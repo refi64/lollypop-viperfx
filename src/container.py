@@ -161,7 +161,11 @@ class Container(ViewContainer):
         @param files as [Gio.Files]
     """
     def load_external(self, files):
-        start_new_thread(self._scanner.add, (files,))
+        # We wait as selection list is threaded
+        if self._list_one.is_populating():
+            GLib.timeout_add(250, self.load_external, files)
+        else:
+            start_new_thread(self._scanner.add, (files,))
 
     """
         Get main widget

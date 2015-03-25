@@ -152,8 +152,8 @@ class Application(Gtk.Application):
         external_files = []
         for f in files:
             external_files.append(f)
-        self._window.load_external(external_files)
         self.do_activate()
+        self._window.load_external(external_files)
 
     """
         Hide window
