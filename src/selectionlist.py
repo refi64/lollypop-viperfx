@@ -226,12 +226,16 @@ class SelectionList(GObject.GObject):
 # PRIVATE             #
 #######################
     """
-        Add an item to the list
+        Add items to the list
         @param items as [(int,str)]
         @param time as float
     """
     def _add_item(self, values, time):
-        if not values or time != self._pop_time:
+        if time != self._pop_time:
+            del values
+            values = None
+            return
+        elif not values:
             self._signal_id = self._view.connect('cursor-changed',
                                                  self._new_item_selected)
             self.emit("populated")
