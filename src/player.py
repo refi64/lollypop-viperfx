@@ -397,6 +397,9 @@ class Player(GObject.GObject):
     """
     def set_albums(self, track_id, album_id, artist_id,
                    genre_id, limit_to_artist):
+        # Invalid track
+        if album_id == -1:
+            return
         self._albums = []
         self._shuffle_prev_tracks = []
         self._shuffle_history = {}
