@@ -152,7 +152,7 @@ class Toolbar:
     def _save_genres_btn_state(self, widget):
         Objects.settings.set_value('show-genres',
                                    GLib.Variant('b',
-                                                not widget.get_active()))
+                                                widget.get_active()))
 
     """
         Pop albums from current artistleft click
