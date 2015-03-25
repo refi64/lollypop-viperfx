@@ -88,12 +88,6 @@ class SelectionList(GObject.GObject):
         return self._is_artists
 
     """
-        Return True if list is populating
-    """
-    def is_populating(self):
-        return self._pop_time != 0.0
-
-    """
         Populate view with values
         @param [(int, str)], will be deleted
         @thread safe
@@ -173,7 +167,6 @@ class SelectionList(GObject.GObject):
         self._signal_id = self._view.connect('cursor-changed',
                                              self._new_item_selected)
         self._updating = False
-        self.emit("populated")
 
     """
         Make treeview select first default item
@@ -246,7 +239,6 @@ class SelectionList(GObject.GObject):
                                                  self._new_item_selected)
             self.emit("populated")
             del values
-            self._pop_time = 0.0
             values = None
             return
 

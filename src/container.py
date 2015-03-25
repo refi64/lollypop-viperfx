@@ -84,13 +84,10 @@ class Container(ViewContainer):
         self._setup_view()
         self._setup_scanner()
 
-        self._list_one_restore = None
+        self._list_one_restore = Navigation.POPULARS
         self._list_two_restore = None
         if Objects.settings.get_value('save-state'):
             self._restore_view_state()
-        else:
-            self._list_one_restore = Navigation.POPULARS
-            self._list_two_restore = None
     
         # Volume manager
         self._vm = Gio.VolumeMonitor.get()
@@ -161,11 +158,12 @@ class Container(ViewContainer):
         @param files as [Gio.Files]
     """
     def load_external(self, files):
-        # We wait as selection list is threaded
-        if self._list_one.is_populating():
-            GLib.timeout_add(250, self.load_external, files)
-        else:
+        # We wait as selection list is threaded,
+        # we don't want to insert item before populated
+        if self._list_one_restore is None:
             start_new_thread(self._scanner.add, (files,))
+        else:
+            GLib.timeout_add(250, self.load_external, files)
 
     """
         Get main widget
