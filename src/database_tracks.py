@@ -350,7 +350,7 @@ class DatabaseTracks:
             sql = Objects.sql
         sql.execute("DELETE FROM tracks\
                      WHERE mtime=0")
-        self.clean()
+        self.clean(sql)
         sql.commit()
 
     """
