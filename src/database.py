@@ -115,12 +115,15 @@ class Database:
         able to restore popularities after db reset
     """
     def _set_popularities(self, sql):
-        result = sql.execute("SELECT albums.name, artists.name, popularity\
-                              FROM albums, artists\
-                              WHERE artists.rowid == albums.artist_id")
-        for row in result:
-            string = "%s_%s" % (row[0], row[1])
-            self._popularity_backup[string] = row[2]
+        try:
+            result = sql.execute("SELECT albums.name, artists.name, popularity\
+                                  FROM albums, artists\
+                                  WHERE artists.rowid == albums.artist_id")
+            for row in result:
+                string = "%s_%s" % (row[0], row[1])
+                self._popularity_backup[string] = row[2]
+        except:
+            pass  # Empty database
 
     """
         Return a new sqlite cursor
