@@ -90,8 +90,6 @@ class Player(GObject.GObject):
         self._shuffle_history = {}
         # Party mode
         self._is_party = False
-        # Available party ids
-        self._is_party_ids = None
         # Current queue
         self._queue = []
 
@@ -322,6 +320,20 @@ class Player(GObject.GObject):
                 self.set_album(album_id)
 
     """
+        Return party ids
+        @return [ids as int]
+    """
+    def get_party_ids(self):
+        party_settings = Objects.settings.get_value('party-ids')
+        ids = []
+        genre_ids = Objects.genres.get_ids()
+        for setting in party_settings:
+            if isinstance(setting, int) and\
+               setting in genre_ids:
+                ids.append(setting)
+        return ids
+
+    """
         Set party mode on if party is True
         Play a new random track if not already playing
         @param party as bool
@@ -339,8 +351,9 @@ class Player(GObject.GObject):
         self._is_party = party
         self._shuffle_prev_tracks = []
         if party:
-            if len(self._is_party_ids) > 0:
-                self._albums = Objects.albums.get_party_ids(self._is_party_ids)
+            party_ids = self.get_party_ids()
+            if len(party_ids) > 0:
+                self._albums = Objects.albums.get_party_ids(party_ids)
             else:
                 self._albums = Objects.albums.get_ids()
             # Start a new song if not playing
@@ -352,21 +365,6 @@ class Player(GObject.GObject):
             if self.current.id:
                 self.set_albums(self.current.id, self.current.album_id,
                                 self.current.aartist_id, None, True)
-
-    """
-        Set party ids to ids
-        Party ids are genres_id (and specials ids) used to populate party mode
-        @param [ids as int]
-    """
-    def set_party_ids(self, ids):
-        self._is_party_ids = ids
-
-    """
-        Return party ids
-        @return [ids as int]
-    """
-    def get_party_ids(self):
-        return self._is_party_ids
 
     """
         True if party mode on
@@ -518,6 +516,7 @@ class Player(GObject.GObject):
 #######################
 # PRIVATE             #
 #######################
+
     """
         Stop current track (for track change)
     """

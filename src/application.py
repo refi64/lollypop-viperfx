@@ -75,13 +75,6 @@ class Application(Gtk.Application):
         dark = Objects.settings.get_value('dark-ui')
         settings.set_property("gtk-application-prefer-dark-theme", dark)
 
-        party_settings = Objects.settings.get_value('party-ids')
-        ids = []
-        for setting in party_settings:
-            if isinstance(setting, int):
-                ids.append(setting)
-        Objects.player.set_party_ids(ids)
-
         self.add_action(Objects.settings.create_action('shuffle'))
         self._window = None
         self._opened_files = False

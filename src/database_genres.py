@@ -83,7 +83,7 @@ class DatabaseGenres:
 
     """
         Get all availables genres
-        @return Array of (id as int, name as string)]
+        @return [(id as int, name as string)]
     """
     def get(self, sql=None):
         if not sql:
@@ -94,3 +94,17 @@ class DatabaseGenres:
         for row in result:
             genres += (row,)
         return genres
+
+    """
+        Get all availables genres ids
+        @return [id as int]
+    """
+    def get_ids(self, sql=None):
+        if not sql:
+            sql = Objects.sql
+        genres = []
+        result = sql.execute("SELECT rowid FROM genres\
+                              ORDER BY name COLLATE NOCASE")
+        for row in result:
+            genres += (row)
+        return genres           

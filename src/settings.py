@@ -220,7 +220,6 @@ class SettingsDialog(Gtk.Dialog):
                 ids.remove(genre_id)
             except:
                 pass
-        Objects.player.set_party_ids(ids)
         Objects.settings.set_value('party-ids',  GLib.Variant('ai', ids))
 
 
