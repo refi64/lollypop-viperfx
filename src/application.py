@@ -155,7 +155,6 @@ class Application(Gtk.Application):
     """
     def _hide_on_delete(self, widget, event):
         if not Objects.settings.get_value('background-mode'):
-            Objects.player.stop()
             GLib.timeout_add(500, self.quit)
         return widget.hide_on_delete()
 
