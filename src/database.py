@@ -72,16 +72,15 @@ class Database:
             except:
                 print("Can't create %s" % self.LOCAL_PATH)
 
+        if os.path.exists(self.DB_PATH):
+            db_version = Objects.settings.get_value('db-version').get_int32()
+            if db_version < self.version:
+                self._set_popularities()
+                os.remove(self.DB_PATH)
+                Objects.settings.set_value('db-version',
+                                           GLib.Variant('i', self.version))
+
         sql = self.get_cursor()
-
-        if Objects.settings.get_value('db-version').get_int32() < self.version:
-            self._set_popularities(sql)
-            sql.close()
-            os.remove(self.DB_PATH)
-            sql = self.get_cursor()
-            Objects.settings.set_value('db-version',
-                                       GLib.Variant('i', self.version))
-
         # Create db schema
         try:
             sql.execute(self.create_albums)
@@ -114,16 +113,18 @@ class Database:
         This is usefull for collection scanner be
         able to restore popularities after db reset
     """
-    def _set_popularities(self, sql):
+    def _set_popularities(self):
         try:
+            sql = self.get_cursor()
             result = sql.execute("SELECT albums.name, artists.name, popularity\
                                   FROM albums, artists\
                                   WHERE artists.rowid == albums.artist_id")
             for row in result:
                 string = "%s_%s" % (row[0], row[1])
                 self._popularity_backup[string] = row[2]
-        except:
-            pass  # Empty database
+            sql.close()
+        except Exception as e:
+            print("Database::_set_popularities: %s" %e)
 
     """
         Return a new sqlite cursor
