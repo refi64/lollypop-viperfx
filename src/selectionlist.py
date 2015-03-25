@@ -208,18 +208,20 @@ class SelectionList(GObject.GObject):
         return len(self._model)
 
     """
-        Add volume
+        Add volume to list if not already present
         @param device name as str
         @param object id as int <  -1000
     """
     def add_device(self, device, object_id):
         for item in self._model:
-            if item[0] >= 0:
+            if item[0] == object_id:
+                break
+            elif item[0] >= 0:
                 self._model.insert_before(item.iter,
                                           [object_id,
                                            device,
                                            self._device_pixbuf])
-                return
+                break
 #######################
 # PRIVATE             #
 #######################
