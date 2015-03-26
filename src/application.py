@@ -14,6 +14,7 @@
 from gi.repository import Gtk, Gio, GLib, Gdk, Notify
 from os import environ
 
+from lollypop.utils import is_audio
 from lollypop.define import Objects, ArtSize
 from lollypop.window import Window
 from lollypop.database import Database
@@ -149,7 +150,8 @@ class Application(Gtk.Application):
         self._opened_files = True
         external_files = []
         for f in files:
-            external_files.append(f)
+            if is_audio(f):
+               external_files.append(f)
         if not self._window.is_visible():
             self.do_activate()
         self._window.load_external(external_files)

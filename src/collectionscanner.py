@@ -14,11 +14,11 @@
 import os
 from time import sleep
 from gettext import gettext as _
-from gi.repository import GLib, GObject
+from gi.repository import GLib, GObject, Gio
 from _thread import start_new_thread
 
 from lollypop.define import Objects, Navigation
-from lollypop.utils import format_artist_name
+from lollypop.utils import format_artist_name, is_audio
 
 
 class CollectionScanner(GObject.GObject):
@@ -28,7 +28,6 @@ class CollectionScanner(GObject.GObject):
         'genre-update': (GObject.SignalFlags.RUN_FIRST, None, (int,)),
         'add-finished': (GObject.SignalFlags.RUN_FIRST, None, ())
     }
-    _mimes = ["mp3", "ogg", "flac", "m4a", "mp4", "opus"]
 
     """
         @param progress as Gtk.Progress
@@ -70,6 +69,8 @@ class CollectionScanner(GObject.GObject):
         @thread safe
     """
     def add(self, files):
+        if not files:
+            return
         GLib.idle_add(self._progress.show)
         sql = Objects.db.get_cursor()
         tracks = Objects.tracks.get_paths(sql)
@@ -81,7 +82,8 @@ class CollectionScanner(GObject.GObject):
             path = f.get_path()
             if path not in tracks:
                 infos = Objects.player.get_infos(path)
-                self._added.append(self._add2db(path, 0, infos, sql))
+                if infos is not None:
+                    self._added.append(self._add2db(path, 0, infos, sql))
             else:
                 self._added.append(Objects.tracks.get_id_by_path(path, sql))
             i += 1
@@ -146,17 +148,11 @@ class CollectionScanner(GObject.GObject):
         count = 0
         for path in paths:
             for root, dirs, files in os.walk(path):
-                for f in files:
-                    lowername = f.lower()
-                    supported = False
-                    for mime in self._mimes:
-                        if lowername.endswith(mime):
-                            supported = True
-                            break
-                    if supported:
-                        new_tracks.append(os.path.join(root, f))
+                for name in files:
+                    f = Gio.File.new_for_path(os.path.join(root, name))
+                    if is_audio(f):
+                        new_tracks.append(os.path.join(root, name))
                         count += 1
-
         i = 0
         for filepath in new_tracks:
             GLib.idle_add(self._update_progress, i, count)
@@ -164,12 +160,14 @@ class CollectionScanner(GObject.GObject):
             try:
                 if filepath not in tracks:
                     infos = Objects.player.get_infos(filepath)
-                    self._add2db(filepath, mtime, infos, sql)
+                    if infos is not None:
+                        self._add2db(filepath, mtime, infos, sql)
                 else:
                     # Update tags by removing song and readd it
                     if mtime != self._mtimes[filepath]:
                         infos = Objects.player.get_infos(filepath)
-                        track_id = Objects.tracks.get_id_by_path(filepath, sql)
+                        if infos is not None:
+                            track_id = Objects.tracks.get_id_by_path(filepath, sql)
                         album_id = Objects.tracks.get_album_id(track_id, sql)
                         Objects.tracks.remove(filepath, sql)
                         self._clean_compilation(album_id, sql)

@@ -116,8 +116,12 @@ class Player(GObject.GObject):
         @return GstPbutils.DiscovererInfo
     """
     def get_infos(self, path):
-        uri = GLib.filename_to_uri(path)
-        return self._tagreader.discover_uri(uri)
+        try:
+            uri = GLib.filename_to_uri(path)
+            infos = self._tagreader.discover_uri(uri)
+            return infos
+        except:
+            return None
 
     """
         True if player is playing
