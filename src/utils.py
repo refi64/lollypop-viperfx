@@ -19,11 +19,14 @@ from gettext import gettext as _
     @param f as Gio.File
 """
 def is_audio(f):
-    info = f.query_info('standard::content-type',
-                        Gio.FileQueryInfoFlags.NONE)
-    if info is not None:
-        if info.get_content_type().find('audio/') != -1:
-            return True
+    try:
+        info = f.query_info('standard::content-type',
+                            Gio.FileQueryInfoFlags.NONE)
+        if info is not None:
+            if info.get_content_type().find('audio/') != -1:
+                return True
+    except:
+        pass
     return False
 
 """

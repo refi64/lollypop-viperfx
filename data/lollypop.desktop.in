@@ -8,4 +8,4 @@ Terminal=false
 Type=Application
 Categories=GNOME;GTK;AudioVideo;Player;Audio;
 StartupNotify=true
-MimeType=application/ogg;application/x-ogg;audio/aac;audio/x-aac;audio/m4a;audio/x-m4a;audio/mp3;audio/x-mp3;audio/mpeg;audio/x-mpeg;audio/mpg;audio/x-mpg;audio/ogg;audio/x-ms-wma;audio/x-flac;audio/x-vorbis+ogg;video/x-ogm+ogg;audio/ac3;audio/flac;
+MimeType=application/ogg;application/x-ogg;audio/aac;audio/x-aac;audio/m4a;audio/x-m4a;audio/mp3;audio/x-mp3;audio/mpeg;audio/x-mpeg;audio/mpg;audio/x-mpg;audio/ogg;audio/x-ms-wma;audio/x-flac;audio/x-vorbis+ogg;video/x-ogm+ogg;audio/ac3;audio/flac;application/xspf+xml;audio/x-mpegurl;
