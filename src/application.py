@@ -150,7 +150,8 @@ class Application(Gtk.Application):
         external_files = []
         for f in files:
             external_files.append(f)
-        self.do_activate()
+        if not self._window.is_visible():
+            self.do_activate()
         self._window.load_external(external_files)
 
     """
