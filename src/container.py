@@ -564,7 +564,8 @@ class Container(ViewContainer):
     def _play_tracks(self, scanner):
         ids = scanner.get_added()
         if ids:
-            Objects.player.set_user_playlist(ids, ids[0])
+            if not Objects.player.is_party():
+                Objects.player.set_user_playlist(ids, ids[0])
             Objects.player.load(ids[0])
 
     """
