@@ -120,6 +120,10 @@ class Application(Gtk.Application):
     def quit(self, action=None, param=None):
         Objects.player.stop()
         if self._opened_files:
+            # Cleaning db here is too slow, user may want to play some more
+            # tracks just after closing lollypop
+            # So mark collection to be scanned at startup,
+            # this will delete orphaned albums
             Objects.settings.set_value('force-scan', GLib.Variant('b', True))
             Objects.tracks.remove_tmp()
         try:
