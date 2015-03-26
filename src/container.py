@@ -106,7 +106,8 @@ class Container(ViewContainer):
         if not self._progress.is_visible():
             if force or Objects.tracks.is_empty():
                 self._scanner.update(False)
-            elif Objects.settings.get_value('startup-scan'):
+            elif Objects.settings.get_value('startup-scan') or\
+                 Objects.settings.get_value('force-scan'):
                 self._scanner.update(True)
 
     """
@@ -260,7 +261,7 @@ class Container(ViewContainer):
     """
     def _setup_scanner(self):
         self._scanner = CollectionScanner(self._progress)
-        self._scanner.connect("scan-finished", self.update_lists)
+        self._scanner.connect("scan-finished", self._on_scan_finished)
         self._scanner.connect("genre-update", self._add_genre)
         self._scanner.connect("artist-update", self._add_artist)
         self._scanner.connect("add-finished", self._play_tracks)
@@ -564,6 +565,16 @@ class Container(ViewContainer):
         if ids:
             Objects.player.set_user_playlist(ids, ids[0])
             Objects.player.load(ids[0])
+
+    """
+        Mark force scan as False, update lists
+        @param scanner as CollectionScanner
+    """
+    def _on_scan_finished(self, scanner):
+        Objects.settings.set_value('force-scan',
+                                   GLib.Variant('b', False))
+        self.update_lists(scanner)
+
     """
         On volume mounter
         @param vm as Gio.VolumeMonitor

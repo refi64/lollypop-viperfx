@@ -120,6 +120,7 @@ class Application(Gtk.Application):
     def quit(self, action=None, param=None):
         Objects.player.stop()
         if self._opened_files:
+            Objects.settings.set_value('force-scan', GLib.Variant('b', True))
             Objects.tracks.remove_tmp()
         try:
             Objects.sql.execute("VACUUM")

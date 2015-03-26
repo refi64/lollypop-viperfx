@@ -81,6 +81,11 @@
             <summary>Auto play albums on click</summary>
             <description></description>
         </key>
+        <key type="b" name="force-scan">
+            <default>false</default>
+            <summary>DO NOT MODIFY</summary>
+            <description></description>
+        </key>
 		 <key type="i" name="paned-mainlist-width">
             <default>150</default>
             <summary>INTERNAL</summary>
