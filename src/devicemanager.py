@@ -249,7 +249,7 @@ class DeviceManagerWidget(Gtk.Bin):
                 if art:
                     dst_art = "%s/cover.jpg" % on_device_album_path
                     if not os.path.exists(dst_art):
-                        copyfile(art, dst_art)
+                        self._copyfile(art, dst_art)
 
                 track_name = os.path.basename(track_path)
                 dst_path = "%s/%s" % (on_device_album_path, track_name)
@@ -259,8 +259,7 @@ class DeviceManagerWidget(Gtk.Bin):
                                album_name.lower(),
                                track_name))
                 if not os.path.exists(dst_path):
-                    copyfile(track_path, dst_path)
-                    sleep(0.1)
+                    self._copyfile(track_path, dst_path)
                 else:
                     self._done += 1
                 self._done += 1
@@ -334,38 +333,54 @@ class DeviceManagerWidget(Gtk.Bin):
                         self._fraction = self._done/self._total
 
     """
+        Copy file
+        @param trackpath as str
+        @param destination path as str
+    """
+    def _copyfile(self, track_path, dst_path, retry=0):
+        try:
+            copyfile(track_path, dst_path)
+        except Exception as e:
+            print("DeviceManagerWidget::_copyfile(): %s" % e)
+            sleep(5)
+            if retry < 5:
+                retry += 1
+                self._copyfile(track_path, dst_path, retry)
+            else:
+                self._errors = True
+
+
+    """
         Delete file
         @param path as str
     """
-    def _delete(self, path):
+    def _delete(self, path, retry=0):
         try:
             os.remove(path)
-            sleep(0.1)
         except Exception as e:
             print("DeviceManagerWidget::_delete(): %s" % e)
+            sleep(5)
+            if retry < 5:
+                retry += 1
+                self._delete(path, retry)
+            else:
+                self._errors = True
 
     """
         Make dir in device
         @param path as str
     """
-    def _mkdir(self, path):
+    def _mkdir(self, path, retry=0):
         try:
             os.makedirs(path, exist_ok=True)
-            sleep(0.1)
         except Exception as e:
             print("DeviceManagerWidget::_mkdir(): %s" % e)
-
-    """
-        Remove dir in device
-        @param path as str
-    """
-    def _rmdir(self, path):
-        try:
-            if os.path.exists(path):
-                os.rmdir(path)
-                sleep(0.1)
-        except Exception as e:
-            print("DeviceManagerWidget::_rmdir(): %s" % e)
+            sleep(5)
+            if retry < 5:
+                retry += 1
+                self._mkdir(path, retry)
+            else:
+                self._errors = True
 
     """
         Show information bar with error message
