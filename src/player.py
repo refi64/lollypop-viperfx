@@ -212,7 +212,7 @@ class Player(GObject.GObject):
                 self._shuffle_prev_tracks.pop()
             except:
                 track_id = None
-        elif self.context.position != -1:
+        elif self.context.position is not None:
             tracks = Objects.albums.get_tracks(self.current.album_id,
                                                self.current.genre_id)
             if self.context.position <= 0:  # Prev album

@@ -11,10 +11,10 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-from gi.repository import Gtk, GLib
+from gi.repository import Gtk, GLib, Gdk
 from cgi import escape
 
-from lollypop.define import Objects, Navigation, ArtSize
+from lollypop.define import Objects, Navigation, ArtSize, NextContext
 from lollypop.tracks import TracksWidget
 from lollypop.popmenu import PopMainMenu
 from lollypop.playlists import PlaylistEditWidget
@@ -109,8 +109,13 @@ class AlbumDetailedWidget(Gtk.Grid):
         self._tracks_widget2 = TracksWidget(show_menu)
         size_group.add_widget(self._tracks_widget1)
         size_group.add_widget(self._tracks_widget2)
+        self._button_mask = None
         self._tracks_widget1.connect('activated', self._on_activated)
+        self._tracks_widget1.connect('button-press-event',
+                                     self._on_button_press_event)
         self._tracks_widget2.connect('activated', self._on_activated)
+        self._tracks_widget2.connect('button-press-event',
+                                     self._on_button_press_event)
         self._ui.get_object('tracks').add(self._tracks_widget1)
         self._ui.get_object('tracks').add(self._tracks_widget2)
         self._tracks_widget1.show()
@@ -260,13 +265,25 @@ class AlbumDetailedWidget(Gtk.Grid):
         @param track id as int
     """
     def _on_activated(self, widget, track_id):
-        if not Objects.player.is_party():
+        if not Objects.player.is_party() and\
+           self._button_state != Gdk.ModifierType.CONTROL_MASK and\
+           self._button_state != Gdk.ModifierType.SHIFT_MASK:
             Objects.player.set_albums(track_id,
                                       self._album_id,
                                       self._artist_id,
                                       self._genre_id,
                                       self._limit_to_artist)
         Objects.player.load(track_id)
+        if self._button_state == Gdk.ModifierType.CONTROL_MASK:
+            Objects.player.context.next = NextContext.STOP_TRACK
+
+    """
+        Keep track of mask
+        @param widget as TrackWidget
+        @param event as Gdk.Event
+    """
+    def _on_button_press_event(self, widget, event):
+        self._button_state = event.get_state()
 
     """
         Popover with album art downloaded from the web (in fact google :-/)
