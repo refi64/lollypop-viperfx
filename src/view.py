@@ -253,11 +253,12 @@ class ArtistView(View):
 class AlbumView(View):
     """
         Init album view ui with a scrolled flow box and a scrolled context view
+        @param navigation id as int
     """
-    def __init__(self):
+    def __init__(self, navigation_id):
         View.__init__(self)
         self._album_id = None
-        self._genre_id = None
+        self._navigation_id = navigation_id
         self._albumsongs = None
         self._context_widget = None
 
@@ -291,19 +292,16 @@ class AlbumView(View):
 
     """
         Populate albums, thread safe
-        @param navigation id as int
     """
-    def populate(self, navigation_id):
+    def populate(self):
         sql = Objects.db.get_cursor()
-        if navigation_id == Navigation.ALL:
+        if self._navigation_id == Navigation.ALL:
             albums = Objects.albums.get_ids(None, None, sql)
-        elif navigation_id == Navigation.POPULARS:
+        elif self._navigation_id == Navigation.POPULARS:
             albums = Objects.albums.get_populars(sql)
         else:
-            self._genre_id = navigation_id
-            albums = Objects.albums.get_compilations(self._genre_id, sql)
-            albums += Objects.albums.get_ids(None, self._genre_id, sql)
-
+            albums = Objects.albums.get_compilations(self._navigation_id, sql)
+            albums += Objects.albums.get_ids(None, self._navigation_id, sql)
         GLib.idle_add(self._add_albums, albums)
         sql.close()
 
@@ -348,7 +346,7 @@ class AlbumView(View):
         if old_view:
             self._stack.remove(old_view)
         self._context_widget = AlbumDetailedWidget(album_id,
-                                                   self._genre_id,
+                                                   self._navigation_id,
                                                    False,
                                                    True,
                                                    size_group)

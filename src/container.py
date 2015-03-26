@@ -413,12 +413,13 @@ class Container(ViewContainer):
 
     """
         Update current view with albums view
+        @param object id as int
     """
-    def _update_view_albums(self, genre_id):
+    def _update_view_albums(self, object_id):
         old_view = self._stack.get_visible_child()
-        view = AlbumView()
+        view = AlbumView(object_id)
         self._stack.add(view)
-        start_new_thread(view.populate, (genre_id,))
+        start_new_thread(view.populate, ())
         self._stack.set_visible_child(view)
         self._clean_view(old_view)
 

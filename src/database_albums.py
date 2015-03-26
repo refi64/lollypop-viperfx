@@ -321,7 +321,7 @@ class DatabaseAlbums:
     def get_count(self, album_id, genre_id, sql=None):
         if not sql:
             sql = Objects.sql
-        if genre_id:
+        if genre_id is not None and genre_id > 0:
             result = sql.execute("SELECT COUNT(tracks.rowid)\
                                   FROM tracks, track_genres\
                                   WHERE tracks.album_id=?\
@@ -348,7 +348,7 @@ class DatabaseAlbums:
         if not sql:
             sql = Objects.sql
         tracks = []
-        if genre_id:
+        if genre_id is not None and genre_id > 0:
             result = sql.execute("SELECT tracks.rowid FROM tracks, track_genres\
                                   WHERE album_id=?\
                                   AND track_genres.track_id = tracks.rowid\
@@ -376,7 +376,7 @@ class DatabaseAlbums:
         if not sql:
             sql = Objects.sql
         tracks = []
-        if genre_id:
+        if genre_id is not None and genre_id > 0:
             result = sql.execute("SELECT tracks.filepath\
                                   FROM tracks, track_genres\
                                   WHERE album_id=?\
@@ -407,7 +407,7 @@ class DatabaseAlbums:
         if not sql:
             sql = Objects.sql
 
-        if genre_id:
+        if genre_id is not None and genre_id > 0:
             result = sql.execute("SELECT tracks.rowid,\
                                   tracks.name,\
                                   tracks.length\
@@ -453,24 +453,15 @@ class DatabaseAlbums:
             sql = Objects.sql
         albums = []
         result = []
-        # Get albums for artist id and genre id
-        if artist_id and genre_id:
-            result = sql.execute("SELECT albums.rowid\
-                                  FROM albums, album_genres\
-                                  WHERE artist_id=?\
-                                  AND album_genres.genre_id=?\
-                                  AND album_genres.album_id=albums.rowid\
-                                  ORDER BY year, name COLLATE NOCASE",
-                                 (artist_id, genre_id))
         # Get albums for all artists
-        elif not artist_id and not genre_id:
+        if artist_id is None and genre_id is None:
             result = sql.execute("SELECT albums.rowid FROM albums, artists\
                                   WHERE artists.rowid=albums.artist_id\
                                   ORDER BY artists.name COLLATE NOCASE,\
                                   albums.year,\
                                   albums.name COLLATE NOCASE")
         # Get albums for genre
-        elif not artist_id:
+        elif artist_id is None:
             result = sql.execute("SELECT albums.rowid FROM albums,\
                                   album_genres, artists\
                                   WHERE album_genres.genre_id=?\
@@ -480,12 +471,20 @@ class DatabaseAlbums:
                                   albums.year,\
                                   albums.name COLLATE NOCASE", (genre_id,))
         # Get albums for artist
-        elif not genre_id:
+        elif genre_id is None:
             result = sql.execute("SELECT rowid FROM albums\
                                   WHERE artist_id=?\
                                   ORDER BY year, name COLLATE NOCASE",
                                  (artist_id,))
-
+        # Get albums for artist id and genre id
+        else:
+            result = sql.execute("SELECT albums.rowid\
+                                  FROM albums, album_genres\
+                                  WHERE artist_id=?\
+                                  AND album_genres.genre_id=?\
+                                  AND album_genres.album_id=albums.rowid\
+                                  ORDER BY year, name COLLATE NOCASE",
+                                 (artist_id, genre_id))
         for row in result:
             albums += row
         return albums
