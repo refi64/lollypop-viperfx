@@ -82,6 +82,8 @@ class CollectionScanner(GObject.GObject):
             if path not in tracks:
                 infos = Objects.player.get_infos(path)
                 self._added.append(self._add2db(path, 0, infos, sql))
+            else:
+                self._added.append(Objects.tracks.get_id_by_path(path, sql))
             i += 1
             GLib.idle_add(self._update_progress, i, count)
         Objects.albums.sanitize(sql)
