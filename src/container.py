@@ -171,7 +171,15 @@ class Container(ViewContainer):
     """
     def main_widget(self):
         return self._paned_main_list
-    
+
+    """
+        Stop current view from processing
+    """
+    def stop_all(self):
+        view = self._stack.get_visible_child()
+        if view is not None:
+            self._clean_view(view)
+
 ############
 # Private  #
 ############

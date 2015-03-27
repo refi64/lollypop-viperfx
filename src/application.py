@@ -126,6 +126,8 @@ class Application(Gtk.Application):
     """
     def quit(self, action=None, param=None):
         Objects.player.stop()
+        if self._window:
+            self._window.stop_all()
         if self._opened_files:
             # Cleaning db here is too slow, user may want to play some more
             # tracks just after closing lollypop
