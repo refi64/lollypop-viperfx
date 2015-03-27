@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lollypop\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-03-20 10:38+0100\n"
+"POT-Creation-Date: 2015-03-27 06:34+0100\n"
 "PO-Revision-Date: 2015-03-07 12:44+0000\n"
 "Last-Translator: Pietro Acinapura <pietro.ac@gmail.com>\n"
 "Language-Team: Italian (http://www.transifex.com/projects/p/lollypop/"
@@ -69,55 +69,65 @@ msgid "Restart needed"
 msgstr ""
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:13
-msgid "DO NOT MODIFY"
-msgstr "NON MODIFICARE"
+msgid "Database version"
+msgstr ""
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:14
+msgid ""
+"Reset this value will reset the database, popular albums will be restored"
+msgstr ""
+
+#: ../data/org.gnome.Lollypop.gschema.xml.h:15
 msgid "Replay gain value in db"
 msgstr "Valore di Replay gain in dB"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:15
+#: ../data/org.gnome.Lollypop.gschema.xml.h:16
 msgid "Between -15 and 15"
 msgstr "Tra -15 e 15"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:16
+#: ../data/org.gnome.Lollypop.gschema.xml.h:17
 msgid "Scan library at startup"
 msgstr "Scansiona la libreria all'avvio"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:17
-msgid "Do not show genres list"
-msgstr "Non mostrare l'elenco dei generi"
-
 #: ../data/org.gnome.Lollypop.gschema.xml.h:18
+#, fuzzy
+msgid "Show genres list"
+msgstr "Mostra generi"
+
+#: ../data/org.gnome.Lollypop.gschema.xml.h:19
 msgid "Use dark gtk theme"
 msgstr "Usa il tema gtk scuro"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:19
+#: ../data/org.gnome.Lollypop.gschema.xml.h:20
 msgid "Show stylized covers"
 msgstr "Mostra copertine stilizzate"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:20 ../data/SettingsDialog.ui.h:4
+#: ../data/org.gnome.Lollypop.gschema.xml.h:21 ../data/SettingsDialog.ui.h:4
 msgid "Continue playback when closed"
 msgstr "Continua la riproduzione quando è chiuso"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:21
+#: ../data/org.gnome.Lollypop.gschema.xml.h:22
 msgid "Restore previous view"
 msgstr "Riprisitina la vista precedente"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:22
+#: ../data/org.gnome.Lollypop.gschema.xml.h:23
 msgid "Auto play albums on click"
 msgstr "Auto esegui album al click"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:23
+#: ../data/org.gnome.Lollypop.gschema.xml.h:24
+msgid "DO NOT MODIFY"
+msgstr "NON MODIFICARE"
+
+#: ../data/org.gnome.Lollypop.gschema.xml.h:25
 msgid "INTERNAL"
 msgstr "INTERNO"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:24
+#: ../data/org.gnome.Lollypop.gschema.xml.h:26
 msgid "Shuffle mode"
 msgstr "Modalità mescola"
 
 #. Translators: Don't translate allowed values, just the description in the brackets
-#: ../data/org.gnome.Lollypop.gschema.xml.h:26
+#: ../data/org.gnome.Lollypop.gschema.xml.h:28
 msgid ""
 "Value identifies whether to shuffle tracks/albums. Allowed values are: \"none"
 "\" (shuffle off), \"tracks\" (shuffle tracks), \"albums\" (shuffle albums)."
@@ -152,27 +162,6 @@ msgstr "Pausa"
 msgid "Play"
 msgstr "Esegui"
 
-#: ../src/window.py:358
-msgid "Popular albums"
-msgstr "Album popolari"
-
-#: ../src/window.py:359 ../src/popmenu.py:49
-msgid "Playlists"
-msgstr "Playlists"
-
-#: ../src/window.py:361
-msgid "All artists"
-msgstr "Tutti gli artisti"
-
-#: ../src/window.py:363
-#, fuzzy
-msgid "All albums"
-msgstr "Album popolari"
-
-#: ../src/window.py:417
-msgid "Compilations"
-msgstr "Compilation"
-
 #: ../src/notification.py:41 ../data/headerbar.ui.h:4
 msgid "Previous"
 msgstr "Precedente"
@@ -192,14 +181,14 @@ msgstr "di %s, da %s"
 msgid "Many artists"
 msgstr "Molti artisti"
 
-#: ../src/database_artists.py:70 ../src/database_albums.py:180
+#: ../src/database_artists.py:70 ../src/database_albums.py:181
 #: ../src/database_tracks.py:181 ../src/database_genres.py:66
-#: ../src/collectionscanner.py:181 ../src/collectionscanner.py:195
-#: ../src/collectionscanner.py:200
+#: ../src/collectionscanner.py:219 ../src/collectionscanner.py:224
+#: ../src/collectionscanner.py:238 ../src/collectionscanner.py:243
 msgid "Unknown"
 msgstr "Sconosciuto"
 
-#: ../src/database_albums.py:197
+#: ../src/database_albums.py:198
 msgid "Compilation"
 msgstr "Compilation"
 
@@ -216,26 +205,22 @@ msgstr "Nuova playlist"
 msgid "Remove these tracks?"
 msgstr "Rimuovere queste tracce?"
 
-#: ../src/view.py:70
-msgid "Loading please wait..."
-msgstr "Caricando, attendere..."
-
-#: ../src/devicemanager.py:53 ../src/devicemanager.py:397
+#: ../src/devicemanager.py:53 ../src/devicemanager.py:412
 #, python-format
 msgid "Synchronize %s"
 msgstr "Sincronizza %s"
 
-#: ../src/devicemanager.py:375
+#: ../src/devicemanager.py:390
 msgid "Unknown error while syncing, try to reboot your device"
 msgstr ""
 "Errore sconosciuto durante la sincronizzazione, prova a riavviare il tuo "
 "dispositivo"
 
-#: ../src/devicemanager.py:382
+#: ../src/devicemanager.py:397
 msgid "No free space available on device"
 msgstr "Non c'è spazio disponibile sul dispositivo"
 
-#: ../src/devicemanager.py:405
+#: ../src/devicemanager.py:420
 msgid "Cancel synchronization"
 msgstr "Annulla la sincronizzazione"
 
@@ -243,51 +228,55 @@ msgstr "Annulla la sincronizzazione"
 msgid "Playback"
 msgstr "Riproduci"
 
-#: ../src/popmenu.py:65
+#: ../src/popmenu.py:49
+msgid "Playlists"
+msgstr "Playlists"
+
+#: ../src/popmenu.py:66
 #, fuzzy
 msgid "Continue playback"
 msgstr "Continua la riproduzione quando è chiuso"
 
-#: ../src/popmenu.py:70
+#: ../src/popmenu.py:71
 msgid "Stop after this track"
 msgstr ""
 
-#: ../src/popmenu.py:75
+#: ../src/popmenu.py:76
 #, fuzzy
 msgid "Stop after this album"
 msgstr "Seleziona una copertina per questo album"
 
-#: ../src/popmenu.py:80
+#: ../src/popmenu.py:81
 msgid "Stop after this artist"
 msgstr ""
 
-#: ../src/popmenu.py:96
+#: ../src/popmenu.py:97
 msgid "Add to others"
 msgstr "Aggiungi ad altri"
 
-#: ../src/popmenu.py:110
+#: ../src/popmenu.py:111
 #, python-format
 msgid "Remove from \"%s\""
 msgstr "Rimuovi da \"%s\""
 
-#: ../src/popmenu.py:118
+#: ../src/popmenu.py:119
 #, python-format
 msgid "Add to \"%s\""
 msgstr "Aggiungi a \"%s\""
 
-#: ../src/popmenu.py:163 ../data/SearchRow.ui.h:3
+#: ../src/popmenu.py:164 ../data/SearchRow.ui.h:3
 msgid "Add to queue"
 msgstr "Aggiungi alla coda"
 
-#: ../src/popmenu.py:169
+#: ../src/popmenu.py:170
 msgid "Next tracks"
 msgstr "Prossime tracce"
 
-#: ../src/popmenu.py:171
+#: ../src/popmenu.py:172
 msgid "Next track"
 msgstr "Possima traccia"
 
-#: ../src/popmenu.py:176
+#: ../src/popmenu.py:177
 msgid "Remove from queue"
 msgstr "Rimuovi dalla coda"
 
@@ -301,7 +290,7 @@ msgstr "Configura Lollypop"
 
 #. Handle language ordering
 #. Translators: Add here words that shoud be ignored for artist sort order
-#: ../src/utils.py:25
+#: ../src/utils.py:41
 msgid "The the"
 msgstr "The the"
 
@@ -444,6 +433,25 @@ msgstr "Scegli cosa dev'essere disponibile in modalità party"
 #: ../data/DeviceManager.ui.h:1
 msgid "Synchronize your device with this playlists"
 msgstr "Sincronizza il tuo dispositivo con questa playlist"
+
+#~ msgid "Do not show genres list"
+#~ msgstr "Non mostrare l'elenco dei generi"
+
+#~ msgid "Popular albums"
+#~ msgstr "Album popolari"
+
+#~ msgid "All artists"
+#~ msgstr "Tutti gli artisti"
+
+#, fuzzy
+#~ msgid "All albums"
+#~ msgstr "Album popolari"
+
+#~ msgid "Compilations"
+#~ msgstr "Compilation"
+
+#~ msgid "Loading please wait..."
+#~ msgstr "Caricando, attendere..."
 
 #~ msgid "Only play this album"
 #~ msgstr "Esegui solo questo album"
