@@ -349,7 +349,6 @@ class DeviceManagerWidget(Gtk.Bin):
             else:
                 self._errors = True
 
-
     """
         Delete file
         @param path as str

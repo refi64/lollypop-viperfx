@@ -71,10 +71,9 @@ class ViewContainer:
 
 # Container for main window child
 class Container(ViewContainer):
-    
     def __init__(self):
         ViewContainer.__init__(self, 500)
-        
+
         # Index will start at -VOLUMES
         self._devices = {}
         self._devices_index = Navigation.DEVICES
@@ -87,7 +86,7 @@ class Container(ViewContainer):
         self._list_two_restore = None
         if Objects.settings.get_value('save-state'):
             self._restore_view_state()
-    
+
         # Volume manager
         self._vm = Gio.VolumeMonitor.get()
         self._vm.connect('mount-added', self._on_mount_added)
@@ -95,7 +94,6 @@ class Container(ViewContainer):
 
         Objects.playlists.connect("playlists-changed",
                                   self.update_lists)
-
 
     """
         Update db at startup only if needed
@@ -287,7 +285,6 @@ class Container(ViewContainer):
             else:
                 start_new_thread(self._setup_list_artists,
                                  (self._list_one, Navigation.ALL, update))
-
 
     """
         Update list two

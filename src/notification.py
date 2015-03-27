@@ -56,7 +56,7 @@ class NotificationManager:
     """
     def _on_current_changed(self, player):
         state = self._window.get_window().get_state()
-        if player.current.id is None or state&Gdk.WindowState.FOCUSED:
+        if player.current.id is None or state & Gdk.WindowState.FOCUSED:
             return
         cover_path = Objects.art.get_path(player.current.album_id,
                                           ArtSize.BIG)

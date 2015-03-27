@@ -24,7 +24,7 @@ from lollypop.utils import format_artist_name, is_audio
 class CollectionScanner(GObject.GObject):
     __gsignals__ = {
         'scan-finished': (GObject.SignalFlags.RUN_FIRST, None, ()),
-        'artist-update': (GObject.SignalFlags.RUN_FIRST, None, (int,int)),
+        'artist-update': (GObject.SignalFlags.RUN_FIRST, None, (int, int)),
         'genre-update': (GObject.SignalFlags.RUN_FIRST, None, (int,)),
         'add-finished': (GObject.SignalFlags.RUN_FIRST, None, ())
     }
@@ -39,7 +39,7 @@ class CollectionScanner(GObject.GObject):
         self._in_thread = False
         self._smooth = False
         self._added = []
-         
+
     """
         Update database
         @param smooth as bool, if smooth, try to scan smoothly
@@ -89,8 +89,8 @@ class CollectionScanner(GObject.GObject):
             GLib.idle_add(self._update_progress, i, count)
         Objects.albums.sanitize(sql)
         sql.commit()
-        sql.close()     
-        GLib.idle_add(self._progress.hide)     
+        sql.close()
+        GLib.idle_add(self._progress.hide)
         GLib.idle_add(self.emit, "add-finished")
 
     """
@@ -274,7 +274,7 @@ class CollectionScanner(GObject.GObject):
                 Objects.artists.add(artist, sql)
                 artist_id = Objects.artists.get_id(artist, sql)
                 if artist == aartist:
-                   self._new_artist = True
+                    self._new_artist = True
             artist_ids.append(artist_id)
 
         if aartist:
@@ -327,11 +327,11 @@ class CollectionScanner(GObject.GObject):
         for genre_id in genre_ids:
             Objects.tracks.add_genre(track_id, genre_id, sql)
         if self._new_genre or self._new_artist:
-             sql.commit()
-             if self._new_genre:
-                 GLib.idle_add(self.emit, "genre-update", genre_id)
-             if self._new_artist:
-                 GLib.idle_add(self.emit, "artist-update", artist_id, album_id)
+            sql.commit()
+            if self._new_genre:
+                GLib.idle_add(self.emit, "genre-update", genre_id)
+            if self._new_artist:
+                GLib.idle_add(self.emit, "artist-update", artist_id, album_id)
         return track_id
 
     """

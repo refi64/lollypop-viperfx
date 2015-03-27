@@ -107,4 +107,4 @@ class DatabaseGenres:
                               ORDER BY name COLLATE NOCASE")
         for row in result:
             genres += (row)
-        return genres           
+        return genres

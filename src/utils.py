@@ -18,6 +18,8 @@ from gettext import gettext as _
     Return True if files is audio
     @param f as Gio.File
 """
+
+
 def is_audio(f):
     try:
         info = f.query_info('standard::content-type',

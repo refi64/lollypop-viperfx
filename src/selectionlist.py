@@ -128,7 +128,7 @@ class SelectionList(GObject.GObject):
                 string = value[1]
             self._model.append([value[0],
                                 string,
-                                self._get_pixbuf(value[0])])     
+                                self._get_pixbuf(value[0])])
         self._updating = False
 
     """

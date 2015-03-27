@@ -21,6 +21,7 @@ from lollypop.view_widgets import AlbumDetailedWidget, AlbumWidget
 from lollypop.view_widgets import PlaylistWidget
 from lollypop.utils import translate_artist_name
 
+
 # Playlist view used to manage playlists
 class PlaylistManageView(Gtk.Bin):
     """

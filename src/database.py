@@ -124,7 +124,7 @@ class Database:
                 self._popularity_backup[string] = row[2]
             sql.close()
         except Exception as e:
-            print("Database::_set_popularities: %s" %e)
+            print("Database::_set_popularities: %s" % e)
 
     """
         Return a new sqlite cursor

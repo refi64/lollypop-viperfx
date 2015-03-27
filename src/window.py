@@ -30,14 +30,13 @@ class Window(Gtk.ApplicationWindow, Container):
         Gtk.ApplicationWindow.__init__(self,
                                        application=app,
                                        title="Lollypop")
-        
+
         self._timeout_configure = None
 
         self._setup_window()
         self._setup_media_keys()
 
         self.connect("destroy", self._on_destroyed_window)
-
 
     """
         Add an application menu to window
