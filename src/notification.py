@@ -31,9 +31,6 @@ class NotificationManager:
         if "action-icons" in caps:
             self._notification.set_hint('action-icons',
                                         GLib.Variant('b', True))
-        if "persistence" in caps:
-            self._notification.set_hint('resident',
-                                        GLib.Variant('b', True))
         self._notification.set_hint('desktop-entry',
                                     GLib.Variant('s', 'lollypop'))
         if "actions" in caps:
