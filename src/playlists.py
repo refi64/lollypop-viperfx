@@ -81,7 +81,7 @@ class PlaylistsManager(GObject.GObject):
         try:
             os.rename(self.PLAYLISTS_PATH+"/"+old_name+".m3u",
                       self.PLAYLISTS_PATH+"/"+new_name+".m3u")
-            for (idx, playlist) in self.idx.items():
+            for (idx, playlist) in self._idx.items():
                 if playlist == old_name:
                     self._idx[idx] = new_name
                     break
