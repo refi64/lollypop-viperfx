@@ -11,7 +11,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-from gi.repository import GLib, Notify
+from gi.repository import Gdk, GLib, Notify
 from gettext import gettext as _
 
 from lollypop.define import Objects, ArtSize
@@ -55,7 +55,8 @@ class NotificationManager:
         @param player Player
     """
     def _on_current_changed(self, player):
-        if player.current.id is None or self._window.is_active():
+        state = self._window.get_window().get_state()
+        if player.current.id is None or state&Gdk.WindowState.FOCUSED:
             return
         cover_path = Objects.art.get_path(player.current.album_id,
                                           ArtSize.BIG)
