@@ -107,7 +107,7 @@ class Application(Gtk.Application):
             self._window = Window(self)
             self._window.connect('delete-event', self._hide_on_delete)
             self._service = MPRIS(self)
-            self._notifications = NotificationManager()
+            self._notifications = NotificationManager(self._window)
         if self._appmenu:
             menu = self._setup_app_menu()
             self.set_app_menu(menu)
