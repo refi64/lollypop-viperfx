@@ -159,6 +159,14 @@ class TracksWidget(Gtk.ListBox):
         self.get_style_context().add_class('trackswidget')
 
     """
+        Add an empty item to list
+    """
+    def add_empty(self):
+        track_row = TrackRow()
+        track_row.set_object_id(-1)
+        self.add(track_row)
+
+    """
         Add track to list
         @param track id as int
         @param track number as int

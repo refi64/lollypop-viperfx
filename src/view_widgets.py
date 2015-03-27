@@ -177,8 +177,12 @@ class AlbumDetailedWidget(Gtk.Grid):
                                                  sql)
         self.populate_list_one(tracks[:mid_tracks],
                                1)
-        self.populate_list_two(tracks[mid_tracks:],
-                               mid_tracks + 1)
+        # We add an empty track here to make the sizegroup working
+        if mid_tracks == 1:
+            self._tracks_widget2.add_empty()
+        else:
+            self.populate_list_two(tracks[mid_tracks:],
+                                   mid_tracks + 1)
 
     """
         Populate list one, thread safe
@@ -221,7 +225,7 @@ class AlbumDetailedWidget(Gtk.Grid):
         popover.show()
 
     """
-        Add tracks for to Album widget
+        Add tracks for to tracks widget
         @param tracks as [(track_id, title, length, [artist ids])]
         @param widget as TracksWidget
         @param i as int
