@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lollypop\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-03-27 06:34+0100\n"
+"POT-Creation-Date: 2015-03-27 16:37+0100\n"
 "PO-Revision-Date: 2015-03-07 11:41+0000\n"
 "Last-Translator: Jiri Grönroos <jiri.gronroos@iki.fi>\n"
 "Language-Team: Finnish (http://www.transifex.com/projects/p/lollypop/"
@@ -161,17 +161,38 @@ msgstr "Keskeytä"
 msgid "Play"
 msgstr "Toista"
 
-#: ../src/notification.py:41 ../data/headerbar.ui.h:4
+#: ../src/container.py:302
+msgid "Popular albums"
+msgstr "Suositut albumit"
+
+#: ../src/container.py:303 ../src/popmenu.py:49
+msgid "Playlists"
+msgstr "Soittolistat"
+
+#: ../src/container.py:305
+msgid "All artists"
+msgstr "Kaikki esittäjät"
+
+#: ../src/container.py:307
+#, fuzzy
+msgid "All albums"
+msgstr "Suositut albumit"
+
+#: ../src/container.py:349
+msgid "Compilations"
+msgstr "Kokoelmat"
+
+#: ../src/notification.py:38 ../data/headerbar.ui.h:4
 msgid "Previous"
 msgstr "Edellinen"
 
-#: ../src/notification.py:45 ../data/headerbar.ui.h:6
+#: ../src/notification.py:42 ../data/headerbar.ui.h:6
 msgid "Next"
 msgstr "Seuraava"
 
 #. TRANSLATORS: by refers to the artist,
 #. from to the album
-#: ../src/notification.py:74
+#: ../src/notification.py:71
 #, python-format
 msgid "by %s, from %s"
 msgstr "esittäjän %s levyltä %s"
@@ -224,10 +245,6 @@ msgstr "Peru synkronointi"
 #: ../src/popmenu.py:44
 msgid "Playback"
 msgstr "Toisto"
-
-#: ../src/popmenu.py:49
-msgid "Playlists"
-msgstr "Soittolistat"
 
 #: ../src/popmenu.py:66
 #, fuzzy
@@ -433,19 +450,6 @@ msgstr "Synkronoi laitteesi tämän soittolistan kanssa"
 
 #~ msgid "Do not show genres list"
 #~ msgstr "Älä näytä tyylilajiluetteloa"
-
-#~ msgid "Popular albums"
-#~ msgstr "Suositut albumit"
-
-#~ msgid "All artists"
-#~ msgstr "Kaikki esittäjät"
-
-#, fuzzy
-#~ msgid "All albums"
-#~ msgstr "Suositut albumit"
-
-#~ msgid "Compilations"
-#~ msgstr "Kokoelmat"
 
 #~ msgid "Loading please wait..."
 #~ msgstr "Ladataan..."

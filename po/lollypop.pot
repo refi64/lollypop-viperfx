@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-03-27 06:34+0100\n"
+"POT-Creation-Date: 2015-03-27 16:37+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -155,17 +155,37 @@ msgstr ""
 msgid "Play"
 msgstr ""
 
-#: ../src/notification.py:41 ../data/headerbar.ui.h:4
+#: ../src/container.py:302
+msgid "Popular albums"
+msgstr ""
+
+#: ../src/container.py:303 ../src/popmenu.py:49
+msgid "Playlists"
+msgstr ""
+
+#: ../src/container.py:305
+msgid "All artists"
+msgstr ""
+
+#: ../src/container.py:307
+msgid "All albums"
+msgstr ""
+
+#: ../src/container.py:349
+msgid "Compilations"
+msgstr ""
+
+#: ../src/notification.py:38 ../data/headerbar.ui.h:4
 msgid "Previous"
 msgstr ""
 
-#: ../src/notification.py:45 ../data/headerbar.ui.h:6
+#: ../src/notification.py:42 ../data/headerbar.ui.h:6
 msgid "Next"
 msgstr ""
 
 #. TRANSLATORS: by refers to the artist,
 #. from to the album
-#: ../src/notification.py:74
+#: ../src/notification.py:71
 #, python-format
 msgid "by %s, from %s"
 msgstr ""
@@ -217,10 +237,6 @@ msgstr ""
 
 #: ../src/popmenu.py:44
 msgid "Playback"
-msgstr ""
-
-#: ../src/popmenu.py:49
-msgid "Playlists"
 msgstr ""
 
 #: ../src/popmenu.py:66

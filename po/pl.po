@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lollypop\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-03-27 06:34+0100\n"
+"POT-Creation-Date: 2015-03-27 16:37+0100\n"
 "PO-Revision-Date: 2015-03-07 10:36+0000\n"
 "Last-Translator: Cédric Bellegarde <web@adishatz.org>\n"
 "Language-Team: Polish (http://www.transifex.com/projects/p/lollypop/language/"
@@ -164,17 +164,38 @@ msgstr "Wstrzymuje odtwarzanie"
 msgid "Play"
 msgstr "Rozpoczyna odtwarzanie"
 
-#: ../src/notification.py:41 ../data/headerbar.ui.h:4
+#: ../src/container.py:302
+msgid "Popular albums"
+msgstr "Popularne albumy"
+
+#: ../src/container.py:303 ../src/popmenu.py:49
+msgid "Playlists"
+msgstr "Listy odtwarzania"
+
+#: ../src/container.py:305
+msgid "All artists"
+msgstr "Wszyscy wykonawcy"
+
+#: ../src/container.py:307
+#, fuzzy
+msgid "All albums"
+msgstr "Popularne albumy"
+
+#: ../src/container.py:349
+msgid "Compilations"
+msgstr "Składanki"
+
+#: ../src/notification.py:38 ../data/headerbar.ui.h:4
 msgid "Previous"
 msgstr "Przechodzi do poprzedniego utworu"
 
-#: ../src/notification.py:45 ../data/headerbar.ui.h:6
+#: ../src/notification.py:42 ../data/headerbar.ui.h:6
 msgid "Next"
 msgstr "Przechodzi do następnego nagrania"
 
 #. TRANSLATORS: by refers to the artist,
 #. from to the album
-#: ../src/notification.py:74
+#: ../src/notification.py:71
 #, python-format
 msgid "by %s, from %s"
 msgstr "w wykonaniu %s, z albumu %s"
@@ -227,10 +248,6 @@ msgstr ""
 #: ../src/popmenu.py:44
 msgid "Playback"
 msgstr "Odtwarzanie"
-
-#: ../src/popmenu.py:49
-msgid "Playlists"
-msgstr "Listy odtwarzania"
 
 #: ../src/popmenu.py:66
 #, fuzzy
@@ -436,19 +453,6 @@ msgstr ""
 
 #~ msgid "Do not show genres list"
 #~ msgstr "Ukrywanie listy gatunków"
-
-#~ msgid "Popular albums"
-#~ msgstr "Popularne albumy"
-
-#~ msgid "All artists"
-#~ msgstr "Wszyscy wykonawcy"
-
-#, fuzzy
-#~ msgid "All albums"
-#~ msgstr "Popularne albumy"
-
-#~ msgid "Compilations"
-#~ msgstr "Składanki"
 
 #~ msgid "Loading please wait..."
 #~ msgstr "Wczytywanie, proszę czekać..."

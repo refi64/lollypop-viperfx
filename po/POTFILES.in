@@ -8,6 +8,7 @@ data/lollypop.appdata.xml.in
 src/application.py
 src/toolbar.py
 src/window.py
+src/container.py
 src/notification.py
 src/database.py
 src/database_artists.py

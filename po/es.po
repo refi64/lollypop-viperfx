@@ -10,7 +10,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lollypop\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-03-27 06:34+0100\n"
+"POT-Creation-Date: 2015-03-27 16:37+0100\n"
 "PO-Revision-Date: 2015-03-07 10:36+0000\n"
 "Last-Translator: Cédric Bellegarde <web@adishatz.org>\n"
 "Language-Team: Spanish (http://www.transifex.com/projects/p/lollypop/"
@@ -163,17 +163,38 @@ msgstr "Pausar"
 msgid "Play"
 msgstr "Reproducir"
 
-#: ../src/notification.py:41 ../data/headerbar.ui.h:4
+#: ../src/container.py:302
+msgid "Popular albums"
+msgstr "Álbumes populares"
+
+#: ../src/container.py:303 ../src/popmenu.py:49
+msgid "Playlists"
+msgstr "Listas"
+
+#: ../src/container.py:305
+msgid "All artists"
+msgstr "Todos los artistas"
+
+#: ../src/container.py:307
+#, fuzzy
+msgid "All albums"
+msgstr "Álbumes populares"
+
+#: ../src/container.py:349
+msgid "Compilations"
+msgstr "Recopilaciones"
+
+#: ../src/notification.py:38 ../data/headerbar.ui.h:4
 msgid "Previous"
 msgstr "Anterior"
 
-#: ../src/notification.py:45 ../data/headerbar.ui.h:6
+#: ../src/notification.py:42 ../data/headerbar.ui.h:6
 msgid "Next"
 msgstr "Siguiente"
 
 #. TRANSLATORS: by refers to the artist,
 #. from to the album
-#: ../src/notification.py:74
+#: ../src/notification.py:71
 #, python-format
 msgid "by %s, from %s"
 msgstr "de %s, desde %s"
@@ -226,10 +247,6 @@ msgstr ""
 #: ../src/popmenu.py:44
 msgid "Playback"
 msgstr "Reproducción"
-
-#: ../src/popmenu.py:49
-msgid "Playlists"
-msgstr "Listas"
 
 #: ../src/popmenu.py:66
 #, fuzzy
@@ -435,19 +452,6 @@ msgstr ""
 
 #~ msgid "Do not show genres list"
 #~ msgstr "No mostrar la lista de género"
-
-#~ msgid "Popular albums"
-#~ msgstr "Álbumes populares"
-
-#~ msgid "All artists"
-#~ msgstr "Todos los artistas"
-
-#, fuzzy
-#~ msgid "All albums"
-#~ msgstr "Álbumes populares"
-
-#~ msgid "Compilations"
-#~ msgstr "Recopilaciones"
 
 #~ msgid "Loading please wait..."
 #~ msgstr "Cargando, paciencia..."
