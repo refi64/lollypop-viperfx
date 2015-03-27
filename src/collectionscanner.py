@@ -164,13 +164,13 @@ class CollectionScanner(GObject.GObject):
                 else:
                     # Update tags by removing song and readd it
                     if mtime != self._mtimes[filepath]:
-                        infos = Objects.player.get_infos(filepath)
-                        if infos is not None:
-                            track_id = Objects.tracks.get_id_by_path(filepath, sql)
+                        track_id = Objects.tracks.get_id_by_path(filepath, sql)
                         album_id = Objects.tracks.get_album_id(track_id, sql)
                         Objects.tracks.remove(filepath, sql)
                         self._clean_compilation(album_id, sql)
-                        self._add2db(filepath, mtime, infos, sql)
+                        infos = Objects.player.get_infos(filepath)
+                        if infos is not None:
+                            self._add2db(filepath, mtime, infos, sql)
                     tracks.remove(filepath)
 
             except Exception as e:
