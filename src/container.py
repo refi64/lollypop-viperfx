@@ -75,7 +75,6 @@ class Container(ViewContainer):
     def __init__(self):
         ViewContainer.__init__(self, 500)
         
-        # Same for volumes, as volumes are in list one,
         # Index will start at -VOLUMES
         self._devices = {}
         self._devices_index = Navigation.DEVICES
