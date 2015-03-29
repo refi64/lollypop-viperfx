@@ -31,7 +31,8 @@ class QueueWidget(Gtk.Popover):
 
         self._timeout = None
         self._in_drag = False
-        self._signal_id = None
+        self._signal_id1 = None
+        self._signal_id2 = None
         self._del_pixbuf = Gtk.IconTheme.get_default().load_icon(
                                             "list-remove-symbolic",
                                             22,
@@ -45,7 +46,6 @@ class QueueWidget(Gtk.Popover):
                                     str,
                                     GdkPixbuf.Pixbuf,
                                     int)
-        self._model.connect("row-deleted", self._updated_rows)
 
         self._view = self._ui.get_object('view')
         self._view.set_model(self._model)
@@ -99,17 +99,22 @@ class QueueWidget(Gtk.Popover):
                                 self._del_pixbuf,
                                 track_id])
 
-        self._signal_id = Objects.player.connect("current-changed",
-                                                 self._on_current_changed)
+        self._signal_id1 = Objects.player.connect("current-changed",
+                                                  self._on_current_changed)
+        self._signal_id2 =  self._model.connect("row-deleted",
+                                                self._updated_rows)
         Gtk.Popover.do_show(self)
 
     """
         Clear model
     """
     def do_hide(self):
-        if self._signal_id:
-            Objects.player.disconnect(self._signal_id)
-            self._signal_id = None
+        if self._signal_id1:
+            Objects.player.disconnect(self._signal_id1)
+            self._signal_id1 = None
+        if self._signal_id2:
+            self._model.disconnect(self._signal_id2)
+            self._signal_id2 = None
         Gtk.Popover.do_hide(self)
         self._model.clear()
 
