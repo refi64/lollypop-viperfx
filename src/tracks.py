@@ -157,6 +157,7 @@ class TracksWidget(Gtk.ListBox):
         self._show_menu = show_menu
         self.connect("row-activated", self._on_activate)
         self.get_style_context().add_class('trackswidget')
+        self.set_property('hexpand', True)
 
     """
         Add track to list
