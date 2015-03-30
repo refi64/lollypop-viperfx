@@ -278,6 +278,7 @@ class CollectionScanner(GObject.GObject):
             artist_ids.append(artist_id)
 
         if aartist:
+            aartist = format_artist_name(aartist)
             # Get aartist id, add it if missing
             aartist_id = Objects.artists.get_id(aartist, sql)
             if aartist_id is None:
@@ -331,7 +332,7 @@ class CollectionScanner(GObject.GObject):
             if self._new_genre:
                 GLib.idle_add(self.emit, "genre-update", genre_id)
             if self._new_artist:
-                GLib.idle_add(self.emit, "artist-update", artist_id, album_id)
+                GLib.idle_add(self.emit, "artist-update", aartist_id, album_id)
         return track_id
 
     """
