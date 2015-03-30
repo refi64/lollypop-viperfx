@@ -14,7 +14,7 @@
 from gi.repository import Gtk, GdkPixbuf, GLib, GObject, Pango
 from time import time
 
-from lollypop.utils import translate_artist_name
+from lollypop.utils import translate_artist_name, format_artist_name
 from lollypop.define import Navigation
 
 
@@ -281,8 +281,8 @@ class SelectionList(GObject.GObject):
     def _sort_items(self, model, itera, iterb, data):
 
         a_index = model.get_value(itera, 0)
-        a = model.get_value(itera, 1)
-        b = model.get_value(iterb, 1)
+        a = format_artist_name(model.get_value(itera, 1))
+        b = format_artist_name(model.get_value(iterb, 1))
 
         if not self._updating:
             return False
