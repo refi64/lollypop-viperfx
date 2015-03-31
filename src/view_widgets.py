@@ -87,12 +87,10 @@ class AlbumDetailedWidget(Gtk.Grid):
         @param album id as int
         @param genre id as int
         @param parent width as int
-        @param limit_to_artist as bool to load artist albums on play
         @param show_menu as bool if menu need to be displayed
         @param size group as Gtk.SizeGroup
     """
-    def __init__(self, album_id, genre_id, limit_to_artist,
-                 show_menu, size_group):
+    def __init__(self, album_id, genre_id, show_menu, size_group):
         Gtk.Grid.__init__(self)
         self._stop = False
 
@@ -103,7 +101,6 @@ class AlbumDetailedWidget(Gtk.Grid):
         self._artist_id = Objects.albums.get_artist_id(album_id)
         self._album_id = album_id
         self._genre_id = genre_id
-        self._limit_to_artist = limit_to_artist
 
         self._tracks_widget1 = TracksWidget(show_menu)
         self._tracks_widget2 = TracksWidget(show_menu)
@@ -271,8 +268,7 @@ class AlbumDetailedWidget(Gtk.Grid):
             Objects.player.set_albums(track_id,
                                       self._album_id,
                                       self._artist_id,
-                                      self._genre_id,
-                                      self._limit_to_artist)
+                                      self._genre_id)
         Objects.player.load(track_id)
         if self._button_state == Gdk.ModifierType.CONTROL_MASK:
             Objects.player.context.next = NextContext.STOP_TRACK

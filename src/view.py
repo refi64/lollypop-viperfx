@@ -233,7 +233,6 @@ class ArtistView(View):
         if len(albums) > 0 and not self._stop:
             widget = AlbumDetailedWidget(albums.pop(0),
                                          genre_id,
-                                         True,
                                          self._show_menu,
                                          size_group)
             widget.show()
@@ -347,7 +346,6 @@ class AlbumView(View):
             self._stack.remove(old_view)
         self._context_widget = AlbumDetailedWidget(album_id,
                                                    self._navigation_id,
-                                                   False,
                                                    True,
                                                    size_group)
         start_new_thread(self._context_widget.populate, ())
