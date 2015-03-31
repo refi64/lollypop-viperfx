@@ -228,6 +228,7 @@ class Player(GObject.GObject):
                 self.current.album_id = self._albums[pos]
                 tracks = Objects.albums.get_tracks(self.current.album_id,
                                                    self.current.genre_id)
+                self.context.album_id = self.current.album_id
                 self.context.position = len(tracks) - 1
                 track_id = tracks[self.context.position]
             else:
