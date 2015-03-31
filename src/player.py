@@ -406,6 +406,12 @@ class Player(GObject.GObject):
         self._shuffle_history = {}
         self._shuffle_albums_backup = []
         self.context.genre_id = genre_id
+
+        # When shuffle from artist is active, we want only artist's albums,
+        # we need to ignore genre
+        if self._shuffle in [Shuffle.TRACKS_ARTIST, Shuffle.ALBUMS_ARTIST]:
+            genre_id = None
+
         # We are not playing a user playlist anymore
         self._user_playlist = None
         # We are in all artists
@@ -429,6 +435,7 @@ class Player(GObject.GObject):
         self.context.album_id = album_id
         tracks = Objects.albums.get_tracks(album_id, genre_id)
         self.context.position = tracks.index(track_id)
+        self.context.genre_id = genre_id
         # Shuffle album list if needed
         self._shuffle_playlist()
 
@@ -598,7 +605,7 @@ class Player(GObject.GObject):
         self.set_albums(self.current.id,
                         self.current.album_id,
                         self.current.aartist_id,
-                        self.current.genre_id)
+                        self.context.genre_id)
 
     """
         Setup replaygain
