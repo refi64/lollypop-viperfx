@@ -10,7 +10,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lollypop\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-03-27 16:37+0100\n"
+"POT-Creation-Date: 2015-03-31 15:22+0200\n"
 "PO-Revision-Date: 2015-03-07 10:36+0000\n"
 "Last-Translator: Cédric Bellegarde <web@adishatz.org>\n"
 "Language-Team: Spanish (http://www.transifex.com/projects/p/lollypop/"
@@ -129,9 +129,12 @@ msgstr "Modo aleatorio"
 
 #. Translators: Don't translate allowed values, just the description in the brackets
 #: ../data/org.gnome.Lollypop.gschema.xml.h:28
+#, fuzzy
 msgid ""
 "Value identifies whether to shuffle tracks/albums. Allowed values are: \"none"
-"\" (shuffle off), \"tracks\" (shuffle tracks), \"albums\" (shuffle albums)."
+"\" (shuffle off), \"tracks\" (shuffle tracks) , \"albums\" (shuffle albums), "
+"\"tracks_artist\" (shuffle tracks from artist), \"albums_artist\" (shuffle "
+"albums from artist)."
 msgstr ""
 "El valor determina si se aleatorizarán las pistas y los álbumes. Los valores "
 "permitidos son: «none» (desactivar modo aleatorio), «tracks» (mezclar las "
@@ -159,42 +162,42 @@ msgid "Pause"
 msgstr "Pausar"
 
 #: ../src/toolbar.py:269 ../src/toolbar.py:285 ../src/fullscreen.py:185
-#: ../data/headerbar.ui.h:5
+#: ../data/headerbar.ui.h:7
 msgid "Play"
 msgstr "Reproducir"
 
-#: ../src/container.py:302
+#: ../src/container.py:307
 msgid "Popular albums"
 msgstr "Álbumes populares"
 
-#: ../src/container.py:303 ../src/popmenu.py:49
+#: ../src/container.py:308 ../src/popmenu.py:49
 msgid "Playlists"
 msgstr "Listas"
 
-#: ../src/container.py:305
+#: ../src/container.py:310
 msgid "All artists"
 msgstr "Todos los artistas"
 
-#: ../src/container.py:307
+#: ../src/container.py:312
 #, fuzzy
 msgid "All albums"
 msgstr "Álbumes populares"
 
-#: ../src/container.py:349
+#: ../src/container.py:354
 msgid "Compilations"
 msgstr "Recopilaciones"
 
-#: ../src/notification.py:38 ../data/headerbar.ui.h:4
+#: ../src/notification.py:39 ../data/headerbar.ui.h:6
 msgid "Previous"
 msgstr "Anterior"
 
-#: ../src/notification.py:42 ../data/headerbar.ui.h:6
+#: ../src/notification.py:43 ../data/headerbar.ui.h:8
 msgid "Next"
 msgstr "Siguiente"
 
 #. TRANSLATORS: by refers to the artist,
 #. from to the album
-#: ../src/notification.py:71
+#: ../src/notification.py:73
 #, python-format
 msgid "by %s, from %s"
 msgstr "de %s, desde %s"
@@ -227,20 +230,20 @@ msgstr "Lista nueva"
 msgid "Remove these tracks?"
 msgstr "¿Eliminar estas canciones?"
 
-#: ../src/devicemanager.py:53 ../src/devicemanager.py:412
+#: ../src/devicemanager.py:53 ../src/devicemanager.py:411
 #, python-format
 msgid "Synchronize %s"
 msgstr ""
 
-#: ../src/devicemanager.py:390
+#: ../src/devicemanager.py:389
 msgid "Unknown error while syncing, try to reboot your device"
 msgstr ""
 
-#: ../src/devicemanager.py:397
+#: ../src/devicemanager.py:396
 msgid "No free space available on device"
 msgstr ""
 
-#: ../src/devicemanager.py:420
+#: ../src/devicemanager.py:419
 msgid "Cancel synchronization"
 msgstr ""
 
@@ -306,7 +309,7 @@ msgstr "Configurar lollypop"
 
 #. Handle language ordering
 #. Translators: Add here words that shoud be ignored for artist sort order
-#: ../src/utils.py:41
+#: ../src/utils.py:43
 msgid "The the"
 msgstr "The the Les les La Le la le los el"
 
@@ -374,27 +377,37 @@ msgstr "Albunes aleatorios"
 msgid "Shuffle tracks"
 msgstr "Canciones aleatorias"
 
-#: ../data/headerbar.ui.h:7
+#: ../data/headerbar.ui.h:4
+#, fuzzy
+msgid "Shuffle albums from artist"
+msgstr "Albunes aleatorios"
+
+#: ../data/headerbar.ui.h:5
+#, fuzzy
+msgid "Shuffle tracks from artist"
+msgstr "Canciones aleatorias"
+
+#: ../data/headerbar.ui.h:9
 msgid "Settings"
 msgstr ""
 
-#: ../data/headerbar.ui.h:8
+#: ../data/headerbar.ui.h:10
 msgid "Shuffle"
 msgstr "Aleatorio"
 
-#: ../data/headerbar.ui.h:9 ../data/SettingsDialog.ui.h:12
+#: ../data/headerbar.ui.h:11 ../data/SettingsDialog.ui.h:12
 msgid "Party mode"
 msgstr "Modo fiesta"
 
-#: ../data/headerbar.ui.h:10
+#: ../data/headerbar.ui.h:12
 msgid "Search"
 msgstr "Búsqueda"
 
-#: ../data/headerbar.ui.h:11
+#: ../data/headerbar.ui.h:13
 msgid "Queue"
 msgstr "Cola"
 
-#: ../data/headerbar.ui.h:12
+#: ../data/headerbar.ui.h:14
 msgid "Show genres"
 msgstr "Mostrar géneros"
 

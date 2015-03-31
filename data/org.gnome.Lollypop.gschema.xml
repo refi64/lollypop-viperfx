@@ -4,6 +4,8 @@
        <value nick="none" value="0"/>
        <value nick="tracks" value="1"/>
        <value nick="albums" value="2"/>
+       <value nick="tracks_artist" value="3"/>
+       <value nick="albums_artist" value="4"/>
     </enum>
     <schema path="/org/gnome/Lollypop/" id="org.gnome.Lollypop" gettext-domain="lollypop">
         <key type="ai" name="window-size">
@@ -110,7 +112,7 @@
             <default>'none'</default>
             <summary>Shuffle mode</summary>
             <!-- Translators: Don't translate allowed values, just the description in the brackets -->
-            <description>Value identifies whether to shuffle tracks/albums. Allowed values are: "none" (shuffle off), "tracks" (shuffle tracks), "albums" (shuffle albums).</description>
+            <description>Value identifies whether to shuffle tracks/albums. Allowed values are: "none" (shuffle off), "tracks" (shuffle tracks) , "albums" (shuffle albums), "tracks_artist" (shuffle tracks from artist), "albums_artist" (shuffle albums from artist).</description>
         </key>
     </schema>
 </schemalist>

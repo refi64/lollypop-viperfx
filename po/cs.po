@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lollypop\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-03-27 16:37+0100\n"
+"POT-Creation-Date: 2015-03-31 15:22+0200\n"
 "PO-Revision-Date: 2015-03-07 13:33+0000\n"
 "Last-Translator: fri\n"
 "Language-Team: Czech (http://www.transifex.com/projects/p/lollypop/language/"
@@ -128,9 +128,12 @@ msgstr "Režim míchání"
 
 #. Translators: Don't translate allowed values, just the description in the brackets
 #: ../data/org.gnome.Lollypop.gschema.xml.h:28
+#, fuzzy
 msgid ""
 "Value identifies whether to shuffle tracks/albums. Allowed values are: \"none"
-"\" (shuffle off), \"tracks\" (shuffle tracks), \"albums\" (shuffle albums)."
+"\" (shuffle off), \"tracks\" (shuffle tracks) , \"albums\" (shuffle albums), "
+"\"tracks_artist\" (shuffle tracks from artist), \"albums_artist\" (shuffle "
+"albums from artist)."
 msgstr ""
 "Hodnota určuje, zda se mají skladby/alba zamíchat. Jsou povoleny hodnoty: "
 "\"žádné\" (míchání vypnuto), \"skladby\" (zamíchat skladby), \"alba"
@@ -158,42 +161,42 @@ msgid "Pause"
 msgstr "Pozastavit"
 
 #: ../src/toolbar.py:269 ../src/toolbar.py:285 ../src/fullscreen.py:185
-#: ../data/headerbar.ui.h:5
+#: ../data/headerbar.ui.h:7
 msgid "Play"
 msgstr "Přehrát"
 
-#: ../src/container.py:302
+#: ../src/container.py:307
 msgid "Popular albums"
 msgstr "Oblíbená alba"
 
-#: ../src/container.py:303 ../src/popmenu.py:49
+#: ../src/container.py:308 ../src/popmenu.py:49
 msgid "Playlists"
 msgstr "Seznamy skladeb"
 
-#: ../src/container.py:305
+#: ../src/container.py:310
 msgid "All artists"
 msgstr "Všichni umělci"
 
-#: ../src/container.py:307
+#: ../src/container.py:312
 #, fuzzy
 msgid "All albums"
 msgstr "Oblíbená alba"
 
-#: ../src/container.py:349
+#: ../src/container.py:354
 msgid "Compilations"
 msgstr "Kompilace"
 
-#: ../src/notification.py:38 ../data/headerbar.ui.h:4
+#: ../src/notification.py:39 ../data/headerbar.ui.h:6
 msgid "Previous"
 msgstr "Předchozí"
 
-#: ../src/notification.py:42 ../data/headerbar.ui.h:6
+#: ../src/notification.py:43 ../data/headerbar.ui.h:8
 msgid "Next"
 msgstr "Další"
 
 #. TRANSLATORS: by refers to the artist,
 #. from to the album
-#: ../src/notification.py:71
+#: ../src/notification.py:73
 #, python-format
 msgid "by %s, from %s"
 msgstr "od %s, na %s"
@@ -226,21 +229,21 @@ msgstr "Nový seznam skladeb"
 msgid "Remove these tracks?"
 msgstr "Odstranit tyto skladby?"
 
-#: ../src/devicemanager.py:53 ../src/devicemanager.py:412
+#: ../src/devicemanager.py:53 ../src/devicemanager.py:411
 #, python-format
 msgid "Synchronize %s"
 msgstr "Seřídit %s"
 
-#: ../src/devicemanager.py:390
+#: ../src/devicemanager.py:389
 msgid "Unknown error while syncing, try to reboot your device"
 msgstr ""
 "Při seřizování nastala neznámá chyba. pokuste se své zařízení zavést znovu"
 
-#: ../src/devicemanager.py:397
+#: ../src/devicemanager.py:396
 msgid "No free space available on device"
 msgstr "Na zařízení není žádné volné místo"
 
-#: ../src/devicemanager.py:420
+#: ../src/devicemanager.py:419
 msgid "Cancel synchronization"
 msgstr "Zrušit seřizování"
 
@@ -306,7 +309,7 @@ msgstr "Nastavit Lollypop"
 
 #. Handle language ordering
 #. Translators: Add here words that shoud be ignored for artist sort order
-#: ../src/utils.py:41
+#: ../src/utils.py:43
 msgid "The the"
 msgstr "\"The\""
 
@@ -374,27 +377,37 @@ msgstr "Zamíchat alba"
 msgid "Shuffle tracks"
 msgstr "Zamíchat skladby"
 
-#: ../data/headerbar.ui.h:7
+#: ../data/headerbar.ui.h:4
+#, fuzzy
+msgid "Shuffle albums from artist"
+msgstr "Zamíchat alba"
+
+#: ../data/headerbar.ui.h:5
+#, fuzzy
+msgid "Shuffle tracks from artist"
+msgstr "Zamíchat skladby"
+
+#: ../data/headerbar.ui.h:9
 msgid "Settings"
 msgstr "Nastavení"
 
-#: ../data/headerbar.ui.h:8
+#: ../data/headerbar.ui.h:10
 msgid "Shuffle"
 msgstr "Zamíchat"
 
-#: ../data/headerbar.ui.h:9 ../data/SettingsDialog.ui.h:12
+#: ../data/headerbar.ui.h:11 ../data/SettingsDialog.ui.h:12
 msgid "Party mode"
 msgstr "Večírkový režim"
 
-#: ../data/headerbar.ui.h:10
+#: ../data/headerbar.ui.h:12
 msgid "Search"
 msgstr "Hledat"
 
-#: ../data/headerbar.ui.h:11
+#: ../data/headerbar.ui.h:13
 msgid "Queue"
 msgstr "Řada"
 
-#: ../data/headerbar.ui.h:12
+#: ../data/headerbar.ui.h:14
 msgid "Show genres"
 msgstr "Ukázat žánry"
 

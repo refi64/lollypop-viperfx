@@ -265,7 +265,8 @@ class Player(GObject.GObject):
                 self._load_track(self._user_playlist[self.context.position],
                                  sql)
         # Get a random album/track
-        elif self._shuffle == Shuffle.TRACKS or self._is_party:
+        elif self._shuffle in [Shuffle.TRACKS, Shuffle.TRACKS_ARTIST] or\
+             self._is_party:
             self._shuffle_next(force, sql)
         elif self.context.position is not None:
             track_id = None
@@ -368,7 +369,7 @@ class Player(GObject.GObject):
             # We need to put some context, take first available genre
             if self.current.id:
                 self.set_albums(self.current.id, self.current.album_id,
-                                self.current.aartist_id, None, True)
+                                self.current.aartist_id, None)
 
     """
         True if party mode on
@@ -398,7 +399,7 @@ class Player(GObject.GObject):
     """
     def set_albums(self, track_id, album_id, artist_id, genre_id):
         # Invalid track
-        if album_id == -1:
+        if track_id is None:
             return
         self._albums = []
         self._shuffle_prev_tracks = []
@@ -414,8 +415,11 @@ class Player(GObject.GObject):
         # We are in popular view, add populars albums
         elif genre_id == Navigation.POPULARS:
             self._albums = Objects.albums.get_populars()
-        # In random tracks, only add artist album
-        elif self._shuffle == Shuffle.TRACKS:
+        # Random tracks/albums for genre
+        elif self._shuffle in [Shuffle.TRACKS, Shuffle.ALBUMS]:
+            self._albums = Objects.albums.get_ids(None, genre_id)
+        # Random tracks/albums for artist
+        elif self._shuffle in [Shuffle.TRACKS_ARTIST, Shuffle.ALBUMS_ARTIST]:
             self._albums = Objects.albums.get_ids(artist_id, genre_id)
         # Add all albums for genre
         else:
@@ -540,32 +544,41 @@ class Player(GObject.GObject):
         Shuffle/Un-shuffle playlist based on shuffle setting
     """
     def _shuffle_playlist(self):
-        # Shuffle album list or restore unshuffled list
-        if self._shuffle == Shuffle.ALBUMS and self._albums:
-            self._albums_backup = list(self._albums)
-            random.shuffle(self._albums)
-        # Shuffle user playlist
-        elif self._shuffle == Shuffle.TRACKS and self._user_playlist:
-            self._user_playlist_backup = list(self._user_playlist)
-            current = self._user_playlist.pop(self.context.position)
-            random.shuffle(self._user_playlist)
-            self._user_playlist.insert(0, current)
-            self.context.position = 0
-        # Shuffle Tracks, just add current to history
-        elif self._shuffle == Shuffle.TRACKS and self.current.id:
-            self._add_to_shuffle_history(self.current.id,
-                                         self.current.album_id)
-        # When shuffle none or shuffle albums and a user playlist is defined
-        # Unshuffle
-        elif self._shuffle in [Shuffle.NONE, Shuffle.ALBUMS]:
-            if self._albums_backup:
-                self._albums = self._albums_backup
-                self._albums_backup = None
+        if self._shuffle in [Shuffle.ALBUMS, Shuffle.ALBUMS_ARTIST]:
+            # No albums shuffle when playing a user playlist
             if self._user_playlist_backup:
                 self._user_playlist = self._user_playlist_backup
                 self.context.position = self._user_playlist.index(
                                                               self.current.id)
                 self._user_playlist_backup = None
+            # Shuffle albums list
+            if self._albums:
+                self._albums_backup = list(self._albums)
+                random.shuffle(self._albums)
+        elif self._shuffle in [Shuffle.TRACKS, Shuffle.TRACKS_ARTIST]:
+            # Shuffle user playlist
+            if self._user_playlist:
+                self._user_playlist_backup = list(self._user_playlist)
+                current = self._user_playlist.pop(self.context.position)
+                random.shuffle(self._user_playlist)
+                self._user_playlist.insert(0, current)
+                self.context.position = 0
+            # Shuffle Tracks, just add current to history
+            elif self.current.id:
+                self._add_to_shuffle_history(self.current.id,
+                                             self.current.album_id)
+
+        # Unshuffle
+        elif self._shuffle == Shuffle.NONE:
+            if self._user_playlist_backup:
+                self._user_playlist = self._user_playlist_backup
+                self.context.position = self._user_playlist.index(
+                                                              self.current.id)
+                self._user_playlist_backup = None
+            elif self._albums_backup:
+                self._albums = self._albums_backup
+                self._albums_backup = None
+          
 
     """
         Set shuffle mode to gettings value
@@ -577,35 +590,15 @@ class Player(GObject.GObject):
         self._shuffle_history = {}
         self._shuffle_prev_tracks = []
 
-        if self._shuffle == Shuffle.TRACKS or self._user_playlist:
+        if self._shuffle in [Shuffle.TRACKS, Shuffle.TRACKS_ARTIST] or\
+           self._user_playlist:
             self._rgvolume.props.album_mode = 0
         else:
             self._rgvolume.props.album_mode = 1
-
-        # Restore position in user playlist
-        if self._shuffle != Shuffle.TRACKS and self._user_playlist:
-            self.context.position = self._user_playlist.index(self.current.id)
-        # Restore position in current album
-        elif self.current.id and\
-                self._shuffle in [Shuffle.NONE, Shuffle.ALBUMS]:
-            tracks = Objects.albums.get_tracks(self.current.album_id,
-                                               self.current.genre_id)
-            self.context.album_id = self.current.album_id
-            self.context.position = tracks.index(self.current.id)
-            # Set albums for current genre
-            self._albums = Objects.albums.get_compilations(
-                                                        self.current.genre_id)
-            self._albums += Objects.albums.get_ids(None,
-                                                   self.current.genre_id)
-        # Add current track too shuffle history
-        elif self.current.id:
-            self._shuffle_prev_tracks.append(self.current.id)
-            # Restore albums from artist
-            self._albums = Objects.albums.get_ids(self.current.aartist_id,
-                                                   self.current.genre_id)
-
-        # Shuffle album list or restore unshuffled list
-        self._shuffle_playlist()
+        self.set_albums(self.current.id,
+                        self.current.album_id,
+                        self.current.aartist_id,
+                        self.current.genre_id)
 
     """
         Setup replaygain

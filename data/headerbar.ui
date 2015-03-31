@@ -17,6 +17,16 @@
       <attribute name="action">app.shuffle</attribute>
       <attribute name="target">tracks</attribute>
     </item>
+     <item>
+      <attribute name="label" translatable="yes">Shuffle albums from artist</attribute>
+      <attribute name="action">app.shuffle</attribute>
+      <attribute name="target">albums_artist</attribute>
+    </item>
+    <item>
+      <attribute name="label" translatable="yes">Shuffle tracks from artist</attribute>
+      <attribute name="action">app.shuffle</attribute>
+      <attribute name="target">tracks_artist</attribute>
+    </item>
   </menu>
   <object class="GtkHeaderBar" id="header-bar">
     <property name="visible">True</property>
