@@ -77,7 +77,7 @@ class Container(ViewContainer):
         # Index will start at -VOLUMES
         self._devices = {}
         self._devices_index = Navigation.DEVICES
-        self._show_genres = True
+        self._show_genres = Objects.settings.get_value('show-genres')
 
         self._setup_view()
         self._setup_scanner()
@@ -177,6 +177,14 @@ class Container(ViewContainer):
         view = self._stack.get_visible_child()
         if view is not None:
             self._clean_view(view)
+
+    """
+        Show/Hide genres
+        @param bool
+    """
+    def show_genres(self, show):
+        self._show_genres = show
+        self._update_list_one(None)
 
 ############
 # Private  #

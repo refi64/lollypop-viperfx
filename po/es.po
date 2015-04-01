@@ -10,7 +10,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lollypop\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-03-31 15:22+0200\n"
+"POT-Creation-Date: 2015-04-01 11:10+0200\n"
 "PO-Revision-Date: 2015-03-07 10:36+0000\n"
 "Last-Translator: Cédric Bellegarde <web@adishatz.org>\n"
 "Language-Team: Spanish (http://www.transifex.com/projects/p/lollypop/"
@@ -156,34 +156,34 @@ msgstr "Reproduzca y organice su colección de música"
 msgid "Music player for the GNOME desktop"
 msgstr "Reproductor de música para el escritorio GNOME"
 
-#: ../src/toolbar.py:259 ../src/toolbar.py:288 ../src/fullscreen.py:80
+#: ../src/toolbar.py:239 ../src/toolbar.py:268 ../src/fullscreen.py:80
 #: ../src/fullscreen.py:181
 msgid "Pause"
 msgstr "Pausar"
 
-#: ../src/toolbar.py:269 ../src/toolbar.py:285 ../src/fullscreen.py:185
+#: ../src/toolbar.py:249 ../src/toolbar.py:265 ../src/fullscreen.py:185
 #: ../data/headerbar.ui.h:7
 msgid "Play"
 msgstr "Reproducir"
 
-#: ../src/container.py:307
+#: ../src/container.py:315
 msgid "Popular albums"
 msgstr "Álbumes populares"
 
-#: ../src/container.py:308 ../src/popmenu.py:49
+#: ../src/container.py:316 ../src/popmenu.py:49
 msgid "Playlists"
 msgstr "Listas"
 
-#: ../src/container.py:310
+#: ../src/container.py:318
 msgid "All artists"
 msgstr "Todos los artistas"
 
-#: ../src/container.py:312
+#: ../src/container.py:320
 #, fuzzy
 msgid "All albums"
 msgstr "Álbumes populares"
 
-#: ../src/container.py:354
+#: ../src/container.py:362
 msgid "Compilations"
 msgstr "Recopilaciones"
 
@@ -303,7 +303,7 @@ msgstr "Suprimir de la cola"
 msgid "Select a cover art for this album"
 msgstr "Seleccionar una carátula para el álbum"
 
-#: ../src/settings.py:33
+#: ../src/settings.py:35
 msgid "Configure lollypop"
 msgstr "Configurar lollypop"
 
@@ -395,7 +395,7 @@ msgstr ""
 msgid "Shuffle"
 msgstr "Aleatorio"
 
-#: ../data/headerbar.ui.h:11 ../data/SettingsDialog.ui.h:12
+#: ../data/headerbar.ui.h:11 ../data/SettingsDialog.ui.h:15
 msgid "Party mode"
 msgstr "Modo fiesta"
 
@@ -406,10 +406,6 @@ msgstr "Búsqueda"
 #: ../data/headerbar.ui.h:13
 msgid "Queue"
 msgstr "Cola"
-
-#: ../data/headerbar.ui.h:14
-msgid "Show genres"
-msgstr "Mostrar géneros"
 
 #: ../data/SearchRow.ui.h:1
 msgid "artist"
@@ -424,38 +420,51 @@ msgid "Close"
 msgstr "Cerrar"
 
 #: ../data/SettingsDialog.ui.h:2
-msgid "Use dark theme variant"
-msgstr "Usar variante oscura"
-
-#: ../data/SettingsDialog.ui.h:3
 msgid "Update music on startup"
 msgstr "Actualizar la música al inicio"
 
-#: ../data/SettingsDialog.ui.h:5
+#: ../data/SettingsDialog.ui.h:3
 msgid "Restore view on startup"
 msgstr "Restaurar vista al iniciar"
 
-#: ../data/SettingsDialog.ui.h:6
+#: ../data/SettingsDialog.ui.h:5
 msgid "Play albums on 2nd click"
 msgstr ""
 
-#: ../data/SettingsDialog.ui.h:7
-msgid "Configure lollypop behaviour"
-msgstr "Configurar el comportamiento de lollypop"
-
-#: ../data/SettingsDialog.ui.h:8
+#: ../data/SettingsDialog.ui.h:6
 msgid "Behaviour"
 msgstr "Comportamiento"
 
+#: ../data/SettingsDialog.ui.h:7
+msgid "Use dark theme variant"
+msgstr "Usar variante oscura"
+
+#: ../data/SettingsDialog.ui.h:8
+msgid "Show genres"
+msgstr "Mostrar géneros"
+
 #: ../data/SettingsDialog.ui.h:9
+msgid "Appearance"
+msgstr ""
+
+#: ../data/SettingsDialog.ui.h:10
+msgid "Configure lollypop behaviour"
+msgstr "Configurar el comportamiento de lollypop"
+
+#: ../data/SettingsDialog.ui.h:11
+#, fuzzy
+msgid "Options"
+msgstr "Recopilaciones"
+
+#: ../data/SettingsDialog.ui.h:12
 msgid "Select music folders"
 msgstr "Seleccionar las carpetas de música"
 
-#: ../data/SettingsDialog.ui.h:10
+#: ../data/SettingsDialog.ui.h:13
 msgid "Music"
 msgstr "Música"
 
-#: ../data/SettingsDialog.ui.h:11
+#: ../data/SettingsDialog.ui.h:14
 msgid "Select what will be available in party mode"
 msgstr "Seleccione lo que estará disponible en el modo fiesta"
 

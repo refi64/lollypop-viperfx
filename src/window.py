@@ -121,10 +121,6 @@ class Window(Gtk.ApplicationWindow, Container):
 
         self._toolbar = Toolbar(self.get_application())
         self._toolbar.header_bar.show()
-        self._toolbar.get_view_genres_btn().connect(
-                                            "toggled",
-                                            self._on_genres_btn_toggled)
-        self._show_genres = self._toolbar.get_view_genres_btn().get_active()
 
         # Only set headerbar on Gnome Shell and Pantheon Shell
         DESKTOP = os.environ.get("XDG_CURRENT_DESKTOP")
@@ -139,13 +135,6 @@ class Window(Gtk.ApplicationWindow, Container):
             hgrid.add(self.main_widget())
             hgrid.show()
             self.add(hgrid)
-
-    """
-        On genres button toggled, update lists/views
-    """
-    def _on_genres_btn_toggled(self, button):
-        self._show_genres = self._toolbar.get_view_genres_btn().get_active()
-        self._update_list_one(None)
 
     """
         Delay event

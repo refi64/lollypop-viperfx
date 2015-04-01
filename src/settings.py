@@ -28,31 +28,30 @@ class SettingsDialog(Gtk.Dialog):
         builder = Gtk.Builder()
         builder.add_from_resource('/org/gnome/Lollypop/SettingsDialog.ui')
 
+        builder.connect_signals(self)
+
         self._settings_dialog = builder.get_object('settings_dialog')
         self._settings_dialog.set_transient_for(parent)
         self._settings_dialog.set_title(_("Configure lollypop"))
 
         switch_scan = builder.get_object('switch_scan')
         switch_scan.set_state(Objects.settings.get_value('startup-scan'))
-        switch_scan.connect('state-set', self._update_scan_setting)
 
         switch_view = builder.get_object('switch_dark')
         switch_view.set_state(Objects.settings.get_value('dark-ui'))
-        switch_view.connect('state-set', self._update_ui_setting)
 
         switch_background = builder.get_object('switch_background')
         switch_background.set_state(Objects.settings.get_value(
                                                     'background-mode'))
-        switch_background.connect('state-set',
-                                  self._update_background_setting)
 
         switch_state = builder.get_object('switch_state')
         switch_state.set_state(Objects.settings.get_value('save-state'))
-        switch_state.connect('state-set', self._update_state_setting)
 
         switch_autoplay = builder.get_object('switch_autoplay')
         switch_autoplay.set_state(Objects.settings.get_value('auto-play'))
-        switch_autoplay.connect('state-set', self._update_autoplay_setting)
+        
+        switch_genres = builder.get_object('switch_genres')
+        switch_genres.set_state(Objects.settings.get_value('show-genres'))
 
         close_button = builder.get_object('close_btn')
         close_button.connect('clicked', self._edit_settings_close)
@@ -170,6 +169,15 @@ class SettingsDialog(Gtk.Dialog):
     def _update_state_setting(self, widget, state):
         Objects.settings.set_value('save-state',
                                    GLib.Variant('b', state))
+    """
+        Update show genre setting
+        @param widget as unused, state as widget state
+    """
+    def _update_genres_setting(self, widget, state):
+        self._window.show_genres(state)
+        Objects.settings.set_value('show-genres',
+                                   GLib.Variant('b', state))
+                                   
     """
         Update auto play setting
         @param widget as unused, state as widget state

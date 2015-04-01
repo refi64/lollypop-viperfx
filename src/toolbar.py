@@ -85,11 +85,6 @@ class Toolbar:
         self._play_btn.connect('clicked', self._on_play_btn_clicked)
         self._next_btn.connect('clicked', self._on_next_btn_clicked)
 
-        self._view_genres_btn = self._ui.get_object('genres_button')
-        self._view_genres_btn.set_active(
-                                   Objects.settings.get_value('show-genres'))
-        self._view_genres_btn.connect("toggled", self._save_genres_btn_state)
-
         search_button = self._ui.get_object('search-button')
         search_button.connect("clicked", self._on_search_btn_clicked)
         self._search = SearchWidget(self.header_bar)
@@ -105,12 +100,6 @@ class Toolbar:
         self._queue.set_relative_to(queue_button)
 
         self._settings_button = self._ui.get_object('settings-button')
-
-    """
-        @return view genres button as GtkToggleButton
-    """
-    def get_view_genres_btn(self):
-        return self._view_genres_btn
 
     """
         Add an application menu to menu button
@@ -144,15 +133,6 @@ class Toolbar:
     """
     def _shuffle_btn_aspect(self, settings, value):
         self._set_shuffle_icon()
-
-    """
-        Save button state
-        @param widget as GtkToggleButton
-    """
-    def _save_genres_btn_state(self, widget):
-        Objects.settings.set_value('show-genres',
-                                   GLib.Variant('b',
-                                                widget.get_active()))
 
     """
         Pop albums from current artistleft click
