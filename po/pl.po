@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lollypop\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-04-02 21:04+0200\n"
+"POT-Creation-Date: 2015-04-02 21:30+0200\n"
 "PO-Revision-Date: 2015-04-01 10:44+0000\n"
 "Last-Translator: Cédric Bellegarde <web@adishatz.org>\n"
 "Language-Team: Polish (http://www.transifex.com/projects/p/lollypop/language/"
@@ -108,8 +108,9 @@ msgid "Continue playback when closed"
 msgstr "Kontynuowanie odtwarzania po zamknięciu okna"
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:22
-msgid "Restore previous view"
-msgstr ""
+#, fuzzy
+msgid "Restore previous state"
+msgstr "Przywrócenie widoku podczas uruchamiania"
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:23
 msgid "Auto play albums on click"
@@ -165,7 +166,7 @@ msgstr "Odtwarza nagrania muzyczne w środowisku GNOME"
 msgid "Play"
 msgstr "Rozpoczyna odtwarzanie"
 
-#: ../src/toolbar.py:242 ../src/toolbar.py:271 ../src/fullscreen.py:80
+#: ../src/toolbar.py:245 ../src/toolbar.py:271 ../src/fullscreen.py:80
 #: ../src/fullscreen.py:181
 msgid "Pause"
 msgstr "Wstrzymuje odtwarzanie"
@@ -423,7 +424,8 @@ msgid "Update music on startup"
 msgstr "Uaktualnianie kolekcji podczas uruchamiania"
 
 #: ../data/SettingsDialog.ui.h:3
-msgid "Restore view on startup"
+#, fuzzy
+msgid "Restore state on startup"
 msgstr "Przywrócenie widoku podczas uruchamiania"
 
 #: ../data/SettingsDialog.ui.h:5

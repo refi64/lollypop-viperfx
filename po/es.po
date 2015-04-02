@@ -10,7 +10,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lollypop\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-04-02 21:04+0200\n"
+"POT-Creation-Date: 2015-04-02 21:30+0200\n"
 "PO-Revision-Date: 2015-04-01 10:44+0000\n"
 "Last-Translator: Cédric Bellegarde <web@adishatz.org>\n"
 "Language-Team: Spanish (http://www.transifex.com/projects/p/lollypop/"
@@ -107,7 +107,8 @@ msgid "Continue playback when closed"
 msgstr "Continuar con la reproducción cuando esté cerrado"
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:22
-msgid "Restore previous view"
+#, fuzzy
+msgid "Restore previous state"
 msgstr "Restaurar la vista anterior"
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:23
@@ -164,7 +165,7 @@ msgstr "Reproductor de música para el escritorio GNOME"
 msgid "Play"
 msgstr "Reproducir"
 
-#: ../src/toolbar.py:242 ../src/toolbar.py:271 ../src/fullscreen.py:80
+#: ../src/toolbar.py:245 ../src/toolbar.py:271 ../src/fullscreen.py:80
 #: ../src/fullscreen.py:181
 msgid "Pause"
 msgstr "Pausar"
@@ -423,7 +424,8 @@ msgid "Update music on startup"
 msgstr "Actualizar la música al inicio"
 
 #: ../data/SettingsDialog.ui.h:3
-msgid "Restore view on startup"
+#, fuzzy
+msgid "Restore state on startup"
 msgstr "Restaurar vista al iniciar"
 
 #: ../data/SettingsDialog.ui.h:5

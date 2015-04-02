@@ -103,6 +103,9 @@ class Application(Gtk.Application):
     def do_startup(self):
         Gtk.Application.do_startup(self)
         Notify.init("Lollypop")
+        if self._appmenu:
+            menu = self._setup_app_menu()
+            self.set_app_menu(menu)
         if not self._window:
             self._window = Window(self)
             self._window.connect('delete-event', self._hide_on_delete)
@@ -110,23 +113,30 @@ class Application(Gtk.Application):
                 MPRIS(self)
             if not Objects.settings.get_value('disable-notifications'):
                 NotificationManager(self._window)
-        if self._appmenu:
-            menu = self._setup_app_menu()
-            self.set_app_menu(menu)
+            self._window.update_lists()
+            self._window.update_db()
+            self._window.show()
+            Objects.player.restore_state()
 
     """
-        Activate window and create it if missing
+        Activate window
     """
     def do_activate(self):
-        self._window.update_lists()
-        self._window.show()
         self._window.present()
-        self._window.update_db()
 
     """
         Destroy main window
     """
     def quit(self, action=None, param=None):
+        if Objects.settings.get_value('save-state'):
+            self._window.save_view_state()
+            if Objects.player.current.id is None:
+                track_id = -1
+            else:
+                track_id = Objects.player.current.id
+            Objects.settings.set_value('track-id', GLib.Variant(
+                                        'i',
+                                        track_id))
         Objects.player.stop()
         if self._window:
             self._window.stop_all()
@@ -142,8 +152,6 @@ class Application(Gtk.Application):
         except:
             pass
         Objects.sql.close()
-        if Objects.settings.get_value('save-state'):
-            self._window.save_view_state()
         self._window.destroy()
 
 #######################

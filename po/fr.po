@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lollypop\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-04-02 21:04+0200\n"
+"POT-Creation-Date: 2015-04-02 21:30+0200\n"
 "PO-Revision-Date: 2015-04-02 05:22+0000\n"
 "Last-Translator: Cédric Bellegarde <web@adishatz.org>\n"
 "Language-Team: French (http://www.transifex.com/projects/p/lollypop/language/"
@@ -108,8 +108,8 @@ msgid "Continue playback when closed"
 msgstr "Continuer à lire à la fermeture"
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:22
-msgid "Restore previous view"
-msgstr "Restaurer la vue au démarrage"
+msgid "Restore previous state"
+msgstr "Restaurer l'état au démarrage"
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:23
 msgid "Auto play albums on click"
@@ -169,7 +169,7 @@ msgstr "Lecteur de musique pour le bureau GNOME"
 msgid "Play"
 msgstr "Lecture"
 
-#: ../src/toolbar.py:242 ../src/toolbar.py:271 ../src/fullscreen.py:80
+#: ../src/toolbar.py:245 ../src/toolbar.py:271 ../src/fullscreen.py:80
 #: ../src/fullscreen.py:181
 msgid "Pause"
 msgstr "Pause"
@@ -429,8 +429,8 @@ msgid "Update music on startup"
 msgstr "Mise à jour de la musique au démarrage"
 
 #: ../data/SettingsDialog.ui.h:3
-msgid "Restore view on startup"
-msgstr "Restaurer la vue au démarrage"
+msgid "Restore state on startup"
+msgstr "Restaurer l'état au démarrage"
 
 #: ../data/SettingsDialog.ui.h:5
 msgid "Play albums on 2nd click"

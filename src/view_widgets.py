@@ -266,7 +266,6 @@ class AlbumDetailedWidget(Gtk.Grid):
            self._button_state != Gdk.ModifierType.CONTROL_MASK and\
            self._button_state != Gdk.ModifierType.SHIFT_MASK:
             Objects.player.set_albums(track_id,
-                                      self._album_id,
                                       self._artist_id,
                                       self._genre_id)
         Objects.player.load(track_id)

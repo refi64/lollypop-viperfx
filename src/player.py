@@ -311,7 +311,6 @@ class Player(GObject.GObject):
         if not Objects.player.is_party():
             if genre_id:
                 self.set_albums(self.current.id,
-                                self.current.album_id,
                                 self.current.aartist_id,
                                 genre_id)
             else:
@@ -361,7 +360,7 @@ class Player(GObject.GObject):
         else:
             # We need to put some context, take first available genre
             if self.current.id:
-                self.set_albums(self.current.id, self.current.album_id,
+                self.set_albums(self.current.id,
                                 self.current.aartist_id, None)
 
     """
@@ -386,14 +385,14 @@ class Player(GObject.GObject):
     """
         Set album list (for next/prev)
         @param track id as int
-        @param album id as int
         @param artist id as int
         @param genre id as int
     """
-    def set_albums(self, track_id, album_id, artist_id, genre_id):
+    def set_albums(self, track_id, artist_id, genre_id):
         # Invalid track
         if track_id is None:
             return
+        album_id = Objects.tracks.get_album_id(track_id)
         self._albums = []
         self._shuffle_prev_tracks = []
         self._shuffle_history = {}
@@ -520,6 +519,16 @@ class Player(GObject.GObject):
         self.context.position = self._user_playlist.index(track_id)
         self._shuffle_playlist()
 
+    """
+        Restore player state
+    """
+    def restore_state(self):
+        track_id = Objects.settings.get_value('track-id').get_int32()
+        if Objects.settings.get_value('save-state') and track_id > 0:
+            self._load_track(track_id)
+            self.set_albums(track_id, Navigation.ALL, Navigation.ALL)
+            self.emit('current-changed')
+    
 #######################
 # PRIVATE             #
 #######################
@@ -596,7 +605,6 @@ class Player(GObject.GObject):
         else:
             self._rgvolume.props.album_mode = 1
         self.set_albums(self.current.id,
-                        self.current.album_id,
                         self.current.aartist_id,
                         self.context.genre_id)
 

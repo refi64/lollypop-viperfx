@@ -117,7 +117,7 @@
                                 <property name="visible">True</property>
                                 <property name="can_focus">False</property>
                                 <property name="halign">start</property>
-                                <property name="label" translatable="yes">Restore view on startup</property>
+                                <property name="label" translatable="yes">Restore state on startup</property>
                               </object>
                               <packing>
                                 <property name="left_attach">0</property>

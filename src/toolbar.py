@@ -205,6 +205,9 @@ class Toolbar:
             if Objects.player.is_party():
                 self._activate_party_button(None, None)
         else:
+            self._prev_btn.set_sensitive(True)
+            self._play_btn.set_sensitive(True)
+            self._next_btn.set_sensitive(True)
             self._infobox.get_window().set_cursor(
                                         Gdk.Cursor(Gdk.CursorType.HAND1))
             art = Objects.art.get(player.current.album_id,  ArtSize.SMALL)
@@ -240,11 +243,8 @@ class Toolbar:
         if is_playing and not self._timeout:
             self._timeout = GLib.timeout_add(1000, self._update_position)
             self._change_play_btn_status(self._pause_image, _("Pause"))
-            self._prev_btn.set_sensitive(True)
-            self._play_btn.set_sensitive(True)
-            self._next_btn.set_sensitive(True)
             # Party mode can be activated
-            # in fullscreen mode, so check button state
+            # via Fullscreen class, so check button state
             self._party_btn.set_active(Objects.player.is_party())
         elif not is_playing and self._timeout:
             GLib.source_remove(self._timeout)
