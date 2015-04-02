@@ -83,6 +83,16 @@
             <summary>Auto play albums on click</summary>
             <description></description>
         </key>
+        <key type="b" name="disable-mpris">
+            <default>false</default>
+            <summary>Disable MPRIS</summary>
+            <description>Restart needed</description>
+        </key>
+        <key type="b" name="disable-notifications">
+            <default>false</default>
+            <summary>Disable notifications</summary>
+            <description>Restart needed</description>
+        </key>
         <key type="b" name="force-scan">
             <default>false</default>
             <summary>DO NOT MODIFY</summary>
