@@ -173,13 +173,6 @@ class MPRIS(dbus.service.Object):
             if cover_path is not None:
                 self._metadata['mpris:artUrl'] = "file://" + cover_path
 
-        self.PropertiesChanged(self.MPRIS_PLAYER_IFACE,
-                           {
-                             'Metadata': dbus.Dictionary(self._metadata,
-                                                         signature='sv'),
-                           },
-                               [])
-
     def _on_seeked(self, player, position):
         self.Seeked(position * 1000000)
 
