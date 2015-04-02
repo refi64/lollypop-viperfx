@@ -1,7 +1,7 @@
 # SOME DESCRIPTIVE TITLE.
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
-#
+# 
 # Translators:
 # Adolfo Jayme Barrientos, 2015
 # Jose Manuel Calero Gonzalez <nosfe1984@gmail.com>, 2015
@@ -11,14 +11,13 @@ msgstr ""
 "Project-Id-Version: lollypop\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2015-04-01 11:10+0200\n"
-"PO-Revision-Date: 2015-03-07 10:36+0000\n"
+"PO-Revision-Date: 2015-04-01 10:44+0000\n"
 "Last-Translator: Cédric Bellegarde <web@adishatz.org>\n"
-"Language-Team: Spanish (http://www.transifex.com/projects/p/lollypop/"
-"language/es/)\n"
-"Language: es\n"
+"Language-Team: Spanish (http://www.transifex.com/projects/p/lollypop/language/es/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Language: es\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:1
@@ -80,20 +79,19 @@ msgstr ""
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:15
 msgid "Replay gain value in db"
-msgstr ""
+msgstr "Valor de ganancia en db"
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:16
 msgid "Between -15 and 15"
-msgstr ""
+msgstr "Entre -15 y 15"
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:17
 msgid "Scan library at startup"
 msgstr "Escanear la biblioteca al inicio"
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:18
-#, fuzzy
 msgid "Show genres list"
-msgstr "Mostrar géneros"
+msgstr ""
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:19
 msgid "Use dark gtk theme"
@@ -113,7 +111,7 @@ msgstr "Restaurar la vista anterior"
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:23
 msgid "Auto play albums on click"
-msgstr ""
+msgstr "Auto reproducir álbumes en clic"
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:24
 msgid "DO NOT MODIFY"
@@ -127,18 +125,15 @@ msgstr "INTERNO"
 msgid "Shuffle mode"
 msgstr "Modo aleatorio"
 
-#. Translators: Don't translate allowed values, just the description in the brackets
+#. Translators: Don't translate allowed values, just the description in the
+#. brackets
 #: ../data/org.gnome.Lollypop.gschema.xml.h:28
-#, fuzzy
 msgid ""
-"Value identifies whether to shuffle tracks/albums. Allowed values are: \"none"
-"\" (shuffle off), \"tracks\" (shuffle tracks) , \"albums\" (shuffle albums), "
-"\"tracks_artist\" (shuffle tracks from artist), \"albums_artist\" (shuffle "
-"albums from artist)."
+"Value identifies whether to shuffle tracks/albums. Allowed values are: "
+"\"none\" (shuffle off), \"tracks\" (shuffle tracks) , \"albums\" (shuffle "
+"albums), \"tracks_artist\" (shuffle tracks from artist), \"albums_artist\" "
+"(shuffle albums from artist)."
 msgstr ""
-"El valor determina si se aleatorizarán las pistas y los álbumes. Los valores "
-"permitidos son: «none» (desactivar modo aleatorio), «tracks» (mezclar las "
-"pistas) y «albums» (mezclar los álbumes)."
 
 #: ../data/lollypop.desktop.in.h:1 ../data/lollypop.appdata.xml.in.h:1
 msgid "Lollypop"
@@ -179,9 +174,8 @@ msgid "All artists"
 msgstr "Todos los artistas"
 
 #: ../src/container.py:320
-#, fuzzy
 msgid "All albums"
-msgstr "Álbumes populares"
+msgstr ""
 
 #: ../src/container.py:362
 msgid "Compilations"
@@ -233,37 +227,35 @@ msgstr "¿Eliminar estas canciones?"
 #: ../src/devicemanager.py:53 ../src/devicemanager.py:411
 #, python-format
 msgid "Synchronize %s"
-msgstr ""
+msgstr "Sincronizar %s"
 
 #: ../src/devicemanager.py:389
 msgid "Unknown error while syncing, try to reboot your device"
-msgstr ""
+msgstr "Error desconocido durante la sincronización, intente reiniciar el dispositivo"
 
 #: ../src/devicemanager.py:396
 msgid "No free space available on device"
-msgstr ""
+msgstr "No hay espacio libre disponible en el dispositivo"
 
 #: ../src/devicemanager.py:419
 msgid "Cancel synchronization"
-msgstr ""
+msgstr "Cancelar la sincronización"
 
 #: ../src/popmenu.py:44
 msgid "Playback"
 msgstr "Reproducción"
 
 #: ../src/popmenu.py:66
-#, fuzzy
 msgid "Continue playback"
-msgstr "Continuar con la reproducción cuando esté cerrado"
+msgstr ""
 
 #: ../src/popmenu.py:71
 msgid "Stop after this track"
 msgstr ""
 
 #: ../src/popmenu.py:76
-#, fuzzy
 msgid "Stop after this album"
-msgstr "Seleccionar una carátula para el álbum"
+msgstr ""
 
 #: ../src/popmenu.py:81
 msgid "Stop after this artist"
@@ -378,18 +370,16 @@ msgid "Shuffle tracks"
 msgstr "Canciones aleatorias"
 
 #: ../data/headerbar.ui.h:4
-#, fuzzy
 msgid "Shuffle albums from artist"
-msgstr "Albunes aleatorios"
+msgstr ""
 
 #: ../data/headerbar.ui.h:5
-#, fuzzy
 msgid "Shuffle tracks from artist"
-msgstr "Canciones aleatorias"
+msgstr ""
 
 #: ../data/headerbar.ui.h:9
 msgid "Settings"
-msgstr ""
+msgstr "Preferencias"
 
 #: ../data/headerbar.ui.h:10
 msgid "Shuffle"
@@ -413,7 +403,7 @@ msgstr "artista"
 
 #: ../data/SearchRow.ui.h:2
 msgid "Add to playlist"
-msgstr "Añadir a una lista"
+msgstr "Añadir a la lista"
 
 #: ../data/SettingsDialog.ui.h:1
 msgid "Close"
@@ -429,7 +419,7 @@ msgstr "Restaurar vista al iniciar"
 
 #: ../data/SettingsDialog.ui.h:5
 msgid "Play albums on 2nd click"
-msgstr ""
+msgstr "Reproducir álbumes con el 2º clic"
 
 #: ../data/SettingsDialog.ui.h:6
 msgid "Behaviour"
@@ -437,7 +427,7 @@ msgstr "Comportamiento"
 
 #: ../data/SettingsDialog.ui.h:7
 msgid "Use dark theme variant"
-msgstr "Usar variante oscura"
+msgstr "Usar la variante del tema oscuro"
 
 #: ../data/SettingsDialog.ui.h:8
 msgid "Show genres"
@@ -452,9 +442,8 @@ msgid "Configure lollypop behaviour"
 msgstr "Configurar el comportamiento de lollypop"
 
 #: ../data/SettingsDialog.ui.h:11
-#, fuzzy
 msgid "Options"
-msgstr "Recopilaciones"
+msgstr ""
 
 #: ../data/SettingsDialog.ui.h:12
 msgid "Select music folders"
@@ -470,13 +459,4 @@ msgstr "Seleccione lo que estará disponible en el modo fiesta"
 
 #: ../data/DeviceManager.ui.h:1
 msgid "Synchronize your device with this playlists"
-msgstr ""
-
-#~ msgid "Do not show genres list"
-#~ msgstr "No mostrar la lista de género"
-
-#~ msgid "Loading please wait..."
-#~ msgstr "Cargando, paciencia..."
-
-#~ msgid "Only play this album"
-#~ msgstr "Sólo reproducir este álbum"
+msgstr "Sincroniza tu dispositivo con las listas de reproducción"

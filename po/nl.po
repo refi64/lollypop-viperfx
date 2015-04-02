@@ -1,7 +1,7 @@
 # SOME DESCRIPTIVE TITLE.
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
-#
+# 
 # Translators:
 # Nathan Follens, 2015
 # Nathan Follens, 2015
@@ -11,14 +11,13 @@ msgstr ""
 "Project-Id-Version: lollypop\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2015-04-01 11:10+0200\n"
-"PO-Revision-Date: 2015-03-08 20:51+0000\n"
-"Last-Translator: Nathan Follens\n"
-"Language-Team: Dutch (http://www.transifex.com/projects/p/lollypop/language/"
-"nl/)\n"
-"Language: nl\n"
+"PO-Revision-Date: 2015-04-01 10:44+0000\n"
+"Last-Translator: Cédric Bellegarde <web@adishatz.org>\n"
+"Language-Team: Dutch (http://www.transifex.com/projects/p/lollypop/language/nl/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Language: nl\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:1
@@ -67,7 +66,7 @@ msgstr ""
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:12
 msgid "Restart needed"
-msgstr ""
+msgstr "Opnieuw opstarten van Lollypop vereist"
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:13
 msgid "Database version"
@@ -91,9 +90,8 @@ msgid "Scan library at startup"
 msgstr "Bibliotheek scannen bij opstarten"
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:18
-#, fuzzy
 msgid "Show genres list"
-msgstr "Toon genres"
+msgstr ""
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:19
 msgid "Use dark gtk theme"
@@ -127,19 +125,15 @@ msgstr "INTERN"
 msgid "Shuffle mode"
 msgstr "Willekeurige volgorde-modus"
 
-#. Translators: Don't translate allowed values, just the description in the brackets
+#. Translators: Don't translate allowed values, just the description in the
+#. brackets
 #: ../data/org.gnome.Lollypop.gschema.xml.h:28
-#, fuzzy
 msgid ""
-"Value identifies whether to shuffle tracks/albums. Allowed values are: \"none"
-"\" (shuffle off), \"tracks\" (shuffle tracks) , \"albums\" (shuffle albums), "
-"\"tracks_artist\" (shuffle tracks from artist), \"albums_artist\" (shuffle "
-"albums from artist)."
+"Value identifies whether to shuffle tracks/albums. Allowed values are: "
+"\"none\" (shuffle off), \"tracks\" (shuffle tracks) , \"albums\" (shuffle "
+"albums), \"tracks_artist\" (shuffle tracks from artist), \"albums_artist\" "
+"(shuffle albums from artist)."
 msgstr ""
-"Waarde bepaalt of nummers/albums in willekeurige volgorde afgespeeld worden. "
-"Toegelaten waarden zijn: \"none\" (geen willekeurige volgorde), \"tracks"
-"\" (nummers in willekeurige volgorde), \"albums\" (albums in willekeurige "
-"volgorde)."
 
 #: ../data/lollypop.desktop.in.h:1 ../data/lollypop.appdata.xml.in.h:1
 msgid "Lollypop"
@@ -180,9 +174,8 @@ msgid "All artists"
 msgstr "Alle artiesten"
 
 #: ../src/container.py:320
-#, fuzzy
 msgid "All albums"
-msgstr "Populaire albums"
+msgstr "Alle albums"
 
 #: ../src/container.py:362
 msgid "Compilations"
@@ -253,18 +246,16 @@ msgid "Playback"
 msgstr "Afspelen"
 
 #: ../src/popmenu.py:66
-#, fuzzy
 msgid "Continue playback"
-msgstr "Doorgaan met afspelen wanneer gesloten"
+msgstr "Doorgaan met afspelen"
 
 #: ../src/popmenu.py:71
 msgid "Stop after this track"
 msgstr ""
 
 #: ../src/popmenu.py:76
-#, fuzzy
 msgid "Stop after this album"
-msgstr "Een albumhoes voor dit album selecteren"
+msgstr ""
 
 #: ../src/popmenu.py:81
 msgid "Stop after this artist"
@@ -379,14 +370,12 @@ msgid "Shuffle tracks"
 msgstr "Nummers in willekeurige volgorde"
 
 #: ../data/headerbar.ui.h:4
-#, fuzzy
 msgid "Shuffle albums from artist"
-msgstr "Albums in willekeurige volgorde"
+msgstr ""
 
 #: ../data/headerbar.ui.h:5
-#, fuzzy
 msgid "Shuffle tracks from artist"
-msgstr "Nummers in willekeurige volgorde"
+msgstr ""
 
 #: ../data/headerbar.ui.h:9
 msgid "Settings"
@@ -453,9 +442,8 @@ msgid "Configure lollypop behaviour"
 msgstr "Pas gedrag van lollypop aan"
 
 #: ../data/SettingsDialog.ui.h:11
-#, fuzzy
 msgid "Options"
-msgstr "Compilaties"
+msgstr ""
 
 #: ../data/SettingsDialog.ui.h:12
 msgid "Select music folders"
@@ -472,12 +460,3 @@ msgstr "Selecteer wat beschikbaar is in feestmodus"
 #: ../data/DeviceManager.ui.h:1
 msgid "Synchronize your device with this playlists"
 msgstr "Synchroniseer je apparaat met deze afspeellijst"
-
-#~ msgid "Do not show genres list"
-#~ msgstr "Geef lijst met genres niet weer"
-
-#~ msgid "Loading please wait..."
-#~ msgstr "Bezig met laden, gelieve te wachten..."
-
-#~ msgid "Only play this album"
-#~ msgstr "Alleen dit album afspelen"

@@ -3,7 +3,7 @@
 # This file is distributed under the same license as the PACKAGE package.
 # 
 # Translators:
-# Piotr Sokół <psokol@jabster.pl>, 2015
+# Dušan Kazik <prescott66@gmail.com>, 2015
 msgid ""
 msgstr ""
 "Project-Id-Version: lollypop\n"
@@ -11,117 +11,117 @@ msgstr ""
 "POT-Creation-Date: 2015-04-01 11:10+0200\n"
 "PO-Revision-Date: 2015-04-01 10:44+0000\n"
 "Last-Translator: Cédric Bellegarde <web@adishatz.org>\n"
-"Language-Team: Polish (http://www.transifex.com/projects/p/lollypop/language/pl/)\n"
+"Language-Team: Slovak (http://www.transifex.com/projects/p/lollypop/language/sk/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Language: pl\n"
-"Plural-Forms: nplurals=3; plural=(n==1 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+"Language: sk\n"
+"Plural-Forms: nplurals=3; plural=(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2;\n"
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:1
 msgid "Window size"
-msgstr "Rozmiar okna"
+msgstr "Veľkosť okna"
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:2
 msgid "Window size (width and height)."
-msgstr "Określa rozmiar okna (szerokość i wysokość)"
+msgstr "Veľkosť okna (šírka a výška)."
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:3
 msgid "Window position"
-msgstr "Położenie okna"
+msgstr "Pozícia okna"
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:4
 msgid "Window position (x and y)."
-msgstr "Określa położenie okna (na osi X i Y)."
+msgstr "Pozícia okna (x a y)."
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:5
 msgid "Window maximized"
-msgstr "Zmaksymalizowane okno"
+msgstr "Maximalizované okno"
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:6
 msgid "Window maximized state."
-msgstr "Określa stan zmaksymalizowania okna"
+msgstr "Maximalizovaný stav okna."
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:7
 msgid "Enabled genres in party mode"
-msgstr "Włączone gatunki w trybie imprezowym"
+msgstr "Povolené žánre v párty režime"
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:8
 msgid "Ids for genres."
-msgstr "Określa gatunki włączone w trybie imprezowym"
+msgstr "Identifikátory žánrov."
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:9
 msgid "Music paths"
-msgstr "Ścieżki katalogów z muzyką"
+msgstr "Cesty k hudbe"
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:10
 msgid "When empty, use XDG_MUSIC_DIR"
-msgstr "Wskazuje ścieżki do katalogów z muzyką. Jeśli nie skonfigurowano, zostanie użyta ścieżka XDG_MUSIC_DIR."
+msgstr "Keď je prázdne, použije sa XDG_MUSIC_DIR"
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:11
 msgid "Favorite cover file"
-msgstr ""
+msgstr "Súbor obľúbeného obalu albumu"
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:12
 msgid "Restart needed"
-msgstr "Wymagane ponowne uruchomienie programu"
+msgstr "Potrebný reštart"
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:13
 msgid "Database version"
-msgstr ""
+msgstr "Verzia databázy"
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:14
 msgid ""
 "Reset this value will reset the database, popular albums will be restored"
-msgstr ""
+msgstr "Vynulovaním tejto hodnoty sa vynuluje databáza. Obľúbené albumy budú obnovené."
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:15
 msgid "Replay gain value in db"
-msgstr ""
+msgstr "Zisk prehrávania, hodnota je v db"
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:16
 msgid "Between -15 and 15"
-msgstr ""
+msgstr "Medzi -15 a 15"
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:17
 msgid "Scan library at startup"
-msgstr "Skanowanie kolekcji podczas uruchamiania"
+msgstr "Skenovať knižnicu po spustení"
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:18
 msgid "Show genres list"
-msgstr ""
+msgstr "Zobraziť zoznam žánrov"
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:19
 msgid "Use dark gtk theme"
-msgstr ""
+msgstr "Použiť tmavú tému gtk"
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:20
 msgid "Show stylized covers"
-msgstr ""
+msgstr "Zobraziť štylizované obaly albumov"
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:21 ../data/SettingsDialog.ui.h:4
 msgid "Continue playback when closed"
-msgstr "Kontynuowanie odtwarzania po zamknięciu okna"
+msgstr "Pokračovať v prehrávaní aj po zatvorení"
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:22
 msgid "Restore previous view"
-msgstr ""
+msgstr "Obnoviť predchádzajúce zobrazenie"
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:23
 msgid "Auto play albums on click"
-msgstr ""
+msgstr "Automaticky prehrať albumy po kliknutí"
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:24
 msgid "DO NOT MODIFY"
-msgstr "NIE MODYFIKOWAĆ"
+msgstr "NEUPRAVOVAŤ"
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:25
 msgid "INTERNAL"
-msgstr "WEWNĘTRZNE"
+msgstr "VNÚTORNÉ"
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:26
 msgid "Shuffle mode"
-msgstr "Losowanie kolejności"
+msgstr "Náhodný režim"
 
 #. Translators: Don't translate allowed values, just the description in the
 #. brackets
@@ -139,163 +139,163 @@ msgstr "Lollypop"
 
 #: ../data/lollypop.desktop.in.h:2
 msgid "Music Player"
-msgstr "Odtwarzacz muzyki"
+msgstr "Prehrávač hudby"
 
 #: ../data/lollypop.desktop.in.h:3 ../data/lollypop.appdata.xml.in.h:2
 msgid "Play and organize your music collection"
-msgstr "Odtwarza i zarządza kolekcją muzyki"
+msgstr "Prehráva a organizuje vašu hudobnú zbierku"
 
 #: ../data/lollypop.appdata.xml.in.h:3
 msgid "Music player for the GNOME desktop"
-msgstr "Odtwarza nagrania muzyczne w środowisku GNOME"
+msgstr "Prehrávač hudby pre prostredie GNOME"
 
 #: ../src/toolbar.py:239 ../src/toolbar.py:268 ../src/fullscreen.py:80
 #: ../src/fullscreen.py:181
 msgid "Pause"
-msgstr "Wstrzymuje odtwarzanie"
+msgstr "Pozastaví"
 
 #: ../src/toolbar.py:249 ../src/toolbar.py:265 ../src/fullscreen.py:185
 #: ../data/headerbar.ui.h:7
 msgid "Play"
-msgstr "Rozpoczyna odtwarzanie"
+msgstr "Prehrá"
 
 #: ../src/container.py:315
 msgid "Popular albums"
-msgstr "Popularne albumy"
+msgstr "Obľúbené albumy"
 
 #: ../src/container.py:316 ../src/popmenu.py:49
 msgid "Playlists"
-msgstr "Listy odtwarzania"
+msgstr "Zoznamy skladieb"
 
 #: ../src/container.py:318
 msgid "All artists"
-msgstr "Wszyscy wykonawcy"
+msgstr "Všetci interpreti"
 
 #: ../src/container.py:320
 msgid "All albums"
-msgstr "Wszystkie albumy"
+msgstr "Všetky albumy"
 
 #: ../src/container.py:362
 msgid "Compilations"
-msgstr "Składanki"
+msgstr "Kompilácie"
 
 #: ../src/notification.py:39 ../data/headerbar.ui.h:6
 msgid "Previous"
-msgstr "Przechodzi do poprzedniego utworu"
+msgstr "Predchádzajúca"
 
 #: ../src/notification.py:43 ../data/headerbar.ui.h:8
 msgid "Next"
-msgstr "Przechodzi do następnego nagrania"
+msgstr "Nasledujúca"
 
 #. TRANSLATORS: by refers to the artist,
 #. from to the album
 #: ../src/notification.py:73
 #, python-format
 msgid "by %s, from %s"
-msgstr "w wykonaniu %s, z albumu %s"
+msgstr "od interpreta %s, z albumu %s"
 
 #: ../src/database_artists.py:62
 msgid "Many artists"
-msgstr "Wielu wykonawców"
+msgstr "Mnoho interpretov"
 
 #: ../src/database_artists.py:70 ../src/database_albums.py:181
 #: ../src/database_tracks.py:181 ../src/database_genres.py:66
 #: ../src/collectionscanner.py:219 ../src/collectionscanner.py:224
 #: ../src/collectionscanner.py:238 ../src/collectionscanner.py:243
 msgid "Unknown"
-msgstr "Nieznany"
+msgstr "Neznáme"
 
 #: ../src/database_albums.py:198
 msgid "Compilation"
-msgstr "Składanka"
+msgstr "Kompilácia"
 
 #: ../src/playlists.py:413 ../src/playlists.py:681
 #, python-format
 msgid "Remove \"%s\"?"
-msgstr "Usunąć „%s”?"
+msgstr "Odstrániť „%s“?"
 
 #: ../src/playlists.py:480 ../src/playlists.py:483
 msgid "New playlist "
-msgstr "Nowa lista odtwarzania"
+msgstr "Nový zoznam skladieb"
 
 #: ../src/playlists.py:709
 msgid "Remove these tracks?"
-msgstr "Usunąć te ścieżki?"
+msgstr "Odstrániť tieto skladby?"
 
 #: ../src/devicemanager.py:53 ../src/devicemanager.py:411
 #, python-format
 msgid "Synchronize %s"
-msgstr ""
+msgstr "Synchronizovať %s"
 
 #: ../src/devicemanager.py:389
 msgid "Unknown error while syncing, try to reboot your device"
-msgstr ""
+msgstr "Vyskytla sa neznáma chyba počas synchronizácie. Skúste reštartovať vaše zariadenie."
 
 #: ../src/devicemanager.py:396
 msgid "No free space available on device"
-msgstr "Brak wolnego miejsca w pamięci urządzenia"
+msgstr "Na zariadení nie je dostupné voľné miesto"
 
 #: ../src/devicemanager.py:419
 msgid "Cancel synchronization"
-msgstr ""
+msgstr "Zrušiť synchronizáciu"
 
 #: ../src/popmenu.py:44
 msgid "Playback"
-msgstr "Odtwarzanie"
+msgstr "Prehrávanie"
 
 #: ../src/popmenu.py:66
 msgid "Continue playback"
-msgstr ""
+msgstr "Pokračovať v prehrávaní"
 
 #: ../src/popmenu.py:71
 msgid "Stop after this track"
-msgstr ""
+msgstr "Zastaviť po tejto skladbe"
 
 #: ../src/popmenu.py:76
 msgid "Stop after this album"
-msgstr ""
+msgstr "Zastaviť po tomto albume"
 
 #: ../src/popmenu.py:81
 msgid "Stop after this artist"
-msgstr ""
+msgstr "Zastaviť po tomto interpretovi"
 
 #: ../src/popmenu.py:97
 msgid "Add to others"
-msgstr "Dodaj do innych"
+msgstr "Pridať k ostatným"
 
 #: ../src/popmenu.py:111
 #, python-format
 msgid "Remove from \"%s\""
-msgstr "Usuń z „%s”"
+msgstr "„%s“"
 
 #: ../src/popmenu.py:119
 #, python-format
 msgid "Add to \"%s\""
-msgstr "Dodaj do „%s”"
+msgstr "Pridať do „%s“"
 
 #: ../src/popmenu.py:164 ../data/SearchRow.ui.h:3
 msgid "Add to queue"
-msgstr "Dodaj do kolejki"
+msgstr "Pridať do fronty"
 
 #: ../src/popmenu.py:170
 msgid "Next tracks"
-msgstr "Jako następne"
+msgstr "Nasledujúce skladby"
 
 #: ../src/popmenu.py:172
 msgid "Next track"
-msgstr "Jako następny"
+msgstr "Nasledujúca skladba"
 
 #: ../src/popmenu.py:177
 msgid "Remove from queue"
-msgstr "Usuń z kolejki"
+msgstr "Odstrániť z fronty"
 
 #: ../src/popimages.py:53
 msgid "Select a cover art for this album"
-msgstr "Wybór okładki albumu"
+msgstr "Vyberte obrázok pre tento album"
 
 #: ../src/settings.py:35
 msgid "Configure lollypop"
-msgstr "Preferencje Lollypop"
+msgstr "Nastavenia prehrávača Lollypop"
 
 #. Handle language ordering
 #. Translators: Add here words that shoud be ignored for artist sort order
@@ -305,67 +305,67 @@ msgstr "The the"
 
 #: ../src/search.py:150
 msgid "Search:"
-msgstr "Wyszukiwanie:"
+msgstr "Vyhľadať:"
 
 #: ../data/AboutDialog.ui.in.h:1
 msgid "A music player for GNOME."
-msgstr "Odtwarza nagrania muzyczne w środowisku GNOME"
+msgstr "Prehrávač hudby pre GNOME."
 
 #: ../data/AboutDialog.ui.in.h:2
 msgid "Visit Lollypop website"
-msgstr "Strona główna Lollypop"
+msgstr "Navštíviť domovskú stránku prehrávača Lollypop"
 
 #: ../data/QueueWidget.ui.h:1
 msgid "Queue:"
-msgstr "Kolejka:"
+msgstr "Fronta:"
 
 #: ../data/QueueWidget.ui.h:2
 msgid "Clear queue"
-msgstr "Czyści kolejkę"
+msgstr "Vymaže frontu"
 
 #: ../data/app-menu.ui.h:1
 msgid "_Preferences"
-msgstr "P_referencje"
+msgstr "_Nastavenia"
 
 #: ../data/app-menu.ui.h:2
 msgid "_Update music"
-msgstr "_Uaktualnij kolekcję"
+msgstr "_Aktualizovať hudbu"
 
 #: ../data/app-menu.ui.h:3
 msgid "_Fullscreen"
-msgstr "_Pełny ekran"
+msgstr "_Režim na celú obrazovku"
 
 #: ../data/app-menu.ui.h:4
 msgid "_About"
-msgstr "_O programie"
+msgstr "_O programe"
 
 #: ../data/app-menu.ui.h:5
 msgid "_Quit"
-msgstr "Za_kończ"
+msgstr "_Ukončiť"
 
 #: ../data/PlaylistsManagerWidget.ui.h:1 ../data/PlaylistView.ui.h:2
 msgid "Confirm"
-msgstr "Potwierdź"
+msgstr "Potvrdiť"
 
 #: ../data/PlaylistsManagerWidget.ui.h:2
 msgid "New playlist"
-msgstr "Nowa lista odtwarzania"
+msgstr "Nový zoznam skladieb"
 
 #: ../data/PlaylistView.ui.h:1
 msgid "Edit"
-msgstr "Edycja"
+msgstr "Upraví"
 
 #: ../data/headerbar.ui.h:1
 msgid "No shuffle"
-msgstr "Brak losowania"
+msgstr "Nezamiešať"
 
 #: ../data/headerbar.ui.h:2
 msgid "Shuffle albums"
-msgstr "Losowanie albumów"
+msgstr "Zamiešať albumy"
 
 #: ../data/headerbar.ui.h:3
 msgid "Shuffle tracks"
-msgstr "Losowanie utworów"
+msgstr "Zamiešať skladby"
 
 #: ../data/headerbar.ui.h:4
 msgid "Shuffle albums from artist"
@@ -377,59 +377,59 @@ msgstr ""
 
 #: ../data/headerbar.ui.h:9
 msgid "Settings"
-msgstr "Ustawienia"
+msgstr "Nastavenia"
 
 #: ../data/headerbar.ui.h:10
 msgid "Shuffle"
-msgstr "Przełącza losowanie kolejności"
+msgstr "Zamieša"
 
 #: ../data/headerbar.ui.h:11 ../data/SettingsDialog.ui.h:15
 msgid "Party mode"
-msgstr "Tryb imprezowy"
+msgstr "Párty režim"
 
 #: ../data/headerbar.ui.h:12
 msgid "Search"
-msgstr "Wyszukuje utwory"
+msgstr "Vyhľadá"
 
 #: ../data/headerbar.ui.h:13
 msgid "Queue"
-msgstr "Wyświetla kolejkę odtwarzania"
+msgstr "Fronta"
 
 #: ../data/SearchRow.ui.h:1
 msgid "artist"
-msgstr "wykonawca"
+msgstr "interpret"
 
 #: ../data/SearchRow.ui.h:2
 msgid "Add to playlist"
-msgstr "Dodaj do listy odtwarzania"
+msgstr "Pridá do zoznamu skladieb"
 
 #: ../data/SettingsDialog.ui.h:1
 msgid "Close"
-msgstr "Zamknij"
+msgstr "Zavrieť"
 
 #: ../data/SettingsDialog.ui.h:2
 msgid "Update music on startup"
-msgstr "Uaktualnianie kolekcji podczas uruchamiania"
+msgstr "Aktualizovať hudbu po spustení"
 
 #: ../data/SettingsDialog.ui.h:3
 msgid "Restore view on startup"
-msgstr "Przywrócenie widoku podczas uruchamiania"
+msgstr "Obnoviť zobrazenie po spustení"
 
 #: ../data/SettingsDialog.ui.h:5
 msgid "Play albums on 2nd click"
-msgstr "Odtwarzanie albumów dwukrotnym kliknięciem"
+msgstr "Prehrávať albumy po dvojkliku"
 
 #: ../data/SettingsDialog.ui.h:6
 msgid "Behaviour"
-msgstr "Zachowanie"
+msgstr "Správanie"
 
 #: ../data/SettingsDialog.ui.h:7
 msgid "Use dark theme variant"
-msgstr "Ciemny styl"
+msgstr "Použiť variant tmavej témy"
 
 #: ../data/SettingsDialog.ui.h:8
 msgid "Show genres"
-msgstr "Wyświetla listę gatunków"
+msgstr "Zobrazí žánre"
 
 #: ../data/SettingsDialog.ui.h:9
 msgid "Appearance"
@@ -437,7 +437,7 @@ msgstr ""
 
 #: ../data/SettingsDialog.ui.h:10
 msgid "Configure lollypop behaviour"
-msgstr "Konfiguruje zachowanie programu"
+msgstr "Nastaví správanie prehrávača Lollypop"
 
 #: ../data/SettingsDialog.ui.h:11
 msgid "Options"
@@ -445,16 +445,16 @@ msgstr ""
 
 #: ../data/SettingsDialog.ui.h:12
 msgid "Select music folders"
-msgstr "Wybiera ścieżki do katalogów z muzyką"
+msgstr "Vyberie priečinky s hudbou"
 
 #: ../data/SettingsDialog.ui.h:13
 msgid "Music"
-msgstr "Kolekcja"
+msgstr "Hudba"
 
 #: ../data/SettingsDialog.ui.h:14
 msgid "Select what will be available in party mode"
-msgstr "Wybiera zawartość trybu imprezowego"
+msgstr "Vyberie, čo bude dostupné v párty režime"
 
 #: ../data/DeviceManager.ui.h:1
 msgid "Synchronize your device with this playlists"
-msgstr ""
+msgstr "Zosynchronizuje vaše zariadenie s týmto zoznam skladieb"
