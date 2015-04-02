@@ -182,8 +182,8 @@ class Player(GObject.GObject):
         Change player state to STOPPED
     """
     def stop(self):
-        self.emit("current-changed")
         self._stop()
+        self.emit("status-changed")
 
     """
         Set PLAYING if PAUSED
