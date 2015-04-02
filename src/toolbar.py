@@ -199,6 +199,7 @@ class Toolbar:
             self._prev_btn.set_sensitive(False)
             self._play_btn.set_sensitive(False)
             self._next_btn.set_sensitive(False)
+            self._change_play_btn_status(self._play_image, _("Play"))
             self._title_label.hide()
             self._artist_label.hide()
         else:
