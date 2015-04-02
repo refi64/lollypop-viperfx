@@ -1,7 +1,7 @@
 # SOME DESCRIPTIVE TITLE.
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
-# 
+#
 # Translators:
 # fri, 2014
 # fri, 2015
@@ -9,14 +9,15 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lollypop\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-04-01 11:10+0200\n"
+"POT-Creation-Date: 2015-04-02 21:04+0200\n"
 "PO-Revision-Date: 2015-04-01 14:32+0000\n"
 "Last-Translator: fri\n"
-"Language-Team: Czech (http://www.transifex.com/projects/p/lollypop/language/cs/)\n"
+"Language-Team: Czech (http://www.transifex.com/projects/p/lollypop/language/"
+"cs/)\n"
+"Language: cs\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Language: cs\n"
 "Plural-Forms: nplurals=3; plural=(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2;\n"
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:1
@@ -74,7 +75,8 @@ msgstr "Verze databáze"
 #: ../data/org.gnome.Lollypop.gschema.xml.h:14
 msgid ""
 "Reset this value will reset the database, popular albums will be restored"
-msgstr "Vynulování této hodnoty vynuluje databázi, oblíbená alba budou obnovena"
+msgstr ""
+"Vynulování této hodnoty vynuluje databázi, oblíbená alba budou obnovena"
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:15
 msgid "Replay gain value in db"
@@ -113,26 +115,37 @@ msgid "Auto play albums on click"
 msgstr "Alba přehrávat po klepnutí automaticky"
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:24
+msgid "Disable MPRIS"
+msgstr ""
+
+#: ../data/org.gnome.Lollypop.gschema.xml.h:25
+msgid "Disable notifications"
+msgstr ""
+
+#: ../data/org.gnome.Lollypop.gschema.xml.h:26
 msgid "DO NOT MODIFY"
 msgstr "NEMĚNIT"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:25
+#: ../data/org.gnome.Lollypop.gschema.xml.h:27
 msgid "INTERNAL"
 msgstr "VNITŘNÍ"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:26
+#: ../data/org.gnome.Lollypop.gschema.xml.h:28
 msgid "Shuffle mode"
 msgstr "Režim míchání"
 
-#. Translators: Don't translate allowed values, just the description in the
-#. brackets
-#: ../data/org.gnome.Lollypop.gschema.xml.h:28
+#. Translators: Don't translate allowed values, just the description in the brackets
+#: ../data/org.gnome.Lollypop.gschema.xml.h:30
 msgid ""
-"Value identifies whether to shuffle tracks/albums. Allowed values are: "
-"\"none\" (shuffle off), \"tracks\" (shuffle tracks) , \"albums\" (shuffle "
-"albums), \"tracks_artist\" (shuffle tracks from artist), \"albums_artist\" "
-"(shuffle albums from artist)."
-msgstr "Hodnota určuje, zda se mají skladby/alba zamíchat. Jsou povoleny hodnoty: \"žádné\" (míchání vypnuto), \"skladby\" (zamíchat skladby), \"alba\" (zamíchat alba), \"tracks_artist\" (zamíchat skladby od umělce), \"albums_artist\" (zamíchat alba od umělce)."
+"Value identifies whether to shuffle tracks/albums. Allowed values are: \"none"
+"\" (shuffle off), \"tracks\" (shuffle tracks) , \"albums\" (shuffle albums), "
+"\"tracks_artist\" (shuffle tracks from artist), \"albums_artist\" (shuffle "
+"albums from artist)."
+msgstr ""
+"Hodnota určuje, zda se mají skladby/alba zamíchat. Jsou povoleny hodnoty: "
+"\"žádné\" (míchání vypnuto), \"skladby\" (zamíchat skladby), \"alba"
+"\" (zamíchat alba), \"tracks_artist\" (zamíchat skladby od umělce), "
+"\"albums_artist\" (zamíchat alba od umělce)."
 
 #: ../data/lollypop.desktop.in.h:1 ../data/lollypop.appdata.xml.in.h:1
 msgid "Lollypop"
@@ -150,15 +163,15 @@ msgstr "Přehrávejte a pořádejte svoji hudební sbírku"
 msgid "Music player for the GNOME desktop"
 msgstr "Přehrávač hudby pro pracovní prostředí GNOME"
 
-#: ../src/toolbar.py:239 ../src/toolbar.py:268 ../src/fullscreen.py:80
+#: ../src/toolbar.py:202 ../src/toolbar.py:252 ../src/toolbar.py:268
+#: ../src/fullscreen.py:185 ../data/headerbar.ui.h:7
+msgid "Play"
+msgstr "Přehrát"
+
+#: ../src/toolbar.py:242 ../src/toolbar.py:271 ../src/fullscreen.py:80
 #: ../src/fullscreen.py:181
 msgid "Pause"
 msgstr "Pozastavit"
-
-#: ../src/toolbar.py:249 ../src/toolbar.py:265 ../src/fullscreen.py:185
-#: ../data/headerbar.ui.h:7
-msgid "Play"
-msgstr "Přehrát"
 
 #: ../src/container.py:315
 msgid "Popular albums"
@@ -230,7 +243,8 @@ msgstr "Seřídit %s"
 
 #: ../src/devicemanager.py:389
 msgid "Unknown error while syncing, try to reboot your device"
-msgstr "Při seřizování nastala neznámá chyba. pokuste se své zařízení zavést znovu"
+msgstr ""
+"Při seřizování nastala neznámá chyba. pokuste se své zařízení zavést znovu"
 
 #: ../src/devicemanager.py:396
 msgid "No free space available on device"
