@@ -202,6 +202,8 @@ class Toolbar:
             self._change_play_btn_status(self._play_image, _("Play"))
             self._title_label.hide()
             self._artist_label.hide()
+            if Objects.player.is_party():
+                self._activate_party_button(None, None)
         else:
             self._infobox.get_window().set_cursor(
                                         Gdk.Cursor(Gdk.CursorType.HAND1))

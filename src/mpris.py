@@ -64,6 +64,7 @@ class MPRIS(dbus.service.Object):
     @dbus.service.method(dbus_interface=MPRIS_PLAYER_IFACE)
     def Stop(self):
         Objects.player.stop()
+        self._update_metadata()
 
     @dbus.service.method(dbus_interface=MPRIS_PLAYER_IFACE)
     def Play(self):
