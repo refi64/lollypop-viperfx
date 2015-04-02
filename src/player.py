@@ -260,8 +260,9 @@ class Player(GObject.GObject):
         # Get a random album/track
         elif self._shuffle in [Shuffle.TRACKS, Shuffle.TRACKS_ARTIST] or\
              self._is_party:
-            self._shuffle_next(force, sql)
-        elif self.context.position is not None:
+            if self._albums:
+                self._shuffle_next(force, sql)
+        elif self.context.position is not None and self._albums:
             track_id = None
             tracks = Objects.albums.get_tracks(self.context.album_id,
                                                self.context.genre_id,
