@@ -182,15 +182,8 @@ class Player(GObject.GObject):
         Change player state to STOPPED
     """
     def stop(self):
-        del self.current
-        self.current = CurrentTrack()
         self.emit("current-changed")
         self._stop()
-        self.context = PlayContext()
-        self._albums = []
-        self._shuffle_prev_tracks = []
-        self._shuffle_history = {}
-        self._shuffle_albums_backup = []
 
     """
         Set PLAYING if PAUSED
