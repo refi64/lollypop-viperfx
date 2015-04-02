@@ -149,7 +149,7 @@ class MPRIS(dbus.service.Object):
             return 'Stopped'
 
     def _update_metadata(self):
-        if self._get_status == 'Stopped':
+        if self._get_status() == 'Stopped':
             self._metadata = {}
         else:
             self._metadata['mpris:trackid'] = dbus.ObjectPath(
