@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lollypop\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-04-02 21:30+0200\n"
+"POT-Creation-Date: 2015-04-03 17:19+0200\n"
 "PO-Revision-Date: 2015-04-01 14:32+0000\n"
 "Last-Translator: fri\n"
 "Language-Team: Czech (http://www.transifex.com/projects/p/lollypop/language/"
@@ -309,10 +309,6 @@ msgstr "Odstranit z řady"
 msgid "Select a cover art for this album"
 msgstr "Vybrat obal pro toto album"
 
-#: ../src/settings.py:35
-msgid "Configure lollypop"
-msgstr "Nastavit Lollypop"
-
 #. Handle language ordering
 #. Translators: Add here words that shoud be ignored for artist sort order
 #: ../src/utils.py:43
@@ -420,8 +416,9 @@ msgid "Add to playlist"
 msgstr "Přidat do seznamu skladeb"
 
 #: ../data/SettingsDialog.ui.h:1
-msgid "Close"
-msgstr "Zavřít"
+#, fuzzy
+msgid "Preferences"
+msgstr "_Nastavení"
 
 #: ../data/SettingsDialog.ui.h:2
 msgid "Update music on startup"
@@ -475,3 +472,9 @@ msgstr "Vyberte, co bude povoleno ve večírkovém režimu"
 #: ../data/DeviceManager.ui.h:1
 msgid "Synchronize your device with this playlists"
 msgstr "Seřídit zařízení s tímto seznamem skladeb"
+
+#~ msgid "Configure lollypop"
+#~ msgstr "Nastavit Lollypop"
+
+#~ msgid "Close"
+#~ msgstr "Zavřít"

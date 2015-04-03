@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lollypop\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-04-02 21:30+0200\n"
+"POT-Creation-Date: 2015-04-03 17:19+0200\n"
 "PO-Revision-Date: 2015-04-01 10:44+0000\n"
 "Last-Translator: Cédric Bellegarde <web@adishatz.org>\n"
 "Language-Team: Slovak (http://www.transifex.com/projects/p/lollypop/language/"
@@ -306,10 +306,6 @@ msgstr "Odstrániť z fronty"
 msgid "Select a cover art for this album"
 msgstr "Vyberte obrázok pre tento album"
 
-#: ../src/settings.py:35
-msgid "Configure lollypop"
-msgstr "Nastavenia prehrávača Lollypop"
-
 #. Handle language ordering
 #. Translators: Add here words that shoud be ignored for artist sort order
 #: ../src/utils.py:43
@@ -417,8 +413,9 @@ msgid "Add to playlist"
 msgstr "Pridá do zoznamu skladieb"
 
 #: ../data/SettingsDialog.ui.h:1
-msgid "Close"
-msgstr "Zavrieť"
+#, fuzzy
+msgid "Preferences"
+msgstr "_Nastavenia"
 
 #: ../data/SettingsDialog.ui.h:2
 msgid "Update music on startup"
@@ -472,3 +469,9 @@ msgstr "Vyberie, čo bude dostupné v párty režime"
 #: ../data/DeviceManager.ui.h:1
 msgid "Synchronize your device with this playlists"
 msgstr "Zosynchronizuje vaše zariadenie s týmto zoznam skladieb"
+
+#~ msgid "Configure lollypop"
+#~ msgstr "Nastavenia prehrávača Lollypop"
+
+#~ msgid "Close"
+#~ msgstr "Zavrieť"

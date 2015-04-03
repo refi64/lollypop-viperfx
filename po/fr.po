@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lollypop\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-04-02 21:30+0200\n"
+"POT-Creation-Date: 2015-04-03 17:19+0200\n"
 "PO-Revision-Date: 2015-04-02 05:22+0000\n"
 "Last-Translator: Cédric Bellegarde <web@adishatz.org>\n"
 "Language-Team: French (http://www.transifex.com/projects/p/lollypop/language/"
@@ -310,10 +310,6 @@ msgstr "Supprimer de la liste d'attente"
 msgid "Select a cover art for this album"
 msgstr "Sélectionnez une pochette pour cet album"
 
-#: ../src/settings.py:35
-msgid "Configure lollypop"
-msgstr "Configurer lollypop"
-
 #. Handle language ordering
 #. Translators: Add here words that shoud be ignored for artist sort order
 #: ../src/utils.py:43
@@ -421,8 +417,8 @@ msgid "Add to playlist"
 msgstr "Ajouter à la liste de lecture"
 
 #: ../data/SettingsDialog.ui.h:1
-msgid "Close"
-msgstr "Fermer"
+msgid "Preferences"
+msgstr "Préférences"
 
 #: ../data/SettingsDialog.ui.h:2
 msgid "Update music on startup"
@@ -475,3 +471,9 @@ msgstr "Selectionnez ce qui sera disponible en mode soirée"
 #: ../data/DeviceManager.ui.h:1
 msgid "Synchronize your device with this playlists"
 msgstr "Synchronisez votre appareil avec ces listes de lecture"
+
+#~ msgid "Configure lollypop"
+#~ msgstr "Configurer lollypop"
+
+#~ msgid "Close"
+#~ msgstr "Fermer"

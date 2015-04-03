@@ -18,7 +18,7 @@ from lollypop.define import Objects
 
 
 # Dialog showing lollypop options
-class SettingsDialog(Gtk.Dialog):
+class SettingsDialog:
 
     def __init__(self, parent):
 
@@ -30,7 +30,6 @@ class SettingsDialog(Gtk.Dialog):
 
         self._settings_dialog = builder.get_object('settings_dialog')
         self._settings_dialog.set_transient_for(parent)
-        self._settings_dialog.set_title(_("Configure lollypop"))
 
         switch_scan = builder.get_object('switch_scan')
         switch_scan.set_state(Objects.settings.get_value('startup-scan'))
@@ -51,8 +50,7 @@ class SettingsDialog(Gtk.Dialog):
         switch_genres = builder.get_object('switch_genres')
         switch_genres.set_state(Objects.settings.get_value('show-genres'))
 
-        close_button = builder.get_object('close_btn')
-        close_button.connect('clicked', self._edit_settings_close)
+        self._settings_dialog.connect('destroy', self._edit_settings_close)
 
         builder.connect_signals(self)
 
@@ -188,7 +186,7 @@ class SettingsDialog(Gtk.Dialog):
 
     """
         Close edit party dialog
-        @param unused
+        @param widget as Gtk.Window
     """
     def _edit_settings_close(self, widget):
         paths = []
@@ -210,7 +208,7 @@ class SettingsDialog(Gtk.Dialog):
         self._settings_dialog.hide()
         self._settings_dialog.destroy()
         if set(previous) != set(paths):
-            self._window.update_db()
+            self._window.update_db(True)
 
     """
         Update party ids when use change a switch in dialog

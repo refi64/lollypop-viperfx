@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lollypop\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-04-02 21:30+0200\n"
+"POT-Creation-Date: 2015-04-03 17:19+0200\n"
 "PO-Revision-Date: 2015-04-01 11:02+0000\n"
 "Last-Translator: Jiri Grönroos <jiri.gronroos@iki.fi>\n"
 "Language-Team: Finnish (http://www.transifex.com/projects/p/lollypop/"
@@ -302,10 +302,6 @@ msgstr "Poista jonosta"
 msgid "Select a cover art for this album"
 msgstr "Valitse kansikuva tälle albumille"
 
-#: ../src/settings.py:35
-msgid "Configure lollypop"
-msgstr "Lollypopin asetukset"
-
 #. Handle language ordering
 #. Translators: Add here words that shoud be ignored for artist sort order
 #: ../src/utils.py:43
@@ -413,8 +409,9 @@ msgid "Add to playlist"
 msgstr "Lisää soittolistalle"
 
 #: ../data/SettingsDialog.ui.h:1
-msgid "Close"
-msgstr "Sulje"
+#, fuzzy
+msgid "Preferences"
+msgstr "_Asetukset"
 
 #: ../data/SettingsDialog.ui.h:2
 msgid "Update music on startup"
@@ -468,3 +465,9 @@ msgstr "Valitse mitä biletilassa on käytettävissä"
 #: ../data/DeviceManager.ui.h:1
 msgid "Synchronize your device with this playlists"
 msgstr "Synkronoi laitteesi tämän soittolistan kanssa"
+
+#~ msgid "Configure lollypop"
+#~ msgstr "Lollypopin asetukset"
+
+#~ msgid "Close"
+#~ msgstr "Sulje"

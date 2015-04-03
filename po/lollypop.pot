@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-04-02 21:30+0200\n"
+"POT-Creation-Date: 2015-04-03 17:19+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -299,10 +299,6 @@ msgstr ""
 msgid "Select a cover art for this album"
 msgstr ""
 
-#: ../src/settings.py:35
-msgid "Configure lollypop"
-msgstr ""
-
 #. Handle language ordering
 #. Translators: Add here words that shoud be ignored for artist sort order
 #: ../src/utils.py:43
@@ -410,7 +406,7 @@ msgid "Add to playlist"
 msgstr ""
 
 #: ../data/SettingsDialog.ui.h:1
-msgid "Close"
+msgid "Preferences"
 msgstr ""
 
 #: ../data/SettingsDialog.ui.h:2
