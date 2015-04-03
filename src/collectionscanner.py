@@ -117,6 +117,7 @@ class CollectionScanner(GObject.GObject):
     def _finish(self):
         self._in_thread = False
         self._progress.hide()
+        self._progress.set_fraction(0.0)
         self.emit("scan-finished")
 
     """
