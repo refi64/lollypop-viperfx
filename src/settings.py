@@ -28,8 +28,6 @@ class SettingsDialog(Gtk.Dialog):
         builder = Gtk.Builder()
         builder.add_from_resource('/org/gnome/Lollypop/SettingsDialog.ui')
 
-        builder.connect_signals(self)
-
         self._settings_dialog = builder.get_object('settings_dialog')
         self._settings_dialog.set_transient_for(parent)
         self._settings_dialog.set_title(_("Configure lollypop"))
@@ -55,6 +53,8 @@ class SettingsDialog(Gtk.Dialog):
 
         close_button = builder.get_object('close_btn')
         close_button.connect('clicked', self._edit_settings_close)
+
+        builder.connect_signals(self)
 
         main_chooser_box = builder.get_object('main_chooser_box')
         self._chooser_box = builder.get_object('chooser_box')
