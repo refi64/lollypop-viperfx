@@ -15,6 +15,7 @@ from gi.repository import Gtk, GLib
 from gettext import gettext as _
 
 from lollypop.define import Objects
+from lollypop.utils import is_gnome, is_eos
 
 
 # Dialog showing lollypop options
@@ -23,13 +24,17 @@ class SettingsDialog:
     def __init__(self, parent):
 
         self._choosers = []
-        self._window = parent
+        self._parent = parent
 
         builder = Gtk.Builder()
         builder.add_from_resource('/org/gnome/Lollypop/SettingsDialog.ui')
 
         self._settings_dialog = builder.get_object('settings_dialog')
         self._settings_dialog.set_transient_for(parent)
+
+        if is_gnome() or is_eos():
+            self._settings_dialog.set_titlebar(
+                                builder.get_object('header_bar'))
 
         switch_scan = builder.get_object('switch_scan')
         switch_scan.set_state(Objects.settings.get_value('startup-scan'))
@@ -172,7 +177,7 @@ class SettingsDialog:
         @param widget as unused, state as widget state
     """
     def _update_genres_setting(self, widget, state):
-        self._window.show_genres(state)
+        self._parent.show_genres(state)
         Objects.settings.set_value('show-genres',
                                    GLib.Variant('b', state))
                                    
@@ -208,7 +213,7 @@ class SettingsDialog:
         self._settings_dialog.hide()
         self._settings_dialog.destroy()
         if set(previous) != set(paths):
-            self._window.update_db(True)
+            self._parent.update_db(True)
 
     """
         Update party ids when use change a switch in dialog
