@@ -5,7 +5,7 @@ Lollypop is a new GNOME music playing application.
 
 
 For users: http://gnumdk.github.io/lollypop/
-
+For translators: https://www.transifex.com/projects/p/lollypop/
 
 It provides:
 - mp3/4, ogg and flac.
@@ -17,12 +17,15 @@ It provides:
 - Replay gain
 - Cover art downloader
 - Context artist view
+- MPT sync
+- Fullscreen view
 
 === Depends on ===
 - gtk3
 - python3
 - intltool (make)
 - itstool (make)
+- totem-plparser
 - python (make)
 - python-cairo
 - python-dbus
