@@ -36,6 +36,7 @@ class MPRIS(dbus.service.Object):
         Objects.player.connect('current-changed', self._on_current_changed)
         Objects.player.connect('seeked', self._on_seeked)
         Objects.player.connect('status-changed', self._on_status_changed)
+        Objects.player.connect('volume-changed', self._on_volume_changed)
 
     @dbus.service.method(dbus_interface=MPRIS_IFACE)
     def Raise(self):
@@ -107,7 +108,7 @@ class MPRIS(dbus.service.Object):
                 'Rate': dbus.Double(1.0),
                 'Shuffle': True,
                 'Metadata': dbus.Dictionary(self._metadata, signature='sv'),
-                'Volume': 1.0,
+                'Volume': dbus.Double(Objects.player.get_volume()),
                 'Position': dbus.Int64(Objects.player.get_position_in_track()),
                 'MinimumRate': dbus.Double(1.0),
                 'MaximumRate': dbus.Double(1.0),
@@ -127,7 +128,9 @@ class MPRIS(dbus.service.Object):
     @dbus.service.method(dbus_interface=dbus.PROPERTIES_IFACE,
                          in_signature='ssv')
     def Set(self, interface, property_name, new_value):
-        pass
+        if property_name == 'Volume':
+            print(new_value)
+            Objects.player.set_volume(new_value)
 
     @dbus.service.signal(dbus_interface=dbus.PROPERTIES_IFACE,
                          signature='sa{sv}as')
@@ -175,6 +178,14 @@ class MPRIS(dbus.service.Object):
 
     def _on_seeked(self, player, position):
         self.Seeked(position * 1000000)
+
+    def _on_volume_changed(self, player, data=None):
+        self.PropertiesChanged(self.MPRIS_PLAYER_IFACE,
+                        {
+                          'Volume': dbus.Double(Objects.player.get_volume()),
+                        },
+                        [])
+
 
     def _on_current_changed(self, player):
         self._update_metadata()

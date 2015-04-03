@@ -12,7 +12,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-from gi.repository import GLib, GObject, Gst, GstPbutils
+from gi.repository import GLib, GObject, Gst, GstPbutils, GstAudio
 import random
 from os import path
 
@@ -60,6 +60,7 @@ class Player(GObject.GObject):
         'current-changed': (GObject.SignalFlags.RUN_FIRST, None, ()),
         'seeked': (GObject.SignalFlags.RUN_FIRST, None, (int,)),
         'status-changed': (GObject.SignalFlags.RUN_FIRST, None, ()),
+        'volume-changed': (GObject.SignalFlags.RUN_FIRST, None, ()),
         'queue-changed': (GObject.SignalFlags.RUN_FIRST, None, ()),
         'cover-changed': (GObject.SignalFlags.RUN_FIRST, None, (int,))
     }
@@ -529,6 +530,21 @@ class Player(GObject.GObject):
             self._load_track(track_id)
             self.set_albums(track_id, Navigation.ALL, Navigation.ALL)
             self.emit('current-changed')
+
+    """
+        Return player volume rate
+        @return rate as double
+    """
+    def get_volume(self):
+        return self._playbin.get_volume(GstAudio.StreamVolumeFormat.LINEAR)
+
+    """
+        Set player volume rate
+        @param rate as double
+    """
+    def set_volume(self, rate):
+        self._playbin.set_volume(GstAudio.StreamVolumeFormat.LINEAR, rate)
+        self.emit('volume-changed')
     
 #######################
 # PRIVATE             #
