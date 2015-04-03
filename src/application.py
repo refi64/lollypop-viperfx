@@ -14,7 +14,7 @@
 from gi.repository import Gtk, Gio, GLib, Gdk, Notify, TotemPlParser
 from os import environ
 
-from lollypop.utils import is_audio
+from lollypop.utils import is_audio, is_gnome
 from lollypop.define import Objects, ArtSize
 from lollypop.window import Window
 from lollypop.database import Database
@@ -86,12 +86,6 @@ class Application(Gtk.Application):
         self._opened_files = False
         self._external_files = []
 
-        DESKTOP = environ.get("XDG_CURRENT_DESKTOP")
-        if DESKTOP and "GNOME" in DESKTOP:
-            self._appmenu = True
-        else:
-            self._appmenu = False
-
         self.register(None)
         if self.get_is_remote():
             Gdk.notify_startup_complete()
@@ -103,11 +97,16 @@ class Application(Gtk.Application):
     def do_startup(self):
         Gtk.Application.do_startup(self)
         Notify.init("Lollypop")
-        if self._appmenu:
-            menu = self._setup_app_menu()
-            self.set_app_menu(menu)
+
         if not self._window:
+            menu = self._setup_app_menu()
+            # If GNOME, add appmenu
+            if is_gnome():
+                self.set_app_menu(menu)
             self._window = Window(self)
+            # If not GNOME add menu to toolbar
+            if not is_gnome():
+                self._window.setup_menu(menu)
             self._window.connect('delete-event', self._hide_on_delete)
             if not Objects.settings.get_value('disable-mpris'):
                 MPRIS(self)

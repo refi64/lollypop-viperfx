@@ -13,6 +13,24 @@
 
 from gi.repository import Gio
 from gettext import gettext as _
+import os
+
+"""
+    Return True if desktop is elementary os
+"""
+
+def is_eos():
+    return os.environ.get("XDG_CURRENT_DESKTOP") == "Pantheon"
+
+
+"""
+    Return True if desktop is Gnome
+"""
+
+
+def is_gnome():
+    return os.environ.get("XDG_CURRENT_DESKTOP") == "GNOME"
+
 
 """
     Return True if files is audio

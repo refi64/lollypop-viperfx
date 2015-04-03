@@ -18,6 +18,7 @@ import os
 from lollypop.container import Container
 from lollypop.define import Objects
 from lollypop.toolbar import Toolbar
+from lollypop.utils import is_gnome, is_eos
 
 
 # Main window
@@ -123,8 +124,7 @@ class Window(Gtk.ApplicationWindow, Container):
         self._toolbar.header_bar.show()
 
         # Only set headerbar on Gnome Shell and Pantheon Shell
-        DESKTOP = os.environ.get("XDG_CURRENT_DESKTOP")
-        if DESKTOP and ("GNOME" in DESKTOP or "Pantheon" in DESKTOP):
+        if is_gnome() or is_eos():
             self.set_titlebar(self._toolbar.header_bar)
             self._toolbar.header_bar.set_show_close_button(True)
             self.add(self.main_widget())
