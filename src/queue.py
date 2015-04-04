@@ -38,8 +38,8 @@ class QueueWidget(Gtk.Popover):
                                             22,
                                             0)
 
-        self._ui = Gtk.Builder()
-        self._ui.add_from_resource(
+        builder = Gtk.Builder()
+        builder.add_from_resource(
                         '/org/gnome/Lollypop/QueueWidget.ui')
 
         self._model = Gtk.ListStore(GdkPixbuf.Pixbuf,
@@ -47,12 +47,12 @@ class QueueWidget(Gtk.Popover):
                                     GdkPixbuf.Pixbuf,
                                     int)
 
-        self._view = self._ui.get_object('view')
+        self._view = builder.get_object('view')
         self._view.set_model(self._model)
 
-        self._ui.connect_signals(self)
+        builder.connect_signals(self)
 
-        self._widget = self._ui.get_object('widget')
+        self._widget = builder.get_object('widget')
 
         renderer0 = Gtk.CellRendererPixbuf()
         renderer0.set_property('stock-size', ArtSize.MEDIUM)

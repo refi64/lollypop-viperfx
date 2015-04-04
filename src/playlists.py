@@ -318,8 +318,8 @@ class PlaylistsManagerWidget(Gtk.Bin):
                                                 22,
                                                 0)
 
-        self._ui = Gtk.Builder()
-        self._ui.add_from_resource(
+        builder = Gtk.Builder()
+        builder.add_from_resource(
                 '/org/gnome/Lollypop/PlaylistsManagerWidget.ui'
                                   )
 
@@ -328,17 +328,17 @@ class PlaylistsManagerWidget(Gtk.Bin):
         self._model.set_sort_func(1, self._sort_items)
 
         if object_id != -1:
-            self._ui.get_object('back_btn').show()
+            builder.get_object('back_btn').show()
 
-        self._view = self._ui.get_object('view')
+        self._view = builder.get_object('view')
         self._view.set_model(self._model)
 
-        self._ui.connect_signals(self)
+        builder.connect_signals(self)
 
-        self.add(self._ui.get_object('widget'))
+        self.add(builder.get_object('widget'))
 
-        self._infobar = self._ui.get_object('infobar')
-        self._infobar_label = self._ui.get_object('infobarlabel')
+        self._infobar = builder.get_object('infobar')
+        self._infobar_label = builder.get_object('infobarlabel')
 
         if self._object_id != -1:
             renderer0 = Gtk.CellRendererToggle()
@@ -553,8 +553,8 @@ class PlaylistEditWidget:
                                                 22,
                                                 0)
 
-        self._ui = Gtk.Builder()
-        self._ui.add_from_resource(
+        builder = Gtk.Builder()
+        builder.add_from_resource(
                 '/org/gnome/Lollypop/PlaylistEditWidget.ui'
                                   )
 
@@ -563,12 +563,14 @@ class PlaylistEditWidget:
                                     GdkPixbuf.Pixbuf,
                                     str)
         self._model.connect("row-deleted", self._on_row_deleted)
-        self._view = self._ui.get_object('view')
+        self._view = builder.get_object('view')
         self._view.set_model(self._model)
+        
+        self._scroll = builder.get_object('scroll')
 
-        self._ui.connect_signals(self)
+        builder.connect_signals(self)
 
-        self.widget = self._ui.get_object('widget')
+        self.widget = builder.get_object('widget')
         self._infobar = infobar
         self._infobar_label = infobar_label
 
@@ -595,9 +597,8 @@ class PlaylistEditWidget:
         populate view if needed
     """
     def populate(self):
-        self._ui.get_object('scroll').set_property(
-                                'width-request',
-                                self._parent.get_allocated_width()/2)
+        self._scroll.set_property('width-request',
+                                  self._parent.get_allocated_width()/2)
         if len(self._model) == 0:
             start_new_thread(self._append_tracks, ())
 

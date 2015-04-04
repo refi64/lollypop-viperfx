@@ -30,13 +30,13 @@ class SearchRow(Gtk.ListBoxRow):
         self._parent = parent
         self.id = None
         self.is_track = False
-        self._ui = Gtk.Builder()
-        self._ui.add_from_resource('/org/gnome/Lollypop/SearchRow.ui')
-        self._ui.connect_signals(self)
-        self._row_widget = self._ui.get_object('row')
-        self._artist = self._ui.get_object('artist')
-        self._item = self._ui.get_object('item')
-        self._cover = self._ui.get_object('cover')
+        builder = Gtk.Builder()
+        builder.add_from_resource('/org/gnome/Lollypop/SearchRow.ui')
+        builder.connect_signals(self)
+        self._row_widget = builder.get_object('row')
+        self._artist = builder.get_object('artist')
+        self._item = builder.get_object('item')
+        self._cover = builder.get_object('cover')
         self.add(self._row_widget)
 
         self.show()
@@ -46,8 +46,6 @@ class SearchRow(Gtk.ListBoxRow):
     """
     def destroy(self):
         self.remove(self._row_widget)
-        for widget in self._ui.get_objects():
-            widget.destroy()
         Gtk.ListBoxRow.destroy(self)
 
     """

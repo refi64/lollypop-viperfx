@@ -13,8 +13,6 @@
 
 from gi.repository import Gtk, Gio, GLib
 
-import os
-
 from lollypop.container import Container
 from lollypop.define import Objects
 from lollypop.toolbar import Toolbar

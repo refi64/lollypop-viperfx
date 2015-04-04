@@ -158,12 +158,12 @@ class ArtistView(View):
         self._signal_id = None
 
         if show_artist_details:
-            self._ui = Gtk.Builder()
-            self._ui.add_from_resource('/org/gnome/Lollypop/ArtistView.ui')
-            self.add(self._ui.get_object('ArtistView'))
+            builder = Gtk.Builder()
+            builder.add_from_resource('/org/gnome/Lollypop/ArtistView.ui')
+            self.add(builder.get_object('ArtistView'))
             artist_name = Objects.artists.get_name(artist_id)
             artist_name = translate_artist_name(artist_name)
-            self._ui.get_object('artist').set_label(artist_name)
+            builder.get_object('artist').set_label(artist_name)
 
         self._show_menu = show_artist_details
 
@@ -402,27 +402,28 @@ class PlaylistView(View):
         self._playlist_name = playlist_name
         self._signal_id = None
 
-        self._ui = Gtk.Builder()
-        self._ui.add_from_resource('/org/gnome/Lollypop/PlaylistView.ui')
+        builder = Gtk.Builder()
+        builder.add_from_resource('/org/gnome/Lollypop/PlaylistView.ui')
 
-        self._edit_btn = self._ui.get_object('edit_btn')
-        self._back_btn = self._ui.get_object('back_btn')
-        self._title = self._ui.get_object('title')
+        self._edit_btn = builder.get_object('edit_btn')
+        self._back_btn = builder.get_object('back_btn')
+        self._title = builder.get_object('title')
 
+        self._infobar = builder.get_object('infobar')
         self._playlist_widget = PlaylistWidget(
                                            playlist_name,
-                                           self._ui.get_object('infobar'),
-                                           self._ui.get_object('infobarlabel'))
+                                           self._infobar,
+                                           builder.get_object('infobarlabel'))
         self._playlist_widget.show()
 
-        widget = self._ui.get_object('PlaylistView')
+        widget = builder.get_object('PlaylistView')
         self.add(widget)
         widget.attach(self._playlist_widget, 0, 3, 2, 1)
 
-        self._header = self._ui.get_object('header')
+        self._header = builder.get_object('header')
 
-        self._ui.get_object('title').set_label(playlist_name)
-        self._ui.connect_signals(self)
+        builder.get_object('title').set_label(playlist_name)
+        builder.connect_signals(self)
 
     """
         Populate view with tracks from playlist
@@ -511,7 +512,7 @@ class PlaylistView(View):
         self._playlist_widget.edit(False)
         self._back_btn.hide()
         self._edit_btn.show()
-        self._ui.get_object('infobar').hide()
+        self._infobar.hide()
         self._title.show()
 
     """

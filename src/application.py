@@ -12,7 +12,6 @@
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 from gi.repository import Gtk, Gio, GLib, Gdk, Notify, TotemPlParser
-from os import environ
 
 from lollypop.utils import is_audio, is_gnome
 from lollypop.define import Objects, ArtSize

@@ -12,7 +12,6 @@
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 from gi.repository import Gtk, GLib
-from gettext import gettext as _
 
 from lollypop.define import Objects
 from lollypop.utils import is_gnome, is_eos

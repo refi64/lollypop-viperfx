@@ -36,31 +36,31 @@ class Toolbar:
         # Update pogress position
         self._timeout = None
 
-        self._ui = Gtk.Builder()
-        self._ui.add_from_resource('/org/gnome/Lollypop/headerbar.ui')
-        self.header_bar = self._ui.get_object('header-bar')
-        self.header_bar.set_custom_title(self._ui.get_object('title-box'))
+        builder = Gtk.Builder()
+        builder.add_from_resource('/org/gnome/Lollypop/headerbar.ui')
+        self.header_bar = builder.get_object('header-bar')
+        self.header_bar.set_custom_title(builder.get_object('title-box'))
 
-        self._prev_btn = self._ui.get_object('previous_button')
-        self._play_btn = self._ui.get_object('play_button')
-        self._next_btn = self._ui.get_object('next_button')
-        self._play_image = self._ui.get_object('play_image')
-        self._pause_image = self._ui.get_object('pause_image')
+        self._prev_btn = builder.get_object('previous_button')
+        self._play_btn = builder.get_object('play_button')
+        self._next_btn = builder.get_object('next_button')
+        self._play_image = builder.get_object('play_image')
+        self._pause_image = builder.get_object('pause_image')
 
-        self._progress = self._ui.get_object('progress_scale')
+        self._progress = builder.get_object('progress_scale')
         self._progress.set_sensitive(False)
         self._progress.connect('button-release-event',
                                self._on_progress_release_button)
         self._progress.connect('button-press-event',
                                self._on_progress_press_button)
 
-        self._timelabel = self._ui.get_object('playback')
-        self._total_time_label = self._ui.get_object('duration')
+        self._timelabel = builder.get_object('playback')
+        self._total_time_label = builder.get_object('duration')
 
-        self._title_label = self._ui.get_object('title')
-        self._artist_label = self._ui.get_object('artist')
-        self._cover = self._ui.get_object('cover')
-        self._infobox = self._ui.get_object('infobox')
+        self._title_label = builder.get_object('title')
+        self._artist_label = builder.get_object('artist')
+        self._cover = builder.get_object('cover')
+        self._infobox = builder.get_object('infobox')
         self._infobox.connect("button-press-event", self._pop_infobox)
         self._popalbums = PopAlbums()
         self._popalbums.set_relative_to(self._infobox)
@@ -69,12 +69,12 @@ class Toolbar:
         Objects.player.connect("current-changed", self._on_current_changed)
         Objects.player.connect("cover-changed", self._update_cover)
 
-        self._shuffle_btn = self._ui.get_object('shuffle-button')
-        self._shuffle_btn_image = self._ui.get_object('shuffle-button-image')
+        self._shuffle_btn = builder.get_object('shuffle-button')
+        self._shuffle_btn_image = builder.get_object('shuffle-button-image')
         self._set_shuffle_icon()
         Objects.settings.connect('changed::shuffle', self._shuffle_btn_aspect)
 
-        self._party_btn = self._ui.get_object('party-button')
+        self._party_btn = builder.get_object('party-button')
         self._party_btn.connect("toggled", self._on_party_btn_toggled)
         partyAction = Gio.SimpleAction.new('party', None)
         partyAction.connect('activate', self._activate_party_button)
@@ -85,7 +85,7 @@ class Toolbar:
         self._play_btn.connect('clicked', self._on_play_btn_clicked)
         self._next_btn.connect('clicked', self._on_next_btn_clicked)
 
-        search_button = self._ui.get_object('search-button')
+        search_button = builder.get_object('search-button')
         search_button.connect("clicked", self._on_search_btn_clicked)
         self._search = SearchWidget(self.header_bar)
         self._search.set_relative_to(search_button)
@@ -94,12 +94,12 @@ class Toolbar:
         app.add_action(searchAction)
         app.add_accelerator("<Control>f", "app.search")
 
-        queue_button = self._ui.get_object('queue-button')
+        queue_button = builder.get_object('queue-button')
         queue_button.connect("clicked", self._on_queue_btn_clicked)
         self._queue = QueueWidget()
         self._queue.set_relative_to(queue_button)
 
-        self._settings_button = self._ui.get_object('settings-button')
+        self._settings_button = builder.get_object('settings-button')
 
     """
         Add an application menu to menu button

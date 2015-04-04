@@ -41,8 +41,6 @@ class TrackRow(Gtk.ListBoxRow):
     """
     def destroy(self):
         self.remove(self._row_widget)
-        for widget in self._ui.get_objects():
-            widget.destroy()
         Gtk.ListBoxRow.destroy(self)
 
     """

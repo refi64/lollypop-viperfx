@@ -44,28 +44,29 @@ class DeviceManagerWidget(Gtk.Bin):
         self._done = 0   # Handled files on sync
         self._fraction = 0.0
 
-        self._ui = Gtk.Builder()
-        self._ui.add_from_resource(
+        builder = Gtk.Builder()
+        builder.add_from_resource(
                 '/org/gnome/Lollypop/DeviceManager.ui'
                                   )
 
-        self._syncing_btn = self._ui.get_object('sync_btn')
+        self._syncing_btn = builder.get_object('sync_btn')
         self._syncing_btn.set_label(_("Synchronize %s") % device.name)
-        self._memory_combo = self._ui.get_object('memory_combo')
+        self._memory_combo = builder.get_object('memory_combo')
+        self._error_label = builder.get_object('error-label')
 
         self._model = Gtk.ListStore(bool, str)
         self._model.set_sort_column_id(1, Gtk.SortType.ASCENDING)
         self._model.set_sort_func(1, self._sort_items)
 
-        self._view = self._ui.get_object('view')
+        self._view = builder.get_object('view')
         self._view.set_model(self._model)
 
-        self._ui.connect_signals(self)
+        builder.connect_signals(self)
 
-        self.add(self._ui.get_object('widget'))
+        self.add(builder.get_object('widget'))
 
-        self._infobar = self._ui.get_object('infobar')
-        self._infobar_label = self._ui.get_object('infobarlabel')
+        self._infobar = builder.get_object('infobar')
+        self._infobar_label = builder.get_object('infobarlabel')
 
         renderer0 = Gtk.CellRendererToggle()
         renderer0.set_property('activatable', True)
@@ -385,7 +386,6 @@ class DeviceManagerWidget(Gtk.Bin):
         Show information bar with error message
     """
     def _show_info_bar(self):
-        error_label = self._ui.get_object('error-label')
         error_text = _("Unknown error while syncing,"
                        " try to reboot your device")
         try:
@@ -396,8 +396,8 @@ class DeviceManagerWidget(Gtk.Bin):
                 error_text = _("No free space available on device")
         except:
             pass
-        error_label.set_text(error_text)
-        self._ui.get_object('infobar').show()
+        self._error_label.set_text(error_text)
+        self._infobar.show()
 
     """
         Start synchronisation

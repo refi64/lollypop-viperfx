@@ -34,32 +34,32 @@ class FullScreen(Gtk.Window):
         self.set_transient_for(parent)
         self.set_skip_taskbar_hint(True)
         self.set_skip_pager_hint(True)
-        self._ui = Gtk.Builder()
-        self._ui.add_from_resource('/org/gnome/Lollypop/FullScreen.ui')
-        main_widget = self._ui.get_object('fs')
+        builder = Gtk.Builder()
+        builder.add_from_resource('/org/gnome/Lollypop/FullScreen.ui')
+        main_widget = builder.get_object('fs')
         self.add(main_widget)
-        self._prev_btn = self._ui.get_object('prev_btn')
+        self._prev_btn = builder.get_object('prev_btn')
         self._prev_btn.connect('clicked', self._on_prev_btn_clicked)
-        self._play_btn = self._ui.get_object('play_btn')
+        self._play_btn = builder.get_object('play_btn')
         self._play_btn.connect('clicked', self._on_play_btn_clicked)
-        self._next_btn = self._ui.get_object('next_btn')
+        self._next_btn = builder.get_object('next_btn')
         self._next_btn.connect('clicked', self._on_next_btn_clicked)
-        self._play_image = self._ui.get_object('play_image')
-        self._pause_image = self._ui.get_object('pause_image')
-        close_btn = self._ui.get_object('close_btn')
+        self._play_image = builder.get_object('play_image')
+        self._pause_image = builder.get_object('pause_image')
+        close_btn = builder.get_object('close_btn')
         close_btn.connect('clicked', self._destroy)
-        self._cover = self._ui.get_object('cover')
-        self._title = self._ui.get_object('title')
-        self._artist = self._ui.get_object('artist')
-        self._album = self._ui.get_object('album')
+        self._cover = builder.get_object('cover')
+        self._title = builder.get_object('title')
+        self._artist = builder.get_object('artist')
+        self._album = builder.get_object('album')
 
-        self._progress = self._ui.get_object('progress_scale')
+        self._progress = builder.get_object('progress_scale')
         self._progress.connect('button-release-event',
                                self._on_progress_release_button)
         self._progress.connect('button-press-event',
                                self._on_progress_press_button)
-        self._timelabel = self._ui.get_object('playback')
-        self._total_time_label = self._ui.get_object('duration')
+        self._timelabel = builder.get_object('playback')
+        self._total_time_label = builder.get_object('duration')
         self.connect('key-release-event', self._on_key_release_event)
 
     """
@@ -158,10 +158,10 @@ class FullScreen(Gtk.Window):
     def _on_play_btn_clicked(self, widget):
         if Objects.player.is_playing():
             Objects.player.pause()
-            widget.set_image(self._ui.get_object('play_image'))
+            widget.set_image(self._play_image)
         else:
             Objects.player.play()
-            widget.set_image(self._ui.get_object('pause_image'))
+            widget.set_image(self._pause_image)
 
     """
         Go to next track

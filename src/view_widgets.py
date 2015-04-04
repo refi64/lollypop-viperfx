@@ -38,18 +38,18 @@ class AlbumWidget(Gtk.Grid):
         self.set_property("margin", 5)
 
         self.set_orientation(Gtk.Orientation.VERTICAL)
-        self._ui = Gtk.Builder()
-        self._ui.add_from_resource('/org/gnome/Lollypop/AlbumWidget.ui')
+        builder = Gtk.Builder()
+        builder.add_from_resource('/org/gnome/Lollypop/AlbumWidget.ui')
 
-        self._cover = self._ui.get_object('cover')
+        self._cover = builder.get_object('cover')
         self._cover.set_from_pixbuf(Objects.art.get(album_id, ArtSize.BIG))
 
         album_name = Objects.albums.get_name(album_id)
-        title = self._ui.get_object('title')
+        title = builder.get_object('title')
         title.set_label(album_name)
         artist_name = Objects.albums.get_artist_name(album_id)
         artist_name = translate_artist_name(artist_name)
-        artist = self._ui.get_object('artist')
+        artist = builder.get_object('artist')
         artist.set_label(artist_name)
 
         self.add(self._cover)
@@ -94,8 +94,8 @@ class AlbumDetailedWidget(Gtk.Grid):
         Gtk.Grid.__init__(self)
         self._stop = False
 
-        self._ui = Gtk.Builder()
-        self._ui.add_from_resource(
+        builder = Gtk.Builder()
+        builder.add_from_resource(
                     '/org/gnome/Lollypop/AlbumDetailedWidget.ui')
 
         self._artist_id = Objects.albums.get_artist_id(album_id)
@@ -113,26 +113,27 @@ class AlbumDetailedWidget(Gtk.Grid):
         self._tracks_widget2.connect('activated', self._on_activated)
         self._tracks_widget2.connect('button-press-event',
                                      self._on_button_press_event)
-        self._ui.get_object('tracks').add(self._tracks_widget1)
-        self._ui.get_object('tracks').add(self._tracks_widget2)
+        builder.get_object('tracks').add(self._tracks_widget1)
+        builder.get_object('tracks').add(self._tracks_widget2)
         self._tracks_widget1.show()
         self._tracks_widget2.show()
 
-        self._cover = self._ui.get_object('cover')
+        self._cover = builder.get_object('cover')
         self._cover.set_from_pixbuf(Objects.art.get(album_id, ArtSize.BIG))
-        self._ui.get_object('title').set_label(
+        builder.get_object('title').set_label(
                                             Objects.albums.get_name(album_id))
-        self._ui.get_object('year').set_label(
+        builder.get_object('year').set_label(
                                             Objects.albums.get_year(album_id))
-        self.add(self._ui.get_object('AlbumDetailedWidget'))
+        self.add(builder.get_object('AlbumDetailedWidget'))
 
         if show_menu:
-            self.eventbox = self._ui.get_object('eventbox')
+            self._menu = builder.get_object('menu')
+            self.eventbox = builder.get_object('eventbox')
             self.eventbox.connect("button-press-event",
                                   self._show_web_art)
-            self._ui.get_object('menu').connect('clicked',
+            self._menu.connect('clicked',
                                                 self._pop_menu)
-            self._ui.get_object('menu').show()
+            self._menu.show()
         else:
             self.eventbox = None
 
@@ -213,8 +214,8 @@ class AlbumDetailedWidget(Gtk.Grid):
         @param album id as int
     """
     def _pop_menu(self, widget):
-        menu = PopMainMenu(self._album_id, self._genre_id, True, False, widget)
-        popover = Gtk.Popover.new_from_model(self._ui.get_object('menu'), menu)
+        pop_menu = PopMainMenu(self._album_id, self._genre_id, True, False, widget)
+        popover = Gtk.Popover.new_from_model(self._menu, pop_menu)
         popover.show()
 
     """
@@ -308,8 +309,8 @@ class PlaylistWidget(Gtk.Grid):
         self._tracks = []
         self.set_property("margin", 5)
 
-        self._ui = Gtk.Builder()
-        self._ui.add_from_resource(
+        builder = Gtk.Builder()
+        builder.add_from_resource(
                 '/org/gnome/Lollypop/PlaylistWidget.ui'
                                   )
 
@@ -326,9 +327,9 @@ class PlaylistWidget(Gtk.Grid):
         size_group.add_widget(self._tracks_widget1)
         size_group.add_widget(self._tracks_widget2)
 
-        self._playlist_widget = self._ui.get_object('scroll')
-        self._ui.get_object('grid').add(self._tracks_widget1)
-        self._ui.get_object('grid').add(self._tracks_widget2)
+        self._playlist_widget = builder.get_object('scroll')
+        builder.get_object('grid').add(self._tracks_widget1)
+        builder.get_object('grid').add(self._tracks_widget2)
 
         self._stack = Gtk.Stack()
         self._playlist_edit = PlaylistEditWidget(playlist_name,
