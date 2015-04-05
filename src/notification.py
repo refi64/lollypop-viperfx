@@ -21,9 +21,11 @@ class NotificationManager:
 
     """
         Init notification object with lollypop infos
+        @param app as Gtk.Application
         @param window as Gtk.ApplicationWindow
     """
-    def __init__(self, window):
+    def __init__(self, app, window):
+        self._app = app
         self._window = window
         caps = Notify.get_server_caps()
 
@@ -56,7 +58,8 @@ class NotificationManager:
     """
     def _on_current_changed(self, player):
         state = self._window.get_window().get_state()
-        if player.current.id is None or state & Gdk.WindowState.FOCUSED:
+        if player.current.id is None or state & Gdk.WindowState.FOCUSED\
+                                     or self._app.is_fullscreen():
             return
         cover_path = Objects.art.get_path(player.current.album_id,
                                           ArtSize.BIG)

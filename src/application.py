@@ -84,6 +84,7 @@ class Application(Gtk.Application):
         self._window = None
         self._opened_files = False
         self._external_files = []
+        self._is_fs = False
 
         self.register(None)
         if self.get_is_remote():
@@ -110,7 +111,7 @@ class Application(Gtk.Application):
             if not Objects.settings.get_value('disable-mpris'):
                 MPRIS(self)
             if not Objects.settings.get_value('disable-notifications'):
-                NotificationManager(self._window)
+                NotificationManager(self, self._window)
             self._window.update_lists()
             self._window.update_db()
             self._window.show()
@@ -151,6 +152,12 @@ class Application(Gtk.Application):
             pass
         Objects.sql.close()
         self._window.destroy()
+
+    """
+        Return True if application is fullscreen
+    """
+    def is_fullscreen(self):
+        return self._is_fs
 
 #######################
 # PRIVATE             #
@@ -223,7 +230,18 @@ class Application(Gtk.Application):
     def _fullscreen(self, action=None, param=None):
         if self._window:
             fs = FullScreen(self._window)
+            fs.connect("destroy", self._on_fs_destroyed)
+            self._is_fs = True
             fs.show()
+        else:
+            self._is_fs = False
+
+    """
+        Mark fullscreen as False
+        @param widget as Fullscreen
+    """
+    def _on_fs_destroyed(self, widget):
+        self._is_fs = False
 
     """
         Show settings dialog
