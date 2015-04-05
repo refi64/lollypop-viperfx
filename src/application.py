@@ -82,7 +82,6 @@ class Application(Gtk.Application):
 
         self.add_action(Objects.settings.create_action('shuffle'))
         self._window = None
-        self._opened_files = False
         self._external_files = []
         self._is_fs = False
 
@@ -139,12 +138,10 @@ class Application(Gtk.Application):
         Objects.player.stop()
         if self._window:
             self._window.stop_all()
-        if self._opened_files:
+        if Objects.settings.get_value('force-scan'):
             # Cleaning db here is too slow, user may want to play some more
-            # tracks just after closing lollypop
-            # So mark collection to be scanned at startup,
-            # this will delete orphaned albums
-            Objects.settings.set_value('force-scan', GLib.Variant('b', True))
+            # tracks just after closing lollypop, will clean on startup
+            # Just delete file from tracks table
             Objects.tracks.remove_tmp()
         try:
             Objects.sql.execute("VACUUM")
@@ -170,7 +167,6 @@ class Application(Gtk.Application):
         @param data as unused
     """
     def _on_files_opened(self, app, files, hint, data):
-        self._opened_files = True
         self._external_files = []
         for f in files:
             if self._parser.parse(f.get_uri(), False) ==\
@@ -204,7 +200,6 @@ class Application(Gtk.Application):
     def _on_playlist_ended(self, parser, uri):
         self._parsing -= 1
         if self._parsing == 0:
-            print(self._external_files)
             self._window.load_external(self._external_files)
 
     """

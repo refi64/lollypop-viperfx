@@ -26,7 +26,7 @@ class CollectionScanner(GObject.GObject):
         'scan-finished': (GObject.SignalFlags.RUN_FIRST, None, ()),
         'artist-update': (GObject.SignalFlags.RUN_FIRST, None, (int, int)),
         'genre-update': (GObject.SignalFlags.RUN_FIRST, None, (int,)),
-        'add-finished': (GObject.SignalFlags.RUN_FIRST, None, ())
+        'add-finished': (GObject.SignalFlags.RUN_FIRST, None, (bool,))
     }
 
     """
@@ -71,6 +71,7 @@ class CollectionScanner(GObject.GObject):
     def add(self, files):
         if not files:
             return
+        outdb_tracks = False
         GLib.idle_add(self._progress.show)
         sql = Objects.db.get_cursor()
         tracks = Objects.tracks.get_paths(sql)
@@ -83,6 +84,7 @@ class CollectionScanner(GObject.GObject):
                 infos = Objects.player.get_infos(f)
                 if infos is not None:
                     self._added.append(self._add2db(f, 0, infos, sql))
+                    outdb_tracks = True
             else:
                 self._added.append(Objects.tracks.get_id_by_path(f, sql))
             i += 1
@@ -91,7 +93,7 @@ class CollectionScanner(GObject.GObject):
         sql.commit()
         sql.close()
         GLib.idle_add(self._progress.hide)
-        GLib.idle_add(self.emit, "add-finished")
+        GLib.idle_add(self.emit, "add-finished", outdb_tracks)
 
     """
         Return files added by last call to CollectionScanner::add

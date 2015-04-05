@@ -572,12 +572,16 @@ class Container(ViewContainer):
     """
         Play tracks as user playlist
         @param scanner as collection scanner
+        @param outdb as bool (tracks not present in db)
     """
-    def _play_tracks(self, scanner):
+    def _play_tracks(self, scanner, outdb):
         ids = scanner.get_added()
         if ids:
             if not Objects.player.is_party():
                 Objects.player.set_user_playlist(ids, ids[0])
+            if outdb:
+                Objects.settings.set_value('force-scan',
+                                           GLib.Variant('b', True))
             Objects.player.load(ids[0])
 
     """
