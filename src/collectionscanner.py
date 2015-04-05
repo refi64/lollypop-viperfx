@@ -207,8 +207,8 @@ class CollectionScanner(GObject.GObject):
         @return track id as int
     """
     def _add2db(self, filepath, mtime, infos, sql):
-        self._new_artist = False
-        self._new_genre = False
+        self._new_artists = []
+        self._new_genres = []
         path = os.path.dirname(filepath)
 
         tags = infos.get_tags()
@@ -277,7 +277,7 @@ class CollectionScanner(GObject.GObject):
                 Objects.artists.add(artist, sql)
                 artist_id = Objects.artists.get_id(artist, sql)
                 if artist == aartist:
-                    self._new_artist = True
+                    self._new_artists.append(artist_id)
             artist_ids.append(artist_id)
 
         if aartist:
@@ -287,7 +287,7 @@ class CollectionScanner(GObject.GObject):
             if aartist_id is None:
                 Objects.artists.add(aartist, sql)
                 aartist_id = Objects.artists.get_id(aartist, sql)
-                self._new_artist = True
+                self._new_artists.append(aartist_id)
         else:
             aartist_id = Navigation.COMPILATIONS
 
@@ -299,7 +299,7 @@ class CollectionScanner(GObject.GObject):
             if genre_id is None:
                 Objects.genres.add(genre, sql)
                 genre_id = Objects.genres.get_id(genre, sql)
-                self._new_genre = True
+                self._new_genres.append(genre_id)
             genre_ids.append(genre_id)
 
         album_id = Objects.albums.get_id(album, aartist_id, sql)
@@ -330,12 +330,13 @@ class CollectionScanner(GObject.GObject):
             Objects.tracks.add_artist(track_id, artist_id, sql)
         for genre_id in genre_ids:
             Objects.tracks.add_genre(track_id, genre_id, sql)
-        if self._new_genre or self._new_artist:
+        # Notify about new artists/genres
+        if self._new_genres or self._new_artists:
             sql.commit()
-            if self._new_genre:
+            for genre_id in self._new_genres:
                 GLib.idle_add(self.emit, "genre-update", genre_id)
-            if self._new_artist:
-                GLib.idle_add(self.emit, "artist-update", aartist_id, album_id)
+            for artist_id in self._new_artists:
+                GLib.idle_add(self.emit, "artist-update", artist_id, album_id)
         return track_id
 
     """

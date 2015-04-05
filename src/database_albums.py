@@ -339,7 +339,6 @@ class DatabaseAlbums:
 
     """
         Get tracks for album id
-        Will search track from albums
         @param album id as int
         @param genre id as int
         @return Arrays of tracks id as int
