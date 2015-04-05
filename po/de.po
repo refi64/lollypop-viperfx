@@ -1,7 +1,7 @@
 # SOME DESCRIPTIVE TITLE.
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
-#
+# 
 # Translators:
 # Mark Gerlach, 2015
 # Mathias Rudolf <manifre.rudolf@gmail.com>, 2015
@@ -11,14 +11,13 @@ msgstr ""
 "Project-Id-Version: lollypop\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2015-04-03 17:19+0200\n"
-"PO-Revision-Date: 2015-04-01 10:44+0000\n"
+"PO-Revision-Date: 2015-04-04 10:37+0000\n"
 "Last-Translator: Cédric Bellegarde <web@adishatz.org>\n"
-"Language-Team: German (http://www.transifex.com/projects/p/lollypop/language/"
-"de/)\n"
-"Language: de\n"
+"Language-Team: German (http://www.transifex.com/projects/p/lollypop/language/de/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Language: de\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:1
@@ -76,9 +75,7 @@ msgstr "Datenbankversion"
 #: ../data/org.gnome.Lollypop.gschema.xml.h:14
 msgid ""
 "Reset this value will reset the database, popular albums will be restored"
-msgstr ""
-"Das Zurücksetzen dieses Wertes setzt die Datenbank, sowie beliebte Alben "
-"zurück"
+msgstr "Das Zurücksetzen dieses Wertes setzt die Datenbank, sowie beliebte Alben zurück"
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:15
 msgid "Replay gain value in db"
@@ -106,12 +103,11 @@ msgstr "Zeige stilisierte Cover"
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:21 ../data/SettingsDialog.ui.h:4
 msgid "Continue playback when closed"
-msgstr "Wiedergabe im Hintergrund fortführen"
+msgstr "Wiedergabe nach Schließen des Programms fortführen"
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:22
-#, fuzzy
 msgid "Restore previous state"
-msgstr "Vorherige Ansicht wiederherstellen"
+msgstr ""
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:23
 msgid "Auto play albums on click"
@@ -137,14 +133,15 @@ msgstr "INTERN"
 msgid "Shuffle mode"
 msgstr "Zufallsmodus"
 
-#. Translators: Don't translate allowed values, just the description in the brackets
+#. Translators: Don't translate allowed values, just the description in the
+#. brackets
 #: ../data/org.gnome.Lollypop.gschema.xml.h:30
 msgid ""
-"Value identifies whether to shuffle tracks/albums. Allowed values are: \"none"
-"\" (shuffle off), \"tracks\" (shuffle tracks) , \"albums\" (shuffle albums), "
-"\"tracks_artist\" (shuffle tracks from artist), \"albums_artist\" (shuffle "
-"albums from artist)."
-msgstr ""
+"Value identifies whether to shuffle tracks/albums. Allowed values are: "
+"\"none\" (shuffle off), \"tracks\" (shuffle tracks) , \"albums\" (shuffle "
+"albums), \"tracks_artist\" (shuffle tracks from artist), \"albums_artist\" "
+"(shuffle albums from artist)."
+msgstr "Wert zur Regelung des Zufallsmodus: \"none\" (Zufall aus), \"tracks\" (zufälliger Titel), \"albums\" (zufälliges Album), \"tracks_artist\" (zufälliger Titel dieses Künstlers), \"albums_artist\" (zufälliges Album dieses Künstlers)"
 
 #: ../data/lollypop.desktop.in.h:1 ../data/lollypop.appdata.xml.in.h:1
 msgid "Lollypop"
@@ -242,9 +239,7 @@ msgstr "Synchronisieren %s"
 
 #: ../src/devicemanager.py:389
 msgid "Unknown error while syncing, try to reboot your device"
-msgstr ""
-"Unbekannter Fehler während der Synchronisation, versuche das Gerät neu zu "
-"starten"
+msgstr "Unbekannter Fehler während der Synchronisation, versuche das Gerät neu zu starten"
 
 #: ../src/devicemanager.py:396
 msgid "No free space available on device"
@@ -260,7 +255,7 @@ msgstr "Wiedergabe"
 
 #: ../src/popmenu.py:66
 msgid "Continue playback"
-msgstr "Wiedergabe im Hintergrund fortführen"
+msgstr "Wiedergabe fortführen"
 
 #: ../src/popmenu.py:71
 msgid "Stop after this track"
@@ -380,11 +375,11 @@ msgstr "Zufälliger Titel"
 
 #: ../data/headerbar.ui.h:4
 msgid "Shuffle albums from artist"
-msgstr ""
+msgstr "Zufälliges Album dieses Künstlers"
 
 #: ../data/headerbar.ui.h:5
 msgid "Shuffle tracks from artist"
-msgstr ""
+msgstr "Zufälliger Titel dieses Künstlers"
 
 #: ../data/headerbar.ui.h:9
 msgid "Settings"
@@ -415,18 +410,16 @@ msgid "Add to playlist"
 msgstr "Zu Playlist hinzufügen"
 
 #: ../data/SettingsDialog.ui.h:1
-#, fuzzy
 msgid "Preferences"
-msgstr "_Einstellungen"
+msgstr ""
 
 #: ../data/SettingsDialog.ui.h:2
 msgid "Update music on startup"
 msgstr "Aktualisiere Musik beim Start"
 
 #: ../data/SettingsDialog.ui.h:3
-#, fuzzy
 msgid "Restore state on startup"
-msgstr "Ansicht beim Start wiederherstellen"
+msgstr ""
 
 #: ../data/SettingsDialog.ui.h:5
 msgid "Play albums on 2nd click"
@@ -446,7 +439,7 @@ msgstr "Zeige Genres"
 
 #: ../data/SettingsDialog.ui.h:9
 msgid "Appearance"
-msgstr ""
+msgstr "Erscheinungsbild"
 
 #: ../data/SettingsDialog.ui.h:10
 msgid "Configure lollypop behaviour"
@@ -454,7 +447,7 @@ msgstr "Konfiguriere das Verhalten von Lollypop"
 
 #: ../data/SettingsDialog.ui.h:11
 msgid "Options"
-msgstr ""
+msgstr "Optionen"
 
 #: ../data/SettingsDialog.ui.h:12
 msgid "Select music folders"
@@ -471,9 +464,3 @@ msgstr "Wähle, was im Partymodus verfügbar sein soll"
 #: ../data/DeviceManager.ui.h:1
 msgid "Synchronize your device with this playlists"
 msgstr "Synchronisiere dein Abspielgerät mit dieser Playlist"
-
-#~ msgid "Configure lollypop"
-#~ msgstr "Konfiguriere Lollypop"
-
-#~ msgid "Close"
-#~ msgstr "Schliessen"
