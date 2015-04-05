@@ -251,7 +251,7 @@ class CollectionScanner(GObject.GObject):
                 if i < size-1:
                     genres += ";"
 
-        (exist, discnumber) = tags.get_uint_index('disc-number', 0)
+        (exist, discnumber) = tags.get_uint_index('album-disc-number', 0)
         if not exist:
             discnumber = 0
 
