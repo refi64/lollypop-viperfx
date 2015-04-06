@@ -93,6 +93,8 @@ class Player(GObject.GObject):
         self._is_party = False
         # Current queue
         self._queue = []
+        # Player errors
+        self._errors = 0
 
         self._playbin = Gst.ElementFactory.make('playbin', 'player')
         self._tagreader = GstPbutils.Discoverer.new(10*Gst.SECOND)
@@ -722,6 +724,7 @@ class Player(GObject.GObject):
     """
     def _on_stream_start(self, bus, message):
         self.emit("current-changed")
+        self._errors = 0
         # Add track to shuffle history if needed
         if self._shuffle != Shuffle.NONE or self._is_party:
             self._shuffle_prev_tracks.append(self.current.id)
@@ -758,6 +761,21 @@ class Player(GObject.GObject):
         except:
             pass
         sql.close()
+
+    """
+        On error, continue 3 times
+        @return True if playing next or False if stop
+    """
+    def _on_errors(self):
+        self._errors += 1
+        if self._errors < 3:
+            GLib.idle_add(self.next, True)
+            return True
+        else:
+            self.current = CurrentTrack()
+            GLib.idle_add(self.stop)
+            GLib.idle_add(self.emit, 'current-changed')
+            return False
 
     """
         Load track
@@ -819,10 +837,9 @@ class Player(GObject.GObject):
                 self._playbin.set_property('uri',
                                            GLib.filename_to_uri(
                                                         self.current.path))
-            except:
-                GLib.idle_add(self.stop)
-                return False
+            except:  # Gstreamer error, stop
+               return self._on_errors()
         else:
             print("File doesn't exist: ", self.current.path)
-            self.next(True, sql)
+            return self._on_errors()
         return True
