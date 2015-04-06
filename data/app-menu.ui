@@ -2,12 +2,7 @@
 <interface domain="lollypop">
   <menu id="app-menu">
     <section>
-	<item>
-        <attribute name="action">app.settings</attribute>
-        <attribute name="label" translatable="yes">_Preferences</attribute>
-        <attribute name="accel">&lt;Primary&gt;s</attribute>
-      </item>
-	 <item>
+      <item>
         <attribute name="action">app.update_db</attribute>
         <attribute name="label" translatable="yes">_Update music</attribute>
         <attribute name="accel">&lt;Primary&gt;u</attribute>
@@ -15,8 +10,17 @@
       <item>
         <attribute name="action">app.fullscreen</attribute>
         <attribute name="label" translatable="yes">_Fullscreen</attribute>
-        <attribute name="accel">&lt;Primary&gt;m</attribute>
+        <attribute name="accel">F11</attribute>
       </item>
+    </section>
+    <section>
+      <item>
+        <attribute name="action">app.settings</attribute>
+        <attribute name="label" translatable="yes">_Preferences</attribute>
+        <attribute name="accel">&lt;Primary&gt;s</attribute>
+      </item>
+    </section>
+    <section>
       <item>
         <attribute name="action">app.about</attribute>
         <attribute name="label" translatable="yes">_About</attribute>
