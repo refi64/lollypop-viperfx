@@ -763,19 +763,16 @@ class Player(GObject.GObject):
         sql.close()
 
     """
-        On error, continue 3 times
-        @return True if playing next or False if stop
+        On error, try 3 more times playing a track
     """
     def _on_errors(self):
         self._errors += 1
         if self._errors < 3:
             GLib.idle_add(self.next, True)
-            return True
         else:
             self.current = CurrentTrack()
             GLib.idle_add(self.stop)
             GLib.idle_add(self.emit, 'current-changed')
-            return False
 
     """
         Load track
@@ -838,8 +835,10 @@ class Player(GObject.GObject):
                                            GLib.filename_to_uri(
                                                         self.current.path))
             except:  # Gstreamer error, stop
-               return self._on_errors()
+               self._on_errors()
+               return False
         else:
             print("File doesn't exist: ", self.current.path)
-            return self._on_errors()
+            self._on_errors()
+            return False
         return True
