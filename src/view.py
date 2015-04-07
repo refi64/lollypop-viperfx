@@ -257,7 +257,7 @@ class AlbumView(View):
     def __init__(self, navigation_id):
         View.__init__(self)
         self._album_id = None
-        self._navigation_id = navigation_id
+        self._genre_id = navigation_id
         self._albumsongs = None
         self._context_widget = None
 
@@ -291,16 +291,19 @@ class AlbumView(View):
 
     """
         Populate albums, thread safe
+        @param navigation id as int
     """
-    def populate(self):
+    def populate(self, navigation_id):
         sql = Objects.db.get_cursor()
-        if self._navigation_id == Navigation.ALL:
+        if self._genre_id == Navigation.ALL:
             albums = Objects.albums.get_ids(None, None, sql)
-        elif self._navigation_id == Navigation.POPULARS:
+        elif self._genre_id == Navigation.POPULARS:
             albums = Objects.albums.get_populars(sql)
+        elif self._genre_id == Navigation.COMPILATIONS:
+            albums = Objects.albums.get_compilations(navigation_id,
+                                                     sql)
         else:
-            albums = Objects.albums.get_compilations(self._navigation_id, sql)
-            albums += Objects.albums.get_ids(None, self._navigation_id, sql)
+            albums = Objects.albums.get_ids(None, self._genre_id, sql)
         GLib.idle_add(self._add_albums, albums)
         sql.close()
 
@@ -345,7 +348,7 @@ class AlbumView(View):
         if old_view:
             self._stack.remove(old_view)
         self._context_widget = AlbumDetailedWidget(album_id,
-                                                   self._navigation_id,
+                                                   self._genre_id,
                                                    True,
                                                    size_group)
         start_new_thread(self._context_widget.populate, ())

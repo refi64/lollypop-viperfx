@@ -426,12 +426,13 @@ class Container(ViewContainer):
     """
         Update current view with albums view
         @param object id as int
+        @param genre id as int
     """
-    def _update_view_albums(self, object_id):
+    def _update_view_albums(self, object_id, genre_id):
         old_view = self._stack.get_visible_child()
         view = AlbumView(object_id)
         self._stack.add(view)
-        start_new_thread(view.populate, ())
+        start_new_thread(view.populate, (genre_id,))
         self._stack.set_visible_child(view)
         self._clean_view(old_view)
 
@@ -504,11 +505,12 @@ class Container(ViewContainer):
             self._update_view_device(object_id)
         elif object_id == Navigation.POPULARS:
             self._list_two.widget.hide()
-            self._update_view_albums(object_id)
+            self._update_view_albums(object_id, None)
         elif selection_list.is_marked_as_artists():
             self._list_two.widget.hide()
-            if object_id == Navigation.ALL:
-                self._update_view_albums(object_id)
+            if object_id == Navigation.ALL or\
+               object_id == Navigation.COMPILATIONS:
+                self._update_view_albums(object_id, None)
             else:
                 self._update_view_artists(object_id, None)
         else:
@@ -516,7 +518,7 @@ class Container(ViewContainer):
                              (self._list_two, object_id, False))
             self._list_two.widget.show()
             if self._list_two_restore is None:
-                self._update_view_albums(object_id)
+                self._update_view_albums(object_id, None)
 
     """
         Restore previous state
@@ -538,8 +540,8 @@ class Container(ViewContainer):
         selected_id = self._list_one.get_selected_id()
         if selected_id == Navigation.PLAYLISTS:
             self._update_view_playlists(object_id)
-        elif selected_id == Navigation.ALL:
-            self._update_view_artists(object_id, None)
+        elif object_id == Navigation.COMPILATIONS:
+            self._update_view_albums(object_id, selected_id)
         else:
             self._update_view_artists(object_id, selected_id)
 
