@@ -15,10 +15,11 @@ from gi.repository import Gtk, Gdk, GLib
 from _thread import start_new_thread
 
 from lollypop.define import Objects, Navigation
-from lollypop.playlists import PlaylistsManagerWidget, PlaylistEditWidget
+from lollypop.playlist_widgets import PlaylistsManagerWidget,\
+                                      PlaylistEditWidget,\
+                                      PlaylistWidget
 from lollypop.devicemanager import DeviceManagerWidget
-from lollypop.view_widgets import AlbumDetailedWidget, AlbumWidget
-from lollypop.view_widgets import PlaylistWidget
+from lollypop.album_widgets import AlbumDetailedWidget, AlbumWidget
 from lollypop.utils import translate_artist_name
 
 # Container for a view
@@ -57,83 +58,6 @@ class ViewContainer(Gtk.Stack):
         view.destroy()
 
 
-# Playlist view used to manage playlists
-class PlaylistManageView(Gtk.Bin):
-    """
-         @param object id as int
-         @param genre id as int
-         @param is album as bool
-    """
-    def __init__(self, object_id, genre_id, is_album):
-        Gtk.Bin.__init__(self)
-        self._widget = PlaylistsManagerWidget(object_id,
-                                              genre_id,
-                                              is_album,
-                                              self)
-        self._widget.show()
-        self.add(self._widget)
-
-    def populate(self):
-        self._widget.populate()
-
-    def remove_signals(self):
-        pass
-
-    def stop(self):
-        pass
-
-# Playlist view used to edit playlists
-class PlaylistEditView(Gtk.Bin):
-    """
-         @param playlist name as str
-         @param width as int
-    """
-    def __init__(self, playlist_name, width):
-        Gtk.Bin.__init__(self)
-        self._widget = PlaylistEditWidget(playlist_name, width, self)
-        self._widget.show()
-        self.add(self._widget)
-
-    def populate(self):
-        self._widget.populate()
-
-    def remove_signals(self):
-        pass
-
-    def stop(self):
-        pass
-
-
-# Playlist synchronisation view
-class DeviceView(Gtk.Bin):
-    """
-         @param device as Device
-         @param progress as Gtk.ProgressBar
-    """
-    def __init__(self, device, progress):
-        Gtk.Bin.__init__(self)
-        self._widget = DeviceManagerWidget(device, progress, self)
-        self._widget.show()
-        self.add(self._widget)
-
-    def populate(self):
-        self._widget.populate()
-
-    def is_syncing(self):
-        return self._widget.is_syncing()
-
-    def remove_signals(self):
-        pass
-
-    def stop(self):
-        pass
-
-
-#######################
-# PRIVATE             #
-#######################
-
-
 # Generic view
 class View(Gtk.Grid):
 
@@ -148,28 +72,15 @@ class View(Gtk.Grid):
         # Stop populate thread
         self._stop = False
 
-        self._viewport = Gtk.Viewport()
-        self._viewport.set_property("valign", Gtk.Align.START)
+        self._scrolledWindow = Gtk.ScrolledWindow()
+        self._scrolledWindow.set_policy(Gtk.PolicyType.AUTOMATIC,
+                                        Gtk.PolicyType.AUTOMATIC)
 
-    """
-        Add widget to main viewport
-        @param widget as Gtk.Widget
-        @param height as int
-    """
-    def set_main_widget(self, widget, height=None):
-        scrolledWindow = Gtk.ScrolledWindow()
-        if height is None:
-            scrolledWindow.set_vexpand(True)
-            scrolledWindow.set_hexpand(True)
-        else:
-            scrolledWindow.set_min_content_height(250)
-        scrolledWindow.set_policy(Gtk.PolicyType.AUTOMATIC,
-                                  Gtk.PolicyType.AUTOMATIC)
-        scrolledWindow.add(self._viewport)
+        self._scrolledWindow.show()
+        self._viewport = Gtk.Viewport()
+        #self._viewport.set_property("valign", Gtk.Align.START)
+        self._scrolledWindow.add(self._viewport)
         self._viewport.show()
-        scrolledWindow.show()
-        self.add(scrolledWindow)
-        self._viewport.add(widget)
 
     """
         Remove signals on player object
@@ -249,7 +160,8 @@ class ArtistView(View):
         self._albumbox.set_property("orientation", Gtk.Orientation.VERTICAL)
         self._albumbox.show()
 
-        self.set_main_widget(self._albumbox)
+        self._scrolledWindow.set_property('expand', True)
+        self._viewport.add(self._albumbox)
 
         self.show()
 
@@ -342,7 +254,8 @@ class AlbumView(View):
         self._albumbox.set_max_children_per_line(100)
         self._albumbox.show()
 
-        self.set_main_widget(self._albumbox)
+        self._viewport.add(self._albumbox)
+        self._scrolledWindow.set_property('expand', True)
 
         self._context = ViewContainer(500)
 
@@ -407,7 +320,8 @@ class AlbumView(View):
         start_new_thread(self._context_widget.populate, ())
         self._context_widget.show()
         view = View()
-        view.set_main_widget(self._context_widget, 250)
+        view._viewport.add(self._context_widget)
+        view._scrolledWindow.set_min_content_height(250)
         view.show()
         self._context.add(view)
         self._context.set_visible_child(view)
@@ -451,18 +365,15 @@ class PlaylistView(View):
     """
         Init PlaylistView ui with a scrolled grid of PlaylistWidgets
         @param playlist name as str
-        @param parent as Gtk.Widget
     """
     def __init__(self, playlist_name, parent):
         View.__init__(self)
-        self._parent = parent
         self._playlist_name = playlist_name
         self._signal_id = None
 
         builder = Gtk.Builder()
         builder.add_from_resource('/org/gnome/Lollypop/PlaylistView.ui')
         builder.get_object('title').set_label(playlist_name)
-        self._header = builder.get_object('header')
         builder.connect_signals(self)
 
         self._edit_btn = builder.get_object('edit_btn')
@@ -473,7 +384,9 @@ class PlaylistView(View):
         self._playlist_widget.show()
 
         self.add(builder.get_object('PlaylistView'))
-        self.set_main_widget(self._playlist_widget)
+        self._viewport.add(self._playlist_widget)
+        self._scrolledWindow.set_property('expand', True)
+        self.add(self._scrolledWindow)
 
     """
         Populate view with tracks from playlist
@@ -531,8 +444,7 @@ class PlaylistView(View):
         @param playlist name as str
     """
     def _on_edit_btn_clicked(self, button):
-        window = self._parent.get_toplevel()
-        window.show_playlist_editor(self._playlist_name)
+        Objects.window.show_playlist_editor(self._playlist_name)
 
     """
         Update the content view
@@ -540,3 +452,90 @@ class PlaylistView(View):
     """
     def _update_content(self, player):
         self._playlist_widget.update_playing_track(player.current.id)
+
+
+# Playlist view used to manage playlists
+class PlaylistManageView(Gtk.Bin):
+    """
+         @param object id as int
+         @param genre id as int
+         @param is album as bool
+    """
+    def __init__(self, object_id, genre_id, is_album):
+        Gtk.Bin.__init__(self)
+        self._widget = PlaylistsManagerWidget(object_id,
+                                              genre_id,
+                                              is_album,
+                                              self)
+        self._widget.show()
+        self.add(self._widget)
+
+    def populate(self):
+        self._widget.populate()
+
+    def remove_signals(self):
+        pass
+
+    def stop(self):
+        pass
+
+# Playlist view used to edit playlists
+class PlaylistEditView(View):
+    """
+         @param playlist name as str
+         @param width as int
+    """
+    def __init__(self, playlist_name, width):
+        View.__init__(self)
+        builder = Gtk.Builder()
+        builder.add_from_resource('/org/gnome/Lollypop/PlaylistEditView.ui')
+        builder.get_object('title').set_label(playlist_name)
+        grid = builder.get_object('widget')
+        self.add(grid)
+        self._edit_widget = PlaylistEditWidget(playlist_name)
+        self._edit_widget.show()
+        self._scrolledWindow.set_property('halign', Gtk.Align.CENTER)
+        self._scrolledWindow.set_property('width-request', width)
+        self._viewport.add(self._edit_widget)
+        self.add(self._scrolledWindow)
+
+    def populate(self):
+        self._edit_widget.populate()
+
+    def remove_signals(self):
+        pass
+
+    def stop(self):
+        pass
+
+
+# Playlist synchronisation view
+class DeviceView(Gtk.Bin):
+    """
+         @param device as Device
+         @param progress as Gtk.ProgressBar
+    """
+    def __init__(self, device, progress):
+        Gtk.Bin.__init__(self)
+        self._widget = DeviceManagerWidget(device, progress, self)
+        self._widget.show()
+        self.add(self._widget)
+
+    def populate(self):
+        self._widget.populate()
+
+    def is_syncing(self):
+        return self._widget.is_syncing()
+
+    def remove_signals(self):
+        pass
+
+    def stop(self):
+        pass
+
+
+#######################
+# PRIVATE             #
+#######################
+
+

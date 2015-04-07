@@ -26,6 +26,7 @@ class Objects_:
     playlists = None
     player = None
     art = None
+    window = None
 
 
 # Represent what to do on next track

@@ -162,6 +162,14 @@ class Container:
         self._show_genres = show
         self._update_list_one(None)
 
+    """
+        Destroy current view
+    """
+    def destroy_current_view(self):
+        view = self._stack.get_visible_child()
+        view.hide()
+        GLib.timeout_add(2000, view.destroy)
+
 ############
 # Private  #
 ############

@@ -19,11 +19,12 @@ app_PYTHON = \
 	queue.py\
 	settings.py\
 	playlists.py\
+	playlist_widgets.py\
 	view.py\
 	mpris.py\
 	search.py\
 	tracks.py\
-	view_widgets.py\
+	album_widgets.py\
 	player.py\
 	popimages.py\
 	popalbums.py\
