@@ -114,7 +114,8 @@ class PlaylistsManager(GObject.GObject):
         @return array of (id, string)
     """
     def get(self):
-        return sorted(self._idx.items(), key=itemgetter(1))
+        return sorted(self._idx.items(),
+                      key=lambda item: item[1].lower())
 
     """
         Return 5 last modified playlist
@@ -386,7 +387,7 @@ class PlaylistsManagerWidget(Gtk.Bin):
     def _sort_items(self, model, itera, iterb, data):
         a = model.get_value(itera, 1)
         b = model.get_value(iterb, 1)
-        return a > b
+        return a.lower() > b.lower()
 
     """
         Append a playlist

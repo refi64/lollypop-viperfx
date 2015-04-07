@@ -382,9 +382,6 @@ class Container(ViewContainer):
         else:
             self._list_two.mark_as_artists(False)
             self._list_two.populate(playlists)
-
-        # Only update view on list populate
-        if not update:
             GLib.idle_add(self._update_view_playlists, None)
 
     """
