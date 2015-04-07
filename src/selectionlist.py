@@ -283,13 +283,12 @@ class SelectionList(GObject.GObject):
         Sort model
     """
     def _sort_items(self, model, itera, iterb, data):
+        if not self._updating:
+            return False
 
         a_index = model.get_value(itera, 0)
         a = format_artist_name(model.get_value(itera, 1))
         b = format_artist_name(model.get_value(iterb, 1))
-
-        if not self._updating:
-            return False
 
         # Do not order static entries
         if a_index < 0:
