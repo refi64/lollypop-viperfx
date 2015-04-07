@@ -37,7 +37,7 @@ class Toolbar:
         self._timeout = None
 
         builder = Gtk.Builder()
-        builder.add_from_resource('/org/gnome/Lollypop/headerbar.ui')
+        builder.add_from_resource('/org/gnome/Lollypop/Toolbar.ui')
         self.header_bar = builder.get_object('header-bar')
         self.header_bar.set_custom_title(builder.get_object('title-box'))
 

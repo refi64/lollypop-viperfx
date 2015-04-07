@@ -279,7 +279,7 @@ class Application(Gtk.Application):
     def _setup_app_menu(self):
         builder = Gtk.Builder()
 
-        builder.add_from_resource('/org/gnome/Lollypop/app-menu.ui')
+        builder.add_from_resource('/org/gnome/Lollypop/Appmenu.ui')
 
         menu = builder.get_object('app-menu')
 

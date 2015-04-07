@@ -2,7 +2,7 @@
 <gresources>
   <gresource prefix="/org/gnome/Lollypop">
     <file preprocess="xml-stripblanks">AboutDialog.ui</file>
-    <file preprocess="xml-stripblanks">app-menu.ui</file>
+    <file preprocess="xml-stripblanks">Appmenu.ui</file>
     <file preprocess="xml-stripblanks">SearchRow.ui</file>
     <file preprocess="xml-stripblanks">TrackRow.ui</file>
     <file preprocess="xml-stripblanks">QueueWidget.ui</file>
@@ -12,12 +12,12 @@
     <file preprocess="xml-stripblanks">AlbumDetailedWidget.ui</file>
     <file preprocess="xml-stripblanks">PlaylistEditWidget.ui</file>
     <file preprocess="xml-stripblanks">FullScreen.ui</file>
-    <file preprocess="xml-stripblanks">unicode.ui</file>
+    <file preprocess="xml-stripblanks">Unicode.ui</file>
     <file preprocess="xml-stripblanks">PlaylistsManagerWidget.ui</file>
     <file>application.css</file>
     <file preprocess="xml-stripblanks">AlbumWidget.ui</file>
     <file preprocess="xml-stripblanks">ArtistView.ui</file>
-    <file preprocess="xml-stripblanks">headerbar.ui</file>
+    <file preprocess="xml-stripblanks">Toolbar.ui</file>
     <file preprocess="xml-stripblanks">SettingsDialog.ui</file>
   </gresource>
 </gresources>
