@@ -277,7 +277,12 @@ class AlbumView(View):
         self._scrolledWindow.add(viewport)
         self._scrolledWindow.show_all()
 
+        self._revealer = Gtk.Revealer()
+        self._revealer.set_transition_duration(500)
+        self._revealer.show()
+
         self._stack = Gtk.Stack()
+        self._stack.show()
         self._stack.set_transition_duration(500)
         self._stack.set_transition_type(Gtk.StackTransitionType.CROSSFADE)
 
@@ -286,7 +291,8 @@ class AlbumView(View):
 
         self.add(self._scrolledWindow)
         self.add(separator)
-        self.add(self._stack)
+        self.add(self._revealer)
+        self._revealer.add(self._stack)
         self.show()
 
     """
@@ -368,11 +374,11 @@ class AlbumView(View):
                 Objects.player.play_album(self._album_id)
             else:
                 self._album_id = None
-                self._stack.hide()
+                self._revealer.set_reveal_child(False)
         else:
             self._album_id = child.get_child().get_id()
             self._populate_context(self._album_id)
-            self._stack.show()
+            self._revealer.set_reveal_child(True)
             self._context_widget.eventbox.get_window().set_cursor(
                                             Gdk.Cursor(Gdk.CursorType.HAND1))
 
