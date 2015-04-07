@@ -124,11 +124,12 @@ class Container(ViewContainer):
     """
         Show playlist manager for playlist id/object_id
         @param object id as int
+        @param genre id as int
         @param is_album as bool
     """
-    def show_playlist_manager(self, object_id, is_album):
+    def show_playlist_manager(self, object_id, genre_id, is_album):
         old_view = self._stack.get_visible_child()
-        view = PlaylistManageView(object_id, is_album)
+        view = PlaylistManageView(object_id, genre_id, is_album)
         view.show()
         self._stack.add(view)
         self._stack.set_visible_child(view)
@@ -450,7 +451,7 @@ class Container(ViewContainer):
                     view = PlaylistView(p_str)
                     break
         else:
-            view = PlaylistManageView(-1, None)
+            view = PlaylistManageView(-1, None, False)
         if view:
             view.show()
             self._stack.add(view)

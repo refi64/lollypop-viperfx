@@ -66,8 +66,13 @@ class PlaylistsManager(GObject.GObject):
                 return f
             else:
                 f.close()
+            # Add playlist to cache
             if changed:
-                self._idx[max(self._idx.keys())+1] = playlist_name
+                try:
+                    max_idx = max(self._idx.keys())+1
+                except:
+                    max_idx = 0
+                self._idx[max_idx] = playlist_name
                 GLib.idle_add(self.emit, "playlists-changed")
         except Exception as e:
             print("PlaylistsManager::add: %s" % e)
@@ -508,7 +513,8 @@ class PlaylistsManagerWidget(Gtk.Bin):
             return
         # Add or remove object from playlist
         if self._is_album:
-            tracks_path = Objects.albums.get_tracks_path(self._object_id)
+            tracks_path = Objects.albums.get_tracks_path(self._object_id,
+                                                         self._genre_id)
         else:
             tracks_path = [Objects.tracks.get_path(self._object_id)]
 

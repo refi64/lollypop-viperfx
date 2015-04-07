@@ -29,7 +29,7 @@ class PlaylistManageView(Gtk.Bin):
          @param genre id as int
          @param is album as bool
     """
-    def __init__(self, object_id, genre_id, is_album=False):
+    def __init__(self, object_id, genre_id, is_album):
         Gtk.Bin.__init__(self)
         self._widget = PlaylistsManagerWidget(object_id,
                                               genre_id,

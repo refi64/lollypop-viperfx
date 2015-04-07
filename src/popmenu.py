@@ -40,11 +40,11 @@ class PopMainMenu(Gio.Menu):
         if toolbar_context and not Objects.player.is_party():
             self._set_playback_actions(app, playback_menu, object_id)
         if not toolbar_context:
-            self._set_queue_actions(app, playback_menu, object_id, is_album)
+            self._set_queue_actions(app, playback_menu, object_id)
         self.insert_section(0, _("Playback"), playback_menu)
 
         playlist_menu = Gio.Menu()
-        self._set_playlist_actions(app, playlist_menu, object_id, is_album)
+        self._set_playlist_actions(app, playlist_menu, object_id)
 
         self.insert_section(1, _("Playlists"), playlist_menu)
 
@@ -85,15 +85,13 @@ class PopMainMenu(Gio.Menu):
         @param app as Gio.Application
         @param menu as Gio.Menu
         @param object_id as int
-        @param is album as bool
     """
-    def _set_playlist_actions(self, app, menu, object_id, is_album):
+    def _set_playlist_actions(self, app, menu, object_id):
         playlist_action = Gio.SimpleAction(name="playlist_action")
         app.add_action(playlist_action)
         playlist_action.connect('activate',
                                 self._add_to_playlists,
-                                object_id,
-                                is_album)
+                                object_id)
         menu.append(_("Add to others"), 'app.playlist_action')
 
         i = 0
@@ -103,10 +101,10 @@ class PopMainMenu(Gio.Menu):
             if Objects.playlists.is_present(playlist,
                                             object_id,
                                             self._genre_id,
-                                            is_album):
+                                            self._is_album):
                 action.connect('activate',
                                self._del_from_playlist,
-                               object_id, is_album,
+                               object_id,
                                playlist)
                 menu.append(_("Remove from \"%s\"") % playlist,
                             "app.playlist%s" % i)
@@ -114,7 +112,6 @@ class PopMainMenu(Gio.Menu):
                 action.connect('activate',
                                self._add_to_playlist,
                                object_id,
-                               is_album,
                                playlist)
                 menu.append(_("Add to \"%s\"") % playlist,
                             "app.playlist%s" % i)
@@ -125,16 +122,15 @@ class PopMainMenu(Gio.Menu):
         @param app as Gio.Application
         @param menu as Gio.Menu
         @param object_id as int
-        @param is album as bool
     """
-    def _set_queue_actions(self, app, menu, object_id, is_album):
+    def _set_queue_actions(self, app, menu, object_id):
         queue = Objects.player.get_queue()
         append = True
         prepend = True
         delete = True
         if not queue:
             append = False
-        if not is_album:
+        if not self._is_album:
             if object_id in queue:
                 if queue and queue[0] == object_id:
                     prepend = False
@@ -166,7 +162,7 @@ class PopMainMenu(Gio.Menu):
             prepend_queue_action.connect('activate',
                                          self._prepend_to_queue,
                                          object_id)
-            if is_album:
+            if self._is_album:
                 menu.append(_("Next tracks"), 'app.prepend_queue_action')
             else:
                 menu.append(_("Next track"), 'app.prepend_queue_action')
@@ -214,11 +210,10 @@ class PopMainMenu(Gio.Menu):
         @param SimpleAction
         @param GVariant
         @param object id as int
-        @param is album as bool
     """
-    def _add_to_playlists(self, action, variant, object_id, is_album):
+    def _add_to_playlists(self, action, variant, object_id):
         window = self._parent.get_toplevel()
-        window.show_playlist_manager(object_id, is_album)
+        window.show_playlist_manager(object_id, self._genre_id, self._is_album)
 
     """
         Add to playlist
@@ -228,9 +223,8 @@ class PopMainMenu(Gio.Menu):
         @param is album as bool
         @param playlist name as str
     """
-    def _add_to_playlist(self, action, variant, object_id,
-                         is_album, playlist_name):
-        if is_album:
+    def _add_to_playlist(self, action, variant, object_id, playlist_name):
+        if self._is_album:
             tracks_path = Objects.albums.get_tracks_path(object_id,
                                                          self._genre_id)
         else:
@@ -247,9 +241,8 @@ class PopMainMenu(Gio.Menu):
         @param is album as bool
         @param playlist name as str
     """
-    def _del_from_playlist(self, action, variant, object_id,
-                           is_album, playlist_name):
-        if is_album:
+    def _del_from_playlist(self, action, variant, object_id, playlist_name):
+        if self._is_album:
             tracks_path = Objects.albums.get_tracks_path(object_id,
                                                          self._genre_id)
         else:
