@@ -649,8 +649,14 @@ class PlaylistEditWidget:
             album_id = Objects.tracks.get_album_id(track_id)
             artist_id = Objects.tracks.get_aartist_id(track_id)
             if artist_id == Navigation.COMPILATIONS:
-                artist_id = Objects.tracks.get_artist_id(track_id)
-            artist_name = Objects.artists.get_name(artist_id)
+                artist_ids = Objects.tracks.get_artist_ids(track_id)
+                artist_name = ""
+                for artist_id in artist_ids:
+                    artist_name += translate_artist_name(
+                                    Objects.artists.get_name(artist_id)) + ", "
+                artist_name = artist_name[:-2]
+            else:
+                artist_name = Objects.artists.get_name(artist_id)
             track_name = Objects.tracks.get_name(track_id)
             art = Objects.art.get(album_id, ArtSize.SMALL)
             self._model.append([art,
