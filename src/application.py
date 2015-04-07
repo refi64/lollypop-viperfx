@@ -12,6 +12,7 @@
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 from gi.repository import Gtk, Gio, GLib, Gdk, Notify, TotemPlParser
+from locale import getlocale
 
 from lollypop.utils import is_audio, is_gnome
 from lollypop.define import Objects, ArtSize
@@ -97,7 +98,15 @@ class Application(Gtk.Application):
         Gtk.Application.do_startup(self)
         Notify.init("Lollypop")
 
-        if not self._window:
+        # Check locale, we want unicode!
+        (code, encoding) = getlocale()
+        if encoding is None or encoding != "UTF-8":
+            builder = Gtk.Builder()
+            builder.add_from_resource('/org/gnome/Lollypop/unicode.ui')
+            self._window = builder.get_object('unicode')
+            self._window.set_application(self)
+            self._window.show()
+        elif not self._window:
             menu = self._setup_app_menu()
             # If GNOME, add appmenu
             if is_gnome():
@@ -120,7 +129,8 @@ class Application(Gtk.Application):
         Activate window
     """
     def do_activate(self):
-        self._window.present()
+        if self._window:
+            self._window.present()
 
     """
         Destroy main window
