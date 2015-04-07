@@ -297,22 +297,19 @@ class AlbumDetailedWidget(Gtk.Grid):
 
 # Playlist Widget is similar to album detailed
 # widget but show a cover grid as playlist cove
-class PlaylistWidget(Gtk.Grid):
+class PlaylistWidget(Gtk.Bin):
     """
         Init playlist Widget
         @param playlist name as str
-        @param infobar as Gtk.InfoBar
-        @param label as Gtk.Label
     """
-    def __init__(self, playlist_name, infobar, infobar_label):
-        Gtk.Grid.__init__(self)
+    def __init__(self, playlist_name):
+        Gtk.Bin.__init__(self)
+        self._playlist_name = playlist_name
         self._tracks = []
         self.set_property("margin", 5)
 
-        builder = Gtk.Builder()
-        builder.add_from_resource(
-                '/org/gnome/Lollypop/PlaylistWidget.ui'
-                                  )
+        self._main_widget = Gtk.Grid()
+        self._main_widget.show()
 
         self._tracks_widget1 = TracksWidget(False)
         self._tracks_widget2 = TracksWidget(False)
@@ -327,24 +324,10 @@ class PlaylistWidget(Gtk.Grid):
         size_group.add_widget(self._tracks_widget1)
         size_group.add_widget(self._tracks_widget2)
 
-        self._playlist_widget = builder.get_object('scroll')
-        builder.get_object('grid').add(self._tracks_widget1)
-        builder.get_object('grid').add(self._tracks_widget2)
+        self._main_widget.add(self._tracks_widget1)
+        self._main_widget.add(self._tracks_widget2)
 
-        self._stack = Gtk.Stack()
-        self._playlist_edit = PlaylistEditWidget(playlist_name,
-                                                 infobar,
-                                                 infobar_label,
-                                                 self)
-        self._stack.add(self._playlist_edit.widget)
-        self._stack.add(self._playlist_widget)
-        self._stack.set_visible_child(self._playlist_widget)
-        self._stack.set_transition_duration(500)
-        self._stack.set_property('expand', True)
-        self._stack.set_transition_type(Gtk.StackTransitionType.CROSSFADE)
-        self._stack.show()
-
-        self.add(self._stack)
+        self.add(self._main_widget)
 
     """
         Populate list one, thread safe
@@ -375,30 +358,6 @@ class PlaylistWidget(Gtk.Grid):
     def update_playing_track(self, track_id):
         self._tracks_widget1.update_playing(track_id)
         self._tracks_widget2.update_playing(track_id)
-
-    """
-        Popup menu for playlist
-        @param edit as bool
-    """
-    def edit(self, edit):
-        if edit:
-            self._stack.set_visible_child(self._playlist_edit.widget)
-            self._playlist_edit.populate()
-        else:
-            self._stack.set_visible_child(self._playlist_widget)
-            self._playlist_edit.unselectall()
-
-    """
-        Unselect all in edit widget
-    """
-    def unselectall(self):
-        self._playlist_edit.unselectall()
-
-    """
-        Delete playlist after confirmation
-    """
-    def delete_confirmed(self):
-        self._playlist_edit.delete_confirmed()
 
     """
         Clear tracks

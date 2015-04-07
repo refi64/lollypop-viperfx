@@ -20,14 +20,14 @@ from lollypop.define import Objects
 
 
 # Show a popup with current artist albums
-class PopAlbums(Gtk.Popover, ViewContainer):
+class PopAlbums(Gtk.Popover):
 
     """
         Init Popover ui with a text entry and a scrolled treeview
     """
     def __init__(self):
         Gtk.Popover.__init__(self)
-        ViewContainer.__init__(self, 1000)
+        self._stack = ViewContainer(1000)
 
         self._on_screen_artist = None
         self.add(self._stack)
@@ -46,7 +46,7 @@ class PopAlbums(Gtk.Popover, ViewContainer):
             start_new_thread(view.populate, (None,))
             self._stack.add(view)
             self._stack.set_visible_child(view)
-            self._clean_view(previous)
+            self._stack.clean_view(previous)
 
     """
         Resize popover
@@ -68,7 +68,7 @@ class PopAlbums(Gtk.Popover, ViewContainer):
         child = self._stack.get_visible_child()
         child.stop()
         self._on_screen_artist = None
-        GLib.timeout_add(1000, self._clean_view, child)
+        self._stack.clean_view(child)
 
 #######################
 # PRIVATE             #

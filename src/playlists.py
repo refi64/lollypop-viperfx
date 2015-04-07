@@ -541,17 +541,15 @@ class PlaylistsManagerWidget(Gtk.Bin):
 
 
 # Dialog for edit a playlist
-class PlaylistEditWidget:
+class PlaylistEditWidget(Gtk.Bin):
 
     """
         Init Popover ui with a text entry and a scrolled treeview
         @param playlist name as str
-        @param infobar as Gtk.InfoBar
-        @param label as Gtk.Label
-        @param parent as Gtk.Window
+        @param width as int
     """
-    def __init__(self, playlist_name, infobar, infobar_label, parent):
-        self._parent = parent
+    def __init__(self, playlist_name, width):
+        Gtk.Bin.__init__(self)
         self._playlist_name = playlist_name
         self._save_on_disk = True
         self._tracks_orig = []
@@ -561,25 +559,21 @@ class PlaylistEditWidget:
                                                 0)
 
         builder = Gtk.Builder()
-        builder.add_from_resource(
-                '/org/gnome/Lollypop/PlaylistEditWidget.ui'
-                                  )
+        builder.add_from_resource('/org/gnome/Lollypop/PlaylistEditWidget.ui')
+        builder.connect_signals(self)
+
+        self._infobar = builder.get_object('infobar')
+        self._infobar_label = builder.get_object('infobarlabel')
+
+        self._view = builder.get_object('view')
 
         self._model = Gtk.ListStore(GdkPixbuf.Pixbuf,
                                     str,
                                     GdkPixbuf.Pixbuf,
                                     str)
         self._model.connect("row-deleted", self._on_row_deleted)
-        self._view = builder.get_object('view')
+
         self._view.set_model(self._model)
-        
-        self._scroll = builder.get_object('scroll')
-
-        builder.connect_signals(self)
-
-        self.widget = builder.get_object('widget')
-        self._infobar = infobar
-        self._infobar_label = infobar_label
 
         renderer0 = Gtk.CellRendererPixbuf()
         renderer0.set_property('stock-size', ArtSize.MEDIUM)
@@ -588,6 +582,7 @@ class PlaylistEditWidget:
         renderer1 = Gtk.CellRendererText()
         renderer1.set_property('ellipsize-set', True)
         renderer1.set_property('ellipsize', Pango.EllipsizeMode.END)
+        renderer1.set_property('width', width)
         column1 = Gtk.TreeViewColumn("text1", renderer1, markup=1)
         column1.set_expand(True)
 
@@ -599,20 +594,21 @@ class PlaylistEditWidget:
         self._view.append_column(column0)
         self._view.append_column(column1)
         self._view.append_column(column2)
+        self._view.set_property("halign", Gtk.Align.CENTER)
+        self.add(builder.get_object('widget'))
 
     """
         populate view if needed
     """
     def populate(self):
-        self._scroll.set_property('width-request',
-                                  self._parent.get_allocated_width()/2)
         if len(self._model) == 0:
             start_new_thread(self._append_tracks, ())
-
+    
     """
-        Delete playlist after confirmation
+        Delete tracks after confirmation
+        @param button as Gtk.Button
     """
-    def delete_confirmed(self):
+    def _on_delete_confirm(self, button):
         self._save_on_disk = False
         selection = self._view.get_selection()
         selected = selection.get_selected_rows()
@@ -700,6 +696,25 @@ class PlaylistEditWidget:
                                                                     '\n',
                                                                     ' - '))
         self._infobar.show()
+
+    """
+        Restore previous view
+        @param button as Gtk.Button
+    """
+    def _on_back_btn_clicked(self, button):
+        window = self._parent.get_toplevel()
+        window.destroy_current_view()
+    
+    """
+        Hide infobar
+        @param widget as Gtk.Infobar
+        @param reponse id as int
+    """
+    def _on_response(self, infobar, response_id):
+        if response_id == Gtk.ResponseType.CLOSE:
+            self._infobar.hide()
+            self._view.grab_focus()
+            self._view.get_selection().unselect_all()
 
     """
         Delete playlist

@@ -15,11 +15,46 @@ from gi.repository import Gtk, Gdk, GLib
 from _thread import start_new_thread
 
 from lollypop.define import Objects, Navigation
-from lollypop.playlists import PlaylistsManagerWidget
+from lollypop.playlists import PlaylistsManagerWidget, PlaylistEditWidget
 from lollypop.devicemanager import DeviceManagerWidget
 from lollypop.view_widgets import AlbumDetailedWidget, AlbumWidget
 from lollypop.view_widgets import PlaylistWidget
 from lollypop.utils import translate_artist_name
+
+# Container for a view
+class ViewContainer(Gtk.Stack):
+    def __init__(self, duration):
+        Gtk.Stack.__init__(self)
+        self._duration = duration
+        # Don't pass resize request to parent
+        self.set_resize_mode(Gtk.ResizeMode.QUEUE)
+        self.set_transition_duration(duration)
+        self.set_transition_type(Gtk.StackTransitionType.CROSSFADE)
+        self.show()
+
+    """
+        Clean view
+        @param view as View
+    """
+    def clean_view(self, view):
+        if view and not isinstance(view, DeviceView):
+            view.stop()
+            # Delayed destroy as we may have an animation running
+            # Gtk.StackTransitionType.CROSSFADE
+            GLib.timeout_add(self._duration,
+                             self._delayedclean_view,
+                             view)
+
+#######################
+# PRIVATE             #
+#######################
+    """
+        Clean view
+        @param valid view as View
+    """
+    def _delayedclean_view(self, view):
+        view.remove_signals()
+        view.destroy()
 
 
 # Playlist view used to manage playlists
@@ -35,6 +70,27 @@ class PlaylistManageView(Gtk.Bin):
                                               genre_id,
                                               is_album,
                                               self)
+        self._widget.show()
+        self.add(self._widget)
+
+    def populate(self):
+        self._widget.populate()
+
+    def remove_signals(self):
+        pass
+
+    def stop(self):
+        pass
+
+# Playlist view used to edit playlists
+class PlaylistEditView(Gtk.Bin):
+    """
+         @param playlist name as str
+         @param width as int
+    """
+    def __init__(self, playlist_name, width):
+        Gtk.Bin.__init__(self)
+        self._widget = PlaylistEditWidget(playlist_name, width)
         self._widget.show()
         self.add(self._widget)
 
@@ -92,6 +148,29 @@ class View(Gtk.Grid):
         # Stop populate thread
         self._stop = False
 
+        self._viewport = Gtk.Viewport()
+        self._viewport.set_property("valign", Gtk.Align.START)
+
+    """
+        Add widget to main viewport
+        @param widget as Gtk.Widget
+        @param height as int
+    """
+    def set_main_widget(self, widget, height=None):
+        scrolledWindow = Gtk.ScrolledWindow()
+        if height is None:
+            scrolledWindow.set_vexpand(True)
+            scrolledWindow.set_hexpand(True)
+        else:
+            scrolledWindow.set_min_content_height(250)
+        scrolledWindow.set_policy(Gtk.PolicyType.AUTOMATIC,
+                                  Gtk.PolicyType.AUTOMATIC)
+        scrolledWindow.add(self._viewport)
+        self._viewport.show()
+        scrolledWindow.show()
+        self.add(scrolledWindow)
+        self._viewport.add(widget)
+
     """
         Remove signals on player object
     """
@@ -107,7 +186,6 @@ class View(Gtk.Grid):
 #######################
 # PRIVATE             #
 #######################
-
     """
         Current song changed
         Update context and content
@@ -160,7 +238,7 @@ class ArtistView(View):
         if show_artist_details:
             builder = Gtk.Builder()
             builder.add_from_resource('/org/gnome/Lollypop/ArtistView.ui')
-            self.add(builder.get_object('ArtistView'))
+            self.attach(builder.get_object('ArtistView'),0, 0, 1, 1)
             artist_name = Objects.artists.get_name(artist_id)
             artist_name = translate_artist_name(artist_name)
             builder.get_object('artist').set_label(artist_name)
@@ -169,14 +247,11 @@ class ArtistView(View):
 
         self._albumbox = Gtk.Grid()
         self._albumbox.set_property("orientation", Gtk.Orientation.VERTICAL)
-        self._scrolledWindow = Gtk.ScrolledWindow()
-        self._scrolledWindow.set_vexpand(True)
-        self._scrolledWindow.set_policy(Gtk.PolicyType.AUTOMATIC,
-                                        Gtk.PolicyType.AUTOMATIC)
-        self._scrolledWindow.add(self._albumbox)
+        self._albumbox.show()
 
-        self.add(self._scrolledWindow)
-        self.show_all()
+        self.set_main_widget(self._albumbox)
+
+        self.show()
 
     """
         Populate the view, can be threaded
@@ -265,28 +340,17 @@ class AlbumView(View):
         self._albumbox.set_selection_mode(Gtk.SelectionMode.NONE)
         self._albumbox.connect("child-activated", self._on_album_activated)
         self._albumbox.set_max_children_per_line(100)
+        self._albumbox.show()
 
-        self._scrolledWindow = Gtk.ScrolledWindow()
-        self._scrolledWindow.set_vexpand(True)
-        self._scrolledWindow.set_hexpand(True)
-        viewport = Gtk.Viewport()
-        viewport.add(self._albumbox)
-        viewport.set_property("valign", Gtk.Align.START)
-        self._scrolledWindow.set_policy(Gtk.PolicyType.AUTOMATIC,
-                                        Gtk.PolicyType.AUTOMATIC)
-        self._scrolledWindow.add(viewport)
-        self._scrolledWindow.show_all()
+        self.set_main_widget(self._albumbox)
 
-        self._stack = Gtk.Stack()
-        self._stack.set_transition_duration(500)
-        self._stack.set_transition_type(Gtk.StackTransitionType.CROSSFADE)
+        self._context = ViewContainer(500)
 
         separator = Gtk.Separator()
         separator.show()
-
-        self.add(self._scrolledWindow)
+        
         self.add(separator)
-        self.add(self._stack)
+        self.add(self._context)
         self.show()
 
     """
@@ -322,15 +386,6 @@ class AlbumView(View):
                 widget.update_cover(album_id)
 
     """
-        Return next view
-    """
-    def _get_next_view(self):
-        for child in self._stack.get_children():
-            if child != self._stack.get_visible_child():
-                return child
-        return None
-
-    """
         Update the context view
         @param player as Player
     """
@@ -344,22 +399,19 @@ class AlbumView(View):
     """
     def _populate_context(self, album_id):
         size_group = Gtk.SizeGroup(mode=Gtk.SizeGroupMode.HORIZONTAL)
-        old_view = self._get_next_view()
-        if old_view:
-            self._stack.remove(old_view)
+        old_view = self._context.get_visible_child()
         self._context_widget = AlbumDetailedWidget(album_id,
                                                    self._genre_id,
                                                    True,
                                                    size_group)
         start_new_thread(self._context_widget.populate, ())
         self._context_widget.show()
-        view = Gtk.ScrolledWindow()
-        view.set_min_content_height(250)
-        view.set_policy(Gtk.PolicyType.AUTOMATIC, Gtk.PolicyType.AUTOMATIC)
-        view.add(self._context_widget)
+        view = View()
+        view.set_main_widget(self._context_widget, 250)
         view.show()
-        self._stack.add(view)
-        self._stack.set_visible_child(view)
+        self._context.add(view)
+        self._context.set_visible_child(view)
+        self._context.clean_view(old_view)
 
     """
         Show Context view for activated album
@@ -371,11 +423,11 @@ class AlbumView(View):
                 Objects.player.play_album(self._album_id)
             else:
                 self._album_id = None
-                self._stack.hide()
+                self._context.hide()
         else:
             self._album_id = child.get_child().get_id()
             self._populate_context(self._album_id)
-            self._stack.show()
+            self._context.show()
             self._context_widget.eventbox.get_window().set_cursor(
                                             Gdk.Cursor(Gdk.CursorType.HAND1))
 
@@ -399,34 +451,29 @@ class PlaylistView(View):
     """
         Init PlaylistView ui with a scrolled grid of PlaylistWidgets
         @param playlist name as str
+        @param parent as Gtk.Widget
     """
-    def __init__(self, playlist_name):
+    def __init__(self, playlist_name, parent):
         View.__init__(self)
+        self._parent = parent
         self._playlist_name = playlist_name
         self._signal_id = None
 
         builder = Gtk.Builder()
         builder.add_from_resource('/org/gnome/Lollypop/PlaylistView.ui')
+        builder.get_object('title').set_label(playlist_name)
+        self._header = builder.get_object('header')
+        builder.connect_signals(self)
 
         self._edit_btn = builder.get_object('edit_btn')
         self._back_btn = builder.get_object('back_btn')
         self._title = builder.get_object('title')
 
-        self._infobar = builder.get_object('infobar')
-        self._playlist_widget = PlaylistWidget(
-                                           playlist_name,
-                                           self._infobar,
-                                           builder.get_object('infobarlabel'))
+        self._playlist_widget = PlaylistWidget(playlist_name)
         self._playlist_widget.show()
 
-        widget = builder.get_object('PlaylistView')
-        self.add(widget)
-        widget.attach(self._playlist_widget, 0, 3, 2, 1)
-
-        self._header = builder.get_object('header')
-
-        builder.get_object('title').set_label(playlist_name)
-        builder.connect_signals(self)
+        self.add(builder.get_object('PlaylistView'))
+        self.set_main_widget(self._playlist_widget)
 
     """
         Populate view with tracks from playlist
@@ -479,44 +526,13 @@ class PlaylistView(View):
             start_new_thread(self.populate, ())
 
     """
-        Delete playlist after confirmation
-        @param button as Gtk.Button
-    """
-    def _on_delete_confirm(self, button):
-        self._playlist_widget.delete_confirmed()
-
-    """
-        Hide infobar
-        @param widget as Gtk.Infobar
-        @param reponse id as int
-    """
-    def _on_response(self, infobar, response_id):
-        if response_id == Gtk.ResponseType.CLOSE:
-            infobar.hide()
-            self._playlist_widget.unselectall()
-
-    """
         Edit playlist
         @param button as Gtk.Button
         @param playlist name as str
     """
     def _on_edit_btn_clicked(self, button):
-        self._playlist_widget.edit(True)
-        self._edit_btn.hide()
-        self._title.hide()
-        self._back_btn.show()
-
-    """
-        Do not edit playlist
-        @param button as Gtk.Button
-        @param playlist name as str
-    """
-    def _on_back_btn_clicked(self, button):
-        self._playlist_widget.edit(False)
-        self._back_btn.hide()
-        self._edit_btn.show()
-        self._infobar.hide()
-        self._title.show()
+        window = self._parent.get_toplevel()
+        window.show_playlist_editor(self._playlist_name)
 
     """
         Update the content view

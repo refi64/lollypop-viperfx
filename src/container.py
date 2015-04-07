@@ -20,8 +20,8 @@ import os
 from lollypop.define import Objects, Navigation
 from lollypop.selectionlist import SelectionList
 from lollypop.playlists import PlaylistsManager
-from lollypop.view import AlbumView, ArtistView, DeviceView
-from lollypop.view import PlaylistView, PlaylistManageView
+from lollypop.view import AlbumView, ArtistView, DeviceView, PlaylistEditView
+from lollypop.view import ViewContainer, PlaylistView, PlaylistManageView
 from lollypop.collectionscanner import CollectionScanner
 
 
@@ -33,52 +33,15 @@ class Device:
     view = None
 
 
-# Container for a view
-class ViewContainer:
-    def __init__(self, duration):
-        self._duration = duration
-        self._stack = Gtk.Stack()
-        # Don't pass resize request to parent
-        self._stack.set_resize_mode(Gtk.ResizeMode.QUEUE)
-        self._stack.set_property('expand', True)
-        self._stack.set_transition_duration(duration)
-        self._stack.set_transition_type(Gtk.StackTransitionType.CROSSFADE)
-        self._stack.show()
-
-#######################
-# PRIVATE             #
-#######################
-    """
-        Clean view
-        @param view as View
-    """
-    def _clean_view(self, view):
-        if view and not isinstance(view, DeviceView):
-            view.stop()
-            # Delayed destroy as we may have an animation running
-            # Gtk.StackTransitionType.CROSSFADE
-            GLib.timeout_add(self._duration,
-                             self._delayed_clean_view,
-                             view)
-
-    """
-        Clean view
-        @param valid view as View
-    """
-    def _delayed_clean_view(self, view):
-        view.remove_signals()
-        view.destroy()
-
-
 # Container for main window child
-class Container(ViewContainer):
+class Container:
     def __init__(self):
-        ViewContainer.__init__(self, 500)
-
+        
         # Index will start at -VOLUMES
         self._devices = {}
         self._devices_index = Navigation.DEVICES
         self._show_genres = Objects.settings.get_value('show-genres')
+        self._stack = ViewContainer(500)
 
         self._setup_view()
         self._setup_scanner()
@@ -122,7 +85,8 @@ class Container(ViewContainer):
                                         self._list_two.get_selected_id()))
 
     """
-        Show playlist manager for playlist id/object_id
+        Show playlist manager for object_id
+        Current view stay present in ViewContainer
         @param object id as int
         @param genre id as int
         @param is_album as bool
@@ -134,7 +98,25 @@ class Container(ViewContainer):
         self._stack.add(view)
         self._stack.set_visible_child(view)
         start_new_thread(view.populate, ())
+        # Keep previous view, 
         if isinstance(old_view, PlaylistManageView):
+            old_view.destroy()
+
+    """
+        Show playlist editor for playlist
+        Current view stay present in ViewContainer
+        @param playlist name as str
+    """
+    def show_playlist_editor(self, playlist_name):
+        old_view = self._stack.get_visible_child()
+        view = PlaylistEditView(playlist_name,
+                                self._stack.get_allocated_width()/2)
+        view.show()
+        self._stack.add(view)
+        self._stack.set_visible_child(view)
+        start_new_thread(view.populate, ())
+        # Keep previous view, 
+        if isinstance(old_view, PlaylistEditView):
             old_view.destroy()
 
     """
@@ -178,7 +160,7 @@ class Container(ViewContainer):
     def stop_all(self):
         view = self._stack.get_visible_child()
         if view is not None:
-            self._clean_view(view)
+            self._stack.clean_view(view)
 
     """
         Show/Hide genres
@@ -407,7 +389,7 @@ class Container(ViewContainer):
             start_new_thread(view.populate, ())
             self._stack.add(view)
         self._stack.set_visible_child(view)
-        self._clean_view(old_view)
+        self._stack.clean_view(old_view)
 
     """
         Update current view with artists view
@@ -420,7 +402,7 @@ class Container(ViewContainer):
         self._stack.add(view)
         start_new_thread(view.populate, (genre_id,))
         self._stack.set_visible_child(view)
-        self._clean_view(old_view)
+        self._stack.clean_view(old_view)
 
     """
         Update current view with albums view
@@ -433,7 +415,7 @@ class Container(ViewContainer):
         self._stack.add(view)
         start_new_thread(view.populate, (genre_id,))
         self._stack.set_visible_child(view)
-        self._clean_view(old_view)
+        self._stack.clean_view(old_view)
 
     """
         Update current view with playlist view
@@ -445,7 +427,7 @@ class Container(ViewContainer):
         if playlist_id is not None:
             for (p_id, p_str) in Objects.playlists.get():
                 if p_id == playlist_id:
-                    view = PlaylistView(p_str)
+                    view = PlaylistView(p_str, self._stack)
                     break
         else:
             view = PlaylistManageView(-1, None, False)
@@ -454,7 +436,7 @@ class Container(ViewContainer):
             self._stack.add(view)
             self._stack.set_visible_child(view)
             start_new_thread(view.populate, ())
-            self._clean_view(old_view)
+            self._stack.clean_view(old_view)
 
     """
         Add volume to device list
@@ -568,7 +550,7 @@ class Container(ViewContainer):
                 self._stack.add(view)
                 self._stack.set_visible_child(view)
                 start_new_thread(view.populate, ())
-                self._clean_view(old_view)
+                self._stack.clean_view(old_view)
 
     """
         Play tracks as user playlist
