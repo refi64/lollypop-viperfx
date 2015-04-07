@@ -102,7 +102,7 @@ class Application(Gtk.Application):
         (code, encoding) = getlocale()
         if encoding is None or encoding != "UTF-8":
             builder = Gtk.Builder()
-            builder.add_from_resource('/org/gnome/Lollypop/unicode.ui')
+            builder.add_from_resource('/org/gnome/Lollypop/Unicode.ui')
             self._window = builder.get_object('unicode')
             self._window.set_application(self)
             self._window.show()
