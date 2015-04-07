@@ -117,15 +117,7 @@ class Container:
         start_new_thread(view.populate, ())
         # Keep previous view, 
         if isinstance(old_view, PlaylistEditView):
-            old_view.destroy()
-
-    """
-        Destroy current view
-    """
-    def destroy_current_view(self):
-        view = self._stack.get_visible_child()
-        view.hide()
-        GLib.timeout_add(2000, view.destroy)
+            old_view.destroy() 
 
     """
         Update lists

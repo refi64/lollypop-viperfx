@@ -425,8 +425,8 @@ class PlaylistsManagerWidget(Gtk.Bin):
         @param button as Gtk.Button
     """
     def _on_back_btn_clicked(self, button):
-        window = self._parent.get_toplevel()
-        window.destroy_current_view()
+        self._parent.hide()
+        GLib.timeout_add(2000, self._parent.destroy)
 
     """
         Hide infobar
@@ -547,10 +547,12 @@ class PlaylistEditWidget(Gtk.Bin):
         Init Popover ui with a text entry and a scrolled treeview
         @param playlist name as str
         @param width as int
+        @parent as Gtk.Widget
     """
-    def __init__(self, playlist_name, width):
+    def __init__(self, playlist_name, width, parent):
         Gtk.Bin.__init__(self)
         self._playlist_name = playlist_name
+        self._parent = parent
         self._save_on_disk = True
         self._tracks_orig = []
         self._del_pixbuf = Gtk.IconTheme.get_default().load_icon(
@@ -702,8 +704,8 @@ class PlaylistEditWidget(Gtk.Bin):
         @param button as Gtk.Button
     """
     def _on_back_btn_clicked(self, button):
-        window = self._parent.get_toplevel()
-        window.destroy_current_view()
+        self._parent.hide()
+        GLib.timeout_add(2000, self._parent.destroy)
     
     """
         Hide infobar

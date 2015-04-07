@@ -90,7 +90,7 @@ class PlaylistEditView(Gtk.Bin):
     """
     def __init__(self, playlist_name, width):
         Gtk.Bin.__init__(self)
-        self._widget = PlaylistEditWidget(playlist_name, width)
+        self._widget = PlaylistEditWidget(playlist_name, width, self)
         self._widget.show()
         self.add(self._widget)
 
