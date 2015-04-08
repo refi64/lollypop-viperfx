@@ -26,13 +26,11 @@ class PopMainMenu(Gio.Menu):
         @param genre id as int
         @param is album as bool
         @param toolbar context as bool => only show playlists
-        @param parent as Gtk.Widget
     """
-    def __init__(self, object_id, genre_id, is_album, toolbar_context, parent):
+    def __init__(self, object_id, genre_id, is_album, toolbar_context):
         Gio.Menu.__init__(self)
         self._genre_id = genre_id
         self._is_album = is_album
-        self._parent = parent
         app = Gio.Application.get_default()
         # FIXME How signal connect works when called many times
 
@@ -212,8 +210,9 @@ class PopMainMenu(Gio.Menu):
         @param object id as int
     """
     def _add_to_playlists(self, action, variant, object_id):
-        window = self._parent.get_toplevel()
-        window.show_playlist_manager(object_id, self._genre_id, self._is_album)
+        Objects.window.show_playlist_manager(object_id,
+                                             self._genre_id,
+                                             self._is_album)
 
     """
         Add to playlist

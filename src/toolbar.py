@@ -147,7 +147,7 @@ class Toolbar:
                 self._popalbums.show()
             else:
                 menu = PopMainMenu(Objects.player.current.id, None,
-                                   False, True, widget)
+                                   False, True)
                 popover = Gtk.Popover.new_from_model(self._infobox, menu)
                 popover.show()
             return True
