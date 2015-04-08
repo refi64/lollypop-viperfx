@@ -16,7 +16,7 @@
       <object class="GtkGrid" id="header">
         <property name="visible">True</property>
         <property name="can_focus">False</property>
-        <property name="margin_top">5</property>
+        <property name="margin_top">2</property>
         <child>
           <object class="GtkButton" id="back_btn">
             <property name="can_focus">True</property>
@@ -40,12 +40,8 @@
             <property name="receives_default">True</property>
             <property name="halign">center</property>
             <property name="valign">start</property>
-            <property name="margin_left">5</property>
-            <property name="margin_right">5</property>
             <property name="margin_start">5</property>
             <property name="margin_end">5</property>
-            <property name="margin_top">5</property>
-            <property name="margin_bottom">5</property>
             <property name="hexpand">True</property>
             <signal name="clicked" handler="_on_new_clicked" swapped="no"/>
           </object>
