@@ -13,6 +13,7 @@
 
 from gi.repository import Gtk, GLib, Gdk
 from cgi import escape
+from gettext import gettext as _
 
 from lollypop.define import Objects, Navigation, ArtSize, NextContext
 from lollypop.tracks import TracksWidget
@@ -100,22 +101,41 @@ class AlbumDetailedWidget(Gtk.Grid):
         self._artist_id = Objects.albums.get_artist_id(album_id)
         self._album_id = album_id
         self._genre_id = genre_id
+        
+        grid = builder.get_object('tracks')
+        self._discs = Objects.albums.get_discs(album_id, genre_id)
+        self._tracks_left = {}
+        self._tracks_right = {}
+        show_label = len(self._discs) > 1
+        i = 0
+        for disc in self._discs:
+            if show_label:
+                label = Gtk.Label()
+                label.set_text(_("Disc %s" % disc))
+                label.set_property('halign', Gtk.Align.START)
+                label.get_style_context().add_class('dim-label')
+                if i:
+                    label.set_property('margin-top', 30)
+                label.show()
+                grid.attach(label, 0, i, 2, 1)
+                i += 1
+            self._tracks_left[disc] = TracksWidget(show_menu)
+            self._tracks_right[disc] = TracksWidget(show_menu)
+            grid.attach(self._tracks_left[disc], 0, i, 1, 1)
+            grid.attach(self._tracks_right[disc], 1, i, 1, 1)
+            size_group.add_widget(self._tracks_left[disc])
+            size_group.add_widget(self._tracks_right[disc])
 
-        self._tracks_widget1 = TracksWidget(show_menu)
-        self._tracks_widget2 = TracksWidget(show_menu)
-        size_group.add_widget(self._tracks_widget1)
-        size_group.add_widget(self._tracks_widget2)
-        self._button_mask = None
-        self._tracks_widget1.connect('activated', self._on_activated)
-        self._tracks_widget1.connect('button-press-event',
+            self._tracks_left[disc].connect('activated', self._on_activated)
+            self._tracks_left[disc].connect('button-press-event',
+                                         self._on_button_press_event)
+            self._tracks_right[disc].connect('activated', self._on_activated)
+            self._tracks_right[disc].connect('button-press-event',
                                      self._on_button_press_event)
-        self._tracks_widget2.connect('activated', self._on_activated)
-        self._tracks_widget2.connect('button-press-event',
-                                     self._on_button_press_event)
-        builder.get_object('tracks').add(self._tracks_widget1)
-        builder.get_object('tracks').add(self._tracks_widget2)
-        self._tracks_widget1.show()
-        self._tracks_widget2.show()
+       
+            self._tracks_left[disc].show()
+            self._tracks_right[disc].show()
+            i += 1
 
         self._cover = builder.get_object('cover')
         self._cover.set_from_pixbuf(Objects.art.get(album_id, ArtSize.BIG))
@@ -141,8 +161,9 @@ class AlbumDetailedWidget(Gtk.Grid):
         @param track id as int
     """
     def update_playing_track(self, track_id):
-        self._tracks_widget1.update_playing(track_id)
-        self._tracks_widget2.update_playing(track_id)
+        for disc in self._discs:
+            self._tracks_left[disc].update_playing(track_id)
+            self._tracks_right[disc].update_playing(track_id)
 
     """
         Update cover for album id
@@ -166,37 +187,43 @@ class AlbumDetailedWidget(Gtk.Grid):
     def populate(self):
         self._stop = False
         sql = Objects.db.get_cursor()
-        mid_tracks = int(0.5+Objects.albums.get_count(self._album_id,
-                                                      self._genre_id,
-                                                      sql)/2)
-        tracks = Objects.albums.get_tracks_infos(self._album_id,
-                                                 self._genre_id,
-                                                 sql)
-        self.populate_list_one(tracks[:mid_tracks],
-                               1)
-        self.populate_list_two(tracks[mid_tracks:],
-                               mid_tracks + 1)
+        for disc in self._discs:
+            mid_tracks = int(0.5+Objects.albums.get_count_for_disc(
+                                                          self._album_id,
+                                                          self._genre_id,
+                                                          disc,
+                                                          sql)/2)
+            tracks = Objects.albums.get_tracks_infos(self._album_id,
+                                                     self._genre_id,
+                                                     disc,
+                                                     sql)
+            self.populate_list_left(tracks[:mid_tracks],
+                                    disc,
+                                    1)
+            self.populate_list_right(tracks[mid_tracks:],
+                                     disc,
+                                     mid_tracks + 1)
 
     """
-        Populate list one, thread safe
+        Populate left list, thread safe
         @param track's ids as array of int
         @param track position as int
     """
-    def populate_list_one(self, tracks, pos):
+    def populate_list_left(self, tracks, disc,pos):
         GLib.idle_add(self._add_tracks,
                       tracks,
-                      self._tracks_widget1,
+                      self._tracks_left[disc],
                       pos)
 
     """
-        Populate list two, thread safe
+        Populate right list, thread safe
         @param track's ids as array of int
         @param track position as int
     """
-    def populate_list_two(self, tracks, pos):
+    def populate_list_right(self, tracks, disc, pos):
         GLib.idle_add(self._add_tracks,
                       tracks,
-                      self._tracks_widget2,
+                      self._tracks_right[disc],
                       pos)
 
     """

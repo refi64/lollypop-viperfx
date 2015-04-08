@@ -338,6 +338,64 @@ class DatabaseAlbums:
         return -1
 
     """
+        Get number of tracks for album_id/disc
+        @param album id as int
+        @param genre id as int
+        @param disc number as int
+        @return count as int
+    """
+    def get_count_for_disc(self, album_id, genre_id, disc, sql=None):
+        if not sql:
+            sql = Objects.sql
+        if genre_id is not None and genre_id > 0:
+            result = sql.execute("SELECT COUNT(tracks.rowid)\
+                                  FROM tracks, track_genres\
+                                  WHERE tracks.album_id=?\
+                                  AND track_genres.track_id = tracks.rowid\
+                                  AND track_genres.genre_id=?\
+                                  AND discnumber=?", (album_id,
+                                                      genre_id,
+                                                      disc))
+        else:
+            result = sql.execute("SELECT COUNT(tracks.rowid)\
+                                  FROM tracks\
+                                  WHERE tracks.album_id=?\
+                                  AND discnumber=?", (album_id, disc))
+        v = result.fetchone()
+        if v and len(v) > 0:
+            return v[0]
+        return -1
+
+    """
+        Get disc numbers
+        @param album id as int
+        @param genre id as int
+        @param disc number as int
+        @return count as int
+    """
+    def get_discs(self, album_id, genre_id, sql=None):
+        if not sql:
+            sql = Objects.sql
+        if genre_id is not None and genre_id > 0:
+            result = sql.execute("SELECT DISTINCT discnumber\
+                                  FROM tracks, track_genres\
+                                  WHERE tracks.album_id=?\
+                                  AND track_genres.track_id = tracks.rowid\
+                                  AND track_genres.genre_id=?\
+                                  ORDER BY discnumber", (album_id,
+                                                         genre_id))
+        else:
+            result = sql.execute("SELECT DISTINCT discnumber\
+                                  FROM tracks\
+                                  WHERE tracks.album_id=?\
+                                  ORDER BY discnumber", (album_id,))
+        discs = []
+        for row in result:
+            discs += row
+        return discs
+
+
+    """
         Get tracks for album id
         @param album id as int
         @param genre id as int
@@ -364,7 +422,7 @@ class DatabaseAlbums:
         return tracks
 
     """
-        Get tracks path for album id
+        Get tracks path for album id/disc
         Will search track from albums from same artist
         with same name and different genre
         @param album id as int
@@ -399,10 +457,11 @@ class DatabaseAlbums:
         with same name and different genre
         @param album id as int
         @param genre id as int
+        @param disc number as int
         @return Arrays of (tracks id as int, name as string,
                            length as int, [artist ids])
     """
-    def get_tracks_infos(self, album_id, genre_id, sql=None):
+    def get_tracks_infos(self, album_id, genre_id, disc, sql=None):
         if not sql:
             sql = Objects.sql
 
@@ -417,8 +476,9 @@ class DatabaseAlbums:
                                   AND tracks.rowid = track_artists.track_id\
                                   AND tracks.rowid = track_genres.track_id\
                                   AND track_genres.genre_id=?\
+                                  AND discnumber=?\
                                   ORDER BY discnumber, tracknumber",
-                                 (album_id, genre_id))
+                                 (album_id, genre_id, disc))
         else:
             result = sql.execute("SELECT tracks.rowid,\
                                   tracks.name,\
@@ -427,8 +487,9 @@ class DatabaseAlbums:
                                   WHERE albums.rowid = ?\
                                   AND albums.rowid = tracks.album_id\
                                   AND track_artists.track_id = tracks.rowid\
+                                  AND discnumber=?\
                                   ORDER BY discnumber, tracknumber",
-                                 (album_id,))
+                                 (album_id, disc))
 
         infos = []
         rm_doublon = []

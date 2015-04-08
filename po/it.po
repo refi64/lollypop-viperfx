@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lollypop\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-04-08 14:19+0200\n"
+"POT-Creation-Date: 2015-04-08 18:43+0200\n"
 "PO-Revision-Date: 2015-04-05 10:01+0000\n"
 "Last-Translator: Pietro Acinapura <pietro.ac@gmail.com>\n"
 "Language-Team: Italian (http://www.transifex.com/projects/p/lollypop/"
@@ -165,12 +165,12 @@ msgid "Music player for the GNOME desktop"
 msgstr "Riproduttore musicale per il desktop GNOME"
 
 #: ../src/toolbar.py:202 ../src/toolbar.py:252 ../src/toolbar.py:268
-#: ../src/fullscreen.py:185 ../data/Toolbar.ui.h:7
+#: ../src/fullscreen.py:178 ../data/Toolbar.ui.h:7
 msgid "Play"
 msgstr "Esegui"
 
-#: ../src/toolbar.py:245 ../src/toolbar.py:271 ../src/fullscreen.py:80
-#: ../src/fullscreen.py:181
+#: ../src/toolbar.py:245 ../src/toolbar.py:271 ../src/fullscreen.py:75
+#: ../src/fullscreen.py:174
 msgid "Pause"
 msgstr "Pausa"
 
@@ -316,9 +316,14 @@ msgstr "Seleziona una copertina per questo album"
 msgid "The the"
 msgstr "The the"
 
-#: ../src/search.py:148
+#: ../src/search.py:147
 msgid "Search:"
 msgstr "Cerca:"
+
+#: ../src/album_widgets.py:114
+#, python-format
+msgid "Disc %s"
+msgstr ""
 
 #: ../data/AboutDialog.ui.in.h:1
 msgid "A music player for GNOME."

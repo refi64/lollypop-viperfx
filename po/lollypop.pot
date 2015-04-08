@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-04-08 14:19+0200\n"
+"POT-Creation-Date: 2015-04-08 18:43+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -156,12 +156,12 @@ msgid "Music player for the GNOME desktop"
 msgstr ""
 
 #: ../src/toolbar.py:202 ../src/toolbar.py:252 ../src/toolbar.py:268
-#: ../src/fullscreen.py:185 ../data/Toolbar.ui.h:7
+#: ../src/fullscreen.py:178 ../data/Toolbar.ui.h:7
 msgid "Play"
 msgstr ""
 
-#: ../src/toolbar.py:245 ../src/toolbar.py:271 ../src/fullscreen.py:80
-#: ../src/fullscreen.py:181
+#: ../src/toolbar.py:245 ../src/toolbar.py:271 ../src/fullscreen.py:75
+#: ../src/fullscreen.py:174
 msgid "Pause"
 msgstr ""
 
@@ -305,8 +305,13 @@ msgstr ""
 msgid "The the"
 msgstr ""
 
-#: ../src/search.py:148
+#: ../src/search.py:147
 msgid "Search:"
+msgstr ""
+
+#: ../src/album_widgets.py:114
+#, python-format
+msgid "Disc %s"
 msgstr ""
 
 #: ../data/AboutDialog.ui.in.h:1
