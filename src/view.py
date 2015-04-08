@@ -31,20 +31,20 @@ class ViewContainer(Gtk.Stack):
         self.set_resize_mode(Gtk.ResizeMode.QUEUE)
         self.set_transition_duration(duration)
         self.set_transition_type(Gtk.StackTransitionType.CROSSFADE)
-        self.show()
 
     """
-        Clean view
-        @param view as View
+        Clean old views
+        @param view as new View
     """
-    def clean_view(self, view):
-        if view and not isinstance(view, DeviceView):
-            view.stop()
-            # Delayed destroy as we may have an animation running
-            # Gtk.StackTransitionType.CROSSFADE
-            GLib.timeout_add(self._duration,
-                             self._delayedclean_view,
-                             view)
+    def clean_old_views(self, view):
+        for child in self.get_children():
+            if child != view:
+                child.stop()
+                # Delayed destroy as we may have an animation running
+                # Gtk.StackTransitionType.CROSSFADE
+                GLib.timeout_add(self._duration,
+                                 self._delayedclean_view,
+                                 child)
 
 #######################
 # PRIVATE             #
@@ -162,8 +162,7 @@ class ArtistView(View):
 
         self._scrolledWindow.set_property('expand', True)
         self._viewport.add(self._albumbox)
-
-        self.show()
+        self.add(self._scrolledWindow)
 
     """
         Populate the view, can be threaded
@@ -235,6 +234,21 @@ class ArtistView(View):
             self._stop = False
 
 
+# Album contextual view
+class AlbumContextView(View):
+    """
+        Init context
+        @param main view widget
+    """
+    def __init__(self, widget):
+        View.__init__(self)
+        self._viewport.add(widget)
+        self._viewport.show()
+        self._scrolledWindow.set_min_content_height(250)
+        self._scrolledWindow.show()
+        self.add(self._scrolledWindow)
+
+
 # Album view is a flowbox of albums widgets with album name and artist name
 class AlbumView(View):
     """
@@ -254,6 +268,7 @@ class AlbumView(View):
         self._albumbox.set_max_children_per_line(100)
         self._albumbox.show()
 
+        self._viewport.set_property("valign", Gtk.Align.START)
         self._viewport.add(self._albumbox)
         self._scrolledWindow.set_property('expand', True)
 
@@ -262,9 +277,9 @@ class AlbumView(View):
         separator = Gtk.Separator()
         separator.show()
         
+        self.add(self._scrolledWindow)
         self.add(separator)
         self.add(self._context)
-        self.show()
 
     """
         Populate albums, thread safe
@@ -312,20 +327,17 @@ class AlbumView(View):
     """
     def _populate_context(self, album_id):
         size_group = Gtk.SizeGroup(mode=Gtk.SizeGroupMode.HORIZONTAL)
-        old_view = self._context.get_visible_child()
         self._context_widget = AlbumDetailedWidget(album_id,
                                                    self._genre_id,
                                                    True,
                                                    size_group)
         start_new_thread(self._context_widget.populate, ())
         self._context_widget.show()
-        view = View()
-        view._viewport.add(self._context_widget)
-        view._scrolledWindow.set_min_content_height(250)
+        view = AlbumContextView(self._context_widget)
         view.show()
         self._context.add(view)
         self._context.set_visible_child(view)
-        self._context.clean_view(old_view)
+        self._context.clean_old_views(view)
 
     """
         Show Context view for activated album

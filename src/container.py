@@ -42,6 +42,7 @@ class Container:
         self._devices_index = Navigation.DEVICES
         self._show_genres = Objects.settings.get_value('show-genres')
         self._stack = ViewContainer(500)
+        self._stack.show()
 
         self._setup_view()
         self._setup_scanner()
@@ -152,7 +153,7 @@ class Container:
     def stop_all(self):
         view = self._stack.get_visible_child()
         if view is not None:
-            self._stack.clean_view(view)
+            self._stack.clean_old_views(None)
 
     """
         Show/Hide genres
@@ -372,7 +373,6 @@ class Container:
         @param object id as int
     """
     def _update_view_device(self, object_id):
-        old_view = self._stack.get_visible_child()
         device = self._devices[object_id]
 
         # Only restore previous widget if not syncing
@@ -389,7 +389,7 @@ class Container:
             start_new_thread(view.populate, ())
             self._stack.add(view)
         self._stack.set_visible_child(view)
-        self._stack.clean_view(old_view)
+        self._stack.clean_old_views(view)
 
     """
         Update current view with artists view
@@ -397,12 +397,12 @@ class Container:
         @param genre id as int
     """
     def _update_view_artists(self, object_id, genre_id):
-        old_view = self._stack.get_visible_child()
         view = ArtistView(object_id, True)
         self._stack.add(view)
+        view.show()
         start_new_thread(view.populate, (genre_id,))
         self._stack.set_visible_child(view)
-        self._stack.clean_view(old_view)
+        self._stack.clean_old_views(view)
 
     """
         Update current view with albums view
@@ -410,19 +410,18 @@ class Container:
         @param genre id as int
     """
     def _update_view_albums(self, object_id, genre_id):
-        old_view = self._stack.get_visible_child()
         view = AlbumView(object_id)
         self._stack.add(view)
+        view.show()
         start_new_thread(view.populate, (genre_id,))
         self._stack.set_visible_child(view)
-        self._stack.clean_view(old_view)
+        self._stack.clean_old_views(view)
 
     """
         Update current view with playlist view
         @param playlist id as int
     """
     def _update_view_playlists(self, playlist_id):
-        old_view = self._stack.get_visible_child()
         view = None
         if playlist_id is not None:
             for (p_id, p_str) in Objects.playlists.get():
@@ -436,7 +435,7 @@ class Container:
             self._stack.add(view)
             self._stack.set_visible_child(view)
             start_new_thread(view.populate, ())
-            self._stack.clean_view(old_view)
+            self._stack.clean_old_views(view)
 
     """
         Add volume to device list
@@ -541,7 +540,6 @@ class Container:
         @param playlist name as str
     """
     def _on_playlist_changed(self, manager, playlist_name):
-        old_view = self._stack.get_visible_child()
         if isinstance(old_view, PlaylistView):
             old_name = old_view.get_name()
             if old_name == playlist_name:
@@ -550,7 +548,7 @@ class Container:
                 self._stack.add(view)
                 self._stack.set_visible_child(view)
                 start_new_thread(view.populate, ())
-                self._stack.clean_view(old_view)
+                self._stack.clean_old_views(view)
 
     """
         Play tracks as user playlist
