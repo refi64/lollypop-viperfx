@@ -119,6 +119,10 @@ class AlbumDetailedWidget(Gtk.Grid):
                 label.show()
                 grid.attach(label, 0, i, 2, 1)
                 i += 1
+                sep = Gtk.Separator()
+                sep.show()
+                grid.attach(sep, 0, i ,2 ,1)
+                i += 1
             self._tracks_left[disc] = TracksWidget(show_menu)
             self._tracks_right[disc] = TracksWidget(show_menu)
             grid.attach(self._tracks_left[disc], 0, i, 1, 1)
