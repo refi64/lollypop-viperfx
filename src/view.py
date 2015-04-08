@@ -280,12 +280,19 @@ class AlbumView(View):
 
         self._context = ViewContainer(500)
 
+        self._revealer = Gtk.Revealer()
+        self._revealer.set_transition_duration(500)
+        self._revealer.add(self._context)
+        self._revealer.show()
+
         separator = Gtk.Separator()
         separator.show()
         
         self.add(self._scrolledWindow)
         self.add(separator)
-        self.add(self._context)
+        self.add(self._revealer)
+
+        self.show()
 
     """
         Populate albums, thread safe
@@ -355,11 +362,12 @@ class AlbumView(View):
                 Objects.player.play_album(self._album_id)
             else:
                 self._album_id = None
-                self._context.hide()
+                self._revealer.set_reveal_child(False)
         else:
             self._album_id = child.get_child().get_id()
             self._populate_context(self._album_id)
             self._context.show()
+            self._revealer.set_reveal_child(True)
             self._context_widget.eventbox.get_window().set_cursor(
                                             Gdk.Cursor(Gdk.CursorType.HAND1))
 
