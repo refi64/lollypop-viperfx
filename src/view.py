@@ -490,6 +490,7 @@ class PlaylistEditView(View):
         builder = Gtk.Builder()
         builder.add_from_resource('/org/gnome/Lollypop/PlaylistEditView.ui')
         builder.get_object('title').set_label(playlist_name)
+        builder.connect_signals(self)
         grid = builder.get_object('widget')
         self.add(grid)
         self._edit_widget = PlaylistEditWidget(playlist_name)
@@ -507,6 +508,16 @@ class PlaylistEditView(View):
 
     def stop(self):
         pass
+
+#######################
+# PRIVATE             #
+#######################
+    """
+        Restore previous view
+        @param button as Gtk.Button
+    """
+    def _on_back_btn_clicked(self, button):
+        Objects.window.destroy_current_view()
 
 
 # Playlist synchronisation view
@@ -533,9 +544,5 @@ class DeviceView(Gtk.Bin):
     def stop(self):
         pass
 
-
-#######################
-# PRIVATE             #
-#######################
 
 
