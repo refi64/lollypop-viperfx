@@ -32,7 +32,6 @@ class PlaylistWidget(Gtk.Bin):
         Gtk.Bin.__init__(self)
         self._playlist_name = playlist_name
         self._tracks = []
-        self.set_property("margin", 5)
 
         self._main_widget = Gtk.Grid()
         self._main_widget.show()
