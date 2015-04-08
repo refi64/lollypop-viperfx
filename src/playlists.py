@@ -11,17 +11,13 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-from gi.repository import Gtk, GLib, GObject, GdkPixbuf, Pango
-from gettext import gettext as _
+from gi.repository import GLib, GObject
 
-from _thread import start_new_thread
 import os
-from operator import itemgetter
-from cgi import escape
+
 from stat import S_ISREG, ST_MTIME, ST_MODE
 
-from lollypop.define import Objects, Navigation, ArtSize
-from lollypop.utils import translate_artist_name
+from lollypop.define import Objects
 
 
 # Playlists manager: add, remove, list, append, ...

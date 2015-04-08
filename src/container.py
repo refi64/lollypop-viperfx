@@ -538,22 +538,6 @@ class Container:
             self._list_two_restore = None
 
     """
-        Update playlist view if we are in playlist view
-        @param manager as PlaylistPopup
-        @param playlist name as str
-    """
-    def _on_playlist_changed(self, manager, playlist_name):
-        if isinstance(old_view, PlaylistView):
-            old_name = old_view.get_name()
-            if old_name == playlist_name:
-                view = PlaylistView(old_name)
-                view.show()
-                self._stack.add(view)
-                self._stack.set_visible_child(view)
-                start_new_thread(view.populate, ())
-                self._stack.clean_old_views(view)
-
-    """
         Play tracks as user playlist
         @param scanner as collection scanner
         @param outdb as bool (tracks not present in db)
