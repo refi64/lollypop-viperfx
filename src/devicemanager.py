@@ -11,7 +11,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-from gi.repository import Gtk, GLib, Pango
+from gi.repository import Gtk, GLib, GObject, Pango
 import os
 from time import sleep
 from shutil import copyfile
@@ -24,6 +24,9 @@ from lollypop.utils import translate_artist_name
 
 # Dialog for synchronize mtp devices
 class DeviceManagerWidget(Gtk.Bin):
+    __gsignals__ = {
+        'sync-finished': (GObject.SignalFlags.RUN_FIRST, None, ())
+    }
 
     """
         Init ui with a scrolled treeview
@@ -40,18 +43,15 @@ class DeviceManagerWidget(Gtk.Bin):
         self._syncing = False
         self._errors = False
         self._in_thread = False
+        self._path = None
         self._total = 0  # Total files to sync
         self._done = 0   # Handled files on sync
         self._fraction = 0.0
 
         builder = Gtk.Builder()
         builder.add_from_resource(
-                '/org/gnome/Lollypop/DeviceManager.ui'
+                '/org/gnome/Lollypop/DeviceManagerWidget.ui'
                                   )
-
-        self._syncing_btn = builder.get_object('sync_btn')
-        self._syncing_btn.set_label(_("Synchronize %s") % device.name)
-        self._memory_combo = builder.get_object('memory_combo')
         self._error_label = builder.get_object('error-label')
 
         self._model = Gtk.ListStore(bool, str)
@@ -87,26 +87,43 @@ class DeviceManagerWidget(Gtk.Bin):
         Populate playlists, thread safe
     """
     def populate(self):
-        files = os.listdir(self._device.path)
-        GLib.idle_add(self._set_combo_text, files)
-        if len(files) > 0:
-            self._path = "%s/%s/Music/%s" %\
-                        (self._device.path, files[0], "lollypop")
-            try:
-                if not os.path.exists(self._path):
-                    os.mkdir(self._path)
-                self._on_disk_playlists = os.listdir(self._path)
-            except:
-                self._on_disk_playlists = []
-
+        self._model.clear()
         playlists = Objects.playlists.get()
         GLib.idle_add(self._append_playlists, playlists)
+
+    """
+        Set available playlists
+        @param path as str
+    """
+    def set_playlists(self, playlists, path):
+        self._on_disk_playlists = playlists
+        self._path = path
 
     """
         @return True if syncing
     """
     def is_syncing(self):
         return self._syncing
+
+    """
+        Start synchronisation
+    """
+    def sync(self):
+        self._syncing = True
+        self._view.set_sensitive(False)
+        self._progress.show()
+        playlists = []
+        for item in self._model:
+            if item[0]:
+                playlists.append(item[1])
+        start_new_thread(self._sync, (playlists,))
+
+    """
+        Cancel synchronisation
+    """
+    def cancel_sync(self):
+        self._view.set_sensitive(True)
+        self._syncing = False
 
 #######################
 # PRIVATE             #
@@ -118,15 +135,6 @@ class DeviceManagerWidget(Gtk.Bin):
         a = model.get_value(itera, 1)
         b = model.get_value(iterb, 1)
         return a > b
-
-    """
-        Set combobox text
-        @param text list as [str]
-    """
-    def _set_combo_text(self, text_list):
-        for text in text_list:
-            self._memory_combo.append_text(text)
-        self._memory_combo.set_active(0)
 
     """
         Append a playlist
@@ -209,7 +217,11 @@ class DeviceManagerWidget(Gtk.Bin):
             self._errors = True
         self._fraction = 1.0
         if self._syncing:
-            GLib.idle_add(self._on_sync_clicked, None)
+            GLib.idle_add(self._view.set_sensitive, True)
+            GLib.idle_add(self.emit, 'sync-finished')
+        
+        GLib.idle_add(self._progress.hide)
+        self._syncing = False
         self._in_thread = False
 
     """
@@ -400,30 +412,6 @@ class DeviceManagerWidget(Gtk.Bin):
         self._infobar.show()
 
     """
-        Start synchronisation
-        @param widget as Gtk.Button
-    """
-    def _on_sync_clicked(self, widget):
-        if self._syncing:
-            self._syncing = False
-            self._memory_combo.show()
-            self._view.set_sensitive(True)
-            self._syncing_btn.set_label(_("Synchronize %s") %
-                                        self._device.name)
-            if self._errors:
-                self._show_info_bar()
-        elif not self._in_thread and not self._progress.is_visible():
-            self._syncing = True
-            self._memory_combo.hide()
-            self._view.set_sensitive(False)
-            self._syncing_btn.set_label(_("Cancel synchronization"))
-            playlists = []
-            for item in self._model:
-                if item[0]:
-                    playlists.append(item[1])
-            start_new_thread(self._sync, (playlists,))
-
-    """
         Hide infobar
         @param widget as Gtk.Infobar
         @param reponse id as int
@@ -431,23 +419,6 @@ class DeviceManagerWidget(Gtk.Bin):
     def _on_response(self, infobar, response_id):
         if response_id == Gtk.ResponseType.CLOSE:
             self._infobar.hide()
-
-    """
-        Update path
-        @param combo as Gtk.ComboxText
-    """
-    def _on_memory_combo_changed(self, combo):
-        text = combo.get_active_text()
-        self._path = "%s/%s/Music/%s" % (self._device.path, text, "lollypop")
-        try:
-            if not os.path.exists(self._path+"/tracks"):
-                self._mkdir(self._path+"/tracks")
-            self._on_disk_playlists = os.listdir(self._path)
-        except Exception as e:
-            print("DeviceManagerWidget::_on_memory_combo_changed: %s" % e)
-            self._on_disk_playlists = []
-        for item in self._model:
-            item[0] = item[1]+".m3u" in self._on_disk_playlists
 
     """
         When playlist is activated, add object to playlist

@@ -9,7 +9,8 @@
     <file preprocess="xml-stripblanks">PlaylistView.ui</file>
     <file preprocess="xml-stripblanks">PlaylistEditView.ui</file>
     <file preprocess="xml-stripblanks">PlaylistEditWidget.ui</file>
-    <file preprocess="xml-stripblanks">DeviceManager.ui</file>
+    <file preprocess="xml-stripblanks">DeviceManagerWidget.ui</file>
+    <file preprocess="xml-stripblanks">DeviceManagerView.ui</file>
     <file preprocess="xml-stripblanks">AlbumDetailedWidget.ui</file>
     <file preprocess="xml-stripblanks">FullScreen.ui</file>
     <file preprocess="xml-stripblanks">Unicode.ui</file>
