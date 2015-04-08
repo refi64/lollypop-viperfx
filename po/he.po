@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lollypop\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-04-08 13:43+0200\n"
+"POT-Creation-Date: 2015-04-08 14:19+0200\n"
 "PO-Revision-Date: 2015-04-05 15:52+0000\n"
 "Last-Translator: Yosef Or Boczko <yoseforb@gmail.com>\n"
 "Language-Team: Hebrew (http://www.transifex.com/projects/p/lollypop/language/"
@@ -177,7 +177,7 @@ msgstr "השהיה"
 msgid "Popular albums"
 msgstr "אלבומים חביבים"
 
-#: ../src/container.py:302 ../src/popmenu.py:49
+#: ../src/container.py:302 ../src/popmenu.py:47
 msgid "Playlists"
 msgstr "רשימות השמעה"
 
@@ -223,6 +223,19 @@ msgstr "לא ידוע"
 msgid "Compilation"
 msgstr "אוסף"
 
+#: ../src/playlist_widgets.py:221 ../src/playlist_widgets.py:224
+msgid "New playlist "
+msgstr "רשימת השמעה חדשה"
+
+#: ../src/playlist_widgets.py:266 ../src/playlist_widgets.py:509
+#, python-format
+msgid "Remove \"%s\"?"
+msgstr "להסיר את „%s”?"
+
+#: ../src/playlist_widgets.py:548
+msgid "Remove these tracks?"
+msgstr "להסיר רצועות אלו?"
+
 #: ../src/view.py:580 ../src/view.py:621
 #, python-format
 msgid "Synchronize %s"
@@ -240,53 +253,53 @@ msgstr "שגיאה בלתי ידועה אירעה בעת התיאום, יש לנ
 msgid "No free space available on device"
 msgstr "אין שטח פנוי זמן על ההתקן"
 
-#: ../src/popmenu.py:44
+#: ../src/popmenu.py:42
 msgid "Playback"
 msgstr "בִצוע מוקלט"
 
-#: ../src/popmenu.py:66
+#: ../src/popmenu.py:64
 msgid "Continue playback"
 msgstr "להמשיך השמעה"
 
-#: ../src/popmenu.py:71
+#: ../src/popmenu.py:69
 msgid "Stop after this track"
 msgstr "עצירה לאחר רצועה זו"
 
-#: ../src/popmenu.py:76
+#: ../src/popmenu.py:74
 msgid "Stop after this album"
 msgstr "עצירה לאחר אלבום זה"
 
-#: ../src/popmenu.py:81
+#: ../src/popmenu.py:79
 msgid "Stop after this artist"
 msgstr "עצירה לאחר אמן זה"
 
-#: ../src/popmenu.py:95
+#: ../src/popmenu.py:93
 msgid "Add to others"
 msgstr "הוספה לאחרים"
 
-#: ../src/popmenu.py:109
+#: ../src/popmenu.py:107
 #, python-format
 msgid "Remove from \"%s\""
 msgstr "הסרה מתוך „%s"
 
-#: ../src/popmenu.py:116
+#: ../src/popmenu.py:114
 #, python-format
 msgid "Add to \"%s\""
 msgstr "הוספה אל „%s”"
 
-#: ../src/popmenu.py:160 ../data/SearchRow.ui.h:3
+#: ../src/popmenu.py:158 ../data/SearchRow.ui.h:3
 msgid "Add to queue"
 msgstr "הוספה לתור"
 
-#: ../src/popmenu.py:166
+#: ../src/popmenu.py:164
 msgid "Next tracks"
 msgstr "רצועות הבאות"
 
-#: ../src/popmenu.py:168
+#: ../src/popmenu.py:166
 msgid "Next track"
 msgstr "רצועה הבאה"
 
-#: ../src/popmenu.py:173
+#: ../src/popmenu.py:171
 msgid "Remove from queue"
 msgstr "הסרה מהתור"
 
@@ -465,12 +478,3 @@ msgid ""
 "Lollypop isn't designed to work without an unicode locale.\n"
 "Please fix your system."
 msgstr ""
-
-#~ msgid "Remove \"%s\"?"
-#~ msgstr "להסיר את „%s”?"
-
-#~ msgid "New playlist "
-#~ msgstr "רשימת השמעה חדשה"
-
-#~ msgid "Remove these tracks?"
-#~ msgstr "להסיר רצועות אלו?"

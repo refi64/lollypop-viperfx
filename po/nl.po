@@ -10,7 +10,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lollypop\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-04-08 13:43+0200\n"
+"POT-Creation-Date: 2015-04-08 14:19+0200\n"
 "PO-Revision-Date: 2015-04-04 10:37+0000\n"
 "Last-Translator: Cédric Bellegarde <web@adishatz.org>\n"
 "Language-Team: Dutch (http://www.transifex.com/projects/p/lollypop/language/"
@@ -173,7 +173,7 @@ msgstr "Pauzeren"
 msgid "Popular albums"
 msgstr "Populaire albums"
 
-#: ../src/container.py:302 ../src/popmenu.py:49
+#: ../src/container.py:302 ../src/popmenu.py:47
 msgid "Playlists"
 msgstr "Afspeellijsten"
 
@@ -219,6 +219,19 @@ msgstr "Onbekend"
 msgid "Compilation"
 msgstr "Compilatie"
 
+#: ../src/playlist_widgets.py:221 ../src/playlist_widgets.py:224
+msgid "New playlist "
+msgstr "Nieuwe afspeellijst"
+
+#: ../src/playlist_widgets.py:266 ../src/playlist_widgets.py:509
+#, python-format
+msgid "Remove \"%s\"?"
+msgstr "\"%s\" verwijderen?"
+
+#: ../src/playlist_widgets.py:548
+msgid "Remove these tracks?"
+msgstr "Deze nummers verwijderen?"
+
 #: ../src/view.py:580 ../src/view.py:621
 #, python-format
 msgid "Synchronize %s"
@@ -236,53 +249,53 @@ msgstr "Onbekende fout bij synchroniseren, probeer je toestel te herstarten"
 msgid "No free space available on device"
 msgstr "Geen vrije ruimte beschikbaar op apparaat"
 
-#: ../src/popmenu.py:44
+#: ../src/popmenu.py:42
 msgid "Playback"
 msgstr "Afspelen"
 
-#: ../src/popmenu.py:66
+#: ../src/popmenu.py:64
 msgid "Continue playback"
 msgstr "Doorgaan met afspelen"
 
-#: ../src/popmenu.py:71
+#: ../src/popmenu.py:69
 msgid "Stop after this track"
 msgstr ""
 
-#: ../src/popmenu.py:76
+#: ../src/popmenu.py:74
 msgid "Stop after this album"
 msgstr ""
 
-#: ../src/popmenu.py:81
+#: ../src/popmenu.py:79
 msgid "Stop after this artist"
 msgstr ""
 
-#: ../src/popmenu.py:95
+#: ../src/popmenu.py:93
 msgid "Add to others"
 msgstr "Toevoegen aan andere"
 
-#: ../src/popmenu.py:109
+#: ../src/popmenu.py:107
 #, python-format
 msgid "Remove from \"%s\""
 msgstr "Verwijderen uit \"%s\""
 
-#: ../src/popmenu.py:116
+#: ../src/popmenu.py:114
 #, python-format
 msgid "Add to \"%s\""
 msgstr "Toevoegen aan \"%s\""
 
-#: ../src/popmenu.py:160 ../data/SearchRow.ui.h:3
+#: ../src/popmenu.py:158 ../data/SearchRow.ui.h:3
 msgid "Add to queue"
 msgstr "Toevoegen aan wachtrij"
 
-#: ../src/popmenu.py:166
+#: ../src/popmenu.py:164
 msgid "Next tracks"
 msgstr "Volgende nummers"
 
-#: ../src/popmenu.py:168
+#: ../src/popmenu.py:166
 msgid "Next track"
 msgstr "Volgend nummer"
 
-#: ../src/popmenu.py:173
+#: ../src/popmenu.py:171
 msgid "Remove from queue"
 msgstr "Verwijderen uit wachtrij"
 
@@ -461,12 +474,3 @@ msgid ""
 "Lollypop isn't designed to work without an unicode locale.\n"
 "Please fix your system."
 msgstr ""
-
-#~ msgid "Remove \"%s\"?"
-#~ msgstr "\"%s\" verwijderen?"
-
-#~ msgid "New playlist "
-#~ msgstr "Nieuwe afspeellijst"
-
-#~ msgid "Remove these tracks?"
-#~ msgstr "Deze nummers verwijderen?"

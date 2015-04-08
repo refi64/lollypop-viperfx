@@ -10,7 +10,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lollypop\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-04-08 13:43+0200\n"
+"POT-Creation-Date: 2015-04-08 14:19+0200\n"
 "PO-Revision-Date: 2015-04-04 10:37+0000\n"
 "Last-Translator: Cédric Bellegarde <web@adishatz.org>\n"
 "Language-Team: German (http://www.transifex.com/projects/p/lollypop/language/"
@@ -179,7 +179,7 @@ msgstr "Pause"
 msgid "Popular albums"
 msgstr "Beliebte Alben"
 
-#: ../src/container.py:302 ../src/popmenu.py:49
+#: ../src/container.py:302 ../src/popmenu.py:47
 msgid "Playlists"
 msgstr "Wiedergabelisten"
 
@@ -225,6 +225,19 @@ msgstr "Unbekannt"
 msgid "Compilation"
 msgstr "Compilation"
 
+#: ../src/playlist_widgets.py:221 ../src/playlist_widgets.py:224
+msgid "New playlist "
+msgstr "Neue Wiedergabeliste"
+
+#: ../src/playlist_widgets.py:266 ../src/playlist_widgets.py:509
+#, python-format
+msgid "Remove \"%s\"?"
+msgstr "Entferne \"%s\"?"
+
+#: ../src/playlist_widgets.py:548
+msgid "Remove these tracks?"
+msgstr "Diese Titel entfernen?"
+
 #: ../src/view.py:580 ../src/view.py:621
 #, python-format
 msgid "Synchronize %s"
@@ -244,53 +257,53 @@ msgstr ""
 msgid "No free space available on device"
 msgstr "Kein freier Platz verfügbar auf diesem Gerät"
 
-#: ../src/popmenu.py:44
+#: ../src/popmenu.py:42
 msgid "Playback"
 msgstr "Wiedergabe"
 
-#: ../src/popmenu.py:66
+#: ../src/popmenu.py:64
 msgid "Continue playback"
 msgstr "Wiedergabe fortführen"
 
-#: ../src/popmenu.py:71
+#: ../src/popmenu.py:69
 msgid "Stop after this track"
 msgstr "Wiedergabe nach Abspielen dieses Titels stoppen"
 
-#: ../src/popmenu.py:76
+#: ../src/popmenu.py:74
 msgid "Stop after this album"
 msgstr "Wiedergabe nach Abspielen dieses Albums stoppen"
 
-#: ../src/popmenu.py:81
+#: ../src/popmenu.py:79
 msgid "Stop after this artist"
 msgstr "Wiedergabe nach Abspielen dieses Künstlers stoppen"
 
-#: ../src/popmenu.py:95
+#: ../src/popmenu.py:93
 msgid "Add to others"
 msgstr "Andere hinzufügen"
 
-#: ../src/popmenu.py:109
+#: ../src/popmenu.py:107
 #, python-format
 msgid "Remove from \"%s\""
 msgstr "Entferne von \"%s\""
 
-#: ../src/popmenu.py:116
+#: ../src/popmenu.py:114
 #, python-format
 msgid "Add to \"%s\""
 msgstr "Hinzufügen zu \"%s\""
 
-#: ../src/popmenu.py:160 ../data/SearchRow.ui.h:3
+#: ../src/popmenu.py:158 ../data/SearchRow.ui.h:3
 msgid "Add to queue"
 msgstr "Zur Warteschlange hinzufügen"
 
-#: ../src/popmenu.py:166
+#: ../src/popmenu.py:164
 msgid "Next tracks"
 msgstr "Nächste Titel"
 
-#: ../src/popmenu.py:168
+#: ../src/popmenu.py:166
 msgid "Next track"
 msgstr "Nächster Titel"
 
-#: ../src/popmenu.py:173
+#: ../src/popmenu.py:171
 msgid "Remove from queue"
 msgstr "Aus Warteschlange entfernen"
 
@@ -469,12 +482,3 @@ msgid ""
 "Lollypop isn't designed to work without an unicode locale.\n"
 "Please fix your system."
 msgstr ""
-
-#~ msgid "Remove \"%s\"?"
-#~ msgstr "Entferne \"%s\"?"
-
-#~ msgid "New playlist "
-#~ msgstr "Neue Wiedergabeliste"
-
-#~ msgid "Remove these tracks?"
-#~ msgstr "Diese Titel entfernen?"

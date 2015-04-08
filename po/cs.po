@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lollypop\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-04-08 13:43+0200\n"
+"POT-Creation-Date: 2015-04-08 14:19+0200\n"
 "PO-Revision-Date: 2015-04-04 11:11+0000\n"
 "Last-Translator: fri\n"
 "Language-Team: Czech (http://www.transifex.com/projects/p/lollypop/language/"
@@ -177,7 +177,7 @@ msgstr "Pozastavit"
 msgid "Popular albums"
 msgstr "Oblíbená alba"
 
-#: ../src/container.py:302 ../src/popmenu.py:49
+#: ../src/container.py:302 ../src/popmenu.py:47
 msgid "Playlists"
 msgstr "Seznamy skladeb"
 
@@ -223,6 +223,19 @@ msgstr "Neznámý"
 msgid "Compilation"
 msgstr "Kompilace"
 
+#: ../src/playlist_widgets.py:221 ../src/playlist_widgets.py:224
+msgid "New playlist "
+msgstr "Nový seznam skladeb"
+
+#: ../src/playlist_widgets.py:266 ../src/playlist_widgets.py:509
+#, python-format
+msgid "Remove \"%s\"?"
+msgstr "Odstranit \"%s\"?"
+
+#: ../src/playlist_widgets.py:548
+msgid "Remove these tracks?"
+msgstr "Odstranit tyto skladby?"
+
 #: ../src/view.py:580 ../src/view.py:621
 #, python-format
 msgid "Synchronize %s"
@@ -241,53 +254,53 @@ msgstr ""
 msgid "No free space available on device"
 msgstr "Na zařízení není žádné volné místo"
 
-#: ../src/popmenu.py:44
+#: ../src/popmenu.py:42
 msgid "Playback"
 msgstr "Přehrávání"
 
-#: ../src/popmenu.py:66
+#: ../src/popmenu.py:64
 msgid "Continue playback"
 msgstr "Pokračovat v přehrávání"
 
-#: ../src/popmenu.py:71
+#: ../src/popmenu.py:69
 msgid "Stop after this track"
 msgstr "Zastavit po této skladbě"
 
-#: ../src/popmenu.py:76
+#: ../src/popmenu.py:74
 msgid "Stop after this album"
 msgstr "Zastavit po tomto albu"
 
-#: ../src/popmenu.py:81
+#: ../src/popmenu.py:79
 msgid "Stop after this artist"
 msgstr "Zastavit po tomto umělci"
 
-#: ../src/popmenu.py:95
+#: ../src/popmenu.py:93
 msgid "Add to others"
 msgstr "Přidat do ostatních"
 
-#: ../src/popmenu.py:109
+#: ../src/popmenu.py:107
 #, python-format
 msgid "Remove from \"%s\""
 msgstr "Odstranit z \"%s\""
 
-#: ../src/popmenu.py:116
+#: ../src/popmenu.py:114
 #, python-format
 msgid "Add to \"%s\""
 msgstr "Přidat do \"%s\""
 
-#: ../src/popmenu.py:160 ../data/SearchRow.ui.h:3
+#: ../src/popmenu.py:158 ../data/SearchRow.ui.h:3
 msgid "Add to queue"
 msgstr "Přidat do řady"
 
-#: ../src/popmenu.py:166
+#: ../src/popmenu.py:164
 msgid "Next tracks"
 msgstr "Další skladby"
 
-#: ../src/popmenu.py:168
+#: ../src/popmenu.py:166
 msgid "Next track"
 msgstr "Další skladba"
 
-#: ../src/popmenu.py:173
+#: ../src/popmenu.py:171
 msgid "Remove from queue"
 msgstr "Odstranit z řady"
 
@@ -466,12 +479,3 @@ msgid ""
 "Lollypop isn't designed to work without an unicode locale.\n"
 "Please fix your system."
 msgstr ""
-
-#~ msgid "Remove \"%s\"?"
-#~ msgstr "Odstranit \"%s\"?"
-
-#~ msgid "New playlist "
-#~ msgstr "Nový seznam skladeb"
-
-#~ msgid "Remove these tracks?"
-#~ msgstr "Odstranit tyto skladby?"
