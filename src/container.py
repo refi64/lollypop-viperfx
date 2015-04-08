@@ -376,12 +376,7 @@ class Container:
     def _update_view_device(self, object_id):
         device = self._devices[object_id]
 
-        # Only restore previous widget if syncing
-        if device and device.view and not device.view.is_syncing():
-            device.view.destroy()
-            device.view = None
-
-        if device.view:
+        if device and device.view:
             view = device.view
         else:
             view = DeviceView(device, self._progress,
@@ -389,7 +384,7 @@ class Container:
             device.view = view
             view.show()
             start_new_thread(view.populate, ())
-            self._stack.add(view)
+        self._stack.add(view)
         self._stack.set_visible_child(view)
         self._stack.clean_old_views(view)
 

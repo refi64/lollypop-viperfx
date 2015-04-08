@@ -40,13 +40,16 @@ class ViewContainer(Gtk.Stack):
     """
     def clean_old_views(self, view):
         for child in self.get_children():
-            if child != view and not isinstance(child, DeviceView):
+            if child != view:
                 child.stop()
-                # Delayed destroy as we may have an animation running
-                # Gtk.StackTransitionType.CROSSFADE
-                GLib.timeout_add(self._duration,
-                                 self._delayedclean_view,
-                                 child)
+                if isinstance(child, DeviceView):
+                    self.remove(child)
+                else:
+                    # Delayed destroy as we may have an animation running
+                    # Gtk.StackTransitionType.CROSSFADE
+                    GLib.timeout_add(self._duration,
+                                     self._delayedclean_view,
+                                     child)
 
 #######################
 # PRIVATE             #
