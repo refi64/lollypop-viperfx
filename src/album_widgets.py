@@ -1,0 +1,294 @@
+#!/usr/bin/python
+# Copyright (c) 2014-2015 Cedric Bellegarde <cedric.bellegarde@adishatz.org>
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+# GNU General Public License for more details.
+# You should have received a copy of the GNU General Public License
+# along with this program. If not, see <http://www.gnu.org/licenses/>.
+
+from gi.repository import Gtk, GLib, Gdk
+from cgi import escape
+
+from lollypop.define import Objects, Navigation, ArtSize, NextContext
+from lollypop.tracks import TracksWidget
+from lollypop.popmenu import PopMainMenu
+from lollypop.popimages import PopImages
+from lollypop.utils import translate_artist_name
+
+
+# Album widget is a pixbuf with two labels: albumm name and artist name
+class AlbumWidget(Gtk.Grid):
+
+    """
+        Init album widget ui with an vertical grid:
+            - Album cover
+            - Album name
+            - Artist name
+    """
+    def __init__(self, album_id):
+        Gtk.Grid.__init__(self)
+        self._album_id = album_id
+
+        self.set_property("margin", 5)
+
+        self.set_orientation(Gtk.Orientation.VERTICAL)
+        builder = Gtk.Builder()
+        builder.add_from_resource('/org/gnome/Lollypop/AlbumWidget.ui')
+
+        self._cover = builder.get_object('cover')
+        self._cover.set_from_pixbuf(Objects.art.get(album_id, ArtSize.BIG))
+
+        album_name = Objects.albums.get_name(album_id)
+        title = builder.get_object('title')
+        title.set_label(album_name)
+        artist_name = Objects.albums.get_artist_name(album_id)
+        artist_name = translate_artist_name(artist_name)
+        artist = builder.get_object('artist')
+        artist.set_label(artist_name)
+
+        self.add(self._cover)
+        self.add(title)
+        self.add(artist)
+
+    def do_get_preferred_width(self):
+        return (ArtSize.BIG, ArtSize.BIG)
+
+    """
+        Update cover for album id
+        @param album id as int
+    """
+    def update_cover(self, album_id):
+        if self._album_id == album_id:
+            self._cover.set_from_pixbuf(Objects.art.get(album_id,
+                                                        ArtSize.BIG))
+
+    """
+        Return album id for widget
+        @return album id as int
+    """
+    def get_id(self):
+        return self._album_id
+
+
+# Album detailed Widget is a pixbuf with album name and tracks list
+class AlbumDetailedWidget(Gtk.Grid):
+    """
+        Init album widget songs ui with a complex grid:
+            - Album cover
+            - Album name
+            - Albums tracks aligned on two columns
+        if cover_add True, let user change album cover
+        @param album id as int
+        @param genre id as int
+        @param parent width as int
+        @param show_menu as bool if menu need to be displayed
+        @param size group as Gtk.SizeGroup
+    """
+    def __init__(self, album_id, genre_id, show_menu, size_group):
+        Gtk.Grid.__init__(self)
+        self._stop = False
+
+        builder = Gtk.Builder()
+        builder.add_from_resource(
+                    '/org/gnome/Lollypop/AlbumDetailedWidget.ui')
+
+        self._artist_id = Objects.albums.get_artist_id(album_id)
+        self._album_id = album_id
+        self._genre_id = genre_id
+
+        self._tracks_widget1 = TracksWidget(show_menu)
+        self._tracks_widget2 = TracksWidget(show_menu)
+        size_group.add_widget(self._tracks_widget1)
+        size_group.add_widget(self._tracks_widget2)
+        self._button_mask = None
+        self._tracks_widget1.connect('activated', self._on_activated)
+        self._tracks_widget1.connect('button-press-event',
+                                     self._on_button_press_event)
+        self._tracks_widget2.connect('activated', self._on_activated)
+        self._tracks_widget2.connect('button-press-event',
+                                     self._on_button_press_event)
+        builder.get_object('tracks').add(self._tracks_widget1)
+        builder.get_object('tracks').add(self._tracks_widget2)
+        self._tracks_widget1.show()
+        self._tracks_widget2.show()
+
+        self._cover = builder.get_object('cover')
+        self._cover.set_from_pixbuf(Objects.art.get(album_id, ArtSize.BIG))
+        builder.get_object('title').set_label(
+                                            Objects.albums.get_name(album_id))
+        builder.get_object('year').set_label(
+                                            Objects.albums.get_year(album_id))
+        self.add(builder.get_object('AlbumDetailedWidget'))
+
+        if show_menu:
+            self._menu = builder.get_object('menu')
+            self.eventbox = builder.get_object('eventbox')
+            self.eventbox.connect("button-press-event",
+                                  self._show_web_art)
+            self._menu.connect('clicked',
+                                                self._pop_menu)
+            self._menu.show()
+        else:
+            self.eventbox = None
+
+    """
+        Update playing track
+        @param track id as int
+    """
+    def update_playing_track(self, track_id):
+        self._tracks_widget1.update_playing(track_id)
+        self._tracks_widget2.update_playing(track_id)
+
+    """
+        Update cover for album id
+        @param album id as int
+    """
+    def update_cover(self, album_id):
+        if self._album_id == album_id:
+            self._cover.set_from_pixbuf(Objects.art.get(album_id,
+                                                        ArtSize.BIG))
+
+    """
+        Return album id for widget
+        @return album id as int
+    """
+    def get_id(self):
+        return self._album_id
+
+    """
+        Populate tracks
+    """
+    def populate(self):
+        self._stop = False
+        sql = Objects.db.get_cursor()
+        mid_tracks = int(0.5+Objects.albums.get_count(self._album_id,
+                                                      self._genre_id,
+                                                      sql)/2)
+        tracks = Objects.albums.get_tracks_infos(self._album_id,
+                                                 self._genre_id,
+                                                 sql)
+        self.populate_list_one(tracks[:mid_tracks],
+                               1)
+        self.populate_list_two(tracks[mid_tracks:],
+                               mid_tracks + 1)
+
+    """
+        Populate list one, thread safe
+        @param track's ids as array of int
+        @param track position as int
+    """
+    def populate_list_one(self, tracks, pos):
+        GLib.idle_add(self._add_tracks,
+                      tracks,
+                      self._tracks_widget1,
+                      pos)
+
+    """
+        Populate list two, thread safe
+        @param track's ids as array of int
+        @param track position as int
+    """
+    def populate_list_two(self, tracks, pos):
+        GLib.idle_add(self._add_tracks,
+                      tracks,
+                      self._tracks_widget2,
+                      pos)
+
+    """
+        Stop populating
+    """
+    def stop(self):
+        self._stop = True
+#######################
+# PRIVATE             #
+#######################
+    """
+        Popup menu for album
+        @param widget as Gtk.Button
+        @param album id as int
+    """
+    def _pop_menu(self, widget):
+        pop_menu = PopMainMenu(self._album_id, self._genre_id, True, False, widget)
+        popover = Gtk.Popover.new_from_model(self._menu, pop_menu)
+        popover.show()
+
+    """
+        Add tracks for to tracks widget
+        @param tracks as [(track_id, title, length, [artist ids])]
+        @param widget as TracksWidget
+        @param i as int
+    """
+    def _add_tracks(self, tracks, widget, i):
+        if not tracks or self._stop:
+            self._stop = False
+            return
+        track = tracks.pop(0)
+        track_id = track[0]
+        title = escape(track[1])
+        length = track[2]
+        artist_ids = track[3]
+
+        # If we are listening to a compilation, prepend artist name
+        if self._artist_id == Navigation.COMPILATIONS or\
+           len(artist_ids) > 1 or\
+           self._artist_id not in artist_ids:
+            artist_name = ""
+            for artist_id in artist_ids:
+                artist_name += translate_artist_name(
+                                Objects.artists.get_name(artist_id)) + ", "
+            title = "<b>%s</b>\n%s" % (escape(artist_name[:-2]),
+                                       title)
+
+        # Get track position in queue
+        pos = None
+        if Objects.player.is_in_queue(track_id):
+            pos = Objects.player.get_track_position(track_id)
+
+        widget.add_track(track_id,
+                         i,
+                         title,
+                         length,
+                         pos)
+        GLib.idle_add(self._add_tracks, tracks, widget, i+1)
+
+    """
+        On track activation, play track
+        @param widget as TracksWidget
+        @param track id as int
+    """
+    def _on_activated(self, widget, track_id):
+        if not Objects.player.is_party() and\
+           self._button_state != Gdk.ModifierType.CONTROL_MASK and\
+           self._button_state != Gdk.ModifierType.SHIFT_MASK:
+            Objects.player.set_albums(track_id,
+                                      self._artist_id,
+                                      self._genre_id)
+        Objects.player.load(track_id)
+        if self._button_state == Gdk.ModifierType.CONTROL_MASK:
+            Objects.player.context.next = NextContext.STOP_TRACK
+
+    """
+        Keep track of mask
+        @param widget as TrackWidget
+        @param event as Gdk.Event
+    """
+    def _on_button_press_event(self, widget, event):
+        self._button_state = event.get_state()
+
+    """
+        Popover with album art downloaded from the web (in fact google :-/)
+        @param: widget as eventbox
+        @param: data as unused
+    """
+    def _show_web_art(self, widget, data):
+        artist = Objects.artists.get_name(self._artist_id)
+        album = Objects.albums.get_name(self._album_id)
+        popover = PopImages(self._album_id)
+        popover.set_relative_to(widget)
+        popover.populate(artist + " " + album)
+        popover.show()
