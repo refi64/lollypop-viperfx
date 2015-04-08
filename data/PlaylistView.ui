@@ -53,9 +53,6 @@
             <property name="relief">none</property>
             <property name="always_show_image">True</property>
             <signal name="clicked" handler="_on_edit_btn_clicked" swapped="no"/>
-            <style>
-              <class name="menubutton"/>
-            </style>
           </object>
           <packing>
             <property name="left_attach">1</property>
@@ -66,7 +63,6 @@
       <packing>
         <property name="left_attach">0</property>
         <property name="top_attach">0</property>
-        <property name="width">2</property>
       </packing>
     </child>
     <child>
@@ -78,15 +74,8 @@
       </object>
       <packing>
         <property name="left_attach">0</property>
-        <property name="top_attach">2</property>
-        <property name="width">2</property>
+        <property name="top_attach">1</property>
       </packing>
-    </child>
-    <child>
-      <placeholder/>
-    </child>
-    <child>
-      <placeholder/>
     </child>
   </object>
 </interface>
