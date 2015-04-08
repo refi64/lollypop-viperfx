@@ -14,7 +14,7 @@
 from gi.repository import Gtk, GLib
 
 from lollypop.define import Objects
-from lollypop.utils import is_gnome, is_eos
+from lollypop.utils import use_csd
 
 
 # Dialog showing lollypop options
@@ -31,7 +31,7 @@ class SettingsDialog:
         self._settings_dialog = builder.get_object('settings_dialog')
         self._settings_dialog.set_transient_for(parent)
 
-        if is_gnome() or is_eos():
+        if use_csd():
             self._settings_dialog.set_titlebar(
                                 builder.get_object('header_bar'))
 
