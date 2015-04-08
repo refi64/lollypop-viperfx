@@ -147,11 +147,9 @@ class PlaylistsManagerWidget(Gtk.Bin):
         @param object id as int
         @param genre id as int
         @param is album as bool
-        @param parent as Gtk.Widget
     """
-    def __init__(self, object_id, genre_id, is_album, parent):
+    def __init__(self, object_id, genre_id, is_album):
         Gtk.Bin.__init__(self)
-        self._parent = parent
         self._genre_id = genre_id
         self._object_id = object_id
         self._is_album = is_album
@@ -164,14 +162,13 @@ class PlaylistsManagerWidget(Gtk.Bin):
         builder = Gtk.Builder()
         builder.add_from_resource(
                 '/org/gnome/Lollypop/PlaylistsManagerWidget.ui'
-                                  )
+                                 )
+        self._infobar = builder.get_object('infobar')
+        self._infobar_label = builder.get_object('infobarlabel')
 
         self._model = Gtk.ListStore(bool, str, GdkPixbuf.Pixbuf)
         self._model.set_sort_column_id(1, Gtk.SortType.ASCENDING)
         self._model.set_sort_func(1, self._sort_items)
-
-        if object_id != -1:
-            builder.get_object('back_btn').show()
 
         self._view = builder.get_object('view')
         self._view.set_model(self._model)
@@ -179,9 +176,6 @@ class PlaylistsManagerWidget(Gtk.Bin):
         builder.connect_signals(self)
 
         self.add(builder.get_object('widget'))
-
-        self._infobar = builder.get_object('infobar')
-        self._infobar_label = builder.get_object('infobarlabel')
 
         if self._object_id != -1:
             renderer0 = Gtk.CellRendererToggle()
@@ -215,6 +209,23 @@ class PlaylistsManagerWidget(Gtk.Bin):
         playlists = Objects.playlists.get()
         GLib.idle_add(self._append_playlists, playlists)
 
+    """
+        Add new playlist
+    """
+    def add_new_playlist(self):
+        existing_playlists = []
+        for item in self._model:
+            existing_playlists.append(item[1])
+
+        # Search for an available name
+        count = 1
+        name = _("New playlist ")+str(count)
+        while name in existing_playlists:
+            count += 1
+            name = _("New playlist ")+str(count)
+        self._model.append([True, name, self._del_pixbuf])
+        Objects.playlists.add(name)
+        self._set_current_object(name, True)
 #######################
 # PRIVATE             #
 #######################
@@ -256,13 +267,6 @@ class PlaylistsManagerWidget(Gtk.Bin):
         self._infobar_label.set_text(_("Remove \"%s\"?") %
                                      self._model.get_value(iterator, 1))
         self._infobar.show()
-
-    """
-        Restore previous view
-        @param button as Gtk.Button
-    """
-    def _on_back_btn_clicked(self, button):
-        Objects.window.destroy_current_view()
 
     """
         Hide infobar
@@ -307,25 +311,6 @@ class PlaylistsManagerWidget(Gtk.Bin):
         if event.keyval == 65535:
             path, column = self._view.get_cursor()
             self._show_infobar(path)
-
-    """
-        Add new playlist
-        @param widget as Gtk.Button
-    """
-    def _on_new_clicked(self, widget):
-        existing_playlists = []
-        for item in self._model:
-            existing_playlists.append(item[1])
-
-        # Search for an available name
-        count = 1
-        name = _("New playlist ")+str(count)
-        while name in existing_playlists:
-            count += 1
-            name = _("New playlist ")+str(count)
-        self._model.append([True, name, self._del_pixbuf])
-        Objects.playlists.add(name)
-        self._set_current_object(name, True)
 
     """
         When playlist is activated, add object to playlist
