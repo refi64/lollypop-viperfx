@@ -111,7 +111,7 @@ class AlbumDetailedWidget(Gtk.Grid):
         for disc in self._discs:
             if show_label:
                 label = Gtk.Label()
-                label.set_text(_("Disc %s" % disc))
+                label.set_text(_("Disc %s") % disc)
                 label.set_property('halign', Gtk.Align.START)
                 label.get_style_context().add_class('dim-label')
                 if i:
