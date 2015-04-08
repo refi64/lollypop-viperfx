@@ -229,7 +229,7 @@
                           </object>
                           <packing>
                             <property name="left_attach">0</property>
-                            <property name="top_attach">1</property>
+                            <property name="top_attach">2</property>
                           </packing>
                         </child>
                         <child>
@@ -239,6 +239,34 @@
                             <property name="halign">end</property>
                             <property name="hexpand">True</property>
                             <signal name="state-set" handler="_update_genres_setting" swapped="no"/>
+                          </object>
+                          <packing>
+                            <property name="left_attach">1</property>
+                            <property name="top_attach">2</property>
+                          </packing>
+                        </child>
+                        <child>
+                          <object class="GtkLabel" id="csd">
+                            <property name="visible">True</property>
+                            <property name="can_focus">False</property>
+                            <property name="halign">start</property>
+                            <property name="margin_right">50</property>
+                            <property name="margin_end">50</property>
+                            <property name="label" translatable="yes">Force CSDs (headerbars)</property>
+                            <property name="ellipsize">end</property>
+                          </object>
+                          <packing>
+                            <property name="left_attach">0</property>
+                            <property name="top_attach">1</property>
+                          </packing>
+                        </child>
+                        <child>
+                          <object class="GtkSwitch" id="switch_csd">
+                            <property name="visible">True</property>
+                            <property name="can_focus">True</property>
+                            <property name="halign">end</property>
+                            <property name="hexpand">True</property>
+                            <signal name="state-set" handler="_update_csd_setting" swapped="no"/>
                           </object>
                           <packing>
                             <property name="left_attach">1</property>
