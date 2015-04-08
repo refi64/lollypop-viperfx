@@ -94,7 +94,8 @@ class Container:
     """
     def show_playlist_manager(self, object_id, genre_id, is_album):
         old_view = self._stack.get_visible_child()
-        view = PlaylistManageView(object_id, genre_id, is_album)
+        view = PlaylistManageView(object_id, genre_id, is_album,
+                                  self._stack.get_allocated_width()/2)
         view.show()
         self._stack.add(view)
         self._stack.set_visible_child(view)
@@ -429,7 +430,8 @@ class Container:
                     view = PlaylistView(p_str, self._stack)
                     break
         else:
-            view = PlaylistManageView(-1, None, False)
+            view = PlaylistManageView(-1, None, False,
+                                      self._stack.get_allocated_width()/2)
         if view:
             view.show()
             self._stack.add(view)

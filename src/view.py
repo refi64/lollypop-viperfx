@@ -467,23 +467,27 @@ class PlaylistView(View):
 
 
 # Playlist view used to manage playlists
-class PlaylistManageView(Gtk.Bin):
+class PlaylistManageView(View):
     """
          @param object id as int
          @param genre id as int
          @param is album as bool
+         @param width as int
     """
-    def __init__(self, object_id, genre_id, is_album):
-        Gtk.Bin.__init__(self)
-        self._widget = PlaylistsManagerWidget(object_id,
-                                              genre_id,
-                                              is_album,
-                                              self)
-        self._widget.show()
-        self.add(self._widget)
+    def __init__(self, object_id, genre_id, is_album, width):
+        View.__init__(self)
+        self._manage_widget = PlaylistsManagerWidget(object_id,
+                                                     genre_id,
+                                                     is_album,
+                                                     width)
+        self._manage_widget.show()
+        self._scrolledWindow.set_property('halign', Gtk.Align.CENTER)
+        self._scrolledWindow.set_property('width-request', width)
+        self._viewport.add(self._manage_widget)
+        self.add(self._scrolledWindow)
 
     def populate(self):
-        self._widget.populate()
+        self._manage_widget.populate()
 
     def remove_signals(self):
         pass
