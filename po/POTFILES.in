@@ -45,3 +45,4 @@ src/collectionscanner.py
 [type: gettext/glade]data/SearchRow.ui
 [type: gettext/glade]data/SettingsDialog.ui
 [type: gettext/glade]data/DeviceManager.ui
+[type: gettext/glade]data/Unicode.ui
