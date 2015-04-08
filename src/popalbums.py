@@ -28,6 +28,7 @@ class PopAlbums(Gtk.Popover):
     def __init__(self):
         Gtk.Popover.__init__(self)
         self._stack = ViewContainer(1000)
+        self._stack.show()
 
         self._on_screen_artist = None
         self.add(self._stack)
@@ -40,13 +41,12 @@ class PopAlbums(Gtk.Popover):
     def populate(self):
         if self._on_screen_artist != Objects.player.current.aartist_id:
             self._on_screen_artist = Objects.player.current.aartist_id
-            previous = self._stack.get_visible_child()
             view = ArtistView(self._on_screen_artist, False)
             view.show()
             start_new_thread(view.populate, (None,))
             self._stack.add(view)
             self._stack.set_visible_child(view)
-            self._stack.clean_view(previous)
+            self._stack.clean_old_views(view)
 
     """
         Resize popover
@@ -68,7 +68,7 @@ class PopAlbums(Gtk.Popover):
         child = self._stack.get_visible_child()
         child.stop()
         self._on_screen_artist = None
-        self._stack.clean_view(child)
+        self._stack.clean_old_views(None)
 
 #######################
 # PRIVATE             #
