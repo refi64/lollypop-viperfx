@@ -196,7 +196,7 @@ class ArtistView(View):
         View.stop(self)
         for child in self._albumbox.get_children():
             child.stop()
-            child.destroy()
+
 #######################
 # PRIVATE             #
 #######################
@@ -384,7 +384,7 @@ class AlbumView(View):
             widget = AlbumWidget(albums.pop(0))
             widget.show()
             self._albumbox.insert(widget, -1)
-            GLib.idle_add(self._add_albums, albums, priority=GLib.PRIORITY_LOW)
+            GLib.idle_add(self._add_albums, albums)
         else:
             self._stop = False
 
