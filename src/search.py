@@ -95,8 +95,7 @@ class SearchRow(Gtk.ListBoxRow):
         @param button as Gtk.Button
     """
     def _on_playlist_clicked(self, button):
-        window = self._parent.get_toplevel()
-        window.show_playlist_manager(self.id, not self.is_track)
+        Objects.window.show_playlist_manager(self.id, None, not self.is_track)
 
     """
         Add track to queue
