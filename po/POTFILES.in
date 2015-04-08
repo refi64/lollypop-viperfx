@@ -48,3 +48,4 @@ src/collectionscanner.py
 [type: gettext/glade]data/SettingsDialog.ui
 [type: gettext/glade]data/DeviceManagerView.ui
 [type: gettext/glade]data/DeviceManagerWidget.ui
+[type: gettext/glade]data/Unicode.ui

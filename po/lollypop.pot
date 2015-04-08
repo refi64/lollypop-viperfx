@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-04-03 17:19+0200\n"
+"POT-Creation-Date: 2015-04-08 13:43+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -156,7 +156,7 @@ msgid "Music player for the GNOME desktop"
 msgstr ""
 
 #: ../src/toolbar.py:202 ../src/toolbar.py:252 ../src/toolbar.py:268
-#: ../src/fullscreen.py:185 ../data/headerbar.ui.h:7
+#: ../src/fullscreen.py:185 ../data/Toolbar.ui.h:7
 msgid "Play"
 msgstr ""
 
@@ -165,31 +165,31 @@ msgstr ""
 msgid "Pause"
 msgstr ""
 
-#: ../src/container.py:315
+#: ../src/container.py:301
 msgid "Popular albums"
 msgstr ""
 
-#: ../src/container.py:316 ../src/popmenu.py:49
+#: ../src/container.py:302 ../src/popmenu.py:49
 msgid "Playlists"
 msgstr ""
 
-#: ../src/container.py:318
+#: ../src/container.py:304
 msgid "All artists"
 msgstr ""
 
-#: ../src/container.py:320
+#: ../src/container.py:306
 msgid "All albums"
 msgstr ""
 
-#: ../src/container.py:362
+#: ../src/container.py:348
 msgid "Compilations"
 msgstr ""
 
-#: ../src/notification.py:39 ../data/headerbar.ui.h:6
+#: ../src/notification.py:37 ../data/Toolbar.ui.h:6
 msgid "Previous"
 msgstr ""
 
-#: ../src/notification.py:43 ../data/headerbar.ui.h:8
+#: ../src/notification.py:41 ../data/Toolbar.ui.h:8
 msgid "Next"
 msgstr ""
 
@@ -206,8 +206,8 @@ msgstr ""
 
 #: ../src/database_artists.py:70 ../src/database_albums.py:181
 #: ../src/database_tracks.py:181 ../src/database_genres.py:66
-#: ../src/collectionscanner.py:219 ../src/collectionscanner.py:224
-#: ../src/collectionscanner.py:238 ../src/collectionscanner.py:243
+#: ../src/collectionscanner.py:222 ../src/collectionscanner.py:227
+#: ../src/collectionscanner.py:241 ../src/collectionscanner.py:246
 msgid "Unknown"
 msgstr ""
 
@@ -215,34 +215,21 @@ msgstr ""
 msgid "Compilation"
 msgstr ""
 
-#: ../src/playlists.py:413 ../src/playlists.py:681
-#, python-format
-msgid "Remove \"%s\"?"
-msgstr ""
-
-#: ../src/playlists.py:480 ../src/playlists.py:483
-msgid "New playlist "
-msgstr ""
-
-#: ../src/playlists.py:709
-msgid "Remove these tracks?"
-msgstr ""
-
-#: ../src/devicemanager.py:53 ../src/devicemanager.py:411
+#: ../src/view.py:580 ../src/view.py:621
 #, python-format
 msgid "Synchronize %s"
 msgstr ""
 
-#: ../src/devicemanager.py:389
+#: ../src/view.py:612
+msgid "Cancel synchronization"
+msgstr ""
+
+#: ../src/devicemanager.py:401
 msgid "Unknown error while syncing, try to reboot your device"
 msgstr ""
 
-#: ../src/devicemanager.py:396
+#: ../src/devicemanager.py:408
 msgid "No free space available on device"
-msgstr ""
-
-#: ../src/devicemanager.py:419
-msgid "Cancel synchronization"
 msgstr ""
 
 #: ../src/popmenu.py:44
@@ -265,33 +252,33 @@ msgstr ""
 msgid "Stop after this artist"
 msgstr ""
 
-#: ../src/popmenu.py:97
+#: ../src/popmenu.py:95
 msgid "Add to others"
 msgstr ""
 
-#: ../src/popmenu.py:111
+#: ../src/popmenu.py:109
 #, python-format
 msgid "Remove from \"%s\""
 msgstr ""
 
-#: ../src/popmenu.py:119
+#: ../src/popmenu.py:116
 #, python-format
 msgid "Add to \"%s\""
 msgstr ""
 
-#: ../src/popmenu.py:164 ../data/SearchRow.ui.h:3
+#: ../src/popmenu.py:160 ../data/SearchRow.ui.h:3
 msgid "Add to queue"
 msgstr ""
 
-#: ../src/popmenu.py:170
+#: ../src/popmenu.py:166
 msgid "Next tracks"
 msgstr ""
 
-#: ../src/popmenu.py:172
+#: ../src/popmenu.py:168
 msgid "Next track"
 msgstr ""
 
-#: ../src/popmenu.py:177
+#: ../src/popmenu.py:173
 msgid "Remove from queue"
 msgstr ""
 
@@ -301,11 +288,11 @@ msgstr ""
 
 #. Handle language ordering
 #. Translators: Add here words that shoud be ignored for artist sort order
-#: ../src/utils.py:43
+#: ../src/utils.py:61
 msgid "The the"
 msgstr ""
 
-#: ../src/search.py:150
+#: ../src/search.py:148
 msgid "Search:"
 msgstr ""
 
@@ -325,31 +312,31 @@ msgstr ""
 msgid "Clear queue"
 msgstr ""
 
-#: ../data/app-menu.ui.h:1
-msgid "_Preferences"
-msgstr ""
-
-#: ../data/app-menu.ui.h:2
+#: ../data/Appmenu.ui.h:1
 msgid "_Update music"
 msgstr ""
 
-#: ../data/app-menu.ui.h:3
+#: ../data/Appmenu.ui.h:2
 msgid "_Fullscreen"
 msgstr ""
 
-#: ../data/app-menu.ui.h:4
+#: ../data/Appmenu.ui.h:3
+msgid "_Preferences"
+msgstr ""
+
+#: ../data/Appmenu.ui.h:4
 msgid "_About"
 msgstr ""
 
-#: ../data/app-menu.ui.h:5
+#: ../data/Appmenu.ui.h:5
 msgid "_Quit"
 msgstr ""
 
-#: ../data/PlaylistsManagerWidget.ui.h:1 ../data/PlaylistView.ui.h:2
+#: ../data/PlaylistEditWidget.ui.h:1 ../data/PlaylistsManagerWidget.ui.h:1
 msgid "Confirm"
 msgstr ""
 
-#: ../data/PlaylistsManagerWidget.ui.h:2
+#: ../data/PlaylistsManagerView.ui.h:1
 msgid "New playlist"
 msgstr ""
 
@@ -357,43 +344,43 @@ msgstr ""
 msgid "Edit"
 msgstr ""
 
-#: ../data/headerbar.ui.h:1
+#: ../data/Toolbar.ui.h:1
 msgid "No shuffle"
 msgstr ""
 
-#: ../data/headerbar.ui.h:2
+#: ../data/Toolbar.ui.h:2
 msgid "Shuffle albums"
 msgstr ""
 
-#: ../data/headerbar.ui.h:3
+#: ../data/Toolbar.ui.h:3
 msgid "Shuffle tracks"
 msgstr ""
 
-#: ../data/headerbar.ui.h:4
+#: ../data/Toolbar.ui.h:4
 msgid "Shuffle albums from artist"
 msgstr ""
 
-#: ../data/headerbar.ui.h:5
+#: ../data/Toolbar.ui.h:5
 msgid "Shuffle tracks from artist"
 msgstr ""
 
-#: ../data/headerbar.ui.h:9
+#: ../data/Toolbar.ui.h:9
 msgid "Settings"
 msgstr ""
 
-#: ../data/headerbar.ui.h:10
+#: ../data/Toolbar.ui.h:10
 msgid "Shuffle"
 msgstr ""
 
-#: ../data/headerbar.ui.h:11 ../data/SettingsDialog.ui.h:15
+#: ../data/Toolbar.ui.h:11 ../data/SettingsDialog.ui.h:15
 msgid "Party mode"
 msgstr ""
 
-#: ../data/headerbar.ui.h:12
+#: ../data/Toolbar.ui.h:12
 msgid "Search"
 msgstr ""
 
-#: ../data/headerbar.ui.h:13
+#: ../data/Toolbar.ui.h:13
 msgid "Queue"
 msgstr ""
 
@@ -457,6 +444,16 @@ msgstr ""
 msgid "Select what will be available in party mode"
 msgstr ""
 
-#: ../data/DeviceManager.ui.h:1
+#: ../data/DeviceManagerView.ui.h:1
 msgid "Synchronize your device with this playlists"
+msgstr ""
+
+#: ../data/Unicode.ui.h:1
+msgid "Error"
+msgstr ""
+
+#: ../data/Unicode.ui.h:2
+msgid ""
+"Lollypop isn't designed to work without an unicode locale.\n"
+"Please fix your system."
 msgstr ""

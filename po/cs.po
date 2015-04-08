@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lollypop\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-04-03 17:19+0200\n"
+"POT-Creation-Date: 2015-04-08 13:43+0200\n"
 "PO-Revision-Date: 2015-04-04 11:11+0000\n"
 "Last-Translator: fri\n"
 "Language-Team: Czech (http://www.transifex.com/projects/p/lollypop/language/"
@@ -164,7 +164,7 @@ msgid "Music player for the GNOME desktop"
 msgstr "Přehrávač hudby pro pracovní prostředí GNOME"
 
 #: ../src/toolbar.py:202 ../src/toolbar.py:252 ../src/toolbar.py:268
-#: ../src/fullscreen.py:185 ../data/headerbar.ui.h:7
+#: ../src/fullscreen.py:185 ../data/Toolbar.ui.h:7
 msgid "Play"
 msgstr "Přehrát"
 
@@ -173,31 +173,31 @@ msgstr "Přehrát"
 msgid "Pause"
 msgstr "Pozastavit"
 
-#: ../src/container.py:315
+#: ../src/container.py:301
 msgid "Popular albums"
 msgstr "Oblíbená alba"
 
-#: ../src/container.py:316 ../src/popmenu.py:49
+#: ../src/container.py:302 ../src/popmenu.py:49
 msgid "Playlists"
 msgstr "Seznamy skladeb"
 
-#: ../src/container.py:318
+#: ../src/container.py:304
 msgid "All artists"
 msgstr "Všichni umělci"
 
-#: ../src/container.py:320
+#: ../src/container.py:306
 msgid "All albums"
 msgstr "Všechna alba"
 
-#: ../src/container.py:362
+#: ../src/container.py:348
 msgid "Compilations"
 msgstr "Kompilace"
 
-#: ../src/notification.py:39 ../data/headerbar.ui.h:6
+#: ../src/notification.py:37 ../data/Toolbar.ui.h:6
 msgid "Previous"
 msgstr "Předchozí"
 
-#: ../src/notification.py:43 ../data/headerbar.ui.h:8
+#: ../src/notification.py:41 ../data/Toolbar.ui.h:8
 msgid "Next"
 msgstr "Další"
 
@@ -214,8 +214,8 @@ msgstr "Mnoho umělců"
 
 #: ../src/database_artists.py:70 ../src/database_albums.py:181
 #: ../src/database_tracks.py:181 ../src/database_genres.py:66
-#: ../src/collectionscanner.py:219 ../src/collectionscanner.py:224
-#: ../src/collectionscanner.py:238 ../src/collectionscanner.py:243
+#: ../src/collectionscanner.py:222 ../src/collectionscanner.py:227
+#: ../src/collectionscanner.py:241 ../src/collectionscanner.py:246
 msgid "Unknown"
 msgstr "Neznámý"
 
@@ -223,36 +223,23 @@ msgstr "Neznámý"
 msgid "Compilation"
 msgstr "Kompilace"
 
-#: ../src/playlists.py:413 ../src/playlists.py:681
-#, python-format
-msgid "Remove \"%s\"?"
-msgstr "Odstranit \"%s\"?"
-
-#: ../src/playlists.py:480 ../src/playlists.py:483
-msgid "New playlist "
-msgstr "Nový seznam skladeb"
-
-#: ../src/playlists.py:709
-msgid "Remove these tracks?"
-msgstr "Odstranit tyto skladby?"
-
-#: ../src/devicemanager.py:53 ../src/devicemanager.py:411
+#: ../src/view.py:580 ../src/view.py:621
 #, python-format
 msgid "Synchronize %s"
 msgstr "Seřídit %s"
 
-#: ../src/devicemanager.py:389
+#: ../src/view.py:612
+msgid "Cancel synchronization"
+msgstr "Zrušit seřizování"
+
+#: ../src/devicemanager.py:401
 msgid "Unknown error while syncing, try to reboot your device"
 msgstr ""
 "Při seřizování nastala neznámá chyba. pokuste se své zařízení zavést znovu"
 
-#: ../src/devicemanager.py:396
+#: ../src/devicemanager.py:408
 msgid "No free space available on device"
 msgstr "Na zařízení není žádné volné místo"
-
-#: ../src/devicemanager.py:419
-msgid "Cancel synchronization"
-msgstr "Zrušit seřizování"
 
 #: ../src/popmenu.py:44
 msgid "Playback"
@@ -274,33 +261,33 @@ msgstr "Zastavit po tomto albu"
 msgid "Stop after this artist"
 msgstr "Zastavit po tomto umělci"
 
-#: ../src/popmenu.py:97
+#: ../src/popmenu.py:95
 msgid "Add to others"
 msgstr "Přidat do ostatních"
 
-#: ../src/popmenu.py:111
+#: ../src/popmenu.py:109
 #, python-format
 msgid "Remove from \"%s\""
 msgstr "Odstranit z \"%s\""
 
-#: ../src/popmenu.py:119
+#: ../src/popmenu.py:116
 #, python-format
 msgid "Add to \"%s\""
 msgstr "Přidat do \"%s\""
 
-#: ../src/popmenu.py:164 ../data/SearchRow.ui.h:3
+#: ../src/popmenu.py:160 ../data/SearchRow.ui.h:3
 msgid "Add to queue"
 msgstr "Přidat do řady"
 
-#: ../src/popmenu.py:170
+#: ../src/popmenu.py:166
 msgid "Next tracks"
 msgstr "Další skladby"
 
-#: ../src/popmenu.py:172
+#: ../src/popmenu.py:168
 msgid "Next track"
 msgstr "Další skladba"
 
-#: ../src/popmenu.py:177
+#: ../src/popmenu.py:173
 msgid "Remove from queue"
 msgstr "Odstranit z řady"
 
@@ -310,11 +297,11 @@ msgstr "Vybrat obal pro toto album"
 
 #. Handle language ordering
 #. Translators: Add here words that shoud be ignored for artist sort order
-#: ../src/utils.py:43
+#: ../src/utils.py:61
 msgid "The the"
 msgstr "\"The\""
 
-#: ../src/search.py:150
+#: ../src/search.py:148
 msgid "Search:"
 msgstr "Hledání:"
 
@@ -334,31 +321,31 @@ msgstr "Řada:"
 msgid "Clear queue"
 msgstr "Vyprázdnit řadu"
 
-#: ../data/app-menu.ui.h:1
-msgid "_Preferences"
-msgstr "_Nastavení"
-
-#: ../data/app-menu.ui.h:2
+#: ../data/Appmenu.ui.h:1
 msgid "_Update music"
 msgstr "_Aktualizovat hudbu"
 
-#: ../data/app-menu.ui.h:3
+#: ../data/Appmenu.ui.h:2
 msgid "_Fullscreen"
 msgstr "_Na celou obrazovku"
 
-#: ../data/app-menu.ui.h:4
+#: ../data/Appmenu.ui.h:3
+msgid "_Preferences"
+msgstr "_Nastavení"
+
+#: ../data/Appmenu.ui.h:4
 msgid "_About"
 msgstr "O _programu"
 
-#: ../data/app-menu.ui.h:5
+#: ../data/Appmenu.ui.h:5
 msgid "_Quit"
 msgstr "_Ukončit"
 
-#: ../data/PlaylistsManagerWidget.ui.h:1 ../data/PlaylistView.ui.h:2
+#: ../data/PlaylistEditWidget.ui.h:1 ../data/PlaylistsManagerWidget.ui.h:1
 msgid "Confirm"
 msgstr "Potvrdit"
 
-#: ../data/PlaylistsManagerWidget.ui.h:2
+#: ../data/PlaylistsManagerView.ui.h:1
 msgid "New playlist"
 msgstr "Nový seznam skladeb"
 
@@ -366,43 +353,43 @@ msgstr "Nový seznam skladeb"
 msgid "Edit"
 msgstr "Upravit"
 
-#: ../data/headerbar.ui.h:1
+#: ../data/Toolbar.ui.h:1
 msgid "No shuffle"
 msgstr "Žádné míchání"
 
-#: ../data/headerbar.ui.h:2
+#: ../data/Toolbar.ui.h:2
 msgid "Shuffle albums"
 msgstr "Zamíchat alba"
 
-#: ../data/headerbar.ui.h:3
+#: ../data/Toolbar.ui.h:3
 msgid "Shuffle tracks"
 msgstr "Zamíchat skladby"
 
-#: ../data/headerbar.ui.h:4
+#: ../data/Toolbar.ui.h:4
 msgid "Shuffle albums from artist"
 msgstr "Zamíchat alba od umělce"
 
-#: ../data/headerbar.ui.h:5
+#: ../data/Toolbar.ui.h:5
 msgid "Shuffle tracks from artist"
 msgstr "Zamíchat skladby od umělce"
 
-#: ../data/headerbar.ui.h:9
+#: ../data/Toolbar.ui.h:9
 msgid "Settings"
 msgstr "Nastavení"
 
-#: ../data/headerbar.ui.h:10
+#: ../data/Toolbar.ui.h:10
 msgid "Shuffle"
 msgstr "Zamíchat"
 
-#: ../data/headerbar.ui.h:11 ../data/SettingsDialog.ui.h:15
+#: ../data/Toolbar.ui.h:11 ../data/SettingsDialog.ui.h:15
 msgid "Party mode"
 msgstr "Večírkový režim"
 
-#: ../data/headerbar.ui.h:12
+#: ../data/Toolbar.ui.h:12
 msgid "Search"
 msgstr "Hledat"
 
-#: ../data/headerbar.ui.h:13
+#: ../data/Toolbar.ui.h:13
 msgid "Queue"
 msgstr "Řada"
 
@@ -466,6 +453,25 @@ msgstr "Hudba"
 msgid "Select what will be available in party mode"
 msgstr "Vyberte, co bude povoleno ve večírkovém režimu"
 
-#: ../data/DeviceManager.ui.h:1
+#: ../data/DeviceManagerView.ui.h:1
 msgid "Synchronize your device with this playlists"
 msgstr "Seřídit zařízení s tímto seznamem skladeb"
+
+#: ../data/Unicode.ui.h:1
+msgid "Error"
+msgstr ""
+
+#: ../data/Unicode.ui.h:2
+msgid ""
+"Lollypop isn't designed to work without an unicode locale.\n"
+"Please fix your system."
+msgstr ""
+
+#~ msgid "Remove \"%s\"?"
+#~ msgstr "Odstranit \"%s\"?"
+
+#~ msgid "New playlist "
+#~ msgstr "Nový seznam skladeb"
+
+#~ msgid "Remove these tracks?"
+#~ msgstr "Odstranit tyto skladby?"

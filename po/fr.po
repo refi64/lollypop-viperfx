@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lollypop\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-04-03 17:19+0200\n"
+"POT-Creation-Date: 2015-04-08 13:43+0200\n"
 "PO-Revision-Date: 2015-04-05 09:11+0000\n"
 "Last-Translator: Cédric Bellegarde <web@adishatz.org>\n"
 "Language-Team: French (http://www.transifex.com/projects/p/lollypop/language/"
@@ -165,7 +165,7 @@ msgid "Music player for the GNOME desktop"
 msgstr "Lecteur de musique pour le bureau GNOME"
 
 #: ../src/toolbar.py:202 ../src/toolbar.py:252 ../src/toolbar.py:268
-#: ../src/fullscreen.py:185 ../data/headerbar.ui.h:7
+#: ../src/fullscreen.py:185 ../data/Toolbar.ui.h:7
 msgid "Play"
 msgstr "Lecture"
 
@@ -174,31 +174,31 @@ msgstr "Lecture"
 msgid "Pause"
 msgstr "Pause"
 
-#: ../src/container.py:315
+#: ../src/container.py:301
 msgid "Popular albums"
 msgstr "Albums populaires"
 
-#: ../src/container.py:316 ../src/popmenu.py:49
+#: ../src/container.py:302 ../src/popmenu.py:49
 msgid "Playlists"
 msgstr "Listes de lecture"
 
-#: ../src/container.py:318
+#: ../src/container.py:304
 msgid "All artists"
 msgstr "Tous les artistes"
 
-#: ../src/container.py:320
+#: ../src/container.py:306
 msgid "All albums"
 msgstr "Tous les albums"
 
-#: ../src/container.py:362
+#: ../src/container.py:348
 msgid "Compilations"
 msgstr "Compilations"
 
-#: ../src/notification.py:39 ../data/headerbar.ui.h:6
+#: ../src/notification.py:37 ../data/Toolbar.ui.h:6
 msgid "Previous"
 msgstr "Précédent"
 
-#: ../src/notification.py:43 ../data/headerbar.ui.h:8
+#: ../src/notification.py:41 ../data/Toolbar.ui.h:8
 msgid "Next"
 msgstr "Suivant"
 
@@ -215,8 +215,8 @@ msgstr "Plusieurs artistes"
 
 #: ../src/database_artists.py:70 ../src/database_albums.py:181
 #: ../src/database_tracks.py:181 ../src/database_genres.py:66
-#: ../src/collectionscanner.py:219 ../src/collectionscanner.py:224
-#: ../src/collectionscanner.py:238 ../src/collectionscanner.py:243
+#: ../src/collectionscanner.py:222 ../src/collectionscanner.py:227
+#: ../src/collectionscanner.py:241 ../src/collectionscanner.py:246
 msgid "Unknown"
 msgstr "Inconnu"
 
@@ -224,37 +224,24 @@ msgstr "Inconnu"
 msgid "Compilation"
 msgstr "Compilation"
 
-#: ../src/playlists.py:413 ../src/playlists.py:681
-#, python-format
-msgid "Remove \"%s\"?"
-msgstr "Supprimer \"%s\"?"
-
-#: ../src/playlists.py:480 ../src/playlists.py:483
-msgid "New playlist "
-msgstr "Nouvelle liste de lecture "
-
-#: ../src/playlists.py:709
-msgid "Remove these tracks?"
-msgstr "Supprimer ces morceaux?"
-
-#: ../src/devicemanager.py:53 ../src/devicemanager.py:411
+#: ../src/view.py:580 ../src/view.py:621
 #, python-format
 msgid "Synchronize %s"
 msgstr "Synchroniser %s"
 
-#: ../src/devicemanager.py:389
+#: ../src/view.py:612
+msgid "Cancel synchronization"
+msgstr "Annuler la synchronisation"
+
+#: ../src/devicemanager.py:401
 msgid "Unknown error while syncing, try to reboot your device"
 msgstr ""
 "Erreur inconnue lors de la synchronisation, essayez de redémarrer votre "
 "appareil"
 
-#: ../src/devicemanager.py:396
+#: ../src/devicemanager.py:408
 msgid "No free space available on device"
 msgstr "Pas d'espace disponible sur l'appareil"
-
-#: ../src/devicemanager.py:419
-msgid "Cancel synchronization"
-msgstr "Annuler la synchronisation"
 
 #: ../src/popmenu.py:44
 msgid "Playback"
@@ -276,33 +263,33 @@ msgstr "Arrêter la lecture après cet album"
 msgid "Stop after this artist"
 msgstr "Arrêter la lecture après cet artiste"
 
-#: ../src/popmenu.py:97
+#: ../src/popmenu.py:95
 msgid "Add to others"
 msgstr "Ajouter aux autres"
 
-#: ../src/popmenu.py:111
+#: ../src/popmenu.py:109
 #, python-format
 msgid "Remove from \"%s\""
 msgstr "Supprimer de \"%s\""
 
-#: ../src/popmenu.py:119
+#: ../src/popmenu.py:116
 #, python-format
 msgid "Add to \"%s\""
 msgstr "Ajouter à \"%s\""
 
-#: ../src/popmenu.py:164 ../data/SearchRow.ui.h:3
+#: ../src/popmenu.py:160 ../data/SearchRow.ui.h:3
 msgid "Add to queue"
 msgstr "Ajouter à la file d'attente"
 
-#: ../src/popmenu.py:170
+#: ../src/popmenu.py:166
 msgid "Next tracks"
 msgstr "Morceaux suivants"
 
-#: ../src/popmenu.py:172
+#: ../src/popmenu.py:168
 msgid "Next track"
 msgstr "Morceau suivant"
 
-#: ../src/popmenu.py:177
+#: ../src/popmenu.py:173
 msgid "Remove from queue"
 msgstr "Supprimer de la liste d'attente"
 
@@ -312,11 +299,11 @@ msgstr "Sélectionnez une pochette pour cet album"
 
 #. Handle language ordering
 #. Translators: Add here words that shoud be ignored for artist sort order
-#: ../src/utils.py:43
+#: ../src/utils.py:61
 msgid "The the"
 msgstr "The the"
 
-#: ../src/search.py:150
+#: ../src/search.py:148
 msgid "Search:"
 msgstr "Recherche:"
 
@@ -336,31 +323,31 @@ msgstr "File d'attente:"
 msgid "Clear queue"
 msgstr "Vider la file d'attente"
 
-#: ../data/app-menu.ui.h:1
-msgid "_Preferences"
-msgstr "_Préférences"
-
-#: ../data/app-menu.ui.h:2
+#: ../data/Appmenu.ui.h:1
 msgid "_Update music"
 msgstr "Mise à jour de la musique"
 
-#: ../data/app-menu.ui.h:3
+#: ../data/Appmenu.ui.h:2
 msgid "_Fullscreen"
 msgstr "_Plein écran"
 
-#: ../data/app-menu.ui.h:4
+#: ../data/Appmenu.ui.h:3
+msgid "_Preferences"
+msgstr "_Préférences"
+
+#: ../data/Appmenu.ui.h:4
 msgid "_About"
 msgstr "À _propos"
 
-#: ../data/app-menu.ui.h:5
+#: ../data/Appmenu.ui.h:5
 msgid "_Quit"
 msgstr "_Quitter"
 
-#: ../data/PlaylistsManagerWidget.ui.h:1 ../data/PlaylistView.ui.h:2
+#: ../data/PlaylistEditWidget.ui.h:1 ../data/PlaylistsManagerWidget.ui.h:1
 msgid "Confirm"
 msgstr "Confirmer"
 
-#: ../data/PlaylistsManagerWidget.ui.h:2
+#: ../data/PlaylistsManagerView.ui.h:1
 msgid "New playlist"
 msgstr "Nouvelle liste de lecture"
 
@@ -368,43 +355,43 @@ msgstr "Nouvelle liste de lecture"
 msgid "Edit"
 msgstr "Editer"
 
-#: ../data/headerbar.ui.h:1
+#: ../data/Toolbar.ui.h:1
 msgid "No shuffle"
 msgstr "Ne pas mélanger"
 
-#: ../data/headerbar.ui.h:2
+#: ../data/Toolbar.ui.h:2
 msgid "Shuffle albums"
 msgstr "Mélanger les albums"
 
-#: ../data/headerbar.ui.h:3
+#: ../data/Toolbar.ui.h:3
 msgid "Shuffle tracks"
 msgstr "Mélanger les morceaux"
 
-#: ../data/headerbar.ui.h:4
+#: ../data/Toolbar.ui.h:4
 msgid "Shuffle albums from artist"
 msgstr "Mélanger les albums de l'artiste"
 
-#: ../data/headerbar.ui.h:5
+#: ../data/Toolbar.ui.h:5
 msgid "Shuffle tracks from artist"
 msgstr "Mélanger les morceaux de l'artiste"
 
-#: ../data/headerbar.ui.h:9
+#: ../data/Toolbar.ui.h:9
 msgid "Settings"
 msgstr "Paramètres"
 
-#: ../data/headerbar.ui.h:10
+#: ../data/Toolbar.ui.h:10
 msgid "Shuffle"
 msgstr "Aléatoire"
 
-#: ../data/headerbar.ui.h:11 ../data/SettingsDialog.ui.h:15
+#: ../data/Toolbar.ui.h:11 ../data/SettingsDialog.ui.h:15
 msgid "Party mode"
 msgstr "Mode soirée"
 
-#: ../data/headerbar.ui.h:12
+#: ../data/Toolbar.ui.h:12
 msgid "Search"
 msgstr "Recherche"
 
-#: ../data/headerbar.ui.h:13
+#: ../data/Toolbar.ui.h:13
 msgid "Queue"
 msgstr "File d'attente"
 
@@ -468,6 +455,18 @@ msgstr "Musique"
 msgid "Select what will be available in party mode"
 msgstr "Selectionnez ce qui sera disponible en mode soirée"
 
-#: ../data/DeviceManager.ui.h:1
+#: ../data/DeviceManagerView.ui.h:1
 msgid "Synchronize your device with this playlists"
 msgstr "Synchronisez votre appareil avec ces listes de lecture"
+
+#: ../data/Unicode.ui.h:1
+msgid "Error"
+msgstr "Erreur"
+
+#: ../data/Unicode.ui.h:2
+msgid ""
+"Lollypop isn't designed to work without an unicode locale.\n"
+"Please fix your system."
+msgstr ""
+"Lolypop n'est pas conçu pour fonctionner sans unicodeMerci de positionner "
+"votre système à fr_FR.UTF-8"

@@ -14,7 +14,7 @@
         <property name="margin_start">50</property>
         <property name="margin_top">50</property>
         <property name="margin_bottom">50</property>
-        <property name="label">Lollypop isn't designed to work without an unicode locale.
+        <property name="label" translatable="yes">Lollypop isn't designed to work without an unicode locale.
 Please fix your system.</property>
         <property name="justify">center</property>
         <attributes>
