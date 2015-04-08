@@ -28,21 +28,23 @@ src/settings.py
 src/mpris.py
 src/utils.py
 src/search.py
-src/view_widgets.py
+src/album_widgets.py
 src/player.py
 src/collectionscanner.py
 [type: gettext/glade]data/AboutDialog.ui.in
 [type: gettext/glade]data/AlbumWidget.ui
 [type: gettext/glade]data/QueueWidget.ui
-[type: gettext/glade]data/app-menu.ui
+[type: gettext/glade]data/Appmenu.ui
 [type: gettext/glade]data/AlbumDetailedWidget.ui
 [type: gettext/glade]data/TrackRow.ui
+[type: gettext/glade]data/PlaylistEditView.ui
 [type: gettext/glade]data/PlaylistEditWidget.ui
+[type: gettext/glade]data/PlaylistsManagerView.ui
 [type: gettext/glade]data/PlaylistsManagerWidget.ui
 [type: gettext/glade]data/PlaylistView.ui
 [type: gettext/glade]data/ArtistView.ui
-[type: gettext/glade]data/headerbar.ui
+[type: gettext/glade]data/Toolbar.ui
 [type: gettext/glade]data/SearchRow.ui
 [type: gettext/glade]data/SettingsDialog.ui
-[type: gettext/glade]data/DeviceManager.ui
-[type: gettext/glade]data/Unicode.ui
+[type: gettext/glade]data/DeviceManagerView.ui
+[type: gettext/glade]data/DeviceManagerWidget.ui

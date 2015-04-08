@@ -1,7 +1,7 @@
 # SOME DESCRIPTIVE TITLE.
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
-# 
+#
 # Translators:
 # Dušan Kazik <prescott66@gmail.com>, 2015
 msgid ""
@@ -11,11 +11,12 @@ msgstr ""
 "POT-Creation-Date: 2015-04-03 17:19+0200\n"
 "PO-Revision-Date: 2015-04-04 10:37+0000\n"
 "Last-Translator: Cédric Bellegarde <web@adishatz.org>\n"
-"Language-Team: Slovak (http://www.transifex.com/projects/p/lollypop/language/sk/)\n"
+"Language-Team: Slovak (http://www.transifex.com/projects/p/lollypop/language/"
+"sk/)\n"
+"Language: sk\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Language: sk\n"
 "Plural-Forms: nplurals=3; plural=(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2;\n"
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:1
@@ -73,7 +74,9 @@ msgstr "Verzia databázy"
 #: ../data/org.gnome.Lollypop.gschema.xml.h:14
 msgid ""
 "Reset this value will reset the database, popular albums will be restored"
-msgstr "Vynulovaním tejto hodnoty sa vynuluje databáza. Obľúbené albumy budú obnovené."
+msgstr ""
+"Vynulovaním tejto hodnoty sa vynuluje databáza. Obľúbené albumy budú "
+"obnovené."
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:15
 msgid "Replay gain value in db"
@@ -131,15 +134,18 @@ msgstr "VNÚTORNÉ"
 msgid "Shuffle mode"
 msgstr "Náhodný režim"
 
-#. Translators: Don't translate allowed values, just the description in the
-#. brackets
+#. Translators: Don't translate allowed values, just the description in the brackets
 #: ../data/org.gnome.Lollypop.gschema.xml.h:30
 msgid ""
-"Value identifies whether to shuffle tracks/albums. Allowed values are: "
-"\"none\" (shuffle off), \"tracks\" (shuffle tracks) , \"albums\" (shuffle "
-"albums), \"tracks_artist\" (shuffle tracks from artist), \"albums_artist\" "
-"(shuffle albums from artist)."
-msgstr "Hodnota, ktorá identifikuje, či sa majú zamiešať skladby/albumy. Vhodné hodnoty sú: „none“ (zamiešanie vypnuté), „tracks“ (zamiešanie skladieb), „albums“ (zamiešanie albumov), „tracks_artist“ (zamiešanie skladieb od interpreta), „albums_artist“ (zamiešanie albumov od interpreta)."
+"Value identifies whether to shuffle tracks/albums. Allowed values are: \"none"
+"\" (shuffle off), \"tracks\" (shuffle tracks) , \"albums\" (shuffle albums), "
+"\"tracks_artist\" (shuffle tracks from artist), \"albums_artist\" (shuffle "
+"albums from artist)."
+msgstr ""
+"Hodnota, ktorá identifikuje, či sa majú zamiešať skladby/albumy. Vhodné "
+"hodnoty sú: „none“ (zamiešanie vypnuté), „tracks“ (zamiešanie skladieb), "
+"„albums“ (zamiešanie albumov), „tracks_artist“ (zamiešanie skladieb od "
+"interpreta), „albums_artist“ (zamiešanie albumov od interpreta)."
 
 #: ../data/lollypop.desktop.in.h:1 ../data/lollypop.appdata.xml.in.h:1
 msgid "Lollypop"
@@ -237,7 +243,9 @@ msgstr "Synchronizovať %s"
 
 #: ../src/devicemanager.py:389
 msgid "Unknown error while syncing, try to reboot your device"
-msgstr "Vyskytla sa neznáma chyba počas synchronizácie. Skúste reštartovať vaše zariadenie."
+msgstr ""
+"Vyskytla sa neznáma chyba počas synchronizácie. Skúste reštartovať vaše "
+"zariadenie."
 
 #: ../src/devicemanager.py:396
 msgid "No free space available on device"
