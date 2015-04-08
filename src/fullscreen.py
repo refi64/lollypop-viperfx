@@ -71,14 +71,11 @@ class FullScreen(Gtk.Window):
                                                   self._on_current_changed)
         self._signal2_id = Objects.player.connect("status-changed",
                                                   self._on_status_changed)
-        if not Objects.player.is_party():
-            settings = Gtk.Settings.get_default()
-            settings.set_property("gtk-application-prefer-dark-theme", True)
-            if not is_playing:
-                Objects.player.set_party(True)
         if is_playing:
             self._change_play_btn_status(self._pause_image, _("Pause"))
             self._on_current_changed(Objects.player)
+        else:
+            Objects.player.set_party(True)
         if not self._timeout:
             self._timeout = GLib.timeout_add(1000, self._update_position)
         Gtk.Window.do_show(self)
@@ -95,10 +92,6 @@ class FullScreen(Gtk.Window):
         if self._signal2_id:
             Objects.player.disconnect(self._signal2_id)
             self._signal2_id = None
-        if not Objects.player.is_party() and\
-           not Objects.settings.get_value('dark-ui'):
-            settings = Gtk.Settings.get_default()
-            settings.set_property("gtk-application-prefer-dark-theme", False)
         if self._timeout:
             GLib.source_remove(self._timeout)
             self._timeout = None
