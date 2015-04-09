@@ -41,9 +41,6 @@ class SettingsDialog:
         switch_view = builder.get_object('switch_dark')
         switch_view.set_state(Objects.settings.get_value('dark-ui'))
 
-        switch_csd = builder.get_object('switch_csd')
-        switch_csd.set_state(Objects.settings.get_value('force-csd'))
-
         switch_background = builder.get_object('switch_background')
         switch_background.set_state(Objects.settings.get_value(
                                                     'background-mode'))
@@ -150,14 +147,6 @@ class SettingsDialog:
         if not Objects.player.is_party():
             settings = Gtk.Settings.get_default()
             settings.set_property("gtk-application-prefer-dark-theme", state)
-
-    """
-        Update CSD setting
-        @param widget as unused, state as widget state
-    """
-    def _update_csd_setting(self, widget, state):
-        Objects.settings.set_value('force-csd',
-                                   GLib.Variant('b', state))
 
     """
         Update scan setting
