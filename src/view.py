@@ -287,7 +287,8 @@ class AlbumView(View):
                                          'paned-context-height').get_int32()
         # We set a stupid max value, safe as self._context is shrinked
         if height == -1:
-            paned.set_position(10000000)
+            height = 10000000
+        paned.set_position(height)
         paned.connect('notify::position', self._on_position_notify)
         paned.show()
         self.add(paned)
