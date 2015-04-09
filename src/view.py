@@ -16,7 +16,7 @@ from _thread import start_new_thread
 from gettext import gettext as _
 import os
 
-from lollypop.define import Objects, Navigation
+from lollypop.define import Objects, Navigation, ArtSize
 from lollypop.playlist_widgets import PlaylistsManagerWidget,\
                                       PlaylistEditWidget,\
                                       PlaylistWidget
@@ -83,7 +83,6 @@ class View(Gtk.Grid):
 
         self._scrolledWindow.show()
         self._viewport = Gtk.Viewport()
-        #self._viewport.set_property("valign", Gtk.Align.START)
         self._scrolledWindow.add(self._viewport)
         self._viewport.show()
 
@@ -248,7 +247,7 @@ class AlbumContextView(View):
         View.__init__(self)
         self._viewport.add(widget)
         self._viewport.show()
-        self._scrolledWindow.set_min_content_height(250)
+        self._scrolledWindow.set_min_content_height(ArtSize.BIG+25)
         self._scrolledWindow.show()
         self.add(self._scrolledWindow)
 
@@ -282,8 +281,8 @@ class AlbumView(View):
         separator.show()
 
         paned = Gtk.Paned.new(Gtk.Orientation.VERTICAL)
-        paned.add(self._scrolledWindow)
-        paned.add(self._context)
+        paned.pack1(self._scrolledWindow)
+        paned.pack2(self._context, True, False)
         paned.set_position(Objects.settings.get_value(
                                          'paned-context-height').get_int32())
         paned.connect('notify::position', self._on_position_notify)

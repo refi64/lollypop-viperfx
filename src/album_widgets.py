@@ -77,7 +77,7 @@ class AlbumWidget(Gtk.Grid):
 
 
 # Album detailed Widget is a pixbuf with album name and tracks list
-class AlbumDetailedWidget(Gtk.Grid):
+class AlbumDetailedWidget(Gtk.Bin):
     """
         Init album widget songs ui with a complex grid:
             - Album cover
@@ -91,7 +91,7 @@ class AlbumDetailedWidget(Gtk.Grid):
         @param size group as Gtk.SizeGroup
     """
     def __init__(self, album_id, genre_id, show_menu, size_group):
-        Gtk.Grid.__init__(self)
+        Gtk.Bin.__init__(self)
         self._stop = False
 
         builder = Gtk.Builder()
