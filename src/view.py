@@ -233,10 +233,6 @@ class ArtistView(View):
             widget.show()
             start_new_thread(widget.populate, ())
             self._albumbox.add(widget)
-            if widget.eventbox:
-                window = widget.eventbox.get_window()
-                if window:
-                    window.set_cursor(Gdk.Cursor(Gdk.CursorType.HAND1))
             GLib.idle_add(self._add_albums, albums, genre_id)
         else:
             self._stop = False
@@ -282,17 +278,17 @@ class AlbumView(View):
 
         self._context = ViewContainer(500)
 
-        self._revealer = Gtk.Revealer()
-        self._revealer.set_transition_duration(500)
-        self._revealer.add(self._context)
-        self._revealer.show()
-
         separator = Gtk.Separator()
         separator.show()
-        
-        self.add(self._scrolledWindow)
-        self.add(separator)
-        self.add(self._revealer)
+
+        paned = Gtk.Paned.new(Gtk.Orientation.VERTICAL)
+        paned.add(self._scrolledWindow)
+        paned.add(self._context)
+        paned.set_position(Objects.settings.get_value(
+                                         'paned-context-height').get_int32())
+        paned.connect('notify::position', self._on_position_notify)
+        paned.show()
+        self.add(paned)
 
         self.show()
 
@@ -355,6 +351,17 @@ class AlbumView(View):
         self._context.clean_old_views(view)
 
     """
+        Save paned position
+        @param paned as Gtk.Paned
+        @param param as Gtk.Param
+    """
+    def _on_position_notify(self, paned, param):
+        Objects.settings.set_value(
+                            'paned-context-height',
+                            GLib.Variant('i', paned.get_position()))
+        return False
+
+    """
         Show Context view for activated album
         @param flowbox, children
     """
@@ -364,14 +371,11 @@ class AlbumView(View):
                 Objects.player.play_album(self._album_id)
             else:
                 self._album_id = None
-                self._revealer.set_reveal_child(False)
+                self._context.hide()
         else:
             self._album_id = child.get_child().get_id()
             self._populate_context(self._album_id)
             self._context.show()
-            self._revealer.set_reveal_child(True)
-            self._context_widget.eventbox.get_window().set_cursor(
-                                            Gdk.Cursor(Gdk.CursorType.HAND1))
 
     """
         Pop an album and add it to the view,

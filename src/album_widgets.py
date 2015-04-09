@@ -151,14 +151,15 @@ class AlbumDetailedWidget(Gtk.Grid):
 
         if show_menu:
             self._menu = builder.get_object('menu')
-            self.eventbox = builder.get_object('eventbox')
-            self.eventbox.connect("button-press-event",
-                                  self._show_web_art)
+            self._eventbox = builder.get_object('eventbox')
+            self._eventbox.connect('realize', self._on_eventbox_realize)
+            self._eventbox.connect("button-press-event",
+                                   self._show_web_art)
             self._menu.connect('clicked',
-                                                self._pop_menu)
+                               self._pop_menu)
             self._menu.show()
         else:
-            self.eventbox = None
+            self._eventbox = None
 
     """
         Update playing track
@@ -310,6 +311,13 @@ class AlbumDetailedWidget(Gtk.Grid):
     """
     def _on_button_press_event(self, widget, event):
         self._button_state = event.get_state()
+
+    """
+        Change cursor over eventbox
+        @param eventbox as Gtk.Eventbox
+    """
+    def _on_eventbox_realize(self, eventbox):
+        eventbox.get_window().set_cursor(Gdk.Cursor(Gdk.CursorType.HAND1))
 
     """
         Popover with album art downloaded from the web (in fact google :-/)
