@@ -182,8 +182,8 @@ class Container:
             - main view as artist view or album view
     """
     def _setup_view(self):
-        self._paned_main_list = Gtk.HPaned()
-        self._paned_list_view = Gtk.HPaned()
+        self._paned_main_list = Gtk.Paned.new(Gtk.Orientation.HORIZONTAL)
+        self._paned_list_view = Gtk.Paned.new(Gtk.Orientation.HORIZONTAL)
         vgrid = Gtk.Grid()
         vgrid.set_orientation(Gtk.Orientation.VERTICAL)
 
