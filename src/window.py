@@ -121,7 +121,7 @@ class Window(Gtk.ApplicationWindow, Container):
         self._toolbar = Toolbar(self.get_application())
         self._toolbar.header_bar.show()
 
-        # Only set headerbar on Gnome Shell and Pantheon Shell
+        # Only set headerbar if according DE detected or forced manually
         if use_csd():
             self.set_titlebar(self._toolbar.header_bar)
             self._toolbar.header_bar.set_show_close_button(True)
