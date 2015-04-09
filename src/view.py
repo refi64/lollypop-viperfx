@@ -283,8 +283,11 @@ class AlbumView(View):
         paned = Gtk.Paned.new(Gtk.Orientation.VERTICAL)
         paned.pack1(self._scrolledWindow)
         paned.pack2(self._context, True, False)
-        paned.set_position(Objects.settings.get_value(
-                                         'paned-context-height').get_int32())
+        height = Objects.settings.get_value(
+                                         'paned-context-height').get_int32()
+        # We set a stupid max value, safe as self._context is shrinked
+        if height == -1:
+            paned.set_position(10000000)
         paned.connect('notify::position', self._on_position_notify)
         paned.show()
         self.add(paned)
