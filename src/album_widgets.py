@@ -23,7 +23,7 @@ from lollypop.utils import translate_artist_name
 
 
 # Album widget is a pixbuf with two labels: albumm name and artist name
-class AlbumWidget(Gtk.Grid):
+class AlbumWidget(Gtk.Bin):
 
     """
         Init album widget ui with an vertical grid:
@@ -32,12 +32,9 @@ class AlbumWidget(Gtk.Grid):
             - Artist name
     """
     def __init__(self, album_id):
-        Gtk.Grid.__init__(self)
+        Gtk.Bin.__init__(self)
         self._album_id = album_id
 
-        self.set_property("margin", 5)
-
-        self.set_orientation(Gtk.Orientation.VERTICAL)
         builder = Gtk.Builder()
         builder.add_from_resource('/org/gnome/Lollypop/AlbumWidget.ui')
 
@@ -52,9 +49,7 @@ class AlbumWidget(Gtk.Grid):
         artist = builder.get_object('artist')
         artist.set_label(artist_name)
 
-        self.add(self._cover)
-        self.add(title)
-        self.add(artist)
+        self.add(builder.get_object('widget'))
 
     def do_get_preferred_width(self):
         return (ArtSize.BIG, ArtSize.BIG)
