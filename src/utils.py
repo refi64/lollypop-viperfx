@@ -12,6 +12,8 @@
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 from gi.repository import Gio
+
+from lollypop.define import Objects
 from gettext import gettext as _
 import os
 
@@ -27,10 +29,14 @@ def is_eos():
     Return True if desktop is Gnome
 """
 
-
 def is_gnome():
     return os.environ.get("XDG_CURRENT_DESKTOP") == "GNOME"
 
+"""
+    Return True if CSDs are to be used based on several criterions
+"""
+def use_csd():
+    return is_gnome() or is_eos() or Objects.settings.get_value('force-csd')
 
 """
     Return True if files is audio

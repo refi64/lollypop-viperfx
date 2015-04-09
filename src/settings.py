@@ -14,7 +14,7 @@
 from gi.repository import Gtk, GLib
 
 from lollypop.define import Objects
-from lollypop.utils import is_gnome, is_eos
+from lollypop.utils import use_csd
 
 
 # Dialog showing lollypop options
@@ -31,7 +31,7 @@ class SettingsDialog:
         self._settings_dialog = builder.get_object('settings_dialog')
         self._settings_dialog.set_transient_for(parent)
 
-        if is_gnome() or is_eos():
+        if use_csd():
             self._settings_dialog.set_titlebar(
                                 builder.get_object('header_bar'))
 
@@ -40,6 +40,9 @@ class SettingsDialog:
 
         switch_view = builder.get_object('switch_dark')
         switch_view.set_state(Objects.settings.get_value('dark-ui'))
+
+        switch_csd = builder.get_object('switch_csd')
+        switch_csd.set_state(Objects.settings.get_value('force-csd'))
 
         switch_background = builder.get_object('switch_background')
         switch_background.set_state(Objects.settings.get_value(
@@ -147,6 +150,14 @@ class SettingsDialog:
         if not Objects.player.is_party():
             settings = Gtk.Settings.get_default()
             settings.set_property("gtk-application-prefer-dark-theme", state)
+
+    """
+        Update CSD setting
+        @param widget as unused, state as widget state
+    """
+    def _update_csd_setting(self, widget, state):
+        Objects.settings.set_value('force-csd',
+                                   GLib.Variant('b', state))
 
     """
         Update scan setting
