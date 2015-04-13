@@ -38,6 +38,9 @@ class NextContext:
 
 
 class ArtSize_:
+    SMALL_RADIUS = 2
+    RADIUS = 3
+    SMALL_BORDER = 1
     BORDER = 3
     SMALL = 32
     MEDIUM = 48

@@ -277,13 +277,16 @@ class AlbumArt:
         @param selected as bool
     """
     def _make_icon_frame(self, pixbuf, size, selected):
-        # No border on small covers, looks ugly
-        if size < ArtSize.BIG:
-            return pixbuf
-
         degrees = pi / 180
-        radius = 3
-        surface_size = size + ArtSize.BORDER * 2
+        
+        if size < ArtSize.BIG:
+            radius = ArtSize.SMALL_RADIUS
+            border = ArtSize.SMALL_BORDER
+        else:
+            radius = ArtSize.RADIUS
+            border = ArtSize.BORDER
+
+        surface_size = size + border * 2
         surface = cairo.ImageSurface(cairo.FORMAT_ARGB32,
                                      surface_size, surface_size)
         ctx = cairo.Context(surface)
@@ -305,7 +308,10 @@ class AlbumArt:
                                color.green,
                                color.blue)
         else:
-            ctx.set_source_rgb(1, 1, 1)
+            if size < ArtSize.BIG:
+                ctx.set_source_rgb(0, 0, 0)
+            else:
+                ctx.set_source_rgb(1, 1, 1)
         ctx.fill()
         border_pixbuf = Gdk.pixbuf_get_from_surface(surface, 0, 0,
                                                     surface_size,
@@ -315,7 +321,7 @@ class AlbumArt:
                          size,
                          size,
                          border_pixbuf,
-                         ArtSize.BORDER, ArtSize.BORDER)
+                         border, border)
         return border_pixbuf
 
     """
