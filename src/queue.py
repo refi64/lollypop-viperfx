@@ -123,7 +123,7 @@ class QueueWidget(Gtk.Popover):
 #######################
     """
         Delete item if Delete was pressed
-        @param widget unused, Gtk.Event
+        @param widget unused, Gdk.Event
     """
     def _on_keyboard_event(self, widget, event):
         if len(Objects.player.get_queue()) > 0:

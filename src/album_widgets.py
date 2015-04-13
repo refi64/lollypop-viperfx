@@ -38,7 +38,7 @@ class AlbumWidget(Gtk.Bin):
 
         builder = Gtk.Builder()
         builder.add_from_resource('/org/gnome/Lollypop/AlbumWidget.ui')
-
+        builder.connect_signals(self)
         self._cover = builder.get_object('cover')
 
         album_name = Objects.albums.get_name(album_id)
@@ -85,6 +85,25 @@ class AlbumWidget(Gtk.Bin):
     """
     def get_id(self):
         return self._album_id
+
+#######################
+# PRIVATE             #
+#######################
+    """
+        Add hover style
+        @param widget as Gtk.Widget
+        @param event es Gdk.Event
+    """
+    def _on_enter_notify(self, widget, event):
+        self.get_style_context().add_class('hovereffect')
+
+    """
+        Remove hover style
+        @param widget as Gtk.Widget
+        @param event es Gdk.Event
+    """
+    def _on_leave_notify(self, widget, event):
+        self.get_style_context().remove_class('hovereffect')
 
 
 # Album detailed Widget is a pixbuf with album name and tracks list
@@ -262,6 +281,7 @@ class AlbumDetailedWidget(Gtk.Bin):
     """
     def stop(self):
         self._stop = True
+
 #######################
 # PRIVATE             #
 #######################
@@ -340,7 +360,7 @@ class AlbumDetailedWidget(Gtk.Bin):
 
     """
         Change cursor over eventbox
-        @param eventbox as Gtk.Eventbox
+        @param eventbox as Gdk.Eventbox
     """
     def _on_eventbox_realize(self, eventbox):
         eventbox.get_window().set_cursor(Gdk.Cursor(Gdk.CursorType.HAND1))

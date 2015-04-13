@@ -138,7 +138,7 @@ class Toolbar:
         Pop albums from current artistleft click
         Show playlist menu on right
         @param widget as Gtk.EventBox
-        @param event as Gtk.Event
+        @param event as Gdk.Event
     """
     def _pop_infobox(self, widget, event):
         if Objects.player.current.id:

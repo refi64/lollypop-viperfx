@@ -146,7 +146,7 @@ class Window(Gtk.ApplicationWindow, Container):
     """
         Delay event
         @param: widget as Gtk.Window
-        @param: event as Gtk.Event
+        @param: event as Gdk.Event
     """
     def _on_configure_event(self, widget, event):
         if self._timeout_configure:

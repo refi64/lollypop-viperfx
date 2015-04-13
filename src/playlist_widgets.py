@@ -304,7 +304,7 @@ class PlaylistsManagerWidget(Gtk.Bin):
 
     """
         Delete item if Delete was pressed
-        @param widget unused, Gtk.Event
+        @param widget unused, Gdk.Event
     """
     def _on_keyboard_event(self, widget, event):
         if event.keyval == 65535:
@@ -493,7 +493,7 @@ class PlaylistEditWidget(Gtk.Bin):
 
     """
         Delete item if Delete was pressed
-        @param widget unused, Gtk.Event
+        @param widget unused, Gdk.Event
     """
     def _on_keyboard_event(self, widget, event):
         if event.keyval == 65535:

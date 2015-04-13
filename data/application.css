@@ -37,6 +37,10 @@ Gtk.ListBoxRow .menubutton:hover {
 	border-color: alpha(#000000, 0.1);
 }
 
+.hovereffect {
+    -gtk-image-effect: highlight;
+}
+
 .trackswidget {
 	background-color: transparent;
 }
