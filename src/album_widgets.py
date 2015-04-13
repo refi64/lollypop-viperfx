@@ -104,6 +104,7 @@ class AlbumDetailedWidget(Gtk.Bin):
     def __init__(self, album_id, genre_id, show_menu, size_group):
         Gtk.Bin.__init__(self)
         self._stop = False
+        self._selected = None
 
         builder = Gtk.Builder()
         builder.add_from_resource(
@@ -153,7 +154,8 @@ class AlbumDetailedWidget(Gtk.Bin):
             i += 1
 
         self._cover = builder.get_object('cover')
-        self._cover.set_from_pixbuf(Objects.art.get(album_id, ArtSize.BIG))
+        self.set_cover()
+
         builder.get_object('title').set_label(
                                             Objects.albums.get_name(album_id))
         builder.get_object('year').set_label(
@@ -171,6 +173,19 @@ class AlbumDetailedWidget(Gtk.Bin):
             self._menu.show()
         else:
             self._eventbox = None
+
+    """
+        Set cover for album if state changed
+    """
+    def set_cover(self):
+        selected = self._album_id==Objects.player.current.album_id
+        if selected != self._selected:
+            self._cover.set_from_pixbuf(
+                    Objects.art.get(
+                                self._album_id,
+                                ArtSize.BIG,
+                                selected))
+            self._selected = selected
 
     """
         Update playing track

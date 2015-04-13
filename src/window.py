@@ -29,7 +29,7 @@ class Window(Gtk.ApplicationWindow, Container):
         Gtk.ApplicationWindow.__init__(self,
                                        application=app,
                                        title="Lollypop")
-
+        self._nullwidget = Gtk.Label() # Use to get selected background color
         self._timeout_configure = None
 
         self._setup_window()
@@ -44,6 +44,15 @@ class Window(Gtk.ApplicationWindow, Container):
     def setup_menu(self, menu):
         self._toolbar.setup_menu_btn(menu)
 
+    """
+        Return selected color
+    """
+    def get_selected_color(self):
+        return self._nullwidget.get_style_context(
+                            ).get_background_color(Gtk.StateFlags.SELECTED)
+############
+# Private  #
+############
     """
         Setup media player keys
     """

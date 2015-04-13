@@ -41,9 +41,6 @@ class AlbumArt:
     def __init__(self):
         self._favorite = Objects.settings.get_value(
                                                 'favorite-cover').get_string()
-        widget = Gtk.Label()
-        self._selected_color = widget.get_style_context(
-                            ).get_background_color(Gtk.StateFlags.SELECTED)
         if not os.path.exists(self._CACHE_PATH):
             try:
                 os.mkdir(self._CACHE_PATH)
@@ -303,9 +300,10 @@ class AlbumArt:
         ctx.set_source_rgb(0.2, 0.2, 0.2)
         ctx.stroke_preserve()
         if selected:
-            ctx.set_source_rgb(self._selected_color.red,
-                               self._selected_color.green,
-                               self._selected_color.blue)
+            color = Objects.window.get_selected_color()
+            ctx.set_source_rgb(color.red,
+                               color.green,
+                               color.blue)
         else:
             ctx.set_source_rgb(1, 1, 1)
         ctx.fill()

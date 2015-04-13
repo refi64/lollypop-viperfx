@@ -213,7 +213,13 @@ class ArtistView(View):
     """
     def _update_content(self, player):
         if self._albumbox:
-            for widget in self._albumbox.get_children():
+            widgets = self._albumbox.get_children()
+            # Only update cover if more than one album
+            # Don't want to mark lonely album as playing
+            update_cover = len(widgets) > 1
+            for widget in widgets:
+                if update_cover:
+                    widget.set_cover()
                 widget.update_playing_track(player.current.id)
 
     """
@@ -302,22 +308,6 @@ class AlbumView(View):
         self.add(paned)
 
     """
-        Connect signal
-    """
-    def do_show(self):
-        self._signal = Objects.player.connect('current-changed',
-                                              self._on_current_changed)
-        View.do_show(self)
-
-    """
-        Disconnect signal
-    """
-    def do_hide(self):
-        if self._signal:
-            Objects.player.disconnect(self._signal)
-        View.do_hide(self)
-
-    """
         Populate albums, thread safe
         @param navigation id as int
     """
@@ -339,15 +329,6 @@ class AlbumView(View):
 # PRIVATE             #
 #######################
     """
-        Update indicator for children
-        @param player as Player
-    """
-    def _on_current_changed(self, player):
-        for child in self._albumbox.get_children():
-            for widget in child.get_children():
-                widget.set_cover()
-
-    """
         Update album cover in view
         @param widget as unused, album id as int
     """
@@ -357,6 +338,15 @@ class AlbumView(View):
         for child in self._albumbox.get_children():
             for widget in child.get_children():
                 widget.update_cover(album_id)
+
+    """
+        Update indicator for children
+        @param player as Player
+    """
+    def _update_content(self, player):
+        for child in self._albumbox.get_children():
+            for widget in child.get_children():
+                widget.set_cover()
 
     """
         Update the context view
