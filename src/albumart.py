@@ -41,6 +41,9 @@ class AlbumArt:
     def __init__(self):
         self._favorite = Objects.settings.get_value(
                                                 'favorite-cover').get_string()
+        widget = Gtk.Label()
+        self._selected_color = widget.get_style_context(
+                            ).get_background_color(Gtk.StateFlags.SELECTED)
         if not os.path.exists(self._CACHE_PATH):
             try:
                 os.mkdir(self._CACHE_PATH)
@@ -107,10 +110,12 @@ class AlbumArt:
 
     """
         Return pixbuf for album_id, covers are cached as jpg.
-        @param album id as int, pixbuf size as int
+        @param album id as int
+        @param pixbuf size as int
+        @param selected as bool
         return: pixbuf
     """
-    def get(self, album_id, size):
+    def get(self, album_id, size, selected=False):
         path = self._get_cache_path(album_id)
         CACHE_PATH_JPG = "%s/%s_%s.jpg" % (self._CACHE_PATH, path, size)
         pixbuf = None
@@ -142,8 +147,8 @@ class AlbumArt:
                         print(e)
                         return self._make_icon_frame(
                                             self._get_default_icon(size),
-                                            size
-                                                    )
+                                            size,
+                                            selected)
 
                 # No cover, use default one
                 if not pixbuf:
@@ -158,11 +163,13 @@ class AlbumArt:
                         pixbuf.savev(CACHE_PATH_JPG, "jpeg",
                                      ["quality"], ["90"])
 
-            return self._make_icon_frame(pixbuf, size)
+            return self._make_icon_frame(pixbuf, size, selected)
 
         except Exception as e:
             print(e)
-            return self._make_icon_frame(self._get_default_icon(size), size)
+            return self._make_icon_frame(self._get_default_icon(size),
+                                         size,
+                                         selected)
 
     """
         Remove cover from cache for album id
@@ -270,11 +277,11 @@ class AlbumArt:
         code forked Gnome Music, see copyright header
         @param: pixbuf source as Gdk.Pixbuf
         @param: size as int
+        @param selected as bool
     """
-    def _make_icon_frame(self, pixbuf, size):
+    def _make_icon_frame(self, pixbuf, size, selected):
         # No border on small covers, looks ugly
-        if size < ArtSize.BIG or not\
-           Objects.settings.get_value('stylized-covers'):
+        if size < ArtSize.BIG:
             return pixbuf
 
         border = 3
@@ -296,7 +303,12 @@ class AlbumArt:
         ctx.set_line_width(0.6)
         ctx.set_source_rgb(0.2, 0.2, 0.2)
         ctx.stroke_preserve()
-        ctx.set_source_rgb(1, 1, 1)
+        if selected:
+            ctx.set_source_rgb(self._selected_color.red,
+                               self._selected_color.green,
+                               self._selected_color.blue)
+        else:
+            ctx.set_source_rgb(1, 1, 1)
         ctx.fill()
         border_pixbuf = Gdk.pixbuf_get_from_surface(surface, 0, 0,
                                                     surface_size,

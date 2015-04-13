@@ -34,12 +34,12 @@ class AlbumWidget(Gtk.Bin):
     def __init__(self, album_id):
         Gtk.Bin.__init__(self)
         self._album_id = album_id
+        self._selected = None
 
         builder = Gtk.Builder()
         builder.add_from_resource('/org/gnome/Lollypop/AlbumWidget.ui')
 
         self._cover = builder.get_object('cover')
-        self._cover.set_from_pixbuf(Objects.art.get(album_id, ArtSize.BIG))
 
         album_name = Objects.albums.get_name(album_id)
         title = builder.get_object('title')
@@ -50,18 +50,35 @@ class AlbumWidget(Gtk.Bin):
         artist.set_label(artist_name)
 
         self.add(builder.get_object('widget'))
+        self.set_cover()
 
     def do_get_preferred_width(self):
         return (ArtSize.BIG, ArtSize.BIG)
 
     """
-        Update cover for album id
+        Set cover for album if state changed
+    """
+    def set_cover(self):
+        selected = self._album_id==Objects.player.current.album_id
+        if selected != self._selected:
+            print('update')
+            self._cover.set_from_pixbuf(
+                    Objects.art.get(
+                                self._album_id,
+                                ArtSize.BIG,
+                                selected))
+            self._selected = selected
+
+    """
+        Update cover for album id id needed
         @param album id as int
     """
     def update_cover(self, album_id):
         if self._album_id == album_id:
+            self._selected = self._album_id==Objects.player.current.album_id
             self._cover.set_from_pixbuf(Objects.art.get(album_id,
-                                                        ArtSize.BIG))
+                                                        ArtSize.BIG,
+                                                        self._selected))
 
     """
         Return album id for widget

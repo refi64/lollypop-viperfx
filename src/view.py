@@ -260,7 +260,8 @@ class AlbumView(View):
     """
     def __init__(self, navigation_id):
         View.__init__(self)
-        self._album_id = None
+        self._signal = None
+        self._context_album_id = None
         self._genre_id = navigation_id
         self._albumsongs = None
         self._context_widget = None
@@ -293,7 +294,21 @@ class AlbumView(View):
         paned.show()
         self.add(paned)
 
-        self.show()
+    """
+        Connect signal
+    """
+    def do_show(self):
+        self._signal = Objects.player.connect('current-changed',
+                                              self._on_current_changed)
+        View.do_show(self)
+
+    """
+        Disconnect signal
+    """
+    def do_hide(self):
+        if self._signal:
+            Objects.player.disconnect(self._signal)
+        View.do_hide(self)
 
     """
         Populate albums, thread safe
@@ -316,6 +331,15 @@ class AlbumView(View):
 #######################
 # PRIVATE             #
 #######################
+    """
+        Update indicator for children
+        @param player as Player
+    """
+    def _on_current_changed(self, player):
+        for child in self._albumbox.get_children():
+            for widget in child.get_children():
+                widget.set_cover()
+
     """
         Update album cover in view
         @param widget as unused, album id as int
@@ -369,15 +393,15 @@ class AlbumView(View):
         @param flowbox, children
     """
     def _on_album_activated(self, flowbox, child):
-        if self._album_id == child.get_child().get_id():
+        if self._context_album_id == child.get_child().get_id():
             if Objects.settings.get_value('auto-play'):
-                Objects.player.play_album(self._album_id)
+                Objects.player.play_album(self._context_album_id)
             else:
-                self._album_id = None
+                self._context_album_id = None
                 self._context.hide()
         else:
-            self._album_id = child.get_child().get_id()
-            self._populate_context(self._album_id)
+            self._context_album_id = child.get_child().get_id()
+            self._populate_context(self._context_album_id)
             self._context.show()
 
     """

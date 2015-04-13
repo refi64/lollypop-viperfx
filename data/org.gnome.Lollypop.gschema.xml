@@ -68,11 +68,6 @@
             <summary>Force the use client side window decorations (headerbar)</summary>
             <description>If set to true CSD headerbars will be used, even if the detected desktop environment is not amongst those that are expected to support it.</description>
         </key>
-		 <key type="b" name="stylized-covers">
-            <default>true</default>
-            <summary>Show stylized covers</summary>
-            <description></description>
-        </key>
      	 <key type="b" name="background-mode">
             <default>false</default>
             <summary>Continue playback when closed</summary>
