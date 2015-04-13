@@ -174,9 +174,12 @@ class TracksWidget(Gtk.ListBox):
         if Objects.player.current.id == track_id:
             track_row.show_widget('icon', True)
         if pos:
-            track_row.set_label('num',
-                                '''<span foreground="#72729f9fcfcf"\
-                                font_desc="Bold">%s</span>''' % str(pos))
+            track_row.set_label(
+                            'num',
+                            '''<span foreground="%s"\
+                            font_desc="Bold">%s</span>''' %\
+                            (Objects.window.get_background_color().to_string(),
+                             str(pos)))
         else:
             track_row.set_label('num', str(num))
         track_row.set_number(num)
