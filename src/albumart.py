@@ -311,7 +311,7 @@ class AlbumArt:
             if size < ArtSize.BIG:
                 ctx.set_source_rgb(0, 0, 0)
             else:
-                ctx.set_source_rgb(1, 1, 1)
+                ctx.set_source_rgba(1, 1, 1, 0.7)
         ctx.fill()
         border_pixbuf = Gdk.pixbuf_get_from_surface(surface, 0, 0,
                                                     surface_size,
