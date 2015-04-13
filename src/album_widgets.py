@@ -61,7 +61,6 @@ class AlbumWidget(Gtk.Bin):
     def set_cover(self):
         selected = self._album_id==Objects.player.current.album_id
         if selected != self._selected:
-            print('update')
             self._cover.set_from_pixbuf(
                     Objects.art.get(
                                 self._album_id,
