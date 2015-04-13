@@ -31,6 +31,7 @@
   <object class="GtkHeaderBar" id="header-bar">
     <property name="visible">True</property>
     <property name="vexpand">False</property>
+    <property name="height_request">44</property>
     <child>
       <object class="GtkBox" id="buttons">
         <property name="visible">True</property>
