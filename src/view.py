@@ -162,6 +162,7 @@ class ArtistView(View):
         self._show_menu = show_artist_details
 
         self._albumbox = Gtk.Grid()
+        self._albumbox.set_row_spacing(20)
         self._albumbox.set_property("orientation", Gtk.Orientation.VERTICAL)
         self._albumbox.show()
 

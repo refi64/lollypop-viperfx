@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!-- Generated with glade 3.18.3 -->
 <interface>
-  <!-- interface-requires gtk+ 3.6 -->
+  <requires lib="gtk+" version="3.6"/>
   <object class="GtkGrid" id="ArtistView">
     <property name="visible">True</property>
     <property name="can_focus">False</property>
-    <property name="margin-start">24</property>
-    <property name="margin_top">18</property>
+    <property name="margin_start">24</property>
+    <property name="margin_top">15</property>
     <property name="orientation">vertical</property>
     <child>
       <object class="GtkLabel" id="artist">
@@ -18,14 +19,22 @@
           <attribute name="weight" value="bold"/>
         </attributes>
       </object>
+      <packing>
+        <property name="left_attach">0</property>
+        <property name="top_attach">0</property>
+      </packing>
     </child>
     <child>
       <object class="GtkSeparator" id="separator1">
         <property name="visible">True</property>
         <property name="can_focus">False</property>
-        <property name="hexpand">True</property>
         <property name="margin_top">6</property>
+        <property name="hexpand">True</property>
       </object>
+      <packing>
+        <property name="left_attach">0</property>
+        <property name="top_attach">1</property>
+      </packing>
     </child>
   </object>
 </interface>
