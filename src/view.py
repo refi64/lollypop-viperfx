@@ -245,12 +245,19 @@ class AlbumContextView(View):
     """
     def __init__(self, widget):
         View.__init__(self)
+        self._widget = widget
         self._viewport.add(widget)
         self._viewport.show()
         self._scrolledWindow.set_min_content_height(ArtSize.BIG+25)
         self._scrolledWindow.show()
         self.add(self._scrolledWindow)
 
+    """
+        Update the content view
+        @param player as Player
+    """
+    def _update_content(self, player):
+        self._widget.update_playing_track(player.current.id)
 
 # Album view is a flowbox of albums widgets with album name and artist name
 class AlbumView(View):
