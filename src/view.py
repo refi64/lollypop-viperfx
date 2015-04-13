@@ -213,13 +213,8 @@ class ArtistView(View):
     """
     def _update_content(self, player):
         if self._albumbox:
-            widgets = self._albumbox.get_children()
-            # Only update cover if more than one album
-            # Don't want to mark lonely album as playing
-            update_cover = len(widgets) > 1
-            for widget in widgets:
-                if update_cover:
-                    widget.set_cover()
+            for widget in self._albumbox.get_children():
+                widget.set_cover()
                 widget.update_playing_track(player.current.id)
 
     """
@@ -264,6 +259,7 @@ class AlbumContextView(View):
     """
     def _update_content(self, player):
         self._widget.update_playing_track(player.current.id)
+        self._widget.set_cover()
 
 # Album view is a flowbox of albums widgets with album name and artist name
 class AlbumView(View):
