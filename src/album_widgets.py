@@ -128,6 +128,7 @@ class AlbumDetailedWidget(Gtk.Bin):
         builder = Gtk.Builder()
         builder.add_from_resource(
                     '/org/gnome/Lollypop/AlbumDetailedWidget.ui')
+        builder.connect_signals(self)
 
         self._artist_id = Objects.albums.get_artist_id(album_id)
         self._album_id = album_id
@@ -357,6 +358,22 @@ class AlbumDetailedWidget(Gtk.Bin):
     """
     def _on_button_press_event(self, widget, event):
         self._button_state = event.get_state()
+
+    """
+        Add hover style
+        @param widget as Gtk.Widget
+        @param event es Gdk.Event
+    """
+    def _on_enter_notify(self, widget, event):
+        self.get_style_context().add_class('hovereffect')
+
+    """
+        Remove hover style
+        @param widget as Gtk.Widget
+        @param event es Gdk.Event
+    """
+    def _on_leave_notify(self, widget, event):
+        self.get_style_context().remove_class('hovereffect')
 
     """
         Change cursor over eventbox
