@@ -284,10 +284,9 @@ class AlbumArt:
         if size < ArtSize.BIG:
             return pixbuf
 
-        border = 3
         degrees = pi / 180
         radius = 3
-        surface_size = size + border * 2
+        surface_size = size + ArtSize.BORDER * 2
         surface = cairo.ImageSurface(cairo.FORMAT_ARGB32,
                                      surface_size, surface_size)
         ctx = cairo.Context(surface)
@@ -318,7 +317,7 @@ class AlbumArt:
                          size,
                          size,
                          border_pixbuf,
-                         border, border)
+                         ArtSize.BORDER, ArtSize.BORDER)
         return border_pixbuf
 
     """

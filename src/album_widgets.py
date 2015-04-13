@@ -53,7 +53,7 @@ class AlbumWidget(Gtk.Bin):
         self.set_cover()
 
     def do_get_preferred_width(self):
-        return (ArtSize.BIG, ArtSize.BIG)
+        return (ArtSize.BIG+ArtSize.BORDER*2, ArtSize.BIG+ArtSize.BORDER*2)
 
     """
         Set cover for album if state changed
