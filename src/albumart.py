@@ -278,6 +278,7 @@ class AlbumArt:
         @param selected as bool
     """
     def _make_icon_frame(self, pixbuf, size, selected):
+        selected_color = Objects.window.get_selected_color()
         dark = self._gtk_settings.get_property(
                                            "gtk-application-prefer-dark-theme")
         degrees = pi / 180
@@ -304,17 +305,20 @@ class AlbumArt:
         ctx.close_path()
         ctx.set_line_width(0.6)
 
-        if dark and size > ArtSize.MEDIUM:
+        if selected:
+            ctx.set_source_rgb(selected_color.red,
+                               selected_color.green,
+                               selected_color.blue)
+        elif dark and size > ArtSize.MEDIUM:
             ctx.set_source_rgb(0.8, 0.8, 0.8)
         else:
             ctx.set_source_rgb(0.2, 0.2, 0.2)
         ctx.stroke_preserve()
 
         if selected:
-            color = Objects.window.get_selected_color()
-            ctx.set_source_rgb(color.red,
-                               color.green,
-                               color.blue)
+            ctx.set_source_rgb(selected_color.red,
+                               selected_color.green,
+                               selected_color.blue)
         else:
             if size < ArtSize.BIG:
                 ctx.set_source_rgb(0, 0, 0)
