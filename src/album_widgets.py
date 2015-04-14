@@ -89,7 +89,6 @@ class AlbumWidget(Gtk.Bin):
 
 # Album widget is a pixbuf with two labels: albumm name and artist name
 class AlbumSimpleWidget(AlbumWidget):
-
     """
         Init album widget ui with an vertical grid:
             - Album cover
