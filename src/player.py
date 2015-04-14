@@ -212,6 +212,12 @@ class Player(GObject.GObject):
                 self._shuffle_prev_tracks.pop()
             except:
                 track_id = None
+        # Look at user playlist then
+        elif self._user_playlist:
+            self.context.position -= 1
+            if self.context.position < 0:
+                self.context.position = len(self._user_playlist) - 1
+            self.load(self._user_playlist[self.context.position])
         elif self.context.position is not None:
             tracks = Objects.albums.get_tracks(self.current.album_id,
                                                self.current.genre_id)
@@ -623,9 +629,6 @@ class Player(GObject.GObject):
             self._rgvolume.props.album_mode = 0
         else:
             self._rgvolume.props.album_mode = 1
-        self.set_albums(self.current.id,
-                        self.current.aartist_id,
-                        self.context.genre_id)
 
     """
         Setup replaygain
@@ -727,6 +730,8 @@ class Player(GObject.GObject):
         self._errors = 0
         # Add track to shuffle history if needed
         if self._shuffle != Shuffle.NONE or self._is_party:
+            if self.current.id in self._shuffle_prev_tracks:
+                self._shuffle_prev_tracks.remove(self.current.id)
             self._shuffle_prev_tracks.append(self.current.id)
             self._add_to_shuffle_history(self.current.id,
                                          self.current.album_id)
