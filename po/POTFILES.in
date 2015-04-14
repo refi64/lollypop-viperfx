@@ -33,7 +33,7 @@ src/album_widgets.py
 src/player.py
 src/collectionscanner.py
 [type: gettext/glade]data/AboutDialog.ui.in
-[type: gettext/glade]data/AlbumWidget.ui
+[type: gettext/glade]data/AlbumSimpleWidget.ui
 [type: gettext/glade]data/QueueWidget.ui
 [type: gettext/glade]data/Appmenu.ui
 [type: gettext/glade]data/AlbumDetailedWidget.ui

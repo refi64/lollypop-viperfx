@@ -17,7 +17,7 @@
     <file preprocess="xml-stripblanks">PlaylistsManagerView.ui</file>
     <file preprocess="xml-stripblanks">PlaylistsManagerWidget.ui</file>
     <file>application.css</file>
-    <file preprocess="xml-stripblanks">AlbumWidget.ui</file>
+    <file preprocess="xml-stripblanks">AlbumSimpleWidget.ui</file>
     <file preprocess="xml-stripblanks">ArtistView.ui</file>
     <file preprocess="xml-stripblanks">Toolbar.ui</file>
     <file preprocess="xml-stripblanks">SettingsDialog.ui</file>

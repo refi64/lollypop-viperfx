@@ -99,7 +99,7 @@ class AlbumSimpleWidget(AlbumWidget):
         AlbumWidget.__init__(self, album_id)
 
         builder = Gtk.Builder()
-        builder.add_from_resource('/org/gnome/Lollypop/AlbumWidget.ui')
+        builder.add_from_resource('/org/gnome/Lollypop/AlbumSimpleWidget.ui')
         builder.connect_signals(self)
         self._cover = builder.get_object('cover')
 
