@@ -83,7 +83,6 @@ class View(Gtk.Grid):
 
         self._scrolledWindow.show()
         self._viewport = Gtk.Viewport()
-        self._viewport.set_property("valign", Gtk.Align.START)
         self._scrolledWindow.add(self._viewport)
         self._viewport.show()
 
@@ -167,6 +166,7 @@ class ArtistView(View):
         self._albumbox.show()
 
         self._scrolledWindow.set_property('expand', True)
+        self._viewport.set_property("valign", Gtk.Align.START)
         self._viewport.add(self._albumbox)
         self.add(self._scrolledWindow)
 
@@ -283,6 +283,7 @@ class AlbumView(View):
         self._albumbox.set_max_children_per_line(100)
         self._albumbox.show()
 
+        self._viewport.set_property("valign", Gtk.Align.START)
         self._viewport.add(self._albumbox)
         self._scrolledWindow.set_property('expand', True)
 
