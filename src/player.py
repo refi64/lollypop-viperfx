@@ -628,6 +628,10 @@ class Player(GObject.GObject):
         else:
             self._rgvolume.props.album_mode = 1
 
+        self.set_albums(self.current.id,
+                        self.current.aartist_id,
+                        self.context.genre_id)
+
     """
         Setup replaygain
     """
