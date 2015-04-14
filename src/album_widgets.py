@@ -29,6 +29,7 @@ class AlbumWidget(Gtk.Bin):
         self._album_id = album_id
         self._selected = None
         self._stop = False
+        self._cover = None
 
     """
         Set cover for album if state changed
@@ -36,20 +37,20 @@ class AlbumWidget(Gtk.Bin):
     """
     def set_cover(self, force=False):
         selected = self._album_id==Objects.player.current.album_id
-        if selected != self._selected or force:
+        if self._cover and (selected != self._selected or force):
+            self._selected = selected
             self._cover.set_from_pixbuf(
                     Objects.art.get(
                                 self._album_id,
                                 ArtSize.BIG,
                                 selected))
-            self._selected = selected
 
     """
         Update cover for album id id needed
         @param album id as int
     """
     def update_cover(self, album_id):
-        if self._album_id == album_id:
+        if self._cover and self._album_id == album_id:
             self._selected = self._album_id==Objects.player.current.album_id
             self._cover.set_from_pixbuf(Objects.art.get(album_id,
                                                         ArtSize.BIG,
