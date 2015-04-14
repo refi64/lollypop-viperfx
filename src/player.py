@@ -620,9 +620,7 @@ class Player(GObject.GObject):
     """
     def _set_shuffle(self, settings, value):
         self._shuffle = Objects.settings.get_enum('shuffle')
-        self._shuffle_albums_backup = []
-        self._shuffle_history = {}
-        self._shuffle_prev_tracks = []
+        self._shuffle_playlist()
 
         if self._shuffle in [Shuffle.TRACKS, Shuffle.TRACKS_ARTIST] or\
            self._user_playlist:
