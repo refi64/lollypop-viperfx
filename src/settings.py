@@ -147,6 +147,7 @@ class SettingsDialog:
         if not Objects.player.is_party():
             settings = Gtk.Settings.get_default()
             settings.set_property("gtk-application-prefer-dark-theme", state)
+            Objects.window.update_view()
 
     """
         Update scan setting

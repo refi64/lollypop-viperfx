@@ -21,7 +21,7 @@ from lollypop.playlist_widgets import PlaylistsManagerWidget,\
                                       PlaylistEditWidget,\
                                       PlaylistWidget
 from lollypop.devicemanager import DeviceManagerWidget
-from lollypop.album_widgets import AlbumDetailedWidget, AlbumWidget
+from lollypop.album_widgets import AlbumDetailedWidget, AlbumSimpleWidget
 from lollypop.utils import translate_artist_name
 
 # Container for a view
@@ -97,45 +97,55 @@ class View(Gtk.Grid):
             Objects.player.disconnect(self._cover_signal)
             self._cover_signal = None
 
+    """
+        Stop populating
+    """
+    def stop(self):
+        self._stop = True
+        for child in self._get_children():
+            child.stop()
+
+    """
+        Update children's covers
+    """
+    def update_covers(self):
+        GLib.idle_add(self._update_widgets, self._get_children(), True)
 
 #######################
 # PRIVATE             #
 #######################
     """
-        Current song changed
-        Update context and content
-        @param player as Player
+        Update all widgets
+        @param widgets as AlbumWidget
+        @param force as bool
     """
-    def _on_current_changed(self, player):
-        self._update_content(player)
-        self._update_context(player)
+    def _update_widgets(self, widgets, force):
+        if len(widgets) > 0:
+            widget = widgets.pop(0)
+            widget.set_cover(force)
+            widget.update_playing_indicator()
+            GLib.idle_add(self._update_widgets, widgets, force)
+
+    """
+        Return view children
+    """
+    def _get_children(self):
+        return []
 
     """
         Update album cover in view
-        Do nothing here
+        @param widget as unused, album id as int
     """
     def _on_cover_changed(self, widget, album_id):
-        pass
+        for widget in self._get_children():
+            widget.update_cover(album_id)
 
     """
-        Update content view
-        Do nothing here
+        Current song changed
+        @param player as Player
     """
-    def _update_content(self, player):
-        pass
-
-    """
-        Update context view
-        Do nothing here
-    """
-    def _update_context(self, player):
-        pass
-
-    """
-        Stop populate thread
-    """
-    def stop(self):
-        self._stop = True
+    def _on_current_changed(self, player):
+        GLib.idle_add(self._update_widgets, self._get_children(), False)
 
 
 # Artist view is a vertical grid with album songs widgets
@@ -190,34 +200,15 @@ class ArtistView(View):
         GLib.idle_add(self._add_albums, albums, navigation_id)
         sql.close()
 
-    """
-        Stop populating
-    """
-    def stop(self):
-        View.stop(self)
-        for child in self._albumbox.get_children():
-            child.stop()
-
 #######################
 # PRIVATE             #
 #######################
     """
-        Update album cover in view
-        @param album id as int
+        Return view children
+        @return [AlbumWidget]
     """
-    def _on_cover_changed(self, widget, album_id):
-        for widget in self._albumbox.get_children():
-            widget.update_cover(album_id)
-
-    """
-        Update the content view
-        @param player as Player
-    """
-    def _update_content(self, player):
-        if self._albumbox:
-            for widget in self._albumbox.get_children():
-                widget.set_cover()
-                widget.update_playing_track(player.current.id)
+    def _get_children(self):
+        return self._albumbox.get_children()
 
     """
         Pop an album and add it to the view,
@@ -255,13 +246,16 @@ class AlbumContextView(View):
         self._scrolledWindow.show()
         self.add(self._scrolledWindow)
 
+#######################
+# PRIVATE             #
+#######################
     """
-        Update the content view
-        @param player as Player
+        Return view children
+        @return [AlbumWidget]
     """
-    def _update_content(self, player):
-        self._widget.update_playing_track(player.current.id)
-        self._widget.set_cover()
+    def _get_children(self):
+        return [self._widget]
+
 
 # Album view is a flowbox of albums widgets with album name and artist name
 class AlbumView(View):
@@ -327,32 +321,15 @@ class AlbumView(View):
 # PRIVATE             #
 #######################
     """
-        Update album cover in view
-        @param widget as unused, album id as int
+        Return view children
+        @return [AlbumWidget]
     """
-    def _on_cover_changed(self, widget, album_id):
-        if self._context_widget:
-            self._context_widget.update_cover(album_id)
+    def _get_children(self):
+        children = []
         for child in self._albumbox.get_children():
             for widget in child.get_children():
-                widget.update_cover(album_id)
-
-    """
-        Update indicator for children
-        @param player as Player
-    """
-    def _update_content(self, player):
-        for child in self._albumbox.get_children():
-            for widget in child.get_children():
-                widget.set_cover()
-
-    """
-        Update the context view
-        @param player as Player
-    """
-    def _update_context(self, player):
-        if self._context_widget:
-            self._context_widget.update_playing_track(player.current.id)
+                children.append(widget)
+        return children
 
     """
         populate context view
@@ -406,7 +383,7 @@ class AlbumView(View):
     """
     def _add_albums(self, albums):
         if len(albums) > 0 and not self._stop:
-            widget = AlbumWidget(albums.pop(0))
+            widget = AlbumSimpleWidget(albums.pop(0))
             widget.show()
             self._albumbox.insert(widget, -1)
             GLib.idle_add(self._add_albums, albums)
@@ -501,11 +478,11 @@ class PlaylistView(View):
         Objects.window.show_playlist_editor(self._playlist_name)
 
     """
-        Update the content view
+        Current song changed
         @param player as Player
     """
-    def _update_content(self, player):
-        self._playlist_widget.update_playing_track(player.current.id)
+    def _on_current_changed(self, player):
+        self._playlist_widget.update_playing_indicator()
 
 
 # Playlist view used to manage playlists

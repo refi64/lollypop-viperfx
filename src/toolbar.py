@@ -316,6 +316,7 @@ class Toolbar:
         if not Objects.settings.get_value('dark-ui'):
             settings = Gtk.Settings.get_default()
             settings.set_property("gtk-application-prefer-dark-theme", active)
+            Objects.window.update_view()
         Objects.player.set_party(active)
 
     """

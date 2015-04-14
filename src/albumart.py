@@ -39,6 +39,7 @@ class AlbumArt:
         Create cache path
     """
     def __init__(self):
+        self._gtk_settings = Gtk.Settings.get_default()
         self._favorite = Objects.settings.get_value(
                                                 'favorite-cover').get_string()
         if not os.path.exists(self._CACHE_PATH):
@@ -277,6 +278,8 @@ class AlbumArt:
         @param selected as bool
     """
     def _make_icon_frame(self, pixbuf, size, selected):
+        dark = self._gtk_settings.get_property(
+                                           "gtk-application-prefer-dark-theme")
         degrees = pi / 180
         
         if size < ArtSize.BIG:
@@ -300,8 +303,13 @@ class AlbumArt:
         ctx.arc(radius, radius, radius - 0.5, 180 * degrees, 270 * degrees)
         ctx.close_path()
         ctx.set_line_width(0.6)
-        ctx.set_source_rgb(0.2, 0.2, 0.2)
+
+        if dark and size > ArtSize.MEDIUM:
+            ctx.set_source_rgb(0.8, 0.8, 0.8)
+        else:
+            ctx.set_source_rgb(0.2, 0.2, 0.2)
         ctx.stroke_preserve()
+
         if selected:
             color = Objects.window.get_selected_color()
             ctx.set_source_rgb(color.red,
@@ -310,8 +318,10 @@ class AlbumArt:
         else:
             if size < ArtSize.BIG:
                 ctx.set_source_rgb(0, 0, 0)
+            elif dark:
+                ctx.set_source_rgba(0, 0, 0, 0.5)
             else:
-                ctx.set_source_rgb(0.9, 0.9, 0.9)
+                ctx.set_source_rgb(1, 1, 1)
         ctx.fill()
         border_pixbuf = Gdk.pixbuf_get_from_surface(surface, 0, 0,
                                                     surface_size,

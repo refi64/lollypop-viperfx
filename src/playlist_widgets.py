@@ -77,12 +77,11 @@ class PlaylistWidget(Gtk.Bin):
                       pos)
 
     """
-        Update playing track
-        @param track id as int
+        Update playing indicator
     """
-    def update_playing_track(self, track_id):
-        self._tracks_widget1.update_playing(track_id)
-        self._tracks_widget2.update_playing(track_id)
+    def update_playing_indicator(self):
+        self._tracks_widget1.update_playing(Objects.player.current.id)
+        self._tracks_widget2.update_playing(Objects.player.current.id)
 
     """
         Clear tracks

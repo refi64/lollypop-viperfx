@@ -172,6 +172,13 @@ class Container:
         view.hide()
         GLib.timeout_add(2000, view.destroy)
 
+    """
+        Update current view
+    """
+    def update_view(self):
+        view = self._stack.get_visible_child()
+        start_new_thread(view.update_covers, ())
+
 ############
 # Private  #
 ############

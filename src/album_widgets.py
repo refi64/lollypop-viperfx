@@ -22,45 +22,21 @@ from lollypop.popimages import PopImages
 from lollypop.utils import translate_artist_name
 
 
-# Album widget is a pixbuf with two labels: albumm name and artist name
+# Base class for album widgets
 class AlbumWidget(Gtk.Bin):
-
-    """
-        Init album widget ui with an vertical grid:
-            - Album cover
-            - Album name
-            - Artist name
-    """
     def __init__(self, album_id):
         Gtk.Bin.__init__(self)
         self._album_id = album_id
         self._selected = None
-
-        builder = Gtk.Builder()
-        builder.add_from_resource('/org/gnome/Lollypop/AlbumWidget.ui')
-        builder.connect_signals(self)
-        self._cover = builder.get_object('cover')
-
-        album_name = Objects.albums.get_name(album_id)
-        title = builder.get_object('title')
-        title.set_label(album_name)
-        artist_name = Objects.albums.get_artist_name(album_id)
-        artist_name = translate_artist_name(artist_name)
-        artist = builder.get_object('artist')
-        artist.set_label(artist_name)
-
-        self.add(builder.get_object('widget'))
-        self.set_cover()
-
-    def do_get_preferred_width(self):
-        return (ArtSize.BIG+ArtSize.BORDER*2, ArtSize.BIG+ArtSize.BORDER*2)
+        self._stop = False
 
     """
         Set cover for album if state changed
+        @param force as bool
     """
-    def set_cover(self):
+    def set_cover(self, force=False):
         selected = self._album_id==Objects.player.current.album_id
-        if selected != self._selected:
+        if selected != self._selected or force:
             self._cover.set_from_pixbuf(
                     Objects.art.get(
                                 self._album_id,
@@ -78,13 +54,17 @@ class AlbumWidget(Gtk.Bin):
             self._cover.set_from_pixbuf(Objects.art.get(album_id,
                                                         ArtSize.BIG,
                                                         self._selected))
+    """
+        Update playing indicator
+    """
+    def update_playing_indicator(self):
+        pass
 
     """
-        Return album id for widget
-        @return album id as int
+        Stop populating
     """
-    def get_id(self):
-        return self._album_id
+    def stop(self):
+        self._stop = True
 
 #######################
 # PRIVATE             #
@@ -106,8 +86,51 @@ class AlbumWidget(Gtk.Bin):
         self.get_style_context().remove_class('hovereffect')
 
 
+# Album widget is a pixbuf with two labels: albumm name and artist name
+class AlbumSimpleWidget(AlbumWidget):
+
+    """
+        Init album widget ui with an vertical grid:
+            - Album cover
+            - Album name
+            - Artist name
+    """
+    def __init__(self, album_id):
+        AlbumWidget.__init__(self, album_id)
+
+        builder = Gtk.Builder()
+        builder.add_from_resource('/org/gnome/Lollypop/AlbumWidget.ui')
+        builder.connect_signals(self)
+        self._cover = builder.get_object('cover')
+
+        album_name = Objects.albums.get_name(album_id)
+        title = builder.get_object('title')
+        title.set_label(album_name)
+        artist_name = Objects.albums.get_artist_name(album_id)
+        artist_name = translate_artist_name(artist_name)
+        artist = builder.get_object('artist')
+        artist.set_label(artist_name)
+
+        self.add(builder.get_object('widget'))
+        self.set_cover()
+
+    def do_get_preferred_width(self):
+        return (ArtSize.BIG+ArtSize.BORDER*2, ArtSize.BIG+ArtSize.BORDER*2)
+
+    """
+        Return album id for widget
+        @return album id as int
+    """
+    def get_id(self):
+        return self._album_id
+
+#######################
+# PRIVATE             #
+#######################
+
+
 # Album detailed Widget is a pixbuf with album name and tracks list
-class AlbumDetailedWidget(Gtk.Bin):
+class AlbumDetailedWidget(AlbumWidget):
     """
         Init album widget songs ui with a complex grid:
             - Album cover
@@ -121,9 +144,7 @@ class AlbumDetailedWidget(Gtk.Bin):
         @param size group as Gtk.SizeGroup
     """
     def __init__(self, album_id, genre_id, show_menu, size_group):
-        Gtk.Bin.__init__(self)
-        self._stop = False
-        self._selected = None
+        AlbumWidget.__init__(self, album_id)
 
         builder = Gtk.Builder()
         builder.add_from_resource(
@@ -195,35 +216,12 @@ class AlbumDetailedWidget(Gtk.Bin):
             self._eventbox = None
 
     """
-        Set cover for album if state changed
+        Update playing indicator
     """
-    def set_cover(self):
-        selected = self._album_id==Objects.player.current.album_id
-        if selected != self._selected:
-            self._cover.set_from_pixbuf(
-                    Objects.art.get(
-                                self._album_id,
-                                ArtSize.BIG,
-                                selected))
-            self._selected = selected
-
-    """
-        Update playing track
-        @param track id as int
-    """
-    def update_playing_track(self, track_id):
+    def update_playing_indicator(self):
         for disc in self._discs:
-            self._tracks_left[disc].update_playing(track_id)
-            self._tracks_right[disc].update_playing(track_id)
-
-    """
-        Update cover for album id
-        @param album id as int
-    """
-    def update_cover(self, album_id):
-        if self._album_id == album_id:
-            self._cover.set_from_pixbuf(Objects.art.get(album_id,
-                                                        ArtSize.BIG))
+            self._tracks_left[disc].update_playing(Objects.player.current.id)
+            self._tracks_right[disc].update_playing(Objects.player.current.id)
 
     """
         Return album id for widget
@@ -276,12 +274,6 @@ class AlbumDetailedWidget(Gtk.Bin):
                       tracks,
                       self._tracks_right[disc],
                       pos)
-
-    """
-        Stop populating
-    """
-    def stop(self):
-        self._stop = True
 
 #######################
 # PRIVATE             #
@@ -358,22 +350,6 @@ class AlbumDetailedWidget(Gtk.Bin):
     """
     def _on_button_press_event(self, widget, event):
         self._button_state = event.get_state()
-
-    """
-        Add hover style
-        @param widget as Gtk.Widget
-        @param event es Gdk.Event
-    """
-    def _on_enter_notify(self, widget, event):
-        self.get_style_context().add_class('hovereffect')
-
-    """
-        Remove hover style
-        @param widget as Gtk.Widget
-        @param event es Gdk.Event
-    """
-    def _on_leave_notify(self, widget, event):
-        self.get_style_context().remove_class('hovereffect')
 
     """
         Change cursor over eventbox
