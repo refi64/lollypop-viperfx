@@ -35,7 +35,7 @@ class DatabaseAlbums:
         sql.execute("INSERT INTO "
                     "albums (name, artist_id, path, popularity, outside)"
                     "VALUES (?, ?, ?, ?, ?)",
-                    (name, artist_id, path, outside, popularity))
+                    (name, artist_id, path, popularity, outside))
 
     """
         Add genre to album
