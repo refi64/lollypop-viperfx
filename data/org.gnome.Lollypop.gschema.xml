@@ -93,17 +93,12 @@
             <summary>Disable notifications</summary>
             <description>Restart needed</description>
         </key>
-        <key type="b" name="force-scan">
-            <default>false</default>
-            <summary>DO NOT MODIFY</summary>
-            <description></description>
-        </key>
-		 <key type="i" name="paned-mainlist-width">
+	 <key type="i" name="paned-mainlist-width">
             <default>150</default>
             <summary>INTERNAL</summary>
             <description></description>
         </key>
-		 <key type="i" name="paned-listview-width">
+	 <key type="i" name="paned-listview-width">
             <default>200</default>
             <summary>INTERNAL</summary>
             <description></description>

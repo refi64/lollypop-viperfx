@@ -183,9 +183,6 @@ class SelectionList(GObject.GObject):
             for item in self._model:
                 if item[0] == object_id:
                     selected = item.iter
-            # Select default
-            if selected is None:
-                selected = self._model.get_iter(0)
             # If ok, here we go
             if selected is not None:
                 path = self._model.get_path(selected)
@@ -203,7 +200,7 @@ class SelectionList(GObject.GObject):
             iter = self._model.get_iter(path)
             if iter:
                 return self._model.get_value(iter, 0)
-        return -1
+        return Navigation.NONE
 
     """
         Return items number in list
@@ -232,6 +229,15 @@ class SelectionList(GObject.GObject):
     """
     def is_populating(self):
         return self._pop_time != 0
+
+    """
+        Clear treeview
+    """
+    def clear(self):
+        if self._signal_id:
+            self._view.disconnect(self._signal_id)
+            self._signal_id = None
+        self._model.clear()
 
 #######################
 # PRIVATE             #

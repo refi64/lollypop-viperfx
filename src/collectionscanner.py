@@ -26,7 +26,7 @@ class CollectionScanner(GObject.GObject):
         'scan-finished': (GObject.SignalFlags.RUN_FIRST, None, ()),
         'artist-update': (GObject.SignalFlags.RUN_FIRST, None, (int, int)),
         'genre-update': (GObject.SignalFlags.RUN_FIRST, None, (int,)),
-        'add-finished': (GObject.SignalFlags.RUN_FIRST, None, (bool,))
+        'add-finished': (GObject.SignalFlags.RUN_FIRST, None, ())
     }
 
     """
@@ -38,7 +38,6 @@ class CollectionScanner(GObject.GObject):
         self._progress = progress
         self._in_thread = False
         self._is_locked = False
-        self._smooth = False
         self._added = []
 
     """
@@ -46,7 +45,6 @@ class CollectionScanner(GObject.GObject):
         @param smooth as bool, if smooth, try to scan smoothly
     """
     def update(self, smooth):
-        self._smooth = smooth
         paths = Objects.settings.get_value('music-path')
         if not paths:
             if GLib.get_user_special_dir(GLib.UserDirectory.DIRECTORY_MUSIC):
@@ -62,7 +60,7 @@ class CollectionScanner(GObject.GObject):
             self._in_thread = True
             self._compilations = []
             self._mtimes = Objects.tracks.get_mtimes()
-            start_new_thread(self._scan, (paths,))
+            start_new_thread(self._scan, (paths, smooth))
 
     """
         Add specified files to collection
@@ -72,7 +70,6 @@ class CollectionScanner(GObject.GObject):
     def add(self, files):
         if not files:
             return
-        outdb_tracks = False
         GLib.idle_add(self._progress.show)
         sql = Objects.db.get_cursor()
         tracks = Objects.tracks.get_paths(sql)
@@ -84,19 +81,18 @@ class CollectionScanner(GObject.GObject):
             if f not in tracks:
                 infos = Objects.player.get_infos(f)
                 if infos is not None:
-                    self._added.append(self._add2db(f, 0, infos, sql))
-                    outdb_tracks = True
+                    self._added.append(self._add2db(f, 0, infos, True, sql))
             else:
                 self._added.append(Objects.tracks.get_id_by_path(f, sql))
             i += 1
             GLib.idle_add(self._update_progress, i, count)
-        Objects.albums.sanitize(sql)
+        Objects.albums.search_compilations(True, sql)
         self._is_locked = True
         sql.commit()
         sql.close()
         self._is_locked = False
         GLib.idle_add(self._progress.hide)
-        GLib.idle_add(self.emit, "add-finished", outdb_tracks)
+        GLib.idle_add(self.emit, "add-finished")
 
     """
         Return files added by last call to CollectionScanner::add
@@ -150,9 +146,10 @@ class CollectionScanner(GObject.GObject):
     """
         Scan music collection for music files
         @param paths as [string], paths to scan
+        @param smooth as bool
         @thread safe
     """
-    def _scan(self, paths):
+    def _scan(self, paths, smooth):
         sql = Objects.db.get_cursor()
 
         tracks = Objects.tracks.get_paths(sql)
@@ -173,7 +170,7 @@ class CollectionScanner(GObject.GObject):
                 if filepath not in tracks:
                     infos = Objects.player.get_infos(filepath)
                     if infos is not None:
-                        self._add2db(filepath, mtime, infos, sql)
+                        self._add2db(filepath, mtime, infos, False, sql)
                 else:
                     # Update tags by removing song and readd it
                     if mtime != self._mtimes[filepath]:
@@ -183,14 +180,14 @@ class CollectionScanner(GObject.GObject):
                         self._clean_compilation(album_id, sql)
                         infos = Objects.player.get_infos(filepath)
                         if infos is not None:
-                            self._add2db(filepath, mtime, infos, sql)
+                            self._add2db(filepath, mtime, infos, False, sql)
                     tracks.remove(filepath)
 
             except Exception as e:
                 print(ascii(filepath))
                 print("CollectionScanner::_scan(): %s" % e)
             i += 1
-            if self._smooth:
+            if smooth:
                 sleep(0.001)
 
         # Clean deleted files
@@ -202,7 +199,7 @@ class CollectionScanner(GObject.GObject):
                 self._clean_compilation(album_id, sql)
 
         Objects.tracks.clean(sql)
-        Objects.albums.sanitize(sql)
+        Objects.albums.search_compilations(False, sql)
         self._restore_popularities(sql)
         self._is_locked = True
         sql.commit()
@@ -215,10 +212,11 @@ class CollectionScanner(GObject.GObject):
         @param filepath as string
         @param file modification time as int
         @param infos as GstPbutils.DiscovererInfo
+        @param outside as bool
         @param sql as sqlite cursor
         @return track id as int
     """
-    def _add2db(self, filepath, mtime, infos, sql):
+    def _add2db(self, filepath, mtime, infos, outside, sql):
         self._new_artists = []
         self._new_genres = []
         path = os.path.dirname(filepath)
@@ -286,7 +284,7 @@ class CollectionScanner(GObject.GObject):
             # Get artist id, add it if missing
             artist_id = Objects.artists.get_id(artist, sql)
             if artist_id is None:
-                Objects.artists.add(artist, sql)
+                Objects.artists.add(artist, outside, sql)
                 artist_id = Objects.artists.get_id(artist, sql)
                 if artist == aartist:
                     self._new_artists.append(artist_id)
@@ -297,7 +295,7 @@ class CollectionScanner(GObject.GObject):
             # Get aartist id, add it if missing
             aartist_id = Objects.artists.get_id(aartist, sql)
             if aartist_id is None:
-                Objects.artists.add(aartist, sql)
+                Objects.artists.add(aartist, outside, sql)
                 aartist_id = Objects.artists.get_id(aartist, sql)
                 self._new_artists.append(aartist_id)
         else:
@@ -309,7 +307,7 @@ class CollectionScanner(GObject.GObject):
             # Get genre id, add genre if missing
             genre_id = Objects.genres.get_id(genre, sql)
             if genre_id is None:
-                Objects.genres.add(genre, sql)
+                Objects.genres.add(genre, outside, sql)
                 genre_id = Objects.genres.get_id(genre, sql)
                 self._new_genres.append(genre_id)
             genre_ids.append(genre_id)
@@ -317,11 +315,11 @@ class CollectionScanner(GObject.GObject):
         album_id = Objects.albums.get_id(album, aartist_id, sql)
         if album_id is None:
             Objects.albums.add(album, aartist_id,
-                               path, 0, sql)
+                               path, 0, outside, sql)
             album_id = Objects.albums.get_id(album, aartist_id, sql)
 
         for genre_id in genre_ids:
-            Objects.albums.add_genre(album_id, genre_id, sql)
+            Objects.albums.add_genre(album_id, genre_id, outside, sql)
 
         # Now we have our album id, check if path doesn't change
         if Objects.albums.get_path(album_id, sql) != path:
@@ -330,7 +328,7 @@ class CollectionScanner(GObject.GObject):
         # Add track to db
         Objects.tracks.add(title, filepath, length,
                            tracknumber, discnumber,
-                           album_id, year, mtime, sql)
+                           album_id, year, mtime, outside, sql)
 
         # Update year for album
         year = Objects.albums.get_year_from_tracks(album_id, sql)
@@ -339,9 +337,9 @@ class CollectionScanner(GObject.GObject):
         # Set artists/genres for track
         track_id = Objects.tracks.get_id_by_path(filepath, sql)
         for artist_id in artist_ids:
-            Objects.tracks.add_artist(track_id, artist_id, sql)
+            Objects.tracks.add_artist(track_id, artist_id, outside, sql)
         for genre_id in genre_ids:
-            Objects.tracks.add_genre(track_id, genre_id, sql)
+            Objects.tracks.add_genre(track_id, genre_id, outside, sql)
         # Notify about new artists/genres
         if self._new_genres or self._new_artists:
             self._is_locked = True

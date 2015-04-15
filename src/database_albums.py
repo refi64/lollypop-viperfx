@@ -26,28 +26,32 @@ class DatabaseAlbums:
         @param Album name as string
         @param artist id as int,
         @param path as string
+        @param outside as bool
         @warning: commit needed
     """
-    def add(self, name, artist_id, path, popularity, sql=None):
+    def add(self, name, artist_id, path, popularity, outside, sql=None):
         if not sql:
             sql = Objects.sql
-        sql.execute("INSERT INTO albums (name, artist_id, path,"
-                    "popularity) VALUES (?, ?, ?, ?)",
-                    (name, artist_id, path, popularity))
+        sql.execute("INSERT INTO "
+                    "albums (name, artist_id, path, popularity, outside)"
+                    "VALUES (?, ?, ?, ?, ?)",
+                    (name, artist_id, path, outside, popularity))
 
     """
         Add genre to album
         @param album id as int
         @param genre id as int
+        @param outside as bool
         @warning: commit needed
     """
-    def add_genre(self, album_id, genre_id, sql=None):
+    def add_genre(self, album_id, genre_id, outside, sql=None):
         if not sql:
             sql = Objects.sql
         genres = self.get_genre_ids(album_id, sql)
         if genre_id not in genres:
-            sql.execute("INSERT INTO album_genres (album_id, genre_id)"
-                        "VALUES (?, ?)", (album_id, genre_id))
+            sql.execute("INSERT INTO "
+                        "album_genres (album_id, genre_id, outside)"
+                        "VALUES (?, ?, ?)", (album_id, genre_id, outside))
 
     """
         Set artist id
@@ -597,12 +601,13 @@ class DatabaseAlbums:
         return None
 
     """
-        Sanitize compilations, after scan some albums marked
+        Search for compilations, after scan some albums marked
         as compilation (no artist album)
         can be albums => all tracks are from the same artist
+        @param outside as bool
         @warning commit needed
     """
-    def sanitize(self, sql):
+    def search_compilations(self, outside, sql):
         if not sql:
             sql = Objects.sql
         result = sql.execute("SELECT DISTINCT track_artists.artist_id,\
@@ -622,7 +627,7 @@ class DatabaseAlbums:
                 sql.execute("UPDATE tracks SET album_id=? WHERE album_id=?",
                             (existing_id, album_id))
                 for genre_id in self.get_genre_ids(album_id, sql):
-                    self.add_genre(existing_id, genre_id, sql)
+                    self.add_genre(existing_id, genre_id, outside, sql)
                 sql.execute("DELETE FROM albums WHERE rowid = ?",
                             (album_id,))
             # Album is not a compilation,

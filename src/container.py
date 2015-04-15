@@ -67,9 +67,14 @@ class Container:
     def update_db(self, force=False):
         if not self._progress.is_visible():
             if force or Objects.tracks.is_empty():
+                Objects.tracks.remove_outside()
+                self._list_one_restore = self._list_one.get_selected_id()
+                self._list_two_restore = self._list_two.get_selected_id()
+                self._list_one.clear()
+                self._list_two.clear()
+                self.update_lists()
                 self._scanner.update(False)
-            elif Objects.settings.get_value('startup-scan') or\
-                 Objects.settings.get_value('force-scan'):
+            elif Objects.settings.get_value('startup-scan'):
                 self._scanner.update(True)
 
     """
@@ -296,13 +301,14 @@ class Container:
         @param updater as GObject
     """
     def _update_list_two(self, updater):
-        if self._show_genres:
-            object_id = self._list_one.get_selected_id()
-            if object_id == Navigation.PLAYLISTS:
-                start_new_thread(self._setup_list_playlists, (True,))
-            elif isinstance(updater, CollectionScanner):
-                start_new_thread(self._setup_list_artists,
-                                 (self._list_two, object_id, True))
+        update = updater is not None
+        object_id = self._list_one.get_selected_id()
+
+        if object_id == Navigation.PLAYLISTS:
+            start_new_thread(self._setup_list_playlists, (update,))
+        elif self._show_genres and isinstance(updater, CollectionScanner):
+            start_new_thread(self._setup_list_artists,
+                             (self._list_two, object_id, update))
 
     """
         Return list one headers
@@ -546,16 +552,12 @@ class Container:
     """
         Play tracks as user playlist
         @param scanner as collection scanner
-        @param outdb as bool (tracks not present in db)
     """
-    def _play_tracks(self, scanner, outdb):
+    def _play_tracks(self, scanner):
         ids = scanner.get_added()
         if ids:
             if not Objects.player.is_party():
                 Objects.player.set_user_playlist(ids, ids[0])
-            if outdb:
-                Objects.settings.set_value('force-scan',
-                                           GLib.Variant('b', True))
             Objects.player.load(ids[0])
 
     """
@@ -563,8 +565,6 @@ class Container:
         @param scanner as CollectionScanner
     """
     def _on_scan_finished(self, scanner):
-        Objects.settings.set_value('force-scan',
-                                   GLib.Variant('b', False))
         self.update_lists(scanner)
 
     """

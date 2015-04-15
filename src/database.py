@@ -35,14 +35,18 @@ class Database:
                         artist_id INT NOT NULL,
                         year INT,
                         path TEXT NOT NULL,
-                        popularity INT NOT NULL)'''
+                        popularity INT NOT NULL,
+                        outside BOOLEAN NOT NULL)'''
     create_artists = '''CREATE TABLE artists (id INTEGER PRIMARY KEY,
-                                              name TEXT NOT NULL)'''
+                                              name TEXT NOT NULL,
+                                              outside BOOLEAN NOT NULL)'''
     create_genres = '''CREATE TABLE genres (id INTEGER PRIMARY KEY,
-                                            name TEXT NOT NULL)'''
+                                            name TEXT NOT NULL,
+                                            outside BOOLEAN NOT NULL)'''
     create_album_genres = '''CREATE TABLE album_genres (
-                                                    album_id INT NOT NULL,
-                                                    genre_id INT NOT NULL)'''
+                                                album_id INT NOT NULL,
+                                                genre_id INT NOT NULL,
+                                                outside BOOLEAN NOT NULL)'''
     create_tracks = '''CREATE TABLE tracks (id INTEGER PRIMARY KEY,
                         name TEXT NOT NULL,
                         filepath TEXT NOT NULL,
@@ -51,14 +55,17 @@ class Database:
                         discnumber INT,
                         album_id INT NOT NULL,
                         year INT,
-                        mtime INT)'''
+                        mtime INT,
+                        outside BOOLEAN NOT NULL)'''
     create_track_artists = '''CREATE TABLE track_artists (
-                                                    track_id INT NOT NULL,
-                                                    artist_id INT NOT NULL)'''
+                                                track_id INT NOT NULL,
+                                                artist_id INT NOT NULL,
+                                                outside BOOLEAN NOT NULL)'''
     create_track_genres = '''CREATE TABLE track_genres (
-                                                    track_id INT NOT NULL,
-                                                    genre_id INT NOT NULL)'''
-    version = 5
+                                                track_id INT NOT NULL,
+                                                genre_id INT NOT NULL,
+                                                outside BOOLEAN NOT NULL)'''
+    version = 6
 
     """
         Create database tables or manage update if needed

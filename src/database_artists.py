@@ -27,11 +27,11 @@ class DatabaseArtists:
         @param Artist name as string
         @warning: commit needed
     """
-    def add(self, name, sql=None):
+    def add(self, name, outside, sql=None):
         if not sql:
             sql = Objects.sql
-        sql.execute("INSERT INTO artists (name) VALUES (?)",
-                    (name,))
+        sql.execute("INSERT INTO artists (name, outside) VALUES (?, ?)",
+                    (name, outside))
 
     """
         Get artist id
@@ -145,4 +145,4 @@ class DatabaseArtists:
                               LIMIT 25", ('%'+string+'%',))
         for row in result:
             artists += row
-        return artists
+        return artists     

@@ -61,6 +61,7 @@ class Navigation_:
     POPULARS = -2
     PLAYLISTS = -3
     ALL = -4
+    NONE = -5
     DEVICES = -1000
 
 Objects = Objects_()

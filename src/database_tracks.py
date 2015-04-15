@@ -33,25 +33,27 @@ class DatabaseTracks:
         @param genre_id as int
         @param year as int
         @param mtime as int
+        @param outside as bool
         @warning: commit needed
     """
     def add(self, name, filepath, length, tracknumber, discnumber,
-            album_id, year, mtime, sql=None):
+            album_id, year, mtime, outside, sql=None):
         if not sql:
             sql = Objects.sql
         # Invalid encoding in filenames may raise an exception
         try:
             sql.execute(
                 "INSERT INTO tracks (name, filepath, length, tracknumber,\
-                discnumber, album_id, year, mtime) VALUES\
-                (?, ?, ?, ?, ?, ?, ?, ?)", (name,
-                                            filepath,
-                                            length,
-                                            tracknumber,
-                                            discnumber,
-                                            album_id,
-                                            year,
-                                            mtime))
+                discnumber, album_id, year, mtime, outside) VALUES\
+                (?, ?, ?, ?, ?, ?, ?, ?, ?)", (name,
+                                               filepath,
+                                               length,
+                                               tracknumber,
+                                               discnumber,
+                                               album_id,
+                                               year,
+                                               mtime,
+                                               outside))
         except Exception as e:
             print("DatabaseTracks::add: ", e, ascii(filepath))
 
@@ -59,29 +61,33 @@ class DatabaseTracks:
         Add artist to track
         @param track id as int
         @param artist id as int
+        @param outside as bool
         @warning: commit needed
     """
-    def add_artist(self, track_id, artist_id, sql=None):
+    def add_artist(self, track_id, artist_id, outside, sql=None):
         if not sql:
             sql = Objects.sql
         artists = self.get_artist_ids(track_id, sql)
         if artist_id not in artists:
-            sql.execute("INSERT INTO track_artists (track_id, artist_id)"
-                        "VALUES (?, ?)", (track_id, artist_id))
+            sql.execute("INSERT INTO "
+                        "track_artists (track_id, artist_id, outside)"
+                        "VALUES (?, ?, ?)", (track_id, artist_id, outside))
 
     """
         Add genre to track
         @param track id as int
         @param genre id as int
+        @param outside as bool
         @warning: commit needed
     """
-    def add_genre(self, track_id, genre_id, sql=None):
+    def add_genre(self, track_id, genre_id, outside, sql=None):
         if not sql:
             sql = Objects.sql
         genres = self.get_genre_ids(track_id, sql)
         if genre_id not in genres:
-            sql.execute("INSERT INTO track_genres (track_id, genre_id)"
-                        "VALUES (?, ?)", (track_id, genre_id))
+            sql.execute("INSERT INTO "
+                        "track_genres (track_id, genre_id, outside)"
+                        "VALUES (?, ?, ?)", (track_id, genre_id, outside))
 
     """
         Return track id for path
@@ -343,13 +349,25 @@ class DatabaseTracks:
         return tracks
 
     """
-        Remove temp tracks for db (ie with mtime=0)
+        Remove tracks outside collection
     """
-    def remove_tmp(self, sql=None):
+    def remove_outside(self, sql=None):
         if not sql:
             sql = Objects.sql
         sql.execute("DELETE FROM tracks\
                      WHERE mtime=0")
+        sql.execute("DELETE FROM albums\
+                     WHERE outside=1")
+        sql.execute("DELETE FROM genres\
+                     WHERE outside=1")
+        sql.execute("DELETE FROM artists\
+                     WHERE outside=1")
+        sql.execute("DELETE FROM album_genres\
+                     WHERE outside=1")
+        sql.execute("DELETE FROM track_genres\
+                     WHERE outside=1")
+        sql.execute("DELETE FROM track_artists\
+                     WHERE outside=1")
         sql.commit()
 
     """

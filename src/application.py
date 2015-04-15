@@ -147,11 +147,9 @@ class Application(Gtk.Application):
         Objects.player.stop()
         if Objects.window:
             Objects.window.stop_all()
-        if Objects.settings.get_value('force-scan'):
-            # Cleaning db here is too slow, user may want to play some more
-            # tracks just after closing lollypop, will clean on startup
-            # Just delete file from tracks table
-            Objects.tracks.remove_tmp()
+
+        Objects.tracks.remove_outside()
+
         try:
             Objects.sql.execute("VACUUM")
         except:
