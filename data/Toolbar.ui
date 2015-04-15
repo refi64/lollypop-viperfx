@@ -333,6 +333,7 @@
         <property name="can_focus">False</property>
         <property name="halign">start</property>
         <property name="valign">center</property>
+        <property name="margin_start">10</property>
         <property name="label">0:00</property>
       </object>
     </child>
@@ -353,6 +354,7 @@
         <property name="can_focus">False</property>
         <property name="halign">start</property>
         <property name="valign">center</property>
+        <property name="margin_end">5</property>
         <property name="label">0:00</property>
       </object>
     </child>
