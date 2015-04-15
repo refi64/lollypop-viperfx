@@ -70,29 +70,8 @@ class CollectionScanner(GObject.GObject):
     def add(self, files):
         if not files:
             return
-        GLib.idle_add(self._progress.show)
-        sql = Objects.db.get_cursor()
-        tracks = Objects.tracks.get_paths(sql)
-        count = len(files)
-        i = 0
-        GLib.idle_add(self._update_progress, i, count)
-        self._added = []
-        for f in files:
-            if f not in tracks:
-                infos = Objects.player.get_infos(f)
-                if infos is not None:
-                    self._added.append(self._add2db(f, 0, infos, True, sql))
-            else:
-                self._added.append(Objects.tracks.get_id_by_path(f, sql))
-            i += 1
-            GLib.idle_add(self._update_progress, i, count)
-        Objects.albums.search_compilations(True, sql)
-        self._is_locked = True
-        sql.commit()
-        sql.close()
-        self._is_locked = False
-        GLib.idle_add(self._progress.hide)
-        GLib.idle_add(self.emit, "add-finished")
+        self._in_thread = True
+        start_new_thread(self._add, (files,))
 
     """
         Return files added by last call to CollectionScanner::add
@@ -107,10 +86,15 @@ class CollectionScanner(GObject.GObject):
     def is_locked(self):
         return self._is_locked
 
+    """
+        Stop scan
+    """
+    def stop(self):
+        self._in_thread = False
+
 #######################
 # PRIVATE             #
 #######################
-
     """
         Update progress bar status
         @param scanned items as int, total items as int
@@ -144,6 +128,41 @@ class CollectionScanner(GObject.GObject):
             Objects.albums.set_path(album_id, path, sql)
 
     """
+        Add specified files to collection
+        @param files as [Gio.Files]
+        @thread safe
+    """
+    def _add(self, files):
+        self._is_locked = True
+        GLib.idle_add(self._progress.show)
+        sql = Objects.db.get_cursor()
+        tracks = Objects.tracks.get_paths(sql)
+        count = len(files)
+        i = 0
+        GLib.idle_add(self._update_progress, i, count)
+        self._added = []
+        for f in files:
+            if not self._in_thread:
+                sql.close()
+                self._is_locked = False
+                return
+            if f not in tracks:
+                infos = Objects.player.get_infos(f)
+                if infos is not None:
+                    self._added.append(self._add2db(f, 0, infos, True, sql))
+            else:
+                self._added.append(Objects.tracks.get_id_by_path(f, sql))
+            i += 1
+            GLib.idle_add(self._update_progress, i, count)
+        Objects.albums.search_compilations(True, sql)
+        sql.commit()
+        sql.close()
+        GLib.idle_add(self._progress.hide)
+        self._in_thread = False
+        self._is_locked = False
+        GLib.idle_add(self.emit, "add-finished")
+
+    """
         Scan music collection for music files
         @param paths as [string], paths to scan
         @param smooth as bool
@@ -151,7 +170,7 @@ class CollectionScanner(GObject.GObject):
     """
     def _scan(self, paths, smooth):
         sql = Objects.db.get_cursor()
-
+        self._is_locked = True
         tracks = Objects.tracks.get_paths(sql)
         new_tracks = []
         count = 0
@@ -164,6 +183,10 @@ class CollectionScanner(GObject.GObject):
                         count += 1
         i = 0
         for filepath in new_tracks:
+            if not self._in_thread:
+                sql.close()
+                self._is_locked = False
+                return
             GLib.idle_add(self._update_progress, i, count)
             mtime = int(os.path.getmtime(filepath))
             try:
@@ -201,7 +224,6 @@ class CollectionScanner(GObject.GObject):
         Objects.tracks.clean(sql)
         Objects.albums.search_compilations(False, sql)
         self._restore_popularities(sql)
-        self._is_locked = True
         sql.commit()
         sql.close()
         self._is_locked = False

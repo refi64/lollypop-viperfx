@@ -145,9 +145,10 @@ class Container:
         if self._list_one.is_populating() or\
            self._list_one.is_populating() or\
            self._scanner.is_locked():
+            self._scanner.stop()
             GLib.timeout_add(250, self.load_external, files)
         else:
-            start_new_thread(self._scanner.add, (files,))
+            self._scanner.add(files)
 
     """
         Get main widget
