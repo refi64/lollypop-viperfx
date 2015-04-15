@@ -109,10 +109,16 @@ class Toolbar:
         self._settings_button.show()
         self._settings_button.set_menu_model(menu)
 
+    """
+        Set Gtk.Scale progress width
+        @param width as int
+    """
+    def set_progress_width(self, width):
+        self._progress.set_property("width_request", width)
+
 #######################
 # PRIVATE             #
 #######################
-
     """
         Set shuffle icon
     """
