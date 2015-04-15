@@ -84,11 +84,11 @@ class Player(GObject.GObject):
         self._user_playlist_backup = None
         self._shuffle = Objects.settings.get_enum('shuffle')
         # Tracks already played
-        self._shuffle_prev_tracks = []
+        self._played_tracks_history = []
         # Albums already played
-        self._shuffle_albums_backup = []
-        # Tracks already played for current album
-        self._shuffle_history = {}
+        self._already_played_albums = []
+        # Tracks already played for albums
+        self._already_played_tracks = {}
         # Party mode
         self._is_party = False
         # Current queue
@@ -207,9 +207,9 @@ class Player(GObject.GObject):
         track_id = None
         if self._shuffle == Shuffle.TRACKS or self._is_party:
             try:
-                track_id = self._shuffle_prev_tracks[-2]
-                self._shuffle_prev_tracks.pop()
-                self._shuffle_prev_tracks.pop()
+                track_id = self._played_tracks_history[-2]
+                self._played_tracks_history.pop()
+                self._played_tracks_history.pop()
             except:
                 track_id = None
         # Look at user playlist then
@@ -346,9 +346,9 @@ class Player(GObject.GObject):
         @param party as bool
     """
     def set_party(self, party):
-        self._shuffle_prev_tracks = []
-        self._shuffle_history = {}
-        self._shuffle_albums_backup = []
+        self._played_tracks_history = []
+        self._already_played_tracks = {}
+        self._already_played_albums = []
         self._user_playlist = None
         if party:
             self.context.next = NextContext.STOP_NONE
@@ -356,7 +356,7 @@ class Player(GObject.GObject):
         else:
             self._rgvolume.props.album_mode = 1
         self._is_party = party
-        self._shuffle_prev_tracks = []
+        self._played_tracks_history = []
         if party:
             party_ids = self.get_party_ids()
             if len(party_ids) > 0:
@@ -404,9 +404,9 @@ class Player(GObject.GObject):
             return
         album_id = Objects.tracks.get_album_id(track_id)
         self._albums = []
-        self._shuffle_prev_tracks = []
-        self._shuffle_history = {}
-        self._shuffle_albums_backup = []
+        self._played_tracks_history = []
+        self._already_played_tracks = {}
+        self._already_played_albums = []
         self.context.genre_id = genre_id
 
         # When shuffle from artist is active, we want only artist's albums,
@@ -570,9 +570,9 @@ class Player(GObject.GObject):
         @param album id as int
     """
     def _add_to_shuffle_history(self, track_id, album_id):
-        if self.current.album_id not in self._shuffle_history.keys():
-            self._shuffle_history[self.current.album_id] = []
-        self._shuffle_history[self.current.album_id].append(self.current.id)
+        if self.current.album_id not in self._already_played_tracks.keys():
+            self._already_played_tracks[self.current.album_id] = []
+        self._already_played_tracks[self.current.album_id].append(self.current.id)
 
     """
         Shuffle/Un-shuffle playlist based on shuffle setting
@@ -688,10 +688,10 @@ class Player(GObject.GObject):
         track_id = self._get_random(sql)
         # Need to clear history
         if not track_id:
-            self._albums = self._shuffle_albums_backup
-            self._shuffle_prev_tracks = []
-            self._shuffle_history = {}
-            self._shuffle_albums_backup = []
+            self._albums = self._already_played_albums
+            self._played_tracks_history = []
+            self._already_played_tracks = {}
+            self._already_played_albums = []
             self._shuffle_next(force)
             return
 
@@ -711,15 +711,15 @@ class Player(GObject.GObject):
                                                self.current.genre_id,
                                                sql)
             for track in sorted(tracks, key=lambda *args: random.random()):
-                if album_id not in self._shuffle_history.keys() or\
-                   track not in self._shuffle_history[album_id]:
+                if album_id not in self._already_played_tracks.keys() or\
+                   track not in self._already_played_tracks[album_id]:
                     return track
             # No new tracks for this album, remove it
             # If albums not in shuffle history, it's not present
             # in db anymore (update since shuffle set)
-            if album_id in self._shuffle_history.keys():
-                self._shuffle_history.pop(album_id)
-                self._shuffle_albums_backup.append(album_id)
+            if album_id in self._already_played_tracks.keys():
+                self._already_played_tracks.pop(album_id)
+                self._already_played_albums.append(album_id)
             self._albums.remove(album_id)
 
         return None
@@ -733,9 +733,9 @@ class Player(GObject.GObject):
         self._errors = 0
         # Add track to shuffle history if needed
         if self._shuffle != Shuffle.NONE or self._is_party:
-            if self.current.id in self._shuffle_prev_tracks:
-                self._shuffle_prev_tracks.remove(self.current.id)
-            self._shuffle_prev_tracks.append(self.current.id)
+            if self.current.id in self._played_tracks_history:
+                self._played_tracks_history.remove(self.current.id)
+            self._played_tracks_history.append(self.current.id)
             self._add_to_shuffle_history(self.current.id,
                                          self.current.album_id)
 
