@@ -43,7 +43,6 @@ class Application(Gtk.Application):
         GLib.set_application_name('lollypop')
         GLib.set_prgname('lollypop')
         self.set_flags(Gio.ApplicationFlags.HANDLES_OPEN)
-        self.connect('open', self._on_files_opened)
         cssProviderFile = Gio.File.new_for_uri(
                             'resource:///org/gnome/Lollypop/application.css'
                                               )
@@ -120,7 +119,6 @@ class Application(Gtk.Application):
             if not Objects.settings.get_value('disable-notifications'):
                 NotificationManager()
             Objects.window.update_lists()
-            Objects.window.update_db()
             Objects.window.show()
             Objects.player.restore_state()
 
@@ -130,6 +128,26 @@ class Application(Gtk.Application):
     def do_activate(self):
         if Objects.window:
             Objects.window.present()
+
+    """
+        Play specified files
+        @param app as Gio.Application
+        @param files as [Gio.Files]
+        @param hint as str
+        @param data as unused
+    """
+    def do_open(self, files, hint, data):
+        self._external_files = []
+        for f in files:
+            if self._parser.parse(f.get_uri(), False) ==\
+                                           TotemPlParser.ParserResult.SUCCESS:
+                self._parsing += 1
+            elif is_audio(f):
+                self._external_files.append(f.get_path())
+        if not Objects.window.is_visible():
+            self.do_activate()
+        if self._parsing == 0:
+            Objects.window.load_external(self._external_files)
 
     """
         Destroy main window
@@ -166,26 +184,6 @@ class Application(Gtk.Application):
 #######################
 # PRIVATE             #
 #######################
-    """
-        Play specified files
-        @param app as Gio.Application
-        @param files as [Gio.Files]
-        @param hint as str
-        @param data as unused
-    """
-    def _on_files_opened(self, app, files, hint, data):
-        self._external_files = []
-        for f in files:
-            if self._parser.parse(f.get_uri(), False) ==\
-                                           TotemPlParser.ParserResult.SUCCESS:
-                self._parsing += 1
-            elif is_audio(f):
-                self._external_files.append(f.get_path())
-        if not Objects.window.is_visible():
-            self.do_activate()
-        if self._parsing == 0:
-            Objects.window.load_external(self._external_files)
-
     """
         Add playlist entry to external files
         @param parser as TotemPlParser.Parser
