@@ -543,6 +543,8 @@ class Player(GObject.GObject):
                 self._load_track(track_id)
                 self.set_albums(track_id, Navigation.ALL, Navigation.ALL)
                 self.emit('current-changed')
+            else:
+                print("Player::restore_state(): track missing")
 
     """
         Return player volume rate
