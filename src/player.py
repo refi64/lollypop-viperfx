@@ -538,9 +538,11 @@ class Player(GObject.GObject):
     def restore_state(self):
         track_id = Objects.settings.get_value('track-id').get_int32()
         if Objects.settings.get_value('save-state') and track_id > 0:
-            self._load_track(track_id)
-            self.set_albums(track_id, Navigation.ALL, Navigation.ALL)
-            self.emit('current-changed')
+            path = Objects.tracks.get_path(track_id)
+            if path != "":
+                self._load_track(track_id)
+                self.set_albums(track_id, Navigation.ALL, Navigation.ALL)
+                self.emit('current-changed')
 
     """
         Return player volume rate
