@@ -256,6 +256,7 @@ class Container:
         artist_name = Objects.artists.get_name(artist_id)
         if self._show_genres:
             genre_ids = Objects.albums.get_genre_ids(album_id)
+            genre_ids.append(Navigation.ALL)
             if self._list_one.get_selected_id() in genre_ids:
                 self._list_two.add((artist_id, artist_name))
         else:
