@@ -37,6 +37,7 @@ class CollectionScanner(GObject.GObject):
 
         self._progress = progress
         self._in_thread = False
+        self._is_locked = False
         self._smooth = False
         self._added = []
 
@@ -90,8 +91,10 @@ class CollectionScanner(GObject.GObject):
             i += 1
             GLib.idle_add(self._update_progress, i, count)
         Objects.albums.sanitize(sql)
+        self._is_locked = True
         sql.commit()
         sql.close()
+        self._is_locked = False
         GLib.idle_add(self._progress.hide)
         GLib.idle_add(self.emit, "add-finished", outdb_tracks)
 
@@ -101,6 +104,12 @@ class CollectionScanner(GObject.GObject):
     """
     def get_added(self):
         return self._added
+
+    """
+        Return True if db locked
+    """
+    def is_locked(self):
+        return self._is_locked
 
 #######################
 # PRIVATE             #
@@ -141,6 +150,7 @@ class CollectionScanner(GObject.GObject):
     """
         Scan music collection for music files
         @param paths as [string], paths to scan
+        @thread safe
     """
     def _scan(self, paths):
         sql = Objects.db.get_cursor()
@@ -194,8 +204,10 @@ class CollectionScanner(GObject.GObject):
         Objects.tracks.clean(sql)
         Objects.albums.sanitize(sql)
         self._restore_popularities(sql)
+        self._is_locked = True
         sql.commit()
         sql.close()
+        self._is_locked = False
         GLib.idle_add(self._finish)
 
     """
@@ -332,7 +344,9 @@ class CollectionScanner(GObject.GObject):
             Objects.tracks.add_genre(track_id, genre_id, sql)
         # Notify about new artists/genres
         if self._new_genres or self._new_artists:
+            self._is_locked = True
             sql.commit()
+            self._is_locked = False
             for genre_id in self._new_genres:
                 GLib.idle_add(self.emit, "genre-update", genre_id)
             for artist_id in self._new_artists:

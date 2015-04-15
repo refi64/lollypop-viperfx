@@ -136,10 +136,13 @@ class Container:
     def load_external(self, files):
         # We wait as selection list is threaded,
         # we don't want to insert item before populated
-        if self._list_one_restore is None:
-            start_new_thread(self._scanner.add, (files,))
-        else:
+        # Same for locked db
+        if self._list_one.is_populating() or\
+           self._list_one.is_populating() or\
+           self._scanner.is_locked():
             GLib.timeout_add(250, self.load_external, files)
+        else:
+            start_new_thread(self._scanner.add, (files,))
 
     """
         Get main widget

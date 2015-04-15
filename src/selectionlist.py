@@ -35,6 +35,7 @@ class SelectionList(GObject.GObject):
         self._model = Gtk.ListStore(int, str, GdkPixbuf.Pixbuf)
         self._model.set_sort_column_id(0, Gtk.SortType.ASCENDING)
         self._model.set_sort_func(0, self._sort_items)
+        self._loading = False
         self._updating = False       # Sort disabled if False
         self._is_artists = False  # for string translation
         self._pop_time = 0.0      # Keep track of time when starting populate
@@ -225,6 +226,13 @@ class SelectionList(GObject.GObject):
                                            device,
                                            self._device_pixbuf])
                 break
+
+    """
+        Return true if view is being populated
+    """
+    def is_populating(self):
+        return self._pop_time != 0
+
 #######################
 # PRIVATE             #
 #######################
@@ -244,6 +252,7 @@ class SelectionList(GObject.GObject):
             self.emit("populated")
             del values
             values = None
+            self._pop_time = 0
             return
 
         (object_id, string) = values.pop(0)
