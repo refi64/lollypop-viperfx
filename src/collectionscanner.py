@@ -83,6 +83,7 @@ class CollectionScanner(GObject.GObject):
     """
     def stop(self):
         self._in_thread = False
+        self._progress.hide()
 
 #######################
 # PRIVATE             #
