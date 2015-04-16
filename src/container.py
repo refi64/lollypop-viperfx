@@ -71,13 +71,13 @@ class Container:
             GLib.timeout_add(250, self.update_db, force)
         # Something is using progress bar, do nothing
         elif not self._progress.is_visible():
-            if force or Objects.tracks.is_empty():
+            if force:
                 Objects.tracks.remove_outside()
                 self._list_one_restore = self._list_one.get_selected_id()
                 self._list_two_restore = self._list_two.get_selected_id()
-                self._list_one.clear()
-                self._list_two.clear()
-                self.update_lists()
+                self.update_lists(True)
+                self._scanner.update(False)
+            elif Objects.tracks.is_empty():
                 self._scanner.update(False)
             elif Objects.settings.get_value('startup-scan'):
                 self._scanner.update(True)
