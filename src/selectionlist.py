@@ -178,8 +178,6 @@ class SelectionList(GObject.GObject):
         @param object id as int
     """
     def select_id(self, object_id):
-        if object_id == Navigation.NONE:
-            return
         try:
             selected = None
             for item in self._model:

@@ -347,7 +347,7 @@ class Container:
         if selection_list == self._list_one:
             if self._list_two.widget.is_visible():
                 self._list_two.widget.hide()
-            self._list_two_restore = None
+            self._list_two_restore = Navigation.NONE
 
     """
         Setup list for artists
@@ -546,9 +546,9 @@ class Container:
         @param selection list as SelectionList
     """
     def _on_list_two_populated(self, selection_list):
-        if self._list_two_restore is not None:
+        if self._list_two_restore != Navigation.NONE:
             self._list_two.select_id(self._list_two_restore)
-            self._list_two_restore = None
+            self._list_two_restore = Navigation.NONE
 
     """
         Play tracks as user playlist
