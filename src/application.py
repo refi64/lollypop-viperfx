@@ -167,9 +167,8 @@ class Application(Gtk.Application):
         if Objects.window:
             Objects.window.stop_all()
 
-        Objects.tracks.remove_outside()
-
         try:
+            Objects.tracks.remove_outside()
             Objects.sql.execute("VACUUM")
         except:
             pass
