@@ -438,7 +438,8 @@ class Player(GObject.GObject):
         tracks = Objects.albums.get_tracks(album_id, genre_id)
         if track_id in tracks:
             self.context.position = tracks.index(track_id)
-            self.context.genre_id = genre_id
+            if genre_id is not None:
+                self.context.genre_id = genre_id
             # Shuffle album list if needed
             self._shuffle_playlist()
         else:
