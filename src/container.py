@@ -212,7 +212,7 @@ class Container:
         self._list_two.connect('populated', self._on_list_two_populated)
 
         self._progress = Gtk.ProgressBar()
-        self._progress.set_property('expand', True)
+        self._progress.set_property('hexpand', True)
 
         vgrid.add(self._stack)
         vgrid.add(self._progress)
