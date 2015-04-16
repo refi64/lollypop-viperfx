@@ -31,7 +31,6 @@ It provides:
 - python-cairo
 - python-dbus
 - python-gobject
-- python-mutagen
 - python-sqlite
 
 === Building from git ===
