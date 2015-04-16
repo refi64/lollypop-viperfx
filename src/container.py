@@ -522,11 +522,11 @@ class Container:
         @param selection list as SelectionList
     """
     def _on_list_one_populated(self, selection_list):
+        for dev in self._devices.values():
+            self._list_one.add_device(dev.name, dev.id)
         if self._list_one_restore is not None:
             self._list_one.select_id(self._list_one_restore)
             self._list_one_restore = None
-        for dev in self._devices.values():
-            self._list_one.add_device(dev.name, dev.id)
 
     """
         Update view based on selected object
