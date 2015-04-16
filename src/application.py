@@ -247,7 +247,7 @@ class Application(Gtk.Application):
         Show settings dialog
     """
     def _settings_dialog(self, action=None, param=None):
-        dialog = SettingsDialog(Objects.window)
+        dialog = SettingsDialog()
         dialog.show()
 
     """

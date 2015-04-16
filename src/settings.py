@@ -20,16 +20,15 @@ from lollypop.utils import use_csd
 # Dialog showing lollypop options
 class SettingsDialog:
 
-    def __init__(self, parent):
+    def __init__(self):
 
         self._choosers = []
-        self._parent = parent
 
         builder = Gtk.Builder()
         builder.add_from_resource('/org/gnome/Lollypop/SettingsDialog.ui')
 
         self._settings_dialog = builder.get_object('settings_dialog')
-        self._settings_dialog.set_transient_for(parent)
+        self._settings_dialog.set_transient_for(Objects.window)
 
         if use_csd():
             self._settings_dialog.set_titlebar(
@@ -177,7 +176,7 @@ class SettingsDialog:
         @param widget as unused, state as widget state
     """
     def _update_genres_setting(self, widget, state):
-        self._parent.show_genres(state)
+        Objects.window.show_genres(state)
         Objects.settings.set_value('show-genres',
                                    GLib.Variant('b', state))
                                    
@@ -213,7 +212,7 @@ class SettingsDialog:
         self._settings_dialog.hide()
         self._settings_dialog.destroy()
         if set(previous) != set(paths):
-            self._parent.update_db(True)
+            Objects.window.update_db(True)
 
     """
         Update party ids when use change a switch in dialog

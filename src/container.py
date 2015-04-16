@@ -191,7 +191,8 @@ class Container:
     """
     def update_view(self):
         view = self._stack.get_visible_child()
-        start_new_thread(view.update_covers, ())
+        if view:
+            start_new_thread(view.update_covers, ())
 
 ############
 # Private  #

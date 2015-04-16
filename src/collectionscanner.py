@@ -57,6 +57,7 @@ class CollectionScanner(GObject.GObject):
         if not self._in_thread:
             self._progress.show()
             self._in_thread = True
+            self._is_locked = True
             self._compilations = []
             self._mtimes = Objects.tracks.get_mtimes()
             start_new_thread(self._scan, (paths, smooth))
@@ -70,6 +71,7 @@ class CollectionScanner(GObject.GObject):
         if not files:
             return
         self._in_thread = True
+        self._is_locked = True
         start_new_thread(self._add, (files,))
 
     """
@@ -82,8 +84,8 @@ class CollectionScanner(GObject.GObject):
         Stop scan
     """
     def stop(self):
-        self._in_thread = False
         self._progress.hide()
+        self._in_thread = False
 
 #######################
 # PRIVATE             #
@@ -99,9 +101,10 @@ class CollectionScanner(GObject.GObject):
         Notify from main thread when scan finished
     """
     def _finish(self):
-        self._in_thread = False
         self._progress.hide()
         self._progress.set_fraction(0.0)
+        self._in_thread = False
+        self._is_locked = False
         self.emit("scan-finished")
 
     """
@@ -126,7 +129,6 @@ class CollectionScanner(GObject.GObject):
         @thread safe
     """
     def _add(self, files):
-        self._is_locked = True
         GLib.idle_add(self._progress.show)
         sql = Objects.db.get_cursor()
         tracks = Objects.tracks.get_paths(sql)
@@ -164,7 +166,6 @@ class CollectionScanner(GObject.GObject):
     """
     def _scan(self, paths, smooth):
         sql = Objects.db.get_cursor()
-        self._is_locked = True
         tracks = Objects.tracks.get_paths(sql)
         new_tracks = []
         count = 0
@@ -220,7 +221,6 @@ class CollectionScanner(GObject.GObject):
         self._restore_popularities(sql)
         sql.commit()
         sql.close()
-        self._is_locked = False
         GLib.idle_add(self._finish)
 
     """
@@ -358,9 +358,7 @@ class CollectionScanner(GObject.GObject):
             Objects.tracks.add_genre(track_id, genre_id, outside, sql)
         # Notify about new artists/genres
         if self._new_genres or self._new_artists:
-            self._is_locked = True
             sql.commit()
-            self._is_locked = False
             for genre_id in self._new_genres:
                 GLib.idle_add(self.emit, "genre-update", genre_id)
             for artist_id in self._new_artists:
