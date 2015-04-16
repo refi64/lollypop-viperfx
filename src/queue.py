@@ -79,6 +79,7 @@ class QueueWidget(Gtk.Popover):
         Show queue popover
         Populate treeview with current queue
     """
+    #TODO Threaded loading
     def do_show(self):
         size_setting = Objects.settings.get_value('window-size')
         if isinstance(size_setting[1], int):
@@ -91,13 +92,14 @@ class QueueWidget(Gtk.Popover):
             artist_id = Objects.albums.get_artist_id(album_id)
             artist_name = Objects.artists.get_name(artist_id)
             track_name = Objects.tracks.get_name(track_id)
-            art = Objects.art.get(album_id, ArtSize.MEDIUM)
-            self._model.append([art,
+            pixbuf = Objects.art.get(album_id, ArtSize.MEDIUM)
+            self._model.append([pixbuf,
                                 "<b>%s</b>\n%s" %
                                 (escape(translate_artist_name(artist_name)),
                                  escape(track_name)),
                                 self._del_pixbuf,
                                 track_id])
+            del pixbuf
 
         self._signal_id1 = Objects.player.connect("current-changed",
                                                   self._on_current_changed)

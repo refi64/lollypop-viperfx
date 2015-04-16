@@ -39,11 +39,11 @@ class AlbumWidget(Gtk.Bin):
         selected = self._album_id==Objects.player.current.album_id
         if self._cover and (selected != self._selected or force):
             self._selected = selected
-            self._cover.set_from_pixbuf(
-                    Objects.art.get(
-                                self._album_id,
-                                ArtSize.BIG,
-                                selected))
+            pixbuf = Objects.art.get(self._album_id,
+                                     ArtSize.BIG,
+                                     selected)
+            self._cover.set_from_pixbuf(pixbuf)
+            del pixbuf
 
     """
         Update cover for album id id needed
@@ -52,9 +52,12 @@ class AlbumWidget(Gtk.Bin):
     def update_cover(self, album_id):
         if self._cover and self._album_id == album_id:
             self._selected = self._album_id==Objects.player.current.album_id
-            self._cover.set_from_pixbuf(Objects.art.get(album_id,
-                                                        ArtSize.BIG,
-                                                        self._selected))
+            pixbuf = Objects.art.get(self._album_id,
+                                     ArtSize.BIG,
+                                     selected)
+            self._cover.set_from_pixbuf(pixbuf)
+            del pixbuf
+
     """
         Update playing indicator
     """

@@ -68,6 +68,7 @@ class SearchRow(Gtk.ListBoxRow):
     """
     def set_cover(self, pixbuf):
         self._cover.set_from_pixbuf(pixbuf)
+        del pixbuf
 
     """
         Return True if self exists in items

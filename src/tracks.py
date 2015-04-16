@@ -188,7 +188,9 @@ class TracksWidget(Gtk.ListBox):
         track_row.set_object_id(track_id)
         if show_cover:
             album_id = Objects.tracks.get_album_id(track_id)
-            track_row.set_cover(Objects.art.get(album_id, ArtSize.MEDIUM))
+            pixbuf = Objects.art.get(album_id, ArtSize.MEDIUM)
+            track_row.set_cover(pixbuf)
+            del pixbuf
         track_row.show()
         self.add(track_row)
 

@@ -164,8 +164,9 @@ class Toolbar:
     """
     def _update_cover(self, obj, album_id):
         if Objects.player.current.album_id == album_id:
-            self._cover.set_from_pixbuf(Objects.art.get(album_id,
-                                                        ArtSize.SMALL))
+            pixbuf = Objects.art.get(album_id, ArtSize.SMALL)
+            self._cover.set_from_pixbuf(pixbuf)
+            del pixbuf
 
     """
         On press, mark player as seeking
