@@ -48,7 +48,7 @@ class Container:
         self._setup_scanner()
 
         self._list_one_restore = Navigation.POPULARS
-        self._list_two_restore = None
+        self._list_two_restore = Navigation.NONE
         if Objects.settings.get_value('save-state'):
             self._restore_view_state()
 
@@ -307,7 +307,7 @@ class Container:
 
         if object_id == Navigation.PLAYLISTS:
             start_new_thread(self._setup_list_playlists, (update,))
-        elif self._show_genres:
+        elif self._show_genres and object_id != Navigation.NONE:
             start_new_thread(self._setup_list_artists,
                              (self._list_two, object_id, update))
 
@@ -513,7 +513,7 @@ class Container:
             start_new_thread(self._setup_list_artists,
                              (self._list_two, object_id, False))
             self._list_two.widget.show()
-            if self._list_two_restore is None:
+            if self._list_two_restore == Navigation.NONE:
                 self._update_view_albums(object_id, None)
 
     """
