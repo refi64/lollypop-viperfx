@@ -340,7 +340,7 @@ class CollectionScanner(GObject.GObject):
             Objects.albums.add_genre(album_id, genre_id, outside, sql)
 
         # Now we have our album id, check if path doesn't change
-        if Objects.albums.get_path(album_id, sql) != path:
+        if Objects.albums.get_path(album_id, sql) != path and not outside:
             Objects.albums.set_path(album_id, path, sql)
 
         # Add track to db
