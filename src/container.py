@@ -572,7 +572,10 @@ class Container:
         @param scanner as CollectionScanner
     """
     def _on_scan_finished(self, scanner):
-        self.update_lists(scanner)
+        if self._list_one.is_populating() or self._list_two.is_populating():
+            GLib.timeout_add(500, self._on_scan_finished, scanner)
+        else:
+            self.update_lists(scanner)
 
     """
         On volume mounter
