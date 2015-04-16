@@ -148,6 +148,8 @@ class CollectionScanner(GObject.GObject):
             else:
                 track_id = Objects.tracks.get_id_by_path(f, sql)
             if track_id is not None:
+                if i == 0:
+                    sql.commit()
                 GLib.idle_add(self.emit, "added", track_id, i==0)
             i += 1
             GLib.idle_add(self._update_progress, i, count)
