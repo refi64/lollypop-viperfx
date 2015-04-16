@@ -204,7 +204,7 @@ class SettingsDialog:
             paths.append(main_path)
             for chooser in choosers:
                 path = chooser.get_dir()
-                if path and path not in paths:
+                if path is not None and path not in paths:
                     paths.append(path)
 
         previous = Objects.settings.get_value('music-path')
@@ -279,8 +279,11 @@ class ChooserWidget(Gtk.Grid):
         @return path as string
     """
     def get_dir(self):
-        path = GLib.uri_unescape_string(self._chooser_btn.get_uri(), None)
-        if path:
+        path = None
+        uri = self._chooser_btn.get_uri()
+        if uri is not None:
+            path = GLib.uri_unescape_string(uri, None)
+        if path is not None:
             return path[7:]
         else:
             return None
