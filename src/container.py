@@ -65,7 +65,12 @@ class Container:
         @param force as bool to force update (if possible)
     """
     def update_db(self, force=False):
-        if not self._progress.is_visible():
+        # Stop previous scan
+        if self._scanner.is_locked():
+            self._scanner.stop()
+            GLib.timeout_add(250, self.update_db, force)
+        # Something is using progress bar, do nothing
+        elif not self._progress.is_visible():
             if force or Objects.tracks.is_empty():
                 Objects.tracks.remove_outside()
                 self._list_one_restore = self._list_one.get_selected_id()
