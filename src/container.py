@@ -292,11 +292,11 @@ class Container:
         # Do not update if updater is PlaylistsManager
         if not isinstance(updater, PlaylistsManager):
             if self._show_genres:
-                start_new_thread(self._setup_list_genres,
-                                 (self._list_one, update))
+                self._setup_list_genres(self._list_one, update)
             else:
-                start_new_thread(self._setup_list_artists,
-                                 (self._list_one, Navigation.ALL, update))
+                self._setup_list_artists(self._list_one,
+                                         Navigation.ALL,
+                                         update)
 
     """
         Update list two
@@ -309,8 +309,7 @@ class Container:
         if object_id == Navigation.PLAYLISTS:
             start_new_thread(self._setup_list_playlists, (update,))
         elif self._show_genres and object_id != Navigation.NONE:
-            start_new_thread(self._setup_list_artists,
-                             (self._list_two, object_id, update))
+            self._setup_list_artists(self._list_two, object_id, update)
 
     """
         Return list one headers
@@ -336,7 +335,7 @@ class Container:
         selection_list.mark_as_artists(False)
         items = self._get_headers() + Objects.genres.get(sql)
         if update:
-            GLib.idle_add(selection_list.update, items)
+            selection_list.update(items)
         else:
             selection_list.populate(items)
         sql.close()
@@ -369,7 +368,7 @@ class Container:
         items += Objects.artists.get(genre_id, sql)
 
         if update:
-            GLib.idle_add(selection_list.update, items)
+            selection_list.update(items)
         else:
             selection_list.populate(items)
         sql.close()
@@ -377,6 +376,7 @@ class Container:
     """
         Setup list for playlists
         @param update as bool
+        @thread safe
     """
     def _setup_list_playlists(self, update):
         playlists = Objects.playlists.get()

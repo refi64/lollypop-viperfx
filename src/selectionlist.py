@@ -13,6 +13,7 @@
 
 from gi.repository import Gtk, GdkPixbuf, GLib, GObject, Pango
 from time import time
+from _thread import start_new_thread
 
 from lollypop.utils import translate_artist_name, format_artist_name
 from lollypop.define import Navigation
@@ -102,8 +103,7 @@ class SelectionList(GObject.GObject):
         if self._signal_id:
             self._view.disconnect(self._signal_id)
             self._signal_id = None
-        GLib.idle_add(self._model.clear)
-        GLib.idle_add(self._add_item, values, self._pop_time)
+        start_new_thread(self._populate, (values,))
 
     """
         Remove row from model
@@ -242,6 +242,15 @@ class SelectionList(GObject.GObject):
 #######################
 # PRIVATE             #
 #######################
+    """
+        Populate view with values
+        @param [(int, str)], will be deleted
+        @thread safe
+    """
+    def _populate(self, values):
+        GLib.idle_add(self._model.clear)
+        GLib.idle_add(self._add_item, values, self._pop_time)
+
     """
         Add items to the list
         @param items as [(int,str)]
