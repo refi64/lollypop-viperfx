@@ -411,35 +411,37 @@ class Player(GObject.GObject):
 
         # When shuffle from artist is active, we want only artist's albums,
         # we need to ignore genre
+        # Do not set genre_id directly as it will changes current context
         if self._shuffle in [Shuffle.TRACKS_ARTIST, Shuffle.ALBUMS_ARTIST]:
-            genre_id = None
+            genre_id_lookup = None
+        else:
+            genre_id_lookup = genre_id
 
         # We are not playing a user playlist anymore
         self._user_playlist = None
         # We are in all artists
-        if genre_id == Navigation.ALL or artist_id == Navigation.ALL:
+        if genre_id_lookup == Navigation.ALL or artist_id == Navigation.ALL:
             self._albums = Objects.albums.get_compilations(Navigation.ALL)
             self._albums += Objects.albums.get_ids()
         # We are in popular view, add populars albums
-        elif genre_id == Navigation.POPULARS:
+        elif genre_id_lookup == Navigation.POPULARS:
             self._albums = Objects.albums.get_populars()
         # Random tracks/albums for genre
         elif self._shuffle in [Shuffle.TRACKS, Shuffle.ALBUMS]:
-            self._albums = Objects.albums.get_ids(None, genre_id)
+            self._albums = Objects.albums.get_ids(None, genre_id_lookup)
         # Random tracks/albums for artist
         elif self._shuffle in [Shuffle.TRACKS_ARTIST, Shuffle.ALBUMS_ARTIST]:
-            self._albums = Objects.albums.get_ids(artist_id, genre_id)
+            self._albums = Objects.albums.get_ids(artist_id, genre_id_lookup)
         # Add all albums for genre
         else:
-            self._albums = Objects.albums.get_compilations(genre_id)
-            self._albums += Objects.albums.get_ids(None, genre_id)
+            self._albums = Objects.albums.get_compilations(genre_id_lookup)
+            self._albums += Objects.albums.get_ids(None, genre_id_lookup)
 
         self.context.album_id = album_id
-        tracks = Objects.albums.get_tracks(album_id, genre_id)
+        tracks = Objects.albums.get_tracks(album_id, genre_id_lookup)
         if track_id in tracks:
             self.context.position = tracks.index(track_id)
-            if genre_id is not None:
-                self.context.genre_id = genre_id
+            self.context.genre_id = genre_id
             # Shuffle album list if needed
             self._shuffle_playlist()
         else:
