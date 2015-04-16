@@ -307,7 +307,7 @@ class Container:
 
         if object_id == Navigation.PLAYLISTS:
             start_new_thread(self._setup_list_playlists, (update,))
-        elif self._show_genres and isinstance(updater, CollectionScanner):
+        elif self._show_genres:
             start_new_thread(self._setup_list_artists,
                              (self._list_two, object_id, update))
 
