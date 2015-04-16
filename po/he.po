@@ -11,8 +11,8 @@ msgstr ""
 "Project-Id-Version: lollypop\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2015-04-09 15:58+0200\n"
-"PO-Revision-Date: 2015-04-16 12:40+0000\n"
-"Last-Translator: Cédric Bellegarde <web@adishatz.org>\n"
+"PO-Revision-Date: 2015-04-16 14:41+0000\n"
+"Last-Translator: Yosef Or Boczko <yoseforb@gmail.com>\n"
 "Language-Team: Hebrew (http://www.transifex.com/projects/p/lollypop/language/he/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -99,13 +99,13 @@ msgstr "Use dark gtk theme"
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:20
 msgid "Force the use client side window decorations (headerbar)"
-msgstr ""
+msgstr "Force the use client side window decorations (headerbar)"
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:21
 msgid ""
 "If set to true CSD headerbars will be used, even if the detected desktop "
 "environment is not amongst those that are expected to support it."
-msgstr ""
+msgstr "If set to true CSD headerbars will be used, even if the detected desktop environment is not amongst those that are expected to support it."
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:22
 msgid "Show stylized covers"
@@ -326,7 +326,7 @@ msgstr "חיפוש:"
 #: ../src/album_widgets.py:109
 #, python-format
 msgid "Disc %s"
-msgstr ""
+msgstr "דיסק %s"
 
 #: ../data/AboutDialog.ui.in.h:1
 msgid "A music player for GNOME."
@@ -482,10 +482,10 @@ msgstr "התאמת ההתקן שלך עם רשימת השמעה זו"
 
 #: ../data/Unicode.ui.h:1
 msgid "Error"
-msgstr ""
+msgstr "שגיאה"
 
 #: ../data/Unicode.ui.h:2
 msgid ""
 "Lollypop isn't designed to work without an unicode locale.\n"
 "Please fix your system."
-msgstr ""
+msgstr "‏ Lollypop לא יועד לעבוד ללא אזור־יוניקוד.\nיש לתקן את המערכת שלך."

@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: lollypop\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2015-04-09 15:58+0200\n"
-"PO-Revision-Date: 2015-04-16 12:41+0000\n"
+"PO-Revision-Date: 2015-04-16 13:00+0000\n"
 "Last-Translator: Jiri Grönroos <jiri.gronroos@iki.fi>\n"
 "Language-Team: Finnish (http://www.transifex.com/projects/p/lollypop/language/fi/)\n"
 "MIME-Version: 1.0\n"
@@ -97,7 +97,7 @@ msgstr "Käytä tummaa teemaa"
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:20
 msgid "Force the use client side window decorations (headerbar)"
-msgstr ""
+msgstr "Pakota sovelluksen hallitsemien reunusten (CSD) käyttö."
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:21
 msgid ""
@@ -486,4 +486,4 @@ msgstr "Virhe"
 msgid ""
 "Lollypop isn't designed to work without an unicode locale.\n"
 "Please fix your system."
-msgstr ""
+msgstr "Lollypopia ei ole suunniteltu toimimaan ilman unicode-maa-asetuksia.\nKorjaa järjestelmäsi asetukset."
