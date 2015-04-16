@@ -28,6 +28,7 @@ from lollypop.utils import translate_artist_name
 class ViewContainer(Gtk.Stack):
     def __init__(self, duration):
         Gtk.Stack.__init__(self)
+        self.set_property("expand", True)
         self._duration = duration
         # Don't pass resize request to parent
         self.set_resize_mode(Gtk.ResizeMode.QUEUE)
