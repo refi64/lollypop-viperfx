@@ -34,7 +34,7 @@
             <description>When empty, use XDG_MUSIC_DIR</description>
         </key>
         <key type="s" name="favorite-cover">
-            <default>"folder.jpg"</default>
+            <default>"cover.jpg"</default>
             <summary>Favorite cover file</summary>
             <description>Restart needed</description>
         </key>
