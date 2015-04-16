@@ -26,7 +26,7 @@ class CollectionScanner(GObject.GObject):
         'scan-finished': (GObject.SignalFlags.RUN_FIRST, None, ()),
         'artist-update': (GObject.SignalFlags.RUN_FIRST, None, (int, int)),
         'genre-update': (GObject.SignalFlags.RUN_FIRST, None, (int,)),
-        'add-finished': (GObject.SignalFlags.RUN_FIRST, None, ())
+        'added': (GObject.SignalFlags.RUN_FIRST, None, (int, bool))
     }
 
     """
@@ -38,7 +38,6 @@ class CollectionScanner(GObject.GObject):
         self._progress = progress
         self._in_thread = False
         self._is_locked = False
-        self._added = []
 
     """
         Update database
@@ -72,13 +71,6 @@ class CollectionScanner(GObject.GObject):
             return
         self._in_thread = True
         start_new_thread(self._add, (files,))
-
-    """
-        Return files added by last call to CollectionScanner::add
-        @return [int]
-    """
-    def get_added(self):
-        return self._added
 
     """
         Return True if db locked
@@ -140,8 +132,8 @@ class CollectionScanner(GObject.GObject):
         count = len(files)
         i = 0
         GLib.idle_add(self._update_progress, i, count)
-        self._added = []
         for f in files:
+            track_id = None
             if not self._in_thread:
                 sql.close()
                 self._is_locked = False
@@ -149,9 +141,11 @@ class CollectionScanner(GObject.GObject):
             if f not in tracks:
                 infos = Objects.player.get_infos(f)
                 if infos is not None:
-                    self._added.append(self._add2db(f, 0, infos, True, sql))
+                    track_id = self._add2db(f, 0, infos, True, sql)
             else:
-                self._added.append(Objects.tracks.get_id_by_path(f, sql))
+                track_id = Objects.tracks.get_id_by_path(f, sql)
+            if track_id is not None:
+                GLib.idle_add(self.emit, "added", track_id, i==0)
             i += 1
             GLib.idle_add(self._update_progress, i, count)
         Objects.albums.search_compilations(True, sql)
@@ -160,7 +154,6 @@ class CollectionScanner(GObject.GObject):
         GLib.idle_add(self._progress.hide)
         self._in_thread = False
         self._is_locked = False
-        GLib.idle_add(self.emit, "add-finished")
 
     """
         Scan music collection for music files

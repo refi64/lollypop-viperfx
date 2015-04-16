@@ -533,6 +533,18 @@ class Player(GObject.GObject):
         self._shuffle_playlist()
 
     """
+        Add track to user playlist
+    """
+    def add_to_user_playlist(self, track_id):
+        self._user_playlist.append(track_id)
+
+    """
+        Clear user playlist
+    """
+    def clear_user_playlist(self):
+        self._user_playlist = []
+
+    """
         Restore player state
     """
     def restore_state(self):

@@ -280,7 +280,7 @@ class Container:
         self._scanner.connect("scan-finished", self._on_scan_finished)
         self._scanner.connect("genre-update", self._add_genre)
         self._scanner.connect("artist-update", self._add_artist)
-        self._scanner.connect("add-finished", self._play_tracks)
+        self._scanner.connect("added", self._play_track)
 
     """
         Update list one
@@ -553,13 +553,18 @@ class Container:
     """
         Play tracks as user playlist
         @param scanner as collection scanner
+        @param track id as int
+        @param play as bool
     """
-    def _play_tracks(self, scanner):
-        ids = scanner.get_added()
-        if ids:
+    def _play_track(self, scanner, track_id, play):
+        tracks = [track_id]
+        if play:
+            Objects.player.clear_user_playlist()
             if not Objects.player.is_party():
-                Objects.player.set_user_playlist(ids, ids[0])
-            Objects.player.load(ids[0])
+                Objects.player.set_user_playlist(tracks, track_id)
+            Objects.player.load(track_id)
+        elif not Objects.player.is_party():
+            Objects.player.add_to_user_playlist(track_id)
 
     """
         Mark force scan as False, update lists
