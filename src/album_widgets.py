@@ -164,21 +164,7 @@ class AlbumDetailedWidget(AlbumWidget):
         self._stars.append(builder.get_object('star2'))
         self._stars.append(builder.get_object('star3'))
         self._stars.append(builder.get_object('star4'))
-
-        avg_popularity = Objects.albums.get_avg_popularity()
-        if avg_popularity > 0:
-            popularity = Objects.albums.get_popularity(album_id)
-            stars = popularity*5/avg_popularity
-            if stars >= 1:
-                self._stars[0].set_property("opacity", 1.0)
-            if stars >= 2:
-                self._stars[1].set_property("opacity", 1.0)
-            if stars >= 3:
-                self._stars[2].set_property("opacity", 1.0)
-            if stars >= 4:
-                self._stars[3].set_property("opacity", 1.0)
-            if stars >= 4.75:
-                self._stars[4].set_property("opacity", 1.0)
+        self._on_leave_notify(None, None)
 
         grid = builder.get_object('tracks')
         self._discs = Objects.albums.get_discs(album_id, genre_id)
@@ -403,23 +389,52 @@ class AlbumDetailedWidget(AlbumWidget):
     """
     def _on_enter_notify(self, widget, event):
         event_star = widget.get_children()[0]
+        # First star is hidden (used to clear score)
+        if event_star.get_property("opacity") == 0.0:
+            found = True
+        else:
+            found = False
         for star in self._stars:
-            opacity = star.get_property("opacity")
-            if opacity != 1.0:
-                star.set_property("opacity", 0.5)
+            if found:
+                star.set_property("opacity", 0.2)
+            else:
+                star.set_property("opacity", 1.0)
             if star == event_star:
-                break
+                found = True
 
     """
         On leave notify, change star opacity
+        @param widget as Gtk.EventBox (can be None)
+        @param event as Gdk.Event (can be None)
+    """
+    def _on_leave_notify(self, widget, event):
+        avg_popularity = Objects.albums.get_avg_popularity()
+        if avg_popularity > 0:
+            popularity = Objects.albums.get_popularity(self._album_id)
+            stars = popularity*5/avg_popularity
+            if stars >= 1:
+                self._stars[0].set_property("opacity", 1.0)
+            if stars >= 2:
+                self._stars[1].set_property("opacity", 1.0)
+            if stars >= 3:
+                self._stars[2].set_property("opacity", 1.0)
+            if stars >= 4:
+                self._stars[3].set_property("opacity", 1.0)
+            if stars >= 4.75:
+                self._stars[4].set_property("opacity", 1.0)
+
+    """
+        On button press, set album popularity
         @param widget as Gtk.EventBox
         @param event as Gdk.Event
     """
-    def _on_leave_notify(self, widget, event):
+    def _on_button_press(self, widget, event):
         event_star = widget.get_children()[0]
-        for star in self._stars:
-            opacity = star.get_property("opacity")
-            if opacity != 1.0:
-                star.set_property("opacity", 0.2)
-            if star == event_star:
-                break
+        try:
+            position = self._stars.index(event_star)
+            avg_popularity = Objects.albums.get_avg_popularity()
+            popularity = int(((position+1)*avg_popularity/5)+0.5)
+            Objects.albums.set_popularity(self._album_id, popularity)
+        except:
+            Objects.albums.set_popularity(self._album_id, 0)
+        Objects.sql.commit()
