@@ -98,6 +98,23 @@ class DatabaseAlbums:
             sql = Objects.sql
         sql.execute("UPDATE albums set popularity=? WHERE rowid=?",
                     (popularity, album_id))
+
+    """
+        Get popularity
+        @param album_id as int
+        @return popularity as int
+    """
+    def get_popularity(self, album_id, sql=None):
+        if not sql:
+            sql = Objects.sql
+        result = sql.execute("SELECT popularity FROM albums WHERE "
+                             "rowid=?",(album_id,))
+
+        v = result.fetchone()
+        if v:
+            return v[0]
+        return 0
+
     """
         Increment popularity field for album id
         @param int
@@ -119,6 +136,20 @@ class DatabaseAlbums:
         sql.commit()
 
     """
+        Return avarage popularity
+        @return avarage popularity as int
+    """
+    def get_avg_popularity(self, sql=None):
+        if not sql:
+            sql = Objects.sql
+        result = sql.execute("SELECT AVG(popularity) FROM "
+                             "albums DESC LIMIT 0,3")
+        v = result.fetchone()
+        if v:
+            return v[0]
+        return 0
+
+    """
         Get album id
         @param Album name as string,
         @param artist id as int
@@ -133,7 +164,6 @@ class DatabaseAlbums:
         v = result.fetchone()
         if v:
             return v[0]
-
         return None
 
     """

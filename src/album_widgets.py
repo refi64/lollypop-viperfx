@@ -158,6 +158,21 @@ class AlbumDetailedWidget(AlbumWidget):
         self._album_id = album_id
         self._genre_id = genre_id
         
+        avg_popularity = Objects.albums.get_avg_popularity()
+        if avg_popularity > 0:
+            popularity = Objects.albums.get_popularity(album_id)
+            stars = popularity*5/avg_popularity
+            if stars >= 1:
+                builder.get_object('star1').set_property("opacity", 1.0)
+            if stars >= 2:
+                builder.get_object('star2').set_property("opacity", 1.0)
+            if stars >= 3:
+                builder.get_object('star3').set_property("opacity", 1.0)
+            if stars >= 4:
+                builder.get_object('star4').set_property("opacity", 1.0)
+            if stars >= 4.75:
+                builder.get_object('star5').set_property("opacity", 1.0)
+
         grid = builder.get_object('tracks')
         self._discs = Objects.albums.get_discs(album_id, genre_id)
         self._tracks_left = {}

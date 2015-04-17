@@ -243,7 +243,7 @@ class AlbumContextView(View):
         self._widget = widget
         self._viewport.add(widget)
         self._viewport.show()
-        self._scrolledWindow.set_min_content_height(ArtSize.BIG+25)
+        self._scrolledWindow.set_min_content_height(ArtSize.BIG+35)
         self._scrolledWindow.show()
         self.add(self._scrolledWindow)
 
