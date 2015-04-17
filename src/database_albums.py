@@ -143,7 +143,7 @@ class DatabaseAlbums:
         if not sql:
             sql = Objects.sql
         result = sql.execute("SELECT AVG(popularity) FROM "
-                             "albums DESC LIMIT 0,3")
+                             "albums DESC LIMIT 0,100")
         v = result.fetchone()
         if v:
             return v[0]
