@@ -158,20 +158,27 @@ class AlbumDetailedWidget(AlbumWidget):
         self._album_id = album_id
         self._genre_id = genre_id
         
+        self._stars = []
+        self._stars.append(builder.get_object('star0'))
+        self._stars.append(builder.get_object('star1'))
+        self._stars.append(builder.get_object('star2'))
+        self._stars.append(builder.get_object('star3'))
+        self._stars.append(builder.get_object('star4'))
+
         avg_popularity = Objects.albums.get_avg_popularity()
         if avg_popularity > 0:
             popularity = Objects.albums.get_popularity(album_id)
             stars = popularity*5/avg_popularity
             if stars >= 1:
-                builder.get_object('star1').set_property("opacity", 1.0)
+                self._stars[0].set_property("opacity", 1.0)
             if stars >= 2:
-                builder.get_object('star2').set_property("opacity", 1.0)
+                self._stars[1].set_property("opacity", 1.0)
             if stars >= 3:
-                builder.get_object('star3').set_property("opacity", 1.0)
+                self._stars[2].set_property("opacity", 1.0)
             if stars >= 4:
-                builder.get_object('star4').set_property("opacity", 1.0)
+                self._stars[3].set_property("opacity", 1.0)
             if stars >= 4.75:
-                builder.get_object('star5').set_property("opacity", 1.0)
+                self._stars[4].set_property("opacity", 1.0)
 
         grid = builder.get_object('tracks')
         self._discs = Objects.albums.get_discs(album_id, genre_id)
@@ -388,3 +395,31 @@ class AlbumDetailedWidget(AlbumWidget):
         popover.set_relative_to(widget)
         popover.populate(artist + " " + album)
         popover.show()
+
+    """
+        On enter notify, change star opacity
+        @param widget as Gtk.EventBox
+        @param event as Gdk.Event
+    """
+    def _on_enter_notify(self, widget, event):
+        event_star = widget.get_children()[0]
+        for star in self._stars:
+            opacity = star.get_property("opacity")
+            if opacity != 1.0:
+                star.set_property("opacity", 0.5)
+            if star == event_star:
+                break
+
+    """
+        On leave notify, change star opacity
+        @param widget as Gtk.EventBox
+        @param event as Gdk.Event
+    """
+    def _on_leave_notify(self, widget, event):
+        event_star = widget.get_children()[0]
+        for star in self._stars:
+            opacity = star.get_property("opacity")
+            if opacity != 1.0:
+                star.set_property("opacity", 0.2)
+            if star == event_star:
+                break
