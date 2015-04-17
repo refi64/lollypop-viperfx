@@ -1,26 +1,37 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!-- Generated with glade 3.18.3 -->
 <interface domain="lollypop">
-  <!-- interface-requires gtk+ 3.0 -->
+  <requires lib="gtk+" version="3.0"/>
   <object class="GtkAboutDialog" id="about_dialog">
     <property name="can_focus">False</property>
     <property name="modal">True</property>
-    <property name="program_name" translatable="no">Lollypop</property>
+    <property name="type_hint">normal</property>
+    <property name="program_name">Lollypop</property>
     <property name="version">@PACKAGE_VERSION@</property>
-    <property name="copyright" translatable="no">Copyright © 2014-2015 Cédric Bellegarde</property>
+    <property name="copyright">Copyright © 2014-2015 Cédric Bellegarde</property>
     <property name="comments" translatable="yes">A music player for GNOME.</property>
     <property name="website">@PACKAGE_URL@</property>
     <property name="website_label" translatable="yes">Visit Lollypop website</property>
-    <property name="license" translatable="no">Lollypop is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation; either version 3 of the License, or (at your option) any later version.
-
-Lollypop is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License along with Lollypop; if not, write to the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.</property>
     <property name="authors">Cédric Bellegarde &lt;cedric.bellegarde@adishatz.org&gt;
 </property>
-    <property name="artists"> 
-    Reda Lazri https://plus.google.com/u/0/+RedaLazri/posts
+    <property name="artists"> Reda Lazri https://plus.google.com/u/0/+RedaLazri/posts
     </property>
     <property name="logo_icon_name">lollypop</property>
-    <property name="wrap_license">True</property>
+    <property name="license_type">gpl-3-0</property>
+    <child internal-child="vbox">
+      <object class="GtkBox" id="aboutdialog-vbox1">
+        <property name="can_focus">False</property>
+        <child internal-child="action_area">
+          <object class="GtkButtonBox" id="aboutdialog-action_area1">
+            <property name="can_focus">False</property>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">False</property>
+            <property name="position">0</property>
+          </packing>
+        </child>
+      </object>
+    </child>
   </object>
 </interface>
