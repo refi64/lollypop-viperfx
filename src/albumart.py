@@ -135,12 +135,9 @@ class AlbumArt:
                 # Try to get from tags
                 else:
                     try:
-                        for track_id in Objects.albums.get_tracks(album_id,
-                                                                  None):
-                            pixbuf = self._pixbuf_from_tags(track_id, size)
-                            # We found a cover in tags
-                            if pixbuf:
-                                break
+                        tracks = Objects.albums.get_tracks(album_id, None)
+                        if tracks:
+                            pixbuf = self._pixbuf_from_tags(tracks[0], size)
                     except Exception as e:
                         print(e)
                         return self._make_icon_frame(
@@ -149,17 +146,17 @@ class AlbumArt:
                                             selected)
 
                 # No cover, use default one
-                if not pixbuf:
+                if pixbuf is None:
                     pixbuf = self._get_default_icon(size)
-                else:
-                    # Gdk < 3.15 was missing save method
-                    # > 3.15 is missing savev method
-                    try:
-                        pixbuf.save(CACHE_PATH_JPG, "jpeg",
-                                    ["quality"], ["90"])
-                    except:
-                        pixbuf.savev(CACHE_PATH_JPG, "jpeg",
-                                     ["quality"], ["90"])
+
+                # Gdk < 3.15 was missing save method
+                # > 3.15 is missing savev method
+                try:
+                    pixbuf.save(CACHE_PATH_JPG, "jpeg",
+                                ["quality"], ["90"])
+                except:
+                    pixbuf.savev(CACHE_PATH_JPG, "jpeg",
+                                 ["quality"], ["90"])
 
             return self._make_icon_frame(pixbuf, size, selected)
 
@@ -170,14 +167,35 @@ class AlbumArt:
                                          selected)
 
     """
+        Remove all covers from cache
+        @param sql as sqlite cursor
+    """
+    def clean_all_cache(self, sql=None):
+        albums = Objects.albums.get_ids(None, None, sql)
+        files = os.listdir(self._CACHE_PATH)
+        for album_id in albums:
+            path = self._get_cache_path(album_id, sql)
+            for f in files:
+                if re.search('%s_.*\.jpg' % re.escape(path), f):
+                    try:
+                        os.remove(os.path.join(self._CACHE_PATH, f))
+                        files.remove(f)
+                    except Exception as e:
+                        print("AlbumArt::clean_all_cache(): ", e, path)
+
+    """
         Remove cover from cache for album id
         @param album id as int
+        @param sql as sqlite cursor
     """
-    def clean_cache(self, album_id):
-        path = self._get_cache_path(album_id)
-        for f in os.listdir(self._CACHE_PATH):
-            if re.search('%s_.*\.jpg' % path, f):
-                os.remove(os.path.join(self._CACHE_PATH, f))
+    def clean_cache(self, album_id, sql=None):
+        path = self._get_cache_path(album_id, sql)
+        try:
+            for f in os.listdir(self._CACHE_PATH):
+                if re.search('%s_.*\.jpg' % re.escape(path), f):
+                    os.remove(os.path.join(self._CACHE_PATH, f))
+        except Exception as e:
+            print("AlbumArt::clean_cache(): ", e, path)
 
     """
         Save pixbuf for album id
@@ -264,10 +282,11 @@ class AlbumArt:
     """
         Get a uniq string for album
         @param album id as int
+        @param sql as sqlite cursor
     """
-    def _get_cache_path(self, album_id):
-        path = Objects.albums.get_name(album_id) + "_" + \
-               Objects.albums.get_artist_name(album_id)
+    def _get_cache_path(self, album_id, sql=None):
+        path = Objects.albums.get_name(album_id, sql) + "_" + \
+               Objects.albums.get_artist_name(album_id, sql)
         return path[0:240].replace("/", "_")
 
     """
