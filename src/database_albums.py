@@ -12,6 +12,7 @@
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 from gettext import gettext as _
+import os
 from lollypop.define import Objects, Navigation
 
 
@@ -262,11 +263,21 @@ class DatabaseAlbums:
             sql = Objects.sql
         result = sql.execute("SELECT path FROM albums WHERE rowid=?",
                              (album_id,))
+        path = ""
         v = result.fetchone()
         if v and len(v) > 0:
-            return v[0]
-
-        return ""
+            path = v[0]
+        if path != "":
+            if not os.path.exists(path):
+                tracks = self.get_tracks(album_id, None, sql)
+                if tracks:
+                    filepath = Objects.tracks.get_path(tracks[0], sql)
+                    path = os.path.dirname(filepath)
+                    if os.path.exists(path):
+                        sql.execute("UPDATE albums SET path=? "
+                                    "WHERE rowid=?", (path, album_id))
+                        sql.commit()
+        return path
 
     """
         Count album having path as album path
