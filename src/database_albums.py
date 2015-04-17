@@ -142,8 +142,8 @@ class DatabaseAlbums:
     def get_avg_popularity(self, sql=None):
         if not sql:
             sql = Objects.sql
-        result = sql.execute("SELECT AVG(popularity) FROM "
-                             "albums DESC LIMIT 0,100")
+        result = sql.execute("SELECT AVG(popularity) FROM (SELECT popularity "
+                             "FROM albums ORDER BY POPULARITY DESC LIMIT 100)")
         v = result.fetchone()
         if v:
             return v[0]
