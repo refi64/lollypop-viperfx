@@ -241,7 +241,7 @@ class PlaylistsManagerWidget(Gtk.Bin):
         @param playlist selected as bool
     """
     def _append_playlists(self, playlists):
-        if len(playlists) > 0:
+        if playlists:
             playlist = playlists.pop(0)
             if self._object_id != -1:
                 selected = Objects.playlists.is_present(playlist[1],
@@ -463,7 +463,7 @@ class PlaylistEditWidget(Gtk.Bin):
         @param tracks as [track_id as int]
     """
     def _append_track(self, tracks):
-        if len(tracks) > 0:
+        if tracks:
             track_id = tracks.pop(0)
             filepath = Objects.tracks.get_path(track_id)
             album_id = Objects.tracks.get_album_id(track_id)

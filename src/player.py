@@ -359,7 +359,7 @@ class Player(GObject.GObject):
         self._played_tracks_history = []
         if party:
             party_ids = self.get_party_ids()
-            if len(party_ids) > 0:
+            if party_ids:
                 self._albums = Objects.albums.get_party_ids(party_ids)
             else:
                 self._albums = Objects.albums.get_ids()

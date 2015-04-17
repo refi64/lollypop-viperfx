@@ -92,7 +92,7 @@ class PopImages(Gtk.Popover):
         Add urls to the view
     """
     def _add_pixbufs(self):
-        if self._urls and len(self._urls) > 0:
+        if self._urls:
             url = self._urls.pop()
             stream = None
             try:

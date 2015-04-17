@@ -142,7 +142,7 @@ class DeviceManagerWidget(Gtk.Bin):
         @param playlist selected as bool
     """
     def _append_playlists(self, playlists):
-        if len(playlists) > 0:
+        if playlists:
             playlist = playlists.pop(0)
             selected = playlist[1]+".m3u" in self._on_disk_playlists
             self._model.append([selected, playlist[1]])

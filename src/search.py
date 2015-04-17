@@ -315,7 +315,7 @@ class SearchWidget(Gtk.Popover):
         @param results as array of SearchObject
     """
     def _add_rows(self, results):
-        if len(results) > 0:
+        if results:
             result = results.pop(0)
             if not self._exists(result):
                 search_row = SearchRow(self._parent)

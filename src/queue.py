@@ -128,7 +128,7 @@ class QueueWidget(Gtk.Popover):
         @param widget unused, Gdk.Event
     """
     def _on_keyboard_event(self, widget, event):
-        if len(Objects.player.get_queue()) > 0:
+        if Objects.player.get_queue():
             if event.keyval == 65535:
                 path, column = self._view.get_cursor()
                 iterator = self._model.get_iter(path)

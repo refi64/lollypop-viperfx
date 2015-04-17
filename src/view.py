@@ -121,7 +121,7 @@ class View(Gtk.Grid):
         @param force as bool
     """
     def _update_widgets(self, widgets, force):
-        if len(widgets) > 0:
+        if widgets:
             widget = widgets.pop(0)
             widget.set_cover(force)
             widget.update_playing_indicator()
@@ -219,7 +219,7 @@ class ArtistView(View):
     """
     def _add_albums(self, albums, genre_id):
         size_group = Gtk.SizeGroup(mode=Gtk.SizeGroupMode.HORIZONTAL)
-        if len(albums) > 0 and not self._stop:
+        if albums and not self._stop:
             widget = AlbumDetailedWidget(albums.pop(0),
                                          genre_id,
                                          self._show_menu,
@@ -383,7 +383,7 @@ class AlbumView(View):
         @param [album ids as int]
     """
     def _add_albums(self, albums):
-        if len(albums) > 0 and not self._stop:
+        if albums and not self._stop:
             widget = AlbumSimpleWidget(albums.pop(0))
             widget.show()
             self._albumbox.insert(widget, -1)

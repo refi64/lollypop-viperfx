@@ -368,7 +368,7 @@ class Container:
         selection_list.mark_as_artists(True)
         if selection_list == self._list_one:
             items = self._get_headers()
-        if len(Objects.albums.get_compilations(genre_id, sql)) > 0:
+        if Objects.albums.get_compilations(genre_id, sql):
             items.append((Navigation.COMPILATIONS, _("Compilations")))
 
         items += Objects.artists.get(genre_id, sql)
