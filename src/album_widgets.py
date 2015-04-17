@@ -54,7 +54,7 @@ class AlbumWidget(Gtk.Bin):
             self._selected = self._album_id==Objects.player.current.album_id
             pixbuf = Objects.art.get(self._album_id,
                                      ArtSize.BIG,
-                                     selected)
+                                     self._selected)
             self._cover.set_from_pixbuf(pixbuf)
             del pixbuf
 
