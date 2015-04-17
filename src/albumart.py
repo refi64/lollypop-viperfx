@@ -80,6 +80,7 @@ class AlbumArt:
         @return cover file path as string
     """
     def get_art_path(self, album_id, sql=None):
+        return None
         album_path = Objects.albums.get_path(album_id, sql)
         album_name = Objects.albums.get_name(album_id, sql)
         artist_name = Objects.albums.get_artist_name(album_id, sql)
@@ -135,12 +136,9 @@ class AlbumArt:
                 # Try to get from tags
                 else:
                     try:
-                        for track_id in Objects.albums.get_tracks(album_id,
-                                                                  None):
-                            pixbuf = self._pixbuf_from_tags(track_id, size)
-                            # We found a cover in tags
-                            if pixbuf:
-                                break
+                        tracks = Objects.albums.get_tracks(album_id, None)
+                        if tracks:
+                            pixbuf = self._pixbuf_from_tags(tracks[0], size)
                     except Exception as e:
                         print(e)
                         return self._make_icon_frame(
@@ -149,7 +147,7 @@ class AlbumArt:
                                             selected)
 
                 # No cover, use default one
-                if not pixbuf:
+                if pixbuf is None:
                     pixbuf = self._get_default_icon(size)
                 else:
                     # Gdk < 3.15 was missing save method
