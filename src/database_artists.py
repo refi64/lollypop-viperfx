@@ -45,7 +45,7 @@ class DatabaseArtists:
         result = sql.execute("SELECT rowid from artists\
                               WHERE name=?", (name,))
         v = result.fetchone()
-        if v and len(v) > 0:
+        if v:
             return v[0]
 
         return None
@@ -64,7 +64,7 @@ class DatabaseArtists:
         result = sql.execute("SELECT name from artists WHERE rowid=?",
                              (artist_id,))
         v = result.fetchone()
-        if v and len(v) > 0:
+        if v:
             return v[0]
 
         return _("Unknown")
@@ -126,7 +126,7 @@ class DatabaseArtists:
         result = sql.execute("SELECT COUNT(*) from artists WHERE rowid=?",
                              (artist_id,))
         v = result.fetchone()
-        if v and len(v) > 0:
+        if v:
             return bool(v[0])
 
         return False

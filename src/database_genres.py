@@ -45,7 +45,7 @@ class DatabaseGenres:
         result = sql.execute("SELECT rowid FROM genres\
                               WHERE name=?", (name,))
         v = result.fetchone()
-        if v and len(v) > 0:
+        if v:
             return v[0]
 
         return None
@@ -61,7 +61,7 @@ class DatabaseGenres:
         result = sql.execute("SELECT name FROM genres\
                               WHERE rowid=?", (genre_id,))
         v = result.fetchone()
-        if v and len(v) > 0:
+        if v:
             return v[0]
 
         return _("Unknown")

@@ -131,7 +131,7 @@ class DatabaseAlbums:
                               AND artist_id=?", (album_name,
                                                  artist_id))
         v = result.fetchone()
-        if v and len(v) > 0:
+        if v:
             return v[0]
 
         return None
@@ -180,7 +180,7 @@ class DatabaseAlbums:
         result = sql.execute("SELECT name FROM albums where rowid=?",
                              (album_id,))
         v = result.fetchone()
-        if v and len(v) > 0:
+        if v:
             return v[0]
 
         return _("Unknown")
@@ -197,7 +197,7 @@ class DatabaseAlbums:
                               WHERE albums.rowid=? AND albums.artist_id ==\
                               artists.rowid", (album_id,))
         v = result.fetchone()
-        if v and len(v) > 0:
+        if v:
             return v[0]
 
         return _("Compilation")
@@ -213,7 +213,7 @@ class DatabaseAlbums:
         result = sql.execute("SELECT artist_id FROM albums where rowid=?",
                              (album_id,))
         v = result.fetchone()
-        if v and len(v) > 0:
+        if v:
             return v[0]
 
         return Navigation.COMPILATIONS
@@ -247,7 +247,7 @@ class DatabaseAlbums:
         result = sql.execute("SELECT year FROM albums where rowid=?",
                              (album_id,))
         v = result.fetchone()
-        if v and len(v) > 0:
+        if v:
             if v[0]:
                 return str(v[0])
 
@@ -265,7 +265,7 @@ class DatabaseAlbums:
                              (album_id,))
         path = ""
         v = result.fetchone()
-        if v and len(v) > 0:
+        if v:
             path = v[0]
         if path != "":
             if not os.path.exists(path):
@@ -289,7 +289,7 @@ class DatabaseAlbums:
         result = sql.execute("SELECT count(path) FROM albums WHERE path=?",
                              (path,))
         v = result.fetchone()
-        if v and len(v) > 0:
+        if v:
             return v[0]
 
         return 1
@@ -348,7 +348,7 @@ class DatabaseAlbums:
                                   FROM tracks\
                                   WHERE tracks.album_id=?", (album_id,))
         v = result.fetchone()
-        if v and len(v) > 0:
+        if v:
             return v[0]
         return -1
 
@@ -377,7 +377,7 @@ class DatabaseAlbums:
                                   WHERE tracks.album_id=?\
                                   AND discnumber=?", (album_id, disc))
         v = result.fetchone()
-        if v and len(v) > 0:
+        if v:
             return v[0]
         return -1
 
@@ -607,7 +607,7 @@ class DatabaseAlbums:
                               ORDER BY occurrence DESC\
                               LIMIT 1", (album_id,))
         v = result.fetchone()
-        if v and len(v) > 0:
+        if v:
             return v[0]
         return None
 

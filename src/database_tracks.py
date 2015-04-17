@@ -99,7 +99,7 @@ class DatabaseTracks:
         result = sql.execute("SELECT rowid FROM tracks where filepath=?",
                              (filepath,))
         v = result.fetchone()
-        if v and len(v) > 0:
+        if v:
             return v[0]
 
         return -1
@@ -115,7 +115,7 @@ class DatabaseTracks:
         result = sql.execute("SELECT name FROM tracks where rowid=?",
                              (track_id,))
         v = result.fetchone()
-        if v and len(v) > 0:
+        if v:
             return v[0]
 
         return ""
@@ -131,7 +131,7 @@ class DatabaseTracks:
         result = sql.execute("SELECT year FROM tracks where rowid=?",
                              (album_id,))
         v = result.fetchone()
-        if v and len(v) > 0:
+        if v:
             if v[0]:
                 return str(v[0])
 
@@ -148,7 +148,7 @@ class DatabaseTracks:
         result = sql.execute("SELECT filepath FROM tracks where rowid=?",
                              (track_id,))
         v = result.fetchone()
-        if v and len(v) > 0:
+        if v:
             return v[0]
 
         return ""
@@ -164,7 +164,7 @@ class DatabaseTracks:
         result = sql.execute("SELECT album_id FROM tracks where rowid=?",
                              (track_id,))
         v = result.fetchone()
-        if v and len(v) > 0:
+        if v:
             return v[0]
 
         return -1
@@ -181,7 +181,7 @@ class DatabaseTracks:
                               WHERE tracks.rowid=? AND\
                               tracks.album_id=albums.rowid", (track_id,))
         v = result.fetchone()
-        if v and len(v) > 0:
+        if v:
             return v[0]
 
         return _("Unknown")
@@ -246,7 +246,7 @@ class DatabaseTracks:
                               length, album_id\
                               FROM tracks WHERE rowid=?", (track_id,))
         v = result.fetchone()
-        if v and len(v) > 0:
+        if v:
             return v
         return ()
 
@@ -264,7 +264,7 @@ class DatabaseTracks:
                               albums.rowid", (track_id,))
         v = result.fetchone()
 
-        if v and len(v) > 0:
+        if v:
             return v[0]
 
         return Navigation.COMPILATIONS
@@ -294,7 +294,7 @@ class DatabaseTracks:
         result = sql.execute("SELECT tracknumber FROM tracks\
                               WHERE rowid=?", (track_id,))
         v = result.fetchone()
-        if v and len(v) > 0:
+        if v:
             return v[0]
 
         return 0
@@ -310,7 +310,7 @@ class DatabaseTracks:
         result = sql.execute("SELECT length FROM tracks\
                               WHERE rowid=?", (track_id,))
         v = result.fetchone()
-        if v and len(v) > 0:
+        if v:
             return v[0]
 
         return 0
@@ -323,7 +323,7 @@ class DatabaseTracks:
             sql = Objects.sql
         result = sql.execute("SELECT COUNT(*) FROM tracks  LIMIT 1")
         v = result.fetchone()
-        if v and len(v) > 0:
+        if v:
             return v[0] == 0
 
         return True
