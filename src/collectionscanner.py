@@ -169,6 +169,11 @@ class CollectionScanner(GObject.GObject):
     def _scan(self, paths, smooth):
         sql = Objects.db.get_cursor()
         tracks = Objects.tracks.get_paths(sql)
+
+        # Clear cover cache
+        if not smooth:
+            Objects.art.clean_all_cache(sql)
+
         new_tracks = []
         count = 0
         for path in paths:
