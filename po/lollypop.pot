@@ -8,13 +8,13 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-04-09 15:58+0200\n"
+"POT-Creation-Date: 2015-04-17 11:23+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: \n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=CHARSET\n"
+"Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:1
@@ -104,44 +104,36 @@ msgid ""
 "environment is not amongst those that are expected to support it."
 msgstr ""
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:22
-msgid "Show stylized covers"
-msgstr ""
-
-#: ../data/org.gnome.Lollypop.gschema.xml.h:23 ../data/SettingsDialog.ui.h:4
+#: ../data/org.gnome.Lollypop.gschema.xml.h:22 ../data/SettingsDialog.ui.h:4
 msgid "Continue playback when closed"
 msgstr ""
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:24
+#: ../data/org.gnome.Lollypop.gschema.xml.h:23
 msgid "Restore previous state"
 msgstr ""
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:25
+#: ../data/org.gnome.Lollypop.gschema.xml.h:24
 msgid "Auto play albums on click"
 msgstr ""
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:26
+#: ../data/org.gnome.Lollypop.gschema.xml.h:25
 msgid "Disable MPRIS"
 msgstr ""
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:27
+#: ../data/org.gnome.Lollypop.gschema.xml.h:26
 msgid "Disable notifications"
 msgstr ""
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:28
-msgid "DO NOT MODIFY"
-msgstr ""
-
-#: ../data/org.gnome.Lollypop.gschema.xml.h:29
+#: ../data/org.gnome.Lollypop.gschema.xml.h:27
 msgid "INTERNAL"
 msgstr ""
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:30
+#: ../data/org.gnome.Lollypop.gschema.xml.h:28
 msgid "Shuffle mode"
 msgstr ""
 
 #. Translators: Don't translate allowed values, just the description in the brackets
-#: ../data/org.gnome.Lollypop.gschema.xml.h:32
+#: ../data/org.gnome.Lollypop.gschema.xml.h:30
 msgid ""
 "Value identifies whether to shuffle tracks/albums. Allowed values are: \"none"
 "\" (shuffle off), \"tracks\" (shuffle tracks) , \"albums\" (shuffle albums), "
@@ -165,33 +157,33 @@ msgstr ""
 msgid "Music player for the GNOME desktop"
 msgstr ""
 
-#: ../src/toolbar.py:202 ../src/toolbar.py:252 ../src/toolbar.py:268
+#: ../src/toolbar.py:209 ../src/toolbar.py:259 ../src/toolbar.py:275
 #: ../src/fullscreen.py:178 ../data/Toolbar.ui.h:7
 msgid "Play"
 msgstr ""
 
-#: ../src/toolbar.py:245 ../src/toolbar.py:271 ../src/fullscreen.py:75
+#: ../src/toolbar.py:252 ../src/toolbar.py:278 ../src/fullscreen.py:75
 #: ../src/fullscreen.py:174
 msgid "Pause"
 msgstr ""
 
-#: ../src/container.py:301
+#: ../src/container.py:325
 msgid "Popular albums"
 msgstr ""
 
-#: ../src/container.py:302 ../src/popmenu.py:47
+#: ../src/container.py:326 ../src/popmenu.py:47
 msgid "Playlists"
 msgstr ""
 
-#: ../src/container.py:304
+#: ../src/container.py:328
 msgid "All artists"
 msgstr ""
 
-#: ../src/container.py:306
+#: ../src/container.py:330
 msgid "All albums"
 msgstr ""
 
-#: ../src/container.py:348
+#: ../src/container.py:372
 msgid "Compilations"
 msgstr ""
 
@@ -214,36 +206,36 @@ msgstr ""
 msgid "Many artists"
 msgstr ""
 
-#: ../src/database_artists.py:70 ../src/database_albums.py:181
-#: ../src/database_tracks.py:181 ../src/database_genres.py:66
-#: ../src/collectionscanner.py:222 ../src/collectionscanner.py:227
-#: ../src/collectionscanner.py:241 ../src/collectionscanner.py:246
+#: ../src/database_artists.py:70 ../src/database_albums.py:185
+#: ../src/database_tracks.py:187 ../src/database_genres.py:67
+#: ../src/collectionscanner.py:250 ../src/collectionscanner.py:255
+#: ../src/collectionscanner.py:269 ../src/collectionscanner.py:274
 msgid "Unknown"
 msgstr ""
 
-#: ../src/database_albums.py:198
+#: ../src/database_albums.py:202
 msgid "Compilation"
 msgstr ""
 
-#: ../src/playlist_widgets.py:221 ../src/playlist_widgets.py:224
+#: ../src/playlist_widgets.py:220 ../src/playlist_widgets.py:223
 msgid "New playlist "
 msgstr ""
 
-#: ../src/playlist_widgets.py:266 ../src/playlist_widgets.py:509
+#: ../src/playlist_widgets.py:265 ../src/playlist_widgets.py:508
 #, python-format
 msgid "Remove \"%s\"?"
 msgstr ""
 
-#: ../src/playlist_widgets.py:548
+#: ../src/playlist_widgets.py:547
 msgid "Remove these tracks?"
 msgstr ""
 
-#: ../src/view.py:587 ../src/view.py:628
+#: ../src/view.py:584 ../src/view.py:625
 #, python-format
 msgid "Synchronize %s"
 msgstr ""
 
-#: ../src/view.py:619
+#: ../src/view.py:616
 msgid "Cancel synchronization"
 msgstr ""
 
@@ -315,11 +307,11 @@ msgstr ""
 msgid "The the"
 msgstr ""
 
-#: ../src/search.py:147
+#: ../src/search.py:148
 msgid "Search:"
 msgstr ""
 
-#: ../src/album_widgets.py:109
+#: ../src/album_widgets.py:170
 #, python-format
 msgid "Disc %s"
 msgstr ""
@@ -330,6 +322,11 @@ msgstr ""
 
 #: ../data/AboutDialog.ui.in.h:2
 msgid "Visit Lollypop website"
+msgstr ""
+
+#. Replace me with your names
+#: ../data/AboutDialog.ui.in.h:4
+msgid "Cédric Bellegarde <cedric.bellegarde@adishatz.org>"
 msgstr ""
 
 #: ../data/QueueWidget.ui.h:1
