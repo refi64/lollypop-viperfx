@@ -41,14 +41,21 @@ class SelectionList(GObject.GObject):
         self._is_artists = False  # for string translation
         self._pop_time = 0.0      # Keep track of time when starting populate
 
-        if Gtk.Widget.get_default_direction() is Gtk.TextDirection.RTL:
-            lookup_flag = Gtk.IconLookupFlags.DIR_RTL
-        else:
-            lookup_flag = Gtk.IconLookupFlags.DIR_LTR
-        self._default_pixbuf = Gtk.IconTheme.get_default().load_icon(
-                                            'go-next-symbolic',
-                                            16,
-                                            lookup_flag)
+        try:
+            if Gtk.Widget.get_default_direction() is Gtk.TextDirection.RTL:
+                lookup_flag = Gtk.IconLookupFlags.DIR_RTL
+            else:
+                lookup_flag = Gtk.IconLookupFlags.DIR_LTR
+            self._default_pixbuf = Gtk.IconTheme.get_default().load_icon(
+                                                'go-next-symbolic',
+                                                16,
+                                                lookup_flag)
+        except: #TODO remove me later, Gtk < 3.14 support
+            self._default_pixbuf = Gtk.IconTheme.get_default().load_icon(
+                                                'go-next-symbolic',
+                                                16,
+                                                0)
+
         self._device_pixbuf = Gtk.IconTheme.get_default().load_icon(
                                             'multimedia-player-symbolic',
                                             16,
