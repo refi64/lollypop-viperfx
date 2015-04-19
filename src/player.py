@@ -423,9 +423,12 @@ class Player(GObject.GObject):
         if genre_id_lookup == Navigation.ALL or artist_id == Navigation.ALL:
             self._albums = Objects.albums.get_compilations(Navigation.ALL)
             self._albums += Objects.albums.get_ids()
-        # We are in popular view, add populars albums
+        # We are in popular view, add popular albums
         elif genre_id_lookup == Navigation.POPULARS:
             self._albums = Objects.albums.get_populars()
+        # We are in recent view, add recent albums
+        elif genre_id_lookup == Navigation.RECENTS:
+            self._albums = Objects.albums.get_recents()
         # Random tracks/albums for genre
         elif self._shuffle in [Shuffle.TRACKS, Shuffle.ALBUMS]:
             self._albums = Objects.albums.get_ids(None, genre_id_lookup)
