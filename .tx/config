@@ -14,5 +14,6 @@ trans.sk = po/sk.po
 trans.pt = po/pt.po
 trans.pt_BR = po/pt_BR.po
 trans.he = po/he.po
+trans.sr = po/sr.po
 type = PO
 
