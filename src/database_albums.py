@@ -28,15 +28,17 @@ class DatabaseAlbums:
         @param artist id as int,
         @param path as string
         @param outside as bool
+        @param mtime as int
         @warning: commit needed
     """
-    def add(self, name, artist_id, path, popularity, outside, sql=None):
+    def add(self, name, artist_id, path, popularity,
+            outside, mtime, sql=None):
         if not sql:
             sql = Objects.sql
-        sql.execute("INSERT INTO "
-                    "albums (name, artist_id, path, popularity, outside)"
-                    "VALUES (?, ?, ?, ?, ?)",
-                    (name, artist_id, path, popularity, outside))
+        sql.execute("INSERT INTO albums "
+                    "(name, artist_id, path, popularity, outside, mtime)"
+                    "VALUES (?, ?, ?, ?, ?, ?)",
+                    (name, artist_id, path, popularity, outside, mtime))
 
     """
         Add genre to album
@@ -86,6 +88,18 @@ class DatabaseAlbums:
         if not sql:
             sql = Objects.sql
         sql.execute("UPDATE albums SET path=? WHERE rowid=?", (path, album_id))
+
+    """
+        Set mtime
+        @param album_id as int
+        @param mtime as int
+        @warning: commit needed
+    """
+    def set_mtime(self, album_id, mtime, sql=None):
+        if not sql:
+            sql = Objects.sql
+        sql.execute("UPDATE albums set mtime=? WHERE rowid=?",
+                    (mtime, album_id))
 
     """
         Set popularity
@@ -347,7 +361,7 @@ class DatabaseAlbums:
             sql = Objects.sql
         albums = []
         result = sql.execute("SELECT rowid FROM albums\
-                             DESC LIMIT 100")
+                              ORDER BY mtime DESC LIMIT 100")
         for row in result:
             albums += row
         return albums

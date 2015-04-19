@@ -36,7 +36,8 @@ class Database:
                         year INT,
                         path TEXT NOT NULL,
                         popularity INT NOT NULL,
-                        outside BOOLEAN NOT NULL)'''
+                        outside BOOLEAN NOT NULL,
+                        mtime INT NOT NULL)'''
     create_artists = '''CREATE TABLE artists (id INTEGER PRIMARY KEY,
                                               name TEXT NOT NULL,
                                               outside BOOLEAN NOT NULL)'''
@@ -65,13 +66,14 @@ class Database:
                                                 track_id INT NOT NULL,
                                                 genre_id INT NOT NULL,
                                                 outside BOOLEAN NOT NULL)'''
-    version = 6
+    version = 7
 
     """
         Create database tables or manage update if needed
     """
     def __init__(self):
         self._popularity_backup = {}
+        self._mtime_backup = {}
         # Create db directory if missing
         if not os.path.exists(self.LOCAL_PATH):
             try:
@@ -83,6 +85,7 @@ class Database:
             db_version = Objects.settings.get_value('db-version').get_int32()
             if db_version < self.version:
                 self._set_popularities()
+                self._set_mtimes()
                 os.remove(self.DB_PATH)
                 Objects.settings.set_value('db-version',
                                            GLib.Variant('i', self.version))
@@ -111,6 +114,13 @@ class Database:
     def get_popularities(self):
         return self._popularity_backup
 
+    """
+        Get a dict with album path and mtime
+        This is usefull for collection scanner be
+        able to restore mtimes after db reset
+    """
+    def get_mtimes(self):
+        return self._mtime_backup
 ###########
 # Private #
 ###########
@@ -132,6 +142,24 @@ class Database:
             sql.close()
         except Exception as e:
             print("Database::_set_popularities: %s" % e)
+
+    """
+        Set a dict with album string and mtime
+        This is usefull for collection scanner be
+        able to restore mtimes after db reset
+    """
+    def _set_mtimes(self):
+        try:
+            sql = self.get_cursor()
+            result = sql.execute("SELECT albums.name, artists.name, mtime\
+                                  FROM albums, artists\
+                                  WHERE artists.rowid == albums.artist_id")
+            for row in result:
+                string = "%s_%s" % (row[0], row[1])
+                self._mtime_backup[string] = row[2]
+            sql.close()
+        except Exception as e:
+            print("Database::_set_mtimes: %s" % e)
 
     """
         Return a new sqlite cursor

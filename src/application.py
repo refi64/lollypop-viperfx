@@ -121,7 +121,6 @@ class Application(Gtk.Application):
             if not Objects.settings.get_value('disable-notifications'):
                 NotificationManager()
             Objects.window.update_lists()
-            Objects.window.update_db()
             Objects.window.show()
             Objects.player.restore_state()
 

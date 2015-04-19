@@ -12,7 +12,7 @@
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 import os
-from time import sleep
+from time import sleep, time
 from gettext import gettext as _
 from gi.repository import GLib, GObject, Gio
 from _thread import start_new_thread
@@ -36,6 +36,7 @@ class CollectionScanner(GObject.GObject):
         GObject.GObject.__init__(self)
 
         self._progress = progress
+        self._is_empty = True
         self._in_thread = False
         self._is_locked = False
 
@@ -169,7 +170,7 @@ class CollectionScanner(GObject.GObject):
     def _scan(self, paths, smooth):
         sql = Objects.db.get_cursor()
         tracks = Objects.tracks.get_paths(sql)
-
+        self._is_empty = len(tracks) == 0
         # Clear cover cache
         if not smooth:
             Objects.art.clean_all_cache(sql)
@@ -235,6 +236,7 @@ class CollectionScanner(GObject.GObject):
         Objects.tracks.clean(sql)
         Objects.albums.search_compilations(False, sql)
         self._restore_popularities(sql)
+        self._restore_mtimes(sql)
         sql.commit()
         sql.close()
         GLib.idle_add(self._finish)
@@ -346,8 +348,15 @@ class CollectionScanner(GObject.GObject):
 
         album_id = Objects.albums.get_id(album, aartist_id, sql)
         if album_id is None:
+            # If db was empty on scan,
+            # use file modification time to get recents
+            if self._is_empty:
+                mtime = int(os.path.getmtime(filepath))
+            # Use current time
+            else:
+                mtime = int(time())
             Objects.albums.add(album, aartist_id,
-                               path, 0, outside, sql)
+                               path, 0, outside, mtime, sql)
             album_id = Objects.albums.get_id(album, aartist_id, sql)
 
         for genre_id in genre_ids:
@@ -394,3 +403,16 @@ class CollectionScanner(GObject.GObject):
             if string in self._popularities:
                 Objects.albums.set_popularity(row[2],
                                               self._popularities[string], sql)
+    """
+        Restore albums mtimes
+    """
+    def _restore_mtimes(self, sql):
+        self._mtimes = Objects.db.get_mtimes()
+        result = sql.execute("SELECT albums.name, artists.name, albums.rowid\
+                              FROM albums, artists\
+                              WHERE artists.rowid == albums.artist_id")
+        for row in result:
+            string = "%s_%s" % (row[0], row[1])
+            if string in self._mtimes:
+                Objects.albums.set_mtime(row[2],
+                                         self._mtimes[string], sql)

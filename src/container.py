@@ -37,6 +37,9 @@ class Device:
 class Container:
     def __init__(self):
         
+        # Try to update db on start, will be done after list one poplating
+        # finished
+        self._need_to_update_db = True
         # Index will start at -VOLUMES
         self._devices = {}
         self._devices_index = Navigation.DEVICES
@@ -534,6 +537,9 @@ class Container:
         if self._list_one_restore is not None:
             self._list_one.select_id(self._list_one_restore)
             self._list_one_restore = None
+        if self._need_to_update_db:
+            self._need_to_update_db = False
+            self.update_db()
 
     """
         Update view based on selected object
