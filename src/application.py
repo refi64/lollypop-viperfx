@@ -42,7 +42,9 @@ class Application(Gtk.Application):
                                  flags=Gio.ApplicationFlags.FLAGS_NONE)
         GLib.set_application_name('lollypop')
         GLib.set_prgname('lollypop')
-        self.set_flags(Gio.ApplicationFlags.HANDLES_OPEN)
+        self.set_flags(Gio.ApplicationFlags.HANDLES_OPEN|\
+                       Gio.ApplicationFlags.HANDLES_COMMAND_LINE)
+        self.connect('command-line', self._on_commandline)
         cssProviderFile = Gio.File.new_for_uri(
                             'resource:///org/gnome/Lollypop/application.css'
                                               )
@@ -184,6 +186,17 @@ class Application(Gtk.Application):
 #######################
 # PRIVATE             #
 #######################
+    """
+        Handle command line
+        @param app as Gio.Application
+        @param cmd as Gio.ApplicationCommandLine
+    """
+    def _on_commandline(self, app, cmd):
+        for arg in cmd.get_arguments():
+            if arg == "-d":
+                Objects.debug = True
+        return True
+
     """
         Add playlist entry to external files
         @param parser as TotemPlParser.Parser

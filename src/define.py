@@ -27,6 +27,7 @@ class Objects_:
     player = None
     art = None
     window = None
+    debug = False
 
 
 # Represent what to do on next track

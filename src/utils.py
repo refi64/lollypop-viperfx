@@ -17,6 +17,18 @@ from lollypop.define import Objects
 from gettext import gettext as _
 import os
 
+
+"""
+    Print debug
+    @param debug as str
+"""
+
+
+def debug(str):
+    if Objects.debug == True:
+        print(str)
+
+
 """
     Return True if desktop is elementary os
 """

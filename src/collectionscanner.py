@@ -18,7 +18,7 @@ from gi.repository import GLib, GObject, Gio
 from _thread import start_new_thread
 
 from lollypop.define import Objects, Navigation
-from lollypop.utils import format_artist_name, is_audio
+from lollypop.utils import format_artist_name, is_audio, debug
 
 
 class CollectionScanner(GObject.GObject):
@@ -179,10 +179,13 @@ class CollectionScanner(GObject.GObject):
         for path in paths:
             for root, dirs, files in os.walk(path):
                 for name in files:
-                    f = Gio.File.new_for_path(os.path.join(root, name))
+                    filepath = os.path.join(root, name)
+                    f = Gio.File.new_for_path(filepath)
                     if is_audio(f):
-                        new_tracks.append(os.path.join(root, name))
+                        new_tracks.append(filepath)
                         count += 1
+                    else:
+                        debug("%s not detected as a music file" % filepath)
         i = 0
         for filepath in new_tracks:
             if not self._in_thread:
@@ -195,7 +198,10 @@ class CollectionScanner(GObject.GObject):
                 if filepath not in tracks:
                     infos = Objects.player.get_infos(filepath)
                     if infos is not None:
+                        debug("Adding file: %s" % filepath)
                         self._add2db(filepath, mtime, infos, False, sql)
+                    else:
+                        print("Can't get infos for ", filepath)
                 else:
                     # Update tags by removing song and readd it
                     if mtime != self._mtimes[filepath]:
@@ -205,7 +211,10 @@ class CollectionScanner(GObject.GObject):
                         self._clean_compilation(album_id, sql)
                         infos = Objects.player.get_infos(filepath)
                         if infos is not None:
+                            debug("Adding file: %s" % filepath)
                             self._add2db(filepath, mtime, infos, False, sql)
+                        else:
+                            print("Can't get infos for ", filepath)
                     tracks.remove(filepath)
 
             except Exception as e:
