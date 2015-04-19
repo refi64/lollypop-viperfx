@@ -323,6 +323,7 @@ class Container:
     def _get_headers(self):
         items = []
         items.append((Navigation.POPULARS, _("Popular albums")))
+        items.append((Navigation.RECENTS, _("Recent albums")))
         items.append((Navigation.PLAYLISTS, _("Playlists")))
         if self._show_genres:
             items.append((Navigation.ALL, _("All artists")))
@@ -506,7 +507,7 @@ class Container:
         elif object_id < Navigation.DEVICES:
             self._list_two.widget.hide()
             self._update_view_device(object_id)
-        elif object_id == Navigation.POPULARS:
+        elif object_id in [Navigation.POPULARS, Navigation.RECENTS]:
             self._list_two.widget.hide()
             self._update_view_albums(object_id, None)
         elif selection_list.is_marked_as_artists():

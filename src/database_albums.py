@@ -326,8 +326,7 @@ class DatabaseAlbums:
 
     """
         Get albums ids with popularity
-        @param None
-        @return Array of album ids as int
+        @return array of album ids as int
     """
     def get_populars(self, sql=None):
         if not sql:
@@ -335,6 +334,20 @@ class DatabaseAlbums:
         albums = []
         result = sql.execute("SELECT rowid FROM albums WHERE popularity!=0\
                              ORDER BY popularity DESC LIMIT 100")
+        for row in result:
+            albums += row
+        return albums
+
+    """
+        Return recent albums
+        @return array of albums ids as int
+    """
+    def get_recents(self, sql=None):
+        if not sql:
+            sql = Objects.sql
+        albums = []
+        result = sql.execute("SELECT DISTINCT album_id FROM tracks\
+                             ORDER BY mtime DESC LIMIT 50")
         for row in result:
             albums += row
         return albums
