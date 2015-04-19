@@ -346,8 +346,8 @@ class DatabaseAlbums:
         if not sql:
             sql = Objects.sql
         albums = []
-        result = sql.execute("SELECT DISTINCT album_id FROM tracks\
-                             ORDER BY mtime DESC LIMIT 100")
+        result = sql.execute("SELECT rowid FROM albums\
+                             DESC LIMIT 100")
         for row in result:
             albums += row
         return albums
