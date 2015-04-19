@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-04-17 11:23+0200\n"
+"POT-Creation-Date: 2015-04-19 16:18+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -171,19 +171,23 @@ msgstr ""
 msgid "Popular albums"
 msgstr ""
 
-#: ../src/container.py:326 ../src/popmenu.py:47
+#: ../src/container.py:326
+msgid "Recent albums"
+msgstr ""
+
+#: ../src/container.py:327 ../src/popmenu.py:47
 msgid "Playlists"
 msgstr ""
 
-#: ../src/container.py:328
+#: ../src/container.py:329
 msgid "All artists"
 msgstr ""
 
-#: ../src/container.py:330
+#: ../src/container.py:331
 msgid "All albums"
 msgstr ""
 
-#: ../src/container.py:372
+#: ../src/container.py:373
 msgid "Compilations"
 msgstr ""
 
@@ -206,14 +210,14 @@ msgstr ""
 msgid "Many artists"
 msgstr ""
 
-#: ../src/database_artists.py:70 ../src/database_albums.py:185
+#: ../src/database_artists.py:70 ../src/database_albums.py:216
 #: ../src/database_tracks.py:187 ../src/database_genres.py:67
-#: ../src/collectionscanner.py:250 ../src/collectionscanner.py:255
-#: ../src/collectionscanner.py:269 ../src/collectionscanner.py:274
+#: ../src/collectionscanner.py:264 ../src/collectionscanner.py:269
+#: ../src/collectionscanner.py:283 ../src/collectionscanner.py:288
 msgid "Unknown"
 msgstr ""
 
-#: ../src/database_albums.py:202
+#: ../src/database_albums.py:233
 msgid "Compilation"
 msgstr ""
 
@@ -230,12 +234,12 @@ msgstr ""
 msgid "Remove these tracks?"
 msgstr ""
 
-#: ../src/view.py:584 ../src/view.py:625
+#: ../src/view.py:586 ../src/view.py:627
 #, python-format
 msgid "Synchronize %s"
 msgstr ""
 
-#: ../src/view.py:616
+#: ../src/view.py:618
 msgid "Cancel synchronization"
 msgstr ""
 
@@ -303,7 +307,7 @@ msgstr ""
 
 #. Handle language ordering
 #. Translators: Add here words that shoud be ignored for artist sort order
-#: ../src/utils.py:67
+#: ../src/utils.py:79
 msgid "The the"
 msgstr ""
 
@@ -311,7 +315,7 @@ msgstr ""
 msgid "Search:"
 msgstr ""
 
-#: ../src/album_widgets.py:170
+#: ../src/album_widgets.py:178
 #, python-format
 msgid "Disc %s"
 msgstr ""
