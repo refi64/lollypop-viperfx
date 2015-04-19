@@ -42,9 +42,9 @@ class Application(Gtk.Application):
                                  flags=Gio.ApplicationFlags.FLAGS_NONE)
         GLib.set_application_name('lollypop')
         GLib.set_prgname('lollypop')
-        self.set_flags(Gio.ApplicationFlags.HANDLES_OPEN|\
-                       Gio.ApplicationFlags.HANDLES_COMMAND_LINE)
-        self.connect('command-line', self._on_commandline)
+        self.set_flags(Gio.ApplicationFlags.HANDLES_OPEN)
+        self.add_main_option("debug", b'd', GLib.OptionFlags.NONE,
+                             GLib.OptionArg.NONE, "Debug lollypop", None)
         cssProviderFile = Gio.File.new_for_uri(
                             'resource:///org/gnome/Lollypop/application.css'
                                               )
@@ -153,6 +153,15 @@ class Application(Gtk.Application):
             Objects.window.load_external(self._external_files)
 
     """
+        Handle command line
+        @param options as GLib.VariantDict
+    """
+    def do_handle_local_options(self, options):
+        if options.contains("debug"):
+            Objects.debug = True
+        return 0
+
+    """
         Destroy main window
     """
     def quit(self, action=None, param=None):
@@ -186,17 +195,6 @@ class Application(Gtk.Application):
 #######################
 # PRIVATE             #
 #######################
-    """
-        Handle command line
-        @param app as Gio.Application
-        @param cmd as Gio.ApplicationCommandLine
-    """
-    def _on_commandline(self, app, cmd):
-        for arg in cmd.get_arguments():
-            if arg == "-d":
-                Objects.debug = True
-        return True
-
     """
         Add playlist entry to external files
         @param parser as TotemPlParser.Parser
