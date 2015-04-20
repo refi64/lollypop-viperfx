@@ -25,12 +25,13 @@ from lollypop.popalbums import PopAlbums
 
 # Toolbar as headerbar
 # Get real widget with Toolbar.widget
-class Toolbar:
+class Toolbar(Gtk.HeaderBar):
     """
         Init toolbar/headerbar ui
         @param app as Gtk.Application
     """
     def __init__(self, app):
+        Gtk.HeaderBar.__init__(self)
         # Prevent updating progress while seeking
         self._seeking = False
         # Update pogress position
@@ -38,8 +39,12 @@ class Toolbar:
 
         builder = Gtk.Builder()
         builder.add_from_resource('/org/gnome/Lollypop/Toolbar.ui')
-        self.header_bar = builder.get_object('header-bar')
-        self.header_bar.set_custom_title(builder.get_object('title-box'))
+
+        self._leftbar = builder.get_object('leftbar')
+        self.pack_start(self._leftbar)
+        self.pack_start(builder.get_object('titlebar'))
+        self.pack_end(builder.get_object('rightbar'))
+        self.set_custom_title(builder.get_object('title-box'))
 
         self._prev_btn = builder.get_object('previous_button')
         self._play_btn = builder.get_object('play_button')
@@ -87,7 +92,7 @@ class Toolbar:
 
         search_button = builder.get_object('search-button')
         search_button.connect("clicked", self._on_search_btn_clicked)
-        self._search = SearchWidget(self.header_bar)
+        self._search = SearchWidget(self)
         self._search.set_relative_to(search_button)
         searchAction = Gio.SimpleAction.new('search', None)
         searchAction.connect('activate', self._on_search_btn_clicked)
@@ -100,6 +105,18 @@ class Toolbar:
         self._queue.set_relative_to(queue_button)
 
         self._settings_button = builder.get_object('settings-button')
+
+    """
+        Here, we calculate height based on left widget
+        We want to ignore titlebox height, like in original Gtk+ code
+        Simplified version here
+    """
+    def do_get_preferred_height(self):
+        style = self.get_style_context()
+        padding = style.get_padding(Gtk.StateFlags.NORMAL)
+        leftbar_height = self._leftbar.get_preferred_height()
+        return (leftbar_height[0]+padding.top+padding.bottom,
+                leftbar_height[1]+padding.top+padding.bottom )
 
     """
         Add an application menu to menu button
@@ -217,9 +234,9 @@ class Toolbar:
             self._prev_btn.set_sensitive(False)
             self._play_btn.set_sensitive(False)
             self._next_btn.set_sensitive(False)
+            self._title_label.set_text('')
+            self._artist_label.set_text('')
             self._change_play_btn_status(self._play_image, _("Play"))
-            self._title_label.hide()
-            self._artist_label.hide()
             if Objects.player.is_party():
                 self._activate_party_button()
         else:
@@ -235,14 +252,8 @@ class Toolbar:
             else:
                 self._cover.hide()
 
-            self._title_label.show()
-            self._title_label.set_markup("<span font_desc='Sans 10.5'>"
-                                         "%s</span>" %
-                                         escape(player.current.title))
-            self._artist_label.show()
-            self._artist_label.set_markup("<span font_desc='Sans 10.5'>"
-                                          "%s</span>" %
-                                          escape(player.current.artist))
+            self._title_label.set_text(player.current.title)
+            self._artist_label.set_text(player.current.artist)
             self._progress.set_value(0.0)
             self._progress.set_range(0.0, player.current.duration * 60)
             self._total_time_label.set_text(

@@ -28,10 +28,9 @@
       <attribute name="target">tracks_artist</attribute>
     </item>
   </menu>
-  <object class="GtkHeaderBar" id="header-bar">
+  <object class="GtkBox" id="leftbar">
     <property name="visible">True</property>
     <property name="vexpand">False</property>
-    <property name="height_request">44</property>
     <child>
       <object class="GtkBox" id="buttons">
         <property name="visible">True</property>
@@ -131,6 +130,10 @@
         </style>
       </object>
     </child>
+  </object>
+  <object class="GtkBox" id="titlebar">
+    <property name="visible">True</property>
+    <property name="vexpand">False</property>
     <child>
       <object class="GtkEventBox" id="infobox">
         <property name="visible">True</property>
@@ -138,9 +141,7 @@
           <object class="GtkBox" id="nowplaying">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
-            <property name="halign">center</property>
             <property name="valign">center</property>
-            <property name="spacing">8</property>
             <child>
               <object class="GtkImage" id="cover">
                 <property name="visible">False</property>
@@ -157,19 +158,19 @@
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
                 <property name="orientation">vertical</property>
+                <property name="homogeneous">True</property>
                 <child>
                   <object class="GtkLabel" id="artist">
-                    <property name="visible">False</property>
-                    <property name="can_focus">False</property>
                     <property name="halign">start</property>
-                    <property name="valign">start</property>
-                    <property name="xalign">0</property>
+                    <property name="visible">True</property>
+                    <property name="can_focus">False</property>
                     <property name="ellipsize">middle</property>
-                    <property name="width_chars">8</property>
+                    <property name="single_line_mode">True</property>
+                    <property name="wrap">False</property>
                     <property name="max_width_chars">24</property>
-                    <attributes>
-                      <attribute name="weight" value="bold"/>
-                    </attributes>
+                    <style>
+                      <class name="title"/>
+                    </style>
                   </object>
                   <packing>
                     <property name="expand">False</property>
@@ -179,14 +180,16 @@
                 </child>
                 <child>
                   <object class="GtkLabel" id="title">
-                    <property name="visible">False</property>
-                    <property name="can_focus">False</property>
                     <property name="halign">start</property>
-                    <property name="valign">start</property>
-                    <property name="xalign">0</property>
+                    <property name="visible">True</property>
+                    <property name="can_focus">False</property>
                     <property name="ellipsize">middle</property>
-                    <property name="width_chars">8</property>
+                    <property name="single_line_mode">True</property>
+                    <property name="wrap">False</property>
                     <property name="max_width_chars">24</property>
+                    <style>
+                      <class name="subtitle"/>
+                    </style>
                   </object>
                   <packing>
                     <property name="expand">False</property>
@@ -205,6 +208,11 @@
         </child>
       </object>
     </child>
+  </object>
+  <object class="GtkBox" id="rightbar">
+    <property name="visible">True</property>
+    <property name="vexpand">False</property>
+    <property name="spacing">6</property>
 	<child>
       <object class="GtkMenuButton" id="settings-button">
         <property name="visible">False</property>

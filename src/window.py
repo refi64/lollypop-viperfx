@@ -164,17 +164,17 @@ class Window(Gtk.ApplicationWindow, Container):
         self.connect("configure-event", self._on_configure_event)
 
         self._toolbar = Toolbar(self.get_application())
-        self._toolbar.header_bar.show()
+        self._toolbar.show()
 
         # Only set headerbar if according DE detected or forced manually
         if use_csd():
-            self.set_titlebar(self._toolbar.header_bar)
-            self._toolbar.header_bar.set_show_close_button(True)
+            self.set_titlebar(self._toolbar)
+            self._toolbar.set_show_close_button(True)
             self.add(self.main_widget())
         else:
             hgrid = Gtk.Grid()
             hgrid.set_orientation(Gtk.Orientation.VERTICAL)
-            hgrid.add(self._toolbar.header_bar)
+            hgrid.add(self._toolbar)
             hgrid.add(self.main_widget())
             hgrid.show()
             self.add(hgrid)
