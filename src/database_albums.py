@@ -159,9 +159,9 @@ class DatabaseAlbums:
         result = sql.execute("SELECT AVG(popularity) FROM (SELECT popularity "
                              "FROM albums ORDER BY POPULARITY DESC LIMIT 100)")
         v = result.fetchone()
-        if v:
+        if v and v[0] > 5:
             return v[0]
-        return 0
+        return 5
 
     """
         Get album id
