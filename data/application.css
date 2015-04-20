@@ -37,17 +37,6 @@ Gtk.ListBoxRow .menubutton:hover {
 	border-color: alpha(#000000, 0.1);
 }
 
-.title {
-    padding-top: 0;
-    padding-bottom: 0;
-}
-
-.subtitle {
-    padding-top: 0;
-    padding-bottom: 0;
-}
-
-
 .hovereffect {
     -gtk-image-effect: highlight;
 }
