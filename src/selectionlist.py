@@ -42,7 +42,7 @@ class SelectionList(GObject.GObject):
         self._pop_time = 0.0      # Keep track of time when starting populate
 
         try:
-            if Gtk.Widget.get_default_direction() == Gtk.TextDirection.RTL:
+            if Gtk.Widget.get_default_direction() is Gtk.TextDirection.RTL:
                 lookup_flag = Gtk.IconLookupFlags.DIR_RTL
             else:
                 lookup_flag = Gtk.IconLookupFlags.DIR_LTR
