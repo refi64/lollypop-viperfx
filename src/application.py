@@ -229,6 +229,8 @@ class Application(Gtk.Application):
 
     """
         Search for new music
+        @param action as Gio.SimpleAction
+        @param param as GLib.Variant
     """
     def _update_db(self, action=None, param=None):
         if Objects.window:
@@ -236,6 +238,8 @@ class Application(Gtk.Application):
 
     """
         Show a fullscreen window with cover and artist informations
+        @param action as Gio.SimpleAction
+        @param param as GLib.Variant
     """
     def _fullscreen(self, action=None, param=None):
         if Objects.window:
@@ -255,6 +259,8 @@ class Application(Gtk.Application):
 
     """
         Show settings dialog
+        @param action as Gio.SimpleAction
+        @param param as GLib.Variant
     """
     def _settings_dialog(self, action=None, param=None):
         dialog = SettingsDialog()

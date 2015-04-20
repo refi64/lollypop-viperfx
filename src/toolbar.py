@@ -53,6 +53,22 @@ class Toolbar:
                                self._on_progress_release_button)
         self._progress.connect('button-press-event',
                                self._on_progress_press_button)
+        seek = Gio.SimpleAction.new('seek',
+                                    GLib.VariantType.new('i'))
+        seek.connect('activate', self._seek)
+        app.add_action(seek)
+        app.add_accelerator("Right",
+                            "app.seek",
+                            GLib.Variant.new_int32(+10))
+        app.add_accelerator("<Control>Right",
+                            "app.seek",
+                            GLib.Variant.new_int32(+20))
+        app.add_accelerator("Left",
+                            "app.seek",
+                            GLib.Variant.new_int32(-10))
+        app.add_accelerator("<Control>Left",
+                            "app.seek",
+                            GLib.Variant.new_int32(-20))
 
         self._timelabel = builder.get_object('playback')
         self._total_time_label = builder.get_object('duration')
@@ -76,9 +92,9 @@ class Toolbar:
 
         self._party_btn = builder.get_object('party-button')
         self._party_btn.connect("toggled", self._on_party_btn_toggled)
-        partyAction = Gio.SimpleAction.new('party', None)
-        partyAction.connect('activate', self._activate_party_button)
-        app.add_action(partyAction)
+        party_action = Gio.SimpleAction.new('party', None)
+        party_action.connect('activate', self._activate_party_button)
+        app.add_action(party_action)
         app.add_accelerator("<Control>p", "app.party")
 
         self._prev_btn.connect('clicked', self._on_prev_btn_clicked)
@@ -210,7 +226,7 @@ class Toolbar:
             self._title_label.hide()
             self._artist_label.hide()
             if Objects.player.is_party():
-                self._activate_party_button(None, None)
+                self._activate_party_button()
         else:
             self._prev_btn.set_sensitive(True)
             self._play_btn.set_sensitive(True)
@@ -309,9 +325,23 @@ class Toolbar:
 
     """
         Activate party button
+        @param action as Gio.SimpleAction
+        @param param as GLib.Variant
     """
-    def _activate_party_button(self, action, param):
+    def _activate_party_button(self, action=None, param=None):
         self._party_btn.set_active(not self._party_btn.get_active())
+
+    """
+        Seek backward
+        @param action as Gio.SimpleAction
+        @param param as GLib.Variant
+    """
+    def _seek(self, action, param):
+        seconds = param.get_int32()
+        position = Objects.player.get_position_in_track()
+        seek = position/1000000/60+seconds
+        Objects.player.seek(seek)
+        self._update_position(seek*60)
 
     """
         Set party mode on if party button active
