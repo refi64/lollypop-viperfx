@@ -266,6 +266,7 @@ class Toolbar:
             self._party_btn.set_active(Objects.player.is_party())
         elif not is_playing and self._timeout:
             GLib.source_remove(self._timeout)
+            self.update_position()
             self._timeout = None
             self._change_play_btn_status(self._play_image, _("Play"))
 

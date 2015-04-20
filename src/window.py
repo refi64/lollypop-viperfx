@@ -34,8 +34,12 @@ class Window(Gtk.ApplicationWindow, Container):
         self._timeout_configure = None
         seek_action = Gio.SimpleAction.new('seek',
                                            GLib.VariantType.new('i'))
-        seek_action.connect('activate', self._seek)
+        seek_action.connect('activate', self._on_seek_action)
         app.add_action(seek_action)
+        player_action = Gio.SimpleAction.new('player',
+                                             GLib.VariantType.new('s'))
+        player_action.connect('activate', self._on_player_action)
+        app.add_action(player_action)
 
         self._setup_window()
         self._setup_media_keys()
@@ -67,11 +71,20 @@ class Window(Gtk.ApplicationWindow, Container):
             self._app.set_accels_for_action("app.seek(20)", ["<Control>Right"])
             self._app.set_accels_for_action("app.seek(-10)", ["Left"])
             self._app.set_accels_for_action("app.seek(-20)", ["<Control>Left"])
+            self._app.set_accels_for_action("app.player::play_pause",
+                                            ["space", "c"])
+            self._app.set_accels_for_action("app.player::play",
+                                            ["x"])
+            self._app.set_accels_for_action("app.player::stop",
+                                            ["v"])
         else:
             self._app.set_accels_for_action("app.seek(10)", [None])
             self._app.set_accels_for_action("app.seek(20)", [None])
             self._app.set_accels_for_action("app.seek(-10)", [None])
             self._app.set_accels_for_action("app.seek(-20)", [None])
+            self._app.set_accels_for_action("app.player::play_pause", [None])
+            self._app.set_accels_for_action("app.player::play", [None])
+            self._app.set_accels_for_action("app.player::stop", [None])
 
 ############
 # Private  #
@@ -218,11 +231,11 @@ class Window(Gtk.ApplicationWindow, Container):
                                         self._paned_list_view.get_position()))
 
     """
-        Seek backward
+        Seek in stream
         @param action as Gio.SimpleAction
         @param param as GLib.Variant
     """
-    def _seek(self, action, param):
+    def _on_seek_action(self, action, param):
         seconds = param.get_int32()
         position = Objects.player.get_position_in_track()
         seek = position/1000000/60+seconds
@@ -232,3 +245,17 @@ class Window(Gtk.ApplicationWindow, Container):
             seek = Objects.player.current.duration - 2
         Objects.player.seek(seek)
         self._toolbar.update_position(seek*60)
+
+    """
+        Change player state
+        @param action as Gio.SimpleAction
+        @param param as GLib.Variant
+    """
+    def _on_player_action(self, action, param):
+        string = param.get_string()
+        if string == "play_pause":
+            Objects.player.play_pause()
+        elif string == "play":
+            Objects.player.play()
+        elif string == "stop":
+            Objects.player.stop()
