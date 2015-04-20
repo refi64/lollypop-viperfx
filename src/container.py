@@ -147,6 +147,7 @@ class Container:
         @param files as [Gio.Files]
     """
     def load_external(self, files):
+        self._need_to_update_db = False
         # We wait as selection list is threaded,
         # we don't want to insert item before populated
         # Same for locked db

@@ -45,6 +45,7 @@ class Application(Gtk.Application):
         self.set_flags(Gio.ApplicationFlags.HANDLES_OPEN)
         self.add_main_option("debug", b'd', GLib.OptionFlags.NONE,
                              GLib.OptionArg.NONE, "Debug lollypop", None)
+        self.connect('handle-local-options', self._on_handle_local_options)
         cssProviderFile = Gio.File.new_for_uri(
                             'resource:///org/gnome/Lollypop/application.css'
                                               )
@@ -152,15 +153,6 @@ class Application(Gtk.Application):
             Objects.window.load_external(self._external_files)
 
     """
-        Handle command line
-        @param options as GLib.VariantDict
-    """
-    def do_handle_local_options(self, options):
-        if options.contains("debug"):
-            Objects.debug = True
-        return 0
-
-    """
         Destroy main window
     """
     def quit(self, action=None, param=None):
@@ -171,8 +163,8 @@ class Application(Gtk.Application):
             else:
                 track_id = Objects.player.current.id
             Objects.settings.set_value('track-id', GLib.Variant(
-                                        'i',
-                                        track_id))
+                                       'i',
+                                       track_id))
         Objects.player.stop()
         if Objects.window:
             Objects.window.stop_all()
@@ -180,8 +172,8 @@ class Application(Gtk.Application):
         try:
             Objects.tracks.remove_outside()
             Objects.sql.execute("VACUUM")
-        except:
-            pass
+        except Exception as e:
+            print("Application::quit(): ", e)
         Objects.sql.close()
         Objects.window.destroy()
 
@@ -194,6 +186,16 @@ class Application(Gtk.Application):
 #######################
 # PRIVATE             #
 #######################
+    """
+        Handle command line
+        @param app as Gio.Application
+        @param options as GLib.VariantDict
+    """
+    def _on_handle_local_options(self, app, options):
+        if options.contains("debug"):
+            Objects.debug = True
+        return 0
+
     """
         Add playlist entry to external files
         @param parser as TotemPlParser.Parser

@@ -355,7 +355,7 @@ class DatabaseTracks:
         if not sql:
             sql = Objects.sql
         sql.execute("DELETE FROM tracks\
-                     WHERE mtime=0")
+                     WHERE outside=1")
         sql.execute("DELETE FROM albums\
                      WHERE outside=1")
         sql.execute("DELETE FROM genres\
