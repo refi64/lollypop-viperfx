@@ -67,31 +67,26 @@ class Window(Gtk.ApplicationWindow, Container):
     """
     def enable_global_shorcuts(self, enable):
         if enable:
-            RTL = False
             try:
                 if Gtk.Widget.get_default_direction() == Gtk.TextDirection.RTL:
-                    RTL = True
+                    self._app.set_accels_for_action("app.seek(10)",
+                                                    ["Left"])
+                    self._app.set_accels_for_action("app.seek(20)",
+                                                    ["<Control>Left"])
+                    self._app.set_accels_for_action("app.seek(-10)",
+                                                    ["Right"])
+                    self._app.set_accels_for_action("app.seek(-20)",
+                                                    ["<Control>Right"])
+                else:
+                    self._app.set_accels_for_action("app.seek(10)",
+                                                    ["Right"])
+                    self._app.set_accels_for_action("app.seek(20)",
+                                                    ["<Control>Right"])
+                    self._app.set_accels_for_action("app.seek(-10)",
+                                                    ["Left"])
+                    self._app.set_accels_for_action("app.seek(-20)",
             except:
                 pass  # Gtk 3.12 doesn't contain Gtk.TextDirection.RTL
-
-            if RTL:
-                self._app.set_accels_for_action("app.seek(10)",
-                                                ["Left"])
-                self._app.set_accels_for_action("app.seek(20)",
-                                                ["<Control>Left"])
-                self._app.set_accels_for_action("app.seek(-10)",
-                                                ["Right"])
-                self._app.set_accels_for_action("app.seek(-20)",
-                                                ["<Control>Right"])
-            else:
-                self._app.set_accels_for_action("app.seek(10)",
-                                                ["Right"])
-                self._app.set_accels_for_action("app.seek(20)",
-                                                ["<Control>Right"])
-                self._app.set_accels_for_action("app.seek(-10)",
-                                                ["Left"])
-                self._app.set_accels_for_action("app.seek(-20)",
-                                                ["<Control>Left"])
 
             self._app.set_accels_for_action("app.player::play_pause",
                                             ["space", "c"])
