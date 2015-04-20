@@ -813,10 +813,12 @@ class Player(GObject.GObject):
         @return False if track not loaded
     """
     def _load_track(self, track_id, sql=None):
+        stop = False
+
         # Stop if needed
         if self.context.next == NextContext.STOP_TRACK:
-            GLib.idle_add(self.stop)
-            return False
+            self.context.next = NextContext.STOP_NONE
+            stop = True
 
         # Stop if album changed
         new_album_id = Objects.tracks.get_album_id(
@@ -824,8 +826,8 @@ class Player(GObject.GObject):
                                                 sql)
         if self.context.next == NextContext.STOP_ALBUM and\
            self.current.album_id != new_album_id:
-            GLib.idle_add(self.stop)
-            return False
+            self.context.next = NextContext.STOP_NONE
+            stop = True
 
         # Stop if aartist changed
         new_aartist_id = Objects.tracks.get_aartist_id(
@@ -833,8 +835,8 @@ class Player(GObject.GObject):
                                                 sql)
         if self.context.next == NextContext.STOP_ARTIST and\
            self.current.aartist_id != new_aartist_id:
-            GLib.idle_add(self.stop)
-            return False
+            self.context.next = NextContext.STOP_NONE
+            stop = True
 
         self.current.id = track_id
         self.current.title = Objects.tracks.get_name(
@@ -874,4 +876,8 @@ class Player(GObject.GObject):
             print("File doesn't exist: ", self.current.path)
             self._on_errors()
             return False
+
+        if stop:
+            GLib.idle_add(self.stop)
+            GLib.idle_add(self.emit, "current-changed")
         return True
