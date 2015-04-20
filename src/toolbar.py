@@ -79,7 +79,7 @@ class Toolbar:
         party_action = Gio.SimpleAction.new('party', None)
         party_action.connect('activate', self._activate_party_button)
         app.add_action(party_action)
-        app.add_accelerator("<Control>p", "app.party")
+        app.set_accels_for_action("app.party", ["<Control>p"])
 
         self._prev_btn.connect('clicked', self._on_prev_btn_clicked)
         self._play_btn.connect('clicked', self._on_play_btn_clicked)
