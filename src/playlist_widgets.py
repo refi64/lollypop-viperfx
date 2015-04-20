@@ -186,6 +186,8 @@ class PlaylistsManagerWidget(Gtk.Bin):
         renderer1.set_property('ellipsize', Pango.EllipsizeMode.END)
         renderer1.set_property('editable', True)
         renderer1.connect('edited', self._on_playlist_edited)
+        renderer1.connect('editing-started', self._on_playlist_editing_start)
+        renderer1.connect('editing-canceled', self._on_playlist_editing_cancel)
         column1 = Gtk.TreeViewColumn('text', renderer1, text=1)
         column1.set_expand(True)
 
@@ -349,7 +351,7 @@ class PlaylistsManagerWidget(Gtk.Bin):
         @param path as str representation of Gtk.TreePath
         @param name as str
     """
-    def _on_playlist_edited(self, view, path, name):
+    def _on_playlist_edited(self, widget, path, name):
         if name.find("/") != -1:
             return
         iterator = self._model.get_iter(path)
@@ -357,6 +359,22 @@ class PlaylistsManagerWidget(Gtk.Bin):
         self._model.remove(iterator)
         self._model.append([True, name, self._del_pixbuf])
         Objects.playlists.rename(name, old_name)
+
+    """
+        Disable global shortcuts
+        @param widget as cell renderer
+        @param editable as Gtk.CellEditable
+        @param path as str representation of Gtk.TreePath
+    """
+    def _on_playlist_editing_start(self, widget, editable, path):
+        Objects.window.enable_global_shorcuts(False)
+
+    """
+        Enable global shortcuts
+        @param widget as cell renderer
+    """
+    def _on_playlist_editing_cancel(self, widget):
+        Objects.window.enable_global_shorcuts(True)
 
 
 # Dialog for edit a playlist

@@ -26,14 +26,20 @@ class Window(Gtk.ApplicationWindow, Container):
     """
     def __init__(self, app):
         Container.__init__(self)
+        self._app = app
         Gtk.ApplicationWindow.__init__(self,
                                        application=app,
                                        title="Lollypop")
         self._nullwidget = Gtk.Label() # Use to get selected background color
         self._timeout_configure = None
+        seek_action = Gio.SimpleAction.new('seek',
+                                           GLib.VariantType.new('i'))
+        seek_action.connect('activate', self._seek)
+        app.add_action(seek_action)
 
         self._setup_window()
         self._setup_media_keys()
+        self.enable_global_shorcuts(True)
 
         self.connect("destroy", self._on_destroyed_window)
 
@@ -50,6 +56,23 @@ class Window(Gtk.ApplicationWindow, Container):
     def get_selected_color(self):
         return self._nullwidget.get_style_context(
                             ).get_background_color(Gtk.StateFlags.SELECTED)
+
+    """
+        Setup global shortcuts
+        @param enable as bool
+    """
+    def enable_global_shorcuts(self, enable):
+        if enable:
+            self._app.set_accels_for_action("app.seek(10)", ["Right"])
+            self._app.set_accels_for_action("app.seek(20)", ["<Control>Right"])
+            self._app.set_accels_for_action("app.seek(-10)", ["Left"])
+            self._app.set_accels_for_action("app.seek(-20)", ["<Control>Left"])
+        else:
+            self._app.set_accels_for_action("app.seek(10)", [None])
+            self._app.set_accels_for_action("app.seek(20)", [None])
+            self._app.set_accels_for_action("app.seek(-10)", [None])
+            self._app.set_accels_for_action("app.seek(-20)", [None])
+
 ############
 # Private  #
 ############
@@ -193,3 +216,19 @@ class Window(Gtk.ApplicationWindow, Container):
                                    GLib.Variant(
                                         'i',
                                         self._paned_list_view.get_position()))
+
+    """
+        Seek backward
+        @param action as Gio.SimpleAction
+        @param param as GLib.Variant
+    """
+    def _seek(self, action, param):
+        seconds = param.get_int32()
+        position = Objects.player.get_position_in_track()
+        seek = position/1000000/60+seconds
+        if seek < 0:
+            seek = 0
+        if seek > Objects.player.current.duration:
+            seek = Objects.player.current.duration - 2
+        Objects.player.seek(seek)
+        self._toolbar.update_position(seek*60)

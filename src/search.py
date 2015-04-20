@@ -190,7 +190,15 @@ class SearchWidget(Gtk.Popover):
         else:
             self.set_size_request(400, 600)
         Gtk.Popover.do_show(self)
+        Objects.window.enable_global_shorcuts(False)
         self._text_entry.grab_focus()
+
+    """
+        Restore global shortcuts
+    """
+    def do_hide(self):
+        Gtk.Popover.do_hide(self)
+        Objects.window.enable_global_shorcuts(True)
 
     """
         Remove row not existing in view, thread safe

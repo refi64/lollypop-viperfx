@@ -53,22 +53,6 @@ class Toolbar:
                                self._on_progress_release_button)
         self._progress.connect('button-press-event',
                                self._on_progress_press_button)
-        seek = Gio.SimpleAction.new('seek',
-                                    GLib.VariantType.new('i'))
-        seek.connect('activate', self._seek)
-        app.add_action(seek)
-        app.add_accelerator("Right",
-                            "app.seek",
-                            GLib.Variant.new_int32(+10))
-        app.add_accelerator("<Control>Right",
-                            "app.seek",
-                            GLib.Variant.new_int32(+20))
-        app.add_accelerator("Left",
-                            "app.seek",
-                            GLib.Variant.new_int32(-10))
-        app.add_accelerator("<Control>Left",
-                            "app.seek",
-                            GLib.Variant.new_int32(-20))
 
         self._timelabel = builder.get_object('playback')
         self._total_time_label = builder.get_object('duration')
@@ -132,6 +116,17 @@ class Toolbar:
     def set_progress_width(self, width):
         self._progress.set_property("width_request", width)
 
+    """
+        Update progress bar position
+        @param value as int
+    """
+    def update_position(self, value=None):
+        if not self._seeking:
+            if value is None:
+                value = Objects.player.get_position_in_track()/1000000
+            self._progress.set_value(value)
+            self._timelabel.set_text(seconds_to_string(value/60))
+        return True
 #######################
 # PRIVATE             #
 #######################
@@ -199,7 +194,7 @@ class Toolbar:
     def _on_progress_release_button(self, scale, data):
         value = scale.get_value()
         self._seeking = False
-        self._update_position(value)
+        self.update_position(value)
         Objects.player.seek(value/60)
 
     """
@@ -264,7 +259,7 @@ class Toolbar:
         is_playing = Objects.player.is_playing()
         self._progress.set_sensitive(is_playing)
         if is_playing and not self._timeout:
-            self._timeout = GLib.timeout_add(1000, self._update_position)
+            self._timeout = GLib.timeout_add(1000, self.update_position)
             self._change_play_btn_status(self._pause_image, _("Pause"))
             # Party mode can be activated
             # via Fullscreen class, so check button state
@@ -332,18 +327,6 @@ class Toolbar:
         self._party_btn.set_active(not self._party_btn.get_active())
 
     """
-        Seek backward
-        @param action as Gio.SimpleAction
-        @param param as GLib.Variant
-    """
-    def _seek(self, action, param):
-        seconds = param.get_int32()
-        position = Objects.player.get_position_in_track()
-        seek = position/1000000/60+seconds
-        Objects.player.seek(seek)
-        self._update_position(seek*60)
-
-    """
         Set party mode on if party button active
         @param obj as Gtk.button
     """
@@ -355,15 +338,3 @@ class Toolbar:
             settings.set_property("gtk-application-prefer-dark-theme", active)
             Objects.window.update_view()
         Objects.player.set_party(active)
-
-    """
-        Update progress bar position
-        @param value as int
-    """
-    def _update_position(self, value=None):
-        if not self._seeking:
-            if value is None:
-                value = Objects.player.get_position_in_track()/1000000
-            self._progress.set_value(value)
-            self._timelabel.set_text(seconds_to_string(value/60))
-        return True
