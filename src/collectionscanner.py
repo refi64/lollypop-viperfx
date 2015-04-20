@@ -145,7 +145,10 @@ class CollectionScanner(GObject.GObject):
             if f not in tracks:
                 infos = Objects.player.get_infos(f)
                 if infos is not None:
+                    debug("Adding file: %s" % f)
                     track_id = self._add2db(f, 0, infos, True, sql)
+                else:
+                    print("Can't get infos for ", filepath)
             else:
                 track_id = Objects.tracks.get_id_by_path(f, sql)
             if track_id is not None:
