@@ -344,14 +344,12 @@ class AlbumDetailedWidget(AlbumWidget):
         @param track id as int
     """
     def _on_activated(self, widget, track_id):
-        if not Objects.player.is_party() and\
-           self._button_state != Gdk.ModifierType.CONTROL_MASK and\
-           self._button_state != Gdk.ModifierType.SHIFT_MASK:
+        if not Objects.player.is_party():
             Objects.player.set_albums(track_id,
                                       self._artist_id,
                                       self._genre_id)
         Objects.player.load(track_id)
-        if self._button_state == Gdk.ModifierType.CONTROL_MASK:
+        if self._button_state&Gdk.ModifierType.CONTROL_MASK:
             Objects.player.context.next = NextContext.STOP_TRACK
 
     """
