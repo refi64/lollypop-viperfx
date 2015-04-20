@@ -67,7 +67,7 @@ class Window(Gtk.ApplicationWindow, Container):
     """
     def enable_global_shorcuts(self, enable):
         if enable:
-            if Gtk.Widget.get_default_direction() is Gtk.TextDirection.RTL:
+            if Gtk.Widget.get_default_direction() == Gtk.TextDirection.RTL:
                 self._app.set_accels_for_action("app.seek(10)", ["Left"])
                 self._app.set_accels_for_action("app.seek(20)", ["<Control>Left"])
                 self._app.set_accels_for_action("app.seek(-10)", ["Right"])
