@@ -177,7 +177,7 @@ class PopMainMenu(Gio.Menu):
         @param album id as int
     """
     def _continue_playback(self, action, variant):
-        Objects.player.current.next = NextContext.STOP_NONE
+        Objects.player.context.next = NextContext.STOP_NONE
 
     """
         Tell player to stop after current track
