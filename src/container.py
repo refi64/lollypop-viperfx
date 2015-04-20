@@ -169,6 +169,7 @@ class Container:
         Stop current view from processing
     """
     def stop_all(self):
+        self._scanner.stop()
         view = self._stack.get_visible_child()
         if view is not None:
             self._stack.clean_old_views(None)
