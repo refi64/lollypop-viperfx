@@ -230,8 +230,6 @@ class Player(GObject.GObject, BasePlayer, QueuePlayer, UserPlaylistPlayer,
             self._already_played_tracks[self.current.album_id] = []
         self._already_played_tracks[self.current.album_id].append(self.current.id)
 
-              
-
     """
         Set shuffle mode to gettings value
         @param settings as Gio.Settings, value as str
