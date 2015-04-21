@@ -21,7 +21,7 @@ src/playlists.py
 src/playlist_widgets.py
 src/queue.py
 src/fullscreen.py
-src/view.py
+src/view_device.py
 src/devicemanager.py
 src/popmenu.py
 src/popimages.py
