@@ -200,7 +200,7 @@ class Player(GObject.GObject, BasePlayer, QueuePlayer, UserPlaylistPlayer,
             self.context.position = tracks.index(track_id)
             self.context.genre_id = genre_id
             # Shuffle album list if needed
-            #self._shuffle_playlist()
+            self._shuffle_albums()
         else:
             self.stop()
 
@@ -240,7 +240,6 @@ class Player(GObject.GObject, BasePlayer, QueuePlayer, UserPlaylistPlayer,
     """
     def _set_shuffle(self, settings, value):
         self._shuffle = Objects.settings.get_enum('shuffle')
-        self._shuffle_playlist()
 
         if self._shuffle in [Shuffle.TRACKS, Shuffle.TRACKS_ARTIST] or\
            self._user_playlist:
@@ -248,7 +247,9 @@ class Player(GObject.GObject, BasePlayer, QueuePlayer, UserPlaylistPlayer,
         else:
             self._rgvolume.props.album_mode = 1
 
-        if not self._user_playlist:
+        if self._user_playlist:
+            self._shuffle_playlist()
+        else:
             self.set_albums(self.current.id,
                             self.current.aartist_id,
                             self.context.genre_id)

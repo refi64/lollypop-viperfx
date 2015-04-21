@@ -115,7 +115,20 @@ class ShufflePlayer:
 
 #######################
 # PRIVATE             #
-#######################      
+#######################g
+    """
+        Shuffle album list
+    """
+    def _shuffle_albums(self):
+        if self._shuffle in [Shuffle.ALBUMS, Shuffle.ALBUMS_ARTIST]:
+            if self._albums:
+                self._albums_backup = list(self._albums)
+                random.shuffle(self._albums)
+        elif self._shuffle == Shuffle.NONE:
+            if self._albums_backup:
+                self._albums = self._albums_backup
+                self._albums_backup = None
+
     """
         Next track in shuffle mode
         if force, stop current track
