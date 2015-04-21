@@ -53,7 +53,7 @@ class PlayContext:
 
 
 # Player object used to manage playback and playlists
-class Player(GObject.GObject, TagReader):
+class Player(GObject.GObject, PlayerReplayGain, TagReader):
 
     EPSILON = 0.001
 
@@ -104,7 +104,8 @@ class Player(GObject.GObject, TagReader):
         self._playbin.set_property("flags", flags)
         self._playbin.connect("about-to-finish",
                               self._on_stream_about_to_finish)
-        PlayerReplayGain(self._playbin)
+
+        PlayerReplayGain.__init__(self, self._playbin)
 
         Objects.settings.connect('changed::shuffle', self._set_shuffle)
 
