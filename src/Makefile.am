@@ -30,6 +30,7 @@ app_PYTHON = \
 	tracks.py\
 	album_widgets.py\
 	player.py\
+    player_rg.py\
 	popimages.py\
 	popalbums.py\
 	popmenu.py\

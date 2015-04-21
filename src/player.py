@@ -1,6 +1,5 @@
 #!/usr/bin/python
 # Copyright (c) 2014-2015 Cedric Bellegarde <cedric.bellegarde@adishatz.org>
-# Copyright (C) 2010 Jonathan Matthew (replay gain code)
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation, either version 3 of the License, or
@@ -16,6 +15,7 @@ from gi.repository import GLib, GObject, Gst, GstPbutils, GstAudio
 import random
 from os import path
 
+from lollypop.player_rg import PlayerReplayGain
 from lollypop.define import Objects, Navigation, NextContext
 from lollypop.define import Shuffle
 from lollypop.utils import translate_artist_name
@@ -103,7 +103,7 @@ class Player(GObject.GObject):
         self._playbin.set_property("flags", flags)
         self._playbin.connect("about-to-finish",
                               self._on_stream_about_to_finish)
-        self._rg_setup()
+        PlayerReplayGain(self._playbin)
 
         Objects.settings.connect('changed::shuffle', self._set_shuffle)
 
@@ -657,51 +657,6 @@ class Player(GObject.GObject):
             self.set_albums(self.current.id,
                             self.current.aartist_id,
                             self.context.genre_id)
-
-    """
-        Setup replaygain
-    """
-    def _rg_setup(self):
-        self._rgfilter = Gst.ElementFactory.make("bin", "bin")
-
-        self._rg_audioconvert1 = Gst.ElementFactory.make("audioconvert",
-                                                         "audioconvert")
-        self._rg_audioconvert2 = Gst.ElementFactory.make("audioconvert",
-                                                         "audioconvert2")
-
-        self._rgvolume = Gst.ElementFactory.make("rgvolume",
-                                                 "rgvolume")
-        self._rglimiter = Gst.ElementFactory.make("rglimiter",
-                                                  "rglimiter")
-        self._rg_audiosink = Gst.ElementFactory.make("autoaudiosink",
-                                                     "autoaudiosink")
-
-        if not self._rgfilter or not self._rg_audioconvert1 or\
-           not self._rg_audioconvert2 or not self._rgvolume or\
-           not self._rglimiter or not self._rg_audiosink:
-            print("Replay Gain not available, ")
-            print("please check your gstreamer installation...")
-            return
-
-        self._rgvolume.props.pre_amp = Objects.settings.get_value(
-                                            "replaygain").get_double()
-
-        self._rgfilter.add(self._rgvolume)
-        self._rgfilter.add(self._rg_audioconvert1)
-        self._rgfilter.add(self._rg_audioconvert2)
-        self._rgfilter.add(self._rglimiter)
-        self._rgfilter.add(self._rg_audiosink)
-
-        self._rg_audioconvert1.link(self._rgvolume)
-        self._rgvolume.link(self._rg_audioconvert2)
-        self._rgvolume.link(self._rglimiter)
-        self._rg_audioconvert2.link(self._rg_audiosink)
-
-        self._rgfilter.add_pad(Gst.GhostPad.new(
-                                "sink",
-                                self._rg_audioconvert1.get_static_pad("sink")))
-
-        self._playbin.set_property("audio-sink", self._rgfilter)
 
     """
         Next track in shuffle mode
