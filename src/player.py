@@ -301,11 +301,11 @@ class Player(GObject.GObject, BasePlayer, QueuePlayer, UserPlaylistPlayer,
     """
         On error, try 3 more times playing a track
     """
-	    def _on_errors(self):
-	        self._errors += 1
-	        if self._errors < 3:
-	            GLib.idle_add(self.next, True)
-	        else:
-	            self.current = CurrentTrack()
-	            GLib.idle_add(self.stop)
-	            GLib.idle_add(self.emit, 'current-changed')
+    def _on_errors(self):
+        self._errors += 1
+        if self._errors < 3:
+            GLib.idle_add(self.next, True)
+        else:
+            self.current = CurrentTrack()
+            GLib.idle_add(self.stop)
+            GLib.idle_add(self.emit, 'current-changed')
