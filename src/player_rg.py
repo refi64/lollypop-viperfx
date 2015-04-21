@@ -18,7 +18,7 @@ from lollypop.define import Objects
 
 
 # replay gain class
-class PlayerReplayGain:
+class ReplayGainPlayer:
     """
         Init replay gain on playbin
         @param playbin as Gst play bin

@@ -32,6 +32,7 @@ app_PYTHON = \
     tagreader.py\
 	player.py\
     player_rg.py\
+    player_base.py\
 	popimages.py\
 	popalbums.py\
 	popmenu.py\
