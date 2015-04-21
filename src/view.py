@@ -287,18 +287,26 @@ class AlbumView(View):
         separator = Gtk.Separator()
         separator.show()
 
-        paned = Gtk.Paned.new(Gtk.Orientation.VERTICAL)
-        paned.pack1(self._scrolledWindow)
-        paned.pack2(self._context, True, False)
+        self._paned = Gtk.Paned.new(Gtk.Orientation.VERTICAL)
+        self._paned.pack1(self._scrolledWindow)
+        self._paned.pack2(self._context, True, False)
         height = Objects.settings.get_value(
                                          'paned-context-height').get_int32()
         # We set a stupid max value, safe as self._context is shrinked
         if height == -1:
-            height = 10000000
-        paned.set_position(height)
-        paned.connect('notify::position', self._on_position_notify)
-        paned.show()
-        self.add(paned)
+            height = Objects.window.get_allocated_height()
+        self._paned.set_position(height)
+        self._paned.connect('notify::position', self._on_position_notify)
+        self._paned.show()
+        self.add(self._paned)
+
+    """
+        Resize context view on size allocate
+        @param allocation as cairo.RectangleInt
+    """
+    def do_size_allocate(self, allocation):
+        View.do_size_allocate(self, allocation)
+        self._paned.set_position(Objects.window.get_allocated_height())
 
     """
         Populate albums, thread safe
