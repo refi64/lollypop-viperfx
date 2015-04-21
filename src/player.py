@@ -203,7 +203,6 @@ class Player(GObject.GObject, BasePlayer, QueuePlayer, UserPlaylistPlayer,
         else:
             self.stop()
 
-
     """
         Restore player state
     """
