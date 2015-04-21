@@ -16,28 +16,6 @@ from gi.repository import GObject, Gst
 from lollypop.player_rg import ReplayGainPlayer
 
 
-# Represent current playing track
-class CurrentTrack:
-        id = None
-        title = None
-        album_id = None
-        album = None
-        artist = None
-        aartist_id = None
-        aartist = None
-        genre_id = None
-        genre = None
-        number = None
-        duration = None
-        path = None
-
-
-class GstPlayFlags:
-    GST_PLAY_FLAG_VIDEO = 1 << 0  # We want video output
-    GST_PLAY_FLAG_AUDIO = 1 << 1  # We want audio output
-    GST_PLAY_FLAG_TEXT = 1 << 3   # We want subtitle output
-
-
 # Base player class
 class BasePlayer(GObject.GObject, ReplayGainPlayer):
     __gsignals__ = {
@@ -55,7 +33,6 @@ class BasePlayer(GObject.GObject, ReplayGainPlayer):
     def __init__(self):
         GObject.GObject.__init__(self)
         Gst.init(None)
-        self.current = CurrentTrack()
         self._playbin = Gst.ElementFactory.make('playbin', 'player')
         flags = self._playbin.get_property("flags")
         flags &= ~GstPlayFlags.GST_PLAY_FLAG_VIDEO
@@ -166,3 +143,12 @@ class BasePlayer(GObject.GObject, ReplayGainPlayer):
     def set_volume(self, rate):
         self._playbin.set_volume(GstAudio.StreamVolumeFormat.LINEAR, rate)
         self.emit('volume-changed')
+
+#######################
+# PRIVATE             #
+#######################
+    """
+        Stop current track (for track change)
+    """
+    def _stop(self):
+        self._playbin.set_state(Gst.State.NULL)

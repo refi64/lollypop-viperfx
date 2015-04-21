@@ -18,17 +18,10 @@ from os import path
 from lollypop.tagreader import TagReader
 from lollypop.player_base import BasePlayer
 from lollypop.player_queue import QueuePlayer
-from lollypop.define import Objects, Navigation, NextContext
-from lollypop.define import Shuffle
+from lollypop.define import Objects, Navigation, NextContext, CurrentTrack
+from lollypop.define import Shuffle, PlayerContext, GstPlayFlags
 from lollypop.utils import translate_artist_name
 
-
-# Represent playback context
-class PlayContext:
-        album_id = None
-        genre_id = None
-        position = None
-        next = NextContext.STOP_NONE
 
 
 # Player object used to manage playback and playlists
@@ -41,15 +34,12 @@ class Player(BasePlayer, QueuePlayer, TagReader):
         QueuePlayer.__init__(self)
         TagReader.__init__(self)
 
+        self.current = CurrentTrack()
         self.context = PlayContext()
         # Albums in current playlist
         self._albums = None
         # Used by shuffle albums to restore playlist before shuffle
         self._albums_backup = None
-        # A user playlist used as current playlist
-        self._user_playlist = None
-        # Used by shuffle tracks to restore user playlist before shuffle
-        self._user_playlist_backup = None
         self._shuffle = Objects.settings.get_enum('shuffle')
         # Tracks already played
         self._played_tracks_history = []
@@ -313,29 +303,6 @@ class Player(BasePlayer, QueuePlayer, TagReader):
         else:
             self.stop()
 
-    """
-        Set user playlist as current playback playlist
-        @param array of track id as int
-        @param starting track id as int
-    """
-    def set_user_playlist(self, tracks, track_id):
-        self._user_playlist = tracks
-        self._albums = None
-        self.context.album_id = None
-        self.context.position = self._user_playlist.index(track_id)
-        self._shuffle_playlist()
-
-    """
-        Add track to user playlist
-    """
-    def add_to_user_playlist(self, track_id):
-        self._user_playlist.append(track_id)
-
-    """
-        Clear user playlist
-    """
-    def clear_user_playlist(self):
-        self._user_playlist = []
 
     """
         Restore player state
@@ -354,13 +321,6 @@ class Player(BasePlayer, QueuePlayer, TagReader):
 #######################
 # PRIVATE             #
 #######################
-
-    """
-        Stop current track (for track change)
-    """
-    def _stop(self):
-        self._playbin.set_state(Gst.State.NULL)
-
     """
         Add a track to shuffle history
         @param track id as int
@@ -371,45 +331,7 @@ class Player(BasePlayer, QueuePlayer, TagReader):
             self._already_played_tracks[self.current.album_id] = []
         self._already_played_tracks[self.current.album_id].append(self.current.id)
 
-    """
-        Shuffle/Un-shuffle playlist based on shuffle setting
-    """
-    def _shuffle_playlist(self):
-        if self._shuffle in [Shuffle.ALBUMS, Shuffle.ALBUMS_ARTIST]:
-            # No albums shuffle when playing a user playlist
-            if self._user_playlist_backup:
-                self._user_playlist = self._user_playlist_backup
-                self.context.position = self._user_playlist.index(
-                                                              self.current.id)
-                self._user_playlist_backup = None
-            # Shuffle albums list
-            if self._albums:
-                self._albums_backup = list(self._albums)
-                random.shuffle(self._albums)
-        elif self._shuffle in [Shuffle.TRACKS, Shuffle.TRACKS_ARTIST]:
-            # Shuffle user playlist
-            if self._user_playlist:
-                self._user_playlist_backup = list(self._user_playlist)
-                current = self._user_playlist.pop(self.context.position)
-                random.shuffle(self._user_playlist)
-                self._user_playlist.insert(0, current)
-                self.context.position = 0
-            # Shuffle Tracks, just add current to history
-            elif self.current.id:
-                self._add_to_shuffle_history(self.current.id,
-                                             self.current.album_id)
-
-        # Unshuffle
-        elif self._shuffle == Shuffle.NONE:
-            if self._user_playlist_backup:
-                self._user_playlist = self._user_playlist_backup
-                self.context.position = self._user_playlist.index(
-                                                              self.current.id)
-                self._user_playlist_backup = None
-            elif self._albums_backup:
-                self._albums = self._albums_backup
-                self._albums_backup = None
-          
+              
 
     """
         Set shuffle mode to gettings value
