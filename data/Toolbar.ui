@@ -30,6 +30,7 @@
   </menu>
   <object class="GtkBox" id="leftbar">
     <property name="visible">True</property>
+    <property name="height-request">42</property>
     <property name="vexpand">False</property>
     <child>
       <object class="GtkBox" id="buttons">
