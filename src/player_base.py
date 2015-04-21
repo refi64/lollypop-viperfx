@@ -11,7 +11,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-from gi.repository import GObject, Gst, GLib
+from gi.repository import Gst, GLib, GstAudio
 
 from os import path
 
@@ -210,7 +210,7 @@ class BasePlayer(ReplayGainPlayer):
                 self._playbin.set_property('uri',
                                            GLib.filename_to_uri(
                                                         self.current.path))
-            except Exception as e:  # Gstreamer error, stop
+            except:  # Gstreamer error, stop
                self._on_errors()
                return False
         else:

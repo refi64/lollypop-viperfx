@@ -11,7 +11,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-from gi.repository import GLib, GObject, Gst, GstAudio
+from gi.repository import GObject
 
 from lollypop.tagreader import TagReader
 from lollypop.player_base import BasePlayer
@@ -19,10 +19,8 @@ from lollypop.player_queue import QueuePlayer
 from lollypop.player_linear import LinearPlayer
 from lollypop.player_shuffle import ShufflePlayer
 from lollypop.player_userplaylist import UserPlaylistPlayer
-from lollypop.define import Objects, Navigation, NextContext, CurrentTrack
-from lollypop.define import Shuffle, PlayContext, GstPlayFlags
-from lollypop.utils import translate_artist_name
-
+from lollypop.define import Objects, Navigation, CurrentTrack
+from lollypop.define import Shuffle, PlayContext
 
 
 # Player object used to manage playback and playlists

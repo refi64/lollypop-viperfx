@@ -144,7 +144,7 @@ class ShufflePlayer:
             self._played_tracks_history = []
             self._already_played_tracks = {}
             self._already_played_albums = []
-            return self._shuffle_next(force)
+            return self._shuffle_next(sql)
 
         return track_id
 

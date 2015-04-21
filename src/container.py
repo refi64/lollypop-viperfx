@@ -109,7 +109,6 @@ class Container:
         @param is_album as bool
     """
     def show_playlist_manager(self, object_id, genre_id, is_album):
-        old_view = self._stack.get_visible_child()
         view = PlaylistManageView(object_id, genre_id, is_album,
                                   self._stack.get_allocated_width()/2)
         view.show()
@@ -123,7 +122,6 @@ class Container:
         @param playlist name as str
     """
     def show_playlist_editor(self, playlist_name):
-        old_view = self._stack.get_visible_child()
         view = PlaylistEditView(playlist_name,
                                 self._stack.get_allocated_width()/2)
         view.show()
