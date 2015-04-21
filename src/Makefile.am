@@ -34,6 +34,9 @@ app_PYTHON = \
     player_rg.py\
     player_base.py\
     player_queue.py\
+    player_linear.py\
+    player_shuffle.py\
+    player_userplaylist.py\
 	popimages.py\
 	popalbums.py\
 	popmenu.py\

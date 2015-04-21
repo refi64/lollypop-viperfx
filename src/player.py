@@ -12,43 +12,51 @@
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 from gi.repository import GLib, GObject, Gst, GstAudio
-import random
-from os import path
 
 from lollypop.tagreader import TagReader
 from lollypop.player_base import BasePlayer
 from lollypop.player_queue import QueuePlayer
+from lollypop.player_linear import LinearPlayer
+from lollypop.player_shuffle import ShufflePlayer
+from lollypop.player_userplaylist import UserPlaylistPlayer
 from lollypop.define import Objects, Navigation, NextContext, CurrentTrack
-from lollypop.define import Shuffle, PlayerContext, GstPlayFlags
+from lollypop.define import Shuffle, PlayContext, GstPlayFlags
 from lollypop.utils import translate_artist_name
 
 
 
 # Player object used to manage playback and playlists
-class Player(BasePlayer, QueuePlayer, TagReader):
+class Player(GObject.GObject, BasePlayer, QueuePlayer, UserPlaylistPlayer,
+             LinearPlayer, ShufflePlayer, TagReader):
+    __gsignals__ = {
+        'current-changed': (GObject.SignalFlags.RUN_FIRST, None, ()),
+        'seeked': (GObject.SignalFlags.RUN_FIRST, None, (int,)),
+        'status-changed': (GObject.SignalFlags.RUN_FIRST, None, ()),
+        'volume-changed': (GObject.SignalFlags.RUN_FIRST, None, ()),
+        'queue-changed': (GObject.SignalFlags.RUN_FIRST, None, ()),
+        'cover-changed': (GObject.SignalFlags.RUN_FIRST, None, (int,))
+    }
+
     """
         Create a gstreamer bin and listen to signals on bus
     """
     def __init__(self):
+        GObject.GObject.__init__(self)
         BasePlayer.__init__(self)
         QueuePlayer.__init__(self)
+        LinearPlayer.__init__(self)
+        ShufflePlayer.__init__(self)
+        UserPlaylistPlayer.__init__(self)
         TagReader.__init__(self)
 
         self.current = CurrentTrack()
         self.context = PlayContext()
         # Albums in current playlist
         self._albums = None
-        # Used by shuffle albums to restore playlist before shuffle
-        self._albums_backup = None
+        # Current shuffle mode
         self._shuffle = Objects.settings.get_enum('shuffle')
         # Tracks already played
         self._played_tracks_history = []
-        # Albums already played
-        self._already_played_albums = []
-        # Tracks already played for albums
-        self._already_played_tracks = {}
-        # Party mode
-        self._is_party = False
         # Player errors
         self._errors = 0
 
@@ -64,102 +72,47 @@ class Player(BasePlayer, QueuePlayer, TagReader):
 
     """
         Play previous track
-        If shuffle or party => go backward in shuffle history
-        Else => Get previous track in currents albums
     """
     def prev(self):
-        track_id = None
-        if self._shuffle == Shuffle.TRACKS or self._is_party:
-            try:
-                track_id = self._played_tracks_history[-2]
-                self._played_tracks_history.pop()
-                self._played_tracks_history.pop()
-            except:
-                track_id = None
+        track_id = ShufflePlayer.prev(self)
+
         # Look at user playlist then
-        elif self._user_playlist:
-            self.context.position -= 1
-            if self.context.position < 0:
-                self.context.position = len(self._user_playlist) - 1
-            self.load(self._user_playlist[self.context.position])
-        elif self.context.position is not None:
-            tracks = Objects.albums.get_tracks(self.current.album_id,
-                                               self.current.genre_id)
-            if self.context.position <= 0:  # Prev album
-                pos = self._albums.index(self.current.album_id)
-                if pos - 1 < 0:  # we are on last album, go to first
-                    pos = len(self._albums) - 1
-                else:
-                    pos -= 1
-                self.current.album_id = self._albums[pos]
-                tracks = Objects.albums.get_tracks(self.current.album_id,
-                                                   self.current.genre_id)
-                self.context.album_id = self.current.album_id
-                self.context.position = len(tracks) - 1
-                track_id = tracks[self.context.position]
-            else:
-                self.context.position -= 1
-                track_id = tracks[self.context.position]
+        if track_id is None:
+            track_id = UserPlaylistPlayer.prev(self)
+            
+        if track_id is None:
+            track_id = LinearPlayer.prev(self)
 
         if track_id:
             self.load(track_id)
 
     """
         Play next track
-        If shuffle or party => get a random file not already played
-        Else => get next track in currents albums
-        if force is True (default), don't wait for end of stream
-        a fresh sqlite cursor should be pass as sql if we are in a thread
+        @param force as bool
+        @param sql as sqlite cursor
     """
     def next(self, force=True, sql=None):
         # Look first at user queue
         track_id = QueuePlayer.next(self)
-        if track_id is not None:
-            if force:
-                self.load(track_id)
-            else:
-                self._load_track(track_id, sql)
+
         # Look at user playlist then
-        elif self._user_playlist:
-            self.context.position += 1
-            if self.context.position >= len(self._user_playlist):
-                self.context.position = 0
-            if force:
-                self.load(self._user_playlist[self.context.position])
-            else:
-                self._load_track(self._user_playlist[self.context.position],
-                                 sql)
-        # Get a random album/track
-        elif self._shuffle in [Shuffle.TRACKS, Shuffle.TRACKS_ARTIST] or\
-             self._is_party:
-            if self._albums:
-                self._shuffle_next(force, sql)
-        elif self.context.position is not None and self._albums:
-            track_id = None
-            tracks = Objects.albums.get_tracks(self.context.album_id,
-                                               self.context.genre_id,
-                                               sql)
-            if self.context.position + 1 >= len(tracks):  # next album
-                pos = self._albums.index(self.context.album_id)
-                # we are on last album, go to first
-                if pos + 1 >= len(self._albums):
-                    pos = 0
-                else:
-                    pos += 1
-                self.context.album_id = self._albums[pos]
-                self.context.position = 0
-                track_id = Objects.albums.get_tracks(self._albums[pos],
-                                                     self.context.genre_id,
-                                                     sql)[0]
-            else:
-                self.context.position += 1
-                track_id = tracks[self.context.position]
+        if track_id is None:
+            track_id = UserPlaylistPlayer.next(self)
 
+        # Get a random album/track
+        if track_id is None:
+            track_id = ShufflePlayer.next(self, sql)
+
+        # Get a linear track
+        if track_id is None:
+            track_id = LinearPlayer.next(self, sql)
+
+        if track_id:
             if force:
                 self.load(track_id)
             else:
                 self._load_track(track_id, sql)
-
+       
     """
         Play album
         @param album id as int
@@ -179,59 +132,7 @@ class Player(BasePlayer, QueuePlayer, TagReader):
             else:
                 self.set_album(album_id)
 
-    """
-        Return party ids
-        @return [ids as int]
-    """
-    def get_party_ids(self):
-        party_settings = Objects.settings.get_value('party-ids')
-        ids = []
-        genre_ids = Objects.genres.get_ids()
-        for setting in party_settings:
-            if isinstance(setting, int) and\
-               setting in genre_ids:
-                ids.append(setting)
-        return ids
 
-    """
-        Set party mode on if party is True
-        Play a new random track if not already playing
-        @param party as bool
-    """
-    def set_party(self, party):
-        self._played_tracks_history = []
-        self._already_played_tracks = {}
-        self._already_played_albums = []
-        self._user_playlist = None
-        if party:
-            self.context.next = NextContext.STOP_NONE
-            self._rgvolume.props.album_mode = 0
-        else:
-            self._rgvolume.props.album_mode = 1
-        self._is_party = party
-        self._played_tracks_history = []
-        if party:
-            party_ids = self.get_party_ids()
-            if party_ids:
-                self._albums = Objects.albums.get_party_ids(party_ids)
-            else:
-                self._albums = Objects.albums.get_ids()
-            # Start a new song if not playing
-            if not self.is_playing() and self._albums:
-                track_id = self._get_random()
-                self.load(track_id)
-        else:
-            # We need to put some context, take first available genre
-            if self.current.id:
-                self.set_albums(self.current.id,
-                                self.current.aartist_id, None)
-
-    """
-        True if party mode on
-        @return bool
-    """
-    def is_party(self):
-        return self._is_party
 
     """
         Set album as current album list (for next/prev)
@@ -299,7 +200,7 @@ class Player(BasePlayer, QueuePlayer, TagReader):
             self.context.position = tracks.index(track_id)
             self.context.genre_id = genre_id
             # Shuffle album list if needed
-            self._shuffle_playlist()
+            #self._shuffle_playlist()
         else:
             self.stop()
 
@@ -353,52 +254,6 @@ class Player(BasePlayer, QueuePlayer, TagReader):
                             self.context.genre_id)
 
     """
-        Next track in shuffle mode
-        if force, stop current track
-        a fresh sqlite cursor should be passed as sql if we are in a thread
-        @param bool, sqlite cursor
-    """
-    def _shuffle_next(self, force=False, sql=None):
-        track_id = self._get_random(sql)
-        # Need to clear history
-        if not track_id:
-            self._albums = self._already_played_albums
-            self._played_tracks_history = []
-            self._already_played_tracks = {}
-            self._already_played_albums = []
-            self._shuffle_next(force)
-            return
-
-        if force:
-            self.load(track_id)
-        else:
-            self._load_track(track_id, sql)
-
-    """
-        Return a random track and make sure it has never been played
-        @param sqlite cursor as sql if running in a thread
-    """
-    def _get_random(self, sql=None):
-        for album_id in sorted(self._albums,
-                               key=lambda *args: random.random()):
-            tracks = Objects.albums.get_tracks(album_id,
-                                               self.current.genre_id,
-                                               sql)
-            for track in sorted(tracks, key=lambda *args: random.random()):
-                if album_id not in self._already_played_tracks.keys() or\
-                   track not in self._already_played_tracks[album_id]:
-                    return track
-            # No new tracks for this album, remove it
-            # If albums not in shuffle history, it's not present
-            # in db anymore (update since shuffle set)
-            if album_id in self._already_played_tracks.keys():
-                self._already_played_tracks.pop(album_id)
-                self._already_played_albums.append(album_id)
-            self._albums.remove(album_id)
-
-        return None
-
-    """
         On stream start
         Emit "current-changed" to notify others components
     """
@@ -444,89 +299,6 @@ class Player(BasePlayer, QueuePlayer, TagReader):
             pass
         sql.close()
 
-    """
-        On error, try 3 more times playing a track
-    """
-    def _on_errors(self):
-        self._errors += 1
-        if self._errors < 3:
-            GLib.idle_add(self.next, True)
-        else:
-            self.current = CurrentTrack()
-            GLib.idle_add(self.stop)
-            GLib.idle_add(self.emit, 'current-changed')
 
-    """
-        Load track
-        @param track id as int, sqlite cursor
-        @return False if track not loaded
-    """
-    def _load_track(self, track_id, sql=None):
-        stop = False
 
-        # Stop if needed
-        if self.context.next == NextContext.STOP_TRACK:
-            self.context.next = NextContext.STOP_NONE
-            stop = True
 
-        # Stop if album changed
-        new_album_id = Objects.tracks.get_album_id(
-                                                track_id,
-                                                sql)
-        if self.context.next == NextContext.STOP_ALBUM and\
-           self.current.album_id != new_album_id:
-            self.context.next = NextContext.STOP_NONE
-            stop = True
-
-        # Stop if aartist changed
-        new_aartist_id = Objects.tracks.get_aartist_id(
-                                                track_id,
-                                                sql)
-        if self.context.next == NextContext.STOP_ARTIST and\
-           self.current.aartist_id != new_aartist_id:
-            self.context.next = NextContext.STOP_NONE
-            stop = True
-
-        self.current.id = track_id
-        self.current.title = Objects.tracks.get_name(
-                                                self.current.id,
-                                                sql)
-        self.current.album_id = new_album_id
-        self.current.album = Objects.albums.get_name(
-                                                self.current.album_id,
-                                                sql)
-        self.current.aartist_id = new_aartist_id
-        self.current.aartist = translate_artist_name(
-                                        Objects.artists.get_name(
-                                                self.current.aartist_id,
-                                                sql))
-        artist_name = ""
-        for artist_id in Objects.tracks.get_artist_ids(self.current.id,
-                                                       sql):
-            artist_name += translate_artist_name(
-                            Objects.artists.get_name(artist_id, sql)) + ", "
-        self.current.artist = artist_name[:-2]
-
-        self.current.genre = Objects.albums.get_genre_name(
-                                                self.current.album_id,
-                                                sql)
-        self.current.duration = Objects.tracks.get_length(self.current.id, sql)
-        self.current.number = Objects.tracks.get_number(self.current.id, sql)
-        self.current.path = Objects.tracks.get_path(self.current.id, sql)
-        if path.exists(self.current.path):
-            try:
-                self._playbin.set_property('uri',
-                                           GLib.filename_to_uri(
-                                                        self.current.path))
-            except:  # Gstreamer error, stop
-               self._on_errors()
-               return False
-        else:
-            print("File doesn't exist: ", self.current.path)
-            self._on_errors()
-            return False
-
-        if stop:
-            GLib.idle_add(self.stop)
-            GLib.idle_add(self.emit, "current-changed")
-        return True

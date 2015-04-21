@@ -11,27 +11,24 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-from gi.repository import GObject, Gst
+from gi.repository import GObject, Gst, GLib
+
+from os import path
 
 from lollypop.player_rg import ReplayGainPlayer
+from lollypop.define import GstPlayFlags, NextContext, Objects
+from lollypop.utils import translate_artist_name
 
 
 # Base player class
-class BasePlayer(GObject.GObject, ReplayGainPlayer):
-    __gsignals__ = {
-        'current-changed': (GObject.SignalFlags.RUN_FIRST, None, ()),
-        'seeked': (GObject.SignalFlags.RUN_FIRST, None, (int,)),
-        'status-changed': (GObject.SignalFlags.RUN_FIRST, None, ()),
-        'volume-changed': (GObject.SignalFlags.RUN_FIRST, None, ()),
-        'queue-changed': (GObject.SignalFlags.RUN_FIRST, None, ()),
-        'cover-changed': (GObject.SignalFlags.RUN_FIRST, None, (int,))
-    }
-
+# Can't be used as this, you need to define this attributes in parent class:
+# - self.context as PlayContext
+# - self.current as CurrentTrack
+class BasePlayer(ReplayGainPlayer):
     """
         Init playbin
     """
     def __init__(self):
-        GObject.GObject.__init__(self)
         Gst.init(None)
         self._playbin = Gst.ElementFactory.make('playbin', 'player')
         flags = self._playbin.get_property("flags")
@@ -152,3 +149,78 @@ class BasePlayer(GObject.GObject, ReplayGainPlayer):
     """
     def _stop(self):
         self._playbin.set_state(Gst.State.NULL)
+
+    """
+        Load track
+        @param track id as int, sqlite cursor
+        @return False if track not loaded
+    """
+    def _load_track(self, track_id, sql=None):
+        stop = False
+
+        # Stop if needed
+        if self.context.next == NextContext.STOP_TRACK:
+            self.context.next = NextContext.STOP_NONE
+            stop = True
+
+        # Stop if album changed
+        new_album_id = Objects.tracks.get_album_id(
+                                                track_id,
+                                                sql)
+        if self.context.next == NextContext.STOP_ALBUM and\
+           self.current.album_id != new_album_id:
+            self.context.next = NextContext.STOP_NONE
+            stop = True
+
+        # Stop if aartist changed
+        new_aartist_id = Objects.tracks.get_aartist_id(
+                                                track_id,
+                                                sql)
+        if self.context.next == NextContext.STOP_ARTIST and\
+           self.current.aartist_id != new_aartist_id:
+            self.context.next = NextContext.STOP_NONE
+            stop = True
+
+        self.current.id = track_id
+        self.current.title = Objects.tracks.get_name(
+                                                self.current.id,
+                                                sql)
+        self.current.album_id = new_album_id
+        self.current.album = Objects.albums.get_name(
+                                                self.current.album_id,
+                                                sql)
+        self.current.aartist_id = new_aartist_id
+        self.current.aartist = translate_artist_name(
+                                        Objects.artists.get_name(
+                                                self.current.aartist_id,
+                                                sql))
+        artist_name = ""
+        for artist_id in Objects.tracks.get_artist_ids(self.current.id,
+                                                       sql):
+            artist_name += translate_artist_name(
+                            Objects.artists.get_name(artist_id, sql)) + ", "
+        self.current.artist = artist_name[:-2]
+
+        self.current.genre = Objects.albums.get_genre_name(
+                                                self.current.album_id,
+                                                sql)
+        self.current.duration = Objects.tracks.get_length(self.current.id, sql)
+        self.current.number = Objects.tracks.get_number(self.current.id, sql)
+        self.current.path = Objects.tracks.get_path(self.current.id, sql)
+        if path.exists(self.current.path):
+            try:
+                self._playbin.set_property('uri',
+                                           GLib.filename_to_uri(
+                                                        self.current.path))
+            except Exception as e:  # Gstreamer error, stop
+               self._on_errors()
+               return False
+        else:
+            print("File doesn't exist: ", self.current.path)
+            self._on_errors()
+            return False
+
+        if stop:
+            GLib.idle_add(self.stop)
+            GLib.idle_add(self.emit, "current-changed")
+        return True

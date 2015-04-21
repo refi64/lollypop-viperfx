@@ -11,14 +11,15 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-from gi.repository import GObject
-
 import random
 
-from lollypop.define import PlayerContext, Shuffle
+from lollypop.define import Shuffle
 
 
 # Manage user playlist
+# Can't be used as this, you need to define this attributes in parent class:
+# - self._shuffle as Shuffle
+# - self.context as PlayerContext
 class UserPlaylistPlayer:
     """
         Init user playlist
@@ -28,13 +29,6 @@ class UserPlaylistPlayer:
         self._user_playlist = None
         # Used by shuffle tracks to restore user playlist before shuffle
         self._user_playlist_backup = None
-        
-        # Should be overriden by parent class
-        # Albums in current player playlist
-        self._albums = None
-        # Used by shuffle albums to restore playlist before shuffle
-        self._albums_backup = None
-        self._shuffle = Shuffle.NONE
 
     """
         Set user playlist as current playback playlist
@@ -59,6 +53,32 @@ class UserPlaylistPlayer:
     def clear_user_playlist(self):
         self._user_playlist = []
 
+    """
+        Next track id
+        @return track id as int or None
+    """
+    def next(self):
+        track_id = None
+        if self._user_playlist:
+            self.context.position += 1
+            if self.context.position >= len(self._user_playlist):
+                self.context.position = 0
+            track_id = self._user_playlist[self.context.position]
+        return track_id
+
+    """
+        Prev track id
+        @return track id as int or None
+    """
+    def prev(self):
+        track_id = None
+        if self._user_playlist:
+            self.context.position -= 1
+            if self.context.position < 0:
+                self.context.position = len(self._user_playlist) - 1
+            track_id = self._user_playlist[self.context.position]
+        return track_id
+
 #######################
 # PRIVATE             #
 #######################
@@ -81,7 +101,6 @@ class UserPlaylistPlayer:
                 random.shuffle(self._user_playlist)
                 self._user_playlist.insert(0, current)
                 self.context.position = 0
-
         # Unshuffle
         elif self._shuffle == Shuffle.NONE:
             if self._user_playlist_backup is not None:

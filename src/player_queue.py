@@ -15,16 +15,13 @@ from gi.repository import GObject
 
 
 # Manage a queue
-class QueuePlayer(GObject.GObject):
-    __gsignals__ = {
-        'queue-changed': (GObject.SignalFlags.RUN_FIRST, None, ())
-    }
-
+# Can't be used as this, you need to define this attributes in parent class:
+# - a queue-changed signal
+class QueuePlayer:
     """
         Init queue
     """
     def __init__(self):
-        GObject.GObject.__init__(self)
         self._queue = []
 
     """

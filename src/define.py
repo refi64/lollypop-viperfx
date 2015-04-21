@@ -30,12 +30,42 @@ class Objects_:
     debug = False
 
 
+# Represent current playing track
+class CurrentTrack:
+    id = None
+    title = None
+    album_id = None
+    album = None
+    artist = None
+    aartist_id = None
+    aartist = None
+    genre_id = None
+    genre = None
+    number = None
+    duration = None
+    path = None
+
+
 # Represent what to do on next track
 class NextContext:
     STOP_NONE = 0    # Continue playback
     STOP_TRACK = 1   # Stop after current track
     STOP_ALBUM = 2   # Stop after current album
     STOP_ARTIST = 3  # Stop after current artist
+
+
+# Represent playback context
+class PlayContext:
+    album_id = None
+    genre_id = None
+    position = None
+    next = NextContext.STOP_NONE
+
+
+class GstPlayFlags:
+    GST_PLAY_FLAG_VIDEO = 1 << 0  # We want video output
+    GST_PLAY_FLAG_AUDIO = 1 << 1  # We want audio output
+    GST_PLAY_FLAG_TEXT = 1 << 3   # We want subtitle output
 
 
 class ArtSize_:
