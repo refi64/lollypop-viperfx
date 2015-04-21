@@ -33,6 +33,7 @@ app_PYTHON = \
 	player.py\
     player_rg.py\
     player_base.py\
+    player_queue.py\
 	popimages.py\
 	popalbums.py\
 	popmenu.py\

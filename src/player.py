@@ -17,6 +17,7 @@ from os import path
 
 from lollypop.tagreader import TagReader
 from lollypop.player_base import BasePlayer
+from lollypop.player_queue import QueuePlayer
 from lollypop.define import Objects, Navigation, NextContext
 from lollypop.define import Shuffle
 from lollypop.utils import translate_artist_name
@@ -31,12 +32,13 @@ class PlayContext:
 
 
 # Player object used to manage playback and playlists
-class Player(BasePlayer, TagReader):
+class Player(BasePlayer, QueuePlayer, TagReader):
     """
         Create a gstreamer bin and listen to signals on bus
     """
     def __init__(self):
         BasePlayer.__init__(self)
+        QueuePlayer.__init__(self)
         TagReader.__init__(self)
 
         self.context = PlayContext()
@@ -57,8 +59,6 @@ class Player(BasePlayer, TagReader):
         self._already_played_tracks = {}
         # Party mode
         self._is_party = False
-        # Current queue
-        self._queue = []
         # Player errors
         self._errors = 0
 
@@ -123,9 +123,8 @@ class Player(BasePlayer, TagReader):
     """
     def next(self, force=True, sql=None):
         # Look first at user queue
-        if self._queue:
-            track_id = self._queue[0]
-            self.del_from_queue(track_id)
+        track_id = QueuePlayer.next(self)
+        if track_id is not None:
             if force:
                 self.load(track_id)
             else:
@@ -313,74 +312,6 @@ class Player(BasePlayer, TagReader):
             self._shuffle_playlist()
         else:
             self.stop()
-
-    """
-        Append track to queue,
-        remove previous track if exist
-        @param track id as int
-    """
-    def append_to_queue(self, track_id):
-        if track_id in self._queue:
-            self._queue.remove(track_id)
-        self._queue.append(track_id)
-        self.emit("queue-changed")
-
-    """
-        Prepend track to queue,
-        remove previous track if exist
-        @param track id as int
-    """
-    def prepend_to_queue(self, track_id):
-        if track_id in self._queue:
-            self._queue.remove(track_id)
-        self._queue.insert(0, track_id)
-        self.emit("queue-changed")
-
-    """
-        Remove track from queue
-        @param track id as int
-    """
-    def del_from_queue(self, track_id):
-        if track_id in self._queue:
-            self._queue.remove(track_id)
-            self.emit("queue-changed")
-
-    """
-        Set queue
-        @param [ids as int]
-    """
-    def set_queue(self, new_queue):
-        self._queue = new_queue
-        self.emit("queue-changed")
-
-    """
-        Return queue
-        @return [ids as int]
-    """
-    def get_queue(self):
-        if self._queue:
-            return self._queue
-        else:
-            return []
-
-    """
-        True if track_id exist in queue
-        @param track id as int
-        @return bool
-    """
-    def is_in_queue(self, track_id):
-        if self._queue:
-            return track_id in self._queue
-        else:
-            return False
-
-    """
-        Return track position in queue
-        @param track id as int
-        @return position as int
-    """
-    def get_track_position(self, track_id):
-        return self._queue.index(track_id)+1
 
     """
         Set user playlist as current playback playlist
