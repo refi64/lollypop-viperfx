@@ -185,8 +185,11 @@ class Container:
     """
     def destroy_current_view(self):
         view = self._stack.get_visible_child()
-        view.hide()
-        GLib.timeout_add(2000, view.destroy)
+        for child in self._stack.get_children():
+            if child != view:
+                self._stack.set_visible_child(child)
+                self._stack.clean_old_views(child)
+                break
 
     """
         Update current view
