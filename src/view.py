@@ -305,8 +305,12 @@ class AlbumView(View):
         @param allocation as cairo.RectangleInt
     """
     def do_size_allocate(self, allocation):
+        previous_position = self._paned.get_position()
+        context_height = self.get_allocated_height() - previous_position
         View.do_size_allocate(self, allocation)
-        self._paned.set_position(Objects.window.get_allocated_height())
+        position = self.get_allocated_height() - context_height
+        if position != previous_position:
+            self._paned.set_position(position)
 
     """
         Populate albums, thread safe
