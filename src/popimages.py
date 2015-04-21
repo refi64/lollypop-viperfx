@@ -30,7 +30,12 @@ class PopImages(Gtk.Popover):
         Gtk.Popover.__init__(self)
         self._album_id = album_id
 
-        self._stack = ViewContainer(1000)
+        self._stack = Gtk.Stack()
+        self._stack.set_property("expand", True)
+        # Don't pass resize request to parent
+        self._stack.set_resize_mode(Gtk.ResizeMode.QUEUE)
+        self._stack.set_transition_duration(1000)
+        self._stack.set_transition_type(Gtk.StackTransitionType.CROSSFADE)
         self._stack.show()
 
         builder = Gtk.Builder()
@@ -44,7 +49,11 @@ class PopImages(Gtk.Popover):
 
         builder.get_object('viewport').add(self._view)
 
-        self._stack.add(builder.get_object('widget'))
+        self._widget = builder.get_object('widget')
+        self._spinner = builder.get_object('spinner')
+        self._stack.add(self._spinner)
+        self._stack.add(self._widget)
+        self._stack.set_visible_child(self._spinner)
         self.add(self._stack)
 
     """
@@ -117,6 +126,11 @@ class PopImages(Gtk.Popover):
         except Exception as e:
             print(e)
             pass
+        # Remove spinner if exist
+        if self._spinner is not None:
+            self._stack.set_visible_child(self._widget)
+            GLib.timeout_add(1000, self._spinner.destroy)
+            self._spinner = None
 
     """
         Use pixbuf as cover
