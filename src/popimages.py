@@ -18,7 +18,6 @@ import urllib.parse
 from _thread import start_new_thread
 
 from lollypop.define import Objects, ArtSize
-from lollypop.view_container import ViewContainer
 
 # Show a popover with album covers from the web
 class PopImages(Gtk.Popover):
