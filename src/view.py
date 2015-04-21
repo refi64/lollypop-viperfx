@@ -301,19 +301,6 @@ class AlbumView(View):
         self.add(self._paned)
 
     """
-        Resize context view on size allocate
-        @param allocation as cairo.RectangleInt
-    """
-    def do_size_allocate(self, allocation):
-        previous_position = self._paned.get_position()
-        context_height = self.get_allocated_height() - previous_position
-        View.do_size_allocate(self, allocation)
-        if self._context.is_visible():
-            position = self.get_allocated_height() - context_height
-            if position != previous_position:
-                self._paned.set_position(position)
-
-    """
         Populate albums, thread safe
         @param navigation id as int
     """
