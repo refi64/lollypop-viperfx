@@ -300,22 +300,27 @@ class Application(Gtk.Application):
         if Gtk.get_minor_version() > 12:
             settingsAction = Gio.SimpleAction.new('settings', None)
             settingsAction.connect('activate', self._settings_dialog)
+            self.set_accels_for_action('app.settings', ["<Control>s"])
             self.add_action(settingsAction)
 
         updateAction = Gio.SimpleAction.new('update_db', None)
         updateAction.connect('activate', self._update_db)
+        self.set_accels_for_action('app.update_db', ["<Control>u"])
         self.add_action(updateAction)
 
         fsAction = Gio.SimpleAction.new('fullscreen', None)
         fsAction.connect('activate', self._fullscreen)
+        self.set_accels_for_action('app.fullscreen', ["F11", "<Control>m"])
         self.add_action(fsAction)
 
         aboutAction = Gio.SimpleAction.new('about', None)
         aboutAction.connect('activate', self._about)
+        self.set_accels_for_action('app.about', ["<Control>a"])
         self.add_action(aboutAction)
 
         quitAction = Gio.SimpleAction.new('quit', None)
         quitAction.connect('activate', self.quit)
+        self.set_accels_for_action('app.quit', ["<Control>q"])
         self.add_action(quitAction)
 
         return menu
