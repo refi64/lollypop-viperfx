@@ -320,7 +320,6 @@ class SelectionList(GObject.GObject):
             return False
 
         a_index = model.get_value(itera, 0)
-        b_index = model.get_value(iterb, 0)
         a = format_artist_name(model.get_value(itera, 1))
         b = format_artist_name(model.get_value(iterb, 1))
 

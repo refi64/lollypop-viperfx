@@ -148,7 +148,7 @@ class CollectionScanner(GObject.GObject):
                     debug("Adding file: %s" % f)
                     track_id = self._add2db(f, 0, infos, True, sql)
                 else:
-                    print("Can't get infos for ", filepath)
+                    print("Can't get infos for ", f)
             else:
                 track_id = Objects.tracks.get_id_by_path(f, sql)
             if track_id is not None:

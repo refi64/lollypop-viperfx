@@ -21,6 +21,10 @@ app_PYTHON = \
 	playlists.py\
 	playlist_widgets.py\
 	view.py\
+    view_container.py\
+    view_device.py\
+    view_playlists.py\
+    view_albums.py\
 	mpris.py\
 	search.py\
 	tracks.py\

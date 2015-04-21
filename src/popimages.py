@@ -11,15 +11,14 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-from gettext import gettext as _
 from gi.repository import Gtk, GLib, Gio, GdkPixbuf
+
 import urllib.request
 import urllib.parse
 from _thread import start_new_thread
 
-from lollypop.define import Objects
-from lollypop.define import ArtSize
-
+from lollypop.define import Objects, ArtSize
+from lollypop.view_container import ViewContainer
 
 # Show a popover with album covers from the web
 class PopImages(Gtk.Popover):
@@ -29,32 +28,24 @@ class PopImages(Gtk.Popover):
     """
     def __init__(self, album_id):
         Gtk.Popover.__init__(self)
-
         self._album_id = album_id
+
+        self._stack = ViewContainer(1000)
+        self._stack.show()
+
+        builder = Gtk.Builder()
+        builder.add_from_resource(
+                    '/org/gnome/Lollypop/PopImages.ui')
 
         self._view = Gtk.FlowBox()
         self._view.set_selection_mode(Gtk.SelectionMode.NONE)
         self._view.connect("child-activated", self._on_activate)
         self._view.show()
 
-        viewport = Gtk.Viewport()
-        viewport.add(self._view)
-        viewport.set_property("valign", Gtk.Align.START)
-        self._scroll = Gtk.ScrolledWindow()
-        self._scroll.set_hexpand(True)
-        self._scroll.set_vexpand(True)
-        self._scroll.set_policy(Gtk.PolicyType.NEVER, Gtk.PolicyType.AUTOMATIC)
-        self._scroll.add(viewport)
+        builder.get_object('viewport').add(self._view)
 
-        grid = Gtk.Grid()
-        grid.set_orientation(Gtk.Orientation.VERTICAL)
-        self._scroll.show()
-        label = Gtk.Label()
-        label.set_text(_("Select a cover art for this album"))
-        grid.add(label)
-        grid.add(self._scroll)
-        grid.show_all()
-        self.add(grid)
+        self._stack.add(builder.get_object('widget'))
+        self.add(self._stack)
 
     """
         Populate view

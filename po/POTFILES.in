@@ -43,6 +43,7 @@ src/collectionscanner.py
 [type: gettext/glade]data/PlaylistsManagerView.ui
 [type: gettext/glade]data/PlaylistsManagerWidget.ui
 [type: gettext/glade]data/PlaylistView.ui
+[type: gettext/glade]data/PopImages.ui
 [type: gettext/glade]data/ArtistView.ui
 [type: gettext/glade]data/Toolbar.ui
 [type: gettext/glade]data/SearchRow.ui

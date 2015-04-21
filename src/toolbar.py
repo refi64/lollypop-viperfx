@@ -13,7 +13,6 @@
 
 from gettext import gettext as _
 from gi.repository import Gtk, Gdk, GLib, Gio
-from cgi import escape
 
 from lollypop.define import Objects, Shuffle, ArtSize
 from lollypop.search import SearchWidget
