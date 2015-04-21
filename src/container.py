@@ -116,9 +116,6 @@ class Container:
         self._stack.add(view)
         self._stack.set_visible_child(view)
         start_new_thread(view.populate, ())
-        # Keep previous view, 
-        if isinstance(old_view, PlaylistManageView):
-            old_view.destroy()
 
     """
         Show playlist editor for playlist
@@ -133,9 +130,6 @@ class Container:
         self._stack.add(view)
         self._stack.set_visible_child(view)
         start_new_thread(view.populate, ())
-        # Keep previous view, 
-        if isinstance(old_view, PlaylistEditView):
-            old_view.destroy() 
 
     """
         Update lists
