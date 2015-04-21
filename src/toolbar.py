@@ -248,6 +248,7 @@ class Toolbar(Gtk.HeaderBar):
             art = Objects.art.get(player.current.album_id,  ArtSize.SMALL)
             if art:
                 self._cover.set_from_pixbuf(art)
+                self._cover.set_tooltip_text(player.current.album)
                 self._cover.show()
             else:
                 self._cover.hide()
