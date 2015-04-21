@@ -84,14 +84,7 @@ class UserPlaylistPlayer:
         Shuffle/Un-shuffle playlist based on shuffle setting
     """
     def _shuffle_playlist(self):
-        if self._shuffle in [Shuffle.ALBUMS, Shuffle.ALBUMS_ARTIST]:
-            # No albums shuffle when playing a user playlist
-            if self._user_playlist_backup is not None:
-                self._user_playlist = self._user_playlist_backup
-                self.context.position = self._user_playlist.index(
-                                                              self.current.id)
-                self._user_playlist_backup = None
-        elif self._shuffle in [Shuffle.TRACKS, Shuffle.TRACKS_ARTIST]:
+        if self._shuffle == Shuffle.TRACKS:
             # Shuffle user playlist
             if self._user_playlist is not None:
                 self._user_playlist_backup = list(self._user_playlist)
@@ -100,7 +93,7 @@ class UserPlaylistPlayer:
                 self._user_playlist.insert(0, current)
                 self.context.position = 0
         # Unshuffle
-        elif self._shuffle == Shuffle.NONE:
+        else:
             if self._user_playlist_backup is not None:
                 self._user_playlist = self._user_playlist_backup
                 self.context.position = self._user_playlist.index(
