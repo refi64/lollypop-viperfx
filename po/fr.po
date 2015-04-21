@@ -9,8 +9,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lollypop\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-04-19 16:18+0200\n"
-"PO-Revision-Date: 2015-04-19 14:21+0000\n"
+"POT-Creation-Date: 2015-04-21 14:44+0200\n"
+"PO-Revision-Date: 2015-04-21 12:51+0000\n"
 "Last-Translator: Cédric Bellegarde <web@adishatz.org>\n"
 "Language-Team: French (http://www.transifex.com/projects/p/lollypop/language/fr/)\n"
 "MIME-Version: 1.0\n"
@@ -160,37 +160,37 @@ msgstr "Jouer et organiser votre discothèque"
 msgid "Music player for the GNOME desktop"
 msgstr "Lecteur de musique pour le bureau GNOME"
 
-#: ../src/toolbar.py:209 ../src/toolbar.py:259 ../src/toolbar.py:275
+#: ../src/toolbar.py:238 ../src/toolbar.py:282 ../src/toolbar.py:298
 #: ../src/fullscreen.py:178 ../data/Toolbar.ui.h:7
 msgid "Play"
 msgstr "Lecture"
 
-#: ../src/toolbar.py:252 ../src/toolbar.py:278 ../src/fullscreen.py:75
+#: ../src/toolbar.py:274 ../src/toolbar.py:301 ../src/fullscreen.py:75
 #: ../src/fullscreen.py:174
 msgid "Pause"
 msgstr "Pause"
 
-#: ../src/container.py:325
+#: ../src/container.py:333
 msgid "Popular albums"
 msgstr "Albums populaires"
 
-#: ../src/container.py:326
+#: ../src/container.py:334
 msgid "Recent albums"
 msgstr "Albums récents"
 
-#: ../src/container.py:327 ../src/popmenu.py:47
+#: ../src/container.py:335 ../src/popmenu.py:47
 msgid "Playlists"
 msgstr "Listes de lecture"
 
-#: ../src/container.py:329
+#: ../src/container.py:337
 msgid "All artists"
 msgstr "Tous les artistes"
 
-#: ../src/container.py:331
+#: ../src/container.py:339
 msgid "All albums"
 msgstr "Tous les albums"
 
-#: ../src/container.py:373
+#: ../src/container.py:381
 msgid "Compilations"
 msgstr "Compilations"
 
@@ -213,38 +213,29 @@ msgstr "par %s, sur %s"
 msgid "Many artists"
 msgstr "Plusieurs artistes"
 
-#: ../src/database_artists.py:70 ../src/database_albums.py:216
+#: ../src/database_artists.py:70 ../src/database_albums.py:230
 #: ../src/database_tracks.py:187 ../src/database_genres.py:67
-#: ../src/collectionscanner.py:264 ../src/collectionscanner.py:269
-#: ../src/collectionscanner.py:283 ../src/collectionscanner.py:288
+#: ../src/collectionscanner.py:269 ../src/collectionscanner.py:274
+#: ../src/collectionscanner.py:288 ../src/collectionscanner.py:293
 msgid "Unknown"
 msgstr "Inconnu"
 
-#: ../src/database_albums.py:233
+#: ../src/database_albums.py:247
 msgid "Compilation"
 msgstr "Compilation"
 
-#: ../src/playlist_widgets.py:220 ../src/playlist_widgets.py:223
+#: ../src/playlist_widgets.py:222 ../src/playlist_widgets.py:225
 msgid "New playlist "
 msgstr "Nouvelle liste de lecture "
 
-#: ../src/playlist_widgets.py:265 ../src/playlist_widgets.py:508
+#: ../src/playlist_widgets.py:267 ../src/playlist_widgets.py:526
 #, python-format
 msgid "Remove \"%s\"?"
 msgstr "Supprimer \"%s\"?"
 
-#: ../src/playlist_widgets.py:547
+#: ../src/playlist_widgets.py:565
 msgid "Remove these tracks?"
 msgstr "Supprimer ces morceaux?"
-
-#: ../src/view.py:586 ../src/view.py:627
-#, python-format
-msgid "Synchronize %s"
-msgstr "Synchroniser %s"
-
-#: ../src/view.py:618
-msgid "Cancel synchronization"
-msgstr "Annuler la synchronisation"
 
 #: ../src/devicemanager.py:401
 msgid "Unknown error while syncing, try to reboot your device"
@@ -304,13 +295,9 @@ msgstr "Morceau suivant"
 msgid "Remove from queue"
 msgstr "Supprimer de la liste d'attente"
 
-#: ../src/popimages.py:53
-msgid "Select a cover art for this album"
-msgstr "Sélectionnez une pochette pour cet album"
-
 #. Handle language ordering
 #. Translators: Add here words that shoud be ignored for artist sort order
-#: ../src/utils.py:79
+#: ../src/utils.py:106
 msgid "The the"
 msgstr "The the"
 
@@ -375,6 +362,14 @@ msgstr "Nouvelle liste de lecture"
 #: ../data/PlaylistView.ui.h:1
 msgid "Edit"
 msgstr "Editer"
+
+#: ../data/PopImages.ui.h:1
+msgid "Please wait..."
+msgstr "Veuillez patienter..."
+
+#: ../data/PopImages.ui.h:2
+msgid "Select a cover art for this album"
+msgstr "Sélectionnez une pochette pour cet album"
 
 #: ../data/Toolbar.ui.h:1
 msgid "No shuffle"
