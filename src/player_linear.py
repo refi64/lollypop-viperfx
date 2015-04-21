@@ -14,10 +14,7 @@
 from lollypop.define import Objects
 
 # Manage normal playback
-# Can't be used as this, you need to define this attributes in parent class:
-# - self._albums as [int]
-# - self.context as PlayContext
-# - self.current as CurrentTrack
+# Can only be used as child of Player class
 class LinearPlayer:
     """
         Init linear player
