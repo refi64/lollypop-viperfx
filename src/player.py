@@ -11,10 +11,11 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-from gi.repository import GLib, GObject, Gst, GstPbutils, GstAudio
+from gi.repository import GLib, GObject, Gst, GstAudio
 import random
 from os import path
 
+from lollypop.tagreader import TagReader
 from lollypop.player_rg import PlayerReplayGain
 from lollypop.define import Objects, Navigation, NextContext
 from lollypop.define import Shuffle
@@ -52,7 +53,7 @@ class PlayContext:
 
 
 # Player object used to manage playback and playlists
-class Player(GObject.GObject):
+class Player(GObject.GObject, TagReader):
 
     EPSILON = 0.001
 
@@ -69,8 +70,9 @@ class Player(GObject.GObject):
         Create a gstreamer bin and listen to signals on bus
     """
     def __init__(self):
-        GObject.GObject.__init__(self)
         Gst.init(None)
+        GObject.GObject.__init__(self)
+        TagReader.__init__(self)
 
         self.current = CurrentTrack()
         self.context = PlayContext()
@@ -97,7 +99,6 @@ class Player(GObject.GObject):
         self._errors = 0
 
         self._playbin = Gst.ElementFactory.make('playbin', 'player')
-        self._tagreader = GstPbutils.Discoverer.new(10*Gst.SECOND)
         flags = self._playbin.get_property("flags")
         flags &= ~GstPlayFlags.GST_PLAY_FLAG_VIDEO
         self._playbin.set_property("flags", flags)
@@ -112,19 +113,6 @@ class Player(GObject.GObject):
         self._bus.connect('message::error', self._on_bus_error)
         self._bus.connect('message::eos', self._on_bus_eos)
         self._bus.connect('message::stream-start', self._on_stream_start)
-
-    """
-        Return informations on file at path
-        @param path as str
-        @return GstPbutils.DiscovererInfo
-    """
-    def get_infos(self, path):
-        try:
-            uri = GLib.filename_to_uri(path)
-            infos = self._tagreader.discover_uri(uri)
-            return infos
-        except:
-            return None
 
     """
         True if player is playing

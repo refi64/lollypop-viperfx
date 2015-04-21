@@ -16,6 +16,8 @@ from gi.repository import Gst
 
 from lollypop.define import Objects
 
+
+# replay gain class
 class PlayerReplayGain:
     """
         Init replay gain on playbin

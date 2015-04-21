@@ -29,6 +29,7 @@ app_PYTHON = \
 	search.py\
 	tracks.py\
 	album_widgets.py\
+    tagreader.py\
 	player.py\
     player_rg.py\
 	popimages.py\
