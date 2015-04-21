@@ -56,7 +56,7 @@ class ShufflePlayer:
                 self._played_tracks_history.pop()
                 self._played_tracks_history.pop()
             except:
-                pass
+                track_id = self.current.id
         return track_id
 
     """

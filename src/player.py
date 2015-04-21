@@ -72,11 +72,12 @@ class Player(GObject.GObject, BasePlayer, QueuePlayer, UserPlaylistPlayer,
         Play previous track
     """
     def prev(self):
-        track_id = ShufflePlayer.prev(self)
-
         # Look at user playlist then
+        track_id = UserPlaylistPlayer.prev(self)
+        
+        # Look at shuffle
         if track_id is None:
-            track_id = UserPlaylistPlayer.prev(self)
+            track_id = ShufflePlayer.prev(self)
             
         if track_id is None:
             track_id = LinearPlayer.prev(self)
