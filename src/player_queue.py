@@ -13,8 +13,7 @@
 
 
 # Manage a queue
-# Can't be used as this, you need to define this attributes in parent class:
-# - a queue-changed signal
+# Can only be used as child of Player class
 class QueuePlayer:
     """
         Init queue
