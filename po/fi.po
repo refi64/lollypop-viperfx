@@ -8,9 +8,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lollypop\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-04-21 14:44+0200\n"
-"PO-Revision-Date: 2015-04-21 12:51+0000\n"
-"Last-Translator: Cédric Bellegarde <web@adishatz.org>\n"
+"POT-Creation-Date: 2015-04-21 15:23+0200\n"
+"PO-Revision-Date: 2015-04-21 13:38+0000\n"
+"Last-Translator: Jiri Grönroos <jiri.gronroos@iki.fi>\n"
 "Language-Team: Finnish (http://www.transifex.com/projects/p/lollypop/language/fi/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -236,6 +236,15 @@ msgstr "Poistetaanko \"%s\"?"
 msgid "Remove these tracks?"
 msgstr "Poistetaanko nämä kappaleet?"
 
+#: ../src/view_device.py:39 ../src/view_device.py:80
+#, python-format
+msgid "Synchronize %s"
+msgstr "Synkronoi %s"
+
+#: ../src/view_device.py:71
+msgid "Cancel synchronization"
+msgstr "Peru synkronointi"
+
 #: ../src/devicemanager.py:401
 msgid "Unknown error while syncing, try to reboot your device"
 msgstr "Tuntematon virhe synkronoitaessa. Yritä käynnistää laite uudelleen"
@@ -364,7 +373,7 @@ msgstr "Muokkaa"
 
 #: ../data/PopImages.ui.h:1
 msgid "Please wait..."
-msgstr ""
+msgstr "Odota hetki..."
 
 #: ../data/PopImages.ui.h:2
 msgid "Select a cover art for this album"

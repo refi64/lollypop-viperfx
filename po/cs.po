@@ -9,9 +9,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lollypop\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-04-21 14:44+0200\n"
-"PO-Revision-Date: 2015-04-21 12:51+0000\n"
-"Last-Translator: Cédric Bellegarde <web@adishatz.org>\n"
+"POT-Creation-Date: 2015-04-21 15:23+0200\n"
+"PO-Revision-Date: 2015-04-21 18:12+0000\n"
+"Last-Translator: fri\n"
 "Language-Team: Czech (http://www.transifex.com/projects/p/lollypop/language/cs/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -237,6 +237,15 @@ msgstr "Odstranit \"%s\"?"
 msgid "Remove these tracks?"
 msgstr "Odstranit tyto skladby?"
 
+#: ../src/view_device.py:39 ../src/view_device.py:80
+#, python-format
+msgid "Synchronize %s"
+msgstr "Seřídit %s"
+
+#: ../src/view_device.py:71
+msgid "Cancel synchronization"
+msgstr "Zrušit seřizování"
+
 #: ../src/devicemanager.py:401
 msgid "Unknown error while syncing, try to reboot your device"
 msgstr "Při seřizování nastala neznámá chyba. pokuste se své zařízení zavést znovu"
@@ -365,7 +374,7 @@ msgstr "Upravit"
 
 #: ../data/PopImages.ui.h:1
 msgid "Please wait..."
-msgstr ""
+msgstr "Počkejte, prosím..."
 
 #: ../data/PopImages.ui.h:2
 msgid "Select a cover art for this album"

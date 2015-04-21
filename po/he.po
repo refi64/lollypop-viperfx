@@ -10,8 +10,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lollypop\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-04-21 14:44+0200\n"
-"PO-Revision-Date: 2015-04-21 12:51+0000\n"
+"POT-Creation-Date: 2015-04-21 15:23+0200\n"
+"PO-Revision-Date: 2015-04-21 13:47+0000\n"
 "Last-Translator: Cédric Bellegarde <web@adishatz.org>\n"
 "Language-Team: Hebrew (http://www.transifex.com/projects/p/lollypop/language/he/)\n"
 "MIME-Version: 1.0\n"
@@ -238,6 +238,15 @@ msgstr "להסיר את „%s”?"
 msgid "Remove these tracks?"
 msgstr "להסיר רצועות אלו?"
 
+#: ../src/view_device.py:39 ../src/view_device.py:80
+#, python-format
+msgid "Synchronize %s"
+msgstr "מתאם %s"
+
+#: ../src/view_device.py:71
+msgid "Cancel synchronization"
+msgstr "ביטול התיאום"
+
 #: ../src/devicemanager.py:401
 msgid "Unknown error while syncing, try to reboot your device"
 msgstr "שגיאה בלתי ידועה אירעה בעת התיאום, יש לנסות להפעיל מחדש את ההתקן שלך"
@@ -366,7 +375,7 @@ msgstr "עריכה"
 
 #: ../data/PopImages.ui.h:1
 msgid "Please wait..."
-msgstr ""
+msgstr "נא להמתין…"
 
 #: ../data/PopImages.ui.h:2
 msgid "Select a cover art for this album"
