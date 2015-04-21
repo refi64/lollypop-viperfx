@@ -17,13 +17,7 @@ from lollypop.define import Shuffle, NextContext, Objects
 
 
 # Manage shuffle tracks and party mode
-# Can't be used as this, you need to define this attributes in parent class:
-# - self._albums as [int]
-# - self._shuffle as Shuffle
-# - self.context as PlayerContext
-# - self._played_tracks_history as [int]
-# - self._rgvolume as Gst.Element
-# - self._user_playlist as [int] or None
+# Can only be used as child of Player class
 class ShufflePlayer:
     """
         Init shuffle player

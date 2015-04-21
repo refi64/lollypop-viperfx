@@ -21,9 +21,7 @@ from lollypop.utils import translate_artist_name
 
 
 # Base player class
-# Can't be used as this, you need to define this attributes in parent class:
-# - self.context as PlayContext
-# - self.current as CurrentTrack
+# Can only be used as child of Player class
 class BasePlayer(ReplayGainPlayer):
     """
         Init playbin

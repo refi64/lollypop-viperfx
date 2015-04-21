@@ -17,9 +17,7 @@ from lollypop.define import Shuffle
 
 
 # Manage user playlist
-# Can't be used as this, you need to define this attributes in parent class:
-# - self._shuffle as Shuffle
-# - self.context as PlayerContext
+# Can only be used as child of Player class
 class UserPlaylistPlayer:
     """
         Init user playlist
