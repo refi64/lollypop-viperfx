@@ -210,9 +210,10 @@ class BasePlayer(ReplayGainPlayer):
                 self._playbin.set_property('uri',
                                            GLib.filename_to_uri(
                                                         self.current.path))
-            except:  # Gstreamer error, stop
-               self._on_errors()
-               return False
+            except Exception as e:  # Gstreamer error, stop
+                print("BasePlayer::_load_track(): ", e)
+                self._on_errors()
+                return False
         else:
             print("File doesn't exist: ", self.current.path)
             self._on_errors()
