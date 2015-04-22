@@ -334,7 +334,7 @@ class PopAlbumMenu(Gio.Menu):
     def __init__(self, object_id, genre_id):
         Gio.Menu.__init__(self)
         self.insert_section(0, _("Playback"),
-                            QueueMenu(object_id, genre_id, False))
+                            QueueMenu(object_id, genre_id, True))
         self.insert_section(1, _("Playlists"),
                             PlaylistsMenu(object_id, genre_id, True))
         
