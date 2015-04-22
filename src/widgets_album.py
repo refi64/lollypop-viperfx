@@ -144,10 +144,10 @@ class AlbumDetailedWidget(AlbumWidget):
         @param genre id as int
         @param parent width as int
         @param show_menu as bool if menu need to be displayed
-        @param context as bool
+        @param scrolled as bool
         @param size group as Gtk.SizeGroup
     """
-    def __init__(self, album_id, genre_id, show_menu, context, size_group):
+    def __init__(self, album_id, genre_id, show_menu, scrolled, size_group):
         AlbumWidget.__init__(self, album_id)
 
         self._artist_id = Objects.albums.get_artist_id(album_id)
@@ -155,7 +155,7 @@ class AlbumDetailedWidget(AlbumWidget):
         self._genre_id = genre_id
 
         builder = Gtk.Builder()
-        if context:
+        if scrolled:
             builder.add_from_resource(
                     '/org/gnome/Lollypop/AlbumContextWidget.ui')
         else:
