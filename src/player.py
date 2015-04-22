@@ -82,7 +82,7 @@ class Player(GObject.GObject, BasePlayer, QueuePlayer, UserPlaylistPlayer,
         if track_id is None:
             track_id = LinearPlayer.prev(self)
 
-        if track_id:
+        if track_id is not None:
             self.load(track_id)
 
     """
@@ -106,7 +106,7 @@ class Player(GObject.GObject, BasePlayer, QueuePlayer, UserPlaylistPlayer,
         if track_id is None:
             track_id = LinearPlayer.next(self, sql)
 
-        if track_id:
+        if track_id is not None:
             if force:
                 self.load(track_id)
             else:
