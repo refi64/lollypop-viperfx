@@ -118,8 +118,7 @@ class QueueMenu(BaseMenu):
     """
     def __init__(self, object_id, genre_id, is_album):
         BaseMenu.__init__(self, object_id, genre_id, is_album)
-        if not Objects.player.is_party():
-            self._set_queue_actions()
+        self._set_queue_actions()
 
 #######################
 # PRIVATE             #
@@ -226,8 +225,7 @@ class PlaylistsMenu(BaseMenu):
     """
     def __init__(self, object_id, genre_id, is_album):
         BaseMenu.__init__(self, object_id, genre_id, is_album)
-        if not Objects.player.is_party():
-            self._set_playlist_actions()
+        self._set_playlist_actions()
 
 #######################
 # PRIVATE             #
