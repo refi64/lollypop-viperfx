@@ -24,8 +24,6 @@ from lollypop.define import Shuffle
 # Player object used to manage playback and playlists
 class Player(BinPlayer, QueuePlayer, UserPlaylistPlayer,
              LinearPlayer, ShufflePlayer, TagReader):
-
-
     """
         Create a gstreamer bin and listen to signals on bus
     """
