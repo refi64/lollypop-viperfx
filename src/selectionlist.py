@@ -42,10 +42,11 @@ class SelectionList(GObject.GObject):
         self._pop_time = 0.0      # Keep track of time when starting populate
 
         try:
+            lookup_flag = Gtk.IconLookupFlags.FORCE_SVG
             if Gtk.Widget.get_default_direction() == Gtk.TextDirection.RTL:
-                lookup_flag = Gtk.IconLookupFlags.DIR_RTL
+                lookup_flag |= Gtk.IconLookupFlags.DIR_RTL
             else:
-                lookup_flag = Gtk.IconLookupFlags.DIR_LTR
+                lookup_flag |= Gtk.IconLookupFlags.DIR_LTR
             self._default_pixbuf = Gtk.IconTheme.get_default().load_icon(
                                                 'go-next-symbolic',
                                                 16,
@@ -54,12 +55,12 @@ class SelectionList(GObject.GObject):
             self._default_pixbuf = Gtk.IconTheme.get_default().load_icon(
                                                 'go-next-symbolic',
                                                 16,
-                                                0)
+                                                Gtk.IconLookupFlags.FORCE_SVG)
 
         self._device_pixbuf = Gtk.IconTheme.get_default().load_icon(
                                             'multimedia-player-symbolic',
                                             16,
-                                            0)
+                                            Gtk.IconLookupFlags.FORCE_SVG)
         self._view = Gtk.TreeView(model=self._model)
         self._view.set_enable_search(True)
         self._view.set_search_column(1)
@@ -308,7 +309,7 @@ class SelectionList(GObject.GObject):
             return Gtk.IconTheme.get_default().load_icon(
                                             icon,
                                             16,
-                                            0)
+                                            Gtk.IconLookupFlags.FORCE_SVG)
         else:
             return self._default_pixbuf
 
