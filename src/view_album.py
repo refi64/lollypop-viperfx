@@ -213,11 +213,12 @@ class AlbumView(View):
         @param album id as int
     """
     def _populate_context(self, album_id):
+        size_group = Gtk.SizeGroup(mode=Gtk.SizeGroupMode.HORIZONTAL)
         self._context_widget = AlbumDetailedWidget(album_id,
                                                    self._genre_id,
                                                    True,
                                                    True,
-                                                   None)
+                                                   size_group)
         start_new_thread(self._context_widget.populate, ())
         self._context_widget.show()
         view = AlbumContextView(self._context_widget)
