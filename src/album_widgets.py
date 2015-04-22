@@ -17,7 +17,7 @@ from gettext import gettext as _
 
 from lollypop.define import Objects, Navigation, ArtSize, NextContext
 from lollypop.tracks import TracksWidget
-from lollypop.popmenu import PopMainMenu
+from lollypop.popmenu import PopAlbumMenu
 from lollypop.popimages import PopImages
 from lollypop.utils import translate_artist_name
 
@@ -300,7 +300,7 @@ class AlbumDetailedWidget(AlbumWidget):
         @param album id as int
     """
     def _pop_menu(self, widget):
-        pop_menu = PopMainMenu(self._album_id, self._genre_id, True, False)
+        pop_menu = PopAlbumMenu(self._album_id, self._genre_id)
         popover = Gtk.Popover.new_from_model(self._menu, pop_menu)
         popover.show()
 

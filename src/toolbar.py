@@ -16,7 +16,7 @@ from gi.repository import Gtk, Gdk, GLib, Gio
 
 from lollypop.define import Objects, Shuffle, ArtSize
 from lollypop.search import SearchWidget
-from lollypop.popmenu import PopMainMenu
+from lollypop.popmenu import PopToolbarMenu
 from lollypop.queue import QueueWidget
 from lollypop.utils import seconds_to_string
 from lollypop.popalbums import PopAlbums
@@ -179,8 +179,7 @@ class Toolbar(Gtk.HeaderBar):
                 self._popalbums.populate()
                 self._popalbums.show()
             else:
-                menu = PopMainMenu(Objects.player.current.id, None,
-                                   False, True)
+                menu = PopToolbarMenu(Objects.player.current.id, None)
                 popover = Gtk.Popover.new_from_model(self._infobox, menu)
                 popover.show()
             return True

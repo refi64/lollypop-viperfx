@@ -14,7 +14,7 @@
 from gi.repository import GObject, Gtk
 
 from lollypop.define import Objects, ArtSize
-from lollypop.popmenu import PopMainMenu
+from lollypop.popmenu import PopTrackMenu
 from lollypop.utils import seconds_to_string
 
 
@@ -122,7 +122,7 @@ class TrackRow(Gtk.ListBoxRow):
         @param widget as Gtk.Button
     """
     def _pop_menu(self, widget):
-        menu = PopMainMenu(self._object_id, None, False, False)
+        menu = PopTrackMenu(self._object_id, None)
         popover = Gtk.Popover.new_from_model(self._ui.get_object('menu'), menu)
         popover.connect('closed', self._on_closed)
         self.get_style_context().add_class('trackrowmenu')
