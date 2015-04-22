@@ -11,8 +11,6 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-from gi.repository import GObject, GLib
-
 from lollypop.tagreader import TagReader
 from lollypop.player_bin import BinPlayer
 from lollypop.player_queue import QueuePlayer
@@ -20,7 +18,7 @@ from lollypop.player_linear import LinearPlayer
 from lollypop.player_shuffle import ShufflePlayer
 from lollypop.player_userplaylist import UserPlaylistPlayer
 from lollypop.define import Objects, Navigation
-from lollypop.define import Shuffle, PlayContext
+from lollypop.define import Shuffle
 
 
 # Player object used to manage playback and playlists
