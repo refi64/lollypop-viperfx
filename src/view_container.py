@@ -16,6 +16,7 @@ from gi.repository import Gtk, GLib
 from lollypop.view_device import DeviceView
 
 # Container for a view
+# Can contain any other widget too
 class ViewContainer(Gtk.Stack):
     def __init__(self, duration):
         Gtk.Stack.__init__(self)
@@ -33,7 +34,8 @@ class ViewContainer(Gtk.Stack):
     def clean_old_views(self, view):
         for child in self.get_children():
             if child != view:
-                child.stop()
+                if hasattr(child, "stop"):
+                    child.stop()
                 if isinstance(child, DeviceView):
                     self.remove(child)
                 else:
@@ -51,5 +53,6 @@ class ViewContainer(Gtk.Stack):
         @param valid view as View
     """
     def _delayedclean_view(self, view):
-        view.remove_signals()
+        if hasattr(view, "remove_signals"):
+            view.remove_signals()
         view.destroy()

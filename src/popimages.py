@@ -18,6 +18,7 @@ import urllib.parse
 from _thread import start_new_thread
 
 from lollypop.define import Objects, ArtSize
+from lollypop.view_container import ViewContainer
 
 # Show a popover with album covers from the web
 class PopImages(Gtk.Popover):
@@ -29,12 +30,7 @@ class PopImages(Gtk.Popover):
         Gtk.Popover.__init__(self)
         self._album_id = album_id
 
-        self._stack = Gtk.Stack()
-        self._stack.set_property("expand", True)
-        # Don't pass resize request to parent
-        self._stack.set_resize_mode(Gtk.ResizeMode.QUEUE)
-        self._stack.set_transition_duration(1000)
-        self._stack.set_transition_type(Gtk.StackTransitionType.CROSSFADE)
+        self._stack = ViewContainer(1000)
         self._stack.show()
 
         builder = Gtk.Builder()
@@ -50,7 +46,9 @@ class PopImages(Gtk.Popover):
 
         self._widget = builder.get_object('widget')
         self._spinner = builder.get_object('spinner')
+        self._not_found = builder.get_object('notfound')
         self._stack.add(self._spinner)
+        self._stack.add(self._not_found)
         self._stack.add(self._widget)
         self._stack.set_visible_child(self._spinner)
         self.add(self._stack)
@@ -85,7 +83,10 @@ class PopImages(Gtk.Popover):
     """
     def _populate(self, string):
         self._urls = Objects.art.get_google_arts(string)
-        self._add_pixbufs()
+        if self._urls:
+            self._add_pixbufs()
+        else:
+            GLib.idle_add(self._show_not_found)
 
     """
         Add urls to the view
@@ -105,6 +106,13 @@ class PopImages(Gtk.Popover):
                 GLib.idle_add(self._add_pixbuf, stream)
             if self._thread:
                 self._add_pixbufs()
+
+    """
+        Show not found message
+    """
+    def _show_not_found(self):
+        self._stack.set_visible_child(self._not_found)
+        self._stack.clean_old_views(self._not_found)
 
     """
         Add stream to the view
@@ -128,7 +136,7 @@ class PopImages(Gtk.Popover):
         # Remove spinner if exist
         if self._spinner is not None:
             self._stack.set_visible_child(self._widget)
-            GLib.timeout_add(1000, self._spinner.destroy)
+            self._stack.clean_old_views(self._widget)
             self._spinner = None
 
     """
