@@ -129,7 +129,6 @@ class MPRIS(dbus.service.Object):
                          in_signature='ssv')
     def Set(self, interface, property_name, new_value):
         if property_name == 'Volume':
-            print(new_value)
             Objects.player.set_volume(new_value)
 
     @dbus.service.signal(dbus_interface=dbus.PROPERTIES_IFACE,
