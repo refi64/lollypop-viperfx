@@ -196,8 +196,10 @@ class AlbumDetailedWidget(AlbumWidget):
             self._tracks_right[disc] = TracksWidget(show_menu)
             grid.attach(self._tracks_left[disc], 0, i, 1, 1)
             grid.attach(self._tracks_right[disc], 1, i, 1, 1)
-            size_group.add_widget(self._tracks_left[disc])
-            size_group.add_widget(self._tracks_right[disc])
+
+            if size_group is not None:
+                size_group.add_widget(self._tracks_left[disc])
+                size_group.add_widget(self._tracks_right[disc])
 
             self._tracks_left[disc].connect('activated', self._on_activated)
             self._tracks_left[disc].connect('button-press-event',
