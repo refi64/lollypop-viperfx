@@ -11,215 +11,50 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-from gi.repository import Gst, GLib, GstAudio
+from gi.repository import GObject
 
-from os import path
-
-from lollypop.player_rg import ReplayGainPlayer
-from lollypop.define import GstPlayFlags, NextContext, Objects
-from lollypop.utils import translate_artist_name
+from lollypop.define import PlayContext, CurrentTrack, Objects
 
 
-# Base player class
-# Can only be used as child of Player class
-class BasePlayer(ReplayGainPlayer):
+class BasePlayer(GObject.GObject):
+    __gsignals__ = {
+        'current-changed': (GObject.SignalFlags.RUN_FIRST, None, ()),
+        'seeked': (GObject.SignalFlags.RUN_FIRST, None, (int,)),
+        'status-changed': (GObject.SignalFlags.RUN_FIRST, None, ()),
+        'volume-changed': (GObject.SignalFlags.RUN_FIRST, None, ()),
+        'queue-changed': (GObject.SignalFlags.RUN_FIRST, None, ()),
+        'cover-changed': (GObject.SignalFlags.RUN_FIRST, None, (int,))
+    }
     """
-        Init playbin
+        Init base player variables
     """
     def __init__(self):
-        Gst.init(None)
-        self._playbin = Gst.ElementFactory.make('playbin', 'player')
-        flags = self._playbin.get_property("flags")
-        flags &= ~GstPlayFlags.GST_PLAY_FLAG_VIDEO
-        self._playbin.set_property("flags", flags)
-        ReplayGainPlayer.__init__(self, self._playbin)
-
-    """
-        True if player is playing
-        @return bool
-    """
-    def is_playing(self):
-        ok, state, pending = self._playbin.get_state(0)
-        if ok == Gst.StateChangeReturn.ASYNC:
-            return pending == Gst.State.PLAYING
-        elif ok == Gst.StateChangeReturn.SUCCESS:
-            return state == Gst.State.PLAYING
-        else:
-            return False
-
-    """
-        Emit a "cover-changed" signal
-        @param album id as int
-    """
-    def announce_cover_update(self, album_id):
-        self.emit("cover-changed", album_id)
-
-    """
-        Playback status
-        @return Gstreamer state
-    """
-    def get_status(self):
-        ok, state, pending = self._playbin.get_state(0)
-        if ok == Gst.StateChangeReturn.ASYNC:
-            state = pending
-        elif (ok != Gst.StateChangeReturn.SUCCESS):
-            state = Gst.State.NULL
-        return state
-
-    """
-        Stop current track, load track id and play it
-        @param track id as int
-    """
-    def load(self, track_id):
-        self._stop()
-        if self._load_track(track_id):
-            self.play()
-
-    """
-        Change player state to PLAYING
-    """
-    def play(self):
-        self._playbin.set_state(Gst.State.PLAYING)
-        self.emit("status-changed")
-
-    """
-        Change player state to PAUSED
-    """
-    def pause(self):
-        self._playbin.set_state(Gst.State.PAUSED)
-        self.emit("status-changed")
-
-    """
-        Change player state to STOPPED
-    """
-    def stop(self):
-        self._stop()
-        self.emit("status-changed")
-
-    """
-        Set PLAYING if PAUSED
-        Set PAUSED if PLAYING
-    """
-    def play_pause(self):
-        if self.is_playing():
-            self.pause()
-        else:
-            self.play()
-
-    """
-        Seek current track to position
-        @param position as seconds
-    """
-    def seek(self, position):
-        self._playbin.seek_simple(Gst.Format.TIME,
-                                  Gst.SeekFlags.FLUSH | Gst.SeekFlags.KEY_UNIT,
-                                  position * Gst.SECOND)
-        self.emit("seeked", position)
-
-    """
-        Return bin playback position
-        @return position as int
-    """
-    def get_position_in_track(self):
-        position = self._playbin.query_position(Gst.Format.TIME)[1] / 1000
-        return position*60
-
-    """
-        Return player volume rate
-        @return rate as double
-    """
-    def get_volume(self):
-        return self._playbin.get_volume(GstAudio.StreamVolumeFormat.LINEAR)
-
-    """
-        Set player volume rate
-        @param rate as double
-    """
-    def set_volume(self, rate):
-        self._playbin.set_volume(GstAudio.StreamVolumeFormat.LINEAR, rate)
-        self.emit('volume-changed')
-
-#######################
-# PRIVATE             #
-#######################
-    """
-        Stop current track (for track change)
-    """
-    def _stop(self):
-        self._playbin.set_state(Gst.State.NULL)
-
-    """
-        Load track
-        @param track id as int, sqlite cursor
-        @return False if track not loaded
-    """
-    def _load_track(self, track_id, sql=None):
-        stop = False
-
-        # Stop if needed
-        if self.context.next == NextContext.STOP_TRACK:
-            self.context.next = NextContext.STOP_NONE
-            stop = True
-
-        # Stop if album changed
-        new_album_id = Objects.tracks.get_album_id(
-                                                track_id,
-                                                sql)
-        if self.context.next == NextContext.STOP_ALBUM and\
-           self.current.album_id != new_album_id:
-            self.context.next = NextContext.STOP_NONE
-            stop = True
-
-        # Stop if aartist changed
-        new_aartist_id = Objects.tracks.get_aartist_id(
-                                                track_id,
-                                                sql)
-        if self.context.next == NextContext.STOP_ARTIST and\
-           self.current.aartist_id != new_aartist_id:
-            self.context.next = NextContext.STOP_NONE
-            stop = True
-
-        self.current.id = track_id
-        self.current.title = Objects.tracks.get_name(
-                                                self.current.id,
-                                                sql)
-        self.current.album_id = new_album_id
-        self.current.album = Objects.albums.get_name(
-                                                self.current.album_id,
-                                                sql)
-        self.current.aartist_id = new_aartist_id
-        self.current.aartist = translate_artist_name(
-                                        Objects.artists.get_name(
-                                                self.current.aartist_id,
-                                                sql))
-        artist_name = ""
-        for artist_id in Objects.tracks.get_artist_ids(self.current.id,
-                                                       sql):
-            artist_name += translate_artist_name(
-                            Objects.artists.get_name(artist_id, sql)) + ", "
-        self.current.artist = artist_name[:-2]
-
-        self.current.genre = Objects.albums.get_genre_name(
-                                                self.current.album_id,
-                                                sql)
-        self.current.duration = Objects.tracks.get_length(self.current.id, sql)
-        self.current.number = Objects.tracks.get_number(self.current.id, sql)
-        self.current.path = Objects.tracks.get_path(self.current.id, sql)
-        if path.exists(self.current.path):
-            try:
-                self._playbin.set_property('uri',
-                                           GLib.filename_to_uri(
-                                                        self.current.path))
-            except Exception as e:  # Gstreamer error, stop
-                print("BasePlayer::_load_track(): ", e)
-                self._on_errors()
-                return False
-        else:
-            print("File doesn't exist: ", self.current.path)
-            self._on_errors()
-            return False
-
-        if stop:
-            GLib.idle_add(self.stop)
-            GLib.idle_add(self.emit, "current-changed")
-        return True
+        # In case of multiple subclassing, 
+        # do not init variables for every subclass
+        try:
+            self._base_init == True
+        except:
+            GObject.GObject.__init__(self)    
+            self._base_init = True
+            # A user playlist used as current playlist
+            self._user_playlist = None
+            # Used by shuffle tracks to restore user playlist before shuffle
+            self._user_playlist_backup = None
+            self.current = CurrentTrack()
+            self.context = PlayContext()
+            # Albums in current playlist
+            self._albums = None
+            # Current shuffle mode
+            self._shuffle = Objects.settings.get_enum('shuffle')
+            # Tracks already played
+            self._played_tracks_history = []
+            # Used by shuffle albums to restore playlist before shuffle
+            self._albums_backup = None
+            # Albums already played
+            self._already_played_albums = []
+            # Tracks already played for albums
+            self._already_played_tracks = {}
+            # Party mode
+            self._is_party = False
+            # Player errors
+            self._errors = 0

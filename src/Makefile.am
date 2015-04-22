@@ -33,6 +33,7 @@ app_PYTHON = \
 	player.py\
     player_rg.py\
     player_base.py\
+    player_bin.py\
     player_queue.py\
     player_linear.py\
     player_shuffle.py\

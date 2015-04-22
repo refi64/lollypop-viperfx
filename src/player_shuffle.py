@@ -14,23 +14,16 @@
 import random
 
 from lollypop.define import Shuffle, NextContext, Objects
-
+from lollypop.player_base import BasePlayer
 
 # Manage shuffle tracks and party mode
-# Can only be used as child of Player class
-class ShufflePlayer:
+class ShufflePlayer(BasePlayer):
     """
         Init shuffle player
     """
     def __init__(self):
-        # Used by shuffle albums to restore playlist before shuffle
-        self._albums_backup = None
-        # Albums already played
-        self._already_played_albums = []
-        # Tracks already played for albums
-        self._already_played_tracks = {}
-        # Party mode
-        self._is_party = False
+       BasePlayer.__init__(self)
+       Objects.settings.connect('changed::shuffle', self._set_shuffle)
 
     """
         Next shuffle track
@@ -115,7 +108,27 @@ class ShufflePlayer:
 
 #######################
 # PRIVATE             #
-#######################g
+#######################
+    """
+        Set shuffle mode to gettings value
+        @param settings as Gio.Settings, value as str
+    """
+    def _set_shuffle(self, settings, value):
+        self._shuffle = Objects.settings.get_enum('shuffle')
+
+        if self._shuffle in [Shuffle.TRACKS, Shuffle.TRACKS_ARTIST] or\
+           self._user_playlist:
+            self._rgvolume.props.album_mode = 0
+        else:
+            self._rgvolume.props.album_mode = 1
+
+        if self._user_playlist:
+            self._shuffle_playlist()
+        else:
+            self.set_albums(self.current.id,
+                            self.current.aartist_id,
+                            self.context.genre_id)
+
     """
         Shuffle album list
     """
@@ -171,3 +184,26 @@ class ShufflePlayer:
             self._albums.remove(album_id)
 
         return None
+
+    """
+        Add a track to shuffle history
+        @param track id as int
+        @param album id as int
+    """
+    def _add_to_shuffle_history(self, track_id, album_id):
+        if self.current.album_id not in self._already_played_tracks.keys():
+            self._already_played_tracks[self.current.album_id] = []
+        self._already_played_tracks[self.current.album_id].append(
+                                                              self.current.id)
+
+    """
+        On stream start add to shuffle history
+    """
+    def _on_stream_start(self, bus, message):
+        # Add track to shuffle history if needed
+        if self._shuffle != Shuffle.NONE or self._is_party:
+            if self.current.id in self._played_tracks_history:
+                self._played_tracks_history.remove(self.current.id)
+            self._played_tracks_history.append(self.current.id)
+            self._add_to_shuffle_history(self.current.id,
+                                         self.current.album_id)

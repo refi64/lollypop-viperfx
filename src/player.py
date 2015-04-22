@@ -14,59 +14,30 @@
 from gi.repository import GObject, GLib
 
 from lollypop.tagreader import TagReader
-from lollypop.player_base import BasePlayer
+from lollypop.player_bin import BinPlayer
 from lollypop.player_queue import QueuePlayer
 from lollypop.player_linear import LinearPlayer
 from lollypop.player_shuffle import ShufflePlayer
 from lollypop.player_userplaylist import UserPlaylistPlayer
-from lollypop.define import Objects, Navigation, CurrentTrack
+from lollypop.define import Objects, Navigation
 from lollypop.define import Shuffle, PlayContext
 
 
 # Player object used to manage playback and playlists
-class Player(GObject.GObject, BasePlayer, QueuePlayer, UserPlaylistPlayer,
+class Player(BinPlayer, QueuePlayer, UserPlaylistPlayer,
              LinearPlayer, ShufflePlayer, TagReader):
-    __gsignals__ = {
-        'current-changed': (GObject.SignalFlags.RUN_FIRST, None, ()),
-        'seeked': (GObject.SignalFlags.RUN_FIRST, None, (int,)),
-        'status-changed': (GObject.SignalFlags.RUN_FIRST, None, ()),
-        'volume-changed': (GObject.SignalFlags.RUN_FIRST, None, ()),
-        'queue-changed': (GObject.SignalFlags.RUN_FIRST, None, ()),
-        'cover-changed': (GObject.SignalFlags.RUN_FIRST, None, (int,))
-    }
+
 
     """
         Create a gstreamer bin and listen to signals on bus
     """
     def __init__(self):
-        GObject.GObject.__init__(self)
-        BasePlayer.__init__(self)
+        BinPlayer.__init__(self)
         QueuePlayer.__init__(self)
         LinearPlayer.__init__(self)
         ShufflePlayer.__init__(self)
         UserPlaylistPlayer.__init__(self)
         TagReader.__init__(self)
-
-        self.current = CurrentTrack()
-        self.context = PlayContext()
-        # Albums in current playlist
-        self._albums = None
-        # Current shuffle mode
-        self._shuffle = Objects.settings.get_enum('shuffle')
-        # Tracks already played
-        self._played_tracks_history = []
-        # Player errors
-        self._errors = 0
-
-        self._playbin.connect("about-to-finish",
-                              self._on_stream_about_to_finish)
-        Objects.settings.connect('changed::shuffle', self._set_shuffle)
-
-        self._bus = self._playbin.get_bus()
-        self._bus.add_signal_watch()
-        self._bus.connect('message::error', self._on_bus_error)
-        self._bus.connect('message::eos', self._on_bus_eos)
-        self._bus.connect('message::stream-start', self._on_stream_start)
 
     """
         Play previous track
@@ -219,89 +190,9 @@ class Player(GObject.GObject, BasePlayer, QueuePlayer, UserPlaylistPlayer,
 # PRIVATE             #
 #######################
     """
-        Add a track to shuffle history
-        @param track id as int
-        @param album id as int
-    """
-    def _add_to_shuffle_history(self, track_id, album_id):
-        if self.current.album_id not in self._already_played_tracks.keys():
-            self._already_played_tracks[self.current.album_id] = []
-        self._already_played_tracks[self.current.album_id].append(self.current.id)
-
-    """
-        Set shuffle mode to gettings value
-        @param settings as Gio.Settings, value as str
-    """
-    def _set_shuffle(self, settings, value):
-        self._shuffle = Objects.settings.get_enum('shuffle')
-
-        if self._shuffle in [Shuffle.TRACKS, Shuffle.TRACKS_ARTIST] or\
-           self._user_playlist:
-            self._rgvolume.props.album_mode = 0
-        else:
-            self._rgvolume.props.album_mode = 1
-
-        if self._user_playlist:
-            self._shuffle_playlist()
-        else:
-            self.set_albums(self.current.id,
-                            self.current.aartist_id,
-                            self.context.genre_id)
-
-    """
         On stream start
         Emit "current-changed" to notify others components
     """
     def _on_stream_start(self, bus, message):
-        self.emit("current-changed")
-        self._errors = 0
-        # Add track to shuffle history if needed
-        if self._shuffle != Shuffle.NONE or self._is_party:
-            if self.current.id in self._played_tracks_history:
-                self._played_tracks_history.remove(self.current.id)
-            self._played_tracks_history.append(self.current.id)
-            self._add_to_shuffle_history(self.current.id,
-                                         self.current.album_id)
-
-    """
-        On error, next()
-    """
-    def _on_bus_error(self, bus, message):
-        print("Error playing: ", self.current.path)
-        self.next(True)
-        return False
-
-    """
-        On eos, force loading if queue fails,
-        if on_stream_about_to_finish never get send
-    """
-    def _on_bus_eos(self, bus, message):
-        self.load(self.current.id)
-
-    """
-        When stream is about to finish, switch to next track without gap
-    """
-    def _on_stream_about_to_finish(self, obj):
-        self._previous_track_id = self.current.id
-        # We are in a thread, we need to create a new cursor
-        sql = Objects.db.get_cursor()
-        self.next(False, sql)
-        # Add populariy if we listen to the song
-        album_id = Objects.tracks.get_album_id(self._previous_track_id, sql)
-        try:
-            Objects.albums.set_more_popular(album_id, sql)
-        except:
-            pass
-        sql.close()
-
-    """
-        On error, try 3 more times playing a track
-    """
-    def _on_errors(self):
-        self._errors += 1
-        if self._errors < 3:
-            GLib.idle_add(self.next, True)
-        else:
-            self.current = CurrentTrack()
-            GLib.idle_add(self.stop)
-            GLib.idle_add(self.emit, 'current-changed')
+        BinPlayer._on_stream_start(self, bus, message)
+        ShufflePlayer._on_stream_start(self, bus, message)

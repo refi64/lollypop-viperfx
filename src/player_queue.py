@@ -13,7 +13,6 @@
 
 
 # Manage a queue
-# Can only be used as child of Player class
 class QueuePlayer:
     """
         Init queue

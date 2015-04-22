@@ -14,19 +14,15 @@
 import random
 
 from lollypop.define import Shuffle
-
+from lollypop.player_base import BasePlayer
 
 # Manage user playlist
-# Can only be used as child of Player class
-class UserPlaylistPlayer:
+class UserPlaylistPlayer(BasePlayer):
     """
         Init user playlist
     """
     def __init__(self):
-        # A user playlist used as current playlist
-        self._user_playlist = None
-        # Used by shuffle tracks to restore user playlist before shuffle
-        self._user_playlist_backup = None
+        BasePlayer.__init__(self)
 
     """
         Set user playlist as current playback playlist

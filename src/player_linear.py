@@ -12,15 +12,16 @@
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 from lollypop.define import Objects
+from lollypop.player_base import BasePlayer
+
 
 # Manage normal playback
-# Can only be used as child of Player class
-class LinearPlayer:
+class LinearPlayer(BasePlayer):
     """
         Init linear player
     """
     def __init__(self):
-        pass
+        BasePlayer.__init__(self)
 
     """
         Next track based on current context
