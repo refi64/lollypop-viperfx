@@ -19,16 +19,17 @@ app_PYTHON = \
 	queue.py\
 	settings.py\
 	playlists.py\
-	playlist_widgets.py\
 	view.py\
     view_container.py\
     view_device.py\
     view_playlists.py\
-    view_albums.py\
+    view_album.py\
 	mpris.py\
 	search.py\
-	tracks.py\
-	album_widgets.py\
+	widgets_track.py\
+	widgets_album.py\
+	widgets_playlist.py\
+	widgets_device.py\
     tagreader.py\
 	player.py\
     player_rg.py\
@@ -41,6 +42,5 @@ app_PYTHON = \
 	popimages.py\
 	popalbums.py\
 	popmenu.py\
-	devicemanager.py\
 	collectionscanner.py
 

@@ -16,8 +16,8 @@ from gi.repository import Gtk
 from _thread import start_new_thread
 
 from lollypop.view import View
-from lollypop.playlist_widgets import PlaylistWidget, PlaylistEditWidget
-from lollypop.playlist_widgets import PlaylistsManagerWidget
+from lollypop.widgets_playlist import PlaylistWidget, PlaylistEditWidget
+from lollypop.widgets_playlist import PlaylistsManagerWidget
 from lollypop.define import Objects
 
 

@@ -18,7 +18,7 @@ from _thread import start_new_thread
 from gettext import gettext as _
 
 from lollypop.view import View
-from lollypop.devicemanager import DeviceManagerWidget
+from lollypop.widgets_device import DeviceManagerWidget
 
 
 # Playlist synchronisation view

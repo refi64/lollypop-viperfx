@@ -18,7 +18,7 @@ from cgi import escape
 from gettext import gettext as _
 
 from lollypop.define import Objects, ArtSize, Navigation
-from lollypop.tracks import TracksWidget
+from lollypop.widgets_track import TracksWidget
 from lollypop.utils import translate_artist_name
 
 # Playlist Widget is similar to album detailed

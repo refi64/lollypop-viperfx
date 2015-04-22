@@ -16,7 +16,7 @@ from cgi import escape
 from gettext import gettext as _
 
 from lollypop.define import Objects, Navigation, ArtSize, NextContext
-from lollypop.tracks import TracksWidget
+from lollypop.widgets_track import TracksWidget
 from lollypop.popmenu import PopAlbumMenu
 from lollypop.popimages import PopImages
 from lollypop.utils import translate_artist_name

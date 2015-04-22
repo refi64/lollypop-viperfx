@@ -17,7 +17,7 @@ from _thread import start_new_thread
 
 from lollypop.view import View
 from lollypop.view_container import ViewContainer
-from lollypop.album_widgets import AlbumSimpleWidget, AlbumDetailedWidget
+from lollypop.widgets_album import AlbumSimpleWidget, AlbumDetailedWidget
 from lollypop.define import Objects, Navigation, ArtSize
 from lollypop.utils import translate_artist_name
 

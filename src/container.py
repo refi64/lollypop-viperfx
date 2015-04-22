@@ -21,7 +21,7 @@ from lollypop.define import Objects, Navigation
 from lollypop.selectionlist import SelectionList
 from lollypop.playlists import PlaylistsManager
 from lollypop.view_container import ViewContainer
-from lollypop.view_albums import AlbumView, ArtistView
+from lollypop.view_album import AlbumView, ArtistView
 from lollypop.view_playlists import PlaylistView
 from lollypop.view_playlists import PlaylistManageView, PlaylistEditView
 from lollypop.view_device import DeviceView
