@@ -131,8 +131,6 @@ class Player(GObject.GObject, BasePlayer, QueuePlayer, UserPlaylistPlayer,
             else:
                 self.set_album(album_id)
 
-
-
     """
         Set album as current album list (for next/prev)
         Set track as current track in album
