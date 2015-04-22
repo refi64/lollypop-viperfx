@@ -239,8 +239,7 @@ class PlaylistsMenu(BaseMenu):
         playlist_action = Gio.SimpleAction(name="playlist_action")
         self._app.add_action(playlist_action)
         playlist_action.connect('activate',
-                                self._add_to_playlists,
-                                self._object_id)
+                                self._add_to_playlists)
         self.append(_("Add to others"), 'app.playlist_action')
 
         i = 0
