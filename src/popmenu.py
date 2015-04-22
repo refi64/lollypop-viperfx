@@ -41,8 +41,7 @@ class PlaybackMenu(BaseMenu):
     """
     def __init__(self):
         BaseMenu.__init__(self, None, None, None)
-        if not Objects.player.is_party():
-            self._set_playback_actions()
+        self._set_playback_actions()
 
 #######################
 # PRIVATE             #
@@ -316,8 +315,9 @@ class PopToolbarMenu(Gio.Menu):
     """
     def __init__(self, object_id, genre_id):
         Gio.Menu.__init__(self)
-        self.insert_section(0, _("Playback"),
-                            PlaybackMenu())
+        if not Objects.player.is_party():
+            self.insert_section(0, _("Playback"),
+                                PlaybackMenu())
         self.insert_section(1, _("Playlists"),
                             PlaylistsMenu(object_id, genre_id, False))
 
