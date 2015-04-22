@@ -409,8 +409,7 @@ class AlbumDetailedWidget(AlbumWidget):
         avg_popularity = Objects.albums.get_avg_popularity()
         if avg_popularity > 0:
             popularity = Objects.albums.get_popularity(self._album_id)
-            stars = popularity*5/avg_popularity
-
+            stars = popularity*5/avg_popularity+0.5
             if stars < 1:
                 for i in range(5):
                     self._stars[i].set_property("opacity", 0.2)
