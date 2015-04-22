@@ -10,9 +10,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lollypop\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-04-21 15:23+0200\n"
-"PO-Revision-Date: 2015-04-21 13:47+0000\n"
-"Last-Translator: Cédric Bellegarde <web@adishatz.org>\n"
+"POT-Creation-Date: 2015-04-22 07:37+0200\n"
+"PO-Revision-Date: 2015-04-22 19:01+0000\n"
+"Last-Translator: Yosef Or Boczko <yoseforb@gmail.com>\n"
 "Language-Team: Hebrew (http://www.transifex.com/projects/p/lollypop/language/he/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -171,27 +171,27 @@ msgstr "ניגון"
 msgid "Pause"
 msgstr "השהיה"
 
-#: ../src/container.py:333
+#: ../src/container.py:328
 msgid "Popular albums"
 msgstr "אלבומים חביבים"
 
-#: ../src/container.py:334
+#: ../src/container.py:329
 msgid "Recent albums"
 msgstr "אלבומים אחרונים"
 
-#: ../src/container.py:335 ../src/popmenu.py:47
+#: ../src/container.py:330 ../src/popmenu.py:47
 msgid "Playlists"
 msgstr "רשימות השמעה"
 
-#: ../src/container.py:337
+#: ../src/container.py:332
 msgid "All artists"
 msgstr "כל האמנים"
 
-#: ../src/container.py:339
+#: ../src/container.py:334
 msgid "All albums"
 msgstr "כל האלבומים"
 
-#: ../src/container.py:381
+#: ../src/container.py:376
 msgid "Compilations"
 msgstr "אוספים"
 
@@ -374,10 +374,14 @@ msgid "Edit"
 msgstr "עריכה"
 
 #: ../data/PopImages.ui.h:1
+msgid "No cover found..."
+msgstr "לא נמצאה עטיפה…"
+
+#: ../data/PopImages.ui.h:2
 msgid "Please wait..."
 msgstr "נא להמתין…"
 
-#: ../data/PopImages.ui.h:2
+#: ../data/PopImages.ui.h:3
 msgid "Select a cover art for this album"
 msgstr "בחירת עטיפה לאלבום זה"
 

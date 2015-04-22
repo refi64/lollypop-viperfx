@@ -9,8 +9,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lollypop\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-04-21 15:23+0200\n"
-"PO-Revision-Date: 2015-04-21 16:22+0000\n"
+"POT-Creation-Date: 2015-04-22 07:37+0200\n"
+"PO-Revision-Date: 2015-04-22 08:04+0000\n"
 "Last-Translator: Pietro Acinapura <pietro.ac@gmail.com>\n"
 "Language-Team: Italian (http://www.transifex.com/projects/p/lollypop/language/it/)\n"
 "MIME-Version: 1.0\n"
@@ -170,27 +170,27 @@ msgstr "Esegui"
 msgid "Pause"
 msgstr "Pausa"
 
-#: ../src/container.py:333
+#: ../src/container.py:328
 msgid "Popular albums"
 msgstr "Album popolari"
 
-#: ../src/container.py:334
+#: ../src/container.py:329
 msgid "Recent albums"
 msgstr "Album recenti"
 
-#: ../src/container.py:335 ../src/popmenu.py:47
+#: ../src/container.py:330 ../src/popmenu.py:47
 msgid "Playlists"
 msgstr "Playlists"
 
-#: ../src/container.py:337
+#: ../src/container.py:332
 msgid "All artists"
 msgstr "Tutti gli artisti"
 
-#: ../src/container.py:339
+#: ../src/container.py:334
 msgid "All albums"
 msgstr "Tutti gli album"
 
-#: ../src/container.py:381
+#: ../src/container.py:376
 msgid "Compilations"
 msgstr "Compilation"
 
@@ -373,10 +373,14 @@ msgid "Edit"
 msgstr "Modifica"
 
 #: ../data/PopImages.ui.h:1
+msgid "No cover found..."
+msgstr "Copertina non trovata..."
+
+#: ../data/PopImages.ui.h:2
 msgid "Please wait..."
 msgstr "Attendere prego..."
 
-#: ../data/PopImages.ui.h:2
+#: ../data/PopImages.ui.h:3
 msgid "Select a cover art for this album"
 msgstr "Seleziona una copertina per questo album"
 

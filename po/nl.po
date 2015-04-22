@@ -10,9 +10,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lollypop\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-04-21 15:23+0200\n"
-"PO-Revision-Date: 2015-04-21 13:47+0000\n"
-"Last-Translator: Cédric Bellegarde <web@adishatz.org>\n"
+"POT-Creation-Date: 2015-04-22 07:37+0200\n"
+"PO-Revision-Date: 2015-04-22 07:53+0000\n"
+"Last-Translator: Nathan Follens\n"
 "Language-Team: Dutch (http://www.transifex.com/projects/p/lollypop/language/nl/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -62,7 +62,7 @@ msgstr "Gebruik XDG_MUSIC_DIR wanneer leeg"
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:11
 msgid "Favorite cover file"
-msgstr ""
+msgstr "Favoriete albumhoes"
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:12
 msgid "Restart needed"
@@ -70,12 +70,12 @@ msgstr "Opnieuw opstarten van Lollypop vereist"
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:13
 msgid "Database version"
-msgstr ""
+msgstr "Databaseversie"
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:14
 msgid ""
 "Reset this value will reset the database, popular albums will be restored"
-msgstr ""
+msgstr "Deze waarde opnieuw instellen zal de database opnieuw instellen, populaire albums zullen hersteld worden"
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:15
 msgid "Replay gain value in db"
@@ -91,7 +91,7 @@ msgstr "Bibliotheek scannen bij opstarten"
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:18
 msgid "Show genres list"
-msgstr ""
+msgstr "Toon genrelijst"
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:19
 msgid "Use dark gtk theme"
@@ -99,13 +99,13 @@ msgstr "Donker GTK-thema gebruiken"
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:20
 msgid "Force the use client side window decorations (headerbar)"
-msgstr ""
+msgstr "Verplicht het gebruik van client side window decorations (headerbar)"
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:21
 msgid ""
 "If set to true CSD headerbars will be used, even if the detected desktop "
 "environment is not amongst those that are expected to support it."
-msgstr ""
+msgstr "Indien waar zullen CSD headerbars gebruikt worden, zelfs als de gedetecteerde bureaubladomgeving niet verwacht wordt deze te ondersteunen."
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:22 ../data/SettingsDialog.ui.h:4
 msgid "Continue playback when closed"
@@ -113,7 +113,7 @@ msgstr "Doorgaan met afspelen wanneer gesloten"
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:23
 msgid "Restore previous state"
-msgstr ""
+msgstr "Vorige toestand herstellen"
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:24
 msgid "Auto play albums on click"
@@ -121,11 +121,11 @@ msgstr "Albums automatisch afspelen bij klik"
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:25
 msgid "Disable MPRIS"
-msgstr ""
+msgstr "MPRIS uitzetten"
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:26
 msgid "Disable notifications"
-msgstr ""
+msgstr "Meldingen uitzetten"
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:27
 msgid "INTERNAL"
@@ -143,7 +143,7 @@ msgid ""
 "\"none\" (shuffle off), \"tracks\" (shuffle tracks) , \"albums\" (shuffle "
 "albums), \"tracks_artist\" (shuffle tracks from artist), \"albums_artist\" "
 "(shuffle albums from artist)."
-msgstr ""
+msgstr "Waarde bepaalt of nummers/albums in willekeurige volgorde afgespeeld worden. Toegelaten waarden zijn: \"none\" (geen willekeurige volgorde), \"tracks\" (nummers in willekeurige volgorde), \"albums\" (albums in willekeurige volgorde), \"tracks_artist\" (nummers van artiest in willekeurige volgorde), \"albums_artist\" (albums van artiest in willekeurige volgorde)."
 
 #: ../data/lollypop.desktop.in.h:1 ../data/lollypop.appdata.xml.in.h:1
 msgid "Lollypop"
@@ -171,27 +171,27 @@ msgstr "Afspelen"
 msgid "Pause"
 msgstr "Pauzeren"
 
-#: ../src/container.py:333
+#: ../src/container.py:328
 msgid "Popular albums"
 msgstr "Populaire albums"
 
-#: ../src/container.py:334
+#: ../src/container.py:329
 msgid "Recent albums"
-msgstr ""
+msgstr "Recente albums"
 
-#: ../src/container.py:335 ../src/popmenu.py:47
+#: ../src/container.py:330 ../src/popmenu.py:47
 msgid "Playlists"
 msgstr "Afspeellijsten"
 
-#: ../src/container.py:337
+#: ../src/container.py:332
 msgid "All artists"
 msgstr "Alle artiesten"
 
-#: ../src/container.py:339
+#: ../src/container.py:334
 msgid "All albums"
 msgstr "Alle albums"
 
-#: ../src/container.py:381
+#: ../src/container.py:376
 msgid "Compilations"
 msgstr "Compilaties"
 
@@ -265,15 +265,15 @@ msgstr "Doorgaan met afspelen"
 
 #: ../src/popmenu.py:69
 msgid "Stop after this track"
-msgstr ""
+msgstr "Stoppen na dit nummer"
 
 #: ../src/popmenu.py:74
 msgid "Stop after this album"
-msgstr ""
+msgstr "Stoppen na dit album"
 
 #: ../src/popmenu.py:79
 msgid "Stop after this artist"
-msgstr ""
+msgstr "Stoppen na deze artiest"
 
 #: ../src/popmenu.py:93
 msgid "Add to others"
@@ -318,7 +318,7 @@ msgstr "Zoeken:"
 #: ../src/album_widgets.py:178
 #, python-format
 msgid "Disc %s"
-msgstr ""
+msgstr "Schijf %s"
 
 #: ../data/AboutDialog.ui.in.h:1
 msgid "A music player for GNOME."
@@ -331,7 +331,7 @@ msgstr "Bezoek de website van Lollypop"
 #. Replace me with your names
 #: ../data/AboutDialog.ui.in.h:4
 msgid "Cédric Bellegarde <cedric.bellegarde@adishatz.org>"
-msgstr ""
+msgstr "Cédric Bellegarde <cedric.bellegarde@adishatz.org>"
 
 #: ../data/QueueWidget.ui.h:1
 msgid "Queue:"
@@ -374,10 +374,14 @@ msgid "Edit"
 msgstr "Bewerken"
 
 #: ../data/PopImages.ui.h:1
-msgid "Please wait..."
-msgstr ""
+msgid "No cover found..."
+msgstr "Geen hoes gevonden..."
 
 #: ../data/PopImages.ui.h:2
+msgid "Please wait..."
+msgstr "Even geduld..."
+
+#: ../data/PopImages.ui.h:3
 msgid "Select a cover art for this album"
 msgstr "Een albumhoes voor dit album selecteren"
 
@@ -395,11 +399,11 @@ msgstr "Nummers in willekeurige volgorde"
 
 #: ../data/Toolbar.ui.h:4
 msgid "Shuffle albums from artist"
-msgstr ""
+msgstr "Albums van artiest in willekeurige volgorde"
 
 #: ../data/Toolbar.ui.h:5
 msgid "Shuffle tracks from artist"
-msgstr ""
+msgstr "Nummers van artiest in willekeurige volgorde"
 
 #: ../data/Toolbar.ui.h:9
 msgid "Settings"
@@ -431,7 +435,7 @@ msgstr "Toevoegen aan afspeellijst"
 
 #: ../data/SettingsDialog.ui.h:1
 msgid "Preferences"
-msgstr ""
+msgstr "Voorkeuren"
 
 #: ../data/SettingsDialog.ui.h:2
 msgid "Update music on startup"
@@ -439,7 +443,7 @@ msgstr "Update muziek bij opstarten"
 
 #: ../data/SettingsDialog.ui.h:3
 msgid "Restore state on startup"
-msgstr ""
+msgstr "Toestand herstellen bij opstarten"
 
 #: ../data/SettingsDialog.ui.h:5
 msgid "Play albums on 2nd click"
@@ -459,7 +463,7 @@ msgstr "Toon genres"
 
 #: ../data/SettingsDialog.ui.h:9
 msgid "Appearance"
-msgstr ""
+msgstr "Uiterlijk"
 
 #: ../data/SettingsDialog.ui.h:10
 msgid "Configure lollypop behaviour"
@@ -467,7 +471,7 @@ msgstr "Pas gedrag van lollypop aan"
 
 #: ../data/SettingsDialog.ui.h:11
 msgid "Options"
-msgstr ""
+msgstr "Opties"
 
 #: ../data/SettingsDialog.ui.h:12
 msgid "Select music folders"
@@ -487,10 +491,10 @@ msgstr "Synchroniseer je apparaat met deze afspeellijst"
 
 #: ../data/Unicode.ui.h:1
 msgid "Error"
-msgstr ""
+msgstr "Fout"
 
 #: ../data/Unicode.ui.h:2
 msgid ""
 "Lollypop isn't designed to work without an unicode locale.\n"
 "Please fix your system."
-msgstr ""
+msgstr "Lollypop is niet gemaakt om te werken zonder een unicode locale.\nHerstel je systeem."
