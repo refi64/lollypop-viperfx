@@ -144,20 +144,25 @@ class AlbumDetailedWidget(AlbumWidget):
         @param genre id as int
         @param parent width as int
         @param show_menu as bool if menu need to be displayed
+        @param context as bool
         @param size group as Gtk.SizeGroup
     """
-    def __init__(self, album_id, genre_id, show_menu, size_group):
+    def __init__(self, album_id, genre_id, show_menu, context, size_group):
         AlbumWidget.__init__(self, album_id)
-
-        builder = Gtk.Builder()
-        builder.add_from_resource(
-                    '/org/gnome/Lollypop/AlbumDetailedWidget.ui')
-        builder.connect_signals(self)
 
         self._artist_id = Objects.albums.get_artist_id(album_id)
         self._album_id = album_id
         self._genre_id = genre_id
-        
+
+        builder = Gtk.Builder()
+        if context:
+            builder.add_from_resource(
+                    '/org/gnome/Lollypop/AlbumContextWidget.ui')
+        else:
+            builder.add_from_resource(
+                    '/org/gnome/Lollypop/AlbumDetailedWidget.ui')
+        builder.connect_signals(self)
+
         self._stars = []
         self._stars.append(builder.get_object('star0'))
         self._stars.append(builder.get_object('star1'))

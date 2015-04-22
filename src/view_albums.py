@@ -96,6 +96,7 @@ class ArtistView(View):
             widget = AlbumDetailedWidget(albums.pop(0),
                                          genre_id,
                                          self._show_menu,
+                                         False,
                                          size_group)
             widget.show()
             start_new_thread(widget.populate, ())
@@ -215,6 +216,7 @@ class AlbumView(View):
         size_group = Gtk.SizeGroup(mode=Gtk.SizeGroupMode.HORIZONTAL)
         self._context_widget = AlbumDetailedWidget(album_id,
                                                    self._genre_id,
+                                                   True,
                                                    True,
                                                    size_group)
         start_new_thread(self._context_widget.populate, ())
