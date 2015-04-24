@@ -349,6 +349,7 @@ class AlbumDetailedWidget(AlbumWidget):
         @param track id as int
     """
     def _on_activated(self, widget, track_id):
+        Objects.player.context.next = NextContext.STOP_NONE
         if not Objects.player.is_party():
             Objects.player.set_albums(track_id,
                                       self._artist_id,
