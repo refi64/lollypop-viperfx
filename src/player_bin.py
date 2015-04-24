@@ -174,7 +174,6 @@ class BinPlayer(ReplayGainPlayer, BasePlayer):
 
         # Stop if needed
         if self.context.next == NextContext.STOP_TRACK:
-            self.context.next = NextContext.STOP_NONE
             stop = True
 
         # Stop if album changed
@@ -183,7 +182,6 @@ class BinPlayer(ReplayGainPlayer, BasePlayer):
                                                 sql)
         if self.context.next == NextContext.STOP_ALBUM and\
            self.current.album_id != new_album_id:
-            self.context.next = NextContext.STOP_NONE
             stop = True
 
         # Stop if aartist changed
@@ -192,8 +190,10 @@ class BinPlayer(ReplayGainPlayer, BasePlayer):
                                                 sql)
         if self.context.next == NextContext.STOP_ARTIST and\
            self.current.aartist_id != new_aartist_id:
-            self.context.next = NextContext.STOP_NONE
             stop = True
+
+        if stop:
+            return False
 
         self.current.id = track_id
         self.current.title = Objects.tracks.get_name(
@@ -234,10 +234,6 @@ class BinPlayer(ReplayGainPlayer, BasePlayer):
             print("File doesn't exist: ", self.current.path)
             self._on_errors()
             return False
-
-        if stop:
-            GLib.idle_add(self.stop)
-            GLib.idle_add(self.emit, "current-changed")
         return True
 
     """
@@ -249,11 +245,17 @@ class BinPlayer(ReplayGainPlayer, BasePlayer):
         return False
 
     """
-        On eos, force loading if queue fails,
-        if on_stream_about_to_finish never get send
+        On end of stream, stop playing if user ask for
+        Else force playing current track
     """
     def _on_bus_eos(self, bus, message):
-        self.load(self.current.id)
+        if self.context.next != NextContext.STOP_NONE:
+            self.context.next = NextContext.STOP_NONE
+            self.stop()
+            self.next(False)
+            self.emit("current-changed")
+        else:
+            self.load(self.current.id)
 
     """
         When stream is about to finish, switch to next track without gap
