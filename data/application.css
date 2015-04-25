@@ -48,6 +48,7 @@ Gtk.ListBoxRow .menubutton:hover {
 .trackrow {
 	background-color: transparent;
   	color: inherit;
+	text-shadow: none;
 }
 
 .trackrow:hover {
@@ -63,6 +64,7 @@ Gtk.ListBoxRow .menubutton:hover {
 .trackrowplaying {
 	background-color: alpha(#000000, 0.05);
   	color: inherit;
+	text-shadow: none;
 }
 
 .trackrowplaying .menubutton{
