@@ -45,7 +45,8 @@ class Player(BinPlayer, QueuePlayer, UserPlaylistPlayer,
         # Look at shuffle
         if track_id is None:
             track_id = ShufflePlayer.prev(self)
-            
+
+        # Get previous track in history
         if track_id is None:
             track_id = LinearPlayer.prev(self)
 
@@ -65,11 +66,11 @@ class Player(BinPlayer, QueuePlayer, UserPlaylistPlayer,
         if track_id is None:
             track_id = UserPlaylistPlayer.next(self)
 
-        # Get a random album/track
+        # Get a random album/track then
         if track_id is None:
             track_id = ShufflePlayer.next(self, sql)
 
-        # Get a linear track
+        # Get a linear track then
         if track_id is None:
             track_id = LinearPlayer.next(self, sql)
 
