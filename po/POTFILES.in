@@ -18,7 +18,7 @@ src/database_genres.py
 src/albumart.py
 src/selectionlist.py
 src/playlists.py
-src/playlist_widgets.py
+src/widgets_playlist.py
 src/queue.py
 src/fullscreen.py
 src/view_device.py
@@ -29,7 +29,7 @@ src/settings.py
 src/mpris.py
 src/utils.py
 src/search.py
-src/album_widgets.py
+src/widgets_album.py
 src/player.py
 src/collectionscanner.py
 [type: gettext/glade]data/AboutDialog.ui.in
