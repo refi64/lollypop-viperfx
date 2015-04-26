@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-04-22 07:37+0200\n"
+"POT-Creation-Date: 2015-04-26 23:44+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -157,14 +157,15 @@ msgstr ""
 msgid "Music player for the GNOME desktop"
 msgstr ""
 
-#: ../src/toolbar.py:238 ../src/toolbar.py:282 ../src/toolbar.py:298
-#: ../src/fullscreen.py:178 ../data/Toolbar.ui.h:7
-msgid "Play"
+#: ../src/collectionscanner.py:60
+msgid "Your music is updating"
 msgstr ""
 
-#: ../src/toolbar.py:274 ../src/toolbar.py:301 ../src/fullscreen.py:75
-#: ../src/fullscreen.py:174
-msgid "Pause"
+#: ../src/collectionscanner.py:271 ../src/collectionscanner.py:276
+#: ../src/collectionscanner.py:290 ../src/collectionscanner.py:295
+#: ../src/database_albums.py:230 ../src/database_artists.py:70
+#: ../src/database_genres.py:67 ../src/database_tracks.py:187
+msgid "Unknown"
 msgstr ""
 
 #: ../src/container.py:328
@@ -175,7 +176,8 @@ msgstr ""
 msgid "Recent albums"
 msgstr ""
 
-#: ../src/container.py:330 ../src/popmenu.py:47
+#: ../src/container.py:330 ../src/popmenu.py:321 ../src/popmenu.py:336
+#: ../src/popmenu.py:351
 msgid "Playlists"
 msgstr ""
 
@@ -191,47 +193,97 @@ msgstr ""
 msgid "Compilations"
 msgstr ""
 
-#: ../src/notification.py:37 ../data/Toolbar.ui.h:6
-msgid "Previous"
-msgstr ""
-
-#: ../src/notification.py:41 ../data/Toolbar.ui.h:8
-msgid "Next"
-msgstr ""
-
-#. TRANSLATORS: by refers to the artist,
-#. from to the album
-#: ../src/notification.py:73
-#, python-format
-msgid "by %s, from %s"
+#: ../src/database_albums.py:247
+msgid "Compilation"
 msgstr ""
 
 #: ../src/database_artists.py:62
 msgid "Many artists"
 msgstr ""
 
-#: ../src/database_artists.py:70 ../src/database_albums.py:230
-#: ../src/database_tracks.py:187 ../src/database_genres.py:67
-#: ../src/collectionscanner.py:269 ../src/collectionscanner.py:274
-#: ../src/collectionscanner.py:288 ../src/collectionscanner.py:293
-msgid "Unknown"
+#: ../src/fullscreen.py:75 ../src/fullscreen.py:174 ../src/toolbar.py:273
+#: ../src/toolbar.py:300
+msgid "Pause"
 msgstr ""
 
-#: ../src/database_albums.py:247
-msgid "Compilation"
+#: ../src/fullscreen.py:178 ../src/toolbar.py:237 ../src/toolbar.py:281
+#: ../src/toolbar.py:297 ../data/Toolbar.ui.h:7
+msgid "Play"
 msgstr ""
 
-#: ../src/playlist_widgets.py:222 ../src/playlist_widgets.py:225
-msgid "New playlist "
+#: ../src/notification.py:64 ../data/Toolbar.ui.h:6
+msgid "Previous"
 msgstr ""
 
-#: ../src/playlist_widgets.py:267 ../src/playlist_widgets.py:526
+#: ../src/notification.py:68 ../data/Toolbar.ui.h:8
+msgid "Next"
+msgstr ""
+
+#. TRANSLATORS: by refers to the artist,
+#. from to the album
+#: ../src/notification.py:94
 #, python-format
-msgid "Remove \"%s\"?"
+msgid "by %s, from %s"
 msgstr ""
 
-#: ../src/playlist_widgets.py:565
-msgid "Remove these tracks?"
+#: ../src/popmenu.py:58
+msgid "Continue playback"
+msgstr ""
+
+#: ../src/popmenu.py:63
+msgid "Stop after this track"
+msgstr ""
+
+#: ../src/popmenu.py:68
+msgid "Stop after this album"
+msgstr ""
+
+#: ../src/popmenu.py:73
+msgid "Stop after this artist"
+msgstr ""
+
+#: ../src/popmenu.py:162 ../data/SearchRow.ui.h:3
+msgid "Add to queue"
+msgstr ""
+
+#: ../src/popmenu.py:167
+msgid "Next tracks"
+msgstr ""
+
+#: ../src/popmenu.py:169
+msgid "Next track"
+msgstr ""
+
+#: ../src/popmenu.py:173
+msgid "Remove from queue"
+msgstr ""
+
+#: ../src/popmenu.py:240
+msgid "Add to others"
+msgstr ""
+
+#: ../src/popmenu.py:253
+#, python-format
+msgid "Remove from \"%s\""
+msgstr ""
+
+#: ../src/popmenu.py:259
+#, python-format
+msgid "Add to \"%s\""
+msgstr ""
+
+#: ../src/popmenu.py:319 ../src/popmenu.py:334 ../src/popmenu.py:349
+msgid "Playback"
+msgstr ""
+
+#: ../src/search.py:148
+msgid "Search:"
+msgstr ""
+
+#. Handle language ordering
+#. Translators: Add here words that shoud be ignored for artist sort order
+#: ../src/utils.py:106
+msgid "The the"
 msgstr ""
 
 #: ../src/view_device.py:39 ../src/view_device.py:80
@@ -243,98 +295,43 @@ msgstr ""
 msgid "Cancel synchronization"
 msgstr ""
 
-#: ../src/devicemanager.py:401
-msgid "Unknown error while syncing, try to reboot your device"
-msgstr ""
-
-#: ../src/devicemanager.py:408
-msgid "No free space available on device"
-msgstr ""
-
-#: ../src/popmenu.py:42
-msgid "Playback"
-msgstr ""
-
-#: ../src/popmenu.py:64
-msgid "Continue playback"
-msgstr ""
-
-#: ../src/popmenu.py:69
-msgid "Stop after this track"
-msgstr ""
-
-#: ../src/popmenu.py:74
-msgid "Stop after this album"
-msgstr ""
-
-#: ../src/popmenu.py:79
-msgid "Stop after this artist"
-msgstr ""
-
-#: ../src/popmenu.py:93
-msgid "Add to others"
-msgstr ""
-
-#: ../src/popmenu.py:107
-#, python-format
-msgid "Remove from \"%s\""
-msgstr ""
-
-#: ../src/popmenu.py:114
-#, python-format
-msgid "Add to \"%s\""
-msgstr ""
-
-#: ../src/popmenu.py:158 ../data/SearchRow.ui.h:3
-msgid "Add to queue"
-msgstr ""
-
-#: ../src/popmenu.py:164
-msgid "Next tracks"
-msgstr ""
-
-#: ../src/popmenu.py:166
-msgid "Next track"
-msgstr ""
-
-#: ../src/popmenu.py:171
-msgid "Remove from queue"
-msgstr ""
-
-#. Handle language ordering
-#. Translators: Add here words that shoud be ignored for artist sort order
-#: ../src/utils.py:106
-msgid "The the"
-msgstr ""
-
-#: ../src/search.py:148
-msgid "Search:"
-msgstr ""
-
-#: ../src/album_widgets.py:178
+#: ../src/widgets_album.py:183
 #, python-format
 msgid "Disc %s"
 msgstr ""
 
-#: ../data/AboutDialog.ui.in.h:1
+#: ../src/widgets_device.py:401
+msgid "Unknown error while syncing, try to reboot your device"
+msgstr ""
+
+#: ../src/widgets_device.py:408
+msgid "No free space available on device"
+msgstr ""
+
+#: ../src/widgets_playlist.py:222 ../src/widgets_playlist.py:225
+msgid "New playlist "
+msgstr ""
+
+#: ../src/widgets_playlist.py:267 ../src/widgets_playlist.py:526
+#, python-format
+msgid "Remove \"%s\"?"
+msgstr ""
+
+#: ../src/widgets_playlist.py:565
+msgid "Remove these tracks?"
+msgstr ""
+
+#: ../data/AboutDialog.ui.h:1
 msgid "A music player for GNOME."
 msgstr ""
 
-#: ../data/AboutDialog.ui.in.h:2
+#: ../data/AboutDialog.ui.h:2
 msgid "Visit Lollypop website"
 msgstr ""
 
 #. Replace me with your names
-#: ../data/AboutDialog.ui.in.h:4
+#: ../data/AboutDialog.ui.h:4
 msgid "Cédric Bellegarde <cedric.bellegarde@adishatz.org>"
-msgstr ""
-
-#: ../data/QueueWidget.ui.h:1
-msgid "Queue:"
-msgstr ""
-
-#: ../data/QueueWidget.ui.h:2
-msgid "Clear queue"
 msgstr ""
 
 #: ../data/Appmenu.ui.h:1
@@ -355,6 +352,10 @@ msgstr ""
 
 #: ../data/Appmenu.ui.h:5
 msgid "_Quit"
+msgstr ""
+
+#: ../data/DeviceManagerView.ui.h:1
+msgid "Synchronize your device with this playlists"
 msgstr ""
 
 #: ../data/PlaylistEditWidget.ui.h:1 ../data/PlaylistsManagerWidget.ui.h:1
@@ -381,44 +382,12 @@ msgstr ""
 msgid "Select a cover art for this album"
 msgstr ""
 
-#: ../data/Toolbar.ui.h:1
-msgid "No shuffle"
+#: ../data/QueueWidget.ui.h:1
+msgid "Queue:"
 msgstr ""
 
-#: ../data/Toolbar.ui.h:2
-msgid "Shuffle albums"
-msgstr ""
-
-#: ../data/Toolbar.ui.h:3
-msgid "Shuffle tracks"
-msgstr ""
-
-#: ../data/Toolbar.ui.h:4
-msgid "Shuffle albums from artist"
-msgstr ""
-
-#: ../data/Toolbar.ui.h:5
-msgid "Shuffle tracks from artist"
-msgstr ""
-
-#: ../data/Toolbar.ui.h:9
-msgid "Settings"
-msgstr ""
-
-#: ../data/Toolbar.ui.h:10
-msgid "Shuffle"
-msgstr ""
-
-#: ../data/Toolbar.ui.h:11 ../data/SettingsDialog.ui.h:15
-msgid "Party mode"
-msgstr ""
-
-#: ../data/Toolbar.ui.h:12
-msgid "Search"
-msgstr ""
-
-#: ../data/Toolbar.ui.h:13
-msgid "Queue"
+#: ../data/QueueWidget.ui.h:2
+msgid "Clear queue"
 msgstr ""
 
 #: ../data/SearchRow.ui.h:1
@@ -481,8 +450,44 @@ msgstr ""
 msgid "Select what will be available in party mode"
 msgstr ""
 
-#: ../data/DeviceManagerView.ui.h:1
-msgid "Synchronize your device with this playlists"
+#: ../data/SettingsDialog.ui.h:15 ../data/Toolbar.ui.h:11
+msgid "Party mode"
+msgstr ""
+
+#: ../data/Toolbar.ui.h:1
+msgid "No shuffle"
+msgstr ""
+
+#: ../data/Toolbar.ui.h:2
+msgid "Shuffle albums"
+msgstr ""
+
+#: ../data/Toolbar.ui.h:3
+msgid "Shuffle tracks"
+msgstr ""
+
+#: ../data/Toolbar.ui.h:4
+msgid "Shuffle albums from artist"
+msgstr ""
+
+#: ../data/Toolbar.ui.h:5
+msgid "Shuffle tracks from artist"
+msgstr ""
+
+#: ../data/Toolbar.ui.h:9
+msgid "Settings"
+msgstr ""
+
+#: ../data/Toolbar.ui.h:10
+msgid "Shuffle"
+msgstr ""
+
+#: ../data/Toolbar.ui.h:12
+msgid "Search"
+msgstr ""
+
+#: ../data/Toolbar.ui.h:13
+msgid "Queue"
 msgstr ""
 
 #: ../data/Unicode.ui.h:1
