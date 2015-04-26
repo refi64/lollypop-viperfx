@@ -27,6 +27,7 @@ class Objects_:
     player = None
     art = None
     window = None
+    notify = None
     debug = False
 
 

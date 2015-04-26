@@ -56,6 +56,8 @@ class CollectionScanner(GObject.GObject):
                 return
 
         if not self._in_thread:
+            if Objects.notify is not None:
+                Objects.notify.send(_("Your music is updating"))
             self._progress.show()
             self._in_thread = True
             self._is_locked = True

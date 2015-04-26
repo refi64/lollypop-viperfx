@@ -23,16 +23,43 @@ class NotificationManager:
         Init notification object with lollypop infos
     """
     def __init__(self):
-        caps = Notify.get_server_caps()
+        self._caps = Notify.get_server_caps()
 
         self._notification = Notify.Notification()
         self._notification.set_category('x-gnome.music')
-        if "action-icons" in caps:
-            self._notification.set_hint('action-icons',
-                                        GLib.Variant('b', True))
         self._notification.set_hint('desktop-entry',
                                     GLib.Variant('s', 'lollypop'))
-        if "actions" in caps:
+        self._set_actions() 
+        Objects.player.connect('current-changed',
+                               self._on_current_changed)
+
+    """
+        Send message to user
+        @param message as str
+    """
+    def send(self, message):
+        self._notification.clear_actions()
+        self._notification.clear_hints()
+        self._notification.update(message,
+                                  None,
+                                  "lollypop")
+        try:
+            self._notification.show()
+        except:
+            pass
+        self._set_actions()
+
+#######################
+# PRIVATE             #
+#######################
+    """
+        Set notification actions
+    """
+    def _set_actions(self):
+        if "action-icons" in self._caps:
+            self._notification.set_hint('action-icons',
+                                        GLib.Variant('b', True))
+        if "actions" in self._caps:
             self._notification.add_action('media-skip-backward',
                                           _("Previous"),
                                           self._go_previous,
@@ -41,12 +68,6 @@ class NotificationManager:
                                           _("Next"),
                                           self._go_next,
                                           None)
-        Objects.player.connect('current-changed',
-                               self._on_current_changed)
-
-#######################
-# PRIVATE             #
-#######################
 
     """
         Update notification with track_id infos

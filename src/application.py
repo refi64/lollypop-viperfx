@@ -120,7 +120,7 @@ class Application(Gtk.Application):
             if not Objects.settings.get_value('disable-mpris'):
                 MPRIS(self)
             if not Objects.settings.get_value('disable-notifications'):
-                NotificationManager()
+                Objects.notify = NotificationManager()
             Objects.window.update_lists()
             Objects.window.show()
             Objects.player.restore_state()
