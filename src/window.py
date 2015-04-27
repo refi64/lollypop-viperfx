@@ -84,6 +84,10 @@ class Window(Gtk.ApplicationWindow, Container):
                                             ["x"])
             self._app.set_accels_for_action("app.player::stop",
                                             ["v"])
+            self._app.set_accels_for_action("app.player::next",
+                                            ["n"])
+            self._app.set_accels_for_action("app.player::prev",
+                                            ["p"])
         else:
             self._app.set_accels_for_action("app.seek(10)", [None])
             self._app.set_accels_for_action("app.seek(20)", [None])
@@ -266,3 +270,7 @@ class Window(Gtk.ApplicationWindow, Container):
             Objects.player.play()
         elif string == "stop":
             Objects.player.stop()
+        elif string == "next":
+            Objects.player.next(True)
+        elif string == "prev":
+            Objects.player.prev()
