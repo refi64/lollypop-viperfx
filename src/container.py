@@ -400,10 +400,10 @@ class Container:
     """
         Update current view with device view,
         Use existing view if available
-        @param object id as int
+        @param device id as int
     """
-    def _update_view_device(self, object_id):
-        device = self._devices[object_id]
+    def _update_view_device(self, device_id):
+        device = self._devices[device_id]
 
         if device and device.view:
             view = device.view
@@ -419,11 +419,11 @@ class Container:
 
     """
         Update current view with artists view
-        @param object id as int
+        @param artist id as int
         @param genre id as int
     """
-    def _update_view_artists(self, object_id, genre_id):
-        view = ArtistView(object_id, True)
+    def _update_view_artists(self, artist_id, genre_id):
+        view = ArtistView(artist_id, True)
         self._stack.add(view)
         view.show()
         start_new_thread(view.populate, (genre_id,))
@@ -432,14 +432,14 @@ class Container:
 
     """
         Update current view with albums view
-        @param object id as int
         @param genre id as int
+        @param is compilation as bool
     """
-    def _update_view_albums(self, object_id, genre_id):
-        view = AlbumView(object_id)
+    def _update_view_albums(self, genre_id, is_compilation=False):
+        view = AlbumView(genre_id)
         self._stack.add(view)
         view.show()
-        start_new_thread(view.populate, (genre_id,))
+        start_new_thread(view.populate, (is_compilation,))
         self._stack.set_visible_child(view)
         self._stack.clean_old_views(view)
 
@@ -501,31 +501,32 @@ class Container:
     """
         Update view based on selected object
         @param list as SelectionList
-        @param object id as int
+        @param selected id as int
     """
-    def _on_list_one_selected(self, selection_list, object_id):
-        if object_id == Navigation.PLAYLISTS:
+    def _on_list_one_selected(self, selection_list, selected_id):
+        if selected_id == Navigation.PLAYLISTS:
             start_new_thread(self._setup_list_playlists, (False,))
             self._list_two.widget.show()
-        elif object_id < Navigation.DEVICES:
+        elif selected_id < Navigation.DEVICES:
             self._list_two.widget.hide()
-            self._update_view_device(object_id)
-        elif object_id in [Navigation.POPULARS, Navigation.RECENTS]:
+            self._update_view_device(selected_id)
+        elif selected_id in [Navigation.POPULARS, Navigation.RECENTS]:
             self._list_two.widget.hide()
-            self._update_view_albums(object_id, None)
+            self._update_view_albums(selected_id)
         elif selection_list.is_marked_as_artists():
             self._list_two.widget.hide()
-            if object_id == Navigation.ALL or\
-               object_id == Navigation.COMPILATIONS:
-                self._update_view_albums(object_id, None)
+            if selected_id == Navigation.ALL:
+                self._update_view_albums(selected_id)
+            elif selected_id == Navigation.COMPILATIONS:
+                self._update_view_albums(None, True)
             else:
-                self._update_view_artists(object_id, None)
+                self._update_view_artists(selected_id)
         else:
             start_new_thread(self._setup_list_artists,
-                             (self._list_two, object_id, False))
+                             (self._list_two, selected_id, False))
             self._list_two.widget.show()
             if self._list_two_restore == Navigation.NONE:
-                self._update_view_albums(object_id, None)
+                self._update_view_albums(selected_id)
 
     """
         Restore previous state
@@ -544,16 +545,16 @@ class Container:
     """
         Update view based on selected object
         @param list as SelectionList
-        @param object id as int
+        @param selected id as int
     """
-    def _on_list_two_selected(self, selection_list, object_id):
-        selected_id = self._list_one.get_selected_id()
-        if selected_id == Navigation.PLAYLISTS:
-            self._update_view_playlists(object_id)
-        elif object_id == Navigation.COMPILATIONS:
-            self._update_view_albums(object_id, selected_id)
+    def _on_list_two_selected(self, selection_list, selected_id):
+        genre_id = self._list_one.get_selected_id()
+        if genre_id == Navigation.PLAYLISTS:
+            self._update_view_playlists(selected_id)
+        elif selected_id == Navigation.COMPILATIONS:
+            self._update_view_albums(genre_id, True)
         else:
-            self._update_view_artists(object_id, selected_id)
+            self._update_view_artists(selected_id, genre_id)
 
     """
         Restore previous state

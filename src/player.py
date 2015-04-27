@@ -148,9 +148,9 @@ class Player(BinPlayer, QueuePlayer, UserPlaylistPlayer,
         # We are in recent view, add recent albums
         elif genre_id_lookup == Navigation.RECENTS:
             self._albums = Objects.albums.get_recents()
-        # Random tracks/albums for genre
-        elif self._shuffle in [Shuffle.TRACKS, Shuffle.ALBUMS]:
-            self._albums = Objects.albums.get_ids(None, genre_id_lookup)
+        # We are in compilation view without genre
+        elif genre_id_lookup == Navigation.COMPILATIONS:
+            self._albums = Objects.albums.get_compilations(None)
         # Random tracks/albums for artist
         elif self._shuffle in [Shuffle.TRACKS_ARTIST, Shuffle.ALBUMS_ARTIST]:
             self._albums = Objects.albums.get_ids(artist_id, genre_id_lookup)

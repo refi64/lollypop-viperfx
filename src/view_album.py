@@ -136,13 +136,13 @@ class AlbumContextView(View):
 class AlbumView(View):
     """
         Init album view ui with a scrolled flow box and a scrolled context view
-        @param navigation id as int
+        @param genre id as int
     """
-    def __init__(self, navigation_id):
+    def __init__(self, genre_id):
         View.__init__(self)
         self._signal = None
         self._context_album_id = None
-        self._genre_id = navigation_id
+        self._genre_id = genre_id
         self._albumsongs = None
         self._context_widget = None
 
@@ -176,9 +176,9 @@ class AlbumView(View):
 
     """
         Populate albums, thread safe
-        @param navigation id as int
+        @param is compilation as bool
     """
-    def populate(self, navigation_id):
+    def populate(self, is_compilation):
         sql = Objects.db.get_cursor()
         if self._genre_id == Navigation.ALL:
             albums = Objects.albums.get_ids(None, None, sql)
@@ -186,8 +186,8 @@ class AlbumView(View):
             albums = Objects.albums.get_populars(sql)
         elif self._genre_id == Navigation.RECENTS:
             albums = Objects.albums.get_recents(sql)
-        elif self._genre_id == Navigation.COMPILATIONS:
-            albums = Objects.albums.get_compilations(navigation_id,
+        elif is_compilation:
+            albums = Objects.albums.get_compilations(self._genre_id,
                                                      sql)
         else:
             albums = Objects.albums.get_ids(None, self._genre_id, sql)
