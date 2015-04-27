@@ -17,7 +17,7 @@ from lollypop.player_queue import QueuePlayer
 from lollypop.player_linear import LinearPlayer
 from lollypop.player_shuffle import ShufflePlayer
 from lollypop.player_userplaylist import UserPlaylistPlayer
-from lollypop.define import Objects, Navigation
+from lollypop.define import Objects, Navigation, NextContext
 from lollypop.define import Shuffle
 
 
@@ -79,7 +79,9 @@ class Player(BinPlayer, QueuePlayer, UserPlaylistPlayer,
                 self.load(track_id)
             else:
                 self._load_track(track_id, sql)
-       
+        if self.context.next == NextContext.START_NEW_ALBUM:
+            self.context.next = NextContext.NONE
+
     """
         Play album
         @param album id as int

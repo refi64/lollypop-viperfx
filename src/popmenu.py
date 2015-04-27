@@ -50,7 +50,7 @@ class PlaybackMenu(BaseMenu):
         Set playback actions
     """
     def _set_playback_actions(self):
-        if Objects.player.context.next != NextContext.STOP_NONE:
+        if Objects.player.context.next != NextContext.NONE:
             continue_play_action = Gio.SimpleAction(
                                                 name="continue_play_action")
             self._app.add_action(continue_play_action)
@@ -79,7 +79,7 @@ class PlaybackMenu(BaseMenu):
         @param album id as int
     """
     def _continue_playback(self, action, variant):
-        Objects.player.context.next = NextContext.STOP_NONE
+        Objects.player.context.next = NextContext.NONE
 
     """
         Tell player to stop after current track

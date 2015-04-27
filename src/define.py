@@ -49,10 +49,11 @@ class CurrentTrack:
 
 # Represent what to do on next track
 class NextContext:
-    STOP_NONE = 0    # Continue playback
-    STOP_TRACK = 1   # Stop after current track
-    STOP_ALBUM = 2   # Stop after current album
-    STOP_ARTIST = 3  # Stop after current artist
+    NONE = 0             # Continue playback
+    STOP_TRACK = 1       # Stop after current track
+    STOP_ALBUM = 2       # Stop after current album
+    STOP_ARTIST = 3      # Stop after current artist
+    START_NEW_ALBUM = 4  # Start a new album
 
 
 # Represent playback context
@@ -60,7 +61,7 @@ class PlayContext:
     album_id = None
     genre_id = None
     position = None
-    next = NextContext.STOP_NONE
+    next = NextContext.NONE
 
 
 class GstPlayFlags:

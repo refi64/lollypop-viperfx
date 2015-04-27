@@ -77,7 +77,7 @@ class ShufflePlayer(BasePlayer):
         self._already_played_albums = []
         self._user_playlist = None
         if party:
-            self.context.next = NextContext.STOP_NONE
+            self.context.next = NextContext.NONE
             self._rgvolume.props.album_mode = 0
         else:
             self._rgvolume.props.album_mode = 1

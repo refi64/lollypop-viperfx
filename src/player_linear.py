@@ -11,7 +11,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-from lollypop.define import Objects
+from lollypop.define import Objects, NextContext
 from lollypop.player_base import BasePlayer
 
 
@@ -34,6 +34,9 @@ class LinearPlayer(BasePlayer):
             tracks = Objects.albums.get_tracks(self.context.album_id,
                                                self.context.genre_id,
                                                sql)
+            if self.context.next == NextContext.START_NEW_ALBUM:
+                self.context.next = NextContext.NONE
+                self.context.position = len(tracks)
             if self.context.position + 1 >= len(tracks):  # next album
                 pos = self._albums.index(self.context.album_id)
                 # we are on last album, go to first

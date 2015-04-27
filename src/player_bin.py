@@ -249,8 +249,8 @@ class BinPlayer(ReplayGainPlayer, BasePlayer):
         Else force playing current track
     """
     def _on_bus_eos(self, bus, message):
-        if self.context.next != NextContext.STOP_NONE:
-            self.context.next = NextContext.STOP_NONE
+        if self.context.next != NextContext.NONE:
+            self.context.next = NextContext.NONE
             self.stop()
             self.next(False)
             self.emit("current-changed")

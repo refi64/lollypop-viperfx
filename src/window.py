@@ -14,7 +14,7 @@
 from gi.repository import Gtk, Gio, GLib
 
 from lollypop.container import Container
-from lollypop.define import Objects
+from lollypop.define import Objects, NextContext
 from lollypop.toolbar import Toolbar
 from lollypop.utils import use_csd
 
@@ -86,6 +86,8 @@ class Window(Gtk.ApplicationWindow, Container):
                                             ["v"])
             self._app.set_accels_for_action("app.player::next",
                                             ["n"])
+            self._app.set_accels_for_action("app.player::next_album",
+                                            ["<Control>n"])
             self._app.set_accels_for_action("app.player::prev",
                                             ["p"])
         else:
@@ -271,6 +273,9 @@ class Window(Gtk.ApplicationWindow, Container):
         elif string == "stop":
             Objects.player.stop()
         elif string == "next":
+            Objects.player.next(True)
+        elif string == "next_album":
+            Objects.player.context.next = NextContext.START_NEW_ALBUM
             Objects.player.next(True)
         elif string == "prev":
             Objects.player.prev()
