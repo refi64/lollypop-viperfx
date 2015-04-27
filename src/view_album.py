@@ -27,11 +27,13 @@ class ArtistView(View):
     """
         Init ArtistView ui with a scrolled grid of AlbumDetailedWidget
         @param artist id as int
+        @param genre id as int
         @param show_artist_details as bool
     """
-    def __init__(self, artist_id, show_artist_details):
+    def __init__(self, artist_id, genre_id, show_artist_details):
         View.__init__(self)
         self._artist_id = artist_id
+        self._genre_id = genre_id
         self._signal_id = None
 
         if show_artist_details:
@@ -56,22 +58,21 @@ class ArtistView(View):
 
     """
         Populate the view, can be threaded
-        @param navigation id as int
     """
-    def populate(self, navigation_id):
+    def populate(self):
         sql = Objects.db.get_cursor()
         if self._artist_id == Navigation.COMPILATIONS:
-            albums = Objects.albums.get_compilations(navigation_id,
+            albums = Objects.albums.get_compilations(self._genre_id,
                                                      sql)
-        elif navigation_id == Navigation.ALL:
+        elif self._genre_id == Navigation.ALL:
             albums = Objects.albums.get_ids(self._artist_id,
                                             None,
                                             sql)
         else:
             albums = Objects.albums.get_ids(self._artist_id,
-                                            navigation_id,
+                                            self._genre_id,
                                             sql)
-        GLib.idle_add(self._add_albums, albums, navigation_id)
+        GLib.idle_add(self._add_albums, albums, self._genre_id)
         sql.close()
 
 #######################
