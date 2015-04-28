@@ -13,7 +13,7 @@
 
 import random
 
-from lollypop.define import Shuffle, NextContext, Objects
+from lollypop.define import Shuffle, NextContext, Objects, Navigation
 from lollypop.player_base import BasePlayer
 
 # Manage shuffle tracks and party mode
@@ -60,6 +60,8 @@ class ShufflePlayer(BasePlayer):
         party_settings = Objects.settings.get_value('party-ids')
         ids = []
         genre_ids = Objects.genres.get_ids()
+        genre_ids.append(Navigation.POPULARS)
+        genre_ids.append(Navigation.RECENTS)
         for setting in party_settings:
             if isinstance(setting, int) and\
                setting in genre_ids:
