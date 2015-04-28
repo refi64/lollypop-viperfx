@@ -520,7 +520,7 @@ class Container:
             elif selected_id == Navigation.COMPILATIONS:
                 self._update_view_albums(None, True)
             else:
-                self._update_view_artists(selected_id)
+                self._update_view_artists(selected_id, None)
         else:
             start_new_thread(self._setup_list_artists,
                              (self._list_two, selected_id, False))
