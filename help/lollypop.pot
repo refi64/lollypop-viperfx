@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2015-04-28 18:34+0200\n"
+"POT-Creation-Date: 2015-04-28 18:39+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -168,12 +168,12 @@ msgstr ""
 
 #. (itstool) path: item/p
 #: C/index.page:61
-msgid "Left key: Skip forward in track"
+msgid "Left key: Skip backward in track"
 msgstr ""
 
 #. (itstool) path: item/p
 #: C/index.page:62
-msgid "Right key: Skip backward in track"
+msgid "Right key: Skip forward in track"
 msgstr ""
 
 #. (itstool) path: item/p
