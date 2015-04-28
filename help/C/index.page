@@ -24,14 +24,14 @@ Lollypop music player</title>
     <p>If lollypop fails to detect your music:</p>
     <list>
         <item><p>Check you have gstreamer-libav or gstreamer-fluendo installed</p></item>
-        <item><p>Go to the "<sys>application menu -> settings -> Music</sys>" and add your music folder</p></item>
+        <item><p>Go to the application menu: "<sys>Settings -> Music</sys>" and add your music folder</p></item>
     </list>
 </section>
 
 <section id="playback" style="2column">
     <title>Playback</title>
      <p>When you start playing a song, a contextual playlist is populated</p>
-     <p>Contexts can be: Album, Artist, Genre, Populars, Recent albums</p>
+     <p>Contexts can be: an album, an artist, a genre, popular or recent albums</p>
      <p>Shuffle interacts on current context.</p>
 </section>
 

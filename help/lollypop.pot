@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2015-04-28 16:13+0200\n"
+"POT-Creation-Date: 2015-04-28 16:28+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -63,7 +63,7 @@ msgstr ""
 
 #. (itstool) path: item/p
 #: C/index.page:27
-msgid "Go to the \"<sys>application menu -&gt; settings -&gt; Music</sys>\" and add your music folder"
+msgid "Go to the application menu: \"<sys>Settings -&gt; Music</sys>\" and add your music folder"
 msgstr ""
 
 #. (itstool) path: section/title
@@ -78,7 +78,7 @@ msgstr ""
 
 #. (itstool) path: section/p
 #: C/index.page:34
-msgid "Contexts can be: Album, Artist, Genre, Populars, Recent albums"
+msgid "Contexts can be: an album, an artist, a genre, popular or recent albums"
 msgstr ""
 
 #. (itstool) path: section/p
