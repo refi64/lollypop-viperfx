@@ -27,6 +27,8 @@ class Window(Gtk.ApplicationWindow, Container):
     def __init__(self, app):
         Container.__init__(self)
         self._app = app
+        self._signal1 = None
+        self._signal2 = None
         Gtk.ApplicationWindow.__init__(self,
                                        application=app,
                                        title="Lollypop")
@@ -41,6 +43,7 @@ class Window(Gtk.ApplicationWindow, Container):
         player_action.connect('activate', self._on_player_action)
         app.add_action(player_action)
 
+        self._setup_content()
         self._setup_window()
         self._setup_media_keys()
         self.enable_global_shorcuts(True)
@@ -99,6 +102,16 @@ class Window(Gtk.ApplicationWindow, Container):
             self._app.set_accels_for_action("app.player::play", [None])
             self._app.set_accels_for_action("app.player::stop", [None])
 
+    """
+        Remove callbacks (we don't want to save an invalid value on hide
+    """
+    def do_hide(self):
+        if self._signal1 is not None:
+            self.disconnect(self._signal1)
+        if self._signal2 is not None:
+            self.disconnect(self._signal2)
+        Gtk.ApplicationWindow.do_hide(self)
+
 ############
 # Private  #
 ############
@@ -154,10 +167,29 @@ class Window(Gtk.ApplicationWindow, Container):
             Objects.player.prev()
 
     """
-        Setup window icon, position and size, callback for updating this values
+        Setup window content
+    """
+    def _setup_content(self):
+        self.set_icon_name('lollypop')
+        self._toolbar = Toolbar(self.get_application())
+        self._toolbar.show()
+        # Only set headerbar if according DE detected or forced manually
+        if use_csd():
+            self.set_titlebar(self._toolbar)
+            self._toolbar.set_show_close_button(True)
+            self.add(self.main_widget())
+        else:
+            hgrid = Gtk.Grid()
+            hgrid.set_orientation(Gtk.Orientation.VERTICAL)
+            hgrid.add(self._toolbar)
+            hgrid.add(self.main_widget())
+            hgrid.show()
+            self.add(hgrid)
+
+    """
+        Setup window position and size, callbacks
     """
     def _setup_window(self):
-        self.set_icon_name('lollypop')
         size_setting = Objects.settings.get_value('window-size')
         if isinstance(size_setting[0], int) and\
            isinstance(size_setting[1], int):
@@ -173,24 +205,10 @@ class Window(Gtk.ApplicationWindow, Container):
         if Objects.settings.get_value('window-maximized'):
             self.maximize()
 
-        self.connect("window-state-event", self._on_window_state_event)
-        self.connect("configure-event", self._on_configure_event)
-
-        self._toolbar = Toolbar(self.get_application())
-        self._toolbar.show()
-
-        # Only set headerbar if according DE detected or forced manually
-        if use_csd():
-            self.set_titlebar(self._toolbar)
-            self._toolbar.set_show_close_button(True)
-            self.add(self.main_widget())
-        else:
-            hgrid = Gtk.Grid()
-            hgrid.set_orientation(Gtk.Orientation.VERTICAL)
-            hgrid.add(self._toolbar)
-            hgrid.add(self.main_widget())
-            hgrid.show()
-            self.add(hgrid)
+        self._signal1 = self.connect("window-state-event",
+                                     self._on_window_state_event)
+        self._signal2 = self.connect("configure-event",
+                                     self._on_configure_event)
 
     """
         Delay event

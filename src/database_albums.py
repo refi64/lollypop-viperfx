@@ -110,8 +110,11 @@ class DatabaseAlbums:
     def set_popularity(self, album_id, popularity, sql=None):
         if not sql:
             sql = Objects.sql
-        sql.execute("UPDATE albums set popularity=? WHERE rowid=?",
-                    (popularity, album_id))
+        try:
+            sql.execute("UPDATE albums set popularity=? WHERE rowid=?",
+                        (popularity, album_id))
+        except:  # Database is locked
+            pass
 
     """
         Get popularity

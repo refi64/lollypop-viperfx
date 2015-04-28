@@ -169,7 +169,7 @@
                     <property name="wrap">False</property>
                     <property name="max_width_chars">30</property>
                     <style>
-                      <class name="title"/>
+                      <class name="lollypop-title"/>
                     </style>
                   </object>
                   <packing>
@@ -189,7 +189,7 @@
                     <property name="wrap">False</property>
                     <property name="max_width_chars">30</property>
                     <style>
-                      <class name="subtitle"/>
+                      <class name="lollypop-subtitle"/>
                     </style>
                   </object>
                   <packing>

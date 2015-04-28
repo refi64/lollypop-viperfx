@@ -33,12 +33,15 @@ Gtk.ListBoxRow .menubutton:hover {
 	border-color: alpha(#000000, 0.1);
 }
 
-.titlebar .title {
-    padding-left: 6px;
+.lollypop-title {
+    font-weight: bold;
+    padding: 0px 12px;
 }
 
-.titlebar .subtitle {
-    padding-left: 6px;
+.lollypop-subtitle {
+    font-size: smaller;
+    opacity: 0.55;
+    padding: 0px 12px;
 }
 
 .hovereffect {
