@@ -38,6 +38,14 @@ def is_eos():
 
 
 """
+    Return True if desktop is Unity
+"""
+
+def is_unity():
+    return os.environ.get("XDG_CURRENT_DESKTOP") == "Unity"
+
+
+"""
     Return True if desktop is Gnome
 """
 

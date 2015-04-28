@@ -14,7 +14,7 @@
 from gi.repository import Gtk, Gio, GLib, Gdk, Notify, TotemPlParser
 from locale import getlocale
 
-from lollypop.utils import is_audio, is_gnome
+from lollypop.utils import is_audio, is_gnome, is_unity
 from lollypop.define import Objects, ArtSize
 from lollypop.window import Window
 from lollypop.database import Database
@@ -109,12 +109,12 @@ class Application(Gtk.Application):
             Objects.window.show()
         elif not Objects.window:
             menu = self._setup_app_menu()
-            # If GNOME, add appmenu
-            if is_gnome():
+            # If GNOME/Unity, add appmenu
+            if is_gnome() or is_unity():
                 self.set_app_menu(menu)
             Objects.window = Window(self)
             # If not GNOME add menu to toolbar
-            if not is_gnome():
+            if not is_gnome() and not is_unity():
                 Objects.window.setup_menu(menu)
             Objects.window.connect('delete-event', self._hide_on_delete)
             if not Objects.settings.get_value('disable-mpris'):
