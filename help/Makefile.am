@@ -9,4 +9,4 @@ HELP_FILES = \
 	index.page\
 	legal.xml
 
-#HELP_LINGUAS = #ar ca cs da de el en_GB es eu fi fr gl hu it ja ko lv oc pa pt_BR ro ru sl sv te th uk zh_CN zh_T
+HELP_LINGUAS = ca cs de es fi fr he it nl pl pt_BR ru sk sr uk
