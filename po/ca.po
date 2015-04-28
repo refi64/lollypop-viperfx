@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lollypop\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-04-21 14:44+0200\n"
-"PO-Revision-Date: 2015-04-21 12:51+0000\n"
+"POT-Creation-Date: 2015-04-28 16:16+0200\n"
+"PO-Revision-Date: 2015-04-28 14:36+0000\n"
 "Last-Translator: Cédric Bellegarde <web@adishatz.org>\n"
 "Language-Team: Catalan (http://www.transifex.com/projects/p/lollypop/language/ca/)\n"
 "MIME-Version: 1.0\n"
@@ -159,176 +159,182 @@ msgstr "Reproduïu i organitzeu la vostra col·lecció musical"
 msgid "Music player for the GNOME desktop"
 msgstr "Reproductor musical per a l’escriptori del GNOME"
 
-#: ../src/toolbar.py:238 ../src/toolbar.py:282 ../src/toolbar.py:298
-#: ../src/fullscreen.py:178 ../data/Toolbar.ui.h:7
-msgid "Play"
-msgstr "Reprodueix"
+#: ../src/collectionscanner.py:60
+msgid "Your music is updating"
+msgstr ""
 
-#: ../src/toolbar.py:274 ../src/toolbar.py:301 ../src/fullscreen.py:75
-#: ../src/fullscreen.py:174
-msgid "Pause"
-msgstr "Fes una pausa"
+#: ../src/collectionscanner.py:271 ../src/collectionscanner.py:276
+#: ../src/collectionscanner.py:290 ../src/collectionscanner.py:295
+#: ../src/database_albums.py:233 ../src/database_artists.py:70
+#: ../src/database_genres.py:67 ../src/database_tracks.py:187
+msgid "Unknown"
+msgstr "Desconegut"
 
-#: ../src/container.py:333
+#: ../src/container.py:328
 msgid "Popular albums"
 msgstr "Àlbums populars"
 
-#: ../src/container.py:334
+#: ../src/container.py:329
 msgid "Recent albums"
 msgstr ""
 
-#: ../src/container.py:335 ../src/popmenu.py:47
+#: ../src/container.py:330 ../src/popmenu.py:321 ../src/popmenu.py:336
+#: ../src/popmenu.py:351
 msgid "Playlists"
 msgstr "Llistes"
 
-#: ../src/container.py:337
+#: ../src/container.py:332
 msgid "All artists"
 msgstr "Tots els artistes"
 
-#: ../src/container.py:339
+#: ../src/container.py:334
 msgid "All albums"
 msgstr ""
 
-#: ../src/container.py:381
+#: ../src/container.py:376
 msgid "Compilations"
 msgstr "Compilacions"
 
-#: ../src/notification.py:37 ../data/Toolbar.ui.h:6
-msgid "Previous"
-msgstr "Anterior"
-
-#: ../src/notification.py:41 ../data/Toolbar.ui.h:8
-msgid "Next"
-msgstr "Següent"
-
-#. TRANSLATORS: by refers to the artist,
-#. from to the album
-#: ../src/notification.py:73
-#, python-format
-msgid "by %s, from %s"
-msgstr "per %s, de l’àlbum %s"
+#: ../src/database_albums.py:250
+msgid "Compilation"
+msgstr "Compilació"
 
 #: ../src/database_artists.py:62
 msgid "Many artists"
 msgstr "Molts artistes"
 
-#: ../src/database_artists.py:70 ../src/database_albums.py:230
-#: ../src/database_tracks.py:187 ../src/database_genres.py:67
-#: ../src/collectionscanner.py:269 ../src/collectionscanner.py:274
-#: ../src/collectionscanner.py:288 ../src/collectionscanner.py:293
-msgid "Unknown"
-msgstr "Desconegut"
+#: ../src/fullscreen.py:75 ../src/fullscreen.py:174 ../src/toolbar.py:273
+#: ../src/toolbar.py:300
+msgid "Pause"
+msgstr "Fes una pausa"
 
-#: ../src/database_albums.py:247
-msgid "Compilation"
-msgstr "Compilació"
+#: ../src/fullscreen.py:178 ../src/toolbar.py:237 ../src/toolbar.py:281
+#: ../src/toolbar.py:297 ../data/Toolbar.ui.h:7
+msgid "Play"
+msgstr "Reprodueix"
 
-#: ../src/playlist_widgets.py:222 ../src/playlist_widgets.py:225
-msgid "New playlist "
-msgstr "Llista nova"
+#: ../src/notification.py:64 ../data/Toolbar.ui.h:6
+msgid "Previous"
+msgstr "Anterior"
 
-#: ../src/playlist_widgets.py:267 ../src/playlist_widgets.py:526
+#: ../src/notification.py:68 ../data/Toolbar.ui.h:8
+msgid "Next"
+msgstr "Següent"
+
+#. TRANSLATORS: by refers to the artist,
+#. from to the album
+#: ../src/notification.py:94
 #, python-format
-msgid "Remove \"%s\"?"
-msgstr ""
+msgid "by %s, from %s"
+msgstr "per %s, de l’àlbum %s"
 
-#: ../src/playlist_widgets.py:565
-msgid "Remove these tracks?"
-msgstr ""
-
-#: ../src/devicemanager.py:401
-msgid "Unknown error while syncing, try to reboot your device"
-msgstr ""
-
-#: ../src/devicemanager.py:408
-msgid "No free space available on device"
-msgstr ""
-
-#: ../src/popmenu.py:42
-msgid "Playback"
-msgstr "Reproducció"
-
-#: ../src/popmenu.py:64
+#: ../src/popmenu.py:58
 msgid "Continue playback"
 msgstr ""
 
-#: ../src/popmenu.py:69
+#: ../src/popmenu.py:63
 msgid "Stop after this track"
 msgstr ""
 
-#: ../src/popmenu.py:74
+#: ../src/popmenu.py:68
 msgid "Stop after this album"
 msgstr ""
 
-#: ../src/popmenu.py:79
+#: ../src/popmenu.py:73
 msgid "Stop after this artist"
 msgstr ""
 
-#: ../src/popmenu.py:93
+#: ../src/popmenu.py:162 ../data/SearchRow.ui.h:3
+msgid "Add to queue"
+msgstr "Afegeix a la cua"
+
+#: ../src/popmenu.py:167
+msgid "Next tracks"
+msgstr "Peces següents"
+
+#: ../src/popmenu.py:169
+msgid "Next track"
+msgstr "Peça següent"
+
+#: ../src/popmenu.py:173
+msgid "Remove from queue"
+msgstr "Treu de la cua"
+
+#: ../src/popmenu.py:240
 msgid "Add to others"
 msgstr ""
 
-#: ../src/popmenu.py:107
+#: ../src/popmenu.py:253
 #, python-format
 msgid "Remove from \"%s\""
 msgstr "Treu de «%s»"
 
-#: ../src/popmenu.py:114
+#: ../src/popmenu.py:259
 #, python-format
 msgid "Add to \"%s\""
 msgstr "Afegeix a «%s»"
 
-#: ../src/popmenu.py:158 ../data/SearchRow.ui.h:3
-msgid "Add to queue"
-msgstr "Afegeix a la cua"
-
-#: ../src/popmenu.py:164
-msgid "Next tracks"
-msgstr "Peces següents"
-
-#: ../src/popmenu.py:166
-msgid "Next track"
-msgstr "Peça següent"
-
-#: ../src/popmenu.py:171
-msgid "Remove from queue"
-msgstr "Treu de la cua"
-
-#. Handle language ordering
-#. Translators: Add here words that shoud be ignored for artist sort order
-#: ../src/utils.py:106
-msgid "The the"
-msgstr "The the El el La la Els els Les les L' l' L’ l’"
+#: ../src/popmenu.py:319 ../src/popmenu.py:334 ../src/popmenu.py:349
+msgid "Playback"
+msgstr "Reproducció"
 
 #: ../src/search.py:148
 msgid "Search:"
 msgstr "Cerca:"
 
-#: ../src/album_widgets.py:178
+#. Handle language ordering
+#. Translators: Add here words that shoud be ignored for artist sort order
+#: ../src/utils.py:114
+msgid "The the"
+msgstr "The the El el La la Els els Les les L' l' L’ l’"
+
+#: ../src/view_device.py:39 ../src/view_device.py:80
+#, python-format
+msgid "Synchronize %s"
+msgstr ""
+
+#: ../src/view_device.py:71
+msgid "Cancel synchronization"
+msgstr ""
+
+#: ../src/widgets_album.py:183
 #, python-format
 msgid "Disc %s"
 msgstr ""
 
-#: ../data/AboutDialog.ui.in.h:1
+#: ../src/widgets_device.py:401
+msgid "Unknown error while syncing, try to reboot your device"
+msgstr ""
+
+#: ../src/widgets_device.py:408
+msgid "No free space available on device"
+msgstr ""
+
+#: ../src/widgets_playlist.py:222 ../src/widgets_playlist.py:225
+msgid "New playlist "
+msgstr "Llista nova"
+
+#: ../src/widgets_playlist.py:267 ../src/widgets_playlist.py:526
+#, python-format
+msgid "Remove \"%s\"?"
+msgstr ""
+
+#: ../src/widgets_playlist.py:565
+msgid "Remove these tracks?"
+msgstr ""
+
+#: ../data/AboutDialog.ui.h:1
 msgid "A music player for GNOME."
 msgstr "Un reproductor musical per al GNOME."
 
-#: ../data/AboutDialog.ui.in.h:2
+#: ../data/AboutDialog.ui.h:2
 msgid "Visit Lollypop website"
 msgstr "Lloc web del Lollypop"
 
 #. Replace me with your names
-#: ../data/AboutDialog.ui.in.h:4
+#: ../data/AboutDialog.ui.h:4
 msgid "Cédric Bellegarde <cedric.bellegarde@adishatz.org>"
 msgstr ""
-
-#: ../data/QueueWidget.ui.h:1
-msgid "Queue:"
-msgstr "Cua:"
-
-#: ../data/QueueWidget.ui.h:2
-msgid "Clear queue"
-msgstr "Neteja la cua"
 
 #: ../data/Appmenu.ui.h:1
 msgid "_Update music"
@@ -347,8 +353,16 @@ msgid "_About"
 msgstr "_Quant a"
 
 #: ../data/Appmenu.ui.h:5
+msgid "_Help"
+msgstr ""
+
+#: ../data/Appmenu.ui.h:6
 msgid "_Quit"
 msgstr "_Surt"
+
+#: ../data/DeviceManagerView.ui.h:1
+msgid "Synchronize your device with this playlists"
+msgstr ""
 
 #: ../data/PlaylistEditWidget.ui.h:1 ../data/PlaylistsManagerWidget.ui.h:1
 msgid "Confirm"
@@ -363,52 +377,24 @@ msgid "Edit"
 msgstr "Edita"
 
 #: ../data/PopImages.ui.h:1
-msgid "Please wait..."
+msgid "No cover found..."
 msgstr ""
 
 #: ../data/PopImages.ui.h:2
+msgid "Please wait..."
+msgstr ""
+
+#: ../data/PopImages.ui.h:3
 msgid "Select a cover art for this album"
 msgstr "Trieu una caràtula per a aquest àlbum"
 
-#: ../data/Toolbar.ui.h:1
-msgid "No shuffle"
-msgstr ""
+#: ../data/QueueWidget.ui.h:1
+msgid "Queue:"
+msgstr "Cua:"
 
-#: ../data/Toolbar.ui.h:2
-msgid "Shuffle albums"
-msgstr ""
-
-#: ../data/Toolbar.ui.h:3
-msgid "Shuffle tracks"
-msgstr ""
-
-#: ../data/Toolbar.ui.h:4
-msgid "Shuffle albums from artist"
-msgstr ""
-
-#: ../data/Toolbar.ui.h:5
-msgid "Shuffle tracks from artist"
-msgstr ""
-
-#: ../data/Toolbar.ui.h:9
-msgid "Settings"
-msgstr ""
-
-#: ../data/Toolbar.ui.h:10
-msgid "Shuffle"
-msgstr ""
-
-#: ../data/Toolbar.ui.h:11 ../data/SettingsDialog.ui.h:15
-msgid "Party mode"
-msgstr "Mode festa"
-
-#: ../data/Toolbar.ui.h:12
-msgid "Search"
-msgstr "Cerca"
-
-#: ../data/Toolbar.ui.h:13
-msgid "Queue"
-msgstr "Cua"
+#: ../data/QueueWidget.ui.h:2
+msgid "Clear queue"
+msgstr "Neteja la cua"
 
 #: ../data/SearchRow.ui.h:1
 msgid "artist"
@@ -470,9 +456,45 @@ msgstr "Música"
 msgid "Select what will be available in party mode"
 msgstr ""
 
-#: ../data/DeviceManagerView.ui.h:1
-msgid "Synchronize your device with this playlists"
+#: ../data/SettingsDialog.ui.h:15 ../data/Toolbar.ui.h:11
+msgid "Party mode"
+msgstr "Mode festa"
+
+#: ../data/Toolbar.ui.h:1
+msgid "No shuffle"
 msgstr ""
+
+#: ../data/Toolbar.ui.h:2
+msgid "Shuffle albums"
+msgstr ""
+
+#: ../data/Toolbar.ui.h:3
+msgid "Shuffle tracks"
+msgstr ""
+
+#: ../data/Toolbar.ui.h:4
+msgid "Shuffle albums from artist"
+msgstr ""
+
+#: ../data/Toolbar.ui.h:5
+msgid "Shuffle tracks from artist"
+msgstr ""
+
+#: ../data/Toolbar.ui.h:9
+msgid "Settings"
+msgstr ""
+
+#: ../data/Toolbar.ui.h:10
+msgid "Shuffle"
+msgstr ""
+
+#: ../data/Toolbar.ui.h:12
+msgid "Search"
+msgstr "Cerca"
+
+#: ../data/Toolbar.ui.h:13
+msgid "Queue"
+msgstr "Cua"
 
 #: ../data/Unicode.ui.h:1
 msgid "Error"

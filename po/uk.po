@@ -8,9 +8,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lollypop\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-04-22 07:37+0200\n"
-"PO-Revision-Date: 2015-04-22 22:51+0000\n"
-"Last-Translator: Svitozar Cherepii <razotivs@gmail.com>\n"
+"POT-Creation-Date: 2015-04-28 16:16+0200\n"
+"PO-Revision-Date: 2015-04-28 14:36+0000\n"
+"Last-Translator: Cédric Bellegarde <web@adishatz.org>\n"
 "Language-Team: Ukrainian (http://www.transifex.com/projects/p/lollypop/language/uk/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -159,15 +159,16 @@ msgstr "Відтворює та організовує вашу музичну �
 msgid "Music player for the GNOME desktop"
 msgstr "Програвач музики для GNOME"
 
-#: ../src/toolbar.py:238 ../src/toolbar.py:282 ../src/toolbar.py:298
-#: ../src/fullscreen.py:178 ../data/Toolbar.ui.h:7
-msgid "Play"
-msgstr "Відтворити"
+#: ../src/collectionscanner.py:60
+msgid "Your music is updating"
+msgstr ""
 
-#: ../src/toolbar.py:274 ../src/toolbar.py:301 ../src/fullscreen.py:75
-#: ../src/fullscreen.py:174
-msgid "Pause"
-msgstr "Призупинити"
+#: ../src/collectionscanner.py:271 ../src/collectionscanner.py:276
+#: ../src/collectionscanner.py:290 ../src/collectionscanner.py:295
+#: ../src/database_albums.py:233 ../src/database_artists.py:70
+#: ../src/database_genres.py:67 ../src/database_tracks.py:187
+msgid "Unknown"
+msgstr "Невідомий"
 
 #: ../src/container.py:328
 msgid "Popular albums"
@@ -177,7 +178,8 @@ msgstr "Популярні альбоми"
 msgid "Recent albums"
 msgstr "Недавні альбоми"
 
-#: ../src/container.py:330 ../src/popmenu.py:47
+#: ../src/container.py:330 ../src/popmenu.py:321 ../src/popmenu.py:336
+#: ../src/popmenu.py:351
 msgid "Playlists"
 msgstr "Список відтворення"
 
@@ -193,48 +195,98 @@ msgstr "Всі альбоми"
 msgid "Compilations"
 msgstr "Збірки"
 
-#: ../src/notification.py:37 ../data/Toolbar.ui.h:6
-msgid "Previous"
-msgstr "Попередній"
-
-#: ../src/notification.py:41 ../data/Toolbar.ui.h:8
-msgid "Next"
-msgstr "Наступний"
-
-#. TRANSLATORS: by refers to the artist,
-#. from to the album
-#: ../src/notification.py:73
-#, python-format
-msgid "by %s, from %s"
-msgstr "у виконанні %s, з %s"
+#: ../src/database_albums.py:250
+msgid "Compilation"
+msgstr "Збірка"
 
 #: ../src/database_artists.py:62
 msgid "Many artists"
 msgstr "Багато виконавців"
 
-#: ../src/database_artists.py:70 ../src/database_albums.py:230
-#: ../src/database_tracks.py:187 ../src/database_genres.py:67
-#: ../src/collectionscanner.py:269 ../src/collectionscanner.py:274
-#: ../src/collectionscanner.py:288 ../src/collectionscanner.py:293
-msgid "Unknown"
-msgstr "Невідомий"
+#: ../src/fullscreen.py:75 ../src/fullscreen.py:174 ../src/toolbar.py:273
+#: ../src/toolbar.py:300
+msgid "Pause"
+msgstr "Призупинити"
 
-#: ../src/database_albums.py:247
-msgid "Compilation"
-msgstr "Збірка"
+#: ../src/fullscreen.py:178 ../src/toolbar.py:237 ../src/toolbar.py:281
+#: ../src/toolbar.py:297 ../data/Toolbar.ui.h:7
+msgid "Play"
+msgstr "Відтворити"
 
-#: ../src/playlist_widgets.py:222 ../src/playlist_widgets.py:225
-msgid "New playlist "
-msgstr "Новий список відтворення"
+#: ../src/notification.py:64 ../data/Toolbar.ui.h:6
+msgid "Previous"
+msgstr "Попередній"
 
-#: ../src/playlist_widgets.py:267 ../src/playlist_widgets.py:526
+#: ../src/notification.py:68 ../data/Toolbar.ui.h:8
+msgid "Next"
+msgstr "Наступний"
+
+#. TRANSLATORS: by refers to the artist,
+#. from to the album
+#: ../src/notification.py:94
 #, python-format
-msgid "Remove \"%s\"?"
-msgstr "Вилучити \"%s\"?"
+msgid "by %s, from %s"
+msgstr "у виконанні %s, з %s"
 
-#: ../src/playlist_widgets.py:565
-msgid "Remove these tracks?"
-msgstr "Вилучити ці треки"
+#: ../src/popmenu.py:58
+msgid "Continue playback"
+msgstr "Продовжити відтворення"
+
+#: ../src/popmenu.py:63
+msgid "Stop after this track"
+msgstr "Зупинити після цього треку"
+
+#: ../src/popmenu.py:68
+msgid "Stop after this album"
+msgstr "Зупинити після цього альбому"
+
+#: ../src/popmenu.py:73
+msgid "Stop after this artist"
+msgstr "Зупинити після цього виконавця"
+
+#: ../src/popmenu.py:162 ../data/SearchRow.ui.h:3
+msgid "Add to queue"
+msgstr "Додати до черги"
+
+#: ../src/popmenu.py:167
+msgid "Next tracks"
+msgstr "Наступні треки"
+
+#: ../src/popmenu.py:169
+msgid "Next track"
+msgstr "Наступний трек"
+
+#: ../src/popmenu.py:173
+msgid "Remove from queue"
+msgstr "Вилучити з черги"
+
+#: ../src/popmenu.py:240
+msgid "Add to others"
+msgstr "Додати до інших"
+
+#: ../src/popmenu.py:253
+#, python-format
+msgid "Remove from \"%s\""
+msgstr "Вилучити з \"%s\""
+
+#: ../src/popmenu.py:259
+#, python-format
+msgid "Add to \"%s\""
+msgstr "Додати до \"%s\""
+
+#: ../src/popmenu.py:319 ../src/popmenu.py:334 ../src/popmenu.py:349
+msgid "Playback"
+msgstr "Відтворення"
+
+#: ../src/search.py:148
+msgid "Search:"
+msgstr "Пошук:"
+
+#. Handle language ordering
+#. Translators: Add here words that shoud be ignored for artist sort order
+#: ../src/utils.py:114
+msgid "The the"
+msgstr "The the"
 
 #: ../src/view_device.py:39 ../src/view_device.py:80
 #, python-format
@@ -245,99 +297,44 @@ msgstr "Синхронізувати %s"
 msgid "Cancel synchronization"
 msgstr "Скасувати синхронізацію"
 
-#: ../src/devicemanager.py:401
-msgid "Unknown error while syncing, try to reboot your device"
-msgstr "Невідома помилка при синхронізації, спробуйте перезавантажити ваш пристрій"
-
-#: ../src/devicemanager.py:408
-msgid "No free space available on device"
-msgstr "Недостатньо вільного місця на пристрої"
-
-#: ../src/popmenu.py:42
-msgid "Playback"
-msgstr "Відтворення"
-
-#: ../src/popmenu.py:64
-msgid "Continue playback"
-msgstr "Продовжити відтворення"
-
-#: ../src/popmenu.py:69
-msgid "Stop after this track"
-msgstr "Зупинити після цього треку"
-
-#: ../src/popmenu.py:74
-msgid "Stop after this album"
-msgstr "Зупинити після цього альбому"
-
-#: ../src/popmenu.py:79
-msgid "Stop after this artist"
-msgstr "Зупинити після цього виконавця"
-
-#: ../src/popmenu.py:93
-msgid "Add to others"
-msgstr "Додати до інших"
-
-#: ../src/popmenu.py:107
-#, python-format
-msgid "Remove from \"%s\""
-msgstr "Вилучити з \"%s\""
-
-#: ../src/popmenu.py:114
-#, python-format
-msgid "Add to \"%s\""
-msgstr "Додати до \"%s\""
-
-#: ../src/popmenu.py:158 ../data/SearchRow.ui.h:3
-msgid "Add to queue"
-msgstr "Додати до черги"
-
-#: ../src/popmenu.py:164
-msgid "Next tracks"
-msgstr "Наступні треки"
-
-#: ../src/popmenu.py:166
-msgid "Next track"
-msgstr "Наступний трек"
-
-#: ../src/popmenu.py:171
-msgid "Remove from queue"
-msgstr "Вилучити з черги"
-
-#. Handle language ordering
-#. Translators: Add here words that shoud be ignored for artist sort order
-#: ../src/utils.py:106
-msgid "The the"
-msgstr "The the"
-
-#: ../src/search.py:148
-msgid "Search:"
-msgstr "Пошук:"
-
-#: ../src/album_widgets.py:178
+#: ../src/widgets_album.py:183
 #, python-format
 msgid "Disc %s"
 msgstr "Диск %s"
 
-#: ../data/AboutDialog.ui.in.h:1
+#: ../src/widgets_device.py:401
+msgid "Unknown error while syncing, try to reboot your device"
+msgstr "Невідома помилка при синхронізації, спробуйте перезавантажити ваш пристрій"
+
+#: ../src/widgets_device.py:408
+msgid "No free space available on device"
+msgstr "Недостатньо вільного місця на пристрої"
+
+#: ../src/widgets_playlist.py:222 ../src/widgets_playlist.py:225
+msgid "New playlist "
+msgstr "Новий список відтворення"
+
+#: ../src/widgets_playlist.py:267 ../src/widgets_playlist.py:526
+#, python-format
+msgid "Remove \"%s\"?"
+msgstr "Вилучити \"%s\"?"
+
+#: ../src/widgets_playlist.py:565
+msgid "Remove these tracks?"
+msgstr "Вилучити ці треки"
+
+#: ../data/AboutDialog.ui.h:1
 msgid "A music player for GNOME."
 msgstr "Програвач музики для GNOME."
 
-#: ../data/AboutDialog.ui.in.h:2
+#: ../data/AboutDialog.ui.h:2
 msgid "Visit Lollypop website"
 msgstr "Відвідати сторінку Lollypop"
 
 #. Replace me with your names
-#: ../data/AboutDialog.ui.in.h:4
+#: ../data/AboutDialog.ui.h:4
 msgid "Cédric Bellegarde <cedric.bellegarde@adishatz.org>"
 msgstr "Cédric Bellegarde <cedric.bellegarde@adishatz.org>"
-
-#: ../data/QueueWidget.ui.h:1
-msgid "Queue:"
-msgstr "Черга:"
-
-#: ../data/QueueWidget.ui.h:2
-msgid "Clear queue"
-msgstr "Очистити чергу"
 
 #: ../data/Appmenu.ui.h:1
 msgid "_Update music"
@@ -356,8 +353,16 @@ msgid "_About"
 msgstr "_Про програму"
 
 #: ../data/Appmenu.ui.h:5
+msgid "_Help"
+msgstr ""
+
+#: ../data/Appmenu.ui.h:6
 msgid "_Quit"
 msgstr "_Вийти"
+
+#: ../data/DeviceManagerView.ui.h:1
+msgid "Synchronize your device with this playlists"
+msgstr "Синхронізувати ваш пристрій з цим списком відтворення"
 
 #: ../data/PlaylistEditWidget.ui.h:1 ../data/PlaylistsManagerWidget.ui.h:1
 msgid "Confirm"
@@ -383,45 +388,13 @@ msgstr "Будь ласка зачекайте..."
 msgid "Select a cover art for this album"
 msgstr "Виберіть обгортку для цього альбому"
 
-#: ../data/Toolbar.ui.h:1
-msgid "No shuffle"
-msgstr "Без тасування"
+#: ../data/QueueWidget.ui.h:1
+msgid "Queue:"
+msgstr "Черга:"
 
-#: ../data/Toolbar.ui.h:2
-msgid "Shuffle albums"
-msgstr "Тасувати альбоми"
-
-#: ../data/Toolbar.ui.h:3
-msgid "Shuffle tracks"
-msgstr "Тасувати треки"
-
-#: ../data/Toolbar.ui.h:4
-msgid "Shuffle albums from artist"
-msgstr "Тасувати альбоми від виконавця"
-
-#: ../data/Toolbar.ui.h:5
-msgid "Shuffle tracks from artist"
-msgstr "Тасувати треки від виконавця"
-
-#: ../data/Toolbar.ui.h:9
-msgid "Settings"
-msgstr "Налаштування"
-
-#: ../data/Toolbar.ui.h:10
-msgid "Shuffle"
-msgstr "Тасування"
-
-#: ../data/Toolbar.ui.h:11 ../data/SettingsDialog.ui.h:15
-msgid "Party mode"
-msgstr "Режим вечірки"
-
-#: ../data/Toolbar.ui.h:12
-msgid "Search"
-msgstr "Пошук"
-
-#: ../data/Toolbar.ui.h:13
-msgid "Queue"
-msgstr "Черга"
+#: ../data/QueueWidget.ui.h:2
+msgid "Clear queue"
+msgstr "Очистити чергу"
 
 #: ../data/SearchRow.ui.h:1
 msgid "artist"
@@ -483,9 +456,45 @@ msgstr "Музика"
 msgid "Select what will be available in party mode"
 msgstr "Вибрати що буде доступно в режимі вечірки"
 
-#: ../data/DeviceManagerView.ui.h:1
-msgid "Synchronize your device with this playlists"
-msgstr "Синхронізувати ваш пристрій з цим списком відтворення"
+#: ../data/SettingsDialog.ui.h:15 ../data/Toolbar.ui.h:11
+msgid "Party mode"
+msgstr "Режим вечірки"
+
+#: ../data/Toolbar.ui.h:1
+msgid "No shuffle"
+msgstr "Без тасування"
+
+#: ../data/Toolbar.ui.h:2
+msgid "Shuffle albums"
+msgstr "Тасувати альбоми"
+
+#: ../data/Toolbar.ui.h:3
+msgid "Shuffle tracks"
+msgstr "Тасувати треки"
+
+#: ../data/Toolbar.ui.h:4
+msgid "Shuffle albums from artist"
+msgstr "Тасувати альбоми від виконавця"
+
+#: ../data/Toolbar.ui.h:5
+msgid "Shuffle tracks from artist"
+msgstr "Тасувати треки від виконавця"
+
+#: ../data/Toolbar.ui.h:9
+msgid "Settings"
+msgstr "Налаштування"
+
+#: ../data/Toolbar.ui.h:10
+msgid "Shuffle"
+msgstr "Тасування"
+
+#: ../data/Toolbar.ui.h:12
+msgid "Search"
+msgstr "Пошук"
+
+#: ../data/Toolbar.ui.h:13
+msgid "Queue"
+msgstr "Черга"
 
 #: ../data/Unicode.ui.h:1
 msgid "Error"

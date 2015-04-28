@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lollypop\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-04-22 07:37+0200\n"
-"PO-Revision-Date: 2015-04-22 07:01+0000\n"
+"POT-Creation-Date: 2015-04-28 16:16+0200\n"
+"PO-Revision-Date: 2015-04-28 15:02+0000\n"
 "Last-Translator: Jiri Grönroos <jiri.gronroos@iki.fi>\n"
 "Language-Team: Finnish (http://www.transifex.com/projects/p/lollypop/language/fi/)\n"
 "MIME-Version: 1.0\n"
@@ -159,15 +159,16 @@ msgstr "Kuuntele ja hallitse musiikkikokoelmaasi"
 msgid "Music player for the GNOME desktop"
 msgstr "Musiikkisoitin Gnome-työpöydälle"
 
-#: ../src/toolbar.py:238 ../src/toolbar.py:282 ../src/toolbar.py:298
-#: ../src/fullscreen.py:178 ../data/Toolbar.ui.h:7
-msgid "Play"
-msgstr "Toista"
+#: ../src/collectionscanner.py:60
+msgid "Your music is updating"
+msgstr "Musiikkisi päivittyy"
 
-#: ../src/toolbar.py:274 ../src/toolbar.py:301 ../src/fullscreen.py:75
-#: ../src/fullscreen.py:174
-msgid "Pause"
-msgstr "Keskeytä"
+#: ../src/collectionscanner.py:271 ../src/collectionscanner.py:276
+#: ../src/collectionscanner.py:290 ../src/collectionscanner.py:295
+#: ../src/database_albums.py:233 ../src/database_artists.py:70
+#: ../src/database_genres.py:67 ../src/database_tracks.py:187
+msgid "Unknown"
+msgstr "Tuntematon"
 
 #: ../src/container.py:328
 msgid "Popular albums"
@@ -177,7 +178,8 @@ msgstr "Suositut albumit"
 msgid "Recent albums"
 msgstr "Viimeisimmät albumit"
 
-#: ../src/container.py:330 ../src/popmenu.py:47
+#: ../src/container.py:330 ../src/popmenu.py:321 ../src/popmenu.py:336
+#: ../src/popmenu.py:351
 msgid "Playlists"
 msgstr "Soittolistat"
 
@@ -193,48 +195,98 @@ msgstr "Kaikki albumit"
 msgid "Compilations"
 msgstr "Kokoelmat"
 
-#: ../src/notification.py:37 ../data/Toolbar.ui.h:6
-msgid "Previous"
-msgstr "Edellinen"
-
-#: ../src/notification.py:41 ../data/Toolbar.ui.h:8
-msgid "Next"
-msgstr "Seuraava"
-
-#. TRANSLATORS: by refers to the artist,
-#. from to the album
-#: ../src/notification.py:73
-#, python-format
-msgid "by %s, from %s"
-msgstr "esittäjän %s levyltä %s"
+#: ../src/database_albums.py:250
+msgid "Compilation"
+msgstr "Kokoelma"
 
 #: ../src/database_artists.py:62
 msgid "Many artists"
 msgstr "Useita esittäjiä"
 
-#: ../src/database_artists.py:70 ../src/database_albums.py:230
-#: ../src/database_tracks.py:187 ../src/database_genres.py:67
-#: ../src/collectionscanner.py:269 ../src/collectionscanner.py:274
-#: ../src/collectionscanner.py:288 ../src/collectionscanner.py:293
-msgid "Unknown"
-msgstr "Tuntematon"
+#: ../src/fullscreen.py:75 ../src/fullscreen.py:174 ../src/toolbar.py:273
+#: ../src/toolbar.py:300
+msgid "Pause"
+msgstr "Keskeytä"
 
-#: ../src/database_albums.py:247
-msgid "Compilation"
-msgstr "Kokoelma"
+#: ../src/fullscreen.py:178 ../src/toolbar.py:237 ../src/toolbar.py:281
+#: ../src/toolbar.py:297 ../data/Toolbar.ui.h:7
+msgid "Play"
+msgstr "Toista"
 
-#: ../src/playlist_widgets.py:222 ../src/playlist_widgets.py:225
-msgid "New playlist "
-msgstr "Uusi soittolista"
+#: ../src/notification.py:64 ../data/Toolbar.ui.h:6
+msgid "Previous"
+msgstr "Edellinen"
 
-#: ../src/playlist_widgets.py:267 ../src/playlist_widgets.py:526
+#: ../src/notification.py:68 ../data/Toolbar.ui.h:8
+msgid "Next"
+msgstr "Seuraava"
+
+#. TRANSLATORS: by refers to the artist,
+#. from to the album
+#: ../src/notification.py:94
 #, python-format
-msgid "Remove \"%s\"?"
-msgstr "Poistetaanko \"%s\"?"
+msgid "by %s, from %s"
+msgstr "esittäjän %s levyltä %s"
 
-#: ../src/playlist_widgets.py:565
-msgid "Remove these tracks?"
-msgstr "Poistetaanko nämä kappaleet?"
+#: ../src/popmenu.py:58
+msgid "Continue playback"
+msgstr "Jatka toistoa"
+
+#: ../src/popmenu.py:63
+msgid "Stop after this track"
+msgstr "Lopeta tämän kappaleen jälkeen"
+
+#: ../src/popmenu.py:68
+msgid "Stop after this album"
+msgstr "Lopeta tämän albumin jälkeen"
+
+#: ../src/popmenu.py:73
+msgid "Stop after this artist"
+msgstr "Lopeta tämän esittäjän jälkeen"
+
+#: ../src/popmenu.py:162 ../data/SearchRow.ui.h:3
+msgid "Add to queue"
+msgstr "Lisää jonoon"
+
+#: ../src/popmenu.py:167
+msgid "Next tracks"
+msgstr "Seuraavat kappaleet"
+
+#: ../src/popmenu.py:169
+msgid "Next track"
+msgstr "Seuraava kappale"
+
+#: ../src/popmenu.py:173
+msgid "Remove from queue"
+msgstr "Poista jonosta"
+
+#: ../src/popmenu.py:240
+msgid "Add to others"
+msgstr "Lisää muihin"
+
+#: ../src/popmenu.py:253
+#, python-format
+msgid "Remove from \"%s\""
+msgstr "Poista kohteesta \"%s\""
+
+#: ../src/popmenu.py:259
+#, python-format
+msgid "Add to \"%s\""
+msgstr "Lisää kohteeseen \"%s\""
+
+#: ../src/popmenu.py:319 ../src/popmenu.py:334 ../src/popmenu.py:349
+msgid "Playback"
+msgstr "Toisto"
+
+#: ../src/search.py:148
+msgid "Search:"
+msgstr "Etsi:"
+
+#. Handle language ordering
+#. Translators: Add here words that shoud be ignored for artist sort order
+#: ../src/utils.py:114
+msgid "The the"
+msgstr ""
 
 #: ../src/view_device.py:39 ../src/view_device.py:80
 #, python-format
@@ -245,99 +297,44 @@ msgstr "Synkronoi %s"
 msgid "Cancel synchronization"
 msgstr "Peru synkronointi"
 
-#: ../src/devicemanager.py:401
-msgid "Unknown error while syncing, try to reboot your device"
-msgstr "Tuntematon virhe synkronoitaessa. Yritä käynnistää laite uudelleen"
-
-#: ../src/devicemanager.py:408
-msgid "No free space available on device"
-msgstr "Laitteella ei ole vapaata tilaa"
-
-#: ../src/popmenu.py:42
-msgid "Playback"
-msgstr "Toisto"
-
-#: ../src/popmenu.py:64
-msgid "Continue playback"
-msgstr "Jatka toistoa"
-
-#: ../src/popmenu.py:69
-msgid "Stop after this track"
-msgstr "Lopeta tämän kappaleen jälkeen"
-
-#: ../src/popmenu.py:74
-msgid "Stop after this album"
-msgstr "Lopeta tämän albumin jälkeen"
-
-#: ../src/popmenu.py:79
-msgid "Stop after this artist"
-msgstr "Lopeta tämän esittäjän jälkeen"
-
-#: ../src/popmenu.py:93
-msgid "Add to others"
-msgstr "Lisää muihin"
-
-#: ../src/popmenu.py:107
-#, python-format
-msgid "Remove from \"%s\""
-msgstr "Poista kohteesta \"%s\""
-
-#: ../src/popmenu.py:114
-#, python-format
-msgid "Add to \"%s\""
-msgstr "Lisää kohteeseen \"%s\""
-
-#: ../src/popmenu.py:158 ../data/SearchRow.ui.h:3
-msgid "Add to queue"
-msgstr "Lisää jonoon"
-
-#: ../src/popmenu.py:164
-msgid "Next tracks"
-msgstr "Seuraavat kappaleet"
-
-#: ../src/popmenu.py:166
-msgid "Next track"
-msgstr "Seuraava kappale"
-
-#: ../src/popmenu.py:171
-msgid "Remove from queue"
-msgstr "Poista jonosta"
-
-#. Handle language ordering
-#. Translators: Add here words that shoud be ignored for artist sort order
-#: ../src/utils.py:106
-msgid "The the"
-msgstr ""
-
-#: ../src/search.py:148
-msgid "Search:"
-msgstr "Etsi:"
-
-#: ../src/album_widgets.py:178
+#: ../src/widgets_album.py:183
 #, python-format
 msgid "Disc %s"
 msgstr "Levy %s"
 
-#: ../data/AboutDialog.ui.in.h:1
+#: ../src/widgets_device.py:401
+msgid "Unknown error while syncing, try to reboot your device"
+msgstr "Tuntematon virhe synkronoitaessa. Yritä käynnistää laite uudelleen"
+
+#: ../src/widgets_device.py:408
+msgid "No free space available on device"
+msgstr "Laitteella ei ole vapaata tilaa"
+
+#: ../src/widgets_playlist.py:222 ../src/widgets_playlist.py:225
+msgid "New playlist "
+msgstr "Uusi soittolista"
+
+#: ../src/widgets_playlist.py:267 ../src/widgets_playlist.py:526
+#, python-format
+msgid "Remove \"%s\"?"
+msgstr "Poistetaanko \"%s\"?"
+
+#: ../src/widgets_playlist.py:565
+msgid "Remove these tracks?"
+msgstr "Poistetaanko nämä kappaleet?"
+
+#: ../data/AboutDialog.ui.h:1
 msgid "A music player for GNOME."
 msgstr "Musiikkisoitin Gnome-työpöydälle."
 
-#: ../data/AboutDialog.ui.in.h:2
+#: ../data/AboutDialog.ui.h:2
 msgid "Visit Lollypop website"
 msgstr "Käy Lollypopin verkkosivustolla"
 
 #. Replace me with your names
-#: ../data/AboutDialog.ui.in.h:4
+#: ../data/AboutDialog.ui.h:4
 msgid "Cédric Bellegarde <cedric.bellegarde@adishatz.org>"
 msgstr "Cédric Bellegarde <cedric.bellegarde@adishatz.org>"
-
-#: ../data/QueueWidget.ui.h:1
-msgid "Queue:"
-msgstr "Jono:"
-
-#: ../data/QueueWidget.ui.h:2
-msgid "Clear queue"
-msgstr "Tyhjennä jono"
 
 #: ../data/Appmenu.ui.h:1
 msgid "_Update music"
@@ -356,8 +353,16 @@ msgid "_About"
 msgstr "_Tietoja"
 
 #: ../data/Appmenu.ui.h:5
+msgid "_Help"
+msgstr "_Ohje"
+
+#: ../data/Appmenu.ui.h:6
 msgid "_Quit"
 msgstr "_Lopeta"
+
+#: ../data/DeviceManagerView.ui.h:1
+msgid "Synchronize your device with this playlists"
+msgstr "Synkronoi laitteesi tämän soittolistan kanssa"
 
 #: ../data/PlaylistEditWidget.ui.h:1 ../data/PlaylistsManagerWidget.ui.h:1
 msgid "Confirm"
@@ -383,45 +388,13 @@ msgstr "Odota hetki..."
 msgid "Select a cover art for this album"
 msgstr "Valitse kansikuva tälle albumille"
 
-#: ../data/Toolbar.ui.h:1
-msgid "No shuffle"
-msgstr "Ei sekoitusta"
+#: ../data/QueueWidget.ui.h:1
+msgid "Queue:"
+msgstr "Jono:"
 
-#: ../data/Toolbar.ui.h:2
-msgid "Shuffle albums"
-msgstr "Sekoita albumit"
-
-#: ../data/Toolbar.ui.h:3
-msgid "Shuffle tracks"
-msgstr "Sekoita kappaleet"
-
-#: ../data/Toolbar.ui.h:4
-msgid "Shuffle albums from artist"
-msgstr "Sekoita esittäjän albumit"
-
-#: ../data/Toolbar.ui.h:5
-msgid "Shuffle tracks from artist"
-msgstr "Sekoita esittäjän kappaleet"
-
-#: ../data/Toolbar.ui.h:9
-msgid "Settings"
-msgstr "Asetukset"
-
-#: ../data/Toolbar.ui.h:10
-msgid "Shuffle"
-msgstr "Sekoita"
-
-#: ../data/Toolbar.ui.h:11 ../data/SettingsDialog.ui.h:15
-msgid "Party mode"
-msgstr "Biletila"
-
-#: ../data/Toolbar.ui.h:12
-msgid "Search"
-msgstr "Etsi"
-
-#: ../data/Toolbar.ui.h:13
-msgid "Queue"
-msgstr "Jono"
+#: ../data/QueueWidget.ui.h:2
+msgid "Clear queue"
+msgstr "Tyhjennä jono"
 
 #: ../data/SearchRow.ui.h:1
 msgid "artist"
@@ -483,9 +456,45 @@ msgstr "Musiikki"
 msgid "Select what will be available in party mode"
 msgstr "Valitse mitä biletilassa on käytettävissä"
 
-#: ../data/DeviceManagerView.ui.h:1
-msgid "Synchronize your device with this playlists"
-msgstr "Synkronoi laitteesi tämän soittolistan kanssa"
+#: ../data/SettingsDialog.ui.h:15 ../data/Toolbar.ui.h:11
+msgid "Party mode"
+msgstr "Biletila"
+
+#: ../data/Toolbar.ui.h:1
+msgid "No shuffle"
+msgstr "Ei sekoitusta"
+
+#: ../data/Toolbar.ui.h:2
+msgid "Shuffle albums"
+msgstr "Sekoita albumit"
+
+#: ../data/Toolbar.ui.h:3
+msgid "Shuffle tracks"
+msgstr "Sekoita kappaleet"
+
+#: ../data/Toolbar.ui.h:4
+msgid "Shuffle albums from artist"
+msgstr "Sekoita esittäjän albumit"
+
+#: ../data/Toolbar.ui.h:5
+msgid "Shuffle tracks from artist"
+msgstr "Sekoita esittäjän kappaleet"
+
+#: ../data/Toolbar.ui.h:9
+msgid "Settings"
+msgstr "Asetukset"
+
+#: ../data/Toolbar.ui.h:10
+msgid "Shuffle"
+msgstr "Sekoita"
+
+#: ../data/Toolbar.ui.h:12
+msgid "Search"
+msgstr "Etsi"
+
+#: ../data/Toolbar.ui.h:13
+msgid "Queue"
+msgstr "Jono"
 
 #: ../data/Unicode.ui.h:1
 msgid "Error"

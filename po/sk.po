@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lollypop\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-04-22 07:37+0200\n"
-"PO-Revision-Date: 2015-04-22 06:42+0000\n"
+"POT-Creation-Date: 2015-04-28 16:16+0200\n"
+"PO-Revision-Date: 2015-04-28 14:36+0000\n"
 "Last-Translator: Dušan Kazik <prescott66@gmail.com>\n"
 "Language-Team: Slovak (http://www.transifex.com/projects/p/lollypop/language/sk/)\n"
 "MIME-Version: 1.0\n"
@@ -159,15 +159,16 @@ msgstr "Prehráva a organizuje vašu hudobnú zbierku"
 msgid "Music player for the GNOME desktop"
 msgstr "Prehrávač hudby pre prostredie GNOME"
 
-#: ../src/toolbar.py:238 ../src/toolbar.py:282 ../src/toolbar.py:298
-#: ../src/fullscreen.py:178 ../data/Toolbar.ui.h:7
-msgid "Play"
-msgstr "Prehrá"
+#: ../src/collectionscanner.py:60
+msgid "Your music is updating"
+msgstr "Aktualizuje sa vaša hudba"
 
-#: ../src/toolbar.py:274 ../src/toolbar.py:301 ../src/fullscreen.py:75
-#: ../src/fullscreen.py:174
-msgid "Pause"
-msgstr "Pozastaví"
+#: ../src/collectionscanner.py:271 ../src/collectionscanner.py:276
+#: ../src/collectionscanner.py:290 ../src/collectionscanner.py:295
+#: ../src/database_albums.py:233 ../src/database_artists.py:70
+#: ../src/database_genres.py:67 ../src/database_tracks.py:187
+msgid "Unknown"
+msgstr "Neznáme"
 
 #: ../src/container.py:328
 msgid "Popular albums"
@@ -177,7 +178,8 @@ msgstr "Obľúbené albumy"
 msgid "Recent albums"
 msgstr "Nedávne albumy"
 
-#: ../src/container.py:330 ../src/popmenu.py:47
+#: ../src/container.py:330 ../src/popmenu.py:321 ../src/popmenu.py:336
+#: ../src/popmenu.py:351
 msgid "Playlists"
 msgstr "Zoznamy skladieb"
 
@@ -193,48 +195,98 @@ msgstr "Všetky albumy"
 msgid "Compilations"
 msgstr "Kompilácie"
 
-#: ../src/notification.py:37 ../data/Toolbar.ui.h:6
-msgid "Previous"
-msgstr "Predchádzajúca"
-
-#: ../src/notification.py:41 ../data/Toolbar.ui.h:8
-msgid "Next"
-msgstr "Nasledujúca"
-
-#. TRANSLATORS: by refers to the artist,
-#. from to the album
-#: ../src/notification.py:73
-#, python-format
-msgid "by %s, from %s"
-msgstr "od interpreta %s, z albumu %s"
+#: ../src/database_albums.py:250
+msgid "Compilation"
+msgstr "Kompilácia"
 
 #: ../src/database_artists.py:62
 msgid "Many artists"
 msgstr "Mnoho interpretov"
 
-#: ../src/database_artists.py:70 ../src/database_albums.py:230
-#: ../src/database_tracks.py:187 ../src/database_genres.py:67
-#: ../src/collectionscanner.py:269 ../src/collectionscanner.py:274
-#: ../src/collectionscanner.py:288 ../src/collectionscanner.py:293
-msgid "Unknown"
-msgstr "Neznáme"
+#: ../src/fullscreen.py:75 ../src/fullscreen.py:174 ../src/toolbar.py:273
+#: ../src/toolbar.py:300
+msgid "Pause"
+msgstr "Pozastaví"
 
-#: ../src/database_albums.py:247
-msgid "Compilation"
-msgstr "Kompilácia"
+#: ../src/fullscreen.py:178 ../src/toolbar.py:237 ../src/toolbar.py:281
+#: ../src/toolbar.py:297 ../data/Toolbar.ui.h:7
+msgid "Play"
+msgstr "Prehrá"
 
-#: ../src/playlist_widgets.py:222 ../src/playlist_widgets.py:225
-msgid "New playlist "
-msgstr "Nový zoznam skladieb"
+#: ../src/notification.py:64 ../data/Toolbar.ui.h:6
+msgid "Previous"
+msgstr "Predchádzajúca"
 
-#: ../src/playlist_widgets.py:267 ../src/playlist_widgets.py:526
+#: ../src/notification.py:68 ../data/Toolbar.ui.h:8
+msgid "Next"
+msgstr "Nasledujúca"
+
+#. TRANSLATORS: by refers to the artist,
+#. from to the album
+#: ../src/notification.py:94
 #, python-format
-msgid "Remove \"%s\"?"
-msgstr "Odstrániť „%s“?"
+msgid "by %s, from %s"
+msgstr "od interpreta %s, z albumu %s"
 
-#: ../src/playlist_widgets.py:565
-msgid "Remove these tracks?"
-msgstr "Odstrániť tieto skladby?"
+#: ../src/popmenu.py:58
+msgid "Continue playback"
+msgstr "Pokračovať v prehrávaní"
+
+#: ../src/popmenu.py:63
+msgid "Stop after this track"
+msgstr "Zastaviť po tejto skladbe"
+
+#: ../src/popmenu.py:68
+msgid "Stop after this album"
+msgstr "Zastaviť po tomto albume"
+
+#: ../src/popmenu.py:73
+msgid "Stop after this artist"
+msgstr "Zastaviť po tomto interpretovi"
+
+#: ../src/popmenu.py:162 ../data/SearchRow.ui.h:3
+msgid "Add to queue"
+msgstr "Pridať do fronty"
+
+#: ../src/popmenu.py:167
+msgid "Next tracks"
+msgstr "Nasledujúce skladby"
+
+#: ../src/popmenu.py:169
+msgid "Next track"
+msgstr "Nasledujúca skladba"
+
+#: ../src/popmenu.py:173
+msgid "Remove from queue"
+msgstr "Odstrániť z fronty"
+
+#: ../src/popmenu.py:240
+msgid "Add to others"
+msgstr "Pridať k ostatným"
+
+#: ../src/popmenu.py:253
+#, python-format
+msgid "Remove from \"%s\""
+msgstr "„%s“"
+
+#: ../src/popmenu.py:259
+#, python-format
+msgid "Add to \"%s\""
+msgstr "Pridať do „%s“"
+
+#: ../src/popmenu.py:319 ../src/popmenu.py:334 ../src/popmenu.py:349
+msgid "Playback"
+msgstr "Prehrávanie"
+
+#: ../src/search.py:148
+msgid "Search:"
+msgstr "Vyhľadať:"
+
+#. Handle language ordering
+#. Translators: Add here words that shoud be ignored for artist sort order
+#: ../src/utils.py:114
+msgid "The the"
+msgstr "The the"
 
 #: ../src/view_device.py:39 ../src/view_device.py:80
 #, python-format
@@ -245,99 +297,44 @@ msgstr "Synchronizovať %s"
 msgid "Cancel synchronization"
 msgstr "Zrušiť synchronizáciu"
 
-#: ../src/devicemanager.py:401
-msgid "Unknown error while syncing, try to reboot your device"
-msgstr "Vyskytla sa neznáma chyba počas synchronizácie. Skúste reštartovať vaše zariadenie."
-
-#: ../src/devicemanager.py:408
-msgid "No free space available on device"
-msgstr "Na zariadení nie je dostupné voľné miesto"
-
-#: ../src/popmenu.py:42
-msgid "Playback"
-msgstr "Prehrávanie"
-
-#: ../src/popmenu.py:64
-msgid "Continue playback"
-msgstr "Pokračovať v prehrávaní"
-
-#: ../src/popmenu.py:69
-msgid "Stop after this track"
-msgstr "Zastaviť po tejto skladbe"
-
-#: ../src/popmenu.py:74
-msgid "Stop after this album"
-msgstr "Zastaviť po tomto albume"
-
-#: ../src/popmenu.py:79
-msgid "Stop after this artist"
-msgstr "Zastaviť po tomto interpretovi"
-
-#: ../src/popmenu.py:93
-msgid "Add to others"
-msgstr "Pridať k ostatným"
-
-#: ../src/popmenu.py:107
-#, python-format
-msgid "Remove from \"%s\""
-msgstr "„%s“"
-
-#: ../src/popmenu.py:114
-#, python-format
-msgid "Add to \"%s\""
-msgstr "Pridať do „%s“"
-
-#: ../src/popmenu.py:158 ../data/SearchRow.ui.h:3
-msgid "Add to queue"
-msgstr "Pridať do fronty"
-
-#: ../src/popmenu.py:164
-msgid "Next tracks"
-msgstr "Nasledujúce skladby"
-
-#: ../src/popmenu.py:166
-msgid "Next track"
-msgstr "Nasledujúca skladba"
-
-#: ../src/popmenu.py:171
-msgid "Remove from queue"
-msgstr "Odstrániť z fronty"
-
-#. Handle language ordering
-#. Translators: Add here words that shoud be ignored for artist sort order
-#: ../src/utils.py:106
-msgid "The the"
-msgstr "The the"
-
-#: ../src/search.py:148
-msgid "Search:"
-msgstr "Vyhľadať:"
-
-#: ../src/album_widgets.py:178
+#: ../src/widgets_album.py:183
 #, python-format
 msgid "Disc %s"
 msgstr "Disk %s"
 
-#: ../data/AboutDialog.ui.in.h:1
+#: ../src/widgets_device.py:401
+msgid "Unknown error while syncing, try to reboot your device"
+msgstr "Vyskytla sa neznáma chyba počas synchronizácie. Skúste reštartovať vaše zariadenie."
+
+#: ../src/widgets_device.py:408
+msgid "No free space available on device"
+msgstr "Na zariadení nie je dostupné voľné miesto"
+
+#: ../src/widgets_playlist.py:222 ../src/widgets_playlist.py:225
+msgid "New playlist "
+msgstr "Nový zoznam skladieb"
+
+#: ../src/widgets_playlist.py:267 ../src/widgets_playlist.py:526
+#, python-format
+msgid "Remove \"%s\"?"
+msgstr "Odstrániť „%s“?"
+
+#: ../src/widgets_playlist.py:565
+msgid "Remove these tracks?"
+msgstr "Odstrániť tieto skladby?"
+
+#: ../data/AboutDialog.ui.h:1
 msgid "A music player for GNOME."
 msgstr "Prehrávač hudby pre GNOME."
 
-#: ../data/AboutDialog.ui.in.h:2
+#: ../data/AboutDialog.ui.h:2
 msgid "Visit Lollypop website"
 msgstr "Navštíviť domovskú stránku prehrávača Lollypop"
 
 #. Replace me with your names
-#: ../data/AboutDialog.ui.in.h:4
+#: ../data/AboutDialog.ui.h:4
 msgid "Cédric Bellegarde <cedric.bellegarde@adishatz.org>"
 msgstr "Dušan Kazik <prescott66@gmail.com>"
-
-#: ../data/QueueWidget.ui.h:1
-msgid "Queue:"
-msgstr "Fronta:"
-
-#: ../data/QueueWidget.ui.h:2
-msgid "Clear queue"
-msgstr "Vymaže frontu"
 
 #: ../data/Appmenu.ui.h:1
 msgid "_Update music"
@@ -356,8 +353,16 @@ msgid "_About"
 msgstr "_O programe"
 
 #: ../data/Appmenu.ui.h:5
+msgid "_Help"
+msgstr "_Pomocník"
+
+#: ../data/Appmenu.ui.h:6
 msgid "_Quit"
 msgstr "_Ukončiť"
+
+#: ../data/DeviceManagerView.ui.h:1
+msgid "Synchronize your device with this playlists"
+msgstr "Zosynchronizuje vaše zariadenie s týmto zoznam skladieb"
 
 #: ../data/PlaylistEditWidget.ui.h:1 ../data/PlaylistsManagerWidget.ui.h:1
 msgid "Confirm"
@@ -383,45 +388,13 @@ msgstr "Prosím, čakajte..."
 msgid "Select a cover art for this album"
 msgstr "Vyberte obrázok pre tento album"
 
-#: ../data/Toolbar.ui.h:1
-msgid "No shuffle"
-msgstr "Nezamiešať"
+#: ../data/QueueWidget.ui.h:1
+msgid "Queue:"
+msgstr "Fronta:"
 
-#: ../data/Toolbar.ui.h:2
-msgid "Shuffle albums"
-msgstr "Zamiešať albumy"
-
-#: ../data/Toolbar.ui.h:3
-msgid "Shuffle tracks"
-msgstr "Zamiešať skladby"
-
-#: ../data/Toolbar.ui.h:4
-msgid "Shuffle albums from artist"
-msgstr "Zamiešať albumy od intepreta"
-
-#: ../data/Toolbar.ui.h:5
-msgid "Shuffle tracks from artist"
-msgstr "Zamiešať skladby od interpreta "
-
-#: ../data/Toolbar.ui.h:9
-msgid "Settings"
-msgstr "Nastavenia"
-
-#: ../data/Toolbar.ui.h:10
-msgid "Shuffle"
-msgstr "Zamieša"
-
-#: ../data/Toolbar.ui.h:11 ../data/SettingsDialog.ui.h:15
-msgid "Party mode"
-msgstr "Párty režim"
-
-#: ../data/Toolbar.ui.h:12
-msgid "Search"
-msgstr "Vyhľadá"
-
-#: ../data/Toolbar.ui.h:13
-msgid "Queue"
-msgstr "Fronta"
+#: ../data/QueueWidget.ui.h:2
+msgid "Clear queue"
+msgstr "Vymaže frontu"
 
 #: ../data/SearchRow.ui.h:1
 msgid "artist"
@@ -457,7 +430,7 @@ msgstr "Použiť variant tmavej témy"
 
 #: ../data/SettingsDialog.ui.h:8
 msgid "Show genres"
-msgstr "Zobrazí žánre"
+msgstr "Zobraziť žánre"
 
 #: ../data/SettingsDialog.ui.h:9
 msgid "Appearance"
@@ -483,9 +456,45 @@ msgstr "Hudba"
 msgid "Select what will be available in party mode"
 msgstr "Vyberie, čo bude dostupné v párty režime"
 
-#: ../data/DeviceManagerView.ui.h:1
-msgid "Synchronize your device with this playlists"
-msgstr "Zosynchronizuje vaše zariadenie s týmto zoznam skladieb"
+#: ../data/SettingsDialog.ui.h:15 ../data/Toolbar.ui.h:11
+msgid "Party mode"
+msgstr "Párty režim"
+
+#: ../data/Toolbar.ui.h:1
+msgid "No shuffle"
+msgstr "Nezamiešať"
+
+#: ../data/Toolbar.ui.h:2
+msgid "Shuffle albums"
+msgstr "Zamiešať albumy"
+
+#: ../data/Toolbar.ui.h:3
+msgid "Shuffle tracks"
+msgstr "Zamiešať skladby"
+
+#: ../data/Toolbar.ui.h:4
+msgid "Shuffle albums from artist"
+msgstr "Zamiešať albumy od intepreta"
+
+#: ../data/Toolbar.ui.h:5
+msgid "Shuffle tracks from artist"
+msgstr "Zamiešať skladby od interpreta "
+
+#: ../data/Toolbar.ui.h:9
+msgid "Settings"
+msgstr "Nastavenia"
+
+#: ../data/Toolbar.ui.h:10
+msgid "Shuffle"
+msgstr "Zamieša"
+
+#: ../data/Toolbar.ui.h:12
+msgid "Search"
+msgstr "Vyhľadá"
+
+#: ../data/Toolbar.ui.h:13
+msgid "Queue"
+msgstr "Fronta"
 
 #: ../data/Unicode.ui.h:1
 msgid "Error"

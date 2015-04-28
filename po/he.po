@@ -10,8 +10,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lollypop\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-04-22 07:37+0200\n"
-"PO-Revision-Date: 2015-04-22 19:01+0000\n"
+"POT-Creation-Date: 2015-04-28 16:16+0200\n"
+"PO-Revision-Date: 2015-04-28 15:25+0000\n"
 "Last-Translator: Yosef Or Boczko <yoseforb@gmail.com>\n"
 "Language-Team: Hebrew (http://www.transifex.com/projects/p/lollypop/language/he/)\n"
 "MIME-Version: 1.0\n"
@@ -161,15 +161,16 @@ msgstr "ניגון וארגון אוספי המוזיקה שלך"
 msgid "Music player for the GNOME desktop"
 msgstr "נגן מוזיקה עבור שולחן העבודה GNOME"
 
-#: ../src/toolbar.py:238 ../src/toolbar.py:282 ../src/toolbar.py:298
-#: ../src/fullscreen.py:178 ../data/Toolbar.ui.h:7
-msgid "Play"
-msgstr "ניגון"
+#: ../src/collectionscanner.py:60
+msgid "Your music is updating"
+msgstr "המוזיקה שלך מתעדכנת"
 
-#: ../src/toolbar.py:274 ../src/toolbar.py:301 ../src/fullscreen.py:75
-#: ../src/fullscreen.py:174
-msgid "Pause"
-msgstr "השהיה"
+#: ../src/collectionscanner.py:271 ../src/collectionscanner.py:276
+#: ../src/collectionscanner.py:290 ../src/collectionscanner.py:295
+#: ../src/database_albums.py:233 ../src/database_artists.py:70
+#: ../src/database_genres.py:67 ../src/database_tracks.py:187
+msgid "Unknown"
+msgstr "לא ידוע"
 
 #: ../src/container.py:328
 msgid "Popular albums"
@@ -179,7 +180,8 @@ msgstr "אלבומים חביבים"
 msgid "Recent albums"
 msgstr "אלבומים אחרונים"
 
-#: ../src/container.py:330 ../src/popmenu.py:47
+#: ../src/container.py:330 ../src/popmenu.py:321 ../src/popmenu.py:336
+#: ../src/popmenu.py:351
 msgid "Playlists"
 msgstr "רשימות השמעה"
 
@@ -195,48 +197,98 @@ msgstr "כל האלבומים"
 msgid "Compilations"
 msgstr "אוספים"
 
-#: ../src/notification.py:37 ../data/Toolbar.ui.h:6
-msgid "Previous"
-msgstr "הקודם"
-
-#: ../src/notification.py:41 ../data/Toolbar.ui.h:8
-msgid "Next"
-msgstr "הבא"
-
-#. TRANSLATORS: by refers to the artist,
-#. from to the album
-#: ../src/notification.py:73
-#, python-format
-msgid "by %s, from %s"
-msgstr "מאת %s, מתוך %s"
+#: ../src/database_albums.py:250
+msgid "Compilation"
+msgstr "אוסף"
 
 #: ../src/database_artists.py:62
 msgid "Many artists"
 msgstr "אמנים שונים"
 
-#: ../src/database_artists.py:70 ../src/database_albums.py:230
-#: ../src/database_tracks.py:187 ../src/database_genres.py:67
-#: ../src/collectionscanner.py:269 ../src/collectionscanner.py:274
-#: ../src/collectionscanner.py:288 ../src/collectionscanner.py:293
-msgid "Unknown"
-msgstr "לא ידוע"
+#: ../src/fullscreen.py:75 ../src/fullscreen.py:174 ../src/toolbar.py:273
+#: ../src/toolbar.py:300
+msgid "Pause"
+msgstr "השהיה"
 
-#: ../src/database_albums.py:247
-msgid "Compilation"
-msgstr "אוסף"
+#: ../src/fullscreen.py:178 ../src/toolbar.py:237 ../src/toolbar.py:281
+#: ../src/toolbar.py:297 ../data/Toolbar.ui.h:7
+msgid "Play"
+msgstr "ניגון"
 
-#: ../src/playlist_widgets.py:222 ../src/playlist_widgets.py:225
-msgid "New playlist "
-msgstr "רשימת השמעה חדשה"
+#: ../src/notification.py:64 ../data/Toolbar.ui.h:6
+msgid "Previous"
+msgstr "הקודם"
 
-#: ../src/playlist_widgets.py:267 ../src/playlist_widgets.py:526
+#: ../src/notification.py:68 ../data/Toolbar.ui.h:8
+msgid "Next"
+msgstr "הבא"
+
+#. TRANSLATORS: by refers to the artist,
+#. from to the album
+#: ../src/notification.py:94
 #, python-format
-msgid "Remove \"%s\"?"
-msgstr "להסיר את „%s”?"
+msgid "by %s, from %s"
+msgstr "מאת %s, מתוך %s"
 
-#: ../src/playlist_widgets.py:565
-msgid "Remove these tracks?"
-msgstr "להסיר רצועות אלו?"
+#: ../src/popmenu.py:58
+msgid "Continue playback"
+msgstr "להמשיך השמעה"
+
+#: ../src/popmenu.py:63
+msgid "Stop after this track"
+msgstr "עצירה לאחר רצועה זו"
+
+#: ../src/popmenu.py:68
+msgid "Stop after this album"
+msgstr "עצירה לאחר אלבום זה"
+
+#: ../src/popmenu.py:73
+msgid "Stop after this artist"
+msgstr "עצירה לאחר אמן זה"
+
+#: ../src/popmenu.py:162 ../data/SearchRow.ui.h:3
+msgid "Add to queue"
+msgstr "הוספה לתור"
+
+#: ../src/popmenu.py:167
+msgid "Next tracks"
+msgstr "רצועות הבאות"
+
+#: ../src/popmenu.py:169
+msgid "Next track"
+msgstr "רצועה הבאה"
+
+#: ../src/popmenu.py:173
+msgid "Remove from queue"
+msgstr "הסרה מהתור"
+
+#: ../src/popmenu.py:240
+msgid "Add to others"
+msgstr "הוספה לאחרים"
+
+#: ../src/popmenu.py:253
+#, python-format
+msgid "Remove from \"%s\""
+msgstr "הסרה מתוך „%s"
+
+#: ../src/popmenu.py:259
+#, python-format
+msgid "Add to \"%s\""
+msgstr "הוספה אל „%s”"
+
+#: ../src/popmenu.py:319 ../src/popmenu.py:334 ../src/popmenu.py:349
+msgid "Playback"
+msgstr "בִצוע מוקלט"
+
+#: ../src/search.py:148
+msgid "Search:"
+msgstr "חיפוש:"
+
+#. Handle language ordering
+#. Translators: Add here words that shoud be ignored for artist sort order
+#: ../src/utils.py:114
+msgid "The the"
+msgstr " ו"
 
 #: ../src/view_device.py:39 ../src/view_device.py:80
 #, python-format
@@ -247,99 +299,44 @@ msgstr "מתאם %s"
 msgid "Cancel synchronization"
 msgstr "ביטול התיאום"
 
-#: ../src/devicemanager.py:401
-msgid "Unknown error while syncing, try to reboot your device"
-msgstr "שגיאה בלתי ידועה אירעה בעת התיאום, יש לנסות להפעיל מחדש את ההתקן שלך"
-
-#: ../src/devicemanager.py:408
-msgid "No free space available on device"
-msgstr "אין שטח פנוי זמן על ההתקן"
-
-#: ../src/popmenu.py:42
-msgid "Playback"
-msgstr "בִצוע מוקלט"
-
-#: ../src/popmenu.py:64
-msgid "Continue playback"
-msgstr "להמשיך השמעה"
-
-#: ../src/popmenu.py:69
-msgid "Stop after this track"
-msgstr "עצירה לאחר רצועה זו"
-
-#: ../src/popmenu.py:74
-msgid "Stop after this album"
-msgstr "עצירה לאחר אלבום זה"
-
-#: ../src/popmenu.py:79
-msgid "Stop after this artist"
-msgstr "עצירה לאחר אמן זה"
-
-#: ../src/popmenu.py:93
-msgid "Add to others"
-msgstr "הוספה לאחרים"
-
-#: ../src/popmenu.py:107
-#, python-format
-msgid "Remove from \"%s\""
-msgstr "הסרה מתוך „%s"
-
-#: ../src/popmenu.py:114
-#, python-format
-msgid "Add to \"%s\""
-msgstr "הוספה אל „%s”"
-
-#: ../src/popmenu.py:158 ../data/SearchRow.ui.h:3
-msgid "Add to queue"
-msgstr "הוספה לתור"
-
-#: ../src/popmenu.py:164
-msgid "Next tracks"
-msgstr "רצועות הבאות"
-
-#: ../src/popmenu.py:166
-msgid "Next track"
-msgstr "רצועה הבאה"
-
-#: ../src/popmenu.py:171
-msgid "Remove from queue"
-msgstr "הסרה מהתור"
-
-#. Handle language ordering
-#. Translators: Add here words that shoud be ignored for artist sort order
-#: ../src/utils.py:106
-msgid "The the"
-msgstr " ו"
-
-#: ../src/search.py:148
-msgid "Search:"
-msgstr "חיפוש:"
-
-#: ../src/album_widgets.py:178
+#: ../src/widgets_album.py:183
 #, python-format
 msgid "Disc %s"
 msgstr "דיסק %s"
 
-#: ../data/AboutDialog.ui.in.h:1
+#: ../src/widgets_device.py:401
+msgid "Unknown error while syncing, try to reboot your device"
+msgstr "שגיאה בלתי ידועה אירעה בעת התיאום, יש לנסות להפעיל מחדש את ההתקן שלך"
+
+#: ../src/widgets_device.py:408
+msgid "No free space available on device"
+msgstr "אין שטח פנוי זמן על ההתקן"
+
+#: ../src/widgets_playlist.py:222 ../src/widgets_playlist.py:225
+msgid "New playlist "
+msgstr "רשימת השמעה חדשה"
+
+#: ../src/widgets_playlist.py:267 ../src/widgets_playlist.py:526
+#, python-format
+msgid "Remove \"%s\"?"
+msgstr "להסיר את „%s”?"
+
+#: ../src/widgets_playlist.py:565
+msgid "Remove these tracks?"
+msgstr "להסיר רצועות אלו?"
+
+#: ../data/AboutDialog.ui.h:1
 msgid "A music player for GNOME."
 msgstr "נגן מוזיקה עבור GNOME"
 
-#: ../data/AboutDialog.ui.in.h:2
+#: ../data/AboutDialog.ui.h:2
 msgid "Visit Lollypop website"
 msgstr "לבקר באתר של Lollypop"
 
 #. Replace me with your names
-#: ../data/AboutDialog.ui.in.h:4
+#: ../data/AboutDialog.ui.h:4
 msgid "Cédric Bellegarde <cedric.bellegarde@adishatz.org>"
 msgstr "יוסף אור בוצ׳קו <yoseforb@gnome.org>"
-
-#: ../data/QueueWidget.ui.h:1
-msgid "Queue:"
-msgstr "תור:"
-
-#: ../data/QueueWidget.ui.h:2
-msgid "Clear queue"
-msgstr "ניקוי התור"
 
 #: ../data/Appmenu.ui.h:1
 msgid "_Update music"
@@ -358,8 +355,16 @@ msgid "_About"
 msgstr "על _אודות"
 
 #: ../data/Appmenu.ui.h:5
+msgid "_Help"
+msgstr "_עזרה"
+
+#: ../data/Appmenu.ui.h:6
 msgid "_Quit"
 msgstr "_יציאה"
+
+#: ../data/DeviceManagerView.ui.h:1
+msgid "Synchronize your device with this playlists"
+msgstr "התאמת ההתקן שלך עם רשימת השמעה זו"
 
 #: ../data/PlaylistEditWidget.ui.h:1 ../data/PlaylistsManagerWidget.ui.h:1
 msgid "Confirm"
@@ -385,45 +390,13 @@ msgstr "נא להמתין…"
 msgid "Select a cover art for this album"
 msgstr "בחירת עטיפה לאלבום זה"
 
-#: ../data/Toolbar.ui.h:1
-msgid "No shuffle"
-msgstr "ללא ערבוב"
+#: ../data/QueueWidget.ui.h:1
+msgid "Queue:"
+msgstr "תור:"
 
-#: ../data/Toolbar.ui.h:2
-msgid "Shuffle albums"
-msgstr "ערבוב אלבומים"
-
-#: ../data/Toolbar.ui.h:3
-msgid "Shuffle tracks"
-msgstr "ערבוב רצועות"
-
-#: ../data/Toolbar.ui.h:4
-msgid "Shuffle albums from artist"
-msgstr "ערבוב אלבומים מאמן"
-
-#: ../data/Toolbar.ui.h:5
-msgid "Shuffle tracks from artist"
-msgstr "ערבוב רצועות מאמן"
-
-#: ../data/Toolbar.ui.h:9
-msgid "Settings"
-msgstr "הגדרות"
-
-#: ../data/Toolbar.ui.h:10
-msgid "Shuffle"
-msgstr "ערבוב"
-
-#: ../data/Toolbar.ui.h:11 ../data/SettingsDialog.ui.h:15
-msgid "Party mode"
-msgstr "מצב מסיבה"
-
-#: ../data/Toolbar.ui.h:12
-msgid "Search"
-msgstr "חיפוש"
-
-#: ../data/Toolbar.ui.h:13
-msgid "Queue"
-msgstr "תור"
+#: ../data/QueueWidget.ui.h:2
+msgid "Clear queue"
+msgstr "ניקוי התור"
 
 #: ../data/SearchRow.ui.h:1
 msgid "artist"
@@ -483,11 +456,47 @@ msgstr "מוזיקה"
 
 #: ../data/SettingsDialog.ui.h:14
 msgid "Select what will be available in party mode"
-msgstr "בחירת מה יהיה זמין במצב מסיבה"
+msgstr "בחירה מה יהיה זמין במצב מסיבה"
 
-#: ../data/DeviceManagerView.ui.h:1
-msgid "Synchronize your device with this playlists"
-msgstr "התאמת ההתקן שלך עם רשימת השמעה זו"
+#: ../data/SettingsDialog.ui.h:15 ../data/Toolbar.ui.h:11
+msgid "Party mode"
+msgstr "מצב מסיבה"
+
+#: ../data/Toolbar.ui.h:1
+msgid "No shuffle"
+msgstr "ללא ערבוב"
+
+#: ../data/Toolbar.ui.h:2
+msgid "Shuffle albums"
+msgstr "ערבוב אלבומים"
+
+#: ../data/Toolbar.ui.h:3
+msgid "Shuffle tracks"
+msgstr "ערבוב רצועות"
+
+#: ../data/Toolbar.ui.h:4
+msgid "Shuffle albums from artist"
+msgstr "ערבוב אלבומים מאמן"
+
+#: ../data/Toolbar.ui.h:5
+msgid "Shuffle tracks from artist"
+msgstr "ערבוב רצועות מאמן"
+
+#: ../data/Toolbar.ui.h:9
+msgid "Settings"
+msgstr "הגדרות"
+
+#: ../data/Toolbar.ui.h:10
+msgid "Shuffle"
+msgstr "ערבוב"
+
+#: ../data/Toolbar.ui.h:12
+msgid "Search"
+msgstr "חיפוש"
+
+#: ../data/Toolbar.ui.h:13
+msgid "Queue"
+msgstr "תור"
 
 #: ../data/Unicode.ui.h:1
 msgid "Error"

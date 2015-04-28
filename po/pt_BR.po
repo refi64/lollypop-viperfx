@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lollypop\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-04-21 15:23+0200\n"
-"PO-Revision-Date: 2015-04-21 13:47+0000\n"
+"POT-Creation-Date: 2015-04-28 16:16+0200\n"
+"PO-Revision-Date: 2015-04-28 14:36+0000\n"
 "Last-Translator: Cédric Bellegarde <web@adishatz.org>\n"
 "Language-Team: Portuguese (Brazil) (http://www.transifex.com/projects/p/lollypop/language/pt_BR/)\n"
 "MIME-Version: 1.0\n"
@@ -159,82 +159,134 @@ msgstr "Reproduza e organize sua coleção de músicas"
 msgid "Music player for the GNOME desktop"
 msgstr "Reprodutor de músicas para a área de trabalho do GNOME"
 
-#: ../src/toolbar.py:238 ../src/toolbar.py:282 ../src/toolbar.py:298
-#: ../src/fullscreen.py:178 ../data/Toolbar.ui.h:7
-msgid "Play"
-msgstr "Reproduzir"
+#: ../src/collectionscanner.py:60
+msgid "Your music is updating"
+msgstr ""
 
-#: ../src/toolbar.py:274 ../src/toolbar.py:301 ../src/fullscreen.py:75
-#: ../src/fullscreen.py:174
-msgid "Pause"
-msgstr "Pausar"
+#: ../src/collectionscanner.py:271 ../src/collectionscanner.py:276
+#: ../src/collectionscanner.py:290 ../src/collectionscanner.py:295
+#: ../src/database_albums.py:233 ../src/database_artists.py:70
+#: ../src/database_genres.py:67 ../src/database_tracks.py:187
+msgid "Unknown"
+msgstr "Desconhecido"
 
-#: ../src/container.py:333
+#: ../src/container.py:328
 msgid "Popular albums"
 msgstr "Álbuns populares"
 
-#: ../src/container.py:334
+#: ../src/container.py:329
 msgid "Recent albums"
 msgstr ""
 
-#: ../src/container.py:335 ../src/popmenu.py:47
+#: ../src/container.py:330 ../src/popmenu.py:321 ../src/popmenu.py:336
+#: ../src/popmenu.py:351
 msgid "Playlists"
 msgstr "Listas de reprodução"
 
-#: ../src/container.py:337
+#: ../src/container.py:332
 msgid "All artists"
 msgstr "Todos os artistas"
 
-#: ../src/container.py:339
+#: ../src/container.py:334
 msgid "All albums"
 msgstr "Todos os álbuns"
 
-#: ../src/container.py:381
+#: ../src/container.py:376
 msgid "Compilations"
 msgstr "Compilações"
 
-#: ../src/notification.py:37 ../data/Toolbar.ui.h:6
-msgid "Previous"
-msgstr "Anterior"
-
-#: ../src/notification.py:41 ../data/Toolbar.ui.h:8
-msgid "Next"
-msgstr "Próxima"
-
-#. TRANSLATORS: by refers to the artist,
-#. from to the album
-#: ../src/notification.py:73
-#, python-format
-msgid "by %s, from %s"
-msgstr "por %s, de %s"
+#: ../src/database_albums.py:250
+msgid "Compilation"
+msgstr "Compilação"
 
 #: ../src/database_artists.py:62
 msgid "Many artists"
 msgstr "Vários artistas"
 
-#: ../src/database_artists.py:70 ../src/database_albums.py:230
-#: ../src/database_tracks.py:187 ../src/database_genres.py:67
-#: ../src/collectionscanner.py:269 ../src/collectionscanner.py:274
-#: ../src/collectionscanner.py:288 ../src/collectionscanner.py:293
-msgid "Unknown"
-msgstr "Desconhecido"
+#: ../src/fullscreen.py:75 ../src/fullscreen.py:174 ../src/toolbar.py:273
+#: ../src/toolbar.py:300
+msgid "Pause"
+msgstr "Pausar"
 
-#: ../src/database_albums.py:247
-msgid "Compilation"
-msgstr "Compilação"
+#: ../src/fullscreen.py:178 ../src/toolbar.py:237 ../src/toolbar.py:281
+#: ../src/toolbar.py:297 ../data/Toolbar.ui.h:7
+msgid "Play"
+msgstr "Reproduzir"
 
-#: ../src/playlist_widgets.py:222 ../src/playlist_widgets.py:225
-msgid "New playlist "
-msgstr "Nova lista de reprodução"
+#: ../src/notification.py:64 ../data/Toolbar.ui.h:6
+msgid "Previous"
+msgstr "Anterior"
 
-#: ../src/playlist_widgets.py:267 ../src/playlist_widgets.py:526
+#: ../src/notification.py:68 ../data/Toolbar.ui.h:8
+msgid "Next"
+msgstr "Próxima"
+
+#. TRANSLATORS: by refers to the artist,
+#. from to the album
+#: ../src/notification.py:94
 #, python-format
-msgid "Remove \"%s\"?"
-msgstr "Remover \"%s\"?"
+msgid "by %s, from %s"
+msgstr "por %s, de %s"
 
-#: ../src/playlist_widgets.py:565
-msgid "Remove these tracks?"
-msgstr "Remover estas faixas?"
+#: ../src/popmenu.py:58
+msgid "Continue playback"
+msgstr "Continuar reprodução"
+
+#: ../src/popmenu.py:63
+msgid "Stop after this track"
+msgstr "Parar após esta faixa"
+
+#: ../src/popmenu.py:68
+msgid "Stop after this album"
+msgstr "Parar após este álbum"
+
+#: ../src/popmenu.py:73
+msgid "Stop after this artist"
+msgstr "Parar após este artista"
+
+#: ../src/popmenu.py:162 ../data/SearchRow.ui.h:3
+msgid "Add to queue"
+msgstr "Adicionar à fila"
+
+#: ../src/popmenu.py:167
+msgid "Next tracks"
+msgstr "Próximas faixas"
+
+#: ../src/popmenu.py:169
+msgid "Next track"
+msgstr "Próxima faixa"
+
+#: ../src/popmenu.py:173
+msgid "Remove from queue"
+msgstr "Remover da fila"
+
+#: ../src/popmenu.py:240
+msgid "Add to others"
+msgstr "Adiciona a outros"
+
+#: ../src/popmenu.py:253
+#, python-format
+msgid "Remove from \"%s\""
+msgstr "Remover de \"%s\""
+
+#: ../src/popmenu.py:259
+#, python-format
+msgid "Add to \"%s\""
+msgstr "Adicionar a \"%s\""
+
+#: ../src/popmenu.py:319 ../src/popmenu.py:334 ../src/popmenu.py:349
+msgid "Playback"
+msgstr "Reprodução"
+
+#: ../src/search.py:148
+msgid "Search:"
+msgstr "Pesquisar:"
+
+#. Handle language ordering
+#. Translators: Add here words that shoud be ignored for artist sort order
+#: ../src/utils.py:114
+msgid "The the"
+msgstr "A a O o As as Os os"
 
 #: ../src/view_device.py:39 ../src/view_device.py:80
 #, python-format
@@ -245,99 +297,44 @@ msgstr "Sincronizar %s"
 msgid "Cancel synchronization"
 msgstr "Cancelar sincronização"
 
-#: ../src/devicemanager.py:401
-msgid "Unknown error while syncing, try to reboot your device"
-msgstr "Error desconhecido ao sincroniar, tente reiniciar o seu dispositivo"
-
-#: ../src/devicemanager.py:408
-msgid "No free space available on device"
-msgstr "Espaço vazio não disponível no dispositivo"
-
-#: ../src/popmenu.py:42
-msgid "Playback"
-msgstr "Reprodução"
-
-#: ../src/popmenu.py:64
-msgid "Continue playback"
-msgstr "Continuar reprodução"
-
-#: ../src/popmenu.py:69
-msgid "Stop after this track"
-msgstr "Parar após esta faixa"
-
-#: ../src/popmenu.py:74
-msgid "Stop after this album"
-msgstr "Parar após este álbum"
-
-#: ../src/popmenu.py:79
-msgid "Stop after this artist"
-msgstr "Parar após este artista"
-
-#: ../src/popmenu.py:93
-msgid "Add to others"
-msgstr "Adiciona a outros"
-
-#: ../src/popmenu.py:107
-#, python-format
-msgid "Remove from \"%s\""
-msgstr "Remover de \"%s\""
-
-#: ../src/popmenu.py:114
-#, python-format
-msgid "Add to \"%s\""
-msgstr "Adicionar a \"%s\""
-
-#: ../src/popmenu.py:158 ../data/SearchRow.ui.h:3
-msgid "Add to queue"
-msgstr "Adicionar à fila"
-
-#: ../src/popmenu.py:164
-msgid "Next tracks"
-msgstr "Próximas faixas"
-
-#: ../src/popmenu.py:166
-msgid "Next track"
-msgstr "Próxima faixa"
-
-#: ../src/popmenu.py:171
-msgid "Remove from queue"
-msgstr "Remover da fila"
-
-#. Handle language ordering
-#. Translators: Add here words that shoud be ignored for artist sort order
-#: ../src/utils.py:106
-msgid "The the"
-msgstr "A a O o As as Os os"
-
-#: ../src/search.py:148
-msgid "Search:"
-msgstr "Pesquisar:"
-
-#: ../src/album_widgets.py:178
+#: ../src/widgets_album.py:183
 #, python-format
 msgid "Disc %s"
 msgstr ""
 
-#: ../data/AboutDialog.ui.in.h:1
+#: ../src/widgets_device.py:401
+msgid "Unknown error while syncing, try to reboot your device"
+msgstr "Error desconhecido ao sincroniar, tente reiniciar o seu dispositivo"
+
+#: ../src/widgets_device.py:408
+msgid "No free space available on device"
+msgstr "Espaço vazio não disponível no dispositivo"
+
+#: ../src/widgets_playlist.py:222 ../src/widgets_playlist.py:225
+msgid "New playlist "
+msgstr "Nova lista de reprodução"
+
+#: ../src/widgets_playlist.py:267 ../src/widgets_playlist.py:526
+#, python-format
+msgid "Remove \"%s\"?"
+msgstr "Remover \"%s\"?"
+
+#: ../src/widgets_playlist.py:565
+msgid "Remove these tracks?"
+msgstr "Remover estas faixas?"
+
+#: ../data/AboutDialog.ui.h:1
 msgid "A music player for GNOME."
 msgstr "Um player de música para o GNOME."
 
-#: ../data/AboutDialog.ui.in.h:2
+#: ../data/AboutDialog.ui.h:2
 msgid "Visit Lollypop website"
 msgstr "Visite o website do Lollypop"
 
 #. Replace me with your names
-#: ../data/AboutDialog.ui.in.h:4
+#: ../data/AboutDialog.ui.h:4
 msgid "Cédric Bellegarde <cedric.bellegarde@adishatz.org>"
 msgstr ""
-
-#: ../data/QueueWidget.ui.h:1
-msgid "Queue:"
-msgstr "Fila:"
-
-#: ../data/QueueWidget.ui.h:2
-msgid "Clear queue"
-msgstr "Limpar fila"
 
 #: ../data/Appmenu.ui.h:1
 msgid "_Update music"
@@ -356,8 +353,16 @@ msgid "_About"
 msgstr "_Sobre"
 
 #: ../data/Appmenu.ui.h:5
+msgid "_Help"
+msgstr ""
+
+#: ../data/Appmenu.ui.h:6
 msgid "_Quit"
 msgstr "_Sair"
+
+#: ../data/DeviceManagerView.ui.h:1
+msgid "Synchronize your device with this playlists"
+msgstr "Sincronizar seu dispositivo com estas listas de reprodução"
 
 #: ../data/PlaylistEditWidget.ui.h:1 ../data/PlaylistsManagerWidget.ui.h:1
 msgid "Confirm"
@@ -372,52 +377,24 @@ msgid "Edit"
 msgstr "Editar"
 
 #: ../data/PopImages.ui.h:1
-msgid "Please wait..."
+msgid "No cover found..."
 msgstr ""
 
 #: ../data/PopImages.ui.h:2
+msgid "Please wait..."
+msgstr ""
+
+#: ../data/PopImages.ui.h:3
 msgid "Select a cover art for this album"
 msgstr "Selecionionar uma arte de capa para este álbum"
 
-#: ../data/Toolbar.ui.h:1
-msgid "No shuffle"
-msgstr "Não misturar"
+#: ../data/QueueWidget.ui.h:1
+msgid "Queue:"
+msgstr "Fila:"
 
-#: ../data/Toolbar.ui.h:2
-msgid "Shuffle albums"
-msgstr "Misturar álbuns"
-
-#: ../data/Toolbar.ui.h:3
-msgid "Shuffle tracks"
-msgstr "Misturar faixas"
-
-#: ../data/Toolbar.ui.h:4
-msgid "Shuffle albums from artist"
-msgstr "Misturar álbuns do artista"
-
-#: ../data/Toolbar.ui.h:5
-msgid "Shuffle tracks from artist"
-msgstr "Misturar faixas do artista"
-
-#: ../data/Toolbar.ui.h:9
-msgid "Settings"
-msgstr "Configurações"
-
-#: ../data/Toolbar.ui.h:10
-msgid "Shuffle"
-msgstr "Misturar"
-
-#: ../data/Toolbar.ui.h:11 ../data/SettingsDialog.ui.h:15
-msgid "Party mode"
-msgstr "Modo de festa"
-
-#: ../data/Toolbar.ui.h:12
-msgid "Search"
-msgstr "Pesquisar"
-
-#: ../data/Toolbar.ui.h:13
-msgid "Queue"
-msgstr "Fila"
+#: ../data/QueueWidget.ui.h:2
+msgid "Clear queue"
+msgstr "Limpar fila"
 
 #: ../data/SearchRow.ui.h:1
 msgid "artist"
@@ -479,9 +456,45 @@ msgstr "Músicas"
 msgid "Select what will be available in party mode"
 msgstr "Selecionar o que estará disponível no modo de festa"
 
-#: ../data/DeviceManagerView.ui.h:1
-msgid "Synchronize your device with this playlists"
-msgstr "Sincronizar seu dispositivo com estas listas de reprodução"
+#: ../data/SettingsDialog.ui.h:15 ../data/Toolbar.ui.h:11
+msgid "Party mode"
+msgstr "Modo de festa"
+
+#: ../data/Toolbar.ui.h:1
+msgid "No shuffle"
+msgstr "Não misturar"
+
+#: ../data/Toolbar.ui.h:2
+msgid "Shuffle albums"
+msgstr "Misturar álbuns"
+
+#: ../data/Toolbar.ui.h:3
+msgid "Shuffle tracks"
+msgstr "Misturar faixas"
+
+#: ../data/Toolbar.ui.h:4
+msgid "Shuffle albums from artist"
+msgstr "Misturar álbuns do artista"
+
+#: ../data/Toolbar.ui.h:5
+msgid "Shuffle tracks from artist"
+msgstr "Misturar faixas do artista"
+
+#: ../data/Toolbar.ui.h:9
+msgid "Settings"
+msgstr "Configurações"
+
+#: ../data/Toolbar.ui.h:10
+msgid "Shuffle"
+msgstr "Misturar"
+
+#: ../data/Toolbar.ui.h:12
+msgid "Search"
+msgstr "Pesquisar"
+
+#: ../data/Toolbar.ui.h:13
+msgid "Queue"
+msgstr "Fila"
 
 #: ../data/Unicode.ui.h:1
 msgid "Error"

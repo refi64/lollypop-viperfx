@@ -1,0 +1,211 @@
+# 
+# Translators:
+# fri, 2015
+msgid ""
+msgstr ""
+"Project-Id-Version: lollypop\n"
+"POT-Creation-Date: 2015-04-28 17:23+0200\n"
+"PO-Revision-Date: 2015-04-28 16:15+0000\n"
+"Last-Translator: Cédric Bellegarde <web@adishatz.org>\n"
+"Language-Team: Czech (http://www.transifex.com/projects/p/lollypop/language/cs/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: cs\n"
+"Plural-Forms: nplurals=3; plural=(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2;\n"
+
+#. Put one translator per line, in the form NAME <EMAIL>, YEAR1, YEAR2
+msgctxt "_"
+msgid "translator-credits"
+msgstr "Pavel Fric"
+
+#. (itstool) path: info/desc
+#: C/index.page:7
+msgid "Help for the Lollypop music player."
+msgstr "Nápověda k hudebnímu přehrávači Lollypop"
+
+#. (itstool) path: info/title
+#: C/index.page:9
+msgctxt "link"
+msgid "Lollypop music player"
+msgstr "Hudební přehrávač Lollypop"
+
+#. (itstool) path: info/title
+#: C/index.page:10
+msgctxt "text"
+msgid "Lollypop music player"
+msgstr "Hudební přehrávač Lollypop"
+
+#. (itstool) path: credit/name
+#: C/index.page:13
+msgid "Cédric Bellegarde"
+msgstr "Cédric Bellegarde"
+
+#. (itstool) path: credit/years
+#: C/index.page:15
+msgid "2015"
+msgstr "2015"
+
+#. (itstool) path: page/title
+#: C/index.page:20
+msgid "<_:media-1/> Lollypop music player"
+msgstr "<_:media-1/> Hudební přehrávač Lollypop"
+
+#. (itstool) path: section/title
+#: C/index.page:23
+msgid "Add music"
+msgstr "Přidání hudby"
+
+#. (itstool) path: section/p
+#: C/index.page:24
+msgid "If lollypop fails to detect your music:"
+msgstr "Pokud se Lollypopu nepodaří vaši hudbu najít:"
+
+#. (itstool) path: item/p
+#: C/index.page:26
+msgid "Check you have gstreamer-libav or gstreamer-fluendo installed"
+msgstr "Prověřte, že máte nainstalován gstreamer-libav nebo gstreamer-fluendo"
+
+#. (itstool) path: item/p
+#: C/index.page:27
+msgid ""
+"Go to the application menu: \"<sys>Settings -&gt; Music</sys>\" and add your"
+" music folder"
+msgstr "Jděte do nabídky programu: \"<sys>Nastavení -&gt; Hudba</sys>\" a přidejte složku s hudbou"
+
+#. (itstool) path: section/title
+#: C/index.page:32
+msgid "Playback"
+msgstr "Přehrávání"
+
+#. (itstool) path: section/p
+#: C/index.page:33
+msgid "When you start playing a song, a contextual playlist is populated"
+msgstr "Když začnete přehrávat píseň, je zaplněn související seznam skladeb"
+
+#. (itstool) path: section/p
+#: C/index.page:34
+msgid ""
+"Contexts can be: an album, an artist, a genre, popular or recent albums"
+msgstr "Souvislostmi mohou být: album, umělec, žánr, oblíbená nebo nedávná alba"
+
+#. (itstool) path: section/p
+#: C/index.page:35
+msgid "Shuffle interacts on current context."
+msgstr "Míchání ovlivní nynější souvislosti"
+
+#. (itstool) path: section/title
+#: C/index.page:39
+msgid "Rate albums"
+msgstr "Hodnocení alb"
+
+#. (itstool) path: section/p
+#: C/index.page:40
+msgid "Album popularity is based on how many tracks you listen for an album"
+msgstr "Oblíbenost alba je založena na tom, kolik skladeb na albu jste si poslechl"
+
+#. (itstool) path: section/p
+#: C/index.page:41
+msgid ""
+"Album rating only influence this popularity, it's not fixed in the time"
+msgstr "Hodnocení alba ovlivní pouze tuto oblíbenost, není pevně stanoveno v čase"
+
+#. (itstool) path: section/title
+#: C/index.page:45
+msgid "Download covers"
+msgstr "Stahování obalů"
+
+#. (itstool) path: section/p
+#: C/index.page:46
+msgid ""
+"When hovering a cover, if mouse cursor changes to a hand, just click and "
+"select a new cover"
+msgstr ""
+
+#. (itstool) path: section/p
+#: C/index.page:47
+msgid "You need an internet connection"
+msgstr ""
+
+#. (itstool) path: section/title
+#: C/index.page:51
+msgid "Shortcuts"
+msgstr "Zkratky"
+
+#. (itstool) path: item/p
+#: C/index.page:53
+msgid "Control+s: Lollypop settings"
+msgstr "Ctrl+s: Nastavení Lollypopu"
+
+#. (itstool) path: item/p
+#: C/index.page:54
+msgid "Control+f: Search"
+msgstr "Ctrl+f: Hledat"
+
+#. (itstool) path: item/p
+#: C/index.page:55
+msgid "Control+p: Party mode"
+msgstr "Ctrl+p: Večírkový režim"
+
+#. (itstool) path: item/p
+#: C/index.page:56 C/index.page:63
+msgid "Control+m or F11: Fullscreen"
+msgstr "Ctrl+m nebo F11: Celá obrazovka"
+
+#. (itstool) path: item/p
+#: C/index.page:57
+msgid "x: Play"
+msgstr "x: Přehrát"
+
+#. (itstool) path: item/p
+#: C/index.page:58
+msgid "c: Pause"
+msgstr "c: Pozastavit"
+
+#. (itstool) path: item/p
+#: C/index.page:59
+msgid "v: Stop"
+msgstr "v: Zastavit"
+
+#. (itstool) path: item/p
+#: C/index.page:60
+msgid "n: Next track"
+msgstr "n: Další skladba"
+
+#. (itstool) path: item/p
+#: C/index.page:61
+msgid "p: Previous track"
+msgstr "p: Předchozí skladba"
+
+#. (itstool) path: item/p
+#: C/index.page:62
+msgid "Control+n: Skip current album"
+msgstr "Ctrl+n: Přeskočit nynější album"
+
+#. (itstool) path: item/p
+#: C/index.page:64
+msgid "Control+h: Help"
+msgstr "Ctrl+h: Nápověda"
+
+#. (itstool) path: item/p
+#: C/index.page:65
+msgid "Control+a: About"
+msgstr "Ctrl+a: O programu"
+
+#. (itstool) path: p/link
+#: C/legal.xml:4
+msgid "Creative Commons Attribution-Share Alike 3.0 United States License"
+msgstr "Povolení Creative Commons Attribution-Share Alike 3.0 United States"
+
+#. (itstool) path: license/p
+#: C/legal.xml:3
+msgid "This work is licensed under a <_:link-1/>."
+msgstr "Tato práce je licencována pod <_:link-1/>."
+
+#. (itstool) path: license/p
+#: C/legal.xml:6
+msgid ""
+"As a special exception, the copyright holders give you permission to copy, "
+"modify, and distribute the example code contained in this document under the"
+" terms of your choosing, without restriction."
+msgstr "Jako zvláštní výjimku vám držitelé autorských práv dávají svolení kopírovat, měnit a šířit příkladový kód obsažený v tomto dokumentu za podmínek, jaké si vyberete, bez omezení."
