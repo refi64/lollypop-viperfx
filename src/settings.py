@@ -13,6 +13,8 @@
 
 from gi.repository import Gtk, GLib
 
+from gettext import gettext as _
+
 from lollypop.define import Objects
 from lollypop.utils import use_csd
 
