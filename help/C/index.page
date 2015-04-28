@@ -5,8 +5,6 @@
 
   <info>
     <desc>Help for the Lollypop music player.</desc>
-    <title type='link' role="trail"><media its:translate="no" type="image" src="figures/eog-trail.png"/></title>
-    <title type='link'>Lollypop music player</title>
     <title type='text'>Lollypop music player</title>
     <revision pkgversion="3.2" version="0.1" date="2015-04-28" status="final"/>
     <credit type="author copyright">
@@ -60,6 +58,8 @@ Lollypop music player</title>
         <item><p>n: Next track</p></item>
         <item><p>p: Previous track</p></item>
         <item><p>Control+n: Skip current album</p></item>
+        <item><p>Left key: Skip forward in track</p></item>
+        <item><p>Right key: Skip backward in track</p></item>
         <item><p>Control+m or F11: Fullscreen</p></item>
         <item><p>Control+h: Help</p></item>
         <item><p>Control+a: About</p></item>

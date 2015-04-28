@@ -1,5 +1,5 @@
 *~
-libgd/
+help/*
 /*.bak
 /*.lo
 /*.o
