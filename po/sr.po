@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lollypop\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-04-28 16:16+0200\n"
-"PO-Revision-Date: 2015-04-28 14:21+0000\n"
+"POT-Creation-Date: 2015-04-28 18:57+0200\n"
+"PO-Revision-Date: 2015-04-28 20:12+0000\n"
 "Last-Translator: Cédric Bellegarde <web@adishatz.org>\n"
 "Language-Team: Serbian (http://www.transifex.com/projects/p/lollypop/language/sr/)\n"
 "MIME-Version: 1.0\n"
@@ -279,6 +279,14 @@ msgstr ""
 
 #: ../src/search.py:148
 msgid "Search:"
+msgstr ""
+
+#: ../src/settings.py:95
+msgid "Populars"
+msgstr ""
+
+#: ../src/settings.py:96
+msgid "Recents"
 msgstr ""
 
 #. Handle language ordering

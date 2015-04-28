@@ -4,8 +4,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: lollypop\n"
-"POT-Creation-Date: 2015-04-28 17:23+0200\n"
-"PO-Revision-Date: 2015-04-28 16:15+0000\n"
+"POT-Creation-Date: 2015-04-28 18:39+0200\n"
+"PO-Revision-Date: 2015-04-28 20:54+0000\n"
 "Last-Translator: Cédric Bellegarde <web@adishatz.org>\n"
 "Language-Team: Finnish (http://www.transifex.com/projects/p/lollypop/language/fi/)\n"
 "MIME-Version: 1.0\n"
@@ -25,162 +25,166 @@ msgid "Help for the Lollypop music player."
 msgstr "Lollypop-musiikkisoittimen ohje."
 
 #. (itstool) path: info/title
-#: C/index.page:9
-msgctxt "link"
-msgid "Lollypop music player"
-msgstr "Lollypop-musiikkisoitin"
-
-#. (itstool) path: info/title
-#: C/index.page:10
+#: C/index.page:8
 msgctxt "text"
 msgid "Lollypop music player"
 msgstr "Lollypop-musiikkisoitin"
 
 #. (itstool) path: credit/name
-#: C/index.page:13
+#: C/index.page:11
 msgid "Cédric Bellegarde"
 msgstr "Cédric Bellegarde"
 
 #. (itstool) path: credit/years
-#: C/index.page:15
+#: C/index.page:13
 msgid "2015"
 msgstr "2015"
 
 #. (itstool) path: page/title
-#: C/index.page:20
+#: C/index.page:18
 msgid "<_:media-1/> Lollypop music player"
 msgstr "<_:media-1/> Lollypop-musiikkisoitin"
 
 #. (itstool) path: section/title
-#: C/index.page:23
+#: C/index.page:21
 msgid "Add music"
 msgstr "Lisää musiikkia"
 
 #. (itstool) path: section/p
-#: C/index.page:24
+#: C/index.page:22
 msgid "If lollypop fails to detect your music:"
 msgstr "Jos Lollypop ei havaitse musiikkiasi:"
 
 #. (itstool) path: item/p
-#: C/index.page:26
+#: C/index.page:24
 msgid "Check you have gstreamer-libav or gstreamer-fluendo installed"
 msgstr "Varmista, että gstreamer-libav tai gstreamer-fluendo on asennettu"
 
 #. (itstool) path: item/p
-#: C/index.page:27
+#: C/index.page:25
 msgid ""
 "Go to the application menu: \"<sys>Settings -&gt; Music</sys>\" and add your"
 " music folder"
 msgstr "Mene sovellusvalikkoon: \"<sys>Asetukset -&gt; Musiikki</sys>\" ja lisää musiikkikansiosi"
 
 #. (itstool) path: section/title
-#: C/index.page:32
+#: C/index.page:30
 msgid "Playback"
 msgstr "Toisto"
 
 #. (itstool) path: section/p
-#: C/index.page:33
+#: C/index.page:31
 msgid "When you start playing a song, a contextual playlist is populated"
 msgstr ""
 
 #. (itstool) path: section/p
-#: C/index.page:34
+#: C/index.page:32
 msgid ""
 "Contexts can be: an album, an artist, a genre, popular or recent albums"
 msgstr ""
 
 #. (itstool) path: section/p
-#: C/index.page:35
+#: C/index.page:33
 msgid "Shuffle interacts on current context."
 msgstr ""
 
 #. (itstool) path: section/title
-#: C/index.page:39
+#: C/index.page:37
 msgid "Rate albums"
 msgstr "Arvostele albumeja"
 
 #. (itstool) path: section/p
-#: C/index.page:40
+#: C/index.page:38
 msgid "Album popularity is based on how many tracks you listen for an album"
 msgstr ""
 
 #. (itstool) path: section/p
-#: C/index.page:41
+#: C/index.page:39
 msgid ""
 "Album rating only influence this popularity, it's not fixed in the time"
 msgstr ""
 
 #. (itstool) path: section/title
-#: C/index.page:45
+#: C/index.page:43
 msgid "Download covers"
 msgstr "Lataa kansikuvia"
 
 #. (itstool) path: section/p
-#: C/index.page:46
+#: C/index.page:44
 msgid ""
 "When hovering a cover, if mouse cursor changes to a hand, just click and "
 "select a new cover"
-msgstr ""
+msgstr "Kun viet hiiren osoittimen kansikuvan päälle, ja jos osoitin muuttuu kädeksi, napsauta ja valitse uusi kansikuva"
 
 #. (itstool) path: section/p
-#: C/index.page:47
+#: C/index.page:45
 msgid "You need an internet connection"
-msgstr ""
+msgstr "Tarvitset internetyhteyden."
 
 #. (itstool) path: section/title
-#: C/index.page:51
+#: C/index.page:49
 msgid "Shortcuts"
 msgstr "Pikanäppäimet"
 
 #. (itstool) path: item/p
-#: C/index.page:53
+#: C/index.page:51
 msgid "Control+s: Lollypop settings"
 msgstr "Control+s: Lollypopin asetukset"
 
 #. (itstool) path: item/p
-#: C/index.page:54
+#: C/index.page:52
 msgid "Control+f: Search"
 msgstr "Control+f: Haku"
 
 #. (itstool) path: item/p
-#: C/index.page:55
+#: C/index.page:53
 msgid "Control+p: Party mode"
 msgstr "Control+p: Biletila"
 
 #. (itstool) path: item/p
-#: C/index.page:56 C/index.page:63
+#: C/index.page:54 C/index.page:63
 msgid "Control+m or F11: Fullscreen"
 msgstr "Control+m tai F11: Koko näytön tila"
 
 #. (itstool) path: item/p
-#: C/index.page:57
+#: C/index.page:55
 msgid "x: Play"
 msgstr "x: Toista"
 
 #. (itstool) path: item/p
-#: C/index.page:58
+#: C/index.page:56
 msgid "c: Pause"
 msgstr "c: Keskeytä"
 
 #. (itstool) path: item/p
-#: C/index.page:59
+#: C/index.page:57
 msgid "v: Stop"
 msgstr "v: Pysäytä"
 
 #. (itstool) path: item/p
-#: C/index.page:60
+#: C/index.page:58
 msgid "n: Next track"
 msgstr "n: Seuraava kappale"
 
 #. (itstool) path: item/p
-#: C/index.page:61
+#: C/index.page:59
 msgid "p: Previous track"
 msgstr "p: Edellinen kappale"
 
 #. (itstool) path: item/p
-#: C/index.page:62
+#: C/index.page:60
 msgid "Control+n: Skip current album"
 msgstr "Control+n: Ohita nykyinen albumi"
+
+#. (itstool) path: item/p
+#: C/index.page:61
+msgid "Left key: Skip backward in track"
+msgstr ""
+
+#. (itstool) path: item/p
+#: C/index.page:62
+msgid "Right key: Skip forward in track"
+msgstr ""
 
 #. (itstool) path: item/p
 #: C/index.page:64

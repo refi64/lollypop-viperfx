@@ -10,9 +10,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lollypop\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-04-28 16:16+0200\n"
-"PO-Revision-Date: 2015-04-28 14:36+0000\n"
-"Last-Translator: Cédric Bellegarde <web@adishatz.org>\n"
+"POT-Creation-Date: 2015-04-28 18:57+0200\n"
+"PO-Revision-Date: 2015-04-28 22:17+0000\n"
+"Last-Translator: Nathan Follens\n"
 "Language-Team: Dutch (http://www.transifex.com/projects/p/lollypop/language/nl/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -284,6 +284,14 @@ msgstr "Afspelen"
 msgid "Search:"
 msgstr "Zoeken:"
 
+#: ../src/settings.py:95
+msgid "Populars"
+msgstr "Populair"
+
+#: ../src/settings.py:96
+msgid "Recents"
+msgstr "Recent"
+
 #. Handle language ordering
 #. Translators: Add here words that shoud be ignored for artist sort order
 #: ../src/utils.py:114
@@ -356,7 +364,7 @@ msgstr "_Over"
 
 #: ../data/Appmenu.ui.h:5
 msgid "_Help"
-msgstr ""
+msgstr "_Hulp"
 
 #: ../data/Appmenu.ui.h:6
 msgid "_Quit"

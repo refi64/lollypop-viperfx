@@ -3,8 +3,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: lollypop\n"
-"POT-Creation-Date: 2015-04-28 17:23+0200\n"
-"PO-Revision-Date: 2015-04-28 16:15+0000\n"
+"POT-Creation-Date: 2015-04-28 18:39+0200\n"
+"PO-Revision-Date: 2015-04-28 16:41+0000\n"
 "Last-Translator: Cédric Bellegarde <web@adishatz.org>\n"
 "Language-Team: Portuguese (Brazil) (http://www.transifex.com/projects/p/lollypop/language/pt_BR/)\n"
 "MIME-Version: 1.0\n"
@@ -24,161 +24,165 @@ msgid "Help for the Lollypop music player."
 msgstr ""
 
 #. (itstool) path: info/title
-#: C/index.page:9
-msgctxt "link"
-msgid "Lollypop music player"
-msgstr ""
-
-#. (itstool) path: info/title
-#: C/index.page:10
+#: C/index.page:8
 msgctxt "text"
 msgid "Lollypop music player"
 msgstr ""
 
 #. (itstool) path: credit/name
-#: C/index.page:13
+#: C/index.page:11
 msgid "Cédric Bellegarde"
 msgstr ""
 
 #. (itstool) path: credit/years
-#: C/index.page:15
+#: C/index.page:13
 msgid "2015"
 msgstr ""
 
 #. (itstool) path: page/title
-#: C/index.page:20
+#: C/index.page:18
 msgid "<_:media-1/> Lollypop music player"
 msgstr ""
 
 #. (itstool) path: section/title
-#: C/index.page:23
+#: C/index.page:21
 msgid "Add music"
 msgstr ""
 
 #. (itstool) path: section/p
-#: C/index.page:24
+#: C/index.page:22
 msgid "If lollypop fails to detect your music:"
 msgstr ""
 
 #. (itstool) path: item/p
-#: C/index.page:26
+#: C/index.page:24
 msgid "Check you have gstreamer-libav or gstreamer-fluendo installed"
 msgstr ""
 
 #. (itstool) path: item/p
-#: C/index.page:27
+#: C/index.page:25
 msgid ""
 "Go to the application menu: \"<sys>Settings -&gt; Music</sys>\" and add your"
 " music folder"
 msgstr ""
 
 #. (itstool) path: section/title
-#: C/index.page:32
+#: C/index.page:30
 msgid "Playback"
 msgstr "Reprodução"
 
 #. (itstool) path: section/p
-#: C/index.page:33
+#: C/index.page:31
 msgid "When you start playing a song, a contextual playlist is populated"
 msgstr ""
 
 #. (itstool) path: section/p
-#: C/index.page:34
+#: C/index.page:32
 msgid ""
 "Contexts can be: an album, an artist, a genre, popular or recent albums"
 msgstr ""
 
 #. (itstool) path: section/p
-#: C/index.page:35
+#: C/index.page:33
 msgid "Shuffle interacts on current context."
 msgstr ""
 
 #. (itstool) path: section/title
-#: C/index.page:39
+#: C/index.page:37
 msgid "Rate albums"
 msgstr ""
 
 #. (itstool) path: section/p
-#: C/index.page:40
+#: C/index.page:38
 msgid "Album popularity is based on how many tracks you listen for an album"
 msgstr ""
 
 #. (itstool) path: section/p
-#: C/index.page:41
+#: C/index.page:39
 msgid ""
 "Album rating only influence this popularity, it's not fixed in the time"
 msgstr ""
 
 #. (itstool) path: section/title
-#: C/index.page:45
+#: C/index.page:43
 msgid "Download covers"
 msgstr ""
 
 #. (itstool) path: section/p
-#: C/index.page:46
+#: C/index.page:44
 msgid ""
 "When hovering a cover, if mouse cursor changes to a hand, just click and "
 "select a new cover"
 msgstr ""
 
 #. (itstool) path: section/p
-#: C/index.page:47
+#: C/index.page:45
 msgid "You need an internet connection"
 msgstr ""
 
 #. (itstool) path: section/title
-#: C/index.page:51
+#: C/index.page:49
 msgid "Shortcuts"
 msgstr ""
 
 #. (itstool) path: item/p
-#: C/index.page:53
+#: C/index.page:51
 msgid "Control+s: Lollypop settings"
 msgstr ""
 
 #. (itstool) path: item/p
-#: C/index.page:54
+#: C/index.page:52
 msgid "Control+f: Search"
 msgstr ""
 
 #. (itstool) path: item/p
-#: C/index.page:55
+#: C/index.page:53
 msgid "Control+p: Party mode"
 msgstr ""
 
 #. (itstool) path: item/p
-#: C/index.page:56 C/index.page:63
+#: C/index.page:54 C/index.page:63
 msgid "Control+m or F11: Fullscreen"
 msgstr ""
 
 #. (itstool) path: item/p
-#: C/index.page:57
+#: C/index.page:55
 msgid "x: Play"
 msgstr ""
 
 #. (itstool) path: item/p
-#: C/index.page:58
+#: C/index.page:56
 msgid "c: Pause"
 msgstr ""
 
 #. (itstool) path: item/p
-#: C/index.page:59
+#: C/index.page:57
 msgid "v: Stop"
 msgstr ""
 
 #. (itstool) path: item/p
-#: C/index.page:60
+#: C/index.page:58
 msgid "n: Next track"
 msgstr ""
 
 #. (itstool) path: item/p
-#: C/index.page:61
+#: C/index.page:59
 msgid "p: Previous track"
 msgstr ""
 
 #. (itstool) path: item/p
-#: C/index.page:62
+#: C/index.page:60
 msgid "Control+n: Skip current album"
+msgstr ""
+
+#. (itstool) path: item/p
+#: C/index.page:61
+msgid "Left key: Skip backward in track"
+msgstr ""
+
+#. (itstool) path: item/p
+#: C/index.page:62
+msgid "Right key: Skip forward in track"
 msgstr ""
 
 #. (itstool) path: item/p

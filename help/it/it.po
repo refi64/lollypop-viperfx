@@ -1,11 +1,12 @@
 # 
 # Translators:
+# Pietro Acinapura <pietro.ac@gmail.com>, 2015
 msgid ""
 msgstr ""
 "Project-Id-Version: lollypop\n"
-"POT-Creation-Date: 2015-04-28 17:23+0200\n"
-"PO-Revision-Date: 2015-04-28 16:15+0000\n"
-"Last-Translator: Cédric Bellegarde <web@adishatz.org>\n"
+"POT-Creation-Date: 2015-04-28 18:39+0200\n"
+"PO-Revision-Date: 2015-04-28 18:14+0000\n"
+"Last-Translator: Pietro Acinapura <pietro.ac@gmail.com>\n"
 "Language-Team: Italian (http://www.transifex.com/projects/p/lollypop/language/it/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -16,190 +17,194 @@ msgstr ""
 #. Put one translator per line, in the form NAME <EMAIL>, YEAR1, YEAR2
 msgctxt "_"
 msgid "translator-credits"
-msgstr ""
+msgstr "Pietro Acinapura"
 
 #. (itstool) path: info/desc
 #: C/index.page:7
 msgid "Help for the Lollypop music player."
-msgstr ""
+msgstr "Aiuto per il riproduttore musicale Lollypop"
 
 #. (itstool) path: info/title
-#: C/index.page:9
-msgctxt "link"
-msgid "Lollypop music player"
-msgstr ""
-
-#. (itstool) path: info/title
-#: C/index.page:10
+#: C/index.page:8
 msgctxt "text"
 msgid "Lollypop music player"
-msgstr ""
+msgstr "Riproduttore di musica Lollypop"
 
 #. (itstool) path: credit/name
-#: C/index.page:13
+#: C/index.page:11
 msgid "Cédric Bellegarde"
-msgstr ""
+msgstr "Cédric Bellegarde"
 
 #. (itstool) path: credit/years
-#: C/index.page:15
+#: C/index.page:13
 msgid "2015"
-msgstr ""
+msgstr "2015"
 
 #. (itstool) path: page/title
-#: C/index.page:20
+#: C/index.page:18
 msgid "<_:media-1/> Lollypop music player"
-msgstr ""
+msgstr "<_:media-1/> Riproduttore di musica Lollypop"
 
 #. (itstool) path: section/title
-#: C/index.page:23
+#: C/index.page:21
 msgid "Add music"
-msgstr ""
+msgstr "Aggiungi musica"
 
 #. (itstool) path: section/p
-#: C/index.page:24
+#: C/index.page:22
 msgid "If lollypop fails to detect your music:"
-msgstr ""
+msgstr "Se Lollypop fallisce nell'individuare la tua musica:"
 
 #. (itstool) path: item/p
-#: C/index.page:26
+#: C/index.page:24
 msgid "Check you have gstreamer-libav or gstreamer-fluendo installed"
-msgstr ""
+msgstr "Controlla se gstreamer-libav o gstreamer-fluendo sono installati"
 
 #. (itstool) path: item/p
-#: C/index.page:27
+#: C/index.page:25
 msgid ""
 "Go to the application menu: \"<sys>Settings -&gt; Music</sys>\" and add your"
 " music folder"
-msgstr ""
+msgstr "Vai nel menu applicazione: \"<sys>Impostazioni -&gt; Musica</sys>\" e aggiungi la tua cartella di musica"
 
 #. (itstool) path: section/title
-#: C/index.page:32
+#: C/index.page:30
 msgid "Playback"
 msgstr "Riproduci"
 
 #. (itstool) path: section/p
-#: C/index.page:33
+#: C/index.page:31
 msgid "When you start playing a song, a contextual playlist is populated"
-msgstr ""
+msgstr "Quando si avvia la riproduzione di un brano, una playlist contestuale viene popolata"
 
 #. (itstool) path: section/p
-#: C/index.page:34
+#: C/index.page:32
 msgid ""
 "Contexts can be: an album, an artist, a genre, popular or recent albums"
-msgstr ""
+msgstr "I contesti possono essere: un album, un artista, un genere, album popolari o recenti"
 
 #. (itstool) path: section/p
-#: C/index.page:35
+#: C/index.page:33
 msgid "Shuffle interacts on current context."
-msgstr ""
+msgstr "Casuale interagisce sul contesto attuale."
 
 #. (itstool) path: section/title
-#: C/index.page:39
+#: C/index.page:37
 msgid "Rate albums"
-msgstr ""
+msgstr "Vota gli album"
 
 #. (itstool) path: section/p
-#: C/index.page:40
+#: C/index.page:38
 msgid "Album popularity is based on how many tracks you listen for an album"
-msgstr ""
+msgstr "La popolarità di un album si basa su quante tracce si ascolta di un album"
 
 #. (itstool) path: section/p
-#: C/index.page:41
+#: C/index.page:39
 msgid ""
 "Album rating only influence this popularity, it's not fixed in the time"
-msgstr ""
+msgstr "La valutazione dell'album influenza solo questa popolarità, non è costante tempo"
 
 #. (itstool) path: section/title
-#: C/index.page:45
+#: C/index.page:43
 msgid "Download covers"
-msgstr ""
+msgstr "Scarica le copertine"
 
 #. (itstool) path: section/p
-#: C/index.page:46
+#: C/index.page:44
 msgid ""
 "When hovering a cover, if mouse cursor changes to a hand, just click and "
 "select a new cover"
-msgstr ""
+msgstr "Quando sei su una copertina, se il cursore del mouse si trasforma in una mano, basta cliccare e selezionare una nuova copertina"
 
 #. (itstool) path: section/p
-#: C/index.page:47
+#: C/index.page:45
 msgid "You need an internet connection"
-msgstr ""
+msgstr "Hai bisogno di una connessione a Internet"
 
 #. (itstool) path: section/title
-#: C/index.page:51
+#: C/index.page:49
 msgid "Shortcuts"
-msgstr ""
+msgstr "Collegamenti"
+
+#. (itstool) path: item/p
+#: C/index.page:51
+msgid "Control+s: Lollypop settings"
+msgstr "Control+s: Impostazioni di Lollypop"
+
+#. (itstool) path: item/p
+#: C/index.page:52
+msgid "Control+f: Search"
+msgstr "Control+f: Cerca"
 
 #. (itstool) path: item/p
 #: C/index.page:53
-msgid "Control+s: Lollypop settings"
-msgstr ""
+msgid "Control+p: Party mode"
+msgstr "Control+p: modalità Party"
 
 #. (itstool) path: item/p
-#: C/index.page:54
-msgid "Control+f: Search"
-msgstr ""
+#: C/index.page:54 C/index.page:63
+msgid "Control+m or F11: Fullscreen"
+msgstr "Control+m o F11: Schermo intero"
 
 #. (itstool) path: item/p
 #: C/index.page:55
-msgid "Control+p: Party mode"
-msgstr ""
+msgid "x: Play"
+msgstr "x: Riproduci"
 
 #. (itstool) path: item/p
-#: C/index.page:56 C/index.page:63
-msgid "Control+m or F11: Fullscreen"
-msgstr ""
+#: C/index.page:56
+msgid "c: Pause"
+msgstr "c: Pausa"
 
 #. (itstool) path: item/p
 #: C/index.page:57
-msgid "x: Play"
-msgstr ""
+msgid "v: Stop"
+msgstr "v: Stop"
 
 #. (itstool) path: item/p
 #: C/index.page:58
-msgid "c: Pause"
-msgstr ""
+msgid "n: Next track"
+msgstr "n: Traccia successiva"
 
 #. (itstool) path: item/p
 #: C/index.page:59
-msgid "v: Stop"
-msgstr ""
+msgid "p: Previous track"
+msgstr "p: Traccia precedente"
 
 #. (itstool) path: item/p
 #: C/index.page:60
-msgid "n: Next track"
-msgstr ""
+msgid "Control+n: Skip current album"
+msgstr "Control+n: Salta l'album corrente"
 
 #. (itstool) path: item/p
 #: C/index.page:61
-msgid "p: Previous track"
-msgstr ""
+msgid "Left key: Skip backward in track"
+msgstr "Tasto sinistro: Scorri la traccia indietro"
 
 #. (itstool) path: item/p
 #: C/index.page:62
-msgid "Control+n: Skip current album"
-msgstr ""
+msgid "Right key: Skip forward in track"
+msgstr "Tasto destro: Scorri la traccia avanti"
 
 #. (itstool) path: item/p
 #: C/index.page:64
 msgid "Control+h: Help"
-msgstr ""
+msgstr "Control+h: Aiuto"
 
 #. (itstool) path: item/p
 #: C/index.page:65
 msgid "Control+a: About"
-msgstr ""
+msgstr "Control+a: A proposito di"
 
 #. (itstool) path: p/link
 #: C/legal.xml:4
 msgid "Creative Commons Attribution-Share Alike 3.0 United States License"
-msgstr ""
+msgstr "Creative Commons Attribution-Share Alike 3.0 United States License"
 
 #. (itstool) path: license/p
 #: C/legal.xml:3
 msgid "This work is licensed under a <_:link-1/>."
-msgstr ""
+msgstr "Questo lavoro è pubblicata sotto licenza <_:link-1/>."
 
 #. (itstool) path: license/p
 #: C/legal.xml:6
@@ -207,4 +212,4 @@ msgid ""
 "As a special exception, the copyright holders give you permission to copy, "
 "modify, and distribute the example code contained in this document under the"
 " terms of your choosing, without restriction."
-msgstr ""
+msgstr "Come eccezione speciale, i titolari dei diritti ti danno il permesso di copiare, modificare e distribuire il codice di esempio contenuto in questo documento secondo i termini della vostra scelta, senza restrizioni."

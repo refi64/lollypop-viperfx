@@ -9,9 +9,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lollypop\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-04-28 16:16+0200\n"
-"PO-Revision-Date: 2015-04-28 14:36+0000\n"
-"Last-Translator: Cédric Bellegarde <web@adishatz.org>\n"
+"POT-Creation-Date: 2015-04-28 18:57+0200\n"
+"PO-Revision-Date: 2015-04-28 20:42+0000\n"
+"Last-Translator: Pietro Acinapura <pietro.ac@gmail.com>\n"
 "Language-Team: Italian (http://www.transifex.com/projects/p/lollypop/language/it/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -283,6 +283,14 @@ msgstr "Riproduci"
 msgid "Search:"
 msgstr "Cerca:"
 
+#: ../src/settings.py:95
+msgid "Populars"
+msgstr "Popolari"
+
+#: ../src/settings.py:96
+msgid "Recents"
+msgstr "Recenti"
+
 #. Handle language ordering
 #. Translators: Add here words that shoud be ignored for artist sort order
 #: ../src/utils.py:114
@@ -343,7 +351,7 @@ msgstr "_Aggiorna musica"
 
 #: ../data/Appmenu.ui.h:2
 msgid "_Fullscreen"
-msgstr "_Fullscreen"
+msgstr "_Schermointero"
 
 #: ../data/Appmenu.ui.h:3
 msgid "_Preferences"
@@ -355,7 +363,7 @@ msgstr "_A proposito"
 
 #: ../data/Appmenu.ui.h:5
 msgid "_Help"
-msgstr ""
+msgstr "_Aiuto"
 
 #: ../data/Appmenu.ui.h:6
 msgid "_Quit"
