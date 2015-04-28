@@ -9,8 +9,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lollypop\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-04-28 16:16+0200\n"
-"PO-Revision-Date: 2015-04-28 14:36+0000\n"
+"POT-Creation-Date: 2015-04-28 18:57+0200\n"
+"PO-Revision-Date: 2015-04-28 20:13+0000\n"
 "Last-Translator: Cédric Bellegarde <web@adishatz.org>\n"
 "Language-Team: French (http://www.transifex.com/projects/p/lollypop/language/fr/)\n"
 "MIME-Version: 1.0\n"
@@ -282,6 +282,14 @@ msgstr "Lecture"
 #: ../src/search.py:148
 msgid "Search:"
 msgstr "Recherche:"
+
+#: ../src/settings.py:95
+msgid "Populars"
+msgstr "Populaires"
+
+#: ../src/settings.py:96
+msgid "Recents"
+msgstr "Récents"
 
 #. Handle language ordering
 #. Translators: Add here words that shoud be ignored for artist sort order
