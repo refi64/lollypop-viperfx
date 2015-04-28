@@ -3,7 +3,7 @@ NULL =
 
 bin_SCRIPTS = lollypop
 
-SUBDIRS = src data po
+SUBDIRS = src data po help
 
 EXTRA_DIST = \
 	AUTHORS.in \

@@ -38,6 +38,7 @@ AC_CONFIG_FILES([
   data/Makefile
   data/AboutDialog.ui
   src/Makefile
+  help/Makefile
   po/Makefile.in
 ])
 AC_OUTPUT
