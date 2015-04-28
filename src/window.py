@@ -41,6 +41,7 @@ class Window(Gtk.ApplicationWindow, Container):
         player_action.connect('activate', self._on_player_action)
         app.add_action(player_action)
 
+        self._setup_content()
         self._setup_window()
         self._setup_media_keys()
         self.enable_global_shorcuts(True)
@@ -154,10 +155,29 @@ class Window(Gtk.ApplicationWindow, Container):
             Objects.player.prev()
 
     """
-        Setup window icon, position and size, callback for updating this values
+        Setup window content
+    """
+    def _setup_content(self):
+        self.set_icon_name('lollypop')
+        self._toolbar = Toolbar(self.get_application())
+        self._toolbar.show()
+        # Only set headerbar if according DE detected or forced manually
+        if use_csd():
+            self.set_titlebar(self._toolbar)
+            self._toolbar.set_show_close_button(True)
+            self.add(self.main_widget())
+        else:
+            hgrid = Gtk.Grid()
+            hgrid.set_orientation(Gtk.Orientation.VERTICAL)
+            hgrid.add(self._toolbar)
+            hgrid.add(self.main_widget())
+            hgrid.show()
+            self.add(hgrid)
+
+    """
+        Setup window position and size, callbacks
     """
     def _setup_window(self):
-        self.set_icon_name('lollypop')
         size_setting = Objects.settings.get_value('window-size')
         if isinstance(size_setting[0], int) and\
            isinstance(size_setting[1], int):
@@ -175,22 +195,6 @@ class Window(Gtk.ApplicationWindow, Container):
 
         self.connect("window-state-event", self._on_window_state_event)
         self.connect("configure-event", self._on_configure_event)
-
-        self._toolbar = Toolbar(self.get_application())
-        self._toolbar.show()
-
-        # Only set headerbar if according DE detected or forced manually
-        if use_csd():
-            self.set_titlebar(self._toolbar)
-            self._toolbar.set_show_close_button(True)
-            self.add(self.main_widget())
-        else:
-            hgrid = Gtk.Grid()
-            hgrid.set_orientation(Gtk.Orientation.VERTICAL)
-            hgrid.add(self._toolbar)
-            hgrid.add(self.main_widget())
-            hgrid.show()
-            self.add(hgrid)
 
     """
         Delay event
