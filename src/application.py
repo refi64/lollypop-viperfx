@@ -280,6 +280,12 @@ class Application(Gtk.Application):
             about.show()
 
     """
+        Show help in yelp
+    """
+    def _help(self, action, param):
+        Gtk.show_uri(None, "help:lollypop", Gtk.get_current_event_time())
+
+    """
         Destroy about dialog when closed
     """
     def _about_response(self, dialog, response):
@@ -317,6 +323,12 @@ class Application(Gtk.Application):
         aboutAction.connect('activate', self._about)
         self.set_accels_for_action('app.about', ["<Control>a"])
         self.add_action(aboutAction)
+
+        helpAction = Gio.SimpleAction.new('help', None)
+        helpAction.connect('activate', self._help)
+        self.set_accels_for_action('app.help', ["<Control>h"])
+        self.add_action(helpAction)
+
 
         quitAction = Gio.SimpleAction.new('quit', None)
         quitAction.connect('activate', self.quit)

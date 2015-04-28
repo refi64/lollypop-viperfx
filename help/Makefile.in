@@ -145,6 +145,7 @@ GREP = @GREP@
 GSETTINGS_DISABLE_SCHEMAS_COMPILE = @GSETTINGS_DISABLE_SCHEMAS_COMPILE@
 GTK_CFLAGS = @GTK_CFLAGS@
 GTK_LIBS = @GTK_LIBS@
+HELP_DIR = @HELP_DIR@
 INSTALL = @INSTALL@
 INSTALL_DATA = @INSTALL_DATA@
 INSTALL_PROGRAM = @INSTALL_PROGRAM@
@@ -166,6 +167,7 @@ INTROSPECTION_LIBS = @INTROSPECTION_LIBS@
 INTROSPECTION_MAKEFILE = @INTROSPECTION_MAKEFILE@
 INTROSPECTION_SCANNER = @INTROSPECTION_SCANNER@
 INTROSPECTION_TYPELIBDIR = @INTROSPECTION_TYPELIBDIR@
+ITSTOOL = @ITSTOOL@
 LD = @LD@
 LDFLAGS = @LDFLAGS@
 LIBOBJS = @LIBOBJS@
@@ -210,6 +212,9 @@ STRIP = @STRIP@
 USE_NLS = @USE_NLS@
 VERSION = @VERSION@
 XGETTEXT = @XGETTEXT@
+XMLLINT = @XMLLINT@
+YELP_LC_DIST = @YELP_LC_DIST@
+YELP_LC_MEDIA_LINKS = @YELP_LC_MEDIA_LINKS@
 abs_builddir = @abs_builddir@
 abs_srcdir = @abs_srcdir@
 abs_top_builddir = @abs_top_builddir@
@@ -271,10 +276,11 @@ top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
 HELP_ID = lollypop
 HELP_MEDIA = \
-	figures/lollypop-logo.png			
+	figures/lollypop-logo.png
 
 HELP_FILES = \
-	index.page				
+	index.page\
+	legal.xml
 
 all: all-am
 
@@ -468,9 +474,7 @@ uninstall-am:
 
 @YELP_HELP_RULES@
 
-#HELP_LINGUAS = ar ca cs da de el en_GB es eu fi fr gl hu it ja ko lv oc pa pt_BR ro ru sl sv te th uk zh_CN zh_TW
-
--include $(top_srcdir)/git.mk
+#HELP_LINGUAS = #ar ca cs da de el en_GB es eu fi fr gl hu it ja ko lv oc pa pt_BR ro ru sl sv te th uk zh_CN zh_T
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.

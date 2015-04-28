@@ -6,48 +6,63 @@
   <info>
     <desc>Help for the Lollypop music player.</desc>
     <title type='link' role="trail"><media its:translate="no" type="image" src="figures/eog-trail.png"/></title>
-    <title type='link'>Eye of GNOME Image Viewer</title>
-    <title type='text'>Eye of GNOME Image Viewer</title>
-    <revision pkgversion="3.2" version="0.1" date="2011-09-05" status="final"/>
+    <title type='link'>Lollypop music player</title>
+    <title type='text'>Lollypop music player</title>
+    <revision pkgversion="3.2" version="0.1" date="2015-04-28" status="final"/>
     <credit type="author copyright">
-      <name>Tiffany Antopolski</name>
-      <email>tiffany.antopolski@gmail.com</email>
-      <years>2011</years>
+      <name>Cédric Bellegarde</name>
+      <email>cedric.bellegarde@adishatz.org</email>
+      <years>2015</years>
     </credit>
     <include href="legal.xml" xmlns="http://www.w3.org/2001/XInclude" />
   </info>
 
-<title><media type="image" its:translate="no" src="figures/eog-logo.png">Eye of GNOME logo</media>
-Eye of GNOME Image Viewer</title>
-<section id="viewing" style="2column">
-    <title>View pictures</title>
+<title><media type="image" its:translate="no" src="figures/lollypop-logo.png">Lollypop logo</media>
+Lollypop music player</title>
+<section id="add" style="2column">
+    <title>Add music</title>
+    <p>If lollypop fails to detect your music:</p>
+    <list>
+        <item><p>Check you have gstreamer-libav or gstreamer-fluendo installed</p></item>
+        <item><p>Go to the "<sys>application menu -> settings -> Music</sys>" and add your music folder</p></item>
+    </list>
 </section>
 
-<section id="edit" style="2column">
-    <title>Edit pictures</title>
+<section id="playback" style="2column">
+    <title>Playback</title>
+     <p>When you start playing a song, a contextual playlist is populated</p>
+     <p>Contexts can be: Album, Artist, Genre, Populars, Recent albums</p>
+     <p>Shuffle interacts on current context.</p>
 </section>
 
-<section id="printing" style="2column">
-    <title>Print pictures</title>
+<section id="rate" style="2column">
+    <title>Rate albums</title>
+     <p>Lollypop handle album popularity based on how many tracks you listen for an album</p>
+     <p>Album rating only influence this popularity, it's not fixed in the time</p>
 </section>
 
-<section id="plugins">
-    <title>Add extra features</title>
-    <links type="topic" style="2column" groups="first" />
-</section>
-<section id="advanced" style="2column">
-    <title>Advanced</title>
+<section id="covers" style="2column">
+    <title>Download covers</title>
+    <p>When hovering a cover, if mouse pointer change to a hand, just clic and select a new cover</p>
+    <p>You need an internet connexion</p>
 </section>
 
-<section id="faq" style="2column" >
-    <title>Frequently asked questions</title>
-</section>
-
-<section id="tips" style="2column">
-    <title>Tips and tricks</title>
-</section>
-
-<section id="get-involved" style="2column" >
-    <title>Get involved</title>
+<section id="shortcuts">
+    <title>Shortcuts</title>
+    <list>
+        <item><p>Control+s: Lollypop settings</p></item>
+        <item><p>Control+f: Search</p></item>
+        <item><p>Control+p: Party mode</p></item>
+        <item><p>Control+m or F11: Fullscreen</p></item>
+        <item><p>x: Play</p></item>
+        <item><p>c: Pause</p></item>
+        <item><p>v: Stop</p></item>
+        <item><p>n: Next track</p></item>
+        <item><p>p: Previous track</p></item>
+        <item><p>Control+n: Skip current album</p></item>
+        <item><p>Control+m or F11: Fullscreen</p></item>
+        <item><p>Control+h: Help</p></item>
+        <item><p>Control+a: About</p></item>
+    </list>
 </section>
 </page>
