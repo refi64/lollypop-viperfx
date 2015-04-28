@@ -90,7 +90,8 @@ class SettingsDialog:
         # Party mode tab
         #
         genres = Objects.genres.get()
-        genres.insert(0, (-1, "Populars"))
+        genres.insert(0, (Navigation.POPULARS, _("Populars")))
+        genres.insert(1, (Navigation.RECENTS, _("Recents")))
         ids = Objects.player.get_party_ids()
         i = 0
         x = 0
