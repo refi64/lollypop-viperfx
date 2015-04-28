@@ -15,7 +15,7 @@ from gi.repository import GObject, Gtk
 
 from lollypop.define import Objects, ArtSize
 from lollypop.popmenu import PopTrackMenu
-from lollypop.utils import seconds_to_string
+from lollypop.utils import seconds_to_string, rgba_to_hex
 
 
 # A track row with track informations
@@ -175,11 +175,11 @@ class TracksWidget(Gtk.ListBox):
             track_row.show_widget('icon', True)
         if pos:
             track_row.set_label(
-                            'num',
-                            '''<span foreground="%s"\
-                            font_desc="Bold">%s</span>''' %\
-                            (Objects.window.get_background_color().to_string(),
-                             str(pos)))
+                        'num',
+                        '''<span foreground="%s"\
+                        font_desc="Bold">%s</span>''' %\
+                        (rgba_to_hex(Objects.window.get_selected_color()),
+                         str(pos)))
         else:
             track_row.set_label('num', str(num))
         track_row.set_number(num)
@@ -235,9 +235,12 @@ class TracksWidget(Gtk.ListBox):
             track_id = row.get_object_id()
             if Objects.player.is_in_queue(track_id):
                 pos = Objects.player.get_track_position(track_id)
-                row.set_label('num',
-                              '''<span foreground="#72729f9fcfcf"\
-                              font_desc="Bold">%s</span>''' % str(pos))
+                row.set_label(
+                        'num',
+                        '''<span foreground="%s"\
+                        font_desc="Bold">%s</span>''' %\
+                        (rgba_to_hex(Objects.window.get_selected_color()),
+                         str(pos)))
             else:
                 row.set_label('num', str(row.get_number()))
 

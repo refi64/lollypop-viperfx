@@ -143,3 +143,14 @@ def seconds_to_string(duration):
     seconds %= 60
 
     return '%i:%02i' % (minutes, seconds)
+
+
+"""
+    Convert Gdk.Color to hexadecimal
+    @param Gdk.Color
+    @return string
+"""
+def rgba_to_hex(color):
+   return "#{0:02x}{1:02x}{2:02x}".format(int(color.red  * 255),
+                                          int(color.green * 255),
+                                          int(color.blue * 255))
