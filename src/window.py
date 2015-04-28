@@ -27,6 +27,8 @@ class Window(Gtk.ApplicationWindow, Container):
     def __init__(self, app):
         Container.__init__(self)
         self._app = app
+        self._signal1 = None
+        self._signal2 = None
         Gtk.ApplicationWindow.__init__(self,
                                        application=app,
                                        title="Lollypop")
@@ -99,6 +101,16 @@ class Window(Gtk.ApplicationWindow, Container):
             self._app.set_accels_for_action("app.player::play_pause", [None])
             self._app.set_accels_for_action("app.player::play", [None])
             self._app.set_accels_for_action("app.player::stop", [None])
+
+    """
+        Remove callbacks (we don't want to save an invalid value on hide
+    """
+    def do_hide(self):
+        if self._signal1 is not None:
+            self.disconnect(self._signal1)
+        if self._signal2 is not None:
+            self.disconnect(self._signal2)
+        Gtk.ApplicationWindow.do_hide(self)
 
 ############
 # Private  #
@@ -193,8 +205,10 @@ class Window(Gtk.ApplicationWindow, Container):
         if Objects.settings.get_value('window-maximized'):
             self.maximize()
 
-        self.connect("window-state-event", self._on_window_state_event)
-        self.connect("configure-event", self._on_configure_event)
+        self._signal1 = self.connect("window-state-event",
+                                     self._on_window_state_event)
+        self._signal2 = self.connect("configure-event",
+                                     self._on_configure_event)
 
     """
         Delay event
