@@ -379,8 +379,11 @@ class DatabaseAlbums:
             sql = Objects.sql
         albums = []
         # get popular first
-        if -1 in genre_ids:
-            albums = self.get_populars()
+        if Navigation.POPULARS in genre_ids:
+            albums += self.get_populars()
+        # get recents next
+        if Navigation.RECENTS in genre_ids:
+            albums += self.get_recents()
         for genre_id in genre_ids:
             for album in Objects.genres.get_albums(genre_id, sql):
                 if album not in albums:
