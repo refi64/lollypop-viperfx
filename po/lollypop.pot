@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-04-26 23:44+0200\n"
+"POT-Creation-Date: 2015-04-28 16:16+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -163,7 +163,7 @@ msgstr ""
 
 #: ../src/collectionscanner.py:271 ../src/collectionscanner.py:276
 #: ../src/collectionscanner.py:290 ../src/collectionscanner.py:295
-#: ../src/database_albums.py:230 ../src/database_artists.py:70
+#: ../src/database_albums.py:233 ../src/database_artists.py:70
 #: ../src/database_genres.py:67 ../src/database_tracks.py:187
 msgid "Unknown"
 msgstr ""
@@ -193,7 +193,7 @@ msgstr ""
 msgid "Compilations"
 msgstr ""
 
-#: ../src/database_albums.py:247
+#: ../src/database_albums.py:250
 msgid "Compilation"
 msgstr ""
 
@@ -282,7 +282,7 @@ msgstr ""
 
 #. Handle language ordering
 #. Translators: Add here words that shoud be ignored for artist sort order
-#: ../src/utils.py:106
+#: ../src/utils.py:114
 msgid "The the"
 msgstr ""
 
@@ -351,6 +351,10 @@ msgid "_About"
 msgstr ""
 
 #: ../data/Appmenu.ui.h:5
+msgid "_Help"
+msgstr ""
+
+#: ../data/Appmenu.ui.h:6
 msgid "_Quit"
 msgstr ""
 
