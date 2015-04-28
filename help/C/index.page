@@ -37,7 +37,7 @@ Lollypop music player</title>
 
 <section id="rate" style="2column">
     <title>Rate albums</title>
-     <p>Lollypop handle album popularity based on how many tracks you listen for an album</p>
+     <p>Album popularity is based on how many tracks you listen for an album</p>
      <p>Album rating only influence this popularity, it's not fixed in the time</p>
 </section>
 

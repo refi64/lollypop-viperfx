@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2015-04-28 16:28+0200\n"
+"POT-Creation-Date: 2015-04-28 16:40+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -93,7 +93,7 @@ msgstr ""
 
 #. (itstool) path: section/p
 #: C/index.page:40
-msgid "Lollypop handle album popularity based on how many tracks you listen for an album"
+msgid "Album popularity is based on how many tracks you listen for an album"
 msgstr ""
 
 #. (itstool) path: section/p
