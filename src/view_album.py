@@ -207,6 +207,8 @@ class AlbumView(View):
         for child in self._albumbox.get_children():
             for widget in child.get_children():
                 children.append(widget)
+        if self._context_widget.is_visible():
+            children.append(self._context_widget)
         return children
 
     """
