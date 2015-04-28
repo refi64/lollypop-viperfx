@@ -207,7 +207,7 @@ class AlbumView(View):
         for child in self._albumbox.get_children():
             for widget in child.get_children():
                 children.append(widget)
-        if self._context_widget.is_visible():
+        if self._context_widget is not None:
             children.append(self._context_widget)
         return children
 
@@ -252,6 +252,8 @@ class AlbumView(View):
             else:
                 self._context_album_id = None
                 self._context.hide()
+                self._context_widget.destroy()
+                self._context_widget.destroy = None
         else:
             self._context_album_id = child.get_child().get_id()
             self._populate_context(self._context_album_id)
