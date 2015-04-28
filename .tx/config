@@ -16,5 +16,31 @@ trans.pt_BR = po/pt_BR.po
 trans.he = po/he.po
 trans.uk = po/uk.po
 trans.sr = po/sr.po
+trans.ru = po/ru.po
+trans.de = po/de.po
+trans.es = po/es.po
+trans.pl = po/pl.po
+type = PO
+
+[lollypop.help]
+file_filter = help/<lang>.po
+source_file = help/lollypop.pot
+source_lang = en
+trans.de = help/de/de.po
+trans.fr = help/fr/fr.po
+trans.fi = help/fi/fi.po
+trans.it = help/it/it.po
+trans.nl = help/nl/nl.po
+trans.ca = help/ca/ca.po
+trans.sk = help/sk/sk.po
+trans.pt = help/pt/pt.po
+trans.pt_BR = help/pt_BR/pt_BR.po
+trans.he = help/he/he.po
+trans.uk = help/uk/uk.po
+trans.sr = help/sr/sr.po
+trans.ru = help/ru/ru.po
+trans.de = help/de/de.po
+trans.es = help/es/es.po
+trans.pl = help/pl/pl.po
 type = PO
 
