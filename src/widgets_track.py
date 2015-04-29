@@ -125,14 +125,14 @@ class TrackRow(Gtk.ListBoxRow):
         menu = PopTrackMenu(self._object_id, None)
         popover = Gtk.Popover.new_from_model(self._ui.get_object('menu'), menu)
         popover.connect('closed', self._on_closed)
-        self.get_style_context().add_class('trackrowmenu')
+        self.get_style_context().add_class('menu-selected')
         popover.show()
     """
         Remove selected style
         @param widget as Gtk.Popover
     """
     def _on_closed(self, widget):
-        self.get_style_context().remove_class('trackrowmenu')
+        self.get_style_context().remove_class('menu-selected')
 
 ######################################################################
 ######################################################################

@@ -302,7 +302,16 @@ class AlbumDetailedWidget(AlbumWidget):
     def _pop_menu(self, widget):
         pop_menu = PopAlbumMenu(self._album_id, self._genre_id)
         popover = Gtk.Popover.new_from_model(self._menu, pop_menu)
+        popover.connect('closed', self._on_closed)
+        self.get_style_context().add_class('menu-selected')
         popover.show()
+
+    """
+        Remove selected style
+        @param widget as Gtk.Popover
+    """
+    def _on_closed(self, widget):
+        self.get_style_context().remove_class('menu-selected')
 
     """
         Add tracks for to tracks widget
