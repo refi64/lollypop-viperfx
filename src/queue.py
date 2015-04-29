@@ -49,6 +49,7 @@ class QueueWidget(Gtk.Popover):
 
         self._view = builder.get_object('view')
         self._view.set_model(self._model)
+        self._view.set_property('fixed_height_mode', True)
 
         builder.connect_signals(self)
 
@@ -57,17 +58,20 @@ class QueueWidget(Gtk.Popover):
         renderer0 = Gtk.CellRendererPixbuf()
         renderer0.set_property('stock-size', ArtSize.MEDIUM)
         column0 = Gtk.TreeViewColumn("pixbuf1", renderer0, pixbuf=0)
+        column0.set_sizing(Gtk.TreeViewColumnSizing.FIXED)
 
         renderer1 = Gtk.CellRendererText()
         renderer1.set_property('ellipsize-set', True)
         renderer1.set_property('ellipsize', Pango.EllipsizeMode.END)
         column1 = Gtk.TreeViewColumn("text", renderer1, markup=1)
         column1.set_expand(True)
+        column1.set_sizing(Gtk.TreeViewColumnSizing.FIXED)
 
         renderer2 = Gtk.CellRendererPixbuf()
         renderer2.set_property('stock-size', 22)
         renderer2.set_fixed_size(22, -1)
         column2 = Gtk.TreeViewColumn("pixbuf2", renderer2, pixbuf=2)
+        column2.set_sizing(Gtk.TreeViewColumnSizing.FIXED)
 
         self._view.append_column(column0)
         self._view.append_column(column1)
