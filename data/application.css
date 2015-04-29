@@ -14,12 +14,12 @@ row:selected {
 }
 
 GtkTreeView:selected {
-        background-color: alpha(@theme_bg_color, 0.9);
+        background-color: alpha(@theme_fg_color, 0.09);
         color: @theme_fg_color;
 }
 
 GtkTreeView:hover {
-        background-color: alpha(@theme_bg_color, 0.7);
+        background-color: alpha(@theme_fg_color, 0.05);
         color: @theme_fg_color;
 }
 
@@ -30,7 +30,7 @@ Gtk.ListBoxRow .menubutton {
 }
 
 Gtk.ListBoxRow .menubutton:hover {
-	border-color: alpha(#000000, 0.1);
+	border-color: alpha(@theme_fg_color, 0.1);
 }
 
 .lollypop-title {
@@ -58,7 +58,7 @@ Gtk.ListBoxRow .menubutton:hover {
 }
 
 .trackrow:hover {
-	background-color: alpha(#000000, 0.03);
+	background-color: alpha(@theme_fg_color, 0.03);
   	color: inherit;
 }
 
@@ -68,7 +68,7 @@ Gtk.ListBoxRow .menubutton:hover {
 }
 
 .trackrowplaying {
-	background-color: alpha(#000000, 0.05);
+	background-color: alpha(@theme_fg_color, 0.05);
   	color: inherit;
 }
 
@@ -98,17 +98,17 @@ Gtk.ListBoxRow .menubutton:hover {
 }
 
 .trackrow:hover .menubutton:hover {
-	border-color: alpha(#000000, 0.1);
+	border-color: alpha(@theme_fg_color, 0.1);
 }
 
 /* trackrowmenu is trackrow when menu is shown*/
 .trackrowmenu {
-	background-color: alpha(#000000, 0.03);
+	background-color: alpha(@theme_fg_color, 0.03);
   	color: inherit;
 }
 
 .trackrowmenu .menubutton{
-	border-color: alpha(#000000, 0.1);
+	border-color: alpha(@theme_fg_color, 0.1);
   	color: inherit;
 }
 
@@ -121,7 +121,7 @@ Gtk.ListBoxRow .menubutton:hover {
 }
 
 .menubutton:hover {
-	border-color: alpha(#000000, 0.1);
+	border-color: alpha(@theme_fg_color, 0.1);
   	color: inherit;
 }
 
