@@ -62,6 +62,7 @@ class SelectionList(GObject.GObject):
                                             16,
                                             Gtk.IconLookupFlags.FORCE_SVG)
         self._view = Gtk.TreeView(model=self._model)
+        self._view.set_property('fixed_height_mode', True)
         self._view.set_enable_search(True)
         self._view.set_search_column(1)
         self._signal_id = self._view.connect('cursor-changed',
@@ -72,10 +73,12 @@ class SelectionList(GObject.GObject):
         renderer0.set_property('ellipsize', Pango.EllipsizeMode.END)
         column0 = Gtk.TreeViewColumn('', renderer0, text=1)
         column0.set_expand(True)
+        column0.set_sizing(Gtk.TreeViewColumnSizing.FIXED)
 
         renderer1 = Gtk.CellRendererPixbuf()
         renderer1.set_property('stock-size', 16)
         column1 = Gtk.TreeViewColumn("pixbuf1", renderer1, pixbuf=2)
+        column1.set_sizing(Gtk.TreeViewColumnSizing.FIXED)
 
         self._view.append_column(column0)
         self._view.append_column(column1)
