@@ -4,8 +4,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: lollypop\n"
-"POT-Creation-Date: 2015-04-28 18:39+0200\n"
-"PO-Revision-Date: 2015-04-28 18:14+0000\n"
+"POT-Creation-Date: 2015-04-29 10:10+0200\n"
+"PO-Revision-Date: 2015-04-29 15:26+0000\n"
 "Last-Translator: Pietro Acinapura <pietro.ac@gmail.com>\n"
 "Language-Team: Italian (http://www.transifex.com/projects/p/lollypop/language/it/)\n"
 "MIME-Version: 1.0\n"
@@ -74,14 +74,14 @@ msgstr "Riproduci"
 
 #. (itstool) path: section/p
 #: C/index.page:31
-msgid "When you start playing a song, a contextual playlist is populated"
-msgstr "Quando si avvia la riproduzione di un brano, una playlist contestuale viene popolata"
+msgid "When you start playing a song, a contextual playlist is populated."
+msgstr ""
 
 #. (itstool) path: section/p
 #: C/index.page:32
 msgid ""
-"Contexts can be: an album, an artist, a genre, popular or recent albums"
-msgstr "I contesti possono essere: un album, un artista, un genere, album popolari o recenti"
+"Contexts can be: an album, an artist, a genre, popular or recent albums."
+msgstr ""
 
 #. (itstool) path: section/p
 #: C/index.page:33
@@ -95,14 +95,14 @@ msgstr "Vota gli album"
 
 #. (itstool) path: section/p
 #: C/index.page:38
-msgid "Album popularity is based on how many tracks you listen for an album"
-msgstr "La popolarità di un album si basa su quante tracce si ascolta di un album"
+msgid "Album popularity is based on how many tracks you listen for an album."
+msgstr ""
 
 #. (itstool) path: section/p
 #: C/index.page:39
 msgid ""
-"Album rating only influence this popularity, it's not fixed in the time"
-msgstr "La valutazione dell'album influenza solo questa popolarità, non è costante tempo"
+"Album rating only influence this popularity, it's not fixed in the time."
+msgstr ""
 
 #. (itstool) path: section/title
 #: C/index.page:43
@@ -113,12 +113,12 @@ msgstr "Scarica le copertine"
 #: C/index.page:44
 msgid ""
 "When hovering a cover, if mouse cursor changes to a hand, just click and "
-"select a new cover"
+"select a new cover."
 msgstr "Quando sei su una copertina, se il cursore del mouse si trasforma in una mano, basta cliccare e selezionare una nuova copertina"
 
 #. (itstool) path: section/p
 #: C/index.page:45
-msgid "You need an internet connection"
+msgid "You need an internet connection."
 msgstr "Hai bisogno di una connessione a Internet"
 
 #. (itstool) path: section/title
@@ -142,7 +142,7 @@ msgid "Control+p: Party mode"
 msgstr "Control+p: modalità Party"
 
 #. (itstool) path: item/p
-#: C/index.page:54 C/index.page:63
+#: C/index.page:54
 msgid "Control+m or F11: Fullscreen"
 msgstr "Control+m o F11: Schermo intero"
 
@@ -187,12 +187,12 @@ msgid "Right key: Skip forward in track"
 msgstr "Tasto destro: Scorri la traccia avanti"
 
 #. (itstool) path: item/p
-#: C/index.page:64
+#: C/index.page:63
 msgid "Control+h: Help"
 msgstr "Control+h: Aiuto"
 
 #. (itstool) path: item/p
-#: C/index.page:65
+#: C/index.page:64
 msgid "Control+a: About"
 msgstr "Control+a: A proposito di"
 

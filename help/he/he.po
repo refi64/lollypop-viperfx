@@ -4,8 +4,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: lollypop\n"
-"POT-Creation-Date: 2015-04-28 18:39+0200\n"
-"PO-Revision-Date: 2015-04-28 16:53+0000\n"
+"POT-Creation-Date: 2015-04-29 10:10+0200\n"
+"PO-Revision-Date: 2015-04-29 08:19+0000\n"
 "Last-Translator: Yosef Or Boczko <yoseforb@gmail.com>\n"
 "Language-Team: Hebrew (http://www.transifex.com/projects/p/lollypop/language/he/)\n"
 "MIME-Version: 1.0\n"
@@ -74,14 +74,14 @@ msgstr "בִצוע מוקלט"
 
 #. (itstool) path: section/p
 #: C/index.page:31
-msgid "When you start playing a song, a contextual playlist is populated"
-msgstr "בעת תחילת ניגון שיר, תופיע רשימת השמעה בהקשר"
+msgid "When you start playing a song, a contextual playlist is populated."
+msgstr "בעת ניגון שיר, תופיע רשימת השמעה בהקשר."
 
 #. (itstool) path: section/p
 #: C/index.page:32
 msgid ""
-"Contexts can be: an album, an artist, a genre, popular or recent albums"
-msgstr "הקשר יכול להיות: אלבום, אמן, סוגה, חביבות או אלבומים אחרונים"
+"Contexts can be: an album, an artist, a genre, popular or recent albums."
+msgstr "הקשר יכול להיות: אלבום, אמן, סוגה, חביבות או אלבומים אחרונים."
 
 #. (itstool) path: section/p
 #: C/index.page:33
@@ -95,14 +95,14 @@ msgstr "דירוג אלבומים"
 
 #. (itstool) path: section/p
 #: C/index.page:38
-msgid "Album popularity is based on how many tracks you listen for an album"
-msgstr "חביבות אלבום מבוססת על מספר ההשמעות של רצועות באלבום"
+msgid "Album popularity is based on how many tracks you listen for an album."
+msgstr "חביבות אלבום מבוססת על מספר השמעת רצועות לאלבום."
 
 #. (itstool) path: section/p
 #: C/index.page:39
 msgid ""
-"Album rating only influence this popularity, it's not fixed in the time"
-msgstr "דירוג אלבום משפיע רק על חביבותו, ללא קשר לזמן"
+"Album rating only influence this popularity, it's not fixed in the time."
+msgstr "דירוג אלבום משפיע רק על חביבות, ללא קשר לזמן."
 
 #. (itstool) path: section/title
 #: C/index.page:43
@@ -113,13 +113,13 @@ msgstr "הורדת עטיפות"
 #: C/index.page:44
 msgid ""
 "When hovering a cover, if mouse cursor changes to a hand, just click and "
-"select a new cover"
-msgstr "בעת מעבר על עטיפה, אם סמן העכבר משתנה ליד, יש רק ללחוץ ולבחור עטיפה חדשה"
+"select a new cover."
+msgstr "בעת מעבר על עטיפה, אם סמן העכבר משתנה ליד, יש רק ללחוץ ולבחור כיסוי חדש."
 
 #. (itstool) path: section/p
 #: C/index.page:45
-msgid "You need an internet connection"
-msgstr "נדרש חיבור אינטרנט"
+msgid "You need an internet connection."
+msgstr "נדרש חיבור לאינטרנט."
 
 #. (itstool) path: section/title
 #: C/index.page:49
@@ -142,7 +142,7 @@ msgid "Control+p: Party mode"
 msgstr "‏Control+p: מצב מסיבה"
 
 #. (itstool) path: item/p
-#: C/index.page:54 C/index.page:63
+#: C/index.page:54
 msgid "Control+m or F11: Fullscreen"
 msgstr "‏Control+m או F11: מסך מלא"
 
@@ -187,12 +187,12 @@ msgid "Right key: Skip forward in track"
 msgstr "מקש ימין: דילוג לאחור ברצועה"
 
 #. (itstool) path: item/p
-#: C/index.page:64
+#: C/index.page:63
 msgid "Control+h: Help"
 msgstr "‏Control+h: עזרה"
 
 #. (itstool) path: item/p
-#: C/index.page:65
+#: C/index.page:64
 msgid "Control+a: About"
 msgstr "‏Control+a: על אודות"
 
