@@ -307,6 +307,8 @@ class SelectionList(GObject.GObject):
             icon = 'system-users-symbolic'
         elif object_id == Navigation.RECENTS:
             icon = 'document-open-recent-symbolic'
+        elif object_id == Navigation.RADIOS:
+            icon = 'audio-input-microphone-symbolic'
 
         if icon:
             return Gtk.IconTheme.get_default().load_icon(

@@ -328,6 +328,7 @@ class Container:
         items.append((Navigation.POPULARS, _("Popular albums")))
         items.append((Navigation.RECENTS, _("Recent albums")))
         items.append((Navigation.PLAYLISTS, _("Playlists")))
+        items.append((Navigation.RADIOS, _("Radios")))
         if self._show_genres:
             items.append((Navigation.ALL, _("All artists")))
         else:

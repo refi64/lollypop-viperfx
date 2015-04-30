@@ -95,7 +95,8 @@ class Navigation_:
     PLAYLISTS = -3
     ALL = -4
     RECENTS = -5
-    NONE = -6
+    RADIOS = -6
+    NONE = -7
     DEVICES = -1000
 
 Objects = Objects_()
