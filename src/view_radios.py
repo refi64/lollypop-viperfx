@@ -36,6 +36,8 @@ class RadiosView(View):
         builder.connect_signals(self)
         widget = builder.get_object('widget')
 
+        self._sizegroup = Gtk.SizeGroup(mode=Gtk.SizeGroupMode.BOTH)
+
         self._radiobox = Gtk.FlowBox()
         self._radiobox.set_selection_mode(Gtk.SelectionMode.NONE)
         #self._radiobox.connect("child-activated", self._on_album_activated)
@@ -98,8 +100,10 @@ class RadiosView(View):
             radio = radios.pop(0)
             uris = self._radios_manager.get_tracks(radio[1])
             if len(uris) > 0:
-                widget = RadioWidget(radio[1], uris[0])
+                widget = RadioWidget(radio[1],
+                                     uris[0])
                 widget.show()
+                self._sizegroup.add_widget(widget)
                 self._radiobox.insert(widget, -1)
             GLib.idle_add(self._add_radios, radios)
         else:
