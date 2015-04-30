@@ -33,6 +33,8 @@ from lollypop.define import Objects, ArtSize
 class AlbumArt:
 
     _CACHE_PATH = os.path.expanduser("~") + "/.cache/lollypop"
+    _RADIOS_PATH = os.path.expanduser("~") +\
+                     "/.local/share/lollypop/radios"
     _mimes = ["jpeg", "jpg", "png", "gif"]
 
     """
@@ -56,8 +58,8 @@ class AlbumArt:
     def get_path(self, album_id, size):
         path = None
         try:
-            path = self._get_cache_path(album_id)
-            CACHE_PATH_JPG = "%s/%s_%s.jpg" % (self._CACHE_PATH, path, size)
+            filename = self._get_album_cache_name(album_id)
+            CACHE_PATH_JPG = "%s/%s_%s.jpg" % (self._CACHE_PATH, filename, size)
             if os.path.exists(CACHE_PATH_JPG):
                 return CACHE_PATH_JPG
             else:
@@ -67,7 +69,7 @@ class AlbumArt:
                 else:
                     return None
         except Exception as e:
-            print("AlbumArt::get_path(): %s" % e, ascii(path))
+            print("AlbumArt::get_path(): %s" % e, ascii(filename))
             return None
 
     """
@@ -79,7 +81,7 @@ class AlbumArt:
         @param album id as int
         @return cover file path as string
     """
-    def get_art_path(self, album_id, sql=None):
+    def get_album_art_path(self, album_id, sql=None):
         album_path = Objects.albums.get_path(album_id, sql)
         album_name = Objects.albums.get_name(album_id, sql)
         artist_name = Objects.albums.get_artist_name(album_id, sql)
@@ -104,17 +106,16 @@ class AlbumArt:
 
             return None
         except Exception as e:
-            print("AlbumArt::get_art_path(): %s" % e)
+            print("AlbumArt::get_album_art_path(): %s" % e)
 
     """
-        Return pixbuf for album_id, covers are cached as jpg.
-        @param album id as int
+        Return a pixbuf for radio name
+        @param radio name as string
         @param pixbuf size as int
         @param selected as bool
-        return: pixbuf
     """
-    def get(self, album_id, size, selected=False):
-        path = self._get_cache_path(album_id)
+    def get_radio(self, name, size, selected=False):
+        path = self._get_radio_cache_path(name)
         CACHE_PATH_JPG = "%s/%s_%s.jpg" % (self._CACHE_PATH, path, size)
         pixbuf = None
 
@@ -125,9 +126,56 @@ class AlbumArt:
                                                                 size,
                                                                 size)
             else:
-                path = self.get_art_path(album_id)
+                path = self.get_radio_art_path(name)
+                if path is not None:
+                    pixbuf = GdkPixbuf.Pixbuf.new_from_file_at_size(path,
+                                                                    size,
+                                                                    size)
+            if pixbuf is None:
+                pixbuf = self._get_default_icon(
+                                            size,
+                                            'audio-input-microphone-symbolic')
+
+            # Gdk < 3.15 was missing save method
+            # > 3.15 is missing savev method
+            try:
+                pixbuf.save(CACHE_PATH_JPG, "jpeg",
+                            ["quality"], ["90"])
+            except:
+                pixbuf.savev(CACHE_PATH_JPG, "jpeg",
+                             ["quality"], ["90"])
+            return self._make_icon_frame(pixbuf, size, selected)
+
+        except Exception as e:
+            print(e)
+            return self._make_icon_frame(self._get_default_icon(
+                                          size,
+                                          'audio-input-microphone-symbolic'),
+                                         size,
+                                         selected)
+
+    """
+        Return a pixbuf for album_id, covers are cached as jpg.
+        @param album id as int
+        @param pixbuf size as int
+        @param selected as bool
+        return: pixbuf
+    """
+    def get(self, album_id, size, selected=False):
+        filename = self._get_album_cache_name(album_id)
+        CACHE_PATH_JPG = "%s/%s_%s.jpg" % (self._CACHE_PATH, filename, size)
+        pixbuf = None
+
+        try:
+            # Look in cache
+            if os.path.exists(CACHE_PATH_JPG):
+                pixbuf = GdkPixbuf.Pixbuf.new_from_file_at_size(CACHE_PATH_JPG,
+                                                                size,
+                                                                size)
+            else:
+                path = self.get_album_art_path(album_id)
                 # Look in album folder
-                if path:
+                if path is not None:
                     pixbuf = GdkPixbuf.Pixbuf.new_from_file_at_scale(path,
                                                                      size,
                                                                      size,
@@ -141,13 +189,16 @@ class AlbumArt:
                     except Exception as e:
                         print(e)
                         return self._make_icon_frame(
-                                            self._get_default_icon(size),
+                                            self._get_default_icon(
+                                                    size,
+                                                    'folder-music-symbolic'),
                                             size,
                                             selected)
 
                 # No cover, use default one
                 if pixbuf is None:
-                    pixbuf = self._get_default_icon(size)
+                    pixbuf = self._get_default_icon(size,
+                                                    'folder-music-symbolic')
 
                 # Gdk < 3.15 was missing save method
                 # > 3.15 is missing savev method
@@ -162,7 +213,9 @@ class AlbumArt:
 
         except Exception as e:
             print(e)
-            return self._make_icon_frame(self._get_default_icon(size),
+            return self._make_icon_frame(self._get_default_icon(
+                                                    size,
+                                                    'folder-music-symbolic'),
                                          size,
                                          selected)
 
@@ -171,17 +224,12 @@ class AlbumArt:
         @param sql as sqlite cursor
     """
     def clean_all_cache(self, sql=None):
-        albums = Objects.albums.get_ids(None, None, sql)
-        files = os.listdir(self._CACHE_PATH)
-        for album_id in albums:
-            path = self._get_cache_path(album_id, sql)
+        try:
+            files = os.listdir(self._CACHE_PATH)
             for f in files:
-                if re.search('%s_.*\.jpg' % re.escape(path), f):
-                    try:
-                        os.remove(os.path.join(self._CACHE_PATH, f))
-                        files.remove(f)
-                    except Exception as e:
-                        print("AlbumArt::clean_all_cache(): ", e, path)
+                os.remove(os.path.join(self._CACHE_PATH, f))
+        except Exception as e:
+            print("AlbumArt::clean_all_cache(): ", e)
 
     """
         Remove cover from cache for album id
@@ -189,10 +237,10 @@ class AlbumArt:
         @param sql as sqlite cursor
     """
     def clean_cache(self, album_id, sql=None):
-        path = self._get_cache_path(album_id, sql)
+        filename = self._get_album_cache_name(album_id, sql)
         try:
             for f in os.listdir(self._CACHE_PATH):
-                if re.search('%s_.*\.jpg' % re.escape(path), f):
+                if re.search('%s_.*\.jpg' % re.escape(filename), f):
                     os.remove(os.path.join(self._CACHE_PATH, f))
         except Exception as e:
             print("AlbumArt::clean_cache(): ", e, path)
@@ -256,6 +304,19 @@ class AlbumArt:
 # PRIVATE             #
 #######################
     """
+        Look for radio covers
+        @param radio name as string
+        @return cover file path as string
+    """
+    def _get_radio_art_path(self, name):
+        try:
+            if os.path.exists(self._RADIOS_PATH + "/" + name + ".jpg"):
+                return self._RADIOS_PATH + "/" + name + ".jpg"
+            return None
+        except Exception as e:
+            print("AlbumArt::_get_radio_art_path(): %s" % e)
+
+    """
         Return cover from tags
         @param track id as int
         @param size as int
@@ -284,10 +345,18 @@ class AlbumArt:
         @param album id as int
         @param sql as sqlite cursor
     """
-    def _get_cache_path(self, album_id, sql=None):
+    def _get_album_cache_name(self, album_id, sql=None):
         path = Objects.albums.get_name(album_id, sql) + "_" + \
                Objects.albums.get_artist_name(album_id, sql)
         return path[0:240].replace("/", "_")
+
+    """
+        Get a uniq string for radio
+        @param album id as int
+        @param sql as sqlite cursor
+    """
+    def _get_album_radio_name(self, name):
+        return "@@"+name+"@@radio@@.jpg"
 
     """
         Draw an icon frame around pixbuf,
@@ -361,12 +430,13 @@ class AlbumArt:
         Construct an empty cover album,
         code forked Gnome Music, see copyright header
         @param size as int
+        @param icon_name as str
         @return pixbuf as Gdk.Pixbuf
     """
-    def _get_default_icon(self, size):
+    def _get_default_icon(self, size, icon_name):
         # get a small pixbuf with the given path
         icon_size = size / 4
-        icon = Gtk.IconTheme.get_default().load_icon('folder-music-symbolic',
+        icon = Gtk.IconTheme.get_default().load_icon(icon_name,
                                                      icon_size, 0)
         # create an empty pixbuf with the requested size
         result = GdkPixbuf.Pixbuf.new(icon.get_colorspace(),

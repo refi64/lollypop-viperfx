@@ -23,13 +23,15 @@ app_PYTHON = \
     view_container.py\
     view_device.py\
     view_playlists.py\
-    view_album.py\
+    view_albums.py\
+    view_radios.py\
 	mpris.py\
 	search.py\
 	widgets_track.py\
 	widgets_album.py\
 	widgets_playlist.py\
 	widgets_device.py\
+    widgets_radio.py\
     tagreader.py\
 	player.py\
     player_rg.py\

@@ -258,7 +258,7 @@ class DeviceManagerWidget(Gtk.Bin):
                 self._mkdir(on_device_album_path)
 
                 # Copy album art
-                art = Objects.art.get_art_path(album_id, sql)
+                art = Objects.art.get_album_art_path(album_id, sql)
                 if art:
                     dst_art = "%s/cover.jpg" % on_device_album_path
                     if not os.path.exists(dst_art):

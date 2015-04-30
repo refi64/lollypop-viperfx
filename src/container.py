@@ -21,7 +21,8 @@ from lollypop.define import Objects, Navigation
 from lollypop.selectionlist import SelectionList
 from lollypop.playlists import PlaylistsManager
 from lollypop.view_container import ViewContainer
-from lollypop.view_album import AlbumsView, ArtistView
+from lollypop.view_albums import AlbumsView, ArtistView
+from lollypop.view_radios import RadiosView
 from lollypop.view_playlists import PlaylistsView
 from lollypop.view_playlists import PlaylistsManageView, PlaylistEditView
 from lollypop.view_device import DeviceView
@@ -469,7 +470,7 @@ class Container:
         Update current view with radios view
     """
     def _update_view_radios(self):
-        view = RadiosView(genre_id)
+        view = RadiosView()
         self._stack.add(view)
         view.show()
         start_new_thread(view.populate, ())

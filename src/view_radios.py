@@ -16,26 +16,33 @@ from gi.repository import Gtk
 from _thread import start_new_thread
 
 from lollypop.view import View
+from lollypop.widgets_radio import RadioWidget
+from lollypop.playlists import RadiosManager
 from lollypop.define import Objects
-
 
 # Radios view
 class RadiosView(View):
     """
         Init radios ui with a scrolled grid of radios widgets
     """
-    def __init__(self, playlist_name, parent):
+    def __init__(self):
         View.__init__(self)
         builder = Gtk.Builder()
         builder.add_from_resource('/org/gnome/Lollypop/RadiosView.ui')
-#       builder.connect_signals(self)
+        builder.connect_signals(self)
         widget = builder.get_object('widget')
 
         self._radiobox = Gtk.FlowBox()
         self._radiobox.set_selection_mode(Gtk.SelectionMode.NONE)
-        self._radiobox.connect("child-activated", self._on_album_activated)
+        #self._radiobox.connect("child-activated", self._on_album_activated)
         self._radiobox.set_max_children_per_line(100)
         self._radiobox.show()
+
+        self._popover = Gtk.Popover()
+        self._popover.set_relative_to(builder.get_object('new'))
+        self._popover.add(builder.get_object('popover'))
+        self._name_entry = builder.get_object('name')
+        self._uri_entry = builder.get_object('uri')
 
         widget.add(self._radiobox)
 
@@ -61,3 +68,28 @@ class RadiosView(View):
     """
     def _on_current_changed(self, player):
         pass
+
+    """
+        Show popover
+        @param widget as Gtk.Widget
+    """
+    def _on_new_clicked(self, widget):
+        self._popover.show()
+        Objects.window.enable_global_shorcuts(False)
+        self._name_entry.grab_focus()
+
+    """
+        Add a new radio
+        @param widget as Gtk.Widget
+    """
+    def _on_add_btn_clicked(self, widget):
+        self._popover.hide()
+        uri = self._uri_entry.get_text()
+        self._uri_entry.set_text('')
+        name = self._name_entry.get_text()
+        self._name_entry.set_text('')
+        radios_manager = RadiosManager()
+        radios_manager.add(name)
+        Objects.window.enable_global_shorcuts(True)
+        radios_manager.add_track(name, uri)
+        del radios_manager

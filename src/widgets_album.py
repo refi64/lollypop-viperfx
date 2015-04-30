@@ -90,7 +90,7 @@ class AlbumWidget(Gtk.Bin):
         self.get_style_context().remove_class('hovereffect')
 
 
-# Album widget is a pixbuf with two labels: albumm name and artist name
+# Album widget is a pixbuf with two labels: album name and artist name
 class AlbumSimpleWidget(AlbumWidget):
     """
         Init album widget ui with an vertical grid:

@@ -14,7 +14,7 @@
 from gi.repository import Gtk
 from _thread import start_new_thread
 
-from lollypop.view_album import ArtistView
+from lollypop.view_albums import ArtistView
 from lollypop.view_container import ViewContainer
 from lollypop.define import Objects
 
