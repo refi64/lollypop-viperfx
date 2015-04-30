@@ -296,3 +296,11 @@ class PlaylistsManager(GObject.GObject):
             f.close()
         except Exception as e:
             print("PlaylistsManager::remove_tracks: %s" % e)
+
+
+# Radios manager
+class RadiosManager(PlaylistsManager):
+    PLAYLISTS_PATH = os.path.expanduser("~") +\
+                     "/.local/share/lollypop/radios"
+    def __init__(self):
+        PlaylistsManager.__init__(self)
