@@ -158,10 +158,10 @@ class PopRadio(Gtk.Popover):
             self._spinner = None
 
     """
-        Add a new radio
+        Add/Modify a radio
         @param widget as Gtk.Widget
     """
-    def _on_add_btn_clicked(self, widget):
+    def _on_btn_clicked(self, widget):
         uri = self._uri_entry.get_text()
         self._name = self._name_entry.get_text()
         if uri != '' and self._name != '':
