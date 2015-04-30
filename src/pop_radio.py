@@ -163,14 +163,20 @@ class PopRadio(Gtk.Popover):
     """
     def _on_btn_clicked(self, widget):
         uri = self._uri_entry.get_text()
-        self._name = self._name_entry.get_text()
-        if uri != '' and self._name != '':
+        new_name = self._name_entry.get_text()
+        rename = self._name != new_name
+
+        if uri != '' and new_name != '':
             radios_manager = RadiosManager()
-            radios_manager.add(self._name)
-            radios_manager.add_track(self._name, uri)
+            if rename:
+                radios_manager.rename(new_name, self._name)
+            else:
+                radios_manager.add(new_name)
+            radios_manager.add_track(new_name, uri)
             del radios_manager
             self._stack.remove(self._widget)
             self._stack.set_visible_child(self._spinner)
+            self._name = new_name
             self._populate_threaded()
             self.set_size_request(700, 400)
 
