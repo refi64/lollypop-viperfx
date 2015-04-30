@@ -56,13 +56,6 @@ class BinPlayer(ReplayGainPlayer, BasePlayer):
             return False
 
     """
-        Emit a "cover-changed" signal
-        @param album id as int
-    """
-    def announce_cover_update(self, album_id):
-        self.emit("cover-changed", album_id)
-
-    """
         Playback status
         @return Gstreamer state
     """

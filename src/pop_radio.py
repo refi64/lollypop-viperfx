@@ -25,14 +25,15 @@ from lollypop.view_container import ViewContainer
 
 # Show a popover with radio logos from the web
 class PopRadio(Gtk.Popover):
-
     """
         Init Popover ui with a text entry and a scrolled treeview
         @param name as string
+        @param radios_manager as RadiosManager
     """
-    def __init__(self, name):
+    def __init__(self, name, radios_manager):
         Gtk.Popover.__init__(self)
         self._name = name
+        self._radios_manager = radios_manager
 
         self._stack = ViewContainer(1000)
         self._stack.show()
@@ -68,8 +69,7 @@ class PopRadio(Gtk.Popover):
         else:
             builder.get_object('btn').set_label(_("Modify"))
             self._name_entry.set_text(self._name)
-            radios_manager = RadiosManager()
-            uris = radios_manager.get_tracks(self._name)
+            uris = self._radios_manager.get_tracks(self._name)
             if len(uris) > 0:
                 self._uri_entry.set_text(uris[0])
             
@@ -87,6 +87,7 @@ class PopRadio(Gtk.Popover):
         self._thread = False
         Gtk.Popover.do_hide(self)
         Objects.window.enable_global_shorcuts(True)
+
 #######################
 # PRIVATE             #
 #######################
@@ -102,7 +103,7 @@ class PopRadio(Gtk.Popover):
         @thread safe
     """
     def _populate(self):
-        self._urls = Objects.art.get_google_arts(self._name)
+        self._urls = Objects.art.get_google_arts(self._name+"+logo")
         if self._urls:
             self._add_pixbufs()
         else:
@@ -164,16 +165,14 @@ class PopRadio(Gtk.Popover):
     def _on_btn_clicked(self, widget):
         uri = self._uri_entry.get_text()
         new_name = self._name_entry.get_text()
-        rename = self._name != new_name
+        rename = self._name != '' and self._name != new_name
 
         if uri != '' and new_name != '':
-            radios_manager = RadiosManager()
             if rename:
-                radios_manager.rename(new_name, self._name)
+                self._radios_manager.rename(new_name, self._name)
             else:
-                radios_manager.add(new_name)
-            radios_manager.add_track(new_name, uri)
-            del radios_manager
+                self._radios_manager.add(new_name)
+            self._radios_manager.add_track(new_name, uri)
             self._stack.remove(self._widget)
             self._stack.set_visible_child(self._spinner)
             self._name = new_name
@@ -188,5 +187,6 @@ class PopRadio(Gtk.Popover):
         pixbuf = child.get_child().get_pixbuf()
         Objects.art.save_radio_logo(pixbuf, self._name)
         Objects.art.clean_radio_cache(self._name)
+        Objects.player.announce_logo_update(self._name)
         self.hide()
         self._streams = {}

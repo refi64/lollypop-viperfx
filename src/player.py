@@ -184,7 +184,21 @@ class Player(BinPlayer, QueuePlayer, UserPlaylistPlayer,
                 self.emit('current-changed')
             else:
                 print("Player::restore_state(): track missing")
-    
+
+    """
+        Announce album cover update
+        @param album id as int
+    """
+    def announce_cover_update(self, album_id):
+        self.emit("cover-changed", album_id)
+
+    """
+        Announce radio logo update
+        @param radio name as string
+    """
+    def announce_logo_update(self, name):
+        self.emit("logo-changed", name)
+
 #######################
 # PRIVATE             #
 #######################

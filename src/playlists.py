@@ -69,7 +69,7 @@ class PlaylistsManager(GObject.GObject):
                 except:
                     max_idx = 0
                 self._idx[max_idx] = playlist_name
-                GLib.idle_add(self.emit, "playlists-changed")
+                GLib.idle_add(self.emit, 'playlists-changed')
         except Exception as e:
             print("PlaylistsManager::add: %s" % e)
 

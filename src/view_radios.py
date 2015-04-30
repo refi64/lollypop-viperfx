@@ -30,7 +30,8 @@ class RadiosView(View):
         View.__init__(self)
 
         self._radios_manager = RadiosManager()
-
+        self._radios_manager.connect('playlists-changed',
+                                     self._on_radios_changed)
         builder = Gtk.Builder()
         builder.add_from_resource('/org/gnome/Lollypop/RadiosView.ui')
         builder.connect_signals(self)
@@ -39,6 +40,7 @@ class RadiosView(View):
         self._sizegroup = Gtk.SizeGroup(mode=Gtk.SizeGroupMode.BOTH)
 
         self._radiobox = Gtk.FlowBox()
+        self._radiobox.set_sort_func(self._sort_radios)
         self._radiobox.set_selection_mode(Gtk.SelectionMode.NONE)
         #self._radiobox.connect("child-activated", self._on_album_activated)
         self._radiobox.set_max_children_per_line(100)
@@ -75,6 +77,16 @@ class RadiosView(View):
         return children
 
     """
+        Sort radios
+        @param a as Gtk.FlowBoxChild
+        @param b as Gtk.FlowBoxChild
+    """
+    def _sort_radios(self, a, b):
+        child1 = a.get_children()[0]
+        child2 = b.get_children()[0]
+        return child1.get_name().lower() > child2.get_name().lower()
+        
+    """
         Current song changed
         @param player as Player
     """
@@ -86,9 +98,27 @@ class RadiosView(View):
         @param widget as Gtk.Widget
     """
     def _on_new_clicked(self, widget):
-        popover = PopRadio('')
+        popover = PopRadio('', self._radios_manager)
         popover.set_relative_to(widget)
         popover.show()
+
+    """
+        Update radios
+        @param manager as PlaylistManager
+    """
+    def _on_radios_changed(self, manager):
+        print('changed')
+        radios = manager.get()
+        currents = []
+        for child in self._radiobox.get_children():
+            widget = child.get_children()[0]
+            if widget.get_name not in radios:
+                self._radiobox.remove(child)
+            else:
+                current.append(widget)
+        for radio in radios:
+            if radio not in currents:
+                self._add_radios([radio])
 
     """
         Pop a radio and add it to the view,
@@ -101,7 +131,8 @@ class RadiosView(View):
             uris = self._radios_manager.get_tracks(radio[1])
             if len(uris) > 0:
                 widget = RadioWidget(radio[1],
-                                     uris[0])
+                                     uris[0],
+                                     self._radios_manager)
                 widget.show()
                 self._sizegroup.add_widget(widget)
                 self._radiobox.insert(widget, -1)
