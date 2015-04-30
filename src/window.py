@@ -71,15 +71,23 @@ class Window(Gtk.ApplicationWindow, Container):
     def enable_global_shorcuts(self, enable):
         if enable:
             if Gtk.Widget.get_default_direction() == Gtk.TextDirection.RTL:
-                self._app.set_accels_for_action("app.seek(10)", ["Left"])
-                self._app.set_accels_for_action("app.seek(20)", ["<Control>Left"])
-                self._app.set_accels_for_action("app.seek(-10)", ["Right"])
-                self._app.set_accels_for_action("app.seek(-20)", ["<Control>Right"])
+                self._app.set_accels_for_action("app.seek(10)",
+                                                ["Left"])
+                self._app.set_accels_for_action("app.seek(20)",
+                                                ["<Control>Left"])
+                self._app.set_accels_for_action("app.seek(-10)",
+                                                ["Right"])
+                self._app.set_accels_for_action("app.seek(-20)",
+                                                ["<Control>Right"])
             else:
-                self._app.set_accels_for_action("app.seek(10)", ["Right"])
-                self._app.set_accels_for_action("app.seek(20)", ["<Control>Right"])
-                self._app.set_accels_for_action("app.seek(-10)", ["Left"])
-                self._app.set_accels_for_action("app.seek(-20)", ["<Control>Left"])
+                self._app.set_accels_for_action("app.seek(10)",
+                                                ["Right"])
+                self._app.set_accels_for_action("app.seek(20)",
+                                                ["<Control>Right"])
+                self._app.set_accels_for_action("app.seek(-10)",
+                                                ["Left"])
+                self._app.set_accels_for_action("app.seek(-20)",
+                                                ["<Control>Left"])
 
             self._app.set_accels_for_action("app.player::play_pause",
                                             ["space", "c"])
@@ -101,6 +109,12 @@ class Window(Gtk.ApplicationWindow, Container):
             self._app.set_accels_for_action("app.player::play_pause", [None])
             self._app.set_accels_for_action("app.player::play", [None])
             self._app.set_accels_for_action("app.player::stop", [None])
+            self._app.set_accels_for_action("app.player::play_pause", [None])
+            self._app.set_accels_for_action("app.player::play", [None])
+            self._app.set_accels_for_action("app.player::stop", [None])
+            self._app.set_accels_for_action("app.player::next", [None])
+            self._app.set_accels_for_action("app.player::next_album", [None])
+            self._app.set_accels_for_action("app.player::prev", [None])
 
     """
         Remove callbacks (we don't want to save an invalid value on hide
