@@ -134,7 +134,7 @@ class AlbumContextView(View):
 
 
 # Album view is a flowbox of albums widgets with album name and artist name
-class AlbumView(View):
+class AlbumsView(View):
     """
         Init album view ui with a scrolled flow box and a scrolled context view
         @param genre id as int

@@ -21,9 +21,9 @@ from lollypop.define import Objects, Navigation
 from lollypop.selectionlist import SelectionList
 from lollypop.playlists import PlaylistsManager
 from lollypop.view_container import ViewContainer
-from lollypop.view_album import AlbumView, ArtistView
-from lollypop.view_playlists import PlaylistView
-from lollypop.view_playlists import PlaylistManageView, PlaylistEditView
+from lollypop.view_album import AlbumsView, ArtistView
+from lollypop.view_playlists import PlaylistsView
+from lollypop.view_playlists import PlaylistsManageView, PlaylistEditView
 from lollypop.view_device import DeviceView
 from lollypop.collectionscanner import CollectionScanner
 
@@ -109,7 +109,7 @@ class Container:
         @param is_album as bool
     """
     def show_playlist_manager(self, object_id, genre_id, is_album):
-        view = PlaylistManageView(object_id, genre_id, is_album,
+        view = PlaylistsManageView(object_id, genre_id, is_album,
                                   self._stack.get_allocated_width()/2)
         view.show()
         self._stack.add(view)
@@ -437,7 +437,7 @@ class Container:
         @param is compilation as bool
     """
     def _update_view_albums(self, genre_id, is_compilation=False):
-        view = AlbumView(genre_id)
+        view = AlbumsView(genre_id)
         self._stack.add(view)
         view.show()
         start_new_thread(view.populate, (is_compilation,))
@@ -453,10 +453,10 @@ class Container:
         if playlist_id is not None:
             for (p_id, p_str) in Objects.playlists.get():
                 if p_id == playlist_id:
-                    view = PlaylistView(p_str, self._stack)
+                    view = PlaylistsView(p_str, self._stack)
                     break
         else:
-            view = PlaylistManageView(-1, None, False,
+            view = PlaylistsManageView(-1, None, False,
                                       self._stack.get_allocated_width()/2)
         if view:
             view.show()
@@ -464,6 +464,17 @@ class Container:
             self._stack.set_visible_child(view)
             start_new_thread(view.populate, ())
             self._stack.clean_old_views(view)
+
+    """
+        Update current view with radios view
+    """
+    def _update_view_radios(self):
+        view = RadiosView(genre_id)
+        self._stack.add(view)
+        view.show()
+        start_new_thread(view.populate, ())
+        self._stack.set_visible_child(view)
+        self._stack.clean_old_views(view)
 
     """
         Add volume to device list
@@ -514,6 +525,9 @@ class Container:
         elif selected_id in [Navigation.POPULARS, Navigation.RECENTS]:
             self._list_two.widget.hide()
             self._update_view_albums(selected_id)
+        elif selected_id == Navigation.RADIOS:
+            self._list_two.widget.hide()
+            self._update_view_radios()
         elif selection_list.is_marked_as_artists():
             self._list_two.widget.hide()
             if selected_id == Navigation.ALL:

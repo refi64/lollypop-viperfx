@@ -22,9 +22,9 @@ from lollypop.define import Objects
 
 
 # Playlist view is a vertical grid with album's covers
-class PlaylistView(View):
+class PlaylistsView(View):
     """
-        Init PlaylistView ui with a scrolled grid of PlaylistWidgets
+        Init PlaylistsView ui with a scrolled grid of PlaylistWidgets
         @param playlist name as str
     """
     def __init__(self, playlist_name, parent):
@@ -33,7 +33,7 @@ class PlaylistView(View):
         self._signal_id = None
 
         builder = Gtk.Builder()
-        builder.add_from_resource('/org/gnome/Lollypop/PlaylistView.ui')
+        builder.add_from_resource('/org/gnome/Lollypop/PlaylistsView.ui')
         builder.get_object('title').set_label(playlist_name)
         builder.connect_signals(self)
 
@@ -44,7 +44,7 @@ class PlaylistView(View):
         self._playlist_widget = PlaylistWidget(playlist_name)
         self._playlist_widget.show()
 
-        self.add(builder.get_object('PlaylistView'))
+        self.add(builder.get_object('widget'))
         self._viewport.add(self._playlist_widget)
         self._scrolledWindow.set_property('expand', True)
         self.add(self._scrolledWindow)
@@ -116,7 +116,7 @@ class PlaylistView(View):
 
 
 # Playlist view used to manage playlists
-class PlaylistManageView(View):
+class PlaylistsManageView(View):
     """
          @param object id as int
          @param genre id as int
