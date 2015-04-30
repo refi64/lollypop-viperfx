@@ -187,6 +187,6 @@ class PopRadio(Gtk.Popover):
     def _on_activate(self, flowbox, child):
         pixbuf = child.get_child().get_pixbuf()
         Objects.art.save_radio_logo(pixbuf, self._name)
-        Objects.art.clean_album_cache(self._name)
+        Objects.art.clean_radio_cache(self._name)
         self.hide()
         self._streams = {}
