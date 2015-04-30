@@ -11,15 +11,22 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
+from gi.repository import Gtk, Gdk
+
+from lollypop.define import Objects, ArtSize, Navigation
+from lollypop.widgets_album import AlbumWidget
+from lollypop.pop_radio import PopRadio
+
 
 # Radio widget is a pixbuf with one label: radio name
-class RadioWidget:
+class RadioWidget(AlbumWidget):
     """
         Init radio widget
         @param name as string
         @param uri as string 
     """
     def __init__(self, name, uri):
+        AlbumWidget.__init__(self, None)
         builder = Gtk.Builder()
         builder.add_from_resource('/org/gnome/Lollypop/RadioWidget.ui')
         builder.connect_signals(self)
@@ -70,6 +77,18 @@ class RadioWidget:
 # PRIVATE             #
 #######################
     """
-        Show popup
+        Edit radio
+        @param widget as Gtk.Widget
+        @param event as Gdk.Event
     """
-    
+    def _on_button_press(self, widget, event):
+        popover = PopRadio(self._name)
+        popover.set_relative_to(widget)
+        popover.show()
+
+    """
+        Change cursor over eventbox
+        @param eventbox as Gdk.Eventbox
+    """
+    def _on_eventbox_realize(self, eventbox):
+        eventbox.get_window().set_cursor(Gdk.Cursor(Gdk.CursorType.HAND1))

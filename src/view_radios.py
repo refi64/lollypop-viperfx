@@ -11,13 +11,14 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-from gi.repository import Gtk
+from gi.repository import Gtk, GLib
 
 from _thread import start_new_thread
 
 from lollypop.view import View
 from lollypop.widgets_radio import RadioWidget
 from lollypop.playlists import RadiosManager
+from lollypop.pop_radio import PopRadio
 from lollypop.define import Objects
 
 # Radios view
@@ -27,6 +28,9 @@ class RadiosView(View):
     """
     def __init__(self):
         View.__init__(self)
+
+        self._radios_manager = RadiosManager()
+
         builder = Gtk.Builder()
         builder.add_from_resource('/org/gnome/Lollypop/RadiosView.ui')
         builder.connect_signals(self)
@@ -37,12 +41,6 @@ class RadiosView(View):
         #self._radiobox.connect("child-activated", self._on_album_activated)
         self._radiobox.set_max_children_per_line(100)
         self._radiobox.show()
-
-        self._popover = Gtk.Popover()
-        self._popover.set_relative_to(builder.get_object('new'))
-        self._popover.add(builder.get_object('popover'))
-        self._name_entry = builder.get_object('name')
-        self._uri_entry = builder.get_object('uri')
 
         widget.add(self._radiobox)
 
@@ -57,11 +55,23 @@ class RadiosView(View):
         Thread safe
     """
     def populate(self):
-        pass
+        radios = self._radios_manager.get()
+        GLib.idle_add(self._add_radios, radios)
 
 #######################
 # PRIVATE             #
 #######################
+    """
+        Return view children
+        @return [RadioWidget]
+    """
+    def _get_children(self):
+        children = []
+        for child in self._radiobox.get_children():
+            for widget in child.get_children():
+                children.append(widget)
+        return children
+
     """
         Current song changed
         @param player as Player
@@ -74,22 +84,24 @@ class RadiosView(View):
         @param widget as Gtk.Widget
     """
     def _on_new_clicked(self, widget):
-        self._popover.show()
-        Objects.window.enable_global_shorcuts(False)
-        self._name_entry.grab_focus()
+        popover = PopRadio('')
+        popover.set_relative_to(widget)
+        popover.show()
 
     """
-        Add a new radio
-        @param widget as Gtk.Widget
+        Pop a radio and add it to the view,
+        repeat operation until radio list is empty
+        @param [radio names as string]
     """
-    def _on_add_btn_clicked(self, widget):
-        self._popover.hide()
-        uri = self._uri_entry.get_text()
-        self._uri_entry.set_text('')
-        name = self._name_entry.get_text()
-        self._name_entry.set_text('')
-        radios_manager = RadiosManager()
-        radios_manager.add(name)
-        Objects.window.enable_global_shorcuts(True)
-        radios_manager.add_track(name, uri)
-        del radios_manager
+    def _add_radios(self, radios):
+        if radios and not self._stop:
+            radio = radios.pop(0)
+            uris = self._radios_manager.get_tracks(radio[1])
+            if len(uris) > 0:
+                widget = RadioWidget(radio[1], uris[0])
+                widget.show()
+                self._radiobox.insert(widget, -1)
+            GLib.idle_add(self._add_radios, radios)
+        else:
+            self._stop = False
+

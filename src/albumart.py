@@ -115,18 +115,18 @@ class AlbumArt:
         @param selected as bool
     """
     def get_radio(self, name, size, selected=False):
-        path = self._get_radio_cache_path(name)
-        CACHE_PATH_JPG = "%s/%s_%s.jpg" % (self._CACHE_PATH, path, size)
+        filename = self._get_radio_cache_name(name)
+        CACHE_PATH_PNG = "%s/%s_%s.png" % (self._CACHE_PATH, filename, size)
         pixbuf = None
 
         try:
             # Look in cache
-            if os.path.exists(CACHE_PATH_JPG):
-                pixbuf = GdkPixbuf.Pixbuf.new_from_file_at_size(CACHE_PATH_JPG,
+            if os.path.exists(CACHE_PATH_PNG):
+                pixbuf = GdkPixbuf.Pixbuf.new_from_file_at_size(CACHE_PATH_PNG,
                                                                 size,
                                                                 size)
             else:
-                path = self.get_radio_art_path(name)
+                path = self._get_radio_art_path(name)
                 if path is not None:
                     pixbuf = GdkPixbuf.Pixbuf.new_from_file_at_size(path,
                                                                     size,
@@ -139,19 +139,18 @@ class AlbumArt:
             # Gdk < 3.15 was missing save method
             # > 3.15 is missing savev method
             try:
-                pixbuf.save(CACHE_PATH_JPG, "jpeg",
-                            ["quality"], ["90"])
+                pixbuf.save(CACHE_PATH_PNG, "png",
+                            [None], [None])
             except:
-                pixbuf.savev(CACHE_PATH_JPG, "jpeg",
-                             ["quality"], ["90"])
-            return self._make_icon_frame(pixbuf, size, selected)
+                pixbuf.savev(CACHE_PATH_PNG, "png",
+                             [None], [None])
+            return self._make_icon_frame(pixbuf, selected)
 
         except Exception as e:
             print(e)
             return self._make_icon_frame(self._get_default_icon(
                                           size,
                                           'audio-input-microphone-symbolic'),
-                                         size,
                                          selected)
 
     """
@@ -192,7 +191,6 @@ class AlbumArt:
                                             self._get_default_icon(
                                                     size,
                                                     'folder-music-symbolic'),
-                                            size,
                                             selected)
 
                 # No cover, use default one
@@ -209,14 +207,13 @@ class AlbumArt:
                     pixbuf.savev(CACHE_PATH_JPG, "jpeg",
                                  ["quality"], ["90"])
 
-            return self._make_icon_frame(pixbuf, size, selected)
+            return self._make_icon_frame(pixbuf, selected)
 
         except Exception as e:
             print(e)
             return self._make_icon_frame(self._get_default_icon(
                                                     size,
                                                     'folder-music-symbolic'),
-                                         size,
                                          selected)
 
     """
@@ -236,21 +233,34 @@ class AlbumArt:
         @param album id as int
         @param sql as sqlite cursor
     """
-    def clean_cache(self, album_id, sql=None):
+    def clean_album_cache(self, album_id, sql=None):
         filename = self._get_album_cache_name(album_id, sql)
         try:
             for f in os.listdir(self._CACHE_PATH):
                 if re.search('%s_.*\.jpg' % re.escape(filename), f):
                     os.remove(os.path.join(self._CACHE_PATH, f))
         except Exception as e:
-            print("AlbumArt::clean_cache(): ", e, path)
+            print("AlbumArt::clean_album_cache(): ", e, path)
+
+    """
+        Remove logo from cache for radio
+        @param radio name as string
+    """
+    def clean_radio_cache(self, name):
+        filename = self._get_radio_cache_name(name)
+        try:
+            for f in os.listdir(self._CACHE_PATH):
+                if re.search('%s_.*\.png' % re.escape(filename), f):
+                    os.remove(os.path.join(self._CACHE_PATH, f))
+        except Exception as e:
+            print("AlbumArt::clean_radio_cache(): ", e, path)
 
     """
         Save pixbuf for album id
         @param pixbuf as Gdk.Pixbuf
         @param album id as int
     """
-    def save_art(self, pixbuf, album_id):
+    def save_album_art(self, pixbuf, album_id):
         album_path = Objects.albums.get_path(album_id)
         path_count = Objects.albums.get_path_count(album_path)
         album_name = Objects.albums.get_name(album_id)
@@ -264,7 +274,7 @@ class AlbumArt:
                 if os.path.exists(album_path+"/"+self._favorite):
                     os.remove(album_path+"/"+self._favorite)
             else:
-                artpath = album_path+"/"+self._favorite
+                artpath = album_path + "/" + self._favorite
 
             # Gdk < 3.15 was missing save method
             try:
@@ -273,7 +283,25 @@ class AlbumArt:
             except:
                 pixbuf.savev(artpath, "jpeg", ["quality"], ["90"])
         except Exception as e:
-            print("AlbumArt::save_art(): %s" % e)
+            print("AlbumArt::save_album_art(): %s" % e)
+
+    """
+        Save pixbuf for radio
+        @param pixbuf as Gdk.Pixbuf
+        @param radio name as string
+    """
+    def save_radio_logo(self, pixbuf, radio):
+        try:
+            artpath = self._RADIOS_PATH + "/" + radio + ".png"
+
+            # Gdk < 3.15 was missing save method
+            try:
+                pixbuf.save(artpath, "png", [None], [None])
+            # > 3.15 is missing savev method :(
+            except:
+                pixbuf.savev(artpath, "png", [None], [None])
+        except Exception as e:
+            print("AlbumArt::save_radio_logo(): %s" % e)
 
     """
         Get arts on google image corresponding to search
@@ -310,8 +338,8 @@ class AlbumArt:
     """
     def _get_radio_art_path(self, name):
         try:
-            if os.path.exists(self._RADIOS_PATH + "/" + name + ".jpg"):
-                return self._RADIOS_PATH + "/" + name + ".jpg"
+            if os.path.exists(self._RADIOS_PATH + "/" + name + ".png"):
+                return self._RADIOS_PATH + "/" + name + ".png"
             return None
         except Exception as e:
             print("AlbumArt::_get_radio_art_path(): %s" % e)
@@ -355,39 +383,42 @@ class AlbumArt:
         @param album id as int
         @param sql as sqlite cursor
     """
-    def _get_album_radio_name(self, name):
-        return "@@"+name+"@@radio@@.jpg"
+    def _get_radio_cache_name(self, name):
+        return "@@"+name+"@@radio@@"
 
     """
         Draw an icon frame around pixbuf,
         code forked Gnome Music, see copyright header
         @param: pixbuf source as Gdk.Pixbuf
-        @param: size as int
         @param selected as bool
     """
-    def _make_icon_frame(self, pixbuf, size, selected):
+    def _make_icon_frame(self, pixbuf, selected):
         selected_color = Objects.window.get_selected_color()
         dark = self._gtk_settings.get_property(
                                            "gtk-application-prefer-dark-theme")
         degrees = pi / 180
         
-        if size < ArtSize.BIG:
+        width = pixbuf.get_width()
+        height = pixbuf.get_height()
+
+        if width < ArtSize.BIG:
             radius = ArtSize.SMALL_RADIUS
             border = ArtSize.SMALL_BORDER
         else:
             radius = ArtSize.RADIUS
             border = ArtSize.BORDER
 
-        surface_size = size + border * 2
+        surface_width = width + border * 2
+        surface_height = height + border * 2
         surface = cairo.ImageSurface(cairo.FORMAT_ARGB32,
-                                     surface_size, surface_size)
+                                     surface_width, surface_height)
         ctx = cairo.Context(surface)
         ctx.new_sub_path()
-        ctx.arc(surface_size - radius, radius,
+        ctx.arc(surface_width - radius, radius,
                 radius - 0.5, -90 * degrees, 0 * degrees)
-        ctx.arc(surface_size - radius, surface_size - radius,
+        ctx.arc(surface_width - radius, surface_height - radius,
                 radius - 0.5, 0 * degrees, 90 * degrees)
-        ctx.arc(radius, surface_size - radius,
+        ctx.arc(radius, surface_height - radius,
                 radius - 0.5, 90 * degrees, 180 * degrees)
         ctx.arc(radius, radius, radius - 0.5, 180 * degrees, 270 * degrees)
         ctx.close_path()
@@ -397,7 +428,7 @@ class AlbumArt:
             ctx.set_source_rgb(selected_color.red,
                                selected_color.green,
                                selected_color.blue)
-        elif dark and size > ArtSize.MEDIUM:
+        elif dark and width > ArtSize.MEDIUM:
             ctx.set_source_rgb(0.8, 0.8, 0.8)
         else:
             ctx.set_source_rgb(0.2, 0.2, 0.2)
@@ -408,7 +439,7 @@ class AlbumArt:
                                selected_color.green,
                                selected_color.blue)
         else:
-            if size < ArtSize.BIG:
+            if width < ArtSize.BIG:
                 ctx.set_source_rgb(0, 0, 0)
             elif dark:
                 ctx.set_source_rgba(0, 0, 0, 0.5)
@@ -416,12 +447,12 @@ class AlbumArt:
                 ctx.set_source_rgb(1, 1, 1)
         ctx.fill()
         border_pixbuf = Gdk.pixbuf_get_from_surface(surface, 0, 0,
-                                                    surface_size,
-                                                    surface_size)
+                                                    surface_width,
+                                                    surface_height)
 
         pixbuf.copy_area(0, 0,
-                         size,
-                         size,
+                         width,
+                         height,
                          border_pixbuf,
                          border, border)
         return border_pixbuf

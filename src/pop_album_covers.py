@@ -21,10 +21,11 @@ from lollypop.define import Objects, ArtSize
 from lollypop.view_container import ViewContainer
 
 # Show a popover with album covers from the web
-class PopImages(Gtk.Popover):
+class PopAlbumCovers(Gtk.Popover):
 
     """
         Init Popover ui with a text entry and a scrolled treeview
+        param album id as int
     """
     def __init__(self, album_id):
         Gtk.Popover.__init__(self)
@@ -35,11 +36,12 @@ class PopImages(Gtk.Popover):
 
         builder = Gtk.Builder()
         builder.add_from_resource(
-                    '/org/gnome/Lollypop/PopImages.ui')
+                    '/org/gnome/Lollypop/PopAlbumCovers.ui')
 
         self._view = Gtk.FlowBox()
         self._view.set_selection_mode(Gtk.SelectionMode.NONE)
-        self._view.connect("child-activated", self._on_activate)
+        self._view.connect('child-activated', self._on_activate)
+        self._view.set_property('row-spacing', 10)
         self._view.show()
 
         builder.get_object('viewport').add(self._view)
@@ -145,8 +147,8 @@ class PopImages(Gtk.Popover):
     """
     def _on_activate(self, flowbox, child):
         pixbuf = child.get_child().get_pixbuf()
-        Objects.art.save_art(pixbuf, self._album_id)
-        Objects.art.clean_cache(self._album_id)
+        Objects.art.save_album_art(pixbuf, self._album_id)
+        Objects.art.clean_album_cache(self._album_id)
         Objects.player.announce_cover_update(self._album_id)
         self.hide()
         self._streams = {}

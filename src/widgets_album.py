@@ -18,7 +18,7 @@ from gettext import gettext as _
 from lollypop.define import Objects, Navigation, ArtSize, NextContext
 from lollypop.widgets_track import TracksWidget
 from lollypop.popmenu import PopAlbumMenu
-from lollypop.popimages import PopImages
+from lollypop.pop_album_covers import PopAlbumCovers
 from lollypop.utils import translate_artist_name
 
 
@@ -390,7 +390,7 @@ class AlbumDetailedWidget(AlbumWidget):
     def _show_web_art(self, widget, data):
         artist = Objects.artists.get_name(self._artist_id)
         album = Objects.albums.get_name(self._album_id)
-        popover = PopImages(self._album_id)
+        popover = PopAlbumCovers(self._album_id)
         popover.set_relative_to(widget)
         popover.populate(artist + " " + album)
         popover.show()

@@ -147,7 +147,7 @@ class PlaylistsManager(GObject.GObject):
         try:
             f = open(self._PLAYLISTS_PATH+"/"+playlist_name+".m3u", "r")
             for filepath in f:
-                if filepath[0] == "/":
+                if filepath[0] != "#":
                     tracks.append(filepath[:-1])
             f.close()
         except Exception as e:
@@ -187,8 +187,13 @@ class PlaylistsManager(GObject.GObject):
         @param track filepath as str
     """
     def add_track(self, playlist_name, filepath):
-        self._add_track(playlist_name, filepath)
-        GLib.idle_add(self.emit, "playlist-changed", playlist_name)
+        try:
+            f = open(self._PLAYLISTS_PATH+"/"+playlist_name+".m3u", "a")
+            self._add_track(f, playlist_name, filepath)
+            GLib.idle_add(self.emit, "playlist-changed", playlist_name)
+            f.close()
+        except Exception as e:
+                print("PlaylistsManager::add_track: %s" % e)
 
     """
         Add tracks to playlist if not already present
