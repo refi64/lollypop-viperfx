@@ -3,8 +3,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: lollypop\n"
-"POT-Creation-Date: 2015-04-28 18:39+0200\n"
-"PO-Revision-Date: 2015-04-28 16:41+0000\n"
+"POT-Creation-Date: 2015-04-29 10:10+0200\n"
+"PO-Revision-Date: 2015-04-29 08:10+0000\n"
 "Last-Translator: Cédric Bellegarde <web@adishatz.org>\n"
 "Language-Team: German (http://www.transifex.com/projects/p/lollypop/language/de/)\n"
 "MIME-Version: 1.0\n"
@@ -73,13 +73,13 @@ msgstr "Wiedergabe"
 
 #. (itstool) path: section/p
 #: C/index.page:31
-msgid "When you start playing a song, a contextual playlist is populated"
+msgid "When you start playing a song, a contextual playlist is populated."
 msgstr ""
 
 #. (itstool) path: section/p
 #: C/index.page:32
 msgid ""
-"Contexts can be: an album, an artist, a genre, popular or recent albums"
+"Contexts can be: an album, an artist, a genre, popular or recent albums."
 msgstr ""
 
 #. (itstool) path: section/p
@@ -94,13 +94,13 @@ msgstr ""
 
 #. (itstool) path: section/p
 #: C/index.page:38
-msgid "Album popularity is based on how many tracks you listen for an album"
+msgid "Album popularity is based on how many tracks you listen for an album."
 msgstr ""
 
 #. (itstool) path: section/p
 #: C/index.page:39
 msgid ""
-"Album rating only influence this popularity, it's not fixed in the time"
+"Album rating only influence this popularity, it's not fixed in the time."
 msgstr ""
 
 #. (itstool) path: section/title
@@ -112,12 +112,12 @@ msgstr ""
 #: C/index.page:44
 msgid ""
 "When hovering a cover, if mouse cursor changes to a hand, just click and "
-"select a new cover"
+"select a new cover."
 msgstr ""
 
 #. (itstool) path: section/p
 #: C/index.page:45
-msgid "You need an internet connection"
+msgid "You need an internet connection."
 msgstr ""
 
 #. (itstool) path: section/title
@@ -141,7 +141,7 @@ msgid "Control+p: Party mode"
 msgstr ""
 
 #. (itstool) path: item/p
-#: C/index.page:54 C/index.page:63
+#: C/index.page:54
 msgid "Control+m or F11: Fullscreen"
 msgstr ""
 
@@ -186,12 +186,12 @@ msgid "Right key: Skip forward in track"
 msgstr ""
 
 #. (itstool) path: item/p
-#: C/index.page:64
+#: C/index.page:63
 msgid "Control+h: Help"
 msgstr ""
 
 #. (itstool) path: item/p
-#: C/index.page:65
+#: C/index.page:64
 msgid "Control+a: About"
 msgstr ""
 

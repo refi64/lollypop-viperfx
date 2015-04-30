@@ -1,11 +1,12 @@
 # 
 # Translators:
+# Марко М. Костић (Marko M. Kostić) <marko.m.kostic@gmail.com>, 2015
 msgid ""
 msgstr ""
 "Project-Id-Version: lollypop\n"
-"POT-Creation-Date: 2015-04-28 18:39+0200\n"
-"PO-Revision-Date: 2015-04-28 16:41+0000\n"
-"Last-Translator: Cédric Bellegarde <web@adishatz.org>\n"
+"POT-Creation-Date: 2015-04-29 10:10+0200\n"
+"PO-Revision-Date: 2015-04-29 20:24+0000\n"
+"Last-Translator: Марко М. Костић (Marko M. Kostić) <marko.m.kostic@gmail.com>\n"
 "Language-Team: Serbian (http://www.transifex.com/projects/p/lollypop/language/sr/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -16,194 +17,194 @@ msgstr ""
 #. Put one translator per line, in the form NAME <EMAIL>, YEAR1, YEAR2
 msgctxt "_"
 msgid "translator-credits"
-msgstr ""
+msgstr "Заслуге преводилаца"
 
 #. (itstool) path: info/desc
 #: C/index.page:7
 msgid "Help for the Lollypop music player."
-msgstr ""
+msgstr "Помоћ за Лолипоп пуштач музике."
 
 #. (itstool) path: info/title
 #: C/index.page:8
 msgctxt "text"
 msgid "Lollypop music player"
-msgstr ""
+msgstr "Лолипоп пуштач музике"
 
 #. (itstool) path: credit/name
 #: C/index.page:11
 msgid "Cédric Bellegarde"
-msgstr ""
+msgstr "Cédric Bellegarde"
 
 #. (itstool) path: credit/years
 #: C/index.page:13
 msgid "2015"
-msgstr ""
+msgstr "2015"
 
 #. (itstool) path: page/title
 #: C/index.page:18
 msgid "<_:media-1/> Lollypop music player"
-msgstr ""
+msgstr "<_:media-1/> Лолипоп пуштач музике"
 
 #. (itstool) path: section/title
 #: C/index.page:21
 msgid "Add music"
-msgstr ""
+msgstr "Додај музику"
 
 #. (itstool) path: section/p
 #: C/index.page:22
 msgid "If lollypop fails to detect your music:"
-msgstr ""
+msgstr "Уколико Лолипоп не пронађе Вашу музику:"
 
 #. (itstool) path: item/p
 #: C/index.page:24
 msgid "Check you have gstreamer-libav or gstreamer-fluendo installed"
-msgstr ""
+msgstr "Проверите да ли имате gstreamer-libav или gstreamer-fluendo пакете инсталиране"
 
 #. (itstool) path: item/p
 #: C/index.page:25
 msgid ""
 "Go to the application menu: \"<sys>Settings -&gt; Music</sys>\" and add your"
 " music folder"
-msgstr ""
+msgstr "Идите у мени програма: \"<sys>Подешавања - Музика</sys>\" и додајте директоријум у којем се налази ваша музика"
 
 #. (itstool) path: section/title
 #: C/index.page:30
 msgid "Playback"
-msgstr ""
+msgstr "Пуштање"
 
 #. (itstool) path: section/p
 #: C/index.page:31
-msgid "When you start playing a song, a contextual playlist is populated"
-msgstr ""
+msgid "When you start playing a song, a contextual playlist is populated."
+msgstr "Када пустите песму, контекстуална листа песама се попуњава."
 
 #. (itstool) path: section/p
 #: C/index.page:32
 msgid ""
-"Contexts can be: an album, an artist, a genre, popular or recent albums"
-msgstr ""
+"Contexts can be: an album, an artist, a genre, popular or recent albums."
+msgstr "Контексти могу бити: албум, извођач, жанр, популарни албуми или скорашњи албуми."
 
 #. (itstool) path: section/p
 #: C/index.page:33
 msgid "Shuffle interacts on current context."
-msgstr ""
+msgstr "Мешање песама се врши над тренутним контекстом."
 
 #. (itstool) path: section/title
 #: C/index.page:37
 msgid "Rate albums"
-msgstr ""
+msgstr "Оцени албуме"
 
 #. (itstool) path: section/p
 #: C/index.page:38
-msgid "Album popularity is based on how many tracks you listen for an album"
-msgstr ""
+msgid "Album popularity is based on how many tracks you listen for an album."
+msgstr "Популарност албума се заснива на броју слушаних песама са албума."
 
 #. (itstool) path: section/p
 #: C/index.page:39
 msgid ""
-"Album rating only influence this popularity, it's not fixed in the time"
-msgstr ""
+"Album rating only influence this popularity, it's not fixed in the time."
+msgstr "Оцена албума има утицај на популарност али не дугорочно."
 
 #. (itstool) path: section/title
 #: C/index.page:43
 msgid "Download covers"
-msgstr ""
+msgstr "Скини омоте албума"
 
 #. (itstool) path: section/p
 #: C/index.page:44
 msgid ""
 "When hovering a cover, if mouse cursor changes to a hand, just click and "
-"select a new cover"
-msgstr ""
+"select a new cover."
+msgstr "Када ставите миша над омотом и када се показивач миша претвори у руку, кликните да бисте изабрали нови омот за тај албум."
 
 #. (itstool) path: section/p
 #: C/index.page:45
-msgid "You need an internet connection"
-msgstr ""
+msgid "You need an internet connection."
+msgstr "Потребна је веза са Интернетом."
 
 #. (itstool) path: section/title
 #: C/index.page:49
 msgid "Shortcuts"
-msgstr ""
+msgstr "Пречице"
 
 #. (itstool) path: item/p
 #: C/index.page:51
 msgid "Control+s: Lollypop settings"
-msgstr ""
+msgstr "Ctrl+S: Подешавања Лолипопа"
 
 #. (itstool) path: item/p
 #: C/index.page:52
 msgid "Control+f: Search"
-msgstr ""
+msgstr "Ctrl+F: Претрага"
 
 #. (itstool) path: item/p
 #: C/index.page:53
 msgid "Control+p: Party mode"
-msgstr ""
+msgstr "Ctrl+P: Режим рада за журке"
 
 #. (itstool) path: item/p
-#: C/index.page:54 C/index.page:63
+#: C/index.page:54
 msgid "Control+m or F11: Fullscreen"
-msgstr ""
+msgstr "Ctrl+M или F11: Преко целог екрана"
 
 #. (itstool) path: item/p
 #: C/index.page:55
 msgid "x: Play"
-msgstr ""
+msgstr "X: Пусти"
 
 #. (itstool) path: item/p
 #: C/index.page:56
 msgid "c: Pause"
-msgstr ""
+msgstr "C: Паузирај"
 
 #. (itstool) path: item/p
 #: C/index.page:57
 msgid "v: Stop"
-msgstr ""
+msgstr "V: Заустави"
 
 #. (itstool) path: item/p
 #: C/index.page:58
 msgid "n: Next track"
-msgstr ""
+msgstr "N: Следећа песма"
 
 #. (itstool) path: item/p
 #: C/index.page:59
 msgid "p: Previous track"
-msgstr ""
+msgstr "P: Претходна песма"
 
 #. (itstool) path: item/p
 #: C/index.page:60
 msgid "Control+n: Skip current album"
-msgstr ""
+msgstr "Ctrl+N: Прескочи тренутни албум"
 
 #. (itstool) path: item/p
 #: C/index.page:61
 msgid "Left key: Skip backward in track"
-msgstr ""
+msgstr "Леви клик: Премотај нешто назад песму"
 
 #. (itstool) path: item/p
 #: C/index.page:62
 msgid "Right key: Skip forward in track"
-msgstr ""
+msgstr "Десни клик: Премотај нешто напред песму"
+
+#. (itstool) path: item/p
+#: C/index.page:63
+msgid "Control+h: Help"
+msgstr "Ctrl+H: Помоћ"
 
 #. (itstool) path: item/p
 #: C/index.page:64
-msgid "Control+h: Help"
-msgstr ""
-
-#. (itstool) path: item/p
-#: C/index.page:65
 msgid "Control+a: About"
-msgstr ""
+msgstr "Ctrl+A: О програму"
 
 #. (itstool) path: p/link
 #: C/legal.xml:4
 msgid "Creative Commons Attribution-Share Alike 3.0 United States License"
-msgstr ""
+msgstr "Creative Commons Attribution-Share Alike 3.0 United States License"
 
 #. (itstool) path: license/p
 #: C/legal.xml:3
 msgid "This work is licensed under a <_:link-1/>."
-msgstr ""
+msgstr "Овај програм издат под лиценцом <_:link-1/>."
 
 #. (itstool) path: license/p
 #: C/legal.xml:6
@@ -211,4 +212,4 @@ msgid ""
 "As a special exception, the copyright holders give you permission to copy, "
 "modify, and distribute the example code contained in this document under the"
 " terms of your choosing, without restriction."
-msgstr ""
+msgstr "Као посебан изузетак, носиоци ауторског права Вам дају дозволу да умножавате, мењате и делите примере кода који се налазе у овом документу под лиценцом коју Ви изаберете, без ограничења."

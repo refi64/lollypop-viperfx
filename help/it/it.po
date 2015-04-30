@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lollypop\n"
 "POT-Creation-Date: 2015-04-29 10:10+0200\n"
-"PO-Revision-Date: 2015-04-29 15:26+0000\n"
+"PO-Revision-Date: 2015-04-29 15:34+0000\n"
 "Last-Translator: Pietro Acinapura <pietro.ac@gmail.com>\n"
 "Language-Team: Italian (http://www.transifex.com/projects/p/lollypop/language/it/)\n"
 "MIME-Version: 1.0\n"
@@ -75,13 +75,13 @@ msgstr "Riproduci"
 #. (itstool) path: section/p
 #: C/index.page:31
 msgid "When you start playing a song, a contextual playlist is populated."
-msgstr ""
+msgstr "Quando si avvia la riproduzione di un brano, una playlist contestuale viene popolata."
 
 #. (itstool) path: section/p
 #: C/index.page:32
 msgid ""
 "Contexts can be: an album, an artist, a genre, popular or recent albums."
-msgstr ""
+msgstr "I contesti possono essere: un album, un artista, un genere, album popolari o recenti."
 
 #. (itstool) path: section/p
 #: C/index.page:33
@@ -96,13 +96,13 @@ msgstr "Vota gli album"
 #. (itstool) path: section/p
 #: C/index.page:38
 msgid "Album popularity is based on how many tracks you listen for an album."
-msgstr ""
+msgstr "La popolarità dell'album si basa sul numero di tracce che si ascolta per un album."
 
 #. (itstool) path: section/p
 #: C/index.page:39
 msgid ""
 "Album rating only influence this popularity, it's not fixed in the time."
-msgstr ""
+msgstr "La valutazione dell'album influenza solo questa popolarità, non è costante nel tempo."
 
 #. (itstool) path: section/title
 #: C/index.page:43

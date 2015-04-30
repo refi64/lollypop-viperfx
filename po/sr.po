@@ -3,13 +3,14 @@
 # This file is distributed under the same license as the PACKAGE package.
 # 
 # Translators:
+# Марко М. Костић (Marko M. Kostić) <marko.m.kostic@gmail.com>, 2015
 msgid ""
 msgstr ""
 "Project-Id-Version: lollypop\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2015-04-28 18:57+0200\n"
-"PO-Revision-Date: 2015-04-28 20:12+0000\n"
-"Last-Translator: Cédric Bellegarde <web@adishatz.org>\n"
+"PO-Revision-Date: 2015-04-29 20:27+0000\n"
+"Last-Translator: Марко М. Костић (Marko M. Kostić) <marko.m.kostic@gmail.com>\n"
 "Language-Team: Serbian (http://www.transifex.com/projects/p/lollypop/language/sr/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -19,118 +20,118 @@ msgstr ""
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:1
 msgid "Window size"
-msgstr ""
+msgstr "Величина прозора"
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:2
 msgid "Window size (width and height)."
-msgstr ""
+msgstr "Величина прозора (ширина и висина)."
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:3
 msgid "Window position"
-msgstr ""
+msgstr "Положај прозора"
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:4
 msgid "Window position (x and y)."
-msgstr ""
+msgstr "Положај прозора (X и Y положај)."
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:5
 msgid "Window maximized"
-msgstr ""
+msgstr "Увећан прозор"
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:6
 msgid "Window maximized state."
-msgstr ""
+msgstr "Стање прозора када је увећан."
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:7
 msgid "Enabled genres in party mode"
-msgstr ""
+msgstr "Омогућени жанрови песама у режиму рада за журке"
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:8
 msgid "Ids for genres."
-msgstr ""
+msgstr "ИБ-ови за жанрове песама."
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:9
 msgid "Music paths"
-msgstr ""
+msgstr "Путања до музике"
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:10
 msgid "When empty, use XDG_MUSIC_DIR"
-msgstr ""
+msgstr "Када је празна, користи XDG_MUSIC_DIR променљиву"
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:11
 msgid "Favorite cover file"
-msgstr ""
+msgstr "Датотека са омиљеним омотом албума"
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:12
 msgid "Restart needed"
-msgstr ""
+msgstr "Потребно је поново покренути програм"
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:13
 msgid "Database version"
-msgstr ""
+msgstr "Издање базе података"
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:14
 msgid ""
 "Reset this value will reset the database, popular albums will be restored"
-msgstr ""
+msgstr "Поновно постављање ове вредности ће вратити базу на почетно стање, Популарни албуми ће бити враћени"
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:15
 msgid "Replay gain value in db"
-msgstr ""
+msgstr "Вредност појачања у децибелима"
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:16
 msgid "Between -15 and 15"
-msgstr ""
+msgstr "Између -15 и 15"
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:17
 msgid "Scan library at startup"
-msgstr ""
+msgstr "Скенирај библиотеку при покретању програма"
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:18
 msgid "Show genres list"
-msgstr ""
+msgstr "Прикажи списак са жанровима"
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:19
 msgid "Use dark gtk theme"
-msgstr ""
+msgstr "Користи тамну ГТК тему"
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:20
 msgid "Force the use client side window decorations (headerbar)"
-msgstr ""
+msgstr "Обавезно користи клијентске украсе прозора"
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:21
 msgid ""
 "If set to true CSD headerbars will be used, even if the detected desktop "
 "environment is not amongst those that are expected to support it."
-msgstr ""
+msgstr "Уколико је опција подешена на тачно, клијентски украси прозора ће бити коришћени и у случају да радно окружење није на списку оних који подржавају клијентске украсе прозора."
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:22 ../data/SettingsDialog.ui.h:4
 msgid "Continue playback when closed"
-msgstr ""
+msgstr "Настави са пуштањем песама након затварања програма"
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:23
 msgid "Restore previous state"
-msgstr ""
+msgstr "Поврати претходно стање програма"
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:24
 msgid "Auto play albums on click"
-msgstr ""
+msgstr "Кликом на омот албума пусти песме из албума"
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:25
 msgid "Disable MPRIS"
-msgstr ""
+msgstr "Искључи МПРИС контроле"
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:26
 msgid "Disable notifications"
-msgstr ""
+msgstr "Искључи обавештења"
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:27
 msgid "INTERNAL"
-msgstr ""
+msgstr "ИНТЕРНО"
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:28
 msgid "Shuffle mode"
-msgstr ""
+msgstr "Режим мешања песама"
 
 #. Translators: Don't translate allowed values, just the description in the
 #. brackets
@@ -140,375 +141,375 @@ msgid ""
 "\"none\" (shuffle off), \"tracks\" (shuffle tracks) , \"albums\" (shuffle "
 "albums), \"tracks_artist\" (shuffle tracks from artist), \"albums_artist\" "
 "(shuffle albums from artist)."
-msgstr ""
+msgstr "Вредност одређује да ли се песме/албуми мешају приликом пуштања. Дозвољене вредности су: „none“ (мешање искључено), „tracks“ (мешање песама само), „albums“ (мешање албума само), „tracks_artist“, (мешање песама једног извођача), „albums_artist“ (мешање песама са свих албума једног извођача)."
 
 #: ../data/lollypop.desktop.in.h:1 ../data/lollypop.appdata.xml.in.h:1
 msgid "Lollypop"
-msgstr ""
+msgstr "Лолипоп"
 
 #: ../data/lollypop.desktop.in.h:2
 msgid "Music Player"
-msgstr ""
+msgstr "Пуштач музике"
 
 #: ../data/lollypop.desktop.in.h:3 ../data/lollypop.appdata.xml.in.h:2
 msgid "Play and organize your music collection"
-msgstr ""
+msgstr "Пуштајте и организујте вашу музичку библиотеку"
 
 #: ../data/lollypop.appdata.xml.in.h:3
 msgid "Music player for the GNOME desktop"
-msgstr ""
+msgstr "Пуштач музике за Гном окружење"
 
 #: ../src/collectionscanner.py:60
 msgid "Your music is updating"
-msgstr ""
+msgstr "Музичка библиотека се ажурира"
 
 #: ../src/collectionscanner.py:271 ../src/collectionscanner.py:276
 #: ../src/collectionscanner.py:290 ../src/collectionscanner.py:295
 #: ../src/database_albums.py:233 ../src/database_artists.py:70
 #: ../src/database_genres.py:67 ../src/database_tracks.py:187
 msgid "Unknown"
-msgstr ""
+msgstr "Непознато"
 
 #: ../src/container.py:328
 msgid "Popular albums"
-msgstr ""
+msgstr "Популарни албуми"
 
 #: ../src/container.py:329
 msgid "Recent albums"
-msgstr ""
+msgstr "Скорашњи албуми"
 
 #: ../src/container.py:330 ../src/popmenu.py:321 ../src/popmenu.py:336
 #: ../src/popmenu.py:351
 msgid "Playlists"
-msgstr ""
+msgstr "Листе песама"
 
 #: ../src/container.py:332
 msgid "All artists"
-msgstr ""
+msgstr "Сви извођачи"
 
 #: ../src/container.py:334
 msgid "All albums"
-msgstr ""
+msgstr "Сви албуми"
 
 #: ../src/container.py:376
 msgid "Compilations"
-msgstr ""
+msgstr "Компилације"
 
 #: ../src/database_albums.py:250
 msgid "Compilation"
-msgstr ""
+msgstr "Компилација"
 
 #: ../src/database_artists.py:62
 msgid "Many artists"
-msgstr ""
+msgstr "Многи извођачи"
 
 #: ../src/fullscreen.py:75 ../src/fullscreen.py:174 ../src/toolbar.py:273
 #: ../src/toolbar.py:300
 msgid "Pause"
-msgstr ""
+msgstr "Паузирај"
 
 #: ../src/fullscreen.py:178 ../src/toolbar.py:237 ../src/toolbar.py:281
 #: ../src/toolbar.py:297 ../data/Toolbar.ui.h:7
 msgid "Play"
-msgstr ""
+msgstr "Пусти"
 
 #: ../src/notification.py:64 ../data/Toolbar.ui.h:6
 msgid "Previous"
-msgstr ""
+msgstr "Претходна"
 
 #: ../src/notification.py:68 ../data/Toolbar.ui.h:8
 msgid "Next"
-msgstr ""
+msgstr "Следећа"
 
 #. TRANSLATORS: by refers to the artist,
 #. from to the album
 #: ../src/notification.py:94
 #, python-format
 msgid "by %s, from %s"
-msgstr ""
+msgstr "изводи %s, са албума %s"
 
 #: ../src/popmenu.py:58
 msgid "Continue playback"
-msgstr ""
+msgstr "Настави са пуштањем"
 
 #: ../src/popmenu.py:63
 msgid "Stop after this track"
-msgstr ""
+msgstr "Стани након ове песме"
 
 #: ../src/popmenu.py:68
 msgid "Stop after this album"
-msgstr ""
+msgstr "Стани након овог албума"
 
 #: ../src/popmenu.py:73
 msgid "Stop after this artist"
-msgstr ""
+msgstr "Стани након овог извођача"
 
 #: ../src/popmenu.py:162 ../data/SearchRow.ui.h:3
 msgid "Add to queue"
-msgstr ""
+msgstr "Додај у редослед"
 
 #: ../src/popmenu.py:167
 msgid "Next tracks"
-msgstr ""
+msgstr "Следеће песме"
 
 #: ../src/popmenu.py:169
 msgid "Next track"
-msgstr ""
+msgstr "Следећа песма"
 
 #: ../src/popmenu.py:173
 msgid "Remove from queue"
-msgstr ""
+msgstr "Избаци из редоследа"
 
 #: ../src/popmenu.py:240
 msgid "Add to others"
-msgstr ""
+msgstr "Додај у друго"
 
 #: ../src/popmenu.py:253
 #, python-format
 msgid "Remove from \"%s\""
-msgstr ""
+msgstr "Избаци из/са \"%s\""
 
 #: ../src/popmenu.py:259
 #, python-format
 msgid "Add to \"%s\""
-msgstr ""
+msgstr "Додај у/на \"%s\""
 
 #: ../src/popmenu.py:319 ../src/popmenu.py:334 ../src/popmenu.py:349
 msgid "Playback"
-msgstr ""
+msgstr "Пуштање"
 
 #: ../src/search.py:148
 msgid "Search:"
-msgstr ""
+msgstr "Претрага:"
 
 #: ../src/settings.py:95
 msgid "Populars"
-msgstr ""
+msgstr "Популарно"
 
 #: ../src/settings.py:96
 msgid "Recents"
-msgstr ""
+msgstr "Скорашње"
 
 #. Handle language ordering
 #. Translators: Add here words that shoud be ignored for artist sort order
 #: ../src/utils.py:114
 msgid "The the"
-msgstr ""
+msgstr "Члан члан"
 
 #: ../src/view_device.py:39 ../src/view_device.py:80
 #, python-format
 msgid "Synchronize %s"
-msgstr ""
+msgstr "Усклади %s"
 
 #: ../src/view_device.py:71
 msgid "Cancel synchronization"
-msgstr ""
+msgstr "Откажи усклађивање"
 
 #: ../src/widgets_album.py:183
 #, python-format
 msgid "Disc %s"
-msgstr ""
+msgstr "Диск %s"
 
 #: ../src/widgets_device.py:401
 msgid "Unknown error while syncing, try to reboot your device"
-msgstr ""
+msgstr "Догодила се непозната грешка приликом усклађивања песама са уређајем. Пробајте да угасите и упалите уређај па онда да ускладите песме."
 
 #: ../src/widgets_device.py:408
 msgid "No free space available on device"
-msgstr ""
+msgstr "Нема довољно слободног простора на уређају"
 
 #: ../src/widgets_playlist.py:222 ../src/widgets_playlist.py:225
 msgid "New playlist "
-msgstr ""
+msgstr "Нова листа песама"
 
 #: ../src/widgets_playlist.py:267 ../src/widgets_playlist.py:526
 #, python-format
 msgid "Remove \"%s\"?"
-msgstr ""
+msgstr "Уклонити \"%s\"?"
 
 #: ../src/widgets_playlist.py:565
 msgid "Remove these tracks?"
-msgstr ""
+msgstr "Уклонити ове песме?"
 
 #: ../data/AboutDialog.ui.h:1
 msgid "A music player for GNOME."
-msgstr ""
+msgstr "Пуштач музике за Гном."
 
 #: ../data/AboutDialog.ui.h:2
 msgid "Visit Lollypop website"
-msgstr ""
+msgstr "Матична веб страница Лолипопа"
 
 #. Replace me with your names
 #: ../data/AboutDialog.ui.h:4
 msgid "Cédric Bellegarde <cedric.bellegarde@adishatz.org>"
-msgstr ""
+msgstr "Cédric Bellegarde <cedric.bellegarde@adishatz.org>"
 
 #: ../data/Appmenu.ui.h:1
 msgid "_Update music"
-msgstr ""
+msgstr "Аж_урирај музику"
 
 #: ../data/Appmenu.ui.h:2
 msgid "_Fullscreen"
-msgstr ""
+msgstr "Пре_ко целог екрана"
 
 #: ../data/Appmenu.ui.h:3
 msgid "_Preferences"
-msgstr ""
+msgstr "П_оставке"
 
 #: ../data/Appmenu.ui.h:4
 msgid "_About"
-msgstr ""
+msgstr "О п_рограму"
 
 #: ../data/Appmenu.ui.h:5
 msgid "_Help"
-msgstr ""
+msgstr "По_моћ"
 
 #: ../data/Appmenu.ui.h:6
 msgid "_Quit"
-msgstr ""
+msgstr "_Излаз"
 
 #: ../data/DeviceManagerView.ui.h:1
 msgid "Synchronize your device with this playlists"
-msgstr ""
+msgstr "Ускладите ваш уређај са овим листама песама"
 
 #: ../data/PlaylistEditWidget.ui.h:1 ../data/PlaylistsManagerWidget.ui.h:1
 msgid "Confirm"
-msgstr ""
+msgstr "Потврди"
 
 #: ../data/PlaylistsManagerView.ui.h:1
 msgid "New playlist"
-msgstr ""
+msgstr "Нова листа песама"
 
 #: ../data/PlaylistView.ui.h:1
 msgid "Edit"
-msgstr ""
+msgstr "Уреди"
 
 #: ../data/PopImages.ui.h:1
 msgid "No cover found..."
-msgstr ""
+msgstr "Нисам пронашао омот..."
 
 #: ../data/PopImages.ui.h:2
 msgid "Please wait..."
-msgstr ""
+msgstr "Сачекајте..."
 
 #: ../data/PopImages.ui.h:3
 msgid "Select a cover art for this album"
-msgstr ""
+msgstr "Изабери омот за овај албум"
 
 #: ../data/QueueWidget.ui.h:1
 msgid "Queue:"
-msgstr ""
+msgstr "Редослед:"
 
 #: ../data/QueueWidget.ui.h:2
 msgid "Clear queue"
-msgstr ""
+msgstr "Очисти редослед"
 
 #: ../data/SearchRow.ui.h:1
 msgid "artist"
-msgstr ""
+msgstr "извођач"
 
 #: ../data/SearchRow.ui.h:2
 msgid "Add to playlist"
-msgstr ""
+msgstr "Додај у листу песама"
 
 #: ../data/SettingsDialog.ui.h:1
 msgid "Preferences"
-msgstr ""
+msgstr "Поставке"
 
 #: ../data/SettingsDialog.ui.h:2
 msgid "Update music on startup"
-msgstr ""
+msgstr "Ажурирај музичку библиотеку приликом покретања програма"
 
 #: ../data/SettingsDialog.ui.h:3
 msgid "Restore state on startup"
-msgstr ""
+msgstr "Поврати претходно стање програма приликом покретања програма"
 
 #: ../data/SettingsDialog.ui.h:5
 msgid "Play albums on 2nd click"
-msgstr ""
+msgstr "Пусти песме са албума са десним кликом"
 
 #: ../data/SettingsDialog.ui.h:6
 msgid "Behaviour"
-msgstr ""
+msgstr "Понашање програма"
 
 #: ../data/SettingsDialog.ui.h:7
 msgid "Use dark theme variant"
-msgstr ""
+msgstr "Користи тамну тему"
 
 #: ../data/SettingsDialog.ui.h:8
 msgid "Show genres"
-msgstr ""
+msgstr "Прикажи жанрове"
 
 #: ../data/SettingsDialog.ui.h:9
 msgid "Appearance"
-msgstr ""
+msgstr "Изглед"
 
 #: ../data/SettingsDialog.ui.h:10
 msgid "Configure lollypop behaviour"
-msgstr ""
+msgstr "Подешавање понашања Лолипопа"
 
 #: ../data/SettingsDialog.ui.h:11
 msgid "Options"
-msgstr ""
+msgstr "Подешавања"
 
 #: ../data/SettingsDialog.ui.h:12
 msgid "Select music folders"
-msgstr ""
+msgstr "Изабери директоријуме са музиком"
 
 #: ../data/SettingsDialog.ui.h:13
 msgid "Music"
-msgstr ""
+msgstr "Музика"
 
 #: ../data/SettingsDialog.ui.h:14
 msgid "Select what will be available in party mode"
-msgstr ""
+msgstr "Изабери шта ће бити доступно у режиму рада за журке"
 
 #: ../data/SettingsDialog.ui.h:15 ../data/Toolbar.ui.h:11
 msgid "Party mode"
-msgstr ""
+msgstr "Режим рада за журке"
 
 #: ../data/Toolbar.ui.h:1
 msgid "No shuffle"
-msgstr ""
+msgstr "Без мешања песама"
 
 #: ../data/Toolbar.ui.h:2
 msgid "Shuffle albums"
-msgstr ""
+msgstr "Мешај албуме"
 
 #: ../data/Toolbar.ui.h:3
 msgid "Shuffle tracks"
-msgstr ""
+msgstr "Мешај песме"
 
 #: ../data/Toolbar.ui.h:4
 msgid "Shuffle albums from artist"
-msgstr ""
+msgstr "Мешај албуме једног извођача"
 
 #: ../data/Toolbar.ui.h:5
 msgid "Shuffle tracks from artist"
-msgstr ""
+msgstr "Мешај песме једног извођача"
 
 #: ../data/Toolbar.ui.h:9
 msgid "Settings"
-msgstr ""
+msgstr "Подешавања"
 
 #: ../data/Toolbar.ui.h:10
 msgid "Shuffle"
-msgstr ""
+msgstr "Мешање песама"
 
 #: ../data/Toolbar.ui.h:12
 msgid "Search"
-msgstr ""
+msgstr "Претрага"
 
 #: ../data/Toolbar.ui.h:13
 msgid "Queue"
-msgstr ""
+msgstr "Редослед"
 
 #: ../data/Unicode.ui.h:1
 msgid "Error"
-msgstr ""
+msgstr "Грешка"
 
 #: ../data/Unicode.ui.h:2
 msgid ""
 "Lollypop isn't designed to work without an unicode locale.\n"
 "Please fix your system."
-msgstr ""
+msgstr "Лолипоп није написан тако да може да ради на систему без Уникод локалног стандарда.\nСредите ваш оперативни систем."
