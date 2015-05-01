@@ -34,6 +34,7 @@ class PopRadio(Gtk.Popover):
         self._name = name
         self._radios_manager = radios_manager
         self._start = 0
+        self._orig_pixbufs = {}
 
         self._stack = ViewContainer(1000)
         self._stack.show()
@@ -147,12 +148,28 @@ class PopRadio(Gtk.Popover):
     def _add_pixbuf(self, stream):
         try:
             pixbuf = GdkPixbuf.Pixbuf.new_from_stream_at_scale(
-                                            stream, ArtSize.BIG,
-                                            ArtSize.BIG,
+                                            stream, ArtSize.MONSTER,
+                                            ArtSize.MONSTER,
                                             True,
                                             None)
             image = Gtk.Image()
-            image.set_from_pixbuf(pixbuf)
+            self._orig_pixbufs[image] = pixbuf
+            # Scale preserving aspect ratio
+            width = pixbuf.get_width()
+            height = pixbuf.get_height()
+            if width > height:
+                height = height*ArtSize.BIG/width
+                width = ArtSize.BIG
+            else:
+                width = width*ArtSize.BIG/height
+                height = ArtSize.BIG
+            scaled_pixbuf = pixbuf.scale_simple(
+                                               width,
+                                               height,
+                                               GdkPixbuf.InterpType.BILINEAR)
+            image.set_from_pixbuf(scaled_pixbuf)
+            del scaled_pixbuf
+            del pixbuf
             image.show()
             self._view.add(image)
         except Exception as e:
@@ -199,7 +216,7 @@ class PopRadio(Gtk.Popover):
         Reset cache and use player object to announce cover change
     """
     def _on_activate(self, flowbox, child):
-        pixbuf = child.get_child().get_pixbuf()
+        pixbuf = self._orig_pixbufs[child.get_child()]
         Objects.art.save_radio_logo(pixbuf, self._name)
         Objects.art.clean_radio_cache(self._name)
         Objects.player.announce_logo_update(self._name)

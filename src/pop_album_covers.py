@@ -32,6 +32,7 @@ class PopAlbumCovers(Gtk.Popover):
         Gtk.Popover.__init__(self)
         self._album_id = album_id
         self._start = 0
+        self._orig_pixbufs = {}
 
         album = Objects.albums.get_name(album_id)
         artist = Objects.artists.get_name(artist_id)
@@ -137,9 +138,13 @@ class PopAlbumCovers(Gtk.Popover):
                                             False,
                                             None)
             image = Gtk.Image()
-            image.set_from_pixbuf(pixbuf.scale_simple(ArtSize.BIG,
+            self._orig_pixbufs[image] = pixbuf
+            scaled_pixbuf = pixbuf.scale_simple(ArtSize.BIG,
                                                       ArtSize.BIG,
-                                                      2))
+                                                      2)
+            image.set_from_pixbuf(scaled_pixbuf)
+            del scaled_pixbuf
+            del pixbuf
             image.show()
             self._view.add(image)
         except Exception as e:
@@ -156,7 +161,7 @@ class PopAlbumCovers(Gtk.Popover):
         Reset cache and use player object to announce cover change
     """
     def _on_activate(self, flowbox, child):
-        pixbuf = child.get_child().get_pixbuf()
+        pixbuf = self._orig_pixbufs[child.get_child()]
         Objects.art.save_album_art(pixbuf, self._album_id)
         Objects.art.clean_album_cache(self._album_id)
         Objects.player.announce_cover_update(self._album_id)

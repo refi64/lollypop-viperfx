@@ -111,7 +111,12 @@ class FullScreen(Gtk.Window):
         if player.current.id is None:
             pass  # Impossible as we force play on show
         else:
-            art = Objects.art.get(player.current.album_id,  ArtSize.MONSTER)
+            if Objects.player.current.id == Navigation.RADIOS:
+                art = Objects.art.get_radio(player.current.artist,
+                                            ArtSize.MONSTER)
+            else:
+                art = Objects.art.get(player.current.album_id,
+                                      ArtSize.MONSTER)
             if art:
                 self._cover.set_from_pixbuf(art)
                 self._cover.show()
