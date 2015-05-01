@@ -111,8 +111,15 @@ class RadioWidget(AlbumWidget):
         self._popover.show()
 
     """
-        Change cursor over eventbox
+        Change cursor over cover eventbox
         @param eventbox as Gdk.Eventbox
     """
-    def _on_eventbox_realize(self, eventbox):
+    def _on_eventbox_realize1(self, eventbox):
         eventbox.get_window().set_cursor(Gdk.Cursor(Gdk.CursorType.HAND1))
+
+    """
+        Change cursor over title eventbox
+        @param eventbox as Gdk.Eventbox
+    """
+    def _on_eventbox_realize2(self, eventbox):
+        eventbox.get_window().set_cursor(Gdk.Cursor(Gdk.CursorType.PENCIL))
