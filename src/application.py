@@ -12,7 +12,9 @@
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 from gi.repository import Gtk, Gio, GLib, Gdk, Notify, TotemPlParser
+
 from locale import getlocale
+from gettext import gettext as _
 
 from lollypop.utils import is_audio, is_gnome, is_unity
 from lollypop.define import Objects, ArtSize
@@ -283,7 +285,10 @@ class Application(Gtk.Application):
         Show help in yelp
     """
     def _help(self, action, param):
-        Gtk.show_uri(None, "help:lollypop", Gtk.get_current_event_time())
+        try:
+            Gtk.show_uri(None, "help:lollypop", Gtk.get_current_event_time())
+        except:
+            print(_("Lollypop: You need to install yelp."))
 
     """
         Destroy about dialog when closed
