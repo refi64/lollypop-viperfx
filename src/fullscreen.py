@@ -14,7 +14,7 @@
 from gi.repository import Gtk, Gdk, GLib
 from gettext import gettext as _
 
-from lollypop.define import Objects, ArtSize
+from lollypop.define import Objects, ArtSize, Navigation
 from lollypop.utils import seconds_to_string
 
 
@@ -112,9 +112,13 @@ class FullScreen(Gtk.Window):
             pass  # Impossible as we force play on show
         else:
             if Objects.player.current.id == Navigation.RADIOS:
+                self._prev_btn.set_sensitive(False)
+                self._next_btn.set_sensitive(False)
                 art = Objects.art.get_radio(player.current.artist,
                                             ArtSize.MONSTER)
             else:
+                self._prev_btn.set_sensitive(True)
+                self._next_btn.set_sensitive(True)
                 art = Objects.art.get(player.current.album_id,
                                       ArtSize.MONSTER)
             if art:
