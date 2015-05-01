@@ -175,7 +175,6 @@ class MPRIS(dbus.service.Object):
                 cover_path = Objects.art.get_radio_cache_path(
                                             Objects.player.current.artist,
                                             ArtSize.BIG)
-                print(cover_path)
             else:
                 cover_path = Objects.art.get_album_cache_path(
                                             Objects.player.current.album_id,
