@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-05-01 19:35+0200\n"
+"POT-Creation-Date: 2015-05-01 19:45+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -546,4 +546,12 @@ msgstr ""
 msgid ""
 "Lollypop isn't designed to work without an unicode locale.\n"
 "Please fix your system."
+msgstr ""
+
+#: ../data/RadiosView.ui.h:1
+msgid "New radio"
+msgstr ""
+
+#: ../data/RadioWidget.ui.h:1
+msgid "titre"
 msgstr ""
