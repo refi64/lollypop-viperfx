@@ -227,6 +227,7 @@ class Toolbar(Gtk.HeaderBar):
             self._play_btn.set_sensitive(True)
             self._next_btn.set_sensitive(True)
             self._artist_label.set_text(player.current.artist)   
+            self._title_label.set_text(player.current.title)
 
             if player.current.id == Navigation.RADIOS:
                 self._total_time_label.hide()
@@ -238,7 +239,6 @@ class Toolbar(Gtk.HeaderBar):
             else:
                 self._infobox.get_window().set_cursor(
                                         Gdk.Cursor(Gdk.CursorType.HAND1))
-                self._title_label.set_text(player.current.title)
                 self._progress.set_value(0.0)
                 self._progress.set_range(0.0, player.current.duration * 60)
                 self._total_time_label.set_text(
