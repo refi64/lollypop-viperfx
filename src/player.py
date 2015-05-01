@@ -40,6 +40,10 @@ class Player(BinPlayer, QueuePlayer, UserPlaylistPlayer, RadioPlayer,
         Play previous track
     """
     def prev(self):
+        # No prev in radio mode
+        if self.current.id == Navigation.RADIOS:
+            return
+
         # Look at user playlist then
         track_id = UserPlaylistPlayer.prev(self)
         
@@ -60,6 +64,10 @@ class Player(BinPlayer, QueuePlayer, UserPlaylistPlayer, RadioPlayer,
         @param sql as sqlite cursor
     """
     def next(self, force=True, sql=None):
+        # No next in radio mode
+        if self.current.id == Navigation.RADIOS:
+            return
+
         # Look first at user queue
         track_id = QueuePlayer.next(self)
 
