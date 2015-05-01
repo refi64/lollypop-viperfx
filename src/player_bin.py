@@ -18,6 +18,7 @@ from os import path
 from lollypop.player_base import BasePlayer
 from lollypop.player_rg import ReplayGainPlayer
 from lollypop.define import GstPlayFlags, NextContext, Objects, CurrentTrack
+from lollypop.define import Navigation
 from lollypop.utils import translate_artist_name
 
 
