@@ -179,7 +179,8 @@ class PopRadio(Gtk.Popover):
                 self._radios_manager.rename(new_name, self._name)
             else:
                 self._radios_manager.add(new_name)
-            self._radios_manager.add_track(new_name, uri)
+            self._radios_manager.add_track(new_name,
+                                           uri.lstrip().rstrip())
             self._stack.remove(self._widget)
             self._stack.set_visible_child(self._spinner)
             self._name = new_name
