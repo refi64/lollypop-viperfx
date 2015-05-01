@@ -380,7 +380,7 @@ class AlbumDetailedWidget(AlbumWidget):
         @param eventbox as Gdk.Eventbox
     """
     def _on_eventbox_realize(self, eventbox):
-        eventbox.get_window().set_cursor(Gdk.Cursor(Gdk.CursorType.HAND1))
+        eventbox.get_window().set_cursor(Gdk.Cursor(Gdk.CursorType.PENCIL))
 
     """
         Popover with album art downloaded from the web (in fact google :-/)
