@@ -36,15 +36,31 @@ class RadioWidget(AlbumWidget):
         self._name = name
         self._uri = uri
         self._radios_manager = radios_manager
+        self._popover = None
 
-        title = builder.get_object('title')
-        title.set_label(name)
+        self._title = builder.get_object('title')
+        self._title.set_label(name)
 
         self.add(builder.get_object('widget'))
         self.set_cover()
 
     def do_get_preferred_width(self):
         return (ArtSize.BIG+ArtSize.BORDER*2, ArtSize.BIG+ArtSize.BORDER*2)
+
+    """
+        Set name
+        @param name as string
+    """
+    def set_name(self, name):
+        self._name = name
+        self._title.set_label(name)
+
+    """
+        Set uri
+        @param uri as string
+    """
+    def set_uri(self, uri):
+        self._uri = uri
 
     """
         Return radio name
@@ -60,7 +76,7 @@ class RadioWidget(AlbumWidget):
     def set_cover(self, force=False):
         selected = Objects.player.current.id == Navigation.RADIOS and\
                    self._name == Objects.player.current.title
-        if self._cover and (selected != self._selected or force):
+        if self._cover is not None and (selected != self._selected or force):
             self._selected = selected
             pixbuf = Objects.art.get_radio(self._name,
                                            ArtSize.BIG,
@@ -70,10 +86,9 @@ class RadioWidget(AlbumWidget):
 
     """
         Update cover for album id id needed
-        @param album id as int
     """
-    def update_cover(self, album_id):
-        if self._cover and self._album_id == album_id:
+    def update_cover(self):
+        if self._cover is not None:
             self._selected = Objects.player.current.id == Navigation.RADIOS\
                              and self._name == Objects.player.current.title
             pixbuf = Objects.art.get_radio(self._name,
@@ -91,9 +106,9 @@ class RadioWidget(AlbumWidget):
         @param event as Gdk.Event
     """
     def _on_button_press(self, widget, event):
-        popover = PopRadio(self._name, self._radios_manager)
-        popover.set_relative_to(widget)
-        popover.show()
+        self._popover = PopRadio(self._name, self._radios_manager)
+        self._popover.set_relative_to(widget)
+        self._popover.show()
 
     """
         Change cursor over eventbox

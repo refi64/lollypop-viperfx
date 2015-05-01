@@ -29,6 +29,8 @@ class RadiosView(View):
     def __init__(self):
         View.__init__(self)
 
+        self._signal = None
+
         self._radios_manager = RadiosManager()
         self._radios_manager.connect('playlists-changed',
                                      self._on_radios_changed)
@@ -60,7 +62,27 @@ class RadiosView(View):
     """
     def populate(self):
         radios = self._radios_manager.get()
-        GLib.idle_add(self._add_radios, radios)
+        radios_name = []
+        # Get radios name
+        for (i, name) in self._radios_manager.get():
+            radios_name.append(name)
+        GLib.idle_add(self._add_radios, radios_name)
+
+    """
+        Connect player signal
+    """
+    def do_show(self):
+        View.do_show(self)
+        self._signal = Objects.player.connect('logo-changed',
+                                              self._on_logo_changed)
+
+    """
+        Disconnect player signal
+    """
+    def do_hide(self):
+        View.do_hide(self)
+        if self._signal is not None:
+            Objects.player.disconnect(self._signal)
 
 #######################
 # PRIVATE             #
@@ -107,36 +129,68 @@ class RadiosView(View):
         @param manager as PlaylistManager
     """
     def _on_radios_changed(self, manager):
-        print('changed')
-        radios = manager.get()
+        radios_name = []
         currents = []
+        new_name = None
+        old_widget = None
+
+        # Get radios name
+        for (i, name) in manager.get():
+            radios_name.append(name)
+
+        # Get currents widget less removed
         for child in self._radiobox.get_children():
             widget = child.get_children()[0]
-            if widget.get_name not in radios:
-                self._radiobox.remove(child)
+            if widget.get_name() not in radios_name:
+                old_widget = widget
             else:
-                current.append(widget)
-        for radio in radios:
-            if radio not in currents:
-                self._add_radios([radio])
+                currents.append(widget.get_name())
+
+
+        # Add the new radio
+        for name in radios_name:
+            if name not in currents:
+                new_name = name
+                break
+
+        # Rename widget
+        if new_name is not None:
+            old_widget.set_name(new_name)
+            uris = manager.get_tracks(new_name)
+            if len(uris) > 0:
+                old_widget.set_uri(uris[0])
+
+    """
+        Update radio logo
+        @param player as Plyaer
+        @param name as string
+    """
+    def _on_logo_changed(self, player, name):
+        for child in self._radiobox.get_children():
+            widget = child.get_children()[0]
+            if widget.get_name() == name:
+                widget.update_cover()
 
     """
         Pop a radio and add it to the view,
         repeat operation until radio list is empty
         @param [radio names as string]
+        @return new widget as RadioWidget
     """
     def _add_radios(self, radios):
         if radios and not self._stop:
             radio = radios.pop(0)
-            uris = self._radios_manager.get_tracks(radio[1])
+            uris = self._radios_manager.get_tracks(radio)
             if len(uris) > 0:
-                widget = RadioWidget(radio[1],
+                widget = RadioWidget(radio,
                                      uris[0],
                                      self._radios_manager)
                 widget.show()
                 self._sizegroup.add_widget(widget)
                 self._radiobox.insert(widget, -1)
+                return widget
             GLib.idle_add(self._add_radios, radios)
         else:
             self._stop = False
+        return None
 
