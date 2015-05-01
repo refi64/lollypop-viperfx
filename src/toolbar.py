@@ -14,7 +14,7 @@
 from gettext import gettext as _
 from gi.repository import Gtk, Gdk, GLib, Gio
 
-from lollypop.define import Objects, Shuffle, ArtSize
+from lollypop.define import Objects, Shuffle, ArtSize, Navigation
 from lollypop.search import SearchWidget
 from lollypop.popmenu import PopToolbarMenu
 from lollypop.queue import QueueWidget
@@ -174,7 +174,8 @@ class Toolbar(Gtk.HeaderBar):
         @param event as Gdk.Event
     """
     def _pop_infobox(self, widget, event):
-        if Objects.player.current.id:
+        if Objects.player.current.id is not None and\
+           Objects.player.current.id != Navigation.RADIOS:
             if event.button == 1:
                 self._popalbums.populate()
                 self._popalbums.show()
@@ -221,29 +222,34 @@ class Toolbar(Gtk.HeaderBar):
         @param player as Player
     """
     def _on_current_changed(self, player):
-        if player.current.id is None:
-            self._infobox.get_window().set_cursor(
-                                        Gdk.Cursor(Gdk.CursorType.LEFT_PTR))
-            self._cover.hide()
-            self._timelabel.hide()
-            self._total_time_label.hide()
-            self._progress.set_value(0.0)
-            self._progress.set_sensitive(False)
-            self._prev_btn.set_sensitive(False)
-            self._play_btn.set_sensitive(False)
-            self._next_btn.set_sensitive(False)
-            self._title_label.set_text('')
-            self._artist_label.set_text('')
-            self._change_play_btn_status(self._play_image, _("Play"))
-            if Objects.player.is_party():
-                self._activate_party_button()
-        else:
+        if player.current.id is not None:
             self._prev_btn.set_sensitive(True)
             self._play_btn.set_sensitive(True)
             self._next_btn.set_sensitive(True)
-            self._infobox.get_window().set_cursor(
+            self._artist_label.set_text(player.current.artist)   
+
+            if player.current.id == Navigation.RADIOS:
+                self._title_label.set_text('')
+                self._total_time_label.hide()
+                self._timelabel.hide()
+                self._progress.set_value(0.0)
+                self._progress.set_range(0.0, 0.0)
+                art = Objects.art.get_radio(player.current.artist,
+                                            ArtSize.SMALL)
+            else:
+                self._infobox.get_window().set_cursor(
                                         Gdk.Cursor(Gdk.CursorType.HAND1))
-            art = Objects.art.get(player.current.album_id,  ArtSize.SMALL)
+                self._title_label.set_text(player.current.title)
+                self._progress.set_value(0.0)
+                self._progress.set_range(0.0, player.current.duration * 60)
+                self._total_time_label.set_text(
+                                        seconds_to_string(player.current.duration))
+                self._total_time_label.show()
+                self._timelabel.set_text("0:00")
+                self._timelabel.show()
+                art = Objects.art.get(player.current.album_id,
+                                      ArtSize.SMALL)
+
             if art:
                 self._cover.set_from_pixbuf(art)
                 self._cover.set_tooltip_text(player.current.album)
@@ -251,34 +257,38 @@ class Toolbar(Gtk.HeaderBar):
             else:
                 self._cover.hide()
 
-            self._title_label.set_text(player.current.title)
-            self._artist_label.set_text(player.current.artist)
-            self._progress.set_value(0.0)
-            self._progress.set_range(0.0, player.current.duration * 60)
-            self._total_time_label.set_text(
-                                    seconds_to_string(player.current.duration))
-            self._total_time_label.show()
-            self._timelabel.set_text("0:00")
-            self._timelabel.show()
 
     """
         Update buttons and progress bar
-        @param progress as Gtk.Range
+        @param player as Player
     """
-    def _on_status_changed(self, progress):
-        is_playing = Objects.player.is_playing()
-        self._progress.set_sensitive(is_playing)
-        if is_playing and not self._timeout:
-            self._timeout = GLib.timeout_add(1000, self.update_position)
-            self._change_play_btn_status(self._pause_image, _("Pause"))
+    def _on_status_changed(self, player):
+        is_playing = player.is_playing()
+
+        if player.current.id == Navigation.RADIOS:
+            self._progress.set_sensitive(False)
+            self._timelabel.hide()
+            self._total_time_label.hide()
+        else:
+            self._progress.set_sensitive(is_playing)
+
+        if is_playing:
             # Party mode can be activated
             # via Fullscreen class, so check button state
             self._party_btn.set_active(Objects.player.is_party())
-        elif not is_playing and self._timeout:
-            GLib.source_remove(self._timeout)
-            self.update_position()
-            self._timeout = None
+            self._change_play_btn_status(self._pause_image, _("Pause"))
+            if player.current.id == Navigation.RADIOS and self._timeout:
+                GLib.source_remove(self._timeout)
+                self._timeout = None
+            elif not self._timeout:
+                self._timeout = GLib.timeout_add(1000, self.update_position)
+        else:
             self._change_play_btn_status(self._play_image, _("Play"))
+            self.update_position()
+            if self._timeout:
+                GLib.source_remove(self._timeout)
+                self._timeout = None
+            
 
     """
         Previous track on prev button clicked

@@ -45,7 +45,7 @@ class RadioWidget(AlbumWidget):
         self.set_cover()
 
     """
-        Set name
+        Set radio name
         @param name as string
     """
     def set_name(self, name):
@@ -53,7 +53,7 @@ class RadioWidget(AlbumWidget):
         self._title.set_label(name)
 
     """
-        Set uri
+        Set radio uri
         @param uri as string
     """
     def set_uri(self, uri):
@@ -67,12 +67,19 @@ class RadioWidget(AlbumWidget):
         return self._name
 
     """
+        Return radio uri
+        @param radio uri as string
+    """
+    def get_uri(self):
+        return self._uri
+
+    """
         Set cover for album if state changed
         @param force as bool
     """
     def set_cover(self, force=False):
         selected = Objects.player.current.id == Navigation.RADIOS and\
-                   self._name == Objects.player.current.title
+                   self._name == Objects.player.current.artist
         if self._cover is not None and (selected != self._selected or force):
             self._selected = selected
             pixbuf = Objects.art.get_radio(self._name,
@@ -87,7 +94,7 @@ class RadioWidget(AlbumWidget):
     def update_cover(self):
         if self._cover is not None:
             self._selected = Objects.player.current.id == Navigation.RADIOS\
-                             and self._name == Objects.player.current.title
+                             and self._name == Objects.player.current.artist
             pixbuf = Objects.art.get_radio(self._name,
                                            ArtSize.BIG,
                                            self._selected)

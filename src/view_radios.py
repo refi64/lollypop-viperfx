@@ -44,7 +44,7 @@ class RadiosView(View):
         self._radiobox = Gtk.FlowBox()
         self._radiobox.set_sort_func(self._sort_radios)
         self._radiobox.set_selection_mode(Gtk.SelectionMode.NONE)
-        #self._radiobox.connect("child-activated", self._on_album_activated)
+        self._radiobox.connect("child-activated", self._on_album_activated)
         self._radiobox.set_max_children_per_line(100)
         self._radiobox.show()
 
@@ -94,8 +94,8 @@ class RadiosView(View):
     def _get_children(self):
         children = []
         for child in self._radiobox.get_children():
-            for widget in child.get_children():
-                children.append(widget)
+            widget =  child.get_child()
+            children.append(widget)
         return children
 
     """
@@ -107,13 +107,6 @@ class RadiosView(View):
         child1 = a.get_children()[0]
         child2 = b.get_children()[0]
         return child1.get_name().lower() > child2.get_name().lower()
-        
-    """
-        Current song changed
-        @param player as Player
-    """
-    def _on_current_changed(self, player):
-        pass
 
     """
         Show popover
@@ -141,7 +134,7 @@ class RadiosView(View):
 
         # Get currents widget less removed
         for child in self._radiobox.get_children():
-            widget = child.get_children()[0]
+            widget = child.get_child()
             if widget.get_name() not in radios_name:
                 old_widget = widget
                 old_child = child
@@ -176,7 +169,7 @@ class RadiosView(View):
     """
     def _on_logo_changed(self, player, name):
         for child in self._radiobox.get_children():
-            widget = child.get_children()[0]
+            widget = child.get_child()
             if widget.get_name() == name:
                 widget.update_cover()
 
@@ -203,3 +196,12 @@ class RadiosView(View):
             self._stop = False
         return None
 
+    """
+        Play album
+        @param flowbox as Gtk.Flowbox
+        @child as Gtk.FlowboxChild
+    """
+    def _on_album_activated(self, flowbox, child):
+        name = child.get_child().get_name()
+        uri =  child.get_child().get_uri()
+        Objects.player.load_radio(name, uri)

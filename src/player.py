@@ -16,13 +16,14 @@ from lollypop.player_bin import BinPlayer
 from lollypop.player_queue import QueuePlayer
 from lollypop.player_linear import LinearPlayer
 from lollypop.player_shuffle import ShufflePlayer
+from lollypop.player_radio import RadioPlayer
 from lollypop.player_userplaylist import UserPlaylistPlayer
 from lollypop.define import Objects, Navigation, NextContext
 from lollypop.define import Shuffle
 
 
 # Player object used to manage playback and playlists
-class Player(BinPlayer, QueuePlayer, UserPlaylistPlayer,
+class Player(BinPlayer, QueuePlayer, UserPlaylistPlayer, RadioPlayer,
              LinearPlayer, ShufflePlayer, TagReader):
     """
         Create a gstreamer bin and listen to signals on bus
@@ -81,6 +82,16 @@ class Player(BinPlayer, QueuePlayer, UserPlaylistPlayer,
                 self._load_track(track_id, sql)
         if self.context.next == NextContext.START_NEW_ALBUM:
             self.context.next = NextContext.NONE
+
+    """
+        Stop current track, load radio, play it
+        @param name as string
+        @param uri as string
+    """
+    def load_radio(self, name, uri):
+        self._stop()
+        if RadioPlayer.load(self, name, uri):
+            self.play()
 
     """
         Play album

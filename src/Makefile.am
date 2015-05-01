@@ -38,6 +38,7 @@ app_PYTHON = \
     player_base.py\
     player_bin.py\
     player_queue.py\
+    player_radio.py\
     player_linear.py\
     player_shuffle.py\
     player_userplaylist.py\

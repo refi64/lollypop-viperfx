@@ -220,7 +220,7 @@ class BinPlayer(ReplayGainPlayer, BasePlayer):
                                            GLib.filename_to_uri(
                                                         self.current.path))
             except Exception as e:  # Gstreamer error, stop
-                print("BasePlayer::_load_track(): ", e)
+                print("BinPlayer::_load_track(): ", e)
                 self._on_errors()
                 return False
         else:
@@ -248,23 +248,28 @@ class BinPlayer(ReplayGainPlayer, BasePlayer):
             self.next(False)
             self.emit("current-changed")
         else:
-            self.load(self.current.id)
+            if self.current.id == Navigation.RADIOS:
+                self.load_radio(self.current.name, self.current.path)
+            else:
+                self.load(self.current.id)
 
     """
         When stream is about to finish, switch to next track without gap
     """
     def _on_stream_about_to_finish(self, obj):
-        self._previous_track_id = self.current.id
-        # We are in a thread, we need to create a new cursor
-        sql = Objects.db.get_cursor()
-        self.next(False, sql)
-        # Add populariy if we listen to the song
-        album_id = Objects.tracks.get_album_id(self._previous_track_id, sql)
-        try:
-            Objects.albums.set_more_popular(album_id, sql)
-        except:
-            pass
-        sql.close()
+        if self.current.id != Navigation.RADIOS:
+            self._previous_track_id = self.current.id
+            # We are in a thread, we need to create a new cursor
+            sql = Objects.db.get_cursor()
+            self.next(False, sql)
+            # Add populariy if we listen to the song
+            album_id = Objects.tracks.get_album_id(self._previous_track_id,
+                                                   sql)
+            try:
+                Objects.albums.set_more_popular(album_id, sql)
+            except:
+                pass
+            sql.close()
 
     """
         On error, try 3 more times playing a track

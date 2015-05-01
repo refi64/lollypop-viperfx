@@ -205,8 +205,8 @@ class AlbumsView(View):
     def _get_children(self):
         children = []
         for child in self._albumbox.get_children():
-            for widget in child.get_children():
-                children.append(widget)
+            widget = child.get_child()
+            children.append(widget)
         if self._context_widget is not None:
             children.append(self._context_widget)
         return children
@@ -243,7 +243,8 @@ class AlbumsView(View):
 
     """
         Show Context view for activated album
-        @param flowbox, children
+        @param flowbox as Gtk.Flowbox
+        @child as Gtk.FlowboxChild
     """
     def _on_album_activated(self, flowbox, child):
         if self._context_album_id == child.get_child().get_id():
