@@ -103,7 +103,7 @@ class PopRadio(Gtk.Popover):
         @thread safe
     """
     def _populate(self):
-        self._urls = Objects.art.get_google_arts(self._name+"+logo")
+        self._urls = Objects.art.get_google_arts(self._name+"+logo+radio")
         if self._urls:
             self._add_pixbufs()
         else:
