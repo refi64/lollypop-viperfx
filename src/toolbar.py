@@ -228,6 +228,8 @@ class Toolbar(Gtk.HeaderBar):
             self._title_label.set_text(player.current.title)
 
             if player.current.id == Navigation.RADIOS:
+                self._infobox.get_window().set_cursor(
+                                          Gdk.Cursor(Gdk.CursorType.LEFT_PTR))
                 self._prev_btn.set_sensitive(False)
                 self._next_btn.set_sensitive(False)
                 self._total_time_label.hide()
