@@ -20,7 +20,6 @@
             <property name="visible">True</property>
             <property name="can_focus">False</property>
             <property name="halign">center</property>
-            <property name="label" translatable="yes">titre</property>
             <property name="ellipsize">middle</property>
             <style>
               <class name="dim-label"/>
