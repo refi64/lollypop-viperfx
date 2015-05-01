@@ -1,7 +1,7 @@
 # SOME DESCRIPTIVE TITLE.
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
-# 
+#
 # Translators:
 # Cédric Bellegarde <web@adishatz.org>, 2015
 # Cédric Bellegarde <web@adishatz.org>, 2015
@@ -12,11 +12,12 @@ msgstr ""
 "POT-Creation-Date: 2015-05-01 19:35+0200\n"
 "PO-Revision-Date: 2015-05-01 17:41+0000\n"
 "Last-Translator: Cédric Bellegarde <web@adishatz.org>\n"
-"Language-Team: French (http://www.transifex.com/projects/p/lollypop/language/fr/)\n"
+"Language-Team: French (http://www.transifex.com/projects/p/lollypop/language/"
+"fr/)\n"
+"Language: fr\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Language: fr\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:1
@@ -74,7 +75,9 @@ msgstr "Version de la base de données"
 #: ../data/org.gnome.Lollypop.gschema.xml.h:14
 msgid ""
 "Reset this value will reset the database, popular albums will be restored"
-msgstr "Remettre cette valeur à zéro réinitialisera votre base de donnee, les albums populaires seront restaurés"
+msgstr ""
+"Remettre cette valeur à zéro réinitialisera votre base de donnee, les albums "
+"populaires seront restaurés"
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:15
 msgid "Replay gain value in db"
@@ -104,7 +107,9 @@ msgstr "Force l'utilisation des décorations coté client"
 msgid ""
 "If set to true CSD headerbars will be used, even if the detected desktop "
 "environment is not amongst those that are expected to support it."
-msgstr "Si vrai, utilise les décorations coté client même si l'environnement de bureau n'est pas censé les supporter"
+msgstr ""
+"Si vrai, utilise les décorations coté client même si l'environnement de "
+"bureau n'est pas censé les supporter"
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:22 ../data/SettingsDialog.ui.h:4
 msgid "Continue playback when closed"
@@ -134,15 +139,18 @@ msgstr "INTERNE"
 msgid "Shuffle mode"
 msgstr "Mode de lecture aléatoire"
 
-#. Translators: Don't translate allowed values, just the description in the
-#. brackets
+#. Translators: Don't translate allowed values, just the description in the brackets
 #: ../data/org.gnome.Lollypop.gschema.xml.h:30
 msgid ""
-"Value identifies whether to shuffle tracks/albums. Allowed values are: "
-"\"none\" (shuffle off), \"tracks\" (shuffle tracks) , \"albums\" (shuffle "
-"albums), \"tracks_artist\" (shuffle tracks from artist), \"albums_artist\" "
-"(shuffle albums from artist)."
-msgstr "La valeur définie si les morceaux/albums doivent être mélangés. Les valeurs valides sont: \"none\" (ne pas mélanger), \"tracks\" (mélanger les morceaux), \"albums\" (mélanger les albums), \"tracks_artist\" (Mélanger les morceaux de l'artiste), \"tracks_album\" (mélanger les albums de l'artiste)."
+"Value identifies whether to shuffle tracks/albums. Allowed values are: \"none"
+"\" (shuffle off), \"tracks\" (shuffle tracks) , \"albums\" (shuffle albums), "
+"\"tracks_artist\" (shuffle tracks from artist), \"albums_artist\" (shuffle "
+"albums from artist)."
+msgstr ""
+"La valeur définie si les morceaux/albums doivent être mélangés. Les valeurs "
+"valides sont: \"none\" (ne pas mélanger), \"tracks\" (mélanger les "
+"morceaux), \"albums\" (mélanger les albums), \"tracks_artist\" (Mélanger les "
+"morceaux de l'artiste), \"tracks_album\" (mélanger les albums de l'artiste)."
 
 #: ../data/lollypop.desktop.in.h:1 ../data/lollypop.appdata.xml.in.h:1
 msgid "Lollypop"
@@ -329,7 +337,9 @@ msgstr "Disque %s"
 
 #: ../src/widgets_device.py:401
 msgid "Unknown error while syncing, try to reboot your device"
-msgstr "Erreur inconnue lors de la synchronisation, essayez de redémarrer votre appareil"
+msgstr ""
+"Erreur inconnue lors de la synchronisation, essayez de redémarrer votre "
+"appareil"
 
 #: ../src/widgets_device.py:408
 msgid "No free space available on device"
@@ -549,4 +559,6 @@ msgstr "Erreur"
 msgid ""
 "Lollypop isn't designed to work without an unicode locale.\n"
 "Please fix your system."
-msgstr "Lollypop ne supporte pas les systèmes non unicode.\nMerci de corriger votre système"
+msgstr ""
+"Lollypop ne supporte pas les systèmes non unicode.\n"
+"Merci de corriger votre système"

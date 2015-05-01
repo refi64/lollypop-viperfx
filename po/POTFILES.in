@@ -71,3 +71,5 @@ src/window.py
 [type: gettext/glade]data/Toolbar.ui
 [type: gettext/glade]data/TrackRow.ui
 [type: gettext/glade]data/Unicode.ui
+[type: gettext/glade]data/RadiosView.ui
+[type: gettext/glade]data/RadioWidget.ui
