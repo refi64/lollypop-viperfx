@@ -19,7 +19,6 @@ from _thread import start_new_thread
 
 from gettext import gettext as _
 
-from lollypop.playlists import RadiosManager
 from lollypop.define import Objects, ArtSize, GOOGLE_INC, GOOGLE_MAX
 from lollypop.view_container import ViewContainer
 

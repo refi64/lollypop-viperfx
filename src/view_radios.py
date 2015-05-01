@@ -13,8 +13,6 @@
 
 from gi.repository import Gtk, GLib
 
-from _thread import start_new_thread
-
 from lollypop.view import View
 from lollypop.widgets_radio import RadioWidget
 from lollypop.playlists import RadiosManager
@@ -61,7 +59,6 @@ class RadiosView(View):
         Thread safe
     """
     def populate(self):
-        radios = self._radios_manager.get()
         radios_name = []
         # Get radios name
         for (i, name) in self._radios_manager.get():

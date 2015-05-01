@@ -56,7 +56,7 @@ class AlbumArt:
         @return cover path as string or None if no cover
     """
     def get_album_cache_path(self, album_id, size):
-        path = None
+        filename = ''
         try:
             filename = self._get_album_cache_name(album_id)
             CACHE_PATH_JPG = "%s/%s_%s.jpg" % (self._CACHE_PATH, 
@@ -80,7 +80,7 @@ class AlbumArt:
         @return cover path as string or None if no cover
     """
     def get_radio_cache_path(self, name, size):
-        path = None
+        filename = ''
         try:
             filename = self._get_radio_cache_name(name)
             CACHE_PATH_JPG = "%s/%s_%s.png" % (self._CACHE_PATH,
@@ -266,7 +266,7 @@ class AlbumArt:
                 if re.search('%s_.*\.jpg' % re.escape(filename), f):
                     os.remove(os.path.join(self._CACHE_PATH, f))
         except Exception as e:
-            print("AlbumArt::clean_album_cache(): ", e, path)
+            print("AlbumArt::clean_album_cache(): ", e, filename)
 
     """
         Remove logo from cache for radio
@@ -279,7 +279,7 @@ class AlbumArt:
                 if re.search('%s_.*\.png' % re.escape(filename), f):
                     os.remove(os.path.join(self._CACHE_PATH, f))
         except Exception as e:
-            print("AlbumArt::clean_radio_cache(): ", e, path)
+            print("AlbumArt::clean_radio_cache(): ", e, filename)
 
     """
         Save pixbuf for album id
