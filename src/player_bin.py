@@ -250,7 +250,7 @@ class BinPlayer(ReplayGainPlayer, BasePlayer):
             self.emit("current-changed")
         else:
             if self.current.id == Navigation.RADIOS:
-                self.load_radio(self.current.name, self.current.path)
+                self.load_radio(self.current.title, self.current.path)
             else:
                 self.load(self.current.id)
 
