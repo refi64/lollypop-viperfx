@@ -17,7 +17,7 @@ import urllib.request
 import urllib.parse
 from _thread import start_new_thread
 
-from lollypop.define import Objects, ArtSize, GOOGLE_INC
+from lollypop.define import Objects, ArtSize, GOOGLE_INC, GOOGLE_MAX
 from lollypop.view_container import ViewContainer
 
 # Show a popover with album covers from the web
@@ -115,7 +115,7 @@ class PopAlbumCovers(Gtk.Popover):
                 GLib.idle_add(self._add_pixbuf, stream)
             if self._thread:
                 self._add_pixbufs()
-        else:
+        elif self._start < GOOGLE_MAX:
             self._populate()
 
     """

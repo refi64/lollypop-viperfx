@@ -15,6 +15,7 @@
 # member init order is important!
 
 GOOGLE_INC = 8
+GOOGLE_MAX = 100
 
 class Objects_:
     settings = None
