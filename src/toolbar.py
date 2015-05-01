@@ -226,6 +226,9 @@ class Toolbar(Gtk.HeaderBar):
             self._play_btn.set_sensitive(True)
             self._artist_label.set_text(player.current.artist)   
             self._title_label.set_text(player.current.title)
+            self._infobox.set_tooltip_text(player.current.artist +\
+                                           " - "+\
+                                           player.current.title)
 
             if player.current.id == Navigation.RADIOS:
                 self._infobox.get_window().set_cursor(
