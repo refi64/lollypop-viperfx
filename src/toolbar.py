@@ -229,7 +229,6 @@ class Toolbar(Gtk.HeaderBar):
             self._artist_label.set_text(player.current.artist)   
 
             if player.current.id == Navigation.RADIOS:
-                self._title_label.set_text('')
                 self._total_time_label.hide()
                 self._timelabel.hide()
                 self._progress.set_value(0.0)

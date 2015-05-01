@@ -14,7 +14,7 @@
 from gi.repository import Gdk, GLib, Notify
 from gettext import gettext as _
 
-from lollypop.define import Objects, ArtSize
+from lollypop.define import Objects, ArtSize, Navigation
 
 
 class NotificationManager:
@@ -79,8 +79,14 @@ class NotificationManager:
         if player.current.id is None or state & Gdk.WindowState.FOCUSED\
                                      or app.is_fullscreen():
             return
-        cover_path = Objects.art.get_path(player.current.album_id,
-                                          ArtSize.BIG)
+        if player.current.id == Navigation.RADIOS:
+            cover_path = Objects.art.get_radio_cache_path(
+                                                        player.current.artist,
+                                                        ArtSize.BIG)
+        else:
+            cover_path = Objects.art.get_album_cache_path(
+                                                       player.current.album_id,
+                                                       ArtSize.BIG)
         if cover_path is not None:
             self._notification.set_hint('image-path',
                                         GLib.Variant('s', cover_path))

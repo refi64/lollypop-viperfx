@@ -55,11 +55,13 @@ class AlbumArt:
         @param album id as int, size as int
         @return cover path as string or None if no cover
     """
-    def get_path(self, album_id, size):
+    def get_album_cache_path(self, album_id, size):
         path = None
         try:
             filename = self._get_album_cache_name(album_id)
-            CACHE_PATH_JPG = "%s/%s_%s.jpg" % (self._CACHE_PATH, filename, size)
+            CACHE_PATH_JPG = "%s/%s_%s.jpg" % (self._CACHE_PATH, 
+                                               filename,
+                                               size)
             if os.path.exists(CACHE_PATH_JPG):
                 return CACHE_PATH_JPG
             else:
@@ -69,7 +71,32 @@ class AlbumArt:
                 else:
                     return None
         except Exception as e:
-            print("AlbumArt::get_path(): %s" % e, ascii(filename))
+            print("AlbumArt::get_album_cache_path(): %s" % e, ascii(filename))
+            return None
+
+    """
+        get cover cache path for radio
+        @param name as string
+        @return cover path as string or None if no cover
+    """
+    def get_radio_cache_path(self, name, size):
+        path = None
+        try:
+            filename = self._get_radio_cache_name(name)
+            CACHE_PATH_JPG = "%s/%s_%s.png" % (self._CACHE_PATH,
+                                               filename,
+                                               size)
+            print(CACHE_PATH_JPG)
+            if os.path.exists(CACHE_PATH_JPG):
+                return CACHE_PATH_JPG
+            else:
+                self.get_radio(name, size)
+                if os.path.exists(CACHE_PATH_JPG):
+                    return CACHE_PATH_JPG
+                else:
+                    return None
+        except Exception as e:
+            print("AlbumArt::get_radio_cache_path(): %s" % e, ascii(filename))
             return None
 
     """

@@ -18,7 +18,7 @@ import dbus.service
 from dbus.mainloop.glib import DBusGMainLoop
 from gi.repository import Gst
 
-from lollypop.define import Objects, ArtSize
+from lollypop.define import Objects, ArtSize, Navigation
 
 
 class MPRIS(dbus.service.Object):
@@ -154,9 +154,10 @@ class MPRIS(dbus.service.Object):
         if self._get_status() == 'Stopped':
             self._metadata = {}
         else:
-            self._metadata['mpris:trackid'] = dbus.ObjectPath(
-                                                '/org/lollypop/%s' %
-                                                Objects.player.current.id)
+            if Objects.player.current.id >= 0:
+                self._metadata['mpris:trackid'] = dbus.ObjectPath(
+                                                    '/org/lollypop/%s' %
+                                                    Objects.player.current.id)
             self._metadata['xesam:trackNumber'] = Objects.player.current.number
             self._metadata['xesam:title'] = Objects.player.current.title
             self._metadata['xesam:album'] = Objects.player.current.album
@@ -170,8 +171,15 @@ class MPRIS(dbus.service.Object):
                                                        )
             self._metadata['xesam:genre'] = [Objects.player.current.genre]
             self._metadata['xesam:url'] = "file://"+Objects.player.current.path
-            cover_path = Objects.art.get_path(Objects.player.current.album_id,
-                                              ArtSize.BIG)
+            if Objects.player.current.id == Navigation.RADIOS:
+                cover_path = Objects.art.get_radio_cache_path(
+                                            Objects.player.current.artist,
+                                            ArtSize.BIG)
+                print(cover_path)
+            else:
+                cover_path = Objects.art.get_album_cache_path(
+                                            Objects.player.current.album_id,
+                                            ArtSize.BIG)
             if cover_path is not None:
                 self._metadata['mpris:artUrl'] = "file://" + cover_path
 
