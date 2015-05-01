@@ -95,29 +95,31 @@ class MPRIS(dbus.service.Object):
     def GetAll(self, interface):
         if interface == self.MPRIS_IFACE:
             return {
-                'CanQuit': True,
-                'CanRaise': True,
-                'HasTrackList': False,
-                'Identity': 'Lollypop',
-                'DesktopEntry': 'lollypop'
+               'CanQuit': True,
+               'CanRaise': True,
+               'HasTrackList': False,
+               'Identity': 'Lollypop',
+               'DesktopEntry': 'lollypop'
             }
         elif interface == self.MPRIS_PLAYER_IFACE:
             return {
-                'PlaybackStatus': self._get_status(),
-                'LoopStatus': 'Playlist',
-                'Rate': dbus.Double(1.0),
-                'Shuffle': True,
-                'Metadata': dbus.Dictionary(self._metadata, signature='sv'),
-                'Volume': dbus.Double(Objects.player.get_volume()),
-                'Position': dbus.Int64(Objects.player.get_position_in_track()),
-                'MinimumRate': dbus.Double(1.0),
-                'MaximumRate': dbus.Double(1.0),
-                'CanGoNext': Objects.player.current.id != None,
-                'CanGoPrevious': Objects.player.current.id != None,
-                'CanPlay': Objects.player.current.id != None,
-                'CanPause': Objects.player.is_playing(),
-                'CanSeek': True,
-                'CanControl': True,
+               'PlaybackStatus': self._get_status(),
+               'LoopStatus': 'Playlist',
+               'Rate': dbus.Double(1.0),
+               'Shuffle': True,
+               'Metadata': dbus.Dictionary(self._metadata, signature='sv'),
+               'Volume': dbus.Double(Objects.player.get_volume()),
+               'Position': dbus.Int64(Objects.player.get_position_in_track()),
+               'MinimumRate': dbus.Double(1.0),
+               'MaximumRate': dbus.Double(1.0),
+               'CanGoNext': Objects.player.current.id != None or\
+                            Objects.player.current.id != Navigation.RADIOS,
+               'CanGoPrevious': Objects.player.current.id != None or\
+                                Objects.player.current.id != Navigation.RADIOS,
+               'CanPlay': Objects.player.current.id != None,
+               'CanPause': Objects.player.is_playing(),
+               'CanSeek': True,
+               'CanControl': True,
             }
         else:
             raise dbus.exceptions.DBusException(
