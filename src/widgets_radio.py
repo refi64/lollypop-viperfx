@@ -53,13 +53,6 @@ class RadioWidget(AlbumWidget):
         self._title.set_label(name)
 
     """
-        Set radio uri
-        @param uri as string
-    """
-    def set_uri(self, uri):
-        self._uri = uri
-
-    """
         Return radio name
         @return name as string
     """
@@ -71,7 +64,11 @@ class RadioWidget(AlbumWidget):
         @param radio uri as string
     """
     def get_uri(self):
-        return self._uri
+        uris = self._radios_manager.get_tracks(self._name)
+        if len(uris) > 0:
+            return uris[0]
+        else:
+            return ''
 
     """
         Set cover for album if state changed

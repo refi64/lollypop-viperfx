@@ -152,9 +152,6 @@ class RadiosView(View):
         if new_name is not None:
             if old_widget is not None:
                 old_widget.set_name(new_name)
-                uris = manager.get_tracks(new_name)
-                if len(uris) > 0:
-                    old_widget.set_uri(uris[0])
             else:
                 self._add_radios([new_name])
         # Delete widget

@@ -223,13 +223,13 @@ class Toolbar(Gtk.HeaderBar):
     """
     def _on_current_changed(self, player):
         if player.current.id is not None:
-            self._prev_btn.set_sensitive(True)
             self._play_btn.set_sensitive(True)
-            self._next_btn.set_sensitive(True)
             self._artist_label.set_text(player.current.artist)   
             self._title_label.set_text(player.current.title)
 
             if player.current.id == Navigation.RADIOS:
+                self._prev_btn.set_sensitive(False)
+                self._next_btn.set_sensitive(False)
                 self._total_time_label.hide()
                 self._timelabel.hide()
                 self._progress.set_value(0.0)
@@ -237,6 +237,8 @@ class Toolbar(Gtk.HeaderBar):
                 art = Objects.art.get_radio(player.current.artist,
                                             ArtSize.SMALL)
             else:
+                self._prev_btn.set_sensitive(True)
+                self._next_btn.set_sensitive(True)
                 self._infobox.get_window().set_cursor(
                                         Gdk.Cursor(Gdk.CursorType.HAND1))
                 self._progress.set_value(0.0)

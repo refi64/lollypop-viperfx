@@ -234,7 +234,7 @@ class BinPlayer(ReplayGainPlayer, BasePlayer):
     """
     def _on_bus_error(self, bus, message):
         print("Error playing: ", self.current.path)
-        self.next(True)
+        self._on_errors()
         return False
 
     """

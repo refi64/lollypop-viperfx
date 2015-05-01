@@ -86,7 +86,6 @@ class AlbumArt:
             CACHE_PATH_JPG = "%s/%s_%s.png" % (self._CACHE_PATH,
                                                filename,
                                                size)
-            print(CACHE_PATH_JPG)
             if os.path.exists(CACHE_PATH_JPG):
                 return CACHE_PATH_JPG
             else:
