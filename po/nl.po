@@ -1,7 +1,7 @@
 # SOME DESCRIPTIVE TITLE.
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
-# 
+#
 # Translators:
 # Nathan Follens, 2015
 # Nathan Follens, 2015
@@ -10,14 +10,15 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lollypop\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-04-28 18:57+0200\n"
+"POT-Creation-Date: 2015-05-01 19:35+0200\n"
 "PO-Revision-Date: 2015-04-28 22:17+0000\n"
 "Last-Translator: Nathan Follens\n"
-"Language-Team: Dutch (http://www.transifex.com/projects/p/lollypop/language/nl/)\n"
+"Language-Team: Dutch (http://www.transifex.com/projects/p/lollypop/language/"
+"nl/)\n"
+"Language: nl\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Language: nl\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:1
@@ -75,7 +76,9 @@ msgstr "Databaseversie"
 #: ../data/org.gnome.Lollypop.gschema.xml.h:14
 msgid ""
 "Reset this value will reset the database, popular albums will be restored"
-msgstr "Deze waarde opnieuw instellen zal de database opnieuw instellen, populaire albums zullen hersteld worden"
+msgstr ""
+"Deze waarde opnieuw instellen zal de database opnieuw instellen, populaire "
+"albums zullen hersteld worden"
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:15
 msgid "Replay gain value in db"
@@ -105,7 +108,9 @@ msgstr "Verplicht het gebruik van client side window decorations (headerbar)"
 msgid ""
 "If set to true CSD headerbars will be used, even if the detected desktop "
 "environment is not amongst those that are expected to support it."
-msgstr "Indien waar zullen CSD headerbars gebruikt worden, zelfs als de gedetecteerde bureaubladomgeving niet verwacht wordt deze te ondersteunen."
+msgstr ""
+"Indien waar zullen CSD headerbars gebruikt worden, zelfs als de "
+"gedetecteerde bureaubladomgeving niet verwacht wordt deze te ondersteunen."
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:22 ../data/SettingsDialog.ui.h:4
 msgid "Continue playback when closed"
@@ -135,15 +140,19 @@ msgstr "INTERN"
 msgid "Shuffle mode"
 msgstr "Willekeurige volgorde-modus"
 
-#. Translators: Don't translate allowed values, just the description in the
-#. brackets
+#. Translators: Don't translate allowed values, just the description in the brackets
 #: ../data/org.gnome.Lollypop.gschema.xml.h:30
 msgid ""
-"Value identifies whether to shuffle tracks/albums. Allowed values are: "
-"\"none\" (shuffle off), \"tracks\" (shuffle tracks) , \"albums\" (shuffle "
-"albums), \"tracks_artist\" (shuffle tracks from artist), \"albums_artist\" "
-"(shuffle albums from artist)."
-msgstr "Waarde bepaalt of nummers/albums in willekeurige volgorde afgespeeld worden. Toegelaten waarden zijn: \"none\" (geen willekeurige volgorde), \"tracks\" (nummers in willekeurige volgorde), \"albums\" (albums in willekeurige volgorde), \"tracks_artist\" (nummers van artiest in willekeurige volgorde), \"albums_artist\" (albums van artiest in willekeurige volgorde)."
+"Value identifies whether to shuffle tracks/albums. Allowed values are: \"none"
+"\" (shuffle off), \"tracks\" (shuffle tracks) , \"albums\" (shuffle albums), "
+"\"tracks_artist\" (shuffle tracks from artist), \"albums_artist\" (shuffle "
+"albums from artist)."
+msgstr ""
+"Waarde bepaalt of nummers/albums in willekeurige volgorde afgespeeld worden. "
+"Toegelaten waarden zijn: \"none\" (geen willekeurige volgorde), \"tracks"
+"\" (nummers in willekeurige volgorde), \"albums\" (albums in willekeurige "
+"volgorde), \"tracks_artist\" (nummers van artiest in willekeurige volgorde), "
+"\"albums_artist\" (albums van artiest in willekeurige volgorde)."
 
 #: ../data/lollypop.desktop.in.h:1 ../data/lollypop.appdata.xml.in.h:1
 msgid "Lollypop"
@@ -172,28 +181,32 @@ msgstr "Je muziek wordt bijgewerkt"
 msgid "Unknown"
 msgstr "Onbekend"
 
-#: ../src/container.py:328
+#: ../src/container.py:329
 msgid "Popular albums"
 msgstr "Populaire albums"
 
-#: ../src/container.py:329
+#: ../src/container.py:330
 msgid "Recent albums"
 msgstr "Recente albums"
 
-#: ../src/container.py:330 ../src/popmenu.py:321 ../src/popmenu.py:336
+#: ../src/container.py:331 ../src/popmenu.py:321 ../src/popmenu.py:336
 #: ../src/popmenu.py:351
 msgid "Playlists"
 msgstr "Afspeellijsten"
 
 #: ../src/container.py:332
+msgid "Radios"
+msgstr ""
+
+#: ../src/container.py:334
 msgid "All artists"
 msgstr "Alle artiesten"
 
-#: ../src/container.py:334
+#: ../src/container.py:336
 msgid "All albums"
 msgstr "Alle albums"
 
-#: ../src/container.py:376
+#: ../src/container.py:378
 msgid "Compilations"
 msgstr "Compilaties"
 
@@ -205,13 +218,13 @@ msgstr "Compilatie"
 msgid "Many artists"
 msgstr "Veel artiesten"
 
-#: ../src/fullscreen.py:75 ../src/fullscreen.py:174 ../src/toolbar.py:273
-#: ../src/toolbar.py:300
+#: ../src/fullscreen.py:75 ../src/fullscreen.py:174 ../src/toolbar.py:280
+#: ../src/toolbar.py:311
 msgid "Pause"
 msgstr "Pauzeren"
 
-#: ../src/fullscreen.py:178 ../src/toolbar.py:237 ../src/toolbar.py:281
-#: ../src/toolbar.py:297 ../data/Toolbar.ui.h:7
+#: ../src/fullscreen.py:178 ../src/toolbar.py:287 ../src/toolbar.py:308
+#: ../data/Toolbar.ui.h:7
 msgid "Play"
 msgstr "Afspelen"
 
@@ -225,10 +238,14 @@ msgstr "Volgende"
 
 #. TRANSLATORS: by refers to the artist,
 #. from to the album
-#: ../src/notification.py:94
+#: ../src/notification.py:100
 #, python-format
 msgid "by %s, from %s"
 msgstr "door %s, van %s"
+
+#: ../src/player_radio.py:58
+msgid "Radio"
+msgstr ""
 
 #: ../src/popmenu.py:58
 msgid "Continue playback"
@@ -279,6 +296,14 @@ msgstr "Toevoegen aan \"%s\""
 #: ../src/popmenu.py:319 ../src/popmenu.py:334 ../src/popmenu.py:349
 msgid "Playback"
 msgstr "Afspelen"
+
+#: ../src/popradio.py:69
+msgid "Add"
+msgstr ""
+
+#: ../src/popradio.py:71
+msgid "Modify"
+msgstr ""
 
 #: ../src/search.py:148
 msgid "Search:"
@@ -382,19 +407,41 @@ msgstr "Bevestigen"
 msgid "New playlist"
 msgstr "Nieuwe afspeellijst"
 
-#: ../data/PlaylistView.ui.h:1
+#: ../data/PlaylistsView.ui.h:1
 msgid "Edit"
 msgstr "Bewerken"
 
-#: ../data/PopImages.ui.h:1
-msgid "No cover found..."
+#: ../data/PopRadio.ui.h:1
+#, fuzzy
+msgid "Select a logo  for this radio"
+msgstr "Een albumhoes voor dit album selecteren"
+
+#: ../data/PopRadio.ui.h:2
+#, fuzzy
+msgid "No logo found..."
 msgstr "Geen hoes gevonden..."
 
-#: ../data/PopImages.ui.h:2
+#: ../data/PopRadio.ui.h:3 ../data/PopAlbumCovers.ui.h:2
 msgid "Please wait..."
 msgstr "Even geduld..."
 
-#: ../data/PopImages.ui.h:3
+#: ../data/PopRadio.ui.h:4
+msgid "Name:"
+msgstr ""
+
+#: ../data/PopRadio.ui.h:5
+msgid "Address:"
+msgstr ""
+
+#: ../data/PopRadio.ui.h:6
+msgid "Delete"
+msgstr ""
+
+#: ../data/PopAlbumCovers.ui.h:1
+msgid "No cover found..."
+msgstr "Geen hoes gevonden..."
+
+#: ../data/PopAlbumCovers.ui.h:3
 msgid "Select a cover art for this album"
 msgstr "Een albumhoes voor dit album selecteren"
 
@@ -514,4 +561,6 @@ msgstr "Fout"
 msgid ""
 "Lollypop isn't designed to work without an unicode locale.\n"
 "Please fix your system."
-msgstr "Lollypop is niet gemaakt om te werken zonder een unicode locale.\nHerstel je systeem."
+msgstr ""
+"Lollypop is niet gemaakt om te werken zonder een unicode locale.\n"
+"Herstel je systeem."

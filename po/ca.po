@@ -1,21 +1,22 @@
 # SOME DESCRIPTIVE TITLE.
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
-# 
+#
 # Translators:
 # Adolfo Jayme Barrientos, 2015
 msgid ""
 msgstr ""
 "Project-Id-Version: lollypop\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-04-28 18:57+0200\n"
+"POT-Creation-Date: 2015-05-01 19:35+0200\n"
 "PO-Revision-Date: 2015-04-28 20:12+0000\n"
 "Last-Translator: Cédric Bellegarde <web@adishatz.org>\n"
-"Language-Team: Catalan (http://www.transifex.com/projects/p/lollypop/language/ca/)\n"
+"Language-Team: Catalan (http://www.transifex.com/projects/p/lollypop/"
+"language/ca/)\n"
+"Language: ca\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Language: ca\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:1
@@ -133,14 +134,13 @@ msgstr "INTERN"
 msgid "Shuffle mode"
 msgstr "Mode aleatori"
 
-#. Translators: Don't translate allowed values, just the description in the
-#. brackets
+#. Translators: Don't translate allowed values, just the description in the brackets
 #: ../data/org.gnome.Lollypop.gschema.xml.h:30
 msgid ""
-"Value identifies whether to shuffle tracks/albums. Allowed values are: "
-"\"none\" (shuffle off), \"tracks\" (shuffle tracks) , \"albums\" (shuffle "
-"albums), \"tracks_artist\" (shuffle tracks from artist), \"albums_artist\" "
-"(shuffle albums from artist)."
+"Value identifies whether to shuffle tracks/albums. Allowed values are: \"none"
+"\" (shuffle off), \"tracks\" (shuffle tracks) , \"albums\" (shuffle albums), "
+"\"tracks_artist\" (shuffle tracks from artist), \"albums_artist\" (shuffle "
+"albums from artist)."
 msgstr ""
 
 #: ../data/lollypop.desktop.in.h:1 ../data/lollypop.appdata.xml.in.h:1
@@ -170,28 +170,32 @@ msgstr ""
 msgid "Unknown"
 msgstr "Desconegut"
 
-#: ../src/container.py:328
+#: ../src/container.py:329
 msgid "Popular albums"
 msgstr "Àlbums populars"
 
-#: ../src/container.py:329
+#: ../src/container.py:330
 msgid "Recent albums"
 msgstr ""
 
-#: ../src/container.py:330 ../src/popmenu.py:321 ../src/popmenu.py:336
+#: ../src/container.py:331 ../src/popmenu.py:321 ../src/popmenu.py:336
 #: ../src/popmenu.py:351
 msgid "Playlists"
 msgstr "Llistes"
 
 #: ../src/container.py:332
+msgid "Radios"
+msgstr ""
+
+#: ../src/container.py:334
 msgid "All artists"
 msgstr "Tots els artistes"
 
-#: ../src/container.py:334
+#: ../src/container.py:336
 msgid "All albums"
 msgstr ""
 
-#: ../src/container.py:376
+#: ../src/container.py:378
 msgid "Compilations"
 msgstr "Compilacions"
 
@@ -203,13 +207,13 @@ msgstr "Compilació"
 msgid "Many artists"
 msgstr "Molts artistes"
 
-#: ../src/fullscreen.py:75 ../src/fullscreen.py:174 ../src/toolbar.py:273
-#: ../src/toolbar.py:300
+#: ../src/fullscreen.py:75 ../src/fullscreen.py:174 ../src/toolbar.py:280
+#: ../src/toolbar.py:311
 msgid "Pause"
 msgstr "Fes una pausa"
 
-#: ../src/fullscreen.py:178 ../src/toolbar.py:237 ../src/toolbar.py:281
-#: ../src/toolbar.py:297 ../data/Toolbar.ui.h:7
+#: ../src/fullscreen.py:178 ../src/toolbar.py:287 ../src/toolbar.py:308
+#: ../data/Toolbar.ui.h:7
 msgid "Play"
 msgstr "Reprodueix"
 
@@ -223,10 +227,14 @@ msgstr "Següent"
 
 #. TRANSLATORS: by refers to the artist,
 #. from to the album
-#: ../src/notification.py:94
+#: ../src/notification.py:100
 #, python-format
 msgid "by %s, from %s"
 msgstr "per %s, de l’àlbum %s"
+
+#: ../src/player_radio.py:58
+msgid "Radio"
+msgstr ""
 
 #: ../src/popmenu.py:58
 msgid "Continue playback"
@@ -277,6 +285,14 @@ msgstr "Afegeix a «%s»"
 #: ../src/popmenu.py:319 ../src/popmenu.py:334 ../src/popmenu.py:349
 msgid "Playback"
 msgstr "Reproducció"
+
+#: ../src/popradio.py:69
+msgid "Add"
+msgstr ""
+
+#: ../src/popradio.py:71
+msgid "Modify"
+msgstr ""
 
 #: ../src/search.py:148
 msgid "Search:"
@@ -380,19 +396,40 @@ msgstr "Confirma"
 msgid "New playlist"
 msgstr "Llista nova"
 
-#: ../data/PlaylistView.ui.h:1
+#: ../data/PlaylistsView.ui.h:1
 msgid "Edit"
 msgstr "Edita"
 
-#: ../data/PopImages.ui.h:1
-msgid "No cover found..."
+#: ../data/PopRadio.ui.h:1
+#, fuzzy
+msgid "Select a logo  for this radio"
+msgstr "Trieu una caràtula per a aquest àlbum"
+
+#: ../data/PopRadio.ui.h:2
+msgid "No logo found..."
 msgstr ""
 
-#: ../data/PopImages.ui.h:2
+#: ../data/PopRadio.ui.h:3 ../data/PopAlbumCovers.ui.h:2
 msgid "Please wait..."
 msgstr ""
 
-#: ../data/PopImages.ui.h:3
+#: ../data/PopRadio.ui.h:4
+msgid "Name:"
+msgstr ""
+
+#: ../data/PopRadio.ui.h:5
+msgid "Address:"
+msgstr ""
+
+#: ../data/PopRadio.ui.h:6
+msgid "Delete"
+msgstr ""
+
+#: ../data/PopAlbumCovers.ui.h:1
+msgid "No cover found..."
+msgstr ""
+
+#: ../data/PopAlbumCovers.ui.h:3
 msgid "Select a cover art for this album"
 msgstr "Trieu una caràtula per a aquest àlbum"
 

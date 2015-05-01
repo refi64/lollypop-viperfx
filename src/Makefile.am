@@ -43,7 +43,7 @@ app_PYTHON = \
     player_shuffle.py\
     player_userplaylist.py\
 	pop_album_covers.py\
-    pop_radio.py\
+    popradio.py\
 	popalbums.py\
 	popmenu.py\
 	collectionscanner.py

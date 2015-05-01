@@ -1,22 +1,24 @@
 # SOME DESCRIPTIVE TITLE.
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
-# 
+#
 # Translators:
 # Piotr Sokół <psokol@jabster.pl>, 2015
 msgid ""
 msgstr ""
 "Project-Id-Version: lollypop\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-04-28 18:57+0200\n"
+"POT-Creation-Date: 2015-05-01 19:35+0200\n"
 "PO-Revision-Date: 2015-04-29 18:13+0000\n"
 "Last-Translator: Piotr Sokół <psokol@jabster.pl>\n"
-"Language-Team: Polish (http://www.transifex.com/projects/p/lollypop/language/pl/)\n"
+"Language-Team: Polish (http://www.transifex.com/projects/p/lollypop/language/"
+"pl/)\n"
+"Language: pl\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Language: pl\n"
-"Plural-Forms: nplurals=3; plural=(n==1 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+"Plural-Forms: nplurals=3; plural=(n==1 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 "
+"|| n%100>=20) ? 1 : 2);\n"
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:1
 msgid "Window size"
@@ -56,7 +58,9 @@ msgstr "Ścieżki katalogów z muzyką"
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:10
 msgid "When empty, use XDG_MUSIC_DIR"
-msgstr "Wskazuje ścieżki do katalogów z muzyką. Jeśli nie skonfigurowano, zostanie użyta ścieżka XDG_MUSIC_DIR."
+msgstr ""
+"Wskazuje ścieżki do katalogów z muzyką. Jeśli nie skonfigurowano, zostanie "
+"użyta ścieżka XDG_MUSIC_DIR."
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:11
 msgid "Favorite cover file"
@@ -133,14 +137,13 @@ msgstr "WEWNĘTRZNE"
 msgid "Shuffle mode"
 msgstr "Losowanie kolejności"
 
-#. Translators: Don't translate allowed values, just the description in the
-#. brackets
+#. Translators: Don't translate allowed values, just the description in the brackets
 #: ../data/org.gnome.Lollypop.gschema.xml.h:30
 msgid ""
-"Value identifies whether to shuffle tracks/albums. Allowed values are: "
-"\"none\" (shuffle off), \"tracks\" (shuffle tracks) , \"albums\" (shuffle "
-"albums), \"tracks_artist\" (shuffle tracks from artist), \"albums_artist\" "
-"(shuffle albums from artist)."
+"Value identifies whether to shuffle tracks/albums. Allowed values are: \"none"
+"\" (shuffle off), \"tracks\" (shuffle tracks) , \"albums\" (shuffle albums), "
+"\"tracks_artist\" (shuffle tracks from artist), \"albums_artist\" (shuffle "
+"albums from artist)."
 msgstr ""
 
 #: ../data/lollypop.desktop.in.h:1 ../data/lollypop.appdata.xml.in.h:1
@@ -170,28 +173,32 @@ msgstr "Uaktualnianie kolekcji"
 msgid "Unknown"
 msgstr "Nieznany"
 
-#: ../src/container.py:328
+#: ../src/container.py:329
 msgid "Popular albums"
 msgstr "Popularne albumy"
 
-#: ../src/container.py:329
+#: ../src/container.py:330
 msgid "Recent albums"
 msgstr "Ostatnie albumy"
 
-#: ../src/container.py:330 ../src/popmenu.py:321 ../src/popmenu.py:336
+#: ../src/container.py:331 ../src/popmenu.py:321 ../src/popmenu.py:336
 #: ../src/popmenu.py:351
 msgid "Playlists"
 msgstr "Listy odtwarzania"
 
 #: ../src/container.py:332
+msgid "Radios"
+msgstr ""
+
+#: ../src/container.py:334
 msgid "All artists"
 msgstr "Wszyscy wykonawcy"
 
-#: ../src/container.py:334
+#: ../src/container.py:336
 msgid "All albums"
 msgstr "Wszystkie albumy"
 
-#: ../src/container.py:376
+#: ../src/container.py:378
 msgid "Compilations"
 msgstr "Kompilacje"
 
@@ -203,13 +210,13 @@ msgstr "Kompilacja"
 msgid "Many artists"
 msgstr "Wielu wykonawców"
 
-#: ../src/fullscreen.py:75 ../src/fullscreen.py:174 ../src/toolbar.py:273
-#: ../src/toolbar.py:300
+#: ../src/fullscreen.py:75 ../src/fullscreen.py:174 ../src/toolbar.py:280
+#: ../src/toolbar.py:311
 msgid "Pause"
 msgstr "Wstrzymuje odtwarzanie"
 
-#: ../src/fullscreen.py:178 ../src/toolbar.py:237 ../src/toolbar.py:281
-#: ../src/toolbar.py:297 ../data/Toolbar.ui.h:7
+#: ../src/fullscreen.py:178 ../src/toolbar.py:287 ../src/toolbar.py:308
+#: ../data/Toolbar.ui.h:7
 msgid "Play"
 msgstr "Rozpoczyna odtwarzanie"
 
@@ -223,10 +230,14 @@ msgstr "Przechodzi do następnego nagrania"
 
 #. TRANSLATORS: by refers to the artist,
 #. from to the album
-#: ../src/notification.py:94
+#: ../src/notification.py:100
 #, python-format
 msgid "by %s, from %s"
 msgstr "w wykonaniu %s, z albumu %s"
+
+#: ../src/player_radio.py:58
+msgid "Radio"
+msgstr ""
 
 #: ../src/popmenu.py:58
 msgid "Continue playback"
@@ -277,6 +288,14 @@ msgstr "Dodaj do „%s”"
 #: ../src/popmenu.py:319 ../src/popmenu.py:334 ../src/popmenu.py:349
 msgid "Playback"
 msgstr "Odtwarzanie"
+
+#: ../src/popradio.py:69
+msgid "Add"
+msgstr ""
+
+#: ../src/popradio.py:71
+msgid "Modify"
+msgstr ""
 
 #: ../src/search.py:148
 msgid "Search:"
@@ -342,7 +361,9 @@ msgstr "Strona główna Lollypop"
 #. Replace me with your names
 #: ../data/AboutDialog.ui.h:4
 msgid "Cédric Bellegarde <cedric.bellegarde@adishatz.org>"
-msgstr "Cédric Bellegarde <cedric.bellegarde@adishatz.org>\nPiotr Sokół <psokol@jabster.pl>, 2015."
+msgstr ""
+"Cédric Bellegarde <cedric.bellegarde@adishatz.org>\n"
+"Piotr Sokół <psokol@jabster.pl>, 2015."
 
 #: ../data/Appmenu.ui.h:1
 msgid "_Update music"
@@ -380,19 +401,41 @@ msgstr "Potwierdź"
 msgid "New playlist"
 msgstr "Nowa lista odtwarzania"
 
-#: ../data/PlaylistView.ui.h:1
+#: ../data/PlaylistsView.ui.h:1
 msgid "Edit"
 msgstr "Edycja"
 
-#: ../data/PopImages.ui.h:1
-msgid "No cover found..."
+#: ../data/PopRadio.ui.h:1
+#, fuzzy
+msgid "Select a logo  for this radio"
+msgstr "Wybór okładki albumu"
+
+#: ../data/PopRadio.ui.h:2
+#, fuzzy
+msgid "No logo found..."
 msgstr "Nie odnaleziono okładki..."
 
-#: ../data/PopImages.ui.h:2
+#: ../data/PopRadio.ui.h:3 ../data/PopAlbumCovers.ui.h:2
 msgid "Please wait..."
 msgstr "Proszę czekać..."
 
-#: ../data/PopImages.ui.h:3
+#: ../data/PopRadio.ui.h:4
+msgid "Name:"
+msgstr ""
+
+#: ../data/PopRadio.ui.h:5
+msgid "Address:"
+msgstr ""
+
+#: ../data/PopRadio.ui.h:6
+msgid "Delete"
+msgstr ""
+
+#: ../data/PopAlbumCovers.ui.h:1
+msgid "No cover found..."
+msgstr "Nie odnaleziono okładki..."
+
+#: ../data/PopAlbumCovers.ui.h:3
 msgid "Select a cover art for this album"
 msgstr "Wybór okładki albumu"
 

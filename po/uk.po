@@ -1,22 +1,24 @@
 # SOME DESCRIPTIVE TITLE.
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
-# 
+#
 # Translators:
 # Svitozar Cherepii <razotivs@gmail.com>, 2015
 msgid ""
 msgstr ""
 "Project-Id-Version: lollypop\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-04-28 18:57+0200\n"
+"POT-Creation-Date: 2015-05-01 19:35+0200\n"
 "PO-Revision-Date: 2015-04-28 20:12+0000\n"
 "Last-Translator: Cédric Bellegarde <web@adishatz.org>\n"
-"Language-Team: Ukrainian (http://www.transifex.com/projects/p/lollypop/language/uk/)\n"
+"Language-Team: Ukrainian (http://www.transifex.com/projects/p/lollypop/"
+"language/uk/)\n"
+"Language: uk\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Language: uk\n"
-"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n"
+"%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:1
 msgid "Window size"
@@ -73,7 +75,9 @@ msgstr "Версія бази даних"
 #: ../data/org.gnome.Lollypop.gschema.xml.h:14
 msgid ""
 "Reset this value will reset the database, popular albums will be restored"
-msgstr "Скидання цього значення перезавантажить базу даних, популярні альбоми будуть відновлені"
+msgstr ""
+"Скидання цього значення перезавантажить базу даних, популярні альбоми будуть "
+"відновлені"
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:15
 msgid "Replay gain value in db"
@@ -103,7 +107,10 @@ msgstr "Примусово використовувати декорації в�
 msgid ""
 "If set to true CSD headerbars will be used, even if the detected desktop "
 "environment is not amongst those that are expected to support it."
-msgstr "Якщо встановлено, заголовки з декораціями на стороні клієнта будуть використані, навіть якщо оточення робочого стола не з тих, від яких слід чекати їх підтримки."
+msgstr ""
+"Якщо встановлено, заголовки з декораціями на стороні клієнта будуть "
+"використані, навіть якщо оточення робочого стола не з тих, від яких слід "
+"чекати їх підтримки."
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:22 ../data/SettingsDialog.ui.h:4
 msgid "Continue playback when closed"
@@ -133,15 +140,18 @@ msgstr "ВНУТРІШНЬО"
 msgid "Shuffle mode"
 msgstr "Режим тасування"
 
-#. Translators: Don't translate allowed values, just the description in the
-#. brackets
+#. Translators: Don't translate allowed values, just the description in the brackets
 #: ../data/org.gnome.Lollypop.gschema.xml.h:30
 msgid ""
-"Value identifies whether to shuffle tracks/albums. Allowed values are: "
-"\"none\" (shuffle off), \"tracks\" (shuffle tracks) , \"albums\" (shuffle "
-"albums), \"tracks_artist\" (shuffle tracks from artist), \"albums_artist\" "
-"(shuffle albums from artist)."
-msgstr "Визначає чи тасувати треки/альбоми. Дозволені значення: \"none\" (без тасування), \"tracks\" (тасувати треки), \"albums\" (тасувати альбоми), \"tracks_artist\" (тасувати треки від виконавця), \"albums_artist\" (тасувати альбоми від виконавця)"
+"Value identifies whether to shuffle tracks/albums. Allowed values are: \"none"
+"\" (shuffle off), \"tracks\" (shuffle tracks) , \"albums\" (shuffle albums), "
+"\"tracks_artist\" (shuffle tracks from artist), \"albums_artist\" (shuffle "
+"albums from artist)."
+msgstr ""
+"Визначає чи тасувати треки/альбоми. Дозволені значення: \"none\" (без "
+"тасування), \"tracks\" (тасувати треки), \"albums\" (тасувати альбоми), "
+"\"tracks_artist\" (тасувати треки від виконавця), \"albums_artist"
+"\" (тасувати альбоми від виконавця)"
 
 #: ../data/lollypop.desktop.in.h:1 ../data/lollypop.appdata.xml.in.h:1
 msgid "Lollypop"
@@ -170,28 +180,32 @@ msgstr ""
 msgid "Unknown"
 msgstr "Невідомий"
 
-#: ../src/container.py:328
+#: ../src/container.py:329
 msgid "Popular albums"
 msgstr "Популярні альбоми"
 
-#: ../src/container.py:329
+#: ../src/container.py:330
 msgid "Recent albums"
 msgstr "Недавні альбоми"
 
-#: ../src/container.py:330 ../src/popmenu.py:321 ../src/popmenu.py:336
+#: ../src/container.py:331 ../src/popmenu.py:321 ../src/popmenu.py:336
 #: ../src/popmenu.py:351
 msgid "Playlists"
 msgstr "Список відтворення"
 
 #: ../src/container.py:332
+msgid "Radios"
+msgstr ""
+
+#: ../src/container.py:334
 msgid "All artists"
 msgstr "Всі виконавці"
 
-#: ../src/container.py:334
+#: ../src/container.py:336
 msgid "All albums"
 msgstr "Всі альбоми"
 
-#: ../src/container.py:376
+#: ../src/container.py:378
 msgid "Compilations"
 msgstr "Збірки"
 
@@ -203,13 +217,13 @@ msgstr "Збірка"
 msgid "Many artists"
 msgstr "Багато виконавців"
 
-#: ../src/fullscreen.py:75 ../src/fullscreen.py:174 ../src/toolbar.py:273
-#: ../src/toolbar.py:300
+#: ../src/fullscreen.py:75 ../src/fullscreen.py:174 ../src/toolbar.py:280
+#: ../src/toolbar.py:311
 msgid "Pause"
 msgstr "Призупинити"
 
-#: ../src/fullscreen.py:178 ../src/toolbar.py:237 ../src/toolbar.py:281
-#: ../src/toolbar.py:297 ../data/Toolbar.ui.h:7
+#: ../src/fullscreen.py:178 ../src/toolbar.py:287 ../src/toolbar.py:308
+#: ../data/Toolbar.ui.h:7
 msgid "Play"
 msgstr "Відтворити"
 
@@ -223,10 +237,14 @@ msgstr "Наступний"
 
 #. TRANSLATORS: by refers to the artist,
 #. from to the album
-#: ../src/notification.py:94
+#: ../src/notification.py:100
 #, python-format
 msgid "by %s, from %s"
 msgstr "у виконанні %s, з %s"
+
+#: ../src/player_radio.py:58
+msgid "Radio"
+msgstr ""
 
 #: ../src/popmenu.py:58
 msgid "Continue playback"
@@ -278,6 +296,14 @@ msgstr "Додати до \"%s\""
 msgid "Playback"
 msgstr "Відтворення"
 
+#: ../src/popradio.py:69
+msgid "Add"
+msgstr ""
+
+#: ../src/popradio.py:71
+msgid "Modify"
+msgstr ""
+
 #: ../src/search.py:148
 msgid "Search:"
 msgstr "Пошук:"
@@ -312,7 +338,8 @@ msgstr "Диск %s"
 
 #: ../src/widgets_device.py:401
 msgid "Unknown error while syncing, try to reboot your device"
-msgstr "Невідома помилка при синхронізації, спробуйте перезавантажити ваш пристрій"
+msgstr ""
+"Невідома помилка при синхронізації, спробуйте перезавантажити ваш пристрій"
 
 #: ../src/widgets_device.py:408
 msgid "No free space available on device"
@@ -380,19 +407,41 @@ msgstr "Підтвердити"
 msgid "New playlist"
 msgstr "Новий список відтворення"
 
-#: ../data/PlaylistView.ui.h:1
+#: ../data/PlaylistsView.ui.h:1
 msgid "Edit"
 msgstr "Редагувати"
 
-#: ../data/PopImages.ui.h:1
-msgid "No cover found..."
+#: ../data/PopRadio.ui.h:1
+#, fuzzy
+msgid "Select a logo  for this radio"
+msgstr "Виберіть обгортку для цього альбому"
+
+#: ../data/PopRadio.ui.h:2
+#, fuzzy
+msgid "No logo found..."
 msgstr "Не знайдено жодної оброртки"
 
-#: ../data/PopImages.ui.h:2
+#: ../data/PopRadio.ui.h:3 ../data/PopAlbumCovers.ui.h:2
 msgid "Please wait..."
 msgstr "Будь ласка зачекайте..."
 
-#: ../data/PopImages.ui.h:3
+#: ../data/PopRadio.ui.h:4
+msgid "Name:"
+msgstr ""
+
+#: ../data/PopRadio.ui.h:5
+msgid "Address:"
+msgstr ""
+
+#: ../data/PopRadio.ui.h:6
+msgid "Delete"
+msgstr ""
+
+#: ../data/PopAlbumCovers.ui.h:1
+msgid "No cover found..."
+msgstr "Не знайдено жодної оброртки"
+
+#: ../data/PopAlbumCovers.ui.h:3
 msgid "Select a cover art for this album"
 msgstr "Виберіть обгортку для цього альбому"
 
@@ -512,4 +561,6 @@ msgstr "Помилка"
 msgid ""
 "Lollypop isn't designed to work without an unicode locale.\n"
 "Please fix your system."
-msgstr "Lollypop не призначено для роботи без Юнікод локалі.\nБудь ласка поправте вашу систему."
+msgstr ""
+"Lollypop не призначено для роботи без Юнікод локалі.\n"
+"Будь ласка поправте вашу систему."

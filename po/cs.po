@@ -1,7 +1,7 @@
 # SOME DESCRIPTIVE TITLE.
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
-# 
+#
 # Translators:
 # fri, 2014
 # fri, 2015
@@ -9,14 +9,15 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lollypop\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-04-28 18:57+0200\n"
+"POT-Creation-Date: 2015-05-01 19:35+0200\n"
 "PO-Revision-Date: 2015-04-28 20:53+0000\n"
 "Last-Translator: fri\n"
-"Language-Team: Czech (http://www.transifex.com/projects/p/lollypop/language/cs/)\n"
+"Language-Team: Czech (http://www.transifex.com/projects/p/lollypop/language/"
+"cs/)\n"
+"Language: cs\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Language: cs\n"
 "Plural-Forms: nplurals=3; plural=(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2;\n"
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:1
@@ -74,7 +75,8 @@ msgstr "Verze databáze"
 #: ../data/org.gnome.Lollypop.gschema.xml.h:14
 msgid ""
 "Reset this value will reset the database, popular albums will be restored"
-msgstr "Vynulování této hodnoty vynuluje databázi, oblíbená alba budou obnovena"
+msgstr ""
+"Vynulování této hodnoty vynuluje databázi, oblíbená alba budou obnovena"
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:15
 msgid "Replay gain value in db"
@@ -104,7 +106,9 @@ msgstr "Vynutit používání okenních dekorací na straně klienta (hlavička)
 msgid ""
 "If set to true CSD headerbars will be used, even if the detected desktop "
 "environment is not amongst those that are expected to support it."
-msgstr "Je-li nastaveno na ano, budou se používat hlavičky CSD, i když rozpoznané pracovní prostředí nebude mezi těmi, u nichž se očekává, že toto podporují."
+msgstr ""
+"Je-li nastaveno na ano, budou se používat hlavičky CSD, i když rozpoznané "
+"pracovní prostředí nebude mezi těmi, u nichž se očekává, že toto podporují."
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:22 ../data/SettingsDialog.ui.h:4
 msgid "Continue playback when closed"
@@ -134,15 +138,18 @@ msgstr "VNITŘNÍ"
 msgid "Shuffle mode"
 msgstr "Režim míchání"
 
-#. Translators: Don't translate allowed values, just the description in the
-#. brackets
+#. Translators: Don't translate allowed values, just the description in the brackets
 #: ../data/org.gnome.Lollypop.gschema.xml.h:30
 msgid ""
-"Value identifies whether to shuffle tracks/albums. Allowed values are: "
-"\"none\" (shuffle off), \"tracks\" (shuffle tracks) , \"albums\" (shuffle "
-"albums), \"tracks_artist\" (shuffle tracks from artist), \"albums_artist\" "
-"(shuffle albums from artist)."
-msgstr "Hodnota určuje, zda se mají skladby/alba zamíchat. Jsou povoleny hodnoty: \"žádné\" (míchání vypnuto), \"skladby\" (zamíchat skladby), \"alba\" (zamíchat alba), \"tracks_artist\" (zamíchat skladby od umělce), \"albums_artist\" (zamíchat alba od umělce)."
+"Value identifies whether to shuffle tracks/albums. Allowed values are: \"none"
+"\" (shuffle off), \"tracks\" (shuffle tracks) , \"albums\" (shuffle albums), "
+"\"tracks_artist\" (shuffle tracks from artist), \"albums_artist\" (shuffle "
+"albums from artist)."
+msgstr ""
+"Hodnota určuje, zda se mají skladby/alba zamíchat. Jsou povoleny hodnoty: "
+"\"žádné\" (míchání vypnuto), \"skladby\" (zamíchat skladby), \"alba"
+"\" (zamíchat alba), \"tracks_artist\" (zamíchat skladby od umělce), "
+"\"albums_artist\" (zamíchat alba od umělce)."
 
 #: ../data/lollypop.desktop.in.h:1 ../data/lollypop.appdata.xml.in.h:1
 msgid "Lollypop"
@@ -171,28 +178,32 @@ msgstr "Vaše hudba se aktualizuje"
 msgid "Unknown"
 msgstr "Neznámý"
 
-#: ../src/container.py:328
+#: ../src/container.py:329
 msgid "Popular albums"
 msgstr "Oblíbená alba"
 
-#: ../src/container.py:329
+#: ../src/container.py:330
 msgid "Recent albums"
 msgstr "Nedávná alba"
 
-#: ../src/container.py:330 ../src/popmenu.py:321 ../src/popmenu.py:336
+#: ../src/container.py:331 ../src/popmenu.py:321 ../src/popmenu.py:336
 #: ../src/popmenu.py:351
 msgid "Playlists"
 msgstr "Seznamy skladeb"
 
 #: ../src/container.py:332
+msgid "Radios"
+msgstr ""
+
+#: ../src/container.py:334
 msgid "All artists"
 msgstr "Všichni umělci"
 
-#: ../src/container.py:334
+#: ../src/container.py:336
 msgid "All albums"
 msgstr "Všechna alba"
 
-#: ../src/container.py:376
+#: ../src/container.py:378
 msgid "Compilations"
 msgstr "Kompilace"
 
@@ -204,13 +215,13 @@ msgstr "Kompilace"
 msgid "Many artists"
 msgstr "Mnoho umělců"
 
-#: ../src/fullscreen.py:75 ../src/fullscreen.py:174 ../src/toolbar.py:273
-#: ../src/toolbar.py:300
+#: ../src/fullscreen.py:75 ../src/fullscreen.py:174 ../src/toolbar.py:280
+#: ../src/toolbar.py:311
 msgid "Pause"
 msgstr "Pozastavit"
 
-#: ../src/fullscreen.py:178 ../src/toolbar.py:237 ../src/toolbar.py:281
-#: ../src/toolbar.py:297 ../data/Toolbar.ui.h:7
+#: ../src/fullscreen.py:178 ../src/toolbar.py:287 ../src/toolbar.py:308
+#: ../data/Toolbar.ui.h:7
 msgid "Play"
 msgstr "Přehrát"
 
@@ -224,10 +235,14 @@ msgstr "Další"
 
 #. TRANSLATORS: by refers to the artist,
 #. from to the album
-#: ../src/notification.py:94
+#: ../src/notification.py:100
 #, python-format
 msgid "by %s, from %s"
 msgstr "od %s, na %s"
+
+#: ../src/player_radio.py:58
+msgid "Radio"
+msgstr ""
 
 #: ../src/popmenu.py:58
 msgid "Continue playback"
@@ -279,6 +294,14 @@ msgstr "Přidat do \"%s\""
 msgid "Playback"
 msgstr "Přehrávání"
 
+#: ../src/popradio.py:69
+msgid "Add"
+msgstr ""
+
+#: ../src/popradio.py:71
+msgid "Modify"
+msgstr ""
+
 #: ../src/search.py:148
 msgid "Search:"
 msgstr "Hledání:"
@@ -313,7 +336,8 @@ msgstr "Disk %s"
 
 #: ../src/widgets_device.py:401
 msgid "Unknown error while syncing, try to reboot your device"
-msgstr "Při seřizování nastala neznámá chyba. pokuste se své zařízení zavést znovu"
+msgstr ""
+"Při seřizování nastala neznámá chyba. pokuste se své zařízení zavést znovu"
 
 #: ../src/widgets_device.py:408
 msgid "No free space available on device"
@@ -381,19 +405,41 @@ msgstr "Potvrdit"
 msgid "New playlist"
 msgstr "Nový seznam skladeb"
 
-#: ../data/PlaylistView.ui.h:1
+#: ../data/PlaylistsView.ui.h:1
 msgid "Edit"
 msgstr "Upravit"
 
-#: ../data/PopImages.ui.h:1
-msgid "No cover found..."
+#: ../data/PopRadio.ui.h:1
+#, fuzzy
+msgid "Select a logo  for this radio"
+msgstr "Vybrat obal pro toto album"
+
+#: ../data/PopRadio.ui.h:2
+#, fuzzy
+msgid "No logo found..."
 msgstr "Nenalezen žádný obal..."
 
-#: ../data/PopImages.ui.h:2
+#: ../data/PopRadio.ui.h:3 ../data/PopAlbumCovers.ui.h:2
 msgid "Please wait..."
 msgstr "Počkejte, prosím..."
 
-#: ../data/PopImages.ui.h:3
+#: ../data/PopRadio.ui.h:4
+msgid "Name:"
+msgstr ""
+
+#: ../data/PopRadio.ui.h:5
+msgid "Address:"
+msgstr ""
+
+#: ../data/PopRadio.ui.h:6
+msgid "Delete"
+msgstr ""
+
+#: ../data/PopAlbumCovers.ui.h:1
+msgid "No cover found..."
+msgstr "Nenalezen žádný obal..."
+
+#: ../data/PopAlbumCovers.ui.h:3
 msgid "Select a cover art for this album"
 msgstr "Vybrat obal pro toto album"
 
@@ -513,4 +559,7 @@ msgstr "Chyba"
 msgid ""
 "Lollypop isn't designed to work without an unicode locale.\n"
 "Please fix your system."
-msgstr "Lollypop není navržen k práci bez toho, že by bylo jazykové nastavení nastaveno na unicode.\nUpravte, prosím, nastavení svého systému."
+msgstr ""
+"Lollypop není navržen k práci bez toho, že by bylo jazykové nastavení "
+"nastaveno na unicode.\n"
+"Upravte, prosím, nastavení svého systému."

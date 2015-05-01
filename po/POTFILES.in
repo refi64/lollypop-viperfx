@@ -23,13 +23,15 @@ src/player_bin.py
 src/player_linear.py
 src/player.py
 src/player_queue.py
+src/player_radio.py
 src/player_rg.py
 src/player_shuffle.py
 src/player_userplaylist.py
 src/playlists.py
+src/pop_album_covers.py
 src/popalbums.py
-src/popimages.py
 src/popmenu.py
+src/popradio.py
 src/queue.py
 src/search.py
 src/selectionlist.py
@@ -37,7 +39,7 @@ src/settings.py
 src/tagreader.py
 src/toolbar.py
 src/utils.py
-src/view_album.py
+src/view_albums.py
 src/view_container.py
 src/view_device.py
 src/view_playlists.py
@@ -60,8 +62,9 @@ src/window.py
 [type: gettext/glade]data/PlaylistEditWidget.ui
 [type: gettext/glade]data/PlaylistsManagerView.ui
 [type: gettext/glade]data/PlaylistsManagerWidget.ui
-[type: gettext/glade]data/PlaylistView.ui
-[type: gettext/glade]data/PopImages.ui
+[type: gettext/glade]data/PlaylistsView.ui
+[type: gettext/glade]data/PopRadio.ui
+[type: gettext/glade]data/PopAlbumCovers.ui
 [type: gettext/glade]data/QueueWidget.ui
 [type: gettext/glade]data/SearchRow.ui
 [type: gettext/glade]data/SettingsDialog.ui

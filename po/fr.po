@@ -1,7 +1,7 @@
 # SOME DESCRIPTIVE TITLE.
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
-# 
+#
 # Translators:
 # Cédric Bellegarde <web@adishatz.org>, 2015
 # Cédric Bellegarde <web@adishatz.org>, 2015
@@ -9,14 +9,15 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lollypop\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-04-28 18:57+0200\n"
+"POT-Creation-Date: 2015-05-01 19:35+0200\n"
 "PO-Revision-Date: 2015-04-28 20:22+0000\n"
 "Last-Translator: Cédric Bellegarde <web@adishatz.org>\n"
-"Language-Team: French (http://www.transifex.com/projects/p/lollypop/language/fr/)\n"
+"Language-Team: French (http://www.transifex.com/projects/p/lollypop/language/"
+"fr/)\n"
+"Language: fr\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Language: fr\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:1
@@ -74,7 +75,9 @@ msgstr "Version de la base de données"
 #: ../data/org.gnome.Lollypop.gschema.xml.h:14
 msgid ""
 "Reset this value will reset the database, popular albums will be restored"
-msgstr "Remettre cette valeur à zéro réinitialisera votre base de donnee, les albums populaires seront restaurés"
+msgstr ""
+"Remettre cette valeur à zéro réinitialisera votre base de donnee, les albums "
+"populaires seront restaurés"
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:15
 msgid "Replay gain value in db"
@@ -104,7 +107,9 @@ msgstr "Force l'utilisation des décorations coté client"
 msgid ""
 "If set to true CSD headerbars will be used, even if the detected desktop "
 "environment is not amongst those that are expected to support it."
-msgstr "Si vrai, utilise les décorations coté client même si l'environnement de bureau n'est pas censé les supporter"
+msgstr ""
+"Si vrai, utilise les décorations coté client même si l'environnement de "
+"bureau n'est pas censé les supporter"
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:22 ../data/SettingsDialog.ui.h:4
 msgid "Continue playback when closed"
@@ -134,15 +139,18 @@ msgstr "INTERNE"
 msgid "Shuffle mode"
 msgstr "Mode de lecture aléatoire"
 
-#. Translators: Don't translate allowed values, just the description in the
-#. brackets
+#. Translators: Don't translate allowed values, just the description in the brackets
 #: ../data/org.gnome.Lollypop.gschema.xml.h:30
 msgid ""
-"Value identifies whether to shuffle tracks/albums. Allowed values are: "
-"\"none\" (shuffle off), \"tracks\" (shuffle tracks) , \"albums\" (shuffle "
-"albums), \"tracks_artist\" (shuffle tracks from artist), \"albums_artist\" "
-"(shuffle albums from artist)."
-msgstr "La valeur définie si les morceaux/albums doivent être mélangés. Les valeurs valides sont: \"none\" (ne pas mélanger), \"tracks\" (mélanger les morceaux), \"albums\" (mélanger les albums), \"tracks_artist\" (Mélanger les morceaux de l'artiste), \"tracks_album\" (mélanger les albums de l'artiste)."
+"Value identifies whether to shuffle tracks/albums. Allowed values are: \"none"
+"\" (shuffle off), \"tracks\" (shuffle tracks) , \"albums\" (shuffle albums), "
+"\"tracks_artist\" (shuffle tracks from artist), \"albums_artist\" (shuffle "
+"albums from artist)."
+msgstr ""
+"La valeur définie si les morceaux/albums doivent être mélangés. Les valeurs "
+"valides sont: \"none\" (ne pas mélanger), \"tracks\" (mélanger les "
+"morceaux), \"albums\" (mélanger les albums), \"tracks_artist\" (Mélanger les "
+"morceaux de l'artiste), \"tracks_album\" (mélanger les albums de l'artiste)."
 
 #: ../data/lollypop.desktop.in.h:1 ../data/lollypop.appdata.xml.in.h:1
 msgid "Lollypop"
@@ -171,28 +179,32 @@ msgstr "Mise à jour de votre musique"
 msgid "Unknown"
 msgstr "Inconnu"
 
-#: ../src/container.py:328
+#: ../src/container.py:329
 msgid "Popular albums"
 msgstr "Albums populaires"
 
-#: ../src/container.py:329
+#: ../src/container.py:330
 msgid "Recent albums"
 msgstr "Albums récents"
 
-#: ../src/container.py:330 ../src/popmenu.py:321 ../src/popmenu.py:336
+#: ../src/container.py:331 ../src/popmenu.py:321 ../src/popmenu.py:336
 #: ../src/popmenu.py:351
 msgid "Playlists"
 msgstr "Listes de lecture"
 
 #: ../src/container.py:332
+msgid "Radios"
+msgstr ""
+
+#: ../src/container.py:334
 msgid "All artists"
 msgstr "Tous les artistes"
 
-#: ../src/container.py:334
+#: ../src/container.py:336
 msgid "All albums"
 msgstr "Tous les albums"
 
-#: ../src/container.py:376
+#: ../src/container.py:378
 msgid "Compilations"
 msgstr "Compilations"
 
@@ -204,13 +216,13 @@ msgstr "Compilation"
 msgid "Many artists"
 msgstr "Plusieurs artistes"
 
-#: ../src/fullscreen.py:75 ../src/fullscreen.py:174 ../src/toolbar.py:273
-#: ../src/toolbar.py:300
+#: ../src/fullscreen.py:75 ../src/fullscreen.py:174 ../src/toolbar.py:280
+#: ../src/toolbar.py:311
 msgid "Pause"
 msgstr "Pause"
 
-#: ../src/fullscreen.py:178 ../src/toolbar.py:237 ../src/toolbar.py:281
-#: ../src/toolbar.py:297 ../data/Toolbar.ui.h:7
+#: ../src/fullscreen.py:178 ../src/toolbar.py:287 ../src/toolbar.py:308
+#: ../data/Toolbar.ui.h:7
 msgid "Play"
 msgstr "Lecture"
 
@@ -224,10 +236,14 @@ msgstr "Suivant"
 
 #. TRANSLATORS: by refers to the artist,
 #. from to the album
-#: ../src/notification.py:94
+#: ../src/notification.py:100
 #, python-format
 msgid "by %s, from %s"
 msgstr "par %s, sur %s"
+
+#: ../src/player_radio.py:58
+msgid "Radio"
+msgstr ""
 
 #: ../src/popmenu.py:58
 msgid "Continue playback"
@@ -279,6 +295,14 @@ msgstr "Ajouter à \"%s\""
 msgid "Playback"
 msgstr "Lecture"
 
+#: ../src/popradio.py:69
+msgid "Add"
+msgstr ""
+
+#: ../src/popradio.py:71
+msgid "Modify"
+msgstr ""
+
 #: ../src/search.py:148
 msgid "Search:"
 msgstr "Recherche:"
@@ -313,7 +337,9 @@ msgstr "Disque %s"
 
 #: ../src/widgets_device.py:401
 msgid "Unknown error while syncing, try to reboot your device"
-msgstr "Erreur inconnue lors de la synchronisation, essayez de redémarrer votre appareil"
+msgstr ""
+"Erreur inconnue lors de la synchronisation, essayez de redémarrer votre "
+"appareil"
 
 #: ../src/widgets_device.py:408
 msgid "No free space available on device"
@@ -381,19 +407,41 @@ msgstr "Confirmer"
 msgid "New playlist"
 msgstr "Nouvelle liste de lecture"
 
-#: ../data/PlaylistView.ui.h:1
+#: ../data/PlaylistsView.ui.h:1
 msgid "Edit"
 msgstr "Editer"
 
-#: ../data/PopImages.ui.h:1
-msgid "No cover found..."
+#: ../data/PopRadio.ui.h:1
+#, fuzzy
+msgid "Select a logo  for this radio"
+msgstr "Sélectionnez une pochette pour cet album"
+
+#: ../data/PopRadio.ui.h:2
+#, fuzzy
+msgid "No logo found..."
 msgstr "Aucune pochette trouvée..."
 
-#: ../data/PopImages.ui.h:2
+#: ../data/PopRadio.ui.h:3 ../data/PopAlbumCovers.ui.h:2
 msgid "Please wait..."
 msgstr "Veuillez patienter..."
 
-#: ../data/PopImages.ui.h:3
+#: ../data/PopRadio.ui.h:4
+msgid "Name:"
+msgstr ""
+
+#: ../data/PopRadio.ui.h:5
+msgid "Address:"
+msgstr ""
+
+#: ../data/PopRadio.ui.h:6
+msgid "Delete"
+msgstr ""
+
+#: ../data/PopAlbumCovers.ui.h:1
+msgid "No cover found..."
+msgstr "Aucune pochette trouvée..."
+
+#: ../data/PopAlbumCovers.ui.h:3
 msgid "Select a cover art for this album"
 msgstr "Sélectionnez une pochette pour cet album"
 
@@ -513,4 +561,6 @@ msgstr "Erreur"
 msgid ""
 "Lollypop isn't designed to work without an unicode locale.\n"
 "Please fix your system."
-msgstr "Lollypop ne supporte pas les systèmes non unicode.\nMerci de corriger votre système"
+msgstr ""
+"Lollypop ne supporte pas les systèmes non unicode.\n"
+"Merci de corriger votre système"

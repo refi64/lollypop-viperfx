@@ -18,7 +18,7 @@ from _thread import start_new_thread
 from lollypop.view import View
 from lollypop.widgets_radio import RadioWidget
 from lollypop.playlists import RadiosManager
-from lollypop.pop_radio import PopRadio
+from lollypop.popradio import PopRadio
 from lollypop.define import Objects
 
 # Radios view
