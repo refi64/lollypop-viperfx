@@ -118,7 +118,7 @@ class AlbumSimpleWidget(AlbumWidget):
         self.set_cover()
 
     def do_get_preferred_width(self):
-        return (ArtSize.BIG+ArtSize.BORDER*2, ArtSize.BIG+ArtSize.BORDER*2)
+        return (ArtSize.BIG+ArtSize.BORDER+10, ArtSize.BIG+ArtSize.BORDER+10)
 
     """
         Return album id for widget
