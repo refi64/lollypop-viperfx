@@ -44,6 +44,9 @@ class RadioWidget(AlbumWidget):
         self.add(builder.get_object('widget'))
         self.set_cover()
 
+    def do_get_preferred_width(self):
+        return (ArtSize.BIG+10, ArtSize.BIG+10)
+
     """
         Set radio name
         @param name as string
