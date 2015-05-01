@@ -151,12 +151,35 @@
       </packing>
     </child>
     <child>
-      <object class="GtkButton" id="btn">
+      <object class="GtkGrid" id="grid1">
         <property name="visible">True</property>
-        <property name="can_focus">True</property>
-        <property name="receives_default">True</property>
+        <property name="can_focus">False</property>
         <property name="halign">center</property>
-        <signal name="clicked" handler="_on_btn_clicked" swapped="no"/>
+        <property name="column_spacing">10</property>
+        <child>
+          <object class="GtkButton" id="btn_add_modify">
+            <property name="visible">True</property>
+            <property name="can_focus">True</property>
+            <property name="receives_default">True</property>
+            <signal name="clicked" handler="_on_btn_add_modify_clicked" swapped="no"/>
+          </object>
+          <packing>
+            <property name="left_attach">0</property>
+            <property name="top_attach">0</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkButton" id="btn_delete">
+            <property name="label" translatable="yes">Delete</property>
+            <property name="can_focus">True</property>
+            <property name="receives_default">True</property>
+            <signal name="clicked" handler="_on_btn_delete_clicked" swapped="no"/>
+          </object>
+          <packing>
+            <property name="left_attach">1</property>
+            <property name="top_attach">0</property>
+          </packing>
+        </child>
       </object>
       <packing>
         <property name="left_attach">0</property>

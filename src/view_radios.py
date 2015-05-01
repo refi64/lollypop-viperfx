@@ -133,6 +133,7 @@ class RadiosView(View):
         currents = []
         new_name = None
         old_widget = None
+        old_child = None
 
         # Get radios name
         for (i, name) in manager.get():
@@ -143,6 +144,7 @@ class RadiosView(View):
             widget = child.get_children()[0]
             if widget.get_name() not in radios_name:
                 old_widget = widget
+                old_child = child
             else:
                 currents.append(widget.get_name())
 
@@ -162,6 +164,10 @@ class RadiosView(View):
                     old_widget.set_uri(uris[0])
             else:
                 self._add_radios([new_name])
+        # Delete widget
+        elif old_widget is not None:
+            self._radiobox.remove(old_child)
+            old_widget.destroy()
 
     """
         Update radio logo

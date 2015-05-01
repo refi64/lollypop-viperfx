@@ -65,9 +65,10 @@ class PopRadio(Gtk.Popover):
         self.add(self._stack)
 
         if self._name == '':
-            builder.get_object('btn').set_label(_("Add"))
+            builder.get_object('btn_add_modify').set_label(_("Add"))
         else:
-            builder.get_object('btn').set_label(_("Modify"))
+            builder.get_object('btn_add_modify').set_label(_("Modify"))
+            builder.get_object('btn_delete').show()
             self._name_entry.set_text(self._name)
             uris = self._radios_manager.get_tracks(self._name)
             if len(uris) > 0:
@@ -162,7 +163,7 @@ class PopRadio(Gtk.Popover):
         Add/Modify a radio
         @param widget as Gtk.Widget
     """
-    def _on_btn_clicked(self, widget):
+    def _on_btn_add_modify_clicked(self, widget):
         uri = self._uri_entry.get_text()
         new_name = self._name_entry.get_text()
         rename = self._name != '' and self._name != new_name
@@ -178,6 +179,14 @@ class PopRadio(Gtk.Popover):
             self._name = new_name
             self._populate_threaded()
             self.set_size_request(700, 400)
+
+    """
+        Delete a radio
+        @param widget as Gtk.Widget
+    """
+    def _on_btn_delete_clicked(self, widget):
+        if self._name != '':
+            self._radios_manager.delete(self._name)
 
     """
         Use pixbuf as cover
