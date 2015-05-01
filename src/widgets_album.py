@@ -388,11 +388,9 @@ class AlbumDetailedWidget(AlbumWidget):
         @param: data as unused
     """
     def _show_web_art(self, widget, data):
-        artist = Objects.artists.get_name(self._artist_id)
-        album = Objects.albums.get_name(self._album_id)
-        popover = PopAlbumCovers(self._album_id)
+        popover = PopAlbumCovers(self._artist_id, self._album_id)
         popover.set_relative_to(widget)
-        popover.populate(artist + " " + album)
+        popover.populate()
         popover.show()
 
     """

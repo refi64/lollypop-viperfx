@@ -14,6 +14,7 @@
 # This is global object initialised at lollypop start
 # member init order is important!
 
+GOOGLE_INC = 8
 
 class Objects_:
     settings = None

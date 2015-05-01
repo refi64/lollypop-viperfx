@@ -20,7 +20,7 @@ from _thread import start_new_thread
 from gettext import gettext as _
 
 from lollypop.playlists import RadiosManager
-from lollypop.define import Objects, ArtSize
+from lollypop.define import Objects, ArtSize, GOOGLE_INC
 from lollypop.view_container import ViewContainer
 
 # Show a popover with radio logos from the web
@@ -34,6 +34,7 @@ class PopRadio(Gtk.Popover):
         Gtk.Popover.__init__(self)
         self._name = name
         self._radios_manager = radios_manager
+        self._start = 0
 
         self._stack = ViewContainer(1000)
         self._stack.show()
@@ -104,8 +105,10 @@ class PopRadio(Gtk.Popover):
         @thread safe
     """
     def _populate(self):
-        self._urls = Objects.art.get_google_arts(self._name+"+logo+radio")
+        self._urls = Objects.art.get_google_arts(self._name+"+logo+radio",
+                                                 self._start)
         if self._urls:
+            self._start += GOOGLE_INC
             self._add_pixbufs()
         else:
             GLib.idle_add(self._show_not_found)
@@ -128,13 +131,16 @@ class PopRadio(Gtk.Popover):
                 GLib.idle_add(self._add_pixbuf, stream)
             if self._thread:
                 self._add_pixbufs()
+        else:
+            self._populate_threaded()
 
     """
-        Show not found message
+        Show not found message if view empty
     """
     def _show_not_found(self):
-        self._stack.set_visible_child(self._not_found)
-        self._stack.clean_old_views(self._not_found)
+        if len(self._view.get_children()) == 0:
+            self._stack.set_visible_child(self._not_found)
+            self._stack.clean_old_views(self._not_found)
 
     """
         Add stream to the view

@@ -26,7 +26,7 @@ import urllib.request
 import urllib.parse
 from math import pi
 
-from lollypop.define import Objects, ArtSize
+from lollypop.define import Objects, ArtSize, GOOGLE_INC
 
 
 # Manage album's arts
@@ -306,14 +306,17 @@ class AlbumArt:
     """
         Get arts on google image corresponding to search
         @param search words as string
+        @param start page
         @return [urls as string]
     """
-    def get_google_arts(self, search):
+    def get_google_arts(self, search, start=0):
         try:
             response = urllib.request.urlopen("https://ajax.googleapis.com/"
                                               "ajax/services/search/images"
-                                              "?&q=%s&v=1.0&start=0&rsz=8" %
-                                              urllib.parse.quote(search))
+                                              "?&q=%s&v=1.0&start=%s&rsz=%s" %
+                                              (urllib.parse.quote(search),
+                                               start,
+                                               GOOGLE_INC))
         except Exception as e:
             print(e)
             return None
@@ -321,10 +324,13 @@ class AlbumArt:
         data = response.read()
         decode = json.loads(data.decode("utf-8"))
         urls = []
-        if not decode:
-            return None
-        for item in decode['responseData']['results']:
-            urls.append(item['url'])
+        if decode is None:
+            return urls
+        try:
+            for item in decode['responseData']['results']:
+                urls.append(item['url'])
+        except:
+            pass
 
         return urls
 
