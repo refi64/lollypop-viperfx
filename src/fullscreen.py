@@ -114,11 +114,17 @@ class FullScreen(Gtk.Window):
             if Objects.player.current.id == Navigation.RADIOS:
                 self._prev_btn.set_sensitive(False)
                 self._next_btn.set_sensitive(False)
+                self._timelabel.hide()
+                self._total_time_label.hide()
+                self._progress.hide()
                 art = Objects.art.get_radio(player.current.artist,
                                             ArtSize.MONSTER)
             else:
                 self._prev_btn.set_sensitive(True)
                 self._next_btn.set_sensitive(True)
+                self._timelabel.show()
+                self._total_time_label.show()
+                self._progress.show()
                 art = Objects.art.get(player.current.album_id,
                                       ArtSize.MONSTER)
             if art:
@@ -218,7 +224,7 @@ class FullScreen(Gtk.Window):
         @param value as int
     """
     def _update_position(self, value=None):
-        if not self._seeking:
+        if not self._seeking and self._progress.is_visible():
             if value is None:
                 value = Objects.player.get_position_in_track()/1000000
             self._progress.set_value(value)
