@@ -33,15 +33,15 @@ class BinPlayer(ReplayGainPlayer, BasePlayer):
         self._playbin = Gst.ElementFactory.make('playbin', 'player')
         flags = self._playbin.get_property("flags")
         flags &= ~GstPlayFlags.GST_PLAY_FLAG_VIDEO
-        self._playbin.set_property("flags", flags)
+        self._playbin.set_property('flags', flags)
         ReplayGainPlayer.__init__(self, self._playbin)
-        self._playbin.connect("about-to-finish",
-        self._on_stream_about_to_finish)
-        bus = self._playbin.get_bus()
-        bus.add_signal_watch()
-        bus.connect('message::error', self._on_bus_error)
-        bus.connect('message::eos', self._on_bus_eos)
-        bus.connect('message::stream-start', self._on_stream_start)
+        self._playbin.connect('about-to-finish',
+                              self._on_stream_about_to_finish)
+        self._bus = self._playbin.get_bus()
+        self._bus.add_signal_watch()
+        self._bus.connect('message::error', self._on_bus_error)
+        self._bus.connect('message::eos', self._on_bus_eos)
+        self._bus.connect('message::stream-start', self._on_stream_start)
 
     """
         True if player is playing
@@ -166,6 +166,11 @@ class BinPlayer(ReplayGainPlayer, BasePlayer):
     def _load_track(self, track_id, sql=None):
         stop = False
 
+        # Disable message tag if we are on db
+        if self._message_tag is not None:
+            self._bus.disconnect(self._message_tag)
+            self._message_tag = None
+
         # Stop if needed
         if self.context.next == NextContext.STOP_TRACK:
             stop = True
@@ -255,9 +260,22 @@ class BinPlayer(ReplayGainPlayer, BasePlayer):
                 self.load(self.current.id)
 
     """
-        When stream is about to finish, switch to next track without gap
+        Read title from stream
+        @param bus as Gst.Bus
+        @param message as Gst.Message
     """
-    def _on_stream_about_to_finish(self, obj):
+    def _on_bus_message_tag(self, bus, message):
+        tags = message.parse_tag()
+        (exist, title) = tags.get_string_index('title', 0)
+        if exist and title != self.current.title:
+            self.current.title = title
+            self.emit('current-changed')
+
+    """
+        When stream is about to finish, switch to next track without gap
+        @param playbin as Gst bin
+    """
+    def _on_stream_about_to_finish(self, playbin):
         if self.current.id != Navigation.RADIOS:
             self._previous_track_id = self.current.id
             # We are in a thread, we need to create a new cursor
@@ -287,6 +305,8 @@ class BinPlayer(ReplayGainPlayer, BasePlayer):
     """
         On stream start
         Emit "current-changed" to notify others components
+        @param bus as Gst.Bus
+        @param message as Gst.Message
     """
     def _on_stream_start(self, bus, message):
         self.emit("current-changed")

@@ -18,7 +18,7 @@ from gettext import gettext as _
 from lollypop.player_base import BasePlayer
 from lollypop.define import Navigation
 
-# This class neeed the parent class to be a BinPlayer
+# This class neeed the parent object to be a BinPlayer
 class RadioPlayer(BasePlayer):
     """
         Init radio player
@@ -69,6 +69,9 @@ class RadioPlayer(BasePlayer):
         self.current.genre = string
         self.current.duration = 0.0
         self.current.number = 0
+        if self._bus is not None and self._message_tag is None:
+            self._message_tag =  self._bus.connect("message::tag",
+                                                   self._on_bus_message_tag)
 
     """
         Play stream

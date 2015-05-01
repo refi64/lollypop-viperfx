@@ -59,3 +59,7 @@ class BasePlayer(GObject.GObject):
             self._is_party = False
             # Player errors
             self._errors = 0
+            # Bus for messages
+            self._bus = None
+            # Signal for message::tag
+            self._message_tag = None
