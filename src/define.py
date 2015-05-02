@@ -36,17 +36,17 @@ class Objects_:
 # Represent current playing track
 class CurrentTrack:
     id = None
-    title = None
+    title = ''
     album_id = None
-    album = None
-    artist = None
+    album = ''
+    artist = ''
     aartist_id = None
-    aartist = None
+    aartist = ''
     genre_id = None
-    genre = None
-    number = None
-    duration = None
-    path = None
+    genre = ''
+    number = 0
+    duration = 0.0
+    path = ''
 
 
 # Represent what to do on next track

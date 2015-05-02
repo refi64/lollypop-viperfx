@@ -222,46 +222,55 @@ class Toolbar(Gtk.HeaderBar):
         @param player as Player
     """
     def _on_current_changed(self, player):
+        art = None
+
+        self._play_btn.set_sensitive(True)
+        self._artist_label.set_text(player.current.artist)
+        self._title_label.set_text(player.current.title)
+
+        # Hide controls if on radio or no track playing:
+        if player.current.id is None or player.current.id == Navigation.RADIOS:
+            self._total_time_label.hide()
+            self._timelabel.hide()
+            self._progress.set_value(0.0)
+            self._progress.set_range(0.0, 0.0)
+
+        # Setup controls if a track is playing
         if player.current.id is not None:
-            self._play_btn.set_sensitive(True)
-            self._artist_label.set_text(player.current.artist)   
-            self._title_label.set_text(player.current.title)
             self._infobox.set_tooltip_text(player.current.artist +\
                                            " - "+\
                                            player.current.title)
 
-            if player.current.id == Navigation.RADIOS:
-                self._infobox.get_window().set_cursor(
-                                          Gdk.Cursor(Gdk.CursorType.LEFT_PTR))
-                self._prev_btn.set_sensitive(False)
-                self._next_btn.set_sensitive(False)
-                self._total_time_label.hide()
-                self._timelabel.hide()
-                self._progress.set_value(0.0)
-                self._progress.set_range(0.0, 0.0)
-                art = Objects.art.get_radio(player.current.artist,
-                                            ArtSize.SMALL)
-            else:
-                self._prev_btn.set_sensitive(True)
-                self._next_btn.set_sensitive(True)
-                self._infobox.get_window().set_cursor(
-                                        Gdk.Cursor(Gdk.CursorType.HAND1))
-                self._progress.set_value(0.0)
-                self._progress.set_range(0.0, player.current.duration * 60)
-                self._total_time_label.set_text(
-                                        seconds_to_string(player.current.duration))
-                self._total_time_label.show()
-                self._timelabel.set_text("0:00")
-                self._timelabel.show()
-                art = Objects.art.get(player.current.album_id,
-                                      ArtSize.SMALL)
+        # Setup buttons and art for radios
+        if player.current.id == Navigation.RADIOS:
+            self._infobox.get_window().set_cursor(
+                                      Gdk.Cursor(Gdk.CursorType.LEFT_PTR))
+            self._prev_btn.set_sensitive(False)
+            self._next_btn.set_sensitive(False)
 
-            if art:
-                self._cover.set_from_pixbuf(art)
-                self._cover.set_tooltip_text(player.current.album)
-                self._cover.show()
-            else:
-                self._cover.hide()
+            art = Objects.art.get_radio(player.current.artist,
+                                        ArtSize.SMALL)
+        elif player.current.id is not None:
+            self._progress.set_value(0.0)
+            self._progress.set_range(0.0, player.current.duration * 60)
+            self._total_time_label.set_text(
+                                    seconds_to_string(player.current.duration))
+            self._total_time_label.show()
+            self._timelabel.set_text("0:00")
+            self._timelabel.show()
+            self._prev_btn.set_sensitive(True)
+            self._next_btn.set_sensitive(True)
+            self._infobox.get_window().set_cursor(
+                                    Gdk.Cursor(Gdk.CursorType.HAND1))
+            art = Objects.art.get(player.current.album_id,
+                                  ArtSize.SMALL)
+
+        if art is not None:
+            self._cover.set_from_pixbuf(art)
+            self._cover.set_tooltip_text(player.current.album)
+            self._cover.show()
+        else:
+            self._cover.hide()
 
 
     """
@@ -271,11 +280,7 @@ class Toolbar(Gtk.HeaderBar):
     def _on_status_changed(self, player):
         is_playing = player.is_playing()
 
-        if player.current.id == Navigation.RADIOS:
-            self._progress.set_sensitive(False)
-            self._timelabel.hide()
-            self._total_time_label.hide()
-        else:
+        if player.current.id != Navigation.RADIOS:
             self._progress.set_sensitive(is_playing)
 
         if is_playing:

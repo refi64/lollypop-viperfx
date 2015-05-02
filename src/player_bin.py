@@ -296,7 +296,11 @@ class BinPlayer(ReplayGainPlayer, BasePlayer):
     def _on_errors(self):
         self._errors += 1
         if self._errors < 3:
-            GLib.idle_add(self.next, True)
+            if self.current.id == Navigation.RADIOS:
+                GLib.idle_add(self.stop)
+                GLib.idle_add(self.play)
+            else:
+                GLib.idle_add(self.next, True)
         else:
             self.current = CurrentTrack()
             GLib.idle_add(self.stop)
