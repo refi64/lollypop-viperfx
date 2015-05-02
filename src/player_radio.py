@@ -38,10 +38,9 @@ class RadioPlayer(BasePlayer):
         self._uri = uri
         try:
             parser = TotemPlParser.Parser.new()
-            if parser.can_parse_from_uri(uri, False):
-                parser.connect("entry-parsed", self._on_entry_parsed)
-                parser.parse(uri, False)
-            else:
+            parser.connect("entry-parsed", self._on_entry_parsed)
+            if parser.parse(uri, False) !=\
+                                           TotemPlParser.ParserResult.SUCCESS:
                 self._playbin.set_property('uri', uri)
                 self._set_current()
         except Exception as e:
