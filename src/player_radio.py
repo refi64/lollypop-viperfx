@@ -25,8 +25,8 @@ class RadioPlayer(BasePlayer):
     """
     def __init__(self):
         BasePlayer.__init__(self)
-        self._name = None
-        self._uri = None
+        self._radio_name = None
+        self._radio_uri = None
 
     """
         Load radio at uri
@@ -34,19 +34,32 @@ class RadioPlayer(BasePlayer):
         @param uri as string
     """
     def load(self, name, uri):
-        self._name = name
-        self._uri = uri
+        self.current.id = Navigation.RADIOS
+        self._radio_name = name
+        self._radio_uri = uri
         try:
             parser = TotemPlParser.Parser.new()
-            parser.connect("entry-parsed", self._on_entry_parsed)
-            if parser.parse(uri, False) !=\
-                                           TotemPlParser.ParserResult.SUCCESS:
-                self._playbin.set_property('uri', uri)
-                self._set_current()
+            parser.connect("entry-parsed", self._on_entry_parsed, name)
+            parser.parse_async(uri, False, None, self._on_parsed, name)
         except Exception as e:
             print("RadioPlayer::load(): ", e)
             return False
         return True
+
+    """
+        If parsing failed, try to play uri
+        @param parser as Totem.PlParser
+        @param result as Gio.AsyncResult
+        @param radio name as string
+    """
+    def _on_parsed(self, parser, result, name):
+        if parser.parse_finish(result) != TotemPlParser.ParserResult.SUCCESS:
+            # Only start playing if context always True
+            if self._radio_name == name:
+                self._stop()
+                self._playbin.set_property('uri', self._radio_uri)
+                self._set_current()
+                self.play()
 
 #######################
 # PRIVATE             #
@@ -56,11 +69,10 @@ class RadioPlayer(BasePlayer):
     """
     def _set_current(self):
         string = _("Radio")
-        self.current.id = Navigation.RADIOS
-        if self._name is not None:
-            self.current.artist = self._name
-        if self._uri is not None:
-            self.current.path = self._uri
+        if self._radio_name is not None:
+            self.current.artist = self._radio_name
+        if self._radio_uri is not None:
+            self.current.path = self._radio_uri
         self.current.title = string
         self.current.album_id = None
         self.current.album = string
@@ -78,7 +90,12 @@ class RadioPlayer(BasePlayer):
         @param parser as TotemPlParser.Parser
         @param track uri as str
         @param metadata as GLib.HastTable
+        @param radio name as string
     """
-    def _on_entry_parsed(self, parser, uri, metadata):
-        self._playbin.set_property('uri', uri)
-        self._set_current()
+    def _on_entry_parsed(self, parser, uri, metadata, name):
+        # Only start playing if context always True
+        if self._radio_name == name:
+            self._stop()
+            self._playbin.set_property('uri', uri)
+            self._set_current()
+            self.play()

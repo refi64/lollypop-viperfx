@@ -97,9 +97,7 @@ class Player(BinPlayer, QueuePlayer, UserPlaylistPlayer, RadioPlayer,
         @param uri as string
     """
     def load_radio(self, name, uri):
-        self._stop()
-        if RadioPlayer.load(self, name, uri):
-            self.play()
+        RadioPlayer.load(self, name, uri)
 
     """
         Play album
