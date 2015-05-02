@@ -230,6 +230,7 @@ class Toolbar(Gtk.HeaderBar):
 
         # Hide controls if on radio or no track playing:
         if player.current.id is None or player.current.id == Navigation.RADIOS:
+            self._progress.set_sensitive(False)
             self._total_time_label.hide()
             self._timelabel.hide()
             self._progress.set_value(0.0)
