@@ -274,7 +274,6 @@ class Toolbar(Gtk.HeaderBar):
         else:
             self._cover.hide()
 
-
     """
         Update buttons and progress bar
         @param player as Player
