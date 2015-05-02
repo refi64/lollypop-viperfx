@@ -236,7 +236,7 @@ class Toolbar(Gtk.HeaderBar):
             self._progress.set_value(0.0)
             self._progress.set_range(0.0, 0.0)
 
-        # Setup controls if a track is playing
+        # Setup tooltip if a track is playing
         if player.current.id is not None:
             self._infobox.set_tooltip_text(player.current.artist +\
                                            " - "+\
@@ -251,6 +251,7 @@ class Toolbar(Gtk.HeaderBar):
 
             art = Objects.art.get_radio(player.current.artist,
                                         ArtSize.SMALL)
+        # Setup buttons and art for local playback
         elif player.current.id is not None:
             self._progress.set_value(0.0)
             self._progress.set_range(0.0, player.current.duration * 60)
