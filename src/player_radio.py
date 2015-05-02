@@ -15,6 +15,7 @@ from gi.repository import TotemPlParser
 
 from gettext import gettext as _
 
+from lollypop.playlists import RadiosManager
 from lollypop.player_base import BasePlayer
 from lollypop.define import Navigation
 
@@ -60,6 +61,54 @@ class RadioPlayer(BasePlayer):
                 self._playbin.set_property('uri', self._radio_uri)
                 self._set_current()
                 self.play()
+
+    """
+        Return next radio name, uri
+        @return (name, uri)
+    """
+    def next(self):
+        radios_manager = RadiosManager()
+        radios = radios_manager.get()
+        i = 0
+        for (radio_id, name) in radios:
+            if name == self._radio_name:
+                break
+            i += 1
+        # Get next radio
+        if i + 1 >= len(radios):
+            i = 0
+        else:
+            i += 1
+        name = radios[i][1]
+        uris = radios_manager.get_tracks(name)
+        if len(uris) > 0:
+            return (name, uris[0])
+        else:
+            return (None, None)
+
+    """
+        Return prev radio name, uri
+        @return (name, uri)
+    """
+    def prev(self):
+        radios_manager = RadiosManager()
+        radios = radios_manager.get()
+        i = 0
+        for (radio_id, name) in radios:
+            if name == self._radio_name:
+                break
+            i += 1
+        # Get prev radio
+        if i - 1 <= 0:
+            i = len(radios) - 1
+        else:
+            i -= 1
+        name = radios[i][1]
+        uris = radios_manager.get_tracks(name)
+        if len(uris) > 0:
+            return (name, uris[0])
+        else:
+            return (None, None)
 
 #######################
 # PRIVATE             #
