@@ -257,118 +257,35 @@ class CollectionScanner(GObject.GObject, TagReader):
         @return track id as int
     """
     def _add2db(self, filepath, mtime, infos, outside, sql):
-        self._new_artists = []
-        self._new_genres = []
-        path = os.path.dirname(filepath)
-
         tags = infos.get_tags()
 
-        (exist, title) = tags.get_string_index('title', 0)
-        if not exist:
-            title = os.path.basename(filepath)
-
-        (exist, artists) = tags.get_string_index('artist', 0)
-        if not exist:
-            artists = _("Unknown")
-
-        artists = ""
-        size = tags.get_tag_size('artist')
-        if size == 0:
-            artists = _("Unknown")
-        else:
-            for i in range(0, size):
-                (exist, artist) = tags.get_string_index('artist', i)
-                artists += artist
-                if i < size-1:
-                    artists += ";"
-
-        (exist, aartist) = tags.get_string_index('album-artist', 0)
-        if not exist:
-            aartist = None
-
-        (exist, album) = tags.get_string_index('album', 0)
-        if not exist:
-            album = _("Unknown")
-
-        genres = ""
-        size = tags.get_tag_size('genre')
-        if size == 0:
-            genres = _("Unknown")
-        else:
-            for i in range(0, size):
-                (exist, genre) = tags.get_string_index('genre', i)
-                genres += genre
-                if i < size-1:
-                    genres += ";"
-
-        (exist, discnumber) = tags.get_uint_index('album-disc-number', 0)
-        if not exist:
-            discnumber = 0
-
-        (exist, tracknumber) = tags.get_uint_index('track-number', 0)
-        if not exist:
-            tracknumber = 0
-
-        (exist, datetime) = tags.get_date_time('datetime')
-        if exist:
-            year = datetime.get_year()
-        else:
-            year = None
-
+        title = self.get_title(tags, filepath)
+        artists = self.get_artists(tags)
+        album_artist = self.get_album_artist(tags)
+        album_name = self.get_album_name(tags)
+        genres = self.get_genres(tags)
+        discnumber = self.get_discnumber(tags)
+        tracknumber = self.get_tracknumber(tags)
+        year = self.get_year(tags)
         length = infos.get_duration()/1000000000
 
-        # Get all artist ids
-        artist_ids = []
-        for word in artists.split(';'):
-            artist = format_artist_name(word)
-            # Get artist id, add it if missing
-            artist_id = Objects.artists.get_id(artist, sql)
-            if artist_id is None:
-                Objects.artists.add(artist, outside, sql)
-                artist_id = Objects.artists.get_id(artist, sql)
-                if artist == aartist:
-                    self._new_artists.append(artist_id)
-            artist_ids.append(artist_id)
+        (artist_ids, new_artist_ids) = self._add_artists(artists,
+                                                         album_artist,
+                                                         outside,
+                                                         sql)
 
-        if aartist:
-            aartist = format_artist_name(aartist)
-            # Get aartist id, add it if missing
-            aartist_id = Objects.artists.get_id(aartist, sql)
-            if aartist_id is None:
-                Objects.artists.add(aartist, outside, sql)
-                aartist_id = Objects.artists.get_id(aartist, sql)
-                self._new_artists.append(aartist_id)
-        else:
-            aartist_id = Navigation.COMPILATIONS
+        (album_artist_id, new) = self._add_album_artist(album_artist, outside, sql)
+        if new:
+            new_artist_ids.append(album_artist_id)
 
-        # Get all genre ids
-        genre_ids = []
-        for genre in genres.split(';'):
-            # Get genre id, add genre if missing
-            genre_id = Objects.genres.get_id(genre, sql)
-            if genre_id is None:
-                Objects.genres.add(genre, outside, sql)
-                genre_id = Objects.genres.get_id(genre, sql)
-                self._new_genres.append(genre_id)
-            genre_ids.append(genre_id)
+        album_id = self._add_album(album_name, album_artist_id,
+                                   filepath, outside, sql)
 
-        album_id = Objects.albums.get_id(album, aartist_id, sql)
-        if album_id is None:
-            # If db was empty on scan,
-            # use file modification time to get recents
-            if self._is_empty:
-                mtime = int(os.path.getmtime(filepath))
-            # Use current time
-            else:
-                mtime = int(time())
-            Objects.albums.add(album, aartist_id,
-                               path, 0, outside, mtime, sql)
-            album_id = Objects.albums.get_id(album, aartist_id, sql)
-
-        for genre_id in genre_ids:
-            Objects.albums.add_genre(album_id, genre_id, outside, sql)
+        (genre_ids, new_genre_ids) = self._add_genres(genres, album_id,
+                                                      outside, sql)
 
         # Now we have our album id, check if path doesn't change
+        path = os.path.dirname(filepath)
         if Objects.albums.get_path(album_id, sql) != path and not outside:
             Objects.albums.set_path(album_id, path, sql)
 
@@ -388,13 +305,110 @@ class CollectionScanner(GObject.GObject, TagReader):
         for genre_id in genre_ids:
             Objects.tracks.add_genre(track_id, genre_id, outside, sql)
         # Notify about new artists/genres
-        if self._new_genres or self._new_artists:
+        if new_genre_ids or new_artist_ids:
             sql.commit()
-            for genre_id in self._new_genres:
+            for genre_id in new_genre_ids:
                 GLib.idle_add(self.emit, "genre-update", genre_id)
-            for artist_id in self._new_artists:
+            for artist_id in new_artist_ids:
                 GLib.idle_add(self.emit, "artist-update", artist_id, album_id)
         return track_id
+
+    """
+        Add artists to db
+        @param artists as [string]
+        @param album artist as string
+        @param outside as bool
+        @param sql as sqlite cursor
+        @commit needed
+        @param return ([artist ids as int], [new artist ids as int])
+    """
+    def _add_artists(self, artists, album_artist, outside, sql):
+        new_artist_ids = []
+        # Get all artist ids
+        artist_ids = []
+        for artist in artists:
+            artist = format_artist_name(artist)
+            # Get artist id, add it if missing
+            artist_id = Objects.artists.get_id(artist, sql)
+            if artist_id is None:
+                Objects.artists.add(artist, outside, sql)
+                artist_id = Objects.artists.get_id(artist, sql)
+                if artist == album_artist:
+                    new_artist_ids.append(artist_id)
+            artist_ids.append(artist_id)
+        return (artist_ids, new_artist_ids)
+
+    """
+        Add album artist to db
+        @param album_artist as string
+        @param outside as bool
+        @param sql as sqlite cursor
+        @param return ([album artist ids as int], [new as bool])
+        @commit needed
+    """
+    def _add_album_artist(self, album_artist, outside, sql):
+        album_artist_id = Navigation.COMPILATIONS
+        new = False
+        if album_artist is not None:
+            album_artist = format_artist_name(album_artist)
+            # Get album artist id, add it if missing
+            album_artist_id = Objects.artists.get_id(album_artist, sql)
+            if album_artist_id is None:
+                Objects.artists.add(album_artist, outside, sql)
+                album_artist_id = Objects.artists.get_id(album_artist, sql)
+                new = True
+        return (album_artist_id, new)
+
+    """
+        Add genres to db
+        @param genres as [string]
+        @param outside as bool
+        @param sql as sqlite cursor
+        @param return ([genre_ids], [new_genre_ids])
+        @commit needed
+    """
+    def _add_genres(self, genres, album_id, outside, sql):
+        # Get all genre ids
+        genre_ids = []
+        new_genre_ids = []
+        for genre in genres:
+            # Get genre id, add genre if missing
+            genre_id = Objects.genres.get_id(genre, sql)
+            if genre_id is None:
+                Objects.genres.add(genre, outside, sql)
+                genre_id = Objects.genres.get_id(genre, sql)
+                new_genre_ids.append(genre_id)
+            genre_ids.append(genre_id)
+
+        for genre_id in genre_ids:
+            Objects.albums.add_genre(album_id, genre_id, outside, sql)
+        return (genre_ids, new_genre_ids)
+
+    """
+        Add album to db
+        @param album name as string
+        @param album artist id as int
+        @param path to an album track as string
+        @param outside as bool
+        @param sql as sqlite cursor
+        @return album id as int
+        @commit needed
+    """
+    def _add_album(self, album_name, artist_id, filepath, outside, sql):
+        path = os.path.dirname(filepath)
+        album_id = Objects.albums.get_id(album_name, artist_id, sql)
+        if album_id is None:
+            # If db was empty on scan,
+            # use file modification time to get recents
+            if self._is_empty:
+                mtime = int(os.path.getmtime(filepath))
+            # Use current time
+            else:
+                mtime = int(time())
+            Objects.albums.add(album_name, artist_id,
+                               path, 0, outside, mtime, sql)
+            album_id = Objects.albums.get_id(album_name, artist_id, sql)
+        return album_id
 
     """
         Restore albums popularties
