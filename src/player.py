@@ -11,7 +11,6 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-from lollypop.tagreader import TagReader
 from lollypop.player_bin import BinPlayer
 from lollypop.player_queue import QueuePlayer
 from lollypop.player_linear import LinearPlayer
@@ -24,7 +23,7 @@ from lollypop.define import Shuffle
 
 # Player object used to manage playback and playlists
 class Player(BinPlayer, QueuePlayer, UserPlaylistPlayer, RadioPlayer,
-             LinearPlayer, ShufflePlayer, TagReader):
+             LinearPlayer, ShufflePlayer):
     """
         Create a gstreamer bin and listen to signals on bus
     """
@@ -34,7 +33,6 @@ class Player(BinPlayer, QueuePlayer, UserPlaylistPlayer, RadioPlayer,
         LinearPlayer.__init__(self)
         ShufflePlayer.__init__(self)
         UserPlaylistPlayer.__init__(self)
-        TagReader.__init__(self)
 
     """
         Play previous track

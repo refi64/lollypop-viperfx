@@ -18,10 +18,11 @@ from gi.repository import GLib, GObject, Gio
 from _thread import start_new_thread
 
 from lollypop.define import Objects, Navigation
+from lollypop.tagreader import TagReader
 from lollypop.utils import format_artist_name, is_audio, debug
 
 
-class CollectionScanner(GObject.GObject):
+class CollectionScanner(GObject.GObject, TagReader):
     __gsignals__ = {
         'scan-finished': (GObject.SignalFlags.RUN_FIRST, None, ()),
         'artist-update': (GObject.SignalFlags.RUN_FIRST, None, (int, int)),
@@ -34,7 +35,7 @@ class CollectionScanner(GObject.GObject):
     """
     def __init__(self, progress):
         GObject.GObject.__init__(self)
-
+        TagReader.__init__(self)
         self._progress = progress
         self._is_empty = True
         self._in_thread = False
@@ -145,7 +146,7 @@ class CollectionScanner(GObject.GObject):
                 self._is_locked = False
                 return
             if f not in tracks:
-                infos = Objects.player.get_infos(f)
+                infos = self.get_infos(f)
                 if infos is not None:
                     debug("Adding file: %s" % f)
                     track_id = self._add2db(f, 0, infos, True, sql)
@@ -202,7 +203,7 @@ class CollectionScanner(GObject.GObject):
             mtime = int(os.path.getmtime(filepath))
             try:
                 if filepath not in tracks:
-                    infos = Objects.player.get_infos(filepath)
+                    infos = self.get_infos(filepath)
                     if infos is not None:
                         debug("Adding file: %s" % filepath)
                         self._add2db(filepath, mtime, infos, False, sql)
@@ -215,7 +216,7 @@ class CollectionScanner(GObject.GObject):
                         album_id = Objects.tracks.get_album_id(track_id, sql)
                         Objects.tracks.remove(filepath, sql)
                         self._clean_compilation(album_id, sql)
-                        infos = Objects.player.get_infos(filepath)
+                        infos = self.get_infos(filepath)
                         if infos is not None:
                             debug("Adding file: %s" % filepath)
                             self._add2db(filepath, mtime, infos, False, sql)

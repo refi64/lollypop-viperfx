@@ -26,11 +26,12 @@ import urllib.request
 import urllib.parse
 from math import pi
 
+from lollypop.tagreader import TagReader
 from lollypop.define import Objects, ArtSize, GOOGLE_INC
 
 
 # Manage album's arts
-class AlbumArt:
+class AlbumArt(TagReader):
 
     _CACHE_PATH = os.path.expanduser("~") + "/.cache/lollypop"
     _RADIOS_PATH = os.path.expanduser("~") +\
@@ -41,6 +42,7 @@ class AlbumArt:
         Create cache path
     """
     def __init__(self):
+        TagReader.__init__(self)
         self._gtk_settings = Gtk.Settings.get_default()
         self._favorite = Objects.settings.get_value(
                                                 'favorite-cover').get_string()
@@ -384,7 +386,7 @@ class AlbumArt:
     def _pixbuf_from_tags(self, track_id, size):
         pixbuf = None
         filepath = Objects.tracks.get_path(track_id)
-        infos = Objects.player.get_infos(filepath)
+        infos = self.get_infos(filepath)
         exist = False
         if infos is not None:
             (exist, sample) = infos.get_tags().get_sample_index('image', 0)
