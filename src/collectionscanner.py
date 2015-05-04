@@ -196,7 +196,7 @@ class CollectionScanner(GObject.GObject, ScannerTagReader):
     def _scan(self, paths, smooth):
         sql = Objects.db.get_cursor()
         orig_tracks = Objects.tracks.get_paths(sql)
-        self._is_empty = len(tracks) == 0
+        self._is_empty = len(orig_tracks) == 0
         # Clear cover cache
         if not smooth:
             Objects.art.clean_all_cache(sql)
