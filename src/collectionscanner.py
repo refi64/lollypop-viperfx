@@ -284,26 +284,16 @@ class CollectionScanner(GObject.GObject, TagReader):
         (genre_ids, new_genre_ids) = self._add_genres(genres, album_id,
                                                       outside, sql)
 
-        # Now we have our album id, check if path doesn't change
-        path = os.path.dirname(filepath)
-        if Objects.albums.get_path(album_id, sql) != path and not outside:
-            Objects.albums.set_path(album_id, path, sql)
-
         # Add track to db
         Objects.tracks.add(title, filepath, length,
                            tracknumber, discnumber,
                            album_id, year, mtime, outside, sql)
 
-        # Update year for album
-        year = Objects.albums.get_year_from_tracks(album_id, sql)
-        Objects.albums.set_year(album_id, year, sql)
+        self._update_year(album_id, sql)
 
-        # Set artists/genres for track
         track_id = Objects.tracks.get_id_by_path(filepath, sql)
-        for artist_id in artist_ids:
-            Objects.tracks.add_artist(track_id, artist_id, outside, sql)
-        for genre_id in genre_ids:
-            Objects.tracks.add_genre(track_id, genre_id, outside, sql)
+        self._update_track(track_id, artist_ids, genre_ids, outside, sql)
+
         # Notify about new artists/genres
         if new_genre_ids or new_artist_ids:
             sql.commit()
@@ -408,7 +398,36 @@ class CollectionScanner(GObject.GObject, TagReader):
             Objects.albums.add(album_name, artist_id,
                                path, 0, outside, mtime, sql)
             album_id = Objects.albums.get_id(album_name, artist_id, sql)
+        # Now we have our album id, check if path doesn't change
+        if Objects.albums.get_path(album_id, sql) != path and not outside:
+            Objects.albums.set_path(album_id, path, sql)
         return album_id
+
+    """
+        Update album year
+        @param album id as int
+        @param sql as sqlite cursor
+        @commit needed
+    """
+    def _update_year(self, album_id, sql):
+        year = Objects.albums.get_year_from_tracks(album_id, sql)
+        Objects.albums.set_year(album_id, year, sql)
+
+    """
+        Set track artists/genres
+        @param track id as int
+        @param artist ids as [int]
+        @param genre ids as [int]
+        @param outside as bool
+        @param sql as sqlite cursor
+        @commit needed
+    """
+    def _update_track(self, track_id, artist_ids, genre_ids, outside, sql):
+         # Set artists/genres for track
+        for artist_id in artist_ids:
+            Objects.tracks.add_artist(track_id, artist_id, outside, sql)
+        for genre_id in genre_ids:
+            Objects.tracks.add_genre(track_id, genre_id, outside, sql)
 
     """
         Restore albums popularties
