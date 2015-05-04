@@ -33,7 +33,7 @@ class Inotify:
         @param path as string
     """
     def add_monitor(self, path):
-        # Check if there is no monitor for this path
+        # Check if there is already a monitor for this path
         if path in self._monitors.keys():
             return
 
