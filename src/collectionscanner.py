@@ -195,7 +195,7 @@ class CollectionScanner(GObject.GObject, ScannerTagReader):
     """
     def _scan(self, paths, smooth):
         sql = Objects.db.get_cursor()
-        tracks = Objects.tracks.get_paths(sql)
+        orig_tracks = Objects.tracks.get_paths(sql)
         self._is_empty = len(tracks) == 0
         # Clear cover cache
         if not smooth:
@@ -212,7 +212,7 @@ class CollectionScanner(GObject.GObject, ScannerTagReader):
             GLib.idle_add(self._update_progress, i, count)
             mtime = int(os.path.getmtime(filepath))
             try:
-                if filepath not in tracks:
+                if filepath not in orig_tracks:
                     infos = self.get_infos(filepath)
                     if infos is not None:
                         debug("Adding file: %s" % filepath)
@@ -232,7 +232,7 @@ class CollectionScanner(GObject.GObject, ScannerTagReader):
                             self._add2db(filepath, mtime, infos, False, sql)
                         else:
                             print("Can't get infos for ", filepath)
-                    tracks.remove(filepath)
+                    orig_tracks.remove(filepath)
 
             except Exception as e:
                 print(ascii(filepath))
@@ -243,7 +243,7 @@ class CollectionScanner(GObject.GObject, ScannerTagReader):
 
         # Clean deleted files
         if i > 0:
-            for filepath in tracks:
+            for filepath in orig_tracks:
                 track_id = Objects.tracks.get_id_by_path(filepath, sql)
                 album_id = Objects.tracks.get_album_id(track_id, sql)
                 Objects.tracks.remove(filepath, sql)
