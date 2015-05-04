@@ -95,6 +95,26 @@ class CollectionScanner(GObject.GObject, ScannerTagReader):
 # PRIVATE             #
 #######################
     """
+        Return all tracks for paths
+        @param paths as string
+        @return ([tracks path], count)
+    """
+    def _get_tracks_for_paths(self, paths):
+        tracks = []
+        count = 0
+        for path in paths:
+            for root, dirs, files in os.walk(path):
+                for name in files:
+                    filepath = os.path.join(root, name)
+                    f = Gio.File.new_for_path(filepath)
+                    if is_audio(f):
+                        tracks.append(filepath)
+                        count += 1
+                    else:
+                        debug("%s not detected as a music file" % filepath)
+        return (tracks, count)
+
+    """
         Update progress bar status
         @param scanned items as int, total items as int
     """
@@ -181,18 +201,8 @@ class CollectionScanner(GObject.GObject, ScannerTagReader):
         if not smooth:
             Objects.art.clean_all_cache(sql)
 
-        new_tracks = []
-        count = 0
-        for path in paths:
-            for root, dirs, files in os.walk(path):
-                for name in files:
-                    filepath = os.path.join(root, name)
-                    f = Gio.File.new_for_path(filepath)
-                    if is_audio(f):
-                        new_tracks.append(filepath)
-                        count += 1
-                    else:
-                        debug("%s not detected as a music file" % filepath)
+        (new_tracks, count) = self._get_tracks_for_paths(paths)
+
         i = 0
         for filepath in new_tracks:
             if not self._in_thread:
