@@ -30,6 +30,7 @@ class Objects_:
     art = None
     window = None
     notify = None
+    inotify = None
     debug = False
 
 

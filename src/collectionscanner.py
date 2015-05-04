@@ -212,8 +212,9 @@ class CollectionScanner(GObject.GObject, ScannerTagReader):
 
         # Add monitors on dirs
         (new_tracks, new_dirs, count) = self._get_objects_for_paths(paths)
-        for d in new_dirs:
-            Objects.inotify.add_monitor(d)
+        if Objects.inotify is not None:
+            for d in new_dirs:
+                Objects.inotify.add_monitor(d)
 
         i = 0
         for filepath in new_tracks:

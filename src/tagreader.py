@@ -66,17 +66,19 @@ class ScannerTagReader(TagReader):
     """
         Return artists for tags
         @param tags as Gst.TagList
-        @return array of string
+        @return string like "artist1;artist2;..."
     """
     def get_artists(self, tags):
-        artists = []
+        artists = ""
         size = tags.get_tag_size('artist')
         if size == 0:
-            artists.append(_("Unknown"))
+            artists = _("Unknown")
         else:
             for i in range(0, size):
                 (exist, artist) = tags.get_string_index('artist', i)
-                artists.append(artist)
+                artists += artist
+                if i < size-1:
+                    artists += ";"
         return artists
 
     """
@@ -104,17 +106,19 @@ class ScannerTagReader(TagReader):
     """
         Return genres for tags
         @param tags as Gst.TagList
-        @return array of string
+        @return string like "genre1;genre2;..."
     """
     def get_genres(self, tags):
-        genres = []
+        genres = ""
         size = tags.get_tag_size('genre')
         if size == 0:
-            genres.append(_("Unknown"))
+            genres = _("Unknown")
         else:
             for i in range(0, size):
                 (exist, genre) = tags.get_string_index('genre', i)
-                genres.append(genre)
+                genres += genre
+                if i < size-1:
+                    genres += ";"
         return genres
 
     """
@@ -165,8 +169,8 @@ class ScannerTagReader(TagReader):
         new_artist_ids = []
         # Get all artist ids
         artist_ids = []
-        for artist in artists:
-            artist = format_artist_name(artist)
+        for word in artists.split(';'):
+            artist = format_artist_name(word)
             # Get artist id, add it if missing
             artist_id = Objects.artists.get_id(artist, sql)
             if artist_id is None:
@@ -210,7 +214,7 @@ class ScannerTagReader(TagReader):
         # Get all genre ids
         genre_ids = []
         new_genre_ids = []
-        for genre in genres:
+        for genre in genres.split(';'):
             # Get genre id, add genre if missing
             genre_id = Objects.genres.get_id(genre, sql)
             if genre_id is None:
