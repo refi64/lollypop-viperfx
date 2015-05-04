@@ -66,7 +66,7 @@ class Database:
                                                 track_id INT NOT NULL,
                                                 genre_id INT NOT NULL,
                                                 outside BOOLEAN NOT NULL)'''
-    version = 7
+    version = 8
 
     """
         Create database tables or manage update if needed

@@ -296,7 +296,9 @@ class CollectionScanner(GObject.GObject, ScannerTagReader):
                                                          outside,
                                                          sql)
 
-        (album_artist_id, new) = self.add_album_artist(album_artist, outside, sql)
+        (album_artist_id, new) = self.add_album_artist(album_artist,
+                                                       outside,
+                                                       sql)
         if new:
             new_artist_ids.append(album_artist_id)
 

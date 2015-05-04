@@ -326,12 +326,20 @@ class SelectionList(GObject.GObject):
             return False
 
         a_index = model.get_value(itera, 0)
+        b_index = model.get_value(iterb, 0)
         a = format_artist_name(model.get_value(itera, 1))
         b = format_artist_name(model.get_value(iterb, 1))
 
-        # Do not order static entries
+        # Static vs static
+        if a_index < 0 and b_index < 0:
+            return a_index < b_index
+        # Static entries always on top
+        elif b_index < 0:
+            return True
+        # Static entries always on top
         if a_index < 0:
             return False
+        # String comparaison for non static
         else:
             return a.lower() > b.lower()
 

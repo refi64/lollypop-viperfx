@@ -413,7 +413,7 @@ class DatabaseAlbums:
         v = result.fetchone()
         if v:
             return v[0]
-        return -1
+        return 0
 
     """
         Get number of tracks for album_id/disc
@@ -442,7 +442,7 @@ class DatabaseAlbums:
         v = result.fetchone()
         if v:
             return v[0]
-        return -1
+        return 0
 
     """
         Get disc numbers
@@ -640,17 +640,18 @@ class DatabaseAlbums:
         # Get all compilations
         if genre_id == Navigation.ALL or genre_id is None:
             result = sql.execute("SELECT albums.rowid FROM albums\
-                                  WHERE artist_id=-1\
-                                  ORDER BY albums.name, albums.year")
+                                  WHERE artist_id=?\
+                                  ORDER BY albums.name, albums.year",
+                                  (Navigation.COMPILATIONS,))
         # Get compilation for genre id
         else:
             result = sql.execute(
                         "SELECT albums.rowid FROM albums, album_genres\
                          WHERE album_genres.genre_id=?\
                          AND album_genres.album_id=albums.rowid\
-                         AND albums.artist_id=-1\
+                         AND albums.artist_id=?\
                          ORDER BY albums.name,\
-                         albums.year", (genre_id,))
+                         albums.year", (genre_id, Navigation.COMPILATIONS))
         for row in result:
             albums += row
         return albums

@@ -91,14 +91,15 @@ class Shuffle_:
     ALBUMS_ARTIST = 4    # Shuffle by albums on artist
 
 
+# Order is important
 class Navigation_:
-    COMPILATIONS = -1
+    NONE = -1
     POPULARS = -2
-    PLAYLISTS = -3
-    ALL = -4
-    RECENTS = -5
-    RADIOS = -6
-    NONE = -7
+    RECENTS = -3
+    PLAYLISTS = -4
+    RADIOS = -5
+    ALL = -6
+    COMPILATIONS = -999
     DEVICES = -1000
 
 Objects = Objects_()
