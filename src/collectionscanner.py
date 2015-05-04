@@ -31,15 +31,22 @@ class CollectionScanner(GObject.GObject, ScannerTagReader):
     }
 
     """
-        @param progress as Gtk.Progress
+        Init scanner
     """
-    def __init__(self, progress):
+    def __init__(self):
         GObject.GObject.__init__(self)
         ScannerTagReader.__init__(self)
-        self._progress = progress
         self._is_empty = True
         self._in_thread = False
         self._is_locked = False
+
+    """
+        Set progress bar to be filed
+        @warning Mandatory
+        @param progress as Gtk.Progress
+    """
+    def set_progress(self, progress):
+        self._progress = progress
 
     """
         Update database

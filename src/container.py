@@ -26,7 +26,6 @@ from lollypop.view_radios import RadiosView
 from lollypop.view_playlists import PlaylistsView
 from lollypop.view_playlists import PlaylistsManageView, PlaylistEditView
 from lollypop.view_device import DeviceView
-from lollypop.collectionscanner import CollectionScanner
 
 
 # This is a multimedia device
@@ -73,8 +72,8 @@ class Container:
     """
     def update_db(self, force=False):
         # Stop previous scan
-        if self._scanner.is_locked():
-            self._scanner.stop()
+        if Objects.scanner.is_locked():
+            Objects.scanner.stop()
             GLib.timeout_add(250, self.update_db, force)
         # Something is using progress bar, do nothing
         elif not self._progress.is_visible():
@@ -83,11 +82,11 @@ class Container:
                 self._list_one_restore = self._list_one.get_selected_id()
                 self._list_two_restore = self._list_two.get_selected_id()
                 self.update_lists(True)
-                self._scanner.update(False)
+                Objects.scanner.update(False)
             elif Objects.tracks.is_empty():
-                self._scanner.update(False)
+                Objects.scanner.update(False)
             elif Objects.settings.get_value('startup-scan'):
-                self._scanner.update(True)
+                Objects.scanner.update(True)
 
     """
         Save view state
@@ -149,11 +148,11 @@ class Container:
         # Same for locked db
         if self._list_one.is_populating() or\
            self._list_one.is_populating() or\
-           self._scanner.is_locked():
-            self._scanner.stop()
+           Objects.scanner.is_locked():
+            Objects.scanner.stop()
             GLib.timeout_add(250, self.load_external, files)
         else:
-            self._scanner.add(files)
+            Objects.scanner.add(files)
 
     """
         Get main widget
@@ -166,7 +165,7 @@ class Container:
         Stop current view from processing
     """
     def stop_all(self):
-        self._scanner.stop()
+        Objects.scanner.stop()
         view = self._stack.get_visible_child()
         if view is not None:
             self._stack.clean_old_views(None)
@@ -287,11 +286,11 @@ class Container:
         @return True if hard scan is running
     """
     def _setup_scanner(self):
-        self._scanner = CollectionScanner(self._progress)
-        self._scanner.connect("scan-finished", self._on_scan_finished)
-        self._scanner.connect("genre-update", self._add_genre)
-        self._scanner.connect("artist-update", self._add_artist)
-        self._scanner.connect("added", self._play_track)
+        Objects.scanner.set_progress(self._progress)
+        Objects.scanner.connect("scan-finished", self._on_scan_finished)
+        Objects.scanner.connect("genre-update", self._add_genre)
+        Objects.scanner.connect("artist-update", self._add_artist)
+        Objects.scanner.connect("added", self._play_track)
 
     """
         Update list one

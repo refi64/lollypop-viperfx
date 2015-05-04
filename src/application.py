@@ -30,6 +30,7 @@ from lollypop.database_artists import DatabaseArtists
 from lollypop.database_genres import DatabaseGenres
 from lollypop.database_tracks import DatabaseTracks
 from lollypop.playlists import PlaylistsManager
+from lollypop.collectionscanner import CollectionScanner
 from lollypop.fullscreen import FullScreen
 
 
@@ -74,6 +75,7 @@ class Application(Gtk.Application):
         Objects.genres = DatabaseGenres()
         Objects.tracks = DatabaseTracks()
         Objects.playlists = PlaylistsManager()
+        Objects.scanner = CollectionScanner()
         Objects.art = AlbumArt()
 
         settings = Gtk.Settings.get_default()
