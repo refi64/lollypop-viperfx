@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-05-01 20:58+0200\n"
+"POT-Creation-Date: 2015-05-04 17:10+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -83,7 +83,7 @@ msgid "Between -15 and 15"
 msgstr ""
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:17
-msgid "Scan library at startup"
+msgid "Auto update db"
 msgstr ""
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:18
@@ -157,48 +157,47 @@ msgstr ""
 msgid "Music player for the GNOME desktop"
 msgstr ""
 
-#: ../src/application.py:291
+#: ../src/application.py:296
 msgid "Lollypop: You need to install yelp."
 msgstr ""
 
-#: ../src/collectionscanner.py:60
+#: ../src/collectionscanner.py:56
 msgid "Your music is updating"
 msgstr ""
 
-#: ../src/collectionscanner.py:271 ../src/collectionscanner.py:276
-#: ../src/collectionscanner.py:290 ../src/collectionscanner.py:295
-#: ../src/database_albums.py:233 ../src/database_artists.py:70
-#: ../src/database_genres.py:67 ../src/database_tracks.py:187
-msgid "Unknown"
-msgstr ""
-
-#: ../src/container.py:329
+#: ../src/container.py:340
 msgid "Popular albums"
 msgstr ""
 
-#: ../src/container.py:330
+#: ../src/container.py:341
 msgid "Recent albums"
 msgstr ""
 
-#: ../src/container.py:331 ../src/popmenu.py:321 ../src/popmenu.py:336
+#: ../src/container.py:342 ../src/popmenu.py:321 ../src/popmenu.py:336
 #: ../src/popmenu.py:351
 msgid "Playlists"
 msgstr ""
 
-#: ../src/container.py:332
+#: ../src/container.py:343
 msgid "Radios"
 msgstr ""
 
-#: ../src/container.py:334
+#: ../src/container.py:345
 msgid "All artists"
 msgstr ""
 
-#: ../src/container.py:336
+#: ../src/container.py:347
 msgid "All albums"
 msgstr ""
 
-#: ../src/container.py:378
+#: ../src/container.py:389
 msgid "Compilations"
+msgstr ""
+
+#: ../src/database_albums.py:233 ../src/database_artists.py:70
+#: ../src/database_genres.py:67 ../src/database_tracks.py:196
+#: ../src/tagreader.py:74 ../src/tagreader.py:100 ../src/tagreader.py:112
+msgid "Unknown"
 msgstr ""
 
 #: ../src/database_albums.py:250
@@ -209,12 +208,12 @@ msgstr ""
 msgid "Many artists"
 msgstr ""
 
-#: ../src/fullscreen.py:75 ../src/fullscreen.py:174 ../src/toolbar.py:280
-#: ../src/toolbar.py:311
+#: ../src/fullscreen.py:75 ../src/fullscreen.py:189 ../src/toolbar.py:288
+#: ../src/toolbar.py:319
 msgid "Pause"
 msgstr ""
 
-#: ../src/fullscreen.py:178 ../src/toolbar.py:287 ../src/toolbar.py:308
+#: ../src/fullscreen.py:193 ../src/toolbar.py:295 ../src/toolbar.py:316
 #: ../data/Toolbar.ui.h:7
 msgid "Play"
 msgstr ""
@@ -234,7 +233,7 @@ msgstr ""
 msgid "by %s, from %s"
 msgstr ""
 
-#: ../src/player_radio.py:58
+#: ../src/player_radio.py:120
 msgid "Radio"
 msgstr ""
 
@@ -300,11 +299,11 @@ msgstr ""
 msgid "Search:"
 msgstr ""
 
-#: ../src/settings.py:95
+#: ../src/settings.py:127
 msgid "Populars"
 msgstr ""
 
-#: ../src/settings.py:96
+#: ../src/settings.py:128
 msgid "Recents"
 msgstr ""
 
@@ -455,7 +454,7 @@ msgid "Preferences"
 msgstr ""
 
 #: ../data/SettingsDialog.ui.h:2
-msgid "Update music on startup"
+msgid "Auto update music"
 msgstr ""
 
 #: ../data/SettingsDialog.ui.h:3
