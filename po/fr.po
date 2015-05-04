@@ -9,8 +9,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lollypop\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-05-01 19:45+0200\n"
-"PO-Revision-Date: 2015-05-01 17:47+0000\n"
+"POT-Creation-Date: 2015-05-04 17:10+0200\n"
+"PO-Revision-Date: 2015-05-04 15:14+0000\n"
 "Last-Translator: Cédric Bellegarde <web@adishatz.org>\n"
 "Language-Team: French (http://www.transifex.com/projects/p/lollypop/language/fr/)\n"
 "MIME-Version: 1.0\n"
@@ -85,8 +85,8 @@ msgid "Between -15 and 15"
 msgstr "Entre -15 et 15"
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:17
-msgid "Scan library at startup"
-msgstr "Scanner la collection au démarrage"
+msgid "Auto update db"
+msgstr "Mise à jour automatique de la base de donnée"
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:18
 msgid "Show genres list"
@@ -160,45 +160,48 @@ msgstr "Jouer et organiser votre discothèque"
 msgid "Music player for the GNOME desktop"
 msgstr "Lecteur de musique pour le bureau GNOME"
 
-#: ../src/collectionscanner.py:60
+#: ../src/application.py:296
+msgid "Lollypop: You need to install yelp."
+msgstr "Lollypop: Vous devez installer yelp."
+
+#: ../src/collectionscanner.py:56
 msgid "Your music is updating"
 msgstr "Mise à jour de votre musique"
 
-#: ../src/collectionscanner.py:271 ../src/collectionscanner.py:276
-#: ../src/collectionscanner.py:290 ../src/collectionscanner.py:295
-#: ../src/database_albums.py:233 ../src/database_artists.py:70
-#: ../src/database_genres.py:67 ../src/database_tracks.py:187
-msgid "Unknown"
-msgstr "Inconnu"
-
-#: ../src/container.py:329
+#: ../src/container.py:340
 msgid "Popular albums"
 msgstr "Albums populaires"
 
-#: ../src/container.py:330
+#: ../src/container.py:341
 msgid "Recent albums"
 msgstr "Albums récents"
 
-#: ../src/container.py:331 ../src/popmenu.py:321 ../src/popmenu.py:336
+#: ../src/container.py:342 ../src/popmenu.py:321 ../src/popmenu.py:336
 #: ../src/popmenu.py:351
 msgid "Playlists"
 msgstr "Listes de lecture"
 
-#: ../src/container.py:332
+#: ../src/container.py:343
 msgid "Radios"
 msgstr "Radios"
 
-#: ../src/container.py:334
+#: ../src/container.py:345
 msgid "All artists"
 msgstr "Tous les artistes"
 
-#: ../src/container.py:336
+#: ../src/container.py:347
 msgid "All albums"
 msgstr "Tous les albums"
 
-#: ../src/container.py:378
+#: ../src/container.py:389
 msgid "Compilations"
 msgstr "Compilations"
+
+#: ../src/database_albums.py:233 ../src/database_artists.py:70
+#: ../src/database_genres.py:67 ../src/database_tracks.py:196
+#: ../src/tagreader.py:74 ../src/tagreader.py:100 ../src/tagreader.py:112
+msgid "Unknown"
+msgstr "Inconnu"
 
 #: ../src/database_albums.py:250
 msgid "Compilation"
@@ -208,12 +211,12 @@ msgstr "Compilation"
 msgid "Many artists"
 msgstr "Plusieurs artistes"
 
-#: ../src/fullscreen.py:75 ../src/fullscreen.py:174 ../src/toolbar.py:280
-#: ../src/toolbar.py:311
+#: ../src/fullscreen.py:75 ../src/fullscreen.py:189 ../src/toolbar.py:288
+#: ../src/toolbar.py:319
 msgid "Pause"
 msgstr "Pause"
 
-#: ../src/fullscreen.py:178 ../src/toolbar.py:287 ../src/toolbar.py:308
+#: ../src/fullscreen.py:193 ../src/toolbar.py:295 ../src/toolbar.py:316
 #: ../data/Toolbar.ui.h:7
 msgid "Play"
 msgstr "Lecture"
@@ -233,7 +236,7 @@ msgstr "Suivant"
 msgid "by %s, from %s"
 msgstr "par %s, sur %s"
 
-#: ../src/player_radio.py:58
+#: ../src/player_radio.py:120
 msgid "Radio"
 msgstr "Radio"
 
@@ -299,11 +302,11 @@ msgstr "Modifier"
 msgid "Search:"
 msgstr "Recherche:"
 
-#: ../src/settings.py:95
+#: ../src/settings.py:127
 msgid "Populars"
 msgstr "Populaires"
 
-#: ../src/settings.py:96
+#: ../src/settings.py:128
 msgid "Recents"
 msgstr "Récents"
 
@@ -454,8 +457,8 @@ msgid "Preferences"
 msgstr "Préférences"
 
 #: ../data/SettingsDialog.ui.h:2
-msgid "Update music on startup"
-msgstr "Mise à jour de la musique au démarrage"
+msgid "Auto update music"
+msgstr "Mise à jour automatique de la musique"
 
 #: ../data/SettingsDialog.ui.h:3
 msgid "Restore state on startup"
@@ -554,7 +557,3 @@ msgstr "Lollypop ne supporte pas les systèmes non unicode.\nMerci de corriger v
 #: ../data/RadiosView.ui.h:1
 msgid "New radio"
 msgstr "Nouvelle radio"
-
-#: ../data/RadioWidget.ui.h:1
-msgid "titre"
-msgstr "titre"
