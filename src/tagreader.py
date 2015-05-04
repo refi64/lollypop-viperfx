@@ -14,6 +14,7 @@
 from gi.repository import GLib, Gst, GstPbutils
 
 import os
+from time import time
 
 from lollypop.define import Objects, Navigation
 from lollypop.utils import format_artist_name

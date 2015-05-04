@@ -32,6 +32,7 @@ src/pop_album_covers.py
 src/popalbums.py
 src/popmenu.py
 src/popradio.py
+src/inotify.py
 src/queue.py
 src/search.py
 src/selectionlist.py

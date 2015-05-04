@@ -26,6 +26,7 @@ app_PYTHON = \
     view_albums.py\
     view_radios.py\
 	mpris.py\
+    inotify.py\
 	search.py\
 	widgets_track.py\
 	widgets_album.py\

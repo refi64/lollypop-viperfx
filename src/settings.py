@@ -11,12 +11,44 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-from gi.repository import Gtk, GLib
+from gi.repository import Gtk, GLib, Gio
 
 from gettext import gettext as _
 
 from lollypop.define import Objects, Navigation
 from lollypop.utils import use_csd
+
+
+# Lollypop settings
+class Settings(Gio.Settings):
+    """
+        Init settings
+    """
+    def __init__(self):
+        Gio.Settings.__init__(self)
+
+    """
+        Return a new Settings object
+    """
+    def new():
+        settings = Gio.Settings.new('org.gnome.Lollypop')
+        settings.__class__ = Settings
+        return settings
+
+    """
+        Return music paths
+        @return [str]
+    """
+    def get_music_paths(self):
+        paths = self.get_value('music-path')
+        if not paths:
+            if GLib.get_user_special_dir(GLib.UserDirectory.DIRECTORY_MUSIC):
+                paths = [GLib.get_user_special_dir(
+                                          GLib.UserDirectory.DIRECTORY_MUSIC)]
+            else:
+                print("You need to add a music path"
+                      " to org.gnome.Lollypop in dconf")
+        return paths
 
 
 # Dialog showing lollypop options
@@ -37,7 +69,7 @@ class SettingsDialog:
                                 builder.get_object('header_bar'))
 
         switch_scan = builder.get_object('switch_scan')
-        switch_scan.set_state(Objects.settings.get_value('startup-scan'))
+        switch_scan.set_state(Objects.settings.get_value('auto-update'))
 
         switch_view = builder.get_object('switch_dark')
         switch_view.set_state(Objects.settings.get_value('dark-ui'))
@@ -156,7 +188,7 @@ class SettingsDialog:
         @param widget as unused, state as widget state
     """
     def _update_scan_setting(self, widget, state):
-        Objects.settings.set_value('startup-scan',
+        Objects.settings.set_value('auto-update',
                                    GLib.Variant('b', state))
 
     """

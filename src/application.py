@@ -22,7 +22,7 @@ from lollypop.window import Window
 from lollypop.database import Database
 from lollypop.player import Player
 from lollypop.albumart import AlbumArt
-from lollypop.settings import SettingsDialog
+from lollypop.settings import Settings, SettingsDialog
 from lollypop.mpris import MPRIS
 from lollypop.notification import NotificationManager
 from lollypop.database_albums import DatabaseAlbums
@@ -32,6 +32,7 @@ from lollypop.database_tracks import DatabaseTracks
 from lollypop.playlists import PlaylistsManager
 from lollypop.collectionscanner import CollectionScanner
 from lollypop.fullscreen import FullScreen
+from lollypop.inotify import Inotify
 
 
 class Application(Gtk.Application):
@@ -65,7 +66,7 @@ class Application(Gtk.Application):
         styleContext.add_provider_for_screen(screen, cssProvider,
                                              Gtk.STYLE_PROVIDER_PRIORITY_USER)
 
-        Objects.settings = Gio.Settings.new('org.gnome.Lollypop')
+        Objects.settings = Settings.new()
         Objects.db = Database()
         # We store a cursor for the main thread
         Objects.sql = Objects.db.get_cursor()
@@ -77,6 +78,12 @@ class Application(Gtk.Application):
         Objects.playlists = PlaylistsManager()
         Objects.scanner = CollectionScanner()
         Objects.art = AlbumArt()
+        if not Objects.settings.get_value('disable-mpris'):
+            MPRIS(self)
+        if not Objects.settings.get_value('disable-notifications'):
+            Objects.notify = NotificationManager()
+        if Objects.settings.get_value('auto-update'):
+            Objects.inotify = Inotify()
 
         settings = Gtk.Settings.get_default()
         dark = Objects.settings.get_value('dark-ui')
@@ -121,10 +128,6 @@ class Application(Gtk.Application):
             if not is_gnome() and not is_unity():
                 Objects.window.setup_menu(menu)
             Objects.window.connect('delete-event', self._hide_on_delete)
-            if not Objects.settings.get_value('disable-mpris'):
-                MPRIS(self)
-            if not Objects.settings.get_value('disable-notifications'):
-                Objects.notify = NotificationManager()
             Objects.window.update_lists()
             Objects.window.show()
             Objects.player.restore_state()

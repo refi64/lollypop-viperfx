@@ -23,12 +23,12 @@
             <summary>Window maximized</summary>
             <description>Window maximized state.</description>
         </key>
-  	<key type="ai" name="party-ids">
+  	    <key type="ai" name="party-ids">
             <default>[]</default>
             <summary>Enabled genres in party mode</summary>
             <description>Ids for genres.</description>
         </key>
-  	<key type="as" name="music-path">
+  	    <key type="as" name="music-path">
             <default>[]</default>
             <summary>Music paths</summary>
             <description>When empty, use XDG_MUSIC_DIR</description>
@@ -48,9 +48,9 @@
             <summary>Replay gain value in db</summary>
             <description>Between -15 and 15</description>
         </key>
-         <key type="b" name="startup-scan">
+         <key type="b" name="auto-update">
             <default>true</default>
-            <summary>Scan library at startup</summary>
+            <summary>Auto update db</summary>
             <description></description>
         </key>
          <key type="b" name="show-genres">

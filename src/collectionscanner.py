@@ -12,7 +12,7 @@
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 import os
-from time import sleep, time
+from time import sleep
 from gettext import gettext as _
 from gi.repository import GLib, GObject, Gio
 from _thread import start_new_thread
@@ -29,9 +29,8 @@ class CollectionScanner(GObject.GObject, ScannerTagReader):
         'genre-update': (GObject.SignalFlags.RUN_FIRST, None, (int,)),
         'added': (GObject.SignalFlags.RUN_FIRST, None, (int, bool))
     }
-
     """
-        Init scanner
+        Init collection scanner
     """
     def __init__(self):
         GObject.GObject.__init__(self)
@@ -39,34 +38,24 @@ class CollectionScanner(GObject.GObject, ScannerTagReader):
         self._is_empty = True
         self._in_thread = False
         self._is_locked = False
-
-    """
-        Set progress bar to be filed
-        @warning Mandatory
-        @param progress as Gtk.Progress
-    """
-    def set_progress(self, progress):
-        self._progress = progress
+        self._progress = None
 
     """
         Update database
         @param smooth as bool, if smooth, try to scan smoothly
+        @param progress as progress bar
     """
-    def update(self, smooth):
-        paths = Objects.settings.get_value('music-path')
+    def update(self, smooth, progress):
+        self._progress = progress
+        paths = Objects.settings.get_music_paths()
         if not paths:
-            if GLib.get_user_special_dir(GLib.UserDirectory.DIRECTORY_MUSIC):
-                paths = [GLib.get_user_special_dir(
-                                          GLib.UserDirectory.DIRECTORY_MUSIC)]
-            else:
-                print("You need to add a music path"
-                      " to org.gnome.Lollypop in dconf")
-                return
+            return
 
         if not self._in_thread:
             if Objects.notify is not None:
                 Objects.notify.send(_("Your music is updating"))
-            self._progress.show()
+            if self._progress is not None:
+                self._progress.show()
             self._in_thread = True
             self._is_locked = True
             self._compilations = []
@@ -95,22 +84,29 @@ class CollectionScanner(GObject.GObject, ScannerTagReader):
         Stop scan
     """
     def stop(self):
-        self._progress.hide()
+        if self._progress is not None:
+            self._progress.hide()
+            self._progress = None
         self._in_thread = False
 
 #######################
 # PRIVATE             #
 #######################
     """
-        Return all tracks for paths
+        Return all tracks/dirs for paths
         @param paths as string
-        @return ([tracks path], count)
+        @return ([tracks path], [dirs path], track count)
     """
-    def _get_tracks_for_paths(self, paths):
+    def _get_objects_for_paths(self, paths):
         tracks = []
+        track_dirs = list(paths)
         count = 0
         for path in paths:
             for root, dirs, files in os.walk(path):
+                # Add dirs
+                for d in dirs:
+                    track_dirs.append(os.path.join(root, d))
+                # Add files
                 for name in files:
                     filepath = os.path.join(root, name)
                     f = Gio.File.new_for_path(filepath)
@@ -119,21 +115,24 @@ class CollectionScanner(GObject.GObject, ScannerTagReader):
                         count += 1
                     else:
                         debug("%s not detected as a music file" % filepath)
-        return (tracks, count)
+        return (tracks, track_dirs, count)
 
     """
         Update progress bar status
         @param scanned items as int, total items as int
     """
     def _update_progress(self, current, total):
-        self._progress.set_fraction(current/total)
+        if self._progress is not None:
+            self._progress.set_fraction(current/total)
 
     """
         Notify from main thread when scan finished
     """
     def _finish(self):
-        self._progress.hide()
-        self._progress.set_fraction(0.0)
+        if self._progress is not None:
+            self._progress.hide()
+            self._progress.set_fraction(0.0)
+            self._progress = None
         self._in_thread = False
         self._is_locked = False
         self.emit("scan-finished")
@@ -155,12 +154,13 @@ class CollectionScanner(GObject.GObject, ScannerTagReader):
             Objects.albums.set_path(album_id, path, sql)
 
     """
-        Add specified files to collection
+        Add temporaly specified files to collection
         @param files as [Gio.Files]
         @thread safe
     """
     def _add(self, files):
-        GLib.idle_add(self._progress.show)
+        if self._progress is not None:
+            GLib.idle_add(self._progress.show)
         sql = Objects.db.get_cursor()
         tracks = Objects.tracks.get_paths(sql)
         count = len(files)
@@ -190,7 +190,9 @@ class CollectionScanner(GObject.GObject, ScannerTagReader):
         Objects.albums.search_compilations(True, sql)
         sql.commit()
         sql.close()
-        GLib.idle_add(self._progress.hide)
+        if self._progress is not None:
+            GLib.idle_add(self._progress.hide)
+            self._progress = None
         self._in_thread = False
         self._is_locked = False
 
@@ -208,7 +210,10 @@ class CollectionScanner(GObject.GObject, ScannerTagReader):
         if not smooth:
             Objects.art.clean_all_cache(sql)
 
-        (new_tracks, count) = self._get_tracks_for_paths(paths)
+        # Add monitors on dirs
+        (new_tracks, new_dirs, count) = self._get_objects_for_paths(paths)
+        for d in new_dirs:
+            Objects.inotify.add_monitor(d)
 
         i = 0
         for filepath in new_tracks:

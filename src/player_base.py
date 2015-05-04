@@ -32,9 +32,7 @@ class BasePlayer(GObject.GObject):
     def __init__(self):
         # In case of multiple subclassing, 
         # do not init variables for every subclass
-        try:
-            self._base_init == True
-        except:
+        if not hasattr(self, 'albums'):
             GObject.GObject.__init__(self)    
             self._base_init = True
             # A user playlist used as current playlist

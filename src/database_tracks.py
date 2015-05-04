@@ -58,6 +58,15 @@ class DatabaseTracks:
             print("DatabaseTracks::add: ", e, ascii(filepath))
 
     """
+        Remove track
+        @param filepath as str
+    """
+    def remove(self, filepath, sql=None):
+        if not sql:
+            sql = Objects.sql
+        sql.execute("DELETE FROM tracks WHERE filepath=?", (filepath))
+
+    """
         Add artist to track
         @param track id as int
         @param artist id as int
@@ -102,7 +111,7 @@ class DatabaseTracks:
         if v:
             return v[0]
 
-        return -1
+        return None
 
     """
         Get track name for track id

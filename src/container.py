@@ -63,7 +63,7 @@ class Container:
         self._vm.connect('mount-added', self._on_mount_added)
         self._vm.connect('mount-removed', self._on_mount_removed)
 
-        Objects.playlists.connect("playlists-changed",
+        Objects.playlists.connect('playlists-changed',
                                   self.update_lists)
 
     """
@@ -75,18 +75,22 @@ class Container:
         if Objects.scanner.is_locked():
             Objects.scanner.stop()
             GLib.timeout_add(250, self.update_db, force)
-        # Something is using progress bar, do nothing
-        elif not self._progress.is_visible():
+        
+        else:
+            # Something (device manager) is using progress bar
+            progress = None
+            if not self._progress.is_visible():
+                progress = self._progress
             if force:
                 Objects.tracks.remove_outside()
                 self._list_one_restore = self._list_one.get_selected_id()
                 self._list_two_restore = self._list_two.get_selected_id()
                 self.update_lists(True)
-                Objects.scanner.update(False)
+                Objects.scanner.update(False, progress)
             elif Objects.tracks.is_empty():
-                Objects.scanner.update(False)
-            elif Objects.settings.get_value('startup-scan'):
-                Objects.scanner.update(True)
+                Objects.scanner.update(False, progress)
+            elif Objects.settings.get_value('auto-update'):
+                Objects.scanner.update(True, progress)
 
     """
         Save view state
@@ -197,6 +201,15 @@ class Container:
         if view:
             start_new_thread(view.update_covers, ())
 
+    """
+        Mark force scan as False, update lists
+        @param scanner as CollectionScanner
+    """
+    def on_scan_finished(self, scanner):
+        if self._list_one.is_populating() or self._list_two.is_populating():
+            GLib.timeout_add(500, self.on_scan_finished, scanner)
+        else:
+            self.update_lists(scanner)
 ############
 # Private  #
 ############
@@ -235,10 +248,10 @@ class Container:
         self._paned_main_list.add2(self._paned_list_view)
         self._paned_main_list.set_position(
                         Objects.settings.get_value(
-                                "paned-mainlist-width").get_int32())
+                                'paned-mainlist-width').get_int32())
         self._paned_list_view.set_position(
                         Objects.settings.get_value(
-                                "paned-listview-width").get_int32())
+                                'paned-listview-width').get_int32())
         self._paned_main_list.show()
         self._paned_list_view.show()
 
@@ -286,11 +299,10 @@ class Container:
         @return True if hard scan is running
     """
     def _setup_scanner(self):
-        Objects.scanner.set_progress(self._progress)
-        Objects.scanner.connect("scan-finished", self._on_scan_finished)
-        Objects.scanner.connect("genre-update", self._add_genre)
-        Objects.scanner.connect("artist-update", self._add_artist)
-        Objects.scanner.connect("added", self._play_track)
+        Objects.scanner.connect('scan-finished', self.on_scan_finished)
+        Objects.scanner.connect('genre-update', self._add_genre)
+        Objects.scanner.connect('artist-update', self._add_artist)
+        Objects.scanner.connect('added', self._play_track)
 
     """
         Update list one
@@ -595,16 +607,6 @@ class Container:
             Objects.player.load(track_id)
         elif not Objects.player.is_party():
             Objects.player.add_to_user_playlist(track_id)
-
-    """
-        Mark force scan as False, update lists
-        @param scanner as CollectionScanner
-    """
-    def _on_scan_finished(self, scanner):
-        if self._list_one.is_populating() or self._list_two.is_populating():
-            GLib.timeout_add(500, self._on_scan_finished, scanner)
-        else:
-            self.update_lists(scanner)
 
     """
         On volume mounter
