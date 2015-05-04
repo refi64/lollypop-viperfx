@@ -13,11 +13,10 @@
 
 from gi.repository import Gio, GLib
 
-from _thread import start_new_thread
 import os
 
 from lollypop.define import Objects
-from lollypop.utils import is_audio
+
 
 class Inotify:
     # 20 second before updating database

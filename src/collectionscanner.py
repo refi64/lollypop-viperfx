@@ -17,7 +17,7 @@ from gettext import gettext as _
 from gi.repository import GLib, GObject, Gio
 from _thread import start_new_thread
 
-from lollypop.define import Objects, Navigation
+from lollypop.define import Objects
 from lollypop.tagreader import ScannerTagReader
 from lollypop.utils import is_audio, debug
 
