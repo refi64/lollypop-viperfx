@@ -26,58 +26,65 @@ class TrackRow(Gtk.ListBoxRow):
     def __init__(self):
         Gtk.ListBoxRow.__init__(self)
         self._object_id = None
-        self._num = 0
         self._number = 0
-        self._ui = Gtk.Builder()
-        self._ui.add_from_resource('/org/gnome/Lollypop/TrackRow.ui')
-        self._row_widget = self._ui.get_object('row')
-        self._ui.get_object('menu').connect('clicked', self._pop_menu)
+        builder = Gtk.Builder()
+        builder.add_from_resource('/org/gnome/Lollypop/TrackRow.ui')
+        self._row_widget = builder.get_object('row')
+        self._title_label = builder.get_object('title')
+        self._duration_label = builder.get_object('duration')
+        self._num_label = builder.get_object('num')
+        self._cover = builder.get_object('cover')
+        self._menu = builder.get_object('menu')
+        self._icon = builder.get_object('icon')
+        self._menu.connect('clicked', self._pop_menu)
         self.add(self._row_widget)
         self.get_style_context().add_class('trackrow')
         self.show()
-
-    """
-        Destroy all widgets
-    """
-    def destroy(self):
-        self.remove(self._row_widget)
-        Gtk.ListBoxRow.destroy(self)
 
     """
         Show play icon
         @param widget name as str
         @param show as bool
     """
-    def show_widget(self, name, show):
-        widget = self._ui.get_object(name)
-        if name == "icon":
-            if show:
-                widget.set_from_icon_name('media-playback-start-symbolic', 1)
-                self.get_style_context().remove_class('trackrow')
-                self.get_style_context().add_class('trackrowplaying')
-            else:
-                widget.clear()
-                self.get_style_context().remove_class('trackrowplaying')
-                self.get_style_context().add_class('trackrow')
+    def show_icon(self, show):
+        if show:
+            self._icon.set_from_icon_name('media-playback-start-symbolic', 1)
+            self.get_style_context().remove_class('trackrow')
+            self.get_style_context().add_class('trackrowplaying')
         else:
-            if show:
-                widget.show()
-            else:
-                widget.hide()
+            self._icon.clear()
+            self.get_style_context().remove_class('trackrowplaying')
+            self.get_style_context().add_class('trackrow')
 
     """
-        Set object label
-        @param object as string
+        Show menu
+    """
+    def show_menu(self, show):
+        if show:
+            self._menu.show()
+        else:
+            self._menu.hide()
+
+    """
+        Set num label
         @param label as string
     """
-    def set_label(self, obj, label):
-        self._ui.get_object(obj).set_markup(label)
+    def set_num_label(self, label):
+        self._num_label.set_text(label)
 
     """
-        Get object label
+        Set title label
+        @param label as string
     """
-    def get_label(self, obj):
-        return self._ui.get_object(obj).get_text()
+    def set_title_label(self, label):
+        self._title_label.set_text(label)
+
+    """
+        Set duration label
+        @param label as string
+    """
+    def set_duration_label(self, label):
+        self._duration_label.set_text(label)
 
     """
         Store current object id
@@ -112,7 +119,8 @@ class TrackRow(Gtk.ListBoxRow):
         @param cover as Gdk.Pixbuf
     """
     def set_cover(self, pixbuf):
-        self._ui.get_object('cover').set_from_pixbuf(pixbuf)
+        self._cover.set_from_pixbuf(pixbuf)
+        del pixbuf
 
 #######################
 # PRIVATE             #
@@ -123,7 +131,7 @@ class TrackRow(Gtk.ListBoxRow):
     """
     def _pop_menu(self, widget):
         menu = PopTrackMenu(self._object_id, None)
-        popover = Gtk.Popover.new_from_model(self._ui.get_object('menu'), menu)
+        popover = Gtk.Popover.new_from_model(self._menu, menu)
         popover.connect('closed', self._on_closed)
         self.get_style_context().add_class('menu-selected')
         popover.show()
@@ -169,28 +177,26 @@ class TracksWidget(Gtk.ListBox):
     def add_track(self, track_id, num, title, length,
                   pos, show_cover=False):
         track_row = TrackRow()
-        track_row.show_widget('cover', show_cover)
-        track_row.show_widget('menu', self._show_menu)
+        track_row.show_menu(self._show_menu)
         if Objects.player.current.id == track_id:
-            track_row.show_widget('icon', True)
+            track_row.show_icon(True)
         if pos:
-            track_row.set_label(
-                        'num',
+            track_row.set_num_label(
                         '''<span foreground="%s"\
                         font_desc="Bold">%s</span>''' %\
                         (rgba_to_hex(Objects.window.get_selected_color()),
                          str(pos)))
         else:
-            track_row.set_label('num', str(num))
+            track_row.set_num_label(str(num))
         track_row.set_number(num)
-        track_row.set_label('title', title)
-        track_row.set_label('duration', seconds_to_string(length))
+        track_row.set_title_label(title)
+        track_row.set_duration_label(seconds_to_string(length))
         track_row.set_object_id(track_id)
         if show_cover:
             album_id = Objects.tracks.get_album_id(track_id)
             pixbuf = Objects.art.get(album_id, ArtSize.MEDIUM)
             track_row.set_cover(pixbuf)
-            del pixbuf
+            track_row.show_cover(True)
         track_row.show()
         self.add(track_row)
 
@@ -201,9 +207,9 @@ class TracksWidget(Gtk.ListBox):
     def update_playing(self, track_id):
         for row in self.get_children():
             if row.get_object_id() == track_id:
-                row.show_widget('icon', True)
+                row.show_icon(True)
             else:
-                row.show_widget('icon', False)
+                row.show_icon(False)
 
     """
         Set signals callback
