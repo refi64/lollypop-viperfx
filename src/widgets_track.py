@@ -78,6 +78,7 @@ class TrackRow(Gtk.ListBoxRow):
     """
     def set_title_label(self, label):
         self._title_label.set_text(label)
+        self._title_label.set_tooltip_text(label)
 
     """
         Set duration label
