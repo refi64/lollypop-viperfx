@@ -180,6 +180,7 @@ class Container:
     """
     def show_genres(self, show):
         self._show_genres = show
+        self._list_one.clear()
         self._update_list_one(None)
 
     """
@@ -551,6 +552,7 @@ class Container:
         else:
             start_new_thread(self._setup_list_artists,
                              (self._list_two, selected_id, False))
+            self._list_two.clear()
             self._list_two.widget.show()
             if self._list_two_restore == Navigation.NONE:
                 self._update_view_albums(selected_id)

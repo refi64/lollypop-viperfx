@@ -241,7 +241,6 @@ class SelectionList(GObject.GObject):
         @thread safe
     """
     def _populate(self, values):
-        GLib.idle_add(self._model.clear)
         GLib.idle_add(self._add_item, values, self._pop_time)
 
     """
