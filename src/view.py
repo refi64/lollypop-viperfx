@@ -22,6 +22,9 @@ class View(Gtk.Grid):
         Gtk.Grid.__init__(self)
         self.set_property("orientation", Gtk.Orientation.VERTICAL)
         self.set_border_width(0)
+        # Fix ubuntu bug drawing black background
+        # when using overlay scrollbars
+        self.get_style_context().add_class('view_container')
         self._current_signal = Objects.player.connect("current-changed",
                                                       self._on_current_changed)
         self._cover_signal = Objects.player.connect("cover-changed",

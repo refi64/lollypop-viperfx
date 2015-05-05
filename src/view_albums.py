@@ -35,7 +35,6 @@ class ArtistView(View):
         self._artist_id = artist_id
         self._genre_id = genre_id
         self._signal_id = None
-
         if show_artist_details:
             builder = Gtk.Builder()
             builder.add_from_resource('/org/gnome/Lollypop/ArtistView.ui')
