@@ -68,6 +68,7 @@ src/window.py
 [type: gettext/glade]data/PopAlbumCovers.ui
 [type: gettext/glade]data/QueueWidget.ui
 [type: gettext/glade]data/SearchRow.ui
+[type: gettext/glade]data/SelectionList.ui
 [type: gettext/glade]data/SettingsDialog.ui
 [type: gettext/glade]data/Toolbar.ui
 [type: gettext/glade]data/TrackRow.ui

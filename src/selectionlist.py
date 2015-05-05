@@ -32,15 +32,10 @@ class SelectionList(GObject.GObject):
     """
     def __init__(self):
         GObject.GObject.__init__(self)
-
-        self._model = Gtk.ListStore(int, str, GdkPixbuf.Pixbuf)
-        self._model.set_sort_column_id(0, Gtk.SortType.ASCENDING)
-        self._model.set_sort_func(0, self._sort_items)
         self._loading = False
         self._updating = False       # Sort disabled if False
         self._is_artists = False  # for string translation
         self._pop_time = 0.0      # Keep track of time when starting populate
-
         try:
             lookup_flag = Gtk.IconLookupFlags.FORCE_SVG
             if Gtk.Widget.get_default_direction() == Gtk.TextDirection.RTL:
@@ -61,12 +56,14 @@ class SelectionList(GObject.GObject):
                                             'multimedia-player-symbolic',
                                             16,
                                             Gtk.IconLookupFlags.FORCE_SVG)
-        self._view = Gtk.TreeView(model=self._model)
-        self._view.set_property('fixed_height_mode', True)
-        self._view.set_enable_search(True)
-        self._view.set_search_column(1)
-        self._signal_id = self._view.connect('cursor-changed',
-                                             self._new_item_selected)
+
+        builder = Gtk.Builder()
+        builder.add_from_resource('/org/gnome/Lollypop/SelectionList.ui')
+        builder.connect_signals(self)
+        self._model = builder.get_object('model')
+        self._model.set_sort_column_id(0, Gtk.SortType.ASCENDING)
+        self._model.set_sort_func(0, self._sort_items)
+        self._view = builder.get_object('view')
 
         renderer0 = Gtk.CellRendererText()
         renderer0.set_property('ellipsize-set', True)
@@ -83,13 +80,7 @@ class SelectionList(GObject.GObject):
         self._view.append_column(column0)
         self._view.append_column(column1)
 
-        self._view.set_headers_visible(False)
-        self._view.show()
-
-        self.widget = Gtk.ScrolledWindow()
-        self.widget.set_vexpand(True)
-        self.widget.set_policy(Gtk.PolicyType.NEVER, Gtk.PolicyType.AUTOMATIC)
-        self.widget.add(self._view)
+        self.widget = builder.get_object('widget')
 
     """
         Mark list as artists list
@@ -111,9 +102,6 @@ class SelectionList(GObject.GObject):
     """
     def populate(self, values):
         self._pop_time = time()
-        if self._signal_id:
-            self._view.disconnect(self._signal_id)
-            self._signal_id = None
         start_new_thread(self._populate, (values,))
 
     """
@@ -153,9 +141,6 @@ class SelectionList(GObject.GObject):
     """
     def update(self, values):
         self._updating = True
-        if self._signal_id:
-            self._view.disconnect(self._signal_id)
-            self._signal_id = None
         for item in self._model:
             found = False
             for value in values:
@@ -180,8 +165,6 @@ class SelectionList(GObject.GObject):
                 self._model.append([value[0],
                                    string,
                                    self._get_pixbuf(value[0])])
-        self._signal_id = self._view.connect('cursor-changed',
-                                             self._new_item_selected)
         self._updating = False
 
     """
@@ -245,10 +228,9 @@ class SelectionList(GObject.GObject):
         Clear treeview
     """
     def clear(self):
-        if self._signal_id:
-            self._view.disconnect(self._signal_id)
-            self._signal_id = None
+        self._updating = True
         self._model.clear()
+        self._updating = False
 
 #######################
 # PRIVATE             #
@@ -273,8 +255,6 @@ class SelectionList(GObject.GObject):
             values = None
             return
         elif not values:
-            self._signal_id = self._view.connect('cursor-changed',
-                                                 self._new_item_selected)
             self.emit("populated")
             del values
             values = None
@@ -348,4 +328,5 @@ class SelectionList(GObject.GObject):
         @param view as Gtk.TreeView
     """
     def _new_item_selected(self, view):
-        self.emit('item-selected', self.get_selected_id())
+        if not self._updating:
+            self.emit('item-selected', self.get_selected_id())
