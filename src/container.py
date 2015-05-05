@@ -509,7 +509,8 @@ class Container:
             dev.name = volume.get_name()
             dev.path = path
             self._devices[self._devices_index] = dev
-            self._list_one.add_device(dev.name, dev.id)
+            if not self._list_one.is_populating():
+                self._list_one.add_value((dev.id, dev.name))
 
     """
         Remove volume from device list
@@ -564,7 +565,7 @@ class Container:
     """
     def _on_list_one_populated(self, selection_list):
         for dev in self._devices.values():
-            self._list_one.add_device(dev.name, dev.id)
+            self._list_one.add_value((dev.id, dev.name))
         if self._need_to_update_db:
             self._need_to_update_db = False
             self.update_db()

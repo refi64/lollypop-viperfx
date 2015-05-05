@@ -159,22 +159,6 @@ class SelectionList(Gtk.ScrolledWindow):
             return Navigation.NONE
 
     """
-        Add volume to list if not already present
-        @param device name as str
-        @param object id as int <  -1000
-    """
-    def add_device(self, device, object_id):
-        for item in self._model:
-            if item[0] == object_id:
-                break
-            elif item[0] >= 0:
-                self._model.insert_before(item.iter,
-                                          [object_id,
-                                           device,
-                                           self._device_pixbuf])
-                break
-
-    """
         Return true if view is being populated
     """
     def is_populating(self):
@@ -261,7 +245,7 @@ class SelectionList(Gtk.ScrolledWindow):
             icon = 'document-open-recent-symbolic'
         elif object_id == Navigation.RADIOS:
             icon = 'audio-input-microphone-symbolic'
-        elif object_id == Navigation.DEVICES:
+        elif object_id < Navigation.DEVICES:
             icon = 'multimedia-player-symbolic'
         return icon
 
