@@ -38,10 +38,11 @@ class QueueWidget(Gtk.Popover):
         builder.add_from_resource(
                         '/org/gnome/Lollypop/QueueWidget.ui')
 
-        self._model = Gtk.ListStore(GdkPixbuf.Pixbuf,
-                                    str,
-                                    str,
-                                    int)
+        self._model = Gtk.ListStore(GdkPixbuf.Pixbuf,  # Cover
+                                    str,               # Artist
+                                    str,               # icon
+                                    int,               # id
+                                    str)               # tooltip
 
         self._view = builder.get_object('view')
         self._view.set_model(self._model)
@@ -71,6 +72,7 @@ class QueueWidget(Gtk.Popover):
         self._view.append_column(column0)
         self._view.append_column(column1)
         self._view.append_column(column2)
+        self._view.set_tooltip_column(4)
 
         self.add(self._widget)
 
@@ -92,12 +94,14 @@ class QueueWidget(Gtk.Popover):
             artist_name = Objects.artists.get_name(artist_id)
             track_name = Objects.tracks.get_name(track_id)
             pixbuf = Objects.art.get(album_id, ArtSize.MEDIUM)
-            self._model.append([pixbuf,
-                                "<b>%s</b>\n%s" %
+            title = "<b>%s</b>\n%s" %\
                                 (escape(translate_artist_name(artist_name)),
-                                 escape(track_name)),
+                                 escape(track_name))
+            self._model.append([pixbuf,
+                                title,
                                 'list-remove-symbolic',
-                                track_id])
+                                track_id,
+                                title])
             del pixbuf
 
         self._signal_id1 = Objects.player.connect("current-changed",
