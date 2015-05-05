@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-05-04 17:10+0200\n"
+"POT-Creation-Date: 2015-05-05 18:22+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -165,38 +165,38 @@ msgstr ""
 msgid "Your music is updating"
 msgstr ""
 
-#: ../src/container.py:340
+#: ../src/container.py:341
 msgid "Popular albums"
 msgstr ""
 
-#: ../src/container.py:341
+#: ../src/container.py:342
 msgid "Recent albums"
 msgstr ""
 
-#: ../src/container.py:342 ../src/popmenu.py:321 ../src/popmenu.py:336
+#: ../src/container.py:343 ../src/popmenu.py:321 ../src/popmenu.py:336
 #: ../src/popmenu.py:351
 msgid "Playlists"
 msgstr ""
 
-#: ../src/container.py:343
+#: ../src/container.py:344
 msgid "Radios"
 msgstr ""
 
-#: ../src/container.py:345
+#: ../src/container.py:346
 msgid "All artists"
 msgstr ""
 
-#: ../src/container.py:347
+#: ../src/container.py:348
 msgid "All albums"
 msgstr ""
 
-#: ../src/container.py:389
+#: ../src/container.py:390
 msgid "Compilations"
 msgstr ""
 
 #: ../src/database_albums.py:233 ../src/database_artists.py:70
-#: ../src/database_genres.py:67 ../src/database_tracks.py:196
-#: ../src/tagreader.py:74 ../src/tagreader.py:100 ../src/tagreader.py:112
+#: ../src/database_genres.py:67 ../src/database_tracks.py:187
+#: ../src/tagreader.py:75 ../src/tagreader.py:103 ../src/tagreader.py:115
 msgid "Unknown"
 msgstr ""
 
@@ -335,16 +335,16 @@ msgstr ""
 msgid "No free space available on device"
 msgstr ""
 
-#: ../src/widgets_playlist.py:222 ../src/widgets_playlist.py:225
+#: ../src/widgets_playlist.py:224 ../src/widgets_playlist.py:227
 msgid "New playlist "
 msgstr ""
 
-#: ../src/widgets_playlist.py:267 ../src/widgets_playlist.py:526
+#: ../src/widgets_playlist.py:269 ../src/widgets_playlist.py:528
 #, python-format
 msgid "Remove \"%s\"?"
 msgstr ""
 
-#: ../src/widgets_playlist.py:565
+#: ../src/widgets_playlist.py:567
 msgid "Remove these tracks?"
 msgstr ""
 
