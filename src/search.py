@@ -35,7 +35,7 @@ class SearchRow(Gtk.ListBoxRow):
         builder.connect_signals(self)
         self._row_widget = builder.get_object('row')
         self._artist = builder.get_object('artist')
-        self._item = builder.get_object('item')
+        self._title = builder.get_object('item')
         self._cover = builder.get_object('cover')
         self.add(self._row_widget)
 
@@ -49,18 +49,14 @@ class SearchRow(Gtk.ListBoxRow):
         Gtk.ListBoxRow.destroy(self)
 
     """
-        Set artist label
+        Set artist and title label
         @param untranslated artist name as string
-    """
-    def set_artist(self, name):
-        self._artist.set_text(translate_artist_name(name))
-
-    """
-        Set item label
         @param item name as string
     """
-    def set_title(self, name):
-        self._item.set_text(name)
+    def set_text(self, artist, title):
+        self._artist.set_text(translate_artist_name(artist))
+        self._title.set_text(title)
+        self.set_tooltip_text(artist + " - " + title)
 
     """
         Set cover pixbuf
@@ -327,10 +323,9 @@ class SearchWidget(Gtk.Popover):
             result = results.pop(0)
             if not self._exists(result):
                 search_row = SearchRow(self._parent)
-                search_row.set_artist(result.artist)
                 if result.count != -1:
                     result.title += " (%s)" % result.count
-                search_row.set_title(result.title)
+                search_row.set_text(result.artist, result.title)
                 search_row.set_cover(Objects.art.get(result.album_id,
                                                      ArtSize.MEDIUM))
                 search_row.id = result.id
