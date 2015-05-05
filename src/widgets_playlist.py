@@ -112,6 +112,8 @@ class PlaylistWidget(Gtk.Bin):
 
         (title, filepath, length, album_id) =\
             Objects.tracks.get_infos(track_id)
+        if title is None:
+            return
 
         artist_name = ""
         for artist_id in Objects.tracks.get_artist_ids(track_id):

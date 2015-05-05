@@ -238,6 +238,7 @@ class DatabaseTracks:
         @param Track id as int
         @return (name as string, filepath as string,
         length as int, tracknumber as int, album_id as int)
+        Returned values can be (None, None, None, None)
     """
     def get_infos(self, track_id, sql=None):
         if not sql:
@@ -248,7 +249,7 @@ class DatabaseTracks:
         v = result.fetchone()
         if v:
             return v
-        return ()
+        return (None, None, None, None)
 
     """
         Get aartist id for track id
