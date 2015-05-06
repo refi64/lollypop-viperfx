@@ -9,7 +9,7 @@
       <!-- column-name label -->
       <column type="gchararray"/>
       <!-- column-name icon -->
-      <column type="GdkPixbuf"/>
+      <column type="gchararray"/>
     </columns>
   </object>
   <object class="GtkScrolledWindow" id="widget">

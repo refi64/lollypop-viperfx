@@ -36,26 +36,6 @@ class SelectionList(GObject.GObject):
         self._updating = False       # Sort disabled if False
         self._is_artists = False  # for string translation
         self._pop_time = 0.0      # Keep track of time when starting populate
-        try:
-            lookup_flag = Gtk.IconLookupFlags.FORCE_SVG
-            if Gtk.Widget.get_default_direction() == Gtk.TextDirection.RTL:
-                lookup_flag |= Gtk.IconLookupFlags.DIR_RTL
-            else:
-                lookup_flag |= Gtk.IconLookupFlags.DIR_LTR
-            self._default_pixbuf = Gtk.IconTheme.get_default().load_icon(
-                                                'go-next-symbolic',
-                                                16,
-                                                lookup_flag)
-        except: #TODO remove me later, Gtk < 3.14 support
-            self._default_pixbuf = Gtk.IconTheme.get_default().load_icon(
-                                                'go-next-symbolic',
-                                                16,
-                                                Gtk.IconLookupFlags.FORCE_SVG)
-
-        self._device_pixbuf = Gtk.IconTheme.get_default().load_icon(
-                                            'multimedia-player-symbolic',
-                                            16,
-                                            Gtk.IconLookupFlags.FORCE_SVG)
 
         builder = Gtk.Builder()
         builder.add_from_resource('/org/gnome/Lollypop/SelectionList.ui')
@@ -68,13 +48,14 @@ class SelectionList(GObject.GObject):
         renderer0 = Gtk.CellRendererText()
         renderer0.set_property('ellipsize-set', True)
         renderer0.set_property('ellipsize', Pango.EllipsizeMode.END)
-        column0 = Gtk.TreeViewColumn('', renderer0, text=1)
+        column0 = Gtk.TreeViewColumn('', renderer0)
+        column0.add_attribute(renderer0, 'text', 1)
         column0.set_expand(True)
         column0.set_sizing(Gtk.TreeViewColumnSizing.FIXED)
 
         renderer1 = Gtk.CellRendererPixbuf()
-        renderer1.set_property('stock-size', 16)
-        column1 = Gtk.TreeViewColumn("pixbuf1", renderer1, pixbuf=2)
+        column1 = Gtk.TreeViewColumn('', renderer1)
+        column1.add_attribute(renderer1, 'icon-name', 2)
         column1.set_sizing(Gtk.TreeViewColumnSizing.FIXED)
 
         self._view.append_column(column0)
@@ -132,7 +113,7 @@ class SelectionList(GObject.GObject):
                 string = value[1]
             self._model.append([value[0],
                                 string,
-                                self._get_pixbuf(value[0])])
+                                self._get_icon_name(value[0])])
         self._updating = False
 
     """
@@ -164,7 +145,7 @@ class SelectionList(GObject.GObject):
                     string = value[1]
                 self._model.append([value[0],
                                    string,
-                                   self._get_pixbuf(value[0])])
+                                   self._get_icon_name(value[0])])
         self._updating = False
 
     """
@@ -260,23 +241,19 @@ class SelectionList(GObject.GObject):
             self._pop_time = 0
             return
 
-        (object_id, string) = values.pop(0)
-        # Translating artist@@@@the => The artist
-        if self._is_artists:
-            string = translate_artist_name(string)
-
-        self._model.append([object_id,
-                            string,
-                            self._get_pixbuf(object_id)])
+        value = values.pop(0)
+        self.add(value)
         GLib.idle_add(self._add_item, values, time)
 
     """
         Return pixbuf for id
         @param ojbect_id as id
     """
-    def _get_pixbuf(self, object_id):
-        icon = None
-        if object_id == Navigation.POPULARS:
+    def _get_icon_name(self, object_id):
+        icon = ''
+        if object_id >= 0:
+            icon = 'go-next-symbolic'
+        elif object_id == Navigation.POPULARS:
             icon = 'emblem-favorite-symbolic'
         elif object_id == Navigation.PLAYLISTS:
             icon = 'emblem-documents-symbolic'
@@ -288,14 +265,9 @@ class SelectionList(GObject.GObject):
             icon = 'document-open-recent-symbolic'
         elif object_id == Navigation.RADIOS:
             icon = 'audio-input-microphone-symbolic'
-
-        if icon:
-            return Gtk.IconTheme.get_default().load_icon(
-                                            icon,
-                                            16,
-                                            Gtk.IconLookupFlags.FORCE_SVG)
-        else:
-            return self._default_pixbuf
+        elif object_id == Navigation.DEVICES:
+            icon = 'multimedia-player-symbolic'
+        return icon
 
     """
         Sort model
