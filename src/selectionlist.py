@@ -125,7 +125,7 @@ class SelectionList(Gtk.ScrolledWindow):
                 self._model.remove(item.iter)
 
         for value in values:
-            self._add(value)
+            self._add_value(value)
         self._updating = False
 
     """
