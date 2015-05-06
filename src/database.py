@@ -166,6 +166,6 @@ class Database:
     """
     def get_cursor(self):
         try:
-            return sqlite3.connect(self.DB_PATH, 60.0)
+            return sqlite3.connect(self.DB_PATH, 600.0)
         except:
             exit(-1)
