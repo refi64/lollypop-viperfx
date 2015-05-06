@@ -45,6 +45,7 @@ class RadiosView(View):
         self._radiobox.connect("child-activated", self._on_album_activated)
         self._radiobox.set_property('column-spacing', 5)
         self._radiobox.set_property('row-spacing', 5)
+        self._radiobox.set_homogeneous(True)
         self._radiobox.show()
 
         self._viewport.set_property("valign", Gtk.Align.START)
