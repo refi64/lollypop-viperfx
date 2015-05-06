@@ -82,9 +82,6 @@ class Container:
                 progress = self._progress
             if force:
                 Objects.tracks.remove_outside()
-                self._list_one_restore = self._list_one.get_selected_id()
-                self._list_two_restore = self._list_two.get_selected_id()
-                self.update_lists(True)
                 Objects.scanner.update(False, progress)
             elif Objects.tracks.is_empty():
                 Objects.scanner.update(False, progress)
@@ -406,7 +403,7 @@ class Container:
     def _setup_list_playlists(self, update):
         playlists = Objects.playlists.get()
         if update:
-            self._list_two.update(playlists)
+            self._list_two.update_values(playlists)
         else:
             self._list_two.mark_as_artists(False)
             self._list_two.populate(playlists)
