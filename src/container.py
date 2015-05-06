@@ -394,7 +394,7 @@ class Container:
         items += Objects.artists.get(genre_id, sql)
 
         if update:
-            selection_list.update(items)
+            selection_list.update_values(items)
         else:
             selection_list.populate(items)
         sql.close()
