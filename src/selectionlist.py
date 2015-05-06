@@ -35,6 +35,7 @@ class SelectionList(Gtk.ScrolledWindow):
         self.set_policy(Gtk.PolicyType.NEVER,
                         Gtk.PolicyType.AUTOMATIC)
         self._loading = False
+        self._to_select_id = Navigation.NONE
         self._updating = False       # Sort disabled if False
         self._is_artists = False  # for string translation
         self._pop_time = 0.0      # Keep track of time when starting populate
@@ -130,17 +131,20 @@ class SelectionList(Gtk.ScrolledWindow):
         @param object id as int
     """
     def select_id(self, object_id):
+        self._to_select_id = None
         try:
             selected = None
             for item in self._model:
                 if item[0] == object_id:
                     selected = item.iter
-            # If ok, here we go
-            if selected is not None:
+            # Select later
+            if selected is None:
+                self._to_select_id = object_id
+            else:
                 path = self._model.get_path(selected)
                 self._view.set_cursor(path, None, False)
         except Exception as e:
-            print("SelectionList::select_item(): %s" % e)
+            self._to_select_id = object_id
 
     """
         Get id at current position
@@ -149,10 +153,10 @@ class SelectionList(Gtk.ScrolledWindow):
     def get_selected_id(self):
         (path, column) = self._view.get_cursor()
         if path:
-            iter = self._model.get_iter(path)
-            if iter:
-                return self._model.get_value(iter, 0)
-        return Navigation.NONE
+            iterator = self._model.get_iter(path)
+            if iterator:
+                return self._model.get_value(iterator, 0)
+            return Navigation.NONE
 
     """
         Add volume to list if not already present
@@ -205,6 +209,8 @@ class SelectionList(Gtk.ScrolledWindow):
             self._model.append([value[0],
                                 string,
                                 self._get_icon_name(value[0])])
+            if value[0] == self._to_select_id:
+                self.select_id(self._to_select_id)
 
     """
         Populate view with values

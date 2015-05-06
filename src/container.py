@@ -53,10 +53,9 @@ class Container:
         self._setup_view()
         self._setup_scanner()
 
-        self._list_one_restore = Navigation.POPULARS
-        self._list_two_restore = Navigation.NONE
-        if Objects.settings.get_value('save-state'):
-            self._restore_view_state()
+        (list_one_id, list_two_id) = self._get_saved_view_state()
+        self._list_one.select_id(list_one_id)
+        self._list_two.select_id(list_two_id)
 
         # Volume manager
         self._vm = Gio.VolumeMonitor.get()
@@ -256,17 +255,21 @@ class Container:
         self._paned_list_view.show()
 
     """
-        Restore saved view
+        Get save view state
+        @return (list one id, list two id)
     """
-    def _restore_view_state(self):
-        position = Objects.settings.get_value('list-one').get_int32()
-        if position != -1:
-            self._list_one_restore = position
-        else:
-            self._list_one_restore = Navigation.POPULARS
-        position = Objects.settings.get_value('list-two').get_int32()
-        if position != -1:
-            self._list_two_restore = position
+    def _get_saved_view_state(self):
+        list_one_id = Navigation.POPULARS
+        list_two_id = Navigation.NONE
+        if Objects.settings.get_value('save-state'):
+            position = Objects.settings.get_value('list-one').get_int32()
+            if position != -1:
+                list_one_id = position
+            position = Objects.settings.get_value('list-two').get_int32()
+            if position != -1:
+                list_two_id = position
+
+        return (list_one_id, list_two_id)
 
     """
         Add genre to genre list
@@ -553,8 +556,7 @@ class Container:
                              (self._list_two, selected_id, False))
             self._list_two.clear()
             self._list_two.show()
-            if self._list_two_restore == Navigation.NONE:
-                self._update_view_albums(selected_id)
+            self._update_view_albums(selected_id, False)
 
     """
         Restore previous state
@@ -563,9 +565,6 @@ class Container:
     def _on_list_one_populated(self, selection_list):
         for dev in self._devices.values():
             self._list_one.add_device(dev.name, dev.id)
-        if self._list_one_restore is not None:
-            self._list_one.select_id(self._list_one_restore)
-            self._list_one_restore = None
         if self._need_to_update_db:
             self._need_to_update_db = False
             self.update_db()
@@ -583,15 +582,6 @@ class Container:
             self._update_view_albums(genre_id, True)
         else:
             self._update_view_artists(selected_id, genre_id)
-
-    """
-        Restore previous state
-        @param selection list as SelectionList
-    """
-    def _on_list_two_populated(self, selection_list):
-        if self._list_two_restore != Navigation.NONE:
-            self._list_two.select_id(self._list_two_restore)
-            self._list_two_restore = Navigation.NONE
 
     """
         Play tracks as user playlist
