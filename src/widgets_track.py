@@ -38,7 +38,6 @@ class TrackRow(Gtk.ListBoxRow):
         self._cover = builder.get_object('cover')
         self._menu = builder.get_object('menu')
         self._icon = builder.get_object('icon')
-        self._menu.connect('clicked', self._pop_menu)
         self.add(self._row_widget)
         self.get_style_context().add_class('trackrow')
         self.show()
@@ -131,7 +130,7 @@ class TrackRow(Gtk.ListBoxRow):
         Popup menu for track
         @param widget as Gtk.Button
     """
-    def _pop_menu(self, widget):
+    def _on_menu_clicked(self, widget):
         menu = PopTrackMenu(self._object_id, None)
         popover = Gtk.Popover.new_from_model(self._menu, menu)
         popover.connect('closed', self._on_closed)

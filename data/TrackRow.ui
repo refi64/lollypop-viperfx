@@ -25,6 +25,7 @@
         <property name="relief">none</property>
         <property name="focus_on_click">False</property>
         <property name="always_show_image">True</property>
+        <signal name="clicked" handler="_on_menu_clicked" swapped="no"/>
         <style>
           <class name="menubutton"/>
         </style>
