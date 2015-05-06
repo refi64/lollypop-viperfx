@@ -33,10 +33,6 @@ class QueueWidget(Gtk.Popover):
         self._in_drag = False
         self._signal_id1 = None
         self._signal_id2 = None
-        self._del_pixbuf = Gtk.IconTheme.get_default().load_icon(
-                                            "list-remove-symbolic",
-                                            22,
-                                            0)
 
         builder = Gtk.Builder()
         builder.add_from_resource(
@@ -44,7 +40,7 @@ class QueueWidget(Gtk.Popover):
 
         self._model = Gtk.ListStore(GdkPixbuf.Pixbuf,
                                     str,
-                                    GdkPixbuf.Pixbuf,
+                                    str,
                                     int)
 
         self._view = builder.get_object('view')
@@ -68,9 +64,8 @@ class QueueWidget(Gtk.Popover):
         column1.set_sizing(Gtk.TreeViewColumnSizing.FIXED)
 
         renderer2 = Gtk.CellRendererPixbuf()
-        renderer2.set_property('stock-size', 22)
-        renderer2.set_fixed_size(22, -1)
-        column2 = Gtk.TreeViewColumn("pixbuf2", renderer2, pixbuf=2)
+        column2 = Gtk.TreeViewColumn('', renderer2)
+        column2.add_attribute(renderer2, 'icon-name', 2)
         column2.set_sizing(Gtk.TreeViewColumnSizing.FIXED)
 
         self._view.append_column(column0)
@@ -101,7 +96,7 @@ class QueueWidget(Gtk.Popover):
                                 "<b>%s</b>\n%s" %
                                 (escape(translate_artist_name(artist_name)),
                                  escape(track_name)),
-                                self._del_pixbuf,
+                                'list-remove-symbolic',
                                 track_id])
             del pixbuf
 
