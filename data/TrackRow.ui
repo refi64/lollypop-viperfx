@@ -85,6 +85,7 @@
         <property name="visible">True</property>
         <property name="can_focus">False</property>
         <property name="ellipsize">end</property>
+        <signal name="query-tooltip" handler="_on_title_query_tooltip" swapped="no"/>
       </object>
       <packing>
         <property name="expand">False</property>

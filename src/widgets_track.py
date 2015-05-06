@@ -29,8 +29,10 @@ class TrackRow(Gtk.ListBoxRow):
         self._number = 0
         builder = Gtk.Builder()
         builder.add_from_resource('/org/gnome/Lollypop/TrackRow.ui')
+        builder.connect_signals(self)
         self._row_widget = builder.get_object('row')
         self._title_label = builder.get_object('title')
+        self._title_label.set_property('has-tooltip', True)
         self._duration_label = builder.get_object('duration')
         self._num_label = builder.get_object('num')
         self._cover = builder.get_object('cover')
@@ -78,7 +80,6 @@ class TrackRow(Gtk.ListBoxRow):
     """
     def set_title_label(self, label):
         self._title_label.set_markup(label)
-        self._title_label.set_tooltip_markup(label)
 
     """
         Set duration label
@@ -143,8 +144,20 @@ class TrackRow(Gtk.ListBoxRow):
     def _on_closed(self, widget):
         self.get_style_context().remove_class('menu-selected')
 
-######################################################################
-######################################################################
+    """
+        Show tooltip if needed
+        @param widget as Gtk.Widget
+        @param x as int
+        @param y as int
+        @param keyboard as bool
+        @param tooltip as Gtk.Tooltip
+    """
+    def _on_title_query_tooltip(self, widget, x, y, keyboard, tooltip):
+        layout = self._title_label.get_layout()
+        if layout.is_ellipsized():
+            self._title_label.set_tooltip_markup(self._title_label.get_text())
+        else:
+            self._title_label.set_tooltip_text('')
 
 
 # Track list of track rows
