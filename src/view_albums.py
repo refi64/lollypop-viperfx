@@ -152,6 +152,7 @@ class AlbumsView(View):
         self._albumbox.connect('child-activated', self._on_album_activated)
         self._albumbox.set_property('column-spacing', 5)
         self._albumbox.set_property('row-spacing', 5)
+        self._albumbox.set_homogeneous(True)
         self._albumbox.show()
 
         self._viewport.set_property('valign', Gtk.Align.START)
