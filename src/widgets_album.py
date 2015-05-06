@@ -113,12 +113,11 @@ class AlbumSimpleWidget(AlbumWidget):
         artist_name = translate_artist_name(artist_name)
         artist = builder.get_object('artist')
         artist.set_label(artist_name)
-
         self.add(builder.get_object('widget'))
         self.set_cover()
 
     def do_get_preferred_width(self):
-        return (ArtSize.BIG+10, ArtSize.BIG+10)
+        return (ArtSize.BIG+ArtSize.BORDER*4, ArtSize.BIG+ArtSize.BORDER*4)
 
     """
         Return album id for widget

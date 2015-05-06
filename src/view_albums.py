@@ -149,11 +149,11 @@ class AlbumsView(View):
 
         self._albumbox = Gtk.FlowBox()
         self._albumbox.set_selection_mode(Gtk.SelectionMode.NONE)
-        self._albumbox.connect("child-activated", self._on_album_activated)
+        self._albumbox.connect('child-activated', self._on_album_activated)
         self._albumbox.set_max_children_per_line(100)
         self._albumbox.show()
 
-        self._viewport.set_property("valign", Gtk.Align.START)
+        self._viewport.set_property('valign', Gtk.Align.START)
         self._viewport.add(self._albumbox)
         self._scrolledWindow.set_property('expand', True)
 
