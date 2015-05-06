@@ -11,7 +11,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-from gi.repository import Gtk, GdkPixbuf, GLib, GObject, Pango
+from gi.repository import Gtk, GLib, GObject, Pango
 from time import time
 from _thread import start_new_thread
 
@@ -144,7 +144,7 @@ class SelectionList(Gtk.ScrolledWindow):
             else:
                 path = self._model.get_path(selected)
                 self._view.set_cursor(path, None, False)
-        except Exception as e:
+        except:
             self._to_select_id = object_id
 
     """
