@@ -15,6 +15,7 @@ from gi.repository import Gtk, Gio, GLib, Gdk, Notify, TotemPlParser
 
 from locale import getlocale
 from gettext import gettext as _
+from _thread import start_new_thread
 
 from lollypop.utils import is_audio, is_gnome, is_unity
 from lollypop.define import Objects, ArtSize
@@ -243,6 +244,7 @@ class Application(Gtk.Application):
     """
     def _update_db(self, action=None, param=None):
         if Objects.window:
+            start_new_thread(Objects.art.clean_all_cache, ())
             Objects.window.update_db()
 
     """

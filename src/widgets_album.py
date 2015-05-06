@@ -480,6 +480,8 @@ class AlbumDetailedWidget(AlbumWidget):
         @param event as Gdk.Event
     """
     def _on_button_press(self, widget, event):
+        if Objects.scanner.is_locked():
+            return
         event_star = widget.get_children()[0]
         try:
             position = self._stars.index(event_star)

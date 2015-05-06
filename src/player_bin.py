@@ -285,10 +285,8 @@ class BinPlayer(ReplayGainPlayer, BasePlayer):
             # Add populariy if we listen to the song
             album_id = Objects.tracks.get_album_id(self._previous_track_id,
                                                    sql)
-            try:
+            if not Objects.scanner.is_locked():
                 Objects.albums.set_more_popular(album_id, sql)
-            except:
-                pass
             sql.close()
 
     """

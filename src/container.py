@@ -72,20 +72,14 @@ class Container:
         # Stop previous scan
         if Objects.scanner.is_locked():
             Objects.scanner.stop()
-            GLib.timeout_add(250, self.update_db, force)
-        
+            GLib.timeout_add(250, self.update_db)
         else:
             # Something (device manager) is using progress bar
             progress = None
             if not self._progress.is_visible():
                 progress = self._progress
-            smooth = True
-            if Objects.tracks.is_empty() or\
-               Objects.player.current.id is None:
-                smooth = False
             Objects.tracks.remove_outside()
             self.update_lists(True)
-            Objects.scanner.set_smoothness(smooth)
             Objects.scanner.update(progress)
 
     """

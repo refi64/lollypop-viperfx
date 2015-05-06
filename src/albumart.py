@@ -246,9 +246,8 @@ class AlbumArt(TagReader):
 
     """
         Remove all covers from cache
-        @param sql as sqlite cursor
     """
-    def clean_all_cache(self, sql=None):
+    def clean_all_cache(self):
         try:
             files = os.listdir(self._CACHE_PATH)
             for f in files:
