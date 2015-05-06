@@ -82,6 +82,7 @@ class Container:
                 progress = self._progress
             if force:
                 Objects.tracks.remove_outside()
+                self.update_lists(True)
                 Objects.scanner.update(False, progress)
             elif Objects.tracks.is_empty():
                 Objects.scanner.update(False, progress)
