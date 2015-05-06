@@ -116,6 +116,7 @@ class AlbumSimpleWidget(AlbumWidget):
         self._artist_label.set_text(artist_name)
         self.add(widget)
         self.set_cover()
+        self.set_property('halign', Gtk.Align.START)
         # Set minimum width
         self.set_property('width-request', ArtSize.BIG+ArtSize.BORDER*2)
 

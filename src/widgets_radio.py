@@ -43,6 +43,7 @@ class RadioWidget(AlbumWidget):
 
         self.add(builder.get_object('widget'))
         self.set_cover()
+        self.set_property('halign', Gtk.Align.START)
         # Set minimum width
         self.set_property('width-request', ArtSize.BIG+ArtSize.BORDER*2)
 

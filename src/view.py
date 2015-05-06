@@ -30,7 +30,7 @@ class View(Gtk.Grid):
         self._stop = False
 
         self._scrolledWindow = Gtk.ScrolledWindow()
-        self._scrolledWindow.set_policy(Gtk.PolicyType.AUTOMATIC,
+        self._scrolledWindow.set_policy(Gtk.PolicyType.NEVER,
                                         Gtk.PolicyType.AUTOMATIC)
 
         self._scrolledWindow.show()
