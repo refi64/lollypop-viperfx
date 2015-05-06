@@ -248,7 +248,7 @@ class BinPlayer(ReplayGainPlayer, BasePlayer):
         Else force playing current track
     """
     def _on_bus_eos(self, bus, message):
-        debug("Player::_on_bus_eos()")
+        debug("Player::_on_bus_eos(): %s" % self.current.path)
         if self.context.next != NextContext.NONE:
             self.context.next = NextContext.NONE
             self.stop()
@@ -311,5 +311,6 @@ class BinPlayer(ReplayGainPlayer, BasePlayer):
         @param message as Gst.Message
     """
     def _on_stream_start(self, bus, message):
+        debug("Player::_on_stream_start(): %s" % self.current.path)
         self.emit("current-changed")
         self._errors = 0
