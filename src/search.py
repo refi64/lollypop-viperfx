@@ -12,6 +12,8 @@
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 from gi.repository import Gtk, GLib
+
+from cgi import escape
 from gettext import gettext as _
 from _thread import start_new_thread
 
@@ -33,6 +35,8 @@ class SearchRow(Gtk.ListBoxRow):
         builder = Gtk.Builder()
         builder.add_from_resource('/org/gnome/Lollypop/SearchRow.ui')
         builder.connect_signals(self)
+        self.set_property('has-tooltip', True)
+        self.connect('query-tooltip', self._on_query_tooltip)
         self._row_widget = builder.get_object('row')
         self._artist = builder.get_object('artist')
         self._title = builder.get_object('item')
@@ -42,13 +46,6 @@ class SearchRow(Gtk.ListBoxRow):
         self.show()
 
     """
-        Destroy all widgets
-    """
-    def destroy(self):
-        self.remove(self._row_widget)
-        Gtk.ListBoxRow.destroy(self)
-
-    """
         Set artist and title label
         @param untranslated artist name as string
         @param item name as string
@@ -56,7 +53,6 @@ class SearchRow(Gtk.ListBoxRow):
     def set_text(self, artist, title):
         self._artist.set_text(translate_artist_name(artist))
         self._title.set_text(title)
-        self.set_tooltip_text(artist + " - " + title)
 
     """
         Set cover pixbuf
@@ -106,8 +102,23 @@ class SearchRow(Gtk.ListBoxRow):
                 Objects.player.append_to_queue(track)
         button.hide()
 
-######################################################################
-######################################################################
+    """
+        Show tooltip if needed
+        @param widget as Gtk.Widget
+        @param x as int
+        @param y as int
+        @param keyboard as bool
+        @param tooltip as Gtk.Tooltip
+    """
+    def _on_query_tooltip(self, widget, x, y, keyboard, tooltip):
+        layout_title = self._title.get_layout()
+        layout_artist = self._artist.get_layout()
+        if layout_title.is_ellipsized() or layout_artist.is_ellipsized():
+            artist = escape(self._artist.get_text())
+            title = escape(self._title.get_text())
+            self.set_tooltip_markup("<b>%s</b>\n%s" % (artist, title))
+        else:
+            self.set_tooltip_text('')
 
 
 # Represent a search object
@@ -119,9 +130,6 @@ class SearchObject:
         self.id = None
         self.album_id = None
         self.is_track = False
-
-######################################################################
-######################################################################
 
 
 # Show a list of search row

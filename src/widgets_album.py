@@ -146,7 +146,8 @@ class AlbumSimpleWidget(AlbumWidget):
             title = escape(self._title_label.get_text())
             self.set_tooltip_markup("<b>%s</b>\n%s" % (artist, title))
         else:
-            self._title_label.set_tooltip_text('')
+            self.set_tooltip_text('')
+
 
 # Album detailed Widget is a pixbuf with album name and tracks list
 class AlbumDetailedWidget(AlbumWidget):
