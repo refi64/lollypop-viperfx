@@ -19,7 +19,7 @@ from lollypop.player_base import BasePlayer
 from lollypop.player_rg import ReplayGainPlayer
 from lollypop.define import GstPlayFlags, NextContext, Objects, CurrentTrack
 from lollypop.define import Navigation
-from lollypop.utils import translate_artist_name
+from lollypop.utils import translate_artist_name, debug
 
 
 # Bin player class
@@ -239,7 +239,7 @@ class BinPlayer(ReplayGainPlayer, BasePlayer):
         On error, next()
     """
     def _on_bus_error(self, bus, message):
-        print("Error playing: ", self.current.path)
+        debug("Error playing: ", self.current.path)
         self._on_errors()
         return False
 
@@ -248,6 +248,7 @@ class BinPlayer(ReplayGainPlayer, BasePlayer):
         Else force playing current track
     """
     def _on_bus_eos(self, bus, message):
+        debug("Player::_on_bus_eos()")
         if self.context.next != NextContext.NONE:
             self.context.next = NextContext.NONE
             self.stop()
@@ -294,6 +295,7 @@ class BinPlayer(ReplayGainPlayer, BasePlayer):
         On error, try 3 more times playing a track
     """
     def _on_errors(self):
+        debug("Player::_on_errors(): %s" % self._errors)
         self._errors += 1
         if self._errors < 3:
             GLib.idle_add(self.next, True)
