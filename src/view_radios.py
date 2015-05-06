@@ -47,13 +47,12 @@ class RadiosView(View):
         self._radiobox.set_property('row-spacing', 5)
         self._radiobox.show()
 
-        widget.add(self._radiobox)
-
         self._viewport.set_property("valign", Gtk.Align.START)
         self._viewport.set_property('margin', 5)
-        self._viewport.add(widget)
+        self._viewport.add(self._radiobox)
         self._scrolledWindow.set_property('expand', True)
 
+        self.add(widget)
         self.add(self._scrolledWindow)
 
     """
