@@ -247,7 +247,7 @@ class SettingsDialog:
         self._settings_dialog.hide()
         self._settings_dialog.destroy()
         if set(previous) != set(paths):
-            Objects.window.update_db(True)
+            Objects.window.update_db()
 
     """
         Update party ids when use change a switch in dialog

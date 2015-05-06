@@ -243,7 +243,7 @@ class Application(Gtk.Application):
     """
     def _update_db(self, action=None, param=None):
         if Objects.window:
-            Objects.window.update_db(True)
+            Objects.window.update_db()
 
     """
         Show a fullscreen window with cover and artist informations

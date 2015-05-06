@@ -39,13 +39,13 @@ class CollectionScanner(GObject.GObject, ScannerTagReader):
         self._in_thread = False
         self._is_locked = False
         self._progress = None
+        self._smooth = False # Smooth scan
 
     """
         Update database
-        @param smooth as bool, if smooth, try to scan smoothly
         @param progress as progress bar
     """
-    def update(self, smooth, progress):
+    def update(self, progress):
         self._progress = progress
         paths = Objects.settings.get_music_paths()
         if not paths:
@@ -60,7 +60,14 @@ class CollectionScanner(GObject.GObject, ScannerTagReader):
             self._is_locked = True
             self._compilations = []
             self._mtimes = Objects.tracks.get_mtimes()
-            start_new_thread(self._scan, (paths, smooth))
+            start_new_thread(self._scan, (paths,))
+
+    """
+        Set smooth
+        @param smooth as bool
+    """
+    def set_smoothness(self, smooth):
+        self._smooth = smooth
 
     """
         Add specified files to collection
@@ -199,15 +206,14 @@ class CollectionScanner(GObject.GObject, ScannerTagReader):
     """
         Scan music collection for music files
         @param paths as [string], paths to scan
-        @param smooth as bool
         @thread safe
     """
-    def _scan(self, paths, smooth):
+    def _scan(self, paths):
         sql = Objects.db.get_cursor()
         orig_tracks = Objects.tracks.get_paths(sql)
         self._is_empty = len(orig_tracks) == 0
         # Clear cover cache
-        if not smooth:
+        if not self._smooth:
             Objects.art.clean_all_cache(sql)
 
         # Add monitors on dirs
@@ -251,7 +257,7 @@ class CollectionScanner(GObject.GObject, ScannerTagReader):
                 print(ascii(filepath))
                 print("CollectionScanner::_scan(): %s" % e)
             i += 1
-            if smooth:
+            if self._smooth:
                 sleep(0.001)
 
         # Clean deleted files

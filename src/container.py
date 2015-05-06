@@ -40,9 +40,9 @@ class Device:
 class Container:
     def __init__(self):
         
-        # Try to update db on start, will be done after list one poplating
+        # Try to update db on start, will be done after list one populating
         # finished
-        self._need_to_update_db = True
+        self._need_to_update_db = Objects.settings.get_value('auto-update')
         # Index will start at -VOLUMES
         self._devices = {}
         self._devices_index = Navigation.DEVICES
@@ -67,9 +67,8 @@ class Container:
 
     """
         Update db at startup only if needed
-        @param force as bool to force update (if possible)
     """
-    def update_db(self, force=False):
+    def update_db(self):
         # Stop previous scan
         if Objects.scanner.is_locked():
             Objects.scanner.stop()
@@ -80,14 +79,14 @@ class Container:
             progress = None
             if not self._progress.is_visible():
                 progress = self._progress
-            if force:
-                Objects.tracks.remove_outside()
-                self.update_lists(True)
-                Objects.scanner.update(False, progress)
-            elif Objects.tracks.is_empty():
-                Objects.scanner.update(False, progress)
-            elif Objects.settings.get_value('auto-update'):
-                Objects.scanner.update(True, progress)
+            smooth = True
+            if Objects.tracks.is_empty() or\
+               Objects.player.current.id is None:
+                smooth = False
+            Objects.tracks.remove_outside()
+            self.update_lists(True)
+            Objects.scanner.set_smoothness(smooth)
+            Objects.scanner.update(progress)
 
     """
         Save view state

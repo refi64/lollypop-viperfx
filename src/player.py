@@ -236,5 +236,6 @@ class Player(BinPlayer, QueuePlayer, UserPlaylistPlayer, RadioPlayer,
         Emit "current-changed" to notify others components
     """
     def _on_stream_start(self, bus, message):
+        Objects.scanner.set_smoothness(True)
         BinPlayer._on_stream_start(self, bus, message)
         ShufflePlayer._on_stream_start(self, bus, message)
