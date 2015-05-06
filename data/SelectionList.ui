@@ -12,26 +12,17 @@
       <column type="gchararray"/>
     </columns>
   </object>
-  <object class="GtkScrolledWindow" id="widget">
+  <object class="GtkTreeView" id="view">
     <property name="visible">True</property>
     <property name="can_focus">True</property>
-    <property name="hexpand">True</property>
-    <property name="vexpand">True</property>
-    <property name="hscrollbar_policy">never</property>
-    <child>
-      <object class="GtkTreeView" id="view">
-        <property name="visible">True</property>
-        <property name="can_focus">True</property>
-        <property name="model">model</property>
-        <property name="headers_visible">False</property>
-        <property name="headers_clickable">False</property>
-        <property name="search_column">1</property>
-        <property name="fixed_height_mode">True</property>
-        <signal name="cursor-changed" handler="_new_item_selected" swapped="no"/>
-        <child internal-child="selection">
-          <object class="GtkTreeSelection" id="treeview-selection1"/>
-        </child>
-      </object>
+    <property name="model">model</property>
+    <property name="headers_visible">False</property>
+    <property name="headers_clickable">False</property>
+    <property name="search_column">1</property>
+    <property name="fixed_height_mode">True</property>
+    <signal name="cursor-changed" handler="_new_item_selected" swapped="no"/>
+    <child internal-child="selection">
+      <object class="GtkTreeSelection" id="treeview-selection1"/>
     </child>
   </object>
 </interface>

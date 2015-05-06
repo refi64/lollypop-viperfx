@@ -20,7 +20,7 @@ from lollypop.define import Navigation
 
 
 # A selection list is a artists or genres scrolled treeview
-class SelectionList(GObject.GObject):
+class SelectionList(Gtk.ScrolledWindow):
 
     __gsignals__ = {
         'item-selected': (GObject.SignalFlags.RUN_FIRST, None, (int,)),
@@ -31,7 +31,9 @@ class SelectionList(GObject.GObject):
         Init Selection list ui
     """
     def __init__(self):
-        GObject.GObject.__init__(self)
+        Gtk.ScrolledWindow.__init__(self)
+        self.set_policy(Gtk.PolicyType.NEVER,
+                        Gtk.PolicyType.AUTOMATIC)
         self._loading = False
         self._updating = False       # Sort disabled if False
         self._is_artists = False  # for string translation
@@ -60,8 +62,7 @@ class SelectionList(GObject.GObject):
 
         self._view.append_column(column0)
         self._view.append_column(column1)
-
-        self.widget = builder.get_object('widget')
+        self.add(self._view)
 
     """
         Mark list as artists list
@@ -99,28 +100,16 @@ class SelectionList(GObject.GObject):
         Add item to list
         @param value as (int, str)
     """
-    def add(self, value):
+    def add_value(self, value):
         self._updating = True
-        found = False
-        for item in self._model:
-            if value[0] == item[0]:
-                found = True
-                break
-        if not found:
-            if self._is_artists:
-                string = translate_artist_name(value[1])
-            else:
-                string = value[1]
-            self._model.append([value[0],
-                                string,
-                                self._get_icon_name(value[0])])
+        self._add_value(value)
         self._updating = False
 
     """
         Update view with values
         @param [(int, str)]
     """
-    def update(self, values):
+    def update_values(self, values):
         self._updating = True
         for item in self._model:
             found = False
@@ -133,19 +122,7 @@ class SelectionList(GObject.GObject):
                 self._model.remove(item.iter)
 
         for value in values:
-            found = False
-            for item in self._model:
-                if item[1] == value[1]:
-                    found = True
-                    break
-            if not found:
-                if self._is_artists:
-                    string = translate_artist_name(value[1])
-                else:
-                    string = value[1]
-                self._model.append([value[0],
-                                   string,
-                                   self._get_icon_name(value[0])])
+            self._add(value)
         self._updating = False
 
     """
@@ -176,12 +153,6 @@ class SelectionList(GObject.GObject):
             if iter:
                 return self._model.get_value(iter, 0)
         return Navigation.NONE
-
-    """
-        Return items number in list
-    """
-    def length(self):
-        return len(self._model)
 
     """
         Add volume to list if not already present
@@ -217,19 +188,38 @@ class SelectionList(GObject.GObject):
 # PRIVATE             #
 #######################
     """
+        Add value to the model
+        @param value as [int, str]
+    """
+    def _add_value(self, value):
+        found = False
+        for item in self._model:
+            if value[0] == item[0]:
+                found = True
+                break
+        if not found:
+            if self._is_artists:
+                string = translate_artist_name(value[1])
+            else:
+                string = value[1]
+            self._model.append([value[0],
+                                string,
+                                self._get_icon_name(value[0])])
+
+    """
         Populate view with values
         @param [(int, str)], will be deleted
         @thread safe
     """
     def _populate(self, values):
-        GLib.idle_add(self._add_item, values, self._pop_time)
+        GLib.idle_add(self._add_values, values, self._pop_time)
 
     """
-        Add items to the list
+        Add values to the list
         @param items as [(int,str)]
         @param time as float
     """
-    def _add_item(self, values, time):
+    def _add_values(self, values, time):
         if time != self._pop_time:
             del values
             values = None
@@ -242,8 +232,8 @@ class SelectionList(GObject.GObject):
             return
 
         value = values.pop(0)
-        self.add(value)
-        GLib.idle_add(self._add_item, values, time)
+        self._add_value(value)
+        GLib.idle_add(self._add_values, values, time)
 
     """
         Return pixbuf for id

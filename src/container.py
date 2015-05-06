@@ -227,12 +227,11 @@ class Container:
         vgrid.set_orientation(Gtk.Orientation.VERTICAL)
 
         self._list_one = SelectionList()
-        self._list_one.widget.show()
+        self._list_one.show()
         self._list_two = SelectionList()
         self._list_one.connect('item-selected', self._on_list_one_selected)
         self._list_one.connect('populated', self._on_list_one_populated)
         self._list_two.connect('item-selected', self._on_list_two_selected)
-        self._list_two.connect('populated', self._on_list_two_populated)
 
         self._progress = Gtk.ProgressBar()
         self._progress.set_property('hexpand', True)
@@ -243,9 +242,9 @@ class Container:
 
         separator = Gtk.Separator()
         separator.show()
-        self._paned_list_view.add1(self._list_two.widget)
+        self._paned_list_view.add1(self._list_two)
         self._paned_list_view.add2(vgrid)
-        self._paned_main_list.add1(self._list_one.widget)
+        self._paned_main_list.add1(self._list_one)
         self._paned_main_list.add2(self._paned_list_view)
         self._paned_main_list.set_position(
                         Objects.settings.get_value(
@@ -277,7 +276,7 @@ class Container:
     def _add_genre(self, scanner, genre_id):
         if self._show_genres:
             genre_name = Objects.genres.get_name(genre_id)
-            self._list_one.add((genre_id, genre_name))
+            self._list_one.add_value((genre_id, genre_name))
 
     """
         Add artist to artist list
@@ -291,9 +290,9 @@ class Container:
             genre_ids = Objects.albums.get_genre_ids(album_id)
             genre_ids.append(Navigation.ALL)
             if self._list_one.get_selected_id() in genre_ids:
-                self._list_two.add((artist_id, artist_name))
+                self._list_two.add_values((artist_id, artist_name))
         else:
-            self._list_one.add((artist_id, artist_name))
+            self._list_one.add_value((artist_id, artist_name))
 
     """
         Run collection update if needed
@@ -359,7 +358,7 @@ class Container:
         selection_list.mark_as_artists(False)
         items = self._get_headers() + Objects.genres.get(sql)
         if update:
-            selection_list.update(items)
+            selection_list.update_values(items)
         else:
             selection_list.populate(items)
         sql.close()
@@ -369,8 +368,8 @@ class Container:
     """
     def _pre_setup_list_artists(self, selection_list):
         if selection_list == self._list_one:
-            if self._list_two.widget.is_visible():
-                self._list_two.widget.hide()
+            if self._list_two.is_visible():
+                self._list_two.hide()
             self._list_two_restore = Navigation.NONE
 
     """
@@ -531,18 +530,18 @@ class Container:
     def _on_list_one_selected(self, selection_list, selected_id):
         if selected_id == Navigation.PLAYLISTS:
             start_new_thread(self._setup_list_playlists, (False,))
-            self._list_two.widget.show()
+            self._list_two.show()
         elif selected_id < Navigation.DEVICES:
-            self._list_two.widget.hide()
+            self._list_two.hide()
             self._update_view_device(selected_id)
         elif selected_id in [Navigation.POPULARS, Navigation.RECENTS]:
-            self._list_two.widget.hide()
+            self._list_two.hide()
             self._update_view_albums(selected_id)
         elif selected_id == Navigation.RADIOS:
-            self._list_two.widget.hide()
+            self._list_two.hide()
             self._update_view_radios()
         elif selection_list.is_marked_as_artists():
-            self._list_two.widget.hide()
+            self._list_two.hide()
             if selected_id == Navigation.ALL:
                 self._update_view_albums(selected_id)
             elif selected_id == Navigation.COMPILATIONS:
@@ -553,7 +552,7 @@ class Container:
             start_new_thread(self._setup_list_artists,
                              (self._list_two, selected_id, False))
             self._list_two.clear()
-            self._list_two.widget.show()
+            self._list_two.show()
             if self._list_two_restore == Navigation.NONE:
                 self._update_view_albums(selected_id)
 
