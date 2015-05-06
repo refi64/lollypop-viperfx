@@ -5,7 +5,7 @@ GtkWidget {
 
 GtkTreeView {
     background-color: shade(@theme_bg_color, 1.02);
-    padding: 3px 2px 3px 2px;
+    padding: 2px 2px 2px 2px;
 }
 
 GtkTreeView row:hover {
