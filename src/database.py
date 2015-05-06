@@ -167,9 +167,9 @@ class Database:
     def get_cursor(self):
         try:
             cursor = sqlite3.connect(self.DB_PATH)
-            # Wait 30s if db is locked, will make lollypop hang in some case
+            # Wait 60s if db is locked, will make lollypop hang in some case
             # Only happen on big commits
-            cursor.execute("PRAGMA busy_timeout = 30000")
+            cursor.execute("PRAGMA busy_timeout = 60000")
             return cursor
         except:
             exit(-1)
