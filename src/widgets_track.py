@@ -73,7 +73,7 @@ class TrackRow(Gtk.ListBoxRow):
         @param label as string
     """
     def set_num_label(self, label):
-        self._num_label.set_text(label)
+        self._num_label.set_markup(label)
 
     """
         Set title label
@@ -256,14 +256,13 @@ class TracksWidget(Gtk.ListBox):
             track_id = row.get_object_id()
             if Objects.player.is_in_queue(track_id):
                 pos = Objects.player.get_track_position(track_id)
-                row.set_label(
-                        'num',
+                row.set_num_label(
                         '''<span foreground="%s"\
                         font_desc="Bold">%s</span>''' %\
                         (rgba_to_hex(Objects.window.get_selected_color()),
                          str(pos)))
             else:
-                row.set_label('num', str(row.get_number()))
+                row.set_num_label(str(row.get_number()))
 
     """
         Play activated item

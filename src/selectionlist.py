@@ -63,7 +63,6 @@ class SelectionList(Gtk.ScrolledWindow):
 
         self._view.append_column(column0)
         self._view.append_column(column1)
-        self._view.set_tooltip_column(3)
 
         self.add(self._view)
 
@@ -194,8 +193,7 @@ class SelectionList(Gtk.ScrolledWindow):
                 string = value[1]
             self._model.append([value[0],
                                 string,
-                                self._get_icon_name(value[0]),
-                                string])
+                                self._get_icon_name(value[0])])
             if value[0] == self._to_select_id:
                 self.select_id(self._to_select_id)
 
