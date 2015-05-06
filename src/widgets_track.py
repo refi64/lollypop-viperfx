@@ -13,6 +13,8 @@
 
 from gi.repository import GObject, Gtk
 
+from cgi import escape
+
 from lollypop.define import Objects, ArtSize
 from lollypop.popmenu import PopTrackMenu
 from lollypop.utils import seconds_to_string, rgba_to_hex

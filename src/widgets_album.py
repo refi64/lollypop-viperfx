@@ -104,16 +104,17 @@ class AlbumSimpleWidget(AlbumWidget):
         builder = Gtk.Builder()
         builder.add_from_resource('/org/gnome/Lollypop/AlbumSimpleWidget.ui')
         builder.connect_signals(self)
+        widget = builder.get_object('widget')
         self._cover = builder.get_object('cover')
-
+        widget.set_property('has-tooltip', True)
         album_name = Objects.albums.get_name(album_id)
-        title = builder.get_object('title')
-        title.set_label(album_name)
+        self._title_label = builder.get_object('title')
+        self._title_label.set_text(album_name)
         artist_name = Objects.albums.get_artist_name(album_id)
         artist_name = translate_artist_name(artist_name)
-        artist = builder.get_object('artist')
-        artist.set_label(artist_name)
-        self.add(builder.get_object('widget'))
+        self._artist_label = builder.get_object('artist')
+        self._artist_label.set_text(artist_name)
+        self.add(widget)
         self.set_cover()
 
     def do_get_preferred_width(self):
@@ -129,7 +130,23 @@ class AlbumSimpleWidget(AlbumWidget):
 #######################
 # PRIVATE             #
 #######################
-
+    """
+        Show tooltip if needed
+        @param widget as Gtk.Widget
+        @param x as int
+        @param y as int
+        @param keyboard as bool
+        @param tooltip as Gtk.Tooltip
+    """
+    def _on_query_tooltip(self, widget, x, y, keyboard, tooltip):
+        layout_title = self._title_label.get_layout()
+        layout_artist = self._artist_label.get_layout()
+        if layout_title.is_ellipsized() or layout_artist.is_ellipsized():
+            artist = escape(self._artist_label.get_text())
+            title = escape(self._title_label.get_text())
+            self.set_tooltip_markup("<b>%s</b>\n%s" % (artist, title))
+        else:
+            self._title_label.set_tooltip_text('')
 
 # Album detailed Widget is a pixbuf with album name and tracks list
 class AlbumDetailedWidget(AlbumWidget):
