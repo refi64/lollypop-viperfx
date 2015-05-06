@@ -201,7 +201,10 @@ class MPRIS(dbus.service.Object):
                 'Metadata': dbus.Dictionary(self._metadata,
                                             signature='sv')
                      }
-        self.PropertiesChanged(self.MPRIS_PLAYER_IFACE, properties, [])
+        try:
+            self.PropertiesChanged(self.MPRIS_PLAYER_IFACE, properties, [])
+        except:
+            pass
 
     def _on_status_changed(self, data=None):
         properties = {'PlaybackStatus': self._get_status()}
