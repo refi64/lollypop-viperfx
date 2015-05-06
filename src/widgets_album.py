@@ -116,7 +116,12 @@ class AlbumSimpleWidget(AlbumWidget):
         self._artist_label.set_text(artist_name)
         self.add(widget)
         self.set_cover()
+        # Set minimum width
+        self.set_property('width-request', ArtSize.BIG+ArtSize.BORDER*2)
 
+    """
+        Set maximum width
+    """
     def do_get_preferred_width(self):
         return (ArtSize.BIG+ArtSize.BORDER*2, ArtSize.BIG+ArtSize.BORDER*2)
 

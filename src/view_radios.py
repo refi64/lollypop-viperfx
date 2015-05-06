@@ -43,12 +43,14 @@ class RadiosView(View):
         self._radiobox.set_sort_func(self._sort_radios)
         self._radiobox.set_selection_mode(Gtk.SelectionMode.NONE)
         self._radiobox.connect("child-activated", self._on_album_activated)
-        self._radiobox.set_max_children_per_line(100)
+        self._radiobox.set_property('column-spacing', 5)
+        self._radiobox.set_property('row-spacing', 5)
         self._radiobox.show()
 
         widget.add(self._radiobox)
 
         self._viewport.set_property("valign", Gtk.Align.START)
+        self._viewport.set_property('margin', 5)
         self._viewport.add(widget)
         self._scrolledWindow.set_property('expand', True)
 

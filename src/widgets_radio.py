@@ -43,7 +43,12 @@ class RadioWidget(AlbumWidget):
 
         self.add(builder.get_object('widget'))
         self.set_cover()
+        # Set minimum width
+        self.set_property('width-request', ArtSize.BIG+ArtSize.BORDER*2)
 
+    """
+        Set maximum width
+    """
     def do_get_preferred_width(self):
         return (ArtSize.BIG+ArtSize.BORDER*2, ArtSize.BIG+ArtSize.BORDER*2)
 
