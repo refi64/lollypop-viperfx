@@ -197,7 +197,7 @@ class Player(BinPlayer, QueuePlayer, UserPlaylistPlayer, RadioPlayer,
             self.context.genre_id = genre_id
             # Shuffle album list if needed
             self._shuffle_albums()
-        else:
+        elif self.current.id != Navigation.RADIOS:
             self.stop()
 
     """
