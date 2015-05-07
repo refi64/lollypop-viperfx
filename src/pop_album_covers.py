@@ -49,6 +49,7 @@ class PopAlbumCovers(Gtk.Popover):
         self._view = Gtk.FlowBox()
         self._view.set_selection_mode(Gtk.SelectionMode.NONE)
         self._view.connect('child-activated', self._on_activate)
+        self._albumbox.set_max_children_per_line(100)
         self._view.set_property('row-spacing', 10)
         self._view.show()
 
