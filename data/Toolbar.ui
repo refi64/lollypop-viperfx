@@ -137,6 +137,7 @@
     <child>
       <object class="GtkEventBox" id="infobox">
         <property name="visible">True</property>
+        <signal name="query-tooltip" handler="_on_query_tooltip" swapped="no"/>
         <child>
           <object class="GtkBox" id="nowplaying">
             <property name="visible">True</property>

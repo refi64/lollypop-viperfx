@@ -11,8 +11,10 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-from gettext import gettext as _
 from gi.repository import Gtk, Gdk, GLib, Gio
+
+from gettext import gettext as _
+from cgi import escape
 
 from lollypop.define import Objects, Shuffle, ArtSize, Navigation
 from lollypop.search import SearchWidget
@@ -38,6 +40,7 @@ class Toolbar(Gtk.HeaderBar):
 
         builder = Gtk.Builder()
         builder.add_from_resource('/org/gnome/Lollypop/Toolbar.ui')
+        builder.connect_signals(self)
 
         self._leftbar = builder.get_object('leftbar')
         self.pack_start(self._leftbar)
@@ -65,6 +68,7 @@ class Toolbar(Gtk.HeaderBar):
         self._artist_label = builder.get_object('artist')
         self._cover = builder.get_object('cover')
         self._infobox = builder.get_object('infobox')
+        self._infobox.set_property('has-tooltip', True)
         self._infobox.connect("button-press-event", self._pop_infobox)
         self._popalbums = PopAlbums()
         self._popalbums.set_relative_to(self._infobox)
@@ -237,12 +241,6 @@ class Toolbar(Gtk.HeaderBar):
             self._progress.set_value(0.0)
             self._progress.set_range(0.0, 0.0)
 
-        # Setup tooltip if a track is playing
-        if player.current.id is not None:
-            self._infobox.set_tooltip_text(player.current.artist +\
-                                           " - "+\
-                                           player.current.title)
-
         # Setup buttons and art for radios
         if player.current.id == Navigation.RADIOS:
             self._infobox.get_window().set_cursor(
@@ -368,3 +366,21 @@ class Toolbar(Gtk.HeaderBar):
             settings.set_property("gtk-application-prefer-dark-theme", active)
             Objects.window.update_view()
         Objects.player.set_party(active)
+
+    """
+        Show tooltip if needed
+        @param widget as Gtk.Widget
+        @param x as int
+        @param y as int
+        @param keyboard as bool
+        @param tooltip as Gtk.Tooltip
+    """
+    def _on_query_tooltip(self, widget, x, y, keyboard, tooltip):
+        layout_title = self._title_label.get_layout()
+        layout_artist = self._artist_label.get_layout()
+        if layout_title.is_ellipsized() or layout_artist.is_ellipsized():
+            artist = escape(self._artist_label.get_text())
+            title = escape(self._title_label.get_text())
+            self.set_tooltip_markup("<b>%s</b>\n%s" % (artist, title))
+        else:
+            self.set_tooltip_text('')
