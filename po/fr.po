@@ -9,8 +9,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lollypop\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-05-04 17:10+0200\n"
-"PO-Revision-Date: 2015-05-04 15:14+0000\n"
+"POT-Creation-Date: 2015-05-07 22:58+0200\n"
+"PO-Revision-Date: 2015-05-07 21:00+0000\n"
 "Last-Translator: Cédric Bellegarde <web@adishatz.org>\n"
 "Language-Team: French (http://www.transifex.com/projects/p/lollypop/language/fr/)\n"
 "MIME-Version: 1.0\n"
@@ -84,9 +84,9 @@ msgstr "Gain de relecture en décibel"
 msgid "Between -15 and 15"
 msgstr "Entre -15 et 15"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:17
-msgid "Auto update db"
-msgstr "Mise à jour automatique de la base de donnée"
+#: ../data/org.gnome.Lollypop.gschema.xml.h:17 ../data/SettingsDialog.ui.h:2
+msgid "Auto update music"
+msgstr "Mise à jour automatique de la musique"
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:18
 msgid "Show genres list"
@@ -160,50 +160,54 @@ msgstr "Jouer et organiser votre discothèque"
 msgid "Music player for the GNOME desktop"
 msgstr "Lecteur de musique pour le bureau GNOME"
 
-#: ../src/application.py:296
+#: ../src/application.py:299
 msgid "Lollypop: You need to install yelp."
 msgstr "Lollypop: Vous devez installer yelp."
 
-#: ../src/collectionscanner.py:56
+#: ../src/collectionscanner.py:55
 msgid "Your music is updating"
 msgstr "Mise à jour de votre musique"
 
-#: ../src/container.py:340
+#: ../src/container.py:333
 msgid "Popular albums"
 msgstr "Albums populaires"
 
-#: ../src/container.py:341
+#: ../src/container.py:334
 msgid "Recent albums"
 msgstr "Albums récents"
 
-#: ../src/container.py:342 ../src/popmenu.py:321 ../src/popmenu.py:336
+#: ../src/container.py:335
+msgid "Random albums"
+msgstr "Albums aléatoires"
+
+#: ../src/container.py:336 ../src/popmenu.py:321 ../src/popmenu.py:336
 #: ../src/popmenu.py:351
 msgid "Playlists"
 msgstr "Listes de lecture"
 
-#: ../src/container.py:343
+#: ../src/container.py:337
 msgid "Radios"
 msgstr "Radios"
 
-#: ../src/container.py:345
+#: ../src/container.py:339
 msgid "All artists"
 msgstr "Tous les artistes"
 
-#: ../src/container.py:347
+#: ../src/container.py:341
 msgid "All albums"
 msgstr "Tous les albums"
 
-#: ../src/container.py:389
+#: ../src/container.py:383
 msgid "Compilations"
 msgstr "Compilations"
 
-#: ../src/database_albums.py:233 ../src/database_artists.py:70
-#: ../src/database_genres.py:67 ../src/database_tracks.py:196
-#: ../src/tagreader.py:74 ../src/tagreader.py:100 ../src/tagreader.py:112
+#: ../src/database_albums.py:235 ../src/database_artists.py:70
+#: ../src/database_genres.py:67 ../src/database_tracks.py:187
+#: ../src/tagreader.py:75 ../src/tagreader.py:103 ../src/tagreader.py:115
 msgid "Unknown"
 msgstr "Inconnu"
 
-#: ../src/database_albums.py:250
+#: ../src/database_albums.py:252
 msgid "Compilation"
 msgstr "Compilation"
 
@@ -211,12 +215,12 @@ msgstr "Compilation"
 msgid "Many artists"
 msgstr "Plusieurs artistes"
 
-#: ../src/fullscreen.py:75 ../src/fullscreen.py:189 ../src/toolbar.py:288
-#: ../src/toolbar.py:319
+#: ../src/fullscreen.py:75 ../src/fullscreen.py:189 ../src/toolbar.py:287
+#: ../src/toolbar.py:318
 msgid "Pause"
 msgstr "Pause"
 
-#: ../src/fullscreen.py:193 ../src/toolbar.py:295 ../src/toolbar.py:316
+#: ../src/fullscreen.py:193 ../src/toolbar.py:294 ../src/toolbar.py:315
 #: ../data/Toolbar.ui.h:7
 msgid "Play"
 msgstr "Lecture"
@@ -236,7 +240,7 @@ msgstr "Suivant"
 msgid "by %s, from %s"
 msgstr "par %s, sur %s"
 
-#: ../src/player_radio.py:120
+#: ../src/player_radio.py:122
 msgid "Radio"
 msgstr "Radio"
 
@@ -290,15 +294,15 @@ msgstr "Ajouter à \"%s\""
 msgid "Playback"
 msgstr "Lecture"
 
-#: ../src/popradio.py:69
+#: ../src/popradio.py:70
 msgid "Add"
 msgstr "Ajouter"
 
-#: ../src/popradio.py:71
+#: ../src/popradio.py:72
 msgid "Modify"
 msgstr "Modifier"
 
-#: ../src/search.py:148
+#: ../src/search.py:152
 msgid "Search:"
 msgstr "Recherche:"
 
@@ -325,7 +329,7 @@ msgstr "Synchroniser %s"
 msgid "Cancel synchronization"
 msgstr "Annuler la synchronisation"
 
-#: ../src/widgets_album.py:183
+#: ../src/widgets_album.py:206
 #, python-format
 msgid "Disc %s"
 msgstr "Disque %s"
@@ -338,16 +342,16 @@ msgstr "Erreur inconnue lors de la synchronisation, essayez de redémarrer votre
 msgid "No free space available on device"
 msgstr "Pas d'espace disponible sur l'appareil"
 
-#: ../src/widgets_playlist.py:222 ../src/widgets_playlist.py:225
+#: ../src/widgets_playlist.py:224 ../src/widgets_playlist.py:227
 msgid "New playlist "
 msgstr "Nouvelle liste de lecture "
 
-#: ../src/widgets_playlist.py:267 ../src/widgets_playlist.py:526
+#: ../src/widgets_playlist.py:269 ../src/widgets_playlist.py:528
 #, python-format
 msgid "Remove \"%s\"?"
 msgstr "Supprimer \"%s\"?"
 
-#: ../src/widgets_playlist.py:565
+#: ../src/widgets_playlist.py:567
 msgid "Remove these tracks?"
 msgstr "Supprimer ces morceaux?"
 
@@ -455,10 +459,6 @@ msgstr "Ajouter à la liste de lecture"
 #: ../data/SettingsDialog.ui.h:1
 msgid "Preferences"
 msgstr "Préférences"
-
-#: ../data/SettingsDialog.ui.h:2
-msgid "Auto update music"
-msgstr "Mise à jour automatique de la musique"
 
 #: ../data/SettingsDialog.ui.h:3
 msgid "Restore state on startup"

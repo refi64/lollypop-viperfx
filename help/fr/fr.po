@@ -4,8 +4,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: lollypop\n"
-"POT-Creation-Date: 2015-04-29 10:10+0200\n"
-"PO-Revision-Date: 2015-04-29 21:15+0000\n"
+"POT-Creation-Date: 2015-05-07 21:04+0200\n"
+"PO-Revision-Date: 2015-05-07 19:12+0000\n"
 "Last-Translator: Cédric Bellegarde <web@adishatz.org>\n"
 "Language-Team: French (http://www.transifex.com/projects/p/lollypop/language/fr/)\n"
 "MIME-Version: 1.0\n"
@@ -95,14 +95,16 @@ msgstr "Noter les albums"
 
 #. (itstool) path: section/p
 #: C/index.page:38
-msgid "Album popularity is based on how many tracks you listen for an album."
+msgid ""
+"Album popularity is based on how many tracks from an album you listen to."
 msgstr "La popularité d'un album est basée sur le nombre de morceaux écoutés."
 
 #. (itstool) path: section/p
 #: C/index.page:39
 msgid ""
-"Album rating only influence this popularity, it's not fixed in the time."
-msgstr "La notation d'un album influence cette popularité, elle n'est pas fixée dans le temps."
+"Album rating will be influenced by album popularity. In other words, rate "
+"will decrease if you stop listening to an album."
+msgstr "La note d'un album sera influencée par sa popularité. En d'autres mots, la note descendra si vous arrêtez d'écouter un album."
 
 #. (itstool) path: section/title
 #: C/index.page:43
@@ -190,11 +192,6 @@ msgstr "Touche droite: Avance dans le morceau"
 #: C/index.page:63
 msgid "Control+h: Help"
 msgstr "Control+h: Aide"
-
-#. (itstool) path: item/p
-#: C/index.page:64
-msgid "Control+a: About"
-msgstr "Control+a: A propos"
 
 #. (itstool) path: p/link
 #: C/legal.xml:4
