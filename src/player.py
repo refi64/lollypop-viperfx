@@ -173,12 +173,15 @@ class Player(BinPlayer, QueuePlayer, UserPlaylistPlayer, RadioPlayer,
         if genre_id_lookup == Navigation.ALL or artist_id == Navigation.ALL:
             self._albums = Objects.albums.get_compilations(Navigation.ALL)
             self._albums += Objects.albums.get_ids()
-        # We are in popular view, add popular albums
+        # We are in populars view, add popular albums
         elif genre_id_lookup == Navigation.POPULARS:
             self._albums = Objects.albums.get_populars()
-        # We are in recent view, add recent albums
+        # We are in recents view, add recent albums
         elif genre_id_lookup == Navigation.RECENTS:
             self._albums = Objects.albums.get_recents()
+        # We are in randoms view, add random albums
+        elif genre_id_lookup == Navigation.RANDOMS:
+            self._albums = Objects.albums.get_cached_randoms()
         # We are in compilation view without genre
         elif genre_id_lookup == Navigation.COMPILATIONS:
             self._albums = Objects.albums.get_compilations(None)

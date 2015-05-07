@@ -96,10 +96,11 @@ class Shuffle_:
 class Navigation_:
     NONE = -1
     POPULARS = -2
-    RECENTS = -3
-    PLAYLISTS = -4
-    RADIOS = -5
-    ALL = -6
+    RANDOMS = -3
+    RECENTS = -4
+    PLAYLISTS = -5
+    RADIOS = -6
+    ALL = -7
     COMPILATIONS = -999
     DEVICES = -1000
 

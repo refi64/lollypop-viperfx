@@ -332,6 +332,7 @@ class Container:
         items = []
         items.append((Navigation.POPULARS, _("Popular albums")))
         items.append((Navigation.RECENTS, _("Recent albums")))
+        items.append((Navigation.RANDOMS, _("Random albums")))
         items.append((Navigation.PLAYLISTS, _("Playlists")))
         items.append((Navigation.RADIOS, _("Radios")))
         if self._show_genres:
@@ -529,7 +530,9 @@ class Container:
         elif selected_id < Navigation.DEVICES:
             self._list_two.hide()
             self._update_view_device(selected_id)
-        elif selected_id in [Navigation.POPULARS, Navigation.RECENTS]:
+        elif selected_id in [Navigation.POPULARS,
+                             Navigation.RECENTS,
+                             Navigation.RANDOMS]:
             self._list_two.hide()
             self._update_view_albums(selected_id)
         elif selected_id == Navigation.RADIOS:

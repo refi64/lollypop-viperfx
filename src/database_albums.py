@@ -13,6 +13,7 @@
 
 from gettext import gettext as _
 import os
+
 from lollypop.define import Objects, Navigation
 
 
@@ -20,6 +21,7 @@ from lollypop.define import Objects, Navigation
 # set another one if you're in a thread
 class DatabaseAlbums:
     def __init__(self):
+        self._cached_randoms = []
         pass
 
     """
@@ -368,6 +370,28 @@ class DatabaseAlbums:
         for row in result:
             albums += row
         return albums
+
+    """
+        Return randoms albums
+        @return array of albums ids as int
+    """
+    def get_randoms(self, sql=None):
+        if not sql:
+            sql = Objects.sql
+        albums = []
+
+        result = sql.execute("SELECT rowid FROM albums\
+                              ORDER BY random() LIMIT 100")
+        for row in result:
+            albums += row
+        self._cached_randoms = list(albums)
+        return albums
+
+    """
+        Same as above (cached result)
+    """
+    def get_cached_randoms(self):
+        return self._cached_randoms
 
     """
         Get album ids for party mode based on genre ids

@@ -191,6 +191,8 @@ class AlbumsView(View):
             albums = Objects.albums.get_populars(sql)
         elif self._genre_id == Navigation.RECENTS:
             albums = Objects.albums.get_recents(sql)
+        elif self._genre_id == Navigation.RANDOMS:
+            albums = Objects.albums.get_randoms(sql)
         elif is_compilation:
             albums = Objects.albums.get_compilations(self._genre_id,
                                                      sql)

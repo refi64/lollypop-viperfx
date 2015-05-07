@@ -249,6 +249,8 @@ class SelectionList(Gtk.ScrolledWindow):
             icon = 'audio-input-microphone-symbolic'
         elif object_id < Navigation.DEVICES:
             icon = 'multimedia-player-symbolic'
+        elif object_id == Navigation.RANDOMS:
+            icon = 'media-playlist-shuffle-symbolic'
         return icon
 
     """
