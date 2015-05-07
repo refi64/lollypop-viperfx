@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-05-07 07:14+0200\n"
+"POT-Creation-Date: 2015-05-07 22:58+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -157,50 +157,54 @@ msgstr ""
 msgid "Music player for the GNOME desktop"
 msgstr ""
 
-#: ../src/application.py:296
+#: ../src/application.py:299
 msgid "Lollypop: You need to install yelp."
 msgstr ""
 
-#: ../src/collectionscanner.py:56
+#: ../src/collectionscanner.py:55
 msgid "Your music is updating"
 msgstr ""
 
-#: ../src/container.py:343
+#: ../src/container.py:333
 msgid "Popular albums"
 msgstr ""
 
-#: ../src/container.py:344
+#: ../src/container.py:334
 msgid "Recent albums"
 msgstr ""
 
-#: ../src/container.py:345 ../src/popmenu.py:321 ../src/popmenu.py:336
+#: ../src/container.py:335
+msgid "Random albums"
+msgstr ""
+
+#: ../src/container.py:336 ../src/popmenu.py:321 ../src/popmenu.py:336
 #: ../src/popmenu.py:351
 msgid "Playlists"
 msgstr ""
 
-#: ../src/container.py:346
+#: ../src/container.py:337
 msgid "Radios"
 msgstr ""
 
-#: ../src/container.py:348
+#: ../src/container.py:339
 msgid "All artists"
 msgstr ""
 
-#: ../src/container.py:350
+#: ../src/container.py:341
 msgid "All albums"
 msgstr ""
 
-#: ../src/container.py:392
+#: ../src/container.py:383
 msgid "Compilations"
 msgstr ""
 
-#: ../src/database_albums.py:233 ../src/database_artists.py:70
+#: ../src/database_albums.py:235 ../src/database_artists.py:70
 #: ../src/database_genres.py:67 ../src/database_tracks.py:187
 #: ../src/tagreader.py:75 ../src/tagreader.py:103 ../src/tagreader.py:115
 msgid "Unknown"
 msgstr ""
 
-#: ../src/database_albums.py:250
+#: ../src/database_albums.py:252
 msgid "Compilation"
 msgstr ""
 
@@ -208,12 +212,12 @@ msgstr ""
 msgid "Many artists"
 msgstr ""
 
-#: ../src/fullscreen.py:75 ../src/fullscreen.py:189 ../src/toolbar.py:286
-#: ../src/toolbar.py:317
+#: ../src/fullscreen.py:75 ../src/fullscreen.py:189 ../src/toolbar.py:287
+#: ../src/toolbar.py:318
 msgid "Pause"
 msgstr ""
 
-#: ../src/fullscreen.py:193 ../src/toolbar.py:293 ../src/toolbar.py:314
+#: ../src/fullscreen.py:193 ../src/toolbar.py:294 ../src/toolbar.py:315
 #: ../data/Toolbar.ui.h:7
 msgid "Play"
 msgstr ""
@@ -233,7 +237,7 @@ msgstr ""
 msgid "by %s, from %s"
 msgstr ""
 
-#: ../src/player_radio.py:120
+#: ../src/player_radio.py:122
 msgid "Radio"
 msgstr ""
 
@@ -287,11 +291,11 @@ msgstr ""
 msgid "Playback"
 msgstr ""
 
-#: ../src/popradio.py:69
+#: ../src/popradio.py:70
 msgid "Add"
 msgstr ""
 
-#: ../src/popradio.py:71
+#: ../src/popradio.py:72
 msgid "Modify"
 msgstr ""
 
@@ -322,7 +326,7 @@ msgstr ""
 msgid "Cancel synchronization"
 msgstr ""
 
-#: ../src/widgets_album.py:200
+#: ../src/widgets_album.py:206
 #, python-format
 msgid "Disc %s"
 msgstr ""
