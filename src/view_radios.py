@@ -46,7 +46,7 @@ class RadiosView(View):
         self._radiobox.set_property('column-spacing', 5)
         self._radiobox.set_property('row-spacing', 5)
         self._radiobox.set_homogeneous(True)
-        self._albumbox.set_max_children_per_line(1000)
+        self._radiobox.set_max_children_per_line(1000)
         self._radiobox.show()
 
         self._viewport.set_property("valign", Gtk.Align.START)
