@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-05-05 18:22+0200\n"
+"POT-Creation-Date: 2015-05-07 07:14+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -82,8 +82,8 @@ msgstr ""
 msgid "Between -15 and 15"
 msgstr ""
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:17
-msgid "Auto update db"
+#: ../data/org.gnome.Lollypop.gschema.xml.h:17 ../data/SettingsDialog.ui.h:2
+msgid "Auto update music"
 msgstr ""
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:18
@@ -165,32 +165,32 @@ msgstr ""
 msgid "Your music is updating"
 msgstr ""
 
-#: ../src/container.py:341
+#: ../src/container.py:343
 msgid "Popular albums"
 msgstr ""
 
-#: ../src/container.py:342
+#: ../src/container.py:344
 msgid "Recent albums"
 msgstr ""
 
-#: ../src/container.py:343 ../src/popmenu.py:321 ../src/popmenu.py:336
+#: ../src/container.py:345 ../src/popmenu.py:321 ../src/popmenu.py:336
 #: ../src/popmenu.py:351
 msgid "Playlists"
 msgstr ""
 
-#: ../src/container.py:344
+#: ../src/container.py:346
 msgid "Radios"
 msgstr ""
 
-#: ../src/container.py:346
+#: ../src/container.py:348
 msgid "All artists"
 msgstr ""
 
-#: ../src/container.py:348
+#: ../src/container.py:350
 msgid "All albums"
 msgstr ""
 
-#: ../src/container.py:390
+#: ../src/container.py:392
 msgid "Compilations"
 msgstr ""
 
@@ -208,12 +208,12 @@ msgstr ""
 msgid "Many artists"
 msgstr ""
 
-#: ../src/fullscreen.py:75 ../src/fullscreen.py:189 ../src/toolbar.py:288
-#: ../src/toolbar.py:319
+#: ../src/fullscreen.py:75 ../src/fullscreen.py:189 ../src/toolbar.py:286
+#: ../src/toolbar.py:317
 msgid "Pause"
 msgstr ""
 
-#: ../src/fullscreen.py:193 ../src/toolbar.py:295 ../src/toolbar.py:316
+#: ../src/fullscreen.py:193 ../src/toolbar.py:293 ../src/toolbar.py:314
 #: ../data/Toolbar.ui.h:7
 msgid "Play"
 msgstr ""
@@ -295,7 +295,7 @@ msgstr ""
 msgid "Modify"
 msgstr ""
 
-#: ../src/search.py:148
+#: ../src/search.py:152
 msgid "Search:"
 msgstr ""
 
@@ -322,7 +322,7 @@ msgstr ""
 msgid "Cancel synchronization"
 msgstr ""
 
-#: ../src/widgets_album.py:183
+#: ../src/widgets_album.py:200
 #, python-format
 msgid "Disc %s"
 msgstr ""
@@ -451,10 +451,6 @@ msgstr ""
 
 #: ../data/SettingsDialog.ui.h:1
 msgid "Preferences"
-msgstr ""
-
-#: ../data/SettingsDialog.ui.h:2
-msgid "Auto update music"
 msgstr ""
 
 #: ../data/SettingsDialog.ui.h:3
