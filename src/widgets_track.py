@@ -166,7 +166,8 @@ class TrackRow(Gtk.ListBoxRow):
     def _on_title_query_tooltip(self, widget, x, y, keyboard, tooltip):
         layout = self._title_label.get_layout()
         if layout.is_ellipsized():
-            self._title_label.set_tooltip_markup(self._title_label.get_text())
+            label = self._title_label.get_label()
+            self._title_label.set_tooltip_markup(label)
         else:
             self._title_label.set_tooltip_text('')
 
