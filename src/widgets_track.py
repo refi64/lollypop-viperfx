@@ -45,6 +45,16 @@ class TrackRow(Gtk.ListBoxRow):
         self.show()
 
     """
+        Show cover
+        @param show as bool
+    """
+    def show_cover(self, show):
+        if show:
+            self._cover.show()
+        else:
+            self._cover.hide()
+
+    """
         Show play icon
         @param widget name as str
         @param show as bool
