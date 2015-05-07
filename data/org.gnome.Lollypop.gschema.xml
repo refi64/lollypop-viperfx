@@ -50,7 +50,7 @@
         </key>
          <key type="b" name="auto-update">
             <default>true</default>
-            <summary>Auto update db</summary>
+            <summary>Auto update music</summary>
             <description></description>
         </key>
          <key type="b" name="show-genres">
