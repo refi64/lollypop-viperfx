@@ -92,7 +92,8 @@ class ShufflePlayer(BasePlayer):
             else:
                 self._albums = Objects.albums.get_ids()
             # Start a new song if not playing
-            if not self.is_playing() and self._albums:
+            if (self.current.id == Navigation.RADIOS or not self.is_playing())\
+               and self._albums:
                 track_id = self._get_random()
                 self.load(track_id)
         else:
@@ -100,6 +101,8 @@ class ShufflePlayer(BasePlayer):
             if self.current.id:
                 self.set_albums(self.current.id,
                                 self.current.aartist_id, None)
+        self.emit('party-changed', party)
+        Objects.window.update_view()
 
     """
         True if party mode on

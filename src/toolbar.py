@@ -75,6 +75,7 @@ class Toolbar(Gtk.HeaderBar):
 
         Objects.player.connect("status-changed", self._on_status_changed)
         Objects.player.connect("current-changed", self._on_current_changed)
+        Objects.player.connect("party-changed", self._on_party_changed)
         Objects.player.connect("cover-changed", self._update_cover)
 
         self._shuffle_btn = builder.get_object('shuffle-button')
@@ -364,8 +365,16 @@ class Toolbar(Gtk.HeaderBar):
         if not Objects.settings.get_value('dark-ui'):
             settings = Gtk.Settings.get_default()
             settings.set_property("gtk-application-prefer-dark-theme", active)
-            Objects.window.update_view()
         Objects.player.set_party(active)
+
+    """
+        On party change, sync toolbar
+        @param player as Player
+        @param is party as bool
+    """
+    def _on_party_changed(self, player, is_party):
+        if self._party_btn.get_active() != is_party:
+            self._activate_party_button()
 
     """
         Show tooltip if needed

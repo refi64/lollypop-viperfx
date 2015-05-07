@@ -239,7 +239,7 @@ class BinPlayer(ReplayGainPlayer, BasePlayer):
         On error, next()
     """
     def _on_bus_error(self, bus, message):
-        debug("Error playing: ", self.current.path)
+        debug("Error playing: %s" % self.current.path)
         self._on_errors()
         return False
 

@@ -45,6 +45,7 @@ class RadioPlayer(BasePlayer):
         except Exception as e:
             print("RadioPlayer::load(): ", e)
             return False
+        self.set_party(False)
         return True
 
     """

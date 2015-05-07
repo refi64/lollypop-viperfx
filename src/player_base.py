@@ -24,7 +24,8 @@ class BasePlayer(GObject.GObject):
         'volume-changed': (GObject.SignalFlags.RUN_FIRST, None, ()),
         'queue-changed': (GObject.SignalFlags.RUN_FIRST, None, ()),
         'cover-changed': (GObject.SignalFlags.RUN_FIRST, None, (int,)),
-        'logo-changed' : (GObject.SignalFlags.RUN_FIRST, None, (str,))
+        'logo-changed' : (GObject.SignalFlags.RUN_FIRST, None, (str,)),
+        'party-changed' : (GObject.SignalFlags.RUN_FIRST, None, (bool,))
     }
     """
         Init base player variables
