@@ -329,7 +329,6 @@ class Container:
     def _update_list_two(self, updater):
         update = updater is not None
         object_id = self._list_one.get_selected_id()
-
         if object_id == Navigation.PLAYLISTS:
             start_new_thread(self._setup_list_playlists, (update,))
         elif self._show_genres and object_id != Navigation.NONE:
@@ -534,6 +533,7 @@ class Container:
     def _on_list_one_selected(self, selection_list, selected_id):
         if selected_id == Navigation.PLAYLISTS:
             start_new_thread(self._setup_list_playlists, (False,))
+            self._list_two.clear()
             self._list_two.show()
         elif selected_id < Navigation.DEVICES:
             self._list_two.hide()

@@ -132,7 +132,7 @@ class SelectionList(Gtk.ScrolledWindow):
         @param object id as int
     """
     def select_id(self, object_id):
-        self._to_select_id = None
+        self._to_select_id = Navigation.NONE
         try:
             selected = None
             for item in self._model:
@@ -152,12 +152,13 @@ class SelectionList(Gtk.ScrolledWindow):
         @return id as int
     """
     def get_selected_id(self):
+        selected_id = Navigation.NONE
         (path, column) = self._view.get_cursor()
         if path:
             iterator = self._model.get_iter(path)
             if iterator:
-                return self._model.get_value(iterator, 0)
-            return Navigation.NONE
+                selected_id = self._model.get_value(iterator, 0)
+        return selected_id
 
     """
         Return true if view is being populated
@@ -280,5 +281,6 @@ class SelectionList(Gtk.ScrolledWindow):
         @param view as Gtk.TreeView
     """
     def _new_item_selected(self, view):
-        if not self._updating:
-            self.emit('item-selected', self.get_selected_id())
+        selected_id = self.get_selected_id()
+        if not self._updating and selected_id != Navigation.NONE:
+            self.emit('item-selected', selected_id)
