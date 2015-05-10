@@ -190,11 +190,7 @@ class CollectionScanner(GObject.GObject, ScannerTagReader):
         Objects.albums.search_compilations(True, sql)
         sql.commit()
         sql.close()
-        if self._progress is not None:
-            GLib.idle_add(self._progress.hide)
-            self._progress = None
-        self._in_thread = False
-        self._is_locked = False
+        GLib.idle_add(self._finish)
 
     """
         Scan music collection for music files
