@@ -100,7 +100,10 @@ class ScannerTagReader(TagReader):
     def get_album_name(self, tags):
         (exist, album_name) = tags.get_string_index('album', 0)
         if not exist:
-            album_name = _("Unknown")
+            album_artist = self.get_album_artist(tags)
+            if album_artist is None:
+                album_artist = self.get_artists(tags)
+            album_name = album_artist+" - "+_("Unknown")
         return album_name
 
     """
