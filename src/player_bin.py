@@ -42,6 +42,7 @@ class BinPlayer(ReplayGainPlayer, BasePlayer):
         self._bus.connect('message::error', self._on_bus_error)
         self._bus.connect('message::eos', self._on_bus_eos)
         self._bus.connect('message::stream-start', self._on_stream_start)
+        self._handled_error = None
 
     """
         True if player is playing
@@ -236,11 +237,16 @@ class BinPlayer(ReplayGainPlayer, BasePlayer):
         return True
 
     """
-        On error, next()
+        Handle first bus error, ignore others
+        @param bus as Gst.Bus
+        @param message as Gst.Message
     """
     def _on_bus_error(self, bus, message):
         debug("Error playing: %s" % self.current.path)
-        self._on_errors()
+        if self._handled_error != self.current.path:
+            self._handled_error = self.current.path
+            GLib.idle_add(self.emit, 'current-changed')
+            GLib.timeout_add(2000, self.next, True)
         return False
 
     """
@@ -290,19 +296,6 @@ class BinPlayer(ReplayGainPlayer, BasePlayer):
             sql.close()
 
     """
-        On error, try 3 more times playing a track
-    """
-    def _on_errors(self):
-        debug("Player::_on_errors(): %s" % self._errors)
-        self._errors += 1
-        if self._errors < 3:
-            GLib.idle_add(self.next, True)
-        else:
-            self.current = CurrentTrack()
-            GLib.idle_add(self.stop)
-            GLib.idle_add(self.emit, 'current-changed')
-
-    """
         On stream start
         Emit "current-changed" to notify others components
         @param bus as Gst.Bus
@@ -311,4 +304,4 @@ class BinPlayer(ReplayGainPlayer, BasePlayer):
     def _on_stream_start(self, bus, message):
         debug("Player::_on_stream_start(): %s" % self.current.path)
         self.emit("current-changed")
-        self._errors = 0
+        self._handled_error = None

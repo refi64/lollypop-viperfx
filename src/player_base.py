@@ -56,8 +56,6 @@ class BasePlayer(GObject.GObject):
             self._already_played_tracks = {}
             # Party mode
             self._is_party = False
-            # Player errors
-            self._errors = 0
             # Bus for messages
             self._bus = None
             # Signal for message::tag
