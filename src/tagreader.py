@@ -241,11 +241,9 @@ class ScannerTagReader(TagReader):
         @commit needed
     """
     def add_album(self, album_name, artist_id, filepath, outside, sql):
-        new = False
         path = os.path.dirname(filepath)
         album_id = Objects.albums.get_id(album_name, artist_id, sql)
         if album_id is None:
-            new = True
             # If db was empty on scan,
             # use file modification time to get recents
             if self._is_empty:
@@ -259,7 +257,7 @@ class ScannerTagReader(TagReader):
         # Now we have our album id, check if path doesn't change
         if Objects.albums.get_path(album_id, sql) != path and not outside:
             Objects.albums.set_path(album_id, path, sql)
-        return (album_id, new)
+        return album_id
 
     """
         Update album year

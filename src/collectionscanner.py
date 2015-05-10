@@ -27,8 +27,7 @@ class CollectionScanner(GObject.GObject, ScannerTagReader):
         'scan-finished': (GObject.SignalFlags.RUN_FIRST, None, ()),
         'artist-update': (GObject.SignalFlags.RUN_FIRST, None, (int, int)),
         'genre-update': (GObject.SignalFlags.RUN_FIRST, None, (int,)),
-        'album-update': (GObject.SignalFlags.RUN_FIRST, None, (int,)),
-        'added': (GObject.SignalFlags.RUN_FIRST, None, (int, bool))
+        'track-added': (GObject.SignalFlags.RUN_FIRST, None, (int, bool))
     }
     """
         Init collection scanner
@@ -185,7 +184,7 @@ class CollectionScanner(GObject.GObject, ScannerTagReader):
             if track_id is not None:
                 if i == 0:
                     sql.commit()
-                GLib.idle_add(self.emit, "added", track_id, i==0)
+                GLib.idle_add(self.emit, "track-added", track_id, i==0)
             i += 1
             GLib.idle_add(self._update_progress, i, count)
         Objects.albums.search_compilations(True, sql)
@@ -295,8 +294,8 @@ class CollectionScanner(GObject.GObject, ScannerTagReader):
         if new:
             new_artist_ids.append(album_artist_id)
 
-        (album_id, new_album_id) = self.add_album(album_name, album_artist_id,
-                                                  filepath, outside, sql)
+        album_id = self.add_album(album_name, album_artist_id,
+                                  filepath, outside, sql)
 
         (genre_ids, new_genre_ids) = self.add_genres(genres, album_id,
                                                       outside, sql)
@@ -314,8 +313,6 @@ class CollectionScanner(GObject.GObject, ScannerTagReader):
         # Notify about new artists/genres
         if new_genre_ids or new_artist_ids or new_album_id:
             sql.commit()
-            if new_album_id:
-                GLib.idle_add(self.emit, 'album-update', album_id)
             for genre_id in new_genre_ids:
                 GLib.idle_add(self.emit, 'genre-update', genre_id)
             for artist_id in new_artist_ids:

@@ -261,6 +261,20 @@ class AlbumsView(View):
         self._context.clean_old_views(view)
 
     """
+        Pop an album and add it to the view,
+        repeat operation until album list is empty
+        @param [album ids as int]
+    """
+    def _add_albums(self, albums):
+        if albums and not self._stop:
+            widget = AlbumSimpleWidget(albums.pop(0))
+            widget.show()
+            self._albumbox.insert(widget, -1)
+            GLib.idle_add(self._add_albums, albums)
+        else:
+            self._stop = False
+
+    """
         Save paned position
         @param paned as Gtk.Paned
         @param param as Gtk.Param
@@ -289,18 +303,3 @@ class AlbumsView(View):
             self._context_album_id = child.get_child().get_id()
             self._populate_context(self._context_album_id)
             self._context.show()
-
-    """
-        Pop an album and add it to the view,
-        repeat operation until album list is empty
-        @param [album ids as int]
-    """
-    def _add_albums(self, albums):
-        if albums and not self._stop:
-            widget = AlbumSimpleWidget(albums.pop(0))
-            widget.show()
-            self._albumbox.insert(widget, -1)
-            GLib.idle_add(self._add_albums, albums)
-        else:
-            self._stop = False
-

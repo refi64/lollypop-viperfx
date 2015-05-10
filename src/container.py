@@ -297,7 +297,7 @@ class Container:
         Objects.scanner.connect('scan-finished', self.on_scan_finished)
         Objects.scanner.connect('genre-update', self._add_genre)
         Objects.scanner.connect('artist-update', self._add_artist)
-        Objects.scanner.connect('added', self._play_track)
+        Objects.scanner.connect('track-added', self._play_track)
 
     """
         Update list one

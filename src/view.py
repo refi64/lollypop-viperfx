@@ -20,16 +20,18 @@ class View(Gtk.Grid):
 
     def __init__(self):
         Gtk.Grid.__init__(self)
-        self.set_property("orientation", Gtk.Orientation.VERTICAL)
+        self.set_property('orientation', Gtk.Orientation.VERTICAL)
         self.set_border_width(0)
-        self._current_signal = Objects.player.connect("current-changed",
+        self._current_signal = Objects.player.connect('current-changed',
                                                       self._on_current_changed)
-        self._cover_signal = Objects.player.connect("cover-changed",
+        self._cover_signal = Objects.player.connect('cover-changed',
                                                     self._on_cover_changed)
-        self._scan_signal = Objects.scanner.connect("scan-finished",
+        self._scan_signal = Objects.scanner.connect('scan-finished',
                                                     self._on_scan_finished)
+
         # Stop populate thread
         self._stop = False
+        self._new_ids = []
 
         self._scrolledWindow = Gtk.ScrolledWindow()
         self._scrolledWindow.set_policy(Gtk.PolicyType.NEVER,
@@ -50,6 +52,9 @@ class View(Gtk.Grid):
         if self._cover_signal:
             Objects.player.disconnect(self._cover_signal)
             self._cover_signal = None
+        if self._scan_signal:
+            Objects.player.disconnect(self._scan_signal)
+            self._scan_signal = None
 
     """
         Stop populating
