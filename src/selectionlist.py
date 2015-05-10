@@ -16,7 +16,7 @@ from time import time
 from _thread import start_new_thread
 
 from lollypop.utils import translate_artist_name, format_artist_name
-from lollypop.define import Navigation
+from lollypop.define import Navigation, Objects
 
 
 # A selection list is a artists or genres scrolled treeview
@@ -286,3 +286,19 @@ class SelectionList(Gtk.ScrolledWindow):
         selected_id = self.get_selected_id()
         if not self._updating and selected_id != Navigation.NONE:
             self.emit('item-selected', selected_id)
+
+    """
+        Disable shortcuts
+        @param widget as Gtk.widget
+        @param event as GdK.Event
+    """
+    def _on_focus_in_event(self, widget, event):
+        Objects.window.enable_global_shorcuts(False)
+
+    """
+        Enable shortcuts
+        @param widget as Gtk.widget
+        @param event as GdK.Event
+    """
+    def _on_focus_out_event(self, widget, event):
+        Objects.window.enable_global_shorcuts(True)

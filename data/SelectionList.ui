@@ -21,6 +21,8 @@
     <property name="search_column">1</property>
     <property name="fixed_height_mode">True</property>
     <signal name="cursor-changed" handler="_new_item_selected" swapped="no"/>
+    <signal name="focus-in-event" handler="_on_focus_in_event" swapped="no"/>
+    <signal name="focus-out-event" handler="_on_focus_out_event" swapped="no"/>
     <child internal-child="selection">
       <object class="GtkTreeSelection" id="treeview-selection1"/>
     </child>
