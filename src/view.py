@@ -53,7 +53,7 @@ class View(Gtk.Grid):
             Objects.player.disconnect(self._cover_signal)
             self._cover_signal = None
         if self._scan_signal:
-            Objects.player.disconnect(self._scan_signal)
+            Objects.scanner.disconnect(self._scan_signal)
             self._scan_signal = None
 
     """
