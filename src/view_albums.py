@@ -86,7 +86,6 @@ class ArtistView(View):
             albums = Objects.albums.get_ids(self._artist_id,
                                             self._genre_id,
                                             sql)
-        GLib.idle_add(self._add_albums, albums, self._genre_id)
         sql.close()
         return albums
 
