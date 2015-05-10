@@ -26,6 +26,8 @@ class View(Gtk.Grid):
                                                       self._on_current_changed)
         self._cover_signal = Objects.player.connect("cover-changed",
                                                     self._on_cover_changed)
+        self._scan_signal = Objects.scanner.connect("scan-finished",
+                                                    self._on_scan_finished)
         # Stop populate thread
         self._stop = False
 
@@ -79,6 +81,14 @@ class View(Gtk.Grid):
             GLib.idle_add(self._update_widgets, widgets, force)
 
     """
+        Get albums
+        @return album ids as [int]
+        @thread safe
+    """
+    def _get_albums(self):
+        return []
+
+    """
         Return view children
     """
     def _get_children(self):
@@ -98,3 +108,13 @@ class View(Gtk.Grid):
     """
     def _on_current_changed(self, player):
         GLib.idle_add(self._update_widgets, self._get_children(), False)
+
+    """
+        On scanner finished, update the view
+        @param scanner as CollectionScanner
+    """
+    def _on_scan_finished(self, scanner):
+        albums = self._get_albums()
+        for child in self._get_children():
+            if child.get_id() not in albums:
+                child.set_sensitive(False)

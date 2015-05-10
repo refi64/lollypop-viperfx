@@ -444,10 +444,10 @@ class Container:
         @param is compilation as bool
     """
     def _update_view_albums(self, genre_id, is_compilation=False):
-        view = AlbumsView(genre_id)
+        view = AlbumsView(genre_id, is_compilation)
         self._stack.add(view)
         view.show()
-        start_new_thread(view.populate, (is_compilation,))
+        start_new_thread(view.populate, ())
         self._stack.set_visible_child(view)
         self._stack.clean_old_views(view)
 

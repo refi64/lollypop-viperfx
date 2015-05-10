@@ -57,9 +57,23 @@ class ArtistView(View):
         self.add(self._scrolledWindow)
 
     """
-        Populate the view, can be threaded
+        Populate the view
+        @thread safe
     """
     def populate(self):
+        albums = self._get_albums()
+        GLib.idle_add(self._add_albums, albums, self._genre_id)
+
+
+#######################
+# PRIVATE             #
+#######################
+    """
+        Get albums
+        @return album ids as [int]
+        @thread safe
+    """
+    def _get_albums(self):
         sql = Objects.db.get_cursor()
         if self._artist_id == Navigation.COMPILATIONS:
             albums = Objects.albums.get_compilations(self._genre_id,
@@ -74,10 +88,8 @@ class ArtistView(View):
                                             sql)
         GLib.idle_add(self._add_albums, albums, self._genre_id)
         sql.close()
+        return albums
 
-#######################
-# PRIVATE             #
-#######################
     """
         Return view children
         @return [AlbumWidget]
@@ -138,12 +150,14 @@ class AlbumsView(View):
     """
         Init album view ui with a scrolled flow box and a scrolled context view
         @param genre id as int
+        @param is compilation as bool
     """
-    def __init__(self, genre_id):
+    def __init__(self, genre_id, is_compilation):
         View.__init__(self)
         self._signal = None
         self._context_album_id = None
         self._genre_id = genre_id
+        self._is_compilation = is_compilation
         self._albumsongs = None
         self._context_widget = None
 
@@ -180,10 +194,23 @@ class AlbumsView(View):
         self.add(self._paned)
 
     """
-        Populate albums, thread safe
+        Populate albums
         @param is compilation as bool
+        @thread safe
     """
-    def populate(self, is_compilation):
+    def populate(self):
+        albums = self._get_albums()
+        GLib.idle_add(self._add_albums, albums)
+
+#######################
+# PRIVATE             #
+#######################
+    """
+        Get albums
+        @return album ids as [int]
+        @thread safe
+    """
+    def _get_albums(self):
         sql = Objects.db.get_cursor()
         if self._genre_id == Navigation.ALL:
             albums = Objects.albums.get_ids(None, None, sql)
@@ -193,17 +220,14 @@ class AlbumsView(View):
             albums = Objects.albums.get_recents(sql)
         elif self._genre_id == Navigation.RANDOMS:
             albums = Objects.albums.get_randoms(sql)
-        elif is_compilation:
+        elif self._is_compilation:
             albums = Objects.albums.get_compilations(self._genre_id,
                                                      sql)
         else:
             albums = Objects.albums.get_ids(None, self._genre_id, sql)
-        GLib.idle_add(self._add_albums, albums)
         sql.close()
+        return albums
 
-#######################
-# PRIVATE             #
-#######################
     """
         Return view children
         @return [AlbumWidget]
