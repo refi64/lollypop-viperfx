@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-05-07 22:58+0200\n"
+"POT-Creation-Date: 2015-05-11 11:15+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -161,46 +161,46 @@ msgstr ""
 msgid "Lollypop: You need to install yelp."
 msgstr ""
 
-#: ../src/collectionscanner.py:55
+#: ../src/collectionscanner.py:56
 msgid "Your music is updating"
 msgstr ""
 
-#: ../src/container.py:333
+#: ../src/container.py:334
 msgid "Popular albums"
 msgstr ""
 
-#: ../src/container.py:334
+#: ../src/container.py:335
 msgid "Recent albums"
 msgstr ""
 
-#: ../src/container.py:335
+#: ../src/container.py:336
 msgid "Random albums"
 msgstr ""
 
-#: ../src/container.py:336 ../src/popmenu.py:321 ../src/popmenu.py:336
+#: ../src/container.py:337 ../src/popmenu.py:321 ../src/popmenu.py:336
 #: ../src/popmenu.py:351
 msgid "Playlists"
 msgstr ""
 
-#: ../src/container.py:337
+#: ../src/container.py:338
 msgid "Radios"
 msgstr ""
 
-#: ../src/container.py:339
+#: ../src/container.py:340
 msgid "All artists"
 msgstr ""
 
-#: ../src/container.py:341
+#: ../src/container.py:342
 msgid "All albums"
 msgstr ""
 
-#: ../src/container.py:383
+#: ../src/container.py:384
 msgid "Compilations"
 msgstr ""
 
 #: ../src/database_albums.py:235 ../src/database_artists.py:70
 #: ../src/database_genres.py:67 ../src/database_tracks.py:187
-#: ../src/tagreader.py:75 ../src/tagreader.py:103 ../src/tagreader.py:115
+#: ../src/tagreader.py:75 ../src/tagreader.py:106 ../src/tagreader.py:118
 msgid "Unknown"
 msgstr ""
 
@@ -237,7 +237,12 @@ msgstr ""
 msgid "by %s, from %s"
 msgstr ""
 
-#: ../src/player_radio.py:122
+#: ../src/player_bin.py:230
+#, python-format
+msgid "File doesn't exist: %s"
+msgstr ""
+
+#: ../src/player_radio.py:108
 msgid "Radio"
 msgstr ""
 
