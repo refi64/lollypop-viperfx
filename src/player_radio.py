@@ -28,6 +28,7 @@ class RadioPlayer(BasePlayer):
         BasePlayer.__init__(self)
         self._radio_name = None
         self._radio_uri = None
+        self._bus.connect("message::tag", self._on_bus_message_tag)
 
     """
         Load radio at uri
@@ -40,29 +41,13 @@ class RadioPlayer(BasePlayer):
         self._radio_uri = uri
         try:
             parser = TotemPlParser.Parser.new()
-            parser.connect("entry-parsed", self._on_entry_parsed, name)
-            parser.parse_async(uri, False, None, self._on_parsed, name)
+            parser.parse_async(uri, False, None, self._on_entry_parsed, name)
         except Exception as e:
             print("RadioPlayer::load(): ", e)
             return False
         self.set_party(False)
         self._albums = []
         return True
-
-    """
-        If parsing failed, try to play uri
-        @param parser as Totem.PlParser
-        @param result as Gio.AsyncResult
-        @param radio name as string
-    """
-    def _on_parsed(self, parser, result, name):
-        if parser.parse_finish(result) != TotemPlParser.ParserResult.SUCCESS:
-            # Only start playing if context always True
-            if self._radio_name == name:
-                self._stop()
-                self._playbin.set_property('uri', self._radio_uri)
-                self._set_current()
-                self.play()
 
     """
         Return next radio name, uri
@@ -132,21 +117,31 @@ class RadioPlayer(BasePlayer):
         self.current.genre = string
         self.current.duration = 0.0
         self.current.number = 0
-        if self._bus is not None and self._message_tag is None:
-            self._message_tag =  self._bus.connect("message::tag",
-                                                   self._on_bus_message_tag)
+
+    """
+        Read title from stream
+        @param bus as Gst.Bus
+        @param message as Gst.Message
+    """
+    def _on_bus_message_tag(self, bus, message):
+        if self.current.id != Navigation.RADIOS:
+            return
+        tags = message.parse_tag()
+        (exist, title) = tags.get_string_index('title', 0)
+        if exist and title != self.current.title:
+            self.current.title = title
+            self.emit('current-changed')
 
     """
         Play stream
         @param parser as TotemPlParser.Parser
-        @param track uri as str
-        @param metadata as GLib.HastTable
+        @param result as Gio.AsyncResult
         @param radio name as string
     """
-    def _on_entry_parsed(self, parser, uri, metadata, name):
+    def _on_entry_parsed(self, parser, result, name):
         # Only start playing if context always True
         if self._radio_name == name:
             self._stop()
-            self._playbin.set_property('uri', uri)
+            self._playbin.set_property('uri', self._radio_uri)
             self._set_current()
             self.play()

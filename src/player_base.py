@@ -33,7 +33,7 @@ class BasePlayer(GObject.GObject):
     def __init__(self):
         # In case of multiple subclassing, 
         # do not init variables for every subclass
-        if not hasattr(self, 'albums'):
+        if not hasattr(self, '_albums'):
             GObject.GObject.__init__(self)    
             self._base_init = True
             # A user playlist used as current playlist
@@ -58,5 +58,3 @@ class BasePlayer(GObject.GObject):
             self._is_party = False
             # Bus for messages
             self._bus = None
-            # Signal for message::tag
-            self._message_tag = None

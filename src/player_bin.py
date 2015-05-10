@@ -167,11 +167,6 @@ class BinPlayer(ReplayGainPlayer, BasePlayer):
     def _load_track(self, track_id, sql=None):
         stop = False
 
-        # Disable message tag if we are on db
-        if self._message_tag is not None:
-            self._bus.disconnect(self._message_tag)
-            self._message_tag = None
-
         # Stop if needed
         if self.context.next == NextContext.STOP_TRACK:
             stop = True
@@ -265,18 +260,6 @@ class BinPlayer(ReplayGainPlayer, BasePlayer):
                 self.load_radio(self.current.title, self.current.path)
             else:
                 self.load(self.current.id)
-
-    """
-        Read title from stream
-        @param bus as Gst.Bus
-        @param message as Gst.Message
-    """
-    def _on_bus_message_tag(self, bus, message):
-        tags = message.parse_tag()
-        (exist, title) = tags.get_string_index('title', 0)
-        if exist and title != self.current.title:
-            self.current.title = title
-            self.emit('current-changed')
 
     """
         When stream is about to finish, switch to next track without gap

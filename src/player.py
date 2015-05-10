@@ -33,6 +33,7 @@ class Player(BinPlayer, QueuePlayer, UserPlaylistPlayer, RadioPlayer,
         LinearPlayer.__init__(self)
         ShufflePlayer.__init__(self)
         UserPlaylistPlayer.__init__(self)
+        RadioPlayer.__init__(self)
 
     """
         Play previous track
