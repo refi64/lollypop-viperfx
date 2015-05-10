@@ -41,7 +41,8 @@ class RadioPlayer(BasePlayer):
         self._radio_uri = uri
         try:
             parser = TotemPlParser.Parser.new()
-            parser.parse_async(uri, False, None, self._on_entry_parsed, name)
+            parser.connect("entry-parsed", self._on_entry_parsed, name)
+            parser.parse_async(uri, False, None, self._on_parsed, name)
         except Exception as e:
             print("RadioPlayer::load(): ", e)
             return False
@@ -133,15 +134,31 @@ class RadioPlayer(BasePlayer):
             self.emit('current-changed')
 
     """
-        Play stream
-        @param parser as TotemPlParser.Parser
+        If parsing failed, try to play uri
+        @param parser as Totem.PlParser
         @param result as Gio.AsyncResult
         @param radio name as string
     """
-    def _on_entry_parsed(self, parser, result, name):
+    def _on_parsed(self, parser, result, name):
+        if parser.parse_finish(result) != TotemPlParser.ParserResult.SUCCESS:
+            # Only start playing if context always True
+            if self._radio_name == name:
+                self._stop()
+                self._playbin.set_property('uri', self._radio_uri)
+                self._set_current()
+                self.play()
+
+    """
+        Play stream
+        @param parser as TotemPlParser.Parser
+        @param track uri as str
+        @param metadata as GLib.HastTable
+        @param radio name as string
+    """
+    def _on_entry_parsed(self, parser, uri, metadata, name):
         # Only start playing if context always True
         if self._radio_name == name:
             self._stop()
-            self._playbin.set_property('uri', self._radio_uri)
+            self._playbin.set_property('uri', uri)
             self._set_current()
             self.play()
