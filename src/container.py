@@ -285,7 +285,7 @@ class Container:
             genre_ids = Objects.albums.get_genre_ids(album_id)
             genre_ids.append(Navigation.ALL)
             if self._list_one.get_selected_id() in genre_ids:
-                self._list_two.add_values((artist_id, artist_name))
+                self._list_two.add_value((artist_id, artist_name))
         else:
             self._list_one.add_value((artist_id, artist_name))
 
