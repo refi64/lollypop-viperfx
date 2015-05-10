@@ -288,9 +288,9 @@ class CollectionScanner(GObject.GObject, ScannerTagReader):
         length = infos.get_duration()/1000000000
 
         (artist_ids, new_artist_ids) = self.add_artists(artists,
-                                                         album_artist,
-                                                         outside,
-                                                         sql)
+                                                        album_artist,
+                                                        outside,
+                                                        sql)
 
         (album_artist_id, new) = self.add_album_artist(album_artist,
                                                        outside,
