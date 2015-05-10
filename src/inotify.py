@@ -19,8 +19,8 @@ from lollypop.define import Objects
 
 
 class Inotify:
-    # 20 second before updating database
-    _TIMEOUT = 20000
+    # 10 second before updating database
+    _TIMEOUT = 10000
     """
         Init inode notification
     """
