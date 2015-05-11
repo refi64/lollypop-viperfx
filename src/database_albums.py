@@ -726,7 +726,7 @@ class DatabaseAlbums:
         result = sql.execute("SELECT COUNT(DISTINCT track_artists.artist_id)\
                               FROM tracks, track_artists\
                               WHERE tracks.album_id=?\
-                              AND tracks.rowid = track_artists.artist_id",
+                              AND tracks.rowid = track_artists.track_id",
                              (album_id,))
         v = result.fetchone()
         if v:
