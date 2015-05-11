@@ -319,7 +319,7 @@ class CollectionScanner(GObject.GObject, ScannerTagReader):
         self.update_track(track_id, artist_ids, genre_ids, outside, sql)
 
         # Notify about new artists/genres
-        if new_genre_ids or new_artist_ids or new_album_id:
+        if new_genre_ids or new_artist_ids:
             sql.commit()
             for genre_id in new_genre_ids:
                 GLib.idle_add(self.emit, 'genre-update', genre_id)
