@@ -161,9 +161,9 @@ class Application(Gtk.Application):
             Objects.window.load_external(self._external_files)
 
     """
-        Destroy main window
+        Save window position and view
     """
-    def quit(self, action=None, param=None):
+    def prepare_to_exit(self, action=None, param=None):
         if Objects.settings.get_value('save-state'):
             Objects.window.save_view_state()
             if Objects.player.current.id is None:
@@ -176,7 +176,16 @@ class Application(Gtk.Application):
         Objects.player.stop()
         if Objects.window:
             Objects.window.stop_all()
+        self.quit()
 
+    """
+        Quit lollypop
+    """
+    def quit(self):
+        if Objects.scanner.is_locked():
+            Objects.scanner.stop()
+            GLib.idle_add(self.quit)
+            return
         try:
             Objects.tracks.remove_outside()
             Objects.sql.execute("VACUUM")
@@ -343,7 +352,7 @@ class Application(Gtk.Application):
 
 
         quitAction = Gio.SimpleAction.new('quit', None)
-        quitAction.connect('activate', self.quit)
+        quitAction.connect('activate', self.prepare_to_exit)
         self.set_accels_for_action('app.quit', ["<Control>q"])
         self.add_action(quitAction)
 
