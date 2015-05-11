@@ -86,14 +86,6 @@ class View(Gtk.Grid):
             GLib.idle_add(self._update_widgets, widgets, force)
 
     """
-        Get albums
-        @return album ids as [int]
-        @thread safe
-    """
-    def _get_albums(self):
-        return []
-
-    """
         Return view children
     """
     def _get_children(self):
@@ -119,7 +111,7 @@ class View(Gtk.Grid):
         @param scanner as CollectionScanner
     """
     def _on_scan_finished(self, scanner):
-        albums = self._get_albums()
+        albums = Objects.albums.get_ids()
         for child in self._get_children():
             if child.get_id() not in albums:
                 child.set_sensitive(False)
