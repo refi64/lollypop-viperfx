@@ -29,13 +29,13 @@ GtkTreeView:hover {
     color: @theme_fg_color;
 }
 
-Gtk.ListBoxRow .menubutton {
+Gtk.ListBoxRow .menu-button {
 	border-color: transparent;
 	background-color: transparent;
 	color: transparent;
 }
 
-Gtk.ListBoxRow .menubutton:hover {
+Gtk.ListBoxRow .menu-button:hover {
 	border-color: alpha(@theme_fg_color, 0.1);
 }
 
@@ -78,46 +78,51 @@ Gtk.ListBoxRow .menubutton:hover {
   	color: inherit;
 }
 
-.trackrowplaying .menubutton{
+.trackrowplaying .menu-button{
 	background-color: transparent;
     border-color: transparent;
   	color: transparent;
 }
 
-.trackrowplaying:hover .menubutton{
+.trackrowplaying:hover .menu-button{
 	border-color: transparent;
   	color: inherit;
 }
 
-.trackrowplaying:hover .menubutton:hover {
+.trackrowplaying:hover .menu-button:hover {
 	border-color: alpha(#000000, 0.1);
 }
 
-.trackrow .menubutton {
+.trackrow .menu-button {
 	border-color: transparent;
 	background-color: transparent;
 	color: transparent;
 }
 
-.trackrow:hover .menubutton {
+.trackrow:hover .menu-button {
   	color: inherit;
 }
 
-.trackrow:hover .menubutton:hover {
+.trackrow:hover .menu-button:hover {
 	border-color: alpha(@theme_fg_color, 0.1);
 }
 
-.menu-selected {
+.album-menu-selected .album-menu-button{
+	border-color: alpha(@theme_fg_color, 0.1);
+  	color: inherit;
+}
+
+.track-menu-selected {
 	background-color: alpha(@theme_fg_color, 0.03);
   	color: inherit;
 }
 
-.menu-selected .menubutton{
+.track-menu-selected .track-menu-button{
 	border-color: alpha(@theme_fg_color, 0.1);
   	color: inherit;
 }
 
-.menubutton {
+.menu-button {
 	box-shadow: none;
 	padding-top: 0;
 	padding-bottom: 0;
@@ -125,7 +130,7 @@ Gtk.ListBoxRow .menubutton:hover {
     color: inherit;
 }
 
-.menubutton:hover {
+.menu-button:hover {
 	border-color: alpha(@theme_fg_color, 0.1);
   	color: inherit;
 }

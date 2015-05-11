@@ -36,7 +36,7 @@
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
                     <child>
-                      <object class="GtkGrid" id="grid3">
+                      <object class="GtkGrid" id="header">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
                         <property name="margin_top">10</property>
@@ -86,7 +86,8 @@
                             <property name="focus_on_click">False</property>
                             <property name="always_show_image">True</property>
                             <style>
-                              <class name="menubutton"/>
+                              <class name="menu-button"/>
+                              <class name="album-menu-button"/>
                             </style>
                           </object>
                           <packing>

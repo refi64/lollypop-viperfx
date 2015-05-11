@@ -28,7 +28,8 @@
         <property name="always_show_image">True</property>
         <signal name="clicked" handler="_on_menu_clicked" swapped="no"/>
         <style>
-          <class name="menubutton"/>
+          <class name="menu-button"/>
+          <class name="track-menu-button"/>
         </style>
       </object>
       <packing>
