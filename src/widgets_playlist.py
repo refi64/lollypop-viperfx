@@ -87,12 +87,6 @@ class PlaylistWidget(Gtk.Bin):
         self._tracks_widget2.update_playing(Objects.player.current.id)
 
     """
-        Return id
-    """
-    def get_id(self):
-        return None
-
-    """
         Stop loading
     """
     def stop(self):

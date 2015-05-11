@@ -86,15 +86,15 @@ class PlaylistsView(View):
             self._signal_id = None
         View.do_hide(self)
 
+    """
+        Stop populating
+    """
+    def stop(self):
+        self._playlist_widget.stop()
+
 #######################
 # PRIVATE             #
 #######################
-    """
-        Return view children
-    """
-    def _get_children(self):
-        return [self._playlist_widget]
-
     """
         Update tracks widgets
         @param manager as PlaylistsManager
