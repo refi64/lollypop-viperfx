@@ -407,7 +407,6 @@ class Container:
         else:
             self._list_two.mark_as_artists(False)
             self._list_two.populate(playlists)
-            GLib.idle_add(self._update_view_playlists, None)
 
     """
         Update current view with device view,
@@ -532,9 +531,12 @@ class Container:
             start_new_thread(self._setup_list_playlists, (False,))
             self._list_two.clear()
             self._list_two.show()
+            if not self._list_two.will_be_selected():
+                self._update_view_playlists(None)
         elif selected_id < Navigation.DEVICES:
             self._list_two.hide()
-            self._update_view_device(selected_id)
+            if not self._list_two.will_be_selected():
+                self._update_view_device(selected_id)
         elif selected_id in [Navigation.POPULARS,
                              Navigation.RECENTS,
                              Navigation.RANDOMS]:
