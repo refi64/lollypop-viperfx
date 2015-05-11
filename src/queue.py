@@ -97,7 +97,7 @@ class QueueWidget(Gtk.Popover):
                                  escape(track_name))
             self._model.append([pixbuf,
                                 title,
-                                'list-remove-symbolic',
+                                'user-trash-symbolic',
                                 track_id])
             del pixbuf
 

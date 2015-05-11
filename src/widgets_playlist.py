@@ -166,7 +166,7 @@ class PlaylistsManagerWidget(Gtk.Bin):
         self._infobar = builder.get_object('infobar')
         self._infobar_label = builder.get_object('infobarlabel')
 
-        self._model = Gtk.ListStore(bool, str, GdkPixbuf.Pixbuf)
+        self._model = Gtk.ListStore(bool, str, str)
         self._model.set_sort_column_id(1, Gtk.SortType.ASCENDING)
         self._model.set_sort_func(1, self._sort_items)
 
@@ -191,12 +191,13 @@ class PlaylistsManagerWidget(Gtk.Bin):
         renderer1.connect('editing-started', self._on_playlist_editing_start)
         renderer1.connect('editing-canceled', self._on_playlist_editing_cancel)
         column1 = Gtk.TreeViewColumn('text', renderer1, text=1)
+        column1.set_sizing(Gtk.TreeViewColumnSizing.FIXED)
         column1.set_expand(True)
 
         renderer2 = Gtk.CellRendererPixbuf()
-        renderer2.set_property('stock-size', 22)
-        renderer2.set_fixed_size(22, -1)
-        column2 = Gtk.TreeViewColumn("pixbuf2", renderer2, pixbuf=2)
+        column2 = Gtk.TreeViewColumn('delete', renderer2)
+        column2.add_attribute(renderer2, 'icon-name', 2)
+        column2.set_sizing(Gtk.TreeViewColumnSizing.FIXED)
 
         if self._object_id != -1:
             self._view.append_column(column0)
@@ -254,7 +255,7 @@ class PlaylistsManagerWidget(Gtk.Bin):
                                                         self._is_album)
             else:
                 selected = False
-            self._model.append([selected, playlist[1], self._del_pixbuf])
+            self._model.append([selected, playlist[1], 'user-trash-symbolic'])
             GLib.idle_add(self._append_playlists, playlists)
         else:
             self._view.get_selection().unselect_all()
@@ -288,7 +289,7 @@ class PlaylistsManagerWidget(Gtk.Bin):
     def _on_row_activated(self, view, path, column):
         iterator = self._model.get_iter(path)
         if iterator:
-            if column.get_title() == "pixbuf2":
+            if column.get_title() == "delete":
                 self._show_infobar(path)
 
     """
@@ -359,7 +360,7 @@ class PlaylistsManagerWidget(Gtk.Bin):
         iterator = self._model.get_iter(path)
         old_name = self._model.get_value(iterator, 1)
         self._model.remove(iterator)
-        self._model.append([True, name, self._del_pixbuf])
+        self._model.append([True, name, 'user-trash-symbolic'])
         Objects.playlists.rename(name, old_name)
 
     """
@@ -391,10 +392,6 @@ class PlaylistEditWidget(Gtk.Bin):
         self._playlist_name = playlist_name
         self._save_on_disk = True
         self._tracks_orig = []
-        self._del_pixbuf = Gtk.IconTheme.get_default().load_icon(
-                                                "list-remove-symbolic",
-                                                22,
-                                                0)
 
         builder = Gtk.Builder()
         builder.add_from_resource('/org/gnome/Lollypop/PlaylistEditWidget.ui')
@@ -407,7 +404,7 @@ class PlaylistEditWidget(Gtk.Bin):
 
         self._model = Gtk.ListStore(GdkPixbuf.Pixbuf,
                                     str,
-                                    GdkPixbuf.Pixbuf,
+                                    str,
                                     str)
         self._model.connect("row-deleted", self._on_row_deleted)
 
@@ -421,12 +418,13 @@ class PlaylistEditWidget(Gtk.Bin):
         renderer1.set_property('ellipsize-set', True)
         renderer1.set_property('ellipsize', Pango.EllipsizeMode.END)
         column1 = Gtk.TreeViewColumn("text1", renderer1, markup=1)
+        column1.set_sizing(Gtk.TreeViewColumnSizing.FIXED)
         column1.set_expand(True)
 
         renderer2 = Gtk.CellRendererPixbuf()
-        renderer2.set_property('stock-size', 22)
-        renderer2.set_fixed_size(22, -1)
-        column2 = Gtk.TreeViewColumn("pixbuf2", renderer2, pixbuf=2)
+        column2 = Gtk.TreeViewColumn('delete', renderer2)
+        column2.add_attribute(renderer2, 'icon-name', 2)
+        column2.set_sizing(Gtk.TreeViewColumnSizing.FIXED)
 
         self._view.append_column(column0)
         self._view.append_column(column1)
@@ -503,7 +501,7 @@ class PlaylistEditWidget(Gtk.Bin):
                                "<b>%s</b>\n%s" % (
                                    escape(translate_artist_name(artist_name)),
                                    escape(track_name)),
-                                self._del_pixbuf, filepath])
+                                'user-trash-symbolic', filepath])
             self._tracks_orig.append(filepath)
             GLib.idle_add(self._append_track, tracks)
         else:
@@ -552,7 +550,7 @@ class PlaylistEditWidget(Gtk.Bin):
     def _on_row_activated(self, view, path, column):
         iterator = self._model.get_iter(path)
         if iterator:
-            if column.get_title() == "pixbuf2":
+            if column.get_title() == "delete":
                 self._show_infobar(path)
             else:
                 self._infobar.hide()
