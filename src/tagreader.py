@@ -270,12 +270,10 @@ class ScannerTagReader(TagReader):
         # If no album artist, handle album artist id for compilations
         if noaartist:
             if Objects.albums.is_compilation(album_id, sql):
-                print('is')
                 Objects.albums.set_artist_id(album_id,
                                              Navigation.COMPILATIONS,
                                              sql)
             else:
-                print('not')
                 Objects.albums.set_artist_id(album_id,
                                              artist_id,
                                              sql)
