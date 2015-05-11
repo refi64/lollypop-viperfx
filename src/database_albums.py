@@ -28,19 +28,21 @@ class DatabaseAlbums:
         Add a new album to database
         @param Album name as string
         @param artist id as int,
+        @param compilation as bool,
         @param path as string
         @param outside as bool
         @param mtime as int
         @warning: commit needed
     """
-    def add(self, name, artist_id, path, popularity,
+    def add(self, name, artist_id, compilation, path, popularity,
             outside, mtime, sql=None):
         if not sql:
             sql = Objects.sql
         sql.execute("INSERT INTO albums "
-                    "(name, artist_id, path, popularity, outside, mtime)"
-                    "VALUES (?, ?, ?, ?, ?, ?)",
-                    (name, artist_id, path, popularity, outside, mtime))
+                    "(name, artist_id, compilation, path, popularity, outside, mtime)"
+                    "VALUES (?, ?, ?, ?, ?, ?, ?)",
+                    (name, artist_id, compilation,
+                     path, popularity, outside, mtime))
 
     """
         Add genre to album
@@ -178,8 +180,24 @@ class DatabaseAlbums:
         if not sql:
             sql = Objects.sql
         result = sql.execute("SELECT rowid FROM albums where name=?\
-                              AND artist_id=?", (album_name,
-                                                 artist_id))
+                              AND artist_id=?\
+                              AND compilation=0", (album_name,
+                                                   artist_id))
+        v = result.fetchone()
+        if v:
+            return v[0]
+        return None
+
+    """
+        Get compilation id
+        @param Album name as string,
+        @return Album id as int
+    """
+    def get_compilation_id(self, album_name, sql=None):
+        if not sql:
+            sql = Objects.sql
+        result = sql.execute("SELECT rowid FROM albums where name=?\
+                              AND compilation=1", (album_name,))
         v = result.fetchone()
         if v:
             return v[0]
@@ -265,25 +283,7 @@ class DatabaseAlbums:
         if v:
             return v[0]
 
-        return Navigation.COMPILATIONS
-
-    """
-        Get compilation artists id
-        @param album id as int
-        @return array of artists id, empty if not a compilation
-    """
-    def get_compilation_artists(self, album_id, sql=None):
-        if not sql:
-            sql = Objects.sql
-        artists = []
-        result = sql.execute("SELECT track_artists.artist_id\
-                              FROM tracks, track_artists\
-                              WHERE tracks.album_id=?\
-                              AND track_artists.track_id = tracks.rowid",
-                             (album_id,))
-        for row in result:
-            artists += row
-        return artists
+        return None
 
     """
         Get album year
@@ -698,42 +698,6 @@ class DatabaseAlbums:
         if v:
             return v[0]
         return None
-
-    """
-        Search for compilations, after scan some albums marked
-        as compilation (no artist album)
-        can be albums => all tracks are from the same artist
-        @param outside as bool
-        @warning commit needed
-    """
-    def search_compilations(self, outside, sql):
-        if not sql:
-            sql = Objects.sql
-        result = sql.execute("SELECT DISTINCT track_artists.artist_id,\
-                              album_id, albums.name\
-                              FROM tracks, albums, track_artists\
-                              WHERE albums.rowid = tracks.album_id\
-                              AND albums.artist_id = ?\
-                              AND track_artists.track_id = tracks.rowid\
-                              GROUP BY album_id\
-                              HAVING COUNT(DISTINCT track_artists.artist_id)\
-                              == 1", (Navigation.COMPILATIONS,))
-
-        for artist_id, album_id, album_name, in result:
-            existing_id = self.get_id(album_name, artist_id, sql)
-            # Some tracks from album have an album artist and some not
-            if existing_id is not None and existing_id != album_id:
-                sql.execute("UPDATE tracks SET album_id=? WHERE album_id=?",
-                            (existing_id, album_id))
-                for genre_id in self.get_genre_ids(album_id, sql):
-                    self.add_genre(existing_id, genre_id, outside, sql)
-                sql.execute("DELETE FROM albums WHERE rowid = ?",
-                            (album_id,))
-            # Album is not a compilation,
-            # so update album id to march track album id
-            else:
-                sql.execute("UPDATE albums SET artist_id=? WHERE rowid=?",
-                            (artist_id, album_id))
 
     """
         Search for albums looking like string

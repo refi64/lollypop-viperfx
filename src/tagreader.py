@@ -193,7 +193,7 @@ class ScannerTagReader(TagReader):
         @commit needed
     """
     def add_album_artist(self, album_artist, outside, sql):
-        album_artist_id = Navigation.COMPILATIONS
+        album_artist_id = None
         new = False
         if album_artist is not None:
             album_artist = format_artist_name(album_artist)
@@ -240,9 +240,14 @@ class ScannerTagReader(TagReader):
         @return (album id as int, new as bool)
         @commit needed
     """
-    def add_album(self, album_name, artist_id, filepath, outside, sql):
+    def add_album(self, album_name, artist_id, compilation,
+                  filepath, outside, sql):
         path = os.path.dirname(filepath)
-        album_id = Objects.albums.get_id(album_name, artist_id, sql)
+
+        if compilation:
+            album_id = Objects.albums.get_compilation_id(album_name, sql)
+        else:
+            album_id = Objects.albums.get_id(album_name, artist_id, sql)
         if album_id is None:
             # If db was empty on scan,
             # use file modification time to get recents
@@ -251,9 +256,12 @@ class ScannerTagReader(TagReader):
             # Use current time
             else:
                 mtime = int(time())
-            Objects.albums.add(album_name, artist_id,
+            Objects.albums.add(album_name, artist_id, compilation,
                                path, 0, outside, mtime, sql)
-            album_id = Objects.albums.get_id(album_name, artist_id, sql)
+            if compilation:
+                album_id = Objects.albums.get_compilation_id(album_name, sql)
+            else:
+                album_id = Objects.albums.get_id(album_name, artist_id, sql)
         # Now we have our album id, check if path doesn't change
         if Objects.albums.get_path(album_id, sql) != path and not outside:
             Objects.albums.set_path(album_id, path, sql)

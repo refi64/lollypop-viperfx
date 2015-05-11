@@ -99,15 +99,24 @@ class DatabaseArtists:
         if genre_id == Navigation.ALL or genre_id is None:
             # Only artist that really have an album
             result = sql.execute("SELECT DISTINCT artists.rowid, artists.name\
-                                  FROM artists, albums\
+                                  FROM artists, albums, tracks, track_artists\
                                   WHERE albums.artist_id = artists.rowid\
+                                  AND tracks.album_id = albums.rowid\
+                                  AND tracks.rowid = track_artists.track_id\
+                                  AND (albums.compilation = 0 OR\
+                                     track_artists.artist_id == artists.rowid)\
                                   ORDER BY artists.name COLLATE NOCASE")
         else:
             result = sql.execute("SELECT DISTINCT artists.rowid, artists.name\
-                                  FROM artists, albums, album_genres\
+                                  FROM artists, albums,\
+                                       album_genres, tracks, track_artists\
                                   WHERE artists.rowid == albums.artist_id\
                                   AND album_genres.genre_id=?\
                                   AND album_genres.album_id=albums.rowid\
+                                  AND tracks.album_id = albums.rowid\
+                                  AND tracks.rowid = track_artists.track_id\
+                                  AND (albums.compilation = 0 OR\
+                                     track_artists.artist_id == artists.rowid)\
                                   ORDER BY artists.name\
                                   COLLATE NOCASE", (genre_id,))
 

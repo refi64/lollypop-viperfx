@@ -57,7 +57,6 @@ class CollectionScanner(GObject.GObject, ScannerTagReader):
                 self._progress.show()
             self._in_thread = True
             self._is_locked = True
-            self._compilations = []
             self._mtimes = Objects.tracks.get_mtimes()
             start_new_thread(self._scan, (paths,))
 
@@ -138,22 +137,6 @@ class CollectionScanner(GObject.GObject, ScannerTagReader):
         self.emit("scan-finished")
 
     """
-        Clean track's compilation if needed
-        @param album id as int
-    """
-    def _clean_compilation(self, album_id, sql=None):
-        artists = Objects.albums.get_compilation_artists(album_id, sql)
-        # It's not a compilation anymore
-        if len(artists) == 1:
-            artist_id = artists[0]
-            Objects.albums.set_artist_id(album_id, artist_id, sql)
-            # Update album path
-            tracks = Objects.albums.get_tracks(album_id, None, sql)
-            filepath = Objects.tracks.get_path(tracks[0], sql)
-            path = os.path.dirname(filepath)
-            Objects.albums.set_path(album_id, path, sql)
-
-    """
         Add temporaly specified files to collection
         @param files as [Gio.Files]
         @thread safe
@@ -187,7 +170,6 @@ class CollectionScanner(GObject.GObject, ScannerTagReader):
                 GLib.idle_add(self.emit, "track-added", track_id, i==0)
             i += 1
             GLib.idle_add(self._update_progress, i, count)
-        Objects.albums.search_compilations(True, sql)
         sql.commit()
         sql.close()
         GLib.idle_add(self._finish)
@@ -231,7 +213,6 @@ class CollectionScanner(GObject.GObject, ScannerTagReader):
                         track_id = Objects.tracks.get_id_by_path(filepath, sql)
                         album_id = Objects.tracks.get_album_id(track_id, sql)
                         Objects.tracks.remove(filepath, sql)
-                        self._clean_compilation(album_id, sql)
                         infos = self.get_infos(filepath)
                         if infos is not None:
                             debug("Adding file: %s" % filepath)
@@ -260,9 +241,7 @@ class CollectionScanner(GObject.GObject, ScannerTagReader):
                     Objects.artists.clean(artist_id, sql)
                 for genre_id in genre_ids:
                     Objects.genres.clean(genre_id, sql)
-                self._clean_compilation(album_id, sql)
 
-        Objects.albums.search_compilations(False, sql)
         self._restore_popularities(sql)
         self._restore_mtimes(sql)
         sql.commit()
@@ -302,7 +281,12 @@ class CollectionScanner(GObject.GObject, ScannerTagReader):
         if new:
             new_artist_ids.append(album_artist_id)
 
-        album_id = self.add_album(album_name, album_artist_id,
+        compilation = False
+        if album_artist_id == None:
+            album_artist_id = artist_ids[0]
+            compilation = True
+
+        album_id = self.add_album(album_name, album_artist_id, compilation,
                                   filepath, outside, sql)
 
         (genre_ids, new_genre_ids) = self.add_genres(genres, album_id,
