@@ -11,7 +11,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-from gi.repository import Gtk, GLib, Gio
+from gi.repository import Gtk, GLib, Gio, Pango
 
 from gettext import gettext as _
 
@@ -134,6 +134,7 @@ class SettingsDialog:
             label.set_property('margin-start', 10)
             label.set_property('halign', Gtk.Align.START)
             label.set_property('hexpand', True)
+            label.set_ellipsize(Pango.EllipsizeMode.END)
             label.set_text(genre)
             label.show()
             switch = Gtk.Switch()
