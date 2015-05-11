@@ -656,7 +656,7 @@ class DatabaseAlbums:
         @param genre id as int
         @return Array of album ids as int
     """
-    def get_compilations(self, genre_id, sql=None):
+    def get_compilations(self, genre_id=None, sql=None):
         if not sql:
             sql = Objects.sql
         albums = []

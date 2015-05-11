@@ -112,6 +112,7 @@ class View(Gtk.Grid):
     """
     def _on_scan_finished(self, scanner):
         albums = Objects.albums.get_ids()
+        albums += Objects.albums.get_compilations()
         for child in self._get_children():
             if child.get_id() not in albums:
                 child.set_sensitive(False)
