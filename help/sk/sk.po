@@ -1,11 +1,12 @@
 # 
 # Translators:
+# Dušan Kazik <prescott66@gmail.com>, 2015
 msgid ""
 msgstr ""
 "Project-Id-Version: lollypop\n"
-"POT-Creation-Date: 2015-04-29 10:10+0200\n"
-"PO-Revision-Date: 2015-04-29 08:10+0000\n"
-"Last-Translator: Cédric Bellegarde <web@adishatz.org>\n"
+"POT-Creation-Date: 2015-05-07 21:04+0200\n"
+"PO-Revision-Date: 2015-05-10 05:22+0000\n"
+"Last-Translator: Dušan Kazik <prescott66@gmail.com>\n"
 "Language-Team: Slovak (http://www.transifex.com/projects/p/lollypop/language/sk/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -16,55 +17,55 @@ msgstr ""
 #. Put one translator per line, in the form NAME <EMAIL>, YEAR1, YEAR2
 msgctxt "_"
 msgid "translator-credits"
-msgstr ""
+msgstr "Dušan Kazik <prescott66@gmail.com>, 2015"
 
 #. (itstool) path: info/desc
 #: C/index.page:7
 msgid "Help for the Lollypop music player."
-msgstr ""
+msgstr "Pomocník pre hudobný prehrávač Lollypop."
 
 #. (itstool) path: info/title
 #: C/index.page:8
 msgctxt "text"
 msgid "Lollypop music player"
-msgstr ""
+msgstr "Prehrávač hudby Lollypop"
 
 #. (itstool) path: credit/name
 #: C/index.page:11
 msgid "Cédric Bellegarde"
-msgstr ""
+msgstr "Cédric Bellegarde"
 
 #. (itstool) path: credit/years
 #: C/index.page:13
 msgid "2015"
-msgstr ""
+msgstr "2015"
 
 #. (itstool) path: page/title
 #: C/index.page:18
 msgid "<_:media-1/> Lollypop music player"
-msgstr ""
+msgstr "<_:media-1/> Prehrávač hudby Lollypop"
 
 #. (itstool) path: section/title
 #: C/index.page:21
 msgid "Add music"
-msgstr ""
+msgstr "Pridanie hudby"
 
 #. (itstool) path: section/p
 #: C/index.page:22
 msgid "If lollypop fails to detect your music:"
-msgstr ""
+msgstr "Ak prehrávač Lollypop zlyhá pri zisťovaní vašej hudby:"
 
 #. (itstool) path: item/p
 #: C/index.page:24
 msgid "Check you have gstreamer-libav or gstreamer-fluendo installed"
-msgstr ""
+msgstr "Skontrolujte, či máte nainštalovanú knižnicu gstreamer-libav alebo gstreamer-fluendo"
 
 #. (itstool) path: item/p
 #: C/index.page:25
 msgid ""
 "Go to the application menu: \"<sys>Settings -&gt; Music</sys>\" and add your"
 " music folder"
-msgstr ""
+msgstr "Prejdite do ponuky aplikácie: „<sys>Nastavenia -&gt; Hudba</sys>“ a pridajte priečinok s vašou hudbou"
 
 #. (itstool) path: section/title
 #: C/index.page:30
@@ -74,13 +75,13 @@ msgstr "Prehrávanie"
 #. (itstool) path: section/p
 #: C/index.page:31
 msgid "When you start playing a song, a contextual playlist is populated."
-msgstr ""
+msgstr "Keď začnete prehrávať skladbu, naplní sa kontextuálny zoznam skladieb."
 
 #. (itstool) path: section/p
 #: C/index.page:32
 msgid ""
 "Contexts can be: an album, an artist, a genre, popular or recent albums."
-msgstr ""
+msgstr "Kontextami môžu byť: album, umelec, žáner, obľúbené alebo nedávne albumy."
 
 #. (itstool) path: section/p
 #: C/index.page:33
@@ -90,120 +91,117 @@ msgstr ""
 #. (itstool) path: section/title
 #: C/index.page:37
 msgid "Rate albums"
-msgstr ""
+msgstr "Hodnotenie albumov"
 
 #. (itstool) path: section/p
 #: C/index.page:38
-msgid "Album popularity is based on how many tracks you listen for an album."
-msgstr ""
+msgid ""
+"Album popularity is based on how many tracks from an album you listen to."
+msgstr "Obľúbenosť albumu je založená na počte stôp z albumu, ktoré ste počúvali."
 
 #. (itstool) path: section/p
 #: C/index.page:39
 msgid ""
-"Album rating only influence this popularity, it's not fixed in the time."
-msgstr ""
+"Album rating will be influenced by album popularity. In other words, rate "
+"will decrease if you stop listening to an album."
+msgstr "Hodnotenie albumu bude ovplyvnené obľúbenosťou albumu. Inými slovami, hodnotenie sa zníži, ak prestanete počúvať album."
 
 #. (itstool) path: section/title
 #: C/index.page:43
 msgid "Download covers"
-msgstr ""
+msgstr "Prevzatie obalov"
 
 #. (itstool) path: section/p
 #: C/index.page:44
 msgid ""
 "When hovering a cover, if mouse cursor changes to a hand, just click and "
 "select a new cover."
-msgstr ""
+msgstr "Keď prechádzate myšou ponad obal a kurzor sa zmení na ruku, stačí kliknúť a vybrať nový obal."
 
 #. (itstool) path: section/p
 #: C/index.page:45
 msgid "You need an internet connection."
-msgstr ""
+msgstr "Musíte byť pripojený k internetu."
 
 #. (itstool) path: section/title
 #: C/index.page:49
 msgid "Shortcuts"
-msgstr ""
+msgstr "Klávesové skratky"
 
 #. (itstool) path: item/p
 #: C/index.page:51
 msgid "Control+s: Lollypop settings"
-msgstr ""
+msgstr "Control+s: Nastavenia prehrávača Lollypop"
 
 #. (itstool) path: item/p
 #: C/index.page:52
 msgid "Control+f: Search"
-msgstr ""
+msgstr "Control+f: Vyhľadanie"
 
 #. (itstool) path: item/p
 #: C/index.page:53
 msgid "Control+p: Party mode"
-msgstr ""
+msgstr "Control+p: Párty režim"
 
 #. (itstool) path: item/p
 #: C/index.page:54
 msgid "Control+m or F11: Fullscreen"
-msgstr ""
+msgstr "Control+m alebo F11: Režim na celú obrazovku"
 
 #. (itstool) path: item/p
 #: C/index.page:55
 msgid "x: Play"
-msgstr ""
+msgstr "x: Prehrávanie"
 
 #. (itstool) path: item/p
 #: C/index.page:56
 msgid "c: Pause"
-msgstr ""
+msgstr "c: Pozastavenie"
 
 #. (itstool) path: item/p
 #: C/index.page:57
 msgid "v: Stop"
-msgstr ""
+msgstr "v: Zastavenie"
 
 #. (itstool) path: item/p
 #: C/index.page:58
 msgid "n: Next track"
-msgstr ""
+msgstr "n: Nasledujúca stopa"
 
 #. (itstool) path: item/p
 #: C/index.page:59
 msgid "p: Previous track"
-msgstr ""
+msgstr "p: Predchádzajúca stopa"
 
 #. (itstool) path: item/p
 #: C/index.page:60
 msgid "Control+n: Skip current album"
-msgstr ""
+msgstr "Control+n: Preskočenie aktuálneho albumu"
 
 #. (itstool) path: item/p
 #: C/index.page:61
 msgid "Left key: Skip backward in track"
-msgstr ""
+msgstr "Šípka vľavo: Preskočenie späť v stope"
 
 #. (itstool) path: item/p
 #: C/index.page:62
 msgid "Right key: Skip forward in track"
-msgstr ""
+msgstr "Šípka vpravo: Preskočenie dopredu v stope"
 
 #. (itstool) path: item/p
 #: C/index.page:63
 msgid "Control+h: Help"
-msgstr ""
-
-#. (itstool) path: item/p
-#: C/index.page:64
-msgid "Control+a: About"
-msgstr ""
+msgstr "Control+h: Pomocník"
 
 #. (itstool) path: p/link
 #: C/legal.xml:4
 msgid "Creative Commons Attribution-Share Alike 3.0 United States License"
-msgstr ""
+msgstr "Creative Commons Attribution-Share Alike 3.0 Licencia Spojených štátov"
 
 #. (itstool) path: license/p
 #: C/legal.xml:3
 msgid "This work is licensed under a <_:link-1/>."
-msgstr ""
+msgstr "Táto práca je pod licenciou <_:link-1/>."
 
 #. (itstool) path: license/p
 #: C/legal.xml:6
