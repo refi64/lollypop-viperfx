@@ -350,10 +350,12 @@ class AlbumDetailedWidget(AlbumWidget):
         track_id = track[0]
         title = escape(track[1])
         length = track[2]
-        is_compilation = track[3]
-        artist_ids = track[4]
+        artist_ids = track[3]
 
-        if len(artist_ids) > 1 or is_compilation:
+        # If we are listening to a compilation, prepend artist name
+        if self._artist_id == Navigation.COMPILATIONS or\
+           len(artist_ids) > 1 or\
+           self._artist_id not in artist_ids:
             artist_name = ""
             for artist_id in artist_ids:
                 artist_name += translate_artist_name(
