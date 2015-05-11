@@ -271,6 +271,7 @@ class AlbumDetailedWidget(AlbumWidget):
 
     """
         Populate tracks
+        @thread safe
     """
     def populate(self):
         self._stop = False

@@ -571,11 +571,8 @@ class DatabaseAlbums:
             result = sql.execute("SELECT tracks.rowid,\
                                   tracks.name,\
                                   tracks.length\
-                                  FROM tracks, albums,\
-                                  track_artists, track_genres\
-                                  WHERE albums.rowid=?\
-                                  AND albums.rowid = tracks.album_id\
-                                  AND tracks.rowid = track_artists.track_id\
+                                  FROM tracks, track_genres\
+                                  WHERE tracks.album_id=?\
                                   AND tracks.rowid = track_genres.track_id\
                                   AND track_genres.genre_id=?\
                                   AND discnumber=?\
@@ -585,24 +582,17 @@ class DatabaseAlbums:
             result = sql.execute("SELECT tracks.rowid,\
                                   tracks.name,\
                                   tracks.length\
-                                  FROM tracks, track_artists, albums\
-                                  WHERE albums.rowid = ?\
-                                  AND albums.rowid = tracks.album_id\
-                                  AND track_artists.track_id = tracks.rowid\
+                                  FROM tracks\
+                                  WHERE tracks.album_id = ?\
                                   AND discnumber=?\
                                   ORDER BY discnumber, tracknumber",
                                  (album_id, disc))
 
         infos = []
-        rm_doublon = []
         for row in result:
-            # Check for doublon
-            if row[0] not in rm_doublon:
-                rm_doublon.append(row[0])
-                # Add artists
-                row += (Objects.tracks.get_artist_ids(row[0], sql),)
-                infos.append(row,)
-        del rm_doublon
+            row += (Objects.tracks.get_artist_ids(row[0], sql),)
+            infos.append(row,)
+
         return infos
 
     """
