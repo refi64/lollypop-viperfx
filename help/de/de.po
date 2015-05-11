@@ -1,10 +1,11 @@
 # 
 # Translators:
+# HumHumXX <xhummuhx+transifex@gmail.com>, 2015
 msgid ""
 msgstr ""
 "Project-Id-Version: lollypop\n"
-"POT-Creation-Date: 2015-04-29 10:10+0200\n"
-"PO-Revision-Date: 2015-04-29 08:10+0000\n"
+"POT-Creation-Date: 2015-05-07 21:04+0200\n"
+"PO-Revision-Date: 2015-05-07 19:04+0000\n"
 "Last-Translator: Cédric Bellegarde <web@adishatz.org>\n"
 "Language-Team: German (http://www.transifex.com/projects/p/lollypop/language/de/)\n"
 "MIME-Version: 1.0\n"
@@ -16,55 +17,55 @@ msgstr ""
 #. Put one translator per line, in the form NAME <EMAIL>, YEAR1, YEAR2
 msgctxt "_"
 msgid "translator-credits"
-msgstr ""
+msgstr "Übersetzung von:"
 
 #. (itstool) path: info/desc
 #: C/index.page:7
 msgid "Help for the Lollypop music player."
-msgstr ""
+msgstr "Hilfe zum Lollypop-Musikspieler"
 
 #. (itstool) path: info/title
 #: C/index.page:8
 msgctxt "text"
 msgid "Lollypop music player"
-msgstr ""
+msgstr "Lollypop-Musikspieler"
 
 #. (itstool) path: credit/name
 #: C/index.page:11
 msgid "Cédric Bellegarde"
-msgstr ""
+msgstr "Cédric Bellegarde"
 
 #. (itstool) path: credit/years
 #: C/index.page:13
 msgid "2015"
-msgstr ""
+msgstr "2015"
 
 #. (itstool) path: page/title
 #: C/index.page:18
 msgid "<_:media-1/> Lollypop music player"
-msgstr ""
+msgstr "<_:media-1/> Lollypop-Musikspieler"
 
 #. (itstool) path: section/title
 #: C/index.page:21
 msgid "Add music"
-msgstr ""
+msgstr "Musik hinzufügen"
 
 #. (itstool) path: section/p
 #: C/index.page:22
 msgid "If lollypop fails to detect your music:"
-msgstr ""
+msgstr "Sollte Lollypop deine Musiksammlung nicht ermitteln können:"
 
 #. (itstool) path: item/p
 #: C/index.page:24
 msgid "Check you have gstreamer-libav or gstreamer-fluendo installed"
-msgstr ""
+msgstr "Stelle sicher, dass das Paket gstream-libav oder gstreamer-fluendo installiert ist."
 
 #. (itstool) path: item/p
 #: C/index.page:25
 msgid ""
 "Go to the application menu: \"<sys>Settings -&gt; Music</sys>\" and add your"
 " music folder"
-msgstr ""
+msgstr "Gehe ins Anwendungsmenü: \"<sys>Einstellungen -&gt; Musik</sys>\" und füge deinen Musikordner hinzu"
 
 #. (itstool) path: section/title
 #: C/index.page:30
@@ -74,136 +75,133 @@ msgstr "Wiedergabe"
 #. (itstool) path: section/p
 #: C/index.page:31
 msgid "When you start playing a song, a contextual playlist is populated."
-msgstr ""
+msgstr "Sobald du einen Titel anspielst, wird eine kontextabhängige Wiedergabeliste erstellt."
 
 #. (itstool) path: section/p
 #: C/index.page:32
 msgid ""
 "Contexts can be: an album, an artist, a genre, popular or recent albums."
-msgstr ""
+msgstr "Kontexte können sein: ein Album, ein Künstler, ein Genre, beliebte oder kürzliche gespielte Alben."
 
 #. (itstool) path: section/p
 #: C/index.page:33
 msgid "Shuffle interacts on current context."
-msgstr ""
+msgstr "Der Zufallsmodus ist vom aktuellen Kontext abhängig."
 
 #. (itstool) path: section/title
 #: C/index.page:37
 msgid "Rate albums"
-msgstr ""
+msgstr "Alben bewerten"
 
 #. (itstool) path: section/p
 #: C/index.page:38
-msgid "Album popularity is based on how many tracks you listen for an album."
+msgid ""
+"Album popularity is based on how many tracks from an album you listen to."
 msgstr ""
 
 #. (itstool) path: section/p
 #: C/index.page:39
 msgid ""
-"Album rating only influence this popularity, it's not fixed in the time."
+"Album rating will be influenced by album popularity. In other words, rate "
+"will decrease if you stop listening to an album."
 msgstr ""
 
 #. (itstool) path: section/title
 #: C/index.page:43
 msgid "Download covers"
-msgstr ""
+msgstr "Cover herunterladen"
 
 #. (itstool) path: section/p
 #: C/index.page:44
 msgid ""
 "When hovering a cover, if mouse cursor changes to a hand, just click and "
 "select a new cover."
-msgstr ""
+msgstr "Wenn der Mauszeiger über einem Cover zur Hand wird, klicke und wähle ein neues Cover aus."
 
 #. (itstool) path: section/p
 #: C/index.page:45
 msgid "You need an internet connection."
-msgstr ""
+msgstr "Du benötigst eine Verbindung zum Internet."
 
 #. (itstool) path: section/title
 #: C/index.page:49
 msgid "Shortcuts"
-msgstr ""
+msgstr "Tastenkürzel"
 
 #. (itstool) path: item/p
 #: C/index.page:51
 msgid "Control+s: Lollypop settings"
-msgstr ""
+msgstr "Strg+s: Einstellungen"
 
 #. (itstool) path: item/p
 #: C/index.page:52
 msgid "Control+f: Search"
-msgstr ""
+msgstr "Strg+f: Suche"
 
 #. (itstool) path: item/p
 #: C/index.page:53
 msgid "Control+p: Party mode"
-msgstr ""
+msgstr "Partymodus"
 
 #. (itstool) path: item/p
 #: C/index.page:54
 msgid "Control+m or F11: Fullscreen"
-msgstr ""
+msgstr "Strg+m oder F11: Vollbild"
 
 #. (itstool) path: item/p
 #: C/index.page:55
 msgid "x: Play"
-msgstr ""
+msgstr "x: Wiedergabe"
 
 #. (itstool) path: item/p
 #: C/index.page:56
 msgid "c: Pause"
-msgstr ""
+msgstr "c: Pause"
 
 #. (itstool) path: item/p
 #: C/index.page:57
 msgid "v: Stop"
-msgstr ""
+msgstr "v: Stop"
 
 #. (itstool) path: item/p
 #: C/index.page:58
 msgid "n: Next track"
-msgstr ""
+msgstr "n: Nächster Titel"
 
 #. (itstool) path: item/p
 #: C/index.page:59
 msgid "p: Previous track"
-msgstr ""
+msgstr "p: Vorheriger Titel"
 
 #. (itstool) path: item/p
 #: C/index.page:60
 msgid "Control+n: Skip current album"
-msgstr ""
+msgstr "Strg+n: Aktuelles Album überspringen"
 
 #. (itstool) path: item/p
 #: C/index.page:61
 msgid "Left key: Skip backward in track"
-msgstr ""
+msgstr "Pfeiltaste links: Im Titel rückwärts springen"
 
 #. (itstool) path: item/p
 #: C/index.page:62
 msgid "Right key: Skip forward in track"
-msgstr ""
+msgstr "Pfeiltaste rechts: Im Titel vorwärts springen"
 
 #. (itstool) path: item/p
 #: C/index.page:63
 msgid "Control+h: Help"
-msgstr ""
-
-#. (itstool) path: item/p
-#: C/index.page:64
-msgid "Control+a: About"
-msgstr ""
+msgstr "Strg+h: Hilfe"
 
 #. (itstool) path: p/link
 #: C/legal.xml:4
 msgid "Creative Commons Attribution-Share Alike 3.0 United States License"
-msgstr ""
+msgstr "\"Creative Commons Attribution-Share Alike 3.0 United States\"-Lizenz"
 
 #. (itstool) path: license/p
 #: C/legal.xml:3
 msgid "This work is licensed under a <_:link-1/>."
-msgstr ""
+msgstr "Dieses Werk ist lizenziert unter einer <_:link-1/>."
 
 #. (itstool) path: license/p
 #: C/legal.xml:6
@@ -211,4 +209,4 @@ msgid ""
 "As a special exception, the copyright holders give you permission to copy, "
 "modify, and distribute the example code contained in this document under the"
 " terms of your choosing, without restriction."
-msgstr ""
+msgstr "Ausnahmsweise erlauben es Ihnen die Urheberrechtsinhaber, den in diesem Dokument enthaltenen exemplarischen Code zu kopieren, zu modifizieren und weiterzugeben unter den von Ihnen gewählten Bedingungen, ohne Einschränkung."

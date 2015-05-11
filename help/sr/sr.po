@@ -4,8 +4,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: lollypop\n"
-"POT-Creation-Date: 2015-04-29 10:10+0200\n"
-"PO-Revision-Date: 2015-04-29 20:24+0000\n"
+"POT-Creation-Date: 2015-05-07 21:04+0200\n"
+"PO-Revision-Date: 2015-05-07 22:01+0000\n"
 "Last-Translator: Марко М. Костић (Marko M. Kostić) <marko.m.kostic@gmail.com>\n"
 "Language-Team: Serbian (http://www.transifex.com/projects/p/lollypop/language/sr/)\n"
 "MIME-Version: 1.0\n"
@@ -48,12 +48,12 @@ msgstr "<_:media-1/> Лолипоп пуштач музике"
 #. (itstool) path: section/title
 #: C/index.page:21
 msgid "Add music"
-msgstr "Додај музику"
+msgstr "Додавање музике"
 
 #. (itstool) path: section/p
 #: C/index.page:22
 msgid "If lollypop fails to detect your music:"
-msgstr "Уколико Лолипоп не пронађе Вашу музику:"
+msgstr "Уколико Лолипоп не проналази и/или не приказује Вашу музику:"
 
 #. (itstool) path: item/p
 #: C/index.page:24
@@ -65,12 +65,12 @@ msgstr "Проверите да ли имате gstreamer-libav или gstreamer
 msgid ""
 "Go to the application menu: \"<sys>Settings -&gt; Music</sys>\" and add your"
 " music folder"
-msgstr "Идите у мени програма: \"<sys>Подешавања - Музика</sys>\" и додајте директоријум у којем се налази ваша музика"
+msgstr "Идите у мени програма: \"<sys>Поставке - Музика</sys>\" и додајте директоријум у којем се налази ваша музика"
 
 #. (itstool) path: section/title
 #: C/index.page:30
 msgid "Playback"
-msgstr "Пуштање"
+msgstr "Пуштање музике"
 
 #. (itstool) path: section/p
 #: C/index.page:31
@@ -91,23 +91,25 @@ msgstr "Мешање песама се врши над тренутним кон
 #. (itstool) path: section/title
 #: C/index.page:37
 msgid "Rate albums"
-msgstr "Оцени албуме"
+msgstr "Оцењивање албума"
 
 #. (itstool) path: section/p
 #: C/index.page:38
-msgid "Album popularity is based on how many tracks you listen for an album."
-msgstr "Популарност албума се заснива на броју слушаних песама са албума."
+msgid ""
+"Album popularity is based on how many tracks from an album you listen to."
+msgstr "Популарност албума се одређује на основу броја преслушавања песама са тог албума."
 
 #. (itstool) path: section/p
 #: C/index.page:39
 msgid ""
-"Album rating only influence this popularity, it's not fixed in the time."
-msgstr "Оцена албума има утицај на популарност али не дугорочно."
+"Album rating will be influenced by album popularity. In other words, rate "
+"will decrease if you stop listening to an album."
+msgstr "Популарност албума утиче на оцену албума. Другим речима, оцена албума се смањује уколико мање слушате песме са тог албума."
 
 #. (itstool) path: section/title
 #: C/index.page:43
 msgid "Download covers"
-msgstr "Скини омоте албума"
+msgstr "Скидање омота албума"
 
 #. (itstool) path: section/p
 #: C/index.page:44
@@ -119,7 +121,7 @@ msgstr "Када ставите миша над омотом и када се п
 #. (itstool) path: section/p
 #: C/index.page:45
 msgid "You need an internet connection."
-msgstr "Потребна је веза са Интернетом."
+msgstr "Потребна је веза са Интернетом да бисте скинули нови омот за албум."
 
 #. (itstool) path: section/title
 #: C/index.page:49
@@ -190,11 +192,6 @@ msgstr "Десни клик: Премотај нешто напред песму
 #: C/index.page:63
 msgid "Control+h: Help"
 msgstr "Ctrl+H: Помоћ"
-
-#. (itstool) path: item/p
-#: C/index.page:64
-msgid "Control+a: About"
-msgstr "Ctrl+A: О програму"
 
 #. (itstool) path: p/link
 #: C/legal.xml:4

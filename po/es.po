@@ -1,7 +1,7 @@
 # SOME DESCRIPTIVE TITLE.
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
-#
+# 
 # Translators:
 # Adolfo Jayme Barrientos, 2015
 # Jose Manuel Calero Gonzalez <nosfe1984@gmail.com>, 2015
@@ -10,15 +10,14 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lollypop\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-05-01 19:35+0200\n"
-"PO-Revision-Date: 2015-04-28 20:12+0000\n"
+"POT-Creation-Date: 2015-05-11 11:15+0200\n"
+"PO-Revision-Date: 2015-05-12 08:51+0000\n"
 "Last-Translator: Cédric Bellegarde <web@adishatz.org>\n"
-"Language-Team: Spanish (http://www.transifex.com/projects/p/lollypop/"
-"language/es/)\n"
-"Language: es\n"
+"Language-Team: Spanish (http://www.transifex.com/projects/p/lollypop/language/es/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Language: es\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:1
@@ -86,9 +85,9 @@ msgstr "Valor de ganancia en db"
 msgid "Between -15 and 15"
 msgstr "Entre -15 y 15"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:17
-msgid "Scan library at startup"
-msgstr "Escanear la biblioteca al inicio"
+#: ../data/org.gnome.Lollypop.gschema.xml.h:17 ../data/SettingsDialog.ui.h:2
+msgid "Auto update music"
+msgstr ""
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:18
 msgid "Show genres list"
@@ -136,18 +135,15 @@ msgstr "INTERNO"
 msgid "Shuffle mode"
 msgstr "Modo aleatorio"
 
-#. Translators: Don't translate allowed values, just the description in the brackets
+#. Translators: Don't translate allowed values, just the description in the
+#. brackets
 #: ../data/org.gnome.Lollypop.gschema.xml.h:30
 msgid ""
-"Value identifies whether to shuffle tracks/albums. Allowed values are: \"none"
-"\" (shuffle off), \"tracks\" (shuffle tracks) , \"albums\" (shuffle albums), "
-"\"tracks_artist\" (shuffle tracks from artist), \"albums_artist\" (shuffle "
-"albums from artist)."
-msgstr ""
-"El valor determina si se aleatorizarán las pistas y los álbumes. Los valores "
-"permitidos son: \"none\" (desactivar modo aleatorio), \"tracks\" (mezclar "
-"las pistas) y \"albums\" (mezclar los álbumes), \"tracks_artist\" (mezclar "
-"pistas de artistas), \"albums_artist\" (mezclar álbumes de artistas)."
+"Value identifies whether to shuffle tracks/albums. Allowed values are: "
+"\"none\" (shuffle off), \"tracks\" (shuffle tracks) , \"albums\" (shuffle "
+"albums), \"tracks_artist\" (shuffle tracks from artist), \"albums_artist\" "
+"(shuffle albums from artist)."
+msgstr "El valor determina si se aleatorizarán las pistas y los álbumes. Los valores permitidos son: \"none\" (desactivar modo aleatorio), \"tracks\" (mezclar las pistas) y \"albums\" (mezclar los álbumes), \"tracks_artist\" (mezclar pistas de artistas), \"albums_artist\" (mezclar álbumes de artistas)."
 
 #: ../data/lollypop.desktop.in.h:1 ../data/lollypop.appdata.xml.in.h:1
 msgid "Lollypop"
@@ -165,47 +161,54 @@ msgstr "Reproduzca y organice su colección de música"
 msgid "Music player for the GNOME desktop"
 msgstr "Reproductor de música para el escritorio GNOME"
 
-#: ../src/collectionscanner.py:60
+#: ../src/application.py:299
+msgid "Lollypop: You need to install yelp."
+msgstr ""
+
+#: ../src/collectionscanner.py:56
 msgid "Your music is updating"
 msgstr ""
 
-#: ../src/collectionscanner.py:271 ../src/collectionscanner.py:276
-#: ../src/collectionscanner.py:290 ../src/collectionscanner.py:295
-#: ../src/database_albums.py:233 ../src/database_artists.py:70
-#: ../src/database_genres.py:67 ../src/database_tracks.py:187
-msgid "Unknown"
-msgstr "Desconocido"
-
-#: ../src/container.py:329
+#: ../src/container.py:334
 msgid "Popular albums"
 msgstr "Álbumes populares"
 
-#: ../src/container.py:330
+#: ../src/container.py:335
 msgid "Recent albums"
 msgstr ""
 
-#: ../src/container.py:331 ../src/popmenu.py:321 ../src/popmenu.py:336
+#: ../src/container.py:336
+msgid "Random albums"
+msgstr ""
+
+#: ../src/container.py:337 ../src/popmenu.py:321 ../src/popmenu.py:336
 #: ../src/popmenu.py:351
 msgid "Playlists"
 msgstr "Listas"
 
-#: ../src/container.py:332
+#: ../src/container.py:338
 msgid "Radios"
 msgstr ""
 
-#: ../src/container.py:334
+#: ../src/container.py:340
 msgid "All artists"
 msgstr "Todos los artistas"
 
-#: ../src/container.py:336
+#: ../src/container.py:342
 msgid "All albums"
 msgstr "Todos los Álbumes"
 
-#: ../src/container.py:378
+#: ../src/container.py:384
 msgid "Compilations"
 msgstr "Recopilaciones"
 
-#: ../src/database_albums.py:250
+#: ../src/database_albums.py:235 ../src/database_artists.py:70
+#: ../src/database_genres.py:67 ../src/database_tracks.py:187
+#: ../src/tagreader.py:75 ../src/tagreader.py:106 ../src/tagreader.py:118
+msgid "Unknown"
+msgstr "Desconocido"
+
+#: ../src/database_albums.py:252
 msgid "Compilation"
 msgstr "Recopilación"
 
@@ -213,12 +216,12 @@ msgstr "Recopilación"
 msgid "Many artists"
 msgstr "Muchos artistas"
 
-#: ../src/fullscreen.py:75 ../src/fullscreen.py:174 ../src/toolbar.py:280
-#: ../src/toolbar.py:311
+#: ../src/fullscreen.py:75 ../src/fullscreen.py:189 ../src/toolbar.py:287
+#: ../src/toolbar.py:318
 msgid "Pause"
 msgstr "Pausar"
 
-#: ../src/fullscreen.py:178 ../src/toolbar.py:287 ../src/toolbar.py:308
+#: ../src/fullscreen.py:193 ../src/toolbar.py:294 ../src/toolbar.py:315
 #: ../data/Toolbar.ui.h:7
 msgid "Play"
 msgstr "Reproducir"
@@ -238,7 +241,12 @@ msgstr "Siguiente"
 msgid "by %s, from %s"
 msgstr "de %s, desde %s"
 
-#: ../src/player_radio.py:58
+#: ../src/player_bin.py:230
+#, python-format
+msgid "File doesn't exist: %s"
+msgstr ""
+
+#: ../src/player_radio.py:108
 msgid "Radio"
 msgstr ""
 
@@ -292,23 +300,23 @@ msgstr "Añadir a «%s»"
 msgid "Playback"
 msgstr "Reproducción"
 
-#: ../src/popradio.py:69
+#: ../src/popradio.py:70
 msgid "Add"
 msgstr ""
 
-#: ../src/popradio.py:71
+#: ../src/popradio.py:72
 msgid "Modify"
 msgstr ""
 
-#: ../src/search.py:148
+#: ../src/search.py:152
 msgid "Search:"
 msgstr "Búsqueda:"
 
-#: ../src/settings.py:95
+#: ../src/settings.py:127
 msgid "Populars"
 msgstr ""
 
-#: ../src/settings.py:96
+#: ../src/settings.py:128
 msgid "Recents"
 msgstr ""
 
@@ -327,30 +335,29 @@ msgstr "Sincronizar %s"
 msgid "Cancel synchronization"
 msgstr "Cancelar la sincronización"
 
-#: ../src/widgets_album.py:183
+#: ../src/widgets_album.py:206
 #, python-format
 msgid "Disc %s"
 msgstr "Album %s"
 
 #: ../src/widgets_device.py:401
 msgid "Unknown error while syncing, try to reboot your device"
-msgstr ""
-"Error desconocido durante la sincronización, intente reiniciar el dispositivo"
+msgstr "Error desconocido durante la sincronización, intente reiniciar el dispositivo"
 
 #: ../src/widgets_device.py:408
 msgid "No free space available on device"
 msgstr "No hay espacio libre disponible en el dispositivo"
 
-#: ../src/widgets_playlist.py:222 ../src/widgets_playlist.py:225
+#: ../src/widgets_playlist.py:224 ../src/widgets_playlist.py:227
 msgid "New playlist "
 msgstr "Lista nueva"
 
-#: ../src/widgets_playlist.py:267 ../src/widgets_playlist.py:526
+#: ../src/widgets_playlist.py:269 ../src/widgets_playlist.py:528
 #, python-format
 msgid "Remove \"%s\"?"
 msgstr "¿Quiere quitar «%s»?"
 
-#: ../src/widgets_playlist.py:565
+#: ../src/widgets_playlist.py:567
 msgid "Remove these tracks?"
 msgstr "¿Eliminar estas canciones?"
 
@@ -408,9 +415,8 @@ msgid "Edit"
 msgstr "Editar"
 
 #: ../data/PopRadio.ui.h:1
-#, fuzzy
 msgid "Select a logo  for this radio"
-msgstr "Seleccionar una carátula para el álbum"
+msgstr ""
 
 #: ../data/PopRadio.ui.h:2
 msgid "No logo found..."
@@ -459,10 +465,6 @@ msgstr "Añadir a la lista"
 #: ../data/SettingsDialog.ui.h:1
 msgid "Preferences"
 msgstr "Preferencias"
-
-#: ../data/SettingsDialog.ui.h:2
-msgid "Update music on startup"
-msgstr "Actualizar la música al inicio"
 
 #: ../data/SettingsDialog.ui.h:3
 msgid "Restore state on startup"
@@ -556,4 +558,8 @@ msgstr "Error"
 msgid ""
 "Lollypop isn't designed to work without an unicode locale.\n"
 "Please fix your system."
+msgstr ""
+
+#: ../data/RadiosView.ui.h:1
+msgid "New radio"
 msgstr ""

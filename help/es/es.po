@@ -3,8 +3,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: lollypop\n"
-"POT-Creation-Date: 2015-04-29 10:10+0200\n"
-"PO-Revision-Date: 2015-04-29 08:10+0000\n"
+"POT-Creation-Date: 2015-05-07 21:04+0200\n"
+"PO-Revision-Date: 2015-05-07 19:04+0000\n"
 "Last-Translator: Cédric Bellegarde <web@adishatz.org>\n"
 "Language-Team: Spanish (http://www.transifex.com/projects/p/lollypop/language/es/)\n"
 "MIME-Version: 1.0\n"
@@ -94,13 +94,15 @@ msgstr ""
 
 #. (itstool) path: section/p
 #: C/index.page:38
-msgid "Album popularity is based on how many tracks you listen for an album."
+msgid ""
+"Album popularity is based on how many tracks from an album you listen to."
 msgstr ""
 
 #. (itstool) path: section/p
 #: C/index.page:39
 msgid ""
-"Album rating only influence this popularity, it's not fixed in the time."
+"Album rating will be influenced by album popularity. In other words, rate "
+"will decrease if you stop listening to an album."
 msgstr ""
 
 #. (itstool) path: section/title
@@ -188,11 +190,6 @@ msgstr ""
 #. (itstool) path: item/p
 #: C/index.page:63
 msgid "Control+h: Help"
-msgstr ""
-
-#. (itstool) path: item/p
-#: C/index.page:64
-msgid "Control+a: About"
 msgstr ""
 
 #. (itstool) path: p/link

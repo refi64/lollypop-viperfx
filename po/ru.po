@@ -8,15 +8,15 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lollypop\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-04-28 18:57+0200\n"
-"PO-Revision-Date: 2015-04-28 20:12+0000\n"
+"POT-Creation-Date: 2015-05-11 11:15+0200\n"
+"PO-Revision-Date: 2015-05-12 08:51+0000\n"
 "Last-Translator: Cédric Bellegarde <web@adishatz.org>\n"
 "Language-Team: Russian (http://www.transifex.com/projects/p/lollypop/language/ru/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Language: ru\n"
-"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+"Plural-Forms: nplurals=4; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<12 || n%100>14) ? 1 : n%10==0 || (n%10>=5 && n%10<=9) || (n%100>=11 && n%100<=14)? 2 : 3);\n"
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:1
 msgid "Window size"
@@ -83,9 +83,9 @@ msgstr "Увеличение громкости в децибелах"
 msgid "Between -15 and 15"
 msgstr "Между -15 и 15"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:17
-msgid "Scan library at startup"
-msgstr "Сканирование библиотеки при запуске"
+#: ../data/org.gnome.Lollypop.gschema.xml.h:17 ../data/SettingsDialog.ui.h:2
+msgid "Auto update music"
+msgstr ""
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:18
 msgid "Show genres list"
@@ -159,43 +159,54 @@ msgstr "Воспроизводите и организовывайте свою 
 msgid "Music player for the GNOME desktop"
 msgstr "Музыкальный плеер для окружения рабочего стола GNOME"
 
-#: ../src/collectionscanner.py:60
+#: ../src/application.py:299
+msgid "Lollypop: You need to install yelp."
+msgstr ""
+
+#: ../src/collectionscanner.py:56
 msgid "Your music is updating"
 msgstr ""
 
-#: ../src/collectionscanner.py:271 ../src/collectionscanner.py:276
-#: ../src/collectionscanner.py:290 ../src/collectionscanner.py:295
-#: ../src/database_albums.py:233 ../src/database_artists.py:70
-#: ../src/database_genres.py:67 ../src/database_tracks.py:187
-msgid "Unknown"
-msgstr "Неизвестный"
-
-#: ../src/container.py:328
+#: ../src/container.py:334
 msgid "Popular albums"
 msgstr "Популярные альбомы"
 
-#: ../src/container.py:329
+#: ../src/container.py:335
 msgid "Recent albums"
 msgstr "Последние альбомы"
 
-#: ../src/container.py:330 ../src/popmenu.py:321 ../src/popmenu.py:336
+#: ../src/container.py:336
+msgid "Random albums"
+msgstr ""
+
+#: ../src/container.py:337 ../src/popmenu.py:321 ../src/popmenu.py:336
 #: ../src/popmenu.py:351
 msgid "Playlists"
 msgstr "Плейлисты"
 
-#: ../src/container.py:332
+#: ../src/container.py:338
+msgid "Radios"
+msgstr ""
+
+#: ../src/container.py:340
 msgid "All artists"
 msgstr "Все исполнители"
 
-#: ../src/container.py:334
+#: ../src/container.py:342
 msgid "All albums"
 msgstr "Все альбомы"
 
-#: ../src/container.py:376
+#: ../src/container.py:384
 msgid "Compilations"
 msgstr "Подборки"
 
-#: ../src/database_albums.py:250
+#: ../src/database_albums.py:235 ../src/database_artists.py:70
+#: ../src/database_genres.py:67 ../src/database_tracks.py:187
+#: ../src/tagreader.py:75 ../src/tagreader.py:106 ../src/tagreader.py:118
+msgid "Unknown"
+msgstr "Неизвестный"
+
+#: ../src/database_albums.py:252
 msgid "Compilation"
 msgstr "Подборка"
 
@@ -203,13 +214,13 @@ msgstr "Подборка"
 msgid "Many artists"
 msgstr "Множество исполнителей"
 
-#: ../src/fullscreen.py:75 ../src/fullscreen.py:174 ../src/toolbar.py:273
-#: ../src/toolbar.py:300
+#: ../src/fullscreen.py:75 ../src/fullscreen.py:189 ../src/toolbar.py:287
+#: ../src/toolbar.py:318
 msgid "Pause"
 msgstr "Пауза"
 
-#: ../src/fullscreen.py:178 ../src/toolbar.py:237 ../src/toolbar.py:281
-#: ../src/toolbar.py:297 ../data/Toolbar.ui.h:7
+#: ../src/fullscreen.py:193 ../src/toolbar.py:294 ../src/toolbar.py:315
+#: ../data/Toolbar.ui.h:7
 msgid "Play"
 msgstr "Воспроизвести"
 
@@ -223,10 +234,19 @@ msgstr "Следующий"
 
 #. TRANSLATORS: by refers to the artist,
 #. from to the album
-#: ../src/notification.py:94
+#: ../src/notification.py:100
 #, python-format
 msgid "by %s, from %s"
 msgstr "%s, из альбома %s"
+
+#: ../src/player_bin.py:230
+#, python-format
+msgid "File doesn't exist: %s"
+msgstr ""
+
+#: ../src/player_radio.py:108
+msgid "Radio"
+msgstr ""
 
 #: ../src/popmenu.py:58
 msgid "Continue playback"
@@ -278,15 +298,23 @@ msgstr "Добавить на \"%s\" "
 msgid "Playback"
 msgstr "Проигрывание"
 
-#: ../src/search.py:148
+#: ../src/popradio.py:70
+msgid "Add"
+msgstr ""
+
+#: ../src/popradio.py:72
+msgid "Modify"
+msgstr ""
+
+#: ../src/search.py:152
 msgid "Search:"
 msgstr "Поиск:"
 
-#: ../src/settings.py:95
+#: ../src/settings.py:127
 msgid "Populars"
 msgstr ""
 
-#: ../src/settings.py:96
+#: ../src/settings.py:128
 msgid "Recents"
 msgstr ""
 
@@ -305,7 +333,7 @@ msgstr "Синхронизировать %s"
 msgid "Cancel synchronization"
 msgstr "Отменить синхронизацию"
 
-#: ../src/widgets_album.py:183
+#: ../src/widgets_album.py:206
 #, python-format
 msgid "Disc %s"
 msgstr "Диск %s"
@@ -318,16 +346,16 @@ msgstr "Неизвестная ошибка при синхронизации, �
 msgid "No free space available on device"
 msgstr "На устройстве не осталось свободного места"
 
-#: ../src/widgets_playlist.py:222 ../src/widgets_playlist.py:225
+#: ../src/widgets_playlist.py:224 ../src/widgets_playlist.py:227
 msgid "New playlist "
 msgstr "Новый плейлист"
 
-#: ../src/widgets_playlist.py:267 ../src/widgets_playlist.py:526
+#: ../src/widgets_playlist.py:269 ../src/widgets_playlist.py:528
 #, python-format
 msgid "Remove \"%s\"?"
 msgstr "Удалить \"%s\"?"
 
-#: ../src/widgets_playlist.py:565
+#: ../src/widgets_playlist.py:567
 msgid "Remove these tracks?"
 msgstr "Удалить эти композиции?"
 
@@ -380,19 +408,39 @@ msgstr "Подтвердить"
 msgid "New playlist"
 msgstr "Новый плейлист"
 
-#: ../data/PlaylistView.ui.h:1
+#: ../data/PlaylistsView.ui.h:1
 msgid "Edit"
 msgstr "Редактировать"
 
-#: ../data/PopImages.ui.h:1
-msgid "No cover found..."
-msgstr "Обложка не найдена..."
+#: ../data/PopRadio.ui.h:1
+msgid "Select a logo  for this radio"
+msgstr ""
 
-#: ../data/PopImages.ui.h:2
+#: ../data/PopRadio.ui.h:2
+msgid "No logo found..."
+msgstr ""
+
+#: ../data/PopRadio.ui.h:3 ../data/PopAlbumCovers.ui.h:2
 msgid "Please wait..."
 msgstr "Пожалуйста, подождите..."
 
-#: ../data/PopImages.ui.h:3
+#: ../data/PopRadio.ui.h:4
+msgid "Name:"
+msgstr ""
+
+#: ../data/PopRadio.ui.h:5
+msgid "Address:"
+msgstr ""
+
+#: ../data/PopRadio.ui.h:6
+msgid "Delete"
+msgstr ""
+
+#: ../data/PopAlbumCovers.ui.h:1
+msgid "No cover found..."
+msgstr "Обложка не найдена..."
+
+#: ../data/PopAlbumCovers.ui.h:3
 msgid "Select a cover art for this album"
 msgstr "Выбрать обложку для этого альбома"
 
@@ -415,10 +463,6 @@ msgstr "Добавить в плейлист"
 #: ../data/SettingsDialog.ui.h:1
 msgid "Preferences"
 msgstr "Настройки"
-
-#: ../data/SettingsDialog.ui.h:2
-msgid "Update music on startup"
-msgstr "Обновлять базу музыки при запуске"
 
 #: ../data/SettingsDialog.ui.h:3
 msgid "Restore state on startup"
@@ -513,3 +557,7 @@ msgid ""
 "Lollypop isn't designed to work without an unicode locale.\n"
 "Please fix your system."
 msgstr "Lollypop не разработан для работы без юникода.\nПожалуйста, исправьте вашу систему."
+
+#: ../data/RadiosView.ui.h:1
+msgid "New radio"
+msgstr ""

@@ -4,9 +4,9 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: lollypop\n"
-"POT-Creation-Date: 2015-04-29 10:10+0200\n"
-"PO-Revision-Date: 2015-04-29 08:10+0000\n"
-"Last-Translator: Cédric Bellegarde <web@adishatz.org>\n"
+"POT-Creation-Date: 2015-05-07 21:04+0200\n"
+"PO-Revision-Date: 2015-05-07 20:31+0000\n"
+"Last-Translator: Nathan Follens\n"
 "Language-Team: Dutch (http://www.transifex.com/projects/p/lollypop/language/nl/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -75,13 +75,13 @@ msgstr "Afspelen"
 #. (itstool) path: section/p
 #: C/index.page:31
 msgid "When you start playing a song, a contextual playlist is populated."
-msgstr ""
+msgstr "Wanneer je een nummer afspeelt wordt een contextuele afspeellijst aangemaakt."
 
 #. (itstool) path: section/p
 #: C/index.page:32
 msgid ""
 "Contexts can be: an album, an artist, a genre, popular or recent albums."
-msgstr ""
+msgstr "Contexten kunnen een album, een artiest, een genre, populaire of recente albums zijn."
 
 #. (itstool) path: section/p
 #: C/index.page:33
@@ -95,14 +95,16 @@ msgstr "Albums beoordelen"
 
 #. (itstool) path: section/p
 #: C/index.page:38
-msgid "Album popularity is based on how many tracks you listen for an album."
-msgstr ""
+msgid ""
+"Album popularity is based on how many tracks from an album you listen to."
+msgstr "De populariteit van een album is gebaseerd op hoeveel nummers je van dat album beluistert."
 
 #. (itstool) path: section/p
 #: C/index.page:39
 msgid ""
-"Album rating only influence this popularity, it's not fixed in the time."
-msgstr ""
+"Album rating will be influenced by album popularity. In other words, rate "
+"will decrease if you stop listening to an album."
+msgstr "De beoordeling van een album wordt beïnvloed door de populariteit van het album. Met andere woorden, de beoordeling van een album zal verlagen als je stopt met er naar te luisteren."
 
 #. (itstool) path: section/title
 #: C/index.page:43
@@ -114,12 +116,12 @@ msgstr "Albumhoezen downloaden"
 msgid ""
 "When hovering a cover, if mouse cursor changes to a hand, just click and "
 "select a new cover."
-msgstr ""
+msgstr "Wanneer je je muisaanwijzer over een albumhoes beweegt en deze verandert in een hand kan je gewoon klikken om een nieuwe hoes te kiezen."
 
 #. (itstool) path: section/p
 #: C/index.page:45
 msgid "You need an internet connection."
-msgstr ""
+msgstr "Je hebt een internetverbinding nodig."
 
 #. (itstool) path: section/title
 #: C/index.page:49
@@ -190,11 +192,6 @@ msgstr "Rechts pijltje: Doorspoelen in nummer"
 #: C/index.page:63
 msgid "Control+h: Help"
 msgstr "Control+h: Hulp"
-
-#. (itstool) path: item/p
-#: C/index.page:64
-msgid "Control+a: About"
-msgstr "Control+o: Over"
 
 #. (itstool) path: p/link
 #: C/legal.xml:4

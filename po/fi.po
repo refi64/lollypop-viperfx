@@ -1,22 +1,21 @@
 # SOME DESCRIPTIVE TITLE.
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
-#
+# 
 # Translators:
 # Jiri Grönroos <jiri.gronroos@iki.fi>, 2014-2015
 msgid ""
 msgstr ""
 "Project-Id-Version: lollypop\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-05-01 19:35+0200\n"
-"PO-Revision-Date: 2015-04-29 06:21+0000\n"
+"POT-Creation-Date: 2015-05-11 11:15+0200\n"
+"PO-Revision-Date: 2015-05-12 09:32+0000\n"
 "Last-Translator: Jiri Grönroos <jiri.gronroos@iki.fi>\n"
-"Language-Team: Finnish (http://www.transifex.com/projects/p/lollypop/"
-"language/fi/)\n"
-"Language: fi\n"
+"Language-Team: Finnish (http://www.transifex.com/projects/p/lollypop/language/fi/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Language: fi\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:1
@@ -84,9 +83,9 @@ msgstr "Replay gain -arvo desibeleissä"
 msgid "Between -15 and 15"
 msgstr "Välillä -15 ja 15"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:17
-msgid "Scan library at startup"
-msgstr "Tarkista kirjasto käynnistyksen yhteydessä"
+#: ../data/org.gnome.Lollypop.gschema.xml.h:17 ../data/SettingsDialog.ui.h:2
+msgid "Auto update music"
+msgstr "Päivitä musiikkikirjasto automaattisesti"
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:18
 msgid "Show genres list"
@@ -134,13 +133,14 @@ msgstr ""
 msgid "Shuffle mode"
 msgstr "Sekoitustila"
 
-#. Translators: Don't translate allowed values, just the description in the brackets
+#. Translators: Don't translate allowed values, just the description in the
+#. brackets
 #: ../data/org.gnome.Lollypop.gschema.xml.h:30
 msgid ""
-"Value identifies whether to shuffle tracks/albums. Allowed values are: \"none"
-"\" (shuffle off), \"tracks\" (shuffle tracks) , \"albums\" (shuffle albums), "
-"\"tracks_artist\" (shuffle tracks from artist), \"albums_artist\" (shuffle "
-"albums from artist)."
+"Value identifies whether to shuffle tracks/albums. Allowed values are: "
+"\"none\" (shuffle off), \"tracks\" (shuffle tracks) , \"albums\" (shuffle "
+"albums), \"tracks_artist\" (shuffle tracks from artist), \"albums_artist\" "
+"(shuffle albums from artist)."
 msgstr ""
 
 #: ../data/lollypop.desktop.in.h:1 ../data/lollypop.appdata.xml.in.h:1
@@ -159,47 +159,54 @@ msgstr "Kuuntele ja hallitse musiikkikokoelmaasi"
 msgid "Music player for the GNOME desktop"
 msgstr "Musiikkisoitin Gnome-työpöydälle"
 
-#: ../src/collectionscanner.py:60
+#: ../src/application.py:299
+msgid "Lollypop: You need to install yelp."
+msgstr "Lollypop: Ohje vaatii yelp-ohjelman asennuksen."
+
+#: ../src/collectionscanner.py:56
 msgid "Your music is updating"
 msgstr "Musiikkisi päivittyy"
 
-#: ../src/collectionscanner.py:271 ../src/collectionscanner.py:276
-#: ../src/collectionscanner.py:290 ../src/collectionscanner.py:295
-#: ../src/database_albums.py:233 ../src/database_artists.py:70
-#: ../src/database_genres.py:67 ../src/database_tracks.py:187
-msgid "Unknown"
-msgstr "Tuntematon"
-
-#: ../src/container.py:329
+#: ../src/container.py:334
 msgid "Popular albums"
 msgstr "Suositut albumit"
 
-#: ../src/container.py:330
+#: ../src/container.py:335
 msgid "Recent albums"
 msgstr "Viimeisimmät albumit"
 
-#: ../src/container.py:331 ../src/popmenu.py:321 ../src/popmenu.py:336
+#: ../src/container.py:336
+msgid "Random albums"
+msgstr "Satunnaiset albumit"
+
+#: ../src/container.py:337 ../src/popmenu.py:321 ../src/popmenu.py:336
 #: ../src/popmenu.py:351
 msgid "Playlists"
 msgstr "Soittolistat"
 
-#: ../src/container.py:332
+#: ../src/container.py:338
 msgid "Radios"
-msgstr ""
+msgstr "Radiot"
 
-#: ../src/container.py:334
+#: ../src/container.py:340
 msgid "All artists"
 msgstr "Kaikki esittäjät"
 
-#: ../src/container.py:336
+#: ../src/container.py:342
 msgid "All albums"
 msgstr "Kaikki albumit"
 
-#: ../src/container.py:378
+#: ../src/container.py:384
 msgid "Compilations"
 msgstr "Kokoelmat"
 
-#: ../src/database_albums.py:250
+#: ../src/database_albums.py:235 ../src/database_artists.py:70
+#: ../src/database_genres.py:67 ../src/database_tracks.py:187
+#: ../src/tagreader.py:75 ../src/tagreader.py:106 ../src/tagreader.py:118
+msgid "Unknown"
+msgstr "Tuntematon"
+
+#: ../src/database_albums.py:252
 msgid "Compilation"
 msgstr "Kokoelma"
 
@@ -207,12 +214,12 @@ msgstr "Kokoelma"
 msgid "Many artists"
 msgstr "Useita esittäjiä"
 
-#: ../src/fullscreen.py:75 ../src/fullscreen.py:174 ../src/toolbar.py:280
-#: ../src/toolbar.py:311
+#: ../src/fullscreen.py:75 ../src/fullscreen.py:189 ../src/toolbar.py:287
+#: ../src/toolbar.py:318
 msgid "Pause"
 msgstr "Keskeytä"
 
-#: ../src/fullscreen.py:178 ../src/toolbar.py:287 ../src/toolbar.py:308
+#: ../src/fullscreen.py:193 ../src/toolbar.py:294 ../src/toolbar.py:315
 #: ../data/Toolbar.ui.h:7
 msgid "Play"
 msgstr "Toista"
@@ -232,9 +239,14 @@ msgstr "Seuraava"
 msgid "by %s, from %s"
 msgstr "esittäjän %s levyltä %s"
 
-#: ../src/player_radio.py:58
+#: ../src/player_bin.py:230
+#, python-format
+msgid "File doesn't exist: %s"
+msgstr "Tiedostoa ei ole olemassa: %s"
+
+#: ../src/player_radio.py:108
 msgid "Radio"
-msgstr ""
+msgstr "Radio"
 
 #: ../src/popmenu.py:58
 msgid "Continue playback"
@@ -286,23 +298,23 @@ msgstr "Lisää kohteeseen \"%s\""
 msgid "Playback"
 msgstr "Toisto"
 
-#: ../src/popradio.py:69
+#: ../src/popradio.py:70
 msgid "Add"
-msgstr ""
+msgstr "Lisää"
 
-#: ../src/popradio.py:71
+#: ../src/popradio.py:72
 msgid "Modify"
-msgstr ""
+msgstr "Muokkaa"
 
-#: ../src/search.py:148
+#: ../src/search.py:152
 msgid "Search:"
 msgstr "Etsi:"
 
-#: ../src/settings.py:95
+#: ../src/settings.py:127
 msgid "Populars"
 msgstr "Suositut"
 
-#: ../src/settings.py:96
+#: ../src/settings.py:128
 msgid "Recents"
 msgstr "Viimeisimmät"
 
@@ -321,7 +333,7 @@ msgstr "Synkronoi %s"
 msgid "Cancel synchronization"
 msgstr "Peru synkronointi"
 
-#: ../src/widgets_album.py:183
+#: ../src/widgets_album.py:206
 #, python-format
 msgid "Disc %s"
 msgstr "Levy %s"
@@ -334,16 +346,16 @@ msgstr "Tuntematon virhe synkronoitaessa. Yritä käynnistää laite uudelleen"
 msgid "No free space available on device"
 msgstr "Laitteella ei ole vapaata tilaa"
 
-#: ../src/widgets_playlist.py:222 ../src/widgets_playlist.py:225
+#: ../src/widgets_playlist.py:224 ../src/widgets_playlist.py:227
 msgid "New playlist "
 msgstr "Uusi soittolista"
 
-#: ../src/widgets_playlist.py:267 ../src/widgets_playlist.py:526
+#: ../src/widgets_playlist.py:269 ../src/widgets_playlist.py:528
 #, python-format
 msgid "Remove \"%s\"?"
 msgstr "Poistetaanko \"%s\"?"
 
-#: ../src/widgets_playlist.py:565
+#: ../src/widgets_playlist.py:567
 msgid "Remove these tracks?"
 msgstr "Poistetaanko nämä kappaleet?"
 
@@ -362,7 +374,7 @@ msgstr "Cédric Bellegarde <cedric.bellegarde@adishatz.org>"
 
 #: ../data/Appmenu.ui.h:1
 msgid "_Update music"
-msgstr "_Päivitä musiikki"
+msgstr "_Päivitä musiikkikirjasto"
 
 #: ../data/Appmenu.ui.h:2
 msgid "_Fullscreen"
@@ -401,14 +413,12 @@ msgid "Edit"
 msgstr "Muokkaa"
 
 #: ../data/PopRadio.ui.h:1
-#, fuzzy
 msgid "Select a logo  for this radio"
-msgstr "Valitse kansikuva tälle albumille"
+msgstr "Valitse logo tälle radiolle"
 
 #: ../data/PopRadio.ui.h:2
-#, fuzzy
 msgid "No logo found..."
-msgstr "Kansikuvaa ei löytynyt..."
+msgstr "Logoa ei löytynyt..."
 
 #: ../data/PopRadio.ui.h:3 ../data/PopAlbumCovers.ui.h:2
 msgid "Please wait..."
@@ -416,15 +426,15 @@ msgstr "Odota hetki..."
 
 #: ../data/PopRadio.ui.h:4
 msgid "Name:"
-msgstr ""
+msgstr "Nimi:"
 
 #: ../data/PopRadio.ui.h:5
 msgid "Address:"
-msgstr ""
+msgstr "Osoite:"
 
 #: ../data/PopRadio.ui.h:6
 msgid "Delete"
-msgstr ""
+msgstr "Poista"
 
 #: ../data/PopAlbumCovers.ui.h:1
 msgid "No cover found..."
@@ -453,10 +463,6 @@ msgstr "Lisää soittolistalle"
 #: ../data/SettingsDialog.ui.h:1
 msgid "Preferences"
 msgstr "Asetukset"
-
-#: ../data/SettingsDialog.ui.h:2
-msgid "Update music on startup"
-msgstr "Päivitä musiikki käynnistyessä"
 
 #: ../data/SettingsDialog.ui.h:3
 msgid "Restore state on startup"
@@ -550,6 +556,8 @@ msgstr "Virhe"
 msgid ""
 "Lollypop isn't designed to work without an unicode locale.\n"
 "Please fix your system."
-msgstr ""
-"Lollypopia ei ole suunniteltu toimimaan ilman unicode-maa-asetuksia.\n"
-"Korjaa järjestelmäsi asetukset."
+msgstr "Lollypopia ei ole suunniteltu toimimaan ilman unicode-maa-asetuksia.\nKorjaa järjestelmäsi asetukset."
+
+#: ../data/RadiosView.ui.h:1
+msgid "New radio"
+msgstr "Uusi radio"

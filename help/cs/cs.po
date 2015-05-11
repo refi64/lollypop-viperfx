@@ -4,8 +4,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: lollypop\n"
-"POT-Creation-Date: 2015-04-29 10:10+0200\n"
-"PO-Revision-Date: 2015-04-29 10:52+0000\n"
+"POT-Creation-Date: 2015-05-07 21:04+0200\n"
+"PO-Revision-Date: 2015-05-07 19:43+0000\n"
 "Last-Translator: fri\n"
 "Language-Team: Czech (http://www.transifex.com/projects/p/lollypop/language/cs/)\n"
 "MIME-Version: 1.0\n"
@@ -95,14 +95,16 @@ msgstr "Hodnocení alb"
 
 #. (itstool) path: section/p
 #: C/index.page:38
-msgid "Album popularity is based on how many tracks you listen for an album."
+msgid ""
+"Album popularity is based on how many tracks from an album you listen to."
 msgstr "Oblíbenost alba je založena na tom, kolik skladeb na albu jste si poslechl."
 
 #. (itstool) path: section/p
 #: C/index.page:39
 msgid ""
-"Album rating only influence this popularity, it's not fixed in the time."
-msgstr "Hodnocení alba ovlivní jen tuto oblíbenost, není časově pevně dáno."
+"Album rating will be influenced by album popularity. In other words, rate "
+"will decrease if you stop listening to an album."
+msgstr "Hodnocení alba bude ovlivněno oblíbeností alba. Jinými slovy řečeno, hodnocení se sníží, pokud zastavíte poslech alba."
 
 #. (itstool) path: section/title
 #: C/index.page:43
@@ -190,11 +192,6 @@ msgstr "Šipka vpravo: Skočit ve skladbě vpřed"
 #: C/index.page:63
 msgid "Control+h: Help"
 msgstr "Ctrl+h: Nápověda"
-
-#. (itstool) path: item/p
-#: C/index.page:64
-msgid "Control+a: About"
-msgstr "Ctrl+a: O programu"
 
 #. (itstool) path: p/link
 #: C/legal.xml:4

@@ -4,8 +4,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: lollypop\n"
-"POT-Creation-Date: 2015-04-29 10:10+0200\n"
-"PO-Revision-Date: 2015-04-29 21:15+0000\n"
+"POT-Creation-Date: 2015-05-07 21:04+0200\n"
+"PO-Revision-Date: 2015-05-07 20:02+0000\n"
 "Last-Translator: Yosef Or Boczko <yoseforb@gmail.com>\n"
 "Language-Team: Hebrew (http://www.transifex.com/projects/p/lollypop/language/he/)\n"
 "MIME-Version: 1.0\n"
@@ -95,14 +95,16 @@ msgstr "דירוג אלבומים"
 
 #. (itstool) path: section/p
 #: C/index.page:38
-msgid "Album popularity is based on how many tracks you listen for an album."
-msgstr "חביבות אלבום מבוססת על מספר השמעת רצועות לאלבום."
+msgid ""
+"Album popularity is based on how many tracks from an album you listen to."
+msgstr "חביבות אלבום מבוססת על מספר השמעת רצועות לאלבום אליו האזנת."
 
 #. (itstool) path: section/p
 #: C/index.page:39
 msgid ""
-"Album rating only influence this popularity, it's not fixed in the time."
-msgstr "דירוג אלבום משפיע רק על חביבות, ללא קשר לזמן."
+"Album rating will be influenced by album popularity. In other words, rate "
+"will decrease if you stop listening to an album."
+msgstr "דירוג אלבום מושפע על ידי חביבות. במילים אחרות, דירוג יקטן אם תופסק האזנה לאלבום."
 
 #. (itstool) path: section/title
 #: C/index.page:43
@@ -190,11 +192,6 @@ msgstr "מקש ימין: דילוג לאחור ברצועה"
 #: C/index.page:63
 msgid "Control+h: Help"
 msgstr "‏Control+h: עזרה"
-
-#. (itstool) path: item/p
-#: C/index.page:64
-msgid "Control+a: About"
-msgstr "‏Control+a: על אודות"
 
 #. (itstool) path: p/link
 #: C/legal.xml:4
