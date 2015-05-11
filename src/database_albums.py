@@ -619,7 +619,6 @@ class DatabaseAlbums:
         if artist_id is None and genre_id is None:
             result = sql.execute("SELECT albums.rowid FROM albums, artists\
                                   WHERE artists.rowid=albums.artist_id\
-                                  AND albums.compilation=0\
                                   ORDER BY artists.name COLLATE NOCASE,\
                                   albums.year,\
                                   albums.name COLLATE NOCASE")
@@ -628,7 +627,6 @@ class DatabaseAlbums:
             result = sql.execute("SELECT albums.rowid FROM albums,\
                                   album_genres, artists\
                                   WHERE album_genres.genre_id=?\
-                                  AND albums.compilation=0\
                                   AND artists.rowid=artist_id\
                                   AND album_genres.album_id=albums.rowid\
                                   ORDER BY artists.name COLLATE NOCASE,\
@@ -638,7 +636,6 @@ class DatabaseAlbums:
         elif genre_id is None:
             result = sql.execute("SELECT rowid FROM albums\
                                   WHERE artist_id=?\
-                                  AND albums.compilation=0\
                                   ORDER BY year, name COLLATE NOCASE",
                                  (artist_id,))
         # Get albums for artist id and genre id
@@ -646,7 +643,6 @@ class DatabaseAlbums:
             result = sql.execute("SELECT albums.rowid\
                                   FROM albums, album_genres\
                                   WHERE artist_id=?\
-                                  AND albums.compilation=0\
                                   AND album_genres.genre_id=?\
                                   AND album_genres.album_id=albums.rowid\
                                   ORDER BY year, name COLLATE NOCASE",
@@ -667,27 +663,19 @@ class DatabaseAlbums:
         result = []
         # Get all compilations
         if genre_id == Navigation.ALL or genre_id is None:
-            result = sql.execute(
-                           "SELECT DISTINCT albums.rowid\
-                            FROM albums, tracks, track_artists\
-                            WHERE compilation=1\
-                            AND albums.rowid = tracks.album_id\
-                            AND track_artists.track_id = tracks.rowid\
-                            AND track_artists.artist_id != albums.artist_id\
-                            ORDER BY albums.name, albums.year")
+            result = sql.execute("SELECT albums.rowid FROM albums\
+                                  WHERE artist_id=?\
+                                  ORDER BY albums.name, albums.year",
+                                  (Navigation.COMPILATIONS,))
         # Get compilation for genre id
         else:
             result = sql.execute(
-                        "SELECT DISTINCT albums.rowid\
-                         FROM albums, album_genres, tracks, track_artists\
+                        "SELECT albums.rowid FROM albums, album_genres\
                          WHERE album_genres.genre_id=?\
-                         AND compilation=1\
                          AND album_genres.album_id=albums.rowid\
-                         AND albums.rowid = tracks.album_id\
-                         AND track_artists.track_id = tracks.rowid\
-                         AND track_artists.artist_id != albums.artist_id\
+                         AND albums.artist_id=?\
                          ORDER BY albums.name,\
-                         albums.year", (genre_id,))
+                         albums.year", (genre_id, Navigation.COMPILATIONS))
         for row in result:
             albums += row
         return albums
