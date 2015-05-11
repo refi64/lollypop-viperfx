@@ -13,6 +13,7 @@
 
 from gi.repository import Gst, GLib, GstAudio
 
+from gettext import gettext as _
 from os import path
 
 from lollypop.player_base import BasePlayer
@@ -226,7 +227,7 @@ class BinPlayer(ReplayGainPlayer, BasePlayer):
                 self._on_errors()
                 return False
         else:
-            print("File doesn't exist: ", self.current.path)
+            Objects.notify.send(_("File doesn't exist: %s") % self.current.path)
             GLib.timeout_add(2000, self.next, True)
             return False
         return True
