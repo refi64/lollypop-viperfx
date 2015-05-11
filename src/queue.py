@@ -64,7 +64,7 @@ class QueueWidget(Gtk.Popover):
         column1.set_sizing(Gtk.TreeViewColumnSizing.FIXED)
 
         renderer2 = Gtk.CellRendererPixbuf()
-        column2 = Gtk.TreeViewColumn('', renderer2)
+        column2 = Gtk.TreeViewColumn('delete', renderer2)
         column2.add_attribute(renderer2, 'icon-name', 2)
         column2.set_sizing(Gtk.TreeViewColumnSizing.FIXED)
 
@@ -188,7 +188,7 @@ class QueueWidget(Gtk.Popover):
             return
         iterator = self._model.get_iter(path)
         if iterator:
-            if column.get_title() == "pixbuf2":
+            if column.get_title() == "delete":
                 self._delete_row(iterator)
             else:
                 # We don't want to play if we are
