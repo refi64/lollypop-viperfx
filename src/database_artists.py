@@ -145,4 +145,26 @@ class DatabaseArtists:
                               LIMIT 25", ('%'+string+'%',))
         for row in result:
             artists += row
-        return artists     
+        return artists
+
+    """
+        Clean database for artist id
+        @param artist id as int
+        @warning commit needed
+    """
+    def clean(self, artist_id, sql=None):
+        if not sql:
+            sql = Objects.sql
+        result = sql.execute("SELECT rowid from albums\
+                              WHERE artist_id=?\
+                              LIMIT 1", (artist_id,))
+        v = result.fetchone()
+        # Check tracks
+        if not v:
+            result = sql.execute("SELECT track_id from track_artists\
+                                 WHERE artist_id=?\
+                                 LIMIT 1", (artist_id,))
+            v = result.fetchone()
+            # Artist with no relation, remove
+            if not v:
+                sql.execute("DELETE FROM artists WHERE rowid=?" % (artist_id,))

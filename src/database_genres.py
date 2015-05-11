@@ -109,3 +109,18 @@ class DatabaseGenres:
         for row in result:
             genres += (row)
         return genres
+
+    """
+        Clean database for genre id
+        @param genre id as int
+        @warning commit needed
+    """
+    def clean(self, genre_id, sql=None):
+        if not sql:
+            sql = Objects.sql
+        result = sql.execute("SELECT track_id from track_genres\
+                             WHERE genre_id=?\
+                             LIMIT 1", (genre_id,))
+        v = result.fetchone()
+        if not v:
+            sql.execute("DELETE FROM genres WHERE rowid=?" % (genre_id,))

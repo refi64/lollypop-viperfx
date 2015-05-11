@@ -750,3 +750,19 @@ class DatabaseAlbums:
         for row in result:
             albums += (row,)
         return albums
+
+    """
+        Clean database for album id
+        @param album id as int
+        @warning commit needed
+    """
+    def clean(self, album_id, sql=None):
+        if not sql:
+            sql = Objects.sql
+        result = sql.execute("SELECT rowid from tracks\
+                              WHERE album_id=?\
+                              LIMIT 1", (album_id,))
+        v = result.fetchone()
+        # Album empty, remove it
+        if not v:
+            sql.execute("DELETE FROM albums WHERE rowid=?" % (album_id,))

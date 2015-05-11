@@ -250,10 +250,17 @@ class CollectionScanner(GObject.GObject, ScannerTagReader):
             for filepath in orig_tracks:
                 track_id = Objects.tracks.get_id_by_path(filepath, sql)
                 album_id = Objects.tracks.get_album_id(track_id, sql)
+                genre_id = Objects.track.get_genre_id(track_id, sql) 
+                album_artist_id = Objects.albums.get_artist_id(album_id, sql)
+                artist_ids = Objects.tracks.get_artist_ids(track_id, sql)
                 Objects.tracks.remove(filepath, sql)
+                Objects.tracks.clean(track_id, sql)
+                Objects.albums.clean(album_id, sql)
+                for artist_id in album_artist_id + artist_ids:
+                    Objects.artists.clean(artist_id, sql)
+                Objects.genres.clean(genre_id, sql)
                 self._clean_compilation(album_id, sql)
 
-        Objects.tracks.clean(sql)
         Objects.albums.search_compilations(False, sql)
         self._restore_popularities(sql)
         self._restore_mtimes(sql)
