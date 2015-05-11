@@ -212,7 +212,7 @@ class CollectionScanner(GObject.GObject, ScannerTagReader):
                     if mtime != self._mtimes[filepath]:
                         track_id = Objects.tracks.get_id_by_path(filepath, sql)
                         album_id = Objects.tracks.get_album_id(track_id, sql)
-                        Objects.tracks.remove(filepath, sql)
+                        self._del_from_db(filepath, sql)
                         infos = self.get_infos(filepath)
                         if infos is not None:
                             debug("Adding file: %s" % filepath)
@@ -229,18 +229,7 @@ class CollectionScanner(GObject.GObject, ScannerTagReader):
         # Clean deleted files
         if i > 0:
             for filepath in orig_tracks:
-                track_id = Objects.tracks.get_id_by_path(filepath, sql)
-                album_id = Objects.tracks.get_album_id(track_id, sql)
-                genre_ids = Objects.tracks.get_genre_ids(track_id, sql) 
-                album_artist_id = Objects.albums.get_artist_id(album_id, sql)
-                artist_ids = Objects.tracks.get_artist_ids(track_id, sql)
-                Objects.tracks.remove(filepath, sql)
-                Objects.tracks.clean(track_id, sql)
-                Objects.albums.clean(album_id, sql)
-                for artist_id in [album_artist_id] + artist_ids:
-                    Objects.artists.clean(artist_id, sql)
-                for genre_id in genre_ids:
-                    Objects.genres.clean(genre_id, sql)
+                self._del_from_db(filepath, sql)
 
         self._restore_popularities(sql)
         self._restore_mtimes(sql)
@@ -310,6 +299,25 @@ class CollectionScanner(GObject.GObject, ScannerTagReader):
             for artist_id in new_artist_ids:
                 GLib.idle_add(self.emit, 'artist-update', artist_id, album_id)
         return track_id
+
+    """
+        Delete track from db
+        @param filepath as string
+        @param sql as sqlite cursor
+    """
+    def _del_from_db(self, filepath, sql):
+        track_id = Objects.tracks.get_id_by_path(filepath, sql)
+        album_id = Objects.tracks.get_album_id(track_id, sql)
+        genre_ids = Objects.tracks.get_genre_ids(track_id, sql)
+        album_artist_id = Objects.albums.get_artist_id(album_id, sql)
+        artist_ids = Objects.tracks.get_artist_ids(track_id, sql)
+        Objects.tracks.remove(filepath, sql)
+        Objects.tracks.clean(track_id, sql)
+        Objects.albums.clean(album_id, sql)
+        for artist_id in [album_artist_id] + artist_ids:
+            Objects.artists.clean(artist_id, sql)
+        for genre_id in genre_ids:
+            Objects.genres.clean(genre_id, sql)
 
     """
         Restore albums popularties
