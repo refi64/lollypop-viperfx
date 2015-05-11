@@ -27,6 +27,7 @@ class TagReader:
         Init tag reader
     """
     def __init__(self):
+        Gst.init(None)
         self._tagreader = GstPbutils.Discoverer.new(10*Gst.SECOND)
 
     """
