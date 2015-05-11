@@ -32,6 +32,7 @@ class PlaylistWidget(Gtk.Bin):
         Gtk.Bin.__init__(self)
         self._playlist_name = playlist_name
         self._tracks = []
+        self._stop = False
 
         self._main_widget = Gtk.Grid()
         self._main_widget.show()
@@ -60,6 +61,7 @@ class PlaylistWidget(Gtk.Bin):
         @param track position as int
     """
     def populate_list_one(self, tracks, pos):
+        self._stop = False
         GLib.idle_add(self._add_tracks,
                       tracks,
                       self._tracks_widget1,
@@ -71,6 +73,7 @@ class PlaylistWidget(Gtk.Bin):
         @param track position as int
     """
     def populate_list_two(self, tracks, pos):
+        self._stop = False
         GLib.idle_add(self._add_tracks,
                       tracks,
                       self._tracks_widget2,
@@ -82,6 +85,12 @@ class PlaylistWidget(Gtk.Bin):
     def update_playing_indicator(self):
         self._tracks_widget1.update_playing(Objects.player.current.id)
         self._tracks_widget2.update_playing(Objects.player.current.id)
+
+    """
+        Stop loading
+    """
+    def stop(self):
+        self._stop = True
 
     """
         Clear tracks
@@ -103,7 +112,7 @@ class PlaylistWidget(Gtk.Bin):
         @param track position as int
     """
     def _add_tracks(self, tracks, widget, pos):
-        if not tracks:
+        if not tracks or self._stop:
             return
 
         track_id = tracks.pop(0)

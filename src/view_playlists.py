@@ -90,6 +90,12 @@ class PlaylistsView(View):
 # PRIVATE             #
 #######################
     """
+        Return view children
+    """
+    def _get_children(self):
+        return [self._playlist_widget]
+
+    """
         Update tracks widgets
         @param manager as PlaylistsManager
         @param playlist name as str
