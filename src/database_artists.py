@@ -167,4 +167,4 @@ class DatabaseArtists:
             v = result.fetchone()
             # Artist with no relation, remove
             if not v:
-                sql.execute("DELETE FROM artists WHERE rowid=?" % (artist_id,))
+                sql.execute("DELETE FROM artists WHERE rowid=?", (artist_id,))

@@ -765,4 +765,4 @@ class DatabaseAlbums:
         v = result.fetchone()
         # Album empty, remove it
         if not v:
-            sql.execute("DELETE FROM albums WHERE rowid=?" % (album_id,))
+            sql.execute("DELETE FROM albums WHERE rowid=?", (album_id,))
