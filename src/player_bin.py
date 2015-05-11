@@ -17,7 +17,7 @@ from os import path
 
 from lollypop.player_base import BasePlayer
 from lollypop.player_rg import ReplayGainPlayer
-from lollypop.define import GstPlayFlags, NextContext, Objects, CurrentTrack
+from lollypop.define import GstPlayFlags, NextContext, Objects
 from lollypop.define import Navigation
 from lollypop.utils import translate_artist_name, debug
 
@@ -227,7 +227,7 @@ class BinPlayer(ReplayGainPlayer, BasePlayer):
                 return False
         else:
             print("File doesn't exist: ", self.current.path)
-            self._on_errors()
+            GLib.timeout_add(2000, self.next, True)
             return False
         return True
 
