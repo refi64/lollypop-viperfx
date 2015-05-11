@@ -129,7 +129,7 @@ class Application(Gtk.Application):
             if not is_gnome() and not is_unity():
                 Objects.window.setup_menu(menu)
             Objects.window.connect('delete-event', self._hide_on_delete)
-            Objects.window.update_lists()
+            Objects.window.init_list_one()
             Objects.window.show()
             Objects.player.restore_state()
 

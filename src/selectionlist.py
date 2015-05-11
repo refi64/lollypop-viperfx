@@ -128,6 +128,13 @@ class SelectionList(Gtk.ScrolledWindow):
         self._updating = False
 
     """
+        Return True if list will select an item on populate
+        @return selected as bool
+    """
+    def will_be_selected(self):
+        return self._to_select_id != Navigation.NONE
+
+    """
         Make treeview select first default item
         @param object id as int
     """

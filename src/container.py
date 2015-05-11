@@ -64,7 +64,7 @@ class Container:
         self._vm.connect('mount-removed', self._on_mount_removed)
 
         Objects.playlists.connect('playlists-changed',
-                                  self.update_lists)
+                                  self._update_lists)
 
     """
         Update db at startup only if needed
@@ -79,9 +79,13 @@ class Container:
             progress = None
             if not self._progress.is_visible():
                 progress = self._progress
-            Objects.tracks.remove_outside()
-            self.update_lists(True)
             Objects.scanner.update(progress)
+
+    """
+        Init list one
+    """
+    def init_list_one(self):
+       self._update_list_one(None)
 
     """
         Save view state
@@ -124,13 +128,6 @@ class Container:
         self._stack.set_visible_child(view)
         start_new_thread(view.populate, ())
 
-    """
-        Update lists
-        @param updater as GObject
-    """
-    def update_lists(self, updater=None):
-        self._update_list_one(updater)
-        self._update_list_two(updater)
 
     """
         Load external files
@@ -201,7 +198,7 @@ class Container:
         if self._list_one.is_populating() or self._list_two.is_populating():
             GLib.timeout_add(500, self.on_scan_finished, scanner)
         else:
-            self.update_lists(scanner)
+            self._update_lists(scanner)
 ############
 # Private  #
 ############
@@ -298,6 +295,14 @@ class Container:
         Objects.scanner.connect('genre-update', self._add_genre)
         Objects.scanner.connect('artist-update', self._add_artist)
         Objects.scanner.connect('track-added', self._play_track)
+
+    """
+        Update lists
+        @param updater as GObject
+    """
+    def _update_lists(self, updater=None):
+        self._update_list_one(updater)
+        self._update_list_two(updater)
 
     """
         Update list one
@@ -548,11 +553,12 @@ class Container:
             else:
                 self._update_view_artists(selected_id, None)
         else:
+            self._list_two.clear()
             start_new_thread(self._setup_list_artists,
                              (self._list_two, selected_id, False))
-            self._list_two.clear()
             self._list_two.show()
-            self._update_view_albums(selected_id, False)
+            if not self._list_two.will_be_selected():
+                self._update_view_albums(selected_id, False)
 
     """
         Restore previous state
