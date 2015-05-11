@@ -42,7 +42,8 @@ class Container:
         
         # Try to update db on start, will be done after list one populating
         # finished
-        self._need_to_update_db = Objects.settings.get_value('auto-update')
+        self._need_to_update_db = Objects.settings.get_value('auto-update') or\
+                                  Objects.tracks.is_empty()
         # Index will start at -VOLUMES
         self._devices = {}
         self._devices_index = Navigation.DEVICES
