@@ -114,5 +114,6 @@ class View(Gtk.Grid):
         albums = Objects.albums.get_ids()
         albums += Objects.albums.get_compilations()
         for child in self._get_children():
-            if child.get_id() not in albums:
+            child_id = child.get_id()
+            if child_id is not None and child_id not in albums:
                 child.set_sensitive(False)
