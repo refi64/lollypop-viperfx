@@ -11,8 +11,10 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
+from gi.repository import Gio, GLib
+
+from shutil import which
 from gettext import gettext as _
-from gi.repository import Gio
 from _thread import start_new_thread
 
 from lollypop.define import Objects, NextContext
@@ -322,6 +324,47 @@ class PopToolbarMenu(Gio.Menu):
                             PlaylistsMenu(object_id, genre_id, False))
 
 
+# Edition menu for album
+# Subclass for BaseMenu
+class EditMenu(BaseMenu):
+    _TAG_EDITORS = ['exfalso', 'easytag', 'puddletag', 'kid3-qt']
+    """
+        Init playlist menu
+        @param object id as int
+        @param genre id as int
+        @param is album as bool
+    """
+    def __init__(self, object_id, genre_id, is_album):
+        BaseMenu.__init__(self, object_id, genre_id, is_album)
+
+        if is_album:
+            favorite = Objects.settings.get_value(
+                                                     'tag-editor').get_string()
+            for editor in [favorite] + self._TAG_EDITORS:
+                if which(editor) is not None:
+                    self._tag_editor = editor
+                    self._set_edit_actions()
+                    break
+
+    """
+        Set edit actions
+    """
+    def _set_edit_actions(self):
+        edit_tag_action = Gio.SimpleAction(name="edit_tag_action")
+        self._app.add_action(edit_tag_action)
+        edit_tag_action.connect('activate',
+                                self._edit_tag)
+        self.append(_("Modify informations"), 'app.edit_tag_action')
+
+    """
+        Run tag editor
+    """
+    def _edit_tag(self, action, variant):
+        album_path = Objects.albums.get_path(self._object_id)
+        GLib.spawn_command_line_async("%s \"%s\"" % (self._tag_editor,
+                                                     album_path))
+
+
 # Contextual menu for album
 class PopAlbumMenu(Gio.Menu):
     """
@@ -335,6 +378,8 @@ class PopAlbumMenu(Gio.Menu):
                             QueueMenu(object_id, genre_id, True))
         self.insert_section(1, _("Playlists"),
                             PlaylistsMenu(object_id, genre_id, True))
+        self.insert_section(2, _("Edit"),
+                            EditMenu(object_id, genre_id, True))
         
 
 # Contextual menu for track
