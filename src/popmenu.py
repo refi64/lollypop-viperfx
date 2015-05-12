@@ -327,7 +327,7 @@ class PopToolbarMenu(Gio.Menu):
 # Edition menu for album
 # Subclass for BaseMenu
 class EditMenu(BaseMenu):
-    _TAG_EDITORS = ['exfalso', 'easytag', 'puddletag', 'kid3-qt']
+    _TAG_EDITORS = ['exfalso', 'easytag', 'picard', 'puddletag', 'kid3-qt']
     """
         Init playlist menu
         @param object id as int
