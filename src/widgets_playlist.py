@@ -235,7 +235,7 @@ class PlaylistsManagerWidget(Gtk.Bin):
         while name in existing_playlists:
             count += 1
             name = _("New playlist ")+str(count)
-        self._model.append([True, name, self._del_pixbuf])
+        self._model.append([True, name, 'user-trash-symbolic'])
         Objects.playlists.add(name)
         self._set_current_object(name, True)
 #######################
