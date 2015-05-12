@@ -16,6 +16,7 @@ from gi.repository import Gio, GLib
 import os
 
 from lollypop.define import Objects
+from lollypop.utils import is_audio
 
 
 class Inotify:
@@ -68,6 +69,9 @@ class Inotify:
                changed_file.query_file_type(Gio.FileQueryInfoFlags.NONE,
                                             None) == Gio.FileType.DIRECTORY:
                 self.add_monitor(path)
+            # If not an audio file, exit
+            elif not is_audio(changed_file):
+                return
             if self._timeout is not None:
                 GLib.source_remove(self._timeout)
                 self._timeout = None
