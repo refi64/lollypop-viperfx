@@ -79,4 +79,4 @@ class Inotify:
     """
     def _run_collection_update(self):
         self._timeout = None
-        Objects.scanner.update(None)
+        Objects.window.update_db()
