@@ -28,20 +28,20 @@ class DatabaseAlbums:
         Add a new album to database
         @param Album name as string
         @param artist id as int,
-        @param compilation as bool,
+        @param noaartist as bool,
         @param path as string
         @param outside as bool
         @param mtime as int
         @warning: commit needed
     """
-    def add(self, name, artist_id, compilation, path, popularity,
+    def add(self, name, artist_id, noaartist, path, popularity,
             outside, mtime, sql=None):
         if not sql:
             sql = Objects.sql
         sql.execute("INSERT INTO albums "
-                    "(name, artist_id, compilation, path, popularity, outside, mtime)"
+                    "(name, artist_id, noaartist, path, popularity, outside, mtime)"
                     "VALUES (?, ?, ?, ?, ?, ?, ?)",
-                    (name, artist_id, compilation,
+                    (name, artist_id, noaartist,
                      path, popularity, outside, mtime))
 
     """
@@ -181,7 +181,7 @@ class DatabaseAlbums:
             sql = Objects.sql
         result = sql.execute("SELECT rowid FROM albums where name=?\
                               AND artist_id=?\
-                              AND compilation=0", (album_name,
+                              AND noaartist=0", (album_name,
                                                    artist_id))
         v = result.fetchone()
         if v:
@@ -197,7 +197,7 @@ class DatabaseAlbums:
         if not sql:
             sql = Objects.sql
         result = sql.execute("SELECT rowid FROM albums where name=?\
-                              AND compilation=1", (album_name,))
+                              AND noaartist=1", (album_name,))
         v = result.fetchone()
         if v:
             return v[0]
@@ -714,6 +714,24 @@ class DatabaseAlbums:
         for row in result:
             albums += (row,)
         return albums
+
+    """
+        True if is a compilation
+        @param album id as int
+        @return is compilation as bool
+    """
+    def is_compilation(self, album_id, sql=None):
+        if not sql:
+            sql = Objects.sql
+        result = sql.execute("SELECT COUNT(DISTINCT track_artists.artist_id)\
+                              FROM tracks, track_artists\
+                              WHERE tracks.album_id=?\
+                              AND tracks.rowid = track_artists.artist_id",
+                             (album_id,))
+        v = result.fetchone()
+        if v:
+            return v[0] > 1
+        return False
 
     """
         Clean database for album id

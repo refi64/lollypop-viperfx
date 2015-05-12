@@ -281,12 +281,12 @@ class CollectionScanner(GObject.GObject, ScannerTagReader):
         if new:
             new_artist_ids.append(album_artist_id)
 
-        compilation = False
+        noaartist = False
         if album_artist_id == None:
             album_artist_id = artist_ids[0]
-            compilation = True
+            noaartist = True
 
-        album_id = self.add_album(album_name, album_artist_id, compilation,
+        album_id = self.add_album(album_name, album_artist_id, noaartist,
                                   filepath, outside, sql)
 
         (genre_ids, new_genre_ids) = self.add_genres(genres, album_id,
@@ -301,10 +301,9 @@ class CollectionScanner(GObject.GObject, ScannerTagReader):
 
         track_id = Objects.tracks.get_id_by_path(filepath, sql)
         self.update_track(track_id, artist_ids, genre_ids, outside, sql)
-
+        sql.commit()
         # Notify about new artists/genres
         if new_genre_ids or new_artist_ids:
-            sql.commit()
             for genre_id in new_genre_ids:
                 GLib.idle_add(self.emit, 'genre-update', genre_id)
             for artist_id in new_artist_ids:

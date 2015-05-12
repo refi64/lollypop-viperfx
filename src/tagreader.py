@@ -234,17 +234,18 @@ class ScannerTagReader(TagReader):
         Add album to db
         @param album name as string
         @param album artist id as int
+        @param no album artist as bool
         @param path to an album track as string
         @param outside as bool
         @param sql as sqlite cursor
         @return (album id as int, new as bool)
         @commit needed
     """
-    def add_album(self, album_name, artist_id, compilation,
+    def add_album(self, album_name, artist_id, noaartist,
                   filepath, outside, sql):
         path = os.path.dirname(filepath)
 
-        if compilation:
+        if noaartist:
             album_id = Objects.albums.get_compilation_id(album_name, sql)
         else:
             album_id = Objects.albums.get_id(album_name, artist_id, sql)
@@ -256,15 +257,28 @@ class ScannerTagReader(TagReader):
             # Use current time
             else:
                 mtime = int(time())
-            Objects.albums.add(album_name, artist_id, compilation,
+            Objects.albums.add(album_name, artist_id, noaartist,
                                path, 0, outside, mtime, sql)
-            if compilation:
+            if noaartist:
                 album_id = Objects.albums.get_compilation_id(album_name, sql)
             else:
                 album_id = Objects.albums.get_id(album_name, artist_id, sql)
         # Now we have our album id, check if path doesn't change
         if Objects.albums.get_path(album_id, sql) != path and not outside:
             Objects.albums.set_path(album_id, path, sql)
+
+        # If no album artist, handle album artist id for compilations
+        if noaartist:
+            if Objects.albums.is_compilation(album_id, sql):
+                print('is')
+                Objects.albums.set_artist_id(album_id,
+                                             Navigation.COMPILATIONS,
+                                             sql)
+            else:
+                print('not')
+                Objects.albums.set_artist_id(album_id,
+                                             artist_id,
+                                             sql)
         return album_id
 
     """
