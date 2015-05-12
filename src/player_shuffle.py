@@ -91,6 +91,7 @@ class ShufflePlayer(BasePlayer):
                 self._albums = Objects.albums.get_party_ids(party_ids)
             else:
                 self._albums = Objects.albums.get_ids()
+
             # Start a new song if not playing
             if (self.current.id == Navigation.RADIOS or not self.is_playing())\
                and self._albums:
