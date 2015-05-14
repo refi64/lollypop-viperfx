@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lollypop\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-05-11 11:15+0200\n"
-"PO-Revision-Date: 2015-05-12 08:51+0000\n"
+"POT-Creation-Date: 2015-05-13 13:08+0200\n"
+"PO-Revision-Date: 2015-05-13 11:10+0000\n"
 "Last-Translator: Cédric Bellegarde <web@adishatz.org>\n"
 "Language-Team: Polish (http://www.transifex.com/projects/p/lollypop/language/pl/)\n"
 "MIME-Version: 1.0\n"
@@ -59,83 +59,87 @@ msgid "When empty, use XDG_MUSIC_DIR"
 msgstr "Wskazuje ścieżki do katalogów z muzyką. Jeśli nie skonfigurowano, zostanie użyta ścieżka XDG_MUSIC_DIR."
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:11
-msgid "Favorite cover file"
+msgid "Favorite tag editor"
 msgstr ""
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:12
+msgid "Favorite cover file"
+msgstr ""
+
+#: ../data/org.gnome.Lollypop.gschema.xml.h:13
 msgid "Restart needed"
 msgstr "Wymaga ponownego uruchomienia programu"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:13
+#: ../data/org.gnome.Lollypop.gschema.xml.h:14
 msgid "Database version"
 msgstr "Wersja bazy danych"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:14
+#: ../data/org.gnome.Lollypop.gschema.xml.h:15
 msgid ""
 "Reset this value will reset the database, popular albums will be restored"
 msgstr ""
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:15
+#: ../data/org.gnome.Lollypop.gschema.xml.h:16
 msgid "Replay gain value in db"
 msgstr ""
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:16
+#: ../data/org.gnome.Lollypop.gschema.xml.h:17
 msgid "Between -15 and 15"
 msgstr ""
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:17 ../data/SettingsDialog.ui.h:2
+#: ../data/org.gnome.Lollypop.gschema.xml.h:18 ../data/SettingsDialog.ui.h:2
 msgid "Auto update music"
 msgstr ""
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:18
+#: ../data/org.gnome.Lollypop.gschema.xml.h:19
 msgid "Show genres list"
 msgstr ""
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:19
+#: ../data/org.gnome.Lollypop.gschema.xml.h:20
 msgid "Use dark gtk theme"
 msgstr ""
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:20
+#: ../data/org.gnome.Lollypop.gschema.xml.h:21
 msgid "Force the use client side window decorations (headerbar)"
 msgstr ""
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:21
+#: ../data/org.gnome.Lollypop.gschema.xml.h:22
 msgid ""
 "If set to true CSD headerbars will be used, even if the detected desktop "
 "environment is not amongst those that are expected to support it."
 msgstr ""
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:22 ../data/SettingsDialog.ui.h:4
+#: ../data/org.gnome.Lollypop.gschema.xml.h:23 ../data/SettingsDialog.ui.h:4
 msgid "Continue playback when closed"
 msgstr "Kontynuowanie odtwarzania po zamknięciu okna"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:23
+#: ../data/org.gnome.Lollypop.gschema.xml.h:24
 msgid "Restore previous state"
 msgstr "Przywraca poprzedni stan po uruchomieniu"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:24
+#: ../data/org.gnome.Lollypop.gschema.xml.h:25
 msgid "Auto play albums on click"
 msgstr "Automatycznie odtwarza albumy po kliknięciu"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:25
+#: ../data/org.gnome.Lollypop.gschema.xml.h:26
 msgid "Disable MPRIS"
 msgstr "Wyłącza MPRIS"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:26
+#: ../data/org.gnome.Lollypop.gschema.xml.h:27
 msgid "Disable notifications"
 msgstr "Wyłącza powiadomienia"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:27
+#: ../data/org.gnome.Lollypop.gschema.xml.h:28
 msgid "INTERNAL"
 msgstr "WEWNĘTRZNE"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:28
+#: ../data/org.gnome.Lollypop.gschema.xml.h:29
 msgid "Shuffle mode"
 msgstr "Losowanie kolejności"
 
 #. Translators: Don't translate allowed values, just the description in the
 #. brackets
-#: ../data/org.gnome.Lollypop.gschema.xml.h:30
+#: ../data/org.gnome.Lollypop.gschema.xml.h:31
 msgid ""
 "Value identifies whether to shuffle tracks/albums. Allowed values are: "
 "\"none\" (shuffle off), \"tracks\" (shuffle tracks) , \"albums\" (shuffle "
@@ -159,54 +163,54 @@ msgstr "Odtwarza i zarządza kolekcją muzyki"
 msgid "Music player for the GNOME desktop"
 msgstr "Odtwarza nagrania muzyczne w środowisku GNOME"
 
-#: ../src/application.py:299
+#: ../src/application.py:308
 msgid "Lollypop: You need to install yelp."
 msgstr ""
 
-#: ../src/collectionscanner.py:56
+#: ../src/collectionscanner.py:55
 msgid "Your music is updating"
 msgstr "Uaktualnianie kolekcji"
 
-#: ../src/container.py:334
+#: ../src/container.py:338
 msgid "Popular albums"
 msgstr "Popularne albumy"
 
-#: ../src/container.py:335
+#: ../src/container.py:339
 msgid "Recent albums"
 msgstr "Ostatnie albumy"
 
-#: ../src/container.py:336
+#: ../src/container.py:340
 msgid "Random albums"
 msgstr ""
 
-#: ../src/container.py:337 ../src/popmenu.py:321 ../src/popmenu.py:336
-#: ../src/popmenu.py:351
+#: ../src/container.py:341 ../src/popmenu.py:323 ../src/popmenu.py:379
+#: ../src/popmenu.py:396
 msgid "Playlists"
 msgstr "Listy odtwarzania"
 
-#: ../src/container.py:338
+#: ../src/container.py:342
 msgid "Radios"
 msgstr ""
 
-#: ../src/container.py:340
+#: ../src/container.py:344
 msgid "All artists"
 msgstr "Wszyscy wykonawcy"
 
-#: ../src/container.py:342
+#: ../src/container.py:346
 msgid "All albums"
 msgstr "Wszystkie albumy"
 
-#: ../src/container.py:384
+#: ../src/container.py:388
 msgid "Compilations"
 msgstr "Kompilacje"
 
-#: ../src/database_albums.py:235 ../src/database_artists.py:70
+#: ../src/database_albums.py:253 ../src/database_artists.py:70
 #: ../src/database_genres.py:67 ../src/database_tracks.py:187
-#: ../src/tagreader.py:75 ../src/tagreader.py:106 ../src/tagreader.py:118
+#: ../src/tagreader.py:76 ../src/tagreader.py:107 ../src/tagreader.py:119
 msgid "Unknown"
 msgstr "Nieznany"
 
-#: ../src/database_albums.py:252
+#: ../src/database_albums.py:270
 msgid "Compilation"
 msgstr "Kompilacja"
 
@@ -248,55 +252,63 @@ msgstr ""
 msgid "Radio"
 msgstr ""
 
-#: ../src/popmenu.py:58
+#: ../src/popmenu.py:60
 msgid "Continue playback"
 msgstr "Kontynuowanie odtwarzania"
 
-#: ../src/popmenu.py:63
+#: ../src/popmenu.py:65
 msgid "Stop after this track"
 msgstr "Zatrzymanie po tym utworze"
 
-#: ../src/popmenu.py:68
+#: ../src/popmenu.py:70
 msgid "Stop after this album"
 msgstr "Zatrzymanie po tym albumie"
 
-#: ../src/popmenu.py:73
+#: ../src/popmenu.py:75
 msgid "Stop after this artist"
 msgstr "Zatrzymanie po tym wykonawcy"
 
-#: ../src/popmenu.py:162 ../data/SearchRow.ui.h:3
+#: ../src/popmenu.py:164 ../data/SearchRow.ui.h:3
 msgid "Add to queue"
 msgstr "Dodaj do kolejki"
 
-#: ../src/popmenu.py:167
+#: ../src/popmenu.py:169
 msgid "Next tracks"
 msgstr "Jako następne"
 
-#: ../src/popmenu.py:169
+#: ../src/popmenu.py:171
 msgid "Next track"
 msgstr "Jako następny"
 
-#: ../src/popmenu.py:173
+#: ../src/popmenu.py:175
 msgid "Remove from queue"
 msgstr "Usuń z kolejki"
 
-#: ../src/popmenu.py:240
+#: ../src/popmenu.py:242
 msgid "Add to others"
 msgstr "Dodaj do innych"
 
-#: ../src/popmenu.py:253
+#: ../src/popmenu.py:255
 #, python-format
 msgid "Remove from \"%s\""
 msgstr "Usuń z „%s”"
 
-#: ../src/popmenu.py:259
+#: ../src/popmenu.py:261
 #, python-format
 msgid "Add to \"%s\""
 msgstr "Dodaj do „%s”"
 
-#: ../src/popmenu.py:319 ../src/popmenu.py:334 ../src/popmenu.py:349
+#: ../src/popmenu.py:321 ../src/popmenu.py:377 ../src/popmenu.py:394
 msgid "Playback"
 msgstr "Odtwarzanie"
+
+#: ../src/popmenu.py:357
+msgid "Modify informations"
+msgstr ""
+
+#: ../src/popmenu.py:381 ../data/PlaylistsView.ui.h:1
+msgid "Edit"
+msgstr "Edycja"
 
 #: ../src/popradio.py:70
 msgid "Add"
@@ -346,16 +358,16 @@ msgstr ""
 msgid "No free space available on device"
 msgstr "Brak wolnego miejsca w pamięci urządzenia"
 
-#: ../src/widgets_playlist.py:224 ../src/widgets_playlist.py:227
+#: ../src/widgets_playlist.py:234 ../src/widgets_playlist.py:237
 msgid "New playlist "
 msgstr "Nowa lista odtwarzania"
 
-#: ../src/widgets_playlist.py:269 ../src/widgets_playlist.py:528
+#: ../src/widgets_playlist.py:279 ../src/widgets_playlist.py:535
 #, python-format
 msgid "Remove \"%s\"?"
 msgstr "Usunąć „%s”?"
 
-#: ../src/widgets_playlist.py:567
+#: ../src/widgets_playlist.py:574
 msgid "Remove these tracks?"
 msgstr "Usunąć te ścieżki?"
 
@@ -407,10 +419,6 @@ msgstr "Potwierdź"
 #: ../data/PlaylistsManagerView.ui.h:1
 msgid "New playlist"
 msgstr "Nowa lista odtwarzania"
-
-#: ../data/PlaylistsView.ui.h:1
-msgid "Edit"
-msgstr "Edycja"
 
 #: ../data/PopRadio.ui.h:1
 msgid "Select a logo  for this radio"
