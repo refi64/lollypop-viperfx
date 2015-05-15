@@ -69,34 +69,7 @@ def is_audio(f):
         info = f.query_info('standard::content-type',
                             Gio.FileQueryInfoFlags.NONE)
         if info is not None:
-            if info.get_content_type() in  ["application/ogg",
-                                            "application/x-ogg",
-                                            "application/x-ogm-audio",
-                                            "audio/aac",
-                                            "audio/mp4",
-                                            "audio/mpeg",
-                                            "audio/ogg",
-                                            "audio/vnd.rn-realaudio",
-                                            "audio/vorbis",
-                                            "audio/x-flac",
-                                            "audio/x-mp3",
-                                            "audio/x-mpeg",
-                                            "audio/x-ms-wma",
-                                            "audio/x-musepack",
-                                            "audio/x-oggflac",
-                                            "audio/x-pn-realaudio",
-                                            "audio/x-scpls",
-                                            "audio/x-speex",
-                                            "audio/x-vorbis",
-                                            "audio/x-vorbis+ogg",
-                                            "audio/x-wav",
-                                            "x-content/audio-player",
-                                            "audio/x-aac",
-                                            "audio/m4a",
-                                            "audio/x-m4a",
-                                            "audio/mp3",
-                                            "audio/ac3",
-                                            "audio/flac"]:
+            if info.get_content_type()[0:6] == "audio/":
                 return True
     except:
         pass
