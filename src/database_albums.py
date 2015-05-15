@@ -734,6 +734,20 @@ class DatabaseAlbums:
     def clean(self, album_id, sql=None):
         if not sql:
             sql = Objects.sql
+
+        # Check album really have tracks from its genres
+        for genre_id in self.get_genre_ids(album_id, sql):
+            result = sql.execute("SELECT track_id FROM tracks, track_genres\
+                                 WHERE track_genres.track_id == tracks.rowid\
+                                 AND tracks.album_id=?\
+                                 AND track_genres.genre_id=?", (album_id, genre_id))
+            v = result.fetchone()
+            if not v:
+                sql.execute("DELETE from album_genres\
+                            WHERE album_id=?\
+                            AND genre_id=?", (album_id, genre_id))
+
+        # Remove album if orphaned
         result = sql.execute("SELECT rowid from tracks\
                               WHERE album_id=?\
                               LIMIT 1", (album_id,))
@@ -741,5 +755,3 @@ class DatabaseAlbums:
         # Album empty, remove it
         if not v:
             sql.execute("DELETE FROM albums WHERE rowid=?", (album_id,))
-            sql.execute("DELETE from album_genres\
-                         WHERE album_id=?", (album_id,))
