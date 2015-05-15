@@ -82,6 +82,15 @@ class Container:
             Objects.scanner.update(progress)
 
     """
+        Return current selected genre
+        @return genre id as int
+    """
+    def get_genre_id(self):
+        if self._show_genres:
+            return self._list_one.get_selected_id()
+        else:
+            return None
+    """
         Init list one
     """
     def init_list_one(self):
