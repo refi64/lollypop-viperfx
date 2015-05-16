@@ -254,7 +254,7 @@ class BinPlayer(ReplayGainPlayer, BasePlayer):
         if self.context.next != NextContext.NONE:
             self.context.next = NextContext.NONE
             self.stop()
-            self.next(False)
+            self.next(True)
             self.emit("current-changed")
         else:
             if self.current.id == Navigation.RADIOS:
