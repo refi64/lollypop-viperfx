@@ -59,7 +59,9 @@ class ScannerTagReader(TagReader):
         @return title as string
     """
     def get_title(self, tags, filepath):
-        (exist, title) = tags.get_string_index('title', 0)
+        exist = False
+        if tags is not None:
+            (exist, title) = tags.get_string_index('title', 0)
         if not exist:
             title = os.path.basename(filepath)
         return title
@@ -71,6 +73,9 @@ class ScannerTagReader(TagReader):
     """
     def get_artists(self, tags):
         artists = ""
+        if tags is None:
+            return artists
+
         size = tags.get_tag_size('artist')
         if size == 0:
             artists = _("Unknown")
@@ -88,7 +93,9 @@ class ScannerTagReader(TagReader):
         @return album artist as string or None
     """
     def get_album_artist(self, tags):
-        (exist, album_artist) = tags.get_string_index('album-artist', 0)
+        exist = False
+        if tags is not None:
+            (exist, album_artist) = tags.get_string_index('album-artist', 0)
         if not exist:
             album_artist = None
         return album_artist
@@ -99,7 +106,9 @@ class ScannerTagReader(TagReader):
         @return album name as string
     """
     def get_album_name(self, tags):
-        (exist, album_name) = tags.get_string_index('album', 0)
+        exist = False
+        if tags is not None:
+            (exist, album_name) = tags.get_string_index('album', 0)
         if not exist:
             album_artist = self.get_album_artist(tags)
             if album_artist is None:
@@ -114,6 +123,9 @@ class ScannerTagReader(TagReader):
     """
     def get_genres(self, tags):
         genres = ""
+        if tags is None:
+            return genres
+
         size = tags.get_tag_size('genre')
         if size == 0:
             genres = _("Unknown")
@@ -131,7 +143,9 @@ class ScannerTagReader(TagReader):
         @return disc number as int
     """
     def get_discnumber(self, tags):
-        (exist, discnumber) = tags.get_uint_index('album-disc-number', 0)
+        exist = False
+        if tags is not None:
+            (exist, discnumber) = tags.get_uint_index('album-disc-number', 0)
         if not exist:
             discnumber = 0
         return discnumber
@@ -142,7 +156,9 @@ class ScannerTagReader(TagReader):
         @return track number as int
     """
     def get_tracknumber(self, tags):
-        (exist, tracknumber) = tags.get_uint_index('track-number', 0)
+        exist = False
+        if tags is not None:
+            (exist, tracknumber) = tags.get_uint_index('track-number', 0)
         if not exist:
             tracknumber = 0
         return tracknumber
@@ -153,7 +169,9 @@ class ScannerTagReader(TagReader):
         @return track year as int or None
     """
     def get_year(self, tags):
-        (exist, datetime) = tags.get_date_time('datetime')
+        exist = False
+        if tags is not None:
+            (exist, datetime) = tags.get_date_time('datetime')
         if exist:
             year = datetime.get_year()
         else:
