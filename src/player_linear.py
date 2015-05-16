@@ -63,7 +63,7 @@ class LinearPlayer(BasePlayer):
         track_id = None
         if track_id is None and self.context.position is not None:
             tracks = Objects.albums.get_tracks(self.current.album_id,
-                                               self.current.genre_id)
+                                               self.context.genre_id)
             if self.context.position <= 0:  # Prev album
                 pos = self._albums.index(self.current.album_id)
                 if pos - 1 < 0:  # we are on last album, go to first
@@ -72,7 +72,7 @@ class LinearPlayer(BasePlayer):
                     pos -= 1
                 self.current.album_id = self._albums[pos]
                 tracks = Objects.albums.get_tracks(self.current.album_id,
-                                                   self.current.genre_id)
+                                                   self.context.genre_id)
                 self.context.album_id = self.current.album_id
                 self.context.position = len(tracks) - 1
                 track_id = tracks[self.context.position]
