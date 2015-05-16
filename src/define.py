@@ -17,7 +17,7 @@
 GOOGLE_INC = 8
 GOOGLE_MAX = 100
 
-class Objects_:
+class Objects:
     settings = None
     db = None
     sql = None
@@ -73,7 +73,7 @@ class GstPlayFlags:
     GST_PLAY_FLAG_TEXT = 1 << 3   # We want subtitle output
 
 
-class ArtSize_:
+class ArtSize:
     SMALL_RADIUS = 2
     RADIUS = 3
     SMALL_BORDER = 1
@@ -84,7 +84,7 @@ class ArtSize_:
     MONSTER = 500
 
 
-class Shuffle_:
+class Shuffle:
     NONE = 0             # No shuffle
     TRACKS = 1           # Shuffle by tracks on genre
     ALBUMS = 2           # Shuffle by albums on genre
@@ -93,7 +93,7 @@ class Shuffle_:
 
 
 # Order is important
-class Navigation_:
+class Navigation:
     NONE = -1
     POPULARS = -2
     RANDOMS = -3
@@ -103,8 +103,3 @@ class Navigation_:
     ALL = -7
     COMPILATIONS = -999
     DEVICES = -1000
-
-Objects = Objects_()
-ArtSize = ArtSize_()
-Shuffle = Shuffle_()
-Navigation = Navigation_()
