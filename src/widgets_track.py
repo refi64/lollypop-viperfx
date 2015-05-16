@@ -210,7 +210,7 @@ class TracksWidget(Gtk.ListBox):
                         font_desc="Bold">%s</span>''' %\
                         (rgba_to_hex(Objects.window.get_selected_color()),
                          str(pos)))
-        else:
+        elif num > 0:
             track_row.set_num_label(str(num))
         track_row.set_number(num)
         track_row.set_title_label(title)
@@ -270,8 +270,10 @@ class TracksWidget(Gtk.ListBox):
                         font_desc="Bold">%s</span>''' %\
                         (rgba_to_hex(Objects.window.get_selected_color()),
                          str(pos)))
-            else:
+            elif row.get_number() > 0:
                 row.set_num_label(str(row.get_number()))
+            else:
+                row.set_num_label('')
 
     """
         Play activated item

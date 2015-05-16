@@ -347,11 +347,13 @@ class AlbumDetailedWidget(AlbumWidget):
         if not tracks or self._stop:
             self._stop = False
             return
+
         track = tracks.pop(0)
         track_id = track[0]
         title = escape(track[1])
         length = track[2]
-        artist_ids = track[3]
+        tracknumber = track[3]
+        artist_ids = track[4]
 
         # If we are listening to a compilation, prepend artist name
         if self._artist_id == Navigation.COMPILATIONS or\
@@ -369,11 +371,18 @@ class AlbumDetailedWidget(AlbumWidget):
         if Objects.player.is_in_queue(track_id):
             pos = Objects.player.get_track_position(track_id)
 
-        widget.add_track(track_id,
-                         i,
-                         title,
-                         length,
-                         pos)
+        if Objects.settings.get_value('show-tag-tracknumber'):
+            widget.add_track(track_id,
+                             tracknumber,
+                             title,
+                             length,
+                             pos)
+        else:
+            widget.add_track(track_id,
+                             i,
+                             title,
+                             length,
+                             pos)
         GLib.idle_add(self._add_tracks, tracks, widget, i+1)
 
     """

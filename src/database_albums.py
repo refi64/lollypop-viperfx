@@ -573,7 +573,8 @@ class DatabaseAlbums:
         if genre_id is not None and genre_id > 0:
             result = sql.execute("SELECT tracks.rowid,\
                                   tracks.name,\
-                                  tracks.length\
+                                  tracks.length,\
+                                  tracks.tracknumber\
                                   FROM tracks, track_genres\
                                   WHERE tracks.album_id=?\
                                   AND tracks.rowid = track_genres.track_id\
@@ -584,7 +585,8 @@ class DatabaseAlbums:
         else:
             result = sql.execute("SELECT tracks.rowid,\
                                   tracks.name,\
-                                  tracks.length\
+                                  tracks.length,\
+                                  tracks.tracknumber\
                                   FROM tracks\
                                   WHERE tracks.album_id = ?\
                                   AND discnumber=?\
