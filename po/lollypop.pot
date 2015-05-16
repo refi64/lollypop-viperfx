@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-05-13 13:08+0200\n"
+"POT-Creation-Date: 2015-05-16 22:56+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -129,15 +129,19 @@ msgid "Disable notifications"
 msgstr ""
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:28
-msgid "INTERNAL"
+msgid "Show track number from tags"
 msgstr ""
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:29
+msgid "INTERNAL"
+msgstr ""
+
+#: ../data/org.gnome.Lollypop.gschema.xml.h:30
 msgid "Shuffle mode"
 msgstr ""
 
 #. Translators: Don't translate allowed values, just the description in the brackets
-#: ../data/org.gnome.Lollypop.gschema.xml.h:31
+#: ../data/org.gnome.Lollypop.gschema.xml.h:32
 msgid ""
 "Value identifies whether to shuffle tracks/albums. Allowed values are: \"none"
 "\" (shuffle off), \"tracks\" (shuffle tracks) , \"albums\" (shuffle albums), "
@@ -169,42 +173,42 @@ msgstr ""
 msgid "Your music is updating"
 msgstr ""
 
-#: ../src/container.py:338
+#: ../src/container.py:347
 msgid "Popular albums"
 msgstr ""
 
-#: ../src/container.py:339
+#: ../src/container.py:348
 msgid "Recent albums"
 msgstr ""
 
-#: ../src/container.py:340
+#: ../src/container.py:349
 msgid "Random albums"
 msgstr ""
 
-#: ../src/container.py:341 ../src/popmenu.py:323 ../src/popmenu.py:379
+#: ../src/container.py:350 ../src/popmenu.py:323 ../src/popmenu.py:379
 #: ../src/popmenu.py:396
 msgid "Playlists"
 msgstr ""
 
-#: ../src/container.py:342
+#: ../src/container.py:351
 msgid "Radios"
 msgstr ""
 
-#: ../src/container.py:344
+#: ../src/container.py:353
 msgid "All artists"
 msgstr ""
 
-#: ../src/container.py:346
+#: ../src/container.py:355
 msgid "All albums"
 msgstr ""
 
-#: ../src/container.py:388
+#: ../src/container.py:397
 msgid "Compilations"
 msgstr ""
 
 #: ../src/database_albums.py:253 ../src/database_artists.py:70
 #: ../src/database_genres.py:67 ../src/database_tracks.py:187
-#: ../src/tagreader.py:76 ../src/tagreader.py:107 ../src/tagreader.py:119
+#: ../src/tagreader.py:81 ../src/tagreader.py:116 ../src/tagreader.py:131
 msgid "Unknown"
 msgstr ""
 
@@ -330,7 +334,7 @@ msgstr ""
 
 #. Handle language ordering
 #. Translators: Add here words that shoud be ignored for artist sort order
-#: ../src/utils.py:114
+#: ../src/utils.py:87
 msgid "The the"
 msgstr ""
 
