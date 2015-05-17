@@ -88,14 +88,14 @@ class RadioPlayer(BasePlayer):
 
         radios_manager = RadiosManager()
         radios = radios_manager.get()
-        i = 0
-        for (radio_id, name) in radios:
+        i = len(radios) - 1
+        for (radio_id, name) in reversed(radios):
             i -= 1
             if self.current_track.artist == name:
                 break
 
         # Get prev radio
-        if i <= 0:
+        if i < 0:
             i = len(radios) - 1
 
         name = radios[i][1]
