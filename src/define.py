@@ -34,22 +34,6 @@ class Objects:
     debug = False
 
 
-# Represent current playing track
-class CurrentTrack:
-    id = None
-    title = ''
-    album_id = None
-    album = ''
-    artist = ''
-    aartist_id = None
-    aartist = ''
-    genre_id = None
-    genre = ''
-    number = 0
-    duration = 0.0
-    path = ''
-
-
 # Represent what to do on next track
 class NextContext:
     NONE = 0             # Continue playback
@@ -62,7 +46,6 @@ class NextContext:
 # Represent playback context
 class PlayContext:
     genre_id = None
-    position = None
     next = NextContext.NONE
 
 
@@ -92,7 +75,7 @@ class Shuffle:
 
 
 # Order is important
-class Navigation:
+class Type:
     NONE = -1
     POPULARS = -2
     RANDOMS = -3

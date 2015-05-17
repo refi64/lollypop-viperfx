@@ -18,7 +18,7 @@ from _thread import start_new_thread
 from lollypop.view import View
 from lollypop.view_container import ViewContainer
 from lollypop.widgets_album import AlbumSimpleWidget, AlbumDetailedWidget
-from lollypop.define import Objects, Navigation, ArtSize
+from lollypop.define import Objects, Type, ArtSize
 from lollypop.utils import translate_artist_name
 
 
@@ -75,10 +75,10 @@ class ArtistView(View):
     """
     def _get_albums(self):
         sql = Objects.db.get_cursor()
-        if self._artist_id == Navigation.COMPILATIONS:
+        if self._artist_id == Type.COMPILATIONS:
             albums = Objects.albums.get_compilations(self._genre_id,
                                                      sql)
-        elif self._genre_id == Navigation.ALL:
+        elif self._genre_id == Type.ALL:
             albums = Objects.albums.get_ids(self._artist_id,
                                             None,
                                             sql)
@@ -211,13 +211,13 @@ class AlbumsView(View):
     """
     def _get_albums(self):
         sql = Objects.db.get_cursor()
-        if self._genre_id == Navigation.ALL:
+        if self._genre_id == Type.ALL:
             albums = Objects.albums.get_ids(None, None, sql)
-        elif self._genre_id == Navigation.POPULARS:
+        elif self._genre_id == Type.POPULARS:
             albums = Objects.albums.get_populars(sql)
-        elif self._genre_id == Navigation.RECENTS:
+        elif self._genre_id == Type.RECENTS:
             albums = Objects.albums.get_recents(sql)
-        elif self._genre_id == Navigation.RANDOMS:
+        elif self._genre_id == Type.RANDOMS:
             albums = Objects.albums.get_randoms(sql)
         elif self._is_compilation:
             albums = Objects.albums.get_compilations(self._genre_id,

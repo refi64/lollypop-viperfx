@@ -13,8 +13,10 @@
 
 import random
 
-from lollypop.define import Shuffle, NextContext, Objects, Navigation
+from lollypop.define import Shuffle, NextContext, Objects, Type
 from lollypop.player_base import BasePlayer
+from lollypop.track import Track
+
 
 # Manage shuffle tracks and party mode
 class ShufflePlayer(BasePlayer):
@@ -35,7 +37,7 @@ class ShufflePlayer(BasePlayer):
              self._is_party:
             if self._albums:
                 track_id = self._shuffle_next(sql)
-        return track_id
+        return Track(track_id)
 
     """
         Prev track based on history
@@ -49,8 +51,8 @@ class ShufflePlayer(BasePlayer):
                 self._played_tracks_history.pop()
                 self._played_tracks_history.pop()
             except:
-                track_id = self.current.id
-        return track_id
+                track_id = self.current_track.id
+        return Track(track_id)
 
     """
         Return party ids
@@ -60,8 +62,8 @@ class ShufflePlayer(BasePlayer):
         party_settings = Objects.settings.get_value('party-ids')
         ids = []
         genre_ids = Objects.genres.get_ids()
-        genre_ids.append(Navigation.POPULARS)
-        genre_ids.append(Navigation.RECENTS)
+        genre_ids.append(Type.POPULARS)
+        genre_ids.append(Type.RECENTS)
         for setting in party_settings:
             if isinstance(setting, int) and\
                setting in genre_ids:
@@ -93,15 +95,15 @@ class ShufflePlayer(BasePlayer):
                 self._albums = Objects.albums.get_ids()
 
             # Start a new song if not playing
-            if (self.current.id == Navigation.RADIOS or not self.is_playing())\
+            if (self.current_track.id == Type.RADIOS or not self.is_playing())\
                and self._albums:
                 track_id = self._get_random()
                 self.load(track_id)
         else:
             # We need to put some context, take first available genre
-            if self.current.id:
-                self.set_albums(self.current.id,
-                                self.current.aartist_id, None)
+            if self.current_track.id:
+                self.set_albums(self.current_track.id,
+                                self.current_track.aartist_id, None)
         self.emit('party-changed', party)
         Objects.window.update_view()
 
@@ -131,8 +133,8 @@ class ShufflePlayer(BasePlayer):
         if self._user_playlist:
             self._shuffle_playlist()
         else:
-            self.set_albums(self.current.id,
-                            self.current.aartist_id,
+            self.set_albums(self.current_track.id,
+                            self.current_track.aartist_id,
                             self.context.genre_id)
 
     """
@@ -175,7 +177,7 @@ class ShufflePlayer(BasePlayer):
         for album_id in sorted(self._albums,
                                key=lambda *args: random.random()):
             tracks = Objects.albums.get_tracks(album_id,
-                                               self.current.genre_id,
+                                               self.context.genre_id,
                                                sql)
             for track in sorted(tracks, key=lambda *args: random.random()):
                 if album_id not in self._already_played_tracks.keys() or\
@@ -197,10 +199,10 @@ class ShufflePlayer(BasePlayer):
         @param album id as int
     """
     def _add_to_shuffle_history(self, track_id, album_id):
-        if self.current.album_id not in self._already_played_tracks.keys():
-            self._already_played_tracks[self.current.album_id] = []
-        self._already_played_tracks[self.current.album_id].append(
-                                                              self.current.id)
+        if self.current_track.album_id not in self._already_played_tracks.keys():
+            self._already_played_tracks[self.current_track.album_id] = []
+        self._already_played_tracks[self.current_track.album_id].append(
+                                                              self.current_track.id)
 
     """
         On stream start add to shuffle history
@@ -208,8 +210,8 @@ class ShufflePlayer(BasePlayer):
     def _on_stream_start(self, bus, message):
         # Add track to shuffle history if needed
         if self._shuffle != Shuffle.NONE or self._is_party:
-            if self.current.id in self._played_tracks_history:
-                self._played_tracks_history.remove(self.current.id)
-            self._played_tracks_history.append(self.current.id)
-            self._add_to_shuffle_history(self.current.id,
-                                         self.current.album_id)
+            if self.current_track.id in self._played_tracks_history:
+                self._played_tracks_history.remove(self.current_track.id)
+            self._played_tracks_history.append(self.current_track.id)
+            self._add_to_shuffle_history(self.current_track.id,
+                                         self.current_track.album_id)

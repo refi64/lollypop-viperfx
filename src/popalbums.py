@@ -39,8 +39,8 @@ class PopAlbums(Gtk.Popover):
         Run _populate in a thread
     """
     def populate(self):
-        if self._on_screen_artist != Objects.player.current.aartist_id:
-            self._on_screen_artist = Objects.player.current.aartist_id
+        if self._on_screen_artist != Objects.player.current_track.aartist_id:
+            self._on_screen_artist = Objects.player.current_track.aartist_id
             view = ArtistView(self._on_screen_artist, None, False)
             view.show()
             start_new_thread(view.populate, ())

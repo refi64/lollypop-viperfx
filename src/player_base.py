@@ -13,7 +13,8 @@
 
 from gi.repository import GObject
 
-from lollypop.define import PlayContext, CurrentTrack, Objects
+from lollypop.define import PlayContext, Objects
+from lollypop.track import Track
 
 
 class BasePlayer(GObject.GObject):
@@ -40,7 +41,9 @@ class BasePlayer(GObject.GObject):
             self._user_playlist = None
             # Used by shuffle tracks to restore user playlist before shuffle
             self._user_playlist_backup = None
-            self.current = CurrentTrack()
+            self.current_track = Track()
+            self.next_track = Track()
+            self.prev_track = Track()
             self.context = PlayContext()
             # Albums in current playlist
             self._albums = None

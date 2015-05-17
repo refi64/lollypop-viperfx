@@ -17,7 +17,9 @@ from gettext import gettext as _
 
 from lollypop.playlists import RadiosManager
 from lollypop.player_base import BasePlayer
-from lollypop.define import Navigation
+from lollypop.define import Type
+from lollypop.track import Track
+
 
 # This class neeed the parent object to be a BinPlayer
 class RadioPlayer(BasePlayer):
@@ -26,8 +28,7 @@ class RadioPlayer(BasePlayer):
     """
     def __init__(self):
         BasePlayer.__init__(self)
-        self._radio_name = None
-        self._radio_uri = None
+        self._current = None
         self._bus.connect("message::tag", self._on_bus_message_tag)
 
     """
@@ -35,14 +36,13 @@ class RadioPlayer(BasePlayer):
         @param name as string
         @param uri as string
     """
-    def load(self, name, uri):
-        self.current.id = Navigation.RADIOS
-        self._radio_name = name
-        self._radio_uri = uri
+    def load(self, track):
         try:
+            self._current = track
+            track.title = _("Radio")
             parser = TotemPlParser.Parser.new()
-            parser.connect("entry-parsed", self._on_entry_parsed, name)
-            parser.parse_async(uri, False, None, self._on_parsed, name)
+            parser.connect("entry-parsed", self._on_entry_parsed, track)
+            parser.parse_async(track.uri, False, None, self._on_parsed, track)
         except Exception as e:
             print("RadioPlayer::load(): ", e)
             return False
@@ -55,97 +55,86 @@ class RadioPlayer(BasePlayer):
         @return (name, uri)
     """
     def next(self):
+        track = Track()
+        if self.current_track.id != Type.RADIOS:
+            return track
+
         radios_manager = RadiosManager()
         radios = radios_manager.get()
         i = 0
         for (radio_id, name) in radios:
-            if name == self._radio_name:
+            i += 1
+            if self.current_track.artist == name:
                 break
-            i += 1
+            
         # Get next radio
-        if i + 1 >= len(radios):
+        if i >= len(radios):
             i = 0
-        else:
-            i += 1
+
         name = radios[i][1]
         uris = radios_manager.get_tracks(name)
         if len(uris) > 0:
-            return (name, uris[0])
-        else:
-            return (None, None)
+            print(name)
+            track.set_radio(name, uris[0])
+        return track
 
     """
         Return prev radio name, uri
         @return (name, uri)
     """
     def prev(self):
+        track = Track()
+        if self.current_track.id != Type.RADIOS:
+            return track
+
         radios_manager = RadiosManager()
         radios = radios_manager.get()
         i = 0
         for (radio_id, name) in radios:
-            if name == self._radio_name:
-                break
-            i += 1
-        # Get prev radio
-        if i - 1 <= 0:
-            i = len(radios) - 1
-        else:
             i -= 1
+            if self.current_track.artist == name:
+                break
+
+        # Get prev radio
+        if i <= 0:
+            i = len(radios) - 1
+
         name = radios[i][1]
         uris = radios_manager.get_tracks(name)
         if len(uris) > 0:
-            return (name, uris[0])
-        else:
-            return (None, None)
+            track.set_radio(name, uris[0])
+        return track
 
 #######################
 # PRIVATE             #
 #######################
-    """
-        Set current state on radio
-    """
-    def _set_current(self):
-        string = _("Radio")
-        if self._radio_name is not None:
-            self.current.artist = self._radio_name
-        if self._radio_uri is not None:
-            self.current.path = self._radio_uri
-        self.current.title = string
-        self.current.album_id = None
-        self.current.album = string
-        self.current.aartist_id = None
-        self.current.aartist = string
-        self.current.genre = string
-        self.current.duration = 0.0
-        self.current.number = 0
-
     """
         Read title from stream
         @param bus as Gst.Bus
         @param message as Gst.Message
     """
     def _on_bus_message_tag(self, bus, message):
-        if self.current.id != Navigation.RADIOS:
+        if self.current_track.id != Type.RADIOS:
             return
         tags = message.parse_tag()
         (exist, title) = tags.get_string_index('title', 0)
-        if exist and title != self.current.title:
-            self.current.title = title
+        if exist and title != self.current_track.title:
+            self.current_track.title = title
             self.emit('current-changed')
 
     """
         If parsing failed, try to play uri
         @param parser as Totem.PlParser
         @param result as Gio.AsyncResult
-        @param radio name as string
+        @param track as Track
     """
-    def _on_parsed(self, parser, result, name):
+    def _on_parsed(self, parser, result, track):
         if parser.parse_finish(result) != TotemPlParser.ParserResult.SUCCESS:
             # Only start playing if context always True
-            if self._radio_name == name:
+            if self._current == track:
                 self._stop()
-                self._playbin.set_property('uri', self._radio_uri)
-                self._set_current()
+                self._playbin.set_property('uri', track.uri)
+                self.current_track = track
                 self.play()
 
     """
@@ -153,12 +142,12 @@ class RadioPlayer(BasePlayer):
         @param parser as TotemPlParser.Parser
         @param track uri as str
         @param metadata as GLib.HastTable
-        @param radio name as string
+        @param track as Track
     """
-    def _on_entry_parsed(self, parser, uri, metadata, name):
+    def _on_entry_parsed(self, parser, uri, metadata, track):
         # Only start playing if context always True
-        if self._radio_name == name:
+        if self._current == track:
             self._stop()
-            self._playbin.set_property('uri', uri)
-            self._set_current()
+            self._playbin.set_property('uri', track.uri)
+            self.current_track = track
             self.play()

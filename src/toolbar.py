@@ -16,7 +16,7 @@ from gi.repository import Gtk, Gdk, GLib, Gio
 from gettext import gettext as _
 from cgi import escape
 
-from lollypop.define import Objects, Shuffle, ArtSize, Navigation
+from lollypop.define import Objects, Shuffle, ArtSize, Type
 from lollypop.search import SearchWidget
 from lollypop.popmenu import PopToolbarMenu
 from lollypop.queue import QueueWidget
@@ -179,13 +179,13 @@ class Toolbar(Gtk.HeaderBar):
         @param event as Gdk.Event
     """
     def _pop_infobox(self, widget, event):
-        if Objects.player.current.id is not None and\
-           Objects.player.current.id != Navigation.RADIOS:
+        if Objects.player.current_track.id is not None and\
+           Objects.player.current_track.id != Type.RADIOS:
             if event.button == 1:
                 self._popalbums.populate()
                 self._popalbums.show()
             else:
-                menu = PopToolbarMenu(Objects.player.current.id, None)
+                menu = PopToolbarMenu(Objects.player.current_track.id, None)
                 popover = Gtk.Popover.new_from_model(self._infobox, menu)
                 popover.show()
             return True
@@ -195,7 +195,7 @@ class Toolbar(Gtk.HeaderBar):
         @param obj as unused, album id as int
     """
     def _update_cover(self, obj, album_id):
-        if Objects.player.current.album_id == album_id:
+        if Objects.player.current_track.album_id == album_id:
             pixbuf = Objects.art.get(album_id, ArtSize.SMALL)
             self._cover.set_from_pixbuf(pixbuf)
             del pixbuf
@@ -231,11 +231,11 @@ class Toolbar(Gtk.HeaderBar):
         self._play_btn.set_sensitive(True)
         self._prev_btn.set_sensitive(True)
         self._next_btn.set_sensitive(True)
-        self._artist_label.set_text(player.current.artist)
-        self._title_label.set_text(player.current.title)
+        self._artist_label.set_text(player.current_track.artist)
+        self._title_label.set_text(player.current_track.title)
 
         # Hide controls if on radio or no track playing:
-        if player.current.id is None or player.current.id == Navigation.RADIOS:
+        if player.current_track.id is None or player.current_track.id == Type.RADIOS:
             self._progress.set_sensitive(False)
             self._total_time_label.hide()
             self._timelabel.hide()
@@ -243,29 +243,29 @@ class Toolbar(Gtk.HeaderBar):
             self._progress.set_range(0.0, 0.0)
 
         # Setup buttons and art for radios
-        if player.current.id == Navigation.RADIOS:
+        if player.current_track.id == Type.RADIOS:
             self._infobox.get_window().set_cursor(
                                       Gdk.Cursor(Gdk.CursorType.LEFT_PTR))
 
-            art = Objects.art.get_radio(player.current.artist,
+            art = Objects.art.get_radio(player.current_track.artist,
                                         ArtSize.SMALL)
         # Setup buttons and art for local playback
-        elif player.current.id is not None:
+        elif player.current_track.id is not None:
             self._progress.set_value(0.0)
-            self._progress.set_range(0.0, player.current.duration * 60)
+            self._progress.set_range(0.0, player.current_track.duration * 60)
             self._total_time_label.set_text(
-                                    seconds_to_string(player.current.duration))
+                                    seconds_to_string(player.current_track.duration))
             self._total_time_label.show()
             self._timelabel.set_text("0:00")
             self._timelabel.show()
             self._infobox.get_window().set_cursor(
                                     Gdk.Cursor(Gdk.CursorType.HAND1))
-            art = Objects.art.get(player.current.album_id,
+            art = Objects.art.get(player.current_track.album_id,
                                   ArtSize.SMALL)
 
         if art is not None:
             self._cover.set_from_pixbuf(art)
-            self._cover.set_tooltip_text(player.current.album)
+            self._cover.set_tooltip_text(player.current_track.album)
             self._cover.show()
         else:
             self._cover.hide()
@@ -277,7 +277,7 @@ class Toolbar(Gtk.HeaderBar):
     def _on_status_changed(self, player):
         is_playing = player.is_playing()
 
-        if player.current.id != Navigation.RADIOS:
+        if player.current_track.id != Type.RADIOS:
             self._progress.set_sensitive(is_playing)
 
         if is_playing:
@@ -285,7 +285,7 @@ class Toolbar(Gtk.HeaderBar):
             # via Fullscreen class, so check button state
             self._party_btn.set_active(Objects.player.is_party())
             self._change_play_btn_status(self._pause_image, _("Pause"))
-            if player.current.id == Navigation.RADIOS and self._timeout:
+            if player.current_track.id == Type.RADIOS and self._timeout:
                 GLib.source_remove(self._timeout)
                 self._timeout = None
             elif not self._timeout:

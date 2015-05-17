@@ -166,10 +166,10 @@ class Application(Gtk.Application):
     def prepare_to_exit(self, action=None, param=None):
         if Objects.settings.get_value('save-state'):
             Objects.window.save_view_state()
-            if Objects.player.current.id is None:
+            if Objects.player.current_track.id is None:
                 track_id = -1
             else:
-                track_id = Objects.player.current.id
+                track_id = Objects.player.current_track.id
             Objects.settings.set_value('track-id', GLib.Variant(
                                        'i',
                                        track_id))

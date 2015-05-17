@@ -14,7 +14,7 @@
 from gettext import gettext as _
 import os
 
-from lollypop.define import Objects, Navigation
+from lollypop.define import Objects, Type
 
 
 # All functions take a sqlite cursor as last parameter,
@@ -403,10 +403,10 @@ class DatabaseAlbums:
             sql = Objects.sql
         albums = []
         # get popular first
-        if Navigation.POPULARS in genre_ids:
+        if Type.POPULARS in genre_ids:
             albums += self.get_populars()
         # get recents next
-        if Navigation.RECENTS in genre_ids:
+        if Type.RECENTS in genre_ids:
             recents = self.get_recents()
             for recent in recents:
                 if recent not in albums:
@@ -657,11 +657,11 @@ class DatabaseAlbums:
         albums = []
         result = []
         # Get all compilations
-        if genre_id == Navigation.ALL or genre_id is None:
+        if genre_id == Type.ALL or genre_id is None:
             result = sql.execute("SELECT albums.rowid FROM albums\
                                   WHERE artist_id=?\
                                   ORDER BY albums.name, albums.year",
-                                  (Navigation.COMPILATIONS,))
+                                  (Type.COMPILATIONS,))
         # Get compilation for genre id
         else:
             result = sql.execute(
@@ -670,7 +670,7 @@ class DatabaseAlbums:
                          AND album_genres.album_id=albums.rowid\
                          AND albums.artist_id=?\
                          ORDER BY albums.name,\
-                         albums.year", (genre_id, Navigation.COMPILATIONS))
+                         albums.year", (genre_id, Type.COMPILATIONS))
         for row in result:
             albums += row
         return albums

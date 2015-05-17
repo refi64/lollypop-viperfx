@@ -18,6 +18,7 @@ from lollypop.widgets_radio import RadioWidget
 from lollypop.playlists import RadiosManager
 from lollypop.popradio import PopRadio
 from lollypop.define import Objects
+from lollypop.track import Track
 
 # Radios view
 class RadiosView(View):
@@ -87,17 +88,6 @@ class RadiosView(View):
 #######################
 # PRIVATE             #
 #######################
-    """
-        Return view children
-        @return [RadioWidget]
-    """
-    def _get_children(self):
-        children = []
-        for child in self._radiobox.get_children():
-            widget =  child.get_child()
-            children.append(widget)
-        return children
-
     """
         Sort radios
         @param a as Gtk.FlowBoxChild
@@ -201,4 +191,6 @@ class RadiosView(View):
     def _on_album_activated(self, flowbox, child):
         name = child.get_child().get_name()
         uri =  child.get_child().get_uri()
-        Objects.player.load_radio(name, uri)
+        track = Track()
+        track.set_radio(name, uri)
+        Objects.player.load(track)

@@ -19,8 +19,9 @@ from os import path
 from lollypop.player_base import BasePlayer
 from lollypop.player_rg import ReplayGainPlayer
 from lollypop.define import GstPlayFlags, NextContext, Objects
-from lollypop.define import Navigation
+from lollypop.define import Type
 from lollypop.utils import translate_artist_name, debug
+from lollypop.track import Track
 
 
 # Bin player class
@@ -72,11 +73,11 @@ class BinPlayer(ReplayGainPlayer, BasePlayer):
 
     """
         Stop current track, load track id and play it
-        @param track id as int
+        @param track as Track
     """
-    def load(self, track_id):
+    def load(self, track):
         self._stop()
-        if self._load_track(track_id):
+        if self._load_track(track):
             self.play()
 
     """
@@ -145,10 +146,8 @@ class BinPlayer(ReplayGainPlayer, BasePlayer):
 
     """
         Go next track
-        @param force as bool
-        @param sql as sqlite cursor
     """
-    def next(self, force, sql):
+    def next(self):
         pass
 
 #######################
@@ -162,10 +161,11 @@ class BinPlayer(ReplayGainPlayer, BasePlayer):
 
     """
         Load track
-        @param track id as int, sqlite cursor
+        @param track as Track
+        @param sql as sqlite cursor
         @return False if track not loaded
     """
-    def _load_track(self, track_id, sql=None):
+    def _load_track(self, track, sql=None):
         stop = False
 
         # Stop if needed
@@ -173,62 +173,31 @@ class BinPlayer(ReplayGainPlayer, BasePlayer):
             stop = True
 
         # Stop if album changed
-        new_album_id = Objects.tracks.get_album_id(
-                                                track_id,
-                                                sql)
         if self.context.next == NextContext.STOP_ALBUM and\
-           self.current.album_id != new_album_id:
+           self.current_track.album_id != track.album_id:
             stop = True
 
         # Stop if aartist changed
-        new_aartist_id = Objects.tracks.get_aartist_id(
-                                                track_id,
-                                                sql)
         if self.context.next == NextContext.STOP_ARTIST and\
-           self.current.aartist_id != new_aartist_id:
+           self.current_track.aartist_id != track.aartist_id:
             stop = True
 
         if stop:
             return False
 
-        self.current.id = track_id
-        self.current.title = Objects.tracks.get_name(
-                                                self.current.id,
-                                                sql)
-        self.current.album_id = new_album_id
-        self.current.album = Objects.albums.get_name(
-                                                self.current.album_id,
-                                                sql)
-        self.current.aartist_id = new_aartist_id
-        self.current.aartist = translate_artist_name(
-                                        Objects.artists.get_name(
-                                                self.current.aartist_id,
-                                                sql))
-        artist_name = ""
-        for artist_id in Objects.tracks.get_artist_ids(self.current.id,
-                                                       sql):
-            artist_name += translate_artist_name(
-                            Objects.artists.get_name(artist_id, sql)) + ", "
-        self.current.artist = artist_name[:-2]
+        self.current_track = track
 
-        self.current.genre = Objects.albums.get_genre_name(
-                                                self.current.album_id,
-                                                sql)
-        self.current.duration = Objects.tracks.get_length(self.current.id, sql)
-        self.current.number = Objects.tracks.get_number(self.current.id, sql)
-        self.current.path = Objects.tracks.get_path(self.current.id, sql)
-        if path.exists(self.current.path):
+        if self.current_track.uri is not None:
             try:
                 self._playbin.set_property('uri',
-                                           GLib.filename_to_uri(
-                                                        self.current.path))
+                                           self.current_track.uri)
             except Exception as e:  # Gstreamer error, stop
                 print("BinPlayer::_load_track(): ", e)
                 self._on_errors()
                 return False
         else:
-            Objects.notify.send(_("File doesn't exist: %s") % self.current.path)
-            GLib.timeout_add(2000, self.next, True)
+            Objects.notify.send(_("File doesn't exist: %s") % self.current_track.path)
+            GLib.timeout_add(2000, self.next)
             return False
         return True
 
@@ -238,11 +207,11 @@ class BinPlayer(ReplayGainPlayer, BasePlayer):
         @param message as Gst.Message
     """
     def _on_bus_error(self, bus, message):
-        debug("Error playing: %s" % self.current.path)
-        if self._handled_error != self.current.path:
-            self._handled_error = self.current.path
+        debug("Error playing: %s" % self.current_track.uri)
+        if self._handled_error != self.current_track.uri:
+            self._handled_error = self.current_track.uri
             GLib.idle_add(self.emit, 'current-changed')
-            GLib.timeout_add(2000, self.next, True)
+            GLib.timeout_add(2000, self.next)
         return False
 
     """
@@ -250,28 +219,28 @@ class BinPlayer(ReplayGainPlayer, BasePlayer):
         Else force playing current track
     """
     def _on_bus_eos(self, bus, message):
-        debug("Player::_on_bus_eos(): %s" % self.current.path)
+        debug("Player::_on_bus_eos(): %s" % self.current_track.path)
         if self.context.next != NextContext.NONE:
             self.context.next = NextContext.NONE
             self.stop()
-            self.next(True)
+            self.next()
             self.emit("current-changed")
         else:
-            if self.current.id == Navigation.RADIOS:
-                self.load_radio(self.current.title, self.current.path)
+            if self.current_track.id == Type.RADIOS:
+                self.load_radio(self.current_track.title, self.current_track.path)
             else:
-                self.load(self.current.id)
+                self.load(self.current_track.id)
 
     """
         When stream is about to finish, switch to next track without gap
         @param playbin as Gst bin
     """
     def _on_stream_about_to_finish(self, playbin):
-        if self.current.id != Navigation.RADIOS:
-            previous_track_id = self.current.id
+        if self.current_track.id != Type.RADIOS:
+            previous_track_id = self.current_track.id
             # We are in a thread, we need to create a new cursor
             sql = Objects.db.get_cursor()
-            self.next(False, sql)
+            self.next()
             # Add populariy if we listen to the song
             album_id = Objects.tracks.get_album_id(previous_track_id,
                                                    sql)
@@ -286,6 +255,6 @@ class BinPlayer(ReplayGainPlayer, BasePlayer):
         @param message as Gst.Message
     """
     def _on_stream_start(self, bus, message):
-        debug("Player::_on_stream_start(): %s" % self.current.path)
+        debug("Player::_on_stream_start(): %s" % self.current_track.uri)
         self.emit("current-changed")
         self._handled_error = None

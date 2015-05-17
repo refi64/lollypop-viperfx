@@ -17,7 +17,8 @@ from lollypop.player_linear import LinearPlayer
 from lollypop.player_shuffle import ShufflePlayer
 from lollypop.player_radio import RadioPlayer
 from lollypop.player_userplaylist import UserPlaylistPlayer
-from lollypop.define import Objects, Navigation, NextContext
+from lollypop.track import Track
+from lollypop.define import Objects, Type, NextContext
 from lollypop.define import Shuffle
 
 
@@ -39,78 +40,27 @@ class Player(BinPlayer, QueuePlayer, UserPlaylistPlayer, RadioPlayer,
         Play previous track
     """
     def prev(self):
-        # Radio is a special case
-        if self.current.id == Navigation.RADIOS:
-            self._stop()
-            (name, uri) = RadioPlayer.prev(self)
-            if uri is not None:
-                self.load_radio(name, uri)
-                self.play()
-            else:
-                self._on_errors()
-            return
-
-        # Look at user playlist then
-        track_id = UserPlaylistPlayer.prev(self)
-        
-        # Look at shuffle
-        if track_id is None:
-            track_id = ShufflePlayer.prev(self)
-
-        # Get previous track in history
-        if track_id is None:
-            track_id = LinearPlayer.prev(self)
-
-        if track_id is not None:
-            self.load(track_id)
+        self._set_prev()
+        if self.prev_track.id is not None:
+            self.load(self.prev_track)
 
     """
         Play next track
-        @param force as bool
-        @param sql as sqlite cursor
     """
-    def next(self, force=True, sql=None):
-        # Radio is a special case
-        if self.current.id == Navigation.RADIOS:
-            self._stop()
-            (name, uri) = RadioPlayer.next(self)
-            if uri is not None:
-                self.load_radio(name, uri)
-                self.play()
-            else:
-                self._on_errors()
-            return
-
-        # Look first at user queue
-        track_id = QueuePlayer.next(self)
-
-        # Look at user playlist then
-        if track_id is None:
-            track_id = UserPlaylistPlayer.next(self)
-
-        # Get a random album/track then
-        if track_id is None:
-            track_id = ShufflePlayer.next(self, sql)
-
-        # Get a linear track then
-        if track_id is None:
-            track_id = LinearPlayer.next(self, sql)
-
-        if track_id is not None:
-            if force:
-                self.load(track_id)
-            else:
-                self._load_track(track_id, sql)
-        if self.context.next == NextContext.START_NEW_ALBUM:
-            self.context.next = NextContext.NONE
+    def next(self):
+        self._set_next()
+        if self.next_track.id is not None:
+            self.load(self.next_track)
 
     """
-        Stop current track, load radio, play it
-        @param name as string
-        @param uri as string
+        Stop current track, load track id and play it
+        @param track as Track
     """
-    def load_radio(self, name, uri):
-        RadioPlayer.load(self, name, uri)
+    def load(self, track):
+        if track.id == Type.RADIOS:
+            RadioPlayer.load(self, track)
+        else:
+            BinPlayer.load(self, track)
 
     """
         Play album
@@ -125,8 +75,8 @@ class Player(BinPlayer, QueuePlayer, UserPlaylistPlayer, RadioPlayer,
         Objects.player.load(track_id)
         if not Objects.player.is_party():
             if genre_id:
-                self.set_albums(self.current.id,
-                                self.current.aartist_id,
+                self.set_albums(self.current_track.id,
+                                self.current_track.aartist_id,
                                 genre_id)
             else:
                 self.set_album(album_id)
@@ -140,7 +90,7 @@ class Player(BinPlayer, QueuePlayer, UserPlaylistPlayer, RadioPlayer,
         self._albums = [album_id]
         self.context.genre_id = None
         tracks = Objects.albums.get_tracks(album_id, None)
-        self.context.position = tracks.index(self.current.id)
+        self.context.position = tracks.index(self.current_track.id)
 
     """
         Set album list (for next/prev)
@@ -170,20 +120,20 @@ class Player(BinPlayer, QueuePlayer, UserPlaylistPlayer, RadioPlayer,
         # We are not playing a user playlist anymore
         self._user_playlist = None
         # We are in all artists
-        if genre_id_lookup == Navigation.ALL or artist_id == Navigation.ALL:
-            self._albums = Objects.albums.get_compilations(Navigation.ALL)
+        if genre_id_lookup == Type.ALL or artist_id == Type.ALL:
+            self._albums = Objects.albums.get_compilations(Type.ALL)
             self._albums += Objects.albums.get_ids()
         # We are in populars view, add popular albums
-        elif genre_id_lookup == Navigation.POPULARS:
+        elif genre_id_lookup == Type.POPULARS:
             self._albums = Objects.albums.get_populars()
         # We are in recents view, add recent albums
-        elif genre_id_lookup == Navigation.RECENTS:
+        elif genre_id_lookup == Type.RECENTS:
             self._albums = Objects.albums.get_recents()
         # We are in randoms view, add random albums
-        elif genre_id_lookup == Navigation.RANDOMS:
+        elif genre_id_lookup == Type.RANDOMS:
             self._albums = Objects.albums.get_cached_randoms()
         # We are in compilation view without genre
-        elif genre_id_lookup == Navigation.COMPILATIONS:
+        elif genre_id_lookup == Type.COMPILATIONS:
             self._albums = Objects.albums.get_compilations(None)
         # Random tracks/albums for artist
         elif self._shuffle in [Shuffle.TRACKS_ARTIST, Shuffle.ALBUMS_ARTIST]:
@@ -199,7 +149,7 @@ class Player(BinPlayer, QueuePlayer, UserPlaylistPlayer, RadioPlayer,
             self.context.genre_id = genre_id
             # Shuffle album list if needed
             self._shuffle_albums()
-        elif self.current.id != Navigation.RADIOS:
+        elif self.current_track.id != Type.RADIOS:
             self.stop()
 
     """
@@ -210,8 +160,8 @@ class Player(BinPlayer, QueuePlayer, UserPlaylistPlayer, RadioPlayer,
         if Objects.settings.get_value('save-state') and track_id > 0:
             path = Objects.tracks.get_path(track_id)
             if path != "":
-                self._load_track(track_id)
-                self.set_albums(track_id, Navigation.ALL, Navigation.ALL)
+                self._load_track(Track(track_id))
+                self.set_albums(track_id, Type.ALL, Type.ALL)
                 self.emit('current-changed')
             else:
                 print("Player::restore_state(): track missing")
@@ -233,6 +183,49 @@ class Player(BinPlayer, QueuePlayer, UserPlaylistPlayer, RadioPlayer,
 #######################
 # PRIVATE             #
 #######################
+    """
+        Set previous track
+    """
+    def _set_prev(self):
+        # Look at radio
+        self.prev_track = RadioPlayer.prev(self)
+
+        # Look at user playlist then
+        if self.prev_track.id is None:
+            self.prev_track = UserPlaylistPlayer.prev(self)
+        
+        # Look at shuffle
+        if self.prev_track.id is None:
+            self.prev_track = ShufflePlayer.prev(self)
+
+        # Get previous track in history
+        if self.prev_track.id is None:
+            self.prev_track = LinearPlayer.prev(self)
+
+    """
+        Play next track
+        @param sql as sqlite cursor
+    """
+    def _set_next(self, sql=None):
+        # Look at radio
+        self.next_track = RadioPlayer.next(self)
+
+        # Look first at user queue
+        if self.next_track.id is None:
+            self.next_track = QueuePlayer.next(self)
+
+        # Look at user playlist then
+        if self.next_track.id is None:
+            self.next_track = UserPlaylistPlayer.next(self)
+
+        # Get a random album/track then
+        if self.next_track.id is None:
+            self.next_track = ShufflePlayer.next(self, sql)
+
+        # Get a linear track then
+        if self.next_track.id is None:
+            self.next_track = LinearPlayer.next(self, sql)
+
     """
         On stream start
         Emit "current-changed" to notify others components

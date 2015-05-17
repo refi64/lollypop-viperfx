@@ -141,7 +141,7 @@ class QueueWidget(Gtk.Popover):
     def _on_current_changed(self, player):
         if len(self._model) > 0:
             row = self._model[0]
-            if row[3] == player.current.id:
+            if row[3] == player.current_track.id:
                 iter = self._model.get_iter(row.path)
                 self._model.remove(iter)
 

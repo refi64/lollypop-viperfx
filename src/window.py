@@ -286,8 +286,8 @@ class Window(Gtk.ApplicationWindow, Container):
         seek = position/1000000/60+seconds
         if seek < 0:
             seek = 0
-        if seek > Objects.player.current.duration:
-            seek = Objects.player.current.duration - 2
+        if seek > Objects.player.current_track.duration:
+            seek = Objects.player.current_track.duration - 2
         Objects.player.seek(seek)
         self._toolbar.update_position(seek*60)
 

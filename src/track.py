@@ -11,7 +11,11 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-from lollypop.define import Objects
+from gi.repository import GLib
+
+from os import path
+
+from lollypop.define import Objects, Type
 from lollypop.utils import translate_artist_name
 
 
@@ -23,6 +27,7 @@ class Track:
         @param sql as sqlite cursor
     """
     def __init__(self, track_id=None, sql=None):
+        self.uri = None
         if track_id is None:
             self.id = None
             self.title = ''
@@ -31,10 +36,10 @@ class Track:
             self.artist = ''
             self.aartist_id = None
             self.aartist = ''
+            self.genre_id = None
             self.genre = ''
             self.number = 0
             self.duration = 0.0
-            self.path = ''
         else:
             self.id = track_id
             self.title = Objects.tracks.get_name(self.id,
@@ -55,9 +60,20 @@ class Track:
                                 Objects.artists.get_name(artist_id, sql)) +\
                                 ", "
             self.artist = artist_name[:-2]
-
             self.genre = Objects.albums.get_genre_name(self.album_id,
                                                        sql)
             self.duration = Objects.tracks.get_length(self.id, sql)
             self.number = Objects.tracks.get_number(self.id, sql)
-            self.path = Objects.tracks.get_path(self.id, sql)
+            filepath = Objects.tracks.get_path(self.id, sql)
+            if path.exists(filepath):
+                self.uri = GLib.filename_to_uri(filepath)
+
+    """
+        Set radio
+        @param name as string
+        @param uri as string
+    """
+    def set_radio(self, name, uri):
+        self.id = Type.RADIOS
+        self.artist = name
+        self.uri = uri

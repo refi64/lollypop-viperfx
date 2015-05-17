@@ -17,7 +17,7 @@ from _thread import start_new_thread
 from cgi import escape
 from gettext import gettext as _
 
-from lollypop.define import Objects, ArtSize, Navigation
+from lollypop.define import Objects, ArtSize, Type
 from lollypop.widgets_track import TracksWidget
 from lollypop.utils import translate_artist_name
 
@@ -83,8 +83,8 @@ class PlaylistWidget(Gtk.Bin):
         Update playing indicator
     """
     def update_playing_indicator(self):
-        self._tracks_widget1.update_playing(Objects.player.current.id)
-        self._tracks_widget2.update_playing(Objects.player.current.id)
+        self._tracks_widget1.update_playing(Objects.player.current_track.id)
+        self._tracks_widget2.update_playing(Objects.player.current_track.id)
 
     """
         Stop loading
@@ -495,7 +495,7 @@ class PlaylistEditWidget(Gtk.Bin):
             filepath = Objects.tracks.get_path(track_id)
             album_id = Objects.tracks.get_album_id(track_id)
             artist_id = Objects.tracks.get_aartist_id(track_id)
-            if artist_id == Navigation.COMPILATIONS:
+            if artist_id == Type.COMPILATIONS:
                 artist_ids = Objects.tracks.get_artist_ids(track_id)
                 artist_name = ""
                 for artist_id in artist_ids:

@@ -17,7 +17,7 @@ import os
 from time import time
 from gettext import gettext as _
 
-from lollypop.define import Objects, Navigation
+from lollypop.define import Objects, Type
 from lollypop.utils import format_artist_name
 
 
@@ -290,7 +290,7 @@ class ScannerTagReader(TagReader):
         if noaartist:
             if Objects.albums.is_compilation(album_id, sql):
                 Objects.albums.set_artist_id(album_id,
-                                             Navigation.COMPILATIONS,
+                                             Type.COMPILATIONS,
                                              sql)
             else:
                 Objects.albums.set_artist_id(album_id,

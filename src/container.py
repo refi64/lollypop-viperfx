@@ -17,7 +17,7 @@ from _thread import start_new_thread
 from gettext import gettext as _
 import os
 
-from lollypop.define import Objects, Navigation
+from lollypop.define import Objects, Type
 from lollypop.selectionlist import SelectionList
 from lollypop.playlists import PlaylistsManager
 from lollypop.view_container import ViewContainer
@@ -46,7 +46,7 @@ class Container:
                                   Objects.tracks.is_empty()
         # Index will start at -VOLUMES
         self._devices = {}
-        self._devices_index = Navigation.DEVICES
+        self._devices_index = Type.DEVICES
         self._show_genres = Objects.settings.get_value('show-genres')
         self._stack = ViewContainer(500)
         self._stack.show()
@@ -256,8 +256,8 @@ class Container:
         @return (list one id, list two id)
     """
     def _get_saved_view_state(self):
-        list_one_id = Navigation.POPULARS
-        list_two_id = Navigation.NONE
+        list_one_id = Type.POPULARS
+        list_two_id = Type.NONE
         if Objects.settings.get_value('save-state'):
             position = Objects.settings.get_value('list-one').get_int32()
             if position != -1:
@@ -288,7 +288,7 @@ class Container:
         artist_name = Objects.artists.get_name(artist_id)
         if self._show_genres:
             genre_ids = Objects.albums.get_genre_ids(album_id)
-            genre_ids.append(Navigation.ALL)
+            genre_ids.append(Type.ALL)
             if self._list_one.get_selected_id() in genre_ids:
                 self._list_two.add_value((artist_id, artist_name))
         else:
@@ -324,7 +324,7 @@ class Container:
                 self._setup_list_genres(self._list_one, update)
             else:
                 self._setup_list_artists(self._list_one,
-                                         Navigation.ALL,
+                                         Type.ALL,
                                          update)
 
     """
@@ -334,9 +334,9 @@ class Container:
     def _update_list_two(self, updater):
         update = updater is not None
         object_id = self._list_one.get_selected_id()
-        if object_id == Navigation.PLAYLISTS:
+        if object_id == Type.PLAYLISTS:
             start_new_thread(self._setup_list_playlists, (update,))
-        elif self._show_genres and object_id != Navigation.NONE:
+        elif self._show_genres and object_id != Type.NONE:
             self._setup_list_artists(self._list_two, object_id, update)
 
     """
@@ -344,15 +344,15 @@ class Container:
     """
     def _get_headers(self):
         items = []
-        items.append((Navigation.POPULARS, _("Popular albums")))
-        items.append((Navigation.RECENTS, _("Recent albums")))
-        items.append((Navigation.RANDOMS, _("Random albums")))
-        items.append((Navigation.PLAYLISTS, _("Playlists")))
-        items.append((Navigation.RADIOS, _("Radios")))
+        items.append((Type.POPULARS, _("Popular albums")))
+        items.append((Type.RECENTS, _("Recent albums")))
+        items.append((Type.RANDOMS, _("Random albums")))
+        items.append((Type.PLAYLISTS, _("Playlists")))
+        items.append((Type.RADIOS, _("Radios")))
         if self._show_genres:
-            items.append((Navigation.ALL, _("All artists")))
+            items.append((Type.ALL, _("All artists")))
         else:
-            items.append((Navigation.ALL, _("All albums")))
+            items.append((Type.ALL, _("All albums")))
         return items
 
     """
@@ -378,7 +378,7 @@ class Container:
         if selection_list == self._list_one:
             if self._list_two.is_visible():
                 self._list_two.hide()
-            self._list_two_restore = Navigation.NONE
+            self._list_two_restore = Type.NONE
 
     """
         Setup list for artists
@@ -394,7 +394,7 @@ class Container:
         if selection_list == self._list_one:
             items = self._get_headers()
         if Objects.albums.get_compilations(genre_id, sql):
-            items.append((Navigation.COMPILATIONS, _("Compilations")))
+            items.append((Type.COMPILATIONS, _("Compilations")))
 
         items += Objects.artists.get(genre_id, sql)
 
@@ -536,29 +536,29 @@ class Container:
         @param selected id as int
     """
     def _on_list_one_selected(self, selection_list, selected_id):
-        if selected_id == Navigation.PLAYLISTS:
+        if selected_id == Type.PLAYLISTS:
             start_new_thread(self._setup_list_playlists, (False,))
             self._list_two.clear()
             self._list_two.show()
             if not self._list_two.will_be_selected():
                 self._update_view_playlists(None)
-        elif selected_id < Navigation.DEVICES:
+        elif selected_id < Type.DEVICES:
             self._list_two.hide()
             if not self._list_two.will_be_selected():
                 self._update_view_device(selected_id)
-        elif selected_id in [Navigation.POPULARS,
-                             Navigation.RECENTS,
-                             Navigation.RANDOMS]:
+        elif selected_id in [Type.POPULARS,
+                             Type.RECENTS,
+                             Type.RANDOMS]:
             self._list_two.hide()
             self._update_view_albums(selected_id)
-        elif selected_id == Navigation.RADIOS:
+        elif selected_id == Type.RADIOS:
             self._list_two.hide()
             self._update_view_radios()
         elif selection_list.is_marked_as_artists():
             self._list_two.hide()
-            if selected_id == Navigation.ALL:
+            if selected_id == Type.ALL:
                 self._update_view_albums(selected_id)
-            elif selected_id == Navigation.COMPILATIONS:
+            elif selected_id == Type.COMPILATIONS:
                 self._update_view_albums(None, True)
             else:
                 self._update_view_artists(selected_id, None)
@@ -588,9 +588,9 @@ class Container:
     """
     def _on_list_two_selected(self, selection_list, selected_id):
         genre_id = self._list_one.get_selected_id()
-        if genre_id == Navigation.PLAYLISTS:
+        if genre_id == Type.PLAYLISTS:
             self._update_view_playlists(selected_id)
-        elif selected_id == Navigation.COMPILATIONS:
+        elif selected_id == Type.COMPILATIONS:
             self._update_view_albums(genre_id, True)
         else:
             self._update_view_artists(selected_id, genre_id)

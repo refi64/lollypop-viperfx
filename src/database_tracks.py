@@ -13,7 +13,7 @@
 
 from gettext import gettext as _
 
-from lollypop.define import Objects, Navigation
+from lollypop.define import Objects, Type
 
 
 # All functions take a sqlite cursor as last parameter,
@@ -268,7 +268,7 @@ class DatabaseTracks:
         if v:
             return v[0]
 
-        return Navigation.COMPILATIONS
+        return Type.COMPILATIONS
 
     """
         Get all tracks filepath

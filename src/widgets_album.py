@@ -15,8 +15,9 @@ from gi.repository import Gtk, GLib, Gdk
 from cgi import escape
 from gettext import gettext as _
 
-from lollypop.define import Objects, Navigation, ArtSize, NextContext
+from lollypop.define import Objects, Type, ArtSize, NextContext
 from lollypop.widgets_track import TracksWidget
+from lollypop.track import Track
 from lollypop.popmenu import PopAlbumMenu
 from lollypop.pop_album_covers import PopAlbumCovers
 from lollypop.utils import translate_artist_name
@@ -36,7 +37,7 @@ class AlbumWidget(Gtk.Bin):
         @param force as bool
     """
     def set_cover(self, force=False):
-        selected = self._album_id==Objects.player.current.album_id
+        selected = self._album_id==Objects.player.current_track.album_id
         if self._cover and (selected != self._selected or force):
             self._selected = selected
             pixbuf = Objects.art.get(self._album_id,
@@ -51,7 +52,7 @@ class AlbumWidget(Gtk.Bin):
     """
     def update_cover(self, album_id):
         if self._cover and self._album_id == album_id:
-            self._selected = self._album_id==Objects.player.current.album_id
+            self._selected = self._album_id==Objects.player.current_track.album_id
             pixbuf = Objects.art.get(self._album_id,
                                      ArtSize.BIG,
                                      self._selected)
@@ -259,8 +260,8 @@ class AlbumDetailedWidget(AlbumWidget):
     """
     def update_playing_indicator(self):
         for disc in self._discs:
-            self._tracks_left[disc].update_playing(Objects.player.current.id)
-            self._tracks_right[disc].update_playing(Objects.player.current.id)
+            self._tracks_left[disc].update_playing(Objects.player.current_track.id)
+            self._tracks_right[disc].update_playing(Objects.player.current_track.id)
 
     """
         Return album id for widget
@@ -356,7 +357,7 @@ class AlbumDetailedWidget(AlbumWidget):
         artist_ids = track[4]
 
         # If we are listening to a compilation, prepend artist name
-        if self._artist_id == Navigation.COMPILATIONS or\
+        if self._artist_id == Type.COMPILATIONS or\
            len(artist_ids) > 1 or\
            self._artist_id not in artist_ids:
             artist_name = ""
@@ -395,8 +396,8 @@ class AlbumDetailedWidget(AlbumWidget):
         if not Objects.player.is_party():
             Objects.player.set_albums(track_id,
                                       self._artist_id,
-                                      self._genre_id)
-        Objects.player.load(track_id)
+                                      self._genre_id) 
+        Objects.player.load(Track(track_id))
         if self._button_state&Gdk.ModifierType.CONTROL_MASK:
             Objects.player.context.next = NextContext.STOP_TRACK
 

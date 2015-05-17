@@ -202,7 +202,7 @@ class TracksWidget(Gtk.ListBox):
                   pos, show_cover=False):
         track_row = TrackRow()
         track_row.show_menu(self._show_menu)
-        if Objects.player.current.id == track_id:
+        if Objects.player.current_track.id == track_id:
             track_row.show_icon(True)
         if pos:
             track_row.set_num_label(

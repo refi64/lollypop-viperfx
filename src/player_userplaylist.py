@@ -15,6 +15,8 @@ import random
 
 from lollypop.define import Shuffle
 from lollypop.player_base import BasePlayer
+from lollypop.track import Track
+
 
 # Manage user playlist
 class UserPlaylistPlayer(BasePlayer):
@@ -23,6 +25,7 @@ class UserPlaylistPlayer(BasePlayer):
     """
     def __init__(self):
         BasePlayer.__init__(self)
+        self._position = 0
 
     """
         Set user playlist as current playback playlist
@@ -31,7 +34,7 @@ class UserPlaylistPlayer(BasePlayer):
     """
     def set_user_playlist(self, tracks, track_id):
         self._user_playlist = tracks
-        self.context.position = self._user_playlist.index(track_id)
+        self._position = self._user_playlist.index(track_id)
         self._shuffle_playlist()
 
     """
@@ -53,11 +56,11 @@ class UserPlaylistPlayer(BasePlayer):
     def next(self):
         track_id = None
         if self._user_playlist:
-            self.context.position += 1
-            if self.context.position >= len(self._user_playlist):
-                self.context.position = 0
-            track_id = self._user_playlist[self.context.position]
-        return track_id
+            self._position += 1
+            if self._position >= len(self._user_playlist):
+                self._position = 0
+            track_id = self._user_playlist[self._position]
+        return Track(track_id)
 
     """
         Prev track id
@@ -66,11 +69,11 @@ class UserPlaylistPlayer(BasePlayer):
     def prev(self):
         track_id = None
         if self._user_playlist:
-            self.context.position -= 1
-            if self.context.position < 0:
-                self.context.position = len(self._user_playlist) - 1
-            track_id = self._user_playlist[self.context.position]
-        return track_id
+            self._position -= 1
+            if self._position < 0:
+                self._position = len(self._user_playlist) - 1
+            track_id = self._user_playlist[self._position]
+        return Track(track_id)
 
 #######################
 # PRIVATE             #
@@ -83,14 +86,14 @@ class UserPlaylistPlayer(BasePlayer):
             # Shuffle user playlist
             if self._user_playlist is not None:
                 self._user_playlist_backup = list(self._user_playlist)
-                current = self._user_playlist.pop(self.context.position)
+                current = self._user_playlist.pop(self._position)
                 random.shuffle(self._user_playlist)
                 self._user_playlist.insert(0, current)
-                self.context.position = 0
+                self._position = 0
         # Unshuffle
         else:
             if self._user_playlist_backup is not None:
                 self._user_playlist = self._user_playlist_backup
-                self.context.position = self._user_playlist.index(
-                                                              self.current.id)
+                self._position = self._user_playlist.index(
+                                                              self.current_track.id)
                 self._user_playlist_backup = None

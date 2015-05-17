@@ -14,7 +14,7 @@
 from gi.repository import Gdk, GLib, Notify
 from gettext import gettext as _
 
-from lollypop.define import Objects, ArtSize, Navigation
+from lollypop.define import Objects, ArtSize, Type
 
 
 class NotificationManager:
@@ -76,16 +76,16 @@ class NotificationManager:
     def _on_current_changed(self, player):
         state = Objects.window.get_window().get_state()
         app = Objects.window.get_application()
-        if player.current.id is None or state & Gdk.WindowState.FOCUSED\
+        if player.current_track.id is None or state & Gdk.WindowState.FOCUSED\
                                      or app.is_fullscreen():
             return
-        if player.current.id == Navigation.RADIOS:
+        if player.current_track.id == Type.RADIOS:
             cover_path = Objects.art.get_radio_cache_path(
-                                                        player.current.artist,
+                                                        player.current_track.artist,
                                                         ArtSize.BIG)
         else:
             cover_path = Objects.art.get_album_cache_path(
-                                                       player.current.album_id,
+                                                       player.current_track.album_id,
                                                        ArtSize.BIG)
         if cover_path is not None:
             self._notification.set_hint('image-path',
@@ -94,12 +94,12 @@ class NotificationManager:
             self._notification.set_hint('image-path',
                                         GLib.Variant('s', ''))
 
-        self._notification.update(player.current.title,
+        self._notification.update(player.current_track.title,
                                   # TRANSLATORS: by refers to the artist,
                                   # from to the album
                                   _("by %s, from %s") %
-                                  ('<b>' + player.current.artist + '</b>',
-                                   '<i>' + player.current.album + '</i>'),
+                                  ('<b>' + player.current_track.artist + '</b>',
+                                   '<i>' + player.current_track.album + '</i>'),
                                   'lollypop')
         try:
             self._notification.show()

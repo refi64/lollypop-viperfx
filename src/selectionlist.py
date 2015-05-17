@@ -16,7 +16,7 @@ from time import time
 from _thread import start_new_thread
 
 from lollypop.utils import translate_artist_name, format_artist_name
-from lollypop.define import Navigation, Objects
+from lollypop.define import Type, Objects
 
 
 # A selection list is a artists or genres scrolled treeview
@@ -35,7 +35,7 @@ class SelectionList(Gtk.ScrolledWindow):
         self.set_policy(Gtk.PolicyType.NEVER,
                         Gtk.PolicyType.AUTOMATIC)
         self._loading = False
-        self._to_select_id = Navigation.NONE
+        self._to_select_id = Type.NONE
         self._updating = False       # Sort disabled if False
         self._is_artists = False  # for string translation
         self._pop_time = 0.0      # Keep track of time when starting populate
@@ -120,7 +120,7 @@ class SelectionList(Gtk.ScrolledWindow):
                     found = True
                     break
             # Remove not found items but not devices
-            if not found and item[0] > Navigation.DEVICES:
+            if not found and item[0] > Type.DEVICES:
                 self._model.remove(item.iter)
 
         for value in values:
@@ -132,14 +132,14 @@ class SelectionList(Gtk.ScrolledWindow):
         @return selected as bool
     """
     def will_be_selected(self):
-        return self._to_select_id != Navigation.NONE
+        return self._to_select_id != Type.NONE
 
     """
         Make treeview select first default item
         @param object id as int
     """
     def select_id(self, object_id):
-        self._to_select_id = Navigation.NONE
+        self._to_select_id = Type.NONE
         try:
             selected = None
             for item in self._model:
@@ -159,7 +159,7 @@ class SelectionList(Gtk.ScrolledWindow):
         @return id as int
     """
     def get_selected_id(self):
-        selected_id = Navigation.NONE
+        selected_id = Type.NONE
         (path, column) = self._view.get_cursor()
         if path:
             iterator = self._model.get_iter(path)
@@ -242,21 +242,21 @@ class SelectionList(Gtk.ScrolledWindow):
         icon = ''
         if object_id >= 0:
             icon = 'go-next-symbolic'
-        elif object_id == Navigation.POPULARS:
+        elif object_id == Type.POPULARS:
             icon = 'emblem-favorite-symbolic'
-        elif object_id == Navigation.PLAYLISTS:
+        elif object_id == Type.PLAYLISTS:
             icon = 'emblem-documents-symbolic'
-        elif object_id == Navigation.ALL:
+        elif object_id == Type.ALL:
             icon = 'avatar-default-symbolic'
-        elif object_id == Navigation.COMPILATIONS:
+        elif object_id == Type.COMPILATIONS:
             icon = 'system-users-symbolic'
-        elif object_id == Navigation.RECENTS:
+        elif object_id == Type.RECENTS:
             icon = 'document-open-recent-symbolic'
-        elif object_id == Navigation.RADIOS:
+        elif object_id == Type.RADIOS:
             icon = 'audio-input-microphone-symbolic'
-        elif object_id < Navigation.DEVICES:
+        elif object_id < Type.DEVICES:
             icon = 'multimedia-player-symbolic'
-        elif object_id == Navigation.RANDOMS:
+        elif object_id == Type.RANDOMS:
             icon = 'media-playlist-shuffle-symbolic'
         return icon
 
@@ -291,7 +291,7 @@ class SelectionList(Gtk.ScrolledWindow):
     """
     def _new_item_selected(self, view):
         selected_id = self.get_selected_id()
-        if not self._updating and selected_id != Navigation.NONE:
+        if not self._updating and selected_id != Type.NONE:
             self.emit('item-selected', selected_id)
 
     """

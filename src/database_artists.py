@@ -13,7 +13,7 @@
 
 from gettext import gettext as _
 
-from lollypop.define import Objects, Navigation
+from lollypop.define import Objects, Type
 
 
 # All functions take a sqlite cursor as last parameter,
@@ -58,7 +58,7 @@ class DatabaseArtists:
     def get_name(self, artist_id, sql=None):
         if not sql:
             sql = Objects.sql
-        if artist_id == Navigation.COMPILATIONS:
+        if artist_id == Type.COMPILATIONS:
             return _("Many artists")
 
         result = sql.execute("SELECT name from artists WHERE rowid=?",
@@ -96,7 +96,7 @@ class DatabaseArtists:
             sql = Objects.sql
         artists = []
         result = []
-        if genre_id == Navigation.ALL or genre_id is None:
+        if genre_id == Type.ALL or genre_id is None:
             # Only artist that really have an album
             result = sql.execute("SELECT DISTINCT artists.rowid, artists.name\
                                   FROM artists, albums\

@@ -18,7 +18,7 @@ import dbus.service
 from dbus.mainloop.glib import DBusGMainLoop
 from gi.repository import Gst
 
-from lollypop.define import Objects, ArtSize, Navigation
+from lollypop.define import Objects, ArtSize, Type
 
 
 class MPRIS(dbus.service.Object):
@@ -112,11 +112,11 @@ class MPRIS(dbus.service.Object):
                'Position': dbus.Int64(Objects.player.get_position_in_track()),
                'MinimumRate': dbus.Double(1.0),
                'MaximumRate': dbus.Double(1.0),
-               'CanGoNext': Objects.player.current.id != None or\
-                            Objects.player.current.id != Navigation.RADIOS,
-               'CanGoPrevious': Objects.player.current.id != None or\
-                                Objects.player.current.id != Navigation.RADIOS,
-               'CanPlay': Objects.player.current.id != None,
+               'CanGoNext': Objects.player.current_track.id != None or\
+                            Objects.player.current_track.id != Type.RADIOS,
+               'CanGoPrevious': Objects.player.current_track.id != None or\
+                                Objects.player.current_track.id != Type.RADIOS,
+               'CanPlay': Objects.player.current_track.id != None,
                'CanPause': Objects.player.is_playing(),
                'CanSeek': True,
                'CanControl': True,
@@ -156,30 +156,30 @@ class MPRIS(dbus.service.Object):
         if self._get_status() == 'Stopped':
             self._metadata = {}
         else:
-            if Objects.player.current.id >= 0:
+            if Objects.player.current_track.id >= 0:
                 self._metadata['mpris:trackid'] = dbus.ObjectPath(
                                                     '/org/lollypop/%s' %
-                                                    Objects.player.current.id)
-            self._metadata['xesam:trackNumber'] = Objects.player.current.number
-            self._metadata['xesam:title'] = Objects.player.current.title
-            self._metadata['xesam:album'] = Objects.player.current.album
-            self._metadata['xesam:artist'] = [Objects.player.current.artist]
+                                                    Objects.player.current_track.id)
+            self._metadata['xesam:trackNumber'] = Objects.player.current_track.number
+            self._metadata['xesam:title'] = Objects.player.current_track.title
+            self._metadata['xesam:album'] = Objects.player.current_track.album
+            self._metadata['xesam:artist'] = [Objects.player.current_track.artist]
             self._metadata['xesam:albumArtist'] = [
-                                            Objects.player.current.aartist
+                                            Objects.player.current_track.aartist
                                                   ]
             self._metadata['mpris:length'] = dbus.Int64(
-                                              Objects.player.current.duration *
+                                              Objects.player.current_track.duration *
                                               1000000
                                                        )
-            self._metadata['xesam:genre'] = [Objects.player.current.genre]
-            self._metadata['xesam:url'] = "file://"+Objects.player.current.path
-            if Objects.player.current.id == Navigation.RADIOS:
+            self._metadata['xesam:genre'] = [Objects.player.current_track.genre]
+            self._metadata['xesam:url'] = Objects.player.current_track.uri
+            if Objects.player.current_track.id == Type.RADIOS:
                 cover_path = Objects.art.get_radio_cache_path(
-                                            Objects.player.current.artist,
+                                            Objects.player.current_track.artist,
                                             ArtSize.BIG)
             else:
                 cover_path = Objects.art.get_album_cache_path(
-                                            Objects.player.current.album_id,
+                                            Objects.player.current_track.album_id,
                                             ArtSize.BIG)
             if cover_path is not None:
                 self._metadata['mpris:artUrl'] = "file://" + cover_path
