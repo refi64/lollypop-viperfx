@@ -61,7 +61,6 @@ class NextContext:
 
 # Represent playback context
 class PlayContext:
-    album_id = None
     genre_id = None
     position = None
     next = NextContext.NONE

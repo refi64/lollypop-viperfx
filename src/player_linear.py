@@ -31,20 +31,20 @@ class LinearPlayer(BasePlayer):
     def next(self, sql=None):
         track_id = None
         if self.context.position is not None and self._albums:
-            tracks = Objects.albums.get_tracks(self.context.album_id,
+            tracks = Objects.albums.get_tracks(self.current.album_id,
                                                self.context.genre_id,
                                                sql)
             if self.context.next == NextContext.START_NEW_ALBUM:
                 self.context.next = NextContext.NONE
                 self.context.position = len(tracks)
             if self.context.position + 1 >= len(tracks):  # next album
-                pos = self._albums.index(self.context.album_id)
+                pos = self._albums.index(self.current.album_id)
                 # we are on last album, go to first
                 if pos + 1 >= len(self._albums):
                     pos = 0
                 else:
                     pos += 1
-                self.context.album_id = self._albums[pos]
+                self.current.album_id = self._albums[pos]
                 self.context.position = 0
                 track_id = Objects.albums.get_tracks(self._albums[pos],
                                                      self.context.genre_id,
@@ -73,7 +73,6 @@ class LinearPlayer(BasePlayer):
                 self.current.album_id = self._albums[pos]
                 tracks = Objects.albums.get_tracks(self.current.album_id,
                                                    self.context.genre_id)
-                self.context.album_id = self.current.album_id
                 self.context.position = len(tracks) - 1
                 track_id = tracks[self.context.position]
             else:

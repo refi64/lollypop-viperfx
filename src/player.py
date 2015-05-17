@@ -138,7 +138,6 @@ class Player(BinPlayer, QueuePlayer, UserPlaylistPlayer, RadioPlayer,
     """
     def set_album(self, album_id):
         self._albums = [album_id]
-        self.context.album_id = album_id
         self.context.genre_id = None
         tracks = Objects.albums.get_tracks(album_id, None)
         self.context.position = tracks.index(self.current.id)
@@ -194,7 +193,6 @@ class Player(BinPlayer, QueuePlayer, UserPlaylistPlayer, RadioPlayer,
             self._albums = Objects.albums.get_compilations(genre_id_lookup)
             self._albums += Objects.albums.get_ids(None, genre_id_lookup)
 
-        self.context.album_id = album_id
         tracks = Objects.albums.get_tracks(album_id, genre_id_lookup)
         if track_id in tracks:
             self.context.position = tracks.index(track_id)

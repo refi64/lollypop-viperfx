@@ -31,7 +31,6 @@ class UserPlaylistPlayer(BasePlayer):
     """
     def set_user_playlist(self, tracks, track_id):
         self._user_playlist = tracks
-        self.context.album_id = None
         self.context.position = self._user_playlist.index(track_id)
         self._shuffle_playlist()
 
