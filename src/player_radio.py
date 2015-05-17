@@ -74,7 +74,6 @@ class RadioPlayer(BasePlayer):
         name = radios[i][1]
         uris = radios_manager.get_tracks(name)
         if len(uris) > 0:
-            print(name)
             track.set_radio(name, uris[0])
         return track
 

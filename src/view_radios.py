@@ -89,6 +89,17 @@ class RadiosView(View):
 # PRIVATE             #
 #######################
     """
+        Return view children
+        @return [RadioWidget]
+    """
+    def _get_children(self):
+        children = []
+        for child in self._radiobox.get_children():
+            widget =  child.get_child()
+            children.append(widget)
+        return children
+
+    """
         Sort radios
         @param a as Gtk.FlowBoxChild
         @param b as Gtk.FlowBoxChild

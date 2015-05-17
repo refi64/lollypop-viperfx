@@ -111,6 +111,10 @@ class View(Gtk.Grid):
         @param scanner as CollectionScanner
     """
     def _on_scan_finished(self, scanner):
+        current_genre = Objects.window.get_genre_id()
+        if current_genre == Type.RADIOS:
+            return
+
         albums = Objects.albums.get_ids()
         albums += Objects.albums.get_compilations()
         for child in self._get_children():
@@ -120,7 +124,6 @@ class View(Gtk.Grid):
                 child.set_sensitive(False)
             exist_in_genre = False
             for genre_id in Objects.albums.get_genre_ids(child_id):
-                current_genre = Objects.window.get_genre_id()
                 if current_genre is None or\
                    current_genre < 0 or\
                    current_genre == genre_id:

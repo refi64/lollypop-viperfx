@@ -100,7 +100,8 @@ class RadioWidget(AlbumWidget):
     def update_cover(self):
         if self._cover is not None:
             self._selected = Objects.player.current_track.id == Type.RADIOS\
-                             and self._name == Objects.player.current_track.artist
+                             and self._name == Objects.player.\
+                                                        current_track.artist
             pixbuf = Objects.art.get_radio(self._name,
                                            ArtSize.BIG,
                                            self._selected)
