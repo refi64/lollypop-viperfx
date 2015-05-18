@@ -72,7 +72,7 @@ class Player(BinPlayer, QueuePlayer, UserPlaylistPlayer, RadioPlayer,
         self._user_playlist = None
         # Get first track from album
         track_id = Objects.albums.get_tracks(album_id, genre_id)[0]
-        Objects.player.load(track_id)
+        Objects.player.load(Track(track_id))
         if not Objects.player.is_party():
             if genre_id:
                 self.set_albums(self.current_track.id,

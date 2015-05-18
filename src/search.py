@@ -18,6 +18,7 @@ from gettext import gettext as _
 from _thread import start_new_thread
 
 from lollypop.define import Objects, ArtSize, Type
+from lollypop.track import Track
 from lollypop.utils import translate_artist_name
 
 
@@ -355,6 +356,6 @@ class SearchWidget(Gtk.Popover):
     def _on_activate(self, widget, row):
         value_id = row.id
         if row.is_track:
-            Objects.player.load(value_id)
+            Objects.player.load(Track(value_id))
         else:
             Objects.player.play_album(value_id)
