@@ -124,8 +124,8 @@ class ShufflePlayer(BasePlayer):
                 self.load(Track(track_id))
             else:
                 self._played_tracks_history.append(self.current_track.id)
-                self._add_to_shuffle_history(self.current_track.id,
-                                             self.current_track.album_id)
+                self._tracks_history_position += 1
+                self._add_to_shuffle_history(self.current_track)
         else:
             # We need to put some context, take first available genre
             if self.current_track.id:
@@ -186,9 +186,7 @@ class ShufflePlayer(BasePlayer):
         # Need to clear history
         if not track_id:
             self._albums = self._already_played_albums
-            self._played_tracks_history = []
-            self._already_played_tracks = {}
-            self._already_played_albums = []
+            self.reset_history()
             return self._shuffle_next()
 
         return track_id
@@ -232,17 +230,8 @@ class ShufflePlayer(BasePlayer):
         # Add track to shuffle history if needed
         if self._shuffle != Shuffle.NONE or self._is_party:
             if self.current_track.id in self._played_tracks_history:
-                if self._played_tracks_history[
-                                   self._tracks_history_position - 1 ] ==\
-                                                         self.current_track.id:
-                    self._tracks_history_position -= 1
-                elif self._played_tracks_history[
-                                   self._tracks_history_position + 1 ] ==\
-                                                         self.current_track.id:
-                    self._tracks_history_position += 1
-                else:
-                    print("ShufflePlayer::_on_stream_start():"
-                          " Should not happen")
+                self._tracks_history_position =\
+                       self._played_tracks_history.index(self.current_track.id)
             else:
                 self._played_tracks_history.append(self.current_track.id)
                 self._tracks_history_position += 1
