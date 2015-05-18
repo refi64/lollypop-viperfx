@@ -98,7 +98,7 @@ class ShufflePlayer(BasePlayer):
             if (self.current_track.id == Type.RADIOS or not self.is_playing())\
                and self._albums:
                 track_id = self._get_random()
-                self.load(track_id)
+                self.load(Track(track_id))
             else:
                 self._played_tracks_history.append(self.current_track.id)
                 self._add_to_shuffle_history(self.current_track.id,
