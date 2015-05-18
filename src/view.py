@@ -112,9 +112,6 @@ class View(Gtk.Grid):
     """
     def _on_scan_finished(self, scanner):
         current_genre = Objects.window.get_genre_id()
-        if current_genre == Type.RADIOS:
-            return
-
         albums = Objects.albums.get_ids()
         albums += Objects.albums.get_compilations()
         for child in self._get_children():

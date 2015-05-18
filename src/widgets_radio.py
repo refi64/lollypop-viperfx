@@ -48,6 +48,18 @@ class RadioWidget(AlbumWidget):
         self.set_property('width-request', ArtSize.BIG+ArtSize.BORDER*2)
 
     """
+        Ignore set sensitive
+    """
+    def set_sensitive(self, b):
+        pass
+
+    """
+        Return widget id (same value for all radio widgets)
+    """
+    def get_id(self):
+        return Type.RADIOS
+
+    """
         Set maximum width
     """
     def do_get_preferred_width(self):
