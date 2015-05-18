@@ -12,6 +12,8 @@
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 from gi.repository import Gtk, Gdk, GLib
+
+from cgi import escape
 from gettext import gettext as _
 
 from lollypop.define import Lp, ArtSize, Type
@@ -52,6 +54,7 @@ class FullScreen(Gtk.Window):
         self._title = builder.get_object('title')
         self._artist = builder.get_object('artist')
         self._album = builder.get_object('album')
+        self._next = builder.get_object('next')
 
         self._progress = builder.get_object('progress_scale')
         self._progress.connect('button-release-event',
@@ -136,6 +139,9 @@ class FullScreen(Gtk.Window):
             self._title.set_text(player.current_track.title)
             self._artist.set_text(player.current_track.artist)
             self._album.set_text(player.current_track.album)
+            self._next.set_markup(_("<b>%s</b> - %s") %\
+                                  (escape(player.next_track.artist),
+                                   escape(player.next_track.title)))
             self._progress.set_value(1.0)
             self._progress.set_range(0.0, player.current_track.duration * 60)
             self._total_time_label.set_text(
