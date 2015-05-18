@@ -388,5 +388,5 @@ class SelectionList(Gtk.ScrolledWindow):
         else:
             text = "  %s  " % start_value[0]
         self._popover.set_text(text)
-        self._popover.set_relative_to(self._view)
+        self._popover.set_relative_to(self.get_vscrollbar())
         self._popover.show()
