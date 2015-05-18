@@ -40,7 +40,6 @@ class Player(BinPlayer, QueuePlayer, UserPlaylistPlayer, RadioPlayer,
         Play previous track
     """
     def prev(self):
-        self._set_prev()
         if self.prev_track.id is not None:
             self.load(self.prev_track)
 
@@ -48,7 +47,6 @@ class Player(BinPlayer, QueuePlayer, UserPlaylistPlayer, RadioPlayer,
         Play next track
     """
     def next(self):
-        self._set_next()
         if self.next_track.id is not None:
             self.load(self.next_track)
 
@@ -206,7 +204,7 @@ class Player(BinPlayer, QueuePlayer, UserPlaylistPlayer, RadioPlayer,
         Play next track
         @param sql as sqlite cursor
     """
-    def _set_next(self, sql=None):
+    def _set_next(self):
         # Look at radio
         self.next_track = RadioPlayer.next(self)
 
@@ -220,11 +218,11 @@ class Player(BinPlayer, QueuePlayer, UserPlaylistPlayer, RadioPlayer,
 
         # Get a random album/track then
         if self.next_track.id is None:
-            self.next_track = ShufflePlayer.next(self, sql)
+            self.next_track = ShufflePlayer.next(self)
 
         # Get a linear track then
         if self.next_track.id is None:
-            self.next_track = LinearPlayer.next(self, sql)
+            self.next_track = LinearPlayer.next(self)
 
     """
         On stream start
@@ -233,3 +231,5 @@ class Player(BinPlayer, QueuePlayer, UserPlaylistPlayer, RadioPlayer,
     def _on_stream_start(self, bus, message):
         BinPlayer._on_stream_start(self, bus, message)
         ShufflePlayer._on_stream_start(self, bus, message)
+        self._set_next()
+        self._set_prev()

@@ -25,15 +25,13 @@ class LinearPlayer(BasePlayer):
 
     """
         Next track based on.current_track context
-        @param sql as sqlite cursor
         @return track as Track
     """
-    def next(self, sql=None):
+    def next(self):
         track_id = None
         if self._albums:
             tracks = Lp.albums.get_tracks(self.current_track.album_id,
-                                               self.context.genre_id,
-                                               sql)
+                                          self.context.genre_id)
             if self.current_track.id in tracks:
                 new_track_position = tracks.index(self.current_track.id) + 1
                 # next album
@@ -47,8 +45,7 @@ class LinearPlayer(BasePlayer):
                     else:
                         pos += 1
                     tracks = Lp.albums.get_tracks(self._albums[pos],
-                                                  self.context.genre_id,
-                                                  sql)
+                                                  self.context.genre_id)
                     track_id = tracks[0]
                 # next track
                 else:
@@ -57,10 +54,9 @@ class LinearPlayer(BasePlayer):
 
     """
         Prev track base on.current_track context
-        @param sql as sqlite cursor
         @return track as Track
     """
-    def prev(self, sql=None):
+    def prev(self):
         track_id = None
         if self._albums:
             tracks = Lp.albums.get_tracks(self.current_track.album_id,
