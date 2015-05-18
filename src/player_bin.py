@@ -227,10 +227,7 @@ class BinPlayer(ReplayGainPlayer, BasePlayer):
             self.next()
             self.emit("current-changed")
         else:
-            if self.current_track.id == Type.RADIOS:
-                self.load_radio(self.current_track.title, self.current_track.path)
-            else:
-                self.load(self.current_track.id)
+            self.load(self.current_track)
 
     """
         When stream is about to finish, switch to next track without gap
@@ -244,7 +241,7 @@ class BinPlayer(ReplayGainPlayer, BasePlayer):
             GLib.idle_add(self.next)
             # Add populariy if we listen to the song
             album_id = Lp.tracks.get_album_id(previous_track_id,
-                                                   sql)
+                                              sql)
             if not Lp.scanner.is_locked():
                 Lp.albums.set_more_popular(album_id, sql)
             sql.close()
