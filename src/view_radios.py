@@ -17,7 +17,7 @@ from lollypop.view import View
 from lollypop.widgets_radio import RadioWidget
 from lollypop.playlists import RadiosManager
 from lollypop.popradio import PopRadio
-from lollypop.define import Objects
+from lollypop.define import Lp
 from lollypop.track import Track
 
 # Radios view
@@ -74,7 +74,7 @@ class RadiosView(View):
     """
     def do_show(self):
         View.do_show(self)
-        self._signal = Objects.player.connect('logo-changed',
+        self._signal = Lp.player.connect('logo-changed',
                                               self._on_logo_changed)
 
     """
@@ -83,7 +83,7 @@ class RadiosView(View):
     def do_hide(self):
         View.do_hide(self)
         if self._signal is not None:
-            Objects.player.disconnect(self._signal)
+            Lp.player.disconnect(self._signal)
 
 #######################
 # PRIVATE             #
@@ -204,4 +204,4 @@ class RadiosView(View):
         uri =  child.get_child().get_uri()
         track = Track()
         track.set_radio(name, uri)
-        Objects.player.load(track)
+        Lp.player.load(track)

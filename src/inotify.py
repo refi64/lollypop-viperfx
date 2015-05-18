@@ -15,7 +15,7 @@ from gi.repository import Gio, GLib
 
 import os
 
-from lollypop.define import Objects
+from lollypop.define import Lp
 from lollypop.utils import is_audio
 
 
@@ -53,8 +53,8 @@ class Inotify:
     """
     def _on_dir_changed(self, monitor, changed_file, other_file, event):
         # Stop collection scanner and wait
-        if Objects.scanner.is_locked():
-            Objects.scanner.stop()
+        if Lp.scanner.is_locked():
+            Lp.scanner.stop()
             GLib.timeout_add(1000,
                              self._on_dir_changed,
                              monitor,
@@ -83,4 +83,4 @@ class Inotify:
     """
     def _run_collection_update(self):
         self._timeout = None
-        Objects.window.update_db()
+        Lp.window.update_db()

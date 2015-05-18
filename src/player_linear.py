@@ -11,7 +11,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-from lollypop.define import Objects, NextContext
+from lollypop.define import Lp, NextContext
 from lollypop.player_base import BasePlayer
 from lollypop.track import Track
 
@@ -31,7 +31,7 @@ class LinearPlayer(BasePlayer):
     def next(self, sql=None):
         track_id = None
         if self._albums:
-            tracks = Objects.albums.get_tracks(self.current_track.album_id,
+            tracks = Lp.albums.get_tracks(self.current_track.album_id,
                                                self.context.genre_id,
                                                sql)
             if self.current_track.id in tracks:
@@ -46,7 +46,7 @@ class LinearPlayer(BasePlayer):
                         pos = 0
                     else:
                         pos += 1
-                    tracks = Objects.albums.get_tracks(self._albums[pos],
+                    tracks = Lp.albums.get_tracks(self._albums[pos],
                                                          self.context.genre_id,
                                                          sql)
                     track_id = tracks[0]
@@ -61,9 +61,9 @@ class LinearPlayer(BasePlayer):
         @return track as Track
     """
     def prev(self, sql=None):
-        track_id = None            
+        track_id = None
         if self._albums:
-            tracks = Objects.albums.get_tracks(self.current_track.album_id,
+            tracks = Lp.albums.get_tracks(self.current_track.album_id,
                                                self.context.genre_id)
             if self.current_track.id in tracks:
                 new_track_position = tracks.index(self.current_track.id) - 1
@@ -74,7 +74,7 @@ class LinearPlayer(BasePlayer):
                         pos = len(self._albums) - 1
                     else:
                         pos -= 1
-                    tracks = Objects.albums.get_tracks(self._albums[pos],
+                    tracks = Lp.albums.get_tracks(self._albums[pos],
                                                        self.context.genre_id)
                     track_id = tracks[len(tracks) - 1]
                 # Previous track

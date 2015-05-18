@@ -13,7 +13,7 @@
 
 from gettext import gettext as _
 
-from lollypop.define import Objects
+from lollypop.define import Lp
 
 
 # All functions take a sqlite cursor as last parameter,
@@ -30,7 +30,7 @@ class DatabaseGenres:
     """
     def add(self, name, outside, sql=None):
         if not sql:
-            sql = Objects.sql
+            sql = Lp.sql
         sql.execute("INSERT INTO genres (name, outside) VALUES (?, ?)",
                     (name, outside))
 
@@ -41,7 +41,7 @@ class DatabaseGenres:
     """
     def get_id(self, name, sql=None):
         if not sql:
-            sql = Objects.sql
+            sql = Lp.sql
         result = sql.execute("SELECT rowid FROM genres\
                               WHERE name=?", (name,))
         v = result.fetchone()
@@ -57,7 +57,7 @@ class DatabaseGenres:
     """
     def get_name(self, genre_id, sql=None):
         if not sql:
-            sql = Objects.sql
+            sql = Lp.sql
         result = sql.execute("SELECT name FROM genres\
                               WHERE rowid=?", (genre_id,))
         v = result.fetchone()
@@ -72,7 +72,7 @@ class DatabaseGenres:
     """
     def get_albums(self, genre_id, sql=None):
         if not sql:
-            sql = Objects.sql
+            sql = Lp.sql
         albums = []
         result = sql.execute("SELECT albums.rowid FROM albums, album_genres\
                              WHERE album_genres.genre_id=?\
@@ -88,7 +88,7 @@ class DatabaseGenres:
     """
     def get(self, sql=None):
         if not sql:
-            sql = Objects.sql
+            sql = Lp.sql
         genres = []
         result = sql.execute("SELECT rowid, name FROM genres\
                               ORDER BY name COLLATE NOCASE")
@@ -102,7 +102,7 @@ class DatabaseGenres:
     """
     def get_ids(self, sql=None):
         if not sql:
-            sql = Objects.sql
+            sql = Lp.sql
         genres = []
         result = sql.execute("SELECT rowid FROM genres\
                               ORDER BY name COLLATE NOCASE")
@@ -117,7 +117,7 @@ class DatabaseGenres:
     """
     def clean(self, genre_id, sql=None):
         if not sql:
-            sql = Objects.sql
+            sql = Lp.sql
         result = sql.execute("SELECT track_id from track_genres\
                              WHERE genre_id=?\
                              LIMIT 1", (genre_id,))

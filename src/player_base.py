@@ -13,7 +13,7 @@
 
 from gi.repository import GObject
 
-from lollypop.define import PlayContext, Objects
+from lollypop.define import PlayContext, Lp
 from lollypop.track import Track
 
 
@@ -32,10 +32,10 @@ class BasePlayer(GObject.GObject):
         Init base player variables
     """
     def __init__(self):
-        # In case of multiple subclassing, 
+        # In case of multiple subclassing,
         # do not init variables for every subclass
         if not hasattr(self, '_albums'):
-            GObject.GObject.__init__(self)    
+            GObject.GObject.__init__(self)
             self._base_init = True
             # A user playlist used as current playlist
             self._user_playlist = None
@@ -48,7 +48,7 @@ class BasePlayer(GObject.GObject):
             # Albums in current playlist
             self._albums = None
             # Current shuffle mode
-            self._shuffle = Objects.settings.get_enum('shuffle')
+            self._shuffle = Lp.settings.get_enum('shuffle')
             # Tracks already played
             self._played_tracks_history = []
             # Used by shuffle albums to restore playlist before shuffle

@@ -15,7 +15,7 @@ from gi.repository import Gtk, GLib, Gdk
 from cgi import escape
 from gettext import gettext as _
 
-from lollypop.define import Objects, Type, ArtSize, NextContext
+from lollypop.define import Lp, Type, ArtSize, NextContext
 from lollypop.widgets_track import TracksWidget
 from lollypop.track import Track
 from lollypop.popmenu import PopAlbumMenu
@@ -37,10 +37,10 @@ class AlbumWidget(Gtk.Bin):
         @param force as bool
     """
     def set_cover(self, force=False):
-        selected = self._album_id==Objects.player.current_track.album_id
+        selected = self._album_id==Lp.player.current_track.album_id
         if self._cover and (selected != self._selected or force):
             self._selected = selected
-            pixbuf = Objects.art.get(self._album_id,
+            pixbuf = Lp.art.get(self._album_id,
                                      ArtSize.BIG,
                                      selected)
             self._cover.set_from_pixbuf(pixbuf)
@@ -52,8 +52,8 @@ class AlbumWidget(Gtk.Bin):
     """
     def update_cover(self, album_id):
         if self._cover and self._album_id == album_id:
-            self._selected = self._album_id==Objects.player.current_track.album_id
-            pixbuf = Objects.art.get(self._album_id,
+            self._selected = self._album_id==Lp.player.current_track.album_id
+            pixbuf = Lp.art.get(self._album_id,
                                      ArtSize.BIG,
                                      self._selected)
             self._cover.set_from_pixbuf(pixbuf)
@@ -108,10 +108,10 @@ class AlbumSimpleWidget(AlbumWidget):
         widget = builder.get_object('widget')
         self._cover = builder.get_object('cover')
         widget.set_property('has-tooltip', True)
-        album_name = Objects.albums.get_name(album_id)
+        album_name = Lp.albums.get_name(album_id)
         self._title_label = builder.get_object('title')
         self._title_label.set_text(album_name)
-        artist_name = Objects.albums.get_artist_name(album_id)
+        artist_name = Lp.albums.get_artist_name(album_id)
         artist_name = translate_artist_name(artist_name)
         self._artist_label = builder.get_object('artist')
         self._artist_label.set_text(artist_name)
@@ -174,7 +174,7 @@ class AlbumDetailedWidget(AlbumWidget):
     def __init__(self, album_id, genre_id, show_menu, scrolled, size_group):
         AlbumWidget.__init__(self, album_id)
 
-        self._artist_id = Objects.albums.get_artist_id(album_id)
+        self._artist_id = Lp.albums.get_artist_id(album_id)
         self._album_id = album_id
         self._genre_id = genre_id
 
@@ -196,7 +196,7 @@ class AlbumDetailedWidget(AlbumWidget):
         self._on_leave_notify(None, None)
 
         grid = builder.get_object('tracks')
-        self._discs = Objects.albums.get_discs(album_id, genre_id)
+        self._discs = Lp.albums.get_discs(album_id, genre_id)
         self._tracks_left = {}
         self._tracks_right = {}
         show_label = len(self._discs) > 1
@@ -229,7 +229,7 @@ class AlbumDetailedWidget(AlbumWidget):
             self._tracks_right[disc].connect('activated', self._on_activated)
             self._tracks_right[disc].connect('button-press-event',
                                      self._on_button_press_event)
-       
+
             self._tracks_left[disc].show()
             self._tracks_right[disc].show()
             i += 1
@@ -238,9 +238,9 @@ class AlbumDetailedWidget(AlbumWidget):
         self.set_cover()
 
         builder.get_object('title').set_label(
-                                            Objects.albums.get_name(album_id))
+                                            Lp.albums.get_name(album_id))
         builder.get_object('year').set_label(
-                                            Objects.albums.get_year(album_id))
+                                            Lp.albums.get_year(album_id))
         self.add(builder.get_object('AlbumDetailedWidget'))
 
         if show_menu:
@@ -260,8 +260,8 @@ class AlbumDetailedWidget(AlbumWidget):
     """
     def update_playing_indicator(self):
         for disc in self._discs:
-            self._tracks_left[disc].update_playing(Objects.player.current_track.id)
-            self._tracks_right[disc].update_playing(Objects.player.current_track.id)
+            self._tracks_left[disc].update_playing(Lp.player.current_track.id)
+            self._tracks_right[disc].update_playing(Lp.player.current_track.id)
 
     """
         Return album id for widget
@@ -276,14 +276,14 @@ class AlbumDetailedWidget(AlbumWidget):
     """
     def populate(self):
         self._stop = False
-        sql = Objects.db.get_cursor()
+        sql = Lp.db.get_cursor()
         for disc in self._discs:
-            mid_tracks = int(0.5+Objects.albums.get_count_for_disc(
+            mid_tracks = int(0.5+Lp.albums.get_count_for_disc(
                                                           self._album_id,
                                                           self._genre_id,
                                                           disc,
                                                           sql)/2)
-            tracks = Objects.albums.get_tracks_infos(self._album_id,
+            tracks = Lp.albums.get_tracks_infos(self._album_id,
                                                      self._genre_id,
                                                      disc,
                                                      sql)
@@ -363,16 +363,16 @@ class AlbumDetailedWidget(AlbumWidget):
             artist_name = ""
             for artist_id in artist_ids:
                 artist_name += translate_artist_name(
-                                Objects.artists.get_name(artist_id)) + ", "
+                                Lp.artists.get_name(artist_id)) + ", "
             title = "<b>%s</b>\n%s" % (escape(artist_name[:-2]),
                                        title)
 
         # Get track position in queue
         pos = None
-        if Objects.player.is_in_queue(track_id):
-            pos = Objects.player.get_track_position(track_id)
+        if Lp.player.is_in_queue(track_id):
+            pos = Lp.player.get_track_position(track_id)
 
-        if Objects.settings.get_value('show-tag-tracknumber'):
+        if Lp.settings.get_value('show-tag-tracknumber'):
             widget.add_track(track_id,
                              tracknumber,
                              title,
@@ -392,14 +392,14 @@ class AlbumDetailedWidget(AlbumWidget):
         @param track id as int
     """
     def _on_activated(self, widget, track_id):
-        Objects.player.context.next = NextContext.NONE
-        if not Objects.player.is_party():
-            Objects.player.set_albums(track_id,
+        Lp.player.context.next = NextContext.NONE
+        if not Lp.player.is_party():
+            Lp.player.set_albums(track_id,
                                       self._artist_id,
-                                      self._genre_id) 
-        Objects.player.load(Track(track_id))
+                                      self._genre_id)
+        Lp.player.load(Track(track_id))
         if self._button_state&Gdk.ModifierType.CONTROL_MASK:
-            Objects.player.context.next = NextContext.STOP_TRACK
+            Lp.player.context.next = NextContext.STOP_TRACK
 
     """
         Keep track of mask
@@ -453,9 +453,9 @@ class AlbumDetailedWidget(AlbumWidget):
         @param event as Gdk.Event (can be None)
     """
     def _on_leave_notify(self, widget, event):
-        avg_popularity = Objects.albums.get_avg_popularity()
+        avg_popularity = Lp.albums.get_avg_popularity()
         if avg_popularity > 0:
-            popularity = Objects.albums.get_popularity(self._album_id)
+            popularity = Lp.albums.get_popularity(self._album_id)
             stars = popularity*5/avg_popularity+0.5
             if stars < 1:
                 for i in range(5):
@@ -491,14 +491,14 @@ class AlbumDetailedWidget(AlbumWidget):
         @param event as Gdk.Event
     """
     def _on_button_press(self, widget, event):
-        if Objects.scanner.is_locked():
+        if Lp.scanner.is_locked():
             return
         event_star = widget.get_children()[0]
         try:
             position = self._stars.index(event_star)
-            avg_popularity = Objects.albums.get_avg_popularity()
+            avg_popularity = Lp.albums.get_avg_popularity()
             popularity = int(((position+1)*avg_popularity/5)+0.5)
-            Objects.albums.set_popularity(self._album_id, popularity)
+            Lp.albums.set_popularity(self._album_id, popularity)
         except:
-            Objects.albums.set_popularity(self._album_id, 0)
-        Objects.sql.commit()
+            Lp.albums.set_popularity(self._album_id, 0)
+        Lp.sql.commit()

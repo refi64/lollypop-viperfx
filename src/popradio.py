@@ -19,7 +19,7 @@ from _thread import start_new_thread
 
 from gettext import gettext as _
 
-from lollypop.define import Objects, ArtSize, GOOGLE_INC, GOOGLE_MAX
+from lollypop.define import Lp, ArtSize, GOOGLE_INC, GOOGLE_MAX
 from lollypop.view_container import ViewContainer
 
 # Show a popover with radio logos from the web
@@ -56,7 +56,7 @@ class PopRadio(Gtk.Popover):
         self._widget = builder.get_object('widget')
         self._logo = builder.get_object('logo')
         self._spinner = builder.get_object('spinner')
-        self._not_found = builder.get_object('notfound')        
+        self._not_found = builder.get_object('notfound')
         self._name_entry = builder.get_object('name')
         self._uri_entry = builder.get_object('uri')
         self._stack.add(self._spinner)
@@ -75,21 +75,21 @@ class PopRadio(Gtk.Popover):
             uris = self._radios_manager.get_tracks(self._name)
             if len(uris) > 0:
                 self._uri_entry.set_text(uris[0])
-            
+
     """
         Resize popover and set signals callback
     """
     def do_show(self):
         Gtk.Popover.do_show(self)
         self._name_entry.grab_focus()
-        Objects.window.enable_global_shorcuts(False)
+        Lp.window.enable_global_shorcuts(False)
     """
         Kill thread
     """
     def do_hide(self):
         self._thread = False
         Gtk.Popover.do_hide(self)
-        Objects.window.enable_global_shorcuts(True)
+        Lp.window.enable_global_shorcuts(True)
 
 #######################
 # PRIVATE             #
@@ -106,7 +106,7 @@ class PopRadio(Gtk.Popover):
         @thread safe
     """
     def _populate(self):
-        self._urls = Objects.art.get_google_arts(self._name+"+logo+radio",
+        self._urls = Lp.art.get_google_arts(self._name+"+logo+radio",
                                                  self._start)
         if self._urls:
             self._start += GOOGLE_INC
@@ -218,8 +218,8 @@ class PopRadio(Gtk.Popover):
     """
     def _on_activate(self, flowbox, child):
         pixbuf = self._orig_pixbufs[child.get_child()]
-        Objects.art.save_radio_logo(pixbuf, self._name)
-        Objects.art.clean_radio_cache(self._name)
-        Objects.player.announce_logo_update(self._name)
+        Lp.art.save_radio_logo(pixbuf, self._name)
+        Lp.art.clean_radio_cache(self._name)
+        Lp.player.announce_logo_update(self._name)
         self.hide()
         self._streams = {}

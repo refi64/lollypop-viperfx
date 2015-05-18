@@ -17,7 +17,7 @@ import os
 
 from stat import S_ISREG, ST_MTIME, ST_MODE
 
-from lollypop.define import Objects
+from lollypop.define import Lp
 
 
 # Playlists manager: add, remove, list, append, ...
@@ -28,7 +28,7 @@ class PlaylistsManager(GObject.GObject):
     __gsignals__ = {
         # Add or remove a playlist
         'playlists-changed': (GObject.SignalFlags.RUN_FIRST, None, ()),
-        # Objects added/removed to/from playlist
+        # Lp added/removed to/from playlist
         'playlist-changed': (GObject.SignalFlags.RUN_FIRST, None, (str,))
     }
 
@@ -178,7 +178,7 @@ class PlaylistsManager(GObject.GObject):
     def get_tracks_id(self, playlist_name, sql=None):
         tracks_id = []
         for filepath in self.get_tracks(playlist_name):
-            tracks_id.append(Objects.tracks.get_id_by_path(filepath, sql))
+            tracks_id.append(Lp.tracks.get_id_by_path(filepath, sql))
         return tracks_id
 
     """
@@ -193,7 +193,7 @@ class PlaylistsManager(GObject.GObject):
             GLib.idle_add(self.emit, "playlist-changed", playlist_name)
             f.close()
         except Exception as e:
-                print("PlaylistsManager::add_track: %s" % e)
+            print("PlaylistsManager::add_track: %s" % e)
 
     """
         Add tracks to playlist if not already present
@@ -208,7 +208,7 @@ class PlaylistsManager(GObject.GObject):
             GLib.idle_add(self.emit, "playlist-changed", playlist_name)
             f.close()
         except Exception as e:
-                print("PlaylistsManager::add_tracks: %s" % e)
+            print("PlaylistsManager::add_tracks: %s" % e)
 
     """
         Remove tracks from playlist
@@ -233,11 +233,11 @@ class PlaylistsManager(GObject.GObject):
                    genre_id, is_album, sql=None):
         playlist_paths = self.get_tracks(playlist_name)
         if is_album:
-            tracks_path = Objects.albums.get_tracks_path(object_id,
+            tracks_path = Lp.albums.get_tracks_path(object_id,
                                                          genre_id,
                                                          sql)
         else:
-            tracks_path = [Objects.tracks.get_path(object_id, sql)]
+            tracks_path = [Lp.tracks.get_path(object_id, sql)]
 
         found = 0
         len_tracks = len(tracks_path)

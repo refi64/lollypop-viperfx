@@ -13,7 +13,7 @@
 
 from gi.repository import Gtk, Gdk
 
-from lollypop.define import Objects, ArtSize, Type
+from lollypop.define import Lp, ArtSize, Type
 from lollypop.widgets_album import AlbumWidget
 from lollypop.popradio import PopRadio
 
@@ -96,11 +96,11 @@ class RadioWidget(AlbumWidget):
         @param force as bool
     """
     def set_cover(self, force=False):
-        selected = Objects.player.current_track.id == Type.RADIOS and\
-                   self._name == Objects.player.current_track.artist
+        selected = Lp.player.current_track.id == Type.RADIOS and\
+                   self._name == Lp.player.current_track.artist
         if self._cover is not None and (selected != self._selected or force):
             self._selected = selected
-            pixbuf = Objects.art.get_radio(self._name,
+            pixbuf = Lp.art.get_radio(self._name,
                                            ArtSize.BIG,
                                            selected)
             self._cover.set_from_pixbuf(pixbuf)
@@ -111,10 +111,10 @@ class RadioWidget(AlbumWidget):
     """
     def update_cover(self):
         if self._cover is not None:
-            self._selected = Objects.player.current_track.id == Type.RADIOS\
-                             and self._name == Objects.player.\
+            self._selected = Lp.player.current_track.id == Type.RADIOS\
+                             and self._name == Lp.player.\
                                                         current_track.artist
-            pixbuf = Objects.art.get_radio(self._name,
+            pixbuf = Lp.art.get_radio(self._name,
                                            ArtSize.BIG,
                                            self._selected)
             self._cover.set_from_pixbuf(pixbuf)

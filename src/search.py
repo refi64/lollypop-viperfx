@@ -17,7 +17,7 @@ from cgi import escape
 from gettext import gettext as _
 from _thread import start_new_thread
 
-from lollypop.define import Objects, ArtSize, Type
+from lollypop.define import Lp, ArtSize, Type
 from lollypop.track import Track
 from lollypop.utils import translate_artist_name
 
@@ -89,7 +89,7 @@ class SearchRow(Gtk.ListBoxRow):
         @param button as Gtk.Button
     """
     def _on_playlist_clicked(self, button):
-        Objects.window.show_playlist_manager(self.id, None, not self.is_track)
+        Lp.window.show_playlist_manager(self.id, None, not self.is_track)
 
     """
         Add track to queue
@@ -97,10 +97,10 @@ class SearchRow(Gtk.ListBoxRow):
     """
     def _on_queue_clicked(self, button):
         if self.is_track:
-            Objects.player.append_to_queue(self.id)
+            Lp.player.append_to_queue(self.id)
         else:
-            for track in Objects.albums.get_tracks(self.id, None):
-                Objects.player.append_to_queue(track)
+            for track in Lp.albums.get_tracks(self.id, None):
+                Lp.player.append_to_queue(track)
         button.hide()
 
     """
@@ -189,13 +189,13 @@ class SearchWidget(Gtk.Popover):
         Give focus to text entry on show
     """
     def do_show(self):
-        size_setting = Objects.settings.get_value('window-size')
+        size_setting = Lp.settings.get_value('window-size')
         if isinstance(size_setting[1], int):
             self.set_size_request(400, size_setting[1]*0.7)
         else:
             self.set_size_request(400, 600)
         Gtk.Popover.do_show(self)
-        Objects.window.enable_global_shorcuts(False)
+        Lp.window.enable_global_shorcuts(False)
         self._text_entry.grab_focus()
 
     """
@@ -203,7 +203,7 @@ class SearchWidget(Gtk.Popover):
     """
     def do_hide(self):
         Gtk.Popover.do_hide(self)
-        Objects.window.enable_global_shorcuts(True)
+        Lp.window.enable_global_shorcuts(True)
 
     """
         Remove row not existing in view, thread safe
@@ -239,8 +239,8 @@ class SearchWidget(Gtk.Popover):
             GLib.timeout_add(100, self._do_filtering)
 
         if self._timeout:
-                GLib.source_remove(self._timeout)
-                self._timeout = None
+            GLib.source_remove(self._timeout)
+            self._timeout = None
 
         if self._text_entry.get_text() != "":
             self._timeout = GLib.timeout_add(100, self._do_filtering_thread)
@@ -260,7 +260,7 @@ class SearchWidget(Gtk.Popover):
         in db based on text entry current text
     """
     def _really_do_filtering(self):
-        sql = Objects.db.get_cursor()
+        sql = Lp.db.get_cursor()
         results = []
         albums = []
 
@@ -269,45 +269,45 @@ class SearchWidget(Gtk.Popover):
         tracks_non_aartist = []
 
         # Get all albums for all artists and non aartist tracks
-        for artist_id in Objects.artists.search(searched, sql):
-            for album_id in Objects.albums.get_ids(artist_id, None, sql):
+        for artist_id in Lp.artists.search(searched, sql):
+            for album_id in Lp.albums.get_ids(artist_id, None, sql):
                 if (album_id, artist_id) not in albums:
                     albums.append((album_id, artist_id))
-            for track_id, track_name in Objects.tracks.get_as_non_aartist(
+            for track_id, track_name in Lp.tracks.get_as_non_aartist(
                                                                    artist_id,
                                                                    sql):
                 tracks_non_aartist.append((track_id, track_name))
 
-        albums += Objects.albums.search(searched, sql)
+        albums += Lp.albums.search(searched, sql)
 
         for album_id, artist_id in albums:
             search_obj = SearchObject()
-            search_obj.artist = Objects.artists.get_name(artist_id, sql)
-            search_obj.title = Objects.albums.get_name(album_id, sql)
-            search_obj.count = Objects.albums.get_count(album_id, None, sql)
+            search_obj.artist = Lp.artists.get_name(artist_id, sql)
+            search_obj.title = Lp.albums.get_name(album_id, sql)
+            search_obj.count = Lp.albums.get_count(album_id, None, sql)
             search_obj.id = album_id
             search_obj.album_id = album_id
             results.append(search_obj)
 
-        for track_id, track_name in Objects.tracks.search(searched, sql) +\
+        for track_id, track_name in Lp.tracks.search(searched, sql) +\
                 tracks_non_aartist:
             search_obj = SearchObject()
             search_obj.title = track_name
             search_obj.id = track_id
-            search_obj.album_id = Objects.tracks.get_album_id(track_id, sql)
+            search_obj.album_id = Lp.tracks.get_album_id(track_id, sql)
             search_obj.is_track = True
 
-            album_artist_id = Objects.albums.get_artist_id(search_obj.album_id,
+            album_artist_id = Lp.albums.get_artist_id(search_obj.album_id,
                                                            sql)
             artist_name = ""
             if album_artist_id != Type.COMPILATIONS:
-                artist_name = Objects.albums.get_artist_name(
+                artist_name = Lp.albums.get_artist_name(
                                             search_obj.album_id,
                                             sql) + ", "
-            for artist_id in Objects.tracks.get_artist_ids(track_id, sql):
+            for artist_id in Lp.tracks.get_artist_ids(track_id, sql):
                 if artist_id != album_artist_id:
                     artist_name += translate_artist_name(
-                                    Objects.artists.get_name(artist_id,
+                                    Lp.artists.get_name(artist_id,
                                                              sql)) + ", "
 
             search_obj.artist = artist_name[:-2]
@@ -335,7 +335,7 @@ class SearchWidget(Gtk.Popover):
                 if result.count != -1:
                     result.title += " (%s)" % result.count
                 search_row.set_text(result.artist, result.title)
-                search_row.set_cover(Objects.art.get(result.album_id,
+                search_row.set_cover(Lp.art.get(result.album_id,
                                                      ArtSize.MEDIUM))
                 search_row.id = result.id
                 search_row.is_track = result.is_track
@@ -356,6 +356,6 @@ class SearchWidget(Gtk.Popover):
     def _on_activate(self, widget, row):
         value_id = row.id
         if row.is_track:
-            Objects.player.load(Track(value_id))
+            Lp.player.load(Track(value_id))
         else:
-            Objects.player.play_album(value_id)
+            Lp.player.play_album(value_id)

@@ -17,7 +17,7 @@ import os
 from time import time
 from gettext import gettext as _
 
-from lollypop.define import Objects, Type
+from lollypop.define import Lp, Type
 from lollypop.utils import format_artist_name
 
 
@@ -194,10 +194,10 @@ class ScannerTagReader(TagReader):
         for word in artists.split(';'):
             artist = format_artist_name(word)
             # Get artist id, add it if missing
-            artist_id = Objects.artists.get_id(artist, sql)
+            artist_id = Lp.artists.get_id(artist, sql)
             if artist_id is None:
-                Objects.artists.add(artist, outside, sql)
-                artist_id = Objects.artists.get_id(artist, sql)
+                Lp.artists.add(artist, outside, sql)
+                artist_id = Lp.artists.get_id(artist, sql)
                 if artist == album_artist:
                     new_artist_ids.append(artist_id)
             artist_ids.append(artist_id)
@@ -217,10 +217,10 @@ class ScannerTagReader(TagReader):
         if album_artist is not None:
             album_artist = format_artist_name(album_artist)
             # Get album artist id, add it if missing
-            album_artist_id = Objects.artists.get_id(album_artist, sql)
+            album_artist_id = Lp.artists.get_id(album_artist, sql)
             if album_artist_id is None:
-                Objects.artists.add(album_artist, outside, sql)
-                album_artist_id = Objects.artists.get_id(album_artist, sql)
+                Lp.artists.add(album_artist, outside, sql)
+                album_artist_id = Lp.artists.get_id(album_artist, sql)
                 new = True
         return (album_artist_id, new)
 
@@ -238,15 +238,15 @@ class ScannerTagReader(TagReader):
         new_genre_ids = []
         for genre in genres.split(';'):
             # Get genre id, add genre if missing
-            genre_id = Objects.genres.get_id(genre, sql)
+            genre_id = Lp.genres.get_id(genre, sql)
             if genre_id is None:
-                Objects.genres.add(genre, outside, sql)
-                genre_id = Objects.genres.get_id(genre, sql)
+                Lp.genres.add(genre, outside, sql)
+                genre_id = Lp.genres.get_id(genre, sql)
                 new_genre_ids.append(genre_id)
             genre_ids.append(genre_id)
 
         for genre_id in genre_ids:
-            Objects.albums.add_genre(album_id, genre_id, outside, sql)
+            Lp.albums.add_genre(album_id, genre_id, outside, sql)
         return (genre_ids, new_genre_ids)
 
     """
@@ -265,9 +265,9 @@ class ScannerTagReader(TagReader):
         path = os.path.dirname(filepath)
 
         if noaartist:
-            album_id = Objects.albums.get_compilation_id(album_name, sql)
+            album_id = Lp.albums.get_compilation_id(album_name, sql)
         else:
-            album_id = Objects.albums.get_id(album_name, artist_id, sql)
+            album_id = Lp.albums.get_id(album_name, artist_id, sql)
         if album_id is None:
             # If db was empty on scan,
             # use file modification time to get recents
@@ -276,24 +276,24 @@ class ScannerTagReader(TagReader):
             # Use current time
             else:
                 mtime = int(time())
-            Objects.albums.add(album_name, artist_id, noaartist,
+            Lp.albums.add(album_name, artist_id, noaartist,
                                path, 0, outside, mtime, sql)
             if noaartist:
-                album_id = Objects.albums.get_compilation_id(album_name, sql)
+                album_id = Lp.albums.get_compilation_id(album_name, sql)
             else:
-                album_id = Objects.albums.get_id(album_name, artist_id, sql)
+                album_id = Lp.albums.get_id(album_name, artist_id, sql)
         # Now we have our album id, check if path doesn't change
-        if Objects.albums.get_path(album_id, sql) != path and not outside:
-            Objects.albums.set_path(album_id, path, sql)
+        if Lp.albums.get_path(album_id, sql) != path and not outside:
+            Lp.albums.set_path(album_id, path, sql)
 
         # If no album artist, handle album artist id for compilations
         if noaartist:
-            if Objects.albums.is_compilation(album_id, sql):
-                Objects.albums.set_artist_id(album_id,
+            if Lp.albums.is_compilation(album_id, sql):
+                Lp.albums.set_artist_id(album_id,
                                              Type.COMPILATIONS,
                                              sql)
             else:
-                Objects.albums.set_artist_id(album_id,
+                Lp.albums.set_artist_id(album_id,
                                              artist_id,
                                              sql)
         return album_id
@@ -305,8 +305,8 @@ class ScannerTagReader(TagReader):
         @commit needed
     """
     def update_year(self, album_id, sql):
-        year = Objects.albums.get_year_from_tracks(album_id, sql)
-        Objects.albums.set_year(album_id, year, sql)
+        year = Lp.albums.get_year_from_tracks(album_id, sql)
+        Lp.albums.set_year(album_id, year, sql)
 
     """
         Set track artists/genres
@@ -320,6 +320,6 @@ class ScannerTagReader(TagReader):
     def update_track(self, track_id, artist_ids, genre_ids, outside, sql):
          # Set artists/genres for track
         for artist_id in artist_ids:
-            Objects.tracks.add_artist(track_id, artist_id, outside, sql)
+            Lp.tracks.add_artist(track_id, artist_id, outside, sql)
         for genre_id in genre_ids:
-            Objects.tracks.add_genre(track_id, genre_id, outside, sql)
+            Lp.tracks.add_genre(track_id, genre_id, outside, sql)

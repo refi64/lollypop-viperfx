@@ -18,7 +18,7 @@ from _thread import start_new_thread
 from lollypop.view import View
 from lollypop.widgets_playlist import PlaylistWidget, PlaylistEditWidget
 from lollypop.widgets_playlist import PlaylistsManagerWidget
-from lollypop.define import Objects
+from lollypop.define import Lp
 
 
 # Playlist view is a vertical grid with album's covers
@@ -54,8 +54,8 @@ class PlaylistsView(View):
         Thread safe
     """
     def populate(self):
-        sql = Objects.db.get_cursor()
-        tracks = Objects.playlists.get_tracks_id(self._playlist_name, sql)
+        sql = Lp.db.get_cursor()
+        tracks = Lp.playlists.get_tracks_id(self._playlist_name, sql)
         mid_tracks = int(0.5+len(tracks)/2)
         self._playlist_widget.populate_list_one(tracks[:mid_tracks],
                                                 1)
@@ -73,7 +73,7 @@ class PlaylistsView(View):
         Do show, connect signals
     """
     def do_show(self):
-        self._signal_id = Objects.playlists.connect("playlist-changed",
+        self._signal_id = Lp.playlists.connect("playlist-changed",
                                                     self._update_view)
         View.do_show(self)
 
@@ -82,7 +82,7 @@ class PlaylistsView(View):
     """
     def do_hide(self):
         if self._signal_id:
-            Objects.playlists.disconnect(self._signal_id)
+            Lp.playlists.disconnect(self._signal_id)
             self._signal_id = None
         View.do_hide(self)
 
@@ -111,7 +111,7 @@ class PlaylistsView(View):
         @param playlist name as str
     """
     def _on_edit_btn_clicked(self, button):
-        Objects.window.show_playlist_editor(self._playlist_name)
+        Lp.window.show_playlist_editor(self._playlist_name)
 
     """
         Current song changed
@@ -164,7 +164,7 @@ class PlaylistsManageView(View):
         @param button as Gtk.Button
     """
     def _on_back_btn_clicked(self, button):
-        Objects.window.destroy_current_view()
+        Lp.window.destroy_current_view()
 
 
 # Playlist view used to edit playlists
@@ -199,4 +199,4 @@ class PlaylistEditView(View):
         @param button as Gtk.Button
     """
     def _on_back_btn_clicked(self, button):
-        Objects.window.destroy_current_view()
+        Lp.window.destroy_current_view()

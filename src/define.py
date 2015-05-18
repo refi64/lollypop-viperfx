@@ -17,7 +17,7 @@
 GOOGLE_INC = 8
 GOOGLE_MAX = 100
 
-class Objects:
+class Lp:
     settings = None
     db = None
     sql = None

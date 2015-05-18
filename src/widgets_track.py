@@ -13,7 +13,7 @@
 
 from gi.repository import GObject, Gtk
 
-from lollypop.define import Objects, ArtSize
+from lollypop.define import Lp, ArtSize
 from lollypop.popmenu import PopTrackMenu
 from lollypop.utils import seconds_to_string, rgba_to_hex
 
@@ -202,13 +202,13 @@ class TracksWidget(Gtk.ListBox):
                   pos, show_cover=False):
         track_row = TrackRow()
         track_row.show_menu(self._show_menu)
-        if Objects.player.current_track.id == track_id:
+        if Lp.player.current_track.id == track_id:
             track_row.show_icon(True)
         if pos:
             track_row.set_num_label(
                         '''<span foreground="%s"\
                         font_desc="Bold">%s</span>''' %\
-                        (rgba_to_hex(Objects.window.get_selected_color()),
+                        (rgba_to_hex(Lp.window.get_selected_color()),
                          str(pos)))
         elif num > 0:
             track_row.set_num_label(str(num))
@@ -217,8 +217,8 @@ class TracksWidget(Gtk.ListBox):
         track_row.set_duration_label(seconds_to_string(length))
         track_row.set_object_id(track_id)
         if show_cover:
-            album_id = Objects.tracks.get_album_id(track_id)
-            pixbuf = Objects.art.get(album_id, ArtSize.MEDIUM)
+            album_id = Lp.tracks.get_album_id(track_id)
+            pixbuf = Lp.art.get(album_id, ArtSize.MEDIUM)
             track_row.set_cover(pixbuf)
             track_row.show_cover(True)
         track_row.show()
@@ -239,7 +239,7 @@ class TracksWidget(Gtk.ListBox):
         Set signals callback
     """
     def do_show(self):
-        self._signal_id = Objects.player.connect("queue-changed",
+        self._signal_id = Lp.player.connect("queue-changed",
                                                  self._update_pos_label)
         Gtk.ListBox.do_show(self)
 
@@ -248,7 +248,7 @@ class TracksWidget(Gtk.ListBox):
     """
     def do_hide(self):
         if self._signal_id:
-            Objects.player.disconnect(self._signal_id)
+            Lp.player.disconnect(self._signal_id)
             self._signal_id = None
         Gtk.ListBox.do_hide(self)
 
@@ -263,12 +263,12 @@ class TracksWidget(Gtk.ListBox):
     def _update_pos_label(self, widget):
         for row in self.get_children():
             track_id = row.get_object_id()
-            if Objects.player.is_in_queue(track_id):
-                pos = Objects.player.get_track_position(track_id)
+            if Lp.player.is_in_queue(track_id):
+                pos = Lp.player.get_track_position(track_id)
                 row.set_num_label(
                         '''<span foreground="%s"\
                         font_desc="Bold">%s</span>''' %\
-                        (rgba_to_hex(Objects.window.get_selected_color()),
+                        (rgba_to_hex(Lp.window.get_selected_color()),
                          str(pos)))
             elif row.get_number() > 0:
                 row.set_num_label(str(row.get_number()))

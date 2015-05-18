@@ -66,7 +66,7 @@ class RadioPlayer(BasePlayer):
             i += 1
             if self.current_track.artist == name:
                 break
-            
+
         # Get next radio
         if i >= len(radios):
             i = 0

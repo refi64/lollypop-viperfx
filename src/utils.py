@@ -13,7 +13,7 @@
 
 from gi.repository import Gio
 
-from lollypop.define import Objects
+from lollypop.define import Lp
 from gettext import gettext as _
 import os
 
@@ -25,7 +25,7 @@ import os
 
 
 def debug(str):
-    if Objects.debug == True:
+    if Lp.debug == True:
         print(str)
 
 
@@ -56,7 +56,7 @@ def is_gnome():
     Return True if CSDs are to be used based on several criterions
 """
 def use_csd():
-    return is_gnome() or is_eos() or Objects.settings.get_value('force-csd')
+    return is_gnome() or is_eos() or Lp.settings.get_value('force-csd')
 
 """
     Return True if files is audio
@@ -124,6 +124,6 @@ def seconds_to_string(duration):
     @return string
 """
 def rgba_to_hex(color):
-   return "#{0:02x}{1:02x}{2:02x}".format(int(color.red  * 255),
-                                          int(color.green * 255),
-                                          int(color.blue * 255))
+    return "#{0:02x}{1:02x}{2:02x}".format(int(color.red  * 255),
+                                           int(color.green * 255),
+                                           int(color.blue * 255))

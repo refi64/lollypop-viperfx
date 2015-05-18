@@ -17,7 +17,7 @@ from _thread import start_new_thread
 from cgi import escape
 from gettext import gettext as _
 
-from lollypop.define import Objects, ArtSize, Type
+from lollypop.define import Lp, ArtSize, Type
 from lollypop.widgets_track import TracksWidget
 from lollypop.utils import translate_artist_name
 
@@ -83,8 +83,8 @@ class PlaylistWidget(Gtk.Bin):
         Update playing indicator
     """
     def update_playing_indicator(self):
-        self._tracks_widget1.update_playing(Objects.player.current_track.id)
-        self._tracks_widget2.update_playing(Objects.player.current_track.id)
+        self._tracks_widget1.update_playing(Lp.player.current_track.id)
+        self._tracks_widget2.update_playing(Lp.player.current_track.id)
 
     """
         Stop loading
@@ -120,14 +120,14 @@ class PlaylistWidget(Gtk.Bin):
             return
 
         (title, filepath, length, album_id) =\
-            Objects.tracks.get_infos(track_id)
+            Lp.tracks.get_infos(track_id)
         if title is None:
             return
 
         artist_name = ""
-        for artist_id in Objects.tracks.get_artist_ids(track_id):
+        for artist_id in Lp.tracks.get_artist_ids(track_id):
             artist_name += translate_artist_name(
-                            Objects.artists.get_name(artist_id)) + ", "
+                            Lp.artists.get_name(artist_id)) + ", "
         title = "<b>%s</b>\n%s" % (escape(artist_name[:-2]),
                                    escape(title))
 
@@ -141,11 +141,11 @@ class PlaylistWidget(Gtk.Bin):
         @param playlist name as str
     """
     def _on_activated(self, widget, track_id, playlist_name):
-        if not Objects.player.is_party():
+        if not Lp.player.is_party():
             if not self._tracks:
-                self._tracks = Objects.playlists.get_tracks_id(playlist_name)
-            Objects.player.set_user_playlist(self._tracks, track_id)
-        Objects.player.load(track_id)
+                self._tracks = Lp.playlists.get_tracks_id(playlist_name)
+            Lp.player.set_user_playlist(self._tracks, track_id)
+        Lp.player.load(track_id)
 
 
 # Dialog for manage playlists (add, rename, delete, add object to)
@@ -218,7 +218,7 @@ class PlaylistsManagerWidget(Gtk.Bin):
     """
     def populate(self):
         # Search if we need to select item or not
-        playlists = Objects.playlists.get()
+        playlists = Lp.playlists.get()
         GLib.idle_add(self._append_playlists, playlists)
 
     """
@@ -236,7 +236,7 @@ class PlaylistsManagerWidget(Gtk.Bin):
             count += 1
             name = _("New playlist ")+str(count)
         self._model.append([True, name, 'user-trash-symbolic'])
-        Objects.playlists.add(name)
+        Lp.playlists.add(name)
         self._set_current_object(name, True)
 #######################
 # PRIVATE             #
@@ -258,7 +258,7 @@ class PlaylistsManagerWidget(Gtk.Bin):
         if playlists:
             playlist = playlists.pop(0)
             if self._object_id != -1:
-                selected = Objects.playlists.is_present(playlist[1],
+                selected = Lp.playlists.is_present(playlist[1],
                                                         self._object_id,
                                                         self._genre_id,
                                                         self._is_album)
@@ -308,7 +308,7 @@ class PlaylistsManagerWidget(Gtk.Bin):
     def _on_delete_confirm(self, button):
         if self._deleted_path:
             iterator = self._model.get_iter(self._deleted_path)
-            Objects.playlists.delete(self._model.get_value(iterator, 1))
+            Lp.playlists.delete(self._model.get_value(iterator, 1))
             self._model.remove(iterator)
             self._deleted_path = None
             self._infobar.hide()
@@ -347,15 +347,15 @@ class PlaylistsManagerWidget(Gtk.Bin):
             return
         # Add or remove object from playlist
         if self._is_album:
-            tracks_path = Objects.albums.get_tracks_path(self._object_id,
+            tracks_path = Lp.albums.get_tracks_path(self._object_id,
                                                          self._genre_id)
         else:
-            tracks_path = [Objects.tracks.get_path(self._object_id)]
+            tracks_path = [Lp.tracks.get_path(self._object_id)]
 
         if add:
-            Objects.playlists.add_tracks(name, tracks_path)
+            Lp.playlists.add_tracks(name, tracks_path)
         else:
-            Objects.playlists.remove_tracks(name, tracks_path)
+            Lp.playlists.remove_tracks(name, tracks_path)
 
     """
         When playlist is edited, rename playlist
@@ -370,7 +370,7 @@ class PlaylistsManagerWidget(Gtk.Bin):
         old_name = self._model.get_value(iterator, 1)
         self._model.remove(iterator)
         self._model.append([True, name, 'user-trash-symbolic'])
-        Objects.playlists.rename(name, old_name)
+        Lp.playlists.rename(name, old_name)
 
     """
         Disable global shortcuts
@@ -379,14 +379,14 @@ class PlaylistsManagerWidget(Gtk.Bin):
         @param path as str representation of Gtk.TreePath
     """
     def _on_playlist_editing_start(self, widget, editable, path):
-        Objects.window.enable_global_shorcuts(False)
+        Lp.window.enable_global_shorcuts(False)
 
     """
         Enable global shortcuts
         @param widget as cell renderer
     """
     def _on_playlist_editing_cancel(self, widget):
-        Objects.window.enable_global_shorcuts(True)
+        Lp.window.enable_global_shorcuts(True)
 
 
 # Dialog for edit a playlist
@@ -481,8 +481,8 @@ class PlaylistEditWidget(Gtk.Bin):
         Append tracks, thread safe
     """
     def _append_tracks(self):
-        sql = Objects.db.get_cursor()
-        tracks = Objects.playlists.get_tracks_id(self._playlist_name, sql)
+        sql = Lp.db.get_cursor()
+        tracks = Lp.playlists.get_tracks_id(self._playlist_name, sql)
         GLib.idle_add(self._append_track, tracks)
 
     """
@@ -492,20 +492,20 @@ class PlaylistEditWidget(Gtk.Bin):
     def _append_track(self, tracks):
         if tracks:
             track_id = tracks.pop(0)
-            filepath = Objects.tracks.get_path(track_id)
-            album_id = Objects.tracks.get_album_id(track_id)
-            artist_id = Objects.tracks.get_aartist_id(track_id)
+            filepath = Lp.tracks.get_path(track_id)
+            album_id = Lp.tracks.get_album_id(track_id)
+            artist_id = Lp.tracks.get_aartist_id(track_id)
             if artist_id == Type.COMPILATIONS:
-                artist_ids = Objects.tracks.get_artist_ids(track_id)
+                artist_ids = Lp.tracks.get_artist_ids(track_id)
                 artist_name = ""
                 for artist_id in artist_ids:
                     artist_name += translate_artist_name(
-                                    Objects.artists.get_name(artist_id)) + ", "
+                                    Lp.artists.get_name(artist_id)) + ", "
                 artist_name = artist_name[:-2]
             else:
-                artist_name = Objects.artists.get_name(artist_id)
-            track_name = Objects.tracks.get_name(track_id)
-            art = Objects.art.get(album_id, ArtSize.SMALL)
+                artist_name = Lp.artists.get_name(artist_id)
+            track_name = Lp.tracks.get_name(track_id)
+            art = Lp.art.get(album_id, ArtSize.SMALL)
             self._model.append([art,
                                "<b>%s</b>\n%s" % (
                                    escape(translate_artist_name(artist_name)),
@@ -540,7 +540,7 @@ class PlaylistEditWidget(Gtk.Bin):
                                                                     '\n',
                                                                     ' - '))
         self._infobar.show()
-    
+
     """
         Hide infobar
         @param widget as Gtk.Infobar
@@ -591,4 +591,4 @@ class PlaylistEditWidget(Gtk.Bin):
         for item in self._model:
             tracks_path.append(item[3])
         if tracks_path != self._tracks_orig:
-            Objects.playlists.set_tracks(self._playlist_name, tracks_path)
+            Lp.playlists.set_tracks(self._playlist_name, tracks_path)

@@ -14,7 +14,7 @@
 
 from gi.repository import Gst
 
-from lollypop.define import Objects
+from lollypop.define import Lp
 
 
 # replay gain class
@@ -45,7 +45,7 @@ class ReplayGainPlayer:
             print("please check your gstreamer installation...")
             return
 
-        self._rgvolume.props.pre_amp = Objects.settings.get_value(
+        self._rgvolume.props.pre_amp = Lp.settings.get_value(
                                             "replaygain").get_double()
 
         self._rgfilter.add(self._rgvolume)
@@ -64,4 +64,3 @@ class ReplayGainPlayer:
                                 self._rg_audioconvert1.get_static_pad("sink")))
 
         playbin.set_property("audio-sink", self._rgfilter)
-

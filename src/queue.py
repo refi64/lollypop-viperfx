@@ -14,7 +14,7 @@
 from gi.repository import Gtk, GLib, GdkPixbuf, Pango
 from cgi import escape
 
-from lollypop.define import Objects, ArtSize
+from lollypop.define import Lp, ArtSize
 from lollypop.utils import translate_artist_name
 
 ######################################################################
@@ -80,18 +80,18 @@ class QueueWidget(Gtk.Popover):
     """
     #TODO Threaded loading
     def do_show(self):
-        size_setting = Objects.settings.get_value('window-size')
+        size_setting = Lp.settings.get_value('window-size')
         if isinstance(size_setting[1], int):
             self.set_size_request(400, size_setting[1]*0.7)
         else:
             self.set_size_request(400, 600)
 
-        for track_id in Objects.player.get_queue():
-            album_id = Objects.tracks.get_album_id(track_id)
-            artist_id = Objects.albums.get_artist_id(album_id)
-            artist_name = Objects.artists.get_name(artist_id)
-            track_name = Objects.tracks.get_name(track_id)
-            pixbuf = Objects.art.get(album_id, ArtSize.MEDIUM)
+        for track_id in Lp.player.get_queue():
+            album_id = Lp.tracks.get_album_id(track_id)
+            artist_id = Lp.albums.get_artist_id(album_id)
+            artist_name = Lp.artists.get_name(artist_id)
+            track_name = Lp.tracks.get_name(track_id)
+            pixbuf = Lp.art.get(album_id, ArtSize.MEDIUM)
             title = "<b>%s</b>\n%s" %\
                                 (escape(translate_artist_name(artist_name)),
                                  escape(track_name))
@@ -101,7 +101,7 @@ class QueueWidget(Gtk.Popover):
                                 track_id])
             del pixbuf
 
-        self._signal_id1 = Objects.player.connect("current-changed",
+        self._signal_id1 = Lp.player.connect("current-changed",
                                                   self._on_current_changed)
         self._signal_id2 =  self._model.connect("row-deleted",
                                                 self._updated_rows)
@@ -112,7 +112,7 @@ class QueueWidget(Gtk.Popover):
     """
     def do_hide(self):
         if self._signal_id1:
-            Objects.player.disconnect(self._signal_id1)
+            Lp.player.disconnect(self._signal_id1)
             self._signal_id1 = None
         if self._signal_id2:
             self._model.disconnect(self._signal_id2)
@@ -128,7 +128,7 @@ class QueueWidget(Gtk.Popover):
         @param widget unused, Gdk.Event
     """
     def _on_keyboard_event(self, widget, event):
-        if Objects.player.get_queue():
+        if Lp.player.get_queue():
             if event.keyval == 65535:
                 path, column = self._view.get_cursor()
                 iterator = self._model.get_iter(path)
@@ -170,7 +170,7 @@ class QueueWidget(Gtk.Popover):
             for row in self._model:
                 if row[3]:
                     new_queue.append(row[3])
-            Objects.player.set_queue(new_queue)
+            Lp.player.set_queue(new_queue)
 
     """
         Delete row
@@ -213,4 +213,4 @@ class QueueWidget(Gtk.Popover):
         if not self._in_drag:
             value_id = self._model.get_value(iterator, 3)
             self._model.remove(iterator)
-            Objects.player.load(value_id)
+            Lp.player.load(value_id)

@@ -16,7 +16,7 @@ from gi.repository import Gtk, Gdk, GLib, Gio
 from gettext import gettext as _
 from cgi import escape
 
-from lollypop.define import Objects, Shuffle, ArtSize, Type
+from lollypop.define import Lp, Shuffle, ArtSize, Type
 from lollypop.search import SearchWidget
 from lollypop.popmenu import PopToolbarMenu
 from lollypop.queue import QueueWidget
@@ -73,15 +73,15 @@ class Toolbar(Gtk.HeaderBar):
         self._popalbums = PopAlbums()
         self._popalbums.set_relative_to(self._infobox)
 
-        Objects.player.connect("status-changed", self._on_status_changed)
-        Objects.player.connect("current-changed", self._on_current_changed)
-        Objects.player.connect("party-changed", self._on_party_changed)
-        Objects.player.connect("cover-changed", self._update_cover)
+        Lp.player.connect("status-changed", self._on_status_changed)
+        Lp.player.connect("current-changed", self._on_current_changed)
+        Lp.player.connect("party-changed", self._on_party_changed)
+        Lp.player.connect("cover-changed", self._update_cover)
 
         self._shuffle_btn = builder.get_object('shuffle-button')
         self._shuffle_btn_image = builder.get_object('shuffle-button-image')
         self._set_shuffle_icon()
-        Objects.settings.connect('changed::shuffle', self._shuffle_btn_aspect)
+        Lp.settings.connect('changed::shuffle', self._shuffle_btn_aspect)
 
         self._party_btn = builder.get_object('party-button')
         self._party_btn.connect("toggled", self._on_party_btn_toggled)
@@ -144,7 +144,7 @@ class Toolbar(Gtk.HeaderBar):
     def update_position(self, value=None):
         if not self._seeking:
             if value is None:
-                value = Objects.player.get_position_in_track()/1000000
+                value = Lp.player.get_position_in_track()/1000000
             self._progress.set_value(value)
             self._timelabel.set_text(seconds_to_string(value/60))
         return True
@@ -155,7 +155,7 @@ class Toolbar(Gtk.HeaderBar):
         Set shuffle icon
     """
     def _set_shuffle_icon(self):
-        shuffle = Objects.settings.get_enum('shuffle')
+        shuffle = Lp.settings.get_enum('shuffle')
         if shuffle == Shuffle.NONE:
             self._shuffle_btn_image.set_from_icon_name(
                                     "media-playlist-consecutive-symbolic",
@@ -179,13 +179,13 @@ class Toolbar(Gtk.HeaderBar):
         @param event as Gdk.Event
     """
     def _pop_infobox(self, widget, event):
-        if Objects.player.current_track.id is not None and\
-           Objects.player.current_track.id != Type.RADIOS:
+        if Lp.player.current_track.id is not None and\
+           Lp.player.current_track.id != Type.RADIOS:
             if event.button == 1:
                 self._popalbums.populate()
                 self._popalbums.show()
             else:
-                menu = PopToolbarMenu(Objects.player.current_track.id, None)
+                menu = PopToolbarMenu(Lp.player.current_track.id, None)
                 popover = Gtk.Popover.new_from_model(self._infobox, menu)
                 popover.show()
             return True
@@ -195,8 +195,8 @@ class Toolbar(Gtk.HeaderBar):
         @param obj as unused, album id as int
     """
     def _update_cover(self, obj, album_id):
-        if Objects.player.current_track.album_id == album_id:
-            pixbuf = Objects.art.get(album_id, ArtSize.SMALL)
+        if Lp.player.current_track.album_id == album_id:
+            pixbuf = Lp.art.get(album_id, ArtSize.SMALL)
             self._cover.set_from_pixbuf(pixbuf)
             del pixbuf
 
@@ -216,7 +216,7 @@ class Toolbar(Gtk.HeaderBar):
         value = scale.get_value()
         self._seeking = False
         self.update_position(value)
-        Objects.player.seek(value/60)
+        Lp.player.seek(value/60)
 
     """
         Update toolbar items with track_id informations:
@@ -247,7 +247,7 @@ class Toolbar(Gtk.HeaderBar):
             self._infobox.get_window().set_cursor(
                                       Gdk.Cursor(Gdk.CursorType.LEFT_PTR))
 
-            art = Objects.art.get_radio(player.current_track.artist,
+            art = Lp.art.get_radio(player.current_track.artist,
                                         ArtSize.SMALL)
         # Setup buttons and art for local playback
         elif player.current_track.id is not None:
@@ -260,7 +260,7 @@ class Toolbar(Gtk.HeaderBar):
             self._timelabel.show()
             self._infobox.get_window().set_cursor(
                                     Gdk.Cursor(Gdk.CursorType.HAND1))
-            art = Objects.art.get(player.current_track.album_id,
+            art = Lp.art.get(player.current_track.album_id,
                                   ArtSize.SMALL)
 
         if art is not None:
@@ -283,7 +283,7 @@ class Toolbar(Gtk.HeaderBar):
         if is_playing:
             # Party mode can be activated
             # via Fullscreen class, so check button state
-            self._party_btn.set_active(Objects.player.is_party())
+            self._party_btn.set_active(Lp.player.is_party())
             self._change_play_btn_status(self._pause_image, _("Pause"))
             if player.current_track.id == Type.RADIOS and self._timeout:
                 GLib.source_remove(self._timeout)
@@ -296,25 +296,25 @@ class Toolbar(Gtk.HeaderBar):
             if self._timeout:
                 GLib.source_remove(self._timeout)
                 self._timeout = None
-            
+
 
     """
         Previous track on prev button clicked
         @param button as Gtk.Button
     """
     def _on_prev_btn_clicked(self, button):
-        Objects.player.prev()
+        Lp.player.prev()
 
     """
         Play/Pause on play button clicked
         @param button as Gtk.Button
     """
     def _on_play_btn_clicked(self, button):
-        if Objects.player.is_playing():
-            Objects.player.pause()
+        if Lp.player.is_playing():
+            Lp.player.pause()
             self._change_play_btn_status(self._play_image, _("Play"))
         else:
-            Objects.player.play()
+            Lp.player.play()
             self._change_play_btn_status(self._pause_image, _("Pause"))
 
     """
@@ -322,7 +322,7 @@ class Toolbar(Gtk.HeaderBar):
         @param button as Gtk.Button
     """
     def _on_next_btn_clicked(self, button):
-        Objects.player.next()
+        Lp.player.next()
 
     """
         Show search widget on search button clicked
@@ -362,10 +362,10 @@ class Toolbar(Gtk.HeaderBar):
     def _on_party_btn_toggled(self, button):
         active = self._party_btn.get_active()
         self._shuffle_btn.set_sensitive(not active)
-        if not Objects.settings.get_value('dark-ui'):
+        if not Lp.settings.get_value('dark-ui'):
             settings = Gtk.Settings.get_default()
             settings.set_property("gtk-application-prefer-dark-theme", active)
-        Objects.player.set_party(active)
+        Lp.player.set_party(active)
 
     """
         On party change, sync toolbar

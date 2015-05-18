@@ -18,7 +18,7 @@ from gettext import gettext as _
 from _thread import start_new_thread
 
 from lollypop.inotify import Inotify
-from lollypop.define import Objects
+from lollypop.define import Lp
 from lollypop.tagreader import ScannerTagReader
 from lollypop.utils import is_audio, debug
 
@@ -36,7 +36,7 @@ class CollectionScanner(GObject.GObject, ScannerTagReader):
     def __init__(self):
         GObject.GObject.__init__(self)
         ScannerTagReader.__init__(self)
-        if Objects.settings.get_value('auto-update'):
+        if Lp.settings.get_value('auto-update'):
             self._inotify = Inotify()
         self._is_empty = True
         self._in_thread = False
@@ -49,18 +49,18 @@ class CollectionScanner(GObject.GObject, ScannerTagReader):
     """
     def update(self, progress):
         self._progress = progress
-        paths = Objects.settings.get_music_paths()
+        paths = Lp.settings.get_music_paths()
         if not paths:
             return
 
         if not self._in_thread:
-            if Objects.notify is not None:
-                Objects.notify.send(_("Your music is updating"))
+            if Lp.notify is not None:
+                Lp.notify.send(_("Your music is updating"))
             if self._progress is not None:
                 self._progress.show()
             self._in_thread = True
             self._is_locked = True
-            self._mtimes = Objects.tracks.get_mtimes()
+            self._mtimes = Lp.tracks.get_mtimes()
             start_new_thread(self._scan, (paths,))
 
     """
@@ -147,8 +147,8 @@ class CollectionScanner(GObject.GObject, ScannerTagReader):
     def _add(self, files):
         if self._progress is not None:
             GLib.idle_add(self._progress.show)
-        sql = Objects.db.get_cursor()
-        tracks = Objects.tracks.get_paths(sql)
+        sql = Lp.db.get_cursor()
+        tracks = Lp.tracks.get_paths(sql)
         count = len(files)
         i = 0
         GLib.idle_add(self._update_progress, i, count)
@@ -166,7 +166,7 @@ class CollectionScanner(GObject.GObject, ScannerTagReader):
                 else:
                     print("Can't get infos for ", f)
             else:
-                track_id = Objects.tracks.get_id_by_path(f, sql)
+                track_id = Lp.tracks.get_id_by_path(f, sql)
             if track_id is not None:
                 if i == 0:
                     sql.commit()
@@ -183,8 +183,8 @@ class CollectionScanner(GObject.GObject, ScannerTagReader):
         @thread safe
     """
     def _scan(self, paths):
-        sql = Objects.db.get_cursor()
-        orig_tracks = Objects.tracks.get_paths(sql)
+        sql = Lp.db.get_cursor()
+        orig_tracks = Lp.tracks.get_paths(sql)
         self._is_empty = len(orig_tracks) == 0
 
 
@@ -283,13 +283,13 @@ class CollectionScanner(GObject.GObject, ScannerTagReader):
                                                       outside, sql)
 
         # Add track to db
-        Objects.tracks.add(title, filepath, length,
+        Lp.tracks.add(title, filepath, length,
                            tracknumber, discnumber,
                            album_id, year, mtime, outside, sql)
 
         self.update_year(album_id, sql)
 
-        track_id = Objects.tracks.get_id_by_path(filepath, sql)
+        track_id = Lp.tracks.get_id_by_path(filepath, sql)
         self.update_track(track_id, artist_ids, genre_ids, outside, sql)
 
         # Notify about new artists/genres
@@ -307,42 +307,42 @@ class CollectionScanner(GObject.GObject, ScannerTagReader):
         @param sql as sqlite cursor
     """
     def _del_from_db(self, filepath, sql):
-        track_id = Objects.tracks.get_id_by_path(filepath, sql)
-        album_id = Objects.tracks.get_album_id(track_id, sql)
-        genre_ids = Objects.tracks.get_genre_ids(track_id, sql)
-        album_artist_id = Objects.albums.get_artist_id(album_id, sql)
-        artist_ids = Objects.tracks.get_artist_ids(track_id, sql)
-        Objects.tracks.remove(filepath, sql)
-        Objects.tracks.clean(track_id, sql)
-        Objects.albums.clean(album_id, sql)
+        track_id = Lp.tracks.get_id_by_path(filepath, sql)
+        album_id = Lp.tracks.get_album_id(track_id, sql)
+        genre_ids = Lp.tracks.get_genre_ids(track_id, sql)
+        album_artist_id = Lp.albums.get_artist_id(album_id, sql)
+        artist_ids = Lp.tracks.get_artist_ids(track_id, sql)
+        Lp.tracks.remove(filepath, sql)
+        Lp.tracks.clean(track_id, sql)
+        Lp.albums.clean(album_id, sql)
         for artist_id in [album_artist_id] + artist_ids:
-            Objects.artists.clean(artist_id, sql)
+            Lp.artists.clean(artist_id, sql)
         for genre_id in genre_ids:
-            Objects.genres.clean(genre_id, sql)
+            Lp.genres.clean(genre_id, sql)
 
     """
         Restore albums popularties
     """
     def _restore_popularities(self, sql):
-        self._popularities = Objects.db.get_popularities()
+        self._popularities = Lp.db.get_popularities()
         result = sql.execute("SELECT albums.name, artists.name, albums.rowid\
                               FROM albums, artists\
                               WHERE artists.rowid == albums.artist_id")
         for row in result:
             string = "%s_%s" % (row[0], row[1])
             if string in self._popularities:
-                Objects.albums.set_popularity(row[2],
+                Lp.albums.set_popularity(row[2],
                                               self._popularities[string], sql)
     """
         Restore albums mtimes
     """
     def _restore_mtimes(self, sql):
-        self._mtimes = Objects.db.get_mtimes()
+        self._mtimes = Lp.db.get_mtimes()
         result = sql.execute("SELECT albums.name, artists.name, albums.rowid\
                               FROM albums, artists\
                               WHERE artists.rowid == albums.artist_id")
         for row in result:
             string = "%s_%s" % (row[0], row[1])
             if string in self._mtimes:
-                Objects.albums.set_mtime(row[2],
+                Lp.albums.set_mtime(row[2],
                                          self._mtimes[string], sql)

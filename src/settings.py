@@ -15,7 +15,7 @@ from gi.repository import Gtk, GLib, Gio, Pango
 
 from gettext import gettext as _
 
-from lollypop.define import Objects, Type
+from lollypop.define import Lp, Type
 from lollypop.utils import use_csd
 
 
@@ -62,30 +62,30 @@ class SettingsDialog:
         builder.add_from_resource('/org/gnome/Lollypop/SettingsDialog.ui')
 
         self._settings_dialog = builder.get_object('settings_dialog')
-        self._settings_dialog.set_transient_for(Objects.window)
+        self._settings_dialog.set_transient_for(Lp.window)
 
         if use_csd():
             self._settings_dialog.set_titlebar(
                                 builder.get_object('header_bar'))
 
         switch_scan = builder.get_object('switch_scan')
-        switch_scan.set_state(Objects.settings.get_value('auto-update'))
+        switch_scan.set_state(Lp.settings.get_value('auto-update'))
 
         switch_view = builder.get_object('switch_dark')
-        switch_view.set_state(Objects.settings.get_value('dark-ui'))
+        switch_view.set_state(Lp.settings.get_value('dark-ui'))
 
         switch_background = builder.get_object('switch_background')
-        switch_background.set_state(Objects.settings.get_value(
+        switch_background.set_state(Lp.settings.get_value(
                                                     'background-mode'))
 
         switch_state = builder.get_object('switch_state')
-        switch_state.set_state(Objects.settings.get_value('save-state'))
+        switch_state.set_state(Lp.settings.get_value('save-state'))
 
         switch_autoplay = builder.get_object('switch_autoplay')
-        switch_autoplay.set_state(Objects.settings.get_value('auto-play'))
-        
+        switch_autoplay.set_state(Lp.settings.get_value('auto-play'))
+
         switch_genres = builder.get_object('switch_genres')
-        switch_genres.set_state(Objects.settings.get_value('show-genres'))
+        switch_genres.set_state(Lp.settings.get_value('show-genres'))
 
         self._settings_dialog.connect('destroy', self._edit_settings_close)
 
@@ -99,7 +99,7 @@ class SettingsDialog:
         # Music tab
         #
         dirs = []
-        for directory in Objects.settings.get_value('music-path'):
+        for directory in Lp.settings.get_value('music-path'):
             dirs.append(directory)
 
         # Main chooser
@@ -123,10 +123,10 @@ class SettingsDialog:
         #
         # Party mode tab
         #
-        genres = Objects.genres.get()
+        genres = Lp.genres.get()
         genres.insert(0, (Type.POPULARS, _("Populars")))
         genres.insert(1, (Type.RECENTS, _("Recents")))
-        ids = Objects.player.get_party_ids()
+        ids = Lp.player.get_party_ids()
         i = 0
         x = 0
         for genre_id, genre in genres:
@@ -179,19 +179,19 @@ class SettingsDialog:
         @param widget as unused, state as widget state
     """
     def _update_ui_setting(self, widget, state):
-        Objects.settings.set_value('dark-ui',
+        Lp.settings.set_value('dark-ui',
                                    GLib.Variant('b', state))
-        if not Objects.player.is_party():
+        if not Lp.player.is_party():
             settings = Gtk.Settings.get_default()
             settings.set_property("gtk-application-prefer-dark-theme", state)
-            Objects.window.update_view()
+            Lp.window.update_view()
 
     """
         Update scan setting
         @param widget as unused, state as widget state
     """
     def _update_scan_setting(self, widget, state):
-        Objects.settings.set_value('auto-update',
+        Lp.settings.set_value('auto-update',
                                    GLib.Variant('b', state))
 
     """
@@ -199,7 +199,7 @@ class SettingsDialog:
         @param widget as unused, state as widget state
     """
     def _update_background_setting(self, widget, state):
-        Objects.settings.set_value('background-mode',
+        Lp.settings.set_value('background-mode',
                                    GLib.Variant('b', state))
 
     """
@@ -207,23 +207,23 @@ class SettingsDialog:
         @param widget as unused, state as widget state
     """
     def _update_state_setting(self, widget, state):
-        Objects.settings.set_value('save-state',
+        Lp.settings.set_value('save-state',
                                    GLib.Variant('b', state))
     """
         Update show genre setting
         @param widget as unused, state as widget state
     """
     def _update_genres_setting(self, widget, state):
-        Objects.window.show_genres(state)
-        Objects.settings.set_value('show-genres',
+        Lp.window.show_genres(state)
+        Lp.settings.set_value('show-genres',
                                    GLib.Variant('b', state))
-                                   
+
     """
         Update auto play setting
         @param widget as unused, state as widget state
     """
     def _update_autoplay_setting(self, widget, state):
-        Objects.settings.set_value('auto-play',
+        Lp.settings.set_value('auto-play',
                                    GLib.Variant('b', state))
 
     """
@@ -245,19 +245,19 @@ class SettingsDialog:
                 if path is not None and path not in paths:
                     paths.append(path)
 
-        previous = Objects.settings.get_value('music-path')
-        Objects.settings.set_value('music-path', GLib.Variant('as', paths))
+        previous = Lp.settings.get_value('music-path')
+        Lp.settings.set_value('music-path', GLib.Variant('as', paths))
         self._settings_dialog.hide()
         self._settings_dialog.destroy()
         if set(previous) != set(paths):
-            Objects.window.update_db()
+            Lp.window.update_db()
 
     """
         Update party ids when use change a switch in dialog
         @param widget as unused, state as widget state, genre id as int
     """
     def _party_switch_state(self, widget, state, genre_id):
-        ids = Objects.player.get_party_ids()
+        ids = Lp.player.get_party_ids()
         if state:
             try:
                 ids.append(genre_id)
@@ -268,7 +268,7 @@ class SettingsDialog:
                 ids.remove(genre_id)
             except:
                 pass
-        Objects.settings.set_value('party-ids',  GLib.Variant('ai', ids))
+        Lp.settings.set_value('party-ids',  GLib.Variant('ai', ids))
 
 
 # Widget used to let user select a collection folder

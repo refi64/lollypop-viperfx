@@ -13,7 +13,7 @@
 
 import random
 
-from lollypop.define import Shuffle, NextContext, Objects, Type
+from lollypop.define import Shuffle, NextContext, Lp, Type
 from lollypop.player_base import BasePlayer
 from lollypop.track import Track
 
@@ -24,8 +24,8 @@ class ShufflePlayer(BasePlayer):
         Init shuffle player
     """
     def __init__(self):
-       BasePlayer.__init__(self)
-       Objects.settings.connect('changed::shuffle', self._set_shuffle)
+        BasePlayer.__init__(self)
+        Lp.settings.connect('changed::shuffle', self._set_shuffle)
 
     """
         Next shuffle track
@@ -59,9 +59,9 @@ class ShufflePlayer(BasePlayer):
         @return [ids as int]
     """
     def get_party_ids(self):
-        party_settings = Objects.settings.get_value('party-ids')
+        party_settings = Lp.settings.get_value('party-ids')
         ids = []
-        genre_ids = Objects.genres.get_ids()
+        genre_ids = Lp.genres.get_ids()
         genre_ids.append(Type.POPULARS)
         genre_ids.append(Type.RECENTS)
         for setting in party_settings:
@@ -90,9 +90,9 @@ class ShufflePlayer(BasePlayer):
         if party:
             party_ids = self.get_party_ids()
             if party_ids:
-                self._albums = Objects.albums.get_party_ids(party_ids)
+                self._albums = Lp.albums.get_party_ids(party_ids)
             else:
-                self._albums = Objects.albums.get_ids()
+                self._albums = Lp.albums.get_ids()
 
             # Start a new song if not playing
             if (self.current_track.id == Type.RADIOS or not self.is_playing())\
@@ -109,7 +109,7 @@ class ShufflePlayer(BasePlayer):
                 self.set_albums(self.current_track.id,
                                 self.current_track.aartist_id, None)
         self.emit('party-changed', party)
-        Objects.window.update_view()
+        Lp.window.update_view()
 
     """
         True if party mode on
@@ -126,7 +126,7 @@ class ShufflePlayer(BasePlayer):
         @param settings as Gio.Settings, value as str
     """
     def _set_shuffle(self, settings, value):
-        self._shuffle = Objects.settings.get_enum('shuffle')
+        self._shuffle = Lp.settings.get_enum('shuffle')
 
         if self._shuffle in [Shuffle.TRACKS, Shuffle.TRACKS_ARTIST] or\
            self._user_playlist:
@@ -180,7 +180,7 @@ class ShufflePlayer(BasePlayer):
     def _get_random(self, sql=None):
         for album_id in sorted(self._albums,
                                key=lambda *args: random.random()):
-            tracks = Objects.albums.get_tracks(album_id,
+            tracks = Lp.albums.get_tracks(album_id,
                                                self.context.genre_id,
                                                sql)
             for track in sorted(tracks, key=lambda *args: random.random()):

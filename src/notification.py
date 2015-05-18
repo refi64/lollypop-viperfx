@@ -14,7 +14,7 @@
 from gi.repository import Gdk, GLib, Notify
 from gettext import gettext as _
 
-from lollypop.define import Objects, ArtSize, Type
+from lollypop.define import Lp, ArtSize, Type
 
 
 class NotificationManager:
@@ -29,8 +29,8 @@ class NotificationManager:
         self._notification.set_category('x-gnome.music')
         self._notification.set_hint('desktop-entry',
                                     GLib.Variant('s', 'lollypop'))
-        self._set_actions() 
-        Objects.player.connect('current-changed',
+        self._set_actions()
+        Lp.player.connect('current-changed',
                                self._on_current_changed)
 
     """
@@ -74,17 +74,17 @@ class NotificationManager:
         @param player Player
     """
     def _on_current_changed(self, player):
-        state = Objects.window.get_window().get_state()
-        app = Objects.window.get_application()
+        state = Lp.window.get_window().get_state()
+        app = Lp.window.get_application()
         if player.current_track.id is None or state & Gdk.WindowState.FOCUSED\
                                      or app.is_fullscreen():
             return
         if player.current_track.id == Type.RADIOS:
-            cover_path = Objects.art.get_radio_cache_path(
+            cover_path = Lp.art.get_radio_cache_path(
                                                         player.current_track.artist,
                                                         ArtSize.BIG)
         else:
-            cover_path = Objects.art.get_album_cache_path(
+            cover_path = Lp.art.get_album_cache_path(
                                                        player.current_track.album_id,
                                                        ArtSize.BIG)
         if cover_path is not None:
@@ -110,10 +110,10 @@ class NotificationManager:
         Callback for notification prev button
     """
     def _go_previous(self, notification, action, data):
-        Objects.player.prev()
+        Lp.player.prev()
 
     """
         Callback for notification next button
     """
     def _go_next(self, notification, action, data):
-        Objects.player.next()
+        Lp.player.next()

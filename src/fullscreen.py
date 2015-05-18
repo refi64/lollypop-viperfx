@@ -14,7 +14,7 @@
 from gi.repository import Gtk, Gdk, GLib
 from gettext import gettext as _
 
-from lollypop.define import Objects, ArtSize, Type
+from lollypop.define import Lp, ArtSize, Type
 from lollypop.utils import seconds_to_string
 
 
@@ -66,16 +66,16 @@ class FullScreen(Gtk.Window):
         Init signals, set color and go party mode if nothing is playing
     """
     def do_show(self):
-        is_playing = Objects.player.is_playing()
-        self._signal1_id = Objects.player.connect("current-changed",
+        is_playing = Lp.player.is_playing()
+        self._signal1_id = Lp.player.connect("current-changed",
                                                   self._on_current_changed)
-        self._signal2_id = Objects.player.connect("status-changed",
+        self._signal2_id = Lp.player.connect("status-changed",
                                                   self._on_status_changed)
         if is_playing:
             self._change_play_btn_status(self._pause_image, _("Pause"))
-            self._on_current_changed(Objects.player)
+            self._on_current_changed(Lp.player)
         else:
-            Objects.player.set_party(True)
+            Lp.player.set_party(True)
         if not self._timeout:
             self._timeout = GLib.timeout_add(1000, self._update_position)
         Gtk.Window.do_show(self)
@@ -87,10 +87,10 @@ class FullScreen(Gtk.Window):
     """
     def do_hide(self):
         if self._signal1_id:
-            Objects.player.disconnect(self._signal1_id)
+            Lp.player.disconnect(self._signal1_id)
             self._signal1_id = None
         if self._signal2_id:
-            Objects.player.disconnect(self._signal2_id)
+            Lp.player.disconnect(self._signal2_id)
             self._signal2_id = None
         if self._timeout:
             GLib.source_remove(self._timeout)
@@ -111,13 +111,13 @@ class FullScreen(Gtk.Window):
         if player.current_track.id is None:
             pass  # Impossible as we force play on show
         else:
-            if Objects.player.current_track.id == Type.RADIOS:
+            if Lp.player.current_track.id == Type.RADIOS:
                 self._prev_btn.set_sensitive(False)
                 self._next_btn.set_sensitive(False)
                 self._timelabel.hide()
                 self._total_time_label.hide()
                 self._progress.hide()
-                art = Objects.art.get_radio(player.current_track.artist,
+                art = Lp.art.get_radio(player.current_track.artist,
                                             ArtSize.MONSTER)
             else:
                 self._prev_btn.set_sensitive(True)
@@ -125,7 +125,7 @@ class FullScreen(Gtk.Window):
                 self._timelabel.show()
                 self._total_time_label.show()
                 self._progress.show()
-                art = Objects.art.get(player.current_track.album_id,
+                art = Lp.art.get(player.current_track.album_id,
                                       ArtSize.MONSTER)
             if art:
                 self._cover.set_from_pixbuf(art)
@@ -157,18 +157,18 @@ class FullScreen(Gtk.Window):
         @param widget as Gtk.Button
     """
     def _on_prev_btn_clicked(self, widget):
-        Objects.player.prev()
+        Lp.player.prev()
 
     """
         Play/pause
         @param widget as Gtk.Button
     """
     def _on_play_btn_clicked(self, widget):
-        if Objects.player.is_playing():
-            Objects.player.pause()
+        if Lp.player.is_playing():
+            Lp.player.pause()
             widget.set_image(self._play_image)
         else:
-            Objects.player.play()
+            Lp.player.play()
             widget.set_image(self._pause_image)
 
     """
@@ -176,14 +176,14 @@ class FullScreen(Gtk.Window):
         @param widget as Gtk.Button
     """
     def _on_next_btn_clicked(self, widget):
-        Objects.player.next()
+        Lp.player.next()
 
     """
         Update buttons and progress bar
         @param obj as unused
     """
     def _on_status_changed(self, obj):
-        is_playing = Objects.player.is_playing()
+        is_playing = Lp.player.is_playing()
         if is_playing and not self._timeout:
             self._timeout = GLib.timeout_add(1000, self._update_position)
             self._change_play_btn_status(self._pause_image, _("Pause"))
@@ -208,7 +208,7 @@ class FullScreen(Gtk.Window):
         value = scale.get_value()
         self._seeking = False
         self._update_position(value)
-        Objects.player.seek(value/60)
+        Lp.player.seek(value/60)
 
     """
         Update play button with image and status as tooltip
@@ -226,7 +226,7 @@ class FullScreen(Gtk.Window):
     def _update_position(self, value=None):
         if not self._seeking and self._progress.is_visible():
             if value is None:
-                value = Objects.player.get_position_in_track()/1000000
+                value = Lp.player.get_position_in_track()/1000000
             self._progress.set_value(value)
             self._timelabel.set_text(seconds_to_string(value/60))
         return True

@@ -18,7 +18,7 @@ from _thread import start_new_thread
 from lollypop.view import View
 from lollypop.view_container import ViewContainer
 from lollypop.widgets_album import AlbumSimpleWidget, AlbumDetailedWidget
-from lollypop.define import Objects, Type, ArtSize
+from lollypop.define import Lp, Type, ArtSize
 from lollypop.utils import translate_artist_name
 
 
@@ -40,7 +40,7 @@ class ArtistView(View):
             builder = Gtk.Builder()
             builder.add_from_resource('/org/gnome/Lollypop/ArtistView.ui')
             self.attach(builder.get_object('ArtistView'),0, 0, 1, 1)
-            artist_name = Objects.artists.get_name(artist_id)
+            artist_name = Lp.artists.get_name(artist_id)
             artist_name = translate_artist_name(artist_name)
             builder.get_object('artist').set_label(artist_name)
 
@@ -74,16 +74,16 @@ class ArtistView(View):
         @thread safe
     """
     def _get_albums(self):
-        sql = Objects.db.get_cursor()
+        sql = Lp.db.get_cursor()
         if self._artist_id == Type.COMPILATIONS:
-            albums = Objects.albums.get_compilations(self._genre_id,
+            albums = Lp.albums.get_compilations(self._genre_id,
                                                      sql)
         elif self._genre_id == Type.ALL:
-            albums = Objects.albums.get_ids(self._artist_id,
+            albums = Lp.albums.get_ids(self._artist_id,
                                             None,
                                             sql)
         else:
-            albums = Objects.albums.get_ids(self._artist_id,
+            albums = Lp.albums.get_ids(self._artist_id,
                                             self._genre_id,
                                             sql)
         sql.close()
@@ -182,11 +182,11 @@ class AlbumsView(View):
         self._paned = Gtk.Paned.new(Gtk.Orientation.VERTICAL)
         self._paned.pack1(self._scrolledWindow)
         self._paned.pack2(self._context, True, False)
-        height = Objects.settings.get_value(
+        height = Lp.settings.get_value(
                                          'paned-context-height').get_int32()
         # We set a stupid max value, safe as self._context is shrinked
         if height == -1:
-            height = Objects.window.get_allocated_height()
+            height = Lp.window.get_allocated_height()
         self._paned.set_position(height)
         self._paned.connect('notify::position', self._on_position_notify)
         self._paned.show()
@@ -210,20 +210,20 @@ class AlbumsView(View):
         @thread safe
     """
     def _get_albums(self):
-        sql = Objects.db.get_cursor()
+        sql = Lp.db.get_cursor()
         if self._genre_id == Type.ALL:
-            albums = Objects.albums.get_ids(None, None, sql)
+            albums = Lp.albums.get_ids(None, None, sql)
         elif self._genre_id == Type.POPULARS:
-            albums = Objects.albums.get_populars(sql)
+            albums = Lp.albums.get_populars(sql)
         elif self._genre_id == Type.RECENTS:
-            albums = Objects.albums.get_recents(sql)
+            albums = Lp.albums.get_recents(sql)
         elif self._genre_id == Type.RANDOMS:
-            albums = Objects.albums.get_randoms(sql)
+            albums = Lp.albums.get_randoms(sql)
         elif self._is_compilation:
-            albums = Objects.albums.get_compilations(self._genre_id,
+            albums = Lp.albums.get_compilations(self._genre_id,
                                                      sql)
         else:
-            albums = Objects.albums.get_ids(None, self._genre_id, sql)
+            albums = Lp.albums.get_ids(None, self._genre_id, sql)
         sql.close()
         return albums
 
@@ -279,7 +279,7 @@ class AlbumsView(View):
         @param param as Gtk.Param
     """
     def _on_position_notify(self, paned, param):
-        Objects.settings.set_value(
+        Lp.settings.set_value(
                             'paned-context-height',
                             GLib.Variant('i', paned.get_position()))
         return False
@@ -291,8 +291,8 @@ class AlbumsView(View):
     """
     def _on_album_activated(self, flowbox, child):
         if self._context_album_id == child.get_child().get_id():
-            if Objects.settings.get_value('auto-play'):
-                Objects.player.play_album(self._context_album_id)
+            if Lp.settings.get_value('auto-play'):
+                Lp.player.play_album(self._context_album_id)
             else:
                 self._context_album_id = None
                 self._context.hide()

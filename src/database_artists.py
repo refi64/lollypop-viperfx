@@ -13,7 +13,7 @@
 
 from gettext import gettext as _
 
-from lollypop.define import Objects, Type
+from lollypop.define import Lp, Type
 
 
 # All functions take a sqlite cursor as last parameter,
@@ -29,7 +29,7 @@ class DatabaseArtists:
     """
     def add(self, name, outside, sql=None):
         if not sql:
-            sql = Objects.sql
+            sql = Lp.sql
         sql.execute("INSERT INTO artists (name, outside) VALUES (?, ?)",
                     (name, outside))
 
@@ -40,7 +40,7 @@ class DatabaseArtists:
     """
     def get_id(self, name, sql=None):
         if not sql:
-            sql = Objects.sql
+            sql = Lp.sql
 
         result = sql.execute("SELECT rowid from artists\
                               WHERE name=?", (name,))
@@ -57,7 +57,7 @@ class DatabaseArtists:
     """
     def get_name(self, artist_id, sql=None):
         if not sql:
-            sql = Objects.sql
+            sql = Lp.sql
         if artist_id == Type.COMPILATIONS:
             return _("Many artists")
 
@@ -75,7 +75,7 @@ class DatabaseArtists:
     """
     def get_albums(self, artist_id, sql=None):
         if not sql:
-            sql = Objects.sql
+            sql = Lp.sql
         albums = []
         result = sql.execute("SELECT rowid FROM albums\
                               WHERE artist_id=?\
@@ -93,7 +93,7 @@ class DatabaseArtists:
     """
     def get(self, genre_id, sql=None):
         if not sql:
-            sql = Objects.sql
+            sql = Lp.sql
         artists = []
         result = []
         if genre_id == Type.ALL or genre_id is None:
@@ -121,7 +121,7 @@ class DatabaseArtists:
     """
     def exists(self, artist_id, sql=None):
         if not sql:
-            sql = Objects.sql
+            sql = Lp.sql
 
         result = sql.execute("SELECT COUNT(*) from artists WHERE rowid=?",
                              (artist_id,))
@@ -138,7 +138,7 @@ class DatabaseArtists:
     """
     def search(self, string, sql=None):
         if not sql:
-            sql = Objects.sql
+            sql = Lp.sql
         artists = []
         result = sql.execute("SELECT rowid FROM artists\
                               WHERE name LIKE ?\
@@ -154,7 +154,7 @@ class DatabaseArtists:
     """
     def clean(self, artist_id, sql=None):
         if not sql:
-            sql = Objects.sql
+            sql = Lp.sql
         result = sql.execute("SELECT rowid from albums\
                               WHERE artist_id=?\
                               LIMIT 1", (artist_id,))

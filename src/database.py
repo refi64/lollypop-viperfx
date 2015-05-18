@@ -15,7 +15,7 @@ import sqlite3
 import os
 from gi.repository import GLib
 
-from lollypop.define import Objects
+from lollypop.define import Lp
 
 
 class Database:
@@ -83,12 +83,12 @@ class Database:
                 print("Can't create %s" % self.LOCAL_PATH)
 
         if os.path.exists(self.DB_PATH):
-            db_version = Objects.settings.get_value('db-version').get_int32()
+            db_version = Lp.settings.get_value('db-version').get_int32()
             if db_version < self.version:
                 self._set_popularities()
                 self._set_mtimes()
                 os.remove(self.DB_PATH)
-                Objects.settings.set_value('db-version',
+                Lp.settings.set_value('db-version',
                                            GLib.Variant('i', self.version))
 
         sql = self.get_cursor()
@@ -102,7 +102,7 @@ class Database:
             sql.execute(self.create_track_artists)
             sql.execute(self.create_track_genres)
             sql.commit()
-            Objects.settings.set_value('db-version',
+            Lp.settings.set_value('db-version',
                                        GLib.Variant('i', self.version))
         except:
             pass

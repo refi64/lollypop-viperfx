@@ -18,7 +18,7 @@ from os import path
 
 from lollypop.player_base import BasePlayer
 from lollypop.player_rg import ReplayGainPlayer
-from lollypop.define import GstPlayFlags, NextContext, Objects
+from lollypop.define import GstPlayFlags, NextContext, Lp
 from lollypop.define import Type
 from lollypop.utils import translate_artist_name, debug
 from lollypop.track import Track
@@ -196,7 +196,7 @@ class BinPlayer(ReplayGainPlayer, BasePlayer):
                 self._on_errors()
                 return False
         else:
-            Objects.notify.send(_("File doesn't exist: %s") % self.current_track.path)
+            Lp.notify.send(_("File doesn't exist: %s") % self.current_track.path)
             GLib.timeout_add(2000, self.next)
             return False
         return True
@@ -239,13 +239,13 @@ class BinPlayer(ReplayGainPlayer, BasePlayer):
         if self.current_track.id != Type.RADIOS:
             previous_track_id = self.current_track.id
             # We are in a thread, we need to create a new cursor
-            sql = Objects.db.get_cursor()
+            sql = Lp.db.get_cursor()
             self.next()
             # Add populariy if we listen to the song
-            album_id = Objects.tracks.get_album_id(previous_track_id,
+            album_id = Lp.tracks.get_album_id(previous_track_id,
                                                    sql)
-            if not Objects.scanner.is_locked():
-                Objects.albums.set_more_popular(album_id, sql)
+            if not Lp.scanner.is_locked():
+                Lp.albums.set_more_popular(album_id, sql)
             sql.close()
 
     """

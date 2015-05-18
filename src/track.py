@@ -15,7 +15,7 @@ from gi.repository import GLib
 
 from os import path
 
-from lollypop.define import Objects, Type
+from lollypop.define import Lp, Type
 from lollypop.utils import translate_artist_name
 
 
@@ -42,29 +42,29 @@ class Track:
             self.duration = 0.0
         else:
             self.id = track_id
-            self.title = Objects.tracks.get_name(self.id,
+            self.title = Lp.tracks.get_name(self.id,
                                                  sql)
-            self.album_id = Objects.tracks.get_album_id(track_id,
+            self.album_id = Lp.tracks.get_album_id(track_id,
                                                         sql)
-            self.album = Objects.albums.get_name(self.album_id,
+            self.album = Lp.albums.get_name(self.album_id,
                                                  sql)
-            self.aartist_id = Objects.tracks.get_aartist_id(track_id,
+            self.aartist_id = Lp.tracks.get_aartist_id(track_id,
                                                             sql)
             self.aartist = translate_artist_name(
-                                            Objects.artists.get_name(
+                                            Lp.artists.get_name(
                                                            self.aartist_id,
                                                            sql))
             artist_name = ""
-            for artist_id in Objects.tracks.get_artist_ids(self.id, sql):
+            for artist_id in Lp.tracks.get_artist_ids(self.id, sql):
                 artist_name += translate_artist_name(
-                                Objects.artists.get_name(artist_id, sql)) +\
+                                Lp.artists.get_name(artist_id, sql)) +\
                                 ", "
             self.artist = artist_name[:-2]
-            self.genre = Objects.albums.get_genre_name(self.album_id,
+            self.genre = Lp.albums.get_genre_name(self.album_id,
                                                        sql)
-            self.duration = Objects.tracks.get_length(self.id, sql)
-            self.number = Objects.tracks.get_number(self.id, sql)
-            filepath = Objects.tracks.get_path(self.id, sql)
+            self.duration = Lp.tracks.get_length(self.id, sql)
+            self.number = Lp.tracks.get_number(self.id, sql)
+            filepath = Lp.tracks.get_path(self.id, sql)
             if path.exists(filepath):
                 self.uri = GLib.filename_to_uri(filepath)
 

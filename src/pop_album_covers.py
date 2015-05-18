@@ -17,7 +17,7 @@ import urllib.request
 import urllib.parse
 from _thread import start_new_thread
 
-from lollypop.define import Objects, ArtSize, GOOGLE_INC, GOOGLE_MAX
+from lollypop.define import Lp, ArtSize, GOOGLE_INC, GOOGLE_MAX
 from lollypop.view_container import ViewContainer
 
 # Show a popover with album covers from the web
@@ -34,8 +34,8 @@ class PopAlbumCovers(Gtk.Popover):
         self._start = 0
         self._orig_pixbufs = {}
 
-        album = Objects.albums.get_name(album_id)
-        artist = Objects.artists.get_name(artist_id)
+        album = Lp.albums.get_name(album_id)
+        artist = Lp.artists.get_name(artist_id)
 
         self._search = "%s+%s" % (artist, album)
 
@@ -92,7 +92,7 @@ class PopAlbumCovers(Gtk.Popover):
         Same as populate()
     """
     def _populate(self):
-        self._urls = Objects.art.get_google_arts(self._search)
+        self._urls = Lp.art.get_google_arts(self._search)
         if self._urls:
             self._start += GOOGLE_INC
             self._add_pixbufs()
@@ -163,8 +163,8 @@ class PopAlbumCovers(Gtk.Popover):
     """
     def _on_activate(self, flowbox, child):
         pixbuf = self._orig_pixbufs[child.get_child()]
-        Objects.art.save_album_art(pixbuf, self._album_id)
-        Objects.art.clean_album_cache(self._album_id)
-        Objects.player.announce_cover_update(self._album_id)
+        Lp.art.save_album_art(pixbuf, self._album_id)
+        Lp.art.clean_album_cache(self._album_id)
+        Lp.player.announce_cover_update(self._album_id)
         self.hide()
         self._streams = {}

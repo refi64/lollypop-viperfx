@@ -27,7 +27,7 @@ import urllib.parse
 from math import pi
 
 from lollypop.tagreader import TagReader
-from lollypop.define import Objects, ArtSize, GOOGLE_INC
+from lollypop.define import Lp, ArtSize, GOOGLE_INC
 
 
 # Manage album's arts
@@ -44,7 +44,7 @@ class AlbumArt(TagReader):
     def __init__(self):
         TagReader.__init__(self)
         self._gtk_settings = Gtk.Settings.get_default()
-        self._favorite = Objects.settings.get_value(
+        self._favorite = Lp.settings.get_value(
                                                 'favorite-cover').get_string()
         if not os.path.exists(self._CACHE_PATH):
             try:
@@ -61,7 +61,7 @@ class AlbumArt(TagReader):
         filename = ''
         try:
             filename = self._get_album_cache_name(album_id)
-            CACHE_PATH_JPG = "%s/%s_%s.jpg" % (self._CACHE_PATH, 
+            CACHE_PATH_JPG = "%s/%s_%s.jpg" % (self._CACHE_PATH,
                                                filename,
                                                size)
             if os.path.exists(CACHE_PATH_JPG):
@@ -110,9 +110,9 @@ class AlbumArt(TagReader):
         @return cover file path as string
     """
     def get_album_art_path(self, album_id, sql=None):
-        album_path = Objects.albums.get_path(album_id, sql)
-        album_name = Objects.albums.get_name(album_id, sql)
-        artist_name = Objects.albums.get_artist_name(album_id, sql)
+        album_path = Lp.albums.get_path(album_id, sql)
+        album_name = Lp.albums.get_name(album_id, sql)
+        artist_name = Lp.albums.get_artist_name(album_id, sql)
         try:
             if os.path.exists(album_path + "/" + self._favorite):
                 return album_path + "/" + self._favorite
@@ -210,7 +210,7 @@ class AlbumArt(TagReader):
                 # Try to get from tags
                 else:
                     try:
-                        tracks = Objects.albums.get_tracks(album_id, None)
+                        tracks = Lp.albums.get_tracks(album_id, None)
                         if tracks:
                             pixbuf = self._pixbuf_from_tags(tracks[0], size)
                     except Exception as e:
@@ -288,10 +288,10 @@ class AlbumArt(TagReader):
         @param album id as int
     """
     def save_album_art(self, pixbuf, album_id):
-        album_path = Objects.albums.get_path(album_id)
-        path_count = Objects.albums.get_path_count(album_path)
-        album_name = Objects.albums.get_name(album_id)
-        artist_name = Objects.albums.get_artist_name(album_id)
+        album_path = Lp.albums.get_path(album_id)
+        path_count = Lp.albums.get_path_count(album_path)
+        album_name = Lp.albums.get_name(album_id)
+        artist_name = Lp.albums.get_artist_name(album_id)
         try:
             # Many albums with same path, suffix with artist_album name
             if path_count > 1:
@@ -384,7 +384,7 @@ class AlbumArt(TagReader):
     """
     def _pixbuf_from_tags(self, track_id, size):
         pixbuf = None
-        filepath = Objects.tracks.get_path(track_id)
+        filepath = Lp.tracks.get_path(track_id)
         infos = self.get_infos(filepath)
         exist = False
         if infos is not None:
@@ -407,8 +407,8 @@ class AlbumArt(TagReader):
         @param sql as sqlite cursor
     """
     def _get_album_cache_name(self, album_id, sql=None):
-        path = Objects.albums.get_name(album_id, sql) + "_" + \
-               Objects.albums.get_artist_name(album_id, sql)
+        path = Lp.albums.get_name(album_id, sql) + "_" + \
+               Lp.albums.get_artist_name(album_id, sql)
         return path[0:240].replace("/", "_")
 
     """
@@ -426,11 +426,11 @@ class AlbumArt(TagReader):
         @param selected as bool
     """
     def _make_icon_frame(self, pixbuf, selected):
-        selected_color = Objects.window.get_selected_color()
+        selected_color = Lp.window.get_selected_color()
         dark = self._gtk_settings.get_property(
                                            "gtk-application-prefer-dark-theme")
         degrees = pi / 180
-        
+
         width = pixbuf.get_width()
         height = pixbuf.get_height()
 

@@ -14,7 +14,7 @@
 from gi.repository import Gtk, Gio, GLib
 
 from lollypop.container import Container
-from lollypop.define import Objects, NextContext
+from lollypop.define import Lp, NextContext
 from lollypop.toolbar import Toolbar
 from lollypop.utils import use_csd
 
@@ -172,13 +172,13 @@ class Window(Gtk.ApplicationWindow, Container):
             return
         response = parameters.get_child_value(1).get_string()
         if 'Play' in response:
-            Objects.player.play_pause()
+            Lp.player.play_pause()
         elif 'Stop' in response:
-            Objects.player.stop()
+            Lp.player.stop()
         elif 'Next' in response:
-            Objects.player.next()
+            Lp.player.next()
         elif 'Previous' in response:
-            Objects.player.prev()
+            Lp.player.prev()
 
     """
         Setup window content
@@ -204,19 +204,19 @@ class Window(Gtk.ApplicationWindow, Container):
         Setup window position and size, callbacks
     """
     def _setup_window(self):
-        size_setting = Objects.settings.get_value('window-size')
+        size_setting = Lp.settings.get_value('window-size')
         if isinstance(size_setting[0], int) and\
            isinstance(size_setting[1], int):
             self.resize(size_setting[0], size_setting[1])
         else:
             self.set_size_request(800, 600)
-        position_setting = Objects.settings.get_value('window-position')
+        position_setting = Lp.settings.get_value('window-position')
         if len(position_setting) == 2 and\
            isinstance(position_setting[0], int) and\
            isinstance(position_setting[1], int):
             self.move(position_setting[0], position_setting[1])
 
-        if Objects.settings.get_value('window-maximized'):
+        if Lp.settings.get_value('window-maximized'):
             self.maximize()
 
         self._signal1 = self.connect("window-state-event",
@@ -244,12 +244,12 @@ class Window(Gtk.ApplicationWindow, Container):
     def _save_size_position(self, widget):
         self._timeout_configure = None
         size = widget.get_size()
-        Objects.settings.set_value('window-size',
+        Lp.settings.set_value('window-size',
                                    GLib.Variant('ai',
                                                 [size[0], size[1]]))
 
         position = widget.get_position()
-        Objects.settings.set_value('window-position',
+        Lp.settings.set_value('window-position',
                                    GLib.Variant('ai',
                                                 [position[0], position[1]]))
 
@@ -257,7 +257,7 @@ class Window(Gtk.ApplicationWindow, Container):
         Save maximised state
     """
     def _on_window_state_event(self, widget, event):
-        Objects.settings.set_boolean('window-maximized',
+        Lp.settings.set_boolean('window-maximized',
                                      'GDK_WINDOW_STATE_MAXIMIZED' in
                                      event.new_window_state.value_names)
 
@@ -266,11 +266,11 @@ class Window(Gtk.ApplicationWindow, Container):
         @param widget as unused, data as unused
     """
     def _on_destroyed_window(self, widget):
-        Objects.settings.set_value("paned-mainlist-width",
+        Lp.settings.set_value("paned-mainlist-width",
                                    GLib.Variant(
                                         'i',
                                         self._paned_main_list.get_position()))
-        Objects.settings.set_value("paned-listview-width",
+        Lp.settings.set_value("paned-listview-width",
                                    GLib.Variant(
                                         'i',
                                         self._paned_list_view.get_position()))
@@ -282,13 +282,13 @@ class Window(Gtk.ApplicationWindow, Container):
     """
     def _on_seek_action(self, action, param):
         seconds = param.get_int32()
-        position = Objects.player.get_position_in_track()
+        position = Lp.player.get_position_in_track()
         seek = position/1000000/60+seconds
         if seek < 0:
             seek = 0
-        if seek > Objects.player.current_track.duration:
-            seek = Objects.player.current_track.duration - 2
-        Objects.player.seek(seek)
+        if seek > Lp.player.current_track.duration:
+            seek = Lp.player.current_track.duration - 2
+        Lp.player.seek(seek)
         self._toolbar.update_position(seek*60)
 
     """
@@ -299,15 +299,15 @@ class Window(Gtk.ApplicationWindow, Container):
     def _on_player_action(self, action, param):
         string = param.get_string()
         if string == "play_pause":
-            Objects.player.play_pause()
+            Lp.player.play_pause()
         elif string == "play":
-            Objects.player.play()
+            Lp.player.play()
         elif string == "stop":
-            Objects.player.stop()
+            Lp.player.stop()
         elif string == "next":
-            Objects.player.next(True)
+            Lp.player.next(True)
         elif string == "next_album":
-            Objects.player.context.next = NextContext.START_NEW_ALBUM
-            Objects.player.next(True)
+            Lp.player.context.next = NextContext.START_NEW_ALBUM
+            Lp.player.next(True)
         elif string == "prev":
-            Objects.player.prev()
+            Lp.player.prev()

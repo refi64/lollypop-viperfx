@@ -17,7 +17,7 @@ from _thread import start_new_thread
 from gettext import gettext as _
 import os
 
-from lollypop.define import Objects, Type
+from lollypop.define import Lp, Type
 from lollypop.selectionlist import SelectionList
 from lollypop.playlists import PlaylistsManager
 from lollypop.view_container import ViewContainer
@@ -39,15 +39,15 @@ class Device:
 # Container for main window child
 class Container:
     def __init__(self):
-        
+
         # Try to update db on start, will be done after list one populating
         # finished
-        self._need_to_update_db = Objects.settings.get_value('auto-update') or\
-                                  Objects.tracks.is_empty()
+        self._need_to_update_db = Lp.settings.get_value('auto-update') or\
+                                  Lp.tracks.is_empty()
         # Index will start at -VOLUMES
         self._devices = {}
         self._devices_index = Type.DEVICES
-        self._show_genres = Objects.settings.get_value('show-genres')
+        self._show_genres = Lp.settings.get_value('show-genres')
         self._stack = ViewContainer(500)
         self._stack.show()
 
@@ -63,7 +63,7 @@ class Container:
         self._vm.connect('mount-added', self._on_mount_added)
         self._vm.connect('mount-removed', self._on_mount_removed)
 
-        Objects.playlists.connect('playlists-changed',
+        Lp.playlists.connect('playlists-changed',
                                   self._update_lists)
 
     """
@@ -71,15 +71,15 @@ class Container:
     """
     def update_db(self):
         # Stop previous scan
-        if Objects.scanner.is_locked():
-            Objects.scanner.stop()
+        if Lp.scanner.is_locked():
+            Lp.scanner.stop()
             GLib.timeout_add(250, self.update_db)
         else:
             # Something (device manager) is using progress bar
             progress = None
             if not self._progress.is_visible():
                 progress = self._progress
-            Objects.scanner.update(progress)
+            Lp.scanner.update(progress)
 
     """
         Return current selected genre
@@ -94,17 +94,17 @@ class Container:
         Init list one
     """
     def init_list_one(self):
-       self._update_list_one(None)
+        self._update_list_one(None)
 
     """
         Save view state
     """
     def save_view_state(self):
-        Objects.settings.set_value("list-one",
+        Lp.settings.set_value("list-one",
                                    GLib.Variant(
                                         'i',
                                         self._list_one.get_selected_id()))
-        Objects.settings.set_value("list-two",
+        Lp.settings.set_value("list-two",
                                    GLib.Variant(
                                         'i',
                                         self._list_two.get_selected_id()))
@@ -149,11 +149,11 @@ class Container:
         # Same for locked db
         if self._list_one.is_populating() or\
            self._list_one.is_populating() or\
-           Objects.scanner.is_locked():
-            Objects.scanner.stop()
+           Lp.scanner.is_locked():
+            Lp.scanner.stop()
             GLib.timeout_add(250, self.load_external, files)
         else:
-            Objects.scanner.add(files)
+            Lp.scanner.add(files)
 
     """
         Get main widget
@@ -243,10 +243,10 @@ class Container:
         self._paned_main_list.add1(self._list_one)
         self._paned_main_list.add2(self._paned_list_view)
         self._paned_main_list.set_position(
-                        Objects.settings.get_value(
+                        Lp.settings.get_value(
                                 'paned-mainlist-width').get_int32())
         self._paned_list_view.set_position(
-                        Objects.settings.get_value(
+                        Lp.settings.get_value(
                                 'paned-listview-width').get_int32())
         self._paned_main_list.show()
         self._paned_list_view.show()
@@ -258,11 +258,11 @@ class Container:
     def _get_saved_view_state(self):
         list_one_id = Type.POPULARS
         list_two_id = Type.NONE
-        if Objects.settings.get_value('save-state'):
-            position = Objects.settings.get_value('list-one').get_int32()
+        if Lp.settings.get_value('save-state'):
+            position = Lp.settings.get_value('list-one').get_int32()
             if position != -1:
                 list_one_id = position
-            position = Objects.settings.get_value('list-two').get_int32()
+            position = Lp.settings.get_value('list-two').get_int32()
             if position != -1:
                 list_two_id = position
 
@@ -275,7 +275,7 @@ class Container:
     """
     def _add_genre(self, scanner, genre_id):
         if self._show_genres:
-            genre_name = Objects.genres.get_name(genre_id)
+            genre_name = Lp.genres.get_name(genre_id)
             self._list_one.add_value((genre_id, genre_name))
 
     """
@@ -285,9 +285,9 @@ class Container:
         @param album id as int
     """
     def _add_artist(self, scanner, artist_id, album_id):
-        artist_name = Objects.artists.get_name(artist_id)
+        artist_name = Lp.artists.get_name(artist_id)
         if self._show_genres:
-            genre_ids = Objects.albums.get_genre_ids(album_id)
+            genre_ids = Lp.albums.get_genre_ids(album_id)
             genre_ids.append(Type.ALL)
             if self._list_one.get_selected_id() in genre_ids:
                 self._list_two.add_value((artist_id, artist_name))
@@ -299,10 +299,10 @@ class Container:
         @return True if hard scan is running
     """
     def _setup_scanner(self):
-        Objects.scanner.connect('scan-finished', self.on_scan_finished)
-        Objects.scanner.connect('genre-update', self._add_genre)
-        Objects.scanner.connect('artist-update', self._add_artist)
-        Objects.scanner.connect('track-added', self._play_track)
+        Lp.scanner.connect('scan-finished', self.on_scan_finished)
+        Lp.scanner.connect('genre-update', self._add_genre)
+        Lp.scanner.connect('artist-update', self._add_artist)
+        Lp.scanner.connect('track-added', self._play_track)
 
     """
         Update lists
@@ -362,9 +362,9 @@ class Container:
         @thread safe
     """
     def _setup_list_genres(self, selection_list, update):
-        sql = Objects.db.get_cursor()
+        sql = Lp.db.get_cursor()
         selection_list.mark_as_artists(False)
-        items = self._get_headers() + Objects.genres.get(sql)
+        items = self._get_headers() + Lp.genres.get(sql)
         if update:
             selection_list.update_values(items)
         else:
@@ -388,15 +388,15 @@ class Container:
     """
     def _setup_list_artists(self, selection_list, genre_id, update):
         GLib.idle_add(self._pre_setup_list_artists, selection_list)
-        sql = Objects.db.get_cursor()
+        sql = Lp.db.get_cursor()
         items = []
         selection_list.mark_as_artists(True)
         if selection_list == self._list_one:
             items = self._get_headers()
-        if Objects.albums.get_compilations(genre_id, sql):
+        if Lp.albums.get_compilations(genre_id, sql):
             items.append((Type.COMPILATIONS, _("Compilations")))
 
-        items += Objects.artists.get(genre_id, sql)
+        items += Lp.artists.get(genre_id, sql)
 
         if update:
             selection_list.update_values(items)
@@ -410,7 +410,7 @@ class Container:
         @thread safe
     """
     def _setup_list_playlists(self, update):
-        playlists = Objects.playlists.get()
+        playlists = Lp.playlists.get()
         if update:
             self._list_two.update_values(playlists)
         else:
@@ -470,7 +470,7 @@ class Container:
     def _update_view_playlists(self, playlist_id):
         view = None
         if playlist_id is not None:
-            for (p_id, p_str) in Objects.playlists.get():
+            for (p_id, p_str) in Lp.playlists.get():
                 if p_id == playlist_id:
                     view = PlaylistsView(p_str, self._stack)
                     break
@@ -604,12 +604,12 @@ class Container:
     def _play_track(self, scanner, track_id, play):
         tracks = [track_id]
         if play:
-            Objects.player.clear_user_playlist()
-            if not Objects.player.is_party():
-                Objects.player.set_user_playlist(tracks, track_id)
-            Objects.player.load(track_id)
-        elif not Objects.player.is_party():
-            Objects.player.add_to_user_playlist(track_id)
+            Lp.player.clear_user_playlist()
+            if not Lp.player.is_party():
+                Lp.player.set_user_playlist(tracks, track_id)
+            Lp.player.load(track_id)
+        elif not Lp.player.is_party():
+            Lp.player.add_to_user_playlist(track_id)
 
     """
         On volume mounter

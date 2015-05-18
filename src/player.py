@@ -18,7 +18,7 @@ from lollypop.player_shuffle import ShufflePlayer
 from lollypop.player_radio import RadioPlayer
 from lollypop.player_userplaylist import UserPlaylistPlayer
 from lollypop.track import Track
-from lollypop.define import Objects, Type, NextContext
+from lollypop.define import Lp, Type, NextContext
 from lollypop.define import Shuffle
 
 
@@ -71,9 +71,9 @@ class Player(BinPlayer, QueuePlayer, UserPlaylistPlayer, RadioPlayer,
         # Empty user playlist
         self._user_playlist = None
         # Get first track from album
-        track_id = Objects.albums.get_tracks(album_id, genre_id)[0]
-        Objects.player.load(Track(track_id))
-        if not Objects.player.is_party():
+        track_id = Lp.albums.get_tracks(album_id, genre_id)[0]
+        Lp.player.load(Track(track_id))
+        if not Lp.player.is_party():
             if genre_id:
                 self.set_albums(self.current_track.id,
                                 self.current_track.aartist_id,
@@ -89,7 +89,7 @@ class Player(BinPlayer, QueuePlayer, UserPlaylistPlayer, RadioPlayer,
     def set_album(self, album_id):
         self._albums = [album_id]
         self.context.genre_id = None
-        tracks = Objects.albums.get_tracks(album_id, None)
+        tracks = Lp.albums.get_tracks(album_id, None)
         self.context.position = tracks.index(self.current_track.id)
 
     """
@@ -102,7 +102,7 @@ class Player(BinPlayer, QueuePlayer, UserPlaylistPlayer, RadioPlayer,
         # Invalid track
         if track_id is None:
             return
-        album_id = Objects.tracks.get_album_id(track_id)
+        album_id = Lp.tracks.get_album_id(track_id)
         self._albums = []
         self._played_tracks_history = []
         self._already_played_tracks = {}
@@ -121,29 +121,29 @@ class Player(BinPlayer, QueuePlayer, UserPlaylistPlayer, RadioPlayer,
         self._user_playlist = None
         # We are in all artists
         if genre_id_lookup == Type.ALL or artist_id == Type.ALL:
-            self._albums = Objects.albums.get_compilations(Type.ALL)
-            self._albums += Objects.albums.get_ids()
+            self._albums = Lp.albums.get_compilations(Type.ALL)
+            self._albums += Lp.albums.get_ids()
         # We are in populars view, add popular albums
         elif genre_id_lookup == Type.POPULARS:
-            self._albums = Objects.albums.get_populars()
+            self._albums = Lp.albums.get_populars()
         # We are in recents view, add recent albums
         elif genre_id_lookup == Type.RECENTS:
-            self._albums = Objects.albums.get_recents()
+            self._albums = Lp.albums.get_recents()
         # We are in randoms view, add random albums
         elif genre_id_lookup == Type.RANDOMS:
-            self._albums = Objects.albums.get_cached_randoms()
+            self._albums = Lp.albums.get_cached_randoms()
         # We are in compilation view without genre
         elif genre_id_lookup == Type.COMPILATIONS:
-            self._albums = Objects.albums.get_compilations(None)
+            self._albums = Lp.albums.get_compilations(None)
         # Random tracks/albums for artist
         elif self._shuffle in [Shuffle.TRACKS_ARTIST, Shuffle.ALBUMS_ARTIST]:
-            self._albums = Objects.albums.get_ids(artist_id, genre_id_lookup)
+            self._albums = Lp.albums.get_ids(artist_id, genre_id_lookup)
         # Add all albums for genre
         else:
-            self._albums = Objects.albums.get_compilations(genre_id_lookup)
-            self._albums += Objects.albums.get_ids(None, genre_id_lookup)
+            self._albums = Lp.albums.get_compilations(genre_id_lookup)
+            self._albums += Lp.albums.get_ids(None, genre_id_lookup)
 
-        tracks = Objects.albums.get_tracks(album_id, genre_id_lookup)
+        tracks = Lp.albums.get_tracks(album_id, genre_id_lookup)
         if track_id in tracks:
             self.context.position = tracks.index(track_id)
             self.context.genre_id = genre_id
@@ -156,9 +156,9 @@ class Player(BinPlayer, QueuePlayer, UserPlaylistPlayer, RadioPlayer,
         Restore player state
     """
     def restore_state(self):
-        track_id = Objects.settings.get_value('track-id').get_int32()
-        if Objects.settings.get_value('save-state') and track_id > 0:
-            path = Objects.tracks.get_path(track_id)
+        track_id = Lp.settings.get_value('track-id').get_int32()
+        if Lp.settings.get_value('save-state') and track_id > 0:
+            path = Lp.tracks.get_path(track_id)
             if path != "":
                 self._load_track(Track(track_id))
                 self.set_albums(track_id, Type.ALL, Type.ALL)
@@ -193,7 +193,7 @@ class Player(BinPlayer, QueuePlayer, UserPlaylistPlayer, RadioPlayer,
         # Look at user playlist then
         if self.prev_track.id is None:
             self.prev_track = UserPlaylistPlayer.prev(self)
-        
+
         # Look at shuffle
         if self.prev_track.id is None:
             self.prev_track = ShufflePlayer.prev(self)

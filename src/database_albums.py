@@ -14,7 +14,7 @@
 from gettext import gettext as _
 import os
 
-from lollypop.define import Objects, Type
+from lollypop.define import Lp, Type
 
 
 # All functions take a sqlite cursor as last parameter,
@@ -37,7 +37,7 @@ class DatabaseAlbums:
     def add(self, name, artist_id, noaartist, path, popularity,
             outside, mtime, sql=None):
         if not sql:
-            sql = Objects.sql
+            sql = Lp.sql
         sql.execute("INSERT INTO albums "
                     "(name, artist_id, noaartist, path, popularity, outside, mtime)"
                     "VALUES (?, ?, ?, ?, ?, ?, ?)",
@@ -53,7 +53,7 @@ class DatabaseAlbums:
     """
     def add_genre(self, album_id, genre_id, outside, sql=None):
         if not sql:
-            sql = Objects.sql
+            sql = Lp.sql
         genres = self.get_genre_ids(album_id, sql)
         if genre_id not in genres:
             sql.execute("INSERT INTO "
@@ -67,7 +67,7 @@ class DatabaseAlbums:
     """
     def set_artist_id(self, album_id, artist_id, sql=None):
         if not sql:
-            sql = Objects.sql
+            sql = Lp.sql
         sql.execute("UPDATE albums SET artist_id=? WHERE rowid=?",
                     (artist_id, album_id))
 
@@ -79,7 +79,7 @@ class DatabaseAlbums:
     """
     def set_year(self, album_id, year, sql=None):
         if not sql:
-            sql = Objects.sql
+            sql = Lp.sql
         sql.execute("UPDATE albums SET year=? WHERE rowid=?",
                     (year, album_id))
 
@@ -90,7 +90,7 @@ class DatabaseAlbums:
     """
     def set_path(self, album_id, path, sql=None):
         if not sql:
-            sql = Objects.sql
+            sql = Lp.sql
         sql.execute("UPDATE albums SET path=? WHERE rowid=?", (path, album_id))
 
     """
@@ -101,7 +101,7 @@ class DatabaseAlbums:
     """
     def set_mtime(self, album_id, mtime, sql=None):
         if not sql:
-            sql = Objects.sql
+            sql = Lp.sql
         sql.execute("UPDATE albums set mtime=? WHERE rowid=?",
                     (mtime, album_id))
 
@@ -113,7 +113,7 @@ class DatabaseAlbums:
     """
     def set_popularity(self, album_id, popularity, sql=None):
         if not sql:
-            sql = Objects.sql
+            sql = Lp.sql
         try:
             sql.execute("UPDATE albums set popularity=? WHERE rowid=?",
                         (popularity, album_id))
@@ -127,7 +127,7 @@ class DatabaseAlbums:
     """
     def get_popularity(self, album_id, sql=None):
         if not sql:
-            sql = Objects.sql
+            sql = Lp.sql
         result = sql.execute("SELECT popularity FROM albums WHERE "
                              "rowid=?",(album_id,))
 
@@ -143,7 +143,7 @@ class DatabaseAlbums:
     """
     def set_more_popular(self, album_id, sql=None):
         if not sql:
-            sql = Objects.sql
+            sql = Lp.sql
         result = sql.execute("SELECT popularity from albums WHERE rowid=?",
                              (album_id,))
         pop = result.fetchone()
@@ -162,7 +162,7 @@ class DatabaseAlbums:
     """
     def get_avg_popularity(self, sql=None):
         if not sql:
-            sql = Objects.sql
+            sql = Lp.sql
         result = sql.execute("SELECT AVG(popularity) FROM (SELECT popularity "
                              "FROM albums ORDER BY POPULARITY DESC LIMIT 100)")
         v = result.fetchone()
@@ -178,7 +178,7 @@ class DatabaseAlbums:
     """
     def get_id(self, album_name, artist_id, sql=None):
         if not sql:
-            sql = Objects.sql
+            sql = Lp.sql
         result = sql.execute("SELECT rowid FROM albums where name=?\
                               AND artist_id=?\
                               AND noaartist=0", (album_name,
@@ -195,7 +195,7 @@ class DatabaseAlbums:
     """
     def get_compilation_id(self, album_name, sql=None):
         if not sql:
-            sql = Objects.sql
+            sql = Lp.sql
         result = sql.execute("SELECT rowid FROM albums where name=?\
                               AND noaartist=1", (album_name,))
         v = result.fetchone()
@@ -210,7 +210,7 @@ class DatabaseAlbums:
     """
     def get_genre_ids(self, album_id, sql=None):
         if not sql:
-            sql = Objects.sql
+            sql = Lp.sql
         result = sql.execute("SELECT genre_id FROM album_genres\
                               WHERE album_id=?", (album_id,))
         genres = []
@@ -225,7 +225,7 @@ class DatabaseAlbums:
     """
     def get_genre_name(self, album_id, sql=None):
         if not sql:
-            sql = Objects.sql
+            sql = Lp.sql
         result = sql.execute("SELECT name FROM genres, album_genres\
                               WHERE album_genres.album_id=?\
                               AND album_genres.genre_id=genres.rowid",
@@ -243,7 +243,7 @@ class DatabaseAlbums:
     """
     def get_name(self, album_id, sql=None):
         if not sql:
-            sql = Objects.sql
+            sql = Lp.sql
         result = sql.execute("SELECT name FROM albums where rowid=?",
                              (album_id,))
         v = result.fetchone()
@@ -259,7 +259,7 @@ class DatabaseAlbums:
     """
     def get_artist_name(self, album_id, sql=None):
         if not sql:
-            sql = Objects.sql
+            sql = Lp.sql
         result = sql.execute("SELECT artists.name from artists, albums\
                               WHERE albums.rowid=? AND albums.artist_id ==\
                               artists.rowid", (album_id,))
@@ -276,7 +276,7 @@ class DatabaseAlbums:
     """
     def get_artist_id(self, album_id, sql=None):
         if not sql:
-            sql = Objects.sql
+            sql = Lp.sql
         result = sql.execute("SELECT artist_id FROM albums where rowid=?",
                              (album_id,))
         v = result.fetchone()
@@ -292,7 +292,7 @@ class DatabaseAlbums:
     """
     def get_year(self, album_id, sql=None):
         if not sql:
-            sql = Objects.sql
+            sql = Lp.sql
         result = sql.execute("SELECT year FROM albums where rowid=?",
                              (album_id,))
         v = result.fetchone()
@@ -309,7 +309,7 @@ class DatabaseAlbums:
     """
     def get_path(self, album_id, sql=None):
         if not sql:
-            sql = Objects.sql
+            sql = Lp.sql
         result = sql.execute("SELECT path FROM albums WHERE rowid=?",
                              (album_id,))
         path = ""
@@ -320,7 +320,7 @@ class DatabaseAlbums:
             if not os.path.exists(path):
                 tracks = self.get_tracks(album_id, None, sql)
                 if tracks:
-                    filepath = Objects.tracks.get_path(tracks[0], sql)
+                    filepath = Lp.tracks.get_path(tracks[0], sql)
                     path = os.path.dirname(filepath)
                     if os.path.exists(path):
                         sql.execute("UPDATE albums SET path=? "
@@ -333,7 +333,7 @@ class DatabaseAlbums:
     """
     def get_path_count(self, path, sql=None):
         if not sql:
-            sql = Objects.sql
+            sql = Lp.sql
 
         result = sql.execute("SELECT count(path) FROM albums WHERE path=?",
                              (path,))
@@ -349,7 +349,7 @@ class DatabaseAlbums:
     """
     def get_populars(self, sql=None):
         if not sql:
-            sql = Objects.sql
+            sql = Lp.sql
         albums = []
         result = sql.execute("SELECT rowid FROM albums WHERE popularity!=0\
                              ORDER BY popularity DESC LIMIT 100")
@@ -363,7 +363,7 @@ class DatabaseAlbums:
     """
     def get_recents(self, sql=None):
         if not sql:
-            sql = Objects.sql
+            sql = Lp.sql
         albums = []
         result = sql.execute("SELECT rowid FROM albums\
                               ORDER BY mtime DESC LIMIT 100")
@@ -377,7 +377,7 @@ class DatabaseAlbums:
     """
     def get_randoms(self, sql=None):
         if not sql:
-            sql = Objects.sql
+            sql = Lp.sql
         albums = []
 
         result = sql.execute("SELECT rowid FROM albums\
@@ -400,7 +400,7 @@ class DatabaseAlbums:
     """
     def get_party_ids(self, genre_ids, sql=None):
         if not sql:
-            sql = Objects.sql
+            sql = Lp.sql
         albums = []
         # get popular first
         if Type.POPULARS in genre_ids:
@@ -412,7 +412,7 @@ class DatabaseAlbums:
                 if recent not in albums:
                     albums.append(recent)
         for genre_id in genre_ids:
-            for album in Objects.genres.get_albums(genre_id, sql):
+            for album in Lp.genres.get_albums(genre_id, sql):
                 if album not in albums:
                     albums.append(album)
         return albums
@@ -425,7 +425,7 @@ class DatabaseAlbums:
     """
     def get_count(self, album_id, genre_id, sql=None):
         if not sql:
-            sql = Objects.sql
+            sql = Lp.sql
         if genre_id is not None and genre_id > 0:
             result = sql.execute("SELECT COUNT(tracks.rowid)\
                                   FROM tracks, track_genres\
@@ -451,7 +451,7 @@ class DatabaseAlbums:
     """
     def get_count_for_disc(self, album_id, genre_id, disc, sql=None):
         if not sql:
-            sql = Objects.sql
+            sql = Lp.sql
         if genre_id is not None and genre_id > 0:
             result = sql.execute("SELECT COUNT(tracks.rowid)\
                                   FROM tracks, track_genres\
@@ -480,7 +480,7 @@ class DatabaseAlbums:
     """
     def get_discs(self, album_id, genre_id, sql=None):
         if not sql:
-            sql = Objects.sql
+            sql = Lp.sql
         if genre_id is not None and genre_id > 0:
             result = sql.execute("SELECT DISTINCT discnumber\
                                   FROM tracks, track_genres\
@@ -508,7 +508,7 @@ class DatabaseAlbums:
     """
     def get_tracks(self, album_id, genre_id, sql=None):
         if not sql:
-            sql = Objects.sql
+            sql = Lp.sql
         tracks = []
         if genre_id is not None and genre_id > 0:
             result = sql.execute("SELECT tracks.rowid FROM tracks, track_genres\
@@ -536,7 +536,7 @@ class DatabaseAlbums:
     """
     def get_tracks_path(self, album_id, genre_id, sql=None):
         if not sql:
-            sql = Objects.sql
+            sql = Lp.sql
         tracks = []
         if genre_id is not None and genre_id > 0:
             result = sql.execute("SELECT tracks.filepath\
@@ -568,7 +568,7 @@ class DatabaseAlbums:
     """
     def get_tracks_infos(self, album_id, genre_id, disc, sql=None):
         if not sql:
-            sql = Objects.sql
+            sql = Lp.sql
 
         if genre_id is not None and genre_id > 0:
             result = sql.execute("SELECT tracks.rowid,\
@@ -595,7 +595,7 @@ class DatabaseAlbums:
 
         infos = []
         for row in result:
-            row += (Objects.tracks.get_artist_ids(row[0], sql),)
+            row += (Lp.tracks.get_artist_ids(row[0], sql),)
             infos.append(row,)
 
         return infos
@@ -607,7 +607,7 @@ class DatabaseAlbums:
     """
     def get_ids(self, artist_id=None, genre_id=None, sql=None):
         if not sql:
-            sql = Objects.sql
+            sql = Lp.sql
         albums = []
         result = []
         # Get albums for all artists
@@ -653,7 +653,7 @@ class DatabaseAlbums:
     """
     def get_compilations(self, genre_id=None, sql=None):
         if not sql:
-            sql = Objects.sql
+            sql = Lp.sql
         albums = []
         result = []
         # Get all compilations
@@ -682,7 +682,7 @@ class DatabaseAlbums:
     """
     def get_year_from_tracks(self, album_id, sql=None):
         if not sql:
-            sql = Objects.sql
+            sql = Lp.sql
         result = sql.execute("SELECT year, COUNT(year) AS occurrence\
                               FROM tracks\
                               WHERE tracks.album_id=?\
@@ -701,7 +701,7 @@ class DatabaseAlbums:
     """
     def search(self, string, sql=None):
         if not sql:
-            sql = Objects.sql
+            sql = Lp.sql
         albums = []
         result = sql.execute("SELECT rowid, artist_id FROM albums\
                               WHERE name LIKE ?\
@@ -717,7 +717,7 @@ class DatabaseAlbums:
     """
     def is_compilation(self, album_id, sql=None):
         if not sql:
-            sql = Objects.sql
+            sql = Lp.sql
         result = sql.execute("SELECT COUNT(DISTINCT track_artists.artist_id)\
                               FROM tracks, track_artists\
                               WHERE tracks.album_id=?\
@@ -735,7 +735,7 @@ class DatabaseAlbums:
     """
     def clean(self, album_id, sql=None):
         if not sql:
-            sql = Objects.sql
+            sql = Lp.sql
 
         # Check album really have tracks from its genres
         for genre_id in self.get_genre_ids(album_id, sql):

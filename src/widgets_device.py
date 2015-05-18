@@ -18,7 +18,7 @@ from shutil import copyfile
 from gettext import gettext as _
 from _thread import start_new_thread
 
-from lollypop.define import Objects
+from lollypop.define import Lp
 from lollypop.utils import translate_artist_name
 
 
@@ -88,7 +88,7 @@ class DeviceManagerWidget(Gtk.Bin):
     """
     def populate(self):
         self._model.clear()
-        playlists = Objects.playlists.get()
+        playlists = Lp.playlists.get()
         GLib.idle_add(self._append_playlists, playlists)
 
     """
@@ -178,7 +178,7 @@ class DeviceManagerWidget(Gtk.Bin):
             GLib.idle_add(self._progress.set_fraction, 0.0)
             self._in_thread = True
             self._errors = False
-            sql = Objects.db.get_cursor()
+            sql = Lp.db.get_cursor()
             # For progress bar
             self._total = 1
             self._done = 0
@@ -188,7 +188,7 @@ class DeviceManagerWidget(Gtk.Bin):
             # New tracks
             for playlist in playlists:
                 self._fraction = self._done/self._total
-                self._total += len(Objects.playlists.get_tracks(playlist))
+                self._total += len(Lp.playlists.get_tracks(playlist))
             # Old tracks
             for root, dirs, files in os.walk(self._path+"/tracks"):
                 for f in files:
@@ -219,7 +219,7 @@ class DeviceManagerWidget(Gtk.Bin):
         if self._syncing:
             GLib.idle_add(self._view.set_sensitive, True)
             GLib.idle_add(self.emit, 'sync-finished')
-        
+
         GLib.idle_add(self._progress.hide)
         self._syncing = False
         self._in_thread = False
@@ -239,17 +239,17 @@ class DeviceManagerWidget(Gtk.Bin):
                 m3u = None
 
             # Start copying
-            tracks_id = Objects.playlists.get_tracks_id(playlist, sql)
+            tracks_id = Lp.playlists.get_tracks_id(playlist, sql)
             for track_id in tracks_id:
                 if not self._syncing:
                     self._fraction = 1.0
                     self._in_thread = False
                     return
-                album_id = Objects.tracks.get_album_id(track_id, sql)
-                album_name = Objects.albums.get_name(album_id, sql)
+                album_id = Lp.tracks.get_album_id(track_id, sql)
+                album_name = Lp.albums.get_name(album_id, sql)
                 artist_name = translate_artist_name(
-                                 Objects.albums.get_artist_name(album_id, sql))
-                track_path = Objects.tracks.get_path(track_id, sql)
+                                 Lp.albums.get_artist_name(album_id, sql))
+                track_path = Lp.tracks.get_path(track_id, sql)
                 on_device_album_path = "%s/tracks/%s_%s" %\
                                        (self._path,
                                         artist_name.lower(),
@@ -258,7 +258,7 @@ class DeviceManagerWidget(Gtk.Bin):
                 self._mkdir(on_device_album_path)
 
                 # Copy album art
-                art = Objects.art.get_album_art_path(album_id, sql)
+                art = Lp.art.get_album_art_path(album_id, sql)
                 if art:
                     dst_art = "%s/cover.jpg" % on_device_album_path
                     if not os.path.exists(dst_art):
@@ -292,7 +292,7 @@ class DeviceManagerWidget(Gtk.Bin):
 
         # Get tracks ids
         for playlist in playlists:
-            tracks_id += Objects.playlists.get_tracks_id(playlist, sql)
+            tracks_id += Lp.playlists.get_tracks_id(playlist, sql)
 
         # Get tracks paths
         for track_id in tracks_id:
@@ -300,11 +300,11 @@ class DeviceManagerWidget(Gtk.Bin):
                 self._fraction = 1.0
                 self._in_thread = False
                 return
-            album_id = Objects.tracks.get_album_id(track_id, sql)
-            album_name = Objects.albums.get_name(album_id, sql)
+            album_id = Lp.tracks.get_album_id(track_id, sql)
+            album_name = Lp.albums.get_name(album_id, sql)
             artist_name = translate_artist_name(
-                                 Objects.albums.get_artist_name(album_id, sql))
-            track_path = Objects.tracks.get_path(track_id, sql)
+                                 Lp.albums.get_artist_name(album_id, sql))
+            track_path = Lp.tracks.get_path(track_id, sql)
             album_path = "%s/tracks/%s_%s" % (self._path,
                                               artist_name.lower(),
                                               album_name.lower())

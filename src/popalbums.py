@@ -16,7 +16,7 @@ from _thread import start_new_thread
 
 from lollypop.view_albums import ArtistView
 from lollypop.view_container import ViewContainer
-from lollypop.define import Objects
+from lollypop.define import Lp
 
 
 # Show a popup with current artist albums
@@ -33,14 +33,14 @@ class PopAlbums(Gtk.Popover):
         self._on_screen_artist = None
         self.add(self._stack)
 
-        Objects.player.connect("current-changed", self._update_content)
+        Lp.player.connect("current-changed", self._update_content)
 
     """
         Run _populate in a thread
     """
     def populate(self):
-        if self._on_screen_artist != Objects.player.current_track.aartist_id:
-            self._on_screen_artist = Objects.player.current_track.aartist_id
+        if self._on_screen_artist != Lp.player.current_track.aartist_id:
+            self._on_screen_artist = Lp.player.current_track.aartist_id
             view = ArtistView(self._on_screen_artist, None, False)
             view.show()
             start_new_thread(view.populate, ())
@@ -52,7 +52,7 @@ class PopAlbums(Gtk.Popover):
         Resize popover
     """
     def do_show(self):
-        size_setting = Objects.settings.get_value('window-size')
+        size_setting = Lp.settings.get_value('window-size')
         if isinstance(size_setting[0], int) and\
            isinstance(size_setting[1], int):
             self.set_size_request(size_setting[0]*0.65, size_setting[1]*0.8)
