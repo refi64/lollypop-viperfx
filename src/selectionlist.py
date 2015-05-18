@@ -74,6 +74,7 @@ class SelectionList(Gtk.ScrolledWindow):
         Gtk.ScrolledWindow.__init__(self)
         self.set_policy(Gtk.PolicyType.NEVER,
                         Gtk.PolicyType.AUTOMATIC)
+        self._last_motion_event = None
         self._loading = False
         self._to_select_id = Type.NONE
         self._updating = False       # Sort disabled if False
@@ -104,11 +105,12 @@ class SelectionList(Gtk.ScrolledWindow):
 
         self._view.append_column(column0)
         self._view.append_column(column1)
+        self._view.connect('motion_notify_event', self._on_motion_notify)
 
         self.add(self._view)
 
         adj = self.get_vadjustment()
-        adj.connect('value_changed', self._on_scroll)
+        adj.connect('value_changed', self._on_motion_notify, None)
 
     """
         Mark list as artists list
@@ -356,37 +358,36 @@ class SelectionList(Gtk.ScrolledWindow):
 
     """
         Show a popover with current letter
-        @param adj as Gtk.Adjustment
+        @param widget as Gtk.Widget
+        @param event as Gdk.Event
     """
-    def _on_scroll(self, adj):
-        visible_range = self._view.get_visible_range()
-        if visible_range is None:
-            return
-
-        start = visible_range[0]
-        end = visible_range[1]
-        if start is None or end is None:
-            return
-
-        start_iter = self._model.get_iter(start)
-        end_iter = self._model.get_iter(end)
-        if start_iter is None or end_iter is None:
-            return
-
-        # Search for first non static item
-        if self._model.get_value(start_iter, 0) < 0:
-            for item in self._model:
-                if item[0] >= 0:
-                    start_value = format_artist_name(item[1])
-                    break
+    def _on_motion_notify(self, widget, event):
+        if event is None and self._last_motion_event is not None:
+            event = self._last_motion_event
+        elif event is not None:
+            self._last_motion_event = event
         else:
-            start_value = format_artist_name(
-                                    self._model.get_value(start_iter, 1))
-        end_value = format_artist_name(self._model.get_value(end_iter, 1))
-        if start_value[0] != end_value[0]:
-            text = "%s - %s" % (start_value[0], end_value[0])
-        else:
-            text = "  %s  " % start_value[0]
-        self._popover.set_text(text)
+            return
+
+        if event.x < 0 or  event.y < 0:
+            return
+
+        dest_row = self._view.get_dest_row_at_pos(event.x, event.y)
+        if dest_row is None:
+            return
+
+        row = dest_row[0]
+
+        if row is None:
+            return
+
+        row_iter = self._model.get_iter(row)
+        if row_iter is None or self._model.get_value(row_iter, 0) < 0:
+            return
+
+        text = self._model.get_value(row_iter, 1)
+        if self._is_artists:
+            text = format_artist_name(text)
+        self._popover.set_text("  %s  " % text[0].upper())
         self._popover.set_relative_to(self.get_vscrollbar())
         self._popover.show()
