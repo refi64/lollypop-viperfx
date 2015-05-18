@@ -25,7 +25,6 @@ class SelectionPopover(Gtk.Popover):
     def __init__(self):
         Gtk.Popover.__init__(self)
         self.set_sensitive(False)
-        self._timeout = None
         self._label = Gtk.Label()
         self._label.set_property('halign', Gtk.Align.CENTER)
         self._label.set_property('valign', Gtk.Align.CENTER)
@@ -41,16 +40,6 @@ class SelectionPopover(Gtk.Popover):
     """
     def set_text(self, text):
         self._label.set_markup('<span size="large"><b>%s</b></span>' % text)
-        if self._timeout is not None:
-            GLib.source_remove(self._timeout)
-        self._timeout = GLib.timeout_add(1000, self.hide)
-
-    """
-        Reset timeout
-    """
-    def do_hide(self):
-        Gtk.Popover.do_hide(self)
-        self._timeout = None
 
     """
         Ignore
@@ -110,7 +99,7 @@ class SelectionList(Gtk.ScrolledWindow):
         self.add(self._view)
 
         adj = self.get_vadjustment()
-        adj.connect('value_changed', self._on_motion_notify, None)
+        adj.connect('value_changed', self._on_scroll)
 
     """
         Mark list as artists list
@@ -357,22 +346,34 @@ class SelectionList(Gtk.ScrolledWindow):
         Lp.window.enable_global_shorcuts(True)
 
     """
-        Show a popover with current letter
-        @param widget as Gtk.Widget
-        @param event as Gdk.Event
+        Hide popover
+        @param widget as Gtk.widget
+        @param event as GdK.Event
+    """
+    def _on_leave_event(self, widget, event):
+        self._popover.hide()
+
+    """
+        Set motion event
+        @param widget as Gtk.widget
+        @param event as GdK.Event
     """
     def _on_motion_notify(self, widget, event):
-        if event is None and self._last_motion_event is not None:
-            event = self._last_motion_event
-        elif event is not None:
-            self._last_motion_event = event
-        else:
+        self._last_motion_event = event
+
+    """
+        Show a popover with current letter
+        @param adj as Gtk.Adjustement
+    """
+    def _on_scroll(self, adj):
+        if self._last_motion_event is None:
             return
 
-        if event.x < 0 or  event.y < 0:
+        if self._last_motion_event.x < 0 or  self._last_motion_event.y < 0:
             return
 
-        dest_row = self._view.get_dest_row_at_pos(event.x, event.y)
+        dest_row = self._view.get_dest_row_at_pos(self._last_motion_event.x,
+                                                  self._last_motion_event.y)
         if dest_row is None:
             return
 
