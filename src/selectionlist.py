@@ -18,6 +18,46 @@ from _thread import start_new_thread
 from lollypop.utils import translate_artist_name, format_artist_name
 from lollypop.define import Type, Lp
 
+class SelectionPopover(Gtk.Popover):
+    """
+        Init popover
+    """
+    def __init__(self):
+        Gtk.Popover.__init__(self)
+        self.set_sensitive(False)
+        self._timeout = None
+        self._label = Gtk.Label()
+        self._label.set_property('halign', Gtk.Align.CENTER)
+        self._label.set_property('valign', Gtk.Align.CENTER)
+        self._label.show()
+        self.get_style_context().add_class('selection-popover')
+        self.set_property('width-request', 100)
+        self.set_property('height-request', 50)
+        self.add(self._label)
+    
+    """
+        Set popover text
+        @param text as string
+    """
+    def set_text(self, text):
+        self._label.set_markup('<span size="large">%s</span>' % text)
+        if self._timeout is not None:
+            GLib.source_remove(self._timeout)
+        self._timeout = GLib.timeout_add(1000, self.hide)
+
+    """
+        Reset timeout
+    """
+    def do_hide(self):
+        Gtk.Popover.do_hide(self)
+        self._timeout = None
+
+    """
+        Ignore
+    """
+    def do_grab_focus(self):
+        pass
+
 
 # A selection list is a artists or genres scrolled treeview
 class SelectionList(Gtk.ScrolledWindow):
@@ -39,6 +79,7 @@ class SelectionList(Gtk.ScrolledWindow):
         self._updating = False       # Sort disabled if False
         self._is_artists = False  # for string translation
         self._pop_time = 0.0      # Keep track of time when starting populate
+        self._popover = SelectionPopover()
 
         builder = Gtk.Builder()
         builder.add_from_resource('/org/gnome/Lollypop/SelectionList.ui')
@@ -65,6 +106,9 @@ class SelectionList(Gtk.ScrolledWindow):
         self._view.append_column(column1)
 
         self.add(self._view)
+
+        adj = self.get_vadjustment()
+        adj.connect('value_changed', self._on_scroll)
 
     """
         Mark list as artists list
@@ -161,7 +205,7 @@ class SelectionList(Gtk.ScrolledWindow):
     def get_selected_id(self):
         selected_id = Type.NONE
         (path, column) = self._view.get_cursor()
-        if path:
+        if path is not None:
             iterator = self._model.get_iter(path)
             if iterator:
                 selected_id = self._model.get_value(iterator, 0)
@@ -309,3 +353,37 @@ class SelectionList(Gtk.ScrolledWindow):
     """
     def _on_focus_out_event(self, widget, event):
         Lp.window.enable_global_shorcuts(True)
+
+    """
+        Show a popover with current letter
+        @param adj as Gtk.Adjustment
+    """
+    def _on_scroll(self, adj):
+        start = None
+        end = None
+        visible_range = self._view.get_visible_range()
+        if visible_range is not None:
+            start = visible_range[0]
+            end = visible_range[1]
+        if start is not None and end is not None:
+            start_iter = self._model.get_iter(start)
+            end_iter = self._model.get_iter(end)
+        if start_iter is not None and end_iter is not None:
+            # Search for first non static item
+            if self._model.get_value(start_iter, 0) < 0:
+                for item in self._model:
+                    if item[0] >= 0:
+                        start_value = format_artist_name(item[1])
+                        break
+            else:
+                start_value = format_artist_name(
+                                        self._model.get_value(start_iter, 1))
+            end_value = format_artist_name(self._model.get_value(end_iter,
+                                                                 1))
+            if start_value[0] != end_value[0]:
+                text = "%s - %s" % (start_value[0], end_value[0])
+            else:
+                text = "  %s  " % start_value[0]
+            self._popover.set_text(text)
+            self._popover.set_relative_to(self._view)
+            self._popover.show()
