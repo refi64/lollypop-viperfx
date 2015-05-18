@@ -15,6 +15,7 @@ from gi.repository import Gtk, GLib, GdkPixbuf, Pango
 from cgi import escape
 
 from lollypop.define import Lp, ArtSize
+from lollypop.track import Track
 from lollypop.utils import translate_artist_name
 
 ######################################################################
@@ -213,4 +214,4 @@ class QueueWidget(Gtk.Popover):
         if not self._in_drag:
             value_id = self._model.get_value(iterator, 3)
             self._model.remove(iterator)
-            Lp.player.load(value_id)
+            Lp.player.load(Track(value_id))
