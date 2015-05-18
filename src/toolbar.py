@@ -231,11 +231,21 @@ class Toolbar(Gtk.HeaderBar):
         self._play_btn.set_sensitive(True)
         self._prev_btn.set_sensitive(True)
         self._next_btn.set_sensitive(True)
+        prev_artist = escape(player.prev_track.artist)
+        prev_title = escape(player.prev_track.title)
+        next_artist = escape(player.next_track.artist)
+        next_title = escape(player.next_track.title)
+        self._next_btn.set_tooltip_markup("<b>%s</b> - %s" %\
+                                          (next_artist,
+                                           next_title))
+        self._prev_btn.set_tooltip_markup("<b>%s</b> - %s" %\
+                                          (prev_artist,
+                                           prev_title))
         self._artist_label.set_text(player.current_track.artist)
         self._title_label.set_text(player.current_track.title)
 
-        # Hide controls if on radio or no track playing:
-        if player.current_track.id is None or player.current_track.id == Type.RADIOS:
+        # Hide controls if on radio
+        if player.current_track.id == Type.RADIOS:
             self._progress.set_sensitive(False)
             self._total_time_label.hide()
             self._timelabel.hide()
@@ -254,7 +264,7 @@ class Toolbar(Gtk.HeaderBar):
             self._progress.set_value(0.0)
             self._progress.set_range(0.0, player.current_track.duration * 60)
             self._total_time_label.set_text(
-                                    seconds_to_string(player.current_track.duration))
+                            seconds_to_string(player.current_track.duration))
             self._total_time_label.show()
             self._timelabel.set_text("0:00")
             self._timelabel.show()

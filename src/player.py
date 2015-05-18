@@ -158,6 +158,8 @@ class Player(BinPlayer, QueuePlayer, UserPlaylistPlayer, RadioPlayer,
             if path != "":
                 self._load_track(Track(track_id))
                 self.set_albums(track_id, Type.ALL, Type.ALL)
+                self._set_next()
+                self._set_prev()
                 self.emit('current-changed')
             else:
                 print("Player::restore_state(): track missing")
