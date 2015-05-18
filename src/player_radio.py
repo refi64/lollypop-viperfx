@@ -147,6 +147,6 @@ class RadioPlayer(BasePlayer):
         # Only start playing if context always True
         if self._current == track:
             self._stop()
-            self._playbin.set_property('uri', track.uri)
+            self._playbin.set_property('uri', uri)
             self.current_track = track
             self.play()
