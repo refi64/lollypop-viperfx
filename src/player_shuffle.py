@@ -240,8 +240,6 @@ class ShufflePlayer(BasePlayer):
                                           self._history)
                     self._history = new_list
             else:
-                new_list = LinkedList(self.current_track.id,
-                                      self._history,
-                                      self._history)
+                new_list = LinkedList(self.current_track.id)
                 self._history = new_list
             self._add_to_shuffle_history(self.current_track)
