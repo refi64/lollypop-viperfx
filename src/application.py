@@ -33,7 +33,6 @@ from lollypop.database_tracks import DatabaseTracks
 from lollypop.playlists import PlaylistsManager
 from lollypop.collectionscanner import CollectionScanner
 from lollypop.fullscreen import FullScreen
-from lollypop.inotify import Inotify
 
 
 class Application(Gtk.Application):
@@ -83,8 +82,6 @@ class Application(Gtk.Application):
             MPRIS(self)
         if not Objects.settings.get_value('disable-notifications'):
             Objects.notify = NotificationManager()
-        if Objects.settings.get_value('auto-update'):
-            Objects.inotify = Inotify()
 
         settings = Gtk.Settings.get_default()
         dark = Objects.settings.get_value('dark-ui')

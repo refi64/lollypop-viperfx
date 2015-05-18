@@ -17,6 +17,7 @@ import os
 from gettext import gettext as _
 from _thread import start_new_thread
 
+from lollypop.inotify import Inotify
 from lollypop.define import Objects
 from lollypop.tagreader import ScannerTagReader
 from lollypop.utils import is_audio, debug
@@ -35,6 +36,8 @@ class CollectionScanner(GObject.GObject, ScannerTagReader):
     def __init__(self):
         GObject.GObject.__init__(self)
         ScannerTagReader.__init__(self)
+        if Objects.settings.get_value('auto-update'):
+            self._inotify = Inotify()
         self._is_empty = True
         self._in_thread = False
         self._is_locked = False
@@ -187,9 +190,9 @@ class CollectionScanner(GObject.GObject, ScannerTagReader):
 
         # Add monitors on dirs
         (new_tracks, new_dirs, count) = self._get_objects_for_paths(paths)
-        if Objects.inotify is not None:
+        if self._inotify is not None:
             for d in new_dirs:
-                Objects.inotify.add_monitor(d)
+                self._inotify.add_monitor(d)
 
         i = 0
         for filepath in new_tracks:
