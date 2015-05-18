@@ -226,7 +226,7 @@ class Container:
         self._list_one.show()
         self._list_two = SelectionList()
         self._list_one.connect('item-selected', self._on_list_one_selected)
-        self._list_one.connect('populated', self._on_list_one_populated)
+        self._list_one.connect('populated', self._on_list_populated)
         self._list_two.connect('item-selected', self._on_list_two_selected)
 
         self._progress = Gtk.ProgressBar()
@@ -571,10 +571,15 @@ class Container:
                 self._update_view_albums(selected_id, False)
 
     """
-        Restore previous state
+        Add device to list one and update db
         @param selection list as SelectionList
     """
-    def _on_list_one_populated(self, selection_list):
+    def _on_list_populated(self, selection_list):
+        if self._list_one.is_populating() or\
+           self._list_two.is_populating():
+            GLib.timeout_add(500, self._on_list_populated, selection_list)
+            return
+
         for dev in self._devices.values():
             self._list_one.add_value((dev.id, dev.name))
         if self._need_to_update_db:
