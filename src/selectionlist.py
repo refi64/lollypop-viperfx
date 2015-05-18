@@ -40,7 +40,7 @@ class SelectionPopover(Gtk.Popover):
         @param text as string
     """
     def set_text(self, text):
-        self._label.set_markup('<span size="large">%s</span>' % text)
+        self._label.set_markup('<span size="large"><b>%s</b></span>' % text)
         if self._timeout is not None:
             GLib.source_remove(self._timeout)
         self._timeout = GLib.timeout_add(1000, self.hide)
