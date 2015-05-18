@@ -241,7 +241,7 @@ class BinPlayer(ReplayGainPlayer, BasePlayer):
             previous_track_id = self.current_track.id
             # We are in a thread, we need to create a new cursor
             sql = Lp.db.get_cursor()
-            self.next()
+            GLib.idle_add(self.next)
             # Add populariy if we listen to the song
             album_id = Lp.tracks.get_album_id(previous_track_id,
                                                    sql)
