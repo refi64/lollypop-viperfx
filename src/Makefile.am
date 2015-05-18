@@ -48,5 +48,6 @@ app_PYTHON = \
 	popalbums.py\
 	popmenu.py\
 	track.py\
+	list.py\
 	collectionscanner.py
 
