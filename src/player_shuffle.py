@@ -124,7 +124,6 @@ class ShufflePlayer(BasePlayer):
                 self.load(Track(track_id))
             else:
                 self._played_tracks_history.append(self.current_track.id)
-                self._tracks_history_position += 1
                 self._add_to_shuffle_history(self.current_track)
         else:
             # We need to put some context, take first available genre

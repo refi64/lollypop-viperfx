@@ -161,6 +161,16 @@ class Player(BinPlayer, QueuePlayer, UserPlaylistPlayer, RadioPlayer,
                 self.emit('current-changed')
             else:
                 print("Player::restore_state(): track missing")
+    
+    """
+        Set party mode on if party is True
+        Play a new random track if not already playing
+        @param party as bool
+    """
+    def set_party(self, party):
+        ShufflePlayer.set_party(self, party)
+        self._set_next()
+        self._set_prev()
 
     """
         Announce album cover update
