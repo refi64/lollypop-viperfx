@@ -154,6 +154,18 @@ class BinPlayer(ReplayGainPlayer, BasePlayer):
 # PRIVATE             #
 #######################
     """
+        Set next track
+    """
+    def _set_next(self):
+        pass
+
+    """
+        Set prev track
+    """
+    def _set_prev(self):
+        pass
+
+    """
         Stop current track (for track change)
     """
     def _stop(self):
@@ -211,8 +223,8 @@ class BinPlayer(ReplayGainPlayer, BasePlayer):
         debug("Error playing: %s" % self.current_track.uri)
         if self._handled_error != self.current_track.uri:
             self._handled_error = self.current_track.uri
-            GLib.idle_add(self.emit, 'current-changed')
-            GLib.timeout_add(2000, self.next)
+            self._set_next()
+            self.next()
         return False
 
     """
@@ -220,12 +232,11 @@ class BinPlayer(ReplayGainPlayer, BasePlayer):
         Else force playing current track
     """
     def _on_bus_eos(self, bus, message):
-        debug("Player::_on_bus_eos(): %s" % self.current_track.path)
+        debug("Player::_on_bus_eos(): %s" % self.current_track.uri)
         if self.context.next != NextContext.NONE:
             self.context.next = NextContext.NONE
-            self.stop()
+            self._set_next()
             self.next()
-            self.emit("current-changed")
         else:
             self.load(self.current_track)
 
