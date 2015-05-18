@@ -48,6 +48,12 @@ class SelectionPopover(Gtk.Popover):
         pass
 
 
+# Keep track of last motion event coordonates
+class MotionEvent:
+    x = 0.0
+    y = 0.0
+
+
 # A selection list is a artists or genres scrolled treeview
 class SelectionList(Gtk.ScrolledWindow):
 
@@ -63,7 +69,7 @@ class SelectionList(Gtk.ScrolledWindow):
         Gtk.ScrolledWindow.__init__(self)
         self.set_policy(Gtk.PolicyType.NEVER,
                         Gtk.PolicyType.AUTOMATIC)
-        self._last_motion_event = None
+        self._last_motion_event = MotionEvent()
         self._loading = False
         self._to_select_id = Type.NONE
         self._updating = False       # Sort disabled if False
@@ -359,7 +365,10 @@ class SelectionList(Gtk.ScrolledWindow):
         @param event as GdK.Event
     """
     def _on_motion_notify(self, widget, event):
-        self._last_motion_event = event
+        if event.x < 0.0 or event.y < 0.0:
+            return
+        self._last_motion_event.x = event.x
+        self._last_motion_event.y = event.y
 
     """
         Show a popover with current letter
@@ -367,9 +376,6 @@ class SelectionList(Gtk.ScrolledWindow):
     """
     def _on_scroll(self, adj):
         if self._last_motion_event is None:
-            return
-
-        if self._last_motion_event.x < 0 or  self._last_motion_event.y < 0:
             return
 
         dest_row = self._view.get_dest_row_at_pos(self._last_motion_event.x,
