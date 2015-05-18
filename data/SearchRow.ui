@@ -87,7 +87,7 @@
         <property name="always_show_image">True</property>
         <signal name="clicked" handler="_on_playlist_clicked" swapped="no"/>
         <style>
-          <class name="menubutton"/>
+          <class name="menu-button"/>
         </style>
       </object>
       <packing>
@@ -105,7 +105,7 @@
         <property name="relief">none</property>
         <signal name="clicked" handler="_on_queue_clicked" swapped="no"/>
         <style>
-          <class name="menubutton"/>
+          <class name="menu-button"/>
         </style>
       </object>
       <packing>
