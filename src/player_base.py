@@ -49,15 +49,5 @@ class BasePlayer(GObject.GObject):
             self._albums = None
             # Current shuffle mode
             self._shuffle = Lp.settings.get_enum('shuffle')
-            # Tracks already played
-            self._played_tracks_history = []
-            # Used by shuffle albums to restore playlist before shuffle
-            self._albums_backup = None
-            # Albums already played
-            self._already_played_albums = []
-            # Tracks already played for albums
-            self._already_played_tracks = {}
-            # Party mode
-            self._is_party = False
             # Bus for messages
             self._bus = None

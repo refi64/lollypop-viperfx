@@ -102,9 +102,7 @@ class Player(BinPlayer, QueuePlayer, UserPlaylistPlayer, RadioPlayer,
             return
         album_id = Lp.tracks.get_album_id(track_id)
         self._albums = []
-        self._played_tracks_history = []
-        self._already_played_tracks = {}
-        self._already_played_albums = []
+        ShufflePlayer.reset_history(self)
         self.context.genre_id = genre_id
 
         # When shuffle from artist is active, we want only artist's albums,
@@ -229,7 +227,7 @@ class Player(BinPlayer, QueuePlayer, UserPlaylistPlayer, RadioPlayer,
         Emit "current-changed" to notify others components
     """
     def _on_stream_start(self, bus, message):
-        BinPlayer._on_stream_start(self, bus, message)
         ShufflePlayer._on_stream_start(self, bus, message)
         self._set_next()
         self._set_prev()
+        BinPlayer._on_stream_start(self, bus, message)

@@ -25,18 +25,43 @@ class ShufflePlayer(BasePlayer):
     """
     def __init__(self):
         BasePlayer.__init__(self)
+        self.reset_history()
+        # Party mode
+        self._is_party = False
         Lp.settings.connect('changed::shuffle', self._set_shuffle)
+
+    """
+        Reset history
+    """
+    def reset_history(self):
+        # Position in history
+        self._tracks_history_position = -1
+        # Tracks already played
+        self._played_tracks_history = []
+        # Used by shuffle albums to restore playlist before shuffle
+        self._albums_backup = None
+        # Albums already played
+        self._already_played_albums = []
+        # Tracks already played for albums
+        self._already_played_tracks = {}
 
     """
         Next shuffle track
         @return track_id as int or None
     """
-    def next(self, sql=None):
+    def next(self):
         track_id = None
         if self._shuffle in [Shuffle.TRACKS, Shuffle.TRACKS_ARTIST] or\
              self._is_party:
-            if self._albums:
-                track_id = self._shuffle_next(sql)
+            # Get a new random track
+            if self._tracks_history_position == \
+                                        len(self._played_tracks_history) - 1:
+                if self._albums:
+                    track_id = self._shuffle_next()
+            # Look in history
+            else:
+                track_id = self._played_tracks_history[
+                                            self._tracks_history_position + 1]
         return Track(track_id)
 
     """
@@ -45,13 +70,11 @@ class ShufflePlayer(BasePlayer):
     """
     def prev(self):
         track_id = None
-        if self._shuffle == Shuffle.TRACKS or self._is_party:
-            try:
-                track_id = self._played_tracks_history[-2]
-                self._played_tracks_history.pop()
-                self._played_tracks_history.pop()
-            except:
-                track_id = self.current_track.id
+        if self._tracks_history_position > 0:
+            track_id = self._played_tracks_history[
+                                            self._tracks_history_position - 1]
+        else:
+            track_id = self.current_track.id
         return Track(track_id)
 
     """
@@ -156,33 +179,28 @@ class ShufflePlayer(BasePlayer):
 
     """
         Next track in shuffle mode
-        if force, stop current track
-        a fresh sqlite cursor should be passed as sql if we are in a thread
-        @param sqlite cursor
         @return track id as int
     """
-    def _shuffle_next(self, sql=None):
-        track_id = self._get_random(sql)
+    def _shuffle_next(self):
+        track_id = self._get_random()
         # Need to clear history
         if not track_id:
             self._albums = self._already_played_albums
             self._played_tracks_history = []
             self._already_played_tracks = {}
             self._already_played_albums = []
-            return self._shuffle_next(sql)
+            return self._shuffle_next()
 
         return track_id
 
     """
         Return a random track and make sure it has never been played
-        @param sqlite cursor as sql if running in a thread
     """
-    def _get_random(self, sql=None):
+    def _get_random(self):
         for album_id in sorted(self._albums,
                                key=lambda *args: random.random()):
             tracks = Lp.albums.get_tracks(album_id,
-                                          self.context.genre_id,
-                                          sql)
+                                          self.context.genre_id)
             for track in sorted(tracks, key=lambda *args: random.random()):
                 if album_id not in self._already_played_tracks.keys() or\
                    track not in self._already_played_tracks[album_id]:
@@ -199,14 +217,13 @@ class ShufflePlayer(BasePlayer):
 
     """
         Add a track to shuffle history
-        @param track id as int
-        @param album id as int
+        @param track as Track
     """
-    def _add_to_shuffle_history(self, track_id, album_id):
-        if self.current_track.album_id not in self._already_played_tracks.keys():
-            self._already_played_tracks[self.current_track.album_id] = []
-        self._already_played_tracks[self.current_track.album_id].append(
-                                                              self.current_track.id)
+    def _add_to_shuffle_history(self, track):
+        if track.album_id not in self._already_played_tracks.keys():
+            self._already_played_tracks[track.album_id] = []
+        if track.id not in self._already_played_tracks[track.album_id]:
+            self._already_played_tracks[track.album_id].append(track.id)
 
     """
         On stream start add to shuffle history
@@ -215,7 +232,19 @@ class ShufflePlayer(BasePlayer):
         # Add track to shuffle history if needed
         if self._shuffle != Shuffle.NONE or self._is_party:
             if self.current_track.id in self._played_tracks_history:
-                self._played_tracks_history.remove(self.current_track.id)
-            self._played_tracks_history.append(self.current_track.id)
-            self._add_to_shuffle_history(self.current_track.id,
-                                         self.current_track.album_id)
+                if self._played_tracks_history[
+                                   self._tracks_history_position - 1 ] ==\
+                                                         self.current_track.id:
+                    self._tracks_history_position -= 1
+                elif self._played_tracks_history[
+                                   self._tracks_history_position + 1 ] ==\
+                                                         self.current_track.id:
+                    self._tracks_history_position += 1
+                else:
+                    print("ShufflePlayer::_on_stream_start():"
+                          " Should not happen")
+            else:
+                self._played_tracks_history.append(self.current_track.id)
+                self._tracks_history_position += 1
+
+            self._add_to_shuffle_history(self.current_track)
