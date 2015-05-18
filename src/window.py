@@ -245,33 +245,31 @@ class Window(Gtk.ApplicationWindow, Container):
         self._timeout_configure = None
         size = widget.get_size()
         Lp.settings.set_value('window-size',
-                                   GLib.Variant('ai',
-                                                [size[0], size[1]]))
+                              GLib.Variant('ai', [size[0], size[1]]))
 
         position = widget.get_position()
         Lp.settings.set_value('window-position',
-                                   GLib.Variant('ai',
-                                                [position[0], position[1]]))
+                              GLib.Variant('ai', [position[0], position[1]]))
 
     """
         Save maximised state
     """
     def _on_window_state_event(self, widget, event):
         Lp.settings.set_boolean('window-maximized',
-                                     'GDK_WINDOW_STATE_MAXIMIZED' in
-                                     event.new_window_state.value_names)
+                                'GDK_WINDOW_STATE_MAXIMIZED' in
+                                event.new_window_state.value_names)
 
     """
         Save paned widget width
         @param widget as unused, data as unused
     """
     def _on_destroyed_window(self, widget):
-        Lp.settings.set_value("paned-mainlist-width",
-                                   GLib.Variant(
+        Lp.settings.set_value('paned-mainlist-width',
+                              GLib.Variant(
                                         'i',
                                         self._paned_main_list.get_position()))
-        Lp.settings.set_value("paned-listview-width",
-                                   GLib.Variant(
+        Lp.settings.set_value('paned-listview-width',
+                              GLib.Variant(
                                         'i',
                                         self._paned_list_view.get_position()))
 
