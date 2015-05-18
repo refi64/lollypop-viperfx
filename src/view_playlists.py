@@ -73,8 +73,8 @@ class PlaylistsView(View):
         Do show, connect signals
     """
     def do_show(self):
-        self._signal_id = Lp.playlists.connect("playlist-changed",
-                                                    self._update_view)
+        self._signal_id = Lp.playlists.connect('playlist-changed',
+                                               self._update_view)
         View.do_show(self)
 
     """

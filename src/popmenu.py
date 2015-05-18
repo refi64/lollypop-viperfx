@@ -144,7 +144,7 @@ class QueueMenu(BaseMenu):
         else:
 
             tracks = Lp.albums.get_tracks(self._object_id,
-                                               self._genre_id)
+                                          self._genre_id)
             union = set(queue) & set(tracks)
             if len(union) == len(tracks):
                 append = False
@@ -182,7 +182,7 @@ class QueueMenu(BaseMenu):
     def _append_to_queue(self, action, variant):
         if self._is_album:
             for track_id in Lp.albums.get_tracks(self._object_id,
-                                                      self._genre_id):
+                                                 self._genre_id):
                 Lp.player.append_to_queue(track_id)
         else:
             Lp.player.append_to_queue(self._object_id)
@@ -209,7 +209,7 @@ class QueueMenu(BaseMenu):
     def _del_from_queue(self, action, variant):
         if self._is_album:
             for track_id in Lp.albums.get_tracks(self._object_id,
-                                                      self._genre_id):
+                                                 self._genre_id):
                 Lp.player.del_from_queue(track_id)
         else:
             Lp.player.del_from_queue(self._object_id)
@@ -246,9 +246,9 @@ class PlaylistsMenu(BaseMenu):
             action = Gio.SimpleAction(name="playlist%s" % i)
             self._app.add_action(action)
             if Lp.playlists.is_present(playlist,
-                                            self._object_id,
-                                            self._genre_id,
-                                            self._is_album):
+                                       self._object_id,
+                                       self._genre_id,
+                                       self._is_album):
                 action.connect('activate',
                                self._del_from_playlist,
                                playlist)
@@ -269,8 +269,8 @@ class PlaylistsMenu(BaseMenu):
     """
     def _add_to_playlists(self, action, variant):
         Lp.window.show_playlist_manager(self._object_id,
-                                             self._genre_id,
-                                             self._is_album)
+                                        self._genre_id,
+                                        self._is_album)
 
     """
         Add to playlist
@@ -281,7 +281,7 @@ class PlaylistsMenu(BaseMenu):
     def _add_to_playlist(self, action, variant, playlist_name):
         if self._is_album:
             tracks_path = Lp.albums.get_tracks_path(self._object_id,
-                                                         self._genre_id)
+                                                    self._genre_id)
         else:
             tracks_path = [Lp.tracks.get_path(self._object_id)]
 
@@ -299,7 +299,7 @@ class PlaylistsMenu(BaseMenu):
     def _del_from_playlist(self, action, variant, playlist_name):
         if self._is_album:
             tracks_path = Lp.albums.get_tracks_path(self._object_id,
-                                                         self._genre_id)
+                                                    self._genre_id)
         else:
             tracks_path = [Lp.tracks.get_path(self._object_id)]
 

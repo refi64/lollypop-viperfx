@@ -31,7 +31,7 @@ class NotificationManager:
                                     GLib.Variant('s', 'lollypop'))
         self._set_actions()
         Lp.player.connect('current-changed',
-                               self._on_current_changed)
+                          self._on_current_changed)
 
     """
         Send message to user
@@ -81,12 +81,12 @@ class NotificationManager:
             return
         if player.current_track.id == Type.RADIOS:
             cover_path = Lp.art.get_radio_cache_path(
-                                                        player.current_track.artist,
-                                                        ArtSize.BIG)
+                                                   player.current_track.artist,
+                                                   ArtSize.BIG)
         else:
             cover_path = Lp.art.get_album_cache_path(
-                                                       player.current_track.album_id,
-                                                       ArtSize.BIG)
+                                                   player.current_track.album_id,
+                                                   ArtSize.BIG)
         if cover_path is not None:
             self._notification.set_hint('image-path',
                                         GLib.Variant('s', cover_path))

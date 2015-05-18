@@ -67,12 +67,12 @@ class FullScreen(Gtk.Window):
     """
     def do_show(self):
         is_playing = Lp.player.is_playing()
-        self._signal1_id = Lp.player.connect("current-changed",
-                                                  self._on_current_changed)
-        self._signal2_id = Lp.player.connect("status-changed",
+        self._signal1_id = Lp.player.connect('current-changed',
+                                             self._on_current_changed)
+        self._signal2_id = Lp.player.connect('status-changed',
                                                   self._on_status_changed)
         if is_playing:
-            self._change_play_btn_status(self._pause_image, _("Pause"))
+            self._change_play_btn_status(self._pause_image, _('Pause'))
             self._on_current_changed(Lp.player)
         else:
             Lp.player.set_party(True)
@@ -118,7 +118,7 @@ class FullScreen(Gtk.Window):
                 self._total_time_label.hide()
                 self._progress.hide()
                 art = Lp.art.get_radio(player.current_track.artist,
-                                            ArtSize.MONSTER)
+                                       ArtSize.MONSTER)
             else:
                 self._prev_btn.set_sensitive(True)
                 self._next_btn.set_sensitive(True)
@@ -126,7 +126,7 @@ class FullScreen(Gtk.Window):
                 self._total_time_label.show()
                 self._progress.show()
                 art = Lp.art.get(player.current_track.album_id,
-                                      ArtSize.MONSTER)
+                                 ArtSize.MONSTER)
             if art:
                 self._cover.set_from_pixbuf(art)
                 self._cover.show()

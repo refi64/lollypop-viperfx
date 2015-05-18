@@ -180,7 +180,7 @@ class SettingsDialog:
     """
     def _update_ui_setting(self, widget, state):
         Lp.settings.set_value('dark-ui',
-                                   GLib.Variant('b', state))
+                         GLib.Variant('b', state))
         if not Lp.player.is_party():
             settings = Gtk.Settings.get_default()
             settings.set_property("gtk-application-prefer-dark-theme", state)
@@ -192,7 +192,7 @@ class SettingsDialog:
     """
     def _update_scan_setting(self, widget, state):
         Lp.settings.set_value('auto-update',
-                                   GLib.Variant('b', state))
+                              GLib.Variant('b', state))
 
     """
         Update background mode setting
@@ -200,7 +200,7 @@ class SettingsDialog:
     """
     def _update_background_setting(self, widget, state):
         Lp.settings.set_value('background-mode',
-                                   GLib.Variant('b', state))
+                              GLib.Variant('b', state))
 
     """
         Update save state setting
@@ -208,7 +208,7 @@ class SettingsDialog:
     """
     def _update_state_setting(self, widget, state):
         Lp.settings.set_value('save-state',
-                                   GLib.Variant('b', state))
+                              GLib.Variant('b', state))
     """
         Update show genre setting
         @param widget as unused, state as widget state
@@ -216,7 +216,7 @@ class SettingsDialog:
     def _update_genres_setting(self, widget, state):
         Lp.window.show_genres(state)
         Lp.settings.set_value('show-genres',
-                                   GLib.Variant('b', state))
+                              GLib.Variant('b', state))
 
     """
         Update auto play setting
@@ -224,7 +224,7 @@ class SettingsDialog:
     """
     def _update_autoplay_setting(self, widget, state):
         Lp.settings.set_value('auto-play',
-                                   GLib.Variant('b', state))
+                              GLib.Variant('b', state))
 
     """
         Close edit party dialog

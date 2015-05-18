@@ -77,15 +77,15 @@ class ArtistView(View):
         sql = Lp.db.get_cursor()
         if self._artist_id == Type.COMPILATIONS:
             albums = Lp.albums.get_compilations(self._genre_id,
-                                                     sql)
+                                                sql)
         elif self._genre_id == Type.ALL:
             albums = Lp.albums.get_ids(self._artist_id,
-                                            None,
-                                            sql)
+                                       None,
+                                       sql)
         else:
             albums = Lp.albums.get_ids(self._artist_id,
-                                            self._genre_id,
-                                            sql)
+                                       self._genre_id,
+                                       sql)
         sql.close()
         return albums
 
@@ -182,8 +182,7 @@ class AlbumsView(View):
         self._paned = Gtk.Paned.new(Gtk.Orientation.VERTICAL)
         self._paned.pack1(self._scrolledWindow)
         self._paned.pack2(self._context, True, False)
-        height = Lp.settings.get_value(
-                                         'paned-context-height').get_int32()
+        height = Lp.settings.get_value('paned-context-height').get_int32()
         # We set a stupid max value, safe as self._context is shrinked
         if height == -1:
             height = Lp.window.get_allocated_height()
@@ -221,7 +220,7 @@ class AlbumsView(View):
             albums = Lp.albums.get_randoms(sql)
         elif self._is_compilation:
             albums = Lp.albums.get_compilations(self._genre_id,
-                                                     sql)
+                                                sql)
         else:
             albums = Lp.albums.get_ids(None, self._genre_id, sql)
         sql.close()

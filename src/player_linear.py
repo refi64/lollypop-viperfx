@@ -47,8 +47,8 @@ class LinearPlayer(BasePlayer):
                     else:
                         pos += 1
                     tracks = Lp.albums.get_tracks(self._albums[pos],
-                                                         self.context.genre_id,
-                                                         sql)
+                                                  self.context.genre_id,
+                                                  sql)
                     track_id = tracks[0]
                 # next track
                 else:
@@ -64,7 +64,7 @@ class LinearPlayer(BasePlayer):
         track_id = None
         if self._albums:
             tracks = Lp.albums.get_tracks(self.current_track.album_id,
-                                               self.context.genre_id)
+                                          self.context.genre_id)
             if self.current_track.id in tracks:
                 new_track_position = tracks.index(self.current_track.id) - 1
                 # Previous album
@@ -75,7 +75,7 @@ class LinearPlayer(BasePlayer):
                     else:
                         pos -= 1
                     tracks = Lp.albums.get_tracks(self._albums[pos],
-                                                       self.context.genre_id)
+                                                  self.context.genre_id)
                     track_id = tracks[len(tracks) - 1]
                 # Previous track
                 else:

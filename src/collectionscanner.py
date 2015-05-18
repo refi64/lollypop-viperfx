@@ -284,8 +284,8 @@ class CollectionScanner(GObject.GObject, ScannerTagReader):
 
         # Add track to db
         Lp.tracks.add(title, filepath, length,
-                           tracknumber, discnumber,
-                           album_id, year, mtime, outside, sql)
+                      tracknumber, discnumber,
+                      album_id, year, mtime, outside, sql)
 
         self.update_year(album_id, sql)
 
@@ -332,7 +332,7 @@ class CollectionScanner(GObject.GObject, ScannerTagReader):
             string = "%s_%s" % (row[0], row[1])
             if string in self._popularities:
                 Lp.albums.set_popularity(row[2],
-                                              self._popularities[string], sql)
+                                         self._popularities[string], sql)
     """
         Restore albums mtimes
     """
@@ -345,4 +345,4 @@ class CollectionScanner(GObject.GObject, ScannerTagReader):
             string = "%s_%s" % (row[0], row[1])
             if string in self._mtimes:
                 Lp.albums.set_mtime(row[2],
-                                         self._mtimes[string], sql)
+                                    self._mtimes[string], sql)

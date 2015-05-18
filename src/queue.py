@@ -101,9 +101,9 @@ class QueueWidget(Gtk.Popover):
                                 track_id])
             del pixbuf
 
-        self._signal_id1 = Lp.player.connect("current-changed",
-                                                  self._on_current_changed)
-        self._signal_id2 =  self._model.connect("row-deleted",
+        self._signal_id1 = Lp.player.connect('current-changed',
+                                             self._on_current_changed)
+        self._signal_id2 =  self._model.connect('row-deleted',
                                                 self._updated_rows)
         Gtk.Popover.do_show(self)
 

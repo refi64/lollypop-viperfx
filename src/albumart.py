@@ -44,8 +44,7 @@ class AlbumArt(TagReader):
     def __init__(self):
         TagReader.__init__(self)
         self._gtk_settings = Gtk.Settings.get_default()
-        self._favorite = Lp.settings.get_value(
-                                                'favorite-cover').get_string()
+        self._favorite = Lp.settings.get_value('favorite-cover').get_string()
         if not os.path.exists(self._CACHE_PATH):
             try:
                 os.mkdir(self._CACHE_PATH)

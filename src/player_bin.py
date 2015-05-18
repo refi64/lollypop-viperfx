@@ -196,7 +196,8 @@ class BinPlayer(ReplayGainPlayer, BasePlayer):
                 self._on_errors()
                 return False
         else:
-            Lp.notify.send(_("File doesn't exist: %s") % self.current_track.path)
+            Lp.notify.send(_("File doesn't exist: %s") %\
+                                                       self.current_track.path)
             GLib.timeout_add(2000, self.next)
             return False
         return True

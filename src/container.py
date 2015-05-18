@@ -64,7 +64,7 @@ class Container:
         self._vm.connect('mount-removed', self._on_mount_removed)
 
         Lp.playlists.connect('playlists-changed',
-                                  self._update_lists)
+                             self._update_lists)
 
     """
         Update db at startup only if needed
@@ -101,13 +101,13 @@ class Container:
     """
     def save_view_state(self):
         Lp.settings.set_value("list-one",
-                                   GLib.Variant(
-                                        'i',
-                                        self._list_one.get_selected_id()))
+                              GLib.Variant(
+                                   'i',
+                                   self._list_one.get_selected_id()))
         Lp.settings.set_value("list-two",
-                                   GLib.Variant(
-                                        'i',
-                                        self._list_two.get_selected_id()))
+                              GLib.Variant(
+                                   'i',
+                                   self._list_two.get_selected_id()))
 
     """
         Show playlist manager for object_id
@@ -244,10 +244,10 @@ class Container:
         self._paned_main_list.add2(self._paned_list_view)
         self._paned_main_list.set_position(
                         Lp.settings.get_value(
-                                'paned-mainlist-width').get_int32())
+                                           'paned-mainlist-width').get_int32())
         self._paned_list_view.set_position(
                         Lp.settings.get_value(
-                                'paned-listview-width').get_int32())
+                                           'paned-listview-width').get_int32())
         self._paned_main_list.show()
         self._paned_list_view.show()
 

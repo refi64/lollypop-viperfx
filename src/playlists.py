@@ -28,7 +28,7 @@ class PlaylistsManager(GObject.GObject):
     __gsignals__ = {
         # Add or remove a playlist
         'playlists-changed': (GObject.SignalFlags.RUN_FIRST, None, ()),
-        # Lp added/removed to/from playlist
+        # Objects added/removed to/from playlist
         'playlist-changed': (GObject.SignalFlags.RUN_FIRST, None, (str,))
     }
 
@@ -234,8 +234,8 @@ class PlaylistsManager(GObject.GObject):
         playlist_paths = self.get_tracks(playlist_name)
         if is_album:
             tracks_path = Lp.albums.get_tracks_path(object_id,
-                                                         genre_id,
-                                                         sql)
+                                                    genre_id,
+                                                    sql)
         else:
             tracks_path = [Lp.tracks.get_path(object_id, sql)]
 

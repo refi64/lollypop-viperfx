@@ -169,8 +169,7 @@ class MPRIS(dbus.service.Object):
                                                   ]
             self._metadata['mpris:length'] = dbus.Int64(
                                               Lp.player.current_track.duration *
-                                              1000000
-                                                       )
+                                              1000000)
             self._metadata['xesam:genre'] = [Lp.player.current_track.genre]
             self._metadata['xesam:url'] = Lp.player.current_track.uri
             if Lp.player.current_track.id == Type.RADIOS:

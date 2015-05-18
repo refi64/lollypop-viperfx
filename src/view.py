@@ -23,11 +23,11 @@ class View(Gtk.Grid):
         self.set_property('orientation', Gtk.Orientation.VERTICAL)
         self.set_border_width(0)
         self._current_signal = Lp.player.connect('current-changed',
-                                                      self._on_current_changed)
+                                                 self._on_current_changed)
         self._cover_signal = Lp.player.connect('cover-changed',
-                                                    self._on_cover_changed)
+                                               self._on_cover_changed)
         self._scan_signal = Lp.scanner.connect('scan-finished',
-                                                    self._on_scan_finished)
+                                               self._on_scan_finished)
 
         # Stop populate thread
         self._stop = False

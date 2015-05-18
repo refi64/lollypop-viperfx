@@ -298,7 +298,7 @@ class SearchWidget(Gtk.Popover):
             search_obj.is_track = True
 
             album_artist_id = Lp.albums.get_artist_id(search_obj.album_id,
-                                                           sql)
+                                                      sql)
             artist_name = ""
             if album_artist_id != Type.COMPILATIONS:
                 artist_name = Lp.albums.get_artist_name(
@@ -308,7 +308,7 @@ class SearchWidget(Gtk.Popover):
                 if artist_id != album_artist_id:
                     artist_name += translate_artist_name(
                                     Lp.artists.get_name(artist_id,
-                                                             sql)) + ", "
+                                                        sql)) + ", "
 
             search_obj.artist = artist_name[:-2]
 
@@ -336,7 +336,7 @@ class SearchWidget(Gtk.Popover):
                     result.title += " (%s)" % result.count
                 search_row.set_text(result.artist, result.title)
                 search_row.set_cover(Lp.art.get(result.album_id,
-                                                     ArtSize.MEDIUM))
+                                                ArtSize.MEDIUM))
                 search_row.id = result.id
                 search_row.is_track = result.is_track
                 self._view.add(search_row)

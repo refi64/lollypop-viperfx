@@ -290,12 +290,12 @@ class ScannerTagReader(TagReader):
         if noaartist:
             if Lp.albums.is_compilation(album_id, sql):
                 Lp.albums.set_artist_id(album_id,
-                                             Type.COMPILATIONS,
-                                             sql)
+                                        Type.COMPILATIONS,
+                                        sql)
             else:
                 Lp.albums.set_artist_id(album_id,
-                                             artist_id,
-                                             sql)
+                                        artist_id,
+                                        sql)
         return album_id
 
     """
