@@ -24,6 +24,46 @@ from lollypop.utils import seconds_to_string
 from lollypop.popalbums import PopAlbums
 
 
+# Show next track to play
+class PartyPopover(Gtk.Popover):
+    """
+        Init popover
+    """
+    def __init__(self):
+        Gtk.Popover.__init__(self)
+        self.set_modal(False)
+        self.get_style_context().add_class('party-popover')
+        builder = Gtk.Builder()
+        builder.add_from_resource('/org/gnome/Lollypop/PartyPopover.ui')
+        self.add(builder.get_object('widget'))
+        self._title_label = builder.get_object('title')
+        self._artist_label = builder.get_object('artist')
+        self._cover = builder.get_object('cover')
+
+    """
+        Set popover text
+        @param track as Track
+    """
+    def update(self, track):
+        self._artist_label.set_text(track.artist)
+        self._title_label.set_text(track.title)
+        art = Lp.art.get(track.album_id,
+                         ArtSize.SMALL)
+        if art is not None:
+            self._cover.set_from_pixbuf(art)
+            del art
+            self._cover.set_tooltip_text(track.album)
+            self._cover.show()
+        else:
+            self._cover.hide()
+
+    """
+        Ignore
+    """
+    def do_grab_focus(self):
+        pass
+
+
 # Toolbar as headerbar
 # Get real widget with Toolbar.widget
 class Toolbar(Gtk.HeaderBar):
@@ -37,6 +77,7 @@ class Toolbar(Gtk.HeaderBar):
         self._seeking = False
         # Update pogress position
         self._timeout = None
+        self._next_popover = PartyPopover()
 
         builder = Gtk.Builder()
         builder.add_from_resource('/org/gnome/Lollypop/Toolbar.ui')
@@ -258,7 +299,7 @@ class Toolbar(Gtk.HeaderBar):
                                       Gdk.Cursor(Gdk.CursorType.LEFT_PTR))
 
             art = Lp.art.get_radio(player.current_track.artist,
-                                        ArtSize.SMALL)
+                                   ArtSize.SMALL)
         # Setup buttons and art for local playback
         elif player.current_track.id is not None:
             self._progress.set_value(0.0)
@@ -271,10 +312,16 @@ class Toolbar(Gtk.HeaderBar):
             self._infobox.get_window().set_cursor(
                                     Gdk.Cursor(Gdk.CursorType.HAND1))
             art = Lp.art.get(player.current_track.album_id,
-                                  ArtSize.SMALL)
+                             ArtSize.SMALL)
+
+            if player.is_party():
+                self._next_popover.update(player.next_track)
+                self._next_popover.set_relative_to(self._party_btn)
+                self._next_popover.show()
 
         if art is not None:
             self._cover.set_from_pixbuf(art)
+            del art
             self._cover.set_tooltip_text(player.current_track.album)
             self._cover.show()
         else:

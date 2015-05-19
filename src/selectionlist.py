@@ -24,7 +24,7 @@ class SelectionPopover(Gtk.Popover):
     """
     def __init__(self):
         Gtk.Popover.__init__(self)
-        self.set_sensitive(False)
+        self.set_modal(False)
         self._label = Gtk.Label()
         self._label.set_property('halign', Gtk.Align.CENTER)
         self._label.set_property('valign', Gtk.Align.CENTER)
