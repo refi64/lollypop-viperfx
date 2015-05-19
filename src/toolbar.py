@@ -25,7 +25,7 @@ from lollypop.popalbums import PopAlbums
 
 
 # Show next track to play
-class PartyPopover(Gtk.Popover):
+class NextPopover(Gtk.Popover):
     """
         Init popover
     """
@@ -34,7 +34,7 @@ class PartyPopover(Gtk.Popover):
         self.set_modal(False)
         self.get_style_context().add_class('party-popover')
         builder = Gtk.Builder()
-        builder.add_from_resource('/org/gnome/Lollypop/PartyPopover.ui')
+        builder.add_from_resource('/org/gnome/Lollypop/NextPopover.ui')
         self.add(builder.get_object('widget'))
         self._title_label = builder.get_object('title')
         self._artist_label = builder.get_object('artist')
@@ -77,7 +77,7 @@ class Toolbar(Gtk.HeaderBar):
         self._seeking = False
         # Update pogress position
         self._timeout = None
-        self._next_popover = PartyPopover()
+        self._next_popover = NextPopover()
 
         builder = Gtk.Builder()
         builder.add_from_resource('/org/gnome/Lollypop/Toolbar.ui')
