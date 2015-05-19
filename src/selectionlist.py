@@ -358,8 +358,9 @@ class SelectionList(Gtk.ScrolledWindow):
         @param widget as Gtk.widget
         @param event as GdK.Event
     """
-    def _on_leave_event(self, widget, event):
+    def _on_leave_event(self, widget=None, event=None):
         self._popover.hide()
+        self._timeout = None
 
     """
         Hide popover later
@@ -371,7 +372,8 @@ class SelectionList(Gtk.ScrolledWindow):
     """
     def _on_motion_notify(self, widget, event):
         if self._timeout is None:
-            self._timeout = GLib.timeout_add(500, self._popover.hide)
+            self._timeout = GLib.timeout_add(500,
+                                             self._on_leave_event)
         if event.x < 0.0 or event.y < 0.0:
             return
         self._last_motion_event.x = event.x
@@ -407,11 +409,8 @@ class SelectionList(Gtk.ScrolledWindow):
         if self._is_artists:
             text = format_artist_name(text)
         self._popover.set_text("  %s  " % text[0].upper())
-        self._popover.set_relative_to(self)
-        r = cairo.RectangleInt()
-        r.x = self.get_allocated_width()
+        self._popover.set_relative_to(self.get_vscrollbar())
+        (b, r) = self._popover.get_pointing_to()
         r.y = self._last_motion_event.y
-        r.width = 1
-        r.height = 1
         self._popover.set_pointing_to(r)
         self._popover.show()
