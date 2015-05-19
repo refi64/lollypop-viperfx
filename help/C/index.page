@@ -60,7 +60,6 @@ Lollypop music player</title>
         <item><p>Control+n: Skip current album</p></item>
         <item><p>Left key: Skip backward in track</p></item>
         <item><p>Right key: Skip forward in track</p></item>
-        <item><p>Control+h: Help</p></item>
     </list>
 </section>
 </page>
