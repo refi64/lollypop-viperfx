@@ -384,6 +384,9 @@ class SelectionList(Gtk.ScrolledWindow):
         @param adj as Gtk.Adjustement
     """
     def _on_scroll(self, adj):
+        # Only show if scrolled window is huge
+        if adj.get_upper() < adj.get_page_size() * 3:
+            return
         if self._last_motion_event is None:
             return
 
