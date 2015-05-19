@@ -39,13 +39,7 @@ Gtk.ListBoxRow .menu-button:hover {
 	border-color: alpha(@theme_fg_color, 0.1);
 }
 
-.party-popover {
-    background-color: @theme_fg_color;
-    color: @theme_bg_color;
-    opacity: 0.95;
-}
-
-.selection-popover {
+.osd-popover {
     background-color: @theme_fg_color;
     color: @theme_bg_color;
     opacity: 0.95;

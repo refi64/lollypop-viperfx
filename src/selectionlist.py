@@ -29,7 +29,7 @@ class SelectionPopover(Gtk.Popover):
         self._label.set_property('halign', Gtk.Align.CENTER)
         self._label.set_property('valign', Gtk.Align.CENTER)
         self._label.show()
-        self.get_style_context().add_class('selection-popover')
+        self.get_style_context().add_class('osd-popover')
         self.set_property('width-request', 100)
         self.set_property('height-request', 50)
         self.add(self._label)

@@ -32,7 +32,7 @@ class NextPopover(Gtk.Popover):
     def __init__(self):
         Gtk.Popover.__init__(self)
         self.set_modal(False)
-        self.get_style_context().add_class('party-popover')
+        self.get_style_context().add_class('osd-popover')
         builder = Gtk.Builder()
         builder.add_from_resource('/org/gnome/Lollypop/NextPopover.ui')
         self.add(builder.get_object('widget'))
