@@ -86,22 +86,21 @@ class SelectionList(Gtk.ScrolledWindow):
         self._model.set_sort_column_id(0, Gtk.SortType.ASCENDING)
         self._model.set_sort_func(0, self._sort_items)
         self._view = builder.get_object('view')
+        self._view.set_row_separator_func(self._row_separator_func)
 
         renderer0 = Gtk.CellRendererText()
         renderer0.set_property('ellipsize-set', True)
         renderer0.set_property('ellipsize', Pango.EllipsizeMode.END)
-        column0 = Gtk.TreeViewColumn('', renderer0)
-        column0.add_attribute(renderer0, 'text', 1)
-        column0.set_expand(True)
-        column0.set_sizing(Gtk.TreeViewColumnSizing.FIXED)
-
         renderer1 = Gtk.CellRendererPixbuf()
-        column1 = Gtk.TreeViewColumn('', renderer1)
-        column1.add_attribute(renderer1, 'icon-name', 2)
-        column1.set_sizing(Gtk.TreeViewColumnSizing.FIXED)
+        column = Gtk.TreeViewColumn('')
+        column.pack_start(renderer0, True)
+        column.pack_start(renderer1, True)
+        column.add_attribute(renderer0, 'text', 1)
+        column.add_attribute(renderer1, 'icon-name', 2)
+        column.set_expand(True)
+        column.set_sizing(Gtk.TreeViewColumnSizing.FIXED)
 
-        self._view.append_column(column0)
-        self._view.append_column(column1)
+        self._view.append_column(column)
         self._view.connect('motion_notify_event', self._on_motion_notify)
 
         self.add(self._view)
@@ -329,6 +328,14 @@ class SelectionList(Gtk.ScrolledWindow):
             return a.lower() > b.lower()
 
     """
+        Draw a separator if needed
+        @param model as Gtk.TreeModel
+        @param iterator as Gtk.TreeIter
+    """
+    def _row_separator_func(self, model, iterator):
+        return model.get_value(iterator, 0) == Type.SEPARATOR
+
+    """
         Forward "cursor-changed" as "item-selected" with item id as arg
         @param view as Gtk.TreeView
     """
@@ -362,9 +369,6 @@ class SelectionList(Gtk.ScrolledWindow):
         self._popover.hide()
         self._timeout = None
 
-    """
-        Hide popover later
-    """
     """
         Set motion event
         @param widget as Gtk.widget

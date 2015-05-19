@@ -353,6 +353,7 @@ class Container:
             items.append((Type.ALL, _("All artists")))
         else:
             items.append((Type.ALL, _("All albums")))
+        items.append((Type.SEPARATOR, ''))
         return items
 
     """

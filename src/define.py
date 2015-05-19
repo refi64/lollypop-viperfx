@@ -84,3 +84,4 @@ class Type:
     ALL = -7
     COMPILATIONS = -999
     DEVICES = -1000
+    SEPARATOR = -2000
