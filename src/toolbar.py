@@ -434,6 +434,9 @@ class Toolbar(Gtk.HeaderBar):
         @param is party as bool
     """
     def _on_party_changed(self, player, is_party):
+        # GTK fail to change colors on popover, so destroy it
+        self._next_popover.destroy()
+        self._next_popover = NextPopover()
         if self._party_btn.get_active() != is_party:
             self._activate_party_button()
 
