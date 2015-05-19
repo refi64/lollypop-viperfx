@@ -314,9 +314,13 @@ class Toolbar(Gtk.HeaderBar):
             art = Lp.art.get(player.current_track.album_id,
                              ArtSize.SMALL)
 
-            if player.is_party():
+            if player.is_party() or\
+               Lp.settings.get_enum('shuffle') == Shuffle.TRACKS:
                 self._next_popover.update(player.next_track)
-                self._next_popover.set_relative_to(self._party_btn)
+                if player.is_party():
+                    self._next_popover.set_relative_to(self._party_btn)
+                else:
+                    self._next_popover.set_relative_to(self._shuffle_btn)
                 self._next_popover.show()
 
         if art is not None:
