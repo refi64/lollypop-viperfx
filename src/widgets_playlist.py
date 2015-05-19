@@ -19,7 +19,7 @@ from gettext import gettext as _
 
 from lollypop.define import Lp, ArtSize, Type
 from lollypop.widgets_track import TracksWidget
-from lollypop.track import track
+from lollypop.track import Track
 from lollypop.utils import translate_artist_name
 
 # Playlist Widget is similar to album detailed
