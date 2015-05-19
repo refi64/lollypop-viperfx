@@ -344,7 +344,7 @@ class Application(Gtk.Application):
 
         helpAction = Gio.SimpleAction.new('help', None)
         helpAction.connect('activate', self._help)
-        self.set_accels_for_action('app.help', ["<Control>h"])
+        self.set_accels_for_action('app.help', ["F1"])
         self.add_action(helpAction)
 
 
