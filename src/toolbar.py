@@ -48,7 +48,7 @@ class NextPopover(Gtk.Popover):
         self._artist_label.set_text(track.artist)
         self._title_label.set_text(track.title)
         art = Lp.art.get(track.album_id,
-                         ArtSize.SMALL)
+                         ArtSize.MEDIUM)
         if art is not None:
             self._cover.set_from_pixbuf(art)
             del art
