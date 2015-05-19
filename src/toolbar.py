@@ -41,18 +41,17 @@ class NextPopover(Gtk.Popover):
         self._cover = builder.get_object('cover')
 
     """
-        Set popover text
-        @param track as Track
+        Update widget with current track
     """
-    def update(self, track):
-        self._artist_label.set_text(track.artist)
-        self._title_label.set_text(track.title)
-        art = Lp.art.get(track.album_id,
+    def update(self):
+        self._artist_label.set_text(Lp.player.next_track.artist)
+        self._title_label.set_text(Lp.player.next_track.title)
+        art = Lp.art.get(Lp.player.next_track.album_id,
                          ArtSize.MEDIUM)
         if art is not None:
             self._cover.set_from_pixbuf(art)
             del art
-            self._cover.set_tooltip_text(track.album)
+            self._cover.set_tooltip_text(Lp.player.next_track.album)
             self._cover.show()
         else:
             self._cover.hide()
@@ -242,6 +241,19 @@ class Toolbar(Gtk.HeaderBar):
             del pixbuf
 
     """
+        Show next popover
+    """
+    def _show_next_popover(self):
+        if Lp.player.is_party() or\
+           Lp.settings.get_enum('shuffle') == Shuffle.TRACKS:
+            self._next_popover.update()
+            if Lp.player.is_party():
+                self._next_popover.set_relative_to(self._party_btn)
+            else:
+                self._next_popover.set_relative_to(self._shuffle_btn)
+            self._next_popover.show()
+    
+    """
         On press, mark player as seeking
         @param unused
     """
@@ -313,15 +325,7 @@ class Toolbar(Gtk.HeaderBar):
                                     Gdk.Cursor(Gdk.CursorType.HAND1))
             art = Lp.art.get(player.current_track.album_id,
                              ArtSize.SMALL)
-
-            if player.is_party() or\
-               Lp.settings.get_enum('shuffle') == Shuffle.TRACKS:
-                self._next_popover.update(player.next_track)
-                if player.is_party():
-                    self._next_popover.set_relative_to(self._party_btn)
-                else:
-                    self._next_popover.set_relative_to(self._shuffle_btn)
-                self._next_popover.show()
+            self._show_next_popover()
 
         if art is not None:
             self._cover.set_from_pixbuf(art)
@@ -427,6 +431,8 @@ class Toolbar(Gtk.HeaderBar):
             settings = Gtk.Settings.get_default()
             settings.set_property("gtk-application-prefer-dark-theme", active)
         Lp.player.set_party(active)
+        if active:
+            self._show_next_popover()
 
     """
         On party change, sync toolbar
