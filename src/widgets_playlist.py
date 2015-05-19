@@ -19,6 +19,7 @@ from gettext import gettext as _
 
 from lollypop.define import Lp, ArtSize, Type
 from lollypop.widgets_track import TracksWidget
+from lollypop.track import track
 from lollypop.utils import translate_artist_name
 
 # Playlist Widget is similar to album detailed
@@ -145,7 +146,7 @@ class PlaylistWidget(Gtk.Bin):
             if not self._tracks:
                 self._tracks = Lp.playlists.get_tracks_id(playlist_name)
             Lp.player.set_user_playlist(self._tracks, track_id)
-        Lp.player.load(track_id)
+        Lp.player.load(Track(track_id))
 
 
 # Dialog for manage playlists (add, rename, delete, add object to)
