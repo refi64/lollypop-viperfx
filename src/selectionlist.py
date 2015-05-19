@@ -11,7 +11,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-from gi.repository import Gtk, GLib, GObject, Pango
+from gi.repository import Gtk, GLib, GObject, Pango, cairo
 from time import time
 from _thread import start_new_thread
 
@@ -70,7 +70,9 @@ class SelectionList(Gtk.ScrolledWindow):
         self.set_policy(Gtk.PolicyType.NEVER,
                         Gtk.PolicyType.AUTOMATIC)
         self._last_motion_event = MotionEvent()
+        self._previous_motion_y = 0.0
         self._loading = False
+        self._timeout = None
         self._to_select_id = Type.NONE
         self._updating = False       # Sort disabled if False
         self._is_artists = False  # for string translation
@@ -360,11 +362,16 @@ class SelectionList(Gtk.ScrolledWindow):
         self._popover.hide()
 
     """
+        Hide popover later
+    """
+    """
         Set motion event
         @param widget as Gtk.widget
         @param event as GdK.Event
     """
     def _on_motion_notify(self, widget, event):
+        if self._timeout is None:
+            self._timeout = GLib.timeout_add(500, self._popover.hide)
         if event.x < 0.0 or event.y < 0.0:
             return
         self._last_motion_event.x = event.x
@@ -377,6 +384,10 @@ class SelectionList(Gtk.ScrolledWindow):
     def _on_scroll(self, adj):
         if self._last_motion_event is None:
             return
+
+        if self._timeout is not None:
+            GLib.source_remove(self._timeout)
+            self._timeout = None
 
         dest_row = self._view.get_dest_row_at_pos(self._last_motion_event.x,
                                                   self._last_motion_event.y)
@@ -396,5 +407,11 @@ class SelectionList(Gtk.ScrolledWindow):
         if self._is_artists:
             text = format_artist_name(text)
         self._popover.set_text("  %s  " % text[0].upper())
-        self._popover.set_relative_to(self.get_vscrollbar())
+        self._popover.set_relative_to(self)
+        r = cairo.RectangleInt()
+        r.x = self.get_allocated_width()
+        r.y = self._last_motion_event.y
+        r.width = 1
+        r.height = 1
+        self._popover.set_pointing_to(r)
         self._popover.show()
