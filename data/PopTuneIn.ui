@@ -80,7 +80,7 @@
     </child>
     <child>
       <object class="GtkLinkButton" id="tunein">
-        <property name="label">Tunein</property>
+        <property name="label">TuneIn</property>
         <property name="visible">True</property>
         <property name="can_focus">True</property>
         <property name="receives_default">True</property>
@@ -106,7 +106,7 @@
       <object class="GtkLabel" id="label3">
         <property name="visible">True</property>
         <property name="can_focus">False</property>
-        <property name="label" translatable="yes">Can't connect to Tunein...</property>
+        <property name="label" translatable="yes">Can't connect to TuneIn...</property>
       </object>
       <packing>
         <property name="left_attach">0</property>
