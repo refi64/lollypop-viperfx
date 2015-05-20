@@ -149,4 +149,5 @@ class RadioPlayer(BasePlayer):
             self._stop()
             self._playbin.set_property('uri', uri)
             self.current_track = track
+            self._current = None
             self.play()

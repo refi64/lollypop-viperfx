@@ -17,6 +17,7 @@ from lollypop.view import View
 from lollypop.widgets_radio import RadioWidget
 from lollypop.playlists import RadiosManager
 from lollypop.popradio import PopRadio
+from lollypop.poptunein import PopTuneIn
 from lollypop.define import Lp
 from lollypop.track import Track
 
@@ -110,12 +111,22 @@ class RadiosView(View):
         return child1.get_name().lower() > child2.get_name().lower()
 
     """
-        Show popover
+        Show popover for adding a new radio
         @param widget as Gtk.Widget
     """
     def _on_new_clicked(self, widget):
         popover = PopRadio('', self._radios_manager)
         popover.set_relative_to(widget)
+        popover.show()
+
+    """
+        Show popover for searching radios
+        @param widget as Gtk.Widget
+    """
+    def _on_search_clicked(self, widget):
+        popover = PopTuneIn(self._radios_manager)
+        popover.set_relative_to(widget)
+        popover.populate()
         popover.show()
 
     """

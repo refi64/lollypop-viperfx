@@ -25,6 +25,7 @@
     <file>application.css</file>
     <file preprocess="xml-stripblanks">AlbumSimpleWidget.ui</file>
     <file preprocess="xml-stripblanks">ArtistView.ui</file>
+    <file preprocess="xml-stripblanks">PopTuneIn.ui</file>
     <file preprocess="xml-stripblanks">Toolbar.ui</file>
     <file preprocess="xml-stripblanks">NextPopover.ui</file>
     <file preprocess="xml-stripblanks">SettingsDialog.ui</file>

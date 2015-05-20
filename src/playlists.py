@@ -147,7 +147,7 @@ class PlaylistsManager(GObject.GObject):
         try:
             f = open(self._PLAYLISTS_PATH+"/"+playlist_name+".m3u", "r")
             for filepath in f:
-                if filepath[0] != "#":
+                if filepath[0] not in [ "#", "\n" ]:
                     tracks.append(filepath[:-1])
             f.close()
         except Exception as e:

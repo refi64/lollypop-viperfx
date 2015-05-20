@@ -101,6 +101,7 @@ class PopAlbumCovers(Gtk.Popover):
 
     """
         Add urls to the view
+        #FIXME Do not use recursion
     """
     def _add_pixbufs(self):
         if self._urls:

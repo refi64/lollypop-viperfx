@@ -47,7 +47,9 @@ app_PYTHON = \
     popradio.py\
 	popalbums.py\
 	popmenu.py\
+	poptunein.py\
 	track.py\
+	tunein.py
 	list.py\
 	collectionscanner.py
 
