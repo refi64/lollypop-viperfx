@@ -20,6 +20,7 @@ It provides:
 - Context artist view
 - MPT sync
 - Fullscreen view
+- Radios support
 
 === Depends on ===
 - gtk3
