@@ -23,6 +23,7 @@ It provides:
 
 === Depends on ===
 - gtk3
+- gobject-introspection
 - python3
 - intltool (make)
 - itstool (make)
