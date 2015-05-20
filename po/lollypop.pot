@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-05-20 16:13+0200\n"
+"POT-Creation-Date: 2015-05-20 18:50+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -169,7 +169,7 @@ msgstr ""
 msgid "Lollypop: You need to install yelp."
 msgstr ""
 
-#: ../src/collectionscanner.py:58
+#: ../src/collectionscanner.py:60
 msgid "Your music is updating"
 msgstr ""
 
@@ -551,7 +551,7 @@ msgstr ""
 msgid "Shuffle"
 msgstr ""
 
-#: ../data/Toolbar.ui.h:12 ../data/RadiosView.ui.h:2
+#: ../data/Toolbar.ui.h:12
 msgid "Search"
 msgstr ""
 
@@ -579,4 +579,8 @@ msgstr ""
 
 #: ../data/RadiosView.ui.h:1
 msgid "New radio"
+msgstr ""
+
+#: ../data/RadiosView.ui.h:2
+msgid "Search in Tunein"
 msgstr ""
