@@ -13,7 +13,6 @@
 
 import xml.etree.ElementTree as xml
 import urllib.request
-import urllib.parse
 from locale import getdefaultlocale
 
 

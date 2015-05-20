@@ -344,7 +344,7 @@ class AlbumArt(TagReader):
                                                start,
                                                GOOGLE_INC))
         except Exception as e:
-            print(e)
+            print("AlbumArt::get_google_arts: %s" % e)
             return None
 
         data = response.read()
@@ -359,6 +359,38 @@ class AlbumArt(TagReader):
             pass
 
         return urls
+
+    """
+        Add artist image to cache
+        @param artist as string
+        @param url as string
+        @param size as int
+    """
+    def add_artist_img_to_cache(self, artist, url, size=ArtSize.MEDIUM):
+        print('save')
+        CACHE_PATH_JPG = "%s/@@@@ARTIST@@@@%s_%s.jpg" % (self._CACHE_PATH,
+                                                         artist,
+                                                         size)
+        print(url)
+        urllib.request.urlretrieve(url, CACHE_PATH_JPG)
+
+    """
+        Get artist pixbuf
+        @param artist as string
+        @param size as int
+    """
+    def get_artist(self, artist, size=ArtSize.MEDIUM):
+        CACHE_PATH_JPG = "%s/@@@@ARTIST@@@@%s_%s.jpg" % (self._CACHE_PATH,
+                                                         artist,
+                                                         size)
+        pixbuf = None
+        if os.path.exists(CACHE_PATH_JPG):
+            pixbuf = GdkPixbuf.Pixbuf.new_from_file_at_size(CACHE_PATH_JPG,
+                                                            size,
+                                                            size)
+        if pixbuf is not None:
+            pixbuf = self._make_icon_frame(pixbuf, False)
+        return pixbuf
 
 #######################
 # PRIVATE             #

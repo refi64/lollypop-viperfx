@@ -30,6 +30,7 @@ class Lp:
     art = None
     window = None
     notify = None
+    lastfm = None
     debug = False
 
 

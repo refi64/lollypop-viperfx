@@ -17,6 +17,7 @@ app_PYTHON = \
 	albumart.py\
 	selectionlist.py\
 	queue.py\
+	lastfm.py\
 	settings.py\
 	playlists.py\
 	view.py\

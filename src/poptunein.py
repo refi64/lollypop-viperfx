@@ -179,8 +179,7 @@ class PopTuneIn(Gtk.Popover):
         # Get cover art
         try:
             cache = AlbumArt._RADIOS_PATH
-            response = urllib.request.urlretrieve(item.LOGO,
-                                                  cache+"/%s.png" % item.TEXT)
+            urllib.request.urlretrieve(item.LOGO, cache+"/%s.png" % item.TEXT)
         except Exception as e:
             print("PopTuneIn::_add_radio: %s" %e)
         url = item.URL
