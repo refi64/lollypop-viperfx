@@ -353,7 +353,6 @@ class Container:
             items.append((Type.ALL, _("All artists")))
         else:
             items.append((Type.ALL, _("All albums")))
-        items.append((Type.SEPARATOR, ''))
         return items
 
     """
@@ -365,7 +364,9 @@ class Container:
     def _setup_list_genres(self, selection_list, update):
         sql = Lp.db.get_cursor()
         selection_list.mark_as_artists(False)
-        items = self._get_headers() + Lp.genres.get(sql)
+        items = self._get_headers()
+        items.append((Type.SEPARATOR, ''))
+        items += Lp.genres.get(sql)
         if update:
             selection_list.update_values(items)
         else:
@@ -396,7 +397,7 @@ class Container:
             items = self._get_headers()
         if Lp.albums.get_compilations(genre_id, sql):
             items.append((Type.COMPILATIONS, _("Compilations")))
-
+        items.append((Type.SEPARATOR, ''))
         items += Lp.artists.get(genre_id, sql)
 
         if update:
