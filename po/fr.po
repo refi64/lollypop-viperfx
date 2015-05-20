@@ -9,8 +9,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lollypop\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-05-20 16:13+0200\n"
-"PO-Revision-Date: 2015-05-20 14:22+0000\n"
+"POT-Creation-Date: 2015-05-20 23:25+0200\n"
+"PO-Revision-Date: 2015-05-20 21:27+0000\n"
 "Last-Translator: Cédric Bellegarde <web@adishatz.org>\n"
 "Language-Team: French (http://www.transifex.com/projects/p/lollypop/language/fr/)\n"
 "MIME-Version: 1.0\n"
@@ -172,7 +172,7 @@ msgstr "Lecteur de musique pour le bureau GNOME"
 msgid "Lollypop: You need to install yelp."
 msgstr "Lollypop: Vous devez installer yelp."
 
-#: ../src/collectionscanner.py:58
+#: ../src/collectionscanner.py:60
 msgid "Your music is updating"
 msgstr "Mise à jour de votre musique"
 
@@ -323,6 +323,19 @@ msgstr "Ajouter"
 msgid "Modify"
 msgstr "Modifier"
 
+#: ../src/poptunein.py:84 ../data/PopRadio.ui.h:3
+#: ../data/PopAlbumCovers.ui.h:2
+msgid "Please wait..."
+msgstr "Veuillez patienter..."
+
+#: ../src/poptunein.py:104
+msgid "Can't connect to TuneIn..."
+msgstr "Impossible de se connecter à TuneIn..."
+
+#: ../src/poptunein.py:146
+msgid "Browse themes and add a new radio"
+msgstr "Parcourir les thèmes et ajoutez une nouvelle radio"
+
 #: ../src/search.py:153
 msgid "Search:"
 msgstr "Recherche:"
@@ -432,11 +445,6 @@ msgstr "Sélectionnez un logo pour cette radio"
 #: ../data/PopRadio.ui.h:2
 msgid "No logo found..."
 msgstr "Aucun logo trouvé..."
-
-#: ../data/PopRadio.ui.h:3 ../data/PopAlbumCovers.ui.h:2
-#: ../data/PopTuneIn.ui.h:3
-msgid "Please wait..."
-msgstr "Veuillez patienter..."
 
 #: ../data/PopRadio.ui.h:4
 msgid "Name:"
@@ -554,7 +562,7 @@ msgstr "Paramètres"
 msgid "Shuffle"
 msgstr "Aléatoire"
 
-#: ../data/Toolbar.ui.h:12 ../data/RadiosView.ui.h:2
+#: ../data/Toolbar.ui.h:12
 msgid "Search"
 msgstr "Recherche"
 
@@ -572,14 +580,10 @@ msgid ""
 "Please fix your system."
 msgstr "Lollypop ne supporte pas les systèmes non unicode.\nMerci de corriger votre système"
 
-#: ../data/PopTuneIn.ui.h:1
-msgid "Browse themes and add a new radio"
-msgstr "Parcourir les thèmes et ajoutez une nouvelle radio"
-
-#: ../data/PopTuneIn.ui.h:2
-msgid "Can't connect to Tunein..."
-msgstr "Impossible de se connecter à Tunein..."
-
 #: ../data/RadiosView.ui.h:1
 msgid "New radio"
 msgstr "Nouvelle radio"
+
+#: ../data/RadiosView.ui.h:2
+msgid "Search in TuneIn"
+msgstr "Rechercher dans TuneIn"
