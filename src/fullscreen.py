@@ -139,7 +139,7 @@ class FullScreen(Gtk.Window):
             self._title.set_text(player.current_track.title)
             self._artist.set_text(player.current_track.artist)
             self._album.set_text(player.current_track.album)
-            self._next.set_markup(_("<b>%s</b> - %s") %\
+            self._next.set_markup(_("Next track") + ": <b>%s</b> - %s" %\
                                   (escape(player.next_track.artist),
                                    escape(player.next_track.title)))
             self._progress.set_value(1.0)
