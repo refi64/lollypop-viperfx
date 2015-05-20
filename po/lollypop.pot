@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-05-20 18:50+0200\n"
+"POT-Creation-Date: 2015-05-20 18:52+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -574,7 +574,7 @@ msgid "Browse themes and add a new radio"
 msgstr ""
 
 #: ../data/PopTuneIn.ui.h:2
-msgid "Can't connect to Tunein..."
+msgid "Can't connect to TuneIn..."
 msgstr ""
 
 #: ../data/RadiosView.ui.h:1
