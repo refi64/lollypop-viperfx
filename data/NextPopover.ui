@@ -2,68 +2,80 @@
 <!-- Generated with glade 3.18.3 -->
 <interface>
   <requires lib="gtk+" version="3.12"/>
-  <object class="GtkBox" id="widget">
+  <object class="GtkGrid" id="widget">
     <property name="visible">True</property>
     <property name="can_focus">False</property>
-    <property name="margin_start">5</property>
-    <property name="margin_end">5</property>
-    <property name="margin_top">5</property>
-    <property name="margin_bottom">5</property>
+    <child>
+      <object class="GtkLabel" id="label1">
+        <property name="visible">True</property>
+        <property name="can_focus">False</property>
+        <property name="label" translatable="yes">Next track</property>
+        <attributes>
+          <attribute name="scale" value="0.80000000000000004"/>
+        </attributes>
+        <style>
+          <class name="dim-label"/>
+        </style>
+      </object>
+      <packing>
+        <property name="left_attach">0</property>
+        <property name="top_attach">0</property>
+        <property name="width">2</property>
+      </packing>
+    </child>
     <child>
       <object class="GtkImage" id="cover">
         <property name="can_focus">False</property>
       </object>
       <packing>
-        <property name="expand">False</property>
-        <property name="fill">True</property>
-        <property name="position">0</property>
+        <property name="left_attach">0</property>
+        <property name="top_attach">2</property>
+        <property name="height">2</property>
       </packing>
     </child>
     <child>
-      <object class="GtkBox" id="nowplaying_labels">
+      <object class="GtkLabel" id="artist">
         <property name="visible">True</property>
         <property name="can_focus">False</property>
-        <property name="orientation">vertical</property>
-        <property name="homogeneous">True</property>
-        <child>
-          <object class="GtkLabel" id="artist">
-            <property name="visible">True</property>
-            <property name="can_focus">False</property>
-            <property name="ellipsize">end</property>
-            <property name="single_line_mode">True</property>
-            <property name="max_width_chars">30</property>
-            <style>
-              <class name="lollypop-title"/>
-            </style>
-          </object>
-          <packing>
-            <property name="expand">False</property>
-            <property name="fill">False</property>
-            <property name="position">0</property>
-          </packing>
-        </child>
-        <child>
-          <object class="GtkLabel" id="title">
-            <property name="visible">True</property>
-            <property name="can_focus">False</property>
-            <property name="ellipsize">end</property>
-            <property name="single_line_mode">True</property>
-            <property name="max_width_chars">30</property>
-            <style>
-              <class name="lollypop-subtitle"/>
-            </style>
-          </object>
-          <packing>
-            <property name="expand">False</property>
-            <property name="fill">False</property>
-            <property name="position">1</property>
-          </packing>
-        </child>
+        <property name="ellipsize">end</property>
+        <property name="single_line_mode">True</property>
+        <property name="max_width_chars">30</property>
+        <style>
+          <class name="lollypop-title"/>
+        </style>
       </object>
       <packing>
-        <property name="expand">False</property>
-        <property name="fill">False</property>
-        <property name="position">1</property>
+        <property name="left_attach">1</property>
+        <property name="top_attach">2</property>
+      </packing>
+    </child>
+    <child>
+      <object class="GtkLabel" id="title">
+        <property name="visible">True</property>
+        <property name="can_focus">False</property>
+        <property name="ellipsize">end</property>
+        <property name="single_line_mode">True</property>
+        <property name="max_width_chars">30</property>
+        <style>
+          <class name="lollypop-subtitle"/>
+        </style>
+      </object>
+      <packing>
+        <property name="left_attach">1</property>
+        <property name="top_attach">3</property>
+      </packing>
+    </child>
+    <child>
+      <object class="GtkSeparator" id="separator1">
+        <property name="visible">True</property>
+        <property name="can_focus">False</property>
+        <property name="margin_top">1</property>
+        <property name="margin_bottom">5</property>
+      </object>
+      <packing>
+        <property name="left_attach">0</property>
+        <property name="top_attach">1</property>
+        <property name="width">2</property>
       </packing>
     </child>
   </object>
