@@ -134,12 +134,26 @@ class PopTuneIn(Gtk.Popover):
         @param item as TuneItem
     """
     def _add_item(self, item):
-        child = Gtk.LinkButton.new_with_label(item.URL, item.TEXT)
-        child.connect('activate-link',
-                      self._on_activate_link,
-                      item)
-        child.show()                
+        child = Gtk.Grid()
+        child.set_property('halign', Gtk.Align.START)
+        child.show()
+        if item.TYPE == "audio":
+            image = Gtk.Image.new_from_icon_name(
+                                            'audio-input-microphone-symbolic',
+                                            Gtk.IconSize.MENU)
+            image.show()
+            child.add(image)
+
+        button = Gtk.LinkButton.new_with_label(item.URL, item.TEXT)
+        button.connect('activate-link',
+                       self._on_activate_link,
+                       item)
+        button.show()
+
+        child.add(button)
+
         self._view.add(child)
+
         # Remove spinner if exist
         if self._spinner == self._stack.get_visible_child():
             self._stack.set_visible_child(self._scrolled)
