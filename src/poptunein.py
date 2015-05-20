@@ -183,6 +183,18 @@ class PopTuneIn(Gtk.Popover):
         start_new_thread(self.populate, (url,))
 
     """
+        Go to root URL
+        @param btn as Gtk.Button
+    """
+    def _on_home_btn_clicked(self, btn):
+        url = None
+        self._current_url = None
+        self._previous_urls = []
+        self._stack.set_visible_child(self._spinner)
+        self._clear()
+        start_new_thread(self.populate, ())
+
+    """
         Update header with new link
         @param link as Gtk.LinkButton
         @param item as TuneIn Item
