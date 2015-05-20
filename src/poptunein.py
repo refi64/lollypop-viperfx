@@ -76,7 +76,7 @@ class PopTuneIn(Gtk.Popover):
         @param url as string
     """
     def populate(self, url=None):
-        if url is not None or self._current_url is None:
+        if not self._view.get_children():
             self._current_url = url
             self._clear()
             self._back_btn.set_sensitive(False)
