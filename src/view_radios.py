@@ -32,7 +32,7 @@ class RadiosView(View):
         self._signal = None
 
         self._radios_manager = RadiosManager()
-        self._radios_manager.connect('playlist-changed',
+        self._radios_manager.connect('playlists-changed',
                                      self._on_radios_changed)
         builder = Gtk.Builder()
         builder.add_from_resource('/org/gnome/Lollypop/RadiosView.ui')
@@ -133,9 +133,8 @@ class RadiosView(View):
     """
         Update radios
         @param manager as PlaylistManager
-        @param playlist name as str
     """
-    def _on_radios_changed(self, manager, name):
+    def _on_radios_changed(self, manager):
         radios_name = []
         currents = []
         new_name = None
@@ -188,20 +187,15 @@ class RadiosView(View):
         Pop a radio and add it to the view,
         repeat operation until radio list is empty
         @param [radio names as string]
-        @return new widget as RadioWidget
     """
     def _add_radios(self, radios):
         if radios and not self._stop:
             radio = radios.pop(0)
-            uris = self._radios_manager.get_tracks(radio)
-            if len(uris) > 0:
-                widget = RadioWidget(radio,
-                                     uris[0],
-                                     self._radios_manager)
-                widget.show()
-                self._sizegroup.add_widget(widget)
-                self._radiobox.insert(widget, -1)
-                return widget
+            widget = RadioWidget(radio,
+                                 self._radios_manager)
+            widget.show()
+            self._sizegroup.add_widget(widget)
+            self._radiobox.insert(widget, -1)
             GLib.idle_add(self._add_radios, radios)
         else:
             self._stop = False
@@ -214,7 +208,8 @@ class RadiosView(View):
     """
     def _on_album_activated(self, flowbox, child):
         name = child.get_child().get_name()
-        uri =  child.get_child().get_uri()
-        track = Track()
-        track.set_radio(name, uri)
-        Lp.player.load(track)
+        uris = self._radios_manager.get_tracks(name)
+        if len(uris) > 0:
+            track = Track()
+            track.set_radio(name, uris[0])
+            Lp.player.load(track)

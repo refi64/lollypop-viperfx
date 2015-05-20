@@ -15,6 +15,7 @@ from gi.repository import Gtk, GLib, GdkPixbuf
 
 import urllib.request
 from _thread import start_new_thread
+from gettext import gettext as _
 
 from lollypop.tunein import TuneIn
 from lollypop.define import Lp
@@ -36,15 +37,20 @@ class PopTuneIn(Gtk.Popover):
         self._current_url = None
         self._previous_urls = []
 
-        self._stack = ViewContainer(1000)
+        self._stack = Gtk.Stack()
+        self._stack.set_property('expand', True)
         self._stack.show()
 
         builder = Gtk.Builder()
         builder.add_from_resource(
                     '/org/gnome/Lollypop/PopTuneIn.ui')
         builder.connect_signals(self)
+        widget = builder.get_object('widget')
+        widget.attach(self._stack, 0, 2, 4, 1)
 
         self._back_btn = builder.get_object('back_btn')
+        self._home_btn = builder.get_object('home_btn')
+        self._label = builder.get_object('label')
 
         self._view = Gtk.FlowBox()
         self._view.set_selection_mode(Gtk.SelectionMode.NONE)
@@ -56,14 +62,14 @@ class PopTuneIn(Gtk.Popover):
 
         builder.get_object('viewport').add(self._view)
 
-        self._widget = builder.get_object('widget')
+        self._scrolled = builder.get_object('scrolled') 
         self._spinner = builder.get_object('spinner')
         self._not_found = builder.get_object('notfound')
         self._stack.add(self._spinner)
         self._stack.add(self._not_found)
-        self._stack.add(self._widget)
+        self._stack.add(self._scrolled)
         self._stack.set_visible_child(self._spinner)
-        self.add(self._stack)
+        self.add(widget)
 
     """
         Populate views
@@ -73,6 +79,9 @@ class PopTuneIn(Gtk.Popover):
         if url is not None or self._current_url is None:
             self._current_url = url
             self._clear()
+            self._back_btn.set_sensitive(False)
+            self._home_btn.set_sensitive(False)
+            self._label.set_text(_("Please wait..."))
             start_new_thread(self._populate, (url,))
 
     """
@@ -92,6 +101,7 @@ class PopTuneIn(Gtk.Popover):
         Show not found message
     """
     def _show_not_found(self):
+        self._label.set_text(_("Can't connect to TuneIn..."))
         self._stack.set_visible_child(self._not_found)
 
     """
@@ -132,11 +142,11 @@ class PopTuneIn(Gtk.Popover):
         self._view.add(child)
         # Remove spinner if exist
         if self._spinner == self._stack.get_visible_child():
-            self._stack.set_visible_child(self._widget)
-            if self._current_url is None:
-                self._back_btn.hide()
-            else:
-                self._back_btn.show()
+            self._stack.set_visible_child(self._scrolled)
+            self._label.set_text(_("Browse themes and add a new radio"))
+            if self._current_url is not None:
+                self._back_btn.set_sensitive(True)
+            self._home_btn.set_sensitive(True)
 
     """
         Clear view
@@ -180,7 +190,7 @@ class PopTuneIn(Gtk.Popover):
             url = self._previous_urls.pop()
         self._stack.set_visible_child(self._spinner)
         self._clear()
-        start_new_thread(self.populate, (url,))
+        self.populate(url)
 
     """
         Go to root URL
@@ -192,7 +202,7 @@ class PopTuneIn(Gtk.Popover):
         self._previous_urls = []
         self._stack.set_visible_child(self._spinner)
         self._clear()
-        start_new_thread(self.populate, ())
+        self.populate()
 
     """
         Update header with new link

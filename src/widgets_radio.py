@@ -23,10 +23,9 @@ class RadioWidget(AlbumWidget):
     """
         Init radio widget
         @param name as string
-        @param uri as string
         @param radios_manager as RadiosManager
     """
-    def __init__(self, name, uri, radios_manager):
+    def __init__(self, name, radios_manager):
         AlbumWidget.__init__(self, None)
         builder = Gtk.Builder()
         builder.add_from_resource('/org/gnome/Lollypop/RadioWidget.ui')
@@ -34,7 +33,6 @@ class RadioWidget(AlbumWidget):
         self._cover = builder.get_object('cover')
 
         self._name = name
-        self._uri = uri
         self._radios_manager = radios_manager
         self._popover = None
 
@@ -79,17 +77,6 @@ class RadioWidget(AlbumWidget):
     """
     def get_name(self):
         return self._name
-
-    """
-        Return radio uri
-        @param radio uri as string
-    """
-    def get_uri(self):
-        uris = self._radios_manager.get_tracks(self._name)
-        if len(uris) > 0:
-            return uris[0]
-        else:
-            return ''
 
     """
         Set cover for album if state changed
