@@ -32,6 +32,7 @@ src/pop_album_covers.py
 src/popalbums.py
 src/popmenu.py
 src/popradio.py
+src/poptunein.py
 src/inotify.py
 src/queue.py
 src/search.py
@@ -39,6 +40,7 @@ src/selectionlist.py
 src/settings.py
 src/tagreader.py
 src/toolbar.py
+src/tunein.py
 src/utils.py
 src/view_albums.py
 src/view_container.py
@@ -73,5 +75,6 @@ src/window.py
 [type: gettext/glade]data/Toolbar.ui
 [type: gettext/glade]data/TrackRow.ui
 [type: gettext/glade]data/Unicode.ui
+[type: gettext/glade]data/PopTuneIn.ui
 [type: gettext/glade]data/RadiosView.ui
 [type: gettext/glade]data/RadioWidget.ui

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-05-16 22:56+0200\n"
+"POT-Creation-Date: 2015-05-20 16:13+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -165,11 +165,11 @@ msgstr ""
 msgid "Music player for the GNOME desktop"
 msgstr ""
 
-#: ../src/application.py:308
+#: ../src/application.py:305
 msgid "Lollypop: You need to install yelp."
 msgstr ""
 
-#: ../src/collectionscanner.py:55
+#: ../src/collectionscanner.py:58
 msgid "Your music is updating"
 msgstr ""
 
@@ -202,7 +202,7 @@ msgstr ""
 msgid "All albums"
 msgstr ""
 
-#: ../src/container.py:397
+#: ../src/container.py:398
 msgid "Compilations"
 msgstr ""
 
@@ -220,12 +220,16 @@ msgstr ""
 msgid "Many artists"
 msgstr ""
 
-#: ../src/fullscreen.py:75 ../src/fullscreen.py:189 ../src/toolbar.py:287
-#: ../src/toolbar.py:318
+#: ../src/fullscreen.py:78 ../src/fullscreen.py:195 ../src/toolbar.py:352
+#: ../src/toolbar.py:383
 msgid "Pause"
 msgstr ""
 
-#: ../src/fullscreen.py:193 ../src/toolbar.py:294 ../src/toolbar.py:315
+#: ../src/fullscreen.py:142 ../src/popmenu.py:171
+msgid "Next track"
+msgstr ""
+
+#: ../src/fullscreen.py:199 ../src/toolbar.py:359 ../src/toolbar.py:380
 #: ../data/Toolbar.ui.h:7
 msgid "Play"
 msgstr ""
@@ -245,12 +249,12 @@ msgstr ""
 msgid "by %s, from %s"
 msgstr ""
 
-#: ../src/player_bin.py:230
+#: ../src/player_bin.py:211
 #, python-format
 msgid "File doesn't exist: %s"
 msgstr ""
 
-#: ../src/player_radio.py:108
+#: ../src/player_radio.py:42
 msgid "Radio"
 msgstr ""
 
@@ -276,10 +280,6 @@ msgstr ""
 
 #: ../src/popmenu.py:169
 msgid "Next tracks"
-msgstr ""
-
-#: ../src/popmenu.py:171
-msgid "Next track"
 msgstr ""
 
 #: ../src/popmenu.py:175
@@ -320,7 +320,7 @@ msgstr ""
 msgid "Modify"
 msgstr ""
 
-#: ../src/search.py:152
+#: ../src/search.py:153
 msgid "Search:"
 msgstr ""
 
@@ -347,7 +347,7 @@ msgstr ""
 msgid "Cancel synchronization"
 msgstr ""
 
-#: ../src/widgets_album.py:206
+#: ../src/widgets_album.py:207
 #, python-format
 msgid "Disc %s"
 msgstr ""
@@ -360,16 +360,16 @@ msgstr ""
 msgid "No free space available on device"
 msgstr ""
 
-#: ../src/widgets_playlist.py:234 ../src/widgets_playlist.py:237
+#: ../src/widgets_playlist.py:235 ../src/widgets_playlist.py:238
 msgid "New playlist "
 msgstr ""
 
-#: ../src/widgets_playlist.py:279 ../src/widgets_playlist.py:535
+#: ../src/widgets_playlist.py:280 ../src/widgets_playlist.py:536
 #, python-format
 msgid "Remove \"%s\"?"
 msgstr ""
 
-#: ../src/widgets_playlist.py:574
+#: ../src/widgets_playlist.py:575
 msgid "Remove these tracks?"
 msgstr ""
 
@@ -431,6 +431,7 @@ msgid "No logo found..."
 msgstr ""
 
 #: ../data/PopRadio.ui.h:3 ../data/PopAlbumCovers.ui.h:2
+#: ../data/PopTuneIn.ui.h:3
 msgid "Please wait..."
 msgstr ""
 
@@ -550,7 +551,7 @@ msgstr ""
 msgid "Shuffle"
 msgstr ""
 
-#: ../data/Toolbar.ui.h:12
+#: ../data/Toolbar.ui.h:12 ../data/RadiosView.ui.h:2
 msgid "Search"
 msgstr ""
 
@@ -566,6 +567,14 @@ msgstr ""
 msgid ""
 "Lollypop isn't designed to work without an unicode locale.\n"
 "Please fix your system."
+msgstr ""
+
+#: ../data/PopTuneIn.ui.h:1
+msgid "Browse themes and add a new radio"
+msgstr ""
+
+#: ../data/PopTuneIn.ui.h:2
+msgid "Can't connect to Tunein..."
 msgstr ""
 
 #: ../data/RadiosView.ui.h:1
