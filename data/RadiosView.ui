@@ -42,7 +42,7 @@
             <property name="visible">True</property>
             <property name="can_focus">True</property>
             <property name="receives_default">True</property>
-            <property name="tooltip_text" translatable="yes">Search</property>
+            <property name="tooltip_text" translatable="yes">Search in Tunein</property>
             <property name="halign">start</property>
             <property name="image">image1</property>
             <signal name="clicked" handler="_on_search_clicked" swapped="no"/>
