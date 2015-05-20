@@ -44,6 +44,8 @@ class PopTuneIn(Gtk.Popover):
                     '/org/gnome/Lollypop/PopTuneIn.ui')
         builder.connect_signals(self)
 
+        self._back_btn = builder.get_object('back_btn')
+
         self._view = Gtk.FlowBox()
         self._view.set_selection_mode(Gtk.SelectionMode.NONE)
         self._view.set_max_children_per_line(100)
@@ -131,6 +133,10 @@ class PopTuneIn(Gtk.Popover):
         # Remove spinner if exist
         if self._spinner == self._stack.get_visible_child():
             self._stack.set_visible_child(self._widget)
+            if self._current_url is None:
+                self._back_btn.hide()
+            else:
+                self._back_btn.show()
 
     """
         Clear view
