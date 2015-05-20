@@ -49,7 +49,7 @@ app_PYTHON = \
 	popmenu.py\
 	poptunein.py\
 	track.py\
-	tunein.py
+	tunein.py\
 	list.py\
 	collectionscanner.py
 
