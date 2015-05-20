@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-05-20 18:55+0200\n"
+"POT-Creation-Date: 2015-05-20 23:25+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -320,6 +320,19 @@ msgstr ""
 msgid "Modify"
 msgstr ""
 
+#: ../src/poptunein.py:84 ../data/PopRadio.ui.h:3
+#: ../data/PopAlbumCovers.ui.h:2
+msgid "Please wait..."
+msgstr ""
+
+#: ../src/poptunein.py:104
+msgid "Can't connect to TuneIn..."
+msgstr ""
+
+#: ../src/poptunein.py:146
+msgid "Browse themes and add a new radio"
+msgstr ""
+
 #: ../src/search.py:153
 msgid "Search:"
 msgstr ""
@@ -428,11 +441,6 @@ msgstr ""
 
 #: ../data/PopRadio.ui.h:2
 msgid "No logo found..."
-msgstr ""
-
-#: ../data/PopRadio.ui.h:3 ../data/PopAlbumCovers.ui.h:2
-#: ../data/PopTuneIn.ui.h:3
-msgid "Please wait..."
 msgstr ""
 
 #: ../data/PopRadio.ui.h:4
@@ -567,14 +575,6 @@ msgstr ""
 msgid ""
 "Lollypop isn't designed to work without an unicode locale.\n"
 "Please fix your system."
-msgstr ""
-
-#: ../data/PopTuneIn.ui.h:1
-msgid "Browse themes and add a new radio"
-msgstr ""
-
-#: ../data/PopTuneIn.ui.h:2
-msgid "Can't connect to TuneIn..."
 msgstr ""
 
 #: ../data/RadiosView.ui.h:1
