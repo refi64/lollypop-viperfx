@@ -169,10 +169,10 @@ class PopTuneIn(Gtk.Popover):
     """
     def _on_back_btn_clicked(self, btn):
         url = None
+        self._current_url = None
         if self._previous_urls:
-            self._stack.set_visible_child(self._spinner)
             url = self._previous_urls.pop()
-
+        self._stack.set_visible_child(self._spinner)
         self._clear()
         start_new_thread(self.populate, (url,))
 
