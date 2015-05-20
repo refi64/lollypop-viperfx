@@ -32,7 +32,7 @@ class RadiosView(View):
         self._signal = None
 
         self._radios_manager = RadiosManager()
-        self._radios_manager.connect('playlists-changed',
+        self._radios_manager.connect('playlist-changed',
                                      self._on_radios_changed)
         builder = Gtk.Builder()
         builder.add_from_resource('/org/gnome/Lollypop/RadiosView.ui')
@@ -132,8 +132,9 @@ class RadiosView(View):
     """
         Update radios
         @param manager as PlaylistManager
+        @param playlist name as str
     """
-    def _on_radios_changed(self, manager):
+    def _on_radios_changed(self, manager, name):
         radios_name = []
         currents = []
         new_name = None
