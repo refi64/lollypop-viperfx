@@ -68,8 +68,10 @@ class PopTuneIn(Gtk.Popover):
         @param url as string
     """
     def populate(self, url=None):
-        self._current_url = url
-        start_new_thread(self._populate, (url,))
+        if url is not None or self._current_url is None:
+            self._current_url = url
+            self._clear()
+            start_new_thread(self._populate, (url,))
 
     """
         Resize popover and set signals callback
@@ -81,7 +83,6 @@ class PopTuneIn(Gtk.Popover):
         else:
             self.set_size_request(700, 400)
         Gtk.Popover.do_show(self)
-
 #######################
 # PRIVATE             #
 #######################
@@ -161,7 +162,6 @@ class PopTuneIn(Gtk.Popover):
         self._radio_manager.add(item.TEXT)
         self._radio_manager.add_track(item.TEXT,
                                       url)
-        GLib.idle_add(self.destroy)
 
     """
         Go to previous URL

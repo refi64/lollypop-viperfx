@@ -39,6 +39,9 @@ class RadiosView(View):
         builder.connect_signals(self)
         widget = builder.get_object('widget')
 
+        self._pop_tunein = PopTuneIn(self._radios_manager)
+        self._pop_tunein.set_relative_to(builder.get_object('search_btn'))
+
         self._sizegroup = Gtk.SizeGroup(mode=Gtk.SizeGroupMode.BOTH)
 
         self._radiobox = Gtk.FlowBox()
@@ -124,10 +127,8 @@ class RadiosView(View):
         @param widget as Gtk.Widget
     """
     def _on_search_clicked(self, widget):
-        popover = PopTuneIn(self._radios_manager)
-        popover.set_relative_to(widget)
-        popover.populate()
-        popover.show()
+        self._pop_tunein.populate()
+        self._pop_tunein.show()
 
     """
         Update radios

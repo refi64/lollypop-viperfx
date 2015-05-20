@@ -20,7 +20,7 @@
         <property name="margin_top">2</property>
         <property name="column_spacing">7</property>
         <child>
-          <object class="GtkButton" id="new">
+          <object class="GtkButton" id="new_btn">
             <property name="label" translatable="yes">New radio</property>
             <property name="visible">True</property>
             <property name="can_focus">True</property>
@@ -38,7 +38,7 @@
           </packing>
         </child>
         <child>
-          <object class="GtkButton" id="search">
+          <object class="GtkButton" id="search_btn">
             <property name="visible">True</property>
             <property name="can_focus">True</property>
             <property name="receives_default">True</property>
