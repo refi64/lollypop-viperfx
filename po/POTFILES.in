@@ -5,7 +5,7 @@
 data/org.gnome.Lollypop.gschema.xml
 data/lollypop.desktop.in
 data/lollypop.appdata.xml.in
-src/albumart.py
+src/art.py
 src/application.py
 src/collectionscanner.py
 src/container.py

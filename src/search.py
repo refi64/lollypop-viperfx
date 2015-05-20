@@ -335,7 +335,7 @@ class SearchWidget(Gtk.Popover):
                 if result.count != -1:
                     result.title += " (%s)" % result.count
                 search_row.set_text(result.artist, result.title)
-                search_row.set_cover(Lp.art.get(result.album_id,
+                search_row.set_cover(Lp.art.get_album(result.album_id,
                                                 ArtSize.MEDIUM))
                 search_row.id = result.id
                 search_row.is_track = result.is_track

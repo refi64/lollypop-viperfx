@@ -22,7 +22,7 @@ from lollypop.define import Lp, ArtSize
 from lollypop.window import Window
 from lollypop.database import Database
 from lollypop.player import Player
-from lollypop.albumart import AlbumArt
+from lollypop.art import Art
 from lollypop.lastfm import LastFM
 from lollypop.settings import Settings, SettingsDialog
 from lollypop.mpris import MPRIS
@@ -79,7 +79,7 @@ class Application(Gtk.Application):
         Lp.playlists = PlaylistsManager()
         Lp.scanner = CollectionScanner()
         Lp.lastfm = LastFM()
-        Lp.art = AlbumArt()
+        Lp.art = Art()
         if not Lp.settings.get_value('disable-mpris'):
             MPRIS(self)
         if not Lp.settings.get_value('disable-notifications'):

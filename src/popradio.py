@@ -22,7 +22,7 @@ from gettext import gettext as _
 
 from lollypop.define import Lp, ArtSize, GOOGLE_INC, GOOGLE_MAX
 from lollypop.view_container import ViewContainer
-from lollypop.albumart import AlbumArt
+from lollypop.art import Art
 
 # Show a popover with radio logos from the web
 class PopRadio(Gtk.Popover):
@@ -212,7 +212,7 @@ class PopRadio(Gtk.Popover):
     """
     def _on_btn_delete_clicked(self, widget):
         if self._name != '':
-            cache = AlbumArt._RADIOS_PATH
+            cache = Art._RADIOS_PATH
             self._radios_manager.delete(self._name)
             Lp.art.clean_radio_cache(self._name)
             if os.path.exists(cache+"/%s.png" % self._name):

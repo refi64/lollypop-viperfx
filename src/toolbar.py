@@ -46,7 +46,7 @@ class NextPopover(Gtk.Popover):
     def update(self):
         self._artist_label.set_text(Lp.player.next_track.artist)
         self._title_label.set_text(Lp.player.next_track.title)
-        art = Lp.art.get(Lp.player.next_track.album_id,
+        art = Lp.art.get_album(Lp.player.next_track.album_id,
                          ArtSize.MEDIUM)
         if art is not None:
             self._cover.set_from_pixbuf(art)
@@ -236,7 +236,7 @@ class Toolbar(Gtk.HeaderBar):
     """
     def _update_cover(self, obj, album_id):
         if Lp.player.current_track.album_id == album_id:
-            pixbuf = Lp.art.get(album_id, ArtSize.SMALL)
+            pixbuf = Lp.art.get_album(album_id, ArtSize.SMALL)
             self._cover.set_from_pixbuf(pixbuf)
             del pixbuf
 
@@ -323,7 +323,7 @@ class Toolbar(Gtk.HeaderBar):
             self._timelabel.show()
             self._infobox.get_window().set_cursor(
                                     Gdk.Cursor(Gdk.CursorType.HAND1))
-            art = Lp.art.get(player.current_track.album_id,
+            art = Lp.art.get_album(player.current_track.album_id,
                              ArtSize.SMALL)
             self._show_next_popover()
 

@@ -506,7 +506,7 @@ class PlaylistEditWidget(Gtk.Bin):
             else:
                 artist_name = Lp.artists.get_name(artist_id)
             track_name = Lp.tracks.get_name(track_id)
-            art = Lp.art.get(album_id, ArtSize.SMALL)
+            art = Lp.art.get_album(album_id, ArtSize.SMALL)
             self._model.append([art,
                                "<b>%s</b>\n%s" % (
                                    escape(translate_artist_name(artist_name)),

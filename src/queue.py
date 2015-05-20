@@ -92,7 +92,7 @@ class QueueWidget(Gtk.Popover):
             artist_id = Lp.albums.get_artist_id(album_id)
             artist_name = Lp.artists.get_name(artist_id)
             track_name = Lp.tracks.get_name(track_id)
-            pixbuf = Lp.art.get(album_id, ArtSize.MEDIUM)
+            pixbuf = Lp.art.get_album(album_id, ArtSize.MEDIUM)
             title = "<b>%s</b>\n%s" %\
                                 (escape(translate_artist_name(artist_name)),
                                  escape(track_name))

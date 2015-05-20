@@ -128,7 +128,7 @@ class FullScreen(Gtk.Window):
                 self._timelabel.show()
                 self._total_time_label.show()
                 self._progress.show()
-                art = Lp.art.get(player.current_track.album_id,
+                art = Lp.art.get_album(player.current_track.album_id,
                                  ArtSize.MONSTER)
             if art:
                 self._cover.set_from_pixbuf(art)

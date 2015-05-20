@@ -19,7 +19,7 @@ from gettext import gettext as _
 
 from lollypop.tunein import TuneIn
 from lollypop.define import Lp
-from lollypop.albumart import AlbumArt
+from lollypop.art import Art
 from lollypop.view_container import ViewContainer
 
 
@@ -178,7 +178,7 @@ class PopTuneIn(Gtk.Popover):
     def _add_radio(self, item):
         # Get cover art
         try:
-            cache = AlbumArt._RADIOS_PATH
+            cache = Art._RADIOS_PATH
             urllib.request.urlretrieve(item.LOGO, cache+"/%s.png" % item.TEXT)
         except Exception as e:
             print("PopTuneIn::_add_radio: %s" %e)
