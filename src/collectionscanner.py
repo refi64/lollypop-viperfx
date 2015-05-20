@@ -36,6 +36,8 @@ class CollectionScanner(GObject.GObject, ScannerTagReader):
     def __init__(self):
         GObject.GObject.__init__(self)
         ScannerTagReader.__init__(self)
+
+        self._inotify = None
         if Lp.settings.get_value('auto-update'):
             self._inotify = Inotify()
         self._is_empty = True
