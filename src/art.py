@@ -70,7 +70,7 @@ class Art(GObject.GObject, TagReader):
             if os.path.exists(CACHE_PATH_JPG):
                 return CACHE_PATH_JPG
             else:
-                self.get(album_id, size)
+                self.get_album(album_id, size)
                 if os.path.exists(CACHE_PATH_JPG):
                     return CACHE_PATH_JPG
                 else:
