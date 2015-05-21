@@ -29,6 +29,10 @@ GtkTreeView:hover {
     color: @theme_fg_color;
 }
 
+GtkTreeView.separator {
+    color: shade(@theme_bg_color, 0.9);
+}
+
 Gtk.ListBoxRow .menu-button {
 	border-color: transparent;
 	background-color: transparent;
