@@ -19,7 +19,7 @@ import json
 from _thread import start_new_thread
 
 from lollypop.define import Lp, Type
-
+from lollypop.utils import translate_artist_name
 
 class LastFM:
     _API = '7a9619a850ccf7377c46cf233c51e3c6'
@@ -32,31 +32,6 @@ class LastFM:
         self._artists_queue = []
 
     """
-        Download artist image
-        @param artist as string
-    """
-    def download_artist_img(self, artist):
-        try:
-            response = urllib.request.urlopen(
-                                        "http://ws.audioscrobbler.com/2.0/?"
-                                        "method=artist.getinfo&api_key="
-                                        "7a9619a850ccf7377c46cf233c51e3c6"
-                                        "&artist=%s&format=json" %\
-                                         urllib.parse.quote(artist))
-        except Exception as e:
-            print("LastFM::download_artist_img: %s" % e)
-            return
-        data = response.read()
-        decode = json.loads(data.decode("utf-8"))
-        if decode is None:
-            return
-        try:
-            url = decode['artist']['image'][3]['#text']
-            #Lp.art.add_artist_img_to_cache(artist, url)
-        except Exception as e:
-            print("LastFM::download_artist_img: %s" % e)
-
-    """
         Download album image
         @param album id as int
     """
@@ -64,7 +39,7 @@ class LastFM:
         if Gio.NetworkMonitor.get_default().get_network_available():
             album = Lp.albums.get_name(album_id)
             artist = Lp.albums.get_artist_name(album_id)
-            self._albums_queue.append((artist, album))
+            self._albums_queue.append((translate_artist_name(artist), album))
             if not self._in_albums_download:
                 start_new_thread(self._download_albums_imgs, ())
 
