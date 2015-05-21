@@ -16,6 +16,7 @@ from gi.repository import Gtk, GLib, Gio, GdkPixbuf
 import urllib.request
 import urllib.parse
 from _thread import start_new_thread
+from gettext import gettext as _
 
 from lollypop.define import Lp, ArtSize, GOOGLE_INC, GOOGLE_MAX
 from lollypop.view_container import ViewContainer
@@ -39,12 +40,15 @@ class PopAlbumCovers(Gtk.Popover):
 
         self._search = "%s+%s" % (artist, album)
 
-        self._stack = ViewContainer(1000)
+        self._stack = Gtk.Stack()
         self._stack.show()
 
         builder = Gtk.Builder()
         builder.add_from_resource(
                     '/org/gnome/Lollypop/PopAlbumCovers.ui')
+
+        widget = builder.get_object('widget')
+        widget.add(self._stack)
 
         self._view = Gtk.FlowBox()
         self._view.set_selection_mode(Gtk.SelectionMode.NONE)
@@ -53,16 +57,19 @@ class PopAlbumCovers(Gtk.Popover):
         self._view.set_property('row-spacing', 10)
         self._view.show()
 
+        self._label = builder.get_object('label')
+        self._label.set_text(_("Please wait..."))
+
         builder.get_object('viewport').add(self._view)
 
-        self._widget = builder.get_object('widget')
-        self._spinner = builder.get_object('spinner')
+        self._scrolled = builder.get_object('scrolled')
+        spinner = builder.get_object('spinner')
         self._not_found = builder.get_object('notfound')
-        self._stack.add(self._spinner)
+        self._stack.add(spinner)
         self._stack.add(self._not_found)
-        self._stack.add(self._widget)
-        self._stack.set_visible_child(self._spinner)
-        self.add(self._stack)
+        self._stack.add(self._scrolled)
+        self._stack.set_visible_child(spinner)
+        self.add(widget)
 
     """
         Populate view
@@ -126,8 +133,8 @@ class PopAlbumCovers(Gtk.Popover):
     """
     def _show_not_found(self):
         if len(self._view.get_children()) == 0:
+            self._label.set_text(_("No cover found..."))
             self._stack.set_visible_child(self._not_found)
-            self._stack.clean_old_views(self._not_found)
 
     """
         Add stream to the view
@@ -154,9 +161,8 @@ class PopAlbumCovers(Gtk.Popover):
             pass
         # Remove spinner if exist
         if self._spinner is not None:
-            self._stack.set_visible_child(self._widget)
-            self._stack.clean_old_views(self._widget)
-            self._spinner = None
+            self._label.set_text(_("Select a cover art for this album"))
+            self._stack.set_visible_child(self._scrolled)
 
     """
         Use pixbuf as cover
