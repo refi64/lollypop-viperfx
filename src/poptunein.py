@@ -103,6 +103,7 @@ class PopTuneIn(Gtk.Popover):
     def _show_not_found(self):
         self._label.set_text(_("Can't connect to TuneIn..."))
         self._stack.set_visible_child(self._not_found)
+        self._home_btn.set_sensitive(True)
 
     """
         Same as populate()
