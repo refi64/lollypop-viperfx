@@ -11,6 +11,8 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
+from gi.repository import Gio
+
 import xml.etree.ElementTree as xml
 import urllib.request
 from locale import getdefaultlocale
@@ -36,6 +38,8 @@ class TuneIn:
     def get_items(self, url="http://opml.radiotime.com/Browse.ashx?c="):
         headers = { "Accept-Language": getdefaultlocale()[0] }
         items = []
+        if not Gio.NetworkMonitor.get_default().get_network_available():
+            return items
         try:
             req = urllib.request.Request(url, None, headers)
             response = urllib.request.urlopen(req)

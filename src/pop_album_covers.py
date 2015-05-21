@@ -99,7 +99,9 @@ class PopAlbumCovers(Gtk.Popover):
         Same as populate()
     """
     def _populate(self):
-        self._urls = Lp.art.get_google_arts(self._search)
+        self._urls = []
+        if Gio.NetworkMonitor.get_default().get_network_available():
+            self._urls = Lp.art.get_google_arts(self._search)
         if self._urls:
             self._start += GOOGLE_INC
             self._add_pixbufs()
