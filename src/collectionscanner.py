@@ -28,7 +28,8 @@ class CollectionScanner(GObject.GObject, ScannerTagReader):
         'scan-finished': (GObject.SignalFlags.RUN_FIRST, None, ()),
         'artist-update': (GObject.SignalFlags.RUN_FIRST, None, (int, int)),
         'genre-update': (GObject.SignalFlags.RUN_FIRST, None, (int,)),
-        'track-added': (GObject.SignalFlags.RUN_FIRST, None, (int, bool))
+        'track-added': (GObject.SignalFlags.RUN_FIRST, None, (int, bool)),
+        'album-modified': (GObject.SignalFlags.RUN_FIRST, None, (int,))
     }
     """
         Init collection scanner
@@ -316,7 +317,9 @@ class CollectionScanner(GObject.GObject, ScannerTagReader):
         artist_ids = Lp.tracks.get_artist_ids(track_id, sql)
         Lp.tracks.remove(filepath, sql)
         Lp.tracks.clean(track_id, sql)
-        Lp.albums.clean(album_id, sql)
+        modified = Lp.albums.clean(album_id, sql)
+        if modified:
+            self.emit('album-modified', album_id)
         for artist_id in [album_artist_id] + artist_ids:
             Lp.artists.clean(artist_id, sql)
         for genre_id in genre_ids:

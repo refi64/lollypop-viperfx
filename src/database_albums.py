@@ -748,12 +748,13 @@ class DatabaseAlbums:
     """
         Clean database for album id
         @param album id as int
+        @param return True if album deleted or genre modified
         @warning commit needed
     """
     def clean(self, album_id, sql=None):
         if not sql:
             sql = Lp.sql
-
+        ret = False
         # Check album really have tracks from its genres
         for genre_id in self.get_genre_ids(album_id, sql):
             result = sql.execute("SELECT track_id FROM tracks, track_genres\
@@ -762,6 +763,7 @@ class DatabaseAlbums:
                                  AND track_genres.genre_id=?", (album_id, genre_id))
             v = result.fetchone()
             if not v:
+                ret = True
                 sql.execute("DELETE from album_genres\
                             WHERE album_id=?\
                             AND genre_id=?", (album_id, genre_id))
@@ -773,4 +775,6 @@ class DatabaseAlbums:
         v = result.fetchone()
         # Album empty, remove it
         if not v:
+            ret = True
             sql.execute("DELETE FROM albums WHERE rowid=?", (album_id,))
+        return ret
