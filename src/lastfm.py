@@ -88,7 +88,7 @@ class LastFM:
                                              (urllib.parse.quote(artist),
                                               urllib.parse.quote(album)))
             except Exception as e:
-                print("LastFM::download_artist_img1: %s" % e)
+                print("LastFM::download_album_img1: %s" % e)
                 continue
             data = response.read()
             decode = json.loads(data.decode("utf-8"))
@@ -108,6 +108,6 @@ class LastFM:
                     Lp.art.clean_album_cache(album_id, sql)
                     GLib.idle_add(Lp.art.announce_cover_update, album_id)
             except Exception as e:
-                print("LastFM::download_artist_img2: %s" % e)
+                print("LastFM::download_album_img2: %s" % e)
         self._in_albums_download = False
         sql.close()
