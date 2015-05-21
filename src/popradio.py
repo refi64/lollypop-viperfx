@@ -226,6 +226,6 @@ class PopRadio(Gtk.Popover):
         pixbuf = self._orig_pixbufs[child.get_child()]
         Lp.art.save_radio_logo(pixbuf, self._name)
         Lp.art.clean_radio_cache(self._name)
-        Lp.player.announce_logo_update(self._name)
+        Lp.art.announce_logo_update(self._name)
         self.hide()
         self._streams = {}

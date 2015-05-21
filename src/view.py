@@ -24,8 +24,8 @@ class View(Gtk.Grid):
         self.set_border_width(0)
         self._current_signal = Lp.player.connect('current-changed',
                                                  self._on_current_changed)
-        self._cover_signal = Lp.player.connect('cover-changed',
-                                               self._on_cover_changed)
+        self._cover_signal = Lp.art.connect('cover-changed',
+                                            self._on_cover_changed)
         self._scan_signal = Lp.scanner.connect('scan-finished',
                                                self._on_scan_finished)
 
@@ -50,7 +50,7 @@ class View(Gtk.Grid):
             Lp.player.disconnect(self._current_signal)
             self._current_signal = None
         if self._cover_signal:
-            Lp.player.disconnect(self._cover_signal)
+            Lp.art.disconnect(self._cover_signal)
             self._cover_signal = None
         if self._scan_signal:
             Lp.scanner.disconnect(self._scan_signal)

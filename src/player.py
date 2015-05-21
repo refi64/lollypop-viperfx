@@ -174,20 +174,6 @@ class Player(BinPlayer, QueuePlayer, UserPlaylistPlayer, RadioPlayer,
         self._set_next()
         self._set_prev()
 
-    """
-        Announce album cover update
-        @param album id as int
-    """
-    def announce_cover_update(self, album_id):
-        self.emit("cover-changed", album_id)
-
-    """
-        Announce radio logo update
-        @param radio name as string
-    """
-    def announce_logo_update(self, name):
-        self.emit("logo-changed", name)
-
 #######################
 # PRIVATE             #
 #######################

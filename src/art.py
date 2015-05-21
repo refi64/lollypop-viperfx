@@ -17,7 +17,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-from gi.repository import Gtk, Gdk, GdkPixbuf, Gio, Gst
+from gi.repository import Gtk, Gdk, GObject, GdkPixbuf, Gio, Gst
 import cairo
 import os
 import re
@@ -31,17 +31,21 @@ from lollypop.define import Lp, ArtSize, GOOGLE_INC
 
 
 # Manage album's arts
-class Art(TagReader):
+class Art(GObject.GObject, TagReader):
 
     _CACHE_PATH = os.path.expanduser("~") + "/.cache/lollypop"
     _RADIOS_PATH = os.path.expanduser("~") +\
                      "/.local/share/lollypop/radios"
     _mimes = ["jpeg", "jpg", "png", "gif"]
-
+    __gsignals__ = {
+        'cover-changed': (GObject.SignalFlags.RUN_FIRST, None, (int,)),
+        'logo-changed' : (GObject.SignalFlags.RUN_FIRST, None, (str,))
+    }
     """
         Create cache path
     """
     def __init__(self):
+        GObject.GObject.__init__(self)
         TagReader.__init__(self)
         self._gtk_settings = Gtk.Settings.get_default()
         self._favorite = Lp.settings.get_value('favorite-cover').get_string()
@@ -219,20 +223,20 @@ class Art(TagReader):
                                                     size,
                                                     'folder-music-symbolic'),
                                             selected)
-
                 # No cover, use default one
                 if pixbuf is None:
+                    Lp.lastfm.download_album_img(album_id)
                     pixbuf = self._get_default_icon(size,
                                                     'folder-music-symbolic')
-
-                # Gdk < 3.15 was missing save method
-                # > 3.15 is missing savev method
-                try:
-                    pixbuf.save(CACHE_PATH_JPG, "jpeg",
-                                ["quality"], ["90"])
-                except:
-                    pixbuf.savev(CACHE_PATH_JPG, "jpeg",
-                                 ["quality"], ["90"])
+                else:
+                    # Gdk < 3.15 was missing save method
+                    # > 3.15 is missing savev method
+                    try:
+                        pixbuf.save(CACHE_PATH_JPG, "jpeg",
+                                    ["quality"], ["90"])
+                    except:
+                        pixbuf.savev(CACHE_PATH_JPG, "jpeg",
+                                     ["quality"], ["90"])
 
             return self._make_icon_frame(pixbuf, selected)
 
@@ -287,21 +291,8 @@ class Art(TagReader):
         @param album id as int
     """
     def save_album_art(self, pixbuf, album_id):
-        album_path = Lp.albums.get_path(album_id)
-        path_count = Lp.albums.get_path_count(album_path)
-        album_name = Lp.albums.get_name(album_id)
-        artist_name = Lp.albums.get_artist_name(album_id)
         try:
-            # Many albums with same path, suffix with artist_album name
-            if path_count > 1:
-                artpath = album_path + "/" +\
-                          artist_name + "_" +\
-                          album_name + ".jpg"
-                if os.path.exists(album_path+"/"+self._favorite):
-                    os.remove(album_path+"/"+self._favorite)
-            else:
-                artpath = album_path + "/" + self._favorite
-
+            path = self.get_album_art_filepath(album_id)
             # Gdk < 3.15 was missing save method
             try:
                 pixbuf.save(artpath, "jpeg", ["quality"], ["90"])
@@ -310,6 +301,28 @@ class Art(TagReader):
                 pixbuf.savev(artpath, "jpeg", ["quality"], ["90"])
         except Exception as e:
             print("Art::save_album_art(): %s" % e)
+
+    """
+        Get album art filepath
+        @param album_id as int
+        @param sql as sqlite cursor
+        @thread safe
+    """
+    def get_album_art_filepath(self, album_id, sql=None):
+        album_path = Lp.albums.get_path(album_id, sql)
+        path_count = Lp.albums.get_path_count(album_path, sql)
+        album_name = Lp.albums.get_name(album_id, sql)
+        artist_name = Lp.albums.get_artist_name(album_id, sql)
+        # Many albums with same path, suffix with artist_album name
+        if path_count > 1:
+            artpath = album_path + "/" +\
+                      artist_name + "_" +\
+                      album_name + ".jpg"
+            if os.path.exists(album_path+"/"+self._favorite):
+                os.remove(album_path+"/"+self._favorite)
+        else:
+            artpath = album_path + "/" + self._favorite
+        return artpath
 
     """
         Save pixbuf for radio
@@ -359,6 +372,20 @@ class Art(TagReader):
             pass
 
         return urls
+
+    """
+        Announce album cover update
+        @param album id as int
+    """
+    def announce_cover_update(self, album_id):
+        self.emit('cover-changed', album_id)
+
+    """
+        Announce radio logo update
+        @param radio name as string
+    """
+    def announce_logo_update(self, name):
+        self.emit('logo-changed', name)
 
 #######################
 # PRIVATE             #
@@ -497,6 +524,16 @@ class Art(TagReader):
         @return pixbuf as Gdk.Pixbuf
     """
     def _get_default_icon(self, size, icon_name):
+        #First look in cache
+        CACHE_PATH_JPG = "%s/%s_%s.jpg" % (self._CACHE_PATH, icon_name, size)
+        if os.path.exists(CACHE_PATH_JPG):
+            print('cache')
+            pixbuf = GdkPixbuf.Pixbuf.new_from_file_at_scale(CACHE_PATH_JPG,
+                                                             size,
+                                                             size,
+                                                             False)
+            return pixbuf
+
         # get a small pixbuf with the given path
         icon_size = size / 4
         icon = Gtk.IconTheme.get_default().load_icon(icon_name,
@@ -517,4 +554,12 @@ class Art(TagReader):
                        icon_size * 3 / 2,
                        1, 1,
                        GdkPixbuf.InterpType.NEAREST, 255)
+        # Gdk < 3.15 was missing save method
+        # > 3.15 is missing savev method
+        try:
+            result.save(CACHE_PATH_JPG, "jpeg",
+                        ["quality"], ["90"])
+        except:
+            result.savev(CACHE_PATH_JPG, "jpeg",
+                         ["quality"], ["90"])
         return result

@@ -78,8 +78,8 @@ class RadiosView(View):
     """
     def do_show(self):
         View.do_show(self)
-        self._signal = Lp.player.connect('logo-changed',
-                                              self._on_logo_changed)
+        self._signal = Lp.art.connect('logo-changed',
+                                      self._on_logo_changed)
 
     """
         Disconnect player signal
@@ -87,7 +87,7 @@ class RadiosView(View):
     def do_hide(self):
         View.do_hide(self)
         if self._signal is not None:
-            Lp.player.disconnect(self._signal)
+            Lp.art.disconnect(self._signal)
 
 #######################
 # PRIVATE             #

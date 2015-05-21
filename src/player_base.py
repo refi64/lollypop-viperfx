@@ -24,8 +24,6 @@ class BasePlayer(GObject.GObject):
         'status-changed': (GObject.SignalFlags.RUN_FIRST, None, ()),
         'volume-changed': (GObject.SignalFlags.RUN_FIRST, None, ()),
         'queue-changed': (GObject.SignalFlags.RUN_FIRST, None, ()),
-        'cover-changed': (GObject.SignalFlags.RUN_FIRST, None, (int,)),
-        'logo-changed' : (GObject.SignalFlags.RUN_FIRST, None, (str,)),
         'party-changed' : (GObject.SignalFlags.RUN_FIRST, None, (bool,))
     }
     """

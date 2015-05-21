@@ -109,14 +109,14 @@ class Toolbar(Gtk.HeaderBar):
         self._cover = builder.get_object('cover')
         self._infobox = builder.get_object('infobox')
         self._infobox.set_property('has-tooltip', True)
-        self._infobox.connect("button-press-event", self._pop_infobox)
+        self._infobox.connect('button-press-event', self._pop_infobox)
         self._popalbums = PopAlbums()
         self._popalbums.set_relative_to(self._infobox)
 
-        Lp.player.connect("status-changed", self._on_status_changed)
-        Lp.player.connect("current-changed", self._on_current_changed)
-        Lp.player.connect("party-changed", self._on_party_changed)
-        Lp.player.connect("cover-changed", self._update_cover)
+        Lp.player.connect('status-changed', self._on_status_changed)
+        Lp.player.connect('current-changed', self._on_current_changed)
+        Lp.player.connect('party-changed', self._on_party_changed)
+        Lp.art.connect('cover-changed', self._update_cover)
 
         self._shuffle_btn = builder.get_object('shuffle-button')
         self._shuffle_btn_image = builder.get_object('shuffle-button-image')
@@ -124,7 +124,7 @@ class Toolbar(Gtk.HeaderBar):
         Lp.settings.connect('changed::shuffle', self._shuffle_btn_aspect)
 
         self._party_btn = builder.get_object('party-button')
-        self._party_btn.connect("toggled", self._on_party_btn_toggled)
+        self._party_btn.connect('toggled', self._on_party_btn_toggled)
         party_action = Gio.SimpleAction.new('party', None)
         party_action.connect('activate', self._activate_party_button)
         app.add_action(party_action)
@@ -135,7 +135,7 @@ class Toolbar(Gtk.HeaderBar):
         self._next_btn.connect('clicked', self._on_next_btn_clicked)
 
         search_button = builder.get_object('search-button')
-        search_button.connect("clicked", self._on_search_btn_clicked)
+        search_button.connect('clicked', self._on_search_btn_clicked)
         self._search = SearchWidget(self)
         self._search.set_relative_to(search_button)
         searchAction = Gio.SimpleAction.new('search', None)
