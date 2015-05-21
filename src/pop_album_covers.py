@@ -160,7 +160,7 @@ class PopAlbumCovers(Gtk.Popover):
             print(e)
             pass
         # Remove spinner if exist
-        if self._spinner is not None:
+        if self._scrolled != self._stack.get_visible_child():
             self._label.set_text(_("Select a cover art for this album"))
             self._stack.set_visible_child(self._scrolled)
 
