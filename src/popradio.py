@@ -215,7 +215,8 @@ class PopRadio(Gtk.Popover):
             cache = AlbumArt._RADIOS_PATH
             self._radios_manager.delete(self._name)
             Lp.art.clean_radio_cache(self._name)
-            os.remove(cache+"/%s.png" % self._name)
+            if os.path.exists(cache+"/%s.png" % self._name):
+                os.remove(cache+"/%s.png" % self._name)
 
     """
         Use pixbuf as cover
