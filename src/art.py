@@ -292,7 +292,7 @@ class Art(GObject.GObject, TagReader):
     """
     def save_album_art(self, pixbuf, album_id):
         try:
-            path = self.get_album_art_filepath(album_id)
+            artpath = self.get_album_art_filepath(album_id)
             # Gdk < 3.15 was missing save method
             try:
                 pixbuf.save(artpath, "jpeg", ["quality"], ["90"])
