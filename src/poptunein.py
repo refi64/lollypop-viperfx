@@ -25,7 +25,6 @@ from lollypop.view_container import ViewContainer
 
 # Tunein popup
 class PopTuneIn(Gtk.Popover):
-
     """
         Init Popover
         @param radio manager as RadioManager
@@ -39,6 +38,7 @@ class PopTuneIn(Gtk.Popover):
 
         self._stack = Gtk.Stack()
         self._stack.set_property('expand', True)
+        self._stack.set_property('margin', 10)
         self._stack.show()
 
         builder = Gtk.Builder()
@@ -57,7 +57,6 @@ class PopTuneIn(Gtk.Popover):
         self._view.set_max_children_per_line(100)
         self._view.set_property('row-spacing', 10)
         self._view.set_property('expand', True)
-        #self._view.connect('child-activated', self._on_radio_activate)
         self._view.show()
 
         builder.get_object('viewport').add(self._view)
