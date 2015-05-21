@@ -28,6 +28,7 @@ class AlbumWidget(Gtk.Bin):
     def __init__(self, album_id):
         Gtk.Bin.__init__(self)
         self._album_id = album_id
+        self._album_title = ''
         self._selected = None
         self._stop = False
         self._cover = None
@@ -71,6 +72,20 @@ class AlbumWidget(Gtk.Bin):
     def stop(self):
         self._stop = True
 
+    """
+        Return album id for widget
+        @return album id as int
+    """
+    def get_id(self):
+        return self._album_id
+
+    """
+        Return album title
+        @return album title as str
+    """
+    def get_title(self):
+        return self._album_title
+
 #######################
 # PRIVATE             #
 #######################
@@ -108,9 +123,9 @@ class AlbumSimpleWidget(AlbumWidget):
         widget = builder.get_object('widget')
         self._cover = builder.get_object('cover')
         widget.set_property('has-tooltip', True)
-        album_name = Lp.albums.get_name(album_id)
+        self._album_title = Lp.albums.get_name(album_id)
         self._title_label = builder.get_object('title')
-        self._title_label.set_text(album_name)
+        self._title_label.set_text(self._album_title)
         artist_name = Lp.albums.get_artist_name(album_id)
         artist_name = translate_artist_name(artist_name)
         self._artist_label = builder.get_object('artist')
@@ -237,8 +252,8 @@ class AlbumDetailedWidget(AlbumWidget):
         self._cover = builder.get_object('cover')
         self.set_cover()
 
-        builder.get_object('title').set_label(
-                                            Lp.albums.get_name(album_id))
+        self._title_label = Lp.albums.get_name(album_id)
+        builder.get_object('title').set_label(self._title_label)
         builder.get_object('year').set_label(
                                             Lp.albums.get_year(album_id))
         self.add(builder.get_object('AlbumDetailedWidget'))
@@ -262,13 +277,6 @@ class AlbumDetailedWidget(AlbumWidget):
         for disc in self._discs:
             self._tracks_left[disc].update_playing(Lp.player.current_track.id)
             self._tracks_right[disc].update_playing(Lp.player.current_track.id)
-
-    """
-        Return album id for widget
-        @return album id as int
-    """
-    def get_id(self):
-        return self._album_id
 
     """
         Populate tracks
