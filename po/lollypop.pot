@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-05-20 23:25+0200\n"
+"POT-Creation-Date: 2015-05-21 07:40+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -202,7 +202,7 @@ msgstr ""
 msgid "All albums"
 msgstr ""
 
-#: ../src/container.py:398
+#: ../src/container.py:399
 msgid "Compilations"
 msgstr ""
 
@@ -249,13 +249,26 @@ msgstr ""
 msgid "by %s, from %s"
 msgstr ""
 
-#: ../src/player_bin.py:211
+#: ../src/player_bin.py:224
 #, python-format
 msgid "File doesn't exist: %s"
 msgstr ""
 
 #: ../src/player_radio.py:42
 msgid "Radio"
+msgstr ""
+
+#: ../src/pop_album_covers.py:61 ../src/poptunein.py:84
+#: ../data/PopRadio.ui.h:3
+msgid "Please wait..."
+msgstr ""
+
+#: ../src/pop_album_covers.py:136
+msgid "No cover found..."
+msgstr ""
+
+#: ../src/pop_album_covers.py:164
+msgid "Select a cover art for this album"
 msgstr ""
 
 #: ../src/popmenu.py:60
@@ -312,24 +325,19 @@ msgstr ""
 msgid "Edit"
 msgstr ""
 
-#: ../src/popradio.py:70
+#: ../src/popradio.py:72
 msgid "Add"
 msgstr ""
 
-#: ../src/popradio.py:72
+#: ../src/popradio.py:74
 msgid "Modify"
-msgstr ""
-
-#: ../src/poptunein.py:84 ../data/PopRadio.ui.h:3
-#: ../data/PopAlbumCovers.ui.h:2
-msgid "Please wait..."
 msgstr ""
 
 #: ../src/poptunein.py:104
 msgid "Can't connect to TuneIn..."
 msgstr ""
 
-#: ../src/poptunein.py:146
+#: ../src/poptunein.py:161
 msgid "Browse themes and add a new radio"
 msgstr ""
 
@@ -453,14 +461,6 @@ msgstr ""
 
 #: ../data/PopRadio.ui.h:6
 msgid "Delete"
-msgstr ""
-
-#: ../data/PopAlbumCovers.ui.h:1
-msgid "No cover found..."
-msgstr ""
-
-#: ../data/PopAlbumCovers.ui.h:3
-msgid "Select a cover art for this album"
 msgstr ""
 
 #: ../data/QueueWidget.ui.h:1
