@@ -205,7 +205,7 @@ class BinPlayer(ReplayGainPlayer, BasePlayer):
                                            self.current_track.uri)
             except Exception as e:  # Gstreamer error, stop
                 print("BinPlayer::_load_track(): ", e)
-                self._on_errors()
+                self.stop()
                 return False
         else:
             Lp.notify.send(_("File doesn't exist: %s") %\
