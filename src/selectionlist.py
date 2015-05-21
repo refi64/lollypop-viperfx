@@ -253,6 +253,8 @@ class SelectionList(Gtk.ScrolledWindow):
         @thread safe
     """
     def _populate(self, values):
+        if len(self._model) > 0:
+            self._updating = True
         GLib.idle_add(self._add_values, values, self._pop_time)
 
     """
@@ -267,6 +269,7 @@ class SelectionList(Gtk.ScrolledWindow):
             return
         elif not values:
             self.emit("populated")
+            self._updating = False
             del values
             values = None
             self._pop_time = 0
