@@ -191,6 +191,7 @@
                     <property name="max_width_chars">30</property>
                     <style>
                       <class name="lollypop-subtitle"/>
+                      <class name="dim-label"/>
                     </style>
                   </object>
                   <packing>
