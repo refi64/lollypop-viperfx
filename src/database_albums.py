@@ -729,6 +729,23 @@ class DatabaseAlbums:
         return False
 
     """
+        True if is outside collection
+        @param album id as int
+        @return outside as bool
+    """
+    def is_outside(self, album_id, sql=None):
+        if not sql:
+            sql = Lp.sql
+        result = sql.execute("SELECT outside\
+                              FROM albums\
+                              WHERE rowid=?",
+                             (album_id,))
+        v = result.fetchone()
+        if v:
+            return v[0] == 1
+        return True
+
+    """
         Clean database for album id
         @param album id as int
         @warning commit needed

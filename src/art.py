@@ -527,7 +527,6 @@ class Art(GObject.GObject, TagReader):
         #First look in cache
         CACHE_PATH_JPG = "%s/%s_%s.jpg" % (self._CACHE_PATH, icon_name, size)
         if os.path.exists(CACHE_PATH_JPG):
-            print('cache')
             pixbuf = GdkPixbuf.Pixbuf.new_from_file_at_scale(CACHE_PATH_JPG,
                                                              size,
                                                              size,
