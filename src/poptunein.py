@@ -38,7 +38,6 @@ class PopTuneIn(Gtk.Popover):
 
         self._stack = Gtk.Stack()
         self._stack.set_property('expand', True)
-        self._stack.set_property('margin', 10)
         self._stack.show()
 
         builder = Gtk.Builder()
@@ -60,6 +59,7 @@ class PopTuneIn(Gtk.Popover):
         self._view.show()
 
         builder.get_object('viewport').add(self._view)
+        builder.get_object('viewport').set_property('margin', 10)
 
         self._scrolled = builder.get_object('scrolled') 
         self._spinner = builder.get_object('spinner')
