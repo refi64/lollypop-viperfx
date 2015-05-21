@@ -26,8 +26,6 @@ class View(Gtk.Grid):
                                                  self._on_current_changed)
         self._cover_signal = Lp.art.connect('cover-changed',
                                             self._on_cover_changed)
-        self._scan_signal = Lp.scanner.connect('scan-finished',
-                                               self._on_scan_finished)
 
         # Stop populate thread
         self._stop = False
@@ -105,26 +103,3 @@ class View(Gtk.Grid):
     """
     def _on_current_changed(self, player):
         GLib.idle_add(self._update_widgets, self._get_children(), False)
-
-    """
-        On scanner finished, update the view
-        @param scanner as CollectionScanner
-    """
-    def _on_scan_finished(self, scanner):
-        current_genre = Lp.window.get_genre_id()
-        albums = Lp.albums.get_ids()
-        albums += Lp.albums.get_compilations()
-        for child in self._get_children():
-            child_id = child.get_id()
-            # Child removed
-            if child_id is not None and child_id not in albums:
-                child.set_sensitive(False)
-            exist_in_genre = False
-            for genre_id in Lp.albums.get_genre_ids(child_id):
-                if current_genre is None or\
-                   current_genre < 0 or\
-                   current_genre == genre_id:
-                    exist_in_genre = True
-                    break
-            if not exist_in_genre:
-                child.set_sensitive(False)
