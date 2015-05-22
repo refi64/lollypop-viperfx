@@ -45,9 +45,6 @@ class NextPopover(Gtk.Popover):
         Update widget with current track
     """
     def update(self, player=None):
-        if not self.is_visible():
-            return
-
         self._artist_label.set_text(Lp.player.next_track.artist)
         self._title_label.set_text(Lp.player.next_track.title)
         art = Lp.art.get_album(Lp.player.next_track.album_id,
@@ -429,7 +426,9 @@ class Toolbar(Gtk.HeaderBar):
             settings = Gtk.Settings.get_default()
             settings.set_property("gtk-application-prefer-dark-theme", active)
         Lp.player.set_party(active)
-        if active:
+        # We need to show the popover only in this case
+        # In other cases, "current-changed" will trigger it
+        if active and Lp.player.is_playing():
             self._show_next_popover()
 
     """
