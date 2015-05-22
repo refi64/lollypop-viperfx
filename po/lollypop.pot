@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-05-21 07:40+0200\n"
+"POT-Creation-Date: 2015-05-22 10:41+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -165,11 +165,11 @@ msgstr ""
 msgid "Music player for the GNOME desktop"
 msgstr ""
 
-#: ../src/application.py:305
+#: ../src/application.py:307
 msgid "Lollypop: You need to install yelp."
 msgstr ""
 
-#: ../src/collectionscanner.py:60
+#: ../src/collectionscanner.py:61
 msgid "Your music is updating"
 msgstr ""
 
@@ -185,8 +185,8 @@ msgstr ""
 msgid "Random albums"
 msgstr ""
 
-#: ../src/container.py:350 ../src/popmenu.py:323 ../src/popmenu.py:379
-#: ../src/popmenu.py:396
+#: ../src/container.py:350 ../src/pop_menu.py:323 ../src/pop_menu.py:379
+#: ../src/pop_menu.py:396
 msgid "Playlists"
 msgstr ""
 
@@ -225,7 +225,7 @@ msgstr ""
 msgid "Pause"
 msgstr ""
 
-#: ../src/fullscreen.py:142 ../src/popmenu.py:171
+#: ../src/fullscreen.py:142 ../src/pop_menu.py:171
 msgid "Next track"
 msgstr ""
 
@@ -258,86 +258,90 @@ msgstr ""
 msgid "Radio"
 msgstr ""
 
-#: ../src/pop_album_covers.py:61 ../src/poptunein.py:84
-#: ../data/PopRadio.ui.h:3
+#: ../src/pop_album_covers.py:61 ../src/pop_artist_infos.py:65
+#: ../src/pop_tunein.py:83 ../data/PopRadio.ui.h:3
 msgid "Please wait..."
 msgstr ""
 
-#: ../src/pop_album_covers.py:136
+#: ../src/pop_album_covers.py:138
 msgid "No cover found..."
 msgstr ""
 
-#: ../src/pop_album_covers.py:164
+#: ../src/pop_album_covers.py:167
 msgid "Select a cover art for this album"
 msgstr ""
 
-#: ../src/popmenu.py:60
+#: ../src/pop_artist_infos.py:129
+msgid "No information for this artist..."
+msgstr ""
+
+#: ../src/pop_menu.py:60
 msgid "Continue playback"
 msgstr ""
 
-#: ../src/popmenu.py:65
+#: ../src/pop_menu.py:65
 msgid "Stop after this track"
 msgstr ""
 
-#: ../src/popmenu.py:70
+#: ../src/pop_menu.py:70
 msgid "Stop after this album"
 msgstr ""
 
-#: ../src/popmenu.py:75
+#: ../src/pop_menu.py:75
 msgid "Stop after this artist"
 msgstr ""
 
-#: ../src/popmenu.py:164 ../data/SearchRow.ui.h:3
+#: ../src/pop_menu.py:164 ../data/SearchRow.ui.h:3
 msgid "Add to queue"
 msgstr ""
 
-#: ../src/popmenu.py:169
+#: ../src/pop_menu.py:169
 msgid "Next tracks"
 msgstr ""
 
-#: ../src/popmenu.py:175
+#: ../src/pop_menu.py:175
 msgid "Remove from queue"
 msgstr ""
 
-#: ../src/popmenu.py:242
+#: ../src/pop_menu.py:242
 msgid "Add to others"
 msgstr ""
 
-#: ../src/popmenu.py:255
+#: ../src/pop_menu.py:255
 #, python-format
 msgid "Remove from \"%s\""
 msgstr ""
 
-#: ../src/popmenu.py:261
+#: ../src/pop_menu.py:261
 #, python-format
 msgid "Add to \"%s\""
 msgstr ""
 
-#: ../src/popmenu.py:321 ../src/popmenu.py:377 ../src/popmenu.py:394
+#: ../src/pop_menu.py:321 ../src/pop_menu.py:377 ../src/pop_menu.py:394
 msgid "Playback"
 msgstr ""
 
-#: ../src/popmenu.py:357
+#: ../src/pop_menu.py:357
 msgid "Modify informations"
 msgstr ""
 
-#: ../src/popmenu.py:381 ../data/PlaylistsView.ui.h:1
+#: ../src/pop_menu.py:381 ../data/PlaylistsView.ui.h:1
 msgid "Edit"
 msgstr ""
 
-#: ../src/popradio.py:72
+#: ../src/pop_radio.py:72
 msgid "Add"
 msgstr ""
 
-#: ../src/popradio.py:74
+#: ../src/pop_radio.py:74
 msgid "Modify"
 msgstr ""
 
-#: ../src/poptunein.py:104
+#: ../src/pop_tunein.py:103
 msgid "Can't connect to TuneIn..."
 msgstr ""
 
-#: ../src/poptunein.py:161
+#: ../src/pop_tunein.py:160
 msgid "Browse themes and add a new radio"
 msgstr ""
 
@@ -368,7 +372,7 @@ msgstr ""
 msgid "Cancel synchronization"
 msgstr ""
 
-#: ../src/widgets_album.py:207
+#: ../src/widgets_album.py:230
 #, python-format
 msgid "Disc %s"
 msgstr ""
