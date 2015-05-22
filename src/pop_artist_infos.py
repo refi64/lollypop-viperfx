@@ -37,6 +37,23 @@ class PopArtistInfos(Gtk.Popover):
     def populate(self):
         self._infos.populate()
 
+    """
+        Resize popover and set signals callback
+    """
+    def do_show(self):
+        size_setting = Lp.settings.get_value('window-size')
+        if isinstance(size_setting[1], int):
+            self.set_size_request(700, size_setting[1]*0.5)
+        else:
+            self.set_size_request(700, 400)
+        Gtk.Popover.do_show(self)
+
+    """
+        Preferred width
+    """
+    def do_get_preferred_width(self):
+        return (700, 700)
+
 
 # Show artist informations from lastfm
 class ArtistInfos(Gtk.Bin):
@@ -78,23 +95,6 @@ class ArtistInfos(Gtk.Bin):
     """
     def populate(self):
         start_new_thread(self._populate, ())
-
-    """
-        Resize popover and set signals callback
-    """
-    def do_show(self):
-        size_setting = Lp.settings.get_value('window-size')
-        if isinstance(size_setting[1], int):
-            self.set_size_request(700, size_setting[1]*0.5)
-        else:
-            self.set_size_request(700, 400)
-        Gtk.Popover.do_show(self)
-
-    """
-        Preferred width
-    """
-    def do_get_preferred_width(self):
-        return (700, 700)
 
 #######################
 # PRIVATE             #
