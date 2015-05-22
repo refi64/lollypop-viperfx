@@ -21,7 +21,7 @@ from lollypop.search import SearchWidget
 from lollypop.pop_menu import PopToolbarMenu
 from lollypop.queue import QueueWidget
 from lollypop.utils import seconds_to_string
-from lollypop.popalbums import PopAlbums
+from lollypop.pop_albums import PopAlbums
 
 
 # Show next track to play
@@ -105,8 +105,8 @@ class Toolbar(Gtk.HeaderBar):
         self._infobox = builder.get_object('infobox')
         self._infobox.set_property('has-tooltip', True)
         self._infobox.connect('button-press-event', self._pop_infobox)
-        self._popalbums = PopAlbums()
-        self._popalbums.set_relative_to(self._infobox)
+        self._pop_albums = PopAlbums()
+        self._pop_albums.set_relative_to(self._infobox)
 
         Lp.player.connect('status-changed', self._on_status_changed)
         Lp.player.connect('current-changed', self._on_current_changed)
@@ -217,8 +217,8 @@ class Toolbar(Gtk.HeaderBar):
         if Lp.player.current_track.id is not None and\
            Lp.player.current_track.id != Type.RADIOS:
             if event.button == 1:
-                self._popalbums.populate()
-                self._popalbums.show()
+                self._pop_albums.populate()
+                self._pop_albums.show()
             else:
                 menu = PopToolbarMenu(Lp.player.current_track.id, None)
                 popover = Gtk.Popover.new_from_model(self._infobox, menu)

@@ -46,8 +46,8 @@ app_PYTHON = \
     player_userplaylist.py\
 	pop_album_covers.py\
 	pop_artist_infos.py\
-    pop_radio.py\
-	popalbums.py\
+	pop_radio.py\
+	pop_albums.py\
 	pop_menu.py\
 	pop_tunein.py\
 	track.py\
