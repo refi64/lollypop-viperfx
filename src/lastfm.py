@@ -63,6 +63,11 @@ class LastFM:
             image_url = decoded['artist']['image'][3]['#text']
             url = decoded['artist']['url']
             content = decoded['artist']['bio']['summary']
+            # Lastfm add this in summary
+            if content[0] == '\n':
+                content = content[1:]
+            else:
+                print("LastFM::get_artist_infos: No more CL in summary")
             content = re.sub(r'.*Last.fm.*', '', content)
             content = re.sub(r'<.*?>', '', content)
             return (url, image_url, html.parser.HTMLParser().unescape(content))
