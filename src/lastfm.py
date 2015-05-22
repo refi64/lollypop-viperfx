@@ -49,25 +49,25 @@ class LastFM:
     """
         Get artist infos
         @param artist as str
-        @return (url as str, content as str)
+        @return (url as str, image url as str, content as str)
     """
     def get_artist_infos(self, artist):
         if not Gio.NetworkMonitor.get_default().get_network_available():
-            return (None, None)
+            return (None, None, None)
         artist = translate_artist_name(artist)
         
         decoded = self._get_decoded_json(artist, getdefaultlocale()[0][0:2])
         if decoded is None:
             decoded = self._get_decoded_json(artist)
         try:
-            url = decoded['artist']['image'][3]['#text']
+            image_url = decoded['artist']['image'][3]['#text']
+            url = decoded['artist']['url']
             content = decoded['artist']['bio']['summary']
-            print(content)
             content = re.sub(r'.*Last.fm.*', '', content)
             content = re.sub(r'<.*?>', '', content)
-            return (url, html.parser.HTMLParser().unescape(content))
+            return (url, image_url, html.parser.HTMLParser().unescape(content))
         except:
-            return (None, None)
+            return (None, None, None)
         
 #######################
 # PRIVATE             #

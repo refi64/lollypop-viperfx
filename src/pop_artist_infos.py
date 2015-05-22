@@ -74,7 +74,7 @@ class ArtistInfos(Gtk.Bin):
         widget = builder.get_object('widget')
         widget.attach(self._stack, 0, 2, 2, 1)
 
-        self._back_btn = builder.get_object('back_btn')
+        self._url_btn = builder.get_object('lastfm')
         self._image =  builder.get_object('image')
         self._content =  builder.get_object('content')
 
@@ -104,25 +104,27 @@ class ArtistInfos(Gtk.Bin):
         @thread safe
     """
     def _populate(self):
-        (url, content) = Lp.lastfm.get_artist_infos(self._artist)
+        (url, image_url, content) = Lp.lastfm.get_artist_infos(self._artist)
         stream = None
         try:
-            response = urllib.request.urlopen(url)
+            response = urllib.request.urlopen(image_url)
             stream = Gio.MemoryInputStream.new_from_data(response.read(), None)
         except Exception as e:
             print("PopArtistInfos::_populate: %s" %e)
             content = None
-        GLib.idle_add(self._set_content, content, stream)
+        GLib.idle_add(self._set_content, content, url, stream)
 
     """
         Set content on view
         @param content as str
+        @param url as str
         @param stream as Gio.MemoryInputStream
     """
-    def _set_content(self, content, stream):
+    def _set_content(self, content, url, stream):
         if content is not None:
             self._stack.set_visible_child(self._scrolled)
             self._label.set_text(self._artist)
+            self._url_btn.set_uri(url)
             self._content.set_text(content)
         else:
             self._stack.set_visible_child(self._not_found)

@@ -87,7 +87,7 @@
       </packing>
     </child>
     <child>
-      <object class="GtkLinkButton" id="Last.fm">
+      <object class="GtkLinkButton" id="lastfm">
         <property name="label">Last.fm</property>
         <property name="visible">True</property>
         <property name="can_focus">True</property>
