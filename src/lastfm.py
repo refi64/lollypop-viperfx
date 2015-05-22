@@ -16,6 +16,7 @@ from gi.repository import GLib, Gio
 import urllib.request
 import urllib.parse
 import json
+import re
 from locale import getdefaultlocale
 from _thread import start_new_thread
 
@@ -60,6 +61,7 @@ class LastFM:
         try:
             url = decoded['artist']['image'][3]['#text']
             content = decoded['artist']['bio']['content']
+            content = re.sub(r'class=".*"', '', content)
             return (url, content)
         except:
             return (None, None)
