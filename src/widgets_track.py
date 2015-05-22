@@ -14,7 +14,7 @@
 from gi.repository import GObject, Gtk
 
 from lollypop.define import Lp, ArtSize
-from lollypop.popmenu import PopTrackMenu
+from lollypop.pop_menu import PopTrackMenu
 from lollypop.utils import seconds_to_string, rgba_to_hex
 
 

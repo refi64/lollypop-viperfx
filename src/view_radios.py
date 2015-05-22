@@ -16,8 +16,8 @@ from gi.repository import Gtk, GLib
 from lollypop.view import View
 from lollypop.widgets_radio import RadioWidget
 from lollypop.playlists import RadiosManager
-from lollypop.popradio import PopRadio
-from lollypop.poptunein import PopTuneIn
+from lollypop.pop_radio import PopRadio
+from lollypop.pop_tunein import PopTuneIn
 from lollypop.define import Lp
 from lollypop.track import Track
 

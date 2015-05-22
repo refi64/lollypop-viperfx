@@ -30,9 +30,9 @@ src/player_userplaylist.py
 src/playlists.py
 src/pop_album_covers.py
 src/popalbums.py
-src/popmenu.py
-src/popradio.py
-src/poptunein.py
+src/pop_menu.py
+src/pop_radio.py
+src/pop_tunein.py
 src/inotify.py
 src/queue.py
 src/search.py

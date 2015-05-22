@@ -18,7 +18,7 @@ from cgi import escape
 
 from lollypop.define import Lp, Shuffle, ArtSize, Type
 from lollypop.search import SearchWidget
-from lollypop.popmenu import PopToolbarMenu
+from lollypop.pop_menu import PopToolbarMenu
 from lollypop.queue import QueueWidget
 from lollypop.utils import seconds_to_string
 from lollypop.popalbums import PopAlbums

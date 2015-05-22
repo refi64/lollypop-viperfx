@@ -19,7 +19,7 @@ from lollypop.define import Lp, Type, ArtSize, NextContext
 from lollypop.pop_artist_infos import PopArtistInfos
 from lollypop.widgets_track import TracksWidget
 from lollypop.track import Track
-from lollypop.popmenu import PopAlbumMenu
+from lollypop.pop_menu import PopAlbumMenu
 from lollypop.pop_album_covers import PopAlbumCovers
 from lollypop.utils import translate_artist_name
 

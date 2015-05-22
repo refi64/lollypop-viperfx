@@ -15,7 +15,7 @@ from gi.repository import Gtk, Gdk
 
 from lollypop.define import Lp, ArtSize, Type
 from lollypop.widgets_album import AlbumWidget
-from lollypop.popradio import PopRadio
+from lollypop.pop_radio import PopRadio
 
 
 # Radio widget is a pixbuf with one label: radio name
