@@ -16,6 +16,7 @@ from cgi import escape
 from gettext import gettext as _
 
 from lollypop.define import Lp, Type, ArtSize, NextContext
+from lollypop.pop_artist_infos import PopArtistInfos
 from lollypop.widgets_track import TracksWidget
 from lollypop.track import Track
 from lollypop.popmenu import PopAlbumMenu
@@ -201,6 +202,13 @@ class AlbumDetailedWidget(AlbumWidget):
             builder.add_from_resource(
                     '/org/gnome/Lollypop/AlbumDetailedWidget.ui')
         builder.connect_signals(self)
+
+        if scrolled:
+            artist = translate_artist_name(Lp.albums.get_artist_name(album_id))
+            builder.get_object('artist').set_text(artist + " -")
+            builder.get_object('artist').show()
+            self._popover = PopArtistInfos(artist)
+            self._popover.populate()
 
         self._stars = []
         self._stars.append(builder.get_object('star0'))
@@ -423,6 +431,22 @@ class AlbumDetailedWidget(AlbumWidget):
     """
     def _on_eventbox_realize(self, eventbox):
         eventbox.get_window().set_cursor(Gdk.Cursor(Gdk.CursorType.PENCIL))
+
+    """
+        Change pointer on label
+        @param eventbox as Gtk.EventBox
+    """
+    def _on_label_realize(self, eventbox):
+        eventbox.get_window().set_cursor(Gdk.Cursor(Gdk.CursorType.HAND1))
+
+    """
+        On clicked label, show artist informations in a popover
+        @param eventbox as Gtk.EventBox
+        @param event as Gdk.Event
+    """
+    def _on_label_button_release(self, eventbox, event):
+        self._popover.set_relative_to(eventbox)
+        self._popover.show()
 
     """
         Popover with album art downloaded from the web (in fact google :-/)

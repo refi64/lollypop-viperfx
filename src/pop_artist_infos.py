@@ -15,6 +15,7 @@ from gi.repository import Gtk, GLib, Gio, GdkPixbuf
 
 from _thread import start_new_thread
 import urllib.request
+from gettext import gettext as _
 
 from lollypop.define import Lp
 
@@ -54,13 +55,14 @@ class ArtistInfos(Gtk.Bin):
         builder.add_from_resource('/org/gnome/Lollypop/ArtistInfos.ui')
         builder.connect_signals(self)
         widget = builder.get_object('widget')
-        widget.attach(self._stack, 0, 2, 2, 1)
+        widget.attach(self._stack, 0, 2, 3, 1)
 
         self._back_btn = builder.get_object('back_btn')
         self._image =  builder.get_object('image')
         self._content =  builder.get_object('content')
 
-        builder.get_object('artist').set_text(artist)
+        self._label = builder.get_object('label')
+        self._label.set_text(_("Please wait..."))
 
         self._scrolled = builder.get_object('scrolled') 
         self._spinner = builder.get_object('spinner')
@@ -83,7 +85,7 @@ class ArtistInfos(Gtk.Bin):
     def do_show(self):
         size_setting = Lp.settings.get_value('window-size')
         if isinstance(size_setting[1], int):
-            self.set_size_request(700, size_setting[1]*0.7)
+            self.set_size_request(700, size_setting[1]*0.5)
         else:
             self.set_size_request(700, 400)
         Gtk.Popover.do_show(self)
@@ -120,9 +122,11 @@ class ArtistInfos(Gtk.Bin):
     def _set_content(self, content, stream):
         if content is not None:
             self._stack.set_visible_child(self._scrolled)
+            self._label.set_text(self._artist)
             self._content.set_markup(content)
         else:
             self._stack.set_visible_child(self._not_found)
+            self._label.set_text(_("No information for this artist..."))
         if stream is not None:
             pixbuf = GdkPixbuf.Pixbuf.new_from_stream(stream, None)
             self._image.set_from_pixbuf(pixbuf)
