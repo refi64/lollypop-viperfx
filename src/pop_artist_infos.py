@@ -55,7 +55,7 @@ class ArtistInfos(Gtk.Bin):
         builder.add_from_resource('/org/gnome/Lollypop/ArtistInfos.ui')
         builder.connect_signals(self)
         widget = builder.get_object('widget')
-        widget.attach(self._stack, 0, 2, 3, 1)
+        widget.attach(self._stack, 0, 2, 2, 1)
 
         self._back_btn = builder.get_object('back_btn')
         self._image =  builder.get_object('image')
