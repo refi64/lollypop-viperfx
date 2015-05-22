@@ -140,6 +140,25 @@ class Art(GObject.GObject, TagReader):
             print("Art::get_album_art_path(): %s" % e)
 
     """
+        Get locally available covers for album
+        @param album_id as int
+        @return [uri]
+    """
+    def get_locally_available_covers(self, album_id, sql=None):
+        album_path = Lp.albums.get_path(album_id, sql)
+        files = []
+        for file in os.listdir(album_path):
+            lowername = file.lower()
+            supported = False
+            for mime in self._mimes:
+                if lowername.endswith(mime):
+                    supported = True
+                    break
+            if (supported):
+                files.append("%s/%s" % (album_path, file))
+        return files
+
+    """
         Return a pixbuf for radio name
         @param radio name as string
         @param pixbuf size as int
@@ -358,7 +377,7 @@ class Art(GObject.GObject, TagReader):
                                                GOOGLE_INC))
         except Exception as e:
             print(e)
-            return None
+            return []
 
         data = response.read()
         decode = json.loads(data.decode("utf-8"))

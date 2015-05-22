@@ -75,7 +75,18 @@ class PopAlbumCovers(Gtk.Popover):
         Populate view
     """
     def populate(self):
+        # First load local files
+        self._urls = Lp.art.get_locally_available_covers(self._album_id)
+        for url in self._urls:
+            pixbuf = GdkPixbuf.Pixbuf.new_from_file_at_size(url,
+                                                            ArtSize.MONSTER,
+                                                            ArtSize.MONSTER)
+            self._add_pixbuf(pixbuf)
+        if len(self._urls) > 0:
+            self._stack.set_visible_child(self._scrolled)
+        # Then Google files
         self._thread = True
+        self._start = 0
         start_new_thread(self._populate, ())
 
     """
@@ -124,7 +135,7 @@ class PopAlbumCovers(Gtk.Popover):
                 if self._thread:
                     self._add_pixbufs()
             if stream:
-                GLib.idle_add(self._add_pixbuf, stream)
+                GLib.idle_add(self._add_stream, stream)
             if self._thread:
                 self._add_pixbufs()
         elif self._start < GOOGLE_MAX:
@@ -142,23 +153,14 @@ class PopAlbumCovers(Gtk.Popover):
         Add stream to the view
         @param stream as Gio.MemoryInputStream
     """
-    def _add_pixbuf(self, stream):
+    def _add_stream(self, stream):
         try:
             pixbuf = GdkPixbuf.Pixbuf.new_from_stream_at_scale(
                                             stream, ArtSize.MONSTER,
                                             ArtSize.MONSTER,
                                             False,
                                             None)
-            image = Gtk.Image()
-            self._orig_pixbufs[image] = pixbuf
-            scaled_pixbuf = pixbuf.scale_simple(ArtSize.BIG,
-                                                      ArtSize.BIG,
-                                                      2)
-            image.set_from_pixbuf(scaled_pixbuf)
-            del scaled_pixbuf
-            del pixbuf
-            image.show()
-            self._view.add(image)
+            self._add_pixbuf(pixbuf)
         except Exception as e:
             print(e)
             pass
@@ -166,6 +168,22 @@ class PopAlbumCovers(Gtk.Popover):
         if self._scrolled != self._stack.get_visible_child():
             self._label.set_text(_("Select a cover art for this album"))
             self._stack.set_visible_child(self._scrolled)
+
+    """
+        Add pixbuf to the view
+        @param pixbuf as Gdk.Pixbuf
+    """
+    def _add_pixbuf(self, pixbuf):
+        image = Gtk.Image()
+        self._orig_pixbufs[image] = pixbuf
+        scaled_pixbuf = pixbuf.scale_simple(ArtSize.BIG,
+                                            ArtSize.BIG,
+                                            2)
+        image.set_from_pixbuf(scaled_pixbuf)
+        del scaled_pixbuf
+        del pixbuf
+        image.show()
+        self._view.add(image)
 
     """
         Use pixbuf as cover
