@@ -17,6 +17,7 @@ import urllib.request
 import urllib.parse
 import json
 import re
+import html.parser
 from locale import getdefaultlocale
 from _thread import start_new_thread
 
@@ -60,11 +61,11 @@ class LastFM:
             decoded = self._get_decoded_json(artist)
         try:
             url = decoded['artist']['image'][3]['#text']
-            content = decoded['artist']['bio']['content']
-            content = re.sub(r'class=".*"', '', content)
-            content = re.sub(r'title=".*"', '', content)
-            content = re.sub(r'rel=".*"', '', content)
-            return (url, content)
+            content = decoded['artist']['bio']['summary']
+            print(content)
+            content = re.sub(r'.*Last.fm.*', '', content)
+            content = re.sub(r'<.*?>', '', content)
+            return (url, html.parser.HTMLParser().unescape(content))
         except:
             return (None, None)
         

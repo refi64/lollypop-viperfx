@@ -123,7 +123,7 @@ class ArtistInfos(Gtk.Bin):
         if content is not None:
             self._stack.set_visible_child(self._scrolled)
             self._label.set_text(self._artist)
-            self._content.set_markup(content)
+            self._content.set_text(content)
         else:
             self._stack.set_visible_child(self._not_found)
             self._label.set_text(_("No information for this artist..."))
