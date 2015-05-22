@@ -16,6 +16,7 @@ from gi.repository import GLib, Gio
 import urllib.request
 import urllib.parse
 import json
+from locale import getdefaultlocale
 from _thread import start_new_thread
 
 from lollypop.define import Lp, Type
@@ -43,9 +44,57 @@ class LastFM:
             if not self._in_albums_download:
                 start_new_thread(self._download_albums_imgs, ())
 
+    """
+        Get artist infos
+        @param artist as str
+        @return (url as str, content as str)
+    """
+    def get_artist_infos(self, artist):
+        if not Gio.NetworkMonitor.get_default().get_network_available():
+            return (None, None)
+        artist = translate_artist_name(artist)
+        
+        decoded = self._get_decoded_json(artist, getdefaultlocale()[0][0:2])
+        if decoded is None:
+            decoded = self._get_decoded_json(artist)
+        try:
+            url = decoded['artist']['image'][3]['#text']
+            content = decoded['artist']['bio']['content']
+            return (url, content)
+        except:
+            return (None, None)
+        
 #######################
 # PRIVATE             #
 #######################
+    """
+        Get decoded json for artist
+        @param artist as str
+        @return dict
+    """
+    def _get_decoded_json(self, artist, locale=''):
+        try:
+            response = urllib.request.urlopen(
+                                        "http://ws.audioscrobbler.com/2.0/?"
+                                        "method=artist.getinfo&api_key="
+                                        "7a9619a850ccf7377c46cf233c51e3c6"
+                                        "&artist=%s&format=json&lang=%s" %\
+                                         (urllib.parse.quote(artist),
+                                          locale))
+        except Exception as e:
+            print("LastFM::download_album_img1: %s" % e)
+            return None
+        data = response.read()
+        decoded = json.loads(data.decode("utf-8"))
+        # Do not return invalid data
+        try:
+            if len(decoded['artist']['bio']['content']) == 0:
+                return None
+            else:
+                return decoded
+        except:
+            return None
+
     """
         Download albums images
     """
@@ -56,12 +105,12 @@ class LastFM:
             (artist, album) = self._albums_queue.pop()
             try:
                 response = urllib.request.urlopen(
-                                            "http://ws.audioscrobbler.com/2.0/?"
-                                            "method=album.getinfo&api_key="
-                                            "7a9619a850ccf7377c46cf233c51e3c6"
-                                            "&artist=%s&album=%s&format=json" %\
-                                             (urllib.parse.quote(artist),
-                                              urllib.parse.quote(album)))
+                                        "http://ws.audioscrobbler.com/2.0/?"
+                                        "method=album.getinfo&api_key="
+                                        "7a9619a850ccf7377c46cf233c51e3c6"
+                                        "&artist=%s&album=%s&format=json" %\
+                                         (urllib.parse.quote(artist),
+                                          urllib.parse.quote(album)))
             except Exception as e:
                 print("LastFM::download_album_img1: %s" % e)
                 continue

@@ -11,11 +11,12 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-from gi.repository import Gtk, GLib
+from gi.repository import Gtk, GLib, Gdk
 
 from _thread import start_new_thread
 
 from lollypop.view import View
+from lollypop.pop_artist_infos import PopArtistInfos
 from lollypop.view_container import ViewContainer
 from lollypop.widgets_album import AlbumSimpleWidget, AlbumDetailedWidget
 from lollypop.define import Lp, Type, ArtSize
@@ -36,13 +37,16 @@ class ArtistView(View):
         self._genre_id = genre_id
         self._signal_id = None
 
+        self._artist_name = Lp.artists.get_name(artist_id)
         if show_artist_details:
+            self._popover = PopArtistInfos(self._artist_name)
+            self._popover.populate()
             builder = Gtk.Builder()
             builder.add_from_resource('/org/gnome/Lollypop/ArtistView.ui')
+            builder.connect_signals(self)
             self.attach(builder.get_object('ArtistView'),0, 0, 1, 1)
-            artist_name = Lp.artists.get_name(artist_id)
-            artist_name = translate_artist_name(artist_name)
-            builder.get_object('artist').set_label(artist_name)
+            builder.get_object('artist').set_label(translate_artist_name(
+                                                            self._artist_name))
 
         self._show_menu = show_artist_details
 
@@ -117,7 +121,23 @@ class ArtistView(View):
         else:
             self._stop = False
 
+    """
+        Change pointer on label
+        @param eventbox as Gtk.EventBox
+    """
+    def _on_label_realize(self, eventbox):
+        eventbox.get_window().set_cursor(Gdk.Cursor(Gdk.CursorType.HAND1))
 
+    """
+        On clicked label, show artist informations in a popover
+        @param eventbox as Gtk.EventBox
+        @param event as Gdk.Event
+    """
+    def _on_label_button_release(self, eventbox, event):
+        self._popover.set_relative_to(eventbox)
+        self._popover.show()
+
+    
 # Album contextual view
 class AlbumContextView(View):
     """

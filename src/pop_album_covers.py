@@ -140,6 +140,7 @@ class PopAlbumCovers(Gtk.Popover):
 
     """
         Add stream to the view
+        @param stream as Gio.MemoryInputStream
     """
     def _add_pixbuf(self, stream):
         try:

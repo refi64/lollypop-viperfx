@@ -45,6 +45,7 @@ app_PYTHON = \
     player_shuffle.py\
     player_userplaylist.py\
 	pop_album_covers.py\
+	pop_artist_infos.py\
     popradio.py\
 	popalbums.py\
 	popmenu.py\
