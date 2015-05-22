@@ -43,6 +43,7 @@
               <object class="GtkLabel" id="content">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
+                <property name="valign">start</property>
                 <property name="wrap">True</property>
               </object>
               <packing>
