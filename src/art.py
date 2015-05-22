@@ -141,6 +141,7 @@ class Art(GObject.GObject, TagReader):
 
     """
         Get locally available covers for album
+        Ignore favorite cover
         @param album_id as int
         @return [uri]
     """
@@ -154,7 +155,7 @@ class Art(GObject.GObject, TagReader):
                 if lowername.endswith(mime):
                     supported = True
                     break
-            if (supported):
+            if (supported and file != self._favorite):
                 files.append("%s/%s" % (album_path, file))
         return files
 
