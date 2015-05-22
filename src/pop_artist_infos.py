@@ -107,8 +107,12 @@ class ArtistInfos(Gtk.Bin):
         (url, image_url, content) = Lp.lastfm.get_artist_infos(self._artist)
         stream = None
         try:
-            response = urllib.request.urlopen(image_url)
-            stream = Gio.MemoryInputStream.new_from_data(response.read(), None)
+            response = None
+            if image_url is not None:
+                response = urllib.request.urlopen(image_url)
+            if response is not None:
+                stream = Gio.MemoryInputStream.new_from_data(response.read(),
+                                                             None)
         except Exception as e:
             print("PopArtistInfos::_populate: %s" %e)
             content = None
