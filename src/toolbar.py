@@ -39,11 +39,15 @@ class NextPopover(Gtk.Popover):
         self._title_label = builder.get_object('title')
         self._artist_label = builder.get_object('artist')
         self._cover = builder.get_object('cover')
+        Lp.player.connect('queue-changed', self.update)
 
     """
         Update widget with current track
     """
-    def update(self):
+    def update(self, player=None):
+        if not self.is_visible():
+            return
+
         self._artist_label.set_text(Lp.player.next_track.artist)
         self._title_label.set_text(Lp.player.next_track.title)
         art = Lp.art.get_album(Lp.player.next_track.album_id,
@@ -55,12 +59,6 @@ class NextPopover(Gtk.Popover):
             self._cover.show()
         else:
             self._cover.hide()
-
-    """
-        Ignore
-    """
-    def do_grab_focus(self):
-        pass
 
 
 # Toolbar as headerbar

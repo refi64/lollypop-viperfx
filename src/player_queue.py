@@ -31,6 +31,7 @@ class QueuePlayer:
         if track_id in self._queue:
             self._queue.remove(track_id)
         self._queue.append(track_id)
+        self._set_next()
         self.emit("queue-changed")
 
     """
@@ -42,6 +43,7 @@ class QueuePlayer:
         if track_id in self._queue:
             self._queue.remove(track_id)
         self._queue.insert(0, track_id)
+        self._set_next()
         self.emit("queue-changed")
 
     """
@@ -51,6 +53,7 @@ class QueuePlayer:
     def del_from_queue(self, track_id):
         if track_id in self._queue:
             self._queue.remove(track_id)
+            self._set_next()
             self.emit("queue-changed")
 
     """
@@ -59,6 +62,7 @@ class QueuePlayer:
     """
     def set_queue(self, new_queue):
         self._queue = new_queue
+        self._set_next()
         self.emit("queue-changed")
 
     """
@@ -91,12 +95,20 @@ class QueuePlayer:
         return self._queue.index(track_id)+1
 
     """
-        Get next track id after removing it from queue
+        Get next track id
         @return track id as int or None
     """
     def next(self):
         track_id = None
         if self._queue:
             track_id = self._queue[0]
-            self.del_from_queue(track_id)
         return Track(track_id)
+
+#######################
+# PRIVATE             #
+#######################
+    """
+        Set next track
+    """
+    def _set_next(self):
+        pass

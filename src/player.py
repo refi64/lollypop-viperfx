@@ -48,6 +48,9 @@ class Player(BinPlayer, QueuePlayer, UserPlaylistPlayer, RadioPlayer,
     """
     def next(self):
         if self.next_track.id is not None:
+            if self.next_track.id in self._queue:
+                self._queue.remove(self.next_track.id)
+                self.emit("queue-changed")
             self.load(self.next_track)
 
     """
