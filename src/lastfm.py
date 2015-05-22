@@ -126,10 +126,12 @@ class LastFM:
                 continue
             data = response.read()
             decode = json.loads(data.decode("utf-8"))
-            if decode is None:
+            if 'album' not in decode.keys():
                 continue
             try:
                 url = decode['album']['image'][4]['#text']
+                if url == '':
+                    continue
                 artist_id = Lp.artists.get_id(artist, sql)
                 album_id = Lp.albums.get_id(album, artist_id, sql)
                 # Compilation or album without album artist
