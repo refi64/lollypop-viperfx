@@ -62,6 +62,7 @@ class LastFM:
             url = decoded['artist']['image'][3]['#text']
             content = decoded['artist']['bio']['content']
             content = re.sub(r'class=".*"', '', content)
+            content = re.sub(r'rel=".*"', '', content)
             return (url, content)
         except:
             return (None, None)
