@@ -207,8 +207,9 @@ class AlbumDetailedWidget(AlbumWidget):
             artist = translate_artist_name(Lp.albums.get_artist_name(album_id))
             builder.get_object('artist').set_text(artist + " -")
             builder.get_object('artist').show()
-            self._popover = PopArtistInfos(artist)
-            self._popover.populate()
+            if Lp.lastfm is not None:
+                self._popover = PopArtistInfos(artist)
+                self._popover.populate()
 
         self._stars = []
         self._stars.append(builder.get_object('star0'))
@@ -437,7 +438,8 @@ class AlbumDetailedWidget(AlbumWidget):
         @param eventbox as Gtk.EventBox
     """
     def _on_label_realize(self, eventbox):
-        eventbox.get_window().set_cursor(Gdk.Cursor(Gdk.CursorType.HAND1))
+        if Lp.lastfm is not None:
+            eventbox.get_window().set_cursor(Gdk.Cursor(Gdk.CursorType.HAND1))
 
     """
         On clicked label, show artist informations in a popover
@@ -445,8 +447,9 @@ class AlbumDetailedWidget(AlbumWidget):
         @param event as Gdk.Event
     """
     def _on_label_button_release(self, eventbox, event):
-        self._popover.set_relative_to(eventbox)
-        self._popover.show()
+        if Lp.lastfm is not None:
+            self._popover.set_relative_to(eventbox)
+            self._popover.show()
 
     """
         Popover with album art downloaded from the web (in fact google :-/)

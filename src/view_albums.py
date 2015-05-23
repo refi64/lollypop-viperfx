@@ -39,8 +39,9 @@ class ArtistView(View):
 
         self._artist_name = Lp.artists.get_name(artist_id)
         if show_artist_details:
-            self._popover = PopArtistInfos(self._artist_name)
-            self._popover.populate()
+            if Lp.lastfm is not None:
+                self._popover = PopArtistInfos(self._artist_name)
+                self._popover.populate()
             builder = Gtk.Builder()
             builder.add_from_resource('/org/gnome/Lollypop/ArtistView.ui')
             builder.connect_signals(self)
@@ -126,7 +127,8 @@ class ArtistView(View):
         @param eventbox as Gtk.EventBox
     """
     def _on_label_realize(self, eventbox):
-        eventbox.get_window().set_cursor(Gdk.Cursor(Gdk.CursorType.HAND1))
+        if Lp.lastfm is not None:
+            eventbox.get_window().set_cursor(Gdk.Cursor(Gdk.CursorType.HAND1))
 
     """
         On clicked label, show artist informations in a popover
@@ -134,8 +136,9 @@ class ArtistView(View):
         @param event as Gdk.Event
     """
     def _on_label_button_release(self, eventbox, event):
-        self._popover.set_relative_to(eventbox)
-        self._popover.show()
+        if Lp.lastfm is not None:
+            self._popover.set_relative_to(eventbox)
+            self._popover.show()
 
     
 # Album contextual view

@@ -17,13 +17,21 @@ from locale import getlocale
 from gettext import gettext as _
 from _thread import start_new_thread
 
+try:
+    from lollypop.lastfm import LastFM
+    PYLAST = True
+except:
+    print(_("python-pylast not installed:\n"
+            "    - Auto cover download disabled\n"
+            "    - Artist informations disabled"))
+    PYLAST = False
+
 from lollypop.utils import is_audio, is_gnome, is_unity
 from lollypop.define import Lp, ArtSize
 from lollypop.window import Window
 from lollypop.database import Database
 from lollypop.player import Player
 from lollypop.art import Art
-from lollypop.lastfm import LastFM
 from lollypop.settings import Settings, SettingsDialog
 from lollypop.mpris import MPRIS
 from lollypop.notification import NotificationManager
@@ -78,7 +86,8 @@ class Application(Gtk.Application):
         Lp.tracks = DatabaseTracks()
         Lp.playlists = PlaylistsManager()
         Lp.scanner = CollectionScanner()
-        Lp.lastfm = LastFM()
+        if PYLAST:
+            Lp.lastfm = LastFM()
         Lp.art = Art()
         if not Lp.settings.get_value('disable-mpris'):
             MPRIS(self)

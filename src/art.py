@@ -245,7 +245,8 @@ class Art(GObject.GObject, TagReader):
                                             selected)
                 # No cover, use default one
                 if pixbuf is None:
-                    Lp.lastfm.download_album_img(album_id)
+                    if Lp.lastfm is not None:
+                        Lp.lastfm.download_album_img(album_id)
                     pixbuf = self._get_default_icon(size,
                                                     'folder-music-symbolic')
                 else:

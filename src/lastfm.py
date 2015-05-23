@@ -13,9 +13,8 @@
 
 from gi.repository import GLib, Gio
 
+from pylast import LastFMNetwork
 import urllib.request
-import urllib.parse
-import json
 import re
 import html.parser
 from locale import getdefaultlocale
@@ -24,15 +23,15 @@ from _thread import start_new_thread
 from lollypop.define import Lp, Type
 from lollypop.utils import translate_artist_name
 
-class LastFM:
-    _API = '7a9619a850ccf7377c46cf233c51e3c6'
+class LastFM(LastFMNetwork):
+    _API_KEY = '7a9619a850ccf7377c46cf233c51e3c6'
     """
         Init lastfm
     """
     def __init__(self):
+        LastFMNetwork.__init__(self, api_key = self._API_KEY)
         self._albums_queue = []
         self._in_albums_download = False
-        self._artists_queue = []
 
     """
         Download album image
@@ -55,21 +54,17 @@ class LastFM:
         if not Gio.NetworkMonitor.get_default().get_network_available():
             return (None, None, None)
         artist = translate_artist_name(artist)
-        
-        decoded = self._get_decoded_json(artist, getdefaultlocale()[0][0:2])
-        if decoded is None:
-            decoded = self._get_decoded_json(artist)
         try:
-            image_url = decoded['artist']['image'][3]['#text']
-            url = decoded['artist']['url']
-            content = decoded['artist']['bio']['summary']
-            # Lastfm add this in summary
-            if content[0] == '\n':
-                content = content[1:]
-            else:
-                print("LastFM::get_artist_infos: No more CL in summary")
+            last_artist = self.get_artist(artist)
+            url = last_artist.get_url()
+            try:
+                content = last_artist.get_bio_summary(
+                                           language=getdefaultlocale()[0][0:2])
+            except:
+                content = last_artist.get_bio_summary()
             content = re.sub(r'.*Last.fm.*', '', content)
             content = re.sub(r'<.*?>', '', content)
+            image_url = last_artist.get_cover_image(3)
             return (url, image_url, html.parser.HTMLParser().unescape(content))
         except:
             return (None, None, None)
@@ -77,34 +72,6 @@ class LastFM:
 #######################
 # PRIVATE             #
 #######################
-    """
-        Get decoded json for artist
-        @param artist as str
-        @return dict
-    """
-    def _get_decoded_json(self, artist, locale=''):
-        try:
-            response = urllib.request.urlopen(
-                                        "http://ws.audioscrobbler.com/2.0/?"
-                                        "method=artist.getinfo&api_key="
-                                        "7a9619a850ccf7377c46cf233c51e3c6"
-                                        "&artist=%s&format=json&lang=%s" %\
-                                         (urllib.parse.quote(artist),
-                                          locale))
-        except Exception as e:
-            print("LastFM::download_album_img1: %s" % e)
-            return None
-        data = response.read()
-        decoded = json.loads(data.decode("utf-8"))
-        # Do not return invalid data
-        try:
-            if len(decoded['artist']['bio']['content']) == 0:
-                return None
-            else:
-                return decoded
-        except:
-            return None
-
     """
         Download albums images
     """
@@ -114,23 +81,9 @@ class LastFM:
         while self._albums_queue:
             (artist, album) = self._albums_queue.pop()
             try:
-                response = urllib.request.urlopen(
-                                        "http://ws.audioscrobbler.com/2.0/?"
-                                        "method=album.getinfo&api_key="
-                                        "7a9619a850ccf7377c46cf233c51e3c6"
-                                        "&artist=%s&album=%s&format=json" %\
-                                         (urllib.parse.quote(artist),
-                                          urllib.parse.quote(album)))
-            except Exception as e:
-                print("LastFM::download_album_img1: %s" % e)
-                continue
-            data = response.read()
-            decode = json.loads(data.decode("utf-8"))
-            if 'album' not in decode.keys():
-                continue
-            try:
-                url = decode['album']['image'][4]['#text']
-                if url == '':
+                last_album = self.get_album(artist, album)
+                url = last_album.get_cover_image(4)
+                if url is None:
                     continue
                 artist_id = Lp.artists.get_id(artist, sql)
                 album_id = Lp.albums.get_id(album, artist_id, sql)
@@ -144,6 +97,6 @@ class LastFM:
                     Lp.art.clean_album_cache(album_id, sql)
                     GLib.idle_add(Lp.art.announce_cover_update, album_id)
             except Exception as e:
-                print("LastFM::download_album_img2: %s" % e)
+                print("LastFM::download_album_img: %s" % e)
         self._in_albums_download = False
         sql.close()
