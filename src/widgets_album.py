@@ -209,7 +209,6 @@ class AlbumDetailedWidget(AlbumWidget):
             builder.get_object('artist').show()
             if Lp.lastfm is not None:
                 self._popover = PopArtistInfos(artist)
-                self._popover.populate()
 
         self._stars = []
         self._stars.append(builder.get_object('star0'))
@@ -449,6 +448,7 @@ class AlbumDetailedWidget(AlbumWidget):
     def _on_label_button_release(self, eventbox, event):
         if Lp.lastfm is not None:
             self._popover.set_relative_to(eventbox)
+            self._popover.populate()
             self._popover.show()
 
     """

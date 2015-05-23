@@ -41,7 +41,6 @@ class ArtistView(View):
         if show_artist_details:
             if Lp.lastfm is not None:
                 self._popover = PopArtistInfos(self._artist_name)
-                self._popover.populate()
             builder = Gtk.Builder()
             builder.add_from_resource('/org/gnome/Lollypop/ArtistView.ui')
             builder.connect_signals(self)
@@ -138,6 +137,7 @@ class ArtistView(View):
     def _on_label_button_release(self, eventbox, event):
         if Lp.lastfm is not None:
             self._popover.set_relative_to(eventbox)
+            self._popover.populate()
             self._popover.show()
 
     
