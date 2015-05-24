@@ -17,6 +17,7 @@ src/database_tracks.py
 src/define.py
 src/fullscreen.py
 src/mpris.py
+src/lastfm.py
 src/notification.py
 src/player_base.py
 src/player_bin.py

@@ -16,6 +16,7 @@ from gi.repository import GLib, Gio, Secret
 from pylast import LastFMNetwork, md5
 from pylast import SCROBBLE_SOURCE_USER, SCROBBLE_MODE_PLAYED
 import urllib.request
+from gettext import gettext as _
 import re
 import html.parser
 from locale import getdefaultlocale
@@ -116,6 +117,7 @@ class LastFM(LastFMNetwork):
                        SCROBBLE_MODE_PLAYED,
                        duration)
         except Exception as e:
+            GLib.idle_add(Lp.notify.send, _("Wrong lastfm credentials"))
             print("LastFM::scrobble: %s" % e)
 
     """
