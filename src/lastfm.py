@@ -13,7 +13,7 @@
 
 from gi.repository import GLib, Gio, Secret
 
-from pylast import LastFMNetwork, md5
+from pylast import LastFMNetwork, md5, BadAuthenticationError
 from pylast import SCROBBLE_SOURCE_USER, SCROBBLE_MODE_PLAYED
 import urllib.request
 from gettext import gettext as _
@@ -116,8 +116,9 @@ class LastFM(LastFMNetwork):
                        SCROBBLE_SOURCE_USER,
                        SCROBBLE_MODE_PLAYED,
                        duration)
-        except Exception as e:
+        except BadAuthenticationError:
             GLib.idle_add(Lp.notify.send, _("Wrong Last.fm credentials"))
+        except Exception as e:
             print("LastFM::scrobble: %s" % e)
 
     """
