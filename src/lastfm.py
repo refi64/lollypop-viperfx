@@ -34,18 +34,26 @@ class LastFM(LastFMNetwork):
         LastFMNetwork.__init__(self, api_key = self._API_KEY)
         self._albums_queue = []
         self._in_albums_download = False
-        self.connect()
+        self.connect(None)
 
     """
         Connect lastfm
+        @param password as str
     """
-    def connect(self):
-        schema = Secret.Schema.new("org.gnome.Lollypop",
-                                   Secret.SchemaFlags.NONE,
-                                   SecretSchema)
-        Secret.password_lookup(schema, SecretAttributes, None,
-                               self._on_password_lookup)
-
+    def connect(self, password):
+        if password is None:
+            schema = Secret.Schema.new("org.gnome.Lollypop",
+                                       Secret.SchemaFlags.NONE,
+                                       SecretSchema)
+            Secret.password_lookup(schema, SecretAttributes, None,
+                                   self._on_password_lookup)
+        else:
+           LastFMNetwork.__init__(
+            self,
+            api_key = self._API_KEY,
+            username = Lp.settings.get_value('lastfm-login').get_string(),
+            password_hash = md5(password))
+ 
     """
         Download album image
         @param album id as int
@@ -108,7 +116,7 @@ class LastFM(LastFMNetwork):
         @thread safe
     """
     def _scrobble(self, artist, title, timestamp, duration):
-        s = Lp.lastfm.get_scrobbler('tst', 1.0)
+        s = self.get_scrobbler('tst', 1.0)
         try:
             s.scrobble(artist,
                        title,

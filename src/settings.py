@@ -14,6 +14,8 @@
 from gi.repository import Gtk, GLib, Gio, Pango, Secret
 
 from gettext import gettext as _
+from pylast import SCROBBLE_SOURCE_USER, SCROBBLE_MODE_PLAYED
+from pylast import BadAuthenticationError
 
 from lollypop.define import Lp, Type, SecretSchema, SecretAttributes
 from lollypop.utils import use_csd
@@ -154,6 +156,7 @@ class SettingsDialog:
         # Last.fm tab
         #
         if Lp.lastfm is not None:
+            self._test_img = builder.get_object('test_img')
             self._login = builder.get_object('login')
             self._password = builder.get_object('password')
             schema = Secret.Schema.new("org.gnome.Lollypop",
@@ -241,6 +244,25 @@ class SettingsDialog:
                               GLib.Variant('b', state))
 
     """
+        Update lastfm settings
+        @param sync as bool
+    """
+    def _update_lastfm_settings(self):
+       if Lp.lastfm is not None:
+            schema = Secret.Schema.new("org.gnome.Lollypop",
+                                       Secret.SchemaFlags.NONE,
+                                       SecretSchema)
+            Secret.password_store_sync(schema, SecretAttributes,
+                                       Secret.COLLECTION_DEFAULT,
+                                       "org.gnome.Lollypop.lastfm.login %s" %\
+                                                self._login.get_text(),
+                                       self._password.get_text(),
+                                       None)
+            Lp.settings.set_value('lastfm-login',
+                                  GLib.Variant('s', self._login.get_text()))
+            Lp.lastfm.connect(self._password.get_text())
+ 
+    """
         Close edit party dialog
         @param widget as Gtk.Window
     """
@@ -264,19 +286,8 @@ class SettingsDialog:
         Lp.settings.set_value('music-path', GLib.Variant('as', paths))
         
         # Last.fm
-        if Lp.lastfm is not None:
-            schema = Secret.Schema.new("org.gnome.Lollypop",
-                                       Secret.SchemaFlags.NONE,
-                                       SecretSchema)
-            Secret.password_store(schema, SecretAttributes,
-                                  Secret.COLLECTION_DEFAULT,
-                                  "org.gnome.Lollypop.lastfm.login %s" %\
-                                                self._login.get_text(),
-                                  self._password.get_text(),
-                                  None, None)
-            Lp.settings.set_value('lastfm-login',
-                                  GLib.Variant('s', self._login.get_text()))
-            Lp.lastfm.connect()
+        self._update_lastfm_settings()
+
         self._settings_dialog.hide()
         self._settings_dialog.destroy()
         if set(previous) != set(paths):
@@ -301,12 +312,38 @@ class SettingsDialog:
         Lp.settings.set_value('party-ids',  GLib.Variant('ai', ids))
 
     """
+        Test lastfm connection
+        @param button as Gtk.Button
+    """
+    def _on_test_btn_clicked(self, button):
+        self._update_lastfm_settings()
+        try:
+            s = Lp.lastfm.get_scrobbler('tst', 1.0)
+            s.scrobble("",
+                       "",
+                       1,
+                       SCROBBLE_SOURCE_USER,
+                       SCROBBLE_MODE_PLAYED,
+                       1)
+            self._test_img.set_from_icon_name('object-select-symbolic',
+                                              Gtk.IconSize.MENU)
+        except BadAuthenticationError:
+            self._test_img.set_from_icon_name('computer-fail-symbolic',
+                                              Gtk.IconSize.MENU)
+        except:
+            pass
+
+    """
         Set password entry
         @param source as GObject.Object
         @param result Gio.AsyncResult
     """
     def _on_password_lookup(self, source, result):
-        self._password.set_text(Secret.password_lookup_finish(result))
+        password = None
+        if result is not None:
+            password = Secret.password_lookup_finish(result)
+        if password is not None:
+            self._password.set_text(password)
     
 
 # Widget used to let user select a collection folder
