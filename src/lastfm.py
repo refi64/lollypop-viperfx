@@ -11,16 +11,17 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-from gi.repository import GLib, Gio
+from gi.repository import GLib, Gio, Secret
 
-from pylast import LastFMNetwork
+from pylast import LastFMNetwork, md5
+from pylast import SCROBBLE_SOURCE_USER, SCROBBLE_MODE_PLAYED
 import urllib.request
 import re
 import html.parser
 from locale import getdefaultlocale
 from _thread import start_new_thread
 
-from lollypop.define import Lp, Type
+from lollypop.define import Lp, Type, SecretSchema, SecretAttributes
 from lollypop.utils import translate_artist_name
 
 class LastFM(LastFMNetwork):
@@ -32,6 +33,17 @@ class LastFM(LastFMNetwork):
         LastFMNetwork.__init__(self, api_key = self._API_KEY)
         self._albums_queue = []
         self._in_albums_download = False
+        self.connect()
+
+    """
+        Connect lastfm
+    """
+    def connect(self):
+        schema = Secret.Schema.new("org.gnome.Lollypop",
+                                   Secret.SchemaFlags.NONE,
+                                   SecretSchema)
+        Secret.password_lookup(schema, SecretAttributes, None,
+                               self._on_password_lookup)
 
     """
         Download album image
@@ -68,10 +80,44 @@ class LastFM(LastFMNetwork):
             return (url, image_url, html.parser.HTMLParser().unescape(content))
         except:
             return (None, None, None)
-        
+
+    """
+        Scrobble track
+        @param artist as str
+        @param title as str
+        @param timestamp as int
+        @param duration as int
+    """
+    def scrobble(self, artist, title, timestamp, duration):
+        if Gio.NetworkMonitor.get_default().get_network_available():
+            start_new_thread(self._scrobble, (artist,
+                                              title,
+                                              timestamp,
+                                              duration))
+    
 #######################
 # PRIVATE             #
 #######################
+    """
+        Scrobble track
+        @param artist as str
+        @param title as str
+        @param timestamp as int
+        @param duration as int
+        @thread safe
+    """
+    def _scrobble(self, artist, title, timestamp, duration):
+        s = Lp.lastfm.get_scrobbler('tst', 1.0)
+        try:
+            s.scrobble(artist,
+                       title,
+                       timestamp,
+                       SCROBBLE_SOURCE_USER,
+                       SCROBBLE_MODE_PLAYED,
+                       duration)
+        except Exception as e:
+            print("LastFM::scrobble: %s" % e)
+
     """
         Download albums images
     """
@@ -100,3 +146,15 @@ class LastFM(LastFMNetwork):
                 print("LastFM::download_album_img: %s" % e)
         self._in_albums_download = False
         sql.close()
+
+    """
+        Init self object
+        @param source as GObject.Object
+        @param result Gio.AsyncResult
+    """
+    def _on_password_lookup(self, source, result):
+        LastFMNetwork.__init__(
+            self,
+            api_key = self._API_KEY,
+            username = Lp.settings.get_value('lastfm-login').get_string(),
+            password_hash = md5(Secret.password_lookup_finish(result)))

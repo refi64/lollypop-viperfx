@@ -15,6 +15,7 @@ from gi.repository import Gst, GLib, GstAudio
 
 from gettext import gettext as _
 from os import path
+from time import time
 
 from lollypop.player_base import BasePlayer
 from lollypop.player_rg import ReplayGainPlayer
@@ -127,7 +128,7 @@ class BinPlayer(ReplayGainPlayer, BasePlayer):
     """
     def get_position_in_track(self):
         position = self._playbin.query_position(Gst.Format.TIME)[1] / 1000
-        return position*60
+        return position * 60
 
     """
         Return player volume rate
@@ -250,6 +251,17 @@ class BinPlayer(ReplayGainPlayer, BasePlayer):
             # We are in a thread, we need to create a new cursor
             sql = Lp.db.get_cursor()
             GLib.idle_add(self.next)
+            # Scrobble on lastfm
+            if Lp.lastfm is not None:
+                if self.current_track.aartist_id == Type.COMPILATIONS:
+                    artist = self.current_track.artist
+                else:
+                    artist = self.current_track.aartist
+                timestamp = time() - self.current_track.duration
+                Lp.lastfm.scrobble(artist,
+                                   self.current_track.title,
+                                   int(timestamp),
+                                   int(self.current_track.duration))
             # Add populariy if we listen to the song
             album_id = Lp.tracks.get_album_id(previous_track_id,
                                               sql)

@@ -20,7 +20,8 @@ from _thread import start_new_thread
 try:
     from lollypop.lastfm import LastFM
     PYLAST = True
-except:
+except Exception as e:
+    print(e)
     print(_("python-pylast not installed:\n"
             "    - Auto cover download disabled\n"
             "    - Artist informations disabled"))
@@ -74,7 +75,8 @@ class Application(Gtk.Application):
         styleContext = Gtk.StyleContext()
         styleContext.add_provider_for_screen(screen, cssProvider,
                                              Gtk.STYLE_PROVIDER_PRIORITY_USER)
-
+        if PYLAST:
+            Lp.lastfm = LastFM()
         Lp.settings = Settings.new()
         Lp.db = Database()
         # We store a cursor for the main thread
@@ -86,8 +88,6 @@ class Application(Gtk.Application):
         Lp.tracks = DatabaseTracks()
         Lp.playlists = PlaylistsManager()
         Lp.scanner = CollectionScanner()
-        if PYLAST:
-            Lp.lastfm = LastFM()
         Lp.art = Art()
         if not Lp.settings.get_value('disable-mpris'):
             MPRIS(self)

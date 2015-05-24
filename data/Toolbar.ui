@@ -32,13 +32,14 @@
     <property name="visible">True</property>
     <property name="vexpand">False</property>
     <property name="height-request">36</property>
+    <property name="margin-end">4</property>
     <child>
       <object class="GtkBox" id="buttons">
         <property name="visible">True</property>
         <property name="can_focus">False</property>
-        <property name="margin-end">10</property>
         <child>
           <object class="GtkButton" id="previous_button">
+            <signal name="clicked" handler="_on_prev_btn_clicked" swapped="no"/>
             <property name="width_request">42</property>
             <property name="visible">True</property>
             <property name="sensitive">False</property>
@@ -66,10 +67,11 @@
         </child>
         <child>
           <object class="GtkButton" id="play_button">
+            <signal name="clicked" handler="_on_play_btn_clicked" swapped="no"/>
             <property name="width_request">60</property>
             <property name="visible">True</property>
             <property name="sensitive">False</property>
-	    <property name="valign">center</property>
+	        <property name="valign">center</property>
             <property name="can_focus">True</property>
             <property name="receives_default">True</property>
             <property name="image">play_image</property>
@@ -100,6 +102,7 @@
         </child>
         <child>
           <object class="GtkButton" id="next_button">
+            <signal name="clicked" handler="_on_next_btn_clicked" swapped="no"/>
             <property name="width_request">42</property>
             <property name="visible">True</property>
             <property name="sensitive">False</property>
@@ -130,6 +133,29 @@
         </style>
       </object>
     </child>
+    <child>
+     <object class="GtkButton" id="lastfm_button">
+        <signal name="clicked" handler="_on_lastfm_btn_clicked" swapped="no"/>
+        <property name="visible">False</property>
+        <property name="sensitive">False</property>
+        <property name="can_focus">True</property>
+        <property name="margin-start">10</property>
+        <property name="valign">center</property>
+        <property name="receives_default">True</property>
+        <property name="image">lastfm_image</property>
+        <property name="always_show_image">True</property>
+        <property name="tooltip_text" translatable="no">Last.fm</property>
+        <child>
+          <object class="GtkImage" id="lastfm_image">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <property name="margin_top">1</property>
+            <property name="icon_name">lollypop-lastfm-symbolic</property>
+            <property name="icon_size">1</property>
+          </object>
+        </child>
+    </object>
+   </child> 
   </object>
   <object class="GtkBox" id="titlebar">
     <property name="visible">True</property>
@@ -138,6 +164,7 @@
       <object class="GtkEventBox" id="infobox">
         <property name="visible">True</property>
         <signal name="query-tooltip" handler="_on_query_tooltip" swapped="no"/>
+        <signal name="button-press-event" handler="_pop_infobox" swapped="no"/>
         <child>
           <object class="GtkBox" id="nowplaying">
             <property name="visible">True</property>
@@ -266,9 +293,10 @@
     </child>
         <child>
       <object class="GtkToggleButton" id="party-button">
+        <signal name="toggled" handler="_on_party_btn_toggled" swapped="no"/>
         <property name="visible">True</property>
         <property name="can_focus">True</property>
-	<property name="valign">center</property>
+    	<property name="valign">center</property>
         <property name="receives_default">True</property>
         <property name="tooltip_text" translatable="yes">Party mode</property>
         <style>
@@ -289,6 +317,7 @@
     </child>
      <child>
       <object class="GtkButton" id="search-button">
+        <signal name="clicked" handler="_on_search_btn_clicked" swapped="no"/>
         <property name="visible">True</property>
         <property name="can_focus">False</property>
         <property name="valign">center</property>
@@ -312,6 +341,7 @@
     </child>
     <child>
       <object class="GtkButton" id="queue-button">
+      <signal name="clicked" handler="_on_queue_btn_clicked" swapped="no"/>
         <property name="visible">True</property>
         <property name="can_focus">False</property>
         <property name="valign">center</property>
@@ -350,6 +380,8 @@
     </child>
     <child>
       <object class="GtkScale" id="progress_scale">
+        <signal name="button-release-event" handler="_on_progress_release_button" swapped="no"/>
+        <signal name="button-press-event" handler="_on_progress_press_button" swapped="no"/>
         <property name="visible">True</property>
         <property name="can_focus">True</property>
         <property name="valign">center</property>

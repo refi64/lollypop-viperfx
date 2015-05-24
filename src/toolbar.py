@@ -18,6 +18,7 @@ from cgi import escape
 
 from lollypop.define import Lp, Shuffle, ArtSize, Type
 from lollypop.search import SearchWidget
+from lollypop.pop_artist_infos import PopArtistInfos
 from lollypop.pop_menu import PopToolbarMenu
 from lollypop.queue import QueueWidget
 from lollypop.utils import seconds_to_string
@@ -91,10 +92,6 @@ class Toolbar(Gtk.HeaderBar):
 
         self._progress = builder.get_object('progress_scale')
         self._progress.set_sensitive(False)
-        self._progress.connect('button-release-event',
-                               self._on_progress_release_button)
-        self._progress.connect('button-press-event',
-                               self._on_progress_press_button)
 
         self._timelabel = builder.get_object('playback')
         self._total_time_label = builder.get_object('duration')
@@ -104,7 +101,6 @@ class Toolbar(Gtk.HeaderBar):
         self._cover = builder.get_object('cover')
         self._infobox = builder.get_object('infobox')
         self._infobox.set_property('has-tooltip', True)
-        self._infobox.connect('button-press-event', self._pop_infobox)
         self._pop_albums = PopAlbums()
         self._pop_albums.set_relative_to(self._infobox)
 
@@ -119,18 +115,12 @@ class Toolbar(Gtk.HeaderBar):
         Lp.settings.connect('changed::shuffle', self._shuffle_btn_aspect)
 
         self._party_btn = builder.get_object('party-button')
-        self._party_btn.connect('toggled', self._on_party_btn_toggled)
         party_action = Gio.SimpleAction.new('party', None)
         party_action.connect('activate', self._activate_party_button)
         app.add_action(party_action)
         app.set_accels_for_action("app.party", ["<Control>p"])
 
-        self._prev_btn.connect('clicked', self._on_prev_btn_clicked)
-        self._play_btn.connect('clicked', self._on_play_btn_clicked)
-        self._next_btn.connect('clicked', self._on_next_btn_clicked)
-
         search_button = builder.get_object('search-button')
-        search_button.connect('clicked', self._on_search_btn_clicked)
         self._search = SearchWidget(self)
         self._search.set_relative_to(search_button)
         searchAction = Gio.SimpleAction.new('search', None)
@@ -139,10 +129,12 @@ class Toolbar(Gtk.HeaderBar):
         app.set_accels_for_action("app.search", ["<Control>f"])
 
         queue_button = builder.get_object('queue-button')
-        queue_button.connect("clicked", self._on_queue_btn_clicked)
         self._queue = QueueWidget()
         self._queue.set_relative_to(queue_button)
 
+        if Lp.lastfm is not None:
+            self._lastfm_btn = builder.get_object('lastfm_button')
+            self._lastfm_btn.show()
         self._settings_button = builder.get_object('settings-button')
 
     """
@@ -276,6 +268,8 @@ class Toolbar(Gtk.HeaderBar):
     """
     def _on_current_changed(self, player):
         art = None
+        if Lp.lastfm is not None:
+            self._lastfm_btn.set_sensitive(True)
         self._play_btn.set_sensitive(True)
         self._prev_btn.set_sensitive(True)
         self._next_btn.set_sensitive(True)
@@ -397,6 +391,17 @@ class Toolbar(Gtk.HeaderBar):
     """
     def _on_queue_btn_clicked(self, button):
         self._queue.show()
+
+    """
+        Show current artist informations
+        @param button as Gtk.Button
+    """
+    def _on_lastfm_btn_clicked(self, button):
+        if Lp.lastfm is not None:
+            popover = PopArtistInfos(Lp.player.current_track.artist)
+            popover.set_relative_to(self._lastfm_btn)
+            popover.populate()
+            popover.show()
 
     """
         Update play button with image and status as tooltip

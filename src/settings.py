@@ -11,11 +11,11 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-from gi.repository import Gtk, GLib, Gio, Pango
+from gi.repository import Gtk, GLib, Gio, Pango, Secret
 
 from gettext import gettext as _
 
-from lollypop.define import Lp, Type
+from lollypop.define import Lp, Type, SecretSchema, SecretAttributes
 from lollypop.utils import use_csd
 
 
@@ -150,6 +150,20 @@ class SettingsDialog:
             else:
                 i += 1
                 x = 0
+        #
+        # Last.fm tab
+        #
+        if Lp.lastfm is not None:
+            self._login = builder.get_object('login')
+            self._password = builder.get_object('password')
+            schema = Secret.Schema.new("org.gnome.Lollypop",
+                                       Secret.SchemaFlags.NONE,
+                                       SecretSchema)
+            Secret.password_lookup(schema, SecretAttributes, None,
+                                   self._on_password_lookup)
+            builder.get_object('lastfm_grid').set_sensitive(True)
+            self._login.set_text(
+                            Lp.settings.get_value('lastfm-login').get_string())
 
     """
         Show dialog
@@ -231,6 +245,7 @@ class SettingsDialog:
         @param widget as Gtk.Window
     """
     def _edit_settings_close(self, widget):
+        # Music path
         paths = []
         main_path = self._main_chooser.get_dir()
         choosers = self._chooser_box.get_children()
@@ -247,6 +262,21 @@ class SettingsDialog:
 
         previous = Lp.settings.get_value('music-path')
         Lp.settings.set_value('music-path', GLib.Variant('as', paths))
+        
+        # Last.fm
+        if Lp.lastfm is not None:
+            schema = Secret.Schema.new("org.gnome.Lollypop",
+                                       Secret.SchemaFlags.NONE,
+                                       SecretSchema)
+            Secret.password_store(schema, SecretAttributes,
+                                  Secret.COLLECTION_DEFAULT,
+                                  "org.gnome.Lollypop.lastfm.login %s" %\
+                                                self._login.get_text(),
+                                  self._password.get_text(),
+                                  None, None)
+            Lp.settings.set_value('lastfm-login',
+                                  GLib.Variant('s', self._login.get_text()))
+            Lp.lastfm.connect()
         self._settings_dialog.hide()
         self._settings_dialog.destroy()
         if set(previous) != set(paths):
@@ -270,6 +300,14 @@ class SettingsDialog:
                 pass
         Lp.settings.set_value('party-ids',  GLib.Variant('ai', ids))
 
+    """
+        Set password entry
+        @param source as GObject.Object
+        @param result Gio.AsyncResult
+    """
+    def _on_password_lookup(self, source, result):
+        self._password.set_text(Secret.password_lookup_finish(result))
+    
 
 # Widget used to let user select a collection folder
 class ChooserWidget(Gtk.Grid):
