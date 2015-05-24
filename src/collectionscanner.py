@@ -114,12 +114,16 @@ class CollectionScanner(GObject.GObject, ScannerTagReader):
                 # Add files
                 for name in files:
                     filepath = os.path.join(root, name)
-                    f = Gio.File.new_for_path(filepath)
-                    if is_audio(f):
-                        tracks.append(filepath)
-                        count += 1
-                    else:
-                        debug("%s not detected as a music file" % filepath)
+                    try:
+                        f = Gio.File.new_for_path(filepath)
+                        if is_audio(f):
+                            tracks.append(filepath)
+                            count += 1
+                        else:
+                            debug("%s not detected as a music file" % filepath)
+                    except Exception as e:
+                        print("CollectionScanner::_get_objects_for_paths: %s" \
+                              % e)
         return (tracks, track_dirs, count)
 
     """
