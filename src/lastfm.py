@@ -117,7 +117,7 @@ class LastFM(LastFMNetwork):
                        SCROBBLE_MODE_PLAYED,
                        duration)
         except Exception as e:
-            GLib.idle_add(Lp.notify.send, _("Wrong lastfm credentials"))
+            GLib.idle_add(Lp.notify.send, _("Wrong Last.fm credentials"))
             print("LastFM::scrobble: %s" % e)
 
     """
