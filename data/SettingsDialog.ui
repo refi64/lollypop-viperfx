@@ -466,7 +466,7 @@
           <object class="GtkLabel" id="Last.fm">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
-            <property name="label" translatable="yes">Last.fm</property>
+            <property name="label" translatable="no">Last.fm</property>
           </object>
           <packing>
             <property name="position">3</property>
