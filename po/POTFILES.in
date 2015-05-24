@@ -30,6 +30,7 @@ src/player_shuffle.py
 src/player_userplaylist.py
 src/playlists.py
 src/pop_album_covers.py
+src/pop_artist_infos.py
 src/pop_albums.py
 src/pop_menu.py
 src/pop_radio.py

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-05-24 23:21+0200\n"
+"POT-Creation-Date: 2015-05-25 00:42+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -273,8 +273,8 @@ msgstr ""
 msgid "Radio"
 msgstr ""
 
-#: ../src/pop_album_covers.py:61 ../src/pop_tunein.py:83
-#: ../data/PopRadio.ui.h:3
+#: ../src/pop_album_covers.py:61 ../src/pop_artist_infos.py:89
+#: ../src/pop_tunein.py:83 ../data/PopRadio.ui.h:3
 msgid "Please wait..."
 msgstr ""
 
@@ -284,6 +284,10 @@ msgstr ""
 
 #: ../src/pop_album_covers.py:169
 msgid "Select a cover art for this album"
+msgstr ""
+
+#: ../src/pop_artist_infos.py:143
+msgid "No information for this artist..."
 msgstr ""
 
 #: ../src/pop_menu.py:60
