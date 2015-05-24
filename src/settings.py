@@ -317,6 +317,11 @@ class SettingsDialog:
     """
     def _on_test_btn_clicked(self, button):
         self._update_lastfm_settings()
+        if not Gio.NetworkMonitor.get_default().get_network_available():
+            self._test_img.set_from_icon_name('computer-fail-symbolic',
+                                              Gtk.IconSize.MENU)
+            return
+
         try:
             s = Lp.lastfm.get_scrobbler('tst', 1.0)
             s.scrobble("",
