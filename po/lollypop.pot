@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-05-25 00:42+0200\n"
+"POT-Creation-Date: 2015-05-25 01:43+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -245,7 +245,7 @@ msgstr ""
 msgid "Play"
 msgstr ""
 
-#: ../src/lastfm.py:120
+#: ../src/lastfm.py:128
 msgid "Wrong Last.fm credentials"
 msgstr ""
 
@@ -368,11 +368,11 @@ msgstr ""
 msgid "Search:"
 msgstr ""
 
-#: ../src/settings.py:127
+#: ../src/settings.py:129
 msgid "Populars"
 msgstr ""
 
-#: ../src/settings.py:128
+#: ../src/settings.py:130
 msgid "Recents"
 msgstr ""
 
@@ -560,6 +560,10 @@ msgstr ""
 
 #: ../data/SettingsDialog.ui.h:17
 msgid "Password:"
+msgstr ""
+
+#: ../data/SettingsDialog.ui.h:18
+msgid "Test"
 msgstr ""
 
 #: ../data/Toolbar.ui.h:1
