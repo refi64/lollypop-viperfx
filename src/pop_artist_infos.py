@@ -18,16 +18,19 @@ import urllib.request
 from gettext import gettext as _
 
 from lollypop.define import Lp
+from lollypop.utils import translate_artist_name
 
 
 # Show ArtistInfos in a popover
 class PopArtistInfos(Gtk.Popover):
     """
         Init popover
+        @param artist id as int
+        @param track id as int
     """
-    def __init__(self, artist):
+    def __init__(self, artist_id, track_id=None):
         Gtk.Popover.__init__(self)
-        self._infos = ArtistInfos(artist)
+        self._infos = ArtistInfos(artist_id, track_id)
         self._infos.show()
         self.add(self._infos)
 
@@ -59,11 +62,15 @@ class PopArtistInfos(Gtk.Popover):
 class ArtistInfos(Gtk.Bin):
     """
         Init artist infos
-        @param artist as str
+        @param artist id as int
+        @param track id as int
     """
-    def __init__(self, artist):
+    def __init__(self, artist_id, track_id=None):
         Gtk.Bin.__init__(self)
-        self._artist = artist
+        self._artist_id = artist_id
+        self._artist_name = translate_artist_name(
+                                                Lp.artists.get_name(artist_id))
+        self._track_id = track_id
         self._stack = Gtk.Stack()
         self._stack.set_property('expand', True)
         self._stack.show()
@@ -104,7 +111,8 @@ class ArtistInfos(Gtk.Bin):
         @thread safe
     """
     def _populate(self):
-        (url, image_url, content) = Lp.lastfm.get_artist_infos(self._artist)
+        (url, image_url, content) = Lp.lastfm.get_artist_infos(
+                                                            self._artist_name)
         stream = None
         try:
             response = None
@@ -127,7 +135,7 @@ class ArtistInfos(Gtk.Bin):
     def _set_content(self, content, url, stream):
         if content is not None:
             self._stack.set_visible_child(self._scrolled)
-            self._label.set_text(self._artist)
+            self._label.set_text(self._artist_name)
             self._url_btn.set_uri(url)
             self._content.set_text(content)
         else:

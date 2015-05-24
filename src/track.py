@@ -33,6 +33,7 @@ class Track:
             self.title = ''
             self.album_id = None
             self.album = ''
+            self.artist_ids = []
             self.artist = ''
             self.aartist_id = None
             self.aartist = ''
@@ -54,8 +55,9 @@ class Track:
                                             Lp.artists.get_name(
                                                            self.aartist_id,
                                                            sql))
+            self.artist_ids = Lp.tracks.get_artist_ids(self.id, sql)
             artist_name = ""
-            for artist_id in Lp.tracks.get_artist_ids(self.id, sql):
+            for artist_id in self.artist_ids:
                 artist_name += translate_artist_name(
                                 Lp.artists.get_name(artist_id, sql)) +\
                                 ", "

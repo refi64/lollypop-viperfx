@@ -208,7 +208,7 @@ class AlbumDetailedWidget(AlbumWidget):
             builder.get_object('artist').set_text(artist + " -")
             builder.get_object('artist').show()
             if Lp.lastfm is not None:
-                self._popover = PopArtistInfos(artist)
+                self._popover = PopArtistInfos(self._artist_id)
 
         self._stars = []
         self._stars.append(builder.get_object('star0'))
@@ -437,7 +437,7 @@ class AlbumDetailedWidget(AlbumWidget):
         @param eventbox as Gtk.EventBox
     """
     def _on_label_realize(self, eventbox):
-        if Lp.lastfm is not None:
+        if Lp.lastfm is not None and self._artist_id != Type.COMPILATIONS:
             eventbox.get_window().set_cursor(Gdk.Cursor(Gdk.CursorType.HAND1))
 
     """
@@ -446,7 +446,7 @@ class AlbumDetailedWidget(AlbumWidget):
         @param event as Gdk.Event
     """
     def _on_label_button_release(self, eventbox, event):
-        if Lp.lastfm is not None:
+        if Lp.lastfm is not None and self._artist_id != Type.COMPILATIONS:
             self._popover.set_relative_to(eventbox)
             self._popover.populate()
             self._popover.show()
