@@ -292,7 +292,10 @@ class SelectionList(Gtk.ScrolledWindow):
         elif object_id == Type.PLAYLISTS:
             icon = 'emblem-documents-symbolic'
         elif object_id == Type.ALL:
-            icon = 'avatar-default-symbolic'
+            if self._is_artists:
+                icon = 'media-optical-cd-audio-symbolic'
+            else:
+                icon = 'avatar-default-symbolic'
         elif object_id == Type.COMPILATIONS:
             icon = 'system-users-symbolic'
         elif object_id == Type.RECENTS:
