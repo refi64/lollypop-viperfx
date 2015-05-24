@@ -22,7 +22,7 @@ try:
     PYLAST = True
 except Exception as e:
     print(e)
-    print(_("python-pylast not installed:\n"
+    print(_("    - Scrobbler disabled\n"
             "    - Auto cover download disabled\n"
             "    - Artist informations disabled"))
     PYLAST = False
