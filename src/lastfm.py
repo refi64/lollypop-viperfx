@@ -44,6 +44,7 @@ class LastFM(LastFMNetwork):
         LastFMNetwork.__init__(self,
                                api_key = self._API_KEY)
         self._albums_queue = []
+        self._is_auth = False
         self._in_albums_download = False
         self.connect(None)
 
@@ -59,15 +60,19 @@ class LastFM(LastFMNetwork):
             Secret.password_lookup(schema, SecretAttributes, None,
                                    self._on_password_lookup)
         else:
-            try:
-                LastFMNetwork.__init__(
-                 self,
-                 api_key = self._API_KEY,
-                 username = Lp.settings.get_value('lastfm-login').get_string(),
-                 password_hash = md5(password))
-            except:
-                pass
- 
+            if password != '':
+                self._is_auth = True
+                try:
+                    LastFMNetwork.__init__(
+                     self,
+                     api_key = self._API_KEY,
+                     username = Lp.settings.get_value('lastfm-login').get_string(),
+                     password_hash = md5(password))
+                except:
+                    pass
+            else:
+                self._is_auth = False
+
     """
         Download album image
         @param album id as int
@@ -112,12 +117,13 @@ class LastFM(LastFMNetwork):
         @param duration as int
     """
     def scrobble(self, artist, title, timestamp, duration):
-        if Gio.NetworkMonitor.get_default().get_network_available():
+        if Gio.NetworkMonitor.get_default().get_network_available() and\
+           self._is_auth:
             start_new_thread(self._scrobble, (artist,
                                               title,
                                               timestamp,
                                               duration))
-    
+
 #######################
 # PRIVATE             #
 #######################
@@ -180,11 +186,17 @@ class LastFM(LastFMNetwork):
         @param result Gio.AsyncResult
     """
     def _on_password_lookup(self, source, result):
-        try:
-            LastFMNetwork.__init__(
-                self,
-                api_key = self._API_KEY,
-                username = Lp.settings.get_value('lastfm-login').get_string(),
-                password_hash = md5(Secret.password_lookup_finish(result)))
-        except:
-            pass
+        password = Secret.password_lookup_finish(result)
+        if password is not None and password != '':
+            self._is_auth = True
+            try:
+                LastFMNetwork.__init__(
+                    self,
+                    api_key = self._API_KEY,
+                    username = Lp.settings.get_value(
+                                                  'lastfm-login').get_string(),
+                    password_hash = md5())
+            except:
+                pass
+        else:
+            self._is_auth = False
