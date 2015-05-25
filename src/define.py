@@ -14,7 +14,19 @@
 # This is global object initialised at lollypop start
 # member init order is important!
 
-from gi.repository import Secret
+try:
+    from gi.repository import Secret
+
+    SecretSchema =  {
+       "org.gnome.Lollypop.lastfm.login": Secret.SchemaAttributeType.STRING
+    }
+    SecretAttributes = {
+            "org.gnome.Lollypop.lastfm.login": "Lastfm login"
+    }
+except:
+    Secret = None
+    SecretSchema = None
+    SecretAttributes = None
 
 GOOGLE_INC = 8
 GOOGLE_MAX = 100
@@ -89,10 +101,3 @@ class Type:
     COMPILATIONS = -999
     DEVICES = -1000
     SEPARATOR = -2000
-
-SecretSchema =  {
-   "org.gnome.Lollypop.lastfm.login": Secret.SchemaAttributeType.STRING
-}
-SecretAttributes = {
-         "org.gnome.Lollypop.lastfm.login": "Lastfm login"
-}

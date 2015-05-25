@@ -11,7 +11,12 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-from gi.repository import Gtk, GLib, Gio, Pango, Secret
+from gi.repository import Gtk, GLib, Gio, Pango
+try:
+    from gi.repository import Secret
+except:
+    Secret = None
+
 
 from gettext import gettext as _
 from _thread import start_new_thread
@@ -154,7 +159,7 @@ class SettingsDialog:
         #
         # Last.fm tab
         #
-        if Lp.lastfm is not None:
+        if Lp.lastfm is not None and Secret is not None:
             self._test_img = builder.get_object('test_img')
             self._login = builder.get_object('login')
             self._password = builder.get_object('password')
@@ -247,7 +252,7 @@ class SettingsDialog:
         @param sync as bool
     """
     def _update_lastfm_settings(self):
-       if Lp.lastfm is not None:
+       if Lp.lastfm is not None and Secret is not None:
             schema = Secret.Schema.new("org.gnome.Lollypop",
                                        Secret.SchemaFlags.NONE,
                                        SecretSchema)

@@ -11,7 +11,11 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-from gi.repository import GLib, Gio, Secret
+from gi.repository import GLib, Gio
+try:
+    from gi.repository import Secret
+except:
+    Secret = None
 
 from pylast import LastFMNetwork, md5, BadAuthenticationError
 from pylast import SCROBBLE_SOURCE_USER, SCROBBLE_MODE_PLAYED
@@ -54,6 +58,8 @@ class LastFM(LastFMNetwork):
         @param password as str
     """
     def connect(self, password):
+        if Secret is None:
+            return
         if password is None:
             schema = Secret.Schema.new("org.gnome.Lollypop",
                                        Secret.SchemaFlags.NONE,
@@ -121,7 +127,7 @@ class LastFM(LastFMNetwork):
     """
     def scrobble(self, artist, title, timestamp, duration):
         if Gio.NetworkMonitor.get_default().get_network_available() and\
-           self._is_auth:
+           self._is_auth and Secret is not None:
             start_new_thread(self._scrobble, (artist,
                                               title,
                                               timestamp,
