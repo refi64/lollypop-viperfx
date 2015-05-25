@@ -70,6 +70,7 @@ src/window.py
 [type: gettext/glade]data/PlaylistsView.ui
 [type: gettext/glade]data/PopRadio.ui
 [type: gettext/glade]data/PopAlbumCovers.ui
+[type: gettext/glade]data/ArtistInfos.ui
 [type: gettext/glade]data/QueueWidget.ui
 [type: gettext/glade]data/SearchRow.ui
 [type: gettext/glade]data/SelectionList.ui
