@@ -26,6 +26,7 @@ from lollypop.view_radios import RadiosView
 from lollypop.view_playlists import PlaylistsView
 from lollypop.view_playlists import PlaylistsManageView, PlaylistEditView
 from lollypop.view_device import DeviceView
+from lollypop.track import Track
 
 
 # This is a multimedia device
@@ -614,7 +615,7 @@ class Container:
             Lp.player.clear_user_playlist()
             if not Lp.player.is_party():
                 Lp.player.set_user_playlist(tracks, track_id)
-            Lp.player.load(track_id)
+            Lp.player.load(Track(track_id))
         elif not Lp.player.is_party():
             Lp.player.add_to_user_playlist(track_id)
 
