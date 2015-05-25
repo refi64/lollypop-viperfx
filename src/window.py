@@ -303,9 +303,9 @@ class Window(Gtk.ApplicationWindow, Container):
         elif string == "stop":
             Lp.player.stop()
         elif string == "next":
-            Lp.player.next(True)
+            Lp.player.next()
         elif string == "next_album":
             Lp.player.context.next = NextContext.START_NEW_ALBUM
-            Lp.player.next(True)
+            Lp.player.next()
         elif string == "prev":
             Lp.player.prev()
