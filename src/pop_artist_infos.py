@@ -79,7 +79,11 @@ class ArtistInfos(Gtk.Bin):
         builder.add_from_resource('/org/gnome/Lollypop/ArtistInfos.ui')
         builder.connect_signals(self)
         widget = builder.get_object('widget')
-        widget.attach(self._stack, 0, 2, 2, 1)
+        widget.attach(self._stack, 0, 2, 4, 1)
+
+        if track_id is not None:
+            builder.get_object('love_btn').show()
+            builder.get_object('unlove_btn').show()
 
         self._url_btn = builder.get_object('lastfm')
         self._image =  builder.get_object('image')
@@ -147,8 +151,39 @@ class ArtistInfos(Gtk.Bin):
             del pixbuf
 
     """
-        Go to previous URL
+        Love a track
         @param btn as Gtk.Button
     """
-    def _on_back_btn_clicked(self, btn):
-        self.destroy()
+    def _on_love_btn_clicked(self, btn):
+        artist_id = Lp.tracks.get_artist_ids(self._track_id)[0]
+        artist_name = Lp.artists.get_name(artist_id)
+        title = Lp.tracks.get_name(self._track_id)
+        start_new_thread(self._love_track, (artist_name, title))
+
+    """
+        Love a track
+        @param artist name as str
+        @param title as str
+    """
+    def _love_track(self, artist_name, title):
+        track = Lp.lastfm.get_track(artist_name, title)
+        track.love()
+
+    """
+        Unlove a track
+        @param btn as Gtk.Button
+    """
+    def _on_unlove_btn_clicked(self, btn):
+        artist_id = Lp.tracks.get_artist_ids(self._track_id)[0]
+        artist_name = Lp.artists.get_name(artist_id)
+        title = Lp.tracks.get_name(self._track_id)
+        start_new_thread(self._unlove_track, (artist_name, title))
+
+    """
+        Unlove a track
+        @param artist name as str
+        @param title as str
+    """
+    def _unlove_track(self, artist_name, title):
+        track = Lp.lastfm.get_track(artist_name, title)
+        track.unlove()

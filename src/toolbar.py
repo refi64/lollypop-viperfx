@@ -384,7 +384,7 @@ class Toolbar(Gtk.HeaderBar):
                 artist_id = Lp.player.current_track.artist_ids[0]
             else:
                 artist_id = Lp.player.current_track.aartist_id
-            popover = PopArtistInfos(artist_id)
+            popover = PopArtistInfos(artist_id, Lp.player.current_track.id)
             popover.set_relative_to(self._lastfm_btn)
             popover.populate()
             popover.show()

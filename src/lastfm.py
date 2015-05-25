@@ -26,12 +26,24 @@ from lollypop.define import Lp, Type, SecretSchema, SecretAttributes
 from lollypop.utils import translate_artist_name
 
 class LastFM(LastFMNetwork):
+    """
+       We recommend you don't distribute the API key and secret with your app, 
+       and that you ask users who want to build it to apply for a key of
+       their own. We don't believe that this would violate the terms of most
+       open-source licenses.
+       That said, we can't stop you from distributing the key and secret if you
+       want, and if your app isn't written in a compiled language, you don't
+       really have much option :).
+    """
     _API_KEY = '7a9619a850ccf7377c46cf233c51e3c6'
+    _API_SECRET = '9254319364d73bec6c59ace485a95c98'
     """
         Init lastfm
     """
     def __init__(self):
-        LastFMNetwork.__init__(self, api_key = self._API_KEY)
+        LastFMNetwork.__init__(self,
+                               api_key = self._API_KEY,
+                               api_secret = self._API_SECRET)
         self._albums_queue = []
         self._in_albums_download = False
         self.connect(None)
@@ -51,6 +63,7 @@ class LastFM(LastFMNetwork):
            LastFMNetwork.__init__(
             self,
             api_key = self._API_KEY,
+            api_secret = self._API_SECRET,
             username = Lp.settings.get_value('lastfm-login').get_string(),
             password_hash = md5(password))
  
@@ -169,5 +182,6 @@ class LastFM(LastFMNetwork):
         LastFMNetwork.__init__(
             self,
             api_key = self._API_KEY,
+            api_secret = self._API_SECRET,
             username = Lp.settings.get_value('lastfm-login').get_string(),
             password_hash = md5(Secret.password_lookup_finish(result)))
