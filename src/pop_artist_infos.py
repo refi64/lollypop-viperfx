@@ -155,10 +155,11 @@ class ArtistInfos(Gtk.Bin):
         @param btn as Gtk.Button
     """
     def _on_love_btn_clicked(self, btn):
-        artist_id = Lp.tracks.get_artist_ids(self._track_id)[0]
-        artist_name = Lp.artists.get_name(artist_id)
-        title = Lp.tracks.get_name(self._track_id)
-        start_new_thread(self._love_track, (artist_name, title))
+        if Gio.NetworkMonitor.get_default().get_network_available():
+            artist_id = Lp.tracks.get_artist_ids(self._track_id)[0]
+            artist_name = Lp.artists.get_name(artist_id)
+            title = Lp.tracks.get_name(self._track_id)
+            start_new_thread(self._love_track, (artist_name, title))
 
     """
         Love a track
@@ -167,17 +168,21 @@ class ArtistInfos(Gtk.Bin):
     """
     def _love_track(self, artist_name, title):
         track = Lp.lastfm.get_track(artist_name, title)
-        track.love()
+        try:
+            track.love()
+        except:
+            GLib.idle_add(Lp.notify.send, _("Wrong Last.fm credentials"))
 
     """
         Unlove a track
         @param btn as Gtk.Button
     """
     def _on_unlove_btn_clicked(self, btn):
-        artist_id = Lp.tracks.get_artist_ids(self._track_id)[0]
-        artist_name = Lp.artists.get_name(artist_id)
-        title = Lp.tracks.get_name(self._track_id)
-        start_new_thread(self._unlove_track, (artist_name, title))
+        if Gio.NetworkMonitor.get_default().get_network_available():
+            artist_id = Lp.tracks.get_artist_ids(self._track_id)[0]
+            artist_name = Lp.artists.get_name(artist_id)
+            title = Lp.tracks.get_name(self._track_id)
+            start_new_thread(self._unlove_track, (artist_name, title))
 
     """
         Unlove a track
@@ -186,4 +191,7 @@ class ArtistInfos(Gtk.Bin):
     """
     def _unlove_track(self, artist_name, title):
         track = Lp.lastfm.get_track(artist_name, title)
-        track.unlove()
+        try:
+            track.unlove()
+        except:
+            GLib.idle_add(Lp.notify.send, _("Wrong Last.fm credentials"))
