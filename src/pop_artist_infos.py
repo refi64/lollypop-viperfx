@@ -81,9 +81,9 @@ class ArtistInfos(Gtk.Bin):
         widget = builder.get_object('widget')
         widget.attach(self._stack, 0, 2, 4, 1)
 
-        #if track_id is not None:
-        #    builder.get_object('love_btn').show()
-        #    builder.get_object('unlove_btn').show()
+        if track_id is not None:
+            builder.get_object('love_btn').show()
+            builder.get_object('unlove_btn').show()
 
         self._url_btn = builder.get_object('lastfm')
         self._image =  builder.get_object('image')
@@ -155,7 +155,8 @@ class ArtistInfos(Gtk.Bin):
         @param btn as Gtk.Button
     """
     def _on_love_btn_clicked(self, btn):
-        if Gio.NetworkMonitor.get_default().get_network_available():
+        if Gio.NetworkMonitor.get_default().get_network_available() and\
+           Lp.lastfm.is_auth():
             artist_id = Lp.tracks.get_artist_ids(self._track_id)[0]
             artist_name = Lp.artists.get_name(artist_id)
             title = Lp.tracks.get_name(self._track_id)
@@ -178,7 +179,8 @@ class ArtistInfos(Gtk.Bin):
         @param btn as Gtk.Button
     """
     def _on_unlove_btn_clicked(self, btn):
-        if Gio.NetworkMonitor.get_default().get_network_available():
+        if Gio.NetworkMonitor.get_default().get_network_available() and\
+           Lp.lastfm.is_auth():
             artist_id = Lp.tracks.get_artist_ids(self._track_id)[0]
             artist_name = Lp.artists.get_name(artist_id)
             title = Lp.tracks.get_name(self._track_id)

@@ -64,17 +64,17 @@ class LastFM(LastFMNetwork):
             username = Lp.settings.get_value('lastfm-login').get_string()
             if password != '' and username != '':
                 self._is_auth = True
-                try:
-                    LastFMNetwork.__init__(
-                     self,
-                     api_key = self._API_KEY,
-                     api_secret=self._API_SECRET,
-                     username = Lp.settings.get_value('lastfm-login').get_string(),
-                     password_hash = md5(password))
-                except:
-                    pass
             else:
                 self._is_auth = False
+            try:
+                LastFMNetwork.__init__(
+                 self,
+                 api_key = self._API_KEY,
+                 api_secret=self._API_SECRET,
+                 username = Lp.settings.get_value('lastfm-login').get_string(),
+                 password_hash = md5(password))
+            except:
+                pass
 
     """
         Download album image
@@ -126,6 +126,13 @@ class LastFM(LastFMNetwork):
                                               title,
                                               timestamp,
                                               duration))
+
+    """
+        Return True if valid authentication send
+        @return bool
+    """
+    def is_auth(self):
+        return self._is_auth
 
 #######################
 # PRIVATE             #
@@ -190,14 +197,14 @@ class LastFM(LastFMNetwork):
         password = Secret.password_lookup_finish(result)
         if password is not None and password != '' and username != '':
             self._is_auth = True
-            try:
-                LastFMNetwork.__init__(
-                    self,
-                    api_key = self._API_KEY,
-                    api_secret=self._API_SECRET,
-                    username = username,
-                    password_hash = md5(password))
-            except:
-                pass
         else:
             self._is_auth = False
+        try:
+            LastFMNetwork.__init__(
+                self,
+                api_key = self._API_KEY,
+                api_secret=self._API_SECRET,
+                username = username,
+                password_hash = md5(password))
+        except:
+            pass            
