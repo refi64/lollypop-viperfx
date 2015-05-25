@@ -12,9 +12,13 @@
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 from gi.repository import GLib, Gio
+
+from gettext import gettext as _
 try:
     from gi.repository import Secret
-except:
+except Exception as e:
+    print(e)
+    print(_("Lastfm authentication disabled"))
     Secret = None
 
 from pylast import LastFMNetwork, md5, BadAuthenticationError
