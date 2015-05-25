@@ -160,7 +160,7 @@ class ArtistInfos(Gtk.Bin):
         Love a track
     """
     def _love_track(self):
-        track = Lp.lastfm.get_track(self.artist, self.title)
+        track = Lp.lastfm.get_track(self._artist, self._title)
         try:
             track.love()
         except:
@@ -179,7 +179,7 @@ class ArtistInfos(Gtk.Bin):
         Unlove a track
     """
     def _unlove_track(self):
-        track = Lp.lastfm.get_track(self.artist, self.title)
+        track = Lp.lastfm.get_track(self._artist, self._title)
         try:
             track.unlove()
         except:
