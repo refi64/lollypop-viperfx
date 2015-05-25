@@ -42,8 +42,7 @@ class LastFM(LastFMNetwork):
     """
     def __init__(self):
         LastFMNetwork.__init__(self,
-                               api_key = self._API_KEY,
-                               api_secret = self._API_SECRET)
+                               api_key = self._API_KEY)
         self._albums_queue = []
         self._in_albums_download = False
         self.connect(None)
@@ -64,7 +63,6 @@ class LastFM(LastFMNetwork):
                 LastFMNetwork.__init__(
                  self,
                  api_key = self._API_KEY,
-                 api_secret = self._API_SECRET,
                  username = Lp.settings.get_value('lastfm-login').get_string(),
                  password_hash = md5(password))
             except:
@@ -186,7 +184,6 @@ class LastFM(LastFMNetwork):
             LastFMNetwork.__init__(
                 self,
                 api_key = self._API_KEY,
-                api_secret = self._API_SECRET,
                 username = Lp.settings.get_value('lastfm-login').get_string(),
                 password_hash = md5(Secret.password_lookup_finish(result)))
         except:

@@ -81,9 +81,9 @@ class ArtistInfos(Gtk.Bin):
         widget = builder.get_object('widget')
         widget.attach(self._stack, 0, 2, 4, 1)
 
-        if track_id is not None:
-            builder.get_object('love_btn').show()
-            builder.get_object('unlove_btn').show()
+        #if track_id is not None:
+        #    builder.get_object('love_btn').show()
+        #    builder.get_object('unlove_btn').show()
 
         self._url_btn = builder.get_object('lastfm')
         self._image =  builder.get_object('image')
