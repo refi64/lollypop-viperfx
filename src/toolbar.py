@@ -200,24 +200,6 @@ class Toolbar(Gtk.HeaderBar):
         self._set_shuffle_icon()
 
     """
-        Pop albums from current artistleft click
-        Show playlist menu on right
-        @param widget as Gtk.EventBox
-        @param event as Gdk.Event
-    """
-    def _pop_infobox(self, widget, event):
-        if Lp.player.current_track.id is not None and\
-           Lp.player.current_track.id != Type.RADIOS:
-            if event.button == 1:
-                self._pop_albums.populate()
-                self._pop_albums.show()
-            else:
-                menu = PopToolbarMenu(Lp.player.current_track.id, None)
-                popover = Gtk.Popover.new_from_model(self._infobox, menu)
-                popover.show()
-            return True
-
-    """
         Update cover for album_id
         @param obj as unused, album id as int
     """
@@ -406,6 +388,24 @@ class Toolbar(Gtk.HeaderBar):
             popover.set_relative_to(self._lastfm_btn)
             popover.populate()
             popover.show()
+
+    """
+        Pop albums from current artistleft click
+        Show playlist menu on right
+        @param widget as Gtk.EventBox
+        @param event as Gdk.Event
+    """
+    def _on_infobox_clicked(self, widget, event):
+        if Lp.player.current_track.id is not None and\
+           Lp.player.current_track.id != Type.RADIOS:
+            if event.button == 1:
+                self._pop_albums.populate()
+                self._pop_albums.show()
+            else:
+                menu = PopToolbarMenu(Lp.player.current_track.id, None)
+                popover = Gtk.Popover.new_from_model(self._infobox, menu)
+                popover.show()
+            return True
 
     """
         Update play button with image and status as tooltip

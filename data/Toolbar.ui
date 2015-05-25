@@ -164,7 +164,7 @@
       <object class="GtkEventBox" id="infobox">
         <property name="visible">True</property>
         <signal name="query-tooltip" handler="_on_query_tooltip" swapped="no"/>
-        <signal name="button-press-event" handler="_pop_infobox" swapped="no"/>
+        <signal name="button-press-event" handler="_on_infobox_clicked" swapped="no"/>
         <child>
           <object class="GtkBox" id="nowplaying">
             <property name="visible">True</property>
