@@ -14,15 +14,13 @@
 from gi.repository import Gst, GLib, GstAudio
 
 from gettext import gettext as _
-from os import path
 from time import time
 
 from lollypop.player_base import BasePlayer
 from lollypop.player_rg import ReplayGainPlayer
 from lollypop.define import GstPlayFlags, NextContext, Lp
 from lollypop.define import Type
-from lollypop.utils import translate_artist_name, debug
-from lollypop.track import Track
+from lollypop.utils import debug
 
 
 # Bin player class

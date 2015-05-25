@@ -14,8 +14,6 @@
 from gi.repository import Gtk, GLib, Gio, Pango, Secret
 
 from gettext import gettext as _
-from pylast import SCROBBLE_SOURCE_USER, SCROBBLE_MODE_PLAYED
-from pylast import BadAuthenticationError
 from _thread import start_new_thread
 
 from lollypop.define import Lp, Type, SecretSchema, SecretAttributes

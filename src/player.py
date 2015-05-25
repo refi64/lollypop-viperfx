@@ -18,7 +18,7 @@ from lollypop.player_shuffle import ShufflePlayer
 from lollypop.player_radio import RadioPlayer
 from lollypop.player_userplaylist import UserPlaylistPlayer
 from lollypop.track import Track
-from lollypop.define import Lp, Type, NextContext
+from lollypop.define import Lp, Type
 from lollypop.define import Shuffle
 
 

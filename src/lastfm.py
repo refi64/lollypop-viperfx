@@ -22,7 +22,7 @@ import html.parser
 from locale import getdefaultlocale
 from _thread import start_new_thread
 
-from lollypop.define import Lp, Type, SecretSchema, SecretAttributes
+from lollypop.define import Lp, SecretSchema, SecretAttributes
 from lollypop.utils import translate_artist_name
 
 class LastFM(LastFMNetwork):

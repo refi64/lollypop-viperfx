@@ -11,7 +11,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-from gi.repository import Gtk, GLib, GdkPixbuf
+from gi.repository import Gtk, GLib
 
 import urllib.request
 from _thread import start_new_thread
@@ -20,7 +20,6 @@ from gettext import gettext as _
 from lollypop.tunein import TuneIn
 from lollypop.define import Lp
 from lollypop.art import Art
-from lollypop.view_container import ViewContainer
 
 
 # Tunein popup
@@ -210,7 +209,6 @@ class PopTuneIn(Gtk.Popover):
         @param btn as Gtk.Button
     """
     def _on_home_btn_clicked(self, btn):
-        url = None
         self._current_url = None
         self._previous_urls = []
         self._stack.set_visible_child(self._spinner)
