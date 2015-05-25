@@ -106,7 +106,6 @@ class LastFM(LastFMNetwork):
     def get_artist_infos(self, artist):
         if not Gio.NetworkMonitor.get_default().get_network_available():
             return (None, None, None)
-        artist = translate_artist_name(artist)
         try:
             last_artist = self.get_artist(artist)
             url = last_artist.get_url()

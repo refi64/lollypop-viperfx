@@ -100,8 +100,6 @@ class Application(Gtk.Application):
 
         self._parser = TotemPlParser.Parser.new()
         self._parser.connect("entry-parsed", self._on_entry_parsed)
-        self._parser.connect("playlist-ended", self._on_playlist_ended)
-        self._parsing = 0
 
         self.add_action(Lp.settings.create_action('shuffle'))
         self._external_files = []
@@ -156,17 +154,14 @@ class Application(Gtk.Application):
         @param data as unused
     """
     def do_open(self, files, hint, data):
-        self._external_files = []
         for f in files:
-            if self._parser.parse(f.get_uri(), False) ==\
+            if self._parser.parse(f.get_uri(), False) !=\
                                            TotemPlParser.ParserResult.SUCCESS:
-                self._parsing += 1
-            elif is_audio(f):
-                self._external_files.append(f.get_path())
+                if is_audio(f):
+                    Lp.player.load_external(f.get_path())
         if not Lp.window.is_visible():
             self.do_activate()
-        if self._parsing == 0:
-            Lp.window.load_external(self._external_files)
+        Lp.player.load_first_external()
 
     """
         Save window position and view
@@ -178,9 +173,8 @@ class Application(Gtk.Application):
                 track_id = -1
             else:
                 track_id = Lp.player.current_track.id
-            Lp.settings.set_value('track-id', GLib.Variant(
-                                       'i',
-                                       track_id))
+            Lp.settings.set_value('track-id', GLib.Variant('i',
+                                                           track_id))
         Lp.player.stop()
         if Lp.window:
             Lp.window.stop_all()
@@ -195,7 +189,6 @@ class Application(Gtk.Application):
             GLib.idle_add(self.quit)
             return
         try:
-            Lp.tracks.remove_outside()
             Lp.sql.execute("VACUUM")
         except Exception as e:
             print("Application::quit(): ", e)
@@ -228,21 +221,7 @@ class Application(Gtk.Application):
         @param metadata as GLib.HastTable
     """
     def _on_entry_parsed(self, parser, uri, metadata):
-        # Check if it's really a file uri
-        if uri.startswith('file://'):
-            self._external_files.append(GLib.filename_from_uri(uri)[0])
-        else:
-            self._external_files.append(uri)
-
-    """
-        Load tracks if no parsing running
-        @param parser as TotemPlParser.Parser
-        @param playlist uri as str
-    """
-    def _on_playlist_ended(self, parser, uri):
-        self._parsing -= 1
-        if self._parsing == 0:
-            Lp.window.load_external(self._external_files)
+        Lp.player.load_external(uri)
 
     """
         Hide window

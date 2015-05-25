@@ -47,5 +47,3 @@ class BasePlayer(GObject.GObject):
             self._albums = None
             # Current shuffle mode
             self._shuffle = Lp.settings.get_enum('shuffle')
-            # Bus for messages
-            self._bus = None

@@ -96,7 +96,7 @@ class QueuePlayer:
 
     """
         Get next track id
-        @return track id as int or None
+        @return Track
     """
     def next(self):
         track_id = None

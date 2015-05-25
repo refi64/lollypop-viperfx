@@ -208,7 +208,7 @@ class AlbumDetailedWidget(AlbumWidget):
             builder.get_object('artist').set_text(artist + " -")
             builder.get_object('artist').show()
             if Lp.lastfm is not None:
-                self._popover = PopArtistInfos(self._artist_id)
+                self._popover = PopArtistInfos(artist)
 
         self._stars = []
         self._stars.append(builder.get_object('star0'))

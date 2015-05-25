@@ -97,7 +97,8 @@ class Type:
     RECENTS = -4
     PLAYLISTS = -5
     RADIOS = -6
-    ALL = -7
+    EXTERNAL = -7
+    ALL = -8
     COMPILATIONS = -999
     DEVICES = -1000
     SEPARATOR = -2000

@@ -29,7 +29,6 @@ class RadioPlayer(BasePlayer):
     def __init__(self):
         BasePlayer.__init__(self)
         self._current = None
-        self._bus.connect("message::tag", self._on_bus_message_tag)
 
     """
         Load radio at uri
@@ -106,20 +105,6 @@ class RadioPlayer(BasePlayer):
 #######################
 # PRIVATE             #
 #######################
-    """
-        Read title from stream
-        @param bus as Gst.Bus
-        @param message as Gst.Message
-    """
-    def _on_bus_message_tag(self, bus, message):
-        if self.current_track.id != Type.RADIOS:
-            return
-        tags = message.parse_tag()
-        (exist, title) = tags.get_string_index('title', 0)
-        if exist and title != self.current_track.title:
-            self.current_track.title = title
-            self.emit('current-changed')
-
     """
         If parsing failed, try to play uri
         @param parser as Totem.PlParser

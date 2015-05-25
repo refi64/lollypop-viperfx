@@ -51,7 +51,7 @@ class UserPlaylistPlayer(BasePlayer):
 
     """
         Next track id
-        @return track id as int or None
+        @return Track
     """
     def next(self):
         track_id = None
@@ -64,7 +64,7 @@ class UserPlaylistPlayer(BasePlayer):
 
     """
         Prev track id
-        @return track id as int or None
+        @return Track
     """
     def prev(self):
         track_id = None

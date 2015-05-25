@@ -44,11 +44,11 @@ class Track:
         else:
             self.id = track_id
             self.title = Lp.tracks.get_name(self.id,
-                                                 sql)
+                                            sql)
             self.album_id = Lp.tracks.get_album_id(track_id,
-                                                        sql)
+                                                   sql)
             self.album = Lp.albums.get_name(self.album_id,
-                                                 sql)
+                                            sql)
             self.aartist_id = Lp.tracks.get_aartist_id(track_id,
                                                             sql)
             self.aartist = translate_artist_name(
@@ -62,8 +62,8 @@ class Track:
                                 Lp.artists.get_name(artist_id, sql)) +\
                                 ", "
             self.artist = artist_name[:-2]
-            self.genre = Lp.albums.get_genre_name(self.album_id,
-                                                       sql)
+            self.genre = Lp.tracks.get_genre_name(self.id,
+                                                  sql)
             self.duration = Lp.tracks.get_length(self.id, sql)
             self.number = Lp.tracks.get_number(self.id, sql)
             filepath = Lp.tracks.get_path(self.id, sql)

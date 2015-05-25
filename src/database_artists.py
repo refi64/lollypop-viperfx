@@ -27,11 +27,11 @@ class DatabaseArtists:
         @param Artist name as string
         @warning: commit needed
     """
-    def add(self, name, outside, sql=None):
+    def add(self, name, sql=None):
         if not sql:
             sql = Lp.sql
-        sql.execute("INSERT INTO artists (name, outside) VALUES (?, ?)",
-                    (name, outside))
+        sql.execute("INSERT INTO artists (name) VALUES (?)",
+                    (name,))
 
     """
         Get artist id

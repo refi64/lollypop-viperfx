@@ -74,6 +74,8 @@ class NotificationManager:
         @param player Player
     """
     def _on_current_changed(self, player):
+        if player.current_track.title == '':
+            return
         state = Lp.window.get_window().get_state()
         app = Lp.window.get_application()
         if player.current_track.id is None or state & Gdk.WindowState.FOCUSED\
@@ -85,8 +87,8 @@ class NotificationManager:
                                                    ArtSize.BIG)
         else:
             cover_path = Lp.art.get_album_cache_path(
-                                                   player.current_track.album_id,
-                                                   ArtSize.BIG)
+                                                 player.current_track.album_id,
+                                                 ArtSize.BIG)
         if cover_path is not None:
             self._notification.set_hint('image-path',
                                         GLib.Variant('s', cover_path))

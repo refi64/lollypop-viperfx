@@ -16,6 +16,7 @@ from lollypop.player_queue import QueuePlayer
 from lollypop.player_linear import LinearPlayer
 from lollypop.player_shuffle import ShufflePlayer
 from lollypop.player_radio import RadioPlayer
+from lollypop.player_externals import ExternalsPlayer
 from lollypop.player_userplaylist import UserPlaylistPlayer
 from lollypop.track import Track
 from lollypop.define import Lp, Type
@@ -24,7 +25,7 @@ from lollypop.define import Shuffle
 
 # Player object used to manage playback and playlists
 class Player(BinPlayer, QueuePlayer, UserPlaylistPlayer, RadioPlayer,
-             LinearPlayer, ShufflePlayer):
+             LinearPlayer, ShufflePlayer, ExternalsPlayer):
     """
         Create a gstreamer bin and listen to signals on bus
     """
@@ -35,6 +36,7 @@ class Player(BinPlayer, QueuePlayer, UserPlaylistPlayer, RadioPlayer,
         ShufflePlayer.__init__(self)
         UserPlaylistPlayer.__init__(self)
         RadioPlayer.__init__(self)
+        ExternalsPlayer.__init__(self)
 
     """
         Play previous track
@@ -184,8 +186,12 @@ class Player(BinPlayer, QueuePlayer, UserPlaylistPlayer, RadioPlayer,
         Set previous track
     """
     def _set_prev(self):
+        # Look at externals
+        self.prev_track = ExternalsPlayer.prev(self)
+
         # Look at radio
-        self.prev_track = RadioPlayer.prev(self)
+        if self.prev_track.id is None:
+            self.prev_track = RadioPlayer.prev(self)
 
         # Look at user playlist then
         if self.prev_track.id is None:
@@ -204,8 +210,12 @@ class Player(BinPlayer, QueuePlayer, UserPlaylistPlayer, RadioPlayer,
         @param sql as sqlite cursor
     """
     def _set_next(self):
+        # Look at externals
+        self.next_track = ExternalsPlayer.next(self)
+        
         # Look at radio
-        self.next_track = RadioPlayer.next(self)
+        if self.next_track.id is None:
+            self.next_track = RadioPlayer.next(self)
 
         # Look first at user queue
         if self.next_track.id is None:
@@ -223,12 +233,14 @@ class Player(BinPlayer, QueuePlayer, UserPlaylistPlayer, RadioPlayer,
         if self.next_track.id is None:
             self.next_track = LinearPlayer.next(self)
 
+
     """
         On stream start
         Emit "current-changed" to notify others components
     """
     def _on_stream_start(self, bus, message):
-        ShufflePlayer._on_stream_start(self, bus, message)
+        if self.current_track.id >= 0:
+            ShufflePlayer._on_stream_start(self, bus, message)
         self._set_next()
         self._set_prev()
         BinPlayer._on_stream_start(self, bus, message)

@@ -113,6 +113,8 @@ class Art(GObject.GObject, TagReader):
         @return cover file path as string
     """
     def get_album_art_path(self, album_id, sql=None):
+        if album_id is None:
+            return None
         album_path = Lp.albums.get_path(album_id, sql)
         album_name = Lp.albums.get_name(album_id, sql)
         artist_name = Lp.albums.get_artist_name(album_id, sql)

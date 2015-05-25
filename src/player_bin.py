@@ -17,6 +17,7 @@ from gettext import gettext as _
 from time import time
 
 from lollypop.player_base import BasePlayer
+from lollypop.tagreader import ScannerTagReader
 from lollypop.player_rg import ReplayGainPlayer
 from lollypop.define import GstPlayFlags, NextContext, Lp
 from lollypop.define import Type
@@ -38,11 +39,12 @@ class BinPlayer(ReplayGainPlayer, BasePlayer):
         ReplayGainPlayer.__init__(self, self._playbin)
         self._playbin.connect('about-to-finish',
                               self._on_stream_about_to_finish)
-        self._bus = self._playbin.get_bus()
-        self._bus.add_signal_watch()
-        self._bus.connect('message::error', self._on_bus_error)
-        self._bus.connect('message::eos', self._on_bus_eos)
-        self._bus.connect('message::stream-start', self._on_stream_start)
+        bus = self._playbin.get_bus()
+        bus.add_signal_watch()
+        bus.connect('message::error', self._on_bus_error)
+        bus.connect('message::eos', self._on_bus_eos)
+        bus.connect('message::stream-start', self._on_stream_start)
+        bus.connect("message::tag", self._on_bus_message_tag)
         self._handled_error = None
 
     """
@@ -212,6 +214,31 @@ class BinPlayer(ReplayGainPlayer, BasePlayer):
         return True
 
     """
+        Read tags from stream
+        @param bus as Gst.Bus
+        @param message as Gst.Message
+    """
+    def _on_bus_message_tag(self, bus, message):
+        if self.current_track.id >= 0:
+            return
+        reader = ScannerTagReader()
+        tags = message.parse_tag()
+
+        self.current_track.title = reader.get_title(tags,
+                                                    self.current_track.uri)
+        if self.current_track.id == Type.EXTERNAL:
+            (b, duration) = self._playbin.query_duration(Gst.Format.TIME)
+            if b:
+                self.current_track.duration = duration/1000000000
+            self.current_track.album = reader.get_album_name(tags)
+            self.current_track.artist = reader.get_artists(tags)
+            self.current_track.aartist = reader.get_album_artist(tags)
+            if self.current_track.aartist is None:
+                self.current_track.aartist = self.current_track.artist
+            self.current_track.genre = reader.get_genres(tags)
+        self.emit('current-changed')
+
+    """
         Handle first bus error, ignore others
         @param bus as Gst.Bus
         @param message as Gst.Message
@@ -244,28 +271,29 @@ class BinPlayer(ReplayGainPlayer, BasePlayer):
         @param playbin as Gst bin
     """
     def _on_stream_about_to_finish(self, playbin):
-        if self.current_track.id != Type.RADIOS:
-            previous_track_id = self.current_track.id
-            # We are in a thread, we need to create a new cursor
-            sql = Lp.db.get_cursor()
-            GLib.idle_add(self.next)
-            # Scrobble on lastfm
-            if Lp.lastfm is not None:
-                if self.current_track.aartist_id == Type.COMPILATIONS:
-                    artist = self.current_track.artist
-                else:
-                    artist = self.current_track.aartist
-                timestamp = time() - self.current_track.duration
-                Lp.lastfm.scrobble(artist,
-                                   self.current_track.title,
-                                   int(timestamp),
-                                   int(self.current_track.duration))
-            # Add populariy if we listen to the song
-            album_id = Lp.tracks.get_album_id(previous_track_id,
-                                              sql)
-            if not Lp.scanner.is_locked():
-                Lp.albums.set_more_popular(album_id, sql)
-            sql.close()
+        if self.current_track.id == Type.RADIOS:
+            return
+        previous_track_id = self.current_track.id
+        # We are in a thread, we need to create a new cursor
+        sql = Lp.db.get_cursor()
+        GLib.idle_add(self.next)
+        # Scrobble on lastfm
+        if Lp.lastfm is not None:
+            if self.current_track.aartist_id == Type.COMPILATIONS:
+                artist = self.current_track.artist
+            else:
+                artist = self.current_track.aartist
+            timestamp = time() - self.current_track.duration
+            Lp.lastfm.scrobble(artist,
+                               self.current_track.title,
+                               int(timestamp),
+                               int(self.current_track.duration))
+        # Add populariy if we listen to the song
+        album_id = Lp.tracks.get_album_id(previous_track_id,
+                                          sql)
+        if not Lp.scanner.is_locked():
+            Lp.albums.set_more_popular(album_id, sql)
+        sql.close()
 
     """
         On stream start

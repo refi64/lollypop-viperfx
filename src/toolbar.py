@@ -213,7 +213,11 @@ class Toolbar(Gtk.HeaderBar):
         Show next popover
     """
     def _show_next_popover(self):
-        if Lp.player.is_party() or\
+        # Do not show next popover for external tracks as 
+        # tags will be readed on the fly
+        if Lp.player.next_track.id == Type.EXTERNAL:
+            self._next_popover.hide()
+        elif Lp.player.is_party() or\
            Lp.settings.get_enum('shuffle') == Shuffle.TRACKS:
             self._next_popover.update()
             if Lp.player.is_party():
@@ -381,10 +385,10 @@ class Toolbar(Gtk.HeaderBar):
     def _on_lastfm_btn_clicked(self, button):
         if Lp.lastfm is not None:
             if Lp.player.current_track.aartist_id == Type.COMPILATIONS:
-                artist_id = Lp.player.current_track.artist_ids[0]
+                artist = Lp.player.current_track.artist
             else:
-                artist_id = Lp.player.current_track.aartist_id
-            popover = PopArtistInfos(artist_id, Lp.player.current_track.id)
+                artist = Lp.player.current_track.aartist
+            popover = PopArtistInfos(artist, Lp.player.current_track.title)
             popover.set_relative_to(self._lastfm_btn)
             popover.populate()
             popover.show()

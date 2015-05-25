@@ -25,14 +25,13 @@ class DatabaseGenres:
     """
         Add a new genre to database
         @param Name as string
-        @param outside as bool
         @warning: commit needed
     """
-    def add(self, name, outside, sql=None):
+    def add(self, name, sql=None):
         if not sql:
             sql = Lp.sql
-        sql.execute("INSERT INTO genres (name, outside) VALUES (?, ?)",
-                    (name, outside))
+        sql.execute("INSERT INTO genres (name) VALUES (?)",
+                    (name,))
 
     """
         Get genre id for name

@@ -62,15 +62,13 @@ class PopArtistInfos(Gtk.Popover):
 class ArtistInfos(Gtk.Bin):
     """
         Init artist infos
-        @param artist id as int
-        @param track id as int
+        @param artist as str
+        @param title as str
     """
-    def __init__(self, artist_id, track_id=None):
+    def __init__(self, artist, title=None):
         Gtk.Bin.__init__(self)
-        self._artist_id = artist_id
-        self._artist_name = translate_artist_name(
-                                                Lp.artists.get_name(artist_id))
-        self._track_id = track_id
+        self._artist = artist
+        self._title = title
         self._stack = Gtk.Stack()
         self._stack.set_property('expand', True)
         self._stack.show()
@@ -81,7 +79,7 @@ class ArtistInfos(Gtk.Bin):
         widget = builder.get_object('widget')
         widget.attach(self._stack, 0, 2, 4, 1)
 
-        if track_id is not None and Lp.lastfm.is_auth():
+        if title is not None and Lp.lastfm.is_auth():
             builder.get_object('love_btn').show()
             builder.get_object('unlove_btn').show()
 
@@ -115,8 +113,7 @@ class ArtistInfos(Gtk.Bin):
         @thread safe
     """
     def _populate(self):
-        (url, image_url, content) = Lp.lastfm.get_artist_infos(
-                                                            self._artist_name)
+        (url, image_url, content) = Lp.lastfm.get_artist_infos(self._artist)
         stream = None
         try:
             response = None
@@ -139,7 +136,7 @@ class ArtistInfos(Gtk.Bin):
     def _set_content(self, content, url, stream):
         if content is not None:
             self._stack.set_visible_child(self._scrolled)
-            self._label.set_text(self._artist_name)
+            self._label.set_text(self._artist)
             self._url_btn.set_uri(url)
             self._content.set_text(content)
         else:
@@ -157,18 +154,13 @@ class ArtistInfos(Gtk.Bin):
     def _on_love_btn_clicked(self, btn):
         if Gio.NetworkMonitor.get_default().get_network_available() and\
            Lp.lastfm.is_auth():
-            artist_id = Lp.tracks.get_artist_ids(self._track_id)[0]
-            artist_name = Lp.artists.get_name(artist_id)
-            title = Lp.tracks.get_name(self._track_id)
-            start_new_thread(self._love_track, (artist_name, title))
+            start_new_thread(self._love_track, ())
 
     """
         Love a track
-        @param artist name as str
-        @param title as str
     """
-    def _love_track(self, artist_name, title):
-        track = Lp.lastfm.get_track(artist_name, title)
+    def _love_track(self):
+        track = Lp.lastfm.get_track(self.artist, self.title)
         try:
             track.love()
         except:
@@ -181,18 +173,13 @@ class ArtistInfos(Gtk.Bin):
     def _on_unlove_btn_clicked(self, btn):
         if Gio.NetworkMonitor.get_default().get_network_available() and\
            Lp.lastfm.is_auth():
-            artist_id = Lp.tracks.get_artist_ids(self._track_id)[0]
-            artist_name = Lp.artists.get_name(artist_id)
-            title = Lp.tracks.get_name(self._track_id)
-            start_new_thread(self._unlove_track, (artist_name, title))
+            start_new_thread(self._unlove_track, ())
 
     """
         Unlove a track
-        @param artist name as str
-        @param title as str
     """
-    def _unlove_track(self, artist_name, title):
-        track = Lp.lastfm.get_track(artist_name, title)
+    def _unlove_track(self):
+        track = Lp.lastfm.get_track(self.artist, self.title)
         try:
             track.unlove()
         except:

@@ -138,24 +138,6 @@ class Container:
         self._stack.set_visible_child(view)
         start_new_thread(view.populate, ())
 
-
-    """
-        Load external files
-        @param files as [Gio.Files]
-    """
-    def load_external(self, files):
-        self._need_to_update_db = False
-        # We wait as selection list is threaded,
-        # we don't want to insert item before populated
-        # Same for locked db
-        if self._list_one.is_populating() or\
-           self._list_one.is_populating() or\
-           Lp.scanner.is_locked():
-            Lp.scanner.stop()
-            GLib.timeout_add(250, self.load_external, files)
-        else:
-            Lp.scanner.add(files)
-
     """
         Get main widget
         @return Gtk.HPaned

@@ -30,35 +30,33 @@ class DatabaseAlbums:
         @param artist id as int,
         @param noaartist as bool,
         @param path as string
-        @param outside as bool
         @param mtime as int
         @warning: commit needed
     """
     def add(self, name, artist_id, noaartist, path, popularity,
-            outside, mtime, sql=None):
+            mtime, sql=None):
         if not sql:
             sql = Lp.sql
         sql.execute("INSERT INTO albums "
-                    "(name, artist_id, noaartist, path, popularity, outside, mtime)"
-                    "VALUES (?, ?, ?, ?, ?, ?, ?)",
+                    "(name, artist_id, noaartist, path, popularity, mtime)"
+                    "VALUES (?, ?, ?, ?, ?, ?)",
                     (name, artist_id, noaartist,
-                     path, popularity, outside, mtime))
+                     path, popularity, mtime))
 
     """
         Add genre to album
         @param album id as int
         @param genre id as int
-        @param outside as bool
         @warning: commit needed
     """
-    def add_genre(self, album_id, genre_id, outside, sql=None):
+    def add_genre(self, album_id, genre_id, sql=None):
         if not sql:
             sql = Lp.sql
         genres = self.get_genre_ids(album_id, sql)
         if genre_id not in genres:
             sql.execute("INSERT INTO "
-                        "album_genres (album_id, genre_id, outside)"
-                        "VALUES (?, ?, ?)", (album_id, genre_id, outside))
+                        "album_genres (album_id, genre_id)"
+                        "VALUES (?, ?)", (album_id, genre_id))
 
     """
         Set artist id
@@ -727,23 +725,6 @@ class DatabaseAlbums:
         if v:
             return v[0] > 1
         return False
-
-    """
-        True if is outside collection
-        @param album id as int
-        @return outside as bool
-    """
-    def is_outside(self, album_id, sql=None):
-        if not sql:
-            sql = Lp.sql
-        result = sql.execute("SELECT outside\
-                              FROM albums\
-                              WHERE rowid=?",
-                             (album_id,))
-        v = result.fetchone()
-        if v:
-            return v[0] == 1
-        return True
 
     """
         Clean database for album id

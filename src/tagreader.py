@@ -182,12 +182,11 @@ class ScannerTagReader(TagReader):
         Add artists to db
         @param artists as [string]
         @param album artist as string
-        @param outside as bool
         @param sql as sqlite cursor
         @commit needed
         @param return ([artist ids as int], [new artist ids as int])
     """
-    def add_artists(self, artists, album_artist, outside, sql):
+    def add_artists(self, artists, album_artist, sql):
         new_artist_ids = []
         # Get all artist ids
         artist_ids = []
@@ -196,7 +195,7 @@ class ScannerTagReader(TagReader):
             # Get artist id, add it if missing
             artist_id = Lp.artists.get_id(artist, sql)
             if artist_id is None:
-                Lp.artists.add(artist, outside, sql)
+                Lp.artists.add(artist, sql)
                 artist_id = Lp.artists.get_id(artist, sql)
                 if artist == album_artist:
                     new_artist_ids.append(artist_id)
@@ -206,12 +205,11 @@ class ScannerTagReader(TagReader):
     """
         Add album artist to db
         @param album_artist as string
-        @param outside as bool
         @param sql as sqlite cursor
         @param return ([album artist ids as int], [new as bool])
         @commit needed
     """
-    def add_album_artist(self, album_artist, outside, sql):
+    def add_album_artist(self, album_artist, sql):
         album_artist_id = None
         new = False
         if album_artist is not None:
@@ -219,7 +217,7 @@ class ScannerTagReader(TagReader):
             # Get album artist id, add it if missing
             album_artist_id = Lp.artists.get_id(album_artist, sql)
             if album_artist_id is None:
-                Lp.artists.add(album_artist, outside, sql)
+                Lp.artists.add(album_artist, sql)
                 album_artist_id = Lp.artists.get_id(album_artist, sql)
                 new = True
         return (album_artist_id, new)
@@ -227,12 +225,11 @@ class ScannerTagReader(TagReader):
     """
         Add genres to db
         @param genres as [string]
-        @param outside as bool
         @param sql as sqlite cursor
         @param return ([genre_ids], [new_genre_ids])
         @commit needed
     """
-    def add_genres(self, genres, album_id, outside, sql):
+    def add_genres(self, genres, album_id, sql):
         # Get all genre ids
         genre_ids = []
         new_genre_ids = []
@@ -240,13 +237,13 @@ class ScannerTagReader(TagReader):
             # Get genre id, add genre if missing
             genre_id = Lp.genres.get_id(genre, sql)
             if genre_id is None:
-                Lp.genres.add(genre, outside, sql)
+                Lp.genres.add(genre, sql)
                 genre_id = Lp.genres.get_id(genre, sql)
                 new_genre_ids.append(genre_id)
             genre_ids.append(genre_id)
 
         for genre_id in genre_ids:
-            Lp.albums.add_genre(album_id, genre_id, outside, sql)
+            Lp.albums.add_genre(album_id, genre_id, sql)
         return (genre_ids, new_genre_ids)
 
     """
@@ -255,13 +252,12 @@ class ScannerTagReader(TagReader):
         @param album artist id as int
         @param no album artist as bool
         @param path to an album track as string
-        @param outside as bool
         @param sql as sqlite cursor
         @return (album id as int, new as bool)
         @commit needed
     """
     def add_album(self, album_name, artist_id, noaartist,
-                  filepath, outside, sql):
+                  filepath, sql):
         path = os.path.dirname(filepath)
 
         if noaartist:
@@ -277,13 +273,13 @@ class ScannerTagReader(TagReader):
             else:
                 mtime = int(time())
             Lp.albums.add(album_name, artist_id, noaartist,
-                               path, 0, outside, mtime, sql)
+                          path, 0, mtime, sql)
             if noaartist:
                 album_id = Lp.albums.get_compilation_id(album_name, sql)
             else:
                 album_id = Lp.albums.get_id(album_name, artist_id, sql)
         # Now we have our album id, check if path doesn't change
-        if Lp.albums.get_path(album_id, sql) != path and not outside:
+        if Lp.albums.get_path(album_id, sql) != path:
             Lp.albums.set_path(album_id, path, sql)
 
         # If no album artist, handle album artist id for compilations
@@ -313,13 +309,12 @@ class ScannerTagReader(TagReader):
         @param track id as int
         @param artist ids as [int]
         @param genre ids as [int]
-        @param outside as bool
         @param sql as sqlite cursor
         @commit needed
     """
-    def update_track(self, track_id, artist_ids, genre_ids, outside, sql):
+    def update_track(self, track_id, artist_ids, genre_ids, sql):
          # Set artists/genres for track
         for artist_id in artist_ids:
-            Lp.tracks.add_artist(track_id, artist_id, outside, sql)
+            Lp.tracks.add_artist(track_id, artist_id, sql)
         for genre_id in genre_ids:
-            Lp.tracks.add_genre(track_id, genre_id, outside, sql)
+            Lp.tracks.add_genre(track_id, genre_id, sql)

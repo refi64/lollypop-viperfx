@@ -66,7 +66,8 @@ class PopAlbums(Gtk.Popover):
     def do_hide(self):
         Gtk.Popover.do_hide(self)
         child = self._stack.get_visible_child()
-        child.stop()
+        if child is not None:
+            child.stop()
         self._on_screen_artist = None
         self._stack.clean_old_views(None)
 

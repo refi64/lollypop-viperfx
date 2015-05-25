@@ -147,44 +147,6 @@ class CollectionScanner(GObject.GObject, ScannerTagReader):
         self.emit("scan-finished")
 
     """
-        Add temporaly specified files to collection
-        @param files as [Gio.Files]
-        @thread safe
-    """
-    def _add(self, files):
-        if self._progress is not None:
-            GLib.idle_add(self._progress.show)
-        sql = Lp.db.get_cursor()
-        tracks = Lp.tracks.get_paths(sql)
-        count = len(files)
-        i = 0
-        GLib.idle_add(self._update_progress, i, count)
-        for f in files:
-            track_id = None
-            if not self._in_thread:
-                sql.close()
-                self._is_locked = False
-                return
-            if f not in tracks:
-                infos = self.get_infos(f)
-                if infos is not None:
-                    debug("Adding file: %s" % f)
-                    track_id = self._add2db(f, 0, infos, True, sql)
-                else:
-                    print("Can't get infos for ", f)
-            else:
-                track_id = Lp.tracks.get_id_by_path(f, sql)
-            if track_id is not None:
-                if i == 0:
-                    sql.commit()
-                GLib.idle_add(self.emit, "track-added", track_id, i==0)
-            i += 1
-            GLib.idle_add(self._update_progress, i, count)
-        sql.commit()
-        sql.close()
-        GLib.idle_add(self._finish)
-
-    """
         Scan music collection for music files
         @param paths as [string], paths to scan
         @thread safe
@@ -207,14 +169,14 @@ class CollectionScanner(GObject.GObject, ScannerTagReader):
                 sql.close()
                 self._is_locked = False
                 return
-            GLib.idle_add(self._update_progress, i, count)
-            mtime = int(os.path.getmtime(filepath))
+            GLib.idle_add(self._update_progress, i, count)        
             try:
+                mtime = int(os.path.getmtime(filepath))
                 if filepath not in orig_tracks:
                     infos = self.get_infos(filepath)
                     if infos is not None:
                         debug("Adding file: %s" % filepath)
-                        self._add2db(filepath, mtime, infos, False, sql)
+                        self._add2db(filepath, mtime, infos, sql)
                     else:
                         print("Can't get infos for ", filepath)
                 else:
@@ -224,7 +186,7 @@ class CollectionScanner(GObject.GObject, ScannerTagReader):
                         infos = self.get_infos(filepath)
                         if infos is not None:
                             debug("Adding file: %s" % filepath)
-                            self._add2db(filepath, mtime, infos, False, sql)
+                            self._add2db(filepath, mtime, infos, sql)
                         else:
                             print("Can't get infos for ", filepath)
                     orig_tracks.remove(filepath)
@@ -250,11 +212,10 @@ class CollectionScanner(GObject.GObject, ScannerTagReader):
         @param filepath as string
         @param file modification time as int
         @param infos as GstPbutils.DiscovererInfo
-        @param outside as bool
         @param sql as sqlite cursor
         @return track id as int
     """
-    def _add2db(self, filepath, mtime, infos, outside, sql):
+    def _add2db(self, filepath, mtime, infos, sql):
         tags = infos.get_tags()
 
         title = self.get_title(tags, filepath)
@@ -269,11 +230,9 @@ class CollectionScanner(GObject.GObject, ScannerTagReader):
 
         (artist_ids, new_artist_ids) = self.add_artists(artists,
                                                         album_artist,
-                                                        outside,
                                                         sql)
 
         (album_artist_id, new) = self.add_album_artist(album_artist,
-                                                       outside,
                                                        sql)
         if new:
             new_artist_ids.append(album_artist_id)
@@ -284,20 +243,19 @@ class CollectionScanner(GObject.GObject, ScannerTagReader):
             noaartist = True
 
         album_id = self.add_album(album_name, album_artist_id, noaartist,
-                                  filepath, outside, sql)
+                                  filepath, sql)
 
-        (genre_ids, new_genre_ids) = self.add_genres(genres, album_id,
-                                                      outside, sql)
+        (genre_ids, new_genre_ids) = self.add_genres(genres, album_id, sql)
 
         # Add track to db
         Lp.tracks.add(title, filepath, length,
                       tracknumber, discnumber,
-                      album_id, year, mtime, outside, sql)
+                      album_id, year, mtime, sql)
 
         self.update_year(album_id, sql)
 
         track_id = Lp.tracks.get_id_by_path(filepath, sql)
-        self.update_track(track_id, artist_ids, genre_ids, outside, sql)
+        self.update_track(track_id, artist_ids, genre_ids, sql)
 
         # Notify about new artists/genres
         if new_genre_ids or new_artist_ids:

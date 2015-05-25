@@ -45,7 +45,7 @@ class ShufflePlayer(BasePlayer):
 
     """
         Next shuffle track
-        @return track_id as int or None
+        @return Track
     """
     def next(self):
         track_id = None
@@ -60,7 +60,7 @@ class ShufflePlayer(BasePlayer):
 
     """
         Prev track based on history
-        @return track id as int or None
+        @return Track
     """
     def prev(self):
         track_id = None
