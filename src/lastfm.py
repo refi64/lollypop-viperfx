@@ -42,7 +42,8 @@ class LastFM(LastFMNetwork):
     """
     def __init__(self):
         LastFMNetwork.__init__(self,
-                               api_key = self._API_KEY)
+                               api_key=self._API_KEY,
+                               api_secret=self._API_SECRET)
         self._albums_queue = []
         self._is_auth = False
         self._in_albums_download = False
@@ -60,12 +61,14 @@ class LastFM(LastFMNetwork):
             Secret.password_lookup(schema, SecretAttributes, None,
                                    self._on_password_lookup)
         else:
-            if password != '':
+            username = Lp.settings.get_value('lastfm-login').get_string()
+            if password != '' and username != '':
                 self._is_auth = True
                 try:
                     LastFMNetwork.__init__(
                      self,
                      api_key = self._API_KEY,
+                     api_secret=self._API_SECRET,
                      username = Lp.settings.get_value('lastfm-login').get_string(),
                      password_hash = md5(password))
                 except:
@@ -138,14 +141,11 @@ class LastFM(LastFMNetwork):
     def _scrobble(self, artist, title, timestamp, duration):
         if duration < 30.0:
             return
-        s = self.get_scrobbler('tst', 1.0)
         try:
-            s.scrobble(artist,
-                       title,
-                       timestamp,
-                       SCROBBLE_SOURCE_USER,
-                       SCROBBLE_MODE_PLAYED,
-                       duration)
+            LastFMNetwork.scrobble(self,
+                                   artist=artist,
+                                   title=title,
+                                   timestamp=timestamp)
         except BadAuthenticationError:
             GLib.idle_add(Lp.notify.send, _("Wrong Last.fm credentials"))
         except Exception as e:
@@ -186,16 +186,17 @@ class LastFM(LastFMNetwork):
         @param result Gio.AsyncResult
     """
     def _on_password_lookup(self, source, result):
+        username = Lp.settings.get_value('lastfm-login').get_string()
         password = Secret.password_lookup_finish(result)
-        if password is not None and password != '':
+        if password is not None and password != '' and username != '':
             self._is_auth = True
             try:
                 LastFMNetwork.__init__(
                     self,
                     api_key = self._API_KEY,
-                    username = Lp.settings.get_value(
-                                                  'lastfm-login').get_string(),
-                    password_hash = md5())
+                    api_secret=self._API_SECRET,
+                    username = username,
+                    password_hash = md5(password))
             except:
                 pass
         else:
