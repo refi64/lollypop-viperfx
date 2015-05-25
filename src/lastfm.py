@@ -60,12 +60,15 @@ class LastFM(LastFMNetwork):
             Secret.password_lookup(schema, SecretAttributes, None,
                                    self._on_password_lookup)
         else:
-           LastFMNetwork.__init__(
-            self,
-            api_key = self._API_KEY,
-            api_secret = self._API_SECRET,
-            username = Lp.settings.get_value('lastfm-login').get_string(),
-            password_hash = md5(password))
+            try:
+                LastFMNetwork.__init__(
+                 self,
+                 api_key = self._API_KEY,
+                 api_secret = self._API_SECRET,
+                 username = Lp.settings.get_value('lastfm-login').get_string(),
+                 password_hash = md5(password))
+            except:
+                pass
  
     """
         Download album image
@@ -179,9 +182,12 @@ class LastFM(LastFMNetwork):
         @param result Gio.AsyncResult
     """
     def _on_password_lookup(self, source, result):
-        LastFMNetwork.__init__(
-            self,
-            api_key = self._API_KEY,
-            api_secret = self._API_SECRET,
-            username = Lp.settings.get_value('lastfm-login').get_string(),
-            password_hash = md5(Secret.password_lookup_finish(result)))
+        try:
+            LastFMNetwork.__init__(
+                self,
+                api_key = self._API_KEY,
+                api_secret = self._API_SECRET,
+                username = Lp.settings.get_value('lastfm-login').get_string(),
+                password_hash = md5(Secret.password_lookup_finish(result)))
+        except:
+            pass

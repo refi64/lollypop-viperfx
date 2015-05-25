@@ -323,20 +323,13 @@ class SettingsDialog:
             return
 
         try:
-            s = Lp.lastfm.get_scrobbler('tst', 1.0)
-            s.scrobble("",
-                       "",
-                       1,
-                       SCROBBLE_SOURCE_USER,
-                       SCROBBLE_MODE_PLAYED,
-                       1)
+            u = Lp.lastfm.get_authenticated_user()
+            u.get_id()
             self._test_img.set_from_icon_name('object-select-symbolic',
                                               Gtk.IconSize.MENU)
-        except BadAuthenticationError:
+        except:
             self._test_img.set_from_icon_name('computer-fail-symbolic',
                                               Gtk.IconSize.MENU)
-        except:
-            pass
 
     """
         Set password entry
