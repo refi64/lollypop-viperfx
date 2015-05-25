@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-05-25 01:43+0200\n"
+"POT-Creation-Date: 2015-05-25 16:03+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -231,8 +231,8 @@ msgstr ""
 msgid "Many artists"
 msgstr ""
 
-#: ../src/fullscreen.py:78 ../src/fullscreen.py:195 ../src/toolbar.py:341
-#: ../src/toolbar.py:372
+#: ../src/fullscreen.py:78 ../src/fullscreen.py:195 ../src/toolbar.py:323
+#: ../src/toolbar.py:354
 msgid "Pause"
 msgstr ""
 
@@ -240,12 +240,13 @@ msgstr ""
 msgid "Next track"
 msgstr ""
 
-#: ../src/fullscreen.py:199 ../src/toolbar.py:348 ../src/toolbar.py:369
+#: ../src/fullscreen.py:199 ../src/toolbar.py:330 ../src/toolbar.py:351
 #: ../data/Toolbar.ui.h:7
 msgid "Play"
 msgstr ""
 
-#: ../src/lastfm.py:128
+#: ../src/lastfm.py:146 ../src/pop_artist_infos.py:174
+#: ../src/pop_artist_infos.py:197
 msgid "Wrong Last.fm credentials"
 msgstr ""
 
@@ -273,7 +274,7 @@ msgstr ""
 msgid "Radio"
 msgstr ""
 
-#: ../src/pop_album_covers.py:61 ../src/pop_artist_infos.py:89
+#: ../src/pop_album_covers.py:61 ../src/pop_artist_infos.py:93
 #: ../src/pop_tunein.py:83 ../data/PopRadio.ui.h:3
 msgid "Please wait..."
 msgstr ""
@@ -286,7 +287,7 @@ msgstr ""
 msgid "Select a cover art for this album"
 msgstr ""
 
-#: ../src/pop_artist_infos.py:143
+#: ../src/pop_artist_infos.py:147
 msgid "No information for this artist..."
 msgstr ""
 
@@ -368,11 +369,11 @@ msgstr ""
 msgid "Search:"
 msgstr ""
 
-#: ../src/settings.py:129
+#: ../src/settings.py:130
 msgid "Populars"
 msgstr ""
 
-#: ../src/settings.py:130
+#: ../src/settings.py:131
 msgid "Recents"
 msgstr ""
 
@@ -484,6 +485,14 @@ msgstr ""
 
 #: ../data/PopRadio.ui.h:6
 msgid "Delete"
+msgstr ""
+
+#: ../data/ArtistInfos.ui.h:1
+msgid "I love"
+msgstr ""
+
+#: ../data/ArtistInfos.ui.h:2
+msgid "I don't love"
 msgstr ""
 
 #: ../data/QueueWidget.ui.h:1
