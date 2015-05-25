@@ -60,7 +60,7 @@ class Database:
     create_track_genres = '''CREATE TABLE track_genres (
                                                 track_id INT NOT NULL,
                                                 genre_id INT NOT NULL)'''
-    version = 9
+    version = 10
 
     """
         Create database tables or manage update if needed
