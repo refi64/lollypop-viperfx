@@ -64,11 +64,13 @@ class ShufflePlayer(BasePlayer):
     """
     def prev(self):
         track_id = None
-        if self._history is not None and \
-           self._history.has_prev():
-            track_id = self._history.get_prev().get_value()
-        else:
-            track_id = self.current_track.id
+        if self._shuffle in [Shuffle.TRACKS, Shuffle.TRACKS_ARTIST] or\
+            self._is_party:
+            if self._history is not None and \
+               self._history.has_prev():
+                track_id = self._history.get_prev().get_value()
+            else:
+                track_id = self.current_track.id
         return Track(track_id)
 
     """
