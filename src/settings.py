@@ -16,6 +16,7 @@ from gi.repository import Gtk, GLib, Gio, Pango, Secret
 from gettext import gettext as _
 from pylast import SCROBBLE_SOURCE_USER, SCROBBLE_MODE_PLAYED
 from pylast import BadAuthenticationError
+from _thread import start_new_thread
 
 from lollypop.define import Lp, Type, SecretSchema, SecretAttributes
 from lollypop.utils import use_csd
@@ -321,15 +322,23 @@ class SettingsDialog:
             self._test_img.set_from_icon_name('computer-fail-symbolic',
                                               Gtk.IconSize.MENU)
             return
+        start_new_thread(self._test_lastfm_connection, ())
 
+    """
+        Test lastfm connection
+        @thread safe
+    """
+    def _test_lastfm_connection(self):
         try:
             u = Lp.lastfm.get_authenticated_user()
             u.get_id()
-            self._test_img.set_from_icon_name('object-select-symbolic',
-                                              Gtk.IconSize.MENU)
+            GLib.idle_add(self._test_img.set_from_icon_name,
+                          'object-select-symbolic',
+                          Gtk.IconSize.MENU)
         except:
-            self._test_img.set_from_icon_name('computer-fail-symbolic',
-                                              Gtk.IconSize.MENU)
+            GLib.idle_add(self._test_img.set_from_icon_name,
+                          'computer-fail-symbolic',
+                          Gtk.IconSize.MENU)
 
     """
         Set password entry
