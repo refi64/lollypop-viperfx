@@ -154,6 +154,7 @@ class Application(Gtk.Application):
         @param data as unused
     """
     def do_open(self, files, hint, data):
+        Lp.player.clear_externals()
         for f in files:
             if self._parser.parse(f.get_uri(), False) !=\
                                            TotemPlParser.ParserResult.SUCCESS:
