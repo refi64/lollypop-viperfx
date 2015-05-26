@@ -415,7 +415,7 @@ class Toolbar(Gtk.HeaderBar):
                 else:
                     self._pop_albums.populate()
                     self._pop_albums.show()
-            else:
+            elif Lp.player.current_track.id >= 0:
                 menu = PopToolbarMenu(Lp.player.current_track.id, None)
                 popover = Gtk.Popover.new_from_model(self._infobox, menu)
                 popover.show()
