@@ -102,7 +102,7 @@ class Application(Gtk.Application):
         self._parser.connect("entry-parsed", self._on_entry_parsed)
 
         self.add_action(Lp.settings.create_action('shuffle'))
-        self._external_files = []
+        self._externals_count = 0
         self._is_fs = False
 
         self.register(None)
@@ -156,13 +156,10 @@ class Application(Gtk.Application):
     def do_open(self, files, hint, data):
         Lp.player.clear_externals()
         for f in files:
-            if self._parser.parse(f.get_uri(), False) !=\
-                                           TotemPlParser.ParserResult.SUCCESS:
-                if is_audio(f):
-                    Lp.player.load_external(f.get_path())
+            self._parser.parse_async(f.get_uri(), True,
+                                     None, self._on_parsing_finished)
         if not Lp.window.is_visible():
             self.do_activate()
-        Lp.player.load_first_external()
 
     """
         Save window position and view
@@ -223,6 +220,17 @@ class Application(Gtk.Application):
     """
     def _on_entry_parsed(self, parser, uri, metadata):
         Lp.player.load_external(uri)
+        if self._externals_count == 0:
+            Lp.player.load_first_external()
+        self._externals_count += 1
+
+    """
+        Reset parsed count
+        @param source as GObject.Object)
+        @param result as Gio.AsyncResult
+    """
+    def _on_parsing_finished(self, source, result):
+        self._externals_count = 0
 
     """
         Hide window
