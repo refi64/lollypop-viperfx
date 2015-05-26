@@ -27,7 +27,7 @@ except Exception as e:
             "    - Artist informations disabled"))
     PYLAST = False
 
-from lollypop.utils import is_audio, is_gnome, is_unity
+from lollypop.utils import is_gnome, is_unity
 from lollypop.define import Lp, ArtSize
 from lollypop.window import Window
 from lollypop.database import Database

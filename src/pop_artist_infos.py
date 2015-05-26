@@ -18,7 +18,6 @@ import urllib.request
 from gettext import gettext as _
 
 from lollypop.define import Lp
-from lollypop.utils import translate_artist_name
 
 
 # Show ArtistInfos in a popover

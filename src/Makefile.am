@@ -15,6 +15,9 @@ app_PYTHON = \
 	database_genres.py\
 	database_tracks.py\
 	art.py\
+	art_base.py\
+	art_radio.py\
+	art_album.py\
 	selectionlist.py\
 	queue.py\
 	lastfm.py\

@@ -22,7 +22,6 @@ except Exception as e:
     Secret = None
 
 from pylast import LastFMNetwork, md5, BadAuthenticationError
-from pylast import SCROBBLE_SOURCE_USER, SCROBBLE_MODE_PLAYED
 import urllib.request
 from gettext import gettext as _
 import re
