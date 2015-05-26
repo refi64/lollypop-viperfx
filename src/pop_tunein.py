@@ -223,6 +223,7 @@ class PopTuneIn(Gtk.Popover):
         if item.TYPE == "link":
             self._stack.set_visible_child(self._spinner)
             self._clear()
+            self._scrolled.get_vadjustment().set_value(0.0)
             if self._current_url is not None:
                 self._previous_urls.append(self._current_url)
             start_new_thread(self.populate, (item.URL,))
