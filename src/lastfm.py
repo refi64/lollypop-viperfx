@@ -72,19 +72,7 @@ class LastFM(LastFMNetwork):
                                    self._on_password_lookup)
         else:
             username = Lp.settings.get_value('lastfm-login').get_string()
-            if password != '' and username != '':
-                self._is_auth = True
-            else:
-                self._is_auth = False
-            try:
-                LastFMNetwork.__init__(
-                 self,
-                 api_key = self._API_KEY,
-                 api_secret=self._API_SECRET,
-                 username = Lp.settings.get_value('lastfm-login').get_string(),
-                 password_hash = md5(password))
-            except:
-                pass
+            start_new_thread(self._connect, (username, password))
 
     """
         Download album image
@@ -147,6 +135,27 @@ class LastFM(LastFMNetwork):
 # PRIVATE             #
 #######################
     """
+        Connect lastfm
+        @param username as str
+        @param password as str
+        @thread safe
+    """
+    def _connect(self, username, password):
+        if password != '' and username != '':
+            self._is_auth = True
+        else:
+            self._is_auth = False
+        try:
+            LastFMNetwork.__init__(
+             self,
+             api_key = self._API_KEY,
+             api_secret=self._API_SECRET,
+             username = Lp.settings.get_value('lastfm-login').get_string(),
+             password_hash = md5(password))
+        except:
+            pass
+
+    """
         Scrobble track
         @param artist as str
         @param title as str
@@ -204,16 +213,4 @@ class LastFM(LastFMNetwork):
     def _on_password_lookup(self, source, result):
         username = Lp.settings.get_value('lastfm-login').get_string()
         password = Secret.password_lookup_finish(result)
-        if password is not None and password != '' and username != '':
-            self._is_auth = True
-        else:
-            self._is_auth = False
-        try:
-            LastFMNetwork.__init__(
-                self,
-                api_key = self._API_KEY,
-                api_secret=self._API_SECRET,
-                username = username,
-                password_hash = md5(password))
-        except:
-            pass            
+        start_new_thread(self._connect, (username, password))
