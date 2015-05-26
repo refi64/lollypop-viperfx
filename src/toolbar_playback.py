@@ -57,12 +57,13 @@ class ToolbarPlayback(Gtk.Bin):
         prev_title = escape(player.prev_track.title)
         next_artist = escape(player.next_track.artist)
         next_title = escape(player.next_track.title)
-        self._next_btn.set_tooltip_markup("<b>%s</b> - %s" %\
-                                          (next_artist,
-                                           next_title))
-        self._prev_btn.set_tooltip_markup("<b>%s</b> - %s" %\
-                                          (prev_artist,
-                                           prev_title))
+        # GTK bug => https://bugzilla.gnome.org/show_bug.cgi?id=749965
+        #self._next_btn.set_tooltip_markup("<b>%s</b>\n%s" %\
+        #                                  (next_artist,
+        #                                   next_title))
+        #self._prev_btn.set_tooltip_markup("<b>%s</b>\n%s" %\
+        #                                  (prev_artist,
+        #                                   prev_title))
 
     """
         Update buttons on status changed
