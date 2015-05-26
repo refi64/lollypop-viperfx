@@ -4,6 +4,10 @@ app_PYTHON = \
 	define.py\
 	application.py\
 	toolbar.py\
+	toolbar_playback.py\
+	toolbar_infos.py\
+	toolbar_end.py\
+	toolbar_title.py\
 	window.py\
 	container.py\
 	fullscreen.py\

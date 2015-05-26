@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<interface domain="lollypop">
+  <!-- interface-requires gtk+ 3.10 -->
+  <menu id="shuffle-menu">
+    <item>
+      <attribute name="label" translatable="yes">No shuffle</attribute>
+      <attribute name="action">app.shuffle</attribute>
+      <attribute name="target">none</attribute>
+    </item>
+    <item>
+      <attribute name="label" translatable="yes">Shuffle albums</attribute>
+      <attribute name="action">app.shuffle</attribute>
+      <attribute name="target">albums</attribute>
+    </item>
+    <item>
+      <attribute name="label" translatable="yes">Shuffle tracks</attribute>
+      <attribute name="action">app.shuffle</attribute>
+      <attribute name="target">tracks</attribute>
+    </item>
+     <item>
+      <attribute name="label" translatable="yes">Shuffle albums from artist</attribute>
+      <attribute name="action">app.shuffle</attribute>
+      <attribute name="target">albums_artist</attribute>
+    </item>
+    <item>
+      <attribute name="label" translatable="yes">Shuffle tracks from artist</attribute>
+      <attribute name="action">app.shuffle</attribute>
+      <attribute name="target">tracks_artist</attribute>
+    </item>
+  </menu>
+  <object class="GtkBox" id="end">
+    <property name="visible">True</property>
+    <property name="vexpand">False</property>
+    <property name="spacing">6</property>
+	<child>
+      <object class="GtkMenuButton" id="settings-button">
+        <property name="visible">False</property>
+        <property name="can_focus">True</property>
+	    <property name="valign">center</property>
+        <property name="receives_default">True</property>
+        <property name="use_popover">True</property>
+        <property name="tooltip_text" translatable="yes">Settings</property>
+        <style>
+	      <class name="image-button"/>
+	    </style>
+	    <child>
+	      <object class="GtkImage" id="settings-button-image">
+	        <property name="visible">True</property>
+	        <property name="can_focus">False</property>
+			<property name="icon-name">open-menu-symbolic</property>
+	        <property name="icon-size">1</property>
+	      </object>
+	    </child>
+      </object>
+      <packing>
+        	<property name="pack_type">end</property>
+      </packing>
+    </child>
+    <child>
+      <object class="GtkMenuButton" id="shuffle-button">
+        <property name="visible">True</property>
+        <property name="can_focus">True</property>
+		<property name="menu_model">shuffle-menu</property>
+	    <property name="valign">center</property>
+        <property name="receives_default">True</property>
+        <property name="use_popover">True</property>
+        <property name="tooltip_text" translatable="yes">Shuffle</property>
+        <style>
+	      <class name="image-button"/>
+	    </style>
+	    <child>
+	      <object class="GtkImage" id="shuffle-button-image">
+	        <property name="visible">True</property>
+	        <property name="can_focus">False</property>
+	        <property name="icon-size">1</property>
+	      </object>
+	    </child>
+      </object>
+      <packing>
+        	<property name="pack_type">end</property>
+      </packing>
+    </child>
+        <child>
+      <object class="GtkToggleButton" id="party-button">
+        <signal name="toggled" handler="_on_party_btn_toggled" swapped="no"/>
+        <property name="visible">True</property>
+        <property name="can_focus">True</property>
+    	<property name="valign">center</property>
+        <property name="receives_default">True</property>
+        <property name="tooltip_text" translatable="yes">Party mode</property>
+        <style>
+	      <class name="image-button"/>
+	    </style>
+	    <child>
+	      <object class="GtkImage" id="party-button-image">
+	        <property name="visible">True</property>
+	        <property name="can_focus">False</property>
+	        <property name="icon-name">emblem-music-symbolic</property>
+	        <property name="icon-size">1</property>
+	      </object>
+	    </child>
+      </object>
+      <packing>
+        	<property name="pack_type">end</property>
+      </packing>
+    </child>
+     <child>
+      <object class="GtkButton" id="search-button">
+        <signal name="clicked" handler="_on_search_btn_clicked" swapped="no"/>
+        <property name="visible">True</property>
+        <property name="can_focus">False</property>
+        <property name="valign">center</property>
+        <property name="sensitive">True</property>
+        <property name="tooltip_text" translatable="yes">Search</property>
+        <style>
+          <class name="image-button"/>
+        </style>
+        <child>
+          <object class="GtkImage" id="search-button-image">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <property name="icon-name">edit-find-symbolic</property>
+            <property name="icon-size">1</property>
+          </object>
+        </child>
+      </object>
+      <packing>
+        <property name="pack_type">end</property>
+      </packing>
+    </child>
+    <child>
+      <object class="GtkButton" id="queue-button">
+      <signal name="clicked" handler="_on_queue_btn_clicked" swapped="no"/>
+        <property name="visible">True</property>
+        <property name="can_focus">False</property>
+        <property name="valign">center</property>
+        <property name="sensitive">True</property>
+        <property name="tooltip_text" translatable="yes">Queue</property>
+        <style>
+          <class name="image-button"/>
+        </style>
+        <child>
+          <object class="GtkImage" id="playlist-button-image">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <property name="icon-name">view-list-symbolic</property>
+            <property name="icon-size">1</property>
+          </object>
+        </child>
+      </object>
+      <packing>
+        <property name="pack_type">end</property>
+      </packing>
+    </child>
+
+  </object>
+</interface>

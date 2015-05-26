@@ -27,7 +27,10 @@
     <file preprocess="xml-stripblanks">ArtistView.ui</file>
     <file preprocess="xml-stripblanks">ArtistInfos.ui</file>
     <file preprocess="xml-stripblanks">PopTuneIn.ui</file>
-    <file preprocess="xml-stripblanks">Toolbar.ui</file>
+    <file preprocess="xml-stripblanks">ToolbarPlayback.ui</file>
+    <file preprocess="xml-stripblanks">ToolbarInfos.ui</file>
+    <file preprocess="xml-stripblanks">ToolbarEnd.ui</file>
+    <file preprocess="xml-stripblanks">ToolbarTitle.ui</file>
     <file preprocess="xml-stripblanks">NextPopover.ui</file>
     <file preprocess="xml-stripblanks">SettingsDialog.ui</file>
   </gresource>

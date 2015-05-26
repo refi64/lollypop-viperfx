@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<interface domain="lollypop">
+  <!-- interface-requires gtk+ 3.10 -->
+  <object class="GtkBox" id="playback">
+    <property name="visible">True</property>
+    <property name="vexpand">False</property>
+    <property name="height-request">36</property>
+    <property name="spacing">6</property>
+    <child>
+      <object class="GtkBox" id="buttons">
+        <property name="visible">True</property>
+        <property name="can_focus">False</property>
+        <child>
+          <object class="GtkButton" id="previous_button">
+            <signal name="clicked" handler="_on_prev_btn_clicked" swapped="no"/>
+            <property name="width_request">42</property>
+            <property name="visible">True</property>
+            <property name="sensitive">False</property>
+            <property name="can_focus">True</property>
+            <property name="valign">center</property>
+            <property name="receives_default">True</property>
+            <property name="image">previous_image</property>
+            <property name="always_show_image">True</property>
+            <property name="tooltip_text" translatable="yes">Previous</property>
+            <child>
+              <object class="GtkImage" id="previous_image">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="margin_top">1</property>
+                <property name="icon_name">media-skip-backward-symbolic</property>
+                <property name="icon_size">1</property>
+              </object>
+            </child>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="position">0</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkButton" id="play_button">
+            <signal name="clicked" handler="_on_play_btn_clicked" swapped="no"/>
+            <property name="width_request">60</property>
+            <property name="visible">True</property>
+            <property name="sensitive">False</property>
+	        <property name="valign">center</property>
+            <property name="can_focus">True</property>
+            <property name="receives_default">True</property>
+            <property name="image">play_image</property>
+            <property name="always_show_image">True</property>
+            <property name="tooltip_text" translatable="yes">Play</property>
+            <child>
+              <object class="GtkImage" id="pause_image">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="margin_top">1</property>
+                <property name="icon_name">media-playback-pause-symbolic</property>
+                <property name="icon_size">1</property>
+              </object>
+              <object class="GtkImage" id="play_image">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="margin_top">1</property>
+                <property name="icon_name">media-playback-start-symbolic</property>
+                <property name="icon_size">1</property>
+              </object>
+            </child>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="position">1</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkButton" id="next_button">
+            <signal name="clicked" handler="_on_next_btn_clicked" swapped="no"/>
+            <property name="width_request">42</property>
+            <property name="visible">True</property>
+            <property name="sensitive">False</property>
+            <property name="can_focus">True</property>
+            <property name="valign">center</property>
+            <property name="receives_default">True</property>
+            <property name="image">next_image</property>
+            <property name="always_show_image">True</property>
+            <property name="tooltip_text" translatable="yes">Next</property>
+            <child>
+              <object class="GtkImage" id="next_image">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="margin_top">1</property>
+                <property name="icon_name">media-skip-forward-symbolic</property>
+                <property name="icon_size">1</property>
+              </object>
+            </child>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="position">2</property>
+          </packing>
+        </child>
+        <style>
+          <class name="linked"/>
+        </style>
+      </object>
+    </child>
+    <child>
+     <object class="GtkButton" id="lastfm_button">
+        <signal name="clicked" handler="_on_lastfm_btn_clicked" swapped="no"/>
+        <property name="visible">False</property>
+        <property name="sensitive">False</property>
+        <property name="can_focus">True</property>
+        <property name="valign">center</property>
+        <property name="receives_default">True</property>
+        <property name="image">lastfm_image</property>
+        <property name="always_show_image">True</property>
+        <property name="tooltip_text" translatable="no">Last.fm</property>
+        <child>
+          <object class="GtkImage" id="lastfm_image">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <property name="icon_name">dialog-information-symbolic</property>
+            <property name="icon_size">1</property>
+          </object>
+        </child>
+    </object>
+   </child> 
+  </object>
+</interface>
