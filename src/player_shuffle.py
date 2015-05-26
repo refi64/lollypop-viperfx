@@ -95,6 +95,7 @@ class ShufflePlayer(BasePlayer):
         @param party as bool
     """
     def set_party(self, party):
+        self._external_uris = []
         self.reset_history()
 
         if party:

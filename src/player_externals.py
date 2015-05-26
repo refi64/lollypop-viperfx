@@ -25,7 +25,6 @@ class ExternalsPlayer(BasePlayer):
     """
     def __init__(self):
         BasePlayer.__init__(self)
-        self._uris = []
 
     """
         Play track
@@ -38,9 +37,9 @@ class ExternalsPlayer(BasePlayer):
         Load track
     """
     def load_first_external(self):
-        if self._uris:
+        if self._external_uris:
             track = Track()
-            track.uri = self._uris[0]
+            track.uri = self._external_uris[0]
             if track.uri.startswith('file://'):
                 track.id = Type.EXTERNAL
             else:
@@ -53,14 +52,14 @@ class ExternalsPlayer(BasePlayer):
     """
     def load_external(self, uri):
         try:
-            self._uris.append(GLib.filename_to_uri(uri))
+            self._external_uris.append(GLib.filename_to_uri(uri))
         except:
-            self._uris.append(uri)
+            self._external_uris.append(uri)
     """
         Clear externals
     """
     def clear_externals(self):
-        self._uris = []
+        self._external_uris = []
 
     """
         Next Track
@@ -68,13 +67,13 @@ class ExternalsPlayer(BasePlayer):
     """
     def next(self):
         track = Track()
-        if self._uris and self.current_track.uri in self._uris:
-            idx = self._uris.index(self.current_track.uri)
-            if idx + 1 >= len(self._uris):
+        if self._external_uris and self.current_track.uri in self._external_uris:
+            idx = self._external_uris.index(self.current_track.uri)
+            if idx + 1 >= len(self._external_uris):
                 idx = 0
             else:
                 idx += 1
-            track.uri = self._uris[idx]
+            track.uri = self._external_uris[idx]
             if track.uri.startswith('file://'):
                 track.id = Type.EXTERNAL
             else:
@@ -87,14 +86,14 @@ class ExternalsPlayer(BasePlayer):
     """
     def prev(self):
         track = Track()
-        if self._uris and self.current_track.uri in self._uris:
-            idx = self._uris.index(self.current_track.uri)
+        if self._external_uris and self.current_track.uri in self._external_uris:
+            idx = self._external_uris.index(self.current_track.uri)
             if idx - 1 < 0:
-                idx = len(self._uris) - 1
+                idx = len(self._external_uris) - 1
             else:
                 idx -= 1
 
-            track.uri = self._uris[idx]
+            track.uri = self._external_uris[idx]
             if track.uri.startswith('file://'):
                 track.id = Type.EXTERNAL
             else:
