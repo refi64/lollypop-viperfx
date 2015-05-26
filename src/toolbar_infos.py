@@ -141,7 +141,7 @@ class ToolbarInfos(Gtk.Bin):
         if layout_title.is_ellipsized() or layout_artist.is_ellipsized():
             artist = escape(self._artist_label.get_text())
             title = escape(self._title_label.get_text())
-            tooltip.set_markup("<b>%s</b>\n%s" % (artist, title))
+            tooltip.set_markup("<b>%s</b> - %s" % (artist, title))
         else:
             return False
         return True
