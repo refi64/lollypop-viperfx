@@ -18,7 +18,7 @@ try:
     from gi.repository import Secret
 except Exception as e:
     print(e)
-    print(_("Lastfm authentication disabled"))
+    print(_("Last.fm authentication disabled"))
     Secret = None
 
 from pylast import LastFMNetwork, md5, BadAuthenticationError

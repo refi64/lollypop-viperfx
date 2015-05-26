@@ -21,7 +21,7 @@ try:
        "org.gnome.Lollypop.lastfm.login": Secret.SchemaAttributeType.STRING
     }
     SecretAttributes = {
-            "org.gnome.Lollypop.lastfm.login": "Lastfm login"
+            "org.gnome.Lollypop.lastfm.login": "Last.fm login"
     }
 except:
     Secret = None
