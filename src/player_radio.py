@@ -33,8 +33,7 @@ class RadioPlayer(BasePlayer):
 
     """
         Load radio at uri
-        @param name as string
-        @param uri as string
+        @param track as Track
     """
     def load(self, track):
         try:
@@ -52,7 +51,7 @@ class RadioPlayer(BasePlayer):
 
     """
         Return next radio name, uri
-        @return (name, uri)
+        @return Track
     """
     def next(self):
         track = Track()
@@ -79,7 +78,7 @@ class RadioPlayer(BasePlayer):
 
     """
         Return prev radio name, uri
-        @return (name, uri)
+        @return Track
     """
     def prev(self):
         track = Track()
