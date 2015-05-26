@@ -21,7 +21,6 @@ import os
 
 from lollypop.art_album import AlbumArt
 from lollypop.art_radio import RadioArt
-from lollypop.tagreader import TagReader
 
 
 # Global artwork manager
@@ -33,7 +32,6 @@ class Art(AlbumArt, RadioArt):
     def __init__(self):
         AlbumArt.__init__(self)
         RadioArt.__init__(self)
-        TagReader.__init__(self)
 
     """
         Remove all covers from cache
