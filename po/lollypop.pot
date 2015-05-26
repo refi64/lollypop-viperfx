@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-05-27 10:01+0200\n"
+"POT-Creation-Date: 2015-05-27 13:53+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -231,8 +231,8 @@ msgstr ""
 msgid "Many artists"
 msgstr ""
 
-#: ../src/fullscreen.py:78 ../src/fullscreen.py:195 ../src/toolbar.py:315
-#: ../src/toolbar.py:346
+#: ../src/fullscreen.py:78 ../src/fullscreen.py:195
+#: ../src/toolbar_playback.py:73 ../src/toolbar_playback.py:106
 msgid "Pause"
 msgstr ""
 
@@ -240,13 +240,13 @@ msgstr ""
 msgid "Next track"
 msgstr ""
 
-#: ../src/fullscreen.py:199 ../src/toolbar.py:322 ../src/toolbar.py:343
-#: ../data/Toolbar.ui.h:7
+#: ../src/fullscreen.py:199 ../src/toolbar_playback.py:75
+#: ../src/toolbar_playback.py:103 ../data/ToolbarPlayback.ui.h:2
 msgid "Play"
 msgstr ""
 
 #: ../src/lastfm.py:21
-msgid "Lastfm authentication disabled"
+msgid "Last.fm authentication disabled"
 msgstr ""
 
 #: ../src/lastfm.py:174 ../src/pop_artist_infos.py:166
@@ -254,11 +254,11 @@ msgstr ""
 msgid "Wrong Last.fm credentials"
 msgstr ""
 
-#: ../src/notification.py:64 ../data/Toolbar.ui.h:6
+#: ../src/notification.py:64 ../data/ToolbarPlayback.ui.h:1
 msgid "Previous"
 msgstr ""
 
-#: ../src/notification.py:68 ../data/Toolbar.ui.h:8
+#: ../src/notification.py:68 ../data/ToolbarPlayback.ui.h:3
 msgid "Next"
 msgstr ""
 
@@ -345,7 +345,7 @@ msgstr ""
 msgid "Modify informations"
 msgstr ""
 
-#: ../src/pop_menu.py:377 ../src/pop_menu.py:394 ../data/Toolbar.ui.h:13
+#: ../src/pop_menu.py:377 ../src/pop_menu.py:394 ../data/ToolbarEnd.ui.h:10
 msgid "Queue"
 msgstr ""
 
@@ -563,7 +563,7 @@ msgstr ""
 msgid "Select what will be available in party mode"
 msgstr ""
 
-#: ../data/SettingsDialog.ui.h:15 ../data/Toolbar.ui.h:11
+#: ../data/SettingsDialog.ui.h:15 ../data/ToolbarEnd.ui.h:8
 msgid "Party mode"
 msgstr ""
 
@@ -579,35 +579,35 @@ msgstr ""
 msgid "Test"
 msgstr ""
 
-#: ../data/Toolbar.ui.h:1
+#: ../data/ToolbarEnd.ui.h:1
 msgid "No shuffle"
 msgstr ""
 
-#: ../data/Toolbar.ui.h:2
+#: ../data/ToolbarEnd.ui.h:2
 msgid "Shuffle albums"
 msgstr ""
 
-#: ../data/Toolbar.ui.h:3
+#: ../data/ToolbarEnd.ui.h:3
 msgid "Shuffle tracks"
 msgstr ""
 
-#: ../data/Toolbar.ui.h:4
+#: ../data/ToolbarEnd.ui.h:4
 msgid "Shuffle albums from artist"
 msgstr ""
 
-#: ../data/Toolbar.ui.h:5
+#: ../data/ToolbarEnd.ui.h:5
 msgid "Shuffle tracks from artist"
 msgstr ""
 
-#: ../data/Toolbar.ui.h:9
+#: ../data/ToolbarEnd.ui.h:6
 msgid "Settings"
 msgstr ""
 
-#: ../data/Toolbar.ui.h:10
+#: ../data/ToolbarEnd.ui.h:7
 msgid "Shuffle"
 msgstr ""
 
-#: ../data/Toolbar.ui.h:12
+#: ../data/ToolbarEnd.ui.h:9
 msgid "Search"
 msgstr ""
 
