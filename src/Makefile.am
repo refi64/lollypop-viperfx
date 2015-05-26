@@ -53,6 +53,7 @@ app_PYTHON = \
 	pop_radio.py\
 	pop_albums.py\
 	pop_menu.py\
+	pop_next.py\
 	pop_tunein.py\
 	track.py\
 	tunein.py\

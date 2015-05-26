@@ -25,40 +25,8 @@ from lollypop.pop_menu import PopToolbarMenu
 from lollypop.queue import QueueWidget
 from lollypop.utils import seconds_to_string
 from lollypop.pop_albums import PopAlbums
+from lollypop.pop_next import PopNext
 
-
-# Show next track to play
-class NextPopover(Gtk.Popover):
-    """
-        Init popover
-    """
-    def __init__(self):
-        Gtk.Popover.__init__(self)
-        self.set_modal(False)
-        self.get_style_context().add_class('osd-popover')
-        builder = Gtk.Builder()
-        builder.add_from_resource('/org/gnome/Lollypop/NextPopover.ui')
-        self.add(builder.get_object('widget'))
-        self._title_label = builder.get_object('title')
-        self._artist_label = builder.get_object('artist')
-        self._cover = builder.get_object('cover')
-        Lp.player.connect('queue-changed', self.update)
-
-    """
-        Update widget with current track
-    """
-    def update(self, player=None):
-        self._artist_label.set_text(Lp.player.next_track.artist)
-        self._title_label.set_text(Lp.player.next_track.title)
-        art = Lp.art.get_album(Lp.player.next_track.album_id,
-                         ArtSize.MEDIUM)
-        if art is not None:
-            self._cover.set_from_pixbuf(art)
-            del art
-            self._cover.set_tooltip_text(Lp.player.next_track.album)
-            self._cover.show()
-        else:
-            self._cover.hide()
 
 
 # Toolbar as headerbar
@@ -74,7 +42,7 @@ class Toolbar(Gtk.HeaderBar):
         self._seeking = False
         # Update pogress position
         self._timeout = None
-        self._next_popover = NextPopover()
+        self._pop_next = PopNext()
 
         builder = Gtk.Builder()
         builder.add_from_resource('/org/gnome/Lollypop/Toolbar.ui')
@@ -229,19 +197,19 @@ class Toolbar(Gtk.HeaderBar):
     """
         Show next popover
     """
-    def _show_next_popover(self):
+    def _show_pop_next(self):
         # Do not show next popover for external tracks as 
         # tags will be readed on the fly
         if Lp.player.next_track.id == Type.EXTERNAL:
-            self._next_popover.hide()
+            self._pop_next.hide()
         elif Lp.player.is_party() or\
            Lp.settings.get_enum('shuffle') == Shuffle.TRACKS:
-            self._next_popover.update()
+            self._pop_next.update()
             if Lp.player.is_party():
-                self._next_popover.set_relative_to(self._party_btn)
+                self._pop_next.set_relative_to(self._party_btn)
             else:
-                self._next_popover.set_relative_to(self._shuffle_btn)
-            self._next_popover.show()
+                self._pop_next.set_relative_to(self._shuffle_btn)
+            self._pop_next.show()
     
     """
         On press, mark player as seeking
@@ -320,7 +288,7 @@ class Toolbar(Gtk.HeaderBar):
             else:
                 art = Lp.art.get_album(player.current_track.album_id,
                                        ArtSize.SMALL)
-            self._show_next_popover()
+            self._show_pop_next()
 
         if art is not None:
             self._cover.set_from_pixbuf(art)
@@ -465,7 +433,7 @@ class Toolbar(Gtk.HeaderBar):
         # We need to show the popover only in this case
         # In other cases, "current-changed" will trigger it
         if active and Lp.player.is_playing():
-            self._show_next_popover()
+            self._show_pop_next()
 
     """
         On party change, sync toolbar
@@ -474,8 +442,8 @@ class Toolbar(Gtk.HeaderBar):
     """
     def _on_party_changed(self, player, is_party):
         # GTK fail to change colors on popover, so destroy it
-        self._next_popover.destroy()
-        self._next_popover = NextPopover()
+        self._pop_next.destroy()
+        self._pop_next = PopNext()
         if self._party_btn.get_active() != is_party:
             self._activate_party_button()
 

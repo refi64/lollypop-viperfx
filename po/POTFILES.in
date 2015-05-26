@@ -36,6 +36,7 @@ src/pop_album_covers.py
 src/pop_artist_infos.py
 src/pop_albums.py
 src/pop_menu.py
+src/pop_next.py
 src/pop_radio.py
 src/pop_tunein.py
 src/inotify.py
