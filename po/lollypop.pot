@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-05-27 09:49+0200\n"
+"POT-Creation-Date: 2015-05-27 10:01+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -231,8 +231,8 @@ msgstr ""
 msgid "Many artists"
 msgstr ""
 
-#: ../src/fullscreen.py:78 ../src/fullscreen.py:195 ../src/toolbar.py:347
-#: ../src/toolbar.py:378
+#: ../src/fullscreen.py:78 ../src/fullscreen.py:195 ../src/toolbar.py:315
+#: ../src/toolbar.py:346
 msgid "Pause"
 msgstr ""
 
@@ -240,7 +240,7 @@ msgstr ""
 msgid "Next track"
 msgstr ""
 
-#: ../src/fullscreen.py:199 ../src/toolbar.py:354 ../src/toolbar.py:375
+#: ../src/fullscreen.py:199 ../src/toolbar.py:322 ../src/toolbar.py:343
 #: ../data/Toolbar.ui.h:7
 msgid "Play"
 msgstr ""
