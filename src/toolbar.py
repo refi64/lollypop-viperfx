@@ -112,6 +112,7 @@ class Toolbar(Gtk.HeaderBar):
         Lp.player.connect('current-changed', self._on_current_changed)
         Lp.player.connect('party-changed', self._on_party_changed)
         Lp.art.connect('cover-changed', self._update_cover)
+        Lp.art.connect('logo-changed', self._update_logo)
 
         self._shuffle_btn = builder.get_object('shuffle-button')
         self._shuffle_btn_image = builder.get_object('shuffle-button-image')
@@ -205,11 +206,23 @@ class Toolbar(Gtk.HeaderBar):
 
     """
         Update cover for album_id
-        @param obj as unused, album id as int
+        @param art as Art
+        @param album id as int
     """
-    def _update_cover(self, obj, album_id):
+    def _update_cover(self, art, album_id):
         if Lp.player.current_track.album_id == album_id:
             pixbuf = Lp.art.get_album(album_id, ArtSize.SMALL)
+            self._cover.set_from_pixbuf(pixbuf)
+            del pixbuf
+
+    """
+        Update logo for name
+        @param art as Art
+        @param name as str
+    """
+    def _update_logo(self, art, name):
+        if Lp.player.current_track.artist == name:
+            pixbuf = Lp.art.get_radio(name, ArtSize.SMALL)
             self._cover.set_from_pixbuf(pixbuf)
             del pixbuf
 

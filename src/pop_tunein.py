@@ -11,14 +11,14 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-from gi.repository import Gtk, GLib
+from gi.repository import Gtk, GLib, Gio
 
 import urllib.request
 from _thread import start_new_thread
 from gettext import gettext as _
 
 from lollypop.tunein import TuneIn
-from lollypop.define import Lp
+from lollypop.define import Lp, ArtSize
 from lollypop.art import Art
 
 
@@ -230,6 +230,11 @@ class PopTuneIn(Gtk.Popover):
             for i in self._current_items:
                 Lp.player.load_external(i.URL, i.TEXT)
             Lp.player.play_this_external(item.URL)
+            # Only toolbar will get this one, so only create small in cache
+            if Gio.NetworkMonitor.get_default().get_network_available():
+                start_new_thread(Lp.art.copy_uri_to_cache, (item.LOGO,
+                                                            item.TEXT,
+                                                            ArtSize.SMALL))
         return True
 
     """

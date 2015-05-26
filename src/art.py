@@ -416,6 +416,19 @@ class Art(GObject.GObject, TagReader):
         return urls
 
     """
+        Copy uri to cache at size
+        @param uri as string
+        @param name as string
+        @param size as int
+        @thread safe
+    """
+    def copy_uri_to_cache(self, uri, name, size):
+        filename = self._get_radio_cache_name(name)
+        CACHE_PATH_PNG = "%s/%s_%s.png" % (self._CACHE_PATH, filename, size)
+        urllib.request.urlretrieve(uri, CACHE_PATH_PNG)
+        GLib.idle_add(self.emit, 'logo-changed', name)
+
+    """
         Announce album cover update
         @param album id as int
     """
