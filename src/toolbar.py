@@ -254,10 +254,11 @@ class Toolbar(Gtk.HeaderBar):
     """
     def _on_current_changed(self, player):
         art = None
-        if Lp.lastfm is not None and player.current_track.id != Type.RADIOS:
-            self._lastfm_btn.set_sensitive(True)
-        else:
-            self._lastfm_btn.set_sensitive(False)
+        if Lp.lastfm is not None:
+            if player.current_track.id != Type.RADIOS:
+                self._lastfm_btn.set_sensitive(True)
+            else:
+                self._lastfm_btn.set_sensitive(False)
         self._play_btn.set_sensitive(True)
         self._prev_btn.set_sensitive(True)
         self._next_btn.set_sensitive(True)
