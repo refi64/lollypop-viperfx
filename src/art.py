@@ -17,7 +17,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-from gi.repository import Gtk, Gdk, GObject, GdkPixbuf, Gio, Gst
+from gi.repository import Gtk, Gdk, GLib, GObject, GdkPixbuf, Gio, Gst
 import cairo
 import os
 import re
@@ -207,11 +207,29 @@ class Art(GObject.GObject, TagReader):
                                          selected)
 
     """
+        Return a pixbuf with borders for filepath
+        No cache usage
+        @param uri as string
+        @param size as int
+        @param selected as bool
+        @return Gdk.Pixbuf
+    """
+    def get_cover_for_uri(self, uri, size, selected):
+        pixbuf = self._pixbuf_from_tags(GLib.filename_from_uri(uri)[0], size)
+        if pixbuf is not None:
+            return self._make_icon_frame(pixbuf, selected)
+        else:
+            return self._make_icon_frame(self._get_default_icon(
+                                                    size,
+                                                    'folder-music-symbolic'),
+                                         selected)
+
+    """
         Return a pixbuf for album_id, covers are cached as jpg.
         @param album id as int
         @param pixbuf size as int
         @param selected as bool
-        return: pixbuf
+        return: Gdk.Pixbuf
     """
     def get_album(self, album_id, size, selected=False):
         filename = self._get_album_cache_name(album_id)
@@ -237,7 +255,8 @@ class Art(GObject.GObject, TagReader):
                     try:
                         tracks = Lp.albums.get_tracks(album_id, None)
                         if tracks:
-                            pixbuf = self._pixbuf_from_tags(tracks[0], size)
+                            filepath = Lp.tracks.get_path(tracks[0])
+                            pixbuf = self._pixbuf_from_tags(filepath, size)
                     except Exception as e:
                         print(e)
                         return self._make_icon_frame(
@@ -428,12 +447,11 @@ class Art(GObject.GObject, TagReader):
 
     """
         Return cover from tags
-        @param track id as int
+        @param filepath as str
         @param size as int
     """
-    def _pixbuf_from_tags(self, track_id, size):
+    def _pixbuf_from_tags(self, filepath, size):
         pixbuf = None
-        filepath = Lp.tracks.get_path(track_id)
         infos = self.get_infos(filepath)
         exist = False
         if infos is not None:
@@ -537,6 +555,7 @@ class Art(GObject.GObject, TagReader):
                          height,
                          border_pixbuf,
                          border, border)
+        del pixbuf
         return border_pixbuf
 
     """
