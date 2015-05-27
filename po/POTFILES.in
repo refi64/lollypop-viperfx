@@ -32,8 +32,8 @@ src/player_rg.py
 src/player_shuffle.py
 src/player_userplaylist.py
 src/playlists.py
-src/pop_album_covers.py
-src/pop_artist_infos.py
+src/pop_covers.py
+src/pop_infos.py
 src/pop_albums.py
 src/pop_menu.py
 src/pop_next.py
@@ -76,8 +76,8 @@ src/window.py
 [type: gettext/glade]data/PlaylistsManagerView.ui
 [type: gettext/glade]data/PlaylistsManagerWidget.ui
 [type: gettext/glade]data/PlaylistsView.ui
-[type: gettext/glade]data/PopRadio.ui
-[type: gettext/glade]data/PopAlbumCovers.ui
+[type: gettext/glade]data/RadioPopover.ui
+[type: gettext/glade]data/CoversPopover.ui
 [type: gettext/glade]data/ArtistInfos.ui
 [type: gettext/glade]data/QueueWidget.ui
 [type: gettext/glade]data/SearchRow.ui
@@ -89,6 +89,6 @@ src/window.py
 [type: gettext/glade]data/ToolbarTitle.ui
 [type: gettext/glade]data/TrackRow.ui
 [type: gettext/glade]data/Unicode.ui
-[type: gettext/glade]data/PopTuneIn.ui
+[type: gettext/glade]data/TuneinPopover.ui
 [type: gettext/glade]data/RadiosView.ui
 [type: gettext/glade]data/RadioWidget.ui
