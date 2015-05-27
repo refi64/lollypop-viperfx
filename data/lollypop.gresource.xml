@@ -8,7 +8,7 @@
     <file preprocess="xml-stripblanks">QueueWidget.ui</file>
     <file preprocess="xml-stripblanks">RadioWidget.ui</file>
     <file preprocess="xml-stripblanks">RadiosView.ui</file>
-    <file preprocess="xml-stripblanks">PopRadio.ui</file>
+    <file preprocess="xml-stripblanks">RadioPopover.ui</file>
     <file preprocess="xml-stripblanks">PlaylistsView.ui</file>
     <file preprocess="xml-stripblanks">PlaylistEditView.ui</file>
     <file preprocess="xml-stripblanks">PlaylistEditWidget.ui</file>
@@ -16,7 +16,7 @@
     <file preprocess="xml-stripblanks">DeviceManagerView.ui</file>
     <file preprocess="xml-stripblanks">AlbumDetailedWidget.ui</file>
     <file preprocess="xml-stripblanks">AlbumContextWidget.ui</file>
-    <file preprocess="xml-stripblanks">PopAlbumCovers.ui</file>
+    <file preprocess="xml-stripblanks">CoversPopover.ui</file>
     <file preprocess="xml-stripblanks">FullScreen.ui</file>
     <file preprocess="xml-stripblanks">Unicode.ui</file>
     <file preprocess="xml-stripblanks">SelectionList.ui</file>
@@ -26,7 +26,7 @@
     <file preprocess="xml-stripblanks">AlbumSimpleWidget.ui</file>
     <file preprocess="xml-stripblanks">ArtistView.ui</file>
     <file preprocess="xml-stripblanks">ArtistInfos.ui</file>
-    <file preprocess="xml-stripblanks">PopTuneIn.ui</file>
+    <file preprocess="xml-stripblanks">TuneinPopover.ui</file>
     <file preprocess="xml-stripblanks">ToolbarPlayback.ui</file>
     <file preprocess="xml-stripblanks">ToolbarInfos.ui</file>
     <file preprocess="xml-stripblanks">ToolbarEnd.ui</file>

@@ -16,8 +16,8 @@ from gi.repository import Gtk, GLib
 from lollypop.view import View
 from lollypop.widgets_radio import RadioWidget
 from lollypop.playlists import RadiosManager
-from lollypop.pop_radio import PopRadio
-from lollypop.pop_tunein import PopTuneIn
+from lollypop.pop_radio import RadioPopover
+from lollypop.pop_tunein import TuneinPopover
 from lollypop.define import Lp
 from lollypop.track import Track
 
@@ -39,7 +39,7 @@ class RadiosView(View):
         builder.connect_signals(self)
         widget = builder.get_object('widget')
 
-        self._pop_tunein = PopTuneIn(self._radios_manager)
+        self._pop_tunein = TuneinPopover(self._radios_manager)
         self._pop_tunein.set_relative_to(builder.get_object('search_btn'))
 
         self._sizegroup = Gtk.SizeGroup(mode=Gtk.SizeGroupMode.BOTH)
@@ -118,7 +118,7 @@ class RadiosView(View):
         @param widget as Gtk.Widget
     """
     def _on_new_clicked(self, widget):
-        popover = PopRadio('', self._radios_manager)
+        popover = RadioPopover('', self._radios_manager)
         popover.set_relative_to(widget)
         popover.show()
 

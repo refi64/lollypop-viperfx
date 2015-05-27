@@ -18,7 +18,7 @@ from lollypop.define import Lp
 
 # All functions take a sqlite cursor as last parameter,
 # set another one if you're in a thread
-class DatabaseGenres:
+class GenresDatabase:
     def __init__(self):
         pass
 

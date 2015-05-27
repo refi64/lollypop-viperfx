@@ -20,7 +20,7 @@ from lollypop.define import Lp
 
 
 # Show a popup with current artist albums
-class PopAlbums(Gtk.Popover):
+class AlbumsPopover(Gtk.Popover):
 
     """
         Init Popover ui with a text entry and a scrolled treeview

@@ -366,7 +366,7 @@ class EditMenu(BaseMenu):
 
 
 # Contextual menu for album
-class PopAlbumMenu(Gio.Menu):
+class AlbumMenuPopover(Gio.Menu):
     """
         Init menu model
         @param object id as int
@@ -383,7 +383,7 @@ class PopAlbumMenu(Gio.Menu):
 
 
 # Contextual menu for track
-class PopTrackMenu(Gio.Menu):
+class TrackMenuPopover(Gio.Menu):
     """
         Init menu model
         @param object id as int

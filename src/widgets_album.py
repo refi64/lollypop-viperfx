@@ -19,7 +19,7 @@ from lollypop.define import Lp, Type, ArtSize, NextContext
 from lollypop.pop_artist_infos import PopArtistInfos
 from lollypop.widgets_track import TracksWidget
 from lollypop.track import Track
-from lollypop.pop_menu import PopAlbumMenu
+from lollypop.pop_menu import AlbumMenuPopover
 from lollypop.pop_album_covers import PopAlbumCovers
 from lollypop.utils import translate_artist_name
 
@@ -341,7 +341,7 @@ class AlbumDetailedWidget(AlbumWidget):
         @param album id as int
     """
     def _pop_menu(self, widget):
-        pop_menu = PopAlbumMenu(self._album_id, self._genre_id)
+        pop_menu = AlbumMenuPopover(self._album_id, self._genre_id)
         popover = Gtk.Popover.new_from_model(self._menu, pop_menu)
         popover.connect('closed', self._on_closed)
         self.get_style_context().add_class('album-menu-selected')

@@ -25,7 +25,7 @@ from lollypop.view_container import ViewContainer
 from lollypop.art import Art
 
 # Show a popover with radio logos from the web
-class PopRadio(Gtk.Popover):
+class RadioPopover(Gtk.Popover):
     """
         Init Popover ui with a text entry and a scrolled treeview
         @param name as string
@@ -43,7 +43,7 @@ class PopRadio(Gtk.Popover):
 
         builder = Gtk.Builder()
         builder.add_from_resource(
-                    '/org/gnome/Lollypop/PopRadio.ui')
+                    '/org/gnome/Lollypop/RadioPopover.ui')
         builder.connect_signals(self)
 
         self._view = Gtk.FlowBox()

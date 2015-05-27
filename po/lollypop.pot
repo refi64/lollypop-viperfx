@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-05-27 13:53+0200\n"
+"POT-Creation-Date: 2015-05-27 22:56+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -232,7 +232,7 @@ msgid "Many artists"
 msgstr ""
 
 #: ../src/fullscreen.py:78 ../src/fullscreen.py:195
-#: ../src/toolbar_playback.py:73 ../src/toolbar_playback.py:106
+#: ../src/toolbar_playback.py:74 ../src/toolbar_playback.py:107
 msgid "Pause"
 msgstr ""
 
@@ -240,8 +240,8 @@ msgstr ""
 msgid "Next track"
 msgstr ""
 
-#: ../src/fullscreen.py:199 ../src/toolbar_playback.py:75
-#: ../src/toolbar_playback.py:103 ../data/ToolbarPlayback.ui.h:2
+#: ../src/fullscreen.py:199 ../src/toolbar_playback.py:76
+#: ../src/toolbar_playback.py:104 ../data/ToolbarPlayback.ui.h:2
 msgid "Play"
 msgstr ""
 
@@ -249,8 +249,7 @@ msgstr ""
 msgid "Last.fm authentication disabled"
 msgstr ""
 
-#: ../src/lastfm.py:174 ../src/pop_artist_infos.py:166
-#: ../src/pop_artist_infos.py:185
+#: ../src/lastfm.py:174 ../src/pop_infos.py:166 ../src/pop_infos.py:185
 msgid "Wrong Last.fm credentials"
 msgstr ""
 
@@ -278,20 +277,20 @@ msgstr ""
 msgid "Radio"
 msgstr ""
 
-#: ../src/pop_album_covers.py:60 ../src/pop_artist_infos.py:90
-#: ../src/pop_tunein.py:83 ../data/PopRadio.ui.h:3
+#: ../src/pop_covers.py:60 ../src/pop_infos.py:90 ../src/pop_tunein.py:83
+#: ../data/RadioPopover.ui.h:3
 msgid "Please wait..."
 msgstr ""
 
-#: ../src/pop_album_covers.py:148
+#: ../src/pop_covers.py:148
 msgid "No cover found..."
 msgstr ""
 
-#: ../src/pop_album_covers.py:168
+#: ../src/pop_covers.py:168
 msgid "Select a cover art for this album"
 msgstr ""
 
-#: ../src/pop_artist_infos.py:143
+#: ../src/pop_infos.py:143
 msgid "No information for this artist..."
 msgstr ""
 
@@ -471,23 +470,23 @@ msgstr ""
 msgid "New playlist"
 msgstr ""
 
-#: ../data/PopRadio.ui.h:1
+#: ../data/RadioPopover.ui.h:1
 msgid "Select a logo  for this radio"
 msgstr ""
 
-#: ../data/PopRadio.ui.h:2
+#: ../data/RadioPopover.ui.h:2
 msgid "No logo found..."
 msgstr ""
 
-#: ../data/PopRadio.ui.h:4
+#: ../data/RadioPopover.ui.h:4
 msgid "Name:"
 msgstr ""
 
-#: ../data/PopRadio.ui.h:5
+#: ../data/RadioPopover.ui.h:5
 msgid "Address:"
 msgstr ""
 
-#: ../data/PopRadio.ui.h:6
+#: ../data/RadioPopover.ui.h:6
 msgid "Delete"
 msgstr ""
 

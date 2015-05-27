@@ -14,9 +14,9 @@
 from gi.repository import Gtk, Gdk
 from cgi import escape
 
-from lollypop.pop_tunein import PopTuneIn
+from lollypop.pop_tunein import TuneinPopover
 from lollypop.playlists import RadiosManager
-from lollypop.pop_albums import PopAlbums
+from lollypop.pop_albums import AlbumsPopover
 from lollypop.pop_menu import PopToolbarMenu
 from lollypop.define import Lp, Type, ArtSize
 
@@ -38,9 +38,9 @@ class ToolbarInfos(Gtk.Bin):
         self._title_label = builder.get_object('title')
         self._artist_label = builder.get_object('artist')
         self._cover = builder.get_object('cover')
-        self._pop_albums = PopAlbums()
+        self._pop_albums = AlbumsPopover()
         self._pop_albums.set_relative_to(infobox)
-        self._pop_tunein = PopTuneIn(RadiosManager())
+        self._pop_tunein = TuneinPopover(RadiosManager())
         self._pop_tunein.set_relative_to(infobox)
 
         Lp.art.connect('cover-changed', self._update_cover)

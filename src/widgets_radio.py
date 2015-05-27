@@ -15,7 +15,7 @@ from gi.repository import Gtk, Gdk
 
 from lollypop.define import Lp, ArtSize, Type
 from lollypop.widgets_album import AlbumWidget
-from lollypop.pop_radio import PopRadio
+from lollypop.pop_radio import RadioPopover
 
 
 # Radio widget is a pixbuf with one label: radio name
@@ -116,7 +116,7 @@ class RadioWidget(AlbumWidget):
         @param event as Gdk.Event
     """
     def _on_button_press(self, widget, event):
-        self._popover = PopRadio(self._name, self._radios_manager)
+        self._popover = RadioPopover(self._name, self._radios_manager)
         self._popover.set_relative_to(widget)
         self._popover.show()
 

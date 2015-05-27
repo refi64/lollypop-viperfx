@@ -18,7 +18,7 @@ from lollypop.define import Lp, Type
 
 # All functions take a sqlite cursor as last parameter,
 # set another one if you're in a thread
-class DatabaseTracks:
+class TracksDatabase:
     def __init__(self):
         pass
 
@@ -53,7 +53,7 @@ class DatabaseTracks:
                                                year,
                                                mtime))
         except Exception as e:
-            print("DatabaseTracks::add: ", e, ascii(filepath))
+            print("TracksDatabase::add: ", e, ascii(filepath))
 
     """
         Add artist to track

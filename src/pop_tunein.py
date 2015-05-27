@@ -23,7 +23,7 @@ from lollypop.art import Art
 
 
 # Tunein popup
-class PopTuneIn(Gtk.Popover):
+class TuneinPopover(Gtk.Popover):
     """
         Init Popover
         @param radio manager as RadioManager
@@ -42,7 +42,7 @@ class PopTuneIn(Gtk.Popover):
 
         builder = Gtk.Builder()
         builder.add_from_resource(
-                    '/org/gnome/Lollypop/PopTuneIn.ui')
+                    '/org/gnome/Lollypop/TuneinPopover.ui')
         builder.connect_signals(self)
         widget = builder.get_object('widget')
         widget.attach(self._stack, 0, 2, 4, 1)
@@ -178,14 +178,14 @@ class PopTuneIn(Gtk.Popover):
             cache = Art._RADIOS_PATH
             urllib.request.urlretrieve(item.LOGO, cache+"/%s.png" % item.TEXT)
         except Exception as e:
-            print("PopTuneIn::_add_radio: %s" %e)
+            print("TuneinPopover::_add_radio: %s" %e)
         url = item.URL
         # Tune in embbed uri in ashx files, so get content if possible
         try:
             response = urllib.request.urlopen(url)
             url = response.read().decode('utf-8')
         except Exception as e:
-            print("PopTuneIn::_add_radio: %s" %e)
+            print("TuneinPopover::_add_radio: %s" %e)
         self._radio_manager.add(item.TEXT)
         self._radio_manager.add_track(item.TEXT,
                                       url)

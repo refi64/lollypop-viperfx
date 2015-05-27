@@ -19,7 +19,7 @@ from lollypop.define import Lp, Type
 
 # All functions take a sqlite cursor as last parameter,
 # set another one if you're in a thread
-class DatabaseAlbums:
+class AlbumsDatabase:
     def __init__(self):
         self._cached_randoms = []
         pass

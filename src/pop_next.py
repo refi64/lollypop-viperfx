@@ -17,7 +17,7 @@ from lollypop.define import Lp, ArtSize
 
 
 # Show next track to play
-class PopNext(Gtk.Popover):
+class NextPopover(Gtk.Popover):
     """
         Init popover
     """

@@ -13,7 +13,7 @@
 
 from gi.repository import Gtk, Gio
 
-from lollypop.pop_next import PopNext
+from lollypop.pop_next import NextPopover
 from lollypop.queue import QueueWidget
 from lollypop.search import SearchWidget
 from lollypop.define import Lp, Shuffle, Type
@@ -26,7 +26,7 @@ class ToolbarEnd(Gtk.Bin):
     """
     def __init__(self, app):
         Gtk.Bin.__init__(self)
-        self._pop_next = PopNext()
+        self._pop_next = NextPopover()
         builder = Gtk.Builder()
         builder.add_from_resource('/org/gnome/Lollypop/ToolbarEnd.ui')
         builder.connect_signals(self)
@@ -167,6 +167,6 @@ class ToolbarEnd(Gtk.Bin):
     def _on_party_changed(self, player, is_party):
         # GTK fail to change colors on popover, so destroy it
         self._pop_next.destroy()
-        self._pop_next = PopNext()
+        self._pop_next = NextPopover()
         if self._party_btn.get_active() != is_party:
             self._activate_party_button()

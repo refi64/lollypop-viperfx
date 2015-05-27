@@ -36,10 +36,10 @@ from lollypop.art import Art
 from lollypop.settings import Settings, SettingsDialog
 from lollypop.mpris import MPRIS
 from lollypop.notification import NotificationManager
-from lollypop.database_albums import DatabaseAlbums
-from lollypop.database_artists import DatabaseArtists
-from lollypop.database_genres import DatabaseGenres
-from lollypop.database_tracks import DatabaseTracks
+from lollypop.database_albums import AlbumsDatabase
+from lollypop.database_artists import ArtistsDatabase
+from lollypop.database_genres import GenresDatabase
+from lollypop.database_tracks import TracksDatabase
 from lollypop.playlists import PlaylistsManager
 from lollypop.collectionscanner import CollectionScanner
 from lollypop.fullscreen import FullScreen
@@ -82,10 +82,10 @@ class Application(Gtk.Application):
         # We store a cursor for the main thread
         Lp.sql = Lp.db.get_cursor()
         Lp.player = Player()
-        Lp.albums = DatabaseAlbums()
-        Lp.artists = DatabaseArtists()
-        Lp.genres = DatabaseGenres()
-        Lp.tracks = DatabaseTracks()
+        Lp.albums = AlbumsDatabase()
+        Lp.artists = ArtistsDatabase()
+        Lp.genres = GenresDatabase()
+        Lp.tracks = TracksDatabase()
         Lp.playlists = PlaylistsManager()
         Lp.scanner = CollectionScanner()
         Lp.art = Art()
