@@ -11,31 +11,31 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-from lollypop.player_bin import BinPlayer
-from lollypop.player_queue import QueuePlayer
-from lollypop.player_linear import LinearPlayer
-from lollypop.player_shuffle import ShufflePlayer
-from lollypop.player_radio import RadioPlayer
+from lollypop.player_bin import PlayerBin
+from lollypop.player_queue import PlayerQueue
+from lollypop.player_linear import PlayerLinear
+from lollypop.player_shuffle import PlayerShuffle
+from lollypop.player_radio import PlayerRadio
 from lollypop.player_externals import ExternalsPlayer
-from lollypop.player_userplaylist import UserPlaylistPlayer
+from lollypop.player_userplaylist import PlayerUserPlaylist
 from lollypop.track import Track
 from lollypop.define import Lp, Type
 from lollypop.define import Shuffle
 
 
 # Player object used to manage playback and playlists
-class Player(BinPlayer, QueuePlayer, UserPlaylistPlayer, RadioPlayer,
-             LinearPlayer, ShufflePlayer, ExternalsPlayer):
+class Player(PlayerBin, PlayerQueue, PlayerUserPlaylist, PlayerRadio,
+             PlayerLinear, PlayerShuffle, ExternalsPlayer):
     """
         Create a gstreamer bin and listen to signals on bus
     """
     def __init__(self):
-        BinPlayer.__init__(self)
-        QueuePlayer.__init__(self)
-        LinearPlayer.__init__(self)
-        ShufflePlayer.__init__(self)
-        UserPlaylistPlayer.__init__(self)
-        RadioPlayer.__init__(self)
+        PlayerBin.__init__(self)
+        PlayerQueue.__init__(self)
+        PlayerLinear.__init__(self)
+        PlayerShuffle.__init__(self)
+        PlayerUserPlaylist.__init__(self)
+        PlayerRadio.__init__(self)
         ExternalsPlayer.__init__(self)
 
     """
@@ -61,9 +61,9 @@ class Player(BinPlayer, QueuePlayer, UserPlaylistPlayer, RadioPlayer,
     """
     def load(self, track):
         if track.id == Type.RADIOS:
-            RadioPlayer.load(self, track)
+            PlayerRadio.load(self, track)
         else:
-            BinPlayer.load(self, track)
+            PlayerBin.load(self, track)
 
     """
         Play album
@@ -107,7 +107,7 @@ class Player(BinPlayer, QueuePlayer, UserPlaylistPlayer, RadioPlayer,
             return
         album_id = Lp.tracks.get_album_id(track_id)
         self._albums = []
-        ShufflePlayer.reset_history(self)
+        PlayerShuffle.reset_history(self)
         self.context.genre_id = genre_id
 
         # When shuffle from artist is active, we want only artist's albums,
@@ -175,7 +175,7 @@ class Player(BinPlayer, QueuePlayer, UserPlaylistPlayer, RadioPlayer,
         @param party as bool
     """
     def set_party(self, party):
-        ShufflePlayer.set_party(self, party)
+        PlayerShuffle.set_party(self, party)
         self._set_next()
         self._set_prev()
 
@@ -191,19 +191,19 @@ class Player(BinPlayer, QueuePlayer, UserPlaylistPlayer, RadioPlayer,
 
         # Look at radio
         if self.prev_track.id is None:
-            self.prev_track = RadioPlayer.prev(self)
+            self.prev_track = PlayerRadio.prev(self)
 
         # Look at user playlist then
         if self.prev_track.id is None:
-            self.prev_track = UserPlaylistPlayer.prev(self)
+            self.prev_track = PlayerUserPlaylist.prev(self)
 
         # Look at shuffle
         if self.prev_track.id is None:
-            self.prev_track = ShufflePlayer.prev(self)
+            self.prev_track = PlayerShuffle.prev(self)
 
         # Get previous track in history
         if self.prev_track.id is None:
-            self.prev_track = LinearPlayer.prev(self)
+            self.prev_track = PlayerLinear.prev(self)
 
     """
         Play next track
@@ -215,23 +215,23 @@ class Player(BinPlayer, QueuePlayer, UserPlaylistPlayer, RadioPlayer,
         
         # Look at radio
         if self.next_track.id is None:
-            self.next_track = RadioPlayer.next(self)
+            self.next_track = PlayerRadio.next(self)
 
         # Look first at user queue
         if self.next_track.id is None:
-            self.next_track = QueuePlayer.next(self)
+            self.next_track = PlayerQueue.next(self)
 
         # Look at user playlist then
         if self.next_track.id is None:
-            self.next_track = UserPlaylistPlayer.next(self)
+            self.next_track = PlayerUserPlaylist.next(self)
 
         # Get a random album/track then
         if self.next_track.id is None:
-            self.next_track = ShufflePlayer.next(self)
+            self.next_track = PlayerShuffle.next(self)
 
         # Get a linear track then
         if self.next_track.id is None:
-            self.next_track = LinearPlayer.next(self)
+            self.next_track = PlayerLinear.next(self)
 
 
     """
@@ -240,7 +240,7 @@ class Player(BinPlayer, QueuePlayer, UserPlaylistPlayer, RadioPlayer,
     """
     def _on_stream_start(self, bus, message):
         if self.current_track.id >= 0:
-            ShufflePlayer._on_stream_start(self, bus, message)
+            PlayerShuffle._on_stream_start(self, bus, message)
         self._set_next()
         self._set_prev()
-        BinPlayer._on_stream_start(self, bus, message)
+        PlayerBin._on_stream_start(self, bus, message)

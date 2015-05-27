@@ -15,7 +15,7 @@ from lollypop.track import Track
 
 
 # Manage a queue
-class QueuePlayer:
+class PlayerQueue:
     """
         Init queue
     """

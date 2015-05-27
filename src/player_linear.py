@@ -12,16 +12,16 @@
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 from lollypop.define import Lp, NextContext
-from lollypop.player_base import BasePlayer
+from lollypop.player_base import PlayerBase
 from lollypop.track import Track
 
 # Manage normal playback
-class LinearPlayer(BasePlayer):
+class PlayerLinear(PlayerBase):
     """
         Init linear player
     """
     def __init__(self):
-        BasePlayer.__init__(self)
+        PlayerBase.__init__(self)
 
     """
         Next track based on.current_track context

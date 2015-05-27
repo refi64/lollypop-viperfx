@@ -14,17 +14,17 @@
 import random
 
 from lollypop.define import Shuffle, NextContext, Lp, Type
-from lollypop.player_base import BasePlayer
+from lollypop.player_base import PlayerBase
 from lollypop.track import Track
 from lollypop.list import LinkedList
 
 # Manage shuffle tracks and party mode
-class ShufflePlayer(BasePlayer):
+class PlayerShuffle(PlayerBase):
     """
         Init shuffle player
     """
     def __init__(self):
-        BasePlayer.__init__(self)
+        PlayerBase.__init__(self)
         self.reset_history()
         # Party mode
         self._is_party = False

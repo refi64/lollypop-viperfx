@@ -14,17 +14,17 @@
 import random
 
 from lollypop.define import Shuffle
-from lollypop.player_base import BasePlayer
+from lollypop.player_base import PlayerBase
 from lollypop.track import Track
 
 
 # Manage user playlist
-class UserPlaylistPlayer(BasePlayer):
+class PlayerUserPlaylist(PlayerBase):
     """
         Init user playlist
     """
     def __init__(self):
-        BasePlayer.__init__(self)
+        PlayerBase.__init__(self)
         self._position = 0
 
     """
