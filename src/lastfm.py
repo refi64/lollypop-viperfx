@@ -58,7 +58,7 @@ class LastFM(LastFMNetwork):
 
     """
         Connect lastfm
-        @param password as str
+        @param password as str/None
     """
     def connect(self, password):
         if Secret is None:
@@ -72,6 +72,14 @@ class LastFM(LastFMNetwork):
         else:
             username = Lp.settings.get_value('lastfm-login').get_string()
             start_new_thread(self._connect, (username, password))
+
+    """
+        Connect lastfm sync
+        @param password as str
+    """
+    def connect_sync(self, password):
+        username = Lp.settings.get_value('lastfm-login').get_string()
+        self._connect(username, password)
 
     """
         Download album image

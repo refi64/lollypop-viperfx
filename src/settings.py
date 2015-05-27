@@ -264,7 +264,7 @@ class SettingsDialog:
                                        None)
             Lp.settings.set_value('lastfm-login',
                                   GLib.Variant('s', self._login.get_text()))
-            Lp.lastfm.connect(self._password.get_text())
+            Lp.lastfm.connect_sync(self._password.get_text())
  
     """
         Close edit party dialog
