@@ -113,6 +113,9 @@ class ToolbarInfos(Gtk.Bin):
         @param event as Gdk.Event
     """
     def _on_infobox_clicked(self, eventbox, event):
+        #TODO Implement a widget to show external playlist
+        if Lp.player.current_track.id == Type.EXTERNALS:
+            return
         if Lp.player.current_track.id is not None:
             if event.button == 1:
                 if Lp.player.current_track.id == Type.RADIOS:
