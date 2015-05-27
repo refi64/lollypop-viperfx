@@ -278,6 +278,8 @@ class Toolbar(Gtk.HeaderBar):
                                            prev_title))
         self._artist_label.set_text(player.current_track.artist)
         self._title_label.set_text(player.current_track.title)
+        self._infobox.get_window().set_cursor(
+                                    Gdk.Cursor(Gdk.CursorType.HAND1))
 
         # Hide controls if on radio
         # Setup art for radios
@@ -298,8 +300,6 @@ class Toolbar(Gtk.HeaderBar):
             self._total_time_label.show()
             self._timelabel.set_text("0:00")
             self._timelabel.show()
-            self._infobox.get_window().set_cursor(
-                                    Gdk.Cursor(Gdk.CursorType.HAND1))
             if player.current_track.id == Type.EXTERNAL:
                 art = Lp.art.get_cover_for_uri(player.current_track.uri,
                                                ArtSize.SMALL,
