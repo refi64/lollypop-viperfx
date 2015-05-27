@@ -14,17 +14,17 @@
 from gi.repository import GLib
 
 from lollypop.define import Type
-from lollypop.player_base import PlayerBase
+from lollypop.player_base import BasePlayer
 from lollypop.track import Track
 
 
 # Manage user playlist
-class ExternalsPlayer(PlayerBase):
+class ExternalsPlayer(BasePlayer):
     """
         Init user playlist
     """
     def __init__(self):
-        PlayerBase.__init__(self)
+        BasePlayer.__init__(self)
 
     """
         Play track

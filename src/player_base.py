@@ -17,7 +17,7 @@ from lollypop.define import PlayContext, Lp
 from lollypop.track import Track
 
 
-class PlayerBase(GObject.GObject):
+class BasePlayer(GObject.GObject):
     __gsignals__ = {
         'current-changed': (GObject.SignalFlags.RUN_FIRST, None, ()),
         'seeked': (GObject.SignalFlags.RUN_FIRST, None, (int,)),

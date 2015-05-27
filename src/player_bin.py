@@ -16,27 +16,27 @@ from gi.repository import Gst, GLib, GstAudio
 from gettext import gettext as _
 from time import time
 
-from lollypop.player_base import PlayerBase
+from lollypop.player_base import BasePlayer
 from lollypop.tagreader import ScannerTagReader
-from lollypop.player_rg import PlayerReplayGain
+from lollypop.player_rg import ReplayGainPlayer
 from lollypop.define import GstPlayFlags, NextContext, Lp
 from lollypop.define import Type
 from lollypop.utils import debug
 
 
 # Bin player class
-class PlayerBin(PlayerReplayGain, PlayerBase):
+class BinPlayer(ReplayGainPlayer, BasePlayer):
     """
         Init playbin
     """
     def __init__(self):
         Gst.init(None)
-        PlayerBase.__init__(self)
+        BasePlayer.__init__(self)
         self._playbin = Gst.ElementFactory.make('playbin', 'player')
         flags = self._playbin.get_property("flags")
         flags &= ~GstPlayFlags.GST_PLAY_FLAG_VIDEO
         self._playbin.set_property('flags', flags)
-        PlayerReplayGain.__init__(self, self._playbin)
+        ReplayGainPlayer.__init__(self, self._playbin)
         self._playbin.connect('about-to-finish',
                               self._on_stream_about_to_finish)
         bus = self._playbin.get_bus()
@@ -205,7 +205,7 @@ class PlayerBin(PlayerReplayGain, PlayerBase):
                 self._playbin.set_property('uri',
                                            self.current_track.uri)
             except Exception as e:  # Gstreamer error, stop
-                print("PlayerBin::_load_track(): ", e)
+                print("BinPlayer::_load_track(): ", e)
                 self.stop()
                 return False
         else:

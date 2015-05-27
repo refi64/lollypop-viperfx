@@ -16,18 +16,18 @@ from gi.repository import TotemPlParser
 from gettext import gettext as _
 
 from lollypop.playlists import RadiosManager
-from lollypop.player_base import PlayerBase
+from lollypop.player_base import BasePlayer
 from lollypop.define import Type
 from lollypop.track import Track
 
 
-# This class neeed the parent object to be a PlayerBin
-class PlayerRadio(PlayerBase):
+# This class neeed the parent object to be a BinPlayer
+class RadioPlayer(BasePlayer):
     """
         Init radio player
     """
     def __init__(self):
-        PlayerBase.__init__(self)
+        BasePlayer.__init__(self)
         self._current = None
 
     """
@@ -42,7 +42,7 @@ class PlayerRadio(PlayerBase):
             parser.connect("entry-parsed", self._on_entry_parsed, track)
             parser.parse_async(track.uri, True, None, None)
         except Exception as e:
-            print("PlayerRadio::load(): ", e)
+            print("RadioPlayer::load(): ", e)
             return False
         self.set_party(False)
         self._albums = []
