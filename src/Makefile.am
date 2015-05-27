@@ -1,66 +1,68 @@
 appdir = $(pythondir)/lollypop/
 
 app_PYTHON = \
-	define.py\
-	application.py\
-	toolbar.py\
-	toolbar_playback.py\
-	toolbar_infos.py\
-	toolbar_end.py\
-	toolbar_title.py\
-	window.py\
-	container.py\
-	fullscreen.py\
-	notification.py\
-	utils.py\
-	database.py\
-	database_albums.py\
-	database_artists.py\
-	database_genres.py\
-	database_tracks.py\
-	art.py\
-	art_base.py\
-	art_radio.py\
-	art_album.py\
-	selectionlist.py\
-	queue.py\
-	lastfm.py\
-	settings.py\
-	playlists.py\
-	view.py\
-    view_container.py\
-    view_device.py\
-    view_playlists.py\
-    view_albums.py\
-    view_radios.py\
-	mpris.py\
+    application.py\
+    art_album.py\
+    art_base.py\
+    art.py\
+    art_radio.py\
+    collectionscanner.py\
+    container.py\
+    database_albums.py\
+    database_artists.py\
+    database_genres.py\
+    database.py\
+    database_tracks.py\
+    define.py\
+    fullscreen.py\
     inotify.py\
-	search.py\
-	widgets_track.py\
-	widgets_album.py\
-	widgets_playlist.py\
-	widgets_device.py\
-    widgets_radio.py\
-    tagreader.py\
-	player.py\
-    player_rg.py\
+    lastfm.py\
+    list.py\
+    mpris.py\
+    notification.py\
     player_base.py\
     player_bin.py\
     player_externals.py\
+    player_linear.py\
+    player.py\
     player_queue.py\
     player_radio.py\
-    player_linear.py\
+    player_rg.py\
     player_shuffle.py\
     player_userplaylist.py\
-	pop_covers.py\
-	pop_infos.py\
-	pop_radio.py\
-	pop_albums.py\
-	pop_menu.py\
-	pop_next.py\
-	pop_tunein.py\
-	track.py\
-	tunein.py\
-	list.py\
-	collectionscanner.py
+    playlists.py\
+    pop_album_covers.py\
+    pop_albums.py\
+    pop_artist_infos.py\
+    pop_covers.py\
+    pop_infos.py\
+    pop_menu.py\
+    pop_next.py\
+    pop_radio.py\
+    pop_tunein.py\
+    queue.py\
+    search.py\
+    selectionlist.py\
+    settings.py\
+    tagreader.py\
+    toolbar_end.py\
+    toolbar_infos.py\
+    toolbar_playback.py\
+    toolbar.py\
+    toolbar_title.py\
+    track.py\
+    tunein.py\
+    utils.py\
+    view_albums.py\
+    view_container.py\
+    view_device.py\
+    view_playlists.py\
+    view.py\
+    view_radios.py\
+    widgets_album.py\
+    widgets_device.py\
+    widgets_playlist.py\
+    widgets_radio.py\
+    widgets_track.py\
+    window.py
 
