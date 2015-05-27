@@ -52,8 +52,8 @@ app_PYTHON = \
     player_linear.py\
     player_shuffle.py\
     player_userplaylist.py\
-	pop_album_covers.py\
-	pop_artist_infos.py\
+	pop_covers.py\
+	pop_infos.py\
 	pop_radio.py\
 	pop_albums.py\
 	pop_menu.py\
