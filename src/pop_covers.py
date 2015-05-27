@@ -44,7 +44,7 @@ class CoversPopover(Gtk.Popover):
 
         builder = Gtk.Builder()
         builder.add_from_resource(
-                    '/org/gnome/Lollypop/PopAlbumCovers.ui')
+                    '/org/gnome/Lollypop/CoversPopover.ui')
 
         widget = builder.get_object('widget')
         widget.add(self._stack)
