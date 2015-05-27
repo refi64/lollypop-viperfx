@@ -23,17 +23,19 @@ import re
 import os
 
 from lollypop.art_base import BaseArt
+from lollypop.tagreader import TagReader
 from lollypop.define import Lp
 
 
 # Manager album artwork
-class AlbumArt(BaseArt):
+class AlbumArt(BaseArt, TagReader):
     _MIMES = ["jpeg", "jpg", "png", "gif"]
     """
         Init radio art
     """
     def __init__(self):
         BaseArt.__init__(self)
+        TagReader.__init__(self)
         self._favorite = Lp.settings.get_value('favorite-cover').get_string()
         if not os.path.exists(self._CACHE_PATH):
             try:
