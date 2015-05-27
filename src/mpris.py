@@ -94,8 +94,7 @@ class MPRIS(dbus.service.Object):
                          in_signature='s', out_signature='a{sv}')
     def GetAll(self, interface):
         if interface == self.MPRIS_IFACE:
-            return
-            {
+            return {
                 'CanQuit': True,
                 'CanRaise': True,
                 'HasTrackList': False,
@@ -103,8 +102,7 @@ class MPRIS(dbus.service.Object):
                 'DesktopEntry': 'lollypop'
             }
         elif interface == self.MPRIS_PLAYER_IFACE:
-            return
-            {
+            return {
                 'PlaybackStatus': self._get_status(),
                 'LoopStatus': 'Playlist',
                 'Rate': dbus.Double(1.0),
