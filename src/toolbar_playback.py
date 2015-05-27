@@ -12,7 +12,6 @@
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 from gi.repository import Gtk
-from cgi import escape
 from gettext import gettext as _
 
 from lollypop.pop_infos import InfosPopover
@@ -53,11 +52,11 @@ class ToolbarPlayback(Gtk.Bin):
         self._play_btn.set_sensitive(True)
         self._prev_btn.set_sensitive(True)
         self._next_btn.set_sensitive(True)
-        prev_artist = escape(player.prev_track.artist)
-        prev_title = escape(player.prev_track.title)
-        next_artist = escape(player.next_track.artist)
-        next_title = escape(player.next_track.title)
         # GTK bug => https://bugzilla.gnome.org/show_bug.cgi?id=749965
+        #prev_artist = escape(player.prev_track.artist)
+        #prev_title = escape(player.prev_track.title)
+        #next_artist = escape(player.next_track.artist)
+        #next_title = escape(player.next_track.title)
         #self._next_btn.set_tooltip_markup("<b>%s</b>\n%s" %\
         #                                  (next_artist,
         #                                   next_title))
@@ -123,7 +122,7 @@ class ToolbarPlayback(Gtk.Bin):
                 artist = Lp.player.current_track.artist
             else:
                 artist = Lp.player.current_track.aartist
-            popover = PopArtistInfos(artist, Lp.player.current_track.title)
+            popover = InfosPopover(artist, Lp.player.current_track.title)
             popover.set_relative_to(button)
             popover.populate()
             popover.show()

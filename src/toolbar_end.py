@@ -16,7 +16,7 @@ from gi.repository import Gtk, Gio
 from lollypop.pop_next import NextPopover
 from lollypop.queue import QueueWidget
 from lollypop.search import SearchWidget
-from lollypop.define import Lp, Shuffle, Type
+from lollypop.define import Lp, Shuffle
 
 
 class ToolbarEnd(Gtk.Bin):

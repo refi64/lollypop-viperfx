@@ -208,7 +208,7 @@ class AlbumDetailedWidget(AlbumWidget):
             builder.get_object('artist').set_text(artist + " -")
             builder.get_object('artist').show()
             if Lp.lastfm is not None:
-                self._popover = PopArtistInfos(artist)
+                self._popover = InfosPopover(artist)
 
         self._stars = []
         self._stars.append(builder.get_object('star0'))
@@ -457,7 +457,7 @@ class AlbumDetailedWidget(AlbumWidget):
         @param: data as unused
     """
     def _show_web_art(self, widget, data):
-        popover = PopAlbumCovers(self._artist_id, self._album_id)
+        popover = CoversPopover(self._artist_id, self._album_id)
         popover.set_relative_to(widget)
         popover.populate()
         popover.show()
