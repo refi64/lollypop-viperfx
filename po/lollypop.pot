@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-05-27 22:56+0200\n"
+"POT-Creation-Date: 2015-05-27 23:22+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -232,16 +232,17 @@ msgid "Many artists"
 msgstr ""
 
 #: ../src/fullscreen.py:78 ../src/fullscreen.py:195
-#: ../src/toolbar_playback.py:74 ../src/toolbar_playback.py:107
+#: ../src/toolbar_playback.py:73 ../src/toolbar_playback.py:106
 msgid "Pause"
 msgstr ""
 
-#: ../src/fullscreen.py:142 ../src/pop_menu.py:171
+#: ../src/fullscreen.py:142 ../src/pop_menu.py:171 ../data/NextPopover.ui.h:1
 msgid "Next track"
 msgstr ""
 
-#: ../src/fullscreen.py:199 ../src/toolbar_playback.py:76
-#: ../src/toolbar_playback.py:104 ../data/ToolbarPlayback.ui.h:2
+#: ../src/fullscreen.py:199 ../src/toolbar_playback.py:75
+#: ../src/toolbar_playback.py:103 ../data/ToolbarPlayback.ui.h:2
+#: ../data/Toolbar.ui.h:7
 msgid "Play"
 msgstr ""
 
@@ -249,15 +250,19 @@ msgstr ""
 msgid "Last.fm authentication disabled"
 msgstr ""
 
-#: ../src/lastfm.py:174 ../src/pop_infos.py:166 ../src/pop_infos.py:185
+#: ../src/lastfm.py:174 ../src/pop_artist_infos.py:166
+#: ../src/pop_artist_infos.py:185 ../src/pop_infos.py:166
+#: ../src/pop_infos.py:185
 msgid "Wrong Last.fm credentials"
 msgstr ""
 
 #: ../src/notification.py:64 ../data/ToolbarPlayback.ui.h:1
+#: ../data/Toolbar.ui.h:6
 msgid "Previous"
 msgstr ""
 
 #: ../src/notification.py:68 ../data/ToolbarPlayback.ui.h:3
+#: ../data/Toolbar.ui.h:8
 msgid "Next"
 msgstr ""
 
@@ -277,20 +282,21 @@ msgstr ""
 msgid "Radio"
 msgstr ""
 
+#: ../src/pop_album_covers.py:60 ../src/pop_artist_infos.py:90
 #: ../src/pop_covers.py:60 ../src/pop_infos.py:90 ../src/pop_tunein.py:83
-#: ../data/RadioPopover.ui.h:3
+#: ../data/PopRadio.ui.h:3 ../data/RadioPopover.ui.h:3
 msgid "Please wait..."
 msgstr ""
 
-#: ../src/pop_covers.py:148
+#: ../src/pop_album_covers.py:148 ../src/pop_covers.py:148
 msgid "No cover found..."
 msgstr ""
 
-#: ../src/pop_covers.py:168
+#: ../src/pop_album_covers.py:168 ../src/pop_covers.py:168
 msgid "Select a cover art for this album"
 msgstr ""
 
-#: ../src/pop_infos.py:143
+#: ../src/pop_artist_infos.py:143 ../src/pop_infos.py:143
 msgid "No information for this artist..."
 msgstr ""
 
@@ -345,6 +351,7 @@ msgid "Modify informations"
 msgstr ""
 
 #: ../src/pop_menu.py:377 ../src/pop_menu.py:394 ../data/ToolbarEnd.ui.h:10
+#: ../data/Toolbar.ui.h:13
 msgid "Queue"
 msgstr ""
 
@@ -458,6 +465,14 @@ msgstr ""
 msgid "_Quit"
 msgstr ""
 
+#: ../data/ArtistInfos.ui.h:1
+msgid "I love"
+msgstr ""
+
+#: ../data/ArtistInfos.ui.h:2
+msgid "I don't love"
+msgstr ""
+
 #: ../data/DeviceManagerView.ui.h:1
 msgid "Synchronize your device with this playlists"
 msgstr ""
@@ -470,32 +485,24 @@ msgstr ""
 msgid "New playlist"
 msgstr ""
 
-#: ../data/RadioPopover.ui.h:1
+#: ../data/PopRadio.ui.h:1 ../data/RadioPopover.ui.h:1
 msgid "Select a logo  for this radio"
 msgstr ""
 
-#: ../data/RadioPopover.ui.h:2
+#: ../data/PopRadio.ui.h:2 ../data/RadioPopover.ui.h:2
 msgid "No logo found..."
 msgstr ""
 
-#: ../data/RadioPopover.ui.h:4
+#: ../data/PopRadio.ui.h:4 ../data/RadioPopover.ui.h:4
 msgid "Name:"
 msgstr ""
 
-#: ../data/RadioPopover.ui.h:5
+#: ../data/PopRadio.ui.h:5 ../data/RadioPopover.ui.h:5
 msgid "Address:"
 msgstr ""
 
-#: ../data/RadioPopover.ui.h:6
+#: ../data/PopRadio.ui.h:6 ../data/RadioPopover.ui.h:6
 msgid "Delete"
-msgstr ""
-
-#: ../data/ArtistInfos.ui.h:1
-msgid "I love"
-msgstr ""
-
-#: ../data/ArtistInfos.ui.h:2
-msgid "I don't love"
 msgstr ""
 
 #: ../data/QueueWidget.ui.h:1
@@ -504,6 +511,14 @@ msgstr ""
 
 #: ../data/QueueWidget.ui.h:2
 msgid "Clear queue"
+msgstr ""
+
+#: ../data/RadiosView.ui.h:1
+msgid "New radio"
+msgstr ""
+
+#: ../data/RadiosView.ui.h:2
+msgid "Search in TuneIn"
 msgstr ""
 
 #: ../data/SearchRow.ui.h:1
@@ -563,6 +578,7 @@ msgid "Select what will be available in party mode"
 msgstr ""
 
 #: ../data/SettingsDialog.ui.h:15 ../data/ToolbarEnd.ui.h:8
+#: ../data/Toolbar.ui.h:11
 msgid "Party mode"
 msgstr ""
 
@@ -578,35 +594,35 @@ msgstr ""
 msgid "Test"
 msgstr ""
 
-#: ../data/ToolbarEnd.ui.h:1
+#: ../data/ToolbarEnd.ui.h:1 ../data/Toolbar.ui.h:1
 msgid "No shuffle"
 msgstr ""
 
-#: ../data/ToolbarEnd.ui.h:2
+#: ../data/ToolbarEnd.ui.h:2 ../data/Toolbar.ui.h:2
 msgid "Shuffle albums"
 msgstr ""
 
-#: ../data/ToolbarEnd.ui.h:3
+#: ../data/ToolbarEnd.ui.h:3 ../data/Toolbar.ui.h:3
 msgid "Shuffle tracks"
 msgstr ""
 
-#: ../data/ToolbarEnd.ui.h:4
+#: ../data/ToolbarEnd.ui.h:4 ../data/Toolbar.ui.h:4
 msgid "Shuffle albums from artist"
 msgstr ""
 
-#: ../data/ToolbarEnd.ui.h:5
+#: ../data/ToolbarEnd.ui.h:5 ../data/Toolbar.ui.h:5
 msgid "Shuffle tracks from artist"
 msgstr ""
 
-#: ../data/ToolbarEnd.ui.h:6
+#: ../data/ToolbarEnd.ui.h:6 ../data/Toolbar.ui.h:9
 msgid "Settings"
 msgstr ""
 
-#: ../data/ToolbarEnd.ui.h:7
+#: ../data/ToolbarEnd.ui.h:7 ../data/Toolbar.ui.h:10
 msgid "Shuffle"
 msgstr ""
 
-#: ../data/ToolbarEnd.ui.h:9
+#: ../data/ToolbarEnd.ui.h:9 ../data/Toolbar.ui.h:12
 msgid "Search"
 msgstr ""
 
@@ -618,12 +634,4 @@ msgstr ""
 msgid ""
 "Lollypop isn't designed to work without an unicode locale.\n"
 "Please fix your system."
-msgstr ""
-
-#: ../data/RadiosView.ui.h:1
-msgid "New radio"
-msgstr ""
-
-#: ../data/RadiosView.ui.h:2
-msgid "Search in TuneIn"
 msgstr ""

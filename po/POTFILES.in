@@ -5,11 +5,11 @@
 data/org.gnome.Lollypop.gschema.xml
 data/lollypop.desktop.in
 data/lollypop.appdata.xml.in
-src/art.py
-src/art_base.py
-src/art_album.py
-src/art_radio.py
 src/application.py
+src/art_album.py
+src/art_base.py
+src/art.py
+src/art_radio.py
 src/collectionscanner.py
 src/container.py
 src/database_albums.py
@@ -19,11 +19,14 @@ src/database.py
 src/database_tracks.py
 src/define.py
 src/fullscreen.py
-src/mpris.py
+src/inotify.py
 src/lastfm.py
+src/list.py
+src/mpris.py
 src/notification.py
 src/player_base.py
 src/player_bin.py
+src/player_externals.py
 src/player_linear.py
 src/player.py
 src/player_queue.py
@@ -32,24 +35,26 @@ src/player_rg.py
 src/player_shuffle.py
 src/player_userplaylist.py
 src/playlists.py
+src/pop_album_covers.py
+src/pop_albums.py
+src/pop_artist_infos.py
 src/pop_covers.py
 src/pop_infos.py
-src/pop_albums.py
 src/pop_menu.py
 src/pop_next.py
 src/pop_radio.py
 src/pop_tunein.py
-src/inotify.py
 src/queue.py
 src/search.py
 src/selectionlist.py
 src/settings.py
 src/tagreader.py
-src/toolbar.py
 src/toolbar_end.py
 src/toolbar_infos.py
 src/toolbar_playback.py
+src/toolbar.py
 src/toolbar_title.py
+src/track.py
 src/tunein.py
 src/utils.py
 src/view_albums.py
@@ -57,9 +62,11 @@ src/view_container.py
 src/view_device.py
 src/view_playlists.py
 src/view.py
+src/view_radios.py
 src/widgets_album.py
 src/widgets_device.py
 src/widgets_playlist.py
+src/widgets_radio.py
 src/widgets_track.py
 src/window.py
 [type: gettext/glade]data/AboutDialog.ui
@@ -67,28 +74,33 @@ src/window.py
 [type: gettext/glade]data/AlbumDetailedWidget.ui
 [type: gettext/glade]data/AlbumSimpleWidget.ui
 [type: gettext/glade]data/Appmenu.ui
+[type: gettext/glade]data/ArtistInfos.ui
 [type: gettext/glade]data/ArtistView.ui
+[type: gettext/glade]data/CoversPopover.ui
 [type: gettext/glade]data/DeviceManagerView.ui
 [type: gettext/glade]data/DeviceManagerWidget.ui
 [type: gettext/glade]data/FullScreen.ui
+[type: gettext/glade]data/NextPopover.ui
 [type: gettext/glade]data/PlaylistEditView.ui
 [type: gettext/glade]data/PlaylistEditWidget.ui
 [type: gettext/glade]data/PlaylistsManagerView.ui
 [type: gettext/glade]data/PlaylistsManagerWidget.ui
 [type: gettext/glade]data/PlaylistsView.ui
-[type: gettext/glade]data/RadioPopover.ui
-[type: gettext/glade]data/CoversPopover.ui
-[type: gettext/glade]data/ArtistInfos.ui
+[type: gettext/glade]data/PopAlbumCovers.ui
+[type: gettext/glade]data/PopRadio.ui
+[type: gettext/glade]data/PopTuneIn.ui
 [type: gettext/glade]data/QueueWidget.ui
+[type: gettext/glade]data/RadioPopover.ui
+[type: gettext/glade]data/RadiosView.ui
+[type: gettext/glade]data/RadioWidget.ui
 [type: gettext/glade]data/SearchRow.ui
 [type: gettext/glade]data/SelectionList.ui
 [type: gettext/glade]data/SettingsDialog.ui
-[type: gettext/glade]data/ToolbarPlayback.ui
-[type: gettext/glade]data/ToolbarInfos.ui
 [type: gettext/glade]data/ToolbarEnd.ui
+[type: gettext/glade]data/ToolbarInfos.ui
+[type: gettext/glade]data/ToolbarPlayback.ui
 [type: gettext/glade]data/ToolbarTitle.ui
+[type: gettext/glade]data/Toolbar.ui
 [type: gettext/glade]data/TrackRow.ui
-[type: gettext/glade]data/Unicode.ui
 [type: gettext/glade]data/TuneinPopover.ui
-[type: gettext/glade]data/RadiosView.ui
-[type: gettext/glade]data/RadioWidget.ui
+[type: gettext/glade]data/Unicode.ui
