@@ -34,32 +34,49 @@ class ExternalsPlayer(BasePlayer):
         pass
 
     """
-        Load track
+        Load external tracks
+        @param uri as str
+        @param name as string
     """
-    def load_first_external(self):
-        if self._external_uris:
-            track = Track()
-            track.uri = self._external_uris[0]
-            if track.uri.startswith('file://'):
-                track.id = Type.EXTERNAL
-            else:
-                track.id = Type.RADIOS
-            self.load(track)
+    def load_external(self, uri, name=''):
+        try:
+            uri = GLib.filename_to_uri(uri)
+        except:
+            pass
+        track = Track()
+        track.artist = name
+        track.uri = uri
+        if track.uri.startswith('file://'):
+            track.id = Type.EXTERNAL
+        else:
+            track.id = Type.RADIOS
+        self._external_tracks.append(track)
 
     """
-        Load external tracks and play first track
-        @param uri as str
+        Play url if in externals
+        @param url as string
     """
-    def load_external(self, uri):
-        try:
-            self._external_uris.append(GLib.filename_to_uri(uri))
-        except:
-            self._external_uris.append(uri)
+    def play_this_external(self, url):
+        search = None
+        for track in self._external_tracks:
+            if track.uri == url:
+                search = track
+                break
+        if search is not None:
+            self.load(search)
+
+    """
+        Play first external track
+    """
+    def play_first_external(self):
+        if self._external_tracks:
+            self.load(self._external_tracks[0])
+
     """
         Clear externals
     """
     def clear_externals(self):
-        self._external_uris = []
+        self._external_tracks = []
 
     """
         Next Track
@@ -67,17 +84,14 @@ class ExternalsPlayer(BasePlayer):
     """
     def next(self):
         track = Track()
-        if self._external_uris and self.current_track.uri in self._external_uris:
-            idx = self._external_uris.index(self.current_track.uri)
-            if idx + 1 >= len(self._external_uris):
+        if self._external_tracks and\
+           self.current_track in self._external_tracks:
+            idx = self._external_tracks.index(self.current_track)
+            if idx + 1 >= len(self._external_tracks):
                 idx = 0
             else:
                 idx += 1
-            track.uri = self._external_uris[idx]
-            if track.uri.startswith('file://'):
-                track.id = Type.EXTERNAL
-            else:
-                track.id = Type.RADIOS
+            track = self._external_tracks[idx]
         return track
 
     """
@@ -86,18 +100,15 @@ class ExternalsPlayer(BasePlayer):
     """
     def prev(self):
         track = Track()
-        if self._external_uris and self.current_track.uri in self._external_uris:
-            idx = self._external_uris.index(self.current_track.uri)
+        if self._external_tracks and\
+           self.current_track in self._external_tracks:
+            idx = self._external_tracks.index(self.current_track)
             if idx - 1 < 0:
-                idx = len(self._external_uris) - 1
+                idx = len(self._external_tracks) - 1
             else:
                 idx -= 1
 
-            track.uri = self._external_uris[idx]
-            if track.uri.startswith('file://'):
-                track.id = Type.EXTERNAL
-            else:
-                track.id = Type.RADIOS
+            track = self._external_tracks[idx]
         return track
 
 #######################

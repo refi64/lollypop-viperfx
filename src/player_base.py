@@ -48,4 +48,4 @@ class BasePlayer(GObject.GObject):
             # Current shuffle mode
             self._shuffle = Lp.settings.get_enum('shuffle')
             # For tracks from the cmd line
-            self._external_uris = []
+            self._external_tracks = []

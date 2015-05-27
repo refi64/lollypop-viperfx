@@ -34,6 +34,7 @@ class PopTuneIn(Gtk.Popover):
         self._radio_manager = radio_manager
         self._current_url = None
         self._previous_urls = []
+        self._current_items = []
 
         self._stack = Gtk.Stack()
         self._stack.set_property('expand', True)
@@ -110,26 +111,25 @@ class PopTuneIn(Gtk.Popover):
     """
     def _populate(self, url):
         if url is None:
-            items = self._tunein.get_items()
+            self._current_items = self._tunein.get_items()
         else:
-            items = self._tunein.get_items(url)
+            self._current_items = self._tunein.get_items(url)
 
-        if items:
-            self._add_items(items)
+        if self._current_items:
+            self._add_items()
         else:
             GLib.idle_add(self._show_not_found)
 
     """
-        Add items to headers
-        @param items as [TuneItem]
+        Add current items
         @thread safe
     """
-    def _add_items(self, items):
-        for item in items:
+    def _add_items(self):
+        for item in self._current_items:
             GLib.idle_add(self._add_item, item)
 
     """
-        Add item to the headers
+        Add item
         @param item as TuneItem
     """
     def _add_item(self, item):
@@ -137,19 +137,18 @@ class PopTuneIn(Gtk.Popover):
         child.set_property('halign', Gtk.Align.START)
         child.show()
         if item.TYPE == "audio":
-            image = Gtk.Image.new_from_icon_name(
-                                            'audio-input-microphone-symbolic',
-                                            Gtk.IconSize.MENU)
-            image.show()
-            child.add(image)
+            button = Gtk.Button.new_from_icon_name(
+                                               'list-add-symbolic',
+                                               Gtk.IconSize.MENU)
+            button.connect('clicked', self._on_button_clicked, item)
+            button.set_relief(Gtk.ReliefStyle.NONE)
+            button.show()
+            child.add(button)
 
-        button = Gtk.LinkButton.new_with_label(item.URL, item.TEXT)
-        button.connect('activate-link',
-                       self._on_activate_link,
-                       item)
-        button.show()
-
-        child.add(button)
+        link = Gtk.LinkButton.new_with_label(item.URL, item.TEXT)
+        link.connect('activate-link', self._on_activate_link, item)
+        link.show()
+        child.add(link)
 
         self._view.add(child)
 
@@ -228,7 +227,16 @@ class PopTuneIn(Gtk.Popover):
                 self._previous_urls.append(self._current_url)
             start_new_thread(self.populate, (item.URL,))
         elif item.TYPE == "audio":
-            start_new_thread(self._add_radio, (item,))
-            self.hide()
+            for i in self._current_items:
+                Lp.player.load_external(i.URL, i.TEXT)
+            Lp.player.play_this_external(item.URL)
         return True
 
+    """
+        Play the radio
+        @param link as Gtk.Button
+        @param item as TuneIn Item
+    """
+    def _on_button_clicked(self, button, item):
+        start_new_thread(self._add_radio, (item,))
+        self.hide()
