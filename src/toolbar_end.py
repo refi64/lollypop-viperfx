@@ -73,7 +73,7 @@ class ToolbarEnd(Gtk.Bin):
         @param player as Player
     """
     def on_current_changed(self, player):
-        # Do not show next popover for external tracks as 
+        # Do not show next popover non internal tracks as
         # tags will be readed on the fly
         if player.next_track.id >= 0 and\
            (player.is_party() or\
