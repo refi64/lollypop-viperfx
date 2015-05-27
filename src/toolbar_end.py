@@ -75,16 +75,17 @@ class ToolbarEnd(Gtk.Bin):
     def on_current_changed(self, player):
         # Do not show next popover for external tracks as 
         # tags will be readed on the fly
-        if player.next_track.id < 0:
-            self._pop_next.hide()
-        elif player.is_party() or\
-           Lp.settings.get_enum('shuffle') == Shuffle.TRACKS:
+        if player.next_track.id >= 0 and\
+           (player.is_party() or\
+            Lp.settings.get_enum('shuffle') == Shuffle.TRACKS):
             self._pop_next.update()
             if player.is_party():
                 self._pop_next.set_relative_to(self._party_btn)
             else:
                 self._pop_next.set_relative_to(self._shuffle_btn)
             self._pop_next.show()
+        else:
+            self._pop_next.hide()
 
     """
         Update buttons on status changed
