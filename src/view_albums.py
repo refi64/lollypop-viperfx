@@ -16,7 +16,7 @@ from gi.repository import Gtk, GLib, Gdk
 from _thread import start_new_thread
 
 from lollypop.view import View
-from lollypop.pop_artist_infos import PopArtistInfos
+from lollypop.pop_infos import InfosPopover
 from lollypop.view_container import ViewContainer
 from lollypop.widgets_album import AlbumSimpleWidget, AlbumDetailedWidget
 from lollypop.define import Lp, Type, ArtSize
