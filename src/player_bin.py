@@ -226,7 +226,7 @@ class BinPlayer(ReplayGainPlayer, BasePlayer):
 
         self.current_track.title = reader.get_title(tags,
                                                     self.current_track.uri)
-        if self.current_track.id == Type.EXTERNAL:
+        if self.current_track.id == Type.EXTERNALS:
             (b, duration) = self._playbin.query_duration(Gst.Format.TIME)
             if b:
                 self.current_track.duration = duration/1000000000

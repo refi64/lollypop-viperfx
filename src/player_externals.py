@@ -47,7 +47,7 @@ class ExternalsPlayer(BasePlayer):
         track.artist = name
         track.uri = uri
         if track.uri.startswith('file://'):
-            track.id = Type.EXTERNAL
+            track.id = Type.EXTERNALS
         else:
             track.id = Type.RADIOS
         self._external_tracks.append(track)

@@ -59,7 +59,7 @@ class ToolbarInfos(Gtk.Bin):
         if player.current_track.id == Type.RADIOS:
             art = Lp.art.get_radio(player.current_track.artist,
                                    ArtSize.SMALL)
-        elif player.current_track.id == Type.EXTERNAL:
+        elif player.current_track.id == Type.EXTERNALS:
             art = Lp.art.get_cover_for_uri(player.current_track.uri,
                                            ArtSize.SMALL,
                                            False)
