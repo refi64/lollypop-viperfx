@@ -17,6 +17,8 @@ from gettext import gettext as _
 from cgi import escape
 
 from lollypop.define import Lp, Shuffle, ArtSize, Type
+from lollypop.pop_tunein import PopTuneIn
+from lollypop.playlists import RadiosManager
 from lollypop.search import SearchWidget
 from lollypop.pop_artist_infos import PopArtistInfos
 from lollypop.pop_menu import PopToolbarMenu
@@ -103,6 +105,8 @@ class Toolbar(Gtk.HeaderBar):
         self._infobox.set_property('has-tooltip', True)
         self._pop_albums = PopAlbums()
         self._pop_albums.set_relative_to(self._infobox)
+        self._pop_tunein = PopTuneIn(RadiosManager())
+        self._pop_tunein.set_relative_to(self._infobox)
 
         Lp.player.connect('status-changed', self._on_status_changed)
         Lp.player.connect('current-changed', self._on_current_changed)
@@ -276,18 +280,13 @@ class Toolbar(Gtk.HeaderBar):
         self._title_label.set_text(player.current_track.title)
 
         # Hide controls if on radio
+        # Setup art for radios
         if player.current_track.id == Type.RADIOS:
             self._progress.set_sensitive(False)
             self._total_time_label.hide()
             self._timelabel.hide()
             self._progress.set_value(0.0)
             self._progress.set_range(0.0, 0.0)
-
-        # Setup buttons and art for radios
-        if player.current_track.id == Type.RADIOS:
-            self._infobox.get_window().set_cursor(
-                                      Gdk.Cursor(Gdk.CursorType.LEFT_PTR))
-
             art = Lp.art.get_radio(player.current_track.artist,
                                    ArtSize.SMALL)
         # Setup buttons and art for local playback
@@ -408,11 +407,14 @@ class Toolbar(Gtk.HeaderBar):
         @param event as Gdk.Event
     """
     def _on_infobox_clicked(self, widget, event):
-        if Lp.player.current_track.id is not None and\
-           Lp.player.current_track.id != Type.RADIOS:
+        if Lp.player.current_track.id is not None:
             if event.button == 1:
-                self._pop_albums.populate()
-                self._pop_albums.show()
+                if Lp.player.current_track.id == Type.RADIOS:
+                    self._pop_tunein.populate()
+                    self._pop_tunein.show()
+                else:
+                    self._pop_albums.populate()
+                    self._pop_albums.show()
             else:
                 menu = PopToolbarMenu(Lp.player.current_track.id, None)
                 popover = Gtk.Popover.new_from_model(self._infobox, menu)
