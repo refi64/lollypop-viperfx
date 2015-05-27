@@ -25,6 +25,7 @@ except Exception as e:
     print(_("    - Scrobbler disabled\n"
             "    - Auto cover download disabled\n"
             "    - Artist informations disabled"))
+    print("$ sudo pip3 install pylast")
     PYLAST = False
 
 from lollypop.utils import is_gnome, is_unity
