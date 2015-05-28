@@ -37,13 +37,15 @@ class Inotify:
         # Check if there is already a monitor for this path
         if path in self._monitors.keys():
             return
-
-        f = Gio.File.new_for_path(path)
-        monitor = f.monitor_directory(Gio.FileMonitorFlags.NONE,
-                                      None)
-        if monitor is not None:
-            monitor.connect('changed', self._on_dir_changed)
-            self._monitors[path] = monitor
+        try:
+            f = Gio.File.new_for_path(path)
+            monitor = f.monitor_directory(Gio.FileMonitorFlags.NONE,
+                                          None)
+            if monitor is not None:
+                monitor.connect('changed', self._on_dir_changed)
+                self._monitors[path] = monitor
+        except Exception as e:
+            print("Inotify::add_monitor: %s" % e)
 
 #######################
 # PRIVATE             #
