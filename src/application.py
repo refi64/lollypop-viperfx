@@ -221,6 +221,7 @@ class Application(Gtk.Application):
     def _on_entry_parsed(self, parser, uri, metadata):
         Lp.player.load_external(uri)
         if self._externals_count == 0:
+            Lp.player.set_party(False)
             Lp.player.play_first_external()
         self._externals_count += 1
 
