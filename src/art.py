@@ -37,5 +37,3 @@ class Art(AlbumArt, RadioArt):
                 os.remove(os.path.join(self._CACHE_PATH, f))
         except Exception as e:
             print("Art::clean_all_cache(): ", e)
-
-

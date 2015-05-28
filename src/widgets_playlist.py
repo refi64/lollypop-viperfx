@@ -22,6 +22,7 @@ from lollypop.widgets_track import TracksWidget
 from lollypop.track import Track
 from lollypop.utils import translate_artist_name
 
+
 # Playlist Widget is similar to album detailed
 # widget but show a cover grid as playlist cove
 class PlaylistWidget(Gtk.Bin):
@@ -128,7 +129,7 @@ class PlaylistWidget(Gtk.Bin):
         artist_name = ""
         for artist_id in Lp.tracks.get_artist_ids(track_id):
             artist_name += translate_artist_name(
-                            Lp.artists.get_name(artist_id)) + ", "
+                Lp.artists.get_name(artist_id)) + ", "
         title = "<b>%s</b>\n%s" % (escape(artist_name[:-2]),
                                    escape(title))
 
@@ -165,14 +166,13 @@ class PlaylistsManagerWidget(Gtk.Bin):
         self._is_album = is_album
         self._deleted_path = None
         self._del_pixbuf = Gtk.IconTheme.get_default().load_icon(
-                                                "list-remove-symbolic",
-                                                22,
-                                                0)
+            "list-remove-symbolic",
+            22,
+            0)
 
         builder = Gtk.Builder()
-        builder.add_from_resource(
-                '/org/gnome/Lollypop/PlaylistsManagerWidget.ui'
-                                 )
+        builder.add_from_resource('/org/gnome/Lollypop/'
+                                  'PlaylistsManagerWidget.ui')
         self._infobar = builder.get_object('infobar')
         self._infobar_label = builder.get_object('infobarlabel')
 
@@ -260,9 +260,9 @@ class PlaylistsManagerWidget(Gtk.Bin):
             playlist = playlists.pop(0)
             if self._object_id != -1:
                 selected = Lp.playlists.is_present(playlist[1],
-                                                        self._object_id,
-                                                        self._genre_id,
-                                                        self._is_album)
+                                                   self._object_id,
+                                                   self._genre_id,
+                                                   self._is_album)
             else:
                 selected = False
             self._model.append([selected, playlist[1], 'user-trash-symbolic'])
@@ -349,7 +349,7 @@ class PlaylistsManagerWidget(Gtk.Bin):
         # Add or remove object from playlist
         if self._is_album:
             tracks_path = Lp.albums.get_tracks_path(self._object_id,
-                                                         self._genre_id)
+                                                    self._genre_id)
         else:
             tracks_path = [Lp.tracks.get_path(self._object_id)]
 
@@ -500,8 +500,9 @@ class PlaylistEditWidget(Gtk.Bin):
                 artist_ids = Lp.tracks.get_artist_ids(track_id)
                 artist_name = ""
                 for artist_id in artist_ids:
-                    artist_name += translate_artist_name(
-                                    Lp.artists.get_name(artist_id)) + ", "
+                    artist_name += translate_artist_name(Lp.artists.
+                                                         get_name(artist_id))\
+                        + ", "
                 artist_name = artist_name[:-2]
             else:
                 artist_name = Lp.artists.get_name(artist_id)
@@ -534,12 +535,9 @@ class PlaylistEditWidget(Gtk.Bin):
     def _show_infobar(self, path):
         iterator = self._model.get_iter(path)
         self._infobar_label.set_markup(_("Remove \"%s\"?") %
-                                       self._model.get_value(
-                                                            iterator,
-                                                            1
-                                                            ).replace(
-                                                                    '\n',
-                                                                    ' - '))
+                                       self._model.get_value(iterator,
+                                                             1).replace('\n',
+                                                                        ' - '))
         self._infobar.show()
 
     """

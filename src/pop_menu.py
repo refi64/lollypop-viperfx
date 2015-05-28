@@ -20,7 +20,7 @@ from _thread import start_new_thread
 from lollypop.define import Lp, NextContext
 
 
-# Base menu class
+# Base menu class
 class BaseMenu(Gio.Menu):
     """
         Init variable
@@ -54,7 +54,7 @@ class PlaybackMenu(BaseMenu):
     def _set_playback_actions(self):
         if Lp.player.context.next != NextContext.NONE:
             continue_play_action = Gio.SimpleAction(
-                                                name="continue_play_action")
+                name="continue_play_action")
             self._app.add_action(continue_play_action)
             continue_play_action.connect('activate', self._continue_playback)
             self.append(_("Continue playback"), 'app.continue_play_action')
@@ -194,9 +194,8 @@ class QueueMenu(BaseMenu):
     """
     def _prepend_to_queue(self, action, variant):
         if self._is_album:
-            for track_id in reversed(Lp.albums.get_tracks(
-                                                    self._object_id,
-                                                    self._genre_id)):
+            for track_id in reversed(Lp.albums.get_tracks(self._object_id,
+                                                          self._genre_id)):
                 Lp.player.prepend_to_queue(track_id)
         else:
             Lp.player.prepend_to_queue(self._object_id)
@@ -307,7 +306,6 @@ class PlaylistsMenu(BaseMenu):
                          (playlist_name, tracks_path))
 
 
-
 # Contextual menu for toolbar
 class PopToolbarMenu(Gio.Menu):
     """
@@ -338,8 +336,7 @@ class EditMenu(BaseMenu):
         BaseMenu.__init__(self, object_id, genre_id, is_album)
 
         if is_album:
-            favorite = Lp.settings.get_value(
-                                                     'tag-editor').get_string()
+            favorite = Lp.settings.get_value('tag-editor').get_string()
             for editor in [favorite] + self._TAG_EDITORS:
                 if which(editor) is not None:
                     self._tag_editor = editor

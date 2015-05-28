@@ -73,7 +73,7 @@ class FullScreen(Gtk.Window):
         self._signal1_id = Lp.player.connect('current-changed',
                                              self._on_current_changed)
         self._signal2_id = Lp.player.connect('status-changed',
-                                                  self._on_status_changed)
+                                             self._on_status_changed)
         if is_playing:
             self._change_play_btn_status(self._pause_image, _('Pause'))
             self._on_current_changed(Lp.player)
@@ -129,7 +129,7 @@ class FullScreen(Gtk.Window):
                 self._total_time_label.show()
                 self._progress.show()
                 art = Lp.art.get_album(player.current_track.album_id,
-                                 ArtSize.MONSTER)
+                                       ArtSize.MONSTER)
             if art:
                 self._cover.set_from_pixbuf(art)
                 self._cover.show()
@@ -139,14 +139,13 @@ class FullScreen(Gtk.Window):
             self._title.set_text(player.current_track.title)
             self._artist.set_text(player.current_track.artist)
             self._album.set_text(player.current_track.album)
-            self._next.set_markup(_("Next track") + ": <b>%s</b> - %s" %\
+            self._next.set_markup(_("Next track") + ": <b>%s</b> - %s" %
                                   (escape(player.next_track.artist),
                                    escape(player.next_track.title)))
             self._progress.set_value(1.0)
             self._progress.set_range(0.0, player.current_track.duration * 60)
             self._total_time_label.set_text(
-                                seconds_to_string(player.current_track.duration)
-                                           )
+                seconds_to_string(player.current_track.duration))
             self._timelabel.set_text("0:00")
 
     """

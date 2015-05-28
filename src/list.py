@@ -12,7 +12,7 @@
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 
-# Double linked list
+# Double linked list
 class LinkedList:
     """
         Init list
@@ -28,7 +28,7 @@ class LinkedList:
         @return has next as bool
     """
     def has_next(self):
-        return self.__next != None
+        return self.__next is not None
 
     """
         Return next
@@ -49,7 +49,7 @@ class LinkedList:
         @return has next as bool
     """
     def has_prev(self):
-        return self.__prev != None
+        return self.__prev is not None
 
     """
         Return prev

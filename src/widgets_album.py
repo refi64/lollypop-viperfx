@@ -39,12 +39,12 @@ class AlbumWidget(Gtk.Bin):
         @param force as bool
     """
     def set_cover(self, force=False):
-        selected = self._album_id==Lp.player.current_track.album_id
+        selected = self._album_id == Lp.player.current_track.album_id
         if self._cover and (selected != self._selected or force):
             self._selected = selected
             pixbuf = Lp.art.get_album(self._album_id,
-                                     ArtSize.BIG,
-                                     selected)
+                                      ArtSize.BIG,
+                                      selected)
             self._cover.set_from_pixbuf(pixbuf)
             del pixbuf
 
@@ -54,10 +54,10 @@ class AlbumWidget(Gtk.Bin):
     """
     def update_cover(self, album_id):
         if self._cover and self._album_id == album_id:
-            self._selected = self._album_id==Lp.player.current_track.album_id
+            self._selected = self._album_id == Lp.player.current_track.album_id
             pixbuf = Lp.art.get_album(self._album_id,
-                                     ArtSize.BIG,
-                                     self._selected)
+                                      ArtSize.BIG,
+                                      self._selected)
             self._cover.set_from_pixbuf(pixbuf)
             del pixbuf
 
@@ -134,7 +134,7 @@ class AlbumSimpleWidget(AlbumWidget):
         self.add(widget)
         self.set_cover()
         self.set_property('halign', Gtk.Align.START)
-        # Set minimum width
+        # Set minimum width
         self.set_property('width-request', ArtSize.BIG+ArtSize.BORDER*2)
 
     """
@@ -197,10 +197,10 @@ class AlbumDetailedWidget(AlbumWidget):
         builder = Gtk.Builder()
         if scrolled:
             builder.add_from_resource(
-                    '/org/gnome/Lollypop/AlbumContextWidget.ui')
+                '/org/gnome/Lollypop/AlbumContextWidget.ui')
         else:
             builder.add_from_resource(
-                    '/org/gnome/Lollypop/AlbumDetailedWidget.ui')
+                '/org/gnome/Lollypop/AlbumDetailedWidget.ui')
         builder.connect_signals(self)
 
         if scrolled:
@@ -237,7 +237,7 @@ class AlbumDetailedWidget(AlbumWidget):
                 i += 1
                 sep = Gtk.Separator()
                 sep.show()
-                grid.attach(sep, 0, i ,2 ,1)
+                grid.attach(sep, 0, i, 2, 1)
                 i += 1
             self._tracks_left[disc] = TracksWidget(show_menu)
             self._tracks_right[disc] = TracksWidget(show_menu)
@@ -248,10 +248,10 @@ class AlbumDetailedWidget(AlbumWidget):
 
             self._tracks_left[disc].connect('activated', self._on_activated)
             self._tracks_left[disc].connect('button-press-event',
-                                         self._on_button_press_event)
+                                            self._on_button_press_event)
             self._tracks_right[disc].connect('activated', self._on_activated)
             self._tracks_right[disc].connect('button-press-event',
-                                     self._on_button_press_event)
+                                             self._on_button_press_event)
 
             self._tracks_left[disc].show()
             self._tracks_right[disc].show()
@@ -262,8 +262,7 @@ class AlbumDetailedWidget(AlbumWidget):
 
         self._title_label = Lp.albums.get_name(album_id)
         builder.get_object('title').set_label(self._title_label)
-        builder.get_object('year').set_label(
-                                            Lp.albums.get_year(album_id))
+        builder.get_object('year').set_label(Lp.albums.get_year(album_id))
         self.add(builder.get_object('AlbumDetailedWidget'))
 
         if show_menu:
@@ -294,15 +293,14 @@ class AlbumDetailedWidget(AlbumWidget):
         self._stop = False
         sql = Lp.db.get_cursor()
         for disc in self._discs:
-            mid_tracks = int(0.5+Lp.albums.get_count_for_disc(
-                                                          self._album_id,
-                                                          self._genre_id,
-                                                          disc,
-                                                          sql)/2)
+            mid_tracks = int(0.5+Lp.albums.get_count_for_disc(self._album_id,
+                                                              self._genre_id,
+                                                              disc,
+                                                              sql)/2)
             tracks = Lp.albums.get_tracks_infos(self._album_id,
-                                                     self._genre_id,
-                                                     disc,
-                                                     sql)
+                                                self._genre_id,
+                                                disc,
+                                                sql)
             self.populate_list_left(tracks[:mid_tracks],
                                     disc,
                                     1)
@@ -315,7 +313,7 @@ class AlbumDetailedWidget(AlbumWidget):
         @param track's ids as array of int
         @param track position as int
     """
-    def populate_list_left(self, tracks, disc,pos):
+    def populate_list_left(self, tracks, disc, pos):
         GLib.idle_add(self._add_tracks,
                       tracks,
                       self._tracks_left[disc],
@@ -379,7 +377,7 @@ class AlbumDetailedWidget(AlbumWidget):
             artist_name = ""
             for artist_id in artist_ids:
                 artist_name += translate_artist_name(
-                                Lp.artists.get_name(artist_id)) + ", "
+                    Lp.artists.get_name(artist_id)) + ", "
             title = "<b>%s</b>\n%s" % (escape(artist_name[:-2]),
                                        title)
 
@@ -411,10 +409,10 @@ class AlbumDetailedWidget(AlbumWidget):
         Lp.player.context.next = NextContext.NONE
         if not Lp.player.is_party():
             Lp.player.set_albums(track_id,
-                                      self._artist_id,
-                                      self._genre_id)
+                                 self._artist_id,
+                                 self._genre_id)
         Lp.player.load(Track(track_id))
-        if self._button_state&Gdk.ModifierType.CONTROL_MASK:
+        if self._button_state & Gdk.ModifierType.CONTROL_MASK:
             Lp.player.context.next = NextContext.STOP_TRACK
 
     """

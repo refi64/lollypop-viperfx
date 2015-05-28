@@ -247,8 +247,8 @@ class BinPlayer(ReplayGainPlayer, BasePlayer):
         debug("Error playing: %s" % self.current_track.uri)
         if self._handled_error != self.current_track.uri:
             self._handled_error = self.current_track.uri
-            Lp.notify.send(_("File doesn't exist: %s") %\
-                                                   self.current_track.uri)
+            Lp.notify.send(_("File doesn't exist: %s") %
+                           self.current_track.uri)
             self._set_next()
             self.next()
         return False

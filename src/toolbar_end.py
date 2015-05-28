@@ -30,7 +30,7 @@ class ToolbarEnd(Gtk.Bin):
         builder = Gtk.Builder()
         builder.add_from_resource('/org/gnome/Lollypop/ToolbarEnd.ui')
         builder.connect_signals(self)
-        
+
         self.add(builder.get_object('end'))
 
         self._shuffle_btn = builder.get_object('shuffle-button')
@@ -76,8 +76,8 @@ class ToolbarEnd(Gtk.Bin):
         # Do not show next popover non internal tracks as
         # tags will be readed on the fly
         if player.next_track.id >= 0 and\
-           (player.is_party() or\
-            Lp.settings.get_enum('shuffle') == Shuffle.TRACKS):
+            (player.is_party() or
+             Lp.settings.get_enum('shuffle') == Shuffle.TRACKS):
             self._pop_next.update()
             if player.is_party():
                 self._pop_next.set_relative_to(self._party_btn)
@@ -107,12 +107,12 @@ class ToolbarEnd(Gtk.Bin):
         shuffle = Lp.settings.get_enum('shuffle')
         if shuffle == Shuffle.NONE:
             self._shuffle_btn_image.set_from_icon_name(
-                                    "media-playlist-consecutive-symbolic",
-                                    Gtk.IconSize.SMALL_TOOLBAR)
+                "media-playlist-consecutive-symbolic",
+                Gtk.IconSize.SMALL_TOOLBAR)
         else:
             self._shuffle_btn_image.set_from_icon_name(
-                                    "media-playlist-shuffle-symbolic",
-                                    Gtk.IconSize.SMALL_TOOLBAR)
+                "media-playlist-shuffle-symbolic",
+                Gtk.IconSize.SMALL_TOOLBAR)
 
     """
         Mark shuffle button as active when shuffle active

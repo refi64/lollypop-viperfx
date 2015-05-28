@@ -15,7 +15,8 @@ from lollypop.define import Lp, NextContext
 from lollypop.player_base import BasePlayer
 from lollypop.track import Track
 
-# Manage normal playback
+
+# Manage normal playback
 class LinearPlayer(BasePlayer):
     """
         Init linear player
@@ -73,7 +74,7 @@ class LinearPlayer(BasePlayer):
                     tracks = Lp.albums.get_tracks(self._albums[pos],
                                                   self.context.genre_id)
                     track_id = tracks[len(tracks) - 1]
-                # Previous track
+                # Previous track
                 else:
                     track_id = tracks[new_track_position]
         return Track(track_id)

@@ -47,7 +47,7 @@ class ReplayGainPlayer:
 
         self._rgvolume.props.album_mode = 1
         self._rgvolume.props.pre_amp = Lp.settings.get_value(
-                                            "replaygain").get_double()
+            "replaygain").get_double()
 
         self._rgfilter.add(self._rgvolume)
         self._rgfilter.add(self._rg_audioconvert1)
@@ -61,7 +61,7 @@ class ReplayGainPlayer:
         self._rg_audioconvert2.link(self._rg_audiosink)
 
         self._rgfilter.add_pad(Gst.GhostPad.new(
-                                "sink",
-                                self._rg_audioconvert1.get_static_pad("sink")))
+                               "sink",
+                               self._rg_audioconvert1.get_static_pad("sink")))
 
         playbin.set_property("audio-sink", self._rgfilter)

@@ -64,7 +64,7 @@ class Inotify:
         # Run update delayed
         else:
             path = changed_file.get_path()
-            # If a directory, monitor it
+            # If a directory, monitor it
             if os.path.exists(path) and\
                changed_file.query_file_type(Gio.FileQueryInfoFlags.NONE,
                                             None) == Gio.FileType.DIRECTORY:

@@ -32,7 +32,7 @@ class Window(Gtk.ApplicationWindow, Container):
         Gtk.ApplicationWindow.__init__(self,
                                        application=app,
                                        title="Lollypop")
-        self._nullwidget = Gtk.Label() # Use to get selected background color
+        self._nullwidget = Gtk.Label()  # Use to get selected background color
         self._timeout_configure = None
         seek_action = Gio.SimpleAction.new('seek',
                                            GLib.VariantType.new('i'))
@@ -61,8 +61,8 @@ class Window(Gtk.ApplicationWindow, Container):
         Return selected color
     """
     def get_selected_color(self):
-        return self._nullwidget.get_style_context(
-                            ).get_background_color(Gtk.StateFlags.SELECTED)
+        return self._nullwidget.get_style_context().\
+            get_background_color(Gtk.StateFlags.SELECTED)
 
     """
         Setup global shortcuts
@@ -133,14 +133,16 @@ class Window(Gtk.ApplicationWindow, Container):
         Setup media player keys
     """
     def _setup_media_keys(self):
-        self._proxy = Gio.DBusProxy.new_sync(
-                            Gio.bus_get_sync(Gio.BusType.SESSION, None),
-                            Gio.DBusProxyFlags.NONE,
-                            None,
-                            'org.gnome.SettingsDaemon',
-                            '/org/gnome/SettingsDaemon/MediaKeys',
-                            'org.gnome.SettingsDaemon.MediaKeys',
-                            None)
+        self._proxy = Gio.DBusProxy.new_sync(Gio.bus_get_sync(Gio.BusType.
+                                                              SESSION, None),
+                                             Gio.DBusProxyFlags.NONE,
+                                             None,
+                                             'org.gnome.SettingsDaemon',
+                                             '/org/gnome/SettingsDaemon/'
+                                             'MediaKeys',
+                                             'org.gnome.SettingsDaemon.'
+                                             'MediaKeys',
+                                             None)
         self._grab_media_player_keys()
         try:
             self._proxy.connect('g-signal', self._handle_media_keys)
@@ -265,13 +267,13 @@ class Window(Gtk.ApplicationWindow, Container):
     """
     def _on_destroyed_window(self, widget):
         Lp.settings.set_value('paned-mainlist-width',
-                              GLib.Variant(
-                                        'i',
-                                        self._paned_main_list.get_position()))
+                              GLib.Variant('i',
+                                           self._paned_main_list.
+                                           get_position()))
         Lp.settings.set_value('paned-listview-width',
-                              GLib.Variant(
-                                        'i',
-                                        self._paned_list_view.get_position()))
+                              GLib.Variant('i',
+                                           self._paned_list_view.
+                                           get_position()))
 
     """
         Seek in stream

@@ -82,7 +82,7 @@ class Database:
                 self._set_mtimes()
                 os.remove(self.DB_PATH)
                 Lp.settings.set_value('db-version',
-                                           GLib.Variant('i', self.version))
+                                      GLib.Variant('i', self.version))
 
         sql = self.get_cursor()
         # Create db schema
@@ -96,7 +96,7 @@ class Database:
             sql.execute(self.create_track_genres)
             sql.commit()
             Lp.settings.set_value('db-version',
-                                       GLib.Variant('i', self.version))
+                                  GLib.Variant('i', self.version))
         except:
             pass
 

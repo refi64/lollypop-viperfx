@@ -21,7 +21,7 @@ from lollypop.define import Lp, Type
 from lollypop.utils import format_artist_name
 
 
-# Tag reader class
+# Tag reader class
 class TagReader:
     """
         Init tag reader
@@ -313,7 +313,7 @@ class ScannerTagReader(TagReader):
         @commit needed
     """
     def update_track(self, track_id, artist_ids, genre_ids, sql):
-         # Set artists/genres for track
+        # Set artists/genres for track
         for artist_id in artist_ids:
             Lp.tracks.add_artist(track_id, artist_id, sql)
         for genre_id in genre_ids:

@@ -44,7 +44,7 @@ class Container:
         # Try to update db on start, will be done after list one populating
         # finished
         self._need_to_update_db = Lp.settings.get_value('auto-update') or\
-                                  Lp.tracks.is_empty()
+            Lp.tracks.is_empty()
         # Index will start at -VOLUMES
         self._devices = {}
         self._devices_index = Type.DEVICES
@@ -102,13 +102,11 @@ class Container:
     """
     def save_view_state(self):
         Lp.settings.set_value("list-one",
-                              GLib.Variant(
-                                   'i',
-                                   self._list_one.get_selected_id()))
+                              GLib.Variant('i',
+                                           self._list_one.get_selected_id()))
         Lp.settings.set_value("list-two",
-                              GLib.Variant(
-                                   'i',
-                                   self._list_two.get_selected_id()))
+                              GLib.Variant('i',
+                                           self._list_two.get_selected_id()))
 
     """
         Show playlist manager for object_id
@@ -119,7 +117,7 @@ class Container:
     """
     def show_playlist_manager(self, object_id, genre_id, is_album):
         view = PlaylistsManageView(object_id, genre_id, is_album,
-                                  self._stack.get_allocated_width()/2)
+                                   self._stack.get_allocated_width()/2)
         view.show()
         self._stack.add(view)
         self._stack.set_visible_child(view)
@@ -226,11 +224,9 @@ class Container:
         self._paned_main_list.add1(self._list_one)
         self._paned_main_list.add2(self._paned_list_view)
         self._paned_main_list.set_position(
-                        Lp.settings.get_value(
-                                           'paned-mainlist-width').get_int32())
+            Lp.settings.get_value('paned-mainlist-width').get_int32())
         self._paned_list_view.set_position(
-                        Lp.settings.get_value(
-                                           'paned-listview-width').get_int32())
+            Lp.settings.get_value('paned-listview-width').get_int32())
         self._paned_main_list.show()
         self._paned_list_view.show()
 
@@ -461,7 +457,7 @@ class Container:
                     break
         else:
             view = PlaylistsManageView(-1, None, False,
-                                      self._stack.get_allocated_width()/2)
+                                       self._stack.get_allocated_width()/2)
         if view:
             view.show()
             self._stack.add(view)

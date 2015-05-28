@@ -24,6 +24,7 @@ from lollypop.define import Lp, ArtSize, GOOGLE_INC, GOOGLE_MAX
 from lollypop.view_container import ViewContainer
 from lollypop.art import Art
 
+
 # Show a popover with radio logos from the web
 class RadioPopover(Gtk.Popover):
     """
@@ -42,8 +43,7 @@ class RadioPopover(Gtk.Popover):
         self._stack.show()
 
         builder = Gtk.Builder()
-        builder.add_from_resource(
-                    '/org/gnome/Lollypop/RadioPopover.ui')
+        builder.add_from_resource('/org/gnome/Lollypop/RadioPopover.ui')
         builder.connect_signals(self)
 
         self._view = Gtk.FlowBox()
@@ -109,7 +109,7 @@ class RadioPopover(Gtk.Popover):
     """
     def _populate(self):
         self._urls = Lp.art.get_google_arts(self._name+"+logo+radio",
-                                                 self._start)
+                                            self._start)
         if self._urls:
             self._start += GOOGLE_INC
             self._add_pixbufs()
@@ -126,7 +126,7 @@ class RadioPopover(Gtk.Popover):
             try:
                 response = urllib.request.urlopen(url)
                 stream = Gio.MemoryInputStream.new_from_data(
-                                                response.read(), None)
+                    response.read(), None)
             except:
                 if self._thread:
                     self._add_pixbufs()
@@ -151,10 +151,10 @@ class RadioPopover(Gtk.Popover):
     def _add_pixbuf(self, stream):
         try:
             pixbuf = GdkPixbuf.Pixbuf.new_from_stream_at_scale(
-                                            stream, ArtSize.MONSTER,
-                                            ArtSize.MONSTER,
-                                            True,
-                                            None)
+                stream, ArtSize.MONSTER,
+                ArtSize.MONSTER,
+                True,
+                None)
             image = Gtk.Image()
             self._orig_pixbufs[image] = pixbuf
             # Scale preserving aspect ratio
@@ -166,10 +166,9 @@ class RadioPopover(Gtk.Popover):
             else:
                 width = width*ArtSize.BIG/height
                 height = ArtSize.BIG
-            scaled_pixbuf = pixbuf.scale_simple(
-                                               width,
-                                               height,
-                                               GdkPixbuf.InterpType.BILINEAR)
+            scaled_pixbuf = pixbuf.scale_simple(width,
+                                                height,
+                                                GdkPixbuf.InterpType.BILINEAR)
             image.set_from_pixbuf(scaled_pixbuf)
             del scaled_pixbuf
             del pixbuf

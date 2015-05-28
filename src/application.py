@@ -61,8 +61,7 @@ class Application(Gtk.Application):
                              GLib.OptionArg.NONE, "Debug lollypop", None)
         self.connect('handle-local-options', self._on_handle_local_options)
         cssProviderFile = Gio.File.new_for_uri(
-                            'resource:///org/gnome/Lollypop/application.css'
-                                              )
+            'resource:///org/gnome/Lollypop/application.css')
         cssProvider = Gtk.CssProvider()
         cssProvider.load_from_file(cssProviderFile)
         screen = Gdk.Screen.get_default()
@@ -117,7 +116,7 @@ class Application(Gtk.Application):
         Gtk.Application.do_startup(self)
         Notify.init("Lollypop")
 
-        # Check locale, we want unicode!
+        # Check locale, we want unicode!
         (code, encoding) = getlocale()
         if encoding is None or encoding != "UTF-8":
             builder = Gtk.Builder()
@@ -347,7 +346,6 @@ class Application(Gtk.Application):
         helpAction.connect('activate', self._help)
         self.set_accels_for_action('app.help', ["F1"])
         self.add_action(helpAction)
-
 
         quitAction = Gio.SimpleAction.new('quit', None)
         quitAction.connect('activate', self.prepare_to_exit)

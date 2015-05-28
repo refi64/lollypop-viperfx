@@ -17,11 +17,11 @@
 try:
     from gi.repository import Secret
 
-    SecretSchema =  {
-       "org.gnome.Lollypop.lastfm.login": Secret.SchemaAttributeType.STRING
+    SecretSchema = {
+        "org.gnome.Lollypop.lastfm.login": Secret.SchemaAttributeType.STRING
     }
     SecretAttributes = {
-            "org.gnome.Lollypop.lastfm.login": "Last.fm login"
+        "org.gnome.Lollypop.lastfm.login": "Last.fm login"
     }
 except:
     Secret = None

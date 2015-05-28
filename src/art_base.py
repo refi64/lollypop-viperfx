@@ -33,9 +33,9 @@ class BaseArt(GObject.GObject):
     _CACHE_PATH = os.path.expanduser("~") + "/.cache/lollypop"
     __gsignals__ = {
         'cover-changed': (GObject.SignalFlags.RUN_FIRST, None, (int,)),
-        'logo-changed' : (GObject.SignalFlags.RUN_FIRST, None, (str,))
+        'logo-changed': (GObject.SignalFlags.RUN_FIRST, None, (str,))
     }
-    
+
     """
         Init base art
     """
@@ -85,7 +85,7 @@ class BaseArt(GObject.GObject):
     def _make_icon_frame(self, pixbuf, selected):
         selected_color = Lp.window.get_selected_color()
         dark = Gtk.Settings.get_default().get_property(
-                                           "gtk-application-prefer-dark-theme")
+            "gtk-application-prefer-dark-theme")
         degrees = pi / 180
 
         width = pixbuf.get_width()
@@ -156,7 +156,7 @@ class BaseArt(GObject.GObject):
         @return pixbuf as Gdk.Pixbuf
     """
     def _get_default_icon(self, size, icon_name):
-        #First look in cache
+        # First look in cache
         cache_path_jpg = "%s/%s_%s.jpg" % (self._CACHE_PATH, icon_name, size)
         if os.path.exists(cache_path_jpg):
             pixbuf = GdkPixbuf.Pixbuf.new_from_file_at_scale(cache_path_jpg,

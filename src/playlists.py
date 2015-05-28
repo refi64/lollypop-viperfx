@@ -24,7 +24,7 @@ from lollypop.define import Lp
 class PlaylistsManager(GObject.GObject):
 
     _PLAYLISTS_PATH = os.path.expanduser("~") +\
-                     "/.local/share/lollypop/playlists"
+        "/.local/share/lollypop/playlists"
     __gsignals__ = {
         # Add or remove a playlist
         'playlists-changed': (GObject.SignalFlags.RUN_FIRST, None, ()),
@@ -147,7 +147,7 @@ class PlaylistsManager(GObject.GObject):
         try:
             f = open(self._PLAYLISTS_PATH+"/"+playlist_name+".m3u", "r")
             for filepath in f:
-                if filepath[0] not in [ "#", "\n" ]:
+                if filepath[0] not in ["#", "\n"]:
                     tracks.append(filepath[:-1])
             f.close()
         except Exception as e:
@@ -305,7 +305,7 @@ class PlaylistsManager(GObject.GObject):
 
 # Radios manager
 class RadiosManager(PlaylistsManager):
-    _PLAYLISTS_PATH = os.path.expanduser("~") +\
-                     "/.local/share/lollypop/radios"
+    _PLAYLISTS_PATH = os.path.expanduser("~") + "/.local/share/lollypop/radios"
+
     def __init__(self):
         PlaylistsManager.__init__(self)

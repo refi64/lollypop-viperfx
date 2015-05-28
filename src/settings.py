@@ -50,7 +50,7 @@ class Settings(Gio.Settings):
         if not paths:
             if GLib.get_user_special_dir(GLib.UserDirectory.DIRECTORY_MUSIC):
                 paths = [GLib.get_user_special_dir(
-                                          GLib.UserDirectory.DIRECTORY_MUSIC)]
+                    GLib.UserDirectory.DIRECTORY_MUSIC)]
             else:
                 print("You need to add a music path"
                       " to org.gnome.Lollypop in dconf")
@@ -72,7 +72,7 @@ class SettingsDialog:
 
         if use_csd():
             self._settings_dialog.set_titlebar(
-                                builder.get_object('header_bar'))
+                builder.get_object('header_bar'))
 
         switch_scan = builder.get_object('switch_scan')
         switch_scan.set_state(Lp.settings.get_value('auto-update'))
@@ -81,8 +81,7 @@ class SettingsDialog:
         switch_view.set_state(Lp.settings.get_value('dark-ui'))
 
         switch_background = builder.get_object('switch_background')
-        switch_background.set_state(Lp.settings.get_value(
-                                                    'background-mode'))
+        switch_background.set_state(Lp.settings.get_value('background-mode'))
 
         switch_state = builder.get_object('switch_state')
         switch_state.set_state(Lp.settings.get_value('save-state'))
@@ -119,7 +118,7 @@ class SettingsDialog:
             path = dirs.pop(0)
         else:
             path = GLib.get_user_special_dir(
-                                        GLib.UserDirectory.DIRECTORY_MUSIC)
+                GLib.UserDirectory.DIRECTORY_MUSIC)
         self._main_chooser.set_dir(path)
 
         # Others choosers
@@ -170,7 +169,7 @@ class SettingsDialog:
                                    self._on_password_lookup)
             builder.get_object('lastfm_grid').set_sensitive(True)
             self._login.set_text(
-                            Lp.settings.get_value('lastfm-login').get_string())
+                Lp.settings.get_value('lastfm-login').get_string())
 
     """
         Show dialog
@@ -200,8 +199,7 @@ class SettingsDialog:
         @param widget as unused, state as widget state
     """
     def _update_ui_setting(self, widget, state):
-        Lp.settings.set_value('dark-ui',
-                         GLib.Variant('b', state))
+        Lp.settings.set_value('dark-ui', GLib.Variant('b', state))
         if not Lp.player.is_party():
             settings = Gtk.Settings.get_default()
             settings.set_property("gtk-application-prefer-dark-theme", state)
@@ -252,20 +250,20 @@ class SettingsDialog:
         @param sync as bool
     """
     def _update_lastfm_settings(self):
-       if Lp.lastfm is not None and Secret is not None:
+        if Lp.lastfm is not None and Secret is not None:
             schema = Secret.Schema.new("org.gnome.Lollypop",
                                        Secret.SchemaFlags.NONE,
                                        SecretSchema)
             Secret.password_store_sync(schema, SecretAttributes,
                                        Secret.COLLECTION_DEFAULT,
-                                       "org.gnome.Lollypop.lastfm.login %s" %\
-                                                self._login.get_text(),
+                                       "org.gnome.Lollypop.lastfm.login %s" %
+                                       self._login.get_text(),
                                        self._password.get_text(),
                                        None)
             Lp.settings.set_value('lastfm-login',
                                   GLib.Variant('s', self._login.get_text()))
             Lp.lastfm.connect_sync(self._password.get_text())
- 
+
     """
         Close edit party dialog
         @param widget as Gtk.Window
@@ -276,7 +274,7 @@ class SettingsDialog:
         main_path = self._main_chooser.get_dir()
         choosers = self._chooser_box.get_children()
         if main_path == GLib.get_user_special_dir(
-                            GLib.UserDirectory.DIRECTORY_MUSIC)\
+            GLib.UserDirectory.DIRECTORY_MUSIC)\
            and not choosers:
             paths = []
         else:
@@ -288,7 +286,7 @@ class SettingsDialog:
 
         previous = Lp.settings.get_value('music-path')
         Lp.settings.set_value('music-path', GLib.Variant('as', paths))
-        
+
         # Last.fm
         self._update_lastfm_settings()
 
@@ -354,7 +352,7 @@ class SettingsDialog:
             password = Secret.password_lookup_finish(result)
         if password is not None:
             self._password.set_text(password)
-    
+
 
 # Widget used to let user select a collection folder
 class ChooserWidget(Gtk.Grid):

@@ -15,6 +15,7 @@ from gi.repository import Gtk, GLib
 
 from lollypop.view_device import DeviceView
 
+
 # Container for a view
 # Can contain any other widget too
 class ViewContainer(Gtk.Stack):

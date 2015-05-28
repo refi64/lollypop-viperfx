@@ -49,9 +49,7 @@ class DeviceManagerWidget(Gtk.Bin):
         self._fraction = 0.0
 
         builder = Gtk.Builder()
-        builder.add_from_resource(
-                '/org/gnome/Lollypop/DeviceManagerWidget.ui'
-                                  )
+        builder.add_from_resource('/org/gnome/Lollypop/DeviceManagerWidget.ui')
         self._error_label = builder.get_object('error-label')
 
         self._model = Gtk.ListStore(bool, str)
@@ -248,7 +246,7 @@ class DeviceManagerWidget(Gtk.Bin):
                 album_id = Lp.tracks.get_album_id(track_id, sql)
                 album_name = Lp.albums.get_name(album_id, sql)
                 artist_name = translate_artist_name(
-                                 Lp.albums.get_artist_name(album_id, sql))
+                    Lp.albums.get_artist_name(album_id, sql))
                 track_path = Lp.tracks.get_path(track_id, sql)
                 on_device_album_path = "%s/tracks/%s_%s" %\
                                        (self._path,
@@ -303,7 +301,7 @@ class DeviceManagerWidget(Gtk.Bin):
             album_id = Lp.tracks.get_album_id(track_id, sql)
             album_name = Lp.albums.get_name(album_id, sql)
             artist_name = translate_artist_name(
-                                 Lp.albums.get_artist_name(album_id, sql))
+                Lp.albums.get_artist_name(album_id, sql))
             track_path = Lp.tracks.get_path(track_id, sql)
             album_path = "%s/tracks/%s_%s" % (self._path,
                                               artist_name.lower(),

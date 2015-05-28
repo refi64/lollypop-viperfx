@@ -18,7 +18,8 @@ from lollypop.player_base import BasePlayer
 from lollypop.track import Track
 from lollypop.list import LinkedList
 
-# Manage shuffle tracks and party mode
+
+# Manage shuffle tracks and party mode
 class ShufflePlayer(BasePlayer):
     """
         Init shuffle player
@@ -50,7 +51,7 @@ class ShufflePlayer(BasePlayer):
     def next(self):
         track_id = None
         if self._shuffle in [Shuffle.TRACKS, Shuffle.TRACKS_ARTIST] or\
-             self._is_party:
+                self._is_party:
             if self._history is not None and \
                self._history.has_next():
                 track_id = self._history.get_next().get_value()
@@ -65,7 +66,7 @@ class ShufflePlayer(BasePlayer):
     def prev(self):
         track_id = None
         if self._shuffle in [Shuffle.TRACKS, Shuffle.TRACKS_ARTIST] or\
-            self._is_party:
+                self._is_party:
             if self._history is not None and \
                self._history.has_prev():
                 track_id = self._history.get_prev().get_value()
@@ -114,8 +115,8 @@ class ShufflePlayer(BasePlayer):
                 self._albums = Lp.albums.get_ids()
 
             # Start a new song if not playing
-            if (self.current_track.id in [None, Type.RADIOS ])\
-               and self._albums:
+            if (self.current_track.id in [None, Type.RADIOS])\
+                    and self._albums:
                 track_id = self._get_random()
                 self.load(Track(track_id))
             elif not self.is_playing():
@@ -226,19 +227,19 @@ class ShufflePlayer(BasePlayer):
             if self._history is not None:
                 next = self._history.get_next()
                 prev = self._history.get_prev()
-                # Next track
+                # Next track
                 if next is not None and\
-                   self.current_track.id == next.get_value():
+                        self.current_track.id == next.get_value():
                     next = self._history.get_next()
                     next.set_prev(self._history)
                     self._history = next
-                # Previous track
+                # Previous track
                 elif prev is not None and\
-                     self.current_track.id == prev.get_value():
+                        self.current_track.id == prev.get_value():
                     prev = self._history.get_prev()
                     prev.set_next(self._history)
                     self._history = prev
-                # New track
+                # New track
                 elif self._history.get_value() != self.current_track.id:
                     new_list = LinkedList(self.current_track.id,
                                           None,

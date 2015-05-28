@@ -30,7 +30,7 @@ class ToolbarTitle(Gtk.Bin):
         builder = Gtk.Builder()
         builder.add_from_resource('/org/gnome/Lollypop/ToolbarTitle.ui')
         builder.connect_signals(self)
-        
+
         self.add(builder.get_object('title'))
 
         self._progress = builder.get_object('progress_scale')
@@ -72,7 +72,7 @@ class ToolbarTitle(Gtk.Bin):
         else:
             self._progress.set_range(0.0, player.current_track.duration * 60)
             self._total_time_label.set_text(
-                            seconds_to_string(player.current_track.duration))
+                seconds_to_string(player.current_track.duration))
             self._total_time_label.show()
             self._timelabel.set_text("0:00")
             self._timelabel.show()

@@ -22,7 +22,7 @@ from lollypop.define import Lp, ArtSize
 from lollypop.art import Art
 
 
-# Tunein popup
+# Tunein popup
 class TuneinPopover(Gtk.Popover):
     """
         Init Popover
@@ -41,8 +41,7 @@ class TuneinPopover(Gtk.Popover):
         self._stack.show()
 
         builder = Gtk.Builder()
-        builder.add_from_resource(
-                    '/org/gnome/Lollypop/TuneinPopover.ui')
+        builder.add_from_resource('/org/gnome/Lollypop/TuneinPopover.ui')
         builder.connect_signals(self)
         widget = builder.get_object('widget')
         widget.attach(self._stack, 0, 2, 4, 1)
@@ -61,7 +60,7 @@ class TuneinPopover(Gtk.Popover):
         builder.get_object('viewport').add(self._view)
         builder.get_object('viewport').set_property('margin', 10)
 
-        self._scrolled = builder.get_object('scrolled') 
+        self._scrolled = builder.get_object('scrolled')
         self._spinner = builder.get_object('spinner')
         self._not_found = builder.get_object('notfound')
         self._stack.add(self._spinner)
@@ -137,9 +136,8 @@ class TuneinPopover(Gtk.Popover):
         child.set_property('halign', Gtk.Align.START)
         child.show()
         if item.TYPE == "audio":
-            button = Gtk.Button.new_from_icon_name(
-                                               'list-add-symbolic',
-                                               Gtk.IconSize.MENU)
+            button = Gtk.Button.new_from_icon_name('list-add-symbolic',
+                                                   Gtk.IconSize.MENU)
             button.connect('clicked', self._on_button_clicked, item)
             button.set_relief(Gtk.ReliefStyle.NONE)
             button.show()
@@ -178,14 +176,14 @@ class TuneinPopover(Gtk.Popover):
             cache = Art._RADIOS_PATH
             urllib.request.urlretrieve(item.LOGO, cache+"/%s.png" % item.TEXT)
         except Exception as e:
-            print("TuneinPopover::_add_radio: %s" %e)
+            print("TuneinPopover::_add_radio: %s" % e)
         url = item.URL
-        # Tune in embbed uri in ashx files, so get content if possible
+        # Tune in embbed uri in ashx files, so get content if possible
         try:
             response = urllib.request.urlopen(url)
             url = response.read().decode('utf-8')
         except Exception as e:
-            print("TuneinPopover::_add_radio: %s" %e)
+            print("TuneinPopover::_add_radio: %s" % e)
         self._radio_manager.add(item.TEXT)
         self._radio_manager.add_track(item.TEXT,
                                       url)
@@ -231,7 +229,7 @@ class TuneinPopover(Gtk.Popover):
             for i in self._current_items:
                 Lp.player.load_external(i.URL, i.TEXT)
             Lp.player.play_this_external(item.URL)
-            # Only toolbar will get this one, so only create small in cache
+            # Only toolbar will get this one, so only create small in cache
             if Gio.NetworkMonitor.get_default().get_network_available():
                 start_new_thread(Lp.art.copy_uri_to_cache, (item.LOGO,
                                                             item.TEXT,

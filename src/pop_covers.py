@@ -20,6 +20,7 @@ from gettext import gettext as _
 
 from lollypop.define import Lp, ArtSize, GOOGLE_INC, GOOGLE_MAX
 
+
 # Show a popover with album covers from the web
 class CoversPopover(Gtk.Popover):
 
@@ -43,8 +44,7 @@ class CoversPopover(Gtk.Popover):
         self._stack.show()
 
         builder = Gtk.Builder()
-        builder.add_from_resource(
-                    '/org/gnome/Lollypop/CoversPopover.ui')
+        builder.add_from_resource('/org/gnome/Lollypop/CoversPopover.ui')
 
         widget = builder.get_object('widget')
         widget.add(self._stack)
@@ -129,7 +129,7 @@ class CoversPopover(Gtk.Popover):
             try:
                 response = urllib.request.urlopen(url)
                 stream = Gio.MemoryInputStream.new_from_data(
-                                                response.read(), None)
+                    response.read(), None)
             except:
                 if self._thread:
                     self._add_pixbufs()
@@ -155,10 +155,10 @@ class CoversPopover(Gtk.Popover):
     def _add_stream(self, stream):
         try:
             pixbuf = GdkPixbuf.Pixbuf.new_from_stream_at_scale(
-                                            stream, ArtSize.MONSTER,
-                                            ArtSize.MONSTER,
-                                            False,
-                                            None)
+                stream, ArtSize.MONSTER,
+                ArtSize.MONSTER,
+                False,
+                None)
             self._add_pixbuf(pixbuf)
         except Exception as e:
             print(e)

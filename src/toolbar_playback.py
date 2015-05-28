@@ -17,6 +17,7 @@ from gettext import gettext as _
 from lollypop.pop_infos import InfosPopover
 from lollypop.define import Lp, Type
 
+
 class ToolbarPlayback(Gtk.Bin):
     """
         Init playback toolbar
@@ -26,9 +27,9 @@ class ToolbarPlayback(Gtk.Bin):
         builder = Gtk.Builder()
         builder.add_from_resource('/org/gnome/Lollypop/ToolbarPlayback.ui')
         builder.connect_signals(self)
-        
+
         self.add(builder.get_object('playback'))
-        
+
         self._prev_btn = builder.get_object('previous_button')
         self._play_btn = builder.get_object('play_button')
         self._next_btn = builder.get_object('next_button')
@@ -52,15 +53,15 @@ class ToolbarPlayback(Gtk.Bin):
         self._play_btn.set_sensitive(True)
         self._prev_btn.set_sensitive(True)
         self._next_btn.set_sensitive(True)
-        # GTK bug => https://bugzilla.gnome.org/show_bug.cgi?id=749965
-        #prev_artist = escape(player.prev_track.artist)
-        #prev_title = escape(player.prev_track.title)
-        #next_artist = escape(player.next_track.artist)
-        #next_title = escape(player.next_track.title)
-        #self._next_btn.set_tooltip_markup("<b>%s</b>\n%s" %\
+        # GTK bug => https://bugzilla.gnome.org/show_bug.cgi?id=749965
+        # prev_artist = escape(player.prev_track.artist)
+        # prev_title = escape(player.prev_track.title)
+        # next_artist = escape(player.next_track.artist)
+        # next_title = escape(player.next_track.title)
+        # self._next_btn.set_tooltip_markup("<b>%s</b>\n%s" %\
         #                                  (next_artist,
         #                                   next_title))
-        #self._prev_btn.set_tooltip_markup("<b>%s</b>\n%s" %\
+        # self._prev_btn.set_tooltip_markup("<b>%s</b>\n%s" %\
         #                                  (prev_artist,
         #                                   prev_title))
 

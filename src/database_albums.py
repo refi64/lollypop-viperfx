@@ -126,8 +126,8 @@ class AlbumsDatabase:
     def get_popularity(self, album_id, sql=None):
         if not sql:
             sql = Lp.sql
-        result = sql.execute("SELECT popularity FROM albums WHERE "
-                             "rowid=?",(album_id,))
+        result = sql.execute("SELECT popularity FROM albums WHERE\
+                             rowid=?", (album_id,))
 
         v = result.fetchone()
         if v:
@@ -179,8 +179,8 @@ class AlbumsDatabase:
             sql = Lp.sql
         result = sql.execute("SELECT rowid FROM albums where name=?\
                               AND artist_id=?\
-                              AND noaartist=0", (album_name,
-                                                   artist_id))
+                              AND noaartist=0",
+                             (album_name, artist_id))
         v = result.fetchone()
         if v:
             return v[0]
@@ -497,7 +497,6 @@ class AlbumsDatabase:
             discs += row
         return discs
 
-
     """
         Get tracks for album id
         @param album id as int
@@ -659,16 +658,16 @@ class AlbumsDatabase:
             result = sql.execute("SELECT albums.rowid FROM albums\
                                   WHERE artist_id=?\
                                   ORDER BY albums.name, albums.year",
-                                  (Type.COMPILATIONS,))
+                                 (Type.COMPILATIONS,))
         # Get compilation for genre id
         else:
             result = sql.execute(
-                        "SELECT albums.rowid FROM albums, album_genres\
-                         WHERE album_genres.genre_id=?\
-                         AND album_genres.album_id=albums.rowid\
-                         AND albums.artist_id=?\
-                         ORDER BY albums.name,\
-                         albums.year", (genre_id, Type.COMPILATIONS))
+                "SELECT albums.rowid FROM albums, album_genres\
+                 WHERE album_genres.genre_id=?\
+                 AND album_genres.album_id=albums.rowid\
+                 AND albums.artist_id=?\
+                 ORDER BY albums.name,\
+                 albums.year", (genre_id, Type.COMPILATIONS))
         for row in result:
             albums += row
         return albums
@@ -741,7 +740,8 @@ class AlbumsDatabase:
             result = sql.execute("SELECT track_id FROM tracks, track_genres\
                                  WHERE track_genres.track_id == tracks.rowid\
                                  AND tracks.album_id=?\
-                                 AND track_genres.genre_id=?", (album_id, genre_id))
+                                 AND track_genres.genre_id=?",
+                                 (album_id, genre_id))
             v = result.fetchone()
             if not v:
                 ret = True

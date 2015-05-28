@@ -32,9 +32,10 @@ from _thread import start_new_thread
 from lollypop.define import Lp, SecretSchema, SecretAttributes
 from lollypop.utils import translate_artist_name
 
+
 class LastFM(LastFMNetwork):
     """
-       We recommend you don't distribute the API key and secret with your app, 
+       We recommend you don't distribute the API key and secret with your app,
        and that you ask users who want to build it to apply for a key of
        their own. We don't believe that this would violate the terms of most
        open-source licenses.
@@ -106,7 +107,7 @@ class LastFM(LastFMNetwork):
             url = last_artist.get_url()
             try:
                 content = last_artist.get_bio_summary(
-                                           language=getdefaultlocale()[0][0:2])
+                    language=getdefaultlocale()[0][0:2])
             except:
                 content = last_artist.get_bio_summary()
             content = re.sub(r'.*Last.fm.*', '', content)
@@ -154,11 +155,11 @@ class LastFM(LastFMNetwork):
             self._is_auth = False
         try:
             LastFMNetwork.__init__(
-             self,
-             api_key = self._API_KEY,
-             api_secret=self._API_SECRET,
-             username = Lp.settings.get_value('lastfm-login').get_string(),
-             password_hash = md5(password))
+                self,
+                api_key=self._API_KEY,
+                api_secret=self._API_SECRET,
+                username=Lp.settings.get_value('lastfm-login').get_string(),
+                password_hash=md5(password))
         except:
             pass
 

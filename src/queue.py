@@ -36,11 +36,10 @@ class QueueWidget(Gtk.Popover):
         self._signal_id2 = None
 
         builder = Gtk.Builder()
-        builder.add_from_resource(
-                        '/org/gnome/Lollypop/QueueWidget.ui')
+        builder.add_from_resource('/org/gnome/Lollypop/QueueWidget.ui')
 
         self._model = Gtk.ListStore(GdkPixbuf.Pixbuf,  # Cover
-                                    str,               # Artist
+                                    str,               # Artist
                                     str,               # icon
                                     int)               # id
 
@@ -79,7 +78,7 @@ class QueueWidget(Gtk.Popover):
         Show queue popover
         Populate treeview with current queue
     """
-    #TODO Threaded loading
+    # TODO Threaded loading
     def do_show(self):
         size_setting = Lp.settings.get_value('window-size')
         if isinstance(size_setting[1], int):
@@ -94,8 +93,8 @@ class QueueWidget(Gtk.Popover):
             track_name = Lp.tracks.get_name(track_id)
             pixbuf = Lp.art.get_album(album_id, ArtSize.MEDIUM)
             title = "<b>%s</b>\n%s" %\
-                                (escape(translate_artist_name(artist_name)),
-                                 escape(track_name))
+                (escape(translate_artist_name(artist_name)),
+                 escape(track_name))
             self._model.append([pixbuf,
                                 title,
                                 'user-trash-symbolic',
@@ -104,8 +103,8 @@ class QueueWidget(Gtk.Popover):
 
         self._signal_id1 = Lp.player.connect('current-changed',
                                              self._on_current_changed)
-        self._signal_id2 =  self._model.connect('row-deleted',
-                                                self._updated_rows)
+        self._signal_id2 = self._model.connect('row-deleted',
+                                               self._updated_rows)
         Gtk.Popover.do_show(self)
 
     """

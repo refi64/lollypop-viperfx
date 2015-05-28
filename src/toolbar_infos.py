@@ -30,11 +30,11 @@ class ToolbarInfos(Gtk.Bin):
         builder = Gtk.Builder()
         builder.add_from_resource('/org/gnome/Lollypop/ToolbarInfos.ui')
         builder.connect_signals(self)
-        
+
         infobox = builder.get_object('infos')
         infobox.set_property('has-tooltip', True)
         self.add(infobox)
-        
+
         self._title_label = builder.get_object('title')
         self._artist_label = builder.get_object('artist')
         self._cover = builder.get_object('cover')
@@ -46,7 +46,6 @@ class ToolbarInfos(Gtk.Bin):
         Lp.art.connect('cover-changed', self._update_cover)
         Lp.art.connect('logo-changed', self._update_logo)
 
-
     """
         Update toolbar on current changed
         @param player as Player
@@ -55,7 +54,7 @@ class ToolbarInfos(Gtk.Bin):
         art = None
         self._artist_label.set_text(player.current_track.artist)
         self._title_label.set_text(player.current_track.title)
-  
+
         if player.current_track.id == Type.RADIOS:
             art = Lp.art.get_radio(player.current_track.artist,
                                    ArtSize.SMALL)
@@ -113,7 +112,7 @@ class ToolbarInfos(Gtk.Bin):
         @param event as Gdk.Event
     """
     def _on_infobox_clicked(self, eventbox, event):
-        #TODO Implement a widget to show external playlist
+        # TODO Implement a widget to show external playlist
         if Lp.player.current_track.id == Type.EXTERNALS:
             return
         if Lp.player.current_track.id is not None:
@@ -139,7 +138,7 @@ class ToolbarInfos(Gtk.Bin):
         @param tooltip as Gtk.Tooltip
     """
     def _on_query_tooltip(self, widget, x, y, keyboard, tooltip):
-        # GTK bug => https://bugzilla.gnome.org/show_bug.cgi?id=749965
+        # GTK bug => https://bugzilla.gnome.org/show_bug.cgi?id=749965
         return False
         layout_title = self._title_label.get_layout()
         layout_artist = self._artist_label.get_layout()

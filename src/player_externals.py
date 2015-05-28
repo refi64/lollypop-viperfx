@@ -18,7 +18,7 @@ from lollypop.player_base import BasePlayer
 from lollypop.track import Track
 
 
-# Manage user playlist
+# Manage user playlist
 class ExternalsPlayer(BasePlayer):
     """
         Init user playlist

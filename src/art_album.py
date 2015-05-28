@@ -61,7 +61,6 @@ class AlbumArt(BaseArt, TagReader):
             print("Art::get_album_cache_path(): %s" % e, ascii(filename))
             return None
 
-   
     """
         Look for covers in dir:
         - favorite from settings first
@@ -84,7 +83,7 @@ class AlbumArt(BaseArt, TagReader):
             elif os.path.exists(album_path + "/" + artist_name +
                                 "_" + album_name + ".jpg"):
                 return album_path + "/" +\
-                       artist_name + "_" + album_name + ".jpg"
+                    artist_name + "_" + album_name + ".jpg"
 
             for file in os.listdir(album_path):
                 lowername = file.lower()
@@ -134,9 +133,9 @@ class AlbumArt(BaseArt, TagReader):
             return self._make_icon_frame(pixbuf, selected)
         else:
             return self._make_icon_frame(self._get_default_icon(
-                                                    size,
-                                                    'folder-music-symbolic'),
-                                         selected)
+                size,
+                'folder-music-symbolic'),
+                selected)
 
     """
         Return a pixbuf for album_id, covers are cached as jpg.
@@ -174,10 +173,10 @@ class AlbumArt(BaseArt, TagReader):
                     except Exception as e:
                         print(e)
                         return self._make_icon_frame(
-                                            self._get_default_icon(
-                                                    size,
-                                                    'folder-music-symbolic'),
-                                            selected)
+                            self._get_default_icon(
+                                size,
+                                'folder-music-symbolic'),
+                            selected)
                 # No cover, use default one
                 if pixbuf is None:
                     if Lp.lastfm is not None:
@@ -199,9 +198,9 @@ class AlbumArt(BaseArt, TagReader):
         except Exception as e:
             print(e)
             return self._make_icon_frame(self._get_default_icon(
-                                                    size,
-                                                    'folder-music-symbolic'),
-                                         selected)
+                size,
+                'folder-music-symbolic'),
+                selected)
 
     """
         Save pixbuf for album id
@@ -234,8 +233,8 @@ class AlbumArt(BaseArt, TagReader):
         # Many albums with same path, suffix with artist_album name
         if path_count > 1:
             artpath = album_path + "/" +\
-                      artist_name + "_" +\
-                      album_name + ".jpg"
+                artist_name + "_" +\
+                album_name + ".jpg"
             if os.path.exists(album_path+"/"+self._favorite):
                 os.remove(album_path+"/"+self._favorite)
         else:
@@ -296,5 +295,5 @@ class AlbumArt(BaseArt, TagReader):
     """
     def _get_album_cache_name(self, album_id, sql=None):
         path = Lp.albums.get_name(album_id, sql) + "_" + \
-               Lp.albums.get_artist_name(album_id, sql)
+            Lp.albums.get_artist_name(album_id, sql)
         return path[0:240].replace("/", "_")

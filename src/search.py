@@ -273,9 +273,8 @@ class SearchWidget(Gtk.Popover):
             for album_id in Lp.albums.get_ids(artist_id, None, sql):
                 if (album_id, artist_id) not in albums:
                     albums.append((album_id, artist_id))
-            for track_id, track_name in Lp.tracks.get_as_non_aartist(
-                                                                   artist_id,
-                                                                   sql):
+            for track_id, track_name in Lp.tracks.get_as_non_aartist(artist_id,
+                                                                     sql):
                 tracks_non_aartist.append((track_id, track_name))
 
         albums += Lp.albums.search(searched, sql)
@@ -302,13 +301,11 @@ class SearchWidget(Gtk.Popover):
             artist_name = ""
             if album_artist_id != Type.COMPILATIONS:
                 artist_name = Lp.albums.get_artist_name(
-                                            search_obj.album_id,
-                                            sql) + ", "
+                    search_obj.album_id, sql) + ", "
             for artist_id in Lp.tracks.get_artist_ids(track_id, sql):
                 if artist_id != album_artist_id:
                     artist_name += translate_artist_name(
-                                    Lp.artists.get_name(artist_id,
-                                                        sql)) + ", "
+                        Lp.artists.get_name(artist_id, sql)) + ", "
 
             search_obj.artist = artist_name[:-2]
 
@@ -336,7 +333,7 @@ class SearchWidget(Gtk.Popover):
                     result.title += " (%s)" % result.count
                 search_row.set_text(result.artist, result.title)
                 search_row.set_cover(Lp.art.get_album(result.album_id,
-                                                ArtSize.MEDIUM))
+                                     ArtSize.MEDIUM))
                 search_row.id = result.id
                 search_row.is_track = result.is_track
                 self._view.add(search_row)

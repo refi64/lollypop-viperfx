@@ -56,7 +56,7 @@ class Toolbar(Gtk.HeaderBar):
         padding = style.get_padding(Gtk.StateFlags.NORMAL)
         toolbar_height = self._toolbar_playback.get_preferred_height()
         return (toolbar_height[0]+padding.top+padding.bottom,
-                toolbar_height[1]+padding.top+padding.bottom )
+                toolbar_height[1]+padding.top+padding.bottom)
 
     """
         Update progress bar position

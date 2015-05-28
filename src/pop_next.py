@@ -16,7 +16,7 @@ from gi.repository import Gtk
 from lollypop.define import Lp, ArtSize
 
 
-# Show next track to play
+# Show next track to play
 class NextPopover(Gtk.Popover):
     """
         Init popover
@@ -40,7 +40,7 @@ class NextPopover(Gtk.Popover):
         self._artist_label.set_text(Lp.player.next_track.artist)
         self._title_label.set_text(Lp.player.next_track.title)
         art = Lp.art.get_album(Lp.player.next_track.album_id,
-                         ArtSize.MEDIUM)
+                               ArtSize.MEDIUM)
         if art is not None:
             self._cover.set_from_pixbuf(art)
             del art

@@ -44,9 +44,9 @@ class ArtistView(View):
             builder = Gtk.Builder()
             builder.add_from_resource('/org/gnome/Lollypop/ArtistView.ui')
             builder.connect_signals(self)
-            self.attach(builder.get_object('ArtistView'),0, 0, 1, 1)
+            self.attach(builder.get_object('ArtistView'), 0, 0, 1, 1)
             builder.get_object('artist').set_label(translate_artist_name(
-                                                            self._artist_name))
+                self._artist_name))
 
         self._show_menu = show_artist_details
 
@@ -140,7 +140,7 @@ class ArtistView(View):
             self._popover.populate()
             self._popover.show()
 
-    
+
 # Album contextual view
 class AlbumContextView(View):
     """
@@ -301,9 +301,8 @@ class AlbumsView(View):
         @param param as Gtk.Param
     """
     def _on_position_notify(self, paned, param):
-        Lp.settings.set_value(
-                            'paned-context-height',
-                            GLib.Variant('i', paned.get_position()))
+        Lp.settings.set_value('paned-context-height',
+                              GLib.Variant('i', paned.get_position()))
         return False
 
     """

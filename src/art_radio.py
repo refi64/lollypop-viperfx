@@ -23,7 +23,7 @@ from lollypop.art_base import BaseArt
 # Manager radio artwork
 class RadioArt(BaseArt):
     _RADIOS_PATH = os.path.expanduser("~") +\
-                     "/.local/share/lollypop/radios"
+        "/.local/share/lollypop/radios"
     """
         Init radio art
     """
@@ -84,8 +84,8 @@ class RadioArt(BaseArt):
                                                                     size)
             if pixbuf is None:
                 pixbuf = self._get_default_icon(
-                                            size,
-                                            'audio-input-microphone-symbolic')
+                    size,
+                    'audio-input-microphone-symbolic')
 
             # Gdk < 3.15 was missing save method
             # > 3.15 is missing savev method
@@ -100,8 +100,8 @@ class RadioArt(BaseArt):
         except Exception as e:
             print(e)
             return self._make_icon_frame(self._get_default_icon(
-                                          size,
-                                          'audio-input-microphone-symbolic'),
+                                         size,
+                                         'audio-input-microphone-symbolic'),
                                          selected)
 
     """

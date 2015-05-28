@@ -168,7 +168,7 @@ class Player(BinPlayer, QueuePlayer, UserPlaylistPlayer, RadioPlayer,
                 self.emit('current-changed')
             else:
                 print("Player::restore_state(): track missing")
-    
+
     """
         Set party mode on if party is True
         Play a new random track if not already playing
@@ -210,9 +210,9 @@ class Player(BinPlayer, QueuePlayer, UserPlaylistPlayer, RadioPlayer,
         @param sql as sqlite cursor
     """
     def _set_next(self):
-        # Look at externals
+        # Look at externals
         self.next_track = ExternalsPlayer.next(self)
-        
+
         # Look at radio
         if self.next_track.id is None:
             self.next_track = RadioPlayer.next(self)
@@ -232,7 +232,6 @@ class Player(BinPlayer, QueuePlayer, UserPlaylistPlayer, RadioPlayer,
         # Get a linear track then
         if self.next_track.id is None:
             self.next_track = LinearPlayer.next(self)
-
 
     """
         On stream start

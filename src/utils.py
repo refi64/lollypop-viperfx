@@ -25,13 +25,14 @@ import os
 
 
 def debug(str):
-    if Lp.debug == True:
+    if Lp.debug is True:
         print(str)
 
 
 """
     Return True if desktop is elementary os
 """
+
 
 def is_eos():
     return os.environ.get("XDG_CURRENT_DESKTOP") == "Pantheon"
@@ -41,6 +42,7 @@ def is_eos():
     Return True if desktop is Unity
 """
 
+
 def is_unity():
     return os.environ.get("XDG_CURRENT_DESKTOP") == "Unity"
 
@@ -49,12 +51,15 @@ def is_unity():
     Return True if desktop is Gnome
 """
 
+
 def is_gnome():
     return os.environ.get("XDG_CURRENT_DESKTOP") == "GNOME"
 
 """
     Return True if CSDs are to be used based on several criterions
 """
+
+
 def use_csd():
     return is_gnome() or is_eos() or Lp.settings.get_value('force-csd')
 
@@ -123,7 +128,9 @@ def seconds_to_string(duration):
     @param Gdk.Color
     @return string
 """
+
+
 def rgba_to_hex(color):
-    return "#{0:02x}{1:02x}{2:02x}".format(int(color.red  * 255),
+    return "#{0:02x}{1:02x}{2:02x}".format(int(color.red * 255),
                                            int(color.green * 255),
                                            int(color.blue * 255))

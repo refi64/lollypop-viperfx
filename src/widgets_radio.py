@@ -42,7 +42,7 @@ class RadioWidget(AlbumWidget):
         self.add(builder.get_object('widget'))
         self.set_cover()
         self.set_property('halign', Gtk.Align.START)
-        # Set minimum width
+        # Set minimum width
         self.set_property('width-request', ArtSize.BIG+ArtSize.BORDER*2)
 
     """
@@ -84,12 +84,12 @@ class RadioWidget(AlbumWidget):
     """
     def set_cover(self, force=False):
         selected = Lp.player.current_track.id == Type.RADIOS and\
-                   self._name == Lp.player.current_track.artist
+            self._name == Lp.player.current_track.artist
         if self._cover is not None and (selected != self._selected or force):
             self._selected = selected
             pixbuf = Lp.art.get_radio(self._name,
-                                           ArtSize.BIG,
-                                           selected)
+                                      ArtSize.BIG,
+                                      selected)
             self._cover.set_from_pixbuf(pixbuf)
             del pixbuf
 
@@ -99,11 +99,10 @@ class RadioWidget(AlbumWidget):
     def update_cover(self):
         if self._cover is not None:
             self._selected = Lp.player.current_track.id == Type.RADIOS\
-                             and self._name == Lp.player.\
-                                                        current_track.artist
+                and self._name == Lp.player.current_track.artist
             pixbuf = Lp.art.get_radio(self._name,
-                                           ArtSize.BIG,
-                                           self._selected)
+                                      ArtSize.BIG,
+                                      self._selected)
             self._cover.set_from_pixbuf(pixbuf)
             del pixbuf
 

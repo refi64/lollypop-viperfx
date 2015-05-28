@@ -15,6 +15,7 @@ from gi.repository import Gtk, GLib
 
 from lollypop.define import Lp
 
+
 # Generic view
 class View(Gtk.Grid):
 

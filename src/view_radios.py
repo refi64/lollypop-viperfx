@@ -21,6 +21,7 @@ from lollypop.pop_tunein import TuneinPopover
 from lollypop.define import Lp
 from lollypop.track import Track
 
+
 # Radios view
 class RadiosView(View):
     """
@@ -99,7 +100,7 @@ class RadiosView(View):
     def _get_children(self):
         children = []
         for child in self._radiobox.get_children():
-            widget =  child.get_child()
+            widget = child.get_child()
             children.append(widget)
         return children
 
@@ -153,7 +154,6 @@ class RadiosView(View):
                 old_child = child
             else:
                 currents.append(widget.get_name())
-
 
         # Add the new radio
         for name in radios_name:

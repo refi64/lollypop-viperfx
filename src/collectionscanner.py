@@ -108,10 +108,10 @@ class CollectionScanner(GObject.GObject, ScannerTagReader):
         count = 0
         for path in paths:
             for root, dirs, files in os.walk(path):
-                # Add dirs
+                # Add dirs
                 for d in dirs:
                     track_dirs.append(os.path.join(root, d))
-                # Add files
+                # Add files
                 for name in files:
                     filepath = os.path.join(root, name)
                     try:
@@ -122,7 +122,7 @@ class CollectionScanner(GObject.GObject, ScannerTagReader):
                         else:
                             debug("%s not detected as a music file" % filepath)
                     except Exception as e:
-                        print("CollectionScanner::_get_objects_for_paths: %s" \
+                        print("CollectionScanner::_get_objects_for_paths: %s"
                               % e)
         return (tracks, track_dirs, count)
 
@@ -156,8 +156,7 @@ class CollectionScanner(GObject.GObject, ScannerTagReader):
         orig_tracks = Lp.tracks.get_paths(sql)
         self._is_empty = len(orig_tracks) == 0
 
-
-        # Add monitors on dirs
+        # Add monitors on dirs
         (new_tracks, new_dirs, count) = self._get_objects_for_paths(paths)
         if self._inotify is not None:
             for d in new_dirs:
@@ -169,7 +168,7 @@ class CollectionScanner(GObject.GObject, ScannerTagReader):
                 sql.close()
                 self._is_locked = False
                 return
-            GLib.idle_add(self._update_progress, i, count)        
+            GLib.idle_add(self._update_progress, i, count)
             try:
                 mtime = int(os.path.getmtime(filepath))
                 if filepath not in orig_tracks:
@@ -238,7 +237,7 @@ class CollectionScanner(GObject.GObject, ScannerTagReader):
             new_artist_ids.append(album_artist_id)
 
         noaartist = False
-        if album_artist_id == None:
+        if album_artist_id is None:
             album_artist_id = artist_ids[0]
             noaartist = True
 

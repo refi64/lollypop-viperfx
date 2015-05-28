@@ -132,7 +132,8 @@ class PlaylistsManageView(View):
     def __init__(self, object_id, genre_id, is_album, width):
         View.__init__(self)
         builder = Gtk.Builder()
-        builder.add_from_resource('/org/gnome/Lollypop/PlaylistsManagerView.ui')
+        builder.add_from_resource(
+            '/org/gnome/Lollypop/PlaylistsManagerView.ui')
         if object_id != -1:
             builder.get_object('back_btn').show()
         builder.connect_signals(self)

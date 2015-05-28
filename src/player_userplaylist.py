@@ -18,7 +18,7 @@ from lollypop.player_base import BasePlayer
 from lollypop.track import Track
 
 
-# Manage user playlist
+# Manage user playlist
 class UserPlaylistPlayer(BasePlayer):
     """
         Init user playlist
@@ -95,5 +95,5 @@ class UserPlaylistPlayer(BasePlayer):
             if self._user_playlist_backup is not None:
                 self._user_playlist = self._user_playlist_backup
                 self._position = self._user_playlist.index(
-                                                              self.current_track.id)
+                    self.current_track.id)
                 self._user_playlist_backup = None

@@ -18,6 +18,7 @@ from _thread import start_new_thread
 from lollypop.utils import translate_artist_name, format_artist_name
 from lollypop.define import Type, Lp
 
+
 class SelectionPopover(Gtk.Popover):
     """
         Init popover
@@ -33,7 +34,7 @@ class SelectionPopover(Gtk.Popover):
         self.set_property('width-request', 100)
         self.set_property('height-request', 50)
         self.add(self._label)
-    
+
     """
         Set popover text
         @param text as string

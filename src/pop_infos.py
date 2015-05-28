@@ -83,13 +83,13 @@ class ArtistInfos(Gtk.Bin):
             builder.get_object('unlove_btn').show()
 
         self._url_btn = builder.get_object('lastfm')
-        self._image =  builder.get_object('image')
-        self._content =  builder.get_object('content')
+        self._image = builder.get_object('image')
+        self._content = builder.get_object('content')
 
         self._label = builder.get_object('label')
         self._label.set_text(_("Please wait..."))
 
-        self._scrolled = builder.get_object('scrolled') 
+        self._scrolled = builder.get_object('scrolled')
         self._spinner = builder.get_object('spinner')
         self._not_found = builder.get_object('notfound')
         self._stack.add(self._spinner)
@@ -122,7 +122,7 @@ class ArtistInfos(Gtk.Bin):
                 stream = Gio.MemoryInputStream.new_from_data(response.read(),
                                                              None)
         except Exception as e:
-            print("PopArtistInfos::_populate: %s" %e)
+            print("PopArtistInfos::_populate: %s" % e)
             content = None
         GLib.idle_add(self._set_content, content, url, stream)
 
