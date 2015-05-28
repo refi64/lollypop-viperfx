@@ -75,6 +75,9 @@
         <property name="image">image2</property>
         <property name="relief">none</property>
         <signal name="clicked" handler="_on_love_btn_clicked" swapped="no"/>
+        <style>
+          <class name="rounded"/>
+        </style>
       </object>
       <packing>
         <property name="left_attach">0</property>
@@ -90,6 +93,9 @@
         <property name="image">image1</property>
         <property name="relief">none</property>
         <signal name="clicked" handler="_on_unlove_btn_clicked" swapped="no"/>
+        <style>
+          <class name="rounded"/>
+        </style>
       </object>
       <packing>
         <property name="left_attach">1</property>
