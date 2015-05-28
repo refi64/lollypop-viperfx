@@ -476,7 +476,7 @@ class AlbumDetailedWidget(AlbumWidget):
             if found:
                 star.set_property("opacity", 0.2)
             else:
-                star.set_property("opacity", 1.0)
+                star.set_property("opacity", 0.8)
             if star == event_star:
                 found = True
 
@@ -495,23 +495,23 @@ class AlbumDetailedWidget(AlbumWidget):
                     self._stars[i].set_property("opacity", 0.2)
             else:
                 if stars >= 1:
-                    self._stars[0].set_property("opacity", 1.0)
+                    self._stars[0].set_property("opacity", 0.8)
                 else:
                     self._stars[0].set_property("opacity", 0.2)
                 if stars >= 2:
-                    self._stars[1].set_property("opacity", 1.0)
+                    self._stars[1].set_property("opacity", 0.8)
                 else:
                     self._stars[1].set_property("opacity", 0.2)
                 if stars >= 3:
-                    self._stars[2].set_property("opacity", 1.0)
+                    self._stars[2].set_property("opacity", 0.8)
                 else:
                     self._stars[2].set_property("opacity", 0.2)
                 if stars >= 4:
-                    self._stars[3].set_property("opacity", 1.0)
+                    self._stars[3].set_property("opacity", 0.8)
                 else:
                     self._stars[3].set_property("opacity", 0.2)
                 if stars >= 4.75:
-                    self._stars[4].set_property("opacity", 1.0)
+                    self._stars[4].set_property("opacity", 0.8)
                 else:
                     self._stars[4].set_property("opacity", 0.2)
         else:
