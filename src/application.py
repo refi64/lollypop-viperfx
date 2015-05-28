@@ -143,8 +143,9 @@ class Application(Gtk.Application):
         Activate window
     """
     def do_activate(self):
-        if Lp.window:
+        if Lp.window is not None:
             Lp.window.present()
+        Gtk.Application.do_activate(self)
 
     """
         Play specified files
@@ -158,8 +159,8 @@ class Application(Gtk.Application):
         for f in files:
             self._parser.parse_async(f.get_uri(), True,
                                      None, self._on_parsing_finished)
-        if not Lp.window.is_visible():
-            self.do_activate()
+        if Lp.window is not None and Lp.window.is_visible():
+            Lp.window.present()
 
     """
         Save window position and view
