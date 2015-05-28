@@ -5,8 +5,8 @@
   <object class="GtkGrid" id="ArtistView">
     <property name="visible">True</property>
     <property name="can_focus">False</property>
-    <property name="margin_start">24</property>
-    <property name="margin_top">15</property>
+    <property name="margin_start">10</property>
+    <property name="margin_top">10</property>
     <property name="orientation">vertical</property>
     <child>
       <object class="GtkSeparator" id="separator1">
@@ -31,8 +31,8 @@
           <object class="GtkLabel" id="artist">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
-            <property name="xalign">0</property>
             <property name="ellipsize">end</property>
+            <property name="xalign">0</property>
             <attributes>
               <attribute name="weight" value="bold"/>
             </attributes>
