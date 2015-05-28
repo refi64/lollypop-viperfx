@@ -95,7 +95,6 @@ class ShufflePlayer(BasePlayer):
         @param party as bool
     """
     def set_party(self, party):
-        self._external_uris = []
         self.reset_history()
 
         if party:
@@ -107,6 +106,7 @@ class ShufflePlayer(BasePlayer):
         self._is_party = party
 
         if party:
+            self._external_tracks = []
             party_ids = self.get_party_ids()
             if party_ids:
                 self._albums = Lp.albums.get_party_ids(party_ids)
