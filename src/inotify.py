@@ -44,8 +44,8 @@ class Inotify:
             if monitor is not None:
                 monitor.connect('changed', self._on_dir_changed)
                 self._monitors[path] = monitor
-        except Exception as e:
-            print("Inotify::add_monitor: %s" % e)
+        except:
+            pass
 
 #######################
 # PRIVATE             #
