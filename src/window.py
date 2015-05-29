@@ -195,12 +195,12 @@ class Window(Gtk.ApplicationWindow, Container):
             self._toolbar.set_show_close_button(True)
             self.add(self.main_widget())
         else:
-            hgrid = Gtk.Grid()
-            hgrid.set_orientation(Gtk.Orientation.VERTICAL)
-            hgrid.add(self._toolbar)
-            hgrid.add(self.main_widget())
-            hgrid.show()
-            self.add(hgrid)
+            vgrid = Gtk.Grid()
+            vgrid.set_orientation(Gtk.Orientation.VERTICAL)
+            vgrid.add(self._toolbar)
+            vgrid.add(self.main_widget())
+            vgrid.show()
+            self.add(vgrid)
 
     """
         Setup window position and size, callbacks
