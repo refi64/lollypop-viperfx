@@ -7,6 +7,9 @@
     <property name="can_focus">False</property>
     <property name="margin_start">5</property>
     <property name="margin_end">5</property>
+    <property name="margin_top">5</property>
+    <property name="margin_bottom">5</property>
+    <property name="column_spacing">5</property>
     <child>
       <object class="GtkLabel" id="label1">
         <property name="visible">True</property>
@@ -71,7 +74,6 @@
       <object class="GtkSeparator" id="separator1">
         <property name="visible">True</property>
         <property name="can_focus">False</property>
-        <property name="margin_top">1</property>
         <property name="margin_bottom">5</property>
       </object>
       <packing>
