@@ -205,7 +205,7 @@ class AlbumDetailedWidget(AlbumWidget):
 
         if scrolled:
             artist = translate_artist_name(Lp.albums.get_artist_name(album_id))
-            builder.get_object('artist').set_text(artist + " -")
+            builder.get_object('artist').set_text(artist)
             builder.get_object('artist').show()
             if Lp.lastfm is not None:
                 self._popover = InfosPopover(artist)
