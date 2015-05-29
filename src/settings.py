@@ -249,7 +249,7 @@ class SettingsDialog:
         Update lastfm settings
         @param sync as bool
     """
-    def _update_lastfm_settings(self):
+    def _update_lastfm_settings(self, sync=False):
         if Lp.lastfm is not None and Secret is not None:
             schema = Secret.Schema.new("org.gnome.Lollypop",
                                        Secret.SchemaFlags.NONE,
@@ -262,7 +262,10 @@ class SettingsDialog:
                                        None)
             Lp.settings.set_value('lastfm-login',
                                   GLib.Variant('s', self._login.get_text()))
-            Lp.lastfm.connect_sync(self._password.get_text())
+            if sync:
+                Lp.lastfm.connect_sync(self._password.get_text())
+            else:
+                Lp.lastfm.connect(self._password.get_text())
 
     """
         Close edit party dialog
@@ -318,7 +321,7 @@ class SettingsDialog:
         @param button as Gtk.Button
     """
     def _on_test_btn_clicked(self, button):
-        self._update_lastfm_settings()
+        self._update_lastfm_settings(True)
         if not Gio.NetworkMonitor.get_default().get_network_available():
             self._test_img.set_from_icon_name('computer-fail-symbolic',
                                               Gtk.IconSize.MENU)
