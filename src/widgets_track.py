@@ -128,9 +128,11 @@ class TrackRow(Gtk.ListBoxRow):
     """
         Set cover
         @param cover as Gdk.Pixbuf
+        @param tooltip as str
     """
-    def set_cover(self, pixbuf):
+    def set_cover(self, pixbuf, tooltip):
         self._cover.set_from_pixbuf(pixbuf)
+        self._cover.set_tooltip_text(tooltip)
         del pixbuf
 
 #######################
@@ -219,7 +221,7 @@ class TracksWidget(Gtk.ListBox):
         if show_cover:
             album_id = Lp.tracks.get_album_id(track_id)
             pixbuf = Lp.art.get_album(album_id, ArtSize.MEDIUM)
-            track_row.set_cover(pixbuf)
+            track_row.set_cover(pixbuf, Lp.albums.get_name(album_id))
             track_row.show_cover(True)
         track_row.show()
         self.add(track_row)
