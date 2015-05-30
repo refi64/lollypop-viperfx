@@ -25,23 +25,23 @@ class UserPlaylistPlayer(BasePlayer):
     """
     def __init__(self):
         BasePlayer.__init__(self)
-        self._position = 0
 
     """
         Set user playlist as current playback playlist
-        @param array of track id as int
-        @param starting track id as int
+        @param array of tracks as [int]
+        @param track id as int
+        @return track id as Track
     """
     def set_user_playlist(self, tracks, track_id):
-        self._user_playlist = tracks
-        self._position = self._user_playlist.index(track_id)
+        self._user_playlist = []
+        ret = None
+        for tid in tracks:
+            new = Track(tid)
+            self._user_playlist.append(new)
+            if track_id == tid:
+                ret = new
         self._shuffle_playlist()
-
-    """
-        Add track to user playlist
-    """
-    def add_to_user_playlist(self, track_id):
-        self._user_playlist.append(track_id)
+        return ret
 
     """
         Clear user playlist
@@ -50,30 +50,36 @@ class UserPlaylistPlayer(BasePlayer):
         self._user_playlist = []
 
     """
-        Next track id
+        Next Track
         @return Track
     """
     def next(self):
-        track_id = None
-        if self._user_playlist:
-            self._position += 1
-            if self._position >= len(self._user_playlist):
-                self._position = 0
-            track_id = self._user_playlist[self._position]
-        return Track(track_id)
+        track = Track()
+        if self._user_playlist and\
+           self.current_track in self._user_playlist:
+            idx = self._user_playlist.index(self.current_track)
+            if idx + 1 >= len(self._user_playlist):
+                idx = 0
+            else:
+                idx += 1
+            track = self._user_playlist[idx]
+        return track
 
     """
         Prev track id
         @return Track
     """
     def prev(self):
-        track_id = None
-        if self._user_playlist:
-            self._position -= 1
-            if self._position < 0:
-                self._position = len(self._user_playlist) - 1
-            track_id = self._user_playlist[self._position]
-        return Track(track_id)
+        track = Track()
+        if self._user_playlist and\
+           self.current_track in self._user_playlist:
+            idx = self._user_playlist.index(self.current_track)
+            if idx - 1 < 0:
+                idx = len(self._user_playlist) - 1
+            else:
+                idx -= 1
+            track = self._user_playlist[idx]
+        return track
 
 #######################
 # PRIVATE             #
@@ -86,14 +92,11 @@ class UserPlaylistPlayer(BasePlayer):
             # Shuffle user playlist
             if self._user_playlist is not None:
                 self._user_playlist_backup = list(self._user_playlist)
-                current = self._user_playlist.pop(self._position)
                 random.shuffle(self._user_playlist)
-                self._user_playlist.insert(0, current)
-                self._position = 0
         # Unshuffle
         else:
             if self._user_playlist_backup is not None:
                 self._user_playlist = self._user_playlist_backup
-                self._position = self._user_playlist.index(
-                    self.current_track.id)
                 self._user_playlist_backup = None
+        self._set_next()
+        self._set_prev()

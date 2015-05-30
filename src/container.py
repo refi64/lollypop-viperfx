@@ -281,7 +281,6 @@ class Container:
         Lp.scanner.connect('scan-finished', self.on_scan_finished)
         Lp.scanner.connect('genre-update', self._add_genre)
         Lp.scanner.connect('artist-update', self._add_artist)
-        Lp.scanner.connect('track-added', self._play_track)
 
     """
         Update lists
@@ -580,22 +579,6 @@ class Container:
             self._update_view_albums(genre_id, True)
         else:
             self._update_view_artists(selected_id, genre_id)
-
-    """
-        Play tracks as user playlist
-        @param scanner as collection scanner
-        @param track id as int
-        @param play as bool
-    """
-    def _play_track(self, scanner, track_id, play):
-        tracks = [track_id]
-        if play:
-            Lp.player.clear_user_playlist()
-            if not Lp.player.is_party():
-                Lp.player.set_user_playlist(tracks, track_id)
-            Lp.player.load(Track(track_id))
-        elif not Lp.player.is_party():
-            Lp.player.add_to_user_playlist(track_id)
 
     """
         On volume mounter

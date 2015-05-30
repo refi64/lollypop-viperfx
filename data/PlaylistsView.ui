@@ -10,7 +10,11 @@
   <object class="GtkGrid" id="widget">
     <property name="visible">True</property>
     <property name="can_focus">False</property>
+    <property name="margin_start">10</property>
+    <property name="margin_end">10</property>
+    <property name="margin_top">10</property>
     <property name="orientation">vertical</property>
+    <property name="column_spacing">5</property>
     <property name="column_homogeneous">True</property>
     <child>
       <object class="GtkGrid" id="header">
@@ -24,10 +28,10 @@
             <property name="halign">start</property>
             <property name="margin_start">6</property>
             <property name="margin_end">5</property>
-            <property name="xalign">0</property>
             <property name="label">title</property>
             <property name="ellipsize">end</property>
             <property name="track_visited_links">False</property>
+            <property name="xalign">0</property>
             <attributes>
               <attribute name="weight" value="bold"/>
             </attributes>

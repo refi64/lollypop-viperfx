@@ -28,7 +28,6 @@ class CollectionScanner(GObject.GObject, ScannerTagReader):
         'scan-finished': (GObject.SignalFlags.RUN_FIRST, None, ()),
         'artist-update': (GObject.SignalFlags.RUN_FIRST, None, (int, int)),
         'genre-update': (GObject.SignalFlags.RUN_FIRST, None, (int,)),
-        'track-added': (GObject.SignalFlags.RUN_FIRST, None, (int, bool)),
         'album-modified': (GObject.SignalFlags.RUN_FIRST, None, (int,))
     }
     """

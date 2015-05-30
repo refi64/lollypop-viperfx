@@ -37,6 +37,7 @@ class PlaylistWidget(Gtk.Bin):
         self._stop = False
 
         self._main_widget = Gtk.Grid()
+        self._main_widget.set_property('margin', 10)
         self._main_widget.show()
 
         self._tracks_widget1 = TracksWidget(False)
@@ -64,6 +65,7 @@ class PlaylistWidget(Gtk.Bin):
     """
     def populate_list_one(self, tracks, pos):
         self._stop = False
+        self._tracks = list(tracks)
         GLib.idle_add(self._add_tracks,
                       tracks,
                       self._tracks_widget1,
@@ -76,6 +78,7 @@ class PlaylistWidget(Gtk.Bin):
     """
     def populate_list_two(self, tracks, pos):
         self._stop = False
+        self._tracks += list(tracks)
         GLib.idle_add(self._add_tracks,
                       tracks,
                       self._tracks_widget2,
@@ -112,8 +115,9 @@ class PlaylistWidget(Gtk.Bin):
         @param tracks id as array of [int]
         @param widget TracksWidget
         @param track position as int
+        @param previous album id as int
     """
-    def _add_tracks(self, tracks, widget, pos):
+    def _add_tracks(self, tracks, widget, pos, previous_album_id=None):
         if not tracks or self._stop:
             return
 
@@ -126,15 +130,17 @@ class PlaylistWidget(Gtk.Bin):
         if title is None:
             return
 
-        artist_name = ""
-        for artist_id in Lp.tracks.get_artist_ids(track_id):
-            artist_name += translate_artist_name(
-                Lp.artists.get_name(artist_id)) + ", "
-        title = "<b>%s</b>\n%s" % (escape(artist_name[:-2]),
-                                   escape(title))
+        if album_id != previous_album_id:
+            artist_name = ""
+            for artist_id in Lp.tracks.get_artist_ids(track_id):
+                artist_name += translate_artist_name(
+                    Lp.artists.get_name(artist_id)) + ", "
+            title = "<b>%s</b>\n%s" % (escape(artist_name[:-2]),
+                                       escape(title))
 
-        widget.add_track(track_id, pos, title, length, None, True)
-        GLib.idle_add(self._add_tracks, tracks, widget, pos+1)
+        widget.add_track(track_id, pos, title,
+                         length, None, previous_album_id != album_id)
+        GLib.idle_add(self._add_tracks, tracks, widget, pos+1, album_id)
 
     """
         On track activation, play track
@@ -144,10 +150,11 @@ class PlaylistWidget(Gtk.Bin):
     """
     def _on_activated(self, widget, track_id, playlist_name):
         if not Lp.player.is_party():
-            if not self._tracks:
-                self._tracks = Lp.playlists.get_tracks_id(playlist_name)
-            Lp.player.set_user_playlist(self._tracks, track_id)
-        Lp.player.load(Track(track_id))
+            track = Lp.player.set_user_playlist(self._tracks, track_id)
+            if track is not None:
+                Lp.player.load(track)
+        else:
+            Lp.player.load(Track(track_id))
 
 
 # Dialog for manage playlists (add, rename, delete, add object to)

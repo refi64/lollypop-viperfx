@@ -155,18 +155,6 @@ class BinPlayer(ReplayGainPlayer, BasePlayer):
 # PRIVATE             #
 #######################
     """
-        Set next track
-    """
-    def _set_next(self):
-        pass
-
-    """
-        Set prev track
-    """
-    def _set_prev(self):
-        pass
-
-    """
         Stop current track (for track change)
     """
     def _stop(self):

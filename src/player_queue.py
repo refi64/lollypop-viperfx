@@ -107,8 +107,3 @@ class QueuePlayer:
 #######################
 # PRIVATE             #
 #######################
-    """
-        Set next track
-    """
-    def _set_next(self):
-        pass

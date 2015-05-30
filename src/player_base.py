@@ -49,3 +49,18 @@ class BasePlayer(GObject.GObject):
             self._shuffle = Lp.settings.get_enum('shuffle')
             # For tracks from the cmd line
             self._external_tracks = []
+            
+#######################
+# PRIVATE             #
+#######################
+    """
+        Set next track
+    """
+    def _set_next(self):
+        pass
+
+    """
+        Set prev track
+    """
+    def _set_prev(self):
+        pass
