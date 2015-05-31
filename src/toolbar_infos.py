@@ -15,6 +15,7 @@ from gi.repository import Gtk, Gdk
 from cgi import escape
 
 from lollypop.pop_tunein import TuneinPopover
+from lollypop.pop_externals import ExternalsPopover
 from lollypop.playlists import RadiosManager
 from lollypop.pop_albums import AlbumsPopover
 from lollypop.pop_menu import PopToolbarMenu
@@ -112,10 +113,12 @@ class ToolbarInfos(Gtk.Bin):
         @param event as Gdk.Event
     """
     def _on_infobox_clicked(self, eventbox, event):
-        # TODO Implement a widget to show external playlist
         if Lp.player.current_track.id == Type.EXTERNALS:
-            return
-        if Lp.player.current_track.id is not None:
+            expopover = ExternalsPopover()
+            expopover.set_relative_to(eventbox)
+            expopover.populate()
+            expopover.show()
+        elif Lp.player.current_track.id is not None:
             if event.button == 1:
                 if Lp.player.current_track.id == Type.RADIOS:
                     self._pop_tunein.populate()

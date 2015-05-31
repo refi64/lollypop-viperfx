@@ -54,12 +54,12 @@ class ExternalsPlayer(BasePlayer):
 
     """
         Play url if in externals
-        @param url as string
+        @param uri as string
     """
-    def play_this_external(self, url):
+    def play_this_external(self, uri):
         search = None
         for track in self._external_tracks:
-            if track.uri == url:
+            if track.uri == uri:
                 search = track
                 break
         if search is not None:
@@ -71,6 +71,13 @@ class ExternalsPlayer(BasePlayer):
     def play_first_external(self):
         if self._external_tracks:
             self.load(self._external_tracks[0])
+
+    """
+        Return external list
+        @return array of Track
+    """
+    def get_externals(self):
+        return self._external_tracks
 
     """
         Clear externals

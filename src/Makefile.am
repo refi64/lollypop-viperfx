@@ -33,6 +33,7 @@ app_PYTHON = \
     playlists.py\
     pop_albums.py\
     pop_covers.py\
+    pop_externals.py\
     pop_infos.py\
     pop_menu.py\
     pop_next.py\

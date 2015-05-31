@@ -75,6 +75,16 @@ Gtk.ListBoxRow .menu-button:hover {
     -gtk-image-effect: highlight;
 }
 
+.externals {
+    background-color: @theme_bg_color;
+    color: @theme_fg_color;
+}
+
+.externals:selected {
+    background-color: @theme_bg_color;
+    color: @theme_fg_color;
+}
+
 .trackswidget {
 	background-color: transparent;
 }

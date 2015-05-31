@@ -206,7 +206,7 @@ class SelectionList(Gtk.ScrolledWindow):
         (path, column) = self._view.get_cursor()
         if path is not None:
             iterator = self._model.get_iter(path)
-            if iterator:
+            if iterator is not None:
                 selected_id = self._model.get_value(iterator, 0)
         return selected_id
 
@@ -346,7 +346,7 @@ class SelectionList(Gtk.ScrolledWindow):
         Forward "cursor-changed" as "item-selected" with item id as arg
         @param view as Gtk.TreeView
     """
-    def _new_item_selected(self, view):
+    def _on_cursor_changed(self, view):
         selected_id = self.get_selected_id()
         if not self._updating and selected_id != Type.NONE:
             self.emit('item-selected', selected_id)

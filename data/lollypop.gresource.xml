@@ -28,6 +28,7 @@
     <file preprocess="xml-stripblanks">ArtistView.ui</file>
     <file preprocess="xml-stripblanks">ArtistInfos.ui</file>
     <file preprocess="xml-stripblanks">TuneinPopover.ui</file>
+    <file preprocess="xml-stripblanks">ExternalsPopover.ui</file>
     <file preprocess="xml-stripblanks">ToolbarPlayback.ui</file>
     <file preprocess="xml-stripblanks">ToolbarInfos.ui</file>
     <file preprocess="xml-stripblanks">ToolbarEnd.ui</file>
