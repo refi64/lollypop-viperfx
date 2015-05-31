@@ -365,7 +365,7 @@ class AlbumDetailedWidget(AlbumWidget):
 
         track = tracks.pop(0)
         track_id = track[0]
-        title = track[1]
+        title = escape(track[1])
         length = track[2]
         tracknumber = track[3]
         artist_ids = track[4]
@@ -378,7 +378,7 @@ class AlbumDetailedWidget(AlbumWidget):
             for artist_id in artist_ids:
                 artist_name += translate_artist_name(
                     Lp.artists.get_name(artist_id)) + ", "
-            title = "<b>%s</b>\n%s" % (artist_name[:-2],
+            title = "<b>%s</b>\n%s" % (escape(artist_name[:-2]),
                                        title)
 
         # Get track position in queue

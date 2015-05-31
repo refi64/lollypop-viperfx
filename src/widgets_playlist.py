@@ -130,6 +130,8 @@ class PlaylistWidget(Gtk.Bin):
             Lp.tracks.get_infos(track_id)
         if title is None:
             return
+        else:
+            title = escape(title)
 
         artist_id = Lp.albums.get_artist_id(album_id)
         artist_ids = Lp.tracks.get_artist_ids(track_id)
@@ -141,7 +143,7 @@ class PlaylistWidget(Gtk.Bin):
             for artist_id in artist_ids:
                 artist_name += translate_artist_name(
                     Lp.artists.get_name(artist_id)) + ", "
-            title = "<b>%s</b>\n%s" % (artist_name[:-2],
+            title = "<b>%s</b>\n%s" % (escape(artist_name[:-2]),
                                        title)
 
         if album_id != previous_album_id:

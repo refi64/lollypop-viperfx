@@ -13,8 +13,6 @@
 
 from gi.repository import GObject, Gtk
 
-from cgi import escape
-
 from lollypop.define import Lp, ArtSize
 from lollypop.pop_menu import TrackMenuPopover
 from lollypop.utils import seconds_to_string, rgba_to_hex,\
@@ -81,7 +79,7 @@ class Row(Gtk.ListBoxRow):
         @param label as string
     """
     def set_title_label(self, label):
-        self._title_label.set_markup(escape(label))
+        self._title_label.set_markup(label)
 
     """
         Set duration label
