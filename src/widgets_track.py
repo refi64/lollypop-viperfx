@@ -167,7 +167,7 @@ class AlbumRow(Row):
         if show:
             self._cover.show()
         else:
-            self._cover.hide()    
+            self._cover.hide()
 
     """
         Set cover
@@ -314,7 +314,7 @@ class TracksWidget(Gtk.ListBox):
         album_row.show_cover(True)
         album_row.show()
         self.add(album_row)
-    
+
     """
         Update playing track
         @param track id as int

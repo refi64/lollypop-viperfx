@@ -26,7 +26,6 @@ from lollypop.view_radios import RadiosView
 from lollypop.view_playlists import PlaylistsView
 from lollypop.view_playlists import PlaylistsManageView, PlaylistEditView
 from lollypop.view_device import DeviceView
-from lollypop.track import Track
 
 
 # This is a multimedia device
