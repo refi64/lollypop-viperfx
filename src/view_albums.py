@@ -46,7 +46,7 @@ class ArtistView(View):
         builder.get_object('artist').set_label(translate_artist_name(
             self._artist_name))
 
-        self._show_menu = True
+        self._pop_allowed = True
 
         self._albumbox = Gtk.Grid()
         self._albumbox.set_row_spacing(20)
@@ -109,7 +109,7 @@ class ArtistView(View):
         if albums and not self._stop:
             widget = AlbumDetailedWidget(albums.pop(0),
                                          genre_id,
-                                         self._show_menu,
+                                         self._pop_allowed,
                                          False,
                                          size_group)
             widget.show()

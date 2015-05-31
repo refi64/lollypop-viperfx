@@ -177,11 +177,11 @@ class AlbumDetailedWidget(AlbumWidget):
         @param album id as int
         @param genre id as int
         @param parent width as int
-        @param show_menu as bool if menu need to be displayed
+        @param pop_allowed as bool if widget can show popovers
         @param scrolled as bool
         @param size group as Gtk.SizeGroup
     """
-    def __init__(self, album_id, genre_id, show_menu, scrolled, size_group):
+    def __init__(self, album_id, genre_id, pop_allowed, scrolled, size_group):
         AlbumWidget.__init__(self, album_id)
 
         self._artist_id = Lp.albums.get_artist_id(album_id)
@@ -233,8 +233,8 @@ class AlbumDetailedWidget(AlbumWidget):
                 sep.show()
                 grid.attach(sep, 0, i, 2, 1)
                 i += 1
-            self._tracks_left[disc] = TracksWidget(show_menu)
-            self._tracks_right[disc] = TracksWidget(show_menu)
+            self._tracks_left[disc] = TracksWidget(pop_allowed)
+            self._tracks_right[disc] = TracksWidget(pop_allowed)
             grid.attach(self._tracks_left[disc], 0, i, 1, 1)
             grid.attach(self._tracks_right[disc], 1, i, 1, 1)
             size_group.add_widget(self._tracks_left[disc])
@@ -259,7 +259,7 @@ class AlbumDetailedWidget(AlbumWidget):
         builder.get_object('year').set_label(Lp.albums.get_year(album_id))
         self.add(builder.get_object('AlbumDetailedWidget'))
 
-        if show_menu:
+        if pop_allowed:
             self._menu = builder.get_object('menu')
             self._eventbox = builder.get_object('eventbox')
             self._eventbox.connect('realize', self._on_eventbox_realize)

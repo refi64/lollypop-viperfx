@@ -32,7 +32,7 @@ class ArtistsView(ArtistView):
         self._genre_id = Type.ALL
         self._signal_id = None
 
-        self._show_menu = False
+        self._pop_allowed = False
 
         self._albumbox = Gtk.Grid()
         self._albumbox.set_row_spacing(20)
