@@ -38,6 +38,7 @@ class PlaylistWidget(Gtk.Bin):
 
         self._main_widget = Gtk.Grid()
         self._main_widget.set_property('margin', 10)
+        self._main_widget.set_property('column-spacing', 10)
         self._main_widget.show()
 
         self._tracks_widget1 = TracksWidget(False)
@@ -130,16 +131,23 @@ class PlaylistWidget(Gtk.Bin):
         if title is None:
             return
 
-        if album_id != previous_album_id:
+        artist_id = Lp.albums.get_artist_id(album_id)
+        artist_ids = Lp.tracks.get_artist_ids(track_id)
+        # If we are listening to a compilation, prepend artist name
+        if artist_id == Type.COMPILATIONS or\
+           len(artist_ids) > 1 or\
+           artist_id not in artist_ids:
             artist_name = ""
-            for artist_id in Lp.tracks.get_artist_ids(track_id):
+            for artist_id in artist_ids:
                 artist_name += translate_artist_name(
                     Lp.artists.get_name(artist_id)) + ", "
-            title = "<b>%s</b>\n%s" % (escape(artist_name[:-2]),
-                                       escape(title))
+            title = "<b>%s</b>\n%s" % (artist_name[:-2],
+                                       title)
 
-        widget.add_track(track_id, pos, title,
-                         length, None, previous_album_id != album_id)
+        if album_id != previous_album_id:
+            widget.add_album(track_id, album_id, pos, title, length, None)        
+        else:
+            widget.add_track(track_id, pos, title, length, None)
         GLib.idle_add(self._add_tracks, tracks, widget, pos+1, album_id)
 
     """

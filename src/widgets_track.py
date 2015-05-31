@@ -13,13 +13,16 @@
 
 from gi.repository import GObject, Gtk
 
+from cgi import escape
+
 from lollypop.define import Lp, ArtSize
 from lollypop.pop_menu import TrackMenuPopover
-from lollypop.utils import seconds_to_string, rgba_to_hex
+from lollypop.utils import seconds_to_string, rgba_to_hex,\
+    translate_artist_name
 
 
-# A track row with track informations
-class TrackRow(Gtk.ListBoxRow):
+# A row as base for AlbumRow and TrackRow
+class Row(Gtk.ListBoxRow):
     """
         Init row widgets
     """
@@ -27,17 +30,13 @@ class TrackRow(Gtk.ListBoxRow):
         Gtk.ListBoxRow.__init__(self)
         self._object_id = None
         self._number = 0
-        builder = Gtk.Builder()
-        builder.add_from_resource('/org/gnome/Lollypop/TrackRow.ui')
-        builder.connect_signals(self)
-        self._row_widget = builder.get_object('row')
-        self._title_label = builder.get_object('title')
+        self._builder.connect_signals(self)
+        self._row_widget = self._builder.get_object('row')
+        self._title_label = self._builder.get_object('title')
         self._title_label.set_property('has-tooltip', True)
-        self._duration_label = builder.get_object('duration')
-        self._num_label = builder.get_object('num')
-        self._cover = builder.get_object('cover')
-        self._menu = builder.get_object('menu')
-        self._icon = builder.get_object('icon')
+        self._duration_label = self._builder.get_object('duration')
+        self._num_label = self._builder.get_object('num')
+        self._icon = self._builder.get_object('icon')
         self.add(self._row_widget)
         self.get_style_context().add_class('trackrow')
         self.show()
@@ -47,10 +46,13 @@ class TrackRow(Gtk.ListBoxRow):
         @param show as bool
     """
     def show_cover(self, show):
-        if show:
-            self._cover.show()
-        else:
-            self._cover.hide()
+        pass
+
+    """
+        Show menu
+    """
+    def show_menu(self, show):
+        pass
 
     """
         Show play icon
@@ -68,15 +70,6 @@ class TrackRow(Gtk.ListBoxRow):
             self.get_style_context().add_class('trackrow')
 
     """
-        Show menu
-    """
-    def show_menu(self, show):
-        if show:
-            self._menu.show()
-        else:
-            self._menu.hide()
-
-    """
         Set num label
         @param label as string
     """
@@ -88,7 +81,7 @@ class TrackRow(Gtk.ListBoxRow):
         @param label as string
     """
     def set_title_label(self, label):
-        self._title_label.set_markup(label)
+        self._title_label.set_markup(escape(label))
 
     """
         Set duration label
@@ -131,30 +124,11 @@ class TrackRow(Gtk.ListBoxRow):
         @param tooltip as str
     """
     def set_cover(self, pixbuf, tooltip):
-        self._cover.set_from_pixbuf(pixbuf)
-        self._cover.set_tooltip_text(tooltip)
-        del pixbuf
+        pass
 
 #######################
 # PRIVATE             #
 #######################
-    """
-        Popup menu for track
-        @param widget as Gtk.Button
-    """
-    def _on_menu_clicked(self, widget):
-        menu = TrackMenuPopover(self._object_id, None)
-        popover = Gtk.Popover.new_from_model(self._menu, menu)
-        popover.connect('closed', self._on_closed)
-        self.get_style_context().add_class('track-menu-selected')
-        popover.show()
-    """
-        Remove selected style
-        @param widget as Gtk.Popover
-    """
-    def _on_closed(self, widget):
-        self.get_style_context().remove_class('track-menu-selected')
-
     """
         Show tooltip if needed
         @param widget as Gtk.Widget
@@ -170,6 +144,92 @@ class TrackRow(Gtk.ListBoxRow):
             self._title_label.set_tooltip_markup(label)
         else:
             self._title_label.set_tooltip_text('')
+
+
+# An album row
+class AlbumRow(Row):
+    """
+        Init row widgets
+    """
+    def __init__(self):
+        self._builder = Gtk.Builder()
+        self._builder.add_from_resource('/org/gnome/Lollypop/AlbumRow.ui')
+        self._cover = self._builder.get_object('cover')
+        self._artist = self._builder.get_object('artist')
+        self._album = self._builder.get_object('album')
+        Row.__init__(self)
+
+    """
+        Show cover
+        @param show as bool
+    """
+    def show_cover(self, show):
+        if show:
+            self._cover.show()
+        else:
+            self._cover.hide()    
+
+    """
+        Set cover
+        @param cover as Gdk.Pixbuf
+        @param tooltip as str
+    """
+    def set_cover(self, pixbuf, tooltip):
+        self._cover.set_from_pixbuf(pixbuf)
+        self._cover.set_tooltip_text(tooltip)
+        del pixbuf
+
+    """
+        Set artist and album labels
+        @param album id as int
+    """
+    def set_album_and_artist(self, album_id):
+        artist =  translate_artist_name(Lp.albums.get_artist_name(album_id))
+        album = Lp.albums.get_name(album_id)
+        self._artist.set_text(artist)
+        self._album.set_text(album)
+
+
+# A TrackRow
+class TrackRow(Row):
+    """
+        Init row widgets
+    """
+    def __init__(self):
+        self._builder = Gtk.Builder()
+        self._builder.add_from_resource('/org/gnome/Lollypop/TrackRow.ui')
+        self._menu = self._builder.get_object('menu')
+        Row.__init__(self)
+
+    """
+        Show menu
+    """
+    def show_menu(self, show):
+        if show:
+            self._menu.show()
+        else:
+            self._menu.hide()
+
+#######################
+# PRIVATE             #
+#######################
+    """
+        Popup menu for track
+        @param widget as Gtk.Button
+    """
+    def _on_menu_clicked(self, widget):
+        menu = TrackMenuPopover(self._object_id, None)
+        popover = Gtk.Popover.new_from_model(self._menu, menu)
+        popover.connect('closed', self._on_closed)
+        self.get_style_context().add_class('track-menu-selected')
+        popover.show()
+
+    """
+        Remove selected style
+        @param widget as Gtk.Popover
+    """
+    def _on_closed(self, widget):
+        self.get_style_context().remove_class('track-menu-selected')
 
 
 # Track list of track rows
@@ -200,8 +260,7 @@ class TracksWidget(Gtk.ListBox):
         @param pos as int
         @param show cover as bool
     """
-    def add_track(self, track_id, num, title, length,
-                  pos, show_cover=False):
+    def add_track(self, track_id, num, title, length, pos):
         track_row = TrackRow()
         track_row.show_menu(self._show_menu)
         if Lp.player.current_track.id == track_id:
@@ -218,14 +277,44 @@ class TracksWidget(Gtk.ListBox):
         track_row.set_title_label(title)
         track_row.set_duration_label(seconds_to_string(length))
         track_row.set_object_id(track_id)
-        if show_cover:
-            album_id = Lp.tracks.get_album_id(track_id)
-            pixbuf = Lp.art.get_album(album_id, ArtSize.MEDIUM)
-            track_row.set_cover(pixbuf, Lp.albums.get_name(album_id))
-            track_row.show_cover(True)
         track_row.show()
         self.add(track_row)
 
+    """
+        Add album row to the list
+        @param track id as int
+        @param album id as int
+        @param track number as int
+        @param title as str
+        @param length as str
+        @param pos as int
+        @param show cover as bool
+    """
+    def add_album(self, track_id, album_id, num, title, length, pos):
+        album_row = AlbumRow()
+        album_row.show_menu(self._show_menu)
+        if Lp.player.current_track.id == track_id:
+            album_row.show_icon(True)
+        if pos:
+            album_row.set_num_label(
+                '''<span foreground="%s"
+                font_desc="Bold">%s</span>''' %
+                (rgba_to_hex(Lp.window.get_selected_color()),
+                 str(pos)))
+        elif num > 0:
+            album_row.set_num_label(str(num))
+        album_row.set_number(num)
+        album_row.set_title_label(title)
+        album_row.set_duration_label(seconds_to_string(length))
+        album_row.set_object_id(track_id)
+        album_row.set_album_and_artist(album_id)
+        album_id = Lp.tracks.get_album_id(track_id)
+        pixbuf = Lp.art.get_album(album_id, ArtSize.SMALL)
+        album_row.set_cover(pixbuf, Lp.albums.get_name(album_id))
+        album_row.show_cover(True)
+        album_row.show()
+        self.add(album_row)
+    
     """
         Update playing track
         @param track id as int
