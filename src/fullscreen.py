@@ -55,6 +55,7 @@ class FullScreen(Gtk.Window):
         self._artist = builder.get_object('artist')
         self._album = builder.get_object('album')
         self._next = builder.get_object('next')
+        self._next_cover = builder.get_object('next_cover')
 
         self._progress = builder.get_object('progress_scale')
         self._progress.connect('button-release-event',
@@ -120,21 +121,19 @@ class FullScreen(Gtk.Window):
                 self._timelabel.hide()
                 self._total_time_label.hide()
                 self._progress.hide()
-                art = Lp.art.get_radio(player.current_track.artist,
-                                       ArtSize.MONSTER)
+                cover = Lp.art.get_radio(player.current_track.artist,
+                                         ArtSize.MONSTER)
             else:
                 self._prev_btn.set_sensitive(True)
                 self._next_btn.set_sensitive(True)
                 self._timelabel.show()
                 self._total_time_label.show()
                 self._progress.show()
-                art = Lp.art.get_album(player.current_track.album_id,
-                                       ArtSize.MONSTER)
-            if art:
-                self._cover.set_from_pixbuf(art)
-                self._cover.show()
-            else:
-                self._cover.hide()
+                cover = Lp.art.get_album(player.current_track.album_id,
+                                         ArtSize.MONSTER)
+
+            self._cover.set_from_pixbuf(cover)
+            del cover
 
             album = player.current_track.album
             if player.current_track.year != '':
@@ -142,7 +141,11 @@ class FullScreen(Gtk.Window):
             self._title.set_text(player.current_track.title)
             self._artist.set_text(player.current_track.artist)
             self._album.set_text(album)
-            self._next.set_markup(_("Next track") + ": <b>%s</b> - %s" %
+            next_cover = Lp.art.get_album(player.next_track.album_id,
+                                           ArtSize.MEDIUM)
+            self._next_cover.set_from_pixbuf(next_cover)
+            del next_cover
+            self._next.set_markup("<b>%s</b> - %s" %
                                   (escape(player.next_track.artist),
                                    escape(player.next_track.title)))
             self._progress.set_value(1.0)
