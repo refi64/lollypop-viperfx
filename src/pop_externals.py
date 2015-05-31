@@ -99,13 +99,16 @@ class ExternalsPopover(Gtk.Popover):
     def _populate(self, tracks):
         for track in tracks:
             if track.duration == 0.0:
-                path = GLib.filename_from_uri(track.uri)[0]        
-                infos = self._tagreader.get_infos(path)
-                if infos is not None:
-                    tags = infos.get_tags()
-                    track.duration = infos.get_duration()/1000000000
-                    track.title = self._tagreader.get_title(tags, path)
-                    track.artist = self._tagreader.get_artists(tags)
+                try:
+                    path = GLib.filename_from_uri(track.uri)[0]
+                    infos = self._tagreader.get_infos(path)
+                    if infos is not None:
+                        tags = infos.get_tags()
+                        track.duration = infos.get_duration()/1000000000
+                        track.title = self._tagreader.get_title(tags, path)
+                        track.artist = self._tagreader.get_artists(tags)
+                except:
+                    track.title = track.uri
             GLib.idle_add(self._add_track, track)
 
     """
