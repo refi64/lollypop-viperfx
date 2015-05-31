@@ -81,12 +81,9 @@ class AlbumsPopover(Gtk.Popover):
         Run _populate in a thread
     """
     def populate(self):
-        current_artist_ids = [ Lp.player.current_track.aartist_id ]
-        if Type.COMPILATIONS in current_artist_ids:
-            current_artist_ids = Lp.player.current_track.artist_ids
-        if current_artist_ids != Lp.player.current_track.aartist_id:
-            self._on_screen_artists = current_artist_ids
-            view = ArtistsView(current_artist_ids)
+        if self._on_screen_artists != Lp.player.current_track.artist_ids:
+            self._on_screen_artists = Lp.player.current_track.artist_ids
+            view = ArtistsView(Lp.player.current_track.artist_ids)
             view.show()
             start_new_thread(view.populate, ())
             self._stack.add(view)
