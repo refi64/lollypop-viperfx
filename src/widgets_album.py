@@ -110,10 +110,8 @@ class AlbumWidget(Gtk.Bin):
 # Album widget is a pixbuf with two labels: album name and artist name
 class AlbumSimpleWidget(AlbumWidget):
     """
-        Init album widget ui with an vertical grid:
-            - Album cover
-            - Album name
-            - Artist name
+        Init simple album widget
+        @param album id as int
     """
     def __init__(self, album_id):
         AlbumWidget.__init__(self, album_id)
@@ -175,11 +173,7 @@ class AlbumSimpleWidget(AlbumWidget):
 # Album detailed Widget is a pixbuf with album name and tracks list
 class AlbumDetailedWidget(AlbumWidget):
     """
-        Init album widget songs ui with a complex grid:
-            - Album cover
-            - Album name
-            - Albums tracks aligned on two columns
-        if cover_add True, let user change album cover
+        Init detailed album widget
         @param album id as int
         @param genre id as int
         @param parent width as int
