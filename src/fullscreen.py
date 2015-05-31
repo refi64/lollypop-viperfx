@@ -136,9 +136,12 @@ class FullScreen(Gtk.Window):
             else:
                 self._cover.hide()
 
+            album = player.current_track.album
+            if player.current_track.year != '':
+                album += " (%s)" % player.current_track.year
             self._title.set_text(player.current_track.title)
             self._artist.set_text(player.current_track.artist)
-            self._album.set_text(player.current_track.album)
+            self._album.set_text(album)
             self._next.set_markup(_("Next track") + ": <b>%s</b> - %s" %
                                   (escape(player.next_track.artist),
                                    escape(player.next_track.title)))

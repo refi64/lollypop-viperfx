@@ -41,6 +41,7 @@ class Track:
             self.genre = ''
             self.number = 0
             self.duration = 0.0
+            self.year = ''
         else:
             self.id = track_id
             self.title = Lp.tracks.get_name(self.id,
@@ -62,6 +63,7 @@ class Track:
             self.genre = Lp.tracks.get_genre_name(self.id,
                                                   sql)
             self.duration = Lp.tracks.get_length(self.id, sql)
+            self.year = Lp.albums.get_year(self.album_id, sql)
             self.number = Lp.tracks.get_number(self.id, sql)
             filepath = Lp.tracks.get_path(self.id, sql)
             if path.exists(filepath):
