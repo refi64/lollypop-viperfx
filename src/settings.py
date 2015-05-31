@@ -168,6 +168,7 @@ class SettingsDialog:
             Secret.password_lookup(schema, SecretAttributes, None,
                                    self._on_password_lookup)
             builder.get_object('lastfm_grid').set_sensitive(True)
+            builder.get_object('lastfm_error').hide()
             self._login.set_text(
                 Lp.settings.get_value('lastfm-login').get_string())
 
