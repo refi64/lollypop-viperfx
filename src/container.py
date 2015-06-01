@@ -15,7 +15,6 @@ from gi.repository import Gtk, Gio, GLib
 
 from _thread import start_new_thread
 from gettext import gettext as _
-import os
 
 from lollypop.define import Lp, Type
 from lollypop.selectionlist import SelectionList
@@ -32,7 +31,7 @@ from lollypop.view_device import DeviceView
 class Device:
     id = None
     name = None
-    path = None
+    uri = None
     view = None
 
 
@@ -484,13 +483,17 @@ class Container:
         root = volume.get_activation_root()
         if root is None:
             return
-        path = root.get_path()
-        if path and path.find('mtp:') != -1:
+
+        uri = root.get_uri()
+        # Just to be sure
+        if uri is not None and len(uri) > 1 and uri[-1:] != '/':
+            uri += '/'
+        if uri is not None and uri.find('mtp:') != -1:
             self._devices_index -= 1
             dev = Device()
             dev.id = self._devices_index
             dev.name = volume.get_name()
-            dev.path = path
+            dev.uri = uri
             self._devices[self._devices_index] = dev
             if not self._list_one.is_populating():
                 self._list_one.add_value((dev.id, dev.name))
@@ -500,8 +503,15 @@ class Container:
         @param volume as Gio.Volume
     """
     def _remove_device(self, volume):
+        if volume is None:
+            return
+        root = volume.get_activation_root()
+        if root is None:
+            return
+
+        uri = root.get_uri()
         for dev in self._devices.values():
-            if not os.path.exists(dev.path):
+            if dev.uri == uri:
                 self._list_one.remove(dev.id)
                 device = self._devices[dev.id]
                 if device.view:

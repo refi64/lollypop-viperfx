@@ -11,9 +11,8 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-from gi.repository import Gtk, GLib
+from gi.repository import Gtk, GLib, Gio
 
-import os
 from _thread import start_new_thread
 from gettext import gettext as _
 
@@ -40,7 +39,7 @@ class DeviceView(View):
         builder.connect_signals(self)
         grid = builder.get_object('widget')
         self.add(grid)
-        self._device_widget = DeviceManagerWidget(device, progress, self)
+        self._device_widget = DeviceManagerWidget(progress, self)
         self._device_widget.connect('sync-finished', self._on_sync_finished)
         self._device_widget.show()
         self._scrolledWindow.set_property('halign', Gtk.Align.CENTER)
@@ -49,7 +48,7 @@ class DeviceView(View):
         self.add(self._scrolledWindow)
 
     def populate(self):
-        files = os.listdir(self._device.path)
+        files = self._get_files(self._device.uri)
         GLib.idle_add(self._set_combo_text, files)
 
     def is_syncing(self):
@@ -79,21 +78,39 @@ class DeviceView(View):
         self._memory_combo.show()
         self._syncing_btn.set_label(_("Synchronize %s") %
                                     self._device.name)
+
+    """
+        Get files for uri
+        @param uri as str
+        @return [str]
+    """
+    def _get_files(self, uri):
+        files = []
+        try:
+            d = Gio.File.new_for_uri(uri)
+            if not d.query_exists(None):
+                d.make_directory_with_parents(None)
+            infos = d.enumerate_children(
+                'standard::name',
+                Gio.FileQueryInfoFlags.NONE,
+                None)
+
+            for info in infos:
+                files.append(info.get_name())
+        except Exception as e:
+            print("DeviceManagerWidget::_get_files: %s: %s" % (uri, e))
+            files = []
+        return files
+
     """
         Update path
         @param combo as Gtk.ComboxText
     """
     def _on_memory_combo_changed(self, combo):
         text = combo.get_active_text()
-        path = "%s/%s/Music/%s" % (self._device.path, text, "lollypop")
-        try:
-            if not os.path.exists(path+"/tracks"):
-                self._mkdir(path+"/tracks")
-            on_disk_playlists = os.listdir(path)
-        except Exception as e:
-            print("DeviceManagerWidget::_on_memory_combo_changed: %s" % e)
-            on_disk_playlists = []
-        self._device_widget.set_playlists(on_disk_playlists, path)
+        uri = "%s%s/Music/%s" % (self._device.uri, text, "lollypop")
+        on_disk_playlists = self._get_files(uri)
+        self._device_widget.set_playlists(on_disk_playlists, uri)
         start_new_thread(self._device_widget.populate, ())
 
     """

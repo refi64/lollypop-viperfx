@@ -43,6 +43,7 @@ app_PYTHON = \
     search.py\
     selectionlist.py\
     settings.py\
+    sync_mtp.py\
     tagreader.py\
     toolbar_end.py\
     toolbar_infos.py\
