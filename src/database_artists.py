@@ -70,7 +70,7 @@ class ArtistsDatabase:
         return _("Unknown")
 
     """
-        Get all availables albums  for artist
+        Get all availables albums for artist
         @return Array of id as int
     """
     def get_albums(self, artist_id, sql=None):
@@ -83,6 +83,26 @@ class ArtistsDatabase:
         for row in result:
             albums += row
         return albums
+
+    """
+        Get all availables compilations for artist
+        @return Array of id as int
+    """
+    def get_compilations(self, artist_id, sql=None):
+        if not sql:
+            sql = Lp.sql
+        compilations = []
+        result = sql.execute("SELECT DISTINCT albums.rowid FROM albums,\
+                              tracks, track_artists\
+                              WHERE track_artists.artist_id=?\
+                              AND track_artists.track_id=tracks.rowid\
+                              AND albums.rowid=tracks.album_id\
+                              AND albums.artist_id=?\
+                              ORDER BY albums.year", (artist_id,
+                                                      Type.COMPILATIONS))
+        for row in result:
+            compilations += row
+        return compilations
 
     """
         Get all available artists

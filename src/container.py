@@ -422,7 +422,7 @@ class Container:
         @param genre id as int
     """
     def _update_view_artists(self, artist_id, genre_id):
-        view = ArtistView(artist_id, genre_id, True)
+        view = ArtistView(artist_id, genre_id)
         self._stack.add(view)
         view.show()
         start_new_thread(view.populate, ())

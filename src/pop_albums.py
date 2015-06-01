@@ -14,14 +14,56 @@
 from gi.repository import Gtk
 from _thread import start_new_thread
 
+from lollypop.view import View
 from lollypop.view_albums import ArtistView
 from lollypop.view_container import ViewContainer
-from lollypop.define import Lp
+from lollypop.define import Lp, Type    
 
 
-# Show a popup with current artist albums
+# Multiple artist view
+class ArtistsView(ArtistView):
+    """
+        Init ArtistsView
+        @param artist ids as int
+    """
+    def __init__(self, artist_ids):
+        View.__init__(self)
+        self._artist_ids = artist_ids
+        self._genre_id = Type.ALL
+        self._signal_id = None
+
+        self._show_menu = False
+
+        self._albumbox = Gtk.Grid()
+        self._albumbox.set_row_spacing(20)
+        self._albumbox.set_property("orientation", Gtk.Orientation.VERTICAL)
+        self._albumbox.show()
+
+        self._scrolledWindow.set_property('expand', True)
+        self._viewport.set_property("valign", Gtk.Align.START)
+        self._viewport.add(self._albumbox)
+        self.add(self._scrolledWindow)
+
+#######################
+# PRIVATE             #
+#######################
+    """
+        Get albums
+        @return album ids as [int]
+        @thread safe
+    """
+    def _get_albums(self):
+        sql = Lp.db.get_cursor()
+        for artist_id in self._artist_ids:
+            if artist_id != Type.COMPILATIONS:
+                albums = Lp.artists.get_albums(artist_id, sql)
+                albums += Lp.artists.get_compilations(artist_id, sql)
+        sql.close()
+        return albums
+
+
+# Show a popup with current artists view
 class AlbumsPopover(Gtk.Popover):
-
     """
         Init Popover ui with a text entry and a scrolled treeview
     """
@@ -30,7 +72,7 @@ class AlbumsPopover(Gtk.Popover):
         self._stack = ViewContainer(1000)
         self._stack.show()
 
-        self._on_screen_artist = None
+        self._on_screen_artists = None
         self.add(self._stack)
 
         Lp.player.connect("current-changed", self._update_content)
@@ -39,9 +81,12 @@ class AlbumsPopover(Gtk.Popover):
         Run _populate in a thread
     """
     def populate(self):
-        if self._on_screen_artist != Lp.player.current_track.aartist_id:
-            self._on_screen_artist = Lp.player.current_track.aartist_id
-            view = ArtistView(self._on_screen_artist, None, False)
+        current_artist_ids = [ Lp.player.current_track.aartist_id ]
+        if Type.COMPILATIONS in current_artist_ids:
+            current_artist_ids = Lp.player.current_track.artist_ids
+        if current_artist_ids != Lp.player.current_track.aartist_id:
+            self._on_screen_artists = current_artist_ids
+            view = ArtistsView(current_artist_ids)
             view.show()
             start_new_thread(view.populate, ())
             self._stack.add(view)

@@ -29,26 +29,24 @@ class ArtistView(View):
         Init ArtistView ui with a scrolled grid of AlbumDetailedWidget
         @param artist id as int
         @param genre id as int
-        @param show_artist_details as bool
     """
-    def __init__(self, artist_id, genre_id, show_artist_details):
+    def __init__(self, artist_id, genre_id):
         View.__init__(self)
         self._artist_id = artist_id
         self._genre_id = genre_id
         self._signal_id = None
 
         self._artist_name = Lp.artists.get_name(artist_id)
-        if show_artist_details:
-            if Lp.lastfm is not None:
-                self._popover = InfosPopover(self._artist_name)
-            builder = Gtk.Builder()
-            builder.add_from_resource('/org/gnome/Lollypop/ArtistView.ui')
-            builder.connect_signals(self)
-            self.attach(builder.get_object('ArtistView'), 0, 0, 1, 1)
-            builder.get_object('artist').set_label(translate_artist_name(
-                self._artist_name))
+        if Lp.lastfm is not None:
+            self._popover = InfosPopover(self._artist_name)
+        builder = Gtk.Builder()
+        builder.add_from_resource('/org/gnome/Lollypop/ArtistView.ui')
+        builder.connect_signals(self)
+        self.attach(builder.get_object('ArtistView'), 0, 0, 1, 1)
+        builder.get_object('artist').set_label(translate_artist_name(
+            self._artist_name))
 
-        self._show_menu = show_artist_details
+        self._show_menu = True
 
         self._albumbox = Gtk.Grid()
         self._albumbox.set_row_spacing(20)
