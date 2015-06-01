@@ -27,12 +27,15 @@ hicolor_icon48dir = $(datadir)/icons/hicolor/48x48/apps
 hicolor_icon48_DATA = icons/hicolor/48x48/apps/lollypop.png
 hicolor_icon256dir = $(datadir)/icons/hicolor/256x256/apps
 hicolor_icon256_DATA = icons/hicolor/256x256/apps/lollypop.png
+hicolor_iconscalabledir = $(datadir)/icons/hicolor/scalable/apps
+hicolor_iconscalable_DATA = icons/hicolor/scalable/apps/lollypop-symbolic.svg
 hicolor_icon_files = \
 	$(hicolor_icon16_DATA) \
 	$(hicolor_icon22_DATA) \
 	$(hicolor_icon32_DATA) \
 	$(hicolor_icon48_DATA) \
 	$(hicolor_icon256_DATA) \
+	$(hicolor_iconscalable_DATA)\
 	icons/hicolor/lollypop.svg
 
 gtk_update_hicolor_icon_cache = gtk-update-icon-cache -f -t $(datadir)/icons/hicolor
