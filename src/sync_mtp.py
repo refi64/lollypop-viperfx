@@ -164,8 +164,16 @@ class MtpSync:
                     return
                 album_id = Lp.tracks.get_album_id(track_id, sql)
                 album_name = Lp.albums.get_name(album_id, sql)
+                # Sanitize file names as some MTP devices do not like this
+                # Or this is a Gio/GObject Introspection bug
+                album_name = "".join([c for c in album_name if c.isalpha()\
+                    or c.isdigit() or c==' ']).rstrip()
                 artist_name = translate_artist_name(
                     Lp.albums.get_artist_name(album_id, sql))
+                # Sanitize file names as some MTP devices do not like this
+                # Or this is a Gio/GObject Introspection bug
+                artist_name = "".join([c for c in artist_name if c.isalpha()\
+                    or c.isdigit() or c==' ']).rstrip()
                 track_path = Lp.tracks.get_path(track_id, sql)
                 on_device_album_uri = "%s/tracks/%s_%s" %\
                                        (self._uri,
@@ -189,6 +197,10 @@ class MtpSync:
                                      None, None))
 
                 track_name = GLib.basename(track_path)
+                # Sanitize file names as some MTP devices do not like this
+                # Or this is a Gio/GObject Introspection bug
+                track_name = "".join([c for c in track_name if c.isalpha()\
+                    or c.isdigit() or c==' ' or c=='.']).rstrip()
                 src_track = Gio.File.new_for_path(track_path)
                 info = src_track.query_info('time::modified',
                                             Gio.FileQueryInfoFlags.NONE,
