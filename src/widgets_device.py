@@ -263,7 +263,10 @@ class DeviceManagerWidget(Gtk.Bin):
                         self._copyfile(art, dst_art)
 
                 track_name = os.path.basename(track_path)
-                dst_path = "%s/%s" % (on_device_album_path, track_name)
+                # Prefix track with mtime to make sure upadting it later
+                mtime = int(os.path.getmtime(track_path))
+                dst_path = "%s/%d_%s" % (on_device_album_path,
+                           mtime, track_name)
                 if m3u:
                     m3u.write("tracks/%s_%s/%s\n" %
                               (artist_name.lower(),
@@ -307,7 +310,9 @@ class DeviceManagerWidget(Gtk.Bin):
                                               artist_name.lower(),
                                               album_name.lower())
             track_name = os.path.basename(track_path)
-            dst_path = "%s/%s" % (album_path, track_name)
+            # Prefix track with mtime to make sure upadting it later
+            mtime = int(os.path.getmtime(track_path))
+            dst_path = "%s/%d_%s" % (album_path, mtime, track_name)
             tracks_path.append(dst_path)
 
         # Delete file on device and not in playlists
