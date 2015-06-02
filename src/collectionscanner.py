@@ -66,18 +66,6 @@ class CollectionScanner(GObject.GObject, ScannerTagReader):
             start_new_thread(self._scan, (paths,))
 
     """
-        Add specified files to collection
-        @param files as [Gio.Files]
-        @thread safe
-    """
-    def add(self, files):
-        if not files:
-            return
-        self._in_thread = True
-        self._is_locked = True
-        start_new_thread(self._add, (files,))
-
-    """
         Return True if db locked
     """
     def is_locked(self):
