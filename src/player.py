@@ -201,7 +201,7 @@ class Player(BinPlayer, QueuePlayer, UserPlaylistPlayer, RadioPlayer,
         if self.prev_track.id is None:
             self.prev_track = ShufflePlayer.prev(self)
 
-        # Get previous track in history
+        # Get a linear track then
         if self.prev_track.id is None:
             self.prev_track = LinearPlayer.prev(self)
 
