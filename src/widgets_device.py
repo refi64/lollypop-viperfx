@@ -102,6 +102,7 @@ class DeviceManagerWidget(Gtk.Bin, MtpSync):
         self._syncing = True
         self._view.set_sensitive(False)
         self._progress.show()
+        self._progress.set_fraction(0.0)
         playlists = []
         for item in self._model:
             if item[0]:
@@ -158,6 +159,13 @@ class DeviceManagerWidget(Gtk.Bin, MtpSync):
             GLib.idle_add(self._update_progress)
         else:
             GLib.timeout_add(1000, self._progress.hide)
+
+    """
+        Emit finished signal
+    """
+    def _on_finished(self):
+        MtpSync._on_finished(self)
+        self.emit('sync-finished')
 
     """
         Show information bar with error message

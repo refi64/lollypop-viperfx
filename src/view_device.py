@@ -103,6 +103,12 @@ class DeviceView(View):
         return files
 
     """
+        Update progress bar. Do nothing
+    """
+    def _update_progress(self):
+        pass
+
+    """
         Update path
         @param combo as Gtk.ComboxText
     """

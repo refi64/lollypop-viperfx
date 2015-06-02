@@ -16,7 +16,7 @@ from gi.repository import GLib, Gio
 from time import sleep
 
 from lollypop.define import Lp
-from lollypop.utils import translate_artist_name
+from lollypop.utils import translate_artist_name, debug
 
 
 class MtpSync:
@@ -42,7 +42,6 @@ class MtpSync:
     def _retry(self, func, args, t=5):
         if t == 0:
             self._errors = True
-            self._syncing = False
             return
         try:
             func(*args)
@@ -79,7 +78,6 @@ class MtpSync:
     """
     def _sync(self, playlists):
         try:
-            GLib.idle_add(self._progress.set_fraction, 0.0)
             self._in_thread = True
             self._errors = False
             self._copied_art_uris = []
@@ -88,7 +86,6 @@ class MtpSync:
             self._total = 1
             self._done = 0
             self._fraction = 0.0
-            GLib.idle_add(self._update_progress)
 
             # New tracks
             for playlist in playlists:
@@ -101,6 +98,7 @@ class MtpSync:
                 self._total += len(children)
             except:
                 pass
+            GLib.idle_add(self._update_progress)
 
             # Copy new tracks to device
             if self._syncing:
@@ -135,6 +133,7 @@ class MtpSync:
         self._in_thread = False
         if self._errors:
             GLib.idle_add(self._on_errors)
+        GLib.idle_add(self._on_finished)
 
     """
         Copy file from playlist to device
@@ -208,6 +207,7 @@ class MtpSync:
                                 (line.encode(encoding='UTF-8'), None))
                 dst_track = Gio.File.new_for_uri(dst_uri)
                 if not dst_track.query_exists(None):
+                    debug("%s, %s" % (track_path, dst_uri))
                     self._retry(src_track.copy,
                                 (dst_track, Gio.FileCopyFlags.OVERWRITE,
                                  None, None))
@@ -215,6 +215,7 @@ class MtpSync:
                     self._done += 1
                 self._done += 1
                 self._fraction = self._done/self._total
+                GLib.idle_add(self._update_progress)
             if stream is not None:
                 stream.close()
             if m3u is not None:
@@ -274,6 +275,13 @@ class MtpSync:
                 self._retry(to_delete.delete, (None,))
             self._done += 1
             self._fraction = self._done/self._total
+            GLib.idle_add(self._update_progress)
+
+    """
+        Clean on finished. Do nothing
+    """
+    def _on_finished(self):
+        pass
 
     """
         Show something to the user. Do nothing.
