@@ -154,6 +154,7 @@ class ArtistInfos(Gtk.Bin):
         if Gio.NetworkMonitor.get_default().get_network_available() and\
            Lp.lastfm.is_auth():
             start_new_thread(self._love_track, ())
+            btn.set_sensitive(False)
 
     """
         Love a track
@@ -173,6 +174,7 @@ class ArtistInfos(Gtk.Bin):
         if Gio.NetworkMonitor.get_default().get_network_available() and\
            Lp.lastfm.is_auth():
             start_new_thread(self._unlove_track, ())
+            btn.set_sensitive(False)
 
     """
         Unlove a track
