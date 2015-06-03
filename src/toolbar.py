@@ -72,6 +72,13 @@ class Toolbar(Gtk.HeaderBar):
     def set_progress_width(self, width):
         self._toolbar_title.set_progress_width(width)
 
+    """
+        Add an application menu to menu button
+        @parma: menu as Gio.Menu
+    """
+    def setup_menu_btn(self, menu):
+        self._toolbar_end.setup_menu_btn(menu)
+
 #######################
 # PRIVATE             #
 #######################
