@@ -164,6 +164,7 @@ class ShufflePlayer(BasePlayer):
             self.set_albums(self.current_track.id,
                             self.current_track.aartist_id,
                             self.context.genre_id)
+        self._set_next()
         self.emit('current-changed')
 
     """
@@ -178,7 +179,6 @@ class ShufflePlayer(BasePlayer):
             if self._albums_backup is not None:
                 self._albums = self._albums_backup
                 self._albums_backup = None
-                self._set_next()
 
     """
         Next track in shuffle mode
