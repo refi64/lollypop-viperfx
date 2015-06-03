@@ -488,7 +488,7 @@
               <object class="GtkLabel" id="lastfm_error">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
-                <property name="label" translatable="yes">You need to install python lastfm support: pylast</property>
+                <property name="label" translatable="yes">You need to install pylast and gi secret</property>
               </object>
               <packing>
                 <property name="left_attach">0</property>
