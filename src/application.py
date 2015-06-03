@@ -193,6 +193,7 @@ class Application(Gtk.Application):
             print("Application::quit(): ", e)
         Lp.sql.close()
         Lp.window.destroy()
+        exit(0)
 
     """
         Return True if application is fullscreen
