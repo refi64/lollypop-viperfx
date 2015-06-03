@@ -114,7 +114,7 @@ class PlaylistsManager(GObject.GObject):
                       key=lambda item: item[1].lower())
 
     """
-        Return 5 last modified playlist
+        Return 10 last modified playlist
         @return array of (id, string)
     """
     def get_last(self):
@@ -130,8 +130,8 @@ class PlaylistsManager(GObject.GObject):
                 if filename.endswith(".m3u"):
                     playlists.append(filename[:-4])
                     index += 1
-                    # Break if 5 playlists is reached
-                    if index >= 5:
+                    # Break if 10 playlists is reached
+                    if index >= 10:
                         break
         except Exception as e:
             print("Lollypop::PlaylistManager::get_last: %s" % e)
