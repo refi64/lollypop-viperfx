@@ -171,12 +171,7 @@ class AlbumArt(BaseArt, TagReader):
                             filepath = Lp.tracks.get_path(tracks[0])
                             pixbuf = self._pixbuf_from_tags(filepath, size)
                     except Exception as e:
-                        print(e)
-                        return self._make_icon_frame(
-                            self._get_default_icon(
-                                size,
-                                'folder-music-symbolic'),
-                            selected)
+                        pass
                 # No cover, use default one
                 if pixbuf is None:
                     if Lp.lastfm is not None:
