@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-06-01 11:06+0200\n"
+"POT-Creation-Date: 2015-06-03 15:58+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -184,36 +184,36 @@ msgstr ""
 msgid "Your music is updating"
 msgstr ""
 
-#: ../src/container.py:324
+#: ../src/container.py:323
 msgid "Popular albums"
 msgstr ""
 
-#: ../src/container.py:325
+#: ../src/container.py:324
 msgid "Recent albums"
 msgstr ""
 
-#: ../src/container.py:326
+#: ../src/container.py:325
 msgid "Random albums"
 msgstr ""
 
-#: ../src/container.py:327 ../src/pop_menu.py:321 ../src/pop_menu.py:376
+#: ../src/container.py:326 ../src/pop_menu.py:321 ../src/pop_menu.py:376
 #: ../src/pop_menu.py:393
 msgid "Playlists"
 msgstr ""
 
-#: ../src/container.py:328
+#: ../src/container.py:327
 msgid "Radios"
 msgstr ""
 
-#: ../src/container.py:330
+#: ../src/container.py:329
 msgid "All artists"
 msgstr ""
 
-#: ../src/container.py:332
+#: ../src/container.py:331
 msgid "All albums"
 msgstr ""
 
-#: ../src/container.py:376
+#: ../src/container.py:375
 msgid "Compilations"
 msgstr ""
 
@@ -246,7 +246,7 @@ msgstr ""
 msgid "Last.fm authentication disabled"
 msgstr ""
 
-#: ../src/lastfm.py:183 ../src/pop_infos.py:166 ../src/pop_infos.py:185
+#: ../src/lastfm.py:183 ../src/pop_infos.py:167 ../src/pop_infos.py:187
 msgid "Wrong Last.fm credentials"
 msgstr ""
 
@@ -390,12 +390,12 @@ msgstr ""
 msgid "The the"
 msgstr ""
 
-#: ../src/view_device.py:39 ../src/view_device.py:80
+#: ../src/view_device.py:38 ../src/view_device.py:79
 #, python-format
 msgid "Synchronize %s"
 msgstr ""
 
-#: ../src/view_device.py:71
+#: ../src/view_device.py:70
 msgid "Cancel synchronization"
 msgstr ""
 
@@ -404,11 +404,11 @@ msgstr ""
 msgid "Disc %s"
 msgstr ""
 
-#: ../src/widgets_device.py:399
+#: ../src/widgets_device.py:175
 msgid "Unknown error while syncing, try to reboot your device"
 msgstr ""
 
-#: ../src/widgets_device.py:406
+#: ../src/widgets_device.py:183
 msgid "No free space available on device"
 msgstr ""
 
@@ -592,7 +592,7 @@ msgid "Test"
 msgstr ""
 
 #: ../data/SettingsDialog.ui.h:19
-msgid "You need to install python lastfm support: pylast"
+msgid "You need to install pylast and gi secret"
 msgstr ""
 
 #: ../data/ToolbarEnd.ui.h:1 ../data/Toolbar.ui.h:1
