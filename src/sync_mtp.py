@@ -47,6 +47,9 @@ class MtpSync:
             func(*args)
         except Exception as e:
             print("MtpSync::_retry(%s, %s): %s" % (func, args, e))
+            for a in args:
+                if isinstance(a, Gio.File):
+                    print(a.get_uri())
             sleep(5)
             self._retry(func, args, t-1)
         
@@ -219,7 +222,6 @@ class MtpSync:
                                 (line.encode(encoding='UTF-8'), None))
                 dst_track = Gio.File.new_for_uri(dst_uri)
                 if not dst_track.query_exists(None):
-                    debug("%s, %s" % (track_path, dst_uri))
                     self._retry(src_track.copy,
                                 (dst_track, Gio.FileCopyFlags.OVERWRITE,
                                  None, None))
