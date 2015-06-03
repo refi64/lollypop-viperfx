@@ -72,7 +72,7 @@ class AlbumsPopover(Gtk.Popover):
         self._stack = ViewContainer(1000)
         self._stack.show()
 
-        self._on_screen_artists = None
+        self._on_screen_id = None
         self.add(self._stack)
 
         Lp.player.connect("current-changed", self._update_content)
@@ -81,8 +81,12 @@ class AlbumsPopover(Gtk.Popover):
         Run _populate in a thread
     """
     def populate(self):
-        if self._on_screen_artists != Lp.player.current_track.artist_ids:
-            self._on_screen_artists = Lp.player.current_track.artist_ids
+        if Lp.player.current_track.aartist_id == Type.COMPILATIONS:
+            new_id = Lp.player.current_track.album_id
+        else:
+            new_id = Lp.player.current_track.aartist_id
+        if self._on_screen_id != new_id:
+            self._on_screen_id = new_id
             view = PopArtistView(Lp.player.current_track.aartist_id)
             view.show()
             start_new_thread(view.populate, ())
@@ -110,7 +114,7 @@ class AlbumsPopover(Gtk.Popover):
         child = self._stack.get_visible_child()
         if child is not None:
             child.stop()
-        self._on_screen_artist = None
+        self._on_screen_id = None
         self._stack.clean_old_views(None)
 
 #######################
