@@ -16,6 +16,7 @@ from gi.repository import Gtk, GLib, Gio, GdkPixbuf
 from _thread import start_new_thread
 import urllib.request
 from gettext import gettext as _
+from cgi import escape
 
 from lollypop.define import Lp
 
@@ -78,10 +79,7 @@ class ArtistInfos(Gtk.Bin):
         widget = builder.get_object('widget')
         widget.attach(self._stack, 0, 2, 4, 1)
 
-        if title is not None and Lp.lastfm.is_auth():
-            builder.get_object('love_btn').show()
-            builder.get_object('unlove_btn').show()
-
+        self._love_btn = builder.get_object('love_btn')
         self._url_btn = builder.get_object('lastfm')
         self._image = builder.get_object('image')
         self._content = builder.get_object('content')
@@ -135,9 +133,16 @@ class ArtistInfos(Gtk.Bin):
     def _set_content(self, content, url, stream):
         if content is not None:
             self._stack.set_visible_child(self._scrolled)
-            self._label.set_text(self._artist)
+            if self._title is None:
+                string = "<b>%s</b>" % escape(self._artist)
+            else:
+                string = "<b>%s</b> %s" % (escape(self._artist),
+                                           escape(self._title))
+            self._label.set_markup(string)
             self._url_btn.set_uri(url)
             self._content.set_text(content)
+            if self._title is not None:
+                self._love_btn.show()
         else:
             self._stack.set_visible_child(self._not_found)
             self._label.set_text(_("No information for this artist..."))
@@ -165,16 +170,6 @@ class ArtistInfos(Gtk.Bin):
             track.love()
         except:
             GLib.idle_add(Lp.notify.send, _("Wrong Last.fm credentials"))
-
-    """
-        Unlove a track
-        @param btn as Gtk.Button
-    """
-    def _on_unlove_btn_clicked(self, btn):
-        if Gio.NetworkMonitor.get_default().get_network_available() and\
-           Lp.lastfm.is_auth():
-            start_new_thread(self._unlove_track, ())
-            btn.set_sensitive(False)
 
     """
         Unlove a track
