@@ -55,7 +55,7 @@ class ShufflePlayer(BasePlayer):
             if self._history is not None and \
                self._history.has_next():
                 track_id = self._history.get_next().get_value()
-            elif self._albums:
+            elif self._albums is not None:
                 track_id = self._shuffle_next()
         return Track(track_id)
 

@@ -30,7 +30,7 @@ class LinearPlayer(BasePlayer):
     """
     def next(self):
         track_id = None
-        if self._albums:
+        if self._albums is not None:
             tracks = Lp.albums.get_tracks(self.current_track.album_id,
                                           self.context.genre_id)
             if self.current_track.id in tracks:
@@ -59,7 +59,7 @@ class LinearPlayer(BasePlayer):
     """
     def prev(self):
         track_id = None
-        if self._albums:
+        if self._albums is not None:
             tracks = Lp.albums.get_tracks(self.current_track.album_id,
                                           self.context.genre_id)
             if self.current_track.id in tracks:
