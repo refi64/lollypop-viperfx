@@ -75,7 +75,8 @@ class ToolbarEnd(Gtk.Bin):
     def on_current_changed(self, player):
         # Do not show next popover non internal tracks as
         # tags will be readed on the fly
-        if player.next_track.id >= 0 and\
+        if player.next_track.id is not None and\
+           player.next_track.id >= 0 and\
             (player.is_party() or
              Lp.settings.get_enum('shuffle') == Shuffle.TRACKS):
             self._pop_next.update()
