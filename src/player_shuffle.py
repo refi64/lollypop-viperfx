@@ -160,12 +160,10 @@ class ShufflePlayer(BasePlayer):
 
         if self._user_playlist:
             self._shuffle_playlist()
-        elif self._albums is not None:
-            self._shuffle_albums()
         elif self.current_track.id is not None and self.current_track.id >= 0:
-            self._set_albums(self.current_track.id,
-                             self.current_track.aartist_id,
-                             self.context.genre_id)
+            self.set_albums(self.current_track.id,
+                            self.current_track.aartist_id,
+                            self.context.genre_id)
         self.emit('current-changed')
 
     """
@@ -173,7 +171,7 @@ class ShufflePlayer(BasePlayer):
     """
     def _shuffle_albums(self):
         if self._shuffle in [Shuffle.ALBUMS, Shuffle.ALBUMS_ARTIST]:
-            if self._albums and self._albums_backup == None:
+            if self._albums is not None and self._albums_backup is None:
                 self._albums_backup = list(self._albums)
                 random.shuffle(self._albums)
         elif self._shuffle == Shuffle.NONE:
