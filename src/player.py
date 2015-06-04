@@ -106,7 +106,7 @@ class Player(BinPlayer, QueuePlayer, UserPlaylistPlayer, RadioPlayer,
         if track_id is None:
             return
         album_id = Lp.tracks.get_album_id(track_id)
-        self._albums = []
+        self._albums = None
         ShufflePlayer.reset_history(self)
         self.context.genre_id = genre_id
 

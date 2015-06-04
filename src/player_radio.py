@@ -45,7 +45,7 @@ class RadioPlayer(BasePlayer):
             print("RadioPlayer::load(): ", e)
             return False
         self.set_party(False)
-        self._albums = []
+        self._albums = None
         return True
 
     """

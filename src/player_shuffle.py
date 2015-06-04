@@ -140,6 +140,12 @@ class ShufflePlayer(BasePlayer):
 # PRIVATE             #
 #######################
     """
+        Set next track. Do nothing
+    """
+    def _set_next(self):
+        pass
+
+    """
         Set shuffle mode to gettings value
         @param settings as Gio.Settings, value as str
     """
@@ -154,23 +160,26 @@ class ShufflePlayer(BasePlayer):
 
         if self._user_playlist:
             self._shuffle_playlist()
-        else:
-            self.set_albums(self.current_track.id,
-                            self.current_track.aartist_id,
-                            self.context.genre_id)
+        elif self._albums is not None:
+            self._shuffle_albums()
+        elif self.current_track.id is not None and self.current_track.id >= 0:
+            self._set_albums(self.current_track.id,
+                             self.current_track.aartist_id,
+                             self.context.genre_id)
 
     """
         Shuffle album list
     """
     def _shuffle_albums(self):
         if self._shuffle in [Shuffle.ALBUMS, Shuffle.ALBUMS_ARTIST]:
-            if self._albums:
+            if self._albums and self._albums_backup == None:
                 self._albums_backup = list(self._albums)
                 random.shuffle(self._albums)
         elif self._shuffle == Shuffle.NONE:
-            if self._albums_backup:
+            if self._albums_backup is not None:
                 self._albums = self._albums_backup
                 self._albums_backup = None
+                self._set_next()
 
     """
         Next track in shuffle mode
