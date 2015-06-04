@@ -21,14 +21,14 @@ from lollypop.define import Lp, Type
 
 
 # Multiple artist view
-class ArtistsView(ArtistView):
+class PopArtistView(ArtistView):
     """
         Init ArtistsView
-        @param artist ids as int
+        @param artist id as int
     """
-    def __init__(self, artist_ids):
+    def __init__(self, artist_id):
         View.__init__(self)
-        self._artist_ids = artist_ids
+        self._artist_id = artist_id
         self._genre_id = Type.ALL
         self._signal_id = None
 
@@ -54,10 +54,10 @@ class ArtistsView(ArtistView):
     """
     def _get_albums(self):
         sql = Lp.db.get_cursor()
-        for artist_id in self._artist_ids:
-            if artist_id != Type.COMPILATIONS:
-                albums = Lp.artists.get_albums(artist_id, sql)
-                albums += Lp.artists.get_compilations(artist_id, sql)
+        if self._artist_id == Type.COMPILATIONS:
+            albums = [Lp.player.current_track.album_id]
+        else:
+            albums = Lp.artists.get_albums(self._artist_id, sql)
         sql.close()
         return albums
 
@@ -83,7 +83,7 @@ class AlbumsPopover(Gtk.Popover):
     def populate(self):
         if self._on_screen_artists != Lp.player.current_track.artist_ids:
             self._on_screen_artists = Lp.player.current_track.artist_ids
-            view = ArtistsView(Lp.player.current_track.artist_ids)
+            view = PopArtistView(Lp.player.current_track.aartist_id)
             view.show()
             start_new_thread(view.populate, ())
             self._stack.add(view)
