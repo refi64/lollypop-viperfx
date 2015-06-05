@@ -34,6 +34,7 @@ It provides:
 - python-dbus
 - python-gobject
 - python-sqlite
+- python-pylast
 
 === Building from git ===
 
