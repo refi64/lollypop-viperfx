@@ -14,7 +14,7 @@
 from gi.repository import GLib, GObject
 
 import os
-
+from gettext import gettext as _
 from stat import S_ISREG, ST_MTIME, ST_MODE
 
 from lollypop.define import Lp
@@ -22,7 +22,7 @@ from lollypop.define import Lp
 
 # Playlists manager: add, remove, list, append, ...
 class PlaylistsManager(GObject.GObject):
-
+    _LIKED = _("Liked tracks")
     _PLAYLISTS_PATH = os.path.expanduser("~") +\
         "/.local/share/lollypop/playlists"
     __gsignals__ = {
@@ -44,18 +44,19 @@ class PlaylistsManager(GObject.GObject):
         self._init_idx()
 
     """
-        Add a playlist (Thread safe)
+        Add a playlist, erase current
         @param playlist name as str
         @param get file descriptor as bool
         @return file descriptor if 2nd param True
+        @thread safe
     """
     def add(self, playlist_name, get_desc=False):
         filename = self._PLAYLISTS_PATH + "/"+playlist_name + ".m3u"
         try:
             if os.path.exists(filename):
-                changed = False
+                new = False
             else:
-                changed = True
+                new = True
             f = open(filename, "w")
             f.write("#EXTM3U\n")
             if get_desc:
@@ -63,7 +64,7 @@ class PlaylistsManager(GObject.GObject):
             else:
                 f.close()
             # Add playlist to cache
-            if changed:
+            if new:
                 try:
                     max_idx = max(self._idx.keys())+1
                 except:
@@ -72,6 +73,20 @@ class PlaylistsManager(GObject.GObject):
                 GLib.idle_add(self.emit, 'playlists-changed')
         except Exception as e:
             print("PlaylistsManager::add: %s" % e)
+
+    """
+        Add liked playlist, will never erase current
+        @thread safe
+    """
+    def add_liked(self):
+        filename = self._PLAYLISTS_PATH + "/"+ self._LIKED + ".m3u"
+        try:
+            if not os.path.exists(filename):
+                f = open(filename, "w")
+                f.write("#EXTM3U\n")
+                GLib.idle_add(self.emit, 'playlists-changed')
+        except Exception as e:
+            print("PlaylistsManager::add_liked: %s" % e)
 
     """
         Rename playlist (Thread safe)
@@ -127,7 +142,8 @@ class PlaylistsManager(GObject.GObject):
                 if S_ISREG(stat[ST_MODE]):
                     entries.append((stat[ST_MTIME], filename))
             for cdate, filename in sorted(entries, reverse=True):
-                if filename.endswith(".m3u"):
+                if filename.endswith(".m3u") and\
+                   filename != self._LIKED+".m3u":
                     playlists.append(filename[:-4])
                     index += 1
                     # Break if 6 playlists is reached
@@ -261,7 +277,8 @@ class PlaylistsManager(GObject.GObject):
         playlists = []
         try:
             for filename in sorted(os.listdir(self._PLAYLISTS_PATH)):
-                if filename.endswith(".m3u"):
+                if filename.endswith(".m3u") and\
+                   filename != self._LIKED+".m3u":
                     playlists.append(filename[:-4])
         except Exception as e:
             print("Lollypop::PlaylistManager::get: %s" % e)

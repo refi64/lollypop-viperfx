@@ -119,11 +119,11 @@ class ToolbarPlayback(Gtk.Bin):
     """
     def _on_lastfm_btn_clicked(self, button):
         if Lp.lastfm is not None:
-            if Lp.player.current_track.aartist_id == Type.COMPILATIONS:
-                artist = Lp.player.current_track.artist
-            else:
-                artist = Lp.player.current_track.aartist
-            popover = InfosPopover(artist, Lp.player.current_track.title)
+            artist_id = Lp.player.current_track.aartist_id
+            if artist_id == Type.COMPILATIONS:
+                # If multiple artists, only match first one
+                artist_id = Lp.player.current_track.artist_ids[0]
+            popover = InfosPopover(artist_id, Lp.player.current_track.id)
             popover.set_relative_to(button)
             popover.populate()
             popover.show()

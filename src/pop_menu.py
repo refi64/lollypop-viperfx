@@ -17,7 +17,7 @@ from shutil import which
 from gettext import gettext as _
 from _thread import start_new_thread
 
-from lollypop.define import Lp, NextContext
+from lollypop.define import Lp, NextContext, Type
 
 
 # Base menu class
@@ -260,6 +260,22 @@ class PlaylistsMenu(BaseMenu):
                 self.append(_("Add to \"%s\"") % playlist,
                             "app.playlist%s" % i)
             i += 1
+        if not self._is_album and Lp.lastfm is not None:
+            action = Gio.SimpleAction(name="liked")
+            self._app.add_action(action)
+            if Lp.playlists.is_present(Lp.playlists._LIKED,
+                                       self._object_id,
+                                       None,
+                                       False):
+                action.connect('activate',
+                               self._del_from_liked)
+                self.append(_("I dislike this track"),
+                            "app.liked")
+            else:
+                action.connect('activate',
+                                self._add_to_liked)
+                self.append(_("I like this track"),
+                            "app.liked")
 
     """
         Add to playlists
@@ -304,6 +320,71 @@ class PlaylistsMenu(BaseMenu):
 
         start_new_thread(Lp.playlists.remove_tracks,
                          (playlist_name, tracks_path))
+
+    """
+        Add to liked
+        @param SimpleAction
+        @param GVariant
+        @param playlist name as str
+    """
+    def _add_to_liked(self, action, variant):
+        Lp.playlists.add_track(Lp.playlists._LIKED,
+                               Lp.tracks.get_path(self._object_id))
+        start_new_thread(self._add_to_liked_on_lastfm, ())
+
+    """
+        Add to liked on lastfm
+    """
+    def _add_to_liked_on_lastfm(self):
+        sql = Lp.db.get_cursor()
+        # Love the track on lastfm
+        if Gio.NetworkMonitor.get_default().get_network_available() and\
+           Lp.lastfm.is_auth():
+            title = Lp.tracks.get_name(self._object_id, sql)
+            album_id = Lp.tracks.get_album_id(self._object_id, sql)
+            artist_id = Lp.albums.get_artist_id(album_id, sql)
+            if artist_id == Type.COMPILATIONS:
+                artist_id = Lp.tracks.get_artist_ids(track_id, sql)[0]
+            artist = Lp.artists.get_name(artist_id, sql)
+            track = Lp.lastfm.get_track(artist, title)
+            try:
+                track.love()
+            except:
+                GLib.idle_add(Lp.notify.send, _("Wrong Last.fm credentials"))
+        sql.close()
+
+    """
+        Remove from liked
+        @param SimpleAction
+        @param GVariant
+        @param playlist name as str
+    """
+    def _del_from_liked(self, action, variant):
+        Lp.playlists.remove_tracks(Lp.playlists._LIKED,
+                                   [Lp.tracks.get_path(self._object_id)])
+        start_new_thread(self._del_from_liked_on_lastfm, ())
+
+    """
+        Remove from liked on lastfm
+    """
+    def _del_from_liked_on_lastfm(self):
+        sql = Lp.db.get_cursor()
+        # Love the track on lastfm
+        if Gio.NetworkMonitor.get_default().get_network_available() and\
+           Lp.lastfm.is_auth():
+            title = Lp.tracks.get_name(self._object_id, sql)
+            album_id = Lp.tracks.get_album_id(self._object_id, sql)
+            artist_id = Lp.albums.get_artist_id(album_id, sql)
+            if artist_id == Type.COMPILATIONS:
+                artist_id = Lp.tracks.get_artist_ids(track_id, sql)[0]
+            artist = Lp.artists.get_name(artist_id, sql)
+            # Unlove the track on lastfm
+            track = Lp.lastfm.get_track(artist, title)
+            try:
+                track.unlove()
+            except:
+                GLib.idle_add(Lp.notify.send, _("Wrong Last.fm credentials"))
+        sql.close()
 
 
 # Contextual menu for toolbar

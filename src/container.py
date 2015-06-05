@@ -388,7 +388,12 @@ class Container:
         @thread safe
     """
     def _setup_list_playlists(self, update):
-        playlists = Lp.playlists.get()
+        if Lp.lastfm is not None:
+            playlists = [(Type.LIKED, Lp.playlists._LIKED)]
+            playlists.append((Type.SEPARATOR, ''))
+        else:
+            playlists = []
+        playlists += Lp.playlists.get()
         if update:
             self._list_two.update_values(playlists)
         else:
@@ -448,10 +453,14 @@ class Container:
     def _update_view_playlists(self, playlist_id):
         view = None
         if playlist_id is not None:
-            for (p_id, p_str) in Lp.playlists.get():
-                if p_id == playlist_id:
-                    view = PlaylistsView(p_str, self._stack)
-                    break
+            if playlist_id == Type.LIKED:
+                name = Lp.playlists._LIKED
+            else:
+                for (p_id, p_str) in Lp.playlists.get():
+                    if p_id == playlist_id:
+                        name = p_str
+                        break
+            view = PlaylistsView(name, self._stack)
         else:
             view = PlaylistsManageView(-1, None, False,
                                        self._stack.get_allocated_width()/2)

@@ -62,13 +62,16 @@ class InfosPopover(Gtk.Popover):
 class ArtistInfos(Gtk.Bin):
     """
         Init artist infos
-        @param artist as str
-        @param title as str
+        @param artist_id as int
+        @param track_id as int
     """
-    def __init__(self, artist, title=None):
+    def __init__(self, artist_id, track_id):
         Gtk.Bin.__init__(self)
-        self._artist = artist
-        self._title = title
+        self._Liked = True  # Liked track or not?
+        self._artist = Lp.artists.get_name(artist_id)
+        self._track_id = track_id
+        if self._track_id is not None:
+            self._title = Lp.tracks.get_name(track_id)
         self._stack = Gtk.Stack()
         self._stack.set_property('expand', True)
         self._stack.show()
@@ -133,7 +136,7 @@ class ArtistInfos(Gtk.Bin):
     def _set_content(self, content, url, stream):
         if content is not None:
             self._stack.set_visible_child(self._scrolled)
-            if self._title is None:
+            if self._track_id is None:
                 string = "<b>%s</b>" % escape(self._artist)
             else:
                 string = "<b>%s</b> %s" % (escape(self._artist),
@@ -141,8 +144,8 @@ class ArtistInfos(Gtk.Bin):
             self._label.set_markup(string)
             self._url_btn.set_uri(url)
             self._content.set_text(content)
-            if self._title is not None:
-                self._love_btn.show()
+            if self._track_id is not None:
+                start_new_thread(self._show_love_btn, ())
         else:
             self._stack.set_visible_child(self._not_found)
             self._label.set_text(_("No information for this artist..."))
@@ -152,31 +155,86 @@ class ArtistInfos(Gtk.Bin):
             del pixbuf
 
     """
-        Love a track
-        @param btn as Gtk.Button
+        Show love button
     """
-    def _on_love_btn_clicked(self, btn):
-        if Gio.NetworkMonitor.get_default().get_network_available() and\
-           Lp.lastfm.is_auth():
-            start_new_thread(self._love_track, ())
-            btn.set_sensitive(False)
+    def _show_love_btn(self):
+        sql = Lp.db.get_cursor()
+        if self._track_id is not None:
+            if Lp.playlists.is_present(Lp.playlists._LIKED,
+                                       self._track_id,
+                                       None, 
+                                       False,
+                                       sql):
+                self._Liked = False
+                self._love_btn.set_tooltip_text(_("I do not like"))
+                self._love_btn.set_image(
+                    Gtk.Image.new_from_icon_name('face-sick-symbolic',
+                                                 Gtk.IconSize.BUTTON))
+        GLib.idle_add(self._love_btn.show)
+        sql.close()
 
     """
         Love a track
+        @thread safe
     """
     def _love_track(self):
-        track = Lp.lastfm.get_track(self._artist, self._title)
-        try:
-            track.love()
-        except:
-            GLib.idle_add(Lp.notify.send, _("Wrong Last.fm credentials"))
+        Lp.playlists.add_liked()
+
+        # Add track to Liked tracks
+        sql = Lp.db.get_cursor()
+        if self._track_id is not None:
+            Lp.playlists.add_track(Lp.playlists._LIKED,
+                                   Lp.tracks.get_path(self._track_id,
+                                                      sql))
+        sql.close()
+
+        # Love the track on lastfm
+        if Gio.NetworkMonitor.get_default().get_network_available() and\
+           Lp.lastfm.is_auth():
+            track = Lp.lastfm.get_track(self._artist, self._title)
+            try:
+                track.love()
+            except:
+                GLib.idle_add(Lp.notify.send, _("Wrong Last.fm credentials"))
 
     """
         Unlove a track
     """
     def _unlove_track(self):
-        track = Lp.lastfm.get_track(self._artist, self._title)
-        try:
-            track.unlove()
-        except:
-            GLib.idle_add(Lp.notify.send, _("Wrong Last.fm credentials"))
+        Lp.playlists.add_liked()
+
+        # Del track from Liked tracks
+        sql = Lp.db.get_cursor()
+        if self._track_id is not None:
+            Lp.playlists.remove_tracks(
+                Lp.playlists._LIKED,
+                [Lp.tracks.get_path(self._track_id, sql)])
+        sql.close()
+
+        # Unlove the track on lastfm
+        if Gio.NetworkMonitor.get_default().get_network_available() and\
+           Lp.lastfm.is_auth():
+            track = Lp.lastfm.get_track(self._artist, self._title)
+            try:
+                track.unlove()
+            except:
+                GLib.idle_add(Lp.notify.send, _("Wrong Last.fm credentials"))
+
+    """
+        Love a track
+        @param btn as Gtk.Button
+    """
+    def _on_love_btn_clicked(self, btn):
+        if self._Liked:
+            start_new_thread(self._love_track, ())
+            btn.set_image(
+                Gtk.Image.new_from_icon_name('face-sick-symbolic',
+                                             Gtk.IconSize.BUTTON))
+            self._Liked = False
+            btn.set_tooltip_text(_("I do not like"))
+        else:
+            start_new_thread(self._unlove_track, ())
+            btn.set_image(
+                Gtk.Image.new_from_icon_name('emblem-favorite-symbolic',
+                                             Gtk.IconSize.BUTTON))
+            self._Liked = True

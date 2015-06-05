@@ -289,7 +289,7 @@ class SelectionList(Gtk.ScrolledWindow):
         if object_id >= 0:
             icon = 'go-next-symbolic'
         elif object_id == Type.POPULARS:
-            icon = 'emblem-favorite-symbolic'
+            icon = 'starred-symbolic'
         elif object_id == Type.PLAYLISTS:
             icon = 'emblem-documents-symbolic'
         elif object_id == Type.ALL:
@@ -307,6 +307,8 @@ class SelectionList(Gtk.ScrolledWindow):
             icon = 'multimedia-player-symbolic'
         elif object_id == Type.RANDOMS:
             icon = 'media-playlist-shuffle-symbolic'
+        elif object_id == Type.LIKED:
+            icon = 'emblem-favorite-symbolic'
         return icon
 
     """

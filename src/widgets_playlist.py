@@ -169,7 +169,6 @@ class PlaylistWidget(Gtk.Bin):
 
 # Dialog for manage playlists (add, rename, delete, add object to)
 class PlaylistsManagerWidget(Gtk.Bin):
-
     """
         Init ui with a scrolled treeview
         @param object id as int
@@ -232,10 +231,10 @@ class PlaylistsManagerWidget(Gtk.Bin):
         self._view.append_column(column2)
 
     """
-        Populate playlists, thread safe
+        Populate playlists
+        @thread safe
     """
     def populate(self):
-        # Search if we need to select item or not
         playlists = Lp.playlists.get()
         GLib.idle_add(self._append_playlists, playlists)
 
@@ -256,6 +255,7 @@ class PlaylistsManagerWidget(Gtk.Bin):
         self._model.append([True, name, 'user-trash-symbolic'])
         Lp.playlists.add(name)
         self._set_current_object(name, True)
+
 #######################
 # PRIVATE             #
 #######################
@@ -265,6 +265,7 @@ class PlaylistsManagerWidget(Gtk.Bin):
     def _sort_items(self, model, itera, iterb, data):
         a = model.get_value(itera, 1)
         b = model.get_value(iterb, 1)
+
         return a.lower() > b.lower()
 
     """
@@ -512,7 +513,7 @@ class PlaylistEditWidget(Gtk.Bin):
             track_id = tracks.pop(0)
             filepath = Lp.tracks.get_path(track_id)
             album_id = Lp.tracks.get_album_id(track_id)
-            artist_id = Lp.tracks.get_aartist_id(track_id)
+            artist_id = Lp.tracks.get_album_artist_id(track_id)
             if artist_id == Type.COMPILATIONS:
                 artist_ids = Lp.tracks.get_artist_ids(track_id)
                 artist_name = ""

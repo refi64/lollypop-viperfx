@@ -50,7 +50,7 @@ class Track:
                                                    sql)
             self.album = Lp.albums.get_name(self.album_id,
                                             sql)
-            self.aartist_id = Lp.tracks.get_aartist_id(track_id,
+            self.aartist_id = Lp.tracks.get_album_artist_id(track_id,
                                                        sql)
             self.aartist = translate_artist_name(
                 Lp.artists.get_name(self.aartist_id, sql))

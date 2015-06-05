@@ -88,7 +88,6 @@ class Shuffle:
     TRACKS_ARTIST = 3    # Shuffle by tracks on artist
     ALBUMS_ARTIST = 4    # Shuffle by albums on artist
 
-
 # Order is important
 class Type:
     NONE = -1
@@ -99,6 +98,7 @@ class Type:
     RADIOS = -6
     EXTERNALS = -7
     ALL = -8
+    LIKED = -998
     COMPILATIONS = -999
     DEVICES = -1000
     SEPARATOR = -2000

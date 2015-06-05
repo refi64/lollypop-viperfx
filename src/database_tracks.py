@@ -86,8 +86,24 @@ class TracksDatabase:
                         "VALUES (?, ?)", (track_id, genre_id))
 
     """
+        Return track ids with name
+        @param name as str
+        @return track id as int
+    """
+    def get_ids_for_name(self, name, sql=None):
+        if not sql:
+            sql = Lp.sql
+        result = sql.execute("SELECT rowid FROM tracks where name=?",
+                             (name,))
+        track_ids = []
+        for row in result:
+            track_ids += row
+        return track_ids
+
+    """
         Return track id for path
         @param filepath as str
+        @return track id as int
     """
     def get_id_by_path(self, filepath, sql=None):
         if not sql:
@@ -97,7 +113,6 @@ class TracksDatabase:
         v = result.fetchone()
         if v:
             return v[0]
-
         return None
 
     """
@@ -270,7 +285,7 @@ class TracksDatabase:
         @param Track id as int
         @return Performer id as int
     """
-    def get_aartist_id(self, track_id, sql=None):
+    def get_album_artist_id(self, track_id, sql=None):
         if not sql:
             sql = Lp.sql
         result = sql.execute("SELECT albums.artist_id from albums,tracks\
@@ -386,10 +401,36 @@ class TracksDatabase:
             sql = Lp.sql
         tracks = []
         result = sql.execute("SELECT rowid, name FROM tracks\
-                              WHERE name LIKE ? LIMIT 25", ('%'+string+'%',))
+                              WHERE name LIKE %?% LIMIT 25", (string,))
         for row in result:
             tracks += (row,)
         return tracks
+
+    """
+        Get track id for artist and title
+        @param artist as string
+        @param title as string
+        @param sql as sqlite cursor
+        @return track id as int
+        @thread safe
+    """
+    def search_track(self, artist, title, sql=None):
+        if not sql:
+            sql = Lp.sql
+        track_ids = self.get_ids_for_name(title, sql)
+        search_track_id = None
+        for track_id in track_ids:
+            aartist = self.get_album_artist_id(track_id, sql)
+            aartist_name = Lp.artists.get_name(aartist, sql)
+            if aartist_name == artist:
+                search_track_id = track_id
+                break
+            artist_ids = self.get_artist_ids(track_id, sql)
+            artist_name = Lp.artists.get_name(artist_ids[0], sql)
+            if artist_name == artist:
+                search_track_id = track_id
+                break
+        return search_track_id
 
     """
         Remove track
