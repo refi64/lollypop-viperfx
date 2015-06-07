@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-06-03 15:58+0200\n"
+"POT-Creation-Date: 2015-06-08 10:58+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -176,7 +176,7 @@ msgid ""
 "    - Artist informations disabled"
 msgstr ""
 
-#: ../src/application.py:306
+#: ../src/application.py:307
 msgid "Lollypop: You need to install yelp."
 msgstr ""
 
@@ -196,8 +196,8 @@ msgstr ""
 msgid "Random albums"
 msgstr ""
 
-#: ../src/container.py:326 ../src/pop_menu.py:321 ../src/pop_menu.py:376
-#: ../src/pop_menu.py:393
+#: ../src/container.py:326 ../src/pop_menu.py:395 ../src/pop_menu.py:450
+#: ../src/pop_menu.py:467
 msgid "Playlists"
 msgstr ""
 
@@ -217,13 +217,13 @@ msgstr ""
 msgid "Compilations"
 msgstr ""
 
-#: ../src/database_albums.py:251 ../src/database_artists.py:70
-#: ../src/database_genres.py:66 ../src/database_tracks.py:183
+#: ../src/database_albums.py:233 ../src/database_artists.py:70
+#: ../src/database_genres.py:66 ../src/database_tracks.py:199
 #: ../src/tagreader.py:81 ../src/tagreader.py:116 ../src/tagreader.py:131
 msgid "Unknown"
 msgstr ""
 
-#: ../src/database_albums.py:268
+#: ../src/database_albums.py:250
 msgid "Compilation"
 msgstr ""
 
@@ -246,7 +246,7 @@ msgstr ""
 msgid "Last.fm authentication disabled"
 msgstr ""
 
-#: ../src/lastfm.py:183 ../src/pop_infos.py:167 ../src/pop_infos.py:187
+#: ../src/lastfm.py:217
 msgid "Wrong Last.fm credentials"
 msgstr ""
 
@@ -276,7 +276,11 @@ msgstr ""
 msgid "Radio"
 msgstr ""
 
-#: ../src/pop_covers.py:60 ../src/pop_infos.py:90 ../src/pop_tunein.py:82
+#: ../src/playlists.py:25
+msgid "Loved tracks"
+msgstr ""
+
+#: ../src/pop_covers.py:60 ../src/pop_infos.py:91 ../src/pop_tunein.py:82
 #: ../data/PopRadio.ui.h:3 ../data/RadioPopover.ui.h:3
 msgid "Please wait..."
 msgstr ""
@@ -289,8 +293,12 @@ msgstr ""
 msgid "Select a cover art for this album"
 msgstr ""
 
-#: ../src/pop_infos.py:143
+#: ../src/pop_infos.py:151
 msgid "No information for this artist..."
+msgstr ""
+
+#: ../src/pop_infos.py:169 ../src/pop_infos.py:220
+msgid "I do not love"
 msgstr ""
 
 #: ../src/pop_menu.py:60
@@ -339,20 +347,28 @@ msgstr ""
 msgid "Add to \"%s\""
 msgstr ""
 
-#: ../src/pop_menu.py:319
+#: ../src/pop_menu.py:272
+msgid "I dislove this track"
+msgstr ""
+
+#: ../src/pop_menu.py:277
+msgid "I love this track"
+msgstr ""
+
+#: ../src/pop_menu.py:393
 msgid "Playback"
 msgstr ""
 
-#: ../src/pop_menu.py:354
+#: ../src/pop_menu.py:428
 msgid "Modify informations"
 msgstr ""
 
-#: ../src/pop_menu.py:374 ../src/pop_menu.py:391 ../data/ToolbarEnd.ui.h:10
+#: ../src/pop_menu.py:448 ../src/pop_menu.py:465 ../data/ToolbarEnd.ui.h:10
 #: ../data/Toolbar.ui.h:13
 msgid "Queue"
 msgstr ""
 
-#: ../src/pop_menu.py:378 ../data/PlaylistsView.ui.h:1
+#: ../src/pop_menu.py:452 ../data/PlaylistsView.ui.h:1
 msgid "Edit"
 msgstr ""
 
@@ -412,16 +428,16 @@ msgstr ""
 msgid "No free space available on device"
 msgstr ""
 
-#: ../src/widgets_playlist.py:252 ../src/widgets_playlist.py:255
+#: ../src/widgets_playlist.py:251 ../src/widgets_playlist.py:254
 msgid "New playlist "
 msgstr ""
 
-#: ../src/widgets_playlist.py:297 ../src/widgets_playlist.py:554
+#: ../src/widgets_playlist.py:298 ../src/widgets_playlist.py:536
 #, python-format
 msgid "Remove \"%s\"?"
 msgstr ""
 
-#: ../src/widgets_playlist.py:590
+#: ../src/widgets_playlist.py:581
 msgid "Remove these tracks?"
 msgstr ""
 
@@ -464,10 +480,6 @@ msgstr ""
 
 #: ../data/ArtistInfos.ui.h:1
 msgid "I love"
-msgstr ""
-
-#: ../data/ArtistInfos.ui.h:2
-msgid "I don't love"
 msgstr ""
 
 #: ../data/DeviceManagerView.ui.h:1
