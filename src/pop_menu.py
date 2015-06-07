@@ -269,12 +269,12 @@ class PlaylistsMenu(BaseMenu):
                                        False):
                 action.connect('activate',
                                self._del_from_loved)
-                self.append(_("I dislike this track"),
+                self.append(_("I dislove this track"),
                             "app.loved")
             else:
                 action.connect('activate',
                                 self._add_to_loved)
-                self.append(_("I like this track"),
+                self.append(_("I love this track"),
                             "app.loved")
 
     """
