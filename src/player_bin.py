@@ -247,12 +247,11 @@ class BinPlayer(ReplayGainPlayer, BasePlayer):
     """
     def _on_bus_eos(self, bus, message):
         debug("Player::_on_bus_eos(): %s" % self.current_track.uri)
-        if self.context.next != NextContext.NONE:
-            self.context.next = NextContext.NONE
-            self._set_next()
-            self.next()
-        else:
-            self.load(self.current_track)
+        self.stop()
+        self.context.next = NextContext.NONE
+        if self.next_track.id is not None:
+            self._load_track(self.next_track)
+        self.emit('current-changed')
 
     """
         When stream is about to finish, switch to next track without gap
@@ -264,7 +263,8 @@ class BinPlayer(ReplayGainPlayer, BasePlayer):
         previous_track_id = self.current_track.id
         # We are in a thread, we need to create a new cursor
         sql = Lp.db.get_cursor()
-        GLib.idle_add(self.next)
+        if self.next_track.id is not None:
+            self._load_track(self.next_track)
         # Scrobble on lastfm
         if Lp.lastfm is not None:
             if self.current_track.aartist_id == Type.COMPILATIONS:
