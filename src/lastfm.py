@@ -163,7 +163,7 @@ class LastFM(LastFMNetwork):
                 track.unlove()
             except Exception as e:
                 print("Lastfm::unlove(): %s" % e)
-        
+
     """
         Return True if valid authentication send
         @return bool
