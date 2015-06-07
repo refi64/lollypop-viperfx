@@ -20,7 +20,7 @@ from _thread import start_new_thread
 from lollypop.inotify import Inotify
 from lollypop.define import Lp
 from lollypop.tagreader import ScannerTagReader
-from lollypop.utils import is_audio, debug
+from lollypop.utils import is_audio, is_pls, debug
 
 
 class CollectionScanner(GObject.GObject, ScannerTagReader):
@@ -103,7 +103,9 @@ class CollectionScanner(GObject.GObject, ScannerTagReader):
                     filepath = os.path.join(root, name)
                     try:
                         f = Gio.File.new_for_path(filepath)
-                        if is_audio(f):
+                        if is_pls(f):
+                            pass
+                        elif is_audio(f):
                             tracks.append(filepath)
                             count += 1
                         else:

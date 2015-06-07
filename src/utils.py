@@ -18,58 +18,44 @@ from gettext import gettext as _
 import os
 
 
-"""
-    Print debug
-    @param debug as str
-"""
-
 
 def debug(str):
+    """
+        Print debug
+        @param debug as str
+    """
     if Lp.debug is True:
         print(str)
 
-
-"""
-    Return True if desktop is elementary os
-"""
-
-
 def is_eos():
+    """
+        Return True if desktop is elementary os
+    """
     return os.environ.get("XDG_CURRENT_DESKTOP") == "Pantheon"
 
-
-"""
-    Return True if desktop is Unity
-"""
-
-
 def is_unity():
+    """
+        Return True if desktop is Unity
+    """
     return os.environ.get("XDG_CURRENT_DESKTOP") == "Unity"
 
-
-"""
-    Return True if desktop is Gnome
-"""
-
-
 def is_gnome():
+    """
+        Return True if desktop is Gnome
+    """
     return os.environ.get("XDG_CURRENT_DESKTOP") == "GNOME"
 
-"""
-    Return True if CSDs are to be used based on several criterions
-"""
-
-
 def use_csd():
+    """
+        Return True if CSDs are to be used based on several criterions
+    """
     return is_gnome() or is_eos() or Lp.settings.get_value('force-csd')
 
-"""
-    Return True if files is audio
-    @param f as Gio.File
-"""
-
-
 def is_audio(f):
+    """
+        Return True if files is audio
+        @param f as Gio.File
+    """
     try:
         info = f.query_info('standard::content-type',
                             Gio.FileQueryInfoFlags.NONE)
@@ -80,13 +66,27 @@ def is_audio(f):
         pass
     return False
 
-"""
-    Return formated artist name
-    @param str
-"""
-
+def is_pls(f):
+    """
+        Return True if files is a playlist
+        @param f as Gio.File
+    """
+    try:
+        info = f.query_info('standard::content-type',
+                            Gio.FileQueryInfoFlags.NONE)
+        if info is not None:
+            if info.get_content_type() in ["audio/x-mpegurl",
+                                           "application/xspf+xml"]:
+                return True
+    except:
+        pass
+    return False
 
 def format_artist_name(name):
+    """
+        Return formated artist name
+        @param str
+    """
     # Handle language ordering
     # Translators: Add here words that shoud be ignored for artist sort order
     for special in _("The the").split():
@@ -95,42 +95,33 @@ def format_artist_name(name):
             name = name[strlen:]+"@@@@"+special
     return name
 
-
-"""
-    Return translate formated artist name
-    @param str
-"""
-
-
 def translate_artist_name(name):
+    """
+        Return translate formated artist name
+        @param str
+    """
     split = name.split("@@@@")
     if len(split) == 2:
         name = split[1]+" "+split[0]
     return name
 
-
-"""
-    Convert seconds to a pretty string
-    @param seconds as int
-"""
-
-
 def seconds_to_string(duration):
+    """
+        Convert seconds to a pretty string
+        @param seconds as int
+    """
     seconds = duration
     minutes = seconds // 60
     seconds %= 60
 
     return '%i:%02i' % (minutes, seconds)
 
-
-"""
-    Convert Gdk.Color to hexadecimal
-    @param Gdk.Color
-    @return string
-"""
-
-
 def rgba_to_hex(color):
+    """
+        Convert Gdk.Color to hexadecimal
+        @param Gdk.Color
+        @return string
+    """
     return "#{0:02x}{1:02x}{2:02x}".format(int(color.red * 255),
                                            int(color.green * 255),
                                            int(color.blue * 255))
