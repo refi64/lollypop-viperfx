@@ -81,6 +81,7 @@ class LastFM(LastFMNetwork):
     def connect_sync(self, password):
         self._username = Lp.settings.get_value('lastfm-login').get_string()
         self._connect(self._username, password)
+        start_new_thread(self._populate_loved_tracks, (True,))
 
     """
         Download album image
@@ -248,11 +249,12 @@ class LastFM(LastFMNetwork):
 
     """
         Populate loved tracks playlist
+        @param bool as force
     """
-    def _populate_loved_tracks(self):
+    def _populate_loved_tracks(self, force=False):
         try:
             Lp.playlists.add_loved()
-            if len(Lp.playlists.get_tracks(Lp.playlists._LOVED)) == 0:
+            if force or len(Lp.playlists.get_tracks(Lp.playlists._LOVED)) == 0:
                 tracks = []
                 sql = Lp.db.get_cursor()
                 user = self.get_user(self._username)
