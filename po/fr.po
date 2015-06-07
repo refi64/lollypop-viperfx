@@ -9,8 +9,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lollypop\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-05-25 16:03+0200\n"
-"PO-Revision-Date: 2015-05-25 14:05+0000\n"
+"POT-Creation-Date: 2015-06-08 10:58+0200\n"
+"PO-Revision-Date: 2015-06-08 09:04+0000\n"
 "Last-Translator: Cédric Bellegarde <web@adishatz.org>\n"
 "Language-Team: French (http://www.transifex.com/projects/p/lollypop/language/fr/)\n"
 "MIME-Version: 1.0\n"
@@ -179,54 +179,54 @@ msgid ""
 "    - Artist informations disabled"
 msgstr "- Scrobbler désactivé\n- Téléchargement automatique des pochettes désactivé\n- Informations sur les artistes désactivée"
 
-#: ../src/application.py:316
+#: ../src/application.py:307
 msgid "Lollypop: You need to install yelp."
 msgstr "Lollypop: Vous devez installer yelp."
 
-#: ../src/collectionscanner.py:61
+#: ../src/collectionscanner.py:60
 msgid "Your music is updating"
 msgstr "Mise à jour de votre musique"
 
-#: ../src/container.py:347
+#: ../src/container.py:323
 msgid "Popular albums"
 msgstr "Albums populaires"
 
-#: ../src/container.py:348
+#: ../src/container.py:324
 msgid "Recent albums"
 msgstr "Albums récents"
 
-#: ../src/container.py:349
+#: ../src/container.py:325
 msgid "Random albums"
 msgstr "Albums aléatoires"
 
-#: ../src/container.py:350 ../src/pop_menu.py:323 ../src/pop_menu.py:379
-#: ../src/pop_menu.py:396
+#: ../src/container.py:326 ../src/pop_menu.py:395 ../src/pop_menu.py:450
+#: ../src/pop_menu.py:467
 msgid "Playlists"
 msgstr "Listes de lecture"
 
-#: ../src/container.py:351
+#: ../src/container.py:327
 msgid "Radios"
 msgstr "Radios"
 
-#: ../src/container.py:353
+#: ../src/container.py:329
 msgid "All artists"
 msgstr "Tous les artistes"
 
-#: ../src/container.py:355
+#: ../src/container.py:331
 msgid "All albums"
 msgstr "Tous les albums"
 
-#: ../src/container.py:399
+#: ../src/container.py:375
 msgid "Compilations"
 msgstr "Compilations"
 
-#: ../src/database_albums.py:253 ../src/database_artists.py:70
-#: ../src/database_genres.py:67 ../src/database_tracks.py:187
+#: ../src/database_albums.py:233 ../src/database_artists.py:70
+#: ../src/database_genres.py:66 ../src/database_tracks.py:199
 #: ../src/tagreader.py:81 ../src/tagreader.py:116 ../src/tagreader.py:131
 msgid "Unknown"
 msgstr "Inconnu"
 
-#: ../src/database_albums.py:270
+#: ../src/database_albums.py:250
 msgid "Compilation"
 msgstr "Compilation"
 
@@ -234,65 +234,75 @@ msgstr "Compilation"
 msgid "Many artists"
 msgstr "Plusieurs artistes"
 
-#: ../src/fullscreen.py:78 ../src/fullscreen.py:195 ../src/toolbar.py:323
-#: ../src/toolbar.py:354
+#: ../src/fullscreen.py:79 ../src/fullscreen.py:200
+#: ../src/toolbar_playback.py:74 ../src/toolbar_playback.py:107
 msgid "Pause"
 msgstr "Pause"
 
-#: ../src/fullscreen.py:142 ../src/pop_menu.py:171
-msgid "Next track"
-msgstr "Morceau suivant"
-
-#: ../src/fullscreen.py:199 ../src/toolbar.py:330 ../src/toolbar.py:351
+#: ../src/fullscreen.py:204 ../src/toolbar_playback.py:76
+#: ../src/toolbar_playback.py:104 ../data/ToolbarPlayback.ui.h:2
 #: ../data/Toolbar.ui.h:7
 msgid "Play"
 msgstr "Lecture"
 
-#: ../src/lastfm.py:146 ../src/pop_artist_infos.py:174
-#: ../src/pop_artist_infos.py:197
+#: ../src/lastfm.py:21
+msgid "Last.fm authentication disabled"
+msgstr "Authentification Last.fm désactivée"
+
+#: ../src/lastfm.py:217
 msgid "Wrong Last.fm credentials"
 msgstr "Identifiants Last.fm invalides"
 
-#: ../src/notification.py:64 ../data/Toolbar.ui.h:6
+#: ../src/notification.py:64 ../data/ToolbarPlayback.ui.h:1
+#: ../data/Toolbar.ui.h:6
 msgid "Previous"
 msgstr "Précédent"
 
-#: ../src/notification.py:68 ../data/Toolbar.ui.h:8
+#: ../src/notification.py:68 ../data/ToolbarPlayback.ui.h:3
+#: ../data/Toolbar.ui.h:8
 msgid "Next"
 msgstr "Suivant"
 
 #. TRANSLATORS: by refers to the artist,
 #. from to the album
-#: ../src/notification.py:100
+#: ../src/notification.py:102
 #, python-format
 msgid "by %s, from %s"
 msgstr "par %s, sur %s"
 
-#: ../src/player_bin.py:225
+#: ../src/player_bin.py:238
 #, python-format
 msgid "File doesn't exist: %s"
 msgstr "Le fichier n'existe pas: %s"
 
-#: ../src/player_radio.py:42
+#: ../src/player_radio.py:40
 msgid "Radio"
 msgstr "Radio"
 
-#: ../src/pop_album_covers.py:61 ../src/pop_artist_infos.py:93
-#: ../src/pop_tunein.py:83 ../data/PopRadio.ui.h:3
+#: ../src/playlists.py:25
+msgid "Loved tracks"
+msgstr "Coups de coeur"
+
+#: ../src/pop_covers.py:60 ../src/pop_infos.py:91 ../src/pop_tunein.py:82
+#: ../data/PopRadio.ui.h:3 ../data/RadioPopover.ui.h:3
 msgid "Please wait..."
 msgstr "Veuillez patienter..."
 
-#: ../src/pop_album_covers.py:149
+#: ../src/pop_covers.py:148
 msgid "No cover found..."
 msgstr "Aucune pochette trouvée..."
 
-#: ../src/pop_album_covers.py:169
+#: ../src/pop_covers.py:168
 msgid "Select a cover art for this album"
 msgstr "Sélectionnez une pochette pour cet album"
 
-#: ../src/pop_artist_infos.py:147
+#: ../src/pop_infos.py:151
 msgid "No information for this artist..."
 msgstr "Aucune information pour cet artiste..."
+
+#: ../src/pop_infos.py:169 ../src/pop_infos.py:220
+msgid "I do not love"
+msgstr "Je n'aime pas"
 
 #: ../src/pop_menu.py:60
 msgid "Continue playback"
@@ -318,37 +328,50 @@ msgstr "Ajouter à la file d'attente"
 msgid "Next tracks"
 msgstr "Morceaux suivants"
 
+#: ../src/pop_menu.py:171 ../data/FullScreen.ui.h:1 ../data/NextPopover.ui.h:1
+msgid "Next track"
+msgstr "Morceau suivant"
+
 #: ../src/pop_menu.py:175
 msgid "Remove from queue"
 msgstr "Supprimer de la liste d'attente"
 
-#: ../src/pop_menu.py:242
+#: ../src/pop_menu.py:241
 msgid "Add to others"
 msgstr "Ajouter aux autres"
 
-#: ../src/pop_menu.py:255
+#: ../src/pop_menu.py:254
 #, python-format
 msgid "Remove from \"%s\""
 msgstr "Supprimer de \"%s\""
 
-#: ../src/pop_menu.py:261
+#: ../src/pop_menu.py:260
 #, python-format
 msgid "Add to \"%s\""
 msgstr "Ajouter à \"%s\""
 
-#: ../src/pop_menu.py:321
+#: ../src/pop_menu.py:272
+msgid "I dislove this track"
+msgstr "Je n'aime pas ce morceau"
+
+#: ../src/pop_menu.py:277
+msgid "I love this track"
+msgstr "J'aime ce morceau"
+
+#: ../src/pop_menu.py:393
 msgid "Playback"
 msgstr "Lecture"
 
-#: ../src/pop_menu.py:357
+#: ../src/pop_menu.py:428
 msgid "Modify informations"
 msgstr "Modifier les informations"
 
-#: ../src/pop_menu.py:377 ../src/pop_menu.py:394 ../data/Toolbar.ui.h:13
+#: ../src/pop_menu.py:448 ../src/pop_menu.py:465 ../data/ToolbarEnd.ui.h:10
+#: ../data/Toolbar.ui.h:13
 msgid "Queue"
 msgstr "File d'attente"
 
-#: ../src/pop_menu.py:381 ../data/PlaylistsView.ui.h:1
+#: ../src/pop_menu.py:452 ../data/PlaylistsView.ui.h:1
 msgid "Edit"
 msgstr "Editer"
 
@@ -360,11 +383,11 @@ msgstr "Ajouter"
 msgid "Modify"
 msgstr "Modifier"
 
-#: ../src/pop_tunein.py:103
+#: ../src/pop_tunein.py:102
 msgid "Can't connect to TuneIn..."
 msgstr "Impossible de se connecter à TuneIn..."
 
-#: ../src/pop_tunein.py:160
+#: ../src/pop_tunein.py:156
 msgid "Browse themes and add a new radio"
 msgstr "Parcourez les thèmes et ajoutez une nouvelle radio"
 
@@ -372,52 +395,52 @@ msgstr "Parcourez les thèmes et ajoutez une nouvelle radio"
 msgid "Search:"
 msgstr "Recherche:"
 
-#: ../src/settings.py:130
+#: ../src/settings.py:132
 msgid "Populars"
 msgstr "Populaires"
 
-#: ../src/settings.py:131
+#: ../src/settings.py:133
 msgid "Recents"
 msgstr "Récents"
 
 #. Handle language ordering
 #. Translators: Add here words that shoud be ignored for artist sort order
-#: ../src/utils.py:87
+#: ../src/utils.py:92
 msgid "The the"
 msgstr "The the"
 
-#: ../src/view_device.py:39 ../src/view_device.py:80
+#: ../src/view_device.py:38 ../src/view_device.py:79
 #, python-format
 msgid "Synchronize %s"
 msgstr "Synchroniser %s"
 
-#: ../src/view_device.py:71
+#: ../src/view_device.py:70
 msgid "Cancel synchronization"
 msgstr "Annuler la synchronisation"
 
-#: ../src/widgets_album.py:230
+#: ../src/widgets_album.py:224
 #, python-format
 msgid "Disc %s"
 msgstr "Disque %s"
 
-#: ../src/widgets_device.py:401
+#: ../src/widgets_device.py:175
 msgid "Unknown error while syncing, try to reboot your device"
 msgstr "Erreur inconnue lors de la synchronisation, essayez de redémarrer votre appareil"
 
-#: ../src/widgets_device.py:408
+#: ../src/widgets_device.py:183
 msgid "No free space available on device"
 msgstr "Pas d'espace disponible sur l'appareil"
 
-#: ../src/widgets_playlist.py:235 ../src/widgets_playlist.py:238
+#: ../src/widgets_playlist.py:251 ../src/widgets_playlist.py:254
 msgid "New playlist "
 msgstr "Nouvelle liste de lecture "
 
-#: ../src/widgets_playlist.py:280 ../src/widgets_playlist.py:536
+#: ../src/widgets_playlist.py:298 ../src/widgets_playlist.py:536
 #, python-format
 msgid "Remove \"%s\"?"
 msgstr "Supprimer \"%s\"?"
 
-#: ../src/widgets_playlist.py:575
+#: ../src/widgets_playlist.py:581
 msgid "Remove these tracks?"
 msgstr "Supprimer ces morceaux?"
 
@@ -458,6 +481,10 @@ msgstr "_Aide"
 msgid "_Quit"
 msgstr "_Quitter"
 
+#: ../data/ArtistInfos.ui.h:1
+msgid "I love"
+msgstr "J'aime"
+
 #: ../data/DeviceManagerView.ui.h:1
 msgid "Synchronize your device with this playlists"
 msgstr "Synchronisez votre appareil avec ces listes de lecture"
@@ -470,33 +497,25 @@ msgstr "Confirmer"
 msgid "New playlist"
 msgstr "Nouvelle liste de lecture"
 
-#: ../data/PopRadio.ui.h:1
+#: ../data/PopRadio.ui.h:1 ../data/RadioPopover.ui.h:1
 msgid "Select a logo  for this radio"
 msgstr "Sélectionnez un logo pour cette radio"
 
-#: ../data/PopRadio.ui.h:2
+#: ../data/PopRadio.ui.h:2 ../data/RadioPopover.ui.h:2
 msgid "No logo found..."
 msgstr "Aucun logo trouvé..."
 
-#: ../data/PopRadio.ui.h:4
+#: ../data/PopRadio.ui.h:4 ../data/RadioPopover.ui.h:4
 msgid "Name:"
 msgstr "Nom:"
 
-#: ../data/PopRadio.ui.h:5
+#: ../data/PopRadio.ui.h:5 ../data/RadioPopover.ui.h:5
 msgid "Address:"
 msgstr "Adresse:"
 
-#: ../data/PopRadio.ui.h:6
+#: ../data/PopRadio.ui.h:6 ../data/RadioPopover.ui.h:6
 msgid "Delete"
 msgstr "Supprimer"
-
-#: ../data/ArtistInfos.ui.h:1
-msgid "I love"
-msgstr "J'aime"
-
-#: ../data/ArtistInfos.ui.h:2
-msgid "I don't love"
-msgstr "Je n'aime pas"
 
 #: ../data/QueueWidget.ui.h:1
 msgid "Queue:"
@@ -505,6 +524,14 @@ msgstr "File d'attente:"
 #: ../data/QueueWidget.ui.h:2
 msgid "Clear queue"
 msgstr "Vider la file d'attente"
+
+#: ../data/RadiosView.ui.h:1
+msgid "New radio"
+msgstr "Nouvelle radio"
+
+#: ../data/RadiosView.ui.h:2
+msgid "Search in TuneIn"
+msgstr "Rechercher dans TuneIn"
 
 #: ../data/SearchRow.ui.h:1
 msgid "artist"
@@ -562,7 +589,8 @@ msgstr "Musique"
 msgid "Select what will be available in party mode"
 msgstr "Selectionnez ce qui sera disponible en mode soirée"
 
-#: ../data/SettingsDialog.ui.h:15 ../data/Toolbar.ui.h:11
+#: ../data/SettingsDialog.ui.h:15 ../data/ToolbarEnd.ui.h:8
+#: ../data/Toolbar.ui.h:11
 msgid "Party mode"
 msgstr "Mode soirée"
 
@@ -578,35 +606,39 @@ msgstr "Mot de passe:"
 msgid "Test"
 msgstr "Tester"
 
-#: ../data/Toolbar.ui.h:1
+#: ../data/SettingsDialog.ui.h:19
+msgid "You need to install pylast and gi secret"
+msgstr "Vous devez installer pylast et gi secret"
+
+#: ../data/ToolbarEnd.ui.h:1 ../data/Toolbar.ui.h:1
 msgid "No shuffle"
 msgstr "Ne pas mélanger"
 
-#: ../data/Toolbar.ui.h:2
+#: ../data/ToolbarEnd.ui.h:2 ../data/Toolbar.ui.h:2
 msgid "Shuffle albums"
 msgstr "Mélanger les albums"
 
-#: ../data/Toolbar.ui.h:3
+#: ../data/ToolbarEnd.ui.h:3 ../data/Toolbar.ui.h:3
 msgid "Shuffle tracks"
 msgstr "Mélanger les morceaux"
 
-#: ../data/Toolbar.ui.h:4
+#: ../data/ToolbarEnd.ui.h:4 ../data/Toolbar.ui.h:4
 msgid "Shuffle albums from artist"
 msgstr "Mélanger les albums de l'artiste"
 
-#: ../data/Toolbar.ui.h:5
+#: ../data/ToolbarEnd.ui.h:5 ../data/Toolbar.ui.h:5
 msgid "Shuffle tracks from artist"
 msgstr "Mélanger les morceaux de l'artiste"
 
-#: ../data/Toolbar.ui.h:9
+#: ../data/ToolbarEnd.ui.h:6 ../data/Toolbar.ui.h:9
 msgid "Settings"
 msgstr "Paramètres"
 
-#: ../data/Toolbar.ui.h:10
+#: ../data/ToolbarEnd.ui.h:7 ../data/Toolbar.ui.h:10
 msgid "Shuffle"
 msgstr "Aléatoire"
 
-#: ../data/Toolbar.ui.h:12
+#: ../data/ToolbarEnd.ui.h:9 ../data/Toolbar.ui.h:12
 msgid "Search"
 msgstr "Recherche"
 
@@ -619,11 +651,3 @@ msgid ""
 "Lollypop isn't designed to work without an unicode locale.\n"
 "Please fix your system."
 msgstr "Lollypop ne supporte pas les systèmes non unicode.\nMerci de corriger votre système"
-
-#: ../data/RadiosView.ui.h:1
-msgid "New radio"
-msgstr "Nouvelle radio"
-
-#: ../data/RadiosView.ui.h:2
-msgid "Search in TuneIn"
-msgstr "Rechercher dans TuneIn"
