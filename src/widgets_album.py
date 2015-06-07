@@ -21,7 +21,6 @@ from lollypop.widgets_track import TracksWidget
 from lollypop.track import Track
 from lollypop.pop_menu import AlbumMenuPopover
 from lollypop.pop_covers import CoversPopover
-from lollypop.utils import translate_artist_name
 
 
 # Base class for album widgets
