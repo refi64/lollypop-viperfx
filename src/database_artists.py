@@ -115,7 +115,6 @@ class ArtistsDatabase:
     def get(self, genre_id, sql=None):
         if not sql:
             sql = Lp.sql
-        artists = []
         result = []
         if genre_id == Type.ALL or genre_id is None:
             # Only artist that really have an album
@@ -131,9 +130,9 @@ class ArtistsDatabase:
                                   AND album_genres.album_id=albums.rowid\
                                   ORDER BY artists.name\
                                   COLLATE NOCASE", (genre_id,))
-
+        artists = []
         for row in result:
-            artists += (row,)
+            artists.append((row[0], translate_artist_name(row[1])))
         return artists
 
     """
