@@ -30,7 +30,6 @@ from locale import getdefaultlocale
 from _thread import start_new_thread
 
 from lollypop.define import Lp, SecretSchema, SecretAttributes
-from lollypop.utils import translate_artist_name
 
 
 class LastFM(LastFMNetwork):
@@ -91,7 +90,7 @@ class LastFM(LastFMNetwork):
         if Gio.NetworkMonitor.get_default().get_network_available():
             album = Lp.albums.get_name(album_id)
             artist = Lp.albums.get_artist_name(album_id)
-            self._albums_queue.append((translate_artist_name(artist), album))
+            self._albums_queue.append((artist, album))
             if not self._in_albums_download:
                 start_new_thread(self._download_albums_imgs, ())
 

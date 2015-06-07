@@ -20,7 +20,6 @@ from lollypop.pop_infos import InfosPopover
 from lollypop.view_container import ViewContainer
 from lollypop.widgets_album import AlbumSimpleWidget, AlbumDetailedWidget
 from lollypop.define import Lp, Type, ArtSize
-from lollypop.utils import translate_artist_name
 
 
 # Artist view is a vertical grid with album songs widgets
@@ -43,8 +42,7 @@ class ArtistView(View):
         builder.add_from_resource('/org/gnome/Lollypop/ArtistView.ui')
         builder.connect_signals(self)
         self.attach(builder.get_object('ArtistView'), 0, 0, 1, 1)
-        builder.get_object('artist').set_label(translate_artist_name(
-            self._artist_name))
+        builder.get_object('artist').set_label(self._artist_name)
 
         self._pop_allowed = True
 

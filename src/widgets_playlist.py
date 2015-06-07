@@ -20,7 +20,6 @@ from gettext import gettext as _
 from lollypop.define import Lp, ArtSize, Type
 from lollypop.widgets_track import TracksWidget
 from lollypop.track import Track
-from lollypop.utils import translate_artist_name
 
 
 # Playlist Widget is similar to album detailed
@@ -141,9 +140,10 @@ class PlaylistWidget(Gtk.Bin):
            artist_id not in artist_ids:
             artist_name = ""
             for artist_id in artist_ids:
-                artist_name += translate_artist_name(
-                    Lp.artists.get_name(artist_id)) + ", "
-            title = "<b>%s</b>\n%s" % (escape(artist_name[:-2]),
+                if artist_name != "":
+                    artist_name += ", "
+                artist_name += Lp.artists.get_name(artist_id)
+            title = "<b>%s</b>\n%s" % (escape(artist_name),
                                        title)
 
         if album_id != previous_album_id:
@@ -498,17 +498,16 @@ class PlaylistEditWidget(Gtk.Bin):
                 artist_ids = Lp.tracks.get_artist_ids(track_id)
                 artist_name = ""
                 for artist_id in artist_ids:
-                    artist_name += translate_artist_name(Lp.artists.
-                                                         get_name(artist_id))\
-                        + ", "
-                artist_name = artist_name[:-2]
+                    if artist_name != "":
+                        artist_name += ", "
+                    artist_name += Lp.artists.get_name(artist_id)
             else:
                 artist_name = Lp.artists.get_name(artist_id)
             track_name = Lp.tracks.get_name(track_id)
             art = Lp.art.get_album(album_id, ArtSize.SMALL)
             self._model.append([art,
                                "<b>%s</b>\n%s" % (
-                                   escape(translate_artist_name(artist_name)),
+                                   escape(artist_name),
                                    escape(track_name)),
                                 'user-trash-symbolic', filepath])
             self._tracks_orig.append(filepath)

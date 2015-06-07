@@ -16,7 +16,6 @@ from gi.repository import GLib, Gio
 from time import sleep
 
 from lollypop.define import Lp
-from lollypop.utils import translate_artist_name
 
 
 class MtpSync:
@@ -171,8 +170,7 @@ class MtpSync:
                 # Or this is a Gio/GObject Introspection bug
                 album_name = "".join([c for c in album_name if c.isalpha()\
                     or c.isdigit() or c==' ']).rstrip()
-                artist_name = translate_artist_name(
-                    Lp.albums.get_artist_name(album_id, sql))
+                artist_name = Lp.albums.get_artist_name(album_id, sql)
                 # Sanitize file names as some MTP devices do not like this
                 # Or this is a Gio/GObject Introspection bug
                 artist_name = "".join([c for c in artist_name if c.isalpha()\
@@ -263,8 +261,7 @@ class MtpSync:
             # Or this is a Gio/GObject Introspection bug
             album_name = "".join([c for c in album_name if c.isalpha()\
                 or c.isdigit() or c==' ']).rstrip()
-            artist_name = translate_artist_name(
-                Lp.albums.get_artist_name(album_id, sql))
+            artist_name = Lp.albums.get_artist_name(album_id, sql)
             # Sanitize file names as some MTP devices do not like this
             # Or this is a Gio/GObject Introspection bug
             artist_name = "".join([c for c in artist_name if c.isalpha()\

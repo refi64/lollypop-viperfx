@@ -19,7 +19,6 @@ from _thread import start_new_thread
 
 from lollypop.define import Lp, ArtSize, Type
 from lollypop.track import Track
-from lollypop.utils import translate_artist_name
 
 
 # show an album/track object with actions
@@ -48,11 +47,11 @@ class SearchRow(Gtk.ListBoxRow):
 
     """
         Set artist and title label
-        @param untranslated artist name as string
+        @param artist name as string
         @param item name as string
     """
     def set_text(self, artist, title):
-        self._artist.set_text(translate_artist_name(artist))
+        self._artist.set_text(artist)
         self._title.set_text(title)
 
     """
@@ -296,18 +295,12 @@ class SearchWidget(Gtk.Popover):
             search_obj.album_id = Lp.tracks.get_album_id(track_id, sql)
             search_obj.is_track = True
 
-            album_artist_id = Lp.albums.get_artist_id(search_obj.album_id,
-                                                      sql)
-            artist_name = ""
-            if album_artist_id != Type.COMPILATIONS:
-                artist_name = Lp.albums.get_artist_name(
-                    search_obj.album_id, sql) + ", "
-            for artist_id in Lp.tracks.get_artist_ids(track_id, sql):
-                if artist_id != album_artist_id:
-                    artist_name += translate_artist_name(
-                        Lp.artists.get_name(artist_id, sql)) + ", "
-
-            search_obj.artist = artist_name[:-2]
+            artist_id = Lp.albums.get_artist_id(search_obj.album_id,
+                                                sql)
+            if artist_id == Type.COMPILATIONS:
+                search_obj.artist = Lp.tracks.get_artist_names(track_id, sql)
+            else:
+                search_obj.artist = Lp.artists.get_name(artist_id, sql)
 
             results.append(search_obj)
 

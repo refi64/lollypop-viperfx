@@ -15,6 +15,7 @@ from gettext import gettext as _
 import os
 
 from lollypop.define import Lp, Type
+from lollypop.utils import translate_artist_name
 
 
 # All functions take a sqlite cursor as last parameter,
@@ -245,7 +246,7 @@ class AlbumsDatabase:
                               artists.rowid", (album_id,))
         v = result.fetchone()
         if v:
-            return v[0]
+            return translate_artist_name(v[0])
 
         return _("Compilation")
 

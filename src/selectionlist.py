@@ -15,7 +15,7 @@ from gi.repository import Gtk, GLib, GObject, Pango, cairo
 from time import time
 from _thread import start_new_thread
 
-from lollypop.utils import translate_artist_name, format_artist_name
+from lollypop.utils import format_artist_name
 from lollypop.define import Type, Lp
 
 
@@ -238,12 +238,8 @@ class SelectionList(Gtk.ScrolledWindow):
                 found = True
                 break
         if not found:
-            if self._is_artists:
-                string = translate_artist_name(value[1])
-            else:
-                string = value[1]
             self._model.append([value[0],
-                                string,
+                                value[1],
                                 self._get_icon_name(value[0])])
             if value[0] == self._to_select_id:
                 self.select_id(self._to_select_id)

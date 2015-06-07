@@ -14,6 +14,7 @@
 from gettext import gettext as _
 
 from lollypop.define import Lp, Type
+from lollypop.utils import translate_artist_name
 
 
 # All functions take a sqlite cursor as last parameter,
@@ -229,7 +230,7 @@ class TracksDatabase:
         for row in result:
             if artists != "":
                 artists += ", "
-            artists += row[0]
+            artists += translate_artist_name(row[0])
         return artists
 
     """
@@ -422,7 +423,7 @@ class TracksDatabase:
             sql = Lp.sql
         tracks = []
         result = sql.execute("SELECT rowid, name FROM tracks\
-                              WHERE name LIKE %?% LIMIT 25", (string,))
+                              WHERE name LIKE ? LIMIT 25", ('%'+string+'%',))
         for row in result:
             tracks += (row,)
         return tracks

@@ -16,7 +16,6 @@ from gi.repository import GLib
 from os import path
 
 from lollypop.define import Lp, Type
-from lollypop.utils import translate_artist_name
 
 
 # Represent a atrack
@@ -52,8 +51,7 @@ class Track:
                                             sql)
             self.aartist_id = Lp.tracks.get_album_artist_id(track_id,
                                                        sql)
-            self.aartist = translate_artist_name(
-                Lp.artists.get_name(self.aartist_id, sql))
+            self.aartist = Lp.artists.get_name(self.aartist_id, sql)
             self.artist_ids = Lp.tracks.get_artist_ids(self.id, sql)
             self.artist = Lp.tracks.get_artist_names(self.id, sql)
             self.genre = Lp.tracks.get_genre_names(self.id, sql)

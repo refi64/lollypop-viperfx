@@ -16,10 +16,6 @@ from cgi import escape
 
 from lollypop.define import Lp, ArtSize
 from lollypop.track import Track
-from lollypop.utils import translate_artist_name
-
-######################################################################
-######################################################################
 
 
 # Widget to manage queue
@@ -93,7 +89,7 @@ class QueueWidget(Gtk.Popover):
             track_name = Lp.tracks.get_name(track_id)
             pixbuf = Lp.art.get_album(album_id, ArtSize.MEDIUM)
             title = "<b>%s</b>\n%s" %\
-                (escape(translate_artist_name(artist_name)),
+                (escape(artist_name),
                  escape(track_name))
             self._model.append([pixbuf,
                                 title,

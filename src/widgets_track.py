@@ -15,8 +15,7 @@ from gi.repository import GObject, Gtk
 
 from lollypop.define import Lp, ArtSize
 from lollypop.pop_menu import TrackMenuPopover
-from lollypop.utils import seconds_to_string, rgba_to_hex,\
-    translate_artist_name
+from lollypop.utils import seconds_to_string, rgba_to_hex
 
 
 # A row as base for AlbumRow and TrackRow
@@ -183,7 +182,7 @@ class AlbumRow(Row):
         @param album id as int
     """
     def set_album_and_artist(self, album_id):
-        artist =  translate_artist_name(Lp.albums.get_artist_name(album_id))
+        artist =  Lp.albums.get_artist_name(album_id)
         album = Lp.albums.get_name(album_id)
         self._artist.set_text(artist)
         self._album.set_text(album)

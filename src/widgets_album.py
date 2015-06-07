@@ -125,10 +125,8 @@ class AlbumSimpleWidget(AlbumWidget):
         self._album_title = Lp.albums.get_name(album_id)
         self._title_label = builder.get_object('title')
         self._title_label.set_text(self._album_title)
-        artist_name = Lp.albums.get_artist_name(album_id)
-        artist_name = translate_artist_name(artist_name)
         self._artist_label = builder.get_object('artist')
-        self._artist_label.set_text(artist_name)
+        self._artist_label.set_text(Lp.albums.get_artist_name(album_id))
         self.add(widget)
         self.set_cover()
         self.set_property('halign', Gtk.Align.START)
@@ -197,9 +195,9 @@ class AlbumDetailedWidget(AlbumWidget):
                 '/org/gnome/Lollypop/AlbumDetailedWidget.ui')
         builder.connect_signals(self)
 
-        if scrolled:
-            artist = translate_artist_name(Lp.albums.get_artist_name(album_id))
-            builder.get_object('artist').set_text(artist)
+        if scrolled: 
+            builder.get_object('artist').set_text(
+                Lp.albums.get_artist_name(album_id))
             builder.get_object('artist').show()
             if Lp.lastfm is not None:
                 self._popover = InfosPopover(self._artist_id)
@@ -370,9 +368,10 @@ class AlbumDetailedWidget(AlbumWidget):
            self._artist_id not in artist_ids:
             artist_name = ""
             for artist_id in artist_ids:
-                artist_name += translate_artist_name(
-                    Lp.artists.get_name(artist_id)) + ", "
-            title = "<b>%s</b>\n%s" % (escape(artist_name[:-2]),
+                if artist_name != "":
+                    artist_name += ", "
+                artist_name += Lp.artists.get_name(artist_id)
+            title = "<b>%s</b>\n%s" % (escape(artist_name),
                                        title)
 
         # Get track position in queue
