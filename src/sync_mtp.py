@@ -16,7 +16,7 @@ from gi.repository import GLib, Gio
 from time import sleep
 
 from lollypop.define import Lp
-from lollypop.utils import translate_artist_name, debug
+from lollypop.utils import translate_artist_name
 
 
 class MtpSync:
