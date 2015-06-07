@@ -22,7 +22,6 @@ from lollypop.define import Lp
 
 # Playlists manager: add, remove, list, append, ...
 class PlaylistsManager(GObject.GObject):
-    _LOVED = _("Loved tracks")
     _PLAYLISTS_PATH = os.path.expanduser("~") +\
         "/.local/share/lollypop/playlists"
     __gsignals__ = {
@@ -34,6 +33,7 @@ class PlaylistsManager(GObject.GObject):
 
     def __init__(self):
         GObject.GObject.__init__(self)
+        self._LOVED = _("Loved tracks")
         self._idx = {}
         # Create playlists directory if missing
         if not os.path.exists(self._PLAYLISTS_PATH):
