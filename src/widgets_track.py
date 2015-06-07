@@ -153,19 +153,20 @@ class AlbumRow(Row):
         self._builder = Gtk.Builder()
         self._builder.add_from_resource('/org/gnome/Lollypop/AlbumRow.ui')
         self._cover = self._builder.get_object('cover')
+        self._header = self._builder.get_object('header')
         self._artist = self._builder.get_object('artist')
         self._album = self._builder.get_object('album')
         Row.__init__(self)
 
     """
-        Show cover
+        Show header
         @param show as bool
     """
-    def show_cover(self, show):
+    def show_header(self, show):
         if show:
-            self._cover.show()
+            self._header.show()
         else:
-            self._cover.hide()
+            self._header.hide()
 
     """
         Set cover
@@ -281,7 +282,7 @@ class TracksWidget(Gtk.ListBox):
     """
         Add album row to the list
         @param track id as int
-        @param album id as int
+        @param album id as int or None
         @param track number as int
         @param title as str
         @param length as str
@@ -305,11 +306,12 @@ class TracksWidget(Gtk.ListBox):
         album_row.set_title_label(title)
         album_row.set_duration_label(seconds_to_string(length))
         album_row.set_object_id(track_id)
-        album_row.set_album_and_artist(album_id)
-        album_id = Lp.tracks.get_album_id(track_id)
-        pixbuf = Lp.art.get_album(album_id, ArtSize.MEDIUM)
-        album_row.set_cover(pixbuf, Lp.albums.get_name(album_id))
-        album_row.show_cover(True)
+        if album_id is not None:
+            album_row.set_album_and_artist(album_id)
+            album_id = Lp.tracks.get_album_id(track_id)
+            pixbuf = Lp.art.get_album(album_id, ArtSize.MEDIUM)
+            album_row.set_cover(pixbuf, Lp.albums.get_name(album_id))
+            album_row.show_header(True)
         album_row.show()
         self.add(album_row)
 
