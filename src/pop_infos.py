@@ -139,8 +139,8 @@ class ArtistInfos(Gtk.Bin):
             if self._track_id is None:
                 string = "<b>%s</b>" % escape(self._artist)
             else:
-                string = "<b>%s</b> %s" % (escape(self._artist),
-                                           escape(self._title))
+                string = "<b>%s</b>   %s" % (escape(self._artist),
+                                             escape(self._title))
             self._label.set_markup(string)
             self._url_btn.set_uri(url)
             self._content.set_text(content)
