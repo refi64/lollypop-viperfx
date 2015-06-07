@@ -93,7 +93,8 @@ class TracksDatabase:
     def get_ids_for_name(self, name, sql=None):
         if not sql:
             sql = Lp.sql
-        result = sql.execute("SELECT rowid FROM tracks where name=?",
+        result = sql.execute("SELECT rowid\
+                              FROM tracks where name=? COLLATE NOCASE",
                              (name,))
         track_ids = []
         for row in result:
@@ -438,19 +439,15 @@ class TracksDatabase:
         if not sql:
             sql = Lp.sql
         track_ids = self.get_ids_for_name(title, sql)
-        search_track_id = None
         for track_id in track_ids:
             aartist = self.get_album_artist_id(track_id, sql)
             aartist_name = Lp.artists.get_name(aartist, sql)
             if aartist_name == artist:
-                search_track_id = track_id
-                break
-            artist_ids = self.get_artist_ids(track_id, sql)
-            artist_name = Lp.artists.get_name(artist_ids[0], sql)
+                return track_id
+            artist_name = Lp.tracks.get_artist_names(track_id, sql)
             if artist_name == artist:
-                search_track_id = track_id
-                break
-        return search_track_id
+                return track_id
+        return None
 
     """
         Remove track

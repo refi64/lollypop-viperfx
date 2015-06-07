@@ -53,6 +53,7 @@ class LastFM(LastFMNetwork):
                                api_key=self._API_KEY,
                                api_secret=self._API_SECRET)
         self._albums_queue = []
+        self._username = ''
         self._is_auth = False
         self._in_albums_download = False
         self.connect(None)
@@ -64,6 +65,7 @@ class LastFM(LastFMNetwork):
     def connect(self, password):
         if Secret is None:
             return
+        self._username = Lp.settings.get_value('lastfm-login').get_string()
         if password is None:
             schema = Secret.Schema.new("org.gnome.Lollypop",
                                        Secret.SchemaFlags.NONE,
@@ -71,16 +73,15 @@ class LastFM(LastFMNetwork):
             Secret.password_lookup(schema, SecretAttributes, None,
                                    self._on_password_lookup)
         else:
-            username = Lp.settings.get_value('lastfm-login').get_string()
-            start_new_thread(self._connect, (username, password))
+            start_new_thread(self._connect, (self._username, password))
 
     """
         Connect lastfm sync
         @param password as str
     """
     def connect_sync(self, password):
-        username = Lp.settings.get_value('lastfm-login').get_string()
-        self._connect(username, password)
+        self._username = Lp.settings.get_value('lastfm-login').get_string()
+        self._connect(self._username, password)
 
     """
         Download album image
@@ -162,7 +163,7 @@ class LastFM(LastFMNetwork):
                 track.unlove()
             except Exception as e:
                 print("Lastfm::unlove(): %s" % e)
-
+        
     """
         Return True if valid authentication send
         @return bool
@@ -180,6 +181,7 @@ class LastFM(LastFMNetwork):
         @thread safe
     """
     def _connect(self, username, password):
+        self._username = username
         if password != '' and username != '':
             self._is_auth = True
         else:
@@ -193,6 +195,7 @@ class LastFM(LastFMNetwork):
                 password_hash=md5(password))
         except:
             pass
+        self._populate_loved_tracks()
 
     """
         Scrobble track
@@ -240,9 +243,29 @@ class LastFM(LastFMNetwork):
                     Lp.art.clean_album_cache(album_id, sql)
                     GLib.idle_add(Lp.art.announce_cover_update, album_id)
             except Exception as e:
-                print("LastFM::download_album_img: %s" % e)
+                print("LastFM::_download_album_img: %s" % e)
         self._in_albums_download = False
         sql.close()
+
+    """
+        Populate loved tracks playlist
+    """
+    def _populate_loved_tracks(self):
+        try:
+            Lp.playlists.add_loved()
+            if len(Lp.playlists.get_tracks(Lp.playlists._LOVED)) == 0:
+                tracks = []
+                sql = Lp.db.get_cursor()
+                user = self.get_user(self._username)
+                for loved in user.get_loved_tracks():
+                    track_id = Lp.tracks.search_track(str(loved.track.artist),
+                                                      str(loved.track.title),
+                                                      sql)
+                    tracks.append(Lp.tracks.get_path(track_id, sql))
+                Lp.playlists.add_tracks(Lp.playlists._LOVED, tracks)
+                sql.close()
+        except Exception as e:
+                print("LastFM::_populate_loved_tracks: %s" % e)
 
     """
         Init self object
@@ -250,6 +273,5 @@ class LastFM(LastFMNetwork):
         @param result Gio.AsyncResult
     """
     def _on_password_lookup(self, source, result):
-        username = Lp.settings.get_value('lastfm-login').get_string()
         password = Secret.password_lookup_finish(result)
-        start_new_thread(self._connect, (username, password))
+        start_new_thread(self._connect, (self._username, password))

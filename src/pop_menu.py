@@ -344,7 +344,7 @@ class PlaylistsMenu(BaseMenu):
             album_id = Lp.tracks.get_album_id(self._object_id, sql)
             artist_id = Lp.albums.get_artist_id(album_id, sql)
             if artist_id == Type.COMPILATIONS:
-                artist = Lp.tracks.get_artist_names(track_id, sql)
+                artist = Lp.tracks.get_artist_names(self._object_id, sql)
             else:
                 artist = Lp.artists.get_name(artist_id, sql)
             Lp.lastfm.love(artist, title)
@@ -373,7 +373,7 @@ class PlaylistsMenu(BaseMenu):
             album_id = Lp.tracks.get_album_id(self._object_id, sql)
             artist_id = Lp.albums.get_artist_id(album_id, sql)
             if artist_id == Type.COMPILATIONS:
-                artist = Lp.tracks.get_artist_names(track_id, sql)
+                artist = Lp.tracks.get_artist_names(self._object_id, sql)
             else:
                 artist = Lp.artists.get_name(artist_id, sql)
             Lp.lastfm.unlove(artist, title)

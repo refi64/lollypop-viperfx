@@ -75,9 +75,9 @@ class Application(Gtk.Application):
         styleContext = Gtk.StyleContext()
         styleContext.add_provider_for_screen(screen, cssProvider,
                                              Gtk.STYLE_PROVIDER_PRIORITY_USER)
+        Lp.settings = Settings.new()
         if PYLAST:
             Lp.lastfm = LastFM()
-        Lp.settings = Settings.new()
         Lp.db = Database()
         # We store a cursor for the main thread
         Lp.sql = Lp.db.get_cursor()
