@@ -609,8 +609,9 @@ class PlaylistEditWidget(Gtk.Bin):
             album_id = Lp.tracks.get_album_id(track_id)
             artist_id = Lp.albums.get_artist_id(album_id)
             if artist_id == Type.COMPILATIONS:
-                artist_id = Lp.tracks.get_artist_ids(track_id)[0]
-            artist = Lp.artists.get_name(artist_id)
+                artist = Lp.tracks.get_artist_names(track_id)
+            else:
+                artist = Lp.artists.get_name(artist_id)
             title = Lp.tracks.get_name(track_id)
             start_new_thread(Lp.lastfm.unlove, (artist, title))
             self._model.remove(iterator)

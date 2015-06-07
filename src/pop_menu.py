@@ -344,13 +344,10 @@ class PlaylistsMenu(BaseMenu):
             album_id = Lp.tracks.get_album_id(self._object_id, sql)
             artist_id = Lp.albums.get_artist_id(album_id, sql)
             if artist_id == Type.COMPILATIONS:
-                artist_id = Lp.tracks.get_artist_ids(track_id, sql)[0]
-            artist = Lp.artists.get_name(artist_id, sql)
-            track = Lp.lastfm.get_track(artist, title)
-            try:
-                track.love()
-            except:
-                GLib.idle_add(Lp.notify.send, _("Wrong Last.fm credentials"))
+                artist = Lp.tracks.get_artist_names(track_id, sql)
+            else:
+                artist = Lp.artists.get_name(artist_id, sql)
+            Lp.lastfm.love(artist, title)
         sql.close()
 
     """
@@ -376,14 +373,10 @@ class PlaylistsMenu(BaseMenu):
             album_id = Lp.tracks.get_album_id(self._object_id, sql)
             artist_id = Lp.albums.get_artist_id(album_id, sql)
             if artist_id == Type.COMPILATIONS:
-                artist_id = Lp.tracks.get_artist_ids(track_id, sql)[0]
-            artist = Lp.artists.get_name(artist_id, sql)
-            # Unlove the track on lastfm
-            track = Lp.lastfm.get_track(artist, title)
-            try:
-                track.unlove()
-            except:
-                GLib.idle_add(Lp.notify.send, _("Wrong Last.fm credentials"))
+                artist = Lp.tracks.get_artist_names(track_id, sql)
+            else:
+                artist = Lp.artists.get_name(artist_id, sql)
+            Lp.lastfm.unlove(artist, title)
         sql.close()
 
 

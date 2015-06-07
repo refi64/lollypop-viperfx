@@ -144,8 +144,8 @@ class LastFM(LastFMNetwork):
             track = self.get_track(artist, title)
             try:
                 track.love()
-            except:
-                GLib.idle_add(Lp.notify.send, _("Wrong Last.fm credentials"))
+            except Exception as e:
+                print("Lastfm::love(): %s" % e)
 
     """
         Unlove track
@@ -160,8 +160,8 @@ class LastFM(LastFMNetwork):
             track = self.get_track(artist, title)
             try:
                 track.unlove()
-            except:
-                GLib.idle_add(Lp.notify.send, _("Wrong Last.fm credentials"))
+            except Exception as e:
+                print("Lastfm::unlove(): %s" % e)
 
     """
         Return True if valid authentication send

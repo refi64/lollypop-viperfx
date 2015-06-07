@@ -25,12 +25,12 @@ from lollypop.define import Lp
 class InfosPopover(Gtk.Popover):
     """
         Init popover
-        @param artist id as int
+        @param artist as string
         @param track id as int
     """
-    def __init__(self, artist_id, track_id=None):
+    def __init__(self, artist, track_id=None):
         Gtk.Popover.__init__(self)
-        self._infos = ArtistInfos(artist_id, track_id)
+        self._infos = ArtistInfos(artist, track_id)
         self._infos.show()
         self.add(self._infos)
 
@@ -62,13 +62,13 @@ class InfosPopover(Gtk.Popover):
 class ArtistInfos(Gtk.Bin):
     """
         Init artist infos
-        @param artist_id as int
+        @param artist as string
         @param track_id as int
     """
-    def __init__(self, artist_id, track_id):
+    def __init__(self, artist, track_id):
         Gtk.Bin.__init__(self)
         self._Liked = True  # Liked track or not?
-        self._artist = Lp.artists.get_name(artist_id)
+        self._artist = artist
         self._track_id = track_id
         if self._track_id is not None:
             self._title = Lp.tracks.get_name(track_id)

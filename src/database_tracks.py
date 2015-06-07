@@ -217,7 +217,7 @@ class TracksDatabase:
         @param track id as int
         @return Genre name as str "artist1, artist2, ..."
     """
-    def get_artists_name(self, track_id, sql=None):
+    def get_artist_names(self, track_id, sql=None):
         if not sql:
             sql = Lp.sql
         result = sql.execute("SELECT name FROM artists, track_artists\

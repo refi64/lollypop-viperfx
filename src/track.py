@@ -55,13 +55,8 @@ class Track:
             self.aartist = translate_artist_name(
                 Lp.artists.get_name(self.aartist_id, sql))
             self.artist_ids = Lp.tracks.get_artist_ids(self.id, sql)
-            artist_name = ""
-            for artist_id in self.artist_ids:
-                artist_name += translate_artist_name(
-                    Lp.artists.get_name(artist_id, sql)) + ", "
-            self.artist = artist_name[:-2]
-            self.genre = Lp.tracks.get_genre_names(self.id,
-                                                   sql)
+            self.artist = Lp.tracks.get_artist_names(self.id, sql)
+            self.genre = Lp.tracks.get_genre_names(self.id, sql)
             self.duration = Lp.tracks.get_length(self.id, sql)
             self.year = Lp.albums.get_year(self.album_id, sql)
             self.number = Lp.tracks.get_number(self.id, sql)

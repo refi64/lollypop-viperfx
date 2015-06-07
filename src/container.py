@@ -388,11 +388,8 @@ class Container:
         @thread safe
     """
     def _setup_list_playlists(self, update):
-        if Lp.lastfm is not None:
-            playlists = [(Type.LOVED, Lp.playlists._LOVED)]
-            playlists.append((Type.SEPARATOR, ''))
-        else:
-            playlists = []
+        playlists = [(Type.LOVED, Lp.playlists._LOVED)]
+        playlists.append((Type.SEPARATOR, ''))
         playlists += Lp.playlists.get()
         if update:
             self._list_two.update_values(playlists)
