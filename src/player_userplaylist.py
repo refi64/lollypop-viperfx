@@ -43,20 +43,17 @@ class UserPlaylistPlayer(BasePlayer):
         
     """
         Set user playlist as current playback playlist
-        @param array of tracks as [int]
+        @param array of tracks as [Track]
         @param track id as int
         @return track id as Track
     """
     def set_user_playlist(self, tracks, track_id):
-        self._user_playlist = []
-        ret = None
-        for tid in tracks:
-            new = Track(tid)
-            self._user_playlist.append(new)
-            if track_id == tid:
-                ret = new
+        self._user_playlist = tracks
         self._shuffle_playlist()
-        return ret
+        for track in tracks:
+            if track.id == track_id:
+                return track
+        return None
 
     """
         Get user playlist

@@ -34,7 +34,8 @@ class PlaylistWidget(Gtk.Bin):
         Gtk.Bin.__init__(self)
         self._playlist_id = playlist_id
         self._playlist_name = playlist_name
-        self._tracks = []
+        self._tracks1 = []
+        self._tracks2 = []
         self._stop = False
 
         self._main_widget = Gtk.Grid()
@@ -67,7 +68,6 @@ class PlaylistWidget(Gtk.Bin):
     """
     def populate_list_one(self, tracks, pos):
         self._stop = False
-        self._tracks = list(tracks)
         GLib.idle_add(self._add_tracks,
                       tracks,
                       self._tracks_widget1,
@@ -80,7 +80,6 @@ class PlaylistWidget(Gtk.Bin):
     """
     def populate_list_two(self, tracks, pos):
         self._stop = False
-        self._tracks += list(tracks)
         GLib.idle_add(self._add_tracks,
                       tracks,
                       self._tracks_widget2,
@@ -149,22 +148,25 @@ class PlaylistWidget(Gtk.Bin):
                                        title)
 
         if album_id != previous_album_id:
+            self._tracks1.append(Track(track_id))
             widget.add_album(track_id, album_id, pos, title, length, None)
         else:
+            self._tracks2.append(Track(track_id))
             widget.add_album(track_id, None, pos, title, length, None)
         GLib.idle_add(self._add_tracks, tracks, widget, pos+1, album_id)
 
     """
         On track activation, play track
         @param widget as TracksWidget
-        @param track id as int
+        @param track as Track
         @param playlist name as str
     """
     def _on_activated(self, widget, track_id, playlist_name):
         if Lp.player.is_party():
             Lp.player.load(Track(track_id))
         else:
-            track = Lp.player.set_user_playlist(self._tracks, track_id)
+            track = Lp.player.set_user_playlist(self._tracks1 + self._tracks2,
+                                                track_id)
             Lp.player.set_user_playlist_id(self._playlist_id)
             if track is not None:
                 Lp.player.load(track)
