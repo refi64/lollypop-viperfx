@@ -22,7 +22,7 @@ from lollypop.define import Lp
 
 # Playlists manager: add, remove, list, append, ...
 class PlaylistsManager(GObject.GObject):
-    _LIKED = _("Liked tracks")
+    _LOVED = _("Loved tracks")
     _PLAYLISTS_PATH = os.path.expanduser("~") +\
         "/.local/share/lollypop/playlists"
     __gsignals__ = {
@@ -75,18 +75,18 @@ class PlaylistsManager(GObject.GObject):
             print("PlaylistsManager::add: %s" % e)
 
     """
-        Add liked playlist, will never erase current
+        Add loved playlist, will never erase current
         @thread safe
     """
-    def add_liked(self):
-        filename = self._PLAYLISTS_PATH + "/"+ self._LIKED + ".m3u"
+    def add_loved(self):
+        filename = self._PLAYLISTS_PATH + "/"+ self._LOVED + ".m3u"
         try:
             if not os.path.exists(filename):
                 f = open(filename, "w")
                 f.write("#EXTM3U\n")
                 GLib.idle_add(self.emit, 'playlists-changed')
         except Exception as e:
-            print("PlaylistsManager::add_liked: %s" % e)
+            print("PlaylistsManager::add_loved: %s" % e)
 
     """
         Rename playlist (Thread safe)
@@ -143,7 +143,7 @@ class PlaylistsManager(GObject.GObject):
                     entries.append((stat[ST_MTIME], filename))
             for cdate, filename in sorted(entries, reverse=True):
                 if filename.endswith(".m3u") and\
-                   filename != self._LIKED+".m3u":
+                   filename != self._LOVED+".m3u":
                     playlists.append(filename[:-4])
                     index += 1
                     # Break if 6 playlists is reached
@@ -278,7 +278,7 @@ class PlaylistsManager(GObject.GObject):
         try:
             for filename in sorted(os.listdir(self._PLAYLISTS_PATH)):
                 if filename.endswith(".m3u") and\
-                   filename != self._LIKED+".m3u":
+                   filename != self._LOVED+".m3u":
                     playlists.append(filename[:-4])
         except Exception as e:
             print("Lollypop::PlaylistManager::get: %s" % e)

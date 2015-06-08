@@ -389,7 +389,7 @@ class Container:
     """
     def _setup_list_playlists(self, update):
         if Lp.lastfm is not None:
-            playlists = [(Type.LIKED, Lp.playlists._LIKED)]
+            playlists = [(Type.LOVED, Lp.playlists._LOVED)]
             playlists.append((Type.SEPARATOR, ''))
         else:
             playlists = []
@@ -453,8 +453,8 @@ class Container:
     def _update_view_playlists(self, playlist_id):
         view = None
         if playlist_id is not None:
-            if playlist_id == Type.LIKED:
-                name = Lp.playlists._LIKED
+            if playlist_id == Type.LOVED:
+                name = Lp.playlists._LOVED
             else:
                 for (p_id, p_str) in Lp.playlists.get():
                     if p_id == playlist_id:

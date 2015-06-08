@@ -261,21 +261,21 @@ class PlaylistsMenu(BaseMenu):
                             "app.playlist%s" % i)
             i += 1
         if not self._is_album and Lp.lastfm is not None:
-            action = Gio.SimpleAction(name="liked")
+            action = Gio.SimpleAction(name="loved")
             self._app.add_action(action)
-            if Lp.playlists.is_present(Lp.playlists._LIKED,
+            if Lp.playlists.is_present(Lp.playlists._LOVED,
                                        self._object_id,
                                        None,
                                        False):
                 action.connect('activate',
-                               self._del_from_liked)
+                               self._del_from_loved)
                 self.append(_("I dislike this track"),
-                            "app.liked")
+                            "app.loved")
             else:
                 action.connect('activate',
-                                self._add_to_liked)
+                                self._add_to_loved)
                 self.append(_("I like this track"),
-                            "app.liked")
+                            "app.loved")
 
     """
         Add to playlists
@@ -322,20 +322,20 @@ class PlaylistsMenu(BaseMenu):
                          (playlist_name, tracks_path))
 
     """
-        Add to liked
+        Add to loved
         @param SimpleAction
         @param GVariant
         @param playlist name as str
     """
-    def _add_to_liked(self, action, variant):
-        Lp.playlists.add_track(Lp.playlists._LIKED,
+    def _add_to_loved(self, action, variant):
+        Lp.playlists.add_track(Lp.playlists._LOVED,
                                Lp.tracks.get_path(self._object_id))
-        start_new_thread(self._add_to_liked_on_lastfm, ())
+        start_new_thread(self._add_to_loved_on_lastfm, ())
 
     """
-        Add to liked on lastfm
+        Add to loved on lastfm
     """
-    def _add_to_liked_on_lastfm(self):
+    def _add_to_loved_on_lastfm(self):
         sql = Lp.db.get_cursor()
         # Love the track on lastfm
         if Gio.NetworkMonitor.get_default().get_network_available() and\
@@ -354,20 +354,20 @@ class PlaylistsMenu(BaseMenu):
         sql.close()
 
     """
-        Remove from liked
+        Remove from loved
         @param SimpleAction
         @param GVariant
         @param playlist name as str
     """
-    def _del_from_liked(self, action, variant):
-        Lp.playlists.remove_tracks(Lp.playlists._LIKED,
+    def _del_from_loved(self, action, variant):
+        Lp.playlists.remove_tracks(Lp.playlists._LOVED,
                                    [Lp.tracks.get_path(self._object_id)])
-        start_new_thread(self._del_from_liked_on_lastfm, ())
+        start_new_thread(self._del_from_loved_on_lastfm, ())
 
     """
-        Remove from liked on lastfm
+        Remove from loved on lastfm
     """
-    def _del_from_liked_on_lastfm(self):
+    def _del_from_loved_on_lastfm(self):
         sql = Lp.db.get_cursor()
         # Love the track on lastfm
         if Gio.NetworkMonitor.get_default().get_network_available() and\

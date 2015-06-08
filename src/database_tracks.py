@@ -213,6 +213,25 @@ class TracksDatabase:
         return artists
 
     """
+        Get artist names
+        @param track id as int
+        @return Genre name as str "artist1, artist2, ..."
+    """
+    def get_artists_name(self, track_id, sql=None):
+        if not sql:
+            sql = Lp.sql
+        result = sql.execute("SELECT name FROM artists, track_artists\
+                              WHERE track_artists.track_id=?\
+                              AND track_artists.artist_id=artists.rowid",
+                             (track_id,))
+        artists = ""
+        for row in result:
+            if artists != "":
+                artists += ", "
+            artists += row[0]
+        return artists
+
+    """
         Get genre ids
         @param track id as int
         @return genre ids as [int]
@@ -228,11 +247,11 @@ class TracksDatabase:
         return genres
 
     """
-        Get genre name
+        Get genre names
         @param track id as int
-        @return Genre name as str "genre1 genre2_..."
+        @return Genre name as str "genre1, genre2..."
     """
-    def get_genre_name(self, track_id, sql=None):
+    def get_genre_names(self, track_id, sql=None):
         if not sql:
             sql = Lp.sql
         result = sql.execute("SELECT name FROM genres, track_genres\
@@ -241,8 +260,9 @@ class TracksDatabase:
                              (track_id,))
         genres = ""
         for row in result:
+            if genres != "":
+                genres += ", "
             genres += row[0]
-            genres += " "
         return genres
 
     """

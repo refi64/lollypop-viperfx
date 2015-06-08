@@ -160,13 +160,13 @@ class ArtistInfos(Gtk.Bin):
     def _show_love_btn(self):
         sql = Lp.db.get_cursor()
         if self._track_id is not None:
-            if Lp.playlists.is_present(Lp.playlists._LIKED,
+            if Lp.playlists.is_present(Lp.playlists._LOVED,
                                        self._track_id,
                                        None, 
                                        False,
                                        sql):
                 self._Liked = False
-                self._love_btn.set_tooltip_text(_("I do not like"))
+                self._love_btn.set_tooltip_text(_("I do not love"))
                 self._love_btn.set_image(
                     Gtk.Image.new_from_icon_name('face-sick-symbolic',
                                                  Gtk.IconSize.BUTTON))
@@ -178,12 +178,12 @@ class ArtistInfos(Gtk.Bin):
         @thread safe
     """
     def _love_track(self):
-        Lp.playlists.add_liked()
+        Lp.playlists.add_loved()
 
         # Add track to Liked tracks
         sql = Lp.db.get_cursor()
         if self._track_id is not None:
-            Lp.playlists.add_track(Lp.playlists._LIKED,
+            Lp.playlists.add_track(Lp.playlists._LOVED,
                                    Lp.tracks.get_path(self._track_id,
                                                       sql))
         sql.close()
@@ -194,13 +194,13 @@ class ArtistInfos(Gtk.Bin):
         Unlove a track
     """
     def _unlove_track(self):
-        Lp.playlists.add_liked()
+        Lp.playlists.add_loved()
 
         # Del track from Liked tracks
         sql = Lp.db.get_cursor()
         if self._track_id is not None:
             Lp.playlists.remove_tracks(
-                Lp.playlists._LIKED,
+                Lp.playlists._LOVED,
                 [Lp.tracks.get_path(self._track_id, sql)])
         sql.close()
 
@@ -217,7 +217,7 @@ class ArtistInfos(Gtk.Bin):
                 Gtk.Image.new_from_icon_name('face-sick-symbolic',
                                              Gtk.IconSize.BUTTON))
             self._Liked = False
-            btn.set_tooltip_text(_("I do not like"))
+            btn.set_tooltip_text(_("I do not love"))
         else:
             start_new_thread(self._unlove_track, ())
             btn.set_image(

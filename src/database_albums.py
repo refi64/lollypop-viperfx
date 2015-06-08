@@ -217,24 +217,6 @@ class AlbumsDatabase:
         return genres
 
     """
-        Get genre name
-        @param Album id as int
-        @return Genre name as str "genre1 genre2_..."
-    """
-    def get_genre_name(self, album_id, sql=None):
-        if not sql:
-            sql = Lp.sql
-        result = sql.execute("SELECT name FROM genres, album_genres\
-                              WHERE album_genres.album_id=?\
-                              AND album_genres.genre_id=genres.rowid",
-                             (album_id,))
-        genres = ""
-        for row in result:
-            genres += row[0]
-            genres += " "
-        return genres
-
-    """
         Get album name for album id
         @param Album id as int
         @return Album name as string
