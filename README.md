@@ -18,7 +18,7 @@ It provides:
 - Replay gain
 - Cover art downloader
 - Context artist view
-- MPT sync
+- MTP sync
 - Fullscreen view
 - Radios support
 
