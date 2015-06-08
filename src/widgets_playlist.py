@@ -620,7 +620,8 @@ class PlaylistEditWidget(Gtk.Bin):
             else:
                 artist = Lp.artists.get_name(artist_id)
             title = Lp.tracks.get_name(track_id)
-            start_new_thread(Lp.lastfm.unlove, (artist, title))
+            if Lp.lastfm is not None:
+                start_new_thread(Lp.lastfm.unlove, (artist, title))
             self._model.remove(iterator)
         self._infobar.hide()
         self._save_on_disk = True
