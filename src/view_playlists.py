@@ -18,7 +18,7 @@ from _thread import start_new_thread
 from lollypop.view import View
 from lollypop.widgets_playlist import PlaylistWidget, PlaylistEditWidget
 from lollypop.widgets_playlist import PlaylistsManagerWidget
-from lollypop.define import Lp
+from lollypop.define import Lp, Type
 
 
 # Playlist view is a vertical grid with album's covers
@@ -39,6 +39,8 @@ class PlaylistsView(View):
         builder.connect_signals(self)
 
         self._edit_btn = builder.get_object('edit_btn')
+        if playlist_id <= 0 and playlist_id != Type.LOVED:
+            self._edit_btn.hide()
         self._back_btn = builder.get_object('back_btn')
         self._title = builder.get_object('title')
 

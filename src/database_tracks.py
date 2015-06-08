@@ -12,7 +12,6 @@
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 from gettext import gettext as _
-from time import time
 
 from lollypop.define import Lp, Type
 from lollypop.utils import translate_artist_name
@@ -484,6 +483,33 @@ class TracksDatabase:
         for row in result:
             tracks += row
         return tracks
+
+    """
+        Set ltime
+        @param track id as int
+        @param mtime as int
+        @warning: commit needed
+    """
+    def set_ltime(self, track_id, ltime, sql=None):
+        if not sql:
+            sql = Lp.sql
+        sql.execute("UPDATE tracks set ltime=? WHERE rowid=?",
+                    (ltime, track_id))
+
+    """
+        Set popularity
+        @param track id as int
+        @param popularity as int
+        @warning: commit needed
+    """
+    def set_popularity(self, track_id, popularity, sql=None):
+        if not sql:
+            sql = Lp.sql
+        try:
+            sql.execute("UPDATE tracks set popularity=? WHERE rowid=?",
+                        (popularity, track_id))
+        except:  # Database is locked
+            pass
 
     """
         Clean database for track id

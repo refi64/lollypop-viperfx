@@ -68,8 +68,10 @@ class Database:
         Create database tables or manage update if needed
     """
     def __init__(self):
-        self._popularity_backup = {}
-        self._mtime_backup = {}
+        self._albums_popularity = {}
+        self._albums_mtime = {}
+        self._tracks_popularity = {}
+        self._tracks_ltime = {}
         # Create db directory if missing
         if not os.path.exists(self.LOCAL_PATH):
             try:
@@ -80,8 +82,10 @@ class Database:
         if os.path.exists(self.DB_PATH):
             db_version = Lp.settings.get_value('db-version').get_int32()
             if db_version < self.version:
-                self._set_popularities()
-                self._set_mtimes()
+                self._set_albums_popularity()
+                self._set_albums_mtime()
+                self._set_tracks_popularity()
+                self._set_tracks_ltime()
                 os.remove(self.DB_PATH)
                 Lp.settings.set_value('db-version',
                                       GLib.Variant('i', self.version))
@@ -103,30 +107,45 @@ class Database:
             pass
 
     """
-        Get a dict with album path and popularity
+        Get a dict with album name and popularity
         This is usefull for collection scanner be
         able to restore popularities after db reset
     """
-    def get_popularities(self):
-        return self._popularity_backup
+    def get_albums_popularity(self):
+        return self._albums_popularity
 
     """
-        Get a dict with album path and mtime
+        Get a dict with album name and mtime
         This is usefull for collection scanner be
         able to restore mtimes after db reset
     """
-    def get_mtimes(self):
-        return self._mtime_backup
+    def get_albums_mtime(self):
+        return self._albums_mtime
+
+    """
+        Get a dict with track name and popularity
+        This is usefull for collection scanner be
+        able to restore popularities after db reset
+    """
+    def get_tracks_popularity(self):
+        return self._tracks_popularity
+
+    """
+        Get a dict with track name and ltime
+        This is usefull for collection scanner be
+        able to restore ltimes after db reset
+    """
+    def get_tracks_ltime(self):
+        return self._tracks_ltime
 ###########
 # Private #
 ###########
-
     """
         Set a dict with album string and popularity
         This is usefull for collection scanner be
         able to restore popularities after db reset
     """
-    def _set_popularities(self):
+    def _set_albums_popularity(self):
         try:
             sql = self.get_cursor()
             result = sql.execute("SELECT albums.name, artists.name, popularity\
@@ -134,17 +153,17 @@ class Database:
                                   WHERE artists.rowid == albums.artist_id")
             for row in result:
                 string = "%s_%s" % (row[0], row[1])
-                self._popularity_backup[string] = row[2]
+                self._albums_popularity[string] = row[2]
             sql.close()
         except Exception as e:
-            print("Database::_set_popularities: %s" % e)
+            print("Database::_set_albums_popularity: %s" % e)
 
     """
         Set a dict with album string and mtime
         This is usefull for collection scanner be
         able to restore mtimes after db reset
     """
-    def _set_mtimes(self):
+    def _set_albums_mtime(self):
         try:
             sql = self.get_cursor()
             result = sql.execute("SELECT albums.name, artists.name, mtime\
@@ -152,10 +171,50 @@ class Database:
                                   WHERE artists.rowid == albums.artist_id")
             for row in result:
                 string = "%s_%s" % (row[0], row[1])
-                self._mtime_backup[string] = row[2]
+                self._albums_mtime[string] = row[2]
             sql.close()
         except Exception as e:
-            print("Database::_set_mtimes: %s" % e)
+            print("Database::_set_albums_mtime: %s" % e)
+
+    """
+        Set a dict with track string and popularity
+        This is usefull for collection scanner be
+        able to restore popularities after db reset
+    """
+    def _set_tracks_popularity(self):
+        try:
+            sql = self.get_cursor()
+            result = sql.execute(
+                "SELECT tracks.name, artists.name, popularity\
+                 FROM tracks, track_artists, artists\
+                 WHERE artists.rowid == track_artists.artist_id\
+                 AND track_artists.track_id == tracks.rowid")
+            for row in result:
+                string = "%s_%s" % (row[0], row[1])
+                self._tracks_popularity[string] = row[2]
+            sql.close()
+        except Exception as e:
+            print("Database::_set_tracks_popularity: %s" % e)
+
+    """
+        Set a dict with track string and ltime
+        This is usefull for collection scanner be
+        able to restore mtimes after db reset
+    """
+    def _set_tracks_ltime(self):
+        try:
+            sql = self.get_cursor()
+            result = sql.execute(
+                "SELECT tracks.name, artists.name, ltime\
+                 FROM tracks, track_artists, artists\
+                 WHERE artists.rowid == track_artists.artist_id\
+                 AND track_artists.track_id == tracks.rowid")
+            for row in result:
+                string = "%s_%s" % (row[0], row[1])
+                self._tracks_ltime[string] = row[2]
+            sql.close()
+        except Exception as e:
+            print("Database::_set_track_ltime: %s" % e)
 
     """
         Return a new sqlite cursor
