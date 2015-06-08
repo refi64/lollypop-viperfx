@@ -214,7 +214,7 @@ class Database:
                 self._tracks_ltime[string] = row[2]
             sql.close()
         except Exception as e:
-            print("Database::_set_track_ltime: %s" % e)
+            print("Database::_set_tracks_ltime: %s" % e)
 
     """
         Return a new sqlite cursor
