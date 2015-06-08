@@ -238,7 +238,7 @@ class CollectionScanner(GObject.GObject, ScannerTagReader):
         # Add track to db
         Lp.tracks.add(title, filepath, length,
                       tracknumber, discnumber,
-                      album_id, year, mtime, sql)
+                      album_id, year, 0, 0, mtime, sql)
 
         self.update_year(album_id, sql)
 

@@ -98,7 +98,8 @@ class Type:
     RADIOS = -6
     EXTERNALS = -7
     ALL = -8
-    LOVED = -998
+    LOVED = -997
+    NEVER = -998
     COMPILATIONS = -999
     DEVICES = -1000
     SEPARATOR = -2000

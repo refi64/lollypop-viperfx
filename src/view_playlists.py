@@ -25,9 +25,10 @@ from lollypop.define import Lp
 class PlaylistsView(View):
     """
         Init PlaylistsView ui with a scrolled grid of PlaylistWidgets
+        @parma playlist id as int
         @param playlist name as str
     """
-    def __init__(self, playlist_name, parent):
+    def __init__(self, playlist_id, playlist_name, parent):
         View.__init__(self)
         self._playlist_name = playlist_name
         self._signal_id = None
@@ -41,7 +42,7 @@ class PlaylistsView(View):
         self._back_btn = builder.get_object('back_btn')
         self._title = builder.get_object('title')
 
-        self._playlist_widget = PlaylistWidget(playlist_name)
+        self._playlist_widget = PlaylistWidget(playlist_id, playlist_name)
         self._playlist_widget.show()
 
         self.add(builder.get_object('widget'))
@@ -56,6 +57,18 @@ class PlaylistsView(View):
     def populate(self):
         sql = Lp.db.get_cursor()
         tracks = Lp.playlists.get_tracks_id(self._playlist_name, sql)
+        mid_tracks = int(0.5+len(tracks)/2)
+        self._playlist_widget.populate_list_one(tracks[:mid_tracks],
+                                                1)
+        self._playlist_widget.populate_list_two(tracks[mid_tracks:],
+                                                mid_tracks + 1)
+        sql.close()
+
+    """
+        Populate view with tracks
+        @param tracks as [int]
+    """
+    def populate_tracks(self, tracks):
         mid_tracks = int(0.5+len(tracks)/2)
         self._playlist_widget.populate_list_one(tracks[:mid_tracks],
                                                 1)

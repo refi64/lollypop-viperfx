@@ -171,6 +171,17 @@ class SelectionList(Gtk.ScrolledWindow):
         self._updating = False
 
     """
+        Return value for id
+        @param id as int
+        @return value as string
+    """
+    def get_value(self, object_id):
+        for item in self._model:
+            if item[0] == object_id:
+                return item[1]
+        return ''
+
+    """
         Return True if list will select an item on populate
         @return selected as bool
     """
@@ -305,6 +316,8 @@ class SelectionList(Gtk.ScrolledWindow):
             icon = 'media-playlist-shuffle-symbolic'
         elif object_id == Type.LOVED:
             icon = 'emblem-favorite-symbolic'
+        elif object_id == Type.NEVER:
+            icon = 'document-new-symbolic'
         return icon
 
     """

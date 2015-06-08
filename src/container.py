@@ -389,6 +389,9 @@ class Container:
     """
     def _setup_list_playlists(self, update):
         playlists = [(Type.LOVED, Lp.playlists._LOVED)]
+        playlists += [(Type.POPULARS, _("Most played"))]
+        playlists += [(Type.RECENTS, _("Recently played"))]
+        playlists += [(Type.NEVER, _("Never played"))]
         playlists.append((Type.SEPARATOR, ''))
         playlists += Lp.playlists.get()
         if update:
@@ -450,14 +453,8 @@ class Container:
     def _update_view_playlists(self, playlist_id):
         view = None
         if playlist_id is not None:
-            if playlist_id == Type.LOVED:
-                name = Lp.playlists._LOVED
-            else:
-                for (p_id, p_str) in Lp.playlists.get():
-                    if p_id == playlist_id:
-                        name = p_str
-                        break
-            view = PlaylistsView(name, self._stack)
+            name = self._list_two.get_value(playlist_id)
+            view = PlaylistsView(playlist_id, name, self._stack)
         else:
             view = PlaylistsManageView(-1, None, False,
                                        self._stack.get_allocated_width()/2)
@@ -465,7 +462,22 @@ class Container:
             view.show()
             self._stack.add(view)
             self._stack.set_visible_child(view)
-            start_new_thread(view.populate, ())
+            # Management or user playlist
+            if playlist_id is None or playlist_id >= 0 or\
+                    playlist_id == Type.LOVED:
+                start_new_thread(view.populate, ())
+            else:
+                tracks = []
+                if playlist_id == Lp.player.get_user_playlist_id():
+                    for track in Lp.player.get_user_playlist():
+                        tracks.append(track.id)
+                elif playlist_id == Type.POPULARS:
+                    tracks = Lp.tracks.get_populars()
+                elif playlist_id == Type.RECENTS:
+                    tracks = Lp.tracks.get_recently_listened_to()
+                elif playlist_id == Type.NEVER:
+                    tracks = Lp.tracks.get_never_listened_to()
+                start_new_thread(view.populate_tracks, (tracks,))
             self._stack.clean_old_views(view)
 
     """

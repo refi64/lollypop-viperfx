@@ -25,7 +25,22 @@ class UserPlaylistPlayer(BasePlayer):
     """
     def __init__(self):
         BasePlayer.__init__(self)
+        self._user_playlist_id = None
 
+    """
+        Set playlist id
+        @param id as int
+    """
+    def set_user_playlist_id(self, playlist_id):
+        self._user_playlist_id = playlist_id
+
+    """
+        Get playlist id
+        @return id as int
+    """
+    def get_user_playlist_id(self):
+        return self._user_playlist_id
+        
     """
         Set user playlist as current playback playlist
         @param array of tracks as [int]
@@ -44,10 +59,11 @@ class UserPlaylistPlayer(BasePlayer):
         return ret
 
     """
-        Clear user playlist
+        Get user playlist
+        @return track id as [int]
     """
-    def clear_user_playlist(self):
-        self._user_playlist = []
+    def get_user_playlist(self):
+        return self._user_playlist
 
     """
         Next Track

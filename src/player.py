@@ -120,6 +120,7 @@ class Player(BinPlayer, QueuePlayer, UserPlaylistPlayer, RadioPlayer,
 
         # We are not playing a user playlist anymore
         self._user_playlist = None
+        self._user_playlist_id = None
         # We are in all artists
         if genre_id_lookup == Type.ALL or artist_id == Type.ALL:
             self._albums = Lp.albums.get_compilations(Type.ALL)

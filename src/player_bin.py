@@ -261,6 +261,7 @@ class BinPlayer(ReplayGainPlayer, BasePlayer):
         if self.current_track.id == Type.RADIOS:
             return
         previous_track_id = self.current_track.id
+        previous_album_id = self.current_track.id
         # We are in a thread, we need to create a new cursor
         sql = Lp.db.get_cursor()
         if self.next_track.id is not None:
@@ -276,11 +277,10 @@ class BinPlayer(ReplayGainPlayer, BasePlayer):
                                self.current_track.title,
                                int(timestamp),
                                int(self.current_track.duration))
-        # Add populariy if we listen to the song
-        album_id = Lp.tracks.get_album_id(previous_track_id,
-                                          sql)
+        # Increment populariy if we listen to the song
         if not Lp.scanner.is_locked():
-            Lp.albums.set_more_popular(album_id, sql)
+            Lp.tracks.set_more_popular(previous_track_id, sql)
+            Lp.albums.set_more_popular(previous_album_id, sql)
         sql.close()
 
     """
@@ -292,4 +292,5 @@ class BinPlayer(ReplayGainPlayer, BasePlayer):
     def _on_stream_start(self, bus, message):
         debug("Player::_on_stream_start(): %s" % self.current_track.uri)
         self.emit("current-changed")
+        Lp.tracks.set_listened_at(self.current_track.id, int(time()))
         self._handled_error = None

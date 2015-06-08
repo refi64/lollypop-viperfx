@@ -53,6 +53,8 @@ class Database:
                         discnumber INT,
                         album_id INT NOT NULL,
                         year INT,
+                        popularity INT NOT NULL,
+                        ltime INT,
                         mtime INT)'''
     create_track_artists = '''CREATE TABLE track_artists (
                                                 track_id INT NOT NULL,
@@ -60,7 +62,7 @@ class Database:
     create_track_genres = '''CREATE TABLE track_genres (
                                                 track_id INT NOT NULL,
                                                 genre_id INT NOT NULL)'''
-    version = 10
+    version = 11
 
     """
         Create database tables or manage update if needed

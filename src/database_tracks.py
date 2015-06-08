@@ -12,6 +12,7 @@
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 from gettext import gettext as _
+from time import time
 
 from lollypop.define import Lp, Type
 from lollypop.utils import translate_artist_name
@@ -33,26 +34,30 @@ class TracksDatabase:
         @param album_id as int
         @param genre_id as int
         @param year as int
+        @param popularity as int
+        @param ltime as int
         @param mtime as int
         @warning: commit needed
     """
     def add(self, name, filepath, length, tracknumber, discnumber,
-            album_id, year, mtime, sql=None):
+            album_id, year, popularity, ltime, mtime, sql=None):
         if not sql:
             sql = Lp.sql
         # Invalid encoding in filenames may raise an exception
         try:
             sql.execute(
                 "INSERT INTO tracks (name, filepath, length, tracknumber,\
-                discnumber, album_id, year, mtime) VALUES\
-                (?, ?, ?, ?, ?, ?, ?, ?)", (name,
-                                            filepath,
-                                            length,
-                                            tracknumber,
-                                            discnumber,
-                                            album_id,
-                                            year,
-                                            mtime))
+                discnumber, album_id, year, popularity, ltime, mtime) VALUES\
+                (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", (name,
+                                                  filepath,
+                                                  length,
+                                                  tracknumber,
+                                                  discnumber,
+                                                  album_id,
+                                                  year,
+                                                  popularity,
+                                                  ltime,
+                                                  mtime))
         except Exception as e:
             print("TracksDatabase::add: ", e, ascii(filepath))
 
@@ -398,6 +403,86 @@ class TracksDatabase:
                                                            artist_id))
         for row in result:
             tracks += (row,)
+        return tracks
+
+    """
+        Return most listened to tracks
+        @return tracks as [int]
+    """
+    def get_populars(self, sql=None):
+        if not sql:
+            sql = Lp.sql
+        tracks = []
+
+        result = sql.execute("SELECT rowid FROM tracks\
+                              WHERE popularity!=0\
+                              ORDER BY popularity LIMIT 100")
+        for row in result:
+            tracks += row
+        return tracks
+    
+    """
+        Increment popularity field
+        @param track id as int
+        @raise sqlite3.OperationalError on db update
+    """
+    def set_more_popular(self, track_id, sql=None):
+        if not sql:
+            sql = Lp.sql
+        result = sql.execute("SELECT popularity from tracks WHERE rowid=?",
+                             (track_id,))
+        pop = result.fetchone()
+        if pop:
+            current = pop[0]
+        else:
+            current = 0
+        current += 1
+        sql.execute("UPDATE tracks set popularity=? WHERE rowid=?",
+                    (current, track_id))
+        sql.commit()
+
+    """
+        Set ltime for track
+        @param track id as int
+        @param time as int
+    """
+    def set_listened_at(self, track_id, time, sql=None):
+        if not sql:
+            sql = Lp.sql
+        sql.execute("UPDATE tracks set ltime=? WHERE rowid=?",
+                    (time, track_id))
+        sql.commit()
+
+    """
+        Return random tracks never listened to
+        @return tracks as [int]
+    """
+    def get_never_listened_to(self, sql=None):
+        if not sql:
+            sql = Lp.sql
+        tracks = []
+
+        result = sql.execute("SELECT rowid FROM tracks\
+                              WHERE ltime=0\
+                              ORDER BY random() LIMIT 100")
+        for row in result:
+            tracks += row
+        return tracks
+
+    """
+        Return tracks listened recently
+        @return tracks as [int]
+    """
+    def get_recently_listened_to(self, sql=None):
+        if not sql:
+            sql = Lp.sql
+        tracks = []
+
+        result = sql.execute("SELECT rowid FROM tracks\
+                              WHERE ltime!=0\
+                              ORDER BY ltime DESC LIMIT 100")
+        for row in result:
+            tracks += row
         return tracks
 
     """

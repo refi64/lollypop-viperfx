@@ -27,10 +27,12 @@ from lollypop.track import Track
 class PlaylistWidget(Gtk.Bin):
     """
         Init playlist Widget
+        @param playlist id as int
         @param playlist name as str
     """
-    def __init__(self, playlist_name):
+    def __init__(self, playlist_id, playlist_name):
         Gtk.Bin.__init__(self)
+        self._playlist_id = playlist_id
         self._playlist_name = playlist_name
         self._tracks = []
         self._stop = False
@@ -161,6 +163,7 @@ class PlaylistWidget(Gtk.Bin):
     def _on_activated(self, widget, track_id, playlist_name):
         if not Lp.player.is_party():
             track = Lp.player.set_user_playlist(self._tracks, track_id)
+            Lp.player.set_user_playlist_id(self._playlist_id)
             if track is not None:
                 Lp.player.load(track)
         else:
