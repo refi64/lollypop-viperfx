@@ -25,6 +25,7 @@ It provides:
 === Depends on ===
 - gtk3
 - gobject-introspection
+- gir1.2-gstreamer-1.0 (Debian)
 - python3
 - intltool (make)
 - itstool (make)
