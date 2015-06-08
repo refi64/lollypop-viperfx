@@ -470,26 +470,6 @@ class PlaylistEditWidget(Gtk.Bin):
 # PRIVATE             #
 #######################
     """
-        Delete tracks after confirmation
-        @param button as Gtk.Button
-    """
-    def _on_delete_confirm(self, button):
-        self._save_on_disk = False
-        selection = self._view.get_selection()
-        selected = selection.get_selected_rows()
-        rows = []
-        for item in selected[1]:
-            rows.append(Gtk.TreeRowReference.new(self._model, item))
-
-        for row in rows:
-            iterator = self._model.get_iter(row.get_path())
-            self._model.remove(iterator)
-        self._infobar.hide()
-        self._save_on_disk = True
-        self._unselectall()
-        self._update_on_disk()
-
-    """
         Unselect all in view
     """
     def _unselectall(self):
@@ -538,13 +518,14 @@ class PlaylistEditWidget(Gtk.Bin):
             self._in_thread = False
 
     """
-        Delete item if Delete was pressed
-        @param widget unused, Gdk.Event
+        Update playlist on disk
     """
-    def _on_keyboard_event(self, widget, event):
-        if event.keyval == 65535:
-            path, column = self._view.get_cursor()
-            self._show_infobar(path)
+    def _update_on_disk(self):
+        tracks_path = []
+        for item in self._model:
+            tracks_path.append(item[3])
+        if tracks_path != self._tracks_orig:
+            Lp.playlists.set_tracks(self._playlist_name, tracks_path)
 
     """
         Show infobar
@@ -557,6 +538,15 @@ class PlaylistEditWidget(Gtk.Bin):
                                                              1).replace('\n',
                                                                         ' - '))
         self._infobar.show()
+
+    """
+        Delete item if Delete was pressed
+        @param widget unused, Gdk.Event
+    """
+    def _on_keyboard_event(self, widget, event):
+        if event.keyval == 65535:
+            path, column = self._view.get_cursor()
+            self._show_infobar(path)
 
     """
         Hide infobar
@@ -601,11 +591,30 @@ class PlaylistEditWidget(Gtk.Bin):
             self._update_on_disk()
 
     """
-        Update playlist on disk
+        Delete tracks after confirmation
+        @param button as Gtk.Button
     """
-    def _update_on_disk(self):
-        tracks_path = []
-        for item in self._model:
-            tracks_path.append(item[3])
-        if tracks_path != self._tracks_orig:
-            Lp.playlists.set_tracks(self._playlist_name, tracks_path)
+    def _on_delete_confirm(self, button):
+        self._save_on_disk = False
+        selection = self._view.get_selection()
+        selected = selection.get_selected_rows()
+        rows = []
+        for item in selected[1]:
+            rows.append(Gtk.TreeRowReference.new(self._model, item))
+
+        for row in rows:
+            iterator = self._model.get_iter(row.get_path())
+            path = self._model.get_value(iterator, 3)
+            track_id = Lp.tracks.get_id_by_path(path)
+            album_id = Lp.tracks.get_album_id(track_id)
+            artist_id = Lp.albums.get_artist_id(album_id)
+            if artist_id == Type.COMPILATIONS:
+                artist_id = Lp.tracks.get_artist_ids(track_id)[0]
+            artist = Lp.artists.get_name(artist_id)
+            title = Lp.tracks.get_name(track_id)
+            start_new_thread(Lp.lastfm.unlove, (artist, title))
+            self._model.remove(iterator)
+        self._infobar.hide()
+        self._save_on_disk = True
+        self._unselectall()
+        self._update_on_disk()

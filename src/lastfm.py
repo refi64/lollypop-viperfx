@@ -131,6 +131,37 @@ class LastFM(LastFMNetwork):
                                               title,
                                               timestamp,
                                               duration))
+    """
+        Love track
+        @param artist as string
+        @param title as string
+        @thread safe
+    """
+    def love(self, artist, title):
+        # Love the track on lastfm
+        if Gio.NetworkMonitor.get_default().get_network_available() and\
+           self.is_auth():
+            track = self.get_track(artist, title)
+            try:
+                track.love()
+            except:
+                GLib.idle_add(Lp.notify.send, _("Wrong Last.fm credentials"))
+
+    """
+        Unlove track
+        @param artist as string
+        @param title as string
+        @thread safe
+    """
+    def unlove(self, artist, title):
+        # Love the track on lastfm
+        if Gio.NetworkMonitor.get_default().get_network_available() and\
+           self.is_auth():
+            track = self.get_track(artist, title)
+            try:
+                track.unlove()
+            except:
+                GLib.idle_add(Lp.notify.send, _("Wrong Last.fm credentials"))
 
     """
         Return True if valid authentication send

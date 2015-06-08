@@ -188,14 +188,7 @@ class ArtistInfos(Gtk.Bin):
                                                       sql))
         sql.close()
 
-        # Love the track on lastfm
-        if Gio.NetworkMonitor.get_default().get_network_available() and\
-           Lp.lastfm.is_auth():
-            track = Lp.lastfm.get_track(self._artist, self._title)
-            try:
-                track.love()
-            except:
-                GLib.idle_add(Lp.notify.send, _("Wrong Last.fm credentials"))
+        Lp.lastfm.love(self._artist, self._title)
 
     """
         Unlove a track
@@ -211,14 +204,7 @@ class ArtistInfos(Gtk.Bin):
                 [Lp.tracks.get_path(self._track_id, sql)])
         sql.close()
 
-        # Unlove the track on lastfm
-        if Gio.NetworkMonitor.get_default().get_network_available() and\
-           Lp.lastfm.is_auth():
-            track = Lp.lastfm.get_track(self._artist, self._title)
-            try:
-                track.unlove()
-            except:
-                GLib.idle_add(Lp.notify.send, _("Wrong Last.fm credentials"))
+        Lp.lastfm.unlove(self._artist, self._title)
 
     """
         Love a track
