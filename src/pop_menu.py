@@ -260,7 +260,7 @@ class PlaylistsMenu(BaseMenu):
                 self.append(_("Add to \"%s\"") % playlist,
                             "app.playlist%s" % i)
             i += 1
-        if not self._is_album and Lp.lastfm is not None:
+        if not self._is_album:
             action = Gio.SimpleAction(name="loved")
             self._app.add_action(action)
             if Lp.playlists.is_present(Lp.playlists._LOVED,
@@ -330,7 +330,8 @@ class PlaylistsMenu(BaseMenu):
     def _add_to_loved(self, action, variant):
         Lp.playlists.add_track(Lp.playlists._LOVED,
                                Lp.tracks.get_path(self._object_id))
-        start_new_thread(self._add_to_loved_on_lastfm, ())
+        if Lp.lastfm is not None:
+            start_new_thread(self._add_to_loved_on_lastfm, ())
 
     """
         Add to loved on lastfm
@@ -359,7 +360,8 @@ class PlaylistsMenu(BaseMenu):
     def _del_from_loved(self, action, variant):
         Lp.playlists.remove_tracks(Lp.playlists._LOVED,
                                    [Lp.tracks.get_path(self._object_id)])
-        start_new_thread(self._del_from_loved_on_lastfm, ())
+        if Lp.lastfm is not None:
+            start_new_thread(self._del_from_loved_on_lastfm, ())
 
     """
         Remove from loved on lastfm
