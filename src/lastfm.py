@@ -237,11 +237,10 @@ class LastFM(LastFMNetwork):
                 if album_id is None:
                     album_id = Lp.albums.get_compilation_id(album, sql)
                 # Do not write files outside collection
-                if not Lp.albums.is_outside(album_id, sql):
-                    filepath = Lp.art.get_album_art_filepath(album_id, sql)
-                    urllib.request.urlretrieve(url, filepath)
-                    Lp.art.clean_album_cache(album_id, sql)
-                    GLib.idle_add(Lp.art.announce_cover_update, album_id)
+                filepath = Lp.art.get_album_art_filepath(album_id, sql)
+                urllib.request.urlretrieve(url, filepath)
+                Lp.art.clean_album_cache(album_id, sql)
+                GLib.idle_add(Lp.art.announce_cover_update, album_id)
             except Exception as e:
                 print("LastFM::_download_album_img: %s" % e)
         self._in_albums_download = False
