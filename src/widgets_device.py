@@ -17,7 +17,7 @@ from gettext import gettext as _
 from _thread import start_new_thread
 
 from lollypop.sync_mtp import MtpSync
-from lollypop.define import Lp
+from lollypop.define import Lp, Type
 
 
 # Dialog for synchronize mtp devices
@@ -78,7 +78,8 @@ class DeviceManagerWidget(Gtk.Bin, MtpSync):
     """
     def populate(self):
         self._model.clear()
-        playlists = Lp.playlists.get()
+        playlists = [(Type.LOVED, Lp.playlists._LOVED)]
+        playlists += Lp.playlists.get()
         GLib.idle_add(self._append_playlists, playlists)
 
     """
