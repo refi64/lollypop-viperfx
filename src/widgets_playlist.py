@@ -161,13 +161,13 @@ class PlaylistWidget(Gtk.Bin):
         @param playlist name as str
     """
     def _on_activated(self, widget, track_id, playlist_name):
-        if not Lp.player.is_party():
+        if Lp.player.is_party():
+            Lp.player.load(Track(track_id))
+        else:
             track = Lp.player.set_user_playlist(self._tracks, track_id)
             Lp.player.set_user_playlist_id(self._playlist_id)
             if track is not None:
                 Lp.player.load(track)
-        else:
-            Lp.player.load(Track(track_id))
 
 
 # Dialog for manage playlists (add, rename, delete, add object to)
