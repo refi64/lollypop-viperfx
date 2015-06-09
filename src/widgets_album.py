@@ -121,6 +121,7 @@ class AlbumSimpleWidget(AlbumWidget):
         builder.connect_signals(self)
         widget = builder.get_object('widget')
         self._cover = builder.get_object('cover')
+        self._scale = self._cover.get_scale_factor()
         widget.set_property('has-tooltip', True)
         self._album_title = Lp.albums.get_name(album_id)
         self._title_label = builder.get_object('title')
@@ -132,13 +133,13 @@ class AlbumSimpleWidget(AlbumWidget):
         self.set_property('halign', Gtk.Align.START)
         # Set minimum width
         self.set_property('width-request', ArtSize.BIG+ArtSize.BORDER*2)
-        self._scale = self._cover.get_scale_factor()
 
     """
         Set maximum width
     """
     def do_get_preferred_width(self):
-        return (ArtSize.BIG+ArtSize.BORDER*2, ArtSize.BIG+ArtSize.BORDER*2)
+        return (ArtSize.BIG*self._scale+ArtSize.BORDER*2,
+                ArtSize.BIG*self._scale+ArtSize.BORDER*2)
 
     """
         Return album id for widget
