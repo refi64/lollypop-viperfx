@@ -61,7 +61,7 @@ class RadioWidget(AlbumWidget):
         Set maximum width
     """
     def do_get_preferred_width(self):
-        return (ArtSize.BIG+ArtSize.BORDER*2, ArtSize.BIG+ArtSize.BORDER*2)
+        return self._cover.get_preferred_width()
 
     """
         Set radio name
