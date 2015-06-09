@@ -43,6 +43,8 @@ class ShufflePlayer(BasePlayer):
         self._already_played_albums = []
         # Tracks already played for albums
         self._already_played_tracks = {}
+        # Reset use playlist
+        self._user_playlist = None
 
     """
         Next shuffle track
