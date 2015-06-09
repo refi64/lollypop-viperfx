@@ -39,6 +39,7 @@ class ToolbarInfos(Gtk.Bin):
         self._title_label = builder.get_object('title')
         self._artist_label = builder.get_object('artist')
         self._cover = builder.get_object('cover')
+        self._scale = self._cover.get_scale_factor()
         self._pop_albums = AlbumsPopover()
         self._pop_albums.set_relative_to(infobox)
         self._pop_tunein = TuneinPopover(RadiosManager())
@@ -58,14 +59,14 @@ class ToolbarInfos(Gtk.Bin):
 
         if player.current_track.id == Type.RADIOS:
             art = Lp.art.get_radio(player.current_track.artist,
-                                   ArtSize.SMALL)
+                                   ArtSize.SMALL*self._scale)
         elif player.current_track.id == Type.EXTERNALS:
             art = Lp.art.get_cover_for_uri(player.current_track.uri,
-                                           ArtSize.SMALL,
+                                           ArtSize.SMALL*self._scale,
                                            False)
         else:
             art = Lp.art.get_album(player.current_track.album_id,
-                                   ArtSize.SMALL)
+                                   ArtSize.SMALL*self._scale)
         if art is not None:
             self._cover.set_from_pixbuf(art)
             del art
@@ -91,7 +92,7 @@ class ToolbarInfos(Gtk.Bin):
     """
     def _update_cover(self, art, album_id):
         if Lp.player.current_track.album_id == album_id:
-            pixbuf = Lp.art.get_album(album_id, ArtSize.SMALL)
+            pixbuf = Lp.art.get_album(album_id, ArtSize.SMALL*self._scale)
             self._cover.set_from_pixbuf(pixbuf)
             del pixbuf
 
@@ -102,7 +103,7 @@ class ToolbarInfos(Gtk.Bin):
     """
     def _update_logo(self, art, name):
         if Lp.player.current_track.artist == name:
-            pixbuf = Lp.art.get_radio(name, ArtSize.SMALL)
+            pixbuf = Lp.art.get_radio(name, ArtSize.SMALL*self._scale)
             self._cover.set_from_pixbuf(pixbuf)
             del pixbuf
 

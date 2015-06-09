@@ -31,6 +31,7 @@ class NextPopover(Gtk.Popover):
         self._title_label = builder.get_object('title')
         self._artist_label = builder.get_object('artist')
         self._cover = builder.get_object('cover')
+        self._scale = self._cover.get_scale_factor()
         Lp.player.connect('queue-changed', self.update)
 
     """
@@ -40,7 +41,7 @@ class NextPopover(Gtk.Popover):
         self._artist_label.set_text(Lp.player.next_track.artist)
         self._title_label.set_text(Lp.player.next_track.title)
         art = Lp.art.get_album(Lp.player.next_track.album_id,
-                               ArtSize.MEDIUM)
+                               ArtSize.MEDIUM*self._scale)
         if art is not None:
             self._cover.set_from_pixbuf(art)
             del art

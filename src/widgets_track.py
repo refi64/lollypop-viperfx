@@ -152,6 +152,7 @@ class AlbumRow(Row):
         self._builder = Gtk.Builder()
         self._builder.add_from_resource('/org/gnome/Lollypop/AlbumRow.ui')
         self._cover = self._builder.get_object('cover')
+        self._scale = self._cover.get_scale_factor()
         self._header = self._builder.get_object('header')
         self._artist = self._builder.get_object('artist')
         self._album = self._builder.get_object('album')
@@ -166,6 +167,13 @@ class AlbumRow(Row):
             self._header.show()
         else:
             self._header.hide()
+
+    """
+        Return scale factor
+        @return scale as float
+    """
+    def get_scale_factor(self):
+        return self._scale
 
     """
         Set cover
@@ -308,7 +316,8 @@ class TracksWidget(Gtk.ListBox):
         if album_id is not None:
             album_row.set_album_and_artist(album_id)
             album_id = Lp.tracks.get_album_id(track_id)
-            pixbuf = Lp.art.get_album(album_id, ArtSize.MEDIUM)
+            scale = album_row.get_scale_factor()
+            pixbuf = Lp.art.get_album(album_id, ArtSize.MEDIUM*scale)
             album_row.set_cover(pixbuf, Lp.albums.get_name(album_id))
             album_row.show_header(True)
         album_row.show()
