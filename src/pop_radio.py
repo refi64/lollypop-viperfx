@@ -156,17 +156,16 @@ class RadioPopover(Gtk.Popover):
                 True,
                 None)
             image = Gtk.Image()
-            scale = image.get_scale_factor()
             self._orig_pixbufs[image] = pixbuf
             # Scale preserving aspect ratio
             width = pixbuf.get_width()
             height = pixbuf.get_height()
             if width > height:
-                height = height*ArtSize.BIG*scale/width
-                width = ArtSize.BIG*scale
+                height = height*ArtSize.BIG/width
+                width = ArtSize.BIG
             else:
-                width = width*ArtSize.BIG*scale/height
-                height = ArtSize.BIG*scale
+                width = width*ArtSize.BIG/height
+                height = ArtSize.BIG
             scaled_pixbuf = pixbuf.scale_simple(width,
                                                 height,
                                                 GdkPixbuf.InterpType.BILINEAR)

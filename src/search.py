@@ -168,7 +168,6 @@ class SearchWidget(Gtk.Popover):
         self._view = Gtk.ListBox()
         self._view.connect("row-activated", self._on_activate)
         self._view.show()
-        self._scale = self._view.get_scale_factor()
 
         self._scroll = Gtk.ScrolledWindow()
         self._scroll.set_vexpand(True)
@@ -327,7 +326,7 @@ class SearchWidget(Gtk.Popover):
                     result.title += " (%s)" % result.count
                 search_row.set_text(result.artist, result.title)
                 search_row.set_cover(Lp.art.get_album(result.album_id,
-                                     ArtSize.MEDIUM*self._scale))
+                                     ArtSize.MEDIUM))
                 search_row.id = result.id
                 search_row.is_track = result.is_track
                 self._view.add(search_row)

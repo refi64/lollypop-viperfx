@@ -33,7 +33,6 @@ class QueueWidget(Gtk.Popover):
 
         builder = Gtk.Builder()
         builder.add_from_resource('/org/gnome/Lollypop/QueueWidget.ui')
-        builder.connect_signals(self)
 
         self._model = Gtk.ListStore(GdkPixbuf.Pixbuf,  # Cover
                                     str,               # Artist
@@ -43,7 +42,8 @@ class QueueWidget(Gtk.Popover):
         self._view = builder.get_object('view')
         self._view.set_model(self._model)
         self._view.set_property('fixed_height_mode', True)
-        self._scale = self._view.get_scale_factor()
+
+        builder.connect_signals(self)
 
         self._widget = builder.get_object('widget')
 
@@ -87,7 +87,7 @@ class QueueWidget(Gtk.Popover):
             artist_id = Lp.albums.get_artist_id(album_id)
             artist_name = Lp.artists.get_name(artist_id)
             track_name = Lp.tracks.get_name(track_id)
-            pixbuf = Lp.art.get_album(album_id, ArtSize.MEDIUM*self._scale)
+            pixbuf = Lp.art.get_album(album_id, ArtSize.MEDIUM)
             title = "<b>%s</b>\n%s" %\
                 (escape(artist_name),
                  escape(track_name))
