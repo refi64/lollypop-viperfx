@@ -61,7 +61,8 @@ class RadioWidget(AlbumWidget):
         Set maximum width
     """
     def do_get_preferred_width(self):
-        return (ArtSize.BIG+ArtSize.BORDER*2, ArtSize.BIG+ArtSize.BORDER*2)
+        return (ArtSize.BIG*Lp.window.get_scale_factor()+ArtSize.BORDER*2,
+                ArtSize.BIG*Lp.window.get_scale_factor()+ArtSize.BORDER*2)
 
     """
         Set radio name
@@ -88,7 +89,7 @@ class RadioWidget(AlbumWidget):
         if self._cover is not None and (selected != self._selected or force):
             self._selected = selected
             pixbuf = Lp.art.get_radio(self._name,
-                                      ArtSize.BIG,
+                                      ArtSize.BIG*Lp.window.get_scale_factor(),
                                       selected)
             self._cover.set_from_pixbuf(pixbuf)
             del pixbuf
@@ -101,7 +102,7 @@ class RadioWidget(AlbumWidget):
             self._selected = Lp.player.current_track.id == Type.RADIOS\
                 and self._name == Lp.player.current_track.artist
             pixbuf = Lp.art.get_radio(self._name,
-                                      ArtSize.BIG,
+                                      ArtSize.BIG*Lp.window.get_scale_factor(),
                                       self._selected)
             self._cover.set_from_pixbuf(pixbuf)
             del pixbuf

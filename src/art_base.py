@@ -81,6 +81,7 @@ class BaseArt(GObject.GObject):
         code forked Gnome Music, see copyright header
         @param: pixbuf source as Gdk.Pixbuf
         @param selected as bool
+        @return Gdk.Pixbuf
     """
     def _make_icon_frame(self, pixbuf, selected):
         selected_color = Lp.window.get_selected_color()
