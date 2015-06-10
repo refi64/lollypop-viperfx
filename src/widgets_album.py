@@ -41,11 +41,12 @@ class AlbumWidget(Gtk.Bin):
         selected = self._album_id == Lp.player.current_track.album_id
         if self._cover and (selected != self._selected or force):
             self._selected = selected
-            pixbuf = Lp.art.get_album(self._album_id,
-                                      ArtSize.BIG,
-                                      selected)
-            self._cover.set_from_pixbuf(pixbuf)
-            del pixbuf
+            surface = Lp.art.get_album(
+                        self._album_id,
+                        ArtSize.BIG*self._cover.get_scale_factor(),
+                        selected)
+            self._cover.set_from_surface(surface)
+            del surface
 
     """
         Update cover for album id id needed
@@ -54,11 +55,12 @@ class AlbumWidget(Gtk.Bin):
     def update_cover(self, album_id):
         if self._cover and self._album_id == album_id:
             self._selected = self._album_id == Lp.player.current_track.album_id
-            pixbuf = Lp.art.get_album(self._album_id,
-                                      ArtSize.BIG,
-                                      self._selected)
-            self._cover.set_from_pixbuf(pixbuf)
-            del pixbuf
+            surface = Lp.art.get_album(
+                        self._album_id,
+                        ArtSize.BIG*self._cover.get_scale_factor(),
+                        self._selected)
+            self._cover.set_from_surface(surface)
+            del surface
 
     """
         Update playing indicator
@@ -129,8 +131,6 @@ class AlbumSimpleWidget(AlbumWidget):
         self.add(widget)
         self.set_cover()
         self.set_property('halign', Gtk.Align.START)
-        # Set minimum width
-        self.set_property('width-request', ArtSize.BIG+ArtSize.BORDER*2)
 
     """
         Set maximum width

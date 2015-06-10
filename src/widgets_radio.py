@@ -42,8 +42,6 @@ class RadioWidget(AlbumWidget):
         self.add(builder.get_object('widget'))
         self.set_cover()
         self.set_property('halign', Gtk.Align.START)
-        # Set minimum width
-        self.set_property('width-request', ArtSize.BIG+ArtSize.BORDER*2)
 
     """
         Ignore set sensitive
@@ -87,11 +85,12 @@ class RadioWidget(AlbumWidget):
             self._name == Lp.player.current_track.artist
         if self._cover is not None and (selected != self._selected or force):
             self._selected = selected
-            pixbuf = Lp.art.get_radio(self._name,
-                                      ArtSize.BIG,
-                                      selected)
-            self._cover.set_from_pixbuf(pixbuf)
-            del pixbuf
+            surface = Lp.art.get_radio(
+                        self._name,
+                        ArtSize.BIG*self._cover.get_scale_factor(),
+                        selected)
+            self._cover.set_from_surface(surface)
+            del surface
 
     """
         Update cover for album id id needed
@@ -100,11 +99,12 @@ class RadioWidget(AlbumWidget):
         if self._cover is not None:
             self._selected = Lp.player.current_track.id == Type.RADIOS\
                 and self._name == Lp.player.current_track.artist
-            pixbuf = Lp.art.get_radio(self._name,
-                                      ArtSize.BIG,
-                                      self._selected)
-            self._cover.set_from_pixbuf(pixbuf)
-            del pixbuf
+            surface = Lp.art.get_radio(
+                        self._name,
+                        ArtSize.BIG*self._cover.get_scale_factor(),
+                        self._selected)
+            self._cover.set_from_surface(surface)
+            del surface
 
 #######################
 # PRIVATE             #

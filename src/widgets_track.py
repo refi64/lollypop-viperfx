@@ -169,13 +169,12 @@ class AlbumRow(Row):
 
     """
         Set cover
-        @param cover as Gdk.Pixbuf
+        @param cover as cairo.Surface
         @param tooltip as str
     """
-    def set_cover(self, pixbuf, tooltip):
-        self._cover.set_from_pixbuf(pixbuf)
+    def set_cover(self, surface, tooltip):
+        self._cover.set_from_surface(surface)
         self._cover.set_tooltip_text(tooltip)
-        del pixbuf
 
     """
         Set artist and album labels
@@ -308,8 +307,11 @@ class TracksWidget(Gtk.ListBox):
         if album_id is not None:
             album_row.set_album_and_artist(album_id)
             album_id = Lp.tracks.get_album_id(track_id)
-            pixbuf = Lp.art.get_album(album_id, ArtSize.MEDIUM)
-            album_row.set_cover(pixbuf, Lp.albums.get_name(album_id))
+            surface = Lp.art.get_album(
+                        album_id,
+                        ArtSize.MEDIUM*album_row.get_scale_factor())
+            album_row.set_cover(surface, Lp.albums.get_name(album_id))
+            del surface
             album_row.show_header(True)
         album_row.show()
         self.add(album_row)

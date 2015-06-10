@@ -55,12 +55,12 @@ class SearchRow(Gtk.ListBoxRow):
         self._title.set_text(title)
 
     """
-        Set cover pixbuf
-        @param pixbuf
+        Set cover surface
+        @param surface as cairo surface
     """
-    def set_cover(self, pixbuf):
-        self._cover.set_from_pixbuf(pixbuf)
-        del pixbuf
+    def set_cover(self, surface):
+        self._cover.set_from_surface(surface)
+        del surface
 
     """
         Return True if self exists in items
@@ -326,7 +326,7 @@ class SearchWidget(Gtk.Popover):
                     result.title += " (%s)" % result.count
                 search_row.set_text(result.artist, result.title)
                 search_row.set_cover(Lp.art.get_album(result.album_id,
-                                     ArtSize.MEDIUM))
+                                     ArtSize.MEDIUM*self.get_scale_factor()))
                 search_row.id = result.id
                 search_row.is_track = result.is_track
                 self._view.add(search_row)

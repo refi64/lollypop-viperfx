@@ -11,7 +11,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-from gi.repository import Gtk, GLib, Gio, GdkPixbuf
+from gi.repository import Gtk, Gdk, GLib, Gio, GdkPixbuf
 
 import os
 import urllib.request
@@ -161,17 +161,21 @@ class RadioPopover(Gtk.Popover):
             width = pixbuf.get_width()
             height = pixbuf.get_height()
             if width > height:
-                height = height*ArtSize.BIG/width
-                width = ArtSize.BIG
+                height = height*ArtSize.BIG*self.get_scale_factor()/width
+                width = ArtSize.BIG*self.get_scale_factor()
             else:
-                width = width*ArtSize.BIG/height
-                height = ArtSize.BIG
+                width = width*ArtSize.BIG*self.get_scale_factor()/height
+                height = ArtSize.BIG*self.get_scale_factor()
             scaled_pixbuf = pixbuf.scale_simple(width,
                                                 height,
                                                 GdkPixbuf.InterpType.BILINEAR)
-            image.set_from_pixbuf(scaled_pixbuf)
-            del scaled_pixbuf
             del pixbuf
+            surface = Gdk.cairo_surface_create_from_pixbuf(scaled_pixbuf,
+                                                           0,
+                                                           None)
+            del scaled_pixbuf
+            image.set_from_surface(surface)
+            del surface
             image.show()
             self._view.add(image)
         except Exception as e:

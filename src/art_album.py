@@ -120,12 +120,12 @@ class AlbumArt(BaseArt, TagReader):
         return files
 
     """
-        Return a pixbuf with borders for uri
+        Return a cairo surface with borders for uri
         No cache usage
         @param uri as string
         @param size as int
         @param selected as bool
-        @return Gdk.Pixbuf
+        @return cairo surface
     """
     def get_cover_for_uri(self, uri, size, selected):
         pixbuf = self._pixbuf_from_tags(GLib.filename_from_uri(uri)[0], size)
@@ -138,11 +138,11 @@ class AlbumArt(BaseArt, TagReader):
                 selected)
 
     """
-        Return a pixbuf for album_id, covers are cached as jpg.
+        Return a cairo surface for album_id, covers are cached as jpg.
         @param album id as int
         @param pixbuf size as int
         @param selected as bool
-        return: Gdk.Pixbuf
+        @return cairo surface
     """
     def get_album(self, album_id, size, selected=False):
         filename = self._get_album_cache_name(album_id)

@@ -11,7 +11,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-from gi.repository import Gtk, GLib, GdkPixbuf, Pango
+from gi.repository import Gtk, Gdk, GLib, GdkPixbuf, Pango
 
 from _thread import start_new_thread
 from cgi import escape
@@ -512,12 +512,16 @@ class PlaylistEditWidget(Gtk.Bin):
             else:
                 artist_name = Lp.artists.get_name(artist_id)
             track_name = Lp.tracks.get_name(track_id)
-            art = Lp.art.get_album(album_id, ArtSize.SMALL)
-            self._model.append([art,
+            size = ArtSize.SMALL*self.get_scale_factor()
+            surface = Lp.art.get_album(album_id, size)
+            pixbuf = Gdk.pixbuf_get_from_surface(surface, 0, 0, size, size)
+            del surface
+            self._model.append([pixbuf,
                                "<b>%s</b>\n%s" % (
                                    escape(artist_name),
                                    escape(track_name)),
                                 'user-trash-symbolic', filepath])
+            del pixbuf
             self._tracks_orig.append(filepath)
             GLib.idle_add(self._append_track, tracks)
         else:

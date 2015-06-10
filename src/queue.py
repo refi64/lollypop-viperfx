@@ -11,7 +11,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-from gi.repository import Gtk, GLib, GdkPixbuf, Pango
+from gi.repository import Gtk, Gdk, GLib, GdkPixbuf, Pango
 from cgi import escape
 
 from lollypop.define import Lp, ArtSize
@@ -87,7 +87,10 @@ class QueueWidget(Gtk.Popover):
             artist_id = Lp.albums.get_artist_id(album_id)
             artist_name = Lp.artists.get_name(artist_id)
             track_name = Lp.tracks.get_name(track_id)
-            pixbuf = Lp.art.get_album(album_id, ArtSize.MEDIUM)
+            size = ArtSize.MEDIUM * self.get_scale_factor()
+            surface = Lp.art.get_album(album_id, size)
+            pixbuf = Gdk.pixbuf_get_from_surface(surface, 0, 0, size, size)
+            del surface
             title = "<b>%s</b>\n%s" %\
                 (escape(artist_name),
                  escape(track_name))

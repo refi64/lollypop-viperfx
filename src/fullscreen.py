@@ -121,19 +121,21 @@ class FullScreen(Gtk.Window):
                 self._timelabel.hide()
                 self._total_time_label.hide()
                 self._progress.hide()
-                cover = Lp.art.get_radio(player.current_track.artist,
-                                         ArtSize.MONSTER)
+                surface = Lp.art.get_radio(
+                    player.current_track.artist,
+                    ArtSize.MONSTER*self.get_scale_factor())
             else:
                 self._prev_btn.set_sensitive(True)
                 self._next_btn.set_sensitive(True)
                 self._timelabel.show()
                 self._total_time_label.show()
                 self._progress.show()
-                cover = Lp.art.get_album(player.current_track.album_id,
-                                         ArtSize.MONSTER)
+                surface = Lp.art.get_album(
+                    player.current_track.album_id,
+                    ArtSize.MONSTER*self.get_scale_factor())
 
-            self._cover.set_from_pixbuf(cover)
-            del cover
+            self._cover.set_from_surface(surface)
+            del surface
 
             album = player.current_track.album
             if player.current_track.year != '':
@@ -141,10 +143,11 @@ class FullScreen(Gtk.Window):
             self._title.set_text(player.current_track.title)
             self._artist.set_text(player.current_track.artist)
             self._album.set_text(album)
-            next_cover = Lp.art.get_album(player.next_track.album_id,
-                                           ArtSize.MEDIUM)
-            self._next_cover.set_from_pixbuf(next_cover)
-            del next_cover
+            surface = Lp.art.get_album(
+                player.next_track.album_id,
+                ArtSize.MEDIUM*self.get_scale_factor())
+            self._next_cover.set_from_surface(surface)
+            del surface
             self._next.set_markup("<b>%s</b> - %s" %
                                   (escape(player.next_track.artist),
                                    escape(player.next_track.title)))

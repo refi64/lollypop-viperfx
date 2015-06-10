@@ -11,7 +11,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-from gi.repository import Gtk, GLib, Gio, GdkPixbuf
+from gi.repository import Gtk, Gdk, GLib, Gio, GdkPixbuf
 
 import urllib.request
 import urllib.parse
@@ -175,12 +175,17 @@ class CoversPopover(Gtk.Popover):
     def _add_pixbuf(self, pixbuf):
         image = Gtk.Image()
         self._orig_pixbufs[image] = pixbuf
-        scaled_pixbuf = pixbuf.scale_simple(ArtSize.BIG,
-                                            ArtSize.BIG,
-                                            2)
-        image.set_from_pixbuf(scaled_pixbuf)
-        del scaled_pixbuf
+        scaled_pixbuf = pixbuf.scale_simple(
+            ArtSize.BIG*self.get_scale_factor(),
+            ArtSize.BIG*self.get_scale_factor(),
+            2)
         del pixbuf
+        surface = Gdk.cairo_surface_create_from_pixbuf(scaled_pixbuf,
+                                                       0,
+                                                       None)
+        del scaled_pixbuf
+        image.set_from_surface(surface)
+        del surface
         image.show()
         self._view.add(image)
 

@@ -60,10 +60,11 @@ class RadioArt(BaseArt):
             return None
 
     """
-        Return a pixbuf for radio name
+        Return a cairo surface for radio name
         @param radio name as string
         @param pixbuf size as int
         @param selected as bool
+        @return cairo surface
     """
     def get_radio(self, name, size, selected=False):
         filename = self._get_radio_cache_name(name)

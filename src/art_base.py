@@ -81,6 +81,7 @@ class BaseArt(GObject.GObject):
         code forked Gnome Music, see copyright header
         @param: pixbuf source as Gdk.Pixbuf
         @param selected as bool
+        @return cairo surface
     """
     def _make_icon_frame(self, pixbuf, selected):
         selected_color = Lp.window.get_selected_color()
@@ -146,7 +147,9 @@ class BaseArt(GObject.GObject):
                          border_pixbuf,
                          border, border)
         del pixbuf
-        return border_pixbuf
+        surface = Gdk.cairo_surface_create_from_pixbuf(border_pixbuf, 0, None)
+        del border_pixbuf
+        return surface
 
     """
         Construct an empty cover album,
