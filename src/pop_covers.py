@@ -175,9 +175,10 @@ class CoversPopover(Gtk.Popover):
     def _add_pixbuf(self, pixbuf):
         image = Gtk.Image()
         self._orig_pixbufs[image] = pixbuf
-        scaled_pixbuf = pixbuf.scale_simple(ArtSize.BIG,
-                                            ArtSize.BIG,
-                                            2)
+        scaled_pixbuf = pixbuf.scale_simple(
+            ArtSize.BIG*Lp.window.get_scale_factor(),
+            ArtSize.BIG*Lp.window.get_scale_factor(),
+            2)
         image.set_from_pixbuf(scaled_pixbuf)
         del scaled_pixbuf
         del pixbuf
