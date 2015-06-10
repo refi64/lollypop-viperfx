@@ -128,3 +128,9 @@ class AlbumsPopover(Gtk.Popover):
     def _update_content(self, player):
         if self.is_visible():
             self.populate()
+
+    """
+        Set 0 to force popover to not expand
+    """
+    def do_get_preferred_width(self):
+        return (0, 0)
