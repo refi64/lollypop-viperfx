@@ -95,7 +95,7 @@ class SelectionList(Gtk.ScrolledWindow):
         renderer1 = Gtk.CellRendererPixbuf()
         column = Gtk.TreeViewColumn('')
         column.pack_start(renderer0, True)
-        column.pack_start(renderer1, True)
+        column.pack_start(renderer1, False)
         column.add_attribute(renderer0, 'text', 1)
         column.add_attribute(renderer1, 'icon-name', 2)
         column.set_expand(True)
