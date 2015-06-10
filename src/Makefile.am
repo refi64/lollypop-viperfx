@@ -6,6 +6,7 @@ app_PYTHON = \
     art_base.py\
     art.py\
     art_radio.py\
+    cellrendereralbum.py\
     collectionscanner.py\
     container.py\
     database_albums.py\

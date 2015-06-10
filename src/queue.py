@@ -11,10 +11,11 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-from gi.repository import Gtk, Gdk, GLib, GdkPixbuf, Pango
+from gi.repository import Gtk, GLib, Pango
 from cgi import escape
 
-from lollypop.define import Lp, ArtSize
+from lollypop.define import Lp
+from lollypop.cellrendereralbum import CellRendererAlbum
 from lollypop.track import Track
 
 
@@ -35,7 +36,7 @@ class QueueWidget(Gtk.Popover):
         builder.add_from_resource('/org/gnome/Lollypop/QueueWidget.ui')
         builder.connect_signals(self)
 
-        self._model = Gtk.ListStore(GdkPixbuf.Pixbuf,  # Cover
+        self._model = Gtk.ListStore(int,               # Album id
                                     str,               # Artist
                                     str,               # icon
                                     int)               # id
@@ -46,68 +47,46 @@ class QueueWidget(Gtk.Popover):
 
         self._widget = builder.get_object('widget')
 
-        renderer0 = Gtk.CellRendererPixbuf()
-        column0 = Gtk.TreeViewColumn("pixbuf1", renderer0, pixbuf=0)
-        column0.set_sizing(Gtk.TreeViewColumnSizing.FIXED)
-
+        renderer0 = CellRendererAlbum()
         renderer1 = Gtk.CellRendererText()
         renderer1.set_property('ellipsize-set', True)
         renderer1.set_property('ellipsize', Pango.EllipsizeMode.END)
-        column1 = Gtk.TreeViewColumn("text", renderer1, markup=1)
-        column1.set_expand(True)
-        column1.set_sizing(Gtk.TreeViewColumnSizing.FIXED)
-
         renderer2 = Gtk.CellRendererPixbuf()
-        column2 = Gtk.TreeViewColumn('delete', renderer2)
-        column2.add_attribute(renderer2, 'icon-name', 2)
-        column2.set_sizing(Gtk.TreeViewColumnSizing.FIXED)
+        column = Gtk.TreeViewColumn('')
+        column.pack_start(renderer0, False)
+        column.pack_start(renderer1, True)
+        column.pack_start(renderer2, False)
+        column.add_attribute(renderer0, 'album', 0)
+        column.add_attribute(renderer1, 'markup', 1)
+        column.add_attribute(renderer2, 'icon-name', 2)
+        column.set_expand(True)
+        column.set_sizing(Gtk.TreeViewColumnSizing.FIXED)
 
-        self._view.append_column(column0)
-        self._view.append_column(column1)
-        self._view.append_column(column2)
+        self._view.append_column(column)
+
 
         self.add(self._widget)
 
     """
-        Show queue popover
-        Populate treeview with current queue
+        Set size and connect signals
     """
-    # TODO Threaded loading
     def do_show(self):
         size_setting = Lp.settings.get_value('window-size')
         if isinstance(size_setting[1], int):
             self.set_size_request(400, size_setting[1]*0.7)
         else:
             self.set_size_request(400, 600)
-
-        for track_id in Lp.player.get_queue():
-            album_id = Lp.tracks.get_album_id(track_id)
-            artist_id = Lp.albums.get_artist_id(album_id)
-            artist_name = Lp.artists.get_name(artist_id)
-            track_name = Lp.tracks.get_name(track_id)
-            size = ArtSize.MEDIUM * 2 * self.get_scale_factor()
-            border = ArtSize.SMALL_BORDER * self.get_scale_factor()
-            surface = Lp.art.get_album(album_id, size)
-            pixbuf = Gdk.pixbuf_get_from_surface(surface,
-                                                 0,
-                                                 0,
-                                                 size+border,
-                                                 size+border)
-            del surface
-            title = "<b>%s</b>\n%s" %\
-                (escape(artist_name),
-                 escape(track_name))
-            self._model.append([pixbuf,
-                                title,
-                                'user-trash-symbolic',
-                                track_id])
-            del pixbuf
-
+        Gtk.Popover.do_show(self)
         self._signal_id1 = Lp.player.connect('current-changed',
                                              self._on_current_changed)
         self._signal_id2 = self._model.connect('row-deleted',
                                                self._updated_rows)
-        Gtk.Popover.do_show(self)
+
+    """
+        Populate view
+    """
+    def populate(self):
+        GLib.idle_add(self._add_items, list(Lp.player.get_queue()))
 
     """
         Clear model
@@ -125,6 +104,26 @@ class QueueWidget(Gtk.Popover):
 #######################
 # PRIVATE             #
 #######################
+    """
+        Add items to the view
+        @param item ids as [int]
+    """
+    def _add_items(self, items):
+        if items:
+            track_id = items.pop(0)
+            album_id = Lp.tracks.get_album_id(track_id)
+            artist_id = Lp.albums.get_artist_id(album_id)
+            artist_name = Lp.artists.get_name(artist_id)
+            track_name = Lp.tracks.get_name(track_id)
+            title = "<b>%s</b>\n%s" %\
+                (escape(artist_name),
+                 escape(track_name))
+            self._model.append([album_id,
+                                title,
+                                'user-trash-symbolic',
+                                track_id])
+            GLib.idle_add(self._add_items, items)
+
     """
         Delete item if Delete was pressed
         @param widget unused, Gdk.Event

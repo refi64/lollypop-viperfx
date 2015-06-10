@@ -143,6 +143,7 @@ class ToolbarEnd(Gtk.Bin):
     """
     def _on_queue_btn_clicked(self, button):
         self._queue.show()
+        self._queue.populate()
 
     """
         Set party mode on if party button active

@@ -18,6 +18,7 @@ from cgi import escape
 from gettext import gettext as _
 
 from lollypop.define import Lp, ArtSize, Type
+from lollypop.cellrendereralbum import CellRendererAlbum
 from lollypop.widgets_track import TracksWidget
 from lollypop.track import Track
 
@@ -438,7 +439,7 @@ class PlaylistEditWidget(Gtk.Bin):
 
         self._view = builder.get_object('view')
 
-        self._model = Gtk.ListStore(GdkPixbuf.Pixbuf,
+        self._model = Gtk.ListStore(int,
                                     str,
                                     str,
                                     str)
@@ -446,24 +447,22 @@ class PlaylistEditWidget(Gtk.Bin):
 
         self._view.set_model(self._model)
 
-        renderer0 = Gtk.CellRendererPixbuf()
-        column0 = Gtk.TreeViewColumn("pixbuf1", renderer0, pixbuf=0)
-
+        renderer0 = CellRendererAlbum()
         renderer1 = Gtk.CellRendererText()
         renderer1.set_property('ellipsize-set', True)
         renderer1.set_property('ellipsize', Pango.EllipsizeMode.END)
-        column1 = Gtk.TreeViewColumn("text1", renderer1, markup=1)
-        column1.set_sizing(Gtk.TreeViewColumnSizing.FIXED)
-        column1.set_expand(True)
-
         renderer2 = Gtk.CellRendererPixbuf()
-        column2 = Gtk.TreeViewColumn('delete', renderer2)
-        column2.add_attribute(renderer2, 'icon-name', 2)
-        column2.set_sizing(Gtk.TreeViewColumnSizing.FIXED)
+        column = Gtk.TreeViewColumn('')
+        column.pack_start(renderer0, False)
+        column.pack_start(renderer1, True)
+        column.pack_start(renderer2, False)
+        column.add_attribute(renderer0, 'album', 0)
+        column.add_attribute(renderer1, 'markup', 1)
+        column.add_attribute(renderer2, 'icon-name', 2)
+        column.set_expand(True)
+        column.set_sizing(Gtk.TreeViewColumnSizing.FIXED)
+        self._view.append_column(column)
 
-        self._view.append_column(column0)
-        self._view.append_column(column1)
-        self._view.append_column(column2)
         self.add(builder.get_object('widget'))
 
     """
@@ -511,21 +510,11 @@ class PlaylistEditWidget(Gtk.Bin):
             else:
                 artist_name = Lp.artists.get_name(artist_id)
             track_name = Lp.tracks.get_name(track_id)
-            size = ArtSize.MEDIUM * self.get_scale_factor()
-            border = ArtSize.SMALL_BORDER * 2 * self.get_scale_factor()
-            surface = Lp.art.get_album(album_id, size)
-            pixbuf = Gdk.pixbuf_get_from_surface(surface,
-                                                 0,
-                                                 0,
-                                                 size+border,
-                                                 size+border)
-            del surface
-            self._model.append([pixbuf,
+            self._model.append([album_id,
                                "<b>%s</b>\n%s" % (
                                    escape(artist_name),
                                    escape(track_name)),
                                 'user-trash-symbolic', filepath])
-            del pixbuf
             self._tracks_orig.append(filepath)
             GLib.idle_add(self._append_track, tracks)
         else:
