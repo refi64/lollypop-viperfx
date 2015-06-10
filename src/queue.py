@@ -47,8 +47,6 @@ class QueueWidget(Gtk.Popover):
         self._widget = builder.get_object('widget')
 
         renderer0 = Gtk.CellRendererPixbuf()
-        renderer0.set_property('stock-size', ArtSize.MEDIUM)
-        stock_size = ArtSize.MEDIUM*2+ArtSize.SMALL_BORDER*2
         column0 = Gtk.TreeViewColumn("pixbuf1", renderer0, pixbuf=0)
         column0.set_sizing(Gtk.TreeViewColumnSizing.FIXED)
 
@@ -87,7 +85,7 @@ class QueueWidget(Gtk.Popover):
             artist_id = Lp.albums.get_artist_id(album_id)
             artist_name = Lp.artists.get_name(artist_id)
             track_name = Lp.tracks.get_name(track_id)
-            size = ArtSize.MEDIUM * self.get_scale_factor()
+            size = ArtSize.MEDIUM * 2 * self.get_scale_factor()
             border = ArtSize.SMALL_BORDER * self.get_scale_factor()
             surface = Lp.art.get_album(album_id, size)
             pixbuf = Gdk.pixbuf_get_from_surface(surface,

@@ -447,7 +447,6 @@ class PlaylistEditWidget(Gtk.Bin):
         self._view.set_model(self._model)
 
         renderer0 = Gtk.CellRendererPixbuf()
-        renderer0.set_property('stock-size', ArtSize.MEDIUM)
         column0 = Gtk.TreeViewColumn("pixbuf1", renderer0, pixbuf=0)
 
         renderer1 = Gtk.CellRendererText()
@@ -512,9 +511,14 @@ class PlaylistEditWidget(Gtk.Bin):
             else:
                 artist_name = Lp.artists.get_name(artist_id)
             track_name = Lp.tracks.get_name(track_id)
-            size = ArtSize.SMALL*self.get_scale_factor()
+            size = ArtSize.MEDIUM * self.get_scale_factor()
+            border = ArtSize.SMALL_BORDER * 2 * self.get_scale_factor()
             surface = Lp.art.get_album(album_id, size)
-            pixbuf = Gdk.pixbuf_get_from_surface(surface, 0, 0, size, size)
+            pixbuf = Gdk.pixbuf_get_from_surface(surface,
+                                                 0,
+                                                 0,
+                                                 size+border,
+                                                 size+border)
             del surface
             self._model.append([pixbuf,
                                "<b>%s</b>\n%s" % (
