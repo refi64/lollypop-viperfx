@@ -1,11 +1,12 @@
 # 
 # Translators:
+# Hilding Kåstad <hilding.kastad@gmail.com>, 2015
 msgid ""
 msgstr ""
 "Project-Id-Version: lollypop\n"
 "POT-Creation-Date: 2015-05-07 21:04+0200\n"
-"PO-Revision-Date: 2015-04-28 14:18+0000\n"
-"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"PO-Revision-Date: 2015-06-08 14:53+0000\n"
+"Last-Translator: Hilding Kåstad <hilding.kastad@gmail.com>\n"
 "Language-Team: Swedish (http://www.transifex.com/projects/p/lollypop/language/sv/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -27,7 +28,7 @@ msgstr ""
 #: C/index.page:8
 msgctxt "text"
 msgid "Lollypop music player"
-msgstr ""
+msgstr "Lollypop musik spelare"
 
 #. (itstool) path: credit/name
 #: C/index.page:11
@@ -37,7 +38,7 @@ msgstr ""
 #. (itstool) path: credit/years
 #: C/index.page:13
 msgid "2015"
-msgstr ""
+msgstr "2015"
 
 #. (itstool) path: page/title
 #: C/index.page:18
@@ -47,7 +48,7 @@ msgstr ""
 #. (itstool) path: section/title
 #: C/index.page:21
 msgid "Add music"
-msgstr ""
+msgstr "Lägg till musik"
 
 #. (itstool) path: section/p
 #: C/index.page:22

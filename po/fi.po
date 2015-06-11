@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lollypop\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-05-25 16:03+0200\n"
-"PO-Revision-Date: 2015-05-25 14:06+0000\n"
+"POT-Creation-Date: 2015-06-09 07:29+0200\n"
+"PO-Revision-Date: 2015-06-09 05:33+0000\n"
 "Last-Translator: Jiri Grönroos <jiri.gronroos@iki.fi>\n"
 "Language-Team: Finnish (http://www.transifex.com/projects/p/lollypop/language/fi/)\n"
 "MIME-Version: 1.0\n"
@@ -178,120 +178,142 @@ msgid ""
 "    - Artist informations disabled"
 msgstr "    - Kuuntelujen lähetystiedot pois käytöstä\n    - Kansikuvien automaattinen lataus pois käytöstä\n    - Esittäjien tiedot pois käytöstä"
 
-#: ../src/application.py:316
+#: ../src/application.py:309
 msgid "Lollypop: You need to install yelp."
 msgstr "Lollypop: Ohje vaatii yelp-ohjelman asennuksen."
 
-#: ../src/collectionscanner.py:61
+#: ../src/collectionscanner.py:60
 msgid "Your music is updating"
 msgstr "Musiikkisi päivittyy"
 
-#: ../src/container.py:347
+#: ../src/container.py:323
 msgid "Popular albums"
 msgstr "Suositut albumit"
 
-#: ../src/container.py:348
+#: ../src/container.py:324
 msgid "Recent albums"
 msgstr "Viimeisimmät albumit"
 
-#: ../src/container.py:349
+#: ../src/container.py:325
 msgid "Random albums"
 msgstr "Satunnaiset albumit"
 
-#: ../src/container.py:350 ../src/pop_menu.py:323 ../src/pop_menu.py:379
-#: ../src/pop_menu.py:396
+#: ../src/container.py:326 ../src/pop_menu.py:395 ../src/pop_menu.py:450
+#: ../src/pop_menu.py:467
 msgid "Playlists"
 msgstr "Soittolistat"
 
-#: ../src/container.py:351
+#: ../src/container.py:327
 msgid "Radios"
 msgstr "Radiot"
 
-#: ../src/container.py:353
+#: ../src/container.py:329
 msgid "All artists"
 msgstr "Kaikki esittäjät"
 
-#: ../src/container.py:355
+#: ../src/container.py:331
 msgid "All albums"
 msgstr "Kaikki albumit"
 
-#: ../src/container.py:399
+#: ../src/container.py:375
 msgid "Compilations"
 msgstr "Kokoelmat"
 
-#: ../src/database_albums.py:253 ../src/database_artists.py:70
-#: ../src/database_genres.py:67 ../src/database_tracks.py:187
+#: ../src/container.py:392
+msgid "Most played"
+msgstr "Eniten toistettu"
+
+#: ../src/container.py:393
+msgid "Recently played"
+msgstr "Äskettäin toistettu"
+
+#: ../src/container.py:394
+msgid "Never played"
+msgstr "Ei koskaan toistettu"
+
+#: ../src/database_albums.py:234 ../src/database_artists.py:71
+#: ../src/database_genres.py:66 ../src/database_tracks.py:204
 #: ../src/tagreader.py:81 ../src/tagreader.py:116 ../src/tagreader.py:131
 msgid "Unknown"
 msgstr "Tuntematon"
 
-#: ../src/database_albums.py:270
+#: ../src/database_albums.py:251
 msgid "Compilation"
 msgstr "Kokoelma"
 
-#: ../src/database_artists.py:62
+#: ../src/database_artists.py:63
 msgid "Many artists"
 msgstr "Useita esittäjiä"
 
-#: ../src/fullscreen.py:78 ../src/fullscreen.py:195 ../src/toolbar.py:323
-#: ../src/toolbar.py:354
+#: ../src/fullscreen.py:79 ../src/fullscreen.py:200
+#: ../src/toolbar_playback.py:74 ../src/toolbar_playback.py:107
 msgid "Pause"
 msgstr "Keskeytä"
 
-#: ../src/fullscreen.py:142 ../src/pop_menu.py:171
-msgid "Next track"
-msgstr "Seuraava kappale"
-
-#: ../src/fullscreen.py:199 ../src/toolbar.py:330 ../src/toolbar.py:351
+#: ../src/fullscreen.py:204 ../src/toolbar_playback.py:76
+#: ../src/toolbar_playback.py:104 ../data/ToolbarPlayback.ui.h:2
 #: ../data/Toolbar.ui.h:7
 msgid "Play"
 msgstr "Toista"
 
-#: ../src/lastfm.py:146 ../src/pop_artist_infos.py:174
-#: ../src/pop_artist_infos.py:197
+#: ../src/lastfm.py:21
+msgid "Last.fm authentication disabled"
+msgstr "Last.fm-tunnistautuminen pois käytöstä"
+
+#: ../src/lastfm.py:217
 msgid "Wrong Last.fm credentials"
 msgstr "Last.fm-kirjautumistiedot olivat väärin"
 
-#: ../src/notification.py:64 ../data/Toolbar.ui.h:6
+#: ../src/notification.py:64 ../data/ToolbarPlayback.ui.h:1
+#: ../data/Toolbar.ui.h:6
 msgid "Previous"
 msgstr "Edellinen"
 
-#: ../src/notification.py:68 ../data/Toolbar.ui.h:8
+#: ../src/notification.py:68 ../data/ToolbarPlayback.ui.h:3
+#: ../data/Toolbar.ui.h:8
 msgid "Next"
 msgstr "Seuraava"
 
 #. TRANSLATORS: by refers to the artist,
 #. from to the album
-#: ../src/notification.py:100
+#: ../src/notification.py:102
 #, python-format
 msgid "by %s, from %s"
 msgstr "esittäjän %s levyltä %s"
 
-#: ../src/player_bin.py:225
+#: ../src/player_bin.py:238
 #, python-format
 msgid "File doesn't exist: %s"
 msgstr "Tiedostoa ei ole olemassa: %s"
 
-#: ../src/player_radio.py:42
+#: ../src/player_radio.py:40
 msgid "Radio"
 msgstr "Radio"
 
-#: ../src/pop_album_covers.py:61 ../src/pop_artist_infos.py:93
-#: ../src/pop_tunein.py:83 ../data/PopRadio.ui.h:3
+#: ../src/playlists.py:36
+msgid "Loved tracks"
+msgstr "Tykätyt kappaleet"
+
+#: ../src/pop_covers.py:60 ../src/pop_infos.py:91 ../src/pop_tunein.py:82
+#: ../data/PopRadio.ui.h:3 ../data/RadioPopover.ui.h:3
 msgid "Please wait..."
 msgstr "Odota hetki..."
 
-#: ../src/pop_album_covers.py:149
+#: ../src/pop_covers.py:148
 msgid "No cover found..."
 msgstr "Kansikuvaa ei löytynyt..."
 
-#: ../src/pop_album_covers.py:169
+#: ../src/pop_covers.py:168
 msgid "Select a cover art for this album"
 msgstr "Valitse kansikuva tälle albumille"
 
-#: ../src/pop_artist_infos.py:147
+#: ../src/pop_infos.py:151
 msgid "No information for this artist..."
 msgstr "Ei tietoja tästä esittäjästä..."
+
+#: ../src/pop_infos.py:169 ../src/pop_infos.py:220
+msgid "I do not love"
+msgstr "En tykkää"
 
 #: ../src/pop_menu.py:60
 msgid "Continue playback"
@@ -317,37 +339,50 @@ msgstr "Lisää jonoon"
 msgid "Next tracks"
 msgstr "Seuraavat kappaleet"
 
+#: ../src/pop_menu.py:171 ../data/FullScreen.ui.h:1 ../data/NextPopover.ui.h:1
+msgid "Next track"
+msgstr "Seuraava kappale"
+
 #: ../src/pop_menu.py:175
 msgid "Remove from queue"
 msgstr "Poista jonosta"
 
-#: ../src/pop_menu.py:242
+#: ../src/pop_menu.py:241
 msgid "Add to others"
 msgstr "Lisää muihin"
 
-#: ../src/pop_menu.py:255
+#: ../src/pop_menu.py:254
 #, python-format
 msgid "Remove from \"%s\""
 msgstr "Poista kohteesta \"%s\""
 
-#: ../src/pop_menu.py:261
+#: ../src/pop_menu.py:260
 #, python-format
 msgid "Add to \"%s\""
 msgstr "Lisää kohteeseen \"%s\""
 
-#: ../src/pop_menu.py:321
+#: ../src/pop_menu.py:272
+msgid "I dislove this track"
+msgstr "En tykkääkään"
+
+#: ../src/pop_menu.py:277
+msgid "I love this track"
+msgstr "Tykkään tästä kappaleesta"
+
+#: ../src/pop_menu.py:393
 msgid "Playback"
 msgstr "Toisto"
 
-#: ../src/pop_menu.py:357
+#: ../src/pop_menu.py:428
 msgid "Modify informations"
 msgstr "Muokkaa tietoja"
 
-#: ../src/pop_menu.py:377 ../src/pop_menu.py:394 ../data/Toolbar.ui.h:13
+#: ../src/pop_menu.py:448 ../src/pop_menu.py:465 ../data/ToolbarEnd.ui.h:10
+#: ../data/Toolbar.ui.h:13
 msgid "Queue"
 msgstr "Jono"
 
-#: ../src/pop_menu.py:381 ../data/PlaylistsView.ui.h:1
+#: ../src/pop_menu.py:452 ../data/PlaylistsView.ui.h:1
 msgid "Edit"
 msgstr "Muokkaa"
 
@@ -359,64 +394,64 @@ msgstr "Lisää"
 msgid "Modify"
 msgstr "Muokkaa"
 
-#: ../src/pop_tunein.py:103
+#: ../src/pop_tunein.py:102
 msgid "Can't connect to TuneIn..."
 msgstr "Yhteys TuneIniin ei onnistu..."
 
-#: ../src/pop_tunein.py:160
+#: ../src/pop_tunein.py:156
 msgid "Browse themes and add a new radio"
 msgstr "Selaa teemoja ja lisää uusi radiokanava"
 
-#: ../src/search.py:153
+#: ../src/search.py:152
 msgid "Search:"
 msgstr "Etsi:"
 
-#: ../src/settings.py:130
+#: ../src/settings.py:132
 msgid "Populars"
 msgstr "Suositut"
 
-#: ../src/settings.py:131
+#: ../src/settings.py:133
 msgid "Recents"
 msgstr "Viimeisimmät"
 
 #. Handle language ordering
 #. Translators: Add here words that shoud be ignored for artist sort order
-#: ../src/utils.py:87
+#: ../src/utils.py:92
 msgid "The the"
 msgstr ""
 
-#: ../src/view_device.py:39 ../src/view_device.py:80
+#: ../src/view_device.py:38 ../src/view_device.py:79
 #, python-format
 msgid "Synchronize %s"
 msgstr "Synkronoi %s"
 
-#: ../src/view_device.py:71
+#: ../src/view_device.py:70
 msgid "Cancel synchronization"
 msgstr "Peru synkronointi"
 
-#: ../src/widgets_album.py:230
+#: ../src/widgets_album.py:221
 #, python-format
 msgid "Disc %s"
 msgstr "Levy %s"
 
-#: ../src/widgets_device.py:401
+#: ../src/widgets_device.py:175
 msgid "Unknown error while syncing, try to reboot your device"
 msgstr "Tuntematon virhe synkronoitaessa. Yritä käynnistää laite uudelleen"
 
-#: ../src/widgets_device.py:408
+#: ../src/widgets_device.py:183
 msgid "No free space available on device"
 msgstr "Laitteella ei ole vapaata tilaa"
 
-#: ../src/widgets_playlist.py:235 ../src/widgets_playlist.py:238
+#: ../src/widgets_playlist.py:254 ../src/widgets_playlist.py:257
 msgid "New playlist "
 msgstr "Uusi soittolista"
 
-#: ../src/widgets_playlist.py:280 ../src/widgets_playlist.py:536
+#: ../src/widgets_playlist.py:301 ../src/widgets_playlist.py:538
 #, python-format
 msgid "Remove \"%s\"?"
 msgstr "Poistetaanko \"%s\"?"
 
-#: ../src/widgets_playlist.py:575
+#: ../src/widgets_playlist.py:583
 msgid "Remove these tracks?"
 msgstr "Poistetaanko nämä kappaleet?"
 
@@ -457,6 +492,10 @@ msgstr "_Ohje"
 msgid "_Quit"
 msgstr "_Lopeta"
 
+#: ../data/ArtistInfos.ui.h:1
+msgid "I love"
+msgstr "Tykkään"
+
 #: ../data/DeviceManagerView.ui.h:1
 msgid "Synchronize your device with this playlists"
 msgstr "Synkronoi laitteesi tämän soittolistan kanssa"
@@ -469,33 +508,25 @@ msgstr "Vahvista"
 msgid "New playlist"
 msgstr "Uusi soittolista"
 
-#: ../data/PopRadio.ui.h:1
+#: ../data/PopRadio.ui.h:1 ../data/RadioPopover.ui.h:1
 msgid "Select a logo  for this radio"
 msgstr "Valitse logo tälle radiolle"
 
-#: ../data/PopRadio.ui.h:2
+#: ../data/PopRadio.ui.h:2 ../data/RadioPopover.ui.h:2
 msgid "No logo found..."
 msgstr "Logoa ei löytynyt..."
 
-#: ../data/PopRadio.ui.h:4
+#: ../data/PopRadio.ui.h:4 ../data/RadioPopover.ui.h:4
 msgid "Name:"
 msgstr "Nimi:"
 
-#: ../data/PopRadio.ui.h:5
+#: ../data/PopRadio.ui.h:5 ../data/RadioPopover.ui.h:5
 msgid "Address:"
 msgstr "Osoite:"
 
-#: ../data/PopRadio.ui.h:6
+#: ../data/PopRadio.ui.h:6 ../data/RadioPopover.ui.h:6
 msgid "Delete"
 msgstr "Poista"
-
-#: ../data/ArtistInfos.ui.h:1
-msgid "I love"
-msgstr "Tykkään"
-
-#: ../data/ArtistInfos.ui.h:2
-msgid "I don't love"
-msgstr "En tykkää"
 
 #: ../data/QueueWidget.ui.h:1
 msgid "Queue:"
@@ -504,6 +535,14 @@ msgstr "Jono:"
 #: ../data/QueueWidget.ui.h:2
 msgid "Clear queue"
 msgstr "Tyhjennä jono"
+
+#: ../data/RadiosView.ui.h:1
+msgid "New radio"
+msgstr "Uusi radio"
+
+#: ../data/RadiosView.ui.h:2
+msgid "Search in TuneIn"
+msgstr "Etsi TuneInistä"
 
 #: ../data/SearchRow.ui.h:1
 msgid "artist"
@@ -561,7 +600,8 @@ msgstr "Musiikki"
 msgid "Select what will be available in party mode"
 msgstr "Valitse mitä biletilassa on käytettävissä"
 
-#: ../data/SettingsDialog.ui.h:15 ../data/Toolbar.ui.h:11
+#: ../data/SettingsDialog.ui.h:15 ../data/ToolbarEnd.ui.h:8
+#: ../data/Toolbar.ui.h:11
 msgid "Party mode"
 msgstr "Biletila"
 
@@ -577,35 +617,39 @@ msgstr "Salasana:"
 msgid "Test"
 msgstr "Testaa"
 
-#: ../data/Toolbar.ui.h:1
+#: ../data/SettingsDialog.ui.h:19
+msgid "You need to install pylast and gi secret"
+msgstr "Asenna pylast ja gi secret"
+
+#: ../data/ToolbarEnd.ui.h:1 ../data/Toolbar.ui.h:1
 msgid "No shuffle"
 msgstr "Ei sekoitusta"
 
-#: ../data/Toolbar.ui.h:2
+#: ../data/ToolbarEnd.ui.h:2 ../data/Toolbar.ui.h:2
 msgid "Shuffle albums"
 msgstr "Sekoita albumit"
 
-#: ../data/Toolbar.ui.h:3
+#: ../data/ToolbarEnd.ui.h:3 ../data/Toolbar.ui.h:3
 msgid "Shuffle tracks"
 msgstr "Sekoita kappaleet"
 
-#: ../data/Toolbar.ui.h:4
+#: ../data/ToolbarEnd.ui.h:4 ../data/Toolbar.ui.h:4
 msgid "Shuffle albums from artist"
 msgstr "Sekoita esittäjän albumit"
 
-#: ../data/Toolbar.ui.h:5
+#: ../data/ToolbarEnd.ui.h:5 ../data/Toolbar.ui.h:5
 msgid "Shuffle tracks from artist"
 msgstr "Sekoita esittäjän kappaleet"
 
-#: ../data/Toolbar.ui.h:9
+#: ../data/ToolbarEnd.ui.h:6 ../data/Toolbar.ui.h:9
 msgid "Settings"
 msgstr "Asetukset"
 
-#: ../data/Toolbar.ui.h:10
+#: ../data/ToolbarEnd.ui.h:7 ../data/Toolbar.ui.h:10
 msgid "Shuffle"
 msgstr "Sekoita"
 
-#: ../data/Toolbar.ui.h:12
+#: ../data/ToolbarEnd.ui.h:9 ../data/Toolbar.ui.h:12
 msgid "Search"
 msgstr "Etsi"
 
@@ -618,11 +662,3 @@ msgid ""
 "Lollypop isn't designed to work without an unicode locale.\n"
 "Please fix your system."
 msgstr "Lollypopia ei ole suunniteltu toimimaan ilman unicode-maa-asetuksia.\nKorjaa järjestelmäsi asetukset."
-
-#: ../data/RadiosView.ui.h:1
-msgid "New radio"
-msgstr "Uusi radio"
-
-#: ../data/RadiosView.ui.h:2
-msgid "Search in TuneIn"
-msgstr "Etsi TuneInistä"
