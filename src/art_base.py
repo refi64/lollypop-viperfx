@@ -140,7 +140,7 @@ class BaseArt(GObject.GObject):
         border_pixbuf = Gdk.pixbuf_get_from_surface(surface, 0, 0,
                                                     surface_width,
                                                     surface_height)
-
+        del surface
         pixbuf.copy_area(0, 0,
                          width,
                          height,
