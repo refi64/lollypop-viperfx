@@ -214,7 +214,8 @@ class LastFM(LastFMNetwork):
                                    title=title,
                                    timestamp=timestamp)
         except BadAuthenticationError:
-            GLib.idle_add(Lp.notify.send, _("Wrong Last.fm credentials"))
+            if Lp.notify is not None:
+                GLib.idle_add(Lp.notify.send, _("Wrong Last.fm credentials"))
         except Exception as e:
             print("LastFM::scrobble: %s" % e)
 
