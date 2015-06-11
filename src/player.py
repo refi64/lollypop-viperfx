@@ -164,8 +164,8 @@ class Player(BinPlayer, QueuePlayer, UserPlaylistPlayer, RadioPlayer,
             if path != "":
                 self._load_track(Track(track_id))
                 self.set_albums(track_id, Type.ALL, Type.ALL)
-                self._set_next()
-                self._set_prev()
+                self.set_next()
+                self.set_prev()
                 self.emit('current-changed')
             else:
                 print("Player::restore_state(): track missing")
@@ -177,16 +177,13 @@ class Player(BinPlayer, QueuePlayer, UserPlaylistPlayer, RadioPlayer,
     """
     def set_party(self, party):
         ShufflePlayer.set_party(self, party)
-        self._set_next()
-        self._set_prev()
+        self.set_next()
+        self.set_prev()
 
-#######################
-# PRIVATE             #
-#######################
     """
         Set previous track
     """
-    def _set_prev(self):
+    def set_prev(self):
         # Look at externals
         self.prev_track = ExternalsPlayer.prev(self)
 
@@ -210,7 +207,7 @@ class Player(BinPlayer, QueuePlayer, UserPlaylistPlayer, RadioPlayer,
         Play next track
         @param sql as sqlite cursor
     """
-    def _set_next(self):
+    def set_next(self):
         # Look at externals
         self.next_track = ExternalsPlayer.next(self)
 
@@ -234,6 +231,9 @@ class Player(BinPlayer, QueuePlayer, UserPlaylistPlayer, RadioPlayer,
         if self.next_track.id is None:
             self.next_track = LinearPlayer.next(self)
 
+#######################
+# PRIVATE             #
+#######################
     """
         On stream start
         Emit "current-changed" to notify others components
@@ -241,6 +241,6 @@ class Player(BinPlayer, QueuePlayer, UserPlaylistPlayer, RadioPlayer,
     def _on_stream_start(self, bus, message):
         if self.current_track.id >= 0:
             ShufflePlayer._on_stream_start(self, bus, message)
-        self._set_next()
-        self._set_prev()
+        self.set_next()
+        self.set_prev()
         BinPlayer._on_stream_start(self, bus, message)

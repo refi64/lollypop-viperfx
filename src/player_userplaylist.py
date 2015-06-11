@@ -111,5 +111,5 @@ class UserPlaylistPlayer(BasePlayer):
             if self._user_playlist_backup is not None:
                 self._user_playlist = self._user_playlist_backup
                 self._user_playlist_backup = None
-        self._set_next()
-        self._set_prev()
+        self.set_next()
+        self.set_prev()

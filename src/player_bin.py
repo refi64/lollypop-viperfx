@@ -238,7 +238,7 @@ class BinPlayer(ReplayGainPlayer, BasePlayer):
             if Lp.notify is not None:
                 Lp.notify.send(_("File doesn't exist: %s") %
                                self.current_track.uri)
-            self._set_next()
+            self.set_next()
             self.next()
         return False
 

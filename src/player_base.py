@@ -50,17 +50,18 @@ class BasePlayer(GObject.GObject):
             # For tracks from the cmd line
             self._external_tracks = []
             
-#######################
-# PRIVATE             #
-#######################
     """
         Set next track
     """
-    def _set_next(self):
+    def set_next(self):
         pass
 
     """
         Set prev track
     """
-    def _set_prev(self):
+    def set_prev(self):
         pass
+
+#######################
+# PRIVATE             #
+#######################

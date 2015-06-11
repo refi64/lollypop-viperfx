@@ -31,7 +31,7 @@ class QueuePlayer:
         if track_id in self._queue:
             self._queue.remove(track_id)
         self._queue.append(track_id)
-        self._set_next()
+        self.set_next()
         self.emit("queue-changed")
 
     """
@@ -43,7 +43,7 @@ class QueuePlayer:
         if track_id in self._queue:
             self._queue.remove(track_id)
         self._queue.insert(0, track_id)
-        self._set_next()
+        self.set_next()
         self.emit("queue-changed")
 
     """
@@ -53,7 +53,7 @@ class QueuePlayer:
     def del_from_queue(self, track_id):
         if track_id in self._queue:
             self._queue.remove(track_id)
-            self._set_next()
+            self.set_next()
             self.emit("queue-changed")
 
     """
@@ -62,7 +62,7 @@ class QueuePlayer:
     """
     def set_queue(self, new_queue):
         self._queue = new_queue
-        self._set_next()
+        self.set_next()
         self.emit("queue-changed")
 
     """

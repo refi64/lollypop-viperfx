@@ -142,12 +142,6 @@ class ShufflePlayer(BasePlayer):
 # PRIVATE             #
 #######################
     """
-        Set next track. Do nothing
-    """
-    def _set_next(self):
-        pass
-
-    """
         Set shuffle mode to gettings value
         @param settings as Gio.Settings, value as str
     """
@@ -166,7 +160,7 @@ class ShufflePlayer(BasePlayer):
             self.set_albums(self.current_track.id,
                             self.current_track.aartist_id,
                             self.context.genre_id)
-        self._set_next()
+        self.set_next()
         self.emit('current-changed')
 
     """
