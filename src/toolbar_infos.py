@@ -142,14 +142,14 @@ class ToolbarInfos(Gtk.Bin):
         @param tooltip as Gtk.Tooltip
     """
     def _on_query_tooltip(self, widget, x, y, keyboard, tooltip):
+        # Can add a \n in markup
         # GTK bug => https://bugzilla.gnome.org/show_bug.cgi?id=749965
-        return False
         layout_title = self._title_label.get_layout()
         layout_artist = self._artist_label.get_layout()
         if layout_title.is_ellipsized() or layout_artist.is_ellipsized():
             artist = escape(self._artist_label.get_text())
             title = escape(self._title_label.get_text())
-            tooltip.set_markup("<b>%s</b>\n%s" % (artist, title))
+            tooltip.set_markup("<b>%s</b> - %s" % (artist, title))
         else:
             return False
         return True
