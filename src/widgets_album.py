@@ -227,6 +227,7 @@ class AlbumDetailedWidget(AlbumWidget):
                 grid.attach(label, 0, i, 2, 1)
                 i += 1
                 sep = Gtk.Separator()
+                sep.set_property('margin-bottom', 2)
                 sep.show()
                 grid.attach(sep, 0, i, 2, 1)
                 i += 1
