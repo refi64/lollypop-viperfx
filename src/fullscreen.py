@@ -116,26 +116,30 @@ class FullScreen(Gtk.Window):
             pass  # Impossible as we force play on show
         else:
             if Lp.player.current_track.id == Type.RADIOS:
-                self._prev_btn.set_sensitive(False)
-                self._next_btn.set_sensitive(False)
                 self._timelabel.hide()
                 self._total_time_label.hide()
                 self._progress.hide()
-                surface = Lp.art.get_radio(
+                surface1 = Lp.art.get_radio(
                     player.current_track.artist,
                     ArtSize.MONSTER*self.get_scale_factor())
+                surface2 = Lp.art.get_radio(
+                    player.next_track.artist,
+                    ArtSize.MEDIUM*self.get_scale_factor())
             else:
-                self._prev_btn.set_sensitive(True)
-                self._next_btn.set_sensitive(True)
                 self._timelabel.show()
                 self._total_time_label.show()
                 self._progress.show()
-                surface = Lp.art.get_album(
+                surface1 = Lp.art.get_album(
                     player.current_track.album_id,
                     ArtSize.MONSTER*self.get_scale_factor())
+                surface2 = Lp.art.get_album(
+                    player.next_track.album_id,
+                    ArtSize.MEDIUM*self.get_scale_factor())
 
-            self._cover.set_from_surface(surface)
-            del surface
+            self._cover.set_from_surface(surface1)
+            self._next_cover.set_from_surface(surface2)
+            del surface1
+            del surface2
 
             album = player.current_track.album
             if player.current_track.year != '':
@@ -143,11 +147,6 @@ class FullScreen(Gtk.Window):
             self._title.set_text(player.current_track.title)
             self._artist.set_text(player.current_track.artist)
             self._album.set_text(album)
-            surface = Lp.art.get_album(
-                player.next_track.album_id,
-                ArtSize.MEDIUM*self.get_scale_factor())
-            self._next_cover.set_from_surface(surface)
-            del surface
             self._next.set_markup("<b>%s</b> - %s" %
                                   (escape(player.next_track.artist),
                                    escape(player.next_track.title)))
