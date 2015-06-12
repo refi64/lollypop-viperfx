@@ -11,7 +11,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-from gi.repository import Gst, GLib, GstAudio
+from gi.repository import Gst, GLib, GstAudio, GstPbutils
 
 from gettext import gettext as _
 from time import time
@@ -20,6 +20,7 @@ from lollypop.player_base import BasePlayer
 from lollypop.tagreader import ScannerTagReader
 from lollypop.player_rg import ReplayGainPlayer
 from lollypop.define import GstPlayFlags, NextContext, Lp
+from lollypop.codecs import Codecs
 from lollypop.define import Type
 from lollypop.utils import debug
 
@@ -32,6 +33,7 @@ class BinPlayer(ReplayGainPlayer, BasePlayer):
     def __init__(self):
         Gst.init(None)
         BasePlayer.__init__(self)
+        self._codecs = Codecs()
         self._playbin = Gst.ElementFactory.make('playbin', 'player')
         flags = self._playbin.get_property("flags")
         flags &= ~GstPlayFlags.GST_PLAY_FLAG_VIDEO
@@ -43,6 +45,7 @@ class BinPlayer(ReplayGainPlayer, BasePlayer):
         bus.add_signal_watch()
         bus.connect('message::error', self._on_bus_error)
         bus.connect('message::eos', self._on_bus_eos)
+        bus.connect('message::element', self._on_bus_element)
         bus.connect('message::stream-start', self._on_stream_start)
         bus.connect("message::tag", self._on_bus_message_tag)
         self._handled_error = None
@@ -227,12 +230,26 @@ class BinPlayer(ReplayGainPlayer, BasePlayer):
         self.emit('current-changed')
 
     """
+        Set elements for missings plugins
+        @param bus as Gst.Bus
+        @param message as Gst.Message
+    """
+    def _on_bus_element(self, bus, message):
+        if GstPbutils.is_missing_plugin_message(message):
+            if self._codecs is not None:
+                self._codecs.append(message)
+
+    """
         Handle first bus error, ignore others
         @param bus as Gst.Bus
         @param message as Gst.Message
     """
     def _on_bus_error(self, bus, message):
         debug("Error playing: %s" % self.current_track.uri)
+        if self._codecs.is_missing_codec(message):
+            self._codecs.install()
+            self.stop()
+            return True
         if self._handled_error != self.current_track.uri:
             self._handled_error = self.current_track.uri
             if Lp.notify is not None:
