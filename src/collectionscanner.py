@@ -136,7 +136,6 @@ class CollectionScanner(GObject.GObject, ScannerTagReader):
         self._in_thread = False
         self._is_locked = False
         self.emit("scan-finished")
-        print(self._missing_codecs)
         if self._missing_codecs is not None:
             Lp.player.load_external(GLib.filename_to_uri(self._missing_codecs))
             Lp.player.play_first_external()
