@@ -50,6 +50,9 @@ class CollectionScanner(GObject.GObject, ScannerTagReader):
         @param progress as progress bar
     """
     def update(self, progress):
+        # Keep track of on file with missing codecs
+        self._missing_codecs = None
+        self.init_discover()
         self._progress = progress
         paths = Lp.settings.get_music_paths()
         if not paths:
@@ -133,6 +136,10 @@ class CollectionScanner(GObject.GObject, ScannerTagReader):
         self._in_thread = False
         self._is_locked = False
         self.emit("scan-finished")
+        print(self._missing_codecs)
+        if self._missing_codecs is not None:
+            Lp.player.load_external(GLib.filename_to_uri(self._missing_codecs))
+            Lp.player.play_first_external()
 
     """
         Scan music collection for music files
@@ -161,12 +168,15 @@ class CollectionScanner(GObject.GObject, ScannerTagReader):
             try:
                 mtime = int(os.path.getmtime(filepath))
                 if filepath not in orig_tracks:
-                    infos = self.get_infos(filepath)
-                    if infos is not None:
+                    try:
+                        infos = self.get_infos(filepath)
                         debug("Adding file: %s" % filepath)
                         self._add2db(filepath, mtime, infos, sql)
-                    else:
-                        print("Can't get infos for ", filepath)
+                    except Exception as e:
+                        debug("Error scanning: %s" % filepath)
+                        string = "%s" % e
+                        if string.startswith('gst-core-error-quark'):
+                            self._missing_codecs = filepath
                 else:
                     # Update tags by removing song and readd it
                     if mtime != mtimes[filepath]:

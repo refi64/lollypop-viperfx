@@ -11,8 +11,11 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-from gi.repository import Gst, GstPbutils
+from gi.repository import Gst, GstPbutils, GLib
 
+from gettext import gettext as _
+
+from lollypop.define import Lp
 
 # Handle missing gstreamer codecs
 class Codecs:
@@ -32,13 +35,19 @@ class Codecs:
             context.set_desktop_id('lollypop.desktop');
             details = []
             for message in self._messages:
-                detail = GstPbutils.missing_plugin_message_get_installer_detail(
-                    message)
+                detail = \
+                    GstPbutils.missing_plugin_message_get_installer_detail(
+                        message)
                 details.append(detail)
             GstPbutils.install_plugins_async(
                 details,
                 context,
                 self._null)
+            if Lp.notify is not None:
+                GLib.timeout_add(
+                    10000,
+                    Lp.notify.send,
+                    _("Restart lollypop after installing codecs"))
         except Exception as e:
             print("Codecs::__init__(): %s" % e)
 

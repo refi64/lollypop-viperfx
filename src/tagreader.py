@@ -27,7 +27,13 @@ class TagReader:
         Init tag reader
     """
     def __init__(self):
-        Gst.init(None)
+        self.init_discover()
+
+    """
+        Init discover
+    """
+    def init_discover(self):
+        GstPbutils.pb_utils_init()
         self._tagreader = GstPbutils.Discoverer.new(10*Gst.SECOND)
 
     """
@@ -36,12 +42,9 @@ class TagReader:
         @return GstPbutils.DiscovererInfo
     """
     def get_infos(self, path):
-        try:
-            uri = GLib.filename_to_uri(path)
-            infos = self._tagreader.discover_uri(uri)
-            return infos
-        except:
-            return None
+        uri = GLib.filename_to_uri(path)
+        infos = self._tagreader.discover_uri(uri)
+        return infos
 
 
 # Scanner tag reader class

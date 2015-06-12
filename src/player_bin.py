@@ -249,6 +249,7 @@ class BinPlayer(ReplayGainPlayer, BasePlayer):
         if self._codecs.is_missing_codec(message):
             self._codecs.install()
             self.stop()
+            Lp.scanner.stop()
             return True
         if self._handled_error != self.current_track.uri:
             self._handled_error = self.current_track.uri
