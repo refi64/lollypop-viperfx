@@ -137,9 +137,18 @@ class BaseArt(GObject.GObject):
             else:
                 ctx.set_source_rgb(1, 1, 1)
         ctx.fill()
-        Gdk.cairo_set_source_pixbuf(ctx, pixbuf, border, border)
+        border_pixbuf = Gdk.pixbuf_get_from_surface(surface, 0, 0,
+                                                    surface_width,
+                                                    surface_height)
+
+        pixbuf.copy_area(0, 0,
+                         width,
+                         height,
+                         border_pixbuf,
+                         border, border)
         del pixbuf
-        ctx.paint()
+        surface = Gdk.cairo_surface_create_from_pixbuf(border_pixbuf, 0, None)
+        del border_pixbuf
         return surface
 
     """
