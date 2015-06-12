@@ -199,8 +199,8 @@ class AlbumsView(View):
         separator.show()
 
         self._paned = Gtk.Paned.new(Gtk.Orientation.VERTICAL)
-        self._paned.pack1(self._scrolledWindow)
-        self._paned.pack2(self._context, True, False)
+        self._paned.pack1(self._scrolledWindow, True, False)
+        self._paned.pack2(self._context, False, False)
         height = Lp.settings.get_value('paned-context-height').get_int32()
         # We set a stupid max value, safe as self._context is shrinked
         if height == -1:
