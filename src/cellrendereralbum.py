@@ -26,12 +26,10 @@ class CellRendererAlbum(Gtk.CellRenderer):
         ctx.paint()
 
     def do_get_preferred_width(self, widget):
-        scale = widget.get_scale_factor()
-        size = ArtSize.MEDIUM * scale
-        border = ArtSize.SMALL_BORDER * 2  * scale
+        size = ArtSize.MEDIUM
+        border = ArtSize.SMALL_BORDER * 2
         return (size+border, size+border)
     def do_get_preferred_height(self, widget):
-        scale = widget.get_scale_factor()
-        size = ArtSize.MEDIUM * scale
-        border = ArtSize.SMALL_BORDER * 2  * scale
+        size = ArtSize.MEDIUM
+        border = ArtSize.SMALL_BORDER * 2
         return (size+border, size+border)
