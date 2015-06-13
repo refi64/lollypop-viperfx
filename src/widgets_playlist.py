@@ -11,13 +11,13 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-from gi.repository import Gtk, Gdk, GLib, GdkPixbuf, Pango
+from gi.repository import Gtk, GLib, Pango
 
 from _thread import start_new_thread
 from cgi import escape
 from gettext import gettext as _
 
-from lollypop.define import Lp, ArtSize, Type
+from lollypop.define import Lp, Type
 from lollypop.cellrendereralbum import CellRendererAlbum
 from lollypop.widgets_track import TracksWidget
 from lollypop.track import Track
