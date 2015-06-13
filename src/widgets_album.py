@@ -194,12 +194,12 @@ class AlbumDetailedWidget(AlbumWidget):
                 '/org/gnome/Lollypop/AlbumDetailedWidget.ui')
         builder.connect_signals(self)
 
-        if scrolled: 
-            builder.get_object('artist').set_text(
-                Lp.albums.get_artist_name(album_id))
+        if scrolled:
+            artist = Lp.albums.get_artist_name(album_id)
+            builder.get_object('artist').set_text(artist)
             builder.get_object('artist').show()
-            if Lp.lastfm is not None:
-                self._popover = InfosPopover(self._artist_id)
+            if Lp.lastfm is not None and self._artist_id != Type.COMPILATIONS:
+                self._popover = InfosPopover(artist)
 
         self._stars = []
         self._stars.append(builder.get_object('star0'))
