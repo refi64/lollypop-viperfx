@@ -21,6 +21,10 @@ It provides:
 - MTP sync
 - Fullscreen view
 - Radios support
+- Last.fm support
+- Auto install codecs
+- HiDPI support
+- Tunein support
 
 === Depends on ===
 - gtk3
