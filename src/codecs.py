@@ -35,7 +35,7 @@ class Codecs:
             try:
                 context.set_desktop_id('lollypop.desktop');
             except:
-                pass
+                pass  # Not supported by Ubuntu VIVID
             details = []
             for message in self._messages:
                 detail = \
