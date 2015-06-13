@@ -32,7 +32,10 @@ class Codecs:
     def install(self):
         try:
             context = GstPbutils.InstallPluginsContext.new()
-            context.set_desktop_id('lollypop.desktop');
+            try:
+                context.set_desktop_id('lollypop.desktop');
+            except:
+                pass
             details = []
             for message in self._messages:
                 detail = \
