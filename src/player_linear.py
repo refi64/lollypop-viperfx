@@ -38,7 +38,8 @@ class LinearPlayer(BasePlayer):
                 # next album
                 if new_track_position >= len(tracks) or\
                    self.context.next == NextContext.START_NEW_ALBUM:
-                    self.context.next = NextContext.NONE
+                    if self.context.next == NextContext.START_NEW_ALBUM:
+                        self.context.next = NextContext.NONE
                     pos = self._albums.index(self.current_track.album_id)
                     # we are on last album, go to first
                     if pos + 1 >= len(self._albums):
