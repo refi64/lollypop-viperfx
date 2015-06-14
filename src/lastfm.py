@@ -211,7 +211,7 @@ class LastFM(LastFMNetwork):
         @thread safe
     """
     def _scrobble(self, artist, title, timestamp, duration, t=0):
-        debug("LastFM::_scrobble: %s, %s, %s %s"  % (artist,
+        debug("LastFM::_scrobble(): %s, %s, %s %s"  % (artist,
                                                      title,
                                                      timestamp,
                                                      duration))
@@ -223,16 +223,14 @@ class LastFM(LastFMNetwork):
         except BadAuthenticationError:
             if Lp.notify is not None:
                 GLib.idle_add(Lp.notify.send, _("Wrong Last.fm credentials"))
-        except (KeyError, WSError):
-            print("LastFM::_scrobble: timeout")
+        except:
+            print("LastFM::_scrobble(): timeout")
             # Try five times
             if t < 5:
                 t += 1
                 sleep(5)
                 self._connect(self._username, self._password)
                 self._scrobble(artist, title, timestamp, duration, t)
-        except Exception as e:
-            print("LastFM::_scrobble: %s" % e)
 
     """
         Download albums images
