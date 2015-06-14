@@ -30,6 +30,7 @@ from locale import getdefaultlocale
 from _thread import start_new_thread
 
 from lollypop.define import Lp, SecretSchema, SecretAttributes
+from lollypop.utils import debug
 
 
 class LastFM(LastFMNetwork):
@@ -208,6 +209,10 @@ class LastFM(LastFMNetwork):
     def _scrobble(self, artist, title, timestamp, duration):
         if duration < 30.0:
             return
+        debug("LastFM::_scrobble: %s, %s, %s %s"  % (artist,
+                                                     title,
+                                                     timestamp,
+                                                     duration))
         try:
             LastFMNetwork.scrobble(self,
                                    artist=artist,
