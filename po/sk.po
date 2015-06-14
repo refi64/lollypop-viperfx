@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lollypop\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-06-09 07:29+0200\n"
-"PO-Revision-Date: 2015-06-09 05:34+0000\n"
+"POT-Creation-Date: 2015-06-13 01:40+0200\n"
+"PO-Revision-Date: 2015-06-13 04:38+0000\n"
 "Last-Translator: Dušan Kazik <prescott66@gmail.com>\n"
 "Language-Team: Slovak (http://www.transifex.com/projects/p/lollypop/language/sk/)\n"
 "MIME-Version: 1.0\n"
@@ -178,11 +178,15 @@ msgid ""
 "    - Artist informations disabled"
 msgstr "    - Scrobbler zakázaný\n    - Automatické prevzatie obalu zakázané\n    - Informácie o interpretoch zakázané"
 
-#: ../src/application.py:309
+#: ../src/application.py:308
 msgid "Lollypop: You need to install yelp."
 msgstr "Lollypop: Musíte nainštalovať knižnicu yelp."
 
-#: ../src/collectionscanner.py:60
+#: ../src/codecs.py:50
+msgid "Restart lollypop after installing codecs"
+msgstr "Po inštalácii kodekov reštartujte prehrávač lollypop"
+
+#: ../src/collectionscanner.py:63
 msgid "Your music is updating"
 msgstr "Aktualizuje sa vaša hudba"
 
@@ -198,8 +202,8 @@ msgstr "Nedávne albumy"
 msgid "Random albums"
 msgstr "Náhodné albumy"
 
-#: ../src/container.py:326 ../src/pop_menu.py:395 ../src/pop_menu.py:450
-#: ../src/pop_menu.py:467
+#: ../src/container.py:326 ../src/pop_menu.py:397 ../src/pop_menu.py:452
+#: ../src/pop_menu.py:469
 msgid "Playlists"
 msgstr "Zoznamy skladieb"
 
@@ -233,7 +237,7 @@ msgstr "Nikdy neprehrávané"
 
 #: ../src/database_albums.py:234 ../src/database_artists.py:71
 #: ../src/database_genres.py:66 ../src/database_tracks.py:204
-#: ../src/tagreader.py:81 ../src/tagreader.py:116 ../src/tagreader.py:131
+#: ../src/tagreader.py:84 ../src/tagreader.py:119 ../src/tagreader.py:134
 msgid "Unknown"
 msgstr "Neznáme"
 
@@ -245,14 +249,13 @@ msgstr "Kompilácia"
 msgid "Many artists"
 msgstr "Mnoho interpretov"
 
-#: ../src/fullscreen.py:79 ../src/fullscreen.py:200
-#: ../src/toolbar_playback.py:74 ../src/toolbar_playback.py:107
+#: ../src/fullscreen.py:79 ../src/fullscreen.py:202
+#: ../src/toolbar_playback.py:77 ../src/toolbar_playback.py:110
 msgid "Pause"
 msgstr "Pozastaví"
 
-#: ../src/fullscreen.py:204 ../src/toolbar_playback.py:76
-#: ../src/toolbar_playback.py:104 ../data/ToolbarPlayback.ui.h:2
-#: ../data/Toolbar.ui.h:7
+#: ../src/fullscreen.py:206 ../src/toolbar_playback.py:79
+#: ../src/toolbar_playback.py:107 ../data/ToolbarPlayback.ui.h:2
 msgid "Play"
 msgstr "Prehrá"
 
@@ -260,17 +263,15 @@ msgstr "Prehrá"
 msgid "Last.fm authentication disabled"
 msgstr "Overenie totožnosti služby Last.fm zakázané"
 
-#: ../src/lastfm.py:217
+#: ../src/lastfm.py:218
 msgid "Wrong Last.fm credentials"
 msgstr "Nesprávne poverenia pre službu Last.fm"
 
 #: ../src/notification.py:64 ../data/ToolbarPlayback.ui.h:1
-#: ../data/Toolbar.ui.h:6
 msgid "Previous"
 msgstr "Predchádzajúca"
 
 #: ../src/notification.py:68 ../data/ToolbarPlayback.ui.h:3
-#: ../data/Toolbar.ui.h:8
 msgid "Next"
 msgstr "Nasledujúca"
 
@@ -281,7 +282,7 @@ msgstr "Nasledujúca"
 msgid "by %s, from %s"
 msgstr "od interpreta %s, z albumu %s"
 
-#: ../src/player_bin.py:238
+#: ../src/player_bin.py:257
 #, python-format
 msgid "File doesn't exist: %s"
 msgstr "Súbor neexistuje: %s"
@@ -313,7 +314,7 @@ msgstr "Žiadne informácie o tomto interpretovi..."
 
 #: ../src/pop_infos.py:169 ../src/pop_infos.py:220
 msgid "I do not love"
-msgstr ""
+msgstr "Nemám rád túto skladbu"
 
 #: ../src/pop_menu.py:60
 msgid "Continue playback"
@@ -363,26 +364,25 @@ msgstr "Pridať do „%s“"
 
 #: ../src/pop_menu.py:272
 msgid "I dislove this track"
-msgstr ""
+msgstr "Už nemám rád túto skladbu"
 
 #: ../src/pop_menu.py:277
 msgid "I love this track"
-msgstr ""
+msgstr "Mám rád túto skladbu"
 
-#: ../src/pop_menu.py:393
+#: ../src/pop_menu.py:395
 msgid "Playback"
 msgstr "Prehrávanie"
 
-#: ../src/pop_menu.py:428
+#: ../src/pop_menu.py:430
 msgid "Modify informations"
 msgstr "Upraviť informácie"
 
-#: ../src/pop_menu.py:448 ../src/pop_menu.py:465 ../data/ToolbarEnd.ui.h:10
-#: ../data/Toolbar.ui.h:13
+#: ../src/pop_menu.py:450 ../src/pop_menu.py:467 ../data/ToolbarEnd.ui.h:10
 msgid "Queue"
 msgstr "Fronta"
 
-#: ../src/pop_menu.py:452 ../data/PlaylistsView.ui.h:1
+#: ../src/pop_menu.py:454 ../data/PlaylistsView.ui.h:1
 msgid "Edit"
 msgstr "Upraví"
 
@@ -434,24 +434,24 @@ msgstr "Zrušiť synchronizáciu"
 msgid "Disc %s"
 msgstr "Disk %s"
 
-#: ../src/widgets_device.py:175
+#: ../src/widgets_device.py:176
 msgid "Unknown error while syncing, try to reboot your device"
 msgstr "Vyskytla sa neznáma chyba počas synchronizácie. Skúste reštartovať vaše zariadenie."
 
-#: ../src/widgets_device.py:183
+#: ../src/widgets_device.py:184
 msgid "No free space available on device"
 msgstr "Na zariadení nie je dostupné voľné miesto"
 
-#: ../src/widgets_playlist.py:254 ../src/widgets_playlist.py:257
+#: ../src/widgets_playlist.py:260 ../src/widgets_playlist.py:263
 msgid "New playlist "
 msgstr "Nový zoznam skladieb"
 
-#: ../src/widgets_playlist.py:301 ../src/widgets_playlist.py:538
+#: ../src/widgets_playlist.py:307 ../src/widgets_playlist.py:540
 #, python-format
 msgid "Remove \"%s\"?"
 msgstr "Odstrániť „%s“?"
 
-#: ../src/widgets_playlist.py:583
+#: ../src/widgets_playlist.py:585
 msgid "Remove these tracks?"
 msgstr "Odstrániť tieto skladby?"
 
@@ -601,7 +601,6 @@ msgid "Select what will be available in party mode"
 msgstr "Vyberie, čo bude dostupné v párty režime"
 
 #: ../data/SettingsDialog.ui.h:15 ../data/ToolbarEnd.ui.h:8
-#: ../data/Toolbar.ui.h:11
 msgid "Party mode"
 msgstr "Párty režim"
 
@@ -621,35 +620,35 @@ msgstr "Skúška"
 msgid "You need to install pylast and gi secret"
 msgstr "Musíte nainštalovať knižice pylast a gi secret"
 
-#: ../data/ToolbarEnd.ui.h:1 ../data/Toolbar.ui.h:1
+#: ../data/ToolbarEnd.ui.h:1
 msgid "No shuffle"
 msgstr "Nezamiešať"
 
-#: ../data/ToolbarEnd.ui.h:2 ../data/Toolbar.ui.h:2
+#: ../data/ToolbarEnd.ui.h:2
 msgid "Shuffle albums"
 msgstr "Zamiešať albumy"
 
-#: ../data/ToolbarEnd.ui.h:3 ../data/Toolbar.ui.h:3
+#: ../data/ToolbarEnd.ui.h:3
 msgid "Shuffle tracks"
 msgstr "Zamiešať skladby"
 
-#: ../data/ToolbarEnd.ui.h:4 ../data/Toolbar.ui.h:4
+#: ../data/ToolbarEnd.ui.h:4
 msgid "Shuffle albums from artist"
 msgstr "Zamiešať albumy od intepreta"
 
-#: ../data/ToolbarEnd.ui.h:5 ../data/Toolbar.ui.h:5
+#: ../data/ToolbarEnd.ui.h:5
 msgid "Shuffle tracks from artist"
 msgstr "Zamiešať skladby od interpreta "
 
-#: ../data/ToolbarEnd.ui.h:6 ../data/Toolbar.ui.h:9
+#: ../data/ToolbarEnd.ui.h:6
 msgid "Settings"
 msgstr "Nastavenia"
 
-#: ../data/ToolbarEnd.ui.h:7 ../data/Toolbar.ui.h:10
+#: ../data/ToolbarEnd.ui.h:7
 msgid "Shuffle"
 msgstr "Zamieša"
 
-#: ../data/ToolbarEnd.ui.h:9 ../data/Toolbar.ui.h:12
+#: ../data/ToolbarEnd.ui.h:9
 msgid "Search"
 msgstr "Vyhľadá"
 

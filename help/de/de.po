@@ -1,12 +1,13 @@
 # 
 # Translators:
+# Mathias Rudolf <manifre.rudolf@gmail.com>, 2015
 # HumHumXX <xhummuhx+transifex@gmail.com>, 2015
 msgid ""
 msgstr ""
 "Project-Id-Version: lollypop\n"
 "POT-Creation-Date: 2015-05-07 21:04+0200\n"
-"PO-Revision-Date: 2015-05-07 19:04+0000\n"
-"Last-Translator: Cédric Bellegarde <web@adishatz.org>\n"
+"PO-Revision-Date: 2015-06-12 07:46+0000\n"
+"Last-Translator: Mathias Rudolf <manifre.rudolf@gmail.com>\n"
 "Language-Team: German (http://www.transifex.com/projects/p/lollypop/language/de/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -97,14 +98,14 @@ msgstr "Alben bewerten"
 #: C/index.page:38
 msgid ""
 "Album popularity is based on how many tracks from an album you listen to."
-msgstr ""
+msgstr "Die Beliebtheit eines Albums basiert darauf, wie viele Titel du auf diesem Album abgespielt hast"
 
 #. (itstool) path: section/p
 #: C/index.page:39
 msgid ""
 "Album rating will be influenced by album popularity. In other words, rate "
 "will decrease if you stop listening to an album."
-msgstr ""
+msgstr "Das Rating des Albums wird von der Beliebtheit des Albums beeinflusst. Mit anderen Worten, brichst du die Wiedergabe eines Albums ab, sinkt sein Rating."
 
 #. (itstool) path: section/title
 #: C/index.page:43

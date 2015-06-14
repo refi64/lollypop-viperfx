@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lollypop\n"
 "POT-Creation-Date: 2015-05-07 21:04+0200\n"
-"PO-Revision-Date: 2015-05-07 22:01+0000\n"
+"PO-Revision-Date: 2015-05-27 06:30+0000\n"
 "Last-Translator: Марко М. Костић (Marko M. Kostić) <marko.m.kostic@gmail.com>\n"
 "Language-Team: Serbian (http://www.transifex.com/projects/p/lollypop/language/sr/)\n"
 "MIME-Version: 1.0\n"
@@ -116,7 +116,7 @@ msgstr "Скидање омота албума"
 msgid ""
 "When hovering a cover, if mouse cursor changes to a hand, just click and "
 "select a new cover."
-msgstr "Када ставите миша над омотом и када се показивач миша претвори у руку, кликните да бисте изабрали нови омот за тај албум."
+msgstr "Када ставите миша над омотом и када се показивач миша претвори у оловку, кликните да бисте изабрали нови омот за тај албум."
 
 #. (itstool) path: section/p
 #: C/index.page:45

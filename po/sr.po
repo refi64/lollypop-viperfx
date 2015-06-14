@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lollypop\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-06-09 07:29+0200\n"
-"PO-Revision-Date: 2015-06-09 16:52+0000\n"
+"POT-Creation-Date: 2015-06-13 01:40+0200\n"
+"PO-Revision-Date: 2015-06-13 08:43+0000\n"
 "Last-Translator: Марко М. Костић (Marko M. Kostić) <marko.m.kostic@gmail.com>\n"
 "Language-Team: Serbian (http://www.transifex.com/projects/p/lollypop/language/sr/)\n"
 "MIME-Version: 1.0\n"
@@ -178,11 +178,15 @@ msgid ""
 "    - Artist informations disabled"
 msgstr "- Scrobbler је искључен\n- Аутоматско скидање омота искључено\n- Скидање података о извођачима искључено"
 
-#: ../src/application.py:309
+#: ../src/application.py:308
 msgid "Lollypop: You need to install yelp."
 msgstr "Лолипоп: потребно је да инсталирате „Помоћ“ (yelp пакет)."
 
-#: ../src/collectionscanner.py:60
+#: ../src/codecs.py:50
+msgid "Restart lollypop after installing codecs"
+msgstr "Поново покрени Лолипоп након инсталирања кодека"
+
+#: ../src/collectionscanner.py:63
 msgid "Your music is updating"
 msgstr "Музичка библиотека се ажурира"
 
@@ -198,8 +202,8 @@ msgstr "Скорашњи албуми"
 msgid "Random albums"
 msgstr "Насумични албуми"
 
-#: ../src/container.py:326 ../src/pop_menu.py:395 ../src/pop_menu.py:450
-#: ../src/pop_menu.py:467
+#: ../src/container.py:326 ../src/pop_menu.py:397 ../src/pop_menu.py:452
+#: ../src/pop_menu.py:469
 msgid "Playlists"
 msgstr "Листе песама"
 
@@ -233,7 +237,7 @@ msgstr "Никада слушано"
 
 #: ../src/database_albums.py:234 ../src/database_artists.py:71
 #: ../src/database_genres.py:66 ../src/database_tracks.py:204
-#: ../src/tagreader.py:81 ../src/tagreader.py:116 ../src/tagreader.py:131
+#: ../src/tagreader.py:84 ../src/tagreader.py:119 ../src/tagreader.py:134
 msgid "Unknown"
 msgstr "Непознато"
 
@@ -245,14 +249,13 @@ msgstr "Компилација"
 msgid "Many artists"
 msgstr "Многи извођачи"
 
-#: ../src/fullscreen.py:79 ../src/fullscreen.py:200
-#: ../src/toolbar_playback.py:74 ../src/toolbar_playback.py:107
+#: ../src/fullscreen.py:79 ../src/fullscreen.py:202
+#: ../src/toolbar_playback.py:77 ../src/toolbar_playback.py:110
 msgid "Pause"
 msgstr "Паузирај"
 
-#: ../src/fullscreen.py:204 ../src/toolbar_playback.py:76
-#: ../src/toolbar_playback.py:104 ../data/ToolbarPlayback.ui.h:2
-#: ../data/Toolbar.ui.h:7
+#: ../src/fullscreen.py:206 ../src/toolbar_playback.py:79
+#: ../src/toolbar_playback.py:107 ../data/ToolbarPlayback.ui.h:2
 msgid "Play"
 msgstr "Пусти"
 
@@ -260,17 +263,15 @@ msgstr "Пусти"
 msgid "Last.fm authentication disabled"
 msgstr "Пријава на Last.fm је онемогућена"
 
-#: ../src/lastfm.py:217
+#: ../src/lastfm.py:218
 msgid "Wrong Last.fm credentials"
 msgstr "Параметри за пријаву на Last.fm су нетачни"
 
 #: ../src/notification.py:64 ../data/ToolbarPlayback.ui.h:1
-#: ../data/Toolbar.ui.h:6
 msgid "Previous"
 msgstr "Претходна"
 
 #: ../src/notification.py:68 ../data/ToolbarPlayback.ui.h:3
-#: ../data/Toolbar.ui.h:8
 msgid "Next"
 msgstr "Следећа"
 
@@ -281,7 +282,7 @@ msgstr "Следећа"
 msgid "by %s, from %s"
 msgstr "изводи %s, са албума %s"
 
-#: ../src/player_bin.py:238
+#: ../src/player_bin.py:257
 #, python-format
 msgid "File doesn't exist: %s"
 msgstr "Датотека не постоји: %s"
@@ -369,20 +370,19 @@ msgstr "Не свиђа ми се ова песма"
 msgid "I love this track"
 msgstr "Свиђа ми се ова песма"
 
-#: ../src/pop_menu.py:393
+#: ../src/pop_menu.py:395
 msgid "Playback"
 msgstr "Пуштање"
 
-#: ../src/pop_menu.py:428
+#: ../src/pop_menu.py:430
 msgid "Modify informations"
 msgstr "Промени податке"
 
-#: ../src/pop_menu.py:448 ../src/pop_menu.py:465 ../data/ToolbarEnd.ui.h:10
-#: ../data/Toolbar.ui.h:13
+#: ../src/pop_menu.py:450 ../src/pop_menu.py:467 ../data/ToolbarEnd.ui.h:10
 msgid "Queue"
 msgstr "Редослед"
 
-#: ../src/pop_menu.py:452 ../data/PlaylistsView.ui.h:1
+#: ../src/pop_menu.py:454 ../data/PlaylistsView.ui.h:1
 msgid "Edit"
 msgstr "Уреди"
 
@@ -434,24 +434,24 @@ msgstr "Откажи усклађивање"
 msgid "Disc %s"
 msgstr "Диск %s"
 
-#: ../src/widgets_device.py:175
+#: ../src/widgets_device.py:176
 msgid "Unknown error while syncing, try to reboot your device"
 msgstr "Догодила се непозната грешка приликом усклађивања песама са уређајем. Пробајте да угасите и упалите уређај па онда да ускладите песме."
 
-#: ../src/widgets_device.py:183
+#: ../src/widgets_device.py:184
 msgid "No free space available on device"
 msgstr "Нема довољно слободног простора на уређају"
 
-#: ../src/widgets_playlist.py:254 ../src/widgets_playlist.py:257
+#: ../src/widgets_playlist.py:260 ../src/widgets_playlist.py:263
 msgid "New playlist "
 msgstr "Нова листа песама"
 
-#: ../src/widgets_playlist.py:301 ../src/widgets_playlist.py:538
+#: ../src/widgets_playlist.py:307 ../src/widgets_playlist.py:540
 #, python-format
 msgid "Remove \"%s\"?"
 msgstr "Уклонити \"%s\"?"
 
-#: ../src/widgets_playlist.py:583
+#: ../src/widgets_playlist.py:585
 msgid "Remove these tracks?"
 msgstr "Уклонити ове песме?"
 
@@ -601,7 +601,6 @@ msgid "Select what will be available in party mode"
 msgstr "Изабери шта ће бити доступно у режиму рада за журке"
 
 #: ../data/SettingsDialog.ui.h:15 ../data/ToolbarEnd.ui.h:8
-#: ../data/Toolbar.ui.h:11
 msgid "Party mode"
 msgstr "Режим рада за журке"
 
@@ -621,35 +620,35 @@ msgstr "Проба"
 msgid "You need to install pylast and gi secret"
 msgstr "Потребно је да инсталирате пакете који садрже „pylast“ и „gi secret“"
 
-#: ../data/ToolbarEnd.ui.h:1 ../data/Toolbar.ui.h:1
+#: ../data/ToolbarEnd.ui.h:1
 msgid "No shuffle"
 msgstr "Без мешања песама"
 
-#: ../data/ToolbarEnd.ui.h:2 ../data/Toolbar.ui.h:2
+#: ../data/ToolbarEnd.ui.h:2
 msgid "Shuffle albums"
 msgstr "Мешај албуме"
 
-#: ../data/ToolbarEnd.ui.h:3 ../data/Toolbar.ui.h:3
+#: ../data/ToolbarEnd.ui.h:3
 msgid "Shuffle tracks"
 msgstr "Мешај песме"
 
-#: ../data/ToolbarEnd.ui.h:4 ../data/Toolbar.ui.h:4
+#: ../data/ToolbarEnd.ui.h:4
 msgid "Shuffle albums from artist"
 msgstr "Мешај албуме једног извођача"
 
-#: ../data/ToolbarEnd.ui.h:5 ../data/Toolbar.ui.h:5
+#: ../data/ToolbarEnd.ui.h:5
 msgid "Shuffle tracks from artist"
 msgstr "Мешај песме једног извођача"
 
-#: ../data/ToolbarEnd.ui.h:6 ../data/Toolbar.ui.h:9
+#: ../data/ToolbarEnd.ui.h:6
 msgid "Settings"
 msgstr "Подешавања"
 
-#: ../data/ToolbarEnd.ui.h:7 ../data/Toolbar.ui.h:10
+#: ../data/ToolbarEnd.ui.h:7
 msgid "Shuffle"
 msgstr "Мешање песама"
 
-#: ../data/ToolbarEnd.ui.h:9 ../data/Toolbar.ui.h:12
+#: ../data/ToolbarEnd.ui.h:9
 msgid "Search"
 msgstr "Претрага"
 

@@ -3,14 +3,15 @@
 # This file is distributed under the same license as the PACKAGE package.
 # 
 # Translators:
+# Denis Morozov <www.strelookpb09@mail.ru>, 2015
 # Derpy Crabs <derpycrabs@gmail.com>, 2015
 msgid ""
 msgstr ""
 "Project-Id-Version: lollypop\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-06-09 07:29+0200\n"
-"PO-Revision-Date: 2015-06-09 05:31+0000\n"
-"Last-Translator: Cédric Bellegarde <web@adishatz.org>\n"
+"POT-Creation-Date: 2015-06-13 01:40+0200\n"
+"PO-Revision-Date: 2015-06-14 09:27+0000\n"
+"Last-Translator: Denis Morozov <www.strelookpb09@mail.ru>\n"
 "Language-Team: Russian (http://www.transifex.com/projects/p/lollypop/language/ru/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -60,11 +61,11 @@ msgstr "Когда не установлено, используется XDG_MUS
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:11
 msgid "Last.fm login"
-msgstr ""
+msgstr "Last.fm авторизация"
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:12
 msgid "Favorite tag editor"
-msgstr ""
+msgstr "Любимый редактор тегов"
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:13
 msgid "Favorite cover file"
@@ -93,7 +94,7 @@ msgstr "Между -15 и 15"
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:19 ../data/SettingsDialog.ui.h:2
 msgid "Auto update music"
-msgstr ""
+msgstr "Автоматическое обновление музыки"
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:20
 msgid "Show genres list"
@@ -135,7 +136,7 @@ msgstr "Отключить уведомления"
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:29
 msgid "Show track number from tags"
-msgstr ""
+msgstr "Показывать номер трека из тегов"
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:30
 msgid "INTERNAL"
@@ -176,15 +177,19 @@ msgid ""
 "    - Scrobbler disabled\n"
 "    - Auto cover download disabled\n"
 "    - Artist informations disabled"
-msgstr ""
+msgstr "    - Скробблинг отключен\n    - Автоматическая загрузка обложек отключена\n    - Информация об исполнителе отключена"
 
-#: ../src/application.py:309
+#: ../src/application.py:308
 msgid "Lollypop: You need to install yelp."
-msgstr ""
+msgstr "Lollypop: Вам необходимо установить yelp."
 
-#: ../src/collectionscanner.py:60
+#: ../src/codecs.py:50
+msgid "Restart lollypop after installing codecs"
+msgstr "Перезапустите lollypop после установки кодеков"
+
+#: ../src/collectionscanner.py:63
 msgid "Your music is updating"
-msgstr ""
+msgstr "Ваши композиции обновляются"
 
 #: ../src/container.py:323
 msgid "Popular albums"
@@ -196,16 +201,16 @@ msgstr "Последние альбомы"
 
 #: ../src/container.py:325
 msgid "Random albums"
-msgstr ""
+msgstr "Случайные альбомы"
 
-#: ../src/container.py:326 ../src/pop_menu.py:395 ../src/pop_menu.py:450
-#: ../src/pop_menu.py:467
+#: ../src/container.py:326 ../src/pop_menu.py:397 ../src/pop_menu.py:452
+#: ../src/pop_menu.py:469
 msgid "Playlists"
 msgstr "Плейлисты"
 
 #: ../src/container.py:327
 msgid "Radios"
-msgstr ""
+msgstr "Радиостанции"
 
 #: ../src/container.py:329
 msgid "All artists"
@@ -221,19 +226,19 @@ msgstr "Подборки"
 
 #: ../src/container.py:392
 msgid "Most played"
-msgstr ""
+msgstr "Часто проигрываемые"
 
 #: ../src/container.py:393
 msgid "Recently played"
-msgstr ""
+msgstr "Недавно прослушанные"
 
 #: ../src/container.py:394
 msgid "Never played"
-msgstr ""
+msgstr "Ни разу не проигрывались"
 
 #: ../src/database_albums.py:234 ../src/database_artists.py:71
 #: ../src/database_genres.py:66 ../src/database_tracks.py:204
-#: ../src/tagreader.py:81 ../src/tagreader.py:116 ../src/tagreader.py:131
+#: ../src/tagreader.py:84 ../src/tagreader.py:119 ../src/tagreader.py:134
 msgid "Unknown"
 msgstr "Неизвестный"
 
@@ -245,32 +250,29 @@ msgstr "Подборка"
 msgid "Many artists"
 msgstr "Множество исполнителей"
 
-#: ../src/fullscreen.py:79 ../src/fullscreen.py:200
-#: ../src/toolbar_playback.py:74 ../src/toolbar_playback.py:107
+#: ../src/fullscreen.py:79 ../src/fullscreen.py:202
+#: ../src/toolbar_playback.py:77 ../src/toolbar_playback.py:110
 msgid "Pause"
 msgstr "Пауза"
 
-#: ../src/fullscreen.py:204 ../src/toolbar_playback.py:76
-#: ../src/toolbar_playback.py:104 ../data/ToolbarPlayback.ui.h:2
-#: ../data/Toolbar.ui.h:7
+#: ../src/fullscreen.py:206 ../src/toolbar_playback.py:79
+#: ../src/toolbar_playback.py:107 ../data/ToolbarPlayback.ui.h:2
 msgid "Play"
 msgstr "Воспроизвести"
 
 #: ../src/lastfm.py:21
 msgid "Last.fm authentication disabled"
-msgstr ""
+msgstr "Last.fm аутентификация отключена"
 
-#: ../src/lastfm.py:217
+#: ../src/lastfm.py:218
 msgid "Wrong Last.fm credentials"
-msgstr ""
+msgstr "Неверные данные учетной записи Last.fm"
 
 #: ../src/notification.py:64 ../data/ToolbarPlayback.ui.h:1
-#: ../data/Toolbar.ui.h:6
 msgid "Previous"
 msgstr "Предыдущий"
 
 #: ../src/notification.py:68 ../data/ToolbarPlayback.ui.h:3
-#: ../data/Toolbar.ui.h:8
 msgid "Next"
 msgstr "Следующий"
 
@@ -281,18 +283,18 @@ msgstr "Следующий"
 msgid "by %s, from %s"
 msgstr "%s, из альбома %s"
 
-#: ../src/player_bin.py:238
+#: ../src/player_bin.py:257
 #, python-format
 msgid "File doesn't exist: %s"
-msgstr ""
+msgstr "Файл не существует: %s"
 
 #: ../src/player_radio.py:40
 msgid "Radio"
-msgstr ""
+msgstr "Радио"
 
 #: ../src/playlists.py:36
 msgid "Loved tracks"
-msgstr ""
+msgstr "Любимые композиции"
 
 #: ../src/pop_covers.py:60 ../src/pop_infos.py:91 ../src/pop_tunein.py:82
 #: ../data/PopRadio.ui.h:3 ../data/RadioPopover.ui.h:3
@@ -309,11 +311,11 @@ msgstr "Выбрать обложку для этого альбома"
 
 #: ../src/pop_infos.py:151
 msgid "No information for this artist..."
-msgstr ""
+msgstr "Нет информации об этом исполнителе"
 
 #: ../src/pop_infos.py:169 ../src/pop_infos.py:220
 msgid "I do not love"
-msgstr ""
+msgstr "Мне не нравится"
 
 #: ../src/pop_menu.py:60
 msgid "Continue playback"
@@ -363,44 +365,43 @@ msgstr "Добавить на \"%s\" "
 
 #: ../src/pop_menu.py:272
 msgid "I dislove this track"
-msgstr ""
+msgstr "Мне не нравится эта композиция"
 
 #: ../src/pop_menu.py:277
 msgid "I love this track"
-msgstr ""
+msgstr "Мне нравится эта композиция"
 
-#: ../src/pop_menu.py:393
+#: ../src/pop_menu.py:395
 msgid "Playback"
 msgstr "Проигрывание"
 
-#: ../src/pop_menu.py:428
+#: ../src/pop_menu.py:430
 msgid "Modify informations"
-msgstr ""
+msgstr "Изменить информацию"
 
-#: ../src/pop_menu.py:448 ../src/pop_menu.py:465 ../data/ToolbarEnd.ui.h:10
-#: ../data/Toolbar.ui.h:13
+#: ../src/pop_menu.py:450 ../src/pop_menu.py:467 ../data/ToolbarEnd.ui.h:10
 msgid "Queue"
 msgstr "Очередь"
 
-#: ../src/pop_menu.py:452 ../data/PlaylistsView.ui.h:1
+#: ../src/pop_menu.py:454 ../data/PlaylistsView.ui.h:1
 msgid "Edit"
 msgstr "Редактировать"
 
 #: ../src/pop_radio.py:72
 msgid "Add"
-msgstr ""
+msgstr "Добавить"
 
 #: ../src/pop_radio.py:74
 msgid "Modify"
-msgstr ""
+msgstr "Изменить"
 
 #: ../src/pop_tunein.py:102
 msgid "Can't connect to TuneIn..."
-msgstr ""
+msgstr "Не удается подключиться к TuneIn..."
 
 #: ../src/pop_tunein.py:156
 msgid "Browse themes and add a new radio"
-msgstr ""
+msgstr "Посмотрите темы и добавьте новые радиостанции"
 
 #: ../src/search.py:152
 msgid "Search:"
@@ -408,11 +409,11 @@ msgstr "Поиск:"
 
 #: ../src/settings.py:132
 msgid "Populars"
-msgstr ""
+msgstr "Популярное"
 
 #: ../src/settings.py:133
 msgid "Recents"
-msgstr ""
+msgstr "Последние"
 
 #. Handle language ordering
 #. Translators: Add here words that shoud be ignored for artist sort order
@@ -434,24 +435,24 @@ msgstr "Отменить синхронизацию"
 msgid "Disc %s"
 msgstr "Диск %s"
 
-#: ../src/widgets_device.py:175
+#: ../src/widgets_device.py:176
 msgid "Unknown error while syncing, try to reboot your device"
 msgstr "Неизвестная ошибка при синхронизации, попробуйте перезагрузить ваше устройство"
 
-#: ../src/widgets_device.py:183
+#: ../src/widgets_device.py:184
 msgid "No free space available on device"
 msgstr "На устройстве не осталось свободного места"
 
-#: ../src/widgets_playlist.py:254 ../src/widgets_playlist.py:257
+#: ../src/widgets_playlist.py:260 ../src/widgets_playlist.py:263
 msgid "New playlist "
 msgstr "Новый плейлист"
 
-#: ../src/widgets_playlist.py:301 ../src/widgets_playlist.py:538
+#: ../src/widgets_playlist.py:307 ../src/widgets_playlist.py:540
 #, python-format
 msgid "Remove \"%s\"?"
 msgstr "Удалить \"%s\"?"
 
-#: ../src/widgets_playlist.py:583
+#: ../src/widgets_playlist.py:585
 msgid "Remove these tracks?"
 msgstr "Удалить эти композиции?"
 
@@ -486,7 +487,7 @@ msgstr "_О программе"
 
 #: ../data/Appmenu.ui.h:5
 msgid "_Help"
-msgstr ""
+msgstr "_Помощь"
 
 #: ../data/Appmenu.ui.h:6
 msgid "_Quit"
@@ -494,7 +495,7 @@ msgstr "_Закрыть"
 
 #: ../data/ArtistInfos.ui.h:1
 msgid "I love"
-msgstr ""
+msgstr "Мне нравится"
 
 #: ../data/DeviceManagerView.ui.h:1
 msgid "Synchronize your device with this playlists"
@@ -510,23 +511,23 @@ msgstr "Новый плейлист"
 
 #: ../data/PopRadio.ui.h:1 ../data/RadioPopover.ui.h:1
 msgid "Select a logo  for this radio"
-msgstr ""
+msgstr "Выберите логотип для этой радиостанции"
 
 #: ../data/PopRadio.ui.h:2 ../data/RadioPopover.ui.h:2
 msgid "No logo found..."
-msgstr ""
+msgstr "Логотип не найден..."
 
 #: ../data/PopRadio.ui.h:4 ../data/RadioPopover.ui.h:4
 msgid "Name:"
-msgstr ""
+msgstr "Имя:"
 
 #: ../data/PopRadio.ui.h:5 ../data/RadioPopover.ui.h:5
 msgid "Address:"
-msgstr ""
+msgstr "Адрес:"
 
 #: ../data/PopRadio.ui.h:6 ../data/RadioPopover.ui.h:6
 msgid "Delete"
-msgstr ""
+msgstr "Удалить"
 
 #: ../data/QueueWidget.ui.h:1
 msgid "Queue:"
@@ -538,11 +539,11 @@ msgstr "Очистить очередь"
 
 #: ../data/RadiosView.ui.h:1
 msgid "New radio"
-msgstr ""
+msgstr "Новая радиостанция"
 
 #: ../data/RadiosView.ui.h:2
 msgid "Search in TuneIn"
-msgstr ""
+msgstr "Искать в TuneIn"
 
 #: ../data/SearchRow.ui.h:1
 msgid "artist"
@@ -601,55 +602,54 @@ msgid "Select what will be available in party mode"
 msgstr "Выберите, что будет доступно в режиме \"вечеринки\""
 
 #: ../data/SettingsDialog.ui.h:15 ../data/ToolbarEnd.ui.h:8
-#: ../data/Toolbar.ui.h:11
 msgid "Party mode"
 msgstr "Режим \"вечеринки\""
 
 #: ../data/SettingsDialog.ui.h:16
 msgid "Login:"
-msgstr ""
+msgstr "Логин:"
 
 #: ../data/SettingsDialog.ui.h:17
 msgid "Password:"
-msgstr ""
+msgstr "Пароль:"
 
 #: ../data/SettingsDialog.ui.h:18
 msgid "Test"
-msgstr ""
+msgstr "Тест"
 
 #: ../data/SettingsDialog.ui.h:19
 msgid "You need to install pylast and gi secret"
-msgstr ""
+msgstr "Вам необходимо установить pylast и gi secret"
 
-#: ../data/ToolbarEnd.ui.h:1 ../data/Toolbar.ui.h:1
+#: ../data/ToolbarEnd.ui.h:1
 msgid "No shuffle"
 msgstr "Без перемешивания"
 
-#: ../data/ToolbarEnd.ui.h:2 ../data/Toolbar.ui.h:2
+#: ../data/ToolbarEnd.ui.h:2
 msgid "Shuffle albums"
 msgstr "Перемешивать альбомы"
 
-#: ../data/ToolbarEnd.ui.h:3 ../data/Toolbar.ui.h:3
+#: ../data/ToolbarEnd.ui.h:3
 msgid "Shuffle tracks"
 msgstr "Перемешивать композиции"
 
-#: ../data/ToolbarEnd.ui.h:4 ../data/Toolbar.ui.h:4
+#: ../data/ToolbarEnd.ui.h:4
 msgid "Shuffle albums from artist"
 msgstr "Перемешивать альбомы исполнителя"
 
-#: ../data/ToolbarEnd.ui.h:5 ../data/Toolbar.ui.h:5
+#: ../data/ToolbarEnd.ui.h:5
 msgid "Shuffle tracks from artist"
 msgstr "Перемешивать композиции исполнителя"
 
-#: ../data/ToolbarEnd.ui.h:6 ../data/Toolbar.ui.h:9
+#: ../data/ToolbarEnd.ui.h:6
 msgid "Settings"
 msgstr "Настройки"
 
-#: ../data/ToolbarEnd.ui.h:7 ../data/Toolbar.ui.h:10
+#: ../data/ToolbarEnd.ui.h:7
 msgid "Shuffle"
 msgstr "Перемешивать"
 
-#: ../data/ToolbarEnd.ui.h:9 ../data/Toolbar.ui.h:12
+#: ../data/ToolbarEnd.ui.h:9
 msgid "Search"
 msgstr "Поиск"
 
