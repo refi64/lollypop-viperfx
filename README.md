@@ -39,7 +39,7 @@ It provides:
 - python-dbus
 - python-gobject
 - python-sqlite
-- python-pylast
+- python-pylast >= 1.0
 
 === Building from git ===
 
