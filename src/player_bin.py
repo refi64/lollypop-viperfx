@@ -49,6 +49,7 @@ class BinPlayer(ReplayGainPlayer, BasePlayer):
         bus.connect('message::stream-start', self._on_stream_start)
         bus.connect("message::tag", self._on_bus_message_tag)
         self._handled_error = None
+        self._start_time = 0
 
     """
         True if player is playing
@@ -291,11 +292,11 @@ class BinPlayer(ReplayGainPlayer, BasePlayer):
                 artist = self.current_track.artist
             else:
                 artist = self.current_track.aartist
-            timestamp = time() - self.current_track.duration
-            Lp.lastfm.scrobble(artist,
-                               self.current_track.title,
-                               int(timestamp),
-                               int(self.current_track.duration))
+            if time() - self._start_time > 30:
+                Lp.lastfm.scrobble(artist,
+                                   self.current_track.title,
+                                   int(self._start_time),
+                                   int(self.current_track.duration))
         if self.next_track.id is not None:
             self._load_track(self.next_track)
         sql.close()
@@ -307,6 +308,7 @@ class BinPlayer(ReplayGainPlayer, BasePlayer):
         @param message as Gst.Message
     """
     def _on_stream_start(self, bus, message):
+        self._start_time = time()
         debug("Player::_on_stream_start(): %s" % self.current_track.uri)
         self.emit("current-changed")
         Lp.tracks.set_listened_at(self.current_track.id, int(time()))

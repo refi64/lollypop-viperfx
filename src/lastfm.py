@@ -207,8 +207,7 @@ class LastFM(LastFMNetwork):
         @thread safe
     """
     def _scrobble(self, artist, title, timestamp, duration):
-        if duration < 30.0:
-            return
+        print(artist, title, timestamp, duration)
         debug("LastFM::_scrobble: %s, %s, %s %s"  % (artist,
                                                      title,
                                                      timestamp,
