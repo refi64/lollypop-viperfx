@@ -66,7 +66,8 @@ class LastFM(LastFMNetwork):
         @param password as str/None
     """
     def connect(self, password):
-        if Secret is None:
+        if Secret is None or\
+                not Gio.NetworkMonitor.get_default().get_network_available():
             return
         self._username = Lp.settings.get_value('lastfm-login').get_string()
         if password is None:
@@ -83,9 +84,10 @@ class LastFM(LastFMNetwork):
         @param password as str
     """
     def connect_sync(self, password):
-        self._username = Lp.settings.get_value('lastfm-login').get_string()
-        self._connect(self._username, password)
-        start_new_thread(self._populate_loved_tracks, (True,))
+        if Gio.NetworkMonitor.get_default().get_network_available():
+            self._username = Lp.settings.get_value('lastfm-login').get_string()
+            self._connect(self._username, password)
+            start_new_thread(self._populate_loved_tracks, (True,))
 
     """
         Download album image
@@ -331,4 +333,5 @@ class LastFM(LastFMNetwork):
     def _on_password_lookup(self, source, result):
         password = Secret.password_lookup_finish(result)
         self._password = password
-        start_new_thread(self._connect, (self._username, password))
+        if Gio.NetworkMonitor.get_default().get_network_available():
+            start_new_thread(self._connect, (self._username, password))
