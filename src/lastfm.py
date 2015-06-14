@@ -230,7 +230,7 @@ class LastFM(LastFMNetwork):
                 t += 1
                 sleep(5)
                 self._connect(self._username, self._password)
-                self._scrobble(self, artist, title, timestamp, duration, t)
+                self._scrobble(artist, title, timestamp, duration, t)
         except Exception as e:
             print("LastFM::_scrobble: %s" % e)
 
