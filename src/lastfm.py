@@ -13,7 +13,9 @@
 
 from gi.repository import GLib, Gio
 
+from time import sleep
 from gettext import gettext as _
+
 try:
     from gi.repository import Secret
 except Exception as e:
@@ -56,6 +58,7 @@ class LastFM(LastFMNetwork):
         self._username = ''
         self._is_auth = False
         self._in_albums_download = False
+        self._password = None
         self.connect(None)
 
     """
@@ -204,10 +207,10 @@ class LastFM(LastFMNetwork):
         @param title as str
         @param timestamp as int
         @param duration as int
+        @param try is internal, ignore it
         @thread safe
     """
-    def _scrobble(self, artist, title, timestamp, duration):
-        print(artist, title, timestamp, duration)
+    def _scrobble(self, artist, title, timestamp, duration, t=0):
         debug("LastFM::_scrobble: %s, %s, %s %s"  % (artist,
                                                      title,
                                                      timestamp,
@@ -220,6 +223,14 @@ class LastFM(LastFMNetwork):
         except BadAuthenticationError:
             if Lp.notify is not None:
                 GLib.idle_add(Lp.notify.send, _("Wrong Last.fm credentials"))
+        except (KeyError, pylast.WSError):
+            print("LastFM::_scrobble: timeout")
+            # Try five times
+            if t < 5:
+                t += 1
+                sleep(5)
+                self._connect(self._username, self._password)
+                self._scrobble(self, artist, title, timestamp, duration, t)
         except Exception as e:
             print("LastFM::_scrobble: %s" % e)
 
@@ -279,4 +290,5 @@ class LastFM(LastFMNetwork):
     """
     def _on_password_lookup(self, source, result):
         password = Secret.password_lookup_finish(result)
+        self._password = password
         start_new_thread(self._connect, (self._username, password))

@@ -263,15 +263,19 @@ class BinPlayer(ReplayGainPlayer, BasePlayer):
 
     """
         On end of stream, stop playing if user ask for
-        Else force playing current track
     """
     def _on_bus_eos(self, bus, message):
         debug("Player::_on_bus_eos(): %s" % self.current_track.uri)
-        self.stop()
-        self.context.next = NextContext.NONE
-        if self.next_track.id is not None:
-            self._load_track(self.next_track)
-        self.emit('current-changed')
+        if self.context.next not in [NextContext.NONE,
+                                     NextContext.START_NEW_ALBUM]:
+            self.stop()
+            self.context.next = NextContext.NONE
+            if self.next_track.id is not None:
+                self._load_track(self.next_track)
+            self.emit('current-changed')
+        else:
+            self._playbin.set_state(Gst.State.NULL)
+            self._playbin.set_state(Gst.State.PLAYING)
 
     """
         When stream is about to finish, switch to next track without gap
@@ -280,25 +284,28 @@ class BinPlayer(ReplayGainPlayer, BasePlayer):
     def _on_stream_about_to_finish(self, playbin):
         if self.current_track.id == Type.RADIOS:
             return
+        finished = self.current_track
+        finished_start_time = self._start_time 
+        if self.next_track.id is not None:
+            self._load_track(self.next_track)
         # We are in a thread, we need to create a new cursor
         sql = Lp.db.get_cursor()
         # Increment popularity
         if not Lp.scanner.is_locked():
-            Lp.tracks.set_more_popular(self.current_track.id, sql)
-            Lp.albums.set_more_popular(self.current_track.album_id, sql)
+            Lp.tracks.set_more_popular(finished.id, sql)
+            Lp.albums.set_more_popular(finished.album_id, sql)
         # Scrobble on lastfm
         if Lp.lastfm is not None:
-            if self.current_track.aartist_id == Type.COMPILATIONS:
-                artist = self.current_track.artist
+            if finished.aartist_id == Type.COMPILATIONS:
+                artist = finished.artist
             else:
-                artist = self.current_track.aartist
-            if time() - self._start_time > 30:
+                artist = finished.aartist
+            if time() - finished_start_time > 30:
                 Lp.lastfm.scrobble(artist,
-                                   self.current_track.title,
-                                   int(self._start_time),
-                                   int(self.current_track.duration))
-        if self.next_track.id is not None:
-            self._load_track(self.next_track)
+                                   finished.title,
+                                   int(finished_start_time),
+                                   int(finished.duration))
+
         sql.close()
 
     """
