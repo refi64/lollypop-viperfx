@@ -219,7 +219,7 @@ class ScannerTagReader(TagReader):
     def add_album_artist(self, album_artist, sql):
         album_artist_id = None
         new = False
-        if album_artist is not None:
+        if album_artist:
             album_artist = format_artist_name(album_artist)
             # Get album artist id, add it if missing
             album_artist_id = Lp.artists.get_id(album_artist, sql)
