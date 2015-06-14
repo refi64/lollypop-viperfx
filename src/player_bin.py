@@ -318,5 +318,14 @@ class BinPlayer(ReplayGainPlayer, BasePlayer):
         self._start_time = time()
         debug("Player::_on_stream_start(): %s" % self.current_track.uri)
         self.emit("current-changed")
+        # Update now playing on lastfm
+        if Lp.lastfm is not None:
+            if self.current_track.aartist_id == Type.COMPILATIONS:
+                artist = self.current_track.artist
+            else:
+                artist = self.current_track.aartist
+                Lp.lastfm.now_playing(artist,
+                                      self.current_track.title,
+                                      int(self.current_track.duration))
         Lp.tracks.set_listened_at(self.current_track.id, int(time()))
         self._handled_error = None

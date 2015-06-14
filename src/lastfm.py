@@ -136,6 +136,20 @@ class LastFM(LastFMNetwork):
                                               title,
                                               timestamp,
                                               duration))
+
+    """
+        Now playing track
+        @param artist as str
+        @param title as str
+        @param duration as int
+    """
+    def now_playing(self, artist, title, duration):
+        if Gio.NetworkMonitor.get_default().get_network_available() and\
+           self._is_auth and Secret is not None:
+            start_new_thread(self._now_playing, (artist,
+                                                 title,
+                                                 duration))
+
     """
         Love track
         @param artist as string
@@ -207,30 +221,58 @@ class LastFM(LastFMNetwork):
         @param title as str
         @param timestamp as int
         @param duration as int
-        @param try is internal, ignore it
+        @param t is internal, ignore it
         @thread safe
     """
     def _scrobble(self, artist, title, timestamp, duration, t=0):
-        debug("LastFM::_scrobble(): %s, %s, %s %s"  % (artist,
-                                                     title,
-                                                     timestamp,
-                                                     duration))
+        debug("LastFM::_scrobble(): %s, %s, %s, %s"  % (artist,
+                                                        title,
+                                                        timestamp,
+                                                        duration))
         try:
             LastFMNetwork.scrobble(self,
                                    artist=artist,
                                    title=title,
                                    timestamp=timestamp)
         except BadAuthenticationError:
-            if Lp.notify is not None:
-                GLib.idle_add(Lp.notify.send, _("Wrong Last.fm credentials"))
+            pass
         except:
-            print("LastFM::_scrobble(): timeout")
+            print("LastFM::_scrobble(): %s" % e)
             # Try five times
             if t < 5:
                 t += 1
                 sleep(5)
                 self._connect(self._username, self._password)
                 self._scrobble(artist, title, timestamp, duration, t)
+
+    """
+        Now playing track
+        @param artist as str
+        @param title as str
+        @param duration as int
+        @param t is internal, ignore it
+        @thread safe
+    """
+    def _now_playing(self, artist, title, duration, t=0):
+        debug("LastFM::_now_playing(): %s, %s, %s"  % (artist,
+                                                       title,
+                                                       duration))
+        try:
+            LastFMNetwork.update_now_playing(self,
+                                             artist=artist,
+                                             title=title,
+                                             duration=duration)
+        except BadAuthenticationError:
+            if Lp.notify is not None:
+                GLib.idle_add(Lp.notify.send, _("Wrong Last.fm credentials"))
+        except Exception as e:
+            print("LastFM::_update_playing(): %s" % e)
+            # Try five times
+            if t < 5:
+                t += 1
+                sleep(5)
+                self._connect(self._username, self._password)
+                self._now_playing(artist, title, duration, t)
 
     """
         Download albums images
