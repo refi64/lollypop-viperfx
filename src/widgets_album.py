@@ -182,6 +182,7 @@ class AlbumDetailedWidget(AlbumWidget):
         AlbumWidget.__init__(self, album_id)
 
         self._artist_id = Lp.albums.get_artist_id(album_id)
+        self._artist_name = Lp.albums.get_artist_name(album_id)
         self._album_id = album_id
         self._genre_id = genre_id
 
@@ -195,11 +196,10 @@ class AlbumDetailedWidget(AlbumWidget):
         builder.connect_signals(self)
 
         if scrolled:
-            artist = Lp.albums.get_artist_name(album_id)
-            builder.get_object('artist').set_text(artist)
+            builder.get_object('artist').set_text(self._artist_name)
             builder.get_object('artist').show()
             if Lp.lastfm is not None and self._artist_id != Type.COMPILATIONS:
-                self._popover = InfosPopover(artist)
+                self._popover = InfosPopover(self._artist_name)
 
         self._stars = []
         self._stars.append(builder.get_object('star0'))
@@ -371,8 +371,9 @@ class AlbumDetailedWidget(AlbumWidget):
                 if artist_name != "":
                     artist_name += ", "
                 artist_name += Lp.artists.get_name(artist_id)
-            title = "<b>%s</b>\n%s" % (escape(artist_name),
-                                       title)
+            if artist_name != self._artist_name:
+                title = "<b>%s</b>\n%s" % (escape(artist_name),
+                                           title)
 
         # Get track position in queue
         pos = None
