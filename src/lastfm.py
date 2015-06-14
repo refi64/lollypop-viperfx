@@ -23,7 +23,7 @@ except Exception as e:
     print(_("Last.fm authentication disabled"))
     Secret = None
 
-from pylast import LastFMNetwork, md5, BadAuthenticationError
+from pylast import LastFMNetwork, md5, BadAuthenticationError, WSError
 import urllib.request
 from gettext import gettext as _
 import re
@@ -223,7 +223,7 @@ class LastFM(LastFMNetwork):
         except BadAuthenticationError:
             if Lp.notify is not None:
                 GLib.idle_add(Lp.notify.send, _("Wrong Last.fm credentials"))
-        except (KeyError, pylast.WSError):
+        except (KeyError, WSError):
             print("LastFM::_scrobble: timeout")
             # Try five times
             if t < 5:
