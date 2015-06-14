@@ -140,10 +140,12 @@ class TuneinPopover(Gtk.Popover):
                                                    Gtk.IconSize.MENU)
             button.connect('clicked', self._on_button_clicked, item)
             button.set_relief(Gtk.ReliefStyle.NONE)
+            button.set_tooltip_text(_("Add"))
             button.show()
             child.add(button)
 
         link = Gtk.LinkButton.new_with_label(item.URL, item.TEXT)
+        link.set_tooltip_text(_("Play"))
         link.connect('activate-link', self._on_activate_link, item)
         link.show()
         child.add(link)
