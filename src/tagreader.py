@@ -75,19 +75,17 @@ class ScannerTagReader(TagReader):
         @return string like "artist1;artist2;..."
     """
     def get_artists(self, tags):
-        artists = ""
         if tags is None:
-            return artists
+            return _("Unknown")
+        else:
+            artists = ""
 
         size = tags.get_tag_size('artist')
-        if size == 0:
-            artists = _("Unknown")
-        else:
-            for i in range(0, size):
-                (exist, artist) = tags.get_string_index('artist', i)
-                artists += artist
-                if i < size-1:
-                    artists += ";"
+        for i in range(0, size):
+            (exist, artist) = tags.get_string_index('artist', i)
+            artists += artist
+            if i < size - 1:
+                artists += ";"
         return artists
 
     """
@@ -96,11 +94,17 @@ class ScannerTagReader(TagReader):
         @return album artist as string or None
     """
     def get_album_artist(self, tags):
-        exist = False
-        if tags is not None:
-            (exist, album_artist) = tags.get_string_index('album-artist', 0)
-        if not exist:
-            album_artist = None
+        if tags is None:
+            return _("Unknown")
+        else:
+            album_artist = ""
+
+        size = tags.get_tag_size('album-artist')
+        for i in range(0, size):
+            (exist, artist) = tags.get_string_index('album-artist', i)
+            album_artist += artist
+            if i < size - 1:
+                album_artist += ", "
         return album_artist
 
     """
