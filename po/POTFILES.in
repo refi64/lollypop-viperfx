@@ -85,9 +85,6 @@ src/window.py
 [type: gettext/glade]data/PlaylistsManagerView.ui
 [type: gettext/glade]data/PlaylistsManagerWidget.ui
 [type: gettext/glade]data/PlaylistsView.ui
-[type: gettext/glade]data/PopAlbumCovers.ui
-[type: gettext/glade]data/PopRadio.ui
-[type: gettext/glade]data/PopTuneIn.ui
 [type: gettext/glade]data/QueueWidget.ui
 [type: gettext/glade]data/RadioPopover.ui
 [type: gettext/glade]data/RadiosView.ui
@@ -99,7 +96,6 @@ src/window.py
 [type: gettext/glade]data/ToolbarInfos.ui
 [type: gettext/glade]data/ToolbarPlayback.ui
 [type: gettext/glade]data/ToolbarTitle.ui
-[type: gettext/glade]data/Toolbar.ui
 [type: gettext/glade]data/TrackRow.ui
 [type: gettext/glade]data/TuneinPopover.ui
 [type: gettext/glade]data/Unicode.ui
