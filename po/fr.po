@@ -9,8 +9,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lollypop\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-06-15 17:41+0200\n"
-"PO-Revision-Date: 2015-06-15 15:42+0000\n"
+"POT-Creation-Date: 2015-06-16 12:40+0200\n"
+"PO-Revision-Date: 2015-06-16 10:45+0000\n"
 "Last-Translator: Cédric Bellegarde <web@adishatz.org>\n"
 "Language-Team: French (http://www.transifex.com/projects/p/lollypop/language/fr/)\n"
 "MIME-Version: 1.0\n"
@@ -179,7 +179,11 @@ msgid ""
 "    - Artist informations disabled"
 msgstr "- Scrobbler désactivé\n- Téléchargement automatique des pochettes désactivé\n- Informations sur les artistes désactivée"
 
-#: ../src/application.py:308
+#: ../src/application.py:36
+msgid "Advanced artist informations disabled"
+msgstr "Informations avancées sur l'artiste désactivée"
+
+#: ../src/application.py:319
 msgid "Lollypop: You need to install yelp."
 msgstr "Lollypop: Vous devez installer yelp."
 
@@ -315,11 +319,11 @@ msgstr "Aucune pochette trouvée..."
 msgid "Select a cover art for this album"
 msgstr "Sélectionnez une pochette pour cet album"
 
-#: ../src/pop_infos.py:151
+#: ../src/pop_infos.py:156
 msgid "No information for this artist..."
 msgstr "Aucune information pour cet artiste..."
 
-#: ../src/pop_infos.py:169 ../src/pop_infos.py:220
+#: ../src/pop_infos.py:178 ../src/pop_infos.py:229
 msgid "I do not love"
 msgstr "Je n'aime pas"
 
@@ -436,7 +440,7 @@ msgstr "Synchroniser %s"
 msgid "Cancel synchronization"
 msgstr "Annuler la synchronisation"
 
-#: ../src/widgets_album.py:221
+#: ../src/widgets_album.py:250
 #, python-format
 msgid "Disc %s"
 msgstr "Disque %s"
@@ -461,6 +465,12 @@ msgstr "Supprimer \"%s\"?"
 #: ../src/widgets_playlist.py:585
 msgid "Remove these tracks?"
 msgstr "Supprimer ces morceaux?"
+
+#. Translators: Put here words added by wikipedia in band search
+#. Ex: Muse_(band), Peaches(musician)
+#: ../src/wikipedia.py:29
+msgid "musician;band"
+msgstr "chanteur;chanteuse;groupe"
 
 #: ../data/AboutDialog.ui.h:1
 msgid "A music player for GNOME."
@@ -568,8 +578,8 @@ msgid "Restore state on startup"
 msgstr "Restaurer l'état au démarrage"
 
 #: ../data/SettingsDialog.ui.h:5
-msgid "Play albums on 2nd click"
-msgstr "Lire les albums au second clic"
+msgid "Play albums on click"
+msgstr "Cliquer pour lire un album"
 
 #: ../data/SettingsDialog.ui.h:6
 msgid "Behaviour"
