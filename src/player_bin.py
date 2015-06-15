@@ -329,5 +329,3 @@ class BinPlayer(ReplayGainPlayer, BasePlayer):
                                       int(self.current_track.duration))
         Lp.tracks.set_listened_at(self.current_track.id, int(time()))
         self._handled_error = None
-        # we preload next track
-        self._load_track(self.next_track)
