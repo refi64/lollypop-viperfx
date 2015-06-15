@@ -48,8 +48,7 @@ class Wikipedia:
                     img = image
                     break
             return (url, img, content)
-        except Exception as e:
-            print(e)
+        except:
             return (None, None, None)
 
 #######################
@@ -73,7 +72,7 @@ class Wikipedia:
                 page = wikipedia.page("%s\_\(%s\)" % (artist, item))
             else:
                 page = wikipedia.page(artist)
-        except Exception as e:
-            print(e)
+        except:
+            print("%s\_\(%s\)" % (artist, item))
             return self._search_page(artist, items)
         return page
