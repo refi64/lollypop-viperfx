@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-06-16 12:40+0200\n"
+"POT-Creation-Date: 2015-06-16 13:52+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -303,7 +303,7 @@ msgstr ""
 msgid "Loved tracks"
 msgstr ""
 
-#: ../src/pop_covers.py:60 ../src/pop_infos.py:91 ../src/pop_tunein.py:82
+#: ../src/pop_covers.py:60 ../src/pop_infos.py:93 ../src/pop_tunein.py:82
 #: ../data/RadioPopover.ui.h:3
 msgid "Please wait..."
 msgstr ""
@@ -316,11 +316,11 @@ msgstr ""
 msgid "Select a cover art for this album"
 msgstr ""
 
-#: ../src/pop_infos.py:156
+#: ../src/pop_infos.py:164
 msgid "No information for this artist..."
 msgstr ""
 
-#: ../src/pop_infos.py:178 ../src/pop_infos.py:229
+#: ../src/pop_infos.py:187 ../src/pop_infos.py:238
 msgid "I do not love"
 msgstr ""
 
@@ -508,6 +508,10 @@ msgstr ""
 
 #: ../data/ArtistInfos.ui.h:1
 msgid "I love"
+msgstr ""
+
+#: ../data/ArtistInfos.ui.h:2
+msgid "Search on Last.fm"
 msgstr ""
 
 #: ../data/DeviceManagerView.ui.h:1
