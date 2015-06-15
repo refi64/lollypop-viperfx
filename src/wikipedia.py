@@ -15,6 +15,7 @@ from gi.repository import Gio
 
 from gettext import gettext as _
 from locale import getdefaultlocale
+from random import shuffle
 import wikipedia
 
 class Wikipedia:
@@ -43,7 +44,8 @@ class Wikipedia:
             content = page.content
             url = page.url
             img = None
-            for image in page.images:
+            images = shuffle(page.images)
+            for image in images:
                 if image.lower().endswith('.jpg'):
                     img = image
                     break
