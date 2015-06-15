@@ -33,7 +33,7 @@ try:
     WIKIPEDIA = True
 except Exception as e:
     print(e)
-    print(_("Advanced artist informations disabled)"))
+    print(_("Advanced artist informations disabled"))
     print("$ sudo pip3 install wikipedia")
     WIKIPEDIA = False
 
