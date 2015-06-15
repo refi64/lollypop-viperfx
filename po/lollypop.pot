@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-06-15 17:41+0200\n"
+"POT-Creation-Date: 2015-06-16 08:59+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -433,7 +433,7 @@ msgstr ""
 msgid "Cancel synchronization"
 msgstr ""
 
-#: ../src/widgets_album.py:221
+#: ../src/widgets_album.py:249
 #, python-format
 msgid "Disc %s"
 msgstr ""
@@ -565,7 +565,7 @@ msgid "Restore state on startup"
 msgstr ""
 
 #: ../data/SettingsDialog.ui.h:5
-msgid "Play albums on 2nd click"
+msgid "Play albums on click"
 msgstr ""
 
 #: ../data/SettingsDialog.ui.h:6
