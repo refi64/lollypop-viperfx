@@ -211,8 +211,8 @@ class LastFM(LastFMNetwork):
                 api_secret=self._API_SECRET,
                 username=Lp.settings.get_value('lastfm-login').get_string(),
                 password_hash=md5(password))
-        except:
-            pass
+        except Exception as e:
+            print("Lastfm::_connect(): %s" % e)
         self._populate_loved_tracks()
 
     """
