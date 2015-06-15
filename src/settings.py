@@ -245,6 +245,7 @@ class SettingsDialog:
     def _update_autoplay_setting(self, widget, state):
         Lp.settings.set_value('auto-play',
                               GLib.Variant('b', state))
+        Lp.window.update_view()
 
     """
         Update lastfm settings

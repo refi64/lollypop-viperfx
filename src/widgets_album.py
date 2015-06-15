@@ -69,6 +69,12 @@ class AlbumWidget(Gtk.Bin):
         pass
 
     """
+        Update cursor for album
+    """
+    def update_cursor(self):
+        pass
+
+    """
         Stop populating
     """
     def stop(self):
@@ -116,6 +122,7 @@ class AlbumSimpleWidget(AlbumWidget):
     """
     def __init__(self, album_id):
         AlbumWidget.__init__(self, album_id)
+        self._eventbox = None
 
         builder = Gtk.Builder()
         builder.add_from_resource('/org/gnome/Lollypop/AlbumSimpleWidget.ui')
@@ -145,9 +152,30 @@ class AlbumSimpleWidget(AlbumWidget):
     def get_id(self):
         return self._album_id
 
+    """
+        Update cursor for album
+    """
+    def update_cursor(self):
+        if self._eventbox is not None:
+            if Lp.settings.get_value('auto-play'):
+                self._eventbox.get_window().set_cursor(
+                    Gdk.Cursor(Gdk.CursorType.HAND1))
+            else:
+                self._eventbox.get_window().set_cursor(
+                    Gdk.Cursor(Gdk.CursorType.LEFT_PTR))
+
 #######################
 # PRIVATE             #
 #######################
+    """
+        Change cursor over cover eventbox
+        @param eventbox as Gdk.Eventbox
+    """
+    def _on_eventbox_realize(self, eventbox):
+        self._eventbox = eventbox
+        if Lp.settings.get_value('auto-play'):
+            eventbox.get_window().set_cursor(Gdk.Cursor(Gdk.CursorType.HAND1))
+
     """
         Show tooltip if needed
         @param widget as Gtk.Widget
@@ -262,7 +290,7 @@ class AlbumDetailedWidget(AlbumWidget):
             self._eventbox = builder.get_object('eventbox')
             self._eventbox.connect('realize', self._on_eventbox_realize)
             self._eventbox.connect("button-press-event",
-                                   self._show_web_art)
+                                   self._on_cover_press_event)
             self._menu.connect('clicked',
                                self._pop_menu)
             self._menu.show()
@@ -321,6 +349,18 @@ class AlbumDetailedWidget(AlbumWidget):
                       tracks,
                       self._tracks_right[disc],
                       pos)
+
+    """
+        Update cursor for album
+    """
+    def update_cursor(self):
+        if self._eventbox is not None:
+            if Lp.settings.get_value('auto-play'):
+                self._eventbox.get_window().set_cursor(
+                    Gdk.Cursor(Gdk.CursorType.HAND1))
+            else:
+                self._eventbox.get_window().set_cursor(
+                    Gdk.Cursor(Gdk.CursorType.PENCIL))
 
 #######################
 # PRIVATE             #
@@ -422,7 +462,7 @@ class AlbumDetailedWidget(AlbumWidget):
         @param eventbox as Gdk.Eventbox
     """
     def _on_eventbox_realize(self, eventbox):
-        eventbox.get_window().set_cursor(Gdk.Cursor(Gdk.CursorType.PENCIL))
+        self.update_cursor()
 
     """
         Change pointer on label
@@ -445,14 +485,20 @@ class AlbumDetailedWidget(AlbumWidget):
 
     """
         Popover with album art downloaded from the web (in fact google :-/)
-        @param: widget as eventbox
-        @param: data as unused
+        @param: widget as Gtk.EventBox
+        @param: event as Gdk.Event
     """
-    def _show_web_art(self, widget, data):
-        popover = CoversPopover(self._artist_id, self._album_id)
-        popover.set_relative_to(widget)
-        popover.populate()
-        popover.show()
+    def _on_cover_press_event(self, widget, event):
+        show_popover = True
+        if Lp.settings.get_value('auto-play'):
+            if event.button == 1:
+                show_popover = False
+                Lp.player.play_album(self._album_id, self._genre_id)
+        if show_popover:
+            popover = CoversPopover(self._artist_id, self._album_id)
+            popover.set_relative_to(widget)
+            popover.populate()
+            popover.show()
 
     """
         On enter notify, change star opacity
