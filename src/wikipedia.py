@@ -44,8 +44,8 @@ class Wikipedia:
             content = page.content
             url = page.url
             img = None
-            images = shuffle(page.images)
-            for image in images:
+            shuffle(page.images)
+            for image in page.images:
                 if image.lower().endswith('.jpg'):
                     img = image
                     break
