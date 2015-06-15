@@ -121,10 +121,8 @@ class ArtistInfos(Gtk.Bin):
                 self._artist)
         if url is None:
             self._wikipedia = False
-            self._url_btn.set_label("Last.fm")
             (url, image_url, content) = Lp.lastfm.get_artist_infos(self._artist)
-        else:
-            self._url_btn.set_label("Wikipedia")
+
         stream = None
         try:
             response = None
@@ -159,6 +157,9 @@ class ArtistInfos(Gtk.Bin):
                 start_new_thread(self._show_love_btn, ())
             if self._wikipedia:
                 self._search_btn.show()
+                self._url_btn.set_label("Wikipedia")
+            else:
+                self._url_btn.set_label("Last.fm")
         else:
             self._stack.set_visible_child(self._not_found)
             self._label.set_text(_("No information for this artist..."))
@@ -251,6 +252,6 @@ class ArtistInfos(Gtk.Bin):
         self._label.set_text(_("Please wait..."))
         self._search_btn.hide()
         self._love_btn.hide()
-        self._url_btn.hide()
+        self._url_btn.set_label('')
         self._stack.set_visible_child(self._spinner)
         self.populate()
