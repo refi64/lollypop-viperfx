@@ -9,9 +9,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lollypop\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-06-13 01:40+0200\n"
-"PO-Revision-Date: 2015-06-14 09:27+0000\n"
-"Last-Translator: Denis Morozov <www.strelookpb09@mail.ru>\n"
+"POT-Creation-Date: 2015-06-15 17:41+0200\n"
+"PO-Revision-Date: 2015-06-15 15:41+0000\n"
+"Last-Translator: Cédric Bellegarde <web@adishatz.org>\n"
 "Language-Team: Russian (http://www.transifex.com/projects/p/lollypop/language/ru/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -183,7 +183,7 @@ msgstr "    - Скробблинг отключен\n    - Автоматиче�
 msgid "Lollypop: You need to install yelp."
 msgstr "Lollypop: Вам необходимо установить yelp."
 
-#: ../src/codecs.py:50
+#: ../src/codecs.py:53
 msgid "Restart lollypop after installing codecs"
 msgstr "Перезапустите lollypop после установки кодеков"
 
@@ -236,9 +236,14 @@ msgstr "Недавно прослушанные"
 msgid "Never played"
 msgstr "Ни разу не проигрывались"
 
+#: ../src/container.py:395
+msgid "Random tracks"
+msgstr ""
+
 #: ../src/database_albums.py:234 ../src/database_artists.py:71
 #: ../src/database_genres.py:66 ../src/database_tracks.py:204
-#: ../src/tagreader.py:84 ../src/tagreader.py:119 ../src/tagreader.py:134
+#: ../src/tagreader.py:79 ../src/tagreader.py:98 ../src/tagreader.py:123
+#: ../src/tagreader.py:138
 msgid "Unknown"
 msgstr "Неизвестный"
 
@@ -255,16 +260,17 @@ msgstr "Множество исполнителей"
 msgid "Pause"
 msgstr "Пауза"
 
-#: ../src/fullscreen.py:206 ../src/toolbar_playback.py:79
-#: ../src/toolbar_playback.py:107 ../data/ToolbarPlayback.ui.h:2
+#: ../src/fullscreen.py:206 ../src/pop_tunein.py:148
+#: ../src/toolbar_playback.py:79 ../src/toolbar_playback.py:107
+#: ../data/ToolbarPlayback.ui.h:2
 msgid "Play"
 msgstr "Воспроизвести"
 
-#: ../src/lastfm.py:21
+#: ../src/lastfm.py:23
 msgid "Last.fm authentication disabled"
 msgstr "Last.fm аутентификация отключена"
 
-#: ../src/lastfm.py:218
+#: ../src/lastfm.py:269
 msgid "Wrong Last.fm credentials"
 msgstr "Неверные данные учетной записи Last.fm"
 
@@ -283,7 +289,7 @@ msgstr "Следующий"
 msgid "by %s, from %s"
 msgstr "%s, из альбома %s"
 
-#: ../src/player_bin.py:257
+#: ../src/player_bin.py:258
 #, python-format
 msgid "File doesn't exist: %s"
 msgstr "Файл не существует: %s"
@@ -297,7 +303,7 @@ msgid "Loved tracks"
 msgstr "Любимые композиции"
 
 #: ../src/pop_covers.py:60 ../src/pop_infos.py:91 ../src/pop_tunein.py:82
-#: ../data/PopRadio.ui.h:3 ../data/RadioPopover.ui.h:3
+#: ../data/RadioPopover.ui.h:3
 msgid "Please wait..."
 msgstr "Пожалуйста, подождите..."
 
@@ -387,7 +393,7 @@ msgstr "Очередь"
 msgid "Edit"
 msgstr "Редактировать"
 
-#: ../src/pop_radio.py:72
+#: ../src/pop_radio.py:72 ../src/pop_tunein.py:143
 msgid "Add"
 msgstr "Добавить"
 
@@ -399,7 +405,7 @@ msgstr "Изменить"
 msgid "Can't connect to TuneIn..."
 msgstr "Не удается подключиться к TuneIn..."
 
-#: ../src/pop_tunein.py:156
+#: ../src/pop_tunein.py:158
 msgid "Browse themes and add a new radio"
 msgstr "Посмотрите темы и добавьте новые радиостанции"
 
@@ -509,26 +515,6 @@ msgstr "Подтвердить"
 msgid "New playlist"
 msgstr "Новый плейлист"
 
-#: ../data/PopRadio.ui.h:1 ../data/RadioPopover.ui.h:1
-msgid "Select a logo  for this radio"
-msgstr "Выберите логотип для этой радиостанции"
-
-#: ../data/PopRadio.ui.h:2 ../data/RadioPopover.ui.h:2
-msgid "No logo found..."
-msgstr "Логотип не найден..."
-
-#: ../data/PopRadio.ui.h:4 ../data/RadioPopover.ui.h:4
-msgid "Name:"
-msgstr "Имя:"
-
-#: ../data/PopRadio.ui.h:5 ../data/RadioPopover.ui.h:5
-msgid "Address:"
-msgstr "Адрес:"
-
-#: ../data/PopRadio.ui.h:6 ../data/RadioPopover.ui.h:6
-msgid "Delete"
-msgstr "Удалить"
-
 #: ../data/QueueWidget.ui.h:1
 msgid "Queue:"
 msgstr "Очередь:"
@@ -536,6 +522,26 @@ msgstr "Очередь:"
 #: ../data/QueueWidget.ui.h:2
 msgid "Clear queue"
 msgstr "Очистить очередь"
+
+#: ../data/RadioPopover.ui.h:1
+msgid "Select a logo  for this radio"
+msgstr "Выберите логотип для этой радиостанции"
+
+#: ../data/RadioPopover.ui.h:2
+msgid "No logo found..."
+msgstr "Логотип не найден..."
+
+#: ../data/RadioPopover.ui.h:4
+msgid "Name:"
+msgstr "Имя:"
+
+#: ../data/RadioPopover.ui.h:5
+msgid "Address:"
+msgstr "Адрес:"
+
+#: ../data/RadioPopover.ui.h:6
+msgid "Delete"
+msgstr "Удалить"
 
 #: ../data/RadiosView.ui.h:1
 msgid "New radio"

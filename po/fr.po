@@ -9,8 +9,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lollypop\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-06-13 01:40+0200\n"
-"PO-Revision-Date: 2015-06-12 23:41+0000\n"
+"POT-Creation-Date: 2015-06-15 17:41+0200\n"
+"PO-Revision-Date: 2015-06-15 15:42+0000\n"
 "Last-Translator: Cédric Bellegarde <web@adishatz.org>\n"
 "Language-Team: French (http://www.transifex.com/projects/p/lollypop/language/fr/)\n"
 "MIME-Version: 1.0\n"
@@ -183,7 +183,7 @@ msgstr "- Scrobbler désactivé\n- Téléchargement automatique des pochettes d�
 msgid "Lollypop: You need to install yelp."
 msgstr "Lollypop: Vous devez installer yelp."
 
-#: ../src/codecs.py:50
+#: ../src/codecs.py:53
 msgid "Restart lollypop after installing codecs"
 msgstr "Redémarrez lollypop après l'installation des codecs"
 
@@ -236,9 +236,14 @@ msgstr "Jouées récemment"
 msgid "Never played"
 msgstr "Jamais jouées"
 
+#: ../src/container.py:395
+msgid "Random tracks"
+msgstr "Morceaux aléatoires"
+
 #: ../src/database_albums.py:234 ../src/database_artists.py:71
 #: ../src/database_genres.py:66 ../src/database_tracks.py:204
-#: ../src/tagreader.py:84 ../src/tagreader.py:119 ../src/tagreader.py:134
+#: ../src/tagreader.py:79 ../src/tagreader.py:98 ../src/tagreader.py:123
+#: ../src/tagreader.py:138
 msgid "Unknown"
 msgstr "Inconnu"
 
@@ -255,16 +260,17 @@ msgstr "Plusieurs artistes"
 msgid "Pause"
 msgstr "Pause"
 
-#: ../src/fullscreen.py:206 ../src/toolbar_playback.py:79
-#: ../src/toolbar_playback.py:107 ../data/ToolbarPlayback.ui.h:2
+#: ../src/fullscreen.py:206 ../src/pop_tunein.py:148
+#: ../src/toolbar_playback.py:79 ../src/toolbar_playback.py:107
+#: ../data/ToolbarPlayback.ui.h:2
 msgid "Play"
 msgstr "Lecture"
 
-#: ../src/lastfm.py:21
+#: ../src/lastfm.py:23
 msgid "Last.fm authentication disabled"
 msgstr "Authentification Last.fm désactivée"
 
-#: ../src/lastfm.py:218
+#: ../src/lastfm.py:269
 msgid "Wrong Last.fm credentials"
 msgstr "Identifiants Last.fm invalides"
 
@@ -283,7 +289,7 @@ msgstr "Suivant"
 msgid "by %s, from %s"
 msgstr "par %s, sur %s"
 
-#: ../src/player_bin.py:257
+#: ../src/player_bin.py:258
 #, python-format
 msgid "File doesn't exist: %s"
 msgstr "Le fichier n'existe pas: %s"
@@ -297,7 +303,7 @@ msgid "Loved tracks"
 msgstr "Coups de coeur"
 
 #: ../src/pop_covers.py:60 ../src/pop_infos.py:91 ../src/pop_tunein.py:82
-#: ../data/PopRadio.ui.h:3 ../data/RadioPopover.ui.h:3
+#: ../data/RadioPopover.ui.h:3
 msgid "Please wait..."
 msgstr "Veuillez patienter..."
 
@@ -387,7 +393,7 @@ msgstr "File d'attente"
 msgid "Edit"
 msgstr "Editer"
 
-#: ../src/pop_radio.py:72
+#: ../src/pop_radio.py:72 ../src/pop_tunein.py:143
 msgid "Add"
 msgstr "Ajouter"
 
@@ -399,7 +405,7 @@ msgstr "Modifier"
 msgid "Can't connect to TuneIn..."
 msgstr "Impossible de se connecter à TuneIn..."
 
-#: ../src/pop_tunein.py:156
+#: ../src/pop_tunein.py:158
 msgid "Browse themes and add a new radio"
 msgstr "Parcourez les thèmes et ajoutez une nouvelle radio"
 
@@ -509,26 +515,6 @@ msgstr "Confirmer"
 msgid "New playlist"
 msgstr "Nouvelle liste de lecture"
 
-#: ../data/PopRadio.ui.h:1 ../data/RadioPopover.ui.h:1
-msgid "Select a logo  for this radio"
-msgstr "Sélectionnez un logo pour cette radio"
-
-#: ../data/PopRadio.ui.h:2 ../data/RadioPopover.ui.h:2
-msgid "No logo found..."
-msgstr "Aucun logo trouvé..."
-
-#: ../data/PopRadio.ui.h:4 ../data/RadioPopover.ui.h:4
-msgid "Name:"
-msgstr "Nom:"
-
-#: ../data/PopRadio.ui.h:5 ../data/RadioPopover.ui.h:5
-msgid "Address:"
-msgstr "Adresse:"
-
-#: ../data/PopRadio.ui.h:6 ../data/RadioPopover.ui.h:6
-msgid "Delete"
-msgstr "Supprimer"
-
 #: ../data/QueueWidget.ui.h:1
 msgid "Queue:"
 msgstr "File d'attente:"
@@ -536,6 +522,26 @@ msgstr "File d'attente:"
 #: ../data/QueueWidget.ui.h:2
 msgid "Clear queue"
 msgstr "Vider la file d'attente"
+
+#: ../data/RadioPopover.ui.h:1
+msgid "Select a logo  for this radio"
+msgstr "Sélectionnez un logo pour cette radio"
+
+#: ../data/RadioPopover.ui.h:2
+msgid "No logo found..."
+msgstr "Aucun logo trouvé..."
+
+#: ../data/RadioPopover.ui.h:4
+msgid "Name:"
+msgstr "Nom:"
+
+#: ../data/RadioPopover.ui.h:5
+msgid "Address:"
+msgstr "Adresse:"
+
+#: ../data/RadioPopover.ui.h:6
+msgid "Delete"
+msgstr "Supprimer"
 
 #: ../data/RadiosView.ui.h:1
 msgid "New radio"
