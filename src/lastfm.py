@@ -236,7 +236,7 @@ class LastFM(LastFMNetwork):
                                    timestamp=timestamp)
         except BadAuthenticationError:
             pass
-        except:
+        except Exception as e:
             print("LastFM::_scrobble(): %s" % e)
             # Try five times
             if t < 5:
