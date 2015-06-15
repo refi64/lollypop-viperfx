@@ -67,7 +67,8 @@ class ArtistInfos(Gtk.Bin):
     """
     def __init__(self, artist, track_id):
         Gtk.Bin.__init__(self)
-        self._Liked = True  # Liked track or not?
+        self._liked = True  # Liked track or not?
+        self._wikipedia = True
         self._artist = artist
         self._track_id = track_id
         if self._track_id is not None:
@@ -82,6 +83,7 @@ class ArtistInfos(Gtk.Bin):
         widget = builder.get_object('widget')
         widget.attach(self._stack, 0, 2, 4, 1)
 
+        self._search_btn = builder.get_object('search_btn')
         self._love_btn = builder.get_object('love_btn')
         self._url_btn = builder.get_object('url_btn')
         self._image = builder.get_object('image')
@@ -113,8 +115,12 @@ class ArtistInfos(Gtk.Bin):
         @thread safe
     """
     def _populate(self):
-        (url, image_url, content) = Lp.wikipedia.get_artist_infos(self._artist)
+        url = None
+        if self._wikipedia:
+            (url, image_url, content) = Lp.wikipedia.get_artist_infos(
+                self._artist)
         if url is None:
+            self._wikipedia = False
             self._url_btn.set_label("Last.fm")
             (url, image_url, content) = Lp.lastfm.get_artist_infos(self._artist)
         else:
@@ -151,6 +157,8 @@ class ArtistInfos(Gtk.Bin):
             self._content.set_text(content)
             if self._track_id is not None:
                 start_new_thread(self._show_love_btn, ())
+            if self._wikipedia:
+                self._search_btn.show()
         else:
             self._stack.set_visible_child(self._not_found)
             self._label.set_text(_("No information for this artist..."))
@@ -162,6 +170,7 @@ class ArtistInfos(Gtk.Bin):
                                                                None)
             self._image.set_from_pixbuf(pixbuf)
             del pixbuf
+        self._wikipedia = False
 
     """
         Show love button
@@ -174,7 +183,7 @@ class ArtistInfos(Gtk.Bin):
                                        None, 
                                        False,
                                        sql):
-                self._Liked = False
+                self._liked = False
                 self._love_btn.set_tooltip_text(_("I do not love"))
                 self._love_btn.set_image(
                     Gtk.Image.new_from_icon_name('face-sick-symbolic',
@@ -220,16 +229,25 @@ class ArtistInfos(Gtk.Bin):
         @param btn as Gtk.Button
     """
     def _on_love_btn_clicked(self, btn):
-        if self._Liked:
+        if self._liked:
             start_new_thread(self._love_track, ())
             btn.set_image(
                 Gtk.Image.new_from_icon_name('face-sick-symbolic',
                                              Gtk.IconSize.BUTTON))
-            self._Liked = False
+            self._liked = False
             btn.set_tooltip_text(_("I do not love"))
         else:
             start_new_thread(self._unlove_track, ())
             btn.set_image(
                 Gtk.Image.new_from_icon_name('emblem-favorite-symbolic',
                                              Gtk.IconSize.BUTTON))
-            self._Liked = True
+            self._liked = True
+
+    """
+        New search with lastfm
+        @param btn as Gtk.Button
+    """
+    def _on_lastfm_search_clicked(self, btn):
+        self._search_btn.hide()
+        self._stack.set_visible_child(self._spinner)
+        self.populate()

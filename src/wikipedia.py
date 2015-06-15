@@ -42,6 +42,7 @@ class Wikipedia:
                 return (None, None, None)
             content = page.content
             url = page.url
+            img = None
             for image in page.images:
                 if image.lower().endswith('.jpg'):
                     img = image
