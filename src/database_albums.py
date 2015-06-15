@@ -353,7 +353,7 @@ class AlbumsDatabase:
         return albums
 
     """
-        Return randoms albums
+        Return random albums
         @return array of albums ids as int
     """
     def get_randoms(self, sql=None):

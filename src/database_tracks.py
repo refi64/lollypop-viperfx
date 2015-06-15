@@ -485,6 +485,21 @@ class TracksDatabase:
         return tracks
 
     """
+        Return random tracks
+        @return array of track ids as int
+    """
+    def get_randoms(self, sql=None):
+        if not sql:
+            sql = Lp.sql
+        tracks = []
+
+        result = sql.execute("SELECT rowid FROM tracks\
+                              ORDER BY random() LIMIT 100")
+        for row in result:
+            tracks += row
+        return tracks
+
+    """
         Set ltime
         @param track id as int
         @param mtime as int

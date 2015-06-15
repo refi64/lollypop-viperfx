@@ -392,6 +392,7 @@ class Container:
         playlists += [(Type.POPULARS, _("Most played"))]
         playlists += [(Type.RECENTS, _("Recently played"))]
         playlists += [(Type.NEVER, _("Never played"))]
+        playlists += [(Type.RANDOMS, _("Random tracks"))]
         playlists.append((Type.SEPARATOR, ''))
         playlists += Lp.playlists.get()
         if update:
@@ -477,6 +478,8 @@ class Container:
                     tracks = Lp.tracks.get_recently_listened_to()
                 elif playlist_id == Type.NEVER:
                     tracks = Lp.tracks.get_never_listened_to()
+                elif playlist_id == Type.RANDOMS:
+                    tracks = Lp.tracks.get_randoms()
                 start_new_thread(view.populate_tracks, (tracks,))
             self._stack.clean_old_views(view)
 
