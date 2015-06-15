@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-06-13 01:40+0200\n"
+"POT-Creation-Date: 2015-06-15 17:41+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -180,7 +180,7 @@ msgstr ""
 msgid "Lollypop: You need to install yelp."
 msgstr ""
 
-#: ../src/codecs.py:50
+#: ../src/codecs.py:53
 msgid "Restart lollypop after installing codecs"
 msgstr ""
 
@@ -233,9 +233,14 @@ msgstr ""
 msgid "Never played"
 msgstr ""
 
+#: ../src/container.py:395
+msgid "Random tracks"
+msgstr ""
+
 #: ../src/database_albums.py:234 ../src/database_artists.py:71
 #: ../src/database_genres.py:66 ../src/database_tracks.py:204
-#: ../src/tagreader.py:84 ../src/tagreader.py:119 ../src/tagreader.py:134
+#: ../src/tagreader.py:79 ../src/tagreader.py:98 ../src/tagreader.py:123
+#: ../src/tagreader.py:138
 msgid "Unknown"
 msgstr ""
 
@@ -252,16 +257,17 @@ msgstr ""
 msgid "Pause"
 msgstr ""
 
-#: ../src/fullscreen.py:206 ../src/toolbar_playback.py:79
-#: ../src/toolbar_playback.py:107 ../data/ToolbarPlayback.ui.h:2
+#: ../src/fullscreen.py:206 ../src/pop_tunein.py:148
+#: ../src/toolbar_playback.py:79 ../src/toolbar_playback.py:107
+#: ../data/ToolbarPlayback.ui.h:2
 msgid "Play"
 msgstr ""
 
-#: ../src/lastfm.py:21
+#: ../src/lastfm.py:23
 msgid "Last.fm authentication disabled"
 msgstr ""
 
-#: ../src/lastfm.py:218
+#: ../src/lastfm.py:269
 msgid "Wrong Last.fm credentials"
 msgstr ""
 
@@ -280,7 +286,7 @@ msgstr ""
 msgid "by %s, from %s"
 msgstr ""
 
-#: ../src/player_bin.py:257
+#: ../src/player_bin.py:258
 #, python-format
 msgid "File doesn't exist: %s"
 msgstr ""
@@ -294,7 +300,7 @@ msgid "Loved tracks"
 msgstr ""
 
 #: ../src/pop_covers.py:60 ../src/pop_infos.py:91 ../src/pop_tunein.py:82
-#: ../data/PopRadio.ui.h:3 ../data/RadioPopover.ui.h:3
+#: ../data/RadioPopover.ui.h:3
 msgid "Please wait..."
 msgstr ""
 
@@ -384,7 +390,7 @@ msgstr ""
 msgid "Edit"
 msgstr ""
 
-#: ../src/pop_radio.py:72
+#: ../src/pop_radio.py:72 ../src/pop_tunein.py:143
 msgid "Add"
 msgstr ""
 
@@ -396,7 +402,7 @@ msgstr ""
 msgid "Can't connect to TuneIn..."
 msgstr ""
 
-#: ../src/pop_tunein.py:156
+#: ../src/pop_tunein.py:158
 msgid "Browse themes and add a new radio"
 msgstr ""
 
@@ -506,32 +512,32 @@ msgstr ""
 msgid "New playlist"
 msgstr ""
 
-#: ../data/PopRadio.ui.h:1 ../data/RadioPopover.ui.h:1
-msgid "Select a logo  for this radio"
-msgstr ""
-
-#: ../data/PopRadio.ui.h:2 ../data/RadioPopover.ui.h:2
-msgid "No logo found..."
-msgstr ""
-
-#: ../data/PopRadio.ui.h:4 ../data/RadioPopover.ui.h:4
-msgid "Name:"
-msgstr ""
-
-#: ../data/PopRadio.ui.h:5 ../data/RadioPopover.ui.h:5
-msgid "Address:"
-msgstr ""
-
-#: ../data/PopRadio.ui.h:6 ../data/RadioPopover.ui.h:6
-msgid "Delete"
-msgstr ""
-
 #: ../data/QueueWidget.ui.h:1
 msgid "Queue:"
 msgstr ""
 
 #: ../data/QueueWidget.ui.h:2
 msgid "Clear queue"
+msgstr ""
+
+#: ../data/RadioPopover.ui.h:1
+msgid "Select a logo  for this radio"
+msgstr ""
+
+#: ../data/RadioPopover.ui.h:2
+msgid "No logo found..."
+msgstr ""
+
+#: ../data/RadioPopover.ui.h:4
+msgid "Name:"
+msgstr ""
+
+#: ../data/RadioPopover.ui.h:5
+msgid "Address:"
+msgstr ""
+
+#: ../data/RadioPopover.ui.h:6
+msgid "Delete"
 msgstr ""
 
 #: ../data/RadiosView.ui.h:1
