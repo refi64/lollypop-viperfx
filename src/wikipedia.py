@@ -73,6 +73,5 @@ class Wikipedia:
             else:
                 page = wikipedia.page(artist)
         except:
-            print("%s\_\(%s\)" % (artist, item))
             return self._search_page(artist, items)
         return page
