@@ -23,7 +23,7 @@ except Exception as e:
     print(_("Last.fm authentication disabled"))
     Secret = None
 
-from pylast import LastFMNetwork, md5, BadAuthenticationError, WSError
+from pylast import LastFMNetwork, md5, BadAuthenticationError
 import urllib.request
 from gettext import gettext as _
 import re

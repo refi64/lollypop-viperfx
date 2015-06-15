@@ -66,5 +66,6 @@ app_PYTHON = \
     widgets_playlist.py\
     widgets_radio.py\
     widgets_track.py\
+    wikipedia.py\
     window.py
 

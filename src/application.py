@@ -28,6 +28,15 @@ except Exception as e:
     print("$ sudo pip3 install pylast")
     PYLAST = False
 
+try:
+    from lollypop.wikipedia import Wikipedia
+    WIKIPEDIA = True
+except Exception as e:
+    print(e)
+    print(_("Advanced artist informations disabled)"))
+    print("$ sudo pip3 install wikipedia")
+    WIKIPEDIA = False
+
 from lollypop.utils import is_gnome, is_unity
 from lollypop.define import Lp, ArtSize
 from lollypop.window import Window
@@ -79,6 +88,8 @@ class Application(Gtk.Application):
         Lp.settings = Settings.new()
         if PYLAST:
             Lp.lastfm = LastFM()
+        if WIKIPEDIA:
+            Lp.wikipedia = Wikipedia()
         Lp.db = Database()
         # We store a cursor for the main thread
         Lp.sql = Lp.db.get_cursor()

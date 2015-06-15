@@ -83,7 +83,7 @@ class ArtistInfos(Gtk.Bin):
         widget.attach(self._stack, 0, 2, 4, 1)
 
         self._love_btn = builder.get_object('love_btn')
-        self._url_btn = builder.get_object('lastfm')
+        self._url_btn = builder.get_object('url_btn')
         self._image = builder.get_object('image')
         self._content = builder.get_object('content')
 
@@ -113,7 +113,12 @@ class ArtistInfos(Gtk.Bin):
         @thread safe
     """
     def _populate(self):
-        (url, image_url, content) = Lp.lastfm.get_artist_infos(self._artist)
+        (url, image_url, content) = Lp.wikipedia.get_artist_infos(self._artist)
+        if url is None:
+            self._url_btn.set_label("Last.fm")
+            (url, image_url, content) = Lp.lastfm.get_artist_infos(self._artist)
+        else:
+            self._url_btn.set_label("Wikipedia")
         stream = None
         try:
             response = None
@@ -150,7 +155,11 @@ class ArtistInfos(Gtk.Bin):
             self._stack.set_visible_child(self._not_found)
             self._label.set_text(_("No information for this artist..."))
         if stream is not None:
-            pixbuf = GdkPixbuf.Pixbuf.new_from_stream(stream, None)
+            pixbuf = GdkPixbuf.Pixbuf.new_from_stream_at_scale(stream,
+                                                               200,
+                                                               -1,
+                                                               True,
+                                                               None)
             self._image.set_from_pixbuf(pixbuf)
             del pixbuf
 
