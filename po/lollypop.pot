@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-06-16 08:59+0200\n"
+"POT-Creation-Date: 2015-06-16 12:36+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -176,7 +176,11 @@ msgid ""
 "    - Artist informations disabled"
 msgstr ""
 
-#: ../src/application.py:308
+#: ../src/application.py:36
+msgid "Advanced artist informations disabled)"
+msgstr ""
+
+#: ../src/application.py:319
 msgid "Lollypop: You need to install yelp."
 msgstr ""
 
@@ -312,11 +316,11 @@ msgstr ""
 msgid "Select a cover art for this album"
 msgstr ""
 
-#: ../src/pop_infos.py:151
+#: ../src/pop_infos.py:156
 msgid "No information for this artist..."
 msgstr ""
 
-#: ../src/pop_infos.py:169 ../src/pop_infos.py:220
+#: ../src/pop_infos.py:178 ../src/pop_infos.py:229
 msgid "I do not love"
 msgstr ""
 
@@ -433,7 +437,7 @@ msgstr ""
 msgid "Cancel synchronization"
 msgstr ""
 
-#: ../src/widgets_album.py:249
+#: ../src/widgets_album.py:250
 #, python-format
 msgid "Disc %s"
 msgstr ""
@@ -457,6 +461,12 @@ msgstr ""
 
 #: ../src/widgets_playlist.py:585
 msgid "Remove these tracks?"
+msgstr ""
+
+#. Translators: Put here words added by wikipedia in band search
+#. Ex: Muse_(band), Peaches(musician)
+#: ../src/wikipedia.py:29
+msgid "musician;band"
 msgstr ""
 
 #: ../data/AboutDialog.ui.h:1
