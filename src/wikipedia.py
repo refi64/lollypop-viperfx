@@ -13,6 +13,7 @@
 
 from gi.repository import Gio
 
+from gettext import gettext as _
 from locale import getdefaultlocale
 import wikipedia
 
@@ -23,6 +24,9 @@ class Wikipedia:
     def __init__(self):
         language=getdefaultlocale()[0][0:2]
         wikipedia.set_lang(language)
+        # Translators: Put here words added by wikipedia in band search
+        # Ex: Muse_(band), Peaches(musician)
+        self._search_str = _("musician;band")
 
     """
         Get artist infos
@@ -33,13 +37,42 @@ class Wikipedia:
         if not Gio.NetworkMonitor.get_default().get_network_available():
             return (None, None, None)
         try:
-            page = wikipedia.page(artist)
+            page = self._search_page(artist)
+            if page is None:
+                return (None, None, None)
             content = page.content
             url = page.url
             for image in page.images:
-                if image.endswith('.jpg'):
+                if image.lower().endswith('.jpg'):
                     img = image
                     break
             return (url, img, content)
-        except:
-            return (None, None, None) 
+        except Exception as e:
+            print(e)
+            return (None, None, None)
+
+#######################
+# PRIVATE             #
+#######################
+    """
+        Search music page
+        @param artist as string
+        @return page as WikipediaPage
+    """
+    def _search_page(self, artist, items=None):
+        if items is None:
+            item = None
+            items = self._search_str.split(';')
+        elif items:
+            item = items.pop(0)
+        else:
+            return None
+        try:
+            if item:
+                page = wikipedia.page("%s\_\(%s\)" % (artist, item))
+            else:
+                page = wikipedia.page(artist)
+        except Exception as e:
+            print(e)
+            return self._search_page(artist, items)
+        return page

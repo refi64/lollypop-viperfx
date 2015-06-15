@@ -67,6 +67,7 @@ src/widgets_device.py
 src/widgets_playlist.py
 src/widgets_radio.py
 src/widgets_track.py
+src/wikipedia.py
 src/window.py
 [type: gettext/glade]data/AboutDialog.ui
 [type: gettext/glade]data/AlbumContextWidget.ui
