@@ -248,6 +248,9 @@ class ArtistInfos(Gtk.Bin):
         @param btn as Gtk.Button
     """
     def _on_lastfm_search_clicked(self, btn):
+        self._label.set_text(_("Please wait..."))
         self._search_btn.hide()
+        self._love_btn.hide()
+        self._url_btn.hide()
         self._stack.set_visible_child(self._spinner)
         self.populate()
