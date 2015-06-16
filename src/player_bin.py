@@ -229,7 +229,7 @@ class BinPlayer(ReplayGainPlayer, BasePlayer):
             self.current_track.album = reader.get_album_name(tags)
             self.current_track.artist = reader.get_artists(tags)
             self.current_track.aartist = reader.get_album_artist(tags)
-            if self.current_track.aartist is None:
+            if self.current_track.aartist == '':
                 self.current_track.aartist = self.current_track.artist
             self.current_track.genre = reader.get_genres(tags)
         self.emit('current-changed')
