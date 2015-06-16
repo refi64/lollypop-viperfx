@@ -38,9 +38,9 @@ class ToolbarPlayback(Gtk.Bin):
         self._play_image = builder.get_object('play_image')
         self._pause_image = builder.get_object('pause_image')
 
-        if Lp.lastfm is not None:
-            self._lastfm_btn = builder.get_object('lastfm_button')
-            self._lastfm_btn.show()
+        if Lp.lastfm is not None or Lp.wikipedia is not None:
+            self._artist_infos_btn = builder.get_object('artist_infos_btn')
+            self._artist_infos_btn.show()
 
     """
         Update buttons on current changed
@@ -49,9 +49,9 @@ class ToolbarPlayback(Gtk.Bin):
     def on_current_changed(self, player):
         if Lp.lastfm is not None:
             if player.current_track.id != Type.RADIOS:
-                self._lastfm_btn.set_sensitive(True)
+                self._artist_infos_btn.set_sensitive(True)
             else:
-                self._lastfm_btn.set_sensitive(False)
+                self._artist_infos_btn.set_sensitive(False)
         self._play_btn.set_sensitive(True)
         self._prev_btn.set_sensitive(True)
         self._next_btn.set_sensitive(True)
@@ -120,8 +120,8 @@ class ToolbarPlayback(Gtk.Bin):
         Show current artist informations
         @param button as Gtk.Button
     """
-    def _on_lastfm_btn_clicked(self, button):
-        if Lp.lastfm is not None:
+    def _on_infos_btn_clicked(self, button):
+        if Lp.lastfm is not None or Lp.wikipedia is not None:
             artist_id = Lp.player.current_track.aartist_id
             if artist_id == Type.COMPILATIONS:
                 artist = Lp.player.current_track.artist

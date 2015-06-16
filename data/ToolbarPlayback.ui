@@ -107,8 +107,8 @@
       </object>
     </child>
     <child>
-     <object class="GtkButton" id="lastfm_button">
-        <signal name="clicked" handler="_on_lastfm_btn_clicked" swapped="no"/>
+     <object class="GtkButton" id="artist_infos_btn">
+        <signal name="clicked" handler="_on_infos_btn_clicked" swapped="no"/>
         <property name="visible">False</property>
         <property name="sensitive">False</property>
         <property name="can_focus">True</property>

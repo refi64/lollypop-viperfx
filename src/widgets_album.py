@@ -226,7 +226,8 @@ class AlbumDetailedWidget(AlbumWidget):
         if scrolled:
             builder.get_object('artist').set_text(self._artist_name)
             builder.get_object('artist').show()
-            if Lp.lastfm is not None and self._artist_id != Type.COMPILATIONS:
+            if (Lp.lastfm is not None or Lp.wikipedia is not None) and\
+                    self._artist_id != Type.COMPILATIONS:
                 self._popover = InfosPopover(self._artist_name)
 
         self._stars = []
@@ -469,7 +470,8 @@ class AlbumDetailedWidget(AlbumWidget):
         @param eventbox as Gtk.EventBox
     """
     def _on_label_realize(self, eventbox):
-        if Lp.lastfm is not None and self._artist_id != Type.COMPILATIONS:
+        if (Lp.lastfm is not None or Lp.wikipedia is not None) and\
+                    self._artist_id != Type.COMPILATIONS:
             eventbox.get_window().set_cursor(Gdk.Cursor(Gdk.CursorType.HAND1))
 
     """
@@ -478,7 +480,8 @@ class AlbumDetailedWidget(AlbumWidget):
         @param event as Gdk.Event
     """
     def _on_label_button_release(self, eventbox, event):
-        if Lp.lastfm is not None and self._artist_id != Type.COMPILATIONS:
+        if (Lp.lastfm is not None or Lp.wikipedia is not None) and\
+                    self._artist_id != Type.COMPILATIONS:
             self._popover.set_relative_to(eventbox)
             self._popover.populate()
             self._popover.show()
