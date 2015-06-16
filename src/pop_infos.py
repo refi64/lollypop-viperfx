@@ -160,8 +160,6 @@ class ArtistInfos(Gtk.Bin):
             if self._track_id is not None:
                 start_new_thread(self._show_love_btn, ())
             if self._wikipedia:
-                if Lp.wikipedia.is_disabled_by_proxy():
-                    self._view_btn.set_sensitive(False)
                 self._view_btn.set_tooltip_text(_("Wikipedia"))
                 self._url_btn.set_label(_("Last.fm"))
             else:

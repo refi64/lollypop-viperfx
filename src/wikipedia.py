@@ -23,10 +23,6 @@ class Wikipedia:
         Init wikipedia
     """
     def __init__(self):
-        try:
-            self._settings = Gio.Settings.new('org.gnome.system.proxy.http')
-        except:
-            self._settings = None
         language=getdefaultlocale()[0][0:2]
         wikipedia.set_lang(language)
         # Translators: Put here words added by wikipedia in band search
@@ -41,13 +37,6 @@ class Wikipedia:
     def get_artist_infos(self, artist):
         if not Gio.NetworkMonitor.get_default().get_network_available():
             return (None, None, None)
-        # Python-wikipedia doesn't support proxy
-        # https://github.com/goldsmith/Wikipedia/issues/99
-        if self._settings is not None:
-            h = self._settings.get_value('host').get_string()
-            p = self._settings.get_value('port').get_int32()
-            if h != '' and p != 0:
-                return (None, None, None)
         try:
             page = self._search_page(artist)
             if page is None:
@@ -67,18 +56,6 @@ class Wikipedia:
 #######################
 # PRIVATE             #
 #######################
-    """
-        Is disabled by proxy
-        @return disabled as bool
-    """
-    def is_disabled_by_proxy(self):
-        if self._settings is not None:
-           h = self._settings.get_value('host').get_string()
-           p = self._settings.get_value('port').get_int32()
-           if h != '' and p != 0:
-                return True
-        return False
-
     """
         Search music page
         @param artist as string

@@ -16,6 +16,8 @@ from gi.repository import Gtk, Gio, GLib, Gdk, Notify, TotemPlParser
 from locale import getlocale
 from gettext import gettext as _
 from _thread import start_new_thread
+import os
+
 
 try:
     from lollypop.lastfm import LastFM
@@ -64,6 +66,7 @@ class Application(Gtk.Application):
         Gtk.Application.__init__(self,
                                  application_id='org.gnome.Lollypop',
                                  flags=Gio.ApplicationFlags.FLAGS_NONE)
+        self._init_proxy()
         GLib.set_application_name('lollypop')
         GLib.set_prgname('lollypop')
         self.set_flags(Gio.ApplicationFlags.HANDLES_OPEN)
@@ -217,6 +220,19 @@ class Application(Gtk.Application):
 #######################
 # PRIVATE             #
 #######################
+    """
+        Init proxy setting env
+    """
+    def _init_proxy(self):
+        try:
+            settings = Gio.Settings.new('org.gnome.system.proxy.http')
+            h = settings.get_value('host').get_string()
+            p = settings.get_value('port').get_int32()
+            if h != '' and p != 0:
+                os.environ['HTTP_PROXY'] = "%s:%s" % (h, p)
+        except:
+            pass
+
     """
         Handle command line
         @param app as Gio.Application
