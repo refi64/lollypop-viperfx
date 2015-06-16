@@ -83,7 +83,7 @@ class ArtistInfos(Gtk.Bin):
         widget = builder.get_object('widget')
         widget.attach(self._stack, 0, 2, 4, 1)
 
-        self._search_btn = builder.get_object('search_btn')
+        self._view_btn = builder.get_object('view_btn')
         self._love_btn = builder.get_object('love_btn')
         self._url_btn = builder.get_object('url_btn')
         self._image = builder.get_object('image')
@@ -112,15 +112,17 @@ class ArtistInfos(Gtk.Bin):
 #######################
     """
         Same as _populate()
+        Horrible code limited to two engines, need rework if adding one more
         @thread safe
     """
     def _populate(self):
         url = None
         if self._wikipedia and Lp.wikipedia is not None:
+            self._wikipedia = False
             (url, image_url, content) = Lp.wikipedia.get_artist_infos(
                 self._artist)
-        if url is None:
-            self._wikipedia = False
+        if url is None and Lp.lastfm is not None:
+            self._wikipedia = True
             (url, image_url, content) = Lp.lastfm.get_artist_infos(self._artist)
 
         stream = None
@@ -144,6 +146,7 @@ class ArtistInfos(Gtk.Bin):
     """
     def _set_content(self, content, url, stream):
         if content is not None:
+            self._view_btn.show()
             self._stack.set_visible_child(self._scrolled)
             if self._track_id is None:
                 string = "<b>%s</b>" % escape(self._artist)
@@ -156,10 +159,11 @@ class ArtistInfos(Gtk.Bin):
             if self._track_id is not None:
                 start_new_thread(self._show_love_btn, ())
             if self._wikipedia:
-                self._search_btn.show()
-                self._url_btn.set_label(_("Wikipedia"))
-            else:
+                self._view_btn.set_tooltip_text(_("Wikipedia"))
                 self._url_btn.set_label(_("Last.fm"))
+            else:
+                self._view_btn.set_tooltip_text(_("Last.fm"))
+                self._url_btn.set_label(_("Wikipedia"))
         else:
             self._stack.set_visible_child(self._not_found)
             self._label.set_text(_("No information for this artist..."))
@@ -171,7 +175,6 @@ class ArtistInfos(Gtk.Bin):
                                                                None)
             self._image.set_from_pixbuf(pixbuf)
             del pixbuf
-        self._wikipedia = False
 
     """
         Show love button
@@ -245,12 +248,12 @@ class ArtistInfos(Gtk.Bin):
             self._liked = True
 
     """
-        New search with lastfm
+        Next view
         @param btn as Gtk.Button
     """
-    def _on_lastfm_search_clicked(self, btn):
+    def _on_view_clicked(self, btn):
         self._label.set_text(_("Please wait..."))
-        self._search_btn.hide()
+        self._view_btn.hide()
         self._love_btn.hide()
         self._url_btn.set_label('')
         self._stack.set_visible_child(self._spinner)

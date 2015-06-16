@@ -5,7 +5,7 @@
   <object class="GtkImage" id="image1">
     <property name="visible">True</property>
     <property name="can_focus">False</property>
-    <property name="icon_name">edit-find-symbolic</property>
+    <property name="icon_name">view-paged-symbolic</property>
   </object>
   <object class="GtkImage" id="image2">
     <property name="visible">True</property>
@@ -81,13 +81,12 @@
       </packing>
     </child>
     <child>
-      <object class="GtkButton" id="search_btn">
+      <object class="GtkButton" id="view_btn">
         <property name="can_focus">True</property>
         <property name="receives_default">True</property>
-        <property name="tooltip_text" translatable="yes">Search on Last.fm</property>
         <property name="image">image1</property>
         <property name="relief">none</property>
-        <signal name="clicked" handler="_on_lastfm_search_clicked" swapped="no"/>
+        <signal name="clicked" handler="_on_view_clicked" swapped="no"/>
         <style>
           <class name="rounded"/>
         </style>
