@@ -447,21 +447,23 @@ class PlaylistEditWidget(Gtk.Bin):
 
         self._view.set_model(self._model)
 
+        # 3 COLUMNS NEEDED
         renderer0 = CellRendererAlbum()
+        column0 = Gtk.TreeViewColumn("pixbuf1", renderer0, album=0)
         renderer1 = Gtk.CellRendererText()
         renderer1.set_property('ellipsize-set', True)
         renderer1.set_property('ellipsize', Pango.EllipsizeMode.END)
+        column1 = Gtk.TreeViewColumn("text1", renderer1, markup=1)
+        column1.set_sizing(Gtk.TreeViewColumnSizing.FIXED)
+        column1.set_expand(True)
         renderer2 = Gtk.CellRendererPixbuf()
-        column = Gtk.TreeViewColumn('')
-        column.pack_start(renderer0, False)
-        column.pack_start(renderer1, True)
-        column.pack_start(renderer2, False)
-        column.add_attribute(renderer0, 'album', 0)
-        column.add_attribute(renderer1, 'markup', 1)
-        column.add_attribute(renderer2, 'icon-name', 2)
-        column.set_expand(True)
-        column.set_sizing(Gtk.TreeViewColumnSizing.FIXED)
-        self._view.append_column(column)
+        column2 = Gtk.TreeViewColumn('delete', renderer2)
+        column2.add_attribute(renderer2, 'icon-name', 2)
+        column2.set_sizing(Gtk.TreeViewColumnSizing.FIXED)
+
+        self._view.append_column(column0)
+        self._view.append_column(column1)
+        self._view.append_column(column2)
 
         self.add(builder.get_object('widget'))
 
