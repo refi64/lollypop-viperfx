@@ -146,7 +146,8 @@ class ArtistInfos(Gtk.Bin):
     """
     def _set_content(self, content, url, stream):
         if content is not None:
-            self._view_btn.show()
+            if Lp.lastfm is not None and Lp.wikipedia is not None:
+                self._view_btn.show()
             self._stack.set_visible_child(self._scrolled)
             if self._track_id is None:
                 string = "<b>%s</b>" % escape(self._artist)

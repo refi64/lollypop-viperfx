@@ -47,7 +47,7 @@ class ToolbarPlayback(Gtk.Bin):
         @param player as Player
     """
     def on_current_changed(self, player):
-        if Lp.lastfm is not None:
+        if Lp.lastfm is not None or Lp.wikipedia is not None:
             if player.current_track.id != Type.RADIOS:
                 self._artist_infos_btn.set_sensitive(True)
             else:
