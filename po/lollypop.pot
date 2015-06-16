@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-06-16 13:52+0200\n"
+"POT-Creation-Date: 2015-06-16 16:08+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -303,8 +303,8 @@ msgstr ""
 msgid "Loved tracks"
 msgstr ""
 
-#: ../src/pop_covers.py:60 ../src/pop_infos.py:93 ../src/pop_tunein.py:82
-#: ../data/RadioPopover.ui.h:3
+#: ../src/pop_covers.py:60 ../src/pop_infos.py:93 ../src/pop_infos.py:252
+#: ../src/pop_tunein.py:82 ../data/RadioPopover.ui.h:3
 msgid "Please wait..."
 msgstr ""
 
@@ -316,11 +316,19 @@ msgstr ""
 msgid "Select a cover art for this album"
 msgstr ""
 
-#: ../src/pop_infos.py:164
+#: ../src/pop_infos.py:160
+msgid "Wikipedia"
+msgstr ""
+
+#: ../src/pop_infos.py:162
+msgid "Last.fm"
+msgstr ""
+
+#: ../src/pop_infos.py:165
 msgid "No information for this artist..."
 msgstr ""
 
-#: ../src/pop_infos.py:187 ../src/pop_infos.py:238
+#: ../src/pop_infos.py:188 ../src/pop_infos.py:239
 msgid "I do not love"
 msgstr ""
 
@@ -465,7 +473,7 @@ msgstr ""
 
 #. Translators: Put here words added by wikipedia in band search
 #. Ex: Muse_(band), Peaches(musician)
-#: ../src/wikipedia.py:29
+#: ../src/wikipedia.py:30
 msgid "musician;band"
 msgstr ""
 
