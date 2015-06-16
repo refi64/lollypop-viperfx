@@ -319,7 +319,7 @@ class BinPlayer(ReplayGainPlayer, BasePlayer):
         debug("Player::_on_stream_start(): %s" % self.current_track.uri)
         self.emit("current-changed")
         # Update now playing on lastfm
-        if Lp.lastfm is not None:
+        if Lp.lastfm is not None and self.current_track.id >= 0:
             if self.current_track.aartist_id == Type.COMPILATIONS:
                 artist = self.current_track.artist
             else:
