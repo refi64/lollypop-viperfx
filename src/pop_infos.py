@@ -157,9 +157,9 @@ class ArtistInfos(Gtk.Bin):
                 start_new_thread(self._show_love_btn, ())
             if self._wikipedia:
                 self._search_btn.show()
-                self._url_btn.set_label("Wikipedia")
+                self._url_btn.set_label(_("Wikipedia"))
             else:
-                self._url_btn.set_label("Last.fm")
+                self._url_btn.set_label(_("Last.fm"))
         else:
             self._stack.set_visible_child(self._not_found)
             self._label.set_text(_("No information for this artist..."))
