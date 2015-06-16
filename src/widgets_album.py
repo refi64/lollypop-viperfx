@@ -230,9 +230,6 @@ class AlbumDetailedWidget(AlbumWidget):
         if scrolled:
             builder.get_object('artist').set_text(self._artist_name)
             builder.get_object('artist').show()
-            if (Lp.lastfm is not None or Lp.wikipedia is not None) and\
-                    self._artist_id != Type.COMPILATIONS:
-                self._popover = InfosPopover(self._artist_name)
 
         self._stars = []
         self._stars.append(builder.get_object('star0'))
@@ -486,9 +483,10 @@ class AlbumDetailedWidget(AlbumWidget):
     def _on_label_button_release(self, eventbox, event):
         if (Lp.lastfm is not None or Lp.wikipedia is not None) and\
                     self._artist_id != Type.COMPILATIONS:
-            self._popover.set_relative_to(eventbox)
-            self._popover.populate()
-            self._popover.show()
+            popover = InfosPopover(self._artist_name)
+            popover.set_relative_to(eventbox)
+            popover.populate()
+            popover.show()
 
     """
         Popover with album art downloaded from the web (in fact google :-/)
