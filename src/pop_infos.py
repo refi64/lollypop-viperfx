@@ -116,7 +116,7 @@ class ArtistInfos(Gtk.Bin):
     """
     def _populate(self):
         url = None
-        if self._wikipedia:
+        if self._wikipedia and Lp.wikipedia is not None:
             (url, image_url, content) = Lp.wikipedia.get_artist_infos(
                 self._artist)
         if url is None:
