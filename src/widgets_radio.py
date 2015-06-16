@@ -106,6 +106,15 @@ class RadioWidget(AlbumWidget):
             self._cover.set_from_surface(surface)
             del surface
 
+    """
+        Edit radio
+        @param widget as Gtk.Widget
+    """
+    def edit(self, widget):
+        self._popover = RadioPopover(self._name, self._radios_manager)
+        self._popover.set_relative_to(widget)
+        self._popover.show()
+
 #######################
 # PRIVATE             #
 #######################
@@ -114,10 +123,17 @@ class RadioWidget(AlbumWidget):
         @param widget as Gtk.Widget
         @param event as Gdk.Event
     """
-    def _on_button_press(self, widget, event):
-        self._popover = RadioPopover(self._name, self._radios_manager)
-        self._popover.set_relative_to(widget)
-        self._popover.show()
+    def _on_title_press(self, widget, event):
+        self.edit(widget)
+
+    """
+        Edit radio on right click
+        @param widget as Gtk.Widget
+        @param event as Gdk.Event
+    """
+    def _on_cover_press(self, widget, event):
+        if event.button != 1:
+            self.edit(widget)
 
     """
         Change cursor over cover eventbox
