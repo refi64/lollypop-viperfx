@@ -88,24 +88,33 @@
       </packing>
     </child>
     <child>
-      <object class="GtkTreeView" id="view">
+      <object class="GtkScrolledWindow" id="scrolledwindow1">
         <property name="visible">True</property>
         <property name="can_focus">True</property>
-        <property name="hexpand">True</property>
-        <property name="vexpand">True</property>
-        <property name="headers_visible">False</property>
-        <property name="reorderable">True</property>
-        <property name="enable_search">False</property>
-        <property name="search_column">1</property>
-        <property name="hover_selection">True</property>
-        <property name="show_expanders">False</property>
-        <property name="activate_on_single_click">True</property>
-        <signal name="key-press-event" handler="_on_keyboard_event" swapped="no"/>
-        <signal name="row-activated" handler="_on_row_activated" swapped="no"/>
-        <child internal-child="selection">
-          <object class="GtkTreeSelection" id="treeview-selection4">
-            <property name="mode">multiple</property>
-            <signal name="changed" handler="_on_selection_changed" swapped="no"/>
+        <property name="hscrollbar_policy">never</property>
+        <property name="shadow_type">in</property>
+        <property name="overlay_scrolling">False</property>
+        <child>
+          <object class="GtkTreeView" id="view">
+            <property name="visible">True</property>
+            <property name="can_focus">True</property>
+            <property name="hexpand">True</property>
+            <property name="vexpand">True</property>
+            <property name="headers_visible">False</property>
+            <property name="reorderable">True</property>
+            <property name="enable_search">False</property>
+            <property name="search_column">1</property>
+            <property name="hover_selection">True</property>
+            <property name="show_expanders">False</property>
+            <property name="activate_on_single_click">True</property>
+            <signal name="key-press-event" handler="_on_keyboard_event" swapped="no"/>
+            <signal name="row-activated" handler="_on_row_activated" swapped="no"/>
+            <child internal-child="selection">
+              <object class="GtkTreeSelection" id="treeview-selection4">
+                <property name="mode">multiple</property>
+                <signal name="changed" handler="_on_selection_changed" swapped="no"/>
+              </object>
+            </child>
           </object>
         </child>
       </object>
