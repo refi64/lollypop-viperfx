@@ -103,7 +103,9 @@ class AlbumWidget(Gtk.Bin):
         @param event es Gdk.Event
     """
     def _on_enter_notify(self, widget, event):
-        self.get_style_context().add_class('hovereffect')
+        # https://bugzilla.gnome.org/show_bug.cgi?id=751076
+        # See application.css => white
+        self._cover.get_style_context().add_class('hovereffect')
 
     """
         Remove hover style
@@ -111,7 +113,9 @@ class AlbumWidget(Gtk.Bin):
         @param event es Gdk.Event
     """
     def _on_leave_notify(self, widget, event):
-        self.get_style_context().remove_class('hovereffect')
+        # https://bugzilla.gnome.org/show_bug.cgi?id=751076
+        # See application.css => white
+        self._cover.get_style_context().remove_class('hovereffect')
 
 
 # Album widget is a pixbuf with two labels: album name and artist name
