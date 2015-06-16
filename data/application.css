@@ -4,7 +4,6 @@ GtkWidget {
 }
 
 GtkTreeView {
-    background-color: shade(@theme_bg_color, 1.1);
     padding: 2px 2px 2px 2px;
 }
 
