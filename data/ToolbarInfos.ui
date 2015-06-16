@@ -16,6 +16,7 @@
         <child>
           <object class="GtkImage" id="cover">
             <property name="can_focus">True</property>
+            <property name="icon_size">0</property>
           </object>
           <packing>
             <property name="expand">False</property>
@@ -31,7 +32,6 @@
             <property name="homogeneous">True</property>
             <child>
               <object class="GtkLabel" id="artist">
-                <property name="visible">True</property>
                 <property name="can_focus">False</property>
                 <property name="halign">start</property>
                 <property name="ellipsize">end</property>
@@ -49,7 +49,6 @@
             </child>
             <child>
               <object class="GtkLabel" id="title">
-                <property name="visible">True</property>
                 <property name="can_focus">False</property>
                 <property name="halign">start</property>
                 <property name="margin_bottom">2</property>

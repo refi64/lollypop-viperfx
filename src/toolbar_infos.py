@@ -53,8 +53,16 @@ class ToolbarInfos(Gtk.Bin):
     """
     def on_current_changed(self, player):
         art = None
-        self._artist_label.set_text(player.current_track.artist)
-        self._title_label.set_text(player.current_track.title)
+        if player.current_track.artist == '':
+            self._artist_label.hide()
+        else:
+            self._artist_label.show()
+            self._artist_label.set_text(player.current_track.artist)
+        if player.current_track.title == '':
+            self._title_label.hide()
+        else:
+            self._title_label.show()
+            self._title_label.set_text(player.current_track.title)
 
         if player.current_track.id == Type.RADIOS:
             art = Lp.art.get_radio(player.current_track.artist,
