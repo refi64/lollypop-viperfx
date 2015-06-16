@@ -205,7 +205,8 @@ class Application(Gtk.Application):
             print("Application::quit(): ", e)
         Lp.sql.close()
         Lp.window.destroy()
-        exit(0)
+        # Users report lollypop sometimes doesn't exit
+        GLib.timeout_add(10000, exit, 0)
 
     """
         Return True if application is fullscreen
