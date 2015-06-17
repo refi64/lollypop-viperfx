@@ -36,7 +36,6 @@ class TuneIn:
         @param uri as string
     """
     def get_items(self, url="http://opml.radiotime.com/Browse.ashx?c="):
-        headers = {"Accept-Language": getdefaultlocale()[0]}
         items = []
         if not Gio.NetworkMonitor.get_default().get_network_available():
             return items

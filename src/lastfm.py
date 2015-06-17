@@ -50,6 +50,10 @@ class LastFM(LastFMNetwork):
         Init lastfm
     """
     def __init__(self):
+        try:
+            self._settings = Gio.Settings.new('org.gnome.system.proxy.http')
+        except:
+            self._settings = None
         LastFMNetwork.__init__(self,
                                api_key=self._API_KEY,
                                api_secret=self._API_SECRET)
@@ -58,6 +62,7 @@ class LastFM(LastFMNetwork):
         self._is_auth = False
         self._in_albums_download = False
         self._password = None
+        self._check_for_proxy()
         self.connect(None)
 
     """
@@ -194,6 +199,17 @@ class LastFM(LastFMNetwork):
 # PRIVATE             #
 #######################
     """
+        Enable proxy if needed
+    """
+    def _check_for_proxy(self):
+        if self._settings is not None and self._settings.get_value('enabled'):
+            h = self._settings.get_value('host').get_string()
+            p = self._settings.get_value('port').get_int32()
+            self.enable_proxy(host=h, port = p)
+        else:
+            self.disable_proxy()
+
+    """
         Connect lastfm
         @param username as str
         @param password as str
@@ -206,6 +222,7 @@ class LastFM(LastFMNetwork):
         else:
             self._is_auth = False
         try:
+            self._check_for_proxy()
             LastFMNetwork.__init__(
                 self,
                 api_key=self._API_KEY,
