@@ -14,8 +14,6 @@
 from gi.repository import Gtk, Gdk, GLib, Gio, GdkPixbuf
 
 import os
-import urllib.request
-import urllib.parse
 from _thread import start_new_thread
 
 from gettext import gettext as _
@@ -124,9 +122,10 @@ class RadioPopover(Gtk.Popover):
             url = self._urls.pop()
             stream = None
             try:
-                response = urllib.request.urlopen(url)
-                stream = Gio.MemoryInputStream.new_from_data(
-                    response.read(), None)
+                f = Gio.File.new_for_uri(url)
+                (status, data, tag) = f.load_contents()
+                if status:
+                    stream = Gio.MemoryInputStream.new_from_data(data, None)
             except:
                 if self._thread:
                     self._add_pixbufs()
