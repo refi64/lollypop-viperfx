@@ -66,6 +66,16 @@ class Wikipedia:
 # PRIVATE             #
 #######################
     """
+        Is disabled by proxy
+        @return disabled as bool
+    """
+    def is_disabled_by_proxy(self):
+        if self._settings is not None:
+            if self._settings.get_value('enabled'):
+                return True
+        return False
+
+    """
         Search music page
         @param artist as string
         @return page as WikipediaPage
