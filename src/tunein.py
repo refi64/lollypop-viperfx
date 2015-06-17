@@ -14,7 +14,6 @@
 from gi.repository import Gio
 
 import xml.etree.ElementTree as xml
-import urllib.request
 from locale import getdefaultlocale
 
 
@@ -42,9 +41,12 @@ class TuneIn:
         if not Gio.NetworkMonitor.get_default().get_network_available():
             return items
         try:
-            req = urllib.request.Request(url, None, headers)
-            response = urllib.request.urlopen(req)
-            root = xml.fromstring(response.read())
+            f = Gio.File.new_for_uri(url)
+            (status, data, tag) = f.load_contents()
+            if not status:
+                return []
+
+            root = xml.fromstring(data)
             for child in root.iter('outline'):
                 try:
                     item = TuneItem()
