@@ -50,6 +50,11 @@ class BaseArt(GObject.GObject):
     """
     def get_google_arts(self, search, start=0):
         data = None
+        urls = []
+
+        if not Gio.NetworkMonitor.get_default().get_network_available():
+            return urls
+
         try:
             f = Gio.File.new_for_uri("https://ajax.googleapis.com/"
                                      "ajax/services/search/images"
@@ -62,7 +67,6 @@ class BaseArt(GObject.GObject):
             print(e)
             return []
 
-        urls = []
         decode = json.loads(data.decode('utf-8'))
         if decode is None:
             return urls
