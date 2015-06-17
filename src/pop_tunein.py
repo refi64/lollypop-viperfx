@@ -13,7 +13,6 @@
 
 from gi.repository import Gtk, GLib, Gio
 
-import urllib.request
 from _thread import start_new_thread
 from gettext import gettext as _
 
@@ -176,14 +175,18 @@ class TuneinPopover(Gtk.Popover):
         # Get cover art
         try:
             cache = Art._RADIOS_PATH
-            urllib.request.urlretrieve(item.LOGO, cache+"/%s.png" % item.TEXT)
+            s = Gio.File.new_for_uri(item.LOGO)
+            d = Gio.File.new_for_path(cache+"/%s.png" % item.TEXT)
+            s.copy(d, Gio.FileCopyFlags.OVERWRITE, None, None)
         except Exception as e:
             print("TuneinPopover::_add_radio: %s" % e)
         url = item.URL
         # Tune in embbed uri in ashx files, so get content if possible
         try:
-            response = urllib.request.urlopen(url)
-            url = response.read().decode('utf-8')
+            f = Gio.File.new_for_uri(url)
+            (status, data, tag) = f.load_contents()
+            if status:
+                url = data.decode('utf-8')
         except Exception as e:
             print("TuneinPopover::_add_radio: %s" % e)
         self._radio_manager.add(item.TEXT)
