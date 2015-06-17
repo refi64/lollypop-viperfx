@@ -202,12 +202,13 @@ class LastFM(LastFMNetwork):
         Enable proxy if needed
     """
     def _check_for_proxy(self):
-        if self._settings is not None and self._settings.get_value('enabled'):
-            h = self._settings.get_value('host').get_string()
-            p = self._settings.get_value('port').get_int32()
-            self.enable_proxy(host=h, port = p)
-        else:
-            self.disable_proxy()
+        if self._settings is not None:
+           h = self._settings.get_value('host').get_string()
+           p = self._settings.get_value('port').get_int32()
+           if h != '' and p != 0:
+               self.enable_proxy(host=h, port = p)
+               return
+        self.disable_proxy()
 
     """
         Connect lastfm

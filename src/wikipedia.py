@@ -44,7 +44,9 @@ class Wikipedia:
         # Python-wikipedia doesn't support proxy
         # https://github.com/goldsmith/Wikipedia/issues/99
         if self._settings is not None:
-            if self._settings.get_value('enabled'):
+            h = self._settings.get_value('host').get_string()
+            p = self._settings.get_value('port').get_int32()
+            if h != '' and p != 0:
                 return (None, None, None)
         try:
             page = self._search_page(artist)
@@ -71,7 +73,9 @@ class Wikipedia:
     """
     def is_disabled_by_proxy(self):
         if self._settings is not None:
-            if self._settings.get_value('enabled'):
+           h = self._settings.get_value('host').get_string()
+           p = self._settings.get_value('port').get_int32()
+           if h != '' and p != 0:
                 return True
         return False
 
