@@ -17,7 +17,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-from gi.repository import Gtk, Gdk, GObject, GdkPixbuf
+from gi.repository import Gtk, Gdk, GObject, GdkPixbuf, Gio
 
 import json
 import urllib.request
@@ -49,20 +49,21 @@ class BaseArt(GObject.GObject):
         @return [urls as string]
     """
     def get_google_arts(self, search, start=0):
+        data = None
         try:
-            response = urllib.request.urlopen("https://ajax.googleapis.com/"
-                                              "ajax/services/search/images"
-                                              "?&q=%s&v=1.0&start=%s&rsz=%s" %
-                                              (urllib.parse.quote(search),
-                                               start,
-                                               GOOGLE_INC))
+            f = Gio.File.new_for_uri("https://ajax.googleapis.com/"
+                                     "ajax/services/search/images"
+                                     "?&q=%s&v=1.0&start=%s&rsz=%s" %
+                                     (urllib.parse.quote(search),
+                                      start,
+                                      GOOGLE_INC))
+            data = f.load_contents()[1]
         except Exception as e:
             print(e)
             return []
 
-        data = response.read()
-        decode = json.loads(data.decode("utf-8"))
         urls = []
+        decode = json.loads(data.decode('utf-8'))
         if decode is None:
             return urls
         try:
