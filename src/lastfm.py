@@ -24,7 +24,6 @@ except Exception as e:
     Secret = None
 
 from pylast import LastFMNetwork, md5, BadAuthenticationError
-import urllib.request
 from gettext import gettext as _
 import re
 import html.parser
@@ -296,7 +295,9 @@ class LastFM(LastFMNetwork):
                     album_id = Lp.albums.get_compilation_id(album, sql)
                 # Do not write files outside collection
                 filepath = Lp.art.get_album_art_filepath(album_id, sql)
-                urllib.request.urlretrieve(url, filepath)
+                s = Gio.File.new_for_uri(url)
+                d = Gio.File.new_for_path(filepath)
+                s.copy(d, Gio.FileCopyFlags.OVERWRITE, None, None)
                 Lp.art.clean_album_cache(album_id, sql)
                 GLib.idle_add(Lp.art.announce_cover_update, album_id)
             except Exception as e:
