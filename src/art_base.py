@@ -126,9 +126,9 @@ class BaseArt(GObject.GObject):
                                selected_color.green,
                                selected_color.blue)
         elif dark and width > ArtSize.MEDIUM:
-            ctx.set_source_rgb(0.8, 0.8, 0.8)
+            ctx.set_source_rgb(1, 1, 1)
         else:
-            ctx.set_source_rgb(0.2, 0.2, 0.2)
+            ctx.set_source_rgb(0, 0, 0)
         ctx.stroke_preserve()
 
         if selected:
