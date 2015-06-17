@@ -11,9 +11,8 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-from gi.repository import GLib, GdkPixbuf
+from gi.repository import GLib, GdkPixbuf, Gio
 
-import urllib.request
 import re
 import os
 
@@ -115,7 +114,9 @@ class RadioArt(BaseArt):
     def copy_uri_to_cache(self, uri, name, size):
         filename = self._get_radio_cache_name(name)
         cache_path_png = "%s/%s_%s.png" % (self._CACHE_PATH, filename, size)
-        urllib.request.urlretrieve(uri, cache_path_png)
+        s = Gio.File.new_for_uri(uri)
+        d = Gio.File.new_for_path(cache_path_png)
+        s.copy(d, Gio.FileCopyFlags.OVERWRITE, None, None)
         GLib.idle_add(self.emit, 'logo-changed', name)
 
     """
