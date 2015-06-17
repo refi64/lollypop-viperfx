@@ -20,7 +20,6 @@
 from gi.repository import Gtk, Gdk, GObject, GdkPixbuf, Gio
 
 import json
-import urllib.request
 import urllib.parse
 from math import pi
 import cairo
@@ -53,7 +52,7 @@ class BaseArt(GObject.GObject):
         urls = []
 
         if not Gio.NetworkMonitor.get_default().get_network_available():
-            return urls
+            return []
 
         try:
             f = Gio.File.new_for_uri("https://ajax.googleapis.com/"
@@ -62,7 +61,9 @@ class BaseArt(GObject.GObject):
                                      (urllib.parse.quote(search),
                                       start,
                                       GOOGLE_INC))
-            data = f.load_contents()[1]
+            (status, data, tag) = f.load_contents()
+            if not status:
+                return []
         except Exception as e:
             print(e)
             return []
