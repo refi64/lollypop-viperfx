@@ -14,7 +14,6 @@
 from gi.repository import Gtk, GLib, Gio, GdkPixbuf
 
 from _thread import start_new_thread
-import urllib.request
 from gettext import gettext as _
 from cgi import escape
 
@@ -129,10 +128,11 @@ class ArtistInfos(Gtk.Bin):
         try:
             response = None
             if image_url is not None:
-                response = urllib.request.urlopen(image_url)
-            if response is not None:
-                stream = Gio.MemoryInputStream.new_from_data(response.read(),
-                                                             None)
+                f = Gio.File.new_for_uri(image_url)
+                (status, data, tag) = f.load_contents()
+                if status:
+                    stream = Gio.MemoryInputStream.new_from_data(data,
+                                                                 None)
         except Exception as e:
             print("PopArtistInfos::_populate: %s" % e)
             content = None
