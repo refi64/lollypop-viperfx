@@ -415,7 +415,7 @@ class TracksDatabase:
 
         result = sql.execute("SELECT rowid FROM tracks\
                               WHERE popularity!=0\
-                              ORDER BY popularity LIMIT 100")
+                              ORDER BY popularity DESC LIMIT 100")
         for row in result:
             tracks += row
         return tracks
