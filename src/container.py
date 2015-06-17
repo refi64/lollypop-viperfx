@@ -182,10 +182,8 @@ class Container:
         @param scanner as CollectionScanner
     """
     def on_scan_finished(self, scanner):
-        if self._list_one.is_populating() or self._list_two.is_populating():
-            GLib.timeout_add(500, self.on_scan_finished, scanner)
-        else:
-            self._update_lists(scanner)
+        self._update_lists(scanner)
+
 ############
 # Private  #
 ############
@@ -297,11 +295,11 @@ class Container:
         # Do not update if updater is PlaylistsManager
         if not isinstance(updater, PlaylistsManager):
             if self._show_genres:
-                self._setup_list_genres(self._list_one, update)
+                start_new_thread(self._setup_list_genres,
+                                 (self._list_one, update))
             else:
-                self._setup_list_artists(self._list_one,
-                                         Type.ALL,
-                                         update)
+                start_new_thread(self._setup_list_artists,
+                                 (self._list_one, Type.ALL, update))
 
     """
         Update list two
@@ -313,7 +311,8 @@ class Container:
         if object_id == Type.PLAYLISTS:
             start_new_thread(self._setup_list_playlists, (update,))
         elif self._show_genres and object_id != Type.NONE:
-            self._setup_list_artists(self._list_two, object_id, update)
+            start_new_thread(self._setup_list_artists, 
+                             (self._list_two, object_id, update))
 
     """
         Return list one headers
@@ -516,8 +515,7 @@ class Container:
             dev.name = volume.get_name()
             dev.uri = uri
             self._devices[self._devices_index] = dev
-            if not self._list_one.is_populating():
-                self._list_one.add_value((dev.id, dev.name))
+            self._list_one.add_value((dev.id, dev.name))
 
     """
         Remove volume from device list
@@ -585,11 +583,6 @@ class Container:
         @param selection list as SelectionList
     """
     def _on_list_populated(self, selection_list):
-        if self._list_one.is_populating() or\
-           self._list_two.is_populating():
-            GLib.timeout_add(500, self._on_list_populated, selection_list)
-            return
-
         for dev in self._devices.values():
             self._list_one.add_value((dev.id, dev.name))
         if self._need_to_update_db:
