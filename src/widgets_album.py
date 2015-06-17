@@ -160,13 +160,15 @@ class AlbumSimpleWidget(AlbumWidget):
         Update cursor for album
     """
     def update_cursor(self):
-        if self._eventbox is not None:
-            if Lp.settings.get_value('auto-play'):
-                self._eventbox.get_window().set_cursor(
-                    Gdk.Cursor(Gdk.CursorType.HAND1))
-            else:
-                self._eventbox.get_window().set_cursor(
-                    Gdk.Cursor(Gdk.CursorType.LEFT_PTR))
+        if self._eventbox is None:
+            return
+        window = self._eventbox.get_window()
+        if window is None:
+            return
+        if Lp.settings.get_value('auto-play'):
+            window.set_cursor(Gdk.Cursor(Gdk.CursorType.HAND1))
+        else:
+            window.set_cursor(Gdk.Cursor(Gdk.CursorType.LEFT_PTR))
 
 #######################
 # PRIVATE             #
@@ -356,13 +358,15 @@ class AlbumDetailedWidget(AlbumWidget):
         Update cursor for album
     """
     def update_cursor(self):
-        if self._eventbox is not None:
-            if Lp.settings.get_value('auto-play'):
-                self._eventbox.get_window().set_cursor(
-                    Gdk.Cursor(Gdk.CursorType.HAND1))
-            else:
-                self._eventbox.get_window().set_cursor(
-                    Gdk.Cursor(Gdk.CursorType.PENCIL))
+        if self._eventbox is None:
+            return
+        window = self._eventbox.get_window()
+        if window is None:
+            return
+        if Lp.settings.get_value('auto-play'):
+            window.set_cursor(Gdk.Cursor(Gdk.CursorType.HAND1))
+        else:
+            window.set_cursor(Gdk.Cursor(Gdk.CursorType.PENCIL))
 
 #######################
 # PRIVATE             #
