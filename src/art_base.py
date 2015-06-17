@@ -136,10 +136,8 @@ class BaseArt(GObject.GObject):
                                selected_color.green,
                                selected_color.blue)
         else:
-            if width < ArtSize.BIG:
+            if width < ArtSize.BIG or dark:
                 ctx.set_source_rgb(0, 0, 0)
-            elif dark:
-                ctx.set_source_rgba(0, 0, 0, 0.5)
             else:
                 ctx.set_source_rgb(1, 1, 1)
         ctx.fill()
