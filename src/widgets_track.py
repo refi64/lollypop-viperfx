@@ -14,7 +14,7 @@
 from gi.repository import GObject, Gtk
 
 from lollypop.define import Lp, ArtSize
-from lollypop.pop_menu import TrackMenuPopover
+from lollypop.pop_menu import TrackMenu
 from lollypop.utils import seconds_to_string, rgba_to_hex
 
 
@@ -215,7 +215,7 @@ class TrackRow(Row):
         @param widget as Gtk.Button
     """
     def _on_menu_clicked(self, widget):
-        menu = TrackMenuPopover(self._object_id, None)
+        menu = TrackMenu(self._object_id, None)
         popover = Gtk.Popover.new_from_model(self._menu, menu)
         popover.connect('closed', self._on_closed)
         self.get_style_context().add_class('track-menu-selected')
