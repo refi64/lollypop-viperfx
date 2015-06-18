@@ -369,11 +369,11 @@ class SearchPopover(Gtk.Popover):
         @param button as Gtk.Button
     """
     def _on_play_btn_clicked(self, button):
-        start_new_thread(self._play_search, ())
+        GLib.idle_add(self._play_search)
 
     """
         Create a new playlist based on search
         @param button as Gtk.Button
     """
     def _on_new_btn_clicked(self, button):
-        start_new_thread(self._new_playlist, ())
+        GLib.idle_add(self._new_playlist)
