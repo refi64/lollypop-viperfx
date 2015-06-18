@@ -41,10 +41,10 @@ src/pop_covers.py
 src/pop_infos.py
 src/pop_menu.py
 src/pop_next.py
+src/pop_queue.py
 src/pop_radio.py
+src/pop_search.py
 src/pop_tunein.py
-src/queue.py
-src/search.py
 src/selectionlist.py
 src/settings.py
 src/tagreader.py
@@ -86,10 +86,11 @@ src/window.py
 [type: gettext/glade]data/PlaylistsManagerView.ui
 [type: gettext/glade]data/PlaylistsManagerWidget.ui
 [type: gettext/glade]data/PlaylistsView.ui
-[type: gettext/glade]data/QueueWidget.ui
+[type: gettext/glade]data/QueuePopover.ui
 [type: gettext/glade]data/RadioPopover.ui
 [type: gettext/glade]data/RadiosView.ui
 [type: gettext/glade]data/RadioWidget.ui
+[type: gettext/glade]data/SearchPopover.ui
 [type: gettext/glade]data/SearchRow.ui
 [type: gettext/glade]data/SelectionList.ui
 [type: gettext/glade]data/SettingsDialog.ui

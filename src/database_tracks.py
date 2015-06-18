@@ -540,16 +540,17 @@ class TracksDatabase:
                      WHERE track_id = ?", (track_id,))
 
     """
-        Search for tracks looking like string
-        @param string
+        Search for tracks looking like searched
+        @param searched as string
         return: Arrays of (id as int, name as string)
     """
-    def search(self, string, sql=None):
+    def search(self, searched, sql=None):
         if not sql:
             sql = Lp.sql
-        tracks = []
+
         result = sql.execute("SELECT rowid, name FROM tracks\
-                              WHERE name LIKE ? LIMIT 25", ('%'+string+'%',))
+                              WHERE name LIKE ? LIMIT 25", ('%'+searched+'%',))
+        tracks = []
         for row in result:
             tracks += (row,)
         return tracks

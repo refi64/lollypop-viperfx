@@ -14,8 +14,8 @@
 from gi.repository import Gtk, Gio
 
 from lollypop.pop_next import NextPopover
-from lollypop.queue import QueueWidget
-from lollypop.search import SearchPopover
+from lollypop.pop_queue import QueueWidget
+from lollypop.pop_search import SearchPopover
 from lollypop.define import Lp, Shuffle
 
 

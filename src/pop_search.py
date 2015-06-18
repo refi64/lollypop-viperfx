@@ -145,6 +145,7 @@ class SearchPopover(Gtk.Popover):
         self._in_thread = False
         self._stop_thread = False
         self._timeout = None
+        self._current_search = ''
 
         builder = Gtk.Builder()
         builder.add_from_resource('/org/gnome/Lollypop/SearchPopover.ui')
@@ -207,9 +208,8 @@ class SearchPopover(Gtk.Popover):
     """
         Populate treeview searching items
         in db based on text entry current text
-        @param searched as string
     """
-    def _populate(self, searched):
+    def _populate(self):
         sql = Lp.db.get_cursor()
         results = []
         albums = []
@@ -217,7 +217,7 @@ class SearchPopover(Gtk.Popover):
         tracks_non_aartist = []
 
         # Get all albums for all artists and non aartist tracks
-        for artist_id in Lp.artists.search(searched, sql):
+        for artist_id in Lp.artists.search(self._current_search, sql):
             for album_id in Lp.albums.get_ids(artist_id, None, sql):
                 if (album_id, artist_id) not in albums:
                     albums.append((album_id, artist_id))
@@ -225,7 +225,7 @@ class SearchPopover(Gtk.Popover):
                                                                      sql):
                 tracks_non_aartist.append((track_id, track_name))
 
-        albums += Lp.albums.search(searched, sql)
+        albums += Lp.albums.search(self._current_search, sql)
 
         for album_id, artist_id in albums:
             search_obj = SearchObject()
@@ -236,8 +236,8 @@ class SearchPopover(Gtk.Popover):
             search_obj.album_id = album_id
             results.append(search_obj)
 
-        for track_id, track_name in Lp.tracks.search(searched, sql) +\
-                tracks_non_aartist:
+        for track_id, track_name in Lp.tracks.search(self._current_search,
+                                                     sql) + tracks_non_aartist:
             search_obj = SearchObject()
             search_obj.title = track_name
             search_obj.id = track_id
@@ -289,6 +289,41 @@ class SearchPopover(Gtk.Popover):
             self._stop_thread = False
 
     """
+        Play tracks based on search
+    """
+    def _play_search(self):
+        sql = Lp.db.get_cursor()
+        tracks = []
+        for child in self._view.get_children():
+            if child.is_track:
+                tracks.append(Track(child.id, sql))
+            else:
+                for track_id in Lp.albums.get_tracks(child.id, None, sql):
+                    tracks.append(Track(track_id, sql))
+        if tracks:
+            track = Lp.player.set_user_playlist(tracks, tracks[0].id)
+            Lp.player.load(track)
+        sql.close()
+
+    """
+        Crate a new playlist based on search
+    """
+    def _new_playlist(self):
+        sql = Lp.db.get_cursor()
+        tracks = []
+        for child in self._view.get_children():
+            if child.is_track:
+                tracks.append(Lp.tracks.get_path(child.id, sql))
+            else:
+                for track_id in Lp.albums.get_tracks(child.id, None, sql):
+                    tracks.append(Lp.tracks.get_path(track_id, sql))
+        if tracks:
+            if not Lp.playlists.exists(self._current_search):
+                Lp.playlists.add(self._current_search)
+            Lp.playlists.add_tracks(self._current_search, tracks)
+        sql.close()
+
+    """
         Timeout filtering, call _really_do_filterting() after a small timeout
         @param widget as Gtk.TextEntry
     """
@@ -301,22 +336,20 @@ class SearchPopover(Gtk.Popover):
             GLib.source_remove(self._timeout)
             self._timeout = None
     
-        searched = widget.get_text()
-        if searched != "":
+        self._current_search = widget.get_text()
+        if self._current_search != "":
             self._timeout = GLib.timeout_add(100,
-                                             self._on_search_changed_thread,
-                                             searched)
+                                             self._on_search_changed_thread)
         else:
             self._clear([])
 
     """
         Just run _reallyon_entry_changed in a thread
-        @param searched as string
     """
-    def _on_search_changed_thread(self, searched):
+    def _on_search_changed_thread(self):
         self._timeout = None
         self._in_thread = True
-        start_new_thread(self._populate, (searched,))
+        start_new_thread(self._populate, ())
 
     """
         Play searched item when selected
@@ -330,3 +363,17 @@ class SearchPopover(Gtk.Popover):
             Lp.player.load(Track(value_id))
         else:
             Lp.player.play_album(value_id)
+
+    """
+        Start playback base on current search
+        @param button as Gtk.Button
+    """
+    def _on_play_btn_clicked(self, button):
+        start_new_thread(self._play_search, ())
+
+    """
+        Create a new playlist based on search
+        @param button as Gtk.Button
+    """
+    def _on_new_btn_clicked(self, button):
+        start_new_thread(self._new_playlist, ())

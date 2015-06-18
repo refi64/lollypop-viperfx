@@ -51,7 +51,7 @@ class PlaylistsManager(GObject.GObject):
         @thread safe
     """
     def add(self, playlist_name, get_desc=False):
-        filename = self._PLAYLISTS_PATH + "/"+playlist_name + ".m3u"
+        filename = self._PLAYLISTS_PATH + "/" + playlist_name + ".m3u"
         try:
             if os.path.exists(filename):
                 new = False
@@ -73,6 +73,15 @@ class PlaylistsManager(GObject.GObject):
                 GLib.idle_add(self.emit, 'playlists-changed')
         except Exception as e:
             print("PlaylistsManager::add: %s" % e)
+
+    """
+        Return True if playlist exist
+        @param playlist name as string
+        @param exist as bool
+    """
+    def exists(self, playlist_name):
+        filename = self._PLAYLISTS_PATH + "/" + playlist_name + ".m3u"
+        return os.path.exists(filename)
 
     """
         Add loved playlist, will never erase current

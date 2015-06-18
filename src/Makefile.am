@@ -39,10 +39,10 @@ app_PYTHON = \
     pop_infos.py\
     pop_menu.py\
     pop_next.py\
+    pop_queue.py\
     pop_radio.py\
+    pop_search.py\
     pop_tunein.py\
-    queue.py\
-    search.py\
     selectionlist.py\
     settings.py\
     sync_mtp.py\
