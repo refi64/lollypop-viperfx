@@ -11,7 +11,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-from gi.repository import Gtk, GLib, GObject, Pango, cairo
+from gi.repository import Gtk, Gdk, GLib, GObject, Pango, cairo
 
 from lollypop.utils import format_artist_name
 from lollypop.define import Type, Lp
@@ -153,6 +153,7 @@ class SelectionList(Gtk.ScrolledWindow):
     """
         Update view with values
         @param [(int, str)]
+        @thread safe
     """
     def update_values(self, values):
         self._updating = True
@@ -160,12 +161,16 @@ class SelectionList(Gtk.ScrolledWindow):
         value_ids = set([v[0] for v in values])
         for item in self._model:
             if item[0] > Type.DEVICES and not item[0] in value_ids:
+                Gdk.threads_enter()
                 self._model.remove(item.iter)
+                Gdk.threads_leave()
         # Add items which are not already in the list
         item_ids = set([i[0] for i in self._model])
         for value in values:
             if not value[0] in item_ids:
+                Gdk.threads_enter()
                 self._add_value(value)
+                Gdk.threads_leave()
         self._updating = False
 
     """
@@ -242,10 +247,13 @@ class SelectionList(Gtk.ScrolledWindow):
     """
         Add values to the list
         @param items as [(int,str)]
+        @thread safe
     """
     def _add_values(self, values):
         for value in values:
+            Gdk.threads_enter()
             self._add_value(value)
+            Gdk.threads_leave()
 
     """
         Return pixbuf for id
