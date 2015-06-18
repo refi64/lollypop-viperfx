@@ -301,6 +301,7 @@ class SearchPopover(Gtk.Popover):
                 for track_id in Lp.albums.get_tracks(child.id, None, sql):
                     tracks.append(Track(track_id, sql))
         if tracks:
+            Lp.player.set_party(False)
             track = Lp.player.set_user_playlist(tracks, tracks[0].id)
             Lp.player.load(track)
         sql.close()
