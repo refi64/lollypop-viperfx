@@ -15,7 +15,7 @@ from gi.repository import Gtk, Gio
 
 from lollypop.pop_next import NextPopover
 from lollypop.queue import QueueWidget
-from lollypop.search import SearchWidget
+from lollypop.search import SearchPopover
 from lollypop.define import Lp, Shuffle
 
 
@@ -45,7 +45,7 @@ class ToolbarEnd(Gtk.Bin):
         app.set_accels_for_action("app.party", ["<Control>p"])
 
         search_button = builder.get_object('search-button')
-        self._search = SearchWidget(self)
+        self._search = SearchPopover(self)
         self._search.set_relative_to(search_button)
         searchAction = Gio.SimpleAction.new('search', None)
         searchAction.connect('activate', self._on_search_btn_clicked)

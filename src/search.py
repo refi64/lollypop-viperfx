@@ -133,7 +133,7 @@ class SearchObject:
 
 
 # Show a list of search row
-class SearchWidget(Gtk.Popover):
+class SearchPopover(Gtk.Popover):
 
     """
         Init Popover ui with a text entry and a scrolled treeview
