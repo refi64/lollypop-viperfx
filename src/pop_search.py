@@ -289,21 +289,39 @@ class SearchPopover(Gtk.Popover):
             self._stop_thread = False
 
     """
-        Play tracks based on search
+        Set user playlist
+        @param tracks as [Track]
+        @param track id as int
+        @thread safe
     """
-    def _play_search(self):
+    def _set_user_playlist(self, tracks, track_id):
+        track = Lp.player.set_user_playlist(tracks, track_id)
+        Lp.player.load(track)
+
+    """
+        Play tracks based on search
+        @param started object id as int
+        @param is track as bool
+    """
+    def _play_search(self, object_id=None, is_track=True):
         sql = Lp.db.get_cursor()
         tracks = []
+        track_id = None
         for child in self._view.get_children():
             if child.is_track:
                 tracks.append(Track(child.id, sql))
             else:
-                for track_id in Lp.albums.get_tracks(child.id, None, sql):
-                    tracks.append(Track(track_id, sql))
+                album_tracks = Lp.albums.get_tracks(child.id, None, sql)
+                if not is_track and child.id == object_id and album_tracks:
+                    track_id = album_tracks[0]
+                for tid in album_tracks:
+                    tracks.append(Track(tid, sql))
         if tracks:
-            Lp.player.set_party(False)
-            track = Lp.player.set_user_playlist(tracks, tracks[0].id)
-            Lp.player.load(track)
+            if object_id is not None and is_track:
+                track_id = object_id
+            elif track_id is None:
+                track_id = tracks[0].id
+            GLib.idle_add(self._set_user_playlist, tracks, track_id)
         sql.close()
 
     """
@@ -360,22 +378,21 @@ class SearchPopover(Gtk.Popover):
     """
     def _on_activate(self, widget, row):
         value_id = row.id
-        if row.is_track:
-            Lp.player.load(Track(value_id))
-        else:
+        if not row.is_track:
             Lp.player.set_party(False)
-            Lp.player.play_album(value_id)
+        start_new_thread(self._play_search, (row.id,    row.is_track))
 
     """
         Start playback base on current search
         @param button as Gtk.Button
     """
     def _on_play_btn_clicked(self, button):
-        GLib.idle_add(self._play_search)
+        Lp.player.set_party(False)
+        start_new_thread(self._play_search, ())
 
     """
         Create a new playlist based on search
         @param button as Gtk.Button
     """
     def _on_new_btn_clicked(self, button):
-        GLib.idle_add(self._new_playlist)
+        start_new_thread(self._new_playlist, ())
