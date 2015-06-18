@@ -129,9 +129,7 @@ class SelectionList(Gtk.ScrolledWindow):
     """
     def populate(self, values):
         self._pop_time = time()
-        if len(self._model) > 0:
-            self._updating = True
-        GLib.idle_add(self._add_values, values, self._pop_time)
+        start_new_thread(self._populate, (values,))
 
     """
         Remove row from model
@@ -155,7 +153,6 @@ class SelectionList(Gtk.ScrolledWindow):
     """
         Update view with values
         @param [(int, str)]
-        @thread safe
     """
     def update_values(self, values):
         self._updating = True
@@ -163,14 +160,13 @@ class SelectionList(Gtk.ScrolledWindow):
         value_ids = set([v[0] for v in values])
         for item in self._model:
             if item[0] > Type.DEVICES and not item[0] in value_ids:
-                GLib.idle_add(self._model.remove, item.iter)
+                self._model.remove(item.iter)
         # Add items which are not already in the list
         item_ids = set([i[0] for i in self._model])
         for value in values:
             if not value[0] in item_ids:
-                GLib.idle_add(self._add_value, value)
-        # We want this after previous add to main loop
-        GLib.idle_add(self._not_updating)
+                self._add_value(value)
+        self._updating = False
 
     """
         Return value for id
@@ -241,12 +237,6 @@ class SelectionList(Gtk.ScrolledWindow):
 # PRIVATE             #
 #######################
     """
-        Helper to set this to False in main loop
-    """
-    def _not_updating(self):
-        self._updating = False
-
-    """
         Add value to the model
         @param value as [int, str]
     """
@@ -262,6 +252,16 @@ class SelectionList(Gtk.ScrolledWindow):
                                 self._get_icon_name(value[0])])
             if value[0] == self._to_select_id:
                 self.select_id(self._to_select_id)
+
+    """
+        Populate view with values
+        @param [(int, str)], will be deleted
+        @thread safe
+    """
+    def _populate(self, values):
+        if len(self._model) > 0:
+            self._updating = True
+        GLib.idle_add(self._add_values, values, self._pop_time)
 
     """
         Add values to the list
