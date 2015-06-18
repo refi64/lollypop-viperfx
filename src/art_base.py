@@ -119,7 +119,7 @@ class BaseArt(GObject.GObject):
                 radius - 0.5, 90 * degrees, 180 * degrees)
         ctx.arc(radius, radius, radius - 0.5, 180 * degrees, 270 * degrees)
         ctx.close_path()
-        ctx.set_line_width(0.6)
+        ctx.set_line_width(1)
 
         if selected:
             ctx.set_source_rgb(selected_color.red,
