@@ -363,6 +363,7 @@ class SearchPopover(Gtk.Popover):
         if row.is_track:
             Lp.player.load(Track(value_id))
         else:
+            Lp.player.set_party(False)
             Lp.player.play_album(value_id)
 
     """
