@@ -60,14 +60,28 @@ class PlaylistWidget(Gtk.Bin):
         self._main_widget.add(self._tracks_widget1)
         self._main_widget.add(self._tracks_widget2)
 
-        self.add(self._main_widget)
+        self._stack = Gtk.Stack()
+        self._stack.set_transition_duration(250)
+        self._stack.set_transition_type(Gtk.StackTransitionType.CROSSFADE)
+        self._stack.show()
+
+        spinner = Gtk.Spinner()
+        spinner.start()
+        spinner.show()
+        self._stack.add(spinner)
+        self._stack.add(self._main_widget)
+        self._stack.set_visible_child(spinner)
+
+        self.add(self._stack)
 
     """
-        Populate list one, thread safe
+        Populate list one
         @param track's ids as array of int
         @param track position as int
+        @thread safe
     """
     def populate_list_one(self, tracks, pos):
+        GLib.idle_add(self._stack.set_visible_child, self._main_widget)
         self._stop = False
         GLib.idle_add(self._add_tracks,
                       tracks,
@@ -75,9 +89,10 @@ class PlaylistWidget(Gtk.Bin):
                       pos)
 
     """
-        Populate list two, thread safe
+        Populate list two
         @param track's ids as array of int
         @param track position as int
+        @thread safe
     """
     def populate_list_two(self, tracks, pos):
         self._stop = False
