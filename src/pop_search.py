@@ -378,8 +378,7 @@ class SearchPopover(Gtk.Popover):
     """
     def _on_activate(self, widget, row):
         value_id = row.id
-        if not row.is_track:
-            Lp.player.set_party(False)
+        Lp.player.set_party(False)
         start_new_thread(self._play_search, (row.id,    row.is_track))
 
     """
