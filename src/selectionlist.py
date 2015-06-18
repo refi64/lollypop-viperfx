@@ -156,18 +156,16 @@ class SelectionList(Gtk.ScrolledWindow):
     """
     def update_values(self, values):
         self._updating = True
+        # Remove not found items but not devices
+        value_ids = set([v[0] for v in values])
         for item in self._model:
-            found = False
-            for value in values:
-                if item[1] == value[1]:
-                    found = True
-                    break
-            # Remove not found items but not devices
-            if not found and item[0] > Type.DEVICES:
+            if item[0] > Type.DEVICES and not item[0] in value_ids:
                 self._model.remove(item.iter)
-
+        # Add items which are not already in the list
+        item_ids = set([i[0] for i in self._model])
         for value in values:
-            self._add_value(value)
+            if not value[0] in item_ids:
+                self._add_value(value)
         self._updating = False
 
     """
