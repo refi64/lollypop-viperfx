@@ -75,6 +75,7 @@ class SelectionList(Gtk.ScrolledWindow):
         self._to_select_id = Type.NONE
         self._updating = False       # Sort disabled if False
         self._is_artists = False  # for string translation
+        self._pop_time = 0.0      # Keep track of time when starting populate
         self._popover = SelectionPopover()
 
         builder = Gtk.Builder()
@@ -218,6 +219,12 @@ class SelectionList(Gtk.ScrolledWindow):
             if iterator is not None:
                 selected_id = self._model.get_value(iterator, 0)
         return selected_id
+
+    """
+        Return true if view is being populated
+    """
+    def is_populating(self):
+        return self._pop_time != 0
 
     """
         Clear treeview
