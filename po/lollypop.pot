@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-06-17 00:05+0200\n"
+"POT-Creation-Date: 2015-06-18 11:16+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -169,18 +169,18 @@ msgstr ""
 msgid "Music player for the GNOME desktop"
 msgstr ""
 
-#: ../src/application.py:25
+#: ../src/application.py:27
 msgid ""
 "    - Scrobbler disabled\n"
 "    - Auto cover download disabled\n"
 "    - Artist informations disabled"
 msgstr ""
 
-#: ../src/application.py:36
+#: ../src/application.py:38
 msgid "Advanced artist informations disabled"
 msgstr ""
 
-#: ../src/application.py:319
+#: ../src/application.py:336
 msgid "Lollypop: You need to install yelp."
 msgstr ""
 
@@ -192,52 +192,52 @@ msgstr ""
 msgid "Your music is updating"
 msgstr ""
 
-#: ../src/container.py:323
+#: ../src/container.py:322
 msgid "Popular albums"
 msgstr ""
 
-#: ../src/container.py:324
+#: ../src/container.py:323
 msgid "Recent albums"
 msgstr ""
 
-#: ../src/container.py:325
+#: ../src/container.py:324
 msgid "Random albums"
 msgstr ""
 
-#: ../src/container.py:326 ../src/pop_menu.py:397 ../src/pop_menu.py:452
+#: ../src/container.py:325 ../src/pop_menu.py:397 ../src/pop_menu.py:452
 #: ../src/pop_menu.py:469
 msgid "Playlists"
 msgstr ""
 
-#: ../src/container.py:327
+#: ../src/container.py:326
 msgid "Radios"
 msgstr ""
 
-#: ../src/container.py:329
+#: ../src/container.py:328
 msgid "All artists"
 msgstr ""
 
-#: ../src/container.py:331
+#: ../src/container.py:330
 msgid "All albums"
 msgstr ""
 
-#: ../src/container.py:375
+#: ../src/container.py:374
 msgid "Compilations"
 msgstr ""
 
-#: ../src/container.py:392
+#: ../src/container.py:391
 msgid "Most played"
 msgstr ""
 
-#: ../src/container.py:393
+#: ../src/container.py:392
 msgid "Recently played"
 msgstr ""
 
-#: ../src/container.py:394
+#: ../src/container.py:393
 msgid "Never played"
 msgstr ""
 
-#: ../src/container.py:395
+#: ../src/container.py:394
 msgid "Random tracks"
 msgstr ""
 
@@ -261,7 +261,7 @@ msgstr ""
 msgid "Pause"
 msgstr ""
 
-#: ../src/fullscreen.py:206 ../src/pop_tunein.py:148
+#: ../src/fullscreen.py:206 ../src/pop_tunein.py:147
 #: ../src/toolbar_playback.py:79 ../src/toolbar_playback.py:107
 #: ../data/ToolbarPlayback.ui.h:2
 msgid "Play"
@@ -271,7 +271,7 @@ msgstr ""
 msgid "Last.fm authentication disabled"
 msgstr ""
 
-#: ../src/lastfm.py:269
+#: ../src/lastfm.py:286
 msgid "Wrong Last.fm credentials"
 msgstr ""
 
@@ -303,32 +303,32 @@ msgstr ""
 msgid "Loved tracks"
 msgstr ""
 
-#: ../src/pop_covers.py:60 ../src/pop_infos.py:93 ../src/pop_infos.py:255
-#: ../src/pop_tunein.py:82 ../data/RadioPopover.ui.h:3
+#: ../src/pop_covers.py:58 ../src/pop_infos.py:92 ../src/pop_infos.py:256
+#: ../src/pop_tunein.py:81 ../data/RadioPopover.ui.h:3
 msgid "Please wait..."
 msgstr ""
 
-#: ../src/pop_covers.py:148
+#: ../src/pop_covers.py:147
 msgid "No cover found..."
 msgstr ""
 
-#: ../src/pop_covers.py:168
+#: ../src/pop_covers.py:167
 msgid "Select a cover art for this album"
 msgstr ""
 
-#: ../src/pop_infos.py:162 ../src/pop_infos.py:166
+#: ../src/pop_infos.py:163 ../src/pop_infos.py:167
 msgid "Wikipedia"
 msgstr ""
 
-#: ../src/pop_infos.py:163 ../src/pop_infos.py:165
+#: ../src/pop_infos.py:164 ../src/pop_infos.py:166
 msgid "Last.fm"
 msgstr ""
 
-#: ../src/pop_infos.py:169
+#: ../src/pop_infos.py:170
 msgid "No information for this artist..."
 msgstr ""
 
-#: ../src/pop_infos.py:191 ../src/pop_infos.py:242
+#: ../src/pop_infos.py:192 ../src/pop_infos.py:243
 msgid "I do not love"
 msgstr ""
 
@@ -402,24 +402,20 @@ msgstr ""
 msgid "Edit"
 msgstr ""
 
-#: ../src/pop_radio.py:72 ../src/pop_tunein.py:143
+#: ../src/pop_radio.py:70 ../src/pop_tunein.py:142
 msgid "Add"
 msgstr ""
 
-#: ../src/pop_radio.py:74
+#: ../src/pop_radio.py:72
 msgid "Modify"
 msgstr ""
 
-#: ../src/pop_tunein.py:102
+#: ../src/pop_tunein.py:101
 msgid "Can't connect to TuneIn..."
 msgstr ""
 
-#: ../src/pop_tunein.py:158
+#: ../src/pop_tunein.py:157
 msgid "Browse themes and add a new radio"
-msgstr ""
-
-#: ../src/search.py:152
-msgid "Search:"
 msgstr ""
 
 #: ../src/settings.py:132
@@ -445,7 +441,7 @@ msgstr ""
 msgid "Cancel synchronization"
 msgstr ""
 
-#: ../src/widgets_album.py:254
+#: ../src/widgets_album.py:253
 #, python-format
 msgid "Disc %s"
 msgstr ""
@@ -458,16 +454,16 @@ msgstr ""
 msgid "No free space available on device"
 msgstr ""
 
-#: ../src/widgets_playlist.py:260 ../src/widgets_playlist.py:263
+#: ../src/widgets_playlist.py:275 ../src/widgets_playlist.py:278
 msgid "New playlist "
 msgstr ""
 
-#: ../src/widgets_playlist.py:307 ../src/widgets_playlist.py:542
+#: ../src/widgets_playlist.py:322 ../src/widgets_playlist.py:557
 #, python-format
 msgid "Remove \"%s\"?"
 msgstr ""
 
-#: ../src/widgets_playlist.py:587
+#: ../src/widgets_playlist.py:602
 msgid "Remove these tracks?"
 msgstr ""
 
@@ -530,11 +526,11 @@ msgstr ""
 msgid "New playlist"
 msgstr ""
 
-#: ../data/QueueWidget.ui.h:1
+#: ../data/QueuePopover.ui.h:1
 msgid "Queue:"
 msgstr ""
 
-#: ../data/QueueWidget.ui.h:2
+#: ../data/QueuePopover.ui.h:2
 msgid "Clear queue"
 msgstr ""
 
@@ -564,6 +560,14 @@ msgstr ""
 
 #: ../data/RadiosView.ui.h:2
 msgid "Search in TuneIn"
+msgstr ""
+
+#: ../data/SearchPopover.ui.h:1
+msgid "Play search"
+msgstr ""
+
+#: ../data/SearchPopover.ui.h:2
+msgid "Create a new playlist based on search"
 msgstr ""
 
 #: ../data/SearchRow.ui.h:1
