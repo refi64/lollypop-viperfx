@@ -111,10 +111,10 @@ class Application(Gtk.Application):
 
         settings = Gtk.Settings.get_default()
         dark = Lp.settings.get_value('dark-ui')
-        settings.set_property("gtk-application-prefer-dark-theme", dark)
+        settings.set_property('gtk-application-prefer-dark-theme', dark)
 
         self._parser = TotemPlParser.Parser.new()
-        self._parser.connect("entry-parsed", self._on_entry_parsed)
+        self._parser.connect('entry-parsed', self._on_entry_parsed)
 
         self.add_action(Lp.settings.create_action('shuffle'))
         self._externals_count = 0
