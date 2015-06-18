@@ -297,11 +297,13 @@ class Container:
         # Do not update if updater is PlaylistsManager
         if not isinstance(updater, PlaylistsManager):
             if self._show_genres:
-                self._setup_list_genres(self._list_one, update)
+                start_new_thread(self._setup_list_genres,
+                                 (self._list_one, update))
             else:
-                self._setup_list_artists(self._list_one,
-                                         Type.ALL,
-                                         update)
+                start_new_thread(self._setup_list_artists,
+                                 (self._list_one,
+                                  Type.ALL,
+                                  update))
 
     """
         Update list two
@@ -313,7 +315,8 @@ class Container:
         if object_id == Type.PLAYLISTS:
             start_new_thread(self._setup_list_playlists, (update,))
         elif self._show_genres and object_id != Type.NONE:
-            self._setup_list_artists(self._list_two, object_id, update)
+            start_new_thread(self._setup_list_artists,
+                             (self._list_two, object_id, update))
 
     """
         Return list one headers
