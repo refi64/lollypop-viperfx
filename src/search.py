@@ -146,40 +146,16 @@ class SearchPopover(Gtk.Popover):
         self._stop_thread = False
         self._timeout = None
 
-        grid = Gtk.Grid()
-        grid.set_property("orientation", Gtk.Orientation.VERTICAL)
-
-        label = Gtk.Label(label=_("Search:"))
-        label.set_property("margin_start", 5)
-        label.set_property("margin_end", 5)
-        label.show()
-
-        self._text_entry = Gtk.Entry()
-        self._text_entry.connect("changed", self._do_filtering)
-        self._text_entry.set_hexpand(True)
-        self._text_entry.set_property("margin", 5)
-        self._text_entry.show()
-
-        entry_line = Gtk.Grid()
-        entry_line.add(label)
-        entry_line.add(self._text_entry)
-        entry_line.show()
+        builder = Gtk.Builder()
+        builder.add_from_resource('/org/gnome/Lollypop/SearchPopover.ui')
+        builder.connect_signals(self)
 
         self._view = Gtk.ListBox()
         self._view.connect("row-activated", self._on_activate)
         self._view.show()
 
-        self._scroll = Gtk.ScrolledWindow()
-        self._scroll.set_vexpand(True)
-        self._scroll.set_policy(Gtk.PolicyType.AUTOMATIC,
-                                Gtk.PolicyType.AUTOMATIC)
-        self._scroll.add(self._view)
-        self._scroll.show()
-
-        grid.add(entry_line)
-        grid.add(self._scroll)
-        grid.show()
-        self.add(grid)
+        builder.get_object('scrolled').add(self._view)
+        self.add(builder.get_object('widget'))
 
 #######################
 # PRIVATE             #
@@ -195,7 +171,6 @@ class SearchPopover(Gtk.Popover):
             self.set_size_request(400, 600)
         Gtk.Popover.do_show(self)
         Lp.window.enable_global_shorcuts(False)
-        self._text_entry.grab_focus()
 
     """
         Restore global shortcuts
@@ -230,40 +205,14 @@ class SearchPopover(Gtk.Popover):
         return found
 
     """
-        Timeout filtering, call _really_do_filterting() after a small timeout
-    """
-    def _do_filtering(self, data=None):
-        if self._in_thread:
-            self._stop_thread = True
-            GLib.timeout_add(100, self._do_filtering)
-
-        if self._timeout:
-            GLib.source_remove(self._timeout)
-            self._timeout = None
-
-        if self._text_entry.get_text() != "":
-            self._timeout = GLib.timeout_add(100, self._do_filtering_thread)
-        else:
-            self._clear([])
-
-    """
-        Just run _really_do_filtering in a thread
-    """
-    def _do_filtering_thread(self):
-        self._timeout = None
-        self._in_thread = True
-        start_new_thread(self._really_do_filtering, ())
-
-    """
         Populate treeview searching items
         in db based on text entry current text
+        @param searched as string
     """
-    def _really_do_filtering(self):
+    def _populate(self, searched):
         sql = Lp.db.get_cursor()
         results = []
         albums = []
-
-        searched = self._text_entry.get_text()
 
         tracks_non_aartist = []
 
@@ -340,8 +289,40 @@ class SearchPopover(Gtk.Popover):
             self._stop_thread = False
 
     """
+        Timeout filtering, call _really_do_filterting() after a small timeout
+        @param widget as Gtk.TextEntry
+    """
+    def _on_search_changed(self, widget):
+        if self._in_thread:
+            self._stop_thread = True
+            GLib.timeout_add(100, self._on_search_changed, widget)
+
+        if self._timeout:
+            GLib.source_remove(self._timeout)
+            self._timeout = None
+    
+        searched = widget.get_text()
+        if searched != "":
+            self._timeout = GLib.timeout_add(100,
+                                             self._on_search_changed_thread,
+                                             searched)
+        else:
+            self._clear([])
+
+    """
+        Just run _reallyon_entry_changed in a thread
+        @param searched as string
+    """
+    def _on_search_changed_thread(self, searched):
+        self._timeout = None
+        self._in_thread = True
+        start_new_thread(self._populate, (searched,))
+
+    """
         Play searched item when selected
         If item is an album, play first track
+        @param widget as Gtk.ListBox
+        @param row as SearchRow
     """
     def _on_activate(self, widget, row):
         value_id = row.id

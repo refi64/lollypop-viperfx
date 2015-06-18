@@ -4,9 +4,10 @@
     <file preprocess="xml-stripblanks">AboutDialog.ui</file>
     <file preprocess="xml-stripblanks">Appmenu.ui</file>
     <file preprocess="xml-stripblanks">SearchRow.ui</file>
+    <file preprocess="xml-stripblanks">SearchPopover.ui</file>
     <file preprocess="xml-stripblanks">TrackRow.ui</file>
     <file preprocess="xml-stripblanks">AlbumRow.ui</file>
-    <file preprocess="xml-stripblanks">QueueWidget.ui</file>
+    <file preprocess="xml-stripblanks">QueuePopover.ui</file>
     <file preprocess="xml-stripblanks">RadioWidget.ui</file>
     <file preprocess="xml-stripblanks">RadiosView.ui</file>
     <file preprocess="xml-stripblanks">RadioPopover.ui</file>

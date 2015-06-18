@@ -33,7 +33,7 @@ class QueueWidget(Gtk.Popover):
         self._signal_id2 = None
 
         builder = Gtk.Builder()
-        builder.add_from_resource('/org/gnome/Lollypop/QueueWidget.ui')
+        builder.add_from_resource('/org/gnome/Lollypop/QueuePopover.ui')
         builder.connect_signals(self)
 
         self._model = Gtk.ListStore(int,               # Album id
