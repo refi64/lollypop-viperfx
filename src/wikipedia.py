@@ -38,6 +38,7 @@ class Wikipedia:
         if not Gio.NetworkMonitor.get_default().get_network_available():
             return (None, None, None)
         try:
+            words = artist.split(' ')
             page = self._search_page(artist)
             if page is None:
                 return (None, None, None)
@@ -47,8 +48,11 @@ class Wikipedia:
             shuffle(page.images)
             for image in page.images:
                 if image.lower().endswith('.jpg'):
+                    # Search specific string in urls
+                    for word in words:
+                        if word in image:
+                            return (url, image, content)
                     img = image
-                    break
             return (url, img, content)
         except:
             return (None, None, None)
