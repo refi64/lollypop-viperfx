@@ -70,8 +70,10 @@ class Application(Gtk.Application):
         GLib.set_application_name('lollypop')
         GLib.set_prgname('lollypop')
         self.set_flags(Gio.ApplicationFlags.HANDLES_OPEN)
-        self.add_main_option("debug", b'd', GLib.OptionFlags.NONE,
-                             GLib.OptionArg.NONE, "Debug lollypop", None)
+        # TODO: Remove this test later
+        if Gtk.get_minor_version() > 12:
+            self.add_main_option("debug", b'd', GLib.OptionFlags.NONE,
+                                 GLib.OptionArg.NONE, "Debug lollypop", None)
         self.connect('handle-local-options', self._on_handle_local_options)
         cssProviderFile = Gio.File.new_for_uri(
             'resource:///org/gnome/Lollypop/application.css')
