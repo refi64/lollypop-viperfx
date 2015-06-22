@@ -39,6 +39,7 @@
     <child>
       <object class="GtkButton" id="play_btn">
         <property name="visible">True</property>
+        <property name="sensitive">False</property>
         <property name="can_focus">True</property>
         <property name="receives_default">True</property>
         <property name="tooltip_text" translatable="yes">Play search</property>
@@ -54,6 +55,7 @@
     <child>
       <object class="GtkButton" id="new_btn">
         <property name="visible">True</property>
+        <property name="sensitive">False</property>
         <property name="can_focus">True</property>
         <property name="receives_default">True</property>
         <property name="tooltip_text" translatable="yes">Create a new playlist based on search</property>

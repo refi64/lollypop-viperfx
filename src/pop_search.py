@@ -151,6 +151,9 @@ class SearchPopover(Gtk.Popover):
         builder.add_from_resource('/org/gnome/Lollypop/SearchPopover.ui')
         builder.connect_signals(self)
 
+        self._play_btn = builder.get_object('play_btn')
+        self._new_btn = builder.get_object('new_btn')
+
         self._view = Gtk.ListBox()
         self._view.connect("row-activated", self._on_activate)
         self._view.show()
@@ -358,9 +361,13 @@ class SearchPopover(Gtk.Popover):
     
         self._current_search = widget.get_text()
         if self._current_search != "":
+            self._play_btn.set_sensitive(True)
+            self._new_btn.set_sensitive(True)
             self._timeout = GLib.timeout_add(100,
                                              self._on_search_changed_thread)
         else:
+            self._play_btn.set_sensitive(False)
+            self._new_btn.set_sensitive(False)
             self._clear([])
 
     """
