@@ -232,14 +232,13 @@ class Player(BinPlayer, QueuePlayer, UserPlaylistPlayer, RadioPlayer,
 # PRIVATE             #
 #######################
     """
-        On stream start
-        Emit "current-changed" to notify others components
+        On stream start, set next and previous track
     """
     def _on_stream_start(self, bus, message):
         if self.current_track.id >= 0:
             ShufflePlayer._on_stream_start(self, bus, message)
-        if self.next_track.id in self._queue:
-            self._queue.remove(self.next_track.id)
+        if self._queue and self.current_track.id == self._queue[0]:
+            self._queue.pop(0)
             self.emit("queue-changed")
         self.set_next()
         self.set_prev()
