@@ -230,7 +230,11 @@ class AlbumsView(View):
     def _get_albums(self):
         sql = Lp.db.get_cursor()
         if self._genre_id == Type.ALL:
-            albums = Lp.albums.get_ids(None, None, sql)
+            if self._is_compilation:
+                albums = Lp.albums.get_compilations(None,
+                                                    sql)
+            else:
+                albums = Lp.albums.get_ids(None, None, sql)
         elif self._genre_id == Type.POPULARS:
             albums = Lp.albums.get_populars(sql)
         elif self._genre_id == Type.RECENTS:
