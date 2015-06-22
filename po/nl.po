@@ -11,8 +11,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lollypop\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-06-18 11:16+0200\n"
-"PO-Revision-Date: 2015-06-19 20:50+0000\n"
+"POT-Creation-Date: 2015-06-22 09:47+0200\n"
+"PO-Revision-Date: 2015-06-22 14:14+0000\n"
 "Last-Translator: Nathan Follens\n"
 "Language-Team: Dutch (http://www.transifex.com/projects/p/lollypop/language/nl/)\n"
 "MIME-Version: 1.0\n"
@@ -47,7 +47,7 @@ msgstr "Venster is gemaximaliseerd."
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:7
 msgid "Enabled genres in party mode"
-msgstr "Genres in feestmodus aangezet."
+msgstr "Genres in feestmodus aangezet"
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:8
 msgid "Ids for genres."
@@ -185,7 +185,7 @@ msgstr "    - Scrobbler uitgeschakeld\n    - Automatisch downloaden van albumhoe
 msgid "Advanced artist informations disabled"
 msgstr "Uitgebreide artiestinformatie uitgeschakeld"
 
-#: ../src/application.py:336
+#: ../src/application.py:338
 msgid "Lollypop: You need to install yelp."
 msgstr "Lollypop: je moet yelp installeren."
 
@@ -435,7 +435,7 @@ msgstr "Recent"
 #. Translators: Add here words that shoud be ignored for artist sort order
 #: ../src/utils.py:92
 msgid "The the"
-msgstr "The the"
+msgstr "The the De de"
 
 #: ../src/view_device.py:38 ../src/view_device.py:79
 #, python-format
@@ -682,6 +682,10 @@ msgstr "Willekeurige volgorde"
 #: ../data/ToolbarEnd.ui.h:9
 msgid "Search"
 msgstr "Zoeken"
+
+#: ../data/ToolbarPlayback.ui.h:4
+msgid "Artist biography"
+msgstr "Biografie van artiest"
 
 #: ../data/Unicode.ui.h:1
 msgid "Error"

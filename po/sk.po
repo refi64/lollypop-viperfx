@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lollypop\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-06-18 11:16+0200\n"
-"PO-Revision-Date: 2015-06-19 08:57+0000\n"
+"POT-Creation-Date: 2015-06-22 09:47+0200\n"
+"PO-Revision-Date: 2015-06-22 08:59+0000\n"
 "Last-Translator: Cédric Bellegarde <web@adishatz.org>\n"
 "Language-Team: Slovak (http://www.transifex.com/projects/p/lollypop/language/sk/)\n"
 "MIME-Version: 1.0\n"
@@ -182,7 +182,7 @@ msgstr "    - Scrobbler zakázaný\n    - Automatické prevzatie obalu zakázan�
 msgid "Advanced artist informations disabled"
 msgstr "Pokročilé informácie o interpretovi zakázané"
 
-#: ../src/application.py:336
+#: ../src/application.py:338
 msgid "Lollypop: You need to install yelp."
 msgstr "Lollypop: Musíte nainštalovať knižnicu yelp."
 
@@ -679,6 +679,10 @@ msgstr "Zamieša"
 #: ../data/ToolbarEnd.ui.h:9
 msgid "Search"
 msgstr "Vyhľadá"
+
+#: ../data/ToolbarPlayback.ui.h:4
+msgid "Artist biography"
+msgstr ""
 
 #: ../data/Unicode.ui.h:1
 msgid "Error"

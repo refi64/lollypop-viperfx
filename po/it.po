@@ -9,8 +9,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lollypop\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-06-18 11:16+0200\n"
-"PO-Revision-Date: 2015-06-19 09:17+0000\n"
+"POT-Creation-Date: 2015-06-22 09:47+0200\n"
+"PO-Revision-Date: 2015-06-22 09:13+0000\n"
 "Last-Translator: Pietro Acinapura <pietro.ac@gmail.com>\n"
 "Language-Team: Italian (http://www.transifex.com/projects/p/lollypop/language/it/)\n"
 "MIME-Version: 1.0\n"
@@ -183,7 +183,7 @@ msgstr "- Scrobbler disabillitato\n- Scaricamento automatico della copertina dis
 msgid "Advanced artist informations disabled"
 msgstr "Informazioni artista avanzate disabilitate"
 
-#: ../src/application.py:336
+#: ../src/application.py:338
 msgid "Lollypop: You need to install yelp."
 msgstr "Lollypop: devi installare yelp."
 
@@ -680,6 +680,10 @@ msgstr "Mescola"
 #: ../data/ToolbarEnd.ui.h:9
 msgid "Search"
 msgstr "Cerca"
+
+#: ../data/ToolbarPlayback.ui.h:4
+msgid "Artist biography"
+msgstr "Biografia dell'artista"
 
 #: ../data/Unicode.ui.h:1
 msgid "Error"

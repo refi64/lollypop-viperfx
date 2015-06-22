@@ -10,8 +10,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lollypop\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-06-18 11:16+0200\n"
-"PO-Revision-Date: 2015-06-19 09:29+0000\n"
+"POT-Creation-Date: 2015-06-22 09:47+0200\n"
+"PO-Revision-Date: 2015-06-22 12:11+0000\n"
 "Last-Translator: Yosef Or Boczko <yoseforb@gmail.com>\n"
 "Language-Team: Hebrew (http://www.transifex.com/projects/p/lollypop/language/he/)\n"
 "MIME-Version: 1.0\n"
@@ -184,7 +184,7 @@ msgstr "- Scrobbler disabled\n- Auto cover download disabled\n- Artist informati
 msgid "Advanced artist informations disabled"
 msgstr "מידע מתקדם אודות אמן מושבת"
 
-#: ../src/application.py:336
+#: ../src/application.py:338
 msgid "Lollypop: You need to install yelp."
 msgstr "‏ Lollypop: יש להתקין את yelp."
 
@@ -681,6 +681,10 @@ msgstr "ערבוב"
 #: ../data/ToolbarEnd.ui.h:9
 msgid "Search"
 msgstr "חיפוש"
+
+#: ../data/ToolbarPlayback.ui.h:4
+msgid "Artist biography"
+msgstr "תולדות האמן"
 
 #: ../data/Unicode.ui.h:1
 msgid "Error"
