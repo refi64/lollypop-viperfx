@@ -243,7 +243,6 @@ class SelectionList(Gtk.ScrolledWindow):
         self._model.append([value[0], value[1], self._get_icon_name(value[0])])
         if value[0] == self._to_select_id:
             GLib.idle_add(self.select_id, self._to_select_id)
-            self._to_select_id = Type.NONE
 
     """
         Add values to the list
@@ -328,7 +327,11 @@ class SelectionList(Gtk.ScrolledWindow):
     """
     def _on_cursor_changed(self, view):
         selected_id = self.get_selected_id()
+        if self._to_select_id != Type.NONE:
+            if selected_id != self._to_select_id:
+                return
         if not self._updating and selected_id != Type.NONE:
+            self._to_select_id = Type.NONE
             self.emit('item-selected', selected_id)
 
     """
