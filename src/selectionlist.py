@@ -70,7 +70,6 @@ class SelectionList(Gtk.ScrolledWindow):
                         Gtk.PolicyType.AUTOMATIC)
         self._last_motion_event = MotionEvent()
         self._previous_motion_y = 0.0
-        self._loading = False
         self._timeout = None
         self._to_select_id = Type.NONE
         self._updating = False       # Sort disabled if False
@@ -244,6 +243,7 @@ class SelectionList(Gtk.ScrolledWindow):
         self._model.append([value[0], value[1], self._get_icon_name(value[0])])
         if value[0] == self._to_select_id:
             GLib.idle_add(self.select_id, self._to_select_id)
+            self._to_select_id = Type.NONE
 
     """
         Add values to the list
