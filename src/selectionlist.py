@@ -238,11 +238,12 @@ class SelectionList(Gtk.ScrolledWindow):
     """
         Add value to the model
         @param value as [int, str]
+        @thread safe
     """
     def _add_value(self, value):
         self._model.append([value[0], value[1], self._get_icon_name(value[0])])
         if value[0] == self._to_select_id:
-            self.select_id(self._to_select_id)
+            GLib.idle_add(self.select_id, self._to_select_id)
 
     """
         Add values to the list
