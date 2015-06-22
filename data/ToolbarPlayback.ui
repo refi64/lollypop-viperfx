@@ -112,7 +112,6 @@
         <property name="visible">False</property>
         <property name="sensitive">False</property>
         <property name="can_focus">True</property>
-        <property name="valign">center</property>
         <property name="receives_default">True</property>
         <property name="image">lastfm_image</property>
         <property name="always_show_image">True</property>
