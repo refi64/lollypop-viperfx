@@ -50,9 +50,6 @@ class Player(BinPlayer, QueuePlayer, UserPlaylistPlayer, RadioPlayer,
     """
     def next(self):
         if self.next_track.id is not None:
-            if self.next_track.id in self._queue:
-                self._queue.remove(self.next_track.id)
-                self.emit("queue-changed")
             self.load(self.next_track)
 
     """
@@ -241,6 +238,9 @@ class Player(BinPlayer, QueuePlayer, UserPlaylistPlayer, RadioPlayer,
     def _on_stream_start(self, bus, message):
         if self.current_track.id >= 0:
             ShufflePlayer._on_stream_start(self, bus, message)
+        if self.next_track.id in self._queue:
+            self._queue.remove(self.next_track.id)
+            self.emit("queue-changed")
         self.set_next()
         self.set_prev()
         BinPlayer._on_stream_start(self, bus, message)
