@@ -128,7 +128,7 @@ class SelectionList(Gtk.ScrolledWindow):
         if len(self._model) > 0:
             self._updating = True
         self._add_values(values)
-        GLib.idle_add(self.emit, "populated")
+        GLib.idle_add(self.emit, 'populated')
         self._updating = False
 
     """
