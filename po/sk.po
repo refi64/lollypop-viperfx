@@ -8,9 +8,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lollypop\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-06-13 01:40+0200\n"
-"PO-Revision-Date: 2015-06-13 04:38+0000\n"
-"Last-Translator: Dušan Kazik <prescott66@gmail.com>\n"
+"POT-Creation-Date: 2015-06-18 11:16+0200\n"
+"PO-Revision-Date: 2015-06-19 08:57+0000\n"
+"Last-Translator: Cédric Bellegarde <web@adishatz.org>\n"
 "Language-Team: Slovak (http://www.transifex.com/projects/p/lollypop/language/sk/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -171,18 +171,22 @@ msgstr "Prehráva a organizuje vašu hudobnú zbierku"
 msgid "Music player for the GNOME desktop"
 msgstr "Prehrávač hudby pre prostredie GNOME"
 
-#: ../src/application.py:25
+#: ../src/application.py:27
 msgid ""
 "    - Scrobbler disabled\n"
 "    - Auto cover download disabled\n"
 "    - Artist informations disabled"
 msgstr "    - Scrobbler zakázaný\n    - Automatické prevzatie obalu zakázané\n    - Informácie o interpretoch zakázané"
 
-#: ../src/application.py:308
+#: ../src/application.py:38
+msgid "Advanced artist informations disabled"
+msgstr "Pokročilé informácie o interpretovi zakázané"
+
+#: ../src/application.py:336
 msgid "Lollypop: You need to install yelp."
 msgstr "Lollypop: Musíte nainštalovať knižnicu yelp."
 
-#: ../src/codecs.py:50
+#: ../src/codecs.py:53
 msgid "Restart lollypop after installing codecs"
 msgstr "Po inštalácii kodekov reštartujte prehrávač lollypop"
 
@@ -190,54 +194,59 @@ msgstr "Po inštalácii kodekov reštartujte prehrávač lollypop"
 msgid "Your music is updating"
 msgstr "Aktualizuje sa vaša hudba"
 
-#: ../src/container.py:323
+#: ../src/container.py:322
 msgid "Popular albums"
 msgstr "Obľúbené albumy"
 
-#: ../src/container.py:324
+#: ../src/container.py:323
 msgid "Recent albums"
 msgstr "Nedávne albumy"
 
-#: ../src/container.py:325
+#: ../src/container.py:324
 msgid "Random albums"
 msgstr "Náhodné albumy"
 
-#: ../src/container.py:326 ../src/pop_menu.py:397 ../src/pop_menu.py:452
+#: ../src/container.py:325 ../src/pop_menu.py:397 ../src/pop_menu.py:452
 #: ../src/pop_menu.py:469
 msgid "Playlists"
 msgstr "Zoznamy skladieb"
 
-#: ../src/container.py:327
+#: ../src/container.py:326
 msgid "Radios"
 msgstr "Rádiá"
 
-#: ../src/container.py:329
+#: ../src/container.py:328
 msgid "All artists"
 msgstr "Všetci interpreti"
 
-#: ../src/container.py:331
+#: ../src/container.py:330
 msgid "All albums"
 msgstr "Všetky albumy"
 
-#: ../src/container.py:375
+#: ../src/container.py:374
 msgid "Compilations"
 msgstr "Kompilácie"
 
-#: ../src/container.py:392
+#: ../src/container.py:391
 msgid "Most played"
 msgstr "Najčastejšie prehrávané"
 
-#: ../src/container.py:393
+#: ../src/container.py:392
 msgid "Recently played"
 msgstr "Nedávno prehrávané"
 
-#: ../src/container.py:394
+#: ../src/container.py:393
 msgid "Never played"
 msgstr "Nikdy neprehrávané"
 
+#: ../src/container.py:394
+msgid "Random tracks"
+msgstr "Náhodné skladby"
+
 #: ../src/database_albums.py:234 ../src/database_artists.py:71
 #: ../src/database_genres.py:66 ../src/database_tracks.py:204
-#: ../src/tagreader.py:84 ../src/tagreader.py:119 ../src/tagreader.py:134
+#: ../src/tagreader.py:79 ../src/tagreader.py:98 ../src/tagreader.py:123
+#: ../src/tagreader.py:138
 msgid "Unknown"
 msgstr "Neznáme"
 
@@ -254,16 +263,17 @@ msgstr "Mnoho interpretov"
 msgid "Pause"
 msgstr "Pozastaví"
 
-#: ../src/fullscreen.py:206 ../src/toolbar_playback.py:79
-#: ../src/toolbar_playback.py:107 ../data/ToolbarPlayback.ui.h:2
+#: ../src/fullscreen.py:206 ../src/pop_tunein.py:147
+#: ../src/toolbar_playback.py:79 ../src/toolbar_playback.py:107
+#: ../data/ToolbarPlayback.ui.h:2
 msgid "Play"
 msgstr "Prehrá"
 
-#: ../src/lastfm.py:21
+#: ../src/lastfm.py:23
 msgid "Last.fm authentication disabled"
 msgstr "Overenie totožnosti služby Last.fm zakázané"
 
-#: ../src/lastfm.py:218
+#: ../src/lastfm.py:286
 msgid "Wrong Last.fm credentials"
 msgstr "Nesprávne poverenia pre službu Last.fm"
 
@@ -282,7 +292,7 @@ msgstr "Nasledujúca"
 msgid "by %s, from %s"
 msgstr "od interpreta %s, z albumu %s"
 
-#: ../src/player_bin.py:257
+#: ../src/player_bin.py:262
 #, python-format
 msgid "File doesn't exist: %s"
 msgstr "Súbor neexistuje: %s"
@@ -295,24 +305,32 @@ msgstr "Rádio"
 msgid "Loved tracks"
 msgstr "Obľúbené skladby"
 
-#: ../src/pop_covers.py:60 ../src/pop_infos.py:91 ../src/pop_tunein.py:82
-#: ../data/PopRadio.ui.h:3 ../data/RadioPopover.ui.h:3
+#: ../src/pop_covers.py:58 ../src/pop_infos.py:92 ../src/pop_infos.py:256
+#: ../src/pop_tunein.py:81 ../data/RadioPopover.ui.h:3
 msgid "Please wait..."
 msgstr "Prosím, čakajte..."
 
-#: ../src/pop_covers.py:148
+#: ../src/pop_covers.py:147
 msgid "No cover found..."
 msgstr "Nenašiel sa žiadny obal..."
 
-#: ../src/pop_covers.py:168
+#: ../src/pop_covers.py:167
 msgid "Select a cover art for this album"
 msgstr "Vyberte obrázok pre tento album"
 
-#: ../src/pop_infos.py:151
+#: ../src/pop_infos.py:163 ../src/pop_infos.py:167
+msgid "Wikipedia"
+msgstr "Wikipedia"
+
+#: ../src/pop_infos.py:164 ../src/pop_infos.py:166
+msgid "Last.fm"
+msgstr "Last.fm"
+
+#: ../src/pop_infos.py:170
 msgid "No information for this artist..."
 msgstr "Žiadne informácie o tomto interpretovi..."
 
-#: ../src/pop_infos.py:169 ../src/pop_infos.py:220
+#: ../src/pop_infos.py:192 ../src/pop_infos.py:243
 msgid "I do not love"
 msgstr "Nemám rád túto skladbu"
 
@@ -386,25 +404,21 @@ msgstr "Fronta"
 msgid "Edit"
 msgstr "Upraví"
 
-#: ../src/pop_radio.py:72
+#: ../src/pop_radio.py:70 ../src/pop_tunein.py:142
 msgid "Add"
 msgstr "Pridať"
 
-#: ../src/pop_radio.py:74
+#: ../src/pop_radio.py:72
 msgid "Modify"
 msgstr "Upraviť"
 
-#: ../src/pop_tunein.py:102
+#: ../src/pop_tunein.py:101
 msgid "Can't connect to TuneIn..."
 msgstr "Nedá sa pripojiť k službe TuneIn..."
 
-#: ../src/pop_tunein.py:156
+#: ../src/pop_tunein.py:157
 msgid "Browse themes and add a new radio"
 msgstr "Vyhľadajte témy a pridajte nové rádio"
-
-#: ../src/search.py:152
-msgid "Search:"
-msgstr "Vyhľadať:"
 
 #: ../src/settings.py:132
 msgid "Populars"
@@ -429,7 +443,7 @@ msgstr "Synchronizovať %s"
 msgid "Cancel synchronization"
 msgstr "Zrušiť synchronizáciu"
 
-#: ../src/widgets_album.py:221
+#: ../src/widgets_album.py:253
 #, python-format
 msgid "Disc %s"
 msgstr "Disk %s"
@@ -442,18 +456,24 @@ msgstr "Vyskytla sa neznáma chyba počas synchronizácie. Skúste reštartovať
 msgid "No free space available on device"
 msgstr "Na zariadení nie je dostupné voľné miesto"
 
-#: ../src/widgets_playlist.py:260 ../src/widgets_playlist.py:263
+#: ../src/widgets_playlist.py:275 ../src/widgets_playlist.py:278
 msgid "New playlist "
 msgstr "Nový zoznam skladieb"
 
-#: ../src/widgets_playlist.py:307 ../src/widgets_playlist.py:540
+#: ../src/widgets_playlist.py:322 ../src/widgets_playlist.py:557
 #, python-format
 msgid "Remove \"%s\"?"
 msgstr "Odstrániť „%s“?"
 
-#: ../src/widgets_playlist.py:585
+#: ../src/widgets_playlist.py:602
 msgid "Remove these tracks?"
 msgstr "Odstrániť tieto skladby?"
+
+#. Translators: Put here words added by wikipedia in band search
+#. Ex: Muse_(band), Peaches(musician)
+#: ../src/wikipedia.py:30
+msgid "musician;band"
+msgstr "hudobník;umelec;skupina"
 
 #: ../data/AboutDialog.ui.h:1
 msgid "A music player for GNOME."
@@ -508,33 +528,33 @@ msgstr "Potvrdiť"
 msgid "New playlist"
 msgstr "Nový zoznam skladieb"
 
-#: ../data/PopRadio.ui.h:1 ../data/RadioPopover.ui.h:1
-msgid "Select a logo  for this radio"
-msgstr "Vybrať logo pre toto rádio"
-
-#: ../data/PopRadio.ui.h:2 ../data/RadioPopover.ui.h:2
-msgid "No logo found..."
-msgstr "Nenašlo sa žiadne logo..."
-
-#: ../data/PopRadio.ui.h:4 ../data/RadioPopover.ui.h:4
-msgid "Name:"
-msgstr "Názov:"
-
-#: ../data/PopRadio.ui.h:5 ../data/RadioPopover.ui.h:5
-msgid "Address:"
-msgstr "Adresa:"
-
-#: ../data/PopRadio.ui.h:6 ../data/RadioPopover.ui.h:6
-msgid "Delete"
-msgstr "Odstrániť"
-
-#: ../data/QueueWidget.ui.h:1
+#: ../data/QueuePopover.ui.h:1
 msgid "Queue:"
 msgstr "Fronta:"
 
-#: ../data/QueueWidget.ui.h:2
+#: ../data/QueuePopover.ui.h:2
 msgid "Clear queue"
 msgstr "Vymaže frontu"
+
+#: ../data/RadioPopover.ui.h:1
+msgid "Select a logo  for this radio"
+msgstr "Vybrať logo pre toto rádio"
+
+#: ../data/RadioPopover.ui.h:2
+msgid "No logo found..."
+msgstr "Nenašlo sa žiadne logo..."
+
+#: ../data/RadioPopover.ui.h:4
+msgid "Name:"
+msgstr "Názov:"
+
+#: ../data/RadioPopover.ui.h:5
+msgid "Address:"
+msgstr "Adresa:"
+
+#: ../data/RadioPopover.ui.h:6
+msgid "Delete"
+msgstr "Odstrániť"
 
 #: ../data/RadiosView.ui.h:1
 msgid "New radio"
@@ -543,6 +563,14 @@ msgstr "Nové rádio"
 #: ../data/RadiosView.ui.h:2
 msgid "Search in TuneIn"
 msgstr "Vyhľadá v službe TuneIn"
+
+#: ../data/SearchPopover.ui.h:1
+msgid "Play search"
+msgstr ""
+
+#: ../data/SearchPopover.ui.h:2
+msgid "Create a new playlist based on search"
+msgstr ""
 
 #: ../data/SearchRow.ui.h:1
 msgid "artist"
@@ -561,8 +589,8 @@ msgid "Restore state on startup"
 msgstr "Obnoviť stav po spustení"
 
 #: ../data/SettingsDialog.ui.h:5
-msgid "Play albums on 2nd click"
-msgstr "Prehrávať albumy po dvojkliku"
+msgid "Play albums on click"
+msgstr "Prehrať albumy po kliknutí"
 
 #: ../data/SettingsDialog.ui.h:6
 msgid "Behaviour"

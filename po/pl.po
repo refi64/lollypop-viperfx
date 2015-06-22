@@ -4,13 +4,14 @@
 # 
 # Translators:
 # Aleksander Charatonik <alexskc@autistici.org>, 2015
+# Paweł Adamczak <pawel.ad@gmail.com>, 2015
 # Piotr Sokół <psokol@jabster.pl>, 2015
 msgid ""
 msgstr ""
 "Project-Id-Version: lollypop\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-06-13 01:40+0200\n"
-"PO-Revision-Date: 2015-06-12 23:41+0000\n"
+"POT-Creation-Date: 2015-06-18 11:16+0200\n"
+"PO-Revision-Date: 2015-06-19 08:57+0000\n"
 "Last-Translator: Cédric Bellegarde <web@adishatz.org>\n"
 "Language-Team: Polish (http://www.transifex.com/projects/p/lollypop/language/pl/)\n"
 "MIME-Version: 1.0\n"
@@ -65,7 +66,7 @@ msgstr "Konto Last.fm"
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:12
 msgid "Favorite tag editor"
-msgstr ""
+msgstr "Ulubiony edytor tagów"
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:13
 msgid "Favorite cover file"
@@ -136,7 +137,7 @@ msgstr "Wyłącza powiadomienia"
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:29
 msgid "Show track number from tags"
-msgstr ""
+msgstr "Pokaż numer utworu z tagów"
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:30
 msgid "INTERNAL"
@@ -172,73 +173,82 @@ msgstr "Odtwarza i zarządza kolekcją muzyki"
 msgid "Music player for the GNOME desktop"
 msgstr "Odtwarza nagrania muzyczne w środowisku GNOME"
 
-#: ../src/application.py:25
+#: ../src/application.py:27
 msgid ""
 "    - Scrobbler disabled\n"
 "    - Auto cover download disabled\n"
 "    - Artist informations disabled"
 msgstr "- Scrobblowanie wyłączone\n- Automatyczne ściąganie okładek wyłączone\n- Automatyczne ściąganie danych wyłączone"
 
-#: ../src/application.py:308
+#: ../src/application.py:38
+msgid "Advanced artist informations disabled"
+msgstr ""
+
+#: ../src/application.py:336
 msgid "Lollypop: You need to install yelp."
 msgstr "Wymagana instalcja yelp."
 
-#: ../src/codecs.py:50
+#: ../src/codecs.py:53
 msgid "Restart lollypop after installing codecs"
-msgstr ""
+msgstr "Uruchom ponownie Lollypop po zainstalowaniu kodeków"
 
 #: ../src/collectionscanner.py:63
 msgid "Your music is updating"
 msgstr "Uaktualnianie kolekcji"
 
-#: ../src/container.py:323
+#: ../src/container.py:322
 msgid "Popular albums"
 msgstr "Popularne albumy"
 
-#: ../src/container.py:324
+#: ../src/container.py:323
 msgid "Recent albums"
 msgstr "Ostatnie albumy"
 
-#: ../src/container.py:325
+#: ../src/container.py:324
 msgid "Random albums"
 msgstr "Losowe albumy"
 
-#: ../src/container.py:326 ../src/pop_menu.py:397 ../src/pop_menu.py:452
+#: ../src/container.py:325 ../src/pop_menu.py:397 ../src/pop_menu.py:452
 #: ../src/pop_menu.py:469
 msgid "Playlists"
 msgstr "Listy odtwarzania"
 
-#: ../src/container.py:327
+#: ../src/container.py:326
 msgid "Radios"
 msgstr "Radia"
 
-#: ../src/container.py:329
+#: ../src/container.py:328
 msgid "All artists"
 msgstr "Wszyscy wykonawcy"
 
-#: ../src/container.py:331
+#: ../src/container.py:330
 msgid "All albums"
 msgstr "Wszystkie albumy"
 
-#: ../src/container.py:375
+#: ../src/container.py:374
 msgid "Compilations"
 msgstr "Kompilacje"
 
-#: ../src/container.py:392
+#: ../src/container.py:391
 msgid "Most played"
 msgstr "Często słuchane"
 
-#: ../src/container.py:393
+#: ../src/container.py:392
 msgid "Recently played"
 msgstr "Ostatnio słuchane"
 
-#: ../src/container.py:394
+#: ../src/container.py:393
 msgid "Never played"
 msgstr "Nigdy słuchane"
 
+#: ../src/container.py:394
+msgid "Random tracks"
+msgstr ""
+
 #: ../src/database_albums.py:234 ../src/database_artists.py:71
 #: ../src/database_genres.py:66 ../src/database_tracks.py:204
-#: ../src/tagreader.py:84 ../src/tagreader.py:119 ../src/tagreader.py:134
+#: ../src/tagreader.py:79 ../src/tagreader.py:98 ../src/tagreader.py:123
+#: ../src/tagreader.py:138
 msgid "Unknown"
 msgstr "Nieznany"
 
@@ -255,16 +265,17 @@ msgstr "Wielu wykonawców"
 msgid "Pause"
 msgstr "Wstrzymuje odtwarzanie"
 
-#: ../src/fullscreen.py:206 ../src/toolbar_playback.py:79
-#: ../src/toolbar_playback.py:107 ../data/ToolbarPlayback.ui.h:2
+#: ../src/fullscreen.py:206 ../src/pop_tunein.py:147
+#: ../src/toolbar_playback.py:79 ../src/toolbar_playback.py:107
+#: ../data/ToolbarPlayback.ui.h:2
 msgid "Play"
 msgstr "Rozpoczyna odtwarzanie"
 
-#: ../src/lastfm.py:21
+#: ../src/lastfm.py:23
 msgid "Last.fm authentication disabled"
 msgstr "Zapotwierdzenie Last.fm wyłączone"
 
-#: ../src/lastfm.py:218
+#: ../src/lastfm.py:286
 msgid "Wrong Last.fm credentials"
 msgstr "Nieprawidłowe konto Last.fm"
 
@@ -283,7 +294,7 @@ msgstr "Przechodzi do następnego nagrania"
 msgid "by %s, from %s"
 msgstr "w wykonaniu %s, z albumu %s"
 
-#: ../src/player_bin.py:257
+#: ../src/player_bin.py:262
 #, python-format
 msgid "File doesn't exist: %s"
 msgstr "Nie istnieje plik %s"
@@ -296,26 +307,34 @@ msgstr "Radio"
 msgid "Loved tracks"
 msgstr "Ulubione utwory"
 
-#: ../src/pop_covers.py:60 ../src/pop_infos.py:91 ../src/pop_tunein.py:82
-#: ../data/PopRadio.ui.h:3 ../data/RadioPopover.ui.h:3
+#: ../src/pop_covers.py:58 ../src/pop_infos.py:92 ../src/pop_infos.py:256
+#: ../src/pop_tunein.py:81 ../data/RadioPopover.ui.h:3
 msgid "Please wait..."
 msgstr "Proszę czekać..."
 
-#: ../src/pop_covers.py:148
+#: ../src/pop_covers.py:147
 msgid "No cover found..."
 msgstr "Nie odnaleziono okładki..."
 
-#: ../src/pop_covers.py:168
+#: ../src/pop_covers.py:167
 msgid "Select a cover art for this album"
 msgstr "Wybór okładki albumu"
 
-#: ../src/pop_infos.py:151
+#: ../src/pop_infos.py:163 ../src/pop_infos.py:167
+msgid "Wikipedia"
+msgstr ""
+
+#: ../src/pop_infos.py:164 ../src/pop_infos.py:166
+msgid "Last.fm"
+msgstr ""
+
+#: ../src/pop_infos.py:170
 msgid "No information for this artist..."
 msgstr "Brak danych o wykonawcy..."
 
-#: ../src/pop_infos.py:169 ../src/pop_infos.py:220
+#: ../src/pop_infos.py:192 ../src/pop_infos.py:243
 msgid "I do not love"
-msgstr ""
+msgstr "Nie ulubione"
 
 #: ../src/pop_menu.py:60
 msgid "Continue playback"
@@ -377,7 +396,7 @@ msgstr "Odtwarzanie"
 
 #: ../src/pop_menu.py:430
 msgid "Modify informations"
-msgstr ""
+msgstr "Zmień informacje"
 
 #: ../src/pop_menu.py:450 ../src/pop_menu.py:467 ../data/ToolbarEnd.ui.h:10
 msgid "Queue"
@@ -387,25 +406,21 @@ msgstr "Wyświetla kolejkę odtwarzania"
 msgid "Edit"
 msgstr "Edycja"
 
-#: ../src/pop_radio.py:72
+#: ../src/pop_radio.py:70 ../src/pop_tunein.py:142
 msgid "Add"
 msgstr "Dodaj"
 
-#: ../src/pop_radio.py:74
+#: ../src/pop_radio.py:72
 msgid "Modify"
 msgstr "Zmień"
 
-#: ../src/pop_tunein.py:102
+#: ../src/pop_tunein.py:101
 msgid "Can't connect to TuneIn..."
 msgstr "Brak połączenia z TuneIn..."
 
-#: ../src/pop_tunein.py:156
+#: ../src/pop_tunein.py:157
 msgid "Browse themes and add a new radio"
-msgstr ""
-
-#: ../src/search.py:152
-msgid "Search:"
-msgstr "Wyszukiwanie:"
+msgstr "Przeglądaj motywy i dodaj nowe radio"
 
 #: ../src/settings.py:132
 msgid "Populars"
@@ -430,7 +445,7 @@ msgstr "Synchronizuj %s"
 msgid "Cancel synchronization"
 msgstr "Anuluj synchronizacji"
 
-#: ../src/widgets_album.py:221
+#: ../src/widgets_album.py:253
 #, python-format
 msgid "Disc %s"
 msgstr "Płyta %s"
@@ -443,18 +458,24 @@ msgstr "Nie rozpoznany błąd. Spróbuj zresetować urządzenie."
 msgid "No free space available on device"
 msgstr "Brak wolnego miejsca w pamięci urządzenia"
 
-#: ../src/widgets_playlist.py:260 ../src/widgets_playlist.py:263
+#: ../src/widgets_playlist.py:275 ../src/widgets_playlist.py:278
 msgid "New playlist "
 msgstr "Nowa lista odtwarzania"
 
-#: ../src/widgets_playlist.py:307 ../src/widgets_playlist.py:540
+#: ../src/widgets_playlist.py:322 ../src/widgets_playlist.py:557
 #, python-format
 msgid "Remove \"%s\"?"
 msgstr "Usunąć „%s”?"
 
-#: ../src/widgets_playlist.py:585
+#: ../src/widgets_playlist.py:602
 msgid "Remove these tracks?"
 msgstr "Usunąć te ścieżki?"
+
+#. Translators: Put here words added by wikipedia in band search
+#. Ex: Muse_(band), Peaches(musician)
+#: ../src/wikipedia.py:30
+msgid "musician;band"
+msgstr ""
 
 #: ../data/AboutDialog.ui.h:1
 msgid "A music player for GNOME."
@@ -509,33 +530,33 @@ msgstr "Potwierdź"
 msgid "New playlist"
 msgstr "Nowa lista odtwarzania"
 
-#: ../data/PopRadio.ui.h:1 ../data/RadioPopover.ui.h:1
-msgid "Select a logo  for this radio"
-msgstr "Wybór logo do radia"
-
-#: ../data/PopRadio.ui.h:2 ../data/RadioPopover.ui.h:2
-msgid "No logo found..."
-msgstr "Nie odnaleziono logo"
-
-#: ../data/PopRadio.ui.h:4 ../data/RadioPopover.ui.h:4
-msgid "Name:"
-msgstr "Nazwa:"
-
-#: ../data/PopRadio.ui.h:5 ../data/RadioPopover.ui.h:5
-msgid "Address:"
-msgstr "Adres:"
-
-#: ../data/PopRadio.ui.h:6 ../data/RadioPopover.ui.h:6
-msgid "Delete"
-msgstr "usunąć"
-
-#: ../data/QueueWidget.ui.h:1
+#: ../data/QueuePopover.ui.h:1
 msgid "Queue:"
 msgstr "Kolejka:"
 
-#: ../data/QueueWidget.ui.h:2
+#: ../data/QueuePopover.ui.h:2
 msgid "Clear queue"
 msgstr "Czyści kolejkę"
+
+#: ../data/RadioPopover.ui.h:1
+msgid "Select a logo  for this radio"
+msgstr "Wybór logo do radia"
+
+#: ../data/RadioPopover.ui.h:2
+msgid "No logo found..."
+msgstr "Nie odnaleziono logo"
+
+#: ../data/RadioPopover.ui.h:4
+msgid "Name:"
+msgstr "Nazwa:"
+
+#: ../data/RadioPopover.ui.h:5
+msgid "Address:"
+msgstr "Adres:"
+
+#: ../data/RadioPopover.ui.h:6
+msgid "Delete"
+msgstr "usunąć"
 
 #: ../data/RadiosView.ui.h:1
 msgid "New radio"
@@ -544,6 +565,14 @@ msgstr "Nowe radio"
 #: ../data/RadiosView.ui.h:2
 msgid "Search in TuneIn"
 msgstr "Szukaj w TuneIn"
+
+#: ../data/SearchPopover.ui.h:1
+msgid "Play search"
+msgstr ""
+
+#: ../data/SearchPopover.ui.h:2
+msgid "Create a new playlist based on search"
+msgstr ""
 
 #: ../data/SearchRow.ui.h:1
 msgid "artist"
@@ -562,8 +591,8 @@ msgid "Restore state on startup"
 msgstr "Przywrócenie stanu podczas uruchamiania"
 
 #: ../data/SettingsDialog.ui.h:5
-msgid "Play albums on 2nd click"
-msgstr "Odtwarzanie albumów dwukrotnym kliknięciem"
+msgid "Play albums on click"
+msgstr ""
 
 #: ../data/SettingsDialog.ui.h:6
 msgid "Behaviour"
@@ -615,7 +644,7 @@ msgstr "Hasło"
 
 #: ../data/SettingsDialog.ui.h:18
 msgid "Test"
-msgstr ""
+msgstr "Test"
 
 #: ../data/SettingsDialog.ui.h:19
 msgid "You need to install pylast and gi secret"
@@ -661,4 +690,4 @@ msgstr "Błąd"
 msgid ""
 "Lollypop isn't designed to work without an unicode locale.\n"
 "Please fix your system."
-msgstr ""
+msgstr "Lollypop nie został stworzony do pracy bez Unicode.\nNapraw swój system."
