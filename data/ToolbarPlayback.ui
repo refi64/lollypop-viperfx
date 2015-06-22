@@ -116,7 +116,7 @@
         <property name="receives_default">True</property>
         <property name="image">lastfm_image</property>
         <property name="always_show_image">True</property>
-        <property name="tooltip_text" translatable="no">Artist</property>
+        <property name="tooltip_text" translatable="no">Artist biography</property>
         <child>
           <object class="GtkImage" id="lastfm_image">
             <property name="visible">True</property>
