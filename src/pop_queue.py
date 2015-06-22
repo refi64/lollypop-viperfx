@@ -36,6 +36,8 @@ class QueueWidget(Gtk.Popover):
         builder.add_from_resource('/org/gnome/Lollypop/QueuePopover.ui')
         builder.connect_signals(self)
 
+        self._clear_btn = builder.get_object('clear_btn')
+
         self._model = Gtk.ListStore(int,               # Album id
                                     str,               # Artist
                                     str,               # icon
@@ -52,18 +54,18 @@ class QueueWidget(Gtk.Popover):
         renderer1.set_property('ellipsize-set', True)
         renderer1.set_property('ellipsize', Pango.EllipsizeMode.END)
         renderer2 = Gtk.CellRendererPixbuf()
-        column = Gtk.TreeViewColumn('')
-        column.pack_start(renderer0, False)
-        column.pack_start(renderer1, True)
-        column.pack_start(renderer2, False)
-        column.add_attribute(renderer0, 'album', 0)
-        column.add_attribute(renderer1, 'markup', 1)
-        column.add_attribute(renderer2, 'icon-name', 2)
-        column.set_expand(True)
-        column.set_sizing(Gtk.TreeViewColumnSizing.FIXED)
+        column0 = Gtk.TreeViewColumn('pixbuf', renderer0, album=0)
+        column0.set_sizing(Gtk.TreeViewColumnSizing.FIXED)
+        column1 = Gtk.TreeViewColumn('text', renderer1, markup=1)
+        column1.set_sizing(Gtk.TreeViewColumnSizing.FIXED)
+        column1.set_expand(True)
+        column2 = Gtk.TreeViewColumn('delete', renderer2)
+        column2.add_attribute(renderer2, 'icon-name', 2)
+        column2.set_sizing(Gtk.TreeViewColumnSizing.FIXED)
 
-        self._view.append_column(column)
-
+        self._view.append_column(column0)
+        self._view.append_column(column1)
+        self._view.append_column(column2)
 
         self.add(self._widget)
 
@@ -86,6 +88,8 @@ class QueueWidget(Gtk.Popover):
         Populate view
     """
     def populate(self):
+        if Lp.player.get_queue():
+            self._clear_btn.set_sensitive(True)
         GLib.idle_add(self._add_items, list(Lp.player.get_queue()))
 
     """
@@ -179,6 +183,8 @@ class QueueWidget(Gtk.Popover):
     """
     def _delete_row(self, iterator):
         self._model.remove(iterator)
+        if len(self._model) == 0:
+            self._clear_btn.set_sensitive(False)
 
     """
         Play clicked item
