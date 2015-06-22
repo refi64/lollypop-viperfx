@@ -310,7 +310,9 @@ class PlaylistsManagerWidget(Gtk.Bin):
             self._model.append([selected, playlist[1], 'user-trash-symbolic'])
             GLib.idle_add(self._append_playlists, playlists)
         else:
-            self._view.get_selection().unselect_all()
+            selection = self._view.get_selection()
+            if selection is not None:
+                selection.unselect_all()
 
     """
         Show infobar
