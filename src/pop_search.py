@@ -317,6 +317,7 @@ class SearchPopover(Gtk.Popover):
                 for tid in album_tracks:
                     tracks.append(Track(tid, sql))
         if tracks:
+            GLib.idle_add(Lp.player.set_party, False)
             if object_id is not None and is_track:
                 track_id = object_id
             elif track_id is None:
@@ -386,7 +387,6 @@ class SearchPopover(Gtk.Popover):
         @param button as Gtk.Button
     """
     def _on_play_btn_clicked(self, button):
-        Lp.player.set_party(False)
         start_new_thread(self._play_search, ())
 
     """
