@@ -327,13 +327,6 @@ class SelectionList(Gtk.ScrolledWindow):
     """
     def _on_cursor_changed(self, view):
         selected_id = self.get_selected_id()
-
-        # Do not select if an items is in selection queue
-        if self._to_select_id != Type.NONE:
-            if selected_id != self._to_select_id:
-                self._to_select_id = Type.NONE
-                return
-
         if not self._updating and selected_id != Type.NONE:
             self._to_select_id = Type.NONE
             self.emit('item-selected', selected_id)
