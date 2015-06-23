@@ -350,7 +350,10 @@ class LastFM(LastFMNetwork):
         @param result Gio.AsyncResult
     """
     def _on_password_lookup(self, source, result):
-        password = Secret.password_lookup_finish(result)
-        self._password = password
-        if Gio.NetworkMonitor.get_default().get_network_available():
-            start_new_thread(self._connect, (self._username, password))
+        try:
+            password = Secret.password_lookup_finish(result)
+            self._password = password
+            if Gio.NetworkMonitor.get_default().get_network_available():
+                start_new_thread(self._connect, (self._username, password))
+        except Exception as e:
+            print("Lastfm::_on_password_lookup(): %s" % e)
