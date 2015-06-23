@@ -29,7 +29,7 @@ Lollypop music player</title>
 <section id="playback" style="2column">
     <title>Playback</title>
      <p>When you start playing a song, a contextual playlist is populated.</p>
-     <p>Contexts can be: an album, an artist, a genre, popular or recent albums.</p>
+     <p>Contexts can be: an album, an artist, a genre, popular or recent albums, searches, playlists, ...</p>
      <p>Shuffle interacts on current context.</p>
 </section>
 
@@ -41,7 +41,7 @@ Lollypop music player</title>
 
 <section id="covers" style="2column">
     <title>Download covers</title>
-    <p>When hovering a cover, if mouse cursor changes to a hand, just click and select a new cover.</p>
+    <p>When hovering a cover, if mouse cursor changes to a pen, just click and select a new cover.</p>
     <p>You need an internet connection.</p>
 </section>
 
