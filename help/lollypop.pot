@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2015-05-07 21:04+0200\n"
+"POT-Creation-Date: 2015-06-24 15:43+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -72,7 +72,7 @@ msgstr ""
 
 #. (itstool) path: section/p
 #: C/index.page:32
-msgid "Contexts can be: an album, an artist, a genre, popular or recent albums."
+msgid "Contexts can be: an album, an artist, a genre, popular or recent albums, searches, playlists, ..."
 msgstr ""
 
 #. (itstool) path: section/p
@@ -102,7 +102,7 @@ msgstr ""
 
 #. (itstool) path: section/p
 #: C/index.page:44
-msgid "When hovering a cover, if mouse cursor changes to a hand, just click and select a new cover."
+msgid "When hovering a cover, if mouse cursor changes to a pen, just click and select a new cover."
 msgstr ""
 
 #. (itstool) path: section/p
@@ -173,11 +173,6 @@ msgstr ""
 #. (itstool) path: item/p
 #: C/index.page:62
 msgid "Right key: Skip forward in track"
-msgstr ""
-
-#. (itstool) path: item/p
-#: C/index.page:63
-msgid "Control+h: Help"
 msgstr ""
 
 #. (itstool) path: p/link
