@@ -15,6 +15,7 @@ from gi.repository import GObject, Gtk
 
 from lollypop.define import Lp, ArtSize
 from lollypop.pop_menu import TrackMenu
+from lollypop.widgets_rating import RatingWidget
 from lollypop.utils import seconds_to_string, rgba_to_hex
 
 
@@ -195,7 +196,7 @@ class TrackRow(Row):
     def __init__(self):
         self._builder = Gtk.Builder()
         self._builder.add_from_resource('/org/gnome/Lollypop/TrackRow.ui')
-        self._menu = self._builder.get_object('menu')
+        self._menu_btn = self._builder.get_object('menu')
         Row.__init__(self)
 
     """
@@ -203,9 +204,9 @@ class TrackRow(Row):
     """
     def show_menu(self, show):
         if show:
-            self._menu.show()
+            self._menu_btn.show()
         else:
-            self._menu.hide()
+            self._menu_btn.hide()
 
 #######################
 # PRIVATE             #
@@ -216,7 +217,25 @@ class TrackRow(Row):
     """
     def _on_menu_clicked(self, widget):
         menu = TrackMenu(self._object_id, None)
-        popover = Gtk.Popover.new_from_model(self._menu, menu)
+        popover = Gtk.Popover.new_from_model(self._menu_btn, menu)
+        rating = RatingWidget(self._object_id, False)
+        rating.set_property('margin_top', 5)
+        rating.set_property('margin_bottom', 5)
+        rating.show()
+        # Hack to add two widgets in popover
+        # Use a Gtk.PopoverMenu later (GTK>3.16 available on Debian stable)
+        stack = Gtk.Stack()
+        grid = Gtk.Grid()
+        grid.set_orientation(Gtk.Orientation.VERTICAL)
+        stack.add_named(grid, 'main')
+        stack.show_all()
+        menu_widget = popover.get_child()
+        menu_widget.reparent(grid)
+        separator = Gtk.Separator()
+        separator.show()
+        grid.add(separator)
+        grid.add(rating)
+        popover.add(stack)
         popover.connect('closed', self._on_closed)
         self.get_style_context().add_class('track-menu-selected')
         popover.show()

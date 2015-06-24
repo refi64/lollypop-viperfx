@@ -70,9 +70,17 @@ class RatingWidget(Gtk.Bin):
         @param event as Gdk.Event (can be None)
     """
     def _on_leave_notify(self, widget, event):
-        avg_popularity = Lp.albums.get_avg_popularity()
+        if self._is_album:
+            avg_popularity = Lp.albums.get_avg_popularity()
+        else:
+            avg_popularity = Lp.tracks.get_avg_popularity()
+
         if avg_popularity > 0:
-            popularity = Lp.albums.get_popularity(self._object_id)
+            if self._is_album:
+                popularity = Lp.albums.get_popularity(self._object_id)
+            else:
+                popularity = Lp.tracks.get_popularity(self._object_id)
+
             stars = popularity*5/avg_popularity+0.5
             if stars < 1:
                 for i in range(5):
@@ -113,9 +121,18 @@ class RatingWidget(Gtk.Bin):
         event_star = widget.get_children()[0]
         try:
             position = self._stars.index(event_star)
-            avg_popularity = Lp.albums.get_avg_popularity()
+            if self._is_album:
+                avg_popularity = Lp.albums.get_avg_popularity()
+            else:
+                avg_popularity = Lp.tracks.get_avg_popularity()
             popularity = int(((position+1)*avg_popularity/5)+0.5)
-            Lp.albums.set_popularity(self._object_id, popularity)
+            if self._is_album:
+                Lp.albums.set_popularity(self._object_id, popularity)
+            else:
+                Lp.tracks.set_popularity(self._object_id, popularity)
         except:
-            Lp.albums.set_popularity(self._object_id, 0)
+            if self._is_album:
+                Lp.albums.set_popularity(self._object_id, 0)
+            else:
+                Lp.tracks.set_popularity(self._object_id, 0)
         Lp.sql.commit()

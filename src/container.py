@@ -388,7 +388,7 @@ class Container:
     """
     def _setup_list_playlists(self, update):
         playlists = [(Type.LOVED, Lp.playlists._LOVED)]
-        playlists += [(Type.POPULARS, _("Most played"))]
+        playlists += [(Type.POPULARS, _("Popular tracks"))]
         playlists += [(Type.RECENTS, _("Recently played"))]
         playlists += [(Type.NEVER, _("Never played"))]
         playlists += [(Type.RANDOMS, _("Random tracks"))]

@@ -419,7 +419,21 @@ class TracksDatabase:
         for row in result:
             tracks += row
         return tracks
-    
+
+    """
+        Return avarage popularity
+        @return avarage popularity as int
+    """
+    def get_avg_popularity(self, sql=None):
+        if not sql:
+            sql = Lp.sql
+        result = sql.execute("SELECT AVG(popularity) FROM (SELECT popularity "
+                             "FROM tracks ORDER BY POPULARITY DESC LIMIT 100)")
+        v = result.fetchone()
+        if v and v[0] > 5:
+            return v[0]
+        return 5
+
     """
         Increment popularity field
         @param track id as int
@@ -525,6 +539,22 @@ class TracksDatabase:
                         (popularity, track_id))
         except:  # Database is locked
             pass
+
+    """
+        Get popularity
+        @param track id  as int
+        @return popularity as int
+    """
+    def get_popularity(self, track_id, sql=None):
+        if not sql:
+            sql = Lp.sql
+        result = sql.execute("SELECT popularity FROM tracks WHERE\
+                             rowid=?", (track_id,))
+
+        v = result.fetchone()
+        if v:
+            return v[0]
+        return 0
 
     """
         Clean database for track id
