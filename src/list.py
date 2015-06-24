@@ -45,7 +45,7 @@ class LinkedList:
         self.__next = next
 
     """
-        True if list has next
+        True if list has prev
         @return has next as bool
     """
     def has_prev(self):
