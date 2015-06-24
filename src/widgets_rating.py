@@ -22,6 +22,8 @@ class RatingWidget(Gtk.Bin):
         @param object id as int
         @param is album as bool
     """
+    #FIXME is_album unused in this class as we need Gtk.ModelButton introduced
+    # in Gtk 3.16 to add this to a menu. FIXME later
     def __init__(self, object_id, is_album):
         Gtk.Bin.__init__(self)
         self._object_id = object_id
