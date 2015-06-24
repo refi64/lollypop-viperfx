@@ -19,6 +19,7 @@ from lollypop.define import Lp, Type, ArtSize, NextContext
 from lollypop.pop_infos import InfosPopover
 from lollypop.widgets_track import TracksWidget
 from lollypop.track import Track
+from lollypop.widgets_rating import RatingWidget
 from lollypop.pop_menu import AlbumMenu
 from lollypop.pop_covers import CoversPopover
 
@@ -227,19 +228,15 @@ class AlbumDetailedWidget(AlbumWidget):
         else:
             builder.add_from_resource(
                 '/org/gnome/Lollypop/AlbumDetailedWidget.ui')
+
+        rating = RatingWidget(album_id, True)
+        rating.show()
+        builder.get_object('coverbox').add(rating)
         builder.connect_signals(self)
 
         if scrolled:
             builder.get_object('artist').set_text(self._artist_name)
             builder.get_object('artist').show()
-
-        self._stars = []
-        self._stars.append(builder.get_object('star0'))
-        self._stars.append(builder.get_object('star1'))
-        self._stars.append(builder.get_object('star2'))
-        self._stars.append(builder.get_object('star3'))
-        self._stars.append(builder.get_object('star4'))
-        self._on_leave_notify(None, None)
 
         grid = builder.get_object('tracks')
         self._discs = Lp.albums.get_discs(album_id, genre_id)
@@ -508,79 +505,3 @@ class AlbumDetailedWidget(AlbumWidget):
             popover.set_relative_to(widget)
             popover.populate()
             popover.show()
-
-    """
-        On enter notify, change star opacity
-        @param widget as Gtk.EventBox
-        @param event as Gdk.Event
-    """
-    def _on_enter_notify(self, widget, event):
-        event_star = widget.get_children()[0]
-        # First star is hidden (used to clear score)
-        if event_star.get_property("opacity") == 0.0:
-            found = True
-        else:
-            found = False
-        for star in self._stars:
-            if found:
-                star.set_property("opacity", 0.2)
-            else:
-                star.set_property("opacity", 0.8)
-            if star == event_star:
-                found = True
-
-    """
-        On leave notify, change star opacity
-        @param widget as Gtk.EventBox (can be None)
-        @param event as Gdk.Event (can be None)
-    """
-    def _on_leave_notify(self, widget, event):
-        avg_popularity = Lp.albums.get_avg_popularity()
-        if avg_popularity > 0:
-            popularity = Lp.albums.get_popularity(self._album_id)
-            stars = popularity*5/avg_popularity+0.5
-            if stars < 1:
-                for i in range(5):
-                    self._stars[i].set_property("opacity", 0.2)
-            else:
-                if stars >= 1:
-                    self._stars[0].set_property("opacity", 0.8)
-                else:
-                    self._stars[0].set_property("opacity", 0.2)
-                if stars >= 2:
-                    self._stars[1].set_property("opacity", 0.8)
-                else:
-                    self._stars[1].set_property("opacity", 0.2)
-                if stars >= 3:
-                    self._stars[2].set_property("opacity", 0.8)
-                else:
-                    self._stars[2].set_property("opacity", 0.2)
-                if stars >= 4:
-                    self._stars[3].set_property("opacity", 0.8)
-                else:
-                    self._stars[3].set_property("opacity", 0.2)
-                if stars >= 4.75:
-                    self._stars[4].set_property("opacity", 0.8)
-                else:
-                    self._stars[4].set_property("opacity", 0.2)
-        else:
-            for i in range(5):
-                self._stars[i].set_property("opacity", 0.2)
-
-    """
-        On button press, set album popularity
-        @param widget as Gtk.EventBox
-        @param event as Gdk.Event
-    """
-    def _on_button_press(self, widget, event):
-        if Lp.scanner.is_locked():
-            return
-        event_star = widget.get_children()[0]
-        try:
-            position = self._stars.index(event_star)
-            avg_popularity = Lp.albums.get_avg_popularity()
-            popularity = int(((position+1)*avg_popularity/5)+0.5)
-            Lp.albums.set_popularity(self._album_id, popularity)
-        except:
-            Lp.albums.set_popularity(self._album_id, 0)
-        Lp.sql.commit()

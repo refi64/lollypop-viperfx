@@ -130,9 +130,10 @@
       </packing>
     </child>
     <child>
-      <object class="GtkGrid" id="grid1">
+      <object class="GtkGrid" id="coverbox">
         <property name="visible">True</property>
         <property name="can_focus">False</property>
+        <property name="orientation">vertical</property>
         <property name="row_spacing">2</property>
         <child>
           <object class="GtkEventBox" id="eventbox">
@@ -153,155 +154,6 @@
           <packing>
             <property name="left_attach">0</property>
             <property name="top_attach">0</property>
-          </packing>
-        </child>
-        <child>
-          <object class="GtkGrid" id="grid4">
-            <property name="visible">True</property>
-            <property name="can_focus">False</property>
-            <property name="halign">center</property>
-            <child>
-              <object class="GtkEventBox" id="eventbox1">
-                <property name="visible">True</property>
-                <property name="can_focus">False</property>
-                <signal name="button-press-event" handler="_on_button_press" swapped="no"/>
-                <signal name="enter-notify-event" handler="_on_enter_notify" swapped="no"/>
-                <signal name="leave-notify-event" handler="_on_leave_notify" swapped="no"/>
-                <child>
-                  <object class="GtkImage" id="star0">
-                    <property name="visible">True</property>
-                    <property name="can_focus">False</property>
-                    <property name="opacity">0.20000000000000001</property>
-                    <property name="icon_name">user-bookmarks-symbolic</property>
-                  </object>
-                </child>
-              </object>
-              <packing>
-                <property name="left_attach">1</property>
-                <property name="top_attach">0</property>
-              </packing>
-            </child>
-            <child>
-              <object class="GtkEventBox" id="eventbox2">
-                <property name="visible">True</property>
-                <property name="can_focus">False</property>
-                <signal name="button-press-event" handler="_on_button_press" swapped="no"/>
-                <signal name="enter-notify-event" handler="_on_enter_notify" swapped="no"/>
-                <signal name="leave-notify-event" handler="_on_leave_notify" swapped="no"/>
-                <child>
-                  <object class="GtkImage" id="star4">
-                    <property name="visible">True</property>
-                    <property name="can_focus">False</property>
-                    <property name="opacity">0.20000000000000001</property>
-                    <property name="icon_name">user-bookmarks-symbolic</property>
-                  </object>
-                </child>
-              </object>
-              <packing>
-                <property name="left_attach">5</property>
-                <property name="top_attach">0</property>
-              </packing>
-            </child>
-            <child>
-              <object class="GtkEventBox" id="eventbox3">
-                <property name="visible">True</property>
-                <property name="can_focus">False</property>
-                <signal name="button-press-event" handler="_on_button_press" swapped="no"/>
-                <signal name="enter-notify-event" handler="_on_enter_notify" swapped="no"/>
-                <signal name="leave-notify-event" handler="_on_leave_notify" swapped="no"/>
-                <child>
-                  <object class="GtkImage" id="star3">
-                    <property name="visible">True</property>
-                    <property name="can_focus">False</property>
-                    <property name="opacity">0.20000000000000001</property>
-                    <property name="icon_name">user-bookmarks-symbolic</property>
-                  </object>
-                </child>
-              </object>
-              <packing>
-                <property name="left_attach">4</property>
-                <property name="top_attach">0</property>
-              </packing>
-            </child>
-            <child>
-              <object class="GtkEventBox" id="eventbox4">
-                <property name="visible">True</property>
-                <property name="can_focus">False</property>
-                <signal name="button-press-event" handler="_on_button_press" swapped="no"/>
-                <signal name="enter-notify-event" handler="_on_enter_notify" swapped="no"/>
-                <signal name="leave-notify-event" handler="_on_leave_notify" swapped="no"/>
-                <child>
-                  <object class="GtkImage" id="star2">
-                    <property name="visible">True</property>
-                    <property name="can_focus">False</property>
-                    <property name="opacity">0.20000000000000001</property>
-                    <property name="icon_name">user-bookmarks-symbolic</property>
-                  </object>
-                </child>
-              </object>
-              <packing>
-                <property name="left_attach">3</property>
-                <property name="top_attach">0</property>
-              </packing>
-            </child>
-            <child>
-              <object class="GtkEventBox" id="eventbox5">
-                <property name="visible">True</property>
-                <property name="can_focus">False</property>
-                <signal name="button-press-event" handler="_on_button_press" swapped="no"/>
-                <signal name="enter-notify-event" handler="_on_enter_notify" swapped="no"/>
-                <signal name="leave-notify-event" handler="_on_leave_notify" swapped="no"/>
-                <child>
-                  <object class="GtkImage" id="star1">
-                    <property name="visible">True</property>
-                    <property name="can_focus">False</property>
-                    <property name="opacity">0.20000000000000001</property>
-                    <property name="icon_name">user-bookmarks-symbolic</property>
-                  </object>
-                </child>
-              </object>
-              <packing>
-                <property name="left_attach">2</property>
-                <property name="top_attach">0</property>
-              </packing>
-            </child>
-            <child>
-              <object class="GtkEventBox" id="eventbox6">
-                <property name="visible">True</property>
-                <property name="can_focus">False</property>
-                <signal name="button-press-event" handler="_on_button_press" swapped="no"/>
-                <signal name="enter-notify-event" handler="_on_enter_notify" swapped="no"/>
-                <signal name="leave-notify-event" handler="_on_leave_notify" swapped="no"/>
-                <child>
-                  <object class="GtkImage" id="empty_star1">
-                    <property name="visible">True</property>
-                    <property name="can_focus">False</property>
-                    <property name="opacity">0</property>
-                    <property name="icon_name">user-bookmarks-symbolic</property>
-                  </object>
-                </child>
-              </object>
-              <packing>
-                <property name="left_attach">0</property>
-                <property name="top_attach">0</property>
-              </packing>
-            </child>
-            <child>
-              <object class="GtkImage" id="empty_star2">
-                <property name="visible">True</property>
-                <property name="can_focus">False</property>
-                <property name="opacity">0</property>
-                <property name="icon_name">user-bookmarks-symbolic</property>
-              </object>
-              <packing>
-                <property name="left_attach">6</property>
-                <property name="top_attach">0</property>
-              </packing>
-            </child>
-          </object>
-          <packing>
-            <property name="left_attach">0</property>
-            <property name="top_attach">1</property>
           </packing>
         </child>
       </object>
