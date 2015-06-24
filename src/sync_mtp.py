@@ -20,7 +20,7 @@ from lollypop.define import Lp
 
 class MtpSync:
     """
-        Init MTP synchronisation 
+        Init MTP synchronisation
     """
     def __init__(self):
         self._syncing = False
@@ -51,7 +51,7 @@ class MtpSync:
                     print(a.get_uri())
             sleep(5)
             self._retry(func, args, t-1)
-        
+
     """
         Return children uris for uri
         @param uri as str
@@ -149,8 +149,8 @@ class MtpSync:
                 m3u = Gio.File.new_for_path(
                     "/tmp/lollypop_%s.m3u" % (playlist,))
                 self._retry(m3u.replace_contents, (b'#EXTM3U\n', None, False,
-                                     Gio.FileCreateFlags.REPLACE_DESTINATION,
-                                     None))
+                            Gio.FileCreateFlags.REPLACE_DESTINATION,
+                            None))
                 stream = m3u.open_readwrite(None)
             except Exception as e:
                 print("DeviceWidget::_copy_to_device(): %s" % e)
@@ -168,18 +168,18 @@ class MtpSync:
                 album_name = Lp.albums.get_name(album_id, sql)
                 # Sanitize file names as some MTP devices do not like this
                 # Or this is a Gio/GObject Introspection bug
-                album_name = "".join([c for c in album_name if c.isalpha()\
-                    or c.isdigit() or c==' ']).rstrip()
+                album_name = "".join([c for c in album_name if c.isalpha() or
+                                      c.isdigit() or c == ' ']).rstrip()
                 artist_name = Lp.albums.get_artist_name(album_id, sql)
                 # Sanitize file names as some MTP devices do not like this
                 # Or this is a Gio/GObject Introspection bug
-                artist_name = "".join([c for c in artist_name if c.isalpha()\
-                    or c.isdigit() or c==' ']).rstrip()
+                artist_name = "".join([c for c in artist_name if c.isalpha() or
+                                       c.isdigit() or c == ' ']).rstrip()
                 track_path = Lp.tracks.get_path(track_id, sql)
                 on_device_album_uri = "%s/tracks/%s_%s" %\
-                                       (self._uri,
-                                        artist_name.lower(),
-                                        album_name.lower())
+                                      (self._uri,
+                                       artist_name.lower(),
+                                       album_name.lower())
 
                 d = Gio.File.new_for_uri(on_device_album_uri)
                 if not d.query_exists(None):
@@ -193,15 +193,17 @@ class MtpSync:
                     self._copied_art_uris.append(art_uri)
                     dst_art = Gio.File.new_for_uri(art_uri)
                     if not dst_art.query_exists(None):
-                        self._retry(src_art.copy, 
+                        self._retry(src_art.copy,
                                     (dst_art, Gio.FileCopyFlags.OVERWRITE,
                                      None, None))
 
                 track_name = GLib.basename(track_path)
                 # Sanitize file names as some MTP devices do not like this
                 # Or this is a Gio/GObject Introspection bug
-                track_name = "".join([c for c in track_name if c.isalpha()\
-                    or c.isdigit() or c==' ' or c=='.']).rstrip()
+                track_name = "".join([c for c in track_name if c.isalpha() or
+                                      c.isdigit() or
+                                      c == ' ' or
+                                      c == '.']).rstrip()
                 src_track = Gio.File.new_for_path(track_path)
                 info = src_track.query_info('time::modified',
                                             Gio.FileQueryInfoFlags.NONE,
@@ -216,7 +218,7 @@ class MtpSync:
                              album_name.lower(),
                              mtime,
                              track_name)
-                    self._retry(stream.get_output_stream().write, 
+                    self._retry(stream.get_output_stream().write,
                                 (line.encode(encoding='UTF-8'), None))
                 dst_track = Gio.File.new_for_uri(dst_uri)
                 if not dst_track.query_exists(None):
@@ -259,13 +261,13 @@ class MtpSync:
             album_name = Lp.albums.get_name(album_id, sql)
             # Sanitize file names as some MTP devices do not like this
             # Or this is a Gio/GObject Introspection bug
-            album_name = "".join([c for c in album_name if c.isalpha()\
-                or c.isdigit() or c==' ']).rstrip()
+            album_name = "".join([c for c in album_name if c.isalpha() or
+                                  c.isdigit() or c == ' ']).rstrip()
             artist_name = Lp.albums.get_artist_name(album_id, sql)
             # Sanitize file names as some MTP devices do not like this
             # Or this is a Gio/GObject Introspection bug
-            artist_name = "".join([c for c in artist_name if c.isalpha()\
-                or c.isdigit() or c==' ']).rstrip()
+            artist_name = "".join([c for c in artist_name if c.isalpha() or
+                                   c.isdigit() or c == ' ']).rstrip()
             track_path = Lp.tracks.get_path(track_id, sql)
             album_uri = "%s/tracks/%s_%s" % (self._uri,
                                              artist_name.lower(),
@@ -274,8 +276,10 @@ class MtpSync:
             track_name = GLib.basename(track_path)
             # Sanitize file names as some MTP devices do not like this
             # Or this is a Gio/GObject Introspection bug
-            track_name = "".join([c for c in track_name if c.isalpha()\
-                or c.isdigit() or c==' ' or c=='.']).rstrip()
+            track_name = "".join([c for c in track_name if c.isalpha() or
+                                  c.isdigit() or
+                                  c == ' ' or
+                                  c == '.']).rstrip()
             on_disk = Gio.File.new_for_path(track_path)
             info = on_disk.query_info('time::modified',
                                       Gio.FileQueryInfoFlags.NONE,

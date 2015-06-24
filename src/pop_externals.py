@@ -72,7 +72,7 @@ class ExternalsPopover(Gtk.Popover):
     """
     def do_show(self):
         self._signal_id = Lp.player.connect('current-changed',
-                                        self._on_current_changed)
+                                            self._on_current_changed)
         size_setting = Lp.settings.get_value('window-size')
         if isinstance(size_setting[1], int):
             self.set_size_request(400, size_setting[1]*0.7)
@@ -118,13 +118,13 @@ class ExternalsPopover(Gtk.Popover):
     """
     def _add_track(self, track):
         if track.uri == Lp.player.current_track.uri:
-            self._model.append((track.uri, 'media-playback-start-symbolic', 
+            self._model.append((track.uri, 'media-playback-start-symbolic',
                                 track.artist, track.title,
                                 seconds_to_string(track.duration)))
         else:
             self._model.append((track.uri, '', track.artist, track.title,
                                 seconds_to_string(track.duration)))
-                                
+
     """
         Update play symbol
         @param player as Player

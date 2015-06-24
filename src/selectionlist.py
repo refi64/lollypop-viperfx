@@ -441,7 +441,7 @@ class SelectionList(Gtk.ScrolledWindow):
                 text = self._model.get_value(iterator, 1)
                 r = self._view.get_cell_area(path, self._view.get_column(0))
                 layout.set_ellipsize(Pango.EllipsizeMode.END)
-                #FIXME 8 is a magic value, don't know where to get this
+                # FIXME 8 is a magic value, don't know where to get this
                 layout.set_width(Pango.units_from_double(r.width-8))
                 layout.set_text(text, -1)
                 if layout.is_ellipsized():

@@ -214,8 +214,9 @@ class BinPlayer(ReplayGainPlayer, BasePlayer):
         if self.current_track.id >= 0:
             return
         # FIXME Report gstreamer bug
-        elif self.current_track.title != '' and self.current_track.artist != ''\
-             and self.current_track.duration > 0.0:
+        elif self.current_track.title != ''\
+                and self.current_track.artist != ''\
+                and self.current_track.duration > 0.0:
             return
         reader = ScannerTagReader()
         tags = message.parse_tag()
@@ -289,7 +290,7 @@ class BinPlayer(ReplayGainPlayer, BasePlayer):
         if self.current_track.id == Type.RADIOS:
             return
         finished = self.current_track
-        finished_start_time = self._start_time 
+        finished_start_time = self._start_time
         if self.next_track.id is not None:
             self._load_track(self.next_track)
         # We are in a thread, we need to create a new cursor

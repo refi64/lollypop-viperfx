@@ -311,7 +311,7 @@ class Container:
         if object_id == Type.PLAYLISTS:
             start_new_thread(self._setup_list_playlists, (update,))
         elif self._show_genres and object_id != Type.NONE:
-            start_new_thread(self._setup_list_artists, 
+            start_new_thread(self._setup_list_artists,
                              (self._list_two, object_id, update))
 
     """

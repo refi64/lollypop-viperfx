@@ -14,7 +14,6 @@
 from gi.repository import Gio
 
 import xml.etree.ElementTree as xml
-from locale import getdefaultlocale
 
 
 class TuneItem:

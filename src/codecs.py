@@ -17,6 +17,7 @@ from gettext import gettext as _
 
 from lollypop.define import Lp
 
+
 # Handle missing gstreamer codecs
 class Codecs:
     """
@@ -33,7 +34,7 @@ class Codecs:
         try:
             context = GstPbutils.InstallPluginsContext.new()
             try:
-                context.set_desktop_id('lollypop.desktop');
+                context.set_desktop_id('lollypop.desktop')
             except:
                 pass  # Not supported by Ubuntu VIVID
             details = []

@@ -89,6 +89,7 @@ class Shuffle:
     TRACKS_ARTIST = 3    # Shuffle by tracks on artist
     ALBUMS_ARTIST = 4    # Shuffle by albums on artist
 
+
 # Order is important
 class Type:
     NONE = -1

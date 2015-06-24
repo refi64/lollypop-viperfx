@@ -182,7 +182,7 @@ class AlbumRow(Row):
         @param album id as int
     """
     def set_album_and_artist(self, album_id):
-        artist =  Lp.albums.get_artist_name(album_id)
+        artist = Lp.albums.get_artist_name(album_id)
         album = Lp.albums.get_name(album_id)
         self._artist.set_text(artist)
         self._album.set_text(album)

@@ -40,7 +40,7 @@ class UserPlaylistPlayer(BasePlayer):
     """
     def get_user_playlist_id(self):
         return self._user_playlist_id
-        
+
     """
         Set user playlist as current playback playlist
         @param array of tracks as [Track]

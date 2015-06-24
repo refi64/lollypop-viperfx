@@ -18,6 +18,7 @@ from lollypop.define import Lp, ArtSize
 
 class CellRendererAlbum(Gtk.CellRenderer):
     album = GObject.property(type=int)
+
     def do_render(self, ctx, widget, background_area, cell_area, flags):
         size = ArtSize.MEDIUM * widget.get_scale_factor()
         surface = Lp.art.get_album(self.album, size)
@@ -28,6 +29,7 @@ class CellRendererAlbum(Gtk.CellRenderer):
     def do_get_preferred_width(self, widget):
         size = ArtSize.MEDIUM + ArtSize.SMALL_BORDER * 2
         return (size, size)
+
     def do_get_preferred_height(self, widget):
         size = ArtSize.MEDIUM + ArtSize.SMALL_BORDER * 2
         return (size, size)

@@ -14,7 +14,6 @@
 from gi.repository import Gtk, GLib
 
 from cgi import escape
-from gettext import gettext as _
 from _thread import start_new_thread
 
 from lollypop.define import Lp, ArtSize, Type
@@ -358,7 +357,7 @@ class SearchPopover(Gtk.Popover):
         if self._timeout:
             GLib.source_remove(self._timeout)
             self._timeout = None
-    
+
         self._current_search = widget.get_text()
         if self._current_search != "":
             self._play_btn.set_sensitive(True)
@@ -385,7 +384,6 @@ class SearchPopover(Gtk.Popover):
         @param row as SearchRow
     """
     def _on_activate(self, widget, row):
-        value_id = row.id
         Lp.player.set_party(False)
         start_new_thread(self._play_search, (row.id,    row.is_track))
 

@@ -18,12 +18,13 @@ from locale import getdefaultlocale
 from random import shuffle
 import wikipedia
 
+
 class Wikipedia:
     """
         Init wikipedia
     """
     def __init__(self):
-        language=getdefaultlocale()[0][0:2]
+        language = getdefaultlocale()[0][0:2]
         wikipedia.set_lang(language)
         # Translators: Put here words added by wikipedia in band search
         # Ex: Muse_(band), Peaches(musician)

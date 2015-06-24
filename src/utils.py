@@ -18,7 +18,6 @@ from gettext import gettext as _
 import os
 
 
-
 def debug(str):
     """
         Print debug
@@ -27,11 +26,13 @@ def debug(str):
     if Lp.debug is True:
         print(str)
 
+
 def is_eos():
     """
         Return True if desktop is elementary os
     """
     return os.environ.get("XDG_CURRENT_DESKTOP") == "Pantheon"
+
 
 def is_unity():
     """
@@ -39,17 +40,20 @@ def is_unity():
     """
     return os.environ.get("XDG_CURRENT_DESKTOP") == "Unity"
 
+
 def is_gnome():
     """
         Return True if desktop is Gnome
     """
     return os.environ.get("XDG_CURRENT_DESKTOP") == "GNOME"
 
+
 def use_csd():
     """
         Return True if CSDs are to be used based on several criterions
     """
     return is_gnome() or is_eos() or Lp.settings.get_value('force-csd')
+
 
 def is_audio(f):
     """
@@ -65,6 +69,7 @@ def is_audio(f):
     except:
         pass
     return False
+
 
 def is_pls(f):
     """
@@ -82,6 +87,7 @@ def is_pls(f):
         pass
     return False
 
+
 def format_artist_name(name):
     """
         Return formated artist name
@@ -95,6 +101,7 @@ def format_artist_name(name):
             name = name[strlen:]+"@@@@"+special
     return name
 
+
 def translate_artist_name(name):
     """
         Return translate formated artist name
@@ -104,6 +111,7 @@ def translate_artist_name(name):
     if len(split) == 2:
         name = split[1]+" "+split[0]
     return name
+
 
 def seconds_to_string(duration):
     """
@@ -115,6 +123,7 @@ def seconds_to_string(duration):
     seconds %= 60
 
     return '%i:%02i' % (minutes, seconds)
+
 
 def rgba_to_hex(color):
     """

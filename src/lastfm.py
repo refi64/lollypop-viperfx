@@ -203,11 +203,11 @@ class LastFM(LastFMNetwork):
     """
     def _check_for_proxy(self):
         if self._settings is not None:
-           h = self._settings.get_value('host').get_string()
-           p = self._settings.get_value('port').get_int32()
-           if h != '' and p != 0:
-               self.enable_proxy(host=h, port = p)
-               return
+            h = self._settings.get_value('host').get_string()
+            p = self._settings.get_value('port').get_int32()
+            if h != '' and p != 0:
+                self.enable_proxy(host=h, port=p)
+                return
         self.disable_proxy()
 
     """
@@ -244,10 +244,10 @@ class LastFM(LastFMNetwork):
         @thread safe
     """
     def _scrobble(self, artist, title, timestamp, duration, t=0):
-        debug("LastFM::_scrobble(): %s, %s, %s, %s"  % (artist,
-                                                        title,
-                                                        timestamp,
-                                                        duration))
+        debug("LastFM::_scrobble(): %s, %s, %s, %s" % (artist,
+                                                       title,
+                                                       timestamp,
+                                                       duration))
         try:
             LastFMNetwork.scrobble(self,
                                    artist=artist,
@@ -273,9 +273,9 @@ class LastFM(LastFMNetwork):
         @thread safe
     """
     def _now_playing(self, artist, title, duration, t=0):
-        debug("LastFM::_now_playing(): %s, %s, %s"  % (artist,
-                                                       title,
-                                                       duration))
+        debug("LastFM::_now_playing(): %s, %s, %s" % (artist,
+                                                      title,
+                                                      duration))
         try:
             LastFMNetwork.update_now_playing(self,
                                              artist=artist,

@@ -17,7 +17,7 @@ from _thread import start_new_thread
 from lollypop.view import View
 from lollypop.view_albums import ArtistView
 from lollypop.view_container import ViewContainer
-from lollypop.define import Lp, Type    
+from lollypop.define import Lp, Type
 
 
 # Multiple artist view

@@ -273,7 +273,7 @@ class PlaylistsMenu(BaseMenu):
                             "app.loved")
             else:
                 action.connect('activate',
-                                self._add_to_loved)
+                               self._add_to_loved)
                 self.append(_("I love this track"),
                             "app.loved")
 

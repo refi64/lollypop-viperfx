@@ -50,7 +50,7 @@ class Track:
             self.album = Lp.albums.get_name(self.album_id,
                                             sql)
             self.aartist_id = Lp.tracks.get_album_artist_id(track_id,
-                                                       sql)
+                                                            sql)
             self.aartist = Lp.artists.get_name(self.aartist_id, sql)
             self.artist_ids = Lp.tracks.get_artist_ids(self.id, sql)
             self.artist = Lp.tracks.get_artist_names(self.id, sql)

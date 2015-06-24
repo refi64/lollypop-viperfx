@@ -122,11 +122,11 @@ class ArtistInfos(Gtk.Bin):
                 self._artist)
         if url is None and Lp.lastfm is not None:
             self._wikipedia = True
-            (url, image_url, content) = Lp.lastfm.get_artist_infos(self._artist)
+            (url, image_url, content) = Lp.lastfm.get_artist_infos(
+                                            self._artist)
 
         stream = None
         try:
-            response = None
             if image_url is not None:
                 f = Gio.File.new_for_uri(image_url)
                 (status, data, tag) = f.load_contents()
@@ -185,7 +185,7 @@ class ArtistInfos(Gtk.Bin):
         if self._track_id is not None:
             if Lp.playlists.is_present(Lp.playlists._LOVED,
                                        self._track_id,
-                                       None, 
+                                       None,
                                        False,
                                        sql):
                 self._liked = False

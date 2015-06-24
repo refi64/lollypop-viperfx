@@ -88,7 +88,7 @@ class PlaylistsManager(GObject.GObject):
         @thread safe
     """
     def add_loved(self):
-        filename = self._PLAYLISTS_PATH + "/"+ self._LOVED + ".m3u"
+        filename = self._PLAYLISTS_PATH + "/" + self._LOVED + ".m3u"
         try:
             if not os.path.exists(filename):
                 f = open(filename, "w")
