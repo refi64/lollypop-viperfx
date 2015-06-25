@@ -208,8 +208,8 @@ class Application(Gtk.Application):
             Lp.sql.execute("VACUUM")
         except Exception as e:
             print("Application::quit(): ", e)
-        Lp.sql.close()
         Lp.window.destroy()
+        Lp.sql.close()
 
     """
         Return True if application is fullscreen
