@@ -87,14 +87,14 @@ class SelectionList(Gtk.ScrolledWindow):
         self._view = builder.get_object('view')
         self._view.set_row_separator_func(self._row_separator_func)
 
-        renderer0 = Gtk.CellRendererText()
-        renderer0.set_property('ellipsize-set', True)
-        renderer0.set_property('ellipsize', Pango.EllipsizeMode.END)
+        self._renderer0 = Gtk.CellRendererText()
+        self._renderer0.set_property('ellipsize-set', True)
+        self._renderer0.set_property('ellipsize', Pango.EllipsizeMode.END)
         renderer1 = Gtk.CellRendererPixbuf()
         column = Gtk.TreeViewColumn('')
-        column.pack_start(renderer0, True)
+        column.pack_start(self._renderer0, True)
         column.pack_start(renderer1, False)
-        column.add_attribute(renderer0, 'text', 1)
+        column.add_attribute(self._renderer0, 'text', 1)
         column.add_attribute(renderer1, 'icon-name', 2)
         column.set_expand(True)
         column.set_sizing(Gtk.TreeViewColumnSizing.FIXED)
@@ -440,10 +440,10 @@ class SelectionList(Gtk.ScrolledWindow):
             iterator = self._model.get_iter(path)
             if iterator is not None:
                 text = self._model.get_value(iterator, 1)
-                r = self._view.get_cell_area(path, self._view.get_column(0))
+                column = self._view.get_column(0)
+                (position, width) = column.cell_get_position(self._renderer0)
                 layout.set_ellipsize(Pango.EllipsizeMode.END)
-                # FIXME 28 is a magic value, don't know where to get this
-                layout.set_width(Pango.units_from_double(r.width-28))
+                layout.set_width(Pango.units_from_double(width-8))
                 layout.set_text(text, -1)
                 if layout.is_ellipsized():
                     tooltip.set_markup(escape(text))
