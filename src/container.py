@@ -370,9 +370,9 @@ class Container:
         selection_list.mark_as_artists(True)
         if selection_list == self._list_one:
             items = self._get_headers()
+            items.append((Type.SEPARATOR, ''))
         if Lp.albums.get_compilations(genre_id, sql):
             items.append((Type.COMPILATIONS, _("Compilations")))
-        items.append((Type.SEPARATOR, ''))
         items += Lp.artists.get(genre_id, sql)
 
         if update:
