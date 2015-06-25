@@ -320,7 +320,7 @@ class Container:
     def _get_headers(self):
         items = []
         items.append((Type.POPULARS, _("Popular albums")))
-        items.append((Type.RECENTS, _("Recent albums")))
+        items.append((Type.RECENTS, _("Recently added albums")))
         items.append((Type.RANDOMS, _("Random albums")))
         items.append((Type.PLAYLISTS, _("Playlists")))
         items.append((Type.RADIOS, _("Radios")))
