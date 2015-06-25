@@ -4,8 +4,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: lollypop\n"
-"POT-Creation-Date: 2015-05-07 21:04+0200\n"
-"PO-Revision-Date: 2015-05-07 20:31+0000\n"
+"POT-Creation-Date: 2015-06-24 15:43+0200\n"
+"PO-Revision-Date: 2015-06-25 09:45+0000\n"
 "Last-Translator: Nathan Follens\n"
 "Language-Team: Dutch (http://www.transifex.com/projects/p/lollypop/language/nl/)\n"
 "MIME-Version: 1.0\n"
@@ -80,8 +80,9 @@ msgstr "Wanneer je een nummer afspeelt wordt een contextuele afspeellijst aangem
 #. (itstool) path: section/p
 #: C/index.page:32
 msgid ""
-"Contexts can be: an album, an artist, a genre, popular or recent albums."
-msgstr "Contexten kunnen een album, een artiest, een genre, populaire of recente albums zijn."
+"Contexts can be: an album, an artist, a genre, popular or recent albums, "
+"searches, playlists, ..."
+msgstr "Contexten kunnen een album, een artiest, een genre, populaire of recente albums, zoekopdrachten, speellijsten, ... zijn."
 
 #. (itstool) path: section/p
 #: C/index.page:33
@@ -114,9 +115,9 @@ msgstr "Albumhoezen downloaden"
 #. (itstool) path: section/p
 #: C/index.page:44
 msgid ""
-"When hovering a cover, if mouse cursor changes to a hand, just click and "
+"When hovering a cover, if mouse cursor changes to a pen, just click and "
 "select a new cover."
-msgstr "Wanneer je je muisaanwijzer over een albumhoes beweegt en deze verandert in een hand kan je gewoon klikken om een nieuwe hoes te kiezen."
+msgstr "Wanneer je je muisaanwijzer over een albumhoes beweegt en deze verandert in een pen kan je gewoon klikken om een nieuwe hoes te kiezen."
 
 #. (itstool) path: section/p
 #: C/index.page:45
@@ -187,11 +188,6 @@ msgstr "Links pijltje: Terugspoelen in nummer"
 #: C/index.page:62
 msgid "Right key: Skip forward in track"
 msgstr "Rechts pijltje: Doorspoelen in nummer"
-
-#. (itstool) path: item/p
-#: C/index.page:63
-msgid "Control+h: Help"
-msgstr "Control+h: Hulp"
 
 #. (itstool) path: p/link
 #: C/legal.xml:4

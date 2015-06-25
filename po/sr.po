@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lollypop\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-06-22 09:47+0200\n"
-"PO-Revision-Date: 2015-06-22 08:59+0000\n"
+"POT-Creation-Date: 2015-06-25 23:51+0200\n"
+"PO-Revision-Date: 2015-06-25 21:56+0000\n"
 "Last-Translator: Cédric Bellegarde <web@adishatz.org>\n"
 "Language-Team: Serbian (http://www.transifex.com/projects/p/lollypop/language/sr/)\n"
 "MIME-Version: 1.0\n"
@@ -186,7 +186,7 @@ msgstr "Напредан приказ података о извођачу је 
 msgid "Lollypop: You need to install yelp."
 msgstr "Лолипоп: потребно је да инсталирате „Помоћ“ (yelp пакет)."
 
-#: ../src/codecs.py:53
+#: ../src/codecs.py:54
 msgid "Restart lollypop after installing codecs"
 msgstr "Поново покрени Лолипоп након инсталирања кодека"
 
@@ -199,8 +199,8 @@ msgid "Popular albums"
 msgstr "Популарни албуми"
 
 #: ../src/container.py:323
-msgid "Recent albums"
-msgstr "Скорашњи албуми"
+msgid "Recently added albums"
+msgstr ""
 
 #: ../src/container.py:324
 msgid "Random albums"
@@ -228,8 +228,8 @@ msgid "Compilations"
 msgstr "Компилације"
 
 #: ../src/container.py:391
-msgid "Most played"
-msgstr "Највише пута слушано"
+msgid "Popular tracks"
+msgstr ""
 
 #: ../src/container.py:392
 msgid "Recently played"
@@ -292,7 +292,7 @@ msgstr "Следећа"
 msgid "by %s, from %s"
 msgstr "изводи %s, са албума %s"
 
-#: ../src/player_bin.py:262
+#: ../src/player_bin.py:263
 #, python-format
 msgid "File doesn't exist: %s"
 msgstr "Датотека не постоји: %s"
@@ -430,7 +430,7 @@ msgstr "Скорашње"
 
 #. Handle language ordering
 #. Translators: Add here words that shoud be ignored for artist sort order
-#: ../src/utils.py:92
+#: ../src/utils.py:98
 msgid "The the"
 msgstr "Члан члан"
 
@@ -443,7 +443,7 @@ msgstr "Усклади %s"
 msgid "Cancel synchronization"
 msgstr "Откажи усклађивање"
 
-#: ../src/widgets_album.py:253
+#: ../src/widgets_album.py:250
 #, python-format
 msgid "Disc %s"
 msgstr "Диск %s"
@@ -460,18 +460,18 @@ msgstr "Нема довољно слободног простора на уре�
 msgid "New playlist "
 msgstr "Нова листа песама"
 
-#: ../src/widgets_playlist.py:322 ../src/widgets_playlist.py:557
+#: ../src/widgets_playlist.py:324 ../src/widgets_playlist.py:559
 #, python-format
 msgid "Remove \"%s\"?"
 msgstr "Уклонити \"%s\"?"
 
-#: ../src/widgets_playlist.py:602
+#: ../src/widgets_playlist.py:604
 msgid "Remove these tracks?"
 msgstr "Уклонити ове песме?"
 
 #. Translators: Put here words added by wikipedia in band search
 #. Ex: Muse_(band), Peaches(musician)
-#: ../src/wikipedia.py:30
+#: ../src/wikipedia.py:31
 msgid "musician;band"
 msgstr "извођач;бенд"
 
@@ -570,7 +570,7 @@ msgstr "Пусти све из претраге"
 
 #: ../data/SearchPopover.ui.h:2
 msgid "Create a new playlist based on search"
-msgstr "Прави нови списак песама на основу резултата из претраге"
+msgstr "Направи нови списак песама на основу резултата из претраге"
 
 #: ../data/SearchRow.ui.h:1
 msgid "artist"
@@ -682,7 +682,7 @@ msgstr "Претрага"
 
 #: ../data/ToolbarPlayback.ui.h:4
 msgid "Artist biography"
-msgstr ""
+msgstr "Биографија извођача"
 
 #: ../data/Unicode.ui.h:1
 msgid "Error"

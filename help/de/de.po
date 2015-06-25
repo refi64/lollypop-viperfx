@@ -5,9 +5,9 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: lollypop\n"
-"POT-Creation-Date: 2015-05-07 21:04+0200\n"
-"PO-Revision-Date: 2015-06-12 07:46+0000\n"
-"Last-Translator: Mathias Rudolf <manifre.rudolf@gmail.com>\n"
+"POT-Creation-Date: 2015-06-24 15:43+0200\n"
+"PO-Revision-Date: 2015-06-25 10:24+0000\n"
+"Last-Translator: HumHumXX <xhummuhx+transifex@gmail.com>\n"
 "Language-Team: German (http://www.transifex.com/projects/p/lollypop/language/de/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -81,8 +81,9 @@ msgstr "Sobald du einen Titel anspielst, wird eine kontextabhängige Wiedergabel
 #. (itstool) path: section/p
 #: C/index.page:32
 msgid ""
-"Contexts can be: an album, an artist, a genre, popular or recent albums."
-msgstr "Kontexte können sein: ein Album, ein Künstler, ein Genre, beliebte oder kürzliche gespielte Alben."
+"Contexts can be: an album, an artist, a genre, popular or recent albums, "
+"searches, playlists, ..."
+msgstr "Mögliche Kontexte: ein Album, ein Künstler, ein Genre, beliebte oder kürzlich gespielte Alben, Suchergebnisse, Wiedergabelisten, ..."
 
 #. (itstool) path: section/p
 #: C/index.page:33
@@ -115,9 +116,9 @@ msgstr "Cover herunterladen"
 #. (itstool) path: section/p
 #: C/index.page:44
 msgid ""
-"When hovering a cover, if mouse cursor changes to a hand, just click and "
+"When hovering a cover, if mouse cursor changes to a pen, just click and "
 "select a new cover."
-msgstr "Wenn der Mauszeiger über einem Cover zur Hand wird, klicke und wähle ein neues Cover aus."
+msgstr "Wenn der Mauszeiger über einem Cover zum Stift wird, klicke und wähle ein neues Cover aus."
 
 #. (itstool) path: section/p
 #: C/index.page:45
@@ -188,11 +189,6 @@ msgstr "Pfeiltaste links: Im Titel rückwärts springen"
 #: C/index.page:62
 msgid "Right key: Skip forward in track"
 msgstr "Pfeiltaste rechts: Im Titel vorwärts springen"
-
-#. (itstool) path: item/p
-#: C/index.page:63
-msgid "Control+h: Help"
-msgstr "Strg+h: Hilfe"
 
 #. (itstool) path: p/link
 #: C/legal.xml:4

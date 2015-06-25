@@ -4,8 +4,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: lollypop\n"
-"POT-Creation-Date: 2015-05-07 21:04+0200\n"
-"PO-Revision-Date: 2015-05-07 21:32+0000\n"
+"POT-Creation-Date: 2015-06-24 15:43+0200\n"
+"PO-Revision-Date: 2015-06-25 10:36+0000\n"
 "Last-Translator: Pietro Acinapura <pietro.ac@gmail.com>\n"
 "Language-Team: Italian (http://www.transifex.com/projects/p/lollypop/language/it/)\n"
 "MIME-Version: 1.0\n"
@@ -80,8 +80,9 @@ msgstr "Quando si avvia la riproduzione di un brano, una playlist contestuale vi
 #. (itstool) path: section/p
 #: C/index.page:32
 msgid ""
-"Contexts can be: an album, an artist, a genre, popular or recent albums."
-msgstr "I contesti possono essere: un album, un artista, un genere, album popolari o recenti."
+"Contexts can be: an album, an artist, a genre, popular or recent albums, "
+"searches, playlists, ..."
+msgstr "I contesti posso essere: un album, un artista, un genere, album recenti o popolari, ricerche, playlist, ..."
 
 #. (itstool) path: section/p
 #: C/index.page:33
@@ -114,9 +115,9 @@ msgstr "Scarica le copertine"
 #. (itstool) path: section/p
 #: C/index.page:44
 msgid ""
-"When hovering a cover, if mouse cursor changes to a hand, just click and "
+"When hovering a cover, if mouse cursor changes to a pen, just click and "
 "select a new cover."
-msgstr "Quando sei su una copertina, se il cursore del mouse si trasforma in una mano, basta cliccare e selezionare una nuova copertina"
+msgstr "Quando passi col mouse su una copertina, se il cursore si trasforma in una penna, basta cliccare e selezionare una nuova copertina."
 
 #. (itstool) path: section/p
 #: C/index.page:45
@@ -187,11 +188,6 @@ msgstr "Tasto sinistro: Scorri la traccia indietro"
 #: C/index.page:62
 msgid "Right key: Skip forward in track"
 msgstr "Tasto destro: Scorri la traccia avanti"
-
-#. (itstool) path: item/p
-#: C/index.page:63
-msgid "Control+h: Help"
-msgstr "Control+h: Aiuto"
 
 #. (itstool) path: p/link
 #: C/legal.xml:4

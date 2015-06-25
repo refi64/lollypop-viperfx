@@ -4,8 +4,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: lollypop\n"
-"POT-Creation-Date: 2015-05-07 21:04+0200\n"
-"PO-Revision-Date: 2015-05-07 19:43+0000\n"
+"POT-Creation-Date: 2015-06-24 15:43+0200\n"
+"PO-Revision-Date: 2015-06-25 12:30+0000\n"
 "Last-Translator: fri\n"
 "Language-Team: Czech (http://www.transifex.com/projects/p/lollypop/language/cs/)\n"
 "MIME-Version: 1.0\n"
@@ -80,8 +80,9 @@ msgstr "Když začnete přehrávat píseň, je související seznam skladeb zapl
 #. (itstool) path: section/p
 #: C/index.page:32
 msgid ""
-"Contexts can be: an album, an artist, a genre, popular or recent albums."
-msgstr "Souvislostmi mohou být: album, umělec, žánr, oblíbená nebo nedávná alba."
+"Contexts can be: an album, an artist, a genre, popular or recent albums, "
+"searches, playlists, ..."
+msgstr "Souvislostmi mohou být: album, umělec, žánr, oblíbená nebo nedávná alba, hledání, seznamy skladeb..."
 
 #. (itstool) path: section/p
 #: C/index.page:33
@@ -114,9 +115,9 @@ msgstr "Stahování obalů"
 #. (itstool) path: section/p
 #: C/index.page:44
 msgid ""
-"When hovering a cover, if mouse cursor changes to a hand, just click and "
+"When hovering a cover, if mouse cursor changes to a pen, just click and "
 "select a new cover."
-msgstr "Při přejetí nad obalem, když se ukazovátko myši změní na ručičku, jednoduše klepněte a vyberte nový obal."
+msgstr "Při přejetí nad obalem, když se ukazovátko myši změní na tužku, jednoduše klepněte a vyberte nový obal."
 
 #. (itstool) path: section/p
 #: C/index.page:45
@@ -187,11 +188,6 @@ msgstr "Šipka vlevo: Skočit ve skladbě zpět"
 #: C/index.page:62
 msgid "Right key: Skip forward in track"
 msgstr "Šipka vpravo: Skočit ve skladbě vpřed"
-
-#. (itstool) path: item/p
-#: C/index.page:63
-msgid "Control+h: Help"
-msgstr "Ctrl+h: Nápověda"
 
 #. (itstool) path: p/link
 #: C/legal.xml:4

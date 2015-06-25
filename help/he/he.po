@@ -4,8 +4,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: lollypop\n"
-"POT-Creation-Date: 2015-05-07 21:04+0200\n"
-"PO-Revision-Date: 2015-05-07 20:02+0000\n"
+"POT-Creation-Date: 2015-06-24 15:43+0200\n"
+"PO-Revision-Date: 2015-06-25 15:04+0000\n"
 "Last-Translator: Yosef Or Boczko <yoseforb@gmail.com>\n"
 "Language-Team: Hebrew (http://www.transifex.com/projects/p/lollypop/language/he/)\n"
 "MIME-Version: 1.0\n"
@@ -80,8 +80,9 @@ msgstr "בעת ניגון שיר, תופיע רשימת השמעה בהקשר."
 #. (itstool) path: section/p
 #: C/index.page:32
 msgid ""
-"Contexts can be: an album, an artist, a genre, popular or recent albums."
-msgstr "הקשר יכול להיות: אלבום, אמן, סוגה, חביבות או אלבומים אחרונים."
+"Contexts can be: an album, an artist, a genre, popular or recent albums, "
+"searches, playlists, ..."
+msgstr "הקשר יכול להיות: אלבום, אמן, סוגה, חביבות או אלבומים, חיפושים ורשימות השמעות אחרונות."
 
 #. (itstool) path: section/p
 #: C/index.page:33
@@ -114,9 +115,9 @@ msgstr "הורדת עטיפות"
 #. (itstool) path: section/p
 #: C/index.page:44
 msgid ""
-"When hovering a cover, if mouse cursor changes to a hand, just click and "
+"When hovering a cover, if mouse cursor changes to a pen, just click and "
 "select a new cover."
-msgstr "בעת מעבר על עטיפה, אם סמן העכבר משתנה ליד, יש רק ללחוץ ולבחור כיסוי חדש."
+msgstr "בעת מעבר על עטיפה, אם סמן העכבר משתנה לעט, יש רק ללחוץ ולבחור עטיפה חדשה."
 
 #. (itstool) path: section/p
 #: C/index.page:45
@@ -187,11 +188,6 @@ msgstr "מקש שמאל: דילוג קדימה ברצועה"
 #: C/index.page:62
 msgid "Right key: Skip forward in track"
 msgstr "מקש ימין: דילוג לאחור ברצועה"
-
-#. (itstool) path: item/p
-#: C/index.page:63
-msgid "Control+h: Help"
-msgstr "‏Control+h: עזרה"
 
 #. (itstool) path: p/link
 #: C/legal.xml:4

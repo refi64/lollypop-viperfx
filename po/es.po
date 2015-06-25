@@ -11,8 +11,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lollypop\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-06-22 09:47+0200\n"
-"PO-Revision-Date: 2015-06-22 08:59+0000\n"
+"POT-Creation-Date: 2015-06-25 23:51+0200\n"
+"PO-Revision-Date: 2015-06-25 21:56+0000\n"
 "Last-Translator: Cédric Bellegarde <web@adishatz.org>\n"
 "Language-Team: Spanish (http://www.transifex.com/projects/p/lollypop/language/es/)\n"
 "MIME-Version: 1.0\n"
@@ -189,7 +189,7 @@ msgstr ""
 msgid "Lollypop: You need to install yelp."
 msgstr ""
 
-#: ../src/codecs.py:53
+#: ../src/codecs.py:54
 msgid "Restart lollypop after installing codecs"
 msgstr ""
 
@@ -202,7 +202,7 @@ msgid "Popular albums"
 msgstr "Álbumes populares"
 
 #: ../src/container.py:323
-msgid "Recent albums"
+msgid "Recently added albums"
 msgstr ""
 
 #: ../src/container.py:324
@@ -231,7 +231,7 @@ msgid "Compilations"
 msgstr "Recopilaciones"
 
 #: ../src/container.py:391
-msgid "Most played"
+msgid "Popular tracks"
 msgstr ""
 
 #: ../src/container.py:392
@@ -295,7 +295,7 @@ msgstr "Siguiente"
 msgid "by %s, from %s"
 msgstr "de %s, desde %s"
 
-#: ../src/player_bin.py:262
+#: ../src/player_bin.py:263
 #, python-format
 msgid "File doesn't exist: %s"
 msgstr ""
@@ -433,7 +433,7 @@ msgstr ""
 
 #. Handle language ordering
 #. Translators: Add here words that shoud be ignored for artist sort order
-#: ../src/utils.py:92
+#: ../src/utils.py:98
 msgid "The the"
 msgstr "The the Les les La Le la le los el"
 
@@ -446,7 +446,7 @@ msgstr "Sincronizar %s"
 msgid "Cancel synchronization"
 msgstr "Cancelar la sincronización"
 
-#: ../src/widgets_album.py:253
+#: ../src/widgets_album.py:250
 #, python-format
 msgid "Disc %s"
 msgstr "Album %s"
@@ -463,18 +463,18 @@ msgstr "No hay espacio libre disponible en el dispositivo"
 msgid "New playlist "
 msgstr "Lista nueva"
 
-#: ../src/widgets_playlist.py:322 ../src/widgets_playlist.py:557
+#: ../src/widgets_playlist.py:324 ../src/widgets_playlist.py:559
 #, python-format
 msgid "Remove \"%s\"?"
 msgstr "¿Quiere quitar «%s»?"
 
-#: ../src/widgets_playlist.py:602
+#: ../src/widgets_playlist.py:604
 msgid "Remove these tracks?"
 msgstr "¿Eliminar estas canciones?"
 
 #. Translators: Put here words added by wikipedia in band search
 #. Ex: Muse_(band), Peaches(musician)
-#: ../src/wikipedia.py:30
+#: ../src/wikipedia.py:31
 msgid "musician;band"
 msgstr ""
 

@@ -8,9 +8,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lollypop\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-06-22 09:47+0200\n"
-"PO-Revision-Date: 2015-06-22 09:31+0000\n"
-"Last-Translator: Jiri Grönroos <jiri.gronroos@iki.fi>\n"
+"POT-Creation-Date: 2015-06-25 23:51+0200\n"
+"PO-Revision-Date: 2015-06-25 21:56+0000\n"
+"Last-Translator: Cédric Bellegarde <web@adishatz.org>\n"
 "Language-Team: Finnish (http://www.transifex.com/projects/p/lollypop/language/fi/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -186,7 +186,7 @@ msgstr "Esittäjien lisätiedot pois käytöstä"
 msgid "Lollypop: You need to install yelp."
 msgstr "Lollypop: Ohje vaatii yelp-ohjelman asennuksen."
 
-#: ../src/codecs.py:53
+#: ../src/codecs.py:54
 msgid "Restart lollypop after installing codecs"
 msgstr "Käynnistä Lollypop uudelleen koodekkien asennuksen jälkeen"
 
@@ -199,8 +199,8 @@ msgid "Popular albums"
 msgstr "Suositut albumit"
 
 #: ../src/container.py:323
-msgid "Recent albums"
-msgstr "Viimeisimmät albumit"
+msgid "Recently added albums"
+msgstr ""
 
 #: ../src/container.py:324
 msgid "Random albums"
@@ -228,8 +228,8 @@ msgid "Compilations"
 msgstr "Kokoelmat"
 
 #: ../src/container.py:391
-msgid "Most played"
-msgstr "Eniten toistettu"
+msgid "Popular tracks"
+msgstr ""
 
 #: ../src/container.py:392
 msgid "Recently played"
@@ -292,7 +292,7 @@ msgstr "Seuraava"
 msgid "by %s, from %s"
 msgstr "esittäjän %s levyltä %s"
 
-#: ../src/player_bin.py:262
+#: ../src/player_bin.py:263
 #, python-format
 msgid "File doesn't exist: %s"
 msgstr "Tiedostoa ei ole olemassa: %s"
@@ -430,7 +430,7 @@ msgstr "Viimeisimmät"
 
 #. Handle language ordering
 #. Translators: Add here words that shoud be ignored for artist sort order
-#: ../src/utils.py:92
+#: ../src/utils.py:98
 msgid "The the"
 msgstr ""
 
@@ -443,7 +443,7 @@ msgstr "Synkronoi %s"
 msgid "Cancel synchronization"
 msgstr "Peru synkronointi"
 
-#: ../src/widgets_album.py:253
+#: ../src/widgets_album.py:250
 #, python-format
 msgid "Disc %s"
 msgstr "Levy %s"
@@ -460,18 +460,18 @@ msgstr "Laitteella ei ole vapaata tilaa"
 msgid "New playlist "
 msgstr "Uusi soittolista"
 
-#: ../src/widgets_playlist.py:322 ../src/widgets_playlist.py:557
+#: ../src/widgets_playlist.py:324 ../src/widgets_playlist.py:559
 #, python-format
 msgid "Remove \"%s\"?"
 msgstr "Poistetaanko \"%s\"?"
 
-#: ../src/widgets_playlist.py:602
+#: ../src/widgets_playlist.py:604
 msgid "Remove these tracks?"
 msgstr "Poistetaanko nämä kappaleet?"
 
 #. Translators: Put here words added by wikipedia in band search
 #. Ex: Muse_(band), Peaches(musician)
-#: ../src/wikipedia.py:30
+#: ../src/wikipedia.py:31
 msgid "musician;band"
 msgstr ""
 

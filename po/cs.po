@@ -9,8 +9,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lollypop\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-06-22 09:47+0200\n"
-"PO-Revision-Date: 2015-06-22 08:59+0000\n"
+"POT-Creation-Date: 2015-06-25 23:51+0200\n"
+"PO-Revision-Date: 2015-06-25 21:56+0000\n"
 "Last-Translator: Cédric Bellegarde <web@adishatz.org>\n"
 "Language-Team: Czech (http://www.transifex.com/projects/p/lollypop/language/cs/)\n"
 "MIME-Version: 1.0\n"
@@ -187,7 +187,7 @@ msgstr "Rozšířené informace o umělci zakázány"
 msgid "Lollypop: You need to install yelp."
 msgstr "Lollypop: Je potřeba nainstalovat yelp."
 
-#: ../src/codecs.py:53
+#: ../src/codecs.py:54
 msgid "Restart lollypop after installing codecs"
 msgstr "Spustit lollypop po nainstalování kodeků znovu"
 
@@ -200,8 +200,8 @@ msgid "Popular albums"
 msgstr "Oblíbená alba"
 
 #: ../src/container.py:323
-msgid "Recent albums"
-msgstr "Nedávná alba"
+msgid "Recently added albums"
+msgstr ""
 
 #: ../src/container.py:324
 msgid "Random albums"
@@ -229,8 +229,8 @@ msgid "Compilations"
 msgstr "Kompilace"
 
 #: ../src/container.py:391
-msgid "Most played"
-msgstr "Nejvíce hráno"
+msgid "Popular tracks"
+msgstr ""
 
 #: ../src/container.py:392
 msgid "Recently played"
@@ -293,7 +293,7 @@ msgstr "Další"
 msgid "by %s, from %s"
 msgstr "od %s, na %s"
 
-#: ../src/player_bin.py:262
+#: ../src/player_bin.py:263
 #, python-format
 msgid "File doesn't exist: %s"
 msgstr "Soubor neexistuje: %s"
@@ -431,7 +431,7 @@ msgstr "Nedávné"
 
 #. Handle language ordering
 #. Translators: Add here words that shoud be ignored for artist sort order
-#: ../src/utils.py:92
+#: ../src/utils.py:98
 msgid "The the"
 msgstr "\"The\""
 
@@ -444,7 +444,7 @@ msgstr "Seřídit %s"
 msgid "Cancel synchronization"
 msgstr "Zrušit seřizování"
 
-#: ../src/widgets_album.py:253
+#: ../src/widgets_album.py:250
 #, python-format
 msgid "Disc %s"
 msgstr "Disk %s"
@@ -461,18 +461,18 @@ msgstr "Na zařízení není žádné volné místo"
 msgid "New playlist "
 msgstr "Nový seznam skladeb"
 
-#: ../src/widgets_playlist.py:322 ../src/widgets_playlist.py:557
+#: ../src/widgets_playlist.py:324 ../src/widgets_playlist.py:559
 #, python-format
 msgid "Remove \"%s\"?"
 msgstr "Odstranit \"%s\"?"
 
-#: ../src/widgets_playlist.py:602
+#: ../src/widgets_playlist.py:604
 msgid "Remove these tracks?"
 msgstr "Odstranit tyto skladby?"
 
 #. Translators: Put here words added by wikipedia in band search
 #. Ex: Muse_(band), Peaches(musician)
-#: ../src/wikipedia.py:30
+#: ../src/wikipedia.py:31
 msgid "musician;band"
 msgstr "hudebník;skupina"
 
@@ -683,7 +683,7 @@ msgstr "Hledat"
 
 #: ../data/ToolbarPlayback.ui.h:4
 msgid "Artist biography"
-msgstr ""
+msgstr "Životopis umělce"
 
 #: ../data/Unicode.ui.h:1
 msgid "Error"
