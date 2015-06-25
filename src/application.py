@@ -11,7 +11,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-from gi.repository import Gtk, Gio, GLib, Gdk, Notify, TotemPlParser
+from gi.repository import Gtk, Gio, GLib, Gdk, Gst, Notify, TotemPlParser
 
 from locale import getlocale
 from gettext import gettext as _
@@ -210,6 +210,7 @@ class Application(Gtk.Application):
             print("Application::quit(): ", e)
         Lp.window.destroy()
         Lp.sql.close()
+        Gst.deinit()
 
     """
         Return True if application is fullscreen
