@@ -141,6 +141,7 @@ class SettingsDialog:
             label.set_property('hexpand', True)
             label.set_ellipsize(Pango.EllipsizeMode.END)
             label.set_text(genre)
+            label.set_tooltip_text(genre)
             label.show()
             switch = Gtk.Switch()
             if genre_id in ids:
