@@ -130,7 +130,7 @@ class SettingsDialog:
         #
         genres = Lp.genres.get()
         genres.insert(0, (Type.POPULARS, _("Populars")))
-        genres.insert(1, (Type.RECENTS, _("Recents")))
+        genres.insert(1, (Type.RECENTS, _("Recently added")))
         ids = Lp.player.get_party_ids()
         i = 0
         x = 0
