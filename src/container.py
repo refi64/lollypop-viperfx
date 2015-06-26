@@ -587,10 +587,7 @@ class Container:
             self._list_one.add_value((dev.id, dev.name))
         if self._need_to_update_db:
             self._need_to_update_db = False
-            # Delay update, segfault on quit otherwise
-            # Don't know why, happened since selection list
-            # is fully threaded (and so update start earlier)
-            GLib.timeout_add(1000, self.update_db)
+            self.update_db()
 
     """
         Update view based on selected object
