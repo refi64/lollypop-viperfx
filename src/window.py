@@ -48,7 +48,8 @@ class Window(Gtk.ApplicationWindow, Container):
         self._setup_media_keys()
         self.enable_global_shorcuts(True)
 
-        self.connect("destroy", self._on_destroyed_window)
+        self.connect('destroy', self._on_destroyed_window)
+        self.connect('realize', self._on_realize)
 
     """
         Add an application menu to window
@@ -312,3 +313,14 @@ class Window(Gtk.ApplicationWindow, Container):
             Lp.player.next()
         elif string == "prev":
             Lp.player.prev()
+
+    """
+        Run scanner on realize
+        @param widget as Gtk.Widget
+    """
+    def _on_realize(self, widget):
+        if Lp.settings.get_value('auto-update') or Lp.tracks.is_empty():
+            # Delayed, make python segfault on sys.exit() otherwise
+            # No idea why, maybe scanner using Gstpbutils before Gstreamer
+            # initialisation is finished...
+            GLib.timeout_add(2000, self.update_db)

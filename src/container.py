@@ -38,11 +38,6 @@ class Device:
 # Container for main window child
 class Container:
     def __init__(self):
-
-        # Try to update db on start, will be done after list one populating
-        # finished
-        self._need_to_update_db = Lp.settings.get_value('auto-update') or\
-            Lp.tracks.is_empty()
         # Index will start at -VOLUMES
         self._devices = {}
         self._devices_index = Type.DEVICES
@@ -585,9 +580,6 @@ class Container:
     def _on_list_populated(self, selection_list):
         for dev in self._devices.values():
             self._list_one.add_value((dev.id, dev.name))
-        if self._need_to_update_db:
-            self._need_to_update_db = False
-            self.update_db()
 
     """
         Update view based on selected object
