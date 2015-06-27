@@ -248,6 +248,7 @@ class PlaylistsManagerWidget(Gtk.Bin):
         column2 = Gtk.TreeViewColumn('delete', renderer2)
         column2.add_attribute(renderer2, 'icon-name', 2)
         column2.set_sizing(Gtk.TreeViewColumnSizing.FIXED)
+        column2.set_property('fixed_width', 50)
 
         if self._object_id != -1:
             self._view.append_column(column0)
@@ -477,6 +478,7 @@ class PlaylistEditWidget(Gtk.Bin):
         column2 = Gtk.TreeViewColumn('delete', renderer2)
         column2.add_attribute(renderer2, 'icon-name', 2)
         column2.set_sizing(Gtk.TreeViewColumnSizing.FIXED)
+        column2.set_property('fixed_width', 50)
 
         self._view.append_column(column0)
         self._view.append_column(column1)
