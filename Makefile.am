@@ -63,6 +63,9 @@ lollypop: lollypop.in Makefile
 		< $< > $@
 	chmod a+x $@
 
+rhythmbox2lollypop: 
+	true
+
 all-local: lollypop
 
 -include $(top_srcdir)/git.mk
