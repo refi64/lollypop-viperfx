@@ -109,7 +109,7 @@ class MPRIS(dbus.service.Object):
                 'Shuffle': True,
                 'Metadata': dbus.Dictionary(self._metadata, signature='sv'),
                 'Volume': dbus.Double(Lp.player.get_volume()),
-                'Position': dbus.Int64(Lp.player.get_position_in_track()),
+                'Position': dbus.Int64(Lp.player.get_position_in_track() / 60),
                 'MinimumRate': dbus.Double(1.0),
                 'MaximumRate': dbus.Double(1.0),
                 'CanGoNext': Lp.player.current_track.id is not None or
