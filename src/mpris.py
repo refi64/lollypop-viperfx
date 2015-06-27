@@ -178,6 +178,8 @@ class MPRIS(dbus.service.Object):
                     Lp.player.current_track.album_id, ArtSize.BIG)
             if cover_path is not None:
                 self._metadata['mpris:artUrl'] = "file://" + cover_path
+            elif 'mpris:artUrl' in self._metadata:
+                del self._metadata['mpris:artUrl']
 
     def _on_seeked(self, player, position):
         self.Seeked(position * 1000000)
