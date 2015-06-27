@@ -11,8 +11,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lollypop\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-06-25 23:51+0200\n"
-"PO-Revision-Date: 2015-06-25 21:56+0000\n"
+"POT-Creation-Date: 2015-06-26 06:42+0200\n"
+"PO-Revision-Date: 2015-06-26 09:00+0000\n"
 "Last-Translator: Cédric Bellegarde <web@adishatz.org>\n"
 "Language-Team: German (http://www.transifex.com/projects/p/lollypop/language/de/)\n"
 "MIME-Version: 1.0\n"
@@ -203,7 +203,7 @@ msgstr "Beliebte Alben"
 
 #: ../src/container.py:323
 msgid "Recently added albums"
-msgstr ""
+msgstr "Kürzlich hinzugefügte Alben"
 
 #: ../src/container.py:324
 msgid "Random albums"
@@ -232,11 +232,11 @@ msgstr "Kompilationen"
 
 #: ../src/container.py:391
 msgid "Popular tracks"
-msgstr ""
+msgstr "Beliebte Titel"
 
 #: ../src/container.py:392
 msgid "Recently played"
-msgstr "Zuletzt abgespielt"
+msgstr "Kürzlich abgespielt"
 
 #: ../src/container.py:393
 msgid "Never played"
@@ -306,7 +306,7 @@ msgstr "Radio"
 
 #: ../src/playlists.py:36
 msgid "Loved tracks"
-msgstr "Beliebte Titel"
+msgstr "Geliebte Titel"
 
 #: ../src/pop_covers.py:58 ../src/pop_infos.py:92 ../src/pop_infos.py:256
 #: ../src/pop_tunein.py:81 ../data/RadioPopover.ui.h:3
@@ -335,7 +335,7 @@ msgstr "Keine Informationen über diesen Künstler vorhanden..."
 
 #: ../src/pop_infos.py:192 ../src/pop_infos.py:243
 msgid "I do not love"
-msgstr "Mag ich nicht"
+msgstr "Lieb' ich nicht"
 
 #: ../src/pop_menu.py:60
 msgid "Continue playback"
@@ -385,11 +385,11 @@ msgstr "Zu \"%s\" hinzufügen"
 
 #: ../src/pop_menu.py:272
 msgid "I dislove this track"
-msgstr "Ich mag diesen Titel nicht mehr"
+msgstr "Ich liebe diesen Titel nicht mehr"
 
 #: ../src/pop_menu.py:277
 msgid "I love this track"
-msgstr "Ich mag diesen Titel"
+msgstr "Ich liebe diesen Titel"
 
 #: ../src/pop_menu.py:395
 msgid "Playback"
@@ -428,8 +428,8 @@ msgid "Populars"
 msgstr "Beliebte"
 
 #: ../src/settings.py:133
-msgid "Recents"
-msgstr "Kürzlich gespielt"
+msgid "Recently added"
+msgstr ""
 
 #. Handle language ordering
 #. Translators: Add here words that shoud be ignored for artist sort order
@@ -517,7 +517,7 @@ msgstr "_Beenden"
 
 #: ../data/ArtistInfos.ui.h:1
 msgid "I love"
-msgstr "Mag ich"
+msgstr "Lieb' ich"
 
 #: ../data/DeviceManagerView.ui.h:1
 msgid "Synchronize your device with this playlists"

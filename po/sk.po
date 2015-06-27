@@ -8,9 +8,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lollypop\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-06-25 23:51+0200\n"
-"PO-Revision-Date: 2015-06-25 21:56+0000\n"
-"Last-Translator: Cédric Bellegarde <web@adishatz.org>\n"
+"POT-Creation-Date: 2015-06-26 06:42+0200\n"
+"PO-Revision-Date: 2015-06-26 12:48+0000\n"
+"Last-Translator: Dušan Kazik <prescott66@gmail.com>\n"
 "Language-Team: Slovak (http://www.transifex.com/projects/p/lollypop/language/sk/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -200,7 +200,7 @@ msgstr "Obľúbené albumy"
 
 #: ../src/container.py:323
 msgid "Recently added albums"
-msgstr ""
+msgstr "Nedávno pridané albumy"
 
 #: ../src/container.py:324
 msgid "Random albums"
@@ -229,7 +229,7 @@ msgstr "Kompilácie"
 
 #: ../src/container.py:391
 msgid "Popular tracks"
-msgstr ""
+msgstr "Obľúbené skladby"
 
 #: ../src/container.py:392
 msgid "Recently played"
@@ -237,7 +237,7 @@ msgstr "Nedávno prehrávané"
 
 #: ../src/container.py:393
 msgid "Never played"
-msgstr "Nikdy neprehrávané"
+msgstr "Nikdy neprehraté"
 
 #: ../src/container.py:394
 msgid "Random tracks"
@@ -425,8 +425,8 @@ msgid "Populars"
 msgstr "Obľúbené"
 
 #: ../src/settings.py:133
-msgid "Recents"
-msgstr "Nedávne"
+msgid "Recently added"
+msgstr "Nedávno pridané"
 
 #. Handle language ordering
 #. Translators: Add here words that shoud be ignored for artist sort order
@@ -566,7 +566,7 @@ msgstr "Vyhľadá v službe TuneIn"
 
 #: ../data/SearchPopover.ui.h:1
 msgid "Play search"
-msgstr "Prehrať vyhľadané"
+msgstr "Prehrať nájdené skladby"
 
 #: ../data/SearchPopover.ui.h:2
 msgid "Create a new playlist based on search"

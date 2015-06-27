@@ -11,9 +11,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lollypop\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-06-25 23:51+0200\n"
-"PO-Revision-Date: 2015-06-25 21:56+0000\n"
-"Last-Translator: Cédric Bellegarde <web@adishatz.org>\n"
+"POT-Creation-Date: 2015-06-26 06:42+0200\n"
+"PO-Revision-Date: 2015-06-26 09:47+0000\n"
+"Last-Translator: Nathan Follens\n"
 "Language-Team: Dutch (http://www.transifex.com/projects/p/lollypop/language/nl/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -203,7 +203,7 @@ msgstr "Populaire albums"
 
 #: ../src/container.py:323
 msgid "Recently added albums"
-msgstr ""
+msgstr "Recent toegevoegde albums"
 
 #: ../src/container.py:324
 msgid "Random albums"
@@ -232,7 +232,7 @@ msgstr "Compilaties"
 
 #: ../src/container.py:391
 msgid "Popular tracks"
-msgstr ""
+msgstr "Populaire nummers"
 
 #: ../src/container.py:392
 msgid "Recently played"
@@ -428,8 +428,8 @@ msgid "Populars"
 msgstr "Populair"
 
 #: ../src/settings.py:133
-msgid "Recents"
-msgstr "Recent"
+msgid "Recently added"
+msgstr "Recent toegevoegd"
 
 #. Handle language ordering
 #. Translators: Add here words that shoud be ignored for artist sort order

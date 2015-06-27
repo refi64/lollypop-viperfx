@@ -9,9 +9,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lollypop\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-06-25 23:51+0200\n"
-"PO-Revision-Date: 2015-06-25 21:56+0000\n"
-"Last-Translator: Cédric Bellegarde <web@adishatz.org>\n"
+"POT-Creation-Date: 2015-06-26 06:42+0200\n"
+"PO-Revision-Date: 2015-06-26 13:00+0000\n"
+"Last-Translator: fri\n"
 "Language-Team: Czech (http://www.transifex.com/projects/p/lollypop/language/cs/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -201,7 +201,7 @@ msgstr "Oblíbená alba"
 
 #: ../src/container.py:323
 msgid "Recently added albums"
-msgstr ""
+msgstr "Nedávno přidaná alba"
 
 #: ../src/container.py:324
 msgid "Random albums"
@@ -230,7 +230,7 @@ msgstr "Kompilace"
 
 #: ../src/container.py:391
 msgid "Popular tracks"
-msgstr ""
+msgstr "Oblíbené skladby"
 
 #: ../src/container.py:392
 msgid "Recently played"
@@ -426,8 +426,8 @@ msgid "Populars"
 msgstr "Oblíbené"
 
 #: ../src/settings.py:133
-msgid "Recents"
-msgstr "Nedávné"
+msgid "Recently added"
+msgstr "Nedávno přidáno"
 
 #. Handle language ordering
 #. Translators: Add here words that shoud be ignored for artist sort order

@@ -8,9 +8,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lollypop\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-06-25 23:51+0200\n"
-"PO-Revision-Date: 2015-06-25 21:56+0000\n"
-"Last-Translator: Cédric Bellegarde <web@adishatz.org>\n"
+"POT-Creation-Date: 2015-06-26 06:42+0200\n"
+"PO-Revision-Date: 2015-06-26 09:14+0000\n"
+"Last-Translator: Jiri Grönroos <jiri.gronroos@iki.fi>\n"
 "Language-Team: Finnish (http://www.transifex.com/projects/p/lollypop/language/fi/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -200,7 +200,7 @@ msgstr "Suositut albumit"
 
 #: ../src/container.py:323
 msgid "Recently added albums"
-msgstr ""
+msgstr "Viimeksi lisätyt albumit"
 
 #: ../src/container.py:324
 msgid "Random albums"
@@ -229,11 +229,11 @@ msgstr "Kokoelmat"
 
 #: ../src/container.py:391
 msgid "Popular tracks"
-msgstr ""
+msgstr "Suositut kappaleet"
 
 #: ../src/container.py:392
 msgid "Recently played"
-msgstr "Äskettäin toistettu"
+msgstr "Viimeksi toistettu"
 
 #: ../src/container.py:393
 msgid "Never played"
@@ -425,8 +425,8 @@ msgid "Populars"
 msgstr "Suositut"
 
 #: ../src/settings.py:133
-msgid "Recents"
-msgstr "Viimeisimmät"
+msgid "Recently added"
+msgstr "Viimeksi lisätty"
 
 #. Handle language ordering
 #. Translators: Add here words that shoud be ignored for artist sort order
