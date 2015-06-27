@@ -109,7 +109,7 @@ class MPRIS(dbus.service.Object):
                 'Shuffle': True,
                 'Metadata': dbus.Dictionary(self._metadata, signature='sv'),
                 'Volume': dbus.Double(Lp.player.get_volume()),
-                'Position': dbus.Int64(Lp.player.get_position_in_track()),
+                'Position': dbus.Int64(Lp.player.get_position_in_track() / 60),
                 'MinimumRate': dbus.Double(1.0),
                 'MaximumRate': dbus.Double(1.0),
                 'CanGoNext': Lp.player.current_track.id is not None or
@@ -178,6 +178,8 @@ class MPRIS(dbus.service.Object):
                     Lp.player.current_track.album_id, ArtSize.BIG)
             if cover_path is not None:
                 self._metadata['mpris:artUrl'] = "file://" + cover_path
+            elif 'mpris:artUrl' in self._metadata:
+                del self._metadata['mpris:artUrl']
 
     def _on_seeked(self, player, position):
         self.Seeked(position * 1000000)
