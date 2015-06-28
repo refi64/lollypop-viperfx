@@ -7,7 +7,6 @@ bin_SCRIPTS = lollypop\
 SUBDIRS = src data po help
 
 EXTRA_DIST = \
-	AUTHORS.in \
 	lollypop.in
 	$(NULL)
 
@@ -37,14 +36,6 @@ GITIGNOREFILES = \
 	$(NULL)
 
 dist-hook: gen-AUTHORS
-
-gen-AUTHORS:
-	$(AM_V_GEN)if test -d $(srcdir)/.git; then                      \
-	   out="`cd $(srcdir) && git log --pretty=format:'%aN <%aE>' | sort -u`" && \
-	   perl -p -e "s/#authorslist#// and print '$$out'"            \
-	     < $(srcdir)/AUTHORS.in > $(distdir)/AUTHORS-tmp &&        \
-	   mv -f $(distdir)/AUTHORS-tmp $(distdir)/AUTHORS ;           \
-	fi
 
 lollypop: lollypop.in Makefile
 	$(AM_V_GEN)sed						\
