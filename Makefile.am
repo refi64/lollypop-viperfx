@@ -35,8 +35,6 @@ GITIGNOREFILES = \
 	m4 \
 	$(NULL)
 
-dist-hook: gen-AUTHORS
-
 lollypop: lollypop.in Makefile
 	$(AM_V_GEN)sed						\
 		-e s!\@srcdir\@!$(abs_top_srcdir)!	\
