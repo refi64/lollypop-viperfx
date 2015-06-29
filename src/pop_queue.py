@@ -62,6 +62,7 @@ class QueueWidget(Gtk.Popover):
         column2 = Gtk.TreeViewColumn('delete', renderer2)
         column2.add_attribute(renderer2, 'icon-name', 2)
         column2.set_sizing(Gtk.TreeViewColumnSizing.FIXED)
+        column2.set_property('fixed_width', 50)
 
         self._view.append_column(column0)
         self._view.append_column(column1)
@@ -75,9 +76,9 @@ class QueueWidget(Gtk.Popover):
     def do_show(self):
         size_setting = Lp.settings.get_value('window-size')
         if isinstance(size_setting[1], int):
-            self.set_size_request(400, size_setting[1]*0.7)
+            self.set_size_request(420, size_setting[1]*0.7)
         else:
-            self.set_size_request(400, 600)
+            self.set_size_request(420, 600)
         Gtk.Popover.do_show(self)
         self._signal_id1 = Lp.player.connect('current-changed',
                                              self._on_current_changed)
