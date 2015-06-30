@@ -160,6 +160,8 @@ class MtpSync:
             # Start copying
             tracks_id = Lp.playlists.get_tracks_id(playlist, sql)
             for track_id in tracks_id:
+                if track_id is None:
+                    continue
                 if not self._syncing:
                     self._fraction = 1.0
                     self._in_thread = False
