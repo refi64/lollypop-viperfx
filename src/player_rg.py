@@ -27,7 +27,7 @@ class ReplayGainPlayer:
         self._rgfilter = Gst.ElementFactory.make("bin", "bin")
 
         self._rg_audioconvert1 = Gst.ElementFactory.make("audioconvert",
-                                                         "audioconvert")
+                                                         "audioconvert1")
         self._rg_audioconvert2 = Gst.ElementFactory.make("audioconvert",
                                                          "audioconvert2")
 
