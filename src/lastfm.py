@@ -11,7 +11,9 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-from gi.repository import GLib, Gio
+from gi.repository import GLib, Gio, GdkPixbuf
+
+from lollypop.define import ArtSize
 
 from time import sleep
 from gettext import gettext as _
@@ -311,13 +313,18 @@ class LastFM(LastFMNetwork):
                 # Compilation or album without album artist
                 if album_id is None:
                     album_id = Lp.albums.get_compilation_id(album, sql)
-                # Do not write files outside collection
-                filepath = Lp.art.get_album_art_filepath(album_id, sql)
                 s = Gio.File.new_for_uri(url)
-                d = Gio.File.new_for_path(filepath)
-                s.copy(d, Gio.FileCopyFlags.OVERWRITE, None, None)
-                Lp.art.clean_album_cache(album_id, sql)
-                GLib.idle_add(Lp.art.announce_cover_update, album_id)
+                (status, data, tag) = s.load_contents()
+                if status:
+                    stream = Gio.MemoryInputStream.new_from_data(data, None)
+                    pixbuf = GdkPixbuf.Pixbuf.new_from_stream_at_scale(
+                                stream, ArtSize.MONSTER,
+                                ArtSize.MONSTER,
+                                False,
+                                None)
+                    Lp.art.save_album_art(pixbuf, album_id, sql)
+                    Lp.art.clean_album_cache(album_id, sql)
+                    GLib.idle_add(Lp.art.announce_cover_update, album_id)
             except Exception as e:
                 print("LastFM::_download_album_img: %s" % e)
         self._in_albums_download = False

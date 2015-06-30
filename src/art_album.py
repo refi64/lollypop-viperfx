@@ -201,10 +201,11 @@ class AlbumArt(BaseArt, TagReader):
         Save pixbuf for album id
         @param pixbuf as Gdk.Pixbuf
         @param album id as int
+        @param sql as sqlite cursor
     """
-    def save_album_art(self, pixbuf, album_id):
+    def save_album_art(self, pixbuf, album_id, sql=None):
         try:
-            artpath = self.get_album_art_filepath(album_id)
+            artpath = self.get_album_art_filepath(album_id, sql)
             # Gdk < 3.15 was missing save method
             try:
                 pixbuf.save(artpath, "jpeg", ["quality"], ["90"])
