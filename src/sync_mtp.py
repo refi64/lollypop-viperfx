@@ -130,7 +130,8 @@ class MtpSync:
             GLib.idle_add(self._view.set_sensitive, True)
             GLib.idle_add(self.emit, 'sync-finished')
 
-        GLib.idle_add(self._progress.hide)
+        # Let user see progress at 100%
+        GLib.timeout_add(2000, self._progress.hide)
         self._syncing = False
         self._in_thread = False
         if self._errors:
