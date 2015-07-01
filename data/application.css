@@ -47,8 +47,6 @@ Gtk.ListBoxRow .menu-button:hover {
 }
 
 .osd-popover {
-    background-color: @theme_fg_color;
-    color: @theme_bg_color;
     opacity: 0.95;
 }
 

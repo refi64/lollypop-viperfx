@@ -80,10 +80,7 @@ class ToolbarEnd(Gtk.Bin):
             (player.is_party() or
              Lp.settings.get_enum('shuffle') == Shuffle.TRACKS):
             self._pop_next.update()
-            if player.is_party():
-                self._pop_next.set_relative_to(self._party_btn)
-            else:
-                self._pop_next.set_relative_to(self._shuffle_btn)
+            self._pop_next.set_relative_to(self)
             self._pop_next.show()
         else:
             self._pop_next.hide()
@@ -167,8 +164,5 @@ class ToolbarEnd(Gtk.Bin):
         @param is party as bool
     """
     def _on_party_changed(self, player, is_party):
-        # GTK fail to change colors on popover, so destroy it
-        self._pop_next.destroy()
-        self._pop_next = NextPopover()
         if self._party_btn.get_active() != is_party:
             self._activate_party_button()
