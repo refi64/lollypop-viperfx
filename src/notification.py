@@ -95,14 +95,22 @@ class NotificationManager:
             self._notification.set_hint('image-path',
                                         GLib.Variant('s', ''))
 
-        self._notification.update(
-            player.current_track.title,
-            # TRANSLATORS: by refers to the artist,
-            # from to the album
-            _("by %s, from %s") %
-            ('<b>' + player.current_track.artist + '</b>',
-             '<i>' + player.current_track.album + '</i>'),
-            'lollypop')
+        if player.current_track.album == '':
+            self._notification.update(
+                player.current_track.title,
+                # TRANSLATORS: by refers to the artist,
+                _("by %s") %
+                '<b>' + player.current_track.artist + '</b>',
+                'lollypop')
+        else:
+            self._notification.update(
+                player.current_track.title,
+                # TRANSLATORS: by refers to the artist,
+                # from to the album
+                _("by %s, from %s") %
+                ('<b>' + player.current_track.artist + '</b>',
+                 '<i>' + player.current_track.album + '</i>'),
+                'lollypop')
         try:
             self._notification.show()
         except:
