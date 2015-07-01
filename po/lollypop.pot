@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-06-26 06:42+0200\n"
+"POT-Creation-Date: 2015-07-02 08:49+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -180,7 +180,7 @@ msgstr ""
 msgid "Advanced artist informations disabled"
 msgstr ""
 
-#: ../src/application.py:338
+#: ../src/application.py:337
 msgid "Lollypop: You need to install yelp."
 msgstr ""
 
@@ -192,52 +192,52 @@ msgstr ""
 msgid "Your music is updating"
 msgstr ""
 
-#: ../src/container.py:322
+#: ../src/container.py:317
 msgid "Popular albums"
 msgstr ""
 
-#: ../src/container.py:323
+#: ../src/container.py:318
 msgid "Recently added albums"
 msgstr ""
 
-#: ../src/container.py:324
+#: ../src/container.py:319
 msgid "Random albums"
 msgstr ""
 
-#: ../src/container.py:325 ../src/pop_menu.py:397 ../src/pop_menu.py:452
+#: ../src/container.py:320 ../src/pop_menu.py:397 ../src/pop_menu.py:452
 #: ../src/pop_menu.py:469
 msgid "Playlists"
 msgstr ""
 
-#: ../src/container.py:326
+#: ../src/container.py:321
 msgid "Radios"
 msgstr ""
 
-#: ../src/container.py:328
+#: ../src/container.py:323
 msgid "All artists"
 msgstr ""
 
-#: ../src/container.py:330
+#: ../src/container.py:325
 msgid "All albums"
 msgstr ""
 
-#: ../src/container.py:374
+#: ../src/container.py:370
 msgid "Compilations"
 msgstr ""
 
-#: ../src/container.py:391
+#: ../src/container.py:386
 msgid "Popular tracks"
 msgstr ""
 
-#: ../src/container.py:392
+#: ../src/container.py:387
 msgid "Recently played"
 msgstr ""
 
-#: ../src/container.py:393
+#: ../src/container.py:388
 msgid "Never played"
 msgstr ""
 
-#: ../src/container.py:394
+#: ../src/container.py:389
 msgid "Random tracks"
 msgstr ""
 
@@ -267,11 +267,11 @@ msgstr ""
 msgid "Play"
 msgstr ""
 
-#: ../src/lastfm.py:23
+#: ../src/lastfm.py:25
 msgid "Last.fm authentication disabled"
 msgstr ""
 
-#: ../src/lastfm.py:286
+#: ../src/lastfm.py:288
 msgid "Wrong Last.fm credentials"
 msgstr ""
 
@@ -284,13 +284,19 @@ msgid "Next"
 msgstr ""
 
 #. TRANSLATORS: by refers to the artist,
-#. from to the album
 #: ../src/notification.py:102
+#, python-format
+msgid "by %s"
+msgstr ""
+
+#. TRANSLATORS: by refers to the artist,
+#. from to the album
+#: ../src/notification.py:110
 #, python-format
 msgid "by %s, from %s"
 msgstr ""
 
-#: ../src/player_bin.py:263
+#: ../src/player_bin.py:265
 #, python-format
 msgid "File doesn't exist: %s"
 msgstr ""
@@ -454,16 +460,16 @@ msgstr ""
 msgid "No free space available on device"
 msgstr ""
 
-#: ../src/widgets_playlist.py:275 ../src/widgets_playlist.py:278
+#: ../src/widgets_playlist.py:276 ../src/widgets_playlist.py:279
 msgid "New playlist "
 msgstr ""
 
-#: ../src/widgets_playlist.py:324 ../src/widgets_playlist.py:559
+#: ../src/widgets_playlist.py:325 ../src/widgets_playlist.py:561
 #, python-format
 msgid "Remove \"%s\"?"
 msgstr ""
 
-#: ../src/widgets_playlist.py:604
+#: ../src/widgets_playlist.py:606
 msgid "Remove these tracks?"
 msgstr ""
 
