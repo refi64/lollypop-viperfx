@@ -293,7 +293,7 @@ class Application(Gtk.Application):
     """
     def _fullscreen(self, action=None, param=None):
         if Lp.window:
-            fs = FullScreen(Lp.window)
+            fs = FullScreen(self, Lp.window)
             fs.connect("destroy", self._on_fs_destroyed)
             self._is_fs = True
             fs.show()

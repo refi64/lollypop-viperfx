@@ -26,10 +26,12 @@ class FullScreen(Gtk.Window):
 
     """
         Init window and set transient for parent
-        @param: parent as Gtk.window
+        @param app as Gio.Application
+        @param parent as Gtk.window
     """
-    def __init__(self, parent):
+    def __init__(self, app, parent):
         Gtk.Window.__init__(self)
+        self.set_application(app)
         self._timeout = None
         self._seeking = False
         self._signal1_id = None
