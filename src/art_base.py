@@ -131,16 +131,18 @@ class BaseArt(GObject.GObject):
             ctx.set_source_rgb(0, 0, 0)
         ctx.stroke_preserve()
 
-        if selected:
-            ctx.set_source_rgb(selected_color.red,
-                               selected_color.green,
-                               selected_color.blue)
-        else:
-            if width < ArtSize.BIG or dark:
+        # Fill content for big artwork
+        if width > ArtSize.MEDIUM:
+            if selected:
+                ctx.set_source_rgb(selected_color.red,
+                                   selected_color.green,
+                                   selected_color.blue)
+            elif dark:
                 ctx.set_source_rgb(0, 0, 0)
             else:
                 ctx.set_source_rgb(1, 1, 1)
-        ctx.fill()
+            ctx.fill()
+
         border_pixbuf = Gdk.pixbuf_get_from_surface(surface, 0, 0,
                                                     surface_width,
                                                     surface_height)
