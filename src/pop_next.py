@@ -39,8 +39,6 @@ class NextPopover(Gtk.Popover):
         Update widget with current track
     """
     def update(self, player=None):
-        if Lp.player.is_party():
-            self._skip_btn.show()
         self._artist_label.set_text(Lp.player.next_track.artist)
         self._title_label.set_text(Lp.player.next_track.title)
         art = Lp.art.get_album(Lp.player.next_track.album_id,
