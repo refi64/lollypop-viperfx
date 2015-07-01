@@ -2,6 +2,11 @@
 <!-- Generated with glade 3.18.3 -->
 <interface>
   <requires lib="gtk+" version="3.12"/>
+  <object class="GtkImage" id="image1">
+    <property name="visible">True</property>
+    <property name="can_focus">False</property>
+    <property name="icon_name">media-skip-forward-symbolic</property>
+  </object>
   <object class="GtkGrid" id="widget">
     <property name="visible">True</property>
     <property name="can_focus">False</property>
@@ -10,24 +15,6 @@
     <property name="margin_top">5</property>
     <property name="margin_bottom">5</property>
     <property name="column_spacing">5</property>
-    <child>
-      <object class="GtkLabel" id="label1">
-        <property name="visible">True</property>
-        <property name="can_focus">False</property>
-        <property name="label" translatable="yes">Next track</property>
-        <attributes>
-          <attribute name="scale" value="0.80000000000000004"/>
-        </attributes>
-        <style>
-          <class name="dim-label"/>
-        </style>
-      </object>
-      <packing>
-        <property name="left_attach">0</property>
-        <property name="top_attach">0</property>
-        <property name="width">2</property>
-      </packing>
-    </child>
     <child>
       <object class="GtkImage" id="cover">
         <property name="can_focus">False</property>
@@ -44,7 +31,7 @@
         <property name="can_focus">False</property>
         <property name="ellipsize">end</property>
         <property name="single_line_mode">True</property>
-        <property name="max_width_chars">30</property>
+        <property name="max_width_chars">20</property>
         <style>
           <class name="lollypop-title"/>
         </style>
@@ -60,7 +47,7 @@
         <property name="can_focus">False</property>
         <property name="ellipsize">end</property>
         <property name="single_line_mode">True</property>
-        <property name="max_width_chars">30</property>
+        <property name="max_width_chars">20</property>
         <style>
           <class name="lollypop-subtitle"/>
         </style>
@@ -79,7 +66,41 @@
       <packing>
         <property name="left_attach">0</property>
         <property name="top_attach">1</property>
-        <property name="width">2</property>
+        <property name="width">3</property>
+      </packing>
+    </child>
+    <child>
+      <object class="GtkButton" id="skip_btn">
+        <property name="can_focus">True</property>
+        <property name="receives_default">True</property>
+        <property name="halign">end</property>
+        <property name="valign">center</property>
+        <property name="image">image1</property>
+        <property name="relief">none</property>
+        <signal name="clicked" handler="_on_skip_btn_clicked" swapped="no"/>
+      </object>
+      <packing>
+        <property name="left_attach">2</property>
+        <property name="top_attach">2</property>
+        <property name="height">2</property>
+      </packing>
+    </child>
+    <child>
+      <object class="GtkLabel" id="label1">
+        <property name="visible">True</property>
+        <property name="can_focus">False</property>
+        <property name="label" translatable="yes">Next track</property>
+        <attributes>
+          <attribute name="scale" value="0.80000000000000004"/>
+        </attributes>
+        <style>
+          <class name="dim-label"/>
+        </style>
+      </object>
+      <packing>
+        <property name="left_attach">0</property>
+        <property name="top_attach">0</property>
+        <property name="width">3</property>
       </packing>
     </child>
   </object>

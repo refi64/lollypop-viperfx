@@ -27,16 +27,20 @@ class NextPopover(Gtk.Popover):
         self.get_style_context().add_class('osd-popover')
         builder = Gtk.Builder()
         builder.add_from_resource('/org/gnome/Lollypop/NextPopover.ui')
+        builder.connect_signals(self)
         self.add(builder.get_object('widget'))
         self._title_label = builder.get_object('title')
         self._artist_label = builder.get_object('artist')
         self._cover = builder.get_object('cover')
+        self._skip_btn = builder.get_object('skip_btn')
         Lp.player.connect('queue-changed', self.update)
 
     """
         Update widget with current track
     """
     def update(self, player=None):
+        if Lp.player.is_party():
+            self._skip_btn.show()
         self._artist_label.set_text(Lp.player.next_track.artist)
         self._title_label.set_text(Lp.player.next_track.title)
         art = Lp.art.get_album(Lp.player.next_track.album_id,
@@ -48,3 +52,11 @@ class NextPopover(Gtk.Popover):
             self._cover.show()
         else:
             self._cover.hide()
+
+    """
+        Skip next track
+        @param btn as Gtk.Button
+    """
+    def _on_skip_btn_clicked(self, btn):
+        Lp.player.set_next()
+        self.update()
