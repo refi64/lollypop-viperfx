@@ -199,6 +199,8 @@ class FullScreen(Gtk.Window):
     """
     def _on_status_changed(self, obj):
         is_playing = Lp.player.is_playing()
+        if Lp.player.current_track.id != Type.RADIOS:
+            self._progress.set_sensitive(is_playing)
         if is_playing and not self._timeout:
             self._timeout = GLib.timeout_add(1000, self._update_position)
             self._change_play_btn_status(self._pause_image, _("Pause"))
