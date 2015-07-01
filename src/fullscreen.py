@@ -18,6 +18,7 @@ from gettext import gettext as _
 
 from lollypop.define import Lp, ArtSize, Type
 from lollypop.utils import seconds_to_string
+from lollypop.pop_next import NextPopover
 
 
 # Show a fullscreen window showing current track context
@@ -46,6 +47,8 @@ class FullScreen(Gtk.Window):
         self._play_btn.connect('clicked', self._on_play_btn_clicked)
         self._next_btn = builder.get_object('next_btn')
         self._next_btn.connect('clicked', self._on_next_btn_clicked)
+        self._next_popover = NextPopover()
+        self._next_popover.set_position(Gtk.PositionType.BOTTOM)
         self._play_image = builder.get_object('play_image')
         self._pause_image = builder.get_object('pause_image')
         close_btn = builder.get_object('close_btn')
@@ -54,8 +57,6 @@ class FullScreen(Gtk.Window):
         self._title = builder.get_object('title')
         self._artist = builder.get_object('artist')
         self._album = builder.get_object('album')
-        self._next = builder.get_object('next')
-        self._next_cover = builder.get_object('next_cover')
 
         self._progress = builder.get_object('progress_scale')
         self._progress.connect('button-release-event',
@@ -85,11 +86,14 @@ class FullScreen(Gtk.Window):
         Gtk.Window.do_show(self)
         self._update_position()
         self.fullscreen()
+        self._next_popover.set_relative_to(self._album)
+        self._next_popover.show()
 
     """
         Remove signals and unset color
     """
     def do_hide(self):
+        Gtk.Window.do_hide(self)
         if self._signal1_id:
             Lp.player.disconnect(self._signal1_id)
             self._signal1_id = None
@@ -99,6 +103,7 @@ class FullScreen(Gtk.Window):
         if self._timeout:
             GLib.source_remove(self._timeout)
             self._timeout = None
+        self._next_popover.set_relative_to(None)
 
 #######################
 # PRIVATE             #
@@ -112,34 +117,23 @@ class FullScreen(Gtk.Window):
         @param player as Player
     """
     def _on_current_changed(self, player):
-        if player.current_track.id is None:
-            pass  # Impossible as we force play on show
-        else:
+        if player.current_track.id is not None:
             if Lp.player.current_track.id == Type.RADIOS:
                 self._timelabel.hide()
                 self._total_time_label.hide()
                 self._progress.hide()
-                surface1 = Lp.art.get_radio(
+                surface = Lp.art.get_radio(
                     player.current_track.artist,
                     ArtSize.MONSTER*self.get_scale_factor())
-                surface2 = Lp.art.get_radio(
-                    player.next_track.artist,
-                    ArtSize.MEDIUM*self.get_scale_factor())
             else:
                 self._timelabel.show()
                 self._total_time_label.show()
                 self._progress.show()
-                surface1 = Lp.art.get_album(
+                surface = Lp.art.get_album(
                     player.current_track.album_id,
                     ArtSize.MONSTER*self.get_scale_factor())
-                surface2 = Lp.art.get_album(
-                    player.next_track.album_id,
-                    ArtSize.MEDIUM*self.get_scale_factor())
-
-            self._cover.set_from_surface(surface1)
-            self._next_cover.set_from_surface(surface2)
-            del surface1
-            del surface2
+            self._cover.set_from_surface(surface)
+            del surface
 
             album = player.current_track.album
             if player.current_track.year != '':
@@ -147,14 +141,19 @@ class FullScreen(Gtk.Window):
             self._title.set_text(player.current_track.title)
             self._artist.set_text(player.current_track.artist)
             self._album.set_text(album)
-            self._next.set_markup("<b>%s</b> - %s" %
-                                  (escape(player.next_track.artist),
-                                   escape(player.next_track.title)))
             self._progress.set_value(1.0)
             self._progress.set_range(0.0, player.current_track.duration * 60)
             self._total_time_label.set_text(
                 seconds_to_string(player.current_track.duration))
             self._timelabel.set_text("0:00")
+
+            # Do not show next popover non internal tracks as
+            # tags will be readed on the fly
+            if player.next_track.id >= 0:
+                self._next_popover.update()
+                self._next_popover.show()
+            else:
+                self._next_popover.hide()
 
     """
         Destroy window if Esc
