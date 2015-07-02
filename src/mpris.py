@@ -16,6 +16,8 @@
 import dbus
 import dbus.service
 from dbus.mainloop.glib import DBusGMainLoop
+from random import randint
+
 from gi.repository import Gst, GLib
 
 from lollypop.define import Lp, ArtSize, Type
@@ -160,8 +162,10 @@ class MPRIS(dbus.service.Object):
                 self._metadata['mpris:trackid'] = dbus.ObjectPath(
                     '/org/lollypop/%s' % Lp.player.current_track.id)
             else:
+                # MPRIS SUX
+                track_id = randint(10000000, 90000000)
                 self._metadata['mpris:trackid'] = dbus.ObjectPath(
-                    '/org/lollypop/0')
+                    '/org/lollypop/%s' % track_id)
             self._metadata['xesam:trackNumber'] =\
                 Lp.player.current_track.number
             self._metadata['xesam:title'] = Lp.player.current_track.title
