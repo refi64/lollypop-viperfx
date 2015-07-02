@@ -62,6 +62,7 @@
             <property name="vexpand">True</property>
             <property name="ellipsize">end</property>
             <attributes>
+              <attribute name="weight" value="semibold"/>
               <attribute name="scale" value="5"/>
             </attributes>
           </object>
@@ -78,7 +79,7 @@
             <property name="vexpand">True</property>
             <property name="ellipsize">end</property>
             <attributes>
-              <attribute name="scale" value="5"/>
+              <attribute name="scale" value="4"/>
             </attributes>
           </object>
           <packing>
