@@ -159,6 +159,9 @@ class MPRIS(dbus.service.Object):
             if Lp.player.current_track.id >= 0:
                 self._metadata['mpris:trackid'] = dbus.ObjectPath(
                     '/org/lollypop/%s' % Lp.player.current_track.id)
+            else:
+                self._metadata['mpris:trackid'] = dbus.ObjectPath(
+                    '/org/lollypop/0')
             self._metadata['xesam:trackNumber'] =\
                 Lp.player.current_track.number
             self._metadata['xesam:title'] = Lp.player.current_track.title
