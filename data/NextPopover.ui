@@ -86,16 +86,24 @@
       </packing>
     </child>
     <child>
-      <object class="GtkLabel" id="label1">
+      <object class="GtkEventBox" id="eventbox1">
         <property name="visible">True</property>
         <property name="can_focus">False</property>
-        <property name="label" translatable="yes">Next track</property>
-        <attributes>
-          <attribute name="scale" value="0.80000000000000004"/>
-        </attributes>
-        <style>
-          <class name="dim-label"/>
-        </style>
+        <property name="above_child">True</property>
+        <signal name="button-press-event" handler="_on_eventbox_press" swapped="no"/>
+        <child>
+          <object class="GtkLabel" id="label1">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <property name="label" translatable="yes">Next track</property>
+            <attributes>
+              <attribute name="scale" value="0.80000000000000004"/>
+            </attributes>
+            <style>
+              <class name="dim-label"/>
+            </style>
+          </object>
+        </child>
       </object>
       <packing>
         <property name="left_attach">0</property>

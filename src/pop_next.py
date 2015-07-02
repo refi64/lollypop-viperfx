@@ -23,7 +23,6 @@ class NextPopover(Gtk.Popover):
     """
     def __init__(self):
         Gtk.Popover.__init__(self)
-        self._show = False
         self.set_modal(False)
         self.get_style_context().add_class('osd-popover')
         builder = Gtk.Builder()
@@ -54,14 +53,15 @@ class NextPopover(Gtk.Popover):
             self._cover.show()
         else:
             self._cover.hide()
-        if self._show:
+        if self.get_relative_to() is not None:
             self.show()
 
     """
         Show widget
+        @param parent as Gtk.Widget
     """
-    def self_show(self):
-        self._show = True
+    def self_show(self, parent):
+        self.set_relative_to(parent)
         if self._title_label.get_text() != '':
             self.show()
 
@@ -69,19 +69,29 @@ class NextPopover(Gtk.Popover):
         Hide widget
     """
     def self_hide(self):
-        self._show = False
+        parent = self.get_relative_to()
+        self.set_relative_to(None)
         self.hide()
+        self.set_relative_to(parent)
 
     """
         Inhibate hide
     """
     def do_hide(self):
-        if not self._show:
+        if self.get_relative_to() is None:
             Gtk.Popover.do_hide(self)
 
 #######################
 # PRIVATE             #
 #######################
+    """
+        Hide popover
+        @param eventbox as Gtk.EventBox
+        @param event as Gdk.Event
+    """
+    def _on_eventbox_press(self, eventbox, event):
+        self.self_hide()
+
     """
         Skip next track
         @param btn as Gtk.Button
