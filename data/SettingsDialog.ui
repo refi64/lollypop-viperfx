@@ -460,8 +460,8 @@
               </packing>
             </child>
             <child>
-              <object class="GtkButton" id="test_btn">
-                <property name="label" translatable="yes">Test</property>
+              <object class="GtkButton" id="connect_btn">
+                <property name="label" translatable="yes">Connect</property>
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="receives_default">True</property>
