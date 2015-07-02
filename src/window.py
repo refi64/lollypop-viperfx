@@ -16,7 +16,6 @@ from gi.repository import Gtk, Gio, GLib
 from lollypop.container import Container
 from lollypop.define import Lp, NextContext
 from lollypop.toolbar import Toolbar
-from lollypop.utils import use_csd
 
 
 # Main window
@@ -190,18 +189,17 @@ class Window(Gtk.ApplicationWindow, Container):
         self.set_icon_name('lollypop')
         self._toolbar = Toolbar(self.get_application())
         self._toolbar.show()
-        # Only set headerbar if according DE detected or forced manually
-        if use_csd():
-            self.set_titlebar(self._toolbar)
-            self._toolbar.set_show_close_button(True)
-            self.add(self.main_widget())
-        else:
+        if Lp.settings.get_value('disable-csd'):
             vgrid = Gtk.Grid()
             vgrid.set_orientation(Gtk.Orientation.VERTICAL)
             vgrid.add(self._toolbar)
             vgrid.add(self.main_widget())
             vgrid.show()
             self.add(vgrid)
+        else:
+            self.set_titlebar(self._toolbar)
+            self._toolbar.set_show_close_button(True)
+            self.add(self.main_widget())
 
     """
         Setup window position and size, callbacks

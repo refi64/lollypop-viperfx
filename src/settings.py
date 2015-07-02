@@ -22,7 +22,6 @@ from gettext import gettext as _
 from _thread import start_new_thread
 
 from lollypop.define import Lp, Type, SecretSchema, SecretAttributes
-from lollypop.utils import use_csd
 
 
 # Lollypop settings
@@ -70,7 +69,7 @@ class SettingsDialog:
         self._settings_dialog = builder.get_object('settings_dialog')
         self._settings_dialog.set_transient_for(Lp.window)
 
-        if use_csd():
+        if not Lp.settings.get_value('disable-csd'):
             self._settings_dialog.set_titlebar(
                 builder.get_object('header_bar'))
 

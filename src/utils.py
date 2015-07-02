@@ -27,13 +27,6 @@ def debug(str):
         print(str)
 
 
-def is_eos():
-    """
-        Return True if desktop is elementary os
-    """
-    return os.environ.get("XDG_CURRENT_DESKTOP") == "Pantheon"
-
-
 def is_unity():
     """
         Return True if desktop is Unity
@@ -46,13 +39,6 @@ def is_gnome():
         Return True if desktop is Gnome
     """
     return os.environ.get("XDG_CURRENT_DESKTOP") == "GNOME"
-
-
-def use_csd():
-    """
-        Return True if CSDs are to be used based on several criterions
-    """
-    return is_gnome() or is_eos() or Lp.settings.get_value('force-csd')
 
 
 def is_audio(f):
