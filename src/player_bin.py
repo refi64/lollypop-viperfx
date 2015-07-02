@@ -214,10 +214,7 @@ class BinPlayer(ReplayGainPlayer, BasePlayer):
         if self.current_track.id >= 0:
             return
         # FIXME Report gstreamer bug
-        elif self.current_track.title != ''\
-                and self.current_track.artist != ''\
-                and self.current_track.album != ''\
-                and self.current_track.duration > 0.0:
+        elif self.current_track.duration > 0.0:
             return
         debug("Player::_on_bus_message_tag(): %s" % self.current_track.uri)
         reader = ScannerTagReader()
