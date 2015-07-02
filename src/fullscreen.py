@@ -38,9 +38,7 @@ class FullScreen(Gtk.Window):
         self._seeking = False
         self._signal1_id = None
         self._signal2_id = None
-        self.set_transient_for(parent)
-        self.set_skip_taskbar_hint(True)
-        self.set_skip_pager_hint(True)
+        self.set_decorated(False)
         builder = Gtk.Builder()
         builder.add_from_resource('/org/gnome/Lollypop/FullScreen.ui')
         main_widget = builder.get_object('fs')
