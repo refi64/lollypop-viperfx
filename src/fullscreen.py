@@ -203,6 +203,19 @@ class FullScreen(Gtk.Window):
                 seconds_to_string(player.current_track.duration))
             self._timelabel.set_text("0:00")
 
+            # Can add a \n in markup
+            # GTK bug => https://bugzilla.gnome.org/show_bug.cgi?id=749965
+            prev_artist = escape(player.prev_track.artist)
+            prev_title = escape(player.prev_track.title)
+            next_artist = escape(player.next_track.artist)
+            next_title = escape(player.next_track.title)
+            self._next_btn.set_tooltip_markup("<b>%s</b> - %s" %
+                                              (next_artist,
+                                               next_title))
+            self._prev_btn.set_tooltip_markup("<b>%s</b> - %s" %
+                                              (prev_artist,
+                                               prev_title))
+
             # Do not show next popover non internal tracks as
             # tags will be readed on the fly
             if player.next_track.id >= 0:
