@@ -293,7 +293,10 @@ class SettingsDialog:
         Lp.settings.set_value('music-path', GLib.Variant('as', paths))
 
         # Last.fm
-        self._update_lastfm_settings()
+        try:
+            self._update_lastfm_settings()
+        except:
+            pass
 
         self._settings_dialog.hide()
         self._settings_dialog.destroy()
