@@ -287,7 +287,7 @@ class LastFM(LastFMNetwork):
             if Lp.notify is not None:
                 GLib.idle_add(Lp.notify.send, _("Wrong Last.fm credentials"))
         except Exception as e:
-            print("LastFM::_update_playing(): %s" % e)
+            print("LastFM::_now_playing(): %s" % e)
             # Try five times
             if t < 5:
                 t += 1
