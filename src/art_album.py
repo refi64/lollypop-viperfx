@@ -128,7 +128,7 @@ class AlbumArt(BaseArt, TagReader):
         @return cairo surface
     """
     def get_cover_for_uri(self, uri, size, selected):
-        pixbuf = self._pixbuf_from_tags(GLib.filename_from_uri(uri)[0], size)
+        pixbuf = self.pixbuf_from_tags(GLib.filename_from_uri(uri)[0], size)
         if pixbuf is not None:
             return self._make_icon_frame(pixbuf, selected)
         else:
@@ -169,7 +169,7 @@ class AlbumArt(BaseArt, TagReader):
                         tracks = Lp.albums.get_tracks(album_id, None)
                         if tracks:
                             filepath = Lp.tracks.get_path(tracks[0])
-                            pixbuf = self._pixbuf_from_tags(filepath, size)
+                            pixbuf = self.pixbuf_from_tags(filepath, size)
                     except Exception as e:
                         pass
                 # No cover, use default one
@@ -258,15 +258,12 @@ class AlbumArt(BaseArt, TagReader):
         except Exception as e:
             print("Art::clean_album_cache(): ", e, filename)
 
-#######################
-# PRIVATE             #
-#######################
     """
         Return cover from tags
         @param filepath as str
         @param size as int
     """
-    def _pixbuf_from_tags(self, filepath, size):
+    def pixbuf_from_tags(self, filepath, size):
         pixbuf = None
         infos = self.get_infos(filepath)
         exist = False
@@ -284,6 +281,9 @@ class AlbumArt(BaseArt, TagReader):
                                                                None)
         return pixbuf
 
+#######################
+# PRIVATE             #
+#######################
     """
         Get a uniq string for album
         @param album id as int

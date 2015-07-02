@@ -16,7 +16,7 @@
 import dbus
 import dbus.service
 from dbus.mainloop.glib import DBusGMainLoop
-from gi.repository import Gst
+from gi.repository import Gst, GLib
 
 from lollypop.define import Lp, ArtSize, Type
 
@@ -176,6 +176,19 @@ class MPRIS(dbus.service.Object):
             if Lp.player.current_track.id == Type.RADIOS:
                 cover_path = Lp.art.get_radio_cache_path(
                     Lp.player.current_track.artist, ArtSize.BIG)
+            elif Lp.player.current_track.id == Type.EXTERNALS:
+                cover_path = "/tmp/lollypop_mpris.jpg"
+                pixbuf = Lp.art.pixbuf_from_tags(
+                    GLib.filename_from_uri(Lp.player.current_track.uri)[0],
+                    ArtSize.BIG)
+                # Gdk < 3.15 was missing save method
+                # > 3.15 is missing savev method
+                try:
+                    pixbuf.save(cover_path, "jpeg",
+                                ["quality"], ["90"])
+                except:
+                    pixbuf.savev(cover_path, "jpeg",
+                                 ["quality"], ["90"])
             else:
                 cover_path = Lp.art.get_album_cache_path(
                     Lp.player.current_track.album_id, ArtSize.BIG)
