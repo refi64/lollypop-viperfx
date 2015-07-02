@@ -181,7 +181,7 @@ class MPRIS(dbus.service.Object):
                 pixbuf = Lp.art.pixbuf_from_tags(
                     GLib.filename_from_uri(Lp.player.current_track.uri)[0],
                     ArtSize.BIG)
-                if pixbuf is none None:
+                if pixbuf is not None:
                     # Gdk < 3.15 was missing save method
                     # > 3.15 is missing savev method
                     try:
