@@ -244,7 +244,20 @@
       </packing>
     </child>
     <child>
-      <placeholder/>
+      <object class="GtkLabel" id="datetime">
+        <property name="visible">True</property>
+        <property name="can_focus">False</property>
+        <attributes>
+          <attribute name="weight" value="bold"/>
+        </attributes>
+        <style>
+          <class name="dim-label"/>
+        </style>
+      </object>
+      <packing>
+        <property name="left_attach">1</property>
+        <property name="top_attach">0</property>
+      </packing>
     </child>
     <child>
       <placeholder/>
