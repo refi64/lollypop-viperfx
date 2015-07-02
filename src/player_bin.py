@@ -216,8 +216,10 @@ class BinPlayer(ReplayGainPlayer, BasePlayer):
         # FIXME Report gstreamer bug
         elif self.current_track.title != ''\
                 and self.current_track.artist != ''\
+                and self.current_track.album != ''\
                 and self.current_track.duration > 0.0:
             return
+        debug("Player::_on_bus_message_tag(): %s" % self.current_track.uri)
         reader = ScannerTagReader()
         tags = message.parse_tag()
 
@@ -227,7 +229,10 @@ class BinPlayer(ReplayGainPlayer, BasePlayer):
             (b, duration) = self._playbin.query_duration(Gst.Format.TIME)
             if b:
                 self.current_track.duration = duration/1000000000
-            self.current_track.album = reader.get_album_name(tags)
+            # We do not use tagreader as we need to check if value is None
+            self.current_track.album = tags.get_string_index('album', 0)[1]
+            if self.current_track.album is None:
+                self.current_track.album = ''
             self.current_track.artist = reader.get_artists(tags)
             self.current_track.aartist = reader.get_album_artist(tags)
             if self.current_track.aartist == '':
@@ -322,7 +327,8 @@ class BinPlayer(ReplayGainPlayer, BasePlayer):
     def _on_stream_start(self, bus, message):
         self._start_time = time()
         debug("Player::_on_stream_start(): %s" % self.current_track.uri)
-        self.emit("current-changed")
+        if self.current_track.id >= 0:
+            self.emit("current-changed")
         # Update now playing on lastfm
         if Lp.lastfm is not None and self.current_track.id >= 0:
             if self.current_track.aartist_id == Type.COMPILATIONS:
