@@ -60,4 +60,4 @@ class NextPopover(Gtk.Popover):
     """
     def _on_skip_btn_clicked(self, btn):
         Lp.player.set_next()
-        self.update()
+        Lp.player.emit('queue-changed')
