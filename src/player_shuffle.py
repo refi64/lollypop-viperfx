@@ -163,7 +163,6 @@ class ShufflePlayer(BasePlayer):
                             self.context.genre_id)
         if self.current_track.id is not None:
             self.set_next()
-            self.emit('current-changed')
 
     """
         Shuffle album list

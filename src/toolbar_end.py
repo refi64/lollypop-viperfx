@@ -122,6 +122,7 @@ class ToolbarEnd(Gtk.Bin):
             if Lp.player.next_track.id is not None and\
                not self._pop_next.is_visible():
                 self._pop_next.set_relative_to(self)
+                self._pop_next.update()
                 self._pop_next.show()
         elif Lp.player.is_playing():
             self._pop_next.set_relative_to(None)
@@ -167,12 +168,14 @@ class ToolbarEnd(Gtk.Bin):
         if not Lp.settings.get_value('dark-ui'):
             settings = Gtk.Settings.get_default()
             settings.set_property("gtk-application-prefer-dark-theme", active)
+        is_playing = Lp.player.is_playing()
         Lp.player.set_party(active)
         if not active:
             self._pop_next.set_relative_to(None)
             self._pop_next.hide()
-        elif Lp.player.is_playing() and not self._pop_next.is_visible():
+        elif is_playing and not self._pop_next.is_visible():
             self._pop_next.set_relative_to(self)
+            self._pop_next.update()
             self._pop_next.show()
 
     """
