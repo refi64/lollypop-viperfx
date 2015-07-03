@@ -5,8 +5,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lollypop\n"
 "POT-Creation-Date: 2015-06-24 15:43+0200\n"
-"PO-Revision-Date: 2015-06-25 09:09+0000\n"
-"Last-Translator: Cédric Bellegarde <web@adishatz.org>\n"
+"PO-Revision-Date: 2015-06-29 07:20+0000\n"
+"Last-Translator: Марко М. Костић (Marko M. Kostić) <marko.m.kostic@gmail.com>\n"
 "Language-Team: Serbian (http://www.transifex.com/projects/p/lollypop/language/sr/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -82,7 +82,7 @@ msgstr "Када пустите песму, контекстуална лист�
 msgid ""
 "Contexts can be: an album, an artist, a genre, popular or recent albums, "
 "searches, playlists, ..."
-msgstr ""
+msgstr "Контексти могу бити: име албума, име извођача, жанр, популарни или скорашњи албуми, претраге, листе песама..."
 
 #. (itstool) path: section/p
 #: C/index.page:33
@@ -117,7 +117,7 @@ msgstr "Скидање омота албума"
 msgid ""
 "When hovering a cover, if mouse cursor changes to a pen, just click and "
 "select a new cover."
-msgstr ""
+msgstr "Да бисте скинули нови омот, ставите миша на стари омот и када се показивач миша претвори у оловку, кликните и изаберите нови омот албума."
 
 #. (itstool) path: section/p
 #: C/index.page:45

@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lollypop\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-06-26 06:42+0200\n"
-"PO-Revision-Date: 2015-06-26 09:00+0000\n"
+"POT-Creation-Date: 2015-07-02 16:09+0200\n"
+"PO-Revision-Date: 2015-07-02 14:11+0000\n"
 "Last-Translator: Cédric Bellegarde <web@adishatz.org>\n"
 "Language-Team: Portuguese (Brazil) (http://www.transifex.com/projects/p/lollypop/language/pt_BR/)\n"
 "MIME-Version: 1.0\n"
@@ -182,7 +182,7 @@ msgstr ""
 msgid "Advanced artist informations disabled"
 msgstr ""
 
-#: ../src/application.py:338
+#: ../src/application.py:337
 msgid "Lollypop: You need to install yelp."
 msgstr "Lollypop: Você precisa installar o yelp."
 
@@ -194,52 +194,52 @@ msgstr ""
 msgid "Your music is updating"
 msgstr "Suas músicas estão sendo atualizadas"
 
-#: ../src/container.py:322
+#: ../src/container.py:317
 msgid "Popular albums"
 msgstr "Álbuns populares"
 
-#: ../src/container.py:323
+#: ../src/container.py:318
 msgid "Recently added albums"
 msgstr ""
 
-#: ../src/container.py:324
+#: ../src/container.py:319
 msgid "Random albums"
 msgstr "Embaralhar álbuns"
 
-#: ../src/container.py:325 ../src/pop_menu.py:397 ../src/pop_menu.py:452
+#: ../src/container.py:320 ../src/pop_menu.py:397 ../src/pop_menu.py:452
 #: ../src/pop_menu.py:469
 msgid "Playlists"
 msgstr "Listas de reprodução"
 
-#: ../src/container.py:326
+#: ../src/container.py:321
 msgid "Radios"
 msgstr "Rádios"
 
-#: ../src/container.py:328
+#: ../src/container.py:323
 msgid "All artists"
 msgstr "Todos os artistas"
 
-#: ../src/container.py:330
+#: ../src/container.py:325
 msgid "All albums"
 msgstr "Todos os álbuns"
 
-#: ../src/container.py:374
+#: ../src/container.py:370
 msgid "Compilations"
 msgstr "Compilações"
 
-#: ../src/container.py:391
+#: ../src/container.py:386
 msgid "Popular tracks"
 msgstr ""
 
-#: ../src/container.py:392
+#: ../src/container.py:387
 msgid "Recently played"
 msgstr ""
 
-#: ../src/container.py:393
+#: ../src/container.py:388
 msgid "Never played"
 msgstr ""
 
-#: ../src/container.py:394
+#: ../src/container.py:389
 msgid "Random tracks"
 msgstr ""
 
@@ -258,22 +258,22 @@ msgstr "Compilação"
 msgid "Many artists"
 msgstr "Vários artistas"
 
-#: ../src/fullscreen.py:79 ../src/fullscreen.py:202
+#: ../src/fullscreen.py:82 ../src/fullscreen.py:206
 #: ../src/toolbar_playback.py:77 ../src/toolbar_playback.py:110
 msgid "Pause"
 msgstr "Pausar"
 
-#: ../src/fullscreen.py:206 ../src/pop_tunein.py:147
+#: ../src/fullscreen.py:210 ../src/pop_tunein.py:147
 #: ../src/toolbar_playback.py:79 ../src/toolbar_playback.py:107
 #: ../data/ToolbarPlayback.ui.h:2
 msgid "Play"
 msgstr "Reproduzir"
 
-#: ../src/lastfm.py:23
+#: ../src/lastfm.py:25
 msgid "Last.fm authentication disabled"
 msgstr ""
 
-#: ../src/lastfm.py:286
+#: ../src/lastfm.py:288
 msgid "Wrong Last.fm credentials"
 msgstr ""
 
@@ -286,13 +286,19 @@ msgid "Next"
 msgstr "Próxima"
 
 #. TRANSLATORS: by refers to the artist,
-#. from to the album
 #: ../src/notification.py:102
+#, python-format
+msgid "by %s"
+msgstr ""
+
+#. TRANSLATORS: by refers to the artist,
+#. from to the album
+#: ../src/notification.py:110
 #, python-format
 msgid "by %s, from %s"
 msgstr "por %s, de %s"
 
-#: ../src/player_bin.py:263
+#: ../src/player_bin.py:265
 #, python-format
 msgid "File doesn't exist: %s"
 msgstr "Arquivo não encontrado: %s"
@@ -358,7 +364,7 @@ msgstr "Adicionar à fila"
 msgid "Next tracks"
 msgstr "Próximas faixas"
 
-#: ../src/pop_menu.py:171 ../data/FullScreen.ui.h:1 ../data/NextPopover.ui.h:1
+#: ../src/pop_menu.py:171 ../data/NextPopover.ui.h:1
 msgid "Next track"
 msgstr "Próxima faixa"
 
@@ -456,16 +462,16 @@ msgstr "Error desconhecido ao sincroniar, tente reiniciar o seu dispositivo"
 msgid "No free space available on device"
 msgstr "Espaço vazio não disponível no dispositivo"
 
-#: ../src/widgets_playlist.py:275 ../src/widgets_playlist.py:278
+#: ../src/widgets_playlist.py:276 ../src/widgets_playlist.py:279
 msgid "New playlist "
 msgstr "Nova lista de reprodução"
 
-#: ../src/widgets_playlist.py:324 ../src/widgets_playlist.py:559
+#: ../src/widgets_playlist.py:325 ../src/widgets_playlist.py:561
 #, python-format
 msgid "Remove \"%s\"?"
 msgstr "Remover \"%s\"?"
 
-#: ../src/widgets_playlist.py:604
+#: ../src/widgets_playlist.py:606
 msgid "Remove these tracks?"
 msgstr "Remover estas faixas?"
 
@@ -641,7 +647,7 @@ msgid "Password:"
 msgstr ""
 
 #: ../data/SettingsDialog.ui.h:18
-msgid "Test"
+msgid "Connect"
 msgstr ""
 
 #: ../data/SettingsDialog.ui.h:19

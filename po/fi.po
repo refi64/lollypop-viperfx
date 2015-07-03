@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lollypop\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-06-26 06:42+0200\n"
-"PO-Revision-Date: 2015-06-26 09:14+0000\n"
+"POT-Creation-Date: 2015-07-02 16:09+0200\n"
+"PO-Revision-Date: 2015-07-02 15:37+0000\n"
 "Last-Translator: Jiri Grönroos <jiri.gronroos@iki.fi>\n"
 "Language-Team: Finnish (http://www.transifex.com/projects/p/lollypop/language/fi/)\n"
 "MIME-Version: 1.0\n"
@@ -182,7 +182,7 @@ msgstr "    - Kuuntelujen lähetystiedot pois käytöstä\n    - Kansikuvien aut
 msgid "Advanced artist informations disabled"
 msgstr "Esittäjien lisätiedot pois käytöstä"
 
-#: ../src/application.py:338
+#: ../src/application.py:337
 msgid "Lollypop: You need to install yelp."
 msgstr "Lollypop: Ohje vaatii yelp-ohjelman asennuksen."
 
@@ -194,52 +194,52 @@ msgstr "Käynnistä Lollypop uudelleen koodekkien asennuksen jälkeen"
 msgid "Your music is updating"
 msgstr "Musiikkisi päivittyy"
 
-#: ../src/container.py:322
+#: ../src/container.py:317
 msgid "Popular albums"
 msgstr "Suositut albumit"
 
-#: ../src/container.py:323
+#: ../src/container.py:318
 msgid "Recently added albums"
 msgstr "Viimeksi lisätyt albumit"
 
-#: ../src/container.py:324
+#: ../src/container.py:319
 msgid "Random albums"
 msgstr "Satunnaiset albumit"
 
-#: ../src/container.py:325 ../src/pop_menu.py:397 ../src/pop_menu.py:452
+#: ../src/container.py:320 ../src/pop_menu.py:397 ../src/pop_menu.py:452
 #: ../src/pop_menu.py:469
 msgid "Playlists"
 msgstr "Soittolistat"
 
-#: ../src/container.py:326
+#: ../src/container.py:321
 msgid "Radios"
 msgstr "Radiot"
 
-#: ../src/container.py:328
+#: ../src/container.py:323
 msgid "All artists"
 msgstr "Kaikki esittäjät"
 
-#: ../src/container.py:330
+#: ../src/container.py:325
 msgid "All albums"
 msgstr "Kaikki albumit"
 
-#: ../src/container.py:374
+#: ../src/container.py:370
 msgid "Compilations"
 msgstr "Kokoelmat"
 
-#: ../src/container.py:391
+#: ../src/container.py:386
 msgid "Popular tracks"
 msgstr "Suositut kappaleet"
 
-#: ../src/container.py:392
+#: ../src/container.py:387
 msgid "Recently played"
 msgstr "Viimeksi toistettu"
 
-#: ../src/container.py:393
+#: ../src/container.py:388
 msgid "Never played"
 msgstr "Ei koskaan toistettu"
 
-#: ../src/container.py:394
+#: ../src/container.py:389
 msgid "Random tracks"
 msgstr "Satunnaiset kappaleet"
 
@@ -258,22 +258,22 @@ msgstr "Kokoelma"
 msgid "Many artists"
 msgstr "Useita esittäjiä"
 
-#: ../src/fullscreen.py:79 ../src/fullscreen.py:202
+#: ../src/fullscreen.py:82 ../src/fullscreen.py:206
 #: ../src/toolbar_playback.py:77 ../src/toolbar_playback.py:110
 msgid "Pause"
 msgstr "Keskeytä"
 
-#: ../src/fullscreen.py:206 ../src/pop_tunein.py:147
+#: ../src/fullscreen.py:210 ../src/pop_tunein.py:147
 #: ../src/toolbar_playback.py:79 ../src/toolbar_playback.py:107
 #: ../data/ToolbarPlayback.ui.h:2
 msgid "Play"
 msgstr "Toista"
 
-#: ../src/lastfm.py:23
+#: ../src/lastfm.py:25
 msgid "Last.fm authentication disabled"
 msgstr "Last.fm-tunnistautuminen pois käytöstä"
 
-#: ../src/lastfm.py:286
+#: ../src/lastfm.py:288
 msgid "Wrong Last.fm credentials"
 msgstr "Last.fm-kirjautumistiedot olivat väärin"
 
@@ -286,13 +286,19 @@ msgid "Next"
 msgstr "Seuraava"
 
 #. TRANSLATORS: by refers to the artist,
-#. from to the album
 #: ../src/notification.py:102
+#, python-format
+msgid "by %s"
+msgstr "esittäjä %s"
+
+#. TRANSLATORS: by refers to the artist,
+#. from to the album
+#: ../src/notification.py:110
 #, python-format
 msgid "by %s, from %s"
 msgstr "esittäjän %s levyltä %s"
 
-#: ../src/player_bin.py:263
+#: ../src/player_bin.py:265
 #, python-format
 msgid "File doesn't exist: %s"
 msgstr "Tiedostoa ei ole olemassa: %s"
@@ -358,7 +364,7 @@ msgstr "Lisää jonoon"
 msgid "Next tracks"
 msgstr "Seuraavat kappaleet"
 
-#: ../src/pop_menu.py:171 ../data/FullScreen.ui.h:1 ../data/NextPopover.ui.h:1
+#: ../src/pop_menu.py:171 ../data/NextPopover.ui.h:1
 msgid "Next track"
 msgstr "Seuraava kappale"
 
@@ -456,16 +462,16 @@ msgstr "Tuntematon virhe synkronoitaessa. Yritä käynnistää laite uudelleen"
 msgid "No free space available on device"
 msgstr "Laitteella ei ole vapaata tilaa"
 
-#: ../src/widgets_playlist.py:275 ../src/widgets_playlist.py:278
+#: ../src/widgets_playlist.py:276 ../src/widgets_playlist.py:279
 msgid "New playlist "
 msgstr "Uusi soittolista"
 
-#: ../src/widgets_playlist.py:324 ../src/widgets_playlist.py:559
+#: ../src/widgets_playlist.py:325 ../src/widgets_playlist.py:561
 #, python-format
 msgid "Remove \"%s\"?"
 msgstr "Poistetaanko \"%s\"?"
 
-#: ../src/widgets_playlist.py:604
+#: ../src/widgets_playlist.py:606
 msgid "Remove these tracks?"
 msgstr "Poistetaanko nämä kappaleet?"
 
@@ -641,8 +647,8 @@ msgid "Password:"
 msgstr "Salasana:"
 
 #: ../data/SettingsDialog.ui.h:18
-msgid "Test"
-msgstr "Testaa"
+msgid "Connect"
+msgstr "Yhdistä"
 
 #: ../data/SettingsDialog.ui.h:19
 msgid "You need to install pylast and gi secret"

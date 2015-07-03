@@ -9,9 +9,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lollypop\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-06-26 06:42+0200\n"
-"PO-Revision-Date: 2015-06-26 13:00+0000\n"
-"Last-Translator: fri\n"
+"POT-Creation-Date: 2015-07-02 16:09+0200\n"
+"PO-Revision-Date: 2015-07-02 14:11+0000\n"
+"Last-Translator: Cédric Bellegarde <web@adishatz.org>\n"
 "Language-Team: Czech (http://www.transifex.com/projects/p/lollypop/language/cs/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -183,7 +183,7 @@ msgstr "    - Odesílání informací o přehrávaných skladbách zakázáno\n 
 msgid "Advanced artist informations disabled"
 msgstr "Rozšířené informace o umělci zakázány"
 
-#: ../src/application.py:338
+#: ../src/application.py:337
 msgid "Lollypop: You need to install yelp."
 msgstr "Lollypop: Je potřeba nainstalovat yelp."
 
@@ -195,52 +195,52 @@ msgstr "Spustit lollypop po nainstalování kodeků znovu"
 msgid "Your music is updating"
 msgstr "Vaše hudba se aktualizuje"
 
-#: ../src/container.py:322
+#: ../src/container.py:317
 msgid "Popular albums"
 msgstr "Oblíbená alba"
 
-#: ../src/container.py:323
+#: ../src/container.py:318
 msgid "Recently added albums"
 msgstr "Nedávno přidaná alba"
 
-#: ../src/container.py:324
+#: ../src/container.py:319
 msgid "Random albums"
 msgstr "Náhodná alba"
 
-#: ../src/container.py:325 ../src/pop_menu.py:397 ../src/pop_menu.py:452
+#: ../src/container.py:320 ../src/pop_menu.py:397 ../src/pop_menu.py:452
 #: ../src/pop_menu.py:469
 msgid "Playlists"
 msgstr "Seznamy skladeb"
 
-#: ../src/container.py:326
+#: ../src/container.py:321
 msgid "Radios"
 msgstr "Rádia"
 
-#: ../src/container.py:328
+#: ../src/container.py:323
 msgid "All artists"
 msgstr "Všichni umělci"
 
-#: ../src/container.py:330
+#: ../src/container.py:325
 msgid "All albums"
 msgstr "Všechna alba"
 
-#: ../src/container.py:374
+#: ../src/container.py:370
 msgid "Compilations"
 msgstr "Kompilace"
 
-#: ../src/container.py:391
+#: ../src/container.py:386
 msgid "Popular tracks"
 msgstr "Oblíbené skladby"
 
-#: ../src/container.py:392
+#: ../src/container.py:387
 msgid "Recently played"
 msgstr "Nedávno hráno"
 
-#: ../src/container.py:393
+#: ../src/container.py:388
 msgid "Never played"
 msgstr "Nikdy nehráno"
 
-#: ../src/container.py:394
+#: ../src/container.py:389
 msgid "Random tracks"
 msgstr "Náhodné skladby"
 
@@ -259,22 +259,22 @@ msgstr "Kompilace"
 msgid "Many artists"
 msgstr "Mnoho umělců"
 
-#: ../src/fullscreen.py:79 ../src/fullscreen.py:202
+#: ../src/fullscreen.py:82 ../src/fullscreen.py:206
 #: ../src/toolbar_playback.py:77 ../src/toolbar_playback.py:110
 msgid "Pause"
 msgstr "Pozastavit"
 
-#: ../src/fullscreen.py:206 ../src/pop_tunein.py:147
+#: ../src/fullscreen.py:210 ../src/pop_tunein.py:147
 #: ../src/toolbar_playback.py:79 ../src/toolbar_playback.py:107
 #: ../data/ToolbarPlayback.ui.h:2
 msgid "Play"
 msgstr "Přehrát"
 
-#: ../src/lastfm.py:23
+#: ../src/lastfm.py:25
 msgid "Last.fm authentication disabled"
 msgstr "Ověření Last.fm zakázáno"
 
-#: ../src/lastfm.py:286
+#: ../src/lastfm.py:288
 msgid "Wrong Last.fm credentials"
 msgstr "Nesprávné přihlašovací údaje k Last.fm"
 
@@ -287,13 +287,19 @@ msgid "Next"
 msgstr "Další"
 
 #. TRANSLATORS: by refers to the artist,
-#. from to the album
 #: ../src/notification.py:102
+#, python-format
+msgid "by %s"
+msgstr ""
+
+#. TRANSLATORS: by refers to the artist,
+#. from to the album
+#: ../src/notification.py:110
 #, python-format
 msgid "by %s, from %s"
 msgstr "od %s, na %s"
 
-#: ../src/player_bin.py:263
+#: ../src/player_bin.py:265
 #, python-format
 msgid "File doesn't exist: %s"
 msgstr "Soubor neexistuje: %s"
@@ -359,7 +365,7 @@ msgstr "Přidat do řady"
 msgid "Next tracks"
 msgstr "Další skladby"
 
-#: ../src/pop_menu.py:171 ../data/FullScreen.ui.h:1 ../data/NextPopover.ui.h:1
+#: ../src/pop_menu.py:171 ../data/NextPopover.ui.h:1
 msgid "Next track"
 msgstr "Další skladba"
 
@@ -457,16 +463,16 @@ msgstr "Při seřizování nastala neznámá chyba. pokuste se své zařízení 
 msgid "No free space available on device"
 msgstr "Na zařízení není žádné volné místo"
 
-#: ../src/widgets_playlist.py:275 ../src/widgets_playlist.py:278
+#: ../src/widgets_playlist.py:276 ../src/widgets_playlist.py:279
 msgid "New playlist "
 msgstr "Nový seznam skladeb"
 
-#: ../src/widgets_playlist.py:324 ../src/widgets_playlist.py:559
+#: ../src/widgets_playlist.py:325 ../src/widgets_playlist.py:561
 #, python-format
 msgid "Remove \"%s\"?"
 msgstr "Odstranit \"%s\"?"
 
-#: ../src/widgets_playlist.py:604
+#: ../src/widgets_playlist.py:606
 msgid "Remove these tracks?"
 msgstr "Odstranit tyto skladby?"
 
@@ -642,8 +648,8 @@ msgid "Password:"
 msgstr "Heslo:"
 
 #: ../data/SettingsDialog.ui.h:18
-msgid "Test"
-msgstr "Zkouška"
+msgid "Connect"
+msgstr ""
 
 #: ../data/SettingsDialog.ui.h:19
 msgid "You need to install pylast and gi secret"
