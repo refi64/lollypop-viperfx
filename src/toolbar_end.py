@@ -35,7 +35,6 @@ class ToolbarEnd(Gtk.Bin):
 
         self._shuffle_btn = builder.get_object('shuffle-button')
         self._shuffle_btn_image = builder.get_object('shuffle-button-image')
-        self._set_shuffle_icon()
         Lp.settings.connect('changed::shuffle', self._shuffle_btn_aspect)
 
         self._party_btn = builder.get_object('party-button')
@@ -95,6 +94,13 @@ class ToolbarEnd(Gtk.Bin):
             # via Fullscreen class, so check button state
             self._party_btn.set_active(player.is_party())
 
+    """
+        Show popover if needed
+	"""
+    def do_realize(self):
+        Gtk.Bin.do_realize(self)
+        self._set_shuffle_icon()
+
 #######################
 # PRIVATE             #
 #######################
@@ -111,6 +117,15 @@ class ToolbarEnd(Gtk.Bin):
             self._shuffle_btn_image.set_from_icon_name(
                 "media-playlist-shuffle-symbolic",
                 Gtk.IconSize.SMALL_TOOLBAR)
+
+        if shuffle == Shuffle.TRACKS:
+            if Lp.player.next_track.id is not None and\
+               not self._pop_next.is_visible():
+                self._pop_next.set_relative_to(self)
+                self._pop_next.show()
+        elif Lp.player.is_playing():
+            self._pop_next.set_relative_to(None)
+            self._pop_next.hide()
 
     """
         Mark shuffle button as active when shuffle active
@@ -153,10 +168,12 @@ class ToolbarEnd(Gtk.Bin):
             settings = Gtk.Settings.get_default()
             settings.set_property("gtk-application-prefer-dark-theme", active)
         Lp.player.set_party(active)
-        # We need to show the popover only in this case
-        # In other cases, "current-changed" will trigger it
-        if active and Lp.player.is_playing():
-            self.on_current_changed(Lp.player)
+        if not active:
+            self._pop_next.set_relative_to(None)
+            self._pop_next.hide()
+        elif Lp.player.is_playing() and not self._pop_next.is_visible():
+            self._pop_next.set_relative_to(self)
+            self._pop_next.show()
 
     """
         On party change, sync toolbar
