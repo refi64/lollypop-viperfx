@@ -218,9 +218,9 @@ class FullScreen(Gtk.Window):
             # tags will be readed on the fly
             if player.next_track.id >= 0:
                 self._next_popover.update()
-                self._next_popover.self_show()
+                self._next_popover.show()
             else:
-                self._next_popover.self_hide()
+                self._next_popover.hide()
 
     """
         Destroy window if Esc
