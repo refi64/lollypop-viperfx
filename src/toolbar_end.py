@@ -116,8 +116,10 @@ class ToolbarEnd(Gtk.Bin):
 
         if shuffle == Shuffle.TRACKS:
             if not self._pop_next.is_visible():
-                self._pop_next.self_show(self)
+                self._pop_next.set_relative_to(self)
+                self._pop_next.self_show()
         elif Lp.player.is_playing():
+            self._pop_next.set_relative_to(None)
             self._pop_next.self_hide()
 
     """
@@ -163,9 +165,11 @@ class ToolbarEnd(Gtk.Bin):
         Lp.player.set_party(active)
 
         if not active:
+            self._pop_next.set_relative_to(None)
             self._pop_next.self_hide()
         elif Lp.player.is_playing() and not self._pop_next.is_visible():
-            self._pop_next.self_show(self)
+            self._pop_next.set_relative_to(self)
+            self._pop_next.self_show()
 
     """
         On party change, sync toolbar

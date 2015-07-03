@@ -98,9 +98,9 @@ class FullScreen(Gtk.Window):
                 self._timeout2 = GLib.timeout_add(60000, self._update_datetime)
         self._update_position()
         self.fullscreen()
-        if Lp.player.next_track.id != Type.RADIOS and not\
-           self._next_popover.is_visible():
-            self._next_popover.self_show(self._album)
+        self._next_popover.set_relative_to(self._album)
+        if Lp.player.next_track.id != Type.RADIOS:
+            self._next_popover.self_show()
 
     """
         Remove signals and unset color
@@ -218,7 +218,7 @@ class FullScreen(Gtk.Window):
             # tags will be readed on the fly
             if player.next_track.id >= 0:
                 self._next_popover.update()
-                self._next_popover.self_show(self._album)
+                self._next_popover.self_show()
             else:
                 self._next_popover.self_hide()
 
