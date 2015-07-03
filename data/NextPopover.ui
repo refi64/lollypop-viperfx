@@ -11,7 +11,6 @@
     <property name="visible">True</property>
     <property name="can_focus">False</property>
     <property name="margin_start">5</property>
-    <property name="margin_end">5</property>
     <property name="margin_top">5</property>
     <property name="margin_bottom">5</property>
     <property name="column_spacing">5</property>
@@ -74,10 +73,12 @@
         <property name="can_focus">True</property>
         <property name="receives_default">True</property>
         <property name="halign">end</property>
-        <property name="valign">center</property>
         <property name="image">image1</property>
         <property name="relief">none</property>
         <signal name="clicked" handler="_on_skip_btn_clicked" swapped="no"/>
+        <style>
+          <class name="menu-button"/>
+        </style>
       </object>
       <packing>
         <property name="left_attach">2</property>
