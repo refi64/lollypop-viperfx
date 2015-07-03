@@ -11,7 +11,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-from gi.repository import Gtk
+from gi.repository import Gtk, GLib
 
 from lollypop.define import Lp, ArtSize, Shuffle
 
@@ -33,7 +33,6 @@ class NextPopover(Gtk.Popover):
         self._artist_label = builder.get_object('artist')
         self._cover = builder.get_object('cover')
         self._skip_btn = builder.get_object('skip_btn')
-        Lp.player.connect('queue-changed', self.update)
 
     """
         Update widget with current track
@@ -54,6 +53,24 @@ class NextPopover(Gtk.Popover):
         else:
             self._cover.hide()
 
+    """
+        Connect signal
+    """
+    def do_show(self):
+        self._signal_id = Lp.player.connect('queue-changed', self.update)
+        Gtk.Popover.do_show(self)
+
+    """
+        Disconnect signal
+    """
+    def do_hide(self):
+        if self._signal_id is not None:
+            Lp.player.disconnect(self._signal_id)
+        Gtk.Popover.do_hide(self)
+
+#######################
+# PRIVATE             #
+#######################
     """
         Skip next track
         @param btn as Gtk.Button

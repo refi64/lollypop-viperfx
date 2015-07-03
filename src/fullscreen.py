@@ -119,6 +119,7 @@ class FullScreen(Gtk.Window):
         if self._timeout2 is not None:
             GLib.source_remove(self._timeout2)
         self._next_popover.set_relative_to(None)
+        self._next_popover.hide()
 
 #######################
 # PRIVATE             #
