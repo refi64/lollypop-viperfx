@@ -292,13 +292,11 @@ class Application(Gtk.Application):
         @param param as GLib.Variant
     """
     def _fullscreen(self, action=None, param=None):
-        if Lp.window:
+        if Lp.window and not self._is_fs:
             fs = FullScreen(self, Lp.window)
             fs.connect("destroy", self._on_fs_destroyed)
             self._is_fs = True
             fs.show()
-        else:
-            self._is_fs = False
 
     """
         Mark fullscreen as False
