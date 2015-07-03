@@ -90,7 +90,7 @@ class FullScreen(Gtk.Window):
         self.fullscreen()
         self._next_popover.set_relative_to(self._album)
         if Lp.player.next_track.id != Type.RADIOS:
-            self._next_popover.show()
+            self._next_popover.self_show()
 
     """
         Remove signals and unset color
