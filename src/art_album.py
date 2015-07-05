@@ -274,11 +274,14 @@ class AlbumArt(BaseArt, TagReader):
         if exist:
             stream = Gio.MemoryInputStream.new_from_data(mapflags.data,
                                                          None)
-            pixbuf = GdkPixbuf.Pixbuf.new_from_stream_at_scale(stream,
-                                                               size,
-                                                               size,
-                                                               False,
-                                                               None)
+            try:
+                pixbuf = GdkPixbuf.Pixbuf.new_from_stream_at_scale(stream,
+                                                                   size,
+                                                                   size,
+                                                                   False,
+                                                                   None)
+            except:
+                pass
         return pixbuf
 
 #######################
