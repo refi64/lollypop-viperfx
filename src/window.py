@@ -14,7 +14,7 @@
 from gi.repository import Gtk, Gio, GLib
 
 from lollypop.container import Container
-from lollypop.define import Lp, NextContext
+from lollypop.define import Lp, NextContext, Shuffle
 from lollypop.toolbar import Toolbar
 
 
