@@ -10,8 +10,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lollypop\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-07-02 16:09+0200\n"
-"PO-Revision-Date: 2015-07-02 14:11+0000\n"
+"POT-Creation-Date: 2015-07-07 13:19+0200\n"
+"PO-Revision-Date: 2015-07-07 11:20+0000\n"
 "Last-Translator: Cédric Bellegarde <web@adishatz.org>\n"
 "Language-Team: Polish (http://www.transifex.com/projects/p/lollypop/language/pl/)\n"
 "MIME-Version: 1.0\n"
@@ -106,13 +106,11 @@ msgid "Use dark gtk theme"
 msgstr "Ciemny styl GTK"
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:22
-msgid "Force the use client side window decorations (headerbar)"
-msgstr "Wymagaj użycie "
+msgid "Disable the use client side window decorations (headerbar)"
+msgstr ""
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:23
-msgid ""
-"If set to true CSD headerbars will be used, even if the detected desktop "
-"environment is not amongst those that are expected to support it."
+#: ../data/org.gnome.Lollypop.gschema.xml.h:23 ../data/SettingsDialog.ui.h:6
+msgid "Show compilations in albums view"
 msgstr ""
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:24 ../data/SettingsDialog.ui.h:4
@@ -184,7 +182,7 @@ msgstr "- Scrobblowanie wyłączone\n- Automatyczne ściąganie okładek wyłąc
 msgid "Advanced artist informations disabled"
 msgstr ""
 
-#: ../src/application.py:337
+#: ../src/application.py:335
 msgid "Lollypop: You need to install yelp."
 msgstr "Wymagana instalcja yelp."
 
@@ -260,12 +258,12 @@ msgstr "Kompilacja"
 msgid "Many artists"
 msgstr "Wielu wykonawców"
 
-#: ../src/fullscreen.py:82 ../src/fullscreen.py:206
+#: ../src/fullscreen.py:84 ../src/fullscreen.py:271
 #: ../src/toolbar_playback.py:77 ../src/toolbar_playback.py:110
 msgid "Pause"
 msgstr "Wstrzymuje odtwarzanie"
 
-#: ../src/fullscreen.py:210 ../src/pop_tunein.py:147
+#: ../src/fullscreen.py:275 ../src/pop_tunein.py:147
 #: ../src/toolbar_playback.py:79 ../src/toolbar_playback.py:107
 #: ../data/ToolbarPlayback.ui.h:2
 msgid "Play"
@@ -428,17 +426,17 @@ msgstr "Brak połączenia z TuneIn..."
 msgid "Browse themes and add a new radio"
 msgstr "Przeglądaj motywy i dodaj nowe radio"
 
-#: ../src/settings.py:132
+#: ../src/settings.py:135
 msgid "Populars"
 msgstr "Popularne"
 
-#: ../src/settings.py:133
+#: ../src/settings.py:136
 msgid "Recently added"
 msgstr ""
 
 #. Handle language ordering
 #. Translators: Add here words that shoud be ignored for artist sort order
-#: ../src/utils.py:98
+#: ../src/utils.py:84
 msgid "The the"
 msgstr "The the"
 
@@ -600,59 +598,59 @@ msgstr "Przywrócenie stanu podczas uruchamiania"
 msgid "Play albums on click"
 msgstr ""
 
-#: ../data/SettingsDialog.ui.h:6
+#: ../data/SettingsDialog.ui.h:7
 msgid "Behaviour"
 msgstr "Zachowanie"
 
-#: ../data/SettingsDialog.ui.h:7
+#: ../data/SettingsDialog.ui.h:8
 msgid "Use dark theme variant"
 msgstr "Ciemny styl"
 
-#: ../data/SettingsDialog.ui.h:8
+#: ../data/SettingsDialog.ui.h:9
 msgid "Show genres"
 msgstr "Lista gatunków"
 
-#: ../data/SettingsDialog.ui.h:9
+#: ../data/SettingsDialog.ui.h:10
 msgid "Appearance"
 msgstr "Wygląd"
 
-#: ../data/SettingsDialog.ui.h:10
+#: ../data/SettingsDialog.ui.h:11
 msgid "Configure lollypop behaviour"
 msgstr "Konfiguruje zachowanie programu"
 
-#: ../data/SettingsDialog.ui.h:11
+#: ../data/SettingsDialog.ui.h:12
 msgid "Options"
 msgstr "Opcje"
 
-#: ../data/SettingsDialog.ui.h:12
+#: ../data/SettingsDialog.ui.h:13
 msgid "Select music folders"
 msgstr "Wybiera ścieżki do katalogów z muzyką"
 
-#: ../data/SettingsDialog.ui.h:13
+#: ../data/SettingsDialog.ui.h:14
 msgid "Music"
 msgstr "Kolekcja"
 
-#: ../data/SettingsDialog.ui.h:14
+#: ../data/SettingsDialog.ui.h:15
 msgid "Select what will be available in party mode"
 msgstr "Wybiera zawartość trybu imprezowego"
 
-#: ../data/SettingsDialog.ui.h:15 ../data/ToolbarEnd.ui.h:8
+#: ../data/SettingsDialog.ui.h:16 ../data/ToolbarEnd.ui.h:8
 msgid "Party mode"
 msgstr "Tryb imprezowy"
 
-#: ../data/SettingsDialog.ui.h:16
+#: ../data/SettingsDialog.ui.h:17
 msgid "Login:"
 msgstr "Konto:"
 
-#: ../data/SettingsDialog.ui.h:17
+#: ../data/SettingsDialog.ui.h:18
 msgid "Password:"
 msgstr "Hasło"
 
-#: ../data/SettingsDialog.ui.h:18
+#: ../data/SettingsDialog.ui.h:19
 msgid "Connect"
 msgstr ""
 
-#: ../data/SettingsDialog.ui.h:19
+#: ../data/SettingsDialog.ui.h:20
 msgid "You need to install pylast and gi secret"
 msgstr "Wymagana instalacja pylasi i gi secret"
 

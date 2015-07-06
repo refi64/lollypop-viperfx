@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lollypop\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-07-02 16:09+0200\n"
-"PO-Revision-Date: 2015-07-02 14:11+0000\n"
+"POT-Creation-Date: 2015-07-07 13:19+0200\n"
+"PO-Revision-Date: 2015-07-07 11:20+0000\n"
 "Last-Translator: Cédric Bellegarde <web@adishatz.org>\n"
 "Language-Team: Serbian (http://www.transifex.com/projects/p/lollypop/language/sr/)\n"
 "MIME-Version: 1.0\n"
@@ -104,14 +104,12 @@ msgid "Use dark gtk theme"
 msgstr "Користи тамну ГТК тему"
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:22
-msgid "Force the use client side window decorations (headerbar)"
-msgstr "Обавезно користи клијентске украсе прозора"
+msgid "Disable the use client side window decorations (headerbar)"
+msgstr "Искључи клијентске декорације прозора (насловна трака)"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:23
-msgid ""
-"If set to true CSD headerbars will be used, even if the detected desktop "
-"environment is not amongst those that are expected to support it."
-msgstr "Уколико је опција подешена на тачно, клијентски украси прозора ће бити коришћени и у случају да радно окружење није на списку оних који подржавају клијентске украсе прозора."
+#: ../data/org.gnome.Lollypop.gschema.xml.h:23 ../data/SettingsDialog.ui.h:6
+msgid "Show compilations in albums view"
+msgstr ""
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:24 ../data/SettingsDialog.ui.h:4
 msgid "Continue playback when closed"
@@ -182,7 +180,7 @@ msgstr "- Scrobbler је искључен\n- Аутоматско скидање
 msgid "Advanced artist informations disabled"
 msgstr "Напредан приказ података о извођачу је искључен"
 
-#: ../src/application.py:337
+#: ../src/application.py:335
 msgid "Lollypop: You need to install yelp."
 msgstr "Лолипоп: потребно је да инсталирате „Помоћ“ (yelp пакет)."
 
@@ -258,12 +256,12 @@ msgstr "Компилација"
 msgid "Many artists"
 msgstr "Многи извођачи"
 
-#: ../src/fullscreen.py:82 ../src/fullscreen.py:206
+#: ../src/fullscreen.py:84 ../src/fullscreen.py:271
 #: ../src/toolbar_playback.py:77 ../src/toolbar_playback.py:110
 msgid "Pause"
 msgstr "Паузирај"
 
-#: ../src/fullscreen.py:210 ../src/pop_tunein.py:147
+#: ../src/fullscreen.py:275 ../src/pop_tunein.py:147
 #: ../src/toolbar_playback.py:79 ../src/toolbar_playback.py:107
 #: ../data/ToolbarPlayback.ui.h:2
 msgid "Play"
@@ -289,7 +287,7 @@ msgstr "Следећа"
 #: ../src/notification.py:102
 #, python-format
 msgid "by %s"
-msgstr ""
+msgstr "изводи %s"
 
 #. TRANSLATORS: by refers to the artist,
 #. from to the album
@@ -426,17 +424,17 @@ msgstr "Не могу да се повежем на TuneIn услугу..."
 msgid "Browse themes and add a new radio"
 msgstr "Прегледај теме и додај нови радио"
 
-#: ../src/settings.py:132
+#: ../src/settings.py:135
 msgid "Populars"
 msgstr "Популарно"
 
-#: ../src/settings.py:133
+#: ../src/settings.py:136
 msgid "Recently added"
 msgstr "Скоро додато"
 
 #. Handle language ordering
 #. Translators: Add here words that shoud be ignored for artist sort order
-#: ../src/utils.py:98
+#: ../src/utils.py:84
 msgid "The the"
 msgstr "Члан члан"
 
@@ -598,59 +596,59 @@ msgstr "Поврати претходно стање програма прили
 msgid "Play albums on click"
 msgstr "Пусти песме са албума на клик"
 
-#: ../data/SettingsDialog.ui.h:6
+#: ../data/SettingsDialog.ui.h:7
 msgid "Behaviour"
 msgstr "Понашање програма"
 
-#: ../data/SettingsDialog.ui.h:7
+#: ../data/SettingsDialog.ui.h:8
 msgid "Use dark theme variant"
 msgstr "Користи тамну тему"
 
-#: ../data/SettingsDialog.ui.h:8
+#: ../data/SettingsDialog.ui.h:9
 msgid "Show genres"
 msgstr "Прикажи жанрове"
 
-#: ../data/SettingsDialog.ui.h:9
+#: ../data/SettingsDialog.ui.h:10
 msgid "Appearance"
 msgstr "Изглед"
 
-#: ../data/SettingsDialog.ui.h:10
+#: ../data/SettingsDialog.ui.h:11
 msgid "Configure lollypop behaviour"
 msgstr "Подешавање понашања Лолипопа"
 
-#: ../data/SettingsDialog.ui.h:11
+#: ../data/SettingsDialog.ui.h:12
 msgid "Options"
 msgstr "Подешавања"
 
-#: ../data/SettingsDialog.ui.h:12
+#: ../data/SettingsDialog.ui.h:13
 msgid "Select music folders"
 msgstr "Изабери директоријуме са музиком"
 
-#: ../data/SettingsDialog.ui.h:13
+#: ../data/SettingsDialog.ui.h:14
 msgid "Music"
 msgstr "Музика"
 
-#: ../data/SettingsDialog.ui.h:14
+#: ../data/SettingsDialog.ui.h:15
 msgid "Select what will be available in party mode"
 msgstr "Изабери шта ће бити доступно у режиму рада за журке"
 
-#: ../data/SettingsDialog.ui.h:15 ../data/ToolbarEnd.ui.h:8
+#: ../data/SettingsDialog.ui.h:16 ../data/ToolbarEnd.ui.h:8
 msgid "Party mode"
 msgstr "Режим рада за журке"
 
-#: ../data/SettingsDialog.ui.h:16
+#: ../data/SettingsDialog.ui.h:17
 msgid "Login:"
 msgstr "Корисничко име:"
 
-#: ../data/SettingsDialog.ui.h:17
+#: ../data/SettingsDialog.ui.h:18
 msgid "Password:"
 msgstr "Лозинка:"
 
-#: ../data/SettingsDialog.ui.h:18
-msgid "Connect"
-msgstr ""
-
 #: ../data/SettingsDialog.ui.h:19
+msgid "Connect"
+msgstr "Повежи се"
+
+#: ../data/SettingsDialog.ui.h:20
 msgid "You need to install pylast and gi secret"
 msgstr "Потребно је да инсталирате пакете који садрже „pylast“ и „gi secret“"
 

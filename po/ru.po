@@ -9,8 +9,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lollypop\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-07-02 16:09+0200\n"
-"PO-Revision-Date: 2015-07-02 14:11+0000\n"
+"POT-Creation-Date: 2015-07-07 13:19+0200\n"
+"PO-Revision-Date: 2015-07-07 11:20+0000\n"
 "Last-Translator: Cédric Bellegarde <web@adishatz.org>\n"
 "Language-Team: Russian (http://www.transifex.com/projects/p/lollypop/language/ru/)\n"
 "MIME-Version: 1.0\n"
@@ -105,14 +105,12 @@ msgid "Use dark gtk theme"
 msgstr "Использовать темный вариант темы"
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:22
-msgid "Force the use client side window decorations (headerbar)"
-msgstr "Насильно использовать client side window decorations (headerbar)"
+msgid "Disable the use client side window decorations (headerbar)"
+msgstr ""
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:23
-msgid ""
-"If set to true CSD headerbars will be used, even if the detected desktop "
-"environment is not amongst those that are expected to support it."
-msgstr "Если включено, то будут использоваться CSD headerbars, даже если окружение рабочего стола не среди тех, кто поддерживают их."
+#: ../data/org.gnome.Lollypop.gschema.xml.h:23 ../data/SettingsDialog.ui.h:6
+msgid "Show compilations in albums view"
+msgstr ""
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:24 ../data/SettingsDialog.ui.h:4
 msgid "Continue playback when closed"
@@ -183,7 +181,7 @@ msgstr "    - Скробблинг отключен\n    - Автоматиче�
 msgid "Advanced artist informations disabled"
 msgstr "Подробная информация об исполнителе отключена"
 
-#: ../src/application.py:337
+#: ../src/application.py:335
 msgid "Lollypop: You need to install yelp."
 msgstr "Lollypop: Вам необходимо установить yelp."
 
@@ -259,12 +257,12 @@ msgstr "Подборка"
 msgid "Many artists"
 msgstr "Множество исполнителей"
 
-#: ../src/fullscreen.py:82 ../src/fullscreen.py:206
+#: ../src/fullscreen.py:84 ../src/fullscreen.py:271
 #: ../src/toolbar_playback.py:77 ../src/toolbar_playback.py:110
 msgid "Pause"
 msgstr "Пауза"
 
-#: ../src/fullscreen.py:210 ../src/pop_tunein.py:147
+#: ../src/fullscreen.py:275 ../src/pop_tunein.py:147
 #: ../src/toolbar_playback.py:79 ../src/toolbar_playback.py:107
 #: ../data/ToolbarPlayback.ui.h:2
 msgid "Play"
@@ -427,17 +425,17 @@ msgstr "Не удается подключиться к TuneIn..."
 msgid "Browse themes and add a new radio"
 msgstr "Посмотрите темы и добавьте новые радиостанции"
 
-#: ../src/settings.py:132
+#: ../src/settings.py:135
 msgid "Populars"
 msgstr "Популярное"
 
-#: ../src/settings.py:133
+#: ../src/settings.py:136
 msgid "Recently added"
 msgstr ""
 
 #. Handle language ordering
 #. Translators: Add here words that shoud be ignored for artist sort order
-#: ../src/utils.py:98
+#: ../src/utils.py:84
 msgid "The the"
 msgstr "The the"
 
@@ -599,59 +597,59 @@ msgstr "Востанавливать состояние при запуске"
 msgid "Play albums on click"
 msgstr ""
 
-#: ../data/SettingsDialog.ui.h:6
+#: ../data/SettingsDialog.ui.h:7
 msgid "Behaviour"
 msgstr "Поведение"
 
-#: ../data/SettingsDialog.ui.h:7
+#: ../data/SettingsDialog.ui.h:8
 msgid "Use dark theme variant"
 msgstr "Использовать тёмный вариант темы"
 
-#: ../data/SettingsDialog.ui.h:8
+#: ../data/SettingsDialog.ui.h:9
 msgid "Show genres"
 msgstr "Показывать жанры"
 
-#: ../data/SettingsDialog.ui.h:9
+#: ../data/SettingsDialog.ui.h:10
 msgid "Appearance"
 msgstr "Внешний вид"
 
-#: ../data/SettingsDialog.ui.h:10
+#: ../data/SettingsDialog.ui.h:11
 msgid "Configure lollypop behaviour"
 msgstr "Настроить поведение Lollypop"
 
-#: ../data/SettingsDialog.ui.h:11
+#: ../data/SettingsDialog.ui.h:12
 msgid "Options"
 msgstr "Опции"
 
-#: ../data/SettingsDialog.ui.h:12
+#: ../data/SettingsDialog.ui.h:13
 msgid "Select music folders"
 msgstr "Выбрать директории с музыкой"
 
-#: ../data/SettingsDialog.ui.h:13
+#: ../data/SettingsDialog.ui.h:14
 msgid "Music"
 msgstr "Музыка"
 
-#: ../data/SettingsDialog.ui.h:14
+#: ../data/SettingsDialog.ui.h:15
 msgid "Select what will be available in party mode"
 msgstr "Выберите, что будет доступно в режиме \"вечеринки\""
 
-#: ../data/SettingsDialog.ui.h:15 ../data/ToolbarEnd.ui.h:8
+#: ../data/SettingsDialog.ui.h:16 ../data/ToolbarEnd.ui.h:8
 msgid "Party mode"
 msgstr "Режим \"вечеринки\""
 
-#: ../data/SettingsDialog.ui.h:16
+#: ../data/SettingsDialog.ui.h:17
 msgid "Login:"
 msgstr "Логин:"
 
-#: ../data/SettingsDialog.ui.h:17
+#: ../data/SettingsDialog.ui.h:18
 msgid "Password:"
 msgstr "Пароль:"
 
-#: ../data/SettingsDialog.ui.h:18
+#: ../data/SettingsDialog.ui.h:19
 msgid "Connect"
 msgstr ""
 
-#: ../data/SettingsDialog.ui.h:19
+#: ../data/SettingsDialog.ui.h:20
 msgid "You need to install pylast and gi secret"
 msgstr "Вам необходимо установить pylast и gi secret"
 
