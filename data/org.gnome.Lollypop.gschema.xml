@@ -78,6 +78,11 @@
             <summary>Disable the use client side window decorations (headerbar)</summary>
             <description></description>
         </key>
+     	 <key type="b" name="show-compilations">
+            <default>false</default>
+            <summary>Show compilations in album view</summary>
+            <description></description>
+        </key>
      	 <key type="b" name="background-mode">
             <default>false</default>
             <summary>Continue playback when closed</summary>

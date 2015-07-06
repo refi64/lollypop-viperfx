@@ -245,7 +245,11 @@ class AlbumsView(View):
             albums = Lp.albums.get_compilations(self._genre_id,
                                                 sql)
         else:
-            albums = Lp.albums.get_ids(None, self._genre_id, sql)
+            albums = []
+            if Lp.settings.get_value('show-compilations'):
+                albums += Lp.albums.get_compilations(self._genre_id,
+                                                    sql)
+            albums += Lp.albums.get_ids(None, self._genre_id, sql)
         sql.close()
         return albums
 

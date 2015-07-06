@@ -91,6 +91,10 @@ class SettingsDialog:
         switch_genres = builder.get_object('switch_genres')
         switch_genres.set_state(Lp.settings.get_value('show-genres'))
 
+        switch_compilations = builder.get_object('switch_compilations')
+        switch_compilations.set_state(
+            Lp.settings.get_value('show-compilations'))
+
         self._settings_dialog.connect('destroy', self._edit_settings_close)
 
         builder.connect_signals(self)
@@ -244,6 +248,15 @@ class SettingsDialog:
     """
     def _update_autoplay_setting(self, widget, state):
         Lp.settings.set_value('auto-play',
+                              GLib.Variant('b', state))
+        Lp.window.update_view()
+
+    """
+        Update compilations setting
+        @param widget as unused, state as widget state
+    """
+    def _update_compilations_setting(self, widget, state):
+        Lp.settings.set_value('show-compilations',
                               GLib.Variant('b', state))
         Lp.window.update_view()
 
