@@ -80,7 +80,7 @@
         </key>
      	 <key type="b" name="show-compilations">
             <default>false</default>
-            <summary>Show compilations in album view</summary>
+            <summary>Show compilations in albums view</summary>
             <description></description>
         </key>
      	 <key type="b" name="background-mode">
