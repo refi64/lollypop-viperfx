@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-07-07 13:17+0200\n"
+"POT-Creation-Date: 2015-07-07 13:19+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -106,8 +106,8 @@ msgstr ""
 msgid "Disable the use client side window decorations (headerbar)"
 msgstr ""
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:23
-msgid "Show compilations in album view"
+#: ../data/org.gnome.Lollypop.gschema.xml.h:23 ../data/SettingsDialog.ui.h:6
+msgid "Show compilations in albums view"
 msgstr ""
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:24 ../data/SettingsDialog.ui.h:4
@@ -592,10 +592,6 @@ msgstr ""
 
 #: ../data/SettingsDialog.ui.h:5
 msgid "Play albums on click"
-msgstr ""
-
-#: ../data/SettingsDialog.ui.h:6
-msgid "Show compilations in albums view"
 msgstr ""
 
 #: ../data/SettingsDialog.ui.h:7
