@@ -70,7 +70,10 @@ class MPRIS(dbus.service.Object):
 
     @dbus.service.method(dbus_interface=MPRIS_PLAYER_IFACE)
     def Play(self):
-        Lp.player.play()
+        if Lp.player.current_track.id is None:
+            Lp.player.set_party(True)
+        else:
+            Lp.player.play()
 
     @dbus.service.method(dbus_interface=MPRIS_PLAYER_IFACE,
                          in_signature='ox')
