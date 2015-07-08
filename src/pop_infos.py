@@ -211,7 +211,7 @@ class ArtistInfos(Gtk.Bin):
             self._url_btn.set_uri(url)
             self._content.set_text(content)
             if self._track_id is not None:
-                start_new_thread(self._show_love_btn, ())
+                self._show_love_btn()
             if self._wikipedia:
                 self._view_btn.set_tooltip_text(_("Wikipedia"))
                 self._url_btn.set_label(_("Last.fm"))
@@ -246,7 +246,7 @@ class ArtistInfos(Gtk.Bin):
                 self._love_btn.set_image(
                     Gtk.Image.new_from_icon_name('face-sick-symbolic',
                                                  Gtk.IconSize.BUTTON))
-        GLib.idle_add(self._love_btn.show)
+        self._love_btn.show()
         sql.close()
 
     def _love_track(self):
@@ -289,14 +289,14 @@ class ArtistInfos(Gtk.Bin):
             @param btn as Gtk.Button
         """
         if self._liked:
-            start_new_thread(self._love_track, ())
+            self._love_track()
             btn.set_image(
                 Gtk.Image.new_from_icon_name('face-sick-symbolic',
                                              Gtk.IconSize.BUTTON))
             self._liked = False
             btn.set_tooltip_text(_("I do not love"))
         else:
-            start_new_thread(self._unlove_track, ())
+            self._unlove_track()
             btn.set_image(
                 Gtk.Image.new_from_icon_name('emblem-favorite-symbolic',
                                              Gtk.IconSize.BUTTON))

@@ -12,8 +12,6 @@
 
 from gi.repository import Gtk
 
-from _thread import start_new_thread
-
 from lollypop.view import View
 from lollypop.widgets_playlist import PlaylistWidget, PlaylistEditWidget
 from lollypop.widgets_playlist import PlaylistsManagerWidget
@@ -55,19 +53,20 @@ class PlaylistView(View):
         self._scrolledWindow.set_property('expand', True)
         self.add(self._scrolledWindow)
 
-    def populate(self):
+    def populate(self, tracks=None):
         """
             Populate view with tracks from playlist
             Thread safe
         """
-        sql = Lp.db.get_cursor()
-        tracks = Lp.playlists.get_tracks_id(self._playlist_name, sql)
-        mid_tracks = int(0.5+len(tracks)/2)
-        self._playlist_widget.populate_list_left(tracks[:mid_tracks],
-                                                1)
-        self._playlist_widget.populate_list_right(tracks[mid_tracks:],
-                                                mid_tracks + 1)
-        sql.close()
+        if tracks:
+            self.populate_tracks(tracks)
+        else:
+            tracks = Lp.playlists.get_tracks_id(self._playlist_name)
+            mid_tracks = int(0.5+len(tracks)/2)
+            self._playlist_widget.populate_list_left(tracks[:mid_tracks],
+                                                    1)
+            self._playlist_widget.populate_list_right(tracks[mid_tracks:],
+                                                    mid_tracks + 1)
 
     def populate_tracks(self, tracks):
         """
@@ -121,7 +120,7 @@ class PlaylistView(View):
         """
         if playlist_name == self._playlist_name:
             self._playlist_widget.clear()
-            start_new_thread(self.populate, ())
+            self.populate()
 
     def _on_edit_btn_clicked(self, button):
         """

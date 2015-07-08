@@ -137,7 +137,7 @@ class SelectionList(Gtk.ScrolledWindow):
         if len(self._model) > 0:
             self._updating = True
         self._add_values(values)
-        GLib.idle_add(self.emit, 'populated')
+        self.emit('populated')
         self._updating = False
 
     def remove(self, object_id):
@@ -170,16 +170,12 @@ class SelectionList(Gtk.ScrolledWindow):
         value_ids = set([v[0] for v in values])
         for item in self._model:
             if item[0] > Type.DEVICES and not item[0] in value_ids:
-                Gdk.threads_enter()
                 self._model.remove(item.iter)
-                Gdk.threads_leave()
         # Add items which are not already in the list
         item_ids = set([i[0] for i in self._model])
         for value in values:
             if not value[0] in item_ids:
-                Gdk.threads_enter()
                 self._add_value(value)
-                Gdk.threads_leave()
         self._updating = False
 
     def get_value(self, object_id):
@@ -254,7 +250,7 @@ class SelectionList(Gtk.ScrolledWindow):
                             value[1],
                             self._get_icon_name(value[0])])
         if value[0] == self._to_select_id:
-            GLib.idle_add(self.select_id, self._to_select_id)
+            self.select_id(self._to_select_id)
 
     def _add_values(self, values):
         """
@@ -263,9 +259,7 @@ class SelectionList(Gtk.ScrolledWindow):
             @thread safe
         """
         for value in values:
-            Gdk.threads_enter()
             self._add_value(value)
-            Gdk.threads_leave()
 
     def _get_icon_name(self, object_id):
         """

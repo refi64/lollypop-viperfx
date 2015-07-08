@@ -81,7 +81,7 @@ class DeviceManagerWidget(Gtk.Bin, MtpSync):
         self._model.clear()
         playlists = [(Type.LOVED, Lp.playlists._LOVED)]
         playlists += Lp.playlists.get()
-        GLib.idle_add(self._append_playlists, playlists)
+        self._append_playlists(playlists)
 
     def set_playlists(self, playlists, uri):
         """

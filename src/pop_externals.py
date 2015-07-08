@@ -12,8 +12,6 @@
 
 from gi.repository import Gtk, GLib, Pango
 
-from _thread import start_new_thread
-
 from lollypop.define import Lp
 from lollypop.tagreader import ScannerTagReader
 from lollypop.utils import seconds_to_string
@@ -67,7 +65,7 @@ class ExternalsPopover(Gtk.Popover):
             Populate popover
         """
         self._model.clear()
-        start_new_thread(self._populate, (Lp.player.get_externals(),))
+        self._populate(Lp.player.get_externals())
 
     def do_show(self):
         """
