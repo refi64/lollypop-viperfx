@@ -405,18 +405,19 @@ class SelectionList(Gtk.ScrolledWindow):
             return
 
         text = self._model.get_value(row_iter, 1)
-        if self._is_artists:
-            text = format_artist_name(text)
-        self._popover.set_text("  %s  " % text[0].upper())
-        self._popover.set_relative_to(self)
-        r = cairo.RectangleInt()
-        r.x = self.get_allocated_width()
-        r.y = self._last_motion_event.y
-        r.width = 1
-        r.height = 1
-        self._popover.set_pointing_to(r)
-        self._popover.set_position(Gtk.PositionType.RIGHT)
-        self._popover.show()
+        if text:
+            if self._is_artists:
+                text = format_artist_name(text)
+            self._popover.set_text("  %s  " % text[0].upper())
+            self._popover.set_relative_to(self)
+            r = cairo.RectangleInt()
+            r.x = self.get_allocated_width()
+            r.y = self._last_motion_event.y
+            r.width = 1
+            r.height = 1
+            self._popover.set_pointing_to(r)
+            self._popover.set_position(Gtk.PositionType.RIGHT)
+            self._popover.show()
 
     """
         Show tooltip if needed
