@@ -187,7 +187,7 @@ class BinPlayer(ReplayGainPlayer, BasePlayer):
            self.current_track.aartist_id != track.aartist_id:
             stop = True
 
-        if stop:
+        if stop and self.is_playing():
             return False
 
         self.current_track = track
