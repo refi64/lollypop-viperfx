@@ -299,6 +299,9 @@ class LastFM(LastFMNetwork):
                 # Compilation or album without album artist
                 if album_id is None:
                     album_id = Lp.albums.get_compilation_id(album, sql)
+                if album_id is None:
+                    sql.close()
+                    return
                 s = Gio.File.new_for_uri(url)
                 (status, data, tag) = s.load_contents()
                 if status:
