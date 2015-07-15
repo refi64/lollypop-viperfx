@@ -199,7 +199,19 @@ class MtpSync:
                         self._retry(src_art.copy,
                                     (dst_art, Gio.FileCopyFlags.OVERWRITE,
                                      None, None))
-
+                    # Mark file as 01/01/1970
+                    # Don't want covers visible in last user photos
+                    try:
+                        dst_art.set_attribute_uint64(
+                            'time::modified',
+                            0,
+                            Gio.FileQueryInfoFlags.NONE)
+                        dst_art.set_attribute_uint64(
+                            'time::access',
+                            0,
+                            Gio.FileQueryInfoFlags.NONE)
+                    except:
+                        pass
                 track_name = GLib.basename(track_path)
                 # Sanitize file names as some MTP devices do not like this
                 # Or this is a Gio/GObject Introspection bug
