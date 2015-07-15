@@ -242,10 +242,10 @@ class LastFM(LastFMNetwork):
         @param title as str
         @param timestamp as int
         @param duration as int
-        @param first is internal, ignore it
+        @param t is internal, ignore it
         @thread safe
     """
-    def _scrobble(self, artist, title, timestamp, duration, first=True):
+    def _scrobble(self, artist, title, timestamp, duration, t=0):
         debug("LastFM::_scrobble(): %s, %s, %s, %s" % (artist,
                                                        title,
                                                        timestamp,
@@ -257,22 +257,24 @@ class LastFM(LastFMNetwork):
                                    timestamp=timestamp)
         except BadAuthenticationError:
             pass
-        except WSError:
-            # Try one more time
-            if first:
+        except Exception as e:
+            print("LastFM::_scrobble(): %s" % e)
+            # Try five times
+            if t < 5:
+                t += 1
                 sleep(5)
                 self._connect(self._username, self._password)
-                self._scrobble(artist, title, timestamp, duration, False)
+                self._scrobble(artist, title, timestamp, duration, t)
 
     """
         Now playing track
         @param artist as str
         @param title as str
         @param duration as int
-        @param first is internal, ignore it
+        @param t is internal, ignore it
         @thread safe
     """
-    def _now_playing(self, artist, title, duration, first=True):
+    def _now_playing(self, artist, title, duration, t=0):
         debug("LastFM::_now_playing(): %s, %s, %s" % (artist,
                                                       title,
                                                       duration))
@@ -284,12 +286,14 @@ class LastFM(LastFMNetwork):
         except BadAuthenticationError:
             if Lp.notify is not None:
                 GLib.idle_add(Lp.notify.send, _("Wrong Last.fm credentials"))
-        except WSError:
-            # Try one more time
-            if first:
+        except Exception as e:
+            print("LastFM::_now_playing(): %s" % e)
+            # Try five times
+            if t < 5:
+                t += 1
                 sleep(5)
                 self._connect(self._username, self._password)
-                self._now_playing(artist, title, duration, False)
+                self._now_playing(artist, title, duration, t)
 
     """
         Download albums images
