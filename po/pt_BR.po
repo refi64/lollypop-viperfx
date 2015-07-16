@@ -4,14 +4,15 @@
 # 
 # Translators:
 # Ian Brunelli <ian@brunelli.me>, 2015
+# Ricardo Borges Jr. <ricardoborges.jr@gmail.com>, 2015
 msgid ""
 msgstr ""
 "Project-Id-Version: lollypop\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2015-07-07 13:19+0200\n"
-"PO-Revision-Date: 2015-07-07 11:20+0000\n"
-"Last-Translator: Cédric Bellegarde <web@adishatz.org>\n"
-"Language-Team: Portuguese (Brazil) (http://www.transifex.com/projects/p/lollypop/language/pt_BR/)\n"
+"PO-Revision-Date: 2015-07-13 15:28+0000\n"
+"Last-Translator: Ricardo Borges Jr. <ricardoborges.jr@gmail.com>\n"
+"Language-Team: Portuguese (Brazil) (http://www.transifex.com/p/lollypop/language/pt_BR/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -60,7 +61,7 @@ msgstr "Quando vazio, utiliza XDG_MUSIC_DIR"
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:11
 msgid "Last.fm login"
-msgstr ""
+msgstr "Login Last.fm"
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:12
 msgid "Favorite tag editor"
@@ -105,7 +106,7 @@ msgstr "Usar tema gtk escuro"
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:22
 msgid "Disable the use client side window decorations (headerbar)"
-msgstr ""
+msgstr "Desabilitar o uso da decoração de janela do lado cliente (headerbar)"
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:23 ../data/SettingsDialog.ui.h:6
 msgid "Show compilations in albums view"
@@ -174,7 +175,7 @@ msgid ""
 "    - Scrobbler disabled\n"
 "    - Auto cover download disabled\n"
 "    - Artist informations disabled"
-msgstr ""
+msgstr "- Scrobbler desabilitado\n- Download automático de capa desabilitado\n- Informação do artista desabilitado"
 
 #: ../src/application.py:38
 msgid "Advanced artist informations disabled"
@@ -186,7 +187,7 @@ msgstr "Lollypop: Você precisa installar o yelp."
 
 #: ../src/codecs.py:54
 msgid "Restart lollypop after installing codecs"
-msgstr ""
+msgstr "Reiniciar o lollypop após instalação dos codecs"
 
 #: ../src/collectionscanner.py:63
 msgid "Your music is updating"
@@ -198,7 +199,7 @@ msgstr "Álbuns populares"
 
 #: ../src/container.py:318
 msgid "Recently added albums"
-msgstr ""
+msgstr "Álbuns adicionados recentemente"
 
 #: ../src/container.py:319
 msgid "Random albums"
@@ -227,19 +228,19 @@ msgstr "Compilações"
 
 #: ../src/container.py:386
 msgid "Popular tracks"
-msgstr ""
+msgstr "Faixas populares"
 
 #: ../src/container.py:387
 msgid "Recently played"
-msgstr ""
+msgstr "Tocada recentemente "
 
 #: ../src/container.py:388
 msgid "Never played"
-msgstr ""
+msgstr "Nunca tocada"
 
 #: ../src/container.py:389
 msgid "Random tracks"
-msgstr ""
+msgstr "Faixas aleatórias"
 
 #: ../src/database_albums.py:234 ../src/database_artists.py:71
 #: ../src/database_genres.py:66 ../src/database_tracks.py:204
@@ -269,7 +270,7 @@ msgstr "Reproduzir"
 
 #: ../src/lastfm.py:25
 msgid "Last.fm authentication disabled"
-msgstr ""
+msgstr "Autenticação "
 
 #: ../src/lastfm.py:288
 msgid "Wrong Last.fm credentials"
@@ -328,7 +329,7 @@ msgstr ""
 
 #: ../src/pop_infos.py:164 ../src/pop_infos.py:166
 msgid "Last.fm"
-msgstr ""
+msgstr "Last.fm"
 
 #: ../src/pop_infos.py:170
 msgid "No information for this artist..."
@@ -638,15 +639,15 @@ msgstr "Modo de festa"
 
 #: ../data/SettingsDialog.ui.h:17
 msgid "Login:"
-msgstr ""
+msgstr "Login:"
 
 #: ../data/SettingsDialog.ui.h:18
 msgid "Password:"
-msgstr ""
+msgstr "Senha:"
 
 #: ../data/SettingsDialog.ui.h:19
 msgid "Connect"
-msgstr ""
+msgstr "Conectar"
 
 #: ../data/SettingsDialog.ui.h:20
 msgid "You need to install pylast and gi secret"
@@ -686,7 +687,7 @@ msgstr "Pesquisar"
 
 #: ../data/ToolbarPlayback.ui.h:4
 msgid "Artist biography"
-msgstr ""
+msgstr "Biografia do artista"
 
 #: ../data/Unicode.ui.h:1
 msgid "Error"
