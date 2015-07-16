@@ -69,5 +69,5 @@ class Track:
     """
     def set_radio(self, name, uri):
         self.id = Type.RADIOS
-        self.artist = name
+        self.aartist = name
         self.uri = uri

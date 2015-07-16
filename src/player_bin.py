@@ -211,10 +211,8 @@ class BinPlayer(ReplayGainPlayer, BasePlayer):
         @param message as Gst.Message
     """
     def _on_bus_message_tag(self, bus, message):
-        if self.current_track.id >= 0:
-            return
-        # FIXME Report gstreamer bug
-        elif self.current_track.duration > 0.0:
+        if self.current_track.id >= 0 or\
+           self.current_track.duration > 0.0:
             return
         debug("Player::_on_bus_message_tag(): %s" % self.current_track.uri)
         reader = ScannerTagReader()
@@ -222,6 +220,11 @@ class BinPlayer(ReplayGainPlayer, BasePlayer):
 
         self.current_track.title = reader.get_title(tags,
                                                     self.current_track.uri)
+        self.current_track.artist = reader.get_artists(tags)
+        # If title set, force artist
+        if self.current_track.title != '' and self.current_track.artist == '':
+            self.current_track.artist = self.current_track.aartist
+
         if self.current_track.id == Type.EXTERNALS:
             (b, duration) = self._playbin.query_duration(Gst.Format.TIME)
             if b:

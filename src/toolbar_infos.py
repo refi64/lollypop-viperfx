@@ -53,6 +53,7 @@ class ToolbarInfos(Gtk.Bin):
     """
     def on_current_changed(self, player):
         art = None
+
         if player.current_track.artist == '':
             self._artist_label.hide()
         else:

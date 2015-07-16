@@ -37,7 +37,6 @@ class RadioPlayer(BasePlayer):
     def load(self, track):
         try:
             self._current = track
-            track.title = _("Radio")
             parser = TotemPlParser.Parser.new()
             parser.connect("entry-parsed", self._on_entry_parsed, track)
             parser.parse_async(track.uri, True, None,
