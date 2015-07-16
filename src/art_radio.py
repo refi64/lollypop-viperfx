@@ -126,7 +126,8 @@ class RadioArt(BaseArt):
     """
     def save_radio_logo(self, pixbuf, radio):
         try:
-            artpath = self._RADIOS_PATH + "/" + radio + ".png"
+            artpath = self._RADIOS_PATH + "/" +\
+                      radio.replace('/', '-') + ".png"
 
             # Gdk < 3.15 was missing save method
             try:
@@ -167,6 +168,7 @@ class RadioArt(BaseArt):
     """
     def _get_radio_art_path(self, name):
         try:
+            name = name.replace('/', '-')
             if os.path.exists(self._RADIOS_PATH + "/" + name + ".png"):
                 return self._RADIOS_PATH + "/" + name + ".png"
             return None
@@ -179,4 +181,4 @@ class RadioArt(BaseArt):
         @param sql as sqlite cursor
     """
     def _get_radio_cache_name(self, name):
-        return "@@"+name.replace('/','@@@')+"@@radio@@"
+        return "@@"+name.replace('/','-')+"@@radio@@"

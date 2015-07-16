@@ -176,7 +176,8 @@ class TuneinPopover(Gtk.Popover):
         try:
             cache = Art._RADIOS_PATH
             s = Gio.File.new_for_uri(item.LOGO)
-            d = Gio.File.new_for_path(cache+"/%s.png" % item.TEXT)
+            d = Gio.File.new_for_path(cache+"/%s.png" %\
+                                      item.TEXT.replace('/', '-'))
             s.copy(d, Gio.FileCopyFlags.OVERWRITE, None, None)
         except Exception as e:
             print("TuneinPopover::_add_radio: %s" % e)
@@ -189,8 +190,8 @@ class TuneinPopover(Gtk.Popover):
                 url = data.decode('utf-8')
         except Exception as e:
             print("TuneinPopover::_add_radio: %s" % e)
-        self._radio_manager.add(item.TEXT)
-        self._radio_manager.add_track(item.TEXT,
+        self._radio_manager.add(item.TEXT.replace('/', '-'))
+        self._radio_manager.add_track(item.TEXT.replace('/', '-'),
                                       url)
 
     """
