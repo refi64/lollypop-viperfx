@@ -218,9 +218,16 @@ class BinPlayer(ReplayGainPlayer, BasePlayer):
         reader = ScannerTagReader()
         tags = message.parse_tag()
 
-        self.current_track.title = reader.get_title(tags,
-                                                    self.current_track.uri)
-        self.current_track.artist = reader.get_artists(tags)
+        title = reader.get_title(tags, '')
+        if title != '':
+            self.current_track.title = title
+        if self.current_track.title == '':
+            self.current_track.title = self.current_track.uri
+
+        artist = reader.get_artists(tags)
+        if artist != '':
+            self.current_track.artist = artist
+
         # If title set, force artist
         if self.current_track.title != '' and self.current_track.artist == '':
             self.current_track.artist = self.current_track.aartist
