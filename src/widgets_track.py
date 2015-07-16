@@ -232,7 +232,6 @@ class TrackRow(Row):
         @param widget as Gtk.Button
     """
     def _on_menu_btn_clicked(self, widget):
-        print('menu')
         self._popup_menu(widget)
 
     """
