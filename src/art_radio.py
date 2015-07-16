@@ -179,4 +179,4 @@ class RadioArt(BaseArt):
         @param sql as sqlite cursor
     """
     def _get_radio_cache_name(self, name):
-        return "@@"+name+"@@radio@@"
+        return "@@"+name.replace('/','@@@')+"@@radio@@"
