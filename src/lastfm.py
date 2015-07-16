@@ -264,9 +264,10 @@ class LastFM(LastFMNetwork):
         @param artist as str
         @param title as str
         @param duration as int
+        @param first is internal
         @thread safe
     """
-    def _now_playing(self, artist, title, duration):
+    def _now_playing(self, artist, title, duration, first=True):
         debug("LastFM::_now_playing(): %s, %s, %s" % (artist,
                                                       title,
                                                       duration))
@@ -279,7 +280,10 @@ class LastFM(LastFMNetwork):
             if Lp.notify is not None:
                 GLib.idle_add(Lp.notify.send, _("Wrong Last.fm credentials"))
         except:
-            self._connect(self._username, self._password)
+            # now playing sometimes fails
+            if first:
+                self._connect(self._username, self._password)
+                self._now_playing(artist, title, duration, False)
 
     """
         Download albums images
