@@ -175,7 +175,8 @@ class Application(Gtk.Application):
         Lp.player.clear_externals()
         for f in files:
             self._parser.parse_async(f.get_uri(), True,
-                                     None, self._on_parsing_finished)
+                                     None, self._on_parsing_finished,
+                                     f.get_uri())
         if Lp.window is not None and Lp.window.is_visible():
             Lp.window.present()
 
@@ -258,12 +259,18 @@ class Application(Gtk.Application):
         self._externals_count += 1
 
     """
-        Reset parsed count
-        @param source as GObject.Object)
+        Reset parsed count and play uri if not a playlist
+        @param source as GObject.Object
         @param result as Gio.AsyncResult
+        @param uri as string
     """
-    def _on_parsing_finished(self, source, result):
-        self._externals_count = 0
+    def _on_parsing_finished(self, source, result, uri):
+        if self._externals_count == 0:
+            Lp.player.load_external(uri)
+            Lp.player.set_party(False)
+            Lp.player.play_first_external()
+        else:
+            self._externals_count = 0
 
     """
         Hide window
