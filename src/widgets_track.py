@@ -213,22 +213,44 @@ class TrackRow(Row):
 # PRIVATE             #
 #######################
     """
-        Popup menu for track if not left clic
+        Popup menu for track relative to track row
         @param widget as Gtk.Widget
         @param event as Gdk.Event
     """
     def _on_button_press(self, widget, event):
         if event.button != 1:
-            self._on_menu_clicked(widget)
+            window = widget.get_window()
+            if window == event.window:
+                self._popup_menu(widget, event.x, event.y)
+            # Happen when pressing button over menu btn
+            else:
+                self._popup_menu(self._menu_btn)
             return True
+
+    """
+        Popup menu for track relative to button
+        @param widget as Gtk.Button
+    """
+    def _on_menu_btn_clicked(self, widget):
+        print('menu')
+        self._popup_menu(widget)
 
     """
         Popup menu for track
         @param widget as Gtk.Button
+        @param xcoordinate as int (or None)
+        @param ycoordinate as int (or None)
     """
-    def _on_menu_clicked(self, widget):
+    def _popup_menu(self, widget, xcoordinate=None, ycoordinate=None):
         menu = TrackMenu(self._object_id, None)
         popover = Gtk.Popover.new_from_model(widget, menu)
+        if xcoordinate is not None and ycoordinate is not None:
+            rect = widget.get_allocation()
+            rect.x = xcoordinate
+            rect.y = ycoordinate
+            rect.width = 1
+            rect.height = 1
+            popover.set_pointing_to(rect)
         rating = RatingWidget(self._object_id, False)
         rating.set_property('margin_top', 5)
         rating.set_property('margin_bottom', 5)
