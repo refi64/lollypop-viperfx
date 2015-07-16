@@ -28,7 +28,6 @@ class Row(Gtk.ListBoxRow):
         Gtk.ListBoxRow.__init__(self)
         self._object_id = None
         self._number = 0
-        self._builder.connect_signals(self)
         self._row_widget = self._builder.get_object('row')
         self._title_label = self._builder.get_object('title')
         self._title_label.set_property('has-tooltip', True)
@@ -152,6 +151,7 @@ class AlbumRow(Row):
     def __init__(self):
         self._builder = Gtk.Builder()
         self._builder.add_from_resource('/org/gnome/Lollypop/AlbumRow.ui')
+        self._builder.connect_signals(self)
         self._cover = self._builder.get_object('cover')
         self._header = self._builder.get_object('header')
         self._artist = self._builder.get_object('artist')
@@ -196,6 +196,7 @@ class TrackRow(Row):
     def __init__(self):
         self._builder = Gtk.Builder()
         self._builder.add_from_resource('/org/gnome/Lollypop/TrackRow.ui')
+        self._builder.connect_signals(self)
         self._menu_btn = self._builder.get_object('menu')
         Row.__init__(self)
 
@@ -212,12 +213,22 @@ class TrackRow(Row):
 # PRIVATE             #
 #######################
     """
+        Popup menu for track if not left clic
+        @param widget as Gtk.Widget
+        @param event as Gdk.Event
+    """
+    def _on_button_press(self, widget, event):
+        if event.button != 1:
+            self._on_menu_clicked(widget)
+            return True
+
+    """
         Popup menu for track
         @param widget as Gtk.Button
     """
     def _on_menu_clicked(self, widget):
         menu = TrackMenu(self._object_id, None)
-        popover = Gtk.Popover.new_from_model(self._menu_btn, menu)
+        popover = Gtk.Popover.new_from_model(widget, menu)
         rating = RatingWidget(self._object_id, False)
         rating.set_property('margin_top', 5)
         rating.set_property('margin_bottom', 5)
