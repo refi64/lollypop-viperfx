@@ -15,7 +15,7 @@ from cgi import escape
 
 from lollypop.define import Lp
 from lollypop.cellrendereralbum import CellRendererAlbum
-from lollypop.track import Track
+from lollypop.objects import Track
 
 
 # Widget to manage queue

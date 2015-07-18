@@ -14,7 +14,7 @@ import random
 
 from lollypop.define import Shuffle
 from lollypop.player_base import BasePlayer
-from lollypop.track import Track
+from lollypop.objects import Track
 
 
 # Manage user playlist

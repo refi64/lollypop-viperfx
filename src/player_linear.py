@@ -12,7 +12,7 @@
 
 from lollypop.define import Lp, NextContext
 from lollypop.player_base import BasePlayer
-from lollypop.track import Track
+from lollypop.objects import Track
 
 
 # Manage normal playback

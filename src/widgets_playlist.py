@@ -19,7 +19,7 @@ from gettext import gettext as _
 from lollypop.define import Lp, Type
 from lollypop.cellrendereralbum import CellRendererAlbum
 from lollypop.widgets_track import TracksWidget
-from lollypop.track import Track
+from lollypop.objects import Track
 
 
 # Playlist Widget is similar to album detailed

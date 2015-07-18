@@ -16,6 +16,7 @@ from lollypop.define import Lp, ArtSize
 from lollypop.pop_menu import TrackMenu
 from lollypop.widgets_rating import RatingWidget
 from lollypop.utils import seconds_to_string, rgba_to_hex
+from lollypop.objects import Track, Album
 
 
 # A row as base for AlbumRow and TrackRow
@@ -158,6 +159,14 @@ class AlbumRow(Row):
         Row.__init__(self)
 
     """
+        Store current object id and object
+        @param object id as int
+    """
+    def set_object_id(self, object_id):
+        Row.set_object_id(self, object_id)
+        self._object = Album(self._object_id)
+
+    """
         Show header
         @param show as bool
     """
@@ -198,6 +207,14 @@ class TrackRow(Row):
         self._builder.connect_signals(self)
         self._menu_btn = self._builder.get_object('menu')
         Row.__init__(self)
+
+    """
+        Store current object id and object
+        @param object id as int
+    """
+    def set_object_id(self, object_id):
+        Row.set_object_id(self, object_id)
+        self._object = Track(self._object_id)
 
     """
         Show menu
@@ -249,7 +266,7 @@ class TrackRow(Row):
             rect.width = 1
             rect.height = 1
             popover.set_pointing_to(rect)
-        rating = RatingWidget(self._object_id, False)
+        rating = RatingWidget(self._object)
         rating.set_property('margin_top', 5)
         rating.set_property('margin_bottom', 5)
         rating.show()

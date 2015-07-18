@@ -52,7 +52,7 @@ app_PYTHON = \
     toolbar_playback.py\
     toolbar.py\
     toolbar_title.py\
-    track.py\
+    objects.py\
     tunein.py\
     utils.py\
     view_albums.py\
