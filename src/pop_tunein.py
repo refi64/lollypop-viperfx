@@ -230,7 +230,7 @@ class TuneinPopover(Gtk.Popover):
             self._scrolled.get_vadjustment().set_value(0.0)
             if self._current_url is not None:
                 self._previous_urls.append(self._current_url)
-            self.populate(item.URLs)
+            self.populate(item.URL)
         elif item.TYPE == "audio":
             for i in self._current_items:
                 Lp.player.load_external(i.URL, i.TEXT)
