@@ -59,6 +59,7 @@ class RadioPopover(Gtk.Popover):
         self._not_found = builder.get_object('notfound')
         self._name_entry = builder.get_object('name')
         self._uri_entry = builder.get_object('uri')
+        self._btn_add_modify = builder.get_object('btn_add_modify')
         self._stack.add(self._spinner)
         self._stack.add(self._not_found)
         self._stack.add(self._logo)
@@ -231,3 +232,15 @@ class RadioPopover(Gtk.Popover):
         Lp.art.announce_logo_update(self._name)
         self.hide()
         self._streams = {}
+
+    """
+        Update modify/add button
+        @param entry as Gtk.Entry
+    """
+    def _on_entry_changed(self, entry):
+        uri = self._uri_entry.get_text()
+        name = self._name_entry.get_text()
+        if name != '' and uri.find('://') != -1:
+            self._btn_add_modify.set_sensitive(True)
+        else:
+            self._btn_add_modify.set_sensitive(False)

@@ -126,6 +126,7 @@
         <property name="visible">True</property>
         <property name="can_focus">True</property>
         <property name="hexpand">True</property>
+        <signal name="changed" handler="_on_entry_changed" swapped="no"/>
       </object>
       <packing>
         <property name="left_attach">1</property>
@@ -148,6 +149,7 @@
         <property name="visible">True</property>
         <property name="can_focus">True</property>
         <property name="hexpand">True</property>
+        <signal name="changed" handler="_on_entry_changed" swapped="no"/>
       </object>
       <packing>
         <property name="left_attach">1</property>
@@ -163,6 +165,7 @@
         <child>
           <object class="GtkButton" id="btn_add_modify">
             <property name="visible">True</property>
+            <property name="sensitive">False</property>
             <property name="can_focus">True</property>
             <property name="receives_default">True</property>
             <signal name="clicked" handler="_on_btn_add_modify_clicked" swapped="no"/>
