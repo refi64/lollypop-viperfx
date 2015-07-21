@@ -29,7 +29,8 @@ class Toolbar(Gtk.HeaderBar):
     """
     def __init__(self, app):
         Gtk.HeaderBar.__init__(self)
-
+        style = self.get_style_context()
+        self._padding = style.get_padding(self.get_state())
         self._toolbar_playback = ToolbarPlayback()
         self._toolbar_playback.show()
         self._toolbar_infos = ToolbarInfos()
@@ -52,11 +53,9 @@ class Toolbar(Gtk.HeaderBar):
         Simplified version here
     """
     def do_get_preferred_height(self):
-        style = self.get_style_context()
-        padding = style.get_padding(self.get_state())
         toolbar_height = self._toolbar_playback.get_preferred_height()
-        return (toolbar_height[0]+padding.top+padding.bottom,
-                toolbar_height[1]+padding.top+padding.bottom)
+        return (toolbar_height[0]+self._padding.top+self._padding.bottom,
+                toolbar_height[1]+self._padding.top+self._padding.bottom)
 
     """
         Update progress bar position
