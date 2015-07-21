@@ -410,7 +410,7 @@ class SelectionList(Gtk.ScrolledWindow):
                 text = format_artist_name(text)
             self._popover.set_text("  %s  " % text[0].upper())
             self._popover.set_relative_to(self)
-            r = cairo.RectangleInt()
+            r = Gdk.Rectangle()
             r.x = self.get_allocated_width()
             r.y = self._last_motion_event.y
             r.width = 1
