@@ -13,8 +13,6 @@
 
 from gi.repository import TotemPlParser
 
-from gettext import gettext as _
-
 from lollypop.playlists import RadiosManager
 from lollypop.player_base import BasePlayer
 from lollypop.define import Type

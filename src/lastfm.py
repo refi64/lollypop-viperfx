@@ -15,7 +15,6 @@ from gi.repository import GLib, Gio, GdkPixbuf
 
 from lollypop.define import ArtSize
 
-from time import sleep
 from gettext import gettext as _
 
 try:
