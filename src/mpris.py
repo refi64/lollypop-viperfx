@@ -196,7 +196,7 @@ class MPRIS(dbus.service.Object):
                                     ["quality"], ["90"])
                     except:
                         pixbuf.savev(cover_path, "jpeg",
-                                    ["quality"], ["90"])
+                                     ["quality"], ["90"])
             else:
                 cover_path = Lp.art.get_album_cache_path(
                     Lp.player.current_track.album_id, ArtSize.BIG)
