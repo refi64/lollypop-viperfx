@@ -53,7 +53,7 @@ class Toolbar(Gtk.HeaderBar):
     """
     def do_get_preferred_height(self):
         style = self.get_style_context()
-        padding = style.get_padding(Gtk.StateFlags.NORMAL)
+        padding = style.get_padding(self.get_state())
         toolbar_height = self._toolbar_playback.get_preferred_height()
         return (toolbar_height[0]+padding.top+padding.bottom,
                 toolbar_height[1]+padding.top+padding.bottom)
