@@ -6,11 +6,30 @@
  <_summary>Play and organize your music collection</_summary>
  <description>
   <_p>
-   Music player for the GNOME desktop
+	Lollypop is a new GNOME music playing application.
+  </_p>
+  <_p>
+	It provides:
+		- mp3/4, ogg and flac.
+		- Genre/Cover browsing.
+		- Genre/Artist/Cover browsing.
+		- Search.
+		- Main playlist (called queue in other apps).
+		- Party mode.
+		- Replay gain.
+		- Cover art downloader.
+		- Context artist view.
+		- MTP sync.
+		- Fullscreen view.
+		- Radios support.
+		- Last.fm support.
+		- Auto install codecs.
+		- HiDPI support.
+		- Tunein support.
   </_p>
  </description>
  <screenshots>
-  <screenshot type="default" width="750" height="469">https://raw.githubusercontent.com/gnumdk/lollypop/gh-pages/images/lollypop1.png</screenshot>
+  <screenshot type="default" width="800" height="439">https://raw.githubusercontent.com/gnumdk/lollypop-data/master/main_small.jpg</screenshot>
  </screenshots>
  <url type="homepage">https://github.com/gnumdk/lollypop</url>
  <updatecontact>cedric.bellegarde@adishatz.org</updatecontact>
