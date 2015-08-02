@@ -19,8 +19,10 @@ from stat import S_ISREG, ST_MTIME, ST_MODE
 from lollypop.define import Lp
 
 
-# Playlists manager: add, remove, list, append, ...
 class PlaylistsManager(GObject.GObject):
+    """
+        Playlists manager
+    """
     _PLAYLISTS_PATH = os.path.expanduser("~") +\
         "/.local/share/lollypop/playlists"
     __gsignals__ = {
@@ -31,6 +33,9 @@ class PlaylistsManager(GObject.GObject):
     }
 
     def __init__(self):
+        """
+            Init playlists manager
+        """
         GObject.GObject.__init__(self)
         self._LOVED = _("Loved tracks")
         self._idx = {}
@@ -42,14 +47,14 @@ class PlaylistsManager(GObject.GObject):
                 print("Lollypop::PlaylistsManager::init: %s" % e)
         self._init_idx()
 
-    """
-        Add a playlist, erase current
-        @param playlist name as str
-        @param get file descriptor as bool
-        @return file descriptor if 2nd param True
-        @thread safe
-    """
     def add(self, playlist_name, get_desc=False):
+        """
+            Add a playlist, erase current
+            @param playlist name as str
+            @param get file descriptor as bool
+            @return file descriptor if 2nd param True
+            @thread safe
+        """
         filename = self._PLAYLISTS_PATH + "/" + playlist_name + ".m3u"
         try:
             if os.path.exists(filename):
@@ -73,20 +78,20 @@ class PlaylistsManager(GObject.GObject):
         except Exception as e:
             print("PlaylistsManager::add: %s" % e)
 
-    """
-        Return True if playlist exist
-        @param playlist name as string
-        @param exist as bool
-    """
     def exists(self, playlist_name):
+        """
+            Return True if playlist exist
+            @param playlist name as string
+            @param exist as bool
+        """
         filename = self._PLAYLISTS_PATH + "/" + playlist_name + ".m3u"
         return os.path.exists(filename)
 
-    """
-        Add loved playlist, will never erase current
-        @thread safe
-    """
     def add_loved(self):
+        """
+            Add loved playlist, will never erase current
+            @thread safe
+        """
         filename = self._PLAYLISTS_PATH + "/" + self._LOVED + ".m3u"
         try:
             if not os.path.exists(filename):
@@ -96,12 +101,12 @@ class PlaylistsManager(GObject.GObject):
         except Exception as e:
             print("PlaylistsManager::add_loved: %s" % e)
 
-    """
-        Rename playlist (Thread safe)
-        @param new playlist name as str
-        @param old playlist name as str
-    """
     def rename(self, new_name, old_name):
+        """
+            Rename playlist (Thread safe)
+            @param new playlist name as str
+            @param old playlist name as str
+        """
         try:
             os.rename(self._PLAYLISTS_PATH+"/"+old_name+".m3u",
                       self._PLAYLISTS_PATH+"/"+new_name+".m3u")
@@ -113,11 +118,11 @@ class PlaylistsManager(GObject.GObject):
         except Exception as e:
             print("PlaylistsManager::rename: %s" % e)
 
-    """
-        delete playlist (Thread safe)
-        @param playlist name as str
-    """
     def delete(self, playlist_name):
+        """
+            delete playlist (Thread safe)
+            @param playlist name as str
+        """
         try:
             os.remove(self._PLAYLISTS_PATH+"/"+playlist_name+".m3u")
             for (idx, playlist) in self._idx.items():
@@ -128,19 +133,19 @@ class PlaylistsManager(GObject.GObject):
         except Exception as e:
             print("PlaylistsManager::delete: %s" % e)
 
-    """
-        Return availables playlists
-        @return array of (id, string)
-    """
     def get(self):
+        """
+            Return availables playlists
+            @return array of (id, string)
+        """
         return sorted(self._idx.items(),
                       key=lambda item: item[1].lower())
 
-    """
-        Return 6 last modified playlist
-        @return array of (id, string)
-    """
     def get_last(self):
+        """
+            Return 6 last modified playlist
+            @return array of (id, string)
+        """
         playlists = []
         try:
             index = 0
@@ -161,12 +166,12 @@ class PlaylistsManager(GObject.GObject):
             print("Lollypop::PlaylistManager::get_last: %s" % e)
         return playlists
 
-    """
-        Return availables tracks for playlist
-        @param playlist playlist_name as str
-        @return array of track filepath as str
-    """
     def get_tracks(self, playlist_name):
+        """
+            Return availables tracks for playlist
+            @param playlist playlist_name as str
+            @return array of track filepath as str
+        """
         tracks = []
         try:
             f = open(self._PLAYLISTS_PATH+"/"+playlist_name+".m3u", "r")
@@ -178,12 +183,12 @@ class PlaylistsManager(GObject.GObject):
             print("PlaylistsManager::get_tracks: %s" % e)
         return tracks
 
-    """
-        Set playlist tracks (Thread safe)
-        @param playlist name as str
-        @param tracks path as [str]
-    """
     def set_tracks(self, playlist_name, tracks_path):
+        """
+            Set playlist tracks (Thread safe)
+            @param playlist name as str
+            @param tracks path as [str]
+        """
         f = self.add(playlist_name, True)
         for filepath in tracks_path:
             self._add_track(f, playlist_name, filepath)
@@ -193,24 +198,24 @@ class PlaylistsManager(GObject.GObject):
         except Exception as e:
             print("PlaylistsManager::set_tracks: %s" % e)
 
-    """
-        Return availables tracks id for playlist
-        Thread safe if you pass an sql cursor
-        @param playlist name as str
-        @return array of track id as int
-    """
     def get_tracks_id(self, playlist_name, sql=None):
+        """
+            Return availables tracks id for playlist
+            Thread safe if you pass an sql cursor
+            @param playlist name as str
+            @return array of track id as int
+        """
         tracks_id = []
         for filepath in self.get_tracks(playlist_name):
             tracks_id.append(Lp.tracks.get_id_by_path(filepath, sql))
         return tracks_id
 
-    """
-        Add track to playlist if not already present
-        @param playlist name as str
-        @param track filepath as str
-    """
     def add_track(self, playlist_name, filepath):
+        """
+            Add track to playlist if not already present
+            @param playlist name as str
+            @param track filepath as str
+        """
         try:
             f = open(self._PLAYLISTS_PATH+"/"+playlist_name+".m3u", "a")
             self._add_track(f, playlist_name, filepath)
@@ -219,12 +224,12 @@ class PlaylistsManager(GObject.GObject):
         except Exception as e:
             print("PlaylistsManager::add_track: %s" % e)
 
-    """
-        Add tracks to playlist if not already present
-        @param playlist name as str
-        @param tracks filepath as [str]
-    """
     def add_tracks(self, playlist_name, tracks_path):
+        """
+            Add tracks to playlist if not already present
+            @param playlist name as str
+            @param tracks filepath as [str]
+        """
         try:
             f = open(self._PLAYLISTS_PATH+"/"+playlist_name+".m3u", "a")
             for filepath in tracks_path:
@@ -234,27 +239,27 @@ class PlaylistsManager(GObject.GObject):
         except Exception as e:
             print("PlaylistsManager::add_tracks: %s" % e)
 
-    """
-        Remove tracks from playlist
-        @param playlist name as str
-        @param tracks to remove as [str]
-    """
     def remove_tracks(self, playlist_name, tracks_to_remove):
+        """
+            Remove tracks from playlist
+            @param playlist name as str
+            @param tracks to remove as [str]
+        """
         playlist_tracks = self.get_tracks(playlist_name)
         self._remove_tracks(playlist_name, playlist_tracks, tracks_to_remove)
         GLib.idle_add(self.emit, "playlist-changed", playlist_name)
 
-    """
-        Return True if object_id is already present in playlist
-        @param playlist name as str
-        @param object id as int
-        @param genre id as int
-        @param is an album as bool
-        @param sql as sqlite cursor
-        @return bool
-    """
     def is_present(self, playlist_name, object_id,
                    genre_id, is_album, sql=None):
+        """
+            Return True if object_id is already present in playlist
+            @param playlist name as str
+            @param object id as int
+            @param genre id as int
+            @param is an album as bool
+            @param sql as sqlite cursor
+            @return bool
+        """
         playlist_paths = self.get_tracks(playlist_name)
         if is_album:
             tracks_path = Lp.albums.get_tracks_path(object_id,
@@ -278,10 +283,10 @@ class PlaylistsManager(GObject.GObject):
 #######################
 # PRIVATE             #
 #######################
-    """
-        Create initial index
-    """
     def _init_idx(self):
+        """
+            Create initial index
+        """
         playlists = []
         try:
             for filename in sorted(os.listdir(self._PLAYLISTS_PATH)):
@@ -296,13 +301,13 @@ class PlaylistsManager(GObject.GObject):
             self._idx[idx] = playlist
             idx += 1
 
-    """
-        Add track to playlist if not already present
-        @param f as file descriptor
-        @param playlist name as str
-        @param track filepath as str
-    """
     def _add_track(self, f, playlist_name, filepath):
+        """
+            Add track to playlist if not already present
+            @param f as file descriptor
+            @param playlist name as str
+            @param track filepath as str
+        """
         tracks = self.get_tracks(playlist_name)
         # Do nothing if uri already present in playlist
         if filepath not in tracks:
@@ -311,13 +316,13 @@ class PlaylistsManager(GObject.GObject):
             except Exception as e:
                 print("PlaylistsManager::_add_track: %s" % e)
 
-    """
-        Remove track from playlist
-        @param playlist name as str
-        @param playlist tracks as [str]
-        @param tracks to remove as [str]
-    """
     def _remove_tracks(self, playlist_name, playlist_tracks, tracks_to_remove):
+        """
+            Remove track from playlist
+            @param playlist name as str
+            @param playlist tracks as [str]
+            @param tracks to remove as [str]
+        """
         try:
             f = open(self._PLAYLISTS_PATH+"/"+playlist_name+".m3u", "w")
             for path in playlist_tracks:
@@ -328,9 +333,14 @@ class PlaylistsManager(GObject.GObject):
             print("PlaylistsManager::remove_tracks: %s" % e)
 
 
-# Radios manager
 class RadiosManager(PlaylistsManager):
+    """
+        Radios manager
+    """
     _PLAYLISTS_PATH = os.path.expanduser("~") + "/.local/share/lollypop/radios"
 
     def __init__(self):
+        """
+            Init radio manager
+        """
         PlaylistsManager.__init__(self)

@@ -19,12 +19,15 @@ from lollypop.tagreader import ScannerTagReader
 from lollypop.utils import seconds_to_string
 
 
-# Show external tracks in a popover
 class ExternalsPopover(Gtk.Popover):
     """
-        Init popover
+        Popover for external tracks
     """
+
     def __init__(self):
+        """
+            Init popover
+        """
         Gtk.Popover.__init__(self)
         builder = Gtk.Builder()
         builder.add_from_resource('/org/gnome/Lollypop/ExternalsPopover.ui')
@@ -59,17 +62,17 @@ class ExternalsPopover(Gtk.Popover):
         self._view.append_column(column)
         self.add(self._view)
 
-    """
-        Populate popover
-    """
     def populate(self):
+        """
+            Populate popover
+        """
         self._model.clear()
         start_new_thread(self._populate, (Lp.player.get_externals(),))
 
-    """
-        Adjuste size and connect signals
-    """
     def do_show(self):
+        """
+            Adjuste size and connect signals
+        """
         self._signal_id = Lp.player.connect('current-changed',
                                             self._on_current_changed)
         size_setting = Lp.settings.get_value('window-size')
@@ -79,10 +82,10 @@ class ExternalsPopover(Gtk.Popover):
             self.set_size_request(400, 600)
         Gtk.Popover.do_show(self)
 
-    """
-        Disconnect signals
-    """
     def do_hide(self):
+        """
+            Disconnect signals
+        """
         if self._signal_id is not None:
             Lp.player.disconnect(self._signal_id)
         Gtk.Popover.do_hide(self)
@@ -90,12 +93,12 @@ class ExternalsPopover(Gtk.Popover):
 #######################
 # PRIVATE             #
 #######################
-    """
-        Populate popover
-        @param tracks as [Track]
-        @thread safe
-    """
     def _populate(self, tracks):
+        """
+            Populate popover
+            @param tracks as [Track]
+            @thread safe
+        """
         for track in tracks:
             if track.duration == 0.0:
                 try:
@@ -110,12 +113,12 @@ class ExternalsPopover(Gtk.Popover):
                     track.title = track.uri
             GLib.idle_add(self._add_track, track)
 
-    """
-        Add track to model
-        @param track as Track
-        @param filepath as string
-    """
     def _add_track(self, track):
+        """
+            Add track to model
+            @param track as Track
+            @param filepath as string
+        """
         if track.uri == Lp.player.current_track.uri:
             self._model.append((track.uri, 'media-playback-start-symbolic',
                                 track.artist, track.title,
@@ -124,24 +127,24 @@ class ExternalsPopover(Gtk.Popover):
             self._model.append((track.uri, '', track.artist, track.title,
                                 seconds_to_string(track.duration)))
 
-    """
-        Update play symbol
-        @param player as Player
-    """
     def _on_current_changed(self, player):
+        """
+            Update play symbol
+            @param player as Player
+        """
         for item in self._model:
             if item[0] == player.current_track.uri:
                 item[1] = 'media-playback-start-symbolic'
             else:
                 item[1] = ''
 
-    """
-        Play selected track
-        @param view as Gtk.TreeView
-        @param path as Gtk.TreePath
-        @param column as Gtk.TreeViewColumn
-    """
     def _on_row_activated(self, view, path, column):
+        """
+            Play selected track
+            @param view as Gtk.TreeView
+            @param path as Gtk.TreePath
+            @param column as Gtk.TreeViewColumn
+        """    
         if path is not None:
             iterator = self._model.get_iter(path)
             if iterator is not None:

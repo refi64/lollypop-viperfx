@@ -21,14 +21,17 @@ from lollypop.widgets_album import AlbumSimpleWidget, AlbumDetailedWidget
 from lollypop.define import Lp, Type, ArtSize
 
 
-# Artist view is a vertical grid with album songs widgets
 class ArtistView(View):
     """
-        Init ArtistView ui with a scrolled grid of AlbumDetailedWidget
-        @param artist id as int
-        @param genre id as int
+        Show artist albums and tracks
     """
+
     def __init__(self, artist_id, genre_id):
+        """
+            Init ArtistView
+            @param artist id as int
+            @param genre id as int
+        """
         View.__init__(self)
         self._artist_id = artist_id
         self._genre_id = genre_id
@@ -55,11 +58,11 @@ class ArtistView(View):
         self._viewport.add(self._albumbox)
         self.add(self._scrolledWindow)
 
-    """
-        Populate the view
-        @thread safe
-    """
     def populate(self):
+        """
+            Populate the view
+            @thread safe
+        """
         albums = self._get_albums()
         GLib.idle_add(self._add_albums, albums, self._genre_id)
 
@@ -67,12 +70,12 @@ class ArtistView(View):
 #######################
 # PRIVATE             #
 #######################
-    """
-        Get albums
-        @return album ids as [int]
-        @thread safe
-    """
     def _get_albums(self):
+        """
+            Get albums
+            @return album ids as [int]
+            @thread safe
+        """
         sql = Lp.db.get_cursor()
         if self._artist_id == Type.COMPILATIONS:
             albums = Lp.albums.get_compilations(self._genre_id,
@@ -88,20 +91,20 @@ class ArtistView(View):
         sql.close()
         return albums
 
-    """
-        Return view children
-        @return [AlbumWidget]
-    """
     def _get_children(self):
+        """
+            Return view children
+            @return [AlbumWidget]
+        """
         return self._albumbox.get_children()
 
-    """
-        Pop an album and add it to the view,
-        repeat operation until album list is empty
-        @param [album ids as int]
-        @param genre id as int
-    """
     def _add_albums(self, albums, genre_id):
+        """
+            Pop an album and add it to the view,
+            repeat operation until album list is empty
+            @param [album ids as int]
+            @param genre id as int
+        """
         size_group = Gtk.SizeGroup(mode=Gtk.SizeGroupMode.HORIZONTAL)
         if albums and not self._stop:
             widget = AlbumDetailedWidget(albums.pop(0),
@@ -116,33 +119,36 @@ class ArtistView(View):
         else:
             self._stop = False
 
-    """
-        Change pointer on label
-        @param eventbox as Gtk.EventBox
-    """
     def _on_label_realize(self, eventbox):
+        """
+            Change pointer on label
+            @param eventbox as Gtk.EventBox
+        """
         if Lp.lastfm is not None and self._artist_id != Type.COMPILATIONS:
             eventbox.get_window().set_cursor(Gdk.Cursor(Gdk.CursorType.HAND1))
 
-    """
-        On clicked label, show artist informations in a popover
-        @param eventbox as Gtk.EventBox
-        @param event as Gdk.Event
-    """
     def _on_label_button_release(self, eventbox, event):
+        """
+            On clicked label, show artist informations in a popover
+            @param eventbox as Gtk.EventBox
+            @param event as Gdk.Event
+        """
         if Lp.lastfm is not None and self._artist_id != Type.COMPILATIONS:
             self._popover.set_relative_to(eventbox)
             self._popover.populate()
             self._popover.show()
 
 
-# Album contextual view
 class AlbumContextView(View):
     """
-        Init context
-        @param main view widget
+        Album contextual view
     """
+
     def __init__(self, widget):
+        """
+            Init context
+            @param main view widget
+        """
         View.__init__(self)
         self._widget = widget
         self._viewport.add(widget)
@@ -154,22 +160,25 @@ class AlbumContextView(View):
 #######################
 # PRIVATE             #
 #######################
-    """
-        Return view children
-        @return [AlbumWidget]
-    """
     def _get_children(self):
+        """
+            Return view children
+            @return [AlbumWidget]
+        """
         return [self._widget]
 
 
-# Album view is a flowbox of albums widgets with album name and artist name
 class AlbumsView(View):
     """
-        Init album view ui with a scrolled flow box and a scrolled context view
-        @param genre id as int
-        @param is compilation as bool
+        Show albums in a box
     """
+
     def __init__(self, genre_id, is_compilation):
+        """
+            Init album view
+            @param genre id as int
+            @param is compilation as bool
+        """
         View.__init__(self)
         self._signal = None
         self._context_album_id = None
@@ -209,24 +218,24 @@ class AlbumsView(View):
         self._paned.show()
         self.add(self._paned)
 
-    """
-        Populate albums
-        @param is compilation as bool
-        @thread safe
-    """
     def populate(self):
+        """
+            Populate albums
+            @param is compilation as bool
+            @thread safe
+        """
         albums = self._get_albums()
         GLib.idle_add(self._add_albums, albums)
 
 #######################
 # PRIVATE             #
 #######################
-    """
-        Get albums
-        @return album ids as [int]
-        @thread safe
-    """
     def _get_albums(self):
+        """
+            Get albums
+            @return album ids as [int]
+            @thread safe
+        """
         sql = Lp.db.get_cursor()
         if self._genre_id == Type.ALL:
             if self._is_compilation:
@@ -252,11 +261,11 @@ class AlbumsView(View):
         sql.close()
         return albums
 
-    """
-        Return view children
-        @return [AlbumWidget]
-    """
     def _get_children(self):
+        """
+            Return view children
+            @return [AlbumWidget]
+        """
         children = []
         for child in self._albumbox.get_children():
             widget = child.get_child()
@@ -265,11 +274,11 @@ class AlbumsView(View):
             children.append(self._context_widget)
         return children
 
-    """
-        populate context view
-        @param album id as int
-    """
     def _populate_context(self, album_id):
+        """
+            populate context view
+            @param album id as int
+        """
         size_group = Gtk.SizeGroup(mode=Gtk.SizeGroupMode.HORIZONTAL)
         self._context_widget = AlbumDetailedWidget(album_id,
                                                    self._genre_id,
@@ -284,12 +293,12 @@ class AlbumsView(View):
         self._context.set_visible_child(view)
         self._context.clean_old_views(view)
 
-    """
-        Pop an album and add it to the view,
-        repeat operation until album list is empty
-        @param [album ids as int]
-    """
     def _add_albums(self, albums):
+        """
+            Pop an album and add it to the view,
+            repeat operation until album list is empty
+            @param [album ids as int]
+        """
         if albums and not self._stop:
             widget = AlbumSimpleWidget(albums.pop(0))
             widget.show()
@@ -298,22 +307,22 @@ class AlbumsView(View):
         else:
             self._stop = False
 
-    """
-        Save paned position
-        @param paned as Gtk.Paned
-        @param param as Gtk.Param
-    """
     def _on_position_notify(self, paned, param):
+        """
+            Save paned position
+            @param paned as Gtk.Paned
+            @param param as Gtk.Param
+        """
         Lp.settings.set_value('paned-context-height',
                               GLib.Variant('i', paned.get_position()))
         return False
 
-    """
-        Show Context view for activated album
-        @param flowbox as Gtk.Flowbox
-        @child as Gtk.FlowboxChild
-    """
     def _on_album_activated(self, flowbox, child):
+        """
+            Show Context view for activated album
+            @param flowbox as Gtk.Flowbox
+            @child as Gtk.FlowboxChild
+        """
         if self._context_album_id == child.get_child().get_id():
             self._context_album_id = None
             self._context.hide()

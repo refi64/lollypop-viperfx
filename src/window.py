@@ -17,12 +17,15 @@ from lollypop.define import Lp, NextContext, Shuffle
 from lollypop.toolbar import Toolbar
 
 
-# Main window
 class Window(Gtk.ApplicationWindow, Container):
     """
-        Init window objects
+        Main window
     """
+
     def __init__(self, app):
+        """
+            Init window
+        """
         Container.__init__(self)
         self._app = app
         self._signal1 = None
@@ -49,25 +52,25 @@ class Window(Gtk.ApplicationWindow, Container):
         self.connect('destroy', self._on_destroyed_window)
         self.connect('realize', self._on_realize)
 
-    """
-        Add an application menu to window
-        @parma: menu as Gio.Menu
-    """
     def setup_menu(self, menu):
+        """
+            Add an application menu to window
+            @parma: menu as Gio.Menu
+        """
         self._toolbar.setup_menu_btn(menu)
 
-    """
-        Return selected color
-    """
     def get_selected_color(self):
+        """
+            Return selected color
+        """
         return self._nullwidget.get_style_context().\
             get_background_color(Gtk.StateFlags.SELECTED)
 
-    """
-        Setup global shortcuts
-        @param enable as bool
-    """
     def enable_global_shorcuts(self, enable):
+        """
+            Setup global shortcuts
+            @param enable as bool
+        """
         if enable:
             if Gtk.Widget.get_default_direction() == Gtk.TextDirection.RTL:
                 self._app.set_accels_for_action("app.seek(10)",
@@ -115,10 +118,10 @@ class Window(Gtk.ApplicationWindow, Container):
             self._app.set_accels_for_action("app.player::next_album", [None])
             self._app.set_accels_for_action("app.player::prev", [None])
 
-    """
-        Remove callbacks (we don't want to save an invalid value on hide
-    """
     def do_hide(self):
+        """
+            Remove callbacks (we don't want to save an invalid value on hide
+        """
         if self._signal1 is not None:
             self.disconnect(self._signal1)
         if self._signal2 is not None:
@@ -128,10 +131,10 @@ class Window(Gtk.ApplicationWindow, Container):
 ############
 # Private  #
 ############
-    """
-        Setup media player keys
-    """
     def _setup_media_keys(self):
+        """
+            Setup media player keys
+        """
         self._proxy = Gio.DBusProxy.new_sync(Gio.bus_get_sync(Gio.BusType.
                                                               SESSION, None),
                                              Gio.DBusProxyFlags.NONE,
@@ -149,10 +152,10 @@ class Window(Gtk.ApplicationWindow, Container):
             # We cannot grab media keys if no settings daemon is running
             pass
 
-    """
-        Do key grabbing
-    """
     def _grab_media_player_keys(self):
+        """
+            Do key grabbing
+        """
         try:
             self._proxy.call_sync('GrabMediaPlayerKeys',
                                   GLib.Variant('(su)', ('Lollypop', 0)),
@@ -163,10 +166,10 @@ class Window(Gtk.ApplicationWindow, Container):
             # We cannot grab media keys if no settings daemon is running
             pass
 
-    """
-        Do player actions in response to media key pressed
-    """
     def _handle_media_keys(self, proxy, sender, signal, parameters):
+        """
+            Do player actions in response to media key pressed
+        """
         if signal != 'MediaPlayerKeyPressed':
             print('Received an unexpected signal\
                    \'%s\' from media player'.format(signal))
@@ -181,10 +184,10 @@ class Window(Gtk.ApplicationWindow, Container):
         elif 'Previous' in response:
             Lp.player.prev()
 
-    """
-        Setup window content
-    """
     def _setup_content(self):
+        """
+            Setup window content
+        """
         self.set_icon_name('lollypop')
         self._toolbar = Toolbar(self.get_application())
         self._toolbar.show()
@@ -200,10 +203,10 @@ class Window(Gtk.ApplicationWindow, Container):
             self._toolbar.set_show_close_button(True)
             self.add(self.main_widget())
 
-    """
-        Setup window position and size, callbacks
-    """
     def _setup_window(self):
+        """
+            Setup window position and size, callbacks
+        """
         size_setting = Lp.settings.get_value('window-size')
         if isinstance(size_setting[0], int) and\
            isinstance(size_setting[1], int):
@@ -224,12 +227,12 @@ class Window(Gtk.ApplicationWindow, Container):
         self._signal2 = self.connect("configure-event",
                                      self._on_configure_event)
 
-    """
-        Delay event
-        @param: widget as Gtk.Window
-        @param: event as Gdk.Event
-    """
     def _on_configure_event(self, widget, event):
+        """
+            Delay event
+            @param: widget as Gtk.Window
+            @param: event as Gdk.Event
+        """
         self._toolbar.set_progress_width(widget.get_size()[0]/4)
         if self._timeout_configure:
             GLib.source_remove(self._timeout_configure)
@@ -237,11 +240,11 @@ class Window(Gtk.ApplicationWindow, Container):
                                                    self._save_size_position,
                                                    widget)
 
-    """
-        Save window state, update current view content size
-        @param: widget as Gtk.Window
-    """
     def _save_size_position(self, widget):
+        """
+            Save window state, update current view content size
+            @param: widget as Gtk.Window
+        """
         self._timeout_configure = None
         size = widget.get_size()
         Lp.settings.set_value('window-size',
@@ -251,19 +254,19 @@ class Window(Gtk.ApplicationWindow, Container):
         Lp.settings.set_value('window-position',
                               GLib.Variant('ai', [position[0], position[1]]))
 
-    """
-        Save maximised state
-    """
     def _on_window_state_event(self, widget, event):
+        """
+            Save maximised state
+        """
         Lp.settings.set_boolean('window-maximized',
                                 'GDK_WINDOW_STATE_MAXIMIZED' in
                                 event.new_window_state.value_names)
 
-    """
-        Save paned widget width
-        @param widget as unused, data as unused
-    """
     def _on_destroyed_window(self, widget):
+        """
+            Save paned widget width
+            @param widget as unused, data as unused
+        """
         Lp.settings.set_value('paned-mainlist-width',
                               GLib.Variant('i',
                                            self._paned_main_list.
@@ -273,12 +276,12 @@ class Window(Gtk.ApplicationWindow, Container):
                                            self._paned_list_view.
                                            get_position()))
 
-    """
-        Seek in stream
-        @param action as Gio.SimpleAction
-        @param param as GLib.Variant
-    """
     def _on_seek_action(self, action, param):
+        """
+            Seek in stream
+            @param action as Gio.SimpleAction
+            @param param as GLib.Variant
+        """
         seconds = param.get_int32()
         position = Lp.player.get_position_in_track()
         seek = position/1000000/60+seconds
@@ -289,12 +292,12 @@ class Window(Gtk.ApplicationWindow, Container):
         Lp.player.seek(seek)
         self._toolbar.update_position(seek*60)
 
-    """
-        Change player state
-        @param action as Gio.SimpleAction
-        @param param as GLib.Variant
-    """
     def _on_player_action(self, action, param):
+        """
+            Change player state
+            @param action as Gio.SimpleAction
+            @param param as GLib.Variant
+        """
         string = param.get_string()
         if string == "play_pause":
             Lp.player.play_pause()
@@ -318,11 +321,11 @@ class Window(Gtk.ApplicationWindow, Container):
         elif string == "prev":
             Lp.player.prev()
 
-    """
-        Run scanner on realize
-        @param widget as Gtk.Widget
-    """
     def _on_realize(self, widget):
+        """
+            Run scanner on realize
+            @param widget as Gtk.Widget
+        """
         if Lp.settings.get_value('auto-update') or Lp.tracks.is_empty():
             # Delayed, make python segfault on sys.exit() otherwise
             # No idea why, maybe scanner using Gstpbutils before Gstreamer

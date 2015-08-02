@@ -19,29 +19,32 @@ from cgi import escape
 from lollypop.define import Lp
 
 
-# Show ArtistInfos in a popover
 class InfosPopover(Gtk.Popover):
     """
-        Init popover
-        @param artist as string
-        @param track id as int
+        Popover with artist informations
     """
+
     def __init__(self, artist, track_id=None):
+        """
+            Init popover
+            @param artist as string
+            @param track id as int
+        """
         Gtk.Popover.__init__(self)
         self._infos = ArtistInfos(artist, track_id)
         self._infos.show()
         self.add(self._infos)
 
-    """
-        Populate view
-    """
     def populate(self):
+        """
+            Populate view
+        """
         self._infos.populate()
 
-    """
-        Resize popover and set signals callback
-    """
     def do_show(self):
+        """
+            Resize popover and set signals callback
+        """
         size_setting = Lp.settings.get_value('window-size')
         if isinstance(size_setting[1], int):
             self.set_size_request(700, size_setting[1]*0.5)
@@ -49,21 +52,24 @@ class InfosPopover(Gtk.Popover):
             self.set_size_request(700, 400)
         Gtk.Popover.do_show(self)
 
-    """
-        Preferred width
-    """
     def do_get_preferred_width(self):
+        """
+            Preferred width
+        """
         return (700, 700)
 
 
-# Show artist informations from lastfm
 class ArtistInfos(Gtk.Bin):
     """
-        Init artist infos
-        @param artist as string
-        @param track_id as int
+        Artist informations from lastfm
     """
+
     def __init__(self, artist, track_id):
+        """
+            Init artist infos
+            @param artist as string
+            @param track_id as int
+        """
         Gtk.Bin.__init__(self)
         self._liked = True  # Liked track or not?
         self._wikipedia = True
@@ -99,21 +105,21 @@ class ArtistInfos(Gtk.Bin):
         self._stack.set_visible_child(self._spinner)
         self.add(widget)
 
-    """
-        Populate informations and artist image
-    """
     def populate(self):
+        """
+            Populate informations and artist image
+        """
         start_new_thread(self._populate, ())
 
 #######################
 # PRIVATE             #
 #######################
-    """
-        Same as _populate()
-        Horrible code limited to two engines, need rework if adding one more
-        @thread safe
-    """
     def _populate(self):
+        """
+            Same as _populate()
+            Horrible code limited to two engines, need rework if adding one more
+            @thread safe
+        """
         url = None
         if self._wikipedia and Lp.wikipedia is not None:
             self._wikipedia = False
@@ -137,13 +143,13 @@ class ArtistInfos(Gtk.Bin):
             content = None
         GLib.idle_add(self._set_content, content, url, stream)
 
-    """
-        Set content on view
-        @param content as str
-        @param url as str
-        @param stream as Gio.MemoryInputStream
-    """
     def _set_content(self, content, url, stream):
+        """
+            Set content on view
+            @param content as str
+            @param url as str
+            @param stream as Gio.MemoryInputStream
+        """
         if content is not None:
             if Lp.lastfm is not None and Lp.wikipedia is not None:
                 self._view_btn.show()
@@ -176,10 +182,10 @@ class ArtistInfos(Gtk.Bin):
             self._image.set_from_pixbuf(pixbuf)
             del pixbuf
 
-    """
-        Show love button
-    """
     def _show_love_btn(self):
+        """
+            Show love button
+        """
         sql = Lp.db.get_cursor()
         if self._track_id is not None:
             if Lp.playlists.is_present(Lp.playlists._LOVED,
@@ -195,11 +201,11 @@ class ArtistInfos(Gtk.Bin):
         GLib.idle_add(self._love_btn.show)
         sql.close()
 
-    """
-        Love a track
-        @thread safe
-    """
     def _love_track(self):
+        """
+            Love a track
+            @thread safe
+        """
         Lp.playlists.add_loved()
 
         # Add track to Liked tracks
@@ -212,10 +218,10 @@ class ArtistInfos(Gtk.Bin):
 
         Lp.lastfm.love(self._artist, self._title)
 
-    """
-        Unlove a track
-    """
     def _unlove_track(self):
+        """
+            Unlove a track
+        """
         Lp.playlists.add_loved()
 
         # Del track from Liked tracks
@@ -228,11 +234,11 @@ class ArtistInfos(Gtk.Bin):
 
         Lp.lastfm.unlove(self._artist, self._title)
 
-    """
-        Love a track
-        @param btn as Gtk.Button
-    """
     def _on_love_btn_clicked(self, btn):
+        """
+            Love a track
+            @param btn as Gtk.Button
+        """
         if self._liked:
             start_new_thread(self._love_track, ())
             btn.set_image(
@@ -247,11 +253,11 @@ class ArtistInfos(Gtk.Bin):
                                              Gtk.IconSize.BUTTON))
             self._liked = True
 
-    """
-        Next view
-        @param btn as Gtk.Button
-    """
     def _on_view_clicked(self, btn):
+        """
+            Next view
+            @param btn as Gtk.Button
+        """
         self._label.set_text(_("Please wait..."))
         self._view_btn.hide()
         self._love_btn.hide()

@@ -23,9 +23,15 @@ from lollypop.pop_menu import AlbumMenu
 from lollypop.pop_covers import CoversPopover
 
 
-# Base class for album widgets
 class AlbumWidget(Gtk.Bin):
+    """
+        Base album widget
+    """
+
     def __init__(self, album_id):
+        """
+            Init widget
+        """
         Gtk.Bin.__init__(self)
         self._album_id = album_id
         self._album_title = ''
@@ -33,11 +39,11 @@ class AlbumWidget(Gtk.Bin):
         self._stop = False
         self._cover = None
 
-    """
-        Set cover for album if state changed
-        @param force as bool
-    """
     def set_cover(self, force=False):
+        """
+            Set cover for album if state changed
+            @param force as bool
+        """
         selected = self._album_id == Lp.player.current_track.album_id
         if self._cover and (selected != self._selected or force):
             self._selected = selected
@@ -48,11 +54,11 @@ class AlbumWidget(Gtk.Bin):
             self._cover.set_from_surface(surface)
             del surface
 
-    """
-        Update cover for album id id needed
-        @param album id as int
-    """
     def update_cover(self, album_id):
+        """
+            Update cover for album id id needed
+            @param album id as int
+        """
         if self._cover and self._album_id == album_id:
             self._selected = self._album_id == Lp.player.current_track.album_id
             surface = Lp.art.get_album(
@@ -62,69 +68,72 @@ class AlbumWidget(Gtk.Bin):
             self._cover.set_from_surface(surface)
             del surface
 
-    """
-        Update playing indicator
-    """
     def update_playing_indicator(self):
+        """
+            Update playing indicator
+        """
         pass
 
-    """
-        Update cursor for album
-    """
     def update_cursor(self):
+        """
+            Update cursor for album
+        """
         pass
 
-    """
-        Stop populating
-    """
     def stop(self):
+        """
+            Stop populating
+        """
         self._stop = True
 
-    """
-        Return album id for widget
-        @return album id as int
-    """
     def get_id(self):
+        """
+            Return album id for widget
+            @return album id as int
+        """
         return self._album_id
 
-    """
-        Return album title
-        @return album title as str
-    """
     def get_title(self):
+        """
+            Return album title
+            @return album title as str
+        """
         return self._album_title
 
 #######################
 # PRIVATE             #
 #######################
-    """
-        Add hover style
-        @param widget as Gtk.Widget
-        @param event es Gdk.Event
-    """
     def _on_enter_notify(self, widget, event):
+        """
+            Add hover style
+            @param widget as Gtk.Widget
+            @param event es Gdk.Event
+        """
         # https://bugzilla.gnome.org/show_bug.cgi?id=751076
         # See application.css => white
         self._cover.get_style_context().add_class('hovereffect')
 
-    """
-        Remove hover style
-        @param widget as Gtk.Widget
-        @param event es Gdk.Event
-    """
     def _on_leave_notify(self, widget, event):
+        """
+            Remove hover style
+            @param widget as Gtk.Widget
+            @param event es Gdk.Event
+        """
         # https://bugzilla.gnome.org/show_bug.cgi?id=751076
         # See application.css => white
         self._cover.get_style_context().remove_class('hovereffect')
 
 
-# Album widget is a pixbuf with two labels: album name and artist name
 class AlbumSimpleWidget(AlbumWidget):
     """
-        Init simple album widget
-        @param album id as int
+        Album widget showing cover, artist and title
     """
+
     def __init__(self, album_id):
+        """
+            Init simple album widget
+            @param album id as int
+        """
         AlbumWidget.__init__(self, album_id)
         self._eventbox = None
 
@@ -143,23 +152,23 @@ class AlbumSimpleWidget(AlbumWidget):
         self.set_cover()
         self.set_property('halign', Gtk.Align.START)
 
-    """
-        Set maximum width
-    """
     def do_get_preferred_width(self):
+        """
+            Set maximum width
+        """
         return self._cover.get_preferred_width()
 
-    """
-        Return album id for widget
-        @return album id as int
-    """
     def get_id(self):
+        """
+            Return album id for widget
+            @return album id as int
+        """
         return self._album_id
 
-    """
-        Update cursor for album
-    """
     def update_cursor(self):
+        """
+            Update cursor for album
+        """
         if self._eventbox is None:
             return
         window = self._eventbox.get_window()
@@ -173,24 +182,24 @@ class AlbumSimpleWidget(AlbumWidget):
 #######################
 # PRIVATE             #
 #######################
-    """
-        Change cursor over cover eventbox
-        @param eventbox as Gdk.Eventbox
-    """
     def _on_eventbox_realize(self, eventbox):
+        """
+            Change cursor over cover eventbox
+            @param eventbox as Gdk.Eventbox
+        """
         self._eventbox = eventbox
         if Lp.settings.get_value('auto-play'):
             eventbox.get_window().set_cursor(Gdk.Cursor(Gdk.CursorType.HAND1))
 
-    """
-        Show tooltip if needed
-        @param widget as Gtk.Widget
-        @param x as int
-        @param y as int
-        @param keyboard as bool
-        @param tooltip as Gtk.Tooltip
-    """
     def _on_query_tooltip(self, widget, x, y, keyboard, tooltip):
+        """
+            Show tooltip if needed
+            @param widget as Gtk.Widget
+            @param x as int
+            @param y as int
+            @param keyboard as bool
+            @param tooltip as Gtk.Tooltip
+        """
         layout_title = self._title_label.get_layout()
         layout_artist = self._artist_label.get_layout()
         if layout_title.is_ellipsized() or layout_artist.is_ellipsized():
@@ -201,18 +210,21 @@ class AlbumSimpleWidget(AlbumWidget):
             self.set_tooltip_text('')
 
 
-# Album detailed Widget is a pixbuf with album name and tracks list
 class AlbumDetailedWidget(AlbumWidget):
     """
-        Init detailed album widget
-        @param album id as int
-        @param genre id as int
-        @param parent width as int
-        @param pop_allowed as bool if widget can show popovers
-        @param scrolled as bool
-        @param size group as Gtk.SizeGroup
+        Widget with cover and tracks
     """
+
     def __init__(self, album_id, genre_id, pop_allowed, scrolled, size_group):
+        """
+            Init detailed album widget
+            @param album id as int
+            @param genre id as int
+            @param parent width as int
+            @param pop_allowed as bool if widget can show popovers
+            @param scrolled as bool
+            @param size group as Gtk.SizeGroup
+        """
         AlbumWidget.__init__(self, album_id)
 
         self._artist_id = Lp.albums.get_artist_id(album_id)
@@ -297,19 +309,19 @@ class AlbumDetailedWidget(AlbumWidget):
         else:
             self._eventbox = None
 
-    """
-        Update playing indicator
-    """
     def update_playing_indicator(self):
+        """
+            Update playing indicator
+        """
         for disc in self._discs:
             self._tracks_left[disc].update_playing(Lp.player.current_track.id)
             self._tracks_right[disc].update_playing(Lp.player.current_track.id)
 
-    """
-        Populate tracks
-        @thread safe
-    """
     def populate(self):
+        """
+            Populate tracks
+            @thread safe
+        """
         self._stop = False
         sql = Lp.db.get_cursor()
         for disc in self._discs:
@@ -328,32 +340,32 @@ class AlbumDetailedWidget(AlbumWidget):
                                      disc,
                                      mid_tracks + 1)
 
-    """
-        Populate left list, thread safe
-        @param track's ids as array of int
-        @param track position as int
-    """
     def populate_list_left(self, tracks, disc, pos):
+        """
+            Populate left list, thread safe
+            @param track's ids as array of int
+            @param track position as int
+        """
         GLib.idle_add(self._add_tracks,
                       tracks,
                       self._tracks_left[disc],
                       pos)
 
-    """
-        Populate right list, thread safe
-        @param track's ids as array of int
-        @param track position as int
-    """
     def populate_list_right(self, tracks, disc, pos):
+        """
+            Populate right list, thread safe
+            @param track's ids as array of int
+            @param track position as int
+        """
         GLib.idle_add(self._add_tracks,
                       tracks,
                       self._tracks_right[disc],
                       pos)
 
-    """
-        Update cursor for album
-    """
     def update_cursor(self):
+        """
+            Update cursor for album
+        """
         if self._eventbox is None:
             return
         window = self._eventbox.get_window()
@@ -367,32 +379,32 @@ class AlbumDetailedWidget(AlbumWidget):
 #######################
 # PRIVATE             #
 #######################
-    """
-        Popup menu for album
-        @param widget as Gtk.Button
-        @param album id as int
-    """
     def _pop_menu(self, widget):
+        """
+            Popup menu for album
+            @param widget as Gtk.Button
+            @param album id as int
+        """
         pop_menu = AlbumMenu(self._album_id, self._genre_id)
         popover = Gtk.Popover.new_from_model(self._menu, pop_menu)
         popover.connect('closed', self._on_closed)
         self.get_style_context().add_class('album-menu-selected')
         popover.show()
 
-    """
-        Remove selected style
-        @param widget as Gtk.Popover
-    """
     def _on_closed(self, widget):
+        """
+            Remove selected style
+            @param widget as Gtk.Popover
+        """
         self.get_style_context().remove_class('album-menu-selected')
 
-    """
-        Add tracks for to tracks widget
-        @param tracks as [(track_id, title, length, [artist ids])]
-        @param widget as TracksWidget
-        @param i as int
-    """
     def _add_tracks(self, tracks, widget, i):
+        """
+            Add tracks for to tracks widget
+            @param tracks as [(track_id, title, length, [artist ids])]
+            @param widget as TracksWidget
+            @param i as int
+        """
         if not tracks or self._stop:
             self._stop = False
             return
@@ -436,12 +448,12 @@ class AlbumDetailedWidget(AlbumWidget):
                              pos)
         GLib.idle_add(self._add_tracks, tracks, widget, i+1)
 
-    """
-        On track activation, play track
-        @param widget as TracksWidget
-        @param track id as int
-    """
     def _on_activated(self, widget, track_id):
+        """
+            On track activation, play track
+            @param widget as TracksWidget
+            @param track id as int
+        """
         Lp.player.context.next = NextContext.NONE
         if not Lp.player.is_party():
             Lp.player.set_albums(track_id,
@@ -451,36 +463,36 @@ class AlbumDetailedWidget(AlbumWidget):
         if self._button_state & Gdk.ModifierType.CONTROL_MASK:
             Lp.player.context.next = NextContext.STOP_TRACK
 
-    """
-        Keep track of mask
-        @param widget as TrackWidget
-        @param event as Gdk.Event
-    """
     def _on_button_press_event(self, widget, event):
+        """
+            Keep track of mask
+            @param widget as TrackWidget
+            @param event as Gdk.Event
+        """
         self._button_state = event.get_state()
 
-    """
-        Change cursor over eventbox
-        @param eventbox as Gdk.Eventbox
-    """
     def _on_eventbox_realize(self, eventbox):
+        """
+            Change cursor over eventbox
+            @param eventbox as Gdk.Eventbox
+        """
         self.update_cursor()
 
-    """
-        Change pointer on label
-        @param eventbox as Gtk.EventBox
-    """
     def _on_label_realize(self, eventbox):
+        """
+            Change pointer on label
+            @param eventbox as Gtk.EventBox
+        """
         if (Lp.lastfm is not None or Lp.wikipedia is not None) and\
                     self._artist_id != Type.COMPILATIONS:
             eventbox.get_window().set_cursor(Gdk.Cursor(Gdk.CursorType.HAND1))
 
-    """
-        On clicked label, show artist informations in a popover
-        @param eventbox as Gtk.EventBox
-        @param event as Gdk.Event
-    """
     def _on_label_button_release(self, eventbox, event):
+        """
+            On clicked label, show artist informations in a popover
+            @param eventbox as Gtk.EventBox
+            @param event as Gdk.Event
+        """
         if (Lp.lastfm is not None or Lp.wikipedia is not None) and\
                     self._artist_id != Type.COMPILATIONS:
             popover = InfosPopover(self._artist_name)
@@ -488,12 +500,12 @@ class AlbumDetailedWidget(AlbumWidget):
             popover.populate()
             popover.show()
 
-    """
-        Popover with album art downloaded from the web (in fact google :-/)
-        @param: widget as Gtk.EventBox
-        @param: event as Gdk.Event
-    """
     def _on_cover_press_event(self, widget, event):
+        """
+            Popover with album art downloaded from the web (in fact google :-/)
+            @param: widget as Gtk.EventBox
+            @param: event as Gdk.Event
+        """
         show_popover = True
         if Lp.settings.get_value('auto-play'):
             if event.button == 1:

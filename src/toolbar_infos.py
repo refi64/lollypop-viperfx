@@ -23,9 +23,13 @@ from lollypop.define import Lp, Type, ArtSize
 
 class ToolbarInfos(Gtk.Bin):
     """
-        Init infos toolbar
+        Informations toolbar
     """
+
     def __init__(self):
+        """
+            Init toolbar
+        """
         Gtk.Bin.__init__(self)
         builder = Gtk.Builder()
         builder.add_from_resource('/org/gnome/Lollypop/ToolbarInfos.ui')
@@ -46,11 +50,11 @@ class ToolbarInfos(Gtk.Bin):
         Lp.art.connect('cover-changed', self._update_cover)
         Lp.art.connect('logo-changed', self._update_logo)
 
-    """
-        Update toolbar on current changed
-        @param player as Player
-    """
     def on_current_changed(self, player):
+        """
+            Update toolbar on current changed
+            @param player as Player
+        """
         art = None
 
         if player.current_track.artist == '':
@@ -83,45 +87,45 @@ class ToolbarInfos(Gtk.Bin):
         else:
             self._cover.hide()
 
-    """
-        Update infos on status changed
-        @param player as Player
-    """
     def on_status_changed(self, player):
+        """
+            Update infos on status changed
+            @param player as Player
+        """
         pass
 
 #######################
 # PRIVATE             #
 #######################
-    """
-        Update cover for album_id
-        @param art as Art
-        @param album id as int
-    """
     def _update_cover(self, art, album_id):
+        """
+            Update cover for album_id
+            @param art as Art
+            @param album id as int
+        """
         if Lp.player.current_track.album_id == album_id:
             pixbuf = Lp.art.get_album(album_id, ArtSize.SMALL)
             self._cover.set_from_surface(pixbuf)
             del pixbuf
 
-    """
-        Update logo for name
-        @param art as Art
-        @param name as str
-    """
     def _update_logo(self, art, name):
+        """
+            Update logo for name
+            @param art as Art
+            @param name as str
+        """
         if Lp.player.current_track.artist == name:
             pixbuf = Lp.art.get_radio(name, ArtSize.SMALL)
             self._cover.set_from_surface(pixbuf)
             del pixbuf
 
-    """
-        Pop albums from current artistleft click
-        Show playlist menu on right
-        @param eventbox as Gtk.EventBox
-        @param event as Gdk.Event
-    """
     def _on_infobox_clicked(self, eventbox, event):
+        """
+            Pop albums from current artistleft click
+            Show playlist menu on right
+            @param eventbox as Gtk.EventBox
+            @param event as Gdk.Event
+        """
         if Lp.player.current_track.id == Type.EXTERNALS:
             expopover = ExternalsPopover()
             expopover.set_relative_to(eventbox)
@@ -141,15 +145,15 @@ class ToolbarInfos(Gtk.Bin):
                 popover.show()
             return True
 
-    """
-        Show tooltip if needed
-        @param widget as Gtk.Widget
-        @param x as int
-        @param y as int
-        @param keyboard as bool
-        @param tooltip as Gtk.Tooltip
-    """
     def _on_query_tooltip(self, widget, x, y, keyboard, tooltip):
+        """
+            Show tooltip if needed
+            @param widget as Gtk.Widget
+            @param x as int
+            @param y as int
+            @param keyboard as bool
+            @param tooltip as Gtk.Tooltip
+        """
         # Can't add a \n in markup
         # GTK bug => https://bugzilla.gnome.org/show_bug.cgi?id=749965
         layout_title = self._title_label.get_layout()
@@ -162,8 +166,8 @@ class ToolbarInfos(Gtk.Bin):
             return False
         return True
 
-    """
-        Show hand cursor over
-    """
     def _on_eventbox_realize(self, eventbox):
+        """
+            Show hand cursor over
+        """
         eventbox.get_window().set_cursor(Gdk.Cursor(Gdk.CursorType.HAND1))

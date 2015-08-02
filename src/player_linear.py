@@ -15,19 +15,22 @@ from lollypop.player_base import BasePlayer
 from lollypop.track import Track
 
 
-# Manage normal playback
 class LinearPlayer(BasePlayer):
     """
-        Init linear player
+        Manage normal playback
     """
+
     def __init__(self):
+        """
+            Init linear player
+        """
         BasePlayer.__init__(self)
 
-    """
-        Next track based on.current_track context
-        @return track as Track
-    """
     def next(self):
+        """
+            Next track based on.current_track context
+            @return track as Track
+        """
         track_id = None
         if self._albums is not None:
             tracks = Lp.albums.get_tracks(self.current_track.album_id,
@@ -53,11 +56,11 @@ class LinearPlayer(BasePlayer):
                     track_id = tracks[new_track_position]
         return Track(track_id)
 
-    """
-        Prev track base on.current_track context
-        @return track as Track
-    """
     def prev(self):
+        """
+            Prev track base on.current_track context
+            @return track as Track
+        """
         track_id = None
         if self._albums is not None:
             tracks = Lp.albums.get_tracks(self.current_track.album_id,

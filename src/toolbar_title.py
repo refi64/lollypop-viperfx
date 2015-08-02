@@ -18,9 +18,13 @@ from lollypop.utils import seconds_to_string
 
 class ToolbarTitle(Gtk.Bin):
     """
-        Init title toolbar
+        Title toolbar
     """
+
     def __init__(self):
+        """
+            Init toolbar
+        """
         # Prevent updating progress while seeking
         self._seeking = False
         # Update pogress position
@@ -38,18 +42,18 @@ class ToolbarTitle(Gtk.Bin):
         self._timelabel = builder.get_object('playback')
         self._total_time_label = builder.get_object('duration')
 
-    """
-        Set Gtk.Scale progress width
-        @param width as int
-    """
     def set_progress_width(self, width):
+        """
+            Set Gtk.Scale progress width
+            @param width as int
+        """
         self._progress.set_property("width_request", width)
 
-    """
-        Update progress bar position
-        @param value as int
-    """
     def update_position(self, value=None):
+        """
+            Update progress bar position
+            @param value as int
+        """
         if not self._seeking:
             if value is None:
                 value = Lp.player.get_position_in_track()/1000000
@@ -57,11 +61,11 @@ class ToolbarTitle(Gtk.Bin):
             self._timelabel.set_text(seconds_to_string(value/60))
         return True
 
-    """
-        Update scale on current changed
-        @param player as Player
-    """
     def on_current_changed(self, player):
+        """
+            Update scale on current changed
+            @param player as Player
+        """
         self._progress.set_value(0.0)
         if player.current_track.id == Type.RADIOS:
             self._progress.set_sensitive(False)
@@ -76,11 +80,11 @@ class ToolbarTitle(Gtk.Bin):
             self._timelabel.set_text("0:00")
             self._timelabel.show()
 
-    """
-        Update buttons and progress bar
-        @param player as Player
-    """
     def on_status_changed(self, player):
+        """
+            Update buttons and progress bar
+            @param player as Player
+        """
         if player.current_track.id != Type.RADIOS:
             self._progress.set_sensitive(player.is_playing())
 
@@ -99,19 +103,19 @@ class ToolbarTitle(Gtk.Bin):
 #######################
 # PRIVATE             #
 #######################
-    """
-        On press, mark player as seeking
-        @param unused
-    """
     def _on_progress_press_button(self, scale, data):
+        """
+            On press, mark player as seeking
+            @param unused
+        """
         self._seeking = True
 
-    """
-        Callback for scale release button
-        Seek player to scale value
-        @param scale as Gtk.Scale, data as unused
-    """
     def _on_progress_release_button(self, scale, data):
+        """
+            Callback for scale release button
+            Seek player to scale value
+            @param scale as Gtk.Scale, data as unused
+        """
         value = scale.get_value()
         self._seeking = False
         self.update_position(value)

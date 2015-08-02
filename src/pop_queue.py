@@ -18,12 +18,15 @@ from lollypop.cellrendereralbum import CellRendererAlbum
 from lollypop.track import Track
 
 
-# Widget to manage queue
 class QueueWidget(Gtk.Popover):
     """
-        Init Popover ui with a text entry and a scrolled treeview
+        Popover with queue management
     """
+
     def __init__(self):
+        """
+            Init Popover
+        """
         Gtk.Popover.__init__(self)
 
         self._timeout = None
@@ -69,10 +72,10 @@ class QueueWidget(Gtk.Popover):
 
         self.add(self._widget)
 
-    """
-        Set size and connect signals
-    """
     def do_show(self):
+        """
+            Set size and connect signals
+        """
         size_setting = Lp.settings.get_value('window-size')
         if isinstance(size_setting[1], int):
             self.set_size_request(420, size_setting[1]*0.7)
@@ -84,18 +87,18 @@ class QueueWidget(Gtk.Popover):
         self._signal_id2 = self._model.connect('row-deleted',
                                                self._updated_rows)
 
-    """
-        Populate view
-    """
     def populate(self):
+        """
+            Populate view
+        """
         if Lp.player.get_queue():
             self._clear_btn.set_sensitive(True)
         GLib.idle_add(self._add_items, list(Lp.player.get_queue()))
 
-    """
-        Clear model
-    """
     def do_hide(self):
+        """
+            Clear model
+        """
         if self._signal_id1:
             Lp.player.disconnect(self._signal_id1)
             self._signal_id1 = None
@@ -108,11 +111,11 @@ class QueueWidget(Gtk.Popover):
 #######################
 # PRIVATE             #
 #######################
-    """
-        Add items to the view
-        @param item ids as [int]
-    """
     def _add_items(self, items):
+        """
+            Add items to the view
+            @param item ids as [int]
+        """
         if items:
             track_id = items.pop(0)
             album_id = Lp.tracks.get_album_id(track_id)
@@ -128,48 +131,48 @@ class QueueWidget(Gtk.Popover):
                                 track_id])
             GLib.idle_add(self._add_items, items)
 
-    """
-        Delete item if Delete was pressed
-        @param widget unused, Gdk.Event
-    """
     def _on_keyboard_event(self, widget, event):
+        """
+            Delete item if Delete was pressed
+            @param widget unused, Gdk.Event
+        """
         if Lp.player.get_queue():
             if event.keyval == 65535:
                 path, column = self._view.get_cursor()
                 iterator = self._model.get_iter(path)
                 self._model.remove(iterator)
 
-    """
-        Pop first item in queue if it's current track id
-        @param player object
-    """
     def _on_current_changed(self, player):
+        """
+            Pop first item in queue if it's current track id
+            @param player object
+        """
         if len(self._model) > 0:
             row = self._model[0]
             if row[3] == player.current_track.id:
                 iter = self._model.get_iter(row.path)
                 self._model.remove(iter)
 
-    """
-        Mark as in drag
-        @param unused
-    """
     def _on_drag_begin(self, widget, context):
+        """
+            Mark as in drag
+            @param unused
+        """
         self._in_drag = True
 
-    """
-        Mark as not in drag
-        @param unused
-    """
     def _on_drag_end(self, widget, context):
+        """
+            Mark as not in drag
+            @param unused
+        """
         self._in_drag = False
 
-    """
-        Update queue when a row has been deleted
-        @param path as Gtk.TreePath
-        @param data as unused
-    """
     def _updated_rows(self, path, data):
+        """
+            Update queue when a row has been deleted
+            @param path as Gtk.TreePath
+            @param data as unused
+        """
         if self.is_visible():
             new_queue = []
             for row in self._model:
@@ -177,20 +180,20 @@ class QueueWidget(Gtk.Popover):
                     new_queue.append(row[3])
             Lp.player.set_queue(new_queue)
 
-    """
-        Delete row
-        @param GtkTreeIter
-    """
     def _delete_row(self, iterator):
+        """
+            Delete row
+            @param GtkTreeIter
+        """
         self._model.remove(iterator)
         if len(self._model) == 0:
             self._clear_btn.set_sensitive(False)
 
-    """
-        Play clicked item
-        @param TreeView, TreePath, TreeViewColumn
-    """
     def _on_row_activated(self, view, path, column):
+        """
+            Play clicked item
+            @param TreeView, TreePath, TreeViewColumn
+        """
         if self._timeout:
             return
         iterator = self._model.get_iter(path)
@@ -204,18 +207,18 @@ class QueueWidget(Gtk.Popover):
                                                  self._play_track,
                                                  iterator)
 
-    """
-        Clear queue
-        @param widget as Gtk.Button
-    """
     def _on_button_clicked(self, widget):
+        """
+            Clear queue
+            @param widget as Gtk.Button
+        """
         self._model.clear()
 
-    """
-        Play track for selected iter
-        @param GtkTreeIter
-    """
     def _play_track(self, iterator):
+        """
+            Play track for selected iter
+            @param GtkTreeIter
+        """
         self._timeout = None
         if not self._in_drag:
             value_id = self._model.get_value(iterator, 3)

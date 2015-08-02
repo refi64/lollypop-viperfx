@@ -22,15 +22,17 @@ from lollypop.widgets_track import TracksWidget
 from lollypop.track import Track
 
 
-# Playlist Widget is similar to album detailed
-# widget but show a cover grid as playlist cove
 class PlaylistWidget(Gtk.Bin):
     """
-        Init playlist Widget
-        @param playlist id as int
-        @param playlist name as str
+        Show playlist tracks/albums
     """
+
     def __init__(self, playlist_id, playlist_name):
+        """
+            Init playlist Widget
+            @param playlist id as int
+            @param playlist name as str
+        """
         Gtk.Bin.__init__(self)
         self._playlist_id = playlist_id
         self._playlist_name = playlist_name
@@ -73,13 +75,13 @@ class PlaylistWidget(Gtk.Bin):
 
         self.add(self._stack)
 
-    """
-        Populate list one
-        @param track's ids as array of int
-        @param track position as int
-        @thread safe
-    """
-    def populate_list_one(self, tracks, pos):
+    def populate_list_left(self, tracks, pos):
+        """
+            Populate left list
+            @param track's ids as array of int
+            @param track position as int
+            @thread safe
+        """
         GLib.idle_add(self._stack.set_visible_child, self._main_widget)
         self._stop = False
         GLib.idle_add(self._add_tracks,
@@ -87,36 +89,36 @@ class PlaylistWidget(Gtk.Bin):
                       self._tracks_widget1,
                       pos)
 
-    """
-        Populate list two
-        @param track's ids as array of int
-        @param track position as int
-        @thread safe
-    """
-    def populate_list_two(self, tracks, pos):
+    def populate_list_right(self, tracks, pos):
+        """
+            Populate right list
+            @param track's ids as array of int
+            @param track position as int
+            @thread safe
+        """
         self._stop = False
         GLib.idle_add(self._add_tracks,
                       tracks,
                       self._tracks_widget2,
                       pos)
 
-    """
-        Update playing indicator
-    """
     def update_playing_indicator(self):
+        """
+            Update playing indicator
+        """
         self._tracks_widget1.update_playing(Lp.player.current_track.id)
         self._tracks_widget2.update_playing(Lp.player.current_track.id)
 
-    """
-        Stop loading
-    """
     def stop(self):
+        """
+            Stop loading
+        """
         self._stop = True
 
-    """
-        Clear tracks
-    """
     def clear(self):
+        """
+            Clear tracks
+        """
         self._tracks = []
         for child in self._tracks_widget1.get_children():
             child.destroy()
@@ -126,14 +128,14 @@ class PlaylistWidget(Gtk.Bin):
 #######################
 # PRIVATE             #
 #######################
-    """
-        Add tracks to list
-        @param tracks id as array of [int]
-        @param widget TracksWidget
-        @param track position as int
-        @param previous album id as int
-    """
     def _add_tracks(self, tracks, widget, pos, previous_album_id=None):
+        """
+            Add tracks to list
+            @param tracks id as array of [int]
+            @param widget TracksWidget
+            @param track position as int
+            @param previous album id as int
+        """
         if not tracks or self._stop:
             return
 
@@ -173,13 +175,13 @@ class PlaylistWidget(Gtk.Bin):
             widget.add_album(track_id, None, pos, title, length, None)
         GLib.idle_add(self._add_tracks, tracks, widget, pos+1, album_id)
 
-    """
-        On track activation, play track
-        @param widget as TracksWidget
-        @param track as Track
-        @param playlist name as str
-    """
     def _on_activated(self, widget, track_id, playlist_name):
+        """
+            On track activation, play track
+            @param widget as TracksWidget
+            @param track as Track
+            @param playlist name as str
+        """
         if Lp.player.is_party():
             Lp.player.load(Track(track_id))
         else:
@@ -190,15 +192,18 @@ class PlaylistWidget(Gtk.Bin):
                 Lp.player.load(track)
 
 
-# Dialog for manage playlists (add, rename, delete, add object to)
 class PlaylistsManagerWidget(Gtk.Bin):
     """
-        Init ui with a scrolled treeview
-        @param object id as int
-        @param genre id as int
-        @param is album as bool
+        Widget for playlists management
     """
+
     def __init__(self, object_id, genre_id, is_album):
+        """
+            Init widget
+            @param object id as int
+            @param genre id as int
+            @param is album as bool
+        """
         Gtk.Bin.__init__(self)
         self._genre_id = genre_id
         self._object_id = object_id
@@ -254,18 +259,18 @@ class PlaylistsManagerWidget(Gtk.Bin):
         self._view.append_column(column1)
         self._view.append_column(column2)
 
-    """
-        Populate playlists
-        @thread safe
-    """
     def populate(self):
+        """
+            Populate playlists
+            @thread safe
+        """
         playlists = Lp.playlists.get()
         GLib.idle_add(self._append_playlists, playlists)
 
-    """
-        Add new playlist
-    """
     def add_new_playlist(self):
+        """
+            Add new playlist
+        """
         existing_playlists = []
         for item in self._model:
             existing_playlists.append(item[1])
@@ -283,21 +288,21 @@ class PlaylistsManagerWidget(Gtk.Bin):
 #######################
 # PRIVATE             #
 #######################
-    """
-        Sort model
-    """
     def _sort_items(self, model, itera, iterb, data):
+        """
+            Sort model
+        """
         a = model.get_value(itera, 1)
         b = model.get_value(iterb, 1)
 
         return a.lower() > b.lower()
 
-    """
-        Append a playlist
-        @param playlists as [str]
-        @param playlist selected as bool
-    """
     def _append_playlists(self, playlists):
+        """
+            Append a playlist
+            @param playlists as [str]
+            @param playlist selected as bool
+        """
         if playlists:
             playlist = playlists.pop(0)
             if self._object_id != -1:
@@ -314,43 +319,43 @@ class PlaylistsManagerWidget(Gtk.Bin):
             if selection is not None:
                 selection.unselect_all()
 
-    """
-        Show infobar
-        @param path as Gtk.TreePath
-    """
     def _show_infobar(self, path):
+        """
+            Show infobar
+            @param path as Gtk.TreePath
+        """
         iterator = self._model.get_iter(path)
         self._deleted_path = path
         self._infobar_label.set_text(_("Remove \"%s\"?") %
                                      self._model.get_value(iterator, 1))
         self._infobar.show()
 
-    """
-        Hide infobar
-        @param widget as Gtk.Infobar
-        @param reponse id as int
-    """
     def _on_response(self, infobar, response_id):
+        """
+            Hide infobar
+            @param widget as Gtk.Infobar
+            @param reponse id as int
+        """
         if response_id == Gtk.ResponseType.CLOSE:
             self._infobar.hide()
             self._view.grab_focus()
             self._view.get_selection().unselect_all()
 
-    """
-        Delete playlist
-        @param TreeView, TreePath, TreeViewColumn
-    """
     def _on_row_activated(self, view, path, column):
+        """
+            Delete playlist
+            @param TreeView, TreePath, TreeViewColumn
+        """
         iterator = self._model.get_iter(path)
         if iterator:
             if column.get_title() == "delete":
                 self._show_infobar(path)
 
-    """
-        Delete playlist after confirmation
-        @param button as Gtk.Button
-    """
     def _on_delete_confirm(self, button):
+        """
+            Delete playlist after confirmation
+            @param button as Gtk.Button
+        """
         if self._deleted_path:
             iterator = self._model.get_iter(self._deleted_path)
             Lp.playlists.delete(self._model.get_value(iterator, 1))
@@ -360,33 +365,33 @@ class PlaylistsManagerWidget(Gtk.Bin):
             self._view.grab_focus()
             self._view.get_selection().unselect_all()
 
-    """
-        Delete item if Delete was pressed
-        @param widget unused, Gdk.Event
-    """
     def _on_keyboard_event(self, widget, event):
+        """
+            Delete item if Delete was pressed
+            @param widget unused, Gdk.Event
+        """
         if event.keyval == 65535:
             path, column = self._view.get_cursor()
             self._show_infobar(path)
 
-    """
-        When playlist is activated, add object to playlist
-        @param widget as cell renderer
-        @param path as str representation of Gtk.TreePath
-    """
     def _on_playlist_toggled(self, view, path):
+        """
+            When playlist is activated, add object to playlist
+            @param widget as cell renderer
+            @param path as str representation of Gtk.TreePath
+        """
         iterator = self._model.get_iter(path)
         toggle = not self._model.get_value(iterator, 0)
         name = self._model.get_value(iterator, 1)
         self._model.set_value(iterator, 0, toggle)
         self._set_current_object(name, toggle)
 
-    """
-        Add/Remove current object to playlist
-        @param playlist name as str
-        @param add as bool
-    """
     def _set_current_object(self, name, add):
+        """
+            Add/Remove current object to playlist
+            @param playlist name as str
+            @param add as bool
+        """
         # No current object
         if self._object_id == -1:
             return
@@ -402,13 +407,13 @@ class PlaylistsManagerWidget(Gtk.Bin):
         else:
             Lp.playlists.remove_tracks(name, tracks_path)
 
-    """
-        When playlist is edited, rename playlist
-        @param widget as cell renderer
-        @param path as str representation of Gtk.TreePath
-        @param name as str
-    """
     def _on_playlist_edited(self, widget, path, name):
+        """
+            When playlist is edited, rename playlist
+            @param widget as cell renderer
+            @param path as str representation of Gtk.TreePath
+            @param name as str
+        """
         if name.find("/") != -1:
             return
         iterator = self._model.get_iter(path)
@@ -417,31 +422,33 @@ class PlaylistsManagerWidget(Gtk.Bin):
         self._model.append([True, name, 'user-trash-symbolic'])
         Lp.playlists.rename(name, old_name)
 
-    """
-        Disable global shortcuts
-        @param widget as cell renderer
-        @param editable as Gtk.CellEditable
-        @param path as str representation of Gtk.TreePath
-    """
     def _on_playlist_editing_start(self, widget, editable, path):
+        """
+            Disable global shortcuts
+            @param widget as cell renderer
+            @param editable as Gtk.CellEditable
+            @param path as str representation of Gtk.TreePath
+        """
         Lp.window.enable_global_shorcuts(False)
 
-    """
-        Enable global shortcuts
-        @param widget as cell renderer
-    """
     def _on_playlist_editing_cancel(self, widget):
+        """
+            Enable global shortcuts
+            @param widget as cell renderer
+        """
         Lp.window.enable_global_shorcuts(True)
 
 
-# Dialog for edit a playlist
 class PlaylistEditWidget(Gtk.Bin):
+    """
+        Widget playlists editor
+    """
 
-    """
-        Init Popover ui with a text entry and a scrolled treeview
-        @param playlist name as str
-    """
     def __init__(self, playlist_name):
+        """
+            Init widget
+            @param playlist name as str
+        """
         Gtk.Bin.__init__(self)
         self._playlist_name = playlist_name
         self._save_on_disk = True
@@ -485,36 +492,36 @@ class PlaylistEditWidget(Gtk.Bin):
 
         self.add(builder.get_object('widget'))
 
-    """
-        populate view if needed
-    """
     def populate(self):
+        """
+            populate view if needed
+        """
         if len(self._model) == 0:
             start_new_thread(self._append_tracks, ())
 
 #######################
 # PRIVATE             #
 #######################
-    """
-        Unselect all in view
-    """
     def _unselectall(self):
+        """
+            Unselect all in view
+        """
         self._view.get_selection().unselect_all()
         self._view.grab_focus()
 
-    """
-        Append tracks, thread safe
-    """
     def _append_tracks(self):
+        """
+            Append tracks, thread safe
+        """
         sql = Lp.db.get_cursor()
         tracks = Lp.playlists.get_tracks_id(self._playlist_name, sql)
         GLib.idle_add(self._append_track, tracks)
 
-    """
-        Append track while tracks not empty
-        @param tracks as [track_id as int]
-    """
     def _append_track(self, tracks):
+        """
+            Append track while tracks not empty
+            @param tracks as [track_id as int]
+        """
         if tracks:
             track_id = tracks.pop(0)
             filepath = Lp.tracks.get_path(track_id)
@@ -541,21 +548,21 @@ class PlaylistEditWidget(Gtk.Bin):
             self._view.grab_focus()
             self._in_thread = False
 
-    """
-        Update playlist on disk
-    """
     def _update_on_disk(self):
+        """
+            Update playlist on disk
+        """
         tracks_path = []
         for item in self._model:
             tracks_path.append(item[3])
         if tracks_path != self._tracks_orig:
             Lp.playlists.set_tracks(self._playlist_name, tracks_path)
 
-    """
-        Show infobar
-        @param path as Gtk.TreePath
-    """
     def _show_infobar(self, path):
+        """
+            Show infobar
+            @param path as Gtk.TreePath
+        """
         iterator = self._model.get_iter(path)
         self._infobar_label.set_markup(_("Remove \"%s\"?") %
                                        self._model.get_value(iterator,
@@ -563,31 +570,31 @@ class PlaylistEditWidget(Gtk.Bin):
                                                                         ' - '))
         self._infobar.show()
 
-    """
-        Delete item if Delete was pressed
-        @param widget unused, Gdk.Event
-    """
     def _on_keyboard_event(self, widget, event):
+        """
+            Delete item if Delete was pressed
+            @param widget unused, Gdk.Event
+        """
         if event.keyval == 65535:
             path, column = self._view.get_cursor()
             self._show_infobar(path)
 
-    """
-        Hide infobar
-        @param widget as Gtk.Infobar
-        @param reponse id as int
-    """
     def _on_response(self, infobar, response_id):
+        """
+            Hide infobar
+            @param widget as Gtk.Infobar
+            @param reponse id as int
+        """
         if response_id == Gtk.ResponseType.CLOSE:
             self._infobar.hide()
             self._view.grab_focus()
             self._view.get_selection().unselect_all()
 
-    """
-        Delete playlist
-        @param TreeView, TreePath, TreeViewColumn
-    """
     def _on_row_activated(self, view, path, column):
+        """
+            Delete playlist
+            @param TreeView, TreePath, TreeViewColumn
+        """
         iterator = self._model.get_iter(path)
         if iterator:
             if column.get_title() == "delete":
@@ -595,30 +602,30 @@ class PlaylistEditWidget(Gtk.Bin):
             else:
                 self._infobar.hide()
 
-    """
-        On selection changed, show infobar
-        @param selection as Gtk.TreeSelection
-    """
     def _on_selection_changed(self, selection):
+        """
+            On selection changed, show infobar
+            @param selection as Gtk.TreeSelection
+        """
         count = selection.count_selected_rows()
         if count > 1:
             self._infobar_label.set_markup(_("Remove these tracks?"))
             self._infobar.show()
 
-    """
-        Only catch drag & drop successful
-        @param path as Gtk.TreePath
-        @param data as unused
-    """
     def _on_row_deleted(self, path, data):
+        """
+            Only catch drag & drop successful
+            @param path as Gtk.TreePath
+            @param data as unused
+        """
         if self._save_on_disk:
             self._update_on_disk()
 
-    """
-        Delete tracks after confirmation
-        @param button as Gtk.Button
-    """
     def _on_delete_confirm(self, button):
+        """
+            Delete tracks after confirmation
+            @param button as Gtk.Button
+        """
         self._save_on_disk = False
         selection = self._view.get_selection()
         selected = selection.get_selected_rows()

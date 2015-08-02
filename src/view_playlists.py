@@ -20,20 +20,23 @@ from lollypop.widgets_playlist import PlaylistsManagerWidget
 from lollypop.define import Lp, Type
 
 
-# Playlist view is a vertical grid with album's covers
-class PlaylistsView(View):
+class PlaylistView(View):
     """
-        Init PlaylistsView ui with a scrolled grid of PlaylistWidgets
-        @parma playlist id as int
-        @param playlist name as str
+        Show playlist tracks
     """
+
     def __init__(self, playlist_id, playlist_name, parent):
+        """
+            Init PlaylistView
+            @parma playlist id as int
+            @param playlist name as str
+        """
         View.__init__(self)
         self._playlist_name = playlist_name
         self._signal_id = None
 
         builder = Gtk.Builder()
-        builder.add_from_resource('/org/gnome/Lollypop/PlaylistsView.ui')
+        builder.add_from_resource('/org/gnome/Lollypop/PlaylistView.ui')
         builder.get_object('title').set_label(playlist_name)
         builder.connect_signals(self)
 
@@ -52,99 +55,103 @@ class PlaylistsView(View):
         self._scrolledWindow.set_property('expand', True)
         self.add(self._scrolledWindow)
 
-    """
-        Populate view with tracks from playlist
-        Thread safe
-    """
     def populate(self):
+        """
+            Populate view with tracks from playlist
+            Thread safe
+        """
         sql = Lp.db.get_cursor()
         tracks = Lp.playlists.get_tracks_id(self._playlist_name, sql)
         mid_tracks = int(0.5+len(tracks)/2)
-        self._playlist_widget.populate_list_one(tracks[:mid_tracks],
+        self._playlist_widget.populate_list_left(tracks[:mid_tracks],
                                                 1)
-        self._playlist_widget.populate_list_two(tracks[mid_tracks:],
+        self._playlist_widget.populate_list_right(tracks[mid_tracks:],
                                                 mid_tracks + 1)
         sql.close()
 
-    """
-        Populate view with tracks
-        @param tracks as [int]
-    """
     def populate_tracks(self, tracks):
+        """
+            Populate view with tracks
+            @param tracks as [int]
+        """
         mid_tracks = int(0.5+len(tracks)/2)
-        self._playlist_widget.populate_list_one(tracks[:mid_tracks],
+        self._playlist_widget.populate_list_left(tracks[:mid_tracks],
                                                 1)
-        self._playlist_widget.populate_list_two(tracks[mid_tracks:],
+        self._playlist_widget.populate_list_right(tracks[mid_tracks:],
                                                 mid_tracks + 1)
 
-    """
-        Return playlist name
-        @return name as str
-    """
     def get_name(self):
+        """
+            Return playlist name
+            @return name as str
+        """
         return self._playlist_name
 
-    """
-        Do show, connect signals
-    """
     def do_show(self):
+        """
+            Do show, connect signals
+        """
         self._signal_id = Lp.playlists.connect('playlist-changed',
                                                self._update_view)
         View.do_show(self)
 
-    """
-        Do hide, disconnect signals
-    """
     def do_hide(self):
+        """
+            Do hide, disconnect signals
+        """
         if self._signal_id:
             Lp.playlists.disconnect(self._signal_id)
             self._signal_id = None
         View.do_hide(self)
 
-    """
-        Stop populating
-    """
     def stop(self):
+        """
+            Stop populating
+        """
         self._playlist_widget.stop()
 
 #######################
 # PRIVATE             #
 #######################
-    """
-        Update tracks widgets
-        @param manager as PlaylistsManager
-        @param playlist name as str
-    """
     def _update_view(self, manager, playlist_name):
+        """
+            Update tracks widgets
+            @param manager as PlaylistsManager
+            @param playlist name as str
+        """
         if playlist_name == self._playlist_name:
             self._playlist_widget.clear()
             start_new_thread(self.populate, ())
 
-    """
-        Edit playlist
-        @param button as Gtk.Button
-        @param playlist name as str
-    """
     def _on_edit_btn_clicked(self, button):
+        """
+            Edit playlist
+            @param button as Gtk.Button
+            @param playlist name as str
+        """
         Lp.window.show_playlist_editor(self._playlist_name)
 
-    """
-        Current song changed
-        @param player as Player
-    """
     def _on_current_changed(self, player):
+        """
+            Current song changed
+            @param player as Player
+        """
         self._playlist_widget.update_playing_indicator()
 
 
-# Playlist view used to manage playlists
 class PlaylistsManageView(View):
     """
-         @param object id as int
-         @param genre id as int
-         @param is album as bool
-         @param width as int
+        Playlist view used to manage playlists
     """
+
     def __init__(self, object_id, genre_id, is_album, width):
+        """
+            Init View
+            @param object id as int
+            @param genre id as int
+            @param is album as bool
+            @param width as int
+        """
         View.__init__(self)
         builder = Gtk.Builder()
         builder.add_from_resource(
@@ -163,33 +170,40 @@ class PlaylistsManageView(View):
         self.add(self._scrolledWindow)
 
     def populate(self):
+        """
+            Populate the view
+        """
         self._manage_widget.populate()
 
 #######################
 # PRIVATE             #
 #######################
-    """
-        Add new playlist
-        @param widget as Gtk.Button
-    """
     def _on_new_clicked(self, widget):
+        """
+            Add new playlist
+            @param widget as Gtk.Button
+        """
         self._manage_widget.add_new_playlist()
 
-    """
-        Restore previous view
-        @param button as Gtk.Button
-    """
     def _on_back_btn_clicked(self, button):
+        """
+            Restore previous view
+            @param button as Gtk.Button
+        """
         Lp.window.destroy_current_view()
 
 
-# Playlist view used to edit playlists
 class PlaylistEditView(View):
     """
-         @param playlist name as str
-         @param width as int
+        Playlist view used to edit playlists
     """
+
     def __init__(self, playlist_name, width):
+        """
+            Init view
+            @param playlist name as str
+            @param width as int
+        """
         View.__init__(self)
         builder = Gtk.Builder()
         builder.add_from_resource('/org/gnome/Lollypop/PlaylistEditView.ui')
@@ -205,14 +219,17 @@ class PlaylistEditView(View):
         self.add(self._scrolledWindow)
 
     def populate(self):
+        """
+            Populate view
+        """
         self._edit_widget.populate()
 
 #######################
 # PRIVATE             #
 #######################
-    """
-        Restore previous view
-        @param button as Gtk.Button
-    """
     def _on_back_btn_clicked(self, button):
+        """
+            Restore previous view
+            @param button as Gtk.Button
+        """
         Lp.window.destroy_current_view()

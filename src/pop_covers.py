@@ -18,15 +18,17 @@ from gettext import gettext as _
 from lollypop.define import Lp, ArtSize, GOOGLE_INC, GOOGLE_MAX
 
 
-# Show a popover with album covers from the web
 class CoversPopover(Gtk.Popover):
+    """
+        Popover with album covers from the web
+    """
 
-    """
-        Init Popover ui with a text entry and a scrolled treeview
-        @param artist id as int
-        @param album id as int
-    """
     def __init__(self, artist_id, album_id):
+        """
+            Init Popover
+            @param artist id as int
+            @param album id as int
+        """
         Gtk.Popover.__init__(self)
         self._album_id = album_id
         self._start = 0
@@ -67,10 +69,10 @@ class CoversPopover(Gtk.Popover):
         self._stack.set_visible_child(spinner)
         self.add(widget)
 
-    """
-        Populate view
-    """
     def populate(self):
+        """
+            Populate view
+        """
         # First load local files
         self._urls = Lp.art.get_locally_available_covers(self._album_id)
         for url in self._urls:
@@ -85,27 +87,27 @@ class CoversPopover(Gtk.Popover):
         self._start = 0
         start_new_thread(self._populate, ())
 
-    """
-        Resize popover and set signals callback
-    """
     def do_show(self):
+        """
+            Resize popover and set signals callback
+        """
         self.set_size_request(700, 400)
         Gtk.Popover.do_show(self)
 
-    """
-        Kill thread
-    """
     def do_hide(self):
+        """
+            Kill thread
+        """
         self._thread = False
         Gtk.Popover.do_hide(self)
 
 #######################
 # PRIVATE             #
 #######################
-    """
-        Same as populate()
-    """
     def _populate(self):
+        """
+            Same as populate()
+        """
         self._urls = []
         if Gio.NetworkMonitor.get_default().get_network_available():
             self._urls = Lp.art.get_google_arts(self._search)
@@ -115,11 +117,11 @@ class CoversPopover(Gtk.Popover):
         else:
             GLib.idle_add(self._show_not_found)
 
-    """
-        Add urls to the view
-    """
     # FIXME Do not use recursion
     def _add_pixbufs(self):
+        """
+            Add urls to the view
+        """
         if self._urls:
             url = self._urls.pop()
             stream = None
@@ -138,19 +140,19 @@ class CoversPopover(Gtk.Popover):
         elif self._start < GOOGLE_MAX:
             self._populate()
 
-    """
-        Show not found message
-    """
     def _show_not_found(self):
+        """
+            Show not found message
+        """
         if len(self._view.get_children()) == 0:
             self._label.set_text(_("No cover found..."))
             self._stack.set_visible_child(self._not_found)
 
-    """
-        Add stream to the view
-        @param stream as Gio.MemoryInputStream
-    """
     def _add_stream(self, stream):
+        """
+            Add stream to the view
+            @param stream as Gio.MemoryInputStream
+        """
         try:
             pixbuf = GdkPixbuf.Pixbuf.new_from_stream_at_scale(
                 stream, ArtSize.MONSTER,
@@ -166,11 +168,11 @@ class CoversPopover(Gtk.Popover):
             self._label.set_text(_("Select a cover art for this album"))
             self._stack.set_visible_child(self._scrolled)
 
-    """
-        Add pixbuf to the view
-        @param pixbuf as Gdk.Pixbuf
-    """
     def _add_pixbuf(self, pixbuf):
+        """
+            Add pixbuf to the view
+            @param pixbuf as Gdk.Pixbuf
+        """
         image = Gtk.Image()
         self._orig_pixbufs[image] = pixbuf
         scaled_pixbuf = pixbuf.scale_simple(
@@ -187,11 +189,11 @@ class CoversPopover(Gtk.Popover):
         image.show()
         self._view.add(image)
 
-    """
-        Use pixbuf as cover
-        Reset cache and use player object to announce cover change
-    """
     def _on_activate(self, flowbox, child):
+        """
+            Use pixbuf as cover
+            Reset cache and use player object to announce cover change
+        """
         pixbuf = self._orig_pixbufs[child.get_child()]
         Lp.art.save_album_art(pixbuf, self._album_id)
         Lp.art.clean_album_cache(self._album_id)

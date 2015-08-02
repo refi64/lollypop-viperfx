@@ -16,13 +16,16 @@ from gi.repository import Gst
 from lollypop.define import Lp
 
 
-# replay gain class
 class ReplayGainPlayer:
     """
-        Init replay gain on playbin
-        @param playbin as Gst play bin
+        Replay gain player
     """
+
     def __init__(self, playbin):
+        """
+            Init replay gain on playbin
+            @param playbin as Gst play bin
+        """
         self._rgfilter = Gst.ElementFactory.make("bin", "bin")
 
         self._rg_audioconvert1 = Gst.ElementFactory.make("audioconvert",

@@ -17,11 +17,15 @@ from lollypop.define import Lp
 
 class RatingWidget(Gtk.Bin):
     """
-        Init widget
-        @param object id as int
-        @param is album as bool
+        Rate widget
     """
+
     def __init__(self, object_id, is_album):
+        """
+            Init widget
+            @param object id as int
+            @param is album as bool
+        """
         Gtk.Bin.__init__(self)
         self._object_id = object_id
         self._is_album = is_album
@@ -41,12 +45,12 @@ class RatingWidget(Gtk.Bin):
 #######################
 # PRIVATE             #
 #######################
-    """
-        On enter notify, change star opacity
-        @param widget as Gtk.EventBox
-        @param event as Gdk.Event
-    """
     def _on_enter_notify(self, widget, event):
+        """
+            On enter notify, change star opacity
+            @param widget as Gtk.EventBox
+            @param event as Gdk.Event
+        """
         event_star = widget.get_children()[0]
         # First star is hidden (used to clear score)
         if event_star.get_property("opacity") == 0.0:
@@ -61,12 +65,12 @@ class RatingWidget(Gtk.Bin):
             if star == event_star:
                 found = True
 
-    """
-        On leave notify, change star opacity
-        @param widget as Gtk.EventBox (can be None)
-        @param event as Gdk.Event (can be None)
-    """
     def _on_leave_notify(self, widget, event):
+        """
+            On leave notify, change star opacity
+            @param widget as Gtk.EventBox (can be None)
+            @param event as Gdk.Event (can be None)
+        """
         if self._is_album:
             avg_popularity = Lp.albums.get_avg_popularity()
         else:
@@ -107,12 +111,12 @@ class RatingWidget(Gtk.Bin):
             for i in range(5):
                 self._stars[i].set_property("opacity", 0.2)
 
-    """
-        On button press, set album popularity
-        @param widget as Gtk.EventBox
-        @param event as Gdk.Event
-    """
     def _on_button_press(self, widget, event):
+        """
+            On button press, set album popularity
+            @param widget as Gtk.EventBox
+            @param event as Gdk.Event
+        """
         if Lp.scanner.is_locked():
             return
         event_star = widget.get_children()[0]

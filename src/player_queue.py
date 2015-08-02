@@ -12,92 +12,95 @@
 
 from lollypop.track import Track
 
-
-# Manage a queue
+ 
 class QueuePlayer:
     """
-        Init queue
+        Manage queue
     """
+
     def __init__(self):
+        """
+            Init queue
+        """
         self._queue = []
 
-    """
-        Append track to queue,
-        remove previous track if exist
-        @param track id as int
-    """
     def append_to_queue(self, track_id):
+        """
+            Append track to queue,
+            remove previous track if exist
+            @param track id as int
+        """
         if track_id in self._queue:
             self._queue.remove(track_id)
         self._queue.append(track_id)
         self.set_next()
         self.emit("queue-changed")
 
-    """
-        Prepend track to queue,
-        remove previous track if exist
-        @param track id as int
-    """
     def prepend_to_queue(self, track_id):
+        """
+            Prepend track to queue,
+            remove previous track if exist
+            @param track id as int
+        """
         if track_id in self._queue:
             self._queue.remove(track_id)
         self._queue.insert(0, track_id)
         self.set_next()
         self.emit("queue-changed")
 
-    """
-        Remove track from queue
-        @param track id as int
-    """
     def del_from_queue(self, track_id):
+        """
+            Remove track from queue
+            @param track id as int
+        """
         if track_id in self._queue:
             self._queue.remove(track_id)
             self.set_next()
             self.emit("queue-changed")
 
-    """
-        Set queue
-        @param [ids as int]
-    """
     def set_queue(self, new_queue):
+        """
+            Set queue
+            @param [ids as int]
+        """
         self._queue = new_queue
         self.set_next()
         self.emit("queue-changed")
 
-    """
-        Return queue
-        @return [ids as int]
-    """
     def get_queue(self):
+        """
+            Return queue
+            @return [ids as int]
+        """
         if self._queue:
             return self._queue
         else:
             return []
 
-    """
-        True if track_id exist in queue
-        @param track id as int
-        @return bool
-    """
     def is_in_queue(self, track_id):
+        """
+            True if track_id exist in queue
+            @param track id as int
+            @return bool
+        """
         if self._queue:
             return track_id in self._queue
         else:
             return False
 
-    """
-        Return track position in queue
-        @param track id as int
-        @return position as int
-    """
     def get_track_position(self, track_id):
+        """
+            Return track position in queue
+            @param track id as int
+            @return position as int
+        """
         return self._queue.index(track_id)+1
 
-    """
-        Get next track id
-        @return Track
-    """
     def next(self):
+        """
+            Get next track id
+            @return Track
+        """
         track_id = None
         if self._queue:
             track_id = self._queue[0]

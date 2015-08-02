@@ -23,27 +23,30 @@ from _thread import start_new_thread
 from lollypop.define import Lp, Type, SecretSchema, SecretAttributes
 
 
-# Lollypop settings
 class Settings(Gio.Settings):
     """
-        Init settings
+        Lollypop settings
     """
+
     def __init__(self):
+        """
+            Init settings
+        """
         Gio.Settings.__init__(self)
 
-    """
-        Return a new Settings object
-    """
     def new():
+        """
+            Return a new Settings object
+        """
         settings = Gio.Settings.new('org.gnome.Lollypop')
         settings.__class__ = Settings
         return settings
 
-    """
-        Return music paths
-        @return [str]
-    """
     def get_music_paths(self):
+        """
+            Return music paths
+            @return [str]
+        """
         paths = self.get_value('music-path')
         if not paths:
             if GLib.get_user_special_dir(GLib.UserDirectory.DIRECTORY_MUSIC):
@@ -55,11 +58,15 @@ class Settings(Gio.Settings):
         return paths
 
 
-# Dialog showing lollypop options
 class SettingsDialog:
+    """
+        Dialog showing lollypop options
+    """
 
     def __init__(self):
-
+        """
+            Init dialog
+        """
         self._choosers = []
 
         builder = Gtk.Builder()
@@ -175,21 +182,20 @@ class SettingsDialog:
             self._login.set_text(
                 Lp.settings.get_value('lastfm-login').get_string())
 
-    """
-        Show dialog
-    """
     def show(self):
+        """
+            Show dialog
+        """
         self._settings_dialog.show()
 
 #######################
 # PRIVATE             #
 #######################
-
-    """
-        Add a new chooser widget
-        @param directory path as string
-    """
     def _add_chooser(self, directory=None):
+        """
+            Add a new chooser widget
+            @param directory path as string
+        """
         chooser = ChooserWidget()
         image = Gtk.Image.new_from_icon_name("list-remove-symbolic",
                                              Gtk.IconSize.MENU)
@@ -198,72 +204,74 @@ class SettingsDialog:
             chooser.set_dir(directory)
         self._chooser_box.add(chooser)
 
-    """
-        Update view setting
-        @param widget as unused, state as widget state
-    """
     def _update_ui_setting(self, widget, state):
+        """
+            Update view setting
+            @param widget as unused, state as widget state
+        """
         Lp.settings.set_value('dark-ui', GLib.Variant('b', state))
         if not Lp.player.is_party():
             settings = Gtk.Settings.get_default()
             settings.set_property("gtk-application-prefer-dark-theme", state)
             Lp.window.update_view()
 
-    """
-        Update scan setting
-        @param widget as unused, state as widget state
-    """
     def _update_scan_setting(self, widget, state):
+        """
+            Update scan setting
+            @param widget as unused, state as widget state
+        """
         Lp.settings.set_value('auto-update',
                               GLib.Variant('b', state))
 
-    """
-        Update background mode setting
-        @param widget as unused, state as widget state
-    """
+
     def _update_background_setting(self, widget, state):
+        """
+            Update background mode setting
+            @param widget as unused, state as widget state
+        """
         Lp.settings.set_value('background-mode',
                               GLib.Variant('b', state))
 
-    """
-        Update save state setting
-        @param widget as unused, state as widget state
-    """
     def _update_state_setting(self, widget, state):
+        """
+            Update save state setting
+            @param widget as unused, state as widget state
+        """
         Lp.settings.set_value('save-state',
                               GLib.Variant('b', state))
-    """
-        Update show genre setting
-        @param widget as unused, state as widget state
-    """
+
     def _update_genres_setting(self, widget, state):
+        """
+            Update show genre setting
+            @param widget as unused, state as widget state
+        """
         Lp.window.show_genres(state)
         Lp.settings.set_value('show-genres',
                               GLib.Variant('b', state))
 
-    """
-        Update auto play setting
-        @param widget as unused, state as widget state
-    """
     def _update_autoplay_setting(self, widget, state):
+        """
+            Update auto play setting
+            @param widget as unused, state as widget state
+        """
         Lp.settings.set_value('auto-play',
                               GLib.Variant('b', state))
         Lp.window.update_view()
 
-    """
-        Update compilations setting
-        @param widget as unused, state as widget state
-    """
     def _update_compilations_setting(self, widget, state):
+        """
+            Update compilations setting
+            @param widget as unused, state as widget state
+        """
         Lp.settings.set_value('show-compilations',
                               GLib.Variant('b', state))
         Lp.window.update_view()
 
-    """
-        Update lastfm settings
-        @param sync as bool
-    """
     def _update_lastfm_settings(self, sync=False):
+        """
+            Update lastfm settings
+            @param sync as bool
+        """
         if Lp.lastfm is not None and Secret is not None:
             schema = Secret.Schema.new("org.gnome.Lollypop",
                                        Secret.SchemaFlags.NONE,
@@ -281,11 +289,11 @@ class SettingsDialog:
             else:
                 Lp.lastfm.connect(self._password.get_text())
 
-    """
-        Close edit party dialog
-        @param widget as Gtk.Window
-    """
     def _edit_settings_close(self, widget):
+        """
+            Close edit party dialog
+            @param widget as Gtk.Window
+        """
         # Music path
         paths = []
         main_path = self._main_chooser.get_dir()
@@ -315,11 +323,11 @@ class SettingsDialog:
         if set(previous) != set(paths):
             Lp.window.update_db()
 
-    """
-        Update party ids when use change a switch in dialog
-        @param widget as unused, state as widget state, genre id as int
-    """
     def _party_switch_state(self, widget, state, genre_id):
+        """
+            Update party ids when use change a switch in dialog
+            @param widget as unused, state as widget state, genre id as int
+        """
         ids = Lp.player.get_party_ids()
         if state:
             try:
@@ -333,11 +341,11 @@ class SettingsDialog:
                 pass
         Lp.settings.set_value('party-ids',  GLib.Variant('ai', ids))
 
-    """
-        Test lastfm connection
-        @param button as Gtk.Button
-    """
     def _on_test_btn_clicked(self, button):
+        """
+            Test lastfm connection
+            @param button as Gtk.Button
+        """
         self._update_lastfm_settings(True)
         if not Gio.NetworkMonitor.get_default().get_network_available():
             self._test_img.set_from_icon_name('computer-fail-symbolic',
@@ -345,11 +353,11 @@ class SettingsDialog:
             return
         start_new_thread(self._test_lastfm_connection, ())
 
-    """
-        Test lastfm connection
-        @thread safe
-    """
     def _test_lastfm_connection(self):
+        """
+            Test lastfm connection
+            @thread safe
+        """
         try:
             u = Lp.lastfm.get_authenticated_user()
             u.get_id()
@@ -361,12 +369,12 @@ class SettingsDialog:
                           'computer-fail-symbolic',
                           Gtk.IconSize.MENU)
 
-    """
-        Set password entry
-        @param source as GObject.Object
-        @param result Gio.AsyncResult
-    """
     def _on_password_lookup(self, source, result):
+        """
+            Set password entry
+            @param source as GObject.Object
+            @param result Gio.AsyncResult
+        """
         password = None
         if result is not None:
             password = Secret.password_lookup_finish(result)
@@ -374,9 +382,15 @@ class SettingsDialog:
             self._password.set_text(password)
 
 
-# Widget used to let user select a collection folder
 class ChooserWidget(Gtk.Grid):
+    """
+        Widget used to let user select a collection folder
+    """
+
     def __init__(self):
+        """
+            Init widget
+        """
         Gtk.Grid.__init__(self)
         self._action = None
         self.set_property("orientation", Gtk.Orientation.HORIZONTAL)
@@ -393,33 +407,33 @@ class ChooserWidget(Gtk.Grid):
         self._action_btn.connect("clicked", self._do_action)
         self.show()
 
-    """
-        Set current selected path for chooser
-        @param directory path as string
-    """
     def set_dir(self, path):
+        """
+            Set current selected path for chooser
+            @param directory path as string
+        """
         if path:
             self._chooser_btn.set_uri("file://"+path)
 
-    """
-        Set image for action button
-        @param Gtk.Image
-    """
     def set_icon(self, image):
+        """
+            Set image for action button
+            @param Gtk.Image
+        """
         self._action_btn.set_image(image)
 
-    """
-        Set action callback for button clicked signal
-        @param func
-    """
     def set_action(self, action):
+        """
+            Set action callback for button clicked signal
+            @param func
+        """
         self._action = action
 
-    """
-        Return select directory path
-        @return path as string
-    """
     def get_dir(self):
+        """
+            Return select directory path
+            @return path as string
+        """
         path = None
         uri = self._chooser_btn.get_uri()
         if uri is not None:
@@ -432,10 +446,10 @@ class ChooserWidget(Gtk.Grid):
 #######################
 # PRIVATE             #
 #######################
-    """
-        If action defined, execute, else, remove widget
-    """
     def _do_action(self, widget):
+        """
+            If action defined, execute, else, remove widget
+        """
         if self._action:
             self._action()
         else:

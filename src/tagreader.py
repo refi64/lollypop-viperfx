@@ -20,47 +20,53 @@ from lollypop.define import Lp, Type
 from lollypop.utils import format_artist_name
 
 
-# Tag reader class
 class TagReader:
     """
-        Init tag reader
+        Read tags from file
     """
+
     def __init__(self):
+        """
+            Init tag reader
+        """
         self.init_discover()
 
-    """
-        Init discover
-    """
     def init_discover(self):
+        """
+            Init discover
+        """
         GstPbutils.pb_utils_init()
         self._tagreader = GstPbutils.Discoverer.new(10*Gst.SECOND)
 
-    """
-        Return informations on file at path
-        @param path as str
-        @return GstPbutils.DiscovererInfo
-    """
     def get_infos(self, path):
+        """
+            Return informations on file at path
+            @param path as str
+            @return GstPbutils.DiscovererInfo
+        """
         uri = GLib.filename_to_uri(path)
         infos = self._tagreader.discover_uri(uri)
         return infos
 
 
-# Scanner tag reader class
 class ScannerTagReader(TagReader):
     """
-        Init tag reader
+        Scanner tag reader
     """
+
     def __init__(self):
+        """
+            Init tag reader
+        """
         TagReader.__init__(self)
 
-    """
-        Return title for tags
-        @param tags as Gst.TagList
-        @param filepath as string
-        @return title as string
-    """
     def get_title(self, tags, filepath):
+        """
+            Return title for tags
+            @param tags as Gst.TagList
+            @param filepath as string
+            @return title as string
+        """
         exist = False
         if tags is not None:
             (exist, title) = tags.get_string_index('title', 0)
@@ -68,12 +74,12 @@ class ScannerTagReader(TagReader):
             title = os.path.basename(filepath)
         return title
 
-    """
-        Return artists for tags
-        @param tags as Gst.TagList
-        @return string like "artist1;artist2;..."
-    """
     def get_artists(self, tags):
+        """
+            Return artists for tags
+            @param tags as Gst.TagList
+            @return string like "artist1;artist2;..."
+        """
         if tags is None:
             return _("Unknown")
         else:
@@ -87,12 +93,12 @@ class ScannerTagReader(TagReader):
                 artists += ";"
         return artists
 
-    """
-        Return album artist for tags
-        @param tags as Gst.TagList
-        @return album artist as string or None
-    """
     def get_album_artist(self, tags):
+        """
+            Return album artist for tags
+            @param tags as Gst.TagList
+            @return album artist as string or None
+        """
         if tags is None:
             return _("Unknown")
         else:
@@ -106,12 +112,12 @@ class ScannerTagReader(TagReader):
                 album_artist += ", "
         return album_artist
 
-    """
-        Return album for tags
-        @param tags as Gst.TagList
-        @return album name as string
-    """
     def get_album_name(self, tags):
+        """
+            Return album for tags
+            @param tags as Gst.TagList
+            @return album name as string
+        """
         exist = False
         if tags is not None:
             (exist, album_name) = tags.get_string_index('album', 0)
@@ -122,12 +128,12 @@ class ScannerTagReader(TagReader):
             album_name = album_artist+" - "+_("Unknown")
         return album_name
 
-    """
-        Return genres for tags
-        @param tags as Gst.TagList
-        @return string like "genre1;genre2;..."
-    """
     def get_genres(self, tags):
+        """
+            Return genres for tags
+            @param tags as Gst.TagList
+            @return string like "genre1;genre2;..."
+        """
         genres = ""
         if tags is None:
             return genres
@@ -143,12 +149,12 @@ class ScannerTagReader(TagReader):
                     genres += ";"
         return genres
 
-    """
-        Return disc number for tags
-        @param tags as Gst.TagList
-        @return disc number as int
-    """
     def get_discnumber(self, tags):
+        """
+            Return disc number for tags
+            @param tags as Gst.TagList
+            @return disc number as int
+        """
         exist = False
         if tags is not None:
             (exist, discnumber) = tags.get_uint_index('album-disc-number', 0)
@@ -156,12 +162,12 @@ class ScannerTagReader(TagReader):
             discnumber = 0
         return discnumber
 
-    """
-        Return track number for tags
-        @param tags as Gst.TagList
-        @return track number as int
-    """
     def get_tracknumber(self, tags):
+        """
+            Return track number for tags
+            @param tags as Gst.TagList
+            @return track number as int
+        """
         exist = False
         if tags is not None:
             (exist, tracknumber) = tags.get_uint_index('track-number', 0)
@@ -169,12 +175,12 @@ class ScannerTagReader(TagReader):
             tracknumber = 0
         return tracknumber
 
-    """
-        Return track year for tags
-        @param tags as Gst.TagList
-        @return track year as int or None
-    """
     def get_year(self, tags):
+        """
+            Return track year for tags
+            @param tags as Gst.TagList
+            @return track year as int or None
+        """
         exist = False
         if tags is not None:
             (exist, datetime) = tags.get_date_time('datetime')
@@ -184,15 +190,15 @@ class ScannerTagReader(TagReader):
             year = None
         return year
 
-    """
-        Add artists to db
-        @param artists as [string]
-        @param album artist as string
-        @param sql as sqlite cursor
-        @commit needed
-        @param return ([artist ids as int], [new artist ids as int])
-    """
     def add_artists(self, artists, album_artist, sql):
+        """
+            Add artists to db
+            @param artists as [string]
+            @param album artist as string
+            @param sql as sqlite cursor
+            @commit needed
+            @param return ([artist ids as int], [new artist ids as int])
+        """
         new_artist_ids = []
         # Get all artist ids
         artist_ids = []
@@ -208,14 +214,14 @@ class ScannerTagReader(TagReader):
             artist_ids.append(artist_id)
         return (artist_ids, new_artist_ids)
 
-    """
-        Add album artist to db
-        @param album_artist as string
-        @param sql as sqlite cursor
-        @param return ([album artist ids as int], [new as bool])
-        @commit needed
-    """
     def add_album_artist(self, album_artist, sql):
+        """
+            Add album artist to db
+            @param album_artist as string
+            @param sql as sqlite cursor
+            @param return ([album artist ids as int], [new as bool])
+            @commit needed
+        """
         album_artist_id = None
         new = False
         if album_artist:
@@ -228,14 +234,14 @@ class ScannerTagReader(TagReader):
                 new = True
         return (album_artist_id, new)
 
-    """
-        Add genres to db
-        @param genres as [string]
-        @param sql as sqlite cursor
-        @param return ([genre_ids], [new_genre_ids])
-        @commit needed
-    """
     def add_genres(self, genres, album_id, sql):
+        """
+            Add genres to db
+            @param genres as [string]
+            @param sql as sqlite cursor
+            @param return ([genre_ids], [new_genre_ids])
+            @commit needed
+        """
         # Get all genre ids
         genre_ids = []
         new_genre_ids = []
@@ -252,18 +258,18 @@ class ScannerTagReader(TagReader):
             Lp.albums.add_genre(album_id, genre_id, sql)
         return (genre_ids, new_genre_ids)
 
-    """
-        Add album to db
-        @param album name as string
-        @param album artist id as int
-        @param no album artist as bool
-        @param path to an album track as string
-        @param sql as sqlite cursor
-        @return (album id as int, new as bool)
-        @commit needed
-    """
     def add_album(self, album_name, artist_id, noaartist,
                   filepath, sql):
+        """
+            Add album to db
+            @param album name as string
+            @param album artist id as int
+            @param no album artist as bool
+            @param path to an album track as string
+            @param sql as sqlite cursor
+            @return (album id as int, new as bool)
+            @commit needed
+        """
         path = os.path.dirname(filepath)
 
         if noaartist:
@@ -300,25 +306,25 @@ class ScannerTagReader(TagReader):
                                         sql)
         return album_id
 
-    """
-        Update album year
-        @param album id as int
-        @param sql as sqlite cursor
-        @commit needed
-    """
     def update_year(self, album_id, sql):
+        """
+            Update album year
+            @param album id as int
+            @param sql as sqlite cursor
+            @commit needed
+        """
         year = Lp.albums.get_year_from_tracks(album_id, sql)
         Lp.albums.set_year(album_id, year, sql)
 
-    """
-        Set track artists/genres
-        @param track id as int
-        @param artist ids as [int]
-        @param genre ids as [int]
-        @param sql as sqlite cursor
-        @commit needed
-    """
     def update_track(self, track_id, artist_ids, genre_ids, sql):
+        """
+            Set track artists/genres
+            @param track id as int
+            @param artist ids as [int]
+            @param genre ids as [int]
+            @param sql as sqlite cursor
+            @commit needed
+        """
         # Set artists/genres for track
         for artist_id in artist_ids:
             Lp.tracks.add_artist(track_id, artist_id, sql)

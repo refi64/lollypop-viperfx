@@ -20,13 +20,16 @@ from lollypop.define import Lp, ArtSize
 from lollypop.art import Art
 
 
-# Tunein popup
 class TuneinPopover(Gtk.Popover):
     """
-        Init Popover
-        @param radio manager as RadioManager
+        Popover showing tunin radios
     """
+
     def __init__(self, radio_manager):
+        """
+            Init Popover
+            @param radio manager as RadioManager
+        """
         Gtk.Popover.__init__(self)
         self._tunein = TuneIn()
         self._radio_manager = radio_manager
@@ -67,11 +70,11 @@ class TuneinPopover(Gtk.Popover):
         self._stack.set_visible_child(self._spinner)
         self.add(widget)
 
-    """
-        Populate views
-        @param url as string
-    """
     def populate(self, url=None):
+        """
+            Populate views
+            @param url as string
+        """
         if not self._view.get_children():
             self._current_url = url
             self._clear()
@@ -80,33 +83,34 @@ class TuneinPopover(Gtk.Popover):
             self._label.set_text(_("Please wait..."))
             start_new_thread(self._populate, (url,))
 
-    """
-        Resize popover and set signals callback
-    """
     def do_show(self):
+        """
+            Resize popover and set signals callback
+        """
         size_setting = Lp.settings.get_value('window-size')
         if isinstance(size_setting[1], int):
             self.set_size_request(700, size_setting[1]*0.7)
         else:
             self.set_size_request(700, 400)
         Gtk.Popover.do_show(self)
+
 #######################
 # PRIVATE             #
 #######################
-    """
-        Show not found message
-    """
     def _show_not_found(self):
+        """
+            Show not found message
+        """
         self._label.set_text(_("Can't connect to TuneIn..."))
         self._stack.set_visible_child(self._not_found)
         self._home_btn.set_sensitive(True)
 
-    """
-        Same as populate()
-        @param url as string
-        @thread safe
-    """
     def _populate(self, url):
+        """
+            Same as populate()
+            @param url as string
+            @thread safe
+        """
         if url is None:
             self._current_items = self._tunein.get_items()
         else:
@@ -117,19 +121,19 @@ class TuneinPopover(Gtk.Popover):
         else:
             GLib.idle_add(self._show_not_found)
 
-    """
-        Add current items
-        @thread safe
-    """
     def _add_items(self):
+        """
+            Add current items
+            @thread safe
+        """
         for item in self._current_items:
             GLib.idle_add(self._add_item, item)
 
-    """
-        Add item
-        @param item as TuneItem
-    """
     def _add_item(self, item):
+        """
+            Add item
+            @param item as TuneItem
+        """
         child = Gtk.Grid()
         child.set_property('halign', Gtk.Align.START)
         child.show()
@@ -158,19 +162,19 @@ class TuneinPopover(Gtk.Popover):
                 self._back_btn.set_sensitive(True)
             self._home_btn.set_sensitive(True)
 
-    """
-        Clear view
-    """
     def _clear(self):
+        """
+            Clear view
+        """
         for child in self._view.get_children():
             self._view.remove(child)
             child.destroy()
 
-    """
-        Add selected radio
-        @param item as TuneIn Item
-    """
     def _add_radio(self, item):
+        """
+            Add selected radio
+            @param item as TuneIn Item
+        """
         # Get cover art
         try:
             cache = Art._RADIOS_PATH
@@ -193,11 +197,11 @@ class TuneinPopover(Gtk.Popover):
         self._radio_manager.add_track(item.TEXT.replace('/', '-'),
                                       url)
 
-    """
-        Go to previous URL
-        @param btn as Gtk.Button
-    """
     def _on_back_btn_clicked(self, btn):
+        """
+            Go to previous URL
+            @param btn as Gtk.Button
+        """
         url = None
         self._current_url = None
         if self._previous_urls:
@@ -206,23 +210,23 @@ class TuneinPopover(Gtk.Popover):
         self._clear()
         self.populate(url)
 
-    """
-        Go to root URL
-        @param btn as Gtk.Button
-    """
     def _on_home_btn_clicked(self, btn):
+        """
+            Go to root URL
+            @param btn as Gtk.Button
+        """
         self._current_url = None
         self._previous_urls = []
         self._stack.set_visible_child(self._spinner)
         self._clear()
         self.populate()
 
-    """
-        Update header with new link
-        @param link as Gtk.LinkButton
-        @param item as TuneIn Item
-    """
     def _on_activate_link(self, link, item):
+        """
+            Update header with new link
+            @param link as Gtk.LinkButton
+            @param item as TuneIn Item
+        """
         if item.TYPE == "link":
             self._stack.set_visible_child(self._spinner)
             self._clear()
@@ -241,11 +245,11 @@ class TuneinPopover(Gtk.Popover):
                                                             ArtSize.SMALL))
         return True
 
-    """
-        Play the radio
-        @param link as Gtk.Button
-        @param item as TuneIn Item
-    """
     def _on_button_clicked(self, button, item):
+        """
+            Play the radio
+            @param link as Gtk.Button
+            @param item as TuneIn Item
+        """
         start_new_thread(self._add_radio, (item,))
         self.hide()

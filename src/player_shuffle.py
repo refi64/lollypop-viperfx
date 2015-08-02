@@ -18,22 +18,26 @@ from lollypop.track import Track
 from lollypop.list import LinkedList
 
 
-# Manage shuffle tracks and party mode
 class ShufflePlayer(BasePlayer):
     """
-        Init shuffle player
+        Shuffle player
+        Manage shuffle tracks and party mode
     """
+
     def __init__(self):
+        """
+            Init shuffle player
+        """
         BasePlayer.__init__(self)
         self.reset_history()
         # Party mode
         self._is_party = False
         Lp.settings.connect('changed::shuffle', self._set_shuffle)
 
-    """
-        Reset history
-    """
     def reset_history(self):
+        """
+            Reset history
+        """
         # Tracks already played
         self._history = None
         # Used by shuffle albums to restore playlist before shuffle
@@ -45,11 +49,11 @@ class ShufflePlayer(BasePlayer):
         # Reset use playlist
         self._user_playlist = None
 
-    """
-        Next shuffle track
-        @return Track
-    """
     def next(self):
+        """
+            Next shuffle track
+            @return Track
+        """
         track_id = None
         if self._shuffle in [Shuffle.TRACKS, Shuffle.TRACKS_ARTIST] or\
                 self._is_party:
@@ -60,11 +64,11 @@ class ShufflePlayer(BasePlayer):
                 track_id = self._shuffle_next()
         return Track(track_id)
 
-    """
-        Prev track based on history
-        @return Track
-    """
     def prev(self):
+        """
+            Prev track based on history
+            @return Track
+        """
         track_id = None
         if self._shuffle in [Shuffle.TRACKS, Shuffle.TRACKS_ARTIST] or\
                 self._is_party:
@@ -75,11 +79,11 @@ class ShufflePlayer(BasePlayer):
                 track_id = self.current_track.id
         return Track(track_id)
 
-    """
-        Return party ids
-        @return [ids as int]
-    """
     def get_party_ids(self):
+        """
+            Return party ids
+            @return [ids as int]
+        """
         party_settings = Lp.settings.get_value('party-ids')
         ids = []
         genre_ids = Lp.genres.get_ids()
@@ -91,12 +95,12 @@ class ShufflePlayer(BasePlayer):
                 ids.append(setting)
         return ids
 
-    """
-        Set party mode on if party is True
-        Play a new random track if not already playing
-        @param party as bool
-    """
     def set_party(self, party):
+        """
+            Set party mode on if party is True
+            Play a new random track if not already playing
+            @param party as bool
+        """
         self.reset_history()
 
         if party:
@@ -131,21 +135,21 @@ class ShufflePlayer(BasePlayer):
         self.emit('party-changed', party)
         Lp.window.update_view()
 
-    """
-        True if party mode on
-        @return bool
-    """
     def is_party(self):
+        """
+            True if party mode on
+            @return bool
+        """
         return self._is_party
 
 #######################
 # PRIVATE             #
 #######################
-    """
-        Set shuffle mode to gettings value
-        @param settings as Gio.Settings, value as str
-    """
     def _set_shuffle(self, settings, value):
+        """
+            Set shuffle mode to gettings value
+            @param settings as Gio.Settings, value as str
+        """
         self._shuffle = Lp.settings.get_enum('shuffle')
 
         if self._shuffle in [Shuffle.TRACKS, Shuffle.TRACKS_ARTIST] or\
@@ -163,10 +167,10 @@ class ShufflePlayer(BasePlayer):
         if self.current_track.id is not None:
             self.set_next()
 
-    """
-        Shuffle album list
-    """
     def _shuffle_albums(self):
+        """
+            Shuffle album list
+        """
         if self._shuffle in [Shuffle.ALBUMS, Shuffle.ALBUMS_ARTIST]:
             if self._albums is not None and self._albums_backup is None:
                 self._albums_backup = list(self._albums)
@@ -176,11 +180,11 @@ class ShufflePlayer(BasePlayer):
                 self._albums = self._albums_backup
                 self._albums_backup = None
 
-    """
-        Next track in shuffle mode
-        @return track id as int
-    """
     def _shuffle_next(self):
+        """
+            Next track in shuffle mode
+            @return track id as int
+        """
         track_id = self._get_random()
         # Need to clear history
         if not track_id:
@@ -190,10 +194,10 @@ class ShufflePlayer(BasePlayer):
 
         return track_id
 
-    """
-        Return a random track and make sure it has never been played
-    """
     def _get_random(self):
+        """
+            Return a random track and make sure it has never been played
+        """
         for album_id in sorted(self._albums,
                                key=lambda *args: random.random()):
             tracks = Lp.albums.get_tracks(album_id,
@@ -212,20 +216,20 @@ class ShufflePlayer(BasePlayer):
 
         return None
 
-    """
-        Add a track to shuffle history
-        @param track as Track
-    """
     def _add_to_shuffle_history(self, track):
+        """
+            Add a track to shuffle history
+            @param track as Track
+        """
         if track.album_id not in self._already_played_tracks.keys():
             self._already_played_tracks[track.album_id] = []
         if track.id not in self._already_played_tracks[track.album_id]:
             self._already_played_tracks[track.album_id].append(track.id)
 
-    """
-        On stream start add to shuffle history
-    """
     def _on_stream_start(self, bus, message):
+        """
+            On stream start add to shuffle history
+        """
         # Add track to shuffle history if needed
         if self._shuffle != Shuffle.NONE or self._is_party:
             if self._history is not None:

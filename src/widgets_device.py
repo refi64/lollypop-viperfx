@@ -19,19 +19,21 @@ from lollypop.sync_mtp import MtpSync
 from lollypop.define import Lp, Type
 
 
-# Dialog for synchronize mtp devices
 class DeviceManagerWidget(Gtk.Bin, MtpSync):
+    """
+        Widget for synchronize mtp devices
+    """
     __gsignals__ = {
         'sync-finished': (GObject.SignalFlags.RUN_FIRST, None, ())
     }
 
-    """
-        Init ui with a scrolled treeview
-        @param device as Device
-        @param progress bar as Gtk.ProgressBar
-        @param parent as Gtk.Widget
-    """
     def __init__(self, progress, parent):
+        """
+            Init widget
+            @param device as Device
+            @param progress bar as Gtk.ProgressBar
+            @param parent as Gtk.Widget
+        """
         Gtk.Bin.__init__(self)
         MtpSync.__init__(self)
         self._parent = parent
@@ -72,33 +74,33 @@ class DeviceManagerWidget(Gtk.Bin, MtpSync):
         self._view.append_column(column0)
         self._view.append_column(column1)
 
-    """
-        Populate playlists, thread safe
-    """
     def populate(self):
+        """
+            Populate playlists, thread safe
+        """
         self._model.clear()
         playlists = [(Type.LOVED, Lp.playlists._LOVED)]
         playlists += Lp.playlists.get()
         GLib.idle_add(self._append_playlists, playlists)
 
-    """
-        Set available playlists
-        @param uri as str
-    """
     def set_playlists(self, playlists, uri):
+        """
+            Set available playlists
+            @param uri as str
+        """
         self._on_disk_playlists = playlists
         self._uri = uri
 
-    """
-        @return True if syncing
-    """
     def is_syncing(self):
+        """
+            @return True if syncing
+        """
         return self._syncing
 
-    """
-        Start synchronisation
-    """
     def sync(self):
+        """
+            Start synchronisation
+        """
         self._syncing = True
         self._view.set_sensitive(False)
         self._progress.show()
@@ -109,30 +111,30 @@ class DeviceManagerWidget(Gtk.Bin, MtpSync):
                 playlists.append(item[1])
         start_new_thread(self._sync, (playlists,))
 
-    """
-        Cancel synchronisation
-    """
     def cancel_sync(self):
+        """
+            Cancel synchronisation
+        """
         self._view.set_sensitive(True)
         self._syncing = False
 
 #######################
 # PRIVATE             #
 #######################
-    """
-        Sort model
-    """
     def _sort_items(self, model, itera, iterb, data):
+        """
+            Sort model
+        """
         a = model.get_value(itera, 1)
         b = model.get_value(iterb, 1)
         return a > b
 
-    """
-        Append a playlist
-        @param playlists as [str]
-        @param playlist selected as bool
-    """
     def _append_playlists(self, playlists):
+        """
+            Append a playlist
+            @param playlists as [str]
+            @param playlist selected as bool
+        """
         if playlists:
             playlist = playlists.pop(0)
             selected = playlist[1]+".m3u" in self._on_disk_playlists
@@ -141,10 +143,10 @@ class DeviceManagerWidget(Gtk.Bin, MtpSync):
         else:
             self._view.get_selection().unselect_all()
 
-    """
-        Update progress bar smoothly
-    """
     def _update_progress(self):
+        """
+            Update progress bar smoothly
+        """
         current = self._progress.get_fraction()
         if self._syncing:
             progress = (self._fraction-current)/10000
@@ -160,17 +162,17 @@ class DeviceManagerWidget(Gtk.Bin, MtpSync):
         else:
             GLib.timeout_add(1000, self._progress.hide)
 
-    """
-        Emit finished signal
-    """
     def _on_finished(self):
+        """
+            Emit finished signal
+        """
         MtpSync._on_finished(self)
         self.emit('sync-finished')
 
-    """
-        Show information bar with error message
-    """
     def _on_errors(self):
+        """
+            Show information bar with error message
+        """
         MtpSync._on_errors(self)
         error_text = _("Unknown error while syncing,"
                        " try to reboot your device")
@@ -186,21 +188,21 @@ class DeviceManagerWidget(Gtk.Bin, MtpSync):
         self._error_label.set_text(error_text)
         self._infobar.show()
 
-    """
-        Hide infobar
-        @param widget as Gtk.Infobar
-        @param reponse id as int
-    """
     def _on_response(self, infobar, response_id):
+        """
+            Hide infobar
+            @param widget as Gtk.Infobar
+            @param reponse id as int
+        """
         if response_id == Gtk.ResponseType.CLOSE:
             self._infobar.hide()
 
-    """
-        When playlist is activated, add object to playlist
-        @param widget as cell renderer
-        @param path as str representation of Gtk.TreePath
-    """
     def _on_playlist_toggled(self, view, path):
+        """
+            When playlist is activated, add object to playlist
+            @param widget as cell renderer
+            @param path as str representation of Gtk.TreePath
+        """
         iterator = self._model.get_iter(path)
         toggle = not self._model.get_value(iterator, 0)
         self._model.set_value(iterator, 0, toggle)

@@ -15,12 +15,15 @@ from gi.repository import Gtk
 from lollypop.define import Lp, ArtSize, Shuffle
 
 
-# Show next track to play
 class NextPopover(Gtk.Popover):
     """
-        Init popover
+        Popover with next track
     """
+
     def __init__(self):
+        """
+            Init popover
+        """
         Gtk.Popover.__init__(self)
         self.set_modal(False)
         self.get_style_context().add_class('osd-popover')
@@ -33,10 +36,10 @@ class NextPopover(Gtk.Popover):
         self._cover = builder.get_object('cover')
         self._skip_btn = builder.get_object('skip_btn')
 
-    """
-        Update widget with current track
-    """
     def update(self, player=None):
+        """
+            Update widget with current track
+        """
         if Lp.player.is_party() or\
                 Lp.settings.get_enum('shuffle') == Shuffle.TRACKS:
             self._skip_btn.show()
@@ -52,17 +55,17 @@ class NextPopover(Gtk.Popover):
         else:
             self._cover.hide()
 
-    """
-        Connect signal
-    """
     def do_show(self):
+        """
+            Connect signal
+        """
         self._signal_id = Lp.player.connect('queue-changed', self.update)
         Gtk.Popover.do_show(self)
 
-    """
-        Disconnect signal
-    """
     def do_hide(self):
+        """
+            Disconnect signal
+        """
         if self._signal_id is not None:
             Lp.player.disconnect(self._signal_id)
         Gtk.Popover.do_hide(self)
@@ -70,10 +73,10 @@ class NextPopover(Gtk.Popover):
 #######################
 # PRIVATE             #
 #######################
-    """
-        Skip next track
-        @param btn as Gtk.Button
-    """
     def _on_skip_btn_clicked(self, btn):
+        """
+            Skip next track
+            @param btn as Gtk.Button
+        """
         Lp.player.set_next()
         Lp.player.emit('queue-changed')

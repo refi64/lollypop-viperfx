@@ -21,19 +21,22 @@ class TuneItem:
     LOGO = ''
 
 
-# Read radios from the web
 class TuneIn:
     """
-        Init tunein
+        Get radios from Tune in
     """
+    
     def __init__(self):
+        """
+            Init tunein
+        """
         pass
 
-    """
-        Get radio entries for uri
-        @param uri as string
-    """
     def get_items(self, url="http://opml.radiotime.com/Browse.ashx?c="):
+        """
+            Get radio entries for uri
+            @param uri as string
+        """
         items = []
         if not Gio.NetworkMonitor.get_default().get_network_available():
             return items

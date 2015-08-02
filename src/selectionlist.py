@@ -20,9 +20,13 @@ from lollypop.define import Type, Lp
 
 class SelectionPopover(Gtk.Popover):
     """
-        Init popover
+        Show a popover with text
     """
+
     def __init__(self):
+        """
+            Init popover
+        """
         Gtk.Popover.__init__(self)
         self.set_modal(False)
         self._label = Gtk.Label()
@@ -34,38 +38,42 @@ class SelectionPopover(Gtk.Popover):
         self.set_property('height-request', 50)
         self.add(self._label)
 
-    """
-        Set popover text
-        @param text as string
-    """
     def set_text(self, text):
+        """
+            Set popover text
+            @param text as string
+        """
         self._label.set_markup('<span size="large"><b>%s</b></span>' % text)
 
-    """
-        Ignore
-    """
     def do_grab_focus(self):
+        """
+            Ignore
+        """
         pass
 
 
-# Keep track of last motion event coordonates
 class MotionEvent:
+    """
+        Keep track of last motion event coordonates
+    """
     x = 0.0
     y = 0.0
 
 
-# A selection list is a artists or genres scrolled treeview
 class SelectionList(Gtk.ScrolledWindow):
-
+    """
+        A list for artists/genres
+    """
     __gsignals__ = {
         'item-selected': (GObject.SignalFlags.RUN_FIRST, None, (int,)),
         'populated': (GObject.SignalFlags.RUN_FIRST, None, ()),
     }
 
-    """
-        Init Selection list ui
-    """
+
     def __init__(self):
+        """
+            Init Selection list ui
+        """
         Gtk.ScrolledWindow.__init__(self)
         self.set_policy(Gtk.PolicyType.NEVER,
                         Gtk.PolicyType.AUTOMATIC)
@@ -107,56 +115,56 @@ class SelectionList(Gtk.ScrolledWindow):
         adj = self.get_vadjustment()
         adj.connect('value_changed', self._on_scroll)
 
-    """
-        Mark list as artists list
-        @param is_artists as bool
-    """
     def mark_as_artists(self, is_artists):
+        """
+            Mark list as artists list
+            @param is_artists as bool
+        """
         self._is_artists = is_artists
 
-    """
-        Return True if list is marked as artists
-    """
     def is_marked_as_artists(self):
+        """
+            Return True if list is marked as artists
+        """
         return self._is_artists
 
-    """
-        Populate view with values
-        @param [(int, str)], will be deleted
-        @thread safe
-    """
     def populate(self, values):
+        """
+            Populate view with values
+            @param [(int, str)], will be deleted
+            @thread safe
+        """
         if len(self._model) > 0:
             self._updating = True
         self._add_values(values)
         GLib.idle_add(self.emit, 'populated')
         self._updating = False
 
-    """
-        Remove row from model
-        @param object id as int
-    """
     def remove(self, object_id):
+        """
+            Remove row from model
+            @param object id as int
+        """
         for item in self._model:
             if item[0] == object_id:
                 self._model.remove(item.iter)
                 break
 
-    """
-        Add item to list
-        @param value as (int, str)
-    """
     def add_value(self, value):
+        """
+            Add item to list
+            @param value as (int, str)
+        """
         self._updating = True
         self._add_value(value)
         self._updating = False
 
-    """
-        Update view with values
-        @param [(int, str)]
-        @thread safe
-    """
     def update_values(self, values):
+        """
+            Update view with values
+            @param [(int, str)]
+            @thread safe
+        """
         self._updating = True
         # Remove not found items but not devices
         value_ids = set([v[0] for v in values])
@@ -174,29 +182,29 @@ class SelectionList(Gtk.ScrolledWindow):
                 Gdk.threads_leave()
         self._updating = False
 
-    """
-        Return value for id
-        @param id as int
-        @return value as string
-    """
     def get_value(self, object_id):
+        """
+            Return value for id
+            @param id as int
+            @return value as string
+        """
         for item in self._model:
             if item[0] == object_id:
                 return item[1]
         return ''
 
-    """
-        Return True if list will select an item on populate
-        @return selected as bool
-    """
     def will_be_selected(self):
+        """
+            Return True if list will select an item on populate
+            @return selected as bool
+        """
         return self._to_select_id != Type.NONE
 
-    """
-        Make treeview select first default item
-        @param object id as int
-    """
     def select_id(self, object_id):
+        """
+            Make treeview select first default item
+            @param object id as int
+        """
         self._to_select_id = Type.NONE
         try:
             selected = None
@@ -212,11 +220,11 @@ class SelectionList(Gtk.ScrolledWindow):
         except:
             self._to_select_id = object_id
 
-    """
-        Get id at current position
-        @return id as int
-    """
     def get_selected_id(self):
+        """
+            Get id at current position
+            @return id as int
+        """
         selected_id = Type.NONE
         (path, column) = self._view.get_cursor()
         if path is not None:
@@ -225,10 +233,10 @@ class SelectionList(Gtk.ScrolledWindow):
                 selected_id = self._model.get_value(iterator, 0)
         return selected_id
 
-    """
-        Clear treeview
-    """
     def clear(self):
+        """
+            Clear treeview
+        """
         self._updating = True
         self._model.clear()
         self._updating = False
@@ -236,34 +244,34 @@ class SelectionList(Gtk.ScrolledWindow):
 #######################
 # PRIVATE             #
 #######################
-    """
-        Add value to the model
-        @param value as [int, str]
-        @thread safe
-    """
     def _add_value(self, value):
+        """
+            Add value to the model
+            @param value as [int, str]
+            @thread safe
+        """
         self._model.append([value[0],
                             value[1],
                             self._get_icon_name(value[0])])
         if value[0] == self._to_select_id:
             GLib.idle_add(self.select_id, self._to_select_id)
 
-    """
-        Add values to the list
-        @param items as [(int,str)]
-        @thread safe
-    """
     def _add_values(self, values):
+        """
+            Add values to the list
+            @param items as [(int,str)]
+            @thread safe
+        """
         for value in values:
             Gdk.threads_enter()
             self._add_value(value)
             Gdk.threads_leave()
 
-    """
-        Return pixbuf for id
-        @param ojbect_id as id
-    """
     def _get_icon_name(self, object_id):
+        """
+            Return pixbuf for id
+            @param ojbect_id as id
+        """
         icon = ''
         if object_id >= 0:
             icon = 'go-next-symbolic'
@@ -292,10 +300,10 @@ class SelectionList(Gtk.ScrolledWindow):
             icon = 'document-new-symbolic'
         return icon
 
-    """
-        Sort model
-    """
     def _sort_items(self, model, itera, iterb, data):
+        """
+            Sort model
+        """
         if not self._updating:
             return False
 
@@ -317,55 +325,55 @@ class SelectionList(Gtk.ScrolledWindow):
         else:
             return a.lower() > b.lower()
 
-    """
-        Draw a separator if needed
-        @param model as Gtk.TreeModel
-        @param iterator as Gtk.TreeIter
-    """
     def _row_separator_func(self, model, iterator):
+        """
+            Draw a separator if needed
+            @param model as Gtk.TreeModel
+            @param iterator as Gtk.TreeIter
+        """
         return model.get_value(iterator, 0) == Type.SEPARATOR
 
-    """
-        Forward "cursor-changed" as "item-selected" with item id as arg
-        @param view as Gtk.TreeView
-    """
     def _on_cursor_changed(self, view):
+        """
+            Forward "cursor-changed" as "item-selected" with item id as arg
+            @param view as Gtk.TreeView
+        """
         selected_id = self.get_selected_id()
         if not self._updating and selected_id != Type.NONE:
             self._to_select_id = Type.NONE
             self.emit('item-selected', selected_id)
 
-    """
-        Disable shortcuts
-        @param widget as Gtk.widget
-        @param event as GdK.Event
-    """
     def _on_focus_in_event(self, widget, event):
+        """
+            Disable shortcuts
+            @param widget as Gtk.widget
+            @param event as GdK.Event
+        """
         Lp.window.enable_global_shorcuts(False)
 
-    """
-        Enable shortcuts
-        @param widget as Gtk.widget
-        @param event as GdK.Event
-    """
     def _on_focus_out_event(self, widget, event):
+        """
+            Enable shortcuts
+            @param widget as Gtk.widget
+            @param event as GdK.Event
+        """
         Lp.window.enable_global_shorcuts(True)
 
-    """
-        Hide popover
-        @param widget as Gtk.widget
-        @param event as GdK.Event
-    """
     def _on_leave_event(self, widget=None, event=None):
+        """
+            Hide popover
+            @param widget as Gtk.widget
+            @param event as GdK.Event
+        """
         self._popover.hide()
         self._timeout = None
 
-    """
-        Set motion event
-        @param widget as Gtk.widget
-        @param event as GdK.Event
-    """
     def _on_motion_notify(self, widget, event):
+        """
+            Set motion event
+            @param widget as Gtk.widget
+            @param event as GdK.Event
+        """
         if self._timeout is None:
             self._timeout = GLib.timeout_add(500,
                                              self._on_leave_event)
@@ -374,11 +382,11 @@ class SelectionList(Gtk.ScrolledWindow):
         self._last_motion_event.x = event.x
         self._last_motion_event.y = event.y
 
-    """
-        Show a popover with current letter
-        @param adj as Gtk.Adjustement
-    """
     def _on_scroll(self, adj):
+        """
+            Show a popover with current letter
+            @param adj as Gtk.Adjustement
+        """
         # Only show if scrolled window is huge
         if adj.get_upper() < adj.get_page_size() * 3:
             return
@@ -418,15 +426,15 @@ class SelectionList(Gtk.ScrolledWindow):
             self._popover.set_position(Gtk.PositionType.RIGHT)
             self._popover.show()
 
-    """
-        Show tooltip if needed
-        @param widget as Gtk.Widget
-        @param x as int
-        @param y as int
-        @param keyboard as bool
-        @param tooltip as Gtk.Tooltip
-    """
     def _on_query_tooltip(self, widget, x, y, keyboard, tooltip):
+        """
+            Show tooltip if needed
+            @param widget as Gtk.Widget
+            @param x as int
+            @param y as int
+            @param keyboard as bool
+            @param tooltip as Gtk.Tooltip
+        """
         if keyboard:
             return True
 

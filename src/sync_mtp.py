@@ -19,9 +19,13 @@ from lollypop.define import Lp
 
 class MtpSync:
     """
-        Init MTP synchronisation
+        Synchronisation to MTP devices
     """
+
     def __init__(self):
+        """
+            Init MTP synchronisation
+        """
         self._syncing = False
         self._errors = False
         self._total = 0  # Total files to sync
@@ -32,12 +36,12 @@ class MtpSync:
 ############
 # Private  #
 ############
-    """
-        Try to execute func 5 times
-        @param func as function
-        @param args as tuple
-    """
     def _retry(self, func, args, t=5):
+        """
+            Try to execute func 5 times
+            @param func as function
+            @param args as tuple
+        """
         if t == 0:
             self._errors = True
             return
@@ -51,12 +55,12 @@ class MtpSync:
             sleep(5)
             self._retry(func, args, t-1)
 
-    """
-        Return children uris for uri
-        @param uri as str
-        @return [str]
-    """
     def _get_children_uris(self, uri):
+        """
+            Return children uris for uri
+            @param uri as str
+            @return [str]
+        """
         children = []
         dir_uris = [uri]
         while dir_uris:
@@ -73,11 +77,11 @@ class MtpSync:
                     children.append(uri+'/'+info.get_name())
         return children
 
-    """
-        Sync playlists with device as this
-        @param playlists as [str]
-    """
     def _sync(self, playlists):
+        """
+            Sync playlists with device as this
+            @param playlists as [str]
+        """
         try:
             self._in_thread = True
             self._errors = False
@@ -137,12 +141,12 @@ class MtpSync:
             GLib.idle_add(self._on_errors)
         GLib.idle_add(self._on_finished)
 
-    """
-        Copy file from playlist to device
-        @param playlists as [str]
-        @param sql cursor
-    """
     def _copy_to_device(self, playlists, sql):
+        """
+            Copy file from playlist to device
+            @param playlists as [str]
+            @param sql cursor
+        """
         for playlist in playlists:
             try:
                 # Create playlist
@@ -239,13 +243,13 @@ class MtpSync:
                 self._retry(m3u.move,
                             (dst, Gio.FileCopyFlags.OVERWRITE, None, None))
 
-    """
-        Delete files not available in playlist
-        if sql None, delete all files
-        @param playlists as [str]
-        @param sql cursor
-    """
     def _remove_from_device(self, playlists, sql):
+        """
+            Delete files not available in playlist
+            if sql None, delete all files
+            @param playlists as [str]
+            @param sql cursor
+        """
         track_uris = []
         tracks_id = []
 
@@ -306,14 +310,14 @@ class MtpSync:
             self._fraction = self._done/self._total
             GLib.idle_add(self._update_progress)
 
-    """
-        Clean on finished. Do nothing
-    """
     def _on_finished(self):
+        """
+            Clean on finished. Do nothing
+        """
         pass
 
-    """
-        Show something to the user. Do nothing.
-    """
     def _on_errors(self):
+        """
+            Show something to the user. Do nothing.
+        """
         pass

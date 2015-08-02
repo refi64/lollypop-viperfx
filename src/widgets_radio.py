@@ -17,14 +17,17 @@ from lollypop.widgets_album import AlbumWidget
 from lollypop.pop_radio import RadioPopover
 
 
-# Radio widget is a pixbuf with one label: radio name
 class RadioWidget(AlbumWidget):
     """
-        Init radio widget
-        @param name as string
-        @param radios_manager as RadiosManager
+        Widget with radio cover and title
     """
+
     def __init__(self, name, radios_manager):
+        """
+            Init radio widget
+            @param name as string
+            @param radios_manager as RadiosManager
+        """
         AlbumWidget.__init__(self, None)
         builder = Gtk.Builder()
         builder.add_from_resource('/org/gnome/Lollypop/RadioWidget.ui')
@@ -42,44 +45,44 @@ class RadioWidget(AlbumWidget):
         self.set_cover()
         self.set_property('halign', Gtk.Align.START)
 
-    """
-        Ignore set sensitive
-    """
     def set_sensitive(self, b):
+        """
+            Ignore set sensitive
+        """
         pass
 
-    """
-        Return widget id (same value for all radio widgets)
-    """
     def get_id(self):
+        """
+            Return widget id (same value for all radio widgets)
+        """
         return Type.RADIOS
 
-    """
-        Set maximum width
-    """
     def do_get_preferred_width(self):
+        """
+            Set maximum width
+        """
         return self._cover.get_preferred_width()
 
-    """
-        Set radio name
-        @param name as string
-    """
     def set_name(self, name):
+        """
+            Set radio name
+            @param name as string
+        """
         self._name = name
         self._title.set_label(name)
 
-    """
-        Return radio name
-        @return name as string
-    """
     def get_name(self):
+        """
+            Return radio name
+            @return name as string
+        """
         return self._name
 
-    """
-        Set cover for album if state changed
-        @param force as bool
-    """
     def set_cover(self, force=False):
+        """
+            Set cover for album if state changed
+            @param force as bool
+        """
         selected = Lp.player.current_track.id == Type.RADIOS and\
             self._name == Lp.player.current_track.artist
         if self._cover is not None and (selected != self._selected or force):
@@ -91,10 +94,10 @@ class RadioWidget(AlbumWidget):
             self._cover.set_from_surface(surface)
             del surface
 
-    """
-        Update cover for album id id needed
-    """
     def update_cover(self):
+        """
+            Update cover for album id id needed
+        """
         if self._cover is not None:
             self._selected = Lp.player.current_track.id == Type.RADIOS\
                 and self._name == Lp.player.current_track.artist
@@ -105,11 +108,11 @@ class RadioWidget(AlbumWidget):
             self._cover.set_from_surface(surface)
             del surface
 
-    """
-        Edit radio
-        @param widget as Gtk.Widget
-    """
     def edit(self, widget):
+        """
+            Edit radio
+            @param widget as Gtk.Widget
+        """
         self._popover = RadioPopover(self._name, self._radios_manager)
         self._popover.set_relative_to(widget)
         self._popover.show()
@@ -117,33 +120,33 @@ class RadioWidget(AlbumWidget):
 #######################
 # PRIVATE             #
 #######################
-    """
-        Edit radio
-        @param widget as Gtk.Widget
-        @param event as Gdk.Event
-    """
     def _on_title_press(self, widget, event):
+        """
+            Edit radio
+            @param widget as Gtk.Widget
+            @param event as Gdk.Event
+        """
         self.edit(widget)
 
-    """
-        Edit radio on right click
-        @param widget as Gtk.Widget
-        @param event as Gdk.Event
-    """
     def _on_cover_press(self, widget, event):
+        """
+            Edit radio on right click
+            @param widget as Gtk.Widget
+            @param event as Gdk.Event
+        """
         if event.button != 1:
             self.edit(widget)
 
-    """
-        Change cursor over cover eventbox
-        @param eventbox as Gdk.Eventbox
-    """
     def _on_eventbox_realize1(self, eventbox):
+        """
+            Change cursor over cover eventbox
+            @param eventbox as Gdk.Eventbox
+        """
         eventbox.get_window().set_cursor(Gdk.Cursor(Gdk.CursorType.HAND1))
 
-    """
-        Change cursor over title eventbox
-        @param eventbox as Gdk.Eventbox
-    """
     def _on_eventbox_realize2(self, eventbox):
+        """
+            Change cursor over title eventbox
+            @param eventbox as Gdk.Eventbox
+        """
         eventbox.get_window().set_cursor(Gdk.Cursor(Gdk.CursorType.PENCIL))

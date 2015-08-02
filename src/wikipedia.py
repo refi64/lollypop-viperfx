@@ -20,21 +20,25 @@ import wikipedia
 
 class Wikipedia:
     """
-        Init wikipedia
+        Wikipedia helper
     """
+
     def __init__(self):
+        """
+            Init wikipedia
+        """
         language = getdefaultlocale()[0][0:2]
         wikipedia.set_lang(language)
         # Translators: Put here words added by wikipedia in band search
         # Ex: Muse_(band), Peaches(musician)
         self._search_str = _("musician;band")
 
-    """
-        Get artist infos
-        @param artist as str
-        @return (url as str, image url as str, content as str)
-    """
     def get_artist_infos(self, artist):
+        """
+            Get artist infos
+            @param artist as str
+            @return (url as str, image url as str, content as str)
+        """
         if not Gio.NetworkMonitor.get_default().get_network_available():
             return (None, None, None)
         try:
@@ -60,12 +64,12 @@ class Wikipedia:
 #######################
 # PRIVATE             #
 #######################
-    """
-        Search music page
-        @param artist as string
-        @return page as WikipediaPage
-    """
     def _search_page(self, artist, items=None):
+        """
+            Search music page
+            @param artist as string
+            @return page as WikipediaPage
+        """
         if items is None:
             item = None
             items = self._search_str.split(';')

@@ -17,27 +17,31 @@ from lollypop.player_base import BasePlayer
 from lollypop.track import Track
 
 
-# Manage user playlist
+
 class ExternalsPlayer(BasePlayer):
     """
-        Init user playlist
+        Manage user playlist
     """
+
     def __init__(self):
+        """
+            Init user playlist
+        """
         BasePlayer.__init__(self)
 
-    """
-        Play track
-        @param track as Track
-    """
     def load(self, track):
+        """
+            Play track
+            @param track as Track
+        """
         pass
 
-    """
-        Load external tracks
-        @param uri as str
-        @param name as string
-    """
     def load_external(self, uri, name=''):
+        """
+            Load external tracks
+            @param uri as str
+            @param name as string
+        """
         try:
             uri = GLib.filename_to_uri(uri)
         except:
@@ -51,11 +55,11 @@ class ExternalsPlayer(BasePlayer):
             track.id = Type.RADIOS
         self._external_tracks.append(track)
 
-    """
-        Play url if in externals
-        @param uri as string
-    """
     def play_this_external(self, uri):
+        """
+            Play url if in externals
+            @param uri as string
+        """
         search = None
         for track in self._external_tracks:
             if track.uri == uri:
@@ -64,31 +68,31 @@ class ExternalsPlayer(BasePlayer):
         if search is not None:
             self.load(search)
 
-    """
-        Play first external track
-    """
     def play_first_external(self):
+        """
+            Play first external track
+        """
         if self._external_tracks:
             self.load(self._external_tracks[0])
 
-    """
-        Return external list
-        @return array of Track
-    """
     def get_externals(self):
+        """
+            Return external list
+            @return array of Track
+        """
         return self._external_tracks
 
-    """
-        Clear externals
-    """
     def clear_externals(self):
+        """
+            Clear externals
+        """
         self._external_tracks = []
 
-    """
-        Next Track
-        @return Track
-    """
     def next(self):
+        """
+            Next Track
+            @return Track
+        """
         track = Track()
         if self._external_tracks and\
            self.current_track in self._external_tracks:
@@ -100,11 +104,11 @@ class ExternalsPlayer(BasePlayer):
             track = self._external_tracks[idx]
         return track
 
-    """
-        Prev track id
-        @return Track
-    """
     def prev(self):
+        """
+            Prev track id
+            @return Track
+        """
         track = Track()
         if self._external_tracks and\
            self.current_track in self._external_tracks:

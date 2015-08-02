@@ -19,14 +19,18 @@ from lollypop.view import View
 from lollypop.widgets_device import DeviceManagerWidget
 
 
-# Playlist synchronisation view
 class DeviceView(View):
     """
-        @param device as Device
-        @param progress as Gtk.ProgressBar
-        @param width as int
+        Playlist synchronisation to MTP
     """
+
     def __init__(self, device, progress, width):
+        """
+            Init view
+            @param device as Device
+            @param progress as Gtk.ProgressBar
+            @param width as int
+        """
         View.__init__(self)
         self._device = device
         self._progress = progress
@@ -56,11 +60,11 @@ class DeviceView(View):
 #######################
 # PRIVATE             #
 #######################
-    """
-        Start synchronisation
-        @param widget as Gtk.Button
-    """
     def _on_sync_clicked(self, widget):
+        """
+            Start synchronisation
+            @param widget as Gtk.Button
+        """
         if self._device_widget.is_syncing():
             self._device_widget.cancel_sync()
             self._on_sync_finished(None)
@@ -69,21 +73,21 @@ class DeviceView(View):
             self._syncing_btn.set_label(_("Cancel synchronization"))
             self._device_widget.sync()
 
-    """
-        Restore widgets state
-        @param device widget as DeviceManager
-    """
     def _on_sync_finished(self, device_widget):
+        """
+            Restore widgets state
+            @param device widget as DeviceManager
+        """
         self._memory_combo.show()
         self._syncing_btn.set_label(_("Synchronize %s") %
                                     self._device.name)
 
-    """
-        Get files for uri
-        @param uri as str
-        @return [str]
-    """
     def _get_files(self, uri):
+        """
+            Get files for uri
+            @param uri as str
+            @return [str]
+        """
         files = []
         try:
             d = Gio.File.new_for_uri(uri)
@@ -101,28 +105,28 @@ class DeviceView(View):
             files = []
         return files
 
-    """
-        Update progress bar. Do nothing
-    """
     def _update_progress(self):
+        """
+            Update progress bar. Do nothing
+        """
         pass
 
-    """
-        Update path
-        @param combo as Gtk.ComboxText
-    """
     def _on_memory_combo_changed(self, combo):
+        """
+            Update path
+            @param combo as Gtk.ComboxText
+        """
         text = combo.get_active_text()
         uri = "%s%s/Music/%s" % (self._device.uri, text, "lollypop")
         on_disk_playlists = self._get_files(uri)
         self._device_widget.set_playlists(on_disk_playlists, uri)
         start_new_thread(self._device_widget.populate, ())
 
-    """
-        Set combobox text
-        @param text list as [str]
-    """
     def _set_combo_text(self, text_list):
+        """
+            Set combobox text
+            @param text list as [str]
+        """
         for text in text_list:
             self._memory_combo.append_text(text)
         self._memory_combo.set_active(0)

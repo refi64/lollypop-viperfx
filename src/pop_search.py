@@ -19,13 +19,16 @@ from lollypop.define import Lp, ArtSize, Type
 from lollypop.track import Track
 
 
-# show an album/track object with actions
 class SearchRow(Gtk.ListBoxRow):
     """
-        Init row widgets
-        @param parent as Gtk.Widget
+        Album/Track search row
     """
+
     def __init__(self, parent):
+        """
+            Init row widgets
+            @param parent as Gtk.Widget
+        """
         Gtk.ListBoxRow.__init__(self)
         self._parent = parent
         self.id = None
@@ -43,28 +46,28 @@ class SearchRow(Gtk.ListBoxRow):
 
         self.show()
 
-    """
-        Set artist and title label
-        @param artist name as string
-        @param item name as string
-    """
     def set_text(self, artist, title):
+        """
+            Set artist and title label
+            @param artist name as string
+            @param item name as string
+        """
         self._artist.set_text(artist)
         self._title.set_text(title)
 
-    """
-        Set cover surface
-        @param surface as cairo surface
-    """
     def set_cover(self, surface):
+        """
+            Set cover surface
+            @param surface as cairo surface
+        """
         self._cover.set_from_surface(surface)
         del surface
 
-    """
-        Return True if self exists in items
-        @param: items as array of searchObject
-    """
     def exists(self, items):
+        """
+            Return True if self exists in items
+            @param: items as array of searchObject
+        """
         found = False
         for item in items:
             if item.is_track and self.is_track:
@@ -80,19 +83,18 @@ class SearchRow(Gtk.ListBoxRow):
 #######################
 # PRIVATE             #
 #######################
-
-    """
-        Prepend track to queue
-        @param button as Gtk.Button
-    """
     def _on_playlist_clicked(self, button):
+        """
+            Prepend track to queue
+            @param button as Gtk.Button
+        """
         Lp.window.show_playlist_manager(self.id, None, not self.is_track)
 
-    """
-        Add track to queue
-        @param button as Gtk.Button
-    """
     def _on_queue_clicked(self, button):
+        """
+            Add track to queue
+            @param button as Gtk.Button
+        """
         if self.is_track:
             Lp.player.append_to_queue(self.id)
         else:
@@ -100,15 +102,15 @@ class SearchRow(Gtk.ListBoxRow):
                 Lp.player.append_to_queue(track)
         button.hide()
 
-    """
-        Show tooltip if needed
-        @param widget as Gtk.Widget
-        @param x as int
-        @param y as int
-        @param keyboard as bool
-        @param tooltip as Gtk.Tooltip
-    """
     def _on_query_tooltip(self, widget, x, y, keyboard, tooltip):
+        """
+            Show tooltip if needed
+            @param widget as Gtk.Widget
+            @param x as int
+            @param y as int
+            @param keyboard as bool
+            @param tooltip as Gtk.Tooltip
+        """
         layout_title = self._title.get_layout()
         layout_artist = self._artist.get_layout()
         if layout_title.is_ellipsized() or layout_artist.is_ellipsized():
@@ -119,8 +121,10 @@ class SearchRow(Gtk.ListBoxRow):
             self.set_tooltip_text('')
 
 
-# Represent a search object
 class SearchObject:
+    """
+        Represent a search object
+    """
     def __init__(self):
         self.artist = None
         self.title = None
@@ -130,14 +134,16 @@ class SearchObject:
         self.is_track = False
 
 
-# Show a list of search row
 class SearchPopover(Gtk.Popover):
+    """
+        Popover allowing user to search for tracks/albums
+    """
 
-    """
-        Init Popover ui with a text entry and a scrolled treeview
-        @param parent as Gtk.Widget
-    """
     def __init__(self, parent):
+        """
+            Init Popover
+            @param parent as Gtk.Widget
+        """
         Gtk.Popover.__init__(self)
         self._parent = parent
         self._in_thread = False
@@ -159,13 +165,10 @@ class SearchPopover(Gtk.Popover):
         builder.get_object('scrolled').add(self._view)
         self.add(builder.get_object('widget'))
 
-#######################
-# PRIVATE             #
-#######################
-    """
-        Give focus to text entry on show
-    """
     def do_show(self):
+        """
+            Give focus to text entry on show
+        """
         size_setting = Lp.settings.get_value('window-size')
         if isinstance(size_setting[1], int):
             self.set_size_request(400, size_setting[1]*0.7)
@@ -174,26 +177,29 @@ class SearchPopover(Gtk.Popover):
         Gtk.Popover.do_show(self)
         Lp.window.enable_global_shorcuts(False)
 
-    """
-        Restore global shortcuts
-    """
     def do_hide(self):
+        """
+            Restore global shortcuts
+        """
         Gtk.Popover.do_hide(self)
         Lp.window.enable_global_shorcuts(True)
 
-    """
-        Remove row not existing in view, thread safe
-    """
+#######################
+# PRIVATE             #
+#######################
     def _clear(self, results):
+        """
+            Remove row not existing in view, thread safe
+        """
         for child in self._view.get_children():
             if not results or not child.exists(results):
                 GLib.idle_add(child.destroy)
 
-    """
-        Return True if item exist in rows
-        @param: item as SearchObject
-    """
     def _exists(self, item):
+        """
+            Return True if item exist in rows
+            @param: item as SearchObject
+        """
         found = False
         for child in self._view.get_children():
             if item.is_track and child.is_track:
@@ -206,11 +212,11 @@ class SearchPopover(Gtk.Popover):
                     break
         return found
 
-    """
-        Populate treeview searching items
-        in db based on text entry current text
-    """
     def _populate(self):
+        """
+            Populate treeview searching items
+            in db based on text entry current text
+        """
         sql = Lp.db.get_cursor()
         results = []
         albums = []
@@ -263,11 +269,11 @@ class SearchPopover(Gtk.Popover):
 
         sql.close()
 
-    """
-        Add a rows recursively
-        @param results as array of SearchObject
-    """
     def _add_rows(self, results):
+        """
+            Add a rows recursively
+            @param results as array of SearchObject
+        """
         if results:
             result = results.pop(0)
             if not self._exists(result):
@@ -289,22 +295,22 @@ class SearchPopover(Gtk.Popover):
             self._in_thread = False
             self._stop_thread = False
 
-    """
-        Set user playlist
-        @param tracks as [Track]
-        @param track id as int
-        @thread safe
-    """
     def _set_user_playlist(self, tracks, track_id):
+        """
+            Set user playlist
+            @param tracks as [Track]
+            @param track id as int
+            @thread safe
+        """
         track = Lp.player.set_user_playlist(tracks, track_id)
         Lp.player.load(track)
 
-    """
-        Play tracks based on search
-        @param started object id as int
-        @param is track as bool
-    """
     def _play_search(self, object_id=None, is_track=True):
+        """
+            Play tracks based on search
+            @param started object id as int
+            @param is track as bool
+        """
         sql = Lp.db.get_cursor()
         tracks = []
         track_id = None
@@ -326,10 +332,10 @@ class SearchPopover(Gtk.Popover):
             GLib.idle_add(self._set_user_playlist, tracks, track_id)
         sql.close()
 
-    """
-        Crate a new playlist based on search
-    """
     def _new_playlist(self):
+        """
+            Create a new playlist based on search
+        """
         sql = Lp.db.get_cursor()
         tracks = []
         for child in self._view.get_children():
@@ -344,11 +350,12 @@ class SearchPopover(Gtk.Popover):
             Lp.playlists.add_tracks(self._current_search, tracks)
         sql.close()
 
-    """
-        Timeout filtering, call _really_do_filterting() after a small timeout
-        @param widget as Gtk.TextEntry
-    """
     def _on_search_changed(self, widget):
+        """
+            Timeout filtering, call _really_do_filterting()
+            after timeout
+            @param widget as Gtk.TextEntry
+        """
         if self._in_thread:
             self._stop_thread = True
             GLib.timeout_add(100, self._on_search_changed, widget)
@@ -368,34 +375,34 @@ class SearchPopover(Gtk.Popover):
             self._new_btn.set_sensitive(False)
             self._clear([])
 
-    """
-        Just run _reallyon_entry_changed in a thread
-    """
     def _on_search_changed_thread(self):
+        """
+            Just run _reallyon_entry_changed in a thread
+        """
         self._timeout = None
         self._in_thread = True
         start_new_thread(self._populate, ())
 
-    """
-        Play searched item when selected
-        If item is an album, play first track
-        @param widget as Gtk.ListBox
-        @param row as SearchRow
-    """
     def _on_activate(self, widget, row):
+        """
+            Play searched item when selected
+            If item is an album, play first track
+            @param widget as Gtk.ListBox
+            @param row as SearchRow
+        """
         Lp.player.set_party(False)
         start_new_thread(self._play_search, (row.id,    row.is_track))
 
-    """
-        Start playback base on current search
-        @param button as Gtk.Button
-    """
     def _on_play_btn_clicked(self, button):
+        """
+            Start playback base on current search
+            @param button as Gtk.Button
+        """
         start_new_thread(self._play_search, ())
 
-    """
-        Create a new playlist based on search
-        @param button as Gtk.Button
-    """
     def _on_new_btn_clicked(self, button):
+        """
+            Create a new playlist based on search
+            @param button as Gtk.Button
+        """
         start_new_thread(self._new_playlist, ())

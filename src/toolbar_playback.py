@@ -21,9 +21,13 @@ from lollypop.define import Lp, Type
 
 class ToolbarPlayback(Gtk.Bin):
     """
-        Init playback toolbar
+        Playback toolbar
     """
+
     def __init__(self):
+        """
+            Init toolbar
+        """
         Gtk.Bin.__init__(self)
         builder = Gtk.Builder()
         builder.add_from_resource('/org/gnome/Lollypop/ToolbarPlayback.ui')
@@ -41,11 +45,11 @@ class ToolbarPlayback(Gtk.Bin):
             self._artist_infos_btn = builder.get_object('artist_infos_btn')
             self._artist_infos_btn.show()
 
-    """
-        Update buttons on current changed
-        @param player as Player
-    """
     def on_current_changed(self, player):
+        """
+            Update buttons on current changed
+            @param player as Player
+        """
         if Lp.lastfm is not None or Lp.wikipedia is not None:
             if player.current_track.id != Type.RADIOS:
                 self._artist_infos_btn.set_sensitive(True)
@@ -67,11 +71,11 @@ class ToolbarPlayback(Gtk.Bin):
                                           (prev_artist,
                                            prev_title))
 
-    """
-        Update buttons on status changed
-        @param player as Player
-    """
     def on_status_changed(self, player):
+        """
+            Update buttons on status changed
+            @param player as Player
+        """
         if player.is_playing():
             self._change_play_btn_status(self._pause_image, _("Pause"))
         else:
@@ -80,27 +84,27 @@ class ToolbarPlayback(Gtk.Bin):
 #######################
 # PRIVATE             #
 #######################
-    """
-        Update play button with image and status as tooltip
-        @param image as Gtk.Image
-        @param status as str
-    """
     def _change_play_btn_status(self, image, status):
+        """
+            Update play button with image and status as tooltip
+            @param image as Gtk.Image
+            @param status as str
+        """
         self._play_btn.set_image(image)
         self._play_btn.set_tooltip_text(status)
 
-    """
-        Previous track on prev button clicked
-        @param button as Gtk.Button
-    """
     def _on_prev_btn_clicked(self, button):
+        """
+            Previous track on prev button clicked
+            @param button as Gtk.Button
+        """
         Lp.player.prev()
 
-    """
-        Play/Pause on play button clicked
-        @param button as Gtk.Button
-    """
     def _on_play_btn_clicked(self, button):
+        """
+            Play/Pause on play button clicked
+            @param button as Gtk.Button
+        """
         if Lp.player.is_playing():
             Lp.player.pause()
             self._change_play_btn_status(self._play_image, _("Play"))
@@ -108,18 +112,18 @@ class ToolbarPlayback(Gtk.Bin):
             Lp.player.play()
             self._change_play_btn_status(self._pause_image, _("Pause"))
 
-    """
-        Next track on next button clicked
-        @param button as Gtk.Button
-    """
     def _on_next_btn_clicked(self, button):
+        """
+            Next track on next button clicked
+            @param button as Gtk.Button
+        """
         Lp.player.next()
 
-    """
-        Show current artist informations
-        @param button as Gtk.Button
-    """
     def _on_infos_btn_clicked(self, button):
+        """
+            Show current artist informations
+            @param button as Gtk.Button
+        """
         if Lp.lastfm is not None or Lp.wikipedia is not None:
             artist_id = Lp.player.current_track.aartist_id
             if artist_id == Type.COMPILATIONS:

@@ -17,36 +17,39 @@ from lollypop.player_base import BasePlayer
 from lollypop.track import Track
 
 
-# Manage user playlist
 class UserPlaylistPlayer(BasePlayer):
     """
-        Init user playlist
+        Manage user playlist
     """
+
     def __init__(self):
+        """
+            Init user playlist
+        """
         BasePlayer.__init__(self)
         self._user_playlist_id = None
 
-    """
-        Set playlist id
-        @param id as int
-    """
     def set_user_playlist_id(self, playlist_id):
+        """
+            Set playlist id
+            @param id as int
+        """
         self._user_playlist_id = playlist_id
 
-    """
-        Get playlist id
-        @return id as int
-    """
     def get_user_playlist_id(self):
+        """
+            Get playlist id
+            @return id as int
+        """
         return self._user_playlist_id
 
-    """
-        Set user playlist as current playback playlist
-        @param array of tracks as [Track]
-        @param track id as int
-        @return track id as Track
-    """
     def set_user_playlist(self, tracks, track_id):
+        """
+            Set user playlist as current playback playlist
+            @param array of tracks as [Track]
+            @param track id as int
+            @return track id as Track
+        """
         self._user_playlist = tracks
         self._shuffle_playlist()
         for track in tracks:
@@ -54,18 +57,18 @@ class UserPlaylistPlayer(BasePlayer):
                 return track
         return None
 
-    """
-        Get user playlist
-        @return track id as [int]
-    """
     def get_user_playlist(self):
+        """
+            Get user playlist
+            @return track id as [int]
+        """
         return self._user_playlist
 
-    """
-        Next Track
-        @return Track
-    """
     def next(self):
+        """
+            Next Track
+            @return Track
+        """
         track = Track()
         if self._user_playlist and\
            self.current_track in self._user_playlist:
@@ -77,11 +80,11 @@ class UserPlaylistPlayer(BasePlayer):
             track = self._user_playlist[idx]
         return track
 
-    """
-        Prev track id
-        @return Track
-    """
     def prev(self):
+        """
+            Prev track id
+            @return Track
+        """
         track = Track()
         if self._user_playlist and\
            self.current_track in self._user_playlist:
@@ -96,10 +99,10 @@ class UserPlaylistPlayer(BasePlayer):
 #######################
 # PRIVATE             #
 #######################
-    """
-        Shuffle/Un-shuffle playlist based on shuffle setting
-    """
     def _shuffle_playlist(self):
+        """
+            Shuffle/Un-shuffle playlist based on shuffle setting
+        """
         if self._shuffle == Shuffle.TRACKS:
             # Shuffle user playlist
             if self._user_playlist is not None:

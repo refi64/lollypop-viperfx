@@ -25,11 +25,15 @@ from lollypop.art import Art
 # Show a popover with radio logos from the web
 class RadioPopover(Gtk.Popover):
     """
-        Init Popover ui with a text entry and a scrolled treeview
-        @param name as string
-        @param radios_manager as RadiosManager
+        Popover with radio logos from the web
     """
+
     def __init__(self, name, radios_manager):
+        """
+            Init Popover
+            @param name as string
+            @param radios_manager as RadiosManager
+        """
         Gtk.Popover.__init__(self)
         self._name = name
         self._radios_manager = radios_manager
@@ -76,17 +80,18 @@ class RadioPopover(Gtk.Popover):
             if len(uris) > 0:
                 self._uri_entry.set_text(uris[0])
 
-    """
-        Resize popover and set signals callback
-    """
     def do_show(self):
+        """
+            Resize popover and set signals callback
+        """
         Gtk.Popover.do_show(self)
         self._name_entry.grab_focus()
         Lp.window.enable_global_shorcuts(False)
-    """
-        Kill thread
-    """
+
     def do_hide(self):
+        """
+            Kill thread
+        """
         self._thread = False
         Gtk.Popover.do_hide(self)
         Lp.window.enable_global_shorcuts(True)
@@ -94,18 +99,18 @@ class RadioPopover(Gtk.Popover):
 #######################
 # PRIVATE             #
 #######################
-    """
-        Populate view
-    """
     def _populate_threaded(self):
+        """
+            Populate view
+        """
         self._thread = True
         start_new_thread(self._populate, ())
 
-    """
-        Same as _populate_threaded()
-        @thread safe
-    """
     def _populate(self):
+        """
+            Same as _populate_threaded()
+            @thread safe
+        """
         self._urls = Lp.art.get_google_arts(self._name+"+logo+radio",
                                             self._start)
         if self._urls:
@@ -114,10 +119,10 @@ class RadioPopover(Gtk.Popover):
         else:
             GLib.idle_add(self._show_not_found)
 
-    """
-        Add urls to the view
-    """
     def _add_pixbufs(self):
+        """
+            Add urls to the view
+        """
         if self._urls:
             url = self._urls.pop()
             stream = None
@@ -136,18 +141,18 @@ class RadioPopover(Gtk.Popover):
         elif self._start < GOOGLE_MAX:
             self._populate_threaded()
 
-    """
-        Show not found message if view empty
-    """
     def _show_not_found(self):
+        """
+            Show not found message if view empty
+        """
         if len(self._view.get_children()) == 0:
             self._stack.set_visible_child(self._not_found)
             self._stack.clean_old_views(self._not_found)
 
-    """
-        Add stream to the view
-    """
     def _add_pixbuf(self, stream):
+        """
+            Add stream to the view
+        """
         try:
             pixbuf = GdkPixbuf.Pixbuf.new_from_stream_at_scale(
                 stream, ArtSize.MONSTER,
@@ -186,11 +191,11 @@ class RadioPopover(Gtk.Popover):
             self._stack.clean_old_views(self._logo)
             self._spinner = None
 
-    """
-        Add/Modify a radio
-        @param widget as Gtk.Widget
-    """
     def _on_btn_add_modify_clicked(self, widget):
+        """
+            Add/Modify a radio
+            @param widget as Gtk.Widget
+        """
         uri = self._uri_entry.get_text()
         new_name = self._name_entry.get_text()
         rename = self._name != '' and self._name != new_name
@@ -208,11 +213,11 @@ class RadioPopover(Gtk.Popover):
             self._populate_threaded()
             self.set_size_request(700, 400)
 
-    """
-        Delete a radio
-        @param widget as Gtk.Widget
-    """
     def _on_btn_delete_clicked(self, widget):
+        """
+            Delete a radio
+            @param widget as Gtk.Widget
+        """
         if self._name != '':
             cache = Art._RADIOS_PATH
             self._radios_manager.delete(self._name)
@@ -220,11 +225,11 @@ class RadioPopover(Gtk.Popover):
             if os.path.exists(cache+"/%s.png" % self._name):
                 os.remove(cache+"/%s.png" % self._name)
 
-    """
-        Use pixbuf as cover
-        Reset cache and use player object to announce cover change
-    """
     def _on_activate(self, flowbox, child):
+        """
+            Use pixbuf as cover
+            Reset cache and use player object to announce cover change
+        """
         pixbuf = self._orig_pixbufs[child.get_child()]
         Lp.art.save_radio_logo(pixbuf, self._name)
         Lp.art.clean_radio_cache(self._name)
@@ -232,11 +237,11 @@ class RadioPopover(Gtk.Popover):
         self.hide()
         self._streams = {}
 
-    """
-        Update modify/add button
-        @param entry as Gtk.Entry
-    """
     def _on_entry_changed(self, entry):
+        """
+            Update modify/add button
+            @param entry as Gtk.Entry
+        """
         uri = self._uri_entry.get_text()
         name = self._name_entry.get_text()
         if name != '' and uri.find('://') != -1:

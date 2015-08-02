@@ -15,10 +15,16 @@ from gi.repository import Gtk, GLib
 from lollypop.view_device import DeviceView
 
 
-# Container for a view
-# Can contain any other widget too
 class ViewContainer(Gtk.Stack):
+    """
+        Container for a view
+        Can contain any other widget too        
+    """
+
     def __init__(self, duration):
+        """
+            Init container
+        """
         Gtk.Stack.__init__(self)
         self.set_property("expand", True)
         self._duration = duration
@@ -27,11 +33,11 @@ class ViewContainer(Gtk.Stack):
         self.set_transition_duration(duration)
         self.set_transition_type(Gtk.StackTransitionType.CROSSFADE)
 
-    """
-        Clean old views
-        @param view as new View
-    """
     def clean_old_views(self, view):
+        """
+            Clean old views
+            @param view as new View
+        """
         for child in self.get_children():
             if child != view:
                 if hasattr(child, "stop"):
@@ -48,11 +54,11 @@ class ViewContainer(Gtk.Stack):
 #######################
 # PRIVATE             #
 #######################
-    """
-        Clean view
-        @param valid view as View
-    """
     def _delayedclean_view(self, view):
+        """
+            Clean view
+            @param valid view as View
+        """
         if hasattr(view, "remove_signals"):
             view.remove_signals()
         view.destroy()

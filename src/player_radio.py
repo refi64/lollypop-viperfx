@@ -18,20 +18,24 @@ from lollypop.define import Type
 from lollypop.track import Track
 
 
-# This class neeed the parent object to be a BinPlayer
 class RadioPlayer(BasePlayer):
     """
-        Init radio player
+        Radio player
+        This class neeed the parent object to be a BinPlayer
     """
+
     def __init__(self):
+        """
+            Init radio player
+        """
         BasePlayer.__init__(self)
         self._current = None
 
-    """
-        Load radio at uri
-        @param track as Track
-    """
     def load(self, track):
+        """
+            Load radio at uri
+            @param track as Track
+        """
         try:
             self._current = track
             parser = TotemPlParser.Parser.new()
@@ -45,11 +49,11 @@ class RadioPlayer(BasePlayer):
         self._albums = None
         return True
 
-    """
-        Return next radio name, uri
-        @return Track
-    """
     def next(self):
+        """
+            Return next radio name, uri
+            @return Track
+        """
         track = Track()
         if self.current_track.id != Type.RADIOS:
             return track
@@ -72,11 +76,11 @@ class RadioPlayer(BasePlayer):
             track.set_radio(name, uris[0])
         return track
 
-    """
-        Return prev radio name, uri
-        @return Track
-    """
     def prev(self):
+        """
+            Return prev radio name, uri
+            @return Track
+        """
         track = Track()
         if self.current_track.id != Type.RADIOS:
             return track
@@ -102,14 +106,14 @@ class RadioPlayer(BasePlayer):
 #######################
 # PRIVATE             #
 #######################
-    """
-        Play stream
-        @param parser as TotemPlParser.Parser
-        @param track uri as str
-        @param metadata as GLib.HastTable
-        @param track as Track
-    """
     def _on_entry_parsed(self, parser, uri, metadata, track):
+        """
+            Play stream
+            @param parser as TotemPlParser.Parser
+            @param track uri as str
+            @param metadata as GLib.HastTable
+            @param track as Track
+        """
         # Only start playing if context always True
         if self._current == track:
             self._stop()
@@ -118,13 +122,13 @@ class RadioPlayer(BasePlayer):
             self._current = None
             self.play()
 
-    """
-        Play track if was not a playlist
-        @param source as GObject.Object
-        @param result as Gio.AsyncResult
-        @param track as Track
-    """
     def _on_parsing_finished(self, source, result, track):
+        """
+            Play track if was not a playlist
+            @param source as GObject.Object
+            @param result as Gio.AsyncResult
+            @param track as Track
+        """
         if self.current_track != track:
             self._stop()
             self._playbin.set_property('uri', track.uri)

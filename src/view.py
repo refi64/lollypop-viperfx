@@ -15,10 +15,15 @@ from gi.repository import Gtk, GLib
 from lollypop.define import Lp
 
 
-# Generic view
 class View(Gtk.Grid):
+    """
+        Generic view
+    """
 
     def __init__(self):
+        """
+            Init view
+        """
         Gtk.Grid.__init__(self)
         self.set_property('orientation', Gtk.Orientation.VERTICAL)
         self.set_border_width(0)
@@ -42,10 +47,10 @@ class View(Gtk.Grid):
         self._scrolledWindow.add(self._viewport)
         self._viewport.show()
 
-    """
-        Remove signals on player object
-    """
     def remove_signals(self):
+        """
+            Remove signals on player object
+        """
         if self._current_signal:
             Lp.player.disconnect(self._current_signal)
             self._current_signal = None
@@ -56,29 +61,29 @@ class View(Gtk.Grid):
             Lp.scanner.disconnect(self._scan_signal)
             self._scan_signal = None
 
-    """
-        Stop populating
-    """
     def stop(self):
+        """
+            Stop populating
+        """
         self._stop = True
         for child in self._get_children():
             child.stop()
 
-    """
-        Update children's covers
-    """
     def update_covers(self):
+        """
+            Update children's covers
+        """
         GLib.idle_add(self._update_widgets, self._get_children(), True)
 
 #######################
 # PRIVATE             #
 #######################
-    """
-        Update all widgets
-        @param widgets as AlbumWidget
-        @param force as bool
-    """
     def _update_widgets(self, widgets, force):
+        """
+            Update all widgets
+            @param widgets as AlbumWidget
+            @param force as bool
+        """
         if widgets:
             widget = widgets.pop(0)
             widget.set_cover(force)
@@ -86,33 +91,33 @@ class View(Gtk.Grid):
             widget.update_playing_indicator()
             GLib.idle_add(self._update_widgets, widgets, force)
 
-    """
-        Return view children
-    """
     def _get_children(self):
+        """
+            Return view children
+        """
         return []
 
-    """
-        Update album cover in view
-        @param widget as unused, album id as int
-    """
     def _on_cover_changed(self, widget, album_id):
+        """
+            Update album cover in view
+            @param widget as unused, album id as int
+        """
         for widget in self._get_children():
             widget.update_cover(album_id)
 
-    """
-        Current song changed
-        @param player as Player
-    """
     def _on_current_changed(self, player):
+        """
+            Current song changed
+            @param player as Player
+        """
         GLib.idle_add(self._update_widgets, self._get_children(), False)
 
-    """
-        On album modified, disable it
-        @param scanner as CollectionScanner
-        @param album id as int
-    """
     def _on_album_modified(self, scanner, album_id):
+        """
+            On album modified, disable it
+            @param scanner as CollectionScanner
+            @param album id as int
+        """
         for child in self._get_children():
             if album_id == child.get_id():
                 child.set_sensitive(False)

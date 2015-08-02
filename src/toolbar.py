@@ -19,14 +19,17 @@ from lollypop.toolbar_title import ToolbarTitle
 from lollypop.toolbar_end import ToolbarEnd
 
 
-# Toolbar as headerbar
-# Get real widget with Toolbar.widget
 class Toolbar(Gtk.HeaderBar):
     """
-        Init toolbar/headerbar ui
-        @param app as Gtk.Application
+        Lollypop toolbar
+        Real widget is Toolbar.widget
     """
+
     def __init__(self, app):
+        """
+            Init toolbar
+            @param app as Gtk.Application
+        """
         Gtk.HeaderBar.__init__(self)
 
         self._toolbar_playback = ToolbarPlayback()
@@ -45,57 +48,57 @@ class Toolbar(Gtk.HeaderBar):
         Lp.player.connect('status-changed', self._on_status_changed)
         Lp.player.connect('current-changed', self._on_current_changed)
 
-    """
-        Here, we calculate height based on left widget
-        We want to ignore titlebox height, like in original Gtk+ code
-        Simplified version here
-    """
     def do_get_preferred_height(self):
+        """
+            Here, we calculate height based on left widget
+            We want to ignore titlebox height, like in original Gtk+ code
+            Simplified version here
+        """
         style = self.get_style_context()
         padding = style.get_padding(style.get_state())
         toolbar_height = self._toolbar_playback.get_preferred_height()
         return (toolbar_height[0]+padding.top+padding.bottom,
                 toolbar_height[1]+padding.top+padding.bottom)
 
-    """
-        Update progress bar position
-        @param value as int
-    """
     def update_position(self, value=None):
+        """
+            Update progress bar position
+            @param value as int
+        """
         self._toolbar_title.update_position(value)
 
-    """
-        Set Gtk.Scale progress width
-        @param width as int
-    """
     def set_progress_width(self, width):
+        """
+            Set Gtk.Scale progress width
+            @param width as int
+        """
         self._toolbar_title.set_progress_width(width)
 
-    """
-        Add an application menu to menu button
-        @parma: menu as Gio.Menu
-    """
     def setup_menu_btn(self, menu):
+        """
+            Add an application menu to menu button
+            @parma: menu as Gio.Menu
+        """
         self._toolbar_end.setup_menu_btn(menu)
 
 #######################
 # PRIVATE             #
 #######################
-    """
-        Update toolbar
-        @param player as Player
-    """
     def _on_current_changed(self, player):
+        """
+            Update toolbar
+            @param player as Player
+        """
         self._toolbar_playback.on_current_changed(player)
         self._toolbar_infos.on_current_changed(player)
         self._toolbar_title.on_current_changed(player)
         self._toolbar_end.on_current_changed(player)
 
-    """
-        Update buttons and progress bar
-        @param player as Player
-    """
     def _on_status_changed(self, player):
+        """
+            Update buttons and progress bar
+            @param player as Player
+        """
         self._toolbar_playback.on_status_changed(player)
         self._toolbar_infos.on_status_changed(player)
         self._toolbar_title.on_status_changed(player)

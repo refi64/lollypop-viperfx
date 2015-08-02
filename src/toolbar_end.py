@@ -20,10 +20,14 @@ from lollypop.define import Lp, Shuffle
 
 class ToolbarEnd(Gtk.Bin):
     """
-        Init end toolbar
-        @param app as Gtk.Application
+        Toolbar end
     """
+
     def __init__(self, app):
+        """
+            Init toolbar
+            @param app as Gtk.Application
+        """
         Gtk.Bin.__init__(self)
         self._pop_next = NextPopover()
         builder = Gtk.Builder()
@@ -58,19 +62,19 @@ class ToolbarEnd(Gtk.Bin):
 
         Lp.player.connect('party-changed', self._on_party_changed)
 
-    """
-        Add an application menu to menu button
-        @parma: menu as Gio.Menu
-    """
     def setup_menu_btn(self, menu):
+        """
+            Add an application menu to menu button
+            @parma: menu as Gio.Menu
+        """
         self._settings_button.show()
         self._settings_button.set_menu_model(menu)
 
-    """
-        Update buttons on current changed
-        @param player as Player
-    """
     def on_current_changed(self, player):
+        """
+            Update buttons on current changed
+            @param player as Player
+        """
         # Do not show next popover non internal tracks as
         # tags will be readed on the fly
         if player.next_track.id is not None and\
@@ -83,30 +87,30 @@ class ToolbarEnd(Gtk.Bin):
         else:
             self._pop_next.hide()
 
-    """
-        Update buttons on status changed
-        @param player as Player
-    """
     def on_status_changed(self, player):
+        """
+            Update buttons on status changed
+            @param player as Player
+        """
         if player.is_playing():
             # Party mode can be activated
             # via Fullscreen class, so check button state
             self._party_btn.set_active(player.is_party())
 
-    """
-        Show popover if needed
-	"""
     def do_realize(self):
+        """
+            Show popover if needed
+	    """
         Gtk.Bin.do_realize(self)
         self._set_shuffle_icon()
 
 #######################
 # PRIVATE             #
 #######################
-    """
-        Set shuffle icon
-    """
     def _set_shuffle_icon(self):
+        """
+            Set shuffle icon
+        """
         shuffle = Lp.settings.get_enum('shuffle')
         if shuffle == Shuffle.NONE:
             self._shuffle_btn_image.set_from_icon_name(
@@ -127,41 +131,41 @@ class ToolbarEnd(Gtk.Bin):
             self._pop_next.set_relative_to(None)
             self._pop_next.hide()
 
-    """
-        Mark shuffle button as active when shuffle active
-        @param settings as Gio.Settings, value as str
-    """
     def _shuffle_btn_aspect(self, settings, value):
+        """
+            Mark shuffle button as active when shuffle active
+            @param settings as Gio.Settings, value as str
+        """
         self._set_shuffle_icon()
 
-    """
-        Activate party button
-        @param action as Gio.SimpleAction
-        @param param as GLib.Variant
-    """
     def _activate_party_button(self, action=None, param=None):
+        """
+            Activate party button
+            @param action as Gio.SimpleAction
+            @param param as GLib.Variant
+        """
         self._party_btn.set_active(not self._party_btn.get_active())
 
-    """
-        Show search widget on search button clicked
-        @param obj as Gtk.Button or Gtk.Action
-    """
     def _on_search_btn_clicked(self, obj, param=None):
+        """
+            Show search widget on search button clicked
+            @param obj as Gtk.Button or Gtk.Action
+        """
         self._search.show()
 
-    """
-        Show queue widget on queue button clicked
-        @param button as Gtk.Button
-    """
     def _on_queue_btn_clicked(self, button):
+        """
+            Show queue widget on queue button clicked
+            @param button as Gtk.Button
+        """
         self._queue.show()
         self._queue.populate()
 
-    """
-        Set party mode on if party button active
-        @param obj as Gtk.button
-    """
     def _on_party_btn_toggled(self, button):
+        """
+            Set party mode on if party button active
+            @param obj as Gtk.button
+        """
         active = self._party_btn.get_active()
         self._shuffle_btn.set_sensitive(not active)
         if not Lp.settings.get_value('dark-ui'):
@@ -177,11 +181,11 @@ class ToolbarEnd(Gtk.Bin):
             self._pop_next.update()
             self._pop_next.show()
 
-    """
-        On party change, sync toolbar
-        @param player as Player
-        @param is party as bool
-    """
     def _on_party_changed(self, player, is_party):
+        """
+            On party change, sync toolbar
+            @param player as Player
+            @param is party as bool
+        """
         if self._party_btn.get_active() != is_party:
             self._activate_party_button()

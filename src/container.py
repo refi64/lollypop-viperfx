@@ -21,7 +21,7 @@ from lollypop.playlists import PlaylistsManager
 from lollypop.view_container import ViewContainer
 from lollypop.view_albums import AlbumsView, ArtistView
 from lollypop.view_radios import RadiosView
-from lollypop.view_playlists import PlaylistsView
+from lollypop.view_playlists import PlaylistView
 from lollypop.view_playlists import PlaylistsManageView, PlaylistEditView
 from lollypop.view_device import DeviceView
 
@@ -455,7 +455,7 @@ class Container:
         view = None
         if playlist_id is not None:
             name = self._list_two.get_value(playlist_id)
-            view = PlaylistsView(playlist_id, name, self._stack)
+            view = PlaylistView(playlist_id, name, self._stack)
         else:
             view = PlaylistsManageView(-1, None, False,
                                        self._stack.get_allocated_width()/2)

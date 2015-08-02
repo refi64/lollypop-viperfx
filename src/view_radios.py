@@ -21,12 +21,15 @@ from lollypop.define import Lp
 from lollypop.track import Track
 
 
-# Radios view
 class RadiosView(View):
     """
-        Init radios ui with a scrolled grid of radios widgets
+        Show radios in a grid
     """
+
     def __init__(self):
+        """
+            Init view
+        """
         View.__init__(self)
 
         self._signal = None
@@ -62,29 +65,29 @@ class RadiosView(View):
         self.add(widget)
         self.add(self._scrolledWindow)
 
-    """
-        Populate view with tracks from playlist
-        Thread safe
-    """
     def populate(self):
+        """
+            Populate view with tracks from playlist
+            Thread safe
+        """
         radios_name = []
         # Get radios name
         for (i, name) in self._radios_manager.get():
             radios_name.append(name)
         GLib.idle_add(self._add_radios, radios_name)
 
-    """
-        Connect player signal
-    """
     def do_show(self):
+        """
+            Connect player signal
+        """
         View.do_show(self)
         self._signal = Lp.art.connect('logo-changed',
                                       self._on_logo_changed)
 
-    """
-        Disconnect player signal
-    """
     def do_hide(self):
+        """
+            Disconnect player signal
+        """
         View.do_hide(self)
         if self._signal is not None:
             Lp.art.disconnect(self._signal)
@@ -92,49 +95,49 @@ class RadiosView(View):
 #######################
 # PRIVATE             #
 #######################
-    """
-        Return view children
-        @return [RadioWidget]
-    """
     def _get_children(self):
+        """
+            Return view children
+            @return [RadioWidget]
+        """
         children = []
         for child in self._radiobox.get_children():
             widget = child.get_child()
             children.append(widget)
         return children
 
-    """
-        Sort radios
-        @param a as Gtk.FlowBoxChild
-        @param b as Gtk.FlowBoxChild
-    """
     def _sort_radios(self, a, b):
+        """
+            Sort radios
+            @param a as Gtk.FlowBoxChild
+            @param b as Gtk.FlowBoxChild
+        """
         child1 = a.get_children()[0]
         child2 = b.get_children()[0]
         return child1.get_name().lower() > child2.get_name().lower()
 
-    """
-        Show popover for adding a new radio
-        @param widget as Gtk.Widget
-    """
     def _on_new_clicked(self, widget):
+        """
+            Show popover for adding a new radio
+            @param widget as Gtk.Widget
+        """
         popover = RadioPopover('', self._radios_manager)
         popover.set_relative_to(widget)
         popover.show()
 
-    """
-        Show popover for searching radios
-        @param widget as Gtk.Widget
-    """
     def _on_search_clicked(self, widget):
+        """
+            Show popover for searching radios
+            @param widget as Gtk.Widget
+        """
         self._pop_tunein.populate()
         self._pop_tunein.show()
 
-    """
-        Update radios
-        @param manager as PlaylistManager
-    """
     def _on_radios_changed(self, manager):
+        """
+            Update radios
+            @param manager as PlaylistManager
+        """
         radios_name = []
         currents = []
         new_name = None
@@ -171,23 +174,23 @@ class RadiosView(View):
             self._radiobox.remove(old_child)
             old_widget.destroy()
 
-    """
-        Update radio logo
-        @param player as Plyaer
-        @param name as string
-    """
     def _on_logo_changed(self, player, name):
+        """
+            Update radio logo
+            @param player as Plyaer
+            @param name as string
+        """
         for child in self._radiobox.get_children():
             widget = child.get_child()
             if widget.get_name() == name:
                 widget.update_cover()
 
-    """
-        Pop a radio and add it to the view,
-        repeat operation until radio list is empty
-        @param [radio names as string]
-    """
     def _add_radios(self, radios):
+        """
+            Pop a radio and add it to the view,
+            repeat operation until radio list is empty
+            @param [radio names as string]
+        """
         if radios and not self._stop:
             radio = radios.pop(0)
             widget = RadioWidget(radio,
@@ -200,12 +203,12 @@ class RadiosView(View):
             self._stop = False
         return None
 
-    """
-        Play album
-        @param flowbox as Gtk.Flowbox
-        @child as Gtk.FlowboxChild
-    """
     def _on_album_activated(self, flowbox, child):
+        """
+            Play album
+            @param flowbox as Gtk.Flowbox
+            @child as Gtk.FlowboxChild
+        """
         name = child.get_child().get_name()
         uris = self._radios_manager.get_tracks(name)
         if len(uris) > 0:
