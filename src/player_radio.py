@@ -15,7 +15,7 @@ from gi.repository import TotemPlParser
 from lollypop.playlists import RadiosManager
 from lollypop.player_base import BasePlayer
 from lollypop.define import Type
-from lollypop.track import Track
+from lollypop.objects import Track
 
 
 class RadioPlayer(BasePlayer):

@@ -16,7 +16,7 @@ from cgi import escape
 from _thread import start_new_thread
 
 from lollypop.define import Lp, ArtSize, Type
-from lollypop.track import Track
+from lollypop.objects import Track
 
 
 class SearchRow(Gtk.ListBoxRow):

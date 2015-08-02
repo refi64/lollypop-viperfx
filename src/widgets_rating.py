@@ -20,15 +20,14 @@ class RatingWidget(Gtk.Bin):
         Rate widget
     """
 
-    def __init__(self, object_id, is_album):
+    def __init__(self, object):
         """
             Init widget
             @param object id as int
             @param is album as bool
         """
         Gtk.Bin.__init__(self)
-        self._object_id = object_id
-        self._is_album = is_album
+        self._object = object
         builder = Gtk.Builder()
         builder.add_from_resource('/org/gnome/Lollypop/RatingWidget.ui')
         builder.connect_signals(self)
@@ -71,45 +70,31 @@ class RatingWidget(Gtk.Bin):
             @param widget as Gtk.EventBox (can be None)
             @param event as Gdk.Event (can be None)
         """
-        if self._is_album:
-            avg_popularity = Lp.albums.get_avg_popularity()
-        else:
-            avg_popularity = Lp.tracks.get_avg_popularity()
-
-        if avg_popularity > 0:
-            if self._is_album:
-                popularity = Lp.albums.get_popularity(self._object_id)
-            else:
-                popularity = Lp.tracks.get_popularity(self._object_id)
-
-            stars = popularity*5/avg_popularity+0.5
-            if stars < 1:
-                for i in range(5):
-                    self._stars[i].set_property("opacity", 0.2)
-            else:
-                if stars >= 1:
-                    self._stars[0].set_property("opacity", 0.8)
-                else:
-                    self._stars[0].set_property("opacity", 0.2)
-                if stars >= 2:
-                    self._stars[1].set_property("opacity", 0.8)
-                else:
-                    self._stars[1].set_property("opacity", 0.2)
-                if stars >= 3:
-                    self._stars[2].set_property("opacity", 0.8)
-                else:
-                    self._stars[2].set_property("opacity", 0.2)
-                if stars >= 4:
-                    self._stars[3].set_property("opacity", 0.8)
-                else:
-                    self._stars[3].set_property("opacity", 0.2)
-                if stars >= 4.75:
-                    self._stars[4].set_property("opacity", 0.8)
-                else:
-                    self._stars[4].set_property("opacity", 0.2)
-        else:
+        stars = self._object.get_popularity()
+        if stars < 1:
             for i in range(5):
                 self._stars[i].set_property("opacity", 0.2)
+        else:
+            if stars >= 1:
+                self._stars[0].set_property("opacity", 0.8)
+            else:
+                self._stars[0].set_property("opacity", 0.2)
+            if stars >= 2:
+                self._stars[1].set_property("opacity", 0.8)
+            else:
+                self._stars[1].set_property("opacity", 0.2)
+            if stars >= 3:
+                self._stars[2].set_property("opacity", 0.8)
+            else:
+                self._stars[2].set_property("opacity", 0.2)
+            if stars >= 4:
+                self._stars[3].set_property("opacity", 0.8)
+            else:
+                self._stars[3].set_property("opacity", 0.2)
+            if stars >= 4.75:
+                self._stars[4].set_property("opacity", 0.8)
+            else:
+                self._stars[4].set_property("opacity", 0.2)
 
     def _on_button_press(self, widget, event):
         """
@@ -120,20 +105,5 @@ class RatingWidget(Gtk.Bin):
         if Lp.scanner.is_locked():
             return
         event_star = widget.get_children()[0]
-        try:
-            position = self._stars.index(event_star)
-            if self._is_album:
-                avg_popularity = Lp.albums.get_avg_popularity()
-            else:
-                avg_popularity = Lp.tracks.get_avg_popularity()
-            popularity = int(((position+1)*avg_popularity/5)+0.5)
-            if self._is_album:
-                Lp.albums.set_popularity(self._object_id, popularity)
-            else:
-                Lp.tracks.set_popularity(self._object_id, popularity)
-        except:
-            if self._is_album:
-                Lp.albums.set_popularity(self._object_id, 0)
-            else:
-                Lp.tracks.set_popularity(self._object_id, 0)
-        Lp.sql.commit()
+        position = self._stars.index(event_star)
+        self._object.set_popularity(position + 1)
