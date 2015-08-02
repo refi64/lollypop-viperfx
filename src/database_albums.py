@@ -108,7 +108,7 @@ class AlbumsDatabase:
         sql.execute("UPDATE albums set mtime=? WHERE rowid=?",
                     (mtime, album_id))
 
-    def set_popularity(self, album_id, popularity, sql=None):
+    def set_popularity(self, album_id, popularity, commit=False, sql=None):
         """
             Set popularity
             @param album_id as int
@@ -120,6 +120,8 @@ class AlbumsDatabase:
         try:
             sql.execute("UPDATE albums set popularity=? WHERE rowid=?",
                         (popularity, album_id))
+            if commit:
+                sql.commit()
         except:  # Database is locked
             pass
 

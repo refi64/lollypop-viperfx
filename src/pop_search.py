@@ -316,13 +316,13 @@ class SearchPopover(Gtk.Popover):
         track_id = None
         for child in self._view.get_children():
             if child.is_track:
-                tracks.append(Track(child.id, sql))
+                tracks.append(Track(child.id))
             else:
                 album_tracks = Lp.albums.get_tracks(child.id, None, sql)
                 if not is_track and child.id == object_id and album_tracks:
                     track_id = album_tracks[0]
                 for tid in album_tracks:
-                    tracks.append(Track(tid, sql))
+                    tracks.append(Track(tid))
         if tracks:
             GLib.idle_add(Lp.player.set_party, False)
             if object_id is not None and is_track:
@@ -391,7 +391,7 @@ class SearchPopover(Gtk.Popover):
             @param row as SearchRow
         """
         Lp.player.set_party(False)
-        start_new_thread(self._play_search, (row.id,    row.is_track))
+        start_new_thread(self._play_search, (row.id, row.is_track))
 
     def _on_play_btn_clicked(self, button):
         """

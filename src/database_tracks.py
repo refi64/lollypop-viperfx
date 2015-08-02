@@ -530,7 +530,7 @@ class TracksDatabase:
         sql.execute("UPDATE tracks set ltime=? WHERE rowid=?",
                     (ltime, track_id))
 
-    def set_popularity(self, track_id, popularity, sql=None):
+    def set_popularity(self, track_id, popularity, commit=False, sql=None):
         """
             Set popularity
             @param track id as int
@@ -542,6 +542,8 @@ class TracksDatabase:
         try:
             sql.execute("UPDATE tracks set popularity=? WHERE rowid=?",
                         (popularity, track_id))
+            if commit:
+                sql.commit()
         except:  # Database is locked
             pass
 

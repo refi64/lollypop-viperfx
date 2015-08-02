@@ -16,13 +16,17 @@ from gi.repository import GLib
 
 from os import path
 
+from threading import current_thread
+
 from lollypop.define import Lp, Type
 
 
 class Base:
-    def __init__(self, db, sql):
+    """
+        Base for album and track objects
+    """
+    def __init__(self, db):
         self.db = db
-        self.sql = sql
 
     def __dir__(self, *args, **kwargs):
         return super(Base, self).__dir__(*args, **kwargs) + self.FIELDS
@@ -37,7 +41,12 @@ class Base:
             attr_name = "_" + attr
             attr_value = getattr(self, attr_name)
             if attr_value is None and not self.id == Type.RADIOS:
-                attr_value = getattr(self.db, "get_" + attr)(self.id, self.sql)
+                sql = None
+                if current_thread() != '_Mainthread':
+                    sql = Lp.db.get_cursor()
+                attr_value = getattr(self.db, "get_" + attr)(self.id, sql)
+                if sql is not None:
+                    sql.close()
                 setattr(self, attr_name, attr_value)
             return attr_value
 
@@ -64,14 +73,16 @@ class Base:
         avg_popularity = self.db.get_avg_popularity()
         popularity = int((popularity * avg_popularity / 5) + 0.5)
         try:
-            self.db.set_popularity(self.id, popularity)
+            self.db.set_popularity(self.id, popularity, True)
         except:
-            self.db.set_popularity(self.id, 0)
-        Lp.sql.commit()
+            self.db.set_popularity(self.id, 0, True)
 
 
-# Represent an album
+
 class Album(Base):
+    """
+        Represent an album
+    """
     FIELDS = ['name', 'artist_name', 'artist_id', 'year', 'tracks_id']
     DEFAULTS = ['', '', None, '', []]
 
@@ -80,9 +91,8 @@ class Album(Base):
             Init album
             @param album_id as int
             @param genre_id as int
-            @param sql as sqlite cursor
         """
-        Base.__init__(self, Lp.albums, sql)
+        Base.__init__(self, Lp.albums)
         self.id = album_id
         self.genre_id = genre_id
 
@@ -101,7 +111,12 @@ class Album(Base):
             @return list of int
         """
         if getattr(self, "_tracks_ids") is None:
-            self._tracks_ids = self.db.get_tracks(self.id, self.genre_id, self.sql)
+            sql = None
+            if current_thread() != '_Mainthread':
+                sql = Lp.db.get_cursor()
+            self._tracks_ids = self.db.get_tracks(self.id, self.genre_id, sql)
+            if sql is not None:
+                sql.close()
         return self._tracks_ids
 
     @property
@@ -115,20 +130,21 @@ class Album(Base):
         return self._tracks
 
 
-# Represent a atrack
 class Track(Base):
+    """
+        Represent a track
+    """
     FIELDS = ['name', 'album_id', 'album_artist_id',
               'artist_ids', 'artist_names',
               'genre_names', 'length', 'number', 'path']
     DEFAULTS = ['', None, None, [], '', '', 0.0, None, '']
 
-    def __init__(self, track_id=None, sql=None):
+    def __init__(self, track_id=None):
         """
             Init track
             @param track_id as int
-            @param sql as sqlite cursor
         """
-        Base.__init__(self, Lp.tracks, sql)
+        Base.__init__(self, Lp.tracks)
         self.id = track_id
 
     @property
@@ -189,7 +205,12 @@ class Track(Base):
             @return str
         """
         if getattr(self, "_aartist") is None:
-            self._aartist = Lp.artists.get_name(self.aartist_id, self.sql)
+            sql = None
+            if current_thread() != '_Mainthread':
+                sql = Lp.db.get_cursor()
+            self._aartist = Lp.artists.get_name(self.aartist_id, sql)
+            if sql is not None:
+                sql.close()
         return self._aartist
 
     @property
