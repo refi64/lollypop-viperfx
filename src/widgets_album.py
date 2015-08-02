@@ -376,7 +376,7 @@ class AlbumDetailedWidget(AlbumWidget):
             @param widget as Gtk.Button
             @param album id as int
         """
-        pop_menu = AlbumMenu(self._album_id, self._album.genre_id)
+        pop_menu = AlbumMenu(self._album.id, self._album.genre_id)
         popover = Gtk.Popover.new_from_model(self._menu, pop_menu)
         popover.connect('closed', self._on_closed)
         self.get_style_context().add_class('album-menu-selected')
