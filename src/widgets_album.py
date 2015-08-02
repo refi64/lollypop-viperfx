@@ -445,14 +445,19 @@ class AlbumDetailedWidget(AlbumWidget):
             @param widget as TracksWidget
             @param track id as int
         """
-        Lp.player.context.next = NextContext.NONE
-        if not Lp.player.is_party():
-            Lp.player.set_albums(track_id,
-                                 self._album.artist_id,
-                                 self._album.genre_id)
-        Lp.player.load(Track(track_id))
-        if self._button_state & Gdk.ModifierType.CONTROL_MASK:
-            Lp.player.context.next = NextContext.STOP_TRACK
+        # Play track with no album, force repeat on track
+        if self._button_state & Gdk.ModifierType.SHIFT_MASK:
+            Lp.player.clear_albums()
+            Lp.player.load(Track(track_id))
+        else:
+            Lp.player.context.next = NextContext.NONE
+            if not Lp.player.is_party():
+                Lp.player.set_albums(track_id,
+                                     self._album.artist_id,
+                                     self._album.genre_id)
+            Lp.player.load(Track(track_id))
+            if self._button_state & Gdk.ModifierType.CONTROL_MASK:
+                Lp.player.context.next = NextContext.STOP_TRACK
 
     def _on_button_press_event(self, widget, event):
         """

@@ -31,6 +31,10 @@ class LinearPlayer(BasePlayer):
             Next track based on.current_track context
             @return track as Track
         """
+        # If no album available, repeat current track
+        if not self._albums:
+            return self.current_track
+
         track_id = None
         if self._albums is not None:
             tracks = Lp.albums.get_tracks(self.current_track.album_id,
@@ -61,6 +65,10 @@ class LinearPlayer(BasePlayer):
             Prev track base on.current_track context
             @return track as Track
         """
+        # If no album available, repeat current track
+        if not self._albums:
+            return self.current_track
+
         track_id = None
         if self._albums is not None:
             tracks = Lp.albums.get_tracks(self.current_track.album_id,

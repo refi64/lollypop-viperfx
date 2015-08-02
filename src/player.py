@@ -153,6 +153,12 @@ class Player(BinPlayer, QueuePlayer, UserPlaylistPlayer, RadioPlayer,
         elif self.current_track.id != Type.RADIOS:
             self.stop()
 
+    def clear_albums(self):
+        """
+            Clear all albums
+        """
+        self._albums = []
+
     def restore_state(self):
         """
             Restore player state
