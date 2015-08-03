@@ -14,7 +14,7 @@ from gi.repository import GLib
 
 from lollypop.define import Type
 from lollypop.player_base import BasePlayer
-from lollypop.track import Track
+from lollypop.objects import Track
 
 
 

@@ -18,7 +18,7 @@ from lollypop.playlists import RadiosManager
 from lollypop.pop_radio import RadioPopover
 from lollypop.pop_tunein import TuneinPopover
 from lollypop.define import Lp
-from lollypop.track import Track
+from lollypop.objects import Track
 
 
 class RadiosView(View):

@@ -179,6 +179,8 @@ class MPRIS(dbus.service.Object):
                 Lp.player.current_track.duration * 1000000)
             self._metadata['xesam:genre'] = [Lp.player.current_track.genre]
             self._metadata['xesam:url'] = Lp.player.current_track.uri
+            self._metadata["xesam:userRating"] = \
+                Lp.player.current_track.get_popularity() / 5
             if Lp.player.current_track.id == Type.RADIOS:
                 cover_path = Lp.art.get_radio_cache_path(
                     Lp.player.current_track.artist, ArtSize.BIG)
