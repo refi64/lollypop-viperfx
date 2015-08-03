@@ -1,4 +1,3 @@
-#!/usr/bin/python
 # Copyright (c) 2014-2015 Cedric Bellegarde <cedric.bellegarde@adishatz.org>
 # Copyright (C) 2010 Jonathan Matthew (replay gain code)
 # This program is free software: you can redistribute it and/or modify
