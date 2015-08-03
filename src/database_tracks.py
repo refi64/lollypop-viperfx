@@ -11,6 +11,7 @@
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 from gettext import gettext as _
+import itertools
 
 from lollypop.define import Lp, Type
 from lollypop.utils import translate_artist_name
@@ -106,10 +107,7 @@ class TracksDatabase:
         result = sql.execute("SELECT rowid\
                               FROM tracks where name=? COLLATE NOCASE",
                              (name,))
-        track_ids = []
-        for row in result:
-            track_ids += row
-        return track_ids
+        return list(itertools.chain(*result))
 
     def get_id_by_path(self, filepath, sql=None):
         """
@@ -153,9 +151,8 @@ class TracksDatabase:
         result = sql.execute("SELECT year FROM tracks where rowid=?",
                              (album_id,))
         v = result.fetchone()
-        if v:
-            if v[0]:
-                return str(v[0])
+        if v and v[0]:
+            return str(v[0])
 
         return ""
 
@@ -218,10 +215,7 @@ class TracksDatabase:
             sql = Lp.sql
         result = sql.execute("SELECT artist_id FROM track_artists\
                               WHERE track_id=?", (track_id,))
-        artists = []
-        for row in result:
-            artists += row
-        return artists
+        return list(itertools.chain(*result))
 
     def get_artist_names(self, track_id, sql=None):
         """
@@ -235,12 +229,8 @@ class TracksDatabase:
                               WHERE track_artists.track_id=?\
                               AND track_artists.artist_id=artists.rowid",
                              (track_id,))
-        artists = ""
-        for row in result:
-            if artists != "":
-                artists += ", "
-            artists += translate_artist_name(row[0])
-        return artists
+        artists = [translate_artist_name(row[0]) for row in result]
+        return ", ".join(artists)
 
     def get_genre_ids(self, track_id, sql=None):
         """
@@ -252,10 +242,7 @@ class TracksDatabase:
             sql = Lp.sql
         result = sql.execute("SELECT genre_id FROM track_genres\
                               WHERE track_id=?", (track_id,))
-        genres = []
-        for row in result:
-            genres += row
-        return genres
+        return list(itertools.chain(*result))
 
     def get_genre_names(self, track_id, sql=None):
         """
@@ -269,12 +256,8 @@ class TracksDatabase:
                               WHERE track_genres.track_id=?\
                               AND track_genres.genre_id=genres.rowid",
                              (track_id,))
-        genres = ""
-        for row in result:
-            if genres != "":
-                genres += ", "
-            genres += row[0]
-        return genres
+        genres = [row[0] for row in result]
+        return ", ".join(genres)
 
     def get_mtimes(self, sql=None):
         """
@@ -286,11 +269,9 @@ class TracksDatabase:
         if not sql:
             sql = Lp.sql
         mtimes = {}
-        sql.row_factory = self._dict_factory
         result = sql.execute("SELECT filepath, mtime FROM tracks")
         for row in result:
             mtimes.update(row)
-        sql.row_factory = None
         return mtimes
 
     def get_infos(self, track_id, sql=None):
@@ -338,11 +319,8 @@ class TracksDatabase:
         """
         if not sql:
             sql = Lp.sql
-        tracks = []
         result = sql.execute("SELECT filepath FROM tracks;")
-        for row in result:
-            tracks += row
-        return tracks
+        return list(itertools.chain(*result))
 
     def get_number(self, track_id, sql=None):
         """
@@ -393,11 +371,10 @@ class TracksDatabase:
         """
             Get tracks for artist_id where artist_id isn't main artist
             @param artist id as int
-            @return array of (tracks id as int, track name as string)
+            @return list of [tracks id as int, track name as string]
         """
         if not sql:
             sql = Lp.sql
-        tracks = []
         result = sql.execute("SELECT tracks.rowid, tracks.name\
                               FROM tracks, track_artists, albums\
                               WHERE albums.rowid == tracks.album_id\
@@ -405,9 +382,7 @@ class TracksDatabase:
                               AND track_artists.track_id=tracks.rowid\
                               AND albums.artist_id != ?", (artist_id,
                                                            artist_id))
-        for row in result:
-            tracks += (row,)
-        return tracks
+        return list(result)
 
     def get_populars(self, sql=None):
         """
@@ -416,14 +391,10 @@ class TracksDatabase:
         """
         if not sql:
             sql = Lp.sql
-        tracks = []
-
         result = sql.execute("SELECT rowid FROM tracks\
                               WHERE popularity!=0\
                               ORDER BY popularity DESC LIMIT 100")
-        for row in result:
-            tracks += row
-        return tracks
+        return list(itertools.chain(*result))
 
     def get_avg_popularity(self, sql=None):
         """
@@ -478,14 +449,10 @@ class TracksDatabase:
         """
         if not sql:
             sql = Lp.sql
-        tracks = []
-
         result = sql.execute("SELECT rowid FROM tracks\
                               WHERE ltime=0\
                               ORDER BY random() LIMIT 100")
-        for row in result:
-            tracks += row
-        return tracks
+        return list(itertools.chain(*result))
 
     def get_recently_listened_to(self, sql=None):
         """
@@ -494,14 +461,10 @@ class TracksDatabase:
         """
         if not sql:
             sql = Lp.sql
-        tracks = []
-
         result = sql.execute("SELECT rowid FROM tracks\
                               WHERE ltime!=0\
                               ORDER BY ltime DESC LIMIT 100")
-        for row in result:
-            tracks += row
-        return tracks
+        return list(itertools.chain(*result))
 
     def get_randoms(self, sql=None):
         """
@@ -510,13 +473,9 @@ class TracksDatabase:
         """
         if not sql:
             sql = Lp.sql
-        tracks = []
-
         result = sql.execute("SELECT rowid FROM tracks\
                               ORDER BY random() LIMIT 100")
-        for row in result:
-            tracks += row
-        return tracks
+        return list(itertools.chain(*result))
 
     def set_ltime(self, track_id, ltime, sql=None):
         """
@@ -580,17 +539,14 @@ class TracksDatabase:
         """
             Search for tracks looking like searched
             @param searched as string
-            return: Arrays of (id as int, name as string)
+            return: list of [id as int, name as string]
         """
         if not sql:
             sql = Lp.sql
 
         result = sql.execute("SELECT rowid, name FROM tracks\
-                              WHERE name LIKE ? LIMIT 25", ('%'+searched+'%',))
-        tracks = []
-        for row in result:
-            tracks += (row,)
-        return tracks
+                              WHERE name LIKE ? LIMIT 25", ('%' + searched + '%',))
+        return list(result)
 
     def search_track(self, artist, title, sql=None):
         """
@@ -628,14 +584,3 @@ class TracksDatabase:
                      WHERE track_id=?", (track_id,))
         sql.execute("DELETE FROM tracks\
                      WHERE rowid=?", (track_id,))
-
-#######################
-# PRIVATE             #
-#######################
-    def _dict_factory(self, cursor, row):
-        """
-            Sqlite row factory
-        """
-        d = {}
-        d[row[0]] = row[1]
-        return d
