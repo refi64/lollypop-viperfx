@@ -17,20 +17,22 @@ from lollypop.art_album import AlbumArt
 from lollypop.art_radio import RadioArt
 
 
-# Global artwork manager
 class Art(AlbumArt, RadioArt):
+    """
+        Global artwork manager
+    """
 
-    """
-        Create cache path
-    """
     def __init__(self):
+        """
+            Create cache path
+        """
         AlbumArt.__init__(self)
         RadioArt.__init__(self)
 
-    """
-        Remove all covers from cache
-    """
     def clean_all_cache(self):
+        """
+            Remove all covers from cache
+        """
         try:
             files = os.listdir(self._CACHE_PATH)
             for f in files:

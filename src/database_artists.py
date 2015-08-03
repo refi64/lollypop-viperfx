@@ -17,29 +17,35 @@ from lollypop.define import Lp, Type
 from lollypop.utils import translate_artist_name
 
 
-# All functions take a sqlite cursor as last parameter,
-# set another one if you're in a thread
 class ArtistsDatabase:
+    """    
+        All functions take a sqlite cursor as last parameter,
+        set another one if you're in a thread
+    """
+
     def __init__(self):
+        """
+            Init artists database object
+        """
         pass
 
-    """
-        Add a new artist to database
-        @param Artist name as string
-        @warning: commit needed
-    """
     def add(self, name, sql=None):
+        """
+            Add a new artist to database
+            @param Artist name as string
+            @warning: commit needed
+        """
         if not sql:
             sql = Lp.sql
         sql.execute("INSERT INTO artists (name) VALUES (?)",
                     (name,))
 
-    """
-        Get artist id
-        @param Artist name as string
-        @return Artist id as int
-    """
     def get_id(self, name, sql=None):
+        """
+            Get artist id
+            @param Artist name as string
+            @return Artist id as int
+        """
         if not sql:
             sql = Lp.sql
 
@@ -51,12 +57,12 @@ class ArtistsDatabase:
 
         return None
 
-    """
-        Get artist name
-        @param Artist id as int
-        @return Artist name as string
-    """
     def get_name(self, artist_id, sql=None):
+        """
+            Get artist name
+            @param Artist id as int
+            @return Artist name as string
+        """
         if not sql:
             sql = Lp.sql
         if artist_id == Type.COMPILATIONS:
@@ -70,11 +76,11 @@ class ArtistsDatabase:
 
         return _("Unknown")
 
-    """
-        Get all availables albums for artist
-        @return Array of id as int
-    """
     def get_albums(self, artist_id, sql=None):
+        """
+            Get all availables albums for artist
+            @return Array of id as int
+        """
         if not sql:
             sql = Lp.sql
         albums = []
@@ -85,11 +91,11 @@ class ArtistsDatabase:
             albums += row
         return albums
 
-    """
-        Get all availables compilations for artist
-        @return Array of id as int
-    """
     def get_compilations(self, artist_id, sql=None):
+        """
+            Get all availables compilations for artist
+            @return Array of id as int
+        """
         if not sql:
             sql = Lp.sql
         compilations = []
@@ -105,14 +111,14 @@ class ArtistsDatabase:
             compilations += row
         return compilations
 
-    """
-        Get all available artists
-        @param None
-        or
-        @param Filter genre id as int
-        @return Array of (artist id as int, artist name as string)
-    """
     def get(self, genre_id, sql=None):
+        """
+            Get all available artists
+            @param None
+            or
+            @param Filter genre id as int
+            @return Array of (artist id as int, artist name as string)
+        """
         if not sql:
             sql = Lp.sql
         result = []
@@ -135,11 +141,11 @@ class ArtistsDatabase:
             artists.append((row[0], translate_artist_name(row[1])))
         return artists
 
-    """
-        Return True if artist exist
-        @param artist id as int
-    """
     def exists(self, artist_id, sql=None):
+        """
+            Return True if artist exist
+            @param artist id as int
+        """
         if not sql:
             sql = Lp.sql
 
@@ -151,12 +157,12 @@ class ArtistsDatabase:
 
         return False
 
-    """
-        Search for artists looking like string
-        @param string
-        @return Array of id as int
-    """
     def search(self, string, sql=None):
+        """
+            Search for artists looking like string
+            @param string
+            @return Array of id as int
+        """
         if not sql:
             sql = Lp.sql
         artists = []
@@ -167,12 +173,12 @@ class ArtistsDatabase:
             artists += row
         return artists
 
-    """
-        Clean database for artist id
-        @param artist id as int
-        @warning commit needed
-    """
     def clean(self, artist_id, sql=None):
+        """
+            Clean database for artist id
+            @param artist id as int
+            @warning commit needed
+        """
         if not sql:
             sql = Lp.sql
         result = sql.execute("SELECT rowid from albums\

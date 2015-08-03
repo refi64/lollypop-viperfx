@@ -29,25 +29,28 @@ from lollypop.define import Lp, ArtSize, GOOGLE_INC
 
 
 class BaseArt(GObject.GObject):
+    """
+        Base art manager
+    """
     _CACHE_PATH = os.path.expanduser("~") + "/.cache/lollypop"
     __gsignals__ = {
         'cover-changed': (GObject.SignalFlags.RUN_FIRST, None, (int,)),
         'logo-changed': (GObject.SignalFlags.RUN_FIRST, None, (str,))
     }
 
-    """
-        Init base art
-    """
     def __init__(self):
+        """
+            Init base art
+        """
         GObject.GObject.__init__(self)
 
-    """
-        Get arts on google image corresponding to search
-        @param search words as string
-        @param start page
-        @return [urls as string]
-    """
     def get_google_arts(self, search, start=0):
+        """
+            Get arts on google image corresponding to search
+            @param search words as string
+            @param start page
+            @return [urls as string]
+        """
         data = None
         urls = []
 
@@ -82,14 +85,14 @@ class BaseArt(GObject.GObject):
 #######################
 # PRIVATE             #
 #######################
-    """
-        Draw an icon frame around pixbuf,
-        code forked Gnome Music, see copyright header
-        @param: pixbuf source as Gdk.Pixbuf
-        @param selected as bool
-        @return cairo surface
-    """
     def _make_icon_frame(self, pixbuf, selected):
+        """
+            Draw an icon frame around pixbuf,
+            code forked Gnome Music, see copyright header
+            @param: pixbuf source as Gdk.Pixbuf
+            @param selected as bool
+            @return cairo surface
+        """
         selected_color = Lp.window.get_selected_color()
         dark = Gtk.Settings.get_default().get_property(
             "gtk-application-prefer-dark-theme")
@@ -157,14 +160,14 @@ class BaseArt(GObject.GObject):
         del border_pixbuf
         return surface
 
-    """
-        Construct an empty cover album,
-        code forked Gnome Music, see copyright header
-        @param size as int
-        @param icon_name as str
-        @return pixbuf as Gdk.Pixbuf
-    """
     def _get_default_icon(self, size, icon_name):
+        """
+            Construct an empty cover album,
+            code forked Gnome Music, see copyright header
+            @param size as int
+            @param icon_name as str
+            @return pixbuf as Gdk.Pixbuf
+        """
         # First look in cache
         cache_path_jpg = "%s/%s_%s.jpg" % (self._CACHE_PATH, icon_name, size)
         if os.path.exists(cache_path_jpg):

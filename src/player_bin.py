@@ -25,12 +25,15 @@ from lollypop.define import Type
 from lollypop.utils import debug
 
 
-# Bin player class
 class BinPlayer(ReplayGainPlayer, BasePlayer):
     """
-        Init playbin
+        Gstreamer bin player
     """
+
     def __init__(self):
+        """
+            Init playbin
+        """
         Gst.init(None)
         BasePlayer.__init__(self)
         self._codecs = Codecs()

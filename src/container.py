@@ -35,9 +35,14 @@ class Device:
     view = None
 
 
-# Container for main window child
 class Container:
+    """
+        Container for main view
+    """
     def __init__(self):
+        """
+            Init container
+        """
         # Index will start at -VOLUMES
         self._devices = {}
         self._devices_index = Type.DEVICES
@@ -60,10 +65,10 @@ class Container:
         Lp.playlists.connect('playlists-changed',
                              self._update_lists)
 
-    """
-        Update db at startup only if needed
-    """
     def update_db(self):
+        """
+            Update db at startup only if needed
+        """
         # Stop previous scan
         if Lp.scanner.is_locked():
             Lp.scanner.stop()
@@ -75,25 +80,27 @@ class Container:
                 progress = self._progress
             Lp.scanner.update(progress)
 
-    """
-        Return current selected genre
-        @return genre id as int
-    """
     def get_genre_id(self):
+        """
+            Return current selected genre
+            @return genre id as int
+        """
         if self._show_genres:
             return self._list_one.get_selected_id()
         else:
             return None
-    """
-        Init list one
-    """
+
     def init_list_one(self):
+        """
+            Init list one
+        """
         self._update_list_one(None)
 
-    """
-        Save view state
-    """
+
     def save_view_state(self):
+        """
+            Save view state
+        """
         Lp.settings.set_value("list-one",
                               GLib.Variant('i',
                                            self._list_one.get_selected_id()))
@@ -101,14 +108,14 @@ class Container:
                               GLib.Variant('i',
                                            self._list_two.get_selected_id()))
 
-    """
-        Show playlist manager for object_id
-        Current view stay present in ViewContainer
-        @param object id as int
-        @param genre id as int
-        @param is_album as bool
-    """
     def show_playlist_manager(self, object_id, genre_id, is_album):
+        """
+            Show playlist manager for object_id
+            Current view stay present in ViewContainer
+            @param object id as int
+            @param genre id as int
+            @param is_album as bool
+        """
         view = PlaylistsManageView(object_id, genre_id, is_album,
                                    self._stack.get_allocated_width()/2)
         view.show()
@@ -116,12 +123,12 @@ class Container:
         self._stack.set_visible_child(view)
         start_new_thread(view.populate, ())
 
-    """
-        Show playlist editor for playlist
-        Current view stay present in ViewContainer
-        @param playlist name as str
-    """
     def show_playlist_editor(self, playlist_name):
+        """
+            Show playlist editor for playlist
+            Current view stay present in ViewContainer
+            @param playlist name as str
+        """
         view = PlaylistEditView(playlist_name,
                                 self._stack.get_allocated_width()/2)
         view.show()
@@ -129,34 +136,34 @@ class Container:
         self._stack.set_visible_child(view)
         start_new_thread(view.populate, ())
 
-    """
-        Get main widget
-        @return Gtk.HPaned
-    """
     def main_widget(self):
+        """
+            Get main widget
+            @return Gtk.HPaned
+        """
         return self._paned_main_list
 
-    """
-        Stop current view from processing
-    """
     def stop_all(self):
+        """
+            Stop current view from processing
+        """
         view = self._stack.get_visible_child()
         if view is not None:
             self._stack.clean_old_views(None)
 
-    """
-        Show/Hide genres
-        @param bool
-    """
     def show_genres(self, show):
+        """
+            Show/Hide genres
+            @param bool
+        """
         self._show_genres = show
         self._list_one.clear()
         self._update_list_one(None)
 
-    """
-        Destroy current view
-    """
     def destroy_current_view(self):
+        """
+            Destroy current view
+        """
         view = self._stack.get_visible_child()
         for child in self._stack.get_children():
             if child != view:
@@ -164,31 +171,31 @@ class Container:
                 self._stack.clean_old_views(child)
                 break
 
-    """
-        Update current view
-    """
     def update_view(self):
+        """
+            Update current view
+        """
         view = self._stack.get_visible_child()
         if view:
             start_new_thread(view.update_covers, ())
 
-    """
-        Mark force scan as False, update lists
-        @param scanner as CollectionScanner
-    """
     def on_scan_finished(self, scanner):
+        """
+            Mark force scan as False, update lists
+            @param scanner as CollectionScanner
+        """
         self._update_lists(scanner)
 
 ############
 # Private  #
 ############
-    """
-        Setup window main view:
-            - genre list
-            - artist list
-            - main view as artist view or album view
-    """
     def _setup_view(self):
+        """
+            Setup window main view:
+                - genre list
+                - artist list
+                - main view as artist view or album view
+        """
         self._paned_main_list = Gtk.Paned.new(Gtk.Orientation.HORIZONTAL)
         self._paned_list_view = Gtk.Paned.new(Gtk.Orientation.HORIZONTAL)
         vgrid = Gtk.Grid()
@@ -221,11 +228,11 @@ class Container:
         self._paned_main_list.show()
         self._paned_list_view.show()
 
-    """
-        Get save view state
-        @return (list one id, list two id)
-    """
     def _get_saved_view_state(self):
+        """
+            Get save view state
+            @return (list one id, list two id)
+        """
         list_one_id = Type.NONE
         list_two_id = Type.NONE
         if Lp.settings.get_value('save-state'):
@@ -238,23 +245,23 @@ class Container:
 
         return (list_one_id, list_two_id)
 
-    """
-        Add genre to genre list
-        @param scanner as CollectionScanner
-        @param genre id as int
-    """
     def _add_genre(self, scanner, genre_id):
+        """
+            Add genre to genre list
+            @param scanner as CollectionScanner
+            @param genre id as int
+        """
         if self._show_genres:
             genre_name = Lp.genres.get_name(genre_id)
             self._list_one.add_value((genre_id, genre_name))
 
-    """
-        Add artist to artist list
-        @param scanner as CollectionScanner
-        @param artist id as int
-        @param album id as int
-    """
     def _add_artist(self, scanner, artist_id, album_id):
+        """
+            Add artist to artist list
+            @param scanner as CollectionScanner
+            @param artist id as int
+            @param album id as int
+        """
         artist_name = Lp.artists.get_name(artist_id)
         if self._show_genres:
             genre_ids = Lp.albums.get_genre_ids(album_id)
@@ -264,28 +271,28 @@ class Container:
         else:
             self._list_one.add_value((artist_id, artist_name))
 
-    """
-        Run collection update if needed
-        @return True if hard scan is running
-    """
     def _setup_scanner(self):
+        """
+            Run collection update if needed
+            @return True if hard scan is running
+        """
         Lp.scanner.connect('scan-finished', self.on_scan_finished)
         Lp.scanner.connect('genre-update', self._add_genre)
         Lp.scanner.connect('artist-update', self._add_artist)
 
-    """
-        Update lists
-        @param updater as GObject
-    """
     def _update_lists(self, updater=None):
+        """
+            Update lists
+            @param updater as GObject
+        """
         self._update_list_one(updater)
         self._update_list_two(updater)
 
-    """
-        Update list one
-        @param updater as GObject
-    """
     def _update_list_one(self, updater):
+        """
+            Update list one
+            @param updater as GObject
+        """
         update = updater is not None
         # Do not update if updater is PlaylistsManager
         if not isinstance(updater, PlaylistsManager):
@@ -296,11 +303,11 @@ class Container:
                 start_new_thread(self._setup_list_artists,
                                  (self._list_one, Type.ALL, update))
 
-    """
-        Update list two
-        @param updater as GObject
-    """
     def _update_list_two(self, updater):
+        """
+            Update list two
+            @param updater as GObject
+        """
         update = updater is not None
         object_id = self._list_one.get_selected_id()
         if object_id == Type.PLAYLISTS:
@@ -309,10 +316,10 @@ class Container:
             start_new_thread(self._setup_list_artists,
                              (self._list_two, object_id, update))
 
-    """
-        Return list one headers
-    """
     def _get_headers(self):
+        """
+            Return list one headers
+        """
         items = []
         items.append((Type.POPULARS, _("Popular albums")))
         items.append((Type.RECENTS, _("Recently added albums")))
@@ -325,13 +332,13 @@ class Container:
             items.append((Type.ALL, _("All albums")))
         return items
 
-    """
-        Setup list for genres
-        @param list as SelectionList
-        @param update as bool, if True, just update entries
-        @thread safe
-    """
     def _setup_list_genres(self, selection_list, update):
+        """
+            Setup list for genres
+            @param list as SelectionList
+            @param update as bool, if True, just update entries
+            @thread safe
+        """
         sql = Lp.db.get_cursor()
         selection_list.mark_as_artists(False)
         items = self._get_headers()
@@ -343,22 +350,22 @@ class Container:
             selection_list.populate(items)
         sql.close()
 
-    """
-        Hide list two base on current artist list
-    """
     def _pre_setup_list_artists(self, selection_list):
+        """
+            Hide list two base on current artist list
+        """
         if selection_list == self._list_one:
             if self._list_two.is_visible():
                 self._list_two.hide()
             self._list_two_restore = Type.NONE
 
-    """
-        Setup list for artists
-        @param list as SelectionList
-        @param update as bool, if True, just update entries
-        @thread safe
-    """
     def _setup_list_artists(self, selection_list, genre_id, update):
+        """
+            Setup list for artists
+            @param list as SelectionList
+            @param update as bool, if True, just update entries
+            @thread safe
+        """
         GLib.idle_add(self._pre_setup_list_artists, selection_list)
         sql = Lp.db.get_cursor()
         items = []
@@ -376,12 +383,12 @@ class Container:
             selection_list.populate(items)
         sql.close()
 
-    """
-        Setup list for playlists
-        @param update as bool
-        @thread safe
-    """
     def _setup_list_playlists(self, update):
+        """
+            Setup list for playlists
+            @param update as bool
+            @thread safe
+        """
         playlists = [(Type.LOVED, Lp.playlists._LOVED)]
         playlists += [(Type.POPULARS, _("Popular tracks"))]
         playlists += [(Type.RECENTS, _("Recently played"))]
@@ -395,12 +402,12 @@ class Container:
             self._list_two.mark_as_artists(False)
             self._list_two.populate(playlists)
 
-    """
-        Update current view with device view,
-        Use existing view if available
-        @param device id as int
-    """
     def _update_view_device(self, device_id):
+        """
+            Update current view with device view,
+            Use existing view if available
+            @param device id as int
+        """
         device = self._devices[device_id]
 
         if device and device.view:
@@ -415,12 +422,12 @@ class Container:
         self._stack.set_visible_child(view)
         self._stack.clean_old_views(view)
 
-    """
-        Update current view with artists view
-        @param artist id as int
-        @param genre id as int
-    """
     def _update_view_artists(self, artist_id, genre_id):
+        """
+            Update current view with artists view
+            @param artist id as int
+            @param genre id as int
+        """
         view = ArtistView(artist_id, genre_id)
         self._stack.add(view)
         view.show()
@@ -428,12 +435,12 @@ class Container:
         self._stack.set_visible_child(view)
         self._stack.clean_old_views(view)
 
-    """
-        Update current view with albums view
-        @param genre id as int
-        @param is compilation as bool
-    """
     def _update_view_albums(self, genre_id, is_compilation=False):
+        """
+            Update current view with albums view
+            @param genre id as int
+            @param is compilation as bool
+        """
         view = AlbumsView(genre_id, is_compilation)
         self._stack.add(view)
         view.show()
@@ -441,11 +448,11 @@ class Container:
         self._stack.set_visible_child(view)
         self._stack.clean_old_views(view)
 
-    """
-        Update current view with playlist view
-        @param playlist id as int
-    """
     def _update_view_playlists(self, playlist_id):
+        """
+            Update current view with playlist view
+            @param playlist id as int
+        """
         view = None
         if playlist_id is not None:
             name = self._list_two.get_value(playlist_id)
@@ -477,10 +484,10 @@ class Container:
                 start_new_thread(view.populate_tracks, (tracks,))
             self._stack.clean_old_views(view)
 
-    """
-        Update current view with radios view
-    """
     def _update_view_radios(self):
+        """
+            Update current view with radios view
+        """
         view = RadiosView()
         self._stack.add(view)
         view.show()
@@ -488,11 +495,11 @@ class Container:
         self._stack.set_visible_child(view)
         self._stack.clean_old_views(view)
 
-    """
-        Add volume to device list
-        @param volume as Gio.Volume
-    """
     def _add_device(self, volume):
+        """
+            Add volume to device list
+            @param volume as Gio.Volume
+        """
         if volume is None:
             return
         root = volume.get_activation_root()
@@ -512,11 +519,11 @@ class Container:
             self._devices[self._devices_index] = dev
             self._list_one.add_value((dev.id, dev.name))
 
-    """
-        Remove volume from device list
-        @param volume as Gio.Volume
-    """
     def _remove_device(self, volume):
+        """
+            Remove volume from device list
+            @param volume as Gio.Volume
+        """
         if volume is None:
             return
         root = volume.get_activation_root()
@@ -533,12 +540,12 @@ class Container:
                 del self._devices[dev.id]
             break
 
-    """
-        Update view based on selected object
-        @param list as SelectionList
-        @param selected id as int
-    """
     def _on_list_one_selected(self, selection_list, selected_id):
+        """
+            Update view based on selected object
+            @param list as SelectionList
+            @param selected id as int
+        """
         if selected_id == Type.PLAYLISTS:
             self._list_two.clear()
             start_new_thread(self._setup_list_playlists, (False,))
@@ -573,20 +580,20 @@ class Container:
             if not self._list_two.will_be_selected():
                 self._update_view_albums(selected_id, False)
 
-    """
-        Add device to list one and update db
-        @param selection list as SelectionList
-    """
     def _on_list_populated(self, selection_list):
+        """
+            Add device to list one and update db
+            @param selection list as SelectionList
+        """
         for dev in self._devices.values():
             self._list_one.add_value((dev.id, dev.name))
 
-    """
-        Update view based on selected object
-        @param list as SelectionList
-        @param selected id as int
-    """
     def _on_list_two_selected(self, selection_list, selected_id):
+        """
+            Update view based on selected object
+            @param list as SelectionList
+            @param selected id as int
+        """
         genre_id = self._list_one.get_selected_id()
         if genre_id == Type.PLAYLISTS:
             self._update_view_playlists(selected_id)
@@ -595,18 +602,18 @@ class Container:
         else:
             self._update_view_artists(selected_id, genre_id)
 
-    """
-        On volume mounter
-        @param vm as Gio.VolumeMonitor
-        @param mnt as Gio.Mount
-    """
     def _on_mount_added(self, vm, mnt):
+        """
+            On volume mounter
+            @param vm as Gio.VolumeMonitor
+            @param mnt as Gio.Mount
+        """
         self._add_device(mnt.get_volume())
 
-    """
-        On volume removed, clean selection list
-        @param vm as Gio.VolumeMonitor
-        @param mnt as Gio.Mount
-    """
     def _on_mount_removed(self, vm, mnt):
+        """
+            On volume removed, clean selection list
+            @param vm as Gio.VolumeMonitor
+            @param mnt as Gio.Mount
+        """
         self._remove_device(mnt.get_volume())

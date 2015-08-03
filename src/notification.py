@@ -18,11 +18,14 @@ from lollypop.define import Lp, ArtSize, Type
 
 
 class NotificationManager:
+    """
+        Freedesktop notification support
+    """
 
-    """
-        Init notification object with lollypop infos
-    """
     def __init__(self):
+        """
+            Init notification object with lollypop infos
+        """
         self._caps = Notify.get_server_caps()
 
         self._notification = Notify.Notification()
@@ -33,11 +36,11 @@ class NotificationManager:
         Lp.player.connect('current-changed',
                           self._on_current_changed)
 
-    """
-        Send message to user
-        @param message as str
-    """
     def send(self, message):
+        """
+            Send message to user
+            @param message as str
+        """
         self._notification.clear_actions()
         self._notification.clear_hints()
         self._notification.update(message,
@@ -52,10 +55,10 @@ class NotificationManager:
 #######################
 # PRIVATE             #
 #######################
-    """
-        Set notification actions
-    """
     def _set_actions(self):
+        """
+            Set notification actions
+        """
         if "action-icons" in self._caps:
             self._notification.set_hint('action-icons',
                                         GLib.Variant('b', True))
@@ -69,11 +72,11 @@ class NotificationManager:
                                           self._go_next,
                                           None)
 
-    """
-        Update notification with track_id infos
-        @param player Player
-    """
     def _on_current_changed(self, player):
+        """
+            Update notification with track_id infos
+            @param player Player
+        """
         if player.current_track.title == '':
             return
         state = Lp.window.get_window().get_state()
@@ -116,14 +119,14 @@ class NotificationManager:
         except:
             pass
 
-    """
-        Callback for notification prev button
-    """
     def _go_previous(self, notification, action, data):
+        """
+            Callback for notification prev button
+        """
         Lp.player.prev()
 
-    """
-        Callback for notification next button
-    """
     def _go_next(self, notification, action, data):
+        """
+            Callback for notification next button
+        """
         Lp.player.next()

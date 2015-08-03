@@ -17,29 +17,35 @@ from lollypop.define import Lp, Type
 from lollypop.utils import translate_artist_name
 
 
-# All functions take a sqlite cursor as last parameter,
-# set another one if you're in a thread
 class TracksDatabase:
+    """
+        All functions take a sqlite cursor as last parameter,
+        set another one if you're in a thread        
+    """
+
     def __init__(self):
+        """
+            Init tracks database object
+        """
         pass
 
-    """
-        Add a new track to database
-        @param name as string
-        @param filepath as string,
-        @param length as int
-        @param tracknumber as int
-        @param discnumber as int
-        @param album_id as int
-        @param genre_id as int
-        @param year as int
-        @param popularity as int
-        @param ltime as int
-        @param mtime as int
-        @warning: commit needed
-    """
     def add(self, name, filepath, length, tracknumber, discnumber,
             album_id, year, popularity, ltime, mtime, sql=None):
+        """
+            Add a new track to database
+            @param name as string
+            @param filepath as string,
+            @param length as int
+            @param tracknumber as int
+            @param discnumber as int
+            @param album_id as int
+            @param genre_id as int
+            @param year as int
+            @param popularity as int
+            @param ltime as int
+            @param mtime as int
+            @warning: commit needed
+        """
         if not sql:
             sql = Lp.sql
         # Invalid encoding in filenames may raise an exception
@@ -60,13 +66,13 @@ class TracksDatabase:
         except Exception as e:
             print("TracksDatabase::add: ", e, ascii(filepath))
 
-    """
-        Add artist to track
-        @param track id as int
-        @param artist id as int
-        @warning: commit needed
-    """
     def add_artist(self, track_id, artist_id, sql=None):
+        """
+            Add artist to track
+            @param track id as int
+            @param artist id as int
+            @warning: commit needed
+        """
         if not sql:
             sql = Lp.sql
         artists = self.get_artist_ids(track_id, sql)
@@ -75,13 +81,13 @@ class TracksDatabase:
                         "track_artists (track_id, artist_id)"
                         "VALUES (?, ?)", (track_id, artist_id))
 
-    """
-        Add genre to track
-        @param track id as int
-        @param genre id as int
-        @warning: commit needed
-    """
     def add_genre(self, track_id, genre_id, sql=None):
+        """
+            Add genre to track
+            @param track id as int
+            @param genre id as int
+            @warning: commit needed
+        """
         if not sql:
             sql = Lp.sql
         genres = self.get_genre_ids(track_id, sql)
@@ -90,12 +96,12 @@ class TracksDatabase:
                         "track_genres (track_id, genre_id)"
                         "VALUES (?, ?)", (track_id, genre_id))
 
-    """
-        Return track ids with name
-        @param name as str
-        @return track id as int
-    """
     def get_ids_for_name(self, name, sql=None):
+        """
+            Return track ids with name
+            @param name as str
+            @return track id as int
+        """
         if not sql:
             sql = Lp.sql
         result = sql.execute("SELECT rowid\
@@ -106,12 +112,12 @@ class TracksDatabase:
             track_ids += row
         return track_ids
 
-    """
-        Return track id for path
-        @param filepath as str
-        @return track id as int
-    """
     def get_id_by_path(self, filepath, sql=None):
+        """
+            Return track id for path
+            @param filepath as str
+            @return track id as int
+        """
         if not sql:
             sql = Lp.sql
         result = sql.execute("SELECT rowid FROM tracks where filepath=?",
@@ -121,12 +127,12 @@ class TracksDatabase:
             return v[0]
         return None
 
-    """
-        Get track name for track id
-        @param Track id as int
-        @return Name as string
-    """
     def get_name(self, track_id, sql=None):
+        """
+            Get track name for track id
+            @param Track id as int
+            @return Name as string
+        """
         if not sql:
             sql = Lp.sql
         result = sql.execute("SELECT name FROM tracks where rowid=?",
@@ -137,12 +143,12 @@ class TracksDatabase:
 
         return ""
 
-    """
-        Get track year
-        @param track id as int
-        @return track year as string
-    """
     def get_year(self, album_id, sql=None):
+        """
+            Get track year
+            @param track id as int
+            @return track year as string
+        """
         if not sql:
             sql = Lp.sql
         result = sql.execute("SELECT year FROM tracks where rowid=?",
@@ -154,12 +160,12 @@ class TracksDatabase:
 
         return ""
 
-    """
-        Get track path for track id
-        @param Track id as int
-        @return Path as string
-    """
     def get_path(self, track_id, sql=None):
+        """
+            Get track path for track id
+            @param Track id as int
+            @return Path as string
+        """
         if not sql:
             sql = Lp.sql
         result = sql.execute("SELECT filepath FROM tracks where rowid=?",
@@ -170,12 +176,12 @@ class TracksDatabase:
 
         return ""
 
-    """
-        Get album id for track id
-        @param track id as int
-        @return album id as int
-    """
     def get_album_id(self, track_id, sql=None):
+        """
+            Get album id for track id
+            @param track id as int
+            @return album id as int
+        """
         if not sql:
             sql = Lp.sql
         result = sql.execute("SELECT album_id FROM tracks where rowid=?",
@@ -186,12 +192,12 @@ class TracksDatabase:
 
         return -1
 
-    """
-        Get album name for track id
-        @param track id as int
-        @return album name as str
-    """
     def get_album_name(self, track_id, sql=None):
+        """
+            Get album name for track id
+            @param track id as int
+            @return album name as str
+        """
         if not sql:
             sql = Lp.sql
         result = sql.execute("SELECT albums.name from albums,tracks\
@@ -203,12 +209,12 @@ class TracksDatabase:
 
         return _("Unknown")
 
-    """
-        Get artist ids
-        @param track id as int
-        @return artist ids as [int]
-    """
     def get_artist_ids(self, track_id, sql=None):
+        """
+            Get artist ids
+            @param track id as int
+            @return artist ids as [int]
+        """
         if not sql:
             sql = Lp.sql
         result = sql.execute("SELECT artist_id FROM track_artists\
@@ -218,12 +224,12 @@ class TracksDatabase:
             artists += row
         return artists
 
-    """
-        Get artist names
-        @param track id as int
-        @return Genre name as str "artist1, artist2, ..."
-    """
     def get_artist_names(self, track_id, sql=None):
+        """
+            Get artist names
+            @param track id as int
+            @return Genre name as str "artist1, artist2, ..."
+        """
         if not sql:
             sql = Lp.sql
         result = sql.execute("SELECT name FROM artists, track_artists\
@@ -237,12 +243,12 @@ class TracksDatabase:
             artists += translate_artist_name(row[0])
         return artists
 
-    """
-        Get genre ids
-        @param track id as int
-        @return genre ids as [int]
-    """
     def get_genre_ids(self, track_id, sql=None):
+        """
+            Get genre ids
+            @param track id as int
+            @return genre ids as [int]
+        """
         if not sql:
             sql = Lp.sql
         result = sql.execute("SELECT genre_id FROM track_genres\
@@ -252,12 +258,12 @@ class TracksDatabase:
             genres += row
         return genres
 
-    """
-        Get genre names
-        @param track id as int
-        @return Genre name as str "genre1, genre2..."
-    """
     def get_genre_names(self, track_id, sql=None):
+        """
+            Get genre names
+            @param track id as int
+            @return Genre name as str "genre1, genre2..."
+        """
         if not sql:
             sql = Lp.sql
         result = sql.execute("SELECT name FROM genres, track_genres\
@@ -271,13 +277,13 @@ class TracksDatabase:
             genres += row[0]
         return genres
 
-    """
-        Get mtime for tracks
-        WARNING: Should be called before anything is shown on screen
-        @param None
-        @return dict of {filepath as string: mtime as int}
-    """
     def get_mtimes(self, sql=None):
+        """
+            Get mtime for tracks
+            WARNING: Should be called before anything is shown on screen
+            @param None
+            @return dict of {filepath as string: mtime as int}
+        """
         if not sql:
             sql = Lp.sql
         mtimes = {}
@@ -288,14 +294,14 @@ class TracksDatabase:
         sql.row_factory = None
         return mtimes
 
-    """
-        Get all track informations for track id
-        @param Track id as int
-        @return (name as string, filepath as string,
-        length as int, tracknumber as int, album_id as int)
-        Returned values can be (None, None, None, None)
-    """
     def get_infos(self, track_id, sql=None):
+        """
+            Get all track informations for track id
+            @param Track id as int
+            @return (name as string, filepath as string,
+            length as int, tracknumber as int, album_id as int)
+            Returned values can be (None, None, None, None)
+        """
         if not sql:
             sql = Lp.sql
         result = sql.execute("SELECT name, filepath,\
@@ -306,12 +312,12 @@ class TracksDatabase:
             return v
         return (None, None, None, None)
 
-    """
-        Get aartist id for track id
-        @param Track id as int
-        @return Performer id as int
-    """
     def get_album_artist_id(self, track_id, sql=None):
+        """
+            Get aartist id for track id
+            @param Track id as int
+            @return Performer id as int
+        """
         if not sql:
             sql = Lp.sql
         result = sql.execute("SELECT albums.artist_id from albums,tracks\
@@ -325,12 +331,12 @@ class TracksDatabase:
 
         return Type.COMPILATIONS
 
-    """
-        Get all tracks filepath
-        @param None
-        @return Array of filepath as string
-    """
     def get_paths(self, sql=None):
+        """
+            Get all tracks filepath
+            @param None
+            @return Array of filepath as string
+        """
         if not sql:
             sql = Lp.sql
         tracks = []
@@ -339,12 +345,12 @@ class TracksDatabase:
             tracks += row
         return tracks
 
-    """
-        Get track position in album
-        @param track id as int
-        @return position as int
-    """
     def get_number(self, track_id, sql=None):
+        """
+            Get track position in album
+            @param track id as int
+            @return position as int
+        """
         if not sql:
             sql = Lp.sql
         result = sql.execute("SELECT tracknumber FROM tracks\
@@ -355,12 +361,12 @@ class TracksDatabase:
 
         return 0
 
-    """
-        Get track length for track id
-        @param Track id as int
-        @return length as int
-    """
     def get_length(self, track_id, sql=None):
+        """
+            Get track length for track id
+            @param Track id as int
+            @return length as int
+        """
         if not sql:
             sql = Lp.sql
         result = sql.execute("SELECT length FROM tracks\
@@ -371,10 +377,10 @@ class TracksDatabase:
 
         return 0
 
-    """
-        Return True if no tracks in db
-    """
     def is_empty(self, sql=None):
+        """
+            Return True if no tracks in db
+        """
         if not sql:
             sql = Lp.sql
         result = sql.execute("SELECT COUNT(*) FROM tracks  LIMIT 1")
@@ -384,12 +390,12 @@ class TracksDatabase:
 
         return True
 
-    """
-        Get tracks for artist_id where artist_id isn't main artist
-        @param artist id as int
-        @return array of (tracks id as int, track name as string)
-    """
     def get_as_non_aartist(self, artist_id, sql=None):
+        """
+            Get tracks for artist_id where artist_id isn't main artist
+            @param artist id as int
+            @return array of (tracks id as int, track name as string)
+        """
         if not sql:
             sql = Lp.sql
         tracks = []
@@ -404,11 +410,11 @@ class TracksDatabase:
             tracks += (row,)
         return tracks
 
-    """
-        Return most listened to tracks
-        @return tracks as [int]
-    """
     def get_populars(self, sql=None):
+        """
+            Return most listened to tracks
+            @return tracks as [int]
+        """
         if not sql:
             sql = Lp.sql
         tracks = []
@@ -420,11 +426,11 @@ class TracksDatabase:
             tracks += row
         return tracks
 
-    """
-        Return avarage popularity
-        @return avarage popularity as int
-    """
     def get_avg_popularity(self, sql=None):
+        """
+            Return avarage popularity
+            @return avarage popularity as int
+        """
         if not sql:
             sql = Lp.sql
         result = sql.execute("SELECT AVG(popularity) FROM (SELECT popularity "
@@ -434,12 +440,12 @@ class TracksDatabase:
             return v[0]
         return 5
 
-    """
-        Increment popularity field
-        @param track id as int
-        @raise sqlite3.OperationalError on db update
-    """
     def set_more_popular(self, track_id, sql=None):
+        """
+            Increment popularity field
+            @param track id as int
+            @raise sqlite3.OperationalError on db update
+        """
         if not sql:
             sql = Lp.sql
         result = sql.execute("SELECT popularity from tracks WHERE rowid=?",
@@ -454,23 +460,23 @@ class TracksDatabase:
                     (current, track_id))
         sql.commit()
 
-    """
-        Set ltime for track
-        @param track id as int
-        @param time as int
-    """
     def set_listened_at(self, track_id, time, sql=None):
+        """
+            Set ltime for track
+            @param track id as int
+            @param time as int
+        """
         if not sql:
             sql = Lp.sql
         sql.execute("UPDATE tracks set ltime=? WHERE rowid=?",
                     (time, track_id))
         sql.commit()
 
-    """
-        Return random tracks never listened to
-        @return tracks as [int]
-    """
     def get_never_listened_to(self, sql=None):
+        """
+            Return random tracks never listened to
+            @return tracks as [int]
+        """
         if not sql:
             sql = Lp.sql
         tracks = []
@@ -482,11 +488,11 @@ class TracksDatabase:
             tracks += row
         return tracks
 
-    """
-        Return tracks listened recently
-        @return tracks as [int]
-    """
     def get_recently_listened_to(self, sql=None):
+        """
+            Return tracks listened recently
+            @return tracks as [int]
+        """
         if not sql:
             sql = Lp.sql
         tracks = []
@@ -498,11 +504,11 @@ class TracksDatabase:
             tracks += row
         return tracks
 
-    """
-        Return random tracks
-        @return array of track ids as int
-    """
     def get_randoms(self, sql=None):
+        """
+            Return random tracks
+            @return array of track ids as int
+        """
         if not sql:
             sql = Lp.sql
         tracks = []
@@ -513,25 +519,25 @@ class TracksDatabase:
             tracks += row
         return tracks
 
-    """
-        Set ltime
-        @param track id as int
-        @param mtime as int
-        @warning: commit needed
-    """
     def set_ltime(self, track_id, ltime, sql=None):
+        """
+            Set ltime
+            @param track id as int
+            @param mtime as int
+            @warning: commit needed
+        """
         if not sql:
             sql = Lp.sql
         sql.execute("UPDATE tracks set ltime=? WHERE rowid=?",
                     (ltime, track_id))
 
-    """
-        Set popularity
-        @param track id as int
-        @param popularity as int
-        @warning: commit needed
-    """
     def set_popularity(self, track_id, popularity, sql=None):
+        """
+            Set popularity
+            @param track id as int
+            @param popularity as int
+            @warning: commit needed
+        """
         if not sql:
             sql = Lp.sql
         try:
@@ -540,12 +546,12 @@ class TracksDatabase:
         except:  # Database is locked
             pass
 
-    """
-        Get popularity
-        @param track id  as int
-        @return popularity as int
-    """
     def get_popularity(self, track_id, sql=None):
+        """
+            Get popularity
+            @param track id  as int
+            @return popularity as int
+        """
         if not sql:
             sql = Lp.sql
         result = sql.execute("SELECT popularity FROM tracks WHERE\
@@ -556,12 +562,12 @@ class TracksDatabase:
             return v[0]
         return 0
 
-    """
-        Clean database for track id
-        @param track_id as int
-        @warning commit needed
-    """
     def clean(self, track_id, sql=None):
+        """
+            Clean database for track id
+            @param track_id as int
+            @warning commit needed
+        """
         if not sql:
             sql = Lp.sql
         sql.execute("DELETE FROM track_artists\
@@ -569,12 +575,12 @@ class TracksDatabase:
         sql.execute("DELETE FROM track_genres\
                      WHERE track_id = ?", (track_id,))
 
-    """
-        Search for tracks looking like searched
-        @param searched as string
-        return: Arrays of (id as int, name as string)
-    """
     def search(self, searched, sql=None):
+        """
+            Search for tracks looking like searched
+            @param searched as string
+            return: Arrays of (id as int, name as string)
+        """
         if not sql:
             sql = Lp.sql
 
@@ -585,15 +591,15 @@ class TracksDatabase:
             tracks += (row,)
         return tracks
 
-    """
-        Get track id for artist and title
-        @param artist as string
-        @param title as string
-        @param sql as sqlite cursor
-        @return track id as int
-        @thread safe
-    """
     def search_track(self, artist, title, sql=None):
+        """
+            Get track id for artist and title
+            @param artist as string
+            @param title as string
+            @param sql as sqlite cursor
+            @return track id as int
+            @thread safe
+        """
         if not sql:
             sql = Lp.sql
         track_ids = self.get_ids_for_name(title, sql)
@@ -607,11 +613,11 @@ class TracksDatabase:
                 return track_id
         return None
 
-    """
-        Remove track
-        @param Track path as string
-    """
     def remove(self, path, sql=None):
+        """
+            Remove track
+            @param Track path as string
+        """
         if not sql:
             sql = Lp.sql
         track_id = self.get_id_by_path(path, sql)
@@ -625,10 +631,10 @@ class TracksDatabase:
 #######################
 # PRIVATE             #
 #######################
-    """
-        Sqlite row factory
-    """
     def _dict_factory(self, cursor, row):
+        """
+            Sqlite row factory
+        """
         d = {}
         d[row[0]] = row[1]
         return d

@@ -21,13 +21,17 @@ from lollypop.tagreader import TagReader
 from lollypop.define import Lp
 
 
-# Manager album artwork
 class AlbumArt(BaseArt, TagReader):
+    """
+         Manager album artwork
+    """
+
     _MIMES = ["jpeg", "jpg", "png", "gif"]
-    """
-        Init radio art
-    """
+
     def __init__(self):
+        """
+            Init radio art
+        """
         BaseArt.__init__(self)
         TagReader.__init__(self)
         self._favorite = Lp.settings.get_value('favorite-cover').get_string()
@@ -37,12 +41,12 @@ class AlbumArt(BaseArt, TagReader):
             except:
                 print("Can't create %s" % self._CACHE_PATH)
 
-    """
-        get cover cache path for album_id
-        @param album id as int, size as int
-        @return cover path as string or None if no cover
-    """
     def get_album_cache_path(self, album_id, size):
+        """
+            get cover cache path for album_id
+            @param album id as int, size as int
+            @return cover path as string or None if no cover
+        """
         filename = ''
         try:
             filename = self._get_album_cache_name(album_id)
@@ -61,16 +65,16 @@ class AlbumArt(BaseArt, TagReader):
             print("Art::get_album_cache_path(): %s" % e, ascii(filename))
             return None
 
-    """
-        Look for covers in dir:
-        - favorite from settings first
-        - Artist_Album.jpg then
-        - Any image else
-        any supported image otherwise
-        @param album id as int
-        @return cover file path as string
-    """
     def get_album_art_path(self, album_id, sql=None):
+        """
+            Look for covers in dir:
+            - favorite from settings first
+            - Artist_Album.jpg then
+            - Any image else
+            any supported image otherwise
+            @param album id as int
+            @return cover file path as string
+        """
         if album_id is None:
             return None
         album_path = Lp.albums.get_path(album_id, sql)
@@ -99,13 +103,13 @@ class AlbumArt(BaseArt, TagReader):
         except Exception as e:
             print("Art::get_album_art_path(): %s" % e)
 
-    """
-        Get locally available covers for album
-        Ignore favorite cover
-        @param album_id as int
-        @return [uri]
-    """
     def get_locally_available_covers(self, album_id, sql=None):
+        """
+            Get locally available covers for album
+            Ignore favorite cover
+            @param album_id as int
+            @return [uri]
+        """
         album_path = Lp.albums.get_path(album_id, sql)
         files = []
         for file in os.listdir(album_path):
@@ -119,15 +123,15 @@ class AlbumArt(BaseArt, TagReader):
                 files.append("%s/%s" % (album_path, file))
         return files
 
-    """
-        Return a cairo surface with borders for uri
-        No cache usage
-        @param uri as string
-        @param size as int
-        @param selected as bool
-        @return cairo surface
-    """
     def get_cover_for_uri(self, uri, size, selected):
+        """
+            Return a cairo surface with borders for uri
+            No cache usage
+            @param uri as string
+            @param size as int
+            @param selected as bool
+            @return cairo surface
+        """
         pixbuf = self.pixbuf_from_tags(GLib.filename_from_uri(uri)[0], size)
         if pixbuf is not None:
             return self._make_icon_frame(pixbuf, selected)
@@ -137,14 +141,14 @@ class AlbumArt(BaseArt, TagReader):
                 'folder-music-symbolic'),
                 selected)
 
-    """
-        Return a cairo surface for album_id, covers are cached as jpg.
-        @param album id as int
-        @param pixbuf size as int
-        @param selected as bool
-        @return cairo surface
-    """
     def get_album(self, album_id, size, selected=False):
+        """
+            Return a cairo surface for album_id, covers are cached as jpg.
+            @param album id as int
+            @param pixbuf size as int
+            @param selected as bool
+            @return cairo surface
+        """
         filename = self._get_album_cache_name(album_id)
         cache_path_jpg = "%s/%s_%s.jpg" % (self._CACHE_PATH, filename, size)
         pixbuf = None
@@ -197,13 +201,13 @@ class AlbumArt(BaseArt, TagReader):
                 'folder-music-symbolic'),
                 selected)
 
-    """
-        Save pixbuf for album id
-        @param pixbuf as Gdk.Pixbuf
-        @param album id as int
-        @param sql as sqlite cursor
-    """
     def save_album_art(self, pixbuf, album_id, sql=None):
+        """
+            Save pixbuf for album id
+            @param pixbuf as Gdk.Pixbuf
+            @param album id as int
+            @param sql as sqlite cursor
+        """
         try:
             artpath = self.get_album_art_filepath(album_id, sql)
             # Gdk < 3.15 was missing save method
@@ -215,13 +219,13 @@ class AlbumArt(BaseArt, TagReader):
         except Exception as e:
             print("Art::save_album_art(): %s" % e)
 
-    """
-        Get album art filepath
-        @param album_id as int
-        @param sql as sqlite cursor
-        @thread safe
-    """
     def get_album_art_filepath(self, album_id, sql=None):
+        """
+            Get album art filepath
+            @param album_id as int
+            @param sql as sqlite cursor
+            @thread safe
+        """
         album_path = Lp.albums.get_path(album_id, sql)
         path_count = Lp.albums.get_path_count(album_path, sql)
         album_name = Lp.albums.get_name(album_id, sql)
@@ -237,19 +241,19 @@ class AlbumArt(BaseArt, TagReader):
             artpath = album_path + "/" + self._favorite
         return artpath
 
-    """
-        Announce album cover update
-        @param album id as int
-    """
     def announce_cover_update(self, album_id):
+        """
+            Announce album cover update
+            @param album id as int
+        """
         self.emit('cover-changed', album_id)
 
-    """
-        Remove cover from cache for album id
-        @param album id as int
-        @param sql as sqlite cursor
-    """
     def clean_album_cache(self, album_id, sql=None):
+        """
+            Remove cover from cache for album id
+            @param album id as int
+            @param sql as sqlite cursor
+        """
         filename = self._get_album_cache_name(album_id, sql)
         try:
             for f in os.listdir(self._CACHE_PATH):
@@ -258,12 +262,12 @@ class AlbumArt(BaseArt, TagReader):
         except Exception as e:
             print("Art::clean_album_cache(): ", e, filename)
 
-    """
-        Return cover from tags
-        @param filepath as str
-        @param size as int
-    """
     def pixbuf_from_tags(self, filepath, size):
+        """
+            Return cover from tags
+            @param filepath as str
+            @param size as int
+        """
         pixbuf = None
         infos = self.get_infos(filepath)
         exist = False
@@ -287,12 +291,12 @@ class AlbumArt(BaseArt, TagReader):
 #######################
 # PRIVATE             #
 #######################
-    """
-        Get a uniq string for album
-        @param album id as int
-        @param sql as sqlite cursor
-    """
     def _get_album_cache_name(self, album_id, sql=None):
+        """
+            Get a uniq string for album
+            @param album id as int
+            @param sql as sqlite cursor
+        """
         path = Lp.albums.get_name(album_id, sql) + "_" + \
             Lp.albums.get_artist_name(album_id, sql)
         return path[0:240].replace("/", "_")

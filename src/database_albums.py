@@ -18,24 +18,29 @@ from lollypop.define import Lp, Type
 from lollypop.utils import translate_artist_name
 
 
-# All functions take a sqlite cursor as last parameter,
-# set another one if you're in a thread
 class AlbumsDatabase:
-    def __init__(self):
-        self._cached_randoms = []
-        pass
+    """
+        All functions take a sqlite cursor as last parameter,
+        set another one if you're in a thread
+    """
 
-    """
-        Add a new album to database
-        @param Album name as string
-        @param artist id as int,
-        @param noaartist as bool,
-        @param path as string
-        @param mtime as int
-        @warning: commit needed
-    """
-    def add(self, name, artist_id, noaartist, path, popularity,
-            mtime, sql=None):
+    def __init__(self):
+        """
+            Init albums database object
+        """
+        self._cached_randoms = []
+
+    def add(self, name, artist_id, noaartist, path,
+            popularity, mtime, sql=None):
+        """
+            Add a new album to database
+            @param Album name as string
+            @param artist id as int,
+            @param noaartist as bool,
+            @param path as string
+            @param mtime as int
+            @warning: commit needed
+        """
         if not sql:
             sql = Lp.sql
         sql.execute("INSERT INTO albums "
@@ -44,13 +49,13 @@ class AlbumsDatabase:
                     (name, artist_id, noaartist,
                      path, popularity, mtime))
 
-    """
-        Add genre to album
-        @param album id as int
-        @param genre id as int
-        @warning: commit needed
-    """
     def add_genre(self, album_id, genre_id, sql=None):
+        """
+            Add genre to album
+            @param album id as int
+            @param genre id as int
+            @warning: commit needed
+        """
         if not sql:
             sql = Lp.sql
         genres = self.get_genre_ids(album_id, sql)
@@ -59,58 +64,58 @@ class AlbumsDatabase:
                         "album_genres (album_id, genre_id)"
                         "VALUES (?, ?)", (album_id, genre_id))
 
-    """
-        Set artist id
-        @param album id as int, artist_id as int
-        @warning: commit needed
-    """
     def set_artist_id(self, album_id, artist_id, sql=None):
+        """
+            Set artist id
+            @param album id as int, artist_id as int
+            @warning: commit needed
+        """
         if not sql:
             sql = Lp.sql
         sql.execute("UPDATE albums SET artist_id=? WHERE rowid=?",
                     (artist_id, album_id))
 
-    """
-        Set year
-        @param album id as int
-        @param year as int
-        @warning: commit needed
-    """
     def set_year(self, album_id, year, sql=None):
+        """
+            Set year
+            @param album id as int
+            @param year as int
+            @warning: commit needed
+        """
         if not sql:
             sql = Lp.sql
         sql.execute("UPDATE albums SET year=? WHERE rowid=?",
                     (year, album_id))
 
-    """
-        Set album path for album id
-        @param Album id as int, path as string
-        @warning: commit needed
-    """
     def set_path(self, album_id, path, sql=None):
+        """
+            Set album path for album id
+            @param Album id as int, path as string
+            @warning: commit needed
+        """
         if not sql:
             sql = Lp.sql
         sql.execute("UPDATE albums SET path=? WHERE rowid=?", (path, album_id))
 
-    """
-        Set mtime
-        @param album_id as int
-        @param mtime as int
-        @warning: commit needed
-    """
     def set_mtime(self, album_id, mtime, sql=None):
+        """
+            Set mtime
+            @param album_id as int
+            @param mtime as int
+            @warning: commit needed
+        """
         if not sql:
             sql = Lp.sql
         sql.execute("UPDATE albums set mtime=? WHERE rowid=?",
                     (mtime, album_id))
 
-    """
-        Set popularity
-        @param album_id as int
-        @param popularity as int
-        @warning: commit needed
-    """
     def set_popularity(self, album_id, popularity, sql=None):
+        """
+            Set popularity
+            @param album_id as int
+            @param popularity as int
+            @warning: commit needed
+        """
         if not sql:
             sql = Lp.sql
         try:
@@ -119,12 +124,12 @@ class AlbumsDatabase:
         except:  # Database is locked
             pass
 
-    """
-        Get popularity
-        @param album_id as int
-        @return popularity as int
-    """
     def get_popularity(self, album_id, sql=None):
+        """
+            Get popularity
+            @param album_id as int
+            @return popularity as int
+        """
         if not sql:
             sql = Lp.sql
         result = sql.execute("SELECT popularity FROM albums WHERE\
@@ -135,12 +140,12 @@ class AlbumsDatabase:
             return v[0]
         return 0
 
-    """
-        Increment popularity field for album id
-        @param int
-        @raise sqlite3.OperationalError on db update
-    """
     def set_more_popular(self, album_id, sql=None):
+        """
+            Increment popularity field for album id
+            @param int
+            @raise sqlite3.OperationalError on db update
+        """
         if not sql:
             sql = Lp.sql
         result = sql.execute("SELECT popularity from albums WHERE rowid=?",
@@ -155,11 +160,11 @@ class AlbumsDatabase:
                     (current, album_id))
         sql.commit()
 
-    """
-        Return avarage popularity
-        @return avarage popularity as int
-    """
     def get_avg_popularity(self, sql=None):
+        """
+            Return avarage popularity
+            @return avarage popularity as int
+        """
         if not sql:
             sql = Lp.sql
         result = sql.execute("SELECT AVG(popularity) FROM (SELECT popularity "
@@ -169,13 +174,13 @@ class AlbumsDatabase:
             return v[0]
         return 5
 
-    """
-        Get album id
-        @param Album name as string,
-        @param artist id as int
-        @return Album id as int
-    """
     def get_id(self, album_name, artist_id, sql=None):
+        """
+            Get album id
+            @param Album name as string,
+            @param artist id as int
+            @return Album id as int
+        """
         if not sql:
             sql = Lp.sql
         result = sql.execute("SELECT rowid FROM albums where name=?\
@@ -187,12 +192,12 @@ class AlbumsDatabase:
             return v[0]
         return None
 
-    """
-        Get compilation id
-        @param Album name as string,
-        @return Album id as int
-    """
     def get_compilation_id(self, album_name, sql=None):
+        """
+            Get compilation id
+            @param Album name as string,
+            @return Album id as int
+        """
         if not sql:
             sql = Lp.sql
         result = sql.execute("SELECT rowid FROM albums where name=?\
@@ -202,12 +207,12 @@ class AlbumsDatabase:
             return v[0]
         return None
 
-    """
-        Get genre ids
-        @param Album id as int
-        @return Genres id as [int]
-    """
     def get_genre_ids(self, album_id, sql=None):
+        """
+            Get genre ids
+            @param Album id as int
+            @return Genres id as [int]
+        """
         if not sql:
             sql = Lp.sql
         result = sql.execute("SELECT genre_id FROM album_genres\
@@ -217,12 +222,12 @@ class AlbumsDatabase:
             genres += row
         return genres
 
-    """
-        Get album name for album id
-        @param Album id as int
-        @return Album name as string
-    """
     def get_name(self, album_id, sql=None):
+        """
+            Get album name for album id
+            @param Album id as int
+            @return Album name as string
+        """
         if not sql:
             sql = Lp.sql
         result = sql.execute("SELECT name FROM albums where rowid=?",
@@ -233,12 +238,12 @@ class AlbumsDatabase:
 
         return _("Unknown")
 
-    """
-        Get artist name
-        @param Album id as int
-        @return Artist name as string
-    """
     def get_artist_name(self, album_id, sql=None):
+        """
+            Get artist name
+            @param Album id as int
+            @return Artist name as string
+        """
         if not sql:
             sql = Lp.sql
         result = sql.execute("SELECT artists.name from artists, albums\
@@ -250,12 +255,12 @@ class AlbumsDatabase:
 
         return _("Compilation")
 
-    """
-        Get album artist id
-        @param album_id
-        @return artist id
-    """
     def get_artist_id(self, album_id, sql=None):
+        """
+            Get album artist id
+            @param album_id
+            @return artist id
+        """
         if not sql:
             sql = Lp.sql
         result = sql.execute("SELECT artist_id FROM albums where rowid=?",
@@ -266,12 +271,12 @@ class AlbumsDatabase:
 
         return None
 
-    """
-        Get album year
-        @param album id as int
-        @return album year as string
-    """
     def get_year(self, album_id, sql=None):
+        """
+            Get album year
+            @param album id as int
+            @return album year as string
+        """
         if not sql:
             sql = Lp.sql
         result = sql.execute("SELECT year FROM albums where rowid=?",
@@ -283,12 +288,12 @@ class AlbumsDatabase:
 
         return ""
 
-    """
-        Get album path for album id
-        @param Album id as int
-        @return Album path as string
-    """
     def get_path(self, album_id, sql=None):
+        """
+            Get album path for album id
+            @param Album id as int
+            @return Album path as string
+        """
         if not sql:
             sql = Lp.sql
         result = sql.execute("SELECT path FROM albums WHERE rowid=?",
@@ -309,10 +314,10 @@ class AlbumsDatabase:
                         sql.commit()
         return path
 
-    """
-        Count album having path as album path
-    """
     def get_path_count(self, path, sql=None):
+        """
+            Count album having path as album path
+        """
         if not sql:
             sql = Lp.sql
 
@@ -324,11 +329,11 @@ class AlbumsDatabase:
 
         return 1
 
-    """
-        Get albums ids with popularity
-        @return array of album ids as int
-    """
     def get_populars(self, sql=None):
+        """
+            Get albums ids with popularity
+            @return array of album ids as int
+        """
         if not sql:
             sql = Lp.sql
         albums = []
@@ -338,11 +343,11 @@ class AlbumsDatabase:
             albums += row
         return albums
 
-    """
-        Return recent albums
-        @return array of albums ids as int
-    """
     def get_recents(self, sql=None):
+        """
+            Return recent albums
+            @return array of albums ids as int
+        """
         if not sql:
             sql = Lp.sql
         albums = []
@@ -352,11 +357,11 @@ class AlbumsDatabase:
             albums += row
         return albums
 
-    """
-        Return random albums
-        @return array of albums ids as int
-    """
     def get_randoms(self, sql=None):
+        """
+            Return random albums
+            @return array of albums ids as int
+        """
         if not sql:
             sql = Lp.sql
         albums = []
@@ -368,18 +373,18 @@ class AlbumsDatabase:
         self._cached_randoms = list(albums)
         return albums
 
-    """
-        Same as above (cached result)
-    """
     def get_cached_randoms(self):
+        """
+            Same as above (cached result)
+        """
         return self._cached_randoms
 
-    """
-        Get album ids for party mode based on genre ids
-        @param Array of genre ids
-        @return Array of album ids as int
-    """
     def get_party_ids(self, genre_ids, sql=None):
+        """
+            Get album ids for party mode based on genre ids
+            @param Array of genre ids
+            @return Array of album ids as int
+        """
         if not sql:
             sql = Lp.sql
         albums = []
@@ -398,13 +403,13 @@ class AlbumsDatabase:
                     albums.append(album)
         return albums
 
-    """
-        Get number of tracks for album_id
-        @param album id as int
-        @param genre id as int
-        @return count as int
-    """
     def get_count(self, album_id, genre_id, sql=None):
+        """
+            Get number of tracks for album_id
+            @param album id as int
+            @param genre id as int
+            @return count as int
+        """
         if not sql:
             sql = Lp.sql
         if genre_id is not None and genre_id > 0:
@@ -423,14 +428,14 @@ class AlbumsDatabase:
             return v[0]
         return 0
 
-    """
-        Get number of tracks for album_id/disc
-        @param album id as int
-        @param genre id as int
-        @param disc number as int
-        @return count as int
-    """
     def get_count_for_disc(self, album_id, genre_id, disc, sql=None):
+        """
+            Get number of tracks for album_id/disc
+            @param album id as int
+            @param genre id as int
+            @param disc number as int
+            @return count as int
+        """
         if not sql:
             sql = Lp.sql
         if genre_id is not None and genre_id > 0:
@@ -452,14 +457,14 @@ class AlbumsDatabase:
             return v[0]
         return 0
 
-    """
-        Get disc numbers
-        @param album id as int
-        @param genre id as int
-        @param disc number as int
-        @return count as int
-    """
     def get_discs(self, album_id, genre_id, sql=None):
+        """
+            Get disc numbers
+            @param album id as int
+            @param genre id as int
+            @param disc number as int
+            @return count as int
+        """
         if not sql:
             sql = Lp.sql
         if genre_id is not None and genre_id > 0:
@@ -480,13 +485,13 @@ class AlbumsDatabase:
             discs += row
         return discs
 
-    """
-        Get tracks for album id
-        @param album id as int
-        @param genre id as int
-        @return Arrays of tracks id as int
-    """
     def get_tracks(self, album_id, genre_id, sql=None):
+        """
+            Get tracks for album id
+            @param album id as int
+            @param genre id as int
+            @return Arrays of tracks id as int
+        """
         if not sql:
             sql = Lp.sql
         tracks = []
@@ -506,15 +511,15 @@ class AlbumsDatabase:
             tracks += row
         return tracks
 
-    """
-        Get tracks path for album id/disc
-        Will search track from albums from same artist
-        with same name and different genre
-        @param album id as int
-        @param genre id as int
-        @return Arrays of tracks id as int
-    """
     def get_tracks_path(self, album_id, genre_id, sql=None):
+        """
+            Get tracks path for album id/disc
+            Will search track from albums from same artist
+            with same name and different genre
+            @param album id as int
+            @param genre id as int
+            @return Arrays of tracks id as int
+        """
         if not sql:
             sql = Lp.sql
         tracks = []
@@ -536,17 +541,17 @@ class AlbumsDatabase:
             tracks += row
         return tracks
 
-    """
-        Get tracks informations for album id
-        Will search track from albums from same artist
-        with same name and different genre
-        @param album id as int
-        @param genre id as int
-        @param disc number as int
-        @return Arrays of (tracks id as int, name as string,
-                           length as int, [artist ids])
-    """
     def get_tracks_infos(self, album_id, genre_id, disc, sql=None):
+        """
+            Get tracks informations for album id
+            Will search track from albums from same artist
+            with same name and different genre
+            @param album id as int
+            @param genre id as int
+            @param disc number as int
+            @return Arrays of (tracks id as int, name as string,
+                               length as int, [artist ids])
+        """
         if not sql:
             sql = Lp.sql
 
@@ -580,12 +585,12 @@ class AlbumsDatabase:
 
         return infos
 
-    """
-        Get albums ids
-        @param Artist id as int/None, genre id as int/None
-        @return Array of album ids as int
-    """
     def get_ids(self, artist_id=None, genre_id=None, sql=None):
+        """
+            Get albums ids
+            @param Artist id as int/None, genre id as int/None
+            @return Array of album ids as int
+        """
         if not sql:
             sql = Lp.sql
         albums = []
@@ -626,12 +631,12 @@ class AlbumsDatabase:
             albums += row
         return albums
 
-    """
-        Get all compilations
-        @param genre id as int
-        @return Array of album ids as int
-    """
     def get_compilations(self, genre_id=None, sql=None):
+        """
+            Get all compilations
+            @param genre id as int
+            @return Array of album ids as int
+        """
         if not sql:
             sql = Lp.sql
         albums = []
@@ -655,12 +660,12 @@ class AlbumsDatabase:
             albums += row
         return albums
 
-    """
-        Get album year based on tracks
-        Use most used year by tracks
-        @param album id as int
-    """
     def get_year_from_tracks(self, album_id, sql=None):
+        """
+            Get album year based on tracks
+            Use most used year by tracks
+            @param album id as int
+        """
         if not sql:
             sql = Lp.sql
         result = sql.execute("SELECT year, COUNT(year) AS occurrence\
@@ -674,12 +679,12 @@ class AlbumsDatabase:
             return v[0]
         return None
 
-    """
-        Search for albums looking like string
-        @param string
-        return: Array of (id as int, artist_id as int)
-    """
     def search(self, string, sql=None):
+        """
+            Search for albums looking like string
+            @param string
+            return: Array of (id as int, artist_id as int)
+        """
         if not sql:
             sql = Lp.sql
         albums = []
@@ -690,12 +695,12 @@ class AlbumsDatabase:
             albums += (row,)
         return albums
 
-    """
-        True if is a compilation
-        @param album id as int
-        @return is compilation as bool
-    """
     def is_compilation(self, album_id, sql=None):
+        """
+            True if is a compilation
+            @param album id as int
+            @return is compilation as bool
+        """
         if not sql:
             sql = Lp.sql
         result = sql.execute("SELECT COUNT(DISTINCT track_artists.artist_id)\
@@ -708,13 +713,13 @@ class AlbumsDatabase:
             return v[0] > 1
         return False
 
-    """
-        Clean database for album id
-        @param album id as int
-        @param return True if album deleted or genre modified
-        @warning commit needed
-    """
     def clean(self, album_id, sql=None):
+        """
+            Clean database for album id
+            @param album id as int
+            @param return True if album deleted or genre modified
+            @warning commit needed
+        """
         if not sql:
             sql = Lp.sql
         ret = False

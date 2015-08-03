@@ -23,13 +23,16 @@ from lollypop.define import Lp, Type
 from lollypop.define import Shuffle
 
 
-# Player object used to manage playback and playlists
 class Player(BinPlayer, QueuePlayer, UserPlaylistPlayer, RadioPlayer,
              LinearPlayer, ShufflePlayer, ExternalsPlayer):
     """
-        Create a gstreamer bin and listen to signals on bus
+        Player object used to manage playback and playlists
     """
+
     def __init__(self):
+        """
+            Create all objects
+        """
         BinPlayer.__init__(self)
         QueuePlayer.__init__(self)
         LinearPlayer.__init__(self)
@@ -38,36 +41,36 @@ class Player(BinPlayer, QueuePlayer, UserPlaylistPlayer, RadioPlayer,
         RadioPlayer.__init__(self)
         ExternalsPlayer.__init__(self)
 
-    """
-        Play previous track
-    """
     def prev(self):
+        """
+            Play previous track
+        """
         if self.prev_track.id is not None:
             self.load(self.prev_track)
 
-    """
-        Play next track
-    """
     def next(self):
+        """
+            Play next track
+        """
         if self.next_track.id is not None:
             self.load(self.next_track)
 
-    """
-        Stop current track, load track id and play it
-        @param track as Track
-    """
     def load(self, track):
+        """
+            Stop current track, load track id and play it
+            @param track as Track
+        """
         if track.id == Type.RADIOS:
             RadioPlayer.load(self, track)
         else:
             BinPlayer.load(self, track)
 
-    """
-        Play album
-        @param album id as int
-        @param genre id as int
-    """
     def play_album(self, album_id, genre_id=None):
+        """
+            Play album
+            @param album id as int
+            @param genre id as int
+        """
         # Empty user playlist
         self._user_playlist = None
         # Get first track from album
@@ -81,24 +84,24 @@ class Player(BinPlayer, QueuePlayer, UserPlaylistPlayer, RadioPlayer,
             else:
                 self.set_album(album_id)
 
-    """
-        Set album as current album list (for next/prev)
-        Set track as current track in album
-        @param album_id as int
-    """
     def set_album(self, album_id):
+        """
+            Set album as current album list (for next/prev)
+            Set track as current track in album
+            @param album_id as int
+        """
         self._albums = [album_id]
         self.context.genre_id = None
         tracks = Lp.albums.get_tracks(album_id, None)
         self.context.position = tracks.index(self.current_track.id)
 
-    """
-        Set album list (for next/prev)
-        @param track id as int
-        @param artist id as int
-        @param genre id as int
-    """
     def set_albums(self, track_id, artist_id, genre_id):
+        """
+            Set album list (for next/prev)
+            @param track id as int
+            @param artist id as int
+            @param genre id as int
+        """
         # Invalid track
         if track_id is None:
             return
@@ -151,10 +154,10 @@ class Player(BinPlayer, QueuePlayer, UserPlaylistPlayer, RadioPlayer,
         elif self.current_track.id != Type.RADIOS:
             self.stop()
 
-    """
-        Restore player state
-    """
     def restore_state(self):
+        """
+            Restore player state
+        """
         track_id = Lp.settings.get_value('track-id').get_int32()
         if Lp.settings.get_value('save-state') and track_id > 0:
             path = Lp.tracks.get_path(track_id)
@@ -167,20 +170,20 @@ class Player(BinPlayer, QueuePlayer, UserPlaylistPlayer, RadioPlayer,
             else:
                 print("Player::restore_state(): track missing")
 
-    """
-        Set party mode on if party is True
-        Play a new random track if not already playing
-        @param party as bool
-    """
     def set_party(self, party):
+        """
+            Set party mode on if party is True
+            Play a new random track if not already playing
+            @param party as bool
+        """
         ShufflePlayer.set_party(self, party)
         self.set_next()
         self.set_prev()
 
-    """
-        Set previous track
-    """
     def set_prev(self):
+        """
+            Set previous track
+        """
         # Look at externals
         self.prev_track = ExternalsPlayer.prev(self)
 
@@ -200,11 +203,11 @@ class Player(BinPlayer, QueuePlayer, UserPlaylistPlayer, RadioPlayer,
         if self.prev_track.id is None:
             self.prev_track = LinearPlayer.prev(self)
 
-    """
-        Play next track
-        @param sql as sqlite cursor
-    """
     def set_next(self):
+        """
+            Play next track
+            @param sql as sqlite cursor
+        """
         # Look at externals
         self.next_track = ExternalsPlayer.next(self)
 
@@ -231,10 +234,10 @@ class Player(BinPlayer, QueuePlayer, UserPlaylistPlayer, RadioPlayer,
 #######################
 # PRIVATE             #
 #######################
-    """
-        On stream start, set next and previous track
-    """
     def _on_stream_start(self, bus, message):
+        """
+            On stream start, set next and previous track
+        """
         if self.current_track.id >= 0:
             ShufflePlayer._on_stream_start(self, bus, message)
         if self._queue and self.current_track.id == self._queue[0]:

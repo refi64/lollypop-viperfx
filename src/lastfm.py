@@ -45,12 +45,14 @@ class LastFM(LastFMNetwork):
        want, and if your app isn't written in a compiled language, you don't
        really have much option :).
     """
+
     _API_KEY = '7a9619a850ccf7377c46cf233c51e3c6'
     _API_SECRET = '9254319364d73bec6c59ace485a95c98'
-    """
-        Init lastfm
-    """
+
     def __init__(self):
+        """
+            Init lastfm support
+        """
         try:
             self._settings = Gio.Settings.new('org.gnome.system.proxy.http')
         except:
@@ -66,11 +68,11 @@ class LastFM(LastFMNetwork):
         self._check_for_proxy()
         self.connect(None)
 
-    """
-        Connect lastfm
-        @param password as str/None
-    """
     def connect(self, password):
+        """
+            Connect lastfm
+            @param password as str/None
+        """
         if Secret is None or\
                 not Gio.NetworkMonitor.get_default().get_network_available():
             return
@@ -84,21 +86,21 @@ class LastFM(LastFMNetwork):
         else:
             start_new_thread(self._connect, (self._username, password))
 
-    """
-        Connect lastfm sync
-        @param password as str
-    """
     def connect_sync(self, password):
+        """
+            Connect lastfm sync
+            @param password as str
+        """
         if Gio.NetworkMonitor.get_default().get_network_available():
             self._username = Lp.settings.get_value('lastfm-login').get_string()
             self._connect(self._username, password)
             start_new_thread(self._populate_loved_tracks, (True,))
 
-    """
-        Download album image
-        @param album id as int
-    """
     def download_album_img(self, album_id):
+        """
+            Download album image
+            @param album id as int
+        """
         if Gio.NetworkMonitor.get_default().get_network_available():
             album = Lp.albums.get_name(album_id)
             artist = Lp.albums.get_artist_name(album_id)
@@ -106,12 +108,12 @@ class LastFM(LastFMNetwork):
             if not self._in_albums_download:
                 start_new_thread(self._download_albums_imgs, ())
 
-    """
-        Get artist infos
-        @param artist as str
-        @return (url as str, image url as str, content as str)
-    """
     def get_artist_infos(self, artist):
+        """
+            Get artist infos
+            @param artist as str
+            @return (url as str, image url as str, content as str)
+        """
         if not Gio.NetworkMonitor.get_default().get_network_available():
             return (None, None, None)
         try:
@@ -129,14 +131,14 @@ class LastFM(LastFMNetwork):
         except:
             return (None, None, None)
 
-    """
-        Scrobble track
-        @param artist as str
-        @param title as str
-        @param timestamp as int
-        @param duration as int
-    """
     def scrobble(self, artist, title, timestamp, duration):
+        """
+            Scrobble track
+            @param artist as str
+            @param title as str
+            @param timestamp as int
+            @param duration as int
+        """
         if Gio.NetworkMonitor.get_default().get_network_available() and\
            self._is_auth and Secret is not None:
             start_new_thread(self._scrobble, (artist,
@@ -144,26 +146,26 @@ class LastFM(LastFMNetwork):
                                               timestamp,
                                               duration))
 
-    """
-        Now playing track
-        @param artist as str
-        @param title as str
-        @param duration as int
-    """
     def now_playing(self, artist, title, duration):
+        """
+            Now playing track
+            @param artist as str
+            @param title as str
+            @param duration as int
+        """
         if Gio.NetworkMonitor.get_default().get_network_available() and\
            self._is_auth and Secret is not None:
             start_new_thread(self._now_playing, (artist,
                                                  title,
                                                  duration))
 
-    """
-        Love track
-        @param artist as string
-        @param title as string
-        @thread safe
-    """
     def love(self, artist, title):
+        """
+            Love track
+            @param artist as string
+            @param title as string
+            @thread safe
+        """
         # Love the track on lastfm
         if Gio.NetworkMonitor.get_default().get_network_available() and\
            self.is_auth():
@@ -173,13 +175,13 @@ class LastFM(LastFMNetwork):
             except Exception as e:
                 print("Lastfm::love(): %s" % e)
 
-    """
-        Unlove track
-        @param artist as string
-        @param title as string
-        @thread safe
-    """
     def unlove(self, artist, title):
+        """
+            Unlove track
+            @param artist as string
+            @param title as string
+            @thread safe
+        """
         # Love the track on lastfm
         if Gio.NetworkMonitor.get_default().get_network_available() and\
            self.is_auth():
@@ -189,20 +191,20 @@ class LastFM(LastFMNetwork):
             except Exception as e:
                 print("Lastfm::unlove(): %s" % e)
 
-    """
-        Return True if valid authentication send
-        @return bool
-    """
     def is_auth(self):
+        """
+            Return True if valid authentication send
+            @return bool
+        """
         return self._is_auth
 
 #######################
 # PRIVATE             #
 #######################
-    """
-        Enable proxy if needed
-    """
     def _check_for_proxy(self):
+        """
+            Enable proxy if needed
+        """
         if self._settings is not None:
             h = self._settings.get_value('host').get_string()
             p = self._settings.get_value('port').get_int32()
@@ -211,13 +213,13 @@ class LastFM(LastFMNetwork):
                 return
         self.disable_proxy()
 
-    """
-        Connect lastfm
-        @param username as str
-        @param password as str
-        @thread safe
-    """
     def _connect(self, username, password):
+        """
+            Connect lastfm
+            @param username as str
+            @param password as str
+            @thread safe
+        """
         self._username = username
         if password != '' and username != '':
             self._is_auth = True
@@ -235,15 +237,15 @@ class LastFM(LastFMNetwork):
             print("Lastfm::_connect(): %s" % e)
         self._populate_loved_tracks()
 
-    """
-        Scrobble track
-        @param artist as str
-        @param title as str
-        @param timestamp as int
-        @param duration as int
-        @thread safe
-    """
     def _scrobble(self, artist, title, timestamp, duration):
+        """
+            Scrobble track
+            @param artist as str
+            @param title as str
+            @param timestamp as int
+            @param duration as int
+            @thread safe
+        """
         debug("LastFM::_scrobble(): %s, %s, %s, %s" % (artist,
                                                        title,
                                                        timestamp,
@@ -258,15 +260,15 @@ class LastFM(LastFMNetwork):
         except:
             self._connect(self._username, self._password)
 
-    """
-        Now playing track
-        @param artist as str
-        @param title as str
-        @param duration as int
-        @param first is internal
-        @thread safe
-    """
     def _now_playing(self, artist, title, duration, first=True):
+        """
+            Now playing track
+            @param artist as str
+            @param title as str
+            @param duration as int
+            @param first is internal
+            @thread safe
+        """
         debug("LastFM::_now_playing(): %s, %s, %s" % (artist,
                                                       title,
                                                       duration))
@@ -284,10 +286,10 @@ class LastFM(LastFMNetwork):
                 self._connect(self._username, self._password)
                 self._now_playing(artist, title, duration, False)
 
-    """
-        Download albums images
-    """
     def _download_albums_imgs(self):
+        """
+            Download albums images
+        """
         self._in_albums_download = True
         sql = Lp.db.get_cursor()
         while self._albums_queue:
@@ -322,11 +324,11 @@ class LastFM(LastFMNetwork):
         self._in_albums_download = False
         sql.close()
 
-    """
-        Populate loved tracks playlist
-        @param bool as force
-    """
     def _populate_loved_tracks(self, force=False):
+        """
+            Populate loved tracks playlist
+            @param bool as force
+        """
         try:
             Lp.playlists.add_loved()
             if force or len(Lp.playlists.get_tracks(Lp.playlists._LOVED)) == 0:
@@ -343,12 +345,12 @@ class LastFM(LastFMNetwork):
         except Exception as e:
                 print("LastFM::_populate_loved_tracks: %s" % e)
 
-    """
-        Init self object
-        @param source as GObject.Object
-        @param result Gio.AsyncResult
-    """
     def _on_password_lookup(self, source, result):
+        """
+            Init self object
+            @param source as GObject.Object
+            @param result Gio.AsyncResult
+        """
         try:
             password = Secret.password_lookup_finish(result)
             self._password = password

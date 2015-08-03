@@ -58,11 +58,17 @@ from lollypop.fullscreen import FullScreen
 
 
 class Application(Gtk.Application):
+    """
+        Lollypop application:
+            - Handle appmenu
+            - Handle command line
+            - Create main window
+    """
 
-    """
-        Create application with a custom css provider
-    """
     def __init__(self):
+        """
+            Create application
+        """
         Gtk.Application.__init__(self,
                                  application_id='org.gnome.Lollypop',
                                  flags=Gio.ApplicationFlags.FLAGS_NONE)
@@ -126,11 +132,11 @@ class Application(Gtk.Application):
         if self.get_is_remote():
             Gdk.notify_startup_complete()
 
-    """
-        Add startup notification and
-        build gnome-shell menu after Gtk.Application startup
-    """
     def do_startup(self):
+        """
+            Add startup notification and
+            build gnome-shell menu after Gtk.Application startup
+        """
         Gtk.Application.do_startup(self)
         Notify.init("Lollypop")
 
@@ -156,22 +162,22 @@ class Application(Gtk.Application):
             Lp.window.show()
             Lp.player.restore_state()
 
-    """
-        Activate window
-    """
     def do_activate(self):
+        """
+            Activate window
+        """
         if Lp.window is not None:
             Lp.window.present()
         Gtk.Application.do_activate(self)
 
-    """
-        Play specified files
-        @param app as Gio.Application
-        @param files as [Gio.Files]
-        @param hint as str
-        @param data as unused
-    """
     def do_open(self, files, hint, data):
+        """
+            Play specified files
+            @param app as Gio.Application
+            @param files as [Gio.Files]
+            @param hint as str
+            @param data as unused
+        """
         Lp.player.clear_externals()
         for f in files:
             self._parser.parse_async(f.get_uri(), True,
@@ -180,10 +186,10 @@ class Application(Gtk.Application):
         if Lp.window is not None and Lp.window.is_visible():
             Lp.window.present()
 
-    """
-        Save window position and view
-    """
     def prepare_to_exit(self, action=None, param=None):
+        """
+            Save window position and view
+        """
         if Lp.settings.get_value('save-state'):
             Lp.window.save_view_state()
             if Lp.player.current_track.id is None:
@@ -197,10 +203,10 @@ class Application(Gtk.Application):
             Lp.window.stop_all()
         self.quit()
 
-    """
-        Quit lollypop
-    """
     def quit(self):
+        """
+            Quit lollypop
+        """
         if Lp.scanner.is_locked():
             Lp.scanner.stop()
             GLib.idle_add(self.quit)
@@ -213,19 +219,19 @@ class Application(Gtk.Application):
         Lp.sql.close()
         Gst.deinit()
 
-    """
-        Return True if application is fullscreen
-    """
     def is_fullscreen(self):
+        """
+            Return True if application is fullscreen
+        """
         return self._is_fs
 
 #######################
 # PRIVATE             #
 #######################
-    """
-        Init proxy setting env
-    """
     def _init_proxy(self):
+        """
+            Init proxy setting env
+        """
         try:
             settings = Gio.Settings.new('org.gnome.system.proxy.http')
             h = settings.get_value('host').get_string()
@@ -235,36 +241,36 @@ class Application(Gtk.Application):
         except:
             pass
 
-    """
-        Handle command line
-        @param app as Gio.Application
-        @param options as GLib.VariantDict
-    """
     def _on_handle_local_options(self, app, options):
+        """
+            Handle command line
+            @param app as Gio.Application
+            @param options as GLib.VariantDict
+        """
         if options.contains("debug"):
             Lp.debug = True
         return 0
 
-    """
-        Add playlist entry to external files
-        @param parser as TotemPlParser.Parser
-        @param track uri as str
-        @param metadata as GLib.HastTable
-    """
     def _on_entry_parsed(self, parser, uri, metadata):
+        """
+            Add playlist entry to external files
+            @param parser as TotemPlParser.Parser
+            @param track uri as str
+            @param metadata as GLib.HastTable
+        """
         Lp.player.load_external(uri)
         if self._externals_count == 0:
             Lp.player.set_party(False)
             Lp.player.play_first_external()
         self._externals_count += 1
 
-    """
-        Reset parsed count and play uri if not a playlist
-        @param source as GObject.Object
-        @param result as Gio.AsyncResult
-        @param uri as string
-    """
     def _on_parsing_finished(self, source, result, uri):
+        """
+            Reset parsed count and play uri if not a playlist
+            @param source as GObject.Object
+            @param result as Gio.AsyncResult
+            @param uri as string
+        """
         if self._externals_count == 0:
             Lp.player.load_external(uri)
             Lp.player.set_party(False)
@@ -272,59 +278,61 @@ class Application(Gtk.Application):
         else:
             self._externals_count = 0
 
-    """
-        Hide window
-        @param widget as Gtk.Widget
-        @param event as Gdk.Event
-    """
     def _hide_on_delete(self, widget, event):
+        """
+            Hide window
+            @param widget as Gtk.Widget
+            @param event as Gdk.Event
+        """
         if not Lp.settings.get_value('background-mode'):
             GLib.timeout_add(500, self.prepare_to_exit)
             Lp.scanner.stop()
         return widget.hide_on_delete()
 
-    """
-        Search for new music
-        @param action as Gio.SimpleAction
-        @param param as GLib.Variant
-    """
     def _update_db(self, action=None, param=None):
+        """
+            Search for new music
+            @param action as Gio.SimpleAction
+            @param param as GLib.Variant
+        """
         if Lp.window:
             start_new_thread(Lp.art.clean_all_cache, ())
             Lp.window.update_db()
 
-    """
-        Show a fullscreen window with cover and artist informations
-        @param action as Gio.SimpleAction
-        @param param as GLib.Variant
-    """
     def _fullscreen(self, action=None, param=None):
+        """
+            Show a fullscreen window with cover and artist informations
+            @param action as Gio.SimpleAction
+            @param param as GLib.Variant
+        """
         if Lp.window and not self._is_fs:
             fs = FullScreen(self, Lp.window)
             fs.connect("destroy", self._on_fs_destroyed)
             self._is_fs = True
             fs.show()
 
-    """
-        Mark fullscreen as False
-        @param widget as Fullscreen
-    """
     def _on_fs_destroyed(self, widget):
+        """
+            Mark fullscreen as False
+            @param widget as Fullscreen
+        """
         self._is_fs = False
 
-    """
-        Show settings dialog
-        @param action as Gio.SimpleAction
-        @param param as GLib.Variant
-    """
     def _settings_dialog(self, action=None, param=None):
+        """
+            Show settings dialog
+            @param action as Gio.SimpleAction
+            @param param as GLib.Variant
+        """
         dialog = SettingsDialog()
         dialog.show()
 
-    """
-        Setup about dialog
-    """
     def _about(self, action, param):
+        """
+            Setup about dialog
+            @param action as Gio.SimpleAction
+            @param param as GLib.Variant
+        """
         builder = Gtk.Builder()
         builder.add_from_resource('/org/gnome/Lollypop/AboutDialog.ui')
         about = builder.get_object('about_dialog')
@@ -332,26 +340,30 @@ class Application(Gtk.Application):
         about.connect("response", self._about_response)
         about.show()
 
-    """
-        Show help in yelp
-    """
     def _help(self, action, param):
+        """
+            Show help in yelp
+            @param action as Gio.SimpleAction
+            @param param as GLib.Variant
+        """
         try:
             Gtk.show_uri(None, "help:lollypop", Gtk.get_current_event_time())
         except:
             print(_("Lollypop: You need to install yelp."))
 
-    """
-        Destroy about dialog when closed
-    """
-    def _about_response(self, dialog, response):
+    def _about_response(self, dialog, response_id):
+        """
+            Destroy about dialog when closed
+            @param dialog as Gtk.Dialog
+            @param response id as int
+        """
         dialog.destroy()
 
-    """
-        Setup application menu
-        @return menu as Gio.Menu
-    """
     def _setup_app_menu(self):
+        """
+            Setup application menu
+            @return menu as Gio.Menu
+        """
         builder = Gtk.Builder()
 
         builder.add_from_resource('/org/gnome/Lollypop/Appmenu.ui')

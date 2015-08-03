@@ -20,20 +20,24 @@ from lollypop.utils import is_audio
 
 
 class Inotify:
+    """
+        Inotify support
+    """
     # 10 second before updating database
     _TIMEOUT = 10000
-    """
-        Init inode notification
-    """
+
     def __init__(self):
+        """
+            Init inode notification
+        """
         self._monitors = {}
         self._timeout = None
 
-    """
-        Add a monitor for path
-        @param path as string
-    """
     def add_monitor(self, path):
+        """
+            Add a monitor for path
+            @param path as string
+        """
         # Check if there is already a monitor for this path
         if path in self._monitors.keys():
             return
@@ -50,10 +54,10 @@ class Inotify:
 #######################
 # PRIVATE             #
 #######################
-    """
-        Prepare thread to handle changes
-    """
     def _on_dir_changed(self, monitor, changed_file, other_file, event):
+        """
+            Prepare thread to handle changes
+        """
         # Stop collection scanner and wait
         if Lp.scanner.is_locked():
             Lp.scanner.stop()
@@ -80,9 +84,9 @@ class Inotify:
             self._timeout = GLib.timeout_add(self._TIMEOUT,
                                              self._run_collection_update)
 
-    """
-        Run a collection update
-    """
     def _run_collection_update(self):
+        """
+            Run a collection update
+        """
         self._timeout = None
         Lp.window.update_db()

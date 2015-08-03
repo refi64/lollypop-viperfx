@@ -18,6 +18,9 @@ from lollypop.track import Track
 
 
 class BasePlayer(GObject.GObject):
+    """
+        Base player object
+    """
     __gsignals__ = {
         'current-changed': (GObject.SignalFlags.RUN_FIRST, None, ()),
         'seeked': (GObject.SignalFlags.RUN_FIRST, None, (int,)),
@@ -26,10 +29,11 @@ class BasePlayer(GObject.GObject):
         'queue-changed': (GObject.SignalFlags.RUN_FIRST, None, ()),
         'party-changed': (GObject.SignalFlags.RUN_FIRST, None, (bool,))
     }
-    """
-        Init base player variables
-    """
+
     def __init__(self):
+        """
+            Init base player variables
+        """
         # In case of multiple subclassing,
         # do not init variables for every subclass
         if not hasattr(self, '_albums'):
@@ -50,16 +54,16 @@ class BasePlayer(GObject.GObject):
             # For tracks from the cmd line
             self._external_tracks = []
 
-    """
-        Set next track
-    """
     def set_next(self):
+        """
+            Set next track
+        """
         pass
 
-    """
-        Set prev track
-    """
     def set_prev(self):
+        """
+            Set prev track
+        """
         pass
 
 #######################

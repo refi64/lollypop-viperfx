@@ -24,16 +24,20 @@ from lollypop.utils import is_audio, is_pls, debug
 
 
 class CollectionScanner(GObject.GObject, ScannerTagReader):
+    """
+        Scan user music collection
+    """
     __gsignals__ = {
         'scan-finished': (GObject.SignalFlags.RUN_FIRST, None, ()),
         'artist-update': (GObject.SignalFlags.RUN_FIRST, None, (int, int)),
         'genre-update': (GObject.SignalFlags.RUN_FIRST, None, (int,)),
         'album-modified': (GObject.SignalFlags.RUN_FIRST, None, (int,))
     }
-    """
-        Init collection scanner
-    """
+
     def __init__(self):
+        """
+            Init collection scanner
+        """
         GObject.GObject.__init__(self)
         ScannerTagReader.__init__(self)
 
@@ -45,11 +49,11 @@ class CollectionScanner(GObject.GObject, ScannerTagReader):
         self._is_locked = False
         self._progress = None
 
-    """
-        Update database
-        @param progress as progress bar
-    """
     def update(self, progress):
+        """
+            Update database
+            @param progress as progress bar
+        """
         # Keep track of on file with missing codecs
         self._missing_codecs = None
         self.init_discover()
@@ -67,16 +71,16 @@ class CollectionScanner(GObject.GObject, ScannerTagReader):
             self._is_locked = True
             start_new_thread(self._scan, (paths,))
 
-    """
-        Return True if db locked
-    """
     def is_locked(self):
+        """
+            Return True if db locked
+        """
         return self._is_locked
 
-    """
-        Stop scan
-    """
     def stop(self):
+        """
+            Stop scan
+        """
         if self._progress is not None:
             self._progress.hide()
             self._progress.set_fraction(0.0)
@@ -86,12 +90,12 @@ class CollectionScanner(GObject.GObject, ScannerTagReader):
 #######################
 # PRIVATE             #
 #######################
-    """
-        Return all tracks/dirs for paths
-        @param paths as string
-        @return ([tracks path], [dirs path], track count)
-    """
     def _get_objects_for_paths(self, paths):
+        """
+            Return all tracks/dirs for paths
+            @param paths as string
+            @return ([tracks path], [dirs path], track count)
+        """
         tracks = []
         track_dirs = list(paths)
         count = 0
@@ -117,18 +121,18 @@ class CollectionScanner(GObject.GObject, ScannerTagReader):
                               % e)
         return (tracks, track_dirs, count)
 
-    """
-        Update progress bar status
-        @param scanned items as int, total items as int
-    """
     def _update_progress(self, current, total):
+        """
+            Update progress bar status
+            @param scanned items as int, total items as int
+        """
         if self._progress is not None:
             self._progress.set_fraction(current/total)
 
-    """
-        Notify from main thread when scan finished
-    """
     def _finish(self):
+        """
+            Notify from main thread when scan finished
+        """
         if self._progress is not None:
             self._progress.hide()
             self._progress.set_fraction(0.0)
@@ -140,12 +144,12 @@ class CollectionScanner(GObject.GObject, ScannerTagReader):
             Lp.player.load_external(GLib.filename_to_uri(self._missing_codecs))
             Lp.player.play_first_external()
 
-    """
-        Scan music collection for music files
-        @param paths as [string], paths to scan
-        @thread safe
-    """
     def _scan(self, paths):
+        """
+            Scan music collection for music files
+            @param paths as [string], paths to scan
+            @thread safe
+        """
         sql = Lp.db.get_cursor()
         mtimes = Lp.tracks.get_mtimes(sql)
         orig_tracks = Lp.tracks.get_paths(sql)
@@ -206,15 +210,15 @@ class CollectionScanner(GObject.GObject, ScannerTagReader):
         sql.close()
         GLib.idle_add(self._finish)
 
-    """
-        Add new file to db with informations
-        @param filepath as string
-        @param file modification time as int
-        @param infos as GstPbutils.DiscovererInfo
-        @param sql as sqlite cursor
-        @return track id as int
-    """
     def _add2db(self, filepath, mtime, infos, sql):
+        """
+            Add new file to db with informations
+            @param filepath as string
+            @param file modification time as int
+            @param infos as GstPbutils.DiscovererInfo
+            @param sql as sqlite cursor
+            @return track id as int
+        """
         tags = infos.get_tags()
 
         title = self.get_title(tags, filepath)
@@ -265,12 +269,12 @@ class CollectionScanner(GObject.GObject, ScannerTagReader):
                 GLib.idle_add(self.emit, 'artist-update', artist_id, album_id)
         return track_id
 
-    """
-        Delete track from db
-        @param filepath as string
-        @param sql as sqlite cursor
-    """
     def _del_from_db(self, filepath, sql):
+        """
+            Delete track from db
+            @param filepath as string
+            @param sql as sqlite cursor
+        """
         track_id = Lp.tracks.get_id_by_path(filepath, sql)
         album_id = Lp.tracks.get_album_id(track_id, sql)
         genre_ids = Lp.tracks.get_genre_ids(track_id, sql)
@@ -286,10 +290,10 @@ class CollectionScanner(GObject.GObject, ScannerTagReader):
         for genre_id in genre_ids:
             Lp.genres.clean(genre_id, sql)
 
-    """
-        Restore albums popularty
-    """
     def _restore_albums_popularity(self, sql):
+        """
+            Restore albums popularty
+        """
         popularities = Lp.db.get_albums_popularity()
         result = sql.execute("SELECT albums.name, artists.name, albums.rowid\
                               FROM albums, artists\
@@ -299,10 +303,11 @@ class CollectionScanner(GObject.GObject, ScannerTagReader):
             if string in popularities:
                 Lp.albums.set_popularity(row[2],
                                          popularities[string], sql)
-    """
-        Restore albums mtime
-    """
+
     def _restore_albums_mtime(self, sql):
+        """
+            Restore albums mtime
+        """
         mtimes = Lp.db.get_albums_mtime()
         result = sql.execute("SELECT albums.name, artists.name, albums.rowid\
                               FROM albums, artists\
@@ -313,10 +318,10 @@ class CollectionScanner(GObject.GObject, ScannerTagReader):
                 Lp.albums.set_mtime(row[2],
                                     mtimes[string], sql)
 
-    """
-        Restore tracks popularty
-    """
     def _restore_tracks_popularity(self, sql):
+        """
+            Restore tracks popularty
+        """
         popularities = Lp.db.get_tracks_popularity()
         result = sql.execute("SELECT tracks.name, artists.name, tracks.rowid\
                               FROM tracks, artists, track_artists\
@@ -327,10 +332,11 @@ class CollectionScanner(GObject.GObject, ScannerTagReader):
             if string in popularities:
                 Lp.tracks.set_popularity(row[2],
                                          popularities[string], sql)
-    """
-        Restore tracks ltime
-    """
+
     def _restore_tracks_ltime(self, sql):
+        """
+            Restore tracks ltime
+        """
         ltimes = Lp.db.get_tracks_ltime()
         result = sql.execute("SELECT tracks.name, artists.name, tracks.rowid\
                               FROM tracks, artists, track_artists\

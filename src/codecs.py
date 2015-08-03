@@ -18,19 +18,21 @@ from gettext import gettext as _
 from lollypop.define import Lp
 
 
-# Handle missing gstreamer codecs
 class Codecs:
     """
-        Init installer
+        Handle missing gstreamer codecs
     """
     def __init__(self):
+        """
+            Init installer
+        """
         GstPbutils.pb_utils_init()
         self._messages = []
 
-    """
-        Install missing plugins
-    """
     def install(self):
+        """
+            Install missing plugins
+        """
         try:
             context = GstPbutils.InstallPluginsContext.new()
             try:
@@ -55,18 +57,18 @@ class Codecs:
         except Exception as e:
             print("Codecs::__init__(): %s" % e)
 
-    """
-        Append a message
-        @param message as Gst.Message
-    """
     def append(self, message):
+        """
+            Append a message
+            @param message as Gst.Message
+        """
         self._messages.append(message)
 
-    """
-        Check if codec is missing
-        @return missing as bool
-    """
     def is_missing_codec(self, message):
+        """
+            Check if codec is missing
+            @return missing as bool
+        """
         error, debug = message.parse_error()
         if error.matches(Gst.CoreError.quark(),
                          Gst.CoreError.MISSING_PLUGIN):
