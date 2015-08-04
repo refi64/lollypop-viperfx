@@ -289,7 +289,6 @@ class ArtistInfos(Gtk.Bin):
         """
         self._label.set_text(_("Please wait..."))
         self._view_btn.hide()
-        self._love_btn.hide()
         if WebKit is not None:
             self._lyrics_btn.show()
         self._url_btn.set_label('')
