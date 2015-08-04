@@ -302,8 +302,8 @@ class ArtistInfos(Gtk.Bin):
             @param btn as Gtk.Button
         """
         self._label.set_text(_("Please wait..."))
-        self._view_btn.hide()
-        if WebKit is not None:
+        self._view_btn.set_sensitive(False)
+        if self.WebKit is not None:
             self._lyrics_btn.show()
         self._url_btn.set_label('')
         self._lyrics_btn.set_sensitive(True)
@@ -335,7 +335,7 @@ class ArtistInfos(Gtk.Bin):
         view.load_uri(url)
         if btn is not None:
             self._view_btn.set_tooltip_text(_("Wikipedia"))
-            self._view_btn.show()
+            self._view_btn.set_sensitive(True)
         self._lyrics_btn.set_sensitive(False)
         self._url_btn.set_label(_("Wikia"))
         self._url_btn.set_uri(url)
