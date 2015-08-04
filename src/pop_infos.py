@@ -12,6 +12,8 @@
 
 from gi.repository import Gtk, GLib, Gio, GdkPixbuf
 
+from gettext import gettext as _
+
 try:
     from lollypop.wikipedia import Wikipedia
 except Exception as e:
@@ -28,7 +30,6 @@ except Exception as e:
     WebKit = None
 
 from _thread import start_new_thread
-from gettext import gettext as _
 from cgi import escape
 
 from lollypop.define import Lp
