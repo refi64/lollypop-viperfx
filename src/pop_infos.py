@@ -301,7 +301,6 @@ class ArtistInfos(Gtk.Bin):
             Next view
             @param btn as Gtk.Button
         """
-        self._label.set_text(_("Please wait..."))
         self._view_btn.set_sensitive(False)
         if self.WebKit is not None:
             self._lyrics_btn.show()
