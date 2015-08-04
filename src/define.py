@@ -45,7 +45,6 @@ class Lp:
     window = None
     notify = None
     lastfm = None
-    wikipedia = None
     debug = False
 
 

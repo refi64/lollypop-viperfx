@@ -14,21 +14,6 @@ from gi.repository import Gtk, GLib, Gio, GdkPixbuf
 
 from gettext import gettext as _
 
-try:
-    from lollypop.wikipedia import Wikipedia
-except Exception as e:
-    print(e)
-    print(_("Advanced artist informations disabled"))
-    print("$ sudo pip3 install wikipedia")
-    Wikipedia = None
-
-try:
-    from gi.repository import WebKit
-except Exception as e:
-    print(e)
-    print(_("Wikia support disabled"))
-    WebKit = None
-
 from _thread import start_new_thread
 from cgi import escape
 
@@ -39,6 +24,14 @@ class InfosPopover(Gtk.Popover):
     """
         Popover with artist informations
     """
+    
+    def should_be_shown():
+        """
+            True if we can show popover
+        """
+        return Lp.lastfm is not None or\
+               ArtistInfos.Wikipedia is not None or\
+               ArtistInfos.WebKit is not None
 
     def __init__(self, artist, track_id=None):
         """
@@ -79,6 +72,21 @@ class ArtistInfos(Gtk.Bin):
     """
         Artist informations from lastfm
     """
+
+    try:
+        from lollypop.wikipedia import Wikipedia
+    except Exception as e:
+        print(e)
+        print(_("Advanced artist informations disabled"))
+        print("$ sudo pip3 install wikipedia")
+        Wikipedia = None
+
+    try:
+        from gi.repository import WebKit
+    except Exception as e:
+        print(e)
+        print(_("Wikia support disabled"))
+        WebKit = None
 
     def __init__(self, artist, track_id):
         """
@@ -122,11 +130,11 @@ class ArtistInfos(Gtk.Bin):
         self._stack.add(self._spinner)
         self._stack.add(self._not_found)
         
-        if Wikipedia is not None or Lp.lastfm is not None:
+        if self.Wikipedia is not None or Lp.lastfm is not None:
             self._scrolled_infos = builder.get_object('scrolled')
             self._stack.add(self._scrolled_infos)
             
-        if WebKit is not None:
+        if self.WebKit is not None:
             self._lyrics_btn = builder.get_object('lyrics_btn')
             self._lyrics_btn.show()
             self._scrolled_lyrics = Gtk.ScrolledWindow()
@@ -140,7 +148,10 @@ class ArtistInfos(Gtk.Bin):
         """
             Populate informations and artist image
         """
-        start_new_thread(self._populate, ())
+        if self.Wikipedia is None and Lp.lastfm is None:
+            self._on_lyrics_clicked(None)
+        else:
+            start_new_thread(self._populate, ())
 
 #######################
 # PRIVATE             #
@@ -152,9 +163,11 @@ class ArtistInfos(Gtk.Bin):
             @thread safe
         """
         url = None
-        if self._wikipedia and Wikipedia is not None:
+        image_url = None
+        content = None
+        if self._wikipedia and self.Wikipedia is not None:
             self._wikipedia = False
-            (url, image_url, content) = Wikipedia().get_artist_infos(
+            (url, image_url, content) = self.Wikipedia().get_artist_infos(
                 self._artist)
         if url is None and Lp.lastfm is not None:
             self._wikipedia = True
@@ -171,7 +184,6 @@ class ArtistInfos(Gtk.Bin):
                                                                  None)
         except Exception as e:
             print("PopArtistInfos::_populate: %s" % e)
-            content = None
 
         GLib.idle_add(self._set_content, content, url, stream)
 
@@ -187,7 +199,7 @@ class ArtistInfos(Gtk.Bin):
             return
 
         if content is not None:
-            if Lp.lastfm is not None and Wikipedia is not None:
+            if Lp.lastfm is not None and self.Wikipedia is not None:
                 self._view_btn.show()
             self._stack.set_visible_child(self._scrolled_infos)
             self._url_btn.set_uri(url)
@@ -300,10 +312,11 @@ class ArtistInfos(Gtk.Bin):
     def _on_lyrics_clicked(self, btn):
         """
             Show lyrics from wikia with webkit
+            @param btn as Gtk.Button, if None, do not show view button
         """
         view = self._scrolled_lyrics.get_child()
         if view is None:
-            settings = WebKit.WebSettings()
+            settings = self.WebKit.WebSettings()
             settings.set_property('enable-private-browsing', True)
             settings.set_property('enable-plugins', False)
             settings.set_property('user-agent',
@@ -311,7 +324,7 @@ class ArtistInfos(Gtk.Bin):
                                   " <Build Tag etc.>) AppleWebKit/<WebKit Rev>"
                                   " (KHTML, like Gecko) Chrome/<Chrome Rev>"
                                   " Mobile Safari/<WebKit Rev>")
-            view = WebKit.WebView()
+            view = self.WebKit.WebView()
             view.set_settings(settings)
             view.show()
             self._scrolled_lyrics.add(view)
@@ -319,8 +332,9 @@ class ArtistInfos(Gtk.Bin):
         title = Lp.player.current_track.title.replace(' ', '_')
         url = "http://lyrics.wikia.com/%s:%s" % (artist, title)
         view.load_uri(url)
-        self._view_btn.set_tooltip_text(_("Wikipedia"))
-        self._view_btn.show()
+        if btn is not None:
+            self._view_btn.set_tooltip_text(_("Wikipedia"))
+            self._view_btn.show()
         self._lyrics_btn.set_sensitive(False)
         self._url_btn.set_label(_("Wikia"))
         self._url_btn.set_uri(url)

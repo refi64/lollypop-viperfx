@@ -41,7 +41,7 @@ class ToolbarPlayback(Gtk.Bin):
         self._play_image = builder.get_object('play_image')
         self._pause_image = builder.get_object('pause_image')
 
-        if Lp.lastfm is not None or Lp.wikipedia is not None:
+        if InfosPopover.should_be_shown():
             self._artist_infos_btn = builder.get_object('artist_infos_btn')
             self._artist_infos_btn.show()
 
@@ -50,7 +50,7 @@ class ToolbarPlayback(Gtk.Bin):
             Update buttons on current changed
             @param player as Player
         """
-        if Lp.lastfm is not None or Lp.wikipedia is not None:
+        if InfosPopover.should_be_shown():
             if player.current_track.id != Type.RADIOS:
                 self._artist_infos_btn.set_sensitive(True)
             else:
@@ -124,7 +124,7 @@ class ToolbarPlayback(Gtk.Bin):
             Show current artist informations
             @param button as Gtk.Button
         """
-        if Lp.lastfm is not None or Lp.wikipedia is not None:
+        if InfosPopover.should_be_shown():
             artist_id = Lp.player.current_track.aartist_id
             if artist_id == Type.COMPILATIONS:
                 artist = Lp.player.current_track.artist
