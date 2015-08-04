@@ -292,6 +292,7 @@ class ArtistInfos(Gtk.Bin):
         if WebKit is not None:
             self._lyrics_btn.show()
         self._url_btn.set_label('')
+        self._lyrics_btn.set_sensitive(True)
         self._stack.set_visible_child(self._spinner)
         self.populate()
 
@@ -319,7 +320,7 @@ class ArtistInfos(Gtk.Bin):
         view.load_uri(url)
         self._view_btn.set_tooltip_text(_("Wikipedia"))
         self._view_btn.show()
-        self._lyrics_btn.hide()
+        self._lyrics_btn.set_sensitive(False)
         self._url_btn.set_label(_("Wikia"))
         self._url_btn.set_uri(url)
         self._stack.set_visible_child(self._scrolled_lyrics)
