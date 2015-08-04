@@ -20,23 +20,21 @@ import os
 
 try:
     from lollypop.lastfm import LastFM
-    PYLAST = True
 except Exception as e:
     print(e)
     print(_("    - Scrobbler disabled\n"
             "    - Auto cover download disabled\n"
             "    - Artist informations disabled"))
     print("$ sudo pip3 install pylast")
-    PYLAST = False
+    LastFM = None
 
 try:
     from lollypop.wikipedia import Wikipedia
-    WIKIPEDIA = True
 except Exception as e:
     print(e)
     print(_("Advanced artist informations disabled"))
     print("$ sudo pip3 install wikipedia")
-    WIKIPEDIA = False
+    Wikipedia = None
 
 from lollypop.utils import is_gnome, is_unity
 from lollypop.define import Lp, ArtSize
@@ -96,9 +94,9 @@ class Application(Gtk.Application):
         styleContext.add_provider_for_screen(screen, cssProvider,
                                              Gtk.STYLE_PROVIDER_PRIORITY_USER)
         Lp.settings = Settings.new()
-        if PYLAST:
+        if LastFM is not None:
             Lp.lastfm = LastFM()
-        if WIKIPEDIA:
+        if Wikipedia is not None:
             Lp.wikipedia = Wikipedia()
         Lp.db = Database()
         # We store a cursor for the main thread
