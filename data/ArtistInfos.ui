@@ -5,12 +5,17 @@
   <object class="GtkImage" id="image1">
     <property name="visible">True</property>
     <property name="can_focus">False</property>
-    <property name="icon_name">view-paged-symbolic</property>
+    <property name="icon_name">view-more-symbolic</property>
   </object>
   <object class="GtkImage" id="image2">
     <property name="visible">True</property>
     <property name="can_focus">False</property>
     <property name="icon_name">emblem-favorite-symbolic</property>
+  </object>
+  <object class="GtkImage" id="image3">
+    <property name="visible">True</property>
+    <property name="can_focus">False</property>
+    <property name="icon_name">view-dual-symbolic</property>
   </object>
   <object class="GtkGrid" id="widget">
     <property name="visible">True</property>
@@ -29,7 +34,7 @@
       <packing>
         <property name="left_attach">0</property>
         <property name="top_attach">1</property>
-        <property name="width">4</property>
+        <property name="width">5</property>
       </packing>
     </child>
     <child>
@@ -45,12 +50,13 @@
         </style>
       </object>
       <packing>
-        <property name="left_attach">3</property>
+        <property name="left_attach">4</property>
         <property name="top_attach">0</property>
       </packing>
     </child>
     <child>
       <object class="GtkButton" id="love_btn">
+        <property name="visible">True</property>
         <property name="can_focus">True</property>
         <property name="receives_default">True</property>
         <property name="tooltip_text" translatable="yes">I love</property>
@@ -63,7 +69,7 @@
         </style>
       </object>
       <packing>
-        <property name="left_attach">0</property>
+        <property name="left_attach">1</property>
         <property name="top_attach">0</property>
       </packing>
     </child>
@@ -77,7 +83,7 @@
         <property name="ellipsize">end</property>
       </object>
       <packing>
-        <property name="left_attach">2</property>
+        <property name="left_attach">3</property>
         <property name="top_attach">0</property>
       </packing>
     </child>
@@ -93,7 +99,24 @@
         </style>
       </object>
       <packing>
-        <property name="left_attach">1</property>
+        <property name="left_attach">2</property>
+        <property name="top_attach">0</property>
+      </packing>
+    </child>
+    <child>
+      <object class="GtkButton" id="lyrics_btn">
+        <property name="can_focus">True</property>
+        <property name="receives_default">True</property>
+        <property name="tooltip_text" translatable="yes">Wikia</property>
+        <property name="image">image3</property>
+        <property name="relief">none</property>
+        <signal name="clicked" handler="_on_lyrics_clicked" swapped="no"/>
+        <style>
+          <class name="rounded"/>
+        </style>
+      </object>
+      <packing>
+        <property name="left_attach">0</property>
         <property name="top_attach">0</property>
       </packing>
     </child>

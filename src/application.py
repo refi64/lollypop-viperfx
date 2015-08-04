@@ -28,14 +28,6 @@ except Exception as e:
     print("$ sudo pip3 install pylast")
     LastFM = None
 
-try:
-    from lollypop.wikipedia import Wikipedia
-except Exception as e:
-    print(e)
-    print(_("Advanced artist informations disabled"))
-    print("$ sudo pip3 install wikipedia")
-    Wikipedia = None
-
 from lollypop.utils import is_gnome, is_unity
 from lollypop.define import Lp, ArtSize
 from lollypop.window import Window
@@ -96,8 +88,6 @@ class Application(Gtk.Application):
         Lp.settings = Settings.new()
         if LastFM is not None:
             Lp.lastfm = LastFM()
-        if Wikipedia is not None:
-            Lp.wikipedia = Wikipedia()
         Lp.db = Database()
         # We store a cursor for the main thread
         Lp.sql = Lp.db.get_cursor()

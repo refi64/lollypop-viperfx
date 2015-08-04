@@ -12,6 +12,21 @@
 
 from gi.repository import Gtk, GLib, Gio, GdkPixbuf
 
+try:
+    from lollypop.wikipedia import Wikipedia
+except Exception as e:
+    print(e)
+    print(_("Advanced artist informations disabled"))
+    print("$ sudo pip3 install wikipedia")
+    Wikipedia = None
+
+try:
+    from gi.repository import WebKit
+except Exception as e:
+    print(e)
+    print(_("Wikia support disabled"))
+    WebKit = None
+
 from _thread import start_new_thread
 from gettext import gettext as _
 from cgi import escape
@@ -47,7 +62,7 @@ class InfosPopover(Gtk.Popover):
         """
         size_setting = Lp.settings.get_value('window-size')
         if isinstance(size_setting[1], int):
-            self.set_size_request(700, size_setting[1]*0.5)
+            self.set_size_request(700, size_setting[1]*0.7)
         else:
             self.set_size_request(700, 400)
         Gtk.Popover.do_show(self)
@@ -85,7 +100,7 @@ class ArtistInfos(Gtk.Bin):
         builder.add_from_resource('/org/gnome/Lollypop/ArtistInfos.ui')
         builder.connect_signals(self)
         widget = builder.get_object('widget')
-        widget.attach(self._stack, 0, 2, 4, 1)
+        widget.attach(self._stack, 0, 2, 5, 1)
 
         self._view_btn = builder.get_object('view_btn')
         self._love_btn = builder.get_object('love_btn')
@@ -94,14 +109,29 @@ class ArtistInfos(Gtk.Bin):
         self._content = builder.get_object('content')
 
         self._label = builder.get_object('label')
-        self._label.set_text(_("Please wait..."))
+        if self._track_id is None:
+            string = "<b>%s</b>" % escape(self._artist)
+        else:
+            string = "<b>%s</b>   %s" % (escape(self._artist),
+                                         escape(self._title))
+        self._label.set_markup(string)
 
-        self._scrolled = builder.get_object('scrolled')
         self._spinner = builder.get_object('spinner')
         self._not_found = builder.get_object('notfound')
         self._stack.add(self._spinner)
         self._stack.add(self._not_found)
-        self._stack.add(self._scrolled)
+        
+        if Wikipedia is not None or Lp.lastfm is not None:
+            self._scrolled_infos = builder.get_object('scrolled')
+            self._stack.add(self._scrolled_infos)
+            
+        if WebKit is not None:
+            self._lyrics_btn = builder.get_object('lyrics_btn')
+            self._lyrics_btn.show()
+            self._scrolled_lyrics = Gtk.ScrolledWindow()
+            self._scrolled_lyrics.show()
+            self._stack.add(self._scrolled_lyrics)
+
         self._stack.set_visible_child(self._spinner)
         self.add(widget)
 
@@ -121,9 +151,9 @@ class ArtistInfos(Gtk.Bin):
             @thread safe
         """
         url = None
-        if self._wikipedia and Lp.wikipedia is not None:
+        if self._wikipedia and Wikipedia is not None:
             self._wikipedia = False
-            (url, image_url, content) = Lp.wikipedia.get_artist_infos(
+            (url, image_url, content) = Wikipedia().get_artist_infos(
                 self._artist)
         if url is None and Lp.lastfm is not None:
             self._wikipedia = True
@@ -141,6 +171,7 @@ class ArtistInfos(Gtk.Bin):
         except Exception as e:
             print("PopArtistInfos::_populate: %s" % e)
             content = None
+
         GLib.idle_add(self._set_content, content, url, stream)
 
     def _set_content(self, content, url, stream):
@@ -150,16 +181,14 @@ class ArtistInfos(Gtk.Bin):
             @param url as str
             @param stream as Gio.MemoryInputStream
         """
+        if self._stack.get_visible_child() == self._scrolled_lyrics:
+            self._wikipedia = True
+            return
+
         if content is not None:
-            if Lp.lastfm is not None and Lp.wikipedia is not None:
+            if Lp.lastfm is not None and Wikipedia is not None:
                 self._view_btn.show()
-            self._stack.set_visible_child(self._scrolled)
-            if self._track_id is None:
-                string = "<b>%s</b>" % escape(self._artist)
-            else:
-                string = "<b>%s</b>   %s" % (escape(self._artist),
-                                             escape(self._title))
-            self._label.set_markup(string)
+            self._stack.set_visible_child(self._scrolled_infos)
             self._url_btn.set_uri(url)
             self._content.set_text(content)
             if self._track_id is not None:
@@ -261,6 +290,37 @@ class ArtistInfos(Gtk.Bin):
         self._label.set_text(_("Please wait..."))
         self._view_btn.hide()
         self._love_btn.hide()
+        if WebKit is not None:
+            self._lyrics_btn.show()
         self._url_btn.set_label('')
         self._stack.set_visible_child(self._spinner)
         self.populate()
+
+    def _on_lyrics_clicked(self, btn):
+        """
+            Show lyrics from wikia with webkit
+        """
+        view = self._scrolled_lyrics.get_child()
+        if view is None:
+            settings = WebKit.WebSettings()
+            settings.set_property('enable-private-browsing', True)
+            settings.set_property('enable-plugins', False)
+            settings.set_property('user-agent',
+                                  "Mozilla/5.0 (Linux; <Android Version>;"
+                                  " <Build Tag etc.>) AppleWebKit/<WebKit Rev>"
+                                  " (KHTML, like Gecko) Chrome/<Chrome Rev>"
+                                  " Mobile Safari/<WebKit Rev>")
+            view = WebKit.WebView()
+            view.set_settings(settings)
+            view.show()
+            self._scrolled_lyrics.add(view)
+        artist = Lp.player.current_track.aartist.replace(' ', '_')
+        title = Lp.player.current_track.title.replace(' ', '_')
+        url = "http://lyrics.wikia.com/%s:%s" % (artist, title)
+        view.load_uri(url)
+        self._view_btn.set_tooltip_text(_("Wikipedia"))
+        self._view_btn.show()
+        self._lyrics_btn.hide()
+        self._url_btn.set_label(_("Wikia"))
+        self._url_btn.set_uri(url)
+        self._stack.set_visible_child(self._scrolled_lyrics)
