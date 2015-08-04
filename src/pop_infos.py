@@ -200,7 +200,7 @@ class ArtistInfos(Gtk.Bin):
 
         if content is not None:
             if Lp.lastfm is not None and self.Wikipedia is not None:
-                self._view_btn.show()
+                self._view_btn.set_sensitive(True)
             self._stack.set_visible_child(self._scrolled_infos)
             self._url_btn.set_uri(url)
             self._content.set_text(content)
