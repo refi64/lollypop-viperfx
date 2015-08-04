@@ -258,7 +258,8 @@ class ArtistInfos(Gtk.Bin):
                                                       sql))
         sql.close()
 
-        Lp.lastfm.love(self._artist, self._title)
+        if Lp.lastfm is not None:
+            Lp.lastfm.love(self._artist, self._title)
 
     def _unlove_track(self):
         """
@@ -273,8 +274,8 @@ class ArtistInfos(Gtk.Bin):
                 Lp.playlists._LOVED,
                 [Lp.tracks.get_path(self._track_id, sql)])
         sql.close()
-
-        Lp.lastfm.unlove(self._artist, self._title)
+        if Lp.lastfm is not None:
+            Lp.lastfm.unlove(self._artist, self._title)
 
     def _on_love_btn_clicked(self, btn):
         """
