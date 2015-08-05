@@ -25,6 +25,7 @@ src/lastfm.py
 src/list.py
 src/mpris.py
 src/notification.py
+src/objects.py
 src/player_base.py
 src/player_bin.py
 src/player_externals.py
@@ -53,7 +54,6 @@ src/toolbar_infos.py
 src/toolbar_playback.py
 src/toolbar.py
 src/toolbar_title.py
-src/track.py
 src/tunein.py
 src/utils.py
 src/view_albums.py
@@ -85,7 +85,7 @@ src/window.py
 [type: gettext/glade]data/PlaylistEditWidget.ui
 [type: gettext/glade]data/PlaylistsManagerView.ui
 [type: gettext/glade]data/PlaylistsManagerWidget.ui
-[type: gettext/glade]data/PlaylistsView.ui
+[type: gettext/glade]data/PlaylistView.ui
 [type: gettext/glade]data/QueuePopover.ui
 [type: gettext/glade]data/RadioPopover.ui
 [type: gettext/glade]data/RadiosView.ui
