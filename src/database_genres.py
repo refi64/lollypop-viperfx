@@ -11,6 +11,7 @@
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 from gettext import gettext as _
+import itertools
 
 from lollypop.define import Lp
 
@@ -77,14 +78,11 @@ class GenresDatabase:
         """
         if not sql:
             sql = Lp.sql
-        albums = []
         result = sql.execute("SELECT albums.rowid FROM albums, album_genres\
                              WHERE album_genres.genre_id=?\
                              AND album_genres.album_id=albums.rowid",
                              (genre_id,))
-        for row in result:
-            albums += row
-        return albums
+        return list(itertools.chain(*result))
 
     def get(self, sql=None):
         """
@@ -93,12 +91,9 @@ class GenresDatabase:
         """
         if not sql:
             sql = Lp.sql
-        genres = []
         result = sql.execute("SELECT rowid, name FROM genres\
                               ORDER BY name COLLATE NOCASE")
-        for row in result:
-            genres += (row,)
-        return genres
+        return list(result)
 
     def get_ids(self, sql=None):
         """
@@ -107,12 +102,9 @@ class GenresDatabase:
         """
         if not sql:
             sql = Lp.sql
-        genres = []
         result = sql.execute("SELECT rowid FROM genres\
                               ORDER BY name COLLATE NOCASE")
-        for row in result:
-            genres += (row)
-        return genres
+        return list(itertools.chain(*result))
 
     def clean(self, genre_id, sql=None):
         """
