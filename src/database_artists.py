@@ -11,13 +11,14 @@
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 from gettext import gettext as _
+import itertools
 
 from lollypop.define import Lp, Type
 from lollypop.utils import translate_artist_name
 
 
 class ArtistsDatabase:
-    """    
+    """
         All functions take a sqlite cursor as last parameter,
         set another one if you're in a thread
     """
@@ -82,13 +83,10 @@ class ArtistsDatabase:
         """
         if not sql:
             sql = Lp.sql
-        albums = []
         result = sql.execute("SELECT rowid FROM albums\
                               WHERE artist_id=?\
                               ORDER BY year", (artist_id,))
-        for row in result:
-            albums += row
-        return albums
+        return list(itertools.chain(*result))
 
     def get_compilations(self, artist_id, sql=None):
         """
@@ -97,7 +95,6 @@ class ArtistsDatabase:
         """
         if not sql:
             sql = Lp.sql
-        compilations = []
         result = sql.execute("SELECT DISTINCT albums.rowid FROM albums,\
                               tracks, track_artists\
                               WHERE track_artists.artist_id=?\
@@ -106,9 +103,7 @@ class ArtistsDatabase:
                               AND albums.artist_id=?\
                               ORDER BY albums.year", (artist_id,
                                                       Type.COMPILATIONS))
-        for row in result:
-            compilations += row
-        return compilations
+        return list(itertools.chain(*result))
 
     def get(self, genre_id, sql=None):
         """
@@ -135,10 +130,7 @@ class ArtistsDatabase:
                                   AND album_genres.album_id=albums.rowid\
                                   ORDER BY artists.name\
                                   COLLATE NOCASE", (genre_id,))
-        artists = []
-        for row in result:
-            artists.append((row[0], translate_artist_name(row[1])))
-        return artists
+        return [(row[0], translate_artist_name(row[1])) for row in result]
 
     def exists(self, artist_id, sql=None):
         """
@@ -164,13 +156,10 @@ class ArtistsDatabase:
         """
         if not sql:
             sql = Lp.sql
-        artists = []
         result = sql.execute("SELECT rowid FROM artists\
                               WHERE name LIKE ?\
-                              LIMIT 25", ('%'+string+'%',))
-        for row in result:
-            artists += row
-        return artists
+                              LIMIT 25", ('%' + string + '%',))
+        return list(itertools.chain(*result))
 
     def clean(self, artist_id, sql=None):
         """
