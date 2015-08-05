@@ -320,10 +320,9 @@ class ArtistInfos(Gtk.Bin):
             settings.set_property('enable-private-browsing', True)
             settings.set_property('enable-plugins', False)
             settings.set_property('user-agent',
-                                  "Mozilla/5.0 (Linux; <Android Version>;"
-                                  " <Build Tag etc.>) AppleWebKit/<WebKit Rev>"
-                                  " (KHTML, like Gecko) Chrome/<Chrome Rev>"
-                                  " Mobile Safari/<WebKit Rev>")
+                                  "Mozilla/5.0 (Linux; Ubuntu 14.04;"
+                                  " BlackBerry) AppleWebKit/537.36 Chromium"
+                                  "/35.0.1870.2 Mobile Safari/537.36")
             view = self.WebKit.WebView()
             view.set_settings(settings)
             view.show()
