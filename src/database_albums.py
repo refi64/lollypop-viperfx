@@ -360,7 +360,7 @@ class AlbumsDatabase:
         result = sql.execute("SELECT rowid FROM albums\
                               ORDER BY random() LIMIT 100")
         albums = list(itertools.chain(*result))
-        self._cached_randoms = albums
+        self._cached_randoms = list(albums)
         return albums
 
     def get_cached_randoms(self):
