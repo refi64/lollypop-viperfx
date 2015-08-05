@@ -20,7 +20,7 @@ from lollypop.utils import translate_artist_name
 class TracksDatabase:
     """
         All functions take a sqlite cursor as last parameter,
-        set another one if you're in a thread        
+        set another one if you're in a thread
     """
 
     def __init__(self):
@@ -271,7 +271,7 @@ class TracksDatabase:
         mtimes = {}
         result = sql.execute("SELECT filepath, mtime FROM tracks")
         for row in result:
-            mtimes.update(row)
+            mtimes.update((row,))
         return mtimes
 
     def get_infos(self, track_id, sql=None):
