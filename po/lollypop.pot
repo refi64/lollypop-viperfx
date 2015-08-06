@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-08-05 15:52+0200\n"
+"POT-Creation-Date: 2015-08-06 13:29+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -168,12 +168,72 @@ msgid "Lollypop is a new GNOME music playing application."
 msgstr ""
 
 #: ../data/lollypop.appdata.xml.in.h:4
-msgid ""
-"It provides: - mp3/4, ogg and flac. - Genre/Cover browsing. - Genre/Artist/"
-"Cover browsing. - Search. - Main playlist (called queue in other apps). - "
-"Party mode. - Replay gain. - Cover art downloader. - Context artist view. - "
-"MTP sync. - Fullscreen view. - Radios support. - Last.fm support. - Auto "
-"install codecs. - HiDPI support. - Tunein support."
+msgid "It provides:"
+msgstr ""
+
+#: ../data/lollypop.appdata.xml.in.h:5
+msgid "mp3/4, ogg and flac"
+msgstr ""
+
+#: ../data/lollypop.appdata.xml.in.h:6
+msgid "Genre/Cover browsing"
+msgstr ""
+
+#: ../data/lollypop.appdata.xml.in.h:7
+msgid "Genre/Artist/Cover browsing"
+msgstr ""
+
+#: ../data/lollypop.appdata.xml.in.h:8 ../data/ToolbarEnd.ui.h:9
+msgid "Search"
+msgstr ""
+
+#: ../data/lollypop.appdata.xml.in.h:9
+msgid "Main playlist (called queue in other apps)"
+msgstr ""
+
+#: ../data/lollypop.appdata.xml.in.h:10 ../data/SettingsDialog.ui.h:16
+#: ../data/ToolbarEnd.ui.h:8
+msgid "Party mode"
+msgstr ""
+
+#: ../data/lollypop.appdata.xml.in.h:11
+msgid "Replay gain"
+msgstr ""
+
+#: ../data/lollypop.appdata.xml.in.h:12
+msgid "Cover art downloader"
+msgstr ""
+
+#: ../data/lollypop.appdata.xml.in.h:13
+msgid "Context artist view"
+msgstr ""
+
+#: ../data/lollypop.appdata.xml.in.h:14
+msgid "MTP sync"
+msgstr ""
+
+#: ../data/lollypop.appdata.xml.in.h:15
+msgid "Fullscreen view"
+msgstr ""
+
+#: ../data/lollypop.appdata.xml.in.h:16
+msgid "Radios support"
+msgstr ""
+
+#: ../data/lollypop.appdata.xml.in.h:17
+msgid "Last.fm support"
+msgstr ""
+
+#: ../data/lollypop.appdata.xml.in.h:18
+msgid "Auto install codecs"
+msgstr ""
+
+#: ../data/lollypop.appdata.xml.in.h:19
+msgid "HiDPI support"
+msgstr ""
+
+#: ../data/lollypop.appdata.xml.in.h:20
+msgid "Tunein support"
 msgstr ""
 
 #: ../src/application.py:25
@@ -244,8 +304,8 @@ msgstr ""
 msgid "Random tracks"
 msgstr ""
 
-#: ../src/database_albums.py:238 ../src/database_artists.py:76
-#: ../src/database_genres.py:71 ../src/database_tracks.py:206
+#: ../src/database_albums.py:238 ../src/database_artists.py:77
+#: ../src/database_genres.py:72 ../src/database_tracks.py:206
 #: ../src/tagreader.py:84 ../src/tagreader.py:103 ../src/tagreader.py:128
 #: ../src/tagreader.py:143
 msgid "Unknown"
@@ -255,7 +315,7 @@ msgstr ""
 msgid "Compilation"
 msgstr ""
 
-#: ../src/database_artists.py:68
+#: ../src/database_artists.py:69
 msgid "Many artists"
 msgstr ""
 
@@ -328,7 +388,7 @@ msgstr ""
 msgid "Wikia support disabled"
 msgstr ""
 
-#: ../src/pop_infos.py:210 ../src/pop_infos.py:214 ../src/pop_infos.py:336
+#: ../src/pop_infos.py:210 ../src/pop_infos.py:214 ../src/pop_infos.py:335
 msgid "Wikipedia"
 msgstr ""
 
@@ -344,7 +404,7 @@ msgstr ""
 msgid "I do not love"
 msgstr ""
 
-#: ../src/pop_infos.py:339 ../data/ArtistInfos.ui.h:2
+#: ../src/pop_infos.py:338 ../data/ArtistInfos.ui.h:2
 msgid "Wikia"
 msgstr ""
 
@@ -642,10 +702,6 @@ msgstr ""
 msgid "Select what will be available in party mode"
 msgstr ""
 
-#: ../data/SettingsDialog.ui.h:16 ../data/ToolbarEnd.ui.h:8
-msgid "Party mode"
-msgstr ""
-
 #: ../data/SettingsDialog.ui.h:17
 msgid "Login:"
 msgstr ""
@@ -688,10 +744,6 @@ msgstr ""
 
 #: ../data/ToolbarEnd.ui.h:7
 msgid "Shuffle"
-msgstr ""
-
-#: ../data/ToolbarEnd.ui.h:9
-msgid "Search"
 msgstr ""
 
 #: ../data/ToolbarPlayback.ui.h:4
