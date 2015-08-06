@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-08-06 13:32+0200\n"
+"POT-Creation-Date: 2015-08-06 13:36+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -187,8 +187,9 @@ msgstr ""
 msgid "Search"
 msgstr ""
 
-#: ../data/lollypop.appdata.xml.in.h:9
-msgid "Main playlist (called queue in other apps)"
+#: ../data/lollypop.appdata.xml.in.h:9 ../src/pop_menu.py:467
+#: ../src/pop_menu.py:487 ../data/ToolbarEnd.ui.h:10
+msgid "Queue"
 msgstr ""
 
 #: ../data/lollypop.appdata.xml.in.h:10 ../data/SettingsDialog.ui.h:16
@@ -468,10 +469,6 @@ msgstr ""
 
 #: ../src/pop_menu.py:444
 msgid "Modify informations"
-msgstr ""
-
-#: ../src/pop_menu.py:467 ../src/pop_menu.py:487 ../data/ToolbarEnd.ui.h:10
-msgid "Queue"
 msgstr ""
 
 #: ../src/pop_menu.py:471 ../data/PlaylistView.ui.h:1
