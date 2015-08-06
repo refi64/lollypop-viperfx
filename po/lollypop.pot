@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-08-06 13:29+0200\n"
+"POT-Creation-Date: 2015-08-06 13:32+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -172,7 +172,7 @@ msgid "It provides:"
 msgstr ""
 
 #: ../data/lollypop.appdata.xml.in.h:5
-msgid "mp3/4, ogg and flac"
+msgid "mp3/4, ogg and flac playback"
 msgstr ""
 
 #: ../data/lollypop.appdata.xml.in.h:6
