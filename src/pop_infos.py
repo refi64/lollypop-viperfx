@@ -118,12 +118,7 @@ class ArtistInfos(Gtk.Bin):
         self._content = builder.get_object('content')
 
         self._label = builder.get_object('label')
-        if self._track_id is None:
-            string = "<b>%s</b>" % escape(self._artist)
-        else:
-            string = "<b>%s</b>   %s" % (escape(self._artist),
-                                         escape(self._title))
-        self._label.set_markup(string)
+        self._set_label()
 
         self._spinner = builder.get_object('spinner')
         self._not_found = builder.get_object('notfound')
@@ -156,6 +151,17 @@ class ArtistInfos(Gtk.Bin):
 #######################
 # PRIVATE             #
 #######################
+    def _set_label(self):
+        """
+            Set label based on current track id
+        """
+        if self._track_id is None:
+            string = "<b>%s</b>" % escape(self._artist)
+        else:
+            string = "<b>%s</b>   %s" % (escape(self._artist),
+                                         escape(self._title))
+        self._label.set_markup(string)
+
     def _populate(self):
         """
             Same as _populate()
@@ -314,6 +320,7 @@ class ArtistInfos(Gtk.Bin):
             Show lyrics from wikia with webkit
             @param btn as Gtk.Button, if None, do not show view button
         """
+        self._set_label()
         view = self._scrolled_lyrics.get_child()
         if view is None:
             settings = self.WebKit.WebSettings()
