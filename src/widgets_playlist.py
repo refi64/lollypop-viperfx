@@ -140,15 +140,16 @@ class PlaylistWidget(Gtk.Bin):
             return
 
         track_id = tracks.pop(0)
-        if track_id == -1:
+
+        if track_id is None:
+            GLib.idle_add(self._add_tracks, tracks,
+                          widget, pos+1, previous_album_id)
             return
 
         (title, filepath, length, album_id) =\
             Lp.tracks.get_infos(track_id)
-        if title is None:
-            return
-        else:
-            title = escape(title)
+
+        title = escape(title)
 
         artist_id = Lp.albums.get_artist_id(album_id)
         artist_ids = Lp.tracks.get_artist_ids(track_id)
