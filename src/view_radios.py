@@ -12,6 +12,8 @@
 
 from gi.repository import Gtk, GLib
 
+from _thread import start_new_thread
+
 from lollypop.view import View
 from lollypop.widgets_radio import RadioWidget
 from lollypop.playlists import RadiosManager
@@ -41,6 +43,7 @@ class RadiosView(View):
         builder.add_from_resource('/org/gnome/Lollypop/RadiosView.ui')
         builder.connect_signals(self)
         widget = builder.get_object('widget')
+        self._empty = builder.get_object('empty')
 
         self._pop_tunein = TuneinPopover(self._radios_manager)
         self._pop_tunein.set_relative_to(builder.get_object('search_btn'))
@@ -57,24 +60,27 @@ class RadiosView(View):
         self._radiobox.set_max_children_per_line(1000)
         self._radiobox.show()
 
+        self._stack = Gtk.Stack()
+        self._stack.set_transition_duration(500)
+        self._stack.set_transition_type(Gtk.StackTransitionType.CROSSFADE)
+        self._stack.add(self._scrolledWindow)
+        self._stack.add(self._empty)
+        self._stack.show()
+
         self._viewport.set_property("valign", Gtk.Align.START)
         self._viewport.set_property('margin', 5)
         self._viewport.add(self._radiobox)
         self._scrolledWindow.set_property('expand', True)
 
         self.add(widget)
-        self.add(self._scrolledWindow)
+        self.add(self._stack)
 
     def populate(self):
         """
             Populate view with tracks from playlist
             Thread safe
         """
-        radios_name = []
-        # Get radios name
-        for (i, name) in self._radios_manager.get():
-            radios_name.append(name)
-        GLib.idle_add(self._add_radios, radios_name)
+        start_new_thread(self._populate, ())
 
     def do_show(self):
         """
@@ -95,6 +101,17 @@ class RadiosView(View):
 #######################
 # PRIVATE             #
 #######################
+    def _populate(self):
+        """
+            Populate view with tracks from playlist
+            Thread safe
+        """
+        radios = []
+        # Get radios name
+        for (i, name) in self._radios_manager.get():
+            radios.append(name)
+        GLib.idle_add(self._show_stack, radios)
+
     def _get_children(self):
         """
             Return view children
@@ -168,11 +185,14 @@ class RadiosView(View):
             if old_widget is not None:
                 old_widget.set_name(new_name)
             else:
-                self._add_radios([new_name])
+                radios = [new_name]
+                self._show_stack(radios)
         # Delete widget
         elif old_widget is not None:
             self._radiobox.remove(old_child)
             old_widget.destroy()
+            if not self._radiobox.get_children():
+                self._show_stack([])
 
     def _on_logo_changed(self, player, name):
         """
@@ -184,6 +204,17 @@ class RadiosView(View):
             widget = child.get_child()
             if widget.get_name() == name:
                 widget.update_cover()
+
+    def _show_stack(self, radios):
+        """
+            Switch empty/radios view based on radios
+            @param [radio names as string]
+        """
+        if radios:
+            self._stack.set_visible_child(self._scrolledWindow)
+            self._add_radios(radios)
+        else:
+            self._stack.set_visible_child(self._empty)
 
     def _add_radios(self, radios):
         """

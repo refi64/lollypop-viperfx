@@ -490,7 +490,7 @@ class Container:
         view = RadiosView()
         self._stack.add(view)
         view.show()
-        start_new_thread(view.populate, ())
+        view.populate()
         self._stack.set_visible_child(view)
         self._stack.clean_old_views(view)
 
