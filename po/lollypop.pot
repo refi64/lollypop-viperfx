@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-08-06 13:36+0200\n"
+"POT-Creation-Date: 2015-08-10 13:55+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -389,23 +389,23 @@ msgstr ""
 msgid "Wikia support disabled"
 msgstr ""
 
-#: ../src/pop_infos.py:210 ../src/pop_infos.py:214 ../src/pop_infos.py:335
+#: ../src/pop_infos.py:216 ../src/pop_infos.py:220 ../src/pop_infos.py:342
 msgid "Wikipedia"
 msgstr ""
 
-#: ../src/pop_infos.py:211 ../src/pop_infos.py:213
+#: ../src/pop_infos.py:217 ../src/pop_infos.py:219
 msgid "Last.fm"
 msgstr ""
 
-#: ../src/pop_infos.py:217
+#: ../src/pop_infos.py:223
 msgid "No information for this artist..."
 msgstr ""
 
-#: ../src/pop_infos.py:239 ../src/pop_infos.py:291
+#: ../src/pop_infos.py:245 ../src/pop_infos.py:297
 msgid "I do not love"
 msgstr ""
 
-#: ../src/pop_infos.py:338 ../data/ArtistInfos.ui.h:2
+#: ../src/pop_infos.py:345 ../data/ArtistInfos.ui.h:2
 msgid "Wikia"
 msgstr ""
 
@@ -501,7 +501,7 @@ msgstr ""
 
 #. Handle language ordering
 #. Translators: Add here words that shoud be ignored for artist sort order
-#: ../src/utils.py:83
+#: ../src/utils.py:84
 msgid "The the"
 msgstr ""
 
@@ -527,16 +527,16 @@ msgstr ""
 msgid "No free space available on device"
 msgstr ""
 
-#: ../src/widgets_playlist.py:280 ../src/widgets_playlist.py:283
+#: ../src/widgets_playlist.py:281 ../src/widgets_playlist.py:284
 msgid "New playlist "
 msgstr ""
 
-#: ../src/widgets_playlist.py:329 ../src/widgets_playlist.py:567
+#: ../src/widgets_playlist.py:330 ../src/widgets_playlist.py:568
 #, python-format
 msgid "Remove \"%s\"?"
 msgstr ""
 
-#: ../src/widgets_playlist.py:612
+#: ../src/widgets_playlist.py:613
 msgid "Remove these tracks?"
 msgstr ""
 
@@ -628,10 +628,14 @@ msgid "Delete"
 msgstr ""
 
 #: ../data/RadiosView.ui.h:1
-msgid "New radio"
+msgid "No favorite radios"
 msgstr ""
 
 #: ../data/RadiosView.ui.h:2
+msgid "New radio"
+msgstr ""
+
+#: ../data/RadiosView.ui.h:3
 msgid "Search in TuneIn"
 msgstr ""
 
