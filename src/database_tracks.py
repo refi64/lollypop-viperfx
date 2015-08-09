@@ -29,13 +29,13 @@ class TracksDatabase:
         """
         pass
 
-    def add(self, name, filepath, length, tracknumber, discnumber,
+    def add(self, name, filepath, duration, tracknumber, discnumber,
             album_id, year, popularity, ltime, mtime, sql=None):
         """
             Add a new track to database
             @param name as string
             @param filepath as string,
-            @param length as int
+            @param duration as int
             @param tracknumber as int
             @param discnumber as int
             @param album_id as int
@@ -51,11 +51,11 @@ class TracksDatabase:
         # Invalid encoding in filenames may raise an exception
         try:
             sql.execute(
-                "INSERT INTO tracks (name, filepath, length, tracknumber,\
+                "INSERT INTO tracks (name, filepath, duration, tracknumber,\
                 discnumber, album_id, year, popularity, ltime, mtime) VALUES\
                 (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", (name,
                                                   filepath,
-                                                  length,
+                                                  duration,
                                                   tracknumber,
                                                   discnumber,
                                                   album_id,
@@ -279,13 +279,13 @@ class TracksDatabase:
             Get all track informations for track id
             @param Track id as int
             @return (name as string, filepath as string,
-            length as int, tracknumber as int, album_id as int)
+            duration as int, tracknumber as int, album_id as int)
             Returned values can be (None, None, None, None)
         """
         if not sql:
             sql = Lp.sql
         result = sql.execute("SELECT name, filepath,\
-                              length, album_id\
+                              duration, album_id\
                               FROM tracks WHERE rowid=?", (track_id,))
         v = result.fetchone()
         if v:
@@ -338,15 +338,15 @@ class TracksDatabase:
 
         return 0
 
-    def get_length(self, track_id, sql=None):
+    def get_duration(self, track_id, sql=None):
         """
-            Get track length for track id
+            Get track duration for track id
             @param Track id as int
-            @return length as int
+            @return duration as int
         """
         if not sql:
             sql = Lp.sql
-        result = sql.execute("SELECT length FROM tracks\
+        result = sql.execute("SELECT duration FROM tracks\
                               WHERE rowid=?", (track_id,))
         v = result.fetchone()
         if v:

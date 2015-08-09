@@ -136,7 +136,7 @@ class Track(Base):
     """
     FIELDS = ['name', 'album_id', 'album_artist_id',
               'artist_ids', 'artist_names',
-              'genre_names', 'length', 'number', 'path']
+              'genre_names', 'duration', 'number', 'path']
     DEFAULTS = ['', None, None, [], '', '', 0.0, None, '']
 
     def __init__(self, track_id=None):
@@ -230,15 +230,6 @@ class Track(Base):
             @return str
         """
         return self.genre_names
-
-    @property
-    def duration(self):
-        """
-            Get track length
-            Alias to Track.length
-            @return float
-        """
-        return self.length
 
     def set_radio(self, name, uri):
         """

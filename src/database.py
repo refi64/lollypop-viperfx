@@ -47,7 +47,7 @@ class Database:
     create_tracks = '''CREATE TABLE tracks (id INTEGER PRIMARY KEY,
                         name TEXT NOT NULL,
                         filepath TEXT NOT NULL,
-                        length INT,
+                        duration INT,
                         tracknumber INT,
                         discnumber INT,
                         album_id INT NOT NULL,
@@ -61,7 +61,7 @@ class Database:
     create_track_genres = '''CREATE TABLE track_genres (
                                                 track_id INT NOT NULL,
                                                 genre_id INT NOT NULL)'''
-    version = 11
+    version = 12
 
     def __init__(self):
         """
