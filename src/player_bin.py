@@ -222,17 +222,17 @@ class BinPlayer(ReplayGainPlayer, BasePlayer):
 
         title = reader.get_title(tags, '')
         if title != '':
-            self.current_track.title = title
-        if self.current_track.title == '':
-            self.current_track.title = self.current_track.uri
+            self.current_track.name = title
+        if self.current_track.name == '':
+            self.current_track.name = self.current_track.uri
 
         artist = reader.get_artists(tags)
         if artist != '':
-            self.current_track.artist = artist
+            self.current_track.artist_names = artist
 
         # If title set, force artist
         if self.current_track.title != '' and self.current_track.artist == '':
-            self.current_track.artist = self.current_track.aartist
+            self.current_track.artist_names = self.current_track.aartist
 
         if self.current_track.id == Type.EXTERNALS:
             (b, duration) = self._playbin.query_duration(Gst.Format.TIME)

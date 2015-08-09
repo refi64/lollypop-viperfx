@@ -48,7 +48,11 @@ class Base:
                 if sql is not None:
                     sql.close()
                 setattr(self, attr_name, attr_value)
-            return attr_value
+            # Return default value if None
+            if attr_value is None:
+                return self.DEFAULTS[self.FIELDS.index(attr)]
+            else:
+                return attr_value
 
     def get_popularity(self):
         """
@@ -146,6 +150,7 @@ class Track(Base):
         """
         Base.__init__(self, Lp.tracks)
         self.id = track_id
+        self._uri = None
 
     @property
     def title(self):
@@ -157,11 +162,13 @@ class Track(Base):
 
     @property
     def uri(self):
-        """Get track file uri
-
-        @return str
         """
-        if path.exists(self.path):
+            Get track file uri
+            @return str
+        """
+        if self._uri is not None:
+            return self._uri
+        else:
             return GLib.filename_to_uri(self.path)
 
     @property
@@ -208,7 +215,7 @@ class Track(Base):
             sql = None
             if current_thread() != '_Mainthread':
                 sql = Lp.db.get_cursor()
-            self._aartist = Lp.artists.get_name(self.aartist_id, sql)
+            self._aartist = Lp.artists.get_name(self._aartist_id, sql)
             if sql is not None:
                 sql.close()
         return self._aartist
@@ -231,12 +238,20 @@ class Track(Base):
         """
         return self.genre_names
 
+    def set_uri(self, uri):
+        """
+            Set uri, will reset path
+            @param uri as string
+        """
+        self._uri = uri
+        self.path = ''
+
     def set_radio(self, name, uri):
         """
             Set radio
             @param name as string
             @param uri as string
         """
-        self._id = Type.RADIOS
+        self.id = Type.RADIOS
         self._aartist = name
         self._uri = uri
