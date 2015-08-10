@@ -272,7 +272,7 @@ class Container:
             Get save view state
             @return (list one id, list two id)
         """
-        list_one_id = Type.NONE
+        list_one_id = Type.POPULARS
         list_two_id = Type.NONE
         if Lp.settings.get_value('save-state'):
             position = Lp.settings.get_value('list-one').get_int32()
