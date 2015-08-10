@@ -139,9 +139,9 @@ class Track(Base):
         Represent a track
     """
     FIELDS = ['name', 'album_id', 'album_artist_id',
-              'artist_ids', 'artist_names',
+              'artist_ids', 'album_name', 'artist_names',
               'genre_names', 'duration', 'number', 'path']
-    DEFAULTS = ['', None, None, [], '', '', 0.0, None, '']
+    DEFAULTS = ['', None, None, [], '', '', '', 0.0, None, '']
 
     def __init__(self, track_id=None):
         """
@@ -197,28 +197,19 @@ class Track(Base):
         return Album(self.album_id).year
 
     @property
-    def aartist_id(self):
-        """
-            Get track artist id
-            Alias to Track.album_artist_id
-            @return int
-        """
-        return self.album_artist_id
-
-    @property
-    def aartist(self):
+    def album_artist(self):
         """
             Get track artist name
             @return str
         """
-        if getattr(self, "_aartist") is None:
+        if getattr(self, "_album_artist") is None:
             sql = None
             if current_thread() != '_Mainthread':
                 sql = Lp.db.get_cursor()
-            self._aartist = Lp.artists.get_name(self._aartist_id, sql)
+            self._album_artist = Lp.artists.get_name(self.album_artist_id, sql)
             if sql is not None:
                 sql.close()
-        return self._aartist
+        return self._album_artist
 
     @property
     def artist(self):
@@ -238,6 +229,13 @@ class Track(Base):
         """
         return self.genre_names
 
+    def set_album_artist(self, name):
+        """
+            Set album artist
+            @param name as string
+        """
+        self._album_artist = name
+
     def set_uri(self, uri):
         """
             Set uri, will reset path
@@ -253,5 +251,5 @@ class Track(Base):
             @param uri as string
         """
         self.id = Type.RADIOS
-        self._aartist = name
+        self._album_artist = name
         self._uri = uri

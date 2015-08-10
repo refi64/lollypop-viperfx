@@ -184,9 +184,9 @@ class BinPlayer(ReplayGainPlayer, BasePlayer):
            self.current_track.album_id != track.album_id:
             stop = True
 
-        # Stop if aartist changed
+        # Stop if album_artist changed
         if self.context.next == NextContext.STOP_ARTIST and\
-           self.current_track.aartist_id != track.aartist_id:
+           self.current_track.album_artist_id != track.album_artist_id:
             stop = True
 
         if stop and self.is_playing():
@@ -232,21 +232,21 @@ class BinPlayer(ReplayGainPlayer, BasePlayer):
 
         # If title set, force artist
         if self.current_track.title != '' and self.current_track.artist == '':
-            self.current_track.artist_names = self.current_track.aartist
+            self.current_track.artist_names = self.current_track.album_artist
 
         if self.current_track.id == Type.EXTERNALS:
             (b, duration) = self._playbin.query_duration(Gst.Format.TIME)
             if b:
                 self.current_track.duration = duration/1000000000
             # We do not use tagreader as we need to check if value is None
-            self.current_track.album = tags.get_string_index('album', 0)[1]
-            if self.current_track.album is None:
-                self.current_track.album = ''
-            self.current_track.artist = reader.get_artists(tags)
-            self.current_track.aartist = reader.get_album_artist(tags)
-            if self.current_track.aartist == '':
-                self.current_track.aartist = self.current_track.artist
-            self.current_track.genre = reader.get_genres(tags)
+            self.current_track.album_name = tags.get_string_index('album', 0)[1]
+            if self.current_track.album_name is None:
+                self.current_track.album_name = ''
+            self.current_track.artist_names = reader.get_artists(tags)
+            self.current_track.set_album_artist(reader.get_album_artist(tags))
+            if self.current_track.album_artist == '':
+                self.current_track.set_album_artist(self.current_track.artist)
+            self.current_track.genre_name = reader.get_genres(tags)
         self.emit('current-changed')
 
     """
@@ -315,10 +315,10 @@ class BinPlayer(ReplayGainPlayer, BasePlayer):
             Lp.albums.set_more_popular(finished.album_id, sql)
         # Scrobble on lastfm
         if Lp.lastfm is not None:
-            if finished.aartist_id == Type.COMPILATIONS:
+            if finished.album_artist_id == Type.COMPILATIONS:
                 artist = finished.artist
             else:
-                artist = finished.aartist
+                artist = finished.album_artist
             if time() - finished_start_time > 30:
                 Lp.lastfm.scrobble(artist,
                                    finished.title,
@@ -340,10 +340,10 @@ class BinPlayer(ReplayGainPlayer, BasePlayer):
             self.emit("current-changed")
         # Update now playing on lastfm
         if Lp.lastfm is not None and self.current_track.id >= 0:
-            if self.current_track.aartist_id == Type.COMPILATIONS:
+            if self.current_track.album_artist_id == Type.COMPILATIONS:
                 artist = self.current_track.artist
             else:
-                artist = self.current_track.aartist
+                artist = self.current_track.album_artist
                 Lp.lastfm.now_playing(artist,
                                       self.current_track.title,
                                       int(self.current_track.duration))

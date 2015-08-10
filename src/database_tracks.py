@@ -294,7 +294,7 @@ class TracksDatabase:
 
     def get_album_artist_id(self, track_id, sql=None):
         """
-            Get aartist id for track id
+            Get album_artist id for track id
             @param Track id as int
             @return Performer id as int
         """
@@ -367,7 +367,7 @@ class TracksDatabase:
 
         return True
 
-    def get_as_non_aartist(self, artist_id, sql=None):
+    def get_as_non_album_artist(self, artist_id, sql=None):
         """
             Get tracks for artist_id where artist_id isn't main artist
             @param artist id as int
@@ -561,9 +561,9 @@ class TracksDatabase:
             sql = Lp.sql
         track_ids = self.get_ids_for_name(title, sql)
         for track_id in track_ids:
-            aartist = self.get_album_artist_id(track_id, sql)
-            aartist_name = Lp.artists.get_name(aartist, sql)
-            if aartist_name == artist:
+            album_artist = self.get_album_artist_id(track_id, sql)
+            album_artist_name = Lp.artists.get_name(album_artist, sql)
+            if album_artist_name == artist:
                 return track_id
             artist_name = Lp.tracks.get_artist_names(track_id, sql)
             if artist_name == artist:

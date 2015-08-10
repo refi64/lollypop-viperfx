@@ -239,12 +239,12 @@ class CollectionScanner(GObject.GObject, ScannerTagReader):
         if new:
             new_artist_ids.append(album_artist_id)
 
-        noaartist = False
+        no_album_artist = False
         if album_artist_id is None:
             album_artist_id = artist_ids[0]
-            noaartist = True
+            no_album_artist = True
 
-        album_id = self.add_album(album_name, album_artist_id, noaartist,
+        album_id = self.add_album(album_name, album_artist_id, no_album_artist,
                                   filepath, sql)
 
         (genre_ids, new_genre_ids) = self.add_genres(genres, album_id, sql)

@@ -334,7 +334,7 @@ class ArtistInfos(Gtk.Bin):
             view.set_settings(settings)
             view.show()
             self._scrolled_lyrics.add(view)
-        artist = Lp.player.current_track.aartist.replace(' ', '_')
+        artist = Lp.player.current_track.album_artist.replace(' ', '_')
         title = Lp.player.current_track.title.replace(' ', '_')
         url = "http://lyrics.wikia.com/%s:%s" % (artist, title)
         view.load_uri(url)

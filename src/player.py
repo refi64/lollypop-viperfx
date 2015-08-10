@@ -78,7 +78,7 @@ class Player(BinPlayer, QueuePlayer, UserPlaylistPlayer, RadioPlayer,
         if not Lp.player.is_party():
             if genre_id:
                 self.set_albums(self.current_track.id,
-                                self.current_track.aartist_id,
+                                self.current_track.album_artist_id,
                                 genre_id)
             else:
                 self.set_album(album_id)

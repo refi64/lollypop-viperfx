@@ -63,7 +63,7 @@ class RadioPlayer(BasePlayer):
         i = 0
         for (radio_id, name) in radios:
             i += 1
-            if self.current_track.aartist == name:
+            if self.current_track.album_artist == name:
                 break
 
         # Get next radio
@@ -90,7 +90,7 @@ class RadioPlayer(BasePlayer):
         i = len(radios) - 1
         for (radio_id, name) in reversed(radios):
             i -= 1
-            if self.current_track.aartist == name:
+            if self.current_track.album_artist == name:
                 break
 
         # Get prev radio

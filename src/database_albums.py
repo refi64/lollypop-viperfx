@@ -30,13 +30,13 @@ class AlbumsDatabase:
         """
         self._cached_randoms = []
 
-    def add(self, name, artist_id, noaartist, path,
+    def add(self, name, artist_id, no_album_artist, path,
             popularity, mtime, sql=None):
         """
             Add a new album to database
             @param Album name as string
             @param artist id as int,
-            @param noaartist as bool,
+            @param no_album_artist as bool,
             @param path as string
             @param mtime as int
             @warning: commit needed
@@ -44,9 +44,9 @@ class AlbumsDatabase:
         if not sql:
             sql = Lp.sql
         sql.execute("INSERT INTO albums "
-                    "(name, artist_id, noaartist, path, popularity, mtime)"
+                    "(name, artist_id, no_album_artist, path, popularity, mtime)"
                     "VALUES (?, ?, ?, ?, ?, ?)",
-                    (name, artist_id, noaartist,
+                    (name, artist_id, no_album_artist,
                      path, popularity, mtime))
 
     def add_genre(self, album_id, genre_id, sql=None):
@@ -187,7 +187,7 @@ class AlbumsDatabase:
             sql = Lp.sql
         result = sql.execute("SELECT rowid FROM albums where name=?\
                               AND artist_id=?\
-                              AND noaartist=0",
+                              AND no_album_artist=0",
                              (album_name, artist_id))
         v = result.fetchone()
         if v:
@@ -203,7 +203,7 @@ class AlbumsDatabase:
         if not sql:
             sql = Lp.sql
         result = sql.execute("SELECT rowid FROM albums where name=?\
-                              AND noaartist=1", (album_name,))
+                              AND no_album_artist=1", (album_name,))
         v = result.fetchone()
         if v:
             return v[0]

@@ -32,7 +32,7 @@ class Database:
     create_albums = '''CREATE TABLE albums (id INTEGER PRIMARY KEY,
                         name TEXT NOT NULL,
                         artist_id INT NOT NULL,
-                        noaartist BOOLEAN NOT NULL,
+                        no_album_artist BOOLEAN NOT NULL,
                         year INT,
                         path TEXT NOT NULL,
                         popularity INT NOT NULL,

@@ -258,7 +258,7 @@ class ScannerTagReader(TagReader):
             Lp.albums.add_genre(album_id, genre_id, sql)
         return (genre_ids, new_genre_ids)
 
-    def add_album(self, album_name, artist_id, noaartist,
+    def add_album(self, album_name, artist_id, no_album_artist,
                   filepath, sql):
         """
             Add album to db
@@ -272,7 +272,7 @@ class ScannerTagReader(TagReader):
         """
         path = os.path.dirname(filepath)
 
-        if noaartist:
+        if no_album_artist:
             album_id = Lp.albums.get_compilation_id(album_name, sql)
         else:
             album_id = Lp.albums.get_id(album_name, artist_id, sql)
@@ -284,9 +284,9 @@ class ScannerTagReader(TagReader):
             # Use current time
             else:
                 mtime = int(time())
-            Lp.albums.add(album_name, artist_id, noaartist,
+            Lp.albums.add(album_name, artist_id, no_album_artist,
                           path, 0, mtime, sql)
-            if noaartist:
+            if no_album_artist:
                 album_id = Lp.albums.get_compilation_id(album_name, sql)
             else:
                 album_id = Lp.albums.get_id(album_name, artist_id, sql)
@@ -295,7 +295,7 @@ class ScannerTagReader(TagReader):
             Lp.albums.set_path(album_id, path, sql)
 
         # If no album artist, handle album artist id for compilations
-        if noaartist:
+        if no_album_artist:
             if Lp.albums.is_compilation(album_id, sql):
                 Lp.albums.set_artist_id(album_id,
                                         Type.COMPILATIONS,

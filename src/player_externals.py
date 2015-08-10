@@ -47,8 +47,8 @@ class ExternalsPlayer(BasePlayer):
         except:
             pass
         track = Track()
-        track.aartist = name
-        track.uri = uri
+        track.set_album_artist(name)
+        track.set_uri(uri)
         if track.uri.startswith('file://'):
             track.id = Type.EXTERNALS
         else:

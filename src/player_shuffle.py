@@ -131,7 +131,7 @@ class ShufflePlayer(BasePlayer):
             # We need to put some context, take first available genre
             if self.current_track.id:
                 self.set_albums(self.current_track.id,
-                                self.current_track.aartist_id, None)
+                                self.current_track.album_artist_id, None)
         self.emit('party-changed', party)
         Lp.window.update_view()
 
@@ -162,7 +162,7 @@ class ShufflePlayer(BasePlayer):
             self._shuffle_playlist()
         elif self.current_track.id is not None and self.current_track.id >= 0:
             self.set_albums(self.current_track.id,
-                            self.current_track.aartist_id,
+                            self.current_track.album_artist_id,
                             self.context.genre_id)
         if self.current_track.id is not None:
             self.set_next()

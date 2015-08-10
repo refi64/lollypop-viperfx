@@ -87,13 +87,13 @@ class AlbumsPopover(Gtk.Popover):
         """
             Run _populate in a thread
         """
-        if Lp.player.current_track.aartist_id == Type.COMPILATIONS:
+        if Lp.player.current_track.album_artist_id == Type.COMPILATIONS:
             new_id = Lp.player.current_track.album_id
         else:
-            new_id = Lp.player.current_track.aartist_id
+            new_id = Lp.player.current_track.album_artist_id
         if self._on_screen_id != new_id:
             self._on_screen_id = new_id
-            view = CurrentArtistView(Lp.player.current_track.aartist_id)
+            view = CurrentArtistView(Lp.player.current_track.album_artist_id)
             view.show()
             start_new_thread(view.populate, ())
             self._stack.add(view)
