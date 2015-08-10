@@ -259,13 +259,15 @@ class ScannerTagReader(TagReader):
         return (genre_ids, new_genre_ids)
 
     def add_album(self, album_name, artist_id, no_album_artist,
-                  filepath, mtime, popularity, sql):
+                  filepath, popularity, mtime, sql):
         """
             Add album to db
             @param album name as string
             @param album artist id as int
             @param no album artist as bool
             @param path to an album track as string
+            @param popularity as int
+            @param mtime as int
             @param sql as sqlite cursor
             @return (album id as int, new as bool)
             @commit needed
