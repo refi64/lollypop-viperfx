@@ -11,7 +11,6 @@
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 from gi.repository import Gtk
-from _thread import start_new_thread
 
 from lollypop.view import View
 from lollypop.view_albums import ArtistView
@@ -47,23 +46,6 @@ class CurrentArtistView(ArtistView):
         self._viewport.add(self._albumbox)
         self.add(self._scrolledWindow)
 
-#######################
-# PRIVATE             #
-#######################
-    def _get_albums(self):
-        """
-            Get albums
-            @return album ids as [int]
-            @thread safe
-        """
-        sql = Lp.db.get_cursor()
-        if self._artist_id == Type.COMPILATIONS:
-            albums = [Lp.player.current_track.album_id]
-        else:
-            albums = Lp.artists.get_albums(self._artist_id, sql)
-        sql.close()
-        return albums
-
 
 class AlbumsPopover(Gtk.Popover):
     """
@@ -85,7 +67,7 @@ class AlbumsPopover(Gtk.Popover):
 
     def populate(self):
         """
-            Run _populate in a thread
+            Load content of the popover
         """
         if Lp.player.current_track.album_artist_id == Type.COMPILATIONS:
             new_id = Lp.player.current_track.album_id
@@ -94,8 +76,9 @@ class AlbumsPopover(Gtk.Popover):
         if self._on_screen_id != new_id:
             self._on_screen_id = new_id
             view = CurrentArtistView(Lp.player.current_track.album_artist_id)
+            albums = self._get_albums(Lp.player.current_track.album_artist_id)
+            view.populate(albums)
             view.show()
-            start_new_thread(view.populate, ())
             self._stack.add(view)
             self._stack.set_visible_child(view)
             self._stack.clean_old_views(view)
@@ -126,6 +109,19 @@ class AlbumsPopover(Gtk.Popover):
 #######################
 # PRIVATE             #
 #######################
+    def _get_albums(self, artist_id):
+        """
+            Get albums
+            @return album ids as [int]
+        """
+        sql = Lp.db.get_cursor()
+        if artist_id == Type.COMPILATIONS:
+            albums = [Lp.player.current_track.album_id]
+        else:
+            albums = Lp.artists.get_albums(artist_id, sql)
+        sql.close()
+        return albums
+
     def _update_content(self, player):
         """
             Update the content view

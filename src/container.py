@@ -12,7 +12,7 @@
 
 from gi.repository import Gtk, Gio, GLib
 
-from _thread import start_new_thread
+from threading import Thread, Lock
 from gettext import gettext as _
 
 from lollypop.define import Lp, Type
@@ -32,6 +32,46 @@ class Device:
     name = None
     uri = None
     view = None
+
+
+class Loader(Thread):
+    """
+        Helper to load data on a separate thread and 
+        dispatch it to the UI thread
+    """
+    active = {}
+    active_lock = Lock()
+
+    def __init__(self, target, view=None, on_finished=None):
+        Thread.__init__(self)
+        self._target = target
+        self._view = view
+        self._on_finished = on_finished
+        self._invalidated = False
+        self._invalidated_lock = Lock()
+
+    def is_invalidated(self):
+        with self._invalidated_lock:
+            return self._invalidated
+
+    def invalidate(self):
+        with self._invalidated_lock:
+            self._invalidated = True
+
+    def run(self):
+        with Loader.active_lock:
+            active = Loader.active.get(self._view, None)
+            if active:
+                active.invalidate()
+            Loader.active[self._view] = self
+        result = self._target()
+        if not self.is_invalidated():
+            if self._on_finished:
+                GLib.idle_add(self._on_finished, (result))
+            elif self._view:
+                GLib.idle_add(self._view.populate, (result))
+            with Loader.active_lock:
+                Loader.active.pop(self._view, None)
 
 
 class Container:
@@ -117,10 +157,10 @@ class Container:
         """
         view = PlaylistsManageView(object_id, genre_id, is_album,
                                    self._stack.get_allocated_width()/2)
+        view.populate()
         view.show()
         self._stack.add(view)
         self._stack.set_visible_child(view)
-        start_new_thread(view.populate, ())
 
     def show_playlist_editor(self, playlist_name):
         """
@@ -133,7 +173,7 @@ class Container:
         view.show()
         self._stack.add(view)
         self._stack.set_visible_child(view)
-        start_new_thread(view.populate, ())
+        view.populate()
 
     def main_widget(self):
         """
@@ -176,7 +216,7 @@ class Container:
         """
         view = self._stack.get_visible_child()
         if view:
-            start_new_thread(view.update_covers, ())
+            view.update_covers()
 
     def on_scan_finished(self, scanner):
         """
@@ -296,11 +336,9 @@ class Container:
         # Do not update if updater is PlaylistsManager
         if not isinstance(updater, PlaylistsManager):
             if self._show_genres:
-                start_new_thread(self._setup_list_genres,
-                                 (self._list_one, update))
+                self._setup_list_genres(self._list_one, update)
             else:
-                start_new_thread(self._setup_list_artists,
-                                 (self._list_one, Type.ALL, update))
+                self._setup_list_artists(self._list_one, Type.ALL, update)
 
     def _update_list_two(self, updater):
         """
@@ -310,10 +348,9 @@ class Container:
         update = updater is not None
         object_id = self._list_one.get_selected_id()
         if object_id == Type.PLAYLISTS:
-            start_new_thread(self._setup_list_playlists, (update,))
+            self._setup_list_playlists(update)
         elif self._show_genres and object_id != Type.NONE:
-            start_new_thread(self._setup_list_artists,
-                             (self._list_two, object_id, update))
+            self._setup_list_artists(self._list_two, object_id, update)
 
     def _get_headers(self):
         """
@@ -338,25 +375,24 @@ class Container:
             @param update as bool, if True, just update entries
             @thread safe
         """
-        sql = Lp.db.get_cursor()
-        selection_list.mark_as_artists(False)
-        items = self._get_headers()
-        items.append((Type.SEPARATOR, ''))
-        items += Lp.genres.get(sql)
-        if update:
-            selection_list.update_values(items)
-        else:
-            selection_list.populate(items)
-        sql.close()
+        def load():
+            sql = Lp.db.get_cursor()
+            genres = Lp.genres.get(sql)
+            sql.close()
+            return genres
 
-    def _pre_setup_list_artists(self, selection_list):
-        """
-            Hide list two base on current artist list
-        """
-        if selection_list == self._list_one:
-            if self._list_two.is_visible():
-                self._list_two.hide()
-            self._list_two_restore = Type.NONE
+        def setup(genres):
+            items = self._get_headers()
+            items.append((Type.SEPARATOR, ''))
+            items += genres
+            selection_list.mark_as_artists(False)
+            if update:
+                selection_list.update_values(items)
+            else:
+                selection_list.populate(items)
+
+        loader = Loader(target=load, view=selection_list, on_finished=setup)
+        loader.start()
 
     def _setup_list_artists(self, selection_list, genre_id, update):
         """
@@ -365,22 +401,35 @@ class Container:
             @param update as bool, if True, just update entries
             @thread safe
         """
-        GLib.idle_add(self._pre_setup_list_artists, selection_list)
-        sql = Lp.db.get_cursor()
-        items = []
-        selection_list.mark_as_artists(True)
-        if selection_list == self._list_one:
-            items = self._get_headers()
-            items.append((Type.SEPARATOR, ''))
-        if Lp.albums.get_compilations(genre_id, sql):
-            items.append((Type.COMPILATIONS, _("Compilations")))
-        items += Lp.artists.get(genre_id, sql)
+        def load():
+            sql = Lp.db.get_cursor()
+            artists = Lp.artists.get(genre_id, sql)
+            compilations = Lp.albums.get_compilations(genre_id, sql)
+            sql.close()
+            return (artists, compilations)
 
-        if update:
-            selection_list.update_values(items)
-        else:
-            selection_list.populate(items)
-        sql.close()
+        def setup(artists, compilations):
+            if selection_list == self._list_one:
+                items = self._get_headers()
+                items.append((Type.SEPARATOR, ''))
+            else:
+                items = []
+            if compilations:
+                items.append((Type.COMPILATIONS, _("Compilations")))
+            items += artists
+            selection_list.mark_as_artists(True)
+            if update:
+                selection_list.update_values(items)
+            else:
+                selection_list.populate(items)
+
+        if selection_list == self._list_one:
+            if self._list_two.is_visible():
+                self._list_two.hide()
+            self._list_two_restore = Type.NONE
+        loader = Loader(target=load, view=selection_list, 
+                        on_finished=lambda r: setup(*r))
+        loader.start()
 
     def _setup_list_playlists(self, update):
         """
@@ -415,8 +464,8 @@ class Container:
             view = DeviceView(device, self._progress,
                               self._stack.get_allocated_width()/2)
             device.view = view
+            view.populate()
             view.show()
-            start_new_thread(view.populate, ())
         self._stack.add(view)
         self._stack.set_visible_child(view)
         self._stack.clean_old_views(view)
@@ -427,10 +476,22 @@ class Container:
             @param artist id as int
             @param genre id as int
         """
+        def load():
+            sql = Lp.db.get_cursor()
+            if artist_id == Type.COMPILATIONS:
+                albums = Lp.albums.get_compilations(genre_id, sql)
+            elif genre_id == Type.ALL:
+                albums = Lp.albums.get_ids(artist_id, None, sql)
+            else:
+                albums = Lp.albums.get_ids(artist_id, genre_id, sql)
+            sql.close()
+            return albums
+
         view = ArtistView(artist_id, genre_id)
-        self._stack.add(view)
+        loader = Loader(target=load, view=view)
+        loader.start()
         view.show()
-        start_new_thread(view.populate, ())
+        self._stack.add(view)
         self._stack.set_visible_child(view)
         self._stack.clean_old_views(view)
 
@@ -440,10 +501,34 @@ class Container:
             @param genre id as int
             @param is compilation as bool
         """
+        def load():
+            sql = Lp.db.get_cursor()
+            if genre_id == Type.ALL:
+                if is_compilation:
+                    albums = Lp.albums.get_compilations(None, sql)
+                else:
+                    albums = Lp.albums.get_ids(None, None, sql)
+            elif genre_id == Type.POPULARS:
+                albums = Lp.albums.get_populars(sql)
+            elif genre_id == Type.RECENTS:
+                albums = Lp.albums.get_recents(sql)
+            elif genre_id == Type.RANDOMS:
+                albums = Lp.albums.get_randoms(sql)
+            elif is_compilation:
+                albums = Lp.albums.get_compilations(genre_id, sql)
+            else:
+                albums = []
+                if Lp.settings.get_value('show-compilations'):
+                    albums += Lp.albums.get_compilations(genre_id, sql)
+                albums += Lp.albums.get_ids(None, genre_id, sql)
+            sql.close()
+            return albums
+
         view = AlbumsView(genre_id, is_compilation)
-        self._stack.add(view)
+        loader = Loader(target=load, view=view)
+        loader.start()
         view.show()
-        start_new_thread(view.populate, ())
+        self._stack.add(view)
         self._stack.set_visible_child(view)
         self._stack.clean_old_views(view)
 
@@ -452,6 +537,21 @@ class Container:
             Update current view with playlist view
             @param playlist id as int
         """
+        def load():
+            sql = Lp.db.get_cursor()
+            if playlist_id == Lp.player.get_user_playlist_id():
+                tracks = [t.id for t in Lp.player.get_user_playlist()]
+            elif playlist_id == Type.POPULARS:
+                tracks = Lp.tracks.get_populars(sql)
+            elif playlist_id == Type.RECENTS:
+                tracks = Lp.tracks.get_recently_listened_to(sql)
+            elif playlist_id == Type.NEVER:
+                tracks = Lp.tracks.get_never_listened_to(sql)
+            elif playlist_id == Type.RANDOMS:
+                tracks = Lp.tracks.get_randoms(sql)
+            sql.close()
+            return tracks
+
         view = None
         if playlist_id is not None:
             name = self._list_two.get_value(playlist_id)
@@ -460,27 +560,16 @@ class Container:
             view = PlaylistsManageView(-1, None, False,
                                        self._stack.get_allocated_width()/2)
         if view:
-            view.show()
-            self._stack.add(view)
-            self._stack.set_visible_child(view)
             # Management or user playlist
             if playlist_id is None or playlist_id >= 0 or\
                     playlist_id == Type.LOVED:
-                start_new_thread(view.populate, ())
+                view.populate()
             else:
-                tracks = []
-                if playlist_id == Lp.player.get_user_playlist_id():
-                    for track in Lp.player.get_user_playlist():
-                        tracks.append(track.id)
-                elif playlist_id == Type.POPULARS:
-                    tracks = Lp.tracks.get_populars()
-                elif playlist_id == Type.RECENTS:
-                    tracks = Lp.tracks.get_recently_listened_to()
-                elif playlist_id == Type.NEVER:
-                    tracks = Lp.tracks.get_never_listened_to()
-                elif playlist_id == Type.RANDOMS:
-                    tracks = Lp.tracks.get_randoms()
-                start_new_thread(view.populate_tracks, (tracks,))
+                loader = Loader(target=load, view=view)
+                loader.start()
+            view.show()
+            self._stack.add(view)
+            self._stack.set_visible_child(view)
             self._stack.clean_old_views(view)
 
     def _update_view_radios(self):
@@ -488,9 +577,9 @@ class Container:
             Update current view with radios view
         """
         view = RadiosView()
-        self._stack.add(view)
-        view.show()
         view.populate()
+        view.show()
+        self._stack.add(view)
         self._stack.set_visible_child(view)
         self._stack.clean_old_views(view)
 
@@ -547,7 +636,7 @@ class Container:
         """
         if selected_id == Type.PLAYLISTS:
             self._list_two.clear()
-            start_new_thread(self._setup_list_playlists, (False,))
+            self._setup_list_playlists(False)
             self._list_two.show()
             if not self._list_two.will_be_selected():
                 self._update_view_playlists(None)
@@ -573,8 +662,7 @@ class Container:
                 self._update_view_artists(selected_id, None)
         else:
             self._list_two.clear()
-            start_new_thread(self._setup_list_artists,
-                             (self._list_two, selected_id, False))
+            self._setup_list_artists(self._list_two, selected_id, False)
             self._list_two.show()
             if not self._list_two.will_be_selected():
                 self._update_view_albums(selected_id, False)

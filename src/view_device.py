@@ -12,7 +12,6 @@
 
 from gi.repository import Gtk, GLib, Gio
 
-from _thread import start_new_thread
 from gettext import gettext as _
 
 from lollypop.view import View
@@ -120,7 +119,7 @@ class DeviceView(View):
         uri = "%s%s/Music/%s" % (self._device.uri, text, "lollypop")
         on_disk_playlists = self._get_files(uri)
         self._device_widget.set_playlists(on_disk_playlists, uri)
-        start_new_thread(self._device_widget.populate, ())
+        self._device_widget.populate()
 
     def _set_combo_text(self, text_list):
         """

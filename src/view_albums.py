@@ -12,8 +12,6 @@
 
 from gi.repository import Gtk, GLib, Gdk
 
-from _thread import start_new_thread
-
 from lollypop.view import View
 from lollypop.pop_infos import InfosPopover
 from lollypop.view_container import ViewContainer
@@ -58,39 +56,16 @@ class ArtistView(View):
         self._viewport.add(self._albumbox)
         self.add(self._scrolledWindow)
 
-    def populate(self):
+    def populate(self, albums):
         """
             Populate the view
-            @thread safe
         """
-        albums = self._get_albums()
-        GLib.idle_add(self._add_albums, albums, self._genre_id)
+        self._add_albums(albums, self._genre_id)
 
 
 #######################
 # PRIVATE             #
 #######################
-    def _get_albums(self):
-        """
-            Get albums
-            @return album ids as [int]
-            @thread safe
-        """
-        sql = Lp.db.get_cursor()
-        if self._artist_id == Type.COMPILATIONS:
-            albums = Lp.albums.get_compilations(self._genre_id,
-                                                sql)
-        elif self._genre_id == Type.ALL:
-            albums = Lp.albums.get_ids(self._artist_id,
-                                       None,
-                                       sql)
-        else:
-            albums = Lp.albums.get_ids(self._artist_id,
-                                       self._genre_id,
-                                       sql)
-        sql.close()
-        return albums
-
     def _get_children(self):
         """
             Return view children
@@ -113,7 +88,7 @@ class ArtistView(View):
                                          False,
                                          size_group)
             widget.show()
-            start_new_thread(widget.populate, ())
+            widget.populate()
             self._albumbox.add(widget)
             GLib.idle_add(self._add_albums, albums, genre_id)
         else:
@@ -218,14 +193,12 @@ class AlbumsView(View):
         self._paned.show()
         self.add(self._paned)
 
-    def populate(self):
+    def populate(self, albums):
         """
             Populate albums
             @param is compilation as bool
-            @thread safe
         """
-        albums = self._get_albums()
-        GLib.idle_add(self._add_albums, albums)
+        self._add_albums(albums)
 
 #######################
 # PRIVATE             #
@@ -285,7 +258,7 @@ class AlbumsView(View):
                                                    True,
                                                    True,
                                                    size_group)
-        start_new_thread(self._context_widget.populate, ())
+        self._context_widget.populate()
         self._context_widget.show()
         view = AlbumContextView(self._context_widget)
         view.show()
