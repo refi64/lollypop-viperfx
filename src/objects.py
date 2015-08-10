@@ -14,8 +14,6 @@
 
 from gi.repository import GLib
 
-from os import path
-
 from threading import current_thread
 
 from lollypop.define import Lp, Type
