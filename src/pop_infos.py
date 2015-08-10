@@ -95,6 +95,7 @@ class ArtistInfos(Gtk.Bin):
             @param track_id as int
         """
         Gtk.Bin.__init__(self)
+        self._wikia_url = None
         self._liked = True  # Liked track or not?
         self._wikipedia = True
         self._artist = artist
@@ -147,7 +148,6 @@ class ArtistInfos(Gtk.Bin):
             self._on_lyrics_clicked(None)
         else:
             start_new_thread(self._populate, ())
-
 #######################
 # PRIVATE             #
 #######################
@@ -333,15 +333,35 @@ class ArtistInfos(Gtk.Bin):
             view = self.WebKit.WebView()
             view.set_settings(settings)
             view.show()
+            view.connect('navigation-policy-decision-requested',
+                         self._on_navigation_policy)
             self._scrolled_lyrics.add(view)
         artist = Lp.player.current_track.album_artist.replace(' ', '_')
         title = Lp.player.current_track.title.replace(' ', '_')
-        url = "http://lyrics.wikia.com/%s:%s" % (artist, title)
-        view.load_uri(url)
+        self._wikia_url = "http://lyrics.wikia.com/wiki/%s:%s" % (artist, title)
+        view.load_uri(self._wikia_url)
         if btn is not None:
             self._view_btn.set_tooltip_text(_("Wikipedia"))
             self._view_btn.set_sensitive(True)
         self._lyrics_btn.set_sensitive(False)
         self._url_btn.set_label(_("Wikia"))
-        self._url_btn.set_uri(url)
+        self._url_btn.set_uri(self._wikia_url)
         self._stack.set_visible_child(self._scrolled_lyrics)
+
+    def _on_navigation_policy(self, view, frame, request,
+                              navigation_action, policy_decision):
+        """
+            Disallow navigation, launch in external browser
+            @param view as WebKit.WebView
+            @param frame as WebKit.WebFrame
+            @param request as WebKit.NetworkRequest
+            @param navigation_action as WebKit.WebNavigationAction
+            @param policy_decision as WebKit.WebPolicyDecision
+            @return bool
+        """
+        if self._wikia_url == request.get_uri():
+            return False
+        elif request.get_uri() != 'about:blank':
+            GLib.spawn_command_line_async("xdg-open \"%s\"" %
+                                          request.get_uri())
+        return True
