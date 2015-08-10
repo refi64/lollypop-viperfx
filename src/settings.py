@@ -375,11 +375,14 @@ class SettingsDialog:
             @param source as GObject.Object
             @param result Gio.AsyncResult
         """
-        password = None
-        if result is not None:
-            password = Secret.password_lookup_finish(result)
-        if password is not None:
-            self._password.set_text(password)
+        try:
+            password = None
+            if result is not None:
+                password = Secret.password_lookup_finish(result)
+            if password is not None:
+                self._password.set_text(password)
+        except:
+            pass
 
 
 class ChooserWidget(Gtk.Grid):
