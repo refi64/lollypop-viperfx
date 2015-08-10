@@ -13,7 +13,7 @@
 from gi.repository import GLib, Gst, GstPbutils
 
 import os
-from time import time
+
 from gettext import gettext as _
 
 from lollypop.define import Lp, Type
