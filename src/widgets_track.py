@@ -325,6 +325,7 @@ class TracksWidget(Gtk.ListBox):
         self.connect("row-activated", self._on_activate)
         self.get_style_context().add_class('trackswidget')
         self.set_property('hexpand', True)
+        self.set_property('selection-mode', Gtk.SelectionMode.NONE)
 
     def add_track(self, track_id, num, title, length, pos):
         """
