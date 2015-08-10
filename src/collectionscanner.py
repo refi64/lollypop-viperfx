@@ -301,7 +301,7 @@ class CollectionScanner(GObject.GObject, ScannerTagReader):
             string = "%s_%s" % (row[0], row[1])
             if string in popularities:
                 Lp.albums.set_popularity(row[2],
-                                         popularities[string], sql)
+                                         popularities[string], True, sql)
 
     def _restore_albums_mtime(self, sql):
         """
@@ -330,7 +330,7 @@ class CollectionScanner(GObject.GObject, ScannerTagReader):
             string = "%s_%s" % (row[0], row[1])
             if string in popularities:
                 Lp.tracks.set_popularity(row[2],
-                                         popularities[string], sql)
+                                         popularities[string], True, sql)
 
     def _restore_tracks_ltime(self, sql):
         """
