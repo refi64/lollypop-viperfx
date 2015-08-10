@@ -261,7 +261,7 @@ class CollectionScanner(GObject.GObject, ScannerTagReader):
             album_mtime = mtime
 
         album_id = self.add_album(album_name, album_artist_id, no_album_artist,
-                                  filepath, popularity, mtime, sql)
+                                  filepath, popularity, album_mtime, sql)
 
         (genre_ids, new_genre_ids) = self.add_genres(genres, album_id, sql)
 
