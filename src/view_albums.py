@@ -203,32 +203,6 @@ class AlbumsView(View):
 #######################
 # PRIVATE             #
 #######################
-    def _get_albums(self):
-        """
-            Get albums
-            @return album ids as [int]
-            @thread safe
-        """
-        if self._genre_id == Type.ALL:
-            if self._is_compilation:
-                albums = Lp.albums.get_compilations(None)
-            else:
-                albums = Lp.albums.get_ids(None, None)
-        elif self._genre_id == Type.POPULARS:
-            albums = Lp.albums.get_populars()
-        elif self._genre_id == Type.RECENTS:
-            albums = Lp.albums.get_recents()
-        elif self._genre_id == Type.RANDOMS:
-            albums = Lp.albums.get_randoms()
-        elif self._is_compilation:
-            albums = Lp.albums.get_compilations(self._genre_id)
-        else:
-            albums = []
-            if Lp.settings.get_value('show-compilations'):
-                albums += Lp.albums.get_compilations(self._genre_id)
-            albums += Lp.albums.get_ids(None, self._genre_id)
-        return albums
-
     def _get_children(self):
         """
             Return view children
