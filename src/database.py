@@ -85,7 +85,10 @@ class Database:
                 self._set_albums_mtime()
                 self._set_tracks_popularity()
                 self._set_tracks_ltime()
-                os.remove(self.DB_PATH)
+                try:
+                    os.rename(self.DB_PATH, self.DB_PATH + ".backup")
+                except:
+                    pass
                 Lp.settings.set_value('db-version',
                                       GLib.Variant('i', self.version))
 

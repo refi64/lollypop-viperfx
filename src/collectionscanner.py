@@ -40,6 +40,11 @@ class CollectionScanner(GObject.GObject, ScannerTagReader):
         GObject.GObject.__init__(self)
         ScannerTagReader.__init__(self)
 
+        self._albums_popularity = {}
+        self._albums_mtime = {}
+        self._tracks_popularity = {}
+        self._tracks_ltime = {}
+
         self._inotify = None
         if Lp.settings.get_value('auto-update'):
             self._inotify = Inotify()
@@ -149,6 +154,10 @@ class CollectionScanner(GObject.GObject, ScannerTagReader):
             @param paths as [string], paths to scan
             @thread safe
         """
+        self._albums_popularity = Lp.db.get_albums_popularity()
+        self._albums_mtime = Lp.db.get_albums_mtime()
+        self._tracks_popularity = Lp.db.get_tracks_popularity()
+        self._tracks_ltime = Lp.db.get_tracks_ltime()
         sql = Lp.db.get_cursor()
         mtimes = Lp.tracks.get_mtimes(sql)
         orig_tracks = Lp.tracks.get_paths(sql)
@@ -201,10 +210,6 @@ class CollectionScanner(GObject.GObject, ScannerTagReader):
             for filepath in orig_tracks:
                 self._del_from_db(filepath, sql)
 
-        self._restore_albums_popularity(sql)
-        self._restore_albums_mtime(sql)
-        self._restore_tracks_popularity(sql)
-        self._restore_tracks_ltime(sql)
         sql.commit()
         sql.close()
         GLib.idle_add(self._finish)
@@ -244,15 +249,37 @@ class CollectionScanner(GObject.GObject, ScannerTagReader):
             album_artist_id = artist_ids[0]
             no_album_artist = True
 
+        # Search for datas to restore
+        search = "%s_%s" % (album_name, album_artist)
+        if search in self._albums_popularity:
+            popularity = self._albums_popularity[search]
+            del self._albums_popularity[search]
+            album_mtime = self._albums_mtime[search]
+            del self._albums_mtime[search]
+        else:
+            popularity = 0
+            album_mtime = mtime
+
         album_id = self.add_album(album_name, album_artist_id, no_album_artist,
-                                  filepath, sql)
+                                  filepath, popularity, mtime, sql)
 
         (genre_ids, new_genre_ids) = self.add_genres(genres, album_id, sql)
+
+        # Search for datas to restore
+        search = "%s_%s" % (title, album_artist)
+        if search in self._tracks_popularity:
+            popularity = self._tracks_popularity[search]
+            del self._tracks_popularity[search]
+            ltime = self._tracks_ltime[search]
+            del self._tracks_ltime[search]
+        else:
+            popularity = 0
+            ltime = 0
 
         # Add track to db
         Lp.tracks.add(title, filepath, length,
                       tracknumber, discnumber,
-                      album_id, year, 0, 0, mtime, sql)
+                      album_id, year, popularity, ltime, mtime, sql)
 
         self.update_year(album_id, sql)
 
@@ -288,61 +315,3 @@ class CollectionScanner(GObject.GObject, ScannerTagReader):
             Lp.artists.clean(artist_id, sql)
         for genre_id in genre_ids:
             Lp.genres.clean(genre_id, sql)
-
-    def _restore_albums_popularity(self, sql):
-        """
-            Restore albums popularty
-        """
-        popularities = Lp.db.get_albums_popularity()
-        result = sql.execute("SELECT albums.name, artists.name, albums.rowid\
-                              FROM albums, artists\
-                              WHERE artists.rowid == albums.artist_id")
-        for row in result:
-            string = "%s_%s" % (row[0], row[1])
-            if string in popularities:
-                Lp.albums.set_popularity(row[2],
-                                         popularities[string], True, sql)
-
-    def _restore_albums_mtime(self, sql):
-        """
-            Restore albums mtime
-        """
-        mtimes = Lp.db.get_albums_mtime()
-        result = sql.execute("SELECT albums.name, artists.name, albums.rowid\
-                              FROM albums, artists\
-                              WHERE artists.rowid == albums.artist_id")
-        for row in result:
-            string = "%s_%s" % (row[0], row[1])
-            if string in mtimes:
-                Lp.albums.set_mtime(row[2],
-                                    mtimes[string], sql)
-
-    def _restore_tracks_popularity(self, sql):
-        """
-            Restore tracks popularty
-        """
-        popularities = Lp.db.get_tracks_popularity()
-        result = sql.execute("SELECT tracks.name, artists.name, tracks.rowid\
-                              FROM tracks, artists, track_artists\
-                              WHERE artists.rowid == track_artists.artist_id\
-                              AND track_artists.track_id == tracks.rowid")
-        for row in result:
-            string = "%s_%s" % (row[0], row[1])
-            if string in popularities:
-                Lp.tracks.set_popularity(row[2],
-                                         popularities[string], True, sql)
-
-    def _restore_tracks_ltime(self, sql):
-        """
-            Restore tracks ltime
-        """
-        ltimes = Lp.db.get_tracks_ltime()
-        result = sql.execute("SELECT tracks.name, artists.name, tracks.rowid\
-                              FROM tracks, artists, track_artists\
-                              WHERE artists.rowid == track_artists.artist_id\
-                              AND track_artists.track_id == tracks.rowid")
-        for row in result:
-            string = "%s_%s" % (row[0], row[1])
-            if string in ltimes:
-                Lp.tracks.set_ltime(row[2],
-                                    ltimes[string], sql)

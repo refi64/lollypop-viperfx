@@ -259,7 +259,7 @@ class ScannerTagReader(TagReader):
         return (genre_ids, new_genre_ids)
 
     def add_album(self, album_name, artist_id, no_album_artist,
-                  filepath, sql):
+                  filepath, mtime, popularity, sql):
         """
             Add album to db
             @param album name as string
@@ -277,15 +277,8 @@ class ScannerTagReader(TagReader):
         else:
             album_id = Lp.albums.get_id(album_name, artist_id, sql)
         if album_id is None:
-            # If db was empty on scan,
-            # use file modification time to get recents
-            if self._is_empty:
-                mtime = int(os.path.getmtime(filepath))
-            # Use current time
-            else:
-                mtime = int(time())
             Lp.albums.add(album_name, artist_id, no_album_artist,
-                          path, 0, mtime, sql)
+                          path, popularity, mtime, sql)
             if no_album_artist:
                 album_id = Lp.albums.get_compilation_id(album_name, sql)
             else:
