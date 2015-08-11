@@ -4,6 +4,7 @@ app_PYTHON = \
     application.py\
     art_album.py\
     art_base.py\
+    art_downloader.py\
     art.py\
     art_radio.py\
     cellrendereralbum.py\

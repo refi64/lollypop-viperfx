@@ -12,8 +12,6 @@
 
 from gi.repository import GLib, Gio, GdkPixbuf
 
-from lollypop.define import ArtSize
-
 from gettext import gettext as _
 
 try:
@@ -59,10 +57,8 @@ class LastFM(LastFMNetwork):
         LastFMNetwork.__init__(self,
                                api_key=self._API_KEY,
                                api_secret=self._API_SECRET)
-        self._albums_queue = []
         self._username = ''
         self._is_auth = False
-        self._in_albums_download = False
         self._password = None
         self._check_for_proxy()
         self.connect(None)
@@ -94,18 +90,6 @@ class LastFM(LastFMNetwork):
             self._username = Lp.settings.get_value('lastfm-login').get_string()
             self._connect(self._username, password)
             start_new_thread(self._populate_loved_tracks, (True,))
-
-    def download_album_img(self, album_id):
-        """
-            Download album image
-            @param album id as int
-        """
-        if Gio.NetworkMonitor.get_default().get_network_available():
-            album = Lp.albums.get_name(album_id)
-            artist = Lp.albums.get_artist_name(album_id)
-            self._albums_queue.append((artist, album))
-            if not self._in_albums_download:
-                start_new_thread(self._download_albums_imgs, ())
 
     def get_artist_infos(self, artist):
         """
@@ -284,44 +268,6 @@ class LastFM(LastFMNetwork):
             if first:
                 self._connect(self._username, self._password)
                 self._now_playing(artist, title, duration, False)
-
-    def _download_albums_imgs(self):
-        """
-            Download albums images
-        """
-        self._in_albums_download = True
-        sql = Lp.db.get_cursor()
-        while self._albums_queue:
-            (artist, album) = self._albums_queue.pop()
-            try:
-                last_album = self.get_album(artist, album)
-                url = last_album.get_cover_image(4)
-                if url is None:
-                    continue
-                artist_id = Lp.artists.get_id(artist, sql)
-                album_id = Lp.albums.get_id(album, artist_id, sql)
-                # Compilation or album without album artist
-                if album_id is None:
-                    album_id = Lp.albums.get_compilation_id(album, sql)
-                if album_id is None:
-                    sql.close()
-                    return
-                s = Gio.File.new_for_uri(url)
-                (status, data, tag) = s.load_contents()
-                if status:
-                    stream = Gio.MemoryInputStream.new_from_data(data, None)
-                    pixbuf = GdkPixbuf.Pixbuf.new_from_stream_at_scale(
-                                stream, ArtSize.MONSTER,
-                                ArtSize.MONSTER,
-                                False,
-                                None)
-                    Lp.art.save_album_art(pixbuf, album_id, sql)
-                    Lp.art.clean_album_cache(album_id, sql)
-                    GLib.idle_add(Lp.art.announce_cover_update, album_id)
-            except Exception as e:
-                print("LastFM::_download_album_img: %s" % e)
-        self._in_albums_download = False
-        sql.close()
 
     def _populate_loved_tracks(self, force=False):
         """

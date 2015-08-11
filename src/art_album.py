@@ -16,11 +16,12 @@ import re
 import os
 
 from lollypop.art_base import BaseArt
+from lollypop.art_downloader import ArtDownloader
 from lollypop.tagreader import TagReader
 from lollypop.define import Lp
 
 
-class AlbumArt(BaseArt, TagReader):
+class AlbumArt(BaseArt, ArtDownloader, TagReader):
     """
          Manager album artwork
     """
@@ -32,6 +33,7 @@ class AlbumArt(BaseArt, TagReader):
             Init radio art
         """
         BaseArt.__init__(self)
+        ArtDownloader.__init__(self)
         TagReader.__init__(self)
         self._favorite = Lp.settings.get_value('favorite-cover').get_string()
         if not os.path.exists(self._CACHE_PATH):
@@ -177,8 +179,7 @@ class AlbumArt(BaseArt, TagReader):
                         pass
                 # No cover, use default one
                 if pixbuf is None:
-                    if Lp.lastfm is not None:
-                        Lp.lastfm.download_album_img(album_id)
+                    self.download_album_art(album_id)
                     pixbuf = self._get_default_icon(size,
                                                     'folder-music-symbolic')
                 else:
