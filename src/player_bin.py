@@ -194,17 +194,17 @@ class BinPlayer(ReplayGainPlayer, BasePlayer):
 
         self.current_track = track
 
-        if self.current_track.uri is not None:
+        # uri not preloaded
+        if self.current_track.uri is None:
+            GLib.timeout_add(2000, self.next)
+            return False
+        elif self._playbin.get_property('uri') != self.current_track.uri:
             try:
                 self._playbin.set_property('uri',
                                            self.current_track.uri)
-            except Exception as e:  # Gstreamer error, stop
+            except Exception as e:  # Gstreamer error
                 print("BinPlayer::_load_track(): ", e)
-                self.stop()
                 return False
-        else:
-            GLib.timeout_add(2000, self.next)
-            return False
         return True
 
     """
@@ -350,3 +350,10 @@ class BinPlayer(ReplayGainPlayer, BasePlayer):
         if not Lp.scanner.is_locked():
             Lp.tracks.set_listened_at(self.current_track.id, int(time()))
         self._handled_error = None
+        # Preload next track
+        if self.next_track.uri is not None:
+            try:
+                self._playbin.set_property('uri',
+                                           self.next_track.uri)
+            except Exception as e:  # Gstreamer error
+                print("BinPlayer::_on_stream_start(): ", e)
