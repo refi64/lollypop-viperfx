@@ -429,18 +429,15 @@ class AlbumDetailedWidget(AlbumWidget):
         if Lp.player.is_in_queue(track_id):
             pos = Lp.player.get_track_position(track_id)
 
-        if Lp.settings.get_value('show-tag-tracknumber'):
-            widget.add_track(track_id,
-                             tracknumber,
-                             title,
-                             length,
-                             pos)
-        else:
-            widget.add_track(track_id,
-                             i,
-                             title,
-                             length,
-                             pos)
+        if not Lp.settings.get_value('show-tag-tracknumber'):
+            tracknumber = i
+
+        widget.add_track(track_id,
+                         tracknumber,
+                         title,
+                         length,
+                         pos)
+
         GLib.idle_add(self._add_tracks, tracks, widget, i+1)
 
     def _on_activated(self, widget, track_id):
