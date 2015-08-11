@@ -28,10 +28,6 @@ class AlbumWidget(Gtk.Bin):
     """
         Base album widget
     """
-    try:
-        from lollypop.wikipedia import Wikipedia
-    except:
-        Wikipedia = None
 
     def __init__(self, album_id):
         """
@@ -212,6 +208,11 @@ class AlbumDetailedWidget(AlbumWidget):
     """
         Widget with cover and tracks
     """
+
+    try:
+        from lollypop.wikipedia import Wikipedia
+    except:
+        Wikipedia = None
 
     def __init__(self, album_id, genre_id, pop_allowed, scrolled, size_group):
         """

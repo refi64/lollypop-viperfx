@@ -24,6 +24,11 @@ class ArtistView(View):
         Show artist albums and tracks
     """
 
+    try:
+        from lollypop.wikipedia import Wikipedia
+    except:
+        Wikipedia = None
+
     def __init__(self, artist_id, genre_id):
         """
             Init ArtistView
@@ -36,7 +41,7 @@ class ArtistView(View):
         self._signal_id = None
 
         self._artist_name = Lp.artists.get_name(artist_id)
-        if Lp.lastfm is not None:
+        if Lp.lastfm is not None or self.Wikipedia is not None:
             self._popover = InfosPopover(self._artist_name)
         builder = Gtk.Builder()
         builder.add_from_resource('/org/gnome/Lollypop/ArtistView.ui')
@@ -99,7 +104,8 @@ class ArtistView(View):
             Change pointer on label
             @param eventbox as Gtk.EventBox
         """
-        if Lp.lastfm is not None and self._artist_id != Type.COMPILATIONS:
+        if (Lp.lastfm is not None or self.Wikipedia is not None) and\
+                    self._artist_id != Type.COMPILATIONS:
             eventbox.get_window().set_cursor(Gdk.Cursor(Gdk.CursorType.HAND1))
 
     def _on_label_button_release(self, eventbox, event):
@@ -108,7 +114,8 @@ class ArtistView(View):
             @param eventbox as Gtk.EventBox
             @param event as Gdk.Event
         """
-        if Lp.lastfm is not None and self._artist_id != Type.COMPILATIONS:
+        if (Lp.lastfm is not None or self.Wikipedia is not None) and\
+                    self._artist_id != Type.COMPILATIONS:
             self._popover.set_relative_to(eventbox)
             self._popover.populate()
             self._popover.show()
