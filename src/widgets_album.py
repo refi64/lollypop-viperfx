@@ -30,10 +30,7 @@ class AlbumWidget(Gtk.Bin):
     """
     try:
         from lollypop.wikipedia import Wikipedia
-    except Exception as e:
-        print(e)
-        print(_("Advanced artist informations disabled"))
-        print("$ sudo pip3 install wikipedia")
+    except:
         Wikipedia = None
 
     def __init__(self, album_id):
