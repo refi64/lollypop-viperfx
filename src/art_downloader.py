@@ -86,7 +86,9 @@ class ArtDownloader:
         sql = Lp.db.get_cursor()
         while self._albums_queue:
             (artist, album) = self._albums_queue.pop()
-            pixbuf = self._get_album_art_itunes(artist, album)
+            pixbuf = self._get_album_art_spotify(artist, album)
+            if pixbuf is None:
+                pixbuf = self._get_album_art_itunes(artist, album)
             if pixbuf is None:
                 pixbuf = self._get_album_art_lastfm(artist, album)
             if pixbuf is None:
@@ -105,6 +107,50 @@ class ArtDownloader:
                 print("ArtDownloader::_download_albums_art: %s" % e)
         self._in_albums_download = False
         sql.close()
+
+    def _get_album_art_spotify(self, artist, album):
+        """
+            Get album artwork from itunes
+            @param artist as string
+            @param album as string
+            @return pixbuf as GdkPixbuf.Pixbuf
+            @tread safe
+        """
+        pixbuf = None
+        album_spotify_id = None
+        try:
+            album_formated = GLib.uri_escape_string(
+                                album, None, True).replace(' ', '+')
+            s = Gio.File.new_for_uri("https://ws.spotify.com/search/"
+                                     "1/album.json?q=%s" % album_formated)
+            (status, data, tag) = s.load_contents()
+            if status:
+                decode = json.loads(data.decode('utf-8'))
+                for item in decode['albums']:
+                    if item['artists'][0]['name'].lower() == artist.lower():
+                        album_spotify_id = item['href'].replace(
+                                    'spotify:album:', '')
+                        break
+            if album_spotify_id is not None:
+                s = Gio.File.new_for_uri("https://api.spotify.com/"
+                                         "v1/albums/%s" % album_spotify_id)
+                (status, data, tag) = s.load_contents()
+                if status:
+                    decode = json.loads(data.decode('utf-8'))
+                    url = decode['images'][0]['url']
+                    s = Gio.File.new_for_uri(url)
+                    (status, data, tag) = s.load_contents()
+                    if status:
+                        stream = Gio.MemoryInputStream.new_from_data(data,
+                                                                     None)
+                        pixbuf = GdkPixbuf.Pixbuf.new_from_stream_at_scale(
+                                    stream, ArtSize.MONSTER,
+                                    ArtSize.MONSTER,
+                                    False,
+                                    None)
+        except Exception as e:
+            print("ArtDownloader::_get_album_art_spotify: %s" % e)
+        return pixbuf
 
     def _get_album_art_itunes(self, artist, album):
         """
@@ -137,6 +183,7 @@ class ArtDownloader:
                                         ArtSize.MONSTER,
                                         False,
                                         None)
+                        break
         except Exception as e:
             print("ArtDownloader::_get_album_art_itunes: %s" % e)
         return pixbuf
