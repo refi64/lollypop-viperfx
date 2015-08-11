@@ -40,7 +40,6 @@
             <property name="can_focus">True</property>
             <property name="receives_default">True</property>
             <property name="halign">end</property>
-            <property name="valign">start</property>
             <property name="margin_start">5</property>
             <property name="margin_end">5</property>
             <property name="hexpand">True</property>
