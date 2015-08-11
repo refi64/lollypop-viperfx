@@ -28,6 +28,13 @@ class AlbumWidget(Gtk.Bin):
     """
         Base album widget
     """
+    try:
+        from lollypop.wikipedia import Wikipedia
+    except Exception as e:
+        print(e)
+        print(_("Advanced artist informations disabled"))
+        print("$ sudo pip3 install wikipedia")
+        Wikipedia = None
 
     def __init__(self, album_id):
         """
@@ -479,7 +486,7 @@ class AlbumDetailedWidget(AlbumWidget):
             Change pointer on label
             @param eventbox as Gtk.EventBox
         """
-        if (Lp.lastfm is not None or Lp.wikipedia is not None) and\
+        if (Lp.lastfm is not None or self.Wikipedia is not None) and\
                     self._album.artist_id != Type.COMPILATIONS:
             eventbox.get_window().set_cursor(Gdk.Cursor(Gdk.CursorType.HAND1))
 
@@ -489,7 +496,7 @@ class AlbumDetailedWidget(AlbumWidget):
             @param eventbox as Gtk.EventBox
             @param event as Gdk.Event
         """
-        if (Lp.lastfm is not None or Lp.wikipedia is not None) and\
+        if (Lp.lastfm is not None or self.Wikipedia is not None) and\
                     self._album.artist_id != Type.COMPILATIONS:
             popover = InfosPopover(self._album.artist_name)
             popover.set_relative_to(eventbox)
