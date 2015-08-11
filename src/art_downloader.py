@@ -13,8 +13,10 @@
 from gi.repository import GLib, Gio, GdkPixbuf
 
 from _thread import start_new_thread
+import urllib.parse
+import json
 
-from lollypop.define import Lp, ArtSize
+from lollypop.define import Lp, ArtSize, GOOGLE_INC
 
 class ArtDownloader:
 
@@ -34,6 +36,43 @@ class ArtDownloader:
             if not self._in_albums_download:
                 start_new_thread(self._download_albums_art, ())
 
+    def get_google_arts(self, search, start=0):
+        """
+            Get arts on google image corresponding to search
+            @param search words as string
+            @param start page
+            @return [urls as string]
+        """
+        data = None
+        urls = []
+
+        if not Gio.NetworkMonitor.get_default().get_network_available():
+            return []
+
+        try:
+            f = Gio.File.new_for_uri("https://ajax.googleapis.com/"
+                                     "ajax/services/search/images"
+                                     "?&q=%s&v=1.0&start=%s&rsz=%s" %
+                                     (urllib.parse.quote(search),
+                                      start,
+                                      GOOGLE_INC))
+            (status, data, tag) = f.load_contents()
+            if not status:
+                return []
+        except Exception as e:
+            print(e)
+            return []
+
+        decode = json.loads(data.decode('utf-8'))
+        if decode is None:
+            return urls
+        try:
+            for item in decode['responseData']['results']:
+                urls.append(item['url'])
+        except:
+            pass
+
+        return urls
 #######################
 # PRIVATE             #
 #######################
@@ -75,7 +114,32 @@ class ArtDownloader:
             @return pixbuf as GdkPixbuf.Pixbuf
             @tread safe
         """
-        return None
+        pixbuf = None
+        try:
+            album_formated = GLib.uri_escape_string(
+                                album, None, True).replace(' ', '+')
+            s = Gio.File.new_for_uri("https://itunes.apple.com/search"
+                                     "?entity=album&term=%s" % album_formated)
+            (status, data, tag) = s.load_contents()
+            if status:
+                decode = json.loads(data.decode('utf-8'))
+                for item in decode['results']:
+                    if item['artistName'].lower() == artist.lower():
+                        url = item['artworkUrl60'].replace('60x60',
+                                                           '512x512')
+                        s = Gio.File.new_for_uri(url)
+                        (status, data, tag) = s.load_contents()
+                        if status:
+                            stream = Gio.MemoryInputStream.new_from_data(data,
+                                                                         None)
+                            pixbuf = GdkPixbuf.Pixbuf.new_from_stream_at_scale(
+                                        stream, ArtSize.MONSTER,
+                                        ArtSize.MONSTER,
+                                        False,
+                                        None)
+        except Exception as e:
+            print("ArtDownloader::_get_album_art_itunes: %s" % e)
+        return pixbuf
 
     def _get_album_art_lastfm(self, artist, album):
         """

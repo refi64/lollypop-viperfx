@@ -16,15 +16,13 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-from gi.repository import Gtk, Gdk, GObject, GdkPixbuf, Gio
+from gi.repository import Gtk, Gdk, GObject, GdkPixbuf
 
-import json
-import urllib.parse
 from math import pi
 import cairo
 import os
 
-from lollypop.define import Lp, ArtSize, GOOGLE_INC
+from lollypop.define import Lp, ArtSize
 
 
 class BaseArt(GObject.GObject):
@@ -42,44 +40,6 @@ class BaseArt(GObject.GObject):
             Init base art
         """
         GObject.GObject.__init__(self)
-
-    def get_google_arts(self, search, start=0):
-        """
-            Get arts on google image corresponding to search
-            @param search words as string
-            @param start page
-            @return [urls as string]
-        """
-        data = None
-        urls = []
-
-        if not Gio.NetworkMonitor.get_default().get_network_available():
-            return []
-
-        try:
-            f = Gio.File.new_for_uri("https://ajax.googleapis.com/"
-                                     "ajax/services/search/images"
-                                     "?&q=%s&v=1.0&start=%s&rsz=%s" %
-                                     (urllib.parse.quote(search),
-                                      start,
-                                      GOOGLE_INC))
-            (status, data, tag) = f.load_contents()
-            if not status:
-                return []
-        except Exception as e:
-            print(e)
-            return []
-
-        decode = json.loads(data.decode('utf-8'))
-        if decode is None:
-            return urls
-        try:
-            for item in decode['responseData']['results']:
-                urls.append(item['url'])
-        except:
-            pass
-
-        return urls
 
 #######################
 # PRIVATE             #
