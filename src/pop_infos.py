@@ -136,6 +136,8 @@ class ArtistInfos(Gtk.Bin):
             self._scrolled_lyrics = Gtk.ScrolledWindow()
             self._scrolled_lyrics.show()
             self._stack.add(self._scrolled_lyrics)
+        else:
+            self._scrolled_lyrics = None
 
         self._stack.set_visible_child(self._spinner)
         self.add(widget)
