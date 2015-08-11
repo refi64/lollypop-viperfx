@@ -154,14 +154,15 @@ class CollectionScanner(GObject.GObject, ScannerTagReader):
             @param paths as [string], paths to scan
             @thread safe
         """
-        self._albums_popularity = Lp.db.get_albums_popularity()
-        self._albums_mtime = Lp.db.get_albums_mtime()
-        self._tracks_popularity = Lp.db.get_tracks_popularity()
-        self._tracks_ltime = Lp.db.get_tracks_ltime()
         sql = Lp.db.get_cursor()
         mtimes = Lp.tracks.get_mtimes(sql)
         orig_tracks = Lp.tracks.get_paths(sql)
         self._is_empty = len(orig_tracks) == 0
+        if self._is_empty:
+            self._albums_popularity = Lp.db.get_albums_popularity()
+            self._albums_mtime = Lp.db.get_albums_mtime()
+            self._tracks_popularity = Lp.db.get_tracks_popularity()
+            self._tracks_ltime = Lp.db.get_tracks_ltime()
 
         # Add monitors on dirs
         (new_tracks, new_dirs, count) = self._get_objects_for_paths(paths)
