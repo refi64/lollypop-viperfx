@@ -129,8 +129,8 @@ class ArtistInfos(Gtk.Bin):
         if self.Wikipedia is not None or Lp.lastfm is not None:
             self._scrolled_infos = builder.get_object('scrolled')
             self._stack.add(self._scrolled_infos)
-            
-        if self.WebKit is not None:
+
+        if self.WebKit is not None and track_id is not None:
             self._lyrics_btn = builder.get_object('lyrics_btn')
             self._lyrics_btn.show()
             self._scrolled_lyrics = Gtk.ScrolledWindow()
