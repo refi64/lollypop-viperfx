@@ -114,31 +114,35 @@ class LastFM(LastFMNetwork):
         except:
             return (None, None, None)
 
-    def scrobble(self, artist, title, timestamp, duration):
+    def scrobble(self, artist, album, title, timestamp, duration):
         """
             Scrobble track
             @param artist as str
             @param title as str
+            @param album as str
             @param timestamp as int
             @param duration as int
         """
         if Gio.NetworkMonitor.get_default().get_network_available() and\
            self._is_auth and Secret is not None:
             start_new_thread(self._scrobble, (artist,
+                                              album,
                                               title,
                                               timestamp,
                                               duration))
 
-    def now_playing(self, artist, title, duration):
+    def now_playing(self, artist, album, title, duration):
         """
             Now playing track
             @param artist as str
             @param title as str
+            @param album as str
             @param duration as int
         """
         if Gio.NetworkMonitor.get_default().get_network_available() and\
            self._is_auth and Secret is not None:
             start_new_thread(self._now_playing, (artist,
+                                                 album,
                                                  title,
                                                  duration))
 
@@ -220,22 +224,25 @@ class LastFM(LastFMNetwork):
             print("Lastfm::_connect(): %s" % e)
         self._populate_loved_tracks()
 
-    def _scrobble(self, artist, title, timestamp, duration):
+    def _scrobble(self, artist, album, title, timestamp, duration):
         """
             Scrobble track
             @param artist as str
             @param title as str
+            @param album_title as str
             @param timestamp as int
             @param duration as int
             @thread safe
         """
-        debug("LastFM::_scrobble(): %s, %s, %s, %s" % (artist,
+        debug("LastFM::_scrobble(): %s, %s, %s, %s, %s" % (artist,
+                                                       album,
                                                        title,
                                                        timestamp,
                                                        duration))
         try:
             LastFMNetwork.scrobble(self,
                                    artist=artist,
+                                   album=album,
                                    title=title,
                                    timestamp=timestamp)
         except BadAuthenticationError:
@@ -243,21 +250,24 @@ class LastFM(LastFMNetwork):
         except:
             self._connect(self._username, self._password)
 
-    def _now_playing(self, artist, title, duration, first=True):
+    def _now_playing(self, artist, album, title, duration, first=True):
         """
             Now playing track
             @param artist as str
             @param title as str
+            @param album as str
             @param duration as int
             @param first is internal
             @thread safe
         """
-        debug("LastFM::_now_playing(): %s, %s, %s" % (artist,
+        debug("LastFM::_now_playing(): %s, %s, %s, %s" % (artist,
+                                                      album,
                                                       title,
                                                       duration))
         try:
             LastFMNetwork.update_now_playing(self,
                                              artist=artist,
+                                             album=album,
                                              title=title,
                                              duration=duration)
         except BadAuthenticationError:
@@ -267,7 +277,7 @@ class LastFM(LastFMNetwork):
             # now playing sometimes fails
             if first:
                 self._connect(self._username, self._password)
-                self._now_playing(artist, title, duration, False)
+                self._now_playing(artist, album, title, duration, False)
 
     def _populate_loved_tracks(self, force=False):
         """
