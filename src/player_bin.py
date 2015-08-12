@@ -278,7 +278,8 @@ class BinPlayer(ReplayGainPlayer, BasePlayer):
 
     def _on_bus_eos(self, bus, message):
         """
-            On end of stream, stop playing if user ask for
+            On end of stream, stop playing if user ask for,
+            go next otherwise
         """
         debug("Player::_on_bus_eos(): %s" % self.current_track.uri)
         if self.context.next not in [NextContext.NONE,
@@ -288,6 +289,8 @@ class BinPlayer(ReplayGainPlayer, BasePlayer):
             if self.next_track.id is not None:
                 self._load_track(self.next_track)
             self.emit('current-changed')
+        else:
+            self.next()
 
     def _on_stream_about_to_finish(self, playbin):
         """
