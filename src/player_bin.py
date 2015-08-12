@@ -323,7 +323,8 @@ class BinPlayer(ReplayGainPlayer, BasePlayer):
                 Lp.lastfm.scrobble(artist,
                                    finished.title,
                                    int(finished_start_time),
-                                   int(finished.duration))
+                                   int(finished.duration),
+                                   finished.album_name)
 
         sql.close()
 
@@ -346,7 +347,8 @@ class BinPlayer(ReplayGainPlayer, BasePlayer):
                 artist = self.current_track.album_artist
                 Lp.lastfm.now_playing(artist,
                                       self.current_track.title,
-                                      int(self.current_track.duration))
+                                      int(self.current_track.duration),
+                                      self.current_track.album_name)
         if not Lp.scanner.is_locked():
             Lp.tracks.set_listened_at(self.current_track.id, int(time()))
         self._handled_error = None
