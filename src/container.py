@@ -464,9 +464,9 @@ class Container:
             view = DeviceView(device, self._progress,
                               self._stack.get_allocated_width()/2)
             device.view = view
-            view.populate()
+            self._stack.add(view)
             view.show()
-        self._stack.add(view)
+        view.populate()
         self._stack.set_visible_child(view)
         self._stack.clean_old_views(view)
 
