@@ -10,7 +10,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-from gi.repository import Gst, GLib, GstAudio, GstPbutils
+from gi.repository import Gst, GstAudio, GstPbutils
 
 from gettext import gettext as _
 from time import time
@@ -129,7 +129,8 @@ class BinPlayer(ReplayGainPlayer, BasePlayer):
             self.next()
         else:
             self._playbin.seek_simple(Gst.Format.TIME,
-                                      Gst.SeekFlags.FLUSH | Gst.SeekFlags.KEY_UNIT,
+                                      Gst.SeekFlags.FLUSH |
+                                      Gst.SeekFlags.KEY_UNIT,
                                       position * Gst.SECOND)
             self.emit("seeked", position)
 
