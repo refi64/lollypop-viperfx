@@ -321,10 +321,11 @@ class AlbumDetailedWidget(AlbumWidget):
         self._stop = False
         sql = Lp.db.get_cursor()
         for disc in self._discs:
-            mid_tracks = int(0.5+Lp.albums.get_count_for_disc(self._album.id,
-                                                              self._album.genre_id,
-                                                              disc,
-                                                              sql)/2)
+            mid_tracks = int(0.5+Lp.albums.get_count_for_disc(
+                                                    self._album.id,
+                                                    self._album.genre_id,
+                                                    disc,
+                                                    sql)/2)
             tracks = Lp.albums.get_tracks_infos(self._album.id,
                                                 self._album.genre_id,
                                                 disc,
@@ -335,6 +336,7 @@ class AlbumDetailedWidget(AlbumWidget):
             self.populate_list_right(tracks[mid_tracks:],
                                      disc,
                                      mid_tracks + 1)
+        sql.close()
 
     def populate_list_left(self, tracks, disc, pos):
         """
