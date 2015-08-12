@@ -123,10 +123,15 @@ class BinPlayer(ReplayGainPlayer, BasePlayer):
             Seek current track to position
             @param position as seconds
         """
-        self._playbin.seek_simple(Gst.Format.TIME,
-                                  Gst.SeekFlags.FLUSH | Gst.SeekFlags.KEY_UNIT,
-                                  position * Gst.SECOND)
-        self.emit("seeked", position)
+        # Seems gstreamer doesn't like seeking to end, sometimes
+        # doesn't go to next track
+        if position > self.current_track.duration - 1:
+            self.next()
+        else:
+            self._playbin.seek_simple(Gst.Format.TIME,
+                                      Gst.SeekFlags.FLUSH | Gst.SeekFlags.KEY_UNIT,
+                                      position * Gst.SECOND)
+            self.emit("seeked", position)
 
     def get_position_in_track(self):
         """
