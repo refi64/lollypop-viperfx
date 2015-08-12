@@ -130,7 +130,7 @@ class LastFM(LastFMNetwork):
         except:
             return (None, None, None)
 
-    def scrobble(self, artist, title, timestamp, duration, album=None):
+    def scrobble(self, artist, album, title, timestamp, duration):
         """
             Scrobble track
             @param artist as str
@@ -142,12 +142,12 @@ class LastFM(LastFMNetwork):
         if Gio.NetworkMonitor.get_default().get_network_available() and\
            self._is_auth and Secret is not None:
             start_new_thread(self._scrobble, (artist,
+                                              album,
                                               title,
                                               timestamp,
-                                              duration,
-                                              album))
+                                              duration))
 
-    def now_playing(self, artist, title, duration, album=None):
+    def now_playing(self, artist, album, title, duration):
         """
             Now playing track
             @param artist as str
@@ -158,9 +158,9 @@ class LastFM(LastFMNetwork):
         if Gio.NetworkMonitor.get_default().get_network_available() and\
            self._is_auth and Secret is not None:
             start_new_thread(self._now_playing, (artist,
+                                                 album,
                                                  title,
-                                                 duration,
-                                                 album))
+                                                 duration))
 
     def love(self, artist, title):
         """
@@ -240,7 +240,7 @@ class LastFM(LastFMNetwork):
             print("Lastfm::_connect(): %s" % e)
         self._populate_loved_tracks()
 
-    def _scrobble(self, artist, title, timestamp, duration, album=None):
+    def _scrobble(self, artist, album, title, timestamp, duration):
         """
             Scrobble track
             @param artist as str
@@ -251,22 +251,22 @@ class LastFM(LastFMNetwork):
             @thread safe
         """
         debug("LastFM::_scrobble(): %s, %s, %s, %s, %s" % (artist,
+                                                       album,
                                                        title,
                                                        timestamp,
-                                                       duration,
-                                                       album))
+                                                       duration))
         try:
             LastFMNetwork.scrobble(self,
                                    artist=artist,
+                                   album=album,
                                    title=title,
-                                   timestamp=timestamp,
-                                   album=album)
+                                   timestamp=timestamp)
         except BadAuthenticationError:
             pass
         except:
             self._connect(self._username, self._password)
 
-    def _now_playing(self, artist, title, duration, first=True, album=None):
+    def _now_playing(self, artist, album, title, duration, first=True):
         """
             Now playing track
             @param artist as str
@@ -276,15 +276,16 @@ class LastFM(LastFMNetwork):
             @param first is internal
             @thread safe
         """
-        debug("LastFM::_now_playing(): %s, %s, %s" % (artist,
+        debug("LastFM::_now_playing(): %s, %s, %s, %s" % (artist,
+                                                      album,
                                                       title,
                                                       duration))
         try:
             LastFMNetwork.update_now_playing(self,
                                              artist=artist,
+                                             album=album,
                                              title=title,
-                                             duration=duration,
-                                             album=album)
+                                             duration=duration)
         except BadAuthenticationError:
             if Lp.notify is not None:
                 GLib.idle_add(Lp.notify.send, _("Wrong Last.fm credentials"))
@@ -292,7 +293,7 @@ class LastFM(LastFMNetwork):
             # now playing sometimes fails
             if first:
                 self._connect(self._username, self._password)
-                self._now_playing(artist, title, duration, False, album)
+                self._now_playing(artist, album, title, duration, False)
 
     def _download_albums_imgs(self):
         """
