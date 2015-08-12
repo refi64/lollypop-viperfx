@@ -53,11 +53,11 @@ class BinPlayer(ReplayGainPlayer, BasePlayer):
         self._handled_error = None
         self._start_time = 0
 
-    """
-        True if player is playing
-        @return bool
-    """
     def is_playing(self):
+        """
+            True if player is playing
+            @return bool
+        """
         ok, state, pending = self._playbin.get_state(0)
         if ok == Gst.StateChangeReturn.ASYNC:
             return pending == Gst.State.PLAYING
@@ -66,11 +66,11 @@ class BinPlayer(ReplayGainPlayer, BasePlayer):
         else:
             return False
 
-    """
-        Playback status
-        @return Gstreamer state
-    """
     def get_status(self):
+        """
+            Playback status
+            @return Gstreamer state
+        """
         ok, state, pending = self._playbin.get_state(0)
         if ok == Gst.StateChangeReturn.ASYNC:
             state = pending
@@ -78,101 +78,101 @@ class BinPlayer(ReplayGainPlayer, BasePlayer):
             state = Gst.State.NULL
         return state
 
-    """
-        Stop current track, load track id and play it
-        @param track as Track
-    """
     def load(self, track):
+        """
+            Stop current track, load track id and play it
+            @param track as Track
+        """
         self._stop()
         if self._load_track(track):
             self.play()
 
-    """
-        Change player state to PLAYING
-    """
     def play(self):
+        """
+            Change player state to PLAYING
+        """
         self._playbin.set_state(Gst.State.PLAYING)
         self.emit("status-changed")
 
-    """
-        Change player state to PAUSED
-    """
     def pause(self):
+        """
+            Change player state to PAUSED
+        """
         self._playbin.set_state(Gst.State.PAUSED)
         self.emit("status-changed")
 
-    """
-        Change player state to STOPPED
-    """
     def stop(self):
+        """
+            Change player state to STOPPED
+        """
         self._stop()
         self.emit("status-changed")
 
-    """
-        Set PLAYING if PAUSED
-        Set PAUSED if PLAYING
-    """
     def play_pause(self):
+        """
+            Set playing if paused
+            Set paused if playing
+        """
         if self.is_playing():
             self.pause()
         else:
             self.play()
 
-    """
-        Seek current track to position
-        @param position as seconds
-    """
     def seek(self, position):
+        """
+            Seek current track to position
+            @param position as seconds
+        """
         self._playbin.seek_simple(Gst.Format.TIME,
                                   Gst.SeekFlags.FLUSH | Gst.SeekFlags.KEY_UNIT,
                                   position * Gst.SECOND)
         self.emit("seeked", position)
 
-    """
-        Return bin playback position
-        @return position as int
-    """
     def get_position_in_track(self):
+        """
+            Return bin playback position
+            @return position as int
+        """
         position = self._playbin.query_position(Gst.Format.TIME)[1] / 1000
         return position * 60
 
-    """
-        Return player volume rate
-        @return rate as double
-    """
     def get_volume(self):
+        """
+            Return player volume rate
+            @return rate as double
+        """
         return self._playbin.get_volume(GstAudio.StreamVolumeFormat.LINEAR)
 
-    """
-        Set player volume rate
-        @param rate as double
-    """
     def set_volume(self, rate):
+        """
+            Set player volume rate
+            @param rate as double
+        """
         self._playbin.set_volume(GstAudio.StreamVolumeFormat.LINEAR, rate)
         self.emit('volume-changed')
 
-    """
-        Go next track
-    """
     def next(self):
+        """
+            Go next track
+        """
         pass
 
 #######################
 # PRIVATE             #
 #######################
-    """
-        Stop current track (for track change)
-    """
     def _stop(self):
+        """
+            Stop current track (for track change)
+        """
         self._playbin.set_state(Gst.State.NULL)
 
-    """
-        Load track
-        @param track as Track
-        @param sql as sqlite cursor
-        @return False if track not loaded
-    """
     def _load_track(self, track, sql=None):
+        """
+            Load track
+            @param track as Track
+            @param sql as sqlite cursor
+            @return False if track not loaded
+        """
         stop = False
 
         # Stop if needed
@@ -207,12 +207,12 @@ class BinPlayer(ReplayGainPlayer, BasePlayer):
                 return False
         return True
 
-    """
-        Read tags from stream
-        @param bus as Gst.Bus
-        @param message as Gst.Message
-    """
     def _on_bus_message_tag(self, bus, message):
+        """
+            Read tags from stream
+            @param bus as Gst.Bus
+            @param message as Gst.Message
+        """
         if self.current_track.id >= 0 or\
            self.current_track.duration > 0.0:
             return
@@ -249,22 +249,22 @@ class BinPlayer(ReplayGainPlayer, BasePlayer):
             self.current_track.genre_name = reader.get_genres(tags)
         self.emit('current-changed')
 
-    """
-        Set elements for missings plugins
-        @param bus as Gst.Bus
-        @param message as Gst.Message
-    """
     def _on_bus_element(self, bus, message):
+        """
+            Set elements for missings plugins
+            @param bus as Gst.Bus
+            @param message as Gst.Message
+        """
         if GstPbutils.is_missing_plugin_message(message):
             if self._codecs is not None:
                 self._codecs.append(message)
 
-    """
-        Handle first bus error, ignore others
-        @param bus as Gst.Bus
-        @param message as Gst.Message
-    """
     def _on_bus_error(self, bus, message):
+        """
+            Handle first bus error, ignore others
+            @param bus as Gst.Bus
+            @param message as Gst.Message
+        """
         debug("Error playing: %s" % self.current_track.uri)
         if self._codecs.is_missing_codec(message):
             self._codecs.install()
@@ -280,10 +280,10 @@ class BinPlayer(ReplayGainPlayer, BasePlayer):
             self.next()
         return False
 
-    """
-        On end of stream, stop playing if user ask for
-    """
     def _on_bus_eos(self, bus, message):
+        """
+            On end of stream, stop playing if user ask for
+        """
         debug("Player::_on_bus_eos(): %s" % self.current_track.uri)
         if self.context.next not in [NextContext.NONE,
                                      NextContext.START_NEW_ALBUM]:
@@ -296,11 +296,11 @@ class BinPlayer(ReplayGainPlayer, BasePlayer):
             self._playbin.set_state(Gst.State.NULL)
             self._playbin.set_state(Gst.State.PLAYING)
 
-    """
-        When stream is about to finish, switch to next track without gap
-        @param playbin as Gst bin
-    """
     def _on_stream_about_to_finish(self, playbin):
+        """
+            When stream is about to finish, switch to next track without gap
+            @param playbin as Gst bin
+        """
         if self.current_track.id == Type.RADIOS:
             return
         finished = self.current_track
@@ -328,13 +328,13 @@ class BinPlayer(ReplayGainPlayer, BasePlayer):
 
         sql.close()
 
-    """
-        On stream start
-        Emit "current-changed" to notify others components
-        @param bus as Gst.Bus
-        @param message as Gst.Message
-    """
     def _on_stream_start(self, bus, message):
+        """
+            On stream start
+            Emit "current-changed" to notify others components
+            @param bus as Gst.Bus
+            @param message as Gst.Message
+        """
         self._start_time = time()
         debug("Player::_on_stream_start(): %s" % self.current_track.uri)
         if self.current_track.id >= 0:
