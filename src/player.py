@@ -184,6 +184,7 @@ class Player(BinPlayer, QueuePlayer, UserPlaylistPlayer, RadioPlayer,
         ShufflePlayer.set_party(self, party)
         self.set_next()
         self.set_prev()
+        self.emit('current-changed')
 
     def set_prev(self):
         """
