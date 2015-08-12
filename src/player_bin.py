@@ -194,17 +194,13 @@ class BinPlayer(ReplayGainPlayer, BasePlayer):
 
         self.current_track = track
 
-        # uri not preloaded
-        if self.current_track.uri is None:
-            GLib.timeout_add(2000, self.next)
+        try:
+            self._playbin.set_property('uri',
+                                       self.current_track.uri)
+        except Exception as e:  # Gstreamer error
+            print("BinPlayer::_load_track(): ", e)
             return False
-        elif self._playbin.get_property('uri') != self.current_track.uri:
-            try:
-                self._playbin.set_property('uri',
-                                           self.current_track.uri)
-            except Exception as e:  # Gstreamer error
-                print("BinPlayer::_load_track(): ", e)
-                return False
+
         return True
 
     def _on_bus_message_tag(self, bus, message):
@@ -292,9 +288,6 @@ class BinPlayer(ReplayGainPlayer, BasePlayer):
             if self.next_track.id is not None:
                 self._load_track(self.next_track)
             self.emit('current-changed')
-        else:
-            self._playbin.set_state(Gst.State.NULL)
-            self._playbin.set_state(Gst.State.PLAYING)
 
     def _on_stream_about_to_finish(self, playbin):
         """
@@ -352,10 +345,3 @@ class BinPlayer(ReplayGainPlayer, BasePlayer):
         if not Lp.scanner.is_locked():
             Lp.tracks.set_listened_at(self.current_track.id, int(time()))
         self._handled_error = None
-        # Preload next track
-        if self.next_track.uri is not None:
-            try:
-                self._playbin.set_property('uri',
-                                           self.next_track.uri)
-            except Exception as e:  # Gstreamer error
-                print("BinPlayer::_on_stream_start(): ", e)
