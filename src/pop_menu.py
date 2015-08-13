@@ -446,10 +446,27 @@ class EditMenu(BaseMenu):
     def _edit_tag(self, action, variant):
         """
             Run tag editor
+            @param SimpleAction
+            @param GVariant
         """
         album_path = Lp.albums.get_path(self._object_id)
-        GLib.spawn_command_line_async("%s \"%s\"" % (self._tag_editor,
-                                                     album_path))
+        argv = [self._tag_editor, album_path, None]
+        (s, pid, i, o, e) = GLib.spawn_async_with_pipes(
+                                None, argv, None,
+                                GLib.SpawnFlags.SEARCH_PATH|
+                                GLib.SpawnFlags.DO_NOT_REAP_CHILD, None)
+        GLib.child_watch_add(GLib.PRIORITY_DEFAULT_IDLE,
+                             pid,
+                             self._on_exit)
+
+    def _on_exit(self, pid, status):
+        """
+            Update database
+            @param pid as int
+            @param status as int
+        """
+        if status == 0:
+            Lp.window.update_db()
 
 
 class AlbumMenu(Gio.Menu):
