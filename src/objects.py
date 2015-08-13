@@ -19,6 +19,21 @@ from threading import current_thread
 from lollypop.define import Lp, Type
 
 
+class SqlCursor:
+    """
+        Context manager to get the SQL cursor
+    """
+    def __enter__(self):
+        self.sql = None
+        if current_thread() != '_Mainthread':
+            self.sql = Lp.db.get_cursor()
+        return self.sql
+
+    def __exit__(self, type, value, traceback):
+        if self.sql is not None:
+            self.sql.close()
+
+
 class Base:
     """
         Base for album and track objects
@@ -39,12 +54,8 @@ class Base:
             attr_name = "_" + attr
             attr_value = getattr(self, attr_name)
             if attr_value is None and not self.id == Type.RADIOS:
-                sql = None
-                if current_thread() != '_Mainthread':
-                    sql = Lp.db.get_cursor()
-                attr_value = getattr(self.db, "get_" + attr)(self.id, sql)
-                if sql is not None:
-                    sql.close()
+                with SqlCursor() as sql:
+                    attr_value = getattr(self.db, "get_" + attr)(self.id, sql)
                 setattr(self, attr_name, attr_value)
             # Return default value if None
             if attr_value is None:
@@ -124,12 +135,8 @@ class Album(Base):
             @return list of int
         """
         if getattr(self, "_tracks_ids") is None:
-            sql = None
-            if current_thread() != '_Mainthread':
-                sql = Lp.db.get_cursor()
-            self._tracks_ids = self.db.get_tracks(self.id, self.genre_id, sql)
-            if sql is not None:
-                sql.close()
+            with SqlCursor() as sql:
+                self._tracks_ids = self.db.get_tracks(self.id, self.genre_id, sql)
         return self._tracks_ids
 
     @property
@@ -212,12 +219,8 @@ class Track(Base):
             @return str
         """
         if getattr(self, "_album_artist") is None:
-            sql = None
-            if current_thread() != '_Mainthread':
-                sql = Lp.db.get_cursor()
-            self._album_artist = Lp.artists.get_name(self.album_artist_id, sql)
-            if sql is not None:
-                sql.close()
+            with SqlCursor() as sql:
+                self._album_artist = Lp.artists.get_name(self.album_artist_id, sql)
         return self._album_artist
 
     @property
