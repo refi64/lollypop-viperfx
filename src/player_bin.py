@@ -187,7 +187,7 @@ class BinPlayer(ReplayGainPlayer, BasePlayer):
 
         # Stop if album changed
         if self.context.next == NextContext.STOP_ALBUM and\
-           self.current_track.album_id != track.album_id:
+           self.current_track.album.id != track.album.id:
             stop = True
 
         # Stop if album_artist changed

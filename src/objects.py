@@ -80,7 +80,6 @@ class Base:
             self.db.set_popularity(self.id, 0, True)
 
 
-
 class Album(Base):
     """
         Represent an album
@@ -88,7 +87,7 @@ class Album(Base):
     FIELDS = ['name', 'artist_name', 'artist_id', 'year', 'tracks_id']
     DEFAULTS = ['', '', None, '', []]
 
-    def __init__(self, album_id=None, genre_id=None, sql=None, fields=[]):
+    def __init__(self, album_id=None, genre_id=None):
         """
             Init album
             @param album_id as int
@@ -97,6 +96,18 @@ class Album(Base):
         Base.__init__(self, Lp.albums)
         self.id = album_id
         self.genre_id = genre_id
+
+    def set_genre(self, genre_id):
+        """
+            Change current genre to lookup
+            tracks
+
+            @param genre_id as int
+            @return None
+        """
+        self.genre_id = genre_id
+        self._tracks_ids = None
+        self._tracks = None
 
     @property
     def title(self):
@@ -181,10 +192,10 @@ class Track(Base):
     @property
     def album(self):
         """
-            Get track's album name
-            @return str
+            Get track's album
+            @return Album
         """
-        return Album(self.album_id).name
+        return Album(self.album_id)
 
     @property
     def year(self):
@@ -192,7 +203,7 @@ class Track(Base):
             Get track year
             @return str
         """
-        return Album(self.album_id).year
+        return self.album.year
 
     @property
     def album_artist(self):

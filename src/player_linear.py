@@ -10,9 +10,9 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-from lollypop.define import Lp, NextContext
+from lollypop.define import NextContext
 from lollypop.player_base import BasePlayer
-from lollypop.objects import Track
+from lollypop.objects import Track, Album
 
 
 class LinearPlayer(BasePlayer):
@@ -35,30 +35,27 @@ class LinearPlayer(BasePlayer):
         if not self._albums:
             return self.current_track
 
-        track_id = None
+        track = Track()
         if self._albums is not None:
-            tracks = Lp.albums.get_tracks(self.current_track.album_id,
-                                          self.context.genre_id)
-            if self.current_track.id in tracks:
-                new_track_position = tracks.index(self.current_track.id) + 1
+            album = Album(self.current_track.album.id, self.context.genre_id)
+            if self.current_track.id in album.tracks_ids:
+                new_track_position = album.tracks_ids.index(self.current_track.id) + 1
                 # next album
-                if new_track_position >= len(tracks) or\
+                if new_track_position >= len(album.tracks) or\
                    self.context.next == NextContext.START_NEW_ALBUM:
                     if self.context.next == NextContext.START_NEW_ALBUM:
                         self.context.next = NextContext.NONE
-                    pos = self._albums.index(self.current_track.album_id)
+                    pos = self._albums.index(album.id)
                     # we are on last album, go to first
                     if pos + 1 >= len(self._albums):
                         pos = 0
                     else:
                         pos += 1
-                    tracks = Lp.albums.get_tracks(self._albums[pos],
-                                                  self.context.genre_id)
-                    track_id = tracks[0]
+                    track = Album(self._albums[pos], self.context.genre_id).tracks[0]
                 # next track
                 else:
-                    track_id = tracks[new_track_position]
-        return Track(track_id)
+                    track = album.tracks[new_track_position]
+        return track
 
     def prev(self):
         """
@@ -69,23 +66,20 @@ class LinearPlayer(BasePlayer):
         if not self._albums:
             return self.current_track
 
-        track_id = None
+        track = Track()
         if self._albums is not None:
-            tracks = Lp.albums.get_tracks(self.current_track.album_id,
-                                          self.context.genre_id)
-            if self.current_track.id in tracks:
-                new_track_position = tracks.index(self.current_track.id) - 1
+            album = Album(self.current_track.album.id, self.context.genre_id)
+            if self.current_track.id in album.tracks_ids:
+                new_track_position = album.tracks_ids.index(self.current_track.id) - 1
                 # Previous album
                 if new_track_position < 0:
-                    pos = self._albums.index(self.current_track.album_id)
+                    pos = self._albums.index(album.id)
                     if pos - 1 < 0:  # we are on last album, go to first
                         pos = len(self._albums) - 1
                     else:
                         pos -= 1
-                    tracks = Lp.albums.get_tracks(self._albums[pos],
-                                                  self.context.genre_id)
-                    track_id = tracks[len(tracks) - 1]
+                    track = Album(self._albums[pos], self.context.genre_id).tracks[-1]
                 # Previous track
                 else:
-                    track_id = tracks[new_track_position]
-        return Track(track_id)
+                    track = album.tracks[new_track_position]
+        return track

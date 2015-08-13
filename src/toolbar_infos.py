@@ -82,7 +82,7 @@ class ToolbarInfos(Gtk.Bin):
         if art is not None:
             self._cover.set_from_surface(art)
             del art
-            self._cover.set_tooltip_text(player.current_track.album)
+            self._cover.set_tooltip_text(player.current_track.album.name)
             self._cover.show()
         else:
             self._cover.hide()
