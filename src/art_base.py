@@ -56,28 +56,28 @@ class BaseArt(GObject.GObject):
         dark = Gtk.Settings.get_default().get_property(
             "gtk-application-prefer-dark-theme")
         degrees = pi / 180
+        cover = Gdk.cairo_surface_create_from_pixbuf(pixbuf, 0, None)
 
-        width = pixbuf.get_width()
-        height = pixbuf.get_height()
+        # Covers are always squares
+        size = pixbuf.get_width()
 
-        if width < ArtSize.BIG:
+        if size < ArtSize.BIG:
             radius = ArtSize.SMALL_RADIUS
             border = ArtSize.SMALL_BORDER
         else:
             radius = ArtSize.RADIUS
             border = ArtSize.BORDER
 
-        surface_width = width + border * 2
-        surface_height = height + border * 2
+        surface_size = size + border * 2
         surface = cairo.ImageSurface(cairo.FORMAT_ARGB32,
-                                     surface_width, surface_height)
+                                     surface_size, surface_size)
         ctx = cairo.Context(surface)
         ctx.new_sub_path()
-        ctx.arc(surface_width - radius, radius,
+        ctx.arc(surface_size - radius, radius,
                 radius - 0.5, -90 * degrees, 0 * degrees)
-        ctx.arc(surface_width - radius, surface_height - radius,
+        ctx.arc(surface_size - radius, surface_size - radius,
                 radius - 0.5, 0 * degrees, 90 * degrees)
-        ctx.arc(radius, surface_height - radius,
+        ctx.arc(radius, surface_size - radius,
                 radius - 0.5, 90 * degrees, 180 * degrees)
         ctx.arc(radius, radius, radius - 0.5, 180 * degrees, 270 * degrees)
         ctx.close_path()
@@ -87,14 +87,14 @@ class BaseArt(GObject.GObject):
             ctx.set_source_rgb(selected_color.red,
                                selected_color.green,
                                selected_color.blue)
-        elif dark and width > ArtSize.MEDIUM:
+        elif dark and size > ArtSize.MEDIUM:
             ctx.set_source_rgb(1, 1, 1)
         else:
             ctx.set_source_rgb(0, 0, 0)
         ctx.stroke_preserve()
 
         # Fill content for big artwork
-        if width > ArtSize.MEDIUM:
+        if size > ArtSize.MEDIUM:
             if selected:
                 ctx.set_source_rgb(selected_color.red,
                                    selected_color.green,
@@ -105,18 +105,10 @@ class BaseArt(GObject.GObject):
                 ctx.set_source_rgb(1, 1, 1)
             ctx.fill()
 
-        border_pixbuf = Gdk.pixbuf_get_from_surface(surface, 0, 0,
-                                                    surface_width,
-                                                    surface_height)
-        del surface
-        pixbuf.copy_area(0, 0,
-                         width,
-                         height,
-                         border_pixbuf,
-                         border, border)
-        del pixbuf
-        surface = Gdk.cairo_surface_create_from_pixbuf(border_pixbuf, 0, None)
-        del border_pixbuf
+        ctx = cairo.Context(surface)
+        ctx.set_source_surface(cover, border, border)
+        ctx.paint()
+
         return surface
 
     def _get_default_icon(self, size, icon_name):
