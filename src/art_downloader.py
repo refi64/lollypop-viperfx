@@ -213,5 +213,5 @@ class ArtDownloader:
                                     False,
                                     None)
             except Exception as e:
-                print("ArtDownloader::_get_album_art_lasfm: %s" % e)
+                print("ArtDownloader::_get_album_art_lastfm: %s" % e)
         return pixbuf
