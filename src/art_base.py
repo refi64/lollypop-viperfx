@@ -108,7 +108,7 @@ class BaseArt(GObject.GObject):
         ctx = cairo.Context(surface)
         ctx.set_source_surface(cover, border, border)
         ctx.paint()
-
+        del cover
         return surface
 
     def _get_default_icon(self, size, icon_name):
