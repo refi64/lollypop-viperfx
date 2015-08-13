@@ -10,7 +10,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-from gi.repository import Gtk, GLib, Gdk
+from gi.repository import Gtk, GLib, GObject, Gdk
 from cgi import escape
 from gettext import gettext as _
 
@@ -209,6 +209,10 @@ class AlbumDetailedWidget(AlbumWidget):
         Widget with cover and tracks
     """
 
+    __gsignals__ = {
+        'finished': (GObject.SignalFlags.RUN_FIRST, None, ())
+    }
+
     try:
         from lollypop.wikipedia import Wikipedia
     except:
@@ -405,6 +409,10 @@ class AlbumDetailedWidget(AlbumWidget):
         """
         if not tracks or self._stop:
             self._stop = False
+            # Emit finished signal if we are on the last disc for
+            # the right tracks widget
+            if widget == self._tracks_right[self._discs[-1]]:
+                self.emit('finished')
             return
 
         track = tracks.pop(0)

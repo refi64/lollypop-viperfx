@@ -452,8 +452,7 @@ class AlbumsDatabase:
             Get disc numbers
             @param album id as int
             @param genre id as int
-            @param disc number as int
-            @return count as int
+            @return [disc as int]
         """
         if not sql:
             sql = Lp.sql

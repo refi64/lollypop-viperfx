@@ -12,6 +12,8 @@
 
 from gi.repository import Gtk, GLib, Gdk
 
+from _thread import start_new_thread
+
 from lollypop.view import View
 from lollypop.pop_infos import InfosPopover
 from lollypop.view_container import ViewContainer
@@ -65,7 +67,7 @@ class ArtistView(View):
         """
             Populate the view
         """
-        self._add_albums(albums, self._genre_id)
+        self._add_albums(albums)
 
 
 #######################
@@ -78,24 +80,31 @@ class ArtistView(View):
         """
         return self._albumbox.get_children()
 
-    def _add_albums(self, albums, genre_id):
+    def _add_albums(self, albums):
         """
             Pop an album and add it to the view,
             repeat operation until album list is empty
             @param [album ids as int]
-            @param genre id as int
         """
         size_group = Gtk.SizeGroup(mode=Gtk.SizeGroupMode.HORIZONTAL)
+        widget = AlbumDetailedWidget(albums.pop(0),
+                                     self._genre_id,
+                                     self._pop_allowed,
+                                     False,
+                                     size_group)
+        widget.connect('finished', self._on_album_finished, albums)
+        widget.show()
+        start_new_thread(widget.populate, ())
+        self._albumbox.add(widget)
+
+    def _on_album_finished(self, album, albums):
+        """
+            Add another album
+            @param album as AlbumDetailedWidget
+            @param [album ids as int]
+        """
         if albums and not self._stop:
-            widget = AlbumDetailedWidget(albums.pop(0),
-                                         genre_id,
-                                         self._pop_allowed,
-                                         False,
-                                         size_group)
-            widget.show()
-            widget.populate()
-            self._albumbox.add(widget)
-            GLib.idle_add(self._add_albums, albums, genre_id)
+            self._add_albums(albums)
         else:
             self._stop = False
 
