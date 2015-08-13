@@ -12,7 +12,7 @@
 
 from lollypop.objects import Track
 
- 
+
 class QueuePlayer:
     """
         Manage queue
@@ -94,7 +94,7 @@ class QueuePlayer:
             @param track id as int
             @return position as int
         """
-        return self._queue.index(track_id)+1
+        return self._queue.index(track_id) + 1
 
     def next(self):
         """

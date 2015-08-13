@@ -19,6 +19,21 @@ from threading import current_thread
 from lollypop.define import Lp, Type
 
 
+class SqlCursor:
+    """
+        Context manager to get the SQL cursor
+    """
+    def __enter__(self):
+        self.sql = None
+        if current_thread() != '_Mainthread':
+            self.sql = Lp.db.get_cursor()
+        return self.sql
+
+    def __exit__(self, type, value, traceback):
+        if self.sql is not None:
+            self.sql.close()
+
+
 class Base:
     """
         Base for album and track objects
@@ -39,12 +54,8 @@ class Base:
             attr_name = "_" + attr
             attr_value = getattr(self, attr_name)
             if attr_value is None and not self.id == Type.RADIOS:
-                sql = None
-                if current_thread() != '_Mainthread':
-                    sql = Lp.db.get_cursor()
-                attr_value = getattr(self.db, "get_" + attr)(self.id, sql)
-                if sql is not None:
-                    sql.close()
+                with SqlCursor() as sql:
+                    attr_value = getattr(self.db, "get_" + attr)(self.id, sql)
                 setattr(self, attr_name, attr_value)
             # Return default value if None
             if attr_value is None:
@@ -80,7 +91,6 @@ class Base:
             self.db.set_popularity(self.id, 0, True)
 
 
-
 class Album(Base):
     """
         Represent an album
@@ -88,7 +98,7 @@ class Album(Base):
     FIELDS = ['name', 'artist_name', 'artist_id', 'year', 'tracks_id']
     DEFAULTS = ['', '', None, '', []]
 
-    def __init__(self, album_id=None, genre_id=None, sql=None, fields=[]):
+    def __init__(self, album_id=None, genre_id=None):
         """
             Init album
             @param album_id as int
@@ -97,6 +107,18 @@ class Album(Base):
         Base.__init__(self, Lp.albums)
         self.id = album_id
         self.genre_id = genre_id
+
+    def set_genre(self, genre_id):
+        """
+            Change current genre to lookup
+            tracks
+
+            @param genre_id as int
+            @return None
+        """
+        self.genre_id = genre_id
+        self._tracks_ids = None
+        self._tracks = None
 
     @property
     def title(self):
@@ -113,12 +135,8 @@ class Album(Base):
             @return list of int
         """
         if getattr(self, "_tracks_ids") is None:
-            sql = None
-            if current_thread() != '_Mainthread':
-                sql = Lp.db.get_cursor()
-            self._tracks_ids = self.db.get_tracks(self.id, self.genre_id, sql)
-            if sql is not None:
-                sql.close()
+            with SqlCursor() as sql:
+                self._tracks_ids = self.db.get_tracks(self.id, self.genre_id, sql)
         return self._tracks_ids
 
     @property
@@ -181,10 +199,10 @@ class Track(Base):
     @property
     def album(self):
         """
-            Get track's album name
-            @return str
+            Get track's album
+            @return Album
         """
-        return Album(self.album_id).name
+        return Album(self.album_id)
 
     @property
     def year(self):
@@ -192,7 +210,7 @@ class Track(Base):
             Get track year
             @return str
         """
-        return Album(self.album_id).year
+        return self.album.year
 
     @property
     def album_artist(self):
@@ -201,12 +219,8 @@ class Track(Base):
             @return str
         """
         if getattr(self, "_album_artist") is None:
-            sql = None
-            if current_thread() != '_Mainthread':
-                sql = Lp.db.get_cursor()
-            self._album_artist = Lp.artists.get_name(self.album_artist_id, sql)
-            if sql is not None:
-                sql.close()
+            with SqlCursor() as sql:
+                self._album_artist = Lp.artists.get_name(self.album_artist_id, sql)
         return self._album_artist
 
     @property
