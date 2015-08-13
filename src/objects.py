@@ -42,9 +42,9 @@ class Base:
         self.db = db
 
     def __dir__(self, *args, **kwargs):
-    """
-        Concatenate base class's fields with child class's fields
-    """
+        """
+            Concatenate base class's fields with child class's fields
+        """
         return super(Base, self).__dir__(*args, **kwargs) + self.FIELDS
 
     def __getattr__(self, attr):
