@@ -89,7 +89,7 @@ class NotificationManager:
                 player.current_track.artist, ArtSize.BIG)
         else:
             cover_path = Lp.art.get_album_cache_path(
-                player.current_track.album_id, ArtSize.BIG)
+                player.current_track.album.id, ArtSize.BIG)
         if cover_path is not None:
             self._notification.set_hint('image-path',
                                         GLib.Variant('s', cover_path))
@@ -97,7 +97,7 @@ class NotificationManager:
             self._notification.set_hint('image-path',
                                         GLib.Variant('s', ''))
 
-        if player.current_track.album == '':
+        if player.current_track.album.name == '':
             self._notification.update(
                 player.current_track.title,
                 # TRANSLATORS: by refers to the artist,
@@ -111,7 +111,7 @@ class NotificationManager:
                 # from to the album
                 _("by %s, from %s") %
                 ('<b>' + player.current_track.artist + '</b>',
-                 '<i>' + player.current_track.album + '</i>'),
+                 '<i>' + player.current_track.album.name + '</i>'),
                 'lollypop')
         try:
             self._notification.show()
