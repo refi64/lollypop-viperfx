@@ -29,12 +29,12 @@ class AlbumWidget(Gtk.Bin):
         Base album widget
     """
 
-    def __init__(self, album_id):
+    def __init__(self, album_id, genre_id=None):
         """
             Init widget
         """
         Gtk.Bin.__init__(self)
-        self._album = Album(album_id)
+        self._album = Album(album_id, genre_id)
         self._selected = None
         self._stop = False
         self._cover = None
@@ -44,13 +44,12 @@ class AlbumWidget(Gtk.Bin):
             Set cover for album if state changed
             @param force as bool
         """
-        selected = self._album.id == Lp.player.current_track.album_id
+        selected = self._album.id == Lp.player.current_track.album.id
         if self._cover and (selected != self._selected or force):
             self._selected = selected
-            surface = Lp.art.get_album(
-                        self._album.id,
-                        ArtSize.BIG*self._cover.get_scale_factor(),
-                        selected)
+            surface = Lp.art.get_album(self._album.id,
+                                       ArtSize.BIG * self._cover.get_scale_factor(),
+                                       selected)
             self._cover.set_from_surface(surface)
             del surface
 
@@ -60,11 +59,10 @@ class AlbumWidget(Gtk.Bin):
             @param album id as int
         """
         if self._cover and self._album.id == album_id:
-            self._selected = self._album.id == Lp.player.current_track.album_id
-            surface = Lp.art.get_album(
-                        self._album.id,
-                        ArtSize.BIG*self._cover.get_scale_factor(),
-                        self._selected)
+            self._selected = self._album.id == Lp.player.current_track.album.id
+            surface = Lp.art.get_album(self._album.id,
+                                       ArtSize.BIG * self._cover.get_scale_factor(),
+                                       self._selected)
             self._cover.set_from_surface(surface)
             del surface
 
@@ -137,7 +135,6 @@ class AlbumSimpleWidget(AlbumWidget):
         """
         AlbumWidget.__init__(self, album_id)
         self._eventbox = None
-        self._album = Album(album_id)
 
         builder = Gtk.Builder()
         builder.add_from_resource('/org/gnome/Lollypop/AlbumSimpleWidget.ui')
@@ -148,7 +145,7 @@ class AlbumSimpleWidget(AlbumWidget):
         self._title_label = builder.get_object('title')
         self._title_label.set_text(self._album.name)
         self._artist_label = builder.get_object('artist')
-        self._artist_label.set_text(Lp.albums.get_artist_name(album_id))
+        self._artist_label.set_text(self._album.artist_name)
         self.add(widget)
         self.set_cover()
         self.set_property('halign', Gtk.Align.START)
@@ -228,9 +225,7 @@ class AlbumDetailedWidget(AlbumWidget):
             @param scrolled as bool
             @param size group as Gtk.SizeGroup
         """
-        AlbumWidget.__init__(self, album_id)
-
-        self._album = Album(album_id, genre_id)
+        AlbumWidget.__init__(self, album_id, genre_id=genre_id)
 
         builder = Gtk.Builder()
         if scrolled:
@@ -250,7 +245,7 @@ class AlbumDetailedWidget(AlbumWidget):
             builder.get_object('artist').show()
 
         grid = builder.get_object('tracks')
-        self._discs = Lp.albums.get_discs(album_id, genre_id)
+        self._discs = self._album.discs
         self._tracks_left = {}
         self._tracks_right = {}
         show_label = len(self._discs) > 1
@@ -292,9 +287,8 @@ class AlbumDetailedWidget(AlbumWidget):
         self._cover = builder.get_object('cover')
         self.set_cover()
 
-        self._title_label = Lp.albums.get_name(album_id)
-        builder.get_object('title').set_label(self._title_label)
-        builder.get_object('year').set_label(Lp.albums.get_year(album_id))
+        builder.get_object('title').set_label(self._album.name)
+        builder.get_object('year').set_label(self._album.year)
         self.add(builder.get_object('AlbumDetailedWidget'))
 
         if pop_allowed:
@@ -325,11 +319,10 @@ class AlbumDetailedWidget(AlbumWidget):
         self._stop = False
         sql = Lp.db.get_cursor()
         for disc in self._discs:
-            mid_tracks = int(0.5+Lp.albums.get_count_for_disc(
-                                                    self._album.id,
-                                                    self._album.genre_id,
-                                                    disc,
-                                                    sql)/2)
+            mid_tracks = int(0.5 + Lp.albums.get_count_for_disc(self._album.id,
+                                                                self._album.genre_id,
+                                                                disc,
+                                                                sql) / 2)
             tracks = Lp.albums.get_tracks_infos(self._album.id,
                                                 self._album.genre_id,
                                                 disc,
@@ -449,7 +442,7 @@ class AlbumDetailedWidget(AlbumWidget):
                          length,
                          pos)
 
-        GLib.idle_add(self._add_tracks, tracks, widget, i+1)
+        GLib.idle_add(self._add_tracks, tracks, widget, i + 1)
 
     def _on_activated(self, widget, track_id):
         """
@@ -492,7 +485,7 @@ class AlbumDetailedWidget(AlbumWidget):
             @param eventbox as Gtk.EventBox
         """
         if (Lp.lastfm is not None or self.Wikipedia is not None) and\
-                    self._album.artist_id != Type.COMPILATIONS:
+                self._album.artist_id != Type.COMPILATIONS:
             eventbox.get_window().set_cursor(Gdk.Cursor(Gdk.CursorType.HAND1))
 
     def _on_label_button_release(self, eventbox, event):
@@ -502,7 +495,7 @@ class AlbumDetailedWidget(AlbumWidget):
             @param event as Gdk.Event
         """
         if (Lp.lastfm is not None or self.Wikipedia is not None) and\
-                    self._album.artist_id != Type.COMPILATIONS:
+                self._album.artist_id != Type.COMPILATIONS:
             popover = InfosPopover(self._album.artist_name)
             popover.set_relative_to(eventbox)
             popover.populate()
