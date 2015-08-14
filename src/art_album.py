@@ -88,32 +88,17 @@ class AlbumArt(BaseArt, ArtDownloader, TagReader):
         for path in paths:
             if os.path.exists(path):
                 return path
+        return self.get_locally_available_cover(album)
 
+    def get_locally_available_cover(self, album):
+        """
+            Get first locally available cover for album
+            @param album as Album
+            @return path or None
+        """
         all_paths = [os.path.join(album.path, f) for f in os.listdir(album.path)]
-        try:
-            return next(filter(lambda p: p.lower().endswith(self._MIMES), all_paths))
-        except StopIteration:
-            pass
-
-    def get_locally_available_covers(self, album_id, sql=None):
-        """
-            Get locally available covers for album
-            Ignore favorite cover
-            @param album_id as int
-            @return [uri]
-        """
-        album_path = Lp.albums.get_path(album_id, sql)
-        files = []
-        for file in os.listdir(album_path):
-            lowername = file.lower()
-            supported = False
-            for mime in self._MIMES:
-                if lowername.endswith(mime):
-                    supported = True
-                    break
-            if (supported and file != self._favorite):
-                files.append("%s/%s" % (album_path, file))
-        return files
+        for path in filter(lambda p: p.lower().endswith(self._MIMES), all_paths):
+            return path
 
     def get_cover_for_uri(self, uri, size, selected):
         """
@@ -141,7 +126,8 @@ class AlbumArt(BaseArt, ArtDownloader, TagReader):
             @param selected as bool
             @return cairo surface
         """
-        filename = self._get_album_cache_name(album_id)
+        album = Album(album_id)
+        filename = self._get_album_cache_name(album.id)
         cache_path_jpg = "%s/%s_%s.jpg" % (self._CACHE_PATH, filename, size)
         pixbuf = None
 
@@ -162,15 +148,13 @@ class AlbumArt(BaseArt, ArtDownloader, TagReader):
                 # Try to get from tags
                 else:
                     try:
-                        tracks = Lp.albums.get_tracks(album_id, None)
-                        if tracks:
-                            filepath = Lp.tracks.get_path(tracks[0])
-                            pixbuf = self.pixbuf_from_tags(filepath, size)
+                        if album.tracks:
+                            pixbuf = self.pixbuf_from_tags(album.tracks[0].path, size)
                     except Exception as e:
                         pass
                 # No cover, use default one
                 if pixbuf is None:
-                    self.download_album_art(album_id)
+                    self.download_album_art(album.id)
                     pixbuf = self._get_default_icon(size,
                                                     'folder-music-symbolic')
                 else:
@@ -217,19 +201,15 @@ class AlbumArt(BaseArt, ArtDownloader, TagReader):
             @param sql as sqlite cursor
             @thread safe
         """
-        album_path = Lp.albums.get_path(album_id, sql)
-        path_count = Lp.albums.get_path_count(album_path, sql)
-        album_name = Lp.albums.get_name(album_id, sql)
-        artist_name = Lp.albums.get_artist_name(album_id, sql)
+        album = Album(album_id)
+        path_count = Lp.albums.get_path_count(album.path, sql)
         # Many albums with same path, suffix with artist_album name
         if path_count > 1:
-            artpath = album_path + "/" +\
-                artist_name + "_" +\
-                album_name + ".jpg"
-            if os.path.exists(album_path+"/"+self._favorite):
-                os.remove(album_path+"/"+self._favorite)
+            artpath = os.path.join(album.path, "{}_{}.jpg".format(album.artist_name, album.name))
+            if os.path.exists(os.path.join(album.path, self._favorite)):
+                os.remove(os.path.join(album.path, self._favorite))
         else:
-            artpath = album_path + "/" + self._favorite
+            artpath = os.path.join(album.path, self._favorite)
         return artpath
 
     def announce_cover_update(self, album_id):
@@ -288,6 +268,6 @@ class AlbumArt(BaseArt, ArtDownloader, TagReader):
             @param album id as int
             @param sql as sqlite cursor
         """
-        path = Lp.albums.get_name(album_id, sql) + "_" + \
-            Lp.albums.get_artist_name(album_id, sql)
+        album = Album(album_id)
+        path = album.name + "_" + album.artist_name
         return path[0:240].replace("/", "_")
