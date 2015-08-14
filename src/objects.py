@@ -98,8 +98,8 @@ class Album(Base):
     """
         Represent an album
     """
-    FIELDS = ['name', 'artist_name', 'artist_id', 'year']
-    DEFAULTS = ['', '', None, '', []]
+    FIELDS = ['name', 'artist_name', 'artist_id', 'year', 'path']
+    DEFAULTS = ['', '', None, '', '']
 
     def __init__(self, album_id=None, genre_id=None):
         """

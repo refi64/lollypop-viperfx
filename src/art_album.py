@@ -19,6 +19,7 @@ from lollypop.art_base import BaseArt
 from lollypop.art_downloader import ArtDownloader
 from lollypop.tagreader import TagReader
 from lollypop.define import Lp
+from lollypop.objects import Album
 
 
 class AlbumArt(BaseArt, ArtDownloader, TagReader):
@@ -26,7 +27,7 @@ class AlbumArt(BaseArt, ArtDownloader, TagReader):
          Manager album artwork
     """
 
-    _MIMES = ["jpeg", "jpg", "png", "gif"]
+    _MIMES = ("jpeg", "jpg", "png", "gif")
 
     def __init__(self):
         """
@@ -71,38 +72,28 @@ class AlbumArt(BaseArt, ArtDownloader, TagReader):
             Look for covers in dir:
             - favorite from settings first
             - Artist_Album.jpg then
-            - Any image else
-            any supported image otherwise
+            - Any any supported image otherwise
             @param album id as int
             @return cover file path as string
         """
         if album_id is None:
             return None
-        album_path = Lp.albums.get_path(album_id, sql)
-        album_name = Lp.albums.get_name(album_id, sql)
-        artist_name = Lp.albums.get_artist_name(album_id, sql)
-        try:
-            if os.path.exists(album_path + "/" + self._favorite):
-                return album_path + "/" + self._favorite
+
+        album = Album(album_id)
+        paths = [
+            os.path.join(album.path, self._favorite),
             # Used when having muliple albums in same folder
-            elif os.path.exists(album_path + "/" + artist_name +
-                                "_" + album_name + ".jpg"):
-                return album_path + "/" +\
-                    artist_name + "_" + album_name + ".jpg"
+            os.path.join(album.path, "{}_{}.jpg".format(album.artist_name, album.name))
+        ]
+        for path in paths:
+            if os.path.exists(path):
+                return path
 
-            for file in os.listdir(album_path):
-                lowername = file.lower()
-                supported = False
-                for mime in self._MIMES:
-                    if lowername.endswith(mime):
-                        supported = True
-                        break
-                if (supported):
-                    return "%s/%s" % (album_path, file)
-
-            return None
-        except Exception as e:
-            print("Art::get_album_art_path(): %s" % e)
+        all_paths = [os.path.join(album.path, f) for f in os.listdir(album.path)]
+        try:
+            return next(filter(lambda p: p.lower().endswith(self._MIMES), all_paths))
+        except StopIteration:
+            pass
 
     def get_locally_available_covers(self, album_id, sql=None):
         """
