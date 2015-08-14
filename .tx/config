@@ -21,6 +21,8 @@ trans.de = po/de.po
 trans.es = po/es.po
 trans.pl = po/pl.po
 trans.sv = po/sv.po
+trans.tr_TR = po/tr_TR.po
+trans.tr = po/tr.po
 type = PO
 
 [lollypop.help]
@@ -44,5 +46,7 @@ trans.de = help/de/de.po
 trans.es = help/es/es.po
 trans.pl = help/pl/pl.po
 trans.sv = help/sv/sv.po
+trans.tr_TR = po/tr_TR.po
+trans.tr = po/tr.po
 type = PO
 

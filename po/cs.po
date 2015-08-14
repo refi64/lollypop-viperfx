@@ -9,10 +9,10 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lollypop\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-07-07 13:19+0200\n"
-"PO-Revision-Date: 2015-07-07 20:01+0000\n"
-"Last-Translator: fri\n"
-"Language-Team: Czech (http://www.transifex.com/projects/p/lollypop/language/cs/)\n"
+"POT-Creation-Date: 2015-08-10 13:55+0200\n"
+"PO-Revision-Date: 2015-08-10 12:02+0000\n"
+"Last-Translator: Cédric Bellegarde <web@adishatz.org>\n"
+"Language-Team: Czech (http://www.transifex.com/gnumdk/lollypop/language/cs/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -108,7 +108,7 @@ msgstr "Použít tmavý motiv GTK"
 msgid "Disable the use client side window decorations (headerbar)"
 msgstr "Zakázat používání okenních dekorací na straně klienta (hlavička)"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:23 ../data/SettingsDialog.ui.h:6
+#: ../data/org.gnome.Lollypop.gschema.xml.h:23 ../data/SettingsDialog.ui.h:9
 msgid "Show compilations in albums view"
 msgstr "Ukázat kompilace v pohledu na alba"
 
@@ -167,269 +167,338 @@ msgid "Play and organize your music collection"
 msgstr "Přehrávejte a pořádejte svoji hudební sbírku"
 
 #: ../data/lollypop.appdata.xml.in.h:3
-msgid "Music player for the GNOME desktop"
-msgstr "Přehrávač hudby pro pracovní prostředí GNOME"
+msgid "Lollypop is a new GNOME music playing application."
+msgstr "Lollypop je nový přehrávač hudby pro GNOME."
 
-#: ../src/application.py:27
+#: ../data/lollypop.appdata.xml.in.h:4
+msgid "It provides:"
+msgstr "Poskytuje:"
+
+#: ../data/lollypop.appdata.xml.in.h:5
+msgid "mp3/4, ogg and flac playback"
+msgstr "Přehrávání MP3/MP4, OGG a FLAC"
+
+#: ../data/lollypop.appdata.xml.in.h:6
+msgid "Genre/Cover browsing"
+msgstr "Procházení podle žánrů/obalů"
+
+#: ../data/lollypop.appdata.xml.in.h:7
+msgid "Genre/Artist/Cover browsing"
+msgstr "Procházení podle žánrů/umělců/obalů"
+
+#: ../data/lollypop.appdata.xml.in.h:8 ../data/ToolbarEnd.ui.h:9
+msgid "Search"
+msgstr "Hledat"
+
+#: ../data/lollypop.appdata.xml.in.h:9 ../src/pop_menu.py:467
+#: ../src/pop_menu.py:487 ../data/ToolbarEnd.ui.h:10
+msgid "Queue"
+msgstr "Řada"
+
+#: ../data/lollypop.appdata.xml.in.h:10 ../data/SettingsDialog.ui.h:16
+#: ../data/ToolbarEnd.ui.h:8
+msgid "Party mode"
+msgstr "Večírkový režim"
+
+#: ../data/lollypop.appdata.xml.in.h:11
+msgid "Replay gain"
+msgstr "Vyrovnání hlasitosti skladeb"
+
+#: ../data/lollypop.appdata.xml.in.h:12
+msgid "Cover art downloader"
+msgstr "Stahování obalů alb"
+
+#: ../data/lollypop.appdata.xml.in.h:13
+msgid "Context artist view"
+msgstr "Zobrazení údájů vztahujících se k umělci"
+
+#: ../data/lollypop.appdata.xml.in.h:14
+msgid "MTP sync"
+msgstr "Seřizování MTP"
+
+#: ../data/lollypop.appdata.xml.in.h:15
+msgid "Fullscreen view"
+msgstr "Zobrazení na celou obrazovku"
+
+#: ../data/lollypop.appdata.xml.in.h:16
+msgid "Radios support"
+msgstr "Podporu rádií"
+
+#: ../data/lollypop.appdata.xml.in.h:17
+msgid "Last.fm support"
+msgstr "Podporu Last.fm"
+
+#: ../data/lollypop.appdata.xml.in.h:18
+msgid "Auto install codecs"
+msgstr "Automatickou instalaci kodeků"
+
+#: ../data/lollypop.appdata.xml.in.h:19
+msgid "HiDPI support"
+msgstr "Podporu HiDPI"
+
+#: ../data/lollypop.appdata.xml.in.h:20
+msgid "Tunein support"
+msgstr "Podporu Tunein"
+
+#: ../src/application.py:25
 msgid ""
 "    - Scrobbler disabled\n"
 "    - Auto cover download disabled\n"
 "    - Artist informations disabled"
 msgstr "    - Odesílání informací o přehrávaných skladbách zakázáno\n    - Automatické stahování obalů zakázáno\n    - Informace o umělcích zakázány"
 
-#: ../src/application.py:38
-msgid "Advanced artist informations disabled"
-msgstr "Rozšířené informace o umělci zakázány"
-
-#: ../src/application.py:335
+#: ../src/application.py:339
 msgid "Lollypop: You need to install yelp."
 msgstr "Lollypop: Je potřeba nainstalovat yelp."
 
-#: ../src/codecs.py:54
+#: ../src/codecs.py:55
 msgid "Restart lollypop after installing codecs"
 msgstr "Spustit lollypop po nainstalování kodeků znovu"
 
-#: ../src/collectionscanner.py:63
+#: ../src/collectionscanner.py:66
 msgid "Your music is updating"
 msgstr "Vaše hudba se aktualizuje"
 
-#: ../src/container.py:317
+#: ../src/container.py:323
 msgid "Popular albums"
 msgstr "Oblíbená alba"
 
-#: ../src/container.py:318
+#: ../src/container.py:324
 msgid "Recently added albums"
 msgstr "Nedávno přidaná alba"
 
-#: ../src/container.py:319
+#: ../src/container.py:325
 msgid "Random albums"
 msgstr "Náhodná alba"
 
-#: ../src/container.py:320 ../src/pop_menu.py:397 ../src/pop_menu.py:452
-#: ../src/pop_menu.py:469
+#: ../src/container.py:326 ../src/pop_menu.py:409 ../src/pop_menu.py:469
+#: ../src/pop_menu.py:489
 msgid "Playlists"
 msgstr "Seznamy skladeb"
 
-#: ../src/container.py:321
+#: ../src/container.py:327
 msgid "Radios"
 msgstr "Rádia"
 
-#: ../src/container.py:323
+#: ../src/container.py:329
 msgid "All artists"
 msgstr "Všichni umělci"
 
-#: ../src/container.py:325
+#: ../src/container.py:331
 msgid "All albums"
 msgstr "Všechna alba"
 
-#: ../src/container.py:370
+#: ../src/container.py:376
 msgid "Compilations"
 msgstr "Kompilace"
 
-#: ../src/container.py:386
+#: ../src/container.py:392
 msgid "Popular tracks"
 msgstr "Oblíbené skladby"
 
-#: ../src/container.py:387
+#: ../src/container.py:393
 msgid "Recently played"
 msgstr "Nedávno hráno"
 
-#: ../src/container.py:388
+#: ../src/container.py:394
 msgid "Never played"
 msgstr "Nikdy nehráno"
 
-#: ../src/container.py:389
+#: ../src/container.py:395
 msgid "Random tracks"
 msgstr "Náhodné skladby"
 
-#: ../src/database_albums.py:234 ../src/database_artists.py:71
-#: ../src/database_genres.py:66 ../src/database_tracks.py:204
-#: ../src/tagreader.py:79 ../src/tagreader.py:98 ../src/tagreader.py:123
-#: ../src/tagreader.py:138
+#: ../src/database_albums.py:238 ../src/database_artists.py:77
+#: ../src/database_genres.py:72 ../src/database_tracks.py:206
+#: ../src/tagreader.py:84 ../src/tagreader.py:103 ../src/tagreader.py:128
+#: ../src/tagreader.py:143
 msgid "Unknown"
 msgstr "Neznámý"
 
-#: ../src/database_albums.py:251
+#: ../src/database_albums.py:255
 msgid "Compilation"
 msgstr "Kompilace"
 
-#: ../src/database_artists.py:63
+#: ../src/database_artists.py:69
 msgid "Many artists"
 msgstr "Mnoho umělců"
 
-#: ../src/fullscreen.py:84 ../src/fullscreen.py:271
-#: ../src/toolbar_playback.py:77 ../src/toolbar_playback.py:110
+#: ../src/fullscreen.py:85 ../src/fullscreen.py:272
+#: ../src/toolbar_playback.py:80 ../src/toolbar_playback.py:113
 msgid "Pause"
 msgstr "Pozastavit"
 
-#: ../src/fullscreen.py:275 ../src/pop_tunein.py:147
-#: ../src/toolbar_playback.py:79 ../src/toolbar_playback.py:107
+#: ../src/fullscreen.py:276 ../src/pop_tunein.py:150
+#: ../src/toolbar_playback.py:82 ../src/toolbar_playback.py:110
 #: ../data/ToolbarPlayback.ui.h:2
 msgid "Play"
 msgstr "Přehrát"
 
-#: ../src/lastfm.py:25
+#: ../src/lastfm.py:23
 msgid "Last.fm authentication disabled"
 msgstr "Ověření Last.fm zakázáno"
 
-#: ../src/lastfm.py:288
+#: ../src/lastfm.py:281
 msgid "Wrong Last.fm credentials"
 msgstr "Nesprávné přihlašovací údaje k Last.fm"
 
-#: ../src/notification.py:64 ../data/ToolbarPlayback.ui.h:1
+#: ../src/notification.py:66 ../data/ToolbarPlayback.ui.h:1
 msgid "Previous"
 msgstr "Předchozí"
 
-#: ../src/notification.py:68 ../data/ToolbarPlayback.ui.h:3
+#: ../src/notification.py:70 ../data/ToolbarPlayback.ui.h:3
 msgid "Next"
 msgstr "Další"
 
 #. TRANSLATORS: by refers to the artist,
-#: ../src/notification.py:102
+#: ../src/notification.py:104
 #, python-format
 msgid "by %s"
 msgstr "od %s"
 
 #. TRANSLATORS: by refers to the artist,
 #. from to the album
-#: ../src/notification.py:110
+#: ../src/notification.py:112
 #, python-format
 msgid "by %s, from %s"
 msgstr "od %s, na %s"
 
-#: ../src/player_bin.py:265
+#: ../src/player_bin.py:277
 #, python-format
 msgid "File doesn't exist: %s"
 msgstr "Soubor neexistuje: %s"
 
-#: ../src/player_radio.py:40
-msgid "Radio"
-msgstr "Rádio"
-
-#: ../src/playlists.py:36
+#: ../src/playlists.py:40
 msgid "Loved tracks"
 msgstr "Oblíbené skladby"
 
-#: ../src/pop_covers.py:58 ../src/pop_infos.py:92 ../src/pop_infos.py:256
-#: ../src/pop_tunein.py:81 ../data/RadioPopover.ui.h:3
+#: ../src/pop_covers.py:59 ../src/pop_tunein.py:83 ../data/RadioPopover.ui.h:3
 msgid "Please wait..."
 msgstr "Počkejte, prosím..."
 
-#: ../src/pop_covers.py:147
+#: ../src/pop_covers.py:148
 msgid "No cover found..."
 msgstr "Nenalezen žádný obal..."
 
-#: ../src/pop_covers.py:167
+#: ../src/pop_covers.py:168
 msgid "Select a cover art for this album"
 msgstr "Vybrat obal pro toto album"
 
-#: ../src/pop_infos.py:163 ../src/pop_infos.py:167
+#: ../src/pop_infos.py:80
+msgid "Advanced artist informations disabled"
+msgstr "Rozšířené informace o umělci zakázány"
+
+#: ../src/pop_infos.py:88
+msgid "Wikia support disabled"
+msgstr "Podpora pro Wikii zakázána"
+
+#: ../src/pop_infos.py:216 ../src/pop_infos.py:220 ../src/pop_infos.py:342
 msgid "Wikipedia"
 msgstr "Wikipedia"
 
-#: ../src/pop_infos.py:164 ../src/pop_infos.py:166
+#: ../src/pop_infos.py:217 ../src/pop_infos.py:219
 msgid "Last.fm"
 msgstr "Last.fm"
 
-#: ../src/pop_infos.py:170
+#: ../src/pop_infos.py:223
 msgid "No information for this artist..."
 msgstr "Źádné údaje o tomto umělci..."
 
-#: ../src/pop_infos.py:192 ../src/pop_infos.py:243
+#: ../src/pop_infos.py:245 ../src/pop_infos.py:297
 msgid "I do not love"
 msgstr "Nelíbí se mi"
 
-#: ../src/pop_menu.py:60
+#: ../src/pop_infos.py:345 ../data/ArtistInfos.ui.h:2
+msgid "Wikia"
+msgstr "Wikia"
+
+#: ../src/pop_menu.py:65
 msgid "Continue playback"
 msgstr "Pokračovat v přehrávání"
 
-#: ../src/pop_menu.py:65
+#: ../src/pop_menu.py:70
 msgid "Stop after this track"
 msgstr "Zastavit po této skladbě"
 
-#: ../src/pop_menu.py:70
+#: ../src/pop_menu.py:75
 msgid "Stop after this album"
 msgstr "Zastavit po tomto albu"
 
-#: ../src/pop_menu.py:75
+#: ../src/pop_menu.py:80
 msgid "Stop after this artist"
 msgstr "Zastavit po tomto umělci"
 
-#: ../src/pop_menu.py:164 ../data/SearchRow.ui.h:3
+#: ../src/pop_menu.py:171 ../data/SearchRow.ui.h:3
 msgid "Add to queue"
 msgstr "Přidat do řady"
 
-#: ../src/pop_menu.py:169
+#: ../src/pop_menu.py:176
 msgid "Next tracks"
 msgstr "Další skladby"
 
-#: ../src/pop_menu.py:171 ../data/NextPopover.ui.h:1
+#: ../src/pop_menu.py:178 ../data/NextPopover.ui.h:1
 msgid "Next track"
 msgstr "Další skladba"
 
-#: ../src/pop_menu.py:175
+#: ../src/pop_menu.py:182
 msgid "Remove from queue"
 msgstr "Odstranit z řady"
 
-#: ../src/pop_menu.py:241
+#: ../src/pop_menu.py:250
 msgid "Add to others"
 msgstr "Přidat do ostatních"
 
-#: ../src/pop_menu.py:254
+#: ../src/pop_menu.py:263
 #, python-format
 msgid "Remove from \"%s\""
 msgstr "Odstranit z \"%s\""
 
-#: ../src/pop_menu.py:260
+#: ../src/pop_menu.py:269
 #, python-format
 msgid "Add to \"%s\""
 msgstr "Přidat do \"%s\""
 
-#: ../src/pop_menu.py:272
+#: ../src/pop_menu.py:281
 msgid "I dislove this track"
 msgstr "Tato skladba se mi nelíbí"
 
-#: ../src/pop_menu.py:277
+#: ../src/pop_menu.py:286
 msgid "I love this track"
 msgstr "Tato skladba se mi líbí"
 
-#: ../src/pop_menu.py:395
+#: ../src/pop_menu.py:407
 msgid "Playback"
 msgstr "Přehrávání"
 
-#: ../src/pop_menu.py:430
+#: ../src/pop_menu.py:444
 msgid "Modify informations"
 msgstr "Upravit údaje"
 
-#: ../src/pop_menu.py:450 ../src/pop_menu.py:467 ../data/ToolbarEnd.ui.h:10
-msgid "Queue"
-msgstr "Řada"
-
-#: ../src/pop_menu.py:454 ../data/PlaylistsView.ui.h:1
+#: ../src/pop_menu.py:471 ../data/PlaylistView.ui.h:1
 msgid "Edit"
 msgstr "Upravit"
 
-#: ../src/pop_radio.py:70 ../src/pop_tunein.py:142
+#: ../src/pop_radio.py:74 ../src/pop_tunein.py:145
 msgid "Add"
 msgstr "Přidat"
 
-#: ../src/pop_radio.py:72
+#: ../src/pop_radio.py:76
 msgid "Modify"
 msgstr "Upravit"
 
-#: ../src/pop_tunein.py:101
+#: ../src/pop_tunein.py:104
 msgid "Can't connect to TuneIn..."
 msgstr "Nelze se připojit k TuneIn..."
 
-#: ../src/pop_tunein.py:157
+#: ../src/pop_tunein.py:160
 msgid "Browse themes and add a new radio"
 msgstr "Procházet motivy a přidat nové rádio"
 
-#: ../src/settings.py:135
+#: ../src/settings.py:141
 msgid "Populars"
 msgstr "Oblíbené"
 
-#: ../src/settings.py:136
+#: ../src/settings.py:142
 msgid "Recently added"
 msgstr "Nedávno přidáno"
 
@@ -439,44 +508,44 @@ msgstr "Nedávno přidáno"
 msgid "The the"
 msgstr "\"The\""
 
-#: ../src/view_device.py:38 ../src/view_device.py:79
+#: ../src/view_device.py:41 ../src/view_device.py:82
 #, python-format
 msgid "Synchronize %s"
 msgstr "Seřídit %s"
 
-#: ../src/view_device.py:70
+#: ../src/view_device.py:73
 msgid "Cancel synchronization"
 msgstr "Zrušit seřizování"
 
-#: ../src/widgets_album.py:250
+#: ../src/widgets_album.py:252
 #, python-format
 msgid "Disc %s"
 msgstr "Disk %s"
 
-#: ../src/widgets_device.py:176
+#: ../src/widgets_device.py:177
 msgid "Unknown error while syncing, try to reboot your device"
 msgstr "Při seřizování nastala neznámá chyba. pokuste se své zařízení zavést znovu"
 
-#: ../src/widgets_device.py:184
+#: ../src/widgets_device.py:185
 msgid "No free space available on device"
 msgstr "Na zařízení není žádné volné místo"
 
-#: ../src/widgets_playlist.py:276 ../src/widgets_playlist.py:279
+#: ../src/widgets_playlist.py:281 ../src/widgets_playlist.py:284
 msgid "New playlist "
 msgstr "Nový seznam skladeb"
 
-#: ../src/widgets_playlist.py:325 ../src/widgets_playlist.py:561
+#: ../src/widgets_playlist.py:330 ../src/widgets_playlist.py:568
 #, python-format
 msgid "Remove \"%s\"?"
 msgstr "Odstranit \"%s\"?"
 
-#: ../src/widgets_playlist.py:606
+#: ../src/widgets_playlist.py:613
 msgid "Remove these tracks?"
 msgstr "Odstranit tyto skladby?"
 
 #. Translators: Put here words added by wikipedia in band search
 #. Ex: Muse_(band), Peaches(musician)
-#: ../src/wikipedia.py:31
+#: ../src/wikipedia.py:34
 msgid "musician;band"
 msgstr "hudebník;skupina"
 
@@ -562,10 +631,14 @@ msgid "Delete"
 msgstr "Smazat"
 
 #: ../data/RadiosView.ui.h:1
+msgid "No favorite radios"
+msgstr ""
+
+#: ../data/RadiosView.ui.h:2
 msgid "New radio"
 msgstr "Nové rádio"
 
-#: ../data/RadiosView.ui.h:2
+#: ../data/RadiosView.ui.h:3
 msgid "Search in TuneIn"
 msgstr "Hledat v TuneIn"
 
@@ -597,15 +670,15 @@ msgstr "Obnovit stav při spuštění"
 msgid "Play albums on click"
 msgstr "Alba přehrávat po klepnutí"
 
-#: ../data/SettingsDialog.ui.h:7
+#: ../data/SettingsDialog.ui.h:6
 msgid "Behaviour"
 msgstr "Chování"
 
-#: ../data/SettingsDialog.ui.h:8
+#: ../data/SettingsDialog.ui.h:7
 msgid "Use dark theme variant"
 msgstr "Použít variantu a tmavým vzhledem"
 
-#: ../data/SettingsDialog.ui.h:9
+#: ../data/SettingsDialog.ui.h:8
 msgid "Show genres"
 msgstr "Ukázat žánry"
 
@@ -632,10 +705,6 @@ msgstr "Hudba"
 #: ../data/SettingsDialog.ui.h:15
 msgid "Select what will be available in party mode"
 msgstr "Vyberte, co bude povoleno ve večírkovém režimu"
-
-#: ../data/SettingsDialog.ui.h:16 ../data/ToolbarEnd.ui.h:8
-msgid "Party mode"
-msgstr "Večírkový režim"
 
 #: ../data/SettingsDialog.ui.h:17
 msgid "Login:"
@@ -681,13 +750,9 @@ msgstr "Nastavení"
 msgid "Shuffle"
 msgstr "Zamíchat"
 
-#: ../data/ToolbarEnd.ui.h:9
-msgid "Search"
-msgstr "Hledat"
-
 #: ../data/ToolbarPlayback.ui.h:4
-msgid "Artist biography"
-msgstr "Životopis umělce"
+msgid "Informations"
+msgstr "Informace"
 
 #: ../data/Unicode.ui.h:1
 msgid "Error"
