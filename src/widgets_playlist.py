@@ -139,42 +139,31 @@ class PlaylistWidget(Gtk.Bin):
         if not tracks or self._stop:
             return
 
-        track_id = tracks.pop(0)
+        track = Track(tracks.pop(0))
+        name = escape(track.name)
+        album = track.album
 
-        if track_id is None:
+        if track.id is None:
             GLib.idle_add(self._add_tracks, tracks,
-                          widget, pos+1, previous_album_id)
+                          widget, pos + 1, previous_album_id)
             return
 
-        (title, filepath, length, album_id) =\
-            Lp.tracks.get_infos(track_id)
-
-        title = escape(title)
-
-        artist_id = Lp.albums.get_artist_id(album_id)
-        artist_ids = Lp.tracks.get_artist_ids(track_id)
         # If we are listening to a compilation, prepend artist name
-        if artist_id == Type.COMPILATIONS or\
-           len(artist_ids) > 1 or\
-           artist_id not in artist_ids:
-            artist_name = ""
-            for artist_id in artist_ids:
-                if artist_name != "":
-                    artist_name += ", "
-                artist_name += Lp.artists.get_name(artist_id)
-            title = "<b>%s</b>\n%s" % (escape(artist_name),
-                                       title)
+        if (album.artist_id == Type.COMPILATIONS or
+                len(track.artist_ids) > 1 or
+                album.artist_id not in track.artist_ids):
+            name = "<b>%s</b>\n%s" % (escape(track.artist_names), name)
 
         if widget == self._tracks_widget1:
-            self._tracks1.append(Track(track_id))
+            self._tracks1.append(track)
         else:
-            self._tracks2.append(Track(track_id))
+            self._tracks2.append(track)
 
-        if album_id != previous_album_id:
-            widget.add_album(track_id, album_id, pos, title, length, None)
+        if album.id != previous_album_id:
+            widget.add_album(track.id, album.id, pos, name, track.duration, None)
         else:
-            widget.add_album(track_id, None, pos, title, length, None)
-        GLib.idle_add(self._add_tracks, tracks, widget, pos+1, album_id)
+            widget.add_album(track.id, None, pos, name, track.duration, None)
+        GLib.idle_add(self._add_tracks, tracks, widget, pos + 1, album.id)
 
     def _on_activated(self, widget, track_id, playlist_name):
         """
@@ -278,10 +267,10 @@ class PlaylistsManagerWidget(Gtk.Bin):
 
         # Search for an available name
         count = 1
-        name = _("New playlist ")+str(count)
+        name = _("New playlist ") + str(count)
         while name in existing_playlists:
             count += 1
-            name = _("New playlist ")+str(count)
+            name = _("New playlist ") + str(count)
         self._model.append([True, name, 'user-trash-symbolic'])
         Lp.playlists.add(name)
         self._set_current_object(name, True)
@@ -514,36 +503,27 @@ class PlaylistEditWidget(Gtk.Bin):
         """
             Append tracks
         """
-        tracks = Lp.playlists.get_tracks_id(self._playlist_name)
-        self._append_track(tracks)
+        track_ids = Lp.playlists.get_tracks_id(self._playlist_name)
+        self._append_track(track_ids)
 
-    def _append_track(self, tracks):
+    def _append_track(self, track_ids):
         """
             Append track while tracks not empty
-            @param tracks as [track_id as int]
+            @param track_ids as [track_id as int]
         """
-        if tracks:
-            track_id = tracks.pop(0)
-            filepath = Lp.tracks.get_path(track_id)
-            album_id = Lp.tracks.get_album_id(track_id)
-            artist_id = Lp.tracks.get_album_artist_id(track_id)
-            if artist_id == Type.COMPILATIONS:
-                artist_ids = Lp.tracks.get_artist_ids(track_id)
-                artist_name = ""
-                for artist_id in artist_ids:
-                    if artist_name != "":
-                        artist_name += ", "
-                    artist_name += Lp.artists.get_name(artist_id)
+        if track_ids:
+            track = Track(track_ids.pop(0))
+            if track.album.artist_id == Type.COMPILATIONS:
+                artist_name = track.artist_names
             else:
-                artist_name = Lp.artists.get_name(artist_id)
-            track_name = Lp.tracks.get_name(track_id)
-            self._model.append([album_id,
+                artist_name = track.album.artist_name
+            self._model.append([track.album.id,
                                "<b>%s</b>\n%s" % (
                                    escape(artist_name),
-                                   escape(track_name)),
-                                'user-trash-symbolic', filepath])
-            self._tracks_orig.append(filepath)
-            GLib.idle_add(self._append_track, tracks)
+                                   escape(track.name)),
+                                'user-trash-symbolic', track.path])
+            self._tracks_orig.append(track.path)
+            GLib.idle_add(self._append_track, track_ids)
         else:
             self._view.grab_focus()
             self._in_thread = False
@@ -636,16 +616,15 @@ class PlaylistEditWidget(Gtk.Bin):
         for row in rows:
             iterator = self._model.get_iter(row.get_path())
             path = self._model.get_value(iterator, 3)
+            # TODO get Track via path
             track_id = Lp.tracks.get_id_by_path(path)
-            album_id = Lp.tracks.get_album_id(track_id)
-            artist_id = Lp.albums.get_artist_id(album_id)
-            if artist_id == Type.COMPILATIONS:
-                artist = Lp.tracks.get_artist_names(track_id)
+            track = Track(track_id)
+            if track.album.artist_id == Type.COMPILATIONS:
+                artist_name = track.artist_names
             else:
-                artist = Lp.artists.get_name(artist_id)
-            title = Lp.tracks.get_name(track_id)
+                artist_name = track.album.artist_name
             if Lp.lastfm is not None:
-                start_new_thread(Lp.lastfm.unlove, (artist, title))
+                start_new_thread(Lp.lastfm.unlove, (artist_name, track.name))
             self._model.remove(iterator)
         self._infobar.hide()
         self._save_on_disk = True
