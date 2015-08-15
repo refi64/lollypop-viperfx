@@ -91,8 +91,7 @@ class Player(BinPlayer, QueuePlayer, UserPlaylistPlayer, RadioPlayer,
         """
         self._albums = [album.id]
         self.context.genre_id = None
-        tracks = album.tracks
-        self.context.position = tracks.index(self.current_track.id)
+        self.context.position = album.tracks_ids.index(self.current_track.id)
 
     def set_albums(self, track_id, artist_id, genre_id):
         """
