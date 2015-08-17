@@ -44,7 +44,8 @@ class AlbumsDatabase:
         if not sql:
             sql = Lp.sql
         sql.execute("INSERT INTO albums "
-                    "(name, artist_id, no_album_artist, path, popularity, mtime)"
+                    "(name, artist_id, no_album_artist,"
+                    " path, popularity, mtime)"
                     "VALUES (?, ?, ?, ?, ?, ?)",
                     (name, artist_id, no_album_artist,
                      path, popularity, mtime))
@@ -558,7 +559,8 @@ class AlbumsDatabase:
                                   ORDER BY discnumber, tracknumber",
                                  (album_id, disc))
 
-        return [row + (Lp.tracks.get_artist_ids(row[0], sql),) for row in result]
+        return [row + (Lp.tracks.get_artist_ids(row[0],
+                                                sql),) for row in result]
 
     def get_ids(self, artist_id=None, genre_id=None, sql=None):
         """

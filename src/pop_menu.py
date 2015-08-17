@@ -453,7 +453,7 @@ class EditMenu(BaseMenu):
         argv = [self._tag_editor, album_path, None]
         (s, pid, i, o, e) = GLib.spawn_async_with_pipes(
                                 None, argv, None,
-                                GLib.SpawnFlags.SEARCH_PATH|
+                                GLib.SpawnFlags.SEARCH_PATH |
                                 GLib.SpawnFlags.DO_NOT_REAP_CHILD, None)
         GLib.child_watch_add(GLib.PRIORITY_DEFAULT_IDLE,
                              pid,

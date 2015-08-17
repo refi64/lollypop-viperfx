@@ -18,7 +18,7 @@ from lollypop.view_device import DeviceView
 class ViewContainer(Gtk.Stack):
     """
         Container for a view
-        Can contain any other widget too        
+        Can contain any other widget too
     """
 
     def __init__(self, duration):

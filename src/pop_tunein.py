@@ -179,7 +179,7 @@ class TuneinPopover(Gtk.Popover):
         try:
             cache = Art._RADIOS_PATH
             s = Gio.File.new_for_uri(item.LOGO)
-            d = Gio.File.new_for_path(cache+"/%s.png" %\
+            d = Gio.File.new_for_path(cache+"/%s.png" %
                                       item.TEXT.replace('/', '-'))
             s.copy(d, Gio.FileCopyFlags.OVERWRITE, None, None)
         except Exception as e:

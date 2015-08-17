@@ -139,6 +139,7 @@ class Database:
             able to restore ltimes after db reset
         """
         return self._tracks_ltime
+
 ###########
 # Private #
 ###########

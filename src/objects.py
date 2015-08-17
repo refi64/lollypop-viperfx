@@ -139,7 +139,9 @@ class Album(Base):
         """
         if getattr(self, "_tracks_ids") is None:
             with SqlCursor() as sql:
-                self._tracks_ids = self.db.get_tracks(self.id, self.genre_id, sql)
+                self._tracks_ids = self.db.get_tracks(self.id,
+                                                      self.genre_id,
+                                                      sql)
         return self._tracks_ids
 
     @property
@@ -234,7 +236,8 @@ class Track(Base):
         """
         if getattr(self, "_album_artist") is None:
             with SqlCursor() as sql:
-                self._album_artist = Lp.artists.get_name(self.album_artist_id, sql)
+                self._album_artist = Lp.artists.get_name(self.album_artist_id,
+                                                         sql)
         return self._album_artist
 
     @property

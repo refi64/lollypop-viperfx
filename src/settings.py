@@ -223,7 +223,6 @@ class SettingsDialog:
         Lp.settings.set_value('auto-update',
                               GLib.Variant('b', state))
 
-
     def _update_background_setting(self, widget, state):
         """
             Update background mode setting

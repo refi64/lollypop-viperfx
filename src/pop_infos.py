@@ -24,14 +24,14 @@ class InfosPopover(Gtk.Popover):
     """
         Popover with artist informations
     """
-    
+
     def should_be_shown():
         """
             True if we can show popover
         """
         return Lp.lastfm is not None or\
-               ArtistInfos.Wikipedia is not None or\
-               ArtistInfos.WebKit is not None
+            ArtistInfos.Wikipedia is not None or\
+            ArtistInfos.WebKit is not None
 
     def __init__(self, artist, track_id=None):
         """
@@ -125,7 +125,7 @@ class ArtistInfos(Gtk.Bin):
         self._not_found = builder.get_object('notfound')
         self._stack.add(self._spinner)
         self._stack.add(self._not_found)
-        
+
         if self.Wikipedia is not None or Lp.lastfm is not None:
             self._scrolled_infos = builder.get_object('scrolled')
             self._stack.add(self._scrolled_infos)
@@ -150,6 +150,7 @@ class ArtistInfos(Gtk.Bin):
             self._on_lyrics_clicked(None)
         else:
             start_new_thread(self._populate, ())
+
 #######################
 # PRIVATE             #
 #######################
@@ -167,7 +168,8 @@ class ArtistInfos(Gtk.Bin):
     def _populate(self):
         """
             Same as _populate()
-            Horrible code limited to two engines, need rework if adding one more
+            Horrible code limited to two engines,
+            need rework if adding one more
             @thread safe
         """
         url = None
@@ -340,7 +342,8 @@ class ArtistInfos(Gtk.Bin):
             self._scrolled_lyrics.add(view)
         artist = Lp.player.current_track.album_artist.replace(' ', '_')
         title = Lp.player.current_track.title.replace(' ', '_')
-        self._wikia_url = "http://lyrics.wikia.com/wiki/%s:%s" % (artist, title)
+        self._wikia_url = "http://lyrics.wikia.com/wiki/%s:%s" % (artist,
+                                                                  title)
         view.load_uri(self._wikia_url)
         if btn is not None:
             self._view_btn.set_tooltip_text(_("Wikipedia"))

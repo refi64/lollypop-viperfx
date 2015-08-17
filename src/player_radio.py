@@ -135,4 +135,3 @@ class RadioPlayer(BasePlayer):
             self.current_track = track
             self._current = None
             self.play()
-

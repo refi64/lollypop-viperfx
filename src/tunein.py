@@ -25,7 +25,7 @@ class TuneIn:
     """
         Get radios from Tune in
     """
-    
+
     def __init__(self):
         """
             Init tunein

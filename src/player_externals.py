@@ -17,7 +17,6 @@ from lollypop.player_base import BasePlayer
 from lollypop.objects import Track
 
 
-
 class ExternalsPlayer(BasePlayer):
     """
         Manage user playlist

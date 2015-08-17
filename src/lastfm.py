@@ -235,10 +235,10 @@ class LastFM(LastFMNetwork):
             @thread safe
         """
         debug("LastFM::_scrobble(): %s, %s, %s, %s, %s" % (artist,
-                                                       album,
-                                                       title,
-                                                       timestamp,
-                                                       duration))
+                                                           album,
+                                                           title,
+                                                           timestamp,
+                                                           duration))
         try:
             LastFMNetwork.scrobble(self,
                                    artist=artist,
@@ -261,9 +261,9 @@ class LastFM(LastFMNetwork):
             @thread safe
         """
         debug("LastFM::_now_playing(): %s, %s, %s, %s" % (artist,
-                                                      album,
-                                                      title,
-                                                      duration))
+                                                          album,
+                                                          title,
+                                                          duration))
         try:
             LastFMNetwork.update_now_playing(self,
                                              artist=artist,

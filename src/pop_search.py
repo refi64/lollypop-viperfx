@@ -228,8 +228,8 @@ class SearchPopover(Gtk.Popover):
             for album_id in Lp.albums.get_ids(artist_id, None, sql):
                 if (album_id, artist_id) not in albums:
                     albums.append((album_id, artist_id))
-            for track_id, track_name in Lp.tracks.get_as_non_album_artist(artist_id,
-                                                                     sql):
+            for track_id, track_name in Lp.tracks.get_as_non_album_artist(
+                                                        artist_id, sql):
                 tracks_non_album_artist.append((track_id, track_name))
 
         albums += Lp.albums.search(self._current_search, sql)
@@ -243,8 +243,8 @@ class SearchPopover(Gtk.Popover):
             search_obj.album_id = album_id
             results.append(search_obj)
 
-        for track_id, track_name in Lp.tracks.search(self._current_search,
-                                                     sql) + tracks_non_album_artist:
+        for track_id, track_name in Lp.tracks.search(
+                        self._current_search, sql) + tracks_non_album_artist:
             search_obj = SearchObject()
             search_obj.title = track_name
             search_obj.id = track_id

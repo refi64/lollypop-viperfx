@@ -69,7 +69,6 @@ class SelectionList(Gtk.ScrolledWindow):
         'populated': (GObject.SignalFlags.RUN_FIRST, None, ()),
     }
 
-
     def __init__(self):
         """
             Init Selection list ui

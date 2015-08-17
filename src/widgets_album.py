@@ -47,9 +47,10 @@ class AlbumWidget(Gtk.Bin):
         selected = self._album.id == Lp.player.current_track.album.id
         if self._cover and (selected != self._selected or force):
             self._selected = selected
-            surface = Lp.art.get_album(self._album.id,
-                                       ArtSize.BIG * self._cover.get_scale_factor(),
-                                       selected)
+            surface = Lp.art.get_album(
+                                self._album.id,
+                                ArtSize.BIG * self._cover.get_scale_factor(),
+                                selected)
             self._cover.set_from_surface(surface)
             del surface
 
@@ -60,9 +61,10 @@ class AlbumWidget(Gtk.Bin):
         """
         if self._cover and self._album.id == album_id:
             self._selected = self._album.id == Lp.player.current_track.album.id
-            surface = Lp.art.get_album(self._album.id,
-                                       ArtSize.BIG * self._cover.get_scale_factor(),
-                                       self._selected)
+            surface = Lp.art.get_album(
+                                self._album.id,
+                                ArtSize.BIG * self._cover.get_scale_factor(),
+                                self._selected)
             self._cover.set_from_surface(surface)
             del surface
 
@@ -319,10 +321,11 @@ class AlbumDetailedWidget(AlbumWidget):
         self._stop = False
         sql = Lp.db.get_cursor()
         for disc in self._discs:
-            mid_tracks = int(0.5 + Lp.albums.get_count_for_disc(self._album.id,
-                                                                self._album.genre_id,
-                                                                disc,
-                                                                sql) / 2)
+            mid_tracks = int(0.5 + Lp.albums.get_count_for_disc(
+                                                        self._album.id,
+                                                        self._album.genre_id,
+                                                        disc,
+                                                        sql) / 2)
             tracks = Lp.albums.get_tracks_infos(self._album.id,
                                                 self._album.genre_id,
                                                 disc,

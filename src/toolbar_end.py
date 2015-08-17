@@ -100,7 +100,7 @@ class ToolbarEnd(Gtk.Bin):
     def do_realize(self):
         """
             Show popover if needed
-	    """
+        """
         Gtk.Bin.do_realize(self)
         self._set_shuffle_icon()
 

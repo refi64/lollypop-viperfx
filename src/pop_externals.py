@@ -142,7 +142,7 @@ class ExternalsPopover(Gtk.Popover):
             @param view as Gtk.TreeView
             @param path as Gtk.TreePath
             @param column as Gtk.TreeViewColumn
-        """    
+        """
         if path is not None:
             iterator = self._model.get_iter(path)
             if iterator is not None:

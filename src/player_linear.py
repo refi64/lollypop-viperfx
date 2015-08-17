@@ -39,7 +39,8 @@ class LinearPlayer(BasePlayer):
         if self._albums is not None:
             album = Album(self.current_track.album.id, self.context.genre_id)
             if self.current_track.id in album.tracks_ids:
-                new_track_position = album.tracks_ids.index(self.current_track.id) + 1
+                new_track_position = album.tracks_ids.index(
+                                                self.current_track.id) + 1
                 # next album
                 if new_track_position >= len(album.tracks) or\
                    self.context.next == NextContext.START_NEW_ALBUM:
@@ -51,7 +52,8 @@ class LinearPlayer(BasePlayer):
                         pos = 0
                     else:
                         pos += 1
-                    track = Album(self._albums[pos], self.context.genre_id).tracks[0]
+                    track = Album(self._albums[pos],
+                                  self.context.genre_id).tracks[0]
                 # next track
                 else:
                     track = album.tracks[new_track_position]
@@ -70,7 +72,8 @@ class LinearPlayer(BasePlayer):
         if self._albums is not None:
             album = Album(self.current_track.album.id, self.context.genre_id)
             if self.current_track.id in album.tracks_ids:
-                new_track_position = album.tracks_ids.index(self.current_track.id) - 1
+                new_track_position = album.tracks_ids.index(
+                                                self.current_track.id) - 1
                 # Previous album
                 if new_track_position < 0:
                     pos = self._albums.index(album.id)
@@ -78,7 +81,8 @@ class LinearPlayer(BasePlayer):
                         pos = len(self._albums) - 1
                     else:
                         pos -= 1
-                    track = Album(self._albums[pos], self.context.genre_id).tracks[-1]
+                    track = Album(self._albums[pos],
+                                  self.context.genre_id).tracks[-1]
                 # Previous track
                 else:
                     track = album.tracks[new_track_position]

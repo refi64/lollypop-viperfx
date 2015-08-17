@@ -18,7 +18,6 @@ from lollypop.view_container import ViewContainer
 from lollypop.define import Lp, Type
 
 
-
 class CurrentArtistView(ArtistView):
     """
         Show albums from current artist

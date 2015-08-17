@@ -160,7 +160,8 @@ class PlaylistWidget(Gtk.Bin):
             self._tracks2.append(track)
 
         if album.id != previous_album_id:
-            widget.add_album(track.id, album.id, pos, name, track.duration, None)
+            widget.add_album(track.id, album.id, pos,
+                             name, track.duration, None)
         else:
             widget.add_album(track.id, None, pos, name, track.duration, None)
         GLib.idle_add(self._add_tracks, tracks, widget, pos + 1, album.id)

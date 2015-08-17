@@ -36,7 +36,7 @@ class Device:
 
 class Loader(Thread):
     """
-        Helper to load data on a separate thread and 
+        Helper to load data on a separate thread and
         dispatch it to the UI thread
     """
     active = {}
@@ -134,7 +134,6 @@ class Container:
             Init list one
         """
         self._update_list_one(None)
-
 
     def save_view_state(self):
         """
@@ -427,7 +426,7 @@ class Container:
             if self._list_two.is_visible():
                 self._list_two.hide()
             self._list_two_restore = Type.NONE
-        loader = Loader(target=load, view=selection_list, 
+        loader = Loader(target=load, view=selection_list,
                         on_finished=lambda r: setup(*r))
         loader.start()
 

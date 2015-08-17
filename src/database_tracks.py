@@ -545,7 +545,8 @@ class TracksDatabase:
             sql = Lp.sql
 
         result = sql.execute("SELECT rowid, name FROM tracks\
-                              WHERE name LIKE ? LIMIT 25", ('%' + searched + '%',))
+                              WHERE name LIKE ? LIMIT 25",
+                             ('%' + searched + '%',))
         return list(result)
 
     def search_track(self, artist, title, sql=None):
