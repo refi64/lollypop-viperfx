@@ -203,4 +203,4 @@ class RadioArt(BaseArt):
             @param album id as int
             @param sql as sqlite cursor
         """
-        return "@@"+name.replace('/','-')+"@@radio@@"
+        return "@@"+name.replace('/', '-')+"@@radio@@"
