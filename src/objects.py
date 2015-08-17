@@ -98,8 +98,8 @@ class Album(Base):
     """
         Represent an album
     """
-    FIELDS = ['name', 'artist_name', 'artist_id', 'year']
-    DEFAULTS = ['', '', None, '', []]
+    FIELDS = ['name', 'artist_name', 'artist_id', 'year', 'path']
+    DEFAULTS = ['', '', None, '', '']
 
     def __init__(self, album_id=None, genre_id=None):
         """
@@ -151,6 +151,17 @@ class Album(Base):
         if not self._tracks and self.tracks_ids:
             self._tracks = [Track(track_id) for track_id in self.tracks_ids]
         return self._tracks
+
+    @property
+    def discs(self):
+        """
+            Get albums discs
+            @return list of int
+        """
+        if not self._discs:
+            with SqlCursor() as sql:
+                self._discs = self.db.get_discs(self.id, self.genre_id, sql)
+        return self._discs
 
 
 class Track(Base):
