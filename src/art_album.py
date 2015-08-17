@@ -83,7 +83,8 @@ class AlbumArt(BaseArt, ArtDownloader, TagReader):
         paths = [
             os.path.join(album.path, self._favorite),
             # Used when having muliple albums in same folder
-            os.path.join(album.path, "{}_{}.jpg".format(album.artist_name, album.name))
+            os.path.join(album.path, "{}_{}.jpg".format(album.artist_name,
+                                                        album.name))
         ]
         for path in paths:
             if os.path.exists(path):
@@ -96,8 +97,10 @@ class AlbumArt(BaseArt, ArtDownloader, TagReader):
             @param album as Album
             @return path or None
         """
-        all_paths = [os.path.join(album.path, f) for f in os.listdir(album.path)]
-        for path in filter(lambda p: p.lower().endswith(self._MIMES), all_paths):
+        all_paths = [os.path.join(album.path, f) for f in os.listdir(
+                                                                album.path)]
+        for path in filter(lambda p: p.lower().endswith(self._MIMES),
+                           all_paths):
             return path
 
     def get_cover_for_uri(self, uri, size, selected):
@@ -149,7 +152,8 @@ class AlbumArt(BaseArt, ArtDownloader, TagReader):
                 else:
                     try:
                         if album.tracks:
-                            pixbuf = self.pixbuf_from_tags(album.tracks[0].path, size)
+                            pixbuf = self.pixbuf_from_tags(
+                                        album.tracks[0].path, size)
                     except Exception as e:
                         pass
                 # No cover, use default one
@@ -205,7 +209,8 @@ class AlbumArt(BaseArt, ArtDownloader, TagReader):
         path_count = Lp.albums.get_path_count(album.path, sql)
         # Many albums with same path, suffix with artist_album name
         if path_count > 1:
-            artpath = os.path.join(album.path, "{}_{}.jpg".format(album.artist_name, album.name))
+            artpath = os.path.join(album.path, "{}_{}.jpg".format(
+                                   album.artist_name, album.name))
             if os.path.exists(os.path.join(album.path, self._favorite)):
                 os.remove(os.path.join(album.path, self._favorite))
         else:
