@@ -18,12 +18,16 @@ import json
 
 from lollypop.define import Lp, ArtSize, GOOGLE_INC
 
+
 class ArtDownloader:
 
     def __init__(self):
+        """
+            Init art downloader
+        """
         self._albums_queue = []
         self._in_albums_download = False
-    
+
     def download_album_art(self, album_id):
         """
             Download album artwork
