@@ -114,7 +114,8 @@ class AlbumArt(BaseArt, ArtDownloader, TagReader):
         paths = []
         for path in filter(lambda p: p.lower().endswith(self._MIMES),
                            all_paths):
-            paths.append(path)
+            if not path.endswith(self._favorite):
+                paths.append(path)
         return paths
 
     def get_cover_for_uri(self, uri, size, selected):

@@ -106,8 +106,9 @@ class CoversPopover(Gtk.Popover):
         """
         self._urls = []
         if Gio.NetworkMonitor.get_default().get_network_available():
-            self._urls = Lp.art.get_google_arts("%s+%s" % (self._album.artist,
-                                                           self._album.name))
+            self._urls = Lp.art.get_google_arts("%s+%s" % (
+                                                       self._album.artist_name,
+                                                       self._album.name))
         if self._urls:
             self._start += GOOGLE_INC
             self._add_pixbufs()
