@@ -40,16 +40,17 @@ class BaseArt(GObject.GObject):
             Init base art
         """
         GObject.GObject.__init__(self)
+        self._nullwidget = Gtk.Label()
 
 #######################
 # PRIVATE             #
 #######################
-    def _make_icon_frame(self, pixbuf, scale_factor, selected):
+    def _make_icon_frame(self, pixbuf, size, selected):
         """
             Draw an icon frame around pixbuf,
             code forked Gnome Music, see copyright header
             @param pixbuf source as Gdk.Pixbuf
-            @param scale factor as int
+            @param size as int
             @param selected as bool
             @return cairo surface
         """
@@ -58,9 +59,6 @@ class BaseArt(GObject.GObject):
             "gtk-application-prefer-dark-theme")
         degrees = pi / 180
         cover = Gdk.cairo_surface_create_from_pixbuf(pixbuf, 0, None)
-
-        # Covers are always squares
-        size = int(pixbuf.get_width() / scale_factor)
 
         if size < ArtSize.BIG:
             radius = ArtSize.SMALL_RADIUS
