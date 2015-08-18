@@ -253,9 +253,10 @@ class AlbumDetailedWidget(AlbumWidget):
         show_label = len(self._discs) > 1
         i = 0
         for disc in self._discs:
+            index = disc.number
             if show_label:
                 label = Gtk.Label()
-                label.set_text(_("Disc %s") % disc)
+                label.set_text(_("Disc %s") % index)
                 label.set_property('halign', Gtk.Align.START)
                 label.get_style_context().add_class('dim-label')
                 if i:
@@ -268,22 +269,23 @@ class AlbumDetailedWidget(AlbumWidget):
                 sep.show()
                 grid.attach(sep, 0, i, 2, 1)
                 i += 1
-            self._tracks_left[disc] = TracksWidget(pop_allowed)
-            self._tracks_right[disc] = TracksWidget(pop_allowed)
-            grid.attach(self._tracks_left[disc], 0, i, 1, 1)
-            grid.attach(self._tracks_right[disc], 1, i, 1, 1)
-            size_group.add_widget(self._tracks_left[disc])
-            size_group.add_widget(self._tracks_right[disc])
+            self._tracks_left[index] = TracksWidget(pop_allowed)
+            self._tracks_right[index] = TracksWidget(pop_allowed)
+            grid.attach(self._tracks_left[index], 0, i, 1, 1)
+            grid.attach(self._tracks_right[index], 1, i, 1, 1)
+            size_group.add_widget(self._tracks_left[index])
+            size_group.add_widget(self._tracks_right[index])
 
-            self._tracks_left[disc].connect('activated', self._on_activated)
-            self._tracks_left[disc].connect('button-press-event',
-                                            self._on_button_press_event)
-            self._tracks_right[disc].connect('activated', self._on_activated)
-            self._tracks_right[disc].connect('button-press-event',
+            self._tracks_left[index].connect('activated',
+                                             self._on_activated)
+            self._tracks_left[index].connect('button-press-event',
                                              self._on_button_press_event)
+            self._tracks_right[index].connect('activated', self._on_activated)
+            self._tracks_right[index].connect('button-press-event',
+                                              self._on_button_press_event)
 
-            self._tracks_left[disc].show()
-            self._tracks_right[disc].show()
+            self._tracks_left[index].show()
+            self._tracks_right[index].show()
             i += 1
 
         self._cover = builder.get_object('cover')
@@ -310,8 +312,10 @@ class AlbumDetailedWidget(AlbumWidget):
             Update playing indicator
         """
         for disc in self._discs:
-            self._tracks_left[disc].update_playing(Lp.player.current_track.id)
-            self._tracks_right[disc].update_playing(Lp.player.current_track.id)
+            self._tracks_left[disc.number].update_playing(
+                Lp.player.current_track.id)
+            self._tracks_right[disc.number].update_playing(
+                Lp.player.current_track.id)
 
     def populate(self):
         """
@@ -321,19 +325,11 @@ class AlbumDetailedWidget(AlbumWidget):
         self._stop = False
         sql = Lp.db.get_cursor()
         for disc in self._discs:
-            mid_tracks = int(0.5 + Lp.albums.get_count_for_disc(
-                                                        self._album.id,
-                                                        self._album.genre_id,
-                                                        disc,
-                                                        sql) / 2)
-            tracks = Lp.albums.get_tracks_infos(self._album.id,
-                                                self._album.genre_id,
-                                                disc,
-                                                sql)
-            self.populate_list_left(tracks[:mid_tracks],
+            mid_tracks = int(0.5 + len(disc.tracks) / 2)
+            self.populate_list_left(disc.tracks[:mid_tracks],
                                     disc,
                                     1)
-            self.populate_list_right(tracks[mid_tracks:],
+            self.populate_list_right(disc.tracks[mid_tracks:],
                                      disc,
                                      mid_tracks + 1)
         sql.close()
@@ -341,23 +337,25 @@ class AlbumDetailedWidget(AlbumWidget):
     def populate_list_left(self, tracks, disc, pos):
         """
             Populate left list, thread safe
-            @param track's ids as array of int
-            @param track position as int
+            @param tracks as [Track]
+            @param disc as Disc
+            @param pos as int
         """
         GLib.idle_add(self._add_tracks,
                       tracks,
-                      self._tracks_left[disc],
+                      self._tracks_left[disc.number],
                       pos)
 
     def populate_list_right(self, tracks, disc, pos):
         """
             Populate right list, thread safe
-            @param track's ids as array of int
-            @param track position as int
+            @param tracks as [Track]
+            @param disc as Disc
+            @param pos as int
         """
         GLib.idle_add(self._add_tracks,
                       tracks,
-                      self._tracks_right[disc],
+                      self._tracks_right[disc.number],
                       pos)
 
     def update_cursor(self):
@@ -407,42 +405,35 @@ class AlbumDetailedWidget(AlbumWidget):
             self._stop = False
             # Emit finished signal if we are on the last disc for
             # the right tracks widget
-            if widget == self._tracks_right[self._discs[-1]]:
+            if widget == self._tracks_right[self._discs[-1].number]:
                 self.emit('finished')
             return
 
         track = tracks.pop(0)
-        track_id = track[0]
-        title = escape(track[1])
-        length = track[2]
-        tracknumber = track[3]
-        artist_ids = track[4]
 
         # If we are listening to a compilation, prepend artist name
+        title = escape(track.name)
         if self._album.artist_id == Type.COMPILATIONS or\
-           len(artist_ids) > 1 or\
-           self._album.artist_id not in artist_ids:
-            artist_name = ""
-            for artist_id in artist_ids:
-                if artist_name != "":
-                    artist_name += ", "
-                artist_name += Lp.artists.get_name(artist_id)
-            if artist_name != self._album.artist_name:
-                title = "<b>%s</b>\n%s" % (escape(artist_name),
-                                           title)
+           len(track.artist_ids) > 1 or\
+           self._album.artist_id not in track.artist_ids:
+            if track.artist_names != self._album.artist_name:
+                title = "<b>%s</b>\n%s" % (escape(track.artist_names),
+                                           track.name)
 
         # Get track position in queue
         pos = None
-        if Lp.player.is_in_queue(track_id):
-            pos = Lp.player.get_track_position(track_id)
+        if Lp.player.is_in_queue(track.id):
+            pos = Lp.player.get_track_position(track.id)
 
         if not Lp.settings.get_value('show-tag-tracknumber'):
-            tracknumber = i
+            track_number = i
+        else:
+            track_number = track.number
 
-        widget.add_track(track_id,
-                         tracknumber,
+        widget.add_track(track.id,
+                         track_number,
                          title,
-                         length,
+                         track.duration,
                          pos)
 
         GLib.idle_add(self._add_tracks, tracks, widget, i + 1)

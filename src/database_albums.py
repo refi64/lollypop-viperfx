@@ -522,25 +522,20 @@ class AlbumsDatabase:
                                  (album_id,))
         return list(itertools.chain(*result))
 
-    def get_tracks_infos(self, album_id, genre_id, disc, sql=None):
+    def get_disc_tracks_ids(self, album_id, genre_id, disc, sql=None):
         """
-            Get tracks informations for album id
-            Will search track from albums from same artist
-            with same name and different genre
-            @param album id as int
-            @param genre id as int
-            @param disc number as int
-            @return Arrays of (tracks id as int, name as string,
-                               length as int, [artist ids])
+            Get tracks ids for album id disc
+
+            @param album_id as int
+            @param genre_id as int
+            @param disc as int
+            @return [int]
         """
         if not sql:
             sql = Lp.sql
 
         if genre_id is not None and genre_id > 0:
-            result = sql.execute("SELECT tracks.rowid,\
-                                  tracks.name,\
-                                  tracks.duration,\
-                                  tracks.tracknumber\
+            result = sql.execute("SELECT tracks.rowid\
                                   FROM tracks, track_genres\
                                   WHERE tracks.album_id=?\
                                   AND tracks.rowid = track_genres.track_id\
@@ -549,18 +544,14 @@ class AlbumsDatabase:
                                   ORDER BY discnumber, tracknumber",
                                  (album_id, genre_id, disc))
         else:
-            result = sql.execute("SELECT tracks.rowid,\
-                                  tracks.name,\
-                                  tracks.duration,\
-                                  tracks.tracknumber\
+            result = sql.execute("SELECT tracks.rowid\
                                   FROM tracks\
                                   WHERE tracks.album_id = ?\
                                   AND discnumber=?\
                                   ORDER BY discnumber, tracknumber",
                                  (album_id, disc))
 
-        return [row + (Lp.tracks.get_artist_ids(row[0],
-                                                sql),) for row in result]
+        return list(itertools.chain(*result))
 
     def get_ids(self, artist_id=None, genre_id=None, sql=None):
         """

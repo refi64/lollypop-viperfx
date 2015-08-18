@@ -94,6 +94,38 @@ class Base:
             self.db.set_popularity(self.id, 0, True)
 
 
+class Disc:
+    """
+        Represent an album disc
+    """
+
+    def __init__(self, album, disc_number):
+        self.db = Lp.albums
+        self.album = album
+        self.number = disc_number
+
+    @property
+    def tracks_ids(self):
+        """
+            Get all tracks ids of the disc
+
+            @return list of int
+        """
+        with SqlCursor() as sql:
+            return self.db.get_disc_tracks_ids(self.album.id,
+                                               self.album.genre_id,
+                                               self.number, sql)
+
+    @property
+    def tracks(self):
+        """
+            Get all tracks of the disc
+
+            @return list of Track
+        """
+        return [Track(id) for id in self.tracks_ids]
+
+
 class Album(Base):
     """
         Represent an album
@@ -163,7 +195,7 @@ class Album(Base):
         if not self._discs:
             with SqlCursor() as sql:
                 self._discs = self.db.get_discs(self.id, self.genre_id, sql)
-        return self._discs
+        return [Disc(self, number) for number in self._discs]
 
 
 class Track(Base):
