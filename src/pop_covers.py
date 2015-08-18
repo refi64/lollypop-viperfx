@@ -15,6 +15,7 @@ from gi.repository import Gtk, Gdk, GLib, Gio, GdkPixbuf
 from _thread import start_new_thread
 from gettext import gettext as _
 
+from lollypop.objects import Album
 from lollypop.define import Lp, ArtSize, GOOGLE_INC, GOOGLE_MAX
 
 
@@ -30,14 +31,9 @@ class CoversPopover(Gtk.Popover):
             @param album id as int
         """
         Gtk.Popover.__init__(self)
-        self._album_id = album_id
+        self._album = Album(album_id)
         self._start = 0
         self._orig_pixbufs = {}
-
-        album = Lp.albums.get_name(album_id)
-        artist = Lp.artists.get_name(artist_id)
-
-        self._search = "%s+%s" % (artist, album)
 
         self._stack = Gtk.Stack()
         self._stack.show()
@@ -74,7 +70,7 @@ class CoversPopover(Gtk.Popover):
             Populate view
         """
         # First load local files
-        self._urls = Lp.art.get_locally_available_covers(self._album_id)
+        self._urls = Lp.art.get_locally_available_covers(self._album)
         for url in self._urls:
             pixbuf = GdkPixbuf.Pixbuf.new_from_file_at_size(url,
                                                             ArtSize.MONSTER,
@@ -110,7 +106,8 @@ class CoversPopover(Gtk.Popover):
         """
         self._urls = []
         if Gio.NetworkMonitor.get_default().get_network_available():
-            self._urls = Lp.art.get_google_arts(self._search)
+            self._urls = Lp.art.get_google_arts("%s+%s" % (self._album.artist,
+                                                           self._album.name))
         if self._urls:
             self._start += GOOGLE_INC
             self._add_pixbufs()

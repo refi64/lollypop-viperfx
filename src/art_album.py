@@ -103,6 +103,20 @@ class AlbumArt(BaseArt, ArtDownloader, TagReader):
                            all_paths):
             return path
 
+    def get_locally_available_covers(self, album):
+        """
+            Get locally available covers for album
+            @param album as Album
+            @return [paths]
+        """
+        all_paths = [os.path.join(album.path, f) for f in os.listdir(
+                                                                album.path)]
+        paths = []
+        for path in filter(lambda p: p.lower().endswith(self._MIMES),
+                           all_paths):
+            paths.append(path)
+        return paths
+
     def get_cover_for_uri(self, uri, size, selected):
         """
             Return a cairo surface with borders for uri
