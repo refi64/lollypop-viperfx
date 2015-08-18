@@ -19,8 +19,9 @@ class CellRendererAlbum(Gtk.CellRenderer):
     album = GObject.property(type=int)
 
     def do_render(self, ctx, widget, background_area, cell_area, flags):
-        size = ArtSize.MEDIUM * widget.get_scale_factor()
-        surface = Lp.art.get_album(self.album, size)
+        surface = Lp.art.get_album(self.album,
+                                   ArtSize.MEDIUM,
+                                   widget.get_scale_factor())
         ctx.translate(cell_area.x, cell_area.y)
         ctx.set_source_surface(surface, 0, 0)
         ctx.paint()
