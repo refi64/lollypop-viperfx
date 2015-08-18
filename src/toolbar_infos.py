@@ -70,15 +70,18 @@ class ToolbarInfos(Gtk.Bin):
 
         if player.current_track.id == Type.RADIOS:
             art = Lp.art.get_radio(player.current_track.artist,
-                                   ArtSize.SMALL*self.get_scale_factor())
+                                   ArtSize.SMALL,
+                                   self.get_scale_factor())
         elif player.current_track.id == Type.EXTERNALS:
             art = Lp.art.get_cover_for_uri(
                     player.current_track.uri,
-                    ArtSize.SMALL*self.get_scale_factor(),
+                    ArtSize.SMALL,
+                    self.get_scale_factor(),
                     False)
         else:
             art = Lp.art.get_album(player.current_track.album_id,
-                                   ArtSize.SMALL*self.get_scale_factor())
+                                   ArtSize.SMALL,
+                                   self.get_scale_factor())
         if art is not None:
             self._cover.set_from_surface(art)
             del art

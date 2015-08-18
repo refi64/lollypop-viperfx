@@ -75,13 +75,6 @@ class Application(Gtk.Application):
         cssProvider = Gtk.CssProvider()
         cssProvider.load_from_file(cssProviderFile)
         screen = Gdk.Screen.get_default()
-        monitor = screen.get_primary_monitor()
-        geometry = screen.get_monitor_geometry(monitor)
-        # We want 500 and 200 in full hd
-        # Do not upscale on HiDPI
-        ArtSize.BIG = int(200*geometry.width/1920)
-        ArtSize.MONSTER = int(500*geometry.width/1920)
-
         styleContext = Gtk.StyleContext()
         styleContext.add_provider_for_screen(screen, cssProvider,
                                              Gtk.STYLE_PROVIDER_PRIORITY_USER)

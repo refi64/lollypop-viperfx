@@ -388,7 +388,8 @@ class TracksWidget(Gtk.ListBox):
             album_id = Lp.tracks.get_album_id(track_id)
             surface = Lp.art.get_album(
                         album_id,
-                        ArtSize.MEDIUM*album_row.get_scale_factor())
+                        ArtSize.MEDIUM,
+                        album_row.get_scale_factor())
             album_row.set_cover(surface, Lp.albums.get_name(album_id))
             del surface
             album_row.show_header(True)
