@@ -1,4 +1,4 @@
-@YELP_HELP_RULES@
+	@YELP_HELP_RULES@
 
 HELP_ID = lollypop
 
