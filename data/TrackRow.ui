@@ -9,6 +9,13 @@
     <property name="icon_name">open-menu-symbolic</property>
     <property name="icon_size">2</property>
   </object>
+  <object class="GtkImage" id="image2">
+    <property name="visible">True</property>
+    <property name="can_focus">False</property>
+    <property name="opacity">0.20000000000000001</property>
+    <property name="icon_name">emblem-favorite</property>
+    <property name="icon_size">2</property>
+  </object>
   <object class="GtkEventBox" id="row">
     <property name="visible">True</property>
     <property name="can_focus">False</property>
@@ -19,13 +26,26 @@
         <property name="can_focus">False</property>
         <property name="margin_start">10</property>
         <child>
+          <object class="GtkImage" id="icon">
+            <property name="width_request">16</property>
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <property name="halign">start</property>
+            <property name="icon_size">1</property>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">False</property>
+            <property name="position">0</property>
+          </packing>
+        </child>
+        <child>
           <object class="GtkButton" id="menu">
             <property name="width_request">42</property>
             <property name="visible">True</property>
             <property name="can_focus">True</property>
             <property name="receives_default">True</property>
             <property name="valign">center</property>
-            <property name="margin_start">10</property>
             <property name="image">image1</property>
             <property name="relief">none</property>
             <property name="focus_on_click">False</property>
@@ -44,16 +64,27 @@
           </packing>
         </child>
         <child>
-          <object class="GtkImage" id="icon">
-            <property name="width_request">16</property>
+          <object class="GtkButton" id="loved">
+            <property name="width_request">42</property>
             <property name="visible">True</property>
-            <property name="can_focus">False</property>
-            <property name="halign">start</property>
-            <property name="icon_size">1</property>
+            <property name="can_focus">True</property>
+            <property name="receives_default">True</property>
+            <property name="valign">center</property>
+            <property name="margin_start">10</property>
+            <property name="image">image2</property>
+            <property name="relief">none</property>
+            <property name="focus_on_click">False</property>
+            <property name="always_show_image">True</property>
+            <signal name="clicked" handler="_on_loved_btn_clicked" swapped="no"/>
+            <style>
+              <class name="loved-button"/>
+              <class name="track-loved-button"/>
+            </style>
           </object>
           <packing>
             <property name="expand">False</property>
             <property name="fill">False</property>
+            <property name="pack_type">end</property>
             <property name="position">1</property>
           </packing>
         </child>

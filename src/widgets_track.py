@@ -17,6 +17,8 @@ from lollypop.pop_menu import TrackMenu
 from lollypop.widgets_rating import RatingWidget
 from lollypop.utils import seconds_to_string, rgba_to_hex
 from lollypop.objects import Track, Album
+from lollypop import utils
+
 
 
 class Row(Gtk.ListBoxRow):
@@ -214,6 +216,7 @@ class TrackRow(Row):
         self._builder = Gtk.Builder()
         self._builder.add_from_resource('/org/gnome/Lollypop/TrackRow.ui')
         self._builder.connect_signals(self)
+        self._loved_img = self._builder.get_object('image2')
         self._menu_btn = self._builder.get_object('menu')
         Row.__init__(self)
 
@@ -224,6 +227,12 @@ class TrackRow(Row):
         """
         Row.set_object_id(self, object_id)
         self._object = Track(self._object_id)
+
+    def set_loved(self, loved):
+        """
+            Set loved
+        """
+        self._loved_img.set_opacity(0.6 if loved else 0.2)
 
     def show_menu(self, show):
         """
@@ -247,7 +256,7 @@ class TrackRow(Row):
             window = widget.get_window()
             if window == event.window:
                 self._popup_menu(widget, event.x, event.y)
-            # Happen when pressing button over menu btn
+            # Happens when pressing button over menu btn
             else:
                 self._popup_menu(self._menu_btn)
             return True
@@ -258,6 +267,18 @@ class TrackRow(Row):
             @param widget as Gtk.Button
         """
         self._popup_menu(widget)
+
+    def _on_loved_btn_clicked(self, widget):
+        """
+            Toggle track love
+            @param widget as Gtk.Button
+        """
+        if utils.is_loved(self._object_id):
+            utils.set_loved(self._object_id, False)
+            self.set_loved(False)
+        else:
+            utils.set_loved(self._object_id, True)
+            self.set_loved(True)
 
     def _popup_menu(self, widget, xcoordinate=None, ycoordinate=None):
         """
@@ -341,6 +362,8 @@ class TracksWidget(Gtk.ListBox):
         track_row.show_menu(self._show_menu)
         if Lp.player.current_track.id == track_id:
             track_row.show_icon(True)
+        if utils.is_loved(track_id):
+            track_row.set_loved(True)
         if pos:
             track_row.set_num_label(
                 '''<span foreground="%s"

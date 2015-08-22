@@ -31,6 +31,16 @@ GtkTreeView.separator {
     color: shade(@theme_bg_color, 0.9);
 }
 
+Gtk.ListBoxRow .loved-button {
+	border-color: transparent;
+	background-color: transparent;
+	color: transparent;
+}
+
+Gtk.ListBoxRow .loved-button:hover {
+	border-color: alpha(@theme_fg_color, 0.1);
+}
+
 Gtk.ListBoxRow .menu-button {
 	border-color: transparent;
 	background-color: transparent;
@@ -118,13 +128,28 @@ Gtk.ListBoxRow .menu-button:hover {
   	color: inherit;
 }
 
-.trackrowplaying .menu-button{
+.trackrowplaying .loved-button {
+	background-color: transparent;
+	border-color: transparent;
+	color: transparent;
+}
+
+.trackrowplaying:hover .loved-button {
+	border-color: transparent;
+	color: inherit;
+}
+
+.trackrowplaying:hover .loved-button:hover {
+	border-color: alpha(#000000, 0.1);
+}
+
+.trackrowplaying .menu-button {
 	background-color: transparent;
     border-color: transparent;
   	color: transparent;
 }
 
-.trackrowplaying:hover .menu-button{
+.trackrowplaying:hover .menu-button {
 	border-color: transparent;
   	color: inherit;
 }
@@ -133,14 +158,28 @@ Gtk.ListBoxRow .menu-button:hover {
 	border-color: alpha(#000000, 0.1);
 }
 
+.trackrow .loved-button {
+	border-color: transparent;
+	background-color: transparent;
+	color: transparent;
+}
+
 .trackrow .menu-button {
 	border-color: transparent;
 	background-color: transparent;
 	color: transparent;
 }
 
+.trackrow:hover .loved-button {
+	color: inherit;
+}
+
 .trackrow:hover .menu-button {
   	color: inherit;
+}
+
+.trackrow:hover .loved-button:hover {
+	border-color: alpha(@theme_fg_color, 0.1);
 }
 
 .trackrow:hover .menu-button:hover {
@@ -157,7 +196,12 @@ Gtk.ListBoxRow .menu-button:hover {
   	color: inherit;
 }
 
-.track-menu-selected .track-menu-button{
+.track-menu-selected .track-loved-button {
+	border-color: alpha(@theme_fg_color, 0.1);
+	color: inherit;
+}
+
+.track-menu-selected .track-menu-button {
 	border-color: alpha(@theme_fg_color, 0.1);
   	color: inherit;
 }
@@ -175,3 +219,15 @@ Gtk.ListBoxRow .menu-button:hover {
   	color: inherit;
 }
 
+.loved-button {
+	box-shadow: none;
+	padding-top: 0;
+	padding-bottom: 0;
+	background-image: none;
+	color: inherit;
+}
+
+.loved-button:hover {
+	border-color: alpha(@theme_fg_color, 0.1);
+	color: inherit;
+}
