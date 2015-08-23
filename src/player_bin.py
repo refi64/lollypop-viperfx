@@ -91,8 +91,13 @@ class BinPlayer(ReplayGainPlayer, BasePlayer):
         """
             Change player state to PLAYING
         """
-        self._playbin.set_state(Gst.State.PLAYING)
-        self.emit("status-changed")
+        # No current playback, song in queue
+        if self.current_track.id == None:
+            if self.next_track.id != None:
+                self.load(self.next_track)
+        else:
+            self._playbin.set_state(Gst.State.PLAYING)
+            self.emit("status-changed")
 
     def pause(self):
         """
