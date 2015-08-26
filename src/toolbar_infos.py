@@ -13,6 +13,7 @@
 from gi.repository import Gtk, Gdk
 from cgi import escape
 
+from lollypop.widgets_rating import RatingWidget
 from lollypop.pop_tunein import TuneinPopover
 from lollypop.pop_externals import ExternalsPopover
 from lollypop.playlists import RadiosManager
@@ -142,6 +143,24 @@ class ToolbarInfos(Gtk.Bin):
             elif Lp.player.current_track.id >= 0:
                 menu = PopToolbarMenu(Lp.player.current_track.id, None)
                 popover = Gtk.Popover.new_from_model(eventbox, menu)
+                rating = RatingWidget(Lp.player.current_track)
+                rating.set_property('margin_top', 5)
+                rating.set_property('margin_bottom', 5)
+                rating.show()
+                # Hack to add two widgets in popover
+                # Use a Gtk.PopoverMenu later (GTK>3.16 available on Debian stable)
+                stack = Gtk.Stack()
+                grid = Gtk.Grid()
+                grid.set_orientation(Gtk.Orientation.VERTICAL)
+                stack.add_named(grid, 'main')
+                stack.show_all()
+                menu_widget = popover.get_child()
+                menu_widget.reparent(grid)
+                separator = Gtk.Separator()
+                separator.show()
+                grid.add(separator)
+                grid.add(rating)
+                popover.add(stack)
                 popover.show()
             return True
 
