@@ -90,6 +90,7 @@ class RadioWidget(AlbumWidget):
             surface = Lp.art.get_radio(
                         self._name,
                         ArtSize.BIG,
+                        self._cover.get_scale_factor(),
                         selected)
             self._cover.set_from_surface(surface)
             del surface
@@ -104,6 +105,7 @@ class RadioWidget(AlbumWidget):
             surface = Lp.art.get_radio(
                         self._name,
                         ArtSize.BIG,
+                        self._cover.get_scale_factor(),
                         self._selected)
             self._cover.set_from_surface(surface)
             del surface

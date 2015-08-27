@@ -50,6 +50,7 @@ class AlbumWidget(Gtk.Bin):
             surface = Lp.art.get_album(
                                 self._album.id,
                                 ArtSize.BIG,
+                                self._cover.get_scale_factor(),
                                 selected)
             self._cover.set_from_surface(surface)
             del surface
@@ -64,6 +65,7 @@ class AlbumWidget(Gtk.Bin):
             surface = Lp.art.get_album(
                                 self._album.id,
                                 ArtSize.BIG,
+                                self._cover.get_scale_factor(),
                                 self._selected)
             self._cover.set_from_surface(surface)
             del surface

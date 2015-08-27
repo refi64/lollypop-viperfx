@@ -60,48 +60,47 @@ class RadioArt(BaseArt):
             print("Art::get_radio_cache_path(): %s" % e, ascii(filename))
             return None
 
-    def get_radio(self, name, size, selected=False):
+    def get_radio(self, name, size, scale_factor, selected=False):
         """
             Return a cairo surface for radio name
             @param radio name as string
             @param pixbuf size as int
+            @param scale factor as int
             @param selected as bool
             @return cairo surface
         """
-        scaled_size =  size * self._nullwidget.get_scale_factor()
+        size *= scale_factor
         filename = self._get_radio_cache_name(name)
-        cache_path_png = "%s/%s_%s.png" % (self._CACHE_PATH,
-                                           filename,
-                                           scaled_size)
+        cache_path_png = "%s/%s_%s.png" % (self._CACHE_PATH, filename, size)
         pixbuf = None
 
         try:
             # Look in cache
             if os.path.exists(cache_path_png):
                 pixbuf = GdkPixbuf.Pixbuf.new_from_file_at_size(cache_path_png,
-                                                                scaled_size,
-                                                                scaled_size)
+                                                                size,
+                                                                size)
             else:
                 pixbuf = GdkPixbuf.Pixbuf.new(GdkPixbuf.Colorspace.RGB,
                                               True,
                                               8,
-                                              scaled_size,
-                                              scaled_size)
+                                              size,
+                                              size)
                 pixbuf.fill(0xffffffff)
                 path = self._get_radio_art_path(name)
                 if path is not None:
                     cover = GdkPixbuf.Pixbuf.new_from_file_at_size(path,
-                                                                   scaled_size,
-                                                                   scaled_size)
+                                                                   size,
+                                                                   size)
                     cover_width = cover.get_width()
                     cover_height = cover.get_height()
                     cover.composite(pixbuf,
-                                    (scaled_size-cover_width)/2,
-                                    (scaled_size-cover_height)/2,
+                                    (size-cover_width)/2,
+                                    (size-cover_height)/2,
                                     cover_width,
                                     cover_height,
-                                    (scaled_size-cover_width)/2,
-                                    (scaled_size-cover_height)/2,
+                                    (size-cover_width)/2,
+                                    (size-cover_height)/2,
                                     1,
                                     1,
                                     GdkPixbuf.InterpType.HYPER,
@@ -109,7 +108,7 @@ class RadioArt(BaseArt):
 
             if pixbuf is None:
                 pixbuf = self._get_default_icon(
-                    scaled_size,
+                    size,
                     'audio-input-microphone-symbolic')
 
             # Gdk < 3.15 was missing save method
@@ -120,14 +119,14 @@ class RadioArt(BaseArt):
             except:
                 pixbuf.savev(cache_path_png, "png",
                              [None], [None])
-            return self._make_icon_frame(pixbuf, size, selected)
+            return self._make_icon_frame(pixbuf, scale_factor, selected)
 
         except Exception as e:
             print(e)
             return self._make_icon_frame(self._get_default_icon(
-                                         scaled_size,
-                                         'audio-input-microphone-symbolic'),
                                          size,
+                                         'audio-input-microphone-symbolic'),
+                                         scale_factor,
                                          selected)
 
     def copy_uri_to_cache(self, uri, name, size):
