@@ -136,16 +136,14 @@ class AlbumArt(BaseArt, ArtDownloader, TagReader):
                 'folder-music-symbolic'),
                 selected)
 
-    def get_album(self, album_id, size, scale_factor, selected=False):
+    def get_album(self, album_id, size, selected=False):
         """
             Return a cairo surface for album_id, covers are cached as jpg.
             @param album id as int
             @param pixbuf size as int
-            @param scale factor as int
             @param selected as bool
             @return cairo surface
         """
-        size *= scale_factor
         album = Album(album_id)
         filename = self._get_album_cache_name(album.id)
         cache_path_jpg = "%s/%s_%s.jpg" % (self._CACHE_PATH, filename, size)
@@ -188,14 +186,13 @@ class AlbumArt(BaseArt, ArtDownloader, TagReader):
                         pixbuf.savev(cache_path_jpg, "jpeg",
                                      ["quality"], ["90"])
 
-            return self._make_icon_frame(pixbuf, scale_factor, selected)
+            return self._make_icon_frame(pixbuf, selected)
 
         except Exception as e:
             print(e)
             return self._make_icon_frame(self._get_default_icon(
                 size,
                 'folder-music-symbolic'),
-                scale_factor,
                 selected)
 
     def save_album_art(self, pixbuf, album_id, sql=None):

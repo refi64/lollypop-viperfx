@@ -89,8 +89,7 @@ class RadioWidget(AlbumWidget):
             self._selected = selected
             surface = Lp.art.get_radio(
                         self._name,
-                        ArtSize.BIG,
-                        self._cover.get_scale_factor(),
+                        ArtSize.BIG*self._cover.get_scale_factor(),
                         selected)
             self._cover.set_from_surface(surface)
             del surface
@@ -104,8 +103,7 @@ class RadioWidget(AlbumWidget):
                 and self._name == Lp.player.current_track.artist
             surface = Lp.art.get_radio(
                         self._name,
-                        ArtSize.BIG,
-                        self._cover.get_scale_factor(),
+                        ArtSize.BIG*self._cover.get_scale_factor(),
                         self._selected)
             self._cover.set_from_surface(surface)
             del surface

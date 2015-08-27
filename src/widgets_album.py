@@ -49,8 +49,7 @@ class AlbumWidget(Gtk.Bin):
             self._selected = selected
             surface = Lp.art.get_album(
                                 self._album.id,
-                                ArtSize.BIG,
-                                self._cover.get_scale_factor(),
+                                ArtSize.BIG * self._cover.get_scale_factor(),
                                 selected)
             self._cover.set_from_surface(surface)
             del surface
@@ -64,8 +63,7 @@ class AlbumWidget(Gtk.Bin):
             self._selected = self._album.id == Lp.player.current_track.album.id
             surface = Lp.art.get_album(
                                 self._album.id,
-                                ArtSize.BIG,
-                                self._cover.get_scale_factor(),
+                                ArtSize.BIG * self._cover.get_scale_factor(),
                                 self._selected)
             self._cover.set_from_surface(surface)
             del surface

@@ -165,11 +165,11 @@ class RadioPopover(Gtk.Popover):
             width = pixbuf.get_width()
             height = pixbuf.get_height()
             if width > height:
-                height = height * ArtSize.BIG * self.get_scale_factor()/width
-                width = ArtSize.BIG * self.get_scale_factor()
+                height = height*ArtSize.BIG*self.get_scale_factor()/width
+                width = ArtSize.BIG*self.get_scale_factor()
             else:
-                width = width * ArtSize.BIG * self.get_scale_factor()/height
-                height = ArtSize.BIG * self.get_scale_factor()
+                width = width*ArtSize.BIG*self.get_scale_factor()/height
+                height = ArtSize.BIG*self.get_scale_factor()
             scaled_pixbuf = pixbuf.scale_simple(width,
                                                 height,
                                                 GdkPixbuf.InterpType.BILINEAR)

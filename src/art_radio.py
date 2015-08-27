@@ -60,16 +60,14 @@ class RadioArt(BaseArt):
             print("Art::get_radio_cache_path(): %s" % e, ascii(filename))
             return None
 
-    def get_radio(self, name, size, scale_factor, selected=False):
+    def get_radio(self, name, size, selected=False):
         """
             Return a cairo surface for radio name
             @param radio name as string
             @param pixbuf size as int
-            @param scale factor as int
             @param selected as bool
             @return cairo surface
         """
-        size *= scale_factor
         filename = self._get_radio_cache_name(name)
         cache_path_png = "%s/%s_%s.png" % (self._CACHE_PATH, filename, size)
         pixbuf = None
@@ -119,14 +117,13 @@ class RadioArt(BaseArt):
             except:
                 pixbuf.savev(cache_path_png, "png",
                              [None], [None])
-            return self._make_icon_frame(pixbuf, scale_factor, selected)
+            return self._make_icon_frame(pixbuf, selected)
 
         except Exception as e:
             print(e)
             return self._make_icon_frame(self._get_default_icon(
                                          size,
                                          'audio-input-microphone-symbolic'),
-                                         scale_factor,
                                          selected)
 
     def copy_uri_to_cache(self, uri, name, size):

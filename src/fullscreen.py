@@ -180,25 +180,18 @@ class FullScreen(Gtk.Window):
                 self._progress.hide()
                 surface = Lp.art.get_radio(
                     player.current_track.artist,
-                    ArtSize.MONSTER,
-                    self.get_scale_factor())
-            elif player.current_track.id == Type.EXTERNALS:
-                art = Lp.art.get_cover_for_uri(
-                        player.current_track.uri,
-                        ArtSize.MONSTER,
-                        self.get_scale_factor())
+                    ArtSize.MONSTER*self.get_scale_factor())
             else:
                 self._timelabel.show()
                 self._total_time_label.show()
                 self._progress.show()
                 surface = Lp.art.get_album(
                     player.current_track.album_id,
-                    ArtSize.MONSTER,
-                    self.get_scale_factor())
+                    ArtSize.MONSTER*self.get_scale_factor())
             self._cover.set_from_surface(surface)
             del surface
 
-            album = player.current_track.album.name
+            album = player.current_track.album
             if player.current_track.year != '':
                 album += " (%s)" % player.current_track.year
             self._title.set_text(player.current_track.title)

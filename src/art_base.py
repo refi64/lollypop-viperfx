@@ -44,12 +44,11 @@ class BaseArt(GObject.GObject):
 #######################
 # PRIVATE             #
 #######################
-    def _make_icon_frame(self, pixbuf, scale_factor, selected):
+    def _make_icon_frame(self, pixbuf, selected):
         """
             Draw an icon frame around pixbuf,
             code forked Gnome Music, see copyright header
-            @param pixbuf source as Gdk.Pixbuf
-            @param scale factor as int
+            @param: pixbuf source as Gdk.Pixbuf
             @param selected as bool
             @return cairo surface
         """
@@ -60,7 +59,7 @@ class BaseArt(GObject.GObject):
         cover = Gdk.cairo_surface_create_from_pixbuf(pixbuf, 0, None)
 
         # Covers are always squares
-        size = int(pixbuf.get_width() / scale_factor)
+        size = pixbuf.get_width()
 
         if size < ArtSize.BIG:
             radius = ArtSize.SMALL_RADIUS
