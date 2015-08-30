@@ -105,5 +105,8 @@ class RatingWidget(Gtk.Bin):
         if Lp.scanner.is_locked():
             return
         event_star = widget.get_children()[0]
-        position = self._stars.index(event_star)
+        if event_star in self._stars:
+            position = self._stars.index(event_star)
+        else:
+            position = -1
         self._object.set_popularity(position + 1)
