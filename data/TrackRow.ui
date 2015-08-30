@@ -9,13 +9,6 @@
     <property name="icon_name">open-menu-symbolic</property>
     <property name="icon_size">2</property>
   </object>
-  <object class="GtkImage" id="image2">
-    <property name="visible">True</property>
-    <property name="can_focus">False</property>
-    <property name="opacity">0.20000000000000001</property>
-    <property name="icon_name">emblem-favorite</property>
-    <property name="icon_size">2</property>
-  </object>
   <object class="GtkEventBox" id="row">
     <property name="visible">True</property>
     <property name="can_focus">False</property>
@@ -64,22 +57,13 @@
           </packing>
         </child>
         <child>
-          <object class="GtkButton" id="loved">
-            <property name="width_request">42</property>
+          <object class="GtkImage" id="loved">
             <property name="visible">True</property>
-            <property name="can_focus">True</property>
-            <property name="receives_default">True</property>
-            <property name="valign">center</property>
+            <property name="can_focus">False</property>
+            <property name="opacity">0.10000000000000001</property>
             <property name="margin_start">10</property>
-            <property name="image">image2</property>
-            <property name="relief">none</property>
-            <property name="focus_on_click">False</property>
-            <property name="always_show_image">True</property>
-            <signal name="clicked" handler="_on_loved_btn_clicked" swapped="no"/>
-            <style>
-              <class name="loved-button"/>
-              <class name="track-loved-button"/>
-            </style>
+            <property name="icon_name">emblem-favorite-symbolic</property>
+            <property name="icon_size">2</property>
           </object>
           <packing>
             <property name="expand">False</property>

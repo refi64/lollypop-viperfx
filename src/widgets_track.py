@@ -216,7 +216,7 @@ class TrackRow(Row):
         self._builder = Gtk.Builder()
         self._builder.add_from_resource('/org/gnome/Lollypop/TrackRow.ui')
         self._builder.connect_signals(self)
-        self._loved_img = self._builder.get_object('image2')
+        self._loved_img = self._builder.get_object('loved')
         self._menu_btn = self._builder.get_object('menu')
         Row.__init__(self)
 
@@ -232,7 +232,7 @@ class TrackRow(Row):
         """
             Set loved
         """
-        self._loved_img.set_opacity(0.6 if loved else 0.2)
+        self._loved_img.set_opacity(0.6 if loved else 0.1)
 
     def show_menu(self, show):
         """
@@ -267,18 +267,6 @@ class TrackRow(Row):
             @param widget as Gtk.Button
         """
         self._popup_menu(widget)
-
-    def _on_loved_btn_clicked(self, widget):
-        """
-            Toggle track love
-            @param widget as Gtk.Button
-        """
-        if utils.is_loved(self._object_id):
-            utils.set_loved(self._object_id, False)
-            self.set_loved(False)
-        else:
-            utils.set_loved(self._object_id, True)
-            self.set_loved(True)
 
     def _popup_menu(self, widget, xcoordinate=None, ycoordinate=None):
         """
