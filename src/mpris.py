@@ -170,8 +170,8 @@ class MPRIS(dbus.service.Object):
                     '/org/lollypop/%s' % track_id)
             self._metadata['xesam:trackNumber'] =\
                 Lp.player.current_track.number
-            self._metadata['xesam:title'] = Lp.player.current_track.title
-            self._metadata['xesam:album'] = Lp.player.current_track.album
+            self._metadata['xesam:title'] = Lp.player.current_track.name
+            self._metadata['xesam:album'] = Lp.player.current_track.album.name
             self._metadata['xesam:artist'] = [Lp.player.current_track.artist]
             self._metadata['xesam:albumArtist'] = [
                 Lp.player.current_track.album_artist]
