@@ -29,7 +29,7 @@ except Exception as e:
     LastFM = None
 
 from lollypop.utils import is_gnome, is_unity
-from lollypop.define import Lp, ArtSize
+from lollypop.define import Lp
 from lollypop.window import Window
 from lollypop.database import Database
 from lollypop.player import Player
@@ -65,11 +65,15 @@ class Application(Gtk.Application):
         GLib.set_application_name('lollypop')
         GLib.set_prgname('lollypop')
         self.set_flags(Gio.ApplicationFlags.HANDLES_OPEN)
+        self.set_flags(Gio.ApplicationFlags.HANDLES_COMMAND_LINE)
         # TODO: Remove this test later
         if Gtk.get_minor_version() > 12:
             self.add_main_option("debug", b'd', GLib.OptionFlags.NONE,
                                  GLib.OptionArg.NONE, "Debug lollypop", None)
+        self.add_main_option("set-rating", b'r', GLib.OptionFlags.NONE,
+                             GLib.OptionArg.INT, "Rate the current track", None)
         self.connect('handle-local-options', self._on_handle_local_options)
+        self.connect('command-line', self._on_command_line)
         cssProviderFile = Gio.File.new_for_uri(
             'resource:///org/gnome/Lollypop/application.css')
         cssProvider = Gtk.CssProvider()
@@ -229,6 +233,23 @@ class Application(Gtk.Application):
         """
         if options.contains("debug"):
             Lp.debug = True
+        return 0
+
+    def _on_command_line(self, app, app_cmd_line):
+        """
+            Handle command line
+            @param app as Gio.Application
+            @param options as Gio.ApplicationCommandLine
+        """
+        options = app_cmd_line.get_options_dict()
+        if options.contains("set-rating"):
+            value = options.lookup_value("set-rating").get_int32()
+            if value < 0 or value > 5:
+                return 1
+            if Lp.player.current_track:
+                Lp.player.current_track.set_popularity(value)
+            else:
+                return 1
         return 0
 
     def _on_entry_parsed(self, parser, uri, metadata):
