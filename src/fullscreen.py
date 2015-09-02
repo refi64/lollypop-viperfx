@@ -191,12 +191,12 @@ class FullScreen(Gtk.Window):
             self._cover.set_from_surface(surface)
             del surface
 
-            album = player.current_track.album
+            album_name = player.current_track.album.name
             if player.current_track.year != '':
-                album += " (%s)" % player.current_track.year
+                album_name += " (%s)" % player.current_track.year
             self._title.set_text(player.current_track.title)
             self._artist.set_text(player.current_track.artist)
-            self._album.set_text(album)
+            self._album.set_text(album_name)
             self._progress.set_value(1.0)
             self._progress.set_range(0.0, player.current_track.duration * 60)
             self._total_time_label.set_text(
