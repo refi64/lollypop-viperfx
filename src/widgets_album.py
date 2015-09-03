@@ -35,10 +35,10 @@ class AlbumWidget(Gtk.Bin):
         """
         Gtk.Bin.__init__(self)
         self._album = Album(album_id, genre_id)
-        self._pop_allowed = False
         self._selected = None
         self._stop = False
         self._cover = None
+        self._eventbox = None
 
     def set_cover(self, force=False):
         """
@@ -102,6 +102,17 @@ class AlbumWidget(Gtk.Bin):
         """
         return self._album.name
 
+    def update_cursor(self, cursor=Gdk.CursorType.LEFT_PTR):
+        """
+            Update widget's cursor
+            @param cursor as Gdk.CursorType
+        """
+        if self._eventbox is None:
+            return
+        window = self._eventbox.get_window()
+        if window is not None:
+            window.set_cursor(Gdk.Cursor(cursor))
+
 #######################
 # PRIVATE             #
 #######################
@@ -110,11 +121,8 @@ class AlbumWidget(Gtk.Bin):
             Change cursor over eventbox
             @param eventbox as Gdk.Eventbox
         """
-        window = eventbox.get_window()
-        if Lp.settings.get_value('auto-play') or not self._pop_allowed:
-            window.set_cursor(Gdk.Cursor(Gdk.CursorType.HAND1))
-        else:
-            window.set_cursor(Gdk.Cursor(Gdk.CursorType.PENCIL))
+        self._eventbox = eventbox
+        self.update_cursor()
 
     def _on_enter_notify(self, widget, event):
         """
@@ -168,6 +176,12 @@ class AlbumSimpleWidget(AlbumWidget):
             Set maximum width
         """
         return self._cover.get_preferred_width()
+
+    def update_cursor(self):
+        if Lp.settings.get_value('auto-play'):
+            AlbumWidget.update_cursor(self, Gdk.CursorType.HAND1)
+        else:
+            AlbumWidget.update_cursor(self, Gdk.CursorType.LEFT_PTR)
 
 #######################
 # PRIVATE             #
@@ -340,6 +354,15 @@ class AlbumDetailedWidget(AlbumWidget):
                       tracks,
                       self._tracks_right[disc.number],
                       pos)
+
+    def update_cursor(self):
+        """
+            Update widget's cursor
+        """
+        if Lp.settings.get_value('auto-play') or not self._pop_allowed:
+            AlbumWidget.update_cursor(self, Gdk.CursorType.HAND1)
+        else:
+            AlbumWidget.update_cursor(self, Gdk.CursorType.PENCIL)
 
 #######################
 # PRIVATE             #
