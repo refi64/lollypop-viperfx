@@ -76,7 +76,7 @@ class Player(BinPlayer, QueuePlayer, UserPlaylistPlayer, RadioPlayer,
         album = Album(album_id, genre_id)
         Lp.player.load(album.tracks[0])
         if not Lp.player.is_party():
-            if genre_id:
+            if genre_id is not None:
                 self.set_albums(self.current_track.id,
                                 self.current_track.album_artist_id,
                                 genre_id)

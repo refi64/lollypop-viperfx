@@ -87,7 +87,6 @@ class View(Gtk.Grid):
         if widgets:
             widget = widgets.pop(0)
             widget.set_cover(force)
-            widget.update_cursor()
             widget.update_playing_indicator()
             GLib.idle_add(self._update_widgets, widgets, force)
 
