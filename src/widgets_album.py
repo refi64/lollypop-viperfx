@@ -35,6 +35,7 @@ class AlbumWidget(Gtk.Bin):
         """
         Gtk.Bin.__init__(self)
         self._album = Album(album_id, genre_id)
+        self._pop_allowed = False
         self._selected = None
         self._stop = False
         self._cover = None
@@ -110,7 +111,7 @@ class AlbumWidget(Gtk.Bin):
             @param eventbox as Gdk.Eventbox
         """
         window = eventbox.get_window()
-        if Lp.settings.get_value('auto-play'):
+        if Lp.settings.get_value('auto-play') or not self._pop_allowed:
             window.set_cursor(Gdk.Cursor(Gdk.CursorType.HAND1))
         else:
             window.set_cursor(Gdk.Cursor(Gdk.CursorType.PENCIL))
