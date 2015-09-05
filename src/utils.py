@@ -123,61 +123,62 @@ def rgba_to_hex(color):
                                            int(color.blue * 255))
 
 
-def is_loved(object_id, genre_id=None, is_album=False, sql=None):
+def is_loved(track_id, genre_id=None, is_album=False, sql=None):
     """
         Check if object is in loved playlist
-        @param object_id
+        @param track_id
         @param genre_id
         @param is_album
         @return bool
     """
     return Lp.playlists.is_present(Lp.playlists._LOVED,
-                                   object_id,
+                                   track_id,
                                    genre_id,
                                    is_album,
                                    sql)
 
-def set_loved(object_id, loved, sql=None):
+def set_loved(track_id, loved, sql=None):
     """
-        Add or remove object from loved playlist
-        @param object_id
+        Add or remove track from loved playlist
+        @param track_id
         @param loved Add to loved playlist if `True`; remove if `False`
     """
     if sql is None:
         sql = Lp.db.get_cursor()
 
-    if not is_loved(object_id):
+    if not is_loved(track_id):
         if loved:
             Lp.playlists.add_track(Lp.playlists._LOVED,
-                                   Lp.tracks.get_path(object_id, sql))
+                                   Lp.tracks.get_path(track_id, sql))
             if Lp.lastfm is not None:
                 start_new_thread(_set_loved_on_lastfm,
-                                 (object_id, True, sql))
+                                 (track_id, True, sql))
     else:
         if not loved:
             Lp.playlists.remove_tracks(Lp.playlists._LOVED,
-                                       [Lp.tracks.get_path(object_id, sql)])
+                                       [Lp.tracks.get_path(track_id, sql)])
             if Lp.lastfm is not None:
                 start_new_thread(_set_loved_on_lastfm,
-                                 (object_id, False, sql))
+                                 (track_id, False, sql))
 
     sql.close()
 
-def _set_loved_on_lastfm(object_id, loved, sql):
+def _set_loved_on_lastfm(track_id, loved, sql):
     """
-        Add or remove object from loved playlist on Last.fm
-        @param object_id
+        Add or remove track from loved playlist on Last.fm
+        @param track_id
         @param loved Add to loved playlist if `True`; remove if `False`
     """
     # Love the track on lastfm
     if Gio.NetworkMonitor.get_default().get_network_available() and\
             Lp.lastfm.is_auth():
-        title = Lp.tracks.get_name(object_id, sql)
-        album_id = Lp.tracks.get_album_id(object_id, sql)
+        Track
+        title = Lp.tracks.get_name(track_id, sql)
+        album_id = Lp.tracks.get_album_id(track_id, sql)
         artist_id = Lp.albums.get_artist_id(album_id, sql)
 
         if artist_id == Type.COMPILATIONS:
-            artist = Lp.tracks.get_artist_names(object_id, sql)
+            artist = Lp.tracks.get_artist_names(track_id, sql)
         else:
             artist = Lp.artists.get_name(artist_id, sql)
 

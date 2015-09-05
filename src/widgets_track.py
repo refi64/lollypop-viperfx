@@ -15,6 +15,7 @@ from gi.repository import GObject, Gtk
 from lollypop.define import Lp, ArtSize
 from lollypop.pop_menu import TrackMenu
 from lollypop.widgets_rating import RatingWidget
+from lollypop.widgets_loved import LovedWidget
 from lollypop.utils import seconds_to_string, rgba_to_hex
 from lollypop.objects import Track, Album
 from lollypop import utils
@@ -284,23 +285,36 @@ class TrackRow(Row):
             rect.width = 1
             rect.height = 1
             popover.set_pointing_to(rect)
+
         rating = RatingWidget(self._object)
         rating.set_property('margin_top', 5)
         rating.set_property('margin_bottom', 5)
         rating.show()
+
+        loved = LovedWidget(self._object_id)
+        loved.set_margin_top(5)
+        loved.set_margin_bottom(5)
+        loved.show()
+
         # Hack to add two widgets in popover
         # Use a Gtk.PopoverMenu later (GTK>3.16 available on Debian stable)
-        stack = Gtk.Stack()
         grid = Gtk.Grid()
         grid.set_orientation(Gtk.Orientation.VERTICAL)
+
+        stack = Gtk.Stack()
         stack.add_named(grid, 'main')
         stack.show_all()
+
         menu_widget = popover.get_child()
         menu_widget.reparent(grid)
+
         separator = Gtk.Separator()
         separator.show()
+
         grid.add(separator)
         grid.add(rating)
+        grid.add(loved)
+
         popover.add(stack)
         popover.connect('closed', self._on_closed)
         self.get_style_context().add_class('track-menu-selected')
@@ -311,6 +325,7 @@ class TrackRow(Row):
             Remove selected style
             @param widget as Gtk.Popover
         """
+        self.set_loved(utils.is_loved(self._object_id))
         self.get_style_context().remove_class('track-menu-selected')
 
 
