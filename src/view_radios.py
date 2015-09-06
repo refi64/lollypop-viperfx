@@ -12,7 +12,7 @@
 
 from gi.repository import Gtk, GLib
 
-from _thread import start_new_thread
+from threading import Thread
 
 from lollypop.view import View
 from lollypop.widgets_radio import RadioWidget
@@ -80,7 +80,9 @@ class RadiosView(View):
             Populate view with tracks from playlist
             Thread safe
         """
-        start_new_thread(self._populate, ())
+        t = Thread(target=self._populate)
+        t.daemon = True
+        t.start()
 
     def do_show(self):
         """
