@@ -12,7 +12,7 @@
 
 from gi.repository import Gtk, GLib, Gio
 
-from _thread import start_new_thread
+from threading import Thread
 from gettext import gettext as _
 
 from lollypop.tunein import TuneIn
@@ -81,7 +81,9 @@ class TuneinPopover(Gtk.Popover):
             self._back_btn.set_sensitive(False)
             self._home_btn.set_sensitive(False)
             self._label.set_text(_("Please wait..."))
-            start_new_thread(self._populate, (url,))
+            t = Thread(target=self._populate, args=(url,))
+            t.daemon = True
+            t.start()
 
     def do_show(self):
         """
