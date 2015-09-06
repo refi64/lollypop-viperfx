@@ -253,5 +253,7 @@ class TuneinPopover(Gtk.Popover):
             @param link as Gtk.Button
             @param item as TuneIn Item
         """
-        start_new_thread(self._add_radio, (item,))
+        t = Thread(target=self._add_radio, args=(item,))
+        t.daemon = True
+        t.start()
         self.hide()
