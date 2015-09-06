@@ -13,7 +13,7 @@
 from gi.repository import Gtk, Gdk, GLib, Gio, GdkPixbuf
 
 import os
-from _thread import start_new_thread
+from threading import Thread
 
 from gettext import gettext as _
 
@@ -104,7 +104,9 @@ class RadioPopover(Gtk.Popover):
             Populate view
         """
         self._thread = True
-        start_new_thread(self._populate, ())
+        t = Thread(target=self._populate)
+        t.daemon = True
+        t.start()
 
     def _populate(self):
         """
