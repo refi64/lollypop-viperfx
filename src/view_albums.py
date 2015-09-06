@@ -67,7 +67,8 @@ class ArtistView(View):
         """
             Populate the view
         """
-        self._add_albums(albums)
+        if albums:
+            self._add_albums(albums)
 
 
 #######################
