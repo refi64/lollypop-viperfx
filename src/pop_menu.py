@@ -14,7 +14,7 @@ from gi.repository import Gio, GLib
 
 from shutil import which
 from gettext import gettext as _
-from _thread import start_new_thread
+from threading import Thread
 
 from lollypop.define import Lp, NextContext, Type
 
@@ -309,8 +309,10 @@ class PlaylistsMenu(BaseMenu):
         else:
             tracks_path = [Lp.tracks.get_path(self._object_id)]
 
-        start_new_thread(Lp.playlists.add_tracks,
-                         (playlist_name, tracks_path))
+        t = Thread(target=Lp.playlists.add_tracks,
+                   args=(playlist_name, tracks_path))
+        t.daemon = True
+        t.start()
 
     def _del_from_playlist(self, action, variant, playlist_name):
         """
@@ -327,8 +329,10 @@ class PlaylistsMenu(BaseMenu):
         else:
             tracks_path = [Lp.tracks.get_path(self._object_id)]
 
-        start_new_thread(Lp.playlists.remove_tracks,
-                         (playlist_name, tracks_path))
+        t = Thread(target=Lp.playlists.remove_tracks,
+                   args=(playlist_name, tracks_path))
+        t.daemon = True
+        t.start()
 
     def _add_to_loved(self, action, variant):
         """
@@ -340,7 +344,9 @@ class PlaylistsMenu(BaseMenu):
         Lp.playlists.add_track(Lp.playlists._LOVED,
                                Lp.tracks.get_path(self._object_id))
         if Lp.lastfm is not None:
-            start_new_thread(self._add_to_loved_on_lastfm, ())
+            t = Thread(target=self._add_to_loved_on_lastfm)
+            t.daemon = True
+            t.start()
 
     def _add_to_loved_on_lastfm(self):
         """
@@ -370,7 +376,9 @@ class PlaylistsMenu(BaseMenu):
         Lp.playlists.remove_tracks(Lp.playlists._LOVED,
                                    [Lp.tracks.get_path(self._object_id)])
         if Lp.lastfm is not None:
-            start_new_thread(self._del_from_loved_on_lastfm, ())
+            t = Thread(target=self._del_from_loved_on_lastfm)
+            t.daemon = True
+            t.start()
 
     def _del_from_loved_on_lastfm(self):
         """
