@@ -13,7 +13,7 @@
 from gi.repository import Gtk, GLib, Gio, GObject, Pango
 
 from gettext import gettext as _
-from _thread import start_new_thread
+from threading import Thread
 
 from lollypop.sync_mtp import MtpSync
 from lollypop.define import Lp, Type
@@ -109,7 +109,9 @@ class DeviceManagerWidget(Gtk.Bin, MtpSync):
         for item in self._model:
             if item[0]:
                 playlists.append(item[1])
-        start_new_thread(self._sync, (playlists,))
+        t = Thread(target=self._sync, args=(playlists,))
+        t.daemon = True
+        t.start()
 
     def cancel_sync(self):
         """
