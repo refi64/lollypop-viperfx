@@ -14,7 +14,7 @@ from gi.repository import Gtk, Gio, GLib, Gdk, Gst, Notify, TotemPlParser
 
 from locale import getlocale
 from gettext import gettext as _
-from _thread import start_new_thread
+from threading import Thread
 import os
 
 
@@ -304,7 +304,9 @@ class Application(Gtk.Application):
             @param param as GLib.Variant
         """
         if Lp.window:
-            start_new_thread(Lp.art.clean_all_cache, ())
+            t = Thread(target=Lp.art.clean_all_cache)
+            t.daemon = True
+            t.start()
             Lp.window.update_db()
 
     def _fullscreen(self, action=None, param=None):
