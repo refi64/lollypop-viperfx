@@ -14,7 +14,7 @@ from gi.repository import Gtk, GLib, Gio, GdkPixbuf
 
 from gettext import gettext as _
 
-from _thread import start_new_thread
+from threading import Thread
 from cgi import escape
 
 from lollypop.define import Lp
@@ -149,7 +149,9 @@ class ArtistInfos(Gtk.Bin):
         if self.Wikipedia is None and Lp.lastfm is None:
             self._on_lyrics_clicked(None)
         else:
-            start_new_thread(self._populate, ())
+            t = Thread(target=self._populate)
+            t.daemon = True
+            t.start()
 
 #######################
 # PRIVATE             #
