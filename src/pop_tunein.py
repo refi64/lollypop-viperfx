@@ -242,9 +242,10 @@ class TuneinPopover(Gtk.Popover):
             Lp.player.play_this_external(item.URL)
             # Only toolbar will get this one, so only create small in cache
             if Gio.NetworkMonitor.get_default().get_network_available():
-                start_new_thread(Lp.art.copy_uri_to_cache, (item.LOGO,
-                                                            item.TEXT,
-                                                            ArtSize.SMALL))
+                t = Thread(target=Lp.art.copy_uri_to_cache,
+                           args=(item.LOGO, item.TEXT, ArtSize.SMALL))
+                t.daemon = True
+                t.start()
         return True
 
     def _on_button_clicked(self, button, item):
