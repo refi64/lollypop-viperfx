@@ -71,7 +71,8 @@ class Application(Gtk.Application):
             self.add_main_option("debug", b'd', GLib.OptionFlags.NONE,
                                  GLib.OptionArg.NONE, "Debug lollypop", None)
         self.add_main_option("set-rating", b'r', GLib.OptionFlags.NONE,
-                             GLib.OptionArg.INT, "Rate the current track", None)
+                             GLib.OptionArg.INT, "Rate the current track",
+                             None)
         self.connect('handle-local-options', self._on_handle_local_options)
         self.connect('command-line', self._on_command_line)
         cssProviderFile = Gio.File.new_for_uri(

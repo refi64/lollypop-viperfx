@@ -92,8 +92,8 @@ class BinPlayer(ReplayGainPlayer, BasePlayer):
             Change player state to PLAYING
         """
         # No current playback, song in queue
-        if self.current_track.id == None:
-            if self.next_track.id != None:
+        if self.current_track.id is None:
+            if self.next_track.id is not None:
                 self.load(self.next_track)
         else:
             self._playbin.set_state(Gst.State.PLAYING)
