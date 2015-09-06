@@ -232,8 +232,10 @@ class Track(Base):
         """
         if self._uri is not None:
             return self._uri
-        else:
+        elif self.path != '':
             return GLib.filename_to_uri(self.path)
+        else:
+            return self.path
 
     @property
     def filepath(self):
