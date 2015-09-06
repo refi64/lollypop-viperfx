@@ -12,7 +12,7 @@
 
 from gi.repository import Gtk, Gdk, GLib, Gio, GdkPixbuf
 
-from _thread import start_new_thread
+from threading import Thread
 from gettext import gettext as _
 
 from lollypop.objects import Album
@@ -81,7 +81,9 @@ class CoversPopover(Gtk.Popover):
         # Then Google files
         self._thread = True
         self._start = 0
-        start_new_thread(self._populate, ())
+        t = Thread(target=self._populate)
+        t.daemon = True
+        t.start()
 
     def do_show(self):
         """

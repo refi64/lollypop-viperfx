@@ -26,7 +26,7 @@ from gettext import gettext as _
 import re
 import html.parser
 from locale import getdefaultlocale
-from _thread import start_new_thread
+from threading import Thread
 
 from lollypop.define import Lp, SecretSchema, SecretAttributes
 from lollypop.utils import debug
@@ -79,7 +79,9 @@ class LastFM(LastFMNetwork):
             Secret.password_lookup(schema, SecretAttributes, None,
                                    self._on_password_lookup)
         else:
-            start_new_thread(self._connect, (self._username, password))
+            t = Thread(target=self._connect, args=(self._username, password))
+            t.daemon = True
+            t.start()
 
     def connect_sync(self, password):
         """
@@ -89,7 +91,9 @@ class LastFM(LastFMNetwork):
         if Gio.NetworkMonitor.get_default().get_network_available():
             self._username = Lp.settings.get_value('lastfm-login').get_string()
             self._connect(self._username, password)
-            start_new_thread(self._populate_loved_tracks, (True,))
+            t = Thread(target=self._populate_loved_tracks, args=(True,))
+            t.daemon = True
+            t.start()
 
     def get_artist_infos(self, artist):
         """
@@ -125,11 +129,14 @@ class LastFM(LastFMNetwork):
         """
         if Gio.NetworkMonitor.get_default().get_network_available() and\
            self._is_auth and Secret is not None:
-            start_new_thread(self._scrobble, (artist,
-                                              album,
-                                              title,
-                                              timestamp,
-                                              duration))
+            t = Thread(target=self._scrobble,
+                       args=(artist,
+                             album,
+                             title,
+                             timestamp,
+                             duration))
+            t.daemon = True
+            t.start()
 
     def now_playing(self, artist, album, title, duration):
         """
@@ -141,10 +148,13 @@ class LastFM(LastFMNetwork):
         """
         if Gio.NetworkMonitor.get_default().get_network_available() and\
            self._is_auth and Secret is not None:
-            start_new_thread(self._now_playing, (artist,
-                                                 album,
-                                                 title,
-                                                 duration))
+            t = Thread(target=self._now_playing,
+                       args=(artist,
+                             album,
+                             title,
+                             duration))
+            t.daemon = True
+            t.start()
 
     def love(self, artist, title):
         """
@@ -310,6 +320,9 @@ class LastFM(LastFMNetwork):
             password = Secret.password_lookup_finish(result)
             self._password = password
             if Gio.NetworkMonitor.get_default().get_network_available():
-                start_new_thread(self._connect, (self._username, password))
+                t = Thread(target=self._connect,
+                           args=(self._username, password))
+                t.daemon = True
+                t.start()
         except Exception as e:
             print("Lastfm::_on_password_lookup(): %s" % e)
