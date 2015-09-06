@@ -14,7 +14,7 @@ from gi.repository import GLib, GObject, Gio
 
 import os
 from gettext import gettext as _
-from _thread import start_new_thread
+from threading import Thread
 
 from lollypop.inotify import Inotify
 from lollypop.define import Lp
@@ -73,7 +73,9 @@ class CollectionScanner(GObject.GObject, ScannerTagReader):
                 self._progress.show()
             self._in_thread = True
             self._is_locked = True
-            start_new_thread(self._scan, (paths,))
+            t = Thread(target=self._scan, args=(paths,))
+            t.daemon = True
+            t.start()
 
     def is_locked(self):
         """
