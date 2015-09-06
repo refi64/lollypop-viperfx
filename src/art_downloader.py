@@ -12,7 +12,7 @@
 
 from gi.repository import GLib, Gio, GdkPixbuf
 
-from _thread import start_new_thread
+from threading import Thread
 import urllib.parse
 import json
 
@@ -38,7 +38,9 @@ class ArtDownloader:
             artist = Lp.albums.get_artist_name(album_id)
             self._albums_queue.append((artist, album))
             if not self._in_albums_download:
-                start_new_thread(self._download_albums_art, ())
+                t = Thread(target=self._download_albums_art)
+                t.daemon = True
+                t.start()
 
     def get_google_arts(self, search, start=0):
         """
