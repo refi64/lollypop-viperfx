@@ -12,7 +12,7 @@
 
 from gi.repository import Gtk, GLib, Pango
 
-from _thread import start_new_thread
+from threading import Thread
 from cgi import escape
 from gettext import gettext as _
 
@@ -625,7 +625,10 @@ class PlaylistEditWidget(Gtk.Bin):
             else:
                 artist_name = track.album.artist_name
             if Lp.lastfm is not None:
-                start_new_thread(Lp.lastfm.unlove, (artist_name, track.name))
+                t = Thread(target=Lp.lastfm.unlove,
+                           args=(artist_name, track.name))
+                t.daemon = True
+                t.start()
             self._model.remove(iterator)
         self._infobar.hide()
         self._save_on_disk = True
