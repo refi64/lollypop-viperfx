@@ -18,7 +18,7 @@ except:
 
 
 from gettext import gettext as _
-from _thread import start_new_thread
+from threading import Thread
 
 from lollypop.define import Lp, Type, SecretSchema, SecretAttributes
 
@@ -350,7 +350,9 @@ class SettingsDialog:
             self._test_img.set_from_icon_name('computer-fail-symbolic',
                                               Gtk.IconSize.MENU)
             return
-        start_new_thread(self._test_lastfm_connection, ())
+        t = Thread(target=self._test_lastfm_connection)
+        t.daemon = True
+        t.start()
 
     def _test_lastfm_connection(self):
         """
