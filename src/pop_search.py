@@ -13,7 +13,7 @@
 from gi.repository import Gtk, GLib
 
 from cgi import escape
-from _thread import start_new_thread
+from threading import Thread
 
 from lollypop.define import Lp, ArtSize, Type
 from lollypop.objects import Track
@@ -381,7 +381,9 @@ class SearchPopover(Gtk.Popover):
         """
         self._timeout = None
         self._in_thread = True
-        start_new_thread(self._populate, ())
+        t = Thread(target=self._populate)
+        t.daemon = True
+        t.start()
 
     def _on_activate(self, widget, row):
         """
@@ -391,18 +393,24 @@ class SearchPopover(Gtk.Popover):
             @param row as SearchRow
         """
         Lp.player.set_party(False)
-        start_new_thread(self._play_search, (row.id, row.is_track))
+        t = Thread(target=self._play_search, args=(row.id, row.is_track))
+        t.daemon = True
+        t.start()
 
     def _on_play_btn_clicked(self, button):
         """
             Start playback base on current search
             @param button as Gtk.Button
         """
-        start_new_thread(self._play_search, ())
+        t = Thread(target=self._play_search)
+        t.daemon = True
+        t.start()
 
     def _on_new_btn_clicked(self, button):
         """
             Create a new playlist based on search
             @param button as Gtk.Button
         """
-        start_new_thread(self._new_playlist, ())
+        t = Thread(target=self._new_playlist)
+        t.daemon = True
+        t.start()
