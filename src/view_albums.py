@@ -12,7 +12,7 @@
 
 from gi.repository import Gtk, GLib, Gdk
 
-from _thread import start_new_thread
+from threading import Thread
 
 from lollypop.view import View
 from lollypop.pop_infos import InfosPopover
@@ -95,7 +95,9 @@ class ArtistView(View):
                                      size_group)
         widget.connect('finished', self._on_album_finished, albums)
         widget.show()
-        start_new_thread(widget.populate, ())
+        t = Thread(target=widget.populate)
+        t.daemon = True
+        t.start()
         self._albumbox.add(widget)
 
     def _on_album_finished(self, album, albums):
