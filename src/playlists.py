@@ -19,6 +19,60 @@ from stat import S_ISREG, ST_MTIME, ST_MODE
 from lollypop.define import Lp
 
 
+# A cached playlist
+class Playlist:
+
+    def __init__(self, index):
+        """
+            Init playlist
+            @param index as int
+        """
+        self._cache = []
+        self._index = index
+
+    def get_index(self):
+        """
+            Get playlist index
+            @return index as int
+        """
+        return self._index
+
+    def add_track(self, track):
+        """
+            Add track to playlist
+            @param track as str
+        """
+        self._cache.append(track)
+
+    def remove_track(self, track):
+        """
+            Remove track from playlist
+            @param track as str
+        """
+        self._cache.remove(track)
+
+    def set_tracks(self, tracks):
+        """
+            Set playlist's tracks
+            @param array of str
+        """
+        self._cache = tracks
+
+    def get_tracks(self):
+        """
+            Return playlist's tracks
+            @return array of str
+        """
+        return self._cache
+
+    def reset_tracks(self):
+        """
+            Set playlist tracks
+        """
+        self._cache = []
+
+
+# Manager user playlists
 class PlaylistsManager(GObject.GObject):
     """
         Playlists manager
@@ -38,15 +92,15 @@ class PlaylistsManager(GObject.GObject):
         """
         GObject.GObject.__init__(self)
         self._LOVED = _("Loved tracks")
-        self._idx = {}
-        self._cache = {}
+        self._index = 0
+        self._playlists = {}
         # Create playlists directory if missing
         if not os.path.exists(self._PLAYLISTS_PATH):
             try:
                 os.mkdir(self._PLAYLISTS_PATH)
             except Exception as e:
                 print("Lollypop::PlaylistsManager::init: %s" % e)
-        self._init_idx()
+        self._init_playlists()
 
     def add(self, playlist_name):
         """
@@ -60,11 +114,8 @@ class PlaylistsManager(GObject.GObject):
                 f = open(filename, "w")
                 f.write("#EXTM3U\n")
                 f.close()
-                try:
-                    max_idx = max(self._idx.keys())+1
-                except:
-                    max_idx = 0
-                self._idx[max_idx] = playlist_name
+                self._index += 1
+                self._playlists[playlist_name] = Playlist(self._index)
                 GLib.idle_add(self.emit, 'playlists-changed')
         except Exception as e:
             print("PlaylistsManager::add: %s" % e)
@@ -75,8 +126,7 @@ class PlaylistsManager(GObject.GObject):
             @param playlist name as string
             @param exist as bool
         """
-        filename = self._PLAYLISTS_PATH + "/" + playlist_name + ".m3u"
-        return os.path.exists(filename)
+        return playlist_name in self._playlists
 
     def rename(self, new_name, old_name):
         """
@@ -87,12 +137,8 @@ class PlaylistsManager(GObject.GObject):
         try:
             os.rename(self._PLAYLISTS_PATH+"/"+old_name+".m3u",
                       self._PLAYLISTS_PATH+"/"+new_name+".m3u")
-            for (idx, playlist) in self._idx.items():
-                if playlist == old_name:
-                    self._idx[idx] = new_name
-                    break
-            self._cache[old_name] = self._cache[new_name]
-            del self._cache[old_name]
+            self._playlists[new_name] = self._playlists[old_name]
+            del self._playlists[old_name]
             GLib.idle_add(self.emit, "playlists-changed")
         except Exception as e:
             print("PlaylistsManager::rename: %s" % e)
@@ -104,11 +150,7 @@ class PlaylistsManager(GObject.GObject):
         """
         try:
             os.remove(self._PLAYLISTS_PATH+"/"+playlist_name+".m3u")
-            for (idx, playlist) in self._idx.items():
-                if playlist == playlist_name:
-                    del self._idx[idx]
-                    break
-            del self._cache[playlist_name]
+            del self._playlists[playlist_name]
             GLib.idle_add(self.emit, "playlists-changed")
         except Exception as e:
             print("PlaylistsManager::delete: %s" % e)
@@ -118,13 +160,15 @@ class PlaylistsManager(GObject.GObject):
             Return availables playlists
             @return array of (id, string)
         """
-        return sorted(self._idx.items(),
-                      key=lambda item: item[1].lower())
+        playlists = []
+        for item in sorted(self._playlists.items()):
+            playlists.append((item[1].get_index(), item[0]))
+        return playlists
 
     def get_last(self):
         """
             Return 6 last modified playlist
-            @return array of (id, string)
+            @return [string]
         """
         playlists = []
         try:
@@ -152,11 +196,11 @@ class PlaylistsManager(GObject.GObject):
             @param playlist playlist_name as str
             @return array of track filepath as str
         """
-        if playlist_name in self._cache:
-            return self._cache[playlist_name]
-
-        tracks = []
         try:
+            tracks = self._playlists[playlist_name].get_tracks()
+            if tracks:
+                return tracks
+
             f = open(self._PLAYLISTS_PATH+"/"+playlist_name+".m3u", "r")
             for filepath in f:
                 if filepath[0] not in ["#", "\n"]:
@@ -164,7 +208,7 @@ class PlaylistsManager(GObject.GObject):
             f.close()
         except Exception as e:
             print("PlaylistsManager::get_tracks: %s" % e)
-        self._cache[playlist_name] = tracks
+        self._playlists[playlist_name].set_tracks(tracks)
         return tracks
 
     def set_tracks(self, playlist_name, tracks_path):
@@ -173,10 +217,11 @@ class PlaylistsManager(GObject.GObject):
             @param playlist name as str
             @param tracks path as [str]
         """
-        f = open(self._PLAYLISTS_PATH+"/"+playlist_name+".m3u", "a")
+        f = open(self._PLAYLISTS_PATH+"/"+playlist_name+".m3u", "w")
+        f.write("#EXTM3U\n")
+        self._playlists[playlist_name].reset_tracks()
         for filepath in tracks_path:
             self._add_track(f, playlist_name, filepath)
-        self._cache[playlist_name] = tracks_path
         GLib.timeout_add(1000, self.emit, "playlist-changed", playlist_name)
         try:
             f.close()
@@ -268,23 +313,17 @@ class PlaylistsManager(GObject.GObject):
 #######################
 # PRIVATE             #
 #######################
-    def _init_idx(self):
+    def _init_playlists(self):
         """
             Create initial index
         """
-        playlists = []
         try:
             for filename in sorted(os.listdir(self._PLAYLISTS_PATH)):
-                if filename.endswith(".m3u") and\
-                   filename != self._LOVED+".m3u":
-                    playlists.append(filename[:-4])
+                if filename.endswith(".m3u"):
+                    self._playlists[filename[:-4]] = Playlist(self._index)
+                    self._index += 1
         except Exception as e:
             print("Lollypop::PlaylistManager::get: %s" % e)
-
-        idx = 0
-        for playlist in playlists:
-            self._idx[idx] = playlist
-            idx += 1
 
     def _add_track(self, f, playlist_name, filepath):
         """
@@ -298,7 +337,7 @@ class PlaylistsManager(GObject.GObject):
         if filepath not in tracks:
             try:
                 f.write(filepath+'\n')
-                self._cache[playlist_name].append(filepath)
+                self._playlists[playlist_name].add_track(filepath)
             except Exception as e:
                 print("PlaylistsManager::_add_track: %s" % e)
 
@@ -314,7 +353,7 @@ class PlaylistsManager(GObject.GObject):
             for path in playlist_tracks:
                 if path not in tracks_to_remove:
                     f.write(path+'\n')
-                    self._cache[playlist_name].remove(path)
+                    self._playlists[playlist_name].remove_track(path)
             f.close()
         except Exception as e:
             print("PlaylistsManager::remove_tracks: %s" % e)

@@ -148,7 +148,7 @@ class ToolbarInfos(Gtk.Bin):
                 rating.set_property('margin_bottom', 5)
                 rating.show()
                 # Hack to add two widgets in popover
-                # Use a Gtk.PopoverMenu later 
+                # Use a Gtk.PopoverMenu later
                 # (GTK>3.16 available on Debian stable)
                 stack = Gtk.Stack()
                 grid = Gtk.Grid()
