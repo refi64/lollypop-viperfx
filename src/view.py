@@ -39,9 +39,6 @@ class View(Gtk.Grid):
         self._new_ids = []
 
         self._scrolledWindow = Gtk.ScrolledWindow()
-        self._scrolledWindow.set_policy(Gtk.PolicyType.NEVER,
-                                        Gtk.PolicyType.AUTOMATIC)
-
         self._scrolledWindow.show()
         self._viewport = Gtk.Viewport()
         self._scrolledWindow.add(self._viewport)
