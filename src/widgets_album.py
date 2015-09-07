@@ -75,12 +75,6 @@ class AlbumWidget(Gtk.Bin):
         """
         pass
 
-    def update_cursor(self):
-        """
-            Update cursor for album
-        """
-        pass
-
     def stop(self):
         """
             Stop populating
