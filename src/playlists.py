@@ -39,6 +39,7 @@ class PlaylistsManager(GObject.GObject):
         GObject.GObject.__init__(self)
         self._LOVED = _("Loved tracks")
         self._idx = {}
+        self._cache = {}
         # Create playlists directory if missing
         if not os.path.exists(self._PLAYLISTS_PATH):
             try:
@@ -90,6 +91,8 @@ class PlaylistsManager(GObject.GObject):
                 if playlist == old_name:
                     self._idx[idx] = new_name
                     break
+            self._cache[old_name] = self._cache[new_name]
+            del self._cache[old_name]
             GLib.idle_add(self.emit, "playlists-changed")
         except Exception as e:
             print("PlaylistsManager::rename: %s" % e)
@@ -105,6 +108,7 @@ class PlaylistsManager(GObject.GObject):
                 if playlist == playlist_name:
                     del self._idx[idx]
                     break
+            del self._cache[playlist_name]
             GLib.idle_add(self.emit, "playlists-changed")
         except Exception as e:
             print("PlaylistsManager::delete: %s" % e)
@@ -148,6 +152,9 @@ class PlaylistsManager(GObject.GObject):
             @param playlist playlist_name as str
             @return array of track filepath as str
         """
+        if playlist_name in self._cache:
+            return self._cache[playlist_name]
+
         tracks = []
         try:
             f = open(self._PLAYLISTS_PATH+"/"+playlist_name+".m3u", "r")
@@ -157,6 +164,7 @@ class PlaylistsManager(GObject.GObject):
             f.close()
         except Exception as e:
             print("PlaylistsManager::get_tracks: %s" % e)
+        self._cache[playlist_name] = tracks
         return tracks
 
     def set_tracks(self, playlist_name, tracks_path):
@@ -165,9 +173,10 @@ class PlaylistsManager(GObject.GObject):
             @param playlist name as str
             @param tracks path as [str]
         """
-        f = self.add(playlist_name, True)
+        f = open(self._PLAYLISTS_PATH+"/"+playlist_name+".m3u", "a")
         for filepath in tracks_path:
             self._add_track(f, playlist_name, filepath)
+        self._cache[playlist_name] = tracks_path
         GLib.timeout_add(1000, self.emit, "playlist-changed", playlist_name)
         try:
             f.close()
@@ -289,6 +298,7 @@ class PlaylistsManager(GObject.GObject):
         if filepath not in tracks:
             try:
                 f.write(filepath+'\n')
+                self._cache[playlist_name].append(filepath)
             except Exception as e:
                 print("PlaylistsManager::_add_track: %s" % e)
 
@@ -304,6 +314,7 @@ class PlaylistsManager(GObject.GObject):
             for path in playlist_tracks:
                 if path not in tracks_to_remove:
                     f.write(path+'\n')
+                    self._cache[playlist_name].remove(path)
             f.close()
         except Exception as e:
             print("PlaylistsManager::remove_tracks: %s" % e)
