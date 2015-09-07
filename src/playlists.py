@@ -162,7 +162,8 @@ class PlaylistsManager(GObject.GObject):
         """
         playlists = []
         for item in sorted(self._playlists.items()):
-            playlists.append((item[1].get_index(), item[0]))
+            if item[0] != self._LOVED:
+                playlists.append((item[1].get_index(), item[0]))
         return playlists
 
     def get_last(self):
