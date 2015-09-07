@@ -47,28 +47,18 @@ class PlaylistsManager(GObject.GObject):
                 print("Lollypop::PlaylistsManager::init: %s" % e)
         self._init_idx()
 
-    def add(self, playlist_name, get_desc=False):
+    def add(self, playlist_name):
         """
             Add a playlist, erase current
             @param playlist name as str
-            @param get file descriptor as bool
-            @return file descriptor if 2nd param True
             @thread safe
         """
         filename = self._PLAYLISTS_PATH + "/" + playlist_name + ".m3u"
         try:
-            if os.path.exists(filename):
-                new = False
-            else:
-                new = True
-            f = open(filename, "w")
-            f.write("#EXTM3U\n")
-            if get_desc:
-                return f
-            else:
+            if not os.path.exists(filename):
+                f = open(filename, "w")
+                f.write("#EXTM3U\n")
                 f.close()
-            # Add playlist to cache
-            if new:
                 try:
                     max_idx = max(self._idx.keys())+1
                 except:
@@ -86,20 +76,6 @@ class PlaylistsManager(GObject.GObject):
         """
         filename = self._PLAYLISTS_PATH + "/" + playlist_name + ".m3u"
         return os.path.exists(filename)
-
-    def add_loved(self):
-        """
-            Add loved playlist, will never erase current
-            @thread safe
-        """
-        filename = self._PLAYLISTS_PATH + "/" + self._LOVED + ".m3u"
-        try:
-            if not os.path.exists(filename):
-                f = open(filename, "w")
-                f.write("#EXTM3U\n")
-                GLib.idle_add(self.emit, 'playlists-changed')
-        except Exception as e:
-            print("PlaylistsManager::add_loved: %s" % e)
 
     def rename(self, new_name, old_name):
         """

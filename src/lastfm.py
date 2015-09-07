@@ -295,7 +295,7 @@ class LastFM(LastFMNetwork):
             @param bool as force
         """
         try:
-            Lp.playlists.add_loved()
+            Lp.playlists.add(Lp.playlists._LOVED)
             if force or len(Lp.playlists.get_tracks(Lp.playlists._LOVED)) == 0:
                 tracks = []
                 sql = Lp.db.get_cursor()

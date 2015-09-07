@@ -260,7 +260,7 @@ class ArtistInfos(Gtk.Bin):
             Love a track
             @thread safe
         """
-        Lp.playlists.add_loved()
+        Lp.playlists.add(Lp.playlists._LOVED)
 
         # Add track to Liked tracks
         sql = Lp.db.get_cursor()
@@ -277,7 +277,7 @@ class ArtistInfos(Gtk.Bin):
         """
             Unlove a track
         """
-        Lp.playlists.add_loved()
+        Lp.playlists.add(Lp.playlists._LOVED)
 
         # Del track from Liked tracks
         sql = Lp.db.get_cursor()
