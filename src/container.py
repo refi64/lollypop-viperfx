@@ -548,6 +548,8 @@ class Container:
                 tracks = Lp.tracks.get_never_listened_to(sql)
             elif playlist_id == Type.RANDOMS:
                 tracks = Lp.tracks.get_randoms(sql)
+            else:
+                tracks = Lp.playlists.get_tracks_id(name, sql)
             sql.close()
             return tracks
 
@@ -560,8 +562,7 @@ class Container:
                                        self._stack.get_allocated_width()/2)
         if view:
             # Management or user playlist
-            if playlist_id is None or playlist_id >= 0 or\
-                    playlist_id == Type.LOVED:
+            if playlist_id is None:
                 view.populate()
             else:
                 loader = Loader(target=load, view=view)

@@ -59,25 +59,11 @@ class PlaylistView(View):
             Thread safe
         """
         if tracks:
-            self.populate_tracks(tracks)
-        else:
-            tracks = Lp.playlists.get_tracks_id(self._playlist_name)
             mid_tracks = int(0.5+len(tracks)/2)
             self._playlist_widget.populate_list_left(tracks[:mid_tracks],
                                                      1)
             self._playlist_widget.populate_list_right(tracks[mid_tracks:],
                                                       mid_tracks + 1)
-
-    def populate_tracks(self, tracks):
-        """
-            Populate view with tracks
-            @param tracks as [int]
-        """
-        mid_tracks = int(0.5+len(tracks)/2)
-        self._playlist_widget.populate_list_left(tracks[:mid_tracks],
-                                                 1)
-        self._playlist_widget.populate_list_right(tracks[mid_tracks:],
-                                                  mid_tracks + 1)
 
     def get_name(self):
         """
