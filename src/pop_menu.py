@@ -270,19 +270,6 @@ class PlaylistsMenu(BaseMenu):
                 self.append(_("Add to \"%s\"") % playlist,
                             "app.playlist%s" % i)
             i += 1
-        if not self._is_album:
-            action = Gio.SimpleAction(name="loved")
-            self._app.add_action(action)
-            if utils.is_loved(self._object_id):
-                action.connect('activate',
-                               self._del_from_loved)
-                self.append(_("I dislove this track"),
-                            "app.loved")
-            else:
-                action.connect('activate',
-                               self._add_to_loved)
-                self.append(_("I love this track"),
-                            "app.loved")
 
     def _add_to_playlists(self, action, variant):
         """
