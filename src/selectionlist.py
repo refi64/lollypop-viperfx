@@ -76,7 +76,7 @@ class SelectionList(Gtk.ScrolledWindow):
         Gtk.ScrolledWindow.__init__(self)
         self.set_policy(Gtk.PolicyType.NEVER,
                         Gtk.PolicyType.AUTOMATIC)
-        self._last_motion_event = MotionEvent()
+        self._last_motion_event = None
         self._previous_motion_y = 0.0
         self._timeout = None
         self._to_select_id = Type.NONE
@@ -213,6 +213,7 @@ class SelectionList(Gtk.ScrolledWindow):
                 path = self._model.get_path(selected)
                 self._view.set_cursor(path, None, False)
         except:
+            self._last_motion_event = None
             self._to_select_id = object_id
 
     def get_selected_id(self):
@@ -372,6 +373,8 @@ class SelectionList(Gtk.ScrolledWindow):
                                              self._on_leave_event)
         if event.x < 0.0 or event.y < 0.0:
             return
+        if self._last_motion_event is None:
+            self._last_motion_event = MotionEvent()
         self._last_motion_event.x = event.x
         self._last_motion_event.y = event.y
 
