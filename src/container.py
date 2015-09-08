@@ -635,10 +635,10 @@ class Container:
         """
         if selected_id == Type.PLAYLISTS:
             self._list_two.clear()
-            self._setup_list_playlists(False)
             self._list_two.show()
             if not self._list_two.will_be_selected():
                 self._update_view_playlists(None)
+            self._setup_list_playlists(False)
         elif selected_id < Type.DEVICES:
             self._list_two.hide()
             if not self._list_two.will_be_selected():
