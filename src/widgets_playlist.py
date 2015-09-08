@@ -316,7 +316,8 @@ class PlaylistsManagerWidget(Gtk.Bin):
             @param path as Gtk.TreePath
         """
         iterator = self._model.get_iter(path)
-        self._deleted_path = path
+        self._deleted_path = str(path)  # Need a copy, segfault on 
+                                        # Elementary OS 0.3.1 otherwise
         self._infobar_label.set_text(_("Remove \"%s\"?") %
                                      self._model.get_value(iterator, 1))
         self._infobar.show()
