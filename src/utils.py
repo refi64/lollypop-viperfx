@@ -14,7 +14,7 @@ from gi.repository import Gio
 
 from lollypop.define import Lp
 from gettext import gettext as _
-from _thread import start_new_thread
+from threading import Thread
 import os
 
 
@@ -151,15 +151,17 @@ def set_loved(track_id, loved, sql=None):
             Lp.playlists.add_track(Lp.playlists._LOVED,
                                    Lp.tracks.get_path(track_id, sql))
             if Lp.lastfm is not None:
-                start_new_thread(_set_loved_on_lastfm,
-                                 (track_id, True, sql))
+                t = Thread(target=_set_loved_on_lastfm, args=(track_id, True, sql))
+                t.daemon = True
+                t.start()
     else:
         if not loved:
             Lp.playlists.remove_tracks(Lp.playlists._LOVED,
                                        [Lp.tracks.get_path(track_id, sql)])
             if Lp.lastfm is not None:
-                start_new_thread(_set_loved_on_lastfm,
-                                 (track_id, False, sql))
+                t = Thread(target=_set_loved_on_lastfm, args=(track_id, False, sql))
+                t.daemon = True
+                t.start()
 
     sql.close()
 
