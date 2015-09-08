@@ -44,6 +44,7 @@ class Loader(Thread):
 
     def __init__(self, target, view=None, on_finished=None):
         Thread.__init__(self)
+        self.daemon = True
         self._target = target
         self._view = view
         self._on_finished = on_finished
