@@ -488,7 +488,9 @@ class PlaylistEditWidget(Gtk.Bin):
             populate view if needed
         """
         if len(self._model) == 0:
-            self._append_tracks()
+            t = Thread(target=self._append_tracks)
+            t.daemon = True
+            t.start()
 
 #######################
 # PRIVATE             #
@@ -504,8 +506,10 @@ class PlaylistEditWidget(Gtk.Bin):
         """
             Append tracks
         """
-        track_ids = Lp.playlists.get_tracks_id(self._playlist_name)
-        self._append_track(track_ids)
+        sql = Lp.db.get_cursor()
+        track_ids = Lp.playlists.get_tracks_id(self._playlist_name, sql)
+        sql.close()
+        GLib.idle_add(self._append_track, track_ids)
 
     def _append_track(self, track_ids):
         """
