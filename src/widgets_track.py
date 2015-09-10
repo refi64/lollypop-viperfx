@@ -57,27 +57,24 @@ class Row(Gtk.ListBoxRow):
         """
         pass
 
-    def show_playing(self, show):
+    def show_indicator(self, playing, loved):
         """
-            Show play icon
+            Show indicator
             @param widget name as str
-            @param show as bool
+            @param playing as bool
+            @param loved as bool
         """
-        if show:
+        if playing:
             self._icon.set_from_icon_name('media-playback-start-symbolic', 1)
             self.get_style_context().remove_class('trackrow')
             self.get_style_context().add_class('trackrowplaying')
         else:
-            self._icon.clear()
+            if loved:
+                self._icon.set_from_icon_name('emblem-favorite-symbolic', 1)
+            else:
+                self._icon.clear()
             self.get_style_context().remove_class('trackrowplaying')
             self.get_style_context().add_class('trackrow')
-
-    def show_loved(self, show):
-        """
-            Show loved icon
-            @param show as bool
-        """
-        pass
 
     def set_num_label(self, label):
         """
@@ -236,12 +233,6 @@ class TrackRow(Row):
         Row.set_object_id(self, object_id)
         self._object = Track(self._object_id)
 
-    def show_loved(self, loved):
-        """
-            Show loved
-        """
-        self._loved_img.set_opacity(0.6 if loved else 0.1)
-
     def show_menu(self, show):
         """
             Show menu
@@ -371,11 +362,8 @@ class TracksWidget(Gtk.ListBox):
         track_row = TrackRow()
         track_row.show_menu(self._show_menu)
 
-        if Lp.player.current_track.id == track_id:
-            track_row.show_playing(True)
-
-        if utils.is_loved(track_id):
-            track_row.show_loved(True)
+        track_row.show_indicator(Lp.player.current_track.id == track_id,
+                                 utils.is_loved(track_id))
 
         if pos:
             track_row.set_num_label(
@@ -407,7 +395,7 @@ class TracksWidget(Gtk.ListBox):
         album_row = AlbumRow()
         album_row.show_menu(self._show_menu)
         if Lp.player.current_track.id == track_id:
-            album_row.show_playing(True)
+            album_row.show_indicator(True, utils.is_loved(track_id))
         if pos:
             album_row.set_num_label(
                 '''<span foreground="%s"
@@ -438,10 +426,8 @@ class TracksWidget(Gtk.ListBox):
             @param track id as int
         """
         for row in self.get_children():
-            if row.get_object_id() == track_id:
-                row.show_playing(True)
-            else:
-                row.show_playing(False)
+            row.show_indicator(row.get_object_id() == track_id,
+                               utils.is_loved(row.get_object_id()))
 
     def do_show(self):
         """
