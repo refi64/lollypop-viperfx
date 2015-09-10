@@ -39,6 +39,7 @@
             <property name="can_focus">True</property>
             <property name="receives_default">True</property>
             <property name="valign">center</property>
+            <property name="margin_start">10</property>
             <property name="image">image1</property>
             <property name="relief">none</property>
             <property name="focus_on_click">False</property>
