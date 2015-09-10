@@ -485,8 +485,8 @@ class TracksWidget(Gtk.ListBox):
 
         for row in self.get_children():
             track_id = row.get_object_id()
-
-            row.show_loved(utils.is_loved(track_id))
+            row.show_indicator(track_id == Lp.player.current_track.id,
+                               utils.is_loved(track_id))
 
     def _on_activate(self, widget, row):
         """
