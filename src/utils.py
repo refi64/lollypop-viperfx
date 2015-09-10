@@ -151,7 +151,9 @@ def set_loved(track_id, loved, sql=None):
             Lp.playlists.add_track(Lp.playlists._LOVED,
                                    Lp.tracks.get_path(track_id, sql))
             if Lp.lastfm is not None:
-                t = Thread(target=_set_loved_on_lastfm, args=(track_id, True, sql))
+                t = Thread(target=_set_loved_on_lastfm, args=(track_id,
+                                                              True,
+                                                              sql))
                 t.daemon = True
                 t.start()
     else:
@@ -159,7 +161,9 @@ def set_loved(track_id, loved, sql=None):
             Lp.playlists.remove_tracks(Lp.playlists._LOVED,
                                        [Lp.tracks.get_path(track_id, sql)])
             if Lp.lastfm is not None:
-                t = Thread(target=_set_loved_on_lastfm, args=(track_id, False, sql))
+                t = Thread(target=_set_loved_on_lastfm, args=(track_id,
+                                                              False,
+                                                              sql))
                 t.daemon = True
                 t.start()
 
