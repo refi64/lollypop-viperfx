@@ -145,7 +145,6 @@ def set_loved(track_id, loved, sql=None):
     """
     if sql is None:
         sql = Lp.db.get_cursor()
-
     if not is_loved(track_id):
         if loved:
             Lp.playlists.add_track(Lp.playlists._LOVED,

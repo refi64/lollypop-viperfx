@@ -354,6 +354,7 @@ class PlaylistsManager(GObject.GObject):
             for path in playlist_tracks:
                 if path not in tracks_to_remove:
                     f.write(path+'\n')
+                else:
                     self._playlists[playlist_name].remove_track(path)
             f.close()
         except Exception as e:
