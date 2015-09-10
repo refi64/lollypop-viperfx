@@ -56,7 +56,6 @@ class CollectionScanner(GObject.GObject, ScannerTagReader):
             Update database
             @param progress as Gtk.Scale
         """
-        print(self.is_locked())
         if not self.is_locked():
             progress.show()
             self._progress = progress
