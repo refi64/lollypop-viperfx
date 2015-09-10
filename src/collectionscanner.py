@@ -44,54 +44,50 @@ class CollectionScanner(GObject.GObject, ScannerTagReader):
         self._albums_mtime = {}
         self._tracks_popularity = {}
         self._tracks_ltime = {}
-
+        self._thread = None
         self._inotify = None
         if Lp.settings.get_value('auto-update'):
             self._inotify = Inotify()
         self._is_empty = True
-        self._in_thread = False
-        self._is_locked = False
         self._progress = None
 
     def update(self, progress):
         """
             Update database
-            @param progress as progress bar
+            @param progress as Gtk.Scale
         """
-        # Keep track of on file with missing codecs
-        self._missing_codecs = None
-        self.init_discover()
-        self._progress = progress
-        paths = Lp.settings.get_music_paths()
-        if not paths:
-            return
+        print(self.is_locked())
+        if not self.is_locked():
+            progress.show()
+            self._progress = progress
+            # Keep track of on file with missing codecs
+            self._missing_codecs = None
+            self.init_discover()
+            paths = Lp.settings.get_music_paths()
+            if not paths:
+                return
 
-        if not self._in_thread:
             if Lp.notify is not None:
                 Lp.notify.send(_("Your music is updating"))
-            if self._progress is not None:
-                self._progress.show()
-            self._in_thread = True
-            self._is_locked = True
-            t = Thread(target=self._scan, args=(paths,))
-            t.daemon = True
-            t.start()
+            self._thread = Thread(target=self._scan, args=(paths,))
+            self._thread.daemon = True
+            self._thread.start()
 
     def is_locked(self):
         """
             Return True if db locked
         """
-        return self._is_locked
+        return self._thread is not None and self._thread.isAlive()
 
     def stop(self):
         """
             Stop scan
         """
+        self._thread = None
         if self._progress is not None:
             self._progress.hide()
             self._progress.set_fraction(0.0)
             self._progress = None
-        self._in_thread = False
 
 #######################
 # PRIVATE             #
@@ -139,12 +135,7 @@ class CollectionScanner(GObject.GObject, ScannerTagReader):
         """
             Notify from main thread when scan finished
         """
-        if self._progress is not None:
-            self._progress.hide()
-            self._progress.set_fraction(0.0)
-            self._progress = None
-        self._in_thread = False
-        self._is_locked = False
+        self.stop()
         self.emit("scan-finished")
         if self._missing_codecs is not None:
             Lp.player.load_external(GLib.filename_to_uri(self._missing_codecs))
@@ -174,9 +165,8 @@ class CollectionScanner(GObject.GObject, ScannerTagReader):
 
         i = 0
         for filepath in new_tracks:
-            if not self._in_thread:
+            if self._thread is None:
                 sql.close()
-                self._is_locked = False
                 return
             GLib.idle_add(self._update_progress, i, count)
             try:
