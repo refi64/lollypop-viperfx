@@ -285,13 +285,18 @@ class TrackRow(Row):
             popover.set_pointing_to(rect)
 
         rating = RatingWidget(self._object)
-        rating.set_property('margin_top', 5)
-        rating.set_property('margin_bottom', 5)
+        rating.set_margin_top(5)
+        rating.set_margin_bottom(5)
+        rating.set_property('halign', Gtk.Align.START)
+        rating.set_property('hexpand', True)
         rating.show()
 
         loved = LovedWidget(self._object_id)
+        loved.set_margin_end(5)
         loved.set_margin_top(5)
         loved.set_margin_bottom(5)
+        loved.set_property('halign', Gtk.Align.END)
+        loved.set_property('hexpand', True)
         loved.show()
 
         # Hack to add two widgets in popover
@@ -310,8 +315,11 @@ class TrackRow(Row):
         separator.show()
 
         grid.add(separator)
-        grid.add(rating)
-        grid.add(loved)
+        hgrid = Gtk.Grid()
+        hgrid.add(rating)
+        hgrid.add(loved)
+        hgrid.show()
+        grid.add(hgrid)
 
         popover.add(stack)
         popover.connect('closed', self._on_closed)
