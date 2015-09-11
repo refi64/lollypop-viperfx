@@ -267,8 +267,8 @@ class AlbumDetailedWidget(AlbumWidget):
                 sep.show()
                 grid.attach(sep, 0, i, 2, 1)
                 i += 1
-            self._tracks_left[index] = TracksWidget(pop_allowed)
-            self._tracks_right[index] = TracksWidget(pop_allowed)
+            self._tracks_left[index] = TracksWidget(pop_allowed, True)
+            self._tracks_right[index] = TracksWidget(pop_allowed, True)
             grid.attach(self._tracks_left[index], 0, i, 1, 1)
             grid.attach(self._tracks_right[index], 1, i, 1, 1)
             size_group.add_widget(self._tracks_left[index])

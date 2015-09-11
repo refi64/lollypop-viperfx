@@ -45,8 +45,9 @@ class PlaylistWidget(Gtk.Bin):
         self._main_widget.set_property('column-spacing', 10)
         self._main_widget.show()
 
-        self._tracks_widget1 = TracksWidget(False)
-        self._tracks_widget2 = TracksWidget(False)
+        loved = playlist_name != Lp.playlists._LOVED
+        self._tracks_widget1 = TracksWidget(False, loved)
+        self._tracks_widget2 = TracksWidget(False, loved)
         self._tracks_widget1.connect('activated',
                                      self._on_activated, playlist_name)
         self._tracks_widget2.connect('activated',

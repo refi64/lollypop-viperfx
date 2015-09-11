@@ -27,11 +27,13 @@ class Row(Gtk.ListBoxRow):
         A row
     """
 
-    def __init__(self):
+    def __init__(self, show_loved):
         """
             Init row widgets
+            @param show loved as bool
         """
         Gtk.ListBoxRow.__init__(self)
+        self._show_loved = show_loved
         self._object_id = None
         self._number = 0
         self._row_widget = self._builder.get_object('row')
@@ -68,13 +70,15 @@ class Row(Gtk.ListBoxRow):
             self._icon.set_from_icon_name('media-playback-start-symbolic', 1)
             self.get_style_context().remove_class('trackrow')
             self.get_style_context().add_class('trackrowplaying')
-        else:
+        elif self._show_loved:
             if loved:
                 self._icon.set_from_icon_name('emblem-favorite-symbolic', 1)
             else:
                 self._icon.clear()
             self.get_style_context().remove_class('trackrowplaying')
             self.get_style_context().add_class('trackrow')
+        else:
+            self._icon.clear()
 
     def set_num_label(self, label):
         """
@@ -158,7 +162,7 @@ class AlbumRow(Row):
         A track row with album cover
     """
 
-    def __init__(self):
+    def __init__(self, show_loved):
         """
             Init row widget
         """
@@ -169,7 +173,7 @@ class AlbumRow(Row):
         self._header = self._builder.get_object('header')
         self._artist = self._builder.get_object('artist')
         self._album = self._builder.get_object('album')
-        Row.__init__(self)
+        Row.__init__(self, show_loved)
 
     def set_object_id(self, object_id):
         """
@@ -214,16 +218,21 @@ class TrackRow(Row):
         A track row
     """
 
-    def __init__(self):
+    def __init__(self, show_menu, show_loved):
         """
             Init row widget
+            @parma show menu as bool
+            @param show loved as bool
         """
         self._builder = Gtk.Builder()
         self._builder.add_from_resource('/org/gnome/Lollypop/TrackRow.ui')
         self._builder.connect_signals(self)
-        self._loved_img = self._builder.get_object('loved')
-        self._menu_btn = self._builder.get_object('menu')
-        Row.__init__(self)
+        menu_btn = self._builder.get_object('menu')
+        if show_menu:
+            menu_btn.show()
+        else:
+            menu_btn.hide()
+        Row.__init__(self, show_loved)
 
     def set_object_id(self, object_id):
         """
@@ -232,15 +241,6 @@ class TrackRow(Row):
         """
         Row.set_object_id(self, object_id)
         self._object = Track(self._object_id)
-
-    def show_menu(self, show):
-        """
-            Show menu
-        """
-        if show:
-            self._menu_btn.show()
-        else:
-            self._menu_btn.hide()
 
 #######################
 # PRIVATE             #
@@ -343,7 +343,7 @@ class TracksWidget(Gtk.ListBox):
         'activated': (GObject.SignalFlags.RUN_FIRST, None, (int,))
     }
 
-    def __init__(self, show_menu):
+    def __init__(self, show_menu=False, show_loved=False):
         """
             Init track widget
             @param show_menu as bool if menu need to be displayed
@@ -352,6 +352,7 @@ class TracksWidget(Gtk.ListBox):
         self._queue_signal_id = None
         self._loved_signal_id = None
         self._show_menu = show_menu
+        self._show_loved = show_loved
         self.connect("row-activated", self._on_activate)
         self.get_style_context().add_class('trackswidget')
         self.set_property('hexpand', True)
@@ -367,8 +368,7 @@ class TracksWidget(Gtk.ListBox):
             @param pos as int
             @param show cover as bool
         """
-        track_row = TrackRow()
-        track_row.show_menu(self._show_menu)
+        track_row = TrackRow(self._show_menu, self._show_loved)
 
         track_row.show_indicator(Lp.player.current_track.id == track_id,
                                  utils.is_loved(track_id))
@@ -400,8 +400,7 @@ class TracksWidget(Gtk.ListBox):
             @param pos as int
             @param show cover as bool
         """
-        album_row = AlbumRow()
-        album_row.show_menu(self._show_menu)
+        album_row = AlbumRow(self._show_loved)
         if Lp.player.current_track.id == track_id:
             album_row.show_indicator(True, utils.is_loved(track_id))
         if pos:
