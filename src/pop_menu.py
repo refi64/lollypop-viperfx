@@ -17,6 +17,7 @@ from gettext import gettext as _
 from threading import Thread
 
 from lollypop.define import Lp, NextContext, Type
+from lollypop import utils
 
 
 class BaseMenu(Gio.Menu):
@@ -269,22 +270,6 @@ class PlaylistsMenu(BaseMenu):
                 self.append(_("Add to \"%s\"") % playlist,
                             "app.playlist%s" % i)
             i += 1
-        if not self._is_album:
-            action = Gio.SimpleAction(name="loved")
-            self._app.add_action(action)
-            if Lp.playlists.is_present(Lp.playlists._LOVED,
-                                       self._object_id,
-                                       None,
-                                       False):
-                action.connect('activate',
-                               self._del_from_loved)
-                self.append(_("I dislove this track"),
-                            "app.loved")
-            else:
-                action.connect('activate',
-                               self._add_to_loved)
-                self.append(_("I love this track"),
-                            "app.loved")
 
     def _add_to_playlists(self, action, variant):
         """
@@ -341,30 +326,7 @@ class PlaylistsMenu(BaseMenu):
             @param GVariant
             @param playlist name as str
         """
-        Lp.playlists.add_track(Lp.playlists._LOVED,
-                               Lp.tracks.get_path(self._object_id))
-        if Lp.lastfm is not None:
-            t = Thread(target=self._add_to_loved_on_lastfm)
-            t.daemon = True
-            t.start()
-
-    def _add_to_loved_on_lastfm(self):
-        """
-            Add to loved on lastfm
-        """
-        sql = Lp.db.get_cursor()
-        # Love the track on lastfm
-        if Gio.NetworkMonitor.get_default().get_network_available() and\
-           Lp.lastfm.is_auth():
-            title = Lp.tracks.get_name(self._object_id, sql)
-            album_id = Lp.tracks.get_album_id(self._object_id, sql)
-            artist_id = Lp.albums.get_artist_id(album_id, sql)
-            if artist_id == Type.COMPILATIONS:
-                artist = Lp.tracks.get_artist_names(self._object_id, sql)
-            else:
-                artist = Lp.artists.get_name(artist_id, sql)
-            Lp.lastfm.love(artist, title)
-        sql.close()
+        utils.set_loved(self._object_id, True)
 
     def _del_from_loved(self, action, variant):
         """
@@ -373,30 +335,7 @@ class PlaylistsMenu(BaseMenu):
             @param GVariant
             @param playlist name as str
         """
-        Lp.playlists.remove_tracks(Lp.playlists._LOVED,
-                                   [Lp.tracks.get_path(self._object_id)])
-        if Lp.lastfm is not None:
-            t = Thread(target=self._del_from_loved_on_lastfm)
-            t.daemon = True
-            t.start()
-
-    def _del_from_loved_on_lastfm(self):
-        """
-            Remove from loved on lastfm
-        """
-        sql = Lp.db.get_cursor()
-        # Love the track on lastfm
-        if Gio.NetworkMonitor.get_default().get_network_available() and\
-           Lp.lastfm.is_auth():
-            title = Lp.tracks.get_name(self._object_id, sql)
-            album_id = Lp.tracks.get_album_id(self._object_id, sql)
-            artist_id = Lp.albums.get_artist_id(album_id, sql)
-            if artist_id == Type.COMPILATIONS:
-                artist = Lp.tracks.get_artist_names(self._object_id, sql)
-            else:
-                artist = Lp.artists.get_name(artist_id, sql)
-            Lp.lastfm.unlove(artist, title)
-        sql.close()
+        utils.set_loved(self._object_id, False)
 
 
 class PopToolbarMenu(Gio.Menu):

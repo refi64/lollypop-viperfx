@@ -18,6 +18,7 @@ from threading import Thread
 from cgi import escape
 
 from lollypop.define import Lp
+from lollypop import utils
 
 
 class InfosPopover(Gtk.Popover):
@@ -242,11 +243,7 @@ class ArtistInfos(Gtk.Bin):
         """
         sql = Lp.db.get_cursor()
         if self._track_id is not None:
-            if Lp.playlists.is_present(Lp.playlists._LOVED,
-                                       self._track_id,
-                                       None,
-                                       False,
-                                       sql):
+            if utils.is_loved(self._track_id, sql=sql):
                 self._liked = False
                 self._love_btn.set_tooltip_text(_("I do not love"))
                 self._love_btn.set_image(
@@ -265,13 +262,8 @@ class ArtistInfos(Gtk.Bin):
         # Add track to Liked tracks
         sql = Lp.db.get_cursor()
         if self._track_id is not None:
-            Lp.playlists.add_track(Lp.playlists._LOVED,
-                                   Lp.tracks.get_path(self._track_id,
-                                                      sql))
+            utils.set_loved(self._track_id, True, sql=sql)
         sql.close()
-
-        if Lp.lastfm is not None:
-            Lp.lastfm.love(self._artist, self._title)
 
     def _unlove_track(self):
         """
@@ -282,12 +274,8 @@ class ArtistInfos(Gtk.Bin):
         # Del track from Liked tracks
         sql = Lp.db.get_cursor()
         if self._track_id is not None:
-            Lp.playlists.remove_tracks(
-                Lp.playlists._LOVED,
-                [Lp.tracks.get_path(self._track_id, sql)])
+            utils.set_loved(self._track_id, False, sql=sql)
         sql.close()
-        if Lp.lastfm is not None:
-            Lp.lastfm.unlove(self._artist, self._title)
 
     def _on_love_btn_clicked(self, btn):
         """

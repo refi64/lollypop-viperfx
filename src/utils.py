@@ -14,6 +14,7 @@ from gi.repository import Gio
 
 from lollypop.define import Lp
 from gettext import gettext as _
+from threading import Thread
 import os
 
 
@@ -120,3 +121,70 @@ def rgba_to_hex(color):
     return "#{0:02x}{1:02x}{2:02x}".format(int(color.red * 255),
                                            int(color.green * 255),
                                            int(color.blue * 255))
+
+
+def is_loved(track_id, genre_id=None, is_album=False, sql=None):
+    """
+        Check if object is in loved playlist
+        @param track_id
+        @param genre_id
+        @param is_album
+        @return bool
+    """
+    return Lp.playlists.is_present(Lp.playlists._LOVED,
+                                   track_id,
+                                   genre_id,
+                                   is_album,
+                                   sql)
+
+def set_loved(track_id, loved, sql=None):
+    """
+        Add or remove track from loved playlist
+        @param track_id
+        @param loved Add to loved playlist if `True`; remove if `False`
+    """
+    if sql is None:
+        sql = Lp.db.get_cursor()
+
+    if not is_loved(track_id):
+        if loved:
+            Lp.playlists.add_track(Lp.playlists._LOVED,
+                                   Lp.tracks.get_path(track_id, sql))
+            if Lp.lastfm is not None:
+                t = Thread(target=_set_loved_on_lastfm, args=(track_id, True, sql))
+                t.daemon = True
+                t.start()
+    else:
+        if not loved:
+            Lp.playlists.remove_tracks(Lp.playlists._LOVED,
+                                       [Lp.tracks.get_path(track_id, sql)])
+            if Lp.lastfm is not None:
+                t = Thread(target=_set_loved_on_lastfm, args=(track_id, False, sql))
+                t.daemon = True
+                t.start()
+
+    sql.close()
+
+def _set_loved_on_lastfm(track_id, loved, sql):
+    """
+        Add or remove track from loved playlist on Last.fm
+        @param track_id
+        @param loved Add to loved playlist if `True`; remove if `False`
+    """
+    # Love the track on lastfm
+    if Gio.NetworkMonitor.get_default().get_network_available() and\
+            Lp.lastfm.is_auth():
+        Track
+        title = Lp.tracks.get_name(track_id, sql)
+        album_id = Lp.tracks.get_album_id(track_id, sql)
+        artist_id = Lp.albums.get_artist_id(album_id, sql)
+
+        if artist_id == Type.COMPILATIONS:
+            artist = Lp.tracks.get_artist_names(track_id, sql)
+        else:
+            artist = Lp.artists.get_name(artist_id, sql)
+
+        if loved:
+            Lp.lastfm.love(artist, title)
+        else:
+            Lp.lastfm.unlove(artist, tile)

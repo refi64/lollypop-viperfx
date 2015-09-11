@@ -15,8 +15,11 @@ from gi.repository import GObject, Gtk
 from lollypop.define import Lp, ArtSize
 from lollypop.pop_menu import TrackMenu
 from lollypop.widgets_rating import RatingWidget
+from lollypop.widgets_loved import LovedWidget
 from lollypop.utils import seconds_to_string, rgba_to_hex
 from lollypop.objects import Track, Album
+from lollypop import utils
+
 
 
 class Row(Gtk.ListBoxRow):
@@ -54,7 +57,7 @@ class Row(Gtk.ListBoxRow):
         """
         pass
 
-    def show_icon(self, show):
+    def show_playing(self, show):
         """
             Show play icon
             @param widget name as str
@@ -68,6 +71,13 @@ class Row(Gtk.ListBoxRow):
             self._icon.clear()
             self.get_style_context().remove_class('trackrowplaying')
             self.get_style_context().add_class('trackrow')
+
+    def show_loved(self, show):
+        """
+            Show loved icon
+            @param show as bool
+        """
+        pass
 
     def set_num_label(self, label):
         """
@@ -214,6 +224,7 @@ class TrackRow(Row):
         self._builder = Gtk.Builder()
         self._builder.add_from_resource('/org/gnome/Lollypop/TrackRow.ui')
         self._builder.connect_signals(self)
+        self._loved_img = self._builder.get_object('loved')
         self._menu_btn = self._builder.get_object('menu')
         Row.__init__(self)
 
@@ -224,6 +235,12 @@ class TrackRow(Row):
         """
         Row.set_object_id(self, object_id)
         self._object = Track(self._object_id)
+
+    def show_loved(self, loved):
+        """
+            Show loved
+        """
+        self._loved_img.set_opacity(0.6 if loved else 0.1)
 
     def show_menu(self, show):
         """
@@ -247,7 +264,7 @@ class TrackRow(Row):
             window = widget.get_window()
             if window == event.window:
                 self._popup_menu(widget, event.x, event.y)
-            # Happen when pressing button over menu btn
+            # Happens when pressing button over menu btn
             else:
                 self._popup_menu(self._menu_btn)
             return True
@@ -275,23 +292,36 @@ class TrackRow(Row):
             rect.width = 1
             rect.height = 1
             popover.set_pointing_to(rect)
+
         rating = RatingWidget(self._object)
         rating.set_property('margin_top', 5)
         rating.set_property('margin_bottom', 5)
         rating.show()
+
+        loved = LovedWidget(self._object_id)
+        loved.set_margin_top(5)
+        loved.set_margin_bottom(5)
+        loved.show()
+
         # Hack to add two widgets in popover
         # Use a Gtk.PopoverMenu later (GTK>3.16 available on Debian stable)
-        stack = Gtk.Stack()
         grid = Gtk.Grid()
         grid.set_orientation(Gtk.Orientation.VERTICAL)
+
+        stack = Gtk.Stack()
         stack.add_named(grid, 'main')
         stack.show_all()
+
         menu_widget = popover.get_child()
         menu_widget.reparent(grid)
+
         separator = Gtk.Separator()
         separator.show()
+
         grid.add(separator)
         grid.add(rating)
+        grid.add(loved)
+
         popover.add(stack)
         popover.connect('closed', self._on_closed)
         self.get_style_context().add_class('track-menu-selected')
@@ -320,7 +350,8 @@ class TracksWidget(Gtk.ListBox):
             @param show_menu as bool if menu need to be displayed
         """
         Gtk.ListBox.__init__(self)
-        self._signal_id = None
+        self._queue_signal_id = None
+        self._loved_signal_id = None
         self._show_menu = show_menu
         self.connect("row-activated", self._on_activate)
         self.get_style_context().add_class('trackswidget')
@@ -339,8 +370,13 @@ class TracksWidget(Gtk.ListBox):
         """
         track_row = TrackRow()
         track_row.show_menu(self._show_menu)
+
         if Lp.player.current_track.id == track_id:
-            track_row.show_icon(True)
+            track_row.show_playing(True)
+
+        if utils.is_loved(track_id):
+            track_row.show_loved(True)
+
         if pos:
             track_row.set_num_label(
                 '''<span foreground="%s"
@@ -349,6 +385,7 @@ class TracksWidget(Gtk.ListBox):
                  str(pos)))
         elif num > 0:
             track_row.set_num_label(str(num))
+
         track_row.set_number(num)
         track_row.set_title_label(title)
         track_row.set_duration_label(seconds_to_string(length))
@@ -370,7 +407,7 @@ class TracksWidget(Gtk.ListBox):
         album_row = AlbumRow()
         album_row.show_menu(self._show_menu)
         if Lp.player.current_track.id == track_id:
-            album_row.show_icon(True)
+            album_row.show_playing(True)
         if pos:
             album_row.set_num_label(
                 '''<span foreground="%s"
@@ -402,25 +439,32 @@ class TracksWidget(Gtk.ListBox):
         """
         for row in self.get_children():
             if row.get_object_id() == track_id:
-                row.show_icon(True)
+                row.show_playing(True)
             else:
-                row.show_icon(False)
+                row.show_playing(False)
 
     def do_show(self):
         """
             Set signals callback
         """
-        self._signal_id = Lp.player.connect("queue-changed",
+        self._queue_signal_id = Lp.player.connect("queue-changed",
                                             self._update_pos_label)
+        self._loved_signal_id = Lp.playlists.connect("playlist-changed",
+                                            self._update_loved_icon)
         Gtk.ListBox.do_show(self)
 
     def do_hide(self):
         """
             Clean signals callback
         """
-        if self._signal_id:
-            Lp.player.disconnect(self._signal_id)
-            self._signal_id = None
+        if self._queue_signal_id is not None:
+            Lp.player.disconnect(self._queue_signal_id)
+            self._queue_signal_id = None
+
+        if self._loved_signal_id is not None:
+            Lp.playlists.disconnect(self._loved_signal_id)
+            self._loved_signal_id = None
+
         Gtk.ListBox.do_hide(self)
 
 #######################
@@ -445,6 +489,18 @@ class TracksWidget(Gtk.ListBox):
                 row.set_num_label(str(row.get_number()))
             else:
                 row.set_num_label('')
+
+    def _update_loved_icon(self, widget, playlist_name):
+        """
+            Updates the loved icon
+        """
+        if playlist_name != Lp.playlists._LOVED:
+            return
+
+        for row in self.get_children():
+            track_id = row.get_object_id()
+
+            row.show_loved(utils.is_loved(track_id))
 
     def _on_activate(self, widget, row):
         """
