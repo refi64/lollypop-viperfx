@@ -401,8 +401,8 @@ class TracksWidget(Gtk.ListBox):
             @param show cover as bool
         """
         album_row = AlbumRow(self._show_loved)
-        if Lp.player.current_track.id == track_id:
-            album_row.show_indicator(True, utils.is_loved(track_id))
+        album_row.show_indicator(Lp.player.current_track.id == track_id,
+                                 utils.is_loved(track_id))
         if pos:
             album_row.set_num_label(
                 '''<span foreground="%s"
