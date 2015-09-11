@@ -12,7 +12,7 @@
 
 from gi.repository import Gio
 
-from lollypop.define import Lp
+from lollypop.define import Lp, Type
 from gettext import gettext as _
 from threading import Thread
 import os
@@ -143,16 +143,13 @@ def set_loved(track_id, loved, sql=None):
         @param track_id
         @param loved Add to loved playlist if `True`; remove if `False`
     """
-    if sql is None:
-        sql = Lp.db.get_cursor()
     if not is_loved(track_id):
         if loved:
             Lp.playlists.add_track(Lp.playlists._LOVED,
                                    Lp.tracks.get_path(track_id, sql))
             if Lp.lastfm is not None:
                 t = Thread(target=_set_loved_on_lastfm, args=(track_id,
-                                                              True,
-                                                              sql))
+                                                              True))
                 t.daemon = True
                 t.start()
     else:
@@ -161,19 +158,18 @@ def set_loved(track_id, loved, sql=None):
                                        [Lp.tracks.get_path(track_id, sql)])
             if Lp.lastfm is not None:
                 t = Thread(target=_set_loved_on_lastfm, args=(track_id,
-                                                              False,
-                                                              sql))
+                                                              False))
                 t.daemon = True
                 t.start()
 
-    sql.close()
 
-def _set_loved_on_lastfm(track_id, loved, sql):
+def _set_loved_on_lastfm(track_id, loved):
     """
         Add or remove track from loved playlist on Last.fm
         @param track_id
         @param loved Add to loved playlist if `True`; remove if `False`
     """
+    sql = Lp.db.get_cursor()
     # Love the track on lastfm
     if Gio.NetworkMonitor.get_default().get_network_available() and\
             Lp.lastfm.is_auth():
