@@ -177,7 +177,6 @@ def _set_loved_on_lastfm(track_id, loved, sql):
     # Love the track on lastfm
     if Gio.NetworkMonitor.get_default().get_network_available() and\
             Lp.lastfm.is_auth():
-        Track
         title = Lp.tracks.get_name(track_id, sql)
         album_id = Lp.tracks.get_album_id(track_id, sql)
         artist_id = Lp.albums.get_artist_id(album_id, sql)
