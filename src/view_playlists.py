@@ -12,6 +12,8 @@
 
 from gi.repository import Gtk
 
+from threading import Thread
+
 from lollypop.view import View
 from lollypop.widgets_playlist import PlaylistWidget, PlaylistEditWidget
 from lollypop.widgets_playlist import PlaylistsManagerWidget
@@ -53,7 +55,7 @@ class PlaylistView(View):
         self._scrolledWindow.set_property('expand', True)
         self.add(self._scrolledWindow)
 
-    def populate(self, tracks=None):
+    def populate(self, tracks):
         """
             Populate view with tracks from playlist
             Thread safe
@@ -76,7 +78,7 @@ class PlaylistView(View):
             Do show, connect signals
         """
         self._signal_id = Lp.playlists.connect('playlist-changed',
-                                               self._update_view)
+                                               self._update)
         View.do_show(self)
 
     def do_hide(self):
@@ -97,7 +99,7 @@ class PlaylistView(View):
 #######################
 # PRIVATE             #
 #######################
-    def _update_view(self, manager, playlist_name):
+    def _update(self, manager, playlist_name):
         """
             Update tracks widgets
             @param manager as PlaylistsManager
@@ -105,7 +107,18 @@ class PlaylistView(View):
         """
         if playlist_name == self._playlist_name:
             self._playlist_widget.clear()
-            self.populate()
+            t = Thread(target=self._update_view)
+            t.daemon = True
+            t.start()
+
+    def _update_view(self):
+        """
+            Update tracks widgets
+        """
+        sql = Lp.db.get_cursor()
+        tracks = Lp.playlists.get_tracks_id(self._playlist_name, sql)
+        sql.close()
+        self.populate(tracks)
 
     def _on_edit_btn_clicked(self, button):
         """

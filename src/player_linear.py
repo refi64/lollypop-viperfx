@@ -46,12 +46,15 @@ class LinearPlayer(BasePlayer):
                    self.context.next == NextContext.START_NEW_ALBUM:
                     if self.context.next == NextContext.START_NEW_ALBUM:
                         self.context.next = NextContext.NONE
-                    pos = self._albums.index(album.id)
-                    # we are on last album, go to first
-                    if pos + 1 >= len(self._albums):
-                        pos = 0
-                    else:
-                        pos += 1
+                    try:
+                        pos = self._albums.index(album.id)
+                        # we are on last album, go to first
+                        if pos + 1 >= len(self._albums):
+                            pos = 0
+                        else:
+                            pos += 1
+                    except:
+                        pos = 0  # Happens if current album has been removed
                     track = Album(self._albums[pos],
                                   self.context.genre_id).tracks[0]
                 # next track
@@ -76,11 +79,14 @@ class LinearPlayer(BasePlayer):
                                                 self.current_track.id) - 1
                 # Previous album
                 if new_track_position < 0:
-                    pos = self._albums.index(album.id)
-                    if pos - 1 < 0:  # we are on last album, go to first
-                        pos = len(self._albums) - 1
-                    else:
-                        pos -= 1
+                    try:
+                        pos = self._albums.index(album.id)
+                        if pos - 1 < 0:  # we are on last album, go to first
+                            pos = len(self._albums) - 1
+                        else:
+                            pos -= 1
+                    except:
+                        pos = 0  # Happens if current album has been removed
                     track = Album(self._albums[pos],
                                   self.context.genre_id).tracks[-1]
                 # Previous track
