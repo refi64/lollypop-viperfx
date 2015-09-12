@@ -38,6 +38,21 @@ class LovedWidget(Gtk.Bin):
 #######################
 # PRIVATE             #
 #######################
+    def _on_enter_notify(self, widget, event):
+        """
+            On enter notify, change love opacity
+            @param widget as Gtk.EventBox
+            @param event as Gdk.Event
+        """
+        self.set_opacity(0.1 if is_loved(self._track_id) else 0.6)
+
+    def _on_leave_notify(self, widget, event):
+        """
+            On leave notify, change love opacity
+            @param widget as Gtk.EventBox (can be None)
+            @param event as Gdk.Event (can be None)
+        """
+        self.set_opacity(0.6 if is_loved(self._track_id) else 0.1)
 
     def _on_button_press(self, widget, event):
         """
