@@ -185,4 +185,4 @@ def _set_loved_on_lastfm(track_id, loved):
         if loved:
             Lp.lastfm.love(artist, title)
         else:
-            Lp.lastfm.unlove(artist, tile)
+            Lp.lastfm.unlove(artist, title)
