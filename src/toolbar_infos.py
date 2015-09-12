@@ -14,6 +14,7 @@ from gi.repository import Gtk, Gdk
 from cgi import escape
 
 from lollypop.widgets_rating import RatingWidget
+from lollypop.widgets_loved import LovedWidget
 from lollypop.pop_tunein import TuneinPopover
 from lollypop.pop_externals import ExternalsPopover
 from lollypop.playlists import RadiosManager
@@ -144,9 +145,18 @@ class ToolbarInfos(Gtk.Bin):
                 menu = PopToolbarMenu(Lp.player.current_track.id, None)
                 popover = Gtk.Popover.new_from_model(eventbox, menu)
                 rating = RatingWidget(Lp.player.current_track)
-                rating.set_property('margin_top', 5)
-                rating.set_property('margin_bottom', 5)
+                rating.set_margin_top(5)
+                rating.set_margin_bottom(5)
+                rating.set_property('halign', Gtk.Align.START)
+                rating.set_property('hexpand', True)
                 rating.show()
+                loved = LovedWidget(Lp.player.current_track.id)
+                loved.set_margin_end(5)
+                loved.set_margin_top(5)
+                loved.set_margin_bottom(5)
+                loved.set_property('halign', Gtk.Align.END)
+                loved.set_property('hexpand', True)
+                loved.show()
                 # Hack to add two widgets in popover
                 # Use a Gtk.PopoverMenu later
                 # (GTK>3.16 available on Debian stable)
@@ -160,7 +170,11 @@ class ToolbarInfos(Gtk.Bin):
                 separator = Gtk.Separator()
                 separator.show()
                 grid.add(separator)
-                grid.add(rating)
+                hgrid = Gtk.Grid()
+                hgrid.add(rating)
+                hgrid.add(loved)
+                hgrid.show()
+                grid.add(hgrid)
                 popover.add(stack)
                 popover.show()
             return True
