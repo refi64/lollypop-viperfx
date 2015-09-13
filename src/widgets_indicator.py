@@ -30,7 +30,6 @@ class IndicatorWidget(Gtk.Stack):
                                             Gtk.IconSize.MENU)
         loved = Gtk.Image.new_from_icon_name('emblem-favorite-symbolic',
                                              Gtk.IconSize.MENU)
-        loved.set_opacity(0.6)
         self.add_named(play, 'play')
         self.add_named(loved, 'loved')
         self.set_opacity(0)
@@ -41,14 +40,14 @@ class IndicatorWidget(Gtk.Stack):
             Show play indicator
         """
         self.set_visible_child_name('play')
-        self.set_opacity(1)
+        self.set_opacity(0.8)
 
     def loved(self):
         """
             Show loved indicator
         """
         self.set_visible_child_name('loved')
-        self.set_opacity(1)
+        self.set_opacity(0.8)
 
     def play_loved(self):
         """
