@@ -66,6 +66,7 @@ class Row(Gtk.ListBoxRow):
             @param playing as bool
             @param loved as bool
         """
+        self._indicator.clear()
         if playing:
             self.get_style_context().remove_class('trackrow')
             self.get_style_context().add_class('trackrowplaying')
@@ -77,10 +78,7 @@ class Row(Gtk.ListBoxRow):
             self.get_style_context().remove_class('trackrowplaying')
             self.get_style_context().add_class('trackrow')
             if self._show_loved and loved:
-                self._indicator.clear()
                 self._indicator.loved()
-            else:
-                self._indicator.clear()
 
     def set_num_label(self, label):
         """
