@@ -81,14 +81,14 @@ class PlaylistView(View):
                                                self._update)
         View.do_show(self)
 
-    def do_hide(self):
+    def remove_signals(self):
         """
-            Do hide, disconnect signals
+            Disconnect signals
         """
+        View.remove_signals(self)
         if self._signal_id:
             Lp.playlists.disconnect(self._signal_id)
             self._signal_id = None
-        View.do_hide(self)
 
     def stop(self):
         """
