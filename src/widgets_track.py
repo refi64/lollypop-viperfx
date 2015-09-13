@@ -68,7 +68,6 @@ class Row(Gtk.ListBoxRow):
         """
         self._indicator.clear()
         if playing:
-            self._indicator.set_opacity(1)
             self.get_style_context().remove_class('trackrow')
             self.get_style_context().add_class('trackrowplaying')
             if self._show_loved and loved:
@@ -76,13 +75,12 @@ class Row(Gtk.ListBoxRow):
             else:
                 self._indicator.play()
         else:
-            self._indicator.set_opacity(1)
             self.get_style_context().remove_class('trackrowplaying')
             self.get_style_context().add_class('trackrow')
             if self._show_loved and loved:
                 self._indicator.loved()
             else:
-                self._indicator.set_opacity(0)
+                self._indicator.empty()
 
     def clear_indicator(self):
         """
@@ -180,7 +178,6 @@ class AlbumRow(Row):
         self._builder.add_from_resource('/org/gnome/Lollypop/AlbumRow.ui')
         self._builder.connect_signals(self)
         self._indicator = IndicatorWidget()
-        self._indicator.set_opacity(0)
         self._builder.get_object('row').attach(self._indicator, 1, 1, 1, 2)
         self._cover = self._builder.get_object('cover')
         self._header = self._builder.get_object('header')
@@ -241,7 +238,6 @@ class TrackRow(Row):
         self._builder.add_from_resource('/org/gnome/Lollypop/TrackRow.ui')
         self._builder.connect_signals(self)
         self._indicator = IndicatorWidget()
-        self._indicator.set_opacity(0)
         self._builder.get_object('grid').attach(self._indicator, 0, 0, 1, 1)
         menu_btn = self._builder.get_object('menu')
         if show_menu:

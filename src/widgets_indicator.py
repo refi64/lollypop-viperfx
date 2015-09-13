@@ -26,13 +26,21 @@ class IndicatorWidget(Gtk.Stack):
         self.set_transition_duration(1000)
         self.set_transition_type(Gtk.StackTransitionType.CROSSFADE)
         self._timeout_id = None
+        empty = Gtk.Image.new()
         play = Gtk.Image.new_from_icon_name('media-playback-start-symbolic',
                                             Gtk.IconSize.MENU)
         loved = Gtk.Image.new_from_icon_name('emblem-favorite-symbolic',
                                              Gtk.IconSize.MENU)
+        self.add_named(empty, 'empty')
         self.add_named(play, 'play')
         self.add_named(loved, 'loved')
         self.show_all()
+
+    def empty(self):
+        """
+            Show no indicator
+        """
+        self.set_visible_child_name('empty')
 
     def play(self):
         """
