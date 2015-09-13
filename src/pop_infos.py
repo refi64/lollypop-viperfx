@@ -246,7 +246,7 @@ class ArtistInfos(Gtk.Bin):
             if utils.is_loved(self._track_id, sql=sql):
                 self._liked = False
                 self._love_btn.set_tooltip_text(_("I do not love"))
-                self._love_btn.set_opacity(1)
+                self._love_btn.get_image().set_opacity(1)
         self._love_btn.show()
         sql.close()
 
@@ -283,11 +283,11 @@ class ArtistInfos(Gtk.Bin):
         if self._liked:
             self._love_track()
             self._liked = False
-            btn.set_opacity(1)
+            btn.get_image().set_opacity(1)
             btn.set_tooltip_text(_("I do not love"))
         else:
             self._unlove_track()
-            btn.set_opacity(0.6)
+            btn.get_image().set_opacity(0.2)
             self._liked = True
 
     def _on_view_clicked(self, btn):

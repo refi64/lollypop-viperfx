@@ -10,6 +10,7 @@
   <object class="GtkImage" id="image2">
     <property name="visible">True</property>
     <property name="can_focus">False</property>
+    <property name="opacity">0.20000000000000001</property>
     <property name="icon_name">emblem-favorite-symbolic</property>
   </object>
   <object class="GtkImage" id="image3">
@@ -60,7 +61,6 @@
         <property name="can_focus">True</property>
         <property name="receives_default">True</property>
         <property name="tooltip_text" translatable="yes">I love</property>
-        <property name="opacity">0.59999999999999998</property>
         <property name="halign">start</property>
         <property name="image">image2</property>
         <property name="relief">none</property>
