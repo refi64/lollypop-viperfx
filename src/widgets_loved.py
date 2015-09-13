@@ -33,7 +33,7 @@ class LovedWidget(Gtk.Bin):
         builder.connect_signals(self)
 
         self.add(builder.get_object('widget'))
-        self.set_opacity(0.6 if is_loved(track_id) else 0.1)
+        self.set_opacity(0.8 if is_loved(track_id) else 0.1)
 
 #######################
 # PRIVATE             #
@@ -44,7 +44,7 @@ class LovedWidget(Gtk.Bin):
             @param widget as Gtk.EventBox
             @param event as Gdk.Event
         """
-        self.set_opacity(0.1 if is_loved(self._track_id) else 0.6)
+        self.set_opacity(0.1 if is_loved(self._track_id) else 0.8)
 
     def _on_leave_notify(self, widget, event):
         """
@@ -52,7 +52,7 @@ class LovedWidget(Gtk.Bin):
             @param widget as Gtk.EventBox (can be None)
             @param event as Gdk.Event (can be None)
         """
-        self.set_opacity(0.6 if is_loved(self._track_id) else 0.1)
+        self.set_opacity(0.8 if is_loved(self._track_id) else 0.1)
 
     def _on_button_press(self, widget, event):
         """
@@ -62,4 +62,4 @@ class LovedWidget(Gtk.Bin):
         """
         loved = not is_loved(self._track_id)
         set_loved(self._track_id, loved)
-        self.set_opacity(0.6 if loved else 0.1)
+        self.set_opacity(0.8 if loved else 0.1)
