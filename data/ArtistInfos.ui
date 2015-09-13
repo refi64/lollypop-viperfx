@@ -60,6 +60,7 @@
         <property name="can_focus">True</property>
         <property name="receives_default">True</property>
         <property name="tooltip_text" translatable="yes">I love</property>
+        <property name="opacity">0.59999999999999998</property>
         <property name="halign">start</property>
         <property name="image">image2</property>
         <property name="relief">none</property>
