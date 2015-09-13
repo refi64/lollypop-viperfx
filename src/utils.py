@@ -137,6 +137,7 @@ def is_loved(track_id, genre_id=None, is_album=False, sql=None):
                                    is_album,
                                    sql)
 
+
 def set_loved(track_id, loved, sql=None):
     """
         Add or remove track from loved playlist
