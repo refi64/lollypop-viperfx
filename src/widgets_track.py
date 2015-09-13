@@ -232,7 +232,6 @@ class TrackRow(Row):
         self._builder.add_from_resource('/org/gnome/Lollypop/TrackRow.ui')
         self._builder.connect_signals(self)
         self._indicator = IndicatorWidget()
-        self._indicator.show()
         self._builder.get_object('grid').attach(self._indicator, 0, 0, 1, 1)
         menu_btn = self._builder.get_object('menu')
         if show_menu:
