@@ -46,7 +46,7 @@ class View(Gtk.Grid):
 
     def remove_signals(self):
         """
-            Remove signals on player object
+            Remove signals
         """
         if self._current_signal:
             Lp.player.disconnect(self._current_signal)
@@ -57,6 +57,8 @@ class View(Gtk.Grid):
         if self._scan_signal:
             Lp.scanner.disconnect(self._scan_signal)
             self._scan_signal = None
+        for child in self._get_children():
+            child.remove_signals()
 
     def stop(self):
         """

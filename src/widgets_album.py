@@ -107,6 +107,12 @@ class AlbumWidget(Gtk.Bin):
         if window is not None:
             window.set_cursor(Gdk.Cursor(cursor))
 
+    def remove_signals(self):
+        """
+            Remove signals
+        """
+    pass
+
 #######################
 # PRIVATE             #
 #######################
@@ -358,6 +364,16 @@ class AlbumDetailedWidget(AlbumWidget):
             AlbumWidget.update_cursor(self, Gdk.CursorType.HAND1)
         else:
             AlbumWidget.update_cursor(self, Gdk.CursorType.PENCIL)
+
+    def remove_signals(self):
+        """
+            Remove signals
+        """
+        AlbumWidget.remove_signals(self)
+        for child in self._tracks_left:
+            self._tracks_left[child].remove_signals()
+        for child in self._tracks_right:
+            self._tracks_right[child].remove_signals()
 
 #######################
 # PRIVATE             #

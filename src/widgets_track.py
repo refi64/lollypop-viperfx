@@ -452,9 +452,9 @@ class TracksWidget(Gtk.ListBox):
                                                      self._update_loved_icon)
         Gtk.ListBox.do_show(self)
 
-    def do_hide(self):
+    def remove_signals(self):
         """
-            Clean signals callback
+            Remove signals
         """
         if self._queue_signal_id is not None:
             Lp.player.disconnect(self._queue_signal_id)
@@ -463,8 +463,6 @@ class TracksWidget(Gtk.ListBox):
         if self._loved_signal_id is not None:
             Lp.playlists.disconnect(self._loved_signal_id)
             self._loved_signal_id = None
-
-        Gtk.ListBox.do_hide(self)
 
 #######################
 # PRIVATE             #
