@@ -63,4 +63,3 @@ class LovedWidget(Gtk.Bin):
         loved = not is_loved(self._track_id)
         set_loved(self._track_id, loved)
         self.set_opacity(0.6 if loved else 0.1)
-

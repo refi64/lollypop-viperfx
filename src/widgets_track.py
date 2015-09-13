@@ -22,7 +22,6 @@ from lollypop.objects import Track, Album
 from lollypop import utils
 
 
-
 class Row(Gtk.ListBoxRow):
     """
         A row
@@ -71,14 +70,14 @@ class Row(Gtk.ListBoxRow):
             self.get_style_context().remove_class('trackrow')
             self.get_style_context().add_class('trackrowplaying')
             if self._show_loved and loved:
-                 self._indicator.play_loved()
+                self._indicator.play_loved()
             else:
                 self._indicator.play()
         else:
             self.get_style_context().remove_class('trackrowplaying')
             self.get_style_context().add_class('trackrow')
             if self._show_loved and loved:
-                self._indicator.clear() 
+                self._indicator.clear()
                 self._indicator.loved()
             else:
                 self._indicator.clear()
@@ -449,9 +448,9 @@ class TracksWidget(Gtk.ListBox):
             Set signals callback
         """
         self._queue_signal_id = Lp.player.connect("queue-changed",
-                                            self._update_pos_label)
+                                                  self._update_pos_label)
         self._loved_signal_id = Lp.playlists.connect("playlist-changed",
-                                            self._update_loved_icon)
+                                                     self._update_loved_icon)
         Gtk.ListBox.do_show(self)
 
     def do_hide(self):

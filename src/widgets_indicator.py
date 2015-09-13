@@ -17,7 +17,7 @@ class IndicatorWidget(Gtk.Stack):
     """
         Show play/loved indicator
     """
-    
+
     def __init__(self):
         """
             Init indicator widget
@@ -35,7 +35,7 @@ class IndicatorWidget(Gtk.Stack):
         self.add_named(loved, 'loved')
         self.set_opacity(0)
         self.show_all()
-        
+
     def play(self):
         """
             Show play indicator
@@ -52,7 +52,7 @@ class IndicatorWidget(Gtk.Stack):
 
     def play_loved(self):
         """
-            Show play/loved indicator 
+            Show play/loved indicator
         """
         self.play()
         self._timeout_id = GLib.timeout_add(2000, self._play_loved)
@@ -71,7 +71,7 @@ class IndicatorWidget(Gtk.Stack):
 #######################
     def _play_loved(self):
         """
-            Show play/loved indicator 
+            Show play/loved indicator
         """
         if self._timeout_id is None:
             return False
