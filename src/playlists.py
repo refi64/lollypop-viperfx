@@ -22,13 +22,15 @@ from lollypop.define import Lp
 # A cached playlist
 class Playlist:
 
-    def __init__(self, index):
+    def __init__(self, index, name):
         """
             Init playlist
             @param index as int
+            @param name as str
         """
         self._cache = []
         self._index = index
+        self._name = name
 
     def get_index(self):
         """
@@ -36,6 +38,13 @@ class Playlist:
             @return index as int
         """
         return self._index
+
+    def get_name(self):
+        """
+            Get playlist name
+            @return name as str
+        """
+        return self._name
 
     def add_track(self, track):
         """
@@ -115,7 +124,8 @@ class PlaylistsManager(GObject.GObject):
                 f.write("#EXTM3U\n")
                 f.close()
                 self._index += 1
-                self._playlists[playlist_name] = Playlist(self._index)
+                self._playlists[playlist_name] = Playlist(self._index,
+                                                          playlist_name)
                 GLib.idle_add(self.emit, 'playlists-changed')
         except Exception as e:
             print("PlaylistsManager::add: %s" % e)
@@ -161,7 +171,8 @@ class PlaylistsManager(GObject.GObject):
             @return array of (id, string)
         """
         playlists = []
-        for item in sorted(self._playlists.items()):
+        for item in sorted(self._playlists.items(),
+                           key=lambda s:s[1].get_name().lower()):
             if item[0] != self._LOVED:
                 playlists.append((item[1].get_index(), item[0]))
         return playlists
@@ -321,7 +332,8 @@ class PlaylistsManager(GObject.GObject):
         try:
             for filename in sorted(os.listdir(self._PLAYLISTS_PATH)):
                 if filename.endswith(".m3u"):
-                    self._playlists[filename[:-4]] = Playlist(self._index)
+                    self._playlists[filename[:-4]] = Playlist(self._index,
+                                                              filename[:-4])
                     self._index += 1
         except Exception as e:
             print("Lollypop::PlaylistManager::get: %s" % e)
