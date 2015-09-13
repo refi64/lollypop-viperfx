@@ -92,11 +92,11 @@ class RadiosView(View):
         self._signal = Lp.art.connect('logo-changed',
                                       self._on_logo_changed)
 
-    def do_hide(self):
+    def remove_signals(self):
         """
-            Disconnect player signal
+            Disconnect signals
         """
-        View.do_hide(self)
+        View.remove_signals(self)
         if self._signal is not None:
             Lp.art.disconnect(self._signal)
 
