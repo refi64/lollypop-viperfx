@@ -240,6 +240,7 @@ class TrackRow(Row):
         self._indicator = IndicatorWidget()
         self._builder.get_object('grid').attach(self._indicator, 0, 0, 1, 1)
         menu_btn = self._builder.get_object('menu')
+        self._show_menu = show_menu
         if show_menu:
             menu_btn.show()
         else:
@@ -263,6 +264,8 @@ class TrackRow(Row):
             @param widget as Gtk.Widget
             @param event as Gdk.Event
         """
+        if not self._show_menu:
+            return
         if event.button != 1:
             window = widget.get_window()
             if window == event.window:
