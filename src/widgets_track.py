@@ -172,7 +172,7 @@ class AlbumRow(Row):
         self._builder.add_from_resource('/org/gnome/Lollypop/AlbumRow.ui')
         self._builder.connect_signals(self)
         self._indicator = IndicatorWidget()
-        self._builder.get_object('row').attach(self._indicator, 1, 0, 1, 1)
+        self._builder.get_object('row').attach(self._indicator, 1, 1, 1, 2)
         self._cover = self._builder.get_object('cover')
         self._header = self._builder.get_object('header')
         self._artist = self._builder.get_object('artist')
