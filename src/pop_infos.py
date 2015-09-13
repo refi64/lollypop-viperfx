@@ -96,7 +96,6 @@ class ArtistInfos(Gtk.Bin):
             @param track_id as int
         """
         Gtk.Bin.__init__(self)
-        self._wikia_url = None
         self._liked = True  # Liked track or not?
         self._wikipedia = True
         self._artist = artist
@@ -326,20 +325,15 @@ class ArtistInfos(Gtk.Bin):
             self._scrolled_lyrics.add(view)
         artist = Lp.player.current_track.album_artist.replace(' ', '_')
         title = Lp.player.current_track.title.replace(' ', '_')
-        self._wikia_url = "http://lyrics.wikia.com/wiki/%s:%s" % \
-                                            (GLib.uri_escape_string(artist,
-                                                                    None,
-                                                                    False),
-                                             GLib.uri_escape_string(title,
-                                                                    None,
-                                                                    False))
-        view.load_uri(self._wikia_url)
+        wikia_url = "http://lyrics.wikia.com/wiki/%s:%s" % (artist,
+                                                                  title)
+        view.load_uri(wikia_url)
         if btn is not None:
             self._view_btn.set_tooltip_text(_("Wikipedia"))
             self._view_btn.set_sensitive(True)
         self._lyrics_btn.set_sensitive(False)
         self._url_btn.set_label(_("Wikia"))
-        self._url_btn.set_uri(self._wikia_url)
+        self._url_btn.set_uri(wikia_url)
         self._stack.set_visible_child(self._scrolled_lyrics)
 
     def _on_navigation_policy(self, view, frame, request,
@@ -353,9 +347,9 @@ class ArtistInfos(Gtk.Bin):
             @param policy_decision as WebKit.WebPolicyDecision
             @return bool
         """
-        if self._wikia_url == request.get_uri():
+        if navigation_action.get_button() == -1:
             return False
-        elif request.get_uri() != 'about:blank':
+        else:
             GLib.spawn_command_line_async("xdg-open \"%s\"" %
                                           request.get_uri())
-        return True
+            return True
