@@ -326,8 +326,13 @@ class ArtistInfos(Gtk.Bin):
             self._scrolled_lyrics.add(view)
         artist = Lp.player.current_track.album_artist.replace(' ', '_')
         title = Lp.player.current_track.title.replace(' ', '_')
-        self._wikia_url = "http://lyrics.wikia.com/wiki/%s:%s" % (artist,
-                                                                  title)
+        self._wikia_url = "http://lyrics.wikia.com/wiki/%s:%s" % \
+                                            (GLib.uri_escape_string(artist,
+                                                                    None,
+                                                                    False),
+                                             GLib.uri_escape_string(title,
+                                                                    None,
+                                                                    False))
         view.load_uri(self._wikia_url)
         if btn is not None:
             self._view_btn.set_tooltip_text(_("Wikipedia"))
