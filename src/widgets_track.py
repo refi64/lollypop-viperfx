@@ -14,6 +14,7 @@ from gi.repository import GObject, Gtk
 
 from lollypop.define import Lp, ArtSize
 from lollypop.pop_menu import TrackMenu
+from lollypop.widgets_indicator import IndicatorWidget
 from lollypop.widgets_rating import RatingWidget
 from lollypop.widgets_loved import LovedWidget
 from lollypop.utils import seconds_to_string, rgba_to_hex
@@ -67,18 +68,20 @@ class Row(Gtk.ListBoxRow):
             @param loved as bool
         """
         if playing:
-            self._icon.set_from_icon_name('media-playback-start-symbolic', 1)
             self.get_style_context().remove_class('trackrow')
             self.get_style_context().add_class('trackrowplaying')
-        elif self._show_loved:
-            if loved:
-                self._icon.set_from_icon_name('emblem-favorite-symbolic', 1)
+            if self._show_loved and loved:
+                 self._indicator.play_loved()
             else:
-                self._icon.clear()
+                self._indicator.play()
+        else:
             self.get_style_context().remove_class('trackrowplaying')
             self.get_style_context().add_class('trackrow')
-        else:
-            self._icon.clear()
+            if self._show_loved and loved:
+                self._indicator.clear() 
+                self._indicator.loved()
+            else:
+                self._indicator.clear()
 
     def set_num_label(self, label):
         """
@@ -169,6 +172,8 @@ class AlbumRow(Row):
         self._builder = Gtk.Builder()
         self._builder.add_from_resource('/org/gnome/Lollypop/AlbumRow.ui')
         self._builder.connect_signals(self)
+        self._indicator = IndicatorWidget()
+        self._builder.get_object('row').attach(self._indicator, 1, 0, 1, 1)
         self._cover = self._builder.get_object('cover')
         self._header = self._builder.get_object('header')
         self._artist = self._builder.get_object('artist')
@@ -227,6 +232,9 @@ class TrackRow(Row):
         self._builder = Gtk.Builder()
         self._builder.add_from_resource('/org/gnome/Lollypop/TrackRow.ui')
         self._builder.connect_signals(self)
+        self._indicator = IndicatorWidget()
+        self._indicator.show()
+        self._builder.get_object('grid').attach(self._indicator, 0, 0, 1, 1)
         menu_btn = self._builder.get_object('menu')
         if show_menu:
             menu_btn.show()

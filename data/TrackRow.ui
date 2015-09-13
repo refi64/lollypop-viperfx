@@ -14,25 +14,9 @@
     <property name="can_focus">False</property>
     <signal name="button-press-event" handler="_on_button_press" swapped="no"/>
     <child>
-      <object class="GtkBox" id="box">
+      <object class="GtkGrid" id="grid">
         <property name="visible">True</property>
         <property name="can_focus">False</property>
-        <property name="margin_start">10</property>
-        <child>
-          <object class="GtkImage" id="icon">
-            <property name="width_request">16</property>
-            <property name="visible">True</property>
-            <property name="can_focus">False</property>
-            <property name="opacity">0.59999999999999998</property>
-            <property name="halign">center</property>
-            <property name="icon_size">1</property>
-          </object>
-          <packing>
-            <property name="expand">False</property>
-            <property name="fill">False</property>
-            <property name="position">0</property>
-          </packing>
-        </child>
         <child>
           <object class="GtkButton" id="menu">
             <property name="width_request">42</property>
@@ -52,10 +36,8 @@
             </style>
           </object>
           <packing>
-            <property name="expand">False</property>
-            <property name="fill">False</property>
-            <property name="pack_type">end</property>
-            <property name="position">0</property>
+            <property name="left_attach">4</property>
+            <property name="top_attach">0</property>
           </packing>
         </child>
         <child>
@@ -71,22 +53,22 @@
             </style>
           </object>
           <packing>
-            <property name="expand">False</property>
-            <property name="fill">False</property>
-            <property name="position">2</property>
+            <property name="left_attach">1</property>
+            <property name="top_attach">0</property>
           </packing>
         </child>
         <child>
           <object class="GtkLabel" id="title">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
+            <property name="halign">start</property>
+            <property name="hexpand">True</property>
             <property name="ellipsize">end</property>
             <signal name="query-tooltip" handler="_on_title_query_tooltip" swapped="no"/>
           </object>
           <packing>
-            <property name="expand">False</property>
-            <property name="fill">False</property>
-            <property name="position">5</property>
+            <property name="left_attach">2</property>
+            <property name="top_attach">0</property>
           </packing>
         </child>
         <child>
@@ -100,11 +82,12 @@
             </style>
           </object>
           <packing>
-            <property name="expand">False</property>
-            <property name="fill">False</property>
-            <property name="pack_type">end</property>
-            <property name="position">6</property>
+            <property name="left_attach">3</property>
+            <property name="top_attach">0</property>
           </packing>
+        </child>
+        <child>
+          <placeholder/>
         </child>
       </object>
     </child>

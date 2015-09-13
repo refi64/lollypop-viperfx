@@ -64,6 +64,7 @@ app_PYTHON = \
     view_radios.py\
     widgets_album.py\
     widgets_device.py\
+    widgets_indicator.py\
     widgets_loved.py\
     widgets_playlist.py\
     widgets_radio.py\
