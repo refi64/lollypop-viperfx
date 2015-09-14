@@ -12,7 +12,6 @@
 
 from gi.repository import Gtk
 
-from lollypop.define import Lp
 from lollypop.utils import is_loved, set_loved
 
 

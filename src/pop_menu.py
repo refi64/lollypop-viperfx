@@ -16,7 +16,7 @@ from shutil import which
 from gettext import gettext as _
 from threading import Thread
 
-from lollypop.define import Lp, NextContext, Type
+from lollypop.define import Lp, NextContext
 from lollypop import utils
 
 
