@@ -23,7 +23,8 @@ class IndicatorWidget(Gtk.Stack):
             Init indicator widget
         """
         Gtk.Stack.__init__(self)
-        self.set_transition_duration(1000)
+        self._pass = 1
+        self.set_transition_duration(500)
         self.set_transition_type(Gtk.StackTransitionType.CROSSFADE)
         self._timeout_id = None
         empty = Gtk.Image.new()
@@ -58,8 +59,9 @@ class IndicatorWidget(Gtk.Stack):
         """
             Show play/loved indicator
         """
+        self._pass = 1
         self.play()
-        self._timeout_id = GLib.timeout_add(2000, self._play_loved)
+        self._timeout_id = GLib.timeout_add(500, self._play_loved)
 
     def clear(self):
         """
@@ -79,7 +81,10 @@ class IndicatorWidget(Gtk.Stack):
         if self._timeout_id is None:
             return False
         if self.get_visible_child_name() == 'play':
-            self.loved()
+            if self._pass == 10:
+                self._pass = 0
+                self.loved()
         else:
             self.play()
+        self._pass += 1
         return True
