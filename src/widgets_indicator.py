@@ -32,7 +32,6 @@ class IndicatorWidget(Gtk.Stack):
                                              Gtk.IconSize.MENU)
         self.add_named(play, 'play')
         self.add_named(loved, 'loved')
-        self.set_opacity(0)
         self.show_all()
 
     def play(self):
@@ -40,14 +39,12 @@ class IndicatorWidget(Gtk.Stack):
             Show play indicator
         """
         self.set_visible_child_name('play')
-        self.set_opacity(1)
 
     def loved(self):
         """
             Show loved indicator
         """
         self.set_visible_child_name('loved')
-        self.set_opacity(1)
 
     def play_loved(self):
         """
@@ -55,16 +52,14 @@ class IndicatorWidget(Gtk.Stack):
         """
         self.play()
         self._timeout_id = GLib.timeout_add(2000, self._play_loved)
-        self.set_opacity(1)
 
     def clear(self):
         """
-            Show nothing
+            Remove timeout
         """
         if self._timeout_id is not None:
             GLib.source_remove(self._timeout_id)
             self._timeout_id = None
-        self.set_opacity(0)
 
 #######################
 # PRIVATE             #
