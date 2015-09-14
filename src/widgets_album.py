@@ -296,7 +296,7 @@ class AlbumDetailedWidget(AlbumWidget):
         self.set_cover()
 
         builder.get_object('title').set_label(self._album.name)
-        if self._album.year != '':
+        if self._album.year:
             year = builder.get_object('year')
             year.set_label(self._album.year)
             year.show()
