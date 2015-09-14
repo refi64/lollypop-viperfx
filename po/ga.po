@@ -1,0 +1,764 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# 
+# Translators:
+# David Ó Laigheanáin, 2015
+msgid ""
+msgstr ""
+"Project-Id-Version: lollypop\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2015-08-10 13:55+0200\n"
+"PO-Revision-Date: 2015-08-26 17:05+0000\n"
+"Last-Translator: David Ó Laigheanáin\n"
+"Language-Team: Irish (http://www.transifex.com/gnumdk/lollypop/language/ga/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: ga\n"
+"Plural-Forms: nplurals=5; plural=(n==1 ? 0 : n==2 ? 1 : n<7 ? 2 : n<11 ? 3 : 4);\n"
+
+#: ../data/org.gnome.Lollypop.gschema.xml.h:1
+msgid "Window size"
+msgstr "Méid fuinneoige"
+
+#: ../data/org.gnome.Lollypop.gschema.xml.h:2
+msgid "Window size (width and height)."
+msgstr "Méid fuinneoige (leithead agus airde)."
+
+#: ../data/org.gnome.Lollypop.gschema.xml.h:3
+msgid "Window position"
+msgstr "Ionad fuinneoige"
+
+#: ../data/org.gnome.Lollypop.gschema.xml.h:4
+msgid "Window position (x and y)."
+msgstr "Ionad fuinneoige (x agus y)."
+
+#: ../data/org.gnome.Lollypop.gschema.xml.h:5
+msgid "Window maximized"
+msgstr "Fuinneog uasmhéadaithe"
+
+#: ../data/org.gnome.Lollypop.gschema.xml.h:6
+msgid "Window maximized state."
+msgstr "Staid uasmhéadaithe fuinneoige."
+
+#: ../data/org.gnome.Lollypop.gschema.xml.h:7
+msgid "Enabled genres in party mode"
+msgstr "Seánraí ar chumas i mód cóisire"
+
+#: ../data/org.gnome.Lollypop.gschema.xml.h:8
+msgid "Ids for genres."
+msgstr "Aitheanta seánraí."
+
+#: ../data/org.gnome.Lollypop.gschema.xml.h:9
+msgid "Music paths"
+msgstr "Cosáin ceoil"
+
+#: ../data/org.gnome.Lollypop.gschema.xml.h:10
+msgid "When empty, use XDG_MUSIC_DIR"
+msgstr "Nuair folamh, úsáid XDG_MUSIC_DIR"
+
+#: ../data/org.gnome.Lollypop.gschema.xml.h:11
+msgid "Last.fm login"
+msgstr "Sonraí logála isteach Last.fm"
+
+#: ../data/org.gnome.Lollypop.gschema.xml.h:12
+msgid "Favorite tag editor"
+msgstr "Eagarthóir clibe na coitiantachta"
+
+#: ../data/org.gnome.Lollypop.gschema.xml.h:13
+msgid "Favorite cover file"
+msgstr "Comhad clúdaigh na coitiantachta"
+
+#: ../data/org.gnome.Lollypop.gschema.xml.h:14
+msgid "Restart needed"
+msgstr "Atosú de dhíth"
+
+#: ../data/org.gnome.Lollypop.gschema.xml.h:15
+msgid "Database version"
+msgstr "Leagan bhunachair sonraí"
+
+#: ../data/org.gnome.Lollypop.gschema.xml.h:16
+msgid ""
+"Reset this value will reset the database, popular albums will be restored"
+msgstr "Athshocraigh an luach seo chun an bunachar sonraí a athshochrú. Athbhunófar albaim a bhfuil tóir orthu."
+
+#: ../data/org.gnome.Lollypop.gschema.xml.h:17
+msgid "Replay gain value in db"
+msgstr "Luach ReplayGain i ndeicibéilí"
+
+#: ../data/org.gnome.Lollypop.gschema.xml.h:18
+msgid "Between -15 and 15"
+msgstr "Idir -15 agus 15"
+
+#: ../data/org.gnome.Lollypop.gschema.xml.h:19 ../data/SettingsDialog.ui.h:2
+msgid "Auto update music"
+msgstr "Uath-nuashonraigh ceol"
+
+#: ../data/org.gnome.Lollypop.gschema.xml.h:20
+msgid "Show genres list"
+msgstr "Taispeáin liosta seánraí"
+
+#: ../data/org.gnome.Lollypop.gschema.xml.h:21
+msgid "Use dark gtk theme"
+msgstr "Úsáid cuma dhorcha gtk"
+
+#: ../data/org.gnome.Lollypop.gschema.xml.h:22
+msgid "Disable the use client side window decorations (headerbar)"
+msgstr "Díchumasaigh maisiúcháin fhuinneoige an chliaint (barra ceanntáisc)"
+
+#: ../data/org.gnome.Lollypop.gschema.xml.h:23 ../data/SettingsDialog.ui.h:9
+msgid "Show compilations in albums view"
+msgstr "Taispeáin teaglaimí i radharc albam"
+
+#: ../data/org.gnome.Lollypop.gschema.xml.h:24 ../data/SettingsDialog.ui.h:4
+msgid "Continue playback when closed"
+msgstr "Lean ar athsheinm nuair dúnta"
+
+#: ../data/org.gnome.Lollypop.gschema.xml.h:25
+msgid "Restore previous state"
+msgstr "Athbhunaigh staid roimhe"
+
+#: ../data/org.gnome.Lollypop.gschema.xml.h:26
+msgid "Auto play albums on click"
+msgstr "Uath-nuashonraigh albam ar chliceáil"
+
+#: ../data/org.gnome.Lollypop.gschema.xml.h:27
+msgid "Disable MPRIS"
+msgstr "Míchumasaigh MPRIS"
+
+#: ../data/org.gnome.Lollypop.gschema.xml.h:28
+msgid "Disable notifications"
+msgstr "Míchumasaigh fógraí"
+
+#: ../data/org.gnome.Lollypop.gschema.xml.h:29
+msgid "Show track number from tags"
+msgstr "Taispeáin uimhir riain as chlibeanna"
+
+#: ../data/org.gnome.Lollypop.gschema.xml.h:30
+msgid "INTERNAL"
+msgstr "INMHEÁNACH"
+
+#: ../data/org.gnome.Lollypop.gschema.xml.h:31
+msgid "Shuffle mode"
+msgstr "Mód suaite"
+
+#. Translators: Don't translate allowed values, just the description in the
+#. brackets
+#: ../data/org.gnome.Lollypop.gschema.xml.h:33
+msgid ""
+"Value identifies whether to shuffle tracks/albums. Allowed values are: "
+"\"none\" (shuffle off), \"tracks\" (shuffle tracks) , \"albums\" (shuffle "
+"albums), \"tracks_artist\" (shuffle tracks from artist), \"albums_artist\" "
+"(shuffle albums from artist)."
+msgstr ""
+
+#: ../data/lollypop.desktop.in.h:1 ../data/lollypop.appdata.xml.in.h:1
+msgid "Lollypop"
+msgstr "Lollypop"
+
+#: ../data/lollypop.desktop.in.h:2
+msgid "Music Player"
+msgstr "Seinnteoir Ceoil"
+
+#: ../data/lollypop.desktop.in.h:3 ../data/lollypop.appdata.xml.in.h:2
+msgid "Play and organize your music collection"
+msgstr "Seinn agus eagraigh do bhailiúchán ceoil"
+
+#: ../data/lollypop.appdata.xml.in.h:3
+msgid "Lollypop is a new GNOME music playing application."
+msgstr "Is ríomhchlár nua le seinm ceoil Lollypop"
+
+#: ../data/lollypop.appdata.xml.in.h:4
+msgid "It provides:"
+msgstr "Cuireann sé ar fáil:"
+
+#: ../data/lollypop.appdata.xml.in.h:5
+msgid "mp3/4, ogg and flac playback"
+msgstr "Athsheinm mp3/4, ogg agus flac"
+
+#: ../data/lollypop.appdata.xml.in.h:6
+msgid "Genre/Cover browsing"
+msgstr "Brabhsáil ar Sheánra/Chlúdach"
+
+#: ../data/lollypop.appdata.xml.in.h:7
+msgid "Genre/Artist/Cover browsing"
+msgstr "Brabhsáil ar Sheánra/Ealaíontóir/Chlúdach"
+
+#: ../data/lollypop.appdata.xml.in.h:8 ../data/ToolbarEnd.ui.h:9
+msgid "Search"
+msgstr "Cuardach"
+
+#: ../data/lollypop.appdata.xml.in.h:9 ../src/pop_menu.py:467
+#: ../src/pop_menu.py:487 ../data/ToolbarEnd.ui.h:10
+msgid "Queue"
+msgstr "Scuaine"
+
+#: ../data/lollypop.appdata.xml.in.h:10 ../data/SettingsDialog.ui.h:16
+#: ../data/ToolbarEnd.ui.h:8
+msgid "Party mode"
+msgstr "Modh cóisire"
+
+#: ../data/lollypop.appdata.xml.in.h:11
+msgid "Replay gain"
+msgstr "ReplayGain"
+
+#: ../data/lollypop.appdata.xml.in.h:12
+msgid "Cover art downloader"
+msgstr "Aimseadóir ealaín clúdaigh"
+
+#: ../data/lollypop.appdata.xml.in.h:13
+msgid "Context artist view"
+msgstr "Radharc ealaíntóra comhthéacsúil"
+
+#: ../data/lollypop.appdata.xml.in.h:14
+msgid "MTP sync"
+msgstr "Sioncrónú MTP"
+
+#: ../data/lollypop.appdata.xml.in.h:15
+msgid "Fullscreen view"
+msgstr "Radharc lánscáileáin"
+
+#: ../data/lollypop.appdata.xml.in.h:16
+msgid "Radios support"
+msgstr "Tacaíocht raidiónna"
+
+#: ../data/lollypop.appdata.xml.in.h:17
+msgid "Last.fm support"
+msgstr "Tacaíocht raidiónna"
+
+#: ../data/lollypop.appdata.xml.in.h:18
+msgid "Auto install codecs"
+msgstr "Uath-shuiteáil codeceanna"
+
+#: ../data/lollypop.appdata.xml.in.h:19
+msgid "HiDPI support"
+msgstr "Tacaíocht HiDPI"
+
+#: ../data/lollypop.appdata.xml.in.h:20
+msgid "Tunein support"
+msgstr "Tacaíocht TuneIn"
+
+#: ../src/application.py:25
+msgid ""
+"    - Scrobbler disabled\n"
+"    - Auto cover download disabled\n"
+"    - Artist informations disabled"
+msgstr "    - Scrobbler díchumasaithe\n    - Uath-íoslódáil clúdaigh díchumasaithe\n    - Eolas ealaíontóra díchumasaithe"
+
+#: ../src/application.py:339
+msgid "Lollypop: You need to install yelp."
+msgstr "Lollypop: Cuirfidh tú yelp a shuiteáil."
+
+#: ../src/codecs.py:55
+msgid "Restart lollypop after installing codecs"
+msgstr "Atosaigh lollypop i ndiaidh suiteála codeceanna"
+
+#: ../src/collectionscanner.py:66
+msgid "Your music is updating"
+msgstr "Tá do chuid ceoil á nuashonrú"
+
+#: ../src/container.py:323
+msgid "Popular albums"
+msgstr "Albaim a bhfuil tóir orthu"
+
+#: ../src/container.py:324
+msgid "Recently added albums"
+msgstr "Albaim a bhfuil curtha le déanaí"
+
+#: ../src/container.py:325
+msgid "Random albums"
+msgstr "Albaim randamacha"
+
+#: ../src/container.py:326 ../src/pop_menu.py:409 ../src/pop_menu.py:469
+#: ../src/pop_menu.py:489
+msgid "Playlists"
+msgstr "Liostaí seanma"
+
+#: ../src/container.py:327
+msgid "Radios"
+msgstr "Raidiónna"
+
+#: ../src/container.py:329
+msgid "All artists"
+msgstr "Ealaíontóirí ar fad"
+
+#: ../src/container.py:331
+msgid "All albums"
+msgstr "Albaim ar fad"
+
+#: ../src/container.py:376
+msgid "Compilations"
+msgstr "Teaglaimí"
+
+#: ../src/container.py:392
+msgid "Popular tracks"
+msgstr "Rianta a bhfuil tóir orthu"
+
+#: ../src/container.py:393
+msgid "Recently played"
+msgstr "Seinnte le déanaí"
+
+#: ../src/container.py:394
+msgid "Never played"
+msgstr "Seinnte riamh"
+
+#: ../src/container.py:395
+msgid "Random tracks"
+msgstr "Rianta randamacha"
+
+#: ../src/database_albums.py:238 ../src/database_artists.py:77
+#: ../src/database_genres.py:72 ../src/database_tracks.py:206
+#: ../src/tagreader.py:84 ../src/tagreader.py:103 ../src/tagreader.py:128
+#: ../src/tagreader.py:143
+msgid "Unknown"
+msgstr "Anaithnid"
+
+#: ../src/database_albums.py:255
+msgid "Compilation"
+msgstr "Teaglaim"
+
+#: ../src/database_artists.py:69
+msgid "Many artists"
+msgstr "Go leor ealaíontóirí"
+
+#: ../src/fullscreen.py:85 ../src/fullscreen.py:272
+#: ../src/toolbar_playback.py:80 ../src/toolbar_playback.py:113
+msgid "Pause"
+msgstr "Cuir ar sos"
+
+#: ../src/fullscreen.py:276 ../src/pop_tunein.py:150
+#: ../src/toolbar_playback.py:82 ../src/toolbar_playback.py:110
+#: ../data/ToolbarPlayback.ui.h:2
+msgid "Play"
+msgstr "Seinn"
+
+#: ../src/lastfm.py:23
+msgid "Last.fm authentication disabled"
+msgstr "Fíordheimniú Last.fm díchumasaithe"
+
+#: ../src/lastfm.py:281
+msgid "Wrong Last.fm credentials"
+msgstr "Cáipéisí Last.fm mhíchearta"
+
+#: ../src/notification.py:66 ../data/ToolbarPlayback.ui.h:1
+msgid "Previous"
+msgstr "An rian roimhe"
+
+#: ../src/notification.py:70 ../data/ToolbarPlayback.ui.h:3
+msgid "Next"
+msgstr "An chéad rian eile"
+
+#. TRANSLATORS: by refers to the artist,
+#: ../src/notification.py:104
+#, python-format
+msgid "by %s"
+msgstr "le %s"
+
+#. TRANSLATORS: by refers to the artist,
+#. from to the album
+#: ../src/notification.py:112
+#, python-format
+msgid "by %s, from %s"
+msgstr "le %s, ó %s"
+
+#: ../src/player_bin.py:277
+#, python-format
+msgid "File doesn't exist: %s"
+msgstr "Ní ann do chomhad: %s"
+
+#: ../src/playlists.py:40
+msgid "Loved tracks"
+msgstr "Rianta le han-dúil iontu"
+
+#: ../src/pop_covers.py:59 ../src/pop_tunein.py:83 ../data/RadioPopover.ui.h:3
+msgid "Please wait..."
+msgstr "Fan le do thoil..."
+
+#: ../src/pop_covers.py:148
+msgid "No cover found..."
+msgstr "Gan clúdach aimsithe ar bith..."
+
+#: ../src/pop_covers.py:168
+msgid "Select a cover art for this album"
+msgstr "Roghnaigh ealaín clúdaigh don albam seo"
+
+#: ../src/pop_infos.py:80
+msgid "Advanced artist informations disabled"
+msgstr "Eolas casta ealaíontóra díchumasaithe"
+
+#: ../src/pop_infos.py:88
+msgid "Wikia support disabled"
+msgstr "Tacaíocht Wikia díchumasaithe"
+
+#: ../src/pop_infos.py:216 ../src/pop_infos.py:220 ../src/pop_infos.py:342
+msgid "Wikipedia"
+msgstr "Wikipedia"
+
+#: ../src/pop_infos.py:217 ../src/pop_infos.py:219
+msgid "Last.fm"
+msgstr "Last.fm"
+
+#: ../src/pop_infos.py:223
+msgid "No information for this artist..."
+msgstr "Gan eolas don ealaíontóir seo..."
+
+#: ../src/pop_infos.py:245 ../src/pop_infos.py:297
+msgid "I do not love"
+msgstr "Ní breá liom"
+
+#: ../src/pop_infos.py:345 ../data/ArtistInfos.ui.h:2
+msgid "Wikia"
+msgstr "Wikia"
+
+#: ../src/pop_menu.py:65
+msgid "Continue playback"
+msgstr "Lean leis an athsheinm"
+
+#: ../src/pop_menu.py:70
+msgid "Stop after this track"
+msgstr "Stad i ndiadh an riain seo"
+
+#: ../src/pop_menu.py:75
+msgid "Stop after this album"
+msgstr "Stad i ndiaidh an albaim seo"
+
+#: ../src/pop_menu.py:80
+msgid "Stop after this artist"
+msgstr "Stad i ndiadh an ealaíontóra seo"
+
+#: ../src/pop_menu.py:171 ../data/SearchRow.ui.h:3
+msgid "Add to queue"
+msgstr "Cuir le scuaine"
+
+#: ../src/pop_menu.py:176
+msgid "Next tracks"
+msgstr "Na céad rianta eile"
+
+#: ../src/pop_menu.py:178 ../data/NextPopover.ui.h:1
+msgid "Next track"
+msgstr "An chéad rian eile"
+
+#: ../src/pop_menu.py:182
+msgid "Remove from queue"
+msgstr "Bain de scuaine"
+
+#: ../src/pop_menu.py:250
+msgid "Add to others"
+msgstr "Cuir le rudaí eile"
+
+#: ../src/pop_menu.py:263
+#, python-format
+msgid "Remove from \"%s\""
+msgstr "Bain de \"%s\""
+
+#: ../src/pop_menu.py:269
+#, python-format
+msgid "Add to \"%s\""
+msgstr "Cuir le \"%s\""
+
+#: ../src/pop_menu.py:281
+msgid "I dislove this track"
+msgstr "Ní breá liom an rian seo"
+
+#: ../src/pop_menu.py:286
+msgid "I love this track"
+msgstr "Is breá liom an rian seo"
+
+#: ../src/pop_menu.py:407
+msgid "Playback"
+msgstr "Athsheinm"
+
+#: ../src/pop_menu.py:444
+msgid "Modify informations"
+msgstr "Mionathraigh eolas"
+
+#: ../src/pop_menu.py:471 ../data/PlaylistView.ui.h:1
+msgid "Edit"
+msgstr "Eagar"
+
+#: ../src/pop_radio.py:74 ../src/pop_tunein.py:145
+msgid "Add"
+msgstr "Cuir leis"
+
+#: ../src/pop_radio.py:76
+msgid "Modify"
+msgstr "Mionathraigh"
+
+#: ../src/pop_tunein.py:104
+msgid "Can't connect to TuneIn..."
+msgstr "Ní féidir ceangal le TuneIn..."
+
+#: ../src/pop_tunein.py:160
+msgid "Browse themes and add a new radio"
+msgstr "Téigh ar amharc thart agus cuir raidió nua leis"
+
+#: ../src/settings.py:141
+msgid "Populars"
+msgstr "Rudaí le tóir orthu"
+
+#: ../src/settings.py:142
+msgid "Recently added"
+msgstr "Curtha le déanaí"
+
+#. Handle language ordering
+#. Translators: Add here words that shoud be ignored for artist sort order
+#: ../src/utils.py:84
+msgid "The the"
+msgstr "An an Na na"
+
+#: ../src/view_device.py:41 ../src/view_device.py:82
+#, python-format
+msgid "Synchronize %s"
+msgstr "Sioncrónaigh %s"
+
+#: ../src/view_device.py:73
+msgid "Cancel synchronization"
+msgstr "Cealaigh sioncrónú"
+
+#: ../src/widgets_album.py:252
+#, python-format
+msgid "Disc %s"
+msgstr "Ceirnín %s"
+
+#: ../src/widgets_device.py:177
+msgid "Unknown error while syncing, try to reboot your device"
+msgstr "Botún anaithnid nuair ag sioncrónú, déan iarracht as atosú do ghléis"
+
+#: ../src/widgets_device.py:185
+msgid "No free space available on device"
+msgstr "Gan spás saor ar bith ar ghléas"
+
+#: ../src/widgets_playlist.py:281 ../src/widgets_playlist.py:284
+msgid "New playlist "
+msgstr "Líosta seanma nua"
+
+#: ../src/widgets_playlist.py:330 ../src/widgets_playlist.py:568
+#, python-format
+msgid "Remove \"%s\"?"
+msgstr "Bain \"%s\"?"
+
+#: ../src/widgets_playlist.py:613
+msgid "Remove these tracks?"
+msgstr "Bain na rianta seo?"
+
+#. Translators: Put here words added by wikipedia in band search
+#. Ex: Muse_(band), Peaches(musician)
+#: ../src/wikipedia.py:34
+msgid "musician;band"
+msgstr "ceoltóir;buíon cheoil"
+
+#: ../data/AboutDialog.ui.h:1
+msgid "A music player for GNOME."
+msgstr "Seinnteoir ceoil do GNOME"
+
+#: ../data/AboutDialog.ui.h:2
+msgid "Visit Lollypop website"
+msgstr "Tabhair cuirt ar shuíomh gréasáin Lollypop"
+
+#. Replace me with your names
+#: ../data/AboutDialog.ui.h:4
+msgid "Cédric Bellegarde <cedric.bellegarde@adishatz.org>"
+msgstr "David Ó Laigheanáin <david.lynam@redbrick.dcu.ie>"
+
+#: ../data/Appmenu.ui.h:1
+msgid "_Update music"
+msgstr "_Nuashonraigh ceol"
+
+#: ../data/Appmenu.ui.h:2
+msgid "_Fullscreen"
+msgstr "_Lánscáileán"
+
+#: ../data/Appmenu.ui.h:3
+msgid "_Preferences"
+msgstr "_Sainroghanna"
+
+#: ../data/Appmenu.ui.h:4
+msgid "_About"
+msgstr "_Maidir Leis Seo"
+
+#: ../data/Appmenu.ui.h:5
+msgid "_Help"
+msgstr "_Cabhair"
+
+#: ../data/Appmenu.ui.h:6
+msgid "_Quit"
+msgstr "_Scoir"
+
+#: ../data/ArtistInfos.ui.h:1
+msgid "I love"
+msgstr "Is breá liom"
+
+#: ../data/DeviceManagerView.ui.h:1
+msgid "Synchronize your device with this playlists"
+msgstr "Sioncrónaigh do ghléas leis an líosta seanma seo"
+
+#: ../data/PlaylistEditWidget.ui.h:1 ../data/PlaylistsManagerWidget.ui.h:1
+msgid "Confirm"
+msgstr "Deimhnigh"
+
+#: ../data/PlaylistsManagerView.ui.h:1
+msgid "New playlist"
+msgstr "Líosta seanma nua"
+
+#: ../data/QueuePopover.ui.h:1
+msgid "Queue:"
+msgstr "Scuaine:"
+
+#: ../data/QueuePopover.ui.h:2
+msgid "Clear queue"
+msgstr "Glan scuaine"
+
+#: ../data/RadioPopover.ui.h:1
+msgid "Select a logo  for this radio"
+msgstr "Roghnaigh lógó don raidió seo"
+
+#: ../data/RadioPopover.ui.h:2
+msgid "No logo found..."
+msgstr "Gan lógó aimsithe ar bith..."
+
+#: ../data/RadioPopover.ui.h:4
+msgid "Name:"
+msgstr "Ainm:"
+
+#: ../data/RadioPopover.ui.h:5
+msgid "Address:"
+msgstr "Seoladh:"
+
+#: ../data/RadioPopover.ui.h:6
+msgid "Delete"
+msgstr "Scrios"
+
+#: ../data/RadiosView.ui.h:1
+msgid "No favorite radios"
+msgstr "Gan raidiónna na coitiantachta"
+
+#: ../data/RadiosView.ui.h:2
+msgid "New radio"
+msgstr "Raidió nua"
+
+#: ../data/RadiosView.ui.h:3
+msgid "Search in TuneIn"
+msgstr "Cuardaigh i dTuneIn"
+
+#: ../data/SearchPopover.ui.h:1
+msgid "Play search"
+msgstr "Seinn cuardach"
+
+#: ../data/SearchPopover.ui.h:2
+msgid "Create a new playlist based on search"
+msgstr "Déan líosta seanma nua cuardachbhunaithe"
+
+#: ../data/SearchRow.ui.h:1
+msgid "artist"
+msgstr "ealaíontóir"
+
+#: ../data/SearchRow.ui.h:2
+msgid "Add to playlist"
+msgstr "Cuir le líosta seanma"
+
+#: ../data/SettingsDialog.ui.h:1
+msgid "Preferences"
+msgstr "Sainroghanna"
+
+#: ../data/SettingsDialog.ui.h:3
+msgid "Restore state on startup"
+msgstr "Athbhunaigh staid ar thosú"
+
+#: ../data/SettingsDialog.ui.h:5
+msgid "Play albums on click"
+msgstr "Seinn albaim ar chliceáil"
+
+#: ../data/SettingsDialog.ui.h:6
+msgid "Behaviour"
+msgstr "Iompar"
+
+#: ../data/SettingsDialog.ui.h:7
+msgid "Use dark theme variant"
+msgstr "Úsáid leagan cuma dhorcha "
+
+#: ../data/SettingsDialog.ui.h:8
+msgid "Show genres"
+msgstr "Taispeáin seánraí"
+
+#: ../data/SettingsDialog.ui.h:10
+msgid "Appearance"
+msgstr "Cuma"
+
+#: ../data/SettingsDialog.ui.h:11
+msgid "Configure lollypop behaviour"
+msgstr "Cumraigh iompar Lollypop"
+
+#: ../data/SettingsDialog.ui.h:12
+msgid "Options"
+msgstr "Roghanna"
+
+#: ../data/SettingsDialog.ui.h:13
+msgid "Select music folders"
+msgstr "Roghnaigh fillteáin ceoil."
+
+#: ../data/SettingsDialog.ui.h:14
+msgid "Music"
+msgstr "Ceol"
+
+#: ../data/SettingsDialog.ui.h:15
+msgid "Select what will be available in party mode"
+msgstr "Roghnaigh a bheith ar fáil i mód cóisire"
+
+#: ../data/SettingsDialog.ui.h:17
+msgid "Login:"
+msgstr "Ainm úsáideora:"
+
+#: ../data/SettingsDialog.ui.h:18
+msgid "Password:"
+msgstr "Focal faire:"
+
+#: ../data/SettingsDialog.ui.h:19
+msgid "Connect"
+msgstr "Ceangail"
+
+#: ../data/SettingsDialog.ui.h:20
+msgid "You need to install pylast and gi secret"
+msgstr "Caithfidh tú pylast agus gi secret a shuiteáil"
+
+#: ../data/ToolbarEnd.ui.h:1
+msgid "No shuffle"
+msgstr "Gan shuaitheadh"
+
+#: ../data/ToolbarEnd.ui.h:2
+msgid "Shuffle albums"
+msgstr "Suaith albaim"
+
+#: ../data/ToolbarEnd.ui.h:3
+msgid "Shuffle tracks"
+msgstr "Suaith rianta"
+
+#: ../data/ToolbarEnd.ui.h:4
+msgid "Shuffle albums from artist"
+msgstr "Suaith albaim le healaíntóir"
+
+#: ../data/ToolbarEnd.ui.h:5
+msgid "Shuffle tracks from artist"
+msgstr "Suaith rianta le healaíontóir"
+
+#: ../data/ToolbarEnd.ui.h:6
+msgid "Settings"
+msgstr "Socruithe"
+
+#: ../data/ToolbarEnd.ui.h:7
+msgid "Shuffle"
+msgstr "Suaith"
+
+#: ../data/ToolbarPlayback.ui.h:4
+msgid "Informations"
+msgstr "Eolas"
+
+#: ../data/Unicode.ui.h:1
+msgid "Error"
+msgstr "Botún"
+
+#: ../data/Unicode.ui.h:2
+msgid ""
+"Lollypop isn't designed to work without an unicode locale.\n"
+"Please fix your system."
+msgstr "Ní oibróidh Lollypop gan unicode.\nSocraigh do chóras le do thoil."
