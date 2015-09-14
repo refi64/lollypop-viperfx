@@ -353,8 +353,10 @@ class TracksWidget(Gtk.ListBox):
             @param show_menu as bool if menu need to be displayed
         """
         Gtk.ListBox.__init__(self)
-        self._queue_signal_id = None
-        self._loved_signal_id = None
+        self._queue_signal_id = Lp.player.connect("queue-changed",
+                                                  self._update_pos_label)
+        self._loved_signal_id = Lp.playlists.connect("playlist-changed",
+                                                     self._update_loved_icon)
         self._show_menu = show_menu
         self._show_loved = show_loved
         self.connect("row-activated", self._on_activate)
@@ -439,16 +441,6 @@ class TracksWidget(Gtk.ListBox):
         for row in self.get_children():
             row.show_indicator(row.get_object_id() == track_id,
                                utils.is_loved(row.get_object_id()))
-
-    def do_show(self):
-        """
-            Set signals callback
-        """
-        self._queue_signal_id = Lp.player.connect("queue-changed",
-                                                  self._update_pos_label)
-        self._loved_signal_id = Lp.playlists.connect("playlist-changed",
-                                                     self._update_loved_icon)
-        Gtk.ListBox.do_show(self)
 
     def remove_signals(self):
         """
