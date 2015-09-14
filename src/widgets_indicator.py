@@ -78,13 +78,16 @@ class IndicatorWidget(Gtk.Stack):
         """
             Show play/loved indicator
         """
-        if self._timeout_id is None:
-            return False
-        if self.get_visible_child_name() == 'play':
-            if self._pass == 10:
-                self._pass = 0
-                self.loved()
-        else:
-            self.play()
-        self._pass += 1
+        try:
+            if self._timeout_id is None:
+                return False
+            if self.get_visible_child_name() == 'play':
+                if self._pass == 10:
+                    self._pass = 0
+                    self.loved()
+            else:
+                self.play()
+            self._pass += 1
+        except:
+            pass
         return True
