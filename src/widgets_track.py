@@ -80,6 +80,12 @@ class Row(Gtk.ListBoxRow):
             if self._show_loved and loved:
                 self._indicator.loved()
 
+    def clear_indicator(self):
+        """
+            Clear indicator
+        """
+        self._indicator.clear()
+
     def set_num_label(self, label):
         """
             Set num label
@@ -446,6 +452,9 @@ class TracksWidget(Gtk.ListBox):
         """
             Remove signals
         """
+        # Set indicator to None
+        for row in self.get_children():
+            row.clear_indicator()
         if self._queue_signal_id is not None:
             Lp.player.disconnect(self._queue_signal_id)
             self._queue_signal_id = None
