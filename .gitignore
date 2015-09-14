@@ -1,5 +1,9 @@
 *~
-/help/*
+/help/Makefile.in
+/help/*/*.page
+/help/*/*.xml
+/help/*/*.mo
+/help/*/*.stamp
 /*.bak
 /*.lo
 /*.o

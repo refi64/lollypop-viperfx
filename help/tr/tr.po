@@ -1,0 +1,208 @@
+# 
+# Translators:
+# Bilal <kira.gazerock@gmail.com>, 2015
+msgid ""
+msgstr ""
+"Project-Id-Version: lollypop\n"
+"POT-Creation-Date: 2015-06-24 15:43+0200\n"
+"PO-Revision-Date: 2015-08-08 19:28+0000\n"
+"Last-Translator: Bilal <kira.gazerock@gmail.com>\n"
+"Language-Team: Turkish (http://www.transifex.com/gnumdk/lollypop/language/tr/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: tr\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+
+#. Put one translator per line, in the form NAME <EMAIL>, YEAR1, YEAR2
+msgctxt "_"
+msgid "translator-credits"
+msgstr "çevirmen-krediler"
+
+#. (itstool) path: info/desc
+#: C/index.page:7
+msgid "Help for the Lollypop music player."
+msgstr "Lollypop müzik çalarına yardım et"
+
+#. (itstool) path: info/title
+#: C/index.page:8
+msgctxt "text"
+msgid "Lollypop music player"
+msgstr "Lollypop müzik çaları"
+
+#. (itstool) path: credit/name
+#: C/index.page:11
+msgid "Cédric Bellegarde"
+msgstr "Cédric Bellegarde"
+
+#. (itstool) path: credit/years
+#: C/index.page:13
+msgid "2015"
+msgstr "2015"
+
+#. (itstool) path: page/title
+#: C/index.page:18
+msgid "<_:media-1/> Lollypop music player"
+msgstr "<_:media-1/> Lollypop müzik çaları"
+
+#. (itstool) path: section/title
+#: C/index.page:21
+msgid "Add music"
+msgstr "Müzik ekle"
+
+#. (itstool) path: section/p
+#: C/index.page:22
+msgid "If lollypop fails to detect your music:"
+msgstr "Lollypop müziğini algılamada başarısız olursa:"
+
+#. (itstool) path: item/p
+#: C/index.page:24
+msgid "Check you have gstreamer-libav or gstreamer-fluendo installed"
+msgstr "Yüklenen gstreamer-libav veya gstreamer-fluendo kontrol et"
+
+#. (itstool) path: item/p
+#: C/index.page:25
+msgid ""
+"Go to the application menu: \"<sys>Settings -&gt; Music</sys>\" and add your"
+" music folder"
+msgstr "Uygulama menüsüne git:  \"<sys>Ayarlar -&gt; Müzik</sys>\" ve müzik dosyanı ekle"
+
+#. (itstool) path: section/title
+#: C/index.page:30
+msgid "Playback"
+msgstr "Kayıttan çal"
+
+#. (itstool) path: section/p
+#: C/index.page:31
+msgid "When you start playing a song, a contextual playlist is populated."
+msgstr ""
+
+#. (itstool) path: section/p
+#: C/index.page:32
+msgid ""
+"Contexts can be: an album, an artist, a genre, popular or recent albums, "
+"searches, playlists, ..."
+msgstr ""
+
+#. (itstool) path: section/p
+#: C/index.page:33
+msgid "Shuffle interacts on current context."
+msgstr ""
+
+#. (itstool) path: section/title
+#: C/index.page:37
+msgid "Rate albums"
+msgstr "Albümleri oyla"
+
+#. (itstool) path: section/p
+#: C/index.page:38
+msgid ""
+"Album popularity is based on how many tracks from an album you listen to."
+msgstr "Albüm popülerliği bir albümde ne kadar parça dinlediğini gösterir."
+
+#. (itstool) path: section/p
+#: C/index.page:39
+msgid ""
+"Album rating will be influenced by album popularity. In other words, rate "
+"will decrease if you stop listening to an album."
+msgstr "Albüm oylaması albüm popülerliğinden etkili olacaktır. Diğer bir değişle, bir albümü dinlemeyi bırakırsan, oylama oranı azalacak."
+
+#. (itstool) path: section/title
+#: C/index.page:43
+msgid "Download covers"
+msgstr "Kapak resimlerini indir"
+
+#. (itstool) path: section/p
+#: C/index.page:44
+msgid ""
+"When hovering a cover, if mouse cursor changes to a pen, just click and "
+"select a new cover."
+msgstr ""
+
+#. (itstool) path: section/p
+#: C/index.page:45
+msgid "You need an internet connection."
+msgstr "İnternet bağlantısına ihtiyacın var."
+
+#. (itstool) path: section/title
+#: C/index.page:49
+msgid "Shortcuts"
+msgstr "Kısayollar"
+
+#. (itstool) path: item/p
+#: C/index.page:51
+msgid "Control+s: Lollypop settings"
+msgstr "Ctrl+s: Lollypop ayarları"
+
+#. (itstool) path: item/p
+#: C/index.page:52
+msgid "Control+f: Search"
+msgstr "Ctrl+f: Ara"
+
+#. (itstool) path: item/p
+#: C/index.page:53
+msgid "Control+p: Party mode"
+msgstr "Ctrl+p: Parti modu"
+
+#. (itstool) path: item/p
+#: C/index.page:54
+msgid "Control+m or F11: Fullscreen"
+msgstr "Ctrl+m ya da F11: Tam ekran"
+
+#. (itstool) path: item/p
+#: C/index.page:55
+msgid "x: Play"
+msgstr "x: Oynat"
+
+#. (itstool) path: item/p
+#: C/index.page:56
+msgid "c: Pause"
+msgstr "c: Duraklat"
+
+#. (itstool) path: item/p
+#: C/index.page:57
+msgid "v: Stop"
+msgstr "v: Durdur"
+
+#. (itstool) path: item/p
+#: C/index.page:58
+msgid "n: Next track"
+msgstr "n: Sonraki parça"
+
+#. (itstool) path: item/p
+#: C/index.page:59
+msgid "p: Previous track"
+msgstr "p: Önceki parça"
+
+#. (itstool) path: item/p
+#: C/index.page:60
+msgid "Control+n: Skip current album"
+msgstr "Ctrl+n: Şimdiki albümü es geç"
+
+#. (itstool) path: item/p
+#: C/index.page:61
+msgid "Left key: Skip backward in track"
+msgstr "Sol tuş ←:  Parçayı geri sar"
+
+#. (itstool) path: item/p
+#: C/index.page:62
+msgid "Right key: Skip forward in track"
+msgstr "Sağ tuş →: Parçayı ileri sar"
+
+#. (itstool) path: p/link
+#: C/legal.xml:4
+msgid "Creative Commons Attribution-Share Alike 3.0 United States License"
+msgstr "Creative Commons Attribution-Share Alike 3.0 Amerika Birleşik Devletleri Lisansı"
+
+#. (itstool) path: license/p
+#: C/legal.xml:3
+msgid "This work is licensed under a <_:link-1/>."
+msgstr "Bu iş  <_:link-1/> altında lisanslanmıştır."
+
+#. (itstool) path: license/p
+#: C/legal.xml:6
+msgid ""
+"As a special exception, the copyright holders give you permission to copy, "
+"modify, and distribute the example code contained in this document under the"
+" terms of your choosing, without restriction."
+msgstr ""
