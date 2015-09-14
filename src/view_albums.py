@@ -285,6 +285,7 @@ class AlbumsView(View):
         if self._context_album_id == child.get_child().get_id():
             self._context_album_id = None
             self._context.hide()
+            self._context_widget.remove_signals()
             self._context_widget.destroy()
             self._context_widget = None
         else:
