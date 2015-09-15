@@ -182,7 +182,7 @@ class AlbumSimpleWidget(AlbumWidget):
         if Lp.settings.get_value('auto-play'):
             AlbumWidget.update_cursor(self, Gdk.CursorType.HAND1)
         else:
-            AlbumWidget.update_cursor(self, Gdk.CursorType.LEFT_PTR)
+            AlbumWidget.update_cursor(self)
 
 #######################
 # PRIVATE             #
@@ -364,10 +364,10 @@ class AlbumDetailedWidget(AlbumWidget):
         """
             Update widget's cursor
         """
-        if Lp.settings.get_value('auto-play') or not self._pop_allowed:
+        if self._pop_allowed:
             AlbumWidget.update_cursor(self, Gdk.CursorType.HAND1)
         else:
-            AlbumWidget.update_cursor(self, Gdk.CursorType.PENCIL)
+            AlbumWidget.update_cursor(self)
 
     def remove_signals(self):
         """
@@ -502,10 +502,10 @@ class AlbumDetailedWidget(AlbumWidget):
             @param: widget as Gtk.EventBox
             @param: event as Gdk.Event
         """
-        if self._pop_allowed and not Lp.settings.get_value('auto-play'):
+        if event.button == 1:
+            Lp.player.play_album(self._album.id)
+        elif self._pop_allowed:
             popover = CoversPopover(self._album.artist_id, self._album.id)
             popover.set_relative_to(widget)
             popover.populate()
             popover.show()
-        else:
-            Lp.player.play_album(self._album.id)
