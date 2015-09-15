@@ -139,7 +139,11 @@ class TuneinPopover(Gtk.Popover):
         child = Gtk.Grid()
         child.set_property('halign', Gtk.Align.START)
         child.show()
+        link = Gtk.LinkButton.new_with_label(item.URL, item.TEXT)
+        link.connect('activate-link', self._on_activate_link, item)
+        link.show()
         if item.TYPE == "audio":
+            link.set_tooltip_text(_("Play"))
             button = Gtk.Button.new_from_icon_name('list-add-symbolic',
                                                    Gtk.IconSize.MENU)
             button.connect('clicked', self._on_button_clicked, item)
@@ -147,11 +151,8 @@ class TuneinPopover(Gtk.Popover):
             button.set_tooltip_text(_("Add"))
             button.show()
             child.add(button)
-
-        link = Gtk.LinkButton.new_with_label(item.URL, item.TEXT)
-        link.set_tooltip_text(_("Play"))
-        link.connect('activate-link', self._on_activate_link, item)
-        link.show()
+        else:
+            link.set_tooltip_text('')
         child.add(link)
 
         self._view.add(child)
