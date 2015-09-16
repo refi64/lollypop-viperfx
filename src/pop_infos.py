@@ -85,7 +85,7 @@ class ArtistContent(Gtk.Stack):
             @param stream as Gio.MemoryInputStream
         """
         if content:
-            self._content.set_text(content)
+            self._content.set_markup(content)
             if stream is not None:
                 pixbuf = GdkPixbuf.Pixbuf.new_from_stream_at_scale(stream,
                                                                    200,

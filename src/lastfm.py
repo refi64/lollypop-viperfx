@@ -111,10 +111,8 @@ class LastFM(LastFMNetwork):
                     language=getdefaultlocale()[0][0:2])
             except:
                 content = last_artist.get_bio_summary()
-            content = re.sub(r'.*Last.fm.*', '', content)
-            content = re.sub(r'<.*?>', '', content)
             image_url = last_artist.get_cover_image(3)
-            return (url, image_url, html.parser.HTMLParser().unescape(content))
+            return (url, image_url, content)
         except:
             return (None, None, None)
 
