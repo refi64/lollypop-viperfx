@@ -14,6 +14,7 @@ from gi.repository import Gtk, GLib, Gio, GdkPixbuf
 
 from gettext import gettext as _
 from threading import Thread
+from cgi import escape
 
 from lollypop.define import Lp
 
@@ -85,7 +86,7 @@ class ArtistContent(Gtk.Stack):
             @param stream as Gio.MemoryInputStream
         """
         if content:
-            self._content.set_markup(content)
+            self._content.set_markup(escape(content))
             if stream is not None:
                 pixbuf = GdkPixbuf.Pixbuf.new_from_stream_at_scale(stream,
                                                                    200,
