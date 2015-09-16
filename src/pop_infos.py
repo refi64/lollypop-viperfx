@@ -31,14 +31,12 @@ class InfosPopover(Gtk.Popover):
             ArtistInfos.Wikipedia is not None or\
             ArtistInfos.WebKit is not None
 
-    def __init__(self, artist, track_id=None):
+    def __init__(self):
         """
             Init popover
-            @param artist as string
-            @param track id as int
         """
         Gtk.Popover.__init__(self)
-        self._infos = ArtistInfos(artist, track_id)
+        self._infos = ArtistInfos()
         self._infos.show()
         self.add(self._infos)
 
@@ -120,16 +118,12 @@ class ArtistInfos(Gtk.Bin):
         print(_("Wikia support disabled"))
         WebKit = None
 
-    def __init__(self, artist, track_id):
+    def __init__(self):
         """
             Init artist infos
-            @param artist as string
-            @param track_id as int
         """
         Gtk.Bin.__init__(self)
         self._liked = True  # Liked track or not?
-        self._artist = artist
-        self._track_id = track_id
 
         builder = Gtk.Builder()
         builder.add_from_resource('/org/gnome/Lollypop/ArtistInfos.ui')
@@ -178,7 +172,8 @@ class ArtistInfos(Gtk.Bin):
         url = None
         image_url = None
         content = None
-        (url, image_url, content) = Lp.lastfm.get_artist_infos(self._artist)
+        (url, image_url, content) = Lp.lastfm.get_artist_infos(
+                                                Lp.player.current_track.artist)
         self._populate(url, image_url, content, widget)
 
     def _on_map_wikipedia(self, widget):
@@ -207,7 +202,7 @@ class ArtistInfos(Gtk.Bin):
         image_url = None
         content = None
         (url, image_url, content) = self.Wikipedia().get_artist_infos(
-                                                                self._artist)
+                                                Lp.player.current_track.artist)
         self._populate(url, image_url, content, widget)
 
     def _on_map_wikia(self, widget):

@@ -130,6 +130,6 @@ class ToolbarPlayback(Gtk.Bin):
                 artist = Lp.player.current_track.artist
             else:
                 artist = Lp.player.current_track.album_artist
-            popover = InfosPopover(artist, Lp.player.current_track.id)
+            popover = InfosPopover()
             popover.set_relative_to(button)
             popover.show()

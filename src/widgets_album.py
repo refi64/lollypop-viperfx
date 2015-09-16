@@ -490,9 +490,8 @@ class AlbumDetailedWidget(AlbumWidget):
         """
         if (Lp.lastfm is not None or self.Wikipedia is not None) and\
                 self._album.artist_id != Type.COMPILATIONS:
-            popover = InfosPopover(self._album.artist_name)
+            popover = InfosPopover()
             popover.set_relative_to(eventbox)
-            popover.populate()
             popover.show()
 
     def _on_cover_press_event(self, widget, event):
