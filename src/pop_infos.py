@@ -13,12 +13,9 @@
 from gi.repository import Gtk, GLib, Gio, GdkPixbuf
 
 from gettext import gettext as _
-
 from threading import Thread
-from cgi import escape
 
 from lollypop.define import Lp
-from lollypop import utils
 
 
 class InfosPopover(Gtk.Popover):
@@ -62,6 +59,7 @@ class InfosPopover(Gtk.Popover):
         """
         return (700, 700)
 
+
 class ArtistContent(Gtk.Stack):
     """
         Widget showing artist image and bio
@@ -100,7 +98,7 @@ class ArtistContent(Gtk.Stack):
             self.set_visible_child_name('widget')
         else:
             self.set_visible_child_name('notfound')
-        
+
 
 class ArtistInfos(Gtk.Bin):
     """
@@ -221,7 +219,7 @@ class ArtistInfos(Gtk.Bin):
         child = widget.get_child()
         if child is not None:
             child.destroy()
-        
+
         settings = self.WebKit.WebSettings()
         settings.set_property('enable-private-browsing', True)
         settings.set_property('enable-plugins', False)
@@ -238,7 +236,7 @@ class ArtistInfos(Gtk.Bin):
         artist = Lp.player.current_track.album_artist.replace(' ', '_')
         title = Lp.player.current_track.title.replace(' ', '_')
         wikia_url = "http://lyrics.wikia.com/wiki/%s:%s" % (artist,
-                                                                  title)
+                                                            title)
         view.load_uri(wikia_url)
         view.set_property('hexpand', True)
         view.set_property('vexpand', True)
