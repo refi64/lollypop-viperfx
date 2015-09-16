@@ -30,6 +30,7 @@
     <file preprocess="xml-stripblanks">AlbumSimpleWidget.ui</file>
     <file preprocess="xml-stripblanks">ArtistView.ui</file>
     <file preprocess="xml-stripblanks">ArtistInfos.ui</file>
+    <file preprocess="xml-stripblanks">ArtistContent.ui</file>
     <file preprocess="xml-stripblanks">TuneinPopover.ui</file>
     <file preprocess="xml-stripblanks">ExternalsPopover.ui</file>
     <file preprocess="xml-stripblanks">ToolbarPlayback.ui</file>

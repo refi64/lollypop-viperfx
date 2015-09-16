@@ -45,12 +45,6 @@ class InfosPopover(Gtk.Popover):
         self._infos.show()
         self.add(self._infos)
 
-    def populate(self):
-        """
-            Populate view
-        """
-        self._infos.populate()
-
     def do_show(self):
         """
             Resize popover and set signals callback
@@ -68,6 +62,45 @@ class InfosPopover(Gtk.Popover):
         """
         return (700, 700)
 
+class ArtistContent(Gtk.Stack):
+    """
+        Widget showing artist image and bio
+    """
+
+    def __init__(self):
+        """
+            Init artist content
+        """
+        Gtk.Stack.__init__(self)
+        builder = Gtk.Builder()
+        builder.add_from_resource('/org/gnome/Lollypop/ArtistContent.ui')
+        self._content = builder.get_object('content')
+        self._image = builder.get_object('image')
+        self.add_named(builder.get_object('widget'), 'widget')
+        self.add_named(builder.get_object('notfound'), 'notfound')
+        self.add_named(builder.get_object('spinner'), 'spinner')
+        self.set_visible_child_name('spinner')
+
+    def set_content(self, content, stream):
+        """
+            Set content
+            @param content as string
+            @param stream as Gio.MemoryInputStream
+        """
+        if content:
+            self._content.set_text(content)
+            if stream is not None:
+                pixbuf = GdkPixbuf.Pixbuf.new_from_stream_at_scale(stream,
+                                                                   200,
+                                                                   -1,
+                                                                   True,
+                                                                   None)
+                self._image.set_from_pixbuf(pixbuf)
+                del pixbuf
+            self.set_visible_child_name('widget')
+        else:
+            self.set_visible_child_name('notfound')
+        
 
 class ArtistInfos(Gtk.Bin):
     """
@@ -97,95 +130,113 @@ class ArtistInfos(Gtk.Bin):
         """
         Gtk.Bin.__init__(self)
         self._liked = True  # Liked track or not?
-        self._wikipedia = True
         self._artist = artist
         self._track_id = track_id
-        if self._track_id is not None:
-            self._title = Lp.tracks.get_name(track_id)
-        self._stack = Gtk.Stack()
-        self._stack.set_property('expand', True)
-        self._stack.show()
 
         builder = Gtk.Builder()
         builder.add_from_resource('/org/gnome/Lollypop/ArtistInfos.ui')
         builder.connect_signals(self)
-        widget = builder.get_object('widget')
-        widget.attach(self._stack, 0, 2, 5, 1)
-
-        self._view_btn = builder.get_object('view_btn')
-        self._love_btn = builder.get_object('love_btn')
-        self._url_btn = builder.get_object('url_btn')
-        self._image = builder.get_object('image')
-        self._content = builder.get_object('content')
-
-        self._label = builder.get_object('label')
-        self._set_label()
-
-        self._spinner = builder.get_object('spinner')
-        self._not_found = builder.get_object('notfound')
-        self._stack.add(self._spinner)
-        self._stack.add(self._not_found)
-
-        if self.Wikipedia is not None or Lp.lastfm is not None:
-            self._scrolled_infos = builder.get_object('scrolled')
-            self._stack.add(self._scrolled_infos)
-
-        if self.WebKit is not None and track_id is not None:
-            self._lyrics_btn = builder.get_object('lyrics_btn')
-            self._lyrics_btn.show()
-            self._scrolled_lyrics = Gtk.ScrolledWindow()
-            self._scrolled_lyrics.show()
-            self._stack.add(self._scrolled_lyrics)
-        else:
-            self._scrolled_lyrics = None
-
-        self._stack.set_visible_child(self._spinner)
-        self.add(widget)
-
-    def populate(self):
-        """
-            Populate informations and artist image
-        """
-        if self.Wikipedia is None and Lp.lastfm is None:
-            self._on_lyrics_clicked(None)
-        else:
-            t = Thread(target=self._populate)
-            t.daemon = True
-            t.start()
+        
+        self._stack = builder.get_object('stack')
+        self._lastfm = builder.get_object('lastfm')
+        self._wikipedia = builder.get_object('wikipedia')
+        self._wikia = builder.get_object('wikia')
+        self._stack.set_visible_child_name('lastfm')
+        self.add(builder.get_object('widget'))
 
 #######################
 # PRIVATE             #
 #######################
-    def _set_label(self):
+    def _on_map_lastfm(self, widget):
         """
-            Set label based on current track id
+            Load on map
         """
-        if self._track_id is None:
-            string = "<b>%s</b>" % escape(self._artist)
-        else:
-            string = "<b>%s</b>   %s" % (escape(self._artist),
-                                         escape(self._title))
-        self._label.set_markup(string)
+        content_widget = ArtistContent()
+        content_widget.show()
+        child = widget.get_child()
+        if child is not None:
+            child.destroy()
+        widget.add(content_widget)
+        t = Thread(target=self._populate_lastfm, args=(content_widget,))
+        t.daemon = True
+        t.start()
 
-    def _populate(self):
+    def _populate_lastfm(self, widget):
         """
-            Same as _populate()
-            Horrible code limited to two engines,
-            need rework if adding one more
+            Populate content with lastfm informations
+            @param widget as Gtk.ScrolledWindow
             @thread safe
         """
         url = None
         image_url = None
         content = None
-        if self._wikipedia and self.Wikipedia is not None:
-            self._wikipedia = False
-            (url, image_url, content) = self.Wikipedia().get_artist_infos(
-                self._artist)
-        if url is None and Lp.lastfm is not None:
-            self._wikipedia = True
-            (url, image_url, content) = Lp.lastfm.get_artist_infos(
-                                            self._artist)
+        (url, image_url, content) = Lp.lastfm.get_artist_infos(self._artist)
+        self._populate(url, image_url, content, widget)
 
+    def _on_map_wikipedia(self, widget):
+        """
+            Load on map
+        """
+        content_widget = ArtistContent()
+        content_widget.show()
+        child = widget.get_child()
+        if child is not None:
+            child.destroy()
+        widget.add(content_widget)
+        t = Thread(target=self._populate_wikipedia, args=(content_widget,))
+        t.daemon = True
+        t.start()
+
+    def _populate_wikipedia(self, widget):
+        """
+            Populate content with wikipedia informations
+            @param widget as Gtk.ScrolledWindow
+            @thread safe
+        """
+        url = None
+        image_url = None
+        content = None
+        (url, image_url, content) = self.Wikipedia().get_artist_infos(
+                                                                self._artist)
+        self._populate(url, image_url, content, widget)
+
+    def _on_map_wikia(self, widget):
+        """
+            Load on map
+        """
+        child = widget.get_child()
+        if child is not None:
+            child.destroy()
+        
+        settings = self.WebKit.WebSettings()
+        settings.set_property('enable-private-browsing', True)
+        settings.set_property('enable-plugins', False)
+        settings.set_property('user-agent',
+                              "Mozilla/5.0 (Linux; Ubuntu 14.04;"
+                              " BlackBerry) AppleWebKit/537.36 Chromium"
+                              "/35.0.1870.2 Mobile Safari/537.36")
+        view = self.WebKit.WebView()
+        view.set_settings(settings)
+        view.show()
+        view.connect('navigation-policy-decision-requested',
+                     self._on_navigation_policy)
+        widget.add(view)
+        artist = Lp.player.current_track.album_artist.replace(' ', '_')
+        title = Lp.player.current_track.title.replace(' ', '_')
+        wikia_url = "http://lyrics.wikia.com/wiki/%s:%s" % (artist,
+                                                                  title)
+        view.load_uri(wikia_url)
+        self._stack.set_visible_child_name('wikia')
+
+    def _populate(self, url, image_url, content, widget):
+        """
+            populate widget with content
+            @param url as string
+            @param image url as string
+            @param content as string
+            @param widget as Gtk.ScrolledWindow
+            @thread safe
+        """
         stream = None
         try:
             if image_url is not None:
@@ -196,45 +247,17 @@ class ArtistInfos(Gtk.Bin):
                                                                  None)
         except Exception as e:
             print("PopArtistInfos::_populate: %s" % e)
+        GLib.idle_add(self._set_content, content, url, stream, widget)
 
-        GLib.idle_add(self._set_content, content, url, stream)
-
-    def _set_content(self, content, url, stream):
+    def _set_content(self, content, url, stream, widget):
         """
             Set content on view
             @param content as str
             @param url as str
             @param stream as Gio.MemoryInputStream
+            @param widget as Gtk.ScrolledWindow
         """
-        if self._stack.get_visible_child() == self._scrolled_lyrics:
-            self._wikipedia = True
-            return
-
-        if content is not None:
-            if Lp.lastfm is not None and self.Wikipedia is not None:
-                self._view_btn.set_sensitive(True)
-            self._stack.set_visible_child(self._scrolled_infos)
-            self._url_btn.set_uri(url)
-            self._content.set_text(content)
-            if self._track_id is not None:
-                self._show_love_btn()
-            if self._wikipedia:
-                self._view_btn.set_tooltip_text(_("Wikipedia"))
-                self._url_btn.set_label(_("Last.fm"))
-            else:
-                self._view_btn.set_tooltip_text(_("Last.fm"))
-                self._url_btn.set_label(_("Wikipedia"))
-        else:
-            self._stack.set_visible_child(self._not_found)
-            self._label.set_text(_("No information for this artist..."))
-        if stream is not None:
-            pixbuf = GdkPixbuf.Pixbuf.new_from_stream_at_scale(stream,
-                                                               200,
-                                                               -1,
-                                                               True,
-                                                               None)
-            self._image.set_from_pixbuf(pixbuf)
-            del pixbuf
+        widget.set_content(content, stream)
 
     def _show_love_btn(self):
         """
@@ -308,33 +331,7 @@ class ArtistInfos(Gtk.Bin):
             @param btn as Gtk.Button, if None, do not show view button
         """
         self._set_label()
-        view = self._scrolled_lyrics.get_child()
-        if view is None:
-            settings = self.WebKit.WebSettings()
-            settings.set_property('enable-private-browsing', True)
-            settings.set_property('enable-plugins', False)
-            settings.set_property('user-agent',
-                                  "Mozilla/5.0 (Linux; Ubuntu 14.04;"
-                                  " BlackBerry) AppleWebKit/537.36 Chromium"
-                                  "/35.0.1870.2 Mobile Safari/537.36")
-            view = self.WebKit.WebView()
-            view.set_settings(settings)
-            view.show()
-            view.connect('navigation-policy-decision-requested',
-                         self._on_navigation_policy)
-            self._scrolled_lyrics.add(view)
-        artist = Lp.player.current_track.album_artist.replace(' ', '_')
-        title = Lp.player.current_track.title.replace(' ', '_')
-        wikia_url = "http://lyrics.wikia.com/wiki/%s:%s" % (artist,
-                                                                  title)
-        view.load_uri(wikia_url)
-        if btn is not None:
-            self._view_btn.set_tooltip_text(_("Wikipedia"))
-            self._view_btn.set_sensitive(True)
-        self._lyrics_btn.set_sensitive(False)
-        self._url_btn.set_label(_("Wikia"))
-        self._url_btn.set_uri(wikia_url)
-        self._stack.set_visible_child(self._scrolled_lyrics)
+        
 
     def _on_navigation_policy(self, view, frame, request,
                               navigation_action, policy_decision):

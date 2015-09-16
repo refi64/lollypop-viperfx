@@ -2,191 +2,69 @@
 <!-- Generated with glade 3.18.3 -->
 <interface>
   <requires lib="gtk+" version="3.12"/>
-  <object class="GtkImage" id="image1">
-    <property name="visible">True</property>
-    <property name="can_focus">False</property>
-    <property name="icon_name">weather-overcast-symbolic</property>
-  </object>
-  <object class="GtkImage" id="image2">
-    <property name="visible">True</property>
-    <property name="can_focus">False</property>
-    <property name="opacity">0.20000000000000001</property>
-    <property name="icon_name">emblem-favorite-symbolic</property>
-  </object>
-  <object class="GtkImage" id="image3">
-    <property name="visible">True</property>
-    <property name="can_focus">False</property>
-    <property name="icon_name">font-x-generic-symbolic</property>
-  </object>
   <object class="GtkGrid" id="widget">
     <property name="visible">True</property>
     <property name="can_focus">False</property>
-    <property name="margin_start">5</property>
+    <property name="margin_start">3</property>
     <property name="margin_end">3</property>
     <property name="margin_top">3</property>
     <property name="margin_bottom">3</property>
     <property name="orientation">vertical</property>
     <property name="row_spacing">4</property>
     <child>
-      <object class="GtkSeparator" id="separator1">
+      <object class="GtkStackSwitcher" id="switcher">
         <property name="visible">True</property>
-        <property name="can_focus">False</property>
+        <property name="stack">stack</property>
+        <property name="halign">center</property>
+      </object>
+      <packing>
+        <property name="left_attach">0</property>
+        <property name="top_attach">0</property>
+      </packing>
+    </child>
+    <child>
+      <object class="GtkStack" id="stack">
+        <property name="visible">True</property>
+        <property name="can_focus">True</property>
+        <property name="transition-type">crossfade</property>
+        <child>
+          <object class="GtkScrolledWindow" id="lastfm">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <signal name="map" handler="_on_map_lastfm" swapped="no"/>
+          </object>
+          <packing>
+            <property name="name">lastfm</property>
+            <property name="title" translatable="yes">Last.fm</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkScrolledWindow" id="wikipedia">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <signal name="map" handler="_on_map_wikipedia" swapped="no"/>
+          </object>
+          <packing>
+            <property name="name">Wikipedia</property>
+            <property name="title" translatable="yes">Wikipedia</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkScrolledWindow" id="wikia">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <signal name="map" handler="_on_map_wikia" swapped="no"/>
+          </object>
+          <packing>
+            <property name="name">wikia</property>
+            <property name="title" translatable="yes">Wikia</property>
+          </packing>
+        </child>
       </object>
       <packing>
         <property name="left_attach">0</property>
         <property name="top_attach">1</property>
-        <property name="width">5</property>
       </packing>
     </child>
-    <child>
-      <object class="GtkLinkButton" id="url_btn">
-        <property name="visible">True</property>
-        <property name="can_focus">True</property>
-        <property name="receives_default">True</property>
-        <property name="halign">end</property>
-        <property name="relief">none</property>
-        <property name="uri">http://last.fm</property>
-        <style>
-          <class name="dim-label"/>
-        </style>
-      </object>
-      <packing>
-        <property name="left_attach">4</property>
-        <property name="top_attach">0</property>
-      </packing>
-    </child>
-    <child>
-      <object class="GtkButton" id="love_btn">
-        <property name="visible">True</property>
-        <property name="can_focus">True</property>
-        <property name="receives_default">True</property>
-        <property name="tooltip_text" translatable="yes">I love</property>
-        <property name="halign">start</property>
-        <property name="image">image2</property>
-        <property name="relief">none</property>
-        <signal name="clicked" handler="_on_love_btn_clicked" swapped="no"/>
-        <style>
-          <class name="rounded"/>
-        </style>
-      </object>
-      <packing>
-        <property name="left_attach">1</property>
-        <property name="top_attach">0</property>
-      </packing>
-    </child>
-    <child>
-      <object class="GtkLabel" id="label">
-        <property name="height_request">32</property>
-        <property name="visible">True</property>
-        <property name="can_focus">False</property>
-        <property name="halign">center</property>
-        <property name="hexpand">True</property>
-        <property name="ellipsize">end</property>
-      </object>
-      <packing>
-        <property name="left_attach">3</property>
-        <property name="top_attach">0</property>
-      </packing>
-    </child>
-    <child>
-      <object class="GtkButton" id="view_btn">
-        <property name="visible">True</property>
-        <property name="sensitive">False</property>
-        <property name="can_focus">True</property>
-        <property name="receives_default">True</property>
-        <property name="image">image1</property>
-        <property name="relief">none</property>
-        <signal name="clicked" handler="_on_view_clicked" swapped="no"/>
-        <style>
-          <class name="rounded"/>
-        </style>
-      </object>
-      <packing>
-        <property name="left_attach">2</property>
-        <property name="top_attach">0</property>
-      </packing>
-    </child>
-    <child>
-      <object class="GtkButton" id="lyrics_btn">
-        <property name="can_focus">True</property>
-        <property name="receives_default">True</property>
-        <property name="tooltip_text" translatable="yes">Wikia</property>
-        <property name="image">image3</property>
-        <property name="relief">none</property>
-        <signal name="clicked" handler="_on_lyrics_clicked" swapped="no"/>
-        <style>
-          <class name="rounded"/>
-        </style>
-      </object>
-      <packing>
-        <property name="left_attach">0</property>
-        <property name="top_attach">0</property>
-      </packing>
-    </child>
-  </object>
-  <object class="GtkImage" id="notfound">
-    <property name="visible">True</property>
-    <property name="can_focus">False</property>
-    <property name="icon_name">computer-fail-symbolic</property>
-  </object>
-  <object class="GtkScrolledWindow" id="scrolled">
-    <property name="visible">True</property>
-    <property name="can_focus">True</property>
-    <property name="hscrollbar_policy">never</property>
-    <child>
-      <object class="GtkViewport" id="viewport">
-        <property name="visible">True</property>
-        <property name="can_focus">False</property>
-        <property name="margin_start">10</property>
-        <property name="margin_end">10</property>
-        <property name="margin_top">10</property>
-        <property name="margin_bottom">10</property>
-        <child>
-          <object class="GtkGrid" id="grid1">
-            <property name="visible">True</property>
-            <property name="can_focus">False</property>
-            <property name="halign">start</property>
-            <property name="valign">start</property>
-            <property name="row_spacing">10</property>
-            <property name="column_spacing">10</property>
-            <child>
-              <object class="GtkImage" id="image">
-                <property name="visible">True</property>
-                <property name="can_focus">False</property>
-                <property name="halign">start</property>
-                <property name="valign">start</property>
-              </object>
-              <packing>
-                <property name="left_attach">0</property>
-                <property name="top_attach">0</property>
-              </packing>
-            </child>
-            <child>
-              <object class="GtkLabel" id="content">
-                <property name="visible">True</property>
-                <property name="can_focus">False</property>
-                <property name="valign">start</property>
-                <property name="wrap">True</property>
-              </object>
-              <packing>
-                <property name="left_attach">1</property>
-                <property name="top_attach">0</property>
-              </packing>
-            </child>
-          </object>
-        </child>
-      </object>
-    </child>
-  </object>
-  <object class="GtkSpinner" id="spinner">
-    <property name="width_request">100</property>
-    <property name="height_request">100</property>
-    <property name="visible">True</property>
-    <property name="can_focus">False</property>
-    <property name="halign">center</property>
-    <property name="valign">center</property>
-    <property name="hexpand">True</property>
-    <property name="vexpand">True</property>
-    <property name="active">True</property>
   </object>
 </interface>
