@@ -23,7 +23,6 @@ except Exception as e:
 
 from pylast import LastFMNetwork, md5, BadAuthenticationError
 from gettext import gettext as _
-import re
 from locale import getdefaultlocale
 from threading import Thread
 

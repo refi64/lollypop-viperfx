@@ -16,7 +16,7 @@ from gettext import gettext as _
 from threading import Thread
 from cgi import escape
 
-from lollypop.define import Lp
+from lollypop.define import Lp, Type
 
 
 class InfosPopover(Gtk.Popover):
