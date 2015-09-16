@@ -136,13 +136,20 @@ class ArtistInfos(Gtk.Bin):
         builder = Gtk.Builder()
         builder.add_from_resource('/org/gnome/Lollypop/ArtistInfos.ui')
         builder.connect_signals(self)
-        
+
         self._stack = builder.get_object('stack')
         self._lastfm = builder.get_object('lastfm')
         self._wikipedia = builder.get_object('wikipedia')
         self._wikia = builder.get_object('wikia')
         self._stack.set_visible_child_name('lastfm')
         self.add(builder.get_object('widget'))
+
+        if self.Wikipedia is None:
+            builder.get_object('wikipedia').destroy()
+        if Lp.lastfm is None:
+            builder.get_object('lastfm').destroy()
+        if self.WebKit is None:
+            builder.get_object('wikia').destroy()
 
 #######################
 # PRIVATE             #
