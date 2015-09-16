@@ -176,7 +176,7 @@ class ArtistInfos(Gtk.Bin):
         image_url = None
         content = None
         if self._artist is None:
-            artist = Lp.player.current_track.artist
+            artist = self._get_current_artist()
         else:
             artist = self._artist
         (url, image_url, content) = Lp.lastfm.get_artist_infos(artist)
@@ -208,7 +208,7 @@ class ArtistInfos(Gtk.Bin):
         image_url = None
         content = None
         if self._artist is None:
-            artist = Lp.player.current_track.artist
+            artist = self._get_current_artist()
         else:
             artist = self._artist
         (url, image_url, content) = self.Wikipedia().get_artist_infos(artist)
@@ -276,6 +276,18 @@ class ArtistInfos(Gtk.Bin):
             @param widget as Gtk.ScrolledWindow
         """
         widget.set_content(content, stream)
+
+    def _get_current_artist(self):
+        """
+            Get current artist
+            @return artist as string
+        """
+        artist_id = Lp.player.current_track.album_artist_id
+        if artist_id == Type.COMPILATIONS:
+            artist = Lp.player.current_track.artist
+        else:
+            artist = Lp.player.current_track.album_artist
+        return artist
 
     def _on_navigation_policy(self, view, frame, request,
                               navigation_action, policy_decision):

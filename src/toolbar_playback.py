@@ -125,11 +125,6 @@ class ToolbarPlayback(Gtk.Bin):
             @param button as Gtk.Button
         """
         if InfosPopover.should_be_shown():
-            artist_id = Lp.player.current_track.album_artist_id
-            if artist_id == Type.COMPILATIONS:
-                artist = Lp.player.current_track.artist
-            else:
-                artist = Lp.player.current_track.album_artist
             popover = InfosPopover()
             popover.set_relative_to(button)
             popover.show()
