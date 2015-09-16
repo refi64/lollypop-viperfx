@@ -141,7 +141,7 @@ class ArtistInfos(Gtk.Bin):
         self._lastfm = builder.get_object('lastfm')
         self._wikipedia = builder.get_object('wikipedia')
         self._wikia = builder.get_object('wikia')
-        self._stack.set_visible_child_name('lastfm')
+        self._stack.set_visible_child_name('wikipedia')
         self.add(builder.get_object('widget'))
 
         if self.Wikipedia is None:

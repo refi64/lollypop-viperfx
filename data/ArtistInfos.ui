@@ -45,7 +45,7 @@
             <signal name="map" handler="_on_map_wikipedia" swapped="no"/>
           </object>
           <packing>
-            <property name="name">Wikipedia</property>
+            <property name="name">wikipedia</property>
             <property name="title" translatable="yes">Wikipedia</property>
           </packing>
         </child>
