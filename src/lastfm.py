@@ -25,6 +25,7 @@ from pylast import LastFMNetwork, md5, BadAuthenticationError
 from gettext import gettext as _
 from locale import getdefaultlocale
 from threading import Thread
+import re
 
 from lollypop.define import Lp, SecretSchema, SecretAttributes
 from lollypop.utils import debug
@@ -105,10 +106,11 @@ class LastFM(LastFMNetwork):
             last_artist = self.get_artist(artist)
             url = last_artist.get_url()
             try:
-                content = last_artist.get_bio_summary(
+                content = last_artist.get_bio_content(
                     language=getdefaultlocale()[0][0:2])
             except:
-                content = last_artist.get_bio_summary()
+                content = last_artist.get_bio_content()
+            content = re.sub(r'<.*Last.fm.*>.', '', content)
             image_url = last_artist.get_cover_image(3)
             return (url, image_url, content)
         except:
