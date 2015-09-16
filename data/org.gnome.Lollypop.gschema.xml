@@ -43,6 +43,11 @@
             <summary>Favorite tag editor</summary>
             <description></description>
         </key>
+        <key type="s" name="infoswitch">
+            <default>"wikipedia"</default>
+            <summary>INTERNAL</summary>
+            <description></description>
+        </key>
         <key type="s" name="favorite-cover">
             <default>"cover.jpg"</default>
             <summary>Favorite cover file</summary>

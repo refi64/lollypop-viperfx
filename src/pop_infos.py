@@ -141,7 +141,8 @@ class ArtistInfos(Gtk.Bin):
         self._lastfm = builder.get_object('lastfm')
         self._wikipedia = builder.get_object('wikipedia')
         self._wikia = builder.get_object('wikia')
-        self._stack.set_visible_child_name('wikipedia')
+        self._stack.set_visible_child_name(
+            Lp.settings.get_value('infoswitch').get_string())
         self.add(builder.get_object('widget'))
 
         if self.Wikipedia is None:
@@ -158,6 +159,8 @@ class ArtistInfos(Gtk.Bin):
         """
             Load on map
         """
+        Lp.settings.set_value('infoswitch',
+                              GLib.Variant('s', 'lastfm'))
         content_widget = ArtistContent()
         content_widget.show()
         child = widget.get_child()
@@ -184,6 +187,8 @@ class ArtistInfos(Gtk.Bin):
         """
             Load on map
         """
+        Lp.settings.set_value('infoswitch',
+                              GLib.Variant('s', 'wikipedia'))
         content_widget = ArtistContent()
         content_widget.show()
         child = widget.get_child()
@@ -211,6 +216,8 @@ class ArtistInfos(Gtk.Bin):
         """
             Load on map
         """
+        Lp.settings.set_value('infoswitch',
+                              GLib.Variant('s', 'wikia'))
         child = widget.get_child()
         if child is not None:
             child.destroy()
@@ -233,6 +240,8 @@ class ArtistInfos(Gtk.Bin):
         wikia_url = "http://lyrics.wikia.com/wiki/%s:%s" % (artist,
                                                                   title)
         view.load_uri(wikia_url)
+        view.set_property('hexpand', True)
+        view.set_property('vexpand', True)
         self._stack.set_visible_child_name('wikia')
 
     def _populate(self, url, image_url, content, widget):
