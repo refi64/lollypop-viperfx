@@ -31,12 +31,13 @@ class InfosPopover(Gtk.Popover):
             ArtistInfos.Wikipedia is not None or\
             ArtistInfos.WebKit is not None
 
-    def __init__(self):
+    def __init__(self, show_lyrics=True):
         """
             Init popover
+            @param show_lyrics as bool
         """
         Gtk.Popover.__init__(self)
-        self._infos = ArtistInfos()
+        self._infos = ArtistInfos(show_lyrics)
         self._infos.show()
         self.add(self._infos)
 
@@ -118,9 +119,10 @@ class ArtistInfos(Gtk.Bin):
         print(_("Wikia support disabled"))
         WebKit = None
 
-    def __init__(self):
+    def __init__(self, show_lyrics):
         """
             Init artist infos
+            @param show_lyrics as bool
         """
         Gtk.Bin.__init__(self)
         self._liked = True  # Liked track or not?
@@ -141,7 +143,7 @@ class ArtistInfos(Gtk.Bin):
             builder.get_object('wikipedia').destroy()
         if Lp.lastfm is None:
             builder.get_object('lastfm').destroy()
-        if self.WebKit is None:
+        if self.WebKit is None or not show_lyrics:
             builder.get_object('wikia').destroy()
 
 #######################

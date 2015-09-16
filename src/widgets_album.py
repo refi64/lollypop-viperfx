@@ -490,7 +490,7 @@ class AlbumDetailedWidget(AlbumWidget):
         """
         if (Lp.lastfm is not None or self.Wikipedia is not None) and\
                 self._album.artist_id != Type.COMPILATIONS:
-            popover = InfosPopover()
+            popover = InfosPopover(False)
             popover.set_relative_to(eventbox)
             popover.show()
 
