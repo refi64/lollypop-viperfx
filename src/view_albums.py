@@ -129,7 +129,6 @@ class ArtistView(View):
         if (Lp.lastfm is not None or self.Wikipedia is not None) and\
                 self._artist_id != Type.COMPILATIONS:
             self._popover.set_relative_to(eventbox)
-            self._popover.populate()
             self._popover.show()
 
 

@@ -31,13 +31,13 @@ class InfosPopover(Gtk.Popover):
             ArtistInfos.Wikipedia is not None or\
             ArtistInfos.WebKit is not None
 
-    def __init__(self, show_lyrics=True):
+    def __init__(self, artist=None):
         """
             Init popover
-            @param show_lyrics as bool
+            @param artist as string
         """
         Gtk.Popover.__init__(self)
-        self._infos = ArtistInfos(show_lyrics)
+        self._infos = ArtistInfos(artist)
         self._infos.show()
         self.add(self._infos)
 
@@ -119,13 +119,13 @@ class ArtistInfos(Gtk.Bin):
         print(_("Wikia support disabled"))
         WebKit = None
 
-    def __init__(self, show_lyrics):
+    def __init__(self, artist):
         """
             Init artist infos
-            @param show_lyrics as bool
+            @param artist as string
         """
         Gtk.Bin.__init__(self)
-        self._liked = True  # Liked track or not?
+        self._artist = artist
 
         builder = Gtk.Builder()
         builder.add_from_resource('/org/gnome/Lollypop/ArtistInfos.ui')
@@ -143,7 +143,7 @@ class ArtistInfos(Gtk.Bin):
             builder.get_object('wikipedia').destroy()
         if Lp.lastfm is None:
             builder.get_object('lastfm').destroy()
-        if self.WebKit is None or not show_lyrics:
+        if self.WebKit is None or artist is not None:
             builder.get_object('wikia').destroy()
 
 #######################
@@ -174,8 +174,11 @@ class ArtistInfos(Gtk.Bin):
         url = None
         image_url = None
         content = None
-        (url, image_url, content) = Lp.lastfm.get_artist_infos(
-                                                Lp.player.current_track.artist)
+        if self._artist is None:
+            artist = Lp.player.current_track.artist
+        else:
+            artist = self._artist
+        (url, image_url, content) = Lp.lastfm.get_artist_infos(artist)
         self._populate(url, image_url, content, widget)
 
     def _on_map_wikipedia(self, widget):
@@ -203,8 +206,11 @@ class ArtistInfos(Gtk.Bin):
         url = None
         image_url = None
         content = None
-        (url, image_url, content) = self.Wikipedia().get_artist_infos(
-                                                Lp.player.current_track.artist)
+        if self._artist is None:
+            artist = Lp.player.current_track.artist
+        else:
+            artist = self._artist
+        (url, image_url, content) = self.Wikipedia().get_artist_infos(artist)
         self._populate(url, image_url, content, widget)
 
     def _on_map_wikia(self, widget):
