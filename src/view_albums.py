@@ -19,6 +19,7 @@ from lollypop.pop_infos import InfosPopover
 from lollypop.view_container import ViewContainer
 from lollypop.widgets_album import AlbumSimpleWidget, AlbumDetailedWidget
 from lollypop.define import Lp, Type, ArtSize
+from lollypop.objects import Album, Track
 
 
 class ArtistView(View):
@@ -290,6 +291,10 @@ class AlbumsView(View):
         else:
             self._context_album_id = child.get_child().get_id()
             if Lp.settings.get_value('auto-play'):
-                Lp.player.play_album(self._context_album_id)
+                album = Album(self._context_album_id)
+                track = Track(album.tracks_ids[0])
+                Lp.player.load(track)
+                Lp.player.set_albums(track.id, None,
+                                     self._genre_id)
             self._populate_context(self._context_album_id)
             self._context.show()
