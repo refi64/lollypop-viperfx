@@ -143,6 +143,7 @@ class ArtistInfos(Gtk.Bin):
             builder.get_object('lastfm').destroy()
         if self.WebKit is None or artist is not None:
             builder.get_object('wikia').destroy()
+        if self.WebKit is None:
             builder.get_object('duck').destroy()
 
 #######################
