@@ -459,8 +459,7 @@ class Container:
 
         child = self._stack.get_child_by_name(device.uri)
         if child is None:
-            child = DeviceView(device, self._progress,
-                               self._stack.get_allocated_width()/2)
+            child = DeviceView(device, self._progress)
             self._stack.add_named(child, device.uri)
             child.show()
         child.populate()

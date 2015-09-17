@@ -24,12 +24,11 @@ class DeviceView(View):
         Playlist synchronisation to MTP
     """
 
-    def __init__(self, device, progress, width):
+    def __init__(self, device, progress):
         """
             Init view
             @param device as Device
             @param progress as Gtk.ProgressBar
-            @param width as int
         """
         View.__init__(self)
         self._timeout_id = None
@@ -46,8 +45,6 @@ class DeviceView(View):
         self._device_widget = DeviceManagerWidget(progress, self)
         self._device_widget.connect('sync-finished', self._on_sync_finished)
         self._device_widget.show()
-        self._scrolledWindow.set_property('halign', Gtk.Align.CENTER)
-        self._scrolledWindow.set_property('width-request', width)
         self._viewport.add(self._device_widget)
         self.add(self._scrolledWindow)
 
@@ -98,6 +95,8 @@ class DeviceView(View):
             Restore widgets state
             @param device widget as DeviceManager
         """
+        self._progress.hide()
+        self._progress.set_fraction(0)
         self._memory_combo.show()
         self._syncing_btn.set_label(_("Synchronize %s") %
                                     self._device.name)
@@ -124,12 +123,6 @@ class DeviceView(View):
             print("DeviceManagerView::_get_files: %s: %s" % (uri, e))
             files = []
         return files
-
-    def _update_progress(self):
-        """
-            Update progress bar. Do nothing
-        """
-        pass
 
     def _on_memory_combo_changed(self, combo):
         """
