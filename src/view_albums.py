@@ -117,7 +117,7 @@ class ArtistView(View):
             @param eventbox as Gtk.EventBox
         """
         if InfosPopover.should_be_shown() and\
-                self._album.artist_id != Type.COMPILATIONS:
+                self._artist_id != Type.COMPILATIONS:
             eventbox.get_window().set_cursor(Gdk.Cursor(Gdk.CursorType.HAND1))
 
     def _on_label_button_release(self, eventbox, event):
@@ -127,7 +127,7 @@ class ArtistView(View):
             @param event as Gdk.Event
         """
         if InfosPopover.should_be_shown() and\
-                self._album.artist_id != Type.COMPILATIONS:
+                self._artist_id != Type.COMPILATIONS:
             self._popover.set_relative_to(eventbox)
             self._popover.show()
 
