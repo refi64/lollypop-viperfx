@@ -234,13 +234,12 @@ class ArtistInfos(Gtk.Bin):
         """
         Lp.settings.set_value('infoswitch',
                               GLib.Variant('s', 'duck'))
-        if self._artist is None:
-            artist = self._get_current_artist()
-        else:
-            artist = self._artist
         title = Lp.player.current_track.title
-        self._load_web(widget, "https://duckduckgo.com/?q=%s+%s" % (artist,
-                                                                    title))
+        if self._artist is None:
+            search = "%s+%s" % (self._get_current_artist(), title)
+        else:
+            search = self._artist
+        self._load_web(widget, "https://duckduckgo.com/?q=%s" % search)
         self._stack.set_visible_child_name('duck')
 
     def _load_web(self, widget, url):
