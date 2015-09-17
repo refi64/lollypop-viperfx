@@ -13,6 +13,7 @@
 from gi.repository import Gtk, GLib, Gio, GdkPixbuf
 
 from gettext import gettext as _
+from locale import getdefaultlocale
 from threading import Thread
 from cgi import escape
 
@@ -30,7 +31,7 @@ class InfosPopover(Gtk.Popover):
         """
         return Lp.lastfm is not None or\
             ArtistInfos.Wikipedia is not None or\
-            ArtistInfos.WebKit is not None
+            ArtistInfos.WebKit2 is not None
 
     def __init__(self, artist=None):
         """
@@ -114,11 +115,11 @@ class ArtistInfos(Gtk.Bin):
         Wikipedia = None
 
     try:
-        from gi.repository import WebKit
+        from gi.repository import WebKit2
     except Exception as e:
         print(e)
         print(_("Wikia support disabled"))
-        WebKit = None
+        WebKit2 = None
 
     def __init__(self, artist):
         """
@@ -141,9 +142,9 @@ class ArtistInfos(Gtk.Bin):
             builder.get_object('wikipedia').destroy()
         if Lp.lastfm is None:
             builder.get_object('lastfm').destroy()
-        if self.WebKit is None or artist is not None:
+        if self.WebKit2 is None or artist is not None:
             builder.get_object('wikia').destroy()
-        if self.WebKit is None:
+        if self.WebKit2 is None:
             builder.get_object('duck').destroy()
 
 #######################
@@ -249,22 +250,28 @@ class ArtistInfos(Gtk.Bin):
         if child is not None:
             child.destroy()
 
-        settings = self.WebKit.WebSettings()
+        settings = self.WebKit2.Settings()
         settings.set_property('enable-private-browsing', True)
         settings.set_property('enable-plugins', False)
         settings.set_property('user-agent',
                               "Mozilla/5.0 (Linux; Ubuntu 14.04;"
-                              " BlackBerry) AppleWebKit/537.36 Chromium"
+                              " BlackBerry) AppleWebKit2/537.36 Chromium"
                               "/35.0.1870.2 Mobile Safari/537.36")
-        view = self.WebKit.WebView()
+        view = self.WebKit2.WebView()
         view.set_settings(settings)
         view.show()
-        view.connect('navigation-policy-decision-requested',
-                     self._on_navigation_policy)
+        view.get_context().set_tls_errors_policy(
+                                        self.WebKit2.TLSErrorsPolicy.IGNORE)
+        view.connect('authenticate', self._on_authenticate)
+        view.connect('load-failed-with-tls-errors',
+                     self._on_load_failed_with_tls_error)
+        view.connect('decide_policy',
+                     self._on_decide_policy)
         widget.add(view)
-        view.load_uri(url)
         view.set_property('hexpand', True)
         view.set_property('vexpand', True)
+        view.grab_focus()
+        view.load_uri(url)
 
     def _populate(self, url, image_url, content, widget):
         """
@@ -309,21 +316,41 @@ class ArtistInfos(Gtk.Bin):
             artist = Lp.player.current_track.album_artist
         return artist
 
-    def _on_navigation_policy(self, view, frame, request,
-                              navigation_action, policy_decision):
+    def _on_authenticate(self, view, request):
         """
-            Disallow navigation, launch in external browser
-            @param view as WebKit.WebView
-            @param frame as WebKit.WebFrame
-            @param request as WebKit.NetworkRequest
-            @param navigation_action as WebKit.WebNavigationAction
-            @param policy_decision as WebKit.WebPolicyDecision
+            Disable web auth
+            @param view as WebKit2.WebView
+            @param request as WebKit2.AuthenticationRequest
             @return bool
         """
-        if navigation_action.get_reason() ==\
-           self.WebKit.WebNavigationReason.LINK_CLICKED:
-            GLib.spawn_command_line_async("xdg-open \"%s\"" %
-                                          request.get_uri())
+        return True
+
+    def _on_load_failed_with_tls_error(self, view, uri, cert, errors):
+        """
+            @param view as WebKit2.WebView
+            @param uri as str
+            @param cert as Gio.TlsCertificate
+            @param errors as Gio.TlsCertificateFlags
+            Ignore TLS errors
+            @return bool
+        """
+        view.get_context().allow_tls_certificate_for_host(cert, uri)
+        return False
+
+    def _on_decide_policy(self, view, decision, decision_type):
+        """
+            Disallow navigation, launch in external browser
+            @param view as WebKit2.WebView
+            @param decision as WebKit2.NavigationPolicyDecision
+            @param decision_type as WebKit2.PolicyDecisionType
+            @return bool
+        """
+        if decision_type == self.WebKit2.PolicyDecisionType.NAVIGATION_ACTION:
+            if decision.get_navigation_action().get_navigation_type() ==\
+               self.WebKit2.NavigationType.LINK_CLICKED:
+                decision.ignore()
+                GLib.spawn_command_line_async("xdg-open \"%s\"" %
+                                              decision.get_request().get_uri())
             return True
-        else:
-            return False
+        decision.use()
+        return False
