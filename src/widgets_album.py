@@ -488,7 +488,7 @@ class AlbumDetailedWidget(AlbumWidget):
             @param eventbox as Gtk.EventBox
             @param event as Gdk.Event
         """
-        if (Lp.lastfm is not None or self.Wikipedia is not None) and\
+        if InfosPopover.should_be_shown() and\
                 self._album.artist_id != Type.COMPILATIONS:
             popover = InfosPopover(self._album.artist_name)
             popover.set_relative_to(eventbox)

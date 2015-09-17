@@ -126,8 +126,8 @@ class ArtistView(View):
             @param eventbox as Gtk.EventBox
             @param event as Gdk.Event
         """
-        if (Lp.lastfm is not None or self.Wikipedia is not None) and\
-                self._artist_id != Type.COMPILATIONS:
+        if InfosPopover.should_be_shown() and\
+                self._album.artist_id != Type.COMPILATIONS:
             self._popover.set_relative_to(eventbox)
             self._popover.show()
 
