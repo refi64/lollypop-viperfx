@@ -133,9 +133,6 @@ class ArtistInfos(Gtk.Bin):
         builder.connect_signals(self)
 
         self._stack = builder.get_object('stack')
-        self._lastfm = builder.get_object('lastfm')
-        self._wikipedia = builder.get_object('wikipedia')
-        self._wikia = builder.get_object('wikia')
         self._stack.set_visible_child_name(
             Lp.settings.get_value('infoswitch').get_string())
         self.add(builder.get_object('widget'))
@@ -146,6 +143,7 @@ class ArtistInfos(Gtk.Bin):
             builder.get_object('lastfm').destroy()
         if self.WebKit is None or artist is not None:
             builder.get_object('wikia').destroy()
+            builder.get_object('duck').destroy()
 
 #######################
 # PRIVATE             #
@@ -217,6 +215,30 @@ class ArtistInfos(Gtk.Bin):
     def _on_map_wikia(self, widget):
         """
             Load on map
+            @param widget as Gtk.ScrolledWindow
+        """
+        artist = self._get_current_artist().replace(' ', '_')
+        title = Lp.player.current_track.title.replace(' ', '_')
+        self._load_web(widget, "http://lyrics.wikia.com/wiki/%s:%s" % (artist,
+                                                                       title))
+        self._stack.set_visible_child_name('wikia')
+
+    def _on_map_duck(self, widget):
+        """
+            Load on map
+            @param widget as Gtk.ScrolledWindow
+        """
+        artist = self._get_current_artist()
+        title = Lp.player.current_track.title
+        self._load_web(widget, "https://duckduckgo.com/?q=%s+%s" % (artist,
+                                                                    title))
+        self._stack.set_visible_child_name('duck')
+
+    def _load_web(self, widget, url):
+        """
+            Load url with two replacement
+            @param url as string
+            @param widget as Gtk.ScrolledWindow
         """
         Lp.settings.set_value('infoswitch',
                               GLib.Variant('s', 'wikia'))
@@ -237,14 +259,9 @@ class ArtistInfos(Gtk.Bin):
         view.connect('navigation-policy-decision-requested',
                      self._on_navigation_policy)
         widget.add(view)
-        artist = Lp.player.current_track.album_artist.replace(' ', '_')
-        title = Lp.player.current_track.title.replace(' ', '_')
-        wikia_url = "http://lyrics.wikia.com/wiki/%s:%s" % (artist,
-                                                            title)
-        view.load_uri(wikia_url)
+        view.load_uri(url)
         view.set_property('hexpand', True)
         view.set_property('vexpand', True)
-        self._stack.set_visible_child_name('wikia')
 
     def _populate(self, url, image_url, content, widget):
         """

@@ -60,6 +60,17 @@
             <property name="title" translatable="yes">Wikia</property>
           </packing>
         </child>
+        <child>
+          <object class="GtkScrolledWindow" id="duck">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <signal name="map" handler="_on_map_duck" swapped="no"/>
+          </object>
+          <packing>
+            <property name="name">duck</property>
+            <property name="title" translatable="yes">Duck Duck Go</property>
+          </packing>
+        </child>
       </object>
       <packing>
         <property name="left_attach">0</property>
