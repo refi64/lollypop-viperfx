@@ -478,7 +478,7 @@ class AlbumDetailedWidget(AlbumWidget):
             Change pointer on label
             @param eventbox as Gtk.EventBox
         """
-        if (Lp.lastfm is not None or self.Wikipedia is not None) and\
+        if InfosPopover.should_be_shown() and\
                 self._album.artist_id != Type.COMPILATIONS:
             eventbox.get_window().set_cursor(Gdk.Cursor(Gdk.CursorType.HAND1))
 
