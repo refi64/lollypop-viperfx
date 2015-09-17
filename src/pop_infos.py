@@ -261,7 +261,6 @@ class ArtistInfos(Gtk.Bin):
                               "/35.0.1870.2 Mobile Safari/537.36")
         view = self.WebKit2.WebView()
         view.set_settings(settings)
-        view.show()
         # TLS is broken in WebKit2, don't know how to fix this so disable
         # auth/forms
         view.get_context().set_tls_errors_policy(
@@ -269,9 +268,10 @@ class ArtistInfos(Gtk.Bin):
         view.connect('authenticate', self._on_authenticate)
         view.connect('decide_policy', self._on_decide_policy)
         view.connect('submit-form', self._on_submit_form)
-        widget.add(view)
         view.set_property('hexpand', True)
         view.set_property('vexpand', True)
+        widget.add(view)
+        view.show()
         view.grab_focus()
         view.load_uri(url)
 
