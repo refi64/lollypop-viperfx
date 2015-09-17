@@ -217,6 +217,8 @@ class ArtistInfos(Gtk.Bin):
             Load on map
             @param widget as Gtk.ScrolledWindow
         """
+        Lp.settings.set_value('infoswitch',
+                              GLib.Variant('s', 'wikia'))
         artist = self._get_current_artist().replace(' ', '_')
         title = Lp.player.current_track.title.replace(' ', '_')
         self._load_web(widget, "http://lyrics.wikia.com/wiki/%s:%s" % (artist,
@@ -228,6 +230,8 @@ class ArtistInfos(Gtk.Bin):
             Load on map
             @param widget as Gtk.ScrolledWindow
         """
+        Lp.settings.set_value('infoswitch',
+                              GLib.Variant('s', 'duck'))
         artist = self._get_current_artist()
         title = Lp.player.current_track.title
         self._load_web(widget, "https://duckduckgo.com/?q=%s+%s" % (artist,
@@ -240,8 +244,6 @@ class ArtistInfos(Gtk.Bin):
             @param url as string
             @param widget as Gtk.ScrolledWindow
         """
-        Lp.settings.set_value('infoswitch',
-                              GLib.Variant('s', 'wikia'))
         child = widget.get_child()
         if child is not None:
             child.destroy()

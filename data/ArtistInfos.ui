@@ -68,7 +68,7 @@
           </object>
           <packing>
             <property name="name">duck</property>
-            <property name="title" translatable="yes">Duck Duck Go</property>
+            <property name="title" translatable="yes">DuckDuckGo</property>
           </packing>
         </child>
       </object>
