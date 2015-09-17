@@ -13,6 +13,7 @@
 from gi.repository import Gtk, GLib, Gio
 
 from gettext import gettext as _
+from threading import Thread
 
 from lollypop.view import View
 from lollypop.widgets_device import DeviceManagerWidget
@@ -31,6 +32,7 @@ class DeviceView(View):
             @param width as int
         """
         View.__init__(self)
+        self._timeout_id = None
         self._device = device
         self._progress = progress
         builder = Gtk.Builder()
@@ -50,11 +52,30 @@ class DeviceView(View):
         self.add(self._scrolledWindow)
 
     def populate(self):
+        """
+            Populate combo box
+        """
         files = self._get_files(self._device.uri)
-        GLib.idle_add(self._set_combo_text, files)
+        if files:
+            GLib.idle_add(self._set_combo_text, files)
+        else:
+            self._timeout_id = GLib.timeout_add(1000, self._wait_for_unlock)
 
     def is_syncing(self):
+        """
+            Check if lollypop is syncing
+            @return bool
+        """
         return self._device_widget.is_syncing()
+
+    def remove_signals(self):
+        """
+            Remove running timeout
+        """
+        if self._timeout_id is not None:
+            GLib.source_remove(self._timeout_id)
+            self._timeout_id = None
+        View.remove_signals(self)
 
 #######################
 # PRIVATE             #
@@ -100,7 +121,7 @@ class DeviceView(View):
             for info in infos:
                 files.append(info.get_name())
         except Exception as e:
-            print("DeviceManagerWidget::_get_files: %s: %s" % (uri, e))
+            print("DeviceManagerView::_get_files: %s: %s" % (uri, e))
             files = []
         return files
 
@@ -115,11 +136,25 @@ class DeviceView(View):
             Update path
             @param combo as Gtk.ComboxText
         """
+        self._timeout_id = None
         text = combo.get_active_text()
         uri = "%s%s/Music/%s" % (self._device.uri, text, "lollypop")
         on_disk_playlists = self._get_files(uri)
-        self._device_widget.set_playlists(on_disk_playlists, uri)
-        self._device_widget.populate()
+        if on_disk_playlists:
+            self._device_widget.set_playlists(on_disk_playlists, uri)
+            self._device_widget.populate()
+
+    def _wait_for_unlock(self):
+        """
+            Wait for device unlock
+        """
+        if self._timeout_id is not None:
+            t = Thread(target=self.populate)
+            t.daemon = True
+            t.start()
+            return True
+        else:
+            return False
 
     def _set_combo_text(self, text_list):
         """

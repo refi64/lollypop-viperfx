@@ -623,6 +623,7 @@ class Container:
                 device = self._devices[dev.id]
                 child = self._stack.get_child_by_name(uri)
                 if child is not None:
+                    child.remove_signals()
                     child.destroy()
                 del self._devices[dev.id]
             break
