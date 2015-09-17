@@ -62,7 +62,10 @@ class UserPlaylistPlayer(BasePlayer):
             Get user playlist
             @return track id as [int]
         """
-        return self._user_playlist
+        if self._user_playlist_backup:
+            return self._user_playlist_backup
+        else:
+            return self._user_playlist
 
     def next(self):
         """
