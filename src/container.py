@@ -31,7 +31,6 @@ class Device:
     id = None
     name = None
     uri = None
-    view = None
 
 
 class Loader(Thread):
@@ -458,17 +457,15 @@ class Container:
         """
         device = self._devices[device_id]
 
-        if device and device.view:
-            view = device.view
-        else:
-            view = DeviceView(device, self._progress,
-                              self._stack.get_allocated_width()/2)
-            device.view = view
-            self._stack.add(view)
-            view.show()
-        view.populate()
-        self._stack.set_visible_child(view)
-        self._stack.clean_old_views(view)
+        child = self._stack.get_child_by_name(device.uri)
+        if child is None:
+            child = DeviceView(device, self._progress,
+                               self._stack.get_allocated_width()/2)
+            self._stack.add_named(child, device.uri)
+            child.show()
+        child.populate()
+        self._stack.set_visible_child(child)
+        self._stack.clean_old_views(child)
 
     def _update_view_artists(self, artist_id, genre_id):
         """
@@ -624,8 +621,9 @@ class Container:
             if dev.uri == uri:
                 self._list_one.remove(dev.id)
                 device = self._devices[dev.id]
-                if device.view:
-                    device.view.destroy()
+                child = self._stack.get_child_by_name(uri)
+                if child is not None:
+                    child.destroy()
                 del self._devices[dev.id]
             break
 

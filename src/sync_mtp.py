@@ -10,7 +10,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-from gi.repository import GLib, Gio
+from gi.repository import GLib, Gio, GObject
 
 from time import sleep
 
@@ -21,6 +21,9 @@ class MtpSync:
     """
         Synchronisation to MTP devices
     """
+    __gsignals__ = {
+        'sync-finished': (GObject.SignalFlags.RUN_FIRST, None, ())
+    }
 
     def __init__(self):
         """
@@ -95,7 +98,7 @@ class MtpSync:
             # New tracks
             for playlist in playlists:
                 self._fraction = self._done/self._total
-                self._total += len(Lp.playlists.get_tracks(playlist))
+                self._total += len(Lp.playlists.get_tracks(playlist, sql))
 
             # Old tracks
             try:
@@ -129,10 +132,6 @@ class MtpSync:
         except Exception as e:
             print("DeviceManagerWidget::_sync(): %s" % e)
         self._fraction = 1.0
-        if self._syncing:
-            GLib.idle_add(self._view.set_sensitive, True)
-            GLib.idle_add(self.emit, 'sync-finished')
-
         # Let user see progress at 100%
         GLib.timeout_add(2000, self._progress.hide)
         self._syncing = False

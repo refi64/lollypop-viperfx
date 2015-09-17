@@ -96,11 +96,21 @@ class TracksDatabase:
                         "track_genres (track_id, genre_id)"
                         "VALUES (?, ?)", (track_id, genre_id))
 
+    def get_ids(self, sql=None):
+        """
+            Return all tracks id
+            @return tracks id as [int]
+        """
+        if not sql:
+            sql = Lp.sql
+        result = sql.execute("SELECT rowid FROM tracks")
+        return list(itertools.chain(*result))
+
     def get_ids_for_name(self, name, sql=None):
         """
-            Return track ids with name
+            Return tracks ids with name
             @param name as str
-            @return track id as int
+            @return track id as [int]
         """
         if not sql:
             sql = Lp.sql
@@ -171,6 +181,16 @@ class TracksDatabase:
             return v[0]
 
         return ""
+
+    def get_paths(self):
+        """
+            Get all tracks path
+            @return paths as [string]
+        """
+        if not sql:
+            sql = Lp.sql
+        result = sql.execute("SELECT filepath FROM tracks")
+        return list(itertools.chain(*result))
 
     def get_album_id(self, track_id, sql=None):
         """

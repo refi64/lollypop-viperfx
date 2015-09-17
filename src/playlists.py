@@ -101,6 +101,7 @@ class PlaylistsManager(GObject.GObject):
         """
         GObject.GObject.__init__(self)
         self._LOVED = _("Loved tracks")
+        self._ALL = "@@@ALL@@@"
         self._index = 0
         self._playlists = {}
         # Create playlists directory if missing
@@ -202,25 +203,30 @@ class PlaylistsManager(GObject.GObject):
             print("Lollypop::PlaylistManager::get_last: %s" % e)
         return playlists
 
-    def get_tracks(self, playlist_name):
+    def get_tracks(self, playlist_name, sql=None):
         """
             Return availables tracks for playlist
+            If playlist name == self._ALL, then return all tracks from db
             @param playlist playlist_name as str
+            @param sql as sqlite cursor
             @return array of track filepath as str
         """
-        try:
-            tracks = self._playlists[playlist_name].get_tracks()
-            if tracks:
-                return tracks
+        if playlist_name == self._ALL:
+            tracks = Lp.tracks.get_paths(sql)
+        else:
+            try:
+                tracks = self._playlists[playlist_name].get_tracks()
+                if tracks:
+                    return tracks
 
-            f = open(self._PLAYLISTS_PATH+"/"+playlist_name+".m3u", "r")
-            for filepath in f:
-                if filepath[0] not in ["#", "\n"]:
-                    tracks.append(filepath[:-1])
-            f.close()
-        except Exception as e:
-            print("PlaylistsManager::get_tracks: %s" % e)
-        self._playlists[playlist_name].set_tracks(tracks)
+                f = open(self._PLAYLISTS_PATH+"/"+playlist_name+".m3u", "r")
+                for filepath in f:
+                    if filepath[0] not in ["#", "\n"]:
+                        tracks.append(filepath[:-1])
+                f.close()
+            except Exception as e:
+                print("PlaylistsManager::get_tracks: %s" % e)
+            self._playlists[playlist_name].set_tracks(tracks)
         return tracks
 
     def set_tracks(self, playlist_name, tracks_path):
@@ -243,13 +249,17 @@ class PlaylistsManager(GObject.GObject):
     def get_tracks_id(self, playlist_name, sql=None):
         """
             Return availables tracks id for playlist
+            If playlist name == self._ALL, then return all tracks from db
             Thread safe if you pass an sql cursor
             @param playlist name as str
             @return array of track id as int
         """
         tracks_id = []
-        for filepath in self.get_tracks(playlist_name):
-            tracks_id.append(Lp.tracks.get_id_by_path(filepath, sql))
+        if playlist_name == self._ALL:
+            tracks_id = Lp.tracks.get_ids(sql)
+        else:
+            for filepath in self.get_tracks(playlist_name):
+                tracks_id.append(Lp.tracks.get_id_by_path(filepath, sql))
         return tracks_id
 
     def add_track(self, playlist_name, filepath):
