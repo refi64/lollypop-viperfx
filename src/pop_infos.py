@@ -320,9 +320,10 @@ class ArtistInfos(Gtk.Bin):
             @param policy_decision as WebKit.WebPolicyDecision
             @return bool
         """
-        if navigation_action.get_button() == -1:
-            return False
-        else:
+        if navigation_action.get_reason() ==\
+           self.WebKit.WebNavigationReason.LINK_CLICKED:
             GLib.spawn_command_line_async("xdg-open \"%s\"" %
                                           request.get_uri())
             return True
+        else:
+            return False
