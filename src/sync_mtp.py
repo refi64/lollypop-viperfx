@@ -132,8 +132,7 @@ class MtpSync:
         except Exception as e:
             print("DeviceManagerWidget::_sync(): %s" % e)
         self._fraction = 1.0
-        # Let user see progress at 100%
-        GLib.timeout_add(2000, self._progress.hide)
+        GLib.idle_add(self._update_progress)
         self._syncing = False
         self._in_thread = False
         if self._errors:
@@ -308,6 +307,12 @@ class MtpSync:
             self._done += 1
             self._fraction = self._done/self._total
             GLib.idle_add(self._update_progress)
+
+    def _update_progress(self):
+        """
+            Update progress bar. Do nothing
+        """
+        pass
 
     def _on_finished(self):
         """
