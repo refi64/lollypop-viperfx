@@ -134,7 +134,7 @@ class DeviceManagerWidget(Gtk.Bin, MtpSync):
         """
         a = model.get_value(itera, 1)
         b = model.get_value(iterb, 1)
-        return a > b
+        return a.lower() > b.lower()
 
     def _append_playlists(self, playlists):
         """
