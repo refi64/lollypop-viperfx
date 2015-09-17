@@ -31,6 +31,7 @@ class MtpSync:
         """
         self._syncing = False
         self._errors = False
+        self._errors_count = 0
         self._total = 0  # Total files to sync
         self._done = 0   # Handled files on sync
         self._fraction = 0.0
@@ -45,7 +46,12 @@ class MtpSync:
             @param func as function
             @param args as tuple
         """
+        # Max allowed errors
+        if self._errors_count > 10:
+            self._syncing = False
+            return
         if t == 0:
+            self._errors_count += 1
             self._errors = True
             return
         try:
@@ -88,6 +94,7 @@ class MtpSync:
         try:
             self._in_thread = True
             self._errors = False
+            self._errors_count = 0
             self._copied_art_uris = []
             sql = Lp.db.get_cursor()
             # For progress bar
