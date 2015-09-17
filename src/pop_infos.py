@@ -260,13 +260,13 @@ class ArtistInfos(Gtk.Bin):
         view = self.WebKit2.WebView()
         view.set_settings(settings)
         view.show()
+        # TLS is broken in WebKit2, don't know how to fix this so disable
+        # auth/forms
         view.get_context().set_tls_errors_policy(
                                         self.WebKit2.TLSErrorsPolicy.IGNORE)
         view.connect('authenticate', self._on_authenticate)
-        view.connect('load-failed-with-tls-errors',
-                     self._on_load_failed_with_tls_error)
-        view.connect('decide_policy',
-                     self._on_decide_policy)
+        view.connect('decide_policy', self._on_decide_policy)
+        view.connect('submit-form', self._on_submit_form)
         widget.add(view)
         view.set_property('hexpand', True)
         view.set_property('vexpand', True)
@@ -325,18 +325,6 @@ class ArtistInfos(Gtk.Bin):
         """
         return True
 
-    def _on_load_failed_with_tls_error(self, view, uri, cert, errors):
-        """
-            @param view as WebKit2.WebView
-            @param uri as str
-            @param cert as Gio.TlsCertificate
-            @param errors as Gio.TlsCertificateFlags
-            Ignore TLS errors
-            @return bool
-        """
-        view.get_context().allow_tls_certificate_for_host(cert, uri)
-        return False
-
     def _on_decide_policy(self, view, decision, decision_type):
         """
             Disallow navigation, launch in external browser
@@ -354,3 +342,12 @@ class ArtistInfos(Gtk.Bin):
             return True
         decision.use()
         return False
+
+    def _on_submit_form(self, view, request):
+        """
+            Ignore request
+            @param view as WebKit2.WebView
+            @param request as WebKit2.FormSubmissionRequest
+        """
+        if request.get_text_fields() is not None:
+            view.stop_loading()
