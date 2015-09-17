@@ -141,7 +141,7 @@ class PlaylistsManageView(View):
         Playlist view used to manage playlists
     """
 
-    def __init__(self, object_id, genre_id, is_album, width):
+    def __init__(self, object_id, genre_id, is_album):
         """
             Init View
             @param object id as int
@@ -160,8 +160,6 @@ class PlaylistsManageView(View):
                                                      genre_id,
                                                      is_album)
         self._manage_widget.show()
-        self._scrolledWindow.set_property('halign', Gtk.Align.CENTER)
-        self._scrolledWindow.set_property('width-request', width)
         self._viewport.add(self._manage_widget)
         self.add(builder.get_object('widget'))
         self.add(self._scrolledWindow)
@@ -195,7 +193,7 @@ class PlaylistEditView(View):
         Playlist view used to edit playlists
     """
 
-    def __init__(self, playlist_name, width):
+    def __init__(self, playlist_name):
         """
             Init view
             @param playlist name as str
@@ -210,8 +208,6 @@ class PlaylistEditView(View):
         self.add(grid)
         self._edit_widget = PlaylistEditWidget(playlist_name)
         self._edit_widget.show()
-        self._scrolledWindow.set_property('halign', Gtk.Align.CENTER)
-        self._scrolledWindow.set_property('width-request', width)
         self._viewport.add(self._edit_widget)
         self.add(self._scrolledWindow)
 

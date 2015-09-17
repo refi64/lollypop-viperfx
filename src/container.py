@@ -154,8 +154,7 @@ class Container:
             @param genre id as int
             @param is_album as bool
         """
-        view = PlaylistsManageView(object_id, genre_id, is_album,
-                                   self._stack.get_allocated_width()/2)
+        view = PlaylistsManageView(object_id, genre_id, is_album)
         view.populate()
         view.show()
         self._stack.add(view)
@@ -167,8 +166,7 @@ class Container:
             Current view stay present in ViewContainer
             @param playlist name as str
         """
-        view = PlaylistEditView(playlist_name,
-                                self._stack.get_allocated_width()/2)
+        view = PlaylistEditView(playlist_name)
         view.show()
         self._stack.add(view)
         self._stack.set_visible_child(view)
@@ -555,8 +553,7 @@ class Container:
             name = self._list_two.get_value(playlist_id)
             view = PlaylistView(playlist_id, name, self._stack)
         else:
-            view = PlaylistsManageView(-1, None, False,
-                                       self._stack.get_allocated_width()/2)
+            view = PlaylistsManageView(-1, None, False)
         if view:
             # Management or user playlist
             if playlist_id is None:
