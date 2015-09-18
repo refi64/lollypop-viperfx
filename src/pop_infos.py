@@ -239,7 +239,7 @@ class ArtistInfos(Gtk.Bin):
             search = "%s+%s" % (self._get_current_artist(), title)
         else:
             search = self._artist
-        self._load_web(widget, "https://duckduckgo.com/?q=%s" % search)
+        self._load_web(widget, "https://duckduckgo.com/html/?q=%s" % search)
         self._stack.set_visible_child_name('duck')
 
     def _load_web(self, widget, url):
