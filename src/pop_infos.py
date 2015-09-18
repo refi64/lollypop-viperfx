@@ -127,6 +127,7 @@ class ArtistInfos(Gtk.Bin):
         """
         Gtk.Bin.__init__(self)
         self._artist = artist
+        self._current = ''
 
         builder = Gtk.Builder()
         builder.add_from_resource('/org/gnome/Lollypop/ArtistInfos.ui')
@@ -222,8 +223,9 @@ class ArtistInfos(Gtk.Bin):
                               GLib.Variant('s', 'wikia'))
         artist = self._get_current_artist().replace(' ', '_')
         title = Lp.player.current_track.title.replace(' ', '_')
-        self._load_web(widget, "http://lyrics.wikia.com/wiki/%s:%s" % (artist,
-                                                                       title))
+        self._current = "lyrics.wikia.com"
+        url = "http://lyrics.wikia.com/wiki/%s:%s" % (artist, title)
+        self._load_web(widget, url)
         self._stack.set_visible_child_name('wikia')
 
     def _on_map_duck(self, widget):
@@ -238,14 +240,18 @@ class ArtistInfos(Gtk.Bin):
             search = "%s+%s" % (self._get_current_artist(), title)
         else:
             search = self._artist
-        self._load_web(widget, "https://duckduckgo.com/html/?q=%s" % search)
+        self._current = "duckduckgo.com"
+        url = "https://duckduckgo.com/?q=%s&kl=%s&kd=-1&k5=2&kp=1&ks=l"\
+                        % (search, Gtk.get_default_language().to_string())
+        self._load_web(widget, url, False)
         self._stack.set_visible_child_name('duck')
 
-    def _load_web(self, widget, url):
+    def _load_web(self, widget, url, mobile=True):
         """
             Load url with two replacement
             @param url as string
             @param widget as Gtk.ScrolledWindow
+            @param mobile as bool
         """
         child = widget.get_child()
         if child is not None:
@@ -255,18 +261,16 @@ class ArtistInfos(Gtk.Bin):
         settings = view.get_settings()
         settings.set_property('enable-private-browsing', True)
         settings.set_property('enable-plugins', False)
-        settings.set_property('user-agent',
-                              "Mozilla/5.0 (Linux; Ubuntu 14.04;"
-                              " BlackBerry) AppleWebKit2/537.36 Chromium"
-                              "/35.0.1870.2 Mobile Safari/537.36")
+        if mobile:
+            settings.set_property('user-agent',
+                                  "Mozilla/5.0 (Linux; Ubuntu 14.04;"
+                                  " BlackBerry) AppleWebKit2/537.36 Chromium"
+                                  "/35.0.1870.2 Mobile Safari/537.36")
         view.set_settings(settings)
-        # TLS is broken in WebKit2, don't know how to fix this so disable
-        # auth/forms
+        #FIXME TLS is broken in WebKit2, don't know how to fix this
         view.get_context().set_tls_errors_policy(
                                         self.WebKit2.TLSErrorsPolicy.IGNORE)
-        view.connect('authenticate', self._on_authenticate)
         view.connect('decide_policy', self._on_decide_policy)
-        view.connect('submit-form', self._on_submit_form)
         view.set_property('hexpand', True)
         view.set_property('vexpand', True)
         widget.add(view)
@@ -317,15 +321,6 @@ class ArtistInfos(Gtk.Bin):
             artist = Lp.player.current_track.album_artist
         return artist
 
-    def _on_authenticate(self, view, request):
-        """
-            Disable web auth
-            @param view as WebKit2.WebView
-            @param request as WebKit2.AuthenticationRequest
-            @return bool
-        """
-        return True
-
     def _on_decide_policy(self, view, decision, decision_type):
         """
             Disallow navigation, launch in external browser
@@ -336,19 +331,11 @@ class ArtistInfos(Gtk.Bin):
         """
         if decision_type == self.WebKit2.PolicyDecisionType.NAVIGATION_ACTION:
             if decision.get_navigation_action().get_navigation_type() ==\
-               self.WebKit2.NavigationType.LINK_CLICKED:
+               self.WebKit2.NavigationType.LINK_CLICKED or self._current\
+               not in decision.get_navigation_action().get_request().get_uri():
                 decision.ignore()
                 GLib.spawn_command_line_async("xdg-open \"%s\"" %
                                               decision.get_request().get_uri())
             return True
         decision.use()
         return False
-
-    def _on_submit_form(self, view, request):
-        """
-            Ignore request
-            @param view as WebKit2.WebView
-            @param request as WebKit2.FormSubmissionRequest
-        """
-        if request.get_text_fields() is not None:
-            view.stop_loading()
