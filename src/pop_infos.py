@@ -252,14 +252,14 @@ class ArtistInfos(Gtk.Bin):
         if child is not None:
             child.destroy()
 
-        settings = self.WebKit2.Settings()
+        view = self.WebKit2.WebView()
+        settings = view.get_settings()
         settings.set_property('enable-private-browsing', True)
         settings.set_property('enable-plugins', False)
         settings.set_property('user-agent',
                               "Mozilla/5.0 (Linux; Ubuntu 14.04;"
                               " BlackBerry) AppleWebKit2/537.36 Chromium"
                               "/35.0.1870.2 Mobile Safari/537.36")
-        view = self.WebKit2.WebView()
         view.set_settings(settings)
         # TLS is broken in WebKit2, don't know how to fix this so disable
         # auth/forms
