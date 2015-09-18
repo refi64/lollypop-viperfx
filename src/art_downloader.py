@@ -79,10 +79,10 @@ class ArtDownloader:
             pass
 
         return urls
+        
 #######################
 # PRIVATE             #
 #######################
-
     def _download_albums_art(self):
         """
             Download albums artwork (from queue)
