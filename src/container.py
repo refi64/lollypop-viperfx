@@ -616,7 +616,6 @@ class Container:
         for dev in self._devices.values():
             if dev.uri == uri:
                 self._list_one.remove(dev.id)
-                device = self._devices[dev.id]
                 child = self._stack.get_child_by_name(uri)
                 if child is not None:
                     child.remove_signals()

@@ -182,16 +182,6 @@ class TracksDatabase:
 
         return ""
 
-    def get_paths(self):
-        """
-            Get all tracks path
-            @return paths as [string]
-        """
-        if not sql:
-            sql = Lp.sql
-        result = sql.execute("SELECT filepath FROM tracks")
-        return list(itertools.chain(*result))
-
     def get_album_id(self, track_id, sql=None):
         """
             Get album id for track id

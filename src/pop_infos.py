@@ -13,7 +13,6 @@
 from gi.repository import Gtk, GLib, Gio, GdkPixbuf
 
 from gettext import gettext as _
-from locale import getdefaultlocale
 from threading import Thread
 from cgi import escape
 

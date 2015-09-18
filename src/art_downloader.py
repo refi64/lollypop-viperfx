@@ -79,7 +79,7 @@ class ArtDownloader:
             pass
 
         return urls
-        
+
 #######################
 # PRIVATE             #
 #######################
