@@ -56,13 +56,10 @@ class CoversPopover(Gtk.Popover):
 
         builder.get_object('viewport').add(self._view)
 
-        self._scrolled = builder.get_object('scrolled')
-        spinner = builder.get_object('spinner')
-        self._not_found = builder.get_object('notfound')
-        self._stack.add(spinner)
-        self._stack.add(self._not_found)
-        self._stack.add(self._scrolled)
-        self._stack.set_visible_child(spinner)
+        self._stack.add_named(builder.get_object('spinner'), 'spinner')
+        self._stack.add_named(builder.get_object('notfound'), 'notfound')
+        self._stack.add_named(builder.get_object('scrolled'), 'main')
+        self._stack.set_visible_child_name('spinner')
         self.add(widget)
 
     def populate(self):
@@ -70,18 +67,17 @@ class CoversPopover(Gtk.Popover):
             Populate view
         """
         # First load local files
-        self._urls = Lp.art.get_locally_available_covers(self._album)
-        for url in self._urls:
+        urls = Lp.art.get_locally_available_covers(self._album)
+        for url in urls:
             pixbuf = GdkPixbuf.Pixbuf.new_from_file_at_size(url,
                                                             ArtSize.MONSTER,
                                                             ArtSize.MONSTER)
             self._add_pixbuf(pixbuf)
-        if len(self._urls) > 0:
-            self._stack.set_visible_child(self._scrolled)
-        # Then Google files
+        if len(urls) > 0:
+            self._stack.set_visible_child_named('main')
+        # Then Google
         self._thread = True
-        self._start = 0
-        t = Thread(target=self._populate)
+        t = Thread(target=self._populate, args=urls)
         t.daemon = True
         t.start()
 
@@ -102,28 +98,30 @@ class CoversPopover(Gtk.Popover):
 #######################
 # PRIVATE             #
 #######################
-    def _populate(self):
+    def _populate(self, start=0):
         """
             Same as populate()
+            @param google api start as int
         """
-        self._urls = []
+        urls = []
         if Gio.NetworkMonitor.get_default().get_network_available():
-            self._urls = Lp.art.get_google_arts("%s+%s" % (
-                                                       self._album.artist_name,
-                                                       self._album.name))
-        if self._urls:
-            self._start += GOOGLE_INC
-            self._add_pixbufs()
+            urls = Lp.art.get_google_arts("%s+%s" % (
+                                                   self._album.artist_name,
+                                                   self._album.name))
+        if urls:
+            start += GOOGLE_INC
+            self._add_pixbufs(urls, start)
         else:
             GLib.idle_add(self._show_not_found)
 
-    # FIXME Do not use recursion
-    def _add_pixbufs(self):
+    def _add_pixbufs(self, urls, start):
         """
             Add urls to the view
+            @parma urls as [string]
+            @param google api start as int
         """
-        if self._urls:
-            url = self._urls.pop()
+        if urls:
+            url = urls.pop()
             stream = None
             try:
                 f = Gio.File.new_for_uri(url)
@@ -132,13 +130,13 @@ class CoversPopover(Gtk.Popover):
                     stream = Gio.MemoryInputStream.new_from_data(data, None)
             except:
                 if self._thread:
-                    self._add_pixbufs()
+                    self._add_pixbufs(urls, start)
             if stream is not None:
                 GLib.idle_add(self._add_stream, stream)
             if self._thread:
-                self._add_pixbufs()
+                self._add_pixbufs(urls, start)
         elif self._start < GOOGLE_MAX:
-            self._populate()
+            self._populate(start)
 
     def _show_not_found(self):
         """
@@ -146,7 +144,7 @@ class CoversPopover(Gtk.Popover):
         """
         if len(self._view.get_children()) == 0:
             self._label.set_text(_("No cover found..."))
-            self._stack.set_visible_child(self._not_found)
+            self._stack.set_visible_child_name('notfound')
 
     def _add_stream(self, stream):
         """
@@ -163,10 +161,9 @@ class CoversPopover(Gtk.Popover):
         except Exception as e:
             print(e)
             pass
-        # Remove spinner if exist
-        if self._scrolled != self._stack.get_visible_child():
-            self._label.set_text(_("Select a cover art for this album"))
-            self._stack.set_visible_child(self._scrolled)
+
+        self._label.set_text(_("Select a cover art for this album"))
+        self._stack.set_visible_child_name('main')
 
     def _add_pixbuf(self, pixbuf):
         """
