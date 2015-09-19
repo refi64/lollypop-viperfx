@@ -63,6 +63,7 @@ src/view_playlists.py
 src/view.py
 src/view_radios.py
 src/widgets_album.py
+src/widgets_artist.py
 src/widgets_device.py
 src/widgets_playlist.py
 src/widgets_radio.py

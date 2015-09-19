@@ -63,6 +63,7 @@ app_PYTHON = \
     view.py\
     view_radios.py\
     widgets_album.py\
+    widgets_artist.py\
     widgets_device.py\
     widgets_indicator.py\
     widgets_loved.py\

@@ -10,13 +10,13 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-from gi.repository import Gtk, GLib, Gio, GdkPixbuf
+from gi.repository import Gtk, GLib, Gio
 
 from gettext import gettext as _
 from threading import Thread
-from cgi import escape
 
 from lollypop.define import Lp, Type
+from lollypop.widgets_artist import ArtistContent
 
 
 class InfosPopover(Gtk.Popover):
@@ -58,46 +58,6 @@ class InfosPopover(Gtk.Popover):
             Preferred width
         """
         return (700, 700)
-
-
-class ArtistContent(Gtk.Stack):
-    """
-        Widget showing artist image and bio
-    """
-
-    def __init__(self):
-        """
-            Init artist content
-        """
-        Gtk.Stack.__init__(self)
-        builder = Gtk.Builder()
-        builder.add_from_resource('/org/gnome/Lollypop/ArtistContent.ui')
-        self._content = builder.get_object('content')
-        self._image = builder.get_object('image')
-        self.add_named(builder.get_object('widget'), 'widget')
-        self.add_named(builder.get_object('notfound'), 'notfound')
-        self.add_named(builder.get_object('spinner'), 'spinner')
-        self.set_visible_child_name('spinner')
-
-    def set_content(self, content, stream):
-        """
-            Set content
-            @param content as string
-            @param stream as Gio.MemoryInputStream
-        """
-        if content:
-            self._content.set_markup(escape(content))
-            if stream is not None:
-                pixbuf = GdkPixbuf.Pixbuf.new_from_stream_at_scale(stream,
-                                                                   200,
-                                                                   -1,
-                                                                   True,
-                                                                   None)
-                self._image.set_from_pixbuf(pixbuf)
-                del pixbuf
-            self.set_visible_child_name('widget')
-        else:
-            self.set_visible_child_name('notfound')
 
 
 class ArtistInfos(Gtk.Bin):
@@ -242,7 +202,7 @@ class ArtistInfos(Gtk.Bin):
             search = self._artist
         self._current = "duckduckgo.com"
         url = "https://duckduckgo.com/?q=%s&kl=%s&kd=-1&k5=2&kp=1&ks=l"\
-                        % (search, Gtk.get_default_language().to_string())
+              % (search, Gtk.get_default_language().to_string())
         self._load_web(widget, url, False)
         self._stack.set_visible_child_name('duck')
 
@@ -267,7 +227,7 @@ class ArtistInfos(Gtk.Bin):
                                   " BlackBerry) AppleWebKit2/537.36 Chromium"
                                   "/35.0.1870.2 Mobile Safari/537.36")
         view.set_settings(settings)
-        #FIXME TLS is broken in WebKit2, don't know how to fix this
+        # FIXME TLS is broken in WebKit2, don't know how to fix this
         view.get_context().set_tls_errors_policy(
                                         self.WebKit2.TLSErrorsPolicy.IGNORE)
         view.connect('decide_policy', self._on_decide_policy)
@@ -331,9 +291,9 @@ class ArtistInfos(Gtk.Bin):
         """
         if decision_type == self.WebKit2.PolicyDecisionType.NAVIGATION_ACTION:
             if decision.get_navigation_action().get_navigation_type() ==\
-               self.WebKit2.NavigationType.LINK_CLICKED or (self._current\
-               not in decision.get_navigation_action().get_request().get_uri()\
-               and decision.get_navigation_action().get_request().get_uri() !=\
+               self.WebKit2.NavigationType.LINK_CLICKED or (self._current not
+               in decision.get_navigation_action().get_request().get_uri() and
+               decision.get_navigation_action().get_request().get_uri() !=
                'about:blank'):
                 decision.ignore()
                 GLib.spawn_command_line_async("xdg-open \"%s\"" %
