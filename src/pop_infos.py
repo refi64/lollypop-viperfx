@@ -332,7 +332,9 @@ class ArtistInfos(Gtk.Bin):
         if decision_type == self.WebKit2.PolicyDecisionType.NAVIGATION_ACTION:
             if decision.get_navigation_action().get_navigation_type() ==\
                self.WebKit2.NavigationType.LINK_CLICKED or self._current\
-               not in decision.get_navigation_action().get_request().get_uri():
+               not in decision.get_navigation_action().get_request().get_uri()\
+               and decision.get_navigation_action().get_request().get_uri() !=\
+               'about:blank':
                 decision.ignore()
                 GLib.spawn_command_line_async("xdg-open \"%s\"" %
                                               decision.get_request().get_uri())
