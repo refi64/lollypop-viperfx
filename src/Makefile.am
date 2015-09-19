@@ -71,6 +71,7 @@ app_PYTHON = \
     widgets_radio.py\
     widgets_rating.py\
     widgets_track.py\
+    widgets_web.py\
     wikipedia.py\
     window.py
 
