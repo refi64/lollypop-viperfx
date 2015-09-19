@@ -35,7 +35,7 @@ class WebView(Gtk.Stack):
         builder.add_from_resource('/org/gnome/Lollypop/ArtistContent.ui')
         view = WebKit2.WebView()
         self.add_named(builder.get_object('spinner'), 'spinner')
-        self.add_named(builder.get_object('notfound'), 'notfound')
+        self.set_visible_child_name('spinner')
         self.add_named(view, 'view')
         view.connect('load-changed', self._on_load_changed)
         settings = view.get_settings()
@@ -88,4 +88,3 @@ class WebView(Gtk.Stack):
             return True
         decision.use()
         return False
-
