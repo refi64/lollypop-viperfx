@@ -204,7 +204,7 @@ class ArtistInfos(Gtk.Bin):
             search = "%s+%s" % (self._get_current_artist(), title)
         else:
             search = self._artist
-        url = "https://duckduckgo.com/?q=%s&kl=%s&kd=-1&k5=2&kp=1&ks=l"\
+        url = "https://duckduckgo.com/?q=%s&kl=%s&kd=-1&k5=2&kp=1&k1=-1"\
               % (search, Gtk.get_default_language().to_string())
         # Delayed load due to WebKit memory loading
         GLib.timeout_add(250, self._load_web, widget, url, False)
