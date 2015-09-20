@@ -9,8 +9,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lollypop\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-08-10 13:55+0200\n"
-"PO-Revision-Date: 2015-08-10 12:02+0000\n"
+"POT-Creation-Date: 2015-09-17 08:19+0200\n"
+"PO-Revision-Date: 2015-09-18 09:33+0000\n"
 "Last-Translator: Cédric Bellegarde <web@adishatz.org>\n"
 "Language-Team: Turkish (Turkey) (http://www.transifex.com/gnumdk/lollypop/language/tr_TR/)\n"
 "MIME-Version: 1.0\n"
@@ -68,77 +68,77 @@ msgid "Favorite tag editor"
 msgstr "Favori etiket düzenleyicisi"
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:13
+msgid "INTERNAL"
+msgstr "DAHİLİ "
+
+#: ../data/org.gnome.Lollypop.gschema.xml.h:14
 msgid "Favorite cover file"
 msgstr "Favori kapak dosyası"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:14
+#: ../data/org.gnome.Lollypop.gschema.xml.h:15
 msgid "Restart needed"
 msgstr "Yeniden başlatmak gerekli"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:15
+#: ../data/org.gnome.Lollypop.gschema.xml.h:16
 msgid "Database version"
 msgstr "Veritabanı sürümü"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:16
+#: ../data/org.gnome.Lollypop.gschema.xml.h:17
 msgid ""
 "Reset this value will reset the database, popular albums will be restored"
 msgstr "Bu değeri sıfırlamak veritabanını sıfırlar, popüler albümler geri yüklenecek"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:17
+#: ../data/org.gnome.Lollypop.gschema.xml.h:18
 msgid "Replay gain value in db"
 msgstr "db olarak tekrar oynatımda kazanım"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:18
+#: ../data/org.gnome.Lollypop.gschema.xml.h:19
 msgid "Between -15 and 15"
 msgstr "-15 ile 15 arasında"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:19 ../data/SettingsDialog.ui.h:2
+#: ../data/org.gnome.Lollypop.gschema.xml.h:20 ../data/SettingsDialog.ui.h:2
 msgid "Auto update music"
 msgstr "Otomatik müzik gücelleme"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:20
+#: ../data/org.gnome.Lollypop.gschema.xml.h:21
 msgid "Show genres list"
 msgstr "Türlerin listesini göster"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:21
+#: ../data/org.gnome.Lollypop.gschema.xml.h:22
 msgid "Use dark gtk theme"
 msgstr "Dark gtk temasını kullan"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:22
+#: ../data/org.gnome.Lollypop.gschema.xml.h:23
 msgid "Disable the use client side window decorations (headerbar)"
 msgstr "Kullanıcılar için pencere dekorasyonu özelliğini devredışı bırak (üst bar)"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:23 ../data/SettingsDialog.ui.h:9
+#: ../data/org.gnome.Lollypop.gschema.xml.h:24 ../data/SettingsDialog.ui.h:9
 msgid "Show compilations in albums view"
 msgstr "Derlemeleri albüm görünümünde göster"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:24 ../data/SettingsDialog.ui.h:4
+#: ../data/org.gnome.Lollypop.gschema.xml.h:25 ../data/SettingsDialog.ui.h:4
 msgid "Continue playback when closed"
 msgstr "Kapandığında banttan çalmaya devam et"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:25
+#: ../data/org.gnome.Lollypop.gschema.xml.h:26
 msgid "Restore previous state"
 msgstr "Bir önceki durumuna geri yükle"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:26
+#: ../data/org.gnome.Lollypop.gschema.xml.h:27
 msgid "Auto play albums on click"
 msgstr "Tıklamayla albümleri otomotik oynat"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:27
+#: ../data/org.gnome.Lollypop.gschema.xml.h:28
 msgid "Disable MPRIS"
 msgstr "MPRIS etkinsizleştir"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:28
+#: ../data/org.gnome.Lollypop.gschema.xml.h:29
 msgid "Disable notifications"
 msgstr "Bildirimleri etkinsizleştir"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:29
+#: ../data/org.gnome.Lollypop.gschema.xml.h:30
 msgid "Show track number from tags"
 msgstr "Parça numarasını etiketten göster"
-
-#: ../data/org.gnome.Lollypop.gschema.xml.h:30
-msgid "INTERNAL"
-msgstr "DAHİLİ "
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:31
 msgid "Shuffle mode"
@@ -190,8 +190,8 @@ msgstr "Tür/Sanatçı/Kapak gezinimi"
 msgid "Search"
 msgstr "Ara"
 
-#: ../data/lollypop.appdata.xml.in.h:9 ../src/pop_menu.py:467
-#: ../src/pop_menu.py:487 ../data/ToolbarEnd.ui.h:10
+#: ../data/lollypop.appdata.xml.in.h:9 ../src/pop_menu.py:431
+#: ../src/pop_menu.py:451 ../data/ToolbarEnd.ui.h:10
 msgid "Queue"
 msgstr "Sıra"
 
@@ -247,7 +247,7 @@ msgid ""
 "    - Artist informations disabled"
 msgstr " - Skroplamayı etkinsizleştir\n- Otomatik kapak indirmeyi etkinsizleştir\n- Şarkıcı bilgilerini etkinsizleştir"
 
-#: ../src/application.py:339
+#: ../src/application.py:363
 msgid "Lollypop: You need to install yelp."
 msgstr "Lollypop: Yelp'i indirmeniz gerekmektedir."
 
@@ -255,67 +255,67 @@ msgstr "Lollypop: Yelp'i indirmeniz gerekmektedir."
 msgid "Restart lollypop after installing codecs"
 msgstr "Kodekleri yükledikledikten sonra Lollypop'u tekrar başlat"
 
-#: ../src/collectionscanner.py:66
+#: ../src/collectionscanner.py:70
 msgid "Your music is updating"
 msgstr "Müziğin güncelleniyor"
 
-#: ../src/container.py:323
+#: ../src/container.py:360
 msgid "Popular albums"
 msgstr "Popüler albümler"
 
-#: ../src/container.py:324
+#: ../src/container.py:361
 msgid "Recently added albums"
 msgstr "Son eklenen albümler"
 
-#: ../src/container.py:325
+#: ../src/container.py:362
 msgid "Random albums"
 msgstr "Rastgele albümler"
 
-#: ../src/container.py:326 ../src/pop_menu.py:409 ../src/pop_menu.py:469
-#: ../src/pop_menu.py:489
+#: ../src/container.py:363 ../src/pop_menu.py:356 ../src/pop_menu.py:433
+#: ../src/pop_menu.py:453
 msgid "Playlists"
 msgstr "Çalma listeleri"
 
-#: ../src/container.py:327
+#: ../src/container.py:364
 msgid "Radios"
 msgstr "Radyolar"
 
-#: ../src/container.py:329
+#: ../src/container.py:366
 msgid "All artists"
 msgstr "Bütün şarkıcılar"
 
-#: ../src/container.py:331
+#: ../src/container.py:368
 msgid "All albums"
 msgstr "Bütü albümler"
 
-#: ../src/container.py:376
+#: ../src/container.py:418
 msgid "Compilations"
 msgstr "Derlemeler"
 
-#: ../src/container.py:392
+#: ../src/container.py:441
 msgid "Popular tracks"
 msgstr "Popüler şarkılar"
 
-#: ../src/container.py:393
+#: ../src/container.py:442
 msgid "Recently played"
 msgstr "Son çalınanlar"
 
-#: ../src/container.py:394
+#: ../src/container.py:443
 msgid "Never played"
 msgstr "Hiç çalınmayanlar"
 
-#: ../src/container.py:395
+#: ../src/container.py:444
 msgid "Random tracks"
 msgstr "Rastgele şarkılar"
 
-#: ../src/database_albums.py:238 ../src/database_artists.py:77
+#: ../src/database_albums.py:239 ../src/database_artists.py:77
 #: ../src/database_genres.py:72 ../src/database_tracks.py:206
 #: ../src/tagreader.py:84 ../src/tagreader.py:103 ../src/tagreader.py:128
 #: ../src/tagreader.py:143
 msgid "Unknown"
 msgstr "Bilinmeyen"
 
-#: ../src/database_albums.py:255
+#: ../src/database_albums.py:256
 msgid "Compilation"
 msgstr "Derleme"
 
@@ -328,17 +328,17 @@ msgstr "Birçok şarkıcı"
 msgid "Pause"
 msgstr "Duraklat"
 
-#: ../src/fullscreen.py:276 ../src/pop_tunein.py:150
+#: ../src/fullscreen.py:276 ../src/pop_tunein.py:146
 #: ../src/toolbar_playback.py:82 ../src/toolbar_playback.py:110
 #: ../data/ToolbarPlayback.ui.h:2
 msgid "Play"
 msgstr "Oynat"
 
-#: ../src/lastfm.py:23
+#: ../src/lastfm.py:21
 msgid "Last.fm authentication disabled"
 msgstr "Last.fm kimlik doğrulamayı etkinsizleştir"
 
-#: ../src/lastfm.py:281
+#: ../src/lastfm.py:283
 msgid "Wrong Last.fm credentials"
 msgstr "Yanlış Last.fm kimliği"
 
@@ -363,16 +363,16 @@ msgstr "%s dan"
 msgid "by %s, from %s"
 msgstr "%s'a, %s'dan"
 
-#: ../src/player_bin.py:277
+#: ../src/player_bin.py:285
 #, python-format
 msgid "File doesn't exist: %s"
 msgstr "Dosya bulunamıyor: %s"
 
-#: ../src/playlists.py:40
+#: ../src/playlists.py:103
 msgid "Loved tracks"
 msgstr "Sevilen parçalar"
 
-#: ../src/pop_covers.py:59 ../src/pop_tunein.py:83 ../data/RadioPopover.ui.h:3
+#: ../src/pop_covers.py:55 ../src/pop_tunein.py:83 ../data/RadioPopover.ui.h:3
 msgid "Please wait..."
 msgstr "Lütfen bekleyin..."
 
@@ -384,101 +384,73 @@ msgstr "Kapak resmi bulunamadı..."
 msgid "Select a cover art for this album"
 msgstr "Bu albüm için bir kapak resmi seçin"
 
-#: ../src/pop_infos.py:80
+#: ../src/pop_infos.py:112
 msgid "Advanced artist informations disabled"
 msgstr "Gelişmiş sanatçı bilgileri etkisizleştirildi"
 
-#: ../src/pop_infos.py:88
+#: ../src/pop_infos.py:120
 msgid "Wikia support disabled"
 msgstr "Wikia desteği etkisizleştirildi"
 
-#: ../src/pop_infos.py:216 ../src/pop_infos.py:220 ../src/pop_infos.py:342
-msgid "Wikipedia"
-msgstr "Wikipedia"
-
-#: ../src/pop_infos.py:217 ../src/pop_infos.py:219
-msgid "Last.fm"
-msgstr "Last.fm"
-
-#: ../src/pop_infos.py:223
-msgid "No information for this artist..."
-msgstr "Bu şarkıcı için bilgi yok..."
-
-#: ../src/pop_infos.py:245 ../src/pop_infos.py:297
-msgid "I do not love"
-msgstr "Sevmiyorum"
-
-#: ../src/pop_infos.py:345 ../data/ArtistInfos.ui.h:2
-msgid "Wikia"
-msgstr "Wikia"
-
-#: ../src/pop_menu.py:65
+#: ../src/pop_menu.py:66
 msgid "Continue playback"
 msgstr "Çalmaya devam et"
 
-#: ../src/pop_menu.py:70
+#: ../src/pop_menu.py:71
 msgid "Stop after this track"
 msgstr "Bu parçadan sonra durdur"
 
-#: ../src/pop_menu.py:75
+#: ../src/pop_menu.py:76
 msgid "Stop after this album"
 msgstr "Bu albümden sonra durdur"
 
-#: ../src/pop_menu.py:80
+#: ../src/pop_menu.py:81
 msgid "Stop after this artist"
 msgstr "Bu şarkıcıdan sonra durdur"
 
-#: ../src/pop_menu.py:171 ../data/SearchRow.ui.h:3
+#: ../src/pop_menu.py:172 ../data/SearchRow.ui.h:3
 msgid "Add to queue"
 msgstr "Sıraya ekle"
 
-#: ../src/pop_menu.py:176
+#: ../src/pop_menu.py:177
 msgid "Next tracks"
 msgstr "Sonraki parçalar"
 
-#: ../src/pop_menu.py:178 ../data/NextPopover.ui.h:1
+#: ../src/pop_menu.py:179 ../data/NextPopover.ui.h:1
 msgid "Next track"
 msgstr "Sonraki parça"
 
-#: ../src/pop_menu.py:182
+#: ../src/pop_menu.py:183
 msgid "Remove from queue"
 msgstr "Sıradan kaldır"
 
-#: ../src/pop_menu.py:250
+#: ../src/pop_menu.py:251
 msgid "Add to others"
 msgstr "Diğerlerine ekle"
 
-#: ../src/pop_menu.py:263
+#: ../src/pop_menu.py:264
 #, python-format
 msgid "Remove from \"%s\""
 msgstr "\"%s\"dan kaldır"
 
-#: ../src/pop_menu.py:269
+#: ../src/pop_menu.py:270
 #, python-format
 msgid "Add to \"%s\""
 msgstr "\"%s\"e ekle"
 
-#: ../src/pop_menu.py:281
-msgid "I dislove this track"
-msgstr "Bu parçayı sevmedim"
-
-#: ../src/pop_menu.py:286
-msgid "I love this track"
-msgstr "Bu parçayı sevdim"
-
-#: ../src/pop_menu.py:407
+#: ../src/pop_menu.py:354
 msgid "Playback"
 msgstr "Kayıttan çal"
 
-#: ../src/pop_menu.py:444
+#: ../src/pop_menu.py:391
 msgid "Modify informations"
 msgstr "Bilgileri değiştir"
 
-#: ../src/pop_menu.py:471 ../data/PlaylistView.ui.h:1
+#: ../src/pop_menu.py:435 ../data/PlaylistView.ui.h:1
 msgid "Edit"
 msgstr "Düzenle"
 
-#: ../src/pop_radio.py:74 ../src/pop_tunein.py:145
+#: ../src/pop_radio.py:74 ../src/pop_tunein.py:151
 msgid "Add"
 msgstr "Ekle"
 
@@ -486,11 +458,11 @@ msgstr "Ekle"
 msgid "Modify"
 msgstr "Değiştir"
 
-#: ../src/pop_tunein.py:104
+#: ../src/pop_tunein.py:106
 msgid "Can't connect to TuneIn..."
 msgstr "Tuneln'e bağlanamıyor..."
 
-#: ../src/pop_tunein.py:160
+#: ../src/pop_tunein.py:163
 msgid "Browse themes and add a new radio"
 msgstr "Temalara göz at ve yeni bir radyo ekle"
 
@@ -504,42 +476,43 @@ msgstr "Son eklenenler"
 
 #. Handle language ordering
 #. Translators: Add here words that shoud be ignored for artist sort order
-#: ../src/utils.py:84
+#: ../src/utils.py:85
 msgid "The the"
 msgstr "_"
 
-#: ../src/view_device.py:41 ../src/view_device.py:82
+#: ../src/view_device.py:40 ../src/view_device.py:81
 #, python-format
 msgid "Synchronize %s"
 msgstr "%s eşitle"
 
-#: ../src/view_device.py:73
+#: ../src/view_device.py:72
 msgid "Cancel synchronization"
 msgstr "Eşitlemeyi iptal et"
 
-#: ../src/widgets_album.py:252
+#: ../src/widgets_album.py:263
 #, python-format
 msgid "Disc %s"
 msgstr "Disk %s"
 
-#: ../src/widgets_device.py:177
+#: ../src/widgets_device.py:179
 msgid "Unknown error while syncing, try to reboot your device"
 msgstr "Eşitlenirken bilinmeyen hata, cihazını yeniden başlatmayı deneyin"
 
-#: ../src/widgets_device.py:185
+#: ../src/widgets_device.py:187
 msgid "No free space available on device"
 msgstr "Cihazda yeterli boş alan yok"
 
-#: ../src/widgets_playlist.py:281 ../src/widgets_playlist.py:284
+#: ../src/widgets_playlist.py:272 ../src/widgets_playlist.py:275
 msgid "New playlist "
 msgstr "Yeni şarkı listesi"
 
-#: ../src/widgets_playlist.py:330 ../src/widgets_playlist.py:568
+#. Need a copy, segfault on EOS 3.1
+#: ../src/widgets_playlist.py:321 ../src/widgets_playlist.py:553
 #, python-format
 msgid "Remove \"%s\"?"
 msgstr "\"%s\" kaldır?"
 
-#: ../src/widgets_playlist.py:613
+#: ../src/widgets_playlist.py:598
 msgid "Remove these tracks?"
 msgstr "Bu parçaları kaldır?"
 
@@ -587,8 +560,20 @@ msgid "_Quit"
 msgstr "_Çıkış"
 
 #: ../data/ArtistInfos.ui.h:1
-msgid "I love"
-msgstr "Sevdim"
+msgid "Last.fm"
+msgstr "Last.fm"
+
+#: ../data/ArtistInfos.ui.h:2
+msgid "Wikipedia"
+msgstr "Wikipedia"
+
+#: ../data/ArtistInfos.ui.h:3
+msgid "Wikia"
+msgstr "Wikia"
+
+#: ../data/ArtistInfos.ui.h:4
+msgid "DuckDuckGo"
+msgstr ""
 
 #: ../data/DeviceManagerView.ui.h:1
 msgid "Synchronize your device with this playlists"
@@ -632,7 +617,7 @@ msgstr "Sil"
 
 #: ../data/RadiosView.ui.h:1
 msgid "No favorite radios"
-msgstr ""
+msgstr "Favori radyo yok"
 
 #: ../data/RadiosView.ui.h:2
 msgid "New radio"

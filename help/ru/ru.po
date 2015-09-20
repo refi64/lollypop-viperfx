@@ -2,11 +2,12 @@
 # Translators:
 # Denis Morozov <www.strelookpb09@mail.ru>, 2015
 # Maxim <murmansksity@gmail.com>, 2015
+# Олег <legunt@yandex.ru>, 2015
 msgid ""
 msgstr ""
 "Project-Id-Version: lollypop\n"
 "POT-Creation-Date: 2015-06-24 15:43+0200\n"
-"PO-Revision-Date: 2015-08-09 14:31+0000\n"
+"PO-Revision-Date: 2015-09-19 19:22+0000\n"
 "Last-Translator: Maxim <murmansksity@gmail.com>\n"
 "Language-Team: Russian (http://www.transifex.com/gnumdk/lollypop/language/ru/)\n"
 "MIME-Version: 1.0\n"
@@ -18,7 +19,7 @@ msgstr ""
 #. Put one translator per line, in the form NAME <EMAIL>, YEAR1, YEAR2
 msgctxt "_"
 msgid "translator-credits"
-msgstr ""
+msgstr "Переводчики"
 
 #. (itstool) path: info/desc
 #: C/index.page:7
@@ -76,19 +77,19 @@ msgstr "Проигрывание"
 #. (itstool) path: section/p
 #: C/index.page:31
 msgid "When you start playing a song, a contextual playlist is populated."
-msgstr ""
+msgstr "Когда начинается проигрывание композиции, то контекстный плейлист заполняется."
 
 #. (itstool) path: section/p
 #: C/index.page:32
 msgid ""
 "Contexts can be: an album, an artist, a genre, popular or recent albums, "
 "searches, playlists, ..."
-msgstr ""
+msgstr "Контексты могут быть: альбом, исполнитель, жанр, популярные или последние альбомы, поиск, список воспроизведения, ..."
 
 #. (itstool) path: section/p
 #: C/index.page:33
 msgid "Shuffle interacts on current context."
-msgstr ""
+msgstr "Перемешать действия по текущему контексту."
 
 #. (itstool) path: section/title
 #: C/index.page:37
@@ -99,14 +100,14 @@ msgstr "Рейтинг альбомов"
 #: C/index.page:38
 msgid ""
 "Album popularity is based on how many tracks from an album you listen to."
-msgstr ""
+msgstr "Популярность альбома оценивается, от большего числа прослушиваний композиций с данного альбома."
 
 #. (itstool) path: section/p
 #: C/index.page:39
 msgid ""
 "Album rating will be influenced by album popularity. In other words, rate "
 "will decrease if you stop listening to an album."
-msgstr ""
+msgstr "Оценка альбома будет зависеть от популярности альбома . Другими словами, оценка снизится, если вы прекратите слушать альбом."
 
 #. (itstool) path: section/title
 #: C/index.page:43
@@ -118,12 +119,12 @@ msgstr "Загрузка обложек"
 msgid ""
 "When hovering a cover, if mouse cursor changes to a pen, just click and "
 "select a new cover."
-msgstr ""
+msgstr "При наведении на обложку, если курсор мыши  меняется на ручку, просто нажмите кнопку и выберите новую обложку."
 
 #. (itstool) path: section/p
 #: C/index.page:45
 msgid "You need an internet connection."
-msgstr "Вам необходимо интернет соединение"
+msgstr "Вам необходимо интернет соединение."
 
 #. (itstool) path: section/title
 #: C/index.page:49
@@ -206,4 +207,4 @@ msgid ""
 "As a special exception, the copyright holders give you permission to copy, "
 "modify, and distribute the example code contained in this document under the"
 " terms of your choosing, without restriction."
-msgstr ""
+msgstr "Как особое исключение, правообладатели дают вам разрешение копировать, изменять и распространять код примера, содержащейся в данном документе, в соответствии с условиями вашего выбора, без ограничений."
