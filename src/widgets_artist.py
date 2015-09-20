@@ -25,7 +25,7 @@ class ArtistContent(Gtk.Stack):
             Init artist content
         """
         Gtk.Stack.__init__(self)
-        self.set_transition_duration(1000)
+        self.set_transition_duration(500)
         self.set_transition_type(Gtk.StackTransitionType.CROSSFADE)
         builder = Gtk.Builder()
         builder.add_from_resource('/org/gnome/Lollypop/ArtistContent.ui')

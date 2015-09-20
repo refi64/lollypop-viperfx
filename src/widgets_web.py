@@ -27,7 +27,7 @@ class WebView(Gtk.Stack):
             @param mobile as bool
         """
         Gtk.Stack.__init__(self)
-        self.set_transition_duration(1000)
+        self.set_transition_duration(500)
         self.set_transition_type(Gtk.StackTransitionType.CROSSFADE)
         self._current = urlsplit(url)[1]
         builder = Gtk.Builder()
