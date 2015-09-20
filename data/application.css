@@ -7,16 +7,6 @@ GtkTreeView {
     padding: 2px 2px 2px 2px;
 }
 
-GtkTreeView row:hover {
-    background-image: none;
-    border-style: none;
-}
-
-GtkTreeView row:selected {
-    background-image: none;
-    border-style: none;
-}
-
 GtkTreeView:selected {
     background-color: @theme_bg_color;
     color: @theme_fg_color;
