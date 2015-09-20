@@ -39,7 +39,8 @@ class WebView(Gtk.Stack):
         self.add_named(view, 'view')
         view.connect('load-changed', self._on_load_changed)
         settings = view.get_settings()
-        settings.set_property('enable-private-browsing', True)
+        # Private browsing make duckduckgo fail to switch translations
+        #settings.set_property('enable-private-browsing', True)
         settings.set_property('enable-plugins', False)
         if mobile:
             settings.set_property('user-agent',
