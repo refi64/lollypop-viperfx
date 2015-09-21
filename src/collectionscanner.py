@@ -176,7 +176,7 @@ class CollectionScanner(GObject.GObject, ScannerTagReader):
                         debug("Adding file: %s" % filepath)
                         self._add2db(filepath, mtime, infos, sql)
                     except Exception as e:
-                        debug("Error scanning: %s" % filepath)
+                        debug("Error scanning: %s, %s" % (filepath, e))
                         string = "%s" % e
                         if string.startswith('gst-core-error-quark'):
                             self._missing_codecs = filepath
@@ -242,7 +242,11 @@ class CollectionScanner(GObject.GObject, ScannerTagReader):
             no_album_artist = True
 
         # Search for datas to restore
-        search = "%s_%s" % (album_name, album_artist)
+        if no_album_artist:
+            search = "%s_%s" % (album_name,
+                                Lp.artists.get_name(album_artist_id, sql))
+        else:
+            search = "%s_%s" % (album_name, album_artist)
         if search in self._albums_popularity:
             popularity = self._albums_popularity[search]
             del self._albums_popularity[search]
@@ -258,7 +262,11 @@ class CollectionScanner(GObject.GObject, ScannerTagReader):
         (genre_ids, new_genre_ids) = self.add_genres(genres, album_id, sql)
 
         # Search for datas to restore
-        search = "%s_%s" % (title, album_artist)
+        if no_album_artist:
+            search = "%s_%s" % (title,
+                                Lp.artists.get_name(album_artist_id, sql))
+        else:
+            search = "%s_%s" % (title, album_artist)
         if search in self._tracks_popularity:
             popularity = self._tracks_popularity[search]
             del self._tracks_popularity[search]
