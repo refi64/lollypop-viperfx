@@ -18,6 +18,7 @@ from urllib.parse import urlsplit
 class WebView(Gtk.Stack):
     """
         Webkit view with loading scrobbler
+        Webkit destroyed on unmap
     """
 
     def __init__(self, url, mobile=True, private=True):
