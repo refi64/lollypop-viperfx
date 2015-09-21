@@ -20,7 +20,7 @@ class WebView(Gtk.Stack):
         Webkit view with loading scrobbler
     """
 
-    def __init__(self, url, mobile=True):
+    def __init__(self, url, mobile=True, private=True):
         """
             Init view
             @param url as string
@@ -33,31 +33,43 @@ class WebView(Gtk.Stack):
         builder = Gtk.Builder()
         # Use ressource from ArtistContent
         builder.add_from_resource('/org/gnome/Lollypop/ArtistContent.ui')
-        view = WebKit2.WebView()
+        self._view = WebKit2.WebView()
         self.add_named(builder.get_object('spinner'), 'spinner')
         self.set_visible_child_name('spinner')
-        self.add_named(view, 'view')
-        view.connect('load-changed', self._on_load_changed)
-        settings = view.get_settings()
+        self.add_named(self._view, 'view')
+        self._view.connect('load-changed', self._on_load_changed)
+        settings = self._view.get_settings()
         # Private browsing make duckduckgo fail to switch translations
-        #settings.set_property('enable-private-browsing', True)
+        if private:
+            settings.set_property('enable-private-browsing', True)
         settings.set_property('enable-plugins', False)
         if mobile:
             settings.set_property('user-agent',
                                   "Mozilla/5.0 (Linux; Ubuntu 14.04;"
                                   " BlackBerry) AppleWebKit2/537.36 Chromium"
                                   "/35.0.1870.2 Mobile Safari/537.36")
-        view.set_settings(settings)
+        self._view.set_settings(settings)
         # FIXME TLS is broken in WebKit2, don't know how to fix this
-        view.get_context().set_tls_errors_policy(
+        self._view.get_context().set_tls_errors_policy(
                                                 WebKit2.TLSErrorsPolicy.IGNORE)
-        view.connect('decide_policy', self._on_decide_policy)
-        view.set_property('hexpand', True)
-        view.set_property('vexpand', True)
-        view.show()
-        view.grab_focus()
-        view.load_uri(url)
+        self._view.connect('decide_policy', self._on_decide_policy)
+        self._view.set_property('hexpand', True)
+        self._view.set_property('vexpand', True)
+        self._view.show()
+        self._view.grab_focus()
+        self._view.load_uri(url)
 
+    def do_unmap(self):
+        """
+            Destroy webkit view to stop any audio playback
+        """
+        self._view.stop_loading()
+        self._view.destroy()
+        Gtk.Stack.do_unmap(self)
+
+#######################
+# PRIVATE             #
+#######################
     def _on_load_changed(self, view, event):
         """
             Show view if finished

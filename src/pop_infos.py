@@ -187,7 +187,7 @@ class ArtistInfos(Gtk.Bin):
         title = Lp.player.current_track.title.replace(' ', '_')
         url = "http://lyrics.wikia.com/wiki/%s:%s" % (artist, title)
         # Delayed load due to WebKit memory loading
-        GLib.timeout_add(250, self._load_web, widget, url, True)
+        GLib.timeout_add(250, self._load_web, widget, url, True, True)
 
     def _on_map_duck(self, widget):
         """
@@ -207,14 +207,14 @@ class ArtistInfos(Gtk.Bin):
         url = "https://duckduckgo.com/?q=%s&kl=%s&kd=-1&k5=2&kp=1&k1=-1"\
               % (search, Gtk.get_default_language().to_string())
         # Delayed load due to WebKit memory loading
-        GLib.timeout_add(250, self._load_web, widget, url, False)
+        GLib.timeout_add(250, self._load_web, widget, url, False, False)
 
-    def _load_web(self, widget, url, mobile):
+    def _load_web(self, widget, url, mobile, private):
         """
             Load url in widget
             @param widget as Gtk.ScrolledWindow
         """
-        web = self.WebView(url, mobile)
+        web = self.WebView(url, mobile, private)
         web.show()
         widget.add(web)
 
