@@ -21,7 +21,6 @@ from lollypop.widgets_rating import RatingWidget
 from lollypop.pop_menu import AlbumMenu
 from lollypop.pop_covers import CoversPopover
 from lollypop.objects import Album
-import lollypop.pop_infos
 
 
 class AlbumWidget(Gtk.Bin):
@@ -209,40 +208,28 @@ class AlbumDetailedWidget(AlbumWidget):
         'finished': (GObject.SignalFlags.RUN_FIRST, None, ())
     }
 
-    try:
-        from lollypop.wikipedia import Wikipedia
-    except:
-        Wikipedia = None
-
-    def __init__(self, album_id, genre_id, pop_allowed, scrolled, size_group):
+    def __init__(self, album_id, genre_id, pop_allowed, size_group):
         """
             Init detailed album widget
             @param album id as int
             @param genre id as int
             @param parent width as int
             @param pop_allowed as bool if widget can show popovers
-            @param scrolled as bool
             @param size group as Gtk.SizeGroup
         """
         AlbumWidget.__init__(self, album_id, genre_id=genre_id)
         self._pop_allowed = pop_allowed
 
         builder = Gtk.Builder()
-        if scrolled:
-            builder.add_from_resource(
-                '/org/gnome/Lollypop/AlbumContextWidget.ui')
-        else:
-            builder.add_from_resource(
-                '/org/gnome/Lollypop/AlbumDetailedWidget.ui')
+        builder.add_from_resource('/org/gnome/Lollypop/%s.ui' %\
+                                  type(self).__name__)
 
         rating = RatingWidget(self._album)
         rating.show()
         builder.get_object('coverbox').add(rating)
         builder.connect_signals(self)
 
-        if scrolled:
-            builder.get_object('artist').set_text(self._album.artist_name)
-            builder.get_object('artist').show()
+        self._artist_label = builder.get_object('artist')
 
         grid = builder.get_object('tracks')
         self._discs = self._album.discs
@@ -295,7 +282,7 @@ class AlbumDetailedWidget(AlbumWidget):
             year.set_label(self._album.year)
             year.show()
 
-        self.add(builder.get_object('AlbumDetailedWidget'))
+        self.add(builder.get_object('widget'))
 
         if pop_allowed:
             self._menu = builder.get_object('menu')
@@ -456,27 +443,6 @@ class AlbumDetailedWidget(AlbumWidget):
             @param event as Gdk.Event
         """
         self._button_state = event.get_state()
-
-    def _on_label_realize(self, eventbox):
-        """
-            Change pointer on label
-            @param eventbox as Gtk.EventBox
-        """
-        if lollypop.pop_infos.InfosPopover.should_be_shown() and\
-                self._album.artist_id != Type.COMPILATIONS:
-            eventbox.get_window().set_cursor(Gdk.Cursor(Gdk.CursorType.HAND1))
-
-    def _on_label_button_release(self, eventbox, event):
-        """
-            On clicked label, show artist informations in a popover
-            @param eventbox as Gtk.EventBox
-            @param event as Gdk.Event
-        """
-        if lollypop.pop_infos.InfosPopover.should_be_shown() and\
-                self._album.artist_id != Type.COMPILATIONS:
-            popover = lollypop.pop_infos.InfosPopover(self._album.artist_id)
-            popover.set_relative_to(eventbox)
-            popover.show()
 
     def _on_cover_press_event(self, widget, event):
         """

@@ -17,7 +17,7 @@ from threading import Thread
 
 from lollypop.define import Lp, Type
 from lollypop.widgets_artist import ArtistContent
-from lollypop.view_artist import CurrentArtistView
+from lollypop.view_artist_albums import CurrentArtistAlbumsView
 
 
 class InfosPopover(Gtk.Popover):
@@ -133,7 +133,7 @@ class ArtistInfos(Gtk.Bin):
         """
         Lp.settings.set_value('infoswitch',
                               GLib.Variant('s', 'albums'))
-        view = CurrentArtistView(self._artist_id)
+        view = CurrentArtistAlbumsView(self._artist_id)
         view.set_property('expand', True)
         view.show()
         child = widget.get_child_at(0, 0)

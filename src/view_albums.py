@@ -14,7 +14,8 @@ from gi.repository import Gtk, GLib
 
 from lollypop.view import View
 from lollypop.view_container import ViewContainer
-from lollypop.widgets_album import AlbumSimpleWidget, AlbumDetailedWidget
+from lollypop.widgets_album import AlbumSimpleWidget
+from lollypop.widgets_album_context import AlbumContextWidget
 from lollypop.define import Lp, ArtSize
 from lollypop.objects import Album, Track
 
@@ -125,11 +126,10 @@ class AlbumsView(View):
             @param album id as int
         """
         size_group = Gtk.SizeGroup(mode=Gtk.SizeGroupMode.HORIZONTAL)
-        self._context_widget = AlbumDetailedWidget(album_id,
-                                                   self._genre_id,
-                                                   True,
-                                                   True,
-                                                   size_group)
+        self._context_widget = AlbumContextWidget(album_id,
+                                                  self._genre_id,
+                                                  True,
+                                                  size_group)
         self._context_widget.populate()
         self._context_widget.show()
         view = AlbumContextView(self._context_widget)

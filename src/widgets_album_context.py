@@ -10,40 +10,39 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-from gi.repository import Gtk, GLib, Gdk
+from gi.repository import Gtk, GLib, GObject, Gdk
+from cgi import escape
+from gettext import gettext as _
 
-from threading import Thread
-
-from lollypop.view import View
-from lollypop.view_container import ViewContainer
-from lollypop.define import Lp, Type
+from lollypop.define import Lp, Type, ArtSize, NextContext
+from lollypop.widgets_track import TracksWidget
+from lollypop.objects import Track
+from lollypop.widgets_rating import RatingWidget
+from lollypop.pop_menu import AlbumMenu
+from lollypop.pop_covers import CoversPopover
+from lollypop.objects import Album
 from lollypop.pop_infos import InfosPopover
-from lollypop.view_artist_albums import ArtistAlbumsView
+from lollypop.widgets_album import AlbumDetailedWidget
 
 
-class ArtistView(ArtistAlbumsView):
+class AlbumContextWidget(AlbumDetailedWidget):
     """
-        Show artist albums and tracks
+        Widget with cover and tracks
     """
 
-    def __init__(self, artist_id, genre_id):
+    def __init__(self, album_id, genre_id, pop_allowed, size_group):
         """
-            Init ArtistView
-            @param artist id as int (Current if None)
+            Init detailed album widget
+            @param album id as int
             @param genre id as int
+            @param parent width as int
+            @param pop_allowed as bool if widget can show popovers
+            @param size group as Gtk.SizeGroup
         """
-        ArtistAlbumsView.__init__(self, artist_id, genre_id)
-        self._artist_id = artist_id
-        self._genre_id = genre_id
-        self._signal_id = None
-
-        self._popover = InfosPopover(artist_id, False)
-        builder = Gtk.Builder()
-        builder.add_from_resource('/org/gnome/Lollypop/ArtistView.ui')
-        builder.connect_signals(self)
-        self.attach(builder.get_object('ArtistView'), 0, 0, 1, 1)
-        builder.get_object('artist').set_label(
-                                            Lp.artists.get_name(artist_id))
+        AlbumDetailedWidget.__init__(self, album_id, genre_id,
+                                     pop_allowed, size_group)
+        self._artist_label.set_text(self._album.artist_name)
+        self._artist_label.show()
 
 #######################
 # PRIVATE             #
@@ -54,7 +53,7 @@ class ArtistView(ArtistAlbumsView):
             @param eventbox as Gtk.EventBox
         """
         if InfosPopover.should_be_shown() and\
-                self._artist_id != Type.COMPILATIONS:
+                self._album.artist_id != Type.COMPILATIONS:
             eventbox.get_window().set_cursor(Gdk.Cursor(Gdk.CursorType.HAND1))
 
     def _on_label_button_release(self, eventbox, event):
@@ -64,6 +63,7 @@ class ArtistView(ArtistAlbumsView):
             @param event as Gdk.Event
         """
         if InfosPopover.should_be_shown() and\
-                self._artist_id != Type.COMPILATIONS:
-            self._popover.set_relative_to(eventbox)
-            self._popover.show()
+                self._album.artist_id != Type.COMPILATIONS:
+            popover = InfosPopover(self._album.artist_id)
+            popover.set_relative_to(eventbox)
+            popover.show()
