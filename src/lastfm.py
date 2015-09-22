@@ -78,7 +78,8 @@ class LastFM(LastFMNetwork):
             Secret.password_lookup(schema, SecretAttributes, None,
                                    self._on_password_lookup)
         else:
-            t = Thread(target=self._connect, args=(self._username, password))
+            t = Thread(target=self._connect, args=(self._username,
+                                                   password, True))
             t.daemon = True
             t.start()
 
@@ -208,7 +209,7 @@ class LastFM(LastFMNetwork):
                 return
         self.disable_proxy()
 
-    def _connect(self, username, password):
+    def _connect(self, username, password, populate_loved=False):
         """
             Connect lastfm
             @param username as str
@@ -228,9 +229,10 @@ class LastFM(LastFMNetwork):
                 api_secret=self._API_SECRET,
                 username=Lp.settings.get_value('lastfm-login').get_string(),
                 password_hash=md5(password))
+            if populate_loved:
+                self._populate_loved_tracks()
         except Exception as e:
             print("Lastfm::_connect(): %s" % e)
-        self._populate_loved_tracks()
 
     def _scrobble(self, artist, album, title, timestamp, duration):
         """
