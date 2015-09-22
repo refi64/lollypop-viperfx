@@ -90,8 +90,10 @@ class ArtistInfos(Gtk.Bin):
             @param show albums as bool
         """
         Gtk.Bin.__init__(self)
+        self._artist = None
         self._artist_id = artist_id
-        self._artist = Lp.artists.get_name(artist_id)
+        if self._artist_id is not None:
+            self._artist = Lp.artists.get_name(artist_id)
 
         builder = Gtk.Builder()
         builder.add_from_resource('/org/gnome/Lollypop/ArtistInfos.ui')
