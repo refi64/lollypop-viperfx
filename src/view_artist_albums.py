@@ -10,7 +10,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-from gi.repository import Gtk, GLib, Gdk
+from gi.repository import Gtk, GLib
 
 from threading import Thread
 
@@ -44,7 +44,7 @@ class ArtistAlbumsView(View):
         self._scrolledWindow.set_property('expand', True)
         self._viewport.set_property("valign", Gtk.Align.START)
         self._viewport.add(self._albumbox)
-        self.attach(self._scrolledWindow, 0, 1, 1 ,1)
+        self.attach(self._scrolledWindow, 0, 1, 1, 1)
 
     def populate(self, albums):
         """

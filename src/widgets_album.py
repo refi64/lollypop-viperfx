@@ -221,7 +221,7 @@ class AlbumDetailedWidget(AlbumWidget):
         self._pop_allowed = pop_allowed
 
         builder = Gtk.Builder()
-        builder.add_from_resource('/org/gnome/Lollypop/%s.ui' %\
+        builder.add_from_resource('/org/gnome/Lollypop/%s.ui' %
                                   type(self).__name__)
 
         rating = RatingWidget(self._album)

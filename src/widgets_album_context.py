@@ -10,17 +10,9 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-from gi.repository import Gtk, GLib, GObject, Gdk
-from cgi import escape
-from gettext import gettext as _
+from gi.repository import Gdk
 
-from lollypop.define import Lp, Type, ArtSize, NextContext
-from lollypop.widgets_track import TracksWidget
-from lollypop.objects import Track
-from lollypop.widgets_rating import RatingWidget
-from lollypop.pop_menu import AlbumMenu
-from lollypop.pop_covers import CoversPopover
-from lollypop.objects import Album
+from lollypop.define import Type
 from lollypop.pop_infos import InfosPopover
 from lollypop.widgets_album import AlbumDetailedWidget
 
