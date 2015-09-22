@@ -276,16 +276,13 @@ class BinPlayer(ReplayGainPlayer, BasePlayer):
         debug("Error playing: %s" % self.current_track.uri)
         if self._codecs.is_missing_codec(message):
             self._codecs.install()
-            self.stop()
             Lp.scanner.stop()
-            return True
-        if self._handled_error != self.current_track.uri:
-            self._handled_error = self.current_track.uri
-            if Lp.notify is not None:
-                Lp.notify.send(_("File doesn't exist: %s") %
-                               self.current_track.uri)
-            self.stop()
-        return False
+        elif Lp.notify is not None:
+            Lp.notify.send(_("File doesn't exist: %s") %
+                           self.current_track.uri)
+        self.stop()
+        self.emit('current-changed')
+        return True
 
     def _on_bus_eos(self, bus, message):
         """
