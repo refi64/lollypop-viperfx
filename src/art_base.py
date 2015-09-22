@@ -41,10 +41,7 @@ class BaseArt(GObject.GObject):
         """
         GObject.GObject.__init__(self)
 
-#######################
-# PRIVATE             #
-#######################
-    def _make_icon_frame(self, pixbuf, selected):
+    def make_icon_frame(self, pixbuf, selected):
         """
             Draw an icon frame around pixbuf,
             code forked Gnome Music, see copyright header
@@ -119,6 +116,9 @@ class BaseArt(GObject.GObject):
         del border_pixbuf
         return surface
 
+#######################
+# PRIVATE             #
+#######################
     def _get_default_icon(self, size, icon_name):
         """
             Construct an empty cover album,

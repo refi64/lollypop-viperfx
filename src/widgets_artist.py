@@ -14,6 +14,8 @@ from gi.repository import Gtk, GdkPixbuf
 
 from cgi import escape
 
+from lollypop.define import Lp
+
 
 class ArtistContent(Gtk.Stack):
     """
@@ -50,7 +52,8 @@ class ArtistContent(Gtk.Stack):
                                                                    -1,
                                                                    True,
                                                                    None)
-                self._image.set_from_pixbuf(pixbuf)
+                self._image.set_from_surface(Lp.art.make_icon_frame(pixbuf,
+                                                                    False))
                 del pixbuf
             self.set_visible_child_name('widget')
         else:

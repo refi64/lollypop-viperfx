@@ -129,9 +129,9 @@ class AlbumArt(BaseArt, ArtDownloader, TagReader):
         """
         pixbuf = self.pixbuf_from_tags(GLib.filename_from_uri(uri)[0], size)
         if pixbuf is not None:
-            return self._make_icon_frame(pixbuf, selected)
+            return self.make_icon_frame(pixbuf, selected)
         else:
-            return self._make_icon_frame(self._get_default_icon(
+            return self.make_icon_frame(self._get_default_icon(
                 size,
                 'folder-music-symbolic'),
                 selected)
@@ -186,11 +186,11 @@ class AlbumArt(BaseArt, ArtDownloader, TagReader):
                         pixbuf.savev(cache_path_jpg, "jpeg",
                                      ["quality"], ["90"])
 
-            return self._make_icon_frame(pixbuf, selected)
+            return self.make_icon_frame(pixbuf, selected)
 
         except Exception as e:
             print(e)
-            return self._make_icon_frame(self._get_default_icon(
+            return self.make_icon_frame(self._get_default_icon(
                 size,
                 'folder-music-symbolic'),
                 selected)

@@ -117,11 +117,11 @@ class RadioArt(BaseArt):
             except:
                 pixbuf.savev(cache_path_png, "png",
                              [None], [None])
-            return self._make_icon_frame(pixbuf, selected)
+            return self.make_icon_frame(pixbuf, selected)
 
         except Exception as e:
             print(e)
-            return self._make_icon_frame(self._get_default_icon(
+            return self.make_icon_frame(self._get_default_icon(
                                          size,
                                          'audio-input-microphone-symbolic'),
                                          selected)
