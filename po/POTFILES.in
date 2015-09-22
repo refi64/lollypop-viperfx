@@ -57,12 +57,15 @@ src/toolbar_title.py
 src/tunein.py
 src/utils.py
 src/view_albums.py
+src/view_artist.py
+src/view_artist_albums.py
 src/view_container.py
 src/view_device.py
 src/view_playlists.py
 src/view.py
 src/view_radios.py
 src/widgets_album.py
+src/widgets_album_context.py
 src/widgets_artist.py
 src/widgets_device.py
 src/widgets_playlist.py
