@@ -25,6 +25,7 @@ class View(Gtk.Grid):
             Init view
         """
         Gtk.Grid.__init__(self)
+        self.connect('destroy', self._on_destroy)
         self.set_property('orientation', Gtk.Orientation.VERTICAL)
         self.set_border_width(0)
         self._current_signal = Lp.player.connect('current-changed',
@@ -43,21 +44,6 @@ class View(Gtk.Grid):
         self._viewport = Gtk.Viewport()
         self._scrolledWindow.add(self._viewport)
         self._viewport.show()
-
-    def do_unamp(self):
-        """
-            Remove signals on unamp
-        """
-        Gtk.Grid.unmap(self)
-        if self._current_signal:
-            Lp.player.disconnect(self._current_signal)
-            self._current_signal = None
-        if self._cover_signal:
-            Lp.art.disconnect(self._cover_signal)
-            self._cover_signal = None
-        if self._scan_signal:
-            Lp.scanner.disconnect(self._scan_signal)
-            self._scan_signal = None
 
     def stop(self):
         """
@@ -94,6 +80,21 @@ class View(Gtk.Grid):
             Return view children
         """
         return []
+
+    def _on_destroy(self, widget):
+        """
+            Remove signals on unamp
+            @param widget as Gtk.Widget
+        """
+        if self._current_signal:
+            Lp.player.disconnect(self._current_signal)
+            self._current_signal = None
+        if self._cover_signal:
+            Lp.art.disconnect(self._cover_signal)
+            self._cover_signal = None
+        if self._scan_signal:
+            Lp.scanner.disconnect(self._scan_signal)
+            self._scan_signal = None
 
     def _on_cover_changed(self, widget, album_id):
         """
