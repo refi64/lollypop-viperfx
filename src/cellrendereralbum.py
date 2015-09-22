@@ -13,6 +13,7 @@
 from gi.repository import Gtk, GObject
 
 from lollypop.define import Lp, ArtSize
+from lollypop.objects import Album
 
 
 class CellRendererAlbum(Gtk.CellRenderer):
@@ -23,7 +24,7 @@ class CellRendererAlbum(Gtk.CellRenderer):
 
     def do_render(self, ctx, widget, background_area, cell_area, flags):
         size = ArtSize.MEDIUM * widget.get_scale_factor()
-        surface = Lp.art.get_album(self.album, size)
+        surface = Lp.art.get_album(Album(self.album), size)
         ctx.translate(cell_area.x, cell_area.y)
         ctx.set_source_surface(surface, 0, 0)
         ctx.paint()
