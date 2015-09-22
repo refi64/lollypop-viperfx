@@ -123,8 +123,7 @@ class ArtistInfos(Gtk.Bin):
             Destroy child
             @param widget as Gtk.Widget
         """
-        child = widget.get_child()
-        if child is not None:
+        for child in widget.get_children():
             child.destroy()
 
     def _on_map_albums(self, widget):
