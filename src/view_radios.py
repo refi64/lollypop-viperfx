@@ -34,7 +34,6 @@ class RadiosView(View):
         """
         View.__init__(self)
 
-        self.connect('destroy', self._on_destroy)
         self._signal = Lp.art.connect('logo-changed',
                                       self._on_logo_changed)
 
@@ -126,6 +125,7 @@ class RadiosView(View):
             Disconnect signals
             @param widget as Gtk.Widget
         """
+        View._on_destroy(self, widget)
         if self._signal is not None:
             Lp.art.disconnect(self._signal)
 

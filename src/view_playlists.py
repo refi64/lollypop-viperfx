@@ -35,7 +35,6 @@ class PlaylistView(View):
         self._playlist_name = playlist_name
         self._signal_id = Lp.playlists.connect('playlist-changed',
                                                self._update)
-        self.connect('destroy', self._on_destroy)
 
         builder = Gtk.Builder()
         builder.add_from_resource('/org/gnome/Lollypop/PlaylistView.ui')
@@ -111,6 +110,7 @@ class PlaylistView(View):
             Disconnect signals
             @param widget as Gtk.Widget
         """
+        View._on_destroy(self, widget)
         if self._signal_id:
             Lp.playlists.disconnect(self._signal_id)
             self._signal_id = None
