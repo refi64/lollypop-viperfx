@@ -38,22 +38,23 @@ class AlbumArt(BaseArt, ArtDownloader, TagReader):
         TagReader.__init__(self)
         self._favorite = Lp.settings.get_value('favorite-cover').get_string()
 
-    def get_album_cache_path(self, album_id, size):
+    def get_album_cache_path(self, album, size):
         """
             get cover cache path for album_id
-            @param album id as int, size as int
+            @param album as Album
+            @param size as int
             @return cover path as string or None if no cover
         """
         filename = ''
         try:
-            filename = self._get_album_cache_name(album_id)
+            filename = self._get_album_cache_name(album)
             cache_path_jpg = "%s/%s_%s.jpg" % (self._CACHE_PATH,
                                                filename,
                                                size)
             if os.path.exists(cache_path_jpg):
                 return cache_path_jpg
             else:
-                self.get_album(album_id, size)
+                self.get_album(album.id, size)
                 if os.path.exists(cache_path_jpg):
                     return cache_path_jpg
                 else:
@@ -62,19 +63,18 @@ class AlbumArt(BaseArt, ArtDownloader, TagReader):
             print("Art::get_album_cache_path(): %s" % e, ascii(filename))
             return None
 
-    def get_album_art_path(self, album_id, sql=None):
+    def get_album_art_path(self, album, sql=None):
         """
             Look for covers in dir:
             - favorite from settings first
             - Artist_Album.jpg then
             - Any any supported image otherwise
-            @param album id as int
+            @param album as Album
             @return cover file path as string
         """
-        if album_id is None:
+        if album is None:
             return None
 
-        album = Album(album_id)
         paths = [
             os.path.join(album.path, self._favorite),
             # Used when having muliple albums in same folder
@@ -131,16 +131,15 @@ class AlbumArt(BaseArt, ArtDownloader, TagReader):
                 'folder-music-symbolic'),
                 selected)
 
-    def get_album(self, album_id, size, selected=False):
+    def get_album(self, album, size, selected=False):
         """
             Return a cairo surface for album_id, covers are cached as jpg.
-            @param album id as int
+            @param album as Album
             @param pixbuf size as int
             @param selected as bool
             @return cairo surface
         """
-        album = Album(album_id)
-        filename = self._get_album_cache_name(album.id)
+        filename = self._get_album_cache_name(album)
         cache_path_jpg = "%s/%s_%s.jpg" % (self._CACHE_PATH, filename, size)
         pixbuf = None
 
@@ -151,7 +150,7 @@ class AlbumArt(BaseArt, ArtDownloader, TagReader):
                                                                 size,
                                                                 size)
             else:
-                path = self.get_album_art_path(album_id)
+                path = self.get_album_art_path(album)
                 # Look in album folder
                 if path is not None:
                     pixbuf = GdkPixbuf.Pixbuf.new_from_file_at_scale(path,
@@ -234,13 +233,13 @@ class AlbumArt(BaseArt, ArtDownloader, TagReader):
         """
         self.emit('cover-changed', album_id)
 
-    def clean_album_cache(self, album_id, sql=None):
+    def clean_album_cache(self, album, sql=None):
         """
             Remove cover from cache for album id
-            @param album id as int
+            @param album as Album
             @param sql as sqlite cursor
         """
-        filename = self._get_album_cache_name(album_id, sql)
+        filename = self._get_album_cache_name(album, sql)
         try:
             for f in os.listdir(self._CACHE_PATH):
                 if re.search('%s_.*\.jpg' % re.escape(filename), f):
@@ -277,12 +276,11 @@ class AlbumArt(BaseArt, ArtDownloader, TagReader):
 #######################
 # PRIVATE             #
 #######################
-    def _get_album_cache_name(self, album_id, sql=None):
+    def _get_album_cache_name(self, album, sql=None):
         """
             Get a uniq string for album
-            @param album id as int
+            @param album as Album
             @param sql as sqlite cursor
         """
-        album = Album(album_id)
         path = album.name + "_" + album.artist_name
         return path[0:240].replace("/", "_")

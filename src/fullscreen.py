@@ -186,7 +186,7 @@ class FullScreen(Gtk.Window):
                 self._total_time_label.show()
                 self._progress.show()
                 surface = Lp.art.get_album(
-                    player.current_track.album_id,
+                    player.current_track.album,
                     ArtSize.MONSTER*self.get_scale_factor())
             self._cover.set_from_surface(surface)
             del surface

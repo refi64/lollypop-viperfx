@@ -79,7 +79,7 @@ class ToolbarInfos(Gtk.Bin):
                     ArtSize.SMALL*self.get_scale_factor(),
                     False)
         else:
-            art = Lp.art.get_album(player.current_track.album_id,
+            art = Lp.art.get_album(player.current_track.album,
                                    ArtSize.SMALL*self.get_scale_factor())
         if art is not None:
             self._cover.set_from_surface(art)
@@ -105,8 +105,9 @@ class ToolbarInfos(Gtk.Bin):
             @param art as Art
             @param album id as int
         """
-        if Lp.player.current_track.album_id == album_id:
-            pixbuf = Lp.art.get_album(album_id, ArtSize.SMALL)
+        if Lp.player.current_track.album.id == album_id:
+            pixbuf = Lp.art.get_album(Lp.player.current_track.album,
+                                      ArtSize.SMALL)
             self._cover.set_from_surface(pixbuf)
             del pixbuf
 

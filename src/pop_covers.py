@@ -193,7 +193,7 @@ class CoversPopover(Gtk.Popover):
         """
         pixbuf = self._orig_pixbufs[child.get_child()]
         Lp.art.save_album_art(pixbuf, self._album.id)
-        Lp.art.clean_album_cache(self._album.id)
+        Lp.art.clean_album_cache(self._album)
         Lp.art.announce_cover_update(self._album.id)
         self.hide()
         self._streams = {}

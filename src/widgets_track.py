@@ -401,11 +401,11 @@ class TracksWidget(Gtk.ListBox):
         track_row.show()
         self.add(track_row)
 
-    def add_album(self, track_id, album_id, num, title, length, pos):
+    def add_album(self, track_id, album, num, title, length, pos):
         """
             Add album row to the list
             @param track id as int
-            @param album id as int or None
+            @param album as album (None)
             @param track number as int
             @param title as str
             @param length as str
@@ -427,13 +427,12 @@ class TracksWidget(Gtk.ListBox):
         album_row.set_title_label(title)
         album_row.set_duration_label(seconds_to_string(length))
         album_row.set_object_id(track_id)
-        if album_id is not None:
-            album_row.set_album_and_artist(album_id)
-            album_id = Lp.tracks.get_album_id(track_id)
+        if album is not None:
+            album_row.set_album_and_artist(album.id)
             surface = Lp.art.get_album(
-                        album_id,
+                        album,
                         ArtSize.MEDIUM*album_row.get_scale_factor())
-            album_row.set_cover(surface, Lp.albums.get_name(album_id))
+            album_row.set_cover(surface, Lp.albums.get_name(album.id))
             del surface
             album_row.show_header(True)
         album_row.show()

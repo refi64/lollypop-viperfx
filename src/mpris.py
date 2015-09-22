@@ -200,7 +200,7 @@ class MPRIS(dbus.service.Object):
                                      ["quality"], ["90"])
             else:
                 cover_path = Lp.art.get_album_cache_path(
-                    Lp.player.current_track.album_id, ArtSize.BIG)
+                    Lp.player.current_track.album, ArtSize.BIG)
             if cover_path is not None:
                 self._metadata['mpris:artUrl'] = "file://" + cover_path
             elif 'mpris:artUrl' in self._metadata:

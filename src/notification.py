@@ -89,7 +89,7 @@ class NotificationManager:
                 player.current_track.artist, ArtSize.BIG)
         else:
             cover_path = Lp.art.get_album_cache_path(
-                player.current_track.album.id, ArtSize.BIG)
+                player.current_track.album, ArtSize.BIG)
         if cover_path is not None:
             self._notification.set_hint('image-path',
                                         GLib.Variant('s', cover_path))

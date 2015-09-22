@@ -15,6 +15,7 @@ from gi.repository import GLib, Gio, GObject
 from time import sleep
 
 from lollypop.define import Lp
+from lollypop.objects import Track
 
 
 class MtpSync:
@@ -175,16 +176,16 @@ class MtpSync:
                     self._fraction = 1.0
                     self._in_thread = False
                     return
-                album_id = Lp.tracks.get_album_id(track_id, sql)
-                album_name = Lp.albums.get_name(album_id, sql)
+                track = Track(track_id)
                 # Sanitize file names as some MTP devices do not like this
                 # Or this is a Gio/GObject Introspection bug
-                album_name = "".join([c for c in album_name if c.isalpha() or
+                album_name = "".join([c for c in track.album_name if
+                                      c.isalpha() or
                                       c.isdigit() or c == ' ']).rstrip()
-                artist_name = Lp.albums.get_artist_name(album_id, sql)
                 # Sanitize file names as some MTP devices do not like this
                 # Or this is a Gio/GObject Introspection bug
-                artist_name = "".join([c for c in artist_name if c.isalpha() or
+                artist_name = "".join([c for c in track.artist_name if
+                                       c.isalpha() or
                                        c.isdigit() or c == ' ']).rstrip()
                 track_path = Lp.tracks.get_path(track_id, sql)
                 on_device_album_uri = "%s/tracks/%s_%s" %\
@@ -197,7 +198,7 @@ class MtpSync:
                     self._retry(d.make_directory_with_parents, (None,))
 
                 # Copy album art
-                art = Lp.art.get_album_art_path(album_id, sql)
+                art = Lp.art.get_album_art_path(track.album.id, sql)
                 if art:
                     src_art = Gio.File.new_for_path(art)
                     art_uri = "%s/cover.jpg" % on_device_album_uri
@@ -268,16 +269,16 @@ class MtpSync:
                 self._fraction = 1.0
                 self._in_thread = False
                 return
-            album_id = Lp.tracks.get_album_id(track_id, sql)
-            album_name = Lp.albums.get_name(album_id, sql)
+            track = Track(track_id)
             # Sanitize file names as some MTP devices do not like this
             # Or this is a Gio/GObject Introspection bug
-            album_name = "".join([c for c in album_name if c.isalpha() or
+            album_name = "".join([c for c in track.album_name if
+                                  c.isalpha() or
                                   c.isdigit() or c == ' ']).rstrip()
-            artist_name = Lp.albums.get_artist_name(album_id, sql)
             # Sanitize file names as some MTP devices do not like this
             # Or this is a Gio/GObject Introspection bug
-            artist_name = "".join([c for c in artist_name if c.isalpha() or
+            artist_name = "".join([c for c in track.artist_name if
+                                   c.isalpha() or
                                    c.isdigit() or c == ' ']).rstrip()
             track_path = Lp.tracks.get_path(track_id, sql)
             album_uri = "%s/tracks/%s_%s" % (self._uri,

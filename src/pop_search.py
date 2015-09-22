@@ -16,7 +16,7 @@ from cgi import escape
 from threading import Thread
 
 from lollypop.define import Lp, ArtSize, Type
-from lollypop.objects import Track
+from lollypop.objects import Track, Album
 
 
 class SearchRow(Gtk.ListBoxRow):
@@ -281,7 +281,7 @@ class SearchPopover(Gtk.Popover):
                 if result.count != -1:
                     result.title += " (%s)" % result.count
                 search_row.set_text(result.artist, result.title)
-                search_row.set_cover(Lp.art.get_album(result.album_id,
+                search_row.set_cover(Lp.art.get_album(Album(result.album_id),
                                      ArtSize.MEDIUM*self.get_scale_factor()))
                 search_row.id = result.id
                 search_row.is_track = result.is_track

@@ -16,6 +16,7 @@ from threading import Thread
 import urllib.parse
 import json
 
+from lollypop.objects import Album
 from lollypop.define import Lp, ArtSize, GOOGLE_INC
 
 
@@ -107,7 +108,7 @@ class ArtDownloader:
                     album_id = Lp.albums.get_compilation_id(album, sql)
                 if album_id is not None:
                     Lp.art.save_album_art(pixbuf, album_id, sql)
-                    Lp.art.clean_album_cache(album_id, sql)
+                    Lp.art.clean_album_cache(Album(album_id), sql)
                     GLib.idle_add(Lp.art.announce_cover_update, album_id)
             except Exception as e:
                 print("ArtDownloader::_download_albums_art: %s" % e)
