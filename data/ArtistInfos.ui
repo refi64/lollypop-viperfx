@@ -28,6 +28,18 @@
         <property name="can_focus">True</property>
         <property name="transition-type">crossfade</property>
         <child>
+          <object class="GtkGrid" id="albums">
+            <property name="visible">True</property>
+            <property name="expand">True</property>
+            <property name="can_focus">False</property>
+            <signal name="map" handler="_on_map_albums" swapped="no"/>
+          </object>
+          <packing>
+            <property name="name">albums</property>
+            <property name="title" translatable="yes">Albums</property>
+          </packing>
+        </child>
+        <child>
           <object class="GtkScrolledWindow" id="lastfm">
             <property name="visible">True</property>
             <property name="expand">True</property>

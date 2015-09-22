@@ -17,45 +17,16 @@ from lollypop.view_albums import ArtistView
 from lollypop.view_container import ViewContainer
 from lollypop.define import Lp, Type
 
-
 class CurrentArtistView(ArtistView):
     """
         Show albums from current artist
-    """
-
-    def __init__(self, artist_id):
-        """
-            Init ArtistsView
-            @param artist id as int
-        """
-        View.__init__(self)
-        self._artist_id = artist_id
-        self._genre_id = Type.ALL
-        self._signal_id = None
-
-        self._pop_allowed = False
-
-        self._albumbox = Gtk.Grid()
-        self._albumbox.set_row_spacing(20)
-        self._albumbox.set_property("orientation", Gtk.Orientation.VERTICAL)
-        self._albumbox.show()
-
-        self._scrolledWindow.set_property('expand', True)
-        self._viewport.set_property("valign", Gtk.Align.START)
-        self._viewport.add(self._albumbox)
-        self.add(self._scrolledWindow)
-
-
-class AlbumsPopover(Gtk.Popover):
-    """
-        Popover => CurrentArtistView
     """
 
     def __init__(self):
         """
             Init popover
         """
-        Gtk.Popover.__init__(self)
+        ArtistView.__init__(self)
         self._stack = ViewContainer(1000)
         self._stack.show()
 
@@ -66,7 +37,8 @@ class AlbumsPopover(Gtk.Popover):
 
     def populate(self):
         """
-            Load content of the popover
+            Populate the view
+            @thread safe
         """
         if Lp.player.current_track.album_artist_id == Type.COMPILATIONS:
             new_id = Lp.player.current_track.album_id
@@ -76,34 +48,7 @@ class AlbumsPopover(Gtk.Popover):
             self._on_screen_id = new_id
             view = CurrentArtistView(Lp.player.current_track.album_artist_id)
             albums = self._get_albums(Lp.player.current_track.album_artist_id)
-            view.populate(albums)
-            view.show()
-            self._stack.add(view)
-            self._stack.set_visible_child(view)
-            self._stack.clean_old_views(view)
-
-    def do_show(self):
-        """
-            Resize popover
-        """
-        size_setting = Lp.settings.get_value('window-size')
-        if isinstance(size_setting[0], int) and\
-           isinstance(size_setting[1], int):
-            self.set_size_request(size_setting[0]*0.65, size_setting[1]*0.8)
-        else:
-            self.set_size_request(600, 600)
-        Gtk.Popover.do_show(self)
-
-    def do_hide(self):
-        """
-            Remove view
-        """
-        Gtk.Popover.do_hide(self)
-        child = self._stack.get_visible_child()
-        if child is not None:
-            child.stop()
-        self._on_screen_id = None
-        self._stack.clean_old_views(None)
+            GLib.idle_add(ArtistView.populate, albums)
 
 #######################
 # PRIVATE             #

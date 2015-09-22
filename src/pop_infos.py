@@ -17,6 +17,7 @@ from threading import Thread
 
 from lollypop.define import Lp, Type
 from lollypop.widgets_artist import ArtistContent
+from lollypop.view_artist import CurrentArtistView
 
 
 class InfosPopover(Gtk.Popover):
@@ -48,9 +49,10 @@ class InfosPopover(Gtk.Popover):
         """
         size_setting = Lp.settings.get_value('window-size')
         if isinstance(size_setting[1], int):
-            self.set_size_request(700, size_setting[1]*0.7)
+            self.set_size_request(size_setting[0]*0.6,
+                                  size_setting[1]*0.8)
         else:
-            self.set_size_request(700, 400)
+            self.set_size_request(700, 600)
         Gtk.Popover.do_show(self)
 
     def do_get_preferred_width(self):
@@ -109,9 +111,28 @@ class ArtistInfos(Gtk.Bin):
 #######################
 # PRIVATE             #
 #######################
+    def _on_map_albums(self, widget):
+        """
+            Load on map
+            @param widget as Gtk.Bin
+        """
+        Lp.settings.set_value('infoswitch',
+                              GLib.Variant('s', 'albums'))
+        view = CurrentArtistView()
+        view.set_property('expand', True)
+        view.show()
+        child = widget.get_child_at(0, 0)
+        if child is not None:
+            child.destroy()
+        widget.add(view)
+        t = Thread(target=view.populate)
+        t.daemon = True
+        t.start()
+
     def _on_map_lastfm(self, widget):
         """
             Load on map
+            @param widget as Gtk.ScrolledWindow
         """
         Lp.settings.set_value('infoswitch',
                               GLib.Variant('s', 'lastfm'))
@@ -144,6 +165,7 @@ class ArtistInfos(Gtk.Bin):
     def _on_map_wikipedia(self, widget):
         """
             Load on map
+            @param widget as Gtk.ScrolledWindow
         """
         Lp.settings.set_value('infoswitch',
                               GLib.Variant('s', 'wikipedia'))

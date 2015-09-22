@@ -18,7 +18,7 @@ from lollypop.widgets_loved import LovedWidget
 from lollypop.pop_tunein import TuneinPopover
 from lollypop.pop_externals import ExternalsPopover
 from lollypop.playlists import RadiosManager
-from lollypop.pop_albums import AlbumsPopover
+from lollypop.pop_infos import InfosPopover
 from lollypop.pop_menu import PopToolbarMenu
 from lollypop.define import Lp, Type, ArtSize
 
@@ -44,8 +44,8 @@ class ToolbarInfos(Gtk.Bin):
         self._title_label = builder.get_object('title')
         self._artist_label = builder.get_object('artist')
         self._cover = builder.get_object('cover')
-        self._pop_albums = AlbumsPopover()
-        self._pop_albums.set_relative_to(infobox)
+        self._pop_infos = InfosPopover()
+        self._pop_infos.set_relative_to(infobox)
         self._pop_tunein = TuneinPopover(RadiosManager())
         self._pop_tunein.set_relative_to(infobox)
 
@@ -139,8 +139,7 @@ class ToolbarInfos(Gtk.Bin):
                     self._pop_tunein.populate()
                     self._pop_tunein.show()
                 else:
-                    self._pop_albums.populate()
-                    self._pop_albums.show()
+                    self._pop_infos.show()
             elif Lp.player.current_track.id >= 0:
                 menu = PopToolbarMenu(Lp.player.current_track.id, None)
                 popover = Gtk.Popover.new_from_model(eventbox, menu)

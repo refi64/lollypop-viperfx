@@ -65,18 +65,18 @@ class DeviceView(View):
         """
         return self._device_widget.is_syncing()
 
-    def remove_signals(self):
+#######################
+# PRIVATE             #
+#######################
+    def _on_destroy(self, widget):
         """
             Remove running timeout
+            @param widget as Gtk.Widget
         """
         if self._timeout_id is not None:
             GLib.source_remove(self._timeout_id)
             self._timeout_id = None
-        View.remove_signals(self)
 
-#######################
-# PRIVATE             #
-#######################
     def _on_sync_clicked(self, widget):
         """
             Start synchronisation

@@ -44,10 +44,11 @@ class View(Gtk.Grid):
         self._scrolledWindow.add(self._viewport)
         self._viewport.show()
 
-    def remove_signals(self):
+    def do_unamp(self):
         """
-            Remove signals
+            Remove signals on unamp
         """
+        Gtk.Grid.unmap(self)
         if self._current_signal:
             Lp.player.disconnect(self._current_signal)
             self._current_signal = None
@@ -57,8 +58,6 @@ class View(Gtk.Grid):
         if self._scan_signal:
             Lp.scanner.disconnect(self._scan_signal)
             self._scan_signal = None
-        for child in self._get_children():
-            child.remove_signals()
 
     def stop(self):
         """

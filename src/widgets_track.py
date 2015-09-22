@@ -82,12 +82,6 @@ class Row(Gtk.ListBoxRow):
             else:
                 self._indicator.empty()
 
-    def clear_indicator(self):
-        """
-            Clear indicator
-        """
-        self._indicator.clear()
-
     def set_num_label(self, label):
         """
             Set num label
@@ -364,6 +358,7 @@ class TracksWidget(Gtk.ListBox):
             @param show_menu as bool if menu need to be displayed
         """
         Gtk.ListBox.__init__(self)
+        self.connect('destroy', self._on_destroy)
         self._queue_signal_id = Lp.player.connect("queue-changed",
                                                   self._update_pos_label)
         self._loved_signal_id = Lp.playlists.connect("playlist-changed",
@@ -453,21 +448,6 @@ class TracksWidget(Gtk.ListBox):
             row.show_indicator(row.get_object_id() == track_id,
                                utils.is_loved(row.get_object_id()))
 
-    def remove_signals(self):
-        """
-            Remove signals
-        """
-        # Set indicator to None
-        for row in self.get_children():
-            row.clear_indicator()
-        if self._queue_signal_id is not None:
-            Lp.player.disconnect(self._queue_signal_id)
-            self._queue_signal_id = None
-
-        if self._loved_signal_id is not None:
-            Lp.playlists.disconnect(self._loved_signal_id)
-            self._loved_signal_id = None
-
 #######################
 # PRIVATE             #
 #######################
@@ -503,6 +483,18 @@ class TracksWidget(Gtk.ListBox):
             row.show_indicator(track_id == Lp.player.current_track.id,
                                utils.is_loved(track_id))
 
+    def _on_destroy(self, widget):
+        """
+            Remove signals
+            @param widget as Gtk.Widget
+        """
+        if self._queue_signal_id is not None:
+            Lp.player.disconnect(self._queue_signal_id)
+            self._queue_signal_id = None
+        if self._loved_signal_id is not None:
+            Lp.playlists.disconnect(self._loved_signal_id)
+            self._loved_signal_id = None
+            
     def _on_activate(self, widget, row):
         """
             Play activated item

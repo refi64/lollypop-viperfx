@@ -22,117 +22,6 @@ from lollypop.define import Lp, Type, ArtSize
 from lollypop.objects import Album, Track
 
 
-class ArtistView(View):
-    """
-        Show artist albums and tracks
-    """
-
-    try:
-        from lollypop.wikipedia import Wikipedia
-    except:
-        Wikipedia = None
-
-    def __init__(self, artist_id, genre_id):
-        """
-            Init ArtistView
-            @param artist id as int
-            @param genre id as int
-        """
-        View.__init__(self)
-        self._artist_id = artist_id
-        self._genre_id = genre_id
-        self._signal_id = None
-
-        self._artist_name = Lp.artists.get_name(artist_id)
-        if Lp.lastfm is not None or self.Wikipedia is not None:
-            self._popover = InfosPopover(self._artist_name)
-        builder = Gtk.Builder()
-        builder.add_from_resource('/org/gnome/Lollypop/ArtistView.ui')
-        builder.connect_signals(self)
-        self.attach(builder.get_object('ArtistView'), 0, 0, 1, 1)
-        builder.get_object('artist').set_label(self._artist_name)
-
-        self._pop_allowed = True
-
-        self._albumbox = Gtk.Grid()
-        self._albumbox.set_row_spacing(20)
-        self._albumbox.set_property("orientation", Gtk.Orientation.VERTICAL)
-        self._albumbox.show()
-
-        self._scrolledWindow.set_property('expand', True)
-        self._viewport.set_property("valign", Gtk.Align.START)
-        self._viewport.add(self._albumbox)
-        self.add(self._scrolledWindow)
-
-    def populate(self, albums):
-        """
-            Populate the view
-        """
-        if albums:
-            self._add_albums(albums)
-
-
-#######################
-# PRIVATE             #
-#######################
-    def _get_children(self):
-        """
-            Return view children
-            @return [AlbumWidget]
-        """
-        return self._albumbox.get_children()
-
-    def _add_albums(self, albums):
-        """
-            Pop an album and add it to the view,
-            repeat operation until album list is empty
-            @param [album ids as int]
-        """
-        size_group = Gtk.SizeGroup(mode=Gtk.SizeGroupMode.HORIZONTAL)
-        widget = AlbumDetailedWidget(albums.pop(0),
-                                     self._genre_id,
-                                     self._pop_allowed,
-                                     False,
-                                     size_group)
-        widget.connect('finished', self._on_album_finished, albums)
-        widget.show()
-        t = Thread(target=widget.populate)
-        t.daemon = True
-        t.start()
-        self._albumbox.add(widget)
-
-    def _on_album_finished(self, album, albums):
-        """
-            Add another album
-            @param album as AlbumDetailedWidget
-            @param [album ids as int]
-        """
-        if albums and not self._stop:
-            self._add_albums(albums)
-        else:
-            self._stop = False
-
-    def _on_label_realize(self, eventbox):
-        """
-            Change pointer on label
-            @param eventbox as Gtk.EventBox
-        """
-        if InfosPopover.should_be_shown() and\
-                self._artist_id != Type.COMPILATIONS:
-            eventbox.get_window().set_cursor(Gdk.Cursor(Gdk.CursorType.HAND1))
-
-    def _on_label_button_release(self, eventbox, event):
-        """
-            On clicked label, show artist informations in a popover
-            @param eventbox as Gtk.EventBox
-            @param event as Gdk.Event
-        """
-        if InfosPopover.should_be_shown() and\
-                self._artist_id != Type.COMPILATIONS:
-            self._popover.set_relative_to(eventbox)
-            self._popover.show()
-
-
 class AlbumContextView(View):
     """
         Album contextual view
@@ -285,7 +174,6 @@ class AlbumsView(View):
         if self._context_album_id == child.get_child().get_id():
             self._context_album_id = None
             self._context.hide()
-            self._context_widget.remove_signals()
             self._context_widget.destroy()
             self._context_widget = None
         else:

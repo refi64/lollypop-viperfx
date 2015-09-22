@@ -41,20 +41,11 @@ class ToolbarPlayback(Gtk.Bin):
         self._play_image = builder.get_object('play_image')
         self._pause_image = builder.get_object('pause_image')
 
-        if InfosPopover.should_be_shown():
-            self._artist_infos_btn = builder.get_object('artist_infos_btn')
-            self._artist_infos_btn.show()
-
     def on_current_changed(self, player):
         """
             Update buttons on current changed
             @param player as Player
         """
-        if InfosPopover.should_be_shown():
-            if player.current_track.id != Type.RADIOS:
-                self._artist_infos_btn.set_sensitive(True)
-            else:
-                self._artist_infos_btn.set_sensitive(False)
         self._play_btn.set_sensitive(True)
         self._prev_btn.set_sensitive(True)
         self._next_btn.set_sensitive(True)
@@ -118,13 +109,3 @@ class ToolbarPlayback(Gtk.Bin):
             @param button as Gtk.Button
         """
         Lp.player.next()
-
-    def _on_infos_btn_clicked(self, button):
-        """
-            Show current artist informations
-            @param button as Gtk.Button
-        """
-        if InfosPopover.should_be_shown():
-            popover = InfosPopover()
-            popover.set_relative_to(button)
-            popover.show()

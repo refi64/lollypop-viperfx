@@ -19,7 +19,8 @@ from lollypop.define import Lp, Type
 from lollypop.selectionlist import SelectionList
 from lollypop.playlists import PlaylistsManager
 from lollypop.view_container import ViewContainer
-from lollypop.view_albums import AlbumsView, ArtistView
+from lollypop.view_albums import AlbumsView
+from lollypop.view_artist import ArtistView
 from lollypop.view_radios import RadiosView
 from lollypop.view_playlists import PlaylistView
 from lollypop.view_playlists import PlaylistsManageView, PlaylistEditView
@@ -618,7 +619,6 @@ class Container:
                 self._list_one.remove(dev.id)
                 child = self._stack.get_child_by_name(uri)
                 if child is not None:
-                    child.remove_signals()
                     child.destroy()
                 del self._devices[dev.id]
             break

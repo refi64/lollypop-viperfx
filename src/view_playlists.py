@@ -33,7 +33,10 @@ class PlaylistView(View):
         """
         View.__init__(self)
         self._playlist_name = playlist_name
-        self._signal_id = None
+        
+        self._signal_id = Lp.playlists.connect('playlist-changed',
+                                               self._update)
+        self.connect('destroy', self._on_destroy)
 
         builder = Gtk.Builder()
         builder.add_from_resource('/org/gnome/Lollypop/PlaylistView.ui')
@@ -73,23 +76,6 @@ class PlaylistView(View):
         """
         return self._playlist_name
 
-    def do_show(self):
-        """
-            Do show, connect signals
-        """
-        self._signal_id = Lp.playlists.connect('playlist-changed',
-                                               self._update)
-        View.do_show(self)
-
-    def remove_signals(self):
-        """
-            Disconnect signals
-        """
-        View.remove_signals(self)
-        if self._signal_id:
-            Lp.playlists.disconnect(self._signal_id)
-            self._signal_id = None
-
     def stop(self):
         """
             Stop populating
@@ -99,6 +85,7 @@ class PlaylistView(View):
 #######################
 # PRIVATE             #
 #######################
+
     def _update(self, manager, playlist_name):
         """
             Update tracks widgets
@@ -119,6 +106,15 @@ class PlaylistView(View):
         tracks = Lp.playlists.get_tracks_id(self._playlist_name, sql)
         sql.close()
         self.populate(tracks)
+
+    def _on_destroy(self, widget):
+        """
+            Disconnect signals
+            @param widget as Gtk.Widget
+        """
+        if self._signal_id:
+            Lp.playlists.disconnect(self._signal_id)
+            self._signal_id = None
 
     def _on_edit_btn_clicked(self, button):
         """

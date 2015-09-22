@@ -1,14 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <interface domain="lollypop">
   <!-- interface-requires gtk+ 3.10 -->
-  <object class="GtkBox" id="playback">
-    <property name="visible">True</property>
-    <property name="vexpand">False</property>
-    <property name="height-request">36</property>
-    <property name="spacing">6</property>
-    <child>
-      <object class="GtkBox" id="buttons">
+      <object class="GtkBox" id="playback">
         <property name="visible">True</property>
+    	<property name="height-request">36</property>
+    	<property name="margin_end">10</property>
         <property name="can_focus">False</property>
         <child>
           <object class="GtkButton" id="previous_button">
@@ -105,26 +101,4 @@
           <class name="linked"/>
         </style>
       </object>
-    </child>
-    <child>
-     <object class="GtkButton" id="artist_infos_btn">
-        <signal name="clicked" handler="_on_infos_btn_clicked" swapped="no"/>
-        <property name="visible">False</property>
-        <property name="sensitive">False</property>
-        <property name="can_focus">True</property>
-        <property name="receives_default">True</property>
-        <property name="image">lastfm_image</property>
-        <property name="always_show_image">True</property>
-        <property name="tooltip_text" translatable="yes">Informations</property>
-        <child>
-          <object class="GtkImage" id="lastfm_image">
-            <property name="visible">True</property>
-            <property name="can_focus">False</property>
-            <property name="icon_name">dialog-information-symbolic</property>
-            <property name="icon_size">1</property>
-          </object>
-        </child>
-    </object>
-   </child> 
-  </object>
 </interface>

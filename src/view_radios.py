@@ -34,7 +34,9 @@ class RadiosView(View):
         """
         View.__init__(self)
 
-        self._signal = None
+        self.connect('destroy', self._on_destroy)
+        self._signal = Lp.art.connect('logo-changed',
+                                      self._on_logo_changed)
 
         self._radios_manager = RadiosManager()
         self._radios_manager.connect('playlists-changed',
@@ -84,22 +86,6 @@ class RadiosView(View):
         t.daemon = True
         t.start()
 
-    def do_show(self):
-        """
-            Connect player signal
-        """
-        View.do_show(self)
-        self._signal = Lp.art.connect('logo-changed',
-                                      self._on_logo_changed)
-
-    def remove_signals(self):
-        """
-            Disconnect signals
-        """
-        View.remove_signals(self)
-        if self._signal is not None:
-            Lp.art.disconnect(self._signal)
-
 #######################
 # PRIVATE             #
 #######################
@@ -134,6 +120,14 @@ class RadiosView(View):
         child1 = a.get_children()[0]
         child2 = b.get_children()[0]
         return child1.get_name().lower() > child2.get_name().lower()
+
+    def _on_destroy(self, widget):
+        """
+            Disconnect signals
+            @param widget as Gtk.Widget
+        """
+        if self._signal is not None:
+            Lp.art.disconnect(self._signal)
 
     def _on_new_clicked(self, widget):
         """

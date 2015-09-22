@@ -28,6 +28,7 @@ class WebView(Gtk.Stack):
             @param mobile as bool
         """
         Gtk.Stack.__init__(self)
+        self.connect('destroy', self._on_destroy)
         self.set_transition_duration(500)
         self.set_transition_type(Gtk.StackTransitionType.CROSSFADE)
         self._current = urlsplit(url)[1]
@@ -60,17 +61,17 @@ class WebView(Gtk.Stack):
         self._view.grab_focus()
         self._view.load_uri(url)
 
-    def do_unmap(self):
-        """
-            Destroy webkit view to stop any audio playback
-        """
-        self._view.stop_loading()
-        self._view.destroy()
-        Gtk.Stack.do_unmap(self)
-
 #######################
 # PRIVATE             #
 #######################
+    def on_destroy(self, widget):
+        """
+            Destroy webkit view to stop any audio playback
+            @param widget as Gtk.Widget
+        """
+        self._view.stop_loading()
+        self._view.destroy()
+
     def _on_load_changed(self, view, event):
         """
             Show view if finished

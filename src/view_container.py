@@ -45,8 +45,6 @@ class ViewContainer(Gtk.Stack):
                 if isinstance(child, DeviceView):
                     self.remove(child)
                 else:
-                    if hasattr(child, "remove_signals"):
-                        child.remove_signals()
                     # Delayed destroy as we may have an animation running
                     # Gtk.StackTransitionType.CROSSFADE
                     GLib.timeout_add(self._duration,

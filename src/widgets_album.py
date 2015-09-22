@@ -15,13 +15,13 @@ from cgi import escape
 from gettext import gettext as _
 
 from lollypop.define import Lp, Type, ArtSize, NextContext
-from lollypop.pop_infos import InfosPopover
 from lollypop.widgets_track import TracksWidget
 from lollypop.objects import Track
 from lollypop.widgets_rating import RatingWidget
 from lollypop.pop_menu import AlbumMenu
 from lollypop.pop_covers import CoversPopover
 from lollypop.objects import Album
+import lollypop.pop_infos
 
 
 class AlbumWidget(Gtk.Bin):
@@ -106,12 +106,6 @@ class AlbumWidget(Gtk.Bin):
         window = self._eventbox.get_window()
         if window is not None:
             window.set_cursor(Gdk.Cursor(cursor))
-
-    def remove_signals(self):
-        """
-            Remove signals
-        """
-    pass
 
 #######################
 # PRIVATE             #
@@ -369,16 +363,6 @@ class AlbumDetailedWidget(AlbumWidget):
         else:
             AlbumWidget.update_cursor(self)
 
-    def remove_signals(self):
-        """
-            Remove signals
-        """
-        AlbumWidget.remove_signals(self)
-        for child in self._tracks_left:
-            self._tracks_left[child].remove_signals()
-        for child in self._tracks_right:
-            self._tracks_right[child].remove_signals()
-
 #######################
 # PRIVATE             #
 #######################
@@ -478,7 +462,7 @@ class AlbumDetailedWidget(AlbumWidget):
             Change pointer on label
             @param eventbox as Gtk.EventBox
         """
-        if InfosPopover.should_be_shown() and\
+        if lollypop.pop_infos.InfosPopover.should_be_shown() and\
                 self._album.artist_id != Type.COMPILATIONS:
             eventbox.get_window().set_cursor(Gdk.Cursor(Gdk.CursorType.HAND1))
 
@@ -488,9 +472,9 @@ class AlbumDetailedWidget(AlbumWidget):
             @param eventbox as Gtk.EventBox
             @param event as Gdk.Event
         """
-        if InfosPopover.should_be_shown() and\
+        if lollypop.pop_infos.InfosPopover.should_be_shown() and\
                 self._album.artist_id != Type.COMPILATIONS:
-            popover = InfosPopover(self._album.artist_name)
+            popover = lollypop.pop_infos.InfosPopover(self._album.artist_name)
             popover.set_relative_to(eventbox)
             popover.show()
 

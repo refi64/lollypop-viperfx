@@ -23,6 +23,7 @@ class IndicatorWidget(Gtk.Stack):
             Init indicator widget
         """
         Gtk.Stack.__init__(self)
+        self.connect('destroy', self._on_destroy)
         self._pass = 1
         self.set_transition_duration(500)
         self.set_transition_type(Gtk.StackTransitionType.CROSSFADE)
@@ -65,7 +66,7 @@ class IndicatorWidget(Gtk.Stack):
 
     def clear(self):
         """
-            Remove timeout
+            Clear timeout
         """
         if self._timeout_id is not None:
             GLib.source_remove(self._timeout_id)
@@ -74,6 +75,13 @@ class IndicatorWidget(Gtk.Stack):
 #######################
 # PRIVATE             #
 #######################
+    def _on_destroy(self, widget):
+        """
+            Clear timeout
+            @param widget as Gtk.Widget
+        """
+        self.clear()
+
     def _play_loved(self):
         """
             Show play/loved indicator
