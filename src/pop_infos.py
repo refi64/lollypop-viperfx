@@ -118,6 +118,15 @@ class ArtistInfos(Gtk.Bin):
 #######################
 # PRIVATE             #
 #######################
+    def _on_unmap(self, widget):
+        """
+            Destroy child
+            @param widget as Gtk.Widget
+        """
+        child = widget.get_child()
+        if child is not None:
+            child.destroy()
+
     def _on_map_albums(self, widget):
         """
             Load on map
