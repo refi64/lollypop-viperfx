@@ -33,13 +33,14 @@ class InfosPopover(Gtk.Popover):
             ArtistInfos.Wikipedia is not None or\
             ArtistInfos.WebView is not None
 
-    def __init__(self, artist=None):
+    def __init__(self, artist=None, show_albums=True):
         """
             Init popover
             @param artist as string
+            @param show albums as bool
         """
         Gtk.Popover.__init__(self)
-        self._infos = ArtistInfos(artist)
+        self._infos = ArtistInfos(artist, show_albums)
         self._infos.show()
         self.add(self._infos)
 
@@ -82,13 +83,15 @@ class ArtistInfos(Gtk.Bin):
         print(_("WebKit support disabled"))
         WebView = None
 
-    def __init__(self, artist):
+    def __init__(self, artist_id, show_albums):
         """
             Init artist infos
-            @param artist as string
+            @param artist as int
+            @param show albums as bool
         """
         Gtk.Bin.__init__(self)
-        self._artist = artist
+        self._artist_id = artist_id
+        self._artist = Lp.artists.get_name(artist_id)
 
         builder = Gtk.Builder()
         builder.add_from_resource('/org/gnome/Lollypop/ArtistInfos.ui')
@@ -99,11 +102,13 @@ class ArtistInfos(Gtk.Bin):
             Lp.settings.get_value('infoswitch').get_string())
         self.add(builder.get_object('widget'))
 
+        if not show_albums:
+            builder.get_object('albums').destroy()
         if self.Wikipedia is None:
             builder.get_object('wikipedia').destroy()
         if Lp.lastfm is None:
             builder.get_object('lastfm').destroy()
-        if self.WebView is None or artist is not None:
+        if self.WebView is None: or artist_id is not None:
             builder.get_object('wikia').destroy()
         if self.WebView is None:
             builder.get_object('duck').destroy()
@@ -118,7 +123,7 @@ class ArtistInfos(Gtk.Bin):
         """
         Lp.settings.set_value('infoswitch',
                               GLib.Variant('s', 'albums'))
-        view = CurrentArtistView()
+        view = CurrentArtistView(self._artist_id)
         view.set_property('expand', True)
         view.show()
         child = widget.get_child_at(0, 0)

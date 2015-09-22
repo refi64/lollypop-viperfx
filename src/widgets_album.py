@@ -474,7 +474,7 @@ class AlbumDetailedWidget(AlbumWidget):
         """
         if lollypop.pop_infos.InfosPopover.should_be_shown() and\
                 self._album.artist_id != Type.COMPILATIONS:
-            popover = lollypop.pop_infos.InfosPopover(self._album.artist_name)
+            popover = lollypop.pop_infos.InfosPopover(self._album.artist_id)
             popover.set_relative_to(eventbox)
             popover.show()
 
