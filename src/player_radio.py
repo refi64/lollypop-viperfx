@@ -10,7 +10,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-from gi.repository import TotemPlParser
+from gi.repository import TotemPlParser, Gio
 
 from lollypop.playlists import RadiosManager
 from lollypop.player_base import BasePlayer
@@ -36,18 +36,17 @@ class RadioPlayer(BasePlayer):
             Load radio at uri
             @param track as Track
         """
-        try:
-            self._current = track
-            parser = TotemPlParser.Parser.new()
-            parser.connect("entry-parsed", self._on_entry_parsed, track)
-            parser.parse_async(track.uri, True, None,
-                               self._on_parsing_finished, track)
-        except Exception as e:
-            print("RadioPlayer::load(): ", e)
-            return False
-        self.set_party(False)
-        self._albums = None
-        return True
+        if Gio.NetworkMonitor.get_default().get_network_available():
+            try:
+                self._current = track
+                parser = TotemPlParser.Parser.new()
+                parser.connect("entry-parsed", self._on_entry_parsed, track)
+                parser.parse_async(track.uri, True, None,
+                                   self._on_parsing_finished, track)
+            except Exception as e:
+                print("RadioPlayer::load(): ", e)
+            self.set_party(False)
+            self._albums = None
 
     def next(self):
         """
