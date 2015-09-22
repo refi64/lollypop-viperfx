@@ -494,7 +494,7 @@ class TracksWidget(Gtk.ListBox):
         if self._loved_signal_id is not None:
             Lp.playlists.disconnect(self._loved_signal_id)
             self._loved_signal_id = None
-            
+
     def _on_activate(self, widget, row):
         """
             Play activated item

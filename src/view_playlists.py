@@ -33,7 +33,6 @@ class PlaylistView(View):
         """
         View.__init__(self)
         self._playlist_name = playlist_name
-        
         self._signal_id = Lp.playlists.connect('playlist-changed',
                                                self._update)
         self.connect('destroy', self._on_destroy)

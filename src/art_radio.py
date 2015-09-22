@@ -122,9 +122,9 @@ class RadioArt(BaseArt):
         except Exception as e:
             print(e)
             return self.make_icon_frame(self._get_default_icon(
-                                         size,
-                                         'audio-input-microphone-symbolic'),
-                                         selected)
+                                        size,
+                                        'audio-input-microphone-symbolic'),
+                                        selected)
 
     def copy_uri_to_cache(self, uri, name, size):
         """

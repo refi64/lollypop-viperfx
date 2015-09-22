@@ -10,15 +10,12 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-from gi.repository import Gtk, GLib, Gdk
-
-from threading import Thread
+from gi.repository import Gtk, GLib
 
 from lollypop.view import View
-from lollypop.pop_infos import InfosPopover
 from lollypop.view_container import ViewContainer
 from lollypop.widgets_album import AlbumSimpleWidget, AlbumDetailedWidget
-from lollypop.define import Lp, Type, ArtSize
+from lollypop.define import Lp, ArtSize
 from lollypop.objects import Album, Track
 
 

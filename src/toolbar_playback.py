@@ -15,8 +15,7 @@ from gi.repository import Gtk
 from cgi import escape
 from gettext import gettext as _
 
-from lollypop.pop_infos import InfosPopover
-from lollypop.define import Lp, Type
+from lollypop.define import Lp
 
 
 class ToolbarPlayback(Gtk.Bin):

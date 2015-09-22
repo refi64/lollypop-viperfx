@@ -10,12 +10,12 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-from gi.repository import Gtk
+from gi.repository import GLib
 
-from lollypop.view import View
 from lollypop.view_albums import ArtistView
 from lollypop.view_container import ViewContainer
 from lollypop.define import Lp, Type
+
 
 class CurrentArtistView(ArtistView):
     """
@@ -46,7 +46,6 @@ class CurrentArtistView(ArtistView):
             new_id = Lp.player.current_track.album_artist_id
         if self._on_screen_id != new_id:
             self._on_screen_id = new_id
-            view = CurrentArtistView(Lp.player.current_track.album_artist_id)
             albums = self._get_albums(Lp.player.current_track.album_artist_id)
             GLib.idle_add(ArtistView.populate, albums)
 
