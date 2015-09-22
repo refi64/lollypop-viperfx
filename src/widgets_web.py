@@ -64,7 +64,7 @@ class WebView(Gtk.Stack):
 #######################
 # PRIVATE             #
 #######################
-    def on_destroy(self, widget):
+    def _on_destroy(self, widget):
         """
             Destroy webkit view to stop any audio playback
             @param widget as Gtk.Widget
