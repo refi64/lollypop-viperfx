@@ -108,7 +108,7 @@ class ArtistInfos(Gtk.Bin):
             builder.get_object('wikipedia').destroy()
         if Lp.lastfm is None:
             builder.get_object('lastfm').destroy()
-        if self.WebView is None: or artist_id is not None:
+        if self.WebView is None or artist_id is not None:
             builder.get_object('wikia').destroy()
         if self.WebView is None:
             builder.get_object('duck').destroy()
