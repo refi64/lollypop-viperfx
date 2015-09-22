@@ -6,9 +6,12 @@ import os
 import locale
 import gettext
 
+if 'LOLLYPOP_TRACE' in os.environ:
+    from pycallgraph import PyCallGraph
+    from pycallgraph.output import GraphvizOutput
 # Disable ubuntu overlay scrollbars
 #FIXME remove this later
-os.environ["LIBOVERLAY_SCROLLBAR"] = "0"
+os.environ['LIBOVERLAY_SCROLLBAR'] = '0'
 # Make sure we'll find the pygobject module, even in JHBuild
 sys.path.insert(1, '@pyexecdir@')
 # Make sure we'll find the lollypop modules, even in JHBuild
@@ -35,7 +38,7 @@ def install_excepthook():
 
 if __name__ == "__main__":
     install_excepthook()
-
+    
     locale.bindtextdomain('lollypop', localedir)
     locale.textdomain('lollypop')
     gettext.bindtextdomain('lollypop', localedir)
@@ -46,5 +49,12 @@ if __name__ == "__main__":
 
     app = Application()
     signal.signal(signal.SIGINT, signal.SIG_DFL)
-    exit_status = app.run(sys.argv)
-    sys.exit(exit_status)
+    if 'LOLLYPOP_TRACE' in os.environ:
+        graphviz = GraphvizOutput()
+        graphviz.output_file = 'lollypop.png'
+        with PyCallGraph(output=graphviz):
+            exit_status = app.run(sys.argv)
+            sys.exit(exit_status)
+    else:
+        exit_status = app.run(sys.argv)
+        sys.exit(exit_status)
