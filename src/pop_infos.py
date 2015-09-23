@@ -255,10 +255,11 @@ class InfosPopover(Gtk.Popover):
         (url, image_url, content) = self.Wikipedia().get_artist_infos(artist)
         self._populate(url, image_url, content, widget)
 
-    def _on_map_wikia(self, widget):
+    def _on_map_wikia(self, widget, force=False):
         """
             Load on map
             @param widget as Gtk.Viewport
+            @param force as bool
         """
         if not self.is_visible():
             return
@@ -268,12 +269,13 @@ class InfosPopover(Gtk.Popover):
         title = Lp.player.current_track.title.replace(' ', '_')
         url = "http://lyrics.wikia.com/wiki/%s:%s" % (artist, title)
         # Delayed load due to WebKit memory loading
-        GLib.timeout_add(250, self._load_web, widget, url, True, True)
+        GLib.timeout_add(250, self._load_web, widget, url, True, True, force)
 
-    def _on_map_duck(self, widget):
+    def _on_map_duck(self, widget, force=False):
         """
             Load on map
             @param widget as Gtk.Viewport
+            @param force as bool
         """
         if not self.is_visible():
             return
@@ -287,19 +289,21 @@ class InfosPopover(Gtk.Popover):
         url = "https://duckduckgo.com/?q=%s&kl=%s&kd=-1&k5=2&kp=1&k1=-1"\
               % (search, Gtk.get_default_language().to_string())
         # Delayed load due to WebKit memory loading
-        GLib.timeout_add(250, self._load_web, widget, url, False, False)
+        GLib.timeout_add(250, self._load_web, widget, url, False, False, force)
 
-    def _load_web(self, widget, url, mobile, private):
+    def _load_web(self, widget, url, mobile, private, force):
         """
             Load url in widget
             @param widget as Gtk.Viewport
+            @param force as bool
         """
         web = widget.get_child()
         if web is None:
             web = self.WebView(mobile, private)
             web.show()
             widget.add(web)
-        web.load(url)
+        if url != web.get_current_url() or force:
+            web.load(url)
 
     def _populate(self, url, image_url, content, widget):
         """
