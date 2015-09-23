@@ -10,7 +10,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-import os
+from shutil import rmtree
 
 from lollypop.art_album import AlbumArt
 from lollypop.art_radio import RadioArt
@@ -27,14 +27,14 @@ class Art(AlbumArt, RadioArt):
         """
         AlbumArt.__init__(self)
         RadioArt.__init__(self)
+        self._create_cache()
 
     def clean_all_cache(self):
         """
             Remove all covers from cache
         """
         try:
-            files = os.listdir(self._CACHE_PATH)
-            for f in files:
-                os.remove(os.path.join(self._CACHE_PATH, f))
+            rmtree(self._CACHE_PATH)
+            self._create_cache()
         except Exception as e:
             print("Art::clean_all_cache(): ", e)

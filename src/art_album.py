@@ -37,11 +37,6 @@ class AlbumArt(BaseArt, ArtDownloader, TagReader):
         ArtDownloader.__init__(self)
         TagReader.__init__(self)
         self._favorite = Lp.settings.get_value('favorite-cover').get_string()
-        if not os.path.exists(self._CACHE_PATH):
-            try:
-                os.mkdir(self._CACHE_PATH)
-            except:
-                print("Can't create %s" % self._CACHE_PATH)
 
     def get_album_cache_path(self, album_id, size):
         """

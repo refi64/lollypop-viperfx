@@ -119,6 +119,16 @@ class BaseArt(GObject.GObject):
 #######################
 # PRIVATE             #
 #######################
+    def _create_cache(self):
+        """
+            Create cache dir
+        """
+        if not os.path.exists(self._CACHE_PATH):
+            try:
+                os.mkdir(self._CACHE_PATH)
+            except:
+                print("Can't create %s" % self._CACHE_PATH)
+
     def _get_default_icon(self, size, icon_name):
         """
             Construct an empty cover album,
