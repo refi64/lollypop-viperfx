@@ -135,7 +135,7 @@ class InfosPopover(Gtk.Popover):
 
     def _on_btn_press(self, widget, event):
         """
-            Reload current view
+            Start a timer to set autoload
             @param widget as Gtk.Widget
             @param event as Gdk.Event
         """
@@ -143,7 +143,7 @@ class InfosPopover(Gtk.Popover):
 
     def _on_btn_release(self, widget, event):
         """
-            Reload current view
+            Reload current view if autoload unchanged
             @param widget as Gtk.Widget
             @param event as Gdk.Event
         """
