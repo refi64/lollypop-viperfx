@@ -34,7 +34,6 @@ class ArtistAlbumsView(View):
         View.__init__(self)
         self._artist_id = artist_id
         self._genre_id = genre_id
-        self._signal_id = None
 
         self._albumbox = Gtk.Grid()
         self._albumbox.set_row_spacing(20)
