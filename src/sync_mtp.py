@@ -184,7 +184,7 @@ class MtpSync:
                                       c.isdigit() or c == ' ']).rstrip()
                 # Sanitize file names as some MTP devices do not like this
                 # Or this is a Gio/GObject Introspection bug
-                artist_name = "".join([c for c in track.artist_name if
+                artist_name = "".join([c for c in track.artist if
                                        c.isalpha() or
                                        c.isdigit() or c == ' ']).rstrip()
                 track_path = Lp.tracks.get_path(track_id, sql)
@@ -277,7 +277,7 @@ class MtpSync:
                                   c.isdigit() or c == ' ']).rstrip()
             # Sanitize file names as some MTP devices do not like this
             # Or this is a Gio/GObject Introspection bug
-            artist_name = "".join([c for c in track.artist_name if
+            artist_name = "".join([c for c in track.artist if
                                    c.isalpha() or
                                    c.isdigit() or c == ' ']).rstrip()
             track_path = Lp.tracks.get_path(track_id, sql)
