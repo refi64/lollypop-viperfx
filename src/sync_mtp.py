@@ -198,7 +198,7 @@ class MtpSync:
                     self._retry(d.make_directory_with_parents, (None,))
 
                 # Copy album art
-                art = Lp.art.get_album_art_path(track.album.id, sql)
+                art = Lp.art.get_album_art_path(track.album, sql)
                 if art:
                     src_art = Gio.File.new_for_path(art)
                     art_uri = "%s/cover.jpg" % on_device_album_uri
