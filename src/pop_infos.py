@@ -75,17 +75,16 @@ class InfosPopover(Gtk.Popover):
 
         self._stack = builder.get_object('stack')
         self.add(builder.get_object('widget'))
-
         if not show_albums:
-            builder.get_object('albums').destroy()
-        if self.Wikipedia is None:
-            builder.get_object('wikipedia').destroy()
+            self._stack.get_child_by_name('albums').destroy()
+        if InfosPopover.Wikipedia is None:
+            self._stack.get_child_by_name('wikipedia').destroy()
         if Lp.lastfm is None:
-            builder.get_object('lastfm').destroy()
-        if self.WebView is None or artist_id is not None:
-            builder.get_object('wikia').destroy()
-        if self.WebView is None:
-            builder.get_object('duck').destroy()
+            self._stack.get_child_by_name('lastfm').destroy()
+        if InfosPopover.WebView is None or artist_id is not None:
+            self._stack.get_child_by_name('wikia').destroy()
+        if InfosPopover.WebView is None:
+            self._stack.get_child_by_name('duck').destroy()
 
     def do_show(self):
         """
