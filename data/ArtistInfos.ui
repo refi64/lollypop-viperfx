@@ -37,7 +37,6 @@
                         <property name="expand">True</property>
                         <property name="can_focus">False</property>
                         <signal name="map" handler="_on_map_albums" swapped="no" />
-                        <signal name="unmap" handler="_on_unmap" swapped="no" />
                      </object>
                      <packing>
                         <property name="name">albums</property>
@@ -54,7 +53,6 @@
                                 <property name="visible">True</property>
                                 <property name="can_focus">False</property>
                                 <signal name="map" handler="_on_map_lastfm" swapped="no" />
-                                <signal name="unmap" handler="_on_unmap" swapped="no" />
                             </object>
                         </child>
                      </object>
@@ -74,7 +72,7 @@
                                 <property name="visible">True</property>
                                 <property name="can_focus">False</property>
                                 <signal name="map" handler="_on_map_wikipedia" swapped="no" />
-                                <signal name="unmap" handler="_on_unmap" swapped="no" />
+
                             </object>
                         </child>
                      </object>
@@ -93,7 +91,6 @@
                                 <property name="visible">True</property>
                                 <property name="can_focus">False</property>
                                 <signal name="map" handler="_on_map_wikia" swapped="no" />
-                                <signal name="unmap" handler="_on_unmap" swapped="no" />
                             </object>
                         </child>
                      </object>
@@ -112,7 +109,6 @@
                                 <property name="visible">True</property>
                                 <property name="can_focus">False</property>
                                 <signal name="map" handler="_on_map_duck" swapped="no" />
-                                <signal name="unmap" handler="_on_unmap" swapped="no" />
                             </object>
                         </child>
                      </object>

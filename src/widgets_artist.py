@@ -27,6 +27,7 @@ class ArtistContent(Gtk.Stack):
             Init artist content
         """
         Gtk.Stack.__init__(self)
+        self._artist = ''
         self.set_transition_duration(500)
         self.set_transition_type(Gtk.StackTransitionType.CROSSFADE)
         builder = Gtk.Builder()
@@ -37,10 +38,25 @@ class ArtistContent(Gtk.Stack):
         self.add_named(builder.get_object('notfound'), 'notfound')
         self.add_named(builder.get_object('spinner'), 'spinner')
 
+    def set_artist(self, artist):
+        """
+            Set artist
+            @param artist as string
+        """
+        self._artist = artist
+
+    def get_artist(self):
+        """
+            Get current artist
+            @return artist as string
+        """
+        return self._artist
+
     def clear(self):
         """
             Clear content
         """
+        self._artist = ''
         self._content.set_text('')
         self._image.clear()
         self.set_visible_child_name('spinner')
