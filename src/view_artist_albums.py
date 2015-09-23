@@ -155,15 +155,6 @@ class CurrentArtistAlbumsView(ViewContainer):
         sql.close()
         return albums
 
-    def _update_content(self, player):
-        """
-            Update the content view
-            @param player as Player
-            @param track id as int
-        """
-        if self.is_visible():
-            self.populate()
-
     def do_get_preferred_width(self):
         """
             Set 0 to force popover to not expand

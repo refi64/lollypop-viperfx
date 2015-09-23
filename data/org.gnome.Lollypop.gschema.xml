@@ -48,6 +48,11 @@
             <summary>INTERNAL</summary>
             <description></description>
         </key>
+        <key type="b" name="infosreload">
+            <default>false</default>
+            <summary>INTERNAL</summary>
+            <description></description>
+        </key>
         <key type="s" name="favorite-cover">
             <default>"cover.jpg"</default>
             <summary>Favorite cover file</summary>

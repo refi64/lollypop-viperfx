@@ -92,12 +92,21 @@ class ArtistInfos(Gtk.Bin):
         Gtk.Bin.__init__(self)
         self._artist = None
         self._artist_id = artist_id
+        self._timeout_id = None
         if self._artist_id is not None:
             self._artist = Lp.artists.get_name(artist_id)
 
         builder = Gtk.Builder()
         builder.add_from_resource('/org/gnome/Lollypop/ArtistInfos.ui')
         builder.connect_signals(self)
+
+        if Lp.settings.get_value('infosreload'):
+            builder.get_object('reload').get_style_context().add_class(
+                                                                      'reload')
+            self._signal_id = Lp.player.connect("current-changed",
+                                                self._update_content)
+        else:
+            self._signal_id = None
 
         self._stack = builder.get_object('stack')
         self._stack.set_visible_child_name(
@@ -118,14 +127,49 @@ class ArtistInfos(Gtk.Bin):
 #######################
 # PRIVATE             #
 #######################
-    def _on_reload_btn_clicked(self, widget):
-        """
-            Reload current view
-            @param widget as Gtk.Widget
-        """
+    def _update_content(self, player=None):
         visible = self._stack.get_visible_child()
         name = self._stack.get_visible_child_name()
         getattr(self, "_on_map_%s" % name)(visible)
+
+    def _set_autoload(self, widget):
+        """
+            Mark as autoload
+            @param widget as Gtk.Widget
+        """
+        self._timeout_id = None
+        if self._signal_id is None:
+            widget.get_style_context().add_class('reload')
+        else:
+            widget.get_style_context().remove_class('reload')
+
+    def _on_btn_press(self, widget, event):
+        """
+            Reload current view
+            @param widget as Gtk.Widget
+            @param event as Gdk.Event
+        """
+        self._timeout_id = GLib.timeout_add(500, self._set_autoload, widget)
+
+    def _on_btn_release(self, widget, event):
+        """
+            Reload current view
+            @param widget as Gtk.Widget
+            @param event as Gdk.Event
+        """
+        if self._timeout_id is None:
+            if self._signal_id is None:
+                Lp.settings.set_value('infosreload', GLib.Variant('b', True))
+                self._signal_id = Lp.player.connect("current-changed",
+                                                    self._update_content)
+            else:
+                Lp.player.disconnect(self._signal_id)
+                self._signal_id = None
+                Lp.settings.set_value('infosreload', GLib.Variant('b', False))
+        else:
+            GLib.source_remove(self._timeout_id)
+            self._timeout_id = None
+            self._update_content()
 
     def _on_unmap(self, widget):
         """

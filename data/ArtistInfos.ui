@@ -106,7 +106,8 @@
       </child>
       <child type="overlay">
          <object class="GtkButton" id="reload">
-            <signal name="clicked" handler="_on_reload_btn_clicked" swapped="no"/>
+            <signal name="button_press_event" handler="_on_btn_press" swapped="no"/>
+            <signal name="button_release_event" handler="_on_btn_release" swapped="no"/>
             <property name="visible">True</property>
             <property name="can_focus">True</property>
             <property name="valign">start</property>
@@ -116,7 +117,6 @@
             <property name="image">reload_image</property>
             <property name="always_show_image">True</property>
             <property name="margin_top">3</property>
-            <property name="tooltip_text" translatable="yes">Reload</property>
             <child>
               <object class="GtkImage" id="reload_image">
                 <property name="visible">True</property>
