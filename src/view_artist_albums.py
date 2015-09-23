@@ -105,14 +105,6 @@ class CurrentArtistAlbumsView(ViewContainer):
         ViewContainer.__init__(self, 1000)
         self.connect('destroy', self._on_destroy)
         self._artist_id = artist_id
-        self._on_screen_id = None
-        self._signal1_id = Lp.player.connect("current-changed",
-                                             self._update_content)
-        if self._artist_id is None:
-            self._signal2_id = Lp.player.connect("current-changed",
-                                                 self._update_content)
-        else:
-            self._signal2_id = None
 
     def populate(self):
         """
@@ -121,15 +113,13 @@ class CurrentArtistAlbumsView(ViewContainer):
         """
         if self._artist_id is None:
             if Lp.player.current_track.album_artist_id == Type.COMPILATIONS:
-                new_id = Lp.player.current_track.album_id
+                artist_id = Lp.player.current_track.album_id
             else:
-                new_id = Lp.player.current_track.album_artist_id
+                artist_id = Lp.player.current_track.album_artist_id
         else:
-            new_id = self._artist_id
-        if self._on_screen_id != new_id:
-            self._on_screen_id = new_id
-            albums = self._get_albums(new_id)
-            GLib.idle_add(self._populate, albums)
+            artist_id = self._artist_id
+        albums = self._get_albums(artist_id)
+        GLib.idle_add(self._populate, albums)
 
 #######################
 # PRIVATE             #
@@ -139,11 +129,7 @@ class CurrentArtistAlbumsView(ViewContainer):
             Disconnect signal
             @param widget as Gtk.Widget
         """
-        self._on_screen_id = None
-        if self._signal1_id is not None:
-            Lp.player.disconnect(self._signal1_id)
-        if self._signal2_id is not None:
-            Lp.player.disconnect(self._signal2_id)
+        self.clean_old_views(None)
 
     def _populate(self, albums):
         """

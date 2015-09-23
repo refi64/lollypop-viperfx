@@ -118,6 +118,15 @@ class ArtistInfos(Gtk.Bin):
 #######################
 # PRIVATE             #
 #######################
+    def _on_reload_btn_clicked(self, widget):
+        """
+            Reload current view
+            @param widget as Gtk.Widget
+        """
+        visible = self._stack.get_visible_child()
+        name = self._stack.get_visible_child_name()
+        getattr(self, "_on_map_%s" % name)(visible)
+
     def _on_unmap(self, widget):
         """
             Destroy child
