@@ -51,12 +51,12 @@ class Base:
         # Lazy DB calls of attributes referenced
         # in self.FIELDS
         if attr in self.FIELDS:
-            if self.id is None:
+            if self.id is None or self.id < 0:
                 return self.DEFAULTS[self.FIELDS.index(attr)]
             # Actual value of 'attr_name' is stored in '_attr_name'
             attr_name = "_" + attr
             attr_value = getattr(self, attr_name)
-            if attr_value is None and not self.id == Type.RADIOS:
+            if attr_value is None:
                 with SqlCursor() as sql:
                     attr_value = getattr(self.db, "get_" + attr)(self.id, sql)
                 setattr(self, attr_name, attr_value)
