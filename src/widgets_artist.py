@@ -36,6 +36,13 @@ class ArtistContent(Gtk.Stack):
         self.add_named(builder.get_object('widget'), 'widget')
         self.add_named(builder.get_object('notfound'), 'notfound')
         self.add_named(builder.get_object('spinner'), 'spinner')
+
+    def clear(self):
+        """
+            Clear content
+        """
+        self._content.set_text('')
+        self._image.clear()
         self.set_visible_child_name('spinner')
 
     def set_content(self, content, stream):

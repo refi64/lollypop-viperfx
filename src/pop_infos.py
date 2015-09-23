@@ -128,7 +128,10 @@ class ArtistInfos(Gtk.Bin):
 # PRIVATE             #
 #######################
     def _update_content(self, player=None):
-        visible = self._stack.get_visible_child()
+        """
+            Update content
+        """
+        visible = self._stack.get_visible_child().get_child()
         name = self._stack.get_visible_child_name()
         getattr(self, "_on_map_%s" % name)(visible)
 
@@ -186,13 +189,12 @@ class ArtistInfos(Gtk.Bin):
         """
         Lp.settings.set_value('infoswitch',
                               GLib.Variant('s', 'albums'))
-        view = CurrentArtistAlbumsView(self._artist_id)
-        view.set_property('expand', True)
-        view.show()
-        child = widget.get_child_at(0, 0)
-        if child is not None:
-            child.destroy()
-        widget.add(view)
+        view = widget.get_child_at(0, 0)
+        if view is None:
+            view = CurrentArtistAlbumsView(self._artist_id)
+            view.set_property('expand', True)
+            view.show()
+            widget.add(view)
         t = Thread(target=view.populate)
         t.daemon = True
         t.start()
@@ -200,16 +202,16 @@ class ArtistInfos(Gtk.Bin):
     def _on_map_lastfm(self, widget):
         """
             Load on map
-            @param widget as Gtk.ScrolledWindow
+            @param widget as Gtk.Viewport
         """
         Lp.settings.set_value('infoswitch',
                               GLib.Variant('s', 'lastfm'))
-        content_widget = ArtistContent()
-        content_widget.show()
-        child = widget.get_child()
-        if child is not None:
-            child.destroy()
-        widget.add(content_widget)
+        content_widget = widget.get_child()
+        if content_widget is None:
+            content_widget = ArtistContent()
+            content_widget.show()
+            widget.add(content_widget)
+        content_widget.clear()
         t = Thread(target=self._populate_lastfm, args=(content_widget,))
         t.daemon = True
         t.start()
@@ -217,7 +219,7 @@ class ArtistInfos(Gtk.Bin):
     def _populate_lastfm(self, widget):
         """
             Populate content with lastfm informations
-            @param widget as Gtk.ScrolledWindow
+            @param widget as Gtk.Viewport
             @thread safe
         """
         url = None
@@ -233,16 +235,16 @@ class ArtistInfos(Gtk.Bin):
     def _on_map_wikipedia(self, widget):
         """
             Load on map
-            @param widget as Gtk.ScrolledWindow
+            @param widget as Gtk.Viewport
         """
         Lp.settings.set_value('infoswitch',
                               GLib.Variant('s', 'wikipedia'))
-        content_widget = ArtistContent()
-        content_widget.show()
-        child = widget.get_child()
-        if child is not None:
-            child.destroy()
-        widget.add(content_widget)
+        content_widget = widget.get_child()
+        if content_widget is None:
+            content_widget = ArtistContent()
+            content_widget.show()
+            widget.add(content_widget)
+        content_widget.clear()
         t = Thread(target=self._populate_wikipedia, args=(content_widget,))
         t.daemon = True
         t.start()
@@ -250,7 +252,7 @@ class ArtistInfos(Gtk.Bin):
     def _populate_wikipedia(self, widget):
         """
             Populate content with wikipedia informations
-            @param widget as Gtk.ScrolledWindow
+            @param widget as Gtk.Viewport
             @thread safe
         """
         url = None
@@ -266,11 +268,8 @@ class ArtistInfos(Gtk.Bin):
     def _on_map_wikia(self, widget):
         """
             Load on map
-            @param widget as Gtk.ScrolledWindow
+            @param widget as Gtk.Viewport
         """
-        child = widget.get_child()
-        if child is not None:
-            child.destroy()
         Lp.settings.set_value('infoswitch',
                               GLib.Variant('s', 'wikia'))
         artist = self._get_current_artist().replace(' ', '_')
@@ -282,11 +281,8 @@ class ArtistInfos(Gtk.Bin):
     def _on_map_duck(self, widget):
         """
             Load on map
-            @param widget as Gtk.ScrolledWindow
+            @param widget as Gtk.Viewport
         """
-        child = widget.get_child()
-        if child is not None:
-            child.destroy()
         Lp.settings.set_value('infoswitch',
                               GLib.Variant('s', 'duck'))
         title = Lp.player.current_track.title
@@ -302,11 +298,14 @@ class ArtistInfos(Gtk.Bin):
     def _load_web(self, widget, url, mobile, private):
         """
             Load url in widget
-            @param widget as Gtk.ScrolledWindow
+            @param widget as Gtk.Viewport
         """
-        web = self.WebView(url, mobile, private)
-        web.show()
-        widget.add(web)
+        web = widget.get_child()
+        if web is None:
+            web = self.WebView(mobile, private)
+            web.show()
+            widget.add(web)
+        web.load(url)
 
     def _populate(self, url, image_url, content, widget):
         """
@@ -314,7 +313,7 @@ class ArtistInfos(Gtk.Bin):
             @param url as string
             @param image url as string
             @param content as string
-            @param widget as Gtk.ScrolledWindow
+            @param widget as Gtk.Viewport
             @thread safe
         """
         stream = None
@@ -335,7 +334,7 @@ class ArtistInfos(Gtk.Bin):
             @param content as str
             @param url as str
             @param stream as Gio.MemoryInputStream
-            @param widget as Gtk.ScrolledWindow
+            @param widget as Gtk.Viewport
         """
         widget.set_content(content, stream)
 

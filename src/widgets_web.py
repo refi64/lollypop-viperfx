@@ -21,17 +21,17 @@ class WebView(Gtk.Stack):
         Webkit destroyed on unmap
     """
 
-    def __init__(self, url, mobile=True, private=True):
+    def __init__(self, mobile=True, private=True):
         """
             Init view
-            @param url as string
             @param mobile as bool
+            @param private as bool
         """
         Gtk.Stack.__init__(self)
         self.connect('destroy', self._on_destroy)
         self.set_transition_duration(500)
         self.set_transition_type(Gtk.StackTransitionType.CROSSFADE)
-        self._current = urlsplit(url)[1]
+        self._current = ''
         builder = Gtk.Builder()
         # Use ressource from ArtistContent
         builder.add_from_resource('/org/gnome/Lollypop/ArtistContent.ui')
@@ -58,6 +58,13 @@ class WebView(Gtk.Stack):
         self._view.set_property('hexpand', True)
         self._view.set_property('vexpand', True)
         self._view.show()
+
+    def load(self, url):
+        """
+            Load url
+            @param url as string
+        """
+        self._current = urlsplit(url)[1]
         self._view.grab_focus()
         self._view.load_uri(url)
 

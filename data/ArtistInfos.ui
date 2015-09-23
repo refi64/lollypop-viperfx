@@ -45,12 +45,18 @@
                      </packing>
                   </child>
                   <child>
-                     <object class="GtkScrolledWindow" id="lastfm">
+                     <object class="GtkScrolledWindow" id="scrolllastfm">
                         <property name="visible">True</property>
                         <property name="expand">True</property>
                         <property name="can_focus">False</property>
-                        <signal name="map" handler="_on_map_lastfm" swapped="no" />
-                        <signal name="unmap" handler="_on_unmap" swapped="no" />
+                        <child>
+                            <object class="GtkViewport" id="lastfm">
+                                <property name="visible">True</property>
+                                <property name="can_focus">False</property>
+                                <signal name="map" handler="_on_map_lastfm" swapped="no" />
+                                <signal name="unmap" handler="_on_unmap" swapped="no" />
+                            </object>
+                        </child>
                      </object>
                      <packing>
                         <property name="name">lastfm</property>
@@ -58,12 +64,19 @@
                      </packing>
                   </child>
                   <child>
-                     <object class="GtkScrolledWindow" id="wikipedia">
+                     <object class="GtkScrolledWindow" id="scrollwikipedia">
                         <property name="visible">True</property>
                         <property name="expand">True</property>
                         <property name="can_focus">False</property>
-                        <signal name="map" handler="_on_map_wikipedia" swapped="no" />
-                        <signal name="unmap" handler="_on_unmap" swapped="no" />
+
+                        <child>
+                            <object class="GtkViewport" id="wikipedia">
+                                <property name="visible">True</property>
+                                <property name="can_focus">False</property>
+                                <signal name="map" handler="_on_map_wikipedia" swapped="no" />
+                                <signal name="unmap" handler="_on_unmap" swapped="no" />
+                            </object>
+                        </child>
                      </object>
                      <packing>
                         <property name="name">wikipedia</property>
@@ -71,12 +84,20 @@
                      </packing>
                   </child>
                   <child>
-                     <object class="GtkScrolledWindow" id="wikia">
+                     <object class="GtkScrolledWindow" id="scrollwikia">
                         <property name="visible">True</property>
                         <property name="expand">True</property>
                         <property name="can_focus">False</property>
                         <signal name="map" handler="_on_map_wikia" swapped="no" />
                         <signal name="unmap" handler="_on_unmap" swapped="no" />
+                        <child>
+                            <object class="GtkViewport" id="wikia">
+                                <property name="visible">True</property>
+                                <property name="can_focus">False</property>
+                                <signal name="map" handler="_on_map_wikia" swapped="no" />
+                                <signal name="unmap" handler="_on_unmap" swapped="no" />
+                            </object>
+                        </child>
                      </object>
                      <packing>
                         <property name="name">wikia</property>
@@ -84,12 +105,18 @@
                      </packing>
                   </child>
                   <child>
-                     <object class="GtkScrolledWindow" id="duck">
+                     <object class="GtkScrolledWindow" id="scrollduck">
                         <property name="visible">True</property>
                         <property name="expand">True</property>
                         <property name="can_focus">False</property>
-                        <signal name="map" handler="_on_map_duck" swapped="no" />
-                        <signal name="unmap" handler="_on_unmap" swapped="no" />
+                        <child>
+                            <object class="GtkViewport" id="duck">
+                                <property name="visible">True</property>
+                                <property name="can_focus">False</property>
+                                <signal name="map" handler="_on_map_duck" swapped="no" />
+                                <signal name="unmap" handler="_on_unmap" swapped="no" />
+                            </object>
+                        </child>
                      </object>
                      <packing>
                         <property name="name">duck</property>
