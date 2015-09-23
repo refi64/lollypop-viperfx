@@ -131,9 +131,12 @@ class ArtistInfos(Gtk.Bin):
         """
             Update content
         """
-        visible = self._stack.get_visible_child().get_child()
         name = self._stack.get_visible_child_name()
-        getattr(self, "_on_map_%s" % name)(visible)
+        if name == "albums":
+            visible = self._stack.get_visible_child()
+        else:
+            visible = self._stack.get_visible_child().get_child()
+        getattr(self, '_on_map_%s' % name)(visible)
 
     def _set_autoload(self, widget):
         """

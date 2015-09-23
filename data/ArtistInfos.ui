@@ -88,8 +88,6 @@
                         <property name="visible">True</property>
                         <property name="expand">True</property>
                         <property name="can_focus">False</property>
-                        <signal name="map" handler="_on_map_wikia" swapped="no" />
-                        <signal name="unmap" handler="_on_unmap" swapped="no" />
                         <child>
                             <object class="GtkViewport" id="wikia">
                                 <property name="visible">True</property>
