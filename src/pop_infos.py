@@ -145,9 +145,9 @@ class ArtistInfos(Gtk.Bin):
         """
         self._timeout_id = None
         if self._signal_id is None:
-            widget.get_style_context().add_class('reload')
+            widget.get_style_context().add_class('selected')
         else:
-            widget.get_style_context().remove_class('reload')
+            widget.get_style_context().remove_class('selected')
 
     def _on_btn_press(self, widget, event):
         """

@@ -113,6 +113,8 @@ class ToolbarEnd(Gtk.Bin):
         """
         shuffle = Lp.settings.get_enum('shuffle')
         if shuffle == Shuffle.NONE:
+            self._shuffle_btn_image.get_style_context().remove_class(
+                                                                    'selected')
             self._shuffle_btn_image.set_from_icon_name(
                 "media-playlist-consecutive-symbolic",
                 Gtk.IconSize.SMALL_TOOLBAR)
@@ -120,7 +122,12 @@ class ToolbarEnd(Gtk.Bin):
             self._shuffle_btn_image.set_from_icon_name(
                 "media-playlist-shuffle-symbolic",
                 Gtk.IconSize.SMALL_TOOLBAR)
-
+            if shuffle in [Shuffle.TRACKS, Shuffle.TRACKS_ARTIST]:
+                self._shuffle_btn_image.get_style_context().add_class(
+                                                                    'selected')
+            else:
+                self._shuffle_btn_image.get_style_context().remove_class(
+                                                                    'selected')
         if shuffle == Shuffle.TRACKS:
             if Lp.player.next_track.id is not None and\
                not self._pop_next.is_visible():
