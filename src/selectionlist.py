@@ -83,7 +83,6 @@ class SelectionList(Gtk.ScrolledWindow):
         self._updating = False       # Sort disabled if False
         self._is_artists = False  # for string translation
         self._popover = SelectionPopover()
-
         builder = Gtk.Builder()
         builder.add_from_resource('/org/gnome/Lollypop/SelectionList.ui')
         builder.connect_signals(self)

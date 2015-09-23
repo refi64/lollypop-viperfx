@@ -25,49 +25,6 @@ class InfosPopover(Gtk.Popover):
         Popover with artist informations
     """
 
-    def should_be_shown():
-        """
-            True if we can show popover
-        """
-        return Lp.lastfm is not None or\
-            ArtistInfos.Wikipedia is not None or\
-            ArtistInfos.WebView is not None
-
-    def __init__(self, artist=None, show_albums=True):
-        """
-            Init popover
-            @param artist as string
-            @param show albums as bool
-        """
-        Gtk.Popover.__init__(self)
-        self._infos = ArtistInfos(artist, show_albums)
-        self._infos.show()
-        self.add(self._infos)
-
-    def do_show(self):
-        """
-            Resize popover and set signals callback
-        """
-        size_setting = Lp.settings.get_value('window-size')
-        if isinstance(size_setting[1], int):
-            self.set_size_request(size_setting[0]*0.6,
-                                  size_setting[1]*0.8)
-        else:
-            self.set_size_request(700, 600)
-        Gtk.Popover.do_show(self)
-
-    def do_get_preferred_width(self):
-        """
-            Preferred width
-        """
-        return (700, 700)
-
-
-class ArtistInfos(Gtk.Bin):
-    """
-        Artist informations from lastfm
-    """
-
     try:
         from lollypop.wikipedia import Wikipedia
     except Exception as e:
@@ -83,7 +40,15 @@ class ArtistInfos(Gtk.Bin):
         print(_("WebKit support disabled"))
         WebView = None
 
-    def __init__(self, artist_id, show_albums):
+    def should_be_shown():
+        """
+            True if we can show popover
+        """
+        return Lp.lastfm is not None or\
+            InfosPopover.Wikipedia is not None or\
+            InfosPopover.WebView is not None
+
+    def __init__(self, artist_id=None, show_albums=True):
         """
             Init artist infos
             @param artist as int
@@ -109,8 +74,6 @@ class ArtistInfos(Gtk.Bin):
             self._signal_id = None
 
         self._stack = builder.get_object('stack')
-        self._stack.set_visible_child_name(
-            Lp.settings.get_value('infoswitch').get_string())
         self.add(builder.get_object('widget'))
 
         if not show_albums:
@@ -123,6 +86,26 @@ class ArtistInfos(Gtk.Bin):
             builder.get_object('wikia').destroy()
         if self.WebView is None:
             builder.get_object('duck').destroy()
+
+    def do_show(self):
+        """
+            Resize popover and set signals callback
+        """
+        size_setting = Lp.settings.get_value('window-size')
+        if isinstance(size_setting[1], int):
+            self.set_size_request(size_setting[0]*0.6,
+                                  size_setting[1]*0.8)
+        else:
+            self.set_size_request(700, 600)
+        self._stack.set_visible_child_name(
+            Lp.settings.get_value('infoswitch').get_string())
+        Gtk.Popover.do_show(self)
+
+    def do_get_preferred_width(self):
+        """
+            Preferred width
+        """
+        return (700, 700)
 
 #######################
 # PRIVATE             #
@@ -190,6 +173,8 @@ class ArtistInfos(Gtk.Bin):
             Load on map
             @param widget as Gtk.Bin
         """
+        if not self.is_visible():
+            return
         Lp.settings.set_value('infoswitch',
                               GLib.Variant('s', 'albums'))
         view = widget.get_child_at(0, 0)
@@ -207,6 +192,8 @@ class ArtistInfos(Gtk.Bin):
             Load on map
             @param widget as Gtk.Viewport
         """
+        if not self.is_visible():
+            return
         Lp.settings.set_value('infoswitch',
                               GLib.Variant('s', 'lastfm'))
         content_widget = widget.get_child()
@@ -240,6 +227,8 @@ class ArtistInfos(Gtk.Bin):
             Load on map
             @param widget as Gtk.Viewport
         """
+        if not self.is_visible():
+            return
         Lp.settings.set_value('infoswitch',
                               GLib.Variant('s', 'wikipedia'))
         content_widget = widget.get_child()
@@ -273,6 +262,8 @@ class ArtistInfos(Gtk.Bin):
             Load on map
             @param widget as Gtk.Viewport
         """
+        if not self.is_visible():
+            return
         Lp.settings.set_value('infoswitch',
                               GLib.Variant('s', 'wikia'))
         artist = self._get_current_artist().replace(' ', '_')
@@ -286,6 +277,8 @@ class ArtistInfos(Gtk.Bin):
             Load on map
             @param widget as Gtk.Viewport
         """
+        if not self.is_visible():
+            return
         Lp.settings.set_value('infoswitch',
                               GLib.Variant('s', 'duck'))
         title = Lp.player.current_track.title
