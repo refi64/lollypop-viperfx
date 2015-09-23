@@ -44,7 +44,7 @@
             <description></description>
         </key>
         <key type="s" name="infoswitch">
-            <default>"wikipedia"</default>
+            <default>"albums"</default>
             <summary>INTERNAL</summary>
             <description></description>
         </key>
