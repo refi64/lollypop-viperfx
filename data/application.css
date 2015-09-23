@@ -42,7 +42,7 @@ Gtk.ListBoxRow .menu-button:hover {
 }
 
 .reload {
-    color: red;
+    color: @theme_selected_bg_color;
 }
 
 .osd-popover {
