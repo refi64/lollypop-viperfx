@@ -102,6 +102,7 @@ class CurrentArtistAlbumsView(ViewContainer):
             Init popover
         """
         ViewContainer.__init__(self, 1000)
+        self.connect('destroy', self._on_destroy)
         self._artist_id = -1
 
     def populate(self, artist_id, force):
@@ -126,6 +127,13 @@ class CurrentArtistAlbumsView(ViewContainer):
 #######################
 # PRIVATE             #
 #######################
+    def _on_destroy(self, widget):
+        """
+            Disconnect signal
+            @param widget as Gtk.Widget
+        """
+        self.clean_old_views(None)
+
     def _populate(self, albums):
         """
             Populate view and make it visible
