@@ -100,16 +100,6 @@ class InfosPopover(Gtk.Popover):
             Lp.settings.get_value('infoswitch').get_string())
         Gtk.Popover.do_show(self)
 
-    def do_hide(self):
-        """
-            Move current view to it loading state
-        """
-        Gtk.Popover.do_hide(self)
-        name = self._stack.get_visible_child_name()
-        if name != "albums":
-            view = self._stack.get_visible_child().get_child().get_child()
-            view.show_spinner(True)
-
     def do_get_preferred_width(self):
         """
             Preferred width
@@ -211,8 +201,6 @@ class InfosPopover(Gtk.Popover):
             t = Thread(target=self._populate_lastfm, args=(content_widget,))
             t.daemon = True
             t.start()
-        else:
-            content_widget.show_spinner(False)
 
     def _populate_lastfm(self, widget, force=False):
         """
@@ -250,8 +238,6 @@ class InfosPopover(Gtk.Popover):
             t = Thread(target=self._populate_wikipedia, args=(content_widget,))
             t.daemon = True
             t.start()
-        else:
-            content_widget.show_spinner(False)
 
     def _populate_wikipedia(self, widget, force=False):
         """
@@ -318,8 +304,6 @@ class InfosPopover(Gtk.Popover):
             widget.add(web)
         if url != web.get_current_url() or force:
             web.load(url)
-        else:
-            web.show_spinner(False)
 
     def _populate(self, url, image_url, content, widget):
         """

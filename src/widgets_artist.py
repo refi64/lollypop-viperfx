@@ -28,16 +28,15 @@ class ArtistContent(Gtk.Stack):
         """
         Gtk.Stack.__init__(self)
         self._artist = ''
-        self._previous = 'widget'
         self.set_transition_duration(500)
         self.set_transition_type(Gtk.StackTransitionType.CROSSFADE)
         builder = Gtk.Builder()
         builder.add_from_resource('/org/gnome/Lollypop/ArtistContent.ui')
         self._content = builder.get_object('content')
         self._image = builder.get_object('image')
-        self.add_named(builder.get_object('spinner'), 'spinner')
         self.add_named(builder.get_object('widget'), 'widget')
         self.add_named(builder.get_object('notfound'), 'notfound')
+        self.add_named(builder.get_object('spinner'), 'spinner')
 
     def set_artist(self, artist):
         """
@@ -53,17 +52,6 @@ class ArtistContent(Gtk.Stack):
         """
         return self._artist
 
-    def show_spinner(self, show):
-        """
-            Show/hide spinner.
-            @param show as bool
-        """
-        if show:
-            self._previous = self.get_visible_child_name()
-            self.set_visible_child_name('spinner')
-        else:
-            self.set_visible_child_name(self._previous)
-
     def clear(self):
         """
             Clear content
@@ -71,7 +59,7 @@ class ArtistContent(Gtk.Stack):
         self._artist = ''
         self._content.set_text('')
         self._image.clear()
-        self.get_child_by_name('spinner').start()
+        self.set_visible_child_name('spinner')
 
     def set_content(self, content, stream):
         """
@@ -93,4 +81,3 @@ class ArtistContent(Gtk.Stack):
             self.set_visible_child_name('widget')
         else:
             self.set_visible_child_name('notfound')
-        self.get_child_by_name('spinner').stop()
