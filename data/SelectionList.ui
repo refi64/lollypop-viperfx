@@ -27,8 +27,5 @@
     <child internal-child="selection">
       <object class="GtkTreeSelection" id="treeview-selection1"/>
     </child>
-    <style>
-      <class name="lollypop-sidebar"/>
-    </style>
   </object>
 </interface>
