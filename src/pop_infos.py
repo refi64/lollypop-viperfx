@@ -109,18 +109,16 @@ class InfosPopover(Gtk.Popover):
 #######################
 # PRIVATE             #
 #######################
-    def _update_content(self, player=None, force=False):
+    def _update_content(self, player=None):
         """
             Update content
-            @param player as None
-            @param force update as bool
         """
         name = self._stack.get_visible_child_name()
         if name == "albums":
             visible = self._stack.get_visible_child()
         else:
             visible = self._stack.get_visible_child().get_child()
-        getattr(self, '_on_map_%s' % name)(visible, force)
+        getattr(self, '_on_map_%s' % name)(visible)
 
     def _set_autoload(self, widget):
         """
@@ -159,13 +157,20 @@ class InfosPopover(Gtk.Popover):
         else:
             GLib.source_remove(self._timeout_id)
             self._timeout_id = None
-            self._update_content(None, True)
+            self._update_content()
 
-    def _on_map_albums(self, widget, force=False):
+    def _on_unmap(self, widget):
+        """
+            Destroy child
+            @param widget as Gtk.Widget
+        """
+        for child in widget.get_children():
+            child.destroy()
+
+    def _on_map_albums(self, widget):
         """
             Load on map
             @param widget as Gtk.Bin
-            @param force update as bool
         """
         if not self.is_visible():
             return
@@ -173,15 +178,15 @@ class InfosPopover(Gtk.Popover):
                               GLib.Variant('s', 'albums'))
         view = widget.get_child_at(0, 0)
         if view is None:
-            view = CurrentArtistAlbumsView()
+            view = CurrentArtistAlbumsView(self._artist_id)
             view.set_property('expand', True)
             view.show()
             widget.add(view)
-        t = Thread(target=view.populate, args=(self._artist_id, force))
+        t = Thread(target=view.populate)
         t.daemon = True
         t.start()
 
-    def _on_map_lastfm(self, widget, force=False):
+    def _on_map_lastfm(self, widget):
         """
             Load on map
             @param widget as Gtk.Viewport
@@ -195,14 +200,12 @@ class InfosPopover(Gtk.Popover):
             content_widget = ArtistContent()
             content_widget.show()
             widget.add(content_widget)
-        if content_widget.get_artist() != self._artist or force:
-            content_widget.clear()
-            content_widget.set_artist(self._artist)
-            t = Thread(target=self._populate_lastfm, args=(content_widget,))
-            t.daemon = True
-            t.start()
+        content_widget.clear()
+        t = Thread(target=self._populate_lastfm, args=(content_widget,))
+        t.daemon = True
+        t.start()
 
-    def _populate_lastfm(self, widget, force=False):
+    def _populate_lastfm(self, widget):
         """
             Populate content with lastfm informations
             @param widget as Gtk.Viewport
@@ -218,7 +221,7 @@ class InfosPopover(Gtk.Popover):
         (url, image_url, content) = Lp.lastfm.get_artist_infos(artist)
         self._populate(url, image_url, content, widget)
 
-    def _on_map_wikipedia(self, widget, force=False):
+    def _on_map_wikipedia(self, widget):
         """
             Load on map
             @param widget as Gtk.Viewport
@@ -232,14 +235,12 @@ class InfosPopover(Gtk.Popover):
             content_widget = ArtistContent()
             content_widget.show()
             widget.add(content_widget)
-        if content_widget.get_artist() != self._artist or force:
-            content_widget.clear()
-            content_widget.set_artist(self._artist)
-            t = Thread(target=self._populate_wikipedia, args=(content_widget,))
-            t.daemon = True
-            t.start()
+        content_widget.clear()
+        t = Thread(target=self._populate_wikipedia, args=(content_widget,))
+        t.daemon = True
+        t.start()
 
-    def _populate_wikipedia(self, widget, force=False):
+    def _populate_wikipedia(self, widget):
         """
             Populate content with wikipedia informations
             @param widget as Gtk.Viewport

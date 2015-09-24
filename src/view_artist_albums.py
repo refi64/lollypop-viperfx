@@ -97,30 +97,26 @@ class CurrentArtistAlbumsView(ViewContainer):
         Show albums from current artist
     """
 
-    def __init__(self):
+    def __init__(self, artist_id=None):
         """
             Init popover
         """
         ViewContainer.__init__(self, 1000)
         self.connect('destroy', self._on_destroy)
-        self._artist_id = -1
+        self._artist_id = artist_id
 
-    def populate(self, artist_id, force):
+    def populate(self):
         """
             Populate the view
-            @param artist id as int
-            @param force as bool
             @thread safe
         """
-        if artist_id is None:
+        if self._artist_id is None:
             if Lp.player.current_track.album_artist_id == Type.COMPILATIONS:
                 artist_id = Lp.player.current_track.album_id
             else:
                 artist_id = Lp.player.current_track.album_artist_id
-        # Ignore populate if already populated
-        if self._artist_id == artist_id and not force:
-            return
-        self._artist_id = artist_id
+        else:
+            artist_id = self._artist_id
         albums = self._get_albums(artist_id)
         GLib.idle_add(self._populate, albums)
 
