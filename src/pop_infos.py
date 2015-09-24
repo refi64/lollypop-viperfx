@@ -67,7 +67,7 @@ class InfosPopover(Gtk.Popover):
 
         if Lp.settings.get_value('infosreload'):
             builder.get_object('reload').get_style_context().add_class(
-                                                                      'reload')
+                                                                  'selected')
             self._signal_id = Lp.player.connect("current-changed",
                                                 self._update_content)
         else:
