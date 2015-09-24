@@ -219,6 +219,7 @@ class AlbumDetailedWidget(AlbumWidget):
         """
         AlbumWidget.__init__(self, album_id, genre_id=genre_id)
         self._pop_allowed = pop_allowed
+        self._update_pending = False
 
         builder = Gtk.Builder()
         builder.add_from_resource('/org/gnome/Lollypop/%s.ui' %
@@ -294,6 +295,9 @@ class AlbumDetailedWidget(AlbumWidget):
         """
             Update playing indicator
         """
+        if not self.is_visible():
+            self._update_pending = True
+            return
         for disc in self._discs:
             self._tracks_left[disc.number].update_playing(
                 Lp.player.current_track.id)
@@ -364,6 +368,18 @@ class AlbumDetailedWidget(AlbumWidget):
         popover.connect('closed', self._on_closed)
         self.get_style_context().add_class('album-menu-selected')
         popover.show()
+
+    def _on_map(self, widget):
+        """
+            If needed, update tracks
+        """
+        if self._update_pending:
+            self._update_pending = False
+            for disc in self._discs:
+                self._tracks_left[disc.number].update_playing(
+                    Lp.player.current_track.id)
+                self._tracks_right[disc.number].update_playing(
+                    Lp.player.current_track.id)
 
     def _on_closed(self, widget):
         """

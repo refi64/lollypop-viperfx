@@ -15,6 +15,7 @@
     <property name="margin_top">10</property>
     <property name="vexpand">True</property>
     <property name="column_spacing">10</property>
+    <signal name="map" handler="_on_map" swapped="no"/>
     <child>
       <object class="GtkGrid" id="albuminfos">
         <property name="visible">True</property>
