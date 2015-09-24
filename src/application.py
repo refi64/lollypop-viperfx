@@ -63,13 +63,13 @@ class Application(Gtk.Application):
         """
             Create application
         """
-        Gtk.Application.__init__(self,
-                                 application_id='org.gnome.Lollypop',
-                                 flags=Gio.ApplicationFlags.FLAGS_NONE)
+        Gtk.Application.__init__(
+                            self,
+                            application_id='org.gnome.Lollypop',
+                            flags=Gio.ApplicationFlags.HANDLES_OPEN)
         self._init_proxy()
         GLib.set_application_name('lollypop')
         GLib.set_prgname('lollypop')
-        self.set_flags(Gio.ApplicationFlags.HANDLES_COMMAND_LINE)
         # TODO: Remove this test later
         if Gtk.get_minor_version() > 12:
             self.add_main_option("debug", b'd', GLib.OptionFlags.NONE,
@@ -79,6 +79,7 @@ class Application(Gtk.Application):
                                  None)
         self.connect('handle-local-options', self._on_handle_local_options)
         self.connect('command-line', self._on_command_line)
+        self.connect('open', self._on_open)
         cssProviderFile = Gio.File.new_for_uri(
             'resource:///org/gnome/Lollypop/application.css')
         cssProvider = Gtk.CssProvider()
@@ -166,22 +167,6 @@ class Application(Gtk.Application):
             Lp.window.present()
         Gtk.Application.do_activate(self)
 
-    def do_open(self, files, hint, data):
-        """
-            Play specified files
-            @param app as Gio.Application
-            @param files as [Gio.Files]
-            @param hint as str
-            @param data as unused
-        """
-        Lp.player.clear_externals()
-        for f in files:
-            self._parser.parse_async(f.get_uri(), True,
-                                     None, self._on_parsing_finished,
-                                     f.get_uri())
-        if Lp.window is not None and Lp.window.is_visible():
-            Lp.window.present()
-
     def prepare_to_exit(self, action=None, param=None):
         """
             Save window position and view
@@ -263,6 +248,22 @@ class Application(Gtk.Application):
             else:
                 return 1
         return 0
+
+    def _on_open(self, app, files, hint, data):
+        """
+            Play specified files
+            @param app as Gio.Application
+            @param files as [Gio.Files]
+            @param hint as str
+            @param data as unused
+        """
+        Lp.player.clear_externals()
+        for f in files:
+            self._parser.parse_async(f.get_uri(), True,
+                                     None, self._on_parsing_finished,
+                                     f.get_uri())
+        if Lp.window is not None and Lp.window.is_visible():
+            Lp.window.present()
 
     def _on_entry_parsed(self, parser, uri, metadata):
         """
