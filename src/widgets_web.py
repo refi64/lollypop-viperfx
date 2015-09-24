@@ -28,7 +28,6 @@ class WebView(Gtk.Stack):
             @param private as bool
         """
         Gtk.Stack.__init__(self)
-        self.connect('destroy', self._on_destroy)
         self.set_transition_duration(500)
         self.set_transition_type(Gtk.StackTransitionType.CROSSFADE)
         self._current_url = ''
@@ -75,17 +74,19 @@ class WebView(Gtk.Stack):
         """
         return self._current_url
 
+    def show_spinner(self, show):
+        """
+            Show/hide spinner. Stop it.
+            @param show as bool
+        """
+        if show:
+            self.set_visible_child_name('spinner')
+        else:
+            self.set_visible_child_name('view')
+
 #######################
 # PRIVATE             #
 #######################
-    def _on_destroy(self, widget):
-        """
-            Destroy webkit view to stop any audio playback
-            @param widget as Gtk.Widget
-        """
-        self._view.stop_loading()
-        self._view.destroy()
-
     def _on_load_changed(self, view, event):
         """
             Show view if finished
@@ -94,7 +95,9 @@ class WebView(Gtk.Stack):
         """
         if event == WebKit2.LoadEvent.STARTED:
             self.set_visible_child_name('spinner')
+            self.get_child_by_name('spinner').start()
         elif event == WebKit2.LoadEvent.FINISHED:
+            self.get_child_by_name('spinner').stop()
             self.set_visible_child_name('view')
 
     def _on_decide_policy(self, view, decision, decision_type):

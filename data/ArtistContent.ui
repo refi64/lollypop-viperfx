@@ -42,7 +42,6 @@
     <property name="valign">center</property>
     <property name="hexpand">True</property>
     <property name="vexpand">True</property>
-    <property name="active">True</property>
   </object>
   <object class="GtkGrid" id="widget">
     <property name="visible">True</property>
