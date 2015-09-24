@@ -204,7 +204,6 @@ class InfosPopover(Gtk.Popover):
             widget.add(content_widget)
         if force:
             content_widget.uncache(self._artist)
-        print(self._artist, content_widget.get_artist())
         if content_widget.get_artist() != self._artist:
             content_widget.clear()
             t = Thread(target=content_widget.populate, args=(self._artist,))
