@@ -10,8 +10,6 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-import gi
-gi.require_version('Secret', '1')
 from gi.repository import GLib, Gio
 
 from gettext import gettext as _
@@ -31,6 +29,9 @@ import re
 
 from lollypop.define import Lp, SecretSchema, SecretAttributes
 from lollypop.utils import debug
+
+import gi
+gi.require_version('Secret', '1')
 
 
 class LastFM(LastFMNetwork):
