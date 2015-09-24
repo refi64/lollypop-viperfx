@@ -47,6 +47,13 @@ class ArtistContent(Gtk.Stack):
             except:
                 print("Can't create %s" % self._CACHE_PATH)
 
+    def get_artist(self):
+        """
+            Get current artist
+            @return artist as str
+        """
+        return self._artist
+
     def clear(self):
         """
             Clear content
@@ -203,11 +210,10 @@ class WikipediaContent(ArtistContent):
             @param artist as string
             @thread safe
         """
-        url = None
-        image_url = None
         content = None
         if artist is None:
             artist = Lp.player.get_current_artist()
+        self._artist = artist
         (content, data) = self._load_from_cache(artist, 'wikipedia')
         if content:
             stream = None
@@ -246,11 +252,10 @@ class LastfmContent(ArtistContent):
             @param artist as string
             @thread safe
         """
-        url = None
-        image_url = None
         content = None
         if artist is None:
             artist = Lp.player.get_current_artist()
+        self._artist = artist
         (content, data) = self._load_from_cache(artist, 'lastfm')
         if content:
             stream = None

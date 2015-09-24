@@ -204,10 +204,12 @@ class InfosPopover(Gtk.Popover):
             widget.add(content_widget)
         if force:
             content_widget.uncache(self._artist)
-        content_widget.clear()
-        t = Thread(target=content_widget.populate, args=(self._artist,))
-        t.daemon = True
-        t.start()
+        print(self._artist, content_widget.get_artist())
+        if content_widget.get_artist() != self._artist:
+            content_widget.clear()
+            t = Thread(target=content_widget.populate, args=(self._artist,))
+            t.daemon = True
+            t.start()
 
     def _on_map_wikipedia(self, widget, force=False):
         """
@@ -226,10 +228,11 @@ class InfosPopover(Gtk.Popover):
             widget.add(content_widget)
         if force:
             content_widget.uncache(self._artist)
-        content_widget.clear()
-        t = Thread(target=content_widget.populate, args=(self._artist,))
-        t.daemon = True
-        t.start()
+        if content_widget.get_artist() != self._artist:
+            content_widget.clear()
+            t = Thread(target=content_widget.populate, args=(self._artist,))
+            t.daemon = True
+            t.start()
 
     def _on_map_wikia(self, widget, force=False):
         """
@@ -247,7 +250,7 @@ class InfosPopover(Gtk.Popover):
         # Delayed load due to WebKit memory loading
         GLib.timeout_add(250, self._load_web, widget, url, True, True)
 
-    def _on_map_duck(self, widget):
+    def _on_map_duck(self, widget, force=False):
         """
             Load on map
             @param widget as Gtk.Viewport
