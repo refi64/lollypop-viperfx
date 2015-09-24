@@ -79,6 +79,34 @@ class ArtistContent(Gtk.Stack):
         except Exception as e:
             print("ArtistContent::populate: %s" % e)
 
+    def uncache(self, artist, suffix):
+        """
+            Remove artist from cache
+            @param artist as string
+            @param suffix as string
+        """
+        filepath = "%s/%s_%s.txt" % (self._CACHE_PATH,
+                                     "".join(
+                                        [c for c in artist if
+                                         c.isalpha() or
+                                         c.isdigit() or c == ' ']).rstrip(),
+                                     suffix)
+        f = Gio.File.new_for_path(filepath)
+        try:
+            f.delete(None)
+        except:
+            pass
+        filepath = "%s/%s_%s" % (self._CACHE_PATH,
+                                 "".join([c for c in artist if
+                                          c.isalpha() or
+                                          c.isdigit() or c == ' ']).rstrip(),
+                                 suffix)
+        f = Gio.File.new_for_path(filepath)
+        try:
+            f.delete(None)
+        except:
+            pass
+
 #######################
 # PRIVATE             #
 #######################
@@ -175,6 +203,7 @@ class WikipediaContent(ArtistContent):
     """
         Show wikipedia content
     """
+
     def __init__(self):
         """
             Init widget
@@ -203,11 +232,21 @@ class WikipediaContent(ArtistContent):
             ArtistContent.populate(self, artist, content,
                                    image_url, 'wikipedia')
 
+    def uncache(self, artist):
+        """
+            Remove artist from cache
+            @param artist as string
+        """
+        if artist is None:
+            artist = self._get_current_artist()
+        ArtistContent.uncache(self, artist, 'wikipedia')
+
 
 class LastfmContent(ArtistContent):
     """
         Show lastfm content
     """
+
     def __init__(self):
         """
             Init widget
@@ -234,3 +273,12 @@ class LastfmContent(ArtistContent):
         else:
             (url, image_url, content) = Lp.lastfm.get_artist_infos(artist)
             ArtistContent.populate(self, artist, content, image_url, 'lastfm')
+
+    def uncache(self, artist):
+        """
+            Remove artist from cache
+            @param artist as string
+        """
+        if artist is None:
+            artist = self._get_current_artist()
+        ArtistContent.uncache(self, artist, 'lastfm')

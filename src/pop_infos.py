@@ -109,7 +109,7 @@ class InfosPopover(Gtk.Popover):
 #######################
 # PRIVATE             #
 #######################
-    def _update_content(self, player=None):
+    def _update_content(self, player=None, force=False):
         """
             Update content
         """
@@ -118,7 +118,7 @@ class InfosPopover(Gtk.Popover):
             visible = self._stack.get_visible_child()
         else:
             visible = self._stack.get_visible_child().get_child()
-        getattr(self, '_on_map_%s' % name)(visible)
+        getattr(self, '_on_map_%s' % name)(visible, force)
 
     def _set_autoload(self, widget):
         """
@@ -157,7 +157,7 @@ class InfosPopover(Gtk.Popover):
         else:
             GLib.source_remove(self._timeout_id)
             self._timeout_id = None
-            self._update_content()
+            self._update_content(None, True)
 
     def _on_unmap(self, widget):
         """
@@ -167,10 +167,11 @@ class InfosPopover(Gtk.Popover):
         for child in widget.get_children():
             child.destroy()
 
-    def _on_map_albums(self, widget):
+    def _on_map_albums(self, widget, force=False):
         """
             Load on map
             @param widget as Gtk.Bin
+            @param force as bool
         """
         if not self.is_visible():
             return
@@ -186,10 +187,11 @@ class InfosPopover(Gtk.Popover):
         t.daemon = True
         t.start()
 
-    def _on_map_lastfm(self, widget):
+    def _on_map_lastfm(self, widget, force=False):
         """
             Load on map
             @param widget as Gtk.Viewport
+            @param force as bool
         """
         if not self.is_visible():
             return
@@ -200,15 +202,18 @@ class InfosPopover(Gtk.Popover):
             content_widget = LastfmContent()
             content_widget.show()
             widget.add(content_widget)
+        if force:
+            content_widget.uncache(self._artist)
         content_widget.clear()
         t = Thread(target=content_widget.populate, args=(self._artist,))
         t.daemon = True
         t.start()
 
-    def _on_map_wikipedia(self, widget):
+    def _on_map_wikipedia(self, widget, force=False):
         """
             Load on map
             @param widget as Gtk.Viewport
+            @param force as bool
         """
         if not self.is_visible():
             return
@@ -219,15 +224,18 @@ class InfosPopover(Gtk.Popover):
             content_widget = WikipediaContent()
             content_widget.show()
             widget.add(content_widget)
+        if force:
+            content_widget.uncache(self._artist)
         content_widget.clear()
         t = Thread(target=content_widget.populate, args=(self._artist,))
         t.daemon = True
         t.start()
 
-    def _on_map_wikia(self, widget):
+    def _on_map_wikia(self, widget, force=False):
         """
             Load on map
             @param widget as Gtk.Viewport
+            @param force as bool
         """
         if not self.is_visible():
             return
