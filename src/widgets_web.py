@@ -31,7 +31,7 @@ class WebView(Gtk.Stack):
         self.connect('destroy', self._on_destroy)
         self.set_transition_duration(500)
         self.set_transition_type(Gtk.StackTransitionType.CROSSFADE)
-        self._current_url = ''
+        self._current = ''
         builder = Gtk.Builder()
         # Use ressource from ArtistContent
         builder.add_from_resource('/org/gnome/Lollypop/ArtistContent.ui')
@@ -64,16 +64,9 @@ class WebView(Gtk.Stack):
             Load url
             @param url as string
         """
-        self._current_url = url
+        self._current = urlsplit(url)[1]
         self._view.grab_focus()
         self._view.load_uri(url)
-
-    def get_current_url(self):
-        """
-            Get current url
-            @return url as string
-        """
-        return self._current_url
 
 #######################
 # PRIVATE             #
@@ -107,9 +100,8 @@ class WebView(Gtk.Stack):
         """
         if decision_type == WebKit2.PolicyDecisionType.NAVIGATION_ACTION:
             if decision.get_navigation_action().get_navigation_type() ==\
-               WebKit2.NavigationType.LINK_CLICKED or\
-               (urlsplit(self._current_url)[1] not in
-               decision.get_navigation_action().get_request().get_uri() and
+               WebKit2.NavigationType.LINK_CLICKED or (self._current not
+               in decision.get_navigation_action().get_request().get_uri() and
                decision.get_navigation_action().get_request().get_uri() !=
                'about:blank'):
                 decision.ignore()
