@@ -49,9 +49,6 @@ class BaseArt(GObject.GObject):
             @param selected as bool
             @return cairo surface
         """
-        selected_color = Lp.window.get_selected_color()
-        dark = Gtk.Settings.get_default().get_property(
-            "gtk-application-prefer-dark-theme")
         degrees = pi / 180
 
         width = pixbuf.get_width()
@@ -80,27 +77,32 @@ class BaseArt(GObject.GObject):
         ctx.close_path()
         ctx.set_line_width(1)
 
-        if selected:
-            ctx.set_source_rgb(selected_color.red,
-                               selected_color.green,
-                               selected_color.blue)
-        elif dark and width > ArtSize.MEDIUM:
-            ctx.set_source_rgb(1, 1, 1)
-        else:
-            ctx.set_source_rgb(0, 0, 0)
-        ctx.stroke_preserve()
-
-        # Fill content for big artwork
         if width > ArtSize.MEDIUM:
+            dark = Gtk.Settings.get_default().get_property(
+                                           "gtk-application-prefer-dark-theme")
             if selected:
+                selected_color = Lp.window.get_selected_color()
                 ctx.set_source_rgb(selected_color.red,
                                    selected_color.green,
                                    selected_color.blue)
+                ctx.stroke_preserve()
+                ctx.set_source_rgb(selected_color.red,
+                                   selected_color.green,
+                                   selected_color.blue)
+                ctx.fill()
             elif dark:
-                ctx.set_source_rgb(0, 0, 0)
-            else:
                 ctx.set_source_rgb(1, 1, 1)
-            ctx.fill()
+                ctx.stroke_preserve()
+                ctx.set_source_rgb(0, 0, 0)
+                ctx.fill()
+            else:
+                ctx.set_source_rgb(0, 0, 0)
+                ctx.stroke_preserve()
+                ctx.set_source_rgb(1, 1, 1)
+                ctx.fill()
+        else:
+            ctx.set_source_rgb(0, 0, 0)
+            ctx.stroke_preserve()
 
         border_pixbuf = Gdk.pixbuf_get_from_surface(surface, 0, 0,
                                                     surface_width,
