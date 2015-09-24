@@ -10,11 +10,6 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-import gi
-gi.require_version('Gtk', '3.0')
-gi.require_version('Gst', '1.0') 
-gi.require_version('Notify', '0.7')
-gi.require_version('TotemPlParser', '1.0')
 from gi.repository import Gtk, Gio, GLib, Gdk, Gst, Notify, TotemPlParser
 
 from locale import getlocale
@@ -50,6 +45,12 @@ from lollypop.playlists import PlaylistsManager
 from lollypop.collectionscanner import CollectionScanner
 from lollypop.fullscreen import FullScreen
 
+import gi
+gi.require_version('Gtk', '3.0')
+gi.require_version('Gst', '1.0')
+gi.require_version('Notify', '0.7')
+gi.require_version('TotemPlParser', '1.0')
+
 
 class Application(Gtk.Application):
     """
@@ -69,15 +70,14 @@ class Application(Gtk.Application):
         self._init_proxy()
         GLib.set_application_name('lollypop')
         GLib.set_prgname('lollypop')
-        self.set_flags(Gio.ApplicationFlags.HANDLES_OPEN)
         self.set_flags(Gio.ApplicationFlags.HANDLES_COMMAND_LINE)
         # TODO: Remove this test later
         if Gtk.get_minor_version() > 12:
             self.add_main_option("debug", b'd', GLib.OptionFlags.NONE,
                                  GLib.OptionArg.NONE, "Debug lollypop", None)
-        self.add_main_option("set-rating", b'r', GLib.OptionFlags.NONE,
-                             GLib.OptionArg.INT, "Rate the current track",
-                             None)
+            self.add_main_option("set-rating", b'r', GLib.OptionFlags.NONE,
+                                 GLib.OptionArg.INT, "Rate the current track",
+                                 None)
         self.connect('handle-local-options', self._on_handle_local_options)
         self.connect('command-line', self._on_command_line)
         cssProviderFile = Gio.File.new_for_uri(
@@ -101,11 +101,11 @@ class Application(Gtk.Application):
         Lp.db = Database()
         # We store a cursor for the main thread
         Lp.sql = Lp.db.get_cursor()
-        Lp.player = Player()
         Lp.albums = AlbumsDatabase()
         Lp.artists = ArtistsDatabase()
         Lp.genres = GenresDatabase()
         Lp.tracks = TracksDatabase()
+        Lp.player = Player()
         Lp.playlists = PlaylistsManager()
         Lp.scanner = CollectionScanner()
         Lp.art = Art()
@@ -246,7 +246,7 @@ class Application(Gtk.Application):
         """
         if options.contains("debug"):
             Lp.debug = True
-        return 0
+        return -1
 
     def _on_command_line(self, app, app_cmd_line):
         """
@@ -259,7 +259,7 @@ class Application(Gtk.Application):
             value = options.lookup_value("set-rating").get_int32()
             if value < 0 or value > 5:
                 return 1
-            if Lp.player.current_track:
+            if Lp.player.current_track.id is not None:
                 Lp.player.current_track.set_popularity(value)
             else:
                 return 1
