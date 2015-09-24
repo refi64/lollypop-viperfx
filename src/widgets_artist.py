@@ -10,11 +10,12 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-from gi.repository import Gtk, GdkPixbuf
+from gi.repository import Gtk, GdkPixbuf, GLib, Gio
 
 from cgi import escape
 
-from lollypop.define import Lp
+from lollypop.wikipedia import Wikipedia
+from lollypop.define import Lp, Type
 
 
 class ArtistContent(Gtk.Stack):
@@ -45,7 +46,28 @@ class ArtistContent(Gtk.Stack):
         self._image.clear()
         self.set_visible_child_name('spinner')
 
-    def set_content(self, content, stream):
+    def populate(self, content, image_url):
+        """
+            populate widget with content
+            @param content as string
+            @param image url as string
+        """
+        stream = None
+        try:
+            if image_url is not None:
+                f = Gio.File.new_for_uri(image_url)
+                (status, data, tag) = f.load_contents()
+                if status:
+                    stream = Gio.MemoryInputStream.new_from_data(data,
+                                                                 None)
+        except Exception as e:
+            print("PopArtistInfos::_populate: %s" % e)
+        self._set_content(content, stream)
+
+#######################
+# PRIVATE             #
+#######################
+    def _set_content(self, content, stream):
         """
             Set content
             @param content as string
@@ -65,3 +87,66 @@ class ArtistContent(Gtk.Stack):
             self.set_visible_child_name('widget')
         else:
             self.set_visible_child_name('notfound')
+
+    def _get_current_artist(self):
+        """
+            Get current artist
+            @return artist as string
+        """
+        # TODO: This code is duplicated
+        artist_id = Lp.player.current_track.album_artist_id
+        if artist_id == Type.COMPILATIONS:
+            artist = Lp.player.current_track.artist
+        else:
+            artist = Lp.player.current_track.album_artist
+        return artist
+
+
+class WikipediaContent(ArtistContent):
+    """
+        Show wikipedia content
+    """
+    def __init__(self):
+        """
+            Init widget
+        """
+        ArtistContent.__init__(self)
+
+    def populate(self, artist):
+        """
+            Populate content
+            @param artist as string
+            @thread safe
+        """
+        url = None
+        image_url = None
+        content = None
+        if artist is None:
+            artist = self._get_current_artist()
+        (url, image_url, content) = Wikipedia().get_artist_infos(artist)
+        GLib.idle_add(ArtistContent.populate, self, content, image_url)
+
+
+class LastfmContent(ArtistContent):
+    """
+        Show lastfm content
+    """
+    def __init__(self):
+        """
+            Init widget
+        """
+        ArtistContent.__init__(self)
+
+    def populate(self, artist):
+        """
+            Populate content
+            @param artist as string
+            @thread safe
+        """
+        url = None
+        image_url = None
+        content = None
+        if artist is None:
+            artist = self._get_current_artist()
+        (url, image_url, content) = Lp.lastfm.get_artist_infos(artist)
+        GLib.idle_add(ArtistContent.populate, self, content, image_url)

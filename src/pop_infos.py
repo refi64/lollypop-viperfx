@@ -10,13 +10,13 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-from gi.repository import Gtk, GLib, Gio
+from gi.repository import Gtk, GLib
 
 from gettext import gettext as _
 from threading import Thread
 
-from lollypop.define import Lp, Type
-from lollypop.widgets_artist import ArtistContent
+from lollypop.define import Lp
+from lollypop.widgets_artist import WikipediaContent, LastfmContent
 from lollypop.view_artist_albums import CurrentArtistAlbumsView
 
 
@@ -197,29 +197,13 @@ class InfosPopover(Gtk.Popover):
                               GLib.Variant('s', 'lastfm'))
         content_widget = widget.get_child()
         if content_widget is None:
-            content_widget = ArtistContent()
+            content_widget = LastfmContent()
             content_widget.show()
             widget.add(content_widget)
         content_widget.clear()
-        t = Thread(target=self._populate_lastfm, args=(content_widget,))
+        t = Thread(target=content_widget.populate, args=(self._artist,))
         t.daemon = True
         t.start()
-
-    def _populate_lastfm(self, widget):
-        """
-            Populate content with lastfm informations
-            @param widget as Gtk.Viewport
-            @thread safe
-        """
-        url = None
-        image_url = None
-        content = None
-        if self._artist is None:
-            artist = self._get_current_artist()
-        else:
-            artist = self._artist
-        (url, image_url, content) = Lp.lastfm.get_artist_infos(artist)
-        self._populate(url, image_url, content, widget)
 
     def _on_map_wikipedia(self, widget):
         """
@@ -232,29 +216,13 @@ class InfosPopover(Gtk.Popover):
                               GLib.Variant('s', 'wikipedia'))
         content_widget = widget.get_child()
         if content_widget is None:
-            content_widget = ArtistContent()
+            content_widget = WikipediaContent()
             content_widget.show()
             widget.add(content_widget)
         content_widget.clear()
-        t = Thread(target=self._populate_wikipedia, args=(content_widget,))
+        t = Thread(target=content_widget.populate, args=(self._artist,))
         t.daemon = True
         t.start()
-
-    def _populate_wikipedia(self, widget):
-        """
-            Populate content with wikipedia informations
-            @param widget as Gtk.Viewport
-            @thread safe
-        """
-        url = None
-        image_url = None
-        content = None
-        if self._artist is None:
-            artist = self._get_current_artist()
-        else:
-            artist = self._artist
-        (url, image_url, content) = self.Wikipedia().get_artist_infos(artist)
-        self._populate(url, image_url, content, widget)
 
     def _on_map_wikia(self, widget):
         """
@@ -301,46 +269,3 @@ class InfosPopover(Gtk.Popover):
             web.show()
             widget.add(web)
         web.load(url)
-
-    def _populate(self, url, image_url, content, widget):
-        """
-            populate widget with content
-            @param url as string
-            @param image url as string
-            @param content as string
-            @param widget as Gtk.Viewport
-            @thread safe
-        """
-        stream = None
-        try:
-            if image_url is not None:
-                f = Gio.File.new_for_uri(image_url)
-                (status, data, tag) = f.load_contents()
-                if status:
-                    stream = Gio.MemoryInputStream.new_from_data(data,
-                                                                 None)
-        except Exception as e:
-            print("PopArtistInfos::_populate: %s" % e)
-        GLib.idle_add(self._set_content, content, url, stream, widget)
-
-    def _set_content(self, content, url, stream, widget):
-        """
-            Set content on view
-            @param content as str
-            @param url as str
-            @param stream as Gio.MemoryInputStream
-            @param widget as Gtk.Viewport
-        """
-        widget.set_content(content, stream)
-
-    def _get_current_artist(self):
-        """
-            Get current artist
-            @return artist as string
-        """
-        artist_id = Lp.player.current_track.album_artist_id
-        if artist_id == Type.COMPILATIONS:
-            artist = Lp.player.current_track.artist
-        else:
-            artist = Lp.player.current_track.album_artist
-        return artist
