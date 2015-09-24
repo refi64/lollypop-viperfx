@@ -134,7 +134,7 @@
             <signal name="button_press_event" handler="_on_btn_press" swapped="no"/>
             <signal name="button_release_event" handler="_on_btn_release" swapped="no"/>
             <property name="visible">True</property>
-            <property name="can_focus">True</property>
+    	    <property name="relief">none</property>
             <property name="valign">start</property>
             <property name="halign">end</property>
             <property name="can_focus">True</property>
