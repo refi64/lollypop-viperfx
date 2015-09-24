@@ -149,6 +149,18 @@ class Player(BinPlayer, QueuePlayer, UserPlaylistPlayer, RadioPlayer,
         """
         self._albums = []
 
+    def get_current_artist(self):
+        """
+            Get current artist
+            @return artist as string
+        """
+        artist_id = self.current_track.album_artist_id
+        if artist_id == Type.COMPILATIONS:
+            artist = self.current_track.artist
+        else:
+            artist = self.current_track.album_artist
+        return artist
+
     def restore_state(self):
         """
             Restore player state

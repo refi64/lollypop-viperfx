@@ -16,7 +16,7 @@ from cgi import escape
 from os import mkdir, path
 
 from lollypop.wikipedia import Wikipedia
-from lollypop.define import Lp, Type
+from lollypop.define import Lp
 
 
 class ArtistContent(Gtk.Stack):
@@ -131,19 +131,6 @@ class ArtistContent(Gtk.Stack):
         else:
             self.set_visible_child_name('notfound')
 
-    def _get_current_artist(self):
-        """
-            Get current artist
-            @return artist as string
-        """
-        # TODO: This code is duplicated
-        artist_id = Lp.player.current_track.album_artist_id
-        if artist_id == Type.COMPILATIONS:
-            artist = Lp.player.current_track.artist
-        else:
-            artist = Lp.player.current_track.album_artist
-        return artist
-
     def _save_to_cache(self, artist, content, data, suffix):
         """
             Save data to cache
@@ -220,7 +207,7 @@ class WikipediaContent(ArtistContent):
         image_url = None
         content = None
         if artist is None:
-            artist = self._get_current_artist()
+            artist = Lp.player.get_current_artist()
         (content, data) = self._load_from_cache(artist, 'wikipedia')
         if content:
             stream = None
@@ -238,7 +225,7 @@ class WikipediaContent(ArtistContent):
             @param artist as string
         """
         if artist is None:
-            artist = self._get_current_artist()
+            artist = Lp.player.get_current_artist()
         ArtistContent.uncache(self, artist, 'wikipedia')
 
 
@@ -263,7 +250,7 @@ class LastfmContent(ArtistContent):
         image_url = None
         content = None
         if artist is None:
-            artist = self._get_current_artist()
+            artist = Lp.player.get_current_artist()
         (content, data) = self._load_from_cache(artist, 'lastfm')
         if content:
             stream = None
@@ -280,5 +267,5 @@ class LastfmContent(ArtistContent):
             @param artist as string
         """
         if artist is None:
-            artist = self._get_current_artist()
+            artist = Lp.player.get_current_artist()
         ArtistContent.uncache(self, artist, 'lastfm')

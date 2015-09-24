@@ -241,7 +241,7 @@ class InfosPopover(Gtk.Popover):
             return
         Lp.settings.set_value('infoswitch',
                               GLib.Variant('s', 'wikia'))
-        artist = self._get_current_artist().replace(' ', '_')
+        artist = Lp.player.get_current_artist().replace(' ', '_')
         title = Lp.player.current_track.title.replace(' ', '_')
         url = "http://lyrics.wikia.com/wiki/%s:%s" % (artist, title)
         # Delayed load due to WebKit memory loading
@@ -258,7 +258,7 @@ class InfosPopover(Gtk.Popover):
                               GLib.Variant('s', 'duck'))
         title = Lp.player.current_track.title
         if self._artist is None:
-            search = "%s+%s" % (self._get_current_artist(), title)
+            search = "%s+%s" % (Lp.player.get_current_artist(), title)
         else:
             search = self._artist
         url = "https://duckduckgo.com/?q=%s&kl=%s&kd=-1&k5=2&kp=1&k1=-1"\
