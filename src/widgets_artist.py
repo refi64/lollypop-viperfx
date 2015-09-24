@@ -13,6 +13,7 @@
 from gi.repository import Gtk, GdkPixbuf, GLib, Gio
 
 from cgi import escape
+from os import mkdir, path
 
 from lollypop.wikipedia import Wikipedia
 from lollypop.define import Lp, Type
@@ -23,11 +24,14 @@ class ArtistContent(Gtk.Stack):
         Widget showing artist image and bio
     """
 
+    _CACHE_PATH = path.expanduser("~") + "/.local/share/lollypop/infos"
+
     def __init__(self):
         """
             Init artist content
         """
         Gtk.Stack.__init__(self)
+        self._artist = ''
         self.set_transition_duration(500)
         self.set_transition_type(Gtk.StackTransitionType.CROSSFADE)
         builder = Gtk.Builder()
@@ -37,6 +41,11 @@ class ArtistContent(Gtk.Stack):
         self.add_named(builder.get_object('widget'), 'widget')
         self.add_named(builder.get_object('notfound'), 'notfound')
         self.add_named(builder.get_object('spinner'), 'spinner')
+        if not path.exists(self._CACHE_PATH):
+            try:
+                mkdir(self._CACHE_PATH)
+            except:
+                print("Can't create %s" % self._CACHE_PATH)
 
     def clear(self):
         """
@@ -46,23 +55,29 @@ class ArtistContent(Gtk.Stack):
         self._image.clear()
         self.set_visible_child_name('spinner')
 
-    def populate(self, content, image_url):
+    def populate(self, artist, content, image_url, suffix):
         """
             populate widget with content
+            @param artist as string
             @param content as string
             @param image url as string
+            @param suffix as string
+            @thread safe
         """
-        stream = None
         try:
-            if image_url is not None:
-                f = Gio.File.new_for_uri(image_url)
-                (status, data, tag) = f.load_contents()
-                if status:
-                    stream = Gio.MemoryInputStream.new_from_data(data,
-                                                                 None)
+            data = None
+            stream = None
+            if content is not None:
+                if image_url is not None:
+                    f = Gio.File.new_for_uri(image_url)
+                    (status, data, tag) = f.load_contents()
+                    if status:
+                        stream = Gio.MemoryInputStream.new_from_data(data,
+                                                                     None)
+                self._save_to_cache(artist, content, data, suffix)
+            GLib.idle_add(self._set_content, content, stream)
         except Exception as e:
-            print("PopArtistInfos::_populate: %s" % e)
-        self._set_content(content, stream)
+            print("ArtistContent::populate: %s" % e)
 
 #######################
 # PRIVATE             #
@@ -71,9 +86,9 @@ class ArtistContent(Gtk.Stack):
         """
             Set content
             @param content as string
-            @param stream as Gio.MemoryInputStream
+            @param data as Gio.MemoryInputStream
         """
-        if content:
+        if content is not None:
             self._content.set_markup(escape(content))
             if stream is not None:
                 pixbuf = GdkPixbuf.Pixbuf.new_from_stream_at_scale(stream,
@@ -101,6 +116,60 @@ class ArtistContent(Gtk.Stack):
             artist = Lp.player.current_track.album_artist
         return artist
 
+    def _save_to_cache(self, artist, content, data, suffix):
+        """
+            Save data to cache
+            @param content as string
+            @param data as bytes
+            @param suffix as string
+        """
+        if content is None:
+            return
+
+        filepath = "%s/%s_%s" % (self._CACHE_PATH,
+                                 "".join([c for c in artist if
+                                          c.isalpha() or
+                                          c.isdigit() or c == ' ']).rstrip(),
+                                 suffix)
+        f = Gio.File.new_for_path(filepath+".txt")
+        fstream = f.replace(None, False,
+                            Gio.FileCreateFlags.REPLACE_DESTINATION, None)
+        if fstream is not None:
+            fstream.write(content.encode(encoding='UTF-8'), None)
+            fstream.close()
+        if data is not None:
+            f = Gio.File.new_for_path(filepath)
+            fstream = f.replace(None, False,
+                                Gio.FileCreateFlags.REPLACE_DESTINATION, None)
+            if fstream is not None:
+                fstream.write(data, None)
+                fstream.close()
+
+    def _load_from_cache(self, artist, suffix):
+        """
+            Load content from cache
+            @return (content as string, data as bytes)
+        """
+        filepath = "%s/%s_%s" % (self._CACHE_PATH,
+                                 "".join([c for c in artist if
+                                          c.isalpha() or
+                                          c.isdigit() or c == ' ']).rstrip(),
+                                 suffix)
+        content = None
+        data = None
+        if path.exists(filepath+".txt"):
+            f = Gio.File.new_for_path(filepath+".txt")
+            (status, content, tag) = f.load_contents()
+            if status and path.exists(filepath):
+                f = Gio.File.new_for_path(filepath)
+                (status, data, tag) = f.load_contents()
+                if not status:
+                    data = None
+        if content is None:
+            return (None, None)
+        else:
+            return (content.decode("utf-8"), data)
+
 
 class WikipediaContent(ArtistContent):
     """
@@ -123,8 +192,16 @@ class WikipediaContent(ArtistContent):
         content = None
         if artist is None:
             artist = self._get_current_artist()
-        (url, image_url, content) = Wikipedia().get_artist_infos(artist)
-        GLib.idle_add(ArtistContent.populate, self, content, image_url)
+        (content, data) = self._load_from_cache(artist, 'wikipedia')
+        if content:
+            stream = None
+            if data is not None:
+                stream = Gio.MemoryInputStream.new_from_data(data, None)
+            self._set_content(content, stream)
+        else:
+            (url, image_url, content) = Wikipedia().get_artist_infos(artist)
+            ArtistContent.populate(self, artist, content,
+                                   image_url, 'wikipedia')
 
 
 class LastfmContent(ArtistContent):
@@ -148,5 +225,12 @@ class LastfmContent(ArtistContent):
         content = None
         if artist is None:
             artist = self._get_current_artist()
-        (url, image_url, content) = Lp.lastfm.get_artist_infos(artist)
-        GLib.idle_add(ArtistContent.populate, self, content, image_url)
+        (content, data) = self._load_from_cache(artist, 'lastfm')
+        if content:
+            stream = None
+            if data is not None:
+                stream = Gio.MemoryInputStream.new_from_data(data, None)
+            self._set_content(content, stream)
+        else:
+            (url, image_url, content) = Lp.lastfm.get_artist_infos(artist)
+            ArtistContent.populate(self, artist, content, image_url, 'lastfm')
