@@ -10,6 +10,11 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
+import gi
+gi.require_version('Gtk', '3.0')
+gi.require_version('Gst', '1.0')
+gi.require_version('Notify', '0.7')
+gi.require_version('TotemPlParser', '1.0')
 from gi.repository import Gtk, Gio, GLib, Gdk, Gst, Notify, TotemPlParser
 
 from locale import getlocale
@@ -44,12 +49,6 @@ from lollypop.database_tracks import TracksDatabase
 from lollypop.playlists import PlaylistsManager
 from lollypop.collectionscanner import CollectionScanner
 from lollypop.fullscreen import FullScreen
-
-import gi
-gi.require_version('Gtk', '3.0')
-gi.require_version('Gst', '1.0')
-gi.require_version('Notify', '0.7')
-gi.require_version('TotemPlParser', '1.0')
 
 
 class Application(Gtk.Application):
