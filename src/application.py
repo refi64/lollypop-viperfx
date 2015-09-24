@@ -66,7 +66,7 @@ class Application(Gtk.Application):
         Gtk.Application.__init__(
                             self,
                             application_id='org.gnome.Lollypop',
-                            flags=Gio.ApplicationFlags.HANDLES_OPEN)
+                            flags=Gio.ApplicationFlags.HANDLES_COMMAND_LINE)
         self._init_proxy()
         GLib.set_application_name('lollypop')
         GLib.set_prgname('lollypop')
@@ -79,7 +79,6 @@ class Application(Gtk.Application):
                                  None)
         self.connect('handle-local-options', self._on_handle_local_options)
         self.connect('command-line', self._on_command_line)
-        self.connect('open', self._on_open)
         cssProviderFile = Gio.File.new_for_uri(
             'resource:///org/gnome/Lollypop/application.css')
         cssProvider = Gtk.CssProvider()
@@ -228,7 +227,7 @@ class Application(Gtk.Application):
             @param app as Gio.Application
             @param options as GLib.VariantDict
         """
-        if options.contains("debug"):
+        if options.contains('debug'):
             Lp.debug = True
         return -1
 
@@ -239,31 +238,21 @@ class Application(Gtk.Application):
             @param options as Gio.ApplicationCommandLine
         """
         options = app_cmd_line.get_options_dict()
-        if options.contains("set-rating"):
-            value = options.lookup_value("set-rating").get_int32()
-            if value < 0 or value > 5:
-                return 1
-            if Lp.player.current_track.id is not None:
+        if options.contains('set-rating'):
+            value = options.lookup_value('set-rating').get_int32()
+            if value > 0 and value < 6 and\
+                    Lp.player.current_track.id is not None:
                 Lp.player.current_track.set_popularity(value)
-            else:
-                return 1
-        return 0
-
-    def _on_open(self, app, files, hint, data):
-        """
-            Play specified files
-            @param app as Gio.Application
-            @param files as [Gio.Files]
-            @param hint as str
-            @param data as unused
-        """
-        Lp.player.clear_externals()
-        for f in files:
-            self._parser.parse_async(f.get_uri(), True,
-                                     None, self._on_parsing_finished,
-                                     f.get_uri())
+        args = app_cmd_line.get_arguments()
+        if len(args) > 1:
+            Lp.player.clear_externals()
+            for f in args[1:]:
+                self._parser.parse_async(GLib.filename_to_uri(f), True,
+                                         None, self._on_parsing_finished,
+                                         GLib.filename_to_uri(f))
         if Lp.window is not None and Lp.window.is_visible():
             Lp.window.present()
+        return 0
 
     def _on_entry_parsed(self, parser, uri, metadata):
         """
