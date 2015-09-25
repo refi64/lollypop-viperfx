@@ -41,7 +41,7 @@ GtkTreeView .image:backdrop{
 }
 
 GtkTreeView .image:selected{
-    color: alpha(@theme_bg_color, 0.9);
+    color: @theme_selected_fg_color;
 }
 
 Gtk.ListBoxRow .loved-button {
