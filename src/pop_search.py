@@ -43,7 +43,6 @@ class SearchRow(Gtk.ListBoxRow):
         self._title = builder.get_object('item')
         self._cover = builder.get_object('cover')
         self.add(self._row_widget)
-
         self.show()
 
     def set_text(self, artist, title):
@@ -145,6 +144,8 @@ class SearchPopover(Gtk.Popover):
             @param parent as Gtk.Widget
         """
         Gtk.Popover.__init__(self)
+        self.connect('map', self._on_map)
+        self.connect('unmap', self._on_unmap)
         self._parent = parent
         self._in_thread = False
         self._stop_thread = False
@@ -165,24 +166,11 @@ class SearchPopover(Gtk.Popover):
         builder.get_object('scrolled').add(self._view)
         self.add(builder.get_object('widget'))
 
-    def do_show(self):
-        """
-            Give focus to text entry on show
-        """
         size_setting = Lp.settings.get_value('window-size')
         if isinstance(size_setting[1], int):
             self.set_size_request(400, size_setting[1]*0.7)
         else:
             self.set_size_request(400, 600)
-        Gtk.Popover.do_show(self)
-        Lp.window.enable_global_shorcuts(False)
-
-    def do_hide(self):
-        """
-            Restore global shortcuts
-        """
-        Gtk.Popover.do_hide(self)
-        Lp.window.enable_global_shorcuts(True)
 
 #######################
 # PRIVATE             #
@@ -349,6 +337,20 @@ class SearchPopover(Gtk.Popover):
                 Lp.playlists.add(self._current_search)
             Lp.playlists.add_tracks(self._current_search, tracks)
         sql.close()
+
+    def _on_map(self, widget):
+        """
+            Disable global shortcuts
+            @param widget as Gtk.Widget
+        """
+        Lp.window.enable_global_shorcuts(False)
+
+    def _on_unmap(self, widget):
+        """
+            Enable global shortcuts
+            @param widget as Gtk.Widget
+        """
+        Lp.window.enable_global_shorcuts(True)
 
     def _on_search_changed(self, widget):
         """

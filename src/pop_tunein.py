@@ -69,6 +69,11 @@ class TuneinPopover(Gtk.Popover):
         self._stack.add(self._scrolled)
         self._stack.set_visible_child(self._spinner)
         self.add(widget)
+        size_setting = Lp.settings.get_value('window-size')
+        if isinstance(size_setting[1], int):
+            self.set_size_request(700, size_setting[1]*0.7)
+        else:
+            self.set_size_request(700, 400)
 
     def populate(self, url=None):
         """
@@ -84,17 +89,6 @@ class TuneinPopover(Gtk.Popover):
             t = Thread(target=self._populate, args=(url,))
             t.daemon = True
             t.start()
-
-    def do_show(self):
-        """
-            Resize popover and set signals callback
-        """
-        size_setting = Lp.settings.get_value('window-size')
-        if isinstance(size_setting[1], int):
-            self.set_size_request(700, size_setting[1]*0.7)
-        else:
-            self.set_size_request(700, 400)
-        Gtk.Popover.do_show(self)
 
 #######################
 # PRIVATE             #

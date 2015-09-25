@@ -67,14 +67,12 @@ class NextPopover(Gtk.Popover):
             @param widget as Gtk.Widget
         """
         self._signal_id = Lp.player.connect('queue-changed', self.update)
-        print('map')
 
     def _on_unmap(self, widget):
         """
             Disconnect signal
             @param widget as Gtk.Widget
         """
-        print('unmap')
         if self._signal_id is not None:
             Lp.player.disconnect(self._signal_id)
 

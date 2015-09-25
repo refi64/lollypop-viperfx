@@ -35,6 +35,8 @@ class RadioPopover(Gtk.Popover):
             @param radios_manager as RadiosManager
         """
         Gtk.Popover.__init__(self)
+        self.connect('map', self._on_map)
+        self.connect('unmap', self._on_unmap)
         self._name = name
         self._radios_manager = radios_manager
         self._start = 0
@@ -79,22 +81,6 @@ class RadioPopover(Gtk.Popover):
             uris = self._radios_manager.get_tracks(self._name)
             if len(uris) > 0:
                 self._uri_entry.set_text(uris[0])
-
-    def do_show(self):
-        """
-            Resize popover and set signals callback
-        """
-        Gtk.Popover.do_show(self)
-        self._name_entry.grab_focus()
-        Lp.window.enable_global_shorcuts(False)
-
-    def do_hide(self):
-        """
-            Kill thread
-        """
-        self._thread = False
-        Gtk.Popover.do_hide(self)
-        Lp.window.enable_global_shorcuts(True)
 
 #######################
 # PRIVATE             #
@@ -192,6 +178,23 @@ class RadioPopover(Gtk.Popover):
             self._stack.set_visible_child(self._logo)
             self._stack.clean_old_views(self._logo)
             self._spinner = None
+
+    def _on_map(self, widget):
+        """
+            Grab focus/Disable global shortcuts
+            @param widget as Gtk.Widget
+        """
+        self._name_entry.grab_focus()
+        Lp.window.enable_global_shorcuts(False)
+
+    def _on_unmap(self, widget):
+        """
+            Enable global shortcuts, destroy
+            @param widget as Gtk.Widget
+        """
+        self._thread = False
+        Lp.window.enable_global_shorcuts(True)
+        self.destroy()
 
     def _on_btn_add_modify_clicked(self, widget):
         """
