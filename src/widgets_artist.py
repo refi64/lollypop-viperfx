@@ -219,7 +219,7 @@ class WikipediaContent(ArtistContent):
             stream = None
             if data is not None:
                 stream = Gio.MemoryInputStream.new_from_data(data, None)
-            self._set_content(content, stream)
+            GLib.idle_add(self._set_content, content, stream)
         else:
             (url, image_url, content) = Wikipedia().get_artist_infos(artist)
             ArtistContent.populate(self, artist, content,
@@ -261,7 +261,7 @@ class LastfmContent(ArtistContent):
             stream = None
             if data is not None:
                 stream = Gio.MemoryInputStream.new_from_data(data, None)
-            self._set_content(content, stream)
+            GLib.idle_add(self._set_content, content, stream)
         else:
             (url, image_url, content) = Lp.lastfm.get_artist_infos(artist)
             ArtistContent.populate(self, artist, content, image_url, 'lastfm')
