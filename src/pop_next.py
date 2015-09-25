@@ -25,6 +25,8 @@ class NextPopover(Gtk.Popover):
             Init popover
         """
         Gtk.Popover.__init__(self)
+        self.connect('map', self._on_map)
+        self.connect('unmap', self._on_unmap)
         self.set_modal(False)
         self.get_style_context().add_class('osd-popover')
         builder = Gtk.Builder()
@@ -35,6 +37,7 @@ class NextPopover(Gtk.Popover):
         self._artist_label = builder.get_object('artist')
         self._cover = builder.get_object('cover')
         self._skip_btn = builder.get_object('skip_btn')
+        self._signal_id = Lp.player.connect('queue-changed', self.update)
 
     def update(self, player=None):
         """
@@ -55,24 +58,26 @@ class NextPopover(Gtk.Popover):
         else:
             self._cover.hide()
 
-    def do_show(self):
-        """
-            Connect signal
-        """
-        self._signal_id = Lp.player.connect('queue-changed', self.update)
-        Gtk.Popover.do_show(self)
-
-    def do_hide(self):
-        """
-            Disconnect signal
-        """
-        if self._signal_id is not None:
-            Lp.player.disconnect(self._signal_id)
-        Gtk.Popover.do_hide(self)
-
 #######################
 # PRIVATE             #
 #######################
+    def _on_map(self, widget):
+        """
+            Connect signal
+            @param widget as Gtk.Widget
+        """
+        self._signal_id = Lp.player.connect('queue-changed', self.update)
+        print('map')
+
+    def _on_unmap(self, widget):
+        """
+            Disconnect signal
+            @param widget as Gtk.Widget
+        """
+        print('unmap')
+        if self._signal_id is not None:
+            Lp.player.disconnect(self._signal_id)
+
     def _on_skip_btn_clicked(self, btn):
         """
             Skip next track
