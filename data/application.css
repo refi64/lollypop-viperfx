@@ -14,9 +14,8 @@ GtkTreeView:selected {
 
 GtkTreeView:selected:backdrop {
     background-color: shade(@theme_bg_color, 0.7);
-    color: @theme_fg_color;
+    color: @theme_selected_fg_color;
 }
-
 
 GtkTreeView:selected:hover {
         background-color: shade(@theme_selected_bg_color, 0.9);
