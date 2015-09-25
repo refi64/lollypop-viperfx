@@ -301,11 +301,11 @@ class Track(Base):
 
     def set_uri(self, uri):
         """
-            Set uri, will reset path
+            Set uri and path
             @param uri as string
         """
         self._uri = uri
-        self.path = ''
+        self.path = GLib.filename_from_uri(uri)[0]
 
     def set_radio(self, name, uri):
         """
