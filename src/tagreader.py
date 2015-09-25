@@ -10,6 +10,8 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
+import gi
+gi.require_version('GstPbutils', '1.0')
 from gi.repository import GLib, Gst, GstPbutils
 
 import os
@@ -18,9 +20,6 @@ from gettext import gettext as _
 
 from lollypop.define import Lp, Type
 from lollypop.utils import format_artist_name
-
-import gi
-gi.require_version('GstPbutils', '1.0')
 
 
 class TagReader:
