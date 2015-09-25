@@ -305,7 +305,10 @@ class Track(Base):
             @param uri as string
         """
         self._uri = uri
-        self.path = GLib.filename_from_uri(uri)[0]
+        try:
+            self.path = GLib.filename_from_uri(uri)[0]
+        except:
+            pass
 
     def set_radio(self, name, uri):
         """
