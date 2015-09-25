@@ -27,6 +27,7 @@ class ExternalsPopover(Gtk.Popover):
             Init popover
         """
         Gtk.Popover.__init__(self)
+        self.connect('closed', self._on_closed)
         builder = Gtk.Builder()
         builder.add_from_resource('/org/gnome/Lollypop/ExternalsPopover.ui')
         builder.connect_signals(self)
@@ -59,18 +60,6 @@ class ExternalsPopover(Gtk.Popover):
         column.set_sizing(Gtk.TreeViewColumnSizing.FIXED)
         self._view.append_column(column)
         self.add(self._view)
-
-    def populate(self):
-        """
-            Populate popover
-        """
-        self._model.clear()
-        self._populate(Lp.player.get_externals())
-
-    def do_show(self):
-        """
-            Adjuste size and connect signals
-        """
         self._signal_id = Lp.player.connect('current-changed',
                                             self._on_current_changed)
         size_setting = Lp.settings.get_value('window-size')
@@ -78,15 +67,13 @@ class ExternalsPopover(Gtk.Popover):
             self.set_size_request(400, size_setting[1]*0.7)
         else:
             self.set_size_request(400, 600)
-        Gtk.Popover.do_show(self)
 
-    def do_hide(self):
+    def populate(self):
         """
-            Disconnect signals
+            Populate popover
         """
-        if self._signal_id is not None:
-            Lp.player.disconnect(self._signal_id)
-        Gtk.Popover.do_hide(self)
+        self._model.clear()
+        self._populate(Lp.player.get_externals())
 
 #######################
 # PRIVATE             #
@@ -125,6 +112,15 @@ class ExternalsPopover(Gtk.Popover):
         else:
             self._model.append((track.uri, '', track.artist, track.title,
                                 seconds_to_string(track.duration)))
+
+    def _on_closed(self, widget):
+        """
+            Disconnect signals and destroy
+            @param widget as Gtk.Widget
+        """
+        if self._signal_id is not None:
+            Lp.player.disconnect(self._signal_id)
+        self.destroy()
 
     def _on_current_changed(self, player):
         """
