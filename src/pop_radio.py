@@ -194,7 +194,6 @@ class RadioPopover(Gtk.Popover):
         """
         self._thread = False
         Lp.window.enable_global_shorcuts(True)
-        self.destroy()
 
     def _on_btn_add_modify_clicked(self, widget):
         """
