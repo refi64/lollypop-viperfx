@@ -86,10 +86,6 @@ class InfosPopover(Gtk.Popover):
         if InfosPopover.WebView is None:
             self._stack.get_child_by_name('duck').destroy()
 
-    def do_show(self):
-        """
-            Resize popover and set signals callback
-        """
         size_setting = Lp.settings.get_value('window-size')
         if isinstance(size_setting[1], int):
             self.set_size_request(size_setting[0]*0.6,
@@ -98,7 +94,6 @@ class InfosPopover(Gtk.Popover):
             self.set_size_request(700, 600)
         self._stack.set_visible_child_name(
             Lp.settings.get_value('infoswitch').get_string())
-        Gtk.Popover.do_show(self)
 
     def do_get_preferred_width(self):
         """
