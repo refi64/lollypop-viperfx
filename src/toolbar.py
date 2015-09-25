@@ -92,7 +92,6 @@ class Toolbar(Gtk.HeaderBar):
         self._toolbar_playback.on_current_changed(player)
         self._toolbar_infos.on_current_changed(player)
         self._toolbar_title.on_current_changed(player)
-        self._toolbar_end.on_current_changed(player)
 
     def _on_status_changed(self, player):
         """
