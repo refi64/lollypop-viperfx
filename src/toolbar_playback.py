@@ -48,6 +48,12 @@ class ToolbarPlayback(Gtk.Bin):
         self._play_btn.set_sensitive(True)
         self._prev_btn.set_sensitive(True)
         self._next_btn.set_sensitive(True)
+
+    def on_next_changed(self, player):
+        """
+            Update next/prev tooltip
+            @param player as Player
+        """
         # Can add a \n in markup
         # GTK bug => https://bugzilla.gnome.org/show_bug.cgi?id=749965
         prev_artist = escape(player.prev_track.artist)

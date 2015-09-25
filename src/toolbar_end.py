@@ -39,7 +39,6 @@ class ToolbarEnd(Gtk.Bin):
         self._shuffle_btn = builder.get_object('shuffle-button')
         self._shuffle_btn_image = builder.get_object('shuffle-button-image')
         Lp.settings.connect('changed::shuffle', self._shuffle_btn_aspect)
-        Lp.player.connect('next-changed', self._on_next_changed)
 
         self._party_btn = builder.get_object('party-button')
         party_action = Gio.SimpleAction.new('party', None)
@@ -87,6 +86,24 @@ class ToolbarEnd(Gtk.Bin):
         """
         Gtk.Bin.do_realize(self)
         self._set_shuffle_icon()
+
+    def on_next_changed(self, player):
+        """
+            Update buttons on current changed
+            @param player as Player
+        """
+        # Do not show next popover non internal tracks as
+        # tags will be readed on the fly
+        if player.next_track.id is not None and\
+           player.next_track.id >= 0 and\
+           player.is_playing() and\
+            (player.is_party() or
+             Lp.settings.get_enum('shuffle') == Shuffle.TRACKS):
+            self._pop_next.update()
+            self._pop_next.set_relative_to(self)
+            self._pop_next.show()
+        else:
+            self._pop_next.hide()
 
 #######################
 # PRIVATE             #
@@ -136,24 +153,6 @@ class ToolbarEnd(Gtk.Bin):
             @param param as GLib.Variant
         """
         self._party_btn.set_active(not self._party_btn.get_active())
-
-    def _on_next_changed(self, player):
-        """
-            Update buttons on current changed
-            @param player as Player
-        """
-        # Do not show next popover non internal tracks as
-        # tags will be readed on the fly
-        if player.next_track.id is not None and\
-           player.next_track.id >= 0 and\
-           player.is_playing() and\
-            (player.is_party() or
-             Lp.settings.get_enum('shuffle') == Shuffle.TRACKS):
-            self._pop_next.update()
-            self._pop_next.set_relative_to(self)
-            self._pop_next.show()
-        else:
-            self._pop_next.hide()
 
     def _on_search_btn_clicked(self, obj, param=None):
         """

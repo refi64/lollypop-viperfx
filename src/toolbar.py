@@ -47,6 +47,7 @@ class Toolbar(Gtk.HeaderBar):
 
         Lp.player.connect('status-changed', self._on_status_changed)
         Lp.player.connect('current-changed', self._on_current_changed)
+        Lp.player.connect('next-changed', self._on_next_changed)
 
     def do_get_preferred_height(self):
         """
@@ -92,6 +93,14 @@ class Toolbar(Gtk.HeaderBar):
         self._toolbar_playback.on_current_changed(player)
         self._toolbar_infos.on_current_changed(player)
         self._toolbar_title.on_current_changed(player)
+
+    def _on_next_changed(self, player):
+        """
+            Update toolbar
+            @param player as Player
+        """
+        self._toolbar_playback.on_next_changed(player)
+        self._toolbar_end.on_next_changed(player)
 
     def _on_status_changed(self, player):
         """
