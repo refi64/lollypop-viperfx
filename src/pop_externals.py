@@ -120,7 +120,6 @@ class ExternalsPopover(Gtk.Popover):
         """
         if self._signal_id is not None:
             Lp.player.disconnect(self._signal_id)
-        self.destroy()
 
     def _on_current_changed(self, player):
         """
