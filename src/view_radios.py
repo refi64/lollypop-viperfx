@@ -125,7 +125,6 @@ class RadiosView(View):
             Disconnect signals
             @param widget as Gtk.Widget
         """
-        View._on_destroy(self, widget)
         if self._signal is not None:
             Lp.art.disconnect(self._signal)
 

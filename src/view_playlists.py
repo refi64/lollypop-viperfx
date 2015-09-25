@@ -110,7 +110,6 @@ class PlaylistView(View):
             Disconnect signals
             @param widget as Gtk.Widget
         """
-        View._on_destroy(self, widget)
         if self._signal_id:
             Lp.playlists.disconnect(self._signal_id)
             self._signal_id = None

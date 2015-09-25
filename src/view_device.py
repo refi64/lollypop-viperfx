@@ -73,7 +73,6 @@ class DeviceView(View):
             Remove running timeout
             @param widget as Gtk.Widget
         """
-        View._on_destroy(self, widget)
         if self._timeout_id is not None:
             GLib.source_remove(self._timeout_id)
             self._timeout_id = None
