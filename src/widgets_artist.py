@@ -15,7 +15,10 @@ from gi.repository import Gtk, GdkPixbuf, GLib, Gio
 from cgi import escape
 from os import mkdir, path
 
-from lollypop.wikipedia import Wikipedia
+try:
+    from lollypop.wikipedia import Wikipedia
+except:
+    pass
 from lollypop.define import Lp
 
 
