@@ -202,6 +202,7 @@ class RadioPopover(Gtk.Popover):
             Add/Modify a radio
             @param widget as Gtk.Widget
         """
+        self.hide()
         uri = self._uri_entry.get_text()
         new_name = self._name_entry.get_text()
         rename = self._name != '' and self._name != new_name
@@ -218,20 +219,19 @@ class RadioPopover(Gtk.Popover):
             self._name = new_name
             self._populate_threaded()
             self.set_size_request(700, 400)
-        self.hide()
 
     def _on_btn_delete_clicked(self, widget):
         """
             Delete a radio
             @param widget as Gtk.Widget
         """
+        self.hide()
         if self._name != '':
             cache = Art._RADIOS_PATH
             self._radios_manager.delete(self._name)
             Lp.art.clean_radio_cache(self._name)
             if os.path.exists(cache+"/%s.png" % self._name):
                 os.remove(cache+"/%s.png" % self._name)
-        self.hide()
 
     def _on_activate(self, flowbox, child):
         """
