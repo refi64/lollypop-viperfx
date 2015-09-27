@@ -23,7 +23,7 @@ from lollypop.view_artist_albums import CurrentArtistAlbumsView
 class InfosPopover(Gtk.Popover):
     """
         Popover with artist informations
-        @Warning: Auto destroy on close
+        @Warning: Auto destroy if artist id is not None
     """
 
     try:
@@ -52,7 +52,7 @@ class InfosPopover(Gtk.Popover):
     def __init__(self, artist_id=None, show_albums=True):
         """
             Init artist infos
-            @param artist as int
+            @param artist id as int
             @param show albums as bool
         """
         Gtk.Bin.__init__(self)
@@ -162,7 +162,8 @@ class InfosPopover(Gtk.Popover):
             Destroy self
             @param widget as Gtk.Widget
         """
-        GLib.idle_add(self.destroy)
+        if self._artist_id is not None:
+            GLib.idle_add(self.destroy)
 
     def _on_unmap(self, widget):
         """

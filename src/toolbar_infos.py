@@ -37,6 +37,9 @@ class ToolbarInfos(Gtk.Bin):
         builder.add_from_resource('/org/gnome/Lollypop/ToolbarInfos.ui')
         builder.connect_signals(self)
 
+        self._pop_tunein = None
+        self._pop_infos = None
+
         self._infobox = builder.get_object('infos')
         self._infobox.set_property('has-tooltip', True)
         self.add(self._infobox)
@@ -133,12 +136,16 @@ class ToolbarInfos(Gtk.Bin):
         elif Lp.player.current_track.id is not None:
             if event.button == 1:
                 if Lp.player.current_track.id == Type.RADIOS:
-                    pop = TuneinPopover(RadiosManager())
-                    pop.populate()
+                    if self._pop_tunein is None:
+                        self._pop_tunein = TuneinPopover()
+                        self._pop_tunein.populate()
+                        self._pop_tunein.set_relative_to(self._infobox)
+                    self._pop_tunein.show()
                 else:
-                    pop = InfosPopover()
-                pop.set_relative_to(self._infobox)
-                pop.show()
+                    if self._pop_infos is None:
+                        self._pop_infos = InfosPopover()
+                        self._pop_infos.set_relative_to(self._infobox)
+                    self._pop_infos.show()
             elif Lp.player.current_track.id >= 0:
                 menu = PopToolbarMenu(Lp.player.current_track.id, None)
                 popover = Gtk.Popover.new_from_model(eventbox, menu)

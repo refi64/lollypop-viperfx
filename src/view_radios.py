@@ -46,7 +46,7 @@ class RadiosView(View):
         widget = builder.get_object('widget')
         self._empty = builder.get_object('empty')
 
-        self._pop_tunein = TuneinPopover(self._radios_manager)
+        self._pop_tunein = TuneinPopover()
         self._pop_tunein.set_relative_to(builder.get_object('search_btn'))
 
         self._sizegroup = Gtk.SizeGroup(mode=Gtk.SizeGroupMode.BOTH)
