@@ -498,11 +498,14 @@ class Container:
         """
         def load():
             sql = Lp.db.get_cursor()
+            albums = []
             if genre_id == Type.ALL:
                 if is_compilation:
                     albums = Lp.albums.get_compilations(None, sql)
                 else:
-                    albums = Lp.albums.get_ids(None, None, sql)
+                    if Lp.settings.get_value('show-compilations'):
+                        albums = Lp.albums.get_compilations(None, sql)
+                    albums += Lp.albums.get_ids(None, None, sql)
             elif genre_id == Type.POPULARS:
                 albums = Lp.albums.get_populars(sql)
             elif genre_id == Type.RECENTS:
@@ -512,9 +515,8 @@ class Container:
             elif is_compilation:
                 albums = Lp.albums.get_compilations(genre_id, sql)
             else:
-                albums = []
                 if Lp.settings.get_value('show-compilations'):
-                    albums += Lp.albums.get_compilations(genre_id, sql)
+                    albums = Lp.albums.get_compilations(genre_id, sql)
                 albums += Lp.albums.get_ids(None, genre_id, sql)
             sql.close()
             return albums
