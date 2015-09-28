@@ -26,6 +26,7 @@ from lollypop.art import Art
 class RadioPopover(Gtk.Popover):
     """
         Popover with radio logos from the web
+        @Warning: destroy it self on close
     """
 
     def __init__(self, name, radios_manager):
@@ -194,6 +195,7 @@ class RadioPopover(Gtk.Popover):
         """
         self._thread = False
         Lp.window.enable_global_shorcuts(True)
+        GLib.idle_add(self.destroy)
 
     def _on_btn_add_modify_clicked(self, widget):
         """
@@ -216,6 +218,7 @@ class RadioPopover(Gtk.Popover):
             self._name = new_name
             self._populate_threaded()
             self.set_size_request(700, 400)
+        self.hide()
 
     def _on_btn_delete_clicked(self, widget):
         """
@@ -228,6 +231,7 @@ class RadioPopover(Gtk.Popover):
             Lp.art.clean_radio_cache(self._name)
             if os.path.exists(cache+"/%s.png" % self._name):
                 os.remove(cache+"/%s.png" % self._name)
+        self.hide()
 
     def _on_activate(self, flowbox, child):
         """

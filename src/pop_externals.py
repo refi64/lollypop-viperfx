@@ -27,7 +27,7 @@ class ExternalsPopover(Gtk.Popover):
             Init popover
         """
         Gtk.Popover.__init__(self)
-        self.connect('closed', self._on_closed)
+        self.connect('unmap', self._on_self_unmap)
         builder = Gtk.Builder()
         builder.add_from_resource('/org/gnome/Lollypop/ExternalsPopover.ui')
         builder.connect_signals(self)
@@ -113,13 +113,14 @@ class ExternalsPopover(Gtk.Popover):
             self._model.append((track.uri, '', track.artist, track.title,
                                 seconds_to_string(track.duration)))
 
-    def _on_closed(self, widget):
+    def _on_self_unmap(self, widget):
         """
             Disconnect signals and destroy
             @param widget as Gtk.Widget
         """
         if self._signal_id is not None:
             Lp.player.disconnect(self._signal_id)
+        GLib.idle_add(self.destroy)
 
     def _on_current_changed(self, player):
         """
