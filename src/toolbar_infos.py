@@ -17,7 +17,6 @@ from lollypop.widgets_rating import RatingWidget
 from lollypop.widgets_loved import LovedWidget
 from lollypop.pop_tunein import TuneinPopover
 from lollypop.pop_externals import ExternalsPopover
-from lollypop.playlists import RadiosManager
 from lollypop.pop_infos import InfosPopover
 from lollypop.pop_menu import PopToolbarMenu
 from lollypop.define import Lp, Type, ArtSize
