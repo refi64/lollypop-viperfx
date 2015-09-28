@@ -10,9 +10,10 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-from gi.repository import Gtk, GLib
+from gi.repository import Gtk, GLib, Gdk
 
 from lollypop.define import Lp, Type
+from lollypop.pop_slider import SliderPopover
 from lollypop.utils import seconds_to_string
 
 
@@ -38,6 +39,9 @@ class ToolbarTitle(Gtk.Bin):
 
         self._progress = builder.get_object('progress_scale')
         self._progress.set_sensitive(False)
+
+        self._popover = SliderPopover()
+        self._popover.set_relative_to(self._progress)
 
         self._timelabel = builder.get_object('playback')
         self._total_time_label = builder.get_object('duration')
@@ -103,18 +107,44 @@ class ToolbarTitle(Gtk.Bin):
 #######################
 # PRIVATE             #
 #######################
-    def _on_progress_press_button(self, scale, data):
+    def _on_progress_motion_notify(self, scale, event):
+        """
+            Show progress popover
+            @param scale as Gtk.Scale
+            @param event as Gdk.Event
+        """
+        slider_width = scale.style_get_property('slider-width') / 2
+        rect = scale.get_range_rect()
+        if event.x < slider_width or\
+           event.x > rect.width - slider_width:
+            return
+
+        current = (event.x - slider_width) *\
+            scale.get_adjustment().get_upper() /\
+            (rect.width - slider_width * 2)
+        self._popover.set(seconds_to_string(current/60))
+        r = Gdk.Rectangle()
+        r.x = event.x
+        r.y = rect.height
+        r.width = 1
+        r.height = 1
+        self._popover.set_pointing_to(r)
+        self._popover.show()
+
+    def _on_progress_press_button(self, scale, event):
         """
             On press, mark player as seeking
-            @param unused
+            @param scale as Gtk.Scale
+            @param event as Gdk.Event
         """
         self._seeking = True
 
-    def _on_progress_release_button(self, scale, data):
+    def _on_progress_release_button(self, scale, event):
         """
             Callback for scale release button
             Seek player to scale value
-            @param scale as Gtk.Scale, data as unused
+            @param scale as Gtk.Scale
+            @param event as Gdk.Event
         """
         value = scale.get_value()
         self._seeking = False

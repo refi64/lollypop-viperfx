@@ -365,7 +365,7 @@ class SelectionList(Gtk.ScrolledWindow):
         """
             Set motion event
             @param widget as Gtk.widget
-            @param event as GdK.Event
+            @param event as Gdk.Event
         """
         if self._timeout is None:
             self._timeout = GLib.timeout_add(500,

@@ -45,6 +45,7 @@ src/pop_next.py
 src/pop_queue.py
 src/pop_radio.py
 src/pop_search.py
+src/pop_slider.py
 src/pop_tunein.py
 src/selectionlist.py
 src/settings.py

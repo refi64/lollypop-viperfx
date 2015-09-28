@@ -42,6 +42,7 @@ app_PYTHON = \
     pop_queue.py\
     pop_radio.py\
     pop_search.py\
+    pop_slider.py\
     pop_tunein.py\
     selectionlist.py\
     settings.py\
