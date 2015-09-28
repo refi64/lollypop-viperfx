@@ -33,7 +33,6 @@ class ArtistView(ArtistAlbumsView):
         self._genre_id = genre_id
         self._signal_id = None
 
-        self._popover = InfosPopover(artist_id, False)
         builder = Gtk.Builder()
         builder.add_from_resource('/org/gnome/Lollypop/ArtistView.ui')
         builder.connect_signals(self)
@@ -61,5 +60,6 @@ class ArtistView(ArtistAlbumsView):
         """
         if InfosPopover.should_be_shown() and\
                 self._artist_id != Type.COMPILATIONS:
-            self._popover.set_relative_to(eventbox)
-            self._popover.show()
+            pop = InfosPopover(self._artist_id, False)
+            pop.set_relative_to(eventbox)
+            pop.show()
