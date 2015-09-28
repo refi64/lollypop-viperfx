@@ -23,6 +23,7 @@ from lollypop.art import Art
 class TuneinPopover(Gtk.Popover):
     """
         Popover showing tunin radios
+        @Warning: auto destroy on close
     """
 
     def __init__(self, radio_manager):
@@ -31,6 +32,7 @@ class TuneinPopover(Gtk.Popover):
             @param radio manager as RadioManager
         """
         Gtk.Popover.__init__(self)
+        self.connect('unmap', self._on_self_unmap)
         self._tunein = TuneIn()
         self._radio_manager = radio_manager
         self._current_url = None
@@ -193,6 +195,13 @@ class TuneinPopover(Gtk.Popover):
         self._radio_manager.add(item.TEXT.replace('/', '-'))
         self._radio_manager.add_track(item.TEXT.replace('/', '-'),
                                       url)
+
+    def _on_self_unmap(self, widget):
+        """
+            Destroy self
+            @param widget as Gtk.Widget
+        """
+        GLib.idle_add(self.destroy)
 
     def _on_back_btn_clicked(self, btn):
         """
