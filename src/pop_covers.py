@@ -22,6 +22,7 @@ from lollypop.define import Lp, ArtSize, GOOGLE_INC, GOOGLE_MAX
 class CoversPopover(Gtk.Popover):
     """
         Popover with album covers from the web
+        @Warning: Destroy it self on close
     """
 
     def __init__(self, artist_id, album_id):
@@ -31,6 +32,7 @@ class CoversPopover(Gtk.Popover):
             @param album id as int
         """
         Gtk.Popover.__init__(self)
+        self.connect('unmap', self._on_self_unmap)
         self._album = Album(album_id)
         self._start = 0
         self._orig_pixbufs = {}
@@ -61,6 +63,7 @@ class CoversPopover(Gtk.Popover):
         self._stack.add_named(builder.get_object('scrolled'), 'main')
         self._stack.set_visible_child_name('spinner')
         self.add(widget)
+        self.set_size_request(700, 400)
 
     def populate(self):
         """
@@ -80,20 +83,6 @@ class CoversPopover(Gtk.Popover):
         t = Thread(target=self._populate, args=urls)
         t.daemon = True
         t.start()
-
-    def do_show(self):
-        """
-            Resize popover and set signals callback
-        """
-        self.set_size_request(700, 400)
-        Gtk.Popover.do_show(self)
-
-    def do_hide(self):
-        """
-            Kill thread
-        """
-        self._thread = False
-        Gtk.Popover.do_hide(self)
 
 #######################
 # PRIVATE             #
@@ -185,6 +174,14 @@ class CoversPopover(Gtk.Popover):
         del surface
         image.show()
         self._view.add(image)
+
+    def _on_self_unmap(self, widget):
+        """
+            Kill thread
+            @param widget as Gtk.Widget
+        """
+        self._thread = False
+        GLib.idle_add(self.destroy)
 
     def _on_activate(self, flowbox, child):
         """
