@@ -37,17 +37,13 @@ class ToolbarInfos(Gtk.Bin):
         builder.add_from_resource('/org/gnome/Lollypop/ToolbarInfos.ui')
         builder.connect_signals(self)
 
-        infobox = builder.get_object('infos')
-        infobox.set_property('has-tooltip', True)
-        self.add(infobox)
+        self._infobox = builder.get_object('infos')
+        self._infobox.set_property('has-tooltip', True)
+        self.add(self._infobox)
 
         self._title_label = builder.get_object('title')
         self._artist_label = builder.get_object('artist')
         self._cover = builder.get_object('cover')
-        self._pop_infos = InfosPopover()
-        self._pop_infos.set_relative_to(infobox)
-        self._pop_tunein = TuneinPopover(RadiosManager())
-        self._pop_tunein.set_relative_to(infobox)
 
         Lp.art.connect('cover-changed', self._update_cover)
         Lp.art.connect('logo-changed', self._update_logo)
@@ -137,10 +133,12 @@ class ToolbarInfos(Gtk.Bin):
         elif Lp.player.current_track.id is not None:
             if event.button == 1:
                 if Lp.player.current_track.id == Type.RADIOS:
-                    self._pop_tunein.populate()
-                    self._pop_tunein.show()
+                    pop = TuneinPopover(RadiosManager())
+                    pop.populate()
                 else:
-                    self._pop_infos.show()
+                    pop = InfosPopover()
+                pop.set_relative_to(self._infobox)
+                pop.show()
             elif Lp.player.current_track.id >= 0:
                 menu = PopToolbarMenu(Lp.player.current_track.id, None)
                 popover = Gtk.Popover.new_from_model(eventbox, menu)

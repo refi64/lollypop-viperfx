@@ -23,6 +23,7 @@ from lollypop.view_artist_albums import CurrentArtistAlbumsView
 class InfosPopover(Gtk.Popover):
     """
         Popover with artist informations
+        @Warning: Auto destroy on close
     """
 
     try:
@@ -55,6 +56,7 @@ class InfosPopover(Gtk.Popover):
             @param show albums as bool
         """
         Gtk.Bin.__init__(self)
+        self.connect('unmap', self._on_self_unmap)
         self._artist = None
         self._artist_id = artist_id
         self._timeout_id = None
@@ -65,12 +67,13 @@ class InfosPopover(Gtk.Popover):
         builder.add_from_resource('/org/gnome/Lollypop/ArtistInfos.ui')
         builder.connect_signals(self)
 
-        if Lp.settings.get_value('infosreload'):
+        if Lp.settings.get_value('infosreload') and artist_id is None:
             builder.get_object('reload').get_style_context().add_class(
                                                                   'selected')
             self._signal_id = Lp.player.connect("current-changed",
                                                 self._update_content)
         else:
+            builder.get_object('reload').hide()
             self._signal_id = None
 
         self._stack = builder.get_object('stack')
@@ -153,6 +156,13 @@ class InfosPopover(Gtk.Popover):
             GLib.source_remove(self._timeout_id)
             self._timeout_id = None
             self._update_content(None, True)
+
+    def _on_self_unmap(self, widget):
+        """
+            Destroy self
+            @param widget as Gtk.Widget
+        """
+        GLib.idle_add(self.destroy)
 
     def _on_unmap(self, widget):
         """
