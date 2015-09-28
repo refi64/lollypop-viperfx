@@ -54,9 +54,7 @@ class ToolbarEnd(Gtk.Bin):
         app.add_action(searchAction)
         app.set_accels_for_action("app.search", ["<Control>f"])
 
-        queue_button = builder.get_object('queue-button')
-        self._queue = QueueWidget()
-        self._queue.set_relative_to(queue_button)
+        self._queue_button = builder.get_object('queue-button')
 
         self._settings_button = builder.get_object('settings-button')
 
@@ -166,8 +164,10 @@ class ToolbarEnd(Gtk.Bin):
             Show queue widget on queue button clicked
             @param button as Gtk.Button
         """
-        self._queue.show()
-        self._queue.populate()
+        queue = QueueWidget()
+        queue.set_relative_to(self._queue_button)
+        queue.populate()
+        queue.show()
 
     def _on_party_btn_toggled(self, button):
         """

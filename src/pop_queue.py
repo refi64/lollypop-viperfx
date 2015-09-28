@@ -21,6 +21,7 @@ from lollypop.objects import Track
 class QueueWidget(Gtk.Popover):
     """
         Popover with queue management
+        @Warning: destroy it self on close
     """
 
     def __init__(self):
@@ -131,7 +132,7 @@ class QueueWidget(Gtk.Popover):
         if self._signal_id2:
             self._model.disconnect(self._signal_id2)
             self._signal_id2 = None
-        self._model.clear()
+        GLib.idle_add(self.destroy)
 
     def _on_keyboard_event(self, widget, event):
         """
