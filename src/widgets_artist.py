@@ -126,6 +126,9 @@ class ArtistContent(Gtk.Stack):
             @param content as string
             @param data as Gio.MemoryInputStream
         """
+        # Happens if widget is destroyed while loading content from the web
+        if self.get_child_by_name('widget') is None:
+            return
         if content is not None:
             self._content.set_markup(escape(content))
             if stream is not None:
