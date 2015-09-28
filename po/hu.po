@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lollypop\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-09-17 08:19+0200\n"
-"PO-Revision-Date: 2015-09-18 09:33+0000\n"
+"POT-Creation-Date: 2015-09-22 21:20+0200\n"
+"PO-Revision-Date: 2015-09-23 08:49+0000\n"
 "Last-Translator: Cédric Bellegarde <web@adishatz.org>\n"
 "Language-Team: Hungarian (http://www.transifex.com/gnumdk/lollypop/language/hu/)\n"
 "MIME-Version: 1.0\n"
@@ -93,7 +93,7 @@ msgstr ""
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:19
 msgid "Between -15 and 15"
-msgstr ""
+msgstr "-15 és 15 között"
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:20 ../data/SettingsDialog.ui.h:2
 msgid "Auto update music"
@@ -113,7 +113,7 @@ msgstr "Kliensoldali dekoráció használatának tiltása (headerbar)"
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:24 ../data/SettingsDialog.ui.h:9
 msgid "Show compilations in albums view"
-msgstr ""
+msgstr "Válogatások mutatása album nézetben"
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:25 ../data/SettingsDialog.ui.h:4
 msgid "Continue playback when closed"
@@ -163,11 +163,11 @@ msgstr "Zene lejátszó"
 
 #: ../data/lollypop.desktop.in.h:3 ../data/lollypop.appdata.xml.in.h:2
 msgid "Play and organize your music collection"
-msgstr ""
+msgstr "Hallgasd és rendezd zene kollekciód"
 
 #: ../data/lollypop.appdata.xml.in.h:3
 msgid "Lollypop is a new GNOME music playing application."
-msgstr ""
+msgstr "A Lollypop egy új GNOME zene lejátszó alkalmazás."
 
 #: ../data/lollypop.appdata.xml.in.h:4
 msgid "It provides:"
@@ -179,11 +179,11 @@ msgstr "lejátsza az mp3/4, ogg és flac formátumokat"
 
 #: ../data/lollypop.appdata.xml.in.h:6
 msgid "Genre/Cover browsing"
-msgstr ""
+msgstr "Műfaj/Borító bögészés"
 
 #: ../data/lollypop.appdata.xml.in.h:7
 msgid "Genre/Artist/Cover browsing"
-msgstr ""
+msgstr "Műfaj/Előadó/Borító böngészés"
 
 #: ../data/lollypop.appdata.xml.in.h:8 ../data/ToolbarEnd.ui.h:9
 msgid "Search"
@@ -201,11 +201,11 @@ msgstr "Parti mód"
 
 #: ../data/lollypop.appdata.xml.in.h:11
 msgid "Replay gain"
-msgstr ""
+msgstr "Replay gain"
 
 #: ../data/lollypop.appdata.xml.in.h:12
 msgid "Cover art downloader"
-msgstr ""
+msgstr "Borító letöltő"
 
 #: ../data/lollypop.appdata.xml.in.h:13
 msgid "Context artist view"
@@ -229,7 +229,7 @@ msgstr "Last.fm támogatás"
 
 #: ../data/lollypop.appdata.xml.in.h:18
 msgid "Auto install codecs"
-msgstr ""
+msgstr "Kódekek automatikus telepítése"
 
 #: ../data/lollypop.appdata.xml.in.h:19
 msgid "HiDPI support"
@@ -248,67 +248,67 @@ msgstr ""
 
 #: ../src/application.py:363
 msgid "Lollypop: You need to install yelp."
-msgstr ""
+msgstr "Lollypop: yelp telepítése szükséges"
 
 #: ../src/codecs.py:55
 msgid "Restart lollypop after installing codecs"
-msgstr ""
+msgstr "Kódekek telepítése után Lollypop újraindítása"
 
 #: ../src/collectionscanner.py:70
 msgid "Your music is updating"
 msgstr "A zenék frissítés alatt"
 
-#: ../src/container.py:360
+#: ../src/container.py:358
 msgid "Popular albums"
 msgstr "Népszerű albumok"
 
-#: ../src/container.py:361
+#: ../src/container.py:359
 msgid "Recently added albums"
-msgstr ""
+msgstr "Legutóbb hozzáadott albumok"
 
-#: ../src/container.py:362
+#: ../src/container.py:360
 msgid "Random albums"
 msgstr "Véletlen album"
 
-#: ../src/container.py:363 ../src/pop_menu.py:356 ../src/pop_menu.py:433
+#: ../src/container.py:361 ../src/pop_menu.py:356 ../src/pop_menu.py:433
 #: ../src/pop_menu.py:453
 msgid "Playlists"
 msgstr "Lejátszási listák"
 
-#: ../src/container.py:364
+#: ../src/container.py:362
 msgid "Radios"
 msgstr "Rádiók"
 
-#: ../src/container.py:366
+#: ../src/container.py:364
 msgid "All artists"
 msgstr "Minden előadó"
 
-#: ../src/container.py:368
+#: ../src/container.py:366 ../data/DeviceManagerWidget.ui.h:1
 msgid "All albums"
 msgstr "Minden album"
 
-#: ../src/container.py:418
+#: ../src/container.py:416
 msgid "Compilations"
 msgstr "Összeállítások"
 
-#: ../src/container.py:441
+#: ../src/container.py:439
 msgid "Popular tracks"
-msgstr ""
+msgstr "Népszerű"
+
+#: ../src/container.py:440
+msgid "Recently played"
+msgstr "Legutóbb lejátszott"
+
+#: ../src/container.py:441
+msgid "Never played"
+msgstr "Soha nem játszott"
 
 #: ../src/container.py:442
-msgid "Recently played"
-msgstr ""
-
-#: ../src/container.py:443
-msgid "Never played"
-msgstr ""
-
-#: ../src/container.py:444
 msgid "Random tracks"
-msgstr ""
+msgstr "Véletlenszerű"
 
 #: ../src/database_albums.py:239 ../src/database_artists.py:77
-#: ../src/database_genres.py:72 ../src/database_tracks.py:206
+#: ../src/database_genres.py:72 ../src/database_tracks.py:216
 #: ../src/tagreader.py:84 ../src/tagreader.py:103 ../src/tagreader.py:128
 #: ../src/tagreader.py:143
 msgid "Unknown"
@@ -323,23 +323,23 @@ msgid "Many artists"
 msgstr ""
 
 #: ../src/fullscreen.py:85 ../src/fullscreen.py:272
-#: ../src/toolbar_playback.py:80 ../src/toolbar_playback.py:113
+#: ../src/toolbar_playback.py:71 ../src/toolbar_playback.py:104
 msgid "Pause"
 msgstr "Szünet"
 
 #: ../src/fullscreen.py:276 ../src/pop_tunein.py:146
-#: ../src/toolbar_playback.py:82 ../src/toolbar_playback.py:110
+#: ../src/toolbar_playback.py:73 ../src/toolbar_playback.py:101
 #: ../data/ToolbarPlayback.ui.h:2
 msgid "Play"
 msgstr "Lejátszás"
 
 #: ../src/lastfm.py:21
 msgid "Last.fm authentication disabled"
-msgstr ""
+msgstr "Last.fm bejelentkezés letiltva"
 
 #: ../src/lastfm.py:283
 msgid "Wrong Last.fm credentials"
-msgstr ""
+msgstr "Hibás Last.fm felhasználónév vagy jelszó"
 
 #: ../src/notification.py:66 ../data/ToolbarPlayback.ui.h:1
 msgid "Previous"
@@ -369,26 +369,26 @@ msgstr ""
 
 #: ../src/playlists.py:103
 msgid "Loved tracks"
-msgstr ""
+msgstr "Kedvelt számok"
 
 #: ../src/pop_covers.py:55 ../src/pop_tunein.py:83 ../data/RadioPopover.ui.h:3
 msgid "Please wait..."
 msgstr "Kérlek várj..."
 
-#: ../src/pop_covers.py:148
+#: ../src/pop_covers.py:146
 msgid "No cover found..."
 msgstr "Nem található borító"
 
-#: ../src/pop_covers.py:168
+#: ../src/pop_covers.py:165
 msgid "Select a cover art for this album"
 msgstr "Válassz borítót az albumhoz"
 
-#: ../src/pop_infos.py:112
+#: ../src/pop_infos.py:75
 msgid "Advanced artist informations disabled"
 msgstr ""
 
-#: ../src/pop_infos.py:120
-msgid "Wikia support disabled"
+#: ../src/pop_infos.py:83
+msgid "WebKit support disabled"
 msgstr ""
 
 #: ../src/pop_menu.py:66
@@ -397,15 +397,15 @@ msgstr "Lejátszás folytatása"
 
 #: ../src/pop_menu.py:71
 msgid "Stop after this track"
-msgstr ""
+msgstr "Jelenlegi szám után megállítás"
 
 #: ../src/pop_menu.py:76
 msgid "Stop after this album"
-msgstr ""
+msgstr "Jelenlegi album után megállítás"
 
 #: ../src/pop_menu.py:81
 msgid "Stop after this artist"
-msgstr ""
+msgstr "Jelenlegi előadó után megállítás "
 
 #: ../src/pop_menu.py:172 ../data/SearchRow.ui.h:3
 msgid "Add to queue"
@@ -413,11 +413,11 @@ msgstr ""
 
 #: ../src/pop_menu.py:177
 msgid "Next tracks"
-msgstr ""
+msgstr "Következő számok"
 
 #: ../src/pop_menu.py:179 ../data/NextPopover.ui.h:1
 msgid "Next track"
-msgstr ""
+msgstr "Következő szám"
 
 #: ../src/pop_menu.py:183
 msgid "Remove from queue"
@@ -451,15 +451,15 @@ msgstr "Szerkesztés"
 
 #: ../src/pop_radio.py:74 ../src/pop_tunein.py:151
 msgid "Add"
-msgstr ""
+msgstr "Hozzáadás"
 
-#: ../src/pop_radio.py:76
+#: ../src/pop_radio.py:76 ../src/wikipedia.py:51
 msgid "Modify"
-msgstr ""
+msgstr "Módosítás"
 
 #: ../src/pop_tunein.py:106
 msgid "Can't connect to TuneIn..."
-msgstr ""
+msgstr "Nem sikerült kapcsolatot létesíteni: TuneIn"
 
 #: ../src/pop_tunein.py:163
 msgid "Browse themes and add a new radio"
@@ -467,11 +467,11 @@ msgstr ""
 
 #: ../src/settings.py:141
 msgid "Populars"
-msgstr ""
+msgstr "Népszerű"
 
 #: ../src/settings.py:142
 msgid "Recently added"
-msgstr ""
+msgstr "Nemrég hozzáadott"
 
 #. Handle language ordering
 #. Translators: Add here words that shoud be ignored for artist sort order
@@ -479,31 +479,31 @@ msgstr ""
 msgid "The the"
 msgstr ""
 
-#: ../src/view_device.py:40 ../src/view_device.py:81
+#: ../src/view_device.py:41 ../src/view_device.py:101
 #, python-format
 msgid "Synchronize %s"
 msgstr ""
 
-#: ../src/view_device.py:72
+#: ../src/view_device.py:90
 msgid "Cancel synchronization"
 msgstr ""
 
-#: ../src/widgets_album.py:263
+#: ../src/widgets_album.py:257
 #, python-format
 msgid "Disc %s"
-msgstr ""
+msgstr "%s. lemez"
 
-#: ../src/widgets_device.py:179
+#: ../src/widgets_device.py:187
 msgid "Unknown error while syncing, try to reboot your device"
 msgstr ""
 
-#: ../src/widgets_device.py:187
+#: ../src/widgets_device.py:195
 msgid "No free space available on device"
 msgstr ""
 
 #: ../src/widgets_playlist.py:272 ../src/widgets_playlist.py:275
 msgid "New playlist "
-msgstr ""
+msgstr "Új lejátszási lista"
 
 #. Need a copy, segfault on EOS 3.1
 #: ../src/widgets_playlist.py:321 ../src/widgets_playlist.py:553
@@ -513,11 +513,11 @@ msgstr ""
 
 #: ../src/widgets_playlist.py:598
 msgid "Remove these tracks?"
-msgstr ""
+msgstr "Eltávolítod ezeket a számokat?"
 
 #. Translators: Put here words added by wikipedia in band search
 #. Ex: Muse_(band), Peaches(musician)
-#: ../src/wikipedia.py:34
+#: ../src/wikipedia.py:35
 msgid "musician;band"
 msgstr ""
 
@@ -527,7 +527,7 @@ msgstr "Zenelejátszó GNOME-hoz"
 
 #: ../data/AboutDialog.ui.h:2
 msgid "Visit Lollypop website"
-msgstr ""
+msgstr "Lollypop weboldal meglátogatása"
 
 #. Replace me with your names
 #: ../data/AboutDialog.ui.h:4
@@ -536,43 +536,47 @@ msgstr ""
 
 #: ../data/Appmenu.ui.h:1
 msgid "_Update music"
-msgstr ""
+msgstr "_Zene frissítése"
 
 #: ../data/Appmenu.ui.h:2
 msgid "_Fullscreen"
-msgstr ""
+msgstr "_Teljes képernyő"
 
 #: ../data/Appmenu.ui.h:3
 msgid "_Preferences"
-msgstr ""
+msgstr "_Beállítások"
 
 #: ../data/Appmenu.ui.h:4
 msgid "_About"
-msgstr ""
+msgstr "_Névjegy"
 
 #: ../data/Appmenu.ui.h:5
 msgid "_Help"
-msgstr ""
+msgstr "_Segítség"
 
 #: ../data/Appmenu.ui.h:6
 msgid "_Quit"
-msgstr ""
+msgstr "_Kilépés"
 
 #: ../data/ArtistInfos.ui.h:1
-msgid "Last.fm"
+msgid "Albums"
 msgstr ""
 
 #: ../data/ArtistInfos.ui.h:2
-msgid "Wikipedia"
-msgstr ""
+msgid "Last.fm"
+msgstr "Last.fm"
 
 #: ../data/ArtistInfos.ui.h:3
-msgid "Wikia"
-msgstr ""
+msgid "Wikipedia"
+msgstr "Wikipédia"
 
 #: ../data/ArtistInfos.ui.h:4
+msgid "Wikia"
+msgstr "Wikia"
+
+#: ../data/ArtistInfos.ui.h:5
 msgid "DuckDuckGo"
-msgstr ""
+msgstr "DuckDuckGo"
 
 #: ../data/DeviceManagerView.ui.h:1
 msgid "Synchronize your device with this playlists"
@@ -733,10 +737,6 @@ msgstr "Beállítások"
 #: ../data/ToolbarEnd.ui.h:7
 msgid "Shuffle"
 msgstr "Keverés"
-
-#: ../data/ToolbarPlayback.ui.h:4
-msgid "Informations"
-msgstr "Információk"
 
 #: ../data/Unicode.ui.h:1
 msgid "Error"

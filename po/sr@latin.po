@@ -3,148 +3,146 @@
 # This file is distributed under the same license as the PACKAGE package.
 # 
 # Translators:
-# Maarten Peels <maartenpeels@gmail.com>, 2015
-# Nathan Follens, 2015
-# Nathan Follens, 2015
-# Nathan Follens, 2015
+# Марко М. Костић (Marko M. Kostić) <marko.m.kostic@gmail.com>, 2015
+# Марко М. Костић (Marko M. Kostić) <marko.m.kostic@gmail.com>, 2015
 msgid ""
 msgstr ""
 "Project-Id-Version: lollypop\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2015-09-22 21:20+0200\n"
-"PO-Revision-Date: 2015-09-25 09:17+0000\n"
-"Last-Translator: Nathan Follens\n"
-"Language-Team: Dutch (http://www.transifex.com/gnumdk/lollypop/language/nl/)\n"
+"PO-Revision-Date: 2015-09-23 13:30+0000\n"
+"Last-Translator: Марко М. Костић (Marko M. Kostić) <marko.m.kostic@gmail.com>\n"
+"Language-Team: Serbian (Latin) (http://www.transifex.com/gnumdk/lollypop/language/sr@latin/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Language: nl\n"
-"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Language: sr@latin\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:1
 msgid "Window size"
-msgstr "Venstergrootte"
+msgstr "Veličina prozora"
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:2
 msgid "Window size (width and height)."
-msgstr "Venstergrootte (breedte en hoogte)"
+msgstr "Veličina prozora (širina i visina)."
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:3
 msgid "Window position"
-msgstr "Vensterpositie"
+msgstr "Položaj prozora"
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:4
 msgid "Window position (x and y)."
-msgstr "Vensterpositie (x en y)."
+msgstr "Položaj prozora (X i Y položaj)."
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:5
 msgid "Window maximized"
-msgstr "Venster gemaximaliseerd"
+msgstr "Uvećan prozor"
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:6
 msgid "Window maximized state."
-msgstr "Venster is gemaximaliseerd."
+msgstr "Stanje prozora kada je uvećan."
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:7
 msgid "Enabled genres in party mode"
-msgstr "Genres in feestmodus aangezet"
+msgstr "Omogućeni žanrovi pesama u režimu rada za žurke"
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:8
 msgid "Ids for genres."
-msgstr "ID's voor genres."
+msgstr "IB-ovi za žanrove pesama."
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:9
 msgid "Music paths"
-msgstr "Muziekpaden"
+msgstr "Putanja do muzike"
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:10
 msgid "When empty, use XDG_MUSIC_DIR"
-msgstr "Gebruik XDG_MUSIC_DIR wanneer leeg"
+msgstr "Kada je prazna, koristi XDG_MUSIC_DIR promenljivu"
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:11
 msgid "Last.fm login"
-msgstr "Last.fm-account"
+msgstr "Last.fm prijava"
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:12
 msgid "Favorite tag editor"
-msgstr "Favoriete tagbewerker"
+msgstr "Omiljeni uređivač oznaka na pesmama"
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:13
 msgid "INTERNAL"
-msgstr "INTERN"
+msgstr "INTERNO"
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:14
 msgid "Favorite cover file"
-msgstr "Favoriete albumhoes"
+msgstr "Datoteka sa omiljenim omotom albuma"
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:15
 msgid "Restart needed"
-msgstr "Opnieuw opstarten van Lollypop vereist"
+msgstr "Potrebno je ponovo pokrenuti program"
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:16
 msgid "Database version"
-msgstr "Databaseversie"
+msgstr "Izdanje baze podataka"
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:17
 msgid ""
 "Reset this value will reset the database, popular albums will be restored"
-msgstr "Deze waarde opnieuw instellen zal de database opnieuw instellen, populaire albums zullen hersteld worden"
+msgstr "Ponovno postavljanje ove vrednosti će vratiti bazu na početno stanje, Popularni albumi će biti vraćeni"
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:18
 msgid "Replay gain value in db"
-msgstr "ReplayGain-waarde in dB"
+msgstr "Vrednost pojačanja u decibelima"
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:19
 msgid "Between -15 and 15"
-msgstr "Tussen -15 en 15"
+msgstr "Između -15 i 15"
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:20 ../data/SettingsDialog.ui.h:2
 msgid "Auto update music"
-msgstr "Muziek automatisch bijwerken"
+msgstr "Automatski ažuriraj muziku"
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:21
 msgid "Show genres list"
-msgstr "Toon genrelijst"
+msgstr "Prikaži listu žanrova"
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:22
 msgid "Use dark gtk theme"
-msgstr "Donker GTK-thema gebruiken"
+msgstr "Koristi tamnu GTK temu"
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:23
 msgid "Disable the use client side window decorations (headerbar)"
-msgstr "Schakel het gebruik van client side window decorations (headerbar) uit"
+msgstr "Isključi klijentske dekoracije prozora (naslovna traka)"
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:24 ../data/SettingsDialog.ui.h:9
 msgid "Show compilations in albums view"
-msgstr "Toon compilaties in albumoverzicht"
+msgstr "Prikaži kompilacije u delu sa albumima"
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:25 ../data/SettingsDialog.ui.h:4
 msgid "Continue playback when closed"
-msgstr "Doorgaan met afspelen wanneer gesloten"
+msgstr "Nastavi sa puštanjem pesama nakon zatvaranja programa"
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:26
 msgid "Restore previous state"
-msgstr "Vorige toestand herstellen"
+msgstr "Povrati prethodno stanje programa"
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:27
 msgid "Auto play albums on click"
-msgstr "Albums automatisch afspelen bij klik"
+msgstr "Klikom na omot albuma pusti pesme iz albuma"
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:28
 msgid "Disable MPRIS"
-msgstr "MPRIS uitzetten"
+msgstr "Isključi MPRIS kontrole"
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:29
 msgid "Disable notifications"
-msgstr "Meldingen uitzetten"
+msgstr "Isključi obaveštenja"
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:30
 msgid "Show track number from tags"
-msgstr "Toon tracknummer uit tags"
+msgstr "Kao broj pesme koristi broj iz oznake pesme"
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:31
 msgid "Shuffle mode"
-msgstr "Willekeurige volgorde-modus"
+msgstr "Režim mešanja pesama"
 
 #. Translators: Don't translate allowed values, just the description in the
 #. brackets
@@ -154,416 +152,416 @@ msgid ""
 "\"none\" (shuffle off), \"tracks\" (shuffle tracks) , \"albums\" (shuffle "
 "albums), \"tracks_artist\" (shuffle tracks from artist), \"albums_artist\" "
 "(shuffle albums from artist)."
-msgstr "Waarde bepaalt of nummers/albums in willekeurige volgorde afgespeeld worden. Toegelaten waarden zijn: \"none\" (geen willekeurige volgorde), \"tracks\" (nummers in willekeurige volgorde), \"albums\" (albums in willekeurige volgorde), \"tracks_artist\" (nummers van artiest in willekeurige volgorde), \"albums_artist\" (albums van artiest in willekeurige volgorde)."
+msgstr "Vrednost određuje da li se pesme/albumi mešaju prilikom puštanja. Dozvoljene vrednosti su: „none“ (mešanje isključeno), „tracks“ (mešanje pesama samo), „albums“ (mešanje albuma samo), „tracks_artist“, (mešanje pesama jednog izvođača), „albums_artist“ (mešanje pesama sa svih albuma jednog izvođača)."
 
 #: ../data/lollypop.desktop.in.h:1 ../data/lollypop.appdata.xml.in.h:1
 msgid "Lollypop"
-msgstr "Lollypop"
+msgstr "Lolipop"
 
 #: ../data/lollypop.desktop.in.h:2
 msgid "Music Player"
-msgstr "Muziekspeler"
+msgstr "Puštač muzike"
 
 #: ../data/lollypop.desktop.in.h:3 ../data/lollypop.appdata.xml.in.h:2
 msgid "Play and organize your music collection"
-msgstr "Je muziekverzameling beluisteren en beheren"
+msgstr "Puštajte i organizujte vašu muzičku biblioteku"
 
 #: ../data/lollypop.appdata.xml.in.h:3
 msgid "Lollypop is a new GNOME music playing application."
-msgstr "Lollypop is een nieuwe GNOME muziekspeler."
+msgstr "Lolipop je novi puštač muzike za Gnom okruženje."
 
 #: ../data/lollypop.appdata.xml.in.h:4
 msgid "It provides:"
-msgstr "Het biedt:"
+msgstr "Program pruža sledeće:"
 
 #: ../data/lollypop.appdata.xml.in.h:5
 msgid "mp3/4, ogg and flac playback"
-msgstr "Afspelen van mp3/4, ogg en flac"
+msgstr "puštanje mp3/4, ogg i flac formata"
 
 #: ../data/lollypop.appdata.xml.in.h:6
 msgid "Genre/Cover browsing"
-msgstr "Bladeren door genres/albumhoezen"
+msgstr "pregledanje po žanru i omotu"
 
 #: ../data/lollypop.appdata.xml.in.h:7
 msgid "Genre/Artist/Cover browsing"
-msgstr "Bladeren door genres/artiesten/albumhoezen"
+msgstr "pregledanje po žanru, izvođaču i omotu"
 
 #: ../data/lollypop.appdata.xml.in.h:8 ../data/ToolbarEnd.ui.h:9
 msgid "Search"
-msgstr "Zoeken"
+msgstr "Pretraga"
 
 #: ../data/lollypop.appdata.xml.in.h:9 ../src/pop_menu.py:431
 #: ../src/pop_menu.py:451 ../data/ToolbarEnd.ui.h:10
 msgid "Queue"
-msgstr "Wachtrij"
+msgstr "Redosled"
 
 #: ../data/lollypop.appdata.xml.in.h:10 ../data/SettingsDialog.ui.h:16
 #: ../data/ToolbarEnd.ui.h:8
 msgid "Party mode"
-msgstr "Feestmodus"
+msgstr "Režim rada za žurke"
 
 #: ../data/lollypop.appdata.xml.in.h:11
 msgid "Replay gain"
-msgstr "ReplayGain"
+msgstr "pojačanje tona"
 
 #: ../data/lollypop.appdata.xml.in.h:12
 msgid "Cover art downloader"
-msgstr "Albumhoesdownloader"
+msgstr "skidanje omota sa interneta"
 
 #: ../data/lollypop.appdata.xml.in.h:13
 msgid "Context artist view"
-msgstr ""
+msgstr "pregled podataka o izvođaču"
 
 #: ../data/lollypop.appdata.xml.in.h:14
 msgid "MTP sync"
-msgstr "MTP-synchronisatie"
+msgstr "MTP sinhronizovanje"
 
 #: ../data/lollypop.appdata.xml.in.h:15
 msgid "Fullscreen view"
-msgstr "Volledig scherm-modus"
+msgstr "pregled preko celog ekrana"
 
 #: ../data/lollypop.appdata.xml.in.h:16
 msgid "Radios support"
-msgstr "Radio-ondersteuning"
+msgstr "puštanje radio stanica"
 
 #: ../data/lollypop.appdata.xml.in.h:17
 msgid "Last.fm support"
-msgstr "Last.fm-ondersteuning"
+msgstr "podršku za Last.fm uslugu"
 
 #: ../data/lollypop.appdata.xml.in.h:18
 msgid "Auto install codecs"
-msgstr "Automatische installatie van codecs"
+msgstr "automatsko instaliranje potrebnih kodeka"
 
 #: ../data/lollypop.appdata.xml.in.h:19
 msgid "HiDPI support"
-msgstr "HiDPI-ondersteuning"
+msgstr "podršku za ekrane visoke rezolucije"
 
 #: ../data/lollypop.appdata.xml.in.h:20
 msgid "Tunein support"
-msgstr "Tunein-ondersteuning"
+msgstr "podršku za Tunein uslugu"
 
 #: ../src/application.py:25
 msgid ""
 "    - Scrobbler disabled\n"
 "    - Auto cover download disabled\n"
 "    - Artist informations disabled"
-msgstr "    - Scrobbler uitgeschakeld\n    - Automatisch downloaden van albumhoezen uitgeschakeld\n    - Artiestinformatie uitgeschakeld"
+msgstr "- Scrobbler je isključen\n- Automatsko skidanje omota isključeno\n- Skidanje podataka o izvođačima isključeno"
 
 #: ../src/application.py:363
 msgid "Lollypop: You need to install yelp."
-msgstr "Lollypop: je moet yelp installeren."
+msgstr "Lolipop: potrebno je da instalirate „Pomoć“ (yelp paket)."
 
 #: ../src/codecs.py:55
 msgid "Restart lollypop after installing codecs"
-msgstr "Herstart lollypop na het installeren van codecs"
+msgstr "Ponovo pokreni Lolipop nakon instaliranja kodeka"
 
 #: ../src/collectionscanner.py:70
 msgid "Your music is updating"
-msgstr "Je muziek wordt bijgewerkt"
+msgstr "Muzička biblioteka se ažurira"
 
 #: ../src/container.py:358
 msgid "Popular albums"
-msgstr "Populaire albums"
+msgstr "Popularni albumi"
 
 #: ../src/container.py:359
 msgid "Recently added albums"
-msgstr "Recent toegevoegde albums"
+msgstr "Skoro dodati albumi"
 
 #: ../src/container.py:360
 msgid "Random albums"
-msgstr "Willekeurige albums"
+msgstr "Nasumični albumi"
 
 #: ../src/container.py:361 ../src/pop_menu.py:356 ../src/pop_menu.py:433
 #: ../src/pop_menu.py:453
 msgid "Playlists"
-msgstr "Afspeellijsten"
+msgstr "Liste pesama"
 
 #: ../src/container.py:362
 msgid "Radios"
-msgstr "Radio's"
+msgstr "Radio stanice"
 
 #: ../src/container.py:364
 msgid "All artists"
-msgstr "Alle artiesten"
+msgstr "Svi izvođači"
 
 #: ../src/container.py:366 ../data/DeviceManagerWidget.ui.h:1
 msgid "All albums"
-msgstr "Alle albums"
+msgstr "Svi albumi"
 
 #: ../src/container.py:416
 msgid "Compilations"
-msgstr "Compilaties"
+msgstr "Kompilacije"
 
 #: ../src/container.py:439
 msgid "Popular tracks"
-msgstr "Populaire nummers"
+msgstr "Popularne pesme"
 
 #: ../src/container.py:440
 msgid "Recently played"
-msgstr "Recent afgespeeld"
+msgstr "Skoro slušano"
 
 #: ../src/container.py:441
 msgid "Never played"
-msgstr "Nooit afgespeeld"
+msgstr "Nikada slušano"
 
 #: ../src/container.py:442
 msgid "Random tracks"
-msgstr "Willekeurige nummers"
+msgstr "Nasumične pesme"
 
 #: ../src/database_albums.py:239 ../src/database_artists.py:77
 #: ../src/database_genres.py:72 ../src/database_tracks.py:216
 #: ../src/tagreader.py:84 ../src/tagreader.py:103 ../src/tagreader.py:128
 #: ../src/tagreader.py:143
 msgid "Unknown"
-msgstr "Onbekend"
+msgstr "Nepoznato"
 
 #: ../src/database_albums.py:256
 msgid "Compilation"
-msgstr "Compilatie"
+msgstr "Kompilacija"
 
 #: ../src/database_artists.py:69
 msgid "Many artists"
-msgstr "Veel artiesten"
+msgstr "Mnogi izvođači"
 
 #: ../src/fullscreen.py:85 ../src/fullscreen.py:272
 #: ../src/toolbar_playback.py:71 ../src/toolbar_playback.py:104
 msgid "Pause"
-msgstr "Pauzeren"
+msgstr "Pauziraj"
 
 #: ../src/fullscreen.py:276 ../src/pop_tunein.py:146
 #: ../src/toolbar_playback.py:73 ../src/toolbar_playback.py:101
 #: ../data/ToolbarPlayback.ui.h:2
 msgid "Play"
-msgstr "Afspelen"
+msgstr "Pusti"
 
 #: ../src/lastfm.py:21
 msgid "Last.fm authentication disabled"
-msgstr "Last.fm authenticatie uitgeschakeld"
+msgstr "Prijava na Last.fm je onemogućena"
 
 #: ../src/lastfm.py:283
 msgid "Wrong Last.fm credentials"
-msgstr "Verkeerde Last.fm-referenties"
+msgstr "Parametri za prijavu na Last.fm su netačni"
 
 #: ../src/notification.py:66 ../data/ToolbarPlayback.ui.h:1
 msgid "Previous"
-msgstr "Vorige"
+msgstr "Prethodna"
 
 #: ../src/notification.py:70 ../data/ToolbarPlayback.ui.h:3
 msgid "Next"
-msgstr "Volgende"
+msgstr "Sledeća"
 
 #. TRANSLATORS: by refers to the artist,
 #: ../src/notification.py:104
 #, python-format
 msgid "by %s"
-msgstr "door %s"
+msgstr "izvodi %s"
 
 #. TRANSLATORS: by refers to the artist,
 #. from to the album
 #: ../src/notification.py:112
 #, python-format
 msgid "by %s, from %s"
-msgstr "door %s, van %s"
+msgstr "izvodi %s, sa albuma %s"
 
 #: ../src/player_bin.py:285
 #, python-format
 msgid "File doesn't exist: %s"
-msgstr "Bestand bestaat niet: %s"
+msgstr "Datoteka ne postoji: %s"
 
 #: ../src/playlists.py:103
 msgid "Loved tracks"
-msgstr "Lievelingsnummers"
+msgstr "Omiljene pesme"
 
 #: ../src/pop_covers.py:55 ../src/pop_tunein.py:83 ../data/RadioPopover.ui.h:3
 msgid "Please wait..."
-msgstr "Even geduld..."
+msgstr "Sačekajte..."
 
 #: ../src/pop_covers.py:146
 msgid "No cover found..."
-msgstr "Geen hoes gevonden..."
+msgstr "Nisam pronašao omot..."
 
 #: ../src/pop_covers.py:165
 msgid "Select a cover art for this album"
-msgstr "Kies een albumhoes voor dit album"
+msgstr "Izaberi omot za ovaj album"
 
 #: ../src/pop_infos.py:75
 msgid "Advanced artist informations disabled"
-msgstr "Uitgebreide artiestinformatie uitgeschakeld"
+msgstr "Napredan prikaz podataka o izvođaču je isključen"
 
 #: ../src/pop_infos.py:83
 msgid "WebKit support disabled"
-msgstr "WebKit-ondersteuning uitgeschakeld"
+msgstr "Vebkit podrška onemogućena"
 
 #: ../src/pop_menu.py:66
 msgid "Continue playback"
-msgstr "Doorgaan met afspelen"
+msgstr "Nastavi sa puštanjem"
 
 #: ../src/pop_menu.py:71
 msgid "Stop after this track"
-msgstr "Stoppen na dit nummer"
+msgstr "Stani nakon ove pesme"
 
 #: ../src/pop_menu.py:76
 msgid "Stop after this album"
-msgstr "Stoppen na dit album"
+msgstr "Stani nakon ovog albuma"
 
 #: ../src/pop_menu.py:81
 msgid "Stop after this artist"
-msgstr "Stoppen na deze artiest"
+msgstr "Stani nakon ovog izvođača"
 
 #: ../src/pop_menu.py:172 ../data/SearchRow.ui.h:3
 msgid "Add to queue"
-msgstr "Toevoegen aan wachtrij"
+msgstr "Dodaj u redosled"
 
 #: ../src/pop_menu.py:177
 msgid "Next tracks"
-msgstr "Volgende nummers"
+msgstr "Sledeće pesme"
 
 #: ../src/pop_menu.py:179 ../data/NextPopover.ui.h:1
 msgid "Next track"
-msgstr "Volgend nummer"
+msgstr "Sledeća pesma"
 
 #: ../src/pop_menu.py:183
 msgid "Remove from queue"
-msgstr "Verwijderen uit wachtrij"
+msgstr "Izbaci iz redosleda"
 
 #: ../src/pop_menu.py:251
 msgid "Add to others"
-msgstr "Toevoegen aan andere"
+msgstr "Dodaj u drugo"
 
 #: ../src/pop_menu.py:264
 #, python-format
 msgid "Remove from \"%s\""
-msgstr "Verwijderen uit \"%s\""
+msgstr "Izbaci iz/sa \"%s\""
 
 #: ../src/pop_menu.py:270
 #, python-format
 msgid "Add to \"%s\""
-msgstr "Toevoegen aan \"%s\""
+msgstr "Dodaj u/na \"%s\""
 
 #: ../src/pop_menu.py:354
 msgid "Playback"
-msgstr "Afspelen"
+msgstr "Puštanje"
 
 #: ../src/pop_menu.py:391
 msgid "Modify informations"
-msgstr "Gegevens bewerken"
+msgstr "Promeni podatke"
 
 #: ../src/pop_menu.py:435 ../data/PlaylistView.ui.h:1
 msgid "Edit"
-msgstr "Bewerken"
+msgstr "Uredi"
 
 #: ../src/pop_radio.py:74 ../src/pop_tunein.py:151
 msgid "Add"
-msgstr "Toevoegen"
+msgstr "Dodaj"
 
 #: ../src/pop_radio.py:76 ../src/wikipedia.py:51
 msgid "Modify"
-msgstr "Bewerken"
+msgstr "Izmeni"
 
 #: ../src/pop_tunein.py:106
 msgid "Can't connect to TuneIn..."
-msgstr "Kan geen verbinding maken met TuneIn..."
+msgstr "Ne mogu da se povežem na TuneIn uslugu..."
 
 #: ../src/pop_tunein.py:163
 msgid "Browse themes and add a new radio"
-msgstr "Blader door thema's en voeg een nieuwe radio toe"
+msgstr "Pregledaj teme i dodaj novi radio"
 
 #: ../src/settings.py:141
 msgid "Populars"
-msgstr "Populair"
+msgstr "Popularno"
 
 #: ../src/settings.py:142
 msgid "Recently added"
-msgstr "Recent toegevoegd"
+msgstr "Skoro dodato"
 
 #. Handle language ordering
 #. Translators: Add here words that shoud be ignored for artist sort order
 #: ../src/utils.py:85
 msgid "The the"
-msgstr "The the De de"
+msgstr "Član član"
 
 #: ../src/view_device.py:41 ../src/view_device.py:101
 #, python-format
 msgid "Synchronize %s"
-msgstr "%s synchroniseren"
+msgstr "Uskladi %s"
 
 #: ../src/view_device.py:90
 msgid "Cancel synchronization"
-msgstr "Synchronisatie annuleren"
+msgstr "Otkaži usklađivanje"
 
 #: ../src/widgets_album.py:257
 #, python-format
 msgid "Disc %s"
-msgstr "Schijf %s"
+msgstr "Disk %s"
 
 #: ../src/widgets_device.py:187
 msgid "Unknown error while syncing, try to reboot your device"
-msgstr "Onbekende fout bij synchroniseren, probeer je toestel te herstarten"
+msgstr "Dogodila se nepoznata greška prilikom usklađivanja pesama sa uređajem. Probajte da ugasite i upalite uređaj pa onda da uskladite pesme."
 
 #: ../src/widgets_device.py:195
 msgid "No free space available on device"
-msgstr "Geen vrije ruimte beschikbaar op apparaat"
+msgstr "Nema dovoljno slobodnog prostora na uređaju"
 
 #: ../src/widgets_playlist.py:272 ../src/widgets_playlist.py:275
 msgid "New playlist "
-msgstr "Nieuwe afspeellijst"
+msgstr "Nova lista pesama"
 
 #. Need a copy, segfault on EOS 3.1
 #: ../src/widgets_playlist.py:321 ../src/widgets_playlist.py:553
 #, python-format
 msgid "Remove \"%s\"?"
-msgstr "\"%s\" verwijderen?"
+msgstr "Ukloniti \"%s\"?"
 
 #: ../src/widgets_playlist.py:598
 msgid "Remove these tracks?"
-msgstr "Deze nummers verwijderen?"
+msgstr "Ukloniti ove pesme?"
 
 #. Translators: Put here words added by wikipedia in band search
 #. Ex: Muse_(band), Peaches(musician)
 #: ../src/wikipedia.py:35
 msgid "musician;band"
-msgstr "muzikant;groep;band"
+msgstr "izvođač;bend"
 
 #: ../data/AboutDialog.ui.h:1
 msgid "A music player for GNOME."
-msgstr "Een muziekspeler voor GNOME."
+msgstr "Puštač muzike za Gnom."
 
 #: ../data/AboutDialog.ui.h:2
 msgid "Visit Lollypop website"
-msgstr "Bezoek de website van Lollypop"
+msgstr "Matična veb stranica Lolipopa"
 
 #. Replace me with your names
 #: ../data/AboutDialog.ui.h:4
 msgid "Cédric Bellegarde <cedric.bellegarde@adishatz.org>"
-msgstr "Cédric Bellegarde <cedric.bellegarde@adishatz.org>"
+msgstr "Marko M. Kostić <marko.m.kostic@gmail.com>"
 
 #: ../data/Appmenu.ui.h:1
 msgid "_Update music"
-msgstr "Muziek _bijwerken"
+msgstr "Až_uriraj muziku"
 
 #: ../data/Appmenu.ui.h:2
 msgid "_Fullscreen"
-msgstr "_Volledig scherm"
+msgstr "Pre_ko celog ekrana"
 
 #: ../data/Appmenu.ui.h:3
 msgid "_Preferences"
-msgstr "_Voorkeuren"
+msgstr "P_ostavke"
 
 #: ../data/Appmenu.ui.h:4
 msgid "_About"
-msgstr "_Over"
+msgstr "O p_rogramu"
 
 #: ../data/Appmenu.ui.h:5
 msgid "_Help"
-msgstr "_Hulp"
+msgstr "Po_moć"
 
 #: ../data/Appmenu.ui.h:6
 msgid "_Quit"
-msgstr "_Afsluiten"
+msgstr "_Izlaz"
 
 #: ../data/ArtistInfos.ui.h:1
 msgid "Albums"
-msgstr "Albums"
+msgstr "Albumi"
 
 #: ../data/ArtistInfos.ui.h:2
 msgid "Last.fm"
@@ -571,11 +569,11 @@ msgstr "Last.fm"
 
 #: ../data/ArtistInfos.ui.h:3
 msgid "Wikipedia"
-msgstr "Wikipedia"
+msgstr "Vikipedija"
 
 #: ../data/ArtistInfos.ui.h:4
 msgid "Wikia"
-msgstr "Wikia"
+msgstr "Vikija"
 
 #: ../data/ArtistInfos.ui.h:5
 msgid "DuckDuckGo"
@@ -583,170 +581,170 @@ msgstr "DuckDuckGo"
 
 #: ../data/DeviceManagerView.ui.h:1
 msgid "Synchronize your device with this playlists"
-msgstr "Synchroniseer je apparaat met deze afspeellijst"
+msgstr "Uskladite vaš uređaj sa ovim listama pesama"
 
 #: ../data/PlaylistEditWidget.ui.h:1 ../data/PlaylistsManagerWidget.ui.h:1
 msgid "Confirm"
-msgstr "Bevestigen"
+msgstr "Potvrdi"
 
 #: ../data/PlaylistsManagerView.ui.h:1
 msgid "New playlist"
-msgstr "Nieuwe afspeellijst"
+msgstr "Nova lista pesama"
 
 #: ../data/QueuePopover.ui.h:1
 msgid "Queue:"
-msgstr "Wachtrij:"
+msgstr "Redosled:"
 
 #: ../data/QueuePopover.ui.h:2
 msgid "Clear queue"
-msgstr "Wachtrij wissen"
+msgstr "Očisti redosled"
 
 #: ../data/RadioPopover.ui.h:1
 msgid "Select a logo  for this radio"
-msgstr "Kies een logo voor deze radio"
+msgstr "Izaberi logotip za ovu stanicu"
 
 #: ../data/RadioPopover.ui.h:2
 msgid "No logo found..."
-msgstr "Geen logo gevonden..."
+msgstr "Nisam pronašao nijedan logotip..."
 
 #: ../data/RadioPopover.ui.h:4
 msgid "Name:"
-msgstr "Naam:"
+msgstr "Ime:"
 
 #: ../data/RadioPopover.ui.h:5
 msgid "Address:"
-msgstr "Adres:"
+msgstr "Adresa:"
 
 #: ../data/RadioPopover.ui.h:6
 msgid "Delete"
-msgstr "Verwijderen"
+msgstr "Ukloni"
 
 #: ../data/RadiosView.ui.h:1
 msgid "No favorite radios"
-msgstr "Geen favoriete radio's"
+msgstr "Nema omiljenih stanica za prikaz"
 
 #: ../data/RadiosView.ui.h:2
 msgid "New radio"
-msgstr "Nieuwe radio"
+msgstr "Nova radio stanica"
 
 #: ../data/RadiosView.ui.h:3
 msgid "Search in TuneIn"
-msgstr "Zoeken op TuneIn"
+msgstr "Pretraži TuneIn"
 
 #: ../data/SearchPopover.ui.h:1
 msgid "Play search"
-msgstr "Zoekopdracht afspelen"
+msgstr "Pusti sve iz pretrage"
 
 #: ../data/SearchPopover.ui.h:2
 msgid "Create a new playlist based on search"
-msgstr "Maak een nieuwe speellijst aan gebaseerd op zoekopdracht"
+msgstr "Napravi novu listu pesama na osnovu rezultata iz pretrage"
 
 #: ../data/SearchRow.ui.h:1
 msgid "artist"
-msgstr "artiest"
+msgstr "izvođač"
 
 #: ../data/SearchRow.ui.h:2
 msgid "Add to playlist"
-msgstr "Toevoegen aan afspeellijst"
+msgstr "Dodaj u listu pesama"
 
 #: ../data/SettingsDialog.ui.h:1
 msgid "Preferences"
-msgstr "Voorkeuren"
+msgstr "Postavke"
 
 #: ../data/SettingsDialog.ui.h:3
 msgid "Restore state on startup"
-msgstr "Toestand herstellen bij opstarten"
+msgstr "Povrati prethodno stanje programa prilikom pokretanja programa"
 
 #: ../data/SettingsDialog.ui.h:5
 msgid "Play albums on click"
-msgstr "Albums afspelen bij klik"
+msgstr "Pusti pesme sa albuma na klik"
 
 #: ../data/SettingsDialog.ui.h:6
 msgid "Behaviour"
-msgstr "Gedrag"
+msgstr "Ponašanje programa"
 
 #: ../data/SettingsDialog.ui.h:7
 msgid "Use dark theme variant"
-msgstr "Donkere thema-variant gebruiken"
+msgstr "Koristi tamnu temu"
 
 #: ../data/SettingsDialog.ui.h:8
 msgid "Show genres"
-msgstr "Toon genres"
+msgstr "Prikaži žanrove"
 
 #: ../data/SettingsDialog.ui.h:10
 msgid "Appearance"
-msgstr "Uiterlijk"
+msgstr "Izgled"
 
 #: ../data/SettingsDialog.ui.h:11
 msgid "Configure lollypop behaviour"
-msgstr "Pas gedrag van lollypop aan"
+msgstr "Podešavanje ponašanja Lolipopa"
 
 #: ../data/SettingsDialog.ui.h:12
 msgid "Options"
-msgstr "Opties"
+msgstr "Podešavanja"
 
 #: ../data/SettingsDialog.ui.h:13
 msgid "Select music folders"
-msgstr "Kies muziekmappen"
+msgstr "Izaberi direktorijume sa muzikom"
 
 #: ../data/SettingsDialog.ui.h:14
 msgid "Music"
-msgstr "Muziek"
+msgstr "Muzika"
 
 #: ../data/SettingsDialog.ui.h:15
 msgid "Select what will be available in party mode"
-msgstr "Kies wat beschikbaar is in feestmodus"
+msgstr "Izaberi šta će biti dostupno u režimu rada za žurke"
 
 #: ../data/SettingsDialog.ui.h:17
 msgid "Login:"
-msgstr "Gebruikersnaam:"
+msgstr "Korisničko ime:"
 
 #: ../data/SettingsDialog.ui.h:18
 msgid "Password:"
-msgstr "Wachtwoord:"
+msgstr "Lozinka:"
 
 #: ../data/SettingsDialog.ui.h:19
 msgid "Connect"
-msgstr "Verbinden"
+msgstr "Poveži se"
 
 #: ../data/SettingsDialog.ui.h:20
 msgid "You need to install pylast and gi secret"
-msgstr "Je moet pylast en gi secret installeren"
+msgstr "Potrebno je da instalirate pakete koji sadrže „pylast“ i „gi secret“"
 
 #: ../data/ToolbarEnd.ui.h:1
 msgid "No shuffle"
-msgstr "Geen willekeurige volgorde"
+msgstr "Bez mešanja pesama"
 
 #: ../data/ToolbarEnd.ui.h:2
 msgid "Shuffle albums"
-msgstr "Albums in willekeurige volgorde"
+msgstr "Mešaj albume"
 
 #: ../data/ToolbarEnd.ui.h:3
 msgid "Shuffle tracks"
-msgstr "Nummers in willekeurige volgorde"
+msgstr "Mešaj pesme"
 
 #: ../data/ToolbarEnd.ui.h:4
 msgid "Shuffle albums from artist"
-msgstr "Albums van artiest in willekeurige volgorde"
+msgstr "Mešaj albume jednog izvođača"
 
 #: ../data/ToolbarEnd.ui.h:5
 msgid "Shuffle tracks from artist"
-msgstr "Nummers van artiest in willekeurige volgorde"
+msgstr "Mešaj pesme jednog izvođača"
 
 #: ../data/ToolbarEnd.ui.h:6
 msgid "Settings"
-msgstr "Instellingen"
+msgstr "Podešavanja"
 
 #: ../data/ToolbarEnd.ui.h:7
 msgid "Shuffle"
-msgstr "Willekeurige volgorde"
+msgstr "Mešanje pesama"
 
 #: ../data/Unicode.ui.h:1
 msgid "Error"
-msgstr "Fout"
+msgstr "Greška"
 
 #: ../data/Unicode.ui.h:2
 msgid ""
 "Lollypop isn't designed to work without an unicode locale.\n"
 "Please fix your system."
-msgstr "Lollypop is niet gemaakt om te werken zonder een unicode locale.\nHerstel je systeem."
+msgstr "Lolipop nije napisan tako da može da radi na sistemu bez Unikod lokalnog standarda.\nSredite vaš operativni sistem."

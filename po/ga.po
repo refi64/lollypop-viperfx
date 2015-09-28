@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lollypop\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-09-17 08:19+0200\n"
-"PO-Revision-Date: 2015-09-18 09:33+0000\n"
+"POT-Creation-Date: 2015-09-22 21:20+0200\n"
+"PO-Revision-Date: 2015-09-23 08:49+0000\n"
 "Last-Translator: Cédric Bellegarde <web@adishatz.org>\n"
 "Language-Team: Irish (http://www.transifex.com/gnumdk/lollypop/language/ga/)\n"
 "MIME-Version: 1.0\n"
@@ -258,57 +258,57 @@ msgstr "Atosaigh lollypop i ndiaidh suiteála codeceanna"
 msgid "Your music is updating"
 msgstr "Tá do chuid ceoil á nuashonrú"
 
-#: ../src/container.py:360
+#: ../src/container.py:358
 msgid "Popular albums"
 msgstr "Albaim a bhfuil tóir orthu"
 
-#: ../src/container.py:361
+#: ../src/container.py:359
 msgid "Recently added albums"
 msgstr "Albaim a bhfuil curtha le déanaí"
 
-#: ../src/container.py:362
+#: ../src/container.py:360
 msgid "Random albums"
 msgstr "Albaim randamacha"
 
-#: ../src/container.py:363 ../src/pop_menu.py:356 ../src/pop_menu.py:433
+#: ../src/container.py:361 ../src/pop_menu.py:356 ../src/pop_menu.py:433
 #: ../src/pop_menu.py:453
 msgid "Playlists"
 msgstr "Liostaí seanma"
 
-#: ../src/container.py:364
+#: ../src/container.py:362
 msgid "Radios"
 msgstr "Raidiónna"
 
-#: ../src/container.py:366
+#: ../src/container.py:364
 msgid "All artists"
 msgstr "Ealaíontóirí ar fad"
 
-#: ../src/container.py:368
+#: ../src/container.py:366 ../data/DeviceManagerWidget.ui.h:1
 msgid "All albums"
 msgstr "Albaim ar fad"
 
-#: ../src/container.py:418
+#: ../src/container.py:416
 msgid "Compilations"
 msgstr "Teaglaimí"
 
-#: ../src/container.py:441
+#: ../src/container.py:439
 msgid "Popular tracks"
 msgstr "Rianta a bhfuil tóir orthu"
 
-#: ../src/container.py:442
+#: ../src/container.py:440
 msgid "Recently played"
 msgstr "Seinnte le déanaí"
 
-#: ../src/container.py:443
+#: ../src/container.py:441
 msgid "Never played"
 msgstr "Seinnte riamh"
 
-#: ../src/container.py:444
+#: ../src/container.py:442
 msgid "Random tracks"
 msgstr "Rianta randamacha"
 
 #: ../src/database_albums.py:239 ../src/database_artists.py:77
-#: ../src/database_genres.py:72 ../src/database_tracks.py:206
+#: ../src/database_genres.py:72 ../src/database_tracks.py:216
 #: ../src/tagreader.py:84 ../src/tagreader.py:103 ../src/tagreader.py:128
 #: ../src/tagreader.py:143
 msgid "Unknown"
@@ -323,12 +323,12 @@ msgid "Many artists"
 msgstr "Go leor ealaíontóirí"
 
 #: ../src/fullscreen.py:85 ../src/fullscreen.py:272
-#: ../src/toolbar_playback.py:80 ../src/toolbar_playback.py:113
+#: ../src/toolbar_playback.py:71 ../src/toolbar_playback.py:104
 msgid "Pause"
 msgstr "Cuir ar sos"
 
 #: ../src/fullscreen.py:276 ../src/pop_tunein.py:146
-#: ../src/toolbar_playback.py:82 ../src/toolbar_playback.py:110
+#: ../src/toolbar_playback.py:73 ../src/toolbar_playback.py:101
 #: ../data/ToolbarPlayback.ui.h:2
 msgid "Play"
 msgstr "Seinn"
@@ -375,21 +375,21 @@ msgstr "Rianta le han-dúil iontu"
 msgid "Please wait..."
 msgstr "Fan le do thoil..."
 
-#: ../src/pop_covers.py:148
+#: ../src/pop_covers.py:146
 msgid "No cover found..."
 msgstr "Gan clúdach aimsithe ar bith..."
 
-#: ../src/pop_covers.py:168
+#: ../src/pop_covers.py:165
 msgid "Select a cover art for this album"
 msgstr "Roghnaigh ealaín clúdaigh don albam seo"
 
-#: ../src/pop_infos.py:112
+#: ../src/pop_infos.py:75
 msgid "Advanced artist informations disabled"
 msgstr "Eolas casta ealaíontóra díchumasaithe"
 
-#: ../src/pop_infos.py:120
-msgid "Wikia support disabled"
-msgstr "Tacaíocht Wikia díchumasaithe"
+#: ../src/pop_infos.py:83
+msgid "WebKit support disabled"
+msgstr ""
 
 #: ../src/pop_menu.py:66
 msgid "Continue playback"
@@ -453,7 +453,7 @@ msgstr "Eagar"
 msgid "Add"
 msgstr "Cuir leis"
 
-#: ../src/pop_radio.py:76
+#: ../src/pop_radio.py:76 ../src/wikipedia.py:51
 msgid "Modify"
 msgstr "Mionathraigh"
 
@@ -479,25 +479,25 @@ msgstr "Curtha le déanaí"
 msgid "The the"
 msgstr "An an Na na"
 
-#: ../src/view_device.py:40 ../src/view_device.py:81
+#: ../src/view_device.py:41 ../src/view_device.py:101
 #, python-format
 msgid "Synchronize %s"
 msgstr "Sioncrónaigh %s"
 
-#: ../src/view_device.py:72
+#: ../src/view_device.py:90
 msgid "Cancel synchronization"
 msgstr "Cealaigh sioncrónú"
 
-#: ../src/widgets_album.py:263
+#: ../src/widgets_album.py:257
 #, python-format
 msgid "Disc %s"
 msgstr "Ceirnín %s"
 
-#: ../src/widgets_device.py:179
+#: ../src/widgets_device.py:187
 msgid "Unknown error while syncing, try to reboot your device"
 msgstr "Botún anaithnid nuair ag sioncrónú, déan iarracht as atosú do ghléis"
 
-#: ../src/widgets_device.py:187
+#: ../src/widgets_device.py:195
 msgid "No free space available on device"
 msgstr "Gan spás saor ar bith ar ghléas"
 
@@ -517,7 +517,7 @@ msgstr "Bain na rianta seo?"
 
 #. Translators: Put here words added by wikipedia in band search
 #. Ex: Muse_(band), Peaches(musician)
-#: ../src/wikipedia.py:34
+#: ../src/wikipedia.py:35
 msgid "musician;band"
 msgstr "ceoltóir;buíon cheoil"
 
@@ -559,18 +559,22 @@ msgid "_Quit"
 msgstr "_Scoir"
 
 #: ../data/ArtistInfos.ui.h:1
+msgid "Albums"
+msgstr ""
+
+#: ../data/ArtistInfos.ui.h:2
 msgid "Last.fm"
 msgstr "Last.fm"
 
-#: ../data/ArtistInfos.ui.h:2
+#: ../data/ArtistInfos.ui.h:3
 msgid "Wikipedia"
 msgstr "Wikipedia"
 
-#: ../data/ArtistInfos.ui.h:3
+#: ../data/ArtistInfos.ui.h:4
 msgid "Wikia"
 msgstr "Wikia"
 
-#: ../data/ArtistInfos.ui.h:4
+#: ../data/ArtistInfos.ui.h:5
 msgid "DuckDuckGo"
 msgstr ""
 
@@ -733,10 +737,6 @@ msgstr "Socruithe"
 #: ../data/ToolbarEnd.ui.h:7
 msgid "Shuffle"
 msgstr "Suaith"
-
-#: ../data/ToolbarPlayback.ui.h:4
-msgid "Informations"
-msgstr "Eolas"
 
 #: ../data/Unicode.ui.h:1
 msgid "Error"

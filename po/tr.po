@@ -10,8 +10,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lollypop\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-09-17 08:19+0200\n"
-"PO-Revision-Date: 2015-09-18 09:33+0000\n"
+"POT-Creation-Date: 2015-09-22 21:20+0200\n"
+"PO-Revision-Date: 2015-09-23 08:49+0000\n"
 "Last-Translator: Cédric Bellegarde <web@adishatz.org>\n"
 "Language-Team: Turkish (http://www.transifex.com/gnumdk/lollypop/language/tr/)\n"
 "MIME-Version: 1.0\n"
@@ -260,57 +260,57 @@ msgstr "Kodekleri yükledikledikten sonra Lollypop'u tekrar başlat"
 msgid "Your music is updating"
 msgstr "Müziğin güncelleniyor"
 
-#: ../src/container.py:360
+#: ../src/container.py:358
 msgid "Popular albums"
 msgstr "Popüler albümler"
 
-#: ../src/container.py:361
+#: ../src/container.py:359
 msgid "Recently added albums"
 msgstr "Son eklenen albümler"
 
-#: ../src/container.py:362
+#: ../src/container.py:360
 msgid "Random albums"
 msgstr "Rastgele albümler"
 
-#: ../src/container.py:363 ../src/pop_menu.py:356 ../src/pop_menu.py:433
+#: ../src/container.py:361 ../src/pop_menu.py:356 ../src/pop_menu.py:433
 #: ../src/pop_menu.py:453
 msgid "Playlists"
 msgstr "Çalma listeleri"
 
-#: ../src/container.py:364
+#: ../src/container.py:362
 msgid "Radios"
 msgstr "Radyolar"
 
-#: ../src/container.py:366
+#: ../src/container.py:364
 msgid "All artists"
 msgstr "Bütün şarkıcılar"
 
-#: ../src/container.py:368
+#: ../src/container.py:366 ../data/DeviceManagerWidget.ui.h:1
 msgid "All albums"
 msgstr "Bütü albümler"
 
-#: ../src/container.py:418
+#: ../src/container.py:416
 msgid "Compilations"
 msgstr "Derlemeler"
 
-#: ../src/container.py:441
+#: ../src/container.py:439
 msgid "Popular tracks"
 msgstr "Popüler şarkılar"
 
-#: ../src/container.py:442
+#: ../src/container.py:440
 msgid "Recently played"
 msgstr "Son çalınanlar"
 
-#: ../src/container.py:443
+#: ../src/container.py:441
 msgid "Never played"
 msgstr "Hiç çalınmayanlar"
 
-#: ../src/container.py:444
+#: ../src/container.py:442
 msgid "Random tracks"
 msgstr "Rastgele şarkılar"
 
 #: ../src/database_albums.py:239 ../src/database_artists.py:77
-#: ../src/database_genres.py:72 ../src/database_tracks.py:206
+#: ../src/database_genres.py:72 ../src/database_tracks.py:216
 #: ../src/tagreader.py:84 ../src/tagreader.py:103 ../src/tagreader.py:128
 #: ../src/tagreader.py:143
 msgid "Unknown"
@@ -325,12 +325,12 @@ msgid "Many artists"
 msgstr "Birçok şarkıcı"
 
 #: ../src/fullscreen.py:85 ../src/fullscreen.py:272
-#: ../src/toolbar_playback.py:80 ../src/toolbar_playback.py:113
+#: ../src/toolbar_playback.py:71 ../src/toolbar_playback.py:104
 msgid "Pause"
 msgstr "Duraklat"
 
 #: ../src/fullscreen.py:276 ../src/pop_tunein.py:146
-#: ../src/toolbar_playback.py:82 ../src/toolbar_playback.py:110
+#: ../src/toolbar_playback.py:73 ../src/toolbar_playback.py:101
 #: ../data/ToolbarPlayback.ui.h:2
 msgid "Play"
 msgstr "Oynat"
@@ -377,21 +377,21 @@ msgstr "Sevilen parçalar"
 msgid "Please wait..."
 msgstr "Lütfen bekleyin..."
 
-#: ../src/pop_covers.py:148
+#: ../src/pop_covers.py:146
 msgid "No cover found..."
 msgstr "Kapak resmi bulunamadı..."
 
-#: ../src/pop_covers.py:168
+#: ../src/pop_covers.py:165
 msgid "Select a cover art for this album"
 msgstr "Bu albüm için bir kapak resmi seçin"
 
-#: ../src/pop_infos.py:112
+#: ../src/pop_infos.py:75
 msgid "Advanced artist informations disabled"
 msgstr "Gelişmiş sanatçı bilgileri etkisizleştirildi"
 
-#: ../src/pop_infos.py:120
-msgid "Wikia support disabled"
-msgstr "Wikia desteği etkisizleştirildi"
+#: ../src/pop_infos.py:83
+msgid "WebKit support disabled"
+msgstr ""
 
 #: ../src/pop_menu.py:66
 msgid "Continue playback"
@@ -455,7 +455,7 @@ msgstr "Düzenle"
 msgid "Add"
 msgstr "Ekle"
 
-#: ../src/pop_radio.py:76
+#: ../src/pop_radio.py:76 ../src/wikipedia.py:51
 msgid "Modify"
 msgstr "Değiştir"
 
@@ -481,25 +481,25 @@ msgstr ""
 msgid "The the"
 msgstr "_"
 
-#: ../src/view_device.py:40 ../src/view_device.py:81
+#: ../src/view_device.py:41 ../src/view_device.py:101
 #, python-format
 msgid "Synchronize %s"
 msgstr "%s eşitle"
 
-#: ../src/view_device.py:72
+#: ../src/view_device.py:90
 msgid "Cancel synchronization"
 msgstr "Eşitlemeyi iptal et"
 
-#: ../src/widgets_album.py:263
+#: ../src/widgets_album.py:257
 #, python-format
 msgid "Disc %s"
 msgstr "Disk %s"
 
-#: ../src/widgets_device.py:179
+#: ../src/widgets_device.py:187
 msgid "Unknown error while syncing, try to reboot your device"
 msgstr "Eşitlenirken bilinmeyen hata, cihazını yeniden başlatmayı deneyin"
 
-#: ../src/widgets_device.py:187
+#: ../src/widgets_device.py:195
 msgid "No free space available on device"
 msgstr "Cihazda yeterli boş alan yok"
 
@@ -519,7 +519,7 @@ msgstr "Bu parçaları kaldır?"
 
 #. Translators: Put here words added by wikipedia in band search
 #. Ex: Muse_(band), Peaches(musician)
-#: ../src/wikipedia.py:34
+#: ../src/wikipedia.py:35
 msgid "musician;band"
 msgstr ""
 
@@ -561,18 +561,22 @@ msgid "_Quit"
 msgstr "_Çıkış"
 
 #: ../data/ArtistInfos.ui.h:1
+msgid "Albums"
+msgstr ""
+
+#: ../data/ArtistInfos.ui.h:2
 msgid "Last.fm"
 msgstr "Last.fm"
 
-#: ../data/ArtistInfos.ui.h:2
+#: ../data/ArtistInfos.ui.h:3
 msgid "Wikipedia"
 msgstr "Wikipedia"
 
-#: ../data/ArtistInfos.ui.h:3
+#: ../data/ArtistInfos.ui.h:4
 msgid "Wikia"
 msgstr "Wikia"
 
-#: ../data/ArtistInfos.ui.h:4
+#: ../data/ArtistInfos.ui.h:5
 msgid "DuckDuckGo"
 msgstr ""
 
@@ -735,10 +739,6 @@ msgstr "Ayarlar"
 #: ../data/ToolbarEnd.ui.h:7
 msgid "Shuffle"
 msgstr "Karıştır"
-
-#: ../data/ToolbarPlayback.ui.h:4
-msgid "Informations"
-msgstr ""
 
 #: ../data/Unicode.ui.h:1
 msgid "Error"

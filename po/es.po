@@ -12,8 +12,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lollypop\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-09-17 08:19+0200\n"
-"PO-Revision-Date: 2015-09-18 09:33+0000\n"
+"POT-Creation-Date: 2015-09-22 21:20+0200\n"
+"PO-Revision-Date: 2015-09-23 08:49+0000\n"
 "Last-Translator: Cédric Bellegarde <web@adishatz.org>\n"
 "Language-Team: Spanish (http://www.transifex.com/gnumdk/lollypop/language/es/)\n"
 "MIME-Version: 1.0\n"
@@ -262,57 +262,57 @@ msgstr "Reinicie lollypop después de instalar los codecs"
 msgid "Your music is updating"
 msgstr "Su música se está actualizando"
 
-#: ../src/container.py:360
+#: ../src/container.py:358
 msgid "Popular albums"
 msgstr "Álbumes populares"
 
-#: ../src/container.py:361
+#: ../src/container.py:359
 msgid "Recently added albums"
 msgstr "Recientemente se añadieron álbumes"
 
-#: ../src/container.py:362
+#: ../src/container.py:360
 msgid "Random albums"
 msgstr "Álbumes aleatorios"
 
-#: ../src/container.py:363 ../src/pop_menu.py:356 ../src/pop_menu.py:433
+#: ../src/container.py:361 ../src/pop_menu.py:356 ../src/pop_menu.py:433
 #: ../src/pop_menu.py:453
 msgid "Playlists"
 msgstr "Listas"
 
-#: ../src/container.py:364
+#: ../src/container.py:362
 msgid "Radios"
 msgstr "Radios"
 
-#: ../src/container.py:366
+#: ../src/container.py:364
 msgid "All artists"
 msgstr "Todos los artistas"
 
-#: ../src/container.py:368
+#: ../src/container.py:366 ../data/DeviceManagerWidget.ui.h:1
 msgid "All albums"
 msgstr "Todos los Álbumes"
 
-#: ../src/container.py:418
+#: ../src/container.py:416
 msgid "Compilations"
 msgstr "Recopilaciones"
 
-#: ../src/container.py:441
+#: ../src/container.py:439
 msgid "Popular tracks"
 msgstr "Pistas populares"
 
-#: ../src/container.py:442
+#: ../src/container.py:440
 msgid "Recently played"
 msgstr "Reproducida recientemente"
 
-#: ../src/container.py:443
+#: ../src/container.py:441
 msgid "Never played"
 msgstr "No reproducido nunca"
 
-#: ../src/container.py:444
+#: ../src/container.py:442
 msgid "Random tracks"
 msgstr "Pistas aleatorias"
 
 #: ../src/database_albums.py:239 ../src/database_artists.py:77
-#: ../src/database_genres.py:72 ../src/database_tracks.py:206
+#: ../src/database_genres.py:72 ../src/database_tracks.py:216
 #: ../src/tagreader.py:84 ../src/tagreader.py:103 ../src/tagreader.py:128
 #: ../src/tagreader.py:143
 msgid "Unknown"
@@ -327,12 +327,12 @@ msgid "Many artists"
 msgstr "Muchos artistas"
 
 #: ../src/fullscreen.py:85 ../src/fullscreen.py:272
-#: ../src/toolbar_playback.py:80 ../src/toolbar_playback.py:113
+#: ../src/toolbar_playback.py:71 ../src/toolbar_playback.py:104
 msgid "Pause"
 msgstr "Pausar"
 
 #: ../src/fullscreen.py:276 ../src/pop_tunein.py:146
-#: ../src/toolbar_playback.py:82 ../src/toolbar_playback.py:110
+#: ../src/toolbar_playback.py:73 ../src/toolbar_playback.py:101
 #: ../data/ToolbarPlayback.ui.h:2
 msgid "Play"
 msgstr "Reproducir"
@@ -379,20 +379,20 @@ msgstr "Pistas amadas"
 msgid "Please wait..."
 msgstr "Espere por favor..."
 
-#: ../src/pop_covers.py:148
+#: ../src/pop_covers.py:146
 msgid "No cover found..."
 msgstr "Carátula no encontrada..."
 
-#: ../src/pop_covers.py:168
+#: ../src/pop_covers.py:165
 msgid "Select a cover art for this album"
 msgstr "Seleccionar una carátula para el álbum"
 
-#: ../src/pop_infos.py:112
+#: ../src/pop_infos.py:75
 msgid "Advanced artist informations disabled"
 msgstr "Información avanzada del artista desactivada"
 
-#: ../src/pop_infos.py:120
-msgid "Wikia support disabled"
+#: ../src/pop_infos.py:83
+msgid "WebKit support disabled"
 msgstr ""
 
 #: ../src/pop_menu.py:66
@@ -457,7 +457,7 @@ msgstr "Editar"
 msgid "Add"
 msgstr "Añadir"
 
-#: ../src/pop_radio.py:76
+#: ../src/pop_radio.py:76 ../src/wikipedia.py:51
 msgid "Modify"
 msgstr "Modificar"
 
@@ -483,25 +483,25 @@ msgstr "Recientemente añadido"
 msgid "The the"
 msgstr "The the Les les La Le la le los el"
 
-#: ../src/view_device.py:40 ../src/view_device.py:81
+#: ../src/view_device.py:41 ../src/view_device.py:101
 #, python-format
 msgid "Synchronize %s"
 msgstr "Sincronizar %s"
 
-#: ../src/view_device.py:72
+#: ../src/view_device.py:90
 msgid "Cancel synchronization"
 msgstr "Cancelar la sincronización"
 
-#: ../src/widgets_album.py:263
+#: ../src/widgets_album.py:257
 #, python-format
 msgid "Disc %s"
 msgstr "Album %s"
 
-#: ../src/widgets_device.py:179
+#: ../src/widgets_device.py:187
 msgid "Unknown error while syncing, try to reboot your device"
 msgstr "Error desconocido durante la sincronización, intente reiniciar el dispositivo"
 
-#: ../src/widgets_device.py:187
+#: ../src/widgets_device.py:195
 msgid "No free space available on device"
 msgstr "No hay espacio libre disponible en el dispositivo"
 
@@ -521,7 +521,7 @@ msgstr "¿Eliminar estas canciones?"
 
 #. Translators: Put here words added by wikipedia in band search
 #. Ex: Muse_(band), Peaches(musician)
-#: ../src/wikipedia.py:34
+#: ../src/wikipedia.py:35
 msgid "musician;band"
 msgstr "músico;banda"
 
@@ -563,18 +563,22 @@ msgid "_Quit"
 msgstr "_Salir"
 
 #: ../data/ArtistInfos.ui.h:1
+msgid "Albums"
+msgstr ""
+
+#: ../data/ArtistInfos.ui.h:2
 msgid "Last.fm"
 msgstr "Last.fm"
 
-#: ../data/ArtistInfos.ui.h:2
+#: ../data/ArtistInfos.ui.h:3
 msgid "Wikipedia"
 msgstr "Wikipedia"
 
-#: ../data/ArtistInfos.ui.h:3
+#: ../data/ArtistInfos.ui.h:4
 msgid "Wikia"
 msgstr ""
 
-#: ../data/ArtistInfos.ui.h:4
+#: ../data/ArtistInfos.ui.h:5
 msgid "DuckDuckGo"
 msgstr ""
 
@@ -737,10 +741,6 @@ msgstr "Preferencias"
 #: ../data/ToolbarEnd.ui.h:7
 msgid "Shuffle"
 msgstr "Aleatorio"
-
-#: ../data/ToolbarPlayback.ui.h:4
-msgid "Informations"
-msgstr ""
 
 #: ../data/Unicode.ui.h:1
 msgid "Error"
