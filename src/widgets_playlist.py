@@ -406,10 +406,11 @@ class PlaylistsManagerWidget(Gtk.Bin):
             @param path as str representation of Gtk.TreePath
             @param name as str
         """
-        if name.find("/") != -1 or not name:
-            return
         iterator = self._model.get_iter(path)
         old_name = self._model.get_value(iterator, 1)
+        if name.find("/") != -1 or\
+           old_name == name or not name:
+            return
         self._model.remove(iterator)
         self._model.append([True, name, 'user-trash-symbolic'])
         Lp.playlists.rename(name, old_name)
