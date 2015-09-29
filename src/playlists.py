@@ -211,9 +211,10 @@ class PlaylistsManager(GObject.GObject):
             @param sql as sqlite cursor
             @return array of track filepath as str
         """
+        tracks = []
         if playlist_name == self._ALL:
             tracks = Lp.tracks.get_paths(sql)
-        else:
+        elif playlist_name in self._playlists:
             try:
                 tracks = self._playlists[playlist_name].get_tracks()
                 if tracks:
