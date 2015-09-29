@@ -1,5 +1,5 @@
-Lollypop
-========================
+#Lollypop
+
 
 Lollypop is a new GNOME music playing application.
 
@@ -26,7 +26,7 @@ It provides:
 - HiDPI support
 - Tunein support
 
-=== Depends on ===
+##Depends on
 - gtk3
 - gobject-introspection
 - gir1.2-gstreamer-1.0 (Debian)
@@ -41,14 +41,11 @@ It provides:
 - python-sqlite
 - python-pylast >= 1.0
 
-=== Building from git ===
-
+##Building from git
+```
 $ git clone https://github.com/gnumdk/lollypop.git
-
 $ cd lollypop
-
 $ ./autogen.sh
-
 $ make
-
 \# make install
+```
