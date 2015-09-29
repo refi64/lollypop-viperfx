@@ -37,7 +37,7 @@ class SliderPopover(Gtk.Popover):
         self._past.set_text(past)
         if self._timeout_id is not None:
             GLib.source_remove(self._timeout_id)
-        self._timeout_id = GLib.timeout_add(250, self._autohide)
+        self._timeout_id = GLib.timeout_add(1000, self._autohide)
 
 #######################
 # PRIVATE             #
