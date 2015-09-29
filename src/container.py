@@ -17,7 +17,7 @@ from gettext import gettext as _
 
 from lollypop.define import Lp, Type
 from lollypop.selectionlist import SelectionList
-from lollypop.playlists import PlaylistsManager
+from lollypop.playlists import Playlists
 from lollypop.view_container import ViewContainer
 from lollypop.view_albums import AlbumsView
 from lollypop.view_artist import ArtistView
@@ -331,8 +331,8 @@ class Container:
             @param updater as GObject
         """
         update = updater is not None
-        # Do not update if updater is PlaylistsManager
-        if not isinstance(updater, PlaylistsManager):
+        # Do not update if updater is Playlists
+        if not isinstance(updater, Playlists):
             if self._show_genres:
                 self._setup_list_genres(self._list_one, update)
             else:

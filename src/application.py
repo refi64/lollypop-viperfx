@@ -46,7 +46,7 @@ from lollypop.database_albums import AlbumsDatabase
 from lollypop.database_artists import ArtistsDatabase
 from lollypop.database_genres import GenresDatabase
 from lollypop.database_tracks import TracksDatabase
-from lollypop.playlists import PlaylistsManager
+from lollypop.playlists import Playlists
 from lollypop.collectionscanner import CollectionScanner
 from lollypop.fullscreen import FullScreen
 
@@ -105,7 +105,7 @@ class Application(Gtk.Application):
         Lp.genres = GenresDatabase()
         Lp.tracks = TracksDatabase()
         Lp.player = Player()
-        Lp.playlists = PlaylistsManager()
+        Lp.playlists = Playlists()
         Lp.scanner = CollectionScanner()
         Lp.art = Art()
         if not Lp.settings.get_value('disable-mpris'):

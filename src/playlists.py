@@ -14,86 +14,35 @@ from gi.repository import GLib, GObject
 
 import os
 from gettext import gettext as _
-from stat import S_ISREG, ST_MTIME, ST_MODE
+import itertools
+import sqlite3
+from datetime import datetime
 
 from lollypop.define import Lp
 
 
-# A cached playlist
-class Playlist:
-
-    def __init__(self, index, name):
-        """
-            Init playlist
-            @param index as int
-            @param name as str
-        """
-        self._cache = []
-        self._index = index
-        self._name = name
-
-    def get_index(self):
-        """
-            Get playlist index
-            @return index as int
-        """
-        return self._index
-
-    def get_name(self):
-        """
-            Get playlist name
-            @return name as str
-        """
-        return self._name
-
-    def add_track(self, track):
-        """
-            Add track to playlist
-            @param track as str
-        """
-        self._cache.append(track)
-
-    def remove_track(self, track):
-        """
-            Remove track from playlist
-            @param track as str
-        """
-        self._cache.remove(track)
-
-    def set_tracks(self, tracks):
-        """
-            Set playlist's tracks
-            @param array of str
-        """
-        self._cache = tracks
-
-    def get_tracks(self):
-        """
-            Return playlist's tracks
-            @return array of str
-        """
-        return self._cache
-
-    def reset_tracks(self):
-        """
-            Set playlist tracks
-        """
-        self._cache = []
-
-
-# Manager user playlists
-class PlaylistsManager(GObject.GObject):
+class Playlists(GObject.GObject):
     """
         Playlists manager
     """
-    _PLAYLISTS_PATH = os.path.expanduser("~") +\
-        "/.local/share/lollypop/playlists"
+    LOCAL_PATH = os.path.expanduser("~") + "/.local/share/lollypop"
+    DB_PATH = "%s/playlists.db" % LOCAL_PATH
     __gsignals__ = {
         # Add or remove a playlist
         'playlists-changed': (GObject.SignalFlags.RUN_FIRST, None, ()),
         # Objects added/removed to/from playlist
-        'playlist-changed': (GObject.SignalFlags.RUN_FIRST, None, (str,))
+        'playlist-changed': (GObject.SignalFlags.RUN_FIRST, None, (int,))
     }
+    create_playlists = '''CREATE TABLE playlists (
+                            id INTEGER PRIMARY KEY,
+                            name TEXT NOT NULL,
+                            mtime BIGINT NOT NULL'''
+
+    create_tracks = '''CREATE TABLE tracks (
+                        id INTEGER PRIMARY KEY,
+                        playlist_id INT NOT NULL,
+                        track_id INT NOT NULL,
+                        path TEXT NOT NULL)'''
 
     def __init__(self):
         """
@@ -104,206 +53,195 @@ class PlaylistsManager(GObject.GObject):
         self._ALL = "@@@ALL@@@"
         self._index = 0
         self._playlists = {}
-        # Create playlists directory if missing
-        if not os.path.exists(self._PLAYLISTS_PATH):
-            try:
-                os.mkdir(self._PLAYLISTS_PATH)
-            except Exception as e:
-                print("Lollypop::PlaylistsManager::init: %s" % e)
-        self._init_playlists()
 
-    def add(self, playlist_name):
+        self._sql = self.get_cursor()
+        # Create db schema
+        try:
+            self._sql.execute(self.create_playlists)
+            self._sql.execute(self.create_tracks)
+        except Exception as e:
+            print("Playlists::__init__(): %s" % e)
+
+    def add(self, name, sql=None):
         """
             Add a playlist
             @param playlist name as str
             @thread safe
         """
-        filename = self._PLAYLISTS_PATH + "/" + playlist_name + ".m3u"
-        try:
-            if not os.path.exists(filename):
-                f = open(filename, "w")
-                f.write("#EXTM3U\n")
-                f.close()
-                self._index += 1
-                self._playlists[playlist_name] = Playlist(self._index,
-                                                          playlist_name)
-                GLib.idle_add(self.emit, 'playlists-changed')
-        except Exception as e:
-            print("PlaylistsManager::add: %s" % e)
+        if not sql:
+            sql = self._sql
+        sql.execute("INSERT INTO playlists "
+                    "VALUES (?, ?)",
+                    (name, datetime.now().strftime('%s')))
+        sql.commit()
+        GLib.idle_add(self.emit, 'playlists-changed')
 
-    def exists(self, playlist_name):
+    def exists(self, name, sql=None):
         """
             Return True if playlist exist
             @param playlist name as string
             @param exist as bool
         """
-        return playlist_name in self._playlists
+        if not sql:
+            sql = self._sql
+        result = sql.execute("SELECT name\
+                              FROM playlists\
+                              WHERE name=?",
+                             (name,))
+        v = result.fetchone()
+        if v:
+            return v[0] > 1
+        return False
 
-    def rename(self, new_name, old_name):
+    def rename(self, new_name, old_name, sql=None):
         """
             Rename playlist (Thread safe)
             @param new playlist name as str
             @param old playlist name as str
         """
-        try:
-            os.rename(self._PLAYLISTS_PATH+"/"+old_name+".m3u",
-                      self._PLAYLISTS_PATH+"/"+new_name+".m3u")
-            self._playlists[new_name] = self._playlists[old_name]
-            del self._playlists[old_name]
-            GLib.idle_add(self.emit, "playlists-changed")
-        except Exception as e:
-            print("PlaylistsManager::rename: %s" % e)
+        if not sql:
+            sql = self._sql
+        sql.execute("UPDATE playlists\
+                    SET name=?\
+                    WHERE name=?",
+                    (new_name, old_name))
+        sql.commit()
 
-    def delete(self, playlist_name):
+    def delete(self, name, sql=None):
         """
             delete playlist (Thread safe)
             @param playlist name as str
         """
-        try:
-            os.remove(self._PLAYLISTS_PATH+"/"+playlist_name+".m3u")
-            del self._playlists[playlist_name]
-            GLib.idle_add(self.emit, "playlists-changed")
-        except Exception as e:
-            print("PlaylistsManager::delete: %s" % e)
+        if not sql:
+            sql = self._sql
+        sql.execute("DELETE FROM playlists\
+                    WHERE name=?",
+                    (name,))
+        sql.commit()
 
-    def get(self):
+    def get(self, sql=None):
         """
             Return availables playlists
             @return array of (id, string)
         """
-        playlists = []
-        for item in sorted(self._playlists.items(),
-                           key=lambda s: s[1].get_name().lower()):
-            if item[0] != self._LOVED:
-                playlists.append((item[1].get_index(), item[0]))
-        return playlists
+        if not sql:
+            sql = self._sql
+        result = sql.execute("SELECT rowid, name\
+                              FROM playlists")
+        return list(itertools.chain(*result))
 
-    def get_last(self):
+    def get_last(self, sql=None):
         """
             Return 6 last modified playlist
             @return [string]
         """
-        playlists = []
-        try:
-            index = 0
-            entries = []
-            for filename in os.listdir(self._PLAYLISTS_PATH):
-                stat = os.stat(self._PLAYLISTS_PATH+"/"+filename)
-                if S_ISREG(stat[ST_MODE]):
-                    entries.append((stat[ST_MTIME], filename))
-            for cdate, filename in sorted(entries, reverse=True):
-                if filename.endswith(".m3u") and\
-                   filename != self._LOVED+".m3u":
-                    playlists.append(filename[:-4])
-                    index += 1
-                    # Break if 6 playlists is reached
-                    if index >= 6:
-                        break
-        except Exception as e:
-            print("Lollypop::PlaylistManager::get_last: %s" % e)
-        return playlists
+        if not sql:
+            sql = self._sql
+        result = sql.execute("SELECT rowid, name\
+                              FROM playlists\
+                              ORDER BY mtime\
+                              LIMIT 6")
+        return list(itertools.chain(*result))
 
-    def get_tracks(self, playlist_name, sql=None):
+    def get_tracks(self, name, sql_l=None, sql_p=None):
         """
             Return availables tracks for playlist
             If playlist name == self._ALL, then return all tracks from db
-            @param playlist playlist_name as str
-            @param sql as sqlite cursor
-            @return array of track filepath as str
-        """
-        tracks = []
-        if playlist_name == self._ALL:
-            tracks = Lp.tracks.get_paths(sql)
-        elif playlist_name in self._playlists:
-            try:
-                tracks = self._playlists[playlist_name].get_tracks()
-                if tracks:
-                    return tracks
-
-                f = open(self._PLAYLISTS_PATH+"/"+playlist_name+".m3u", "r")
-                for filepath in f:
-                    if filepath[0] not in ["#", "\n"]:
-                        tracks.append(filepath[:-1])
-                f.close()
-            except Exception as e:
-                print("PlaylistsManager::get_tracks: %s" % e)
-            self._playlists[playlist_name].set_tracks(tracks)
-        return tracks
-
-    def set_tracks(self, playlist_name, tracks_path):
-        """
-            Set playlist tracks (Thread safe)
             @param playlist name as str
-            @param tracks path as [str]
+            @return array of paths as [str]
         """
-        f = open(self._PLAYLISTS_PATH+"/"+playlist_name+".m3u", "w")
-        f.write("#EXTM3U\n")
-        self._playlists[playlist_name].reset_tracks()
-        for filepath in tracks_path:
-            self._add_track(f, playlist_name, filepath)
-        GLib.timeout_add(1000, self.emit, "playlist-changed", playlist_name)
-        try:
-            f.close()
-        except Exception as e:
-            print("PlaylistsManager::set_tracks: %s" % e)
+        if not sql_p:
+            sql_p = self._sql_p
+        if not sql_l:
+            sql_l = self._sql_l
+        if name == self._ALL:
+            return Lp.tracks.get_paths(sql_l)
+        else:
+            result = sql_p.execute("SELECT path\
+                                   FROM playlists, tracks\
+                                   WHERE playlist_id=playlists.rowid\
+                                   AND name=?", (name,))
+            return list(itertools.chain(*result))
 
-    def get_tracks_id(self, playlist_name, sql=None):
+    def get_tracks_id(self, name, sql_l=None, sql_p=None):
         """
             Return availables tracks id for playlist
             If playlist name == self._ALL, then return all tracks from db
-            Thread safe if you pass an sql cursor
             @param playlist name as str
             @return array of track id as int
         """
-        tracks_id = []
-        if playlist_name == self._ALL:
-            tracks_id = Lp.tracks.get_ids(sql)
+        if not sql_l:
+            sql_l = Lp.sql
+        if not sql_p:
+            sql_p = self._sql
+        if name == self._ALL:
+            return Lp.tracks.get_ids(sql_l)
         else:
-            for filepath in self.get_tracks(playlist_name):
-                tracks_id.append(Lp.tracks.get_id_by_path(filepath, sql))
-        return tracks_id
+            result = sql_p.execute("SELECT track_id\
+                                   FROM playlists, tracks\
+                                   WHERE playlist_id=playlists.rowid\
+                                   AND name=?", (name,))
+            return list(itertools.chain(*result))
 
-    def add_track(self, playlist_name, filepath):
+    def clear(self, name, sql=None):
+        """
+            Clear playlsit
+            @param playlist name as str
+        """
+        if not sql:
+            sql = self._sql
+        sql.execute("DELETE FROM tracks\
+                     WHERE EXISTS (SELECT * from playlists\
+                                   WHERE playlists.rowid=tracks.playlist_id)")
+        sql.commit()
+
+    def add_track(self, playlist_id, track, sql=None):
         """
             Add track to playlist if not already present
-            @param playlist name as str
-            @param track filepath as str
+            @param playlist id as int
+            @param track as Track
         """
-        try:
-            f = open(self._PLAYLISTS_PATH+"/"+playlist_name+".m3u", "a")
-            self._add_track(f, playlist_name, filepath)
-            GLib.idle_add(self.emit, "playlist-changed", playlist_name)
-            f.close()
-        except Exception as e:
-            print("PlaylistsManager::add_track: %s" % e)
+        if not sql:
+            sql = self._sql
+        sql.execute("INSERT INTO tracks"
+                    "VALUES (?, ?, ?)",
+                    (playlist_id, track.id, track.path))
+        sql.commit()
+        GLib.idle_add(self.emit, "playlist-changed", playlist_id)
 
-    def add_tracks(self, playlist_name, tracks_path):
+    def add_tracks(self, playlist_id, tracks, sql=None):
         """
             Add tracks to playlist if not already present
-            @param playlist name as str
-            @param tracks filepath as [str]
+            @param playlist id as int
+            @param tracks as [Track]
         """
-        try:
-            f = open(self._PLAYLISTS_PATH+"/"+playlist_name+".m3u", "a")
-            for filepath in tracks_path:
-                self._add_track(f, playlist_name, filepath)
-            GLib.idle_add(self.emit, "playlist-changed", playlist_name)
-            f.close()
-        except Exception as e:
-            print("PlaylistsManager::add_tracks: %s" % e)
+        if not sql:
+            sql = self._sql
+        for track in tracks:
+            sql.execute("INSERT INTO tracks"
+                        "VALUES (?, ?, ?)",
+                        (playlist_id, track.id, track.path))
+        sql.commit()
+        GLib.idle_add(self.emit, "playlist-changed", playlist_id)
 
-    def remove_tracks(self, playlist_name, tracks_to_remove):
+    def remove_tracks(self, name, paths, sql=None):
         """
             Remove tracks from playlist
             @param playlist name as str
-            @param tracks to remove as [str]
+            @param paths as [str]
         """
-        playlist_tracks = self.get_tracks(playlist_name)
-        self._remove_tracks(playlist_name, playlist_tracks, tracks_to_remove)
-        GLib.idle_add(self.emit, "playlist-changed", playlist_name)
+        if not sql:
+            sql = self._sql
+        for path in paths:
+            sql.execute("DELETE FROM tracks\
+                         WHERE path=?\
+                         AND EXISTS (SELECT * from playlists\
+                          WHERE playlists.rowid=tracks.playlist_id)", (path,))
+        sql.commit()
+        GLib.idle_add(self.emit, "playlist-changed", name)
 
     def is_present(self, playlist_name, object_id,
-                   genre_id, is_album, sql=None):
+                   genre_id, is_album, sql_l=None, sql_p=None):
         """
             Return True if object_id is already present in playlist
             @param playlist name as str
@@ -313,18 +251,22 @@ class PlaylistsManager(GObject.GObject):
             @param sql as sqlite cursor
             @return bool
         """
-        playlist_paths = self.get_tracks(playlist_name)
+        if not sql_l:
+            sql_l = Lp.sql
+        if not sql_p:
+            sql_p = self._sql
+        paths = self.get_tracks(playlist_name, sql_p)
         if is_album:
-            tracks_path = Lp.albums.get_tracks_path(object_id,
-                                                    genre_id,
-                                                    sql)
+            tracks_paths = Lp.albums.get_tracks_paths(object_id,
+                                                      genre_id,
+                                                      sql_l)
         else:
-            tracks_path = [Lp.tracks.get_path(object_id, sql)]
+            tracks_paths = [Lp.tracks.get_path(object_id, sql_l)]
 
         found = 0
-        len_tracks = len(tracks_path)
-        for filepath in tracks_path:
-            if filepath in playlist_paths:
+        len_tracks = len(tracks_paths)
+        for filepath in tracks_paths:
+            if filepath in paths:
                 found += 1
                 if found >= len_tracks:
                     break
@@ -336,63 +278,24 @@ class PlaylistsManager(GObject.GObject):
 #######################
 # PRIVATE             #
 #######################
-    def _init_playlists(self):
+    def get_cursor(self):
         """
-            Create initial index
-        """
-        self.add(self._LOVED)
-        try:
-            for filename in sorted(os.listdir(self._PLAYLISTS_PATH)):
-                if filename.endswith(".m3u"):
-                    self._playlists[filename[:-4]] = Playlist(self._index,
-                                                              filename[:-4])
-                    self._index += 1
-        except Exception as e:
-            print("Lollypop::PlaylistManager::get: %s" % e)
-
-    def _add_track(self, f, playlist_name, filepath):
-        """
-            Add track to playlist if not already present
-            @param f as file descriptor
-            @param playlist name as str
-            @param track filepath as str
-        """
-        tracks = self.get_tracks(playlist_name)
-        # Do nothing if uri already present in playlist
-        if filepath not in tracks:
-            try:
-                f.write(filepath+'\n')
-                self._playlists[playlist_name].add_track(filepath)
-            except Exception as e:
-                print("PlaylistsManager::_add_track: %s" % e)
-
-    def _remove_tracks(self, playlist_name, playlist_tracks, tracks_to_remove):
-        """
-            Remove track from playlist
-            @param playlist name as str
-            @param playlist tracks as [str]
-            @param tracks to remove as [str]
+            Return a new sqlite cursor
         """
         try:
-            f = open(self._PLAYLISTS_PATH+"/"+playlist_name+".m3u", "w")
-            for path in playlist_tracks:
-                if path not in tracks_to_remove:
-                    f.write(path+'\n')
-                else:
-                    self._playlists[playlist_name].remove_track(path)
-            f.close()
-        except Exception as e:
-            print("PlaylistsManager::remove_tracks: %s" % e)
+            return sqlite3.connect(self.DB_PATH, 600.0)
+        except:
+            exit(-1)
 
 
-class RadiosManager(PlaylistsManager):
+class RadiosManager(Playlists):
     """
         Radios manager
     """
-    _PLAYLISTS_PATH = os.path.expanduser("~") + "/.local/share/lollypop/radios"
+    DB_PATH = "%s/radios.db" % Playlists.LOCAL_PATH
 
     def __init__(self):
         """
             Init radio manager
         """
-        PlaylistsManager.__init__(self)
+        Playlists.__init__(self)
