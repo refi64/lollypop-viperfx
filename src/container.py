@@ -554,7 +554,7 @@ class Container:
         view = None
         if playlist_id is not None:
             name = self._list_two.get_value(playlist_id)
-            view = PlaylistView(playlist_id, name, self._stack)
+            view = PlaylistView(playlist_id, name)
         else:
             view = PlaylistsManageView(-1, None, False)
         if view:

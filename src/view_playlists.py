@@ -25,7 +25,7 @@ class PlaylistView(View):
         Show playlist tracks
     """
 
-    def __init__(self, playlist_id, playlist_name, parent):
+    def __init__(self, playlist_id, playlist_name):
         """
             Init PlaylistView
             @parma playlist id as int
