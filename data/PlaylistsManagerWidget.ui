@@ -111,9 +111,7 @@
             <signal name="key-press-event" handler="_on_keyboard_event" swapped="no"/>
             <signal name="row-activated" handler="_on_row_activated" swapped="no"/>
             <child internal-child="selection">
-              <object class="GtkTreeSelection" id="treeview-selection4">
-                <property name="mode">multiple</property>
-              </object>
+              <object class="GtkTreeSelection" id="treeview-selection4"/>
             </child>
           </object>
         </child>
@@ -132,6 +130,30 @@
         <child>
           <placeholder/>
         </child>
+        <child>
+          <placeholder/>
+        </child>
+        <child>
+          <placeholder/>
+        </child>
+        <child>
+          <placeholder/>
+        </child>
+        <child>
+          <placeholder/>
+        </child>
+        <child>
+          <placeholder/>
+        </child>
+        <child>
+          <placeholder/>
+        </child>
+        <child>
+          <placeholder/>
+        </child>
+        <child>
+          <placeholder/>
+        </child>
       </object>
       <packing>
         <property name="left_attach">0</property>
@@ -143,6 +165,30 @@
         <property name="visible">True</property>
         <property name="can_focus">False</property>
         <property name="hexpand">True</property>
+        <child>
+          <placeholder/>
+        </child>
+        <child>
+          <placeholder/>
+        </child>
+        <child>
+          <placeholder/>
+        </child>
+        <child>
+          <placeholder/>
+        </child>
+        <child>
+          <placeholder/>
+        </child>
+        <child>
+          <placeholder/>
+        </child>
+        <child>
+          <placeholder/>
+        </child>
+        <child>
+          <placeholder/>
+        </child>
         <child>
           <placeholder/>
         </child>
