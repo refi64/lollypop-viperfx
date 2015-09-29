@@ -114,7 +114,7 @@ class PlaylistsManager(GObject.GObject):
 
     def add(self, playlist_name):
         """
-            Add a playlist, erase current
+            Add a playlist
             @param playlist name as str
             @thread safe
         """
@@ -340,6 +340,7 @@ class PlaylistsManager(GObject.GObject):
         """
             Create initial index
         """
+        self.add(self._LOVED)
         try:
             for filename in sorted(os.listdir(self._PLAYLISTS_PATH)):
                 if filename.endswith(".m3u"):
