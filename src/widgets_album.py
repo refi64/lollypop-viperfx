@@ -396,7 +396,7 @@ class AlbumDetailedWidget(AlbumWidget):
            self._album.artist_id not in track.artist_ids:
             if track.artist_names != self._album.artist_name:
                 title = "<b>%s</b>\n%s" % (escape(track.artist_names),
-                                           track.name)
+                                           title)
 
         # Get track position in queue
         pos = None
