@@ -34,19 +34,25 @@ class SliderPopover(Gtk.Popover):
             Set values and start an auto hide timer
             @param past as string
         """
-        self._past.set_text(past)
         if self._timeout_id is not None:
             GLib.source_remove(self._timeout_id)
-        self._timeout_id = GLib.timeout_add(1000, self._autohide)
+            self._timeout_id = None
+        self._past.set_text(past)
+
+    def delayed_hide(self):
+        """
+            Delayed hide
+        """
+        if self._timeout_id is not None:
+            GLib.source_remove(self._timeout_id)
+        self._timeout_id = GLib.timeout_add(250, self._hide)
 
 #######################
 # PRIVATE             #
 #######################
-    def _autohide(self):
+    def _hide(self):
         """
-            Hide and remove source if needed
+            Hide and unset timeout id
         """
+        self._timeout_id = None
         self.hide()
-        if self._timeout_id is not None:
-            GLib.source_remove(self._timeout_id)
-            self._timeout_id = None

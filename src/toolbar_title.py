@@ -107,20 +107,20 @@ class ToolbarTitle(Gtk.Bin):
 #######################
 # PRIVATE             #
 #######################
-    def _on_progress_motion_notify(self, scale, event):
+    def _on_progress_motion_notify(self, eventbox, event):
         """
             Show progress popover
-            @param scale as Gtk.Scale
+            @param eventbox as Gtk.EventBox
             @param event as Gdk.Event
         """
-        slider_width = scale.style_get_property('slider-width') / 2
-        rect = scale.get_range_rect()
+        slider_width = self._progress.style_get_property('slider-width') / 2
+        rect = self._progress.get_range_rect()
         if event.x < slider_width or\
            event.x > rect.width - slider_width:
             return
 
         current = (event.x - slider_width) *\
-            scale.get_adjustment().get_upper() /\
+            self._progress.get_adjustment().get_upper() /\
             (rect.width - slider_width * 2)
         self._popover.set(seconds_to_string(current/60))
         r = Gdk.Rectangle()
@@ -130,6 +130,14 @@ class ToolbarTitle(Gtk.Bin):
         r.height = 1
         self._popover.set_pointing_to(r)
         self._popover.show()
+
+    def _on_progress_leave_notify(self, eventbox, event):
+        """
+            Show progress popover
+            @param eventbox as Gtk.EventBox
+            @param event as Gdk.Event
+        """
+        self._popover.delayed_hide()
 
     def _on_progress_press_button(self, scale, event):
         """
