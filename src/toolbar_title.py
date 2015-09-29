@@ -125,7 +125,7 @@ class ToolbarTitle(Gtk.Bin):
         self._popover.set(seconds_to_string(current/60))
         r = Gdk.Rectangle()
         r.x = event.x
-        r.y = rect.height / 2
+        r.y = rect.height
         r.width = 1
         r.height = 1
         self._popover.set_pointing_to(r)
