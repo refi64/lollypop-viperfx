@@ -419,7 +419,9 @@ class PlaylistsManagerWidget(Gtk.Bin):
         old_name = self._model.get_value(iterator, 1)
         playlist_id = self._model.get_value(iterator, 3)
         if name.find("/") != -1 or\
-           old_name == name or not name:
+           old_name == name or\
+           not name or\
+           Lp.playlists.get_id(name) != Type.NONE:
             return
         self._model.remove(iterator)
         self._model.append([True, name, 'user-trash-symbolic', playlist_id])

@@ -127,7 +127,8 @@ class Playlists(GObject.GObject):
         if not sql:
             sql = self._sql
         result = sql.execute("SELECT rowid, name\
-                              FROM playlists")
+                              FROM playlists\
+                              ORDER BY name COLLATE NOCASE")
         return list(result)
 
     def get_last(self, sql=None):
