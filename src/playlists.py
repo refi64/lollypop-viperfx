@@ -69,9 +69,12 @@ class Playlists(GObject.GObject):
                 None)
             for info in infos:
                 f = info.get_name()
-                if f.endswith(".m3u") and f[:-4] != self._LOVED:
+                if f.endswith(".m3u"):
                     self.add(f[:-4])
-                    playlist_id = self.get_id(f[:-4])
+                    if f[:-4] == self._LOVED:
+                        playlist_id = Type.LOVED
+                    else:
+                        playlist_id = self.get_id(f[:-4])
                     parser = TotemPlParser.Parser.new()
                     parser.connect('entry-parsed',
                                    self._on_entry_parsed,
