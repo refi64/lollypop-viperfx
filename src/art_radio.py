@@ -33,8 +33,8 @@ class RadioArt(BaseArt):
         if not os.path.exists(self._RADIOS_PATH):
             try:
                 os.mkdir(self._RADIOS_PATH)
-            except:
-                print("Can't create %s" % self._RADIOS_PATH)
+            except Exception as e:
+                print("RadioArt.__init__(): %s" % e)
 
     def get_radio_cache_path(self, name, size):
         """
@@ -141,6 +141,19 @@ class RadioArt(BaseArt):
         s.copy(d, Gio.FileCopyFlags.OVERWRITE, None, None)
         GLib.idle_add(self.emit, 'logo-changed', name)
 
+    def rename_radio(self, old_name, new_name):
+        """
+            Rename artwork
+            @param old name as str
+            @param new name as str
+        """
+        old = "%s/%s.png" % (self._RADIOS_PATH, old_name)
+        new = "%s/%s.png" % (self._RADIOS_PATH, new_name)
+        try:
+            os.rename(old, new)
+        except Exception as e:
+            print("RadioArt::rename_radio(): %s" % e)
+
     def save_radio_logo(self, pixbuf, radio):
         """
             Save pixbuf for radio
@@ -158,7 +171,7 @@ class RadioArt(BaseArt):
             except:
                 pixbuf.savev(artpath, "png", [None], [None])
         except Exception as e:
-            print("Art::save_radio_logo(): %s" % e)
+            print("RadioArt::save_radio_logo(): %s" % e)
 
     def announce_logo_update(self, name):
         """
@@ -178,7 +191,7 @@ class RadioArt(BaseArt):
                 if re.search('%s_.*\.png' % re.escape(filename), f):
                     os.remove(os.path.join(self._CACHE_PATH, f))
         except Exception as e:
-            print("Art::clean_radio_cache(): ", e, filename)
+            print("RadioArt::clean_radio_cache(): ", e, filename)
 
 #######################
 # PRIVATE             #

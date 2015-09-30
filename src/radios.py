@@ -101,11 +101,11 @@ class Radios(GObject.GObject):
         else:
             return False
 
-    def rename(self, new_name, old_name, sql=None):
+    def rename(self, old_name, new_name, sql=None):
         """
             Rename playlist
-            @param new playlist name as str
             @param old playlist name as str
+            @param new playlist name as str
         """
         if not sql:
             sql = self._sql
