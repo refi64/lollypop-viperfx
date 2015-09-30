@@ -118,6 +118,7 @@ class AlbumsView(View):
         for child in self._albumbox.get_children():
             widget = child.get_child()
             children.append(widget)
+        children.append(self._context_widget)
         return children
 
     def _populate_context(self, album_id):
