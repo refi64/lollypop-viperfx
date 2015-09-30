@@ -614,6 +614,21 @@ class AlbumsDatabase:
             return v[0]
         return None
 
+    def get_duration(self, album_id, sql=None):
+        """
+            Album duration in seconds
+            @param album id as int
+            @return album duration as int
+        """
+        if not sql:
+            sql = Lp.sql
+        result = sql.execute("SELECT SUM(duration) FROM tracks\
+                              WHERE album_id=?", (album_id,))
+        v = result.fetchone()
+        if v:
+            return v[0]
+        return 0
+
     def search(self, string, sql=None):
         """
             Search for albums looking like string

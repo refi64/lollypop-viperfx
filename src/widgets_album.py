@@ -11,6 +11,7 @@
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 from gi.repository import Gtk, GLib, GObject, Gdk
+
 from cgi import escape
 from gettext import gettext as _
 
@@ -230,6 +231,19 @@ class AlbumDetailedWidget(AlbumWidget):
         builder.connect_signals(self)
 
         self._artist_label = builder.get_object('artist')
+
+        label = builder.get_object('duration')
+        duration = Lp.albums.get_duration(album_id)
+        hours = int(duration / 3600)
+        mins = int(duration / 60)
+        if hours > 0:
+            mins -= hours * 60
+            if mins > 0:
+                label.set_text(_("%s hrs  %s mins") % (hours, mins))
+            else:
+                label.set_text(_("%s hrs") % hours)
+        else:
+            label.set_text(_("%s mins") % mins)
 
         grid = builder.get_object('tracks')
         self._discs = self._album.discs
