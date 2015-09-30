@@ -10,7 +10,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-from gi.repository import GLib, GObject
+from gi.repository import GObject, GLib, Gio, TotemPlParser
 
 import os
 from gettext import gettext as _
@@ -19,6 +19,7 @@ import sqlite3
 from datetime import datetime
 
 from lollypop.define import Lp, Type
+from lollypop.objects import Track
 
 
 class Playlists(GObject.GObject):
@@ -49,7 +50,7 @@ class Playlists(GObject.GObject):
         """
         GObject.GObject.__init__(self)
         self._LOVED = _("Loved tracks")
-
+        try_import = not os.path.exists(self.DB_PATH)
         self._sql = self.get_cursor()
         # Create db schema
         try:
@@ -58,6 +59,25 @@ class Playlists(GObject.GObject):
             self._sql.commit()
         except:
             pass
+
+        # We import playlists from lollypop < 0.9.60
+        if try_import:
+            d = Gio.File.new_for_path(self.LOCAL_PATH + "/playlists")
+            infos = d.enumerate_children(
+                'standard::name',
+                Gio.FileQueryInfoFlags.NOFOLLOW_SYMLINKS,
+                None)
+            for info in infos:
+                f = info.get_name()
+                if f.endswith(".m3u"):
+                    self.add(f[:-4])
+                    playlist_id = self.get_id(f[:-4])
+                    parser = TotemPlParser.Parser.new()
+                    parser.connect('entry-parsed',
+                                   self._on_entry_parsed,
+                                   playlist_id)
+                    parser.parse_async(d.get_uri() + "/%s" % f,
+                                       True, None, None)
 
     def add(self, name, sql=None):
         """
@@ -303,9 +323,6 @@ class Playlists(GObject.GObject):
         else:
             return False
 
-#######################
-# PRIVATE             #
-#######################
     def get_cursor(self):
         """
             Return a new sqlite cursor
@@ -314,3 +331,19 @@ class Playlists(GObject.GObject):
             return sqlite3.connect(self.DB_PATH, 600.0)
         except:
             exit(-1)
+#######################
+# PRIVATE             #
+#######################
+
+    def _on_entry_parsed(self, parser, uri, metadata, playlist_id):
+        """
+            Import entry
+            @param parser as TotemPlParser.Parser
+            @param playlist uri as str
+            @param metadata as GLib.HastTable
+            @param playlist id as int
+        """
+        track_id = Lp.tracks.get_id_by_path(GLib.filename_from_uri(uri)[0])
+        if track_id is not None:
+            track = Track(track_id)
+            self.add_tracks(playlist_id, [track])

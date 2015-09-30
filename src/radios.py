@@ -10,7 +10,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-from gi.repository import GObject, GLib
+from gi.repository import GObject, GLib, Gio, TotemPlParser
 
 import os
 import sqlite3
@@ -38,6 +38,7 @@ class Radios(GObject.GObject):
             Init playlists manager
         """
         GObject.GObject.__init__(self)
+        try_import = not os.path.exists(self.DB_PATH)
         self._sql = self.get_cursor()
         # Create db schema
         try:
@@ -45,6 +46,23 @@ class Radios(GObject.GObject):
             self._sql.commit()
         except:
             pass
+
+        # We import radios from lollypop < 0.9.60
+        if try_import:
+            d = Gio.File.new_for_path(self.LOCAL_PATH + "/radios")
+            infos = d.enumerate_children(
+                'standard::name',
+                Gio.FileQueryInfoFlags.NOFOLLOW_SYMLINKS,
+                None)
+            for info in infos:
+                f = info.get_name()
+                if f.endswith(".m3u"):
+                    parser = TotemPlParser.Parser.new()
+                    parser.connect('entry-parsed',
+                                   self._on_entry_parsed,
+                                   f[:-4])
+                    parser.parse_async(d.get_uri() + "/%s" % f,
+                                       True, None, None)
 
     def add(self, name, url, sql=None):
         """
@@ -139,9 +157,6 @@ class Radios(GObject.GObject):
             return v[0]
         return ''
 
-#######################
-# PRIVATE             #
-#######################
     def get_cursor(self):
         """
             Return a new sqlite cursor
@@ -150,3 +165,16 @@ class Radios(GObject.GObject):
             return sqlite3.connect(self.DB_PATH, 600.0)
         except:
             exit(-1)
+
+#######################
+# PRIVATE             #
+#######################
+    def _on_entry_parsed(self, parser, uri, metadata, name):
+        """
+            Import entry
+            @param parser as TotemPlParser.Parser
+            @param radio uri as str
+            @param metadata as GLib.HastTable
+            @param name as str
+        """
+        self.add(name, uri)
