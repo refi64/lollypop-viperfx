@@ -453,7 +453,6 @@ class Container:
         playlists.append((Type.RANDOMS, _("Random tracks")))
         playlists.append((Type.SEPARATOR, ''))
         playlists += Lp.playlists.get()
-        print(playlists)
         if update:
             self._list_two.update_values(playlists)
         else:
