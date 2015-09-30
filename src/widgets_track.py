@@ -12,7 +12,7 @@
 
 from gi.repository import GObject, Gtk
 
-from lollypop.define import Lp, ArtSize
+from lollypop.define import Lp, ArtSize, Type
 from lollypop.pop_menu import TrackMenu
 from lollypop.widgets_indicator import IndicatorWidget
 from lollypop.widgets_rating import RatingWidget
@@ -470,11 +470,11 @@ class TracksWidget(Gtk.ListBox):
             else:
                 row.set_num_label('')
 
-    def _update_loved_icon(self, widget, playlist_name):
+    def _update_loved_icon(self, widget, playlist_id):
         """
             Updates the loved icon
         """
-        if playlist_name != Lp.playlists._LOVED:
+        if playlist_id != Type.LOVED:
             return
 
         for row in self.get_children():

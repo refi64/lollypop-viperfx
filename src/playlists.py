@@ -219,21 +219,20 @@ class Playlists(GObject.GObject):
         sql.commit()
         GLib.idle_add(self.emit, "playlist-changed", playlist_id)
 
-    def remove_tracks(self, name, paths, sql=None):
+    def remove_tracks(self, playlist_id, tracks, sql=None):
         """
             Remove tracks from playlist
-            @param playlist name as str
-            @param paths as [str]
+            @param playlist id as int
+            @param tracks as [Track]
         """
         if not sql:
             sql = self._sql
-        for path in paths:
+        for track in tracks:
             sql.execute("DELETE FROM tracks\
-                         WHERE path=?\
-                         AND EXISTS (SELECT * from playlists\
-                          WHERE playlists.rowid=tracks.playlist_id)", (path,))
+                         WHERE track_id=?\
+                         AND playlist_id=?", (track.id, playlist_id))
         sql.commit()
-        GLib.idle_add(self.emit, "playlist-changed", name)
+        GLib.idle_add(self.emit, "playlist-changed", playlist_id)
 
     def exists_track(self, playlist_id, track, sql=None):
         """
