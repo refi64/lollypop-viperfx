@@ -39,10 +39,10 @@ class PlaylistWidget(Gtk.Bin):
         self._tracks2 = []
         self._stop = False
 
-        self._main_widget = Gtk.Grid()
-        self._main_widget.set_property('margin', 10)
-        self._main_widget.set_property('column-spacing', 10)
-        self._main_widget.show()
+        main_widget = Gtk.Grid()
+        main_widget.set_property('margin', 10)
+        main_widget.set_property('column-spacing', 10)
+        main_widget.show()
 
         loved = playlist_id != Type.LOVED
         self._tracks_widget1 = TracksWidget(False, loved)
@@ -58,22 +58,9 @@ class PlaylistWidget(Gtk.Bin):
         size_group.add_widget(self._tracks_widget1)
         size_group.add_widget(self._tracks_widget2)
 
-        self._main_widget.add(self._tracks_widget1)
-        self._main_widget.add(self._tracks_widget2)
-
-        self._stack = Gtk.Stack()
-        self._stack.set_transition_duration(250)
-        self._stack.set_transition_type(Gtk.StackTransitionType.CROSSFADE)
-        self._stack.show()
-
-        spinner = Gtk.Spinner()
-        spinner.start()
-        spinner.show()
-        self._stack.add(spinner)
-        self._stack.add(self._main_widget)
-        self._stack.set_visible_child(spinner)
-
-        self.add(self._stack)
+        main_widget.add(self._tracks_widget1)
+        main_widget.add(self._tracks_widget2)
+        self.add(main_widget)
 
     def populate_list_left(self, tracks, pos):
         """
@@ -82,7 +69,6 @@ class PlaylistWidget(Gtk.Bin):
             @param track position as int
             @thread safe
         """
-        GLib.idle_add(self._stack.set_visible_child, self._main_widget)
         self._stop = False
         GLib.idle_add(self._add_tracks,
                       tracks,
