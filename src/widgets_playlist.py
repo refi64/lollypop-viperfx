@@ -386,7 +386,7 @@ class PlaylistsManagerWidget(Gtk.Bin):
             @param playlist id as int
             @param add as bool
         """
-        def load(playlist_id, add):
+        def set(playlist_id, add):
             sql_p = Lp.playlists.get_cursor()
             sql_l = Lp.db.get_cursor()
             tracks = []
@@ -402,7 +402,7 @@ class PlaylistsManagerWidget(Gtk.Bin):
             else:
                 Lp.playlists.remove_tracks(playlist_id, tracks, sql_p)
         if self._object_id != -1:
-            t = Thread(target=load, args=(playlist_id,))
+            t = Thread(target=set, args=(playlist_id, add))
             t.daemon = True
             t.start()
 
