@@ -5,7 +5,6 @@
   <object class="GtkGrid" id="widget">
     <property name="visible">True</property>
     <property name="can_focus">False</property>
-    <property name="margin_top">20</property>
     <property name="margin_bottom">20</property>
     <property name="orientation">vertical</property>
     <property name="column_homogeneous">True</property>
@@ -94,6 +93,7 @@
       <object class="GtkScrolledWindow" id="scrolledwindow1">
         <property name="visible">True</property>
         <property name="can_focus">True</property>
+        <property name="margin_top">20</property>
         <property name="hscrollbar_policy">never</property>
         <property name="shadow_type">in</property>
         <child>
