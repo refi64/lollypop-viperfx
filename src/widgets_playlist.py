@@ -210,7 +210,7 @@ class PlaylistsManagerWidget(Gtk.Bin):
         self._infobar = builder.get_object('infobar')
         self._infobar_label = builder.get_object('infobarlabel')
 
-        self._model = Gtk.ListStore(bool, str, str)
+        self._model = Gtk.ListStore(bool, str, str, int)
         self._model.set_sort_column_id(1, Gtk.SortType.ASCENDING)
         self._model.set_sort_func(1, self._sort_items)
 
@@ -271,9 +271,10 @@ class PlaylistsManagerWidget(Gtk.Bin):
         while name in existing_playlists:
             count += 1
             name = _("New playlist ") + str(count)
-        self._model.append([True, name, 'user-trash-symbolic'])
         Lp.playlists.add(name)
-        self._set_current_object(name, True)
+        playlist_id = Lp.playlists.get_id(name)
+        self._model.append([True, name, 'user-trash-symbolic', playlist_id])
+        self._set_current_object(playlist_id, True)
 
 #######################
 # PRIVATE             #
@@ -306,7 +307,8 @@ class PlaylistsManagerWidget(Gtk.Bin):
                                                        Track(self._object_id))
             else:
                 selected = False
-            self._model.append([selected, playlist[1], 'user-trash-symbolic'])
+            self._model.append([selected, playlist[1],
+                               'user-trash-symbolic', playlist[0]])
             GLib.idle_add(self._append_playlists, playlists)
         else:
             selection = self._view.get_selection()
@@ -376,7 +378,7 @@ class PlaylistsManagerWidget(Gtk.Bin):
         """
         iterator = self._model.get_iter(path)
         toggle = not self._model.get_value(iterator, 0)
-        playlist_id = self._model.get_value(iterator, 0)
+        playlist_id = self._model.get_value(iterator, 3)
         self._model.set_value(iterator, 0, toggle)
         self._set_current_object(playlist_id, toggle)
 
@@ -391,8 +393,8 @@ class PlaylistsManagerWidget(Gtk.Bin):
             sql_l = Lp.db.get_cursor()
             tracks = []
             if self._is_album:
-                tracks_ids = Lp.albums.get_tracks_ids(self._object_id,
-                                                      self._genre_id, sql_l)
+                tracks_ids = Lp.albums.get_tracks(self._object_id,
+                                                  self._genre_id, sql_l)
                 for track_id in tracks_ids:
                     tracks.append(Track(track_id))
             else:
@@ -401,10 +403,9 @@ class PlaylistsManagerWidget(Gtk.Bin):
                 Lp.playlists.add_tracks(playlist_id, tracks, sql_p)
             else:
                 Lp.playlists.remove_tracks(playlist_id, tracks, sql_p)
-        if self._object_id != -1:
-            t = Thread(target=set, args=(playlist_id, add))
-            t.daemon = True
-            t.start()
+        t = Thread(target=set, args=(playlist_id, add))
+        t.daemon = True
+        t.start()
 
     def _on_playlist_edited(self, widget, path, name):
         """

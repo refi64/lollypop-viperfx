@@ -178,7 +178,30 @@ class Playlists(GObject.GObject):
                                    WHERE playlist_id=?", (playlist_id,))
             return list(itertools.chain(*result))
 
+    def get_id(self, playlist_name, sql=None):
+        """
+            Get playlist id
+            @param playlist name as str
+            @return playlst id as int
+        """
+        if playlist_name == self._LOVED:
+            return Type.LOVED
+        if not sql:
+            sql = self._sql
+        result = sql.execute("SELECT rowid\
+                             FROM playlists\
+                             WHERE name=?", (playlist_name,))
+        v = result.fetchone()
+        if v:
+            return v[0]
+        return 0
+
     def get_name(self, playlist_id, sql=None):
+        """
+            Get playlist name
+            @param playlist id as int
+            @return playlist name as str
+        """
         if playlist_id == Type.LOVED:
             return self._LOVED
         if not sql:
