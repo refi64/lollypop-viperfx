@@ -18,6 +18,7 @@ import itertools
 import sqlite3
 from datetime import datetime
 
+from lollypop.objects import Album
 from lollypop.define import Lp, Type
 
 
@@ -179,6 +180,8 @@ class Playlists(GObject.GObject):
             return list(itertools.chain(*result))
 
     def get_name(self, playlist_id, sql=None):
+        if playlist_id == Type.LOVED:
+            return self._LOVED
         if not sql:
             sql = self._sql
         result = sql.execute("SELECT name\
@@ -189,36 +192,16 @@ class Playlists(GObject.GObject):
             return v[0]
         return ''
 
-    def clear(self, name, sql=None):
+    def clear(self, playlist_id, sql=None):
         """
             Clear playlsit
-            @param playlist name as str
+            @param playlist id as int
         """
         if not sql:
             sql = self._sql
         sql.execute("DELETE FROM tracks\
-                     WHERE EXISTS (SELECT * from playlists\
-                                   WHERE playlists.rowid=tracks.playlist_id)")
+                     WHERE playlist_id=?", (playlist_id,))
         sql.commit()
-
-    def add_track(self, playlist_id, track, sql=None):
-        """
-            Add track to playlist if not already present
-            @param playlist id as int
-            @param track as Track
-        """
-        if not sql:
-            sql = self._sql
-        result = sql.execute("SELECT rowid FROM tracks WHERE track_id=?"
-                             " AND playlist_id=?", (track.id, playlist_id))
-        v = result.fetchone()
-        if v:
-            return
-        sql.execute("INSERT INTO tracks"
-                    " VALUES (?, ?, ?)",
-                    (playlist_id, track.id, track.path))
-        sql.commit()
-        GLib.idle_add(self.emit, "playlist-changed", playlist_id)
 
     def add_tracks(self, playlist_id, tracks, sql=None):
         """
@@ -229,14 +212,10 @@ class Playlists(GObject.GObject):
         if not sql:
             sql = self._sql
         for track in tracks:
-            result = sql.execute("SELECT rowid FROM tracks WHERE track_id=?"
-                                 " AND playlist_id=?", (track.id, playlist_id))
-            v = result.fetchone()
-            if v:
-                continue
-            sql.execute("INSERT INTO tracks"
-                        " VALUES (?, ?, ?)",
-                        (playlist_id, track.id, track.path))
+            if not self.exists_track(playlist_id, track):
+                sql.execute("INSERT INTO tracks"
+                            " VALUES (?, ?, ?)",
+                            (playlist_id, track.id, track.path))
         sql.commit()
         GLib.idle_add(self.emit, "playlist-changed", playlist_id)
 
@@ -256,14 +235,27 @@ class Playlists(GObject.GObject):
         sql.commit()
         GLib.idle_add(self.emit, "playlist-changed", name)
 
-    def is_present(self, playlist_id, object_id,
-                   genre_id, is_album, sql_l=None, sql_p=None):
+    def exists_track(self, playlist_id, track, sql=None):
+        """
+            Check if track id exist in playlist
+            @param playlist id as int
+            @param track as Track
+            @return bool
+        """
+        if not sql:
+            sql = self._sql
+        result = sql.execute("SELECT rowid FROM tracks WHERE track_id=?"
+                             " AND playlist_id=?", (track.id, playlist_id))
+        v = result.fetchone()
+        if v:
+            return True
+        return False
+
+    def exists_album(self, playlist_id, album, sql_l=None, sql_p=None):
         """
             Return True if object_id is already present in playlist
             @param playlist id as int
-            @param object id as int
-            @param genre id as int
-            @param is an album as bool
+            @param album as Album
             @param sql as sqlite cursor
             @return bool
         """
@@ -272,16 +264,10 @@ class Playlists(GObject.GObject):
         if not sql_p:
             sql_p = self._sql
         tracks_ids = self.get_tracks_ids(playlist_id, sql_l, sql_p)
-        if is_album:
-            tracks = Lp.albums.get_tracks(object_id,
-                                          genre_id,
-                                          sql_l)
-        else:
-            tracks = [object_id]
 
         found = 0
-        len_tracks = len(tracks)
-        for track_id in tracks:
+        len_tracks = len(Album.tracks)
+        for track_id in Album.tracks:
             if track_id in tracks_ids:
                 found += 1
                 if found >= len_tracks:

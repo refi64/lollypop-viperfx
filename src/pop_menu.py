@@ -17,7 +17,7 @@ from gettext import gettext as _
 from threading import Thread
 
 from lollypop.define import Lp, NextContext
-from lollypop.objects import Track
+from lollypop.objects import Track, Album
 from lollypop import utils
 
 
@@ -255,10 +255,13 @@ class PlaylistsMenu(BaseMenu):
         for playlist in Lp.playlists.get_last():
             action = Gio.SimpleAction(name="playlist%s" % i)
             self._app.add_action(action)
-            if Lp.playlists.is_present(playlist[0],
-                                       self._object_id,
-                                       self._genre_id,
-                                       self._is_album):
+            if self._is_album:
+                exists = Lp.playlists.exists_album(playlist[0],
+                                                   Album(self._object_id))
+            else:
+                exists = Lp.playlists.exists_track(playlist[0],
+                                                   Track(self._object_id))
+            if exists:
                 action.connect('activate',
                                self._remove_from_playlist,
                                playlist[0])

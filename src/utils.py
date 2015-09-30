@@ -12,10 +12,12 @@
 
 from gi.repository import Gio
 
-from lollypop.define import Lp, Type
 from gettext import gettext as _
 from threading import Thread
 import os
+
+from lollypop.define import Lp, Type
+from lollypop.objects import Track
 
 
 def debug(str):
@@ -123,31 +125,26 @@ def rgba_to_hex(color):
                                            int(color.blue * 255))
 
 
-def is_loved(track_id, genre_id=None, is_album=False, sql=None):
+def is_loved(track_id):
     """
         Check if object is in loved playlist
-        @param track_id
-        @param genre_id
-        @param is_album
         @return bool
     """
-    return Lp.playlists.is_present(Lp.playlists._LOVED,
-                                   track_id,
-                                   genre_id,
-                                   is_album,
-                                   sql)
+    return Lp.playlists.exists_track(Type.LOVED,
+                                     Track(track_id))
 
 
-def set_loved(track_id, loved, sql=None):
+def set_loved(track_id, loved):
     """
         Add or remove track from loved playlist
         @param track_id
         @param loved Add to loved playlist if `True`; remove if `False`
     """
+    sql = Lp.playlists.get_cursor()
     if not is_loved(track_id):
         if loved:
-            Lp.playlists.add_track(Lp.playlists._LOVED,
-                                   Lp.tracks.get_path(track_id, sql))
+            Lp.playlists.add_tracks(Type.LOVED,
+                                    [Track(track_id)], sql)
             if Lp.lastfm is not None:
                 t = Thread(target=_set_loved_on_lastfm, args=(track_id,
                                                               True))
@@ -155,13 +152,14 @@ def set_loved(track_id, loved, sql=None):
                 t.start()
     else:
         if not loved:
-            Lp.playlists.remove_tracks(Lp.playlists._LOVED,
-                                       [Lp.tracks.get_path(track_id, sql)])
+            Lp.playlists.remove_tracks(Type.LOVED,
+                                       [Track(track_id)], sql)
             if Lp.lastfm is not None:
                 t = Thread(target=_set_loved_on_lastfm, args=(track_id,
                                                               False))
                 t.daemon = True
                 t.start()
+    sql.close()
 
 
 def _set_loved_on_lastfm(track_id, loved):
