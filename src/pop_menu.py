@@ -292,7 +292,7 @@ class PlaylistsMenu(BaseMenu):
             @param GVariant
             @param playlist id as int
         """
-        def load(playlist_id):
+        def add(playlist_id):
             sql_p = Lp.playlists.get_cursor()
             sql_l = Lp.db.get_cursor()
             tracks = []
@@ -304,7 +304,7 @@ class PlaylistsMenu(BaseMenu):
             else:
                 tracks = [Track(self._object_id)]
             Lp.playlists.add_tracks(playlist_id, tracks, sql_p)
-        t = Thread(target=load, args=(playlist_id,))
+        t = Thread(target=add, args=(playlist_id,))
         t.daemon = True
         t.start()
 
@@ -317,7 +317,7 @@ class PlaylistsMenu(BaseMenu):
             @param is album as bool
             @param playlist id as int
         """
-        def load(playlist_id):
+        def remove(playlist_id):
             sql_p = Lp.playlists.get_cursor()
             sql_l = Lp.db.get_cursor()
             tracks = []
@@ -329,7 +329,7 @@ class PlaylistsMenu(BaseMenu):
             else:
                 tracks = [Track(self._object_id)]
             Lp.playlists.remove_tracks(playlist_id, tracks, sql_p)
-        t = Thread(target=load, args=(playlist_id,))
+        t = Thread(target=remove, args=(playlist_id,))
         t.daemon = True
         t.start()
 
