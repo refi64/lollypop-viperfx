@@ -18,7 +18,7 @@ import itertools
 import sqlite3
 from datetime import datetime
 
-from lollypop.define import Lp
+from lollypop.define import Lp, Type
 
 
 class Playlists(GObject.GObject):
@@ -36,10 +36,9 @@ class Playlists(GObject.GObject):
     create_playlists = '''CREATE TABLE playlists (
                             id INTEGER PRIMARY KEY,
                             name TEXT NOT NULL,
-                            mtime BIGINT NOT NULL'''
+                            mtime BIGINT NOT NULL)'''
 
     create_tracks = '''CREATE TABLE tracks (
-                        id INTEGER PRIMARY KEY,
                         playlist_id INT NOT NULL,
                         track_id INT NOT NULL,
                         path TEXT NOT NULL)'''
@@ -50,17 +49,15 @@ class Playlists(GObject.GObject):
         """
         GObject.GObject.__init__(self)
         self._LOVED = _("Loved tracks")
-        self._ALL = "@@@ALL@@@"
-        self._index = 0
-        self._playlists = {}
 
         self._sql = self.get_cursor()
         # Create db schema
         try:
             self._sql.execute(self.create_playlists)
             self._sql.execute(self.create_tracks)
-        except Exception as e:
-            print("Playlists::__init__(): %s" % e)
+            self._sql.commit()
+        except:
+            pass
 
     def add(self, name, sql=None):
         """
@@ -70,8 +67,8 @@ class Playlists(GObject.GObject):
         """
         if not sql:
             sql = self._sql
-        sql.execute("INSERT INTO playlists "
-                    "VALUES (?, ?)",
+        sql.execute("INSERT INTO playlists (name, mtime)"
+                    " VALUES (?, ?)",
                     (name, datetime.now().strftime('%s')))
         sql.commit()
         GLib.idle_add(self.emit, 'playlists-changed')
@@ -128,7 +125,7 @@ class Playlists(GObject.GObject):
             sql = self._sql
         result = sql.execute("SELECT rowid, name\
                               FROM playlists")
-        return list(itertools.chain(*result))
+        return list(result)
 
     def get_last(self, sql=None):
         """
@@ -141,46 +138,44 @@ class Playlists(GObject.GObject):
                               FROM playlists\
                               ORDER BY mtime\
                               LIMIT 6")
-        return list(itertools.chain(*result))
+        return list(result)
 
-    def get_tracks(self, name, sql_l=None, sql_p=None):
+    def get_tracks(self, playlist_id, sql_l=None, sql_p=None):
         """
             Return availables tracks for playlist
             If playlist name == self._ALL, then return all tracks from db
             @param playlist name as str
             @return array of paths as [str]
         """
-        if not sql_p:
-            sql_p = self._sql_p
-        if not sql_l:
-            sql_l = self._sql_l
-        if name == self._ALL:
+        if sql_p is None:
+            sql_p = self._sql
+        if sql_l is None:
+            sql_l = Lp.sql
+        if playlist_id == Type.ALL:
             return Lp.tracks.get_paths(sql_l)
         else:
             result = sql_p.execute("SELECT path\
-                                   FROM playlists, tracks\
-                                   WHERE playlist_id=playlists.rowid\
-                                   AND name=?", (name,))
+                                   FROM tracks\
+                                   WHERE playlist_id=?", (playlist_id,))
             return list(itertools.chain(*result))
 
-    def get_tracks_id(self, name, sql_l=None, sql_p=None):
+    def get_tracks_ids(self, playlist_id, sql_l=None, sql_p=None):
         """
             Return availables tracks id for playlist
-            If playlist name == self._ALL, then return all tracks from db
-            @param playlist name as str
+            If playlist name == Type.ALL, then return all tracks from db
+            @param playlist id as int
             @return array of track id as int
         """
         if not sql_l:
             sql_l = Lp.sql
         if not sql_p:
             sql_p = self._sql
-        if name == self._ALL:
+        if playlist_id == Type.ALL:
             return Lp.tracks.get_ids(sql_l)
         else:
             result = sql_p.execute("SELECT track_id\
-                                   FROM playlists, tracks\
-                                   WHERE playlist_id=playlists.rowid\
-                                   AND name=?", (name,))
+                                   FROM tracks\
+                                   WHERE playlist_id=?", (playlist_id,))
             return list(itertools.chain(*result))
 
     def clear(self, name, sql=None):
@@ -204,7 +199,7 @@ class Playlists(GObject.GObject):
         if not sql:
             sql = self._sql
         sql.execute("INSERT INTO tracks"
-                    "VALUES (?, ?, ?)",
+                    " VALUES (?, ?, ?)",
                     (playlist_id, track.id, track.path))
         sql.commit()
         GLib.idle_add(self.emit, "playlist-changed", playlist_id)
@@ -219,7 +214,7 @@ class Playlists(GObject.GObject):
             sql = self._sql
         for track in tracks:
             sql.execute("INSERT INTO tracks"
-                        "VALUES (?, ?, ?)",
+                        " VALUES (?, ?, ?)",
                         (playlist_id, track.id, track.path))
         sql.commit()
         GLib.idle_add(self.emit, "playlist-changed", playlist_id)
@@ -240,11 +235,11 @@ class Playlists(GObject.GObject):
         sql.commit()
         GLib.idle_add(self.emit, "playlist-changed", name)
 
-    def is_present(self, playlist_name, object_id,
+    def is_present(self, playlist_id, object_id,
                    genre_id, is_album, sql_l=None, sql_p=None):
         """
             Return True if object_id is already present in playlist
-            @param playlist name as str
+            @param playlist id as int
             @param object id as int
             @param genre id as int
             @param is an album as bool
@@ -255,18 +250,18 @@ class Playlists(GObject.GObject):
             sql_l = Lp.sql
         if not sql_p:
             sql_p = self._sql
-        paths = self.get_tracks(playlist_name, sql_p)
+        tracks_ids = self.get_tracks_ids(playlist_id, sql_l, sql_p)
         if is_album:
-            tracks_paths = Lp.albums.get_tracks_paths(object_id,
-                                                      genre_id,
-                                                      sql_l)
+            tracks = Lp.albums.get_tracks(object_id,
+                                          genre_id,
+                                          sql_l)
         else:
-            tracks_paths = [Lp.tracks.get_path(object_id, sql_l)]
+            tracks = [object_id]
 
         found = 0
-        len_tracks = len(tracks_paths)
-        for filepath in tracks_paths:
-            if filepath in paths:
+        len_tracks = len(tracks)
+        for track_id in tracks:
+            if track_id in tracks_ids:
                 found += 1
                 if found >= len_tracks:
                     break

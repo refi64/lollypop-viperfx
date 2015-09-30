@@ -374,30 +374,35 @@ class PlaylistsManagerWidget(Gtk.Bin):
         """
         iterator = self._model.get_iter(path)
         toggle = not self._model.get_value(iterator, 0)
-        name = self._model.get_value(iterator, 1)
+        playlist_id = self._model.get_value(iterator, 0)
         self._model.set_value(iterator, 0, toggle)
-        self._set_current_object(name, toggle)
+        self._set_current_object(playlist_id, toggle)
 
-    def _set_current_object(self, name, add):
+    def _set_current_object(self, playlist_id, add):
         """
             Add/Remove current object to playlist
-            @param playlist name as str
+            @param playlist id as int
             @param add as bool
         """
-        # No current object
-        if self._object_id == -1:
-            return
-        # Add or remove object from playlist
-        if self._is_album:
-            tracks_path = Lp.albums.get_tracks_path(self._object_id,
-                                                    self._genre_id)
-        else:
-            tracks_path = [Lp.tracks.get_path(self._object_id)]
-
-        if add:
-            Lp.playlists.add_tracks(name, tracks_path)
-        else:
-            Lp.playlists.remove_tracks(name, tracks_path)
+        def load(playlist_id, add):
+            sql_p = Lp.playlists.get_cursor()
+            sql_l = Lp.db.get_cursor()
+            tracks = []
+            if self._is_album:
+                tracks_ids = Lp.albums.get_tracks_ids(self._object_id,
+                                                      self._genre_id, sql_l)
+                for track_id in tracks_ids:
+                    tracks.append(Track(track_id))
+            else:
+                tracks = [Track(self._object_id)]
+            if add:
+                Lp.playlists.add_tracks(playlist_id, tracks, sql_p)
+            else:
+                Lp.playlists.remove_tracks(playlist_id, tracks, sql_p)
+        if self._object_id != -1:
+            t = Thread(target=load, args=(playlist_id,))
+            t.daemon = True
+            t.start()
 
     def _on_playlist_edited(self, widget, path, name):
         """
@@ -508,9 +513,12 @@ class PlaylistEditWidget(Gtk.Bin):
         """
             Append tracks
         """
-        sql = Lp.db.get_cursor()
-        track_ids = Lp.playlists.get_tracks_id(self._playlist_name, sql)
-        sql.close()
+        sql_l = Lp.db.get_cursor()
+        sql_p = Lp.playlists.get_cursor()
+        track_ids = Lp.playlists.get_tracks_ids(self._playlist_name,
+                                                sql_l, sql_p)
+        sql_l.close()
+        sql_p.close()
         GLib.idle_add(self._append_track, track_ids)
 
     def _append_track(self, track_ids):

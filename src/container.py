@@ -436,10 +436,10 @@ class Container:
             @thread safe
         """
         playlists = [(Type.LOVED, Lp.playlists._LOVED)]
-        playlists += [(Type.POPULARS, _("Popular tracks"))]
-        playlists += [(Type.RECENTS, _("Recently played"))]
-        playlists += [(Type.NEVER, _("Never played"))]
-        playlists += [(Type.RANDOMS, _("Random tracks"))]
+        playlists.append((Type.POPULARS, _("Popular tracks")))
+        playlists.append((Type.RECENTS, _("Recently played")))
+        playlists.append((Type.NEVER, _("Never played")))
+        playlists.append((Type.RANDOMS, _("Random tracks")))
         playlists.append((Type.SEPARATOR, ''))
         playlists += Lp.playlists.get()
         if update:
@@ -547,7 +547,10 @@ class Container:
             elif playlist_id == Type.RANDOMS:
                 tracks = Lp.tracks.get_randoms(sql)
             else:
-                tracks = Lp.playlists.get_tracks_id(name, sql)
+                sql_p = Lp.playlists.get_cursor()
+                tracks = Lp.playlists.get_tracks_ids(playlist_id,
+                                                     sql, sql_p)
+                sql_p.close()
             sql.close()
             return tracks
 

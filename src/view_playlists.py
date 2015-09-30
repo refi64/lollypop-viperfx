@@ -100,9 +100,11 @@ class PlaylistView(View):
         """
             Update tracks widgets
         """
-        sql = Lp.db.get_cursor()
-        tracks = Lp.playlists.get_tracks_id(self._playlist_name, sql)
-        sql.close()
+        sql_l = Lp.db.get_cursor()
+        sql_p = Lp.playlists.get_cursor()
+        tracks = Lp.playlists.get_tracks_ids(self._playlist_name, sql_l, sql_p)
+        sql_l.close()
+        sql_p.close()
         self.populate(tracks)
 
     def _on_destroy(self, widget):

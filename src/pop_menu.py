@@ -17,6 +17,7 @@ from gettext import gettext as _
 from threading import Thread
 
 from lollypop.define import Lp, NextContext
+from lollypop.objects import Track
 from lollypop import utils
 
 
@@ -254,20 +255,20 @@ class PlaylistsMenu(BaseMenu):
         for playlist in Lp.playlists.get_last():
             action = Gio.SimpleAction(name="playlist%s" % i)
             self._app.add_action(action)
-            if Lp.playlists.is_present(playlist,
+            if Lp.playlists.is_present(playlist[0],
                                        self._object_id,
                                        self._genre_id,
                                        self._is_album):
                 action.connect('activate',
-                               self._del_from_playlist,
-                               playlist)
+                               self._remove_from_playlist,
+                               playlist[0])
                 self.append(_("Remove from \"%s\"") % playlist,
                             "app.playlist%s" % i)
             else:
                 action.connect('activate',
                                self._add_to_playlist,
-                               playlist)
-                self.append(_("Add to \"%s\"") % playlist,
+                               playlist[0])
+                self.append(_("Add to \"%s\"") % playlist[1],
                             "app.playlist%s" % i)
             i += 1
 
@@ -281,41 +282,51 @@ class PlaylistsMenu(BaseMenu):
                                         self._genre_id,
                                         self._is_album)
 
-    def _add_to_playlist(self, action, variant, playlist_name):
+    def _add_to_playlist(self, action, variant, playlist_id):
         """
             Add to playlist
             @param SimpleAction
             @param GVariant
-            @param playlist name as str
+            @param playlist id as int
         """
-        if self._is_album:
-            tracks_path = Lp.albums.get_tracks_path(self._object_id,
-                                                    self._genre_id)
-        else:
-            tracks_path = [Lp.tracks.get_path(self._object_id)]
-
-        t = Thread(target=Lp.playlists.add_tracks,
-                   args=(playlist_name, tracks_path))
+        def load(playlist_id):
+            sql_p = Lp.playlists.get_cursor()
+            sql_l = Lp.db.get_cursor()
+            tracks = []
+            if self._is_album:
+                tracks_ids = Lp.albums.get_tracks(self._object_id,
+                                                  self._genre_id, sql_l)
+                for track_id in tracks_ids:
+                    tracks.append(Track(track_id))
+            else:
+                tracks = [Track(self._object_id)]
+            Lp.playlists.add_tracks(playlist_id, tracks, sql_p)
+        t = Thread(target=load, args=(playlist_id,))
         t.daemon = True
         t.start()
 
-    def _del_from_playlist(self, action, variant, playlist_name):
+    def _remove_from_playlist(self, action, variant, playlist_id):
         """
             Del from playlist
             @param SimpleAction
             @param GVariant
             @param object id as int
             @param is album as bool
-            @param playlist name as str
+            @param playlist id as int
         """
-        if self._is_album:
-            tracks_path = Lp.albums.get_tracks_path(self._object_id,
-                                                    self._genre_id)
-        else:
-            tracks_path = [Lp.tracks.get_path(self._object_id)]
-
-        t = Thread(target=Lp.playlists.remove_tracks,
-                   args=(playlist_name, tracks_path))
+        def load(playlist_id):
+            sql_p = Lp.playlists.get_cursor()
+            sql_l = Lp.db.get_cursor()
+            tracks = []
+            if self._is_album:
+                tracks_ids = Lp.albums.get_tracks_ids(self._object_id,
+                                                      self._genre_id, sql_l)
+                for track_id in tracks_ids:
+                    tracks.append(Track(track_id))
+            else:
+                tracks = [Track(self._object_id)]
+            Lp.playlists.remove_tracks(playlist_id, tracks, sql_p)
+        t = Thread(target=load, args=(playlist_id,))
         t.daemon = True
         t.start()
 
