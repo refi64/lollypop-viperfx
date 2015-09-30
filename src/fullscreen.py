@@ -18,6 +18,7 @@ from datetime import datetime
 
 from lollypop.define import Lp, ArtSize, Type
 from lollypop.utils import seconds_to_string
+from lollypop.pop_slider import SliderPopover
 from lollypop.pop_next import NextPopover
 
 
@@ -42,14 +43,11 @@ class FullScreen(Gtk.Window):
         self.set_decorated(False)
         builder = Gtk.Builder()
         builder.add_from_resource('/org/gnome/Lollypop/FullScreen.ui')
-        main_widget = builder.get_object('fs')
-        self.add(main_widget)
-        self._prev_btn = builder.get_object('prev_btn')
-        self._prev_btn.connect('clicked', self._on_prev_btn_clicked)
+        builder.connect_signals(self)
+
         self._play_btn = builder.get_object('play_btn')
-        self._play_btn.connect('clicked', self._on_play_btn_clicked)
         self._next_btn = builder.get_object('next_btn')
-        self._next_btn.connect('clicked', self._on_next_btn_clicked)
+        self._prev_btn = builder.get_object('prev_btn')
         self._next_popover = NextPopover()
         self._next_popover.set_position(Gtk.PositionType.BOTTOM)
         self._play_image = builder.get_object('play_image')
@@ -64,13 +62,13 @@ class FullScreen(Gtk.Window):
         self._datetime = builder.get_object('datetime')
 
         self._progress = builder.get_object('progress_scale')
-        self._progress.connect('button-release-event',
-                               self._on_progress_release_button)
-        self._progress.connect('button-press-event',
-                               self._on_progress_press_button)
+        self._slider_popover = SliderPopover()
+        self._slider_popover.set_relative_to(self._progress)
+        self._slider_popover.set_position(Gtk.PositionType.BOTTOM)
         self._timelabel = builder.get_object('playback')
         self._total_time_label = builder.get_object('duration')
         self.connect('key-release-event', self._on_key_release_event)
+        self.add(builder.get_object('widget'))
 
     def do_show(self):
         """
@@ -163,6 +161,38 @@ class FullScreen(Gtk.Window):
             @param widget as Gtk.Button
         """
         self.destroy()
+
+    def _on_progress_motion_notify(self, eventbox, event):
+        """
+            Show progress popover
+            @param eventbox as Gtk.EventBox
+            @param event as Gdk.Event
+        """
+        slider_width = self._progress.style_get_property('slider-width') / 2
+        rect = self._progress.get_range_rect()
+        if event.x < slider_width or\
+           event.x > rect.width - slider_width:
+            return
+
+        current = (event.x - slider_width) *\
+            self._progress.get_adjustment().get_upper() /\
+            (rect.width - slider_width * 2)
+        self._slider_popover.set(seconds_to_string(current/60))
+        r = Gdk.Rectangle()
+        r.x = event.x
+        r.y = rect.height
+        r.width = 1
+        r.height = 1
+        self._slider_popover.set_pointing_to(r)
+        self._slider_popover.show()
+
+    def _on_progress_leave_notify(self, eventbox, event):
+        """
+            Show progress popover
+            @param eventbox as Gtk.EventBox
+            @param event as Gdk.Event
+        """
+        self._slider_popover.delayed_hide()
 
     def _on_current_changed(self, player):
         """
@@ -275,14 +305,14 @@ class FullScreen(Gtk.Window):
             self._timeout1 = None
             self._change_play_btn_status(self._play_image, _("Play"))
 
-    def _on_progress_press_button(self, scale, data):
+    def _on_progress_press_btn(self, scale, data):
         """
             On press, mark player as seeking
             @param unused
         """
         self._seeking = True
 
-    def _on_progress_release_button(self, scale, data):
+    def _on_progress_release_btn(self, scale, data):
         """
             Callback for scale release button
             Seek player to scale value
