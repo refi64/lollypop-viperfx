@@ -18,7 +18,6 @@ import itertools
 import sqlite3
 from datetime import datetime
 
-from lollypop.objects import Album
 from lollypop.define import Lp, Type
 
 
@@ -212,7 +211,7 @@ class Playlists(GObject.GObject):
         if not sql:
             sql = self._sql
         for track in tracks:
-            if not self.exists_track(playlist_id, track):
+            if not self.exists_track(playlist_id, track, sql):
                 sql.execute("INSERT INTO tracks"
                             " VALUES (?, ?, ?)",
                             (playlist_id, track.id, track.path))
@@ -265,8 +264,8 @@ class Playlists(GObject.GObject):
         tracks_ids = self.get_tracks_ids(playlist_id, sql_l, sql_p)
 
         found = 0
-        len_tracks = len(Album.tracks)
-        for track_id in Album.tracks:
+        len_tracks = len(album.tracks)
+        for track_id in album.tracks:
             if track_id in tracks_ids:
                 found += 1
                 if found >= len_tracks:
