@@ -237,6 +237,7 @@ class Application(Gtk.Application):
             @param app as Gio.Application
             @param options as Gio.ApplicationCommandLine
         """
+        self._externals_count = 0
         options = app_cmd_line.get_options_dict()
         if options.contains('set-rating'):
             value = options.lookup_value('set-rating').get_int32()
@@ -248,8 +249,7 @@ class Application(Gtk.Application):
             Lp.player.clear_externals()
             for f in args[1:]:
                 self._parser.parse_async(GLib.filename_to_uri(f), True,
-                                         None, self._on_parsing_finished,
-                                         GLib.filename_to_uri(f))
+                                         None, None)
         if Lp.window is not None and Lp.window.is_visible():
             Lp.window.present()
         return 0
@@ -266,20 +266,6 @@ class Application(Gtk.Application):
             Lp.player.set_party(False)
             Lp.player.play_first_external()
         self._externals_count += 1
-
-    def _on_parsing_finished(self, source, result, uri):
-        """
-            Reset parsed count and play uri if not a playlist
-            @param source as GObject.Object
-            @param result as Gio.AsyncResult
-            @param uri as string
-        """
-        if self._externals_count == 0:
-            Lp.player.load_external(uri)
-            Lp.player.set_party(False)
-            Lp.player.play_first_external()
-        else:
-            self._externals_count = 0
 
     def _hide_on_delete(self, widget, event):
         """
