@@ -138,7 +138,7 @@ class Radios(GObject.GObject):
             sql = self._sql
         result = sql.execute("SELECT name, url\
                               FROM radios\
-                              ORDER BY popularity, name")
+                              ORDER BY popularity DESC, name")
         return list(result)
 
     def get_url(self, name, sql=None):
@@ -156,6 +156,25 @@ class Radios(GObject.GObject):
         if v:
             return v[0]
         return ''
+
+    def set_more_popular(self, name, sql=None):
+        """
+            Set radio more popular
+            @param name as str
+        """
+        if not sql:
+            sql = self._sql
+        result = sql.execute("SELECT popularity from radios WHERE name=?",
+                             (name,))
+        pop = result.fetchone()
+        if pop:
+            current = pop[0]
+        else:
+            current = 0
+        current += 1
+        sql.execute("UPDATE radios set popularity=? WHERE name=?",
+                    (current, name))
+        sql.commit()
 
     def get_cursor(self):
         """

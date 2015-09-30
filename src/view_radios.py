@@ -33,7 +33,6 @@ class RadiosView(View):
             Init view
         """
         View.__init__(self)
-
         self._signal = Lp.art.connect('logo-changed',
                                       self._on_logo_changed)
 
@@ -52,7 +51,6 @@ class RadiosView(View):
         self._sizegroup = Gtk.SizeGroup(mode=Gtk.SizeGroupMode.BOTH)
 
         self._radiobox = Gtk.FlowBox()
-        self._radiobox.set_sort_func(self._sort_radios)
         self._radiobox.set_selection_mode(Gtk.SelectionMode.NONE)
         self._radiobox.connect("child-activated", self._on_album_activated)
         self._radiobox.set_property('column-spacing', 5)
@@ -111,16 +109,6 @@ class RadiosView(View):
             widget = child.get_child()
             children.append(widget)
         return children
-
-    def _sort_radios(self, a, b):
-        """
-            Sort radios
-            @param a as Gtk.FlowBoxChild
-            @param b as Gtk.FlowBoxChild
-        """
-        child1 = a.get_children()[0]
-        child2 = b.get_children()[0]
-        return child1.get_name().lower() > child2.get_name().lower()
 
     def _on_destroy(self, widget):
         """
@@ -209,15 +197,16 @@ class RadiosView(View):
         """
         if radios:
             self._stack.set_visible_child(self._scrolledWindow)
-            self._add_radios(radios)
+            self._add_radios(radios, True)
         else:
             self._stack.set_visible_child(self._empty)
 
-    def _add_radios(self, radios):
+    def _add_radios(self, radios, first=False):
         """
             Pop a radio and add it to the view,
             repeat operation until radio list is empty
             @param [radio names as string]
+            @param first as bool
         """
         if radios and not self._stop:
             radio = radios.pop(0)
@@ -225,7 +214,10 @@ class RadiosView(View):
                                  self._radios_manager)
             widget.show()
             self._sizegroup.add_widget(widget)
-            self._radiobox.insert(widget, -1)
+            if first:
+                self._radiobox.insert(widget, 0)
+            else:
+                self._radiobox.insert(widget, -1)
             GLib.idle_add(self._add_radios, radios)
         else:
             self._stop = False

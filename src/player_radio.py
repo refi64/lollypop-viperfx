@@ -116,6 +116,7 @@ class RadioPlayer(BasePlayer):
         if self._current == track:
             self._stop()
             self._playbin.set_property('uri', uri)
+            Radios().set_more_popular(track.album_artist)
             self.current_track = track
             self._current = None
             self.play()
