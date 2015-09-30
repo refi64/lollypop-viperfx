@@ -417,11 +417,12 @@ class PlaylistsManagerWidget(Gtk.Bin):
         """
         iterator = self._model.get_iter(path)
         old_name = self._model.get_value(iterator, 1)
+        playlist_id = self._model.get_value(iterator, 3)
         if name.find("/") != -1 or\
            old_name == name or not name:
             return
         self._model.remove(iterator)
-        self._model.append([True, name, 'user-trash-symbolic'])
+        self._model.append([True, name, 'user-trash-symbolic', playlist_id])
         Lp.playlists.rename(name, old_name)
 
     def _on_playlist_editing_start(self, widget, editable, path):
