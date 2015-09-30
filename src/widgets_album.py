@@ -263,11 +263,6 @@ class AlbumDetailedWidget(AlbumWidget):
                 label.show()
                 grid.attach(label, 0, i, 2, 1)
                 i += 1
-                sep = Gtk.Separator()
-                sep.set_property('margin-bottom', 2)
-                sep.show()
-                grid.attach(sep, 0, i, 2, 1)
-                i += 1
             self._tracks_left[index] = TracksWidget(pop_allowed, True)
             self._tracks_right[index] = TracksWidget(pop_allowed, True)
             grid.attach(self._tracks_left[index], 0, i, 1, 1)
