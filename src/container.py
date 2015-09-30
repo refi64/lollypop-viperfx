@@ -17,7 +17,6 @@ from gettext import gettext as _
 
 from lollypop.define import Lp, Type
 from lollypop.selectionlist import SelectionList
-from lollypop.playlists import Playlists
 from lollypop.view_container import ViewContainer
 from lollypop.view_albums import AlbumsView
 from lollypop.view_artist import ArtistView
@@ -103,7 +102,7 @@ class Container:
         self._vm.connect('mount-removed', self._on_mount_removed)
 
         Lp.playlists.connect('playlists-changed',
-                             self._update_lists)
+                             self._update_playlists)
 
     def update_db(self):
         """
@@ -318,6 +317,19 @@ class Container:
         Lp.scanner.connect('genre-update', self._add_genre)
         Lp.scanner.connect('artist-update', self._add_artist)
 
+    def _update_playlists(self, playlists, playlist_id):
+        """
+            Update playlists in second list
+            @param playlists as Playlists
+            @param playlist_id as int
+        """
+        if self._list_one.get_selected_id() == Type.PLAYLISTS:
+            if Lp.playlists.exists(playlist_id):
+                self._list_two.update_value(playlist_id,
+                                            Lp.playlists.get_name(playlist_id))
+            else:
+                self._list_two.remove(playlist_id)
+
     def _update_lists(self, updater=None):
         """
             Update lists
@@ -332,12 +344,10 @@ class Container:
             @param updater as GObject
         """
         update = updater is not None
-        # Do not update if updater is Playlists
-        if not isinstance(updater, Playlists):
-            if self._show_genres:
-                self._setup_list_genres(self._list_one, update)
-            else:
-                self._setup_list_artists(self._list_one, Type.ALL, update)
+        if self._show_genres:
+            self._setup_list_genres(self._list_one, update)
+        else:
+            self._setup_list_artists(self._list_one, Type.ALL, update)
 
     def _update_list_two(self, updater):
         """
@@ -443,6 +453,7 @@ class Container:
         playlists.append((Type.RANDOMS, _("Random tracks")))
         playlists.append((Type.SEPARATOR, ''))
         playlists += Lp.playlists.get()
+        print(playlists)
         if update:
             self._list_two.update_values(playlists)
         else:

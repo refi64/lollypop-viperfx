@@ -157,6 +157,19 @@ class SelectionList(Gtk.ScrolledWindow):
         self._add_value(value)
         self._updating = False
 
+    def update_value(self, object_id, name):
+        """
+            Update object with new name
+            @param object id as int
+            @param name as str
+        """
+        self._updating = True
+        for item in self._model:
+            if item[0] == object_id:
+                item[1] = name
+                break
+        self._updating = False
+
     def update_values(self, values):
         """
             Update view with values

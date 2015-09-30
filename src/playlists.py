@@ -29,7 +29,7 @@ class Playlists(GObject.GObject):
     DB_PATH = "%s/playlists.db" % LOCAL_PATH
     __gsignals__ = {
         # Add or remove a playlist
-        'playlists-changed': (GObject.SignalFlags.RUN_FIRST, None, ()),
+        'playlists-changed': (GObject.SignalFlags.RUN_FIRST, None, (int,)),
         # Objects added/removed to/from playlist
         'playlist-changed': (GObject.SignalFlags.RUN_FIRST, None, (int,))
     }
@@ -71,20 +71,21 @@ class Playlists(GObject.GObject):
                     " VALUES (?, ?)",
                     (name, datetime.now().strftime('%s')))
         sql.commit()
-        GLib.idle_add(self.emit, 'playlists-changed')
+        playlist_id = self.get_id(name, sql)
+        GLib.idle_add(self.emit, 'playlists-changed', playlist_id)
 
-    def exists(self, name, sql=None):
+    def exists(self, playlist_id, sql=None):
         """
             Return True if playlist exist
-            @param playlist name as string
+            @param playlist id as int
             @param exist as bool
         """
         if not sql:
             sql = self._sql
-        result = sql.execute("SELECT name\
+        result = sql.execute("SELECT rowid\
                               FROM playlists\
-                              WHERE name=?",
-                             (name,))
+                              WHERE rowid=?",
+                             (playlist_id,))
         v = result.fetchone()
         if v:
             return v[0] > 1
@@ -98,15 +99,17 @@ class Playlists(GObject.GObject):
         """
         if not sql:
             sql = self._sql
+        playlist_id = self.get_id(old_name, sql)
         sql.execute("UPDATE playlists\
                     SET name=?\
                     WHERE name=?",
                     (new_name, old_name))
         sql.commit()
+        GLib.idle_add(self.emit, 'playlists-changed', playlist_id)
 
     def delete(self, name, sql=None):
         """
-            delete playlist (Thread safe)
+            delete playlist
             @param playlist name as str
         """
         if not sql:
@@ -194,7 +197,7 @@ class Playlists(GObject.GObject):
         v = result.fetchone()
         if v:
             return v[0]
-        return 0
+        return Type.NONE
 
     def get_name(self, playlist_id, sql=None):
         """
