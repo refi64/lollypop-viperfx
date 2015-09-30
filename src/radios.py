@@ -48,16 +48,20 @@ class Radios(GObject.GObject):
 
     def add(self, name, url, sql=None):
         """
-            Add a radio
+            Add a radio, update url if radio already exists in db
             @param radio name as str
             @param url as str
             @thread safe
         """
         if not sql:
             sql = self._sql
-        sql.execute("INSERT INTO radios (name, url, popularity)"
-                    " VALUES (?, ?, ?)",
-                    (name, url, 0))
+        if self.exists(name, sql):
+            sql.execute("UPDATE radios SET"
+                        " url=?", (url,))
+        else:
+            sql.execute("INSERT INTO radios (name, url, popularity)"
+                        " VALUES (?, ?, ?)",
+                        (name, url, 0))
         sql.commit()
         GLib.idle_add(self.emit, 'radios-changed')
 

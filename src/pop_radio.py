@@ -202,6 +202,7 @@ class RadioPopover(Gtk.Popover):
         rename = self._name != '' and self._name != new_name
 
         if uri != '' and new_name != '':
+            self._stack.get_visible_child().hide()
             if rename:
                 self._radios_manager.rename(new_name, self._name)
             else:
