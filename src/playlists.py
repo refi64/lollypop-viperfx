@@ -76,9 +76,9 @@ class Playlists(GObject.GObject):
 
     def exists(self, playlist_id, sql=None):
         """
-            Return True if playlist exist
+            Return True if playlist exists
             @param playlist id as int
-            @param exist as bool
+            @param bool
         """
         if not sql:
             sql = self._sql
@@ -93,7 +93,7 @@ class Playlists(GObject.GObject):
 
     def rename(self, new_name, old_name, sql=None):
         """
-            Rename playlist (Thread safe)
+            Rename playlist
             @param new playlist name as str
             @param old playlist name as str
         """
@@ -313,16 +313,3 @@ class Playlists(GObject.GObject):
             return sqlite3.connect(self.DB_PATH, 600.0)
         except:
             exit(-1)
-
-
-class RadiosManager(Playlists):
-    """
-        Radios manager
-    """
-    DB_PATH = "%s/radios.db" % Playlists.LOCAL_PATH
-
-    def __init__(self):
-        """
-            Init radio manager
-        """
-        Playlists.__init__(self)
