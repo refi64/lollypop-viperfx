@@ -27,7 +27,7 @@ class PlaylistWidget(Gtk.Bin):
         Show playlist tracks/albums
     """
 
-    def __init__(self, playlist_id, playlist_name):
+    def __init__(self, playlist_id):
         """
             Init playlist Widget
             @param playlist id as int
@@ -35,7 +35,6 @@ class PlaylistWidget(Gtk.Bin):
         """
         Gtk.Bin.__init__(self)
         self._playlist_id = playlist_id
-        self._playlist_name = playlist_name
         self._tracks1 = []
         self._tracks2 = []
         self._stop = False
@@ -45,13 +44,13 @@ class PlaylistWidget(Gtk.Bin):
         self._main_widget.set_property('column-spacing', 10)
         self._main_widget.show()
 
-        loved = playlist_name != Lp.playlists._LOVED
+        loved = playlist_id != Type.LOVED
         self._tracks_widget1 = TracksWidget(False, loved)
         self._tracks_widget2 = TracksWidget(False, loved)
         self._tracks_widget1.connect('activated',
-                                     self._on_activated, playlist_name)
+                                     self._on_activated)
         self._tracks_widget2.connect('activated',
-                                     self._on_activated, playlist_name)
+                                     self._on_activated)
         self._tracks_widget1.show()
         self._tracks_widget2.show()
 
@@ -167,12 +166,11 @@ class PlaylistWidget(Gtk.Bin):
             widget.add_album(track.id, None, pos, name, track.duration, None)
         GLib.idle_add(self._add_tracks, tracks, widget, pos + 1, album.id)
 
-    def _on_activated(self, widget, track_id, playlist_name):
+    def _on_activated(self, widget, track_id):
         """
             On track activation, play track
             @param widget as TracksWidget
             @param track as Track
-            @param playlist name as str
         """
         if Lp.player.is_party():
             Lp.player.load(Track(track_id))
@@ -442,15 +440,14 @@ class PlaylistEditWidget(Gtk.Bin):
         Widget playlists editor
     """
 
-    def __init__(self, playlist_name):
+    def __init__(self, playlist_id):
         """
             Init widget
-            @param playlist name as str
+            @param playlist id as int
         """
         Gtk.Bin.__init__(self)
-        self._playlist_name = playlist_name
+        self._playlist_id = playlist_id
         self._save_on_disk = True
-        self._tracks_orig = []
 
         builder = Gtk.Builder()
         builder.add_from_resource('/org/gnome/Lollypop/PlaylistEditWidget.ui')
@@ -464,7 +461,7 @@ class PlaylistEditWidget(Gtk.Bin):
         self._model = Gtk.ListStore(int,
                                     str,
                                     str,
-                                    str)
+                                    int)
         self._model.connect("row-deleted", self._on_row_deleted)
 
         self._view.set_model(self._model)
@@ -515,7 +512,7 @@ class PlaylistEditWidget(Gtk.Bin):
         """
         sql_l = Lp.db.get_cursor()
         sql_p = Lp.playlists.get_cursor()
-        track_ids = Lp.playlists.get_tracks_ids(self._playlist_name,
+        track_ids = Lp.playlists.get_tracks_ids(self._playlist_id,
                                                 sql_l, sql_p)
         sql_l.close()
         sql_p.close()
@@ -536,8 +533,7 @@ class PlaylistEditWidget(Gtk.Bin):
                                "<b>%s</b>\n%s" % (
                                    escape(artist_name),
                                    escape(track.name)),
-                                'user-trash-symbolic', track.path])
-            self._tracks_orig.append(track.path)
+                                'user-trash-symbolic', track.id])
             GLib.idle_add(self._append_track, track_ids)
         else:
             self._view.grab_focus()
@@ -547,11 +543,17 @@ class PlaylistEditWidget(Gtk.Bin):
         """
             Update playlist on disk
         """
-        tracks_path = []
-        for item in self._model:
-            tracks_path.append(item[3])
-        if tracks_path != self._tracks_orig:
-            Lp.playlists.set_tracks(self._playlist_name, tracks_path)
+        def update():
+            sql = Lp.playlists.get_cursor()
+            Lp.playlists.clear(self._playlist_id, sql)
+            tracks = []
+            for item in self._model:
+                tracks.append(Track(item[3]))
+            Lp.playlists.add_tracks(self._playlist_id, tracks, sql)
+            sql.close()
+        t = Thread(target=update)
+        t.daemon = True
+        t.start()
 
     def _show_infobar(self, path):
         """
@@ -630,10 +632,7 @@ class PlaylistEditWidget(Gtk.Bin):
 
         for row in rows:
             iterator = self._model.get_iter(row.get_path())
-            path = self._model.get_value(iterator, 3)
-            # TODO get Track via path
-            track_id = Lp.tracks.get_id_by_path(path)
-            track = Track(track_id)
+            track = Track(self._model.get_value(iterator, 3))
             if track.album.artist_id == Type.COMPILATIONS:
                 artist_name = track.artist_names
             else:

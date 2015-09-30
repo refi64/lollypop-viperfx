@@ -143,7 +143,7 @@ class Playlists(GObject.GObject):
     def get_tracks(self, playlist_id, sql_l=None, sql_p=None):
         """
             Return availables tracks for playlist
-            If playlist name == self._ALL, then return all tracks from db
+            If playlist name == Type.ALL, then return all tracks from db
             @param playlist name as str
             @return array of paths as [str]
         """
@@ -178,6 +178,17 @@ class Playlists(GObject.GObject):
                                    WHERE playlist_id=?", (playlist_id,))
             return list(itertools.chain(*result))
 
+    def get_name(self, playlist_id, sql=None):
+        if not sql:
+            sql = self._sql
+        result = sql.execute("SELECT name\
+                             FROM playlists\
+                             WHERE rowid=?", (playlist_id,))
+        v = result.fetchone()
+        if v:
+            return v[0]
+        return ''
+
     def clear(self, name, sql=None):
         """
             Clear playlsit
@@ -198,6 +209,11 @@ class Playlists(GObject.GObject):
         """
         if not sql:
             sql = self._sql
+        result = sql.execute("SELECT rowid FROM tracks WHERE track_id=?"
+                             " AND playlist_id=?", (track.id, playlist_id))
+        v = result.fetchone()
+        if v:
+            return
         sql.execute("INSERT INTO tracks"
                     " VALUES (?, ?, ?)",
                     (playlist_id, track.id, track.path))
@@ -213,6 +229,11 @@ class Playlists(GObject.GObject):
         if not sql:
             sql = self._sql
         for track in tracks:
+            result = sql.execute("SELECT rowid FROM tracks WHERE track_id=?"
+                                 " AND playlist_id=?", (track.id, playlist_id))
+            v = result.fetchone()
+            if v:
+                continue
             sql.execute("INSERT INTO tracks"
                         " VALUES (?, ?, ?)",
                         (playlist_id, track.id, track.path))

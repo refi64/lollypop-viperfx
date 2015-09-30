@@ -161,13 +161,14 @@ class Container:
         self._stack.add(view)
         self._stack.set_visible_child(view)
 
-    def show_playlist_editor(self, playlist_name):
+    def show_playlist_editor(self, playlist_id):
         """
             Show playlist editor for playlist
             Current view stay present in ViewContainer
+            @param playlist id as int
             @param playlist name as str
         """
-        view = PlaylistEditView(playlist_name)
+        view = PlaylistEditView(playlist_id)
         view.show()
         self._stack.add(view)
         self._stack.set_visible_child(view)
@@ -556,8 +557,7 @@ class Container:
 
         view = None
         if playlist_id is not None:
-            name = self._list_two.get_value(playlist_id)
-            view = PlaylistView(playlist_id, name)
+            view = PlaylistView(playlist_id)
         else:
             view = PlaylistsManageView(-1, None, False)
         if view:

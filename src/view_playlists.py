@@ -25,20 +25,20 @@ class PlaylistView(View):
         Show playlist tracks
     """
 
-    def __init__(self, playlist_id, playlist_name):
+    def __init__(self, playlist_id):
         """
             Init PlaylistView
             @parma playlist id as int
-            @param playlist name as str
         """
         View.__init__(self)
-        self._playlist_name = playlist_name
+        self._playlist_id = playlist_id
         self._signal_id = Lp.playlists.connect('playlist-changed',
                                                self._update)
 
         builder = Gtk.Builder()
         builder.add_from_resource('/org/gnome/Lollypop/PlaylistView.ui')
-        builder.get_object('title').set_label(playlist_name)
+        builder.get_object('title').set_label(
+                                            Lp.playlists.get_name(playlist_id))
         builder.connect_signals(self)
 
         self._edit_btn = builder.get_object('edit_btn')
@@ -48,7 +48,7 @@ class PlaylistView(View):
         self._back_btn = builder.get_object('back_btn')
         self._title = builder.get_object('title')
 
-        self._playlist_widget = PlaylistWidget(playlist_id, playlist_name)
+        self._playlist_widget = PlaylistWidget(playlist_id)
         self._playlist_widget.show()
 
         self.add(builder.get_object('widget'))
@@ -67,12 +67,12 @@ class PlaylistView(View):
         self._playlist_widget.populate_list_right(tracks[mid_tracks:],
                                                   mid_tracks + 1)
 
-    def get_name(self):
+    def get_id(self):
         """
-            Return playlist name
-            @return name as str
+            Return playlist id
+            @return id as int
         """
-        return self._playlist_name
+        return self._playlist_id
 
     def stop(self):
         """
@@ -84,13 +84,13 @@ class PlaylistView(View):
 # PRIVATE             #
 #######################
 
-    def _update(self, manager, playlist_name):
+    def _update(self, manager, playlist_id):
         """
             Update tracks widgets
             @param manager as PlaylistsManager
-            @param playlist name as str
+            @param playlist id as int
         """
-        if playlist_name == self._playlist_name:
+        if playlist_id == self._playlist_id:
             self._playlist_widget.clear()
             t = Thread(target=self._update_view)
             t.daemon = True
@@ -102,7 +102,7 @@ class PlaylistView(View):
         """
         sql_l = Lp.db.get_cursor()
         sql_p = Lp.playlists.get_cursor()
-        tracks = Lp.playlists.get_tracks_ids(self._playlist_name, sql_l, sql_p)
+        tracks = Lp.playlists.get_tracks_ids(self._playlist_id, sql_l, sql_p)
         sql_l.close()
         sql_p.close()
         self.populate(tracks)
@@ -122,7 +122,7 @@ class PlaylistView(View):
             @param button as Gtk.Button
             @param playlist name as str
         """
-        Lp.window.show_playlist_editor(self._playlist_name)
+        Lp.window.show_playlist_editor(self._playlist_id)
 
     def _on_current_changed(self, player):
         """
@@ -189,20 +189,22 @@ class PlaylistEditView(View):
         Playlist view used to edit playlists
     """
 
-    def __init__(self, playlist_name):
+    def __init__(self, playlist_id):
         """
             Init view
-            @param playlist name as str
+            @param playlist id as int
+            @param playlist name as int
             @param width as int
         """
         View.__init__(self)
         builder = Gtk.Builder()
         builder.add_from_resource('/org/gnome/Lollypop/PlaylistEditView.ui')
-        builder.get_object('title').set_label(playlist_name)
+        builder.get_object('title').set_label(
+                                            Lp.playlists.get_name(playlist_id))
         builder.connect_signals(self)
         grid = builder.get_object('widget')
         self.add(grid)
-        self._edit_widget = PlaylistEditWidget(playlist_name)
+        self._edit_widget = PlaylistEditWidget(playlist_id)
         self._edit_widget.show()
         self._viewport.add(self._edit_widget)
         self.add(self._scrolledWindow)
