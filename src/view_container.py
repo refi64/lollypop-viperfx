@@ -28,8 +28,6 @@ class ViewContainer(Gtk.Stack):
         Gtk.Stack.__init__(self)
         self.set_property("expand", True)
         self._duration = duration
-        # Don't pass resize request to parent
-        self.set_resize_mode(Gtk.ResizeMode.QUEUE)
         self.set_transition_duration(duration)
         self.set_transition_type(Gtk.StackTransitionType.CROSSFADE)
 

@@ -18,7 +18,6 @@ from threading import Thread
 from gettext import gettext as _
 
 from lollypop.define import Lp, ArtSize, GOOGLE_INC, GOOGLE_MAX
-from lollypop.view_container import ViewContainer
 from lollypop.art import Art
 
 
@@ -43,7 +42,9 @@ class RadioPopover(Gtk.Popover):
         self._start = 0
         self._orig_pixbufs = {}
 
-        self._stack = ViewContainer(1000)
+        self._stack = Gtk.Stack()
+        self._stack.set_transition_duration(1000)
+        self._stack.set_transition_type(Gtk.StackTransitionType.CROSSFADE)
         self._stack.show()
 
         builder = Gtk.Builder()
@@ -59,18 +60,14 @@ class RadioPopover(Gtk.Popover):
 
         builder.get_object('viewport').add(self._view)
 
-        self._widget = builder.get_object('widget')
-        self._logo = builder.get_object('logo')
-        self._spinner = builder.get_object('spinner')
-        self._not_found = builder.get_object('notfound')
         self._name_entry = builder.get_object('name')
         self._uri_entry = builder.get_object('uri')
         self._btn_add_modify = builder.get_object('btn_add_modify')
-        self._stack.add(self._spinner)
-        self._stack.add(self._not_found)
-        self._stack.add(self._logo)
-        self._stack.add(self._widget)
-        self._stack.set_visible_child(self._widget)
+        self._stack.add_named(builder.get_object('spinner'), 'spinner')
+        self._stack.add_named(builder.get_object('notfound'), 'notfound')
+        self._stack.add_named(builder.get_object('logo'), 'logo')
+        self._stack.add_named(builder.get_object('widget'), 'widget')
+        self._stack.set_visible_child_name('widget')
         self.add(self._stack)
 
         if self._name == '':
@@ -135,8 +132,7 @@ class RadioPopover(Gtk.Popover):
             Show not found message if view empty
         """
         if len(self._view.get_children()) == 0:
-            self._stack.set_visible_child(self._not_found)
-            self._stack.clean_old_views(self._not_found)
+            self._stack.set_visible_child_name('notfound')
 
     def _add_pixbuf(self, stream):
         """
@@ -176,8 +172,7 @@ class RadioPopover(Gtk.Popover):
             pass
         # Remove spinner if exist
         if self._spinner is not None:
-            self._stack.set_visible_child(self._logo)
-            self._stack.clean_old_views(self._logo)
+            self._stack.set_visible_child_name(self._logo)
             self._spinner = None
 
     def _on_map(self, widget):
@@ -212,8 +207,7 @@ class RadioPopover(Gtk.Popover):
                 self._radios_manager.rename(new_name, self._name)
             else:
                 self._radios_manager.add(new_name, uri.lstrip().rstrip())
-            self._stack.remove(self._widget)
-            self._stack.set_visible_child(self._spinner)
+            self._stack.set_visible_child_name('spinner')
             self._name = new_name
             self._populate_threaded()
             self.set_size_request(700, 400)
