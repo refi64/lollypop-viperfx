@@ -302,8 +302,9 @@ class PlaylistsManagerWidget(Gtk.Bin):
                                                        playlist[0],
                                                        Album(self._object_id))
                 else:
+
                     selected = Lp.playlists.exists_track(
-                                                       playlists[0],
+                                                       playlist[0],
                                                        Track(self._object_id))
             else:
                 selected = False
