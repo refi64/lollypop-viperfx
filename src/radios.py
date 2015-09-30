@@ -65,7 +65,7 @@ class Radios(GObject.GObject):
         sql.commit()
         GLib.idle_add(self.emit, 'radios-changed')
 
-    def exists(self, radio, sql=None):
+    def exists(self, name, sql=None):
         """
             Return True if radio exists
             @param radio as string
@@ -76,11 +76,12 @@ class Radios(GObject.GObject):
         result = sql.execute("SELECT rowid\
                               FROM radios\
                               WHERE name=?",
-                             (radio,))
+                             (name,))
         v = result.fetchone()
         if v:
-            return v[0] > 1
-        return False
+            return True
+        else:
+            return False
 
     def rename(self, new_name, old_name, sql=None):
         """

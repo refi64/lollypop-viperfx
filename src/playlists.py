@@ -88,8 +88,9 @@ class Playlists(GObject.GObject):
                              (playlist_id,))
         v = result.fetchone()
         if v:
-            return v[0] > 1
-        return False
+            return True
+        else:
+            return False
 
     def rename(self, new_name, old_name, sql=None):
         """
