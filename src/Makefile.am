@@ -44,6 +44,7 @@ app_PYTHON = \
     pop_search.py\
     pop_slider.py\
     pop_tunein.py\
+    radios.py\
     selectionlist.py\
     settings.py\
     sync_mtp.py\

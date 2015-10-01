@@ -12,7 +12,7 @@
 
 from gi.repository import TotemPlParser, Gio
 
-from lollypop.playlists import RadiosManager
+from lollypop.radios import Radios
 from lollypop.player_base import BasePlayer
 from lollypop.define import Type
 from lollypop.objects import Track
@@ -57,10 +57,10 @@ class RadioPlayer(BasePlayer):
         if self.current_track.id != Type.RADIOS:
             return track
 
-        radios_manager = RadiosManager()
+        radios_manager = Radios()
         radios = radios_manager.get()
         i = 0
-        for (radio_id, name) in radios:
+        for (name, url) in radios:
             i += 1
             if self.current_track.album_artist == name:
                 break
@@ -69,10 +69,10 @@ class RadioPlayer(BasePlayer):
         if i >= len(radios):
             i = 0
 
-        name = radios[i][1]
-        uris = radios_manager.get_tracks(name)
-        if len(uris) > 0:
-            track.set_radio(name, uris[0])
+        name = radios[i][0]
+        url = radios[i][1]
+        if url:
+            track.set_radio(name, url)
         return track
 
     def prev(self):
@@ -84,10 +84,10 @@ class RadioPlayer(BasePlayer):
         if self.current_track.id != Type.RADIOS:
             return track
 
-        radios_manager = RadiosManager()
+        radios_manager = Radios()
         radios = radios_manager.get()
         i = len(radios) - 1
-        for (radio_id, name) in reversed(radios):
+        for (name, url) in reversed(radios):
             i -= 1
             if self.current_track.album_artist == name:
                 break
@@ -96,10 +96,10 @@ class RadioPlayer(BasePlayer):
         if i < 0:
             i = len(radios) - 1
 
-        name = radios[i][1]
-        uris = radios_manager.get_tracks(name)
-        if len(uris) > 0:
-            track.set_radio(name, uris[0])
+        name = radios[i][0]
+        url = radios[i][1]
+        if url:
+            track.set_radio(name, url)
         return track
 
 #######################

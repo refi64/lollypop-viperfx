@@ -79,9 +79,9 @@ class RadioPopover(Gtk.Popover):
             builder.get_object('btn_add_modify').set_label(_("Modify"))
             builder.get_object('btn_delete').show()
             self._name_entry.set_text(self._name)
-            uris = self._radios_manager.get_tracks(self._name)
-            if len(uris) > 0:
-                self._uri_entry.set_text(uris[0])
+            url = self._radios_manager.get_url(self._name)
+            if url:
+                self._uri_entry.set_text(url)
 
 #######################
 # PRIVATE             #
@@ -211,9 +211,7 @@ class RadioPopover(Gtk.Popover):
             if rename:
                 self._radios_manager.rename(new_name, self._name)
             else:
-                self._radios_manager.add(new_name)
-            self._radios_manager.add_track(new_name,
-                                           uri.lstrip().rstrip())
+                self._radios_manager.add(new_name, uri.lstrip().rstrip())
             self._stack.remove(self._widget)
             self._stack.set_visible_child(self._spinner)
             self._name = new_name

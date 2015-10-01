@@ -16,7 +16,7 @@ from threading import Thread
 
 from lollypop.view import View
 from lollypop.widgets_radio import RadioWidget
-from lollypop.playlists import RadiosManager
+from lollypop.radios import Radios
 from lollypop.pop_radio import RadioPopover
 from lollypop.pop_tunein import TuneinPopover
 from lollypop.define import Lp
@@ -37,8 +37,8 @@ class RadiosView(View):
         self._signal = Lp.art.connect('logo-changed',
                                       self._on_logo_changed)
 
-        self._radios_manager = RadiosManager()
-        self._radios_manager.connect('playlists-changed',
+        self._radios_manager = Radios()
+        self._radios_manager.connect('radios-changed',
                                      self._on_radios_changed)
         builder = Gtk.Builder()
         builder.add_from_resource('/org/gnome/Lollypop/RadiosView.ui')
@@ -95,8 +95,10 @@ class RadiosView(View):
         """
         radios = []
         # Get radios name
-        for (i, name) in self._radios_manager.get():
+        sql = self._radios_manager.get_cursor()
+        for (i, name) in self._radios_manager.get(sql):
             radios.append(name)
+        sql.close()
         GLib.idle_add(self._show_stack, radios)
 
     def _get_children(self):
@@ -157,7 +159,7 @@ class RadiosView(View):
         old_child = None
 
         # Get radios name
-        for (i, name) in manager.get():
+        for (name, url) in manager.get():
             radios_name.append(name)
 
         # Get currents widget less removed
@@ -236,8 +238,8 @@ class RadiosView(View):
             @child as Gtk.FlowboxChild
         """
         name = child.get_child().get_name()
-        uris = self._radios_manager.get_tracks(name)
-        if len(uris) > 0:
+        url = self._radios_manager.get_url(name)
+        if url:
             track = Track()
-            track.set_radio(name, uris[0])
+            track.set_radio(name, url)
             Lp.player.load(track)

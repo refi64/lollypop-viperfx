@@ -15,7 +15,7 @@ from gi.repository import Gtk, GLib, Gio
 from threading import Thread
 from gettext import gettext as _
 
-from lollypop.playlists import RadiosManager
+from lollypop.radios import Radios
 from lollypop.tunein import TuneIn
 from lollypop.define import Lp, ArtSize
 from lollypop.art import Art
@@ -32,7 +32,7 @@ class TuneinPopover(Gtk.Popover):
         """
         Gtk.Popover.__init__(self)
         self._tunein = TuneIn()
-        self._radio_manager = RadiosManager()
+        self._radio_manager = Radios()
         self._current_url = None
         self._previous_urls = []
         self._current_items = []
@@ -190,9 +190,9 @@ class TuneinPopover(Gtk.Popover):
                 url = data.decode('utf-8')
         except Exception as e:
             print("TuneinPopover::_add_radio: %s" % e)
-        self._radio_manager.add(item.TEXT.replace('/', '-'))
-        self._radio_manager.add_track(item.TEXT.replace('/', '-'),
-                                      url)
+        sql = self._radio_manager.get_cursor()
+        self._radio_manager.add(item.TEXT.replace('/', '-'), url, sql)
+        sql.close()
 
     def _on_back_btn_clicked(self, btn):
         """

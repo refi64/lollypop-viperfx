@@ -10,28 +10,35 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
+from gi.repository import GObject
+
 import os
 import sqlite3
 from datetime import datetime
 
 
-class Radios:
+class Radios(GObject.GObject):
     """
         Playlists manager
     """
     LOCAL_PATH = os.path.expanduser("~") + "/.local/share/lollypop"
     DB_PATH = "%s/radios.db" % LOCAL_PATH
 
-    create_radios = '''CREATE TABLE playlists (
+    create_radios = '''CREATE TABLE radios (
                             id INTEGER PRIMARY KEY,
                             name TEXT NOT NULL,
-                            url TEXY NOT NULL
+                            url TEXY NOT NULL,
                             popularity INT NOT NULL)'''
+    __gsignals__ = {
+        # Add, rename, delete
+        'radios-changed': (GObject.SignalFlags.RUN_FIRST, None, (int,)),
+    }
 
     def __init__(self):
         """
             Init playlists manager
         """
+        GObject.GObject.__init__(self)
         self._sql = self.get_cursor()
         # Create db schema
         try:
@@ -63,7 +70,7 @@ class Radios:
         if not sql:
             sql = self._sql
         result = sql.execute("SELECT rowid\
-                              FROM playlists\
+                              FROM radios\
                               WHERE name=?",
                              (radio,))
         v = result.fetchone()
@@ -105,9 +112,25 @@ class Radios:
         if not sql:
             sql = self._sql
         result = sql.execute("SELECT name, url\
-                              FROM playlists\
+                              FROM radios\
                               ORDER BY popularity, name")
         return list(result)
+
+    def get_url(self, name, sql=None):
+        """
+            Return url for name
+            @param name as str
+            @return url as str
+        """
+        if not sql:
+            sql = self._sql
+        result = sql.execute("SELECT url\
+                              FROM radios\
+                              WHERE name=?", (name,))
+        v = result.fetchone()
+        if v:
+            return v[0]
+        return ''
 
 #######################
 # PRIVATE             #
