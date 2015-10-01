@@ -37,7 +37,6 @@ src/player_rg.py
 src/player_shuffle.py
 src/player_userplaylist.py
 src/playlists.py
-src/pop_albums.py
 src/pop_covers.py
 src/pop_infos.py
 src/pop_menu.py
@@ -80,6 +79,7 @@ src/window.py
 [type: gettext/glade]data/AlbumDetailedWidget.ui
 [type: gettext/glade]data/AlbumSimpleWidget.ui
 [type: gettext/glade]data/Appmenu.ui
+[type: gettext/glade]data/ArtistContent.ui
 [type: gettext/glade]data/ArtistInfos.ui
 [type: gettext/glade]data/ArtistView.ui
 [type: gettext/glade]data/CoversPopover.ui
