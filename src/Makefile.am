@@ -16,6 +16,7 @@ app_PYTHON = \
     database_genres.py\
     database.py\
     database_tracks.py\
+    database_upgrade.py\
     define.py\
     fullscreen.py\
     inotify.py\

@@ -15,6 +15,7 @@ import os
 from gi.repository import GLib
 
 from lollypop.define import Lp
+from lollypop.database_upgrade import DatabaseUpgrade
 
 
 class Database:
@@ -61,16 +62,11 @@ class Database:
     create_track_genres = '''CREATE TABLE track_genres (
                                                 track_id INT NOT NULL,
                                                 genre_id INT NOT NULL)'''
-    version = 12
 
     def __init__(self):
         """
             Create database tables or manage update if needed
         """
-        self._albums_popularity = {}
-        self._albums_mtime = {}
-        self._tracks_popularity = {}
-        self._tracks_ltime = {}
         # Create db directory if missing
         if not os.path.exists(self.LOCAL_PATH):
             try:
@@ -78,21 +74,12 @@ class Database:
             except:
                 print("Can't create %s" % self.LOCAL_PATH)
 
-        if os.path.exists(self.DB_PATH):
-            db_version = Lp.settings.get_value('db-version').get_int32()
-            if db_version < self.version:
-                self._set_albums_popularity()
-                self._set_albums_mtime()
-                self._set_tracks_popularity()
-                self._set_tracks_ltime()
-                try:
-                    os.rename(self.DB_PATH, self.DB_PATH + ".backup")
-                except:
-                    pass
-                Lp.settings.set_value('db-version',
-                                      GLib.Variant('i', self.version))
-
         sql = self.get_cursor()
+        db_version = Lp.settings.get_value('db-version').get_int32()
+        upgrade = DatabaseUpgrade(db_version, sql)
+        upgrade.do_db_upgrade()
+        Lp.settings.set_value('db-version',
+                              GLib.Variant('i', upgrade.count()))
         # Create db schema
         try:
             sql.execute(self.create_albums)
@@ -103,121 +90,8 @@ class Database:
             sql.execute(self.create_track_artists)
             sql.execute(self.create_track_genres)
             sql.commit()
-            Lp.settings.set_value('db-version',
-                                  GLib.Variant('i', self.version))
         except:
             pass
-
-    def get_albums_popularity(self):
-        """
-            Get a dict with album name and popularity
-            This is usefull for collection scanner be
-            able to restore popularities after db reset
-        """
-        return self._albums_popularity
-
-    def get_albums_mtime(self):
-        """
-            Get a dict with album name and mtime
-            This is usefull for collection scanner be
-            able to restore mtimes after db reset
-        """
-        return self._albums_mtime
-
-    def get_tracks_popularity(self):
-        """
-            Get a dict with track name and popularity
-            This is usefull for collection scanner be
-            able to restore popularities after db reset
-        """
-        return self._tracks_popularity
-
-    def get_tracks_ltime(self):
-        """
-            Get a dict with track name and ltime
-            This is usefull for collection scanner be
-            able to restore ltimes after db reset
-        """
-        return self._tracks_ltime
-
-###########
-# Private #
-###########
-    def _set_albums_popularity(self):
-        """
-            Set a dict with album string and popularity
-            This is usefull for collection scanner be
-            able to restore popularities after db reset
-        """
-        try:
-            sql = self.get_cursor()
-            result = sql.execute("SELECT albums.name, artists.name, popularity\
-                                  FROM albums, artists\
-                                  WHERE artists.rowid == albums.artist_id")
-            for row in result:
-                string = "%s_%s" % (row[0], row[1])
-                self._albums_popularity[string] = row[2]
-            sql.close()
-        except Exception as e:
-            print("Database::_set_albums_popularity: %s" % e)
-
-    def _set_albums_mtime(self):
-        """
-            Set a dict with album string and mtime
-            This is usefull for collection scanner be
-            able to restore mtimes after db reset
-        """
-        try:
-            sql = self.get_cursor()
-            result = sql.execute("SELECT albums.name, artists.name, mtime\
-                                  FROM albums, artists\
-                                  WHERE artists.rowid == albums.artist_id")
-            for row in result:
-                string = "%s_%s" % (row[0], row[1])
-                self._albums_mtime[string] = row[2]
-            sql.close()
-        except Exception as e:
-            print("Database::_set_albums_mtime: %s" % e)
-
-    def _set_tracks_popularity(self):
-        """
-            Set a dict with track string and popularity
-            This is usefull for collection scanner be
-            able to restore popularities after db reset
-        """
-        try:
-            sql = self.get_cursor()
-            result = sql.execute(
-                "SELECT tracks.name, artists.name, popularity\
-                 FROM tracks, track_artists, artists\
-                 WHERE artists.rowid == track_artists.artist_id\
-                 AND track_artists.track_id == tracks.rowid")
-            for row in result:
-                string = "%s_%s" % (row[0], row[1])
-                self._tracks_popularity[string] = row[2]
-            sql.close()
-        except Exception as e:
-            print("Database::_set_tracks_popularity: %s" % e)
-
-    def _set_tracks_ltime(self):
-        """
-            Set a dict with track string and ltime
-            This is usefull for collection scanner be
-            able to restore mtimes after db reset
-        """
-        try:
-            sql = self.get_cursor()
-            result = sql.execute(
-                "SELECT tracks.name, artists.name, ltime\
-                 FROM tracks, track_artists, artists\
-                 WHERE artists.rowid == track_artists.artist_id\
-                 AND track_artists.track_id == tracks.rowid")
-            for row in result:
-                string = "%s_%s" % (row[0], row[1])
-                self._tracks_ltime[string] = row[2]
-            sql.close()
-        except Exception as e:
-            print("Database::_set_tracks_ltime: %s" % e)
 
     def get_cursor(self):
         """
