@@ -115,7 +115,7 @@ class TracksDatabase:
         if not sql:
             sql = Lp.sql
         result = sql.execute("SELECT rowid\
-                              FROM tracks where name=? COLLATE NOCASE",
+                              FROM tracks WHERE name=? COLLATE NOCASE",
                              (name,))
         return list(itertools.chain(*result))
 
@@ -127,8 +127,24 @@ class TracksDatabase:
         """
         if not sql:
             sql = Lp.sql
-        result = sql.execute("SELECT rowid FROM tracks where filepath=?",
+        result = sql.execute("SELECT rowid FROM tracks WHERE filepath=?",
                              (filepath,))
+        v = result.fetchone()
+        if v:
+            return v[0]
+        return None
+
+    def get_id_by_filename(self, filename, sql=None):
+        """
+            Return track id for path
+            @param filename as str
+            @return track id as int
+        """
+        if not sql:
+            sql = Lp.sql
+        result = sql.execute("SELECT rowid FROM tracks\
+                             WHERE filepath LIKE ?",
+                             ('%' + filename + '%',))
         v = result.fetchone()
         if v:
             return v[0]
@@ -142,7 +158,7 @@ class TracksDatabase:
         """
         if not sql:
             sql = Lp.sql
-        result = sql.execute("SELECT name FROM tracks where rowid=?",
+        result = sql.execute("SELECT name FROM tracks WHERE rowid=?",
                              (track_id,))
         v = result.fetchone()
         if v:
@@ -158,7 +174,7 @@ class TracksDatabase:
         """
         if not sql:
             sql = Lp.sql
-        result = sql.execute("SELECT year FROM tracks where rowid=?",
+        result = sql.execute("SELECT year FROM tracks WHERE rowid=?",
                              (album_id,))
         v = result.fetchone()
         if v and v[0]:
@@ -174,7 +190,7 @@ class TracksDatabase:
         """
         if not sql:
             sql = Lp.sql
-        result = sql.execute("SELECT filepath FROM tracks where rowid=?",
+        result = sql.execute("SELECT filepath FROM tracks WHERE rowid=?",
                              (track_id,))
         v = result.fetchone()
         if v:
@@ -190,7 +206,7 @@ class TracksDatabase:
         """
         if not sql:
             sql = Lp.sql
-        result = sql.execute("SELECT album_id FROM tracks where rowid=?",
+        result = sql.execute("SELECT album_id FROM tracks WHERE rowid=?",
                              (track_id,))
         v = result.fetchone()
         if v:

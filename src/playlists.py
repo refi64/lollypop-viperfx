@@ -302,9 +302,17 @@ class Playlists(GObject.GObject):
             return None
 
         track_id = Lp.tracks.get_id_by_path(v[0], sql_l)
-        sql_p.execute("UPDATE tracks SET track_id=?\
-                      WHERE path=?", (track_id, v[0]))
-        sql_p.commit()
+
+        # File was moved by user
+        if track_id is None:
+            filename = GLib.basename(v[0])
+            track_id = Lp.tracks.get_id_by_filename(filename, sql_l)
+
+        if track_id is not None:
+            path = Lp.tracks.get_path(track_id, sql_l)
+            sql_p.execute("UPDATE tracks SET track_id=?, path=?\
+                          WHERE path=?", (track_id, path, v[0]))
+            sql_p.commit()
         return track_id
 
     def exists_track(self, playlist_id, track, sql=None):
