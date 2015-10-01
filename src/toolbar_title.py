@@ -90,7 +90,7 @@ class ToolbarTitle(Gtk.Bin):
             @param player as Player
         """
         if player.current_track.id != Type.RADIOS:
-            self._progress.set_sensitive(player.is_playing())
+            self._progress.set_sensitive(player.current_track.id is not None)
 
         if player.is_playing():
             if player.current_track.id == Type.RADIOS and self._timeout:
