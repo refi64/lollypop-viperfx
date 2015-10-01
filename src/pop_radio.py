@@ -197,7 +197,6 @@ class RadioPopover(Gtk.Popover):
             Add/Modify a radio
             @param widget as Gtk.Widget
         """
-        self.hide()
         uri = self._uri_entry.get_text()
         new_name = self._name_entry.get_text()
         rename = self._name != '' and self._name != new_name
