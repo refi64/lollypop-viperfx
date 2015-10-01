@@ -187,7 +187,7 @@ class TuneinPopover(Gtk.Popover):
             f = Gio.File.new_for_uri(url)
             (status, data, tag) = f.load_contents()
             if status:
-                url = data.decode('utf-8')
+                url = data.decode('utf-8').split('\n')[0]
         except Exception as e:
             print("TuneinPopover::_add_radio: %s" % e)
         sql = self._radio_manager.get_cursor()

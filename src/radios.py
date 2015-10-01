@@ -14,7 +14,6 @@ from gi.repository import GObject
 
 import os
 import sqlite3
-from datetime import datetime
 
 
 class Radios(GObject.GObject):
@@ -56,9 +55,9 @@ class Radios(GObject.GObject):
         """
         if not sql:
             sql = self._sql
-        sql.execute("INSERT INTO radios (name, url, mtime, popularity)"
-                    " VALUES (?, ?, ?, ?)",
-                    (name, url, datetime.now().strftime('%s'), 0))
+        sql.execute("INSERT INTO radios (name, url, popularity)"
+                    " VALUES (?, ?, ?)",
+                    (name, url, 0))
         sql.commit()
 
     def exists(self, radio, sql=None):

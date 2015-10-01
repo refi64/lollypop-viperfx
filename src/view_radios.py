@@ -96,7 +96,7 @@ class RadiosView(View):
         radios = []
         # Get radios name
         sql = self._radios_manager.get_cursor()
-        for (i, name) in self._radios_manager.get(sql):
+        for (name, url) in self._radios_manager.get(sql):
             radios.append(name)
         sql.close()
         GLib.idle_add(self._show_stack, radios)
