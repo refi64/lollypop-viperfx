@@ -198,7 +198,6 @@ class CollectionScanner(GObject.GObject, ScannerTagReader):
                 value = Lp.albums.get_stats(duration, count)
                 print(value)
                 if value is not None:
-                    print('\o/')
                     Lp.albums.set_popularity(album_id, value[0], True, sql)
                     Lp.albums.set_mtime(album_id, value[1], sql)
 
