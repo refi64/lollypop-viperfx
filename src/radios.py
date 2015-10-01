@@ -10,7 +10,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-from gi.repository import GObject
+from gi.repository import GObject, GLib
 
 import os
 import sqlite3
@@ -30,7 +30,7 @@ class Radios(GObject.GObject):
                             popularity INT NOT NULL)'''
     __gsignals__ = {
         # Add, rename, delete
-        'radios-changed': (GObject.SignalFlags.RUN_FIRST, None, (int,)),
+        'radios-changed': (GObject.SignalFlags.RUN_FIRST, None, ()),
     }
 
     def __init__(self):
@@ -59,6 +59,7 @@ class Radios(GObject.GObject):
                     " VALUES (?, ?, ?)",
                     (name, url, 0))
         sql.commit()
+        GLib.idle_add(self.emit, 'radios-changed')
 
     def exists(self, radio, sql=None):
         """
@@ -90,6 +91,7 @@ class Radios(GObject.GObject):
                     WHERE name=?",
                     (new_name, old_name))
         sql.commit()
+        GLib.idle_add(self.emit, 'radios-changed')
 
     def delete(self, name, sql=None):
         """
@@ -102,6 +104,7 @@ class Radios(GObject.GObject):
                     WHERE name=?",
                     (name,))
         sql.commit()
+        GLib.idle_add(self.emit, 'radios-changed')
 
     def get(self, sql=None):
         """

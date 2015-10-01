@@ -26,13 +26,17 @@ class TuneinPopover(Gtk.Popover):
         Popover showing tunin radios
     """
 
-    def __init__(self):
+    def __init__(self, radios_manager=None):
         """
             Init Popover
+            @param radios_manager as Radios
         """
         Gtk.Popover.__init__(self)
         self._tunein = TuneIn()
-        self._radio_manager = Radios()
+        if radios_manager is not None:
+            self._radios_manager = radios_manager
+        else:
+            self._radios_manager = Radios()
         self._current_url = None
         self._previous_urls = []
         self._current_items = []
@@ -62,12 +66,10 @@ class TuneinPopover(Gtk.Popover):
         builder.get_object('viewport').set_property('margin', 10)
 
         self._scrolled = builder.get_object('scrolled')
-        self._spinner = builder.get_object('spinner')
-        self._not_found = builder.get_object('notfound')
-        self._stack.add(self._spinner)
-        self._stack.add(self._not_found)
-        self._stack.add(self._scrolled)
-        self._stack.set_visible_child(self._spinner)
+        self._stack.add_named(builder.get_object('spinner'), 'spinner')
+        self._stack.add_named(builder.get_object('notfound'), 'notfound')
+        self._stack.add_named(self._scrolled, 'scrolled')
+        self._stack.set_visible_child_name('spinner')
         self.add(widget)
         size_setting = Lp.settings.get_value('window-size')
         if isinstance(size_setting[1], int):
@@ -98,7 +100,7 @@ class TuneinPopover(Gtk.Popover):
             Show not found message
         """
         self._label.set_text(_("Can't connect to TuneIn..."))
-        self._stack.set_visible_child(self._not_found)
+        self._stack.set_visible_child_name('notfound')
         self._home_btn.set_sensitive(True)
 
     def _populate(self, url):
@@ -152,8 +154,8 @@ class TuneinPopover(Gtk.Popover):
         self._view.add(child)
 
         # Remove spinner if exist
-        if self._spinner == self._stack.get_visible_child():
-            self._stack.set_visible_child(self._scrolled)
+        if self._stack.get_visible_child_name() == 'spinner':
+            self._stack.set_visible_child_name('scrolled')
             self._label.set_text(_("Browse themes and add a new radio"))
             if self._current_url is not None:
                 self._back_btn.set_sensitive(True)
@@ -190,8 +192,8 @@ class TuneinPopover(Gtk.Popover):
                 url = data.decode('utf-8').split('\n')[0]
         except Exception as e:
             print("TuneinPopover::_add_radio: %s" % e)
-        sql = self._radio_manager.get_cursor()
-        self._radio_manager.add(item.TEXT.replace('/', '-'), url, sql)
+        sql = self._radios_manager.get_cursor()
+        self._radios_manager.add(item.TEXT.replace('/', '-'), url, sql)
         sql.close()
 
     def _on_back_btn_clicked(self, btn):
@@ -225,7 +227,7 @@ class TuneinPopover(Gtk.Popover):
             @param item as TuneIn Item
         """
         if item.TYPE == "link":
-            self._stack.set_visible_child(self._spinner)
+            self._stack.set_visible_child_name('spinner')
             self._clear()
             self._scrolled.get_vadjustment().set_value(0.0)
             if self._current_url is not None:
