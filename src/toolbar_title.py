@@ -93,12 +93,14 @@ class ToolbarTitle(Gtk.Bin):
             self._progress.set_sensitive(player.current_track.id is not None)
 
         if player.is_playing():
+            self.set_opacity(1)
             if player.current_track.id == Type.RADIOS and self._timeout:
                 GLib.source_remove(self._timeout)
                 self._timeout = None
             elif not self._timeout:
                 self._timeout = GLib.timeout_add(1000, self.update_position)
         else:
+            self.set_opacity(0.5)
             self.update_position()
             if self._timeout:
                 GLib.source_remove(self._timeout)
