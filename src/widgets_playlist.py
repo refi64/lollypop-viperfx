@@ -126,6 +126,9 @@ class PlaylistWidget(Gtk.Bin):
             return
 
         track = Track(tracks.pop(0))
+        if not track.path:
+            # Track may have changed of id, try to update from db
+            track = Track(Lp.playlists.update_id(track.id))
         name = escape(track.name)
         album = track.album
 

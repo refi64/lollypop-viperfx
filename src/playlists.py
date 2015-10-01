@@ -284,6 +284,29 @@ class Playlists(GObject.GObject):
         sql.commit()
         GLib.idle_add(self.emit, "playlist-changed", playlist_id)
 
+    def update_id(self, track_id, sql_l=None, sql_p=None):
+        """
+            Search track id by path
+            @param track id as int
+            @return new track id
+        """
+        if not sql_l:
+            sql_l = Lp.sql
+        if not sql_p:
+            sql_p = self._sql
+        result = sql_p.execute("SELECT path\
+                               FROM tracks\
+                               WHERE track_id=?", (track_id,))
+        v = result.fetchone()
+        if not v:
+            return None
+
+        track_id = Lp.tracks.get_id_by_path(v[0], sql_l)
+        sql_p.execute("UPDATE tracks SET track_id=?\
+                      WHERE path=?", (track_id, v[0]))
+        sql_p.commit()
+        return track_id
+
     def exists_track(self, playlist_id, track, sql=None):
         """
             Check if track id exist in playlist
