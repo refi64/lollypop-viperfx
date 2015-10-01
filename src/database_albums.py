@@ -633,7 +633,6 @@ class AlbumsDatabase:
                                   AND track_genres.genre_id=?", (album_id,
                                                                  genre_id))
         else:
-            print('ici', album_id, genre_id)
             result = sql.execute("SELECT SUM(duration) FROM tracks\
                                   WHERE album_id=?", (album_id,))
         v = result.fetchone()
