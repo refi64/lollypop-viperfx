@@ -29,7 +29,8 @@ from locale import getdefaultlocale
 from threading import Thread
 import re
 
-from lollypop.define import Lp, SecretSchema, SecretAttributes
+from lollypop.define import Lp, SecretSchema, SecretAttributes, Type
+from lollypop.objects import Track
 from lollypop.utils import debug
 
 
@@ -306,8 +307,8 @@ class LastFM(LastFMNetwork):
                     track_id = Lp.tracks.search_track(str(loved.track.artist),
                                                       str(loved.track.title),
                                                       sql)
-                    tracks.append(Lp.tracks.get_path(track_id, sql))
-                Lp.playlists.add_tracks(Lp.playlists._LOVED, tracks)
+                    tracks.append(Track(track_id))
+                Lp.playlists.add_tracks(Type.LOVED, tracks, sql)
                 sql.close()
         except Exception as e:
                 print("LastFM::_populate_loved_tracks: %s" % e)
