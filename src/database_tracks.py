@@ -10,6 +10,8 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
+from gi.repository import GLib
+
 from gettext import gettext as _
 import itertools
 
@@ -44,27 +46,25 @@ class TracksDatabase:
             @param popularity as int
             @param ltime as int
             @param mtime as int
+            @return inserted rowid as int
             @warning: commit needed
         """
         if not sql:
             sql = Lp.sql
-        # Invalid encoding in filenames may raise an exception
-        try:
-            sql.execute(
-                "INSERT INTO tracks (name, filepath, duration, tracknumber,\
-                discnumber, album_id, year, popularity, ltime, mtime) VALUES\
-                (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", (name,
-                                                  filepath,
-                                                  duration,
-                                                  tracknumber,
-                                                  discnumber,
-                                                  album_id,
-                                                  year,
-                                                  popularity,
-                                                  ltime,
-                                                  mtime))
-        except Exception as e:
-            print("TracksDatabase::add: ", e, ascii(filepath))
+        result = sql.execute(
+            "INSERT INTO tracks (name, filepath, duration, tracknumber,\
+            discnumber, album_id, year, popularity, ltime, mtime) VALUES\
+            (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", (name,
+                                              filepath,
+                                              duration,
+                                              tracknumber,
+                                              discnumber,
+                                              album_id,
+                                              year,
+                                              popularity,
+                                              ltime,
+                                              mtime))
+        return result.lastrowid
 
     def add_artist(self, track_id, artist_id, sql=None):
         """
@@ -130,7 +130,7 @@ class TracksDatabase:
         result = sql.execute("SELECT rowid FROM tracks WHERE filepath=?",
                              (filepath,))
         v = result.fetchone()
-        if v:
+        if v is not None:
             return v[0]
         return None
 
@@ -146,7 +146,7 @@ class TracksDatabase:
                              WHERE filepath LIKE ?",
                              ('%' + filename + '%',))
         v = result.fetchone()
-        if v:
+        if v is not None:
             return v[0]
         return None
 
@@ -161,7 +161,7 @@ class TracksDatabase:
         result = sql.execute("SELECT name FROM tracks WHERE rowid=?",
                              (track_id,))
         v = result.fetchone()
-        if v:
+        if v is not None:
             return v[0]
 
         return ""
@@ -193,7 +193,7 @@ class TracksDatabase:
         result = sql.execute("SELECT filepath FROM tracks WHERE rowid=?",
                              (track_id,))
         v = result.fetchone()
-        if v:
+        if v is not None:
             return v[0]
 
         return ""
@@ -209,7 +209,7 @@ class TracksDatabase:
         result = sql.execute("SELECT album_id FROM tracks WHERE rowid=?",
                              (track_id,))
         v = result.fetchone()
-        if v:
+        if v is not None:
             return v[0]
 
         return -1
@@ -226,7 +226,7 @@ class TracksDatabase:
                               WHERE tracks.rowid=? AND\
                               tracks.album_id=albums.rowid", (track_id,))
         v = result.fetchone()
-        if v:
+        if v is not None:
             return v[0]
 
         return _("Unknown")
@@ -314,7 +314,7 @@ class TracksDatabase:
                               duration, album_id\
                               FROM tracks WHERE rowid=?", (track_id,))
         v = result.fetchone()
-        if v:
+        if v is not None:
             return v
         return (None, None, None, None)
 
@@ -332,7 +332,7 @@ class TracksDatabase:
                               albums.rowid", (track_id,))
         v = result.fetchone()
 
-        if v:
+        if v is not None:
             return v[0]
 
         return Type.COMPILATIONS
@@ -359,7 +359,7 @@ class TracksDatabase:
         result = sql.execute("SELECT tracknumber FROM tracks\
                               WHERE rowid=?", (track_id,))
         v = result.fetchone()
-        if v:
+        if v is not None:
             return v[0]
 
         return 0
@@ -375,7 +375,7 @@ class TracksDatabase:
         result = sql.execute("SELECT duration FROM tracks\
                               WHERE rowid=?", (track_id,))
         v = result.fetchone()
-        if v:
+        if v is not None:
             return v[0]
 
         return 0
@@ -388,7 +388,7 @@ class TracksDatabase:
             sql = Lp.sql
         result = sql.execute("SELECT COUNT(*) FROM tracks  LIMIT 1")
         v = result.fetchone()
-        if v:
+        if v is not None:
             return v[0] == 0
 
         return True
@@ -544,7 +544,7 @@ class TracksDatabase:
                              rowid=?", (track_id,))
 
         v = result.fetchone()
-        if v:
+        if v is not None:
             return v[0]
         return 0
 
@@ -575,6 +575,25 @@ class TracksDatabase:
                              ('%' + searched + '%',))
         return list(result)
 
+    def get_stats(self, path, duration, sql=None):
+        """
+            Get stats for track with filename and duration
+            @param path as str
+            @param duration as int
+            @return (popularity, mtime) as (int, int)
+        """
+        if not sql:
+            sql = Lp.sql
+        name = GLib.path_get_basename(path)
+        result = sql.execute("SELECT popularity, ltime\
+                              FROM tracks\
+                              WHERE filepath LIKE ?\
+                              AND duration=?", ('%' + name + '%', duration))
+        v = result.fetchone()
+        if v is not None:
+            return v
+        return None
+
     def search_track(self, artist, title, sql=None):
         """
             Get track id for artist and title
@@ -597,14 +616,13 @@ class TracksDatabase:
                 return track_id
         return None
 
-    def remove(self, path, sql=None):
+    def remove(self, track_id, sql=None):
         """
             Remove track
-            @param Track path as string
+            @param track id as int
         """
         if not sql:
             sql = Lp.sql
-        track_id = self.get_id_by_path(path, sql)
         sql.execute("DELETE FROM track_genres\
                      WHERE track_id=?", (track_id,))
         sql.execute("DELETE FROM track_artists\

@@ -32,12 +32,14 @@ class GenresDatabase:
         """
             Add a new genre to database
             @param Name as string
+            @return inserted rowid as int
             @warning: commit needed
         """
         if not sql:
             sql = Lp.sql
-        sql.execute("INSERT INTO genres (name) VALUES (?)",
-                    (name,))
+        result = sql.execute("INSERT INTO genres (name) VALUES (?)",
+                             (name,))
+        return result.lastrowid
 
     def get_id(self, name, sql=None):
         """
@@ -50,7 +52,7 @@ class GenresDatabase:
         result = sql.execute("SELECT rowid FROM genres\
                               WHERE name=?", (name,))
         v = result.fetchone()
-        if v:
+        if v is not None:
             return v[0]
 
         return None
@@ -66,7 +68,7 @@ class GenresDatabase:
         result = sql.execute("SELECT name FROM genres\
                               WHERE rowid=?", (genre_id,))
         v = result.fetchone()
-        if v:
+        if v is not None:
             return v[0]
 
         return _("Unknown")

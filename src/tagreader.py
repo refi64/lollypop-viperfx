@@ -209,8 +209,7 @@ class ScannerTagReader(TagReader):
             # Get artist id, add it if missing
             artist_id = Lp.artists.get_id(artist, sql)
             if artist_id is None:
-                Lp.artists.add(artist, sql)
-                artist_id = Lp.artists.get_id(artist, sql)
+                artist_id = Lp.artists.add(artist, sql)
                 if artist == album_artist:
                     new_artist_ids.append(artist_id)
             artist_ids.append(artist_id)
@@ -231,8 +230,7 @@ class ScannerTagReader(TagReader):
             # Get album artist id, add it if missing
             album_artist_id = Lp.artists.get_id(album_artist, sql)
             if album_artist_id is None:
-                Lp.artists.add(album_artist, sql)
-                album_artist_id = Lp.artists.get_id(album_artist, sql)
+                album_artist_id = Lp.artists.add(album_artist, sql)
                 new = True
         return (album_artist_id, new)
 
@@ -251,8 +249,7 @@ class ScannerTagReader(TagReader):
             # Get genre id, add genre if missing
             genre_id = Lp.genres.get_id(genre, sql)
             if genre_id is None:
-                Lp.genres.add(genre, sql)
-                genre_id = Lp.genres.get_id(genre, sql)
+                genre_id = Lp.genres.add(genre, sql)
                 new_genre_ids.append(genre_id)
             genre_ids.append(genre_id)
 
@@ -275,18 +272,15 @@ class ScannerTagReader(TagReader):
             @commit needed
         """
         path = os.path.dirname(filepath)
-
+        new = False
         if no_album_artist:
             album_id = Lp.albums.get_compilation_id(album_name, sql)
         else:
             album_id = Lp.albums.get_id(album_name, artist_id, sql)
         if album_id is None:
-            Lp.albums.add(album_name, artist_id, no_album_artist,
-                          path, popularity, mtime, sql)
-            if no_album_artist:
-                album_id = Lp.albums.get_compilation_id(album_name, sql)
-            else:
-                album_id = Lp.albums.get_id(album_name, artist_id, sql)
+            new = True
+            album_id = Lp.albums.add(album_name, artist_id, no_album_artist,
+                                     path, popularity, mtime, sql)
         # Now we have our album id, check if path doesn't change
         if Lp.albums.get_path(album_id, sql) != path:
             Lp.albums.set_path(album_id, path, sql)
@@ -301,7 +295,7 @@ class ScannerTagReader(TagReader):
                 Lp.albums.set_artist_id(album_id,
                                         artist_id,
                                         sql)
-        return album_id
+        return (album_id, new)
 
     def update_year(self, album_id, sql):
         """

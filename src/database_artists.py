@@ -33,12 +33,14 @@ class ArtistsDatabase:
         """
             Add a new artist to database
             @param Artist name as string
+            @return inserted rowid as int
             @warning: commit needed
         """
         if not sql:
             sql = Lp.sql
-        sql.execute("INSERT INTO artists (name) VALUES (?)",
-                    (name,))
+        result = sql.execute("INSERT INTO artists (name) VALUES (?)",
+                             (name,))
+        return result.lastrowid
 
     def get_id(self, name, sql=None):
         """
@@ -52,7 +54,7 @@ class ArtistsDatabase:
         result = sql.execute("SELECT rowid from artists\
                               WHERE name=?", (name,))
         v = result.fetchone()
-        if v:
+        if v is not None:
             return v[0]
 
         return None
@@ -71,7 +73,7 @@ class ArtistsDatabase:
         result = sql.execute("SELECT name from artists WHERE rowid=?",
                              (artist_id,))
         v = result.fetchone()
-        if v:
+        if v is not None:
             return translate_artist_name(v[0])
 
         return _("Unknown")
@@ -143,7 +145,7 @@ class ArtistsDatabase:
         result = sql.execute("SELECT COUNT(*) from artists WHERE rowid=?",
                              (artist_id,))
         v = result.fetchone()
-        if v:
+        if v is not None:
             return bool(v[0])
 
         return False

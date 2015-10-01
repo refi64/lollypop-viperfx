@@ -96,7 +96,7 @@ class Radios(GObject.GObject):
                               WHERE name=?",
                              (name,))
         v = result.fetchone()
-        if v:
+        if v is not None:
             return True
         else:
             return False
@@ -153,7 +153,7 @@ class Radios(GObject.GObject):
                               FROM radios\
                               WHERE name=?", (name,))
         v = result.fetchone()
-        if v:
+        if v is not None:
             return v[0]
         return ''
 

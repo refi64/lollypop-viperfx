@@ -39,16 +39,18 @@ class AlbumsDatabase:
             @param no_album_artist as bool,
             @param path as string
             @param mtime as int
+            @return inserted rowid as int
             @warning: commit needed
         """
         if not sql:
             sql = Lp.sql
-        sql.execute("INSERT INTO albums "
-                    "(name, artist_id, no_album_artist,"
-                    " path, popularity, mtime)"
-                    "VALUES (?, ?, ?, ?, ?, ?)",
-                    (name, artist_id, no_album_artist,
-                     path, popularity, mtime))
+        result = sql.execute("INSERT INTO albums "
+                             "(name, artist_id, no_album_artist,"
+                             " path, popularity, mtime)"
+                             "VALUES (?, ?, ?, ?, ?, ?)",
+                             (name, artist_id, no_album_artist,
+                              path, popularity, mtime))
+        return result.lastrowid
 
     def add_genre(self, album_id, genre_id, sql=None):
         """
@@ -110,7 +112,7 @@ class AlbumsDatabase:
         sql.execute("UPDATE albums set mtime=? WHERE rowid=?",
                     (mtime, album_id))
 
-    def set_popularity(self, album_id, popularity, commit=False, sql=None):
+    def set_popularity(self, album_id, popularity, commit, sql=None):
         """
             Set popularity
             @param album_id as int
@@ -139,7 +141,7 @@ class AlbumsDatabase:
                              rowid=?", (album_id,))
 
         v = result.fetchone()
-        if v:
+        if v is not None:
             return v[0]
         return 0
 
@@ -191,7 +193,7 @@ class AlbumsDatabase:
                               AND no_album_artist=0",
                              (album_name, artist_id))
         v = result.fetchone()
-        if v:
+        if v is not None:
             return v[0]
         return None
 
@@ -206,7 +208,7 @@ class AlbumsDatabase:
         result = sql.execute("SELECT rowid FROM albums where name=?\
                               AND no_album_artist=1", (album_name,))
         v = result.fetchone()
-        if v:
+        if v is not None:
             return v[0]
         return None
 
@@ -233,7 +235,7 @@ class AlbumsDatabase:
         result = sql.execute("SELECT name FROM albums where rowid=?",
                              (album_id,))
         v = result.fetchone()
-        if v:
+        if v is not None:
             return v[0]
 
         return _("Unknown")
@@ -250,7 +252,7 @@ class AlbumsDatabase:
                               WHERE albums.rowid=? AND albums.artist_id ==\
                               artists.rowid", (album_id,))
         v = result.fetchone()
-        if v:
+        if v is not None:
             return translate_artist_name(v[0])
 
         return _("Compilation")
@@ -266,7 +268,7 @@ class AlbumsDatabase:
         result = sql.execute("SELECT artist_id FROM albums where rowid=?",
                              (album_id,))
         v = result.fetchone()
-        if v:
+        if v is not None:
             return v[0]
 
         return None
@@ -299,7 +301,7 @@ class AlbumsDatabase:
                              (album_id,))
         path = ""
         v = result.fetchone()
-        if v:
+        if v is not None:
             path = v[0]
         if path != "" and not os.path.exists(path):
             tracks = self.get_tracks(album_id, None, sql)
@@ -322,7 +324,7 @@ class AlbumsDatabase:
         result = sql.execute("SELECT count(path) FROM albums WHERE path=?",
                              (path,))
         v = result.fetchone()
-        if v:
+        if v is not None:
             return v[0]
 
         return 1
@@ -415,7 +417,7 @@ class AlbumsDatabase:
                                   FROM tracks\
                                   WHERE tracks.album_id=?", (album_id,))
         v = result.fetchone()
-        if v:
+        if v is not None:
             return v[0]
         return 0
 
@@ -444,7 +446,7 @@ class AlbumsDatabase:
                                   WHERE tracks.album_id=?\
                                   AND discnumber=?", (album_id, disc))
         v = result.fetchone()
-        if v:
+        if v is not None:
             return v[0]
         return 0
 
@@ -610,22 +612,32 @@ class AlbumsDatabase:
                               ORDER BY occurrence DESC\
                               LIMIT 1", (album_id,))
         v = result.fetchone()
-        if v:
+        if v is not None:
             return v[0]
         return None
 
-    def get_duration(self, album_id, sql=None):
+    def get_duration(self, album_id, genre_id, sql=None):
         """
             Album duration in seconds
             @param album id as int
+            @param genre id as int
             @return album duration as int
         """
         if not sql:
             sql = Lp.sql
-        result = sql.execute("SELECT SUM(duration) FROM tracks\
-                              WHERE album_id=?", (album_id,))
+        if genre_id is not None and genre_id > 0:
+            result = sql.execute("SELECT SUM(duration)\
+                                  FROM tracks, track_genres\
+                                  WHERE tracks.album_id=?\
+                                  AND track_genres.track_id = tracks.rowid\
+                                  AND track_genres.genre_id=?", (album_id,
+                                                                 genre_id))
+        else:
+            print('ici', album_id, genre_id)
+            result = sql.execute("SELECT SUM(duration) FROM tracks\
+                                  WHERE album_id=?", (album_id,))
         v = result.fetchone()
-        if v:
+        if v and v[0] is not None:
             return v[0]
         return 0
 
@@ -656,9 +668,41 @@ class AlbumsDatabase:
                               AND tracks.rowid = track_artists.track_id",
                              (album_id,))
         v = result.fetchone()
-        if v:
+        if v is not None:
             return v[0] > 1
         return False
+
+    def get_stats(self, duration, count):
+        """
+            Get stats for album with same duration and track count
+            @param path as str
+            @param duration as int
+            @return (popularity, mtime) as (int, int)
+        """
+        sql = Lp.db.get_cursor()
+        print(duration, count)
+        sql.execute("CREATE TEMP TABLE stats (album_id INT,\
+                                              count INT,\
+                                              duration INT)")
+        sql.execute("INSERT INTO stats (album_id, count, duration)\
+                        SELECT album_id,\
+                               COUNT(tracks.rowid),\
+                               SUM(tracks.duration)\
+                        FROM tracks GROUP BY album_id")
+        result = sql.execute("SELECT album_id\
+                              FROM stats\
+                              WHERE count=? and duration=?", (count, duration))
+        v = result.fetchone()
+        ret = None
+        if v is not None:
+            result = sql.execute("SELECT popularity, mtime\
+                                  FROM albums\
+                                  WHERE rowid=?", (v[0],))
+            v = result.fetchone()
+            if v is not None:
+                ret = v
+        sql.close()
+        return ret
 
     def clean(self, album_id, sql=None):
         """

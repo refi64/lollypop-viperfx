@@ -233,7 +233,7 @@ class AlbumDetailedWidget(AlbumWidget):
         self._artist_label = builder.get_object('artist')
 
         label = builder.get_object('duration')
-        duration = Lp.albums.get_duration(album_id)
+        duration = Lp.albums.get_duration(album_id, genre_id)
         hours = int(duration / 3600)
         mins = int(duration / 60)
         if hours > 0:

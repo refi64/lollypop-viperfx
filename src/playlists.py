@@ -110,7 +110,7 @@ class Playlists(GObject.GObject):
                               WHERE rowid=?",
                              (playlist_id,))
         v = result.fetchone()
-        if v:
+        if v is not None:
             return True
         else:
             return False
@@ -220,7 +220,7 @@ class Playlists(GObject.GObject):
                              FROM playlists\
                              WHERE name=?", (playlist_name,))
         v = result.fetchone()
-        if v:
+        if v is not None:
             return v[0]
         return Type.NONE
 
@@ -238,7 +238,7 @@ class Playlists(GObject.GObject):
                              FROM playlists\
                              WHERE rowid=?", (playlist_id,))
         v = result.fetchone()
-        if v:
+        if v is not None:
             return v[0]
         return ''
 
@@ -327,7 +327,7 @@ class Playlists(GObject.GObject):
         result = sql.execute("SELECT rowid FROM tracks WHERE track_id=?"
                              " AND playlist_id=?", (track.id, playlist_id))
         v = result.fetchone()
-        if v:
+        if v is not None:
             return True
         return False
 
