@@ -10,7 +10,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-from gi.repository import Gtk
+from gi.repository import Gtk, GLib
 
 from lollypop.define import Lp, ArtSize, Shuffle
 
@@ -27,6 +27,11 @@ class NextPopover(Gtk.Popover):
         Gtk.Popover.__init__(self)
         self.connect('map', self._on_map)
         self.connect('unmap', self._on_unmap)
+        self.connect('enter-notify-event', self._on_enter_notify)
+        self.connect('leave-notify-event', self._on_leave_notify)
+        self.connect('motion-notify-event', self._on_motion_notify)
+        self._timeout_id = None
+        self._entered = False
         self.set_modal(False)
         self.get_style_context().add_class('osd-popover')
         builder = Gtk.Builder()
@@ -61,6 +66,47 @@ class NextPopover(Gtk.Popover):
 #######################
 # PRIVATE             #
 #######################
+    def _set_transparent(self):
+        """
+            Set widget transparent
+        """
+        self._timeout_id = None
+        self.set_opacity(0.2)
+
+    def _on_enter_notify(self, widget, event):
+        """
+            Keep trace of event
+            @param widget as Gtk.Widget
+            @param event as Gdk.Event
+        """
+        self._entered = True
+
+    def _on_leave_notify(self, widget, event):
+        """
+            Set widget opaque
+            @param widget as Gtk.Widget
+            @param event as Gdk.Event
+        """
+        self._entered = False
+        if self._timeout_id is not None:
+            GLib.source_remove(self._timeout_id)
+            self._timeout_id = None
+        self.set_opacity(1)
+
+    def _on_motion_notify(self, widget, event):
+        """
+            Set widget as transparent after a timeout
+            @param widget as Gtk.Widget
+            @param event as Gdk.Event
+        """
+        if not self._entered:
+            return
+        self.set_opacity(1)
+        if self._timeout_id is not None:
+            GLib.source_remove(self._timeout_id)
+            self._timeout_id = None
+        self._timeout_id = GLib.timeout_add(500, self._set_transparent)
+
     def _on_map(self, widget):
         """
             Connect signal
