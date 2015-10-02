@@ -56,6 +56,7 @@ class Playlists(GObject.GObject):
         try:
             self._sql.execute(self.create_playlists)
             self._sql.execute(self.create_tracks)
+            self.add(Type.LOVED)
             self._sql.commit()
         except:
             pass
@@ -365,10 +366,10 @@ class Playlists(GObject.GObject):
             return sqlite3.connect(self.DB_PATH, 600.0)
         except:
             exit(-1)
+
 #######################
 # PRIVATE             #
 #######################
-
     def _on_entry_parsed(self, parser, uri, metadata, playlist_id):
         """
             Import entry
