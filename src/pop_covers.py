@@ -77,7 +77,7 @@ class CoversPopover(Gtk.Popover):
                                                             ArtSize.MONSTER)
             self._add_pixbuf(pixbuf)
         if len(urls) > 0:
-            self._stack.set_visible_child_named('main')
+            self._stack.set_visible_child_name('main')
         # Then Google
         self._thread = True
         t = Thread(target=self._populate, args=urls)
