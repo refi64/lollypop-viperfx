@@ -328,15 +328,19 @@ class SearchPopover(Gtk.Popover):
         tracks = []
         for child in self._view.get_children():
             if child.is_track:
-                tracks.append(Lp.tracks.get_path(child.id, sql))
+                tracks.append(Track(child.id))
             else:
                 for track_id in Lp.albums.get_tracks(child.id, None, sql):
-                    tracks.append(Lp.tracks.get_path(track_id, sql))
-        if tracks:
-            if not Lp.playlists.exists(self._current_search):
-                Lp.playlists.add(self._current_search)
-            Lp.playlists.add_tracks(self._current_search, tracks)
+                    tracks.append(Track(child.id))
         sql.close()
+
+        if tracks:
+            sql = Lp.playlists.get_cursor()
+            playlist_id = Lp.playlists.get_id(self._current_search, sql)
+            if playlist_id == Type.NONE:
+                Lp.playlists.add(self._current_search, sql)
+            Lp.playlists.add_tracks(playlist_id, tracks, sql)
+            sql.close()
 
     def _on_map(self, widget):
         """
