@@ -158,14 +158,6 @@ class Application(Gtk.Application):
             Lp.window.show()
             Lp.player.restore_state()
 
-    def do_activate(self):
-        """
-            Activate window
-        """
-        if Lp.window is not None:
-            Lp.window.present()
-        Gtk.Application.do_activate(self)
-
     def prepare_to_exit(self, action=None, param=None):
         """
             Save window position and view
@@ -250,7 +242,7 @@ class Application(Gtk.Application):
             for f in args[1:]:
                 self._parser.parse_async(GLib.filename_to_uri(f), True,
                                          None, None)
-        if Lp.window is not None and Lp.window.is_visible():
+        if Lp.window is not None:
             Lp.window.present()
         return 0
 
