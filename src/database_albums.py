@@ -679,7 +679,6 @@ class AlbumsDatabase:
             @return (popularity, mtime) as (int, int)
         """
         sql = Lp.db.get_cursor()
-        print(duration, count)
         sql.execute("CREATE TEMP TABLE stats (album_id INT,\
                                               count INT,\
                                               duration INT)")

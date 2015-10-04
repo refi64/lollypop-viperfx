@@ -144,7 +144,7 @@ class CollectionScanner(GObject.GObject, ScannerTagReader):
         self._new_albums = []
         sql = Lp.db.get_cursor()
         mtimes = Lp.tracks.get_mtimes(sql)
-        orig_tracks = Lp.tracks.get_ids(sql)
+        orig_tracks = Lp.tracks.get_paths(sql)
         is_empty = len(orig_tracks) == 0
 
         # Add monitors on dirs
@@ -161,8 +161,7 @@ class CollectionScanner(GObject.GObject, ScannerTagReader):
             GLib.idle_add(self._update_progress, i, count)
             try:
                 mtime = int(os.path.getmtime(filepath))
-                track_id = Lp.tracks.get_id_by_path(filepath, sql)
-                if track_id is None:
+                if filepath not in orig_tracks:
                     try:
                         infos = self.get_infos(filepath)
                         debug("Adding file: %s" % filepath)
@@ -174,7 +173,6 @@ class CollectionScanner(GObject.GObject, ScannerTagReader):
                             self._missing_codecs = filepath
                 else:
                     # Update tags by removing song and readd it
-                    track_id = Lp.tracks.get_id_by_path(filepath, sql)
                     if mtime != mtimes[filepath]:
                         infos = self.get_infos(filepath)
                         if infos is not None:
@@ -183,7 +181,7 @@ class CollectionScanner(GObject.GObject, ScannerTagReader):
                         else:
                             print("Can't get infos for ", filepath)
                     else:
-                        orig_tracks.remove(track_id)
+                        orig_tracks.remove(filepath)
 
             except Exception as e:
                 print(ascii(filepath))
@@ -196,13 +194,13 @@ class CollectionScanner(GObject.GObject, ScannerTagReader):
                 duration = Lp.albums.get_duration(album_id, None, sql)
                 count = Lp.albums.get_count(album_id, None, sql)
                 value = Lp.albums.get_stats(duration, count)
-                print(value)
                 if value is not None:
                     Lp.albums.set_popularity(album_id, value[0], True, sql)
                     Lp.albums.set_mtime(album_id, value[1], sql)
 
         # Clean deleted files
-        for track_id in orig_tracks:
+        for filepath in orig_tracks:
+            track_id = Lp.tracks.get_id_by_path(filepath, sql)
             self._del_from_db(track_id, sql)
 
         sql.commit()
