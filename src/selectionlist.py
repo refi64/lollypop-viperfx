@@ -164,10 +164,14 @@ class SelectionList(Gtk.ScrolledWindow):
             @param name as str
         """
         self._updating = True
+        found = False
         for item in self._model:
             if item[0] == object_id:
                 item[1] = name
+                found = True
                 break
+        if not found:
+            self.add_value((object_id, name))
         self._updating = False
 
     def update_values(self, values):

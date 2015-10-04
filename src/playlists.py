@@ -91,12 +91,11 @@ class Playlists(GObject.GObject):
         """
         if not sql:
             sql = self._sql
-        sql.execute("INSERT INTO playlists (name, mtime)"
-                    " VALUES (?, ?)",
-                    (name, datetime.now().strftime('%s')))
+        result = sql.execute("INSERT INTO playlists (name, mtime)"
+                             " VALUES (?, ?)",
+                             (name, datetime.now().strftime('%s')))
         sql.commit()
-        playlist_id = self.get_id(name, sql)
-        GLib.idle_add(self.emit, 'playlists-changed', playlist_id)
+        GLib.idle_add(self.emit, 'playlists-changed', result.lastrowid)
 
     def exists(self, playlist_id, sql=None):
         """
@@ -139,10 +138,12 @@ class Playlists(GObject.GObject):
         """
         if not sql:
             sql = self._sql
+        playlist_id = self.get_id(name, sql)
         sql.execute("DELETE FROM playlists\
                     WHERE name=?",
                     (name,))
         sql.commit()
+        GLib.idle_add(self.emit, 'playlists-changed', playlist_id)
 
     def get(self, sql=None):
         """
