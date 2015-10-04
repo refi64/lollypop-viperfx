@@ -170,7 +170,7 @@ class RadioPopover(Gtk.Popover):
         except Exception as e:
             print(e)
             pass
-        if self._stack.get_visible_child_name == 'spinner':
+        if self._stack.get_visible_child_name() == 'spinner':
             self._stack.set_visible_child_name(self._logo)
 
     def _on_map(self, widget):
