@@ -14,7 +14,7 @@ from gettext import gettext as _
 import itertools
 
 from lollypop.define import Lp, Type
-from lollypop.utils import translate_artist_name
+from lollypop.utils import translate_artist_name, format_artist_name
 
 
 class ArtistsDatabase:
@@ -160,7 +160,9 @@ class ArtistsDatabase:
             sql = Lp.sql
         result = sql.execute("SELECT rowid FROM artists\
                               WHERE name LIKE ?\
-                              LIMIT 25", ('%' + string + '%',))
+                              LIMIT 25", ('%' +
+                                          format_artist_name(string) +
+                                          '%',))
         return list(itertools.chain(*result))
 
     def clean(self, artist_id, sql=None):
