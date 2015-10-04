@@ -171,7 +171,7 @@ class RadioPopover(Gtk.Popover):
             print(e)
             pass
         if self._stack.get_visible_child_name() == 'spinner':
-            self._stack.set_visible_child_name(self._logo)
+            self._stack.set_visible_child_name('logo')
 
     def _on_map(self, widget):
         """
