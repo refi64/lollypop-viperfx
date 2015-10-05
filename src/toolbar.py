@@ -22,7 +22,6 @@ from lollypop.toolbar_end import ToolbarEnd
 class Toolbar(Gtk.HeaderBar):
     """
         Lollypop toolbar
-        Real widget is Toolbar.widget
     """
 
     def __init__(self, app):
