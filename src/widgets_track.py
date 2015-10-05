@@ -174,6 +174,7 @@ class AlbumRow(Row):
         self._indicator = IndicatorWidget()
         self._builder.get_object('row').attach(self._indicator, 1, 1, 1, 2)
         self._cover = self._builder.get_object('cover')
+        self._cover_frame = self._builder.get_object('frame')
         self._header = self._builder.get_object('header')
         self._artist = self._builder.get_object('artist')
         self._album = self._builder.get_object('album')
@@ -205,6 +206,7 @@ class AlbumRow(Row):
         """
         self._cover.set_from_surface(surface)
         self._cover.set_tooltip_text(tooltip)
+        self._cover_frame.set_shadow_type(Gtk.ShadowType.IN)
 
     def set_album_and_artist(self, album_id):
         """
