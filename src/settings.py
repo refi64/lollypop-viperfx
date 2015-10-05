@@ -271,22 +271,27 @@ class SettingsDialog:
             Update lastfm settings
             @param sync as bool
         """
-        if Lp.lastfm is not None and Secret is not None:
-            schema = Secret.Schema.new("org.gnome.Lollypop",
-                                       Secret.SchemaFlags.NONE,
-                                       SecretSchema)
-            Secret.password_store_sync(schema, SecretAttributes,
-                                       Secret.COLLECTION_DEFAULT,
-                                       "org.gnome.Lollypop.lastfm.login %s" %
-                                       self._login.get_text(),
-                                       self._password.get_text(),
-                                       None)
-            Lp.settings.set_value('lastfm-login',
-                                  GLib.Variant('s', self._login.get_text()))
-            if sync:
-                Lp.lastfm.connect_sync(self._password.get_text())
-            else:
-                Lp.lastfm.connect(self._password.get_text())
+        try:
+            if Lp.lastfm is not None and Secret is not None:
+                schema = Secret.Schema.new("org.gnome.Lollypop",
+                                           Secret.SchemaFlags.NONE,
+                                           SecretSchema)
+                Secret.password_store_sync(schema, SecretAttributes,
+                                           Secret.COLLECTION_DEFAULT,
+                                           "org.gnome.Lollypop"
+                                           ".lastfm.login %s" %
+                                           self._login.get_text(),
+                                           self._password.get_text(),
+                                           None)
+                Lp.settings.set_value('lastfm-login',
+                                      GLib.Variant('s',
+                                                   self._login.get_text()))
+                if sync:
+                    Lp.lastfm.connect_sync(self._password.get_text())
+                else:
+                    Lp.lastfm.connect(self._password.get_text())
+        except Exception as e:
+            print("Settings::_update_lastfm_settings(): %s" % e)
 
     def _edit_settings_close(self, widget):
         """
