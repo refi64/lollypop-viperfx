@@ -165,8 +165,8 @@ class AlbumArt(BaseArt, ArtDownloader, TagReader):
                 # No cover, use default one
                 if pixbuf is None:
                     self.download_album_art(album.id)
-                    pixbuf = self._get_default_icon(size,
-                                                    'folder-music-symbolic')
+                    return self._get_default_icon(size,
+                                                  'folder-music-symbolic')
                 else:
                     # Gdk < 3.15 was missing save method
                     # > 3.15 is missing savev method

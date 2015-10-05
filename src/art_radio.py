@@ -78,14 +78,14 @@ class RadioArt(BaseArt):
                                                                 size,
                                                                 size)
             else:
-                pixbuf = GdkPixbuf.Pixbuf.new(GdkPixbuf.Colorspace.RGB,
-                                              True,
-                                              8,
-                                              size,
-                                              size)
-                pixbuf.fill(0xffffffff)
                 path = self._get_radio_art_path(name)
                 if path is not None:
+                    pixbuf = GdkPixbuf.Pixbuf.new(GdkPixbuf.Colorspace.RGB,
+                                                  True,
+                                                  8,
+                                                  size,
+                                                  size)
+                    pixbuf.fill(0xffffffff)
                     cover = GdkPixbuf.Pixbuf.new_from_file_at_size(path,
                                                                    size,
                                                                    size)
@@ -104,9 +104,9 @@ class RadioArt(BaseArt):
                                     255)
 
             if pixbuf is None:
-                pixbuf = self._get_default_icon(
-                    size,
-                    'audio-input-microphone-symbolic')
+                return self._get_default_icon(
+                                             size,
+                                             'audio-input-microphone-symbolic')
 
             # Gdk < 3.15 was missing save method
             # > 3.15 is missing savev method
