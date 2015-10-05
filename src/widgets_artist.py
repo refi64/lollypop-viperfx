@@ -52,12 +52,14 @@ class ArtistContent(Gtk.Stack):
             except:
                 print("Can't create %s" % self._CACHE_PATH)
 
-    def get_artist(self):
+    def should_update(self, artist):
         """
-            Get current artist
-            @return artist as str
+            Should widget be updated
+            @param artist as str
         """
-        return self._artist
+        if artist is None:
+            artist = Lp.player.get_current_artist()
+        return artist != self._artist
 
     def clear(self):
         """
@@ -98,6 +100,7 @@ class ArtistContent(Gtk.Stack):
             @param artist as string
             @param suffix as string
         """
+        self._artist = ''
         filepath = "%s/%s_%s.txt" % (self._CACHE_PATH,
                                      "".join(
                                         [c for c in artist if
