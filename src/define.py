@@ -70,7 +70,7 @@ class GstPlayFlags:
 
 
 class ArtSize:
-    SMALL = 32
+    SMALL = 33
     MEDIUM = 48  # If changed, adapt width request in AlbumRow.ui
     BIG = 200
     MONSTER = 500
