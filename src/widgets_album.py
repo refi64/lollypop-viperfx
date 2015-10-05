@@ -34,6 +34,7 @@ class AlbumWidget:
             Init widget
         """
         self._album = Album(album_id, genre_id)
+        self._selected = None
         self._stop = False
         self._cover = None
         self._eventbox = None
@@ -66,7 +67,14 @@ class AlbumWidget:
         """
             Update widget state
         """
-        pass
+        selected = self._album.id == Lp.player.current_track.album.id
+        if selected != self._selected:
+            if selected:
+                self._color.get_style_context().add_class(
+                                                    'cover-frame-selected')
+            else:
+                self._color.get_style_context().remove_class(
+                                                    'cover-frame-selected')
 
     def update_playing_indicator(self):
         """
@@ -150,7 +158,6 @@ class AlbumSimpleWidget(Gtk.Bin, AlbumWidget):
         """
         Gtk.Bin.__init__(self)
         AlbumWidget.__init__(self, album_id)
-        self._selected = None
         builder = Gtk.Builder()
         builder.add_from_resource('/org/gnome/Lollypop/AlbumSimpleWidget.ui')
         builder.connect_signals(self)
@@ -179,19 +186,6 @@ class AlbumSimpleWidget(Gtk.Bin, AlbumWidget):
             AlbumWidget.update_cursor(self, Gdk.CursorType.HAND1)
         else:
             AlbumWidget.update_cursor(self)
-
-    def update_state(self):
-        """
-            Update widget state
-        """
-        selected = self._album.id == Lp.player.current_track.album.id
-        if selected != self._selected:
-            if selected:
-                self._color.get_style_context().add_class(
-                                                    'cover-frame-selected')
-            else:
-                self._color.get_style_context().remove_class(
-                                                    'cover-frame-selected')
 
 #######################
 # PRIVATE             #
@@ -236,11 +230,10 @@ class AlbumDetailedWidget(Gtk.Bin, AlbumWidget):
         Gtk.Bin.__init__(self)
         AlbumWidget.__init__(self, album_id, genre_id=genre_id)
         self._pop_allowed = pop_allowed
-
         builder = Gtk.Builder()
         builder.add_from_resource('/org/gnome/Lollypop/%s.ui' %
                                   type(self).__name__)
-
+        self._color = builder.get_object('color')
         rating = RatingWidget(self._album)
         rating.show()
         builder.get_object('coverbox').add(rating)
