@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lollypop\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-09-22 21:20+0200\n"
-"PO-Revision-Date: 2015-09-23 13:29+0000\n"
+"POT-Creation-Date: 2015-10-01 14:37+0200\n"
+"PO-Revision-Date: 2015-10-04 05:48+0000\n"
 "Last-Translator: Марко М. Костић (Marko M. Kostić) <marko.m.kostic@gmail.com>\n"
 "Language-Team: Serbian (http://www.transifex.com/gnumdk/lollypop/language/sr/)\n"
 "MIME-Version: 1.0\n"
@@ -189,8 +189,8 @@ msgstr "прегледање по жанру, извођачу и омоту"
 msgid "Search"
 msgstr "Претрага"
 
-#: ../data/lollypop.appdata.xml.in.h:9 ../src/pop_menu.py:431
-#: ../src/pop_menu.py:451 ../data/ToolbarEnd.ui.h:10
+#: ../data/lollypop.appdata.xml.in.h:9 ../src/pop_menu.py:445
+#: ../src/pop_menu.py:465 ../data/ToolbarEnd.ui.h:10
 msgid "Queue"
 msgstr "Редослед"
 
@@ -239,14 +239,14 @@ msgstr "подршку за екране високе резолуције"
 msgid "Tunein support"
 msgstr "подршку за Tunein услугу"
 
-#: ../src/application.py:25
+#: ../src/application.py:30
 msgid ""
 "    - Scrobbler disabled\n"
 "    - Auto cover download disabled\n"
 "    - Artist informations disabled"
 msgstr "- Scrobbler је искључен\n- Аутоматско скидање омота искључено\n- Скидање података о извођачима искључено"
 
-#: ../src/application.py:363
+#: ../src/application.py:343
 msgid "Lollypop: You need to install yelp."
 msgstr "Лолипоп: потребно је да инсталирате „Помоћ“ (yelp пакет)."
 
@@ -258,59 +258,59 @@ msgstr "Поново покрени Лолипоп након инсталира
 msgid "Your music is updating"
 msgstr "Музичка библиотека се ажурира"
 
-#: ../src/container.py:358
+#: ../src/container.py:369
 msgid "Popular albums"
 msgstr "Популарни албуми"
 
-#: ../src/container.py:359
+#: ../src/container.py:370
 msgid "Recently added albums"
 msgstr "Скоро додати албуми"
 
-#: ../src/container.py:360
+#: ../src/container.py:371
 msgid "Random albums"
 msgstr "Насумични албуми"
 
-#: ../src/container.py:361 ../src/pop_menu.py:356 ../src/pop_menu.py:433
-#: ../src/pop_menu.py:453
+#: ../src/container.py:372 ../src/pop_menu.py:370 ../src/pop_menu.py:447
+#: ../src/pop_menu.py:467
 msgid "Playlists"
 msgstr "Листе песама"
 
-#: ../src/container.py:362
+#: ../src/container.py:373
 msgid "Radios"
 msgstr "Радио станице"
 
-#: ../src/container.py:364
+#: ../src/container.py:375
 msgid "All artists"
 msgstr "Сви извођачи"
 
-#: ../src/container.py:366 ../data/DeviceManagerWidget.ui.h:1
+#: ../src/container.py:377 ../data/DeviceManagerWidget.ui.h:1
 msgid "All albums"
 msgstr "Сви албуми"
 
-#: ../src/container.py:416
+#: ../src/container.py:427
 msgid "Compilations"
 msgstr "Компилације"
 
-#: ../src/container.py:439
+#: ../src/container.py:450
 msgid "Popular tracks"
 msgstr "Популарне песме"
 
-#: ../src/container.py:440
+#: ../src/container.py:451
 msgid "Recently played"
 msgstr "Скоро слушано"
 
-#: ../src/container.py:441
+#: ../src/container.py:452
 msgid "Never played"
 msgstr "Никада слушано"
 
-#: ../src/container.py:442
+#: ../src/container.py:453
 msgid "Random tracks"
 msgstr "Насумичне песме"
 
 #: ../src/database_albums.py:239 ../src/database_artists.py:77
 #: ../src/database_genres.py:72 ../src/database_tracks.py:216
-#: ../src/tagreader.py:84 ../src/tagreader.py:103 ../src/tagreader.py:128
-#: ../src/tagreader.py:143
+#: ../src/tagreader.py:86 ../src/tagreader.py:105 ../src/tagreader.py:130
+#: ../src/tagreader.py:145
 msgid "Unknown"
 msgstr "Непознато"
 
@@ -322,22 +322,22 @@ msgstr "Компилација"
 msgid "Many artists"
 msgstr "Многи извођачи"
 
-#: ../src/fullscreen.py:85 ../src/fullscreen.py:272
-#: ../src/toolbar_playback.py:71 ../src/toolbar_playback.py:104
+#: ../src/fullscreen.py:83 ../src/fullscreen.py:302
+#: ../src/toolbar_playback.py:76 ../src/toolbar_playback.py:109
 msgid "Pause"
 msgstr "Паузирај"
 
-#: ../src/fullscreen.py:276 ../src/pop_tunein.py:146
-#: ../src/toolbar_playback.py:73 ../src/toolbar_playback.py:101
+#: ../src/fullscreen.py:306 ../src/pop_tunein.py:142
+#: ../src/toolbar_playback.py:78 ../src/toolbar_playback.py:106
 #: ../data/ToolbarPlayback.ui.h:2
 msgid "Play"
 msgstr "Пусти"
 
-#: ../src/lastfm.py:21
+#: ../src/lastfm.py:23
 msgid "Last.fm authentication disabled"
 msgstr "Пријава на Last.fm је онемогућена"
 
-#: ../src/lastfm.py:283
+#: ../src/lastfm.py:287
 msgid "Wrong Last.fm credentials"
 msgstr "Параметри за пријаву на Last.fm су нетачни"
 
@@ -362,94 +362,94 @@ msgstr "изводи %s"
 msgid "by %s, from %s"
 msgstr "изводи %s, са албума %s"
 
-#: ../src/player_bin.py:285
+#: ../src/player_bin.py:281
 #, python-format
 msgid "File doesn't exist: %s"
 msgstr "Датотека не постоји: %s"
 
-#: ../src/playlists.py:103
+#: ../src/playlists.py:52
 msgid "Loved tracks"
 msgstr "Омиљене песме"
 
-#: ../src/pop_covers.py:55 ../src/pop_tunein.py:83 ../data/RadioPopover.ui.h:3
+#: ../src/pop_covers.py:57 ../src/pop_tunein.py:90 ../data/RadioPopover.ui.h:3
 msgid "Please wait..."
 msgstr "Сачекајте..."
 
-#: ../src/pop_covers.py:146
+#: ../src/pop_covers.py:135
 msgid "No cover found..."
 msgstr "Нисам пронашао омот..."
 
-#: ../src/pop_covers.py:165
+#: ../src/pop_covers.py:154
 msgid "Select a cover art for this album"
 msgstr "Изабери омот за овај албум"
 
-#: ../src/pop_infos.py:75
+#: ../src/pop_infos.py:33
 msgid "Advanced artist informations disabled"
 msgstr "Напредан приказ података о извођачу је искључен"
 
-#: ../src/pop_infos.py:83
+#: ../src/pop_infos.py:41
 msgid "WebKit support disabled"
 msgstr "Вебкит подршка онемогућена"
 
-#: ../src/pop_menu.py:66
+#: ../src/pop_menu.py:67
 msgid "Continue playback"
 msgstr "Настави са пуштањем"
 
-#: ../src/pop_menu.py:71
+#: ../src/pop_menu.py:72
 msgid "Stop after this track"
 msgstr "Стани након ове песме"
 
-#: ../src/pop_menu.py:76
+#: ../src/pop_menu.py:77
 msgid "Stop after this album"
 msgstr "Стани након овог албума"
 
-#: ../src/pop_menu.py:81
+#: ../src/pop_menu.py:82
 msgid "Stop after this artist"
 msgstr "Стани након овог извођача"
 
-#: ../src/pop_menu.py:172 ../data/SearchRow.ui.h:3
+#: ../src/pop_menu.py:173 ../data/SearchRow.ui.h:3
 msgid "Add to queue"
 msgstr "Додај у редослед"
 
-#: ../src/pop_menu.py:177
+#: ../src/pop_menu.py:178
 msgid "Next tracks"
 msgstr "Следеће песме"
 
-#: ../src/pop_menu.py:179 ../data/NextPopover.ui.h:1
+#: ../src/pop_menu.py:180 ../data/NextPopover.ui.h:1
 msgid "Next track"
 msgstr "Следећа песма"
 
-#: ../src/pop_menu.py:183
+#: ../src/pop_menu.py:184
 msgid "Remove from queue"
 msgstr "Избаци из редоследа"
 
-#: ../src/pop_menu.py:251
+#: ../src/pop_menu.py:252
 msgid "Add to others"
 msgstr "Додај у друго"
 
-#: ../src/pop_menu.py:264
+#: ../src/pop_menu.py:268
 #, python-format
 msgid "Remove from \"%s\""
 msgstr "Избаци из/са \"%s\""
 
-#: ../src/pop_menu.py:270
+#: ../src/pop_menu.py:274
 #, python-format
 msgid "Add to \"%s\""
 msgstr "Додај у/на \"%s\""
 
-#: ../src/pop_menu.py:354
+#: ../src/pop_menu.py:368
 msgid "Playback"
 msgstr "Пуштање"
 
-#: ../src/pop_menu.py:391
+#: ../src/pop_menu.py:405
 msgid "Modify informations"
 msgstr "Промени податке"
 
-#: ../src/pop_menu.py:435 ../data/PlaylistView.ui.h:1
+#: ../src/pop_menu.py:449 ../data/PlaylistView.ui.h:1
 msgid "Edit"
 msgstr "Уреди"
 
-#: ../src/pop_radio.py:74 ../src/pop_tunein.py:151
+#: ../src/pop_radio.py:74 ../src/pop_tunein.py:147
 msgid "Add"
 msgstr "Додај"
 
@@ -457,11 +457,11 @@ msgstr "Додај"
 msgid "Modify"
 msgstr "Измени"
 
-#: ../src/pop_tunein.py:106
+#: ../src/pop_tunein.py:102
 msgid "Can't connect to TuneIn..."
 msgstr "Не могу да се повежем на TuneIn услугу..."
 
-#: ../src/pop_tunein.py:163
+#: ../src/pop_tunein.py:159
 msgid "Browse themes and add a new radio"
 msgstr "Прегледај теме и додај нови радио"
 
@@ -475,7 +475,7 @@ msgstr "Скоро додато"
 
 #. Handle language ordering
 #. Translators: Add here words that shoud be ignored for artist sort order
-#: ../src/utils.py:85
+#: ../src/utils.py:87
 msgid "The the"
 msgstr "Члан члан"
 
@@ -488,7 +488,22 @@ msgstr "Усклади %s"
 msgid "Cancel synchronization"
 msgstr "Откажи усклађивање"
 
-#: ../src/widgets_album.py:257
+#: ../src/widgets_album.py:242
+#, python-format
+msgid "%s hrs  %s mins"
+msgstr "%s ч %s мин."
+
+#: ../src/widgets_album.py:244
+#, python-format
+msgid "%s hrs"
+msgstr "%s ч"
+
+#: ../src/widgets_album.py:246
+#, python-format
+msgid "%s mins"
+msgstr "%s мин."
+
+#: ../src/widgets_album.py:258
 #, python-format
 msgid "Disc %s"
 msgstr "Диск %s"
@@ -501,17 +516,17 @@ msgstr "Догодила се непозната грешка приликом �
 msgid "No free space available on device"
 msgstr "Нема довољно слободног простора на уређају"
 
-#: ../src/widgets_playlist.py:272 ../src/widgets_playlist.py:275
+#: ../src/widgets_playlist.py:256 ../src/widgets_playlist.py:259
 msgid "New playlist "
 msgstr "Нова листа песама"
 
 #. Need a copy, segfault on EOS 3.1
-#: ../src/widgets_playlist.py:321 ../src/widgets_playlist.py:553
+#: ../src/widgets_playlist.py:312 ../src/widgets_playlist.py:559
 #, python-format
 msgid "Remove \"%s\"?"
 msgstr "Уклонити \"%s\"?"
 
-#: ../src/widgets_playlist.py:598
+#: ../src/widgets_playlist.py:604
 msgid "Remove these tracks?"
 msgstr "Уклонити ове песме?"
 
@@ -557,6 +572,10 @@ msgstr "По_моћ"
 #: ../data/Appmenu.ui.h:6
 msgid "_Quit"
 msgstr "_Излаз"
+
+#: ../data/ArtistContent.ui.h:1
+msgid "No information for this artist..."
+msgstr "Нема података о овом извођачу..."
 
 #: ../data/ArtistInfos.ui.h:1
 msgid "Albums"
@@ -608,7 +627,7 @@ msgstr "Нисам пронашао ниједан логотип..."
 
 #: ../data/RadioPopover.ui.h:4
 msgid "Name:"
-msgstr "Име:"
+msgstr "Назив:"
 
 #: ../data/RadioPopover.ui.h:5
 msgid "Address:"
