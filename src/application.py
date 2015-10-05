@@ -47,6 +47,7 @@ from lollypop.database_artists import ArtistsDatabase
 from lollypop.database_genres import GenresDatabase
 from lollypop.database_tracks import TracksDatabase
 from lollypop.playlists import Playlists
+from lollypop.radios import Radios
 from lollypop.collectionscanner import CollectionScanner
 from lollypop.fullscreen import FullScreen
 
@@ -184,7 +185,14 @@ class Application(Gtk.Application):
             GLib.idle_add(self.quit)
             return
         try:
-            Lp.sql.execute("VACUUM")
+            Lp.sql.execute('VACUUM')
+            sql_p = Lp.playlists.get_cursor()
+            sql_p.execute('VACUUM')
+            sql_p.close()
+            radios = Radios()
+            sql_r = radios.get_cursor()
+            sql_r.execute('VACUUM')
+            sql_r.close()
         except Exception as e:
             print("Application::quit(): ", e)
         Lp.window.destroy()
