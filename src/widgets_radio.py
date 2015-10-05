@@ -17,7 +17,7 @@ from lollypop.widgets_album import AlbumWidget
 from lollypop.pop_radio import RadioPopover
 
 
-class RadioWidget(AlbumWidget):
+class RadioWidget(Gtk.Bin, AlbumWidget):
     """
         Widget with radio cover and title
     """
@@ -28,12 +28,13 @@ class RadioWidget(AlbumWidget):
             @param name as string
             @param radios_manager as RadiosManager
         """
+        Gtk.Bin.__init__(self)
         AlbumWidget.__init__(self, None)
         builder = Gtk.Builder()
         builder.add_from_resource('/org/gnome/Lollypop/RadioWidget.ui')
         builder.connect_signals(self)
         self._cover = builder.get_object('cover')
-
+        self._color = builder.get_object('color')
         self._name = name
         self._radios_manager = radios_manager
         self._popover = None
@@ -61,7 +62,8 @@ class RadioWidget(AlbumWidget):
         """
             Set maximum width
         """
-        return self._cover.get_preferred_width()
+        widths = self._cover.get_preferred_width()
+        return (widths[0] + 8, widths[1] + 8)
 
     def set_name(self, name):
         """
@@ -78,35 +80,43 @@ class RadioWidget(AlbumWidget):
         """
         return self._name
 
-    def set_cover(self, force=False):
+    def set_cover(self):
         """
             Set cover for album if state changed
-            @param force as bool
         """
-        selected = Lp.player.current_track.id == Type.RADIOS and\
-            self._name == Lp.player.current_track.artist
-        if self._cover is not None and (selected != self._selected or force):
-            self._selected = selected
-            surface = Lp.art.get_radio(
-                        self._name,
-                        ArtSize.BIG*self._cover.get_scale_factor(),
-                        selected)
-            self._cover.set_from_surface(surface)
-            del surface
+        if self._cover is None:
+            return
+        surface = Lp.art.get_radio(
+                    self._name,
+                    ArtSize.BIG*self._cover.get_scale_factor())
+        self._cover.set_from_surface(surface)
+        del surface
 
     def update_cover(self):
         """
-            Update cover for album id id needed
+            Update cover for radio
         """
-        if self._cover is not None:
-            self._selected = Lp.player.current_track.id == Type.RADIOS\
-                and self._name == Lp.player.current_track.artist
-            surface = Lp.art.get_radio(
-                        self._name,
-                        ArtSize.BIG*self._cover.get_scale_factor(),
-                        self._selected)
-            self._cover.set_from_surface(surface)
-            del surface
+        if self._cover is None:
+            return
+        surface = Lp.art.get_radio(
+                    self._name,
+                    ArtSize.BIG*self._cover.get_scale_factor(),
+                    self._selected)
+        self._cover.set_from_surface(surface)
+        del surface
+
+    def update_state(self):
+        """
+            Update widget state
+        """
+        selected = Lp.player.current_track.id == Type.RADIOS and\
+            self._name == Lp.player.current_track.artist
+        if selected:
+            self._color.get_style_context().add_class(
+                                                    'cover-frame-selected')
+        else:
+            self._color.get_style_context().remove_class(
+                                                    'cover-frame-selected')
 
     def edit(self, widget):
         """

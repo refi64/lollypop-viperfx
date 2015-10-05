@@ -24,7 +24,7 @@ from lollypop.pop_covers import CoversPopover
 from lollypop.objects import Album
 
 
-class AlbumWidget(Gtk.Bin):
+class AlbumWidget:
     """
         Base album widget
     """
@@ -33,41 +33,40 @@ class AlbumWidget(Gtk.Bin):
         """
             Init widget
         """
-        Gtk.Bin.__init__(self)
         self._album = Album(album_id, genre_id)
-        self._selected = None
         self._stop = False
         self._cover = None
         self._eventbox = None
 
-    def set_cover(self, force=False):
+    def set_cover(self):
         """
             Set cover for album if state changed
-            @param force as bool
         """
-        selected = self._album.id == Lp.player.current_track.album.id
-        if self._cover and (selected != self._selected or force):
-            self._selected = selected
-            surface = Lp.art.get_album(
-                                self._album,
-                                ArtSize.BIG * self._cover.get_scale_factor(),
-                                selected)
-            self._cover.set_from_surface(surface)
-            del surface
+        if self._cover is None:
+            return
+        surface = Lp.art.get_album(
+                            self._album,
+                            ArtSize.BIG * self._cover.get_scale_factor())
+        self._cover.set_from_surface(surface)
+        del surface
 
     def update_cover(self, album_id):
         """
             Update cover for album id id needed
             @param album id as int
         """
-        if self._cover and self._album.id == album_id:
-            self._selected = self._album.id == Lp.player.current_track.album.id
-            surface = Lp.art.get_album(
-                                self._album,
-                                ArtSize.BIG * self._cover.get_scale_factor(),
-                                self._selected)
-            self._cover.set_from_surface(surface)
-            del surface
+        surface = Lp.art.get_album(
+                            self._album,
+                            ArtSize.BIG * self._cover.get_scale_factor(),
+                            self._selected)
+        self._cover.set_from_surface(surface)
+        del surface
+
+    def update_state(self):
+        """
+            Update widget state
+        """
+        pass
 
     def update_playing_indicator(self):
         """
@@ -139,7 +138,7 @@ class AlbumWidget(Gtk.Bin):
         self._cover.get_style_context().remove_class('hovereffect')
 
 
-class AlbumSimpleWidget(AlbumWidget):
+class AlbumSimpleWidget(Gtk.Bin, AlbumWidget):
     """
         Album widget showing cover, artist and title
     """
@@ -149,19 +148,21 @@ class AlbumSimpleWidget(AlbumWidget):
             Init simple album widget
             @param album id as int
         """
+        Gtk.Bin.__init__(self)
         AlbumWidget.__init__(self, album_id)
-
+        self._selected = None
         builder = Gtk.Builder()
         builder.add_from_resource('/org/gnome/Lollypop/AlbumSimpleWidget.ui')
         builder.connect_signals(self)
-        widget = builder.get_object('widget')
+        self._widget = builder.get_object('widget')
         self._cover = builder.get_object('cover')
-        widget.set_property('has-tooltip', True)
+        self._color = builder.get_object('color')
+        self._widget.set_property('has-tooltip', True)
         self._title_label = builder.get_object('title')
         self._title_label.set_text(self._album.name)
         self._artist_label = builder.get_object('artist')
         self._artist_label.set_text(self._album.artist_name)
-        self.add(widget)
+        self.add(self._widget)
         self.set_cover()
         self.set_property('halign', Gtk.Align.START)
         self.set_property('valign', Gtk.Align.START)
@@ -170,13 +171,27 @@ class AlbumSimpleWidget(AlbumWidget):
         """
             Set maximum width
         """
-        return self._cover.get_preferred_width()
+        widths = self._cover.get_preferred_width()
+        return (widths[0] + 8, widths[1] + 8)
 
     def update_cursor(self):
         if Lp.settings.get_value('auto-play'):
             AlbumWidget.update_cursor(self, Gdk.CursorType.HAND1)
         else:
             AlbumWidget.update_cursor(self)
+
+    def update_state(self):
+        """
+            Update widget state
+        """
+        selected = self._album.id == Lp.player.current_track.album.id
+        if selected != self._selected:
+            if selected:
+                self._color.get_style_context().add_class(
+                                                    'cover-frame-selected')
+            else:
+                self._color.get_style_context().remove_class(
+                                                    'cover-frame-selected')
 
 #######################
 # PRIVATE             #
@@ -200,7 +215,7 @@ class AlbumSimpleWidget(AlbumWidget):
             self.set_tooltip_text('')
 
 
-class AlbumDetailedWidget(AlbumWidget):
+class AlbumDetailedWidget(Gtk.Bin, AlbumWidget):
     """
         Widget with cover and tracks
     """
@@ -218,6 +233,7 @@ class AlbumDetailedWidget(AlbumWidget):
             @param pop_allowed as bool if widget can show popovers
             @param size group as Gtk.SizeGroup
         """
+        Gtk.Bin.__init__(self)
         AlbumWidget.__init__(self, album_id, genre_id=genre_id)
         self._pop_allowed = pop_allowed
 

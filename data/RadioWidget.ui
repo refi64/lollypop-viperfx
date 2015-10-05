@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Generated with glade 3.18.3 -->
+<!-- Generated with glade 3.19.0 -->
 <interface>
   <requires lib="gtk+" version="3.6"/>
   <object class="GtkGrid" id="widget">
@@ -28,20 +28,48 @@
       </packing>
     </child>
     <child>
-      <object class="GtkEventBox" id="eventbox2">
+      <object class="GtkFrame" id="frame1">
         <property name="visible">True</property>
         <property name="can_focus">False</property>
-        <property name="vexpand">True</property>
-        <signal name="button-press-event" handler="_on_cover_press" swapped="no"/>
-        <signal name="enter-notify-event" handler="_on_enter_notify" swapped="no"/>
-        <signal name="leave-notify-event" handler="_on_leave_notify" swapped="no"/>
-        <signal name="realize" handler="_on_eventbox_realize1" swapped="no"/>
+        <property name="label_xalign">0</property>
+        <property name="shadow_type">in</property>
         <child>
-          <object class="GtkImage" id="cover">
+          <object class="GtkFrame" id="color">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
+            <property name="label_xalign">0</property>
+            <property name="shadow_type">in</property>
+            <child>
+              <object class="GtkEventBox" id="eventbox2">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="vexpand">True</property>
+                <signal name="button-press-event" handler="_on_cover_press" swapped="no"/>
+                <signal name="enter-notify-event" handler="_on_enter_notify" swapped="no"/>
+                <signal name="leave-notify-event" handler="_on_leave_notify" swapped="no"/>
+                <signal name="realize" handler="_on_eventbox_realize1" swapped="no"/>
+                <child>
+                  <object class="GtkImage" id="cover">
+                    <property name="visible">True</property>
+                    <property name="can_focus">False</property>
+                  </object>
+                </child>
+              </object>
+            </child>
+            <child type="label_item">
+              <placeholder/>
+            </child>
+            <style>
+              <class name="cover-frame-border"/>
+            </style>
           </object>
         </child>
+        <child type="label_item">
+          <placeholder/>
+        </child>
+        <style>
+          <class name="cover-frame"/>
+        </style>
       </object>
       <packing>
         <property name="left_attach">0</property>

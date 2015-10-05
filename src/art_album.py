@@ -10,7 +10,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-from gi.repository import GLib, GdkPixbuf, Gio, Gst
+from gi.repository import GLib, Gdk, GdkPixbuf, Gio, Gst
 
 import re
 import os
@@ -113,30 +113,27 @@ class AlbumArt(BaseArt, ArtDownloader, TagReader):
                 paths.append(path)
         return paths
 
-    def get_cover_for_uri(self, uri, size, selected):
+    def get_cover_for_uri(self, uri, size):
         """
             Return a cairo surface with borders for uri
             No cache usage
             @param uri as string
             @param size as int
-            @param selected as bool
             @return cairo surface
         """
         pixbuf = self.pixbuf_from_tags(GLib.filename_from_uri(uri)[0], size)
         if pixbuf is not None:
-            return self.make_icon_frame(pixbuf, selected)
+            surface = Gdk.cairo_surface_create_from_pixbuf(pixbuf, 0, None)
+            del pixbuf
+            return surface
         else:
-            return self.make_icon_frame(self._get_default_icon(
-                size,
-                'folder-music-symbolic'),
-                selected)
+            return self._get_default_icon(size, 'folder-music-symbolic')
 
-    def get_album(self, album, size, selected=False):
+    def get_album(self, album, size):
         """
             Return a cairo surface for album_id, covers are cached as jpg.
             @param album as Album
             @param pixbuf size as int
-            @param selected as bool
             @return cairo surface
         """
         filename = self._get_album_cache_name(album)
@@ -179,15 +176,13 @@ class AlbumArt(BaseArt, ArtDownloader, TagReader):
                     except:
                         pixbuf.savev(cache_path_jpg, "jpeg",
                                      ["quality"], ["90"])
-
-            return self.make_icon_frame(pixbuf, selected)
+            surface = Gdk.cairo_surface_create_from_pixbuf(pixbuf, 0, None)
+            del pixbuf
+            return surface
 
         except Exception as e:
             print(e)
-            return self.make_icon_frame(self._get_default_icon(
-                size,
-                'folder-music-symbolic'),
-                selected)
+            return self._get_default_icon(size, 'folder-music-symbolic')
 
     def save_album_art(self, pixbuf, album_id, sql=None):
         """

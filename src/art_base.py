@@ -18,11 +18,7 @@
 
 from gi.repository import Gtk, Gdk, GObject, GdkPixbuf
 
-from math import pi
-import cairo
 import os
-
-from lollypop.define import Lp, ArtSize
 
 
 class BaseArt(GObject.GObject):
@@ -40,83 +36,6 @@ class BaseArt(GObject.GObject):
             Init base art
         """
         GObject.GObject.__init__(self)
-
-    def make_icon_frame(self, pixbuf, selected):
-        """
-            Draw an icon frame around pixbuf,
-            code forked Gnome Music, see copyright header
-            @param: pixbuf source as Gdk.Pixbuf
-            @param selected as bool
-            @return cairo surface
-        """
-        degrees = pi / 180
-
-        width = pixbuf.get_width()
-        height = pixbuf.get_height()
-
-        if width < ArtSize.BIG:
-            radius = ArtSize.SMALL_RADIUS
-            border = ArtSize.SMALL_BORDER
-        else:
-            radius = ArtSize.RADIUS
-            border = ArtSize.BORDER
-
-        surface_width = width + border * 2
-        surface_height = height + border * 2
-        surface = cairo.ImageSurface(cairo.FORMAT_ARGB32,
-                                     surface_width, surface_height)
-        ctx = cairo.Context(surface)
-        ctx.new_sub_path()
-        ctx.arc(surface_width - radius, radius,
-                radius - 0.5, -90 * degrees, 0 * degrees)
-        ctx.arc(surface_width - radius, surface_height - radius,
-                radius - 0.5, 0 * degrees, 90 * degrees)
-        ctx.arc(radius, surface_height - radius,
-                radius - 0.5, 90 * degrees, 180 * degrees)
-        ctx.arc(radius, radius, radius - 0.5, 180 * degrees, 270 * degrees)
-        ctx.close_path()
-        ctx.set_line_width(1)
-
-        if width > ArtSize.MEDIUM:
-            dark = Gtk.Settings.get_default().get_property(
-                                           "gtk-application-prefer-dark-theme")
-            if selected:
-                selected_color = Lp.window.get_selected_color()
-                ctx.set_source_rgb(selected_color.red,
-                                   selected_color.green,
-                                   selected_color.blue)
-                ctx.stroke_preserve()
-                ctx.set_source_rgb(selected_color.red,
-                                   selected_color.green,
-                                   selected_color.blue)
-                ctx.fill()
-            elif dark:
-                ctx.set_source_rgb(1, 1, 1)
-                ctx.stroke_preserve()
-                ctx.set_source_rgb(0, 0, 0)
-                ctx.fill()
-            else:
-                ctx.set_source_rgb(0, 0, 0)
-                ctx.stroke_preserve()
-                ctx.set_source_rgb(1, 1, 1)
-                ctx.fill()
-        else:
-            ctx.set_source_rgb(0, 0, 0)
-            ctx.stroke_preserve()
-
-        border_pixbuf = Gdk.pixbuf_get_from_surface(surface, 0, 0,
-                                                    surface_width,
-                                                    surface_height)
-        del surface
-        pixbuf.copy_area(0, 0,
-                         width,
-                         height,
-                         border_pixbuf,
-                         border, border)
-        del pixbuf
-        surface = Gdk.cairo_surface_create_from_pixbuf(border_pixbuf, 0, None)
-        del border_pixbuf
-        return surface
 
 #######################
 # PRIVATE             #
@@ -146,34 +65,35 @@ class BaseArt(GObject.GObject):
                                                              size,
                                                              size,
                                                              False)
-            return pixbuf
-
-        # get a small pixbuf with the given path
-        icon_size = size / 4
-        icon = Gtk.IconTheme.get_default().load_icon(icon_name,
-                                                     icon_size, 0)
-        # create an empty pixbuf with the requested size
-        result = GdkPixbuf.Pixbuf.new(icon.get_colorspace(),
-                                      True,
-                                      icon.get_bits_per_sample(),
-                                      size,
-                                      size)
-        result.fill(0xffffffff)
-        icon.composite(result,
-                       icon_size * 3 / 2,
-                       icon_size * 3 / 2,
-                       icon_size,
-                       icon_size,
-                       icon_size * 3 / 2,
-                       icon_size * 3 / 2,
-                       1, 1,
-                       GdkPixbuf.InterpType.NEAREST, 255)
-        # Gdk < 3.15 was missing save method
-        # > 3.15 is missing savev method
-        try:
-            result.save(cache_path_jpg, "jpeg",
-                        ["quality"], ["90"])
-        except:
-            result.savev(cache_path_jpg, "jpeg",
-                         ["quality"], ["90"])
-        return result
+        else:
+            # get a small pixbuf with the given path
+            icon_size = size / 4
+            icon = Gtk.IconTheme.get_default().load_icon(icon_name,
+                                                         icon_size, 0)
+            # create an empty pixbuf with the requested size
+            pixbuf = GdkPixbuf.Pixbuf.new(icon.get_colorspace(),
+                                          True,
+                                          icon.get_bits_per_sample(),
+                                          size,
+                                          size)
+            pixbuf.fill(0xffffffff)
+            icon.composite(pixbuf,
+                           icon_size * 3 / 2,
+                           icon_size * 3 / 2,
+                           icon_size,
+                           icon_size,
+                           icon_size * 3 / 2,
+                           icon_size * 3 / 2,
+                           1, 1,
+                           GdkPixbuf.InterpType.NEAREST, 255)
+            # Gdk < 3.15 was missing save method
+            # > 3.15 is missing savev method
+            try:
+                pixbuf.save(cache_path_jpg, "jpeg",
+                            ["quality"], ["90"])
+            except:
+                pixbuf.savev(cache_path_jpg, "jpeg",
+                             ["quality"], ["90"])
+        surface = Gdk.cairo_surface_create_from_pixbuf(pixbuf, 0, None)
+        del pixbuf
+        return surface

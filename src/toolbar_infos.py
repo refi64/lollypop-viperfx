@@ -74,8 +74,7 @@ class ToolbarInfos(Gtk.Bin):
         elif player.current_track.id == Type.EXTERNALS:
             art = Lp.art.get_cover_for_uri(
                     player.current_track.uri,
-                    ArtSize.SMALL*self.get_scale_factor(),
-                    False)
+                    ArtSize.SMALL*self.get_scale_factor())
         else:
             art = Lp.art.get_album(player.current_track.album,
                                    ArtSize.SMALL*self.get_scale_factor())

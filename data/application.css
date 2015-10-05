@@ -81,6 +81,25 @@ Gtk.ListBoxRow .menu-button:hover {
     -gtk-image-effect: highlight;
 }
 
+.small-cover-frame {
+    border-radius: 3px;
+    border-color: black;
+}
+
+.cover-frame {
+    border-radius: 5px;
+}
+
+.cover-frame-border {
+    border-radius: 3px;
+    border-color: shade(@theme_bg_color, 1.5);
+    border-width: 3px;
+}
+
+.cover-frame-selected {
+    border-color: @theme_selected_bg_color;
+}
+
 .trackswidget {
 	background-color: transparent;
 }

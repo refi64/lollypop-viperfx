@@ -10,7 +10,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-from gi.repository import GLib, GdkPixbuf, Gio
+from gi.repository import GLib, Gdk, GdkPixbuf, Gio
 
 import re
 import os
@@ -60,12 +60,11 @@ class RadioArt(BaseArt):
             print("Art::get_radio_cache_path(): %s" % e, ascii(filename))
             return None
 
-    def get_radio(self, name, size, selected=False):
+    def get_radio(self, name, size):
         """
             Return a cairo surface for radio name
             @param radio name as string
             @param pixbuf size as int
-            @param selected as bool
             @return cairo surface
         """
         filename = self._get_radio_cache_name(name)
@@ -117,14 +116,14 @@ class RadioArt(BaseArt):
             except:
                 pixbuf.savev(cache_path_png, "png",
                              [None], [None])
-            return self.make_icon_frame(pixbuf, selected)
+            surface = Gdk.cairo_surface_create_from_pixbuf(pixbuf, 0, None)
+            del pixbuf
+            return surface
 
         except Exception as e:
             print(e)
-            return self.make_icon_frame(self._get_default_icon(
-                                        size,
-                                        'audio-input-microphone-symbolic'),
-                                        selected)
+            return self._get_default_icon(size,
+                                          'audio-input-microphone-symbolic')
 
     def copy_uri_to_cache(self, uri, name, size):
         """
