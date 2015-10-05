@@ -227,7 +227,7 @@ class WikipediaContent(ArtistContent):
         self._artist = artist
         if not self._load_cache_content(artist):
             self._load_page_content(artist)
-            self._setup_menu(artist)
+        self._setup_menu(artist)
 
     def uncache(self, artist):
         """
