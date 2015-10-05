@@ -12,6 +12,8 @@
 
 from gi.repository import Gtk, GObject
 
+from math import pi
+
 from lollypop.define import Lp, ArtSize
 from lollypop.objects import Album
 
@@ -26,13 +28,26 @@ class CellRendererAlbum(Gtk.CellRenderer):
         size = ArtSize.MEDIUM * widget.get_scale_factor()
         surface = Lp.art.get_album(Album(self.album), size)
         ctx.translate(cell_area.x, cell_area.y)
-        ctx.set_source_surface(surface, 0, 0)
+        ctx.new_sub_path()
+        radius = 2
+        degrees = pi / 180
+        ctx.arc(size + 2 - radius, radius,
+                radius - 0.5, -90 * degrees, 0 * degrees)
+        ctx.arc(size + 2 - radius, size + 2 - radius,
+                radius - 0.5, 0 * degrees, 90 * degrees)
+        ctx.arc(radius, size + 2 - radius,
+                radius - 0.5, 90 * degrees, 180 * degrees)
+        ctx.arc(radius, radius, radius - 0.5, 180 * degrees, 270 * degrees)
+        ctx.close_path()
+        ctx.set_line_width(1)
+        ctx.fill()
+        ctx.set_source_surface(surface, 1, 1)
         ctx.paint()
 
     def do_get_preferred_width(self, widget):
         size = ArtSize.MEDIUM
-        return (size, size)
+        return (size+2, size+2)
 
     def do_get_preferred_height(self, widget):
         size = ArtSize.MEDIUM
-        return (size, size)
+        return (size+2, size+2)
