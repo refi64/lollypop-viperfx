@@ -185,6 +185,7 @@
       <object class="GtkMenuButton" id="menu">
         <property name="can_focus">True</property>
         <property name="receives_default">True</property>
+        <property name="relief">none</property>
         <property name="margin_top">3</property>
         <property name="margin_start">3</property>
         <property name="halign">start</property>
