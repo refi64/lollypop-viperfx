@@ -30,21 +30,26 @@ class Wikipedia:
         """
         language = getdefaultlocale()[0][0:2]
         wikipedia.set_lang(language)
-        # Translators: Put here words added by wikipedia in band search
-        # Ex: Muse_(band), Peaches(musician)
-        self._search_str = _("musician;band")
 
-    def get_artist_infos(self, artist):
+    def search(self, search):
         """
-            Get artist infos
-            @param artist as str
+            Search string on wikipedia
+            @param search as str
+            @return [str]
+        """
+        return wikipedia.search(search)
+
+    def get_page_infos(self, name):
+        """
+            Get page infos
+            @param page name as str
             @return (url as str, image url as str, content as str)
         """
         if not Gio.NetworkMonitor.get_default().get_network_available():
             return (None, None, None)
         try:
-            words = artist.split(' ')
-            page = self._search_page(artist)
+            words = name.split(' ')
+            page = wikipedia.page(name)
             if page is None:
                 return (None, None, None)
             content = page.content
@@ -66,24 +71,3 @@ class Wikipedia:
 #######################
 # PRIVATE             #
 #######################
-    def _search_page(self, artist, items=None):
-        """
-            Search music page
-            @param artist as string
-            @return page as WikipediaPage
-        """
-        if items is None:
-            item = None
-            items = self._search_str.split(';')
-        elif items:
-            item = items.pop(0)
-        else:
-            return None
-        try:
-            if item:
-                page = wikipedia.page("%s\_\(%s\)" % (artist, item))
-            else:
-                page = wikipedia.page(artist)
-        except:
-            return self._search_page(artist, items)
-        return page

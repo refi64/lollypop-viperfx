@@ -1,156 +1,205 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Generated with glade 3.18.3 -->
+<!-- Generated with glade 3.19.0 -->
 <interface>
-   <requires lib="gtk+" version="3.12" />
-   <object class="GtkOverlay" id="widget">
-      <property name="visible">True</property>
-      <property name="can_focus">False</property>
-      <child>
-         <object class="GtkGrid" id="grid">
+  <requires lib="gtk+" version="3.12"/>
+  <object class="GtkOverlay" id="widget">
+    <property name="visible">True</property>
+    <property name="can_focus">False</property>
+    <child>
+      <object class="GtkGrid" id="grid">
+        <property name="visible">True</property>
+        <property name="can_focus">False</property>
+        <property name="margin_start">3</property>
+        <property name="margin_end">3</property>
+        <property name="margin_top">3</property>
+        <property name="margin_bottom">3</property>
+        <property name="orientation">vertical</property>
+        <property name="row_spacing">4</property>
+        <child>
+          <object class="GtkStackSwitcher" id="switcher">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
-            <property name="margin_start">3</property>
-            <property name="margin_end">3</property>
-            <property name="margin_top">3</property>
-            <property name="margin_bottom">3</property>
-            <property name="orientation">vertical</property>
-            <property name="row_spacing">4</property>
-            <child>
-               <object class="GtkStackSwitcher" id="switcher">
-                  <property name="visible">True</property>
-                  <property name="stack">stack</property>
-                  <property name="halign">center</property>
-               </object>
-               <packing>
-                  <property name="left_attach">0</property>
-                  <property name="top_attach">0</property>
-               </packing>
-            </child>
-            <child>
-               <object class="GtkStack" id="stack">
-                  <property name="visible">True</property>
-                  <property name="can_focus">True</property>
-                  <property name="transition-type">crossfade</property>
-                  <child>
-                     <object class="GtkGrid" id="albums">
-                        <property name="visible">True</property>
-                        <property name="expand">True</property>
-                        <property name="can_focus">False</property>
-                        <signal name="map" handler="_on_map_albums" swapped="no" />
-                        <signal name="unmap" handler="_on_unmap" swapped="no" />
-                     </object>
-                     <packing>
-                        <property name="name">albums</property>
-                        <property name="title" translatable="yes">Albums</property>
-                     </packing>
-                  </child>
-                  <child>
-                     <object class="GtkScrolledWindow" id="scrolllastfm">
-                        <property name="visible">True</property>
-                        <property name="expand">True</property>
-                        <property name="can_focus">False</property>
-                        <child>
-                            <object class="GtkViewport" id="lastfm">
-                                <property name="visible">True</property>
-                                <property name="can_focus">False</property>
-                                <signal name="map" handler="_on_map_lastfm" swapped="no" />
-                                <signal name="unmap" handler="_on_unmap" swapped="no" />
-                            </object>
-                        </child>
-                     </object>
-                     <packing>
-                        <property name="name">lastfm</property>
-                        <property name="title" translatable="yes">Last.fm</property>
-                     </packing>
-                  </child>
-                  <child>
-                     <object class="GtkScrolledWindow" id="scrollwikipedia">
-                        <property name="visible">True</property>
-                        <property name="expand">True</property>
-                        <property name="can_focus">False</property>
-
-                        <child>
-                            <object class="GtkViewport" id="wikipedia">
-                                <property name="visible">True</property>
-                                <property name="can_focus">False</property>
-                                <signal name="map" handler="_on_map_wikipedia" swapped="no" />
-                                <signal name="unmap" handler="_on_unmap" swapped="no" />
-                            </object>
-                        </child>
-                     </object>
-                     <packing>
-                        <property name="name">wikipedia</property>
-                        <property name="title" translatable="yes">Wikipedia</property>
-                     </packing>
-                  </child>
-                  <child>
-                     <object class="GtkScrolledWindow" id="scrollwikia">
-                        <property name="visible">True</property>
-                        <property name="expand">True</property>
-                        <property name="can_focus">False</property>
-                        <child>
-                            <object class="GtkViewport" id="wikia">
-                                <property name="visible">True</property>
-                                <property name="can_focus">False</property>
-                                <signal name="map" handler="_on_map_wikia" swapped="no" />
-                                <signal name="unmap" handler="_on_unmap" swapped="no" />
-                            </object>
-                        </child>
-                     </object>
-                     <packing>
-                        <property name="name">wikia</property>
-                        <property name="title" translatable="yes">Wikia</property>
-                     </packing>
-                  </child>
-                  <child>
-                     <object class="GtkScrolledWindow" id="scrollduck">
-                        <property name="visible">True</property>
-                        <property name="expand">True</property>
-                        <property name="can_focus">False</property>
-                        <child>
-                            <object class="GtkViewport" id="duck">
-                                <property name="visible">True</property>
-                                <property name="can_focus">False</property>
-                                <signal name="map" handler="_on_map_duck" swapped="no" />
-                                <signal name="unmap" handler="_on_unmap" swapped="no" />
-                            </object>
-                        </child>
-                     </object>
-                     <packing>
-                        <property name="name">duck</property>
-                        <property name="title" translatable="yes">DuckDuckGo</property>
-                     </packing>
-                  </child>
-               </object>
-               <packing>
-                  <property name="left_attach">0</property>
-                  <property name="top_attach">1</property>
-               </packing>
-            </child>
-         </object>
-      </child>
-      <child type="overlay">
-         <object class="GtkButton" id="reload">
-            <signal name="button_press_event" handler="_on_btn_press" swapped="no"/>
-            <signal name="button_release_event" handler="_on_btn_release" swapped="no"/>
+            <property name="halign">center</property>
+            <property name="stack">stack</property>
+          </object>
+          <packing>
+            <property name="left_attach">0</property>
+            <property name="top_attach">0</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkStack" id="stack">
             <property name="visible">True</property>
-    	    <property name="relief">none</property>
-            <property name="valign">start</property>
-            <property name="halign">end</property>
             <property name="can_focus">True</property>
-            <property name="receives_default">True</property>
-            <property name="image">reload_image</property>
-            <property name="always_show_image">True</property>
-            <property name="margin_top">3</property>
+            <property name="transition_type">crossfade</property>
             <child>
-              <object class="GtkImage" id="reload_image">
+              <object class="GtkGrid" id="albums">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
-                <property name="icon_name">view-refresh-symbolic</property>
-                <property name="icon_size">1</property>
+                <signal name="map" handler="_on_map_albums" swapped="no"/>
+                <signal name="unmap" handler="_on_unmap" swapped="no"/>
+                <child>
+                  <placeholder/>
+                </child>
+                <child>
+                  <placeholder/>
+                </child>
+                <child>
+                  <placeholder/>
+                </child>
+                <child>
+                  <placeholder/>
+                </child>
+                <child>
+                  <placeholder/>
+                </child>
+                <child>
+                  <placeholder/>
+                </child>
+                <child>
+                  <placeholder/>
+                </child>
+                <child>
+                  <placeholder/>
+                </child>
+                <child>
+                  <placeholder/>
+                </child>
               </object>
+              <packing>
+                <property name="name">albums</property>
+                <property name="title" translatable="yes">Albums</property>
+              </packing>
             </child>
-         </object>
-      </child>
-   </object>
+            <child>
+              <object class="GtkScrolledWindow" id="scrolllastfm">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <child>
+                  <object class="GtkViewport" id="lastfm">
+                    <property name="visible">True</property>
+                    <property name="can_focus">False</property>
+                    <signal name="map" handler="_on_map_lastfm" swapped="no"/>
+                    <signal name="unmap" handler="_on_unmap" swapped="no"/>
+                  </object>
+                </child>
+              </object>
+              <packing>
+                <property name="name">lastfm</property>
+                <property name="title" translatable="yes">Last.fm</property>
+                <property name="position">1</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkScrolledWindow" id="scrollwikipedia">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <child>
+                  <object class="GtkViewport" id="wikipedia">
+                    <property name="visible">True</property>
+                    <property name="can_focus">False</property>
+                    <signal name="map" handler="_on_map_wikipedia" swapped="no"/>
+                    <signal name="unmap" handler="_on_unmap" swapped="no"/>
+                  </object>
+                </child>
+              </object>
+              <packing>
+                <property name="name">wikipedia</property>
+                <property name="title" translatable="yes">Wikipedia</property>
+                <property name="position">2</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkScrolledWindow" id="scrollwikia">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <child>
+                  <object class="GtkViewport" id="wikia">
+                    <property name="visible">True</property>
+                    <property name="can_focus">False</property>
+                    <signal name="map" handler="_on_map_wikia" swapped="no"/>
+                    <signal name="unmap" handler="_on_unmap" swapped="no"/>
+                  </object>
+                </child>
+              </object>
+              <packing>
+                <property name="name">wikia</property>
+                <property name="title" translatable="yes">Wikia</property>
+                <property name="position">3</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkScrolledWindow" id="scrollduck">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <child>
+                  <object class="GtkViewport" id="duck">
+                    <property name="visible">True</property>
+                    <property name="can_focus">False</property>
+                    <signal name="map" handler="_on_map_duck" swapped="no"/>
+                    <signal name="unmap" handler="_on_unmap" swapped="no"/>
+                  </object>
+                </child>
+              </object>
+              <packing>
+                <property name="name">duck</property>
+                <property name="title" translatable="yes">DuckDuckGo</property>
+                <property name="position">4</property>
+              </packing>
+            </child>
+          </object>
+          <packing>
+            <property name="left_attach">0</property>
+            <property name="top_attach">1</property>
+          </packing>
+        </child>
+      </object>
+      <packing>
+        <property name="index">-1</property>
+      </packing>
+    </child>
+    <child type="overlay">
+      <object class="GtkButton" id="reload">
+        <property name="visible">True</property>
+        <property name="can_focus">True</property>
+        <property name="receives_default">True</property>
+        <property name="halign">end</property>
+        <property name="valign">start</property>
+        <property name="margin_top">3</property>
+        <property name="margin_end">3</property>
+        <property name="image">reload_image</property>
+        <property name="relief">none</property>
+        <property name="always_show_image">True</property>
+        <signal name="button-press-event" handler="_on_btn_press" swapped="no"/>
+        <signal name="button-release-event" handler="_on_btn_release" swapped="no"/>
+        <child>
+          <object class="GtkImage" id="reload_image">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <property name="icon_name">view-refresh-symbolic</property>
+          </object>
+        </child>
+      </object>
+    </child>
+    <child type="overlay">
+      <object class="GtkMenuButton" id="menu">
+        <property name="can_focus">True</property>
+        <property name="receives_default">True</property>
+        <property name="margin_top">3</property>
+        <property name="margin_start">3</property>
+        <property name="halign">start</property>
+        <property name="valign">start</property>
+        <child>
+          <object class="GtkImage" id="image1">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <property name="icon_name">edit-find-symbolic</property>
+          </object>
+        </child>
+      </object>
+      <packing>
+        <property name="index">1</property>
+      </packing>
+    </child>
+  </object>
 </interface>

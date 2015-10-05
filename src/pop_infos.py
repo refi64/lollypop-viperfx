@@ -66,6 +66,7 @@ class InfosPopover(Gtk.Popover):
         builder = Gtk.Builder()
         builder.add_from_resource('/org/gnome/Lollypop/ArtistInfos.ui')
         builder.connect_signals(self)
+        self._menu = builder.get_object('menu')
 
         if Lp.settings.get_value('infosreload') and artist_id is None:
             builder.get_object('reload').get_style_context().add_class(
@@ -129,6 +130,18 @@ class InfosPopover(Gtk.Popover):
         else:
             widget.get_style_context().remove_class('selected')
 
+    def _load_web(self, widget, url, mobile, private):
+        """
+            Load url in widget
+            @param widget as Gtk.Viewport
+        """
+        web = widget.get_child()
+        if web is None:
+            web = self.WebView(mobile, private)
+            web.show()
+            widget.add(web)
+        web.load(url)
+
     def _on_btn_press(self, widget, event):
         """
             Start a timer to set autoload
@@ -181,6 +194,7 @@ class InfosPopover(Gtk.Popover):
         """
         if not self.is_visible():
             return
+        self._menu.hide()
         Lp.settings.set_value('infoswitch',
                               GLib.Variant('s', 'albums'))
         view = widget.get_child_at(0, 0)
@@ -201,6 +215,7 @@ class InfosPopover(Gtk.Popover):
         """
         if not self.is_visible():
             return
+        self._menu.hide()
         Lp.settings.set_value('infoswitch',
                               GLib.Variant('s', 'lastfm'))
         content_widget = widget.get_child()
@@ -228,7 +243,7 @@ class InfosPopover(Gtk.Popover):
                               GLib.Variant('s', 'wikipedia'))
         content_widget = widget.get_child()
         if content_widget is None:
-            content_widget = WikipediaContent()
+            content_widget = WikipediaContent(self._menu)
             content_widget.show()
             widget.add(content_widget)
         if force:
@@ -247,6 +262,7 @@ class InfosPopover(Gtk.Popover):
         """
         if not self.is_visible():
             return
+        self._menu.hide()
         Lp.settings.set_value('infoswitch',
                               GLib.Variant('s', 'wikia'))
         artist = Lp.player.get_current_artist().replace(' ', '_')
@@ -262,6 +278,7 @@ class InfosPopover(Gtk.Popover):
         """
         if not self.is_visible():
             return
+        self._menu.hide()
         Lp.settings.set_value('infoswitch',
                               GLib.Variant('s', 'duck'))
         title = Lp.player.current_track.title
@@ -273,15 +290,3 @@ class InfosPopover(Gtk.Popover):
               % (search, Gtk.get_default_language().to_string())
         # Delayed load due to WebKit memory loading
         GLib.timeout_add(250, self._load_web, widget, url, False, False)
-
-    def _load_web(self, widget, url, mobile, private):
-        """
-            Load url in widget
-            @param widget as Gtk.Viewport
-        """
-        web = widget.get_child()
-        if web is None:
-            web = self.WebView(mobile, private)
-            web.show()
-            widget.add(web)
-        web.load(url)

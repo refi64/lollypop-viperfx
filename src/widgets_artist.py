@@ -12,6 +12,7 @@
 
 from gi.repository import Gtk, GdkPixbuf, GLib, Gio
 
+from threading import Thread
 from cgi import escape
 from os import mkdir, path
 
@@ -205,32 +206,27 @@ class WikipediaContent(ArtistContent):
         Show wikipedia content
     """
 
-    def __init__(self):
+    def __init__(self, menu):
         """
             Init widget
+            @param menu as Gtk.MenuButton
         """
         ArtistContent.__init__(self)
+        self._menu = menu
+        self._app = Gio.Application.get_default()
 
     def populate(self, artist):
         """
             Populate content
-            @param artist as string
+            @param artist as str
             @thread safe
         """
-        content = None
         if artist is None:
             artist = Lp.player.get_current_artist()
         self._artist = artist
-        (content, data) = self._load_from_cache(artist, 'wikipedia')
-        if content:
-            stream = None
-            if data is not None:
-                stream = Gio.MemoryInputStream.new_from_data(data, None)
-            GLib.idle_add(self._set_content, content, stream)
-        else:
-            (url, image_url, content) = Wikipedia().get_artist_infos(artist)
-            ArtistContent.populate(self, artist, content,
-                                   image_url, 'wikipedia')
+        if not self._load_cache_content(artist):
+            self._load_page_content(artist)
+            self._setup_menu(artist)
 
     def uncache(self, artist):
         """
@@ -240,6 +236,73 @@ class WikipediaContent(ArtistContent):
         if artist is None:
             artist = Lp.player.get_current_artist()
         ArtistContent.uncache(self, artist, 'wikipedia')
+
+#######################
+# PRIVATE             #
+#######################
+    def _load_cache_content(self, artist):
+        """
+            Load from cache
+            @param artist as str
+            @return True if loaded
+        """
+        (content, data) = self._load_from_cache(artist, 'wikipedia')
+        if content:
+            stream = None
+            if data is not None:
+                stream = Gio.MemoryInputStream.new_from_data(data, None)
+            GLib.idle_add(self._set_content, content, stream)
+            return True
+        return False
+
+    def _load_page_content(self, page):
+        """
+            Load page content
+            @param page as str
+        """
+        wp = Wikipedia()
+        (url, image_url, content) = wp.get_page_infos(page)
+        ArtistContent.populate(self, self._artist, content,
+                               image_url, 'wikipedia')
+
+    def _setup_menu(self, artist):
+        """
+            Setup menu for artist
+        """
+        wp = Wikipedia()
+        GLib.idle_add(self._setup_menu_strings, [artist])
+        search = wp.search(artist)
+        GLib.idle_add(self._setup_menu_strings, search)
+
+    def _setup_menu_strings(self, strings):
+        """
+            Setup a menu with strings
+            @param strings as [str]
+        """
+        menu_model = Gio.Menu()
+        i = 0
+        for string in strings:
+            action = Gio.SimpleAction(name="wikipedia_%s" % i)
+            self._app.add_action(action)
+            action.connect('activate',
+                           self._on_search_activated,
+                           string)
+            menu_model.append(string, "app.wikipedia_%s" % i)
+            i += 1
+        self._menu.set_menu_model(menu_model)
+        self._menu.show()
+
+    def _on_search_activated(self, action, variant, page):
+        """
+            Switch to page
+            @param SimpleAction
+            @param GVariant
+        """
+        self.uncache(self._artist)
+        self.clear()
+        t = Thread(target=self._load_page_content, args=(page,))
+        t.daemon = True
+        t.start()
 
 
 class LastfmContent(ArtistContent):
