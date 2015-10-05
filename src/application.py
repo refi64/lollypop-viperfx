@@ -248,7 +248,11 @@ class Application(Gtk.Application):
         if len(args) > 1:
             Lp.player.clear_externals()
             for f in args[1:]:
-                self._parser.parse_async(GLib.filename_to_uri(f), True,
+                try:
+                    f = GLib.filename_to_uri(f)
+                except:
+                    pass
+                self._parser.parse_async(f, True,
                                          None, None)
         if Lp.window is not None:
             Lp.window.present()
