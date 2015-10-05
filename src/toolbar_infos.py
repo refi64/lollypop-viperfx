@@ -45,6 +45,7 @@ class ToolbarInfos(Gtk.Bin):
 
         self._title_label = builder.get_object('title')
         self._artist_label = builder.get_object('artist')
+        self._cover_frame = builder.get_object('frame')
         self._cover = builder.get_object('cover')
 
         Lp.art.connect('cover-changed', self._update_cover)
@@ -82,9 +83,9 @@ class ToolbarInfos(Gtk.Bin):
             self._cover.set_from_surface(art)
             del art
             self._cover.set_tooltip_text(player.current_track.album.name)
-            self._cover.show()
+            self._cover_frame.show()
         else:
-            self._cover.hide()
+            self._cover_frame.hide()
 
     def on_status_changed(self, player):
         """
@@ -103,10 +104,10 @@ class ToolbarInfos(Gtk.Bin):
             @param album id as int
         """
         if Lp.player.current_track.album.id == album_id:
-            pixbuf = Lp.art.get_album(Lp.player.current_track.album,
-                                      ArtSize.SMALL)
-            self._cover.set_from_surface(pixbuf)
-            del pixbuf
+            surface = Lp.art.get_album(Lp.player.current_track.album,
+                                       ArtSize.SMALL)
+            self._cover.set_from_surface(surface)
+            del surface
 
     def _update_logo(self, art, name):
         """
