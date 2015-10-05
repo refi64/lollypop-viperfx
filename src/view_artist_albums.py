@@ -104,6 +104,7 @@ class CurrentArtistAlbumsView(ViewContainer):
         ViewContainer.__init__(self, 1000)
         self.connect('destroy', self._on_destroy)
         self._artist_id = artist_id
+        self._current_artist_id = artist_id
 
     def populate(self):
         """
@@ -115,10 +116,10 @@ class CurrentArtistAlbumsView(ViewContainer):
                 artist_id = Lp.player.current_track.album_id
             else:
                 artist_id = Lp.player.current_track.album_artist_id
-        else:
-            artist_id = self._artist_id
-        albums = self._get_albums(artist_id)
-        GLib.idle_add(self._populate, albums)
+        if artist_id != self._current_artist_id:
+            self._current_artist_id = artist_id
+            albums = self._get_albums(artist_id)
+            GLib.idle_add(self._populate, albums)
 
 #######################
 # PRIVATE             #
