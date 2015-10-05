@@ -64,6 +64,7 @@ class ArtistContent(Gtk.Stack):
             Clear content
         """
         self._content.set_text('')
+        self._image_frame.hide()
         self._image.clear()
         self.set_visible_child_name('spinner')
 
