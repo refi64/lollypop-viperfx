@@ -166,7 +166,7 @@ class Playlists(GObject.GObject):
             sql = self._sql
         result = sql.execute("SELECT rowid, name\
                               FROM playlists\
-                              ORDER BY mtime\
+                              ORDER BY mtime DESC\
                               LIMIT 6")
         return list(result)
 
@@ -268,6 +268,9 @@ class Playlists(GObject.GObject):
                 sql.execute("INSERT INTO tracks"
                             " VALUES (?, ?, ?)",
                             (playlist_id, track.id, track.path))
+        sql.execute("UPDATE playlists SET mtime=?\
+                     WHERE rowid=?", (datetime.now().strftime('%s'),
+                                      playlist_id))
         sql.commit()
         GLib.idle_add(self.emit, "playlist-changed", playlist_id)
 
