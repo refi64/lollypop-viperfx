@@ -171,6 +171,7 @@ class AlbumSimpleWidget(Gtk.Bin, AlbumWidget):
         self._artist_label.set_text(self._album.artist_name)
         self.add(self._widget)
         self.set_cover()
+        self.update_state()
         self.set_property('halign', Gtk.Align.START)
         self.set_property('valign', Gtk.Align.START)
 
@@ -293,6 +294,7 @@ class AlbumDetailedWidget(Gtk.Bin, AlbumWidget):
 
         self._cover = builder.get_object('cover')
         self.set_cover()
+        self.update_state()
 
         builder.get_object('title').set_label(self._album.name)
         if self._album.year:
