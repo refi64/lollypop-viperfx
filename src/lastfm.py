@@ -299,7 +299,8 @@ class LastFM(LastFMNetwork):
         """
         try:
             sql_l = Lp.db.get_cursor()
-            if force or len(Lp.playlists.get_tracks(Type.LOVED, sql_l)) == 0:
+            sql_p = Lp.playlists.get_cursor()
+            if force or len(Lp.playlists.get_tracks(Type.LOVED, sql_p)) == 0:
                 tracks = []
                 user = self.get_user(self._username)
                 for loved in user.get_loved_tracks():
@@ -308,10 +309,9 @@ class LastFM(LastFMNetwork):
                                                       sql_l)
                     if track_id is not None:
                         tracks.append(Track(track_id))
-                sql_p = Lp.playlists.get_cursor()
                 Lp.playlists.add_tracks(Type.LOVED, tracks, sql_p)
-                sql_p.close()
-                sql_l.close()
+            sql_p.close()
+            sql_l.close()
         except Exception as e:
                 print("LastFM::_populate_loved_tracks: %s" % e)
 
