@@ -265,7 +265,7 @@ class PlaylistsMenu(BaseMenu):
                 action.connect('activate',
                                self._remove_from_playlist,
                                playlist[0])
-                self.append(_("Remove from \"%s\"") % playlist,
+                self.append(_("Remove from \"%s\"") % playlist[1],
                             "app.playlist%s" % i)
             else:
                 action.connect('activate',
