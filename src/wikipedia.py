@@ -14,7 +14,6 @@ from gi.repository import Gio
 
 from gettext import gettext as _
 from locale import getdefaultlocale
-from random import shuffle
 import re
 import wikipedia
 
@@ -55,17 +54,14 @@ class Wikipedia:
             content = page.content
             content = re.sub(r'%s ==' % _('Modify'), ' ==', content)
             url = page.url
-            img = None
-            shuffle(page.images)
             for image in page.images:
-                if image.lower().endswith('.jpg'):
-                    # Search specific string in urls
-                    for word in words:
-                        if word in image:
-                            return (url, image, content)
-                    img = image
-            return (url, img, content)
-        except:
+                # Search specific string in urls
+                for word in words:
+                    if word.lower() in image.lower():
+                        return (url, image, content)
+            return (url, None, content)
+        except Exception as e:
+            print("Wikipedia::get_page_infos(): %s" % e)
             return (None, None, None)
 
 #######################
