@@ -227,16 +227,11 @@ class WikipediaContent(ArtistContent):
         """
         if artist is None:
             artist = Lp.player.get_current_artist()
-            genre = Lp.player.current_track.genres
-            album = Lp.player.current_track.album.name
-        else:
-            genre = None
-            album = None
         self._artist = artist
         GLib.idle_add(self._setup_menu_strings, [artist])
         if not self._load_cache_content(artist):
             self._load_page_content(artist)
-        self._setup_menu(artist, genre, album)
+        self._setup_menu(artist)
 
     def clear(self):
         """
@@ -281,21 +276,13 @@ class WikipediaContent(ArtistContent):
         (url, image_url, content) = wp.get_page_infos(page)
         ArtistContent.populate(self, content, image_url, 'wikipedia')
 
-    def _setup_menu(self, artist, genre, album):
+    def _setup_menu(self, artist):
         """
             Setup menu for artist
             @param artist as str
-            @param genre as str
-            @param album as str
         """
-        if genre:
-            search = artist + ' ' + genre
-        elif album:
-            search = artist + ' ' + album
-        else:
-            search = artist + ' album'
         wp = Wikipedia()
-        result = wp.search(search)
+        result = wp.search(artist)
         if artist in result:
             result.remove(artist)
         GLib.idle_add(self._setup_menu_strings, result)

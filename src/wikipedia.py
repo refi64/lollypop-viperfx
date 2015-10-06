@@ -29,6 +29,9 @@ class Wikipedia:
         """
         language = getdefaultlocale()[0][0:2]
         wikipedia.set_lang(language)
+        # Translators: Put here words added by wikipedia in band search
+        # Ex: Muse_(band), Peaches(musician)
+        self._search_str = _("musician;band")
 
     def search(self, search):
         """
@@ -36,7 +39,10 @@ class Wikipedia:
             @param search as str
             @return [str]
         """
-        return wikipedia.search(search)
+        results = wikipedia.search(search)
+        for item in self._search_str.split(';'):
+            results += wikipedia.search(search + ' ' + item)
+        return list(set(results))
 
     def get_page_infos(self, name):
         """
@@ -54,12 +60,19 @@ class Wikipedia:
             content = page.content
             content = re.sub(r'%s ==' % _('Modify'), ' ==', content)
             url = page.url
+            jpegs = []
             for image in page.images:
+                if image.lower().endswith('.jpg'):
+                    jpegs.append(image)
                 # Search specific string in urls
                 for word in words:
                     if word.lower() in image.lower():
                         return (url, image, content)
-            return (url, None, content)
+            # If we only found one jpg, then use it
+            image = None
+            if len(jpegs) == 1:
+                image = jpegs[0]
+            return (url, image, content)
         except Exception as e:
             print("Wikipedia::get_page_infos(): %s" % e)
             return (None, None, None)
