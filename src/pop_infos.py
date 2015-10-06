@@ -56,26 +56,22 @@ class InfosPopover(Gtk.Popover):
             @param show albums as bool
         """
         Gtk.Bin.__init__(self)
+        self.connect('map', self._on_self_map)
         self.connect('unmap', self._on_self_unmap)
         self._artist_id = artist_id
         self._current = self._get_current()
         self._timeout_id = None
+        self._signal_id = None
 
         builder = Gtk.Builder()
         builder.add_from_resource('/org/gnome/Lollypop/ArtistInfos.ui')
         builder.connect_signals(self)
         self._menu = builder.get_object('menu')
-
-        if Lp.settings.get_value('infosreload') and artist_id is None:
-            builder.get_object('reload').get_style_context().add_class(
-                                                                  'selected')
-            self._signal_id = Lp.player.connect("current-changed",
-                                                self._on_current_changed)
-        else:
-            self._signal_id = None
-
         self._stack = builder.get_object('stack')
         self.add(builder.get_object('widget'))
+        if Lp.settings.get_value('infosreload'):
+            builder.get_object('reload').get_style_context().add_class(
+                                                                    'selected')
         if not show_albums:
             self._stack.get_child_by_name('albums').destroy()
         if InfosPopover.Wikipedia is None:
@@ -185,13 +181,24 @@ class InfosPopover(Gtk.Popover):
             self._timeout_id = None
             self._on_current_changed(Lp.player, True)
 
+    def _on_self_map(self, widget):
+        """
+            Connect signals
+            @param widget as Gtk.Widget
+        """
+        if Lp.settings.get_value('infosreload') and self._artist_id is None:
+            self._signal_id = Lp.player.connect("current-changed",
+                                                self._on_current_changed)
+
     def _on_self_unmap(self, widget):
         """
-            Destroy self
+            Destroy self if needed and disconnect signals
             @param widget as Gtk.Widget
         """
         if self._artist_id is not None:
             GLib.idle_add(self.destroy)
+        Lp.player.disconnect(self._signal_id)
+        self._signal_id = None
 
     def _on_unmap(self, widget):
         """
