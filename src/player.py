@@ -116,7 +116,13 @@ class Player(BinPlayer, QueuePlayer, UserPlaylistPlayer, RadioPlayer,
             self._albums += Lp.albums.get_ids()
         # We are in populars view, add popular albums
         elif genre_id == Type.POPULARS:
-            self._albums = Lp.albums.get_populars()
+            if self._shuffle in [Shuffle.TRACKS_ARTIST, Shuffle.ALBUMS_ARTIST]:
+                self._albums = []
+                for album_id in Lp.albums.get_populars():
+                    if Lp.albums.get_artist_id(album_id) == artist_id:
+                        self._albums.append(album_id)
+            else:
+                self._albums = Lp.albums.get_populars()
         # We are in recents view, add recent albums
         elif genre_id == Type.RECENTS:
             self._albums = Lp.albums.get_recents()
