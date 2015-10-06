@@ -237,7 +237,8 @@ class TrackRow(Row):
         self._builder.get_object('grid').attach(self._indicator, 0, 0, 1, 1)
         menu_btn = self._builder.get_object('menu')
         self._show_menu = show_menu
-        if show_menu:
+        # TODO: Remove this test later
+        if show_menu or Gtk.get_minor_version() > 16:
             menu_btn.show()
         else:
             menu_btn.hide()

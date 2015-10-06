@@ -304,7 +304,8 @@ class AlbumDetailedWidget(Gtk.Bin, AlbumWidget):
 
         self.add(builder.get_object('widget'))
 
-        if pop_allowed:
+        # TODO: Remove this test later
+        if pop_allowed or Gtk.get_minor_version() > 16:
             self._menu = builder.get_object('menu')
             self._menu.connect('clicked',
                                self._pop_menu)
