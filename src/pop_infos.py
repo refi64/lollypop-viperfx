@@ -225,7 +225,7 @@ class InfosPopover(Gtk.Popover):
             widget.add(content_widget)
         if force:
             content_widget.uncache(self._artist)
-        if content_widget.should_update(self._artist):
+        if content_widget.should_update(self._artist) or force:
             content_widget.clear()
             t = Thread(target=content_widget.populate, args=(self._artist,))
             t.daemon = True
@@ -248,7 +248,7 @@ class InfosPopover(Gtk.Popover):
             widget.add(content_widget)
         if force:
             content_widget.uncache(self._artist)
-        if content_widget.should_update(self._artist):
+        if content_widget.should_update(self._artist) or force:
             content_widget.clear()
             t = Thread(target=content_widget.populate, args=(self._artist,))
             t.daemon = True

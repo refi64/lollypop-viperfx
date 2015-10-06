@@ -70,10 +70,9 @@ class ArtistContent(Gtk.Stack):
         self._image.clear()
         self.set_visible_child_name('spinner')
 
-    def populate(self, artist, content, image_url, suffix):
+    def populate(self, content, image_url, suffix):
         """
             populate widget with content
-            @param artist as string
             @param content as string
             @param image url as string
             @param suffix as string
@@ -89,7 +88,7 @@ class ArtistContent(Gtk.Stack):
                     if status:
                         stream = Gio.MemoryInputStream.new_from_data(data,
                                                                      None)
-                self._save_to_cache(artist, content, data, suffix)
+                self._save_to_cache(self._artist, content, data, suffix)
             GLib.idle_add(self._set_content, content, stream)
         except Exception as e:
             print("ArtistContent::populate: %s" % e)
@@ -100,7 +99,6 @@ class ArtistContent(Gtk.Stack):
             @param artist as string
             @param suffix as string
         """
-        self._artist = ''
         filepath = "%s/%s_%s.txt" % (self._CACHE_PATH,
                                      "".join(
                                         [c for c in artist if
@@ -278,8 +276,7 @@ class WikipediaContent(ArtistContent):
         """
         wp = Wikipedia()
         (url, image_url, content) = wp.get_page_infos(page)
-        ArtistContent.populate(self, self._artist, content,
-                               image_url, 'wikipedia')
+        ArtistContent.populate(self, content, image_url, 'wikipedia')
 
     def _setup_menu(self, artist, genre, album):
         """
@@ -361,7 +358,7 @@ class LastfmContent(ArtistContent):
             GLib.idle_add(self._set_content, content, stream)
         else:
             (url, image_url, content) = Lp.lastfm.get_artist_infos(artist)
-            ArtistContent.populate(self, artist, content, image_url, 'lastfm')
+            ArtistContent.populate(self, content, image_url, 'lastfm')
 
     def uncache(self, artist):
         """
