@@ -57,11 +57,9 @@ class InfosPopover(Gtk.Popover):
         """
         Gtk.Bin.__init__(self)
         self.connect('unmap', self._on_self_unmap)
-        self._artist = None
         self._artist_id = artist_id
+        self._current_artist_id = None
         self._timeout_id = None
-        if self._artist_id is not None:
-            self._artist = Lp.artists.get_name(artist_id)
 
         builder = Gtk.Builder()
         builder.add_from_resource('/org/gnome/Lollypop/ArtistInfos.ui')
@@ -74,7 +72,6 @@ class InfosPopover(Gtk.Popover):
             self._signal_id = Lp.player.connect("current-changed",
                                                 self._update_content)
         else:
-            builder.get_object('reload').hide()
             self._signal_id = None
 
         self._stack = builder.get_object('stack')
@@ -192,8 +189,6 @@ class InfosPopover(Gtk.Popover):
             @param widget as Gtk.Bin
             @param force as bool
         """
-        if not self.is_visible():
-            return
         self._menu.hide()
         Lp.settings.set_value('infoswitch',
                               GLib.Variant('s', 'albums'))
@@ -213,8 +208,8 @@ class InfosPopover(Gtk.Popover):
             @param widget as Gtk.Viewport
             @param force as bool
         """
-        if not self.is_visible():
-            return
+        artist = Lp.artists.get_name(self._artist_id)\
+            if self._artist_id is not None else None
         self._menu.hide()
         Lp.settings.set_value('infoswitch',
                               GLib.Variant('s', 'lastfm'))
@@ -224,10 +219,10 @@ class InfosPopover(Gtk.Popover):
             content_widget.show()
             widget.add(content_widget)
         if force:
-            content_widget.uncache(self._artist)
-        if content_widget.should_update(self._artist) or force:
+            content_widget.uncache(artist)
+        if content_widget.should_update(artist) or force:
             content_widget.clear()
-            t = Thread(target=content_widget.populate, args=(self._artist,))
+            t = Thread(target=content_widget.populate, args=(artist,))
             t.daemon = True
             t.start()
 
@@ -237,8 +232,8 @@ class InfosPopover(Gtk.Popover):
             @param widget as Gtk.Viewport
             @param force as bool
         """
-        if not self.is_visible():
-            return
+        artist = Lp.artists.get_name(self._artist_id)\
+            if self._artist_id is not None else None
         Lp.settings.set_value('infoswitch',
                               GLib.Variant('s', 'wikipedia'))
         content_widget = widget.get_child()
@@ -247,10 +242,10 @@ class InfosPopover(Gtk.Popover):
             content_widget.show()
             widget.add(content_widget)
         if force:
-            content_widget.uncache(self._artist)
-        if content_widget.should_update(self._artist) or force:
+            content_widget.uncache(artist)
+        if content_widget.should_update(artist) or force:
             content_widget.clear()
-            t = Thread(target=content_widget.populate, args=(self._artist,))
+            t = Thread(target=content_widget.populate, args=(artist,))
             t.daemon = True
             t.start()
 
@@ -260,8 +255,6 @@ class InfosPopover(Gtk.Popover):
             @param widget as Gtk.Viewport
             @param force as bool
         """
-        if not self.is_visible():
-            return
         self._menu.hide()
         Lp.settings.set_value('infoswitch',
                               GLib.Variant('s', 'wikia'))
@@ -276,16 +269,16 @@ class InfosPopover(Gtk.Popover):
             Load on map
             @param widget as Gtk.Viewport
         """
-        if not self.is_visible():
-            return
+        artist = Lp.artists.get_name(self._artist_id)\
+            if self._artist_id is not None else None
         self._menu.hide()
         Lp.settings.set_value('infoswitch',
                               GLib.Variant('s', 'duck'))
-        title = Lp.player.current_track.title
-        if self._artist is None:
-            search = "%s+%s" % (Lp.player.get_current_artist(), title)
+        if artist is None:
+            search = "%s+%s" % (Lp.player.get_current_artist(),
+                                Lp.player.current_track.title)
         else:
-            search = self._artist
+            search = artist
         url = "https://duckduckgo.com/?q=%s&kl=%s&kd=-1&k5=2&kp=1&k1=-1"\
               % (search, Gtk.get_default_language().to_string())
         # Delayed load due to WebKit memory loading

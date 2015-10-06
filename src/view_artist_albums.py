@@ -94,7 +94,8 @@ class ArtistAlbumsView(View):
 
 class CurrentArtistAlbumsView(ViewContainer):
     """
-        Show albums from current artist
+        Show albums from artist
+        Show current artist if no artist specified
     """
 
     def __init__(self, artist_id=None):
