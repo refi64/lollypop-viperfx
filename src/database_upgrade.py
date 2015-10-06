@@ -28,7 +28,7 @@ class DatabaseUpgrade:
         # Here are schema upgrade, key is database version,
         # value function doing shema update
         self._UPGRADES = {
-                            # 1: self._db_add_modification_time,
+            1: "update tracks set duration=CAST(duration as INTEGER);"
                          }
 
     """
@@ -45,14 +45,8 @@ class DatabaseUpgrade:
     def do_db_upgrade(self):
         for i in range(self._version+1, len(self._UPGRADES)+1):
             try:
-                self._UPGRADES[i]()
+                self._sql.execute(self._UPGRADES[i])
+                self._sql.commit()
             except Exception as e:
                 print("Database upgrade failed: ", e)
         return len(self._UPGRADES)
-
-    """
-        Add modification time to track table
-        @EXEMPLE
-    """
-    def _db_add_modification_time(self):
-        self._sql.execute("ALTER TABLE tracks ADD COLUMN mtime INT")
