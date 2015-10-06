@@ -215,6 +215,8 @@ class WikipediaContent(ArtistContent):
         """
         ArtistContent.__init__(self)
         self._menu = menu
+        self._menu_model = Gio.Menu()
+        self._menu.set_menu_model(self._menu_model)
         self._app = Gio.Application.get_default()
 
     def populate(self, artist):
@@ -231,6 +233,7 @@ class WikipediaContent(ArtistContent):
             genre = None
             album = None
         self._artist = artist
+        GLib.idle_add(self._setup_menu_strings, [artist])
         if not self._load_cache_content(artist):
             self._load_page_content(artist)
         self._setup_menu(artist, genre, album)
@@ -239,7 +242,7 @@ class WikipediaContent(ArtistContent):
         """
             Clear model and then content
         """
-        self._menu.set_menu_model(None)
+        self._menu_model.remove_all()
         ArtistContent.clear(self)
 
     def uncache(self, artist):
@@ -292,10 +295,9 @@ class WikipediaContent(ArtistContent):
         else:
             search = artist + ' album'
         wp = Wikipedia()
-        GLib.idle_add(self._setup_menu_strings, [artist])
         result = wp.search(search)
-        if artist not in result:
-            result.append(artist)
+        if artist in result:
+            result.remove(artist)
         GLib.idle_add(self._setup_menu_strings, result)
 
     def _setup_menu_strings(self, strings):
@@ -303,7 +305,6 @@ class WikipediaContent(ArtistContent):
             Setup a menu with strings
             @param strings as [str]
         """
-        menu_model = Gio.Menu()
         i = 0
         for string in strings:
             action = Gio.SimpleAction(name="wikipedia_%s" % i)
@@ -311,9 +312,8 @@ class WikipediaContent(ArtistContent):
             action.connect('activate',
                            self._on_search_activated,
                            string)
-            menu_model.append(string, "app.wikipedia_%s" % i)
+            self._menu_model.append(string, "app.wikipedia_%s" % i)
             i += 1
-        self._menu.set_menu_model(menu_model)
         self._menu.show()
 
     def _on_search_activated(self, action, variant, page):
