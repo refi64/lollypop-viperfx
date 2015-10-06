@@ -98,29 +98,19 @@ class CurrentArtistAlbumsView(ViewContainer):
         Show current artist if no artist specified
     """
 
-    def __init__(self, artist_id=None):
+    def __init__(self):
         """
             Init popover
         """
         ViewContainer.__init__(self, 1000)
         self.connect('destroy', self._on_destroy)
-        self._artist_id = artist_id
         self._current = (Type.NONE, Type.NONE)
 
-    def populate(self):
+    def populate(self, artist_id, album_id):
         """
             Populate the view
             @thread safe
         """
-        album_id = Type.NONE
-        if self._artist_id is None:
-            if Lp.player.current_track.album_artist_id == Type.COMPILATIONS:
-                album_id = Lp.player.current_track.album_id
-                artist_id = Type.NONE
-            else:
-                artist_id = Lp.player.current_track.album_artist_id
-        else:
-            artist_id = self._artist_id
         if (artist_id, album_id) != self._current:
             self._current = (artist_id, album_id)
             if album_id == Type.NONE:

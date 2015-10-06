@@ -15,7 +15,7 @@ from gi.repository import Gtk, GLib
 from gettext import gettext as _
 from threading import Thread
 
-from lollypop.define import Lp
+from lollypop.define import Lp, Type
 from lollypop.widgets_artist import WikipediaContent, LastfmContent
 from lollypop.view_artist_albums import CurrentArtistAlbumsView
 
@@ -58,7 +58,7 @@ class InfosPopover(Gtk.Popover):
         Gtk.Bin.__init__(self)
         self.connect('unmap', self._on_self_unmap)
         self._artist_id = artist_id
-        self._current_artist_id = None
+        self._current = self._get_current()
         self._timeout_id = None
 
         builder = Gtk.Builder()
@@ -70,7 +70,7 @@ class InfosPopover(Gtk.Popover):
             builder.get_object('reload').get_style_context().add_class(
                                                                   'selected')
             self._signal_id = Lp.player.connect("current-changed",
-                                                self._update_content)
+                                                self._on_current_changed)
         else:
             self._signal_id = None
 
@@ -105,16 +105,20 @@ class InfosPopover(Gtk.Popover):
 #######################
 # PRIVATE             #
 #######################
-    def _update_content(self, player=None, force=False):
+    def _get_current(self):
         """
-            Update content
+            Update current track
         """
-        name = self._stack.get_visible_child_name()
-        if name == "albums":
-            visible = self._stack.get_visible_child()
+        album_id = Type.NONE
+        if self._artist_id is None:
+            if Lp.player.current_track.album_artist_id == Type.COMPILATIONS:
+                album_id = Lp.player.current_track.album_id
+                artist_id = Lp.player.current_track.artist_id
+            else:
+                artist_id = Lp.player.current_track.album_artist_id
         else:
-            visible = self._stack.get_visible_child().get_child()
-        getattr(self, '_on_map_%s' % name)(visible, force)
+            artist_id = self._artist_id
+        return (artist_id, album_id)
 
     def _set_autoload(self, widget):
         """
@@ -139,6 +143,20 @@ class InfosPopover(Gtk.Popover):
             widget.add(web)
         web.load(url)
 
+    def _on_current_changed(self, player, force=False):
+        """
+            Update content on track changed
+            @param player as Player
+            @param force as bool
+        """
+        self._current = self._get_current()
+        name = self._stack.get_visible_child_name()
+        if name == "albums":
+            visible = self._stack.get_visible_child()
+        else:
+            visible = self._stack.get_visible_child().get_child()
+        getattr(self, '_on_map_%s' % name)(visible, force)
+
     def _on_btn_press(self, widget, event):
         """
             Start a timer to set autoload
@@ -157,7 +175,7 @@ class InfosPopover(Gtk.Popover):
             if self._signal_id is None:
                 Lp.settings.set_value('infosreload', GLib.Variant('b', True))
                 self._signal_id = Lp.player.connect("current-changed",
-                                                    self._update_content)
+                                                    self._on_current_changed)
             else:
                 Lp.player.disconnect(self._signal_id)
                 self._signal_id = None
@@ -165,7 +183,7 @@ class InfosPopover(Gtk.Popover):
         else:
             GLib.source_remove(self._timeout_id)
             self._timeout_id = None
-            self._update_content(None, True)
+            self._on_current_changed(Lp.player, True)
 
     def _on_self_unmap(self, widget):
         """
@@ -194,11 +212,12 @@ class InfosPopover(Gtk.Popover):
                               GLib.Variant('s', 'albums'))
         view = widget.get_child_at(0, 0)
         if view is None:
-            view = CurrentArtistAlbumsView(self._artist_id)
+            view = CurrentArtistAlbumsView()
             view.set_property('expand', True)
             view.show()
             widget.add(view)
-        t = Thread(target=view.populate)
+        t = Thread(target=view.populate,
+                   args=(self._current[0], self._current[1]))
         t.daemon = True
         t.start()
 
@@ -208,8 +227,7 @@ class InfosPopover(Gtk.Popover):
             @param widget as Gtk.Viewport
             @param force as bool
         """
-        artist = Lp.artists.get_name(self._artist_id)\
-            if self._artist_id is not None else None
+        artist = Lp.artists.get_name(self._current[0])
         self._menu.hide()
         Lp.settings.set_value('infoswitch',
                               GLib.Variant('s', 'lastfm'))
@@ -232,8 +250,7 @@ class InfosPopover(Gtk.Popover):
             @param widget as Gtk.Viewport
             @param force as bool
         """
-        artist = Lp.artists.get_name(self._artist_id)\
-            if self._artist_id is not None else None
+        artist = Lp.artists.get_name(self._current[0])
         Lp.settings.set_value('infoswitch',
                               GLib.Variant('s', 'wikipedia'))
         content_widget = widget.get_child()
@@ -269,7 +286,7 @@ class InfosPopover(Gtk.Popover):
             Load on map
             @param widget as Gtk.Viewport
         """
-        artist = Lp.artists.get_name(self._artist_id)\
+        artist = Lp.artists.get_name(self._current[0])\
             if self._artist_id is not None else None
         self._menu.hide()
         Lp.settings.set_value('infoswitch',
