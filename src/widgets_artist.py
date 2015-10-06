@@ -314,7 +314,9 @@ class WikipediaContent(ArtistContent):
                            string)
             self._menu_model.append(string, "app.wikipedia_%s" % i)
             i += 1
-        self._menu.show()
+        # TODO: Remove this test later
+        if Gtk.get_minor_version() > 16:
+            self._menu.show()
 
     def _on_search_activated(self, action, variant, page):
         """
