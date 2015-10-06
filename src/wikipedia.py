@@ -31,6 +31,7 @@ class Wikipedia:
         wikipedia.set_lang(language)
         # Translators: Put here words added by wikipedia in band search
         # Ex: Muse_(band), Peaches(musician)
+        # Unused be we keep this for now (as it's already translated)
         self._search_str = _("musician;band")
 
     def search(self, search):
@@ -39,10 +40,7 @@ class Wikipedia:
             @param search as str
             @return [str]
         """
-        results = wikipedia.search(search)
-        for item in self._search_str.split(';'):
-            results += wikipedia.search(search + ' ' + item)
-        return list(set(results))
+        return wikipedia.search(search)
 
     def get_page_infos(self, name):
         """
