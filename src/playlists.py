@@ -317,12 +317,12 @@ class Playlists(GObject.GObject):
             sql_l = Lp.sql
         if not sql_p:
             sql_p = self._sql
-        tracks_ids = self.get_tracks_ids(playlist_id, sql_l, sql_p)
+        tracks = self.get_tracks(playlist_id, sql_l, sql_p)
 
         found = 0
         len_tracks = len(album.tracks)
-        for track_id in album.tracks:
-            if track_id in tracks_ids:
+        for track in album.tracks:
+            if track.path in tracks:
                 found += 1
                 if found >= len_tracks:
                     break
