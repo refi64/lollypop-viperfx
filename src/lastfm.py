@@ -300,7 +300,9 @@ class LastFM(LastFMNetwork):
         try:
             sql_l = Lp.db.get_cursor()
             sql_p = Lp.playlists.get_cursor()
-            if force or len(Lp.playlists.get_tracks(Type.LOVED, sql_p)) == 0:
+            if force or len(Lp.playlists.get_tracks(Type.LOVED,
+                                                    sql_l,
+                                                    sql_p)) == 0:
                 tracks = []
                 user = self.get_user(self._username)
                 for loved in user.get_loved_tracks():
