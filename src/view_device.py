@@ -23,6 +23,29 @@ class DeviceView(View):
         Playlist synchronisation to MTP
     """
 
+    def get_files(uri):
+        """
+            Get files for uri
+            @param uri as str
+            @return [str]
+        """
+        files = []
+        try:
+            d = Gio.File.new_for_uri(uri)
+            if not d.query_exists(None):
+                d.make_directory_with_parents(None)
+            infos = d.enumerate_children(
+                'standard::name',
+                Gio.FileQueryInfoFlags.NONE,
+                None)
+            for info in infos:
+                files.append(info.get_name())
+            infos.close(None)
+        except Exception as e:
+            print("DeviceManagerView::_get_files: %s: %s" % (uri, e))
+            files = []
+        return files
+
     def __init__(self, device, progress):
         """
             Init view
@@ -52,7 +75,7 @@ class DeviceView(View):
             Populate combo box
             @thread safe
         """
-        files = self._get_files(self._device.uri)
+        files = DeviceView.get_files(self._device.uri)
         if files:
             GLib.idle_add(self._set_combo_text, files)
         else:
@@ -101,29 +124,6 @@ class DeviceView(View):
         self._syncing_btn.set_label(_("Synchronize %s") %
                                     self._device.name)
 
-    def _get_files(self, uri):
-        """
-            Get files for uri
-            @param uri as str
-            @return [str]
-        """
-        files = []
-        try:
-            d = Gio.File.new_for_uri(uri)
-            if not d.query_exists(None):
-                d.make_directory_with_parents(None)
-            infos = d.enumerate_children(
-                'standard::name',
-                Gio.FileQueryInfoFlags.NONE,
-                None)
-            for info in infos:
-                files.append(info.get_name())
-            infos.close(None)
-        except Exception as e:
-            print("DeviceManagerView::_get_files: %s: %s" % (uri, e))
-            files = []
-        return files
-
     def _on_memory_combo_changed(self, combo):
         """
             Update path
@@ -132,7 +132,7 @@ class DeviceView(View):
         self._timeout_id = None
         text = combo.get_active_text()
         uri = "%s%s/Music/%s" % (self._device.uri, text, "lollypop")
-        on_disk_playlists = self._get_files(uri)
+        on_disk_playlists = DeviceView.get_files(uri)
         if on_disk_playlists:
             self._device_widget.set_playlists(on_disk_playlists, uri)
             self._device_widget.populate()
