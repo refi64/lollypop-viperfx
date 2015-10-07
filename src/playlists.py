@@ -41,7 +41,6 @@ class Playlists(GObject.GObject):
 
     create_tracks = '''CREATE TABLE tracks (
                         playlist_id INT NOT NULL,
-                        track_id INT NOT NULL,
                         path TEXT NOT NULL)'''
 
     def __init__(self):
@@ -56,7 +55,6 @@ class Playlists(GObject.GObject):
         try:
             self._sql.execute(self.create_playlists)
             self._sql.execute(self.create_tracks)
-            self.add(Type.LOVED)
             self._sql.commit()
         except:
             pass
@@ -71,11 +69,9 @@ class Playlists(GObject.GObject):
             for info in infos:
                 f = info.get_name()
                 if f.endswith(".m3u"):
-                    self.add(f[:-4])
-                    if f[:-4] == self._LOVED:
-                        playlist_id = Type.LOVED
-                    else:
-                        playlist_id = self.get_id(f[:-4])
+                    if f[:-4] != self._LOVED:
+                        self.add(f[:-4])
+                    playlist_id = self.get_id(f[:-4])
                     parser = TotemPlParser.Parser.new()
                     parser.connect('entry-parsed',
                                    self._on_entry_parsed,
@@ -201,12 +197,16 @@ class Playlists(GObject.GObject):
         if not sql_p:
             sql_p = self._sql
         if playlist_id == Type.ALL:
-            return Lp.tracks.get_ids(sql_l)
+            tracks = Lp.tracks.get_ids(sql_l)
         else:
-            result = sql_p.execute("SELECT track_id\
+            result = sql_p.execute("SELECT path\
                                    FROM tracks\
                                    WHERE playlist_id=?", (playlist_id,))
-            return list(itertools.chain(*result))
+
+            tracks = []
+            for path in list(itertools.chain(*result)):
+                tracks.append(Lp.tracks.get_id_by_path(path, sql_l))
+        return tracks
 
     def get_id(self, playlist_name, sql=None):
         """
@@ -266,8 +266,8 @@ class Playlists(GObject.GObject):
         for track in tracks:
             if not self.exists_track(playlist_id, track, sql):
                 sql.execute("INSERT INTO tracks"
-                            " VALUES (?, ?, ?)",
-                            (playlist_id, track.id, track.path))
+                            " VALUES (?, ?)",
+                            (playlist_id, track.path))
         sql.execute("UPDATE playlists SET mtime=?\
                      WHERE rowid=?", (datetime.now().strftime('%s'),
                                       playlist_id))
@@ -289,37 +289,6 @@ class Playlists(GObject.GObject):
         sql.commit()
         GLib.idle_add(self.emit, "playlist-changed", playlist_id)
 
-    def update_id(self, track_id, sql_l=None, sql_p=None):
-        """
-            Search track id by path
-            @param track id as int
-            @return new track id
-        """
-        if not sql_l:
-            sql_l = Lp.sql
-        if not sql_p:
-            sql_p = self._sql
-        result = sql_p.execute("SELECT path\
-                               FROM tracks\
-                               WHERE track_id=?", (track_id,))
-        v = result.fetchone()
-        if not v:
-            return None
-
-        track_id = Lp.tracks.get_id_by_path(v[0], sql_l)
-
-        # File was moved by user
-        if track_id is None:
-            filename = GLib.basename(v[0])
-            track_id = Lp.tracks.get_id_by_filename(filename, sql_l)
-
-        if track_id is not None:
-            path = Lp.tracks.get_path(track_id, sql_l)
-            sql_p.execute("UPDATE tracks SET track_id=?, path=?\
-                          WHERE path=?", (track_id, path, v[0]))
-            sql_p.commit()
-        return track_id
-
     def exists_track(self, playlist_id, track, sql=None):
         """
             Check if track id exist in playlist
@@ -329,8 +298,8 @@ class Playlists(GObject.GObject):
         """
         if not sql:
             sql = self._sql
-        result = sql.execute("SELECT rowid FROM tracks WHERE track_id=?"
-                             " AND playlist_id=?", (track.id, playlist_id))
+        result = sql.execute("SELECT rowid FROM tracks WHERE path=?"
+                             " AND playlist_id=?", (track.path, playlist_id))
         v = result.fetchone()
         if v is not None:
             return True
@@ -382,7 +351,9 @@ class Playlists(GObject.GObject):
             @param metadata as GLib.HastTable
             @param playlist id as int
         """
-        track_id = Lp.tracks.get_id_by_path(GLib.filename_from_uri(uri)[0])
-        if track_id is not None:
-            track = Track(track_id)
-            self.add_tracks(playlist_id, [track])
+        try:
+            track_id = Lp.tracks.get_id_by_path(GLib.filename_from_uri(uri)[0])
+            if track_id is not None:
+                self.add_tracks(playlist_id, [Track(track_id)])
+        except Exception as e:
+            print("Playlists::_on_entry_parsed: %s" % e)
