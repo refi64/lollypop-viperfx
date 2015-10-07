@@ -18,6 +18,20 @@ from lollypop.view import View
 from lollypop.widgets_device import DeviceManagerWidget
 
 
+class DeviceLocked(View):
+    """
+        Show a message about locked device to users
+    """
+    def __init__(self):
+        """
+            Init view
+        """
+        View.__init__(self)
+        builder = Gtk.Builder()
+        builder.add_from_resource('/org/gnome/Lollypop/DeviceManagerView.ui')
+        self.add(builder.get_object('nodevice'))
+
+
 class DeviceView(View):
     """
         Playlist synchronisation to MTP
@@ -62,7 +76,7 @@ class DeviceView(View):
         self._syncing_btn = builder.get_object('sync_btn')
         self._syncing_btn.set_label(_("Synchronize %s") % device.name)
         builder.connect_signals(self)
-        grid = builder.get_object('widget')
+        grid = builder.get_object('device')
         self.add(grid)
         self._device_widget = DeviceManagerWidget(progress, self)
         self._device_widget.connect('sync-finished', self._on_sync_finished)

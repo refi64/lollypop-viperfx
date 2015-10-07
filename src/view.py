@@ -59,6 +59,9 @@ class View(Gtk.Grid):
         """
         GLib.idle_add(self._update_widgets, self._get_children(), True)
 
+    def populate(self):
+        pass
+
 #######################
 # PRIVATE             #
 #######################

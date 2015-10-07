@@ -23,7 +23,7 @@ from lollypop.view_artist import ArtistView
 from lollypop.view_radios import RadiosView
 from lollypop.view_playlists import PlaylistView
 from lollypop.view_playlists import PlaylistsManageView, PlaylistEditView
-from lollypop.view_device import DeviceView
+from lollypop.view_device import DeviceView, DeviceLocked
 
 
 # This is a multimedia device
@@ -469,8 +469,12 @@ class Container:
 
         child = self._stack.get_child_by_name(device.uri)
         if child is None:
-            child = DeviceView(device, self._progress)
-            self._stack.add_named(child, device.uri)
+            if DeviceView.get_files(device.uri):
+                child = DeviceView(device, self._progress)
+                self._stack.add_named(child, device.uri)
+            else:
+                child = DeviceLocked()
+                self._stack.add(child)
             child.show()
         child.populate()
         self._stack.set_visible_child(child)
