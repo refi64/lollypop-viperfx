@@ -349,7 +349,8 @@ class LastfmContent(ArtistContent):
             GLib.idle_add(self._set_content, content, stream)
         else:
             (url, image_url, content) = Lp.lastfm.get_artist_infos(artist)
-            ArtistContent.populate(self, content, image_url, 'lastfm')
+            if artist == self._artist:
+                ArtistContent.populate(self, content, image_url, 'lastfm')
 
     def uncache(self, artist):
         """
