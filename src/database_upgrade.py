@@ -26,7 +26,7 @@ class DatabaseUpgrade:
         self._sql = sql
         self._version = version
         # Here are schema upgrade, key is database version,
-        # value function doing shema update
+        # value is sql request
         self._UPGRADES = {
             1: "update tracks set duration=CAST(duration as INTEGER);"
                          }
