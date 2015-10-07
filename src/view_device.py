@@ -13,7 +13,6 @@
 from gi.repository import Gtk, GLib, Gio
 
 from gettext import gettext as _
-from threading import Thread
 
 from lollypop.view import View
 from lollypop.widgets_device import DeviceManagerWidget
@@ -51,12 +50,13 @@ class DeviceView(View):
     def populate(self):
         """
             Populate combo box
+            @thread safe
         """
         files = self._get_files(self._device.uri)
         if files:
             GLib.idle_add(self._set_combo_text, files)
         else:
-            self._timeout_id = GLib.timeout_add(1000, self._wait_for_unlock)
+            GLib.idle_add(self.destroy)
 
     def is_syncing(self):
         """
@@ -116,9 +116,9 @@ class DeviceView(View):
                 'standard::name',
                 Gio.FileQueryInfoFlags.NONE,
                 None)
-
             for info in infos:
                 files.append(info.get_name())
+            infos.close(None)
         except Exception as e:
             print("DeviceManagerView::_get_files: %s: %s" % (uri, e))
             files = []
@@ -136,18 +136,6 @@ class DeviceView(View):
         if on_disk_playlists:
             self._device_widget.set_playlists(on_disk_playlists, uri)
             self._device_widget.populate()
-
-    def _wait_for_unlock(self):
-        """
-            Wait for device unlock
-        """
-        if self._timeout_id is not None:
-            t = Thread(target=self.populate)
-            t.daemon = True
-            t.start()
-            return True
-        else:
-            return False
 
     def _set_combo_text(self, text_list):
         """
