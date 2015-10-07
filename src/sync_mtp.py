@@ -158,9 +158,10 @@ class MtpSync:
         """
         for playlist in playlists:
             try:
+                playlist_name = Lp.playlists.get_name(playlist, sql_p)
                 # Create playlist
                 m3u = Gio.File.new_for_path(
-                    "/tmp/lollypop_%s.m3u" % (playlist,))
+                    "/tmp/lollypop_%s.m3u" % (playlist_name,))
                 self._retry(m3u.replace_contents, (b'#EXTM3U\n', None, False,
                             Gio.FileCreateFlags.REPLACE_DESTINATION,
                             None))
@@ -248,7 +249,7 @@ class MtpSync:
             if stream is not None:
                 stream.close()
             if m3u is not None:
-                dst = Gio.File.new_for_uri(self._uri+'/'+playlist+'.m3u')
+                dst = Gio.File.new_for_uri(self._uri+'/'+playlist_name+'.m3u')
                 self._retry(m3u.move,
                             (dst, Gio.FileCopyFlags.OVERWRITE, None, None))
 

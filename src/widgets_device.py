@@ -46,7 +46,7 @@ class DeviceManagerWidget(Gtk.Bin, MtpSync):
         self._error_label = builder.get_object('error-label')
         self._switch = builder.get_object('switch')
 
-        self._model = Gtk.ListStore(bool, str)
+        self._model = Gtk.ListStore(bool, str, int)
         self._model.set_sort_column_id(1, Gtk.SortType.ASCENDING)
         self._model.set_sort_func(1, self._sort_items)
 
@@ -111,9 +111,9 @@ class DeviceManagerWidget(Gtk.Bin, MtpSync):
             self._view.set_sensitive(False)
             for item in self._model:
                 if item[0]:
-                    playlists.append(item[1])
+                    playlists.append(item[2])
         else:
-            playlists.append(Lp.playlists._ALL)
+            playlists.append(Type.ALL)
 
         t = Thread(target=self._sync, args=(playlists,))
         t.daemon = True
@@ -145,7 +145,7 @@ class DeviceManagerWidget(Gtk.Bin, MtpSync):
         if playlists:
             playlist = playlists.pop(0)
             selected = playlist[1]+".m3u" in self._on_disk_playlists
-            self._model.append([selected, playlist[1]])
+            self._model.append([selected, playlist[1], playlist[0]])
             GLib.idle_add(self._append_playlists, playlists)
         else:
             self._view.get_selection().unselect_all()
