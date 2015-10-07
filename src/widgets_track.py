@@ -41,7 +41,6 @@ class Row(Gtk.ListBoxRow):
         self._title_label.set_property('has-tooltip', True)
         self._duration_label = self._builder.get_object('duration')
         self._num_label = self._builder.get_object('num')
-        self._icon = self._builder.get_object('icon')
         self.add(self._row_widget)
         self.get_style_context().add_class('trackrow')
         self.show()
