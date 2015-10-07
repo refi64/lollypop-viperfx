@@ -322,8 +322,8 @@ class PlaylistsMenu(BaseMenu):
             sql_l = Lp.db.get_cursor()
             tracks = []
             if self._is_album:
-                tracks_ids = Lp.albums.get_tracks_ids(self._object_id,
-                                                      self._genre_id, sql_l)
+                tracks_ids = Lp.albums.get_tracks(self._object_id,
+                                                  self._genre_id, sql_l)
                 for track_id in tracks_ids:
                     tracks.append(Track(track_id))
             else:

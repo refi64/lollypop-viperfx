@@ -284,8 +284,8 @@ class Playlists(GObject.GObject):
             sql = self._sql
         for track in tracks:
             sql.execute("DELETE FROM tracks\
-                         WHERE track_id=?\
-                         AND playlist_id=?", (track.id, playlist_id))
+                         WHERE path=?\
+                         AND playlist_id=?", (track.path, playlist_id))
         sql.commit()
         GLib.idle_add(self.emit, "playlist-changed", playlist_id)
 
