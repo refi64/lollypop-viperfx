@@ -1,14 +1,14 @@
 # 
 # Translators:
 # Denis Morozov <www.strelookpb09@mail.ru>, 2015
-# Maxim <murmansksity@gmail.com>, 2015
+# Maxim Orlov <murmansksity@gmail.com>, 2015
 # Олег <legunt@yandex.ru>, 2015
 msgid ""
 msgstr ""
 "Project-Id-Version: lollypop\n"
 "POT-Creation-Date: 2015-06-24 15:43+0200\n"
-"PO-Revision-Date: 2015-09-19 19:22+0000\n"
-"Last-Translator: Maxim <murmansksity@gmail.com>\n"
+"PO-Revision-Date: 2015-10-05 20:21+0000\n"
+"Last-Translator: Maxim Orlov <murmansksity@gmail.com>\n"
 "Language-Team: Russian (http://www.transifex.com/gnumdk/lollypop/language/ru/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"

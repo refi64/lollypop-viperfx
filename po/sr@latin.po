@@ -9,9 +9,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lollypop\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-10-01 14:37+0200\n"
-"PO-Revision-Date: 2015-10-04 05:50+0000\n"
-"Last-Translator: Марко М. Костић (Marko M. Kostić) <marko.m.kostic@gmail.com>\n"
+"POT-Creation-Date: 2015-10-07 22:56+0200\n"
+"PO-Revision-Date: 2015-10-07 20:57+0000\n"
+"Last-Translator: Cédric Bellegarde <web@adishatz.org>\n"
 "Language-Team: Serbian (Latin) (http://www.transifex.com/gnumdk/lollypop/language/sr@latin/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -190,8 +190,8 @@ msgstr "pregledanje po žanru, izvođaču i omotu"
 msgid "Search"
 msgstr "Pretraga"
 
-#: ../data/lollypop.appdata.xml.in.h:9 ../src/pop_menu.py:445
-#: ../src/pop_menu.py:465 ../data/ToolbarEnd.ui.h:10
+#: ../data/lollypop.appdata.xml.in.h:9 ../src/pop_menu.py:446
+#: ../src/pop_menu.py:466 ../data/ToolbarEnd.ui.h:10
 msgid "Queue"
 msgstr "Redosled"
 
@@ -247,7 +247,7 @@ msgid ""
 "    - Artist informations disabled"
 msgstr "- Scrobbler je isključen\n- Automatsko skidanje omota isključeno\n- Skidanje podataka o izvođačima isključeno"
 
-#: ../src/application.py:343
+#: ../src/application.py:347
 msgid "Lollypop: You need to install yelp."
 msgstr "Lolipop: potrebno je da instalirate „Pomoć“ (yelp paket)."
 
@@ -255,7 +255,7 @@ msgstr "Lolipop: potrebno je da instalirate „Pomoć“ (yelp paket)."
 msgid "Restart lollypop after installing codecs"
 msgstr "Ponovo pokreni Lolipop nakon instaliranja kodeka"
 
-#: ../src/collectionscanner.py:70
+#: ../src/collectionscanner.py:65
 msgid "Your music is updating"
 msgstr "Muzička biblioteka se ažurira"
 
@@ -271,8 +271,8 @@ msgstr "Skoro dodati albumi"
 msgid "Random albums"
 msgstr "Nasumični albumi"
 
-#: ../src/container.py:372 ../src/pop_menu.py:370 ../src/pop_menu.py:447
-#: ../src/pop_menu.py:467
+#: ../src/container.py:372 ../src/pop_menu.py:371 ../src/pop_menu.py:448
+#: ../src/pop_menu.py:468
 msgid "Playlists"
 msgstr "Liste pesama"
 
@@ -308,18 +308,18 @@ msgstr "Nikada slušano"
 msgid "Random tracks"
 msgstr "Nasumične pesme"
 
-#: ../src/database_albums.py:239 ../src/database_artists.py:77
-#: ../src/database_genres.py:72 ../src/database_tracks.py:216
+#: ../src/database_albums.py:241 ../src/database_artists.py:79
+#: ../src/database_genres.py:74 ../src/database_tracks.py:232
 #: ../src/tagreader.py:86 ../src/tagreader.py:105 ../src/tagreader.py:130
 #: ../src/tagreader.py:145
 msgid "Unknown"
 msgstr "Nepoznato"
 
-#: ../src/database_albums.py:256
+#: ../src/database_albums.py:258
 msgid "Compilation"
 msgstr "Kompilacija"
 
-#: ../src/database_artists.py:69
+#: ../src/database_artists.py:71
 msgid "Many artists"
 msgstr "Mnogi izvođači"
 
@@ -338,7 +338,7 @@ msgstr "Pusti"
 msgid "Last.fm authentication disabled"
 msgstr "Prijava na Last.fm je onemogućena"
 
-#: ../src/lastfm.py:287
+#: ../src/lastfm.py:288
 msgid "Wrong Last.fm credentials"
 msgstr "Parametri za prijavu na Last.fm su netačni"
 
@@ -368,7 +368,7 @@ msgstr "izvodi %s, sa albuma %s"
 msgid "File doesn't exist: %s"
 msgstr "Datoteka ne postoji: %s"
 
-#: ../src/playlists.py:52
+#: ../src/playlists.py:51
 msgid "Loved tracks"
 msgstr "Omiljene pesme"
 
@@ -428,25 +428,25 @@ msgstr "Izbaci iz redosleda"
 msgid "Add to others"
 msgstr "Dodaj u drugo"
 
-#: ../src/pop_menu.py:268
+#: ../src/pop_menu.py:269
 #, python-format
 msgid "Remove from \"%s\""
 msgstr "Izbaci iz/sa \"%s\""
 
-#: ../src/pop_menu.py:274
+#: ../src/pop_menu.py:275
 #, python-format
 msgid "Add to \"%s\""
 msgstr "Dodaj u/na \"%s\""
 
-#: ../src/pop_menu.py:368
+#: ../src/pop_menu.py:369
 msgid "Playback"
 msgstr "Puštanje"
 
-#: ../src/pop_menu.py:405
+#: ../src/pop_menu.py:406
 msgid "Modify informations"
 msgstr "Promeni podatke"
 
-#: ../src/pop_menu.py:449 ../data/PlaylistView.ui.h:1
+#: ../src/pop_menu.py:450 ../data/PlaylistView.ui.h:1
 msgid "Edit"
 msgstr "Uredi"
 
@@ -454,7 +454,7 @@ msgstr "Uredi"
 msgid "Add"
 msgstr "Dodaj"
 
-#: ../src/pop_radio.py:76 ../src/wikipedia.py:51
+#: ../src/pop_radio.py:76 ../src/wikipedia.py:59
 msgid "Modify"
 msgstr "Izmeni"
 
@@ -480,31 +480,31 @@ msgstr "Skoro dodato"
 msgid "The the"
 msgstr "Član član"
 
-#: ../src/view_device.py:41 ../src/view_device.py:101
+#: ../src/view_device.py:77 ../src/view_device.py:138
 #, python-format
 msgid "Synchronize %s"
 msgstr "Uskladi %s"
 
-#: ../src/view_device.py:90
+#: ../src/view_device.py:127
 msgid "Cancel synchronization"
 msgstr "Otkaži usklađivanje"
 
-#: ../src/widgets_album.py:242
+#: ../src/widgets_album.py:252
 #, python-format
 msgid "%s hrs  %s mins"
 msgstr "%s č %s min."
 
-#: ../src/widgets_album.py:244
+#: ../src/widgets_album.py:254
 #, python-format
 msgid "%s hrs"
 msgstr "%s č"
 
-#: ../src/widgets_album.py:246
+#: ../src/widgets_album.py:256
 #, python-format
 msgid "%s mins"
 msgstr "%s min."
 
-#: ../src/widgets_album.py:258
+#: ../src/widgets_album.py:268
 #, python-format
 msgid "Disc %s"
 msgstr "Disk %s"
@@ -522,17 +522,18 @@ msgid "New playlist "
 msgstr "Nova lista pesama"
 
 #. Need a copy, segfault on EOS 3.1
-#: ../src/widgets_playlist.py:312 ../src/widgets_playlist.py:559
+#: ../src/widgets_playlist.py:313 ../src/widgets_playlist.py:560
 #, python-format
 msgid "Remove \"%s\"?"
 msgstr "Ukloniti \"%s\"?"
 
-#: ../src/widgets_playlist.py:604
+#: ../src/widgets_playlist.py:605
 msgid "Remove these tracks?"
 msgstr "Ukloniti ove pesme?"
 
 #. Translators: Put here words added by wikipedia in band search
 #. Ex: Muse_(band), Peaches(musician)
+#. Unused be we keep this for now (as it's already translated)
 #: ../src/wikipedia.py:35
 msgid "musician;band"
 msgstr "izvođač;bend"
@@ -549,6 +550,10 @@ msgstr "Matična veb stranica Lolipopa"
 #: ../data/AboutDialog.ui.h:4
 msgid "Cédric Bellegarde <cedric.bellegarde@adishatz.org>"
 msgstr "Marko M. Kostić <marko.m.kostic@gmail.com>"
+
+#: ../data/AlbumContextWidget.ui.h:1 ../data/AlbumDetailedWidget.ui.h:1
+msgid "Play this album"
+msgstr ""
 
 #: ../data/Appmenu.ui.h:1
 msgid "_Update music"
@@ -601,6 +606,10 @@ msgstr "DuckDuckGo"
 #: ../data/DeviceManagerView.ui.h:1
 msgid "Synchronize your device with this playlists"
 msgstr "Uskladite vaš uređaj sa ovim listama pesama"
+
+#: ../data/DeviceManagerView.ui.h:2
+msgid "Please unlock your device"
+msgstr ""
 
 #: ../data/PlaylistEditWidget.ui.h:1 ../data/PlaylistsManagerWidget.ui.h:1
 msgid "Confirm"

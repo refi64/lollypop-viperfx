@@ -6,13 +6,14 @@
 # Denis Morozov <www.strelookpb09@mail.ru>, 2015
 # Derpy Crabs <derpycrabs@gmail.com>, 2015
 # Maxim Orlov <murmansksity@gmail.com>, 2015
+# Maxim Orlov <murmansksity@gmail.com>, 2015
 msgid ""
 msgstr ""
 "Project-Id-Version: lollypop\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-10-01 14:37+0200\n"
-"PO-Revision-Date: 2015-10-03 14:16+0000\n"
-"Last-Translator: Maxim Orlov <murmansksity@gmail.com>\n"
+"POT-Creation-Date: 2015-10-07 22:56+0200\n"
+"PO-Revision-Date: 2015-10-07 20:57+0000\n"
+"Last-Translator: Cédric Bellegarde <web@adishatz.org>\n"
 "Language-Team: Russian (http://www.transifex.com/gnumdk/lollypop/language/ru/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -26,15 +27,15 @@ msgstr "Размер окна"
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:2
 msgid "Window size (width and height)."
-msgstr "Размер окна (ширина и высота)."
+msgstr "Размер окна (ширина и высота)"
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:3
 msgid "Window position"
-msgstr "Позиция окна"
+msgstr "Положение окна"
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:4
 msgid "Window position (x and y)."
-msgstr "Позиция окна (x и y)."
+msgstr "Положение окна (x, y)"
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:5
 msgid "Window maximized"
@@ -42,7 +43,7 @@ msgstr "Развёрнутое окно"
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:6
 msgid "Window maximized state."
-msgstr "Состояние развернутого окна."
+msgstr "Состояние развёрнутого окна"
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:7
 msgid "Enabled genres in party mode"
@@ -111,7 +112,7 @@ msgstr "Использовать темный вариант темы"
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:23
 msgid "Disable the use client side window decorations (headerbar)"
-msgstr "Отключить так называемое «клиентское оформление окна» (headerbar)"
+msgstr "Отключить CSD (заголовок окна)"
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:24 ../data/SettingsDialog.ui.h:9
 msgid "Show compilations in albums view"
@@ -191,8 +192,8 @@ msgstr "Жанр/Исполнитель/Просмотр обложки"
 msgid "Search"
 msgstr "Поиск"
 
-#: ../data/lollypop.appdata.xml.in.h:9 ../src/pop_menu.py:445
-#: ../src/pop_menu.py:465 ../data/ToolbarEnd.ui.h:10
+#: ../data/lollypop.appdata.xml.in.h:9 ../src/pop_menu.py:446
+#: ../src/pop_menu.py:466 ../data/ToolbarEnd.ui.h:10
 msgid "Queue"
 msgstr "Очередь"
 
@@ -248,7 +249,7 @@ msgid ""
 "    - Artist informations disabled"
 msgstr "    - Скробблинг отключен\n    - Автоматическая загрузка обложек отключена\n    - Информация об исполнителе отключена"
 
-#: ../src/application.py:343
+#: ../src/application.py:347
 msgid "Lollypop: You need to install yelp."
 msgstr "Lollypop: Вам необходимо установить yelp."
 
@@ -256,7 +257,7 @@ msgstr "Lollypop: Вам необходимо установить yelp."
 msgid "Restart lollypop after installing codecs"
 msgstr "Перезапустите lollypop после установки кодеков"
 
-#: ../src/collectionscanner.py:70
+#: ../src/collectionscanner.py:65
 msgid "Your music is updating"
 msgstr "Ваши композиции обновляются"
 
@@ -272,8 +273,8 @@ msgstr "Недавно добавленные альбомы"
 msgid "Random albums"
 msgstr "Случайные альбомы"
 
-#: ../src/container.py:372 ../src/pop_menu.py:370 ../src/pop_menu.py:447
-#: ../src/pop_menu.py:467
+#: ../src/container.py:372 ../src/pop_menu.py:371 ../src/pop_menu.py:448
+#: ../src/pop_menu.py:468
 msgid "Playlists"
 msgstr "Плейлисты"
 
@@ -309,18 +310,18 @@ msgstr "Ни разу не проигрывались"
 msgid "Random tracks"
 msgstr "Случайные композиции"
 
-#: ../src/database_albums.py:239 ../src/database_artists.py:77
-#: ../src/database_genres.py:72 ../src/database_tracks.py:216
+#: ../src/database_albums.py:241 ../src/database_artists.py:79
+#: ../src/database_genres.py:74 ../src/database_tracks.py:232
 #: ../src/tagreader.py:86 ../src/tagreader.py:105 ../src/tagreader.py:130
 #: ../src/tagreader.py:145
 msgid "Unknown"
 msgstr "Неизвестный"
 
-#: ../src/database_albums.py:256
+#: ../src/database_albums.py:258
 msgid "Compilation"
 msgstr "Подборка"
 
-#: ../src/database_artists.py:69
+#: ../src/database_artists.py:71
 msgid "Many artists"
 msgstr "Множество исполнителей"
 
@@ -337,9 +338,9 @@ msgstr "Воспроизвести"
 
 #: ../src/lastfm.py:23
 msgid "Last.fm authentication disabled"
-msgstr "Last.fm аутентификация отключена"
+msgstr "Аутентификация Last.fm отключена"
 
-#: ../src/lastfm.py:287
+#: ../src/lastfm.py:288
 msgid "Wrong Last.fm credentials"
 msgstr "Неверные данные учетной записи Last.fm"
 
@@ -369,7 +370,7 @@ msgstr "%s, из альбома %s"
 msgid "File doesn't exist: %s"
 msgstr "Файл не существует: %s"
 
-#: ../src/playlists.py:52
+#: ../src/playlists.py:51
 msgid "Loved tracks"
 msgstr "Любимые композиции"
 
@@ -429,25 +430,25 @@ msgstr "Удалить из очереди "
 msgid "Add to others"
 msgstr "Добавить к другим"
 
-#: ../src/pop_menu.py:268
+#: ../src/pop_menu.py:269
 #, python-format
 msgid "Remove from \"%s\""
 msgstr "Удалить с \"%s\""
 
-#: ../src/pop_menu.py:274
+#: ../src/pop_menu.py:275
 #, python-format
 msgid "Add to \"%s\""
-msgstr "Добавить на \"%s\" "
+msgstr "Добавить к \"%s\" "
 
-#: ../src/pop_menu.py:368
+#: ../src/pop_menu.py:369
 msgid "Playback"
 msgstr "Проигрывание"
 
-#: ../src/pop_menu.py:405
+#: ../src/pop_menu.py:406
 msgid "Modify informations"
 msgstr "Изменить информацию"
 
-#: ../src/pop_menu.py:449 ../data/PlaylistView.ui.h:1
+#: ../src/pop_menu.py:450 ../data/PlaylistView.ui.h:1
 msgid "Edit"
 msgstr "Редактировать"
 
@@ -455,7 +456,7 @@ msgstr "Редактировать"
 msgid "Add"
 msgstr "Добавить"
 
-#: ../src/pop_radio.py:76 ../src/wikipedia.py:51
+#: ../src/pop_radio.py:76 ../src/wikipedia.py:59
 msgid "Modify"
 msgstr "Изменить"
 
@@ -481,31 +482,31 @@ msgstr "Недавно добавленные"
 msgid "The the"
 msgstr "The the"
 
-#: ../src/view_device.py:41 ../src/view_device.py:101
+#: ../src/view_device.py:77 ../src/view_device.py:138
 #, python-format
 msgid "Synchronize %s"
 msgstr "Синхронизировать %s"
 
-#: ../src/view_device.py:90
+#: ../src/view_device.py:127
 msgid "Cancel synchronization"
 msgstr "Отменить синхронизацию"
 
-#: ../src/widgets_album.py:242
+#: ../src/widgets_album.py:252
 #, python-format
 msgid "%s hrs  %s mins"
 msgstr "%s ч %s мин"
 
-#: ../src/widgets_album.py:244
+#: ../src/widgets_album.py:254
 #, python-format
 msgid "%s hrs"
 msgstr "%s ч"
 
-#: ../src/widgets_album.py:246
+#: ../src/widgets_album.py:256
 #, python-format
 msgid "%s mins"
 msgstr "%s мин"
 
-#: ../src/widgets_album.py:258
+#: ../src/widgets_album.py:268
 #, python-format
 msgid "Disc %s"
 msgstr "Диск %s"
@@ -523,17 +524,18 @@ msgid "New playlist "
 msgstr "Новый плейлист"
 
 #. Need a copy, segfault on EOS 3.1
-#: ../src/widgets_playlist.py:312 ../src/widgets_playlist.py:559
+#: ../src/widgets_playlist.py:313 ../src/widgets_playlist.py:560
 #, python-format
 msgid "Remove \"%s\"?"
 msgstr "Удалить \"%s\"?"
 
-#: ../src/widgets_playlist.py:604
+#: ../src/widgets_playlist.py:605
 msgid "Remove these tracks?"
 msgstr "Удалить эти композиции?"
 
 #. Translators: Put here words added by wikipedia in band search
 #. Ex: Muse_(band), Peaches(musician)
+#. Unused be we keep this for now (as it's already translated)
 #: ../src/wikipedia.py:35
 msgid "musician;band"
 msgstr "музыкант;группа"
@@ -550,6 +552,10 @@ msgstr "Посетить сайт Lollypop"
 #: ../data/AboutDialog.ui.h:4
 msgid "Cédric Bellegarde <cedric.bellegarde@adishatz.org>"
 msgstr "Derpy Crabs <derpycrabs@gmail.com>"
+
+#: ../data/AlbumContextWidget.ui.h:1 ../data/AlbumDetailedWidget.ui.h:1
+msgid "Play this album"
+msgstr ""
 
 #: ../data/Appmenu.ui.h:1
 msgid "_Update music"
@@ -602,6 +608,10 @@ msgstr "DuckDuckGo"
 #: ../data/DeviceManagerView.ui.h:1
 msgid "Synchronize your device with this playlists"
 msgstr "Синхронизировать ваше устройство с этими плейлистами"
+
+#: ../data/DeviceManagerView.ui.h:2
+msgid "Please unlock your device"
+msgstr ""
 
 #: ../data/PlaylistEditWidget.ui.h:1 ../data/PlaylistsManagerWidget.ui.h:1
 msgid "Confirm"

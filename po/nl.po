@@ -11,9 +11,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lollypop\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-10-01 14:37+0200\n"
-"PO-Revision-Date: 2015-10-03 09:33+0000\n"
-"Last-Translator: Nathan Follens\n"
+"POT-Creation-Date: 2015-10-07 22:56+0200\n"
+"PO-Revision-Date: 2015-10-07 20:57+0000\n"
+"Last-Translator: Cédric Bellegarde <web@adishatz.org>\n"
 "Language-Team: Dutch (http://www.transifex.com/gnumdk/lollypop/language/nl/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -192,8 +192,8 @@ msgstr "Bladeren door genres/artiesten/albumhoezen"
 msgid "Search"
 msgstr "Zoeken"
 
-#: ../data/lollypop.appdata.xml.in.h:9 ../src/pop_menu.py:445
-#: ../src/pop_menu.py:465 ../data/ToolbarEnd.ui.h:10
+#: ../data/lollypop.appdata.xml.in.h:9 ../src/pop_menu.py:446
+#: ../src/pop_menu.py:466 ../data/ToolbarEnd.ui.h:10
 msgid "Queue"
 msgstr "Wachtrij"
 
@@ -249,7 +249,7 @@ msgid ""
 "    - Artist informations disabled"
 msgstr "    - Scrobbler uitgeschakeld\n    - Automatisch downloaden van albumhoezen uitgeschakeld\n    - Artiestinformatie uitgeschakeld"
 
-#: ../src/application.py:343
+#: ../src/application.py:347
 msgid "Lollypop: You need to install yelp."
 msgstr "Lollypop: je moet yelp installeren."
 
@@ -257,7 +257,7 @@ msgstr "Lollypop: je moet yelp installeren."
 msgid "Restart lollypop after installing codecs"
 msgstr "Herstart lollypop na het installeren van codecs"
 
-#: ../src/collectionscanner.py:70
+#: ../src/collectionscanner.py:65
 msgid "Your music is updating"
 msgstr "Je muziek wordt bijgewerkt"
 
@@ -273,8 +273,8 @@ msgstr "Recent toegevoegde albums"
 msgid "Random albums"
 msgstr "Willekeurige albums"
 
-#: ../src/container.py:372 ../src/pop_menu.py:370 ../src/pop_menu.py:447
-#: ../src/pop_menu.py:467
+#: ../src/container.py:372 ../src/pop_menu.py:371 ../src/pop_menu.py:448
+#: ../src/pop_menu.py:468
 msgid "Playlists"
 msgstr "Afspeellijsten"
 
@@ -310,18 +310,18 @@ msgstr "Nooit afgespeeld"
 msgid "Random tracks"
 msgstr "Willekeurige nummers"
 
-#: ../src/database_albums.py:239 ../src/database_artists.py:77
-#: ../src/database_genres.py:72 ../src/database_tracks.py:216
+#: ../src/database_albums.py:241 ../src/database_artists.py:79
+#: ../src/database_genres.py:74 ../src/database_tracks.py:232
 #: ../src/tagreader.py:86 ../src/tagreader.py:105 ../src/tagreader.py:130
 #: ../src/tagreader.py:145
 msgid "Unknown"
 msgstr "Onbekend"
 
-#: ../src/database_albums.py:256
+#: ../src/database_albums.py:258
 msgid "Compilation"
 msgstr "Compilatie"
 
-#: ../src/database_artists.py:69
+#: ../src/database_artists.py:71
 msgid "Many artists"
 msgstr "Veel artiesten"
 
@@ -340,7 +340,7 @@ msgstr "Afspelen"
 msgid "Last.fm authentication disabled"
 msgstr "Last.fm authenticatie uitgeschakeld"
 
-#: ../src/lastfm.py:287
+#: ../src/lastfm.py:288
 msgid "Wrong Last.fm credentials"
 msgstr "Verkeerde Last.fm-referenties"
 
@@ -370,7 +370,7 @@ msgstr "door %s, van %s"
 msgid "File doesn't exist: %s"
 msgstr "Bestand bestaat niet: %s"
 
-#: ../src/playlists.py:52
+#: ../src/playlists.py:51
 msgid "Loved tracks"
 msgstr "Lievelingsnummers"
 
@@ -430,25 +430,25 @@ msgstr "Verwijderen uit wachtrij"
 msgid "Add to others"
 msgstr "Toevoegen aan andere"
 
-#: ../src/pop_menu.py:268
+#: ../src/pop_menu.py:269
 #, python-format
 msgid "Remove from \"%s\""
 msgstr "Verwijderen uit \"%s\""
 
-#: ../src/pop_menu.py:274
+#: ../src/pop_menu.py:275
 #, python-format
 msgid "Add to \"%s\""
 msgstr "Toevoegen aan \"%s\""
 
-#: ../src/pop_menu.py:368
+#: ../src/pop_menu.py:369
 msgid "Playback"
 msgstr "Afspelen"
 
-#: ../src/pop_menu.py:405
+#: ../src/pop_menu.py:406
 msgid "Modify informations"
 msgstr "Gegevens bewerken"
 
-#: ../src/pop_menu.py:449 ../data/PlaylistView.ui.h:1
+#: ../src/pop_menu.py:450 ../data/PlaylistView.ui.h:1
 msgid "Edit"
 msgstr "Bewerken"
 
@@ -456,7 +456,7 @@ msgstr "Bewerken"
 msgid "Add"
 msgstr "Toevoegen"
 
-#: ../src/pop_radio.py:76 ../src/wikipedia.py:51
+#: ../src/pop_radio.py:76 ../src/wikipedia.py:59
 msgid "Modify"
 msgstr "Bewerken"
 
@@ -482,31 +482,31 @@ msgstr "Recent toegevoegd"
 msgid "The the"
 msgstr "The the De de"
 
-#: ../src/view_device.py:41 ../src/view_device.py:101
+#: ../src/view_device.py:77 ../src/view_device.py:138
 #, python-format
 msgid "Synchronize %s"
 msgstr "%s synchroniseren"
 
-#: ../src/view_device.py:90
+#: ../src/view_device.py:127
 msgid "Cancel synchronization"
 msgstr "Synchronisatie annuleren"
 
-#: ../src/widgets_album.py:242
+#: ../src/widgets_album.py:252
 #, python-format
 msgid "%s hrs  %s mins"
 msgstr "%s u  %s min"
 
-#: ../src/widgets_album.py:244
+#: ../src/widgets_album.py:254
 #, python-format
 msgid "%s hrs"
 msgstr "%s u"
 
-#: ../src/widgets_album.py:246
+#: ../src/widgets_album.py:256
 #, python-format
 msgid "%s mins"
 msgstr "%s min"
 
-#: ../src/widgets_album.py:258
+#: ../src/widgets_album.py:268
 #, python-format
 msgid "Disc %s"
 msgstr "Schijf %s"
@@ -524,17 +524,18 @@ msgid "New playlist "
 msgstr "Nieuwe afspeellijst"
 
 #. Need a copy, segfault on EOS 3.1
-#: ../src/widgets_playlist.py:312 ../src/widgets_playlist.py:559
+#: ../src/widgets_playlist.py:313 ../src/widgets_playlist.py:560
 #, python-format
 msgid "Remove \"%s\"?"
 msgstr "\"%s\" verwijderen?"
 
-#: ../src/widgets_playlist.py:604
+#: ../src/widgets_playlist.py:605
 msgid "Remove these tracks?"
 msgstr "Deze nummers verwijderen?"
 
 #. Translators: Put here words added by wikipedia in band search
 #. Ex: Muse_(band), Peaches(musician)
+#. Unused be we keep this for now (as it's already translated)
 #: ../src/wikipedia.py:35
 msgid "musician;band"
 msgstr "muzikant;groep;band"
@@ -551,6 +552,10 @@ msgstr "Bezoek de website van Lollypop"
 #: ../data/AboutDialog.ui.h:4
 msgid "Cédric Bellegarde <cedric.bellegarde@adishatz.org>"
 msgstr "Cédric Bellegarde <cedric.bellegarde@adishatz.org>"
+
+#: ../data/AlbumContextWidget.ui.h:1 ../data/AlbumDetailedWidget.ui.h:1
+msgid "Play this album"
+msgstr ""
 
 #: ../data/Appmenu.ui.h:1
 msgid "_Update music"
@@ -603,6 +608,10 @@ msgstr "DuckDuckGo"
 #: ../data/DeviceManagerView.ui.h:1
 msgid "Synchronize your device with this playlists"
 msgstr "Synchroniseer je apparaat met deze afspeellijst"
+
+#: ../data/DeviceManagerView.ui.h:2
+msgid "Please unlock your device"
+msgstr ""
 
 #: ../data/PlaylistEditWidget.ui.h:1 ../data/PlaylistsManagerWidget.ui.h:1
 msgid "Confirm"
