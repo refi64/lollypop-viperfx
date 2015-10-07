@@ -267,25 +267,27 @@ class WikipediaContent(ArtistContent):
             return True
         return False
 
-    def _load_page_content(self, page):
+    def _load_page_content(self, artist):
         """
-            Load page content
-            @param page as str
+            Load artist page content
+            @param artist as str
         """
         wp = Wikipedia()
-        (url, image_url, content) = wp.get_page_infos(page)
-        ArtistContent.populate(self, content, image_url, 'wikipedia')
+        (url, image_url, content) = wp.get_page_infos(artist)
+        if artist == self._artist:
+            ArtistContent.populate(self, content, image_url, 'wikipedia')
 
     def _setup_menu(self, artist):
         """
             Setup menu for artist
             @param artist as str
         """
-        wp = Wikipedia()
-        result = wp.search(artist)
-        if artist in result:
-            result.remove(artist)
-        GLib.idle_add(self._setup_menu_strings, result)
+        if artist == self._artist:
+            wp = Wikipedia()
+            result = wp.search(artist)
+            if artist in result:
+                result.remove(artist)
+            GLib.idle_add(self._setup_menu_strings, result)
 
     def _setup_menu_strings(self, strings):
         """
@@ -302,7 +304,7 @@ class WikipediaContent(ArtistContent):
             self._menu_model.append(string, "app.wikipedia_%s" % i)
             i += 1
         # TODO: Remove this test later
-        if Gtk.get_minor_version() > 16 and self.is_visible():
+        if Gtk.get_minor_version() > 16:
             self._menu.show()
 
     def _on_search_activated(self, action, variant, page):
