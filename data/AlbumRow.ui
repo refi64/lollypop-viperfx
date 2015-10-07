@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Generated with glade 3.18.3 -->
+<!-- Generated with glade 3.19.0 -->
 <interface>
   <requires lib="gtk+" version="3.10"/>
   <object class="GtkGrid" id="row">
@@ -7,12 +7,12 @@
     <property name="can_focus">False</property>
     <property name="margin_start">10</property>
     <property name="margin_end">10</property>
+    <property name="column_spacing">5</property>
     <child>
       <object class="GtkLabel" id="num">
         <property name="visible">True</property>
         <property name="can_focus">False</property>
         <property name="halign">start</property>
-        <property name="margin_end">10</property>
         <property name="justify">fill</property>
         <property name="ellipsize">end</property>
         <property name="width_chars">4</property>
@@ -43,7 +43,6 @@
         <property name="visible">True</property>
         <property name="can_focus">False</property>
         <property name="halign">end</property>
-        <property name="margin_start">10</property>
         <property name="ellipsize">end</property>
         <style>
           <class name="dim-label"/>
@@ -59,7 +58,7 @@
         <property name="name">1</property>
         <property name="can_focus">False</property>
         <property name="valign">center</property>
-        <property name="column_spacing">15</property>
+        <property name="column_spacing">5</property>
         <child>
           <object class="GtkLabel" id="artist">
             <property name="visible">True</property>
@@ -101,8 +100,8 @@
     </child>
     <child>
       <object class="GtkFrame" id="frame">
+        <property name="width_request">50</property>
         <property name="visible">True</property>
-<property name="width_request">50</property>
         <property name="can_focus">False</property>
         <property name="halign">end</property>
         <property name="margin_end">10</property>
