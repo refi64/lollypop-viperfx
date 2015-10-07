@@ -113,7 +113,7 @@ class CurrentArtistAlbumsView(ViewContainer):
         """
         album_id = Type.NONE
         if self._artist_id is None:
-            if Lp.player.current_track.album_artist_id != Type.COMPILATIONS:
+            if Lp.player.current_track.album_artist_id == Type.COMPILATIONS:
                 album_id = Lp.player.current_track.album_id
                 artist_id = Type.NONE
             else:
