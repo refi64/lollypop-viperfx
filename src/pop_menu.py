@@ -261,7 +261,7 @@ class PlaylistsMenu(BaseMenu):
                                                    self._genre_id)
             else:
                 exists = Lp.playlists.exists_track(playlist[0],
-                                                   Track(self._object_id))
+                                                   self._object_id)
             if exists:
                 action.connect('activate',
                                self._remove_from_playlist,

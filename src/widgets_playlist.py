@@ -292,7 +292,7 @@ class PlaylistsManagerWidget(Gtk.Bin):
 
                     selected = Lp.playlists.exists_track(
                                                        playlist[0],
-                                                       Track(self._object_id))
+                                                       self._object_id)
             else:
                 selected = False
             self._model.append([selected, playlist[1],

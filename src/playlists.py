@@ -200,7 +200,6 @@ class Playlists(GObject.GObject):
         if playlist_id == Type.ALL:
             tracks = Lp.tracks.get_ids(sql_l)
         else:
-            sql_p.execute("ATTACH DATABASE '%s' AS music" % Database.DB_PATH)
             result = sql_p.execute("SELECT music.tracks.rowid\
                                    FROM tracks, music.tracks\
                                    WHERE tracks.playlist_id=?\
@@ -209,7 +208,6 @@ class Playlists(GObject.GObject):
                                    (playlist_id,))
 
             return list(itertools.chain(*result))
-            sql_p.execute("DETACH DATABASE music")
         return tracks
 
     def get_id(self, playlist_name, sql=None):
@@ -268,7 +266,7 @@ class Playlists(GObject.GObject):
         if not sql:
             sql = self._sql
         for track in tracks:
-            if not self.exists_track(playlist_id, track, sql):
+            if not self.exists_track(playlist_id, track.id, sql):
                 sql.execute("INSERT INTO tracks"
                             " VALUES (?, ?)",
                             (playlist_id, track.path))
@@ -293,7 +291,7 @@ class Playlists(GObject.GObject):
         sql.commit()
         GLib.idle_add(self.emit, "playlist-changed", playlist_id)
 
-    def exists_track(self, playlist_id, track, sql=None):
+    def exists_track(self, playlist_id, track_id, sql=None):
         """
             Check if track id exist in playlist
             @param playlist id as int
@@ -302,8 +300,12 @@ class Playlists(GObject.GObject):
         """
         if not sql:
             sql = self._sql
-        result = sql.execute("SELECT rowid FROM tracks WHERE filepath=?"
-                             " AND playlist_id=?", (track.path, playlist_id))
+        result = sql.execute("SELECT main.tracks.filepath\
+                              FROM tracks, music.tracks\
+                              WHERE music.tracks.rowid=?\
+                              AND playlist_id=?\
+                              AND music.tracks.filepath=main.tracks.filepath",
+                             (track_id, playlist_id))
         v = result.fetchone()
         if v is not None:
             return True
@@ -345,7 +347,9 @@ class Playlists(GObject.GObject):
             Return a new sqlite cursor
         """
         try:
-            return sqlite3.connect(self.DB_PATH, 600.0)
+            sql = sqlite3.connect(self.DB_PATH, 600.0)
+            sql.execute("ATTACH DATABASE '%s' AS music" % Database.DB_PATH)
+            return sql
         except:
             exit(-1)
 

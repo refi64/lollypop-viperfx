@@ -131,7 +131,7 @@ def is_loved(track_id):
         @return bool
     """
     return Lp.playlists.exists_track(Type.LOVED,
-                                     Track(track_id))
+                                     track_id)
 
 
 def set_loved(track_id, loved):
