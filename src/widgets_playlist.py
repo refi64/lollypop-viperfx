@@ -207,7 +207,7 @@ class PlaylistsManagerWidget(Gtk.Bin):
 
         self.add(builder.get_object('widget'))
 
-        if self._object_id != -1:
+        if self._object_id != Type.NONE:
             renderer0 = Gtk.CellRendererToggle()
             renderer0.set_property('activatable', True)
             renderer0.connect('toggled', self._on_playlist_toggled)
@@ -230,7 +230,7 @@ class PlaylistsManagerWidget(Gtk.Bin):
         column2.set_sizing(Gtk.TreeViewColumnSizing.FIXED)
         column2.set_property('fixed_width', 50)
 
-        if self._object_id != -1:
+        if self._object_id != Type.NONE:
             self._view.append_column(column0)
         self._view.append_column(column1)
         self._view.append_column(column2)
@@ -282,7 +282,7 @@ class PlaylistsManagerWidget(Gtk.Bin):
         """
         if playlists:
             playlist = playlists.pop(0)
-            if self._object_id != -1:
+            if self._object_id != Type.NONE:
                 if self._is_album:
                     selected = Lp.playlists.exists_album(
                                                        playlist[0],

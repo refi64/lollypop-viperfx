@@ -573,7 +573,7 @@ class Container:
         if playlist_id is not None:
             view = PlaylistView(playlist_id)
         else:
-            view = PlaylistsManageView(-1, None, False)
+            view = PlaylistsManageView(Type.NONE, None, False)
         if view:
             # Management or user playlist
             if playlist_id is None:
