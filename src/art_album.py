@@ -74,17 +74,19 @@ class AlbumArt(BaseArt, ArtDownloader, TagReader):
         """
         if album is None:
             return None
-
-        paths = [
-            os.path.join(album.path, self._favorite),
-            # Used when having muliple albums in same folder
-            os.path.join(album.path, "{}_{}.jpg".format(album.artist_name,
-                                                        album.name))
-        ]
-        for path in paths:
-            if os.path.exists(path):
-                return path
-        return self.get_locally_available_cover(album)
+        try:
+            paths = [
+                os.path.join(album.path, self._favorite),
+                # Used when having muliple albums in same folder
+                os.path.join(album.path, "{}_{}.jpg".format(album.artist_name,
+                                                            album.name))
+            ]
+            for path in paths:
+                if os.path.exists(path):
+                    return path
+            return self.get_locally_available_cover(album)
+        except:
+            return None
 
     def get_locally_available_cover(self, album):
         """

@@ -139,12 +139,12 @@ class DeviceManagerWidget(Gtk.Bin, MtpSync):
     def _append_playlists(self, playlists):
         """
             Append a playlist
-            @param playlists as [str]
+            @param playlists as [(int, str)]
             @param playlist selected as bool
         """
         if playlists:
             playlist = playlists.pop(0)
-            selected = playlist[1]+".m3u" in self._on_disk_playlists
+            selected = playlist[1]+'.m3u' in self._on_disk_playlists
             self._model.append([selected, playlist[1], playlist[0]])
             GLib.idle_add(self._append_playlists, playlists)
         else:

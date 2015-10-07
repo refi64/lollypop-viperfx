@@ -103,9 +103,11 @@ class MtpSync:
             self._total = 1
             self._done = 0
             self._fraction = 0.0
+            plnames = []
 
             # New tracks
             for playlist in playlists:
+                plnames.append(Lp.playlists.get_name(playlist, sql_p))
                 self._fraction = self._done/self._total
                 self._total += len(Lp.playlists.get_tracks(playlist, sql_l,
                                                            sql_p))
@@ -134,7 +136,7 @@ class MtpSync:
                 None)
             for info in infos:
                 f = info.get_name()
-                if f.endswith(".m3u") and f[:-4] not in playlists:
+                if f.endswith(".m3u") and f[:-4] not in plnames:
                     uri = self._uri+'/'+f
                     d = Gio.File.new_for_uri(uri)
                     self._retry(d.delete, (None,))
@@ -172,8 +174,8 @@ class MtpSync:
                 stream = None
 
             # Start copying
-            tracks_id = Lp.playlists.get_tracks_ids(playlist, sql_l, sql_p)
-            for track_id in tracks_id:
+            tracks_ids = Lp.playlists.get_tracks_ids(playlist, sql_l, sql_p)
+            for track_id in tracks_ids:
                 if track_id is None:
                     continue
                 if not self._syncing:
@@ -191,7 +193,6 @@ class MtpSync:
                 artist_name = "".join([c for c in track.artist if
                                        c.isalpha() or
                                        c.isdigit() or c == ' ']).rstrip()
-                track_path = Lp.tracks.get_path(track_id, sql_l)
                 on_device_album_uri = "%s/tracks/%s_%s" %\
                                       (self._uri,
                                        artist_name.lower(),
@@ -200,10 +201,9 @@ class MtpSync:
                 d = Gio.File.new_for_uri(on_device_album_uri)
                 if not d.query_exists(None):
                     self._retry(d.make_directory_with_parents, (None,))
-
                 # Copy album art
                 art = Lp.art.get_album_art_path(track.album, sql_l)
-                if art:
+                if art is not None:
                     src_art = Gio.File.new_for_path(art)
                     art_uri = "%s/cover.jpg" % on_device_album_uri
                     self._copied_art_uris.append(art_uri)
@@ -213,14 +213,14 @@ class MtpSync:
                                     (dst_art, Gio.FileCopyFlags.OVERWRITE,
                                      None, None))
 
-                track_name = GLib.basename(track_path)
+                track_name = GLib.basename(track.path)
                 # Sanitize file names as some MTP devices do not like this
                 # Or this is a Gio/GObject Introspection bug
                 track_name = "".join([c for c in track_name if c.isalpha() or
                                       c.isdigit() or
                                       c == ' ' or
                                       c == '.']).rstrip()
-                src_track = Gio.File.new_for_path(track_path)
+                src_track = Gio.File.new_for_path(track.path)
                 info = src_track.query_info('time::modified',
                                             Gio.FileQueryInfoFlags.NONE,
                                             None)
@@ -261,14 +261,14 @@ class MtpSync:
             @param sql_p as playlists sqlite cursor
         """
         track_uris = []
-        tracks_id = []
+        tracks_ids = []
 
         # Get tracks ids
         for playlist in playlists:
-            tracks_id += Lp.playlists.get_tracks_ids(playlist, sql_l, sql_p)
+            tracks_ids += Lp.playlists.get_tracks_ids(playlist, sql_l, sql_p)
 
         # Get tracks uris
-        for track_id in tracks_id:
+        for track_id in tracks_ids:
             if not self._syncing:
                 self._fraction = 1.0
                 self._in_thread = False
