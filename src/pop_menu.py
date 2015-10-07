@@ -17,7 +17,7 @@ from gettext import gettext as _
 from threading import Thread
 
 from lollypop.define import Lp, NextContext
-from lollypop.objects import Track, Album
+from lollypop.objects import Track
 from lollypop import utils
 
 
@@ -257,7 +257,8 @@ class PlaylistsMenu(BaseMenu):
             self._app.add_action(action)
             if self._is_album:
                 exists = Lp.playlists.exists_album(playlist[0],
-                                                   Album(self._object_id))
+                                                   self._object_id,
+                                                   self._genre_id)
             else:
                 exists = Lp.playlists.exists_track(playlist[0],
                                                    Track(self._object_id))

@@ -497,6 +497,33 @@ class AlbumsDatabase:
                                  (album_id,))
         return list(itertools.chain(*result))
 
+    def get_tracks_path(self, album_id, genre_id, sql=None):
+        """
+            Get tracks path for album id/disc
+            Will search track from albums from same artist
+            with same name and different genre
+            @param album id as int
+            @param genre id as int
+            @return Arrays of tracks id as int
+        """
+        if not sql:
+            sql = Lp.sql
+        if genre_id is not None and genre_id > 0:
+            result = sql.execute("SELECT tracks.filepath\
+                                  FROM tracks, track_genres\
+                                  WHERE album_id=?\
+                                  AND track_genres.genre_id=?\
+                                  AND track_genres.track_id=tracks.rowid\
+                                  ORDER BY discnumber, tracknumber",
+                                 (album_id, genre_id))
+        else:
+            result = sql.execute("SELECT tracks.filepath\
+                                  FROM tracks\
+                                  WHERE album_id=?\
+                                  ORDER BY discnumber, tracknumber",
+                                 (album_id,))
+        return list(itertools.chain(*result))
+
     def get_disc_tracks_ids(self, album_id, genre_id, disc, sql=None):
         """
             Get tracks ids for album id disc

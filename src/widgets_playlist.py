@@ -19,7 +19,7 @@ from gettext import gettext as _
 from lollypop.define import Lp, Type
 from lollypop.cellrendereralbum import CellRendererAlbum
 from lollypop.widgets_track import TracksWidget
-from lollypop.objects import Track, Album
+from lollypop.objects import Track
 
 
 class PlaylistWidget(Gtk.Bin):
@@ -286,7 +286,8 @@ class PlaylistsManagerWidget(Gtk.Bin):
                 if self._is_album:
                     selected = Lp.playlists.exists_album(
                                                        playlist[0],
-                                                       Album(self._object_id))
+                                                       self._object_id,
+                                                       self._genre_id)
                 else:
 
                     selected = Lp.playlists.exists_track(
