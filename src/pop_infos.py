@@ -197,8 +197,9 @@ class InfosPopover(Gtk.Popover):
         """
         if self._artist_id is not None:
             GLib.idle_add(self.destroy)
-        Lp.player.disconnect(self._signal_id)
-        self._signal_id = None
+        if self._signal_id is not None:
+            Lp.player.disconnect(self._signal_id)
+            self._signal_id = None
 
     def _on_unmap(self, widget):
         """
