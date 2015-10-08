@@ -59,7 +59,7 @@ class InfosPopover(Gtk.Popover):
         self.connect('map', self._on_self_map)
         self.connect('unmap', self._on_self_unmap)
         self._artist_id = artist_id
-        self._current = self._get_current()
+        self._current = None
         self._timeout_id = None
         self._signal_id = None
 
@@ -195,6 +195,7 @@ class InfosPopover(Gtk.Popover):
             Destroy self if needed and disconnect signals
             @param widget as Gtk.Widget
         """
+        self._current = None
         if self._artist_id is not None:
             GLib.idle_add(self.destroy)
         if self._signal_id is not None:
@@ -217,6 +218,8 @@ class InfosPopover(Gtk.Popover):
             @param widget as Gtk.Bin
             @param force as bool
         """
+        if self._current is None:
+            self._current = self._get_current()
         self._menu.hide()
         Lp.settings.set_value('infoswitch',
                               GLib.Variant('s', 'albums'))
@@ -237,6 +240,8 @@ class InfosPopover(Gtk.Popover):
             @param widget as Gtk.Viewport
             @param force as bool
         """
+        if self._current is None:
+            self._current = self._get_current()
         artist = Lp.artists.get_name(self._current[0])
         self._menu.hide()
         Lp.settings.set_value('infoswitch',
@@ -259,6 +264,8 @@ class InfosPopover(Gtk.Popover):
             @param widget as Gtk.Viewport
             @param force as bool
         """
+        if self._current is None:
+            self._current = self._get_current()
         artist = Lp.artists.get_name(self._current[0])
         Lp.settings.set_value('infoswitch',
                               GLib.Variant('s', 'wikipedia'))
@@ -281,6 +288,8 @@ class InfosPopover(Gtk.Popover):
             @param widget as Gtk.Viewport
             @param force as bool
         """
+        if self._current is None:
+            self._current = self._get_current()
         self._menu.hide()
         Lp.settings.set_value('infoswitch',
                               GLib.Variant('s', 'wikia'))
@@ -295,6 +304,8 @@ class InfosPopover(Gtk.Popover):
             Load on map
             @param widget as Gtk.Viewport
         """
+        if self._current is None:
+            self._current = self._get_current()
         artist = Lp.artists.get_name(self._current[0])\
             if self._artist_id is not None else None
         self._menu.hide()
