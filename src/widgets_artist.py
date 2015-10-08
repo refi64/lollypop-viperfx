@@ -28,7 +28,7 @@ class ArtistContent(Gtk.Stack):
         Widget showing artist image and bio
     """
 
-    _CACHE_PATH = path.expanduser("~") + "/.local/share/lollypop/infos"
+    _CACHE_PATH = path.expanduser("~") + "/.cache/lollypop_infos"
 
     def __init__(self):
         """
