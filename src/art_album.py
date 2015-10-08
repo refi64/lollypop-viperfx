@@ -170,14 +170,8 @@ class AlbumArt(BaseArt, ArtDownloader, TagReader):
                     return self._get_default_icon(size,
                                                   'folder-music-symbolic')
                 else:
-                    # Gdk < 3.15 was missing save method
-                    # > 3.15 is missing savev method
-                    try:
-                        pixbuf.save(cache_path_jpg, "jpeg",
-                                    ["quality"], ["90"])
-                    except:
-                        pixbuf.savev(cache_path_jpg, "jpeg",
-                                     ["quality"], ["90"])
+                    pixbuf.savev(cache_path_jpg, "jpeg",
+                                 ["quality"], ["90"])
             surface = Gdk.cairo_surface_create_from_pixbuf(pixbuf, 0, None)
             del pixbuf
             return surface
@@ -195,12 +189,7 @@ class AlbumArt(BaseArt, ArtDownloader, TagReader):
         """
         try:
             artpath = self.get_album_art_filepath(album_id, sql)
-            # Gdk < 3.15 was missing save method
-            try:
-                pixbuf.save(artpath, "jpeg", ["quality"], ["90"])
-            # > 3.15 is missing savev method :(
-            except:
-                pixbuf.savev(artpath, "jpeg", ["quality"], ["90"])
+            pixbuf.savev(artpath, "jpeg", ["quality"], ["90"])
         except Exception as e:
             print("Art::save_album_art(): %s" % e)
 

@@ -107,15 +107,7 @@ class RadioArt(BaseArt):
                 return self._get_default_icon(
                                              size,
                                              'audio-input-microphone-symbolic')
-
-            # Gdk < 3.15 was missing save method
-            # > 3.15 is missing savev method
-            try:
-                pixbuf.save(cache_path_png, "png",
-                            [None], [None])
-            except:
-                pixbuf.savev(cache_path_png, "png",
-                             [None], [None])
+                pixbuf.savev(cache_path_png, "png", [None], [None])
             surface = Gdk.cairo_surface_create_from_pixbuf(pixbuf, 0, None)
             del pixbuf
             return surface
@@ -162,13 +154,7 @@ class RadioArt(BaseArt):
         try:
             artpath = self._RADIOS_PATH + "/" +\
                       radio.replace('/', '-') + ".png"
-
-            # Gdk < 3.15 was missing save method
-            try:
-                pixbuf.save(artpath, "png", [None], [None])
-            # > 3.15 is missing savev method :(
-            except:
-                pixbuf.savev(artpath, "png", [None], [None])
+            pixbuf.savev(artpath, "png", [None], [None])
         except Exception as e:
             print("RadioArt::save_radio_logo(): %s" % e)
 
