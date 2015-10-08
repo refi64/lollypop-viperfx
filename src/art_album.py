@@ -170,8 +170,7 @@ class AlbumArt(BaseArt, ArtDownloader, TagReader):
                     return self._get_default_icon(size,
                                                   'folder-music-symbolic')
                 else:
-                    pixbuf.savev(cache_path_jpg, "jpeg",
-                                 ["quality"], ["90"])
+                    pixbuf.savev(cache_path_jpg, "jpeg", ["quality"], ["90"])
             surface = Gdk.cairo_surface_create_from_pixbuf(pixbuf, 0, None)
             del pixbuf
             return surface

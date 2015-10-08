@@ -175,12 +175,14 @@ class ArtistContent(Gtk.Stack):
             fstream.write(content.encode(encoding='UTF-8'), None)
             fstream.close()
         if data is not None:
-            f = Gio.File.new_for_path(filepath)
-            fstream = f.replace(None, False,
-                                Gio.FileCreateFlags.REPLACE_DESTINATION, None)
-            if fstream is not None:
-                fstream.write(data, None)
-                fstream.close()
+            stream = Gio.MemoryInputStream.new_from_data(data, None)
+            pixbuf = GdkPixbuf.Pixbuf.new_from_stream_at_scale(stream,
+                                                               200,
+                                                               -1,
+                                                               True,
+                                                               None)
+            pixbuf.savev(filepath+".jpg", "jpeg", ["quality"], ["90"])
+            del pixbuf
 
     def _load_from_cache(self, artist, suffix):
         """
@@ -197,8 +199,8 @@ class ArtistContent(Gtk.Stack):
         if path.exists(filepath+".txt"):
             f = Gio.File.new_for_path(filepath+".txt")
             (status, content, tag) = f.load_contents()
-            if status and path.exists(filepath):
-                f = Gio.File.new_for_path(filepath)
+            if status and path.exists(filepath+".jpg"):
+                f = Gio.File.new_for_path(filepath+".jpg")
                 (status, data, tag) = f.load_contents()
                 if not status:
                     data = None
