@@ -18,6 +18,7 @@ import itertools
 import sqlite3
 from datetime import datetime
 
+from lollypop.database import Database
 from lollypop.define import Lp, Type
 from lollypop.objects import Track
 
@@ -41,7 +42,7 @@ class Playlists(GObject.GObject):
 
     create_tracks = '''CREATE TABLE tracks (
                         playlist_id INT NOT NULL,
-                        path TEXT NOT NULL)'''
+                        filepath TEXT NOT NULL)'''
 
     def __init__(self):
         """
@@ -180,7 +181,7 @@ class Playlists(GObject.GObject):
         if playlist_id == Type.ALL:
             return Lp.tracks.get_paths(sql_l)
         else:
-            result = sql_p.execute("SELECT path\
+            result = sql_p.execute("SELECT filepath\
                                    FROM tracks\
                                    WHERE playlist_id=?", (playlist_id,))
             return list(itertools.chain(*result))
@@ -199,13 +200,16 @@ class Playlists(GObject.GObject):
         if playlist_id == Type.ALL:
             tracks = Lp.tracks.get_ids(sql_l)
         else:
-            result = sql_p.execute("SELECT path\
-                                   FROM tracks\
-                                   WHERE playlist_id=?", (playlist_id,))
+            sql_p.execute("ATTACH DATABASE '%s' AS music" % Database.DB_PATH)
+            result = sql_p.execute("SELECT music.tracks.rowid\
+                                   FROM tracks, music.tracks\
+                                   WHERE tracks.playlist_id=?\
+                                   AND music.tracks.filepath=\
+                                   main.tracks.filepath",
+                                   (playlist_id,))
 
-            tracks = []
-            for path in list(itertools.chain(*result)):
-                tracks.append(Lp.tracks.get_id_by_path(path, sql_l))
+            return list(itertools.chain(*result))
+            sql_p.execute("DETACH DATABASE music")
         return tracks
 
     def get_id(self, playlist_name, sql=None):
@@ -284,7 +288,7 @@ class Playlists(GObject.GObject):
             sql = self._sql
         for track in tracks:
             sql.execute("DELETE FROM tracks\
-                         WHERE path=?\
+                         WHERE filepath=?\
                          AND playlist_id=?", (track.path, playlist_id))
         sql.commit()
         GLib.idle_add(self.emit, "playlist-changed", playlist_id)
@@ -298,7 +302,7 @@ class Playlists(GObject.GObject):
         """
         if not sql:
             sql = self._sql
-        result = sql.execute("SELECT rowid FROM tracks WHERE path=?"
+        result = sql.execute("SELECT rowid FROM tracks WHERE filepath=?"
                              " AND playlist_id=?", (track.path, playlist_id))
         v = result.fetchone()
         if v is not None:
