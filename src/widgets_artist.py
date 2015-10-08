@@ -20,7 +20,7 @@ try:
     from lollypop.wikipedia import Wikipedia
 except:
     pass
-from lollypop.define import Lp
+from lollypop.define import Lp, Type
 
 
 class ArtistContent(Gtk.Stack):
@@ -35,7 +35,7 @@ class ArtistContent(Gtk.Stack):
             Init artist content
         """
         Gtk.Stack.__init__(self)
-        self._artist = ''
+        self._artist = Type.NONE
         self.set_transition_duration(500)
         self.set_transition_type(Gtk.StackTransitionType.CROSSFADE)
         builder = Gtk.Builder()
@@ -60,6 +60,12 @@ class ArtistContent(Gtk.Stack):
         if artist is None:
             artist = Lp.player.get_current_artist()
         return artist != self._artist
+
+    def clear_artist(self):
+        """
+            Clear current artist
+        """
+        self._artist = Type.NONE
 
     def clear(self):
         """
@@ -294,18 +300,19 @@ class WikipediaContent(ArtistContent):
             Setup a menu with strings
             @param strings as [str]
         """
-        i = 0
-        for string in strings:
-            action = Gio.SimpleAction(name="wikipedia_%s" % i)
-            self._app.add_action(action)
-            action.connect('activate',
-                           self._on_search_activated,
-                           string)
-            self._menu_model.append(string, "app.wikipedia_%s" % i)
-            i += 1
-        # TODO: Remove this test later
-        if Gtk.get_minor_version() > 16:
-            self._menu.show()
+        if self._artist != Type.NONE:
+            i = 0
+            for string in strings:
+                action = Gio.SimpleAction(name="wikipedia_%s" % i)
+                self._app.add_action(action)
+                action.connect('activate',
+                               self._on_search_activated,
+                               string)
+                self._menu_model.append(string, "app.wikipedia_%s" % i)
+                i += 1
+            # TODO: Remove this test later
+            if Gtk.get_minor_version() > 16:
+                self._menu.show()
 
     def _on_search_activated(self, action, variant, page):
         """

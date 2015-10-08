@@ -207,6 +207,8 @@ class InfosPopover(Gtk.Popover):
             @param widget as Gtk.Widget
         """
         for child in widget.get_children():
+            if hasattr(child, 'clear_artist'):
+                child.clear_artist()
             child.destroy()
 
     def _on_map_albums(self, widget, force=False):
@@ -247,7 +249,6 @@ class InfosPopover(Gtk.Popover):
         if force:
             content_widget.uncache(artist)
         if content_widget.should_update(artist) or force:
-            content_widget.clear()
             t = Thread(target=content_widget.populate, args=(artist,))
             t.daemon = True
             t.start()
