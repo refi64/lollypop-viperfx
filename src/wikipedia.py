@@ -14,6 +14,7 @@ from gi.repository import Gio
 
 from gettext import gettext as _
 from locale import getdefaultlocale
+from random import shuffle
 import re
 import wikipedia
 
@@ -59,6 +60,7 @@ class Wikipedia:
             content = re.sub(r'%s ==' % _('Modify'), ' ==', content)
             url = page.url
             jpegs = []
+            shuffle(page.images)
             for image in page.images:
                 if image.lower().endswith('.jpg'):
                     jpegs.append(image)
