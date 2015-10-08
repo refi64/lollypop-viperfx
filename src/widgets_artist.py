@@ -238,7 +238,7 @@ class WikipediaContent(ArtistContent):
         GLib.idle_add(self._setup_menu_strings, [artist])
         if not self._load_cache_content(artist):
             GLib.idle_add(self.set_visible_child_name, 'spinner')
-            self._load_page_content(artist)
+            self._load_page_content(artist, artist)
         self._setup_menu(artist)
 
     def clear(self):
@@ -275,13 +275,14 @@ class WikipediaContent(ArtistContent):
             return True
         return False
 
-    def _load_page_content(self, artist):
+    def _load_page_content(self, page, artist):
         """
             Load artist page content
+            @param page as str
             @param artist as str
         """
         wp = Wikipedia()
-        (url, image_url, content) = wp.get_page_infos(artist)
+        (url, image_url, content) = wp.get_page_infos(page)
         if artist == self._artist:
             ArtistContent.populate(self, content, image_url, 'wikipedia')
 
@@ -324,7 +325,8 @@ class WikipediaContent(ArtistContent):
         """
         self.uncache(self._artist)
         ArtistContent.clear(self)
-        t = Thread(target=self._load_page_content, args=(page,))
+        self.set_visible_child_name('spinner')
+        t = Thread(target=self._load_page_content, args=(page, self._artist))
         t.daemon = True
         t.start()
 
