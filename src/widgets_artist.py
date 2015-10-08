@@ -68,7 +68,6 @@ class ArtistContent(Gtk.Stack):
         self._content.set_text('')
         self._image_frame.hide()
         self._image.clear()
-        self.set_visible_child_name('spinner')
 
     def populate(self, content, image_url, suffix):
         """
@@ -230,6 +229,7 @@ class WikipediaContent(ArtistContent):
         self._artist = artist
         GLib.idle_add(self._setup_menu_strings, [artist])
         if not self._load_cache_content(artist):
+            GLib.idle_add(self.set_visible_child_name, 'spinner')
             self._load_page_content(artist)
         self._setup_menu(artist)
 
@@ -348,6 +348,7 @@ class LastfmContent(ArtistContent):
                 stream = Gio.MemoryInputStream.new_from_data(data, None)
             GLib.idle_add(self._set_content, content, stream)
         else:
+            GLib.idle_add(self.set_visible_child_name, 'spinner')
             (url, image_url, content) = Lp.lastfm.get_artist_infos(artist)
             if artist == self._artist:
                 ArtistContent.populate(self, content, image_url, 'lastfm')
