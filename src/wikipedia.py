@@ -64,7 +64,7 @@ class Wikipedia:
                     jpegs.append(image)
                 # Search specific string in urls
                 for word in words:
-                    if len(word) > 4 and word.lower() in image.lower():
+                    if word.lower() in image.lower():
                         return (url, image, content)
             # If we only found one jpg, then use it
             image = None
