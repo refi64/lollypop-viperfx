@@ -34,7 +34,6 @@ class CoversPopover(Gtk.Popover):
         Gtk.Popover.__init__(self)
         self.connect('unmap', self._on_self_unmap)
         self._album = Album(album_id)
-        self._start = 0
         self._orig_pixbufs = {}
 
         self._stack = Gtk.Stack()
@@ -96,9 +95,8 @@ class CoversPopover(Gtk.Popover):
         if Gio.NetworkMonitor.get_default().get_network_available():
             urls = Lp.art.get_google_arts("%s+%s" % (
                                                    self._album.artist_name,
-                                                   self._album.name))
+                                                   self._album.name), start)
         if urls:
-            start += GOOGLE_INC
             self._add_pixbufs(urls, start)
         else:
             GLib.idle_add(self._show_not_found)
@@ -118,13 +116,13 @@ class CoversPopover(Gtk.Popover):
                 if status:
                     stream = Gio.MemoryInputStream.new_from_data(data, None)
             except:
-                if self._thread:
-                    self._add_pixbufs(urls, start)
+                pass
             if stream is not None:
                 GLib.idle_add(self._add_stream, stream)
             if self._thread:
                 self._add_pixbufs(urls, start)
-        elif self._start < GOOGLE_MAX:
+        elif start < GOOGLE_MAX:
+            start += GOOGLE_INC
             self._populate(start)
 
     def _show_not_found(self):

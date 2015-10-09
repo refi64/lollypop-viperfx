@@ -58,8 +58,7 @@ class AlbumWidget:
         """
         surface = Lp.art.get_album(
                             self._album,
-                            ArtSize.BIG * self._cover.get_scale_factor(),
-                            self._selected)
+                            ArtSize.BIG * self._cover.get_scale_factor())
         self._cover.set_from_surface(surface)
         del surface
 

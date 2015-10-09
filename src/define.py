@@ -28,7 +28,7 @@ except:
     SecretAttributes = None
 
 GOOGLE_INC = 8
-GOOGLE_MAX = 100
+GOOGLE_MAX = 8
 
 
 class Lp:
