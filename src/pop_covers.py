@@ -79,7 +79,7 @@ class CoversPopover(Gtk.Popover):
             self._stack.set_visible_child_name('main')
         # Then Google
         self._thread = True
-        t = Thread(target=self._populate, args=urls)
+        t = Thread(target=self._populate)
         t.daemon = True
         t.start()
 
@@ -115,8 +115,8 @@ class CoversPopover(Gtk.Popover):
                 (status, data, tag) = f.load_contents()
                 if status:
                     stream = Gio.MemoryInputStream.new_from_data(data, None)
-            except:
-                pass
+            except Exception as e:
+                print("CoversPopover::_add_pixbufs: %s" % e)
             if stream is not None:
                 GLib.idle_add(self._add_stream, stream)
             if self._thread:
@@ -145,12 +145,10 @@ class CoversPopover(Gtk.Popover):
                 False,
                 None)
             self._add_pixbuf(pixbuf)
+            self._label.set_text(_("Select a cover art for this album"))
+            self._stack.set_visible_child_name('main')
         except Exception as e:
-            print(e)
-            pass
-
-        self._label.set_text(_("Select a cover art for this album"))
-        self._stack.set_visible_child_name('main')
+            print("CoversPopover::_add_stream: %s" % e)
 
     def _add_pixbuf(self, pixbuf):
         """
