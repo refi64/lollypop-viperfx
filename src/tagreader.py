@@ -258,13 +258,14 @@ class ScannerTagReader(TagReader):
         return (genre_ids, new_genre_ids)
 
     def add_album(self, album_name, artist_id, no_album_artist,
-                  filepath, popularity, mtime, sql):
+                  year, filepath, popularity, mtime, sql):
         """
             Add album to db
             @param album name as string
             @param album artist id as int
             @param no album artist as bool
             @param path to an album track as string
+            @param year as int
             @param popularity as int
             @param mtime as int
             @param sql as sqlite cursor
@@ -274,13 +275,13 @@ class ScannerTagReader(TagReader):
         path = os.path.dirname(filepath)
         new = False
         if no_album_artist:
-            album_id = Lp.albums.get_compilation_id(album_name, sql)
+            album_id = Lp.albums.get_compilation_id(album_name, year, sql)
         else:
-            album_id = Lp.albums.get_id(album_name, artist_id, sql)
+            album_id = Lp.albums.get_id(album_name, artist_id, year, sql)
         if album_id is None:
             new = True
             album_id = Lp.albums.add(album_name, artist_id, no_album_artist,
-                                     path, popularity, mtime, sql)
+                                     year, path, popularity, mtime, sql)
         # Now we have our album id, check if path doesn't change
         if Lp.albums.get_path(album_id, sql) != path:
             Lp.albums.set_path(album_id, path, sql)
@@ -296,16 +297,6 @@ class ScannerTagReader(TagReader):
                                         artist_id,
                                         sql)
         return (album_id, new)
-
-    def update_year(self, album_id, sql):
-        """
-            Update album year
-            @param album id as int
-            @param sql as sqlite cursor
-            @commit needed
-        """
-        year = Lp.albums.get_year_from_tracks(album_id, sql)
-        Lp.albums.set_year(album_id, year, sql)
 
     def update_track(self, track_id, artist_ids, genre_ids, sql):
         """

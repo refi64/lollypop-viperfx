@@ -243,10 +243,11 @@ class CollectionScanner(GObject.GObject, ScannerTagReader):
             no_album_artist = True
 
         (album_id, new) = self.add_album(album_name, album_artist_id,
-                                         no_album_artist, filepath, 0,
+                                         no_album_artist, year, filepath, 0,
                                          mtime, sql)
         if new:
             self._new_albums.append(album_id)
+
         (genre_ids, new_genre_ids) = self.add_genres(genres, album_id, sql)
 
         # Restore stats
@@ -261,7 +262,6 @@ class CollectionScanner(GObject.GObject, ScannerTagReader):
         track_id = Lp.tracks.add(title, filepath, duration,
                                  tracknumber, discnumber,
                                  album_id, year, popularity, ltime, mtime, sql)
-        self.update_year(album_id, sql)
         self.update_track(track_id, artist_ids, genre_ids, sql)
 
         # Notify about new artists/genres

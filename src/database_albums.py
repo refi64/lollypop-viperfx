@@ -30,13 +30,14 @@ class AlbumsDatabase:
         """
         self._cached_randoms = []
 
-    def add(self, name, artist_id, no_album_artist, path,
-            popularity, mtime, sql=None):
+    def add(self, name, artist_id, no_album_artist, year,
+            path, popularity, mtime, sql=None):
         """
             Add a new album to database
             @param Album name as string
             @param artist id as int,
             @param no_album_artist as bool,
+            @param year as int
             @param path as string
             @param mtime as int
             @return inserted rowid as int
@@ -44,11 +45,11 @@ class AlbumsDatabase:
         """
         if not sql:
             sql = Lp.sql
-        result = sql.execute("INSERT INTO albums "
-                             "(name, artist_id, no_album_artist,"
-                             " path, popularity, mtime)"
-                             "VALUES (?, ?, ?, ?, ?, ?)",
-                             (name, artist_id, no_album_artist,
+        result = sql.execute("INSERT INTO albums\
+                              (name, artist_id, no_album_artist, year,\
+                              path, popularity, mtime)\
+                              VALUES (?, ?, ?, ?, ?, ?, ?)",
+                             (name, artist_id, no_album_artist, year,
                               path, popularity, mtime))
         return result.lastrowid
 
@@ -179,34 +180,50 @@ class AlbumsDatabase:
             return v[0]
         return 5
 
-    def get_id(self, album_name, artist_id, sql=None):
+    def get_id(self, album_name, artist_id, year, sql=None):
         """
             Get album id
             @param Album name as string,
             @param artist id as int
+            @param year as int
             @return Album id as int
         """
         if not sql:
             sql = Lp.sql
-        result = sql.execute("SELECT rowid FROM albums where name=?\
-                              AND artist_id=?\
-                              AND no_album_artist=0",
-                             (album_name, artist_id))
+        if year is None:
+            result = sql.execute("SELECT rowid FROM albums where name=?\
+                                  AND artist_id=?\
+                                  AND year is null\
+                                  AND no_album_artist=0",
+                                 (album_name, artist_id))
+        else:
+            result = sql.execute("SELECT rowid FROM albums where name=?\
+                                  AND artist_id=?\
+                                  AND year =?\
+                                  AND no_album_artist=0",
+                                 (album_name, artist_id, year))
         v = result.fetchone()
         if v is not None:
             return v[0]
         return None
 
-    def get_compilation_id(self, album_name, sql=None):
+    def get_compilation_id(self, album_name, year, sql=None):
         """
             Get compilation id
             @param Album name as string,
+            @param year as int
             @return Album id as int
         """
         if not sql:
             sql = Lp.sql
-        result = sql.execute("SELECT rowid FROM albums where name=?\
-                              AND no_album_artist=1", (album_name,))
+        if year is None:
+            result = sql.execute("SELECT rowid FROM albums where name=?\
+                                  AND no_album_artist=1\
+                                  AND year is null", (album_name,))
+        else:
+            result = sql.execute("SELECT rowid FROM albums where name=?\
+                                  AND no_album_artist=1\
+                                  AND year=?", (album_name, year))
         v = result.fetchone()
         if v is not None:
             return v[0]
@@ -623,25 +640,6 @@ class AlbumsDatabase:
                  ORDER BY albums.name,\
                  albums.year", (genre_id, Type.COMPILATIONS))
         return list(itertools.chain(*result))
-
-    def get_year_from_tracks(self, album_id, sql=None):
-        """
-            Get album year based on tracks
-            Use most used year by tracks
-            @param album id as int
-        """
-        if not sql:
-            sql = Lp.sql
-        result = sql.execute("SELECT year, COUNT(year) AS occurrence\
-                              FROM tracks\
-                              WHERE tracks.album_id=?\
-                              GROUP BY year\
-                              ORDER BY occurrence DESC\
-                              LIMIT 1", (album_id,))
-        v = result.fetchone()
-        if v is not None:
-            return v[0]
-        return None
 
     def get_duration(self, album_id, genre_id, sql=None):
         """
