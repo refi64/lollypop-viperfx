@@ -50,6 +50,13 @@ class BaseArt(GObject.GObject):
             except:
                 print("Can't create %s" % self._CACHE_PATH)
 
+    def _get_default_icon_path(self, size, icon_name):
+        """
+            Return default icon path
+            @return path as string
+        """
+        return "%s/%s_%s.jpg" % (self._CACHE_PATH, icon_name, size)
+
     def _get_default_icon(self, size, icon_name):
         """
             Construct an empty cover album,
@@ -59,7 +66,7 @@ class BaseArt(GObject.GObject):
             @return pixbuf as Gdk.Pixbuf
         """
         # First look in cache
-        cache_path_jpg = "%s/%s_%s.jpg" % (self._CACHE_PATH, icon_name, size)
+        cache_path_jpg = self._get_default_icon_path(size, icon_name)
         if os.path.exists(cache_path_jpg):
             pixbuf = GdkPixbuf.Pixbuf.new_from_file_at_scale(cache_path_jpg,
                                                              size,

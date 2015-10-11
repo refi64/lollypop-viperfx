@@ -45,17 +45,19 @@ class RadioArt(BaseArt):
         filename = ''
         try:
             filename = self._get_radio_cache_name(name)
-            cache_path_jpg = "%s/%s_%s.png" % (self._CACHE_PATH,
+            cache_path_png = "%s/%s_%s.png" % (self._CACHE_PATH,
                                                filename,
                                                size)
-            if os.path.exists(cache_path_jpg):
-                return cache_path_jpg
+            if os.path.exists(cache_path_png):
+                return cache_path_png
             else:
                 self.get_radio(name, size)
-                if os.path.exists(cache_path_jpg):
-                    return cache_path_jpg
+                if os.path.exists(cache_path_png):
+                    return cache_path_png
                 else:
-                    return None
+                    return self._get_default_icon_path(
+                                           size,
+                                           'audio-input-microphone-symbolic')
         except Exception as e:
             print("Art::get_radio_cache_path(): %s" % e, ascii(filename))
             return None
@@ -102,12 +104,11 @@ class RadioArt(BaseArt):
                                     1,
                                     GdkPixbuf.InterpType.HYPER,
                                     255)
-
             if pixbuf is None:
                 return self._get_default_icon(
                                              size,
                                              'audio-input-microphone-symbolic')
-                pixbuf.savev(cache_path_png, "png", [None], [None])
+            pixbuf.savev(cache_path_png, "png", [None], [None])
             surface = Gdk.cairo_surface_create_from_pixbuf(pixbuf, 0, None)
             del pixbuf
             return surface
