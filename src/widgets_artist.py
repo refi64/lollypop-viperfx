@@ -10,7 +10,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-from gi.repository import Gtk, GdkPixbuf, GLib, Gio
+from gi.repository import Gtk, Gdk, GdkPixbuf, GLib, Gio
 
 from threading import Thread
 from cgi import escape
@@ -141,13 +141,16 @@ class ArtistContent(Gtk.Stack):
         if content is not None:
             self._content.set_markup(escape(content))
             if stream is not None:
+                scale = self._image.get_scale_factor()
                 pixbuf = GdkPixbuf.Pixbuf.new_from_stream_at_scale(stream,
-                                                                   200,
+                                                                   200*scale,
                                                                    -1,
                                                                    True,
                                                                    None)
-                self._image.set_from_pixbuf(pixbuf)
+                surface = Gdk.cairo_surface_create_from_pixbuf(pixbuf, 0, None)
                 del pixbuf
+                self._image.set_from_surface(surface)
+                del surface
                 self._image_frame.show()
             self.set_visible_child_name('widget')
         else:
@@ -177,7 +180,7 @@ class ArtistContent(Gtk.Stack):
         if data is not None:
             stream = Gio.MemoryInputStream.new_from_data(data, None)
             pixbuf = GdkPixbuf.Pixbuf.new_from_stream_at_scale(stream,
-                                                               200,
+                                                               400,
                                                                -1,
                                                                True,
                                                                None)
