@@ -116,10 +116,8 @@ class MPRIS(dbus.service.Object):
                 'Position': dbus.Int64(Lp.player.get_position_in_track() / 60),
                 'MinimumRate': dbus.Double(1.0),
                 'MaximumRate': dbus.Double(1.0),
-                'CanGoNext': Lp.player.current_track.id is not None or
-                Lp.player.current_track.id != Type.RADIOS,
-                'CanGoPrevious': Lp.player.current_track.id is not None or
-                Lp.player.current_track.id != Type.RADIOS,
+                'CanGoNext': Lp.player.current_track.id is not None,
+                'CanGoPrevious': Lp.player.current_track.id is not None,
                 'CanPlay': Lp.player.current_track.id is not None,
                 'CanPause': Lp.player.is_playing(),
                 'CanSeek': True,
