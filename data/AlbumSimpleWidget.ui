@@ -78,6 +78,7 @@
             </child>
             <style>
               <class name="cover-frame"/>
+              <class name="white"/>
             </style>
           </object>
           <packing>
