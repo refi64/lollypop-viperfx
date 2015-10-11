@@ -176,6 +176,53 @@ class Radios(GObject.GObject):
                     (current, name))
         sql.commit()
 
+    def get_avg_popularity(self, sql=None):
+        """
+            Return avarage popularity
+            @return avarage popularity as int
+        """
+        if not sql:
+            sql = self._sql
+        result = sql.execute("SELECT AVG(popularity) FROM (SELECT popularity "
+                             "FROM radios ORDER BY POPULARITY DESC LIMIT 100)")
+        v = result.fetchone()
+        if v and v[0] > 5:
+            return v[0]
+        return 5
+
+    def set_popularity(self, name, popularity, sql=None):
+        """
+            Set popularity
+            @param name as str
+            @param popularity as int
+        """
+        if not sql:
+            sql = self._sql
+        try:
+            sql.execute("UPDATE radios SET\
+                        popularity=? WHERE name=?",
+                        (popularity, name))
+            sql.commit()
+        except:  # Database is locked
+            pass
+
+    def get_popularity(self, name, sql=None):
+        """
+            Get popularity
+            @param name as str
+            @return popularity as int
+        """
+        if not sql:
+            sql = self._sql
+        result = sql.execute("SELECT popularity\
+                             FROM radios WHERE\
+                             name=?", (name,))
+
+        v = result.fetchone()
+        if v is not None:
+            return v[0]
+        return 0
+
     def get_cursor(self):
         """
             Return a new sqlite cursor

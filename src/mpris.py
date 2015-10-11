@@ -166,8 +166,10 @@ class MPRIS(dbus.service.Object):
                 track_id = randint(10000000, 90000000)
                 self._metadata['mpris:trackid'] = dbus.ObjectPath(
                     '/org/lollypop/%s' % track_id)
-            self._metadata['xesam:trackNumber'] =\
-                Lp.player.current_track.number
+            track_number = Lp.player.current_track.number
+            if track_number is None:
+                track_number = 1
+            self._metadata['xesam:trackNumber'] = track_number
             self._metadata['xesam:title'] = Lp.player.current_track.name
             self._metadata['xesam:album'] = Lp.player.current_track.album.name
             self._metadata['xesam:artist'] = [Lp.player.current_track.artist]
@@ -213,8 +215,8 @@ class MPRIS(dbus.service.Object):
                                                   signature='sv')}
         try:
             self.PropertiesChanged(self.MPRIS_PLAYER_IFACE, properties, [])
-        except:
-            pass
+        except Exception as e:
+            print("MPRIS::_on_current_changed(): %s" % e)
 
     def _on_status_changed(self, data=None):
         properties = {'PlaybackStatus': self._get_status()}

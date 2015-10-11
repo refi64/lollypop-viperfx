@@ -16,6 +16,7 @@ from gi.repository import GLib
 
 from threading import current_thread
 
+from lollypop.radios import Radios
 from lollypop.define import Lp, Type
 
 
@@ -71,14 +72,19 @@ class Base:
             Get popularity
             @return int between 0 and 5
         """
-        if self.id is None:
-            return
+        if self.id is None or self.id == Type.EXTERNALS:
+            return 0
 
         popularity = 0
-        avg_popularity = self.db.get_avg_popularity()
-        if avg_popularity > 0:
-            popularity = self.db.get_popularity(self.id)
-
+        if self.id >= 0:
+            avg_popularity = self.db.get_avg_popularity()
+            if avg_popularity > 0:
+                popularity = self.db.get_popularity(self.id)
+        elif self.id == Type.RADIOS:
+            radios = Radios()
+            avg_popularity = radios.get_avg_popularity()
+            if avg_popularity > 0:
+                popularity = radios.get_popularity(self._album_artist)
         return popularity * 5 / avg_popularity + 0.5
 
     def set_popularity(self, popularity):
@@ -86,12 +92,20 @@ class Base:
             Set popularity
             @param popularity as int between 0 and 5
         """
-        avg_popularity = self.db.get_avg_popularity()
-        popularity = int((popularity * avg_popularity / 5) + 0.5)
+        if self.id is None or self.id == Type.EXTERNALS:
+            return
         try:
-            self.db.set_popularity(self.id, popularity, True)
-        except:
-            self.db.set_popularity(self.id, 0, True)
+            if self.id >= 0:
+                avg_popularity = self.db.get_avg_popularity()
+                popularity = int((popularity * avg_popularity / 5) + 0.5)
+                self.db.set_popularity(self.id, popularity, True)
+            elif self.id == Type.RADIOS:
+                radios = Radios()
+                avg_popularity = radios.get_avg_popularity()
+                popularity = int((popularity * avg_popularity / 5) + 0.5)
+                radios.set_popularity(self._album_artist, popularity)
+        except Exception as e:
+            print("Base::set_popularity(): %s" % e)
 
 
 class Disc:
