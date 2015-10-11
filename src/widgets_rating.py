@@ -23,7 +23,7 @@ class RatingWidget(Gtk.Bin):
     def __init__(self, object):
         """
             Init widget
-            @param object id as int
+            @param object as Track/Album
             @param is album as bool
         """
         Gtk.Bin.__init__(self)
