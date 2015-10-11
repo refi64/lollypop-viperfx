@@ -38,10 +38,9 @@ class RadioWidget(Gtk.Bin, AlbumWidget):
         self._name = name
         self._radios_manager = radios_manager
         self._popover = None
-
         self._title = builder.get_object('title')
         self._title.set_label(name)
-
+        self.update_state()
         self.add(builder.get_object('widget'))
         self.set_cover()
         self.set_property('halign', Gtk.Align.START)
@@ -109,7 +108,7 @@ class RadioWidget(Gtk.Bin, AlbumWidget):
             Update widget state
         """
         selected = Lp.player.current_track.id == Type.RADIOS and\
-            self._name == Lp.player.current_track.artist
+            self._name == Lp.player.current_track.album_artist
         if selected:
             self._color.get_style_context().add_class(
                                                     'cover-frame-selected')
