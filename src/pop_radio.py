@@ -17,6 +17,8 @@ from threading import Thread
 
 from gettext import gettext as _
 
+from lollypop.objects import Track
+from lollypop.widgets_rating import RatingWidget
 from lollypop.define import Lp, ArtSize, GOOGLE_INC, GOOGLE_MAX
 from lollypop.art import Art
 
@@ -69,6 +71,12 @@ class RadioPopover(Gtk.Popover):
         self._stack.add_named(builder.get_object('widget'), 'widget')
         self._stack.set_visible_child_name('widget')
         self.add(self._stack)
+
+        track = Track()
+        track.set_radio(name, '')
+        rating = RatingWidget(track)
+        rating.show()
+        builder.get_object('widget').attach(rating, 0, 2, 2, 1)
 
         if self._name == '':
             builder.get_object('btn_add_modify').set_label(_("Add"))
