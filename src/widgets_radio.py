@@ -100,8 +100,7 @@ class RadioWidget(Gtk.Bin, AlbumWidget):
             return
         surface = Lp.art.get_radio(
                     self._name,
-                    ArtSize.BIG*self._cover.get_scale_factor(),
-                    self._selected)
+                    ArtSize.BIG*self._cover.get_scale_factor())
         self._cover.set_from_surface(surface)
         del surface
 
