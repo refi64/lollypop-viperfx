@@ -188,14 +188,8 @@ class MPRIS(dbus.service.Object):
                     GLib.filename_from_uri(Lp.player.current_track.uri)[0],
                     ArtSize.BIG)
                 if pixbuf is not None:
-                    # Gdk < 3.15 was missing save method
-                    # > 3.15 is missing savev method
-                    try:
-                        pixbuf.save(cover_path, "jpeg",
-                                    ["quality"], ["90"])
-                    except:
-                        pixbuf.savev(cover_path, "jpeg",
-                                     ["quality"], ["90"])
+                    pixbuf.savev(cover_path, "jpeg",
+                                 ["quality"], ["90"])
             else:
                 cover_path = Lp.art.get_album_cache_path(
                     Lp.player.current_track.album, ArtSize.BIG)
