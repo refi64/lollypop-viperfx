@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Generated with glade 3.18.3 -->
+<!-- Generated with glade 3.19.0 -->
 <interface>
   <requires lib="gtk+" version="3.12"/>
   <object class="GtkImage" id="close_image">
@@ -36,17 +36,6 @@
     <property name="hexpand">True</property>
     <property name="vexpand">True</property>
     <property name="column_homogeneous">True</property>
-    <child>
-      <object class="GtkImage" id="cover">
-        <property name="visible">True</property>
-        <property name="can_focus">False</property>
-        <property name="valign">center</property>
-      </object>
-      <packing>
-        <property name="left_attach">0</property>
-        <property name="top_attach">1</property>
-      </packing>
-    </child>
     <child>
       <object class="GtkBox" id="box1">
         <property name="visible">True</property>
@@ -276,6 +265,46 @@
       </packing>
     </child>
     <child>
+      <object class="GtkFrame" id="frame">
+        <property name="visible">True</property>
+        <property name="can_focus">False</property>
+        <property name="halign">center</property>
+        <property name="valign">center</property>
+        <property name="label_xalign">0</property>
+        <property name="shadow_type">in</property>
+        <child>
+          <object class="GtkFrame" id="color">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <property name="label_xalign">0</property>
+            <property name="shadow_type">in</property>
+            <child>
+              <object class="GtkImage" id="cover">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+              </object>
+            </child>
+            <child type="label_item">
+              <placeholder/>
+            </child>
+            <style>
+              <class name="cover-frame-border"/>
+            </style>
+          </object>
+        </child>
+        <child type="label_item">
+          <placeholder/>
+        </child>
+        <style>
+          <class name="cover-frame"/>
+        </style>
+      </object>
+      <packing>
+        <property name="left_attach">0</property>
+        <property name="top_attach">1</property>
+      </packing>
+    </child>
+    <child>
       <placeholder/>
     </child>
     <child>
@@ -293,9 +322,5 @@
   </object>
   <object class="GtkSizeGroup" id="sizegroup1">
     <property name="mode">vertical</property>
-    <widgets>
-      <widget name="cover"/>
-      <widget name="box1"/>
-    </widgets>
   </object>
 </interface>
