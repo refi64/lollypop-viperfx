@@ -85,10 +85,11 @@ class RadioWidget(Gtk.Bin, AlbumWidget):
         """
         if self._cover is None:
             return
-        path = Lp.art.get_radio_artwork_path(
+        surface = Lp.art.get_radio(
                     self._name,
                     ArtSize.BIG*self._cover.get_scale_factor())
-        self._cover.set_from_file(path)
+        self._cover.set_from_surface(surface)
+        del surface
 
     def update_cover(self):
         """

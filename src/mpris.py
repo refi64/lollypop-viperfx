@@ -182,7 +182,7 @@ class MPRIS(dbus.service.Object):
             self._metadata["xesam:userRating"] = \
                 Lp.player.current_track.get_popularity() / 5
             if Lp.player.current_track.id == Type.RADIOS:
-                cover_path = Lp.art.get_radio_artwork_path(
+                cover_path = Lp.art.get_radio_cache_path(
                     Lp.player.current_track.artist, ArtSize.BIG)
             elif Lp.player.current_track.id == Type.EXTERNALS:
                 cover_path = "/tmp/lollypop_mpris.jpg"
@@ -193,7 +193,7 @@ class MPRIS(dbus.service.Object):
                     pixbuf.savev(cover_path, "jpeg",
                                  ["quality"], ["90"])
             else:
-                cover_path = Lp.art.get_album_artwork_path(
+                cover_path = Lp.art.get_album_cache_path(
                     Lp.player.current_track.album, ArtSize.BIG)
             if cover_path is not None:
                 self._metadata['mpris:artUrl'] = "file://" + cover_path

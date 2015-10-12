@@ -10,7 +10,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-from gi.repository import Gtk, GdkPixbuf, Gdk, GObject
+from gi.repository import Gtk, GObject
 
 from math import pi
 
@@ -26,10 +26,7 @@ class CellRendererAlbum(Gtk.CellRenderer):
 
     def do_render(self, ctx, widget, background_area, cell_area, flags):
         size = ArtSize.MEDIUM * widget.get_scale_factor()
-        path = Lp.art.get_album_artwork_path(Album(self.album), size)
-        pixbuf = GdkPixbuf.Pixbuf.new_from_file_at_size(path, size, size)
-        surface = Gdk.cairo_surface_create_from_pixbuf(pixbuf, 0, None)
-        del pixbuf
+        surface = Lp.art.get_album(Album(self.album), size)
         ctx.translate(cell_area.x, cell_area.y)
         ctx.new_sub_path()
         radius = 2
@@ -46,7 +43,6 @@ class CellRendererAlbum(Gtk.CellRenderer):
         ctx.fill()
         ctx.set_source_surface(surface, 1, 1)
         ctx.paint()
-        del surface
 
     def do_get_preferred_width(self, widget):
         size = ArtSize.MEDIUM

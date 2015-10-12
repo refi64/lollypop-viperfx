@@ -116,7 +116,7 @@ class LastFM(LastFMNetwork):
                 content = last_artist.get_bio_content()
             content = re.sub(r'<.*Last.fm.*>.', '', content)
             image_url = last_artist.get_cover_image(3)
-            return (url, image_url, content.encode(encoding='UTF-8'))
+            return (url, image_url, content)
         except:
             return (None, None, None)
 

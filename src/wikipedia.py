@@ -67,12 +67,12 @@ class Wikipedia:
                 # Search specific string in urls
                 for word in words:
                     if word.lower() in image.lower():
-                        return (url, image, content.encode(encoding='UTF-8'))
+                        return (url, image, content)
             # If we only found one jpg, then use it
             image = None
             if len(jpegs) == 1:
                 image = jpegs[0]
-            return (url, image, content.encode(encoding='UTF-8'))
+            return (url, image, content)
         except Exception as e:
             print("Wikipedia::get_page_infos(): %s" % e)
             return (None, None, None)

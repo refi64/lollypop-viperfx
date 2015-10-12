@@ -85,10 +85,10 @@ class NotificationManager:
                 app.is_fullscreen():
             return
         if player.current_track.id == Type.RADIOS:
-            cover_path = Lp.art.get_radio_artwork_path(
+            cover_path = Lp.art.get_radio_cache_path(
                 player.current_track.artist, ArtSize.BIG)
         else:
-            cover_path = Lp.art.get_album_artwork_path(
+            cover_path = Lp.art.get_album_cache_path(
                 player.current_track.album, ArtSize.BIG)
         if cover_path is not None:
             self._notification.set_hint('image-path',

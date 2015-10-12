@@ -10,7 +10,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-from gi.repository import GLib, GdkPixbuf, Gio
+from gi.repository import GLib, Gdk, GdkPixbuf, Gio
 
 import re
 import os
@@ -36,95 +36,33 @@ class RadioArt(BaseArt):
             except Exception as e:
                 print("RadioArt.__init__(): %s" % e)
 
-    def get_radio_artwork_path(self, name, size):
+    def get_radio_cache_path(self, name, size):
         """
-            get cover cache path for name
-            @param name as str
-            @param size as int
+            get cover cache path for radio
+            @param name as string
             @return cover path as string or None if no cover
         """
         filename = ''
         try:
             filename = self._get_radio_cache_name(name)
-            cache_path_jpg = "%s/%s_%s.jpg" % (self._CACHE_PATH,
+            cache_path_png = "%s/%s_%s.png" % (self._CACHE_PATH,
                                                filename,
                                                size)
-            self._cache_radio(name, size)
-            if os.path.exists(cache_path_jpg):
-                return cache_path_jpg
+            if os.path.exists(cache_path_png):
+                return cache_path_png
             else:
-                return self._cache_default_icon(
-                                             size,
-                                             'audio-input-microphone-symbolic')
+                self.get_radio(name, size)
+                if os.path.exists(cache_path_png):
+                    return cache_path_png
+                else:
+                    return self._get_default_icon_path(
+                                           size,
+                                           'audio-input-microphone-symbolic')
         except Exception as e:
-            print("Art::get_radio_artwork_path(): %s" % e, ascii(filename))
+            print("Art::get_radio_cache_path(): %s" % e, ascii(filename))
             return None
 
-    def copy_uri_to_cache(self, uri, name, size):
-        """
-            Copy uri to cache at size
-            @param uri as string
-            @param name as string
-            @param size as int
-            @thread safe
-        """
-        filename = self._get_radio_cache_name(name)
-        cache_path_jpg = "%s/%s_%s.jpg" % (self._CACHE_PATH, filename, size)
-        s = Gio.File.new_for_uri(uri)
-        d = Gio.File.new_for_path(cache_path_jpg)
-        s.copy(d, Gio.FileCopyFlags.OVERWRITE, None, None)
-        GLib.idle_add(self.emit, 'radio-artwork-changed', name)
-
-    def rename_radio(self, old_name, new_name):
-        """
-            Rename artwork
-            @param old name as str
-            @param new name as str
-        """
-        old = "%s/%s.jpg" % (self._RADIOS_PATH, old_name)
-        new = "%s/%s.jpg" % (self._RADIOS_PATH, new_name)
-        try:
-            os.rename(old, new)
-        except Exception as e:
-            print("RadioArt::rename_radio(): %s" % e)
-
-    def save_radio_artwork(self, pixbuf, radio):
-        """
-            Save pixbuf for radio
-            @param pixbuf as Gdk.Pixbuf
-            @param radio name as string
-        """
-        try:
-            artpath = self._RADIOS_PATH + "/" +\
-                      radio.replace('/', '-') + ".jpg"
-            pixbuf.savev(artpath, "jpeg", ["quality"], ["90"])
-        except Exception as e:
-            print("RadioArt::save_radio_artwork(): %s" % e)
-
-    def radio_artwork_update(self, name):
-        """
-            Announce radio logo update
-            @param radio name as string
-        """
-        self.emit('radio-artwork-changed', name)
-
-    def clean_radio_cache(self, name):
-        """
-            Remove logo from cache for radio
-            @param radio name as string
-        """
-        filename = self._get_radio_cache_name(name)
-        try:
-            for f in os.listdir(self._CACHE_PATH):
-                if re.search('%s_.*\.jpg' % re.escape(filename), f):
-                    os.remove(os.path.join(self._CACHE_PATH, f))
-        except Exception as e:
-            print("RadioArt::clean_radio_cache(): ", e, filename)
-
-#######################
-# PRIVATE             #
-#######################
-    def _cache_radio(self, name, size):
+    def get_radio(self, name, size):
         """
             Return a cairo surface for radio name
             @param radio name as string
@@ -132,11 +70,16 @@ class RadioArt(BaseArt):
             @return cairo surface
         """
         filename = self._get_radio_cache_name(name)
-        cache_path_jpg = "%s/%s_%s.jpg" % (self._CACHE_PATH, filename, size)
+        cache_path_png = "%s/%s_%s.png" % (self._CACHE_PATH, filename, size)
         pixbuf = None
 
         try:
-            if not os.path.exists(cache_path_jpg):
+            # Look in cache
+            if os.path.exists(cache_path_png):
+                pixbuf = GdkPixbuf.Pixbuf.new_from_file_at_size(cache_path_png,
+                                                                size,
+                                                                size)
+            else:
                 path = self._get_radio_art_path(name)
                 if path is not None:
                     pixbuf = GdkPixbuf.Pixbuf.new(GdkPixbuf.Colorspace.RGB,
@@ -161,12 +104,84 @@ class RadioArt(BaseArt):
                                     1,
                                     GdkPixbuf.InterpType.HYPER,
                                     255)
-            if pixbuf is not None:
-                pixbuf.savev(cache_path_jpg, "jpeg", ["quality"], ["90"])
+            if pixbuf is None:
+                return self._get_default_icon(
+                                             size,
+                                             'audio-input-microphone-symbolic')
+            pixbuf.savev(cache_path_png, "png", [None], [None])
+            surface = Gdk.cairo_surface_create_from_pixbuf(pixbuf, 0, None)
+            del pixbuf
+            return surface
 
         except Exception as e:
             print(e)
+            return self._get_default_icon(size,
+                                          'audio-input-microphone-symbolic')
 
+    def copy_uri_to_cache(self, uri, name, size):
+        """
+            Copy uri to cache at size
+            @param uri as string
+            @param name as string
+            @param size as int
+            @thread safe
+        """
+        filename = self._get_radio_cache_name(name)
+        cache_path_png = "%s/%s_%s.png" % (self._CACHE_PATH, filename, size)
+        s = Gio.File.new_for_uri(uri)
+        d = Gio.File.new_for_path(cache_path_png)
+        s.copy(d, Gio.FileCopyFlags.OVERWRITE, None, None)
+        GLib.idle_add(self.emit, 'logo-changed', name)
+
+    def rename_radio(self, old_name, new_name):
+        """
+            Rename artwork
+            @param old name as str
+            @param new name as str
+        """
+        old = "%s/%s.png" % (self._RADIOS_PATH, old_name)
+        new = "%s/%s.png" % (self._RADIOS_PATH, new_name)
+        try:
+            os.rename(old, new)
+        except Exception as e:
+            print("RadioArt::rename_radio(): %s" % e)
+
+    def save_radio_logo(self, pixbuf, radio):
+        """
+            Save pixbuf for radio
+            @param pixbuf as Gdk.Pixbuf
+            @param radio name as string
+        """
+        try:
+            artpath = self._RADIOS_PATH + "/" +\
+                      radio.replace('/', '-') + ".png"
+            pixbuf.savev(artpath, "png", [None], [None])
+        except Exception as e:
+            print("RadioArt::save_radio_logo(): %s" % e)
+
+    def announce_logo_update(self, name):
+        """
+            Announce radio logo update
+            @param radio name as string
+        """
+        self.emit('logo-changed', name)
+
+    def clean_radio_cache(self, name):
+        """
+            Remove logo from cache for radio
+            @param radio name as string
+        """
+        filename = self._get_radio_cache_name(name)
+        try:
+            for f in os.listdir(self._CACHE_PATH):
+                if re.search('%s_.*\.png' % re.escape(filename), f):
+                    os.remove(os.path.join(self._CACHE_PATH, f))
+        except Exception as e:
+            print("RadioArt::clean_radio_cache(): ", e, filename)
+
+#######################
+# PRIVATE             #
+#######################
     def _get_radio_art_path(self, name):
         """
             Look for radio covers
