@@ -58,7 +58,9 @@ class AlbumArt(BaseArt, ArtDownloader, TagReader):
                 if os.path.exists(cache_path_jpg):
                     return cache_path_jpg
                 else:
-                    return None
+                    return self._get_default_icon_path(
+                                           size,
+                                           'folder-music-symbolic')
         except Exception as e:
             print("Art::get_album_cache_path(): %s" % e, ascii(filename))
             return None
