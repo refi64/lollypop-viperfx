@@ -180,7 +180,7 @@ class ArtistContent(Gtk.Stack):
         if data is not None:
             stream = Gio.MemoryInputStream.new_from_data(data, None)
             pixbuf = GdkPixbuf.Pixbuf.new_from_stream_at_scale(stream,
-                                                               400,
+                                                               800,
                                                                -1,
                                                                True,
                                                                None)
