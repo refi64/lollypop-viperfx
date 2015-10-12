@@ -238,9 +238,9 @@ class RadioPopover(Gtk.Popover):
             Reset cache and use player object to announce cover change
         """
         pixbuf = self._orig_pixbufs[child.get_child()]
-        Lp.art.save_radio_logo(pixbuf, self._name)
+        Lp.art.save_radio_artwork(pixbuf, self._name)
         Lp.art.clean_radio_cache(self._name)
-        Lp.art.announce_logo_update(self._name)
+        Lp.art.radio_artwork_update(self._name)
         self.hide()
         self._streams = {}
 

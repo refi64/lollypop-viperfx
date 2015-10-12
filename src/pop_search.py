@@ -54,13 +54,12 @@ class SearchRow(Gtk.ListBoxRow):
         self._artist.set_text(artist)
         self._title.set_text(title)
 
-    def set_cover(self, surface):
+    def set_cover(self, path):
         """
-            Set cover surface
-            @param surface as cairo surface
+            Set cover
+            @param path as str
         """
-        self._cover.set_from_surface(surface)
-        del surface
+        self._cover.set_from_file(path)
 
     def exists(self, items):
         """
@@ -269,8 +268,9 @@ class SearchPopover(Gtk.Popover):
                 if result.count != -1:
                     result.title += " (%s)" % result.count
                 search_row.set_text(result.artist, result.title)
-                search_row.set_cover(Lp.art.get_album(Album(result.album_id),
-                                     ArtSize.MEDIUM*self.get_scale_factor()))
+                search_row.set_cover(Lp.art.get_album_artwork_path(
+                                       Album(result.album_id),
+                                       ArtSize.MEDIUM*self.get_scale_factor()))
                 search_row.id = result.id
                 search_row.is_track = result.is_track
                 self._view.add(search_row)

@@ -107,9 +107,9 @@ class ArtDownloader:
                 if album_id is None:
                     album_id = Lp.albums.get_compilation_id(album, sql)
                 if album_id is not None:
-                    Lp.art.save_album_art(pixbuf, album_id, sql)
+                    Lp.art.save_album_artwork(pixbuf, album_id, sql)
                     Lp.art.clean_album_cache(Album(album_id), sql)
-                    GLib.idle_add(Lp.art.announce_cover_update, album_id)
+                    GLib.idle_add(Lp.art.album_artwork_update, album_id)
             except Exception as e:
                 print("ArtDownloader::_download_albums_art: %s" % e)
         self._in_albums_download = False

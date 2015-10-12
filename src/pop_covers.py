@@ -69,7 +69,7 @@ class CoversPopover(Gtk.Popover):
             Populate view
         """
         # First load local files
-        urls = Lp.art.get_locally_available_covers(self._album)
+        urls = Lp.art.get_album_all_artwork_paths(self._album)
         for url in urls:
             pixbuf = GdkPixbuf.Pixbuf.new_from_file_at_size(url,
                                                             ArtSize.MONSTER,
@@ -185,8 +185,8 @@ class CoversPopover(Gtk.Popover):
             Reset cache and use player object to announce cover change
         """
         pixbuf = self._orig_pixbufs[child.get_child()]
-        Lp.art.save_album_art(pixbuf, self._album.id)
+        Lp.art.save_album_artwork(pixbuf, self._album.id)
         Lp.art.clean_album_cache(self._album)
-        Lp.art.announce_cover_update(self._album.id)
+        Lp.art.album_artwork_update(self._album.id)
         self.hide()
         self._streams = {}

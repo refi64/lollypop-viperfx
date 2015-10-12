@@ -48,15 +48,10 @@ class NextPopover(Gtk.Popover):
             self._skip_btn.show()
         self._artist_label.set_text(Lp.player.next_track.artist)
         self._title_label.set_text(Lp.player.next_track.title)
-        art = Lp.art.get_album(Lp.player.next_track.album,
-                               ArtSize.MEDIUM * self.get_scale_factor())
-        if art is not None:
-            self._cover.set_from_surface(art)
-            del art
-            self._cover.set_tooltip_text(Lp.player.next_track.album.name)
-            self._cover.show()
-        else:
-            self._cover.hide()
+        path = Lp.art.get_album_artwork_path(
+                                      Lp.player.next_track.album,
+                                      ArtSize.MEDIUM * self.get_scale_factor())
+        self._cover.set_from_file(path)
 
 #######################
 # PRIVATE             #

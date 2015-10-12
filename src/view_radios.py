@@ -33,7 +33,7 @@ class RadiosView(View):
             Init view
         """
         View.__init__(self)
-        self._signal = Lp.art.connect('logo-changed',
+        self._signal = Lp.art.connect('radio-artwork-changed',
                                       self._on_logo_changed)
 
         self._radios_manager = Radios()

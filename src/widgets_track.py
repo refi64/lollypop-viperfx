@@ -197,13 +197,13 @@ class AlbumRow(Row):
         else:
             self._header.hide()
 
-    def set_cover(self, surface, tooltip):
+    def set_cover(self, path, tooltip):
         """
             Set cover
-            @param cover as cairo.Surface
+            @param path as str
             @param tooltip as str
         """
-        self._cover.set_from_surface(surface)
+        self._cover.set_from_file(path)
         self._cover.set_tooltip_text(tooltip)
         self._cover_frame.set_shadow_type(Gtk.ShadowType.IN)
 
@@ -431,11 +431,10 @@ class TracksWidget(Gtk.ListBox):
         album_row.set_object_id(track_id)
         if album is not None:
             album_row.set_album_and_artist(album.id)
-            surface = Lp.art.get_album(
-                        album,
-                        ArtSize.MEDIUM*album_row.get_scale_factor())
-            album_row.set_cover(surface, Lp.albums.get_name(album.id))
-            del surface
+            path = Lp.art.get_album_artwork_path(
+                                   album,
+                                   ArtSize.MEDIUM*album_row.get_scale_factor())
+            album_row.set_cover(path, Lp.albums.get_name(album.id))
             album_row.show_header(True)
         album_row.show()
         self.add(album_row)

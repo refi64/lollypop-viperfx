@@ -48,16 +48,14 @@ class ToolbarInfos(Gtk.Bin):
         self._cover_frame = builder.get_object('frame')
         self._cover = builder.get_object('cover')
 
-        Lp.art.connect('cover-changed', self._update_cover)
-        Lp.art.connect('logo-changed', self._update_logo)
+        Lp.art.connect('album-artwork-changed', self._update_cover)
+        Lp.art.connect('radio-artwork-changed', self._update_logo)
 
     def on_current_changed(self, player):
         """
             Update toolbar on current changed
             @param player as Player
         """
-        art = None
-
         if player.current_track.artist == '':
             self._artist_label.hide()
         else:
@@ -70,22 +68,20 @@ class ToolbarInfos(Gtk.Bin):
             self._title_label.set_text(player.current_track.title)
 
         if player.current_track.id == Type.RADIOS:
-            art = Lp.art.get_radio(player.current_track.artist,
-                                   ArtSize.SMALL*self.get_scale_factor())
+            path = Lp.art.get_radio_artwork_path(
+                                        player.current_track.artist,
+                                        ArtSize.SMALL*self.get_scale_factor())
         elif player.current_track.id == Type.EXTERNALS:
-            art = Lp.art.get_cover_for_uri(
+            path = Lp.art.get_album_artwork_path2(
                     player.current_track.uri,
                     ArtSize.SMALL*self.get_scale_factor())
         else:
-            art = Lp.art.get_album(player.current_track.album,
+            path = Lp.art.get_album_artwork_path(
+                                   player.current_track.album,
                                    ArtSize.SMALL*self.get_scale_factor())
-        if art is not None:
-            self._cover.set_from_surface(art)
-            del art
-            self._cover.set_tooltip_text(player.current_track.album.name)
-            self._cover_frame.show()
-        else:
-            self._cover_frame.hide()
+        self._cover.set_from_file(path)
+        self._cover.set_tooltip_text(player.current_track.album.name)
+        self._cover_frame.show()
 
     def on_status_changed(self, player):
         """
@@ -104,10 +100,10 @@ class ToolbarInfos(Gtk.Bin):
             @param album id as int
         """
         if Lp.player.current_track.album.id == album_id:
-            surface = Lp.art.get_album(Lp.player.current_track.album,
-                                       ArtSize.SMALL)
-            self._cover.set_from_surface(surface)
-            del surface
+            self._cover.set_from_file(
+                          Lp.art.get_album_artwork_path(
+                              self._album,
+                              ArtSize.BIG * self._cover.get_scale_factor()))
 
     def _update_logo(self, art, name):
         """

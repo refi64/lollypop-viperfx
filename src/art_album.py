@@ -10,7 +10,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-from gi.repository import GLib, Gdk, GdkPixbuf, Gio, Gst
+from gi.repository import GLib, GdkPixbuf, Gio, Gst
 
 import re
 import os
@@ -38,9 +38,9 @@ class AlbumArt(BaseArt, ArtDownloader, TagReader):
         TagReader.__init__(self)
         self._favorite = Lp.settings.get_value('favorite-cover').get_string()
 
-    def get_album_cache_path(self, album, size):
+    def get_album_artwork_path(self, album, size):
         """
-            get cover cache path for album_id
+            Get album artwork path
             @param album as Album
             @param size as int
             @return cover path as string or None if no cover
@@ -51,21 +51,37 @@ class AlbumArt(BaseArt, ArtDownloader, TagReader):
             cache_path_jpg = "%s/%s_%s.jpg" % (self._CACHE_PATH,
                                                filename,
                                                size)
+            self._cache_album(album, size)
             if os.path.exists(cache_path_jpg):
                 return cache_path_jpg
             else:
-                self.get_album(album, size)
-                if os.path.exists(cache_path_jpg):
-                    return cache_path_jpg
-                else:
-                    return None
+                return self._cache_default_icon(size, 'folder-music-symbolic')
         except Exception as e:
-            print("Art::get_album_cache_path(): %s" % e, ascii(filename))
+            print("Art::get_album_artwork_path(): %s" % e, ascii(filename))
             return None
 
-    def get_album_art_path(self, album, sql=None):
+    def get_album_artwork_path2(self, uri, size):
         """
-            Look for covers in dir:
+            Get album artwork path for uri
+            @param uri as string
+            @param size as int
+            @return path as str
+        """
+        path = GLib.filename_from_uri(uri).replace('/', '_')
+        cache_path_jpg = "%s/%s_%s.jpg" % (self._CACHE_PATH, path, size)
+        if os.path.exists(cache_path_jpg):
+            return cache_path_jpg
+        else:
+            pixbuf = self.pixbuf_from_tags(GLib.filename_from_uri(uri)[0],
+                                           size)
+            if pixbuf is not None:
+                pixbuf.savev(cache_path_jpg, "jpeg", ["quality"], ["90"])
+                return cache_path_jpg
+        return self._cache_default_icon(size, 'folder-music-symbolic')
+
+    def get_album_favorite_artwork_path(self, album, sql=None):
+        """
+            Look for artworks in album dir:
             - favorite from settings first
             - Artist_Album.jpg then
             - Any any supported image otherwise
@@ -84,13 +100,13 @@ class AlbumArt(BaseArt, ArtDownloader, TagReader):
             for path in paths:
                 if os.path.exists(path):
                     return path
-            return self.get_locally_available_cover(album)
+            return self.get_album_first_artwork_path(album)
         except:
             return None
 
-    def get_locally_available_cover(self, album):
+    def get_album_first_artwork_path(self, album):
         """
-            Get first locally available cover for album
+            Get first locally available artwork for album
             @param album as Album
             @return path or None
         """
@@ -100,9 +116,9 @@ class AlbumArt(BaseArt, ArtDownloader, TagReader):
                            all_paths):
             return path
 
-    def get_locally_available_covers(self, album):
+    def get_album_all_artwork_paths(self, album):
         """
-            Get locally available covers for album
+            Get locally available artworks for album
             @param album as Album
             @return [paths]
         """
@@ -115,71 +131,7 @@ class AlbumArt(BaseArt, ArtDownloader, TagReader):
                 paths.append(path)
         return paths
 
-    def get_cover_for_uri(self, uri, size):
-        """
-            Return a cairo surface with borders for uri
-            No cache usage
-            @param uri as string
-            @param size as int
-            @return cairo surface
-        """
-        pixbuf = self.pixbuf_from_tags(GLib.filename_from_uri(uri)[0], size)
-        if pixbuf is not None:
-            surface = Gdk.cairo_surface_create_from_pixbuf(pixbuf, 0, None)
-            del pixbuf
-            return surface
-        else:
-            return self._get_default_icon(size, 'folder-music-symbolic')
-
-    def get_album(self, album, size):
-        """
-            Return a cairo surface for album_id, covers are cached as jpg.
-            @param album as Album
-            @param pixbuf size as int
-            @return cairo surface
-        """
-        filename = self._get_album_cache_name(album)
-        cache_path_jpg = "%s/%s_%s.jpg" % (self._CACHE_PATH, filename, size)
-        pixbuf = None
-
-        try:
-            # Look in cache
-            if os.path.exists(cache_path_jpg):
-                pixbuf = GdkPixbuf.Pixbuf.new_from_file_at_size(cache_path_jpg,
-                                                                size,
-                                                                size)
-            else:
-                path = self.get_album_art_path(album)
-                # Look in album folder
-                if path is not None:
-                    pixbuf = GdkPixbuf.Pixbuf.new_from_file_at_scale(path,
-                                                                     size,
-                                                                     size,
-                                                                     False)
-                # Try to get from tags
-                else:
-                    try:
-                        if album.tracks:
-                            pixbuf = self.pixbuf_from_tags(
-                                        album.tracks[0].path, size)
-                    except Exception as e:
-                        pass
-                # No cover, use default one
-                if pixbuf is None:
-                    self.download_album_art(album.id)
-                    return self._get_default_icon(size,
-                                                  'folder-music-symbolic')
-                else:
-                    pixbuf.savev(cache_path_jpg, "jpeg", ["quality"], ["90"])
-            surface = Gdk.cairo_surface_create_from_pixbuf(pixbuf, 0, None)
-            del pixbuf
-            return surface
-
-        except Exception as e:
-            print(e)
-            return self._get_default_icon(size, 'folder-music-symbolic')
-
-    def save_album_art(self, pixbuf, album_id, sql=None):
+    def save_album_artwork(self, pixbuf, album_id, sql=None):
         """
             Save pixbuf for album id
             @param pixbuf as Gdk.Pixbuf
@@ -187,36 +139,26 @@ class AlbumArt(BaseArt, ArtDownloader, TagReader):
             @param sql as sqlite cursor
         """
         try:
-            artpath = self.get_album_art_filepath(album_id, sql)
+            album = Album(album_id)
+            path_count = Lp.albums.get_path_count(album.path, sql)
+            # Many albums with same path, suffix with artist_album name
+            if path_count > 1:
+                artpath = os.path.join(album.path, "{}_{}.jpg".format(
+                                       album.artist_name, album.name))
+                if os.path.exists(os.path.join(album.path, self._favorite)):
+                    os.remove(os.path.join(album.path, self._favorite))
+            else:
+                artpath = os.path.join(album.path, self._favorite)
             pixbuf.savev(artpath, "jpeg", ["quality"], ["90"])
         except Exception as e:
-            print("Art::save_album_art(): %s" % e)
+            print("Art::save_album_artwork(): %s" % e)
 
-    def get_album_art_filepath(self, album_id, sql=None):
+    def album_artwork_update(self, album_id):
         """
-            Get album art filepath
-            @param album_id as int
-            @param sql as sqlite cursor
-            @thread safe
-        """
-        album = Album(album_id)
-        path_count = Lp.albums.get_path_count(album.path, sql)
-        # Many albums with same path, suffix with artist_album name
-        if path_count > 1:
-            artpath = os.path.join(album.path, "{}_{}.jpg".format(
-                                   album.artist_name, album.name))
-            if os.path.exists(os.path.join(album.path, self._favorite)):
-                os.remove(os.path.join(album.path, self._favorite))
-        else:
-            artpath = os.path.join(album.path, self._favorite)
-        return artpath
-
-    def announce_cover_update(self, album_id):
-        """
-            Announce album cover update
+            Announce album artwork update
             @param album id as int
         """
-        self.emit('cover-changed', album_id)
+        self.emit('album-artwork-changed', album_id)
 
     def clean_album_cache(self, album, sql=None):
         """
@@ -261,6 +203,42 @@ class AlbumArt(BaseArt, ArtDownloader, TagReader):
 #######################
 # PRIVATE             #
 #######################
+    def _cache_album(self, album, size):
+        """
+            Create cache for album at size
+            @param album as Album
+            @param pixbuf size as int
+            @return cairo surface
+        """
+        filename = self._get_album_cache_name(album)
+        cache_path_jpg = "%s/%s_%s.jpg" % (self._CACHE_PATH, filename, size)
+        pixbuf = None
+
+        try:
+            if not os.path.exists(cache_path_jpg):
+                path = self.get_album_favorite_artwork_path(album)
+                # Look in album folder
+                if path is not None:
+                    pixbuf = GdkPixbuf.Pixbuf.new_from_file_at_scale(path,
+                                                                     size,
+                                                                     size,
+                                                                     False)
+                # Try to get from tags
+                else:
+                    try:
+                        if album.tracks:
+                            pixbuf = self.pixbuf_from_tags(
+                                        album.tracks[0].path, size)
+                    except Exception as e:
+                        pass
+                # No cover, use default one
+                if pixbuf is None:
+                    self.download_album_art(album.id)
+                else:
+                    pixbuf.savev(cache_path_jpg, "jpeg", ["quality"], ["90"])
+        except Exception as e:
+            print("AlbumArt::_cache(): ", e)
+
     def _get_album_cache_name(self, album, sql=None):
         """
             Get a uniq string for album

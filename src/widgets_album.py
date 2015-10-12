@@ -45,22 +45,20 @@ class AlbumWidget:
         """
         if self._cover is None:
             return
-        surface = Lp.art.get_album(
-                            self._album,
-                            ArtSize.BIG * self._cover.get_scale_factor())
-        self._cover.set_from_surface(surface)
-        del surface
+        self._cover.set_from_file(Lp.art.get_album_artwork_path(
+                              self._album,
+                              ArtSize.BIG * self._cover.get_scale_factor()))
 
     def update_cover(self, album_id):
         """
             Update cover for album id id needed
             @param album id as int
         """
-        surface = Lp.art.get_album(
-                            self._album,
-                            ArtSize.BIG * self._cover.get_scale_factor())
-        self._cover.set_from_surface(surface)
-        del surface
+        if album_id == self._album.id:
+            self._cover.set_from_file(
+                          Lp.art.get_album_artwork_path(
+                              self._album,
+                              ArtSize.BIG * self._cover.get_scale_factor()))
 
     def update_state(self):
         """
