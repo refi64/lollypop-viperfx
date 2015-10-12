@@ -431,7 +431,7 @@ class TracksWidget(Gtk.ListBox):
         album_row.set_object_id(track_id)
         if album is not None:
             album_row.set_album_and_artist(album.id)
-            surface = Lp.art.get_album(
+            surface = Lp.art.get_album_artwork(
                         album,
                         ArtSize.MEDIUM*album_row.get_scale_factor())
             album_row.set_cover(surface, Lp.albums.get_name(album.id))

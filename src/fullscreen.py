@@ -208,14 +208,14 @@ class FullScreen(Gtk.Window):
                 self._timelabel.hide()
                 self._total_time_label.hide()
                 self._progress.hide()
-                surface = Lp.art.get_radio(
+                surface = Lp.art.get_radio_artwork(
                     player.current_track.artist,
                     ArtSize.MONSTER*self.get_scale_factor())
             else:
                 self._timelabel.show()
                 self._total_time_label.show()
                 self._progress.show()
-                surface = Lp.art.get_album(
+                surface = Lp.art.get_album_artwork(
                     player.current_track.album,
                     ArtSize.MONSTER*self.get_scale_factor())
             self._cover.set_from_surface(surface)
