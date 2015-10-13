@@ -163,8 +163,8 @@ class CollectionScanner(GObject.GObject, ScannerTagReader):
                 mtime = int(os.path.getmtime(filepath))
                 if filepath not in orig_tracks:
                     try:
-                        infos = self.get_infos(filepath)
                         debug("Adding file: %s" % filepath)
+                        infos = self.get_infos(filepath)
                         self._add2db(filepath, mtime, infos, sql)
                     except Exception as e:
                         debug("Error scanning: %s, %s" % (filepath, e))
@@ -174,9 +174,9 @@ class CollectionScanner(GObject.GObject, ScannerTagReader):
                 else:
                     # Update tags by removing song and readd it
                     if mtime != mtimes[filepath]:
+                        debug("Adding file: %s" % filepath)
                         infos = self.get_infos(filepath)
                         if infos is not None:
-                            debug("Adding file: %s" % filepath)
                             self._add2db(filepath, mtime, infos, sql)
                         else:
                             print("Can't get infos for ", filepath)
