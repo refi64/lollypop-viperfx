@@ -52,7 +52,6 @@ class Wikipedia:
         if not Gio.NetworkMonitor.get_default().get_network_available():
             return (None, None, None)
         try:
-            words = name.split(' ')
             page = wikipedia.page(name)
             if page is None:
                 return (None, None, None)
@@ -65,9 +64,8 @@ class Wikipedia:
                 if image.lower().endswith('.jpg'):
                     jpegs.append(image)
                 # Search specific string in urls
-                for word in words:
-                    if word.lower() in image.lower():
-                        return (url, image, content.encode(encoding='UTF-8'))
+                if name.replace(' ', '_').lower() in image.lower():
+                    return (url, image, content.encode(encoding='UTF-8'))
             # If we only found one jpg, then use it
             image = None
             if len(jpegs) == 1:

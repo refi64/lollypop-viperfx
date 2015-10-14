@@ -54,7 +54,7 @@ class AlbumArt(BaseArt, ArtDownloader, TagReader):
             if os.path.exists(cache_path_jpg):
                 return cache_path_jpg
             else:
-                self.get_album(album, size)
+                self.get_album_artwork(album, size)
                 if os.path.exists(cache_path_jpg):
                     return cache_path_jpg
                 else:
