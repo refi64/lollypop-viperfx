@@ -37,7 +37,8 @@ class ArtDownloader:
         if Gio.NetworkMonitor.get_default().get_network_available():
             album = Lp.albums.get_name(album_id)
             artist = Lp.albums.get_artist_name(album_id)
-            self._albums_queue.append((artist, album))
+            year = Lp.albums.get_year(album_id)
+            self._albums_queue.append((artist, album, year))
             if not self._in_albums_download:
                 t = Thread(target=self._download_albums_art)
                 t.daemon = True
@@ -92,7 +93,7 @@ class ArtDownloader:
         self._in_albums_download = True
         sql = Lp.db.get_cursor()
         while self._albums_queue:
-            (artist, album) = self._albums_queue.pop()
+            (artist, album, year) = self._albums_queue.pop()
             pixbuf = self._get_album_art_spotify(artist, album)
             if pixbuf is None:
                 pixbuf = self._get_album_art_itunes(artist, album)
@@ -102,10 +103,10 @@ class ArtDownloader:
                 continue
             try:
                 artist_id = Lp.artists.get_id(artist, sql)
-                album_id = Lp.albums.get_id(album, artist_id, sql)
+                album_id = Lp.albums.get_id(album, artist_id, year, sql)
                 # Compilation or album without album artist
                 if album_id is None:
-                    album_id = Lp.albums.get_compilation_id(album, sql)
+                    album_id = Lp.albums.get_compilation_id(album, year, sql)
                 if album_id is not None:
                     Lp.art.save_album_artwork(pixbuf, album_id, sql)
                     Lp.art.clean_album_cache(Album(album_id), sql)
