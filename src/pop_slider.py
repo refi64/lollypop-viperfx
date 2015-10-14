@@ -25,6 +25,7 @@ class SliderPopover(Gtk.Popover):
         Gtk.Popover.__init__(self)
         self._timeout_id = None
         self.set_modal(False)
+        self.set_position(Gtk.PositionType.BOTTOM)
         self._past = Gtk.Label()
         self._past.show()
         self.add(self._past)
