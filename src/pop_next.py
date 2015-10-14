@@ -25,6 +25,7 @@ class NextPopover(Gtk.Popover):
             Init popover
         """
         Gtk.Popover.__init__(self)
+        self.set_position(Gtk.PositionType.BOTTOM)
         self.connect('map', self._on_map)
         self.connect('unmap', self._on_unmap)
         self.set_modal(False)
