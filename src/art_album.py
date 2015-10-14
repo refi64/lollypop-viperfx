@@ -74,7 +74,7 @@ class AlbumArt(BaseArt, ArtDownloader, TagReader):
             @param album as Album
             @return cover file path as string
         """
-        if album is None:
+        if album.id is None:
             return None
         try:
             paths = [
@@ -86,9 +86,9 @@ class AlbumArt(BaseArt, ArtDownloader, TagReader):
             for path in paths:
                 if os.path.exists(path):
                     return path
-            return self.get_first_album_artwork(album)
         except:
-            return None
+            pass
+        return None
 
     def get_first_album_artwork(self, album):
         """
@@ -135,22 +135,33 @@ class AlbumArt(BaseArt, ArtDownloader, TagReader):
                                                                 size,
                                                                 size)
             else:
-                path = self.get_album_artwork_path(album)
-                # Look in album folder
-                if path is not None:
-                    pixbuf = GdkPixbuf.Pixbuf.new_from_file_at_scale(path,
-                                                                     size,
-                                                                     size,
-                                                                     False)
-                # Try to get from tags
-                else:
+                # Use favorite folder artwork
+                if pixbuf is None:
+                    path = self.get_album_artwork_path(album)
+                    # Look in album folder
+                    if path is not None:
+                        pixbuf = GdkPixbuf.Pixbuf.new_from_file_at_scale(path,
+                                                                         size,
+                                                                         size,
+                                                                         False)
+                # Use tags artwork
+                if pixbuf is None and album.tracks:
                     try:
-                        if album.tracks:
-                            pixbuf = self.pixbuf_from_tags(
-                                        album.tracks[0].path, size)
+                        pixbuf = self.pixbuf_from_tags(
+                                    album.tracks[0].path, size)
                     except Exception as e:
                         pass
-                # No cover, use default one
+
+                # Use folder artwork
+                if pixbuf is None:
+                    path = self.get_first_album_artwork(album)
+                    # Look in album folder
+                    if path is not None:
+                        pixbuf = GdkPixbuf.Pixbuf.new_from_file_at_scale(path,
+                                                                         size,
+                                                                         size,
+                                                                         False)
+                # Use default artwork
                 if pixbuf is None:
                     self.download_album_art(album.id)
                     return self._get_default_icon(size,
