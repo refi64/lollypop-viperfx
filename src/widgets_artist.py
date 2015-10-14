@@ -245,10 +245,11 @@ class WikipediaContent(ArtistContent):
         self._menu.set_menu_model(self._menu_model)
         self._app = Gio.Application.get_default()
 
-    def populate(self, artist):
+    def populate(self, artist, album):
         """
             Populate content
             @param artist as str
+            @param album as str
             @thread safe
         """
         if artist is None:
@@ -258,7 +259,7 @@ class WikipediaContent(ArtistContent):
         if not self._load_cache_content(artist, 'wikipedia'):
             GLib.idle_add(self.set_visible_child_name, 'spinner')
             self._load_page_content(artist, artist)
-        self._setup_menu(artist)
+        self._setup_menu(artist, album)
 
     def clear(self):
         """
@@ -290,17 +291,20 @@ class WikipediaContent(ArtistContent):
         if artist == self._artist:
             ArtistContent.populate(self, content, image_url, 'wikipedia')
 
-    def _setup_menu(self, artist):
+    def _setup_menu(self, artist, album):
         """
             Setup menu for artist
             @param artist as str
+            @param album as str
         """
         if artist == self._artist:
             wp = Wikipedia()
             result = wp.search(artist)
-            if artist in result:
-                result.remove(artist)
-            GLib.idle_add(self._setup_menu_strings, result)
+            result += wp.search(artist + ' ' + album)
+            cleaned = list(set(result))
+            if artist in cleaned:
+                cleaned.remove(artist)
+            GLib.idle_add(self._setup_menu_strings, cleaned)
 
     def _setup_menu_strings(self, strings):
         """

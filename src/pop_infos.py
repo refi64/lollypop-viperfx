@@ -270,6 +270,13 @@ class InfosPopover(Gtk.Popover):
         if self._current is None:
             self._current = self._get_current()
         artist = Lp.artists.get_name(self._current[0])
+        # Get one album from artist
+        if self._current[1] == Type.NONE:
+            ids = Lp.artists.get_albums(self._current[0])
+            if ids:
+                album = Lp.albums.get_name(ids[0])
+        else:
+            album = Lp.albums.get_name(self._current[1])
         Lp.settings.set_value('infoswitch',
                               GLib.Variant('s', 'wikipedia'))
         content_widget = widget.get_child()
@@ -281,7 +288,7 @@ class InfosPopover(Gtk.Popover):
             content_widget.uncache(artist)
         if content_widget.should_update(artist) or force:
             content_widget.clear()
-            t = Thread(target=content_widget.populate, args=(artist,))
+            t = Thread(target=content_widget.populate, args=(artist, album))
             t.daemon = True
             t.start()
 
