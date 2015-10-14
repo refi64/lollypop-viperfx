@@ -68,7 +68,7 @@ class Wikipedia:
                     return (url, image, content.encode(encoding='UTF-8'))
             # If we only found one jpg, then use it
             image = None
-            if len(jpegs) == 1:
+            if jpegs:
                 image = jpegs[0]
             return (url, image, content.encode(encoding='UTF-8'))
         except Exception as e:
