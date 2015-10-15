@@ -30,7 +30,7 @@ class View(Gtk.Grid):
         self.set_border_width(0)
         self._current_signal = Lp.player.connect('current-changed',
                                                  self._on_current_changed)
-        self._cover_signal = Lp.art.connect('cover-changed',
+        self._cover_signal = Lp.art.connect('album-artwork-changed',
                                             self._on_cover_changed)
         self._scan_signal = Lp.scanner.connect('album-modified',
                                                self._on_album_modified)

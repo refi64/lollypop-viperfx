@@ -40,6 +40,8 @@ class BinPlayer(ReplayGainPlayer, BasePlayer):
         flags = self._playbin.get_property("flags")
         flags &= ~GstPlayFlags.GST_PLAY_FLAG_VIDEO
         self._playbin.set_property('flags', flags)
+        self._playbin.set_property('buffer-size', 5 << 20)
+        self._playbin.set_property('buffer-duration', 10 * Gst.SECOND)
         ReplayGainPlayer.__init__(self, self._playbin)
         self._playbin.connect('about-to-finish',
                               self._on_stream_about_to_finish)

@@ -51,7 +51,7 @@ class RadioArt(BaseArt):
             if os.path.exists(cache_path_png):
                 return cache_path_png
             else:
-                self.get_radio(name, size)
+                self.get_radio_artwork(name, size)
                 if os.path.exists(cache_path_png):
                     return cache_path_png
                 else:
@@ -62,7 +62,7 @@ class RadioArt(BaseArt):
             print("Art::get_radio_cache_path(): %s" % e, ascii(filename))
             return None
 
-    def get_radio(self, name, size):
+    def get_radio_artwork(self, name, size):
         """
             Return a cairo surface for radio name
             @param radio name as string
@@ -131,7 +131,7 @@ class RadioArt(BaseArt):
         s = Gio.File.new_for_uri(uri)
         d = Gio.File.new_for_path(cache_path_png)
         s.copy(d, Gio.FileCopyFlags.OVERWRITE, None, None)
-        GLib.idle_add(self.emit, 'logo-changed', name)
+        GLib.idle_add(self.emit, 'radio-artwork-changed', name)
 
     def rename_radio(self, old_name, new_name):
         """
@@ -146,7 +146,7 @@ class RadioArt(BaseArt):
         except Exception as e:
             print("RadioArt::rename_radio(): %s" % e)
 
-    def save_radio_logo(self, pixbuf, radio):
+    def save_radio_artwork(self, pixbuf, radio):
         """
             Save pixbuf for radio
             @param pixbuf as Gdk.Pixbuf
@@ -157,14 +157,14 @@ class RadioArt(BaseArt):
                       radio.replace('/', '-') + ".png"
             pixbuf.savev(artpath, "png", [None], [None])
         except Exception as e:
-            print("RadioArt::save_radio_logo(): %s" % e)
+            print("RadioArt::save_radio_artwork(): %s" % e)
 
-    def announce_logo_update(self, name):
+    def radio_artwork_update(self, name):
         """
             Announce radio logo update
             @param radio name as string
         """
-        self.emit('logo-changed', name)
+        self.emit('radio-artwork-changed', name)
 
     def clean_radio_cache(self, name):
         """

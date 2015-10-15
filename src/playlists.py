@@ -62,23 +62,26 @@ class Playlists(GObject.GObject):
 
         # We import playlists from lollypop < 0.9.60
         if try_import:
-            d = Gio.File.new_for_path(self.LOCAL_PATH + "/playlists")
-            infos = d.enumerate_children(
-                'standard::name',
-                Gio.FileQueryInfoFlags.NOFOLLOW_SYMLINKS,
-                None)
-            for info in infos:
-                f = info.get_name()
-                if f.endswith(".m3u"):
-                    if f[:-4] != self._LOVED:
-                        self.add(f[:-4])
-                    playlist_id = self.get_id(f[:-4])
-                    parser = TotemPlParser.Parser.new()
-                    parser.connect('entry-parsed',
-                                   self._on_entry_parsed,
-                                   playlist_id)
-                    parser.parse_async(d.get_uri() + "/%s" % f,
-                                       True, None, None)
+            try:
+                d = Gio.File.new_for_path(self.LOCAL_PATH + "/playlists")
+                infos = d.enumerate_children(
+                    'standard::name',
+                    Gio.FileQueryInfoFlags.NOFOLLOW_SYMLINKS,
+                    None)
+                for info in infos:
+                    f = info.get_name()
+                    if f.endswith(".m3u"):
+                        if f[:-4] != self._LOVED:
+                            self.add(f[:-4])
+                        playlist_id = self.get_id(f[:-4])
+                        parser = TotemPlParser.Parser.new()
+                        parser.connect('entry-parsed',
+                                       self._on_entry_parsed,
+                                       playlist_id)
+                        parser.parse_async(d.get_uri() + "/%s" % f,
+                                           True, None, None)
+            except:
+                pass
 
     def add(self, name, sql=None):
         """
