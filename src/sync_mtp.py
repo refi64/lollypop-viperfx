@@ -97,8 +97,6 @@ class MtpSync:
             self._errors = False
             self._errors_count = 0
             self._copied_art_uris = []
-            sql_l = Lp.db.get_cursor()
-            sql_p = Lp.playlists.get_cursor()
             # For progress bar
             self._total = 1
             self._done = 0
@@ -107,10 +105,9 @@ class MtpSync:
 
             # New tracks
             for playlist in playlists:
-                plnames.append(Lp.playlists.get_name(playlist, sql_p))
+                plnames.append(Lp.playlists.get_name(playlist))
                 self._fraction = self._done/self._total
-                self._total += len(Lp.playlists.get_tracks(playlist, sql_l,
-                                                           sql_p))
+                self._total += len(Lp.playlists.get_tracks(playlist))
 
             # Old tracks
             try:
@@ -122,11 +119,11 @@ class MtpSync:
 
             # Copy new tracks to device
             if self._syncing:
-                self._copy_to_device(playlists, sql_l, sql_p)
+                self._copy_to_device(playlists)
 
             # Remove old tracks from device
             if self._syncing:
-                self._remove_from_device(playlists, sql_l, sql_p)
+                self._remove_from_device(playlists)
 
             # Delete old playlists
             d = Gio.File.new_for_uri(self._uri)
@@ -151,16 +148,14 @@ class MtpSync:
             GLib.idle_add(self._on_errors)
         GLib.idle_add(self._on_finished)
 
-    def _copy_to_device(self, playlists, sql_l, sql_p):
+    def _copy_to_device(self, playlists):
         """
             Copy file from playlist to device
             @param playlists as [str]
-            @param sql_l as main sqlite cursor
-            @param sql_p as playlists sqlite cursor
         """
         for playlist in playlists:
             try:
-                playlist_name = Lp.playlists.get_name(playlist, sql_p)
+                playlist_name = Lp.playlists.get_name(playlist)
                 # Create playlist
                 m3u = Gio.File.new_for_path(
                     "/tmp/lollypop_%s.m3u" % (playlist_name,))
@@ -174,7 +169,7 @@ class MtpSync:
                 stream = None
 
             # Start copying
-            tracks_ids = Lp.playlists.get_tracks_ids(playlist, sql_l, sql_p)
+            tracks_ids = Lp.playlists.get_tracks_ids(playlist)
             for track_id in tracks_ids:
                 if track_id is None:
                     continue
@@ -202,7 +197,7 @@ class MtpSync:
                 if not d.query_exists(None):
                     self._retry(d.make_directory_with_parents, (None,))
                 # Copy album art
-                art = Lp.art.get_album_artwork_path(track.album, sql_l)
+                art = Lp.art.get_album_artwork_path(track.album)
                 if art is not None:
                     src_art = Gio.File.new_for_path(art)
                     art_uri = "%s/cover.jpg" % on_device_album_uri
@@ -253,19 +248,16 @@ class MtpSync:
                 self._retry(m3u.move,
                             (dst, Gio.FileCopyFlags.OVERWRITE, None, None))
 
-    def _remove_from_device(self, playlists, sql_l, sql_p):
+    def _remove_from_device(self, playlists):
         """
             Delete files not available in playlist
-            if sql None, delete all files
-            @param sql_l as main sqlite cursor
-            @param sql_p as playlists sqlite cursor
         """
         track_uris = []
         tracks_ids = []
 
         # Get tracks ids
         for playlist in playlists:
-            tracks_ids += Lp.playlists.get_tracks_ids(playlist, sql_l, sql_p)
+            tracks_ids += Lp.playlists.get_tracks_ids(playlist)
 
         # Get tracks uris
         for track_id in tracks_ids:
@@ -284,7 +276,7 @@ class MtpSync:
             artist_name = "".join([c for c in track.artist if
                                    c.isalpha() or
                                    c.isdigit() or c == ' ']).rstrip()
-            track_path = Lp.tracks.get_path(track_id, sql_l)
+            track_path = Lp.tracks.get_path(track_id)
             album_uri = "%s/tracks/%s_%s" % (self._uri,
                                              artist_name.lower(),
                                              album_name.lower())

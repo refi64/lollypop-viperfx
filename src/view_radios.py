@@ -93,10 +93,8 @@ class RadiosView(View):
         """
         radios = []
         # Get radios name
-        sql = self._radios_manager.get_cursor()
-        for (name, url) in self._radios_manager.get(sql):
+        for (name, url) in self._radios_manager.get():
             radios.append(name)
-        sql.close()
         GLib.idle_add(self._show_stack, radios)
 
     def _get_children(self):

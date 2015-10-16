@@ -385,9 +385,7 @@ class Container:
             @thread safe
         """
         def load():
-            sql = Lp.db.get_cursor()
-            genres = Lp.genres.get(sql)
-            sql.close()
+            genres = Lp.genres.get()
             return genres
 
         def setup(genres):
@@ -411,10 +409,8 @@ class Container:
             @thread safe
         """
         def load():
-            sql = Lp.db.get_cursor()
-            artists = Lp.artists.get(genre_id, sql)
-            compilations = Lp.albums.get_compilations(genre_id, sql)
-            sql.close()
+            artists = Lp.artists.get(genre_id)
+            compilations = Lp.albums.get_compilations(genre_id)
             return (artists, compilations)
 
         def setup(artists, compilations):
@@ -487,14 +483,12 @@ class Container:
             @param genre id as int
         """
         def load():
-            sql = Lp.db.get_cursor()
             if artist_id == Type.COMPILATIONS:
-                albums = Lp.albums.get_compilations(genre_id, sql)
+                albums = Lp.albums.get_compilations(genre_id)
             elif genre_id == Type.ALL:
-                albums = Lp.albums.get_ids(artist_id, None, sql)
+                albums = Lp.albums.get_ids(artist_id, None)
             else:
-                albums = Lp.albums.get_ids(artist_id, genre_id, sql)
-            sql.close()
+                albums = Lp.albums.get_ids(artist_id, genre_id)
             return albums
 
         view = ArtistView(artist_id, genre_id)
@@ -512,28 +506,26 @@ class Container:
             @param is compilation as bool
         """
         def load():
-            sql = Lp.db.get_cursor()
             albums = []
             if genre_id == Type.ALL:
                 if is_compilation:
-                    albums = Lp.albums.get_compilations(None, sql)
+                    albums = Lp.albums.get_compilations(None)
                 else:
                     if Lp.settings.get_value('show-compilations'):
-                        albums = Lp.albums.get_compilations(None, sql)
-                    albums += Lp.albums.get_ids(None, None, sql)
+                        albums = Lp.albums.get_compilations(None)
+                    albums += Lp.albums.get_ids(None, None)
             elif genre_id == Type.POPULARS:
-                albums = Lp.albums.get_populars(sql)
+                albums = Lp.albums.get_populars()
             elif genre_id == Type.RECENTS:
-                albums = Lp.albums.get_recents(sql)
+                albums = Lp.albums.get_recents()
             elif genre_id == Type.RANDOMS:
-                albums = Lp.albums.get_randoms(sql)
+                albums = Lp.albums.get_randoms()
             elif is_compilation:
-                albums = Lp.albums.get_compilations(genre_id, sql)
+                albums = Lp.albums.get_compilations(genre_id)
             else:
                 if Lp.settings.get_value('show-compilations'):
-                    albums = Lp.albums.get_compilations(genre_id, sql)
-                albums += Lp.albums.get_ids(None, genre_id, sql)
-            sql.close()
+                    albums = Lp.albums.get_compilations(genre_id)
+                albums += Lp.albums.get_ids(None, genre_id)
             return albums
 
         view = AlbumsView(genre_id, is_compilation)
@@ -550,23 +542,18 @@ class Container:
             @param playlist id as int
         """
         def load():
-            sql = Lp.db.get_cursor()
             if playlist_id == Lp.player.get_user_playlist_id():
                 tracks = [t.id for t in Lp.player.get_user_playlist()]
             elif playlist_id == Type.POPULARS:
-                tracks = Lp.tracks.get_populars(sql)
+                tracks = Lp.tracks.get_populars()
             elif playlist_id == Type.RECENTS:
-                tracks = Lp.tracks.get_recently_listened_to(sql)
+                tracks = Lp.tracks.get_recently_listened_to()
             elif playlist_id == Type.NEVER:
-                tracks = Lp.tracks.get_never_listened_to(sql)
+                tracks = Lp.tracks.get_never_listened_to()
             elif playlist_id == Type.RANDOMS:
-                tracks = Lp.tracks.get_randoms(sql)
+                tracks = Lp.tracks.get_randoms()
             else:
-                sql_p = Lp.playlists.get_cursor()
-                tracks = Lp.playlists.get_tracks_ids(playlist_id,
-                                                     sql, sql_p)
-                sql_p.close()
-            sql.close()
+                tracks = Lp.playlists.get_tracks_ids(playlist_id)
             return tracks
 
         view = None

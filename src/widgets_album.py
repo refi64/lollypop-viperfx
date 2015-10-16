@@ -326,7 +326,6 @@ class AlbumDetailedWidget(Gtk.Bin, AlbumWidget):
             @thread safe
         """
         self._stop = False
-        sql = Lp.db.get_cursor()
         for disc in self._discs:
             mid_tracks = int(0.5 + len(disc.tracks) / 2)
             self.populate_list_left(disc.tracks[:mid_tracks],
@@ -335,7 +334,6 @@ class AlbumDetailedWidget(Gtk.Bin, AlbumWidget):
             self.populate_list_right(disc.tracks[mid_tracks:],
                                      disc,
                                      mid_tracks + 1)
-        sql.close()
 
     def populate_list_left(self, tracks, disc, pos):
         """

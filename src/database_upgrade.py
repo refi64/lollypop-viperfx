@@ -11,20 +11,22 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
+from lollypop.sqlcursor import SqlCursor
+
 
 class DatabaseUpgrade:
     """
         Manage database schema upgrades
     """
 
-    def __init__(self, version, sql):
+    def __init__(self, version, db):
         """
             Init object
             @param version as int
-            @param sql as sqlite cursor
+            @param db as Database
         """
-        self._sql = sql
         self._version = version
+        self._db = db
         # Here are schema upgrade, key is database version,
         # value is sql request
         self._UPGRADES = {
@@ -43,10 +45,11 @@ class DatabaseUpgrade:
         @return new db version as int
     """
     def do_db_upgrade(self):
-        for i in range(self._version+1, len(self._UPGRADES)+1):
-            try:
-                self._sql.execute(self._UPGRADES[i])
-                self._sql.commit()
-            except Exception as e:
-                print("Database upgrade failed: ", e)
-        return len(self._UPGRADES)
+        with SqlCursor(self._db) as sql:
+            for i in range(self._version+1, len(self._UPGRADES)+1):
+                try:
+                    sql.execute(self._UPGRADES[i])
+                    sql.commit()
+                except Exception as e:
+                    print("Database upgrade failed: ", e)
+            return len(self._UPGRADES)

@@ -21,6 +21,7 @@ from datetime import datetime
 from lollypop.database import Database
 from lollypop.define import Lp, Type
 from lollypop.objects import Track
+from lollypop.sqlcursor import SqlCursor
 
 
 class Playlists(GObject.GObject):
@@ -51,12 +52,12 @@ class Playlists(GObject.GObject):
         GObject.GObject.__init__(self)
         self._LOVED = _("Loved tracks")
         try_import = not os.path.exists(self.DB_PATH)
-        self._sql = self.get_cursor()
         # Create db schema
         try:
-            self._sql.execute(self.create_playlists)
-            self._sql.execute(self.create_tracks)
-            self._sql.commit()
+            with SqlCursor(self) as sql:
+                sql.execute(self.create_playlists)
+                sql.execute(self.create_tracks)
+                sql.commit()
         except:
             pass
 
@@ -83,137 +84,124 @@ class Playlists(GObject.GObject):
             except:
                 pass
 
-    def add(self, name, sql=None):
+    def add(self, name):
         """
             Add a playlist
             @param playlist name as str
             @thread safe
         """
-        if not sql:
-            sql = self._sql
-        result = sql.execute("INSERT INTO playlists (name, mtime)"
-                             " VALUES (?, ?)",
-                             (name, datetime.now().strftime('%s')))
-        sql.commit()
-        GLib.idle_add(self.emit, 'playlists-changed', result.lastrowid)
+        with SqlCursor(self) as sql:
+            result = sql.execute("INSERT INTO playlists (name, mtime)"
+                                 " VALUES (?, ?)",
+                                 (name, datetime.now().strftime('%s')))
+            sql.commit()
+            GLib.idle_add(self.emit, 'playlists-changed', result.lastrowid)
 
-    def exists(self, playlist_id, sql=None):
+    def exists(self, playlist_id):
         """
             Return True if playlist exists
             @param playlist id as int
             @param bool
         """
-        if not sql:
-            sql = self._sql
-        result = sql.execute("SELECT rowid\
-                              FROM playlists\
-                              WHERE rowid=?",
-                             (playlist_id,))
-        v = result.fetchone()
-        if v is not None:
-            return True
-        else:
-            return False
+        with SqlCursor(self) as sql:
+            result = sql.execute("SELECT rowid\
+                                  FROM playlists\
+                                  WHERE rowid=?",
+                                 (playlist_id,))
+            v = result.fetchone()
+            if v is not None:
+                return True
+            else:
+                return False
 
-    def rename(self, new_name, old_name, sql=None):
+    def rename(self, new_name, old_name):
         """
             Rename playlist
             @param new playlist name as str
             @param old playlist name as str
         """
-        if not sql:
-            sql = self._sql
-        playlist_id = self.get_id(old_name, sql)
-        sql.execute("UPDATE playlists\
-                    SET name=?\
-                    WHERE name=?",
-                    (new_name, old_name))
-        sql.commit()
-        GLib.idle_add(self.emit, 'playlists-changed', playlist_id)
+        with SqlCursor(self) as sql:
+            playlist_id = self.get_id(old_name, sql)
+            sql.execute("UPDATE playlists\
+                        SET name=?\
+                        WHERE name=?",
+                        (new_name, old_name))
+            sql.commit()
+            GLib.idle_add(self.emit, 'playlists-changed', playlist_id)
 
-    def delete(self, name, sql=None):
+    def delete(self, name):
         """
             delete playlist
             @param playlist name as str
         """
-        if not sql:
-            sql = self._sql
-        playlist_id = self.get_id(name, sql)
-        sql.execute("DELETE FROM playlists\
-                    WHERE name=?",
-                    (name,))
-        sql.commit()
-        GLib.idle_add(self.emit, 'playlists-changed', playlist_id)
+        with SqlCursor(self) as sql:
+            playlist_id = self.get_id(name, sql)
+            sql.execute("DELETE FROM playlists\
+                        WHERE name=?",
+                        (name,))
+            sql.commit()
+            GLib.idle_add(self.emit, 'playlists-changed', playlist_id)
 
-    def get(self, sql=None):
+    def get(self):
         """
             Return availables playlists
             @return array of (id, string)
         """
-        if not sql:
-            sql = self._sql
-        result = sql.execute("SELECT rowid, name\
-                              FROM playlists\
-                              ORDER BY name COLLATE NOCASE")
-        return list(result)
+        with SqlCursor(self) as sql:
+            result = sql.execute("SELECT rowid, name\
+                                  FROM playlists\
+                                  ORDER BY name COLLATE NOCASE")
+            return list(result)
 
-    def get_last(self, sql=None):
+    def get_last(self):
         """
             Return 6 last modified playlist
             @return [string]
         """
-        if not sql:
-            sql = self._sql
-        result = sql.execute("SELECT rowid, name\
-                              FROM playlists\
-                              ORDER BY mtime DESC\
-                              LIMIT 6")
-        return list(result)
+        with SqlCursor(self) as sql:
+            result = sql.execute("SELECT rowid, name\
+                                  FROM playlists\
+                                  ORDER BY mtime DESC\
+                                  LIMIT 6")
+            return list(result)
 
-    def get_tracks(self, playlist_id, sql_l=None, sql_p=None):
+    def get_tracks(self, playlist_id):
         """
             Return availables tracks for playlist
             If playlist name == Type.ALL, then return all tracks from db
             @param playlist name as str
             @return array of paths as [str]
         """
-        if sql_p is None:
-            sql_p = self._sql
-        if sql_l is None:
-            sql_l = Lp.sql
-        if playlist_id == Type.ALL:
-            return Lp.tracks.get_paths(sql_l)
-        else:
-            result = sql_p.execute("SELECT filepath\
-                                   FROM tracks\
-                                   WHERE playlist_id=?", (playlist_id,))
-            return list(itertools.chain(*result))
+        with SqlCursor(self) as sql:
+            if playlist_id == Type.ALL:
+                return Lp.tracks.get_paths()
+            else:
+                result = sql.execute("SELECT filepath\
+                                      FROM tracks\
+                                      WHERE playlist_id=?", (playlist_id,))
+                return list(itertools.chain(*result))
 
-    def get_tracks_ids(self, playlist_id, sql_l=None, sql_p=None):
+    def get_tracks_ids(self, playlist_id):
         """
             Return availables tracks id for playlist
             If playlist name == Type.ALL, then return all tracks from db
             @param playlist id as int
             @return array of track id as int
         """
-        if not sql_l:
-            sql_l = Lp.sql
-        if not sql_p:
-            sql_p = self._sql
-        if playlist_id == Type.ALL:
-            tracks = Lp.tracks.get_ids(sql_l)
-        else:
-            result = sql_p.execute("SELECT music.tracks.rowid\
-                                   FROM tracks, music.tracks\
-                                   WHERE tracks.playlist_id=?\
-                                   AND music.tracks.filepath=\
-                                   main.tracks.filepath",
-                                   (playlist_id,))
+        with SqlCursor(self) as sql:
+            if playlist_id == Type.ALL:
+                tracks = Lp.tracks.get_ids()
+            else:
+                result = sql.execute("SELECT music.tracks.rowid\
+                                      FROM tracks, music.tracks\
+                                      WHERE tracks.playlist_id=?\
+                                      AND music.tracks.filepath=\
+                                      main.tracks.filepath",
+                                     (playlist_id,))
+                return list(itertools.chain(*result))
+            return tracks
 
-            return list(itertools.chain(*result))
-        return tracks
-
-    def get_id(self, playlist_name, sql=None):
+    def get_id(self, playlist_name):
         """
             Get playlist id
             @param playlist name as str
@@ -221,17 +209,16 @@ class Playlists(GObject.GObject):
         """
         if playlist_name == self._LOVED:
             return Type.LOVED
-        if not sql:
-            sql = self._sql
-        result = sql.execute("SELECT rowid\
-                             FROM playlists\
-                             WHERE name=?", (playlist_name,))
-        v = result.fetchone()
-        if v is not None:
-            return v[0]
-        return Type.NONE
+        with SqlCursor(self) as sql:
+            result = sql.execute("SELECT rowid\
+                                 FROM playlists\
+                                 WHERE name=?", (playlist_name,))
+            v = result.fetchone()
+            if v is not None:
+                return v[0]
+            return Type.NONE
 
-    def get_name(self, playlist_id, sql=None):
+    def get_name(self, playlist_id):
         """
             Get playlist name
             @param playlist id as int
@@ -239,80 +226,76 @@ class Playlists(GObject.GObject):
         """
         if playlist_id == Type.LOVED:
             return self._LOVED
-        if not sql:
-            sql = self._sql
-        result = sql.execute("SELECT name\
-                             FROM playlists\
-                             WHERE rowid=?", (playlist_id,))
-        v = result.fetchone()
-        if v is not None:
-            return v[0]
-        return ''
+        with SqlCursor(self) as sql:
+            result = sql.execute("SELECT name\
+                                 FROM playlists\
+                                 WHERE rowid=?", (playlist_id,))
+            v = result.fetchone()
+            if v is not None:
+                return v[0]
+            return ''
 
-    def clear(self, playlist_id, sql=None):
+    def clear(self, playlist_id):
         """
             Clear playlsit
             @param playlist id as int
         """
-        if not sql:
-            sql = self._sql
-        sql.execute("DELETE FROM tracks\
-                     WHERE playlist_id=?", (playlist_id,))
-        sql.commit()
+        with SqlCursor(self) as sql:
+            sql.execute("DELETE FROM tracks\
+                         WHERE playlist_id=?", (playlist_id,))
+            sql.commit()
 
-    def add_tracks(self, playlist_id, tracks, sql=None):
+    def add_tracks(self, playlist_id, tracks):
         """
             Add tracks to playlist if not already present
             @param playlist id as int
             @param tracks as [Track]
         """
-        if not sql:
-            sql = self._sql
-        for track in tracks:
-            if not self.exists_track(playlist_id, track.id, sql):
-                sql.execute("INSERT INTO tracks"
-                            " VALUES (?, ?)",
-                            (playlist_id, track.path))
-        sql.execute("UPDATE playlists SET mtime=?\
-                     WHERE rowid=?", (datetime.now().strftime('%s'),
-                                      playlist_id))
-        sql.commit()
-        GLib.idle_add(self.emit, "playlist-changed", playlist_id)
+        with SqlCursor(self) as sql:
+            for track in tracks:
+                if not self.exists_track(playlist_id, track.id, sql):
+                    sql.execute("INSERT INTO tracks"
+                                " VALUES (?, ?)",
+                                (playlist_id, track.path))
+            sql.execute("UPDATE playlists SET mtime=?\
+                         WHERE rowid=?", (datetime.now().strftime('%s'),
+                                          playlist_id))
+            sql.commit()
+            GLib.idle_add(self.emit, "playlist-changed", playlist_id)
 
-    def remove_tracks(self, playlist_id, tracks, sql=None):
+    def remove_tracks(self, playlist_id, tracks):
         """
             Remove tracks from playlist
             @param playlist id as int
             @param tracks as [Track]
         """
-        if not sql:
-            sql = self._sql
-        for track in tracks:
-            sql.execute("DELETE FROM tracks\
-                         WHERE filepath=?\
-                         AND playlist_id=?", (track.path, playlist_id))
-        sql.commit()
-        GLib.idle_add(self.emit, "playlist-changed", playlist_id)
+        with SqlCursor(self) as sql:
+            for track in tracks:
+                sql.execute("DELETE FROM tracks\
+                             WHERE filepath=?\
+                             AND playlist_id=?", (track.path, playlist_id))
+            sql.commit()
+            GLib.idle_add(self.emit, "playlist-changed", playlist_id)
 
-    def exists_track(self, playlist_id, track_id, sql=None):
+    def exists_track(self, playlist_id, track_id):
         """
             Check if track id exist in playlist
             @param playlist id as int
             @param track as Track
             @return bool
         """
-        if not sql:
-            sql = self._sql
-        result = sql.execute("SELECT main.tracks.filepath\
-                              FROM tracks, music.tracks\
-                              WHERE music.tracks.rowid=?\
-                              AND playlist_id=?\
-                              AND music.tracks.filepath=main.tracks.filepath",
-                             (track_id, playlist_id))
-        v = result.fetchone()
-        if v is not None:
-            return True
-        return False
+        with SqlCursor(self) as sql:
+            result = sql.execute("SELECT main.tracks.filepath\
+                                  FROM tracks, music.tracks\
+                                  WHERE music.tracks.rowid=?\
+                                  AND playlist_id=?\
+                                  AND music.tracks.filepath=\
+                                  main.tracks.filepath",
+                                 (track_id, playlist_id))
+            v = result.fetchone()
+            if v is not None:
+                return True
+            return False
 
     def exists_album(self, playlist_id, album_id,
                      genre_id, sql_l=None, sql_p=None):
@@ -325,14 +308,9 @@ class Playlists(GObject.GObject):
             @return bool
         """
         # We do not use Album object for performance reasons
-        if not sql_l:
-            sql_l = Lp.sql
-        if not sql_p:
-            sql_p = self._sql
-        playlist_paths = self.get_tracks(playlist_id, sql_l, sql_p)
+        playlist_paths = self.get_tracks(playlist_id)
         tracks_paths = Lp.albums.get_tracks_path(album_id,
-                                                 genre_id,
-                                                 sql_l)
+                                                 genre_id)
         found = 0
         len_tracks = len(tracks_paths)
         for filepath in tracks_paths:

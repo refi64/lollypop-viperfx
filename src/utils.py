@@ -140,11 +140,10 @@ def set_loved(track_id, loved):
         @param track_id
         @param loved Add to loved playlist if `True`; remove if `False`
     """
-    sql = Lp.playlists.get_cursor()
     if not is_loved(track_id):
         if loved:
             Lp.playlists.add_tracks(Type.LOVED,
-                                    [Track(track_id)], sql)
+                                    [Track(track_id)])
             if Lp.lastfm is not None:
                 t = Thread(target=_set_loved_on_lastfm, args=(track_id,
                                                               True))
@@ -153,13 +152,12 @@ def set_loved(track_id, loved):
     else:
         if not loved:
             Lp.playlists.remove_tracks(Type.LOVED,
-                                       [Track(track_id)], sql)
+                                       [Track(track_id)])
             if Lp.lastfm is not None:
                 t = Thread(target=_set_loved_on_lastfm, args=(track_id,
                                                               False))
                 t.daemon = True
                 t.start()
-    sql.close()
 
 
 def _set_loved_on_lastfm(track_id, loved):
@@ -168,18 +166,17 @@ def _set_loved_on_lastfm(track_id, loved):
         @param track_id
         @param loved Add to loved playlist if `True`; remove if `False`
     """
-    sql = Lp.db.get_cursor()
     # Love the track on lastfm
     if Gio.NetworkMonitor.get_default().get_network_available() and\
             Lp.lastfm.is_auth():
-        title = Lp.tracks.get_name(track_id, sql)
-        album_id = Lp.tracks.get_album_id(track_id, sql)
-        artist_id = Lp.albums.get_artist_id(album_id, sql)
+        title = Lp.tracks.get_name(track_id)
+        album_id = Lp.tracks.get_album_id(track_id)
+        artist_id = Lp.albums.get_artist_id(album_id)
 
         if artist_id == Type.COMPILATIONS:
-            artist = Lp.tracks.get_artist_names(track_id, sql)
+            artist = Lp.tracks.get_artist_names(track_id)
         else:
-            artist = Lp.artists.get_name(artist_id, sql)
+            artist = Lp.artists.get_name(artist_id)
 
         if loved:
             Lp.lastfm.love(artist, title)

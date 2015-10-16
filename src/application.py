@@ -39,6 +39,7 @@ from lollypop.window import Window
 from lollypop.database import Database
 from lollypop.player import Player
 from lollypop.art import Art
+from lollypop.sqlcursor import SqlCursor
 from lollypop.settings import Settings, SettingsDialog
 from lollypop.mpris import MPRIS
 from lollypop.notification import NotificationManager
@@ -99,14 +100,16 @@ class Application(Gtk.Application):
         if LastFM is not None:
             Lp.lastfm = LastFM()
         Lp.db = Database()
-        # We store a cursor for the main thread
-        Lp.sql = Lp.db.get_cursor()
+        Lp.db.create()
+        Lp.playlists = Playlists()
+        # We store cursors for main thread
+        SqlCursor.add(Lp.db)
+        SqlCursor.add(Lp.playlists)
         Lp.albums = AlbumsDatabase()
         Lp.artists = ArtistsDatabase()
         Lp.genres = GenresDatabase()
         Lp.tracks = TracksDatabase()
         Lp.player = Player()
-        Lp.playlists = Playlists()
         Lp.scanner = CollectionScanner()
         Lp.art = Art()
         if not Lp.settings.get_value('disable-mpris'):
@@ -185,18 +188,15 @@ class Application(Gtk.Application):
             GLib.idle_add(self.quit)
             return
         try:
-            Lp.sql.execute('VACUUM')
-            sql_p = Lp.playlists.get_cursor()
-            sql_p.execute('VACUUM')
-            sql_p.close()
-            radios = Radios()
-            sql_r = radios.get_cursor()
-            sql_r.execute('VACUUM')
-            sql_r.close()
+            with SqlCursor(Lp.db) as sql:
+                sql.execute('VACUUM')
+            with SqlCursor(Lp.playlists) as sql:
+                sql.execute('VACUUM')
+            with SqlCursor(Radios()) as sql:
+                sql.execute('VACUUM')
         except Exception as e:
             print("Application::quit(): ", e)
         Lp.window.destroy()
-        Lp.sql.close()
         Gst.deinit()
 
     def is_fullscreen(self):

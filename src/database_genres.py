@@ -13,13 +13,13 @@
 from gettext import gettext as _
 import itertools
 
+from lollypop.sqlcursor import SqlCursor
 from lollypop.define import Lp
 
 
 class GenresDatabase:
     """
-        All functions take a sqlite cursor as last parameter,
-        set another one if you're in a thread
+        Genres database helper
     """
 
     def __init__(self):
@@ -28,97 +28,89 @@ class GenresDatabase:
         """
         pass
 
-    def add(self, name, sql=None):
+    def add(self, name):
         """
             Add a new genre to database
             @param Name as string
             @return inserted rowid as int
             @warning: commit needed
         """
-        if not sql:
-            sql = Lp.sql
-        result = sql.execute("INSERT INTO genres (name) VALUES (?)",
-                             (name,))
-        return result.lastrowid
+        with SqlCursor(Lp.db) as sql:
+            result = sql.execute("INSERT INTO genres (name) VALUES (?)",
+                                 (name,))
+            return result.lastrowid
 
-    def get_id(self, name, sql=None):
+    def get_id(self, name):
         """
             Get genre id for name
             @param name as string
             @return genre id as int
         """
-        if not sql:
-            sql = Lp.sql
-        result = sql.execute("SELECT rowid FROM genres\
-                              WHERE name=?", (name,))
-        v = result.fetchone()
-        if v is not None:
-            return v[0]
+        with SqlCursor(Lp.db) as sql:
+            result = sql.execute("SELECT rowid FROM genres\
+                                  WHERE name=?", (name,))
+            v = result.fetchone()
+            if v is not None:
+                return v[0]
+            return None
 
-        return None
-
-    def get_name(self, genre_id, sql=None):
+    def get_name(self, genre_id):
         """
             Get genre name for genre id
             @param string
             @return int
         """
-        if not sql:
-            sql = Lp.sql
-        result = sql.execute("SELECT name FROM genres\
-                              WHERE rowid=?", (genre_id,))
-        v = result.fetchone()
-        if v is not None:
-            return v[0]
+        with SqlCursor(Lp.db) as sql:
+            result = sql.execute("SELECT name FROM genres\
+                                  WHERE rowid=?", (genre_id,))
+            v = result.fetchone()
+            if v is not None:
+                return v[0]
+            return _("Unknown")
 
-        return _("Unknown")
-
-    def get_albums(self, genre_id, sql=None):
+    def get_albums(self, genre_id):
         """
             Get all availables albums  for genres
             @return Array of id as int
         """
-        if not sql:
-            sql = Lp.sql
-        result = sql.execute("SELECT albums.rowid FROM albums, album_genres\
-                             WHERE album_genres.genre_id=?\
-                             AND album_genres.album_id=albums.rowid",
-                             (genre_id,))
-        return list(itertools.chain(*result))
+        with SqlCursor(Lp.db) as sql:
+            result = sql.execute("SELECT albums.rowid\
+                                 FROM albums, album_genres\
+                                 WHERE album_genres.genre_id=?\
+                                 AND album_genres.album_id=albums.rowid",
+                                 (genre_id,))
+            return list(itertools.chain(*result))
 
-    def get(self, sql=None):
+    def get(self):
         """
             Get all availables genres
             @return [(id as int, name as string)]
         """
-        if not sql:
-            sql = Lp.sql
-        result = sql.execute("SELECT rowid, name FROM genres\
-                              ORDER BY name COLLATE NOCASE")
-        return list(result)
+        with SqlCursor(Lp.db) as sql:
+            result = sql.execute("SELECT rowid, name FROM genres\
+                                  ORDER BY name COLLATE NOCASE")
+            return list(result)
 
-    def get_ids(self, sql=None):
+    def get_ids(self):
         """
             Get all availables genres ids
             @return [id as int]
         """
-        if not sql:
-            sql = Lp.sql
-        result = sql.execute("SELECT rowid FROM genres\
-                              ORDER BY name COLLATE NOCASE")
-        return list(itertools.chain(*result))
+        with SqlCursor(Lp.db) as sql:
+            result = sql.execute("SELECT rowid FROM genres\
+                                  ORDER BY name COLLATE NOCASE")
+            return list(itertools.chain(*result))
 
-    def clean(self, genre_id, sql=None):
+    def clean(self, genre_id):
         """
             Clean database for genre id
             @param genre id as int
             @warning commit needed
         """
-        if not sql:
-            sql = Lp.sql
-        result = sql.execute("SELECT track_id from track_genres\
-                             WHERE genre_id=?\
-                             LIMIT 1", (genre_id,))
-        v = result.fetchone()
-        if not v:
-            sql.execute("DELETE FROM genres WHERE rowid=?", (genre_id,))
+        with SqlCursor(Lp.db) as sql:
+            result = sql.execute("SELECT track_id from track_genres\
+                                 WHERE genre_id=?\
+                                 LIMIT 1", (genre_id,))
+            v = result.fetchone()
+            if not v:
+                sql.execute("DELETE FROM genres WHERE rowid=?", (genre_id,))

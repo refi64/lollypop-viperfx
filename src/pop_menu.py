@@ -294,17 +294,15 @@ class PlaylistsMenu(BaseMenu):
             @param playlist id as int
         """
         def add(playlist_id):
-            sql_p = Lp.playlists.get_cursor()
-            sql_l = Lp.db.get_cursor()
             tracks = []
             if self._is_album:
                 tracks_ids = Lp.albums.get_tracks(self._object_id,
-                                                  self._genre_id, sql_l)
+                                                  self._genre_id)
                 for track_id in tracks_ids:
                     tracks.append(Track(track_id))
             else:
                 tracks = [Track(self._object_id)]
-            Lp.playlists.add_tracks(playlist_id, tracks, sql_p)
+            Lp.playlists.add_tracks(playlist_id, tracks)
         t = Thread(target=add, args=(playlist_id,))
         t.daemon = True
         t.start()
@@ -319,17 +317,15 @@ class PlaylistsMenu(BaseMenu):
             @param playlist id as int
         """
         def remove(playlist_id):
-            sql_p = Lp.playlists.get_cursor()
-            sql_l = Lp.db.get_cursor()
             tracks = []
             if self._is_album:
                 tracks_ids = Lp.albums.get_tracks(self._object_id,
-                                                  self._genre_id, sql_l)
+                                                  self._genre_id)
                 for track_id in tracks_ids:
                     tracks.append(Track(track_id))
             else:
                 tracks = [Track(self._object_id)]
-            Lp.playlists.remove_tracks(playlist_id, tracks, sql_p)
+            Lp.playlists.remove_tracks(playlist_id, tracks)
         t = Thread(target=remove, args=(playlist_id,))
         t.daemon = True
         t.start()

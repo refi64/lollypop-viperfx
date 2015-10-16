@@ -313,12 +313,10 @@ class BinPlayer(ReplayGainPlayer, BasePlayer):
         finished_start_time = self._start_time
         if self.next_track.id is not None:
             self._load_track(self.next_track)
-        # We are in a thread, we need to create a new cursor
-        sql = Lp.db.get_cursor()
         # Increment popularity
         if not Lp.scanner.is_locked():
-            Lp.tracks.set_more_popular(finished.id, sql)
-            Lp.albums.set_more_popular(finished.album_id, sql)
+            Lp.tracks.set_more_popular(finished.id)
+            Lp.albums.set_more_popular(finished.album_id)
         # Scrobble on lastfm
         if Lp.lastfm is not None:
             if finished.album_artist_id == Type.COMPILATIONS:
@@ -331,8 +329,6 @@ class BinPlayer(ReplayGainPlayer, BasePlayer):
                                    finished.title,
                                    int(finished_start_time),
                                    int(finished.duration))
-
-        sql.close()
 
     def _on_stream_start(self, bus, message):
         """

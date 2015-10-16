@@ -13,14 +13,14 @@
 from gettext import gettext as _
 import itertools
 
+from lollypop.sqlcursor import SqlCursor
 from lollypop.define import Lp, Type
 from lollypop.utils import translate_artist_name, format_artist_name
 
 
 class ArtistsDatabase:
     """
-        All functions take a sqlite cursor as last parameter,
-        set another one if you're in a thread
+        Artists database helper
     """
 
     def __init__(self):
@@ -29,85 +29,77 @@ class ArtistsDatabase:
         """
         pass
 
-    def add(self, name, sql=None):
+    def add(self, name):
         """
             Add a new artist to database
             @param Artist name as string
             @return inserted rowid as int
             @warning: commit needed
         """
-        if not sql:
-            sql = Lp.sql
-        result = sql.execute("INSERT INTO artists (name) VALUES (?)",
-                             (name,))
-        return result.lastrowid
+        with SqlCursor(Lp.db) as sql:
+            result = sql.execute("INSERT INTO artists (name) VALUES (?)",
+                                 (name,))
+            return result.lastrowid
 
-    def get_id(self, name, sql=None):
+    def get_id(self, name):
         """
             Get artist id
             @param Artist name as string
             @return Artist id as int
         """
-        if not sql:
-            sql = Lp.sql
+        with SqlCursor(Lp.db) as sql:
+            result = sql.execute("SELECT rowid from artists\
+                                  WHERE name=?", (name,))
+            v = result.fetchone()
+            if v is not None:
+                return v[0]
+            return None
 
-        result = sql.execute("SELECT rowid from artists\
-                              WHERE name=?", (name,))
-        v = result.fetchone()
-        if v is not None:
-            return v[0]
-
-        return None
-
-    def get_name(self, artist_id, sql=None):
+    def get_name(self, artist_id):
         """
             Get artist name
             @param Artist id as int
             @return Artist name as string
         """
-        if not sql:
-            sql = Lp.sql
-        if artist_id == Type.COMPILATIONS:
-            return _("Many artists")
+        with SqlCursor(Lp.db) as sql:
+            if artist_id == Type.COMPILATIONS:
+                return _("Many artists")
 
-        result = sql.execute("SELECT name from artists WHERE rowid=?",
-                             (artist_id,))
-        v = result.fetchone()
-        if v is not None:
-            return translate_artist_name(v[0])
+            result = sql.execute("SELECT name from artists WHERE rowid=?",
+                                 (artist_id,))
+            v = result.fetchone()
+            if v is not None:
+                return translate_artist_name(v[0])
+            return _("Unknown")
 
-        return _("Unknown")
-
-    def get_albums(self, artist_id, sql=None):
+    def get_albums(self, artist_id):
         """
             Get all availables albums for artist
             @return Array of id as int
         """
-        if not sql:
-            sql = Lp.sql
-        result = sql.execute("SELECT rowid FROM albums\
-                              WHERE artist_id=?\
-                              ORDER BY year", (artist_id,))
-        return list(itertools.chain(*result))
+        with SqlCursor(Lp.db) as sql:
+            result = sql.execute("SELECT rowid FROM albums\
+                                  WHERE artist_id=?\
+                                  ORDER BY year", (artist_id,))
+            return list(itertools.chain(*result))
 
-    def get_compilations(self, artist_id, sql=None):
+    def get_compilations(self, artist_id):
         """
             Get all availables compilations for artist
             @return Array of id as int
         """
-        if not sql:
-            sql = Lp.sql
-        result = sql.execute("SELECT DISTINCT albums.rowid FROM albums,\
-                              tracks, track_artists\
-                              WHERE track_artists.artist_id=?\
-                              AND track_artists.track_id=tracks.rowid\
-                              AND albums.rowid=tracks.album_id\
-                              AND albums.artist_id=?\
-                              ORDER BY albums.year", (artist_id,
-                                                      Type.COMPILATIONS))
-        return list(itertools.chain(*result))
+        with SqlCursor(Lp.db) as sql:
+            result = sql.execute("SELECT DISTINCT albums.rowid FROM albums,\
+                                  tracks, track_artists\
+                                  WHERE track_artists.artist_id=?\
+                                  AND track_artists.track_id=tracks.rowid\
+                                  AND albums.rowid=tracks.album_id\
+                                  AND albums.artist_id=?\
+                                  ORDER BY albums.year", (artist_id,
+                                                          Type.COMPILATIONS))
+            return list(itertools.chain(*result))
 
-    def get(self, genre_id, sql=None):
+    def get(self, genre_id):
         """
             Get all available artists
             @param None
@@ -115,74 +107,71 @@ class ArtistsDatabase:
             @param Filter genre id as int
             @return Array of (artist id as int, artist name as string)
         """
-        if not sql:
-            sql = Lp.sql
-        result = []
-        if genre_id == Type.ALL or genre_id is None:
-            # Only artist that really have an album
-            result = sql.execute("SELECT DISTINCT artists.rowid, artists.name\
-                                  FROM artists, albums\
-                                  WHERE albums.artist_id = artists.rowid\
-                                  ORDER BY artists.name COLLATE NOCASE")
-        else:
-            result = sql.execute("SELECT DISTINCT artists.rowid, artists.name\
-                                  FROM artists, albums, album_genres\
-                                  WHERE artists.rowid == albums.artist_id\
-                                  AND album_genres.genre_id=?\
-                                  AND album_genres.album_id=albums.rowid\
-                                  ORDER BY artists.name\
-                                  COLLATE NOCASE", (genre_id,))
-        return [(row[0], translate_artist_name(row[1])) for row in result]
+        with SqlCursor(Lp.db) as sql:
+            result = []
+            if genre_id == Type.ALL or genre_id is None:
+                # Only artist that really have an album
+                result = sql.execute("SELECT DISTINCT artists.rowid,\
+                                      artists.name\
+                                      FROM artists, albums\
+                                      WHERE albums.artist_id = artists.rowid\
+                                      ORDER BY artists.name COLLATE NOCASE")
+            else:
+                result = sql.execute("SELECT DISTINCT artists.rowid,\
+                                      artists.name\
+                                      FROM artists, albums, album_genres\
+                                      WHERE artists.rowid == albums.artist_id\
+                                      AND album_genres.genre_id=?\
+                                      AND album_genres.album_id=albums.rowid\
+                                      ORDER BY artists.name\
+                                      COLLATE NOCASE", (genre_id,))
+            return [(row[0], translate_artist_name(row[1])) for row in result]
 
-    def exists(self, artist_id, sql=None):
+    def exists(self, artist_id):
         """
             Return True if artist exist
             @param artist id as int
         """
-        if not sql:
-            sql = Lp.sql
+        with SqlCursor(Lp.db) as sql:
+            result = sql.execute("SELECT COUNT(*) from artists WHERE rowid=?",
+                                 (artist_id,))
+            v = result.fetchone()
+            if v is not None:
+                return bool(v[0])
+            return False
 
-        result = sql.execute("SELECT COUNT(*) from artists WHERE rowid=?",
-                             (artist_id,))
-        v = result.fetchone()
-        if v is not None:
-            return bool(v[0])
-
-        return False
-
-    def search(self, string, sql=None):
+    def search(self, string):
         """
             Search for artists looking like string
             @param string
             @return Array of id as int
         """
-        if not sql:
-            sql = Lp.sql
-        result = sql.execute("SELECT rowid FROM artists\
-                              WHERE name LIKE ?\
-                              LIMIT 25", ('%' +
-                                          format_artist_name(string) +
-                                          '%',))
-        return list(itertools.chain(*result))
+        with SqlCursor(Lp.db) as sql:
+            result = sql.execute("SELECT rowid FROM artists\
+                                  WHERE name LIKE ?\
+                                  LIMIT 25", ('%' +
+                                              format_artist_name(string) +
+                                              '%',))
+            return list(itertools.chain(*result))
 
-    def clean(self, artist_id, sql=None):
+    def clean(self, artist_id):
         """
             Clean database for artist id
             @param artist id as int
             @warning commit needed
         """
-        if not sql:
-            sql = Lp.sql
-        result = sql.execute("SELECT rowid from albums\
-                              WHERE artist_id=?\
-                              LIMIT 1", (artist_id,))
-        v = result.fetchone()
-        # Check tracks
-        if not v:
-            result = sql.execute("SELECT track_id from track_artists\
-                                 WHERE artist_id=?\
-                                 LIMIT 1", (artist_id,))
+        with SqlCursor(Lp.db) as sql:
+            result = sql.execute("SELECT rowid from albums\
+                                  WHERE artist_id=?\
+                                  LIMIT 1", (artist_id,))
             v = result.fetchone()
-            # Artist with no relation, remove
+            # Check tracks
             if not v:
-                sql.execute("DELETE FROM artists WHERE rowid=?", (artist_id,))
+                result = sql.execute("SELECT track_id from track_artists\
+                                     WHERE artist_id=?\
+                                     LIMIT 1", (artist_id,))
+                v = result.fetchone()
+                # Artist with no relation, remove
+                if not v:
+                    sql.execute("DELETE FROM artists WHERE rowid=?",
+                                (artist_id,))

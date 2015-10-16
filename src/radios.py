@@ -15,6 +15,8 @@ from gi.repository import GObject, GLib, Gio, TotemPlParser
 import os
 import sqlite3
 
+from lollypop.sqlcursor import SqlCursor
+
 
 class Radios(GObject.GObject):
     """
@@ -39,11 +41,11 @@ class Radios(GObject.GObject):
         """
         GObject.GObject.__init__(self)
         try_import = not os.path.exists(self.DB_PATH)
-        self._sql = self.get_cursor()
         # Create db schema
         try:
-            self._sql.execute(self.create_radios)
-            self._sql.commit()
+            with SqlCursor(self) as sql:
+                sql.execute(self.create_radios)
+                sql.commit()
         except:
             pass
 
@@ -64,164 +66,156 @@ class Radios(GObject.GObject):
                     parser.parse_async(d.get_uri() + "/%s" % f,
                                        True, None, None)
 
-    def add(self, name, url, sql=None):
+    def add(self, name, url):
         """
             Add a radio, update url if radio already exists in db
             @param radio name as str
             @param url as str
             @thread safe
         """
-        if not sql:
-            sql = self._sql
-        if self.exists(name, sql):
-            sql.execute("UPDATE radios SET"
-                        " url=?", (url,))
-        else:
-            sql.execute("INSERT INTO radios (name, url, popularity)"
-                        " VALUES (?, ?, ?)",
-                        (name, url, 0))
-        sql.commit()
-        GLib.idle_add(self.emit, 'radios-changed')
+        with SqlCursor(self) as sql:
+            if self.exists(name, sql):
+                sql.execute("UPDATE radios SET"
+                            " url=?", (url,))
+            else:
+                sql.execute("INSERT INTO radios (name, url, popularity)"
+                            " VALUES (?, ?, ?)",
+                            (name, url, 0))
+            sql.commit()
+            GLib.idle_add(self.emit, 'radios-changed')
 
-    def exists(self, name, sql=None):
+    def exists(self, name):
         """
             Return True if radio exists
             @param radio as string
             @return bool
         """
-        if not sql:
-            sql = self._sql
-        result = sql.execute("SELECT rowid\
-                              FROM radios\
-                              WHERE name=?",
-                             (name,))
-        v = result.fetchone()
-        if v is not None:
-            return True
-        else:
-            return False
+        with SqlCursor(self) as sql:
+            result = sql.execute("SELECT rowid\
+                                  FROM radios\
+                                  WHERE name=?",
+                                 (name,))
+            v = result.fetchone()
+            if v is not None:
+                return True
+            else:
+                return False
 
-    def rename(self, old_name, new_name, sql=None):
+    def rename(self, old_name, new_name):
         """
             Rename playlist
             @param old playlist name as str
             @param new playlist name as str
         """
-        if not sql:
-            sql = self._sql
-        sql.execute("UPDATE radios\
-                    SET name=?\
-                    WHERE name=?",
-                    (new_name, old_name))
-        sql.commit()
-        GLib.idle_add(self.emit, 'radios-changed')
+        with SqlCursor(self) as sql:
+            sql.execute("UPDATE radios\
+                        SET name=?\
+                        WHERE name=?",
+                        (new_name, old_name))
+            sql.commit()
+            GLib.idle_add(self.emit, 'radios-changed')
 
-    def delete(self, name, sql=None):
+    def delete(self, name):
         """
             delete radio
             @param radio name as str
         """
-        if not sql:
-            sql = self._sql
-        sql.execute("DELETE FROM radios\
-                    WHERE name=?",
-                    (name,))
-        sql.commit()
-        GLib.idle_add(self.emit, 'radios-changed')
+        with SqlCursor(self) as sql:
+            sql.execute("DELETE FROM radios\
+                        WHERE name=?",
+                        (name,))
+            sql.commit()
+            GLib.idle_add(self.emit, 'radios-changed')
 
-    def get(self, sql=None):
+    def get(self):
         """
             Return availables radios
             @return array of (name, url) as[(str, str)]
         """
-        if not sql:
-            sql = self._sql
-        result = sql.execute("SELECT name, url\
-                              FROM radios\
-                              ORDER BY popularity DESC, name")
-        return list(result)
+        with SqlCursor(self) as sql:
+            result = sql.execute("SELECT name, url\
+                                  FROM radios\
+                                  ORDER BY popularity DESC, name")
+            return list(result)
 
-    def get_url(self, name, sql=None):
+    def get_url(self, name):
         """
             Return url for name
             @param name as str
             @return url as str
         """
-        if not sql:
-            sql = self._sql
-        result = sql.execute("SELECT url\
-                              FROM radios\
-                              WHERE name=?", (name,))
-        v = result.fetchone()
-        if v is not None:
-            return v[0]
-        return ''
+        with SqlCursor(self) as sql:
+            result = sql.execute("SELECT url\
+                                  FROM radios\
+                                  WHERE name=?", (name,))
+            v = result.fetchone()
+            if v is not None:
+                return v[0]
+            return ''
 
-    def set_more_popular(self, name, sql=None):
+    def set_more_popular(self, name):
         """
             Set radio more popular
             @param name as str
         """
-        if not sql:
-            sql = self._sql
-        result = sql.execute("SELECT popularity from radios WHERE name=?",
-                             (name,))
-        pop = result.fetchone()
-        if pop:
-            current = pop[0]
-        else:
-            current = 0
-        current += 1
-        sql.execute("UPDATE radios set popularity=? WHERE name=?",
-                    (current, name))
-        sql.commit()
+        with SqlCursor(self) as sql:
+            result = sql.execute("SELECT popularity from radios WHERE name=?",
+                                 (name,))
+            pop = result.fetchone()
+            if pop:
+                current = pop[0]
+            else:
+                current = 0
+            current += 1
+            sql.execute("UPDATE radios set popularity=? WHERE name=?",
+                        (current, name))
+            sql.commit()
 
-    def get_avg_popularity(self, sql=None):
+    def get_avg_popularity(self):
         """
             Return avarage popularity
             @return avarage popularity as int
         """
-        if not sql:
-            sql = self._sql
-        result = sql.execute("SELECT AVG(popularity) FROM (SELECT popularity "
-                             "FROM radios ORDER BY POPULARITY DESC LIMIT 100)")
-        v = result.fetchone()
-        if v and v[0] > 5:
-            return v[0]
-        return 5
+        with SqlCursor(self) as sql:
+            result = sql.execute("SELECT AVG(popularity)\
+                                  FROM (SELECT popularity\
+                                        FROM radios\
+                                        ORDER BY POPULARITY DESC LIMIT 100)")
+            v = result.fetchone()
+            if v and v[0] > 5:
+                return v[0]
+            return 5
 
-    def set_popularity(self, name, popularity, sql=None):
+    def set_popularity(self, name, popularity):
         """
             Set popularity
             @param name as str
             @param popularity as int
         """
-        if not sql:
-            sql = self._sql
-        try:
-            sql.execute("UPDATE radios SET\
-                        popularity=? WHERE name=?",
-                        (popularity, name))
-            sql.commit()
-        except:  # Database is locked
-            pass
+        with SqlCursor(self) as sql:
+            try:
+                sql.execute("UPDATE radios SET\
+                            popularity=? WHERE name=?",
+                            (popularity, name))
+                sql.commit()
+            except:  # Database is locked
+                pass
 
-    def get_popularity(self, name, sql=None):
+    def get_popularity(self, name):
         """
             Get popularity
             @param name as str
             @return popularity as int
         """
-        if not sql:
-            sql = self._sql
-        result = sql.execute("SELECT popularity\
-                             FROM radios WHERE\
-                             name=?", (name,))
+        with SqlCursor(self) as sql:
+            result = sql.execute("SELECT popularity\
+                                 FROM radios WHERE\
+                                 name=?", (name,))
 
-        v = result.fetchone()
-        if v is not None:
-            return v[0]
-        return 0
+            v = result.fetchone()
+            if v is not None:
+                return v[0]
+            return 0
 
     def get_cursor(self):
         """

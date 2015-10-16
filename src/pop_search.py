@@ -205,46 +205,44 @@ class SearchPopover(Gtk.Popover):
             Populate treeview searching items
             in db based on text entry current text
         """
-        sql = Lp.db.get_cursor()
         results = []
         albums = []
 
         tracks_non_album_artist = []
 
         # Get all albums for all artists and non album_artist tracks
-        for artist_id in Lp.artists.search(self._current_search, sql):
-            for album_id in Lp.albums.get_ids(artist_id, None, sql):
+        for artist_id in Lp.artists.search(self._current_search):
+            for album_id in Lp.albums.get_ids(artist_id, None):
                 if (album_id, artist_id) not in albums:
                     albums.append((album_id, artist_id))
             for track_id, track_name in Lp.tracks.get_as_non_album_artist(
-                                                        artist_id, sql):
+                                                        artist_id):
                 tracks_non_album_artist.append((track_id, track_name))
 
-        albums += Lp.albums.search(self._current_search, sql)
+        albums += Lp.albums.search(self._current_search)
 
         for album_id, artist_id in albums:
             search_obj = SearchObject()
-            search_obj.artist = Lp.artists.get_name(artist_id, sql)
-            search_obj.title = Lp.albums.get_name(album_id, sql)
-            search_obj.count = Lp.albums.get_count(album_id, None, sql)
+            search_obj.artist = Lp.artists.get_name(artist_id)
+            search_obj.title = Lp.albums.get_name(album_id)
+            search_obj.count = Lp.albums.get_count(album_id, None)
             search_obj.id = album_id
             search_obj.album_id = album_id
             results.append(search_obj)
 
         for track_id, track_name in Lp.tracks.search(
-                        self._current_search, sql) + tracks_non_album_artist:
+                        self._current_search) + tracks_non_album_artist:
             search_obj = SearchObject()
             search_obj.title = track_name
             search_obj.id = track_id
-            search_obj.album_id = Lp.tracks.get_album_id(track_id, sql)
+            search_obj.album_id = Lp.tracks.get_album_id(track_id)
             search_obj.is_track = True
 
-            artist_id = Lp.albums.get_artist_id(search_obj.album_id,
-                                                sql)
+            artist_id = Lp.albums.get_artist_id(search_obj.album_id)
             if artist_id == Type.COMPILATIONS:
-                search_obj.artist = Lp.tracks.get_artist_names(track_id, sql)
+                search_obj.artist = Lp.tracks.get_artist_names(track_id)
             else:
-                search_obj.artist = Lp.artists.get_name(artist_id, sql)
+                search_obj.artist = Lp.artists.get_name(artist_id)
 
             results.append(search_obj)
 
@@ -254,8 +252,6 @@ class SearchPopover(Gtk.Popover):
         else:
             self._in_thread = False
             self._stop_thread = False
-
-        sql.close()
 
     def _add_rows(self, results):
         """
@@ -301,14 +297,13 @@ class SearchPopover(Gtk.Popover):
             @param started object id as int
             @param is track as bool
         """
-        sql = Lp.db.get_cursor()
         tracks = []
         track_id = None
         for child in self._view.get_children():
             if child.is_track:
                 tracks.append(Track(child.id))
             else:
-                album_tracks = Lp.albums.get_tracks(child.id, None, sql)
+                album_tracks = Lp.albums.get_tracks(child.id, None)
                 if not is_track and child.id == object_id and album_tracks:
                     track_id = album_tracks[0]
                 for tid in album_tracks:
@@ -320,29 +315,24 @@ class SearchPopover(Gtk.Popover):
             elif track_id is None:
                 track_id = tracks[0].id
             GLib.idle_add(self._set_user_playlist, tracks, track_id)
-        sql.close()
 
     def _new_playlist(self):
         """
             Create a new playlist based on search
         """
-        sql = Lp.db.get_cursor()
         tracks = []
         for child in self._view.get_children():
             if child.is_track:
                 tracks.append(Track(child.id))
             else:
-                for track_id in Lp.albums.get_tracks(child.id, None, sql):
+                for track_id in Lp.albums.get_tracks(child.id, None):
                     tracks.append(Track(child.id))
-        sql.close()
 
         if tracks:
-            sql = Lp.playlists.get_cursor()
-            playlist_id = Lp.playlists.get_id(self._current_search, sql)
+            playlist_id = Lp.playlists.get_id(self._current_search)
             if playlist_id == Type.NONE:
-                Lp.playlists.add(self._current_search, sql)
-            Lp.playlists.add_tracks(playlist_id, tracks, sql)
-            sql.close()
+                Lp.playlists.add(self._current_search)
+            Lp.playlists.add_tracks(playlist_id, tracks)
 
     def _on_map(self, widget):
         """

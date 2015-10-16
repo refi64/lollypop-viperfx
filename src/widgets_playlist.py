@@ -377,20 +377,18 @@ class PlaylistsManagerWidget(Gtk.Bin):
             @param add as bool
         """
         def set(playlist_id, add):
-            sql_p = Lp.playlists.get_cursor()
-            sql_l = Lp.db.get_cursor()
             tracks = []
             if self._is_album:
                 tracks_ids = Lp.albums.get_tracks(self._object_id,
-                                                  self._genre_id, sql_l)
+                                                  self._genre_id)
                 for track_id in tracks_ids:
                     tracks.append(Track(track_id))
             else:
                 tracks = [Track(self._object_id)]
             if add:
-                Lp.playlists.add_tracks(playlist_id, tracks, sql_p)
+                Lp.playlists.add_tracks(playlist_id, tracks)
             else:
-                Lp.playlists.remove_tracks(playlist_id, tracks, sql_p)
+                Lp.playlists.remove_tracks(playlist_id, tracks)
         t = Thread(target=set, args=(playlist_id, add))
         t.daemon = True
         t.start()
@@ -506,12 +504,7 @@ class PlaylistEditWidget(Gtk.Bin):
         """
             Append tracks
         """
-        sql_l = Lp.db.get_cursor()
-        sql_p = Lp.playlists.get_cursor()
-        track_ids = Lp.playlists.get_tracks_ids(self._playlist_id,
-                                                sql_l, sql_p)
-        sql_l.close()
-        sql_p.close()
+        track_ids = Lp.playlists.get_tracks_ids(self._playlist_id)
         GLib.idle_add(self._append_track, track_ids)
 
     def _append_track(self, track_ids):
@@ -540,13 +533,11 @@ class PlaylistEditWidget(Gtk.Bin):
             Update playlist on disk
         """
         def update():
-            sql = Lp.playlists.get_cursor()
-            Lp.playlists.clear(self._playlist_id, sql)
+            Lp.playlists.clear(self._playlist_id)
             tracks = []
             for item in self._model:
                 tracks.append(Track(item[3]))
-            Lp.playlists.add_tracks(self._playlist_id, tracks, sql)
-            sql.close()
+            Lp.playlists.add_tracks(self._playlist_id, tracks)
         t = Thread(target=update)
         t.daemon = True
         t.start()

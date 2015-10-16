@@ -16,6 +16,7 @@ from gi.repository import GLib
 
 from lollypop.define import Lp
 from lollypop.database_upgrade import DatabaseUpgrade
+from lollypop.sqlcursor import SqlCursor
 
 
 class Database:
@@ -65,7 +66,7 @@ class Database:
 
     def __init__(self):
         """
-            Create database tables or manage update if needed
+            Init object
         """
         # Create db directory if missing
         if not os.path.exists(self.LOCAL_PATH):
@@ -74,24 +75,28 @@ class Database:
             except:
                 print("Can't create %s" % self.LOCAL_PATH)
 
-        sql = self.get_cursor()
-        db_version = Lp.settings.get_value('db-version').get_int32()
-        upgrade = DatabaseUpgrade(db_version, sql)
-        upgrade.do_db_upgrade()
-        Lp.settings.set_value('db-version',
-                              GLib.Variant('i', upgrade.count()))
-        # Create db schema
-        try:
-            sql.execute(self.create_albums)
-            sql.execute(self.create_artists)
-            sql.execute(self.create_genres)
-            sql.execute(self.create_album_genres)
-            sql.execute(self.create_tracks)
-            sql.execute(self.create_track_artists)
-            sql.execute(self.create_track_genres)
-            sql.commit()
-        except:
-            pass
+    def create(self):
+        """
+            Create database tables or manage update if needed
+        """
+        with SqlCursor(self) as sql:
+            db_version = Lp.settings.get_value('db-version').get_int32()
+            upgrade = DatabaseUpgrade(db_version, self)
+            upgrade.do_db_upgrade()
+            Lp.settings.set_value('db-version',
+                                  GLib.Variant('i', upgrade.count()))
+            # Create db schema
+            try:
+                sql.execute(self.create_albums)
+                sql.execute(self.create_artists)
+                sql.execute(self.create_genres)
+                sql.execute(self.create_album_genres)
+                sql.execute(self.create_tracks)
+                sql.execute(self.create_track_artists)
+                sql.execute(self.create_track_genres)
+                sql.commit()
+            except:
+                pass
 
     def get_cursor(self):
         """

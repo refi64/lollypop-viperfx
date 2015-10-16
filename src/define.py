@@ -34,7 +34,7 @@ GOOGLE_MAX = 32
 class Lp:
     settings = None
     db = None
-    sql = None
+    cursors = {}
     albums = None
     artists = None
     genres = None

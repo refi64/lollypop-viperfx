@@ -14,25 +14,8 @@
 
 from gi.repository import GLib
 
-from threading import current_thread
-
 from lollypop.radios import Radios
 from lollypop.define import Lp, Type
-
-
-class SqlCursor:
-    """
-        Context manager to get the SQL cursor
-    """
-    def __enter__(self):
-        self.sql = None
-        if current_thread() != '_Mainthread':
-            self.sql = Lp.db.get_cursor()
-        return self.sql
-
-    def __exit__(self, type, value, traceback):
-        if self.sql is not None:
-            self.sql.close()
 
 
 class Base:
@@ -58,8 +41,7 @@ class Base:
             attr_name = "_" + attr
             attr_value = getattr(self, attr_name)
             if attr_value is None:
-                with SqlCursor() as sql:
-                    attr_value = getattr(self.db, "get_" + attr)(self.id, sql)
+                attr_value = getattr(self.db, "get_" + attr)(self.id)
                 setattr(self, attr_name, attr_value)
             # Return default value if None
             if attr_value is None:
@@ -125,10 +107,9 @@ class Disc:
 
             @return list of int
         """
-        with SqlCursor() as sql:
-            return self.db.get_disc_tracks_ids(self.album.id,
-                                               self.album.genre_id,
-                                               self.number, sql)
+        return self.db.get_disc_tracks_ids(self.album.id,
+                                           self.album.genre_id,
+                                           self.number)
 
     @property
     def tracks(self):
@@ -184,10 +165,8 @@ class Album(Base):
             @return list of int
         """
         if getattr(self, "_tracks_ids") is None:
-            with SqlCursor() as sql:
-                self._tracks_ids = self.db.get_tracks(self.id,
-                                                      self.genre_id,
-                                                      sql)
+            self._tracks_ids = self.db.get_tracks(self.id,
+                                                  self.genre_id)
         return self._tracks_ids
 
     @property
@@ -207,8 +186,7 @@ class Album(Base):
             @return list of int
         """
         if not self._discs:
-            with SqlCursor() as sql:
-                self._discs = self.db.get_discs(self.id, self.genre_id, sql)
+            self._discs = self.db.get_discs(self.id, self.genre_id)
         return [Disc(self, number) for number in self._discs]
 
 
@@ -283,9 +261,7 @@ class Track(Base):
             @return str
         """
         if getattr(self, "_album_artist") is None:
-            with SqlCursor() as sql:
-                self._album_artist = Lp.artists.get_name(self.album_artist_id,
-                                                         sql)
+            self._album_artist = Lp.artists.get_name(self.album_artist_id)
         return self._album_artist
 
     @property

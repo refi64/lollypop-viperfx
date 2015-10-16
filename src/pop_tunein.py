@@ -192,9 +192,7 @@ class TuneinPopover(Gtk.Popover):
                 url = data.decode('utf-8').split('\n')[0]
         except Exception as e:
             print("TuneinPopover::_add_radio: %s" % e)
-        sql = self._radios_manager.get_cursor()
-        self._radios_manager.add(item.TEXT.replace('/', '-'), url, sql)
-        sql.close()
+        self._radios_manager.add(item.TEXT.replace('/', '-'), url)
 
     def _on_back_btn_clicked(self, btn):
         """
