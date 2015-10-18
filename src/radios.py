@@ -74,7 +74,7 @@ class Radios(GObject.GObject):
             @thread safe
         """
         with SqlCursor(self) as sql:
-            if self.exists(name, sql):
+            if self.exists(name):
                 sql.execute("UPDATE radios SET"
                             " url=?", (url,))
             else:
