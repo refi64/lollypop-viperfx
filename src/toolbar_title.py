@@ -115,7 +115,11 @@ class ToolbarTitle(Gtk.Bin):
             @param eventbox as Gtk.EventBox
             @param event as Gdk.Event
         """
-        slider_width = self._progress.style_get_property('slider-width') / 2
+        if Gtk.get_minor_version() > 14:
+            slider_width = self._progress.style_get_property(
+                                                            'slider-width') / 2
+        else:
+            slider_width = 14
         rect = self._progress.get_range_rect()
         if event.x < slider_width or\
            event.x > rect.width - slider_width:
