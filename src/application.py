@@ -90,7 +90,7 @@ class Application(Gtk.Application):
         styleContext.add_provider_for_screen(screen, cssProvider,
                                              Gtk.STYLE_PROVIDER_PRIORITY_USER)
         Lp.settings = Settings.new()
-        ArtSize.BIG = Lp.settings.get_enum('cover-size').get_int32()
+        ArtSize.BIG = Lp.settings.get_value('cover-size').get_int32()
         if LastFM is not None:
             Lp.lastfm = LastFM()
         Lp.db = Database()

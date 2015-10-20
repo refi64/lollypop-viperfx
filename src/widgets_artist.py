@@ -144,7 +144,7 @@ class ArtistContent(Gtk.Stack):
                 scale = self._image.get_scale_factor()
                 pixbuf = GdkPixbuf.Pixbuf.new_from_stream_at_scale(
                            stream,
-                           Lp.settings.get_enum(
+                           Lp.settings.get_value(
                                         'cover-size').get_int32() + 50 * scale,
                            -1,
                            True,
