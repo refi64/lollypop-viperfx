@@ -142,11 +142,13 @@ class ArtistContent(Gtk.Stack):
             self._content.set_markup(escape(content.decode('utf-8')))
             if stream is not None:
                 scale = self._image.get_scale_factor()
-                pixbuf = GdkPixbuf.Pixbuf.new_from_stream_at_scale(stream,
-                                                                   250*scale,
-                                                                   -1,
-                                                                   True,
-                                                                   None)
+                pixbuf = GdkPixbuf.Pixbuf.new_from_stream_at_scale(
+                           stream,
+                           Lp.settings.get_enum(
+                                        'cover-size').get_int32() + 50 * scale,
+                           -1,
+                           True,
+                           None)
                 surface = Gdk.cairo_surface_create_from_pixbuf(pixbuf, 0, None)
                 del pixbuf
                 self._image.set_from_surface(surface)
