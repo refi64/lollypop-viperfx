@@ -63,10 +63,20 @@
             <summary>Database version</summary>
             <description>Reset this value will reset the database, popular albums will be restored</description>
         </key>
+        <key type="i" name="cover-size">
+            <default>200</default>
+            <summary>Albums cover size</summary>
+            <description></description>
+        </key>
         <key type="d" name="replaygain">
             <default>3.0</default>
             <summary>Replay gain value in db</summary>
             <description>Between -15 and 15</description>
+        </key>
+         <key type="b" name="disable-mpd">
+            <default>true</default>
+            <summary>Disable mpd support</summary>
+            <description></description>
         </key>
          <key type="b" name="auto-update">
             <default>true</default>
