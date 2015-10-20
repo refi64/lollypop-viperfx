@@ -143,7 +143,7 @@ class ArtistContent(Gtk.Stack):
             if stream is not None:
                 scale = self._image.get_scale_factor()
                 pixbuf = GdkPixbuf.Pixbuf.new_from_stream_at_scale(stream,
-                                                                   400*scale,
+                                                                   250*scale,
                                                                    -1,
                                                                    True,
                                                                    None)
