@@ -58,8 +58,8 @@ class Inotify:
             Prepare thread to handle changes
         """
         # Stop collection scanner and wait
-        if Lp.scanner.is_locked():
-            Lp.scanner.stop()
+        if Lp().scanner.is_locked():
+            Lp().scanner.stop()
             GLib.timeout_add(1000,
                              self._on_dir_changed,
                              monitor,
@@ -88,4 +88,4 @@ class Inotify:
             Run a collection update
         """
         self._timeout = None
-        Lp.window.update_db()
+        Lp().window.update_db()

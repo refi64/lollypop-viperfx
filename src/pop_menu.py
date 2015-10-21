@@ -59,23 +59,23 @@ class PlaybackMenu(BaseMenu):
         """
             Set playback actions
         """
-        if Lp.player.context.next != NextContext.NONE:
+        if Lp().player.context.next != NextContext.NONE:
             continue_play_action = Gio.SimpleAction(
                 name="continue_play_action")
             self._app.add_action(continue_play_action)
             continue_play_action.connect('activate', self._continue_playback)
             self.append(_("Continue playback"), 'app.continue_play_action')
-        if Lp.player.context.next != NextContext.STOP_TRACK:
+        if Lp().player.context.next != NextContext.STOP_TRACK:
             stop_track_action = Gio.SimpleAction(name="stop_track_action")
             self._app.add_action(stop_track_action)
             stop_track_action.connect('activate', self._stop_track)
             self.append(_("Stop after this track"), 'app.stop_track_action')
-        if Lp.player.context.next != NextContext.STOP_ALBUM:
+        if Lp().player.context.next != NextContext.STOP_ALBUM:
             stop_album_action = Gio.SimpleAction(name="stop_album_action")
             self._app.add_action(stop_album_action)
             stop_album_action.connect('activate', self._stop_album)
             self.append(_("Stop after this album"), 'app.stop_album_action')
-        if Lp.player.context.next != NextContext.STOP_ARTIST:
+        if Lp().player.context.next != NextContext.STOP_ARTIST:
             stop_artist_action = Gio.SimpleAction(name="stop_artist_action")
             self._app.add_action(stop_artist_action)
             stop_artist_action.connect('activate', self._stop_artist)
@@ -88,7 +88,7 @@ class PlaybackMenu(BaseMenu):
             @param GVariant
             @param album id as int
         """
-        Lp.player.context.next = NextContext.NONE
+        Lp().player.context.next = NextContext.NONE
 
     def _stop_track(self, action, variant):
         """
@@ -96,7 +96,7 @@ class PlaybackMenu(BaseMenu):
             @param SimpleAction
             @param GVariant
         """
-        Lp.player.context.next = NextContext.STOP_TRACK
+        Lp().player.context.next = NextContext.STOP_TRACK
 
     def _stop_album(self, action, variant):
         """
@@ -104,7 +104,7 @@ class PlaybackMenu(BaseMenu):
             @param SimpleAction
             @param GVariant
         """
-        Lp.player.context.next = NextContext.STOP_ALBUM
+        Lp().player.context.next = NextContext.STOP_ALBUM
 
     def _stop_artist(self, action, variant):
         """
@@ -112,7 +112,7 @@ class PlaybackMenu(BaseMenu):
             @param SimpleAction
             @param GVariant
         """
-        Lp.player.context.next = NextContext.STOP_ARTIST
+        Lp().player.context.next = NextContext.STOP_ARTIST
 
 
 class QueueMenu(BaseMenu):
@@ -137,7 +137,7 @@ class QueueMenu(BaseMenu):
         """
             Set queue actions
         """
-        queue = Lp.player.get_queue()
+        queue = Lp().player.get_queue()
         append = True
         prepend = True
         delete = True
@@ -152,8 +152,8 @@ class QueueMenu(BaseMenu):
                 delete = False
         else:
 
-            tracks = Lp.albums.get_tracks(self._object_id,
-                                          self._genre_id)
+            tracks = Lp().albums.get_tracks(self._object_id,
+                                            self._genre_id)
             union = set(queue) & set(tracks)
             if len(union) == len(tracks):
                 append = False
@@ -190,11 +190,11 @@ class QueueMenu(BaseMenu):
             @param GVariant
         """
         if self._is_album:
-            for track_id in Lp.albums.get_tracks(self._object_id,
-                                                 self._genre_id):
-                Lp.player.append_to_queue(track_id)
+            for track_id in Lp().albums.get_tracks(self._object_id,
+                                                   self._genre_id):
+                Lp().player.append_to_queue(track_id)
         else:
-            Lp.player.append_to_queue(self._object_id)
+            Lp().player.append_to_queue(self._object_id)
 
     def _prepend_to_queue(self, action, variant):
         """
@@ -203,11 +203,11 @@ class QueueMenu(BaseMenu):
             @param GVariant
         """
         if self._is_album:
-            for track_id in reversed(Lp.albums.get_tracks(self._object_id,
-                                                          self._genre_id)):
-                Lp.player.prepend_to_queue(track_id)
+            for track_id in reversed(Lp().albums.get_tracks(self._object_id,
+                                                            self._genre_id)):
+                Lp().player.prepend_to_queue(track_id)
         else:
-            Lp.player.prepend_to_queue(self._object_id)
+            Lp().player.prepend_to_queue(self._object_id)
 
     def _del_from_queue(self, action, variant):
         """
@@ -216,11 +216,11 @@ class QueueMenu(BaseMenu):
             @param GVariant
         """
         if self._is_album:
-            for track_id in Lp.albums.get_tracks(self._object_id,
-                                                 self._genre_id):
-                Lp.player.del_from_queue(track_id)
+            for track_id in Lp().albums.get_tracks(self._object_id,
+                                                   self._genre_id):
+                Lp().player.del_from_queue(track_id)
         else:
-            Lp.player.del_from_queue(self._object_id)
+            Lp().player.del_from_queue(self._object_id)
 
 
 class PlaylistsMenu(BaseMenu):
@@ -252,16 +252,16 @@ class PlaylistsMenu(BaseMenu):
         self.append(_("Add to others"), 'app.playlist_action')
 
         i = 0
-        for playlist in Lp.playlists.get_last():
+        for playlist in Lp().playlists.get_last():
             action = Gio.SimpleAction(name="playlist%s" % i)
             self._app.add_action(action)
             if self._is_album:
-                exists = Lp.playlists.exists_album(playlist[0],
-                                                   self._object_id,
-                                                   self._genre_id)
+                exists = Lp().playlists.exists_album(playlist[0],
+                                                     self._object_id,
+                                                     self._genre_id)
             else:
-                exists = Lp.playlists.exists_track(playlist[0],
-                                                   self._object_id)
+                exists = Lp().playlists.exists_track(playlist[0],
+                                                     self._object_id)
             if exists:
                 action.connect('activate',
                                self._remove_from_playlist,
@@ -282,9 +282,9 @@ class PlaylistsMenu(BaseMenu):
             @param SimpleAction
             @param GVariant
         """
-        Lp.window.show_playlist_manager(self._object_id,
-                                        self._genre_id,
-                                        self._is_album)
+        Lp().window.show_playlist_manager(self._object_id,
+                                          self._genre_id,
+                                          self._is_album)
 
     def _add_to_playlist(self, action, variant, playlist_id):
         """
@@ -296,13 +296,13 @@ class PlaylistsMenu(BaseMenu):
         def add(playlist_id):
             tracks = []
             if self._is_album:
-                tracks_ids = Lp.albums.get_tracks(self._object_id,
-                                                  self._genre_id)
+                tracks_ids = Lp().albums.get_tracks(self._object_id,
+                                                    self._genre_id)
                 for track_id in tracks_ids:
                     tracks.append(Track(track_id))
             else:
                 tracks = [Track(self._object_id)]
-            Lp.playlists.add_tracks(playlist_id, tracks)
+            Lp().playlists.add_tracks(playlist_id, tracks)
         t = Thread(target=add, args=(playlist_id,))
         t.daemon = True
         t.start()
@@ -319,13 +319,13 @@ class PlaylistsMenu(BaseMenu):
         def remove(playlist_id):
             tracks = []
             if self._is_album:
-                tracks_ids = Lp.albums.get_tracks(self._object_id,
-                                                  self._genre_id)
+                tracks_ids = Lp().albums.get_tracks(self._object_id,
+                                                    self._genre_id)
                 for track_id in tracks_ids:
                     tracks.append(Track(track_id))
             else:
                 tracks = [Track(self._object_id)]
-            Lp.playlists.remove_tracks(playlist_id, tracks)
+            Lp().playlists.remove_tracks(playlist_id, tracks)
         t = Thread(target=remove, args=(playlist_id,))
         t.daemon = True
         t.start()
@@ -361,7 +361,7 @@ class PopToolbarMenu(Gio.Menu):
             @param genre id as int
         """
         Gio.Menu.__init__(self)
-        if not Lp.player.is_party():
+        if not Lp().player.is_party():
             self.insert_section(0, _("Playback"),
                                 PlaybackMenu())
         self.insert_section(1, _("Playlists"),
@@ -384,7 +384,7 @@ class EditMenu(BaseMenu):
         BaseMenu.__init__(self, object_id, genre_id, is_album)
 
         if is_album:
-            favorite = Lp.settings.get_value('tag-editor').get_string()
+            favorite = Lp().settings.get_value('tag-editor').get_string()
             for editor in [favorite] + self._TAG_EDITORS:
                 if which(editor) is not None:
                     self._tag_editor = editor
@@ -407,7 +407,7 @@ class EditMenu(BaseMenu):
             @param SimpleAction
             @param GVariant
         """
-        album_path = Lp.albums.get_path(self._object_id)
+        album_path = Lp().albums.get_path(self._object_id)
         argv = [self._tag_editor, album_path, None]
         (s, pid, i, o, e) = GLib.spawn_async_with_pipes(
                                 None, argv, None,
@@ -424,7 +424,7 @@ class EditMenu(BaseMenu):
             @param status as int
         """
         if status == 0:
-            Lp.window.update_db()
+            Lp().window.update_db()
 
 
 class AlbumMenu(Gio.Menu):

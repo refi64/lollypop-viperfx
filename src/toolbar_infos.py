@@ -48,8 +48,8 @@ class ToolbarInfos(Gtk.Bin):
         self._cover_frame = builder.get_object('frame')
         self._cover = builder.get_object('cover')
 
-        Lp.art.connect('album-artwork-changed', self._update_cover)
-        Lp.art.connect('radio-artwork-changed', self._update_logo)
+        Lp().art.connect('album-artwork-changed', self._update_cover)
+        Lp().art.connect('radio-artwork-changed', self._update_logo)
 
     def on_current_changed(self, player):
         """
@@ -70,15 +70,15 @@ class ToolbarInfos(Gtk.Bin):
             self._title_label.set_text(player.current_track.title)
 
         if player.current_track.id == Type.RADIOS:
-            art = Lp.art.get_radio_artwork(
+            art = Lp().art.get_radio_artwork(
                                    player.current_track.artist,
                                    ArtSize.SMALL*self.get_scale_factor())
         elif player.current_track.id == Type.EXTERNALS:
-            art = Lp.art.get_album_artwork2(
+            art = Lp().art.get_album_artwork2(
                     player.current_track.uri,
                     ArtSize.SMALL*self.get_scale_factor())
         else:
-            art = Lp.art.get_album_artwork(
+            art = Lp().art.get_album_artwork(
                                    player.current_track.album,
                                    ArtSize.SMALL*self.get_scale_factor())
         if art is not None:
@@ -105,9 +105,9 @@ class ToolbarInfos(Gtk.Bin):
             @param art as Art
             @param album id as int
         """
-        if Lp.player.current_track.album.id == album_id:
-            surface = Lp.art.get_album_artwork(
-                                       Lp.player.current_track.album,
+        if Lp().player.current_track.album.id == album_id:
+            surface = Lp().art.get_album_artwork(
+                                       Lp().player.current_track.album,
                                        ArtSize.SMALL)
             self._cover.set_from_surface(surface)
             del surface
@@ -118,8 +118,8 @@ class ToolbarInfos(Gtk.Bin):
             @param art as Art
             @param name as str
         """
-        if Lp.player.current_track.artist == name:
-            pixbuf = Lp.art.get_radio_artwork(name, ArtSize.SMALL)
+        if Lp().player.current_track.artist == name:
+            pixbuf = Lp().art.get_radio_artwork(name, ArtSize.SMALL)
             self._cover.set_from_surface(pixbuf)
             del pixbuf
 
@@ -130,14 +130,14 @@ class ToolbarInfos(Gtk.Bin):
             @param eventbox as Gtk.EventBox
             @param event as Gdk.Event
         """
-        if Lp.player.current_track.id == Type.EXTERNALS:
+        if Lp().player.current_track.id == Type.EXTERNALS:
             expopover = ExternalsPopover()
             expopover.set_relative_to(eventbox)
             expopover.populate()
             expopover.show()
-        elif Lp.player.current_track.id is not None:
+        elif Lp().player.current_track.id is not None:
             if event.button == 1:
-                if Lp.player.current_track.id == Type.RADIOS:
+                if Lp().player.current_track.id == Type.RADIOS:
                     if self._pop_tunein is None:
                         self._pop_tunein = TuneinPopover()
                         self._pop_tunein.populate()
@@ -148,16 +148,16 @@ class ToolbarInfos(Gtk.Bin):
                         self._pop_infos = InfosPopover()
                         self._pop_infos.set_relative_to(self._infobox)
                     self._pop_infos.show()
-            elif Lp.player.current_track.id >= 0:
-                menu = PopToolbarMenu(Lp.player.current_track.id, None)
+            elif Lp().player.current_track.id >= 0:
+                menu = PopToolbarMenu(Lp().player.current_track.id, None)
                 popover = Gtk.Popover.new_from_model(eventbox, menu)
-                rating = RatingWidget(Lp.player.current_track)
+                rating = RatingWidget(Lp().player.current_track)
                 rating.set_margin_top(5)
                 rating.set_margin_bottom(5)
                 rating.set_property('halign', Gtk.Align.START)
                 rating.set_property('hexpand', True)
                 rating.show()
-                loved = LovedWidget(Lp.player.current_track.id)
+                loved = LovedWidget(Lp().player.current_track.id)
                 loved.set_margin_end(5)
                 loved.set_margin_top(5)
                 loved.set_margin_bottom(5)

@@ -105,9 +105,9 @@ class MtpSync:
 
             # New tracks
             for playlist in playlists:
-                plnames.append(Lp.playlists.get_name(playlist))
+                plnames.append(Lp().playlists.get_name(playlist))
                 self._fraction = self._done/self._total
-                self._total += len(Lp.playlists.get_tracks(playlist))
+                self._total += len(Lp().playlists.get_tracks(playlist))
 
             # Old tracks
             try:
@@ -155,7 +155,7 @@ class MtpSync:
         """
         for playlist in playlists:
             try:
-                playlist_name = Lp.playlists.get_name(playlist)
+                playlist_name = Lp().playlists.get_name(playlist)
                 # Create playlist
                 m3u = Gio.File.new_for_path(
                     "/tmp/lollypop_%s.m3u" % (playlist_name,))
@@ -169,7 +169,7 @@ class MtpSync:
                 stream = None
 
             # Start copying
-            tracks_ids = Lp.playlists.get_tracks_ids(playlist)
+            tracks_ids = Lp().playlists.get_tracks_ids(playlist)
             for track_id in tracks_ids:
                 if track_id is None:
                     continue
@@ -197,7 +197,7 @@ class MtpSync:
                 if not d.query_exists(None):
                     self._retry(d.make_directory_with_parents, (None,))
                 # Copy album art
-                art = Lp.art.get_album_artwork_path(track.album)
+                art = Lp().art.get_album_artwork_path(track.album)
                 if art is not None:
                     src_art = Gio.File.new_for_path(art)
                     art_uri = "%s/cover.jpg" % on_device_album_uri
@@ -257,7 +257,7 @@ class MtpSync:
 
         # Get tracks ids
         for playlist in playlists:
-            tracks_ids += Lp.playlists.get_tracks_ids(playlist)
+            tracks_ids += Lp().playlists.get_tracks_ids(playlist)
 
         # Get tracks uris
         for track_id in tracks_ids:
@@ -276,7 +276,7 @@ class MtpSync:
             artist_name = "".join([c for c in track.artist if
                                    c.isalpha() or
                                    c.isdigit() or c == ' ']).rstrip()
-            track_path = Lp.tracks.get_path(track_id)
+            track_path = Lp().tracks.get_path(track_id)
             album_uri = "%s/tracks/%s_%s" % (self._uri,
                                              artist_name.lower(),
                                              album_name.lower())

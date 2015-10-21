@@ -32,13 +32,13 @@ class PlaylistView(View):
         """
         View.__init__(self)
         self._playlist_id = playlist_id
-        self._signal_id = Lp.playlists.connect('playlist-changed',
-                                               self._update)
+        self._signal_id = Lp().playlists.connect('playlist-changed',
+                                                 self._update)
 
         builder = Gtk.Builder()
         builder.add_from_resource('/org/gnome/Lollypop/PlaylistView.ui')
         builder.get_object('title').set_label(
-                                            Lp.playlists.get_name(playlist_id))
+                                          Lp().playlists.get_name(playlist_id))
         builder.connect_signals(self)
 
         self._edit_btn = builder.get_object('edit_btn')
@@ -100,7 +100,7 @@ class PlaylistView(View):
         """
             Update tracks widgets
         """
-        tracks = Lp.playlists.get_tracks_ids(self._playlist_id)
+        tracks = Lp().playlists.get_tracks_ids(self._playlist_id)
         self.populate(tracks)
 
     def _on_destroy(self, widget):
@@ -109,7 +109,7 @@ class PlaylistView(View):
             @param widget as Gtk.Widget
         """
         if self._signal_id:
-            Lp.playlists.disconnect(self._signal_id)
+            Lp().playlists.disconnect(self._signal_id)
             self._signal_id = None
 
     def _on_edit_btn_clicked(self, button):
@@ -118,7 +118,7 @@ class PlaylistView(View):
             @param button as Gtk.Button
             @param playlist name as str
         """
-        Lp.window.show_playlist_editor(self._playlist_id)
+        Lp().window.show_playlist_editor(self._playlist_id)
 
     def _on_current_changed(self, player):
         """
@@ -177,7 +177,7 @@ class PlaylistsManageView(View):
             Restore previous view
             @param button as Gtk.Button
         """
-        Lp.window.destroy_current_view()
+        Lp().window.destroy_current_view()
 
 
 class PlaylistEditView(View):
@@ -196,7 +196,7 @@ class PlaylistEditView(View):
         builder = Gtk.Builder()
         builder.add_from_resource('/org/gnome/Lollypop/PlaylistEditView.ui')
         builder.get_object('title').set_label(
-                                            Lp.playlists.get_name(playlist_id))
+                                          Lp().playlists.get_name(playlist_id))
         builder.connect_signals(self)
         grid = builder.get_object('widget')
         self.add(grid)
@@ -219,4 +219,4 @@ class PlaylistEditView(View):
             Restore previous view
             @param button as Gtk.Button
         """
-        Lp.window.destroy_current_view()
+        Lp().window.destroy_current_view()

@@ -36,7 +36,7 @@ class AlbumArt(BaseArt, ArtDownloader, TagReader):
         BaseArt.__init__(self)
         ArtDownloader.__init__(self)
         TagReader.__init__(self)
-        self._favorite = Lp.settings.get_value('favorite-cover').get_string()
+        self._favorite = Lp().settings.get_value('favorite-cover').get_string()
 
     def get_album_cache_path(self, album, size):
         """
@@ -201,7 +201,7 @@ class AlbumArt(BaseArt, ArtDownloader, TagReader):
         """
         try:
             album = Album(album_id)
-            path_count = Lp.albums.get_path_count(album.path, sql)
+            path_count = Lp().albums.get_path_count(album.path, sql)
             # Many albums with same path, suffix with artist_album name
             if path_count > 1:
                 artpath = os.path.join(album.path, "{}_{}.jpg".format(

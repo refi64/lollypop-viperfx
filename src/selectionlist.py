@@ -359,7 +359,7 @@ class SelectionList(Gtk.ScrolledWindow):
             @param widget as Gtk.widget
             @param event as GdK.Event
         """
-        Lp.window.enable_global_shorcuts(False)
+        Lp().window.enable_global_shorcuts(False)
 
     def _on_focus_out_event(self, widget, event):
         """
@@ -367,7 +367,7 @@ class SelectionList(Gtk.ScrolledWindow):
             @param widget as Gtk.widget
             @param event as GdK.Event
         """
-        Lp.window.enable_global_shorcuts(True)
+        Lp().window.enable_global_shorcuts(True)
 
     def _on_leave_event(self, widget=None, event=None):
         """

@@ -38,24 +38,24 @@ class NextPopover(Gtk.Popover):
         self._artist_label = builder.get_object('artist')
         self._cover = builder.get_object('cover')
         self._skip_btn = builder.get_object('skip_btn')
-        self._signal_id = Lp.player.connect('queue-changed', self.update)
+        self._signal_id = Lp().player.connect('queue-changed', self.update)
 
     def update(self, player=None):
         """
             Update widget with current track
         """
-        if Lp.player.is_party() or\
-                Lp.settings.get_enum('shuffle') == Shuffle.TRACKS:
+        if Lp().player.is_party() or\
+                Lp().settings.get_enum('shuffle') == Shuffle.TRACKS:
             self._skip_btn.show()
-        self._artist_label.set_text(Lp.player.next_track.artist)
-        self._title_label.set_text(Lp.player.next_track.title)
-        art = Lp.art.get_album_artwork(
-                               Lp.player.next_track.album,
+        self._artist_label.set_text(Lp().player.next_track.artist)
+        self._title_label.set_text(Lp().player.next_track.title)
+        art = Lp().art.get_album_artwork(
+                               Lp().player.next_track.album,
                                ArtSize.MEDIUM * self.get_scale_factor())
         if art is not None:
             self._cover.set_from_surface(art)
             del art
-            self._cover.set_tooltip_text(Lp.player.next_track.album.name)
+            self._cover.set_tooltip_text(Lp().player.next_track.album.name)
             self._cover.show()
         else:
             self._cover.hide()
@@ -68,7 +68,7 @@ class NextPopover(Gtk.Popover):
             Connect signal
             @param widget as Gtk.Widget
         """
-        self._signal_id = Lp.player.connect('queue-changed', self.update)
+        self._signal_id = Lp().player.connect('queue-changed', self.update)
 
     def _on_unmap(self, widget):
         """
@@ -76,12 +76,12 @@ class NextPopover(Gtk.Popover):
             @param widget as Gtk.Widget
         """
         if self._signal_id is not None:
-            Lp.player.disconnect(self._signal_id)
+            Lp().player.disconnect(self._signal_id)
 
     def _on_skip_btn_clicked(self, btn):
         """
             Skip next track
             @param btn as Gtk.Button
         """
-        Lp.player.set_next()
-        Lp.player.emit('queue-changed')
+        Lp().player.set_next()
+        Lp().player.emit('queue-changed')

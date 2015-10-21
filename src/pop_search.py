@@ -87,7 +87,7 @@ class SearchRow(Gtk.ListBoxRow):
             Prepend track to queue
             @param button as Gtk.Button
         """
-        Lp.window.show_playlist_manager(self.id, None, not self.is_track)
+        Lp().window.show_playlist_manager(self.id, None, not self.is_track)
 
     def _on_queue_clicked(self, button):
         """
@@ -95,10 +95,10 @@ class SearchRow(Gtk.ListBoxRow):
             @param button as Gtk.Button
         """
         if self.is_track:
-            Lp.player.append_to_queue(self.id)
+            Lp().player.append_to_queue(self.id)
         else:
-            for track in Lp.albums.get_tracks(self.id, None):
-                Lp.player.append_to_queue(track)
+            for track in Lp().albums.get_tracks(self.id, None):
+                Lp().player.append_to_queue(track)
         button.hide()
 
     def _on_query_tooltip(self, widget, x, y, keyboard, tooltip):
@@ -166,7 +166,7 @@ class SearchPopover(Gtk.Popover):
         builder.get_object('scrolled').add(self._view)
         self.add(builder.get_object('widget'))
 
-        size_setting = Lp.settings.get_value('window-size')
+        size_setting = Lp().settings.get_value('window-size')
         if isinstance(size_setting[1], int):
             self.set_size_request(400, size_setting[1]*0.7)
         else:
@@ -211,38 +211,38 @@ class SearchPopover(Gtk.Popover):
         tracks_non_album_artist = []
 
         # Get all albums for all artists and non album_artist tracks
-        for artist_id in Lp.artists.search(self._current_search):
-            for album_id in Lp.albums.get_ids(artist_id, None):
+        for artist_id in Lp().artists.search(self._current_search):
+            for album_id in Lp().albums.get_ids(artist_id, None):
                 if (album_id, artist_id) not in albums:
                     albums.append((album_id, artist_id))
-            for track_id, track_name in Lp.tracks.get_as_non_album_artist(
+            for track_id, track_name in Lp().tracks.get_as_non_album_artist(
                                                         artist_id):
                 tracks_non_album_artist.append((track_id, track_name))
 
-        albums += Lp.albums.search(self._current_search)
+        albums += Lp().albums.search(self._current_search)
 
         for album_id, artist_id in albums:
             search_obj = SearchObject()
-            search_obj.artist = Lp.artists.get_name(artist_id)
-            search_obj.title = Lp.albums.get_name(album_id)
-            search_obj.count = Lp.albums.get_count(album_id, None)
+            search_obj.artist = Lp().artists.get_name(artist_id)
+            search_obj.title = Lp().albums.get_name(album_id)
+            search_obj.count = Lp().albums.get_count(album_id, None)
             search_obj.id = album_id
             search_obj.album_id = album_id
             results.append(search_obj)
 
-        for track_id, track_name in Lp.tracks.search(
+        for track_id, track_name in Lp().tracks.search(
                         self._current_search) + tracks_non_album_artist:
             search_obj = SearchObject()
             search_obj.title = track_name
             search_obj.id = track_id
-            search_obj.album_id = Lp.tracks.get_album_id(track_id)
+            search_obj.album_id = Lp().tracks.get_album_id(track_id)
             search_obj.is_track = True
 
-            artist_id = Lp.albums.get_artist_id(search_obj.album_id)
+            artist_id = Lp().albums.get_artist_id(search_obj.album_id)
             if artist_id == Type.COMPILATIONS:
-                search_obj.artist = Lp.tracks.get_artist_names(track_id)
+                search_obj.artist = Lp().tracks.get_artist_names(track_id)
             else:
-                search_obj.artist = Lp.artists.get_name(artist_id)
+                search_obj.artist = Lp().artists.get_name(artist_id)
 
             results.append(search_obj)
 
@@ -266,7 +266,7 @@ class SearchPopover(Gtk.Popover):
                     result.title += " (%s)" % result.count
                 search_row.set_text(result.artist, result.title)
                 search_row.set_cover(
-                        Lp.art.get_album_artwork(
+                        Lp().art.get_album_artwork(
                                      Album(result.album_id),
                                      ArtSize.MEDIUM*self.get_scale_factor()))
                 search_row.id = result.id
@@ -288,8 +288,8 @@ class SearchPopover(Gtk.Popover):
             @param track id as int
             @thread safe
         """
-        track = Lp.player.set_user_playlist(tracks, track_id)
-        Lp.player.load(track)
+        track = Lp().player.set_user_playlist(tracks, track_id)
+        Lp().player.load(track)
 
     def _play_search(self, object_id=None, is_track=True):
         """
@@ -303,13 +303,13 @@ class SearchPopover(Gtk.Popover):
             if child.is_track:
                 tracks.append(Track(child.id))
             else:
-                album_tracks = Lp.albums.get_tracks(child.id, None)
+                album_tracks = Lp().albums.get_tracks(child.id, None)
                 if not is_track and child.id == object_id and album_tracks:
                     track_id = album_tracks[0]
                 for tid in album_tracks:
                     tracks.append(Track(tid))
         if tracks:
-            GLib.idle_add(Lp.player.set_party, False)
+            GLib.idle_add(Lp().player.set_party, False)
             if object_id is not None and is_track:
                 track_id = object_id
             elif track_id is None:
@@ -325,28 +325,28 @@ class SearchPopover(Gtk.Popover):
             if child.is_track:
                 tracks.append(Track(child.id))
             else:
-                for track_id in Lp.albums.get_tracks(child.id, None):
+                for track_id in Lp().albums.get_tracks(child.id, None):
                     tracks.append(Track(child.id))
 
         if tracks:
-            playlist_id = Lp.playlists.get_id(self._current_search)
+            playlist_id = Lp().playlists.get_id(self._current_search)
             if playlist_id == Type.NONE:
-                Lp.playlists.add(self._current_search)
-            Lp.playlists.add_tracks(playlist_id, tracks)
+                Lp().playlists.add(self._current_search)
+            Lp().playlists.add_tracks(playlist_id, tracks)
 
     def _on_map(self, widget):
         """
             Disable global shortcuts
             @param widget as Gtk.Widget
         """
-        Lp.window.enable_global_shorcuts(False)
+        Lp().window.enable_global_shorcuts(False)
 
     def _on_unmap(self, widget):
         """
             Enable global shortcuts
             @param widget as Gtk.Widget
         """
-        Lp.window.enable_global_shorcuts(True)
+        Lp().window.enable_global_shorcuts(True)
 
     def _on_search_changed(self, widget):
         """
@@ -390,7 +390,7 @@ class SearchPopover(Gtk.Popover):
             @param widget as Gtk.ListBox
             @param row as SearchRow
         """
-        Lp.player.set_party(False)
+        Lp().player.set_party(False)
         t = Thread(target=self._play_search, args=(row.id, row.is_track))
         t.daemon = True
         t.start()

@@ -38,7 +38,7 @@ class ArtistView(ArtistAlbumsView):
         builder.connect_signals(self)
         self.attach(builder.get_object('ArtistView'), 0, 0, 1, 1)
         builder.get_object('artist').set_label(
-                                            Lp.artists.get_name(artist_id))
+                                            Lp().artists.get_name(artist_id))
 
 #######################
 # PRIVATE             #

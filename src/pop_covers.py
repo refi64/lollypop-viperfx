@@ -69,7 +69,7 @@ class CoversPopover(Gtk.Popover):
             Populate view
         """
         # First load local files
-        urls = Lp.art.get_album_artworks(self._album)
+        urls = Lp().art.get_album_artworks(self._album)
         for url in urls:
             pixbuf = GdkPixbuf.Pixbuf.new_from_file_at_size(url,
                                                             ArtSize.MONSTER,
@@ -93,7 +93,7 @@ class CoversPopover(Gtk.Popover):
         """
         urls = []
         if Gio.NetworkMonitor.get_default().get_network_available():
-            urls = Lp.art.get_google_arts("%s+%s" % (
+            urls = Lp().art.get_google_arts("%s+%s" % (
                                                    self._album.artist_name,
                                                    self._album.name), start)
         if urls:
@@ -185,8 +185,8 @@ class CoversPopover(Gtk.Popover):
             Reset cache and use player object to announce cover change
         """
         pixbuf = self._orig_pixbufs[child.get_child()]
-        Lp.art.save_album_artwork(pixbuf, self._album.id)
-        Lp.art.clean_album_cache(self._album)
-        Lp.art.album_artwork_update(self._album.id)
+        Lp().art.save_album_artwork(pixbuf, self._album.id)
+        Lp().art.clean_album_cache(self._album)
+        Lp().art.album_artwork_update(self._album.id)
         self.hide()
         self._streams = {}

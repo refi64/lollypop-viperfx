@@ -80,8 +80,8 @@ class DeviceManagerWidget(Gtk.Bin, MtpSync):
             Populate playlists, thread safe
         """
         self._model.clear()
-        playlists = [(Type.LOVED, Lp.playlists._LOVED)]
-        playlists += Lp.playlists.get()
+        playlists = [(Type.LOVED, Lp().playlists._LOVED)]
+        playlists += Lp().playlists.get()
         self._append_playlists(playlists)
 
     def set_playlists(self, playlists, uri):

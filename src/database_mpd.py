@@ -31,7 +31,7 @@ class MpdDatabase:
         """
         songs = 0
         playtime = 0
-        with SqlCursor(Lp.db) as sql:
+        with SqlCursor(Lp().db) as sql:
             result = self._get_tracks(sql, "COUNT(*), SUM(tracks.duration)",
                                       album, artist_id, genre_id, year)
             v = result.fetchone()
@@ -51,7 +51,7 @@ class MpdDatabase:
             @param year as int
             @return paths as [str]
         """
-        with SqlCursor(Lp.db) as sql:
+        with SqlCursor(Lp().db) as sql:
             result = self._get_tracks(sql, "filepath",
                                       album, artist_id, genre_id, year)
             return list(itertools.chain(*result))
@@ -65,7 +65,7 @@ class MpdDatabase:
             @param year as int
             @return paths as [str]
         """
-        with SqlCursor(Lp.db) as sql:
+        with SqlCursor(Lp().db) as sql:
             result = self._get_tracks(sql, "tracks.rowid",
                                       album, artist_id, genre_id, year)
             return list(itertools.chain(*result))
@@ -92,7 +92,7 @@ class MpdDatabase:
         else:
             where_str += " albums.year = %s" % year
 
-        with SqlCursor(Lp.db) as sql:
+        with SqlCursor(Lp().db) as sql:
             request = "SELECT albums.name FROM "\
                        + from_str
             if where_str != "":
@@ -118,7 +118,7 @@ class MpdDatabase:
                           AND album_genres.album_id = albums.rowid\
                           AND" % genre_id
 
-        with SqlCursor(Lp.db) as sql:
+        with SqlCursor(Lp().db) as sql:
             request = "SELECT artists.name FROM "\
                        + from_str
             if where_str != "":
@@ -152,7 +152,7 @@ class MpdDatabase:
             request += " WHERE " + where_str
         if request.endswith("AND"):
             request = request[:-3]
-        with SqlCursor(Lp.db) as sql:
+        with SqlCursor(Lp().db) as sql:
             result = sql.execute(request)
             return list(itertools.chain(*result))
 

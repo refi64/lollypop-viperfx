@@ -35,7 +35,7 @@ class GenresDatabase:
             @return inserted rowid as int
             @warning: commit needed
         """
-        with SqlCursor(Lp.db) as sql:
+        with SqlCursor(Lp().db) as sql:
             result = sql.execute("INSERT INTO genres (name) VALUES (?)",
                                  (name,))
             return result.lastrowid
@@ -46,7 +46,7 @@ class GenresDatabase:
             @param name as string
             @return genre id as int
         """
-        with SqlCursor(Lp.db) as sql:
+        with SqlCursor(Lp().db) as sql:
             result = sql.execute("SELECT rowid FROM genres\
                                   WHERE name=?", (name,))
             v = result.fetchone()
@@ -60,7 +60,7 @@ class GenresDatabase:
             @param string
             @return int
         """
-        with SqlCursor(Lp.db) as sql:
+        with SqlCursor(Lp().db) as sql:
             result = sql.execute("SELECT name FROM genres\
                                   WHERE rowid=?", (genre_id,))
             v = result.fetchone()
@@ -73,7 +73,7 @@ class GenresDatabase:
             Get all availables albums  for genres
             @return Array of id as int
         """
-        with SqlCursor(Lp.db) as sql:
+        with SqlCursor(Lp().db) as sql:
             result = sql.execute("SELECT albums.rowid\
                                  FROM albums, album_genres\
                                  WHERE album_genres.genre_id=?\
@@ -86,7 +86,7 @@ class GenresDatabase:
             Get all availables genres
             @return [(id as int, name as string)]
         """
-        with SqlCursor(Lp.db) as sql:
+        with SqlCursor(Lp().db) as sql:
             result = sql.execute("SELECT rowid, name FROM genres\
                                   ORDER BY name COLLATE NOCASE")
             return list(result)
@@ -96,7 +96,7 @@ class GenresDatabase:
             Get all availables genres ids
             @return [id as int]
         """
-        with SqlCursor(Lp.db) as sql:
+        with SqlCursor(Lp().db) as sql:
             result = sql.execute("SELECT rowid FROM genres\
                                   ORDER BY name COLLATE NOCASE")
             return list(itertools.chain(*result))
@@ -107,7 +107,7 @@ class GenresDatabase:
             @param genre id as int
             @warning commit needed
         """
-        with SqlCursor(Lp.db) as sql:
+        with SqlCursor(Lp().db) as sql:
             result = sql.execute("SELECT track_id from track_genres\
                                  WHERE genre_id=?\
                                  LIMIT 1", (genre_id,))

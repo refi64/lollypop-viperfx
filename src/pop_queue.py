@@ -74,7 +74,7 @@ class QueueWidget(Gtk.Popover):
 
         self.add(self._widget)
 
-        size_setting = Lp.settings.get_value('window-size')
+        size_setting = Lp().settings.get_value('window-size')
         if isinstance(size_setting[1], int):
             self.set_size_request(420, size_setting[1]*0.7)
         else:
@@ -84,9 +84,9 @@ class QueueWidget(Gtk.Popover):
         """
             Populate view
         """
-        if Lp.player.get_queue():
+        if Lp().player.get_queue():
             self._clear_btn.set_sensitive(True)
-        GLib.idle_add(self._add_items, list(Lp.player.get_queue()))
+        GLib.idle_add(self._add_items, list(Lp().player.get_queue()))
 
 #######################
 # PRIVATE             #
@@ -98,10 +98,10 @@ class QueueWidget(Gtk.Popover):
         """
         if items:
             track_id = items.pop(0)
-            album_id = Lp.tracks.get_album_id(track_id)
-            artist_id = Lp.albums.get_artist_id(album_id)
-            artist_name = Lp.artists.get_name(artist_id)
-            track_name = Lp.tracks.get_name(track_id)
+            album_id = Lp().tracks.get_album_id(track_id)
+            artist_id = Lp().albums.get_artist_id(album_id)
+            artist_name = Lp().artists.get_name(artist_id)
+            track_name = Lp().tracks.get_name(track_id)
             title = "<b>%s</b>\n%s" %\
                 (escape(artist_name),
                  escape(track_name))
@@ -116,8 +116,8 @@ class QueueWidget(Gtk.Popover):
             Connect signals
             @param widget as Gtk.Widget
         """
-        self._signal_id1 = Lp.player.connect('current-changed',
-                                             self._on_current_changed)
+        self._signal_id1 = Lp().player.connect('current-changed',
+                                               self._on_current_changed)
         self._signal_id2 = self._model.connect('row-deleted',
                                                self._updated_rows)
 
@@ -127,7 +127,7 @@ class QueueWidget(Gtk.Popover):
             @param widget as Gtk.Widget
         """
         if self._signal_id1:
-            Lp.player.disconnect(self._signal_id1)
+            Lp().player.disconnect(self._signal_id1)
             self._signal_id1 = None
         if self._signal_id2:
             self._model.disconnect(self._signal_id2)
@@ -139,7 +139,7 @@ class QueueWidget(Gtk.Popover):
             Delete item if Delete was pressed
             @param widget unused, Gdk.Event
         """
-        if Lp.player.get_queue():
+        if Lp().player.get_queue():
             if event.keyval == 65535:
                 path, column = self._view.get_cursor()
                 iterator = self._model.get_iter(path)
@@ -181,7 +181,7 @@ class QueueWidget(Gtk.Popover):
             for row in self._model:
                 if row[3]:
                     new_queue.append(row[3])
-            Lp.player.set_queue(new_queue)
+            Lp().player.set_queue(new_queue)
 
     def _delete_row(self, iterator):
         """
@@ -226,4 +226,4 @@ class QueueWidget(Gtk.Popover):
         if not self._in_drag:
             value_id = self._model.get_value(iterator, 3)
             self._model.remove(iterator)
-            Lp.player.load(Track(value_id))
+            Lp().player.load(Track(value_id))

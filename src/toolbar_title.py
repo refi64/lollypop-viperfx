@@ -60,7 +60,7 @@ class ToolbarTitle(Gtk.Bin):
         """
         if not self._seeking:
             if value is None:
-                value = Lp.player.get_position_in_track()/1000000
+                value = Lp().player.get_position_in_track()/1000000
             self._progress.set_value(value)
             self._timelabel.set_text(seconds_to_string(value/60))
         return True
@@ -163,4 +163,4 @@ class ToolbarTitle(Gtk.Bin):
         value = scale.get_value()
         self._seeking = False
         self.update_position(value)
-        Lp.player.seek(value/60)
+        Lp().player.seek(value/60)

@@ -80,11 +80,11 @@ class Database:
             Create database tables or manage update if needed
         """
         with SqlCursor(self) as sql:
-            db_version = Lp.settings.get_value('db-version').get_int32()
+            db_version = Lp().settings.get_value('db-version').get_int32()
             upgrade = DatabaseUpgrade(db_version, self)
             upgrade.do_db_upgrade()
-            Lp.settings.set_value('db-version',
-                                  GLib.Variant('i', upgrade.count()))
+            Lp().settings.set_value('db-version',
+                                    GLib.Variant('i', upgrade.count()))
             # Create db schema
             try:
                 sql.execute(self.create_albums)

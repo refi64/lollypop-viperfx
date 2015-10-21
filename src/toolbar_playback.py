@@ -94,18 +94,18 @@ class ToolbarPlayback(Gtk.Bin):
             Previous track on prev button clicked
             @param button as Gtk.Button
         """
-        Lp.player.prev()
+        Lp().player.prev()
 
     def _on_play_btn_clicked(self, button):
         """
             Play/Pause on play button clicked
             @param button as Gtk.Button
         """
-        if Lp.player.is_playing():
-            Lp.player.pause()
+        if Lp().player.is_playing():
+            Lp().player.pause()
             self._change_play_btn_status(self._play_image, _("Play"))
         else:
-            Lp.player.play()
+            Lp().player.play()
             self._change_play_btn_status(self._pause_image, _("Pause"))
 
     def _on_next_btn_clicked(self, button):
@@ -113,4 +113,4 @@ class ToolbarPlayback(Gtk.Bin):
             Next track on next button clicked
             @param button as Gtk.Button
         """
-        Lp.player.next()
+        Lp().player.next()

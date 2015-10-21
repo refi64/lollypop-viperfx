@@ -45,7 +45,7 @@ class AlbumWidget:
         """
         if self._cover is None:
             return
-        surface = Lp.art.get_album_artwork(
+        surface = Lp().art.get_album_artwork(
                             self._album,
                             ArtSize.BIG * self._cover.get_scale_factor())
         self._cover.set_from_surface(surface)
@@ -56,7 +56,7 @@ class AlbumWidget:
             Update cover for album id id needed
             @param album id as int
         """
-        surface = Lp.art.get_album_artwork(
+        surface = Lp().art.get_album_artwork(
                             self._album,
                             ArtSize.BIG * self._cover.get_scale_factor())
         self._cover.set_from_surface(surface)
@@ -66,7 +66,7 @@ class AlbumWidget:
         """
             Update widget state
         """
-        selected = self._album.id == Lp.player.current_track.album.id
+        selected = self._album.id == Lp().player.current_track.album.id
         if selected != self._selected:
             if selected:
                 self._color.get_style_context().add_class(
@@ -182,7 +182,7 @@ class AlbumSimpleWidget(Gtk.Bin, AlbumWidget):
         return (widths[0] + 8, widths[1] + 8)
 
     def update_cursor(self):
-        if Lp.settings.get_value('auto-play'):
+        if Lp().settings.get_value('auto-play'):
             AlbumWidget.update_cursor(self, Gdk.CursorType.HAND1)
         else:
             AlbumWidget.update_cursor(self)
@@ -242,7 +242,7 @@ class AlbumDetailedWidget(Gtk.Bin, AlbumWidget):
         self._artist_label = builder.get_object('artist')
 
         label = builder.get_object('duration')
-        duration = Lp.albums.get_duration(album_id, genre_id)
+        duration = Lp().albums.get_duration(album_id, genre_id)
         hours = int(duration / 3600)
         mins = int(duration / 60)
         if hours > 0:
@@ -316,9 +316,9 @@ class AlbumDetailedWidget(Gtk.Bin, AlbumWidget):
         """
         for disc in self._discs:
             self._tracks_left[disc.number].update_playing(
-                Lp.player.current_track.id)
+                Lp().player.current_track.id)
             self._tracks_right[disc.number].update_playing(
-                Lp.player.current_track.id)
+                Lp().player.current_track.id)
 
     def populate(self):
         """
@@ -418,10 +418,10 @@ class AlbumDetailedWidget(Gtk.Bin, AlbumWidget):
 
         # Get track position in queue
         pos = None
-        if Lp.player.is_in_queue(track.id):
-            pos = Lp.player.get_track_position(track.id)
+        if Lp().player.is_in_queue(track.id):
+            pos = Lp().player.get_track_position(track.id)
 
-        if not Lp.settings.get_value('show-tag-tracknumber'):
+        if not Lp().settings.get_value('show-tag-tracknumber'):
             track_number = i
         else:
             track_number = track.number
@@ -442,17 +442,17 @@ class AlbumDetailedWidget(Gtk.Bin, AlbumWidget):
         """
         # Play track with no album, force repeat on track
         if self._button_state & Gdk.ModifierType.SHIFT_MASK:
-            Lp.player.clear_albums()
-            Lp.player.load(Track(track_id))
+            Lp().player.clear_albums()
+            Lp().player.load(Track(track_id))
         else:
-            Lp.player.context.next = NextContext.NONE
-            if not Lp.player.is_party():
-                Lp.player.set_albums(track_id,
-                                     self._album.artist_id,
-                                     self._album.genre_id)
-            Lp.player.load(Track(track_id))
+            Lp().player.context.next = NextContext.NONE
+            if not Lp().player.is_party():
+                Lp().player.set_albums(track_id,
+                                       self._album.artist_id,
+                                       self._album.genre_id)
+            Lp().player.load(Track(track_id))
             if self._button_state & Gdk.ModifierType.CONTROL_MASK:
-                Lp.player.context.next = NextContext.STOP_TRACK
+                Lp().player.context.next = NextContext.STOP_TRACK
 
     def _on_button_press_event(self, widget, event):
         """
@@ -470,7 +470,7 @@ class AlbumDetailedWidget(Gtk.Bin, AlbumWidget):
             @param: event as Gdk.Event
         """
         if event.button == 1:
-            Lp.player.play_album(self._album.id)
+            Lp().player.play_album(self._album.id)
         elif self._pop_allowed:
             popover = CoversPopover(self._album.artist_id, self._album.id)
             popover.set_relative_to(widget)

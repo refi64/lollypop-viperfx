@@ -34,14 +34,14 @@ class MpdHandler(socketserver.BaseRequestHandler):
         self._playlist_version = 0
         self._idle_strings = []
         self._current_song = None
-        self._signal1 = Lp.player.connect('current-changed',
-                                          self._on_player_changed)
-        self._signal2 = Lp.player.connect('status-changed',
-                                          self._on_player_changed)
-        self._signal3 = Lp.player.connect('seeked',
-                                          self._on_player_changed)
-        self._signal4 = Lp.playlists.connect('playlist-changed',
-                                             self._on_playlist_changed)
+        self._signal1 = Lp().player.connect('current-changed',
+                                            self._on_player_changed)
+        self._signal2 = Lp().player.connect('status-changed',
+                                            self._on_player_changed)
+        self._signal3 = Lp().player.connect('seeked',
+                                            self._on_player_changed)
+        self._signal4 = Lp().playlists.connect('playlist-changed',
+                                               self._on_playlist_changed)
         self.request.send("OK MPD 0.19.0\n".encode('utf-8'))
         try:
             while self.server.running:
@@ -67,7 +67,7 @@ class MpdHandler(socketserver.BaseRequestHandler):
                     data = data.replace('command_list_end\n', '')
                     cmds = data.split('\n')
                     print(cmds)
-                    if cmds:
+                    if cmds and self.server.running:
                         try:
                             # Group commands
                             cmd_dict = {}
@@ -90,10 +90,10 @@ class MpdHandler(socketserver.BaseRequestHandler):
                             self._send_msg('', list_ok)
         except:
             self._noidle(None, None)
-        Lp.player.disconnect(self._signal1)
-        Lp.player.disconnect(self._signal2)
-        Lp.player.disconnect(self._signal3)
-        Lp.playlists.disconnect(self._signal4)
+        Lp().player.disconnect(self._signal1)
+        Lp().player.disconnect(self._signal2)
+        Lp().player.disconnect(self._signal3)
+        Lp().playlists.disconnect(self._signal4)
 
     def _add(self, args_array, list_ok):
         """
@@ -103,9 +103,9 @@ class MpdHandler(socketserver.BaseRequestHandler):
         """
         tracks = []
         for args in args_array:
-            track_id = Lp.tracks.get_id_by_path(self._get_args(args)[0])
+            track_id = Lp().tracks.get_id_by_path(self._get_args(args)[0])
             tracks.append(Track(track_id))
-        Lp.playlists.add_tracks(Type.MPD, tracks)
+        Lp().playlists.add_tracks(Type.MPD, tracks)
         self._send_msg('', list_ok)
 
     def _clear(self, args_array, list_ok):
@@ -114,7 +114,7 @@ class MpdHandler(socketserver.BaseRequestHandler):
             @param args as [str]
             @param add list_OK as bool
         """
-        Lp.playlists.clear(Type.MPD, True)
+        Lp().playlists.clear(Type.MPD, True)
         self._send_msg('', list_ok)
 
     def _channels(self, args_array, list_ok):
@@ -169,9 +169,9 @@ class MpdHandler(socketserver.BaseRequestHandler):
             year = Type.NONE
 
         if genre is not None:
-            genre_id = Lp.genres.get_id(genre)
+            genre_id = Lp().genres.get_id(genre)
         if artist is not None:
-            artist_id = Lp.artists.get_id(artist)
+            artist_id = Lp().artists.get_id(artist)
 
         (songs, playtime) = self._mpddb.count(album, artist_id,
                                               genre_id, year)
@@ -186,7 +186,7 @@ class MpdHandler(socketserver.BaseRequestHandler):
         """
         if self._current_song is None:
             self._current_song = self._string_for_track_id(
-                                                    Lp.player.current_track.id)
+                                                  Lp().player.current_track.id)
         msg = self._current_song
         self._send_msg(msg, list_ok)
 
@@ -198,17 +198,19 @@ class MpdHandler(socketserver.BaseRequestHandler):
         """
         for args in args_array:
             tracks = []
-            for track_id in Lp.playlists.get_tracks_ids(Type.MPD):
+            for track_id in Lp().playlists.get_tracks_ids(Type.MPD):
                 tracks.append(Track(track_id))
             del tracks[self._get_args(args)[0]]
-            Lp.playlists.clear(Type.MPD, False)
-            Lp.playlists.add_tracks(Type.MPD, tracks)
+            Lp().playlists.clear(Type.MPD, False)
+            Lp().playlists.add_tracks(Type.MPD, tracks)
 
     def _idle(self, args_array, list_ok):
         msg = ''
         self.request.settimeout(0)
         MpdHandler.idle = self
-        while not self._idle_strings and MpdHandler.idle == self:
+        while not self._idle_strings and\
+                MpdHandler.idle == self and\
+                self.server.running:
             print('IDLE', MpdHandler.idle, self, self._idle_strings)
             sleep(1)
         if MpdHandler.idle == self:
@@ -252,9 +254,9 @@ class MpdHandler(socketserver.BaseRequestHandler):
         except:
             year = None
         if genre is not None:
-            genre_id = Lp.genres.get_id(genre)
+            genre_id = Lp().genres.get_id(genre)
         if artist is not None:
-            artist_id = Lp.artists.get_id(artist)
+            artist_id = Lp().artists.get_id(artist)
 
         if args[0].lower() == 'file':
             for path in self._mpddb.get_tracks_paths(album, artist_id,
@@ -268,7 +270,7 @@ class MpdHandler(socketserver.BaseRequestHandler):
             for artist in self._mpddb.get_artists_names(genre_id):
                 msg += "Artist: "+translate_artist_name(artist)+"\n"
         elif args[0].lower() == 'genre':
-            results = Lp.genres.get_names()
+            results = Lp().genres.get_names()
             for name in results:
                 msg += "Genre: "+name+"\n"
         elif args[0].lower() == 'date':
@@ -293,7 +295,7 @@ class MpdHandler(socketserver.BaseRequestHandler):
         """
         i = 0
         msg = ""
-        for track_id in Lp.tracks.get_ids():
+        for track_id in Lp().tracks.get_ids():
             msg += self._string_for_track_id(track_id)
             if i > 100:
                 self.request.send(msg.encode("utf-8"))
@@ -310,9 +312,9 @@ class MpdHandler(socketserver.BaseRequestHandler):
             @param add list_OK as bool
         """
         arg = self._get_args(args_array[0])[0]
-        playlist_id = Lp.playlists.get_id(arg)
+        playlist_id = Lp().playlists.get_id(arg)
         msg = ""
-        for track_id in Lp.playlists.get_tracks_ids(playlist_id):
+        for track_id in Lp().playlists.get_tracks_ids(playlist_id):
             msg += self._string_for_track_id(track_id)
         self._send_msg(msg, list_ok)
 
@@ -325,7 +327,7 @@ class MpdHandler(socketserver.BaseRequestHandler):
         dt = datetime.utcnow()
         dt = dt.replace(microsecond=0)
         msg = ""
-        for (playlist_id, name) in Lp.playlists.get():
+        for (playlist_id, name) in Lp().playlists.get():
             msg += "playlist: %s\nLast-Modified: %s\n" % (
                                                       name,
                                                       '%sZ' % dt.isoformat())
@@ -338,11 +340,11 @@ class MpdHandler(socketserver.BaseRequestHandler):
             @param add list_OK as bool
         """
         arg = self._get_args(args_array[0])[0]
-        playlist_id = Lp.playlists.get_id(arg)
+        playlist_id = Lp().playlists.get_id(arg)
         tracks = []
-        for track_id in Lp.playlists.get_tracks_ids(playlist_id):
+        for track_id in Lp().playlists.get_tracks_ids(playlist_id):
             tracks.append(Track(track_id))
-        Lp.playlists.add_tracks(Type.MPD, tracks)
+        Lp().playlists.add_tracks(Type.MPD, tracks)
         self._send_msg('', list_ok)
 
     def _lsinfo(self, args_array, list_ok):
@@ -355,7 +357,7 @@ class MpdHandler(socketserver.BaseRequestHandler):
         if args_array:
             pass  # args = self._get_args(args_array[0])
         else:
-            results = Lp.genres.get()
+            results = Lp().genres.get()
             i = 0
             for (rowid, genre) in results:
                 msg += 'directory: '+genre+'\n'
@@ -372,7 +374,7 @@ class MpdHandler(socketserver.BaseRequestHandler):
             @param args as [str]
             @param add list_OK as bool
         """
-        GLib.idle_add(Lp.player.next)
+        GLib.idle_add(Lp().player.next)
         self._send_msg('', list_ok)
 
     def _move(self, args_array, list_ok):
@@ -382,7 +384,7 @@ class MpdHandler(socketserver.BaseRequestHandler):
             @param add list_OK as bool
         """
         # TODO implement range
-        tracks_ids = Lp.playlists.get_tracks_ids(Type.MPD)
+        tracks_ids = Lp().playlists.get_tracks_ids(Type.MPD)
         for args in args_array:
             arg = self._get_args(args)
             orig = int(arg[0])
@@ -391,11 +393,11 @@ class MpdHandler(socketserver.BaseRequestHandler):
             del tracks_ids[orig]
             tracks_ids.insert(dst, track_id)
 
-        Lp.playlists.clear(Type.MPD)
+        Lp().playlists.clear(Type.MPD)
         tracks = []
         for track_id in tracks_ids:
             tracks.append(Track(track_id))
-        Lp.playlists.add_tracks(Type.MPD, tracks)
+        Lp().playlists.add_tracks(Type.MPD, tracks)
         self._send_msg('', list_ok)
 
     def _moveid(self, args_array, list_ok):
@@ -404,7 +406,7 @@ class MpdHandler(socketserver.BaseRequestHandler):
             @param args as [str]
             @param add list_OK as bool
         """
-        tracks_ids = Lp.playlists.get_tracks_ids(Type.MPD)
+        tracks_ids = Lp().playlists.get_tracks_ids(Type.MPD)
         for args in args_array:
             arg = self._get_args(args)
             track_id = int(arg[0])
@@ -413,11 +415,11 @@ class MpdHandler(socketserver.BaseRequestHandler):
             del tracks_ids[orig]
             tracks_ids.insert(dst, track_id)
 
-        Lp.playlists.clear(Type.MPD)
+        Lp().playlists.clear(Type.MPD)
         tracks = []
         for track_id in tracks_ids:
             tracks.append(Track(track_id))
-        Lp.playlists.add_tracks(Type.MPD, tracks)
+        Lp().playlists.add_tracks(Type.MPD, tracks)
         self._send_msg('', list_ok)
 
     def _outputs(self, args_array, list_ok):
@@ -438,9 +440,9 @@ class MpdHandler(socketserver.BaseRequestHandler):
         try:
             args = self._get_args(args_array[0])
             if args[0] == "0":
-                GLib.idle_add(Lp.player.play)
+                GLib.idle_add(Lp().player.play)
             else:
-                GLib.idle_add(Lp.player.pause)
+                GLib.idle_add(Lp().player.pause)
         except Exception as e:
             print("MpdHandler::_pause(): %s" % e)
         self._send_msg('', list_ok)
@@ -451,13 +453,13 @@ class MpdHandler(socketserver.BaseRequestHandler):
             @param args as [str]
             @param add list_OK as bool
         """
-        if Lp.player.get_user_playlist_id() != Type.MPD:
-            Lp.player.set_user_playlist(Type.MPD)
+        if Lp().player.get_user_playlist_id() != Type.MPD:
+            Lp().player.set_user_playlist(Type.MPD)
         if self._get_status == 'stop':
-            track_id = Lp.player.get_user_playlist()[0]
-            GLib.idle_add(Lp.player.load_in_playlist, track_id)
+            track_id = Lp().player.get_user_playlist()[0]
+            GLib.idle_add(Lp().player.load_in_playlist, track_id)
         else:
-            GLib.idle_add(Lp.player.play)
+            GLib.idle_add(Lp().player.play)
         self._send_msg('', list_ok)
 
     def _playid(self, args_array, list_ok):
@@ -467,9 +469,9 @@ class MpdHandler(socketserver.BaseRequestHandler):
             @param add list_OK as bool
         """
         arg = int(self._get_args(args_array[0])[0])
-        if Lp.player.get_user_playlist_id() != Type.MPD:
-            Lp.player.set_user_playlist(Type.MPD)
-        GLib.idle_add(Lp.player.load_in_playlist, arg)
+        if Lp().player.get_user_playlist_id() != Type.MPD:
+            Lp().player.set_user_playlist(Type.MPD)
+        GLib.idle_add(Lp().player.load_in_playlist, arg)
         self._send_msg('', list_ok)
 
     def _playlistadd(self, args_array, list_ok):
@@ -477,16 +479,16 @@ class MpdHandler(socketserver.BaseRequestHandler):
             Add a new playlist
         """
         args = self._get_args(args_array[0])
-        playlist_id = Lp.playlists.get_id(args[0])
+        playlist_id = Lp().playlists.get_id(args[0])
         tracks = []
-        if not Lp.playlists.exists(playlist_id):
-            Lp.playlists.add(args[0])
-            playlist_id = Lp.playlists.get_id(args[0])
+        if not Lp().playlists.exists(playlist_id):
+            Lp().playlists.add(args[0])
+            playlist_id = Lp().playlists.get_id(args[0])
         for arg in args[1:]:
-            track_id = Lp.tracks.get_id_by_path(arg)
+            track_id = Lp().tracks.get_id_by_path(arg)
             tracks.append(Track(track_id))
         if tracks:
-            Lp.playlists.add_tracks(playlist_id, tracks)
+            Lp().playlists.add_tracks(playlist_id, tracks)
         self._send_msg('', list_ok)
 
     def _playlistinfo(self, args_array, list_ok):
@@ -496,10 +498,10 @@ class MpdHandler(socketserver.BaseRequestHandler):
             @param add list_OK as bool
         """
         msg = ""
-        tracks_ids = Lp.playlists.get_tracks_ids(Type.MPD)
-        if Lp.player.is_playing() and\
-           Lp.player.current_track.id not in tracks_ids:
-            tracks_ids.insert(0, Lp.player.current_track.id)
+        tracks_ids = Lp().playlists.get_tracks_ids(Type.MPD)
+        if Lp().player.is_playing() and\
+           Lp().player.current_track.id not in tracks_ids:
+            tracks_ids.insert(0, Lp().player.current_track.id)
         for track_id in tracks_ids:
             msg += self._string_for_track_id(track_id)
         self._send_msg(msg, list_ok)
@@ -511,7 +513,7 @@ class MpdHandler(socketserver.BaseRequestHandler):
             @param add list_OK as bool
         """
         msg = ""
-        for track_id in Lp.playlists.get_tracks_ids(Type.MPD):
+        for track_id in Lp().playlists.get_tracks_ids(Type.MPD):
             msg += self._string_for_track_id(track_id)
         self._send_msg(msg, list_ok)
 
@@ -529,7 +531,7 @@ class MpdHandler(socketserver.BaseRequestHandler):
             @param args as [str]
             @param add list_OK as bool
         """
-        GLib.idle_add(Lp.player.prev)
+        GLib.idle_add(Lp().player.prev)
         self._send_msg('', list_ok)
 
     def _replay_gain_status(self, args_array, list_ok):
@@ -557,7 +559,7 @@ class MpdHandler(socketserver.BaseRequestHandler):
         """
         args = self._get_args(args_array[0])
         seek = int(args[1])
-        GLib.idle_add(Lp.player.seek, seek)
+        GLib.idle_add(Lp().player.seek, seek)
         self._send_msg('', list_ok)
 
     def _seekid(self, args_array, list_ok):
@@ -569,8 +571,8 @@ class MpdHandler(socketserver.BaseRequestHandler):
         args = self._get_args(args_array[0])
         track_id = int(args[0])
         seek = int(args[1])
-        if track_id == Lp.player.current_track.id:
-            GLib.idle_add(Lp.player.seek, seek)
+        if track_id == Lp().player.current_track.id:
+            GLib.idle_add(Lp().player.seek, seek)
         self._send_msg('', list_ok)
 
     def _search(self, args_array, list_ok):
@@ -603,9 +605,9 @@ class MpdHandler(socketserver.BaseRequestHandler):
         except:
             year = None
         if genre is not None:
-            genre_id = Lp.genres.get_id(genre)
+            genre_id = Lp().genres.get_id(genre)
         if artist is not None:
-            artist_id = Lp.artists.get_id(artist)
+            artist_id = Lp().artists.get_id(artist)
 
         for track_id in self._mpddb.get_tracks_ids(album, artist_id,
                                                    genre_id, year):
@@ -620,7 +622,7 @@ class MpdHandler(socketserver.BaseRequestHandler):
         """
         args = self._get_args(args_array[0])
         vol = float(args[0])
-        Lp.player.set_volume(vol/100)
+        Lp().player.set_volume(vol/100)
 
     def _stats(self, args_array, list_ok):
         """
@@ -628,9 +630,9 @@ class MpdHandler(socketserver.BaseRequestHandler):
             @param args as [str]
             @param add list_OK as bool
         """
-        artists = Lp.artists.count()
-        albums = Lp.albums.count()
-        tracks = Lp.tracks.count()
+        artists = Lp().artists.count()
+        albums = Lp().albums.count()
+        tracks = Lp().tracks.count()
         msg = "artists: %s\nalbums: %s\nsongs: %s\nuptime: 0\
 \nplaytime: 0\ndb_playtime: 0\ndb_update: 0\n" % \
             (artists, albums, tracks)
@@ -643,9 +645,9 @@ class MpdHandler(socketserver.BaseRequestHandler):
             @param add list_OK as bool
         """
         if self._get_status() != 'stop':
-            elapsed = Lp.player.get_position_in_track() / 1000000 / 60
-            time = Lp.player.current_track.duration
-            songid = Lp.player.current_track.id
+            elapsed = Lp().player.get_position_in_track() / 1000000 / 60
+            time = Lp().player.current_track.duration
+            songid = Lp().player.current_track.id
         else:
             time = 0
             elapsed = 0
@@ -654,16 +656,16 @@ class MpdHandler(socketserver.BaseRequestHandler):
 \nsingle: %s\nconsume: %s\nplaylist: %s\
 \nplaylistlength: %s\nstate: %s\nsong: %s\
 \nsongid: %s\ntime: %s:%s\nelapsed: %s\n" % (
-           int(Lp.player.get_volume()*100),
+           int(Lp().player.get_volume()*100),
            1,
-           int(Lp.player.is_party()),
+           int(Lp().player.is_party()),
            1,
            1,
            self._playlist_version,
-           len(Lp.playlists.get_tracks(Type.MPD)),
+           len(Lp().playlists.get_tracks(Type.MPD)),
            self._get_status(),
-           Lp.playlists.get_position(Type.MPD,
-                                     Lp.player.current_track.id),
+           Lp().playlists.get_position(Type.MPD,
+                                       Lp().player.current_track.id),
            songid,
            int(elapsed),
            time,
@@ -680,12 +682,12 @@ class MpdHandler(socketserver.BaseRequestHandler):
         msg = ""
         if args[0].find("get song ") != -1 and\
                 args[2].find("rating") != -1:
-            track_id = Lp.tracks.get_id_by_path(args[1])
+            track_id = Lp().tracks.get_id_by_path(args[1])
             track = Track(track_id)
             msg = "sticker: rating=%s\n" % int(track.get_popularity()*2)
         elif args[0].find("set song") != -1 and\
                 args[2].find("rating") != -1:
-            track_id = Lp.tracks.get_id_by_path(args[1])
+            track_id = Lp().tracks.get_id_by_path(args[1])
             track = Track(track_id)
             track.set_popularity(int(args[3])/2)
         self._send_msg(msg, list_ok)
@@ -696,7 +698,7 @@ class MpdHandler(socketserver.BaseRequestHandler):
             @param args as [str]
             @param add list_OK as bool
         """
-        GLib.idle_add(Lp.player.stop)
+        GLib.idle_add(Lp().player.stop)
 
     def _tagtypes(self, args_array, list_ok):
         """
@@ -715,7 +717,7 @@ class MpdHandler(socketserver.BaseRequestHandler):
             @param args as [str]
             @param add list_OK as bool
         """
-        Lp.window.update_db()
+        Lp().window.update_db()
         self._send_msg('', list_ok)
 
     def _urlhandlers(self, args_array, list_ok):
@@ -756,7 +758,7 @@ class MpdHandler(socketserver.BaseRequestHandler):
             Player status
             @return str
         """
-        state = Lp.player.get_status()
+        state = Lp().player.get_status()
         if state == Gst.State.PLAYING:
             return 'play'
         elif state == Gst.State.PAUSED:
@@ -851,3 +853,4 @@ class MpdServerDaemon(MpdServer):
         """
         self.running = False
         self.shutdown()
+        self.server_close()

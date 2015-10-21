@@ -38,7 +38,7 @@ class ToolbarEnd(Gtk.Bin):
 
         self._shuffle_btn = builder.get_object('shuffle-button')
         self._shuffle_btn_image = builder.get_object('shuffle-button-image')
-        Lp.settings.connect('changed::shuffle', self._shuffle_btn_aspect)
+        Lp().settings.connect('changed::shuffle', self._shuffle_btn_aspect)
 
         self._party_btn = builder.get_object('party-button')
         party_action = Gio.SimpleAction.new('party', None)
@@ -58,7 +58,7 @@ class ToolbarEnd(Gtk.Bin):
 
         self._settings_button = builder.get_object('settings-button')
 
-        Lp.player.connect('party-changed', self._on_party_changed)
+        Lp().player.connect('party-changed', self._on_party_changed)
 
     def setup_menu_btn(self, menu):
         """
@@ -96,7 +96,7 @@ class ToolbarEnd(Gtk.Bin):
            player.next_track.id >= 0 and\
            player.is_playing() and\
             (player.is_party() or
-             Lp.settings.get_enum('shuffle') == Shuffle.TRACKS):
+             Lp().settings.get_enum('shuffle') == Shuffle.TRACKS):
             self._pop_next.update()
             self._pop_next.set_relative_to(self)
             self._pop_next.show()
@@ -110,7 +110,7 @@ class ToolbarEnd(Gtk.Bin):
         """
             Set shuffle icon
         """
-        shuffle = Lp.settings.get_enum('shuffle')
+        shuffle = Lp().settings.get_enum('shuffle')
         if shuffle == Shuffle.NONE:
             self._shuffle_btn_image.get_style_context().remove_class(
                                                                     'selected')
@@ -128,12 +128,12 @@ class ToolbarEnd(Gtk.Bin):
                 self._shuffle_btn_image.get_style_context().remove_class(
                                                                     'selected')
         if shuffle == Shuffle.TRACKS:
-            if Lp.player.next_track.id is not None and\
+            if Lp().player.next_track.id is not None and\
                not self._pop_next.is_visible():
                 self._pop_next.set_relative_to(self)
                 self._pop_next.update()
                 self._pop_next.show()
-        elif Lp.player.is_playing():
+        elif Lp().player.is_playing():
             self._pop_next.set_relative_to(None)
             self._pop_next.hide()
 
@@ -176,11 +176,11 @@ class ToolbarEnd(Gtk.Bin):
         """
         active = self._party_btn.get_active()
         self._shuffle_btn.set_sensitive(not active)
-        if not Lp.settings.get_value('dark-ui'):
+        if not Lp().settings.get_value('dark-ui'):
             settings = Gtk.Settings.get_default()
             settings.set_property("gtk-application-prefer-dark-theme", active)
-        is_playing = Lp.player.is_playing()
-        Lp.player.set_party(active)
+        is_playing = Lp().player.is_playing()
+        Lp().player.set_party(active)
         if not active:
             self._pop_next.set_relative_to(None)
             self._pop_next.hide()

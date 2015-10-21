@@ -278,10 +278,10 @@ class BinPlayer(ReplayGainPlayer, BasePlayer):
         debug("Error playing: %s" % self.current_track.uri)
         if self._codecs.is_missing_codec(message):
             self._codecs.install()
-            Lp.scanner.stop()
-        elif Lp.notify is not None:
-            Lp.notify.send(_("File doesn't exist: %s") %
-                           self.current_track.uri)
+            Lp().scanner.stop()
+        elif Lp().notify is not None:
+            Lp().notify.send(_("File doesn't exist: %s") %
+                             self.current_track.uri)
         self.stop()
         self.emit('current-changed')
         return True
@@ -314,21 +314,21 @@ class BinPlayer(ReplayGainPlayer, BasePlayer):
         if self.next_track.id is not None:
             self._load_track(self.next_track)
         # Increment popularity
-        if not Lp.scanner.is_locked():
-            Lp.tracks.set_more_popular(finished.id)
-            Lp.albums.set_more_popular(finished.album_id)
+        if not Lp().scanner.is_locked():
+            Lp().tracks.set_more_popular(finished.id)
+            Lp().albums.set_more_popular(finished.album_id)
         # Scrobble on lastfm
-        if Lp.lastfm is not None:
+        if Lp().lastfm is not None:
             if finished.album_artist_id == Type.COMPILATIONS:
                 artist = finished.artist
             else:
                 artist = finished.album_artist
             if time() - finished_start_time > 30:
-                Lp.lastfm.scrobble(artist,
-                                   finished.album_name,
-                                   finished.title,
-                                   int(finished_start_time),
-                                   int(finished.duration))
+                Lp().lastfm.scrobble(artist,
+                                     finished.album_name,
+                                     finished.title,
+                                     int(finished_start_time),
+                                     int(finished.duration))
 
     def _on_stream_start(self, bus, message):
         """
@@ -341,15 +341,15 @@ class BinPlayer(ReplayGainPlayer, BasePlayer):
         debug("Player::_on_stream_start(): %s" % self.current_track.uri)
         self.emit('current-changed')
         # Update now playing on lastfm
-        if Lp.lastfm is not None and self.current_track.id >= 0:
+        if Lp().lastfm is not None and self.current_track.id >= 0:
             if self.current_track.album_artist_id == Type.COMPILATIONS:
                 artist = self.current_track.artist
             else:
                 artist = self.current_track.album_artist
-                Lp.lastfm.now_playing(artist,
-                                      self.current_track.album_name,
-                                      self.current_track.title,
-                                      int(self.current_track.duration))
-        if not Lp.scanner.is_locked():
-            Lp.tracks.set_listened_at(self.current_track.id, int(time()))
+                Lp().lastfm.now_playing(artist,
+                                        self.current_track.album_name,
+                                        self.current_track.title,
+                                        int(self.current_track.duration))
+        if not Lp().scanner.is_locked():
+            Lp().tracks.set_listened_at(self.current_track.id, int(time()))
         self._handled_error = None

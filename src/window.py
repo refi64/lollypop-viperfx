@@ -176,13 +176,13 @@ class Window(Gtk.ApplicationWindow, Container):
             return
         response = parameters.get_child_value(1).get_string()
         if 'Play' in response:
-            Lp.player.play_pause()
+            Lp().player.play_pause()
         elif 'Stop' in response:
-            Lp.player.stop()
+            Lp().player.stop()
         elif 'Next' in response:
-            Lp.player.next()
+            Lp().player.next()
         elif 'Previous' in response:
-            Lp.player.prev()
+            Lp().player.prev()
 
     def _setup_content(self):
         """
@@ -191,7 +191,7 @@ class Window(Gtk.ApplicationWindow, Container):
         self.set_icon_name('lollypop')
         self._toolbar = Toolbar(self.get_application())
         self._toolbar.show()
-        if Lp.settings.get_value('disable-csd'):
+        if Lp().settings.get_value('disable-csd'):
             vgrid = Gtk.Grid()
             vgrid.set_orientation(Gtk.Orientation.VERTICAL)
             vgrid.add(self._toolbar)
@@ -207,19 +207,19 @@ class Window(Gtk.ApplicationWindow, Container):
         """
             Setup window position and size, callbacks
         """
-        size_setting = Lp.settings.get_value('window-size')
+        size_setting = Lp().settings.get_value('window-size')
         if isinstance(size_setting[0], int) and\
            isinstance(size_setting[1], int):
             self.resize(size_setting[0], size_setting[1])
         else:
             self.set_size_request(800, 600)
-        position_setting = Lp.settings.get_value('window-position')
+        position_setting = Lp().settings.get_value('window-position')
         if len(position_setting) == 2 and\
            isinstance(position_setting[0], int) and\
            isinstance(position_setting[1], int):
             self.move(position_setting[0], position_setting[1])
 
-        if Lp.settings.get_value('window-maximized'):
+        if Lp().settings.get_value('window-maximized'):
             self.maximize()
 
         self._signal1 = self.connect("window-state-event",
@@ -247,34 +247,34 @@ class Window(Gtk.ApplicationWindow, Container):
         """
         self._timeout_configure = None
         size = widget.get_size()
-        Lp.settings.set_value('window-size',
-                              GLib.Variant('ai', [size[0], size[1]]))
+        Lp().settings.set_value('window-size',
+                                GLib.Variant('ai', [size[0], size[1]]))
 
         position = widget.get_position()
-        Lp.settings.set_value('window-position',
-                              GLib.Variant('ai', [position[0], position[1]]))
+        Lp().settings.set_value('window-position',
+                                GLib.Variant('ai', [position[0], position[1]]))
 
     def _on_window_state_event(self, widget, event):
         """
             Save maximised state
         """
-        Lp.settings.set_boolean('window-maximized',
-                                'GDK_WINDOW_STATE_MAXIMIZED' in
-                                event.new_window_state.value_names)
+        Lp().settings.set_boolean('window-maximized',
+                                  'GDK_WINDOW_STATE_MAXIMIZED' in
+                                  event.new_window_state.value_names)
 
     def _on_destroyed_window(self, widget):
         """
             Save paned widget width
             @param widget as unused, data as unused
         """
-        Lp.settings.set_value('paned-mainlist-width',
-                              GLib.Variant('i',
-                                           self._paned_main_list.
-                                           get_position()))
-        Lp.settings.set_value('paned-listview-width',
-                              GLib.Variant('i',
-                                           self._paned_list_view.
-                                           get_position()))
+        Lp().settings.set_value('paned-mainlist-width',
+                                GLib.Variant('i',
+                                             self._paned_main_list.
+                                             get_position()))
+        Lp().settings.set_value('paned-listview-width',
+                                GLib.Variant('i',
+                                             self._paned_list_view.
+                                             get_position()))
 
     def _on_seek_action(self, action, param):
         """
@@ -283,13 +283,13 @@ class Window(Gtk.ApplicationWindow, Container):
             @param param as GLib.Variant
         """
         seconds = param.get_int32()
-        position = Lp.player.get_position_in_track()
+        position = Lp().player.get_position_in_track()
         seek = position/1000000/60+seconds
         if seek < 0:
             seek = 0
-        if seek > Lp.player.current_track.duration:
-            seek = Lp.player.current_track.duration - 2
-        Lp.player.seek(seek)
+        if seek > Lp().player.current_track.duration:
+            seek = Lp().player.current_track.duration - 2
+        Lp().player.seek(seek)
         self._toolbar.update_position(seek*60)
 
     def _on_player_action(self, action, param):
@@ -300,33 +300,33 @@ class Window(Gtk.ApplicationWindow, Container):
         """
         string = param.get_string()
         if string == "play_pause":
-            Lp.player.play_pause()
+            Lp().player.play_pause()
         elif string == "play":
-            Lp.player.play()
+            Lp().player.play()
         elif string == "stop":
-            Lp.player.stop()
+            Lp().player.stop()
         elif string == "next":
-            Lp.player.next()
+            Lp().player.next()
         elif string == "next_album":
             # In party or shuffle, just update next track
-            if Lp.player.is_party() or\
-                    Lp.settings.get_enum('shuffle') == Shuffle.TRACKS:
-                Lp.player.set_next()
+            if Lp().player.is_party() or\
+                    Lp().settings.get_enum('shuffle') == Shuffle.TRACKS:
+                Lp().player.set_next()
                 # We send this signal to update next popover
-                Lp.player.emit("queue-changed")
+                Lp().player.emit("queue-changed")
             else:
-                Lp.player.context.next = NextContext.START_NEW_ALBUM
-                Lp.player.set_next()
-                Lp.player.next()
+                Lp().player.context.next = NextContext.START_NEW_ALBUM
+                Lp().player.set_next()
+                Lp().player.next()
         elif string == "prev":
-            Lp.player.prev()
+            Lp().player.prev()
 
     def _on_realize(self, widget):
         """
             Run scanner on realize
             @param widget as Gtk.Widget
         """
-        if Lp.settings.get_value('auto-update') or Lp.tracks.is_empty():
+        if Lp().settings.get_value('auto-update') or Lp().tracks.is_empty():
             # Delayed, make python segfault on sys.exit() otherwise
             # No idea why, maybe scanner using Gstpbutils before Gstreamer
             # initialisation is finished...

@@ -99,7 +99,7 @@ class RatingWidget(Gtk.Bin):
             @param widget as Gtk.EventBox
             @param event as Gdk.Event
         """
-        if Lp.scanner.is_locked():
+        if Lp().scanner.is_locked():
             return
         event_star = widget.get_children()[0]
         if event_star in self._stars:

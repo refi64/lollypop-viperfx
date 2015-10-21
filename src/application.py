@@ -34,7 +34,7 @@ except Exception as e:
     LastFM = None
 
 from lollypop.utils import is_gnome, is_unity
-from lollypop.define import Lp, ArtSize
+from lollypop.define import ArtSize
 from lollypop.window import Window
 from lollypop.database import Database
 from lollypop.player import Player
@@ -51,6 +51,7 @@ from lollypop.playlists import Playlists
 from lollypop.radios import Radios
 from lollypop.collectionscanner import CollectionScanner
 from lollypop.fullscreen import FullScreen
+from lollypop.mpd import MpdServerDaemon
 
 
 class Application(Gtk.Application):
@@ -69,6 +70,12 @@ class Application(Gtk.Application):
                             self,
                             application_id='org.gnome.Lollypop',
                             flags=Gio.ApplicationFlags.HANDLES_COMMAND_LINE)
+        self.cursors = {}
+        self.window = None
+        self.notify = None
+        self.mpd = None
+        self.debug = False
+
         self._init_proxy()
         GLib.set_application_name('lollypop')
         GLib.set_prgname('lollypop')
@@ -89,36 +96,38 @@ class Application(Gtk.Application):
         styleContext = Gtk.StyleContext()
         styleContext.add_provider_for_screen(screen, cssProvider,
                                              Gtk.STYLE_PROVIDER_PRIORITY_USER)
-        Lp.settings = Settings.new()
-        ArtSize.BIG = Lp.settings.get_value('cover-size').get_int32()
+        self.settings = Settings.new()
+        ArtSize.BIG = self.settings.get_value('cover-size').get_int32()
         if LastFM is not None:
-            Lp.lastfm = LastFM()
-        Lp.db = Database()
-        Lp.db.create()
-        Lp.playlists = Playlists()
+            self.lastfm = LastFM()
+        self.db = Database()
+        self.db.create()
+        self.playlists = Playlists()
         # We store cursors for main thread
-        SqlCursor.add(Lp.db)
-        SqlCursor.add(Lp.playlists)
-        Lp.albums = AlbumsDatabase()
-        Lp.artists = ArtistsDatabase()
-        Lp.genres = GenresDatabase()
-        Lp.tracks = TracksDatabase()
-        Lp.player = Player()
-        Lp.scanner = CollectionScanner()
-        Lp.art = Art()
-        if not Lp.settings.get_value('disable-mpris'):
+        SqlCursor.add(self.db)
+        SqlCursor.add(self.playlists)
+        self.albums = AlbumsDatabase()
+        self.artists = ArtistsDatabase()
+        self.genres = GenresDatabase()
+        self.tracks = TracksDatabase()
+        self.player = Player()
+        self.scanner = CollectionScanner()
+        self.art = Art()
+        if not self.settings.get_value('disable-mpris'):
             MPRIS(self)
-        if not Lp.settings.get_value('disable-notifications'):
-            Lp.notify = NotificationManager()
+        if not self.settings.get_value('disable-mpd'):
+            self.mpd = MpdServerDaemon()
+        if not self.settings.get_value('disable-notifications'):
+            self.notify = NotificationManager()
 
         settings = Gtk.Settings.get_default()
-        dark = Lp.settings.get_value('dark-ui')
+        dark = self.settings.get_value('dark-ui')
         settings.set_property('gtk-application-prefer-dark-theme', dark)
 
         self._parser = TotemPlParser.Parser.new()
         self._parser.connect('entry-parsed', self._on_entry_parsed)
 
-        self.add_action(Lp.settings.create_action('shuffle'))
+        self.add_action(self.settings.create_action('shuffle'))
         self._externals_count = 0
         self._is_fs = False
 
@@ -139,58 +148,58 @@ class Application(Gtk.Application):
         if encoding is None or encoding != "UTF-8":
             builder = Gtk.Builder()
             builder.add_from_resource('/org/gnome/Lollypop/Unicode.ui')
-            Lp.window = builder.get_object('unicode')
-            Lp.window.set_application(self)
-            Lp.window.show()
-        elif not Lp.window:
+            self.window = builder.get_object('unicode')
+            self.window.set_application(self)
+            self.window.show()
+        elif not self.window:
             menu = self._setup_app_menu()
             # If GNOME/Unity, add appmenu
             if is_gnome() or is_unity():
                 self.set_app_menu(menu)
-            Lp.window = Window(self)
+            self.window = Window(self)
             # If not GNOME add menu to toolbar
             if not is_gnome() and not is_unity():
-                Lp.window.setup_menu(menu)
-            Lp.window.connect('delete-event', self._hide_on_delete)
-            Lp.window.init_list_one()
-            Lp.window.show()
-            Lp.player.restore_state()
+                self.window.setup_menu(menu)
+            self.window.connect('delete-event', self._hide_on_delete)
+            self.window.init_list_one()
+            self.window.show()
+            self.player.restore_state()
 
     def prepare_to_exit(self, action=None, param=None):
         """
             Save window position and view
         """
-        if Lp.settings.get_value('save-state'):
-            Lp.window.save_view_state()
-            if Lp.player.current_track.id is None:
+        if self.settings.get_value('save-state'):
+            self.window.save_view_state()
+            if self.player.current_track.id is None:
                 track_id = -1
             else:
-                track_id = Lp.player.current_track.id
-            Lp.settings.set_value('track-id', GLib.Variant('i',
-                                                           track_id))
-        Lp.player.stop()
-        if Lp.window:
-            Lp.window.stop_all()
+                track_id = self.player.current_track.id
+            self.settings.set_value('track-id', GLib.Variant('i',
+                                                             track_id))
+        self.player.stop()
+        if self.window:
+            self.window.stop_all()
         self.quit()
 
     def quit(self):
         """
             Quit lollypop
         """
-        if Lp.scanner.is_locked():
-            Lp.scanner.stop()
+        if self.scanner.is_locked():
+            self.scanner.stop()
             GLib.idle_add(self.quit)
             return
         try:
-            with SqlCursor(Lp.db) as sql:
+            with SqlCursor(self.db) as sql:
                 sql.execute('VACUUM')
-            with SqlCursor(Lp.playlists) as sql:
+            with SqlCursor(self.playlists) as sql:
                 sql.execute('VACUUM')
             with SqlCursor(Radios()) as sql:
                 sql.execute('VACUUM')
         except Exception as e:
             print("Application::quit(): ", e)
-        Lp.window.destroy()
+        self.window.destroy()
         Gst.deinit()
 
     def is_fullscreen(self):
@@ -222,7 +231,7 @@ class Application(Gtk.Application):
             @param options as GLib.VariantDict
         """
         if options.contains('debug'):
-            Lp.debug = True
+            self.debug = True
         return -1
 
     def _on_command_line(self, app, app_cmd_line):
@@ -236,11 +245,11 @@ class Application(Gtk.Application):
         if options.contains('set-rating'):
             value = options.lookup_value('set-rating').get_int32()
             if value > 0 and value < 6 and\
-                    Lp.player.current_track.id is not None:
-                Lp.player.current_track.set_popularity(value)
+                    self.player.current_track.id is not None:
+                self.player.current_track.set_popularity(value)
         args = app_cmd_line.get_arguments()
         if len(args) > 1:
-            Lp.player.clear_externals()
+            self.player.clear_externals()
             for f in args[1:]:
                 try:
                     f = GLib.filename_to_uri(f)
@@ -248,8 +257,8 @@ class Application(Gtk.Application):
                     pass
                 self._parser.parse_async(f, True,
                                          None, None)
-        if Lp.window is not None:
-            Lp.window.present()
+        if self.window is not None:
+            self.window.present()
         return 0
 
     def _on_entry_parsed(self, parser, uri, metadata):
@@ -259,10 +268,10 @@ class Application(Gtk.Application):
             @param track uri as str
             @param metadata as GLib.HastTable
         """
-        Lp.player.load_external(uri)
+        self.player.load_external(uri)
         if self._externals_count == 0:
-            Lp.player.set_party(False)
-            Lp.player.play_first_external()
+            self.player.set_party(False)
+            self.player.play_first_external()
         self._externals_count += 1
 
     def _hide_on_delete(self, widget, event):
@@ -271,9 +280,9 @@ class Application(Gtk.Application):
             @param widget as Gtk.Widget
             @param event as Gdk.Event
         """
-        if not Lp.settings.get_value('background-mode'):
+        if not self.settings.get_value('background-mode'):
             GLib.timeout_add(500, self.prepare_to_exit)
-            Lp.scanner.stop()
+            self.scanner.stop()
         return widget.hide_on_delete()
 
     def _update_db(self, action=None, param=None):
@@ -282,11 +291,11 @@ class Application(Gtk.Application):
             @param action as Gio.SimpleAction
             @param param as GLib.Variant
         """
-        if Lp.window:
-            t = Thread(target=Lp.art.clean_all_cache)
+        if self.window:
+            t = Thread(target=self.art.clean_all_cache)
             t.daemon = True
             t.start()
-            Lp.window.update_db()
+            self.window.update_db()
 
     def _fullscreen(self, action=None, param=None):
         """
@@ -294,8 +303,8 @@ class Application(Gtk.Application):
             @param action as Gio.SimpleAction
             @param param as GLib.Variant
         """
-        if Lp.window and not self._is_fs:
-            fs = FullScreen(self, Lp.window)
+        if self.window and not self._is_fs:
+            fs = FullScreen(self, self.window)
             fs.connect("destroy", self._on_fs_destroyed)
             self._is_fs = True
             fs.show()
@@ -325,7 +334,7 @@ class Application(Gtk.Application):
         builder = Gtk.Builder()
         builder.add_from_resource('/org/gnome/Lollypop/AboutDialog.ui')
         about = builder.get_object('about_dialog')
-        about.set_transient_for(Lp.window)
+        about.set_transient_for(self.window)
         about.connect("response", self._about_response)
         about.show()
 
@@ -338,7 +347,7 @@ class Application(Gtk.Application):
         try:
             Gtk.show_uri(None, "help:lollypop", Gtk.get_current_event_time())
         except:
-            print(_("Lollypop: You need to install yelp."))
+            print(_("Lollypop: You need to install yeself."))
 
     def _about_response(self, dialog, response_id):
         """

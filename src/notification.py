@@ -32,8 +32,8 @@ class NotificationManager:
         self._notification.set_hint('desktop-entry',
                                     GLib.Variant('s', 'lollypop'))
         self._set_actions()
-        Lp.player.connect('current-changed',
-                          self._on_current_changed)
+        Lp().player.connect('current-changed',
+                            self._on_current_changed)
 
     def send(self, message):
         """
@@ -78,17 +78,17 @@ class NotificationManager:
         """
         if player.current_track.title == '':
             return
-        state = Lp.window.get_window().get_state()
-        app = Lp.window.get_application()
+        state = Lp().window.get_window().get_state()
+        app = Lp().window.get_application()
         if player.current_track.id is None or\
                 state & Gdk.WindowState.FOCUSED or\
                 app.is_fullscreen():
             return
         if player.current_track.id == Type.RADIOS:
-            cover_path = Lp.art.get_radio_cache_path(
+            cover_path = Lp().art.get_radio_cache_path(
                 player.current_track.artist, ArtSize.BIG)
         else:
-            cover_path = Lp.art.get_album_cache_path(
+            cover_path = Lp().art.get_album_cache_path(
                 player.current_track.album, ArtSize.BIG)
         if cover_path is not None:
             self._notification.set_hint('image-path',
@@ -122,10 +122,10 @@ class NotificationManager:
         """
             Callback for notification prev button
         """
-        Lp.player.prev()
+        Lp().player.prev()
 
     def _go_next(self, notification, action, data):
         """
             Callback for notification next button
         """
-        Lp.player.next()
+        Lp().player.next()

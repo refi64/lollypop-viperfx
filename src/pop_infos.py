@@ -45,7 +45,7 @@ class InfosPopover(Gtk.Popover):
         """
             True if we can show popover
         """
-        return Lp.lastfm is not None or\
+        return Lp().lastfm is not None or\
             InfosPopover.Wikipedia is not None or\
             InfosPopover.WebView is not None
 
@@ -69,28 +69,28 @@ class InfosPopover(Gtk.Popover):
         self._menu = builder.get_object('menu')
         self._stack = builder.get_object('stack')
         self.add(builder.get_object('widget'))
-        if Lp.settings.get_value('infosreload'):
+        if Lp().settings.get_value('infosreload'):
             builder.get_object('reload').get_style_context().add_class(
                                                                     'selected')
         if not show_albums:
             self._stack.get_child_by_name('albums').destroy()
         if InfosPopover.Wikipedia is None:
             self._stack.get_child_by_name('wikipedia').destroy()
-        if Lp.lastfm is None:
+        if Lp().lastfm is None:
             self._stack.get_child_by_name('lastfm').destroy()
         if InfosPopover.WebView is None or artist_id is not None:
             self._stack.get_child_by_name('wikia').destroy()
         if InfosPopover.WebView is None:
             self._stack.get_child_by_name('duck').destroy()
 
-        size_setting = Lp.settings.get_value('window-size')
+        size_setting = Lp().settings.get_value('window-size')
         if isinstance(size_setting[1], int):
             self.set_size_request(size_setting[0]*0.6,
                                   size_setting[1]*0.8)
         else:
             self.set_size_request(700, 600)
         self._stack.set_visible_child_name(
-            Lp.settings.get_value('infoswitch').get_string())
+            Lp().settings.get_value('infoswitch').get_string())
 
     def do_get_preferred_width(self):
         """
@@ -108,12 +108,12 @@ class InfosPopover(Gtk.Popover):
         album_id = Type.NONE
         track_id = Type.NONE
         if self._artist_id is None:
-            if Lp.player.current_track.album_artist_id == Type.COMPILATIONS:
-                album_id = Lp.player.current_track.album_id
-                artist_id = Lp.player.current_track.artist_id
+            if Lp().player.current_track.album_artist_id == Type.COMPILATIONS:
+                album_id = Lp().player.current_track.album_id
+                artist_id = Lp().player.current_track.artist_id
             else:
-                artist_id = Lp.player.current_track.album_artist_id
-            track_id = Lp.player.current_track.id
+                artist_id = Lp().player.current_track.album_artist_id
+            track_id = Lp().player.current_track.id
         else:
             artist_id = self._artist_id
         return (artist_id, album_id, track_id)
@@ -171,26 +171,27 @@ class InfosPopover(Gtk.Popover):
         """
         if self._timeout_id is None:
             if self._signal_id is None:
-                Lp.settings.set_value('infosreload', GLib.Variant('b', True))
-                self._signal_id = Lp.player.connect("current-changed",
-                                                    self._on_current_changed)
+                Lp().settings.set_value('infosreload', GLib.Variant('b', True))
+                self._signal_id = Lp().player.connect("current-changed",
+                                                      self._on_current_changed)
             else:
-                Lp.player.disconnect(self._signal_id)
+                Lp().player.disconnect(self._signal_id)
                 self._signal_id = None
-                Lp.settings.set_value('infosreload', GLib.Variant('b', False))
+                Lp().settings.set_value('infosreload',
+                                        GLib.Variant('b', False))
         else:
             GLib.source_remove(self._timeout_id)
             self._timeout_id = None
-            self._on_current_changed(Lp.player, True)
+            self._on_current_changed(Lp().player, True)
 
     def _on_self_map(self, widget):
         """
             Connect signals
             @param widget as Gtk.Widget
         """
-        if Lp.settings.get_value('infosreload') and self._artist_id is None:
-            self._signal_id = Lp.player.connect("current-changed",
-                                                self._on_current_changed)
+        if Lp().settings.get_value('infosreload') and self._artist_id is None:
+            self._signal_id = Lp().player.connect("current-changed",
+                                                  self._on_current_changed)
 
     def _on_self_unmap(self, widget):
         """
@@ -199,7 +200,7 @@ class InfosPopover(Gtk.Popover):
         """
         self._current = None
         if self._signal_id is not None:
-            Lp.player.disconnect(self._signal_id)
+            Lp().player.disconnect(self._signal_id)
             self._signal_id = None
         if self._artist_id is not None:
             GLib.idle_add(self.destroy)
@@ -223,8 +224,8 @@ class InfosPopover(Gtk.Popover):
         self._menu.hide()
         if self._current is None:
             self._current = self._get_current()
-        Lp.settings.set_value('infoswitch',
-                              GLib.Variant('s', 'albums'))
+        Lp().settings.set_value('infoswitch',
+                                GLib.Variant('s', 'albums'))
         view = widget.get_child_at(0, 0)
         if view is None:
             view = CurrentArtistAlbumsView()
@@ -245,9 +246,9 @@ class InfosPopover(Gtk.Popover):
         self._menu.hide()
         if self._current is None:
             self._current = self._get_current()
-        artist = Lp.artists.get_name(self._current[0])
-        Lp.settings.set_value('infoswitch',
-                              GLib.Variant('s', 'lastfm'))
+        artist = Lp().artists.get_name(self._current[0])
+        Lp().settings.set_value('infoswitch',
+                                GLib.Variant('s', 'lastfm'))
         content_widget = widget.get_child()
         if content_widget is None:
             content_widget = LastfmContent()
@@ -269,16 +270,16 @@ class InfosPopover(Gtk.Popover):
         """
         if self._current is None:
             self._current = self._get_current()
-        artist = Lp.artists.get_name(self._current[0])
+        artist = Lp().artists.get_name(self._current[0])
         # Get one album from artist
         if self._current[1] == Type.NONE:
-            ids = Lp.artists.get_albums(self._current[0])
+            ids = Lp().artists.get_albums(self._current[0])
             if ids:
-                album = Lp.albums.get_name(ids[0])
+                album = Lp().albums.get_name(ids[0])
         else:
-            album = Lp.albums.get_name(self._current[1])
-        Lp.settings.set_value('infoswitch',
-                              GLib.Variant('s', 'wikipedia'))
+            album = Lp().albums.get_name(self._current[1])
+        Lp().settings.set_value('infoswitch',
+                                GLib.Variant('s', 'wikipedia'))
         content_widget = widget.get_child()
         if content_widget is None:
             content_widget = WikipediaContent(self._menu)
@@ -301,10 +302,10 @@ class InfosPopover(Gtk.Popover):
         self._menu.hide()
         if self._current is None:
             self._current = self._get_current()
-        artist = Lp.artists.get_name(self._current[0])
-        title = Lp.tracks.get_name(self._current[2])
-        Lp.settings.set_value('infoswitch',
-                              GLib.Variant('s', 'wikia'))
+        artist = Lp().artists.get_name(self._current[0])
+        title = Lp().tracks.get_name(self._current[2])
+        Lp().settings.set_value('infoswitch',
+                                GLib.Variant('s', 'wikia'))
         url = "http://lyrics.wikia.com/wiki/%s:%s" % (artist.replace(' ', '_'),
                                                       title.replace(' ', '_'))
         # Delayed load due to WebKit memory loading
@@ -318,13 +319,13 @@ class InfosPopover(Gtk.Popover):
         self._menu.hide()
         if self._current is None:
             self._current = self._get_current()
-        artist = Lp.artists.get_name(self._current[0])
-        Lp.settings.set_value('infoswitch',
-                              GLib.Variant('s', 'duck'))
+        artist = Lp().artists.get_name(self._current[0])
+        Lp().settings.set_value('infoswitch',
+                                GLib.Variant('s', 'duck'))
         if self._current[2] == Type.NONE:
             search = artist
         else:
-            title = Lp.tracks.get_name(self._current[2])
+            title = Lp().tracks.get_name(self._current[2])
             search = "%s+%s" % (artist, title)
         url = "https://duckduckgo.com/?q=%s&kl=%s&kd=-1&k5=2&kp=1&k1=-1"\
               % (search, Gtk.get_default_language().to_string())

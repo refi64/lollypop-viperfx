@@ -36,7 +36,7 @@ class ArtistsDatabase:
             @return inserted rowid as int
             @warning: commit needed
         """
-        with SqlCursor(Lp.db) as sql:
+        with SqlCursor(Lp().db) as sql:
             result = sql.execute("INSERT INTO artists (name) VALUES (?)",
                                  (name,))
             return result.lastrowid
@@ -47,7 +47,7 @@ class ArtistsDatabase:
             @param Artist name as string
             @return Artist id as int
         """
-        with SqlCursor(Lp.db) as sql:
+        with SqlCursor(Lp().db) as sql:
             result = sql.execute("SELECT rowid from artists\
                                   WHERE name=?", (name,))
             v = result.fetchone()
@@ -61,7 +61,7 @@ class ArtistsDatabase:
             @param Artist id as int
             @return Artist name as string
         """
-        with SqlCursor(Lp.db) as sql:
+        with SqlCursor(Lp().db) as sql:
             if artist_id == Type.COMPILATIONS:
                 return _("Many artists")
 
@@ -77,7 +77,7 @@ class ArtistsDatabase:
             Get all availables albums for artist
             @return Array of id as int
         """
-        with SqlCursor(Lp.db) as sql:
+        with SqlCursor(Lp().db) as sql:
             result = sql.execute("SELECT rowid FROM albums\
                                   WHERE artist_id=?\
                                   ORDER BY year", (artist_id,))
@@ -88,7 +88,7 @@ class ArtistsDatabase:
             Get all availables compilations for artist
             @return Array of id as int
         """
-        with SqlCursor(Lp.db) as sql:
+        with SqlCursor(Lp().db) as sql:
             result = sql.execute("SELECT DISTINCT albums.rowid FROM albums,\
                                   tracks, track_artists\
                                   WHERE track_artists.artist_id=?\
@@ -107,7 +107,7 @@ class ArtistsDatabase:
             @param Filter genre id as int
             @return Array of (artist id as int, artist name as string)
         """
-        with SqlCursor(Lp.db) as sql:
+        with SqlCursor(Lp().db) as sql:
             result = []
             if genre_id == Type.ALL or genre_id is None:
                 # Only artist that really have an album
@@ -132,7 +132,7 @@ class ArtistsDatabase:
             Return True if artist exist
             @param artist id as int
         """
-        with SqlCursor(Lp.db) as sql:
+        with SqlCursor(Lp().db) as sql:
             result = sql.execute("SELECT COUNT(*) from artists WHERE rowid=?",
                                  (artist_id,))
             v = result.fetchone()
@@ -146,7 +146,7 @@ class ArtistsDatabase:
             @param string
             @return Array of id as int
         """
-        with SqlCursor(Lp.db) as sql:
+        with SqlCursor(Lp().db) as sql:
             result = sql.execute("SELECT rowid FROM artists\
                                   WHERE name LIKE ?\
                                   LIMIT 25", ('%' +
@@ -160,7 +160,7 @@ class ArtistsDatabase:
             @param artist id as int
             @warning commit needed
         """
-        with SqlCursor(Lp.db) as sql:
+        with SqlCursor(Lp().db) as sql:
             result = sql.execute("SELECT rowid from albums\
                                   WHERE artist_id=?\
                                   LIMIT 1", (artist_id,))

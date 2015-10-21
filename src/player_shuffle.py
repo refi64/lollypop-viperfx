@@ -32,7 +32,7 @@ class ShufflePlayer(BasePlayer):
         self.reset_history()
         # Party mode
         self._is_party = False
-        Lp.settings.connect('changed::shuffle', self._set_shuffle)
+        Lp().settings.connect('changed::shuffle', self._set_shuffle)
 
     def reset_history(self):
         """
@@ -84,9 +84,9 @@ class ShufflePlayer(BasePlayer):
             Return party ids
             @return [ids as int]
         """
-        party_settings = Lp.settings.get_value('party-ids')
+        party_settings = Lp().settings.get_value('party-ids')
         ids = []
-        genre_ids = Lp.genres.get_ids()
+        genre_ids = Lp().genres.get_ids()
         genre_ids.append(Type.POPULARS)
         genre_ids.append(Type.RECENTS)
         for setting in party_settings:
@@ -116,9 +116,9 @@ class ShufflePlayer(BasePlayer):
             self.context.genre_id = None
             party_ids = self.get_party_ids()
             if party_ids:
-                self._albums = Lp.albums.get_party_ids(party_ids)
+                self._albums = Lp().albums.get_party_ids(party_ids)
             else:
-                self._albums = Lp.albums.get_ids()
+                self._albums = Lp().albums.get_ids()
 
             # Start a new song if not playing
             if (self.current_track.id in [None, Type.RADIOS])\
@@ -133,7 +133,7 @@ class ShufflePlayer(BasePlayer):
                 self.set_albums(self.current_track.id,
                                 self.current_track.album_artist_id, None)
         self.emit('party-changed', party)
-        Lp.window.update_view()
+        Lp().window.update_view()
 
     def is_party(self):
         """
@@ -150,7 +150,7 @@ class ShufflePlayer(BasePlayer):
             Set shuffle mode to gettings value
             @param settings as Gio.Settings, value as str
         """
-        self._shuffle = Lp.settings.get_enum('shuffle')
+        self._shuffle = Lp().settings.get_enum('shuffle')
 
         if self._shuffle in [Shuffle.TRACKS, Shuffle.TRACKS_ARTIST] or\
            self._user_playlist:

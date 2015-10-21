@@ -174,7 +174,7 @@ class Playlists(GObject.GObject):
         """
         with SqlCursor(self) as sql:
             if playlist_id == Type.ALL:
-                return Lp.tracks.get_paths()
+                return Lp().tracks.get_paths()
             else:
                 result = sql.execute("SELECT filepath\
                                       FROM tracks\
@@ -190,7 +190,7 @@ class Playlists(GObject.GObject):
         """
         with SqlCursor(self) as sql:
             if playlist_id == Type.ALL:
-                tracks = Lp.tracks.get_ids()
+                tracks = Lp().tracks.get_ids()
             else:
                 result = sql.execute("SELECT music.tracks.rowid\
                                       FROM tracks, music.tracks\
@@ -209,6 +209,8 @@ class Playlists(GObject.GObject):
         """
         if playlist_name == self._LOVED:
             return Type.LOVED
+        elif playlist_name == self._MPD:
+            return Type.MPD
         with SqlCursor(self) as sql:
             result = sql.execute("SELECT rowid\
                                  FROM playlists\
@@ -226,6 +228,8 @@ class Playlists(GObject.GObject):
         """
         if playlist_id == Type.LOVED:
             return self._LOVED
+        elif playlist_id == Type.MPD:
+            return "MPD"
         with SqlCursor(self) as sql:
             result = sql.execute("SELECT name\
                                  FROM playlists\
@@ -277,6 +281,20 @@ class Playlists(GObject.GObject):
             sql.commit()
             GLib.idle_add(self.emit, "playlist-changed", playlist_id)
 
+    def get_position(self, playlist_id, track_id):
+        """
+            Get track position in playlist
+            @param playlist id as int
+            @param track id as int
+            @return position as int
+        """
+        i = 0
+        for tid in self.get_tracks_ids(playlist_id):
+            if track_id == tid:
+                break
+            i += 1
+        return i
+
     def exists_track(self, playlist_id, track_id):
         """
             Check if track id exist in playlist
@@ -309,8 +327,8 @@ class Playlists(GObject.GObject):
         """
         # We do not use Album object for performance reasons
         playlist_paths = self.get_tracks(playlist_id)
-        tracks_paths = Lp.albums.get_tracks_path(album_id,
-                                                 genre_id)
+        tracks_paths = Lp().albums.get_tracks_path(album_id,
+                                                   genre_id)
         found = 0
         len_tracks = len(tracks_paths)
         for filepath in tracks_paths:
@@ -346,7 +364,8 @@ class Playlists(GObject.GObject):
             @param playlist id as int
         """
         try:
-            track_id = Lp.tracks.get_id_by_path(GLib.filename_from_uri(uri)[0])
+            track_id = Lp().tracks.get_id_by_path(
+                                                GLib.filename_from_uri(uri)[0])
             if track_id is not None:
                 self.add_tracks(playlist_id, [Track(track_id)])
         except Exception as e:

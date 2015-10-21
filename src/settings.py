@@ -21,6 +21,7 @@ from gettext import gettext as _
 from threading import Thread
 
 from lollypop.define import Lp, Type, SecretSchema, SecretAttributes
+from lollypop.mpd import MpdServerDaemon
 
 
 class Settings(Gio.Settings):
@@ -73,33 +74,36 @@ class SettingsDialog:
         builder.add_from_resource('/org/gnome/Lollypop/SettingsDialog.ui')
 
         self._settings_dialog = builder.get_object('settings_dialog')
-        self._settings_dialog.set_transient_for(Lp.window)
+        self._settings_dialog.set_transient_for(Lp().window)
 
-        if not Lp.settings.get_value('disable-csd'):
+        if not Lp().settings.get_value('disable-csd'):
             self._settings_dialog.set_titlebar(
                 builder.get_object('header_bar'))
 
         switch_scan = builder.get_object('switch_scan')
-        switch_scan.set_state(Lp.settings.get_value('auto-update'))
+        switch_scan.set_state(Lp().settings.get_value('auto-update'))
 
         switch_view = builder.get_object('switch_dark')
-        switch_view.set_state(Lp.settings.get_value('dark-ui'))
+        switch_view.set_state(Lp().settings.get_value('dark-ui'))
 
         switch_background = builder.get_object('switch_background')
-        switch_background.set_state(Lp.settings.get_value('background-mode'))
+        switch_background.set_state(Lp().settings.get_value('background-mode'))
 
         switch_state = builder.get_object('switch_state')
-        switch_state.set_state(Lp.settings.get_value('save-state'))
+        switch_state.set_state(Lp().settings.get_value('save-state'))
 
         switch_autoplay = builder.get_object('switch_autoplay')
-        switch_autoplay.set_state(Lp.settings.get_value('auto-play'))
+        switch_autoplay.set_state(Lp().settings.get_value('auto-play'))
+
+        switch_mpd = builder.get_object('switch_mpd')
+        switch_mpd.set_state(not Lp().settings.get_value('disable-mpd'))
 
         switch_genres = builder.get_object('switch_genres')
-        switch_genres.set_state(Lp.settings.get_value('show-genres'))
+        switch_genres.set_state(Lp().settings.get_value('show-genres'))
 
         switch_compilations = builder.get_object('switch_compilations')
         switch_compilations.set_state(
-            Lp.settings.get_value('show-compilations'))
+            Lp().settings.get_value('show-compilations'))
 
         self._settings_dialog.connect('destroy', self._edit_settings_close)
 
@@ -113,7 +117,7 @@ class SettingsDialog:
         # Music tab
         #
         dirs = []
-        for directory in Lp.settings.get_value('music-path'):
+        for directory in Lp().settings.get_value('music-path'):
             dirs.append(directory)
 
         # Main chooser
@@ -137,10 +141,10 @@ class SettingsDialog:
         #
         # Party mode tab
         #
-        genres = Lp.genres.get()
+        genres = Lp().genres.get()
         genres.insert(0, (Type.POPULARS, _("Populars")))
         genres.insert(1, (Type.RECENTS, _("Recently added")))
-        ids = Lp.player.get_party_ids()
+        ids = Lp().player.get_party_ids()
         i = 0
         x = 0
         for genre_id, genre in genres:
@@ -168,7 +172,7 @@ class SettingsDialog:
         #
         # Last.fm tab
         #
-        if Lp.lastfm is not None and Secret is not None:
+        if Lp().lastfm is not None and Secret is not None:
             self._test_img = builder.get_object('test_img')
             self._login = builder.get_object('login')
             self._password = builder.get_object('password')
@@ -180,7 +184,7 @@ class SettingsDialog:
             builder.get_object('lastfm_grid').set_sensitive(True)
             builder.get_object('lastfm_error').hide()
             self._login.set_text(
-                Lp.settings.get_value('lastfm-login').get_string())
+                Lp().settings.get_value('lastfm-login').get_string())
 
     def show(self):
         """
@@ -209,62 +213,75 @@ class SettingsDialog:
             Update view setting
             @param widget as unused, state as widget state
         """
-        Lp.settings.set_value('dark-ui', GLib.Variant('b', state))
-        if not Lp.player.is_party():
+        Lp().settings.set_value('dark-ui', GLib.Variant('b', state))
+        if not Lp().player.is_party():
             settings = Gtk.Settings.get_default()
             settings.set_property("gtk-application-prefer-dark-theme", state)
-            Lp.window.update_view()
+            Lp().window.update_view()
 
     def _update_scan_setting(self, widget, state):
         """
             Update scan setting
             @param widget as unused, state as widget state
         """
-        Lp.settings.set_value('auto-update',
-                              GLib.Variant('b', state))
+        Lp().settings.set_value('auto-update',
+                                GLib.Variant('b', state))
 
     def _update_background_setting(self, widget, state):
         """
             Update background mode setting
             @param widget as unused, state as widget state
         """
-        Lp.settings.set_value('background-mode',
-                              GLib.Variant('b', state))
+        Lp().settings.set_value('background-mode',
+                                GLib.Variant('b', state))
 
     def _update_state_setting(self, widget, state):
         """
             Update save state setting
             @param widget as unused, state as widget state
         """
-        Lp.settings.set_value('save-state',
-                              GLib.Variant('b', state))
+        Lp().settings.set_value('save-state',
+                                GLib.Variant('b', state))
 
     def _update_genres_setting(self, widget, state):
         """
             Update show genre setting
             @param widget as unused, state as widget state
         """
-        Lp.window.show_genres(state)
-        Lp.settings.set_value('show-genres',
-                              GLib.Variant('b', state))
+        Lp().window.show_genres(state)
+        Lp().settings.set_value('show-genres',
+                                GLib.Variant('b', state))
 
     def _update_autoplay_setting(self, widget, state):
         """
             Update auto play setting
             @param widget as unused, state as widget state
         """
-        Lp.settings.set_value('auto-play',
-                              GLib.Variant('b', state))
-        Lp.window.update_view()
+        Lp().settings.set_value('auto-play',
+                                GLib.Variant('b', state))
+        Lp().window.update_view()
+
+    def _update_mpd_setting(self, widget, state):
+        """
+            Update mpd setting
+            @param widget as unused, state as widget state
+        """
+        Lp().settings.set_value('disable-mpd',
+                                GLib.Variant('b', not state))
+        if Lp().mpd is None:
+            Lp().mpd = MpdServerDaemon()
+        else:
+            Lp().mpd.quit()
+            Lp().mpd = None
 
     def _update_compilations_setting(self, widget, state):
         """
             Update compilations setting
             @param widget as unused, state as widget state
         """
-        Lp.settings.set_value('show-compilations',
-                              GLib.Variant('b', state))
-        Lp.window.update_view()
+        Lp().settings.set_value('show-compilations',
+                                GLib.Variant('b', state))
+        Lp().window.update_view()
 
     def _update_lastfm_settings(self, sync=False):
         """
@@ -272,7 +289,7 @@ class SettingsDialog:
             @param sync as bool
         """
         try:
-            if Lp.lastfm is not None and Secret is not None:
+            if Lp().lastfm is not None and Secret is not None:
                 schema = Secret.Schema.new("org.gnome.Lollypop",
                                            Secret.SchemaFlags.NONE,
                                            SecretSchema)
@@ -283,13 +300,13 @@ class SettingsDialog:
                                            self._login.get_text(),
                                            self._password.get_text(),
                                            None)
-                Lp.settings.set_value('lastfm-login',
-                                      GLib.Variant('s',
-                                                   self._login.get_text()))
+                Lp().settings.set_value('lastfm-login',
+                                        GLib.Variant('s',
+                                                     self._login.get_text()))
                 if sync:
-                    Lp.lastfm.connect_sync(self._password.get_text())
+                    Lp().lastfm.connect_sync(self._password.get_text())
                 else:
-                    Lp.lastfm.connect(self._password.get_text())
+                    Lp().lastfm.connect(self._password.get_text())
         except Exception as e:
             print("Settings::_update_lastfm_settings(): %s" % e)
 
@@ -313,8 +330,8 @@ class SettingsDialog:
                 if path is not None and path not in paths:
                     paths.append(path)
 
-        previous = Lp.settings.get_value('music-path')
-        Lp.settings.set_value('music-path', GLib.Variant('as', paths))
+        previous = Lp().settings.get_value('music-path')
+        Lp().settings.set_value('music-path', GLib.Variant('as', paths))
 
         # Last.fm
         try:
@@ -325,14 +342,14 @@ class SettingsDialog:
         self._settings_dialog.hide()
         self._settings_dialog.destroy()
         if set(previous) != set(paths):
-            Lp.window.update_db()
+            Lp().window.update_db()
 
     def _party_switch_state(self, widget, state, genre_id):
         """
             Update party ids when use change a switch in dialog
             @param widget as unused, state as widget state, genre id as int
         """
-        ids = Lp.player.get_party_ids()
+        ids = Lp().player.get_party_ids()
         if state:
             try:
                 ids.append(genre_id)
@@ -343,7 +360,7 @@ class SettingsDialog:
                 ids.remove(genre_id)
             except:
                 pass
-        Lp.settings.set_value('party-ids',  GLib.Variant('ai', ids))
+        Lp().settings.set_value('party-ids',  GLib.Variant('ai', ids))
 
     def _on_test_btn_clicked(self, button):
         """
@@ -365,7 +382,7 @@ class SettingsDialog:
             @thread safe
         """
         try:
-            u = Lp.lastfm.get_authenticated_user()
+            u = Lp().lastfm.get_authenticated_user()
             u.get_id()
             GLib.idle_add(self._test_img.set_from_icon_name,
                           'object-select-symbolic',

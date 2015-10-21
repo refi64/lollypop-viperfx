@@ -33,8 +33,8 @@ class RadiosView(View):
             Init view
         """
         View.__init__(self)
-        self._signal = Lp.art.connect('radio-artwork-changed',
-                                      self._on_logo_changed)
+        self._signal = Lp().art.connect('radio-artwork-changed',
+                                        self._on_logo_changed)
 
         self._radios_manager = Radios()
         self._radios_manager.connect('radios-changed',
@@ -114,7 +114,7 @@ class RadiosView(View):
             @param widget as Gtk.Widget
         """
         if self._signal is not None:
-            Lp.art.disconnect(self._signal)
+            Lp().art.disconnect(self._signal)
 
     def _on_new_clicked(self, widget):
         """
@@ -232,4 +232,4 @@ class RadiosView(View):
         if url:
             track = Track()
             track.set_radio(name, url)
-            Lp.player.load(track)
+            Lp().player.load(track)

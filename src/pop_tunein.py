@@ -71,7 +71,7 @@ class TuneinPopover(Gtk.Popover):
         self._stack.add_named(self._scrolled, 'scrolled')
         self._stack.set_visible_child_name('spinner')
         self.add(widget)
-        size_setting = Lp.settings.get_value('window-size')
+        size_setting = Lp().settings.get_value('window-size')
         if isinstance(size_setting[1], int):
             self.set_size_request(700, size_setting[1]*0.7)
         else:
@@ -233,11 +233,11 @@ class TuneinPopover(Gtk.Popover):
             self.populate(item.URL)
         elif item.TYPE == "audio":
             for i in self._current_items:
-                Lp.player.load_external(i.URL, i.TEXT)
-            Lp.player.play_this_external(item.URL)
+                Lp().player.load_external(i.URL, i.TEXT)
+            Lp().player.play_this_external(item.URL)
             # Only toolbar will get this one, so only create small in cache
             if Gio.NetworkMonitor.get_default().get_network_available():
-                t = Thread(target=Lp.art.copy_uri_to_cache,
+                t = Thread(target=Lp().art.copy_uri_to_cache,
                            args=(item.LOGO, item.TEXT, ArtSize.SMALL))
                 t.daemon = True
                 t.start()

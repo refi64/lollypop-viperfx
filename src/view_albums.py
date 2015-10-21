@@ -90,10 +90,10 @@ class AlbumsView(View):
         self._paned = Gtk.Paned.new(Gtk.Orientation.VERTICAL)
         self._paned.pack1(self._scrolledWindow, True, False)
         self._paned.pack2(self._context, False, False)
-        height = Lp.settings.get_value('paned-context-height').get_int32()
+        height = Lp().settings.get_value('paned-context-height').get_int32()
         # We set a stupid max value, safe as self._context is shrinked
         if height == -1:
-            height = Lp.window.get_allocated_height()
+            height = Lp().window.get_allocated_height()
         self._paned.set_position(height)
         self._paned.connect('notify::position', self._on_position_notify)
         self._paned.show()
@@ -160,8 +160,8 @@ class AlbumsView(View):
             @param paned as Gtk.Paned
             @param param as Gtk.Param
         """
-        Lp.settings.set_value('paned-context-height',
-                              GLib.Variant('i', paned.get_position()))
+        Lp().settings.set_value('paned-context-height',
+                                GLib.Variant('i', paned.get_position()))
         return False
 
     def _on_album_activated(self, flowbox, child):
@@ -177,11 +177,11 @@ class AlbumsView(View):
             self._context_widget = None
         else:
             self._context_album_id = child.get_child().get_id()
-            if Lp.settings.get_value('auto-play'):
+            if Lp().settings.get_value('auto-play'):
                 album = Album(self._context_album_id)
                 track = Track(album.tracks_ids[0])
-                Lp.player.load(track)
-                Lp.player.set_albums(track.id, None,
-                                     self._genre_id)
+                Lp().player.load(track)
+                Lp().player.set_albums(track.id, None,
+                                       self._genre_id)
             self._populate_context(self._context_album_id)
             self._context.show()

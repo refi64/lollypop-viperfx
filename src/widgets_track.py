@@ -212,8 +212,8 @@ class AlbumRow(Row):
             Set artist and album labels
             @param album id as int
         """
-        artist = Lp.albums.get_artist_name(album_id)
-        album = Lp.albums.get_name(album_id)
+        artist = Lp().albums.get_artist_name(album_id)
+        album = Lp().albums.get_name(album_id)
         self._artist.set_text(artist)
         self._album.set_text(album)
 
@@ -361,10 +361,10 @@ class TracksWidget(Gtk.ListBox):
         """
         Gtk.ListBox.__init__(self)
         self.connect('destroy', self._on_destroy)
-        self._queue_signal_id = Lp.player.connect("queue-changed",
-                                                  self._update_pos_label)
-        self._loved_signal_id = Lp.playlists.connect("playlist-changed",
-                                                     self._update_loved_icon)
+        self._queue_signal_id = Lp().player.connect("queue-changed",
+                                                    self._update_pos_label)
+        self._loved_signal_id = Lp().playlists.connect("playlist-changed",
+                                                       self._update_loved_icon)
         self._show_menu = show_menu
         self._show_loved = show_loved
         self.connect("row-activated", self._on_activate)
@@ -384,14 +384,14 @@ class TracksWidget(Gtk.ListBox):
         """
         track_row = TrackRow(self._show_menu, self._show_loved)
 
-        track_row.show_indicator(Lp.player.current_track.id == track_id,
+        track_row.show_indicator(Lp().player.current_track.id == track_id,
                                  utils.is_loved(track_id))
 
         if pos:
             track_row.set_num_label(
                 '''<span foreground="%s"
                 font_desc="Bold">%s</span>''' %
-                (rgba_to_hex(Lp.window.get_selected_color()),
+                (rgba_to_hex(Lp().window.get_selected_color()),
                  str(pos)))
         elif num > 0:
             track_row.set_num_label(str(num))
@@ -415,13 +415,13 @@ class TracksWidget(Gtk.ListBox):
             @param show cover as bool
         """
         album_row = AlbumRow(self._show_loved)
-        album_row.show_indicator(Lp.player.current_track.id == track_id,
+        album_row.show_indicator(Lp().player.current_track.id == track_id,
                                  utils.is_loved(track_id))
         if pos:
             album_row.set_num_label(
                 '''<span foreground="%s"
                 font_desc="Bold">%s</span>''' %
-                (rgba_to_hex(Lp.window.get_selected_color()),
+                (rgba_to_hex(Lp().window.get_selected_color()),
                  str(pos)))
         elif num > 0:
             album_row.set_num_label(str(num))
@@ -431,10 +431,10 @@ class TracksWidget(Gtk.ListBox):
         album_row.set_object_id(track_id)
         if album is not None:
             album_row.set_album_and_artist(album.id)
-            surface = Lp.art.get_album_artwork(
+            surface = Lp().art.get_album_artwork(
                         album,
                         ArtSize.MEDIUM*album_row.get_scale_factor())
-            album_row.set_cover(surface, Lp.albums.get_name(album.id))
+            album_row.set_cover(surface, Lp().albums.get_name(album.id))
             del surface
             album_row.show_header(True)
         album_row.show()
@@ -460,12 +460,12 @@ class TracksWidget(Gtk.ListBox):
         """
         for row in self.get_children():
             track_id = row.get_object_id()
-            if Lp.player.is_in_queue(track_id):
-                pos = Lp.player.get_track_position(track_id)
+            if Lp().player.is_in_queue(track_id):
+                pos = Lp().player.get_track_position(track_id)
                 row.set_num_label(
                     '''<span foreground="%s"
                     font_desc="Bold">%s</span>''' %
-                    (rgba_to_hex(Lp.window.get_selected_color()),
+                    (rgba_to_hex(Lp().window.get_selected_color()),
                      str(pos)))
             elif row.get_number() > 0:
                 row.set_num_label(str(row.get_number()))
@@ -481,7 +481,7 @@ class TracksWidget(Gtk.ListBox):
 
         for row in self.get_children():
             track_id = row.get_object_id()
-            row.show_indicator(track_id == Lp.player.current_track.id,
+            row.show_indicator(track_id == Lp().player.current_track.id,
                                utils.is_loved(track_id))
 
     def _on_destroy(self, widget):
@@ -490,10 +490,10 @@ class TracksWidget(Gtk.ListBox):
             @param widget as Gtk.Widget
         """
         if self._queue_signal_id is not None:
-            Lp.player.disconnect(self._queue_signal_id)
+            Lp().player.disconnect(self._queue_signal_id)
             self._queue_signal_id = None
         if self._loved_signal_id is not None:
-            Lp.playlists.disconnect(self._loved_signal_id)
+            Lp().playlists.disconnect(self._loved_signal_id)
             self._loved_signal_id = None
 
     def _on_activate(self, widget, row):

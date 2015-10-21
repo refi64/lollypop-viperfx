@@ -28,12 +28,12 @@ class View(Gtk.Grid):
         self.connect('destroy', self._on_destroy)
         self.set_property('orientation', Gtk.Orientation.VERTICAL)
         self.set_border_width(0)
-        self._current_signal = Lp.player.connect('current-changed',
-                                                 self._on_current_changed)
-        self._cover_signal = Lp.art.connect('album-artwork-changed',
-                                            self._on_cover_changed)
-        self._scan_signal = Lp.scanner.connect('album-modified',
-                                               self._on_album_modified)
+        self._current_signal = Lp().player.connect('current-changed',
+                                                   self._on_current_changed)
+        self._cover_signal = Lp().art.connect('album-artwork-changed',
+                                              self._on_cover_changed)
+        self._scan_signal = Lp().scanner.connect('album-modified',
+                                                 self._on_album_modified)
 
         # Stop populate thread
         self._stop = False
@@ -90,13 +90,13 @@ class View(Gtk.Grid):
             @param widget as Gtk.Widget
         """
         if self._current_signal:
-            Lp.player.disconnect(self._current_signal)
+            Lp().player.disconnect(self._current_signal)
             self._current_signal = None
         if self._cover_signal:
-            Lp.art.disconnect(self._cover_signal)
+            Lp().art.disconnect(self._cover_signal)
             self._cover_signal = None
         if self._scan_signal:
-            Lp.scanner.disconnect(self._scan_signal)
+            Lp().scanner.disconnect(self._scan_signal)
             self._scan_signal = None
 
     def _on_cover_changed(self, widget, album_id):

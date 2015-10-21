@@ -147,9 +147,9 @@ class CurrentArtistAlbumsView(ViewContainer):
             @return album ids as [int]
         """
         if artist_id == Type.COMPILATIONS:
-            albums = [Lp.player.current_track.album_id]
+            albums = [Lp().player.current_track.album_id]
         else:
-            albums = Lp.artists.get_albums(artist_id)
+            albums = Lp().artists.get_albums(artist_id)
         return albums
 
     def do_get_preferred_width(self):

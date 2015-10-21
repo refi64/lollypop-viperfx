@@ -48,7 +48,7 @@ class ReplayGainPlayer:
             return
 
         self._rgvolume.props.album_mode = 1
-        self._rgvolume.props.pre_amp = Lp.settings.get_value(
+        self._rgvolume.props.pre_amp = Lp().settings.get_value(
             "replaygain").get_double()
 
         self._rgfilter.add(self._rgvolume)

@@ -50,7 +50,7 @@ class BasePlayer(GObject.GObject):
             # Albums in current playlist
             self._albums = None
             # Current shuffle mode
-            self._shuffle = Lp.settings.get_enum('shuffle')
+            self._shuffle = Lp().settings.get_enum('shuffle')
             # For tracks from the cmd line
             self._external_tracks = []
 

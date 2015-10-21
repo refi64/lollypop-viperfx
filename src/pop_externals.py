@@ -60,9 +60,9 @@ class ExternalsPopover(Gtk.Popover):
         column.set_sizing(Gtk.TreeViewColumnSizing.FIXED)
         self._view.append_column(column)
         self.add(self._view)
-        self._signal_id = Lp.player.connect('current-changed',
-                                            self._on_current_changed)
-        size_setting = Lp.settings.get_value('window-size')
+        self._signal_id = Lp().player.connect('current-changed',
+                                              self._on_current_changed)
+        size_setting = Lp().settings.get_value('window-size')
         if isinstance(size_setting[1], int):
             self.set_size_request(400, size_setting[1]*0.7)
         else:
@@ -73,7 +73,7 @@ class ExternalsPopover(Gtk.Popover):
             Populate popover
         """
         self._model.clear()
-        self._populate(Lp.player.get_externals())
+        self._populate(Lp().player.get_externals())
 
 #######################
 # PRIVATE             #
@@ -105,7 +105,7 @@ class ExternalsPopover(Gtk.Popover):
             @param track as Track
             @param filepath as string
         """
-        if track.uri == Lp.player.current_track.uri:
+        if track.uri == Lp().player.current_track.uri:
             self._model.append((track.uri, 'media-playback-start-symbolic',
                                 track.artist, track.title,
                                 seconds_to_string(track.duration)))
@@ -119,7 +119,7 @@ class ExternalsPopover(Gtk.Popover):
             @param widget as Gtk.Widget
         """
         if self._signal_id is not None:
-            Lp.player.disconnect(self._signal_id)
+            Lp().player.disconnect(self._signal_id)
         GLib.idle_add(self.destroy)
 
     def _on_current_changed(self, player):
@@ -144,4 +144,4 @@ class ExternalsPopover(Gtk.Popover):
             iterator = self._model.get_iter(path)
             if iterator is not None:
                 uri = self._model.get_value(iterator, 0)
-                Lp.player.play_this_external(uri)
+                Lp().player.play_this_external(uri)

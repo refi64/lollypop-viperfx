@@ -105,8 +105,8 @@ class RadioPopover(Gtk.Popover):
             Same as _populate_threaded()
             @thread safe
         """
-        self._urls = Lp.art.get_google_arts(self._name+"+logo+radio",
-                                            self._start)
+        self._urls = Lp().art.get_google_arts(self._name+"+logo+radio",
+                                              self._start)
         if self._urls:
             self._start += GOOGLE_INC
             self._add_pixbufs()
@@ -187,7 +187,7 @@ class RadioPopover(Gtk.Popover):
             @param widget as Gtk.Widget
         """
         self._name_entry.grab_focus()
-        Lp.window.enable_global_shorcuts(False)
+        Lp().window.enable_global_shorcuts(False)
 
     def _on_unmap(self, widget):
         """
@@ -195,7 +195,7 @@ class RadioPopover(Gtk.Popover):
             @param widget as Gtk.Widget
         """
         self._thread = False
-        Lp.window.enable_global_shorcuts(True)
+        Lp().window.enable_global_shorcuts(True)
         GLib.idle_add(self.destroy)
 
     def _on_btn_add_modify_clicked(self, widget):
@@ -211,7 +211,7 @@ class RadioPopover(Gtk.Popover):
             self._stack.get_visible_child().hide()
             if rename:
                 self._radios_manager.rename(self._name, new_name)
-                Lp.art.rename_radio(self._name, new_name)
+                Lp().art.rename_radio(self._name, new_name)
             else:
                 self._radios_manager.add(new_name, uri.lstrip().rstrip())
             self._stack.set_visible_child_name('spinner')
@@ -228,7 +228,7 @@ class RadioPopover(Gtk.Popover):
         if self._name != '':
             cache = Art._RADIOS_PATH
             self._radios_manager.delete(self._name)
-            Lp.art.clean_radio_cache(self._name)
+            Lp().art.clean_radio_cache(self._name)
             if os.path.exists(cache+"/%s.png" % self._name):
                 os.remove(cache+"/%s.png" % self._name)
 
@@ -238,9 +238,9 @@ class RadioPopover(Gtk.Popover):
             Reset cache and use player object to announce cover change
         """
         pixbuf = self._orig_pixbufs[child.get_child()]
-        Lp.art.save_radio_artwork(pixbuf, self._name)
-        Lp.art.clean_radio_cache(self._name)
-        Lp.art.radio_artwork_update(self._name)
+        Lp().art.save_radio_artwork(pixbuf, self._name)
+        Lp().art.clean_radio_cache(self._name)
+        Lp().art.radio_artwork_update(self._name)
         self.hide()
         self._streams = {}
 

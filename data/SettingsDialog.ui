@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Generated with glade 3.18.3 -->
+<!-- Generated with glade 3.19.0 -->
 <interface>
-  <requires lib="gtk+" version="3.12"/>
+  <requires lib="gtk+" version="3.14"/>
   <object class="GtkHeaderBar" id="header_bar">
-    <property name="title" translatable="yes">Preferences</property>
     <property name="visible">True</property>
     <property name="can_focus">False</property>
-    <property name="show-close-button">True</property>
+    <property name="title">Preferences</property>
+    <property name="show_close_button">True</property>
   </object>
   <object class="GtkWindow" id="settings_dialog">
     <property name="can_focus">False</property>
@@ -148,6 +148,32 @@
                       <packing>
                         <property name="left_attach">1</property>
                         <property name="top_attach">3</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <object class="GtkLabel" id="mpd">
+                        <property name="visible">True</property>
+                        <property name="can_focus">False</property>
+                        <property name="tooltip_text" translatable="yes">Control Lollypop with any MPD client</property>
+                        <property name="halign">start</property>
+                        <property name="label" translatable="yes">Network control</property>
+                        <property name="ellipsize">start</property>
+                      </object>
+                      <packing>
+                        <property name="left_attach">0</property>
+                        <property name="top_attach">4</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <object class="GtkSwitch" id="switch_mpd">
+                        <property name="visible">True</property>
+                        <property name="can_focus">True</property>
+                        <property name="halign">end</property>
+                        <signal name="state-set" handler="_update_mpd_setting" swapped="no"/>
+                      </object>
+                      <packing>
+                        <property name="left_attach">1</property>
+                        <property name="top_attach">4</property>
                       </packing>
                     </child>
                   </object>

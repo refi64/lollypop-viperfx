@@ -73,7 +73,7 @@ class LastFM(LastFMNetwork):
         if Secret is None or\
                 not Gio.NetworkMonitor.get_default().get_network_available():
             return
-        self._username = Lp.settings.get_value('lastfm-login').get_string()
+        self._username = Lp().settings.get_value('lastfm-login').get_string()
         if password is None:
             schema = Secret.Schema.new("org.gnome.Lollypop",
                                        Secret.SchemaFlags.NONE,
@@ -92,7 +92,8 @@ class LastFM(LastFMNetwork):
             @param password as str
         """
         if Gio.NetworkMonitor.get_default().get_network_available():
-            self._username = Lp.settings.get_value('lastfm-login').get_string()
+            self._username = Lp().settings.get_value(
+                                                   'lastfm-login').get_string()
             self._connect(self._username, password)
             t = Thread(target=self._populate_loved_tracks, args=(True,))
             t.daemon = True
@@ -230,7 +231,7 @@ class LastFM(LastFMNetwork):
                 self,
                 api_key=self._API_KEY,
                 api_secret=self._API_SECRET,
-                username=Lp.settings.get_value('lastfm-login').get_string(),
+                username=Lp().settings.get_value('lastfm-login').get_string(),
                 password_hash=md5(password))
             if populate_loved:
                 self._populate_loved_tracks()
@@ -284,8 +285,8 @@ class LastFM(LastFMNetwork):
                                              title=title,
                                              duration=duration)
         except BadAuthenticationError:
-            if Lp.notify is not None:
-                GLib.idle_add(Lp.notify.send, _("Wrong Last.fm credentials"))
+            if Lp().notify is not None:
+                GLib.idle_add(Lp().notify.send, _("Wrong Last.fm credentials"))
         except:
             # now playing sometimes fails
             if first:
@@ -298,15 +299,16 @@ class LastFM(LastFMNetwork):
             @param bool as force
         """
         try:
-            if force or len(Lp.playlists.get_tracks(Type.LOVED)) == 0:
+            if force or len(Lp().playlists.get_tracks(Type.LOVED)) == 0:
                 tracks = []
                 user = self.get_user(self._username)
                 for loved in user.get_loved_tracks():
-                    track_id = Lp.tracks.search_track(str(loved.track.artist),
+                    track_id = Lp().tracks.search_track(
+                                                      str(loved.track.artist),
                                                       str(loved.track.title))
                     if track_id is not None:
                         tracks.append(Track(track_id))
-                Lp.playlists.add_tracks(Type.LOVED, tracks)
+                Lp().playlists.add_tracks(Type.LOVED, tracks)
         except Exception as e:
                 print("LastFM::_populate_loved_tracks: %s" % e)
 

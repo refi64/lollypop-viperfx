@@ -85,7 +85,7 @@ class RadioWidget(Gtk.Bin, AlbumWidget):
         """
         if self._cover is None:
             return
-        surface = Lp.art.get_radio_artwork(
+        surface = Lp().art.get_radio_artwork(
                     self._name,
                     ArtSize.BIG*self._cover.get_scale_factor())
         self._cover.set_from_surface(surface)
@@ -97,7 +97,7 @@ class RadioWidget(Gtk.Bin, AlbumWidget):
         """
         if self._cover is None:
             return
-        surface = Lp.art.get_radio_artwork(
+        surface = Lp().art.get_radio_artwork(
                     self._name,
                     ArtSize.BIG*self._cover.get_scale_factor())
         self._cover.set_from_surface(surface)
@@ -107,8 +107,8 @@ class RadioWidget(Gtk.Bin, AlbumWidget):
         """
             Update widget state
         """
-        selected = Lp.player.current_track.id == Type.RADIOS and\
-            self._name == Lp.player.current_track.album_artist
+        selected = Lp().player.current_track.id == Type.RADIOS and\
+            self._name == Lp().player.current_track.album_artist
         if selected:
             self._color.get_style_context().add_class(
                                                     'cover-frame-selected')

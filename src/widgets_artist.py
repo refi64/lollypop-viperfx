@@ -58,7 +58,7 @@ class ArtistContent(Gtk.Stack):
             @param artist as str
         """
         if artist is None:
-            artist = Lp.player.get_current_artist()
+            artist = Lp().player.get_current_artist()
         return artist != self._artist
 
     def clear_artist(self):
@@ -144,7 +144,7 @@ class ArtistContent(Gtk.Stack):
                 scale = self._image.get_scale_factor()
                 pixbuf = GdkPixbuf.Pixbuf.new_from_stream_at_scale(
                            stream,
-                           Lp.settings.get_value(
+                           Lp().settings.get_value(
                                         'cover-size').get_int32() + 50 * scale,
                            -1,
                            True,
@@ -255,7 +255,7 @@ class WikipediaContent(ArtistContent):
             @thread safe
         """
         if artist is None:
-            artist = Lp.player.get_current_artist()
+            artist = Lp().player.get_current_artist()
         self._artist = artist
         GLib.idle_add(self._setup_menu_strings, [artist])
         if not self._load_cache_content(artist, 'wikipedia'):
@@ -276,7 +276,7 @@ class WikipediaContent(ArtistContent):
             @param artist as string
         """
         if artist is None:
-            artist = Lp.player.get_current_artist()
+            artist = Lp().player.get_current_artist()
         ArtistContent.uncache(self, artist, 'wikipedia')
 
 #######################
@@ -359,7 +359,7 @@ class LastfmContent(ArtistContent):
             @thread safe
         """
         if artist is None:
-            artist = Lp.player.get_current_artist()
+            artist = Lp().player.get_current_artist()
         self._artist = artist
         if not self._load_cache_content(artist, 'lastfm'):
             GLib.idle_add(self.set_visible_child_name, 'spinner')
@@ -371,7 +371,7 @@ class LastfmContent(ArtistContent):
             @param artist as string
         """
         if artist is None:
-            artist = Lp.player.get_current_artist()
+            artist = Lp().player.get_current_artist()
         ArtistContent.uncache(self, artist, 'lastfm')
 
 #######################
@@ -382,6 +382,6 @@ class LastfmContent(ArtistContent):
             Load artist page content
             @param artist as str
         """
-        (url, image_url, content) = Lp.lastfm.get_artist_infos(artist)
+        (url, image_url, content) = Lp().lastfm.get_artist_infos(artist)
         if artist == self._artist:
             ArtistContent.populate(self, content, image_url, 'lastfm')

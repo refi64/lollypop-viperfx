@@ -12,7 +12,7 @@
 
 import random
 
-from lollypop.define import Shuffle
+from lollypop.define import Shuffle, Lp
 from lollypop.player_base import BasePlayer
 from lollypop.objects import Track
 
@@ -43,19 +43,28 @@ class UserPlaylistPlayer(BasePlayer):
         """
         return self._user_playlist_id
 
-    def set_user_playlist(self, tracks, track_id):
+    def load_in_playlist(self, track_id):
+        """
+            Load track from playlist
+            @param track id as int
+        """
+        for track in self._user_playlist:
+            if track.id == track_id:
+                self.load(track)
+                break
+
+    def set_user_playlist(self, playlist_id):
         """
             Set user playlist as current playback playlist
             @param array of tracks as [Track]
-            @param track id as int
             @return track id as Track
         """
+        tracks = []
+        self._user_playlist_id = playlist_id
+        for track_id in Lp().playlists.get_tracks_ids(playlist_id):
+            tracks.append(Track(track_id))
         self._user_playlist = tracks
         self._shuffle_playlist()
-        for track in tracks:
-            if track.id == track_id:
-                return track
-        return None
 
     def get_user_playlist(self):
         """

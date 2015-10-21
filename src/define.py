@@ -13,6 +13,8 @@
 # This is global object initialised at lollypop start
 # member init order is important!
 
+from gi.repository import Gio
+
 try:
     from gi.repository import Secret
 
@@ -31,21 +33,7 @@ GOOGLE_INC = 8
 GOOGLE_MAX = 32
 
 
-class Lp:
-    settings = None
-    db = None
-    cursors = {}
-    albums = None
-    artists = None
-    genres = None
-    tracks = None
-    playlists = None
-    player = None
-    art = None
-    window = None
-    notify = None
-    lastfm = None
-    debug = False
+Lp = Gio.Application.get_default
 
 
 # Represent what to do on next track
@@ -94,6 +82,7 @@ class Type:
     RADIOS = -6
     EXTERNALS = -7
     ALL = -8
+    MPD = -996
     LOVED = -997
     NEVER = -998
     COMPILATIONS = -999

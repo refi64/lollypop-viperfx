@@ -26,7 +26,7 @@ class SqlCursor:
             Raise an exception if cursor already exists
         """
         name = current_thread().getName() + obj.__class__.__name__
-        Lp.cursors[name] = obj.get_cursor()
+        Lp().cursors[name] = obj.get_cursor()
 
     def __init__(self, obj):
         """
@@ -40,10 +40,10 @@ class SqlCursor:
             Store cursor if created, return thread+object cursor
         """
         name = current_thread().getName() + self._obj.__class__.__name__
-        if name not in Lp.cursors:
+        if name not in Lp().cursors:
             self._creator = True
-            Lp.cursors[name] = self._obj.get_cursor()
-        return Lp.cursors[name]
+            Lp().cursors[name] = self._obj.get_cursor()
+        return Lp().cursors[name]
 
     def __exit__(self, type, value, traceback):
         """
@@ -51,5 +51,5 @@ class SqlCursor:
         """
         if self._creator:
             name = current_thread().getName() + self._obj.__class__.__name__
-            Lp.cursors[name].close()
-            del Lp.cursors[name]
+            Lp().cursors[name].close()
+            del Lp().cursors[name]

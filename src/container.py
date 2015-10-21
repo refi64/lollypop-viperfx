@@ -85,7 +85,7 @@ class Container:
         # Index will start at -VOLUMES
         self._devices = {}
         self._devices_index = Type.DEVICES
-        self._show_genres = Lp.settings.get_value('show-genres')
+        self._show_genres = Lp().settings.get_value('show-genres')
         self._stack = ViewContainer(500)
         self._stack.show()
 
@@ -101,23 +101,23 @@ class Container:
         self._vm.connect('mount-added', self._on_mount_added)
         self._vm.connect('mount-removed', self._on_mount_removed)
 
-        Lp.playlists.connect('playlists-changed',
-                             self._update_playlists)
+        Lp().playlists.connect('playlists-changed',
+                               self._update_playlists)
 
     def update_db(self):
         """
             Update db at startup only if needed
         """
         # Stop previous scan
-        if Lp.scanner.is_locked():
-            Lp.scanner.stop()
+        if Lp().scanner.is_locked():
+            Lp().scanner.stop()
             GLib.timeout_add(250, self.update_db)
         else:
             # Something (device manager) is using progress bar
             progress = None
             if not self._progress.is_visible():
                 progress = self._progress
-            Lp.scanner.update(progress)
+            Lp().scanner.update(progress)
 
     def get_genre_id(self):
         """
@@ -139,12 +139,12 @@ class Container:
         """
             Save view state
         """
-        Lp.settings.set_value("list-one",
-                              GLib.Variant('i',
-                                           self._list_one.get_selected_id()))
-        Lp.settings.set_value("list-two",
-                              GLib.Variant('i',
-                                           self._list_two.get_selected_id()))
+        Lp().settings.set_value("list-one",
+                                GLib.Variant('i',
+                                             self._list_one.get_selected_id()))
+        Lp().settings.set_value("list-two",
+                                GLib.Variant('i',
+                                             self._list_two.get_selected_id()))
 
     def show_playlist_manager(self, object_id, genre_id, is_album):
         """
@@ -259,9 +259,9 @@ class Container:
         self._paned_main_list.add1(self._list_one)
         self._paned_main_list.add2(self._paned_list_view)
         self._paned_main_list.set_position(
-            Lp.settings.get_value('paned-mainlist-width').get_int32())
+            Lp().settings.get_value('paned-mainlist-width').get_int32())
         self._paned_list_view.set_position(
-            Lp.settings.get_value('paned-listview-width').get_int32())
+            Lp().settings.get_value('paned-listview-width').get_int32())
         self._paned_main_list.show()
         self._paned_list_view.show()
 
@@ -272,11 +272,11 @@ class Container:
         """
         list_one_id = Type.POPULARS
         list_two_id = Type.NONE
-        if Lp.settings.get_value('save-state'):
-            position = Lp.settings.get_value('list-one').get_int32()
+        if Lp().settings.get_value('save-state'):
+            position = Lp().settings.get_value('list-one').get_int32()
             if position != -1:
                 list_one_id = position
-            position = Lp.settings.get_value('list-two').get_int32()
+            position = Lp().settings.get_value('list-two').get_int32()
             if position != -1:
                 list_two_id = position
 
@@ -289,7 +289,7 @@ class Container:
             @param genre id as int
         """
         if self._show_genres:
-            genre_name = Lp.genres.get_name(genre_id)
+            genre_name = Lp().genres.get_name(genre_id)
             self._list_one.add_value((genre_id, genre_name))
 
     def _add_artist(self, scanner, artist_id, album_id):
@@ -299,9 +299,9 @@ class Container:
             @param artist id as int
             @param album id as int
         """
-        artist_name = Lp.artists.get_name(artist_id)
+        artist_name = Lp().artists.get_name(artist_id)
         if self._show_genres:
-            genre_ids = Lp.albums.get_genre_ids(album_id)
+            genre_ids = Lp().albums.get_genre_ids(album_id)
             genre_ids.append(Type.ALL)
             if self._list_one.get_selected_id() in genre_ids:
                 self._list_two.add_value((artist_id, artist_name))
@@ -313,9 +313,9 @@ class Container:
             Run collection update if needed
             @return True if hard scan is running
         """
-        Lp.scanner.connect('scan-finished', self.on_scan_finished)
-        Lp.scanner.connect('genre-update', self._add_genre)
-        Lp.scanner.connect('artist-update', self._add_artist)
+        Lp().scanner.connect('scan-finished', self.on_scan_finished)
+        Lp().scanner.connect('genre-update', self._add_genre)
+        Lp().scanner.connect('artist-update', self._add_artist)
 
     def _update_playlists(self, playlists, playlist_id):
         """
@@ -324,9 +324,10 @@ class Container:
             @param playlist_id as int
         """
         if self._list_one.get_selected_id() == Type.PLAYLISTS:
-            if Lp.playlists.exists(playlist_id):
+            if Lp().playlists.exists(playlist_id):
                 self._list_two.update_value(playlist_id,
-                                            Lp.playlists.get_name(playlist_id))
+                                            Lp().playlists.get_name(
+                                                                  playlist_id))
             else:
                 self._list_two.remove(playlist_id)
 
@@ -385,7 +386,7 @@ class Container:
             @thread safe
         """
         def load():
-            genres = Lp.genres.get()
+            genres = Lp().genres.get()
             return genres
 
         def setup(genres):
@@ -409,8 +410,8 @@ class Container:
             @thread safe
         """
         def load():
-            artists = Lp.artists.get(genre_id)
-            compilations = Lp.albums.get_compilations(genre_id)
+            artists = Lp().artists.get(genre_id)
+            compilations = Lp().albums.get_compilations(genre_id)
             return (artists, compilations)
 
         def setup(artists, compilations):
@@ -442,13 +443,13 @@ class Container:
             @param update as bool
             @thread safe
         """
-        playlists = [(Type.LOVED, Lp.playlists._LOVED)]
+        playlists = [(Type.LOVED, Lp().playlists._LOVED)]
         playlists.append((Type.POPULARS, _("Popular tracks")))
         playlists.append((Type.RECENTS, _("Recently played")))
         playlists.append((Type.NEVER, _("Never played")))
         playlists.append((Type.RANDOMS, _("Random tracks")))
         playlists.append((Type.SEPARATOR, ''))
-        playlists += Lp.playlists.get()
+        playlists += Lp().playlists.get()
         if update:
             self._list_two.update_values(playlists)
         else:
@@ -484,11 +485,11 @@ class Container:
         """
         def load():
             if artist_id == Type.COMPILATIONS:
-                albums = Lp.albums.get_compilations(genre_id)
+                albums = Lp().albums.get_compilations(genre_id)
             elif genre_id == Type.ALL:
-                albums = Lp.albums.get_ids(artist_id, None)
+                albums = Lp().albums.get_ids(artist_id, None)
             else:
-                albums = Lp.albums.get_ids(artist_id, genre_id)
+                albums = Lp().albums.get_ids(artist_id, genre_id)
             return albums
 
         view = ArtistView(artist_id, genre_id)
@@ -509,23 +510,23 @@ class Container:
             albums = []
             if genre_id == Type.ALL:
                 if is_compilation:
-                    albums = Lp.albums.get_compilations(None)
+                    albums = Lp().albums.get_compilations(None)
                 else:
-                    if Lp.settings.get_value('show-compilations'):
-                        albums = Lp.albums.get_compilations(None)
-                    albums += Lp.albums.get_ids(None, None)
+                    if Lp().settings.get_value('show-compilations'):
+                        albums = Lp().albums.get_compilations(None)
+                    albums += Lp().albums.get_ids(None, None)
             elif genre_id == Type.POPULARS:
-                albums = Lp.albums.get_populars()
+                albums = Lp().albums.get_populars()
             elif genre_id == Type.RECENTS:
-                albums = Lp.albums.get_recents()
+                albums = Lp().albums.get_recents()
             elif genre_id == Type.RANDOMS:
-                albums = Lp.albums.get_randoms()
+                albums = Lp().albums.get_randoms()
             elif is_compilation:
-                albums = Lp.albums.get_compilations(genre_id)
+                albums = Lp().albums.get_compilations(genre_id)
             else:
-                if Lp.settings.get_value('show-compilations'):
-                    albums = Lp.albums.get_compilations(genre_id)
-                albums += Lp.albums.get_ids(None, genre_id)
+                if Lp().settings.get_value('show-compilations'):
+                    albums = Lp().albums.get_compilations(genre_id)
+                albums += Lp().albums.get_ids(None, genre_id)
             return albums
 
         view = AlbumsView(genre_id, is_compilation)
@@ -542,18 +543,18 @@ class Container:
             @param playlist id as int
         """
         def load():
-            if playlist_id == Lp.player.get_user_playlist_id():
-                tracks = [t.id for t in Lp.player.get_user_playlist()]
+            if playlist_id == Lp().player.get_user_playlist_id():
+                tracks = [t.id for t in Lp().player.get_user_playlist()]
             elif playlist_id == Type.POPULARS:
-                tracks = Lp.tracks.get_populars()
+                tracks = Lp().tracks.get_populars()
             elif playlist_id == Type.RECENTS:
-                tracks = Lp.tracks.get_recently_listened_to()
+                tracks = Lp().tracks.get_recently_listened_to()
             elif playlist_id == Type.NEVER:
-                tracks = Lp.tracks.get_never_listened_to()
+                tracks = Lp().tracks.get_never_listened_to()
             elif playlist_id == Type.RANDOMS:
-                tracks = Lp.tracks.get_randoms()
+                tracks = Lp().tracks.get_randoms()
             else:
-                tracks = Lp.playlists.get_tracks_ids(playlist_id)
+                tracks = Lp().playlists.get_tracks_ids(playlist_id)
             return tracks
 
         view = None

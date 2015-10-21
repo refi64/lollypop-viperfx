@@ -44,9 +44,9 @@ class Toolbar(Gtk.HeaderBar):
         self.set_custom_title(self._toolbar_title)
         self.pack_end(self._toolbar_end)
 
-        Lp.player.connect('status-changed', self._on_status_changed)
-        Lp.player.connect('current-changed', self._on_current_changed)
-        Lp.player.connect('next-changed', self._on_next_changed)
+        Lp().player.connect('status-changed', self._on_status_changed)
+        Lp().player.connect('current-changed', self._on_current_changed)
+        Lp().player.connect('next-changed', self._on_next_changed)
 
     def do_get_preferred_height(self):
         """

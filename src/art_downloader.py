@@ -88,11 +88,11 @@ class ArtDownloader:
             @thread safe
         """
         self._in_albums_download = True
-        sql = Lp.db.get_cursor()
+        sql = Lp().db.get_cursor()
         while self._albums_queue:
             album_id = self._albums_queue.pop()
-            album = Lp.albums.get_name(album_id, sql)
-            artist = Lp.albums.get_artist_name(album_id, sql)
+            album = Lp().albums.get_name(album_id, sql)
+            artist = Lp().albums.get_artist_name(album_id, sql)
             pixbuf = self._get_album_art_spotify(artist, album)
             if pixbuf is None:
                 pixbuf = self._get_album_art_itunes(artist, album)
@@ -101,9 +101,9 @@ class ArtDownloader:
             if pixbuf is None:
                 continue
             try:
-                    Lp.art.save_album_artwork(pixbuf, album_id, sql)
-                    Lp.art.clean_album_cache(Album(album_id), sql)
-                    GLib.idle_add(Lp.art.album_artwork_update, album_id)
+                    Lp().art.save_album_artwork(pixbuf, album_id, sql)
+                    Lp().art.clean_album_cache(Album(album_id), sql)
+                    GLib.idle_add(Lp().art.album_artwork_update, album_id)
             except Exception as e:
                 print("ArtDownloader::_download_albums_art: %s" % e)
         self._in_albums_download = False
@@ -198,9 +198,9 @@ class ArtDownloader:
             @tread safe
         """
         pixbuf = None
-        if Lp.lastfm is not None:
+        if Lp().lastfm is not None:
             try:
-                last_album = Lp.lastfm.get_album(artist, album)
+                last_album = Lp().lastfm.get_album(artist, album)
                 url = last_album.get_cover_image(4)
                 if url is not None:
                     s = Gio.File.new_for_uri(url)

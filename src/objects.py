@@ -96,7 +96,7 @@ class Disc:
     """
 
     def __init__(self, album, disc_number):
-        self.db = Lp.albums
+        self.db = Lp().albums
         self.album = album
         self.number = disc_number
 
@@ -134,7 +134,7 @@ class Album(Base):
             @param album_id as int
             @param genre_id as int
         """
-        Base.__init__(self, Lp.albums)
+        Base.__init__(self, Lp().albums)
         self.id = album_id
         self.genre_id = genre_id
 
@@ -204,7 +204,7 @@ class Track(Base):
             Init track
             @param track_id as int
         """
-        Base.__init__(self, Lp.tracks)
+        Base.__init__(self, Lp().tracks)
         self.id = track_id
         self._uri = None
 
@@ -261,7 +261,7 @@ class Track(Base):
             @return str
         """
         if getattr(self, "_album_artist") is None:
-            self._album_artist = Lp.artists.get_name(self.album_artist_id)
+            self._album_artist = Lp().artists.get_name(self.album_artist_id)
         return self._album_artist
 
     @property

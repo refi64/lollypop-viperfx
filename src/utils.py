@@ -25,7 +25,7 @@ def debug(str):
         Print debug
         @param debug as str
     """
-    if Lp.debug is True:
+    if Lp().debug is True:
         print(str)
 
 
@@ -130,8 +130,8 @@ def is_loved(track_id):
         Check if object is in loved playlist
         @return bool
     """
-    return Lp.playlists.exists_track(Type.LOVED,
-                                     track_id)
+    return Lp().playlists.exists_track(Type.LOVED,
+                                       track_id)
 
 
 def set_loved(track_id, loved):
@@ -142,18 +142,18 @@ def set_loved(track_id, loved):
     """
     if not is_loved(track_id):
         if loved:
-            Lp.playlists.add_tracks(Type.LOVED,
-                                    [Track(track_id)])
-            if Lp.lastfm is not None:
+            Lp().playlists.add_tracks(Type.LOVED,
+                                      [Track(track_id)])
+            if Lp().lastfm is not None:
                 t = Thread(target=_set_loved_on_lastfm, args=(track_id,
                                                               True))
                 t.daemon = True
                 t.start()
     else:
         if not loved:
-            Lp.playlists.remove_tracks(Type.LOVED,
-                                       [Track(track_id)])
-            if Lp.lastfm is not None:
+            Lp().playlists.remove_tracks(Type.LOVED,
+                                         [Track(track_id)])
+            if Lp().lastfm is not None:
                 t = Thread(target=_set_loved_on_lastfm, args=(track_id,
                                                               False))
                 t.daemon = True
@@ -168,17 +168,17 @@ def _set_loved_on_lastfm(track_id, loved):
     """
     # Love the track on lastfm
     if Gio.NetworkMonitor.get_default().get_network_available() and\
-            Lp.lastfm.is_auth():
-        title = Lp.tracks.get_name(track_id)
-        album_id = Lp.tracks.get_album_id(track_id)
-        artist_id = Lp.albums.get_artist_id(album_id)
+            Lp().lastfm.is_auth():
+        title = Lp().tracks.get_name(track_id)
+        album_id = Lp().tracks.get_album_id(track_id)
+        artist_id = Lp().albums.get_artist_id(album_id)
 
         if artist_id == Type.COMPILATIONS:
-            artist = Lp.tracks.get_artist_names(track_id)
+            artist = Lp().tracks.get_artist_names(track_id)
         else:
-            artist = Lp.artists.get_name(artist_id)
+            artist = Lp().artists.get_name(artist_id)
 
         if loved:
-            Lp.lastfm.love(artist, title)
+            Lp().lastfm.love(artist, title)
         else:
-            Lp.lastfm.unlove(artist, title)
+            Lp().lastfm.unlove(artist, title)
