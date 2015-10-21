@@ -337,6 +337,20 @@ class TracksDatabase:
                 return v[0]
             return 0
 
+    def get_position(self, track_id):
+        """
+            Get track duration for track id
+            @param Track id as int
+            @return duration as int
+        """
+        with SqlCursor(Lp.db) as sql:
+            result = sql.execute("SELECT tracknumber FROM tracks\
+                                  WHERE rowid=?", (track_id,))
+            v = result.fetchone()
+            if v is not None and v[0] is not None:
+                return v[0]
+            return 0
+
     def get_duration(self, track_id):
         """
             Get track duration for track id
