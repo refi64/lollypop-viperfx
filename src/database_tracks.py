@@ -343,7 +343,7 @@ class TracksDatabase:
             @param Track id as int
             @return duration as int
         """
-        with SqlCursor(Lp.db) as sql:
+        with SqlCursor(Lp().db) as sql:
             result = sql.execute("SELECT tracknumber FROM tracks\
                                   WHERE rowid=?", (track_id,))
             v = result.fetchone()
