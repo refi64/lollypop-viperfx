@@ -355,17 +355,18 @@ class MpdHandler(socketserver.BaseRequestHandler):
         """
         msg = ""
         if args_array:
-            pass  # args = self._get_args(args_array[0])
-        else:
-            results = Lp().genres.get()
-            i = 0
-            for (rowid, genre) in results:
-                msg += 'directory: '+genre+'\n'
-                if i > 100:
-                    self._send_msg(msg, list_ok)
-                    msg = ""
-                    i = 0
-                i += 1
+            args = self._get_args(args_array[0])
+            print(args)
+
+        results = Lp().genres.get()
+        i = 0
+        for (rowid, genre) in results:
+            msg += 'directory: '+genre+'\n'
+            if i > 100:
+                self._send_msg(msg, list_ok)
+                msg = ""
+                i = 0
+            i += 1
         self._send_msg(msg, list_ok)
 
     def _next(self, args_array, list_ok):
