@@ -209,8 +209,6 @@ class Playlists(GObject.GObject):
         """
         if playlist_name == self._LOVED:
             return Type.LOVED
-        elif playlist_name == self._MPD:
-            return Type.MPD
         with SqlCursor(self) as sql:
             result = sql.execute("SELECT rowid\
                                  FROM playlists\
