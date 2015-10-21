@@ -623,6 +623,7 @@ class MpdHandler(socketserver.BaseRequestHandler):
         args = self._get_args(args_array[0])
         vol = float(args[0])
         Lp().player.set_volume(vol/100)
+        self._send_msg('', list_ok)
 
     def _stats(self, args_array, list_ok):
         """
