@@ -128,7 +128,7 @@ class MpdHandler(socketserver.BaseRequestHandler):
                     # Get year
                     try:
                         date = re.search('\([0-9]*\)', splited[2]).group(0)
-                        name = splited[2].replace(' '+date, '')
+                        name = splited[2].replace(' '+date, '', 1)
                     except:
                         date = ''
                         name = splited[2]
@@ -136,13 +136,11 @@ class MpdHandler(socketserver.BaseRequestHandler):
                         year = int(date[1:-1])
                     except:
                         year = None
-
                     album_id = Lp().albums.get_id(name, artist_id, year)
                     if len(splited) == 4:
                         track_id = Lp().tracks.get_id_by(splited[3], album_id)
                         tracks.append(Track(track_id))
                     else:
-                        print(album_id, genre_id)
                         for track_id in Lp().albums.get_tracks(album_id,
                                                                genre_id):
                             tracks.append(Track(track_id))
@@ -432,7 +430,7 @@ class MpdHandler(socketserver.BaseRequestHandler):
                 date = re.search('\([0-9]*\)', splited[2]).group(0)
             except:
                 date = ''
-            name = splited[2].replace(' '+date, '')
+            name = splited[2].replace(' '+date, '', 1)
             try:
                 year = int(date[1:-1])
             except:
