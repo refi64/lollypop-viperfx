@@ -12,6 +12,8 @@
         <property name="halign">start</property>
         <property name="margin_start">10</property>
         <property name="label">0:00</property>
+        <property name="justify">right</property>
+        <property name="width_chars">5</property>
       </object>
       <packing>
         <property name="left_attach">0</property>
@@ -24,6 +26,7 @@
         <property name="halign">start</property>
         <property name="margin_end">10</property>
         <property name="label">0:00</property>
+        <property name="width_chars">5</property>
       </object>
       <packing>
         <property name="left_attach">2</property>
