@@ -273,7 +273,9 @@ class ScannerTagReader(TagReader):
         if no_album_artist:
             album_id = Lp().albums.get_compilation_id(album_name, year)
         else:
-            album_id = Lp().albums.get_id(album_name, artist_id, year)
+            album_id = Lp().albums.get_non_compilation_id(album_name,
+                                                          artist_id,
+                                                          year)
         if album_id is None:
             new = True
             album_id = Lp().albums.add(album_name, artist_id, no_album_artist,

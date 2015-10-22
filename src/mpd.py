@@ -16,9 +16,10 @@ import socketserver
 import threading
 from time import sleep
 from datetime import datetime
+import re
 
 from lollypop.define import Lp, Type
-from lollypop.objects import Track
+from lollypop.objects import Track, Album
 from lollypop.database_mpd import MpdDatabase
 from lollypop.utils import translate_artist_name, format_artist_name
 
@@ -103,8 +104,50 @@ class MpdHandler(socketserver.BaseRequestHandler):
         """
         tracks = []
         for args in args_array:
-            track_id = Lp().tracks.get_id_by_path(self._get_args(args)[0])
-            tracks.append(Track(track_id))
+            arg = self._get_args(args)
+            track_id = Lp().tracks.get_id_by_path(arg[0])
+            if track_id is None:
+                splited = arg[0].split("/")
+                print(splited)
+                # Genre and artist
+                if len(splited) < 3:
+                    genre_id = Lp().genres.get_id(splited[0])
+                    try:
+                        artist_id = Lp().artists.get_id(splited[1])
+                    except:
+                        artist_id = None
+                    print(artist_id, genre_id)
+                    for album_id in Lp().albums.get_ids(artist_id, genre_id):
+                        for track_id in Lp().albums.get_tracks(album_id,
+                                                               genre_id):
+                            tracks.append(Track(track_id))
+                # Album or track
+                else:
+                    genre_id = Lp().genres.get_id(splited[0])
+                    artist_id = Lp().artists.get_id(splited[1])
+                    # Get year
+                    try:
+                        date = re.search('\([0-9]*\)', splited[2]).group(0)
+                        name = splited[2].replace(' '+date, '')
+                    except:
+                        date = ''
+                        name = splited[2]
+                    try:
+                        year = int(date[1:-1])
+                    except:
+                        year = None
+
+                    album_id = Lp().albums.get_id(name, artist_id, year)
+                    if len(splited) == 4:
+                        track_id = Lp().tracks.get_id_by(splited[3], album_id)
+                        tracks.append(Track(track_id))
+                    else:
+                        print(album_id, genre_id)
+                        for track_id in Lp().albums.get_tracks(album_id,
+                                                               genre_id):
+                            tracks.append(Track(track_id))
+            else:
+                tracks.append(Track(track_id))
         Lp().playlists.add_tracks(Type.MPD, tracks)
         self._send_msg('', list_ok)
 
@@ -354,19 +397,71 @@ class MpdHandler(socketserver.BaseRequestHandler):
             @param add list_OK as bool
         """
         msg = ""
-        if args_array:
-            args = self._get_args(args_array[0])
-            print(args)
+        args = self._get_args(args_array[0])
 
-        results = Lp().genres.get()
+        if not args:
+            arg = ""
+        else:
+            arg = args[0]
+            if arg == "/":
+                arg = ""
+        directory = True
+        if arg == "":
+            results = Lp().genres.get()
+        elif arg.count("/") == 0:
+            genre_id = Lp().genres.get_id(arg)
+            results = Lp().artists.get(genre_id)
+        elif arg.count("/") == 1:
+            splited = arg.split("/")
+            genre_id = Lp().genres.get_id(splited[0])
+            artist_id = Lp().artists.get_id(splited[1])
+            results = []
+            for album_id in Lp().albums.get_ids(artist_id, genre_id):
+                album = Album(album_id)
+                if album.year != '':
+                    string = " (%s)" % album.year
+                else:
+                    string = ""
+                results.append((album.id, album.name + string))
+        elif arg.count("/") == 2:
+            splited = arg.split("/")
+            genre_id = Lp().genres.get_id(splited[0])
+            artist_id = Lp().artists.get_id(splited[1])
+            # Get year
+            try:
+                date = re.search('\([0-9]*\)', splited[2]).group(0)
+            except:
+                date = ''
+            name = splited[2].replace(' '+date, '')
+            try:
+                year = int(date[1:-1])
+            except:
+                year = None
+            album_id = Lp().albums.get_id(name, artist_id, year)
+            tracks_ids = Lp().albums.get_tracks(album_id, genre_id)
+            directory = False
+
         i = 0
-        for (rowid, genre) in results:
-            msg += 'directory: '+genre+'\n'
-            if i > 100:
-                self._send_msg(msg, list_ok)
-                msg = ""
-                i = 0
-            i += 1
+        if directory:
+            for (rowid, item) in results:
+                if arg:
+                    msg += "directory: %s/%s\n" % (arg, item)
+                else:
+                    msg += "directory: %s\n" % item
+                if i > 100:
+                    self._send_msg(msg, list_ok)
+                    msg = ""
+                    i = 0
+                i += 1
+        else:
+            for track_id in tracks_ids:
+                track = Track(track_id)
+                msg += "file: %s/%s\n" % (arg, track.title)
+                if i > 100:
+                    self._send_msg(msg, list_ok)
+                    msg = ""
+                    i = 0
+                i += 1
         self._send_msg(msg, list_ok)
 
     def _next(self, args_array, list_ok):
@@ -513,9 +608,16 @@ class MpdHandler(socketserver.BaseRequestHandler):
             @param args as [str]
             @param add list_OK as bool
         """
+        i = 0
         msg = ""
         for track_id in Lp().playlists.get_tracks_ids(Type.MPD):
             msg += self._string_for_track_id(track_id)
+            if i > 100:
+                self.request.send(msg.encode("utf-8"))
+                msg = ""
+                i = 0
+            else:
+                i += 1
         self._send_msg(msg, list_ok)
 
     def _plchangesposid(self, args_array, list_ok):

@@ -129,16 +129,18 @@ class TracksDatabase:
                 return v[0]
             return None
 
-    def get_id_by_filename(self, filename):
+    def get_id_by(self, name, album_id):
         """
             Return track id for path
-            @param filename as str
+            @param name as str
+            @param album id as int
             @return track id as int
         """
         with SqlCursor(Lp().db) as sql:
             result = sql.execute("SELECT rowid FROM tracks\
-                                 WHERE filepath LIKE ?",
-                                 ('%' + filename + '%',))
+                                  WHERE name =?\
+                                  AND album_id = ?",
+                                 (name, album_id))
             v = result.fetchone()
             if v is not None:
                 return v[0]
