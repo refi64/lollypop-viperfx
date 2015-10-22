@@ -65,7 +65,7 @@ class Toolbar(Gtk.HeaderBar):
             Update progress bar position
             @param value as int
         """
-        self._toolbar_title.update_position(value)
+        self._toolbar_title._update_position(value)
 
     def set_progress_width(self, width):
         """
