@@ -238,17 +238,8 @@ class TuneinPopover(Gtk.Popover):
                            args=(item.LOGO, item.TEXT, ArtSize.SMALL))
                 t.daemon = True
                 t.start()
-            # Tune in embbed uri in ashx files, so get content if possible
-            try:
-                url = item.URL
-                f = Gio.File.new_for_uri(url)
-                (status, data, tag) = f.load_contents()
-                if status:
-                    url = data.decode('utf-8').split('\n')[0]
-            except Exception as e:
-                print("TuneinPopover::_add_radio: %s" % e)
-            Lp().player.load_external(url, item.TEXT)
-            Lp().player.play_this_external(url)
+            Lp().player.load_external(item.URL, item.TEXT)
+            Lp().player.play_this_external(item.URL)
         return True
 
     def _on_button_clicked(self, button, item):
