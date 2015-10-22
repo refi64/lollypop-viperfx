@@ -75,7 +75,7 @@ class Application(Gtk.Application):
         self.notify = None
         self.mpd = None
         self.debug = False
-
+        self._externals_count = 0
         self._init_proxy()
         GLib.set_application_name('lollypop')
         GLib.set_prgname('lollypop')
@@ -88,6 +88,14 @@ class Application(Gtk.Application):
                                  None)
         self.connect('handle-local-options', self._on_handle_local_options)
         self.connect('command-line', self._on_command_line)
+        self.register(None)
+        if self.get_is_remote():
+            Gdk.notify_startup_complete()
+
+    def init(self):
+        """
+            Init main application
+        """
         cssProviderFile = Gio.File.new_for_uri(
             'resource:///org/gnome/Lollypop/application.css')
         cssProvider = Gtk.CssProvider()
@@ -128,12 +136,8 @@ class Application(Gtk.Application):
         self._parser.connect('entry-parsed', self._on_entry_parsed)
 
         self.add_action(self.settings.create_action('shuffle'))
-        self._externals_count = 0
-        self._is_fs = False
 
-        self.register(None)
-        if self.get_is_remote():
-            Gdk.notify_startup_complete()
+        self._is_fs = False
 
     def do_startup(self):
         """
@@ -152,6 +156,7 @@ class Application(Gtk.Application):
             self.window.set_application(self)
             self.window.show()
         elif not self.window:
+            self.init()
             menu = self._setup_app_menu()
             # If GNOME/Unity, add appmenu
             if is_gnome() or is_unity():
