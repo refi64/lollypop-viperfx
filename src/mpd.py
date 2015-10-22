@@ -14,7 +14,6 @@ from gi.repository import GLib, Gst
 
 import socketserver
 import threading
-from time import sleep
 from datetime import datetime
 import os
 
@@ -40,7 +39,7 @@ class MpdHandler(socketserver.BaseRequestHandler):
         self._signal2 = Lp().player.connect('status-changed',
                                             self._on_player_changed)
         self._signal3 = Lp().player.connect('seeked',
-                                            self._on_player_changed)
+                                            self._on_position_changed)
         self._signal4 = Lp().playlists.connect('playlist-changed',
                                                self._on_playlist_changed)
         self.request.send("OK MPD 0.19.0\n".encode('utf-8'))
@@ -81,7 +80,7 @@ class MpdHandler(socketserver.BaseRequestHandler):
                                     cmd_dict[command].append(cmd[size:])
                             for key in cmd_dict.keys():
                                 if key.find("idle") == -1:
-                                    self._noidle(None, None)
+                                    self.server.event.set()
                                 call = getattr(self, '_%s' % key)
                                 call(cmd_dict[key], list_ok)
                             if list_ok:
@@ -90,7 +89,7 @@ class MpdHandler(socketserver.BaseRequestHandler):
                             print("MpdHandler::handle(): ", command, e)
                             self._send_msg('', list_ok)
         except:
-            self._noidle(None, None)
+            self.server.event.set()
         Lp().player.disconnect(self._signal1)
         Lp().player.disconnect(self._signal2)
         Lp().player.disconnect(self._signal3)
@@ -225,21 +224,20 @@ class MpdHandler(socketserver.BaseRequestHandler):
     def _idle(self, args_array, list_ok):
         msg = ''
         self.request.settimeout(0)
-        MpdHandler.idle = self
-        while not self._idle_strings and\
-                MpdHandler.idle == self and\
-                self.server.running:
-            print('IDLE', MpdHandler.idle, self, self._idle_strings)
-            sleep(1)
-        if MpdHandler.idle == self:
-            for string in self._idle_strings:
-                msg += "changed: %s\n" % string
-            self._idle_strings = []
+        self.server.event.clear()
+        # We handle notifications directly
+        if not self._idle_strings:
+            self.server.event.wait()
+        # Handle new notifications
+        for string in self._idle_strings:
+            msg += "changed: %s\n" % string
+        self._idle_strings = []
         self._send_msg(msg, list_ok)
         self.request.settimeout(10)
 
     def _noidle(self, args_array, list_ok):
-        MpdHandler.idle = None
+        self._idle_strings = []
+        self.server.event.set()
 
     def _list(self, args_array, list_ok):
         """
@@ -860,7 +858,22 @@ class MpdHandler(socketserver.BaseRequestHandler):
             @param player as Player
         """
         self._current_song = None
-        self._idle_strings.append('player')
+        if "player" not in self._idle_strings:
+            self._idle_strings.append("player")
+            self.server.event.set()
+
+    def _on_position_changed(self, player, data=None):
+        """
+            Add player to idle
+            @param player as Player
+        """
+        self._current_song = None
+        # Player may be in pause so wait for playback
+        if player.get_status() == Gst.State.PAUSED:
+            GLib.idle_add(self._on_position_changed, player, data)
+        elif "player" not in self._idle_strings:
+            self._idle_strings.append("player")
+            self.server.event.set()
 
     def _on_playlist_changed(self, playlists, playlist_id):
         """
@@ -869,10 +882,13 @@ class MpdHandler(socketserver.BaseRequestHandler):
             @param playlist id as int
         """
         if playlist_id == Type.MPD:
-            self._idle_strings.append('playlist')
+            if "playlist" not in self._idle_strings:
+                self._idle_strings.append("playlist")
+                self.server.event.set()
             self._playlist_version += 1
-        else:
-            self._idle_strings.append('stored_playlist')
+        elif "stored_playlist" not in self._idle_strings:
+            self._idle_strings.append("stored_playlist")
+            self.server.event.set()
 
 
 class MpdServer(socketserver.ThreadingMixIn, socketserver.TCPServer):
@@ -884,13 +900,16 @@ class MpdServer(socketserver.ThreadingMixIn, socketserver.TCPServer):
         """
             Init server
         """
+        self.event = None
         socketserver.TCPServer.allow_reuse_address = True
         socketserver.TCPServer.__init__(self, ("", port), MpdHandler)
 
-    def run(self):
+    def run(self, e):
         """
             Run MPD server in a blocking way.
+            @param e as threading.Event
         """
+        self.event = e
         self.serve_forever()
 
 
@@ -904,7 +923,9 @@ class MpdServerDaemon(MpdServer):
         """
         MpdServer.__init__(self, port)
         self.running = True
-        self.thread = threading.Thread(target=self.run)
+        event = threading.Event()
+        self.thread = threading.Thread(target=self.run,
+                                       args=(event,))
         self.thread.setDaemon(True)
         self.thread.start()
 
