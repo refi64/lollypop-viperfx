@@ -154,6 +154,18 @@ class ArtistsDatabase:
                                               '%',))
             return list(itertools.chain(*result))
 
+    def count(self):
+        """
+            Count artists
+            @return int
+        """
+        with SqlCursor(Lp().db) as sql:
+            result = sql.execute("SELECT COUNT(*) from artists")
+            v = result.fetchone()
+            if v is not None:
+                return v[0]
+            return 0
+
     def clean(self, artist_id):
         """
             Clean database for artist id
