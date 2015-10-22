@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-10-22 11:30+0200\n"
+"POT-Creation-Date: 2015-10-22 11:38+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -496,17 +496,17 @@ msgstr ""
 
 #: ../src/widgets_album.py:251
 #, python-format
-msgid "%s hrs  %s mins"
+msgid "%s h  %s m"
 msgstr ""
 
 #: ../src/widgets_album.py:253
 #, python-format
-msgid "%s hrs"
+msgid "%s h"
 msgstr ""
 
 #: ../src/widgets_album.py:255
 #, python-format
-msgid "%s mins"
+msgid "%s m"
 msgstr ""
 
 #: ../src/widgets_album.py:267
