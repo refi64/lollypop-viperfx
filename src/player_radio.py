@@ -41,7 +41,8 @@ class RadioPlayer(BasePlayer):
                 self._current = track
                 parser = TotemPlParser.Parser.new()
                 parser.connect("entry-parsed", self._on_entry_parsed, track)
-                parser.parse_async(track.uri, True, None, None)
+                parser.parse_async(track.uri, True,
+                                   None, self._on_parse_finished, track)
             except Exception as e:
                 print("RadioPlayer::load(): ", e)
             self.set_party(False)
@@ -104,6 +105,31 @@ class RadioPlayer(BasePlayer):
 #######################
 # PRIVATE             #
 #######################
+    def _start_playback(self, track):
+        """
+            Start playing track
+            @param track as Track:
+        """
+        self._stop()
+        self._playbin.set_property('uri', track.uri)
+        Radios().set_more_popular(track.album_artist)
+        self.current_track = track
+        self._current = None
+        self.play()
+
+    def _on_parse_finished(self, parser, result, track):
+        """
+            Sometimes, TotemPlparse fails to add
+            the playlist URI to the end of the playlist on parse failure
+            So, do the job here
+            @param parser as TotemPlParser.Parser
+            @param result as Gio.AsyncResult
+            @param track as Track
+        """
+        # Only start playing if context always True
+        if self._current == track:
+            self._start_playback(track)
+
     def _on_entry_parsed(self, parser, uri, metadata, track):
         """
             Play stream
@@ -114,9 +140,4 @@ class RadioPlayer(BasePlayer):
         """
         # Only start playing if context always True
         if self._current == track:
-            self._stop()
-            self._playbin.set_property('uri', uri)
-            Radios().set_more_popular(track.album_artist)
-            self.current_track = track
-            self._current = None
-            self.play()
+            self._start_playback(track)
