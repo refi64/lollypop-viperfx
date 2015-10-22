@@ -10,7 +10,7 @@ msgstr ""
 "Project-Id-Version: lollypop\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2015-10-22 11:38+0200\n"
-"PO-Revision-Date: 2015-10-22 09:40+0000\n"
+"PO-Revision-Date: 2015-10-22 09:45+0000\n"
 "Last-Translator: Cédric Bellegarde <web@adishatz.org>\n"
 "Language-Team: French (http://www.transifex.com/gnumdk/lollypop/language/fr/)\n"
 "MIME-Version: 1.0\n"
@@ -697,7 +697,7 @@ msgstr "Cliquer pour lire un album"
 
 #: ../data/SettingsDialog.ui.h:6
 msgid "Control Lollypop with any MPD client"
-msgstr "Controllez Lollypop avec n'importe quel client MPD"
+msgstr "Contrôlez Lollypop avec n'importe quel client MPD"
 
 #: ../data/SettingsDialog.ui.h:7
 msgid "Network control"
