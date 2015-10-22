@@ -248,11 +248,11 @@ class AlbumDetailedWidget(Gtk.Bin, AlbumWidget):
         if hours > 0:
             mins -= hours * 60
             if mins > 0:
-                label.set_text(_("%s hrs  %s mins") % (hours, mins))
+                label.set_text(_("%s h  %s m") % (hours, mins))
             else:
-                label.set_text(_("%s hrs") % hours)
+                label.set_text(_("%s h") % hours)
         else:
-            label.set_text(_("%s mins") % mins)
+            label.set_text(_("%s m") % mins)
 
         grid = builder.get_object('tracks')
         self._discs = self._album.discs
