@@ -39,7 +39,6 @@ class TuneinPopover(Gtk.Popover):
             self._radios_manager = Radios()
         self._current_url = None
         self._previous_urls = []
-        self._current_items = []
 
         self._stack = Gtk.Stack()
         self._stack.set_property('expand', True)
@@ -110,21 +109,22 @@ class TuneinPopover(Gtk.Popover):
             @thread safe
         """
         if url is None:
-            self._current_items = self._tunein.get_items()
+            items = self._tunein.get_items()
         else:
-            self._current_items = self._tunein.get_items(url)
+            items = self._tunein.get_items(url)
 
-        if self._current_items:
-            self._add_items()
+        if items:
+            self._add_items(items)
         else:
             GLib.idle_add(self._show_not_found)
 
-    def _add_items(self):
+    def _add_items(self, items):
         """
             Add current items
+            @param items as [TuneItem]
             @thread safe
         """
-        for item in self._current_items:
+        for item in items:
             GLib.idle_add(self._add_item, item)
 
     def _add_item(self, item):
@@ -232,15 +232,23 @@ class TuneinPopover(Gtk.Popover):
                 self._previous_urls.append(self._current_url)
             self.populate(item.URL)
         elif item.TYPE == "audio":
-            for i in self._current_items:
-                Lp().player.load_external(i.URL, i.TEXT)
-            Lp().player.play_this_external(item.URL)
             # Only toolbar will get this one, so only create small in cache
             if Gio.NetworkMonitor.get_default().get_network_available():
                 t = Thread(target=Lp().art.copy_uri_to_cache,
                            args=(item.LOGO, item.TEXT, ArtSize.SMALL))
                 t.daemon = True
                 t.start()
+            # Tune in embbed uri in ashx files, so get content if possible
+            try:
+                url = item.URL
+                f = Gio.File.new_for_uri(url)
+                (status, data, tag) = f.load_contents()
+                if status:
+                    url = data.decode('utf-8').split('\n')[0]
+            except Exception as e:
+                print("TuneinPopover::_add_radio: %s" % e)
+            Lp().player.load_external(url, item.TEXT)
+            Lp().player.play_this_external(url)
         return True
 
     def _on_button_clicked(self, button, item):
