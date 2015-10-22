@@ -16,10 +16,10 @@ import socketserver
 import threading
 from time import sleep
 from datetime import datetime
-import re
+import os
 
 from lollypop.define import Lp, Type
-from lollypop.objects import Track, Album
+from lollypop.objects import Track
 from lollypop.database_mpd import MpdDatabase
 from lollypop.utils import translate_artist_name, format_artist_name
 
@@ -107,43 +107,20 @@ class MpdHandler(socketserver.BaseRequestHandler):
             arg = self._get_args(args)
             track_id = Lp().tracks.get_id_by_path(arg[0])
             if track_id is None:
-                splited = arg[0].split("/")
-                print(splited)
-                # Genre and artist
-                if len(splited) < 3:
-                    genre_id = Lp().genres.get_id(splited[0])
-                    try:
-                        artist_id = Lp().artists.get_id(splited[1])
-                    except:
-                        artist_id = None
-                    print(artist_id, genre_id)
-                    for album_id in Lp().albums.get_ids(artist_id, genre_id):
-                        for track_id in Lp().albums.get_tracks(album_id,
-                                                               genre_id):
-                            tracks.append(Track(track_id))
-                # Album or track
-                else:
-                    genre_id = Lp().genres.get_id(splited[0])
-                    artist_id = Lp().artists.get_id(splited[1])
-                    # Get year
-                    try:
-                        date = re.search('\([0-9]*\)', splited[2]).group(0)
-                        name = splited[2].replace(' '+date, '', 1)
-                    except:
-                        date = ''
-                        name = splited[2]
-                    try:
-                        year = int(date[1:-1])
-                    except:
-                        year = None
-                    album_id = Lp().albums.get_id(name, artist_id, year)
-                    if len(splited) == 4:
-                        track_id = Lp().tracks.get_id_by(splited[3], album_id)
+                path = ""
+                for musicpath in Lp().settings.get_music_paths():
+                    search = musicpath.replace("/", "_")
+                    if search in arg[0]:
+                        path = musicpath + arg[0].replace(search, path)
+                print(path)
+                if os.path.isdir(path):
+                    tracks_ids = Lp().tracks.get_ids_by_path(path)
+                    for track_id in tracks_ids:
                         tracks.append(Track(track_id))
-                    else:
-                        for track_id in Lp().albums.get_tracks(album_id,
-                                                               genre_id):
-                            tracks.append(Track(track_id))
+                elif os.path.isfile(path):
+                        track_id = Lp().tracks.get_id_by_path(path)
+                        tracks.append(Track(track_id))
+                        break
             else:
                 tracks.append(Track(track_id))
         Lp().playlists.add_tracks(Type.MPD, tracks)
@@ -396,70 +373,45 @@ class MpdHandler(socketserver.BaseRequestHandler):
         """
         msg = ""
         args = self._get_args(args_array[0])
-
         if not args:
             arg = ""
         else:
             arg = args[0]
             if arg == "/":
                 arg = ""
-        directory = True
+        results = []
+        root = ""
         if arg == "":
-            results = Lp().genres.get()
-        elif arg.count("/") == 0:
-            genre_id = Lp().genres.get_id(arg)
-            results = Lp().artists.get(genre_id)
-        elif arg.count("/") == 1:
-            splited = arg.split("/")
-            genre_id = Lp().genres.get_id(splited[0])
-            artist_id = Lp().artists.get_id(splited[1])
-            results = []
-            for album_id in Lp().albums.get_ids(artist_id, genre_id):
-                album = Album(album_id)
-                if album.year != '':
-                    string = " (%s)" % album.year
-                else:
-                    string = ""
-                results.append((album.id, album.name + string))
-        elif arg.count("/") == 2:
-            splited = arg.split("/")
-            genre_id = Lp().genres.get_id(splited[0])
-            artist_id = Lp().artists.get_id(splited[1])
-            # Get year
-            try:
-                date = re.search('\([0-9]*\)', splited[2]).group(0)
-            except:
-                date = ''
-            name = splited[2].replace(' '+date, '', 1)
-            try:
-                year = int(date[1:-1])
-            except:
-                year = None
-            album_id = Lp().albums.get_id(name, artist_id, year)
-            tracks_ids = Lp().albums.get_tracks(album_id, genre_id)
-            directory = False
-
-        i = 0
-        if directory:
-            for (rowid, item) in results:
-                if arg:
-                    msg += "directory: %s/%s\n" % (arg, item)
-                else:
-                    msg += "directory: %s\n" % item
-                if i > 100:
-                    self._send_msg(msg, list_ok)
-                    msg = ""
-                    i = 0
-                i += 1
+            for path in Lp().settings.get_music_paths():
+                results.append((True, path.replace("/", "_")))
         else:
-            for track_id in tracks_ids:
-                track = Track(track_id)
-                msg += "file: %s/%s\n" % (arg, track.title)
-                if i > 100:
-                    self._send_msg(msg, list_ok)
-                    msg = ""
-                    i = 0
-                i += 1
+            splited = arg.split("/")
+            root = None
+            for path in Lp().settings.get_music_paths():
+                if path.replace("/", "_") in [arg, splited[0]]:
+                    root = path + "/" + "/".join(splited[1:])
+                    break
+            if root is not None:
+                for entry in os.listdir(root):
+                    if os.path.isdir(root+"/"+entry):
+                        results.append((True, entry))
+                    else:
+                        results.append((False, entry))
+        i = 0
+        for (d, path) in results:
+            relative = path.replace(root, '', 1)
+            if d:
+                if arg == "":
+                    msg += "directory: %s\n" % relative
+                else:
+                    msg += "directory: %s/%s\n" % (arg, relative)
+            elif Lp().tracks.get_id_by_path(root+"/"+relative) is not None:
+                msg += "file: %s/%s\n" % (arg, relative)
+            if i > 100:
+                self.request.send(msg.encode("utf-8"))
+                msg = ""
+                i = 0
+            i += 1
         self._send_msg(msg, list_ok)
 
     def _next(self, args_array, list_ok):

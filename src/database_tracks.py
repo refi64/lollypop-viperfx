@@ -129,6 +129,18 @@ class TracksDatabase:
                 return v[0]
             return None
 
+    def get_ids_by_path(self, path):
+        """
+            Return track id for path
+            @param path as str
+            @return track id as int
+        """
+        with SqlCursor(Lp().db) as sql:
+            result = sql.execute("SELECT rowid FROM tracks\
+                                  WHERE filepath like ?",
+                                 ('%' + path + '%',))
+            return list(itertools.chain(*result))
+
     def get_id_by(self, name, album_id):
         """
             Return track id for path
