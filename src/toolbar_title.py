@@ -161,6 +161,6 @@ class ToolbarTitle(Gtk.Bin):
             @param event as Gdk.Event
         """
         value = scale.get_value()
+        Lp().player.seek(value/60)
         self._seeking = False
         self.update_position(value)
-        Lp().player.seek(value/60)
