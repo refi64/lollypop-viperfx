@@ -33,6 +33,7 @@ class MpdHandler(socketserver.BaseRequestHandler):
         self._mpddb = MpdDatabase()
         self._playlist_version = 0
         self._idle_strings = []
+        self._last_tracks = Lp().playlists.get_tracks_ids(Type.MPD)
         self._current_song = None
         self._signal1 = Lp().player.connect('current-changed',
                                             self._on_player_changed)
@@ -564,7 +565,7 @@ class MpdHandler(socketserver.BaseRequestHandler):
         """
         i = 0
         msg = ""
-        for track_id in Lp().playlists.get_tracks_ids(Type.MPD):
+        for track_id in self._last_tracks:
             msg += self._string_for_track_id(track_id)
             if i > 100:
                 self.request.send(msg.encode("utf-8"))
@@ -885,6 +886,11 @@ class MpdHandler(socketserver.BaseRequestHandler):
             if "playlist" not in self._idle_strings:
                 self._idle_strings.append("playlist")
                 self.server.event.set()
+            tracks_ids = Lp().playlists.get_tracks_ids(Type.MPD)
+            if tracks_ids:
+                for track_id in self._last_tracks:
+                    tracks_ids.remove(track_id)
+            self._last_tracks = tracks_ids
             self._playlist_version += 1
         elif "stored_playlist" not in self._idle_strings:
             self._idle_strings.append("stored_playlist")
