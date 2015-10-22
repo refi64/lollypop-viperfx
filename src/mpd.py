@@ -499,7 +499,10 @@ class MpdHandler(socketserver.BaseRequestHandler):
             @param args as [str]
             @param add list_OK as bool
         """
-        arg = int(self._get_args(args_array[0])[0])
+        try:
+            arg = int(self._get_args(args_array[0])[0])
+        except:
+            arg = -1
         if Lp().player.get_user_playlist_id() != Type.MPD:
             Lp().player.set_user_playlist(Type.MPD)
 
@@ -659,7 +662,8 @@ class MpdHandler(socketserver.BaseRequestHandler):
         try:
             year = int(date)
         except:
-            year = None
+            year = Type.NONE
+
         if genre is not None:
             genre_id = Lp().genres.get_id(genre)
         if artist is not None:
@@ -712,8 +716,7 @@ class MpdHandler(socketserver.BaseRequestHandler):
         msg = "volume: %s\nrepeat: %s\nrandom: %s\
 \nsingle: %s\nconsume: %s\nplaylist: %s\
 \nplaylistlength: %s\nstate: %s\nsong: %s\
-\nsongid: %s\ntime: %s:%s\nelapsed: %s\n\
-\nbitrate: 0\naudio: 44100" % (
+\nsongid: %s\ntime: %s:%s\nelapsed: %s\n" % (
            int(Lp().player.get_volume()*100),
            1,
            int(Lp().player.is_party()),

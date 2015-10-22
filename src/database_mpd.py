@@ -180,7 +180,7 @@ class MpdDatabase:
             from_str += ", artists"
             if "albums" not in from_str:
                 from_str += ",albums"
-                where_str += "tracks.album_id = albums.rowid AND"
+                where_str += " tracks.album_id = albums.rowid AND"
             where_str += " artists.rowid = %s\
                           AND albums.artist_id = artists.rowid\
                           AND" % artist_id
