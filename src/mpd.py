@@ -372,9 +372,12 @@ class MpdHandler(socketserver.BaseRequestHandler):
         arg = self._get_args(args_array[0])[0]
         playlist_id = Lp().playlists.get_id(arg)
         tracks = []
-        for track_id in Lp().playlists.get_tracks_ids(playlist_id):
+        tracks_ids = Lp().playlists.get_tracks_ids(playlist_id)
+        for track_id in tracks_ids:
             tracks.append(Track(track_id))
         Lp().playlists.add_tracks(Type.MPD, tracks)
+        Lp().player.set_user_playlist(Type.MPD)
+        GLib.idle_add(Lp().player.load_in_playlist, tracks_ids[0])
         self._send_msg('', list_ok)
 
     def _lsinfo(self, args_array, list_ok):
