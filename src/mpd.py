@@ -144,8 +144,9 @@ class MpdHandler(socketserver.BaseRequestHandler):
             @param args as [str]
             @param add list_OK as bool
         """
-        msg = "command: add\ncommand: clear\ncommand: channels\ncommand: count\
-\ncommand: currentsong\ncommand: delete\ncommand: idle\ncommand: noidle\
+        msg = "command: add\ncommand: addid\ncommand: clear\
+\ncommand: channels\ncommand: count\ncommand: currentsong\
+\ncommand: delete\ncommand: deleteid\ncommand: idle\ncommand: noidle\
 \ncommand: list\ncommand: listallinfo\ncommand: listplaylists\ncommand: lsinfo\
 \ncommand: next\ncommand: outputs\ncommand: pause\ncommand: play\
 \ncommand: playid\ncommand: playlistinfo\ncommand: plchanges\
