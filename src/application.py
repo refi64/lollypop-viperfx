@@ -191,6 +191,8 @@ class Application(Gtk.Application):
         """
             Quit lollypop
         """
+        if self.mpd is not None:
+            self.mpd.quit()
         if self.scanner.is_locked():
             self.scanner.stop()
             GLib.idle_add(self.quit)
