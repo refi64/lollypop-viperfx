@@ -161,12 +161,8 @@ class PlaylistWidget(Gtk.Bin):
         if Lp().player.is_party():
             Lp().player.load(Track(track_id))
         else:
-            track = Lp().player.set_user_playlist(self._tracks1 +
-                                                  self._tracks2,
-                                                  track_id)
-            Lp().player.set_user_playlist_id(self._playlist_id)
-            if track is not None:
-                Lp().player.load(track)
+            Lp().player.set_user_playlist(self._playlist_id)
+            Lp().player.load_in_playlist(track_id)
 
 
 class PlaylistsManagerWidget(Gtk.Bin):
