@@ -685,6 +685,18 @@ class AlbumsDatabase:
                 return v[0] > 1
             return False
 
+    def count(self, sql=None):
+        """
+            Count albums
+            @return int
+        """
+        with SqlCursor(Lp.db) as sql:
+            result = sql.execute("SELECT COUNT(*) from albums")
+            v = result.fetchone()
+            if v is not None:
+                return v[0]
+            return 0
+
     def get_stats(self, duration, count):
         """
             Get stats for album with same duration and track count
