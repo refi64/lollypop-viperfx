@@ -133,6 +133,7 @@ class MpdHandler(socketserver.BaseRequestHandler):
             @param add list_OK as bool
         """
         Lp().playlists.clear(Type.MPD, True)
+        Lp().player.set_user_playlist(Type.NONE)
         self._send_msg('', list_ok)
 
     def _channels(self, args_array, list_ok):
@@ -895,6 +896,7 @@ class MpdHandler(socketserver.BaseRequestHandler):
             if "playlist" not in self._idle_strings:
                 self._idle_strings.append("playlist")
                 self.server.event.set()
+                Lp().player.set_user_playlist(Type.MPD)
             tracks_ids = Lp().playlists.get_tracks_ids(Type.MPD)
             if tracks_ids:
                 for track_id in self._last_tracks:

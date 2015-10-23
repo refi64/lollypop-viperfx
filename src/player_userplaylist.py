@@ -62,7 +62,10 @@ class UserPlaylistPlayer(BasePlayer):
         tracks = []
         self._user_playlist_id = playlist_id
         for track_id in Lp().playlists.get_tracks_ids(playlist_id):
-            tracks.append(Track(track_id))
+            if track_id == Lp().player.current_track.id:
+                tracks.append(Lp().player.current_track)
+            else:
+                tracks.append(Track(track_id))
         self._user_playlist = tracks
         self._shuffle_playlist()
 
