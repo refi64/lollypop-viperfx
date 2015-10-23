@@ -515,7 +515,8 @@ class MpdHandler(socketserver.BaseRequestHandler):
             arg = int(self._get_args(args_array[0])[0])
         except:
             arg = -1
-        if Lp().player.get_user_playlist_id() != Type.MPD:
+        if Lp().player.get_user_playlist_id() != Type.MPD or\
+           not Lp().player.get_user_playlist():
             Lp().player.set_user_playlist(Type.MPD)
         currents = Lp().player.get_user_playlist()
         if len(currents) == 0 or arg != -1:
@@ -532,7 +533,8 @@ class MpdHandler(socketserver.BaseRequestHandler):
             @param add list_OK as bool
         """
         arg = int(self._get_args(args_array[0])[0])
-        if Lp().player.get_user_playlist_id() != Type.MPD:
+        if Lp().player.get_user_playlist_id() != Type.MPD or\
+           not Lp().player.get_user_playlist():
             Lp().player.set_user_playlist(Type.MPD)
         GLib.idle_add(Lp().player.load_in_playlist, arg)
         self._send_msg('', list_ok)
