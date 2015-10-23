@@ -174,14 +174,15 @@ class MpdDatabase:
         where_str = ""
         if album is not None:
             from_str += ",albums"
-            where_str += 'albums.name = "%s" AND' % album
+            where_str += 'albums.name = "%s" AND\
+                          tracks.album_id = albums.rowid AND' % album
         if artist_id is not None:
             from_str += ", artists"
             if "albums" not in from_str:
                 from_str += ",albums"
+                where_str += " tracks.album_id = albums.rowid AND"
             where_str += " artists.rowid = %s\
                           AND albums.artist_id = artists.rowid\
-                          AND tracks.album_id = albums.rowid\
                           AND" % artist_id
         if genre_id is not None:
             from_str += ",track_genres"
@@ -199,6 +200,5 @@ class MpdDatabase:
             request += " WHERE " + where_str
         if request.endswith("AND"):
             request = request[:-3]
-
         result = sql.execute(request)
         return result
