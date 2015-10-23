@@ -67,7 +67,8 @@ class MpdHandler(socketserver.BaseRequestHandler):
                     data = data.replace('command_list_ok_begin\n', '')
                     data = data.replace('command_list_end\n', '')
                     cmds = data.split('\n')
-                    print(cmds)
+                    if "status" not in data and "currentsong" not in data:
+                        print(cmds, list_ok)
                     if cmds and self.server.running:
                         try:
                             # Group commands
@@ -214,13 +215,24 @@ class MpdHandler(socketserver.BaseRequestHandler):
             @param args as [str]
             @param add list_OK as bool
         """
+        arg = self._get_args(args_array[0])[0]
+        tracks_ids = Lp().playlists.get_tracks_ids(Type.MPD)
+        track_id = tracks_ids[int(arg)]
+        Lp().playlists.remove_tracks(Type.MPD, [Track(track_id)])
+        self._send_msg("", list_ok)
+
+    def _deleteid(self, args_array, list_ok):
+        """
+            Delete track from playlist
+            @param args as [str]
+            @param add list_OK as bool
+        """
+        tracks = []
         for args in args_array:
-            tracks = []
-            for track_id in Lp().playlists.get_tracks_ids(Type.MPD):
-                tracks.append(Track(track_id))
-            del tracks[self._get_args(args)[0]]
-            Lp().playlists.clear(Type.MPD, False)
-            Lp().playlists.add_tracks(Type.MPD, tracks)
+            arg = self._get_args(args)
+            tracks.append(Track(int(arg[0])))
+        Lp().playlists.remove_tracks(Type.MPD, tracks)
+        self._send_msg("", list_ok)
 
     def _idle(self, args_array, list_ok):
         msg = ''
@@ -889,7 +901,8 @@ class MpdHandler(socketserver.BaseRequestHandler):
             tracks_ids = Lp().playlists.get_tracks_ids(Type.MPD)
             if tracks_ids:
                 for track_id in self._last_tracks:
-                    tracks_ids.remove(track_id)
+                    if track_id in tracks_ids:
+                        tracks_ids.remove(track_id)
             self._last_tracks = tracks_ids
             self._playlist_version += 1
         elif "stored_playlist" not in self._idle_strings:
