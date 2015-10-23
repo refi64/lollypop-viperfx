@@ -499,7 +499,10 @@ class MpdHandler(socketserver.BaseRequestHandler):
             @param args as [str]
             @param add list_OK as bool
         """
-        arg = int(self._get_args(args_array[0])[0])
+        try:
+            arg = int(self._get_args(args_array[0])[0])
+        except:
+            arg = -1
         if Lp().player.get_user_playlist_id() != Type.MPD:
             Lp().player.set_user_playlist(Type.MPD)
 
