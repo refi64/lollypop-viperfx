@@ -66,8 +66,7 @@ class MpdHandler(socketserver.BaseRequestHandler):
                     data = data.replace('command_list_ok_begin\n', '')
                     data = data.replace('command_list_end\n', '')
                     cmds = data.split('\n')
-                    if "status" not in data and "currentsong" not in data:
-                        print(cmds, list_ok)
+                    print(cmds, list_ok, self)
                     if cmds and self.server.running:
                         try:
                             # Group commands
@@ -522,7 +521,7 @@ class MpdHandler(socketserver.BaseRequestHandler):
            not Lp().player.get_user_playlist():
             Lp().player.set_user_playlist(Type.MPD)
         currents = Lp().player.get_user_playlist()
-        if len(currents) == 0 or arg != -1:
+        if len(currents) != 0:
             track = currents[arg]
             GLib.idle_add(Lp().player.load_in_playlist, track.id)
         if not Lp().player.is_playing():
@@ -719,32 +718,31 @@ class MpdHandler(socketserver.BaseRequestHandler):
             @param args as [str]
             @param add list_OK as bool
         """
+        msg = "volume: %s\nrepeat: %s\nrandom: %s\
+\nsingle: %s\nconsume: %s\nplaylist: %s\
+\nplaylistlength: %s\nstate: %s\
+\nbitrate: 0\naudio: 44100:24:2\nmixrampdb: 0.000000\n" % (
+                                   int(Lp().player.get_volume()*100),
+                                   1,
+                                   int(Lp().player.is_party()),
+                                   1,
+                                   1,
+                                   self._playlist_version,
+                                   len(Lp().playlists.get_tracks(Type.MPD)),
+                                   self._get_status(),
+                                   )
         if self._get_status() != 'stop':
             elapsed = Lp().player.get_position_in_track() / 1000000 / 60
             time = Lp().player.current_track.duration
             songid = Lp().player.current_track.id
-        else:
-            time = 0
-            elapsed = 0
-            songid = -1
-        msg = "volume: %s\nrepeat: %s\nrandom: %s\
-\nsingle: %s\nconsume: %s\nplaylist: %s\
-\nplaylistlength: %s\nstate: %s\nsong: %s\
-\nsongid: %s\ntime: %s:%s\nelapsed: %s\n" % (
-           int(Lp().player.get_volume()*100),
-           1,
-           int(Lp().player.is_party()),
-           1,
-           1,
-           self._playlist_version,
-           len(Lp().playlists.get_tracks(Type.MPD)),
-           self._get_status(),
-           Lp().playlists.get_position(Type.MPD,
-                                       Lp().player.current_track.id),
-           songid,
-           int(elapsed),
-           time,
-           elapsed)
+            msg += "song: %s\nsongid: %s\ntime: %s:%s\nelapsed: %s\n" % (
+                                       Lp().playlists.get_position(
+                                            Type.MPD,
+                                            Lp().player.current_track.id),
+                                       songid,
+                                       float(elapsed),
+                                       time,
+                                       float(elapsed))
         self._send_msg(msg, list_ok)
 
     def _sticker(self, args_array, list_ok):
