@@ -34,7 +34,6 @@ class MpdHandler(socketserver.BaseRequestHandler):
         self._playlist_version = 0
         self._idle_strings = []
         self._last_tracks = Lp().playlists.get_tracks_ids(Type.MPD)
-        self._current_song = None
         self._signal1 = Lp().player.connect('current-changed',
                                             self._on_player_changed)
         self._signal2 = Lp().player.connect('status-changed',
@@ -203,10 +202,11 @@ class MpdHandler(socketserver.BaseRequestHandler):
             @param args as [str]
             @param add list_OK as bool
         """
-        if self._current_song is None:
-            self._current_song = self._string_for_track_id(
-                                                  Lp().player.current_track.id)
-        msg = self._current_song
+        if Lp().player.current_track.id in Lp().playlists.get_tracks_ids(
+                                                                    Type.MPD):
+            msg = self._string_for_track_id(Lp().player.current_track.id)
+        else:
+            msg = ""
         self._send_msg(msg, list_ok)
 
     def _delete(self, args_array, list_ok):
@@ -562,9 +562,6 @@ class MpdHandler(socketserver.BaseRequestHandler):
         """
         msg = ""
         tracks_ids = Lp().playlists.get_tracks_ids(Type.MPD)
-        if Lp().player.is_playing() and\
-           Lp().player.current_track.id not in tracks_ids:
-            tracks_ids.insert(0, Lp().player.current_track.id)
         for track_id in tracks_ids:
             msg += self._string_for_track_id(track_id)
         self._send_msg(msg, list_ok)
@@ -870,7 +867,6 @@ class MpdHandler(socketserver.BaseRequestHandler):
             Add player to idle
             @param player as Player
         """
-        self._current_song = None
         if "player" not in self._idle_strings:
             self._idle_strings.append("player")
             self.server.event.set()
@@ -880,7 +876,6 @@ class MpdHandler(socketserver.BaseRequestHandler):
             Add player to idle
             @param player as Player
         """
-        self._current_song = None
         # Player may be in pause so wait for playback
         if player.get_status() == Gst.State.PAUSED:
             GLib.idle_add(self._on_position_changed, player, data)
