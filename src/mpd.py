@@ -112,7 +112,6 @@ class MpdHandler(socketserver.BaseRequestHandler):
                     search = musicpath.replace("/", "_")
                     if search in arg[0]:
                         path = musicpath + arg[0].replace(search, path)
-                print(path)
                 if os.path.isdir(path):
                     tracks_ids = Lp().tracks.get_ids_by_path(path)
                     for track_id in tracks_ids:
@@ -518,7 +517,6 @@ class MpdHandler(socketserver.BaseRequestHandler):
             arg = -1
         if Lp().player.get_user_playlist_id() != Type.MPD:
             Lp().player.set_user_playlist(Type.MPD)
-
         currents = Lp().player.get_user_playlist()
         if len(currents) == 0 or arg != -1:
             track = currents[arg]
