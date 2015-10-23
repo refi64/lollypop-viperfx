@@ -175,7 +175,31 @@ class AlbumsDatabase:
 
     def get_id(self, album_name, artist_id, year):
         """
-            Get album id
+            Get non compilation album id
+            @param Album name as string,
+            @param artist id as int
+            @param year as int
+            @return Album id as int
+        """
+        with SqlCursor(Lp().db) as sql:
+            if year is None:
+                result = sql.execute("SELECT rowid FROM albums where name=?\
+                                      AND artist_id=?\
+                                      AND year is null",
+                                     (album_name, artist_id))
+            else:
+                result = sql.execute("SELECT rowid FROM albums where name=?\
+                                      AND artist_id=?\
+                                      AND year =?",
+                                     (album_name, artist_id, year))
+            v = result.fetchone()
+            if v is not None:
+                return v[0]
+            return None
+
+    def get_non_compilation_id(self, album_name, artist_id, year):
+        """
+            Get non compilation album id
             @param Album name as string,
             @param artist id as int
             @param year as int

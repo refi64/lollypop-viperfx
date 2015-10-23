@@ -347,7 +347,7 @@ class Application(Gtk.Application):
         try:
             Gtk.show_uri(None, "help:lollypop", Gtk.get_current_event_time())
         except:
-            print(_("Lollypop: You need to install yeself."))
+            print(_("Lollypop: You need to install yelp."))
 
     def _about_response(self, dialog, response_id):
         """

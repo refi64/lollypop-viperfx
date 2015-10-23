@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-10-21 16:33+0200\n"
+"POT-Creation-Date: 2015-10-22 11:38+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -253,7 +253,7 @@ msgid ""
 msgstr ""
 
 #: ../src/application.py:350
-msgid "Lollypop: You need to install yeself."
+msgid "Lollypop: You need to install yelp."
 msgstr ""
 
 #: ../src/codecs.py:55
@@ -313,14 +313,14 @@ msgstr ""
 msgid "Random tracks"
 msgstr ""
 
-#: ../src/database_albums.py:247 ../src/database_artists.py:73
-#: ../src/database_genres.py:69 ../src/database_tracks.py:216
+#: ../src/database_albums.py:271 ../src/database_artists.py:73
+#: ../src/database_genres.py:69 ../src/database_tracks.py:218
 #: ../src/tagreader.py:86 ../src/tagreader.py:105 ../src/tagreader.py:130
 #: ../src/tagreader.py:145
 msgid "Unknown"
 msgstr ""
 
-#: ../src/database_albums.py:263
+#: ../src/database_albums.py:287
 msgid "Compilation"
 msgstr ""
 
@@ -496,17 +496,17 @@ msgstr ""
 
 #: ../src/widgets_album.py:251
 #, python-format
-msgid "%s hrs  %s mins"
+msgid "%s h  %s m"
 msgstr ""
 
 #: ../src/widgets_album.py:253
 #, python-format
-msgid "%s hrs"
+msgid "%s h"
 msgstr ""
 
 #: ../src/widgets_album.py:255
 #, python-format
-msgid "%s mins"
+msgid "%s m"
 msgstr ""
 
 #: ../src/widgets_album.py:267

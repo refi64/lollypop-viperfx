@@ -51,6 +51,7 @@ class Playlists(GObject.GObject):
         """
         GObject.GObject.__init__(self)
         self._LOVED = _("Loved tracks")
+        self._MPD = "MPD"
         try_import = not os.path.exists(self.DB_PATH)
         # Create db schema
         try:
@@ -209,6 +210,9 @@ class Playlists(GObject.GObject):
         """
         if playlist_name == self._LOVED:
             return Type.LOVED
+        elif playlist_name == self._MPD:
+            return Type.MPD
+
         with SqlCursor(self) as sql:
             result = sql.execute("SELECT rowid\
                                  FROM playlists\
@@ -227,7 +231,8 @@ class Playlists(GObject.GObject):
         if playlist_id == Type.LOVED:
             return self._LOVED
         elif playlist_id == Type.MPD:
-            return "MPD"
+            return self._MPD
+
         with SqlCursor(self) as sql:
             result = sql.execute("SELECT name\
                                  FROM playlists\
@@ -237,7 +242,7 @@ class Playlists(GObject.GObject):
                 return v[0]
             return ''
 
-    def clear(self, playlist_id):
+    def clear(self, playlist_id, notify=False):
         """
             Clear playlsit
             @param playlist id as int
@@ -246,6 +251,8 @@ class Playlists(GObject.GObject):
             sql.execute("DELETE FROM tracks\
                          WHERE playlist_id=?", (playlist_id,))
             sql.commit()
+            if notify:
+                GLib.idle_add(self.emit, 'playlist-changed', playlist_id)
 
     def add_tracks(self, playlist_id, tracks):
         """
@@ -254,16 +261,19 @@ class Playlists(GObject.GObject):
             @param tracks as [Track]
         """
         with SqlCursor(self) as sql:
+            changed = False
             for track in tracks:
                 if not self.exists_track(playlist_id, track.id):
+                    changed = True
                     sql.execute("INSERT INTO tracks"
                                 " VALUES (?, ?)",
                                 (playlist_id, track.path))
-            sql.execute("UPDATE playlists SET mtime=?\
-                         WHERE rowid=?", (datetime.now().strftime('%s'),
-                                          playlist_id))
-            sql.commit()
-            GLib.idle_add(self.emit, "playlist-changed", playlist_id)
+            if changed:
+                sql.execute("UPDATE playlists SET mtime=?\
+                             WHERE rowid=?", (datetime.now().strftime('%s'),
+                                              playlist_id))
+                sql.commit()
+                GLib.idle_add(self.emit, 'playlist-changed', playlist_id)
 
     def remove_tracks(self, playlist_id, tracks):
         """
@@ -277,7 +287,7 @@ class Playlists(GObject.GObject):
                              WHERE filepath=?\
                              AND playlist_id=?", (track.path, playlist_id))
             sql.commit()
-            GLib.idle_add(self.emit, "playlist-changed", playlist_id)
+            GLib.idle_add(self.emit, 'playlist-changed', playlist_id)
 
     def get_position(self, playlist_id, track_id):
         """
@@ -313,8 +323,7 @@ class Playlists(GObject.GObject):
                 return True
             return False
 
-    def exists_album(self, playlist_id, album_id,
-                     genre_id):
+    def exists_album(self, playlist_id, album_id, genre_id):
         """
             Return True if object_id is already present in playlist
             @param playlist id as int
@@ -363,7 +372,7 @@ class Playlists(GObject.GObject):
         """
         try:
             track_id = Lp().tracks.get_id_by_path(
-                                                GLib.filename_from_uri(uri)[0])
+                                            GLib.filename_from_uri(uri)[0])
             if track_id is not None:
                 self.add_tracks(playlist_id, [Track(track_id)])
         except Exception as e:
