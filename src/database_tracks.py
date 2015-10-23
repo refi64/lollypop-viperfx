@@ -536,6 +536,18 @@ class TracksDatabase:
                 return v[0]
             return 0
 
+    def count(self):
+        """
+            Count albums
+            @return int
+        """
+        with SqlCursor(Lp.db) as sql:
+            result = sql.execute("SELECT COUNT(*) from tracks")
+            v = result.fetchone()
+            if v is not None:
+                return v[0]
+            return 0
+
     def clean(self, track_id):
         """
             Clean database for track id
