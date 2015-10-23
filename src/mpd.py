@@ -896,7 +896,8 @@ class MpdHandler(socketserver.BaseRequestHandler):
             if "playlist" not in self._idle_strings:
                 self._idle_strings.append("playlist")
                 self.server.event.set()
-                Lp().player.set_user_playlist(Type.MPD)
+                if Lp().player.get_user_playlist():
+                    Lp().player.set_user_playlist(Type.MPD)
             tracks_ids = Lp().playlists.get_tracks_ids(Type.MPD)
             if tracks_ids:
                 for track_id in self._last_tracks:
