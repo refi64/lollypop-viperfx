@@ -15,6 +15,7 @@ from gi.repository import GLib, GObject, Gio
 import os
 from gettext import gettext as _
 from threading import Thread
+from time import time
 
 from lollypop.inotify import Inotify
 from lollypop.define import Lp
@@ -130,6 +131,7 @@ class CollectionScanner(GObject.GObject, ScannerTagReader):
         """
             Notify from main thread when scan finished
         """
+        Lp().settings.set_value('db-mtime', GLib.Variant('i', int(time())))
         self.stop()
         self.emit("scan-finished")
         if self._missing_codecs is not None:

@@ -704,8 +704,9 @@ class MpdHandler(socketserver.BaseRequestHandler):
         albums = Lp().albums.count()
         tracks = Lp().tracks.count()
         msg = "artists: %s\nalbums: %s\nsongs: %s\nuptime: 0\
-\nplaytime: 0\ndb_playtime: 0\ndb_update: 0\n" % \
-            (artists, albums, tracks)
+\nplaytime: 0\ndb_playtime: 0\ndb_update: %s\n" % \
+            (artists, albums, tracks,
+             Lp().settings.get_value('db-mtime').get_int32())
         self._send_msg(msg, list_ok)
 
     def _status(self, args_array, list_ok):

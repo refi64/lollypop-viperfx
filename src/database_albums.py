@@ -690,7 +690,7 @@ class AlbumsDatabase:
             Count albums
             @return int
         """
-        with SqlCursor(Lp.db) as sql:
+        with SqlCursor(Lp().db) as sql:
             result = sql.execute("SELECT COUNT(*) from albums")
             v = result.fetchone()
             if v is not None:
