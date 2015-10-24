@@ -132,6 +132,9 @@ class MpdHandler(socketserver.BaseRequestHandler):
         """
         Lp().playlists.clear(Type.MPD, True)
         Lp().player.set_user_playlist(Type.NONE)
+        GLib.idle_add(Lp().player.stop)
+        Lp().player.current_track = Track()
+        GLib.idle_add(Lp().player.emit, 'current-changed')
         self._send_msg('', list_ok)
 
     def _channels(self, args_array, list_ok):
@@ -513,19 +516,30 @@ class MpdHandler(socketserver.BaseRequestHandler):
             @param args as [str]
             @param add list_OK as bool
         """
+        # Make sure we have a playlist loaded in player
+        if Lp().player.get_user_playlist_id() != Type.MPD or\
+           not Lp().player.get_user_playlist():
+            Lp().player.set_user_playlist(Type.MPD)
         try:
             arg = int(self._get_args(args_array[0])[0])
         except:
             arg = -1
-        if Lp().player.get_user_playlist_id() != Type.MPD or\
-           not Lp().player.get_user_playlist():
-            Lp().player.set_user_playlist(Type.MPD)
-        currents = Lp().player.get_user_playlist()
-        if len(currents) != 0:
-            track = currents[arg]
-            GLib.idle_add(Lp().player.load_in_playlist, track.id)
-        if not Lp().player.is_playing():
-            GLib.idle_add(Lp().player.play)
+        if arg == -1:
+            if Lp().player.get_status() == Gst.State.PAUSED:
+                GLib.idle_add(Lp().player.play)
+            elif Lp().player.get_status() == Gst.State.NULL:
+                if Lp().player.current_track.id is not None:
+                    GLib.idle_add(Lp().player.play)
+                else:
+                    currents = Lp().player.get_user_playlist()
+                    if currents:
+                        track = currents[0]
+                        GLib.idle_add(Lp().player.load_in_playlist, track.id)
+        else:
+            currents = Lp().player.get_user_playlist()
+            if currents:
+                track = currents[arg]
+                GLib.idle_add(Lp().player.load_in_playlist, track.id)
         self._send_msg('', list_ok)
 
     def _playid(self, args_array, list_ok):
@@ -534,11 +548,27 @@ class MpdHandler(socketserver.BaseRequestHandler):
             @param args as [str]
             @param add list_OK as bool
         """
-        arg = int(self._get_args(args_array[0])[0])
+        # Make sure we have a playlist loaded in player
         if Lp().player.get_user_playlist_id() != Type.MPD or\
            not Lp().player.get_user_playlist():
             Lp().player.set_user_playlist(Type.MPD)
-        GLib.idle_add(Lp().player.load_in_playlist, arg)
+        try:
+            arg = int(self._get_args(args_array[0])[0])
+        except:
+            arg = -1
+        if arg == -1:
+            if Lp().player.get_status() == Gst.State.PAUSED:
+                GLib.idle_add(Lp().player.play)
+            elif Lp().player.get_status() == Gst.State.NULL:
+                if Lp().player.current_track.id is not None:
+                    GLib.idle_add(Lp().player.play)
+                else:
+                    currents = Lp().player.get_user_playlist()
+                    if currents:
+                        track = currents[0]
+                        GLib.idle_add(Lp().player.load_in_playlist, track.id)
+        else:
+            GLib.idle_add(Lp().player.load_in_playlist, arg)
         self._send_msg('', list_ok)
 
     def _playlistadd(self, args_array, list_ok):
