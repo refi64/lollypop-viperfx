@@ -77,7 +77,7 @@ class ToolbarInfos(Gtk.Bin):
             art = Lp().art.get_album_artwork2(
                     player.current_track.uri,
                     ArtSize.SMALL*self.get_scale_factor())
-        else:
+        elif player.current_track.id is not None:
             art = Lp().art.get_album_artwork(
                                    player.current_track.album,
                                    ArtSize.SMALL*self.get_scale_factor())
