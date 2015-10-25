@@ -794,9 +794,9 @@ class MpdHandler(socketserver.BaseRequestHandler):
                                             Type.MPD,
                                             Lp().player.current_track.id),
                                        songid,
-                                       float(elapsed),
+                                       int(elapsed),
                                        time,
-                                       float(elapsed))
+                                       int(elapsed))
         self._send_msg(msg, list_ok)
 
     def _sticker(self, args_array, list_ok):
