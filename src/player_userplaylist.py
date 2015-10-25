@@ -54,6 +54,7 @@ class UserPlaylistPlayer(BasePlayer):
             @param array of tracks as [Track]
             @return track id as Track
         """
+        Lp().player.set_party(False)
         tracks = []
         self._user_playlist_id = playlist_id
         for track_id in Lp().playlists.get_tracks_ids(playlist_id):
@@ -63,7 +64,6 @@ class UserPlaylistPlayer(BasePlayer):
                 tracks.append(Track(track_id))
         self._user_playlist = tracks
         self._shuffle_playlist()
-        Lp().player.set_party(False)
 
     def set_user_playlist(self, tracks):
         """
@@ -71,6 +71,7 @@ class UserPlaylistPlayer(BasePlayer):
             @param array of tracks as [Track]
             @param track id as int
         """
+        Lp().player.set_party(False)
         self._user_playlist = []
         for track in tracks:
             if track.id == Lp().player.current_track.id:
@@ -78,7 +79,6 @@ class UserPlaylistPlayer(BasePlayer):
             else:
                 self._user_playlist.append(track)
         self._shuffle_playlist()
-        Lp().player.set_party(False)
 
     def get_user_playlist(self):
         """
