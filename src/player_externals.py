@@ -108,6 +108,10 @@ class ExternalsPlayer(BasePlayer):
             Prev track id
             @return Track
         """
+        # If no prev, current
+        if self.current_track.id == Type.EXTERNALS and\
+                not self._external_tracks:
+            return self.current_track
         track = Track()
         if self._external_tracks and\
            self.current_track in self._external_tracks:
