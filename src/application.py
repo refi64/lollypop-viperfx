@@ -74,6 +74,7 @@ class Application(Gtk.Application):
         self.window = None
         self.notify = None
         self.mpd = None
+        self.lastfm = None
         self.debug = False
         self._externals_count = 0
         self._init_proxy()
