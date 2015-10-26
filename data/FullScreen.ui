@@ -232,7 +232,7 @@
                 <property name="hexpand">True</property>
                 <property name="draw_value">False</property>
                 <signal name="button-press-event" handler="_on_progress_press_btn" swapped="no"/>
-                <signal name="button-press-event" handler="_on_progress_release_btn" swapped="no"/>
+                <signal name="button-release-event" handler="_on_progress_release_btn" swapped="no"/>
                 <signal name="motion-notify-event" handler="_on_progress_motion_notify" swapped="no"/>
               </object>
             </child>
