@@ -646,7 +646,7 @@ class MpdHandler(socketserver.BaseRequestHandler):
                 i += 1
         self._send_msg('', list_ok)
 
-    def _prev(self, args_array, list_ok):
+    def _previous(self, args_array, list_ok):
         """
             Send output
             @param args as [str]
