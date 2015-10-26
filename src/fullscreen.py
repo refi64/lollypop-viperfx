@@ -10,7 +10,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-from gi.repository import Gtk, Gdk, GLib
+from gi.repository import Gtk, Gdk, GLib, Gst
 
 from cgi import escape
 from gettext import gettext as _
@@ -149,10 +149,11 @@ class FullScreen(Gtk.Window):
             @param value as int
         """
         if not self._seeking and self._progress.is_visible():
-            if value is None:
+            if value is None and Lp().player.get_status() != Gst.State.PAUSED:
                 value = Lp().player.get_position_in_track()/1000000
-            self._progress.set_value(value)
-            self._timelabel.set_text(seconds_to_string(value/60))
+            if value is not None:
+                self._progress.set_value(value)
+                self._timelabel.set_text(seconds_to_string(value/60))
         return True
 
     def _destroy(self, widget):
@@ -227,7 +228,7 @@ class FullScreen(Gtk.Window):
             self._title.set_text(player.current_track.title)
             self._artist.set_text(player.current_track.artist)
             self._album.set_text(album_name)
-            self._progress.set_value(1.0)
+            self._progress.set_value(0.0)
             self._progress.set_range(0.0, player.current_track.duration * 60)
             self._total_time_label.set_text(
                 seconds_to_string(player.current_track.duration))
@@ -319,6 +320,6 @@ class FullScreen(Gtk.Window):
             @param scale as Gtk.Scale, data as unused
         """
         value = scale.get_value()
+        Lp().player.seek(value/60)
         self._seeking = False
         self._update_position(value)
-        Lp().player.seek(value/60)
