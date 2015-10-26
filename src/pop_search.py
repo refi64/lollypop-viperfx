@@ -309,7 +309,6 @@ class SearchPopover(Gtk.Popover):
                 for tid in album_tracks:
                     tracks.append(Track(tid))
         if tracks:
-            GLib.idle_add(Lp().player.set_party, False)
             if object_id is not None and is_track:
                 track_id = object_id
             elif track_id is None:
@@ -390,7 +389,6 @@ class SearchPopover(Gtk.Popover):
             @param widget as Gtk.ListBox
             @param row as SearchRow
         """
-        Lp().player.set_party(False)
         t = Thread(target=self._play_search, args=(row.id, row.is_track))
         t.daemon = True
         t.start()

@@ -61,6 +61,7 @@ class UserPlaylistPlayer(BasePlayer):
                 tracks.append(Track(track_id))
         self._user_playlist = tracks
         self._shuffle_playlist()
+        Lp().player.set_party(False)
 
     def set_user_playlist(self, tracks):
         """
@@ -75,6 +76,7 @@ class UserPlaylistPlayer(BasePlayer):
             else:
                 self._user_playlist.append(track)
         self._shuffle_playlist()
+        Lp().player.set_party(False)
 
     def get_user_playlist(self):
         """
