@@ -10,10 +10,9 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-from gi.repository import Gtk, GLib, Gdk, Gst
+from gi.repository import Gtk, GLib, Gst
 
 from lollypop.define import Lp, Type
-from lollypop.pop_slider import SliderPopover
 from lollypop.utils import seconds_to_string
 
 
@@ -39,9 +38,6 @@ class ToolbarTitle(Gtk.Bin):
 
         self._progress = builder.get_object('progress_scale')
         self._progress.set_sensitive(False)
-
-        self._popover = SliderPopover()
-        self._popover.set_relative_to(self._progress)
 
         self._timelabel = builder.get_object('playback')
         self._total_time_label = builder.get_object('duration')
@@ -109,42 +105,6 @@ class ToolbarTitle(Gtk.Bin):
                 self._progress.set_value(value)
                 self._timelabel.set_text(seconds_to_string(value/60))
         return True
-
-    def _on_progress_motion_notify(self, eventbox, event):
-        """
-            Show progress popover
-            @param eventbox as Gtk.EventBox
-            @param event as Gdk.Event
-        """
-        if Gtk.get_minor_version() > 14:
-            slider_width = self._progress.style_get_property(
-                                                            'slider-width') / 2
-        else:
-            slider_width = 14
-        rect = self._progress.get_range_rect()
-        if event.x < slider_width or\
-           event.x > rect.width - slider_width:
-            return
-
-        current = (event.x - slider_width) *\
-            self._progress.get_adjustment().get_upper() /\
-            (rect.width - slider_width * 2)
-        self._popover.set(seconds_to_string(current/60))
-        r = Gdk.Rectangle()
-        r.x = event.x
-        r.y = rect.height
-        r.width = 1
-        r.height = 1
-        self._popover.set_pointing_to(r)
-        self._popover.show()
-
-    def _on_progress_leave_notify(self, eventbox, event):
-        """
-            Show progress popover
-            @param eventbox as Gtk.EventBox
-            @param event as Gdk.Event
-        """
-        self._popover.delayed_hide()
 
     def _on_progress_press_button(self, scale, event):
         """

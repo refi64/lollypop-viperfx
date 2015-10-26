@@ -18,7 +18,6 @@ from datetime import datetime
 
 from lollypop.define import Lp, ArtSize, Type
 from lollypop.utils import seconds_to_string
-from lollypop.pop_slider import SliderPopover
 from lollypop.pop_next import NextPopover
 
 
@@ -62,9 +61,6 @@ class FullScreen(Gtk.Window):
         self._datetime = builder.get_object('datetime')
 
         self._progress = builder.get_object('progress_scale')
-        self._slider_popover = SliderPopover()
-        self._slider_popover.set_relative_to(self._progress)
-        self._slider_popover.set_position(Gtk.PositionType.BOTTOM)
         self._timelabel = builder.get_object('playback')
         self._total_time_label = builder.get_object('duration')
         self.connect('key-release-event', self._on_key_release_event)
@@ -162,38 +158,6 @@ class FullScreen(Gtk.Window):
             @param widget as Gtk.Button
         """
         self.destroy()
-
-    def _on_progress_motion_notify(self, eventbox, event):
-        """
-            Show progress popover
-            @param eventbox as Gtk.EventBox
-            @param event as Gdk.Event
-        """
-        slider_width = self._progress.style_get_property('slider-width') / 2
-        rect = self._progress.get_range_rect()
-        if event.x < slider_width or\
-           event.x > rect.width - slider_width:
-            return
-
-        current = (event.x - slider_width) *\
-            self._progress.get_adjustment().get_upper() /\
-            (rect.width - slider_width * 2)
-        self._slider_popover.set(seconds_to_string(current/60))
-        r = Gdk.Rectangle()
-        r.x = event.x
-        r.y = rect.height
-        r.width = 1
-        r.height = 1
-        self._slider_popover.set_pointing_to(r)
-        self._slider_popover.show()
-
-    def _on_progress_leave_notify(self, eventbox, event):
-        """
-            Show progress popover
-            @param eventbox as Gtk.EventBox
-            @param event as Gdk.Event
-        """
-        self._slider_popover.delayed_hide()
 
     def _on_current_changed(self, player):
         """
