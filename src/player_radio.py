@@ -140,4 +140,5 @@ class RadioPlayer(BasePlayer):
         """
         # Only start playing if context always True
         if self._current == track:
+            track.set_radio(track.album_artist, uri)
             self._start_playback(track)
