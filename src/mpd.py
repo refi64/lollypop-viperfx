@@ -438,8 +438,9 @@ class MpdHandler(socketserver.BaseRequestHandler):
             @param add list_OK as bool
         """
         # Make sure we have a playlist loaded in player
-        if Lp().player.get_user_playlist_id() != Type.MPD or\
-           not Lp().player.get_user_playlist():
+        if not Lp().player.is_party() and\
+                (Lp().player.get_user_playlist_id() != Type.MPD or
+                    not Lp().player.get_user_playlist()):
             Lp().player.set_user_playlist_id(Type.MPD)
         GLib.idle_add(Lp().player.next)
         self._send_msg('', list_ok)
@@ -653,8 +654,9 @@ class MpdHandler(socketserver.BaseRequestHandler):
             @param add list_OK as bool
         """
         # Make sure we have a playlist loaded in player
-        if Lp().player.get_user_playlist_id() != Type.MPD or\
-           not Lp().player.get_user_playlist():
+        if not Lp().player.is_party() and\
+                (Lp().player.get_user_playlist_id() != Type.MPD or
+                    not Lp().player.get_user_playlist()):
             Lp().player.set_user_playlist_id(Type.MPD)
         GLib.idle_add(Lp().player.prev)
         self._send_msg('', list_ok)
