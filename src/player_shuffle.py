@@ -185,14 +185,16 @@ class ShufflePlayer(BasePlayer):
             Next track in shuffle mode
             @return track id as int
         """
-        track_id = self._get_random()
-        # Need to clear history
-        if not track_id:
-            self._albums = self._already_played_albums
-            self.reset_history()
-            return self._shuffle_next()
-
-        return track_id
+        try:
+            track_id = self._get_random()
+            # Need to clear history
+            if not track_id:
+                self._albums = self._already_played_albums
+                self.reset_history()
+                return self._shuffle_next()
+            return track_id
+        except:  # Recursion error
+            return None
 
     def _get_random(self):
         """
