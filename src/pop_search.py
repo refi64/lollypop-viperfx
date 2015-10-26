@@ -288,8 +288,8 @@ class SearchPopover(Gtk.Popover):
             @param track id as int
             @thread safe
         """
-        track = Lp().player.set_user_playlist(tracks, track_id)
-        Lp().player.load(track)
+        Lp().player.load(Track(track_id))
+        Lp().player.set_user_playlist(tracks)
 
     def _play_search(self, object_id=None, is_track=True):
         """

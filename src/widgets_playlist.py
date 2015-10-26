@@ -161,7 +161,7 @@ class PlaylistWidget(Gtk.Bin):
         if Lp().player.is_party():
             Lp().player.load(Track(track_id))
         else:
-            Lp().player.set_user_playlist(self._playlist_id)
+            Lp().player.set_user_playlist_id(self._playlist_id)
             Lp().player.load_in_playlist(track_id)
 
 

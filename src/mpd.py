@@ -132,7 +132,7 @@ class MpdHandler(socketserver.BaseRequestHandler):
             @param add list_OK as bool
         """
         Lp().playlists.clear(Type.MPD, True)
-        Lp().player.set_user_playlist(Type.NONE)
+        Lp().player.set_user_playlist_id(Type.NONE)
         GLib.idle_add(Lp().player.stop)
         Lp().player.current_track = Track()
         GLib.idle_add(Lp().player.emit, 'current-changed')
@@ -379,7 +379,7 @@ class MpdHandler(socketserver.BaseRequestHandler):
         for track_id in tracks_ids:
             tracks.append(Track(track_id))
         Lp().playlists.add_tracks(Type.MPD, tracks)
-        Lp().player.set_user_playlist(Type.MPD)
+        Lp().player.set_user_playlist_id(Type.MPD)
         GLib.idle_add(Lp().player.load_in_playlist, tracks_ids[0])
         self._send_msg('', list_ok)
 
@@ -441,7 +441,7 @@ class MpdHandler(socketserver.BaseRequestHandler):
         # Make sure we have a playlist loaded in player
         if Lp().player.get_user_playlist_id() != Type.MPD or\
            not Lp().player.get_user_playlist():
-            Lp().player.set_user_playlist(Type.MPD)
+            Lp().player.set_user_playlist_id(Type.MPD)
         GLib.idle_add(Lp().player.next)
         self._send_msg('', list_ok)
 
@@ -465,7 +465,7 @@ class MpdHandler(socketserver.BaseRequestHandler):
         tracks = []
         for track_id in tracks_ids:
             tracks.append(Track(track_id))
-        Lp().player.set_user_playlist(Type.NONE)
+        Lp().player.set_user_playlist_id(Type.NONE)
         Lp().playlists.add_tracks(Type.MPD, tracks)
         self._send_msg('', list_ok)
 
@@ -488,7 +488,7 @@ class MpdHandler(socketserver.BaseRequestHandler):
         tracks = []
         for track_id in tracks_ids:
             tracks.append(Track(track_id))
-        Lp().player.set_user_playlist(Type.NONE)
+        Lp().player.set_user_playlist_id(Type.NONE)
         Lp().playlists.add_tracks(Type.MPD, tracks)
         self._send_msg('', list_ok)
 
@@ -526,7 +526,7 @@ class MpdHandler(socketserver.BaseRequestHandler):
         # Make sure we have a playlist loaded in player
         if Lp().player.get_user_playlist_id() != Type.MPD or\
            not Lp().player.get_user_playlist():
-            Lp().player.set_user_playlist(Type.MPD)
+            Lp().player.set_user_playlist_id(Type.MPD)
         try:
             arg = int(self._get_args(args_array[0])[0])
         except:
@@ -558,7 +558,7 @@ class MpdHandler(socketserver.BaseRequestHandler):
         # Make sure we have a playlist loaded in player
         if Lp().player.get_user_playlist_id() != Type.MPD or\
            not Lp().player.get_user_playlist():
-            Lp().player.set_user_playlist(Type.MPD)
+            Lp().player.set_user_playlist_id(Type.MPD)
         try:
             arg = int(self._get_args(args_array[0])[0])
         except:
@@ -653,7 +653,7 @@ class MpdHandler(socketserver.BaseRequestHandler):
         # Make sure we have a playlist loaded in player
         if Lp().player.get_user_playlist_id() != Type.MPD or\
            not Lp().player.get_user_playlist():
-            Lp().player.set_user_playlist(Type.MPD)
+            Lp().player.set_user_playlist_id(Type.MPD)
         GLib.idle_add(Lp().player.prev)
         self._send_msg('', list_ok)
 
@@ -960,7 +960,7 @@ class MpdHandler(socketserver.BaseRequestHandler):
                 self._idle_strings.append("playlist")
                 self.server.event.set()
                 if Lp().player.get_user_playlist():
-                    Lp().player.set_user_playlist(Type.MPD)
+                    Lp().player.set_user_playlist_id(Type.MPD)
             tracks_ids = Lp().playlists.get_tracks_ids(Type.MPD)
             if tracks_ids:
                 for track_id in self._last_tracks:
