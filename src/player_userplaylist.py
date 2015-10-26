@@ -28,6 +28,8 @@ class UserPlaylistPlayer(BasePlayer):
         """
         BasePlayer.__init__(self)
         self._user_playlist_id = None
+        self._user_playlist = []
+        self._user_playlist_backup = []
 
     def load_in_playlist(self, track_id):
         """
@@ -129,13 +131,13 @@ class UserPlaylistPlayer(BasePlayer):
         """
         if self._shuffle == Shuffle.TRACKS:
             # Shuffle user playlist
-            if self._user_playlist is not None:
+            if self._user_playlist:
                 self._user_playlist_backup = list(self._user_playlist)
                 random.shuffle(self._user_playlist)
         # Unshuffle
         else:
-            if self._user_playlist_backup is not None:
+            if self._user_playlist_backup:
                 self._user_playlist = self._user_playlist_backup
-                self._user_playlist_backup = None
+                self._user_playlist_backup = []
         self.set_next()
         self.set_prev()

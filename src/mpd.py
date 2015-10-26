@@ -206,8 +206,7 @@ class MpdHandler(socketserver.BaseRequestHandler):
             @param args as [str]
             @param add list_OK as bool
         """
-        if Lp().player.current_track.id in Lp().playlists.get_tracks_ids(
-                                                                    Type.MPD):
+        if Lp().player.current_track.id is not None:
             msg = self._string_for_track_id(Lp().player.current_track.id)
         else:
             msg = ""
@@ -603,6 +602,9 @@ class MpdHandler(socketserver.BaseRequestHandler):
         """
         msg = ""
         tracks_ids = Lp().playlists.get_tracks_ids(Type.MPD)
+        if Lp().player.current_track.id is not None and\
+           Lp().player.current_track.id not in tracks_ids:
+            tracks_ids.insert(0, Lp().player.current_track.id)
         for track_id in tracks_ids:
             msg += self._string_for_track_id(track_id)
         self._send_msg(msg, list_ok)

@@ -47,7 +47,7 @@ class ShufflePlayer(BasePlayer):
         # Tracks already played for albums
         self._already_played_tracks = {}
         # Reset use playlist
-        self._user_playlist = None
+        self._user_playlist = []
 
     def next(self):
         """

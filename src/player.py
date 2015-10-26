@@ -71,7 +71,7 @@ class Player(BinPlayer, QueuePlayer, UserPlaylistPlayer, RadioPlayer,
             @param genre id as int
         """
         # Empty user playlist
-        self._user_playlist = None
+        self._user_playlist = []
         # Get first track from album
         album = Album(album_id, genre_id)
         Lp().player.load(album.tracks[0])
@@ -108,7 +108,7 @@ class Player(BinPlayer, QueuePlayer, UserPlaylistPlayer, RadioPlayer,
         ShufflePlayer.reset_history(self)
 
         # We are not playing a user playlist anymore
-        self._user_playlist = None
+        self._user_playlist = []
         self._user_playlist_id = None
         # We are in all artists
         if genre_id == Type.ALL or artist_id == Type.ALL:
