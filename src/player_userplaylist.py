@@ -10,8 +10,6 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-from gi.repository import GLib
-
 import random
 
 from lollypop.define import Shuffle, Lp
@@ -57,7 +55,6 @@ class UserPlaylistPlayer(BasePlayer):
             @return track id as Track
             @thread safe
         """
-        GLib.idle_add(Lp().player.set_party, False)
         tracks = []
         self._user_playlist_id = playlist_id
         for track_id in Lp().playlists.get_tracks_ids(playlist_id):

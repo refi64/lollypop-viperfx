@@ -536,6 +536,10 @@ class MpdHandler(socketserver.BaseRequestHandler):
             @param args as [str]
             @param add list_OK as bool
         """
+        if Lp().player.is_party():
+            # Force player to not load albums
+            Lp().player.current_track.id = None
+            GLib.idle_add(Lp().player.set_party, False)
         # Make sure we have a playlist loaded in player
         if Lp().player.get_user_playlist_id() != Type.MPD or\
            not Lp().player.get_user_playlist():
@@ -568,6 +572,10 @@ class MpdHandler(socketserver.BaseRequestHandler):
             @param args as [str]
             @param add list_OK as bool
         """
+        if Lp().player.is_party():
+            # Force player to not load albums
+            Lp().player.current_track.id = None
+            GLib.idle_add(Lp().player.set_party, False)
         # Make sure we have a playlist loaded in player
         if Lp().player.get_user_playlist_id() != Type.MPD or\
            not Lp().player.get_user_playlist():
