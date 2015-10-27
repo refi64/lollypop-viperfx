@@ -685,7 +685,7 @@ class AlbumsDatabase:
                 return v[0] > 1
             return False
 
-    def count(self, sql=None):
+    def count(self):
         """
             Count albums
             @return int

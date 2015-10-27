@@ -179,11 +179,10 @@ class BinPlayer(ReplayGainPlayer, BasePlayer):
         """
         self._playbin.set_state(Gst.State.NULL)
 
-    def _load_track(self, track, sql=None):
+    def _load_track(self, track):
         """
             Load track
             @param track as Track
-            @param sql as sqlite cursor
             @return False if track not loaded
         """
         stop = False

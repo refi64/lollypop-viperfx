@@ -65,7 +65,7 @@ class AlbumArt(BaseArt, ArtDownloader, TagReader):
             print("Art::get_album_cache_path(): %s" % e, ascii(filename))
             return None
 
-    def get_album_artwork_path(self, album, sql=None):
+    def get_album_artwork_path(self, album):
         """
             Look for artwork in dir:
             - favorite from settings first
@@ -192,16 +192,15 @@ class AlbumArt(BaseArt, ArtDownloader, TagReader):
         else:
             return self._get_default_icon(size, 'folder-music-symbolic')
 
-    def save_album_artwork(self, pixbuf, album_id, sql=None):
+    def save_album_artwork(self, pixbuf, album_id):
         """
             Save pixbuf for album id
             @param pixbuf as Gdk.Pixbuf
             @param album id as int
-            @param sql as sqlite cursor
         """
         try:
             album = Album(album_id)
-            path_count = Lp().albums.get_path_count(album.path, sql)
+            path_count = Lp().albums.get_path_count(album.path)
             # Many albums with same path, suffix with artist_album name
             if path_count > 1:
                 artpath = os.path.join(album.path, "{}_{}.jpg".format(
@@ -221,13 +220,12 @@ class AlbumArt(BaseArt, ArtDownloader, TagReader):
         """
         self.emit('album-artwork-changed', album_id)
 
-    def clean_album_cache(self, album, sql=None):
+    def clean_album_cache(self, album):
         """
             Remove cover from cache for album id
             @param album as Album
-            @param sql as sqlite cursor
         """
-        filename = self._get_album_cache_name(album, sql)
+        filename = self._get_album_cache_name(album)
         try:
             for f in os.listdir(self._CACHE_PATH):
                 if re.search('%s_.*\.jpg' % re.escape(filename), f):
@@ -264,11 +262,10 @@ class AlbumArt(BaseArt, ArtDownloader, TagReader):
 #######################
 # PRIVATE             #
 #######################
-    def _get_album_cache_name(self, album, sql=None):
+    def _get_album_cache_name(self, album):
         """
             Get a uniq string for album
             @param album as Album
-            @param sql as sqlite cursor
         """
         path = album.name + "_" + album.artist_name
         return path[0:240].replace("/", "_")

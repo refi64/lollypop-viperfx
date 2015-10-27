@@ -91,8 +91,8 @@ class ArtDownloader:
         sql = Lp().db.get_cursor()
         while self._albums_queue:
             album_id = self._albums_queue.pop()
-            album = Lp().albums.get_name(album_id, sql)
-            artist = Lp().albums.get_artist_name(album_id, sql)
+            album = Lp().albums.get_name(album_id)
+            artist = Lp().albums.get_artist_name(album_id)
             pixbuf = self._get_album_art_spotify(artist, album)
             if pixbuf is None:
                 pixbuf = self._get_album_art_itunes(artist, album)
@@ -101,8 +101,8 @@ class ArtDownloader:
             if pixbuf is None:
                 continue
             try:
-                    Lp().art.save_album_artwork(pixbuf, album_id, sql)
-                    Lp().art.clean_album_cache(Album(album_id), sql)
+                    Lp().art.save_album_artwork(pixbuf, album_id)
+                    Lp().art.clean_album_cache(Album(album_id))
                     GLib.idle_add(Lp().art.album_artwork_update, album_id)
             except Exception as e:
                 print("ArtDownloader::_download_albums_art: %s" % e)
