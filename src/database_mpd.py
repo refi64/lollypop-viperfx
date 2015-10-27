@@ -156,6 +156,33 @@ class MpdDatabase:
             result = sql.execute(request)
             return list(itertools.chain(*result))
 
+    def listallinfos(self):
+        """
+            Get all tracks
+            @return array [(
+                     track.path,
+                     track.artist,
+                     track.album.name,
+                     track.album_artist,
+                     track.name,
+                     track.album.year,
+                     track.genre,
+                     track.duration,
+                     track.id,
+                     track.position)]
+        """
+        request = "SELECT tracks.filepath, artists.name, albums.name,\
+                   artists.name, tracks.name, albums.year, genres.name,\
+                   tracks.duration, tracks.rowid, tracks.tracknumber\
+                   FROM artists, albums, tracks, genres, track_genres\
+                   WHERE albums.rowid = tracks.album_id\
+                   AND artists.rowid = albums.artist_id\
+                   AND genres.rowid = track_genres.genre_id\
+                   AND tracks.rowid = track_genres.track_id"
+        with SqlCursor(Lp().db) as sql:
+            result = sql.execute(request)
+            return list(result)
+
 #######################
 # PRIVATE             #
 #######################
