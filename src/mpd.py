@@ -869,7 +869,7 @@ class MpdHandler(socketserver.BaseRequestHandler):
         else:
             track = Track(track_id)
             msg = "file: %s\nArtist: %s\nAlbum: %s\nAlbumArtist: %s\
-\nTitle: %s\nDate: %s\nGenre: %s\nTime: %s\nId: %s\nPos: %s\n" % (
+\nTitle: %s\nDate: %s\nGenre: %s\nTime: %s\nId: %s\nTrack: %s\n" % (
                      track.path,
                      track.artist,
                      track.album.name,
