@@ -214,7 +214,7 @@ class Container:
         """
         view = self._stack.get_visible_child()
         if view:
-            view.update_covers()
+            view.update_children()
 
     def on_scan_finished(self, scanner):
         """

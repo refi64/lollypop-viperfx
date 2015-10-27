@@ -53,9 +53,9 @@ class View(Gtk.Grid):
         for child in self._get_children():
             child.stop()
 
-    def update_covers(self):
+    def update_children(self):
         """
-            Update children's covers
+            Update children
         """
         GLib.idle_add(self._update_widgets, self._get_children())
 
