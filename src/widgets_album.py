@@ -363,10 +363,7 @@ class AlbumDetailedWidget(Gtk.Bin, AlbumWidget):
         """
             Update widget's cursor
         """
-        if self._pop_allowed:
-            AlbumWidget.update_cursor(self, Gdk.CursorType.HAND1)
-        else:
-            AlbumWidget.update_cursor(self)
+        AlbumWidget.update_cursor(self, Gdk.CursorType.HAND1)
 
 #######################
 # PRIVATE             #
@@ -471,7 +468,7 @@ class AlbumDetailedWidget(Gtk.Bin, AlbumWidget):
         """
         if event.button == 1:
             Lp().player.play_album(self._album.id)
-        elif self._pop_allowed:
+        elif self._pop_allowed or Gtk.get_minor_version() > 16:
             popover = CoversPopover(self._album.artist_id, self._album.id)
             popover.set_relative_to(widget)
             popover.populate()
