@@ -57,7 +57,7 @@ class View(Gtk.Grid):
         """
             Update children's covers
         """
-        GLib.idle_add(self._update_widgets, self._get_children(), True)
+        GLib.idle_add(self._update_widgets, self._get_children())
 
     def populate(self):
         pass
@@ -65,18 +65,17 @@ class View(Gtk.Grid):
 #######################
 # PRIVATE             #
 #######################
-    def _update_widgets(self, widgets, force):
+    def _update_widgets(self, widgets):
         """
             Update all widgets
             @param widgets as AlbumWidget
-            @param force as bool
         """
         if widgets:
             widget = widgets.pop(0)
             widget.update_state()
             widget.update_cursor()
             widget.update_playing_indicator()
-            GLib.idle_add(self._update_widgets, widgets, force)
+            GLib.idle_add(self._update_widgets, widgets)
 
     def _get_children(self):
         """
@@ -112,7 +111,7 @@ class View(Gtk.Grid):
             Current song changed
             @param player as Player
         """
-        GLib.idle_add(self._update_widgets, self._get_children(), False)
+        GLib.idle_add(self._update_widgets, self._get_children())
 
     def _on_album_modified(self, scanner, album_id):
         """
