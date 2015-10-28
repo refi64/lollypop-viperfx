@@ -49,7 +49,7 @@ class DatabaseUpgrade:
             for i in range(self._version+1, len(self._UPGRADES)+1):
                 try:
                     sql.execute(self._UPGRADES[i])
-                    sql.commit()
                 except Exception as e:
                     print("Database upgrade failed: ", e)
+            sql.commit()
             return len(self._UPGRADES)
