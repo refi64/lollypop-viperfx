@@ -110,7 +110,6 @@ class Application(Gtk.Application):
         if LastFM is not None:
             self.lastfm = LastFM()
         self.db = Database()
-        self.db.create()
         self.playlists = Playlists()
         # We store cursors for main thread
         SqlCursor.add(self.db)

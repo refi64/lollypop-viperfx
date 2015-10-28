@@ -66,37 +66,31 @@ class Database:
 
     def __init__(self):
         """
-            Init object
-        """
-        # Create db directory if missing
-        if not os.path.exists(self.LOCAL_PATH):
-            try:
-                os.mkdir(self.LOCAL_PATH)
-            except:
-                print("Can't create %s" % self.LOCAL_PATH)
-
-    def create(self):
-        """
             Create database tables or manage update if needed
         """
-        with SqlCursor(self) as sql:
-            db_version = Lp().settings.get_value('db-version').get_int32()
-            upgrade = DatabaseUpgrade(db_version, self)
-            upgrade.do_db_upgrade()
-            Lp().settings.set_value('db-version',
-                                    GLib.Variant('i', upgrade.count()))
-            # Create db schema
+        if os.path.exists(self.DB_PATH):
+            with SqlCursor(self) as sql:
+                db_version = Lp().settings.get_value('db-version').get_int32()
+                upgrade = DatabaseUpgrade(db_version, self)
+                upgrade.do_db_upgrade()
+                Lp().settings.set_value('db-version',
+                                        GLib.Variant('i', upgrade.count()))
+        else:
             try:
-                sql.execute(self.create_albums)
-                sql.execute(self.create_artists)
-                sql.execute(self.create_genres)
-                sql.execute(self.create_album_genres)
-                sql.execute(self.create_tracks)
-                sql.execute(self.create_track_artists)
-                sql.execute(self.create_track_genres)
-                sql.commit()
+                if not os.path.exists(self.LOCAL_PATH):
+                    os.mkdir(self.LOCAL_PATH)
+                # Create db schema
+                with SqlCursor(self) as sql:
+                    sql.execute(self.create_albums)
+                    sql.execute(self.create_artists)
+                    sql.execute(self.create_genres)
+                    sql.execute(self.create_album_genres)
+                    sql.execute(self.create_tracks)
+                    sql.execute(self.create_track_artists)
+                    sql.execute(self.create_track_genres)
+                    sql.commit()
             except:
-                pass
+                print("Database::__init__(): %s" % self.LOCAL_PATH)
 
     def get_cursor(self):
         """
