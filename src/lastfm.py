@@ -298,6 +298,8 @@ class LastFM(LastFMNetwork):
             Populate loved tracks playlist
             @param bool as force
         """
+        if not self._is_auth:
+            return
         try:
             if force or len(Lp().playlists.get_tracks(Type.LOVED)) == 0:
                 tracks = []
