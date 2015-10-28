@@ -15,6 +15,7 @@ from gi.repository import Gtk, Gio, GLib
 from lollypop.container import Container
 from lollypop.define import Lp, NextContext, Shuffle
 from lollypop.toolbar import Toolbar
+from lollypop.utils import is_unity
 
 
 class Window(Gtk.ApplicationWindow, Container):
@@ -191,7 +192,7 @@ class Window(Gtk.ApplicationWindow, Container):
         self.set_icon_name('lollypop')
         self._toolbar = Toolbar(self.get_application())
         self._toolbar.show()
-        if Lp().settings.get_value('disable-csd'):
+        if Lp().settings.get_value('disable-csd') or is_unity():
             vgrid = Gtk.Grid()
             vgrid.set_orientation(Gtk.Orientation.VERTICAL)
             vgrid.add(self._toolbar)
