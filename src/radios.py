@@ -75,11 +75,12 @@ class Radios(GObject.GObject):
         """
         with SqlCursor(self) as sql:
             if self.exists(name):
-                sql.execute("UPDATE radios SET"
-                            " url=?", (url,))
+                sql.execute("UPDATE radios\
+                             SET url=?\
+                             WHERE name=?", (url, name))
             else:
-                sql.execute("INSERT INTO radios (name, url, popularity)"
-                            " VALUES (?, ?, ?)",
+                sql.execute("INSERT INTO radios (name, url, popularity)\
+                             VALUES (?, ?, ?)",
                             (name, url, 0))
             sql.commit()
             GLib.idle_add(self.emit, 'radios-changed')
