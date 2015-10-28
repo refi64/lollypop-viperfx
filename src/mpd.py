@@ -950,6 +950,9 @@ class MpdHandler(socketserver.BaseRequestHandler):
         """
         if "player" not in self._idle_strings:
             self._idle_strings.append("player")
+            tracks_ids = Lp().playlists.get_tracks_ids(Type.MPD)
+            if Lp().player.current_track.id not in tracks_ids:
+                self._idle_strings.append("playlist")
             self.server.event.set()
 
     def _on_position_changed(self, player, data=None):
