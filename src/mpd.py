@@ -331,7 +331,7 @@ class MpdHandler(socketserver.BaseRequestHandler):
              title, date, genre, time,
              track_id, pos) in self._mpddb.listallinfos():
             msg += "file: %s\nArtist: %s\nAlbum: %s\nAlbumArtist: %s\
-\nTitle: %s\nDate: %s\nGenre: %s\nTime: %s\nId: %s\nTrack: %s\n" % (
+\nTitle: %s\nDate: %s\nGenre: %s\nTime: %s\nId: %s\nPos: %s\nTrack: %s\n" % (
                                         path,
                                         translate_artist_name(artist),
                                         album,
@@ -341,6 +341,7 @@ class MpdHandler(socketserver.BaseRequestHandler):
                                         genre,
                                         time,
                                         track_id,
+                                        pos,
                                         pos)
             if i > 1000:
                 self.request.send(msg.encode("utf-8"))
