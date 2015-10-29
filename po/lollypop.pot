@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-10-22 11:38+0200\n"
+"POT-Creation-Date: 2015-10-29 16:26+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -171,6 +171,20 @@ msgstr ""
 msgid "Play and organize your music collection"
 msgstr ""
 
+#: ../data/lollypop.desktop.in.h:4
+msgid "Play/Pause"
+msgstr ""
+
+#: ../data/lollypop.desktop.in.h:5 ../src/notification.py:70
+#: ../data/ToolbarPlayback.ui.h:3
+msgid "Next"
+msgstr ""
+
+#: ../data/lollypop.desktop.in.h:6 ../src/notification.py:66
+#: ../data/ToolbarPlayback.ui.h:1
+msgid "Previous"
+msgstr ""
+
 #: ../data/lollypop.appdata.xml.in.h:3
 msgid "Lollypop is a new GNOME music playing application."
 msgstr ""
@@ -252,7 +266,7 @@ msgid ""
 "    - Artist informations disabled"
 msgstr ""
 
-#: ../src/application.py:350
+#: ../src/application.py:361
 msgid "Lollypop: You need to install yelp."
 msgstr ""
 
@@ -260,7 +274,7 @@ msgstr ""
 msgid "Restart lollypop after installing codecs"
 msgstr ""
 
-#: ../src/collectionscanner.py:66
+#: ../src/collectionscanner.py:67
 msgid "Your music is updating"
 msgstr ""
 
@@ -314,7 +328,7 @@ msgid "Random tracks"
 msgstr ""
 
 #: ../src/database_albums.py:271 ../src/database_artists.py:73
-#: ../src/database_genres.py:69 ../src/database_tracks.py:218
+#: ../src/database_genres.py:69 ../src/database_tracks.py:230
 #: ../src/tagreader.py:86 ../src/tagreader.py:105 ../src/tagreader.py:130
 #: ../src/tagreader.py:145
 msgid "Unknown"
@@ -328,12 +342,12 @@ msgstr ""
 msgid "Many artists"
 msgstr ""
 
-#: ../src/fullscreen.py:83 ../src/fullscreen.py:302
+#: ../src/fullscreen.py:79 ../src/fullscreen.py:267
 #: ../src/toolbar_playback.py:76 ../src/toolbar_playback.py:109
 msgid "Pause"
 msgstr ""
 
-#: ../src/fullscreen.py:306 ../src/pop_tunein.py:142
+#: ../src/fullscreen.py:271 ../src/pop_tunein.py:142
 #: ../src/toolbar_playback.py:78 ../src/toolbar_playback.py:106
 #: ../data/ToolbarPlayback.ui.h:2
 msgid "Play"
@@ -345,14 +359,6 @@ msgstr ""
 
 #: ../src/lastfm.py:289
 msgid "Wrong Last.fm credentials"
-msgstr ""
-
-#: ../src/notification.py:66 ../data/ToolbarPlayback.ui.h:1
-msgid "Previous"
-msgstr ""
-
-#: ../src/notification.py:70 ../data/ToolbarPlayback.ui.h:3
-msgid "Next"
 msgstr ""
 
 #. TRANSLATORS: by refers to the artist,
@@ -368,7 +374,7 @@ msgstr ""
 msgid "by %s, from %s"
 msgstr ""
 
-#: ../src/player_bin.py:283
+#: ../src/player_bin.py:282
 #, python-format
 msgid "File doesn't exist: %s"
 msgstr ""
@@ -377,7 +383,7 @@ msgstr ""
 msgid "Loved tracks"
 msgstr ""
 
-#: ../src/pop_covers.py:56 ../src/pop_tunein.py:90 ../data/RadioPopover.ui.h:3
+#: ../src/pop_covers.py:56 ../src/pop_tunein.py:89 ../data/RadioPopover.ui.h:3
 msgid "Please wait..."
 msgstr ""
 
@@ -463,7 +469,7 @@ msgstr ""
 msgid "Modify"
 msgstr ""
 
-#: ../src/pop_tunein.py:102
+#: ../src/pop_tunein.py:101
 msgid "Can't connect to TuneIn..."
 msgstr ""
 
@@ -522,17 +528,17 @@ msgstr ""
 msgid "No free space available on device"
 msgstr ""
 
-#: ../src/widgets_playlist.py:257 ../src/widgets_playlist.py:260
+#: ../src/widgets_playlist.py:253 ../src/widgets_playlist.py:256
 msgid "New playlist "
 msgstr ""
 
 #. Need a copy, segfault on EOS 3.1
-#: ../src/widgets_playlist.py:314 ../src/widgets_playlist.py:552
+#: ../src/widgets_playlist.py:310 ../src/widgets_playlist.py:548
 #, python-format
 msgid "Remove \"%s\"?"
 msgstr ""
 
-#: ../src/widgets_playlist.py:597
+#: ../src/widgets_playlist.py:593
 msgid "Remove these tracks?"
 msgstr ""
 

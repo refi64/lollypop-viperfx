@@ -13,13 +13,13 @@ MimeType=application/ogg;application/x-ogg;application/x-ogm-audio;audio/aac;aud
 Actions=Toggle;Next;Prev;
 
 [Desktop Action Toggle]
-Name=Play/Pause
+_Name=Play/Pause
 Exec=lollypop -t
 
 [Desktop Action Next]
-Name=Next
+_Name=Next
 Exec=lollypop -n
 
 [Desktop Action Prev]
-Name=Previous
+_Name=Previous
 Exec=lollypop -p
