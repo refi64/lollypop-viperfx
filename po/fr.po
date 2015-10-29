@@ -9,8 +9,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lollypop\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-10-22 11:38+0200\n"
-"PO-Revision-Date: 2015-10-22 09:45+0000\n"
+"POT-Creation-Date: 2015-10-29 16:26+0100\n"
+"PO-Revision-Date: 2015-10-29 15:28+0000\n"
 "Last-Translator: Cédric Bellegarde <web@adishatz.org>\n"
 "Language-Team: French (http://www.transifex.com/gnumdk/lollypop/language/fr/)\n"
 "MIME-Version: 1.0\n"
@@ -174,6 +174,20 @@ msgstr "Lecteur de musique"
 msgid "Play and organize your music collection"
 msgstr "Jouer et organiser votre discothèque"
 
+#: ../data/lollypop.desktop.in.h:4
+msgid "Play/Pause"
+msgstr "Lecture/Pause"
+
+#: ../data/lollypop.desktop.in.h:5 ../src/notification.py:70
+#: ../data/ToolbarPlayback.ui.h:3
+msgid "Next"
+msgstr "Suivant"
+
+#: ../data/lollypop.desktop.in.h:6 ../src/notification.py:66
+#: ../data/ToolbarPlayback.ui.h:1
+msgid "Previous"
+msgstr "Précédent"
+
 #: ../data/lollypop.appdata.xml.in.h:3
 msgid "Lollypop is a new GNOME music playing application."
 msgstr "Lollypop est une nouvelle application musicale pour GNOME"
@@ -255,7 +269,7 @@ msgid ""
 "    - Artist informations disabled"
 msgstr "- Scrobbler désactivé\n- Téléchargement automatique des pochettes désactivé\n- Informations sur les artistes désactivée"
 
-#: ../src/application.py:350
+#: ../src/application.py:361
 msgid "Lollypop: You need to install yelp."
 msgstr "Lollypop: Vous devez installer yelp."
 
@@ -263,7 +277,7 @@ msgstr "Lollypop: Vous devez installer yelp."
 msgid "Restart lollypop after installing codecs"
 msgstr "Redémarrez lollypop après l'installation des codecs"
 
-#: ../src/collectionscanner.py:66
+#: ../src/collectionscanner.py:67
 msgid "Your music is updating"
 msgstr "Mise à jour de votre musique"
 
@@ -317,7 +331,7 @@ msgid "Random tracks"
 msgstr "Morceaux aléatoires"
 
 #: ../src/database_albums.py:271 ../src/database_artists.py:73
-#: ../src/database_genres.py:69 ../src/database_tracks.py:218
+#: ../src/database_genres.py:69 ../src/database_tracks.py:230
 #: ../src/tagreader.py:86 ../src/tagreader.py:105 ../src/tagreader.py:130
 #: ../src/tagreader.py:145
 msgid "Unknown"
@@ -331,12 +345,12 @@ msgstr "Compilation"
 msgid "Many artists"
 msgstr "Plusieurs artistes"
 
-#: ../src/fullscreen.py:83 ../src/fullscreen.py:302
+#: ../src/fullscreen.py:79 ../src/fullscreen.py:267
 #: ../src/toolbar_playback.py:76 ../src/toolbar_playback.py:109
 msgid "Pause"
 msgstr "Pause"
 
-#: ../src/fullscreen.py:306 ../src/pop_tunein.py:142
+#: ../src/fullscreen.py:271 ../src/pop_tunein.py:142
 #: ../src/toolbar_playback.py:78 ../src/toolbar_playback.py:106
 #: ../data/ToolbarPlayback.ui.h:2
 msgid "Play"
@@ -349,14 +363,6 @@ msgstr "Authentification Last.fm désactivée"
 #: ../src/lastfm.py:289
 msgid "Wrong Last.fm credentials"
 msgstr "Identifiants Last.fm invalides"
-
-#: ../src/notification.py:66 ../data/ToolbarPlayback.ui.h:1
-msgid "Previous"
-msgstr "Précédent"
-
-#: ../src/notification.py:70 ../data/ToolbarPlayback.ui.h:3
-msgid "Next"
-msgstr "Suivant"
 
 #. TRANSLATORS: by refers to the artist,
 #: ../src/notification.py:104
@@ -371,7 +377,7 @@ msgstr "Par %s"
 msgid "by %s, from %s"
 msgstr "par %s, sur %s"
 
-#: ../src/player_bin.py:283
+#: ../src/player_bin.py:282
 #, python-format
 msgid "File doesn't exist: %s"
 msgstr "Le fichier n'existe pas: %s"
@@ -380,7 +386,7 @@ msgstr "Le fichier n'existe pas: %s"
 msgid "Loved tracks"
 msgstr "Coups de coeur"
 
-#: ../src/pop_covers.py:56 ../src/pop_tunein.py:90 ../data/RadioPopover.ui.h:3
+#: ../src/pop_covers.py:56 ../src/pop_tunein.py:89 ../data/RadioPopover.ui.h:3
 msgid "Please wait..."
 msgstr "Veuillez patienter..."
 
@@ -466,7 +472,7 @@ msgstr "Ajouter"
 msgid "Modify"
 msgstr "Modifier"
 
-#: ../src/pop_tunein.py:102
+#: ../src/pop_tunein.py:101
 msgid "Can't connect to TuneIn..."
 msgstr "Impossible de se connecter à TuneIn..."
 
@@ -525,17 +531,17 @@ msgstr "Erreur inconnue lors de la synchronisation, essayez de redémarrer votre
 msgid "No free space available on device"
 msgstr "Pas d'espace disponible sur l'appareil"
 
-#: ../src/widgets_playlist.py:257 ../src/widgets_playlist.py:260
+#: ../src/widgets_playlist.py:253 ../src/widgets_playlist.py:256
 msgid "New playlist "
 msgstr "Nouvelle liste de lecture "
 
 #. Need a copy, segfault on EOS 3.1
-#: ../src/widgets_playlist.py:314 ../src/widgets_playlist.py:552
+#: ../src/widgets_playlist.py:310 ../src/widgets_playlist.py:548
 #, python-format
 msgid "Remove \"%s\"?"
 msgstr "Supprimer \"%s\"?"
 
-#: ../src/widgets_playlist.py:597
+#: ../src/widgets_playlist.py:593
 msgid "Remove these tracks?"
 msgstr "Supprimer ces morceaux?"
 

@@ -5,8 +5,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lollypop\n"
 "POT-Creation-Date: 2015-06-24 15:43+0200\n"
-"PO-Revision-Date: 2015-06-25 09:09+0000\n"
-"Last-Translator: Cédric Bellegarde <web@adishatz.org>\n"
+"PO-Revision-Date: 2015-10-22 19:57+0000\n"
+"Last-Translator: Dušan Kazik <prescott66@gmail.com>\n"
 "Language-Team: Slovak (http://www.transifex.com/gnumdk/lollypop/language/sk/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -82,12 +82,12 @@ msgstr "Keď začnete prehrávať skladbu, naplní sa kontextuálny zoznam sklad
 msgid ""
 "Contexts can be: an album, an artist, a genre, popular or recent albums, "
 "searches, playlists, ..."
-msgstr ""
+msgstr "Kontextami môžu byť: album, umelec, žáner, obľúbené alebo nedávne albumy, vyhľadávania, zoznamy skladieb, ..."
 
 #. (itstool) path: section/p
 #: C/index.page:33
 msgid "Shuffle interacts on current context."
-msgstr ""
+msgstr "Zamiešanie spolupracuje s aktuálnym kontextom."
 
 #. (itstool) path: section/title
 #: C/index.page:37
@@ -117,7 +117,7 @@ msgstr "Prevzatie obalov"
 msgid ""
 "When hovering a cover, if mouse cursor changes to a pen, just click and "
 "select a new cover."
-msgstr ""
+msgstr "Keď prechádzate myšou ponad obal a kurzor myši sa zmení na pero, stačí kliknúť a vybrať nový obal."
 
 #. (itstool) path: section/p
 #: C/index.page:45
@@ -205,4 +205,4 @@ msgid ""
 "As a special exception, the copyright holders give you permission to copy, "
 "modify, and distribute the example code contained in this document under the"
 " terms of your choosing, without restriction."
-msgstr ""
+msgstr "Ako špeciálnu výnimku vám držitelia autorských práv poskytujú oprávnenie kopírovať, upravovať a distribuovať vzorový kód obsiahnutý v tomto dokumente, pod podmienkami vami zvolenými, bez obmedzení."

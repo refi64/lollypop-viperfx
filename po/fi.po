@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lollypop\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-10-07 22:56+0200\n"
-"PO-Revision-Date: 2015-10-07 20:57+0000\n"
+"POT-Creation-Date: 2015-10-29 16:26+0100\n"
+"PO-Revision-Date: 2015-10-29 15:27+0000\n"
 "Last-Translator: Cédric Bellegarde <web@adishatz.org>\n"
 "Language-Team: Finnish (http://www.transifex.com/gnumdk/lollypop/language/fi/)\n"
 "MIME-Version: 1.0\n"
@@ -88,64 +88,72 @@ msgid ""
 msgstr ""
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:18
+msgid "Albums cover size"
+msgstr "Albumien kuvituksen koko"
+
+#: ../data/org.gnome.Lollypop.gschema.xml.h:19
 msgid "Replay gain value in db"
 msgstr "Replay gain -arvo desibeleissä"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:19
+#: ../data/org.gnome.Lollypop.gschema.xml.h:20
 msgid "Between -15 and 15"
 msgstr "Välillä -15 ja 15"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:20 ../data/SettingsDialog.ui.h:2
+#: ../data/org.gnome.Lollypop.gschema.xml.h:21
+msgid "Disable mpd support"
+msgstr "Poista mpd-tuki käytöstä"
+
+#: ../data/org.gnome.Lollypop.gschema.xml.h:22 ../data/SettingsDialog.ui.h:2
 msgid "Auto update music"
 msgstr "Päivitä musiikkikirjasto automaattisesti"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:21
+#: ../data/org.gnome.Lollypop.gschema.xml.h:23
 msgid "Show genres list"
 msgstr "Näytä tyylilajien luettelo"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:22
+#: ../data/org.gnome.Lollypop.gschema.xml.h:24
 msgid "Use dark gtk theme"
 msgstr "Käytä tummaa teemaa"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:23
+#: ../data/org.gnome.Lollypop.gschema.xml.h:25
 msgid "Disable the use client side window decorations (headerbar)"
 msgstr "Poista käytöstä sovelluksen hallitsemat reunukset (CSD)."
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:24 ../data/SettingsDialog.ui.h:9
+#: ../data/org.gnome.Lollypop.gschema.xml.h:26 ../data/SettingsDialog.ui.h:11
 msgid "Show compilations in albums view"
 msgstr "Näytä kokoelmalevyt albuminäkymässä"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:25 ../data/SettingsDialog.ui.h:4
+#: ../data/org.gnome.Lollypop.gschema.xml.h:27 ../data/SettingsDialog.ui.h:4
 msgid "Continue playback when closed"
 msgstr "Jatka toistoa, kun sovellus suljetaan"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:26
+#: ../data/org.gnome.Lollypop.gschema.xml.h:28
 msgid "Restore previous state"
 msgstr "Palauta edellinen tila"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:27
+#: ../data/org.gnome.Lollypop.gschema.xml.h:29
 msgid "Auto play albums on click"
 msgstr "Toista albumit automaattisesti napsautuksella"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:28
+#: ../data/org.gnome.Lollypop.gschema.xml.h:30
 msgid "Disable MPRIS"
 msgstr "Poista MPRIS käytöstä"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:29
+#: ../data/org.gnome.Lollypop.gschema.xml.h:31
 msgid "Disable notifications"
 msgstr "Poista ilmoitukset käytöstä"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:30
+#: ../data/org.gnome.Lollypop.gschema.xml.h:32
 msgid "Show track number from tags"
 msgstr "Näytä kappaleen numero tunnistetiedoista"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:31
+#: ../data/org.gnome.Lollypop.gschema.xml.h:33
 msgid "Shuffle mode"
 msgstr "Sekoitustila"
 
 #. Translators: Don't translate allowed values, just the description in the
 #. brackets
-#: ../data/org.gnome.Lollypop.gschema.xml.h:33
+#: ../data/org.gnome.Lollypop.gschema.xml.h:35
 msgid ""
 "Value identifies whether to shuffle tracks/albums. Allowed values are: "
 "\"none\" (shuffle off), \"tracks\" (shuffle tracks) , \"albums\" (shuffle "
@@ -164,6 +172,20 @@ msgstr "Musiikkisoitin"
 #: ../data/lollypop.desktop.in.h:3 ../data/lollypop.appdata.xml.in.h:2
 msgid "Play and organize your music collection"
 msgstr "Kuuntele ja hallitse musiikkikokoelmaasi"
+
+#: ../data/lollypop.desktop.in.h:4
+msgid "Play/Pause"
+msgstr ""
+
+#: ../data/lollypop.desktop.in.h:5 ../src/notification.py:70
+#: ../data/ToolbarPlayback.ui.h:3
+msgid "Next"
+msgstr "Seuraava"
+
+#: ../data/lollypop.desktop.in.h:6 ../src/notification.py:66
+#: ../data/ToolbarPlayback.ui.h:1
+msgid "Previous"
+msgstr "Edellinen"
 
 #: ../data/lollypop.appdata.xml.in.h:3
 msgid "Lollypop is a new GNOME music playing application."
@@ -189,12 +211,12 @@ msgstr "Tyylilajin/esittäjän/kannen perusteella selaaminen"
 msgid "Search"
 msgstr "Etsi"
 
-#: ../data/lollypop.appdata.xml.in.h:9 ../src/pop_menu.py:446
-#: ../src/pop_menu.py:466 ../data/ToolbarEnd.ui.h:10
+#: ../data/lollypop.appdata.xml.in.h:9 ../src/pop_menu.py:442
+#: ../src/pop_menu.py:462 ../data/ToolbarEnd.ui.h:10
 msgid "Queue"
 msgstr "Jono"
 
-#: ../data/lollypop.appdata.xml.in.h:10 ../data/SettingsDialog.ui.h:16
+#: ../data/lollypop.appdata.xml.in.h:10 ../data/SettingsDialog.ui.h:18
 #: ../data/ToolbarEnd.ui.h:8
 msgid "Party mode"
 msgstr "Biletila"
@@ -246,7 +268,7 @@ msgid ""
 "    - Artist informations disabled"
 msgstr "    - Kuuntelujen lähetystiedot pois käytöstä\n    - Kansikuvien automaattinen lataus pois käytöstä\n    - Esittäjien tiedot pois käytöstä"
 
-#: ../src/application.py:347
+#: ../src/application.py:361
 msgid "Lollypop: You need to install yelp."
 msgstr "Lollypop: Ohje vaatii yelp-ohjelman asennuksen."
 
@@ -254,80 +276,80 @@ msgstr "Lollypop: Ohje vaatii yelp-ohjelman asennuksen."
 msgid "Restart lollypop after installing codecs"
 msgstr "Käynnistä Lollypop uudelleen koodekkien asennuksen jälkeen"
 
-#: ../src/collectionscanner.py:65
+#: ../src/collectionscanner.py:67
 msgid "Your music is updating"
 msgstr "Musiikkisi päivittyy"
 
-#: ../src/container.py:369
+#: ../src/container.py:370
 msgid "Popular albums"
 msgstr "Suositut albumit"
 
-#: ../src/container.py:370
+#: ../src/container.py:371
 msgid "Recently added albums"
 msgstr "Viimeksi lisätyt albumit"
 
-#: ../src/container.py:371
+#: ../src/container.py:372
 msgid "Random albums"
 msgstr "Satunnaiset albumit"
 
-#: ../src/container.py:372 ../src/pop_menu.py:371 ../src/pop_menu.py:448
-#: ../src/pop_menu.py:468
+#: ../src/container.py:373 ../src/pop_menu.py:367 ../src/pop_menu.py:444
+#: ../src/pop_menu.py:464
 msgid "Playlists"
 msgstr "Soittolistat"
 
-#: ../src/container.py:373
+#: ../src/container.py:374
 msgid "Radios"
 msgstr "Radiot"
 
-#: ../src/container.py:375
+#: ../src/container.py:376
 msgid "All artists"
 msgstr "Kaikki esittäjät"
 
-#: ../src/container.py:377 ../data/DeviceManagerWidget.ui.h:1
+#: ../src/container.py:378 ../data/DeviceManagerWidget.ui.h:1
 msgid "All albums"
 msgstr "Kaikki albumit"
 
-#: ../src/container.py:427
+#: ../src/container.py:424
 msgid "Compilations"
 msgstr "Kokoelmat"
 
-#: ../src/container.py:450
+#: ../src/container.py:447
 msgid "Popular tracks"
 msgstr "Suositut kappaleet"
 
-#: ../src/container.py:451
+#: ../src/container.py:448
 msgid "Recently played"
 msgstr "Viimeksi toistettu"
 
-#: ../src/container.py:452
+#: ../src/container.py:449
 msgid "Never played"
 msgstr "Ei koskaan toistettu"
 
-#: ../src/container.py:453
+#: ../src/container.py:450
 msgid "Random tracks"
 msgstr "Satunnaiset kappaleet"
 
-#: ../src/database_albums.py:241 ../src/database_artists.py:79
-#: ../src/database_genres.py:74 ../src/database_tracks.py:232
+#: ../src/database_albums.py:271 ../src/database_artists.py:73
+#: ../src/database_genres.py:69 ../src/database_tracks.py:230
 #: ../src/tagreader.py:86 ../src/tagreader.py:105 ../src/tagreader.py:130
 #: ../src/tagreader.py:145
 msgid "Unknown"
 msgstr "Tuntematon"
 
-#: ../src/database_albums.py:258
+#: ../src/database_albums.py:287
 msgid "Compilation"
 msgstr "Kokoelma"
 
-#: ../src/database_artists.py:71
+#: ../src/database_artists.py:66
 msgid "Many artists"
 msgstr "Useita esittäjiä"
 
-#: ../src/fullscreen.py:83 ../src/fullscreen.py:302
+#: ../src/fullscreen.py:79 ../src/fullscreen.py:267
 #: ../src/toolbar_playback.py:76 ../src/toolbar_playback.py:109
 msgid "Pause"
 msgstr "Keskeytä"
 
-#: ../src/fullscreen.py:306 ../src/pop_tunein.py:142
+#: ../src/fullscreen.py:271 ../src/pop_tunein.py:142
 #: ../src/toolbar_playback.py:78 ../src/toolbar_playback.py:106
 #: ../data/ToolbarPlayback.ui.h:2
 msgid "Play"
@@ -337,17 +359,9 @@ msgstr "Toista"
 msgid "Last.fm authentication disabled"
 msgstr "Last.fm-tunnistautuminen pois käytöstä"
 
-#: ../src/lastfm.py:288
+#: ../src/lastfm.py:289
 msgid "Wrong Last.fm credentials"
 msgstr "Last.fm-kirjautumistiedot olivat väärin"
-
-#: ../src/notification.py:66 ../data/ToolbarPlayback.ui.h:1
-msgid "Previous"
-msgstr "Edellinen"
-
-#: ../src/notification.py:70 ../data/ToolbarPlayback.ui.h:3
-msgid "Next"
-msgstr "Seuraava"
 
 #. TRANSLATORS: by refers to the artist,
 #: ../src/notification.py:104
@@ -362,24 +376,24 @@ msgstr "esittäjä %s"
 msgid "by %s, from %s"
 msgstr "esittäjän %s albumilta %s"
 
-#: ../src/player_bin.py:281
+#: ../src/player_bin.py:282
 #, python-format
 msgid "File doesn't exist: %s"
 msgstr "Tiedostoa ei ole olemassa: %s"
 
-#: ../src/playlists.py:51
+#: ../src/playlists.py:53
 msgid "Loved tracks"
 msgstr "Tykätyt kappaleet"
 
-#: ../src/pop_covers.py:57 ../src/pop_tunein.py:90 ../data/RadioPopover.ui.h:3
+#: ../src/pop_covers.py:56 ../src/pop_tunein.py:89 ../data/RadioPopover.ui.h:3
 msgid "Please wait..."
 msgstr "Odota hetki..."
 
-#: ../src/pop_covers.py:135
+#: ../src/pop_covers.py:133
 msgid "No cover found..."
 msgstr "Kansikuvaa ei löytynyt..."
 
-#: ../src/pop_covers.py:154
+#: ../src/pop_covers.py:148
 msgid "Select a cover art for this album"
 msgstr "Valitse kansikuva tälle albumille"
 
@@ -437,27 +451,27 @@ msgstr "Poista kohteesta \"%s\""
 msgid "Add to \"%s\""
 msgstr "Lisää kohteeseen \"%s\""
 
-#: ../src/pop_menu.py:369
+#: ../src/pop_menu.py:365
 msgid "Playback"
 msgstr "Toisto"
 
-#: ../src/pop_menu.py:406
+#: ../src/pop_menu.py:402
 msgid "Modify informations"
 msgstr "Muokkaa tietoja"
 
-#: ../src/pop_menu.py:450 ../data/PlaylistView.ui.h:1
+#: ../src/pop_menu.py:446 ../data/PlaylistView.ui.h:1
 msgid "Edit"
 msgstr "Muokkaa"
 
-#: ../src/pop_radio.py:74 ../src/pop_tunein.py:147
+#: ../src/pop_radio.py:82 ../src/pop_tunein.py:147
 msgid "Add"
 msgstr "Lisää"
 
-#: ../src/pop_radio.py:76 ../src/wikipedia.py:59
+#: ../src/pop_radio.py:84 ../src/wikipedia.py:59
 msgid "Modify"
 msgstr "Muokkaa"
 
-#: ../src/pop_tunein.py:102
+#: ../src/pop_tunein.py:101
 msgid "Can't connect to TuneIn..."
 msgstr "Yhteys TuneIniin ei onnistu..."
 
@@ -465,11 +479,11 @@ msgstr "Yhteys TuneIniin ei onnistu..."
 msgid "Browse themes and add a new radio"
 msgstr "Selaa teemoja ja lisää uusi radiokanava"
 
-#: ../src/settings.py:141
+#: ../src/settings.py:145
 msgid "Populars"
 msgstr "Suositut"
 
-#: ../src/settings.py:142
+#: ../src/settings.py:146
 msgid "Recently added"
 msgstr "Viimeksi lisätty"
 
@@ -488,22 +502,22 @@ msgstr "Synkronoi %s"
 msgid "Cancel synchronization"
 msgstr "Peru synkronointi"
 
-#: ../src/widgets_album.py:252
+#: ../src/widgets_album.py:251
 #, python-format
-msgid "%s hrs  %s mins"
+msgid "%s h  %s m"
 msgstr "%s t  %s min"
 
-#: ../src/widgets_album.py:254
+#: ../src/widgets_album.py:253
 #, python-format
-msgid "%s hrs"
+msgid "%s h"
 msgstr "%s t"
 
-#: ../src/widgets_album.py:256
+#: ../src/widgets_album.py:255
 #, python-format
-msgid "%s mins"
+msgid "%s m"
 msgstr "%s min"
 
-#: ../src/widgets_album.py:268
+#: ../src/widgets_album.py:267
 #, python-format
 msgid "Disc %s"
 msgstr "Levy %s"
@@ -516,24 +530,24 @@ msgstr "Tuntematon virhe synkronoitaessa. Yritä käynnistää laite uudelleen"
 msgid "No free space available on device"
 msgstr "Laitteella ei ole vapaata tilaa"
 
-#: ../src/widgets_playlist.py:256 ../src/widgets_playlist.py:259
+#: ../src/widgets_playlist.py:253 ../src/widgets_playlist.py:256
 msgid "New playlist "
 msgstr "Uusi soittolista"
 
 #. Need a copy, segfault on EOS 3.1
-#: ../src/widgets_playlist.py:313 ../src/widgets_playlist.py:560
+#: ../src/widgets_playlist.py:310 ../src/widgets_playlist.py:548
 #, python-format
 msgid "Remove \"%s\"?"
 msgstr "Poistetaanko \"%s\"?"
 
-#: ../src/widgets_playlist.py:605
+#: ../src/widgets_playlist.py:593
 msgid "Remove these tracks?"
 msgstr "Poistetaanko nämä kappaleet?"
 
 #. Translators: Put here words added by wikipedia in band search
 #. Ex: Muse_(band), Peaches(musician)
 #. Unused be we keep this for now (as it's already translated)
-#: ../src/wikipedia.py:35
+#: ../src/wikipedia.py:36
 msgid "musician;band"
 msgstr ""
 
@@ -552,7 +566,7 @@ msgstr "Cédric Bellegarde <cedric.bellegarde@adishatz.org>"
 
 #: ../data/AlbumContextWidget.ui.h:1 ../data/AlbumDetailedWidget.ui.h:1
 msgid "Play this album"
-msgstr ""
+msgstr "Toista tämä albumi"
 
 #: ../data/Appmenu.ui.h:1
 msgid "_Update music"
@@ -608,7 +622,7 @@ msgstr "Synkronoi laitteesi tämän soittolistan kanssa"
 
 #: ../data/DeviceManagerView.ui.h:2
 msgid "Please unlock your device"
-msgstr ""
+msgstr "Avaa laitteesi lukitus"
 
 #: ../data/PlaylistEditWidget.ui.h:1 ../data/PlaylistsManagerWidget.ui.h:1
 msgid "Confirm"
@@ -687,54 +701,62 @@ msgid "Play albums on click"
 msgstr "Toista albumit napsautuksella"
 
 #: ../data/SettingsDialog.ui.h:6
+msgid "Control Lollypop with any MPD client"
+msgstr "Halitse Lollypopia millä tahansa MPD-sovelluksella"
+
+#: ../data/SettingsDialog.ui.h:7
+msgid "Network control"
+msgstr "Verkkohallinta"
+
+#: ../data/SettingsDialog.ui.h:8
 msgid "Behaviour"
 msgstr "Toiminta"
 
-#: ../data/SettingsDialog.ui.h:7
+#: ../data/SettingsDialog.ui.h:9
 msgid "Use dark theme variant"
 msgstr "Käytä tumman teeman muunnelmaa"
 
-#: ../data/SettingsDialog.ui.h:8
+#: ../data/SettingsDialog.ui.h:10
 msgid "Show genres"
 msgstr "Näytä tyylilajit"
 
-#: ../data/SettingsDialog.ui.h:10
+#: ../data/SettingsDialog.ui.h:12
 msgid "Appearance"
 msgstr "Ulkoasu"
 
-#: ../data/SettingsDialog.ui.h:11
+#: ../data/SettingsDialog.ui.h:13
 msgid "Configure lollypop behaviour"
 msgstr "Muokkaa Lollypopin toimintoja"
 
-#: ../data/SettingsDialog.ui.h:12
+#: ../data/SettingsDialog.ui.h:14
 msgid "Options"
 msgstr "Valinnat"
 
-#: ../data/SettingsDialog.ui.h:13
+#: ../data/SettingsDialog.ui.h:15
 msgid "Select music folders"
 msgstr "Valitse musiikkikansiot"
 
-#: ../data/SettingsDialog.ui.h:14
+#: ../data/SettingsDialog.ui.h:16
 msgid "Music"
 msgstr "Musiikki"
 
-#: ../data/SettingsDialog.ui.h:15
+#: ../data/SettingsDialog.ui.h:17
 msgid "Select what will be available in party mode"
 msgstr "Valitse mitä biletilassa on käytettävissä"
 
-#: ../data/SettingsDialog.ui.h:17
+#: ../data/SettingsDialog.ui.h:19
 msgid "Login:"
 msgstr "Käyttäjätunnus:"
 
-#: ../data/SettingsDialog.ui.h:18
+#: ../data/SettingsDialog.ui.h:20
 msgid "Password:"
 msgstr "Salasana:"
 
-#: ../data/SettingsDialog.ui.h:19
+#: ../data/SettingsDialog.ui.h:21
 msgid "Connect"
 msgstr "Yhdistä"
 
-#: ../data/SettingsDialog.ui.h:20
+#: ../data/SettingsDialog.ui.h:22
 msgid "You need to install pylast and gi secret"
 msgstr "Asenna pylast ja gi secret"
 
