@@ -1013,16 +1013,22 @@ class MpdServer(socketserver.ThreadingMixIn, socketserver.TCPServer):
             Init server
         """
         self.event = None
-        socketserver.TCPServer.allow_reuse_address = True
-        socketserver.TCPServer.__init__(self, ("", port), MpdHandler)
+        try:
+            socketserver.TCPServer.allow_reuse_address = True
+            socketserver.TCPServer.__init__(self, ("", port), MpdHandler)
+        except Exception as e:
+            print("MpdServer::__init__(): %s" % e)
 
     def run(self, e):
         """
             Run MPD server in a blocking way.
             @param e as threading.Event
         """
-        self.event = e
-        self.serve_forever()
+        try:
+            self.event = e
+            self.serve_forever()
+        except Exception as e:
+            print("MpdServer::run(): %s" % e)
 
 
 class MpdServerDaemon(MpdServer):
