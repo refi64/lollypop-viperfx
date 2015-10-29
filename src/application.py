@@ -87,7 +87,15 @@ class Application(Gtk.Application):
             self.add_main_option("set-rating", b'r', GLib.OptionFlags.NONE,
                                  GLib.OptionArg.INT, "Rate the current track",
                                  None)
-        self.connect('handle-local-options', self._on_handle_local_options)
+            self.add_main_option("play-pause", b't', GLib.OptionFlags.NONE,
+                                 GLib.OptionArg.NONE, "Toggle playback",
+                                 None)
+            self.add_main_option("next", b'n', GLib.OptionFlags.NONE,
+                                 GLib.OptionArg.NONE, "Go to next track",
+                                 None)
+            self.add_main_option("prev", b'p', GLib.OptionFlags.NONE,
+                                 GLib.OptionArg.NONE, "Go to prev track",
+                                 None)
         self.connect('command-line', self._on_command_line)
         self.register(None)
         if self.get_is_remote():
@@ -231,16 +239,6 @@ class Application(Gtk.Application):
         except:
             pass
 
-    def _on_handle_local_options(self, app, options):
-        """
-            Handle command line
-            @param app as Gio.Application
-            @param options as GLib.VariantDict
-        """
-        if options.contains('debug'):
-            self.debug = True
-        return -1
-
     def _on_command_line(self, app, app_cmd_line):
         """
             Handle command line
@@ -249,11 +247,19 @@ class Application(Gtk.Application):
         """
         self._externals_count = 0
         options = app_cmd_line.get_options_dict()
+        if options.contains('debug'):
+            self.debug = True
         if options.contains('set-rating'):
             value = options.lookup_value('set-rating').get_int32()
             if value > 0 and value < 6 and\
                     self.player.current_track.id is not None:
                 self.player.current_track.set_popularity(value)
+        if options.contains('play-pause'):
+            self.player.play_pause()
+        elif options.contains('next'):
+            self.player.next()
+        elif options.contains('prev'):
+            self.player.prev()
         args = app_cmd_line.get_arguments()
         if len(args) > 1:
             self.player.clear_externals()
@@ -264,8 +270,6 @@ class Application(Gtk.Application):
                     pass
                 self._parser.parse_async(f, True,
                                          None, None)
-        if self.window is not None:
-            self.window.present()
         return 0
 
     def _on_entry_parsed(self, parser, uri, metadata):
