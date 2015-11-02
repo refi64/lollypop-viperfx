@@ -125,3 +125,23 @@ class ToolbarTitle(Gtk.Bin):
         Lp().player.seek(value/60)
         self._seeking = False
         self._update_position(value)
+
+    def _on_scroll_event(self, scale, event):
+        """
+            Seek forward or backward
+            @param scale as Gtk.Scale
+            @param event as Gdk.Event
+        """
+        (smooth, x, y) = event.get_scroll_deltas()
+        if smooth and Lp().player.is_playing():
+            position = Lp().player.get_position_in_track()
+            if y > 0:
+                seek = position/1000000/60-5
+            else:
+                seek = position/1000000/60+5
+            if seek < 0:
+                seek = 0
+            if seek > Lp().player.current_track.duration:
+                seek = Lp().player.current_track.duration - 2
+            Lp().player.seek(seek)
+            self._update_position(seek*60)
