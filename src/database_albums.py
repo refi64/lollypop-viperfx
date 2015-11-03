@@ -108,12 +108,12 @@ class AlbumsDatabase:
             sql.execute("UPDATE albums set mtime=? WHERE rowid=?",
                         (mtime, album_id))
 
-    def set_popularity(self, album_id, popularity, commit):
+    def set_popularity(self, album_id, popularity, commit=False):
         """
             Set popularity
             @param album_id as int
             @param popularity as int
-            @warning: commit needed
+            @param commit as bool
         """
         with SqlCursor(Lp().db) as sql:
             try:
@@ -726,7 +726,6 @@ class AlbumsDatabase:
                 v = result.fetchone()
                 if v is not None:
                     ret = v
-            sql.close()
             return ret
 
     def clean(self, album_id):

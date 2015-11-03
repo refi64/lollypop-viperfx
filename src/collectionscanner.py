@@ -198,7 +198,7 @@ class CollectionScanner(GObject.GObject, ScannerTagReader):
                     count = Lp().albums.get_count(album_id, None)
                     value = Lp().albums.get_stats(duration, count)
                     if value is not None:
-                        Lp().albums.set_popularity(album_id, value[0], True)
+                        Lp().albums.set_popularity(album_id, value[0])
                         Lp().albums.set_mtime(album_id, value[1])
 
             # Clean deleted files
