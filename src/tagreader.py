@@ -185,9 +185,11 @@ class ScannerTagReader(TagReader):
         """
         exist = False
         if tags is not None:
-            (exist, datetime) = tags.get_date_time('datetime')
+            (exist, date) = tags.get_date('date')
+            if not exist:
+                (exist, date) = tags.get_date_time('datetime')
         if exist:
-            year = datetime.get_year()
+            year = date.get_year()
         else:
             year = None
         return year
