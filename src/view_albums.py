@@ -181,14 +181,14 @@ class AlbumsView(View):
                 self._context_widget.destroy()
                 self._context_widget = None
             else:
-                self._context_album_id = album_widget.get_id()
                 if Lp().settings.get_value('auto-play'):
-                    album = Album(self._context_album_id)
+                    album = Album(album_widget.get_id())
                     track = Track(album.tracks_ids[0])
                     Lp().player.load(track)
                     Lp().player.set_albums(track.id, None,
                                            self._genre_id)
                 else:
+                    self._context_album_id = album_widget.get_id()
                     self._populate_context(self._context_album_id)
                     self._context.show()
         else:
