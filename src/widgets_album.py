@@ -171,7 +171,7 @@ class AlbumSimpleWidget(Gtk.Bin, AlbumWidget):
         self.add(self._widget)
         self.set_cover()
         self.update_state()
-        self.set_property('halign', Gtk.Align.START)
+        self.set_property('halign', Gtk.Align.CENTER)
         self.set_property('valign', Gtk.Align.START)
 
     def do_get_preferred_width(self):
