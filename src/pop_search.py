@@ -88,6 +88,7 @@ class SearchRow(Gtk.ListBoxRow):
             @param button as Gtk.Button
         """
         Lp().window.show_playlist_manager(self.id, None, not self.is_track)
+        self._parent.hide()
 
     def _on_queue_clicked(self, button):
         """
