@@ -22,16 +22,17 @@ class AlbumContextWidget(AlbumDetailedWidget):
         Widget with cover and tracks
     """
 
-    def __init__(self, album_id, genre_id, size_group):
+    def __init__(self, album_id, genre_id, pop_allowed, size_group):
         """
             Init detailed album widget
             @param album id as int
             @param genre id as int
             @param parent width as int
+            @param pop_allowed as bool if widget can show popovers
             @param size group as Gtk.SizeGroup
         """
         AlbumDetailedWidget.__init__(self, album_id, genre_id,
-                                     True, size_group)
+                                     pop_allowed, size_group)
         self._artist_label.set_text(self._album.artist_name)
         self._artist_label.show()
 
