@@ -404,6 +404,7 @@ class Application(Gtk.Application):
 
         aboutAction = Gio.SimpleAction.new('about', None)
         aboutAction.connect('activate', self._about)
+        self.set_accels_for_action('app.about', ["<Control>a"])
         self.add_action(aboutAction)
 
         helpAction = Gio.SimpleAction.new('help', None)
