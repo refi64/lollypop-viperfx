@@ -10,7 +10,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-from gi.repository import Gtk, GLib
+from gi.repository import Gtk, GLib, Gdk
 
 from lollypop.view import View
 from lollypop.view_container import ViewContainer
@@ -68,7 +68,7 @@ class AlbumsView(View):
         self._is_compilation = is_compilation
         self._albumsongs = None
         self._context_widget = None
-        self._button_press = 1
+        self._press_rect = None
 
         self._albumbox = Gtk.FlowBox()
         self._albumbox.set_selection_mode(Gtk.SelectionMode.NONE)
@@ -174,7 +174,7 @@ class AlbumsView(View):
             @param child as Gtk.FlowboxChild
         """
         album_widget = child.get_child()
-        if self._button_press == 1:
+        if self._press_rect is None:
             if self._context_album_id == album_widget.get_id():
                 self._context_album_id = None
                 self._context.hide()
@@ -198,8 +198,9 @@ class AlbumsView(View):
                 self._context_widget.destroy()
                 self._context_widget = None
             popover = AlbumPopoverWidget(album_widget.get_id(),
-                                         self._genre_id,
-                                         album_widget)
+                                         self._genre_id)
+            popover.set_relative_to(album_widget)
+            popover.set_pointing_to(self._press_rect)
             popover.show()
 
     def _on_button_press(self, flowbox, event):
@@ -208,5 +209,11 @@ class AlbumsView(View):
             @param flowbox as Gtk.Flowbox
             @param event as Gdk.EventButton
         """
-        self._button_press = event.button
-        event.button = 1
+        if event.button == 1:
+            self._press_rect = None
+        else:
+            self._press_rect = Gdk.Rectangle()
+            self._press_rect.x = event.x
+            self._press_rect.y = event.y
+            self._press_rect.width = self._press_rect.height = 1
+            event.button = 1

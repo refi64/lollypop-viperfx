@@ -291,8 +291,7 @@ class TrackRow(Row):
             rect = widget.get_allocation()
             rect.x = xcoordinate
             rect.y = ycoordinate
-            rect.width = 1
-            rect.height = 1
+            rect.width = rect.height = 1
             popover.set_pointing_to(rect)
 
         rating = RatingWidget(self._object)

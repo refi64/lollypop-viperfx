@@ -66,12 +66,11 @@ class AlbumPopoverWidget(Gtk.Popover):
         An AlbumContextWidget in a popover
     """
 
-    def __init__(self, album_id, genre_id, parent):
+    def __init__(self, album_id, genre_id):
         """
             Init popover
             @param album id as int
             @param genre id as int
-            @param parent as Gtk.Widget
         """
         Gtk.Popover.__init__(self)
         self.connect('hide', self._on_hide)
@@ -83,7 +82,6 @@ class AlbumPopoverWidget(Gtk.Popover):
         self._widget.populate()
         self._widget.show()
         self.add(self._widget)
-        self.set_relative_to(parent)
 
     def do_get_preferred_width(self):
         """
