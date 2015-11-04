@@ -86,7 +86,7 @@ class InfosPopover(Gtk.Popover):
         size_setting = Lp().settings.get_value('window-size')
         if isinstance(size_setting[1], int):
             self.set_size_request(size_setting[0]*0.6,
-                                  size_setting[1]*0.8)
+                                  size_setting[1]*0.7)
         else:
             self.set_size_request(700, 600)
         self._stack.set_visible_child_name(
