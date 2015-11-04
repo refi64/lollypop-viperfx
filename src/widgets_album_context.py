@@ -78,6 +78,7 @@ class AlbumPopoverWidget(Gtk.Popover):
         size_group = Gtk.SizeGroup(mode=Gtk.SizeGroupMode.HORIZONTAL)
         self._widget = AlbumContextWidget(album_id,
                                           genre_id,
+                                          Gtk.get_minor_version() > 16,
                                           size_group)
         self._widget.populate()
         self._widget.show()
