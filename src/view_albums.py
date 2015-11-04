@@ -192,6 +192,11 @@ class AlbumsView(View):
                     self._populate_context(self._context_album_id)
                     self._context.show()
         else:
+            if self._context_album_id is not None:
+                self._context_album_id = None
+                self._context.hide()
+                self._context_widget.destroy()
+                self._context_widget = None
             popover = AlbumPopoverWidget(album_widget.get_id(),
                                          self._genre_id,
                                          album_widget)
