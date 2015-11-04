@@ -52,7 +52,7 @@ class ArtistContent(Gtk.Stack):
                                               c == ' ']).rstrip(),
                                      suffix)
         if path.exists(filepath):
-            return path
+            return filepath
         else:
             return ""
 
