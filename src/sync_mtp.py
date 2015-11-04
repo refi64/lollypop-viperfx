@@ -178,12 +178,12 @@ class MtpSync:
                     self._in_thread = False
                     return
                 track = Track(track_id)
-                # Sanitize file names as some MTP devices do not like this
+                # Sanitize filename as some MTP devices do not like this
                 # Or this is a Gio/GObject Introspection bug
                 album_name = "".join([c for c in track.album_name if
                                       c.isalpha() or
                                       c.isdigit() or c == ' ']).rstrip()
-                # Sanitize file names as some MTP devices do not like this
+                # Sanitize filename as some MTP devices do not like this
                 # Or this is a Gio/GObject Introspection bug
                 artist_name = "".join([c for c in track.artist if
                                        c.isalpha() or
@@ -209,7 +209,7 @@ class MtpSync:
                                      None, None))
 
                 track_name = GLib.basename(track.path)
-                # Sanitize file names as some MTP devices do not like this
+                # Sanitize filename as some MTP devices do not like this
                 # Or this is a Gio/GObject Introspection bug
                 track_name = "".join([c for c in track_name if c.isalpha() or
                                       c.isdigit() or
@@ -266,12 +266,12 @@ class MtpSync:
                 self._in_thread = False
                 return
             track = Track(track_id)
-            # Sanitize file names as some MTP devices do not like this
+            # Sanitize filename as some MTP devices do not like this
             # Or this is a Gio/GObject Introspection bug
             album_name = "".join([c for c in track.album_name if
                                   c.isalpha() or
                                   c.isdigit() or c == ' ']).rstrip()
-            # Sanitize file names as some MTP devices do not like this
+            # Sanitize filename as some MTP devices do not like this
             # Or this is a Gio/GObject Introspection bug
             artist_name = "".join([c for c in track.artist if
                                    c.isalpha() or
@@ -282,7 +282,7 @@ class MtpSync:
                                              album_name.lower())
 
             track_name = GLib.basename(track_path)
-            # Sanitize file names as some MTP devices do not like this
+            # Sanitize filename as some MTP devices do not like this
             # Or this is a Gio/GObject Introspection bug
             track_name = "".join([c for c in track_name if c.isalpha() or
                                   c.isdigit() or
