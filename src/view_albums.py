@@ -188,8 +188,9 @@ class AlbumsView(View):
                     Lp().player.load(track)
                     Lp().player.set_albums(track.id, None,
                                            self._genre_id)
-                self._populate_context(self._context_album_id)
-                self._context.show()
+                else:
+                    self._populate_context(self._context_album_id)
+                    self._context.show()
         else:
             popover = AlbumPopoverWidget(album_widget.get_id(),
                                          self._genre_id,
