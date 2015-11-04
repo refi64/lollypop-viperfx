@@ -28,7 +28,33 @@ class ArtistContent(Gtk.Stack):
         Widget showing artist image and bio
     """
 
-    _CACHE_PATH = path.expanduser("~") + "/.cache/lollypop_infos"
+    CACHE_PATH = path.expanduser("~") + "/.cache/lollypop_infos"
+
+    def exists_in_cache(artist):
+        """
+            Return True if an artist is cached
+            @param artist as string
+        """
+        return ArtistContent.get_artwork(artist, "lastfm") != "" or\
+            ArtistContent.get_artwork(artist, "wikipedia") != ""
+
+    def get_artwork(artist, suffix):
+        """
+            Return path for artwork, empty if none
+            @param artist as string
+            @param suffix as string
+            @return path as string
+        """
+        filepath = "%s/%s_%s.jpg" % (ArtistContent.CACHE_PATH,
+                                     "".join([c for c in artist if
+                                              c.isalpha() or
+                                              c.isdigit() or
+                                              c == ' ']).rstrip(),
+                                     suffix)
+        if path.exists(filepath):
+            return path
+        else:
+            return ""
 
     def __init__(self):
         """
@@ -46,11 +72,11 @@ class ArtistContent(Gtk.Stack):
         self.add_named(builder.get_object('widget'), 'widget')
         self.add_named(builder.get_object('notfound'), 'notfound')
         self.add_named(builder.get_object('spinner'), 'spinner')
-        if not path.exists(self._CACHE_PATH):
+        if not path.exists(self.CACHE_PATH):
             try:
-                mkdir(self._CACHE_PATH)
+                mkdir(self.CACHE_PATH)
             except:
-                print("Can't create %s" % self._CACHE_PATH)
+                print("Can't create %s" % self.CACHE_PATH)
 
     def should_update(self, artist):
         """
@@ -104,7 +130,7 @@ class ArtistContent(Gtk.Stack):
             @param artist as string
             @param suffix as string
         """
-        filepath = "%s/%s_%s.txt" % (self._CACHE_PATH,
+        filepath = "%s/%s_%s.txt" % (self.CACHE_PATH,
                                      "".join(
                                         [c for c in artist if
                                          c.isalpha() or
@@ -115,7 +141,7 @@ class ArtistContent(Gtk.Stack):
             f.delete(None)
         except:
             pass
-        filepath = "%s/%s_%s" % (self._CACHE_PATH,
+        filepath = "%s/%s_%s" % (self.CACHE_PATH,
                                  "".join([c for c in artist if
                                           c.isalpha() or
                                           c.isdigit() or c == ' ']).rstrip(),
@@ -168,7 +194,7 @@ class ArtistContent(Gtk.Stack):
         if content is None:
             return
 
-        filepath = "%s/%s_%s" % (self._CACHE_PATH,
+        filepath = "%s/%s_%s" % (self.CACHE_PATH,
                                  "".join([c for c in artist if
                                           c.isalpha() or
                                           c.isdigit() or c == ' ']).rstrip(),
@@ -210,7 +236,7 @@ class ArtistContent(Gtk.Stack):
             Load content from cache
             @return (content as string, data as bytes)
         """
-        filepath = "%s/%s_%s" % (self._CACHE_PATH,
+        filepath = "%s/%s_%s" % (self.CACHE_PATH,
                                  "".join([c for c in artist if
                                           c.isalpha() or
                                           c.isdigit() or c == ' ']).rstrip(),
