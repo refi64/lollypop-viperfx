@@ -67,10 +67,12 @@ class AlbumsView(View):
         self._is_compilation = is_compilation
         self._albumsongs = None
         self._context_widget = None
+        self._button_press = 1
 
         self._albumbox = Gtk.FlowBox()
         self._albumbox.set_selection_mode(Gtk.SelectionMode.NONE)
         self._albumbox.connect('child-activated', self._on_album_activated)
+        self._albumbox.connect('button-press-event', self._on_button_press)
         self._albumbox.set_property('column-spacing', 5)
         self._albumbox.set_property('row-spacing', 5)
         self._albumbox.set_homogeneous(True)
@@ -167,20 +169,41 @@ class AlbumsView(View):
         """
             Show Context view for activated album
             @param flowbox as Gtk.Flowbox
-            @child as Gtk.FlowboxChild
+            @param child as Gtk.FlowboxChild
         """
-        if self._context_album_id == child.get_child().get_id():
-            self._context_album_id = None
-            self._context.hide()
-            self._context_widget.destroy()
-            self._context_widget = None
+        album_widget = child.get_child()
+        if self._button_press == 1:
+            if self._context_album_id == album_widget.get_id():
+                self._context_album_id = None
+                self._context.hide()
+                self._context_widget.destroy()
+                self._context_widget = None
+            else:
+                self._context_album_id = album_widget.get_id()
+                if Lp().settings.get_value('auto-play'):
+                    album = Album(self._context_album_id)
+                    track = Track(album.tracks_ids[0])
+                    Lp().player.load(track)
+                    Lp().player.set_albums(track.id, None,
+                                           self._genre_id)
+                self._populate_context(self._context_album_id)
+                self._context.show()
         else:
-            self._context_album_id = child.get_child().get_id()
-            if Lp().settings.get_value('auto-play'):
-                album = Album(self._context_album_id)
-                track = Track(album.tracks_ids[0])
-                Lp().player.load(track)
-                Lp().player.set_albums(track.id, None,
-                                       self._genre_id)
-            self._populate_context(self._context_album_id)
-            self._context.show()
+            size_group = Gtk.SizeGroup(mode=Gtk.SizeGroupMode.HORIZONTAL)
+            widget = AlbumContextWidget(album_widget.get_id(),
+                                        self._genre_id,
+                                        size_group)
+            widget.populate()
+            widget.show()
+            popover = Gtk.Popover.new(album_widget)
+            popover.add(widget)
+            popover.show()
+
+    def _on_button_press(self, flowbox, event):
+        """
+            Store pressed button
+            @param flowbox as Gtk.Flowbox
+            @param event as Gdk.EventButton
+        """
+        self._button_press = event.button
+        event.button = 1
