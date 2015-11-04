@@ -16,6 +16,7 @@ from lollypop.view import View
 from lollypop.view_container import ViewContainer
 from lollypop.widgets_album import AlbumSimpleWidget
 from lollypop.widgets_album_context import AlbumContextWidget
+from lollypop.widgets_album_context import AlbumPopoverWidget
 from lollypop.define import Lp, ArtSize
 from lollypop.objects import Album, Track
 
@@ -189,14 +190,9 @@ class AlbumsView(View):
                 self._populate_context(self._context_album_id)
                 self._context.show()
         else:
-            size_group = Gtk.SizeGroup(mode=Gtk.SizeGroupMode.HORIZONTAL)
-            widget = AlbumContextWidget(album_widget.get_id(),
-                                        self._genre_id,
-                                        size_group)
-            widget.populate()
-            widget.show()
-            popover = Gtk.Popover.new(album_widget)
-            popover.add(widget)
+            popover = AlbumPopoverWidget(album_widget.get_id(),
+                                         self._genre_id,
+                                         album_widget)
             popover.show()
 
     def _on_button_press(self, flowbox, event):

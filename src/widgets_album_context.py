@@ -10,9 +10,9 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-from gi.repository import Gdk
+from gi.repository import Gtk, Gdk
 
-from lollypop.define import Type
+from lollypop.define import Type, Lp
 from lollypop.pop_infos import InfosPopover
 from lollypop.widgets_album import AlbumDetailedWidget
 
@@ -58,3 +58,49 @@ class AlbumContextWidget(AlbumDetailedWidget):
             pop = InfosPopover(self._album.artist_id)
             pop.set_relative_to(eventbox)
             pop.show()
+
+
+class AlbumPopoverWidget(Gtk.Popover):
+    """
+        An AlbumContextWidget in a popover
+    """
+
+    def __init__(self, album_id, genre_id, parent):
+        """
+            Init popover
+            @param album id as int
+            @param genre id as int
+            @param parent as Gtk.Widget
+        """
+        Gtk.Popover.__init__(self)
+        self.connect('hide', self._on_hide)
+        size_group = Gtk.SizeGroup(mode=Gtk.SizeGroupMode.HORIZONTAL)
+        self._widget = AlbumContextWidget(album_id,
+                                          genre_id,
+                                          size_group)
+        self._widget.populate()
+        self._widget.show()
+        self.add(self._widget)
+        self.set_relative_to(parent)
+
+    def do_get_preferred_width(self):
+        """
+            Set maximum width
+        """
+        size_setting = Lp().settings.get_value('window-size')
+        if isinstance(size_setting[0], int):
+            width = size_setting[0] * 0.6
+        else:
+            width = 500
+        return (width, width)
+
+#######################
+# PRIVATE             #
+#######################
+    def _on_hide(self, widget):
+        """
+            Destroy itself
+            @param widget as Gtk.Widget
+        """
+        self._widget.destroy()
+        self.destroy()
