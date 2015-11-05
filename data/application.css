@@ -13,7 +13,7 @@ GtkTreeView:selected:hover {
 }
 
 GtkTreeView:hover {
-    background-color: alpha(@theme_bg_color, 0.9);
+    background-color: @theme_bg_color;
     color: @theme_fg_color;
 }
 
