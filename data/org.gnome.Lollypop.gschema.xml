@@ -168,6 +168,16 @@
             <summary>INTERNAL</summary>
             <description></description>
         </key>
+        <key type="s" name="mpd-eth">
+            <default>""</default>
+            <summary>MPD network interface</summary>
+            <description></description>
+        </key>
+        <key type="i" name="mpd-port">
+            <default>6600</default>
+            <summary>MPD network port</summary>
+            <description></description>
+        </key>
         <key enum="org.gnome.Lollypop.Shuffle" name="shuffle">
             <default>'none'</default>
             <summary>Shuffle mode</summary>

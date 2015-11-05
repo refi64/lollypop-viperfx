@@ -12,15 +12,15 @@
 
 from gi.repository import GLib, Gst
 
+from datetime import datetime
 import socketserver
 import threading
-from datetime import datetime
 import os
 
 from lollypop.define import Lp, Type
 from lollypop.objects import Track
 from lollypop.database_mpd import MpdDatabase
-from lollypop.utils import translate_artist_name, format_artist_name
+from lollypop.utils import translate_artist_name, format_artist_name, get_ip
 
 
 class MpdHandler(socketserver.BaseRequestHandler):
@@ -1019,14 +1019,20 @@ class MpdServer(socketserver.ThreadingMixIn, socketserver.TCPServer):
         Create a MPD server.
     """
 
-    def __init__(self, port=6600):
+    def __init__(self, eth, port=6600):
         """
             Init server
+            @param eth as string
+            @param port as int
         """
         self.event = None
         try:
             socketserver.TCPServer.allow_reuse_address = True
-            socketserver.TCPServer.__init__(self, ("", port), MpdHandler)
+            # Get ip for interface
+            ip = ""
+            if eth != "":
+                ip = get_ip(eth)
+            socketserver.TCPServer.__init__(self, (ip, port), MpdHandler)
         except Exception as e:
             print("MpdServer::__init__(): %s" % e)
 
@@ -1045,12 +1051,14 @@ class MpdServer(socketserver.ThreadingMixIn, socketserver.TCPServer):
 class MpdServerDaemon(MpdServer):
     """
         Create a deamonized MPD server
+        @param eth as string
+        @param port as int
     """
-    def __init__(self, port=6600):
+    def __init__(self, eth="", port=6600):
         """
             Init daemon
         """
-        MpdServer.__init__(self, port)
+        MpdServer.__init__(self, eth, port)
         self.running = True
         event = threading.Event()
         self.thread = threading.Thread(target=self.run,

@@ -132,7 +132,9 @@ class Application(Gtk.Application):
         if not self.settings.get_value('disable-mpris'):
             MPRIS(self)
         if not self.settings.get_value('disable-mpd'):
-            self.mpd = MpdServerDaemon()
+            self.mpd = MpdServerDaemon(
+                               self.settings.get_value('mpd-eth').get_string(),
+                               self.settings.get_value('mpd-port').get_int32())
         if not self.settings.get_value('disable-notifications'):
             self.notify = NotificationManager()
 

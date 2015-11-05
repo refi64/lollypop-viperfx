@@ -269,7 +269,9 @@ class SettingsDialog:
         Lp().settings.set_value('disable-mpd',
                                 GLib.Variant('b', not state))
         if Lp().mpd is None:
-            Lp().mpd = MpdServerDaemon()
+            Lp().mpd = MpdServerDaemon(
+                               Lp().settings.get_value('mpd-eth').get_string(),
+                               Lp().settings.get_value('mpd-port').get_int32())
         else:
             Lp().mpd.quit()
             Lp().mpd = None
