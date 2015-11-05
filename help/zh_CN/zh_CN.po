@@ -1,39 +1,39 @@
 # 
 # Translators:
-# naren93 <m.renato93@gmail.com>, 2015
+# orange <orau9e@outlook.com>, 2015
 msgid ""
 msgstr ""
 "Project-Id-Version: lollypop\n"
 "POT-Creation-Date: 2015-06-24 15:43+0200\n"
-"PO-Revision-Date: 2015-10-31 20:44+0000\n"
-"Last-Translator: naren93 <m.renato93@gmail.com>\n"
-"Language-Team: Hungarian (http://www.transifex.com/gnumdk/lollypop/language/hu/)\n"
+"PO-Revision-Date: 2015-09-26 04:05+0000\n"
+"Last-Translator: orange <orau9e@outlook.com>\n"
+"Language-Team: Chinese (China) (http://www.transifex.com/gnumdk/lollypop/language/zh_CN/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Language: hu\n"
-"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Language: zh_CN\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
 
 #. Put one translator per line, in the form NAME <EMAIL>, YEAR1, YEAR2
 msgctxt "_"
 msgid "translator-credits"
-msgstr ""
+msgstr "翻译"
 
 #. (itstool) path: info/desc
 #: C/index.page:7
 msgid "Help for the Lollypop music player."
-msgstr "Súgó a Lollypop zene lejátszóhoz"
+msgstr "Lollypop音乐播放器帮助"
 
 #. (itstool) path: info/title
 #: C/index.page:8
 msgctxt "text"
 msgid "Lollypop music player"
-msgstr "Lollypop zene lejátszó"
+msgstr "Lollypop音乐播放器"
 
 #. (itstool) path: credit/name
 #: C/index.page:11
 msgid "Cédric Bellegarde"
-msgstr ""
+msgstr "Cédric Bellegarde"
 
 #. (itstool) path: credit/years
 #: C/index.page:13
@@ -43,34 +43,34 @@ msgstr "2015"
 #. (itstool) path: page/title
 #: C/index.page:18
 msgid "<_:media-1/> Lollypop music player"
-msgstr "<_:media-1/> Lollypop zene lejátszó"
+msgstr "<_:media-1/> Lollypop音乐播放器"
 
 #. (itstool) path: section/title
 #: C/index.page:21
 msgid "Add music"
-msgstr "Zene hozzáadása"
+msgstr "添加音乐"
 
 #. (itstool) path: section/p
 #: C/index.page:22
 msgid "If lollypop fails to detect your music:"
-msgstr "Ha a Lollypop nem talál zenét:"
+msgstr "如果lollypop 检测音乐失败"
 
 #. (itstool) path: item/p
 #: C/index.page:24
 msgid "Check you have gstreamer-libav or gstreamer-fluendo installed"
-msgstr "Ellenőrizd hogy a gstreamer-libav vagy a gstreamer-fluendo telepítve van-e"
+msgstr "检查是否已经安装 gstreamer-libav 或者gstreamer-fluendo"
 
 #. (itstool) path: item/p
 #: C/index.page:25
 msgid ""
 "Go to the application menu: \"<sys>Settings -&gt; Music</sys>\" and add your"
 " music folder"
-msgstr "Menj az alkalmazás menüjébe: \"<sys>Beállítások -&gt; Zene</sys>\" és add hozzá a zene mappád"
+msgstr ""
 
 #. (itstool) path: section/title
 #: C/index.page:30
 msgid "Playback"
-msgstr "Lejátszás"
+msgstr "回放"
 
 #. (itstool) path: section/p
 #: C/index.page:31
@@ -92,7 +92,7 @@ msgstr ""
 #. (itstool) path: section/title
 #: C/index.page:37
 msgid "Rate albums"
-msgstr "Értékeld az albumokat"
+msgstr "评价专辑"
 
 #. (itstool) path: section/p
 #: C/index.page:38
@@ -110,7 +110,7 @@ msgstr ""
 #. (itstool) path: section/title
 #: C/index.page:43
 msgid "Download covers"
-msgstr ""
+msgstr "下载封面"
 
 #. (itstool) path: section/p
 #: C/index.page:44
@@ -122,72 +122,72 @@ msgstr ""
 #. (itstool) path: section/p
 #: C/index.page:45
 msgid "You need an internet connection."
-msgstr ""
+msgstr "你需要接入因特网"
 
 #. (itstool) path: section/title
 #: C/index.page:49
 msgid "Shortcuts"
-msgstr "Gyorsbillentyűk"
+msgstr "快捷键"
 
 #. (itstool) path: item/p
 #: C/index.page:51
 msgid "Control+s: Lollypop settings"
-msgstr "Ctrl+s: Lollypop  beállítások"
+msgstr "Control+s: Lollypop 设置"
 
 #. (itstool) path: item/p
 #: C/index.page:52
 msgid "Control+f: Search"
-msgstr "Ctrl+f: Keresés"
+msgstr "Control+f: 搜索"
 
 #. (itstool) path: item/p
 #: C/index.page:53
 msgid "Control+p: Party mode"
-msgstr "Ctrl+p: Parti mód"
+msgstr "Control+p: 派对模式"
 
 #. (itstool) path: item/p
 #: C/index.page:54
 msgid "Control+m or F11: Fullscreen"
-msgstr "Control+m vagy F11: Teljes képernyő"
+msgstr "Control+m 或 F11: 全屏"
 
 #. (itstool) path: item/p
 #: C/index.page:55
 msgid "x: Play"
-msgstr "x: Lejátszás"
+msgstr "x: 播放"
 
 #. (itstool) path: item/p
 #: C/index.page:56
 msgid "c: Pause"
-msgstr "c: Szünet"
+msgstr "c: 暂停"
 
 #. (itstool) path: item/p
 #: C/index.page:57
 msgid "v: Stop"
-msgstr "v: Megállítás"
+msgstr "v: 停止"
 
 #. (itstool) path: item/p
 #: C/index.page:58
 msgid "n: Next track"
-msgstr "n: Következő szám"
+msgstr "n: 下一轨道"
 
 #. (itstool) path: item/p
 #: C/index.page:59
 msgid "p: Previous track"
-msgstr "p: Előző szám"
+msgstr "p: 上一轨道"
 
 #. (itstool) path: item/p
 #: C/index.page:60
 msgid "Control+n: Skip current album"
-msgstr "Ctrl+n: Jelenlegi album kihagyása"
+msgstr "Control+n: 跳过当前专辑"
 
 #. (itstool) path: item/p
 #: C/index.page:61
 msgid "Left key: Skip backward in track"
-msgstr "Bal nyíl: Tekerés előre"
+msgstr ""
 
 #. (itstool) path: item/p
 #: C/index.page:62
 msgid "Right key: Skip forward in track"
-msgstr "Jobb nyíl: tekerés hátra"
+msgstr ""
 
 #. (itstool) path: p/link
 #: C/legal.xml:4
@@ -197,7 +197,7 @@ msgstr ""
 #. (itstool) path: license/p
 #: C/legal.xml:3
 msgid "This work is licensed under a <_:link-1/>."
-msgstr ""
+msgstr "本文许可协议 <_:link-1/>."
 
 #. (itstool) path: license/p
 #: C/legal.xml:6
@@ -205,4 +205,4 @@ msgid ""
 "As a special exception, the copyright holders give you permission to copy, "
 "modify, and distribute the example code contained in this document under the"
 " terms of your choosing, without restriction."
-msgstr ""
+msgstr "As a special exception, the copyright holders give you permission to copy, modify, and distribute the example code contained in this document under the terms of your choosing, without restriction."
