@@ -683,6 +683,17 @@ class MpdHandler(socketserver.BaseRequestHandler):
         GLib.idle_add(Lp().player.prev)
         self._send_msg('', list_ok)
 
+    def _random(self, args_array, list_ok):
+        """
+            Set player random, as MPD can't handle all lollypop random modes,
+            set party mode
+            @param args as [str]
+            @param ass list_OK as bool
+        """
+        args = self._get_args(args_array[0])
+        GLib.idle_add(Lp().player.set_party, bool(int(args[0])))
+        self._send_msg('', list_ok)
+
     def _replay_gain_status(self, args_array, list_ok):
         """
             Send output
