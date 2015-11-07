@@ -33,7 +33,6 @@ class MpdHandler(socketserver.BaseRequestHandler):
         self._mpddb = MpdDatabase()
         self._playlist_version = 0
         self._idle_strings = []
-        self._plchanges_timeout = {}
         self._last_tracks = Lp().playlists.get_tracks_ids(Type.MPD)
         self._signal1 = Lp().player.connect('current-changed',
                                             self._on_player_changed)
@@ -99,6 +98,7 @@ class MpdHandler(socketserver.BaseRequestHandler):
     def _add(self, args_array, list_ok):
         """
             Add track to mpd playlist
+            @syntax add filepath
             @param args as [str]
             @param add list_OK as bool
         """
@@ -128,6 +128,7 @@ class MpdHandler(socketserver.BaseRequestHandler):
     def _clear(self, args_array, list_ok):
         """
             Clear mpd playlist
+            @syntax clear
             @param args as [str]
             @param add list_OK as bool
         """
@@ -144,6 +145,7 @@ class MpdHandler(socketserver.BaseRequestHandler):
     def _commands(self, args_array, list_ok):
         """
             Send available commands
+            @syntax commands
             @param args as [str]
             @param add list_OK as bool
         """
@@ -162,6 +164,7 @@ class MpdHandler(socketserver.BaseRequestHandler):
     def _count(self, args_array, list_ok):
         """
             Send lollypop current song
+            @syntax count tag
             @param args as [str]
             @param add list_OK as bool
         """
@@ -203,6 +206,7 @@ class MpdHandler(socketserver.BaseRequestHandler):
     def _currentsong(self, args_array, list_ok):
         """
             Send lollypop current song
+            @syntax currentsong
             @param args as [str]
             @param add list_OK as bool
         """
@@ -215,6 +219,7 @@ class MpdHandler(socketserver.BaseRequestHandler):
     def _delete(self, args_array, list_ok):
         """
             Delete track from playlist
+            @syntax delete position
             @param args as [str]
             @param add list_OK as bool
         """
@@ -227,6 +232,7 @@ class MpdHandler(socketserver.BaseRequestHandler):
     def _deleteid(self, args_array, list_ok):
         """
             Delete track from playlist
+            @syntax delete track_id
             @param args as [str]
             @param add list_OK as bool
         """
@@ -238,6 +244,12 @@ class MpdHandler(socketserver.BaseRequestHandler):
         self._send_msg("", list_ok)
 
     def _idle(self, args_array, list_ok):
+        """
+            Idle waiting for changes
+            @syntax idle type (type not implemented here)
+            @param args as [str]
+            @param add list_OK as bool
+        """
         msg = ''
         self.request.settimeout(0)
         self.server.event.clear()
@@ -252,12 +264,19 @@ class MpdHandler(socketserver.BaseRequestHandler):
         self.request.settimeout(10)
 
     def _noidle(self, args_array, list_ok):
+        """
+            Stop idle
+            @syntax noidle
+            @param args as [str]
+            @param add list_OK as bool
+        """
         self._idle_strings = []
         self.server.event.set()
 
     def _list(self, args_array, list_ok):
         """
             List objects
+            @syntax list what [filter value...]
             @param args as [str]
             @param add list_OK as bool
         """
@@ -314,6 +333,7 @@ class MpdHandler(socketserver.BaseRequestHandler):
     def _listall(self, args_array, list_ok):
         """
             List all tracks
+            @syntax listall
             @param args as [str]
             @param add list_OK as bool
         """
@@ -322,6 +342,7 @@ class MpdHandler(socketserver.BaseRequestHandler):
     def _listallinfo(self, args_array, list_ok):
         """
             List all tracks
+            @syntax listallinfo
             @param args as [str]
             @param add list_OK as bool
         """
@@ -354,6 +375,7 @@ class MpdHandler(socketserver.BaseRequestHandler):
     def _listplaylistinfo(self, args_array, list_ok):
         """
             List playlist informations
+            @syntax listplaylistinfo name
             @param args as [str]
             @param add list_OK as bool
         """
@@ -367,6 +389,7 @@ class MpdHandler(socketserver.BaseRequestHandler):
     def _listplaylists(self, args_array, list_ok):
         """
             Send available playlists
+            @syntax listplaylists
             @param args as [str]
             @param add list_OK as bool
         """
@@ -382,6 +405,7 @@ class MpdHandler(socketserver.BaseRequestHandler):
     def _load(self, args_array, list_ok):
         """
             Load playlist
+            @syntax load name
             @param args as [str]
             @param add list_OK as bool
         """
@@ -399,6 +423,7 @@ class MpdHandler(socketserver.BaseRequestHandler):
     def _lsinfo(self, args_array, list_ok):
         """
             List directories and files
+            @syntax lsinfo path
             @param args as [str]
             @param add list_OK as bool
         """
@@ -448,6 +473,7 @@ class MpdHandler(socketserver.BaseRequestHandler):
     def _next(self, args_array, list_ok):
         """
             Send output
+            @syntax next
             @param args as [str]
             @param add list_OK as bool
         """
@@ -462,6 +488,7 @@ class MpdHandler(socketserver.BaseRequestHandler):
     def _move(self, args_array, list_ok):
         """
             Move range in playlist
+            @syntax move position destination
             @param args as [str]
             @param add list_OK as bool
         """
@@ -486,6 +513,7 @@ class MpdHandler(socketserver.BaseRequestHandler):
     def _moveid(self, args_array, list_ok):
         """
             Move id in playlist
+            @syntax move track_id destination
             @param args as [str]
             @param add list_OK as bool
         """
@@ -509,6 +537,7 @@ class MpdHandler(socketserver.BaseRequestHandler):
     def _outputs(self, args_array, list_ok):
         """
             Send output
+            @syntax outputs
             @param args as [str]
             @param add list_OK as bool
         """
@@ -518,6 +547,7 @@ class MpdHandler(socketserver.BaseRequestHandler):
     def _pause(self, args_array, list_ok):
         """
             Pause track
+            @syntax pause [1|0]
             @param args as [str]
             @param add list_OK as bool
         """
@@ -527,13 +557,14 @@ class MpdHandler(socketserver.BaseRequestHandler):
                 GLib.idle_add(Lp().player.play)
             else:
                 GLib.idle_add(Lp().player.pause)
-        except Exception as e:
-            print("MpdHandler::_pause(): %s" % e)
+        except:
+            GLib.idle_add(Lp().play_pause())
         self._send_msg('', list_ok)
 
     def _play(self, args_array, list_ok):
         """
             Play track
+            @syntax play [position|-1]
             @param args as [str]
             @param add list_OK as bool
         """
@@ -570,6 +601,7 @@ class MpdHandler(socketserver.BaseRequestHandler):
     def _playid(self, args_array, list_ok):
         """
             Play track
+            @syntax play [track_id|-1]
             @param args as [str]
             @param add list_OK as bool
         """
@@ -603,6 +635,9 @@ class MpdHandler(socketserver.BaseRequestHandler):
     def _playlistadd(self, args_array, list_ok):
         """
             Add a new playlist
+            @syntax playlistadd name
+            @param args as [str]
+            @param add list_OK as bool
         """
         args = self._get_args(args_array[0])
         playlist_id = Lp().playlists.get_id(args[0])
@@ -617,9 +652,26 @@ class MpdHandler(socketserver.BaseRequestHandler):
             Lp().playlists.add_tracks(playlist_id, tracks)
         self._send_msg('', list_ok)
 
+    def _playlistid(self, args_array, list_ok):
+        """
+            Send informations about current playlist
+            @param playlistid
+            @param args as [str]
+            @param add list_OK as bool
+        """
+        msg = ""
+        tracks_ids = Lp().playlists.get_tracks_ids(Type.MPD)
+        if Lp().player.current_track.id is not None and\
+           Lp().player.current_track.id not in tracks_ids:
+            tracks_ids.insert(0, Lp().player.current_track.id)
+        for track_id in tracks_ids:
+            msg += self._string_for_track_id(track_id)
+        self._send_msg(msg, list_ok)
+
     def _playlistinfo(self, args_array, list_ok):
         """
-            Send informations about playlists
+            Send informations about current playlist
+            @parma playlistinfo
             @param args as [str]
             @param add list_OK as bool
         """
@@ -635,6 +687,7 @@ class MpdHandler(socketserver.BaseRequestHandler):
     def _plchanges(self, args_array, list_ok):
         """
             Send informations about playlists
+            @syntax plchanges version
             @param args as [str]
             @param add list_OK as bool
         """
@@ -653,6 +706,7 @@ class MpdHandler(socketserver.BaseRequestHandler):
     def _plchangesposid(self, args_array, list_ok):
         """
             Send informations about playlists
+            @param plchangesposid version
             @param args as [str]
             @param add list_OK as bool
         """
@@ -672,6 +726,7 @@ class MpdHandler(socketserver.BaseRequestHandler):
     def _previous(self, args_array, list_ok):
         """
             Send output
+            @syntax previous
             @param args as [str]
             @param add list_OK as bool
         """
@@ -687,6 +742,7 @@ class MpdHandler(socketserver.BaseRequestHandler):
         """
             Set player random, as MPD can't handle all lollypop random modes,
             set party mode
+            @syntax random [1|0]
             @param args as [str]
             @param ass list_OK as bool
         """
@@ -697,10 +753,11 @@ class MpdHandler(socketserver.BaseRequestHandler):
     def _replay_gain_status(self, args_array, list_ok):
         """
             Send output
+            @syntax replay_gain_status
             @param args as [str]
             @param add list_OK as bool
         """
-        msg = "replay_gain_mode: off\n"
+        msg = "replay_gain_mode: on\n"
         self._send_msg(msg, list_ok)
 
     def _repeat(self, args_array, list_ok):
@@ -714,6 +771,7 @@ class MpdHandler(socketserver.BaseRequestHandler):
     def _seek(self, args_array, list_ok):
         """
            Seek current
+           @syntax seek position
            @param args as [str]
            @param add list_OK as bool
         """
@@ -725,6 +783,7 @@ class MpdHandler(socketserver.BaseRequestHandler):
     def _seekid(self, args_array, list_ok):
         """
             Seek track id
+            @syntax seekid track_id position
             @param args as [str]
             @param add list_OK as bool
         """
@@ -738,6 +797,7 @@ class MpdHandler(socketserver.BaseRequestHandler):
     def _search(self, args_array, list_ok):
         """
             Send stats about db
+            @syntax search what value
             @param args as [str]
             @param add list_OK as bool
         """
@@ -778,6 +838,7 @@ class MpdHandler(socketserver.BaseRequestHandler):
     def _setvol(self, args_array, list_ok):
         """
             Send stats about db
+            @syntax setvol value
             @param args as [str]
             @param add list_OK as bool
         """
@@ -789,6 +850,7 @@ class MpdHandler(socketserver.BaseRequestHandler):
     def _stats(self, args_array, list_ok):
         """
             Send stats about db
+            @syntax stats
             @param args as [str]
             @param add list_OK as bool
         """
@@ -804,6 +866,7 @@ class MpdHandler(socketserver.BaseRequestHandler):
     def _status(self, args_array, list_ok):
         """
             Send lollypop status
+            @syntax status
             @param args as [str]
             @param add list_OK as bool
         """
@@ -837,6 +900,7 @@ class MpdHandler(socketserver.BaseRequestHandler):
     def _sticker(self, args_array, list_ok):
         """
             Send stickers
+            @syntax sticker [get|set] song rating
             @param args as [str]
             @param add list_OK as bool
         """
@@ -857,6 +921,7 @@ class MpdHandler(socketserver.BaseRequestHandler):
     def _stop(self, args_array, list_ok):
         """
             Stop player
+            @syntax stop
             @param args as [str]
             @param add list_OK as bool
         """
@@ -865,6 +930,7 @@ class MpdHandler(socketserver.BaseRequestHandler):
     def _tagtypes(self, args_array, list_ok):
         """
             Send available tags
+            @syntax tagtypes
             @param args as [str]
             @param add list_OK as bool
         """
@@ -876,6 +942,7 @@ class MpdHandler(socketserver.BaseRequestHandler):
     def _update(self, args_array, list_ok):
         """
             Update database
+            @syntax update
             @param args as [str]
             @param add list_OK as bool
         """
@@ -885,6 +952,7 @@ class MpdHandler(socketserver.BaseRequestHandler):
     def _urlhandlers(self, args_array, list_ok):
         """
             Send url handlers
+            @syntax urlhandlers
             @param args as [str]
             @param add list_OK as bool
         """
@@ -985,16 +1053,6 @@ class MpdHandler(socketserver.BaseRequestHandler):
             Add playlist to idle if mpd
             @param playlists as Playlists
             @param playlist id as int
-        """
-        if playlist_id in self._plchanges_timeout.keys():
-            GLib.source_remove(self._plchanges_timeout[playlist_id])
-            del self._plchanges_timeout[playlist_id]
-        GLib.timeout_add(500, self._handle_plchanges, playlist_id)
-
-    def _handle_plchanges(self, playlist_id):
-        """
-            Send message to main connexion
-            @parma playlist id as int
         """
         if playlist_id == Type.MPD:
             if "playlist" not in self._idle_strings:
