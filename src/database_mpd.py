@@ -89,7 +89,7 @@ class MpdDatabase:
                           AND" % genre_id
         if year is None:
             where_str += " albums.year is null"
-        else:
+        elif year != Type.NONE:
             where_str += " albums.year = %s" % year
 
         with SqlCursor(Lp().db) as sql:
@@ -109,17 +109,16 @@ class MpdDatabase:
             @param genre id as int
             @return names as [str]
         """
-        from_str = "artists "
-        where_str = ""
+        from_str = "artists, albums "
+        where_str = " albums.artist_id = artists.rowid AND"
         if genre_id is not None:
             from_str += ", albums, album_genres"
-            where_str += " albums.artist_id = artists.rowid AND\
-                          album_genres.genre_id = %s\
+            where_str += " album_genres.genre_id = %s\
                           AND album_genres.album_id = albums.rowid\
                           AND" % genre_id
 
         with SqlCursor(Lp().db) as sql:
-            request = "SELECT artists.name FROM "\
+            request = "SELECT DISTINCT artists.name FROM "\
                        + from_str
             if where_str != "":
                 request += " WHERE " + where_str
@@ -227,5 +226,5 @@ class MpdDatabase:
             request += " WHERE " + where_str
         if request.endswith("AND"):
             request = request[:-3]
-        result = sql.execute(request)
+        result = sql.execute(request + "ORDER BY tracks.tracknumber")
         return result

@@ -1,4 +1,5 @@
 # Copyright (c) 2014-2015 Cedric Bellegarde <cedric.bellegarde@adishatz.org>
+# Copyright (C) 2011 kedals0@gmail.com
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation, either version 3 of the License, or
@@ -23,131 +24,131 @@ from lollypop.database_mpd import MpdDatabase
 from lollypop.utils import translate_artist_name, format_artist_name, get_ip
 
 
-class MpdHandler(socketserver.BaseRequestHandler):
-    idle = None
+class MpdHandler(socketserver.StreamRequestHandler):
+    # Delayed signal
+    _PLCHANGES = ["add", "delete", "clear", "deleteid", "move",
+                  "moveid", "load", "playlistadd"]
+
+    def __init__(self, arg1, arg2, arg3):
+        """
+            Init handler
+        """
+        self._is_idle = False
+        self._mpddb = MpdDatabase()
+        self._playlist = {}
+        self._playlist_version = 0
+        self._idle_wanted_strings = []
+        self._idle_strings = []
+        self._last_tracks = Lp().playlists.get_tracks_ids(Type.MPD)
+        socketserver.StreamRequestHandler.__init__(self, arg1, arg2, arg3)
 
     def handle(self):
         """
             One function to handle them all
         """
-        self._mpddb = MpdDatabase()
-        self._playlist_version = 0
-        self._idle_strings = []
-        self._last_tracks = Lp().playlists.get_tracks_ids(Type.MPD)
-        self._signal1 = Lp().player.connect('current-changed',
-                                            self._on_player_changed)
-        self._signal2 = Lp().player.connect('status-changed',
-                                            self._on_player_changed)
-        self._signal3 = Lp().player.connect('seeked',
-                                            self._on_position_changed)
-        self._signal4 = Lp().playlists.connect('playlist-changed',
-                                               self._on_playlist_changed)
         self.request.send("OK MPD 0.19.0\n".encode('utf-8'))
-        try:
-            while self.server.running:
-                data = self.request.recv(4096).decode('utf-8')
-                # We check if we need to wait for a command_list_end
-                list_begin = data.startswith('command_list_begin') or\
-                    data.startswith('command_list_ok_begin')
-                list_ok = data.startswith('command_list_ok_begin')
-                # Check for list_ok
-                list_end = data.endswith('command_list_end\n')
-                if list_end:
-                    data = data.replace('command_list_end\n', '')
-                    list_begin = False
-                while list_begin:
-                    data += self.request.recv(1024).decode('utf-8')
-                    if data.endswith('command_list_end\n'):
-                        list_begin = False
-                if data == '':
-                    raise IOError
-                else:
-                    data = data.replace('command_list_begin\n', '')
-                    data = data.replace('command_list_ok_begin\n', '')
-                    data = data.replace('command_list_end\n', '')
-                    cmds = data.split('\n')
-                    print(cmds, list_ok, self)
-                    if cmds and self.server.running:
-                        try:
-                            # Group commands
-                            cmd_dict = {}
-                            for cmd in cmds:
-                                if cmd != '':
-                                    command = cmd.split(' ')[0]
-                                    size = len(command) + 1
-                                    if command not in cmd_dict:
-                                        cmd_dict[command] = []
-                                    cmd_dict[command].append(cmd[size:])
-                            for key in cmd_dict.keys():
-                                if key.find("idle") == -1:
-                                    self.server.event.set()
-                                call = getattr(self, '_%s' % key)
-                                call(cmd_dict[key], list_ok)
-                            if list_ok:
-                                self._send_msg('', False)
-                        except Exception as e:
-                            print("MpdHandler::handle(): ", command, e)
-                            self._send_msg('', list_ok)
-        except:
-            self.server.event.set()
-        Lp().player.disconnect(self._signal1)
-        Lp().player.disconnect(self._signal2)
-        Lp().player.disconnect(self._signal3)
-        Lp().playlists.disconnect(self._signal4)
+        self.__connect()
+        while self.server.running:
+            msg = ""
+            try:
+                cmdlist = None
+                cmds = []
+                # check for delayed plchanges
+                delayed = False
+                # Read commands
+                while True:
+                    data = self.rfile.readline().strip().decode("utf-8")
+                    if len(data) == 0:
+                        raise IOError  # EOF
+                    if data == "command_list_ok_begin":
+                        cmdlist = "list_ok"
+                    elif data == "command_list_begin":
+                        cmdlist = "list"
+                    elif data == "command_list_end":
+                        break
+                    else:
+                        cmds.append(data)
+                        if not cmdlist:
+                            break
+                try:
+                    print(cmds)
+                    for cmd in cmds:
+                        command = cmd.split(' ')[0]
+                        size = len(command) + 1
+                        args = cmd[size:]
+                        if command in self._PLCHANGES:
+                            delayed = True
+                        call = getattr(self, '_%s' % command)
+                        msg += call(args)
+                        if cmdlist == "list_ok":
+                            msg += "list_OK\n"
+                except Exception as e:
+                    print("MpdHandler::handle(): ", cmds, e)
+                    raise
+                msg += "OK\n"
+                self.request.send(msg.encode("utf-8"))
+                print(msg.encode("utf-8"), self)
+                if delayed:
+                    print('DELAYED')
+                    GLib.idle_add(Lp().playlists.emit,
+                                  'playlist-changed',
+                                  Type.MPD)
+            except Exception as e:
+                print("IOERRRO")
+                break
+        self.__connect(False)
 
-    def _add(self, args_array, list_ok):
+    def _add(self, cmd_args):
         """
             Add track to mpd playlist
             @syntax add filepath
-            @param args as [str]
-            @param add list_OK as bool
+            @param args as str
+            @return msg as str
         """
         tracks = []
-        for args in args_array:
-            arg = self._get_args(args)
-            track_id = Lp().tracks.get_id_by_path(arg[0])
-            if track_id is None:
-                path = ""
-                for musicpath in Lp().settings.get_music_paths():
-                    search = musicpath.replace("/", "_")
-                    if search in arg[0]:
-                        path = musicpath + arg[0].replace(search, path)
-                if os.path.isdir(path):
-                    tracks_ids = Lp().tracks.get_ids_by_path(path)
-                    for track_id in tracks_ids:
-                        tracks.append(Track(track_id))
-                elif os.path.isfile(path):
-                        track_id = Lp().tracks.get_id_by_path(path)
-                        tracks.append(Track(track_id))
-                        break
-            else:
+        arg = self._get_args(cmd_args)[0]
+        track_id = Lp().tracks.get_id_by_path(arg)
+        if track_id is None:
+            path = ""
+            for musicpath in Lp().settings.get_music_paths():
+                search = musicpath.replace("/", "_")
+                if search in arg:
+                    path = musicpath + arg.replace(search, path)
+            if os.path.isdir(path):
+                tracks_ids = Lp().tracks.get_ids_by_path(path)
+                for track_id in tracks_ids:
+                    tracks.append(Track(track_id))
+            elif os.path.isfile(path):
+                track_id = Lp().tracks.get_id_by_path(path)
                 tracks.append(Track(track_id))
-        Lp().playlists.add_tracks(Type.MPD, tracks)
-        self._send_msg('', list_ok)
+        else:
+            tracks.append(Track(track_id))
+        Lp().playlists.add_tracks(Type.MPD, tracks, False)
+        return ""
 
-    def _clear(self, args_array, list_ok):
+    def _clear(self, cmd_args):
         """
             Clear mpd playlist
             @syntax clear
-            @param args as [str]
-            @param add list_OK as bool
+            @param args as str
+            @return msg as str
         """
-        Lp().playlists.clear(Type.MPD, True)
+        Lp().playlists.clear(Type.MPD, False)
         Lp().player.set_user_playlist_id(Type.NONE)
         GLib.idle_add(Lp().player.stop)
         Lp().player.current_track = Track()
         GLib.idle_add(Lp().player.emit, 'current-changed')
-        self._send_msg('', list_ok)
+        return ""
 
-    def _channels(self, args_array, list_ok):
-        self._send_msg('', list_ok)
+    def _channels(self, cmd_args):
+        return ""
 
-    def _commands(self, args_array, list_ok):
+    def _commands(self, cmd_args):
         """
             Send available commands
             @syntax commands
-            @param args as [str]
-            @param add list_OK as bool
+            @param args as str
+            @return msg as str
         """
         msg = "command: add\ncommand: addid\ncommand: clear\
 \ncommand: channels\ncommand: count\ncommand: currentsong\
@@ -155,20 +156,21 @@ class MpdHandler(socketserver.BaseRequestHandler):
 \ncommand: list\ncommand: listallinfo\ncommand: listplaylists\ncommand: lsinfo\
 \ncommand: next\ncommand: outputs\ncommand: pause\ncommand: play\
 \ncommand: playid\ncommand: playlistinfo\ncommand: plchanges\
-\ncommand: plchangesposid\ncommand: prev\ncommand: replay_gain_status\
+\ncommand: plchangesposid\ncommand: prev\ncommand:find\ncommand:findadd\
+\ncommand: replay_gain_status\
 \ncommand: repeat\ncommand: seek\ncommand: seekid\ncommand: search\
 \ncommand: setvol\ncommand: stats\ncommand: status\ncommand: sticker\
 \ncommand: stop\ncommand: tagtypes\ncommand: update\ncommand: urlhandlers\n"
-        self._send_msg(msg, list_ok)
+        return msg
 
-    def _count(self, args_array, list_ok):
+    def _count(self, cmd_args):
         """
             Send lollypop current song
             @syntax count tag
-            @param args as [str]
-            @param add list_OK as bool
+            @param args as str
+            @return msg as str
         """
-        args = self._get_args(args_array[0])
+        args = self._get_args(cmd_args)
         # Search for filters
         i = 0
         artist = artist_id = year = album = genre = genre_id = None
@@ -201,98 +203,150 @@ class MpdHandler(socketserver.BaseRequestHandler):
         (songs, playtime) = self._mpddb.count(album, artist_id,
                                               genre_id, year)
         msg = "songs: %s\nplaytime: %s\n" % (songs, playtime)
-        self._send_msg(msg, list_ok)
+        return msg
 
-    def _currentsong(self, args_array, list_ok):
+    def _currentsong(self, cmd_args):
         """
             Send lollypop current song
             @syntax currentsong
-            @param args as [str]
-            @param add list_OK as bool
+            @param args as str
+
+            @return msg as str
         """
         if Lp().player.current_track.id is not None:
             msg = self._string_for_track_id(Lp().player.current_track.id)
         else:
             msg = ""
-        self._send_msg(msg, list_ok)
+        return msg
 
-    def _delete(self, args_array, list_ok):
+    def _delete(self, cmd_args):
         """
             Delete track from playlist
             @syntax delete position
-            @param args as [str]
-            @param add list_OK as bool
+            @param args as str
+            @return msg as str
         """
-        arg = self._get_args(args_array[0])[0]
+        arg = self._get_args(cmd_args)[0]
+        # Check for a range
+        try:
+            splited = arg.split(':')
+            start = int(splited[0])
+            end = int(splited[1])
+        except:
+            start = end = int(arg)
         tracks_ids = Lp().playlists.get_tracks_ids(Type.MPD)
-        track_id = tracks_ids[int(arg)]
-        Lp().playlists.remove_tracks(Type.MPD, [Track(track_id)])
-        self._send_msg("", list_ok)
+        tracks = []
+        for i in range(start, end):
+            track_id = tracks_ids[i]
+            tracks.append(Track(track_id))
+        Lp().playlists.remove_tracks(Type.MPD, tracks, False)
+        return ""
 
-    def _deleteid(self, args_array, list_ok):
+    def _deleteid(self, cmd_args):
         """
             Delete track from playlist
             @syntax delete track_id
-            @param args as [str]
-            @param add list_OK as bool
+            @param args as str
+
+            @return msg as str
+        """
+        arg = self._get_args(cmd_args)
+        Lp().playlists.remove_tracks(Type.MPD, Track(int(arg[0])), False)
+        return ""
+
+    def _find(self, cmd_args):
+        """
+            find tracks
+            @syntax find filter value
+            @param args as str
+
+            @return msg as str
+        """
+        msg = ""
+        for track_id in self._find_tracks(cmd_args):
+            msg += self._string_for_track_id(track_id)
+        return msg
+
+    def _findadd(self, cmd_args):
+        """
+            Find tracks and add them to playlist
+            @syntax findadd filter value
+            @param args as str
+            @return msg as str
         """
         tracks = []
-        for args in args_array:
-            arg = self._get_args(args)
-            tracks.append(Track(int(arg[0])))
-        Lp().playlists.remove_tracks(Type.MPD, tracks)
-        self._send_msg("", list_ok)
+        for track_id in self._find_tracks(cmd_args):
+            tracks.append(Track(track_id))
+        if tracks:
+            Lp().playlists.add_tracks(Type.MPD, tracks, False)
+        return ""
 
-    def _idle(self, args_array, list_ok):
+    def _idle(self, cmd_args):
         """
             Idle waiting for changes
             @syntax idle type (type not implemented here)
-            @param args as [str]
-            @param add list_OK as bool
+            @param args as str
+            @return msg as str
         """
         msg = ''
+        args = self._get_args(cmd_args)
+        if args:
+            self._idle_wanted_strings = []
+            for arg in args:
+                self._idle_wanted_strings.append(arg)
+        else:
+            self._idle_wanted_strings = ["stored_playlist",
+                                         "player", "playlist"]
         self.request.settimeout(0)
         self.server.event.clear()
-        # We handle notifications directly
+        # We handle notifications directly if something in queue
         if not self._idle_strings:
             self.server.event.wait()
         # Handle new notifications
         for string in self._idle_strings:
             msg += "changed: %s\n" % string
         self._idle_strings = []
-        self._send_msg(msg, list_ok)
         self.request.settimeout(10)
+        return msg
 
-    def _noidle(self, args_array, list_ok):
+    def _noidle(self, cmd_args):
         """
             Stop idle
             @syntax noidle
-            @param args as [str]
-            @param add list_OK as bool
+            @param args as str
+            @return msg as str
         """
         self._idle_strings = []
         self.server.event.set()
+        return ""
 
-    def _list(self, args_array, list_ok):
+    def _list(self, cmd_args):
         """
             List objects
-            @syntax list what [filter value...]
-            @param args as [str]
-            @param add list_OK as bool
+            @syntax list what [filter value...] or list album artist_name
+            @param args as str
+            @return msg as str
         """
         msg = ""
-        args = self._get_args(args_array[0])
-
+        args = self._get_args(cmd_args)
         # Search for filters
-        i = 1
+        if len(args) == 2:
+            i = 0
+        else:
+            i = 1
         artist = artist_id = None
         album = None
         genre = genre_id = None
         date = ''
         while i < len(args) - 1:
+            print(args[i], i)
             if args[i].lower() == 'album':
-                album = args[i+1]
-            elif args[i].lower() == 'artist':
+                if i % 2:
+                    album = args[i+1]
+                else:
+                    artist = format_artist_name(args[i+1])
+            elif args[i].lower() == 'artist' or\
+                    args[i].lower() == 'albumartist':
                 artist = format_artist_name(args[i+1])
             elif args[i].lower() == 'genre':
                 genre = args[i+1]
@@ -303,7 +357,8 @@ class MpdHandler(socketserver.BaseRequestHandler):
         try:
             year = int(date)
         except:
-            year = None
+            year = Type.NONE
+
         if genre is not None:
             genre_id = Lp().genres.get_id(genre)
         if artist is not None:
@@ -314,6 +369,7 @@ class MpdHandler(socketserver.BaseRequestHandler):
                                                      genre_id, year):
                 msg += "File: "+path+"\n"
         if args[0].lower() == 'album':
+            print(artist_id)
             for album in self._mpddb.get_albums_names(artist_id,
                                                       genre_id, year):
                 msg += "Album: "+album+"\n"
@@ -328,23 +384,23 @@ class MpdHandler(socketserver.BaseRequestHandler):
             for year in self._mpddb.get_albums_years(album, artist_id,
                                                      genre_id):
                 msg += "Date: "+str(year)+"\n"
-        self._send_msg(msg, list_ok)
+        return msg
 
-    def _listall(self, args_array, list_ok):
+    def _listall(self, cmd_args):
         """
             List all tracks
             @syntax listall
-            @param args as [str]
-            @param add list_OK as bool
+            @param args as str
+            @return msg as str
         """
-        self._send_msg('', list_ok)
+        return ""
 
-    def _listallinfo(self, args_array, list_ok):
+    def _listallinfo(self, cmd_args):
         """
             List all tracks
             @syntax listallinfo
-            @param args as [str]
-            @param add list_OK as bool
+            @param args as str
+            @return msg as str
         """
         i = 0
         msg = ""
@@ -370,28 +426,28 @@ class MpdHandler(socketserver.BaseRequestHandler):
                 i = 0
             else:
                 i += 1
-        self._send_msg(msg, list_ok)
+        return msg
 
-    def _listplaylistinfo(self, args_array, list_ok):
+    def _listplaylistinfo(self, cmd_args):
         """
             List playlist informations
             @syntax listplaylistinfo name
-            @param args as [str]
-            @param add list_OK as bool
+            @param args as str
+            @return msg as str
         """
-        arg = self._get_args(args_array[0])[0]
+        arg = self._get_args(cmd_args)[0]
         playlist_id = Lp().playlists.get_id(arg)
         msg = ""
         for track_id in Lp().playlists.get_tracks_ids(playlist_id):
             msg += self._string_for_track_id(track_id)
-        self._send_msg(msg, list_ok)
+        return msg
 
-    def _listplaylists(self, args_array, list_ok):
+    def _listplaylists(self, cmd_args):
         """
             Send available playlists
             @syntax listplaylists
-            @param args as [str]
-            @param add list_OK as bool
+            @param args as str
+            @return msg as str
         """
         dt = datetime.utcnow()
         dt = dt.replace(microsecond=0)
@@ -400,35 +456,35 @@ class MpdHandler(socketserver.BaseRequestHandler):
             msg += "playlist: %s\nLast-Modified: %s\n" % (
                                                       name,
                                                       '%sZ' % dt.isoformat())
-        self._send_msg(msg, list_ok)
+        return msg
 
-    def _load(self, args_array, list_ok):
+    def _load(self, cmd_args):
         """
             Load playlist
             @syntax load name
-            @param args as [str]
-            @param add list_OK as bool
+            @param args as str
+            @return msg as str
         """
-        arg = self._get_args(args_array[0])[0]
+        arg = self._get_args(cmd_args)[0]
         playlist_id = Lp().playlists.get_id(arg)
         tracks = []
         tracks_ids = Lp().playlists.get_tracks_ids(playlist_id)
         for track_id in tracks_ids:
             tracks.append(Track(track_id))
-        Lp().playlists.add_tracks(Type.MPD, tracks)
+        Lp().playlists.add_tracks(Type.MPD, tracks, False)
         Lp().player.set_user_playlist_id(Type.MPD)
         GLib.idle_add(Lp().player.load_in_playlist, tracks_ids[0])
-        self._send_msg('', list_ok)
+        return ""
 
-    def _lsinfo(self, args_array, list_ok):
+    def _lsinfo(self, cmd_args):
         """
             List directories and files
             @syntax lsinfo path
-            @param args as [str]
-            @param add list_OK as bool
+            @param args as str
+            @return msg as str
         """
         msg = ""
-        args = self._get_args(args_array[0])
+        args = self._get_args(cmd_args)
         if not args:
             arg = ""
         else:
@@ -468,105 +524,112 @@ class MpdHandler(socketserver.BaseRequestHandler):
                 msg = ""
                 i = 0
             i += 1
-        self._send_msg(msg, list_ok)
+        return msg
 
-    def _next(self, args_array, list_ok):
+    def _next(self, cmd_args):
         """
             Send output
             @syntax next
-            @param args as [str]
-            @param add list_OK as bool
+            @param args as str
+            @return msg as str
         """
         # Make sure we have a playlist loaded in player
-        if not Lp().player.is_party() and\
-                (Lp().player.get_user_playlist_id() != Type.MPD or
-                    not Lp().player.get_user_playlist()):
-            Lp().player.set_user_playlist_id(Type.MPD)
+        if not Lp().player.is_party():
+            if Lp().player.get_user_playlist_id() != Type.MPD or not\
+               Lp().player.get_user_playlist():
+                Lp().player.set_user_playlist_id(Type.MPD)
+            tracks_ids = Lp().playlists.get_tracks_ids(Type.MPD)
+            if tracks_ids and Lp().player.current_track.id not in tracks_ids:
+                GLib.idle_add(Lp().player.load_in_playlist, tracks_ids[0])
+                return ""
         GLib.idle_add(Lp().player.next)
-        self._send_msg('', list_ok)
+        return ""
 
-    def _move(self, args_array, list_ok):
+    def _move(self, cmd_args):
         """
             Move range in playlist
             @syntax move position destination
-            @param args as [str]
-            @param add list_OK as bool
+            @param args as str
+            @return msg as str
         """
         # TODO implement range
         tracks_ids = Lp().playlists.get_tracks_ids(Type.MPD)
-        for args in args_array:
-            arg = self._get_args(args)
-            orig = int(arg[0])
-            dst = int(arg[1])
+        arg = self._get_args(cmd_args)
+        orig = int(arg[0])
+        dst = int(arg[1])
+        if orig != dst:
             track_id = tracks_ids[orig]
             del tracks_ids[orig]
             tracks_ids.insert(dst, track_id)
+            Lp().playlists.clear(Type.MPD, False)
+            tracks = []
+            for track_id in tracks_ids:
+                tracks.append(Track(track_id))
+            Lp().player.set_user_playlist_id(Type.NONE)
+            Lp().playlists.add_tracks(Type.MPD, tracks, False)
+        return ""
 
-        Lp().playlists.clear(Type.MPD)
-        tracks = []
-        for track_id in tracks_ids:
-            tracks.append(Track(track_id))
-        Lp().player.set_user_playlist_id(Type.NONE)
-        Lp().playlists.add_tracks(Type.MPD, tracks)
-        self._send_msg('', list_ok)
-
-    def _moveid(self, args_array, list_ok):
+    def _moveid(self, cmd_args):
         """
             Move id in playlist
             @syntax move track_id destination
-            @param args as [str]
-            @param add list_OK as bool
+            @param args as str
+            @return msg as str
         """
-        tracks_ids = Lp().playlists.get_tracks_ids(Type.MPD)
-        for args in args_array:
-            arg = self._get_args(args)
+        try:
+            tracks_ids = Lp().playlists.get_tracks_ids(Type.MPD)
+            arg = self._get_args(cmd_args)
             track_id = int(arg[0])
             orig = tracks_ids.index(track_id)
             dst = int(arg[1])
             del tracks_ids[orig]
             tracks_ids.insert(dst, track_id)
 
-        Lp().playlists.clear(Type.MPD)
-        tracks = []
-        for track_id in tracks_ids:
-            tracks.append(Track(track_id))
-        Lp().player.set_user_playlist_id(Type.NONE)
-        Lp().playlists.add_tracks(Type.MPD, tracks)
-        self._send_msg('', list_ok)
+            Lp().playlists.clear(Type.MPD)
+            tracks = []
+            for track_id in tracks_ids:
+                tracks.append(Track(track_id))
+            Lp().player.set_user_playlist_id(Type.NONE)
+            Lp().playlists.add_tracks(Type.MPD, tracks, False)
+        except:
+            pass
+        return ""
 
-    def _outputs(self, args_array, list_ok):
+    def _outputs(self, cmd_args):
         """
             Send output
             @syntax outputs
-            @param args as [str]
-            @param add list_OK as bool
+            @param args as str
+            @return msg as str
         """
         msg = "outputid: 0\noutputname: null\noutputenabled: 1\n"
-        self._send_msg(msg, list_ok)
+        return msg
 
-    def _pause(self, args_array, list_ok):
+    def _pause(self, cmd_args):
         """
             Pause track
             @syntax pause [1|0]
-            @param args as [str]
-            @param add list_OK as bool
+            @param args as str
+            @return msg as str
         """
+        print("debut")
         try:
-            args = self._get_args(args_array[0])
+            args = self._get_args(cmd_args)
             if args[0] == "0":
                 GLib.idle_add(Lp().player.play)
             else:
                 GLib.idle_add(Lp().player.pause)
         except:
-            GLib.idle_add(Lp().play_pause())
-        self._send_msg('', list_ok)
+            GLib.idle_add(Lp().player.play_pause)
+        print('fin')
+        return ""
 
-    def _play(self, args_array, list_ok):
+    def _play(self, cmd_args):
         """
             Play track
             @syntax play [position|-1]
-            @param args as [str]
-            @param add list_OK as bool
+            @param args as str
+            @return msg as str
         """
         if Lp().player.is_party():
             # Force player to not load albums
@@ -577,33 +640,31 @@ class MpdHandler(socketserver.BaseRequestHandler):
            not Lp().player.get_user_playlist():
             Lp().player.set_user_playlist_id(Type.MPD)
         try:
-            arg = int(self._get_args(args_array[0])[0])
-        except:
-            arg = -1
-        if arg == -1:
-            if Lp().player.get_status() == Gst.State.PAUSED:
-                GLib.idle_add(Lp().player.play)
-            elif Lp().player.get_status() == Gst.State.NULL:
-                if Lp().player.current_track.id is not None:
-                    GLib.idle_add(Lp().player.play)
-                else:
-                    currents = Lp().player.get_user_playlist()
-                    if currents:
-                        track = currents[0]
-                        GLib.idle_add(Lp().player.load_in_playlist, track.id)
-        else:
+            arg = int(self._get_args(cmd_args)[0])
             currents = Lp().player.get_user_playlist()
             if currents:
                 track = currents[arg]
                 GLib.idle_add(Lp().player.load_in_playlist, track.id)
-        self._send_msg('', list_ok)
+        except:
+            arg = -1
+        if Lp().player.get_status() == Gst.State.PAUSED:
+            GLib.idle_add(Lp().player.play)
+        elif Lp().player.get_status() == Gst.State.NULL:
+            if Lp().player.current_track.id is not None:
+                GLib.idle_add(Lp().player.play)
+            else:
+                currents = Lp().player.get_user_playlist()
+                if currents:
+                    track = currents[0]
+                    GLib.idle_add(Lp().player.load_in_playlist, track.id)
+        return ""
 
-    def _playid(self, args_array, list_ok):
+    def _playid(self, cmd_args):
         """
             Play track
             @syntax play [track_id|-1]
-            @param args as [str]
-            @param add list_OK as bool
+            @param args as str
+            @return msg as str
         """
         if Lp().player.is_party():
             # Force player to not load albums
@@ -614,10 +675,9 @@ class MpdHandler(socketserver.BaseRequestHandler):
            not Lp().player.get_user_playlist():
             Lp().player.set_user_playlist_id(Type.MPD)
         try:
-            arg = int(self._get_args(args_array[0])[0])
+            arg = int(self._get_args(cmd_args)[0])
+            GLib.idle_add(Lp().player.load_in_playlist, arg)
         except:
-            arg = -1
-        if arg == -1:
             if Lp().player.get_status() == Gst.State.PAUSED:
                 GLib.idle_add(Lp().player.play)
             elif Lp().player.get_status() == Gst.State.NULL:
@@ -628,18 +688,16 @@ class MpdHandler(socketserver.BaseRequestHandler):
                     if currents:
                         track = currents[0]
                         GLib.idle_add(Lp().player.load_in_playlist, track.id)
-        else:
-            GLib.idle_add(Lp().player.load_in_playlist, arg)
-        self._send_msg('', list_ok)
+        return ""
 
-    def _playlistadd(self, args_array, list_ok):
+    def _playlistadd(self, cmd_args):
         """
             Add a new playlist
             @syntax playlistadd name
-            @param args as [str]
-            @param add list_OK as bool
+            @param args as str
+            @return msg as str
         """
-        args = self._get_args(args_array[0])
+        args = self._get_args(cmd_args)
         playlist_id = Lp().playlists.get_id(args[0])
         tracks = []
         if not Lp().playlists.exists(playlist_id):
@@ -649,71 +707,82 @@ class MpdHandler(socketserver.BaseRequestHandler):
             track_id = Lp().tracks.get_id_by_path(arg)
             tracks.append(Track(track_id))
         if tracks:
-            Lp().playlists.add_tracks(playlist_id, tracks)
-        self._send_msg('', list_ok)
+            Lp().playlists.add_tracks(playlist_id, tracks, False)
+        return ""
 
-    def _playlistid(self, args_array, list_ok):
+    def _playlistid(self, cmd_args):
         """
             Send informations about current playlist
             @param playlistid
-            @param args as [str]
-            @param add list_OK as bool
+            @param args as str
+            @return msg as str
         """
         msg = ""
-        tracks_ids = Lp().playlists.get_tracks_ids(Type.MPD)
-        if Lp().player.current_track.id is not None and\
-           Lp().player.current_track.id not in tracks_ids:
-            tracks_ids.insert(0, Lp().player.current_track.id)
-        for track_id in tracks_ids:
+        try:
+            track_id = int(self._get_args(cmd_args))
             msg += self._string_for_track_id(track_id)
-        self._send_msg(msg, list_ok)
+        except:
+            tracks_ids = Lp().playlists.get_tracks_ids(Type.MPD)
+            if Lp().player.current_track.id is not None and\
+               Lp().player.current_track.id not in tracks_ids and\
+               Lp().player.is_party():
+                tracks_ids.insert(0, Lp().player.current_track.id)
+            for track_id in tracks_ids:
+                msg += self._string_for_track_id(track_id)
+        return msg
 
-    def _playlistinfo(self, args_array, list_ok):
+    def _playlistinfo(self, cmd_args):
         """
             Send informations about current playlist
             @parma playlistinfo
-            @param args as [str]
-            @param add list_OK as bool
+            @param args as str
+            @return msg as str
         """
         msg = ""
         tracks_ids = Lp().playlists.get_tracks_ids(Type.MPD)
         if Lp().player.current_track.id is not None and\
-           Lp().player.current_track.id not in tracks_ids:
+           Lp().player.current_track.id not in tracks_ids and\
+           Lp().player.is_party():
             tracks_ids.insert(0, Lp().player.current_track.id)
         for track_id in tracks_ids:
             msg += self._string_for_track_id(track_id)
-        self._send_msg(msg, list_ok)
+        return msg
 
-    def _plchanges(self, args_array, list_ok):
+    def _plchanges(self, cmd_args):
         """
             Send informations about playlists
             @syntax plchanges version
-            @param args as [str]
-            @param add list_OK as bool
+            @param args as str
+            @return msg as str
         """
-        i = 0
         msg = ""
-        for track_id in self._last_tracks:
-            msg += self._string_for_track_id(track_id)
-            if i > 100:
-                self.request.send(msg.encode("utf-8"))
-                msg = ""
-                i = 0
-            else:
-                i += 1
-        self._send_msg(msg, list_ok)
+        version = int(self._get_args(cmd_args)[0])
+        i = 0
+        try:
+            for track_id in self._playlist[version]:
+                msg += self._string_for_track_id(track_id)
+                if i > 100:
+                    self.request.send(msg.encode("utf-8"))
+                    msg = ""
+                    i = 0
+                else:
+                    i += 1
+        except:
+            print("No such version")
+        return msg
 
-    def _plchangesposid(self, args_array, list_ok):
+    def _plchangesposid(self, cmd_args):
         """
             Send informations about playlists
             @param plchangesposid version
-            @param args as [str]
-            @param add list_OK as bool
+            @param args as str
+            @return msg as str
         """
         i = 0
         msg = ""
+        version = int(self._get_args(cmd_args)[0])
         pl = Lp().playlists.get_tracks_ids(Type.MPD)
-        for track_id in self._last_tracks:
+        for track_id in self._playlist[version]:
             msg += "cpos: %s\nId: %s\n" % (pl.index(track_id), track_id)
             if i > 100:
                 self.request.send(msg.encode("utf-8"))
@@ -721,88 +790,92 @@ class MpdHandler(socketserver.BaseRequestHandler):
                 i = 0
             else:
                 i += 1
-        self._send_msg('', list_ok)
+        return msg
 
-    def _previous(self, args_array, list_ok):
+    def _previous(self, cmd_args):
         """
             Send output
             @syntax previous
-            @param args as [str]
-            @param add list_OK as bool
+            @param args as str
+            @return msg as str
         """
         # Make sure we have a playlist loaded in player
-        if not Lp().player.is_party() and\
-                (Lp().player.get_user_playlist_id() != Type.MPD or
-                    not Lp().player.get_user_playlist()):
-            Lp().player.set_user_playlist_id(Type.MPD)
+        if not Lp().player.is_party():
+            if Lp().player.get_user_playlist_id() != Type.MPD or not\
+               Lp().player.get_user_playlist():
+                Lp().player.set_user_playlist_id(Type.MPD)
+            tracks_ids = Lp().playlists.get_tracks_ids(Type.MPD)
+            if tracks_ids and Lp().player.current_track.id not in tracks_ids:
+                GLib.idle_add(Lp().player.load_in_playlist, tracks_ids[0])
+                return ""
         GLib.idle_add(Lp().player.prev)
-        self._send_msg('', list_ok)
+        return ""
 
-    def _random(self, args_array, list_ok):
+    def _random(self, cmd_args):
         """
             Set player random, as MPD can't handle all lollypop random modes,
             set party mode
             @syntax random [1|0]
-            @param args as [str]
-            @param ass list_OK as bool
+            @param args as str
+            @return msg as str
         """
-        args = self._get_args(args_array[0])
+        args = self._get_args(cmd_args)
         GLib.idle_add(Lp().player.set_party, bool(int(args[0])))
-        self._send_msg('', list_ok)
+        return ""
 
-    def _replay_gain_status(self, args_array, list_ok):
+    def _replay_gain_status(self, cmd_args):
         """
             Send output
             @syntax replay_gain_status
-            @param args as [str]
-            @param add list_OK as bool
+            @param args as str
+            @return msg as str
         """
         msg = "replay_gain_mode: on\n"
-        self._send_msg(msg, list_ok)
+        return msg
 
-    def _repeat(self, args_array, list_ok):
+    def _repeat(self, cmd_args):
         """
             Ignore
-            @param args as [str]
-            @param add list_OK as bool
+            @param args as str
+            @return msg as str
         """
-        self._send_msg('', list_ok)
+        return ""
 
-    def _seek(self, args_array, list_ok):
+    def _seek(self, cmd_args):
         """
            Seek current
            @syntax seek position
-           @param args as [str]
-           @param add list_OK as bool
+           @param args as str
+           @return msg as str
         """
-        args = self._get_args(args_array[0])
+        args = self._get_args(cmd_args)
         seek = int(args[1])
         GLib.idle_add(Lp().player.seek, seek)
-        self._send_msg('', list_ok)
+        return ""
 
-    def _seekid(self, args_array, list_ok):
+    def _seekid(self, cmd_args):
         """
             Seek track id
             @syntax seekid track_id position
-            @param args as [str]
-            @param add list_OK as bool
+            @param args as str
+            @return msg as str
         """
-        args = self._get_args(args_array[0])
+        args = self._get_args(cmd_args)
         track_id = int(args[0])
         seek = int(args[1])
         if track_id == Lp().player.current_track.id:
             GLib.idle_add(Lp().player.seek, seek)
-        self._send_msg('', list_ok)
+        return ""
 
-    def _search(self, args_array, list_ok):
+    def _search(self, cmd_args):
         """
             Send stats about db
             @syntax search what value
-            @param args as [str]
-            @param add list_OK as bool
+            @param args as str
+            @return msg as str
         """
         msg = ""
-        args = self._get_args(args_array[0])
+        args = self._get_args(cmd_args)
         # Search for filters
         i = 0
         artist = artist_id = None
@@ -812,7 +885,8 @@ class MpdHandler(socketserver.BaseRequestHandler):
         while i < len(args) - 1:
             if args[i].lower() == 'album':
                 album = args[i+1]
-            elif args[i].lower() == 'artist':
+            elif args[i].lower() == 'artist' or\
+                    args[i].lower() == 'albumartist':
                 artist = format_artist_name(args[i+1])
             elif args[i].lower() == 'genre':
                 genre = args[i+1]
@@ -833,26 +907,26 @@ class MpdHandler(socketserver.BaseRequestHandler):
         for track_id in self._mpddb.get_tracks_ids(album, artist_id,
                                                    genre_id, year):
             msg += self._string_for_track_id(track_id)
-        self._send_msg(msg, list_ok)
+        return msg
 
-    def _setvol(self, args_array, list_ok):
+    def _setvol(self, cmd_args):
         """
             Send stats about db
             @syntax setvol value
-            @param args as [str]
-            @param add list_OK as bool
+            @param args as str
+            @return msg as str
         """
-        args = self._get_args(args_array[0])
+        args = self._get_args(cmd_args)
         vol = float(args[0])
         Lp().player.set_volume(vol/100)
-        self._send_msg('', list_ok)
+        return ""
 
-    def _stats(self, args_array, list_ok):
+    def _stats(self, cmd_args):
         """
             Send stats about db
             @syntax stats
-            @param args as [str]
-            @param add list_OK as bool
+            @param args as str
+            @return msg as str
         """
         artists = Lp().artists.count()
         albums = Lp().albums.count()
@@ -861,14 +935,14 @@ class MpdHandler(socketserver.BaseRequestHandler):
 \nplaytime: 0\ndb_playtime: 0\ndb_update: %s\n" % \
             (artists, albums, tracks,
              Lp().settings.get_value('db-mtime').get_int32())
-        self._send_msg(msg, list_ok)
+        return msg
 
-    def _status(self, args_array, list_ok):
+    def _status(self, cmd_args):
         """
             Send lollypop status
             @syntax status
-            @param args as [str]
-            @param add list_OK as bool
+            @param args as str
+            @return msg as str
         """
         msg = "volume: %s\nrepeat: %s\nrandom: %s\
 \nsingle: %s\nconsume: %s\nplaylist: %s\
@@ -895,16 +969,16 @@ class MpdHandler(socketserver.BaseRequestHandler):
                                        int(elapsed),
                                        time,
                                        int(elapsed))
-        self._send_msg(msg, list_ok)
+        return msg
 
-    def _sticker(self, args_array, list_ok):
+    def _sticker(self, cmd_args):
         """
             Send stickers
             @syntax sticker [get|set] song rating
-            @param args as [str]
-            @param add list_OK as bool
+            @param args as str
+            @return msg as str
         """
-        args = self._get_args(args_array[0])
+        args = self._get_args(cmd_args)
         msg = ""
         if args[0].find("get song ") != -1 and\
                 args[2].find("rating") != -1:
@@ -916,48 +990,49 @@ class MpdHandler(socketserver.BaseRequestHandler):
             track_id = Lp().tracks.get_id_by_path(args[1])
             track = Track(track_id)
             track.set_popularity(int(args[3])/2)
-        self._send_msg(msg, list_ok)
+        return msg
 
-    def _stop(self, args_array, list_ok):
+    def _stop(self, cmd_args):
         """
             Stop player
             @syntax stop
-            @param args as [str]
-            @param add list_OK as bool
+            @param args as str
+            @return msg as str
         """
         GLib.idle_add(Lp().player.stop)
+        return ""
 
-    def _tagtypes(self, args_array, list_ok):
+    def _tagtypes(self, cmd_args):
         """
             Send available tags
             @syntax tagtypes
-            @param args as [str]
-            @param add list_OK as bool
+            @param args as str
+            @return msg as str
         """
         msg = "tagtype: Artist\ntagtype: Album\ntagtype: Title\
 \ntagtype: Track\ntagtype: Name\ntagtype: Genre\ntagtype: Date\
 \ntagtype: Performer\ntagtype: Disc\n"
-        self._send_msg(msg, list_ok)
+        return msg
 
-    def _update(self, args_array, list_ok):
+    def _update(self, cmd_args):
         """
             Update database
             @syntax update
-            @param args as [str]
-            @param add list_OK as bool
+            @param args as str
+            @return msg as str
         """
         Lp().window.update_db()
-        self._send_msg('', list_ok)
+        return ""
 
-    def _urlhandlers(self, args_array, list_ok):
+    def _urlhandlers(self, cmd_args):
         """
             Send url handlers
             @syntax urlhandlers
-            @param args as [str]
-            @param add list_OK as bool
+            @param args as str
+            @return msg as str
         """
         msg = "handler: http\n"
-        self._send_msg(msg, list_ok)
+        return msg
 
     def _string_for_track_id(self, track_id):
         """
@@ -1011,25 +1086,62 @@ class MpdHandler(socketserver.BaseRequestHandler):
             ret.append(arg)
         return ret
 
-    def _send_msg(self, msg, list_ok):
+    def _find_tracks(self, cmd_args):
         """
-            Send message to client
-            @msg as string
-            @param list ok as bool
+            find tracks
+            @syntax find filter value
+            @param args as str
+
         """
-        if list_ok:
-            msg += "list_OK\n"
-        else:
-            msg += "OK\n"
-        self.request.send(msg.encode("utf-8"))
-        print(msg.encode("utf-8"))
+        tracks = []
+        args = self._get_args(cmd_args)
+        # Search for filters
+        i = 0
+        track_position = None
+        artist = artist_id = None
+        album = None
+        genre = genre_id = None
+        date = ''
+        while i < len(args) - 1:
+            if args[i].lower() == 'album':
+                album = args[i+1]
+            elif args[i].lower() == 'artist' or\
+                    args[i].lower() == 'albumartist':
+                artist = format_artist_name(args[i+1])
+            elif args[i].lower() == 'genre':
+                genre = args[i+1]
+            elif args[i].lower() == 'date':
+                date = args[i+1]
+            elif args[i].lower() == 'track':
+                track_position = args[i+1]
+            i += 2
+
+        try:
+            year = int(date)
+        except:
+            year = Type.NONE
+
+        if genre is not None:
+            genre_id = Lp().genres.get_id(genre)
+        if artist is not None:
+            artist_id = Lp().artists.get_id(artist)
+
+        # We search for tracks and filter on position
+        for track_id in self._mpddb.get_tracks_ids(album, artist_id,
+                                                   genre_id, year):
+            track_id_position = None
+            if track_position is not None:
+                track_id_position = Lp().tracks.get_position(track_id)
+            if track_id_position == track_position:
+                tracks.append(track_id)
+        return tracks
 
     def _on_player_changed(self, player, data=None):
         """
             Add player to idle
             @param player as Player
         """
-        if "player" not in self._idle_strings:
+        if "player" in self._idle_wanted_strings:
             self._idle_strings.append("player")
             tracks_ids = Lp().playlists.get_tracks_ids(Type.MPD)
             if Lp().player.current_track.id not in tracks_ids:
@@ -1044,7 +1156,7 @@ class MpdHandler(socketserver.BaseRequestHandler):
         # Player may be in pause so wait for playback
         if player.get_status() == Gst.State.PAUSED:
             GLib.idle_add(self._on_position_changed, player, data)
-        elif "player" not in self._idle_strings:
+        elif "player" in self._idle_wanted_strings:
             self._idle_strings.append("player")
             self.server.event.set()
 
@@ -1055,21 +1167,41 @@ class MpdHandler(socketserver.BaseRequestHandler):
             @param playlist id as int
         """
         if playlist_id == Type.MPD:
-            if "playlist" not in self._idle_strings:
+            if "playlist" in self._idle_wanted_strings:
+                try:
+                    previous = self._playlist[self._playlist_version-1]
+                except:
+                    previous = []
+                i = 0
+                self._playlist[self._playlist_version] = []
+                for track_id in Lp().playlists.get_tracks_ids(Type.MPD):
+                    if track_id not in previous or previous[i] != track_id:
+                        self._playlist[self._playlist_version].append(track_id)
+                self._playlist_version += 1
                 self._idle_strings.append("playlist")
                 self.server.event.set()
-                if Lp().player.get_user_playlist():
-                    Lp().player.set_user_playlist_id(Type.MPD)
-            tracks_ids = Lp().playlists.get_tracks_ids(Type.MPD)
-            if tracks_ids:
-                for track_id in self._last_tracks:
-                    if track_id in tracks_ids:
-                        tracks_ids.remove(track_id)
-            self._last_tracks = tracks_ids
-            self._playlist_version += 1
-        elif "stored_playlist" not in self._idle_strings:
+        elif "stored_playlist" in self._idle_wanted_strings:
             self._idle_strings.append("stored_playlist")
             self.server.event.set()
+
+    def __connect(self, connect=True):
+        """
+            Connect or disconnect signals
+        """
+        if connect:
+            self._signal1 = Lp().player.connect('current-changed',
+                                                self._on_player_changed)
+            self._signal2 = Lp().player.connect('status-changed',
+                                                self._on_player_changed)
+            self._signal3 = Lp().player.connect('seeked',
+                                                self._on_position_changed)
+            self._signal4 = Lp().playlists.connect('playlist-changed',
+                                                   self._on_playlist_changed)
+        else:
+            Lp().player.disconnect(self._signal1)
+            Lp().player.disconnect(self._signal2)
+            Lp().player.disconnect(self._signal3)
+            Lp().playlists.disconnect(self._signal4)
 
 
 class MpdServer(socketserver.ThreadingMixIn, socketserver.TCPServer):

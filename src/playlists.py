@@ -51,7 +51,7 @@ class Playlists(GObject.GObject):
         """
         GObject.GObject.__init__(self)
         self._LOVED = _("Loved tracks")
-        self._MPD = "MPD"
+        self._MPD = _("Network control")
         try_import = not os.path.exists(self.DB_PATH)
         # Create db schema
         try:
@@ -242,10 +242,11 @@ class Playlists(GObject.GObject):
                 return v[0]
             return ''
 
-    def clear(self, playlist_id, notify=False):
+    def clear(self, playlist_id, notify=True):
         """
             Clear playlsit
             @param playlist id as int
+            @param notify as bool
         """
         with SqlCursor(self) as sql:
             sql.execute("DELETE FROM tracks\
@@ -254,11 +255,12 @@ class Playlists(GObject.GObject):
             if notify:
                 GLib.idle_add(self.emit, 'playlist-changed', playlist_id)
 
-    def add_tracks(self, playlist_id, tracks):
+    def add_tracks(self, playlist_id, tracks, notify=True):
         """
             Add tracks to playlist if not already present
             @param playlist id as int
             @param tracks as [Track]
+            @param notify as bool
         """
         with SqlCursor(self) as sql:
             changed = False
@@ -273,9 +275,10 @@ class Playlists(GObject.GObject):
                              WHERE rowid=?", (datetime.now().strftime('%s'),
                                               playlist_id))
                 sql.commit()
-                GLib.idle_add(self.emit, 'playlist-changed', playlist_id)
+                if notify:
+                    GLib.idle_add(self.emit, 'playlist-changed', playlist_id)
 
-    def remove_tracks(self, playlist_id, tracks):
+    def remove_tracks(self, playlist_id, tracks, notify=True):
         """
             Remove tracks from playlist
             @param playlist id as int
@@ -287,7 +290,8 @@ class Playlists(GObject.GObject):
                              WHERE filepath=?\
                              AND playlist_id=?", (track.path, playlist_id))
             sql.commit()
-            GLib.idle_add(self.emit, 'playlist-changed', playlist_id)
+            if notify:
+                GLib.idle_add(self.emit, 'playlist-changed', playlist_id)
 
     def get_position(self, playlist_id, track_id):
         """

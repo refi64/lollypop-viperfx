@@ -308,6 +308,8 @@ class SelectionList(Gtk.ScrolledWindow):
             icon = 'emblem-favorite-symbolic'
         elif object_id == Type.NEVER:
             icon = 'document-new-symbolic'
+        elif object_id == Type.MPD:
+            icon = 'network-workgroup-symbolic'
         return icon
 
     def _sort_items(self, model, itera, iterb, data):
