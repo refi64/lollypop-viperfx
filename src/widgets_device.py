@@ -144,7 +144,8 @@ class DeviceManagerWidget(Gtk.Bin, MtpSync):
         """
         if playlists:
             playlist = playlists.pop(0)
-            selected = playlist[1]+'.m3u' in self._on_disk_playlists
+            playlist_name = GLib.uri_escape_string(playlist[1], "", False)
+            selected = playlist_name + '.m3u' in self._on_disk_playlists
             self._model.append([selected, playlist[1], playlist[0]])
             GLib.idle_add(self._append_playlists, playlists)
         else:
