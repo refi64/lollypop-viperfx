@@ -44,6 +44,7 @@ class TagReader:
         """
             Return informations on file at path
             @param path as str
+            @Exception GLib.Error
             @return GstPbutils.DiscovererInfo
         """
         uri = GLib.filename_to_uri(path)

@@ -240,23 +240,23 @@ class AlbumArt(BaseArt, ArtDownloader, TagReader):
             @param size as int
         """
         pixbuf = None
-        infos = self.get_infos(filepath)
-        exist = False
-        if infos is not None:
-            (exist, sample) = infos.get_tags().get_sample_index('image', 0)
-        if exist:
-            (exist, mapflags) = sample.get_buffer().map(Gst.MapFlags.READ)
-        if exist:
-            stream = Gio.MemoryInputStream.new_from_data(mapflags.data,
-                                                         None)
-            try:
+        try:
+            infos = self.get_infos(filepath)
+            exist = False
+            if infos is not None:
+                (exist, sample) = infos.get_tags().get_sample_index('image', 0)
+            if exist:
+                (exist, mapflags) = sample.get_buffer().map(Gst.MapFlags.READ)
+            if exist:
+                stream = Gio.MemoryInputStream.new_from_data(mapflags.data,
+                                                             None)
                 pixbuf = GdkPixbuf.Pixbuf.new_from_stream_at_scale(stream,
                                                                    size,
                                                                    size,
                                                                    False,
                                                                    None)
-            except:
-                pass
+        except:
+            pass
         return pixbuf
 
 #######################
