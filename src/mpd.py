@@ -86,12 +86,10 @@ class MpdHandler(socketserver.StreamRequestHandler):
                 self.request.send(msg.encode("utf-8"))
                 print(msg.encode("utf-8"), self)
                 if delayed:
-                    print('DELAYED')
                     GLib.idle_add(Lp().playlists.emit,
                                   'playlist-changed',
                                   Type.MPD)
-            except Exception as e:
-                print("IOERRRO")
+            except:
                 break
         self.__connect(False)
 
@@ -227,10 +225,11 @@ class MpdHandler(socketserver.StreamRequestHandler):
         # Check for a range
         try:
             splited = arg.split(':')
-            start = int(splited[0])
+            start = int(splited[0]) - 1
             end = int(splited[1])
         except:
-            start = end = int(arg)
+            start = int(arg) - 1
+            end = int(arg)
         tracks_ids = Lp().playlists.get_tracks_ids(Type.MPD)
         tracks = []
         for i in range(start, end):
@@ -632,10 +631,7 @@ class MpdHandler(socketserver.StreamRequestHandler):
             # Force player to not load albums
             Lp().player.current_track.id = None
             GLib.idle_add(Lp().player.set_party, False)
-        # Make sure we have a playlist loaded in player
-        if Lp().player.get_user_playlist_id() != Type.MPD or\
-           not Lp().player.get_user_playlist():
-            Lp().player.set_user_playlist_id(Type.MPD)
+        Lp().player.set_user_playlist_id(Type.MPD)
         try:
             arg = int(self._get_args(cmd_args)[0])
             currents = Lp().player.get_user_playlist()
@@ -667,10 +663,7 @@ class MpdHandler(socketserver.StreamRequestHandler):
             # Force player to not load albums
             Lp().player.current_track.id = None
             GLib.idle_add(Lp().player.set_party, False)
-        # Make sure we have a playlist loaded in player
-        if Lp().player.get_user_playlist_id() != Type.MPD or\
-           not Lp().player.get_user_playlist():
-            Lp().player.set_user_playlist_id(Type.MPD)
+        Lp().player.set_user_playlist_id(Type.MPD)
         try:
             arg = int(self._get_args(cmd_args)[0])
             GLib.idle_add(Lp().player.load_in_playlist, arg)
