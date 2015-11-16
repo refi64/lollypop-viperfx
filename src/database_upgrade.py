@@ -30,7 +30,8 @@ class DatabaseUpgrade:
         # Here are schema upgrade, key is database version,
         # value is sql request
         self._UPGRADES = {
-            1: "update tracks set duration=CAST(duration as INTEGER);"
+            1: "update tracks set duration=CAST(duration as INTEGER);",
+            2: "update albums set artist_id=-2001 where artist_id=-999;"
                          }
 
     """

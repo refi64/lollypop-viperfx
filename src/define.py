@@ -85,6 +85,6 @@ class Type:
     MPD = -996
     LOVED = -997
     NEVER = -998
-    COMPILATIONS = -999
     DEVICES = -1000
     SEPARATOR = -2000
+    COMPILATIONS = -2001
