@@ -272,6 +272,8 @@ class Application(Gtk.Application):
                     pass
                 self._parser.parse_async(f, True,
                                          None, None)
+        if self.window is not None and not self.window.is_visible():
+            self.window.present()
         return 0
 
     def _on_entry_parsed(self, parser, uri, metadata):
