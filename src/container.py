@@ -643,7 +643,7 @@ class Container:
             if not self._list_two.will_be_selected():
                 self._update_view_playlists(None)
             self._setup_list_playlists(False)
-        elif selected_id < Type.DEVICES:
+        elif Type.DEVICES - 999 < selected_id < Type.DEVICES:
             self._list_two.hide()
             if not self._list_two.will_be_selected():
                 self._update_view_device(selected_id)
