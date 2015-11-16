@@ -247,7 +247,7 @@ class MpdHandler(socketserver.StreamRequestHandler):
             @return msg as str
         """
         arg = self._get_args(cmd_args)
-        Lp().playlists.remove_tracks(Type.MPD, Track(int(arg[0])), False)
+        Lp().playlists.remove_tracks(Type.MPD, [Track(int(arg[0]))], False)
         return ""
 
     def _find(self, cmd_args):
