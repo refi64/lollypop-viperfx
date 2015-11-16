@@ -34,9 +34,6 @@ class MpdHandler(socketserver.StreamRequestHandler):
             Init handler
         """
         self._is_idle = False
-        self._mpddb = MpdDatabase()
-        self._playlist = {}
-        self._playlist_version = 0
         self._idle_wanted_strings = []
         self._idle_strings = []
         self._last_tracks = Lp().playlists.get_tracks_ids(Type.MPD)
@@ -71,7 +68,7 @@ class MpdHandler(socketserver.StreamRequestHandler):
                         if not cmdlist:
                             break
                 try:
-                    print(cmds)
+                    print(cmds, self)
                     for cmd in cmds:
                         command = cmd.split(' ')[0]
                         size = len(command) + 1
@@ -200,8 +197,8 @@ class MpdHandler(socketserver.StreamRequestHandler):
         if artist is not None:
             artist_id = Lp().artists.get_id(artist)
 
-        (songs, playtime) = self._mpddb.count(album, artist_id,
-                                              genre_id, year)
+        (songs, playtime) = self.server.mpddb.count(album, artist_id,
+                                                    genre_id, year)
         msg = "songs: %s\nplaytime: %s\n" % (songs, playtime)
         return msg
 
@@ -365,24 +362,24 @@ class MpdHandler(socketserver.StreamRequestHandler):
             artist_id = Lp().artists.get_id(artist)
 
         if args[0].lower() == 'file':
-            for path in self._mpddb.get_tracks_paths(album, artist_id,
-                                                     genre_id, year):
+            for path in self.server.mpddb.get_tracks_paths(album, artist_id,
+                                                           genre_id, year):
                 msg += "File: "+path+"\n"
         if args[0].lower() == 'album':
             print(artist_id)
-            for album in self._mpddb.get_albums_names(artist_id,
-                                                      genre_id, year):
+            for album in self.server.mpddb.get_albums_names(artist_id,
+                                                            genre_id, year):
                 msg += "Album: "+album+"\n"
         elif args[0].lower() == 'artist':
-            for artist in self._mpddb.get_artists_names(genre_id):
+            for artist in self.server.mpddb.get_artists_names(genre_id):
                 msg += "Artist: "+translate_artist_name(artist)+"\n"
         elif args[0].lower() == 'genre':
             results = Lp().genres.get_names()
             for name in results:
                 msg += "Genre: "+name+"\n"
         elif args[0].lower() == 'date':
-            for year in self._mpddb.get_albums_years(album, artist_id,
-                                                     genre_id):
+            for year in self.server.mpddb.get_albums_years(album, artist_id,
+                                                           genre_id):
                 msg += "Date: "+str(year)+"\n"
         return msg
 
@@ -406,7 +403,7 @@ class MpdHandler(socketserver.StreamRequestHandler):
         msg = ""
         for (path, artist, album, album_artist,
              title, date, genre, time,
-             track_id, pos) in self._mpddb.listallinfos():
+             track_id, pos) in self.server.mpddb.listallinfos():
             msg += "file: %s\nArtist: %s\nAlbum: %s\nAlbumArtist: %s\
 \nTitle: %s\nDate: %s\nGenre: %s\nTime: %s\nId: %s\nPos: %s\nTrack: %s\n" % (
                                         path,
@@ -759,7 +756,7 @@ class MpdHandler(socketserver.StreamRequestHandler):
         version = int(self._get_args(cmd_args)[0])
         i = 0
         try:
-            for track_id in self._playlist[version]:
+            for track_id in self.server.playlist[version]:
                 msg += self._string_for_track_id(track_id)
                 if i > 100:
                     self.request.send(msg.encode("utf-8"))
@@ -782,7 +779,7 @@ class MpdHandler(socketserver.StreamRequestHandler):
         msg = ""
         version = int(self._get_args(cmd_args)[0])
         pl = Lp().playlists.get_tracks_ids(Type.MPD)
-        for track_id in self._playlist[version]:
+        for track_id in self.server.playlist[version]:
             msg += "cpos: %s\nId: %s\n" % (pl.index(track_id), track_id)
             if i > 100:
                 self.request.send(msg.encode("utf-8"))
@@ -904,8 +901,8 @@ class MpdHandler(socketserver.StreamRequestHandler):
         if artist is not None:
             artist_id = Lp().artists.get_id(artist)
 
-        for track_id in self._mpddb.get_tracks_ids(album, artist_id,
-                                                   genre_id, year):
+        for track_id in self.server.mpddb.get_tracks_ids(album, artist_id,
+                                                         genre_id, year):
             msg += self._string_for_track_id(track_id)
         return msg
 
@@ -953,7 +950,7 @@ class MpdHandler(socketserver.StreamRequestHandler):
                                    int(Lp().player.is_party()),
                                    1,
                                    1,
-                                   self._playlist_version,
+                                   self.server.playlist_version,
                                    len(Lp().playlists.get_tracks(Type.MPD)),
                                    self._get_status(),
                                    )
@@ -1127,8 +1124,8 @@ class MpdHandler(socketserver.StreamRequestHandler):
             artist_id = Lp().artists.get_id(artist)
 
         # We search for tracks and filter on position
-        for track_id in self._mpddb.get_tracks_ids(album, artist_id,
-                                                   genre_id, year):
+        for track_id in self.server.mpddb.get_tracks_ids(album, artist_id,
+                                                         genre_id, year):
             track_id_position = None
             if track_position is not None:
                 track_id_position = Lp().tracks.get_position(track_id)
@@ -1167,17 +1164,18 @@ class MpdHandler(socketserver.StreamRequestHandler):
             @param playlist id as int
         """
         if playlist_id == Type.MPD:
+            try:
+                previous = self.server.playlist[self.server.playlist_version-1]
+            except:
+                previous = []
+            i = 0
+            self.server.playlist[self.server.playlist_version] = []
+            for track_id in Lp().playlists.get_tracks_ids(Type.MPD):
+                if track_id not in previous or previous[i] != track_id:
+                    self.server.playlist[self.server.playlist_version].append(
+                                                                      track_id)
+            self.server.playlist_version += 1
             if "playlist" in self._idle_wanted_strings:
-                try:
-                    previous = self._playlist[self._playlist_version-1]
-                except:
-                    previous = []
-                i = 0
-                self._playlist[self._playlist_version] = []
-                for track_id in Lp().playlists.get_tracks_ids(Type.MPD):
-                    if track_id not in previous or previous[i] != track_id:
-                        self._playlist[self._playlist_version].append(track_id)
-                self._playlist_version += 1
                 self._idle_strings.append("playlist")
                 self.server.event.set()
         elif "stored_playlist" in self._idle_wanted_strings:
@@ -1216,6 +1214,9 @@ class MpdServer(socketserver.ThreadingMixIn, socketserver.TCPServer):
             @param port as int
         """
         self.event = None
+        self.mpddb = MpdDatabase()
+        self.playlist = {}
+        self.playlist_version = 0
         try:
             socketserver.TCPServer.allow_reuse_address = True
             # Get ip for interface
