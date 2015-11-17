@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-11-16 15:03+0100\n"
+"POT-Creation-Date: 2015-11-17 17:22+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -274,22 +274,22 @@ msgid ""
 "    - Artist informations disabled"
 msgstr ""
 
-#: ../src/application.py:349
-#, python-format
-msgid "%s artists"
-msgstr ""
-
 #: ../src/application.py:351
 #, python-format
-msgid "%s albums"
+msgid "%s artist(s)"
 msgstr ""
 
 #: ../src/application.py:353
 #, python-format
-msgid "%s tracks"
+msgid "%s album(s)"
 msgstr ""
 
-#: ../src/application.py:369
+#: ../src/application.py:355
+#, python-format
+msgid "%s track(s)"
+msgstr ""
+
+#: ../src/application.py:371
 msgid "Lollypop: You need to install yelp."
 msgstr ""
 
@@ -548,11 +548,11 @@ msgstr ""
 msgid "Disc %s"
 msgstr ""
 
-#: ../src/widgets_device.py:187
+#: ../src/widgets_device.py:188
 msgid "Unknown error while syncing, try to reboot your device"
 msgstr ""
 
-#: ../src/widgets_device.py:195
+#: ../src/widgets_device.py:196
 msgid "No free space available on device"
 msgstr ""
 
