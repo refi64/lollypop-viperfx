@@ -1157,17 +1157,19 @@ class MpdHandler(socketserver.StreamRequestHandler):
             @param playlist id as int
         """
         if playlist_id == Type.MPD:
-            try:
-                previous = self.server.playlist[self.server.playlist_version-1]
-            except:
-                previous = []
-            i = 0
-            self.server.playlist[self.server.playlist_version] = []
-            for track_id in Lp().playlists.get_tracks_ids(Type.MPD):
-                if track_id not in previous or previous[i] != track_id:
-                    self.server.playlist[self.server.playlist_version].append(
-                                                                      track_id)
-            self.server.playlist_version += 1
+            if not Lp().player.is_party():
+                try:
+                    previous = self.server.playlist[
+                                                self.server.playlist_version-1]
+                except:
+                    previous = []
+                i = 0
+                self.server.playlist[self.server.playlist_version] = []
+                for track_id in Lp().playlists.get_tracks_ids(Type.MPD):
+                    if track_id not in previous or previous[i] != track_id:
+                        self.server.playlist[
+                                self.server.playlist_version].append(track_id)
+                self.server.playlist_version += 1
             if "playlist" in self._idle_wanted_strings:
                 self._idle_strings.append("playlist")
                 self.server.event.set()
