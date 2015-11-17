@@ -348,11 +348,11 @@ class Application(Gtk.Application):
         """
         builder = Gtk.Builder()
         builder.add_from_resource('/org/gnome/Lollypop/AboutDialog.ui')
-        builder.get_object('artists').set_text(_("%s artists") %
+        builder.get_object('artists').set_text(_("%s artist(s)") %
                                                self.artists.count())
-        builder.get_object('albums').set_text(_("%s albums") %
+        builder.get_object('albums').set_text(_("%s album(s)") %
                                               self.albums.count())
-        builder.get_object('tracks').set_text(_("%s tracks") %
+        builder.get_object('tracks').set_text(_("%s track(s)") %
                                               self.tracks.count())
         about = builder.get_object('about_dialog')
         about.set_transient_for(self.window)
