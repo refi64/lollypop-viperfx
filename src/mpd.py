@@ -740,7 +740,7 @@ class MpdHandler(socketserver.StreamRequestHandler):
 
     def _plchanges(self, cmd_args):
         """
-            Send informations about playlists
+            Displays changed songs currently in the playlist since version
             @syntax plchanges version
             @param args as str
             @return msg as str
@@ -749,21 +749,26 @@ class MpdHandler(socketserver.StreamRequestHandler):
         version = int(self._get_args(cmd_args)[0])
         i = 0
         try:
-            for track_id in self.server.playlist[version]:
-                msg += self._string_for_track_id(track_id)
-                if i > 100:
-                    self.request.send(msg.encode("utf-8"))
-                    msg = ""
-                    i = 0
-                else:
-                    i += 1
+            currents = list(Lp().playlists.get_tracks_ids(Type.MPD))
+            previous = list(self.server.playlist[version])
+            while currents:
+                current = currents.pop(0)
+                prev = previous.pop(0)
+                if current != prev:
+                    msg += self._string_for_track_id(current)
+                    if i > 100:
+                        self.request.send(msg.encode("utf-8"))
+                        msg = ""
+                        i = 0
+                    else:
+                        i += 1
         except:
             print("No such version")
         return msg
 
     def _plchangesposid(self, cmd_args):
         """
-            Send informations about playlists
+            Displays changed songs currently in the playlist since version
             @param plchangesposid version
             @param args as str
             @return msg as str
@@ -771,15 +776,20 @@ class MpdHandler(socketserver.StreamRequestHandler):
         i = 0
         msg = ""
         version = int(self._get_args(cmd_args)[0])
-        pl = Lp().playlists.get_tracks_ids(Type.MPD)
-        for track_id in self.server.playlist[version]:
-            msg += "cpos: %s\nId: %s\n" % (pl.index(track_id), track_id)
-            if i > 100:
-                self.request.send(msg.encode("utf-8"))
-                msg = ""
-                i = 0
-            else:
-                i += 1
+        currents = list(Lp().playlists.get_tracks_ids(Type.MPD))
+        previous = list(self.server.playlist[version])
+        while currents:
+            current = currents.pop(0)
+            prev = previous.pop(0)
+            if current != prev:
+                msg += "cpos: %s\nId: %s\n" % (currents.index(current),
+                                               current)
+                if i > 100:
+                    self.request.send(msg.encode("utf-8"))
+                    msg = ""
+                    i = 0
+                else:
+                    i += 1
         return msg
 
     def _previous(self, cmd_args):
@@ -1158,17 +1168,11 @@ class MpdHandler(socketserver.StreamRequestHandler):
         """
         if playlist_id == Type.MPD:
             if not Lp().player.is_party():
-                try:
-                    previous = self.server.playlist[
-                                                self.server.playlist_version-1]
-                except:
-                    previous = []
-                i = 0
+                Lp().player.set_user_playlist_id(Type.MPD)
                 self.server.playlist[self.server.playlist_version] = []
                 for track_id in Lp().playlists.get_tracks_ids(Type.MPD):
-                    if track_id not in previous or previous[i] != track_id:
-                        self.server.playlist[
-                                self.server.playlist_version].append(track_id)
+                    self.server.playlist[
+                            self.server.playlist_version].append(track_id)
                 self.server.playlist_version += 1
             if "playlist" in self._idle_wanted_strings:
                 self._idle_strings.append("playlist")
