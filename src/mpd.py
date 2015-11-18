@@ -758,28 +758,25 @@ class MpdHandler(socketserver.StreamRequestHandler):
         msg = ""
         version = int(self._get_args(cmd_args)[0])
         i = 0
-        try:
-            currents = list(Lp().playlists.get_tracks_ids(Type.MPD))
-            if Lp().player.is_party():
-                currents.insert(0, Lp().player.current_track.id)
-                if Lp().player.prev_track.id is not None:
-                    currents.insert(0, Lp().player.prev_track.id)
-                if Lp().player.next_track.id is not None:
-                    currents.append(Lp().player.next_track.id)
-            previous = list(self.server.playlist[version])
-            while currents:
-                current = currents.pop(0)
-                prev = previous.pop(0)
-                if current != prev:
-                    msg += self._string_for_track_id(current)
-                    if i > 100:
-                        self.request.send(msg.encode("utf-8"))
-                        msg = ""
-                        i = 0
-                    else:
-                        i += 1
-        except:
-            print("No such version")
+        currents = list(Lp().playlists.get_tracks_ids(Type.MPD))
+        if Lp().player.is_party():
+            currents.insert(0, Lp().player.current_track.id)
+            if Lp().player.prev_track.id is not None:
+                currents.insert(0, Lp().player.prev_track.id)
+            if Lp().player.next_track.id is not None:
+                currents.append(Lp().player.next_track.id)
+        previous = list(self.server.playlist[version])
+        while currents:
+            current = currents.pop(0)
+            prev = previous.pop(0)
+            if current != prev:
+                msg += self._string_for_track_id(current)
+                if i > 100:
+                    self.request.send(msg.encode("utf-8"))
+                    msg = ""
+                    i = 0
+                else:
+                    i += 1
         return msg
 
     def _plchangesposid(self, cmd_args):
