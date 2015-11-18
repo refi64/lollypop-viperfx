@@ -1242,6 +1242,10 @@ class MpdServer(socketserver.ThreadingMixIn, socketserver.TCPServer):
         elif "stored_playlist" in self.idle_wanted_strings:
             self.idle_strings.append("stored_playlist")
             self.event.set()
+        # Clean history
+        if len(self.playlist) > 50:
+            for i in range(1, 25):
+                self._playlist.pop(0)
 
 
 class MpdServerDaemon(MpdServer):
