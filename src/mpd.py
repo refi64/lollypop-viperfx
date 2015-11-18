@@ -29,22 +29,11 @@ class MpdHandler(socketserver.StreamRequestHandler):
     _PLCHANGES = ["add", "delete", "clear", "deleteid", "move",
                   "moveid", "load", "playlistadd"]
 
-    def __init__(self, arg1, arg2, arg3):
-        """
-            Init handler
-        """
-        self._is_idle = False
-        self._idle_wanted_strings = []
-        self._idle_strings = []
-        self._last_tracks = Lp().playlists.get_tracks_ids(Type.MPD)
-        socketserver.StreamRequestHandler.__init__(self, arg1, arg2, arg3)
-
     def handle(self):
         """
             One function to handle them all
         """
         self.request.send("OK MPD 0.19.0\n".encode('utf-8'))
-        self.__connect()
         while self.server.running:
             msg = ""
             try:
@@ -91,7 +80,6 @@ class MpdHandler(socketserver.StreamRequestHandler):
                                   Type.MPD)
             except:
                 break
-        self.__connect(False)
 
     def _add(self, cmd_args):
         """
@@ -287,21 +275,21 @@ class MpdHandler(socketserver.StreamRequestHandler):
         msg = ''
         args = self._get_args(cmd_args)
         if args:
-            self._idle_wanted_strings = []
+            self.server.idle_wanted_strings = []
             for arg in args:
-                self._idle_wanted_strings.append(arg)
+                self.server.idle_wanted_strings.append(arg)
         else:
-            self._idle_wanted_strings = ["stored_playlist",
-                                         "player", "playlist"]
+            self.server.idle_wanted_strings = ["stored_playlist",
+                                               "player", "playlist"]
         self.request.settimeout(0)
         self.server.event.clear()
         # We handle notifications directly if something in queue
-        if not self._idle_strings:
+        if not self.server.idle_strings:
             self.server.event.wait()
         # Handle new notifications
-        for string in self._idle_strings:
+        for string in self.server.idle_strings:
             msg += "changed: %s\n" % string
-        self._idle_strings = []
+        self.server.idle_strings = []
         self.request.settimeout(10)
         return msg
 
@@ -312,7 +300,7 @@ class MpdHandler(socketserver.StreamRequestHandler):
             @param args as str
             @return msg as str
         """
-        self._idle_strings = []
+        self.server.idle_strings = []
         self.server.event.set()
         return ""
 
@@ -773,7 +761,8 @@ class MpdHandler(socketserver.StreamRequestHandler):
             @param args as str
             @return msg as str
         """
-        i = 0
+        i = 0  # Sending index
+        idx = 0  # Track index
         msg = ""
         version = int(self._get_args(cmd_args)[0])
         currents = list(Lp().playlists.get_tracks_ids(Type.MPD))
@@ -782,14 +771,14 @@ class MpdHandler(socketserver.StreamRequestHandler):
             current = currents.pop(0)
             prev = previous.pop(0)
             if current != prev:
-                msg += "cpos: %s\nId: %s\n" % (currents.index(current),
-                                               current)
+                msg += "cpos: %s\nId: %s\n" % (idx, current)
                 if i > 100:
                     self.request.send(msg.encode("utf-8"))
                     msg = ""
                     i = 0
                 else:
                     i += 1
+            idx += 1
         return msg
 
     def _previous(self, cmd_args):
@@ -1136,52 +1125,56 @@ class MpdHandler(socketserver.StreamRequestHandler):
                 tracks.append(track_id)
         return tracks
 
-    def _on_player_changed(self, player, data=None):
-        """
-            Add player to idle
-            @param player as Player
-        """
-        if "player" in self._idle_wanted_strings:
-            self._idle_strings.append("player")
-            tracks_ids = Lp().playlists.get_tracks_ids(Type.MPD)
-            if Lp().player.current_track.id not in tracks_ids:
-                self._idle_strings.append("playlist")
-            self.server.event.set()
 
-    def _on_position_changed(self, player, data=None):
-        """
-            Add player to idle
-            @param player as Player
-        """
-        # Player may be in pause so wait for playback
-        if player.get_status() == Gst.State.PAUSED:
-            GLib.idle_add(self._on_position_changed, player, data)
-        elif "player" in self._idle_wanted_strings:
-            self._idle_strings.append("player")
-            self.server.event.set()
+class MpdServer(socketserver.ThreadingMixIn, socketserver.TCPServer):
+    """
+        Create a MPD server.
+    """
 
-    def _on_playlist_changed(self, playlists, playlist_id):
+    def __init__(self, eth, port=6600):
         """
-            Add playlist to idle if mpd
-            @param playlists as Playlists
-            @param playlist id as int
+            Init server
+            @param eth as string
+            @param port as int
         """
-        if playlist_id == Type.MPD:
-            if not Lp().player.is_party():
-                Lp().player.set_user_playlist_id(Type.MPD)
-                self.server.playlist[self.server.playlist_version] = []
-                for track_id in Lp().playlists.get_tracks_ids(Type.MPD):
-                    self.server.playlist[
-                            self.server.playlist_version].append(track_id)
-                self.server.playlist_version += 1
-            if "playlist" in self._idle_wanted_strings:
-                self._idle_strings.append("playlist")
-                self.server.event.set()
-        elif "stored_playlist" in self._idle_wanted_strings:
-            self._idle_strings.append("stored_playlist")
-            self.server.event.set()
+        self.event = None
+        self.mpddb = MpdDatabase()
+        self.playlist = {}
+        self.playlist_version = 0
+        self.idle_wanted_strings = []
+        self.idle_strings = []
+        try:
+            # Set initial playlist version
+            self.playlist[self.playlist_version] = []
+            for track_id in Lp().playlists.get_tracks_ids(Type.MPD):
+                self.playlist[
+                        self.playlist_version].append(track_id)
+            socketserver.TCPServer.allow_reuse_address = True
+            # Get ip for interface
+            ip = ""
+            if eth != "":
+                ip = get_ip(eth)
+            socketserver.TCPServer.__init__(self, (ip, port), MpdHandler)
+        except Exception as e:
+            print("MpdServer::__init__(): %s" % e)
 
-    def __connect(self, connect=True):
+    def run(self, e):
+        """
+            Run MPD server in a blocking way.
+            @param e as threading.Event
+        """
+        try:
+            self._connect()
+            self.event = e
+            self.serve_forever()
+            self._connect(False)
+        except Exception as e:
+            print("MpdServer::run(): %s" % e)
+
+#######################
+# PRIVATE             #
+#######################
+    def _connect(self, connect=True):
         """
             Connect or disconnect signals
         """
@@ -1200,42 +1193,50 @@ class MpdHandler(socketserver.StreamRequestHandler):
             Lp().player.disconnect(self._signal3)
             Lp().playlists.disconnect(self._signal4)
 
+    def _on_player_changed(self, player, data=None):
+        """
+            Add player to idle
+            @param player as Player
+        """
+        if "player" in self.idle_wanted_strings:
+            self.idle_strings.append("player")
+            tracks_ids = Lp().playlists.get_tracks_ids(Type.MPD)
+            if Lp().player.current_track.id not in tracks_ids:
+                self.idle_strings.append("playlist")
+            self.event.set()
 
-class MpdServer(socketserver.ThreadingMixIn, socketserver.TCPServer):
-    """
-        Create a MPD server.
-    """
+    def _on_position_changed(self, player, data=None):
+        """
+            Add player to idle
+            @param player as Player
+        """
+        # Player may be in pause so wait for playback
+        if player.get_status() == Gst.State.PAUSED:
+            GLib.idle_add(self._on_position_changed, player, data)
+        elif "player" in self.idle_wanted_strings:
+            self.idle_strings.append("player")
+            self.event.set()
 
-    def __init__(self, eth, port=6600):
+    def _on_playlist_changed(self, playlists, playlist_id):
         """
-            Init server
-            @param eth as string
-            @param port as int
+            Add playlist to idle if mpd
+            @param playlists as Playlists
+            @param playlist id as int
         """
-        self.event = None
-        self.mpddb = MpdDatabase()
-        self.playlist = {}
-        self.playlist_version = 0
-        try:
-            socketserver.TCPServer.allow_reuse_address = True
-            # Get ip for interface
-            ip = ""
-            if eth != "":
-                ip = get_ip(eth)
-            socketserver.TCPServer.__init__(self, (ip, port), MpdHandler)
-        except Exception as e:
-            print("MpdServer::__init__(): %s" % e)
-
-    def run(self, e):
-        """
-            Run MPD server in a blocking way.
-            @param e as threading.Event
-        """
-        try:
-            self.event = e
-            self.serve_forever()
-        except Exception as e:
-            print("MpdServer::run(): %s" % e)
+        if playlist_id == Type.MPD:
+            if not Lp().player.is_party():
+                Lp().player.set_user_playlist_id(Type.MPD)
+                self.playlist_version += 1
+                self.playlist[self.playlist_version] = []
+                for track_id in Lp().playlists.get_tracks_ids(Type.MPD):
+                    self.playlist[
+                            self.playlist_version].append(track_id)
+            if "playlist" in self.idle_wanted_strings:
+                self.idle_strings.append("playlist")
+                self.event.set()
+        elif "stored_playlist" in self.idle_wanted_strings:
+            self.idle_strings.append("stored_playlist")
+            self.event.set()
 
 
 class MpdServerDaemon(MpdServer):
