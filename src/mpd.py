@@ -717,12 +717,14 @@ class MpdHandler(socketserver.StreamRequestHandler):
             @return msg as str
         """
         msg = ""
-        tracks_ids = Lp().playlists.get_tracks_ids(Type.MPD)
-        if Lp().player.current_track.id is not None and\
-           Lp().player.current_track.id not in tracks_ids and\
-           Lp().player.is_party():
-            tracks_ids.insert(0, Lp().player.current_track.id)
-        for track_id in tracks_ids:
+        currents = Lp().playlists.get_tracks_ids(Type.MPD)
+        if Lp().player.is_party():
+            currents.insert(0, Lp().player.current_track.id)
+            if Lp().player.prev_track.id is not None:
+                currents.insert(0, Lp().player.prev_track.id)
+            if Lp().player.next_track.id is not None:
+                currents.append(Lp().player.next_track.id)
+        for track_id in currents:
             msg += self._string_for_track_id(track_id)
         return msg
 
@@ -740,6 +742,10 @@ class MpdHandler(socketserver.StreamRequestHandler):
             currents = list(Lp().playlists.get_tracks_ids(Type.MPD))
             if Lp().player.is_party():
                 currents.insert(0, Lp().player.current_track.id)
+                if Lp().player.prev_track.id is not None:
+                    currents.insert(0, Lp().player.prev_track.id)
+                if Lp().player.next_track.id is not None:
+                    currents.append(Lp().player.next_track.id)
             previous = list(self.server.playlist[version])
             while currents:
                 current = currents.pop(0)
@@ -770,10 +776,17 @@ class MpdHandler(socketserver.StreamRequestHandler):
         currents = list(Lp().playlists.get_tracks_ids(Type.MPD))
         if Lp().player.is_party():
             currents.insert(0, Lp().player.current_track.id)
+            if Lp().player.prev_track.id is not None:
+                currents.insert(0, Lp().player.prev_track.id)
+            if Lp().player.next_track.id is not None:
+                currents.append(Lp().player.next_track.id)
         previous = list(self.server.playlist[version])
         while currents:
             current = currents.pop(0)
-            prev = previous.pop(0)
+            try:
+                prev = previous.pop(0)
+            except:
+                prev = Type.NONE
             if current != prev:
                 msg += "cpos: %s\nId: %s\n" % (idx, current)
                 if i > 100:
@@ -1228,8 +1241,15 @@ class MpdServer(socketserver.ThreadingMixIn, socketserver.TCPServer):
         if player.is_party() and "playlist" in self.idle_wanted_strings:
             self.idle_strings.append("playlist")
             self.playlist_version += 1
+            self.playlist[self.playlist_version] = []
+            if Lp().player.prev_track.id is not None:
+                self.playlist[self.playlist_version] = [
+                                                Lp().player.prev_track.id]
             self.playlist[self.playlist_version] = [
                                                 Lp().player.current_track.id]
+            if Lp().player.next_track.id is not None:
+                self.playlist[self.playlist_version] = [
+                                                Lp().player.next_track.id]
             changed = True
         if changed:
             self.event.set()
@@ -1252,7 +1272,7 @@ class MpdServer(socketserver.ThreadingMixIn, socketserver.TCPServer):
             @param player as Player
             @param enabled as bool
         """
-        Lp().playlists.clear(Type.MPD, True)
+        Lp().playlists.clear(Type.MPD, False)
         if "options" in self.idle_wanted_strings:
             self.idle_strings.append("options")
             self.event.set()
@@ -1264,14 +1284,15 @@ class MpdServer(socketserver.ThreadingMixIn, socketserver.TCPServer):
             @param playlist id as int
         """
         if playlist_id == Type.MPD:
-            self.init_player_playlist()
-            self.playlist_version += 1
-            self.playlist[self.playlist_version] = []
-            for track_id in Lp().playlists.get_tracks_ids(Type.MPD):
-                self.playlist[self.playlist_version].append(track_id)
-            if "playlist" in self.idle_wanted_strings:
-                self.idle_strings.append("playlist")
-                self.event.set()
+            if not Lp().player.is_party():
+                self.init_player_playlist()
+                self.playlist_version += 1
+                self.playlist[self.playlist_version] = []
+                for track_id in Lp().playlists.get_tracks_ids(Type.MPD):
+                    self.playlist[self.playlist_version].append(track_id)
+                if "playlist" in self.idle_wanted_strings:
+                    self.idle_strings.append("playlist")
+                    self.event.set()
         elif "stored_playlist" in self.idle_wanted_strings:
             self.idle_strings.append("stored_playlist")
             self.event.set()
