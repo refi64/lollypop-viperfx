@@ -742,8 +742,8 @@ class MpdHandler(socketserver.StreamRequestHandler):
         i = 0
         for track_id in currents:
             if (start is not None and start <= i <= end) or\
-               (pos is not None None and pos == i) or\
-               (start == end == pos is not None):
+               (pos is not None and pos == i) or\
+               (start == end == pos is None):
                 msg += self._string_for_track_id(track_id)
             i += 1
         return msg
