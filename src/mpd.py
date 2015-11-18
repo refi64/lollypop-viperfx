@@ -712,11 +712,26 @@ class MpdHandler(socketserver.StreamRequestHandler):
     def _playlistinfo(self, cmd_args):
         """
             Send informations about current playlist
-            @parma playlistinfo
+            @syntax playlistinfo [[pos]|[start:end]]
+            @param playlistinfo
             @param args as str
             @return msg as str
         """
         msg = ""
+        try:
+            arg = self._get_args(cmd_args)[0]
+        except:
+            arg = None
+        start = end = pos = None
+        if arg is not None:
+            # Check for a range
+            try:
+                splited = arg.split(':')
+                start = int(splited[0])
+                end = int(splited[1])
+            except:
+                start = end = None
+                pos = int(arg)
         currents = Lp().playlists.get_tracks_ids(Type.MPD)
         if Lp().player.is_party():
             currents.insert(0, Lp().player.current_track.id)
@@ -724,8 +739,13 @@ class MpdHandler(socketserver.StreamRequestHandler):
                 currents.insert(0, Lp().player.prev_track.id)
             if Lp().player.next_track.id is not None:
                 currents.append(Lp().player.next_track.id)
+        i = 0
         for track_id in currents:
-            msg += self._string_for_track_id(track_id)
+            if (start is not None and start <= i <= end) or\
+               (pos is not None None and pos == i) or\
+               (start == end == pos is not None):
+                msg += self._string_for_track_id(track_id)
+            i += 1
         return msg
 
     def _plchanges(self, cmd_args):
