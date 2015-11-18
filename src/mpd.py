@@ -768,7 +768,10 @@ class MpdHandler(socketserver.StreamRequestHandler):
         previous = list(self.server.playlist[version])
         while currents:
             current = currents.pop(0)
-            prev = previous.pop(0)
+            try:
+                prev = previous.pop(0)
+            except:
+                prev = Type.NONE
             if current != prev:
                 msg += self._string_for_track_id(current)
                 if i > 100:
