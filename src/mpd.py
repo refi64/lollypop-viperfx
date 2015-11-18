@@ -1033,6 +1033,11 @@ class MpdHandler(socketserver.StreamRequestHandler):
             msg = ""
         else:
             track = Track(track_id)
+            tracks_ids = Lp().playlists.get_tracks_ids(Type.MPD)
+            try:
+                index = tracks_ids.index(track_id)
+            except:
+                index = 0
             msg = "file: %s\nArtist: %s\nAlbum: %s\nAlbumArtist: %s\
 \nTitle: %s\nDate: %s\nGenre: %s\nTime: %s\nId: %s\nPos: %s\nTrack: %s\n" % (
                      track.path,
@@ -1044,7 +1049,7 @@ class MpdHandler(socketserver.StreamRequestHandler):
                      track.genre,
                      track.duration,
                      track.id,
-                     track.position,
+                     index,
                      track.position)
         return msg
 
