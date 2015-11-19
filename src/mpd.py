@@ -1255,9 +1255,6 @@ class MpdServer(socketserver.ThreadingMixIn, socketserver.TCPServer):
         changed = False
         if "player" in self.idle_wanted_strings:
             self.idle_strings.append("player")
-            tracks_ids = Lp().playlists.get_tracks_ids(Type.MPD)
-            if Lp().player.current_track.id not in tracks_ids:
-                self.idle_strings.append("playlist")
             changed = True
         # We want to add party song to playlist
         if player.is_party() and "playlist" in self.idle_wanted_strings:
