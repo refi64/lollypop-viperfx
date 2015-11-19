@@ -1231,9 +1231,9 @@ class MpdServer(socketserver.ThreadingMixIn, socketserver.TCPServer):
         """
         if connect:
             self._signal1 = Lp().player.connect('current-changed',
-                                                self._on_player_changed)
+                                                self._on_current_changed)
             self._signal2 = Lp().player.connect('status-changed',
-                                                self._on_player_changed)
+                                                self._on_status_changed)
             self._signal3 = Lp().player.connect('seeked',
                                                 self._on_position_changed)
             self._signal4 = Lp().player.connect('party-changed',
@@ -1247,7 +1247,7 @@ class MpdServer(socketserver.ThreadingMixIn, socketserver.TCPServer):
             Lp().player.disconnect(self._signal4)
             Lp().playlists.disconnect(self._signal5)
 
-    def _on_player_changed(self, player, data=None):
+    def _on_current_changed(self, player):
         """
             Add player to idle
             @param player as Player
@@ -1274,6 +1274,15 @@ class MpdServer(socketserver.ThreadingMixIn, socketserver.TCPServer):
                                                 Lp().player.next_track.id]
             changed = True
         if changed:
+            self.event.set()
+
+    def _on_status_changed(self, player, data=None):
+        """
+            Add player to idle
+            @param player as Player
+        """
+        if "player" in self.idle_wanted_strings:
+            self.idle_strings.append("player")
             self.event.set()
 
     def _on_position_changed(self, player, data=None):

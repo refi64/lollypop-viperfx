@@ -87,7 +87,10 @@ class BinPlayer(ReplayGainPlayer, BasePlayer):
         """
         self._stop()
         if self._load_track(track):
-            self.play()
+            if self.is_playing():
+                self._play()
+            else:
+                self.play()
 
     def play(self):
         """
@@ -112,7 +115,7 @@ class BinPlayer(ReplayGainPlayer, BasePlayer):
         """
             Change player state to STOPPED
         """
-        self._stop()
+        self._playbin.set_state(Gst.State.NULL)
         self.emit("status-changed")
 
     def play_pause(self):
@@ -173,6 +176,12 @@ class BinPlayer(ReplayGainPlayer, BasePlayer):
 #######################
 # PRIVATE             #
 #######################
+    def _play(self):
+        """
+            play current track (for track change)
+        """
+        self._playbin.set_state(Gst.State.PLAYING)
+
     def _stop(self):
         """
             Stop current track (for track change)
