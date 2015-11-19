@@ -10,7 +10,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-from gi.repository import TotemPlParser, Gio
+from gi.repository import TotemPlParser, Gio, Gst
 
 from lollypop.radios import Radios
 from lollypop.player_base import BasePlayer
@@ -110,7 +110,7 @@ class RadioPlayer(BasePlayer):
             Start playing track
             @param track as Track:
         """
-        self._stop()
+        self._playbin.set_state(Gst.State.NULL)
         self._playbin.set_property('uri', track.uri)
         Radios().set_more_popular(track.album_artist)
         self.current_track = track

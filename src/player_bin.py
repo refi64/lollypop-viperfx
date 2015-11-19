@@ -80,17 +80,17 @@ class BinPlayer(ReplayGainPlayer, BasePlayer):
             state = Gst.State.NULL
         return state
 
-    def load(self, track):
+    def load(self, track, notify=True):
         """
             Stop current track, load track id and play it
             @param track as Track
         """
-        self._stop()
+        self._playbin.set_state(Gst.State.NULL)
         if self._load_track(track):
-            if self.is_playing():
-                self._play()
-            else:
+            if notify:
                 self.play()
+            else:
+                self._playbin.set_state(Gst.State.PLAYING)
 
     def play(self):
         """
@@ -176,18 +176,6 @@ class BinPlayer(ReplayGainPlayer, BasePlayer):
 #######################
 # PRIVATE             #
 #######################
-    def _play(self):
-        """
-            play current track (for track change)
-        """
-        self._playbin.set_state(Gst.State.PLAYING)
-
-    def _stop(self):
-        """
-            Stop current track (for track change)
-        """
-        self._playbin.set_state(Gst.State.NULL)
-
     def _load_track(self, track):
         """
             Load track
