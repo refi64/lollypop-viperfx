@@ -700,12 +700,14 @@ class MpdHandler(socketserver.StreamRequestHandler):
             track_id = int(self._get_args(cmd_args))
             msg += self._string_for_track_id(track_id)
         except:
-            tracks_ids = Lp().playlists.get_tracks_ids(Type.MPD)
-            if Lp().player.current_track.id is not None and\
-               Lp().player.current_track.id not in tracks_ids and\
-               Lp().player.is_party():
-                tracks_ids.insert(0, Lp().player.current_track.id)
-            for track_id in tracks_ids:
+            currents = Lp().playlists.get_tracks_ids(Type.MPD)
+            if Lp().player.is_party():
+                currents.insert(0, Lp().player.current_track.id)
+                if Lp().player.prev_track.id is not None:
+                    currents.insert(0, Lp().player.prev_track.id)
+                if Lp().player.next_track.id is not None:
+                    currents.append(Lp().player.next_track.id)
+            for track_id in currents:
                 msg += self._string_for_track_id(track_id)
         return msg
 
