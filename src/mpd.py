@@ -972,6 +972,10 @@ class MpdHandler(socketserver.StreamRequestHandler):
             @param args as str
             @return msg as str
         """
+        if Lp().player.is_party:
+            playlistlength = 3
+        else:
+            playlistlength = len(Lp().playlists.get_tracks(Type.MPD))
         msg = "volume: %s\nrepeat: %s\nrandom: %s\
 \nsingle: %s\nconsume: %s\nplaylist: %s\
 \nplaylistlength: %s\nstate: %s\
@@ -982,7 +986,7 @@ class MpdHandler(socketserver.StreamRequestHandler):
                                    1,
                                    1,
                                    self.server.playlist_version,
-                                   len(Lp().playlists.get_tracks(Type.MPD)),
+                                   playlistlength,
                                    self._get_status(),
                                    )
         if self._get_status() != 'stop':
@@ -1072,11 +1076,18 @@ class MpdHandler(socketserver.StreamRequestHandler):
             msg = ""
         else:
             track = Track(track_id)
-            tracks_ids = Lp().playlists.get_tracks_ids(Type.MPD)
-            try:
-                index = tracks_ids.index(track_id)
-            except:
-                index = 0
+            index = 0
+            if Lp().player.is_party():
+                if track_id == Lp().player.current_track.id:
+                    index = 1
+                elif track_id == Lp().player.next_track.id:
+                    index = 2
+            else:
+                tracks_ids = Lp().playlists.get_tracks_ids(Type.MPD)
+                try:
+                    index = tracks_ids.index(track_id)
+                except:
+                    pass
             msg = "file: %s\nArtist: %s\nAlbum: %s\nAlbumArtist: %s\
 \nTitle: %s\nDate: %s\nGenre: %s\nTime: %s\nId: %s\nPos: %s\nTrack: %s\n" % (
                      track.path,
