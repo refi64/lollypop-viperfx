@@ -247,8 +247,10 @@ class MpdHandler(socketserver.StreamRequestHandler):
             @return msg as str
         """
         msg = ""
+        idx = 0
         for track_id in self._find_tracks(cmd_args):
-            msg += self._string_for_track_id(track_id)
+            msg += self._string_for_track_id(track_id, idx)
+            idx += 1
         return msg
 
     def _findadd(self, cmd_args):
@@ -422,8 +424,10 @@ class MpdHandler(socketserver.StreamRequestHandler):
         arg = self._get_args(cmd_args)[0]
         playlist_id = Lp().playlists.get_id(arg)
         msg = ""
+        idx = 0
         for track_id in Lp().playlists.get_tracks_ids(playlist_id):
-            msg += self._string_for_track_id(track_id)
+            msg += self._string_for_track_id(track_id, idx)
+            idx += 1
         return msg
 
     def _listplaylists(self, cmd_args):
@@ -1067,28 +1071,30 @@ class MpdHandler(socketserver.StreamRequestHandler):
         msg = "handler: http\n"
         return msg
 
-    def _string_for_track_id(self, track_id):
+    def _string_for_track_id(self, track_id, index=Type.NONE):
         """
             Get mpd protocol string for track id
             @param track id as int
+            @param track index as int
             @return str
         """
         if track_id is None:
             msg = ""
         else:
             track = Track(track_id)
-            index = 0
-            if Lp().player.is_party():
-                tracks_ids = [Lp().player.prev_track.id,
-                              Lp().player.current_track.id,
-                              Lp().player.next_track.id]
-                index = tracks_ids.index(track_id)
-            else:
-                tracks_ids = Lp().playlists.get_tracks_ids(Type.MPD)
-                try:
+            if index == Type.NONE:
+                index = 0
+                if Lp().player.is_party():
+                    tracks_ids = [Lp().player.prev_track.id,
+                                  Lp().player.current_track.id,
+                                  Lp().player.next_track.id]
                     index = tracks_ids.index(track_id)
-                except:
-                    pass
+                else:
+                    tracks_ids = Lp().playlists.get_tracks_ids(Type.MPD)
+                    try:
+                        index = tracks_ids.index(track_id)
+                    except:
+                        pass
             msg = "file: %s\nArtist: %s\nAlbum: %s\nAlbumArtist: %s\
 \nTitle: %s\nDate: %s\nGenre: %s\nTime: %s\nId: %s\nPos: %s\nTrack: %s\n" % (
                      track.path,
