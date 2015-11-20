@@ -112,7 +112,7 @@ class MpdDatabase:
         from_str = "artists, albums "
         where_str = " albums.artist_id = artists.rowid AND"
         if genre_id is not None:
-            from_str += ", albums, album_genres"
+            from_str += ", album_genres"
             where_str += " album_genres.genre_id = %s\
                           AND album_genres.album_id = albums.rowid\
                           AND" % genre_id
