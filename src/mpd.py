@@ -972,9 +972,12 @@ class MpdHandler(socketserver.StreamRequestHandler):
             @param args as str
             @return msg as str
         """
-        if Lp().player.is_party:
+        if Lp().player.is_party():
+            pos = 1
             playlistlength = 3
         else:
+            pos = Lp().playlists.get_position(Type.MPD,
+                                              Lp().player.current_track.id)
             playlistlength = len(Lp().playlists.get_tracks(Type.MPD))
         msg = "volume: %s\nrepeat: %s\nrandom: %s\
 \nsingle: %s\nconsume: %s\nplaylist: %s\
@@ -994,9 +997,7 @@ class MpdHandler(socketserver.StreamRequestHandler):
             time = Lp().player.current_track.duration
             songid = Lp().player.current_track.id
             msg += "song: %s\nsongid: %s\ntime: %s:%s\nelapsed: %s\n" % (
-                                       Lp().playlists.get_position(
-                                            Type.MPD,
-                                            Lp().player.current_track.id),
+                                       pos,
                                        songid,
                                        int(elapsed),
                                        time,
@@ -1078,10 +1079,10 @@ class MpdHandler(socketserver.StreamRequestHandler):
             track = Track(track_id)
             index = 0
             if Lp().player.is_party():
-                if track_id == Lp().player.current_track.id:
-                    index = 1
-                elif track_id == Lp().player.next_track.id:
-                    index = 2
+                tracks_ids = [Lp().player.prev_track.id,
+                              Lp().player.current_track.id,
+                              Lp().player.next_track.id]
+                index = tracks_ids.index(track_id)
             else:
                 tracks_ids = Lp().playlists.get_tracks_ids(Type.MPD)
                 try:
