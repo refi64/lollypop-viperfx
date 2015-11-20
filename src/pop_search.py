@@ -282,7 +282,7 @@ class SearchPopover(Gtk.Popover):
             self._in_thread = False
             self._stop_thread = False
 
-    def _set_user_playlist(self, tracks, track_id):
+    def _set_user_playlist_by_tracks(self, tracks, track_id):
         """
             Set user playlist
             @param tracks as [Track]
@@ -290,7 +290,7 @@ class SearchPopover(Gtk.Popover):
             @thread safe
         """
         Lp().player.load(Track(track_id))
-        Lp().player.set_user_playlist(tracks)
+        Lp().player.set_user_playlist_by_tracks(tracks)
 
     def _play_search(self, object_id=None, is_track=True):
         """
