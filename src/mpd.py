@@ -423,7 +423,7 @@ class MpdHandler(socketserver.StreamRequestHandler):
         playlist_id = Lp().playlists.get_id(arg)
         msg = ""
         for track_id in Lp().playlists.get_tracks_ids(playlist_id):
-            msg += self._string_for_track_id(track_id)
+            msg += self._string_for_track_id(track_id, playlist_id)
         return msg
 
     def _listplaylists(self, cmd_args):
@@ -1067,10 +1067,11 @@ class MpdHandler(socketserver.StreamRequestHandler):
         msg = "handler: http\n"
         return msg
 
-    def _string_for_track_id(self, track_id):
+    def _string_for_track_id(self, track_id, playlist_id=Type.MPD):
         """
             Get mpd protocol string for track id
             @param track id as int
+            @param playlist id as int
             @return str
         """
         if track_id is None:
@@ -1078,13 +1079,13 @@ class MpdHandler(socketserver.StreamRequestHandler):
         else:
             track = Track(track_id)
             index = 0
-            if Lp().player.is_party():
+            if Lp().player.is_party() and playlist_id == Type.MPD:
                 tracks_ids = [Lp().player.prev_track.id,
                               Lp().player.current_track.id,
                               Lp().player.next_track.id]
                 index = tracks_ids.index(track_id)
             else:
-                tracks_ids = Lp().playlists.get_tracks_ids(Type.MPD)
+                tracks_ids = Lp().playlists.get_tracks_ids(playlist_id)
                 try:
                     index = tracks_ids.index(track_id)
                 except:
