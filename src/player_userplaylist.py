@@ -78,7 +78,8 @@ class UserPlaylistPlayer(BasePlayer):
             @param array of tracks as [Track]
             @param track id as int
         """
-        Lp().player.set_party(False)
+        if Lp().player.is_party():
+            Lp().player.set_party(False)
         self._user_playlist = []
         for track in tracks:
             if track.id == Lp().player.current_track.id:
