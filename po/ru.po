@@ -11,9 +11,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lollypop\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-10-29 16:26+0100\n"
-"PO-Revision-Date: 2015-10-29 15:27+0000\n"
-"Last-Translator: Cédric Bellegarde <web@adishatz.org>\n"
+"POT-Creation-Date: 2015-11-17 17:22+0100\n"
+"PO-Revision-Date: 2015-11-21 14:01+0000\n"
+"Last-Translator: Олег <legunt@yandex.ru>\n"
 "Language-Team: Russian (http://www.transifex.com/gnumdk/lollypop/language/ru/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -55,7 +55,7 @@ msgstr "Идентификаторы для жанров"
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:9
 msgid "Music paths"
-msgstr "Директории с музыкой"
+msgstr "Директория с музыкой"
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:10
 msgid "When empty, use XDG_MUSIC_DIR"
@@ -151,12 +151,20 @@ msgid "Show track number from tags"
 msgstr "Показывать номер трека из тегов"
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:33
+msgid "MPD network interface"
+msgstr "MPD сетевой интерфейс"
+
+#: ../data/org.gnome.Lollypop.gschema.xml.h:34
+msgid "MPD network port"
+msgstr "MPD сетевой порт"
+
+#: ../data/org.gnome.Lollypop.gschema.xml.h:35
 msgid "Shuffle mode"
 msgstr "Режим перемешивания"
 
 #. Translators: Don't translate allowed values, just the description in the
 #. brackets
-#: ../data/org.gnome.Lollypop.gschema.xml.h:35
+#: ../data/org.gnome.Lollypop.gschema.xml.h:37
 msgid ""
 "Value identifies whether to shuffle tracks/albums. Allowed values are: "
 "\"none\" (shuffle off), \"tracks\" (shuffle tracks) , \"albums\" (shuffle "
@@ -178,7 +186,7 @@ msgstr "Воспроизводите и организовывайте свою 
 
 #: ../data/lollypop.desktop.in.h:4
 msgid "Play/Pause"
-msgstr ""
+msgstr "Воспроизведение/Пауза"
 
 #: ../data/lollypop.desktop.in.h:5 ../src/notification.py:70
 #: ../data/ToolbarPlayback.ui.h:3
@@ -271,7 +279,22 @@ msgid ""
 "    - Artist informations disabled"
 msgstr "    - Скробблинг отключен\n    - Автоматическая загрузка обложек отключена\n    - Информация об исполнителе отключена"
 
-#: ../src/application.py:361
+#: ../src/application.py:351
+#, python-format
+msgid "%s artist(s)"
+msgstr "%s исполнитель(ли)"
+
+#: ../src/application.py:353
+#, python-format
+msgid "%s album(s)"
+msgstr "%s альбом(ы)"
+
+#: ../src/application.py:355
+#, python-format
+msgid "%s track(s)"
+msgstr "%s композиция(и)"
+
+#: ../src/application.py:371
 msgid "Lollypop: You need to install yelp."
 msgstr "Lollypop: Вам необходимо установить yelp."
 
@@ -332,10 +355,15 @@ msgstr "Ни разу не проигрывались"
 msgid "Random tracks"
 msgstr "Случайные композиции"
 
+#: ../src/container.py:451 ../src/playlists.py:54
+#: ../data/SettingsDialog.ui.h:7
+msgid "Network control"
+msgstr "Сетевое управление"
+
 #: ../src/database_albums.py:271 ../src/database_artists.py:73
 #: ../src/database_genres.py:69 ../src/database_tracks.py:230
-#: ../src/tagreader.py:86 ../src/tagreader.py:105 ../src/tagreader.py:130
-#: ../src/tagreader.py:145
+#: ../src/tagreader.py:87 ../src/tagreader.py:106 ../src/tagreader.py:131
+#: ../src/tagreader.py:146
 msgid "Unknown"
 msgstr "Неизвестный"
 
@@ -492,7 +520,7 @@ msgstr "Недавно добавленные"
 
 #. Handle language ordering
 #. Translators: Add here words that shoud be ignored for artist sort order
-#: ../src/utils.py:87
+#: ../src/utils.py:101
 msgid "The the"
 msgstr "The the"
 
@@ -525,11 +553,11 @@ msgstr "%s мин"
 msgid "Disc %s"
 msgstr "Диск %s"
 
-#: ../src/widgets_device.py:187
+#: ../src/widgets_device.py:188
 msgid "Unknown error while syncing, try to reboot your device"
 msgstr "Неизвестная ошибка при синхронизации, попробуйте перезагрузить ваше устройство"
 
-#: ../src/widgets_device.py:195
+#: ../src/widgets_device.py:196
 msgid "No free space available on device"
 msgstr "На устройстве не осталось свободного места"
 
@@ -706,10 +734,6 @@ msgstr "Проигрывать альбом по клику"
 #: ../data/SettingsDialog.ui.h:6
 msgid "Control Lollypop with any MPD client"
 msgstr "Управлять Lollypop при помощи любого MPD клиента"
-
-#: ../data/SettingsDialog.ui.h:7
-msgid "Network control"
-msgstr "Сетевое управление"
 
 #: ../data/SettingsDialog.ui.h:8
 msgid "Behaviour"

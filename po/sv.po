@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lollypop\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-10-29 16:26+0100\n"
-"PO-Revision-Date: 2015-10-29 15:27+0000\n"
+"POT-Creation-Date: 2015-11-17 17:22+0100\n"
+"PO-Revision-Date: 2015-11-18 09:50+0000\n"
 "Last-Translator: Cédric Bellegarde <web@adishatz.org>\n"
 "Language-Team: Swedish (http://www.transifex.com/gnumdk/lollypop/language/sv/)\n"
 "MIME-Version: 1.0\n"
@@ -147,12 +147,20 @@ msgid "Show track number from tags"
 msgstr ""
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:33
+msgid "MPD network interface"
+msgstr ""
+
+#: ../data/org.gnome.Lollypop.gschema.xml.h:34
+msgid "MPD network port"
+msgstr ""
+
+#: ../data/org.gnome.Lollypop.gschema.xml.h:35
 msgid "Shuffle mode"
 msgstr ""
 
 #. Translators: Don't translate allowed values, just the description in the
 #. brackets
-#: ../data/org.gnome.Lollypop.gschema.xml.h:35
+#: ../data/org.gnome.Lollypop.gschema.xml.h:37
 msgid ""
 "Value identifies whether to shuffle tracks/albums. Allowed values are: "
 "\"none\" (shuffle off), \"tracks\" (shuffle tracks) , \"albums\" (shuffle "
@@ -267,7 +275,22 @@ msgid ""
 "    - Artist informations disabled"
 msgstr ""
 
-#: ../src/application.py:361
+#: ../src/application.py:351
+#, python-format
+msgid "%s artist(s)"
+msgstr ""
+
+#: ../src/application.py:353
+#, python-format
+msgid "%s album(s)"
+msgstr ""
+
+#: ../src/application.py:355
+#, python-format
+msgid "%s track(s)"
+msgstr ""
+
+#: ../src/application.py:371
 msgid "Lollypop: You need to install yelp."
 msgstr ""
 
@@ -328,10 +351,15 @@ msgstr ""
 msgid "Random tracks"
 msgstr ""
 
+#: ../src/container.py:451 ../src/playlists.py:54
+#: ../data/SettingsDialog.ui.h:7
+msgid "Network control"
+msgstr ""
+
 #: ../src/database_albums.py:271 ../src/database_artists.py:73
 #: ../src/database_genres.py:69 ../src/database_tracks.py:230
-#: ../src/tagreader.py:86 ../src/tagreader.py:105 ../src/tagreader.py:130
-#: ../src/tagreader.py:145
+#: ../src/tagreader.py:87 ../src/tagreader.py:106 ../src/tagreader.py:131
+#: ../src/tagreader.py:146
 msgid "Unknown"
 msgstr ""
 
@@ -488,7 +516,7 @@ msgstr ""
 
 #. Handle language ordering
 #. Translators: Add here words that shoud be ignored for artist sort order
-#: ../src/utils.py:87
+#: ../src/utils.py:101
 msgid "The the"
 msgstr ""
 
@@ -521,11 +549,11 @@ msgstr ""
 msgid "Disc %s"
 msgstr ""
 
-#: ../src/widgets_device.py:187
+#: ../src/widgets_device.py:188
 msgid "Unknown error while syncing, try to reboot your device"
 msgstr ""
 
-#: ../src/widgets_device.py:195
+#: ../src/widgets_device.py:196
 msgid "No free space available on device"
 msgstr ""
 
@@ -701,10 +729,6 @@ msgstr ""
 
 #: ../data/SettingsDialog.ui.h:6
 msgid "Control Lollypop with any MPD client"
-msgstr ""
-
-#: ../data/SettingsDialog.ui.h:7
-msgid "Network control"
 msgstr ""
 
 #: ../data/SettingsDialog.ui.h:8

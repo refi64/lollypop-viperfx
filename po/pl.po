@@ -4,14 +4,15 @@
 # 
 # Translators:
 # Aleksander Charatonik <alexskc@autistici.org>, 2015
+# Artur Motyka <slashcraftpl@gmail.com>, 2015
 # Paweł Adamczak <pawel.ad@gmail.com>, 2015
 # Piotr Sokół <psokol@jabster.pl>, 2015
 msgid ""
 msgstr ""
 "Project-Id-Version: lollypop\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-10-29 16:26+0100\n"
-"PO-Revision-Date: 2015-10-29 15:27+0000\n"
+"POT-Creation-Date: 2015-11-17 17:22+0100\n"
+"PO-Revision-Date: 2015-11-18 09:50+0000\n"
 "Last-Translator: Cédric Bellegarde <web@adishatz.org>\n"
 "Language-Team: Polish (http://www.transifex.com/gnumdk/lollypop/language/pl/)\n"
 "MIME-Version: 1.0\n"
@@ -62,7 +63,7 @@ msgstr "Wskazuje ścieżki do katalogów z muzyką. Jeśli nie skonfigurowano, z
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:11
 msgid "Last.fm login"
-msgstr "Konto Last.fm"
+msgstr "Nazwa uży Last.fm"
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:12
 msgid "Favorite tag editor"
@@ -150,12 +151,20 @@ msgid "Show track number from tags"
 msgstr "Pokaż numer utworu z tagów"
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:33
+msgid "MPD network interface"
+msgstr ""
+
+#: ../data/org.gnome.Lollypop.gschema.xml.h:34
+msgid "MPD network port"
+msgstr ""
+
+#: ../data/org.gnome.Lollypop.gschema.xml.h:35
 msgid "Shuffle mode"
 msgstr "Losowanie kolejności"
 
 #. Translators: Don't translate allowed values, just the description in the
 #. brackets
-#: ../data/org.gnome.Lollypop.gschema.xml.h:35
+#: ../data/org.gnome.Lollypop.gschema.xml.h:37
 msgid ""
 "Value identifies whether to shuffle tracks/albums. Allowed values are: "
 "\"none\" (shuffle off), \"tracks\" (shuffle tracks) , \"albums\" (shuffle "
@@ -270,7 +279,22 @@ msgid ""
 "    - Artist informations disabled"
 msgstr "- Scrobblowanie wyłączone\n- Automatyczne ściąganie okładek wyłączone\n- Automatyczne ściąganie danych wyłączone"
 
-#: ../src/application.py:361
+#: ../src/application.py:351
+#, python-format
+msgid "%s artist(s)"
+msgstr ""
+
+#: ../src/application.py:353
+#, python-format
+msgid "%s album(s)"
+msgstr ""
+
+#: ../src/application.py:355
+#, python-format
+msgid "%s track(s)"
+msgstr ""
+
+#: ../src/application.py:371
 msgid "Lollypop: You need to install yelp."
 msgstr "Wymagana instalcja yelp."
 
@@ -331,10 +355,15 @@ msgstr "Nie odtwarzane"
 msgid "Random tracks"
 msgstr "Losowe utwory"
 
+#: ../src/container.py:451 ../src/playlists.py:54
+#: ../data/SettingsDialog.ui.h:7
+msgid "Network control"
+msgstr ""
+
 #: ../src/database_albums.py:271 ../src/database_artists.py:73
 #: ../src/database_genres.py:69 ../src/database_tracks.py:230
-#: ../src/tagreader.py:86 ../src/tagreader.py:105 ../src/tagreader.py:130
-#: ../src/tagreader.py:145
+#: ../src/tagreader.py:87 ../src/tagreader.py:106 ../src/tagreader.py:131
+#: ../src/tagreader.py:146
 msgid "Unknown"
 msgstr "Nieznany"
 
@@ -491,7 +520,7 @@ msgstr "Ostatnio dodane"
 
 #. Handle language ordering
 #. Translators: Add here words that shoud be ignored for artist sort order
-#: ../src/utils.py:87
+#: ../src/utils.py:101
 msgid "The the"
 msgstr "The the"
 
@@ -507,28 +536,28 @@ msgstr "Anuluj synchronizowanie"
 #: ../src/widgets_album.py:251
 #, python-format
 msgid "%s h  %s m"
-msgstr ""
+msgstr "%s h  %s m"
 
 #: ../src/widgets_album.py:253
 #, python-format
 msgid "%s h"
-msgstr ""
+msgstr "%s h"
 
 #: ../src/widgets_album.py:255
 #, python-format
 msgid "%s m"
-msgstr ""
+msgstr "%s m"
 
 #: ../src/widgets_album.py:267
 #, python-format
 msgid "Disc %s"
 msgstr "Płyta %s"
 
-#: ../src/widgets_device.py:187
+#: ../src/widgets_device.py:188
 msgid "Unknown error while syncing, try to reboot your device"
 msgstr "Nie rozpoznany błąd. Spróbuj zresetować urządzenie."
 
-#: ../src/widgets_device.py:195
+#: ../src/widgets_device.py:196
 msgid "No free space available on device"
 msgstr "Brak wolnego miejsca w pamięci urządzenia"
 
@@ -596,7 +625,7 @@ msgstr "Za_kończ"
 
 #: ../data/ArtistContent.ui.h:1
 msgid "No information for this artist..."
-msgstr ""
+msgstr "Brak informacji dla tego wykonawcy..."
 
 #: ../data/ArtistInfos.ui.h:1
 msgid "Albums"
@@ -616,7 +645,7 @@ msgstr "Wikia"
 
 #: ../data/ArtistInfos.ui.h:5
 msgid "DuckDuckGo"
-msgstr ""
+msgstr "DuckDuckGo"
 
 #: ../data/DeviceManagerView.ui.h:1
 msgid "Synchronize your device with this playlists"
@@ -624,7 +653,7 @@ msgstr "Użyj tą listę odtwarzania by synchronizować urządzenie."
 
 #: ../data/DeviceManagerView.ui.h:2
 msgid "Please unlock your device"
-msgstr ""
+msgstr "Proszę odblokować urządzenie"
 
 #: ../data/PlaylistEditWidget.ui.h:1 ../data/PlaylistsManagerWidget.ui.h:1
 msgid "Confirm"
@@ -704,10 +733,6 @@ msgstr "Odtwarzanie albumów kliknięciem"
 
 #: ../data/SettingsDialog.ui.h:6
 msgid "Control Lollypop with any MPD client"
-msgstr ""
-
-#: ../data/SettingsDialog.ui.h:7
-msgid "Network control"
 msgstr ""
 
 #: ../data/SettingsDialog.ui.h:8
@@ -798,4 +823,4 @@ msgstr "Błąd"
 msgid ""
 "Lollypop isn't designed to work without an unicode locale.\n"
 "Please fix your system."
-msgstr "Lollypop nie został stworzony do pracy bez Unicode.\nNapraw swój system."
+msgstr "Program Lollypop nie został stworzony do działania z pominięciem kodowania Unicode.\nProszę naprawić system."

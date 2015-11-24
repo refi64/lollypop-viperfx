@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lollypop\n"
 "POT-Creation-Date: 2015-06-24 15:43+0200\n"
-"PO-Revision-Date: 2015-08-26 11:48+0000\n"
+"PO-Revision-Date: 2015-11-24 14:13+0000\n"
 "Last-Translator: David Ó Laigheanáin\n"
 "Language-Team: Irish (http://www.transifex.com/gnumdk/lollypop/language/ga/)\n"
 "MIME-Version: 1.0\n"
@@ -182,12 +182,12 @@ msgstr "Control+n: Léim an albam seo"
 #. (itstool) path: item/p
 #: C/index.page:61
 msgid "Left key: Skip backward in track"
-msgstr "Cnaipe clé: Léim ar ais i rian"
+msgstr "Cnaipe ar chlé: Léim ar ais i rian"
 
 #. (itstool) path: item/p
 #: C/index.page:62
 msgid "Right key: Skip forward in track"
-msgstr "Cnaipe deas: Léim ar aghaidh i rian"
+msgstr "Cnaipe ar dheis: Léim ar aghaidh i rian"
 
 #. (itstool) path: p/link
 #: C/legal.xml:4
@@ -205,4 +205,4 @@ msgid ""
 "As a special exception, the copyright holders give you permission to copy, "
 "modify, and distribute the example code contained in this document under the"
 " terms of your choosing, without restriction."
-msgstr "Mar díolúine ar leith, tugann na daoine gur leo an cóipcheart an ábhar seo cead duit chun an chóid sampla sa chaipéis seo a chóipeáil, a mhionathrú agus a dháileadh faoi do rogha téarmaíocht, gan srian."
+msgstr "Mar díolúine ar leith, tugann na daoine gur leo cóipcheart an ábhair seo cead duit chun an chóid sampla sa chaipéis seo a chóipeáil, a mhionathrú agus a dháileadh faoi do rogha coinníollacha, gan srian."

@@ -3,14 +3,15 @@
 # This file is distributed under the same license as the PACKAGE package.
 # 
 # Translators:
+# Jan Máslo <jeden.Maslic.nestaci@openmailbox.org>, 2015
 # fri, 2014
 # fri, 2015
 msgid ""
 msgstr ""
 "Project-Id-Version: lollypop\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-10-29 16:26+0100\n"
-"PO-Revision-Date: 2015-10-29 15:27+0000\n"
+"POT-Creation-Date: 2015-11-17 17:22+0100\n"
+"PO-Revision-Date: 2015-11-18 09:50+0000\n"
 "Last-Translator: Cédric Bellegarde <web@adishatz.org>\n"
 "Language-Team: Czech (http://www.transifex.com/gnumdk/lollypop/language/cs/)\n"
 "MIME-Version: 1.0\n"
@@ -90,7 +91,7 @@ msgstr "Vynulování této hodnoty vynuluje databázi, oblíbená alba budou obn
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:18
 msgid "Albums cover size"
-msgstr ""
+msgstr "Velikost obalu alba"
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:19
 msgid "Replay gain value in db"
@@ -102,7 +103,7 @@ msgstr "Mezi -15 a 15"
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:21
 msgid "Disable mpd support"
-msgstr ""
+msgstr "Vypnout podporu mpd"
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:22 ../data/SettingsDialog.ui.h:2
 msgid "Auto update music"
@@ -149,12 +150,20 @@ msgid "Show track number from tags"
 msgstr "Ukázat číslo skladby ze značek"
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:33
+msgid "MPD network interface"
+msgstr ""
+
+#: ../data/org.gnome.Lollypop.gschema.xml.h:34
+msgid "MPD network port"
+msgstr ""
+
+#: ../data/org.gnome.Lollypop.gschema.xml.h:35
 msgid "Shuffle mode"
 msgstr "Režim míchání"
 
 #. Translators: Don't translate allowed values, just the description in the
 #. brackets
-#: ../data/org.gnome.Lollypop.gschema.xml.h:35
+#: ../data/org.gnome.Lollypop.gschema.xml.h:37
 msgid ""
 "Value identifies whether to shuffle tracks/albums. Allowed values are: "
 "\"none\" (shuffle off), \"tracks\" (shuffle tracks) , \"albums\" (shuffle "
@@ -176,7 +185,7 @@ msgstr "Přehrávejte a pořádejte svoji hudební sbírku"
 
 #: ../data/lollypop.desktop.in.h:4
 msgid "Play/Pause"
-msgstr ""
+msgstr "Přehrát/Pozastavit"
 
 #: ../data/lollypop.desktop.in.h:5 ../src/notification.py:70
 #: ../data/ToolbarPlayback.ui.h:3
@@ -269,7 +278,22 @@ msgid ""
 "    - Artist informations disabled"
 msgstr "    - Odesílání informací o přehrávaných skladbách zakázáno\n    - Automatické stahování obalů zakázáno\n    - Informace o umělcích zakázány"
 
-#: ../src/application.py:361
+#: ../src/application.py:351
+#, python-format
+msgid "%s artist(s)"
+msgstr ""
+
+#: ../src/application.py:353
+#, python-format
+msgid "%s album(s)"
+msgstr ""
+
+#: ../src/application.py:355
+#, python-format
+msgid "%s track(s)"
+msgstr ""
+
+#: ../src/application.py:371
 msgid "Lollypop: You need to install yelp."
 msgstr "Lollypop: Je potřeba nainstalovat yelp."
 
@@ -330,10 +354,15 @@ msgstr "Nikdy nehráno"
 msgid "Random tracks"
 msgstr "Náhodné skladby"
 
+#: ../src/container.py:451 ../src/playlists.py:54
+#: ../data/SettingsDialog.ui.h:7
+msgid "Network control"
+msgstr "Síťové ovládání"
+
 #: ../src/database_albums.py:271 ../src/database_artists.py:73
 #: ../src/database_genres.py:69 ../src/database_tracks.py:230
-#: ../src/tagreader.py:86 ../src/tagreader.py:105 ../src/tagreader.py:130
-#: ../src/tagreader.py:145
+#: ../src/tagreader.py:87 ../src/tagreader.py:106 ../src/tagreader.py:131
+#: ../src/tagreader.py:146
 msgid "Unknown"
 msgstr "Neznámý"
 
@@ -404,7 +433,7 @@ msgstr "Rozšířené informace o umělci zakázány"
 
 #: ../src/pop_infos.py:41
 msgid "WebKit support disabled"
-msgstr ""
+msgstr "Podpora WebKit je vypnuta"
 
 #: ../src/pop_menu.py:67
 msgid "Continue playback"
@@ -490,7 +519,7 @@ msgstr "Nedávno přidáno"
 
 #. Handle language ordering
 #. Translators: Add here words that shoud be ignored for artist sort order
-#: ../src/utils.py:87
+#: ../src/utils.py:101
 msgid "The the"
 msgstr "\"The\""
 
@@ -506,28 +535,28 @@ msgstr "Zrušit seřizování"
 #: ../src/widgets_album.py:251
 #, python-format
 msgid "%s h  %s m"
-msgstr ""
+msgstr "%s h  %s m"
 
 #: ../src/widgets_album.py:253
 #, python-format
 msgid "%s h"
-msgstr ""
+msgstr "%s h"
 
 #: ../src/widgets_album.py:255
 #, python-format
 msgid "%s m"
-msgstr ""
+msgstr "%s m"
 
 #: ../src/widgets_album.py:267
 #, python-format
 msgid "Disc %s"
 msgstr "Disk %s"
 
-#: ../src/widgets_device.py:187
+#: ../src/widgets_device.py:188
 msgid "Unknown error while syncing, try to reboot your device"
 msgstr "Při seřizování nastala neznámá chyba. pokuste se své zařízení zavést znovu"
 
-#: ../src/widgets_device.py:195
+#: ../src/widgets_device.py:196
 msgid "No free space available on device"
 msgstr "Na zařízení není žádné volné místo"
 
@@ -567,7 +596,7 @@ msgstr "Cédric Bellegarde <cedric.bellegarde@adishatz.org>"
 
 #: ../data/AlbumContextWidget.ui.h:1 ../data/AlbumDetailedWidget.ui.h:1
 msgid "Play this album"
-msgstr ""
+msgstr "Přehrát toto album"
 
 #: ../data/Appmenu.ui.h:1
 msgid "_Update music"
@@ -595,11 +624,11 @@ msgstr "_Ukončit"
 
 #: ../data/ArtistContent.ui.h:1
 msgid "No information for this artist..."
-msgstr ""
+msgstr "O umělci nejsou žádné informace..."
 
 #: ../data/ArtistInfos.ui.h:1
 msgid "Albums"
-msgstr ""
+msgstr "Alba"
 
 #: ../data/ArtistInfos.ui.h:2
 msgid "Last.fm"
@@ -615,7 +644,7 @@ msgstr "Wikia"
 
 #: ../data/ArtistInfos.ui.h:5
 msgid "DuckDuckGo"
-msgstr ""
+msgstr "DuckDuckGo"
 
 #: ../data/DeviceManagerView.ui.h:1
 msgid "Synchronize your device with this playlists"
@@ -623,7 +652,7 @@ msgstr "Seřídit zařízení s tímto seznamem skladeb"
 
 #: ../data/DeviceManagerView.ui.h:2
 msgid "Please unlock your device"
-msgstr ""
+msgstr "Prosím, odemkněte své zařízení"
 
 #: ../data/PlaylistEditWidget.ui.h:1 ../data/PlaylistsManagerWidget.ui.h:1
 msgid "Confirm"
@@ -663,7 +692,7 @@ msgstr "Smazat"
 
 #: ../data/RadiosView.ui.h:1
 msgid "No favorite radios"
-msgstr ""
+msgstr "Žádná oblíbená rádia"
 
 #: ../data/RadiosView.ui.h:2
 msgid "New radio"
@@ -703,11 +732,7 @@ msgstr "Alba přehrávat po klepnutí"
 
 #: ../data/SettingsDialog.ui.h:6
 msgid "Control Lollypop with any MPD client"
-msgstr ""
-
-#: ../data/SettingsDialog.ui.h:7
-msgid "Network control"
-msgstr ""
+msgstr "Ovládejte Lollypop pomocí jakéhokoliv klienta MPD"
 
 #: ../data/SettingsDialog.ui.h:8
 msgid "Behaviour"

@@ -1,12 +1,13 @@
 # 
 # Translators:
+# mabier <ma_120420@msn.com>, 2015
 # orange <orau9e@outlook.com>, 2015
 msgid ""
 msgstr ""
 "Project-Id-Version: lollypop\n"
 "POT-Creation-Date: 2015-06-24 15:43+0200\n"
-"PO-Revision-Date: 2015-09-26 04:05+0000\n"
-"Last-Translator: orange <orau9e@outlook.com>\n"
+"PO-Revision-Date: 2015-11-22 15:09+0000\n"
+"Last-Translator: mabier <ma_120420@msn.com>\n"
 "Language-Team: Chinese (China) (http://www.transifex.com/gnumdk/lollypop/language/zh_CN/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -17,7 +18,7 @@ msgstr ""
 #. Put one translator per line, in the form NAME <EMAIL>, YEAR1, YEAR2
 msgctxt "_"
 msgid "translator-credits"
-msgstr "翻译"
+msgstr "译者-鸣谢"
 
 #. (itstool) path: info/desc
 #: C/index.page:7
@@ -65,7 +66,7 @@ msgstr "检查是否已经安装 gstreamer-libav 或者gstreamer-fluendo"
 msgid ""
 "Go to the application menu: \"<sys>Settings -&gt; Music</sys>\" and add your"
 " music folder"
-msgstr ""
+msgstr "到程序菜单：”<sys>设置-&gt；音乐</sys>\"并添加您的音乐文件夹"
 
 #. (itstool) path: section/title
 #: C/index.page:30
@@ -75,19 +76,19 @@ msgstr "回放"
 #. (itstool) path: section/p
 #: C/index.page:31
 msgid "When you start playing a song, a contextual playlist is populated."
-msgstr ""
+msgstr "当您开始播放一首歌曲时，一个情景播放列表会被弹出。"
 
 #. (itstool) path: section/p
 #: C/index.page:32
 msgid ""
 "Contexts can be: an album, an artist, a genre, popular or recent albums, "
 "searches, playlists, ..."
-msgstr ""
+msgstr "语境可以是：一个专辑，一位艺术家，一种风格，流行的或最近的专辑，搜索，播放列表，......"
 
 #. (itstool) path: section/p
 #: C/index.page:33
 msgid "Shuffle interacts on current context."
-msgstr ""
+msgstr "根据现在的情境互动进行重排"
 
 #. (itstool) path: section/title
 #: C/index.page:37
@@ -98,14 +99,14 @@ msgstr "评价专辑"
 #: C/index.page:38
 msgid ""
 "Album popularity is based on how many tracks from an album you listen to."
-msgstr ""
+msgstr "专辑的流行程度取决于您听过该专辑中的多少首曲目。"
 
 #. (itstool) path: section/p
 #: C/index.page:39
 msgid ""
 "Album rating will be influenced by album popularity. In other words, rate "
 "will decrease if you stop listening to an album."
-msgstr ""
+msgstr "专辑的评分将收到专辑流行度的影响。也就是说，如果您不再听某一专辑的话，该专辑的评分将会降低。"
 
 #. (itstool) path: section/title
 #: C/index.page:43
@@ -117,7 +118,7 @@ msgstr "下载封面"
 msgid ""
 "When hovering a cover, if mouse cursor changes to a pen, just click and "
 "select a new cover."
-msgstr ""
+msgstr "当停留在一个封面上时，如果鼠标指针变化成了一支钢笔的图标，请点击并选择一个新的封面。"
 
 #. (itstool) path: section/p
 #: C/index.page:45
@@ -182,17 +183,17 @@ msgstr "Control+n: 跳过当前专辑"
 #. (itstool) path: item/p
 #: C/index.page:61
 msgid "Left key: Skip backward in track"
-msgstr ""
+msgstr "左键：在曲目中逆向跳跃"
 
 #. (itstool) path: item/p
 #: C/index.page:62
 msgid "Right key: Skip forward in track"
-msgstr ""
+msgstr "右键：在曲目中向前跳跃"
 
 #. (itstool) path: p/link
 #: C/legal.xml:4
 msgid "Creative Commons Attribution-Share Alike 3.0 United States License"
-msgstr ""
+msgstr "Creative Commons 署名-相同方式共享3.0美国执照"
 
 #. (itstool) path: license/p
 #: C/legal.xml:3
