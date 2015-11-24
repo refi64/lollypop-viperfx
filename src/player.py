@@ -61,6 +61,8 @@ class Player(BinPlayer, QueuePlayer, UserPlaylistPlayer, RadioPlayer,
             @param notify as bool
         """
         if track.id == Type.RADIOS:
+            if not Lp().scanner.is_locked():
+                Lp().window.pulse(True)
             RadioPlayer.load(self, track)
         else:
             BinPlayer.load(self, track, notify)
@@ -255,6 +257,8 @@ class Player(BinPlayer, QueuePlayer, UserPlaylistPlayer, RadioPlayer,
         """
             On stream start, set next and previous track
         """
+        if not Lp().scanner.is_locked():
+            Lp().window.pulse(False)
         if self.current_track.id >= 0:
             ShufflePlayer._on_stream_start(self, bus, message)
         if self._queue and self.current_track.id == self._queue[0]:

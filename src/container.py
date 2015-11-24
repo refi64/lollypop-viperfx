@@ -216,6 +216,17 @@ class Container:
         if view:
             view.update_children()
 
+    def pulse(self, pulse):
+        """
+            Make progress bar visible/pulse if pulse is True
+            @param pulse as bool
+        """
+        if pulse:
+            self._progress.show()
+            GLib.timeout_add(500, self._pulse)
+        else:
+            self._progress.hide()
+
     def on_scan_finished(self, scanner):
         """
             Mark force scan as False, update lists
@@ -226,6 +237,18 @@ class Container:
 ############
 # Private  #
 ############
+    def _pulse(self):
+        """
+            Make progress bar pulse while visible
+            @param pulse as bool
+        """
+        if self._progress.is_visible():
+            self._progress.pulse()
+            return True
+        else:
+            self._progress.set_fraction(0.0)
+            return False
+
     def _setup_view(self):
         """
             Setup window main view:
