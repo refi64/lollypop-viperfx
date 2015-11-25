@@ -272,6 +272,7 @@ class BinPlayer(ReplayGainPlayer, BasePlayer):
             @param message as Gst.Message
         """
         debug("Error playing: %s" % self.current_track.uri)
+        Lp().window.pulse(False)
         if self._codecs.is_missing_codec(message):
             self._codecs.install()
             Lp().scanner.stop()
