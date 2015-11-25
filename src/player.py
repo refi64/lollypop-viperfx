@@ -62,6 +62,7 @@ class Player(BinPlayer, QueuePlayer, UserPlaylistPlayer, RadioPlayer,
         """
         if track.id == Type.RADIOS:
             if not Lp().scanner.is_locked():
+                Lp().window.pulse(False)
                 Lp().window.pulse(True)
             RadioPlayer.load(self, track)
         else:

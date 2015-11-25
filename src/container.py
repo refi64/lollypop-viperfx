@@ -82,6 +82,7 @@ class Container:
         """
             Init container
         """
+        self._pulse_timeout = None
         # Index will start at -VOLUMES
         self._devices = {}
         self._devices_index = Type.DEVICES
@@ -223,8 +224,12 @@ class Container:
         """
         if pulse:
             self._progress.show()
-            GLib.timeout_add(500, self._pulse)
+            if self._pulse_timeout is None:
+                self._pulse_timeout = GLib.timeout_add(500, self._pulse)
         else:
+            if self._pulse_timeout is not None:
+                GLib.source_remove(self._pulse_timeout)
+                self._pulse_timeout = None
             self._progress.hide()
 
     def on_scan_finished(self, scanner):
@@ -242,7 +247,7 @@ class Container:
             Make progress bar pulse while visible
             @param pulse as bool
         """
-        if self._progress.is_visible():
+        if self._progress.is_visible() and not Lp().scanner.is_locked():
             self._progress.pulse()
             return True
         else:
