@@ -48,11 +48,6 @@ class Codecs:
                 details,
                 context,
                 self._null)
-            if Lp().notify is not None:
-                GLib.timeout_add(
-                    10000,
-                    Lp().notify.send,
-                    _("Restart lollypop after installing codecs"))
         except Exception as e:
             print("Codecs::__init__(): %s" % e)
 
