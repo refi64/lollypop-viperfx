@@ -273,6 +273,7 @@ class Application(Gtk.Application):
                 self._parser.parse_async(f, True,
                                          None, None)
         if self.window is not None and not self.window.is_visible():
+            self.window.setup_window()
             self.window.present()
         return 0
 

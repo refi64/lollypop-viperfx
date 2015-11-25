@@ -46,7 +46,7 @@ class Window(Gtk.ApplicationWindow, Container):
         app.add_action(player_action)
 
         self._setup_content()
-        self._setup_window()
+        self.setup_window()
         self._setup_media_keys()
         self.enable_global_shorcuts(True)
 
@@ -125,9 +125,37 @@ class Window(Gtk.ApplicationWindow, Container):
         """
         if self._signal1 is not None:
             self.disconnect(self._signal1)
+            self._signal1 = None
         if self._signal2 is not None:
             self.disconnect(self._signal2)
+            self._signal2 = None
         Gtk.ApplicationWindow.do_hide(self)
+
+    def setup_window(self):
+        """
+            Setup window position and size, callbacks
+        """
+        size_setting = Lp().settings.get_value('window-size')
+        if isinstance(size_setting[0], int) and\
+           isinstance(size_setting[1], int):
+            self.resize(size_setting[0], size_setting[1])
+        else:
+            self.set_size_request(800, 600)
+        position_setting = Lp().settings.get_value('window-position')
+        if len(position_setting) == 2 and\
+           isinstance(position_setting[0], int) and\
+           isinstance(position_setting[1], int):
+            self.move(position_setting[0], position_setting[1])
+
+        if Lp().settings.get_value('window-maximized'):
+            self.maximize()
+
+        if self._signal1 is None:
+            self._signal1 = self.connect("window-state-event",
+                                         self._on_window_state_event)
+        if self._signal2 is None:
+            self._signal2 = self.connect("configure-event",
+                                         self._on_configure_event)
 
 ############
 # Private  #
@@ -203,30 +231,6 @@ class Window(Gtk.ApplicationWindow, Container):
             self.set_titlebar(self._toolbar)
             self._toolbar.set_show_close_button(True)
             self.add(self.main_widget())
-
-    def _setup_window(self):
-        """
-            Setup window position and size, callbacks
-        """
-        size_setting = Lp().settings.get_value('window-size')
-        if isinstance(size_setting[0], int) and\
-           isinstance(size_setting[1], int):
-            self.resize(size_setting[0], size_setting[1])
-        else:
-            self.set_size_request(800, 600)
-        position_setting = Lp().settings.get_value('window-position')
-        if len(position_setting) == 2 and\
-           isinstance(position_setting[0], int) and\
-           isinstance(position_setting[1], int):
-            self.move(position_setting[0], position_setting[1])
-
-        if Lp().settings.get_value('window-maximized'):
-            self.maximize()
-
-        self._signal1 = self.connect("window-state-event",
-                                     self._on_window_state_event)
-        self._signal2 = self.connect("configure-event",
-                                     self._on_configure_event)
 
     def _on_configure_event(self, widget, event):
         """
