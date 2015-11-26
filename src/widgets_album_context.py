@@ -94,6 +94,13 @@ class AlbumPopoverWidget(Gtk.Popover):
             width = 500
         return (width, width)
 
+    def get_widget(self):
+        """
+            Return widget
+            @return widget as AlbumContextWidget
+        """
+        return self._widget
+
 #######################
 # PRIVATE             #
 #######################
