@@ -47,9 +47,10 @@ class ReplayGainPlayer:
             print("please check your gstreamer installation...")
             return
 
-        self._rgvolume.props.album_mode = 1
-        self._rgvolume.props.pre_amp = Lp().settings.get_value(
-            "replaygain").get_double()
+        if self._rgvolume is not None:
+            self._rgvolume.props.album_mode = 1
+            self._rgvolume.props.pre_amp = Lp().settings.get_value(
+                "replaygain").get_double()
 
         self._rgfilter.add(self._rgvolume)
         self._rgfilter.add(self._rg_audioconvert1)

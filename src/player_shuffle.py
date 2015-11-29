@@ -103,11 +103,12 @@ class ShufflePlayer(BasePlayer):
         """
         self.reset_history()
 
-        if party:
-            self.context.next = NextContext.NONE
-            self._rgvolume.props.album_mode = 0
-        else:
-            self._rgvolume.props.album_mode = 1
+        if self._rgvolume is not None:
+            if party:
+                self.context.next = NextContext.NONE
+                self._rgvolume.props.album_mode = 0
+            else:
+                self._rgvolume.props.album_mode = 1
 
         self._is_party = party
 
@@ -152,11 +153,12 @@ class ShufflePlayer(BasePlayer):
         """
         self._shuffle = Lp().settings.get_enum('shuffle')
 
-        if self._shuffle in [Shuffle.TRACKS, Shuffle.TRACKS_ARTIST] or\
-           self._user_playlist:
-            self._rgvolume.props.album_mode = 0
-        else:
-            self._rgvolume.props.album_mode = 1
+        if self._rgvolume is not None:
+            if self._shuffle in [Shuffle.TRACKS, Shuffle.TRACKS_ARTIST] or\
+               self._user_playlist:
+                self._rgvolume.props.album_mode = 0
+            else:
+                self._rgvolume.props.album_mode = 1
 
         if self._user_playlist:
             self._shuffle_playlist()
