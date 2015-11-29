@@ -21,7 +21,7 @@ import os
 from lollypop.define import Lp, Type
 from lollypop.objects import Track
 from lollypop.database_mpd import MpdDatabase
-from lollypop.utils import translate_artist_name, format_artist_name, get_ip
+from lollypop.utils import get_ip
 
 
 class MpdHandler(socketserver.StreamRequestHandler):
@@ -161,7 +161,7 @@ class MpdHandler(socketserver.StreamRequestHandler):
             if args[i].lower() == 'album':
                 album = args[i+1]
             elif args[i].lower() == 'artist':
-                artist = format_artist_name(args[i+1])
+                artist = args[i+1]
             elif args[i].lower() == 'genre':
                 genre = args[i+1]
             elif args[i].lower() == 'date':
@@ -330,10 +330,10 @@ class MpdHandler(socketserver.StreamRequestHandler):
                 if i % 2:
                     album = args[i+1]
                 else:
-                    artist = format_artist_name(args[i+1])
+                    artist = args[i+1]
             elif args[i].lower() == 'artist' or\
                     args[i].lower() == 'albumartist':
-                artist = format_artist_name(args[i+1])
+                artist = args[i+1]
             elif args[i].lower() == 'genre':
                 genre = args[i+1]
             elif args[i].lower() == 'date':
@@ -361,7 +361,7 @@ class MpdHandler(socketserver.StreamRequestHandler):
                 msg += "Album: "+album+"\n"
         elif args[0].lower() == 'artist':
             for artist in self.server.mpddb.get_artists_names(genre_id):
-                msg += "Artist: "+translate_artist_name(artist)+"\n"
+                msg += "Artist: "+artist+"\n"
         elif args[0].lower() == 'genre':
             results = Lp().genres.get_names()
             for name in results:
@@ -396,9 +396,9 @@ class MpdHandler(socketserver.StreamRequestHandler):
             msg += "file: %s\nArtist: %s\nAlbum: %s\nAlbumArtist: %s\
 \nTitle: %s\nDate: %s\nGenre: %s\nTime: %s\nId: %s\nPos: %s\nTrack: %s\n" % (
                                         path,
-                                        translate_artist_name(artist),
+                                        artist,
                                         album,
-                                        translate_artist_name(album_artist),
+                                        album_artist,
                                         title,
                                         date,
                                         genre,
@@ -919,7 +919,7 @@ class MpdHandler(socketserver.StreamRequestHandler):
                 album = args[i+1]
             elif args[i].lower() == 'artist' or\
                     args[i].lower() == 'albumartist':
-                artist = format_artist_name(args[i+1])
+                artist = args[i+1]
             elif args[i].lower() == 'genre':
                 genre = args[i+1]
             elif args[i].lower() == 'date':
@@ -1158,7 +1158,7 @@ class MpdHandler(socketserver.StreamRequestHandler):
                 album = args[i+1]
             elif args[i].lower() == 'artist' or\
                     args[i].lower() == 'albumartist':
-                artist = format_artist_name(args[i+1])
+                artist = args[i+1]
             elif args[i].lower() == 'genre':
                 genre = args[i+1]
             elif args[i].lower() == 'date':

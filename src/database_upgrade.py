@@ -12,6 +12,7 @@
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 from lollypop.sqlcursor import SqlCursor
+from lollypop.utils import translate_artist_name
 
 
 class DatabaseUpgrade:
@@ -30,8 +31,9 @@ class DatabaseUpgrade:
         # Here are schema upgrade, key is database version,
         # value is sql request
         self._UPGRADES = {
-            1: "update tracks set duration=CAST(duration as INTEGER);",
-            2: "update albums set artist_id=-2001 where artist_id=-999;"
+            1: "UPDATE tracks SET duration=CAST(duration as INTEGER);",
+            2: "UPDATE albums SET artist_id=-2001 where artist_id=-999;",
+            3: self._upgrade_3
                          }
 
     """
@@ -49,8 +51,31 @@ class DatabaseUpgrade:
         with SqlCursor(self._db) as sql:
             for i in range(self._version+1, len(self._UPGRADES)+1):
                 try:
-                    sql.execute(self._UPGRADES[i])
+                    if isinstance(self._UPGRADES[i], str):
+                        sql.execute(self._UPGRADES[i])
+                    else:
+                        self._UPGRADES[i]()
                 except Exception as e:
                     print("Database upgrade failed: ", e)
             sql.commit()
             return len(self._UPGRADES)
+
+#######################
+# PRIVATE             #
+#######################
+    def _upgrade_3(self):
+        """
+            Add a sorted field to artists
+        """
+        with SqlCursor(self._db) as sql:
+            sql.execute("ALTER TABLE artists ADD sortname TEXT")
+            result = sql.execute("SELECT DISTINCT artists.rowid,\
+                                  artists.name\
+                                  FROM artists")
+            for row in result:
+                translated = translate_artist_name(row[1])
+                sql.execute("UPDATE artists SET name=? WHERE rowid=?",
+                            (translated, row[0]))
+                sql.execute("UPDATE artists SET sortname=? WHERE rowid=?",
+                            (row[1], row[0]))
+            sql.commit()

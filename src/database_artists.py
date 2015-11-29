@@ -15,7 +15,7 @@ import itertools
 
 from lollypop.sqlcursor import SqlCursor
 from lollypop.define import Lp, Type
-from lollypop.utils import translate_artist_name, format_artist_name
+from lollypop.utils import format_artist_name
 
 
 class ArtistsDatabase:
@@ -29,17 +29,34 @@ class ArtistsDatabase:
         """
         pass
 
-    def add(self, name):
+    def add(self, name, sortname):
         """
             Add a new artist to database
-            @param Artist name as string
+            @param artist name as string
+            @param sortname as string
             @return inserted rowid as int
             @warning: commit needed
         """
+        if sortname == "":
+            sortname = format_artist_name(name)
         with SqlCursor(Lp().db) as sql:
-            result = sql.execute("INSERT INTO artists (name) VALUES (?)",
-                                 (name,))
+            result = sql.execute("INSERT INTO artists (name, sortname)\
+                                  VALUES (?, ?)",
+                                 (name, sortname))
             return result.lastrowid
+
+    def set_sortname(self, artist_id, sortname):
+        """
+            Set sort name
+            @param id as int
+            @param sort name a str
+            @warning: commit needed
+        """
+        with SqlCursor(Lp().db) as sql:
+            result = sql.execute("UPDATE artists\
+                                  SET sortname=?\
+                                  WHERE rowid=?",
+                                 (sortname, artist_id))
 
     def get_id(self, name):
         """
@@ -69,7 +86,7 @@ class ArtistsDatabase:
                                  (artist_id,))
             v = result.fetchone()
             if v is not None:
-                return translate_artist_name(v[0])
+                return v[0]
             return _("Unknown")
 
     def get_albums(self, artist_id):
@@ -111,11 +128,12 @@ class ArtistsDatabase:
             result = []
             if genre_id == Type.ALL or genre_id is None:
                 # Only artist that really have an album
-                result = sql.execute("SELECT DISTINCT artists.rowid,\
-                                      artists.name\
-                                      FROM artists, albums\
-                                      WHERE albums.artist_id = artists.rowid\
-                                      ORDER BY artists.name COLLATE NOCASE")
+                result = sql.execute(
+                                 "SELECT DISTINCT artists.rowid,\
+                                  artists.name\
+                                  FROM artists, albums\
+                                  WHERE albums.artist_id = artists.rowid\
+                                  ORDER BY artists.sortname COLLATE NOCASE")
             else:
                 result = sql.execute("SELECT DISTINCT artists.rowid,\
                                       artists.name\
@@ -123,9 +141,9 @@ class ArtistsDatabase:
                                       WHERE artists.rowid == albums.artist_id\
                                       AND album_genres.genre_id=?\
                                       AND album_genres.album_id=albums.rowid\
-                                      ORDER BY artists.name\
+                                      ORDER BY artists.sortname\
                                       COLLATE NOCASE", (genre_id,))
-            return [(row[0], translate_artist_name(row[1])) for row in result]
+            return [(row[0], row[1]) for row in result]
 
     def exists(self, artist_id):
         """
@@ -149,9 +167,7 @@ class ArtistsDatabase:
         with SqlCursor(Lp().db) as sql:
             result = sql.execute("SELECT rowid FROM artists\
                                   WHERE name LIKE ?\
-                                  LIMIT 25", ('%' +
-                                              format_artist_name(string) +
-                                              '%',))
+                                  LIMIT 25", ('%' + string + '%',))
             return list(itertools.chain(*result))
 
     def count(self):

@@ -14,7 +14,6 @@ from gi.repository import Gtk, Gdk, GLib, GObject, Pango
 
 from cgi import escape
 
-from lollypop.utils import format_artist_name
 from lollypop.define import Type, Lp
 
 
@@ -321,8 +320,8 @@ class SelectionList(Gtk.ScrolledWindow):
 
         a_index = model.get_value(itera, 0)
         b_index = model.get_value(iterb, 0)
-        a = format_artist_name(model.get_value(itera, 1))
-        b = format_artist_name(model.get_value(iterb, 1))
+        a = model.get_value(itera, 1)
+        b = model.get_value(iterb, 1)
 
         # Static vs static
         if a_index < 0 and b_index < 0:
@@ -427,8 +426,6 @@ class SelectionList(Gtk.ScrolledWindow):
 
         text = self._model.get_value(row_iter, 1)
         if text:
-            if self._is_artists:
-                text = format_artist_name(text)
             self._popover.set_text("  %s  " % text[0].upper())
             self._popover.set_relative_to(self)
             r = Gdk.Rectangle()

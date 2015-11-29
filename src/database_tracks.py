@@ -17,7 +17,6 @@ import itertools
 
 from lollypop.sqlcursor import SqlCursor
 from lollypop.define import Lp, Type
-from lollypop.utils import translate_artist_name
 
 
 class TracksDatabase:
@@ -150,7 +149,7 @@ class TracksDatabase:
         """
         with SqlCursor(Lp().db) as sql:
             result = sql.execute("SELECT rowid FROM tracks\
-                                  WHERE name =?\
+                                  WHERE name = ?\
                                   AND album_id = ?",
                                  (name, album_id))
             v = result.fetchone()
@@ -251,7 +250,7 @@ class TracksDatabase:
                                   WHERE track_artists.track_id=?\
                                   AND track_artists.artist_id=artists.rowid",
                                  (track_id,))
-            artists = [translate_artist_name(row[0]) for row in result]
+            artists = [row[0] for row in result]
             return ", ".join(artists)
 
     def get_genre_ids(self, track_id):

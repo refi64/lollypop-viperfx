@@ -40,7 +40,8 @@ class Database:
                         popularity INT NOT NULL,
                         mtime INT NOT NULL)'''
     create_artists = '''CREATE TABLE artists (id INTEGER PRIMARY KEY,
-                                              name TEXT NOT NULL)'''
+                                              name TEXT NOT NULL,
+                                              sortname TEXT NOT NULL)'''
     create_genres = '''CREATE TABLE genres (id INTEGER PRIMARY KEY,
                                             name TEXT NOT NULL)'''
     create_album_genres = '''CREATE TABLE album_genres (

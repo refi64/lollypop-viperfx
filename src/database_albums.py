@@ -16,7 +16,6 @@ import itertools
 
 from lollypop.sqlcursor import SqlCursor
 from lollypop.define import Lp, Type
-from lollypop.utils import translate_artist_name
 
 
 class AlbumsDatabase:
@@ -282,7 +281,7 @@ class AlbumsDatabase:
                                   artists.rowid", (album_id,))
             v = result.fetchone()
             if v is not None:
-                return translate_artist_name(v[0])
+                return v[0]
 
         return _("Compilation")
 
@@ -575,21 +574,23 @@ class AlbumsDatabase:
             result = []
             # Get albums for all artists
             if artist_id is None and genre_id is None:
-                result = sql.execute("SELECT albums.rowid FROM albums, artists\
-                                      WHERE artists.rowid=albums.artist_id\
-                                      ORDER BY artists.name COLLATE NOCASE,\
-                                      albums.year,\
-                                      albums.name COLLATE NOCASE")
+                result = sql.execute(
+                                 "SELECT albums.rowid FROM albums, artists\
+                                  WHERE artists.rowid=albums.artist_id\
+                                  ORDER BY artists.sortname COLLATE NOCASE,\
+                                  albums.year,\
+                                  albums.name COLLATE NOCASE")
             # Get albums for genre
             elif artist_id is None:
-                result = sql.execute("SELECT albums.rowid FROM albums,\
-                                      album_genres, artists\
-                                      WHERE album_genres.genre_id=?\
-                                      AND artists.rowid=artist_id\
-                                      AND album_genres.album_id=albums.rowid\
-                                      ORDER BY artists.name COLLATE NOCASE,\
-                                      albums.year,\
-                                      albums.name COLLATE NOCASE", (genre_id,))
+                result = sql.execute(
+                                 "SELECT albums.rowid FROM albums,\
+                                  album_genres, artists\
+                                  WHERE album_genres.genre_id=?\
+                                  AND artists.rowid=artist_id\
+                                  AND album_genres.album_id=albums.rowid\
+                                  ORDER BY artists.sortname COLLATE NOCASE,\
+                                  albums.year,\
+                                  albums.name COLLATE NOCASE", (genre_id,))
             # Get albums for artist
             elif genre_id is None:
                 result = sql.execute("SELECT rowid FROM albums\

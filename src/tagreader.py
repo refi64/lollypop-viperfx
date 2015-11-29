@@ -19,7 +19,6 @@ import os
 from gettext import gettext as _
 
 from lollypop.define import Lp, Type
-from lollypop.utils import format_artist_name
 
 
 class TagReader:
@@ -95,6 +94,18 @@ class ScannerTagReader(TagReader):
             if i < size - 1:
                 artists += ";"
         return artists
+
+    def get_artist_sortname(self, tags):
+        """
+            Return artist sort name
+            @param tags as Gst.TagList
+            @return artist sort name as string
+        """
+        if tags is not None:
+            (exist, sortname) = tags.get_string_index('artist-sortname', 0)
+        if not exist:
+            sortname = ""
+        return sortname
 
     def get_album_artist(self, tags):
         """
@@ -195,25 +206,27 @@ class ScannerTagReader(TagReader):
             year = None
         return year
 
-    def add_artists(self, artists, album_artist):
+    def add_artists(self, artists, album_artist, sortname):
         """
             Add artists to db
             @param artists as [string]
             @param album artist as string
+            @param sortname as string
             @commit needed
             @param return ([artist ids as int], [new artist ids as int])
         """
         new_artist_ids = []
         # Get all artist ids
         artist_ids = []
-        for word in artists.split(';'):
-            artist = format_artist_name(word)
+        for artist in artists.split(';'):
             # Get artist id, add it if missing
             artist_id = Lp().artists.get_id(artist)
             if artist_id is None:
-                artist_id = Lp().artists.add(artist)
+                artist_id = Lp().artists.add(artist, sortname)
                 if artist == album_artist:
                     new_artist_ids.append(artist_id)
+            elif sortname != "":
+                Lp().artists.set_sortname(artist_id, sortname)
             artist_ids.append(artist_id)
         return (artist_ids, new_artist_ids)
 
@@ -227,11 +240,10 @@ class ScannerTagReader(TagReader):
         album_artist_id = None
         new = False
         if album_artist:
-            album_artist = format_artist_name(album_artist)
             # Get album artist id, add it if missing
             album_artist_id = Lp().artists.get_id(album_artist)
             if album_artist_id is None:
-                album_artist_id = Lp().artists.add(album_artist)
+                album_artist_id = Lp().artists.add(album_artist, sortname)
                 new = True
         return (album_artist_id, new)
 

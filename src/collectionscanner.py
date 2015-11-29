@@ -221,6 +221,7 @@ class CollectionScanner(GObject.GObject, ScannerTagReader):
 
         title = self.get_title(tags, filepath)
         artists = self.get_artists(tags)
+        sortname = self.get_artist_sortname(tags)
         album_artist = self.get_album_artist(tags)
         album_name = self.get_album_name(tags)
         genres = self.get_genres(tags)
@@ -230,12 +231,13 @@ class CollectionScanner(GObject.GObject, ScannerTagReader):
         duration = int(infos.get_duration()/1000000000)
 
         (artist_ids, new_artist_ids) = self.add_artists(artists,
-                                                        album_artist)
-
+                                                        album_artist,
+                                                        sortname)
         (album_artist_id, new) = self.add_album_artist(album_artist)
         if new:
             new_artist_ids.append(album_artist_id)
 
+        # Check for album artist, if none, use first available artist
         no_album_artist = False
         if album_artist_id is None:
             album_artist_id = artist_ids[0]
