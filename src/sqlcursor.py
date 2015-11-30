@@ -37,7 +37,7 @@ class SqlCursor:
 
     def __enter__(self):
         """
-            Store cursor if created, return thread+object cursor
+            Return cursor for thread, create a new one if needed
         """
         name = current_thread().getName() + self._obj.__class__.__name__
         if name not in Lp().cursors:
