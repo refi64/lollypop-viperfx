@@ -44,6 +44,16 @@ class FullScreen(Gtk.Window):
         builder.add_from_resource('/org/gnome/Lollypop/FullScreen.ui')
         builder.connect_signals(self)
 
+        # Calculate cover size
+        screen = Gdk.Screen.get_default()
+        monitor = screen.get_primary_monitor()
+        geometry = screen.get_monitor_geometry(monitor)
+        # We want 500 and 200 in full hd
+        if geometry.width > geometry.height:
+            self._artsize = int(ArtSize.MONSTER*geometry.width/1920)
+        else:
+            self._artsize = int(ArtSize.MONSTER*geometry.height/1920)
+
         self._play_btn = builder.get_object('play_btn')
         self._next_btn = builder.get_object('next_btn')
         self._prev_btn = builder.get_object('prev_btn')
@@ -175,14 +185,14 @@ class FullScreen(Gtk.Window):
                 self._progress.hide()
                 surface = Lp().art.get_radio_artwork(
                     player.current_track.artist,
-                    ArtSize.MONSTER*self.get_scale_factor())
+                    self._artsize*self.get_scale_factor())
             else:
                 self._timelabel.show()
                 self._total_time_label.show()
                 self._progress.show()
                 surface = Lp().art.get_album_artwork(
                     player.current_track.album,
-                    ArtSize.MONSTER*self.get_scale_factor())
+                    self._artsize*self.get_scale_factor())
             self._cover.set_from_surface(surface)
             del surface
 
