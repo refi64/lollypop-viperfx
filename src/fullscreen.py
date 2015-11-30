@@ -85,11 +85,14 @@ class FullScreen(Gtk.Window):
                                                self._on_current_changed)
         self._signal2_id = Lp().player.connect('status-changed',
                                                self._on_status_changed)
-        if is_playing:
-            self._change_play_btn_status(self._pause_image, _('Pause'))
-            self._on_current_changed(Lp().player)
-        else:
+        if Lp().player.current_track is None:
             Lp().player.set_party(True)
+        else:
+            if is_playing:
+                self._change_play_btn_status(self._pause_image, _('Pause'))
+            else:
+                self._on_status_changed(Lp().player)
+            self._on_current_changed(Lp().player)
         if self._timeout1 is None:
             self._timeout1 = GLib.timeout_add(1000, self._update_position)
         Gtk.Window.do_show(self)
