@@ -58,6 +58,20 @@ class ArtistsDatabase:
                                   WHERE rowid=?",
                                  (sortname, artist_id))
 
+    def get_sortname(self, artist_id):
+        """
+            Return sortname
+            @param artist id as int
+            @return sortname as string
+        """
+        with SqlCursor(Lp().db) as sql:
+            result = sql.execute("SELECT sortname from artists\
+                                  WHERE rowid=?", (artist_id,))
+            v = result.fetchone()
+            if v is not None:
+                return v[0]
+            return self.get_name(artist_id)
+
     def get_id(self, name):
         """
             Get artist id

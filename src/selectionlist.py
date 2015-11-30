@@ -80,7 +80,7 @@ class SelectionList(Gtk.ScrolledWindow):
         self._timeout = None
         self._to_select_id = Type.NONE
         self._updating = False       # Sort disabled if False
-        self._is_artists = False  # for string translation
+        self._is_artists = False
         self._popover = SelectionPopover()
         builder = Gtk.Builder()
         builder.add_from_resource('/org/gnome/Lollypop/SelectionList.ui')
@@ -320,8 +320,6 @@ class SelectionList(Gtk.ScrolledWindow):
 
         a_index = model.get_value(itera, 0)
         b_index = model.get_value(iterb, 0)
-        a = model.get_value(itera, 1)
-        b = model.get_value(iterb, 1)
 
         # Static vs static
         if a_index < 0 and b_index < 0:
@@ -334,6 +332,12 @@ class SelectionList(Gtk.ScrolledWindow):
             return False
         # String comparaison for non static
         else:
+            if self._is_artists:
+                a = Lp().artists.get_sortname(a_index)
+                b = Lp().artists.get_sortname(b_index)
+            else:
+                a = model.get_value(itera, 1)
+                b = model.get_value(iterb, 1)
             return a.lower() > b.lower()
 
     def _row_separator_func(self, model, iterator):
