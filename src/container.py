@@ -280,8 +280,6 @@ class Container:
         vgrid.add(self._progress)
         vgrid.show()
 
-        separator = Gtk.Separator()
-        separator.show()
         self._paned_list_view.add1(self._list_two)
         self._paned_list_view.add2(vgrid)
         self._paned_main_list.add1(self._list_one)
