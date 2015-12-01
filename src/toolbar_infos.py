@@ -15,6 +15,7 @@ from cgi import escape
 
 from lollypop.widgets_rating import RatingWidget
 from lollypop.widgets_loved import LovedWidget
+from lollypop.pop_menu import TrackMenuPopover, TrackMenu
 from lollypop.pop_tunein import TuneinPopover
 from lollypop.pop_externals import ExternalsPopover
 from lollypop.pop_infos import InfosPopover
@@ -150,40 +151,11 @@ class ToolbarInfos(Gtk.Bin):
                         self._pop_infos.set_relative_to(self._infobox)
                     self._pop_infos.show()
             elif Lp().player.current_track.id >= 0:
-                menu = PopToolbarMenu(Lp().player.current_track.id, None)
-                popover = Gtk.Popover.new_from_model(eventbox, menu)
-                rating = RatingWidget(Lp().player.current_track)
-                rating.set_margin_top(5)
-                rating.set_margin_bottom(5)
-                rating.set_property('halign', Gtk.Align.START)
-                rating.set_property('hexpand', True)
-                rating.show()
-                loved = LovedWidget(Lp().player.current_track.id)
-                loved.set_margin_end(5)
-                loved.set_margin_top(5)
-                loved.set_margin_bottom(5)
-                loved.set_property('halign', Gtk.Align.END)
-                loved.set_property('hexpand', True)
-                loved.show()
-                # Hack to add two widgets in popover
-                # Use a Gtk.PopoverMenu later
-                # (GTK>3.16 available on Debian stable)
-                stack = Gtk.Stack()
-                grid = Gtk.Grid()
-                grid.set_orientation(Gtk.Orientation.VERTICAL)
-                stack.add_named(grid, 'main')
-                stack.show_all()
-                menu_widget = popover.get_child()
-                menu_widget.reparent(grid)
-                separator = Gtk.Separator()
-                separator.show()
-                grid.add(separator)
-                hgrid = Gtk.Grid()
-                hgrid.add(rating)
-                hgrid.add(loved)
-                hgrid.show()
-                grid.add(hgrid)
-                popover.add(stack)
+                menu = PopToolbarMenu(Lp().player.current_track.id)
+                popover = TrackMenuPopover(
+                            Lp().player.current_track.id,
+                            PopToolbarMenu(Lp().player.current_track.id))
+                popover.set_relative_to(self._infobox)
                 popover.show()
             return True
 

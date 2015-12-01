@@ -13,7 +13,7 @@
 from gi.repository import GObject, Gtk
 
 from lollypop.define import Lp, ArtSize, Type
-from lollypop.pop_menu import TrackMenuWidget
+from lollypop.pop_menu import TrackMenuPopover, TrackMenu
 from lollypop.widgets_indicator import IndicatorWidget
 from lollypop.utils import seconds_to_string, rgba_to_hex
 from lollypop.objects import Track, Album
@@ -284,7 +284,7 @@ class TrackRow(Row):
             @param xcoordinate as int (or None)
             @param ycoordinate as int (or None)
         """
-        popover = TrackMenuWidget(self._object_id)
+        popover = TrackMenuPopover(self._object_id, TrackMenu(self._object_id))
         popover.set_relative_to(widget)
         if xcoordinate is not None and ycoordinate is not None:
             rect = widget.get_allocation()

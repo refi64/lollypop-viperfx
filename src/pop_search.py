@@ -17,7 +17,7 @@ from threading import Thread
 
 from lollypop.define import Lp, ArtSize, Type
 from lollypop.objects import Track, Album
-from lollypop.pop_menu import TrackMenuWidget
+from lollypop.pop_menu import TrackMenuPopover, TrackMenu
 from lollypop.widgets_album_context import AlbumPopoverWidget
 
 
@@ -428,7 +428,7 @@ class SearchPopover(Gtk.Popover):
             rect.width = rect.height = 1
             row = widget.get_row_at_y(event.y)
             if row.is_track:
-                popover = TrackMenuWidget(row.id)
+                popover = TrackMenuPopover(row.id, TrackMenu(row.id))
                 popover.set_relative_to(widget)
                 popover.set_pointing_to(rect)
                 popover.show()

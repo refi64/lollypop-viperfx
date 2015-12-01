@@ -356,18 +356,17 @@ class PopToolbarMenu(Gio.Menu):
         Contextual menu for toolbar
     """
 
-    def __init__(self, object_id, genre_id):
+    def __init__(self, object_id):
         """
             Init menu model
             @param object id as int
-            @param genre id as int
         """
         Gio.Menu.__init__(self)
         if not Lp().player.is_party():
             self.insert_section(0, _("Playback"),
                                 PlaybackMenu())
         self.insert_section(1, _("Playlists"),
-                            PlaylistsMenu(object_id, genre_id, False))
+                            PlaylistsMenu(object_id, None, False))
 
 
 class EditMenu(BaseMenu):
@@ -466,18 +465,19 @@ class TrackMenu(Gio.Menu):
                             PlaylistsMenu(object_id, None, False))
 
 
-class TrackMenuWidget(Gtk.Popover):
+class TrackMenuPopover(Gtk.Popover):
     """
         Contextual menu widget for a track
     """
 
-    def __init__(self, object_id):
+    def __init__(self, object_id, menu):
         """
             Init widget
             @param object id as int
+            @param menu as Gio.Menu
         """
         Gtk.Popover.__init__(self)
-        self.bind_model(TrackMenu(object_id), None)
+        self.bind_model(menu, None)
 
         rating = RatingWidget(Track(object_id))
         rating.set_margin_top(5)
