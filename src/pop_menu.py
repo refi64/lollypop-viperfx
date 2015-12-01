@@ -477,7 +477,6 @@ class TrackMenuWidget(Gtk.Popover):
             @param object id as int
         """
         Gtk.Popover.__init__(self)
-        self.set_position(Gtk.PositionType.BOTTOM)
         self.bind_model(TrackMenu(object_id), None)
 
         rating = RatingWidget(Track(object_id))
