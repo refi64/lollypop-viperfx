@@ -13,10 +13,8 @@
 from gi.repository import GObject, Gtk
 
 from lollypop.define import Lp, ArtSize, Type
-from lollypop.pop_menu import TrackMenu
+from lollypop.pop_menu import TrackMenuWidget
 from lollypop.widgets_indicator import IndicatorWidget
-from lollypop.widgets_rating import RatingWidget
-from lollypop.widgets_loved import LovedWidget
 from lollypop.utils import seconds_to_string, rgba_to_hex
 from lollypop.objects import Track, Album
 from lollypop import utils
@@ -285,53 +283,14 @@ class TrackRow(Row):
             @param xcoordinate as int (or None)
             @param ycoordinate as int (or None)
         """
-        menu = TrackMenu(self._object_id, None)
-        popover = Gtk.Popover.new_from_model(widget, menu)
+        popover = TrackMenuWidget(self._object_id)
+        popover.set_relative_to(widget)
         if xcoordinate is not None and ycoordinate is not None:
             rect = widget.get_allocation()
             rect.x = xcoordinate
             rect.y = ycoordinate
             rect.width = rect.height = 1
             popover.set_pointing_to(rect)
-
-        rating = RatingWidget(self._object)
-        rating.set_margin_top(5)
-        rating.set_margin_bottom(5)
-        rating.set_property('halign', Gtk.Align.START)
-        rating.set_property('hexpand', True)
-        rating.show()
-
-        loved = LovedWidget(self._object_id)
-        loved.set_margin_end(5)
-        loved.set_margin_top(5)
-        loved.set_margin_bottom(5)
-        loved.set_property('halign', Gtk.Align.END)
-        loved.set_property('hexpand', True)
-        loved.show()
-
-        # Hack to add two widgets in popover
-        # Use a Gtk.PopoverMenu later (GTK>3.16 available on Debian stable)
-        grid = Gtk.Grid()
-        grid.set_orientation(Gtk.Orientation.VERTICAL)
-
-        stack = Gtk.Stack()
-        stack.add_named(grid, 'main')
-        stack.show_all()
-
-        menu_widget = popover.get_child()
-        menu_widget.reparent(grid)
-
-        separator = Gtk.Separator()
-        separator.show()
-
-        grid.add(separator)
-        hgrid = Gtk.Grid()
-        hgrid.add(rating)
-        hgrid.add(loved)
-        hgrid.show()
-        grid.add(hgrid)
-
-        popover.add(stack)
         popover.connect('closed', self._on_closed)
         self.get_style_context().add_class('track-menu-selected')
         popover.show()

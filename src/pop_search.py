@@ -17,6 +17,7 @@ from threading import Thread
 
 from lollypop.define import Lp, ArtSize, Type
 from lollypop.objects import Track, Album
+from lollypop.pop_menu import TrackMenuWidget
 from lollypop.widgets_album_context import AlbumPopoverWidget
 
 
@@ -89,7 +90,6 @@ class SearchRow(Gtk.ListBoxRow):
             @param button as Gtk.Button
         """
         Lp().window.show_playlist_manager(self.id, None, not self.is_track)
-        self._parent.hide()
 
     def _on_queue_clicked(self, button):
         """
@@ -162,6 +162,7 @@ class SearchPopover(Gtk.Popover):
         self._new_btn = builder.get_object('new_btn')
 
         self._view = Gtk.ListBox()
+        self._view.connect("button-press-event", self._on_button_press)
         self._view.connect("row-activated", self._on_activate)
         self._view.show()
 
@@ -384,22 +385,6 @@ class SearchPopover(Gtk.Popover):
         t.daemon = True
         t.start()
 
-    def _on_activate(self, widget, row):
-        """
-            Play searched item when selected
-            If item is an album, play first track
-            @param widget as Gtk.ListBox
-            @param row as SearchRow
-        """
-        if Gtk.get_minor_version() > 16 and not row.is_track:
-            popover = AlbumPopoverWidget(row.id, None)
-            popover.set_relative_to(row)
-            popover.show()
-        else:
-            t = Thread(target=self._play_search, args=(row.id, row.is_track))
-            t.daemon = True
-            t.start()
-
     def _on_play_btn_clicked(self, button):
         """
             Start playback base on current search
@@ -417,3 +402,38 @@ class SearchPopover(Gtk.Popover):
         t = Thread(target=self._new_playlist)
         t.daemon = True
         t.start()
+
+    def _on_activate(self, widget, row):
+        """
+            Play searched item when selected
+            If item is an album, play first track
+            @param widget as Gtk.ListBox
+            @param row as SearchRow
+        """
+        t = Thread(target=self._play_search, args=(row.id, row.is_track))
+        t.daemon = True
+        t.start()
+
+    def _on_button_press(self, widget, event):
+        """
+            Store pressed button
+            @param widget as Gtk.ListBox
+            @param event as Gdk.EventButton
+        """
+        if event.button != 1 and\
+           Gtk.get_minor_version() > 16:
+            rect = widget.get_allocation()
+            rect.x = event.x
+            rect.y = event.y
+            rect.width = rect.height = 1
+            row = widget.get_row_at_y(event.y)
+            if row.is_track:
+                popover = TrackMenuWidget(row.id)
+                popover.set_relative_to(widget)
+                popover.set_pointing_to(rect)
+                popover.show()
+            else:
+                popover = AlbumPopoverWidget(row.id, None)
+                popover.set_relative_to(widget)
+                popover.set_pointing_to(rect)
+                popover.show()

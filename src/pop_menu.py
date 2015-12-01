@@ -10,12 +10,14 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-from gi.repository import Gio, GLib
+from gi.repository import Gio, GLib, Gtk
 
 from shutil import which
 from gettext import gettext as _
 from threading import Thread
 
+from lollypop.widgets_rating import RatingWidget
+from lollypop.widgets_loved import LovedWidget
 from lollypop.define import Lp, NextContext
 from lollypop.objects import Track
 from lollypop import utils
@@ -449,17 +451,69 @@ class AlbumMenu(Gio.Menu):
 
 class TrackMenu(Gio.Menu):
     """
-        Contextual menu for track
+        Contextual menu for a track
     """
 
-    def __init__(self, object_id, genre_id):
+    def __init__(self, object_id):
         """
             Init menu model
             @param object id as int
-            @param genre id as int
         """
         Gio.Menu.__init__(self)
         self.insert_section(0, _("Queue"),
-                            QueueMenu(object_id, genre_id, False))
+                            QueueMenu(object_id, None, False))
         self.insert_section(1, _("Playlists"),
-                            PlaylistsMenu(object_id, genre_id, False))
+                            PlaylistsMenu(object_id, None, False))
+
+
+class TrackMenuWidget(Gtk.Popover):
+    """
+        Contextual menu widget for a track
+    """
+
+    def __init__(self, object_id):
+        """
+            Init widget
+            @param object id as int
+        """
+        Gtk.Popover.__init__(self)
+        self.set_position(Gtk.PositionType.BOTTOM)
+        self.bind_model(TrackMenu(object_id), None)
+
+        rating = RatingWidget(Track(object_id))
+        rating.set_margin_top(5)
+        rating.set_margin_bottom(5)
+        rating.set_property('halign', Gtk.Align.START)
+        rating.set_property('hexpand', True)
+        rating.show()
+
+        loved = LovedWidget(object_id)
+        loved.set_margin_end(5)
+        loved.set_margin_top(5)
+        loved.set_margin_bottom(5)
+        loved.set_property('halign', Gtk.Align.END)
+        loved.set_property('hexpand', True)
+        loved.show()
+
+        # Hack to add two widgets in popover
+        # Use a Gtk.PopoverMenu later (GTK>3.16 available on Debian stable)
+        grid = Gtk.Grid()
+        grid.set_orientation(Gtk.Orientation.VERTICAL)
+
+        stack = Gtk.Stack()
+        stack.add_named(grid, 'main')
+        stack.show_all()
+
+        menu_widget = self.get_child()
+        menu_widget.reparent(grid)
+
+        separator = Gtk.Separator()
+        separator.show()
+
+        grid.add(separator)
+        hgrid = Gtk.Grid()
+        hgrid.add(rating)
+        hgrid.add(loved)
+        hgrid.show()
+        grid.add(hgrid)
+        self.add(stack)
