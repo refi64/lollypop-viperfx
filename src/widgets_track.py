@@ -233,11 +233,12 @@ class TrackRow(Row):
         self._indicator = IndicatorWidget()
         self._builder.get_object('grid').attach(self._indicator, 0, 0, 1, 1)
         menu_btn = self._builder.get_object('menu')
-        self._show_menu = show_menu
         # TODO: Remove this test later
         if show_menu or Gtk.get_minor_version() > 16:
             menu_btn.show()
+            self._show_menu = True
         else:
+            self._show_menu = False
             menu_btn.hide()
         Row.__init__(self, show_loved)
 
