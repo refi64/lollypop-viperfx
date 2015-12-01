@@ -17,6 +17,7 @@ from threading import Thread
 
 from lollypop.define import Lp, ArtSize, Type
 from lollypop.objects import Track, Album
+from lollypop.widgets_album_context import AlbumPopoverWidget
 
 
 class SearchRow(Gtk.ListBoxRow):
@@ -314,7 +315,7 @@ class SearchPopover(Gtk.Popover):
                 track_id = object_id
             elif track_id is None:
                 track_id = tracks[0].id
-            GLib.idle_add(self._set_user_playlist, tracks, track_id)
+            GLib.idle_add(self._set_user_playlist_by_tracks, tracks, track_id)
 
     def _new_playlist(self):
         """
@@ -390,9 +391,14 @@ class SearchPopover(Gtk.Popover):
             @param widget as Gtk.ListBox
             @param row as SearchRow
         """
-        t = Thread(target=self._play_search, args=(row.id, row.is_track))
-        t.daemon = True
-        t.start()
+        if Gtk.get_minor_version() > 16 and not row.is_track:
+            popover = AlbumPopoverWidget(row.id, None)
+            popover.set_relative_to(row)
+            popover.show()
+        else:
+            t = Thread(target=self._play_search, args=(row.id, row.is_track))
+            t.daemon = True
+            t.start()
 
     def _on_play_btn_clicked(self, button):
         """
