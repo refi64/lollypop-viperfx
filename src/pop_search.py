@@ -146,6 +146,7 @@ class SearchPopover(Gtk.Popover):
             @param parent as Gtk.Widget
         """
         Gtk.Popover.__init__(self)
+        self.set_position(Gtk.PositionType.BOTTOM)
         self.connect('map', self._on_map)
         self.connect('unmap', self._on_unmap)
         self._parent = parent

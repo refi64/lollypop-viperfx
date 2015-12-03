@@ -55,7 +55,8 @@ class InfosPopover(Gtk.Popover):
             @param artist id as int
             @param show albums as bool
         """
-        Gtk.Bin.__init__(self)
+        Gtk.Popover.__init__(self)
+        self.set_position(Gtk.PositionType.BOTTOM)
         self.connect('map', self._on_self_map)
         self.connect('unmap', self._on_self_unmap)
         self._artist_id = artist_id

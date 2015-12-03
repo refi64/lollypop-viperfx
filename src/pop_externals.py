@@ -27,6 +27,7 @@ class ExternalsPopover(Gtk.Popover):
             Init popover
         """
         Gtk.Popover.__init__(self)
+        self.set_position(Gtk.PositionType.BOTTOM)
         self.connect('unmap', self._on_self_unmap)
         builder = Gtk.Builder()
         builder.add_from_resource('/org/gnome/Lollypop/ExternalsPopover.ui')
