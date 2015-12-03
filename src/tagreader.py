@@ -19,6 +19,7 @@ import os
 from gettext import gettext as _
 
 from lollypop.define import Lp, Type
+from lollypop.utils import format_artist_name
 
 
 class TagReader:
@@ -243,7 +244,9 @@ class ScannerTagReader(TagReader):
             # Get album artist id, add it if missing
             album_artist_id = Lp().artists.get_id(album_artist)
             if album_artist_id is None:
-                album_artist_id = Lp().artists.add(album_artist, album_artist)
+                album_artist_id = Lp().artists.add(album_artist,
+                                                   format_artist_name(
+                                                                 album_artist))
                 new = True
         return (album_artist_id, new)
 
