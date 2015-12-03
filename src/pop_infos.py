@@ -83,15 +83,20 @@ class InfosPopover(Gtk.Popover):
             self._stack.get_child_by_name('wikia').destroy()
         if InfosPopover.WebView is None:
             self._stack.get_child_by_name('duck').destroy()
+        self._stack.set_visible_child_name(
+            Lp().settings.get_value('infoswitch').get_string())
 
+    def do_show(self):
+        """
+            Set widget size
+        """
         size_setting = Lp().settings.get_value('window-size')
         if isinstance(size_setting[1], int):
             self.set_size_request(size_setting[0]*0.6,
                                   size_setting[1]*0.7)
         else:
             self.set_size_request(700, 600)
-        self._stack.set_visible_child_name(
-            Lp().settings.get_value('infoswitch').get_string())
+        Gtk.Popover.do_show(self)
 
     def do_get_preferred_width(self):
         """
