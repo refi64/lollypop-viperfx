@@ -9,8 +9,8 @@
     <property name="show_close_button">True</property>
   </object>
   <object class="GtkWindow" id="settings_dialog">
-    <property name="title" translatable="yes">Preferences</property>
     <property name="can_focus">False</property>
+    <property name="title" translatable="yes">Preferences</property>
     <property name="modal">True</property>
     <property name="window_position">center-on-parent</property>
     <property name="default_width">600</property>
@@ -284,6 +284,32 @@
                       <packing>
                         <property name="left_attach">1</property>
                         <property name="top_attach">2</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <object class="GtkLabel" id="coversize">
+                        <property name="visible">True</property>
+                        <property name="can_focus">False</property>
+                        <property name="halign">start</property>
+                        <property name="label" translatable="yes">Albums cover size</property>
+                      </object>
+                      <packing>
+                        <property name="left_attach">0</property>
+                        <property name="top_attach">3</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <object class="GtkScale" id="scale_coversize">
+                        <property name="visible">True</property>
+                        <property name="can_focus">True</property>
+                        <property name="halign">end</property>
+                        <property name="round_digits">1</property>
+                        <property name="draw_value">False</property>
+                        <signal name="value-changed" handler="_update_coversize" swapped="no"/>
+                      </object>
+                      <packing>
+                        <property name="left_attach">1</property>
+                        <property name="top_attach">3</property>
                       </packing>
                     </child>
                   </object>
@@ -572,6 +598,12 @@
     <widgets>
       <widget name="fame1"/>
       <widget name="frame2"/>
+    </widgets>
+  </object>
+  <object class="GtkSizeGroup" id="sizegroup2">
+    <widgets>
+      <widget name="switch_compilations"/>
+      <widget name="scale_coversize"/>
     </widgets>
   </object>
 </interface>

@@ -217,6 +217,17 @@ class Container:
         if view:
             view.update_children()
 
+    def reload_view(self):
+        """
+            Reload current view
+        """
+        if self._list_two.is_visible():
+            value = self._list_two.get_selected_id()
+            self._list_two.select_id(value)
+        else:
+            value = self._list_one.get_selected_id()
+            self._list_one.select_id(value)
+
     def pulse(self, pulse):
         """
             Make progress bar visible/pulse if pulse is True

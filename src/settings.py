@@ -20,7 +20,7 @@ except:
 from gettext import gettext as _
 from threading import Thread
 
-from lollypop.define import Lp, Type, SecretSchema, SecretAttributes
+from lollypop.define import Lp, Type, SecretSchema, SecretAttributes, ArtSize
 from lollypop.mpd import MpdServerDaemon
 
 
@@ -69,6 +69,7 @@ class SettingsDialog:
             Init dialog
         """
         self._choosers = []
+        self._timeout_id = None
 
         builder = Gtk.Builder()
         builder.add_from_resource('/org/gnome/Lollypop/SettingsDialog.ui')
@@ -105,6 +106,10 @@ class SettingsDialog:
         switch_compilations.set_state(
             Lp().settings.get_value('show-compilations'))
 
+        scale_coversize = builder.get_object('scale_coversize')
+        scale_coversize.set_range(100, 300)
+        scale_coversize.set_value(
+                            Lp().settings.get_value('cover-size').get_int32())
         self._settings_dialog.connect('destroy', self._edit_settings_close)
 
         builder.connect_signals(self)
@@ -207,6 +212,29 @@ class SettingsDialog:
         if directory:
             chooser.set_dir(directory)
         self._chooser_box.add(chooser)
+
+    def _update_coversize(self, widget):
+        """
+            Delayed update cover size
+            @param widget as Gtk.Range
+        """
+        if self._timeout_id is not None:
+            GLib.source_remove(self._timeout_id)
+            self._timeout_id = None
+        self._timeout_id = GLib.timeout_add(500,
+                                            self._really_update_coversize,
+                                            widget)
+
+    def _really_update_coversize(self, widget):
+        """
+            Update cover size
+            @param widget as Gtk.Range
+        """
+        self._timeout_id = None
+        value = widget.get_value()
+        Lp().settings.set_value('cover-size', GLib.Variant('i', value))
+        ArtSize.BIG = value
+        Lp().window.reload_view()
 
     def _update_ui_setting(self, widget, state):
         """
