@@ -461,7 +461,6 @@ class AlbumDetailedWidget(Gtk.Bin, AlbumWidget):
 
     def _on_cover_press_event(self, widget, event):
         """
-            Popover with album art downloaded from the web (in fact google :-/)
             If no popover allowed or 'auto-play' is on, play album
             @param: widget as Gtk.EventBox
             @param: event as Gdk.Event
