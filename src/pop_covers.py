@@ -16,7 +16,7 @@ from threading import Thread
 from gettext import gettext as _
 
 from lollypop.objects import Album
-from lollypop.define import Lp, ArtSize, GOOGLE_INC, GOOGLE_MAX
+from lollypop.define import Lp, ArtSize
 
 
 class CoversPopover(Gtk.Popover):
@@ -77,7 +77,7 @@ class CoversPopover(Gtk.Popover):
             self._add_pixbuf(pixbuf)
         if len(urls) > 0:
             self._stack.set_visible_child_name('main')
-        # Then Google
+        # Then duckduckgo
         self._thread = True
         t = Thread(target=self._populate)
         t.daemon = True
@@ -86,29 +86,29 @@ class CoversPopover(Gtk.Popover):
 #######################
 # PRIVATE             #
 #######################
-    def _populate(self, start=0):
+    def _populate(self):
         """
-            Same as populate()
-            @param google api start as int
+            Same as populate
+            @thread safe
         """
         urls = []
         if Gio.NetworkMonitor.get_default().get_network_available():
-            urls = Lp().art.get_google_arts("%s+%s" % (
+            urls = Lp().art.get_duck_arts("%s+%s" % (
                                                    self._album.artist_name,
-                                                   self._album.name), start)
+                                                   self._album.name))
         if urls:
-            self._add_pixbufs(urls, start)
+            self._add_pixbufs(urls)
         else:
             GLib.idle_add(self._show_not_found)
 
-    def _add_pixbufs(self, urls, start):
+    def _add_pixbufs(self, urls):
         """
             Add urls to the view
             @parma urls as [string]
-            @param google api start as int
+            @param duck api start as int
         """
         if urls:
-            url = urls.pop()
+            url = urls.pop(0)
             stream = None
             try:
                 f = Gio.File.new_for_uri(url)
@@ -120,10 +120,7 @@ class CoversPopover(Gtk.Popover):
             if stream is not None:
                 GLib.idle_add(self._add_stream, stream)
             if self._thread:
-                self._add_pixbufs(urls, start)
-        elif start < GOOGLE_MAX:
-            start += GOOGLE_INC
-            self._populate(start)
+                self._add_pixbufs(urls)
 
     def _show_not_found(self):
         """

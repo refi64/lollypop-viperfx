@@ -19,7 +19,7 @@ from gettext import gettext as _
 
 from lollypop.objects import Track
 from lollypop.widgets_rating import RatingWidget
-from lollypop.define import Lp, ArtSize, GOOGLE_INC, GOOGLE_MAX
+from lollypop.define import Lp, ArtSize
 from lollypop.art import Art
 
 
@@ -105,10 +105,8 @@ class RadioPopover(Gtk.Popover):
             Same as _populate_threaded()
             @thread safe
         """
-        self._urls = Lp().art.get_google_arts(self._name+"+logo+radio",
-                                              self._start)
+        self._urls = Lp().art.get_duck_arts(self._name+"+logo+radio")
         if self._urls:
-            self._start += GOOGLE_INC
             self._add_pixbufs()
         else:
             GLib.idle_add(self._show_not_found)
@@ -132,8 +130,6 @@ class RadioPopover(Gtk.Popover):
                 GLib.idle_add(self._add_pixbuf, stream)
             if self._thread:
                 self._add_pixbufs()
-        elif self._start < GOOGLE_MAX:
-            self._populate_threaded()
 
     def _show_not_found(self):
         """

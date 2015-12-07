@@ -13,11 +13,10 @@
 from gi.repository import GLib, Gio, GdkPixbuf
 
 from threading import Thread
-import urllib.parse
 import json
 
 from lollypop.objects import Album
-from lollypop.define import Lp, ArtSize, GOOGLE_INC
+from lollypop.define import Lp, ArtSize
 
 
 class ArtDownloader:
@@ -41,11 +40,10 @@ class ArtDownloader:
                 t.daemon = True
                 t.start()
 
-    def get_google_arts(self, search, start=0):
+    def get_duck_arts(self, search):
         """
-            Get arts on google image corresponding to search
+            Get arts on duck image corresponding to search
             @param search words as string
-            @param start page
             @return [urls as string]
         """
         data = None
@@ -55,25 +53,23 @@ class ArtDownloader:
             return []
 
         try:
-            f = Gio.File.new_for_uri("https://ajax.googleapis.com/"
-                                     "ajax/services/search/images"
-                                     "?&q=%s&v=1.0&start=%s&rsz=%s" %
-                                     (urllib.parse.quote(search),
-                                      start,
-                                      GOOGLE_INC))
+            f = Gio.File.new_for_uri("https://duckduckgo.com/i.js"
+                                     "?q=%s&ia=images" %
+                                     (GLib.uri_escape_string(search,
+                                                             "",
+                                                             False),))
             (status, data, tag) = f.load_contents()
             if not status:
                 return []
         except Exception as e:
             print(e)
             return []
-
-        decode = json.loads(data.decode('utf-8'))
-        if decode is None:
-            return urls
         try:
-            for item in decode['responseData']['results']:
-                urls.append(item['url'])
+            decode = json.loads(data.decode('utf-8'))
+            if decode is None:
+                return urls
+            for item in decode['results']:
+                urls.append(item['image'])
         except:
             pass
 

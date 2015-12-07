@@ -29,9 +29,6 @@ except:
     SecretSchema = None
     SecretAttributes = None
 
-GOOGLE_INC = 8
-GOOGLE_MAX = 32
-
 
 Lp = Gio.Application.get_default
 
