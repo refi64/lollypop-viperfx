@@ -13,7 +13,9 @@
 from gi.repository import Gtk, Gdk
 from cgi import escape
 
-from lollypop.pop_menu import TrackMenuPopover
+from lollypop.widgets_rating import RatingWidget
+from lollypop.widgets_loved import LovedWidget
+from lollypop.pop_menu import TrackMenuPopover, TrackMenu
 from lollypop.pop_tunein import TuneinPopover
 from lollypop.pop_externals import ExternalsPopover
 from lollypop.pop_infos import InfosPopover
@@ -149,6 +151,7 @@ class ToolbarInfos(Gtk.Bin):
                         self._pop_infos.set_relative_to(self._infobox)
                     self._pop_infos.show()
             elif Lp().player.current_track.id >= 0:
+                menu = PopToolbarMenu(Lp().player.current_track.id)
                 popover = TrackMenuPopover(
                             Lp().player.current_track.id,
                             PopToolbarMenu(Lp().player.current_track.id))

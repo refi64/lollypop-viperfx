@@ -53,10 +53,10 @@ class ArtistsDatabase:
             @warning: commit needed
         """
         with SqlCursor(Lp().db) as sql:
-            sql.execute("UPDATE artists\
-                         SET sortname=?\
-                         WHERE rowid=?",
-                        (sortname, artist_id))
+            result = sql.execute("UPDATE artists\
+                                  SET sortname=?\
+                                  WHERE rowid=?",
+                                 (sortname, artist_id))
 
     def get_sortname(self, artist_id):
         """
