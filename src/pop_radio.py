@@ -63,7 +63,7 @@ class RadioPopover(Gtk.Popover):
         track.set_radio(name, '')
         rating = RatingWidget(track)
         rating.show()
-        builder.get_object('widget').attach(rating, 0, 2, 3, 1)
+        builder.get_object('widget').attach(rating, 0, 2, 2, 1)
 
         if self._name == '':
             builder.get_object('btn_add_modify').set_label(_("Add"))
