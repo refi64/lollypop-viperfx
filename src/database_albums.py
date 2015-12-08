@@ -420,14 +420,14 @@ class AlbumsDatabase:
         """
         with SqlCursor(Lp().db) as sql:
             if genre_id is not None and genre_id > 0:
-                result = sql.execute("SELECT COUNT(tracks.rowid)\
+                result = sql.execute("SELECT COUNT(1)\
                                       FROM tracks, track_genres\
                                       WHERE tracks.album_id=?\
                                       AND track_genres.track_id = tracks.rowid\
                                       AND track_genres.genre_id=?", (album_id,
                                                                      genre_id))
             else:
-                result = sql.execute("SELECT COUNT(tracks.rowid)\
+                result = sql.execute("SELECT COUNT(1)\
                                       FROM tracks\
                                       WHERE tracks.album_id=?", (album_id,))
             v = result.fetchone()
@@ -445,7 +445,7 @@ class AlbumsDatabase:
         """
         with SqlCursor(Lp().db) as sql:
             if genre_id is not None and genre_id > 0:
-                result = sql.execute("SELECT COUNT(tracks.rowid)\
+                result = sql.execute("SELECT COUNT(1)\
                                       FROM tracks, track_genres\
                                       WHERE tracks.album_id=?\
                                       AND track_genres.track_id = tracks.rowid\
@@ -454,7 +454,7 @@ class AlbumsDatabase:
                                                           genre_id,
                                                           disc))
             else:
-                result = sql.execute("SELECT COUNT(tracks.rowid)\
+                result = sql.execute("SELECT COUNT(1)\
                                       FROM tracks\
                                       WHERE tracks.album_id=?\
                                       AND discnumber=?", (album_id, disc))
@@ -692,7 +692,7 @@ class AlbumsDatabase:
             @return int
         """
         with SqlCursor(Lp().db) as sql:
-            result = sql.execute("SELECT COUNT(*) from albums")
+            result = sql.execute("SELECT COUNT(1) from albums")
             v = result.fetchone()
             if v is not None:
                 return v[0]
@@ -711,7 +711,7 @@ class AlbumsDatabase:
                                                   duration INT)")
             sql.execute("INSERT INTO stats (album_id, count, duration)\
                             SELECT album_id,\
-                                   COUNT(tracks.rowid),\
+                                   COUNT(1),\
                                    SUM(tracks.duration)\
                             FROM tracks GROUP BY album_id")
             result = sql.execute("SELECT album_id\

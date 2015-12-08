@@ -165,7 +165,7 @@ class ArtistsDatabase:
             @param artist id as int
         """
         with SqlCursor(Lp().db) as sql:
-            result = sql.execute("SELECT COUNT(*) from artists WHERE rowid=?",
+            result = sql.execute("SELECT COUNT(1) from artists WHERE rowid=?",
                                  (artist_id,))
             v = result.fetchone()
             if v is not None:
@@ -190,7 +190,7 @@ class ArtistsDatabase:
             @return int
         """
         with SqlCursor(Lp().db) as sql:
-            result = sql.execute("SELECT COUNT(*) from artists")
+            result = sql.execute("SELECT COUNT(1) from artists")
             v = result.fetchone()
             if v is not None:
                 return v[0]

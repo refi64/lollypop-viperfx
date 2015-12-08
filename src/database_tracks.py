@@ -383,7 +383,7 @@ class TracksDatabase:
             Return True if no tracks in db
         """
         with SqlCursor(Lp().db) as sql:
-            result = sql.execute("SELECT COUNT(*) FROM tracks  LIMIT 1")
+            result = sql.execute("SELECT COUNT(1) FROM tracks  LIMIT 1")
             v = result.fetchone()
             if v is not None:
                 return v[0] == 0
@@ -541,7 +541,7 @@ class TracksDatabase:
             @return int
         """
         with SqlCursor(Lp().db) as sql:
-            result = sql.execute("SELECT COUNT(*) from tracks")
+            result = sql.execute("SELECT COUNT(1) from tracks")
             v = result.fetchone()
             if v is not None:
                 return v[0]
