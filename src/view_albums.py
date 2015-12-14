@@ -151,7 +151,7 @@ class AlbumsView(View):
         """
         if albums and not self._stop:
             widget = AlbumSimpleWidget(albums.pop(0))
-            widget.show()
+            widget.show_all()
             self._albumbox.insert(widget, -1)
             GLib.idle_add(self._add_albums, albums)
         else:

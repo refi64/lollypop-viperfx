@@ -10,7 +10,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-from gi.repository import Gtk, GLib, GObject, Gdk
+from gi.repository import Gtk, GLib, GObject, Gdk, Pango
 
 from cgi import escape
 from gettext import gettext as _
@@ -155,19 +155,38 @@ class AlbumSimpleWidget(Gtk.Bin, AlbumWidget):
             Init simple album widget
             @param album id as int
         """
+        # We do not use Gtk.Builder for speed reasons
+        # Original ui file is present in data as AlbumSimpleWidget.ui
         Gtk.Bin.__init__(self)
         AlbumWidget.__init__(self, album_id)
-        builder = Gtk.Builder()
-        builder.add_from_resource('/org/gnome/Lollypop/AlbumSimpleWidget.ui')
-        builder.connect_signals(self)
-        self._widget = builder.get_object('widget')
-        self._cover = builder.get_object('cover')
-        self._color = builder.get_object('color')
+        self._widget = Gtk.EventBox()
         self._widget.set_property('has-tooltip', True)
-        self._title_label = builder.get_object('title')
-        self._title_label.set_text(self._album.name)
-        self._artist_label = builder.get_object('artist')
+        grid = Gtk.Grid()
+        grid.set_orientation(Gtk.Orientation.VERTICAL)
+        grid1 = Gtk.Grid()
+        grid1.get_style_context().add_class('white')
+        frame = Gtk.Frame()
+        frame.get_style_context().add_class('cover-frame')
+        self._color = Gtk.Frame()
+        self._color.get_style_context().add_class('cover-frame-border')
+        builder = Gtk.Builder()
+        self._cover = Gtk.Image()
+        self._title_label = Gtk.Label()
+        self._title_label.set_ellipsize(Pango.EllipsizeMode.END)
+        self._title_label.set_property('halign', Gtk.Align.CENTER)
+        self._title_label.set_markup("<b>"+escape(self._album.name)+"</b>")
+        self._artist_label = Gtk.Label()
+        self._artist_label.set_ellipsize(Pango.EllipsizeMode.END)
+        self._artist_label.set_property('halign', Gtk.Align.CENTER)
         self._artist_label.set_text(self._album.artist_name)
+        self._artist_label.get_style_context().add_class('dim-label')
+        self._widget.add(grid)
+        grid.add(frame)
+        grid.add(self._title_label)
+        grid.add(self._artist_label)
+        frame.add(self._color)
+        self._color.add(grid1)
+        grid1.add(self._cover)
         self.add(self._widget)
         self.set_cover()
         self.update_state()
