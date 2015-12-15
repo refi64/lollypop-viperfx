@@ -161,6 +161,7 @@ class AlbumSimpleWidget(Gtk.Frame, AlbumWidget):
         """
         # We do not use Gtk.Builder for speed reasons
         Gtk.Frame.__init__(self)
+        self.set_shadow_type(Gtk.ShadowType.NONE)
         self.get_style_context().add_class('loading')
         self._album_id = album_id
         self._album = None
@@ -173,7 +174,6 @@ class AlbumSimpleWidget(Gtk.Frame, AlbumWidget):
             Init widget content
         """
         self.get_style_context().remove_class('loading')
-        self.set_shadow_type(Gtk.ShadowType.NONE)
         AlbumWidget.__init__(self, self._album_id)
         self._widget = Gtk.EventBox()
         self._widget.set_property('has-tooltip', True)
