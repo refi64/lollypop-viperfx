@@ -69,7 +69,7 @@ class AlbumsView(View):
         self._albumsongs = None
         self._context_widget = None
         self._press_rect = None
-        self._lazy_queue = [] # Widgets not initialized
+        self._lazy_queue = []  # Widgets not initialized
         self._scroll_value = 0
 
         self._albumbox = Gtk.FlowBox()
@@ -190,7 +190,7 @@ class AlbumsView(View):
         if widget is not None:
             widget.init_widget()
             GLib.idle_add(self._lazy_loading, widgets, scroll_value)
-        
+
     def _is_visible(self, widget):
         """
             Is widget visible in scrolled
@@ -201,7 +201,7 @@ class AlbumsView(View):
         try:
             (x, y) = widget.translate_coordinates(self._scrolled, 0, 0)
             return (y > -widget_alloc.height-ArtSize.BIG or y >= 0) and\
-                   y  < scrolled_alloc.height+ArtSize.BIG
+                y < scrolled_alloc.height+ArtSize.BIG
         except:
             return True
 
@@ -216,8 +216,7 @@ class AlbumsView(View):
         widgets = []
         for child in self._lazy_queue:
             if self._is_visible(child):
-               widgets.append(child)
-               album_id = child.get_id()
+                widgets.append(child)
         GLib.idle_add(self._lazy_loading, widgets, self._scroll_value)
 
     def _on_position_notify(self, paned, param):
