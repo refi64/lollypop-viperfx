@@ -216,7 +216,7 @@ class AlbumSimpleWidget(Gtk.Bin, AlbumWidget):
             @return (int, int)
         """
         if self._width != 0:
-            return (self._width + 8, self._width + 8)
+            return (self._width, self._width)
         else:
             widths = self._cover.get_preferred_width()
             return (widths[0] + 8, widths[1] + 8)
