@@ -40,10 +40,10 @@ class ArtistAlbumsView(View):
         self._albumbox.set_property("orientation", Gtk.Orientation.VERTICAL)
         self._albumbox.show()
 
-        self._scrolledWindow.set_property('expand', True)
+        self._scrolled.set_property('expand', True)
         self._viewport.set_property("valign", Gtk.Align.START)
         self._viewport.add(self._albumbox)
-        self.attach(self._scrolledWindow, 0, 1, 1, 1)
+        self.attach(self._scrolled, 0, 1, 1, 1)
 
     def populate(self, albums):
         """

@@ -53,8 +53,8 @@ class PlaylistView(View):
 
         self.add(builder.get_object('widget'))
         self._viewport.add(self._playlist_widget)
-        self._scrolledWindow.set_property('expand', True)
-        self.add(self._scrolledWindow)
+        self._scrolled.set_property('expand', True)
+        self.add(self._scrolled)
 
     def populate(self, tracks):
         """
@@ -154,7 +154,7 @@ class PlaylistsManageView(View):
         self._manage_widget.show()
         self._viewport.add(self._manage_widget)
         self.add(builder.get_object('widget'))
-        self.add(self._scrolledWindow)
+        self.add(self._scrolled)
 
     def populate(self):
         """
@@ -203,7 +203,7 @@ class PlaylistEditView(View):
         self._edit_widget = PlaylistEditWidget(playlist_id)
         self._edit_widget.show()
         self._viewport.add(self._edit_widget)
-        self.add(self._scrolledWindow)
+        self.add(self._scrolled)
 
     def populate(self):
         """

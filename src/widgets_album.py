@@ -150,14 +150,25 @@ class AlbumSimpleWidget(Gtk.Bin, AlbumWidget):
         Album widget showing cover, artist and title
     """
 
-    def __init__(self, album_id):
+    def __init__(self, album_id, width=0, height=0):
         """
             Init simple album widget
             @param album id as int
+            @param width request as int
+            @param height request as int
         """
         # We do not use Gtk.Builder for speed reasons
         Gtk.Bin.__init__(self)
-        AlbumWidget.__init__(self, album_id)
+        self._album_id = album_id
+        self._width = width
+        if width != 0 and height != 0:
+            self.set_size_request(width, height)
+
+    def init_widget(self):
+        """
+            Init widget content
+        """
+        AlbumWidget.__init__(self, self._album_id)
         self._widget = Gtk.EventBox()
         self._widget.set_property('has-tooltip', True)
         grid = Gtk.Grid()
@@ -190,15 +201,30 @@ class AlbumSimpleWidget(Gtk.Bin, AlbumWidget):
         self.update_state()
         self.set_property('halign', Gtk.Align.CENTER)
         self.set_property('valign', Gtk.Align.START)
+        self.show_all()
+
+    def get_id(self):
+        """
+            Return album id
+            @return int
+        """
+        return self._album_id
 
     def do_get_preferred_width(self):
         """
-            Set maximum width
+            Return preferred width
+            @return (int, int)
         """
-        widths = self._cover.get_preferred_width()
-        return (widths[0] + 8, widths[1] + 8)
+        if self._width != 0:
+            return (self._width + 8, self._width + 8)
+        else:
+            widths = self._cover.get_preferred_width()
+            return (widths[0] + 8, widths[1] + 8)
 
     def update_cursor(self):
+        """
+            Update album cursor
+        """
         if Lp().settings.get_value('auto-play'):
             AlbumWidget.update_cursor(self, Gdk.CursorType.HAND1)
         else:

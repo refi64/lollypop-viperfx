@@ -39,10 +39,10 @@ class View(Gtk.Grid):
         self._stop = False
         self._new_ids = []
 
-        self._scrolledWindow = Gtk.ScrolledWindow()
-        self._scrolledWindow.show()
+        self._scrolled = Gtk.ScrolledWindow()
+        self._scrolled.show()
         self._viewport = Gtk.Viewport()
-        self._scrolledWindow.add(self._viewport)
+        self._scrolled.add(self._viewport)
         self._viewport.show()
 
     def stop(self):

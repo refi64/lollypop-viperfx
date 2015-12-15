@@ -35,9 +35,9 @@ class AlbumContextView(View):
         self._widget = widget
         self._viewport.add(widget)
         self._viewport.show()
-        self._scrolledWindow.set_min_content_height(ArtSize.BIG+35)
-        self._scrolledWindow.show()
-        self.add(self._scrolledWindow)
+        self._scrolled.set_min_content_height(ArtSize.BIG+35)
+        self._scrolled.show()
+        self.add(self._scrolled)
 
 #######################
 # PRIVATE             #
@@ -69,6 +69,8 @@ class AlbumsView(View):
         self._albumsongs = None
         self._context_widget = None
         self._press_rect = None
+        self._lazy_queue = [] # Widgets not initialized
+        self._scroll_value = 0
 
         self._albumbox = Gtk.FlowBox()
         self._albumbox.set_selection_mode(Gtk.SelectionMode.NONE)
@@ -82,16 +84,16 @@ class AlbumsView(View):
 
         self._viewport.set_property('valign', Gtk.Align.START)
         self._viewport.set_property('margin', 5)
-        self._viewport.add(self._albumbox)
-        self._scrolledWindow.set_property('expand', True)
-
+        self._scrolled.set_property('expand', True)
+        self._scrolled.get_vadjustment().connect('value-changed',
+                                                 self._on_value_changed)
         self._context = ViewContainer(500)
 
         separator = Gtk.Separator()
         separator.show()
 
         self._paned = Gtk.Paned.new(Gtk.Orientation.VERTICAL)
-        self._paned.pack1(self._scrolledWindow, True, False)
+        self._paned.pack1(self._scrolled, True, False)
         self._paned.pack2(self._context, False, False)
         height = Lp().settings.get_value('paned-context-height').get_int32()
         # We set a stupid max value, safe as self._context is shrinked
@@ -107,6 +109,14 @@ class AlbumsView(View):
             Populate albums
             @param is compilation as bool
         """
+        # Add first album to get album size,
+        # used to precalculate next albums size
+        widget = AlbumSimpleWidget(albums.pop(0))
+        widget.init_widget()
+        widget.show_all()
+        self._albumbox.insert(widget, -1)
+        # Keep album requisition
+        self._requisition = widget.get_preferred_size()[1]
         self._add_albums(albums)
 
 #######################
@@ -145,17 +155,70 @@ class AlbumsView(View):
 
     def _add_albums(self, albums):
         """
-            Pop an album and add it to the view,
-            repeat operation until album list is empty
+            Add albums to the view
+            Start lazy loading
             @param [album ids as int]
         """
         if albums and not self._stop:
-            widget = AlbumSimpleWidget(albums.pop(0))
-            widget.show_all()
+            widget = AlbumSimpleWidget(albums.pop(0),
+                                       self._requisition.width,
+                                       self._requisition.height)
             self._albumbox.insert(widget, -1)
+            widget.show_all()
+            self._lazy_queue.append(widget)
             GLib.idle_add(self._add_albums, albums)
         else:
-            self._stop = False
+            GLib.idle_add(self._lazy_loading)
+            self._viewport.add(self._albumbox)
+
+    def _lazy_loading(self, widgets=[], scroll_value=0):
+        """
+            Load the view in a lazy way:
+                - widgets first
+                - _waiting_init then
+            @param widgets as [AlbumSimpleWidgets]
+            @param scroll_value as float
+        """
+        widget = None
+        if self._stop or self._scroll_value != scroll_value:
+            return
+        if widgets:
+            widget = widgets.pop(0)
+            self._lazy_queue.remove(widget)
+        elif self._lazy_queue:
+            widget = self._lazy_queue.pop(0)
+        if widget is not None:
+            widget.init_widget()
+            GLib.idle_add(self._lazy_loading, widgets, scroll_value)
+        
+    def _is_visible(self, widget):
+        """
+            Is widget visible in scrolled
+            @param widget as Gtk.Widget
+        """
+        widget_alloc = widget.get_allocation()
+        scrolled_alloc = self._scrolled.get_allocation()
+        try:
+            (x, y) = widget.translate_coordinates(self._scrolled, 0, 0)
+            return (y > -widget_alloc.height-ArtSize.BIG or y >= 0) and\
+                   y  < scrolled_alloc.height+ArtSize.BIG
+        except:
+            return True
+
+    def _on_value_changed(self, adj):
+        """
+            Add visible widgets to lazy queue
+            @param adj as Gtk.Adjustment
+        """
+        self._scroll_value = adj.get_value()
+        if not self._lazy_queue:
+            return
+        widgets = []
+        for child in self._lazy_queue:
+            if self._is_visible(child):
+               widgets.append(child)
+               album_id = child.get_id()
+        GLib.idle_add(self._lazy_loading, widgets, self._scroll_value)
 
     def _on_position_notify(self, paned, param):
         """

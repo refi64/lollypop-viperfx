@@ -62,14 +62,14 @@ class RadiosView(View):
         self._stack = Gtk.Stack()
         self._stack.set_transition_duration(500)
         self._stack.set_transition_type(Gtk.StackTransitionType.CROSSFADE)
-        self._stack.add(self._scrolledWindow)
+        self._stack.add(self._scrolled)
         self._stack.add(self._empty)
         self._stack.show()
 
         self._viewport.set_property("valign", Gtk.Align.START)
         self._viewport.set_property('margin', 5)
         self._viewport.add(self._radiobox)
-        self._scrolledWindow.set_property('expand', True)
+        self._scrolled.set_property('expand', True)
 
         self.add(widget)
         self.add(self._stack)
@@ -194,7 +194,7 @@ class RadiosView(View):
             @param [radio names as string]
         """
         if radios:
-            self._stack.set_visible_child(self._scrolledWindow)
+            self._stack.set_visible_child(self._scrolled)
             self._add_radios(radios, True)
         else:
             self._stack.set_visible_child(self._empty)

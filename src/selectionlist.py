@@ -108,9 +108,7 @@ class SelectionList(Gtk.ScrolledWindow):
         self._view.set_property('has_tooltip', True)
 
         self.add(self._view)
-
-        adj = self.get_vadjustment()
-        adj.connect('value_changed', self._on_scroll)
+        self.get_vadjustment().connect('value_changed', self._on_scroll)
 
     def mark_as_artists(self, is_artists):
         """

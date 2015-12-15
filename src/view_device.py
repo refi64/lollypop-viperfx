@@ -82,7 +82,7 @@ class DeviceView(View):
         self._device_widget.connect('sync-finished', self._on_sync_finished)
         self._device_widget.show()
         self._viewport.add(self._device_widget)
-        self.add(self._scrolledWindow)
+        self.add(self._scrolled)
 
     def populate(self):
         """
