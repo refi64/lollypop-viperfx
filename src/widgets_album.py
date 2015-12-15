@@ -66,6 +66,8 @@ class AlbumWidget:
         """
             Update widget state
         """
+        if self._album is None:
+            return
         selected = self._album.id == Lp().player.current_track.album.id
         if selected != self._selected:
             if selected:
@@ -160,6 +162,7 @@ class AlbumSimpleWidget(Gtk.Bin, AlbumWidget):
         # We do not use Gtk.Builder for speed reasons
         Gtk.Bin.__init__(self)
         self._album_id = album_id
+        self._album = None
         self._width = width
         if width != 0 and height != 0:
             self.set_size_request(width, height)

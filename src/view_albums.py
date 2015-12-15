@@ -71,6 +71,7 @@ class AlbumsView(View):
         self._press_rect = None
         self._lazy_queue = []  # Widgets not initialized
         self._scroll_value = 0
+        self._timeout_id = None
 
         self._albumbox = Gtk.FlowBox()
         self._albumbox.set_selection_mode(Gtk.SelectionMode.NONE)
@@ -205,19 +206,29 @@ class AlbumsView(View):
         except:
             return True
 
-    def _on_value_changed(self, adj):
+    def _lazy_or_not(self):
         """
             Add visible widgets to lazy queue
-            @param adj as Gtk.Adjustment
         """
-        self._scroll_value = adj.get_value()
-        if not self._lazy_queue:
-            return
+        self._timeout_id = None
         widgets = []
         for child in self._lazy_queue:
             if self._is_visible(child):
                 widgets.append(child)
         GLib.idle_add(self._lazy_loading, widgets, self._scroll_value)
+
+    def _on_value_changed(self, adj):
+        """
+            Update scroll value and check for lazy queue
+            @param adj as Gtk.Adjustment
+        """
+        if self._timeout_id is not None:
+            GLib.source_remove(self._timeout_id)
+            self._timeout_id = None
+        self._scroll_value = adj.get_value()
+        if not self._lazy_queue:
+            return
+        self._timeout_id = GLib.timeout_add(250, self._lazy_or_not)
 
     def _on_position_notify(self, paned, param):
         """
