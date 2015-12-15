@@ -182,6 +182,7 @@ class AlbumRow(Row):
             Init row widget and show it
         """
         Row.__init__(self, show_loved)
+        self._indicator.set_margin_start(5)
         self._row_widget.set_margin_start(10)
         self._row_widget.set_margin_end(10)
         self._grid.insert_row(0)
@@ -197,7 +198,6 @@ class AlbumRow(Row):
         self._grid.attach(self._cover_frame, 0, 0, 1, 2)
         self.show_all()
         self._header = Gtk.Grid()
-        self._header.set_margin_start(5)
         self._header.set_column_spacing(5)
         self._artist_label = Gtk.Label()
         self._artist_label.get_style_context().add_class('dim-label')
