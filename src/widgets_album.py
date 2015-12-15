@@ -147,7 +147,7 @@ class AlbumWidget:
         self._cover.get_style_context().remove_class('hovereffect')
 
 
-class AlbumSimpleWidget(Gtk.Bin, AlbumWidget):
+class AlbumSimpleWidget(Gtk.Frame, AlbumWidget):
     """
         Album widget showing cover, artist and title
     """
@@ -160,7 +160,7 @@ class AlbumSimpleWidget(Gtk.Bin, AlbumWidget):
             @param height request as int
         """
         # We do not use Gtk.Builder for speed reasons
-        Gtk.Bin.__init__(self)
+        Gtk.Frame.__init__(self)
         self._album_id = album_id
         self._album = None
         self._width = width
@@ -171,6 +171,7 @@ class AlbumSimpleWidget(Gtk.Bin, AlbumWidget):
         """
             Init widget content
         """
+        self.set_shadow_type(Gtk.ShadowType.NONE)
         AlbumWidget.__init__(self, self._album_id)
         self._widget = Gtk.EventBox()
         self._widget.set_property('has-tooltip', True)
