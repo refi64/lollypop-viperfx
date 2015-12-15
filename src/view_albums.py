@@ -112,13 +112,14 @@ class AlbumsView(View):
         """
         # Add first album to get album size,
         # used to precalculate next albums size
-        widget = AlbumSimpleWidget(albums.pop(0))
-        widget.init_widget()
-        widget.show_all()
-        self._albumbox.insert(widget, -1)
-        # Keep album requisition
-        self._requisition = widget.get_preferred_size()[1]
-        self._add_albums(albums)
+        if albums:
+            widget = AlbumSimpleWidget(albums.pop(0))
+            widget.init_widget()
+            widget.show_all()
+            self._albumbox.insert(widget, -1)
+            # Keep album requisition
+            self._requisition = widget.get_preferred_size()[1]
+            self._add_albums(albums)
 
 #######################
 # PRIVATE             #
