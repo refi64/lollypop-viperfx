@@ -5,8 +5,6 @@
     <file preprocess="xml-stripblanks">Appmenu.ui</file>
     <file preprocess="xml-stripblanks">SearchRow.ui</file>
     <file preprocess="xml-stripblanks">SearchPopover.ui</file>
-    <file preprocess="xml-stripblanks">TrackRow.ui</file>
-    <file preprocess="xml-stripblanks">AlbumRow.ui</file>
     <file preprocess="xml-stripblanks">QueuePopover.ui</file>
     <file preprocess="xml-stripblanks">RatingWidget.ui</file>
     <file preprocess="xml-stripblanks">LovedWidget.ui</file>

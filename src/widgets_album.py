@@ -156,7 +156,6 @@ class AlbumSimpleWidget(Gtk.Bin, AlbumWidget):
             @param album id as int
         """
         # We do not use Gtk.Builder for speed reasons
-        # Original ui file is present in data as AlbumSimpleWidget.ui
         Gtk.Bin.__init__(self)
         AlbumWidget.__init__(self, album_id)
         self._widget = Gtk.EventBox()
@@ -169,7 +168,6 @@ class AlbumSimpleWidget(Gtk.Bin, AlbumWidget):
         frame.get_style_context().add_class('cover-frame')
         self._color = Gtk.Frame()
         self._color.get_style_context().add_class('cover-frame-border')
-        builder = Gtk.Builder()
         self._cover = Gtk.Image()
         self._title_label = Gtk.Label()
         self._title_label.set_ellipsize(Pango.EllipsizeMode.END)

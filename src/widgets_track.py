@@ -10,7 +10,9 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-from gi.repository import GObject, Gtk
+from gi.repository import GObject, Gtk, Pango
+
+from cgi import escape
 
 from lollypop.define import Lp, ArtSize, Type
 from lollypop.pop_menu import TrackMenuPopover, TrackMenu
@@ -30,18 +32,32 @@ class Row(Gtk.ListBoxRow):
             Init row widgets
             @param show loved as bool
         """
+        # We do not use Gtk.Builder for speed reasons
         Gtk.ListBoxRow.__init__(self)
+        self._indicator = IndicatorWidget()
         self._show_loved = show_loved
         self._object_id = None
         self._number = 0
-        self._row_widget = self._builder.get_object('row')
-        self._title_label = self._builder.get_object('title')
+        self._row_widget = Gtk.EventBox()
+        self._grid = Gtk.Grid()
+        self._grid.set_column_spacing(5)
+        self._row_widget.add(self._grid)
+        self._title_label = Gtk.Label()
         self._title_label.set_property('has-tooltip', True)
-        self._duration_label = self._builder.get_object('duration')
-        self._num_label = self._builder.get_object('num')
+        self._title_label.set_property('hexpand', True)
+        self._title_label.set_property('halign', Gtk.Align.START)
+        self._title_label.set_ellipsize(Pango.EllipsizeMode.END)
+        self._duration_label = Gtk.Label()
+        self._duration_label.get_style_context().add_class('dim-label')
+        self._num_label = Gtk.Label()
+        self._num_label.set_ellipsize(Pango.EllipsizeMode.END)
+        self._num_label.set_width_chars(4)
+        self._num_label.get_style_context().add_class('dim-label')
+        self._grid.add(self._num_label)
+        self._grid.add(self._title_label)
+        self._grid.add(self._duration_label)
         self.add(self._row_widget)
         self.get_style_context().add_class('trackrow')
-        self.show()
 
     def show_cover(self, show):
         """
@@ -163,37 +179,52 @@ class AlbumRow(Row):
 
     def __init__(self, show_loved):
         """
-            Init row widget
+            Init row widget and show it
         """
-        self._builder = Gtk.Builder()
-        self._builder.add_from_resource('/org/gnome/Lollypop/AlbumRow.ui')
-        self._builder.connect_signals(self)
-        self._indicator = IndicatorWidget()
-        self._builder.get_object('row').attach(self._indicator, 1, 1, 1, 2)
-        self._cover = self._builder.get_object('cover')
-        self._cover_frame = self._builder.get_object('frame')
-        self._header = self._builder.get_object('header')
-        self._artist = self._builder.get_object('artist')
-        self._album = self._builder.get_object('album')
         Row.__init__(self, show_loved)
+        self._row_widget.set_margin_start(10)
+        self._row_widget.set_margin_end(10)
+        self._grid.insert_row(0)
+        self._grid.insert_column(0)
+        self._grid.insert_column(1)
+        self._grid.attach(self._indicator, 1, 1, 1, 2)
+        self._cover = Gtk.Image()
+        self._cover_frame = Gtk.Frame()
+        self._cover_frame.set_shadow_type(Gtk.ShadowType.NONE)
+        self._cover_frame.set_property('width-request', 50)
+        self._cover_frame.get_style_context().add_class('small-cover-frame')
+        self._cover_frame.add(self._cover)
+        self._grid.attach(self._cover_frame, 0, 0, 1, 2)
+        self.show_all()
+        self._header = Gtk.Grid()
+        self._header.set_margin_start(5)
+        self._header.set_column_spacing(5)
+        self._artist_label = Gtk.Label()
+        self._artist_label.get_style_context().add_class('dim-label')
+        self._album_label = Gtk.Label()
+        self._album_label.get_style_context().add_class('dim-label')
+        self._header.add(self._artist_label)
+        self._header.add(self._album_label)
 
     def set_object_id(self, object_id):
         """
-            Store current object id and object
+            Store current object and show row
             @param object id as int
         """
         Row.set_object_id(self, object_id)
         self._object = Album(self._object_id)
 
-    def show_header(self, show):
+    def show_header(self):
         """
             Show header
-            @param show as bool
         """
-        if show:
-            self._header.show()
-        else:
-            self._header.hide()
+        self._row_widget.set_margin_top(10)
+        self._num_label.set_property('valign', Gtk.Align.END)
+        self._title_label.set_property('valign', Gtk.Align.END)
+        self._duration_label.set_property('valign', Gtk.Align.END)
+        self._indicator.set_property('valign', Gtk.Align.END)
+        self._grid.attach(self._header, 1, 0, 4, 1)
+        self._header.show_all()
 
     def set_cover(self, surface, tooltip):
         """
@@ -212,8 +243,8 @@ class AlbumRow(Row):
         """
         artist = Lp().albums.get_artist_name(album_id)
         album = Lp().albums.get_name(album_id)
-        self._artist.set_text(artist)
-        self._album.set_text(album)
+        self._artist_label.set_markup("<b>"+escape(artist)+"</b>")
+        self._album_label.set_text(escape(album))
 
 
 class TrackRow(Row):
@@ -223,24 +254,31 @@ class TrackRow(Row):
 
     def __init__(self, show_menu, show_loved):
         """
-            Init row widget
+            Init row widget and show it
             @parma show menu as bool
             @param show loved as bool
         """
-        self._builder = Gtk.Builder()
-        self._builder.add_from_resource('/org/gnome/Lollypop/TrackRow.ui')
-        self._builder.connect_signals(self)
-        self._indicator = IndicatorWidget()
-        self._builder.get_object('grid').attach(self._indicator, 0, 0, 1, 1)
-        menu_btn = self._builder.get_object('menu')
+        Row.__init__(self, show_loved)
+        self._grid.insert_column(0)
+        self._grid.attach(self._indicator, 0, 0, 1, 1)
+        self.show_all()
+        button = Gtk.Button.new_from_icon_name('open-menu-symbolic',
+                                               Gtk.IconSize.MENU)
+        button.set_relief(Gtk.ReliefStyle.NONE)
+        button.get_style_context().add_class('menu-button')
+        button.get_style_context().add_class('track-menu-button')
+        button.get_image().set_opacity(0.2)
+        self._grid.add(button)
         # TODO: Remove this test later
         if show_menu or Gtk.get_minor_version() > 16:
-            menu_btn.show()
+            button.show()
             self._show_menu = True
+            self._row_widget.connect('button-press-event',
+                                     self._on_button_press)
+            button.connect('clicked', self._on_button_clicked)
         else:
             self._show_menu = False
-            menu_btn.hide()
-        Row.__init__(self, show_loved)
+            button.hide()
 
     def set_object_id(self, object_id):
         """
@@ -259,8 +297,6 @@ class TrackRow(Row):
             @param widget as Gtk.Widget
             @param event as Gdk.Event
         """
-        if not self._show_menu:
-            return
         if event.button != 1:
             window = widget.get_window()
             if window == event.window:
@@ -270,7 +306,7 @@ class TrackRow(Row):
                 self._popup_menu(self._menu_btn)
             return True
 
-    def _on_menu_btn_clicked(self, widget):
+    def _on_button_clicked(self, widget):
         """
             Popup menu for track relative to button
             @param widget as Gtk.Button
@@ -395,7 +431,7 @@ class TracksWidget(Gtk.ListBox):
                         ArtSize.MEDIUM*album_row.get_scale_factor())
             album_row.set_cover(surface, Lp().albums.get_name(album.id))
             del surface
-            album_row.show_header(True)
+            album_row.show_header()
         album_row.show()
         self.add(album_row)
 
