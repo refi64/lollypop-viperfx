@@ -184,5 +184,5 @@ class ToolbarInfos(Gtk.Bin):
         style = self.get_style_context()
         padding = style.get_padding(style.get_state())
         self._cover_size = self.get_allocated_height()\
-            - padding.top - padding.bottom
+            - padding.top - padding.bottom - 2
         eventbox.get_window().set_cursor(Gdk.Cursor(Gdk.CursorType.HAND1))
