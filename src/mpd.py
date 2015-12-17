@@ -365,7 +365,6 @@ class MpdHandler(socketserver.StreamRequestHandler):
         genre = genre_id = None
         date = ''
         while i < len(args) - 1:
-            print(args[i], i)
             if args[i].lower() == 'album':
                 if i % 2:
                     album = args[i+1]
@@ -1169,12 +1168,19 @@ class MpdHandler(socketserver.StreamRequestHandler):
             @param args as str
             @return args as [str]
         """
-        splited = args.split('"')
         ret = []
-        for arg in splited:
-            if len(arg.replace(' ', '')) == 0:
+        for arg in args.split('"'):
+            # Ignore bad args
+            if arg.strip() == "":
                 continue
-            ret.append(arg)
+            # Some client do not put "" for all args
+            elif len(arg) > 0 and (arg[-1] == " " or
+                                   arg[0] == " "):
+                for subarg in arg.split(' '):
+                    if subarg.strip() != "":
+                        ret.append(subarg)
+            else:
+                ret.append(arg)
         return ret
 
     def _find_tracks(self, cmd_args):
