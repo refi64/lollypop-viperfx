@@ -318,8 +318,10 @@ class MpdHandler(socketserver.StreamRequestHandler):
         # Handle new notifications
         for string in self.server.idle_strings:
             msg += "changed: %s\n" % string
-        msg += "OK\n"
-        self.request.send(msg.encode("utf-8"))
+        if msg != "":
+            msg += "OK\n"
+            self.request.send(msg.encode("utf-8"))
+            print("IDLE", msg.encode("utf-8"), self)
         self.server.idle_wanted_strings = []
         self.server.idle_strings = []
         self._idle_thread = None
@@ -331,6 +333,16 @@ class MpdHandler(socketserver.StreamRequestHandler):
             @param args as str
             @return msg as str
         """
+        msg = ""
+        # Handle new notifications
+        for string in self.server.idle_strings:
+            msg += "changed: %s\n" % string
+        msg += "OK\n"
+        self.request.send(msg.encode("utf-8"))
+        print("NOIDLE", msg.encode("utf-8"), self)
+        self.server.idle_wanted_strings = []
+        self.server.idle_strings = []
+        self._idle_thread = None
         self.server.event.set()
         return None
 
