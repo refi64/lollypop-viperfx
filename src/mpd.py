@@ -25,7 +25,7 @@ from lollypop.utils import get_ip
 
 
 class MpdHandler(socketserver.StreamRequestHandler):
-    # Delayed signal
+    # Delayed signals
     _PLCHANGES = ["add", "delete", "clear", "deleteid", "move",
                   "moveid", "load", "playlistadd"]
 
@@ -34,6 +34,7 @@ class MpdHandler(socketserver.StreamRequestHandler):
             One function to handle them all
         """
         self.request.send("OK MPD 0.19.0\n".encode('utf-8'))
+        self._idle_thread = None
         while self.server.running:
             msg = ""
             try:
@@ -43,9 +44,11 @@ class MpdHandler(socketserver.StreamRequestHandler):
                 delayed = False
                 # Read commands
                 while True:
+                    print("True")
                     data = self.rfile.readline().strip().decode("utf-8")
+                    print("False")
                     if len(data) == 0:
-                        raise IOError  # EOF
+                        raise IOError
                     if data == "command_list_ok_begin":
                         cmdlist = "list_ok"
                     elif data == "command_list_begin":
@@ -56,29 +59,43 @@ class MpdHandler(socketserver.StreamRequestHandler):
                         cmds.append(data)
                         if not cmdlist:
                             break
+                if not cmds:
+                    continue
                 try:
                     print(cmds, self)
                     for cmd in cmds:
                         command = cmd.split(' ')[0]
                         size = len(command) + 1
                         args = cmd[size:]
+                        # Not allowed, we quit
+                        if self._idle_thread is not None and\
+                           command != "noidle":
+                            return
                         if command in self._PLCHANGES:
                             delayed = True
                         call = getattr(self, '_%s' % command)
-                        msg += call(args)
-                        if cmdlist == "list_ok":
-                            msg += "list_OK\n"
+                        result = call(args)
+                        if result is None:
+                            msg = None
+                            break
+                        else:
+                            msg += result
+                            if cmdlist == "list_ok":
+                                msg += "list_OK\n"
+                    if msg is None:
+                        continue
                 except Exception as e:
                     print("MpdHandler::handle(): ", cmds, e)
                     raise
                 msg += "OK\n"
-                self.request.send(msg.encode("utf-8"))
+                self.wfile.write(msg.encode("utf-8"))
                 print(msg.encode("utf-8"), self)
                 if delayed:
                     GLib.idle_add(Lp().playlists.emit,
                                   'playlist-changed',
                                   Type.MPD)
-            except:
+            except Exception as e:
+                print(e)
                 break
 
     def _add(self, cmd_args):
@@ -274,6 +291,17 @@ class MpdHandler(socketserver.StreamRequestHandler):
             @param args as str
             @return msg as str
         """
+        if self._idle_thread is None:
+            self._idle_thread = threading.Thread(target=self._idle_threaded,
+                                                 args=(cmd_args,))
+            self._idle_thread.daemon = True
+            self._idle_thread.start()
+        return None
+
+    def _idle_threaded(self, cmd_args):
+        """
+            Same as previous, thread safe
+        """
         msg = ''
         args = self._get_args(cmd_args)
         if args:
@@ -283,7 +311,6 @@ class MpdHandler(socketserver.StreamRequestHandler):
         else:
             self.server.idle_wanted_strings = ["stored_playlist",
                                                "player", "playlist", "options"]
-        self.request.settimeout(0)
         self.server.event.clear()
         # We handle notifications directly if something in queue
         if not self.server.idle_strings:
@@ -291,9 +318,11 @@ class MpdHandler(socketserver.StreamRequestHandler):
         # Handle new notifications
         for string in self.server.idle_strings:
             msg += "changed: %s\n" % string
+        msg += "OK\n"
+        self.request.send(msg.encode("utf-8"))
+        self.server.idle_wanted_strings = []
         self.server.idle_strings = []
-        self.request.settimeout(10)
-        return msg
+        self._idle_thread = None
 
     def _noidle(self, cmd_args):
         """
@@ -302,9 +331,8 @@ class MpdHandler(socketserver.StreamRequestHandler):
             @param args as str
             @return msg as str
         """
-        self.server.idle_strings = []
         self.server.event.set()
-        return ""
+        return None
 
     def _list(self, cmd_args):
         """
