@@ -122,6 +122,17 @@ class MpdHandler(socketserver.StreamRequestHandler):
         Lp().playlists.add_tracks(Type.MPD, tracks, False)
         return ""
 
+    def _addid(self, cmd_args):
+        """
+            Add track to mpd playlist at pos
+            @syntax add filepath
+            @param args as str
+            @return msg as str
+        """
+        arg = self._get_args(cmd_args)[0]
+        self._add(cmd_args)
+        return "Id: %s" % Lp().tracks.get_id_by_path(arg)
+
     def _clear(self, cmd_args):
         """
             Clear mpd playlist
