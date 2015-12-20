@@ -67,10 +67,6 @@ class MpdHandler(socketserver.StreamRequestHandler):
                         command = cmd.split(' ')[0]
                         size = len(command) + 1
                         args = cmd[size:]
-                        # Not allowed, we quit
-                        if self._idle_thread is not None and\
-                           command != "noidle":
-                            return
                         if command in self._PLCHANGES:
                             delayed = True
                         call = getattr(self, '_%s' % command)
@@ -320,7 +316,10 @@ class MpdHandler(socketserver.StreamRequestHandler):
             msg += "changed: %s\n" % string
         if msg != "":
             msg += "OK\n"
-            self.request.send(msg.encode("utf-8"))
+            try:
+                self.request.send(msg.encode("utf-8"))
+            except:
+                pass
             print("IDLE", msg.encode("utf-8"), self)
         self.server.idle_wanted_strings = []
         self.server.idle_strings = []
