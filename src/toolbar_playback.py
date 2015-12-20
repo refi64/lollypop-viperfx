@@ -56,16 +56,22 @@ class ToolbarPlayback(Gtk.Bin):
         """
         # Can add a \n in markup
         # GTK bug => https://bugzilla.gnome.org/show_bug.cgi?id=749965
-        prev_artist = escape(player.prev_track.artist)
-        prev_title = escape(player.prev_track.title)
-        next_artist = escape(player.next_track.artist)
-        next_title = escape(player.next_track.title)
-        self._next_btn.set_tooltip_markup("<b>%s</b> - %s" %
-                                          (next_artist,
-                                           next_title))
-        self._prev_btn.set_tooltip_markup("<b>%s</b> - %s" %
-                                          (prev_artist,
-                                           prev_title))
+        if player.prev_track.id is not None:
+            prev_artist = escape(player.prev_track.artist)
+            prev_title = escape(player.prev_track.title)
+            self._prev_btn.set_tooltip_markup("<b>%s</b> - %s" %
+                                              (prev_artist,
+                                               prev_title))
+        else:
+            self._prev_btn.set_tooltip_text("")
+        if player.next_track.id is not None:
+            next_artist = escape(player.next_track.artist)
+            next_title = escape(player.next_track.title)
+            self._next_btn.set_tooltip_markup("<b>%s</b> - %s" %
+                                              (next_artist,
+                                               next_title))
+        else:
+            self._prev_btn.set_tooltip_text("")
 
     def on_status_changed(self, player):
         """
