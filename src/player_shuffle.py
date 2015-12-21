@@ -190,7 +190,7 @@ class ShufflePlayer(BasePlayer):
         try:
             track_id = self._get_random()
             # Need to clear history
-            if not track_id:
+            if track_id is None:
                 self._albums = self._already_played_albums
                 self.reset_history()
                 return self._shuffle_next()
@@ -216,7 +216,6 @@ class ShufflePlayer(BasePlayer):
                 self._already_played_tracks.pop(album_id)
                 self._already_played_albums.append(album_id)
             self._albums.remove(album_id)
-
         return None
 
     def _add_to_shuffle_history(self, track):
