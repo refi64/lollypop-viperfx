@@ -102,6 +102,10 @@ class MpdHandler(socketserver.StreamRequestHandler):
         """
         tracks = []
         arg = self._get_args(cmd_args)[0]
+        try:
+            arg = GLib.filename_from_uri(arg)[0]
+        except:
+            pass
         track_id = Lp().tracks.get_id_by_path(arg)
         if track_id is None:
             path = ""
@@ -130,6 +134,10 @@ class MpdHandler(socketserver.StreamRequestHandler):
         """
         arg = self._get_args(cmd_args)[0]
         self._add(cmd_args)
+        try:
+            arg = GLib.filename_from_uri(arg)[0]
+        except:
+            pass
         return "Id: %s" % Lp().tracks.get_id_by_path(arg)
 
     def _clear(self, cmd_args):
