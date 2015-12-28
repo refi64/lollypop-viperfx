@@ -67,6 +67,7 @@ Gtk.ListBoxRow .menu-button:hover {
 
 .lollypop-title {
     font-weight: bold;
+    font-size: smaller;
     padding: 0px 12px;
 }
 

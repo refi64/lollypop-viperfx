@@ -43,6 +43,7 @@ class ToolbarInfos(Gtk.Bin):
         self._infobox.set_property('has-tooltip', True)
         self.add(self._infobox)
 
+        self._labels = builder.get_object('nowplaying_labels')
         self._title_label = builder.get_object('title')
         self._artist_label = builder.get_object('artist')
         self._cover_frame = builder.get_object('frame')
@@ -50,6 +51,13 @@ class ToolbarInfos(Gtk.Bin):
 
         Lp().art.connect('album-artwork-changed', self._update_cover)
         Lp().art.connect('radio-artwork-changed', self._update_logo)
+
+    def get_preferred_height(self):
+        """
+            Return preferred height
+            @return (int, int)
+        """
+        return self._labels.get_preferred_height()
 
     def on_current_changed(self, player):
         """

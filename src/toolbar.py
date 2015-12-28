@@ -50,15 +50,20 @@ class Toolbar(Gtk.HeaderBar):
 
     def do_get_preferred_height(self):
         """
-            Here, we calculate height based on left widget
-            We want to ignore titlebox height, like in original Gtk+ code
-            Simplified version here
+            Here, we calculate height based on:
+            - playback toolbar if bigger
+            - infos toolbar to adapt to font size then
         """
         style = self.get_style_context()
         padding = style.get_padding(style.get_state())
-        toolbar_height = self._toolbar_playback.get_preferred_height()
-        return (toolbar_height[0]+padding.top+padding.bottom,
-                toolbar_height[1]+padding.top+padding.bottom)
+        playback_height = self._toolbar_playback.get_preferred_height()
+        info_height = self._toolbar_infos.get_preferred_height()
+        if playback_height > info_height:
+            return (playback_height[0]+padding.top+padding.bottom,
+                    playback_height[1]+padding.top+padding.bottom)
+        else:
+            return (info_height[0]+padding.top+padding.bottom+1,
+                    info_height[1]+padding.top+padding.bottom+1)
 
     def update_position(self, value=None):
         """
