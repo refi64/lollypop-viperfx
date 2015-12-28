@@ -1132,7 +1132,7 @@ class MpdHandler(socketserver.StreamRequestHandler):
         else:
             track = Track(track_id)
             if index == Type.NONE:
-                index = 0
+                index = 1
                 if Lp().player.is_party():
                     tracks_ids = [Lp().player.prev_track.id,
                                   Lp().player.current_track.id,
@@ -1141,7 +1141,7 @@ class MpdHandler(socketserver.StreamRequestHandler):
                 else:
                     tracks_ids = Lp().playlists.get_tracks_ids(Type.MPD)
                     try:
-                        index = tracks_ids.index(track_id)
+                        index = tracks_ids.index(track_id) + 1
                     except:
                         pass
             msg = "file: %s\nArtist: %s\nAlbum: %s\nAlbumArtist: %s\
@@ -1156,7 +1156,7 @@ class MpdHandler(socketserver.StreamRequestHandler):
                      track.duration,
                      track.id,
                      index,
-                     track.position)
+                     index)
         return msg
 
     def _get_status(self):
