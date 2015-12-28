@@ -1263,10 +1263,7 @@ class MpdServer(socketserver.ThreadingMixIn, socketserver.TCPServer):
         self.idle_strings = []
         try:
             # Set initial playlist version
-            self.playlist[self.playlist_version] = []
-            for track_id in Lp().playlists.get_tracks_ids(Type.MPD):
-                self.playlist[
-                        self.playlist_version].append(track_id)
+            self.playlist[0] = []
             socketserver.TCPServer.allow_reuse_address = True
             # Get ip for interface
             ip = ""
