@@ -82,7 +82,6 @@ class MpdHandler(socketserver.StreamRequestHandler):
                         continue
                 except Exception as e:
                     print("MpdHandler::handle(): ", cmds, e)
-                    raise
                 msg += "OK\n"
                 self.wfile.write(msg.encode("utf-8"))
                 print(msg.encode("utf-8"), self)
@@ -1066,16 +1065,17 @@ class MpdHandler(socketserver.StreamRequestHandler):
         """
         args = self._get_args(cmd_args)
         msg = ""
-        if args[0].find("get song ") != -1 and\
-                args[2].find("rating") != -1:
-            track_id = Lp().tracks.get_id_by_path(args[1])
+        print(args)
+        if args[0] == "get" and args[1] == "song" and\
+                args[3] == "rating":
+            track_id = Lp().tracks.get_id_by_path(args[2])
             track = Track(track_id)
-            msg = "sticker: rating=%s\n" % int(track.get_popularity()*2)
-        elif args[0].find("set song") != -1 and\
-                args[2].find("rating") != -1:
-            track_id = Lp().tracks.get_id_by_path(args[1])
+            msg = "sticker: rating=%s\n" % int((track.get_popularity()-0.5)*2)
+        elif args[0] == "set" and args[1] == "song" and\
+                args[3] == "rating":
+            track_id = Lp().tracks.get_id_by_path(args[2])
             track = Track(track_id)
-            track.set_popularity(int(args[3])/2)
+            track.set_popularity(int(args[4])/2)
         return msg
 
     def _stop(self, cmd_args):
