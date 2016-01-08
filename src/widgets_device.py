@@ -38,7 +38,6 @@ class DeviceManagerWidget(Gtk.Bin, MtpSync):
         MtpSync.__init__(self)
         self._parent = parent
         self._progress = progress
-        self._on_disk_playlists = None
         self._uri = None
 
         builder = Gtk.Builder()
@@ -89,7 +88,6 @@ class DeviceManagerWidget(Gtk.Bin, MtpSync):
             Set available playlists
             @param uri as str
         """
-        self._on_disk_playlists = playlists
         self._uri = uri
 
     def is_syncing(self):
@@ -145,7 +143,9 @@ class DeviceManagerWidget(Gtk.Bin, MtpSync):
         if playlists:
             playlist = playlists.pop(0)
             playlist_name = GLib.uri_escape_string(playlist[1], "", False)
-            selected = playlist_name + '.m3u' in self._on_disk_playlists
+            playlist_obj = Gio.File.new_for_uri(self._uri + "/" +
+                                                playlist_name + '.m3u')
+            selected = playlist_obj.query_exists(None)
             self._model.append([selected, playlist[1], playlist[0]])
             GLib.idle_add(self._append_playlists, playlists)
         else:
