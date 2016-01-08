@@ -85,17 +85,16 @@ class MtpSync:
                     dir_uris.append(uri+'/'+info.get_name())
                 else:
                     album_name = uri.replace(self._uri+"/tracks/", "")
-                    album =  GLib.uri_escape_string(album_name,
-                                                    "",
-                                                    False)
+                    album = GLib.uri_escape_string(album_name,
+                                                   "",
+                                                   False)
                     track = GLib.uri_escape_string(info.get_name(),
-                                                    "",
-                                                    False)
-
+                                                   "",
+                                                   False)
 
                     children.append("%s/tracks/%s/%s" % (self._uri,
-                                                        album,
-                                                        track))
+                                                         album,
+                                                         track))
         return children
 
     def _sync(self, playlists):

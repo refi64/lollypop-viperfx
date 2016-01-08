@@ -56,6 +56,8 @@ class AlbumWidget:
             Update cover for album id id needed
             @param album id as int
         """
+        if self._cover is None:
+            return
         surface = Lp().art.get_album_artwork(
                             self._album,
                             ArtSize.BIG * self._cover.get_scale_factor())
