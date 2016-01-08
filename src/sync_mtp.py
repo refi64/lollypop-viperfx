@@ -71,26 +71,25 @@ class MtpSync:
             @return [str]
         """
         children = []
-        dir_uris = [self._uri+'/tracks']
+        dir_uris = [self._uri+'/tracks/']
         while dir_uris:
             uri = dir_uris.pop(0)
-            d = Gio.File.new_for_uri(uri)
+            album_name = uri.replace(self._uri+"/tracks/", "")
+            album = GLib.uri_escape_string(album_name,
+                                           "",
+                                           False)
+            d = Gio.File.new_for_uri(self._uri+"/tracks/"+album)
             infos = d.enumerate_children(
                 'standard::name,standard::type',
                 Gio.FileQueryInfoFlags.NOFOLLOW_SYMLINKS,
                 None)
             for info in infos:
                 if info.get_file_type() == Gio.FileType.DIRECTORY:
-                    dir_uris.append(uri+'/'+info.get_name())
+                    dir_uris.append(uri+info.get_name())
                 else:
-                    album_name = uri.replace(self._uri+"/tracks/", "")
-                    album = GLib.uri_escape_string(album_name,
-                                                   "",
-                                                   False)
                     track = GLib.uri_escape_string(info.get_name(),
                                                    "",
                                                    False)
-
                     children.append("%s/tracks/%s/%s" % (self._uri,
                                                          album,
                                                          track))
@@ -187,16 +186,16 @@ class MtpSync:
                     self._in_thread = False
                     return
                 track = Track(track_id)
-                album_name = GLib.uri_escape_string(track.album_name,
+                album_name = GLib.uri_escape_string(track.album_name.lower(),
                                                     "",
                                                     False)
-                artist_name = GLib.uri_escape_string(track.artist,
+                artist_name = GLib.uri_escape_string(track.artist.lower(),
                                                      "",
                                                      False)
                 on_device_album_uri = "%s/tracks/%s_%s" %\
                                       (self._uri,
-                                       artist_name.lower(),
-                                       album_name.lower())
+                                       artist_name,
+                                       album_name)
 
                 d = Gio.File.new_for_uri(on_device_album_uri)
                 if not d.query_exists(None):
@@ -270,16 +269,16 @@ class MtpSync:
                 self._in_thread = False
                 return
             track = Track(track_id)
-            album_name = GLib.uri_escape_string(track.album_name,
+            album_name = GLib.uri_escape_string(track.album_name.lower(),
                                                 "",
                                                 False)
-            artist_name = GLib.uri_escape_string(track.artist,
+            artist_name = GLib.uri_escape_string(track.artist.lower(),
                                                  "",
                                                  False)
             track_path = Lp().tracks.get_path(track_id)
             album_uri = "%s/tracks/%s_%s" % (self._uri,
-                                             artist_name.lower(),
-                                             album_name.lower())
+                                             artist_name,
+                                             album_name)
             track_name = GLib.uri_escape_string(GLib.basename(track_path),
                                                 "",
                                                 False)
