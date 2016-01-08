@@ -65,14 +65,13 @@ class MtpSync:
             sleep(5)
             self._retry(func, args, t-1)
 
-    def _get_children_uris(self, uri):
+    def _get_tracks_files(self):
         """
             Return children uris for uri
-            @param uri as str
             @return [str]
         """
         children = []
-        dir_uris = [uri]
+        dir_uris = [self._uri+'/tracks']
         while dir_uris:
             uri = dir_uris.pop(0)
             d = Gio.File.new_for_uri(uri)
@@ -121,7 +120,7 @@ class MtpSync:
 
             # Old tracks
             try:
-                children = self._get_children_uris(self._uri+'/tracks')
+                children = self._get_tracks_files()
                 self._total += len(children)
             except:
                 pass
@@ -293,7 +292,7 @@ class MtpSync:
             dst_uri = "%s/%s_%s" % (album_uri, mtime, track_name)
             track_uris.append(dst_uri)
 
-        on_mtp_files = self._get_children_uris(self._uri+'/tracks')
+        on_mtp_files = self._get_tracks_files()
 
         # Delete file on device and not in playlists
         for uri in on_mtp_files:
