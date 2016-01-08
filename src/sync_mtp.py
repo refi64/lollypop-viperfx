@@ -36,8 +36,7 @@ class MtpSync:
         self._total = 0  # Total files to sync
         self._done = 0   # Handled files on sync
         self._fraction = 0.0
-        self._copied_arts = []
-        self._copied_playlists = []
+        self._copied_art_uris = []
 
 ############
 # Private  #
@@ -107,8 +106,7 @@ class MtpSync:
             self._in_thread = True
             self._errors = False
             self._errors_count = 0
-            self._copied_arts = []
-            self._copied_playlists = []
+            self._copied_art_uris = []
             # For progress bar
             self._total = 1
             self._done = 0
@@ -209,7 +207,7 @@ class MtpSync:
                 if art is not None:
                     src_art = Gio.File.new_for_path(art)
                     art_uri = "%s/cover.jpg" % on_device_album_uri
-                    self._copied_arts.append(art_uri)
+                    self._copied_art_uris.append(art_uri)
                     dst_art = Gio.File.new_for_uri(art_uri)
                     if not dst_art.query_exists(None):
                         self._retry(src_art.copy,
@@ -251,9 +249,7 @@ class MtpSync:
                 playlist_name = GLib.uri_escape_string(playlist_name,
                                                        "",
                                                        False)
-                playlist_uri = self._uri+'/'+playlist_name+'.m3u'
-                dst = Gio.File.new_for_uri(playlist_uri)
-                self._copied_playlists.append(playlist_uri)
+                dst = Gio.File.new_for_uri(self._uri+'/'+playlist_name+'.m3u')
                 self._retry(m3u.move,
                             (dst, Gio.FileCopyFlags.OVERWRITE, None, None))
 
@@ -305,9 +301,7 @@ class MtpSync:
                 self._fraction = 1.0
                 self._in_thread = False
                 return
-            if uri not in track_uris and\
-               uri not in self._copied_arts and\
-               uri not in self._copied_playlists:
+            if uri not in track_uris and uri not in self._copied_art_uris:
                 to_delete = Gio.File.new_for_uri(uri)
                 self._retry(to_delete.delete, (None,))
             self._done += 1
