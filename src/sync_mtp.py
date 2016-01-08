@@ -84,7 +84,18 @@ class MtpSync:
                 if info.get_file_type() == Gio.FileType.DIRECTORY:
                     dir_uris.append(uri+'/'+info.get_name())
                 else:
-                    children.append(uri+'/'+info.get_name())
+                    album_name = uri.replace(self._uri+"/tracks/", "")
+                    album =  GLib.uri_escape_string(album_name,
+                                                    "",
+                                                    False)
+                    track = GLib.uri_escape_string(info.get_name(),
+                                                    "",
+                                                    False)
+
+
+                    children.append("%s/tracks/%s/%s" % (self._uri,
+                                                        album,
+                                                        track))
         return children
 
     def _sync(self, playlists):
