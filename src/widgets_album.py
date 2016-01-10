@@ -178,6 +178,8 @@ class AlbumSimpleWidget(Gtk.Frame, AlbumWidget):
         self.get_style_context().remove_class('loading')
         AlbumWidget.__init__(self, self._album_id)
         self._widget = Gtk.EventBox()
+        self._widget.connect('enter-notify-event', self._on_enter_notify)
+        self._widget.connect('leave-notify-event', self._on_leave_notify)
         self._widget.set_property('has-tooltip', True)
         grid = Gtk.Grid()
         grid.set_orientation(Gtk.Orientation.VERTICAL)

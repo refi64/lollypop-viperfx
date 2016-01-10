@@ -83,7 +83,6 @@ Gtk.ListBoxRow .menu-button:hover {
 
 .hovereffect {
     opacity: 0.9;
-    -gtk-image-effect: highlight;
 }
 
 .small-cover-frame {
