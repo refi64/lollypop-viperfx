@@ -1,4 +1,4 @@
-# Copyright (c) 2014-2015 Cedric Bellegarde <cedric.bellegarde@adishatz.org>
+# Copyright (c) 2014-2016 Cedric Bellegarde <cedric.bellegarde@adishatz.org>
 # Copyright (C) 2011 kedals0@gmail.com
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
