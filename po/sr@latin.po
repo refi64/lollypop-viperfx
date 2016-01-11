@@ -10,7 +10,7 @@ msgstr ""
 "Project-Id-Version: lollypop\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2015-11-17 17:22+0100\n"
-"PO-Revision-Date: 2015-11-18 17:35+0000\n"
+"PO-Revision-Date: 2015-11-27 18:44+0000\n"
 "Last-Translator: Марко М. Костић (Marko M. Kostić) <marko.m.kostic@gmail.com>\n"
 "Language-Team: Serbian (Latin) (http://www.transifex.com/gnumdk/lollypop/language/sr@latin/)\n"
 "MIME-Version: 1.0\n"
@@ -290,7 +290,7 @@ msgstr "%s album(a)"
 #: ../src/application.py:355
 #, python-format
 msgid "%s track(s)"
-msgstr "%s traka (trake)"
+msgstr "%s numera (numere)"
 
 #: ../src/application.py:371
 msgid "Lollypop: You need to install yelp."

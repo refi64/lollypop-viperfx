@@ -8,14 +8,15 @@
 # Bryan Daniel Velastegui Lucreo <bryan_slvr@hotmail.com>, 2015
 # Jose Manuel Calero Gonzalez <nosfe1984@gmail.com>, 2015
 # karlinux <karlinux47@gmail.com>, 2014-2015
+# Manuel Genovés <manuel.genoves@gmail.com>, 2015
 # Ricardo Enrique Lugo Ochoa <ricardol8a@hotmail.com>, 2015
 msgid ""
 msgstr ""
 "Project-Id-Version: lollypop\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2015-11-17 17:22+0100\n"
-"PO-Revision-Date: 2015-11-18 09:50+0000\n"
-"Last-Translator: Cédric Bellegarde <web@adishatz.org>\n"
+"PO-Revision-Date: 2015-12-30 08:45+0000\n"
+"Last-Translator: Manuel Genovés <manuel.genoves@gmail.com>\n"
 "Language-Team: Spanish (http://www.transifex.com/gnumdk/lollypop/language/es/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -69,7 +70,7 @@ msgstr "Iniciar sesión en Last.fm"
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:12
 msgid "Favorite tag editor"
-msgstr "Editor de etiqueta favorito"
+msgstr "Editor de etiquetas favorito"
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:13
 msgid "INTERNAL"
@@ -106,7 +107,7 @@ msgstr "Entre -15 y 15"
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:21
 msgid "Disable mpd support"
-msgstr ""
+msgstr "Desactivar soporte para mpd"
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:22 ../data/SettingsDialog.ui.h:2
 msgid "Auto update music"
@@ -252,7 +253,7 @@ msgstr ""
 
 #: ../data/lollypop.appdata.xml.in.h:15
 msgid "Fullscreen view"
-msgstr ""
+msgstr "Vista a pantalla completa"
 
 #: ../data/lollypop.appdata.xml.in.h:16
 msgid "Radios support"
@@ -599,7 +600,7 @@ msgstr "Cédric Bellegarde <cedric.bellegarde@adishatz.org>"
 
 #: ../data/AlbumContextWidget.ui.h:1 ../data/AlbumDetailedWidget.ui.h:1
 msgid "Play this album"
-msgstr ""
+msgstr "Reproducir este álbum"
 
 #: ../data/Appmenu.ui.h:1
 msgid "_Update music"
@@ -627,11 +628,11 @@ msgstr "_Salir"
 
 #: ../data/ArtistContent.ui.h:1
 msgid "No information for this artist..."
-msgstr ""
+msgstr "Sin información para este artista..."
 
 #: ../data/ArtistInfos.ui.h:1
 msgid "Albums"
-msgstr "Albunes"
+msgstr "Álbumes"
 
 #: ../data/ArtistInfos.ui.h:2
 msgid "Last.fm"
@@ -655,7 +656,7 @@ msgstr "Sincroniza tu dispositivo con las listas de reproducción"
 
 #: ../data/DeviceManagerView.ui.h:2
 msgid "Please unlock your device"
-msgstr ""
+msgstr "Por favor, desbloquea tu dispositivo"
 
 #: ../data/PlaylistEditWidget.ui.h:1 ../data/PlaylistsManagerWidget.ui.h:1
 msgid "Confirm"

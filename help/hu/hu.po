@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lollypop\n"
 "POT-Creation-Date: 2015-06-24 15:43+0200\n"
-"PO-Revision-Date: 2015-10-31 20:44+0000\n"
+"PO-Revision-Date: 2015-12-12 23:03+0000\n"
 "Last-Translator: naren93 <m.renato93@gmail.com>\n"
 "Language-Team: Hungarian (http://www.transifex.com/gnumdk/lollypop/language/hu/)\n"
 "MIME-Version: 1.0\n"
@@ -17,7 +17,7 @@ msgstr ""
 #. Put one translator per line, in the form NAME <EMAIL>, YEAR1, YEAR2
 msgctxt "_"
 msgid "translator-credits"
-msgstr ""
+msgstr "translator-credits"
 
 #. (itstool) path: info/desc
 #: C/index.page:7
@@ -33,7 +33,7 @@ msgstr "Lollypop zene lejátszó"
 #. (itstool) path: credit/name
 #: C/index.page:11
 msgid "Cédric Bellegarde"
-msgstr ""
+msgstr "Cédric Bellegarde"
 
 #. (itstool) path: credit/years
 #: C/index.page:13
@@ -75,19 +75,19 @@ msgstr "Lejátszás"
 #. (itstool) path: section/p
 #: C/index.page:31
 msgid "When you start playing a song, a contextual playlist is populated."
-msgstr ""
+msgstr "Amikor lejátszol egy számot, egy kapcsolódó lejátszási lista jön létre."
 
 #. (itstool) path: section/p
 #: C/index.page:32
 msgid ""
 "Contexts can be: an album, an artist, a genre, popular or recent albums, "
 "searches, playlists, ..."
-msgstr ""
+msgstr "Kapcsolódó lista lehet: album, előadó, műfaj, népszerű vagy előző albumok, keresés, lejátszási listák, ..."
 
 #. (itstool) path: section/p
 #: C/index.page:33
 msgid "Shuffle interacts on current context."
-msgstr ""
+msgstr "A keverés a jelenlegi kapcsolódó listán érvényesül."
 
 #. (itstool) path: section/title
 #: C/index.page:37
@@ -98,31 +98,31 @@ msgstr "Értékeld az albumokat"
 #: C/index.page:38
 msgid ""
 "Album popularity is based on how many tracks from an album you listen to."
-msgstr ""
+msgstr "Az album népszerűségét az határozza meg, hogy az albumon található számok közül mennyit hallgattál meg."
 
 #. (itstool) path: section/p
 #: C/index.page:39
 msgid ""
 "Album rating will be influenced by album popularity. In other words, rate "
 "will decrease if you stop listening to an album."
-msgstr ""
+msgstr "Az album népszerűsége hatással van az értékelésére. Más szóval, az érték csökken, ha már nem hallgatsz egy albumot.  "
 
 #. (itstool) path: section/title
 #: C/index.page:43
 msgid "Download covers"
-msgstr ""
+msgstr "Borítók letöltése"
 
 #. (itstool) path: section/p
 #: C/index.page:44
 msgid ""
 "When hovering a cover, if mouse cursor changes to a pen, just click and "
 "select a new cover."
-msgstr ""
+msgstr "Ha egy borító fölé viszed az egérmutatót és az tollá változik, csak klikkelned kell és kiválaszthatsz egy új borítót."
 
 #. (itstool) path: section/p
 #: C/index.page:45
 msgid "You need an internet connection."
-msgstr ""
+msgstr "Internetkapcsolat szükséges"
 
 #. (itstool) path: section/title
 #: C/index.page:49
@@ -192,12 +192,12 @@ msgstr "Jobb nyíl: tekerés hátra"
 #. (itstool) path: p/link
 #: C/legal.xml:4
 msgid "Creative Commons Attribution-Share Alike 3.0 United States License"
-msgstr ""
+msgstr "Creative Commons Attribution-Share Alike 3.0 United States License"
 
 #. (itstool) path: license/p
 #: C/legal.xml:3
 msgid "This work is licensed under a <_:link-1/>."
-msgstr ""
+msgstr "This work is licensed under a <_:link-1/>."
 
 #. (itstool) path: license/p
 #: C/legal.xml:6
@@ -205,4 +205,4 @@ msgid ""
 "As a special exception, the copyright holders give you permission to copy, "
 "modify, and distribute the example code contained in this document under the"
 " terms of your choosing, without restriction."
-msgstr ""
+msgstr "As a special exception, the copyright holders give you permission to copy, modify, and distribute the example code contained in this document under the terms of your choosing, without restriction."

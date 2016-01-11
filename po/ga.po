@@ -3,13 +3,13 @@
 # This file is distributed under the same license as the PACKAGE package.
 # 
 # Translators:
-# David Ó Laigheanáin, 2015
+# David Ó Laigheanáin, 2015-2016
 msgid ""
 msgstr ""
 "Project-Id-Version: lollypop\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2015-11-17 17:22+0100\n"
-"PO-Revision-Date: 2015-11-24 14:07+0000\n"
+"PO-Revision-Date: 2016-01-04 13:15+0000\n"
 "Last-Translator: David Ó Laigheanáin\n"
 "Language-Team: Irish (http://www.transifex.com/gnumdk/lollypop/language/ga/)\n"
 "MIME-Version: 1.0\n"
@@ -590,7 +590,7 @@ msgstr "Tabhair cuirt ar shuíomh gréasáin Lollypop"
 #. Replace me with your names
 #: ../data/AboutDialog.ui.h:4
 msgid "Cédric Bellegarde <cedric.bellegarde@adishatz.org>"
-msgstr "David Ó Laigheanáin <david.lynam@redbrick.dcu.ie>"
+msgstr "David Ó Laıġeanáın <david.lynam@redbrick.dcu.ie>"
 
 #: ../data/AlbumContextWidget.ui.h:1 ../data/AlbumDetailedWidget.ui.h:1
 msgid "Play this album"
