@@ -60,7 +60,7 @@ class BinPlayer(ReplayGainPlayer, BasePlayer):
             True if player is playing
             @return bool
         """
-        ok, state, pending = self._playbin.get_state(0)
+        ok, state, pending = self._playbin.get_state(Gst.CLOCK_TIME_NONE)
         if ok == Gst.StateChangeReturn.ASYNC:
             return pending == Gst.State.PLAYING
         elif ok == Gst.StateChangeReturn.SUCCESS:
@@ -73,7 +73,7 @@ class BinPlayer(ReplayGainPlayer, BasePlayer):
             Playback status
             @return Gstreamer state
         """
-        ok, state, pending = self._playbin.get_state(0)
+        ok, state, pending = self._playbin.get_state(Gst.CLOCK_TIME_NONE)
         if ok == Gst.StateChangeReturn.ASYNC:
             state = pending
         elif (ok != Gst.StateChangeReturn.SUCCESS):
