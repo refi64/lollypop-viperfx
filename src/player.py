@@ -142,7 +142,7 @@ class Player(BinPlayer, QueuePlayer, UserPlaylistPlayer, RadioPlayer,
         # Add all albums for genre
         else:
             self._albums = Lp().albums.get_compilations(genre_ids)
-            self._albums += Lp().albums.get_ids([], genre_ids)
+            self._albums += Lp().albums.get_ids(artist_ids, genre_ids)
 
         album.set_genre(genre_ids)
         if track_id in album.tracks_ids:
