@@ -114,7 +114,8 @@ class ShufflePlayer(BasePlayer):
 
         if party:
             self._external_tracks = []
-            self.context.genre_id = None
+            self.context.genre_ids = []
+            self.context.track_id = None
             party_ids = self.get_party_ids()
             if party_ids:
                 self._albums = Lp().albums.get_party_ids(party_ids)
