@@ -521,7 +521,7 @@ class AlbumDetailedWidget(Gtk.Bin, AlbumWidget):
             @param: event as Gdk.Event
         """
         if event.button == 1:
-            Lp().player.play_album(self._album.id)
+            Lp().player.play_album(self._album)
         elif self._pop_allowed:
             popover = CoversPopover(self._album.artist_id, self._album.id)
             popover.set_relative_to(widget)

@@ -17,7 +17,7 @@ from lollypop.player_shuffle import ShufflePlayer
 from lollypop.player_radio import RadioPlayer
 from lollypop.player_externals import ExternalsPlayer
 from lollypop.player_userplaylist import UserPlaylistPlayer
-from lollypop.objects import Track, Album
+from lollypop.objects import Track
 from lollypop.define import Lp, Type
 from lollypop.define import Shuffle
 
@@ -68,34 +68,17 @@ class Player(BinPlayer, QueuePlayer, UserPlaylistPlayer, RadioPlayer,
         else:
             BinPlayer.load(self, track, notify)
 
-    def play_album(self, album_id, genre_id=None):
+    def play_album(self, album):
         """
             Play album
-            @param album id as int
-            @param genre id as int
+            @param album as Album
         """
         # Empty user playlist
         self._user_playlist = []
-        # Get first track from album
-        album = Album(album_id, genre_id)
         Lp().player.load(album.tracks[0])
         if not Lp().player.is_party():
-            if genre_id is not None:
-                self.set_albums(self.current_track.id,
-                                self.current_track.album_artist_id,
-                                genre_id)
-            else:
-                self.set_album(album)
-
-    def set_album(self, album):
-        """
-            Set album as current album list (for next/prev)
-            Set track as current track in album
-            @param album as Album
-        """
-        self._albums = [album.id]
-        self.context.genre_id = None
-        self.context.position = album.tracks_ids.index(self.current_track.id)
+            self._albums = [album.id]
+            self.context.genre_ids = []
 
     def set_albums(self, track_id, artist_ids, genre_ids):
         """
@@ -147,7 +130,6 @@ class Player(BinPlayer, QueuePlayer, UserPlaylistPlayer, RadioPlayer,
 
         album.set_genre(genre_ids)
         if track_id in album.tracks_ids:
-            self.context.position = album.tracks_ids.index(track_id)
             self.context.artist_ids = artist_ids
             self.context.genre_ids = genre_ids
             # Shuffle album list if needed
@@ -239,6 +221,8 @@ class Player(BinPlayer, QueuePlayer, UserPlaylistPlayer, RadioPlayer,
         # Look first at user queue
         if self.next_track.id is None:
             self.next_track = QueuePlayer.next(self)
+            if self.next_track.id is not None:
+                self.context.next_track = LinearPlayer.next(self)
 
         # Look at user playlist then
         if self.next_track.id is None:
@@ -250,7 +234,11 @@ class Player(BinPlayer, QueuePlayer, UserPlaylistPlayer, RadioPlayer,
 
         # Get a linear track then
         if self.next_track.id is None:
-            self.next_track = LinearPlayer.next(self)
+            if self.context.next_track is not None:
+                self.next_track = self.context.next_track
+                self.context.next_track = None
+            else:
+                self.next_track = LinearPlayer.next(self)
         self.emit('next-changed')
 
 #######################
