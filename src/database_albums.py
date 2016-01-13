@@ -586,8 +586,8 @@ class AlbumsDatabase:
     def get_ids(self, artist_ids=[], genre_ids=[]):
         """
             Get albums ids
-            @param artist ids as [int]/None
-            @param genre ids as [int]/None
+            @param artist ids as [int]
+            @param genre ids as [int]
             @return Array of album ids as int
         """
         with SqlCursor(Lp().db) as sql:
@@ -651,13 +651,13 @@ class AlbumsDatabase:
     def get_compilations(self, genre_ids=[]):
         """
             Get all compilations
-            @param Filter genre ids as [int]/Type.ALL/None
+            @param Filter genre ids as [int]
             @return Array of album ids as int
         """
         with SqlCursor(Lp().db) as sql:
             result = []
             # Get all compilations
-            if genre_ids == Type.ALL or not genre_ids:
+            if not genre_ids or genre_ids[0] == Type.ALL:
                 result = sql.execute("SELECT albums.rowid FROM albums\
                                       WHERE artist_id=?\
                                       ORDER BY albums.name, albums.year",
