@@ -71,7 +71,7 @@ class ArtistAlbumsView(View):
         size_group = Gtk.SizeGroup(mode=Gtk.SizeGroupMode.HORIZONTAL)
         widget = AlbumDetailedWidget(albums.pop(0),
                                      self._genre_ids,
-                                     self._artist_ids is not None,
+                                     self._artist_ids,
                                      size_group)
         widget.connect('finished', self._on_album_finished, albums)
         widget.show()
