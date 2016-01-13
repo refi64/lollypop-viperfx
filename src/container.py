@@ -390,7 +390,7 @@ class Container:
         if self._show_genres:
             self._setup_list_genres(self._list_one, update)
         else:
-            self._setup_list_artists(self._list_one, Type.ALL, update)
+            self._setup_list_artists(self._list_one, [Type.ALL], update)
 
     def _update_list_two(self, updater):
         """
@@ -398,11 +398,11 @@ class Container:
             @param updater as GObject
         """
         update = updater is not None
-        object_id = self._list_one.get_selected_id()
-        if object_id == Type.PLAYLISTS:
+        ids = self._list_one.get_selected_ids()
+        if ids and ids[0] == Type.PLAYLISTS:
             self._setup_list_playlists(update)
-        elif self._show_genres and object_id != Type.NONE:
-            self._setup_list_artists(self._list_two, object_id, update)
+        elif self._show_genres and ids:
+            self._setup_list_artists(self._list_two, ids, update)
 
     def _get_headers(self):
         """
@@ -528,10 +528,10 @@ class Container:
             @param genre id as int
         """
         def load():
-            if artist_ids[0] == Type.COMPILATIONS:
+            if artist_ids and artist_ids[0] == Type.COMPILATIONS:
                 albums = Lp().albums.get_compilations(genre_ids)
-            elif genre_ids[0] == Type.ALL:
-                albums = Lp().albums.get_ids(artist_ids, None)
+            elif genre_ids and genre_ids[0] == Type.ALL:
+                albums = Lp().albums.get_ids(artist_ids, [])
             else:
                 albums = Lp().albums.get_ids(artist_ids, genre_ids)
             return albums
@@ -705,7 +705,7 @@ class Container:
             elif selected_ids[0] == Type.COMPILATIONS:
                 self._update_view_albums([], True)
             else:
-                self._update_view_artists(selected_ids, None)
+                self._update_view_artists(selected_ids, [])
         else:
             self._list_two.clear()
             self._setup_list_artists(self._list_two, selected_ids, False)

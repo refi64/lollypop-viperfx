@@ -98,12 +98,12 @@ class Player(BinPlayer, QueuePlayer, UserPlaylistPlayer, RadioPlayer,
         self._user_playlist = []
         self._user_playlist_id = None
         # We are in all artists
-        if genre_ids[0] == Type.ALL or\
+        if (genre_ids and genre_ids[0] == Type.ALL) or\
            (artist_ids and artist_ids[0] == Type.ALL):
             self._albums = Lp().albums.get_compilations(Type.ALL)
             self._albums += Lp().albums.get_ids()
         # We are in populars view, add popular albums
-        elif genre_ids[0] == Type.POPULARS:
+        elif genre_ids and genre_ids[0] == Type.POPULARS:
             if self._shuffle in [Shuffle.TRACKS_ARTIST, Shuffle.ALBUMS_ARTIST]:
                 self._albums = []
                 for album_id in Lp().albums.get_populars():
@@ -112,13 +112,13 @@ class Player(BinPlayer, QueuePlayer, UserPlaylistPlayer, RadioPlayer,
             else:
                 self._albums = Lp().albums.get_populars()
         # We are in recents view, add recent albums
-        elif genre_ids[0] == Type.RECENTS:
+        elif genre_ids and genre_ids[0] == Type.RECENTS:
             self._albums = Lp().albums.get_recents()
         # We are in randoms view, add random albums
-        elif genre_ids[0] == Type.RANDOMS:
+        elif genre_ids and genre_ids[0] == Type.RANDOMS:
             self._albums = Lp().albums.get_cached_randoms()
         # We are in compilation view without genre
-        elif genre_ids[0] == Type.COMPILATIONS:
+        elif genre_ids and genre_ids[0] == Type.COMPILATIONS:
             self._albums = Lp().albums.get_compilations()
         # Random tracks/albums for artist
         elif self._shuffle in [Shuffle.TRACKS_ARTIST, Shuffle.ALBUMS_ARTIST]:
