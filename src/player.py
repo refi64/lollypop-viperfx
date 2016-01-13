@@ -95,7 +95,6 @@ class Player(BinPlayer, QueuePlayer, UserPlaylistPlayer, RadioPlayer,
         """
         self._albums = [album.id]
         self.context.genre_id = None
-        self.context.position = album.tracks_ids.index(self.current_track.id)
 
     def set_albums(self, track_id, artist_id, genre_id):
         """
@@ -146,7 +145,6 @@ class Player(BinPlayer, QueuePlayer, UserPlaylistPlayer, RadioPlayer,
 
         album.set_genre(genre_id)
         if track_id in album.tracks_ids:
-            self.context.position = album.tracks_ids.index(track_id)
             self.context.genre_id = genre_id
             # Shuffle album list if needed
             self._shuffle_albums()
