@@ -72,6 +72,7 @@ class ArtistAlbumsView(View):
         widget = AlbumDetailedWidget(albums.pop(0),
                                      self._genre_ids,
                                      self._artist_ids,
+                                     False,
                                      size_group)
         widget.connect('finished', self._on_album_finished, albums)
         widget.show()
