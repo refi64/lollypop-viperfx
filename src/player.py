@@ -122,7 +122,7 @@ class Player(BinPlayer, QueuePlayer, UserPlaylistPlayer, RadioPlayer,
             self._albums = Lp().albums.get_compilations()
         # Random tracks/albums for artist
         elif self._shuffle in [Shuffle.TRACKS_ARTIST, Shuffle.ALBUMS_ARTIST]:
-            self._albums = Lp().albums.get_ids(artist_ids, genre_ids)
+            self._albums = Lp().albums.get_ids([album.artist_id], genre_ids)
         # Add all albums for genre
         else:
             self._albums = Lp().albums.get_compilations(genre_ids)
