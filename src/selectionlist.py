@@ -209,7 +209,7 @@ class SelectionList(Gtk.ScrolledWindow):
             Return True if list will select items on populate
             @return selected as bool
         """
-        return not self._to_select_ids
+        return self._to_select_ids
 
     def select_ids(self, ids):
         """
@@ -268,6 +268,7 @@ class SelectionList(Gtk.ScrolledWindow):
                                 self._get_icon_name(value[0])])
         if value[0] in self._to_select_ids:
             self._selection.select_iter(i)
+            self._to_select_ids.remove(value[0])
 
     def _add_values(self, values):
         """
