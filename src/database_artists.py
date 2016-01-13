@@ -130,17 +130,17 @@ class ArtistsDatabase:
                                                           Type.COMPILATIONS))
             return list(itertools.chain(*result))
 
-    def get(self, genre_id):
+    def get(self, genre_ids):
         """
             Get all available artists
             @param None
             or
-            @param Filter genre id as int
+            @param Filter genre ids as [int]/Type.ALL/None
             @return Array of (artist id as int, artist name as string)
         """
         with SqlCursor(Lp().db) as sql:
             result = []
-            if genre_id == Type.ALL or genre_id is None:
+            if genre_ids == Type.ALL or not genre_ids:
                 # Only artist that really have an album
                 result = sql.execute(
                                  "SELECT DISTINCT artists.rowid,\
@@ -149,14 +149,17 @@ class ArtistsDatabase:
                                   WHERE albums.artist_id = artists.rowid\
                                   ORDER BY artists.sortname COLLATE NOCASE")
             else:
-                result = sql.execute("SELECT DISTINCT artists.rowid,\
-                                      artists.name\
-                                      FROM artists, albums, album_genres\
-                                      WHERE artists.rowid == albums.artist_id\
-                                      AND album_genres.genre_id=?\
-                                      AND album_genres.album_id=albums.rowid\
-                                      ORDER BY artists.sortname\
-                                      COLLATE NOCASE", (genre_id,))
+                genres = tuple(genre_ids)
+                request = "SELECT DISTINCT artists.rowid,\
+                           artists.name\
+                           FROM artists, albums, album_genres\
+                           WHERE artists.rowid == albums.artist_id\
+                           AND album_genres.album_id=albums.rowid AND ("
+                for genre_id in genre_ids:
+                    request += "album_genres.genre_id=? OR "
+                request += "1=0) ORDER BY artists.sortname\
+                            COLLATE NOCASE"
+                result = sql.execute(request, genres)
             return [(row[0], row[1]) for row in result]
 
     def exists(self, artist_id):

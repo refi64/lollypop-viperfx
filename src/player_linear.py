@@ -37,7 +37,7 @@ class LinearPlayer(BasePlayer):
 
         track = Track()
         if self._albums is not None:
-            album = Album(self.current_track.album.id, self.context.genre_id)
+            album = Album(self.current_track.album.id, self.context.genre_ids)
             if self.current_track.id in album.tracks_ids:
                 new_track_position = album.tracks_ids.index(
                                                 self.current_track.id) + 1
@@ -56,7 +56,7 @@ class LinearPlayer(BasePlayer):
                     except:
                         pos = 0  # Happens if current album has been removed
                     track = Album(self._albums[pos],
-                                  self.context.genre_id).tracks[0]
+                                  self.context.genre_ids).tracks[0]
                 # next track
                 else:
                     track = album.tracks[new_track_position]
@@ -73,7 +73,7 @@ class LinearPlayer(BasePlayer):
 
         track = Track()
         if self._albums is not None:
-            album = Album(self.current_track.album.id, self.context.genre_id)
+            album = Album(self.current_track.album.id, self.context.genre_ids)
             if self.current_track.id in album.tracks_ids:
                 new_track_position = album.tracks_ids.index(
                                                 self.current_track.id) - 1
@@ -88,7 +88,7 @@ class LinearPlayer(BasePlayer):
                     except:
                         pos = 0  # Happens if current album has been removed
                     track = Album(self._albums[pos],
-                                  self.context.genre_id).tracks[-1]
+                                  self.context.genre_ids).tracks[-1]
                 # Previous track
                 else:
                     track = album.tracks[new_track_position]

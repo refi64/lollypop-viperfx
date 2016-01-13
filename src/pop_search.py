@@ -221,7 +221,7 @@ class SearchPopover(Gtk.Popover):
 
         # Get all albums for all artists and non album_artist tracks
         for artist_id in Lp().artists.search(self._current_search):
-            for album_id in Lp().albums.get_ids(artist_id, None):
+            for album_id in Lp().albums.get_ids([artist_id], None):
                 if (album_id, artist_id) not in albums:
                     albums.append((album_id, artist_id))
             for track_id, track_name in Lp().tracks.get_as_non_album_artist(

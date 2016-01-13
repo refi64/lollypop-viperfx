@@ -19,13 +19,15 @@
     <property name="headers_visible">False</property>
     <property name="headers_clickable">False</property>
     <property name="search_column">1</property>
-    <signal name="cursor-changed" handler="_on_cursor_changed" swapped="no"/>
     <signal name="focus-in-event" handler="_on_focus_in_event" swapped="no"/>
     <signal name="focus-out-event" handler="_on_focus_out_event" swapped="no"/>
     <signal name="leave-notify-event" handler="_on_leave_event" swapped="no"/>
     <signal name="query-tooltip" handler="_on_query_tooltip" swapped="no"/>
     <child internal-child="selection">
-      <object class="GtkTreeSelection" id="treeview-selection1"/>
+      <object class="GtkTreeSelection" id="selection">
+        <property name="mode">multiple</property>
+        <signal name="changed" handler="_on_selection_changed" swapped="no"/>
+      </object>
     </child>
     <style>
       <class name="sidebar"/>

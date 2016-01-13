@@ -12,7 +12,7 @@
 
 from gi.repository import Gtk, Gdk
 
-from lollypop.define import Lp, Type
+from lollypop.define import Lp
 from lollypop.pop_infos import InfosPopover
 from lollypop.view_artist_albums import ArtistAlbumsView
 
@@ -22,23 +22,27 @@ class ArtistView(ArtistAlbumsView):
         Show artist albums and tracks
     """
 
-    def __init__(self, artist_id, genre_id):
+    def __init__(self, artist_ids, genre_ids):
         """
             Init ArtistView
             @param artist id as int (Current if None)
             @param genre id as int
         """
-        ArtistAlbumsView.__init__(self, artist_id, genre_id)
-        self._artist_id = artist_id
-        self._genre_id = genre_id
+        ArtistAlbumsView.__init__(self, artist_ids, genre_ids)
+        if len(artist_ids) > 1:
+            self._artist_id = None
+        else:
+            self._artist_id = artist_ids[0]
         self._signal_id = None
 
         builder = Gtk.Builder()
         builder.add_from_resource('/org/gnome/Lollypop/ArtistView.ui')
         builder.connect_signals(self)
         self.attach(builder.get_object('ArtistView'), 0, 0, 1, 1)
-        builder.get_object('artist').set_label(
-                                            Lp().artists.get_name(artist_id))
+        artists = ""
+        for artist_id in artist_ids:
+            artists += Lp().artists.get_name(artist_id) + ", "
+        builder.get_object('artist').set_label(artists[:-2])
 
 #######################
 # PRIVATE             #
@@ -49,7 +53,7 @@ class ArtistView(ArtistAlbumsView):
             @param eventbox as Gtk.EventBox
         """
         if InfosPopover.should_be_shown() and\
-                self._artist_id != Type.COMPILATIONS:
+                self._artist_id is not None:
             eventbox.get_window().set_cursor(Gdk.Cursor(Gdk.CursorType.HAND1))
 
     def _on_label_button_release(self, eventbox, event):
@@ -59,7 +63,7 @@ class ArtistView(ArtistAlbumsView):
             @param event as Gdk.Event
         """
         if InfosPopover.should_be_shown() and\
-                self._artist_id != Type.COMPILATIONS:
+                self._artist_id is not None:
             pop = InfosPopover(self._artist_id, False)
             pop.set_relative_to(eventbox)
             pop.show()

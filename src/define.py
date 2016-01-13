@@ -44,7 +44,8 @@ class NextContext:
 
 # Represent playback context
 class PlayContext:
-    genre_id = None
+    genre_ids = []
+    artist_ids = []
     next = NextContext.NONE
 
 
