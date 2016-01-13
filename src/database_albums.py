@@ -592,25 +592,14 @@ class AlbumsDatabase:
         """
         with SqlCursor(Lp().db) as sql:
             result = []
-            # Get albums for artist id and genre id
-            if artist_ids and genre_ids:
-                filters = tuple(artist_ids)
-                filters += tuple(genre_ids)
-                request = "SELECT DISTINCT albums.rowid\
-                           FROM albums, album_genres, artists\
-                           WHERE album_genres.album_id=albums.rowid AND ("
-                for artist_id in artist_ids:
-                    request += "albums.artist_id=? OR "
-                request += "1=0) AND ("
-                for genre_id in genre_ids:
-                    request += "album_genres.genre_id=? OR "
-                if len(artist_ids) > 1:
-                    request += "1=0) AND artists.rowid=albums.artist_id\
-                                ORDER BY artists.name COLLATE NOCASE,\
-                                year, albums.name COLLATE NOCASE"
-                else:
-                    request += "1=0) ORDER BY year, albums.name COLLATE NOCASE"
-                result = sql.execute(request, filters)
+            # Get albums for all artists
+            if not artist_ids and not genre_ids:
+                result = sql.execute(
+                                 "SELECT albums.rowid FROM albums, artists\
+                                  WHERE artists.rowid=albums.artist_id\
+                                  ORDER BY artists.sortname COLLATE NOCASE,\
+                                  albums.year,\
+                                  albums.name COLLATE NOCASE")
             # Get albums for genre
             elif not artist_ids:
                 genres = tuple(genre_ids)
@@ -637,14 +626,25 @@ class AlbumsDatabase:
                 else:
                     request += "1=0) ORDER BY year, albums.name COLLATE NOCASE"
                 result = sql.execute(request, artists)
-            # Get albums for all artists
+            # Get albums for artist id and genre id
             else:
-                result = sql.execute(
-                                 "SELECT albums.rowid FROM albums, artists\
-                                  WHERE artists.rowid=albums.artist_id\
-                                  ORDER BY artists.sortname COLLATE NOCASE,\
-                                  albums.year,\
-                                  albums.name COLLATE NOCASE")
+                filters = tuple(artist_ids)
+                filters += tuple(genre_ids)
+                request = "SELECT DISTINCT albums.rowid\
+                           FROM albums, album_genres, artists\
+                           WHERE album_genres.album_id=albums.rowid AND ("
+                for artist_id in artist_ids:
+                    request += "albums.artist_id=? OR "
+                request += "1=0) AND ("
+                for genre_id in genre_ids:
+                    request += "album_genres.genre_id=? OR "
+                if len(artist_ids) > 1:
+                    request += "1=0) AND artists.rowid=albums.artist_id\
+                                ORDER BY artists.name COLLATE NOCASE,\
+                                year, albums.name COLLATE NOCASE"
+                else:
+                    request += "1=0) ORDER BY year, albums.name COLLATE NOCASE"
+                result = sql.execute(request, filters)
             return list(itertools.chain(*result))
 
     def get_compilations(self, genre_ids=[]):
