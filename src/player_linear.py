@@ -36,7 +36,7 @@ class LinearPlayer(BasePlayer):
             return self.current_track
 
         track = Track()
-        if self._albums is not None:
+        if self._albums:
             album = Album(self.current_track.album.id, self.context.genre_ids)
             if self.current_track.id in album.tracks_ids:
                 new_track_position = album.tracks_ids.index(
@@ -72,7 +72,7 @@ class LinearPlayer(BasePlayer):
             return self.current_track
 
         track = Track()
-        if self._albums is not None:
+        if self._albums:
             album = Album(self.current_track.album.id, self.context.genre_ids)
             if self.current_track.id in album.tracks_ids:
                 new_track_position = album.tracks_ids.index(

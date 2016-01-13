@@ -91,7 +91,7 @@ class Player(BinPlayer, QueuePlayer, UserPlaylistPlayer, RadioPlayer,
         if track_id is None:
             return
         album = Track(track_id).album
-        self._albums = None
+        self._albums = []
         ShufflePlayer.reset_history(self)
 
         # We are not playing a user playlist anymore
@@ -125,7 +125,8 @@ class Player(BinPlayer, QueuePlayer, UserPlaylistPlayer, RadioPlayer,
             self._albums = Lp().albums.get_ids([album.artist_id], genre_ids)
         # Add all albums for genre
         else:
-            self._albums = Lp().albums.get_compilations(genre_ids)
+            if not artist_ids:
+                self._albums = Lp().albums.get_compilations(genre_ids)
             self._albums += Lp().albums.get_ids(artist_ids, genre_ids)
 
         album.set_genre(genre_ids)

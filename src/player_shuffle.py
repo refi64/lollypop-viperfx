@@ -39,9 +39,9 @@ class ShufflePlayer(BasePlayer):
             Reset history
         """
         # Tracks already played
-        self._history = None
+        self._history = []
         # Used by shuffle albums to restore playlist before shuffle
-        self._albums_backup = None
+        self._albums_backup = []
         # Albums already played
         self._already_played_albums = []
         # Tracks already played for albums
@@ -57,10 +57,9 @@ class ShufflePlayer(BasePlayer):
         track_id = None
         if self._shuffle in [Shuffle.TRACKS, Shuffle.TRACKS_ARTIST] or\
                 self._is_party:
-            if self._history is not None and \
-               self._history.has_next():
+            if self._history and self._history.has_next():
                 track_id = self._history.get_next().get_value()
-            elif self._albums is not None:
+            elif self._albums:
                 track_id = self._shuffle_next()
         return Track(track_id)
 
@@ -72,8 +71,7 @@ class ShufflePlayer(BasePlayer):
         track_id = None
         if self._shuffle in [Shuffle.TRACKS, Shuffle.TRACKS_ARTIST] or\
                 self._is_party:
-            if self._history is not None and \
-               self._history.has_prev():
+            if self._history and self._history.has_prev():
                 track_id = self._history.get_prev().get_value()
             else:
                 track_id = self.current_track.id
@@ -175,13 +173,13 @@ class ShufflePlayer(BasePlayer):
             Shuffle album list
         """
         if self._shuffle in [Shuffle.ALBUMS, Shuffle.ALBUMS_ARTIST]:
-            if self._albums is not None and self._albums_backup is None:
+            if self._albums and not self._albums_backup:
                 self._albums_backup = list(self._albums)
                 random.shuffle(self._albums)
         elif self._shuffle == Shuffle.NONE:
-            if self._albums_backup is not None:
+            if self._albums_backup:
                 self._albums = self._albums_backup
-                self._albums_backup = None
+                self._albums_backup = []
 
     def _shuffle_next(self):
         """
@@ -235,7 +233,7 @@ class ShufflePlayer(BasePlayer):
         """
         # Add track to shuffle history if needed
         if self._shuffle != Shuffle.NONE or self._is_party:
-            if self._history is not None:
+            if self._history:
                 next = self._history.get_next()
                 prev = self._history.get_prev()
                 # Next track
