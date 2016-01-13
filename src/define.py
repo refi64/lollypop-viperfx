@@ -45,6 +45,7 @@ class NextContext:
 # Represent playback context
 class PlayContext:
     genre_id = None
+    next_track = None  # Needed to return from queue
     next = NextContext.NONE
 
 

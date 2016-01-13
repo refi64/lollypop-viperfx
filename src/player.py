@@ -235,6 +235,8 @@ class Player(BinPlayer, QueuePlayer, UserPlaylistPlayer, RadioPlayer,
         # Look first at user queue
         if self.next_track.id is None:
             self.next_track = QueuePlayer.next(self)
+            if self.next_track.id is not None:
+                self.context.next_track = LinearPlayer.next(self)
 
         # Look at user playlist then
         if self.next_track.id is None:
@@ -246,7 +248,11 @@ class Player(BinPlayer, QueuePlayer, UserPlaylistPlayer, RadioPlayer,
 
         # Get a linear track then
         if self.next_track.id is None:
-            self.next_track = LinearPlayer.next(self)
+            if self.context.next_track is not None:
+                self.next_track = self.context.next_track
+                self.context.next_track = None
+            else:
+                self.next_track = LinearPlayer.next(self)
         self.emit('next-changed')
 
 #######################
