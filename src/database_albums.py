@@ -616,7 +616,8 @@ class AlbumsDatabase:
             # Get albums for artist
             elif not genre_ids:
                 artists = tuple(artist_ids)
-                request = "SELECT DISTINCT rowid FROM albums, artists WHERE ("
+                request = "SELECT DISTINCT albums.rowid\
+                           FROM albums, artists WHERE ("
                 for artist_id in artist_ids:
                     request += "artist_id=? OR "
                 if len(artist_ids) > 1:
