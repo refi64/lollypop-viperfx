@@ -30,7 +30,7 @@ class AlbumContextWidget(AlbumDetailedWidget):
             @param size group as Gtk.SizeGroup
         """
         AlbumDetailedWidget.__init__(self, album_id, genre_id,
-                                     [Type.NONE], popover, size_group)
+                                     [], popover, size_group)
         self._artist_label.set_text(self._album.artist_name)
         self._artist_label.show()
 

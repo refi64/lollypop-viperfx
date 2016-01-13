@@ -115,7 +115,8 @@ class Player(BinPlayer, QueuePlayer, UserPlaylistPlayer, RadioPlayer,
         self._user_playlist = []
         self._user_playlist_id = None
         # We are in all artists
-        if genre_ids[0] == Type.ALL or artist_ids[0] == Type.ALL:
+        if genre_ids[0] == Type.ALL or\
+           (artist_ids and artist_ids[0] == Type.ALL):
             self._albums = Lp().albums.get_compilations(Type.ALL)
             self._albums += Lp().albums.get_ids()
         # We are in populars view, add popular albums
