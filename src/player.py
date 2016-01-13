@@ -164,7 +164,7 @@ class Player(BinPlayer, QueuePlayer, UserPlaylistPlayer, RadioPlayer,
             path = Lp().tracks.get_path(track_id)
             if path != "":
                 self._load_track(Track(track_id))
-                self.set_albums(track_id, Type.ALL, Type.ALL)
+                self.set_albums(track_id, [Type.ALL], [Type.ALL])
                 self.set_next()
                 self.set_prev()
                 self.emit('current-changed')
