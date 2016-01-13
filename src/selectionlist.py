@@ -360,8 +360,10 @@ class SelectionList(Gtk.ScrolledWindow):
             @param current as bool
             @return bool
         """
-        if self._modifier:
-            ids = self.get_selected_ids()
+        ids = self.get_selected_ids()
+        if not ids:
+            return True
+        elif self._modifier:
             iterator = self._model.get_iter(path)
             value = self._model.get_value(iterator, 0)
             if value < 0 and len(ids) > 1:
