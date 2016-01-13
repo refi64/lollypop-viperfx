@@ -78,7 +78,7 @@ class SelectionList(Gtk.ScrolledWindow):
         self._last_motion_event = None
         self._previous_motion_y = 0.0
         self._timeout = None
-        self._to_select_id = Type.NONE
+        self._to_select_id = []
         self._modifier = False
         self._updating = False       # Sort disabled if False
         self._is_artists = False
@@ -267,8 +267,8 @@ class SelectionList(Gtk.ScrolledWindow):
                                 value[1],
                                 self._get_icon_name(value[0])])
         if value[0] in self._to_select_ids:
-            self._selection.select_iter(i)
             self._to_select_ids.remove(value[0])
+            self._selection.select_iter(i)
 
     def _add_values(self, values):
         """
@@ -394,8 +394,7 @@ class SelectionList(Gtk.ScrolledWindow):
             Forward as "item-selected"
             @param view as Gtk.TreeSelection
         """
-        if not self._updating:
-            self._to_select_id = Type.NONE
+        if not self._updating and not self._to_select_ids:
             self.emit('item-selected')
 
     def _on_focus_in_event(self, widget, event):
