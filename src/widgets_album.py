@@ -295,7 +295,9 @@ class AlbumDetailedWidget(Gtk.Bin, AlbumWidget):
         builder.connect_signals(self)
 
         self._artist_label = builder.get_object('artist')
-
+        if len(artist_ids) > 1:
+            self._artist_label.set_text(self._album.artist_name)
+            self._artist_label.show()
         label = builder.get_object('duration')
         duration = Lp().albums.get_duration(album_id, genre_ids)
         hours = int(duration / 3600)
