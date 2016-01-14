@@ -29,11 +29,11 @@ class AlbumWidget:
         Base album widget
     """
 
-    def __init__(self, album_id, genre_id=None):
+    def __init__(self, album_id, genre_ids=[]):
         """
             Init widget
         """
-        self._album = Album(album_id, genre_id)
+        self._album = Album(album_id, genre_ids)
         self._selected = None
         self._stop = False
         self._cover = None
@@ -272,18 +272,19 @@ class AlbumDetailedWidget(Gtk.Bin, AlbumWidget):
         'finished': (GObject.SignalFlags.RUN_FIRST, None, ())
     }
 
-    def __init__(self, album_id, genre_id, pop_allowed, size_group):
+    def __init__(self, album_id, genre_ids, artist_ids, popover, size_group):
         """
             Init detailed album widget
             @param album id as int
-            @param genre id as int
-            @param parent width as int
-            @param pop_allowed as bool if widget can show popovers
+            @param genre ids as [int]
+            @param artist ids as [int]
+            @param popover as bool
             @param size group as Gtk.SizeGroup
         """
         Gtk.Bin.__init__(self)
-        AlbumWidget.__init__(self, album_id, genre_id=genre_id)
-        self._pop_allowed = pop_allowed
+        AlbumWidget.__init__(self, album_id, genre_ids)
+        self._artist_ids = artist_ids
+        self._pop_allowed = not popover or Gtk.get_minor_version() > 16
         builder = Gtk.Builder()
         builder.add_from_resource('/org/gnome/Lollypop/%s.ui' %
                                   type(self).__name__)
@@ -296,7 +297,7 @@ class AlbumDetailedWidget(Gtk.Bin, AlbumWidget):
         self._artist_label = builder.get_object('artist')
 
         label = builder.get_object('duration')
-        duration = Lp().albums.get_duration(album_id, genre_id)
+        duration = Lp().albums.get_duration(album_id, genre_ids)
         hours = int(duration / 3600)
         mins = int(duration / 60)
         if hours > 0:
@@ -326,8 +327,8 @@ class AlbumDetailedWidget(Gtk.Bin, AlbumWidget):
                 label.show()
                 grid.attach(label, 0, i, 2, 1)
                 i += 1
-            self._tracks_left[index] = TracksWidget(pop_allowed, True)
-            self._tracks_right[index] = TracksWidget(pop_allowed, True)
+            self._tracks_left[index] = TracksWidget(self._pop_allowed, True)
+            self._tracks_right[index] = TracksWidget(self._pop_allowed, True)
             grid.attach(self._tracks_left[index], 0, i, 1, 1)
             grid.attach(self._tracks_right[index], 1, i, 1, 1)
             size_group.add_widget(self._tracks_left[index])
@@ -358,7 +359,7 @@ class AlbumDetailedWidget(Gtk.Bin, AlbumWidget):
         self.add(builder.get_object('widget'))
 
         # TODO: Remove this test later
-        if pop_allowed or Gtk.get_minor_version() > 16:
+        if self._pop_allowed:
             self._menu = builder.get_object('menu')
             self._menu.connect('clicked',
                                self._pop_menu)
@@ -498,9 +499,14 @@ class AlbumDetailedWidget(Gtk.Bin, AlbumWidget):
         else:
             Lp().player.context.next = NextContext.NONE
             if not Lp().player.is_party():
-                Lp().player.set_albums(track_id,
-                                       self._album.artist_id,
-                                       self._album.genre_id)
+                if len(self._artist_ids) > 1:
+                    Lp().player.set_albums(track_id,
+                                           self._artist_ids,
+                                           self._album.genre_ids)
+                else:
+                    Lp().player.set_albums(track_id,
+                                           [],
+                                           self._album.genre_ids)
             Lp().player.load(Track(track_id))
             if self._button_state & Gdk.ModifierType.CONTROL_MASK:
                 Lp().player.context.next = NextContext.STOP_TRACK
@@ -521,8 +527,8 @@ class AlbumDetailedWidget(Gtk.Bin, AlbumWidget):
             @param: event as Gdk.Event
         """
         if event.button == 1:
-            Lp().player.play_album(self._album.id)
-        elif self._pop_allowed or Gtk.get_minor_version() > 16:
+            Lp().player.play_album(self._album)
+        elif self._pop_allowed:
             popover = CoversPopover(self._album.artist_id, self._album.id)
             popover.set_relative_to(widget)
             popover.populate()

@@ -64,7 +64,7 @@ class SelectionList(Gtk.ScrolledWindow):
         A list for artists/genres
     """
     __gsignals__ = {
-        'item-selected': (GObject.SignalFlags.RUN_FIRST, None, (int,)),
+        'item-selected': (GObject.SignalFlags.RUN_FIRST, None, ()),
         'populated': (GObject.SignalFlags.RUN_FIRST, None, ()),
     }
 
@@ -78,13 +78,16 @@ class SelectionList(Gtk.ScrolledWindow):
         self._last_motion_event = None
         self._previous_motion_y = 0.0
         self._timeout = None
-        self._to_select_id = Type.NONE
+        self._to_select_id = []
+        self._modifier = False
         self._updating = False       # Sort disabled if False
         self._is_artists = False
         self._popover = SelectionPopover()
         builder = Gtk.Builder()
         builder.add_from_resource('/org/gnome/Lollypop/SelectionList.ui')
         builder.connect_signals(self)
+        self._selection = builder.get_object('selection')
+        self._selection.set_select_function(self._selection_validation)
         self._model = builder.get_object('model')
         self._model.set_sort_column_id(0, Gtk.SortType.ASCENDING)
         self._model.set_sort_func(0, self._sort_items)
@@ -203,44 +206,45 @@ class SelectionList(Gtk.ScrolledWindow):
 
     def will_be_selected(self):
         """
-            Return True if list will select an item on populate
+            Return True if list will select items on populate
             @return selected as bool
         """
-        return self._to_select_id != Type.NONE
+        return self._to_select_ids
 
-    def select_id(self, object_id):
+    def select_ids(self, ids):
         """
             Make treeview select first default item
             @param object id as int
         """
-        self._to_select_id = Type.NONE
+        self._to_select_ids = []
         try:
-            selected = None
-            for item in self._model:
-                if item[0] == object_id:
-                    selected = item.iter
+            iters = []
+            for i in list(ids):
+                for item in self._model:
+                    if item[0] == i:
+                        iters.append(item.iter)
+                        ids.remove(i)
             # Select later
-            if selected is None:
-                self._to_select_id = object_id
+            if ids:
+                self._to_select_ids = ids
             else:
-                path = self._model.get_path(selected)
-                self._view.set_cursor(path, None, False)
+                for i in iters:
+                    self._selection.select_iter(i)
         except:
             self._last_motion_event = None
-            self._to_select_id = object_id
+            self._to_select_ids = ids
 
-    def get_selected_id(self):
+    def get_selected_ids(self):
         """
-            Get id at current position
-            @return id as int
+            Get selected ids
+            @return array of ids as [int]
         """
-        selected_id = Type.NONE
-        (path, column) = self._view.get_cursor()
-        if path is not None:
-            iterator = self._model.get_iter(path)
-            if iterator is not None:
-                selected_id = self._model.get_value(iterator, 0)
-        return selected_id
+        selected_ids = []
+        (model, items) = self._selection.get_selected_rows()
+        if model is not None:
+            for item in items:
+                selected_ids.append(model[item][0])
+        return selected_ids
 
     def clear(self):
         """
@@ -259,11 +263,12 @@ class SelectionList(Gtk.ScrolledWindow):
             @param value as [int, str]
             @thread safe
         """
-        self._model.append([value[0],
-                            value[1],
-                            self._get_icon_name(value[0])])
-        if value[0] == self._to_select_id:
-            self.select_id(self._to_select_id)
+        i = self._model.append([value[0],
+                                value[1],
+                                self._get_icon_name(value[0])])
+        if value[0] in self._to_select_ids:
+            self._to_select_ids.remove(value[0])
+            self._selection.select_iter(i)
 
     def _add_values(self, values):
         """
@@ -346,21 +351,59 @@ class SelectionList(Gtk.ScrolledWindow):
         """
         return model.get_value(iterator, 0) == Type.SEPARATOR
 
-    def _on_cursor_changed(self, view):
+    def _selection_validation(self, selection, model, path, current):
         """
-            Forward "cursor-changed" as "item-selected" with item id as arg
-            @param view as Gtk.TreeView
+            Keep track of last inserted item
+            @param selection as Gtk.TreeSelection
+            @param model as Gtk.TreeModel
+            @param path as Gtk.TreePath
+            @param current as bool
+            @return bool
         """
-        selected_id = self.get_selected_id()
-        if not self._updating and selected_id != Type.NONE:
-            self._to_select_id = Type.NONE
-            self.emit('item-selected', selected_id)
+        ids = self.get_selected_ids()
+        if not ids:
+            return True
+        elif self._modifier:
+            iterator = self._model.get_iter(path)
+            value = self._model.get_value(iterator, 0)
+            if value < 0 and len(ids) > 1:
+                return False
+            else:
+                static = False
+                for i in ids:
+                    if i < 0:
+                        static = True
+                if static:
+                    return False
+                elif value > 0:
+                    return True
+                else:
+                    return False
+        else:
+            return True
+
+    def _on_button_press_event(self, view, event):
+        state = event.get_state()
+        if state & Gdk.ModifierType.CONTROL_MASK or\
+           state & Gdk.ModifierType.SHIFT_MASK:
+            self._modifier = True
+
+    def _on_button_release_event(self, view, event):
+        self._modifier = False
+
+    def _on_selection_changed(self, selection):
+        """
+            Forward as "item-selected"
+            @param view as Gtk.TreeSelection
+        """
+        if not self._updating and not self._to_select_ids:
+            self.emit('item-selected')
 
     def _on_focus_in_event(self, widget, event):
         """
             Disable shortcuts
             @param widget as Gtk.widget
-            @param event as GdK.Event
+            @param event as Gdk.Event
         """
         Lp().window.enable_global_shorcuts(False)
 

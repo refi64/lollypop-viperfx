@@ -107,9 +107,9 @@ class Disc:
 
             @return list of int
         """
-        return self.db.get_disc_tracks_ids(self.album.id,
-                                           self.album.genre_id,
-                                           self.number)
+        return self.db.get_disc_tracks(self.album.id,
+                                       self.album.genre_ids,
+                                       self.number)
 
     @property
     def tracks(self):
@@ -125,28 +125,28 @@ class Album(Base):
     """
         Represent an album
     """
-    FIELDS = ['name', 'artist_name', 'artist_id', 'year', 'path']
-    DEFAULTS = ['', '', None, '', '']
+    FIELDS = ['name', 'artist_name', 'artist_id', 'year', 'path', 'duration']
+    DEFAULTS = ['', '', None, '', '', 0]
 
-    def __init__(self, album_id=None, genre_id=None):
+    def __init__(self, album_id=None, genre_ids=None):
         """
             Init album
             @param album_id as int
-            @param genre_id as int
+            @param genre_ids as [int]
         """
         Base.__init__(self, Lp().albums)
         self.id = album_id
-        self.genre_id = genre_id
+        self.genre_ids = genre_ids
 
-    def set_genre(self, genre_id):
+    def set_genre(self, genre_ids):
         """
             Change current genre to lookup
             tracks
 
-            @param genre_id as int
+            @param genre_ids as [int]
             @return None
         """
-        self.genre_id = genre_id
+        self.genre_ids = genre_ids
         self._tracks_ids = None
         self._tracks = None
 
@@ -166,7 +166,7 @@ class Album(Base):
         """
         if getattr(self, "_tracks_ids") is None:
             self._tracks_ids = self.db.get_tracks(self.id,
-                                                  self.genre_id)
+                                                  self.genre_ids)
         return self._tracks_ids
 
     @property
@@ -186,7 +186,7 @@ class Album(Base):
             @return list of int
         """
         if not self._discs:
-            self._discs = self.db.get_discs(self.id, self.genre_id)
+            self._discs = self.db.get_discs(self.id, self.genre_ids)
         return [Disc(self, number) for number in self._discs]
 
 

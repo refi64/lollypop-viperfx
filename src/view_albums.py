@@ -145,7 +145,7 @@ class AlbumsView(View):
         size_group = Gtk.SizeGroup(mode=Gtk.SizeGroupMode.HORIZONTAL)
         self._context_widget = AlbumContextWidget(album_id,
                                                   self._genre_id,
-                                                  True,
+                                                  False,
                                                   size_group)
         self._context_widget.populate()
         self._context_widget.show()

@@ -272,7 +272,7 @@ class TrackRow(Row):
         button.get_image().set_opacity(0.2)
         self._grid.add(button)
         # TODO: Remove this test later
-        if show_menu or Gtk.get_minor_version() > 16:
+        if show_menu:
             button.show()
             self._show_menu = True
             self._row_widget.connect('button-press-event',

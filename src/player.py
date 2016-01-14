@@ -17,7 +17,7 @@ from lollypop.player_shuffle import ShufflePlayer
 from lollypop.player_radio import RadioPlayer
 from lollypop.player_externals import ExternalsPlayer
 from lollypop.player_userplaylist import UserPlaylistPlayer
-from lollypop.objects import Track, Album
+from lollypop.objects import Track
 from lollypop.define import Lp, Type
 from lollypop.define import Shuffle
 
@@ -68,35 +68,19 @@ class Player(BinPlayer, QueuePlayer, UserPlaylistPlayer, RadioPlayer,
         else:
             BinPlayer.load(self, track, notify)
 
-    def play_album(self, album_id, genre_id=None):
+    def play_album(self, album):
         """
             Play album
-            @param album id as int
-            @param genre id as int
+            @param album as Album
         """
         # Empty user playlist
         self._user_playlist = []
-        # Get first track from album
-        album = Album(album_id, genre_id)
         Lp().player.load(album.tracks[0])
         if not Lp().player.is_party():
-            if genre_id is not None:
-                self.set_albums(self.current_track.id,
-                                self.current_track.album_artist_id,
-                                genre_id)
-            else:
-                self.set_album(album)
+            self._albums = [album.id]
+            self.context.genre_ids = []
 
-    def set_album(self, album):
-        """
-            Set album as current album list (for next/prev)
-            Set track as current track in album
-            @param album as Album
-        """
-        self._albums = [album.id]
-        self.context.genre_id = None
-
-    def set_albums(self, track_id, artist_id, genre_id):
+    def set_albums(self, track_id, artist_ids, genre_ids):
         """
             Set album list (for next/prev)
             @param track id as int
@@ -107,45 +91,48 @@ class Player(BinPlayer, QueuePlayer, UserPlaylistPlayer, RadioPlayer,
         if track_id is None:
             return
         album = Track(track_id).album
-        self._albums = None
+        self._albums = []
         ShufflePlayer.reset_history(self)
 
         # We are not playing a user playlist anymore
         self._user_playlist = []
         self._user_playlist_id = None
         # We are in all artists
-        if genre_id == Type.ALL or artist_id == Type.ALL:
-            self._albums = Lp().albums.get_compilations(Type.ALL)
+        if (genre_ids and genre_ids[0] == Type.ALL) or\
+           (artist_ids and artist_ids[0] == Type.ALL):
+            self._albums = Lp().albums.get_compilations()
             self._albums += Lp().albums.get_ids()
         # We are in populars view, add popular albums
-        elif genre_id == Type.POPULARS:
+        elif genre_ids and genre_ids[0] == Type.POPULARS:
             if self._shuffle in [Shuffle.TRACKS_ARTIST, Shuffle.ALBUMS_ARTIST]:
                 self._albums = []
                 for album_id in Lp().albums.get_populars():
-                    if Lp().albums.get_artist_id(album_id) == artist_id:
+                    if Lp().albums.get_artist_id(album_id) in artist_ids:
                         self._albums.append(album_id)
             else:
                 self._albums = Lp().albums.get_populars()
         # We are in recents view, add recent albums
-        elif genre_id == Type.RECENTS:
+        elif genre_ids and genre_ids[0] == Type.RECENTS:
             self._albums = Lp().albums.get_recents()
         # We are in randoms view, add random albums
-        elif genre_id == Type.RANDOMS:
+        elif genre_ids and genre_ids[0] == Type.RANDOMS:
             self._albums = Lp().albums.get_cached_randoms()
         # We are in compilation view without genre
-        elif genre_id == Type.COMPILATIONS:
-            self._albums = Lp().albums.get_compilations(None)
+        elif genre_ids and genre_ids[0] == Type.COMPILATIONS:
+            self._albums = Lp().albums.get_compilations()
         # Random tracks/albums for artist
         elif self._shuffle in [Shuffle.TRACKS_ARTIST, Shuffle.ALBUMS_ARTIST]:
-            self._albums = Lp().albums.get_ids(artist_id, genre_id)
+            self._albums = Lp().albums.get_ids([album.artist_id], genre_ids)
         # Add all albums for genre
         else:
-            self._albums = Lp().albums.get_compilations(genre_id)
-            self._albums += Lp().albums.get_ids(None, genre_id)
+            if not artist_ids:
+                self._albums = Lp().albums.get_compilations(genre_ids)
+            self._albums += Lp().albums.get_ids(artist_ids, genre_ids)
 
-        album.set_genre(genre_id)
+        album.set_genre(genre_ids)
         if track_id in album.tracks_ids:
-            self.context.genre_id = genre_id
+            self.context.artist_ids = artist_ids
+            self.context.genre_ids = genre_ids
             # Shuffle album list if needed
             self._shuffle_albums()
         else:  # Error
@@ -178,7 +165,7 @@ class Player(BinPlayer, QueuePlayer, UserPlaylistPlayer, RadioPlayer,
             path = Lp().tracks.get_path(track_id)
             if path != "":
                 self._load_track(Track(track_id))
-                self.set_albums(track_id, Type.ALL, Type.ALL)
+                self.set_albums(track_id, [Type.ALL], [Type.ALL])
                 self.set_next()
                 self.set_prev()
                 self.emit('current-changed')

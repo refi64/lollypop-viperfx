@@ -93,9 +93,9 @@ class Container:
         self._setup_view()
         self._setup_scanner()
 
-        (list_one_id, list_two_id) = self._get_saved_view_state()
-        self._list_one.select_id(list_one_id)
-        self._list_two.select_id(list_two_id)
+        (list_one_ids, list_two_ids) = self._get_saved_view_state()
+        self._list_one.select_ids(list_one_ids)
+        self._list_two.select_ids(list_two_ids)
 
         # Volume manager
         self._vm = Gio.VolumeMonitor.get()
@@ -140,12 +140,14 @@ class Container:
         """
             Save view state
         """
-        Lp().settings.set_value("list-one",
-                                GLib.Variant('i',
-                                             self._list_one.get_selected_id()))
-        Lp().settings.set_value("list-two",
-                                GLib.Variant('i',
-                                             self._list_two.get_selected_id()))
+        Lp().settings.set_value(
+                            "list-one-ids",
+                            GLib.Variant('ai',
+                                         self._list_one.get_selected_ids()))
+        Lp().settings.set_value(
+                            "list-two-ids",
+                            GLib.Variant('ai',
+                                         self._list_two.get_selected_ids()))
 
     def show_playlist_manager(self, object_id, genre_id, is_album):
         """
@@ -222,11 +224,11 @@ class Container:
             Reload current view
         """
         if self._list_two.is_visible():
-            value = self._list_two.get_selected_id()
-            self._list_two.select_id(value)
+            values = self._list_two.get_selected_ids()
+            self._list_two.select_ids(values)
         else:
-            value = self._list_one.get_selected_id()
-            self._list_one.select_id(value)
+            values = self._list_one.get_selected_ids()
+            self._list_one.select_ids(values)
 
     def pulse(self, pulse):
         """
@@ -307,17 +309,20 @@ class Container:
             Get save view state
             @return (list one id, list two id)
         """
-        list_one_id = Type.POPULARS
-        list_two_id = Type.NONE
+        list_one_ids = [Type.POPULARS]
+        list_two_ids = [Type.NONE]
         if Lp().settings.get_value('save-state'):
-            position = Lp().settings.get_value('list-one').get_int32()
-            if position != -1:
-                list_one_id = position
-            position = Lp().settings.get_value('list-two').get_int32()
-            if position != -1:
-                list_two_id = position
-
-        return (list_one_id, list_two_id)
+            list_one_ids = []
+            list_two_ids = []
+            ids = Lp().settings.get_value('list-one-ids')
+            for i in ids:
+                if isinstance(i, int):
+                    list_one_ids.append(i)
+            ids = Lp().settings.get_value('list-two-ids')
+            for i in ids:
+                if isinstance(i, int):
+                    list_two_ids.append(i)
+        return (list_one_ids, list_two_ids)
 
     def _add_genre(self, scanner, genre_id):
         """
@@ -385,7 +390,7 @@ class Container:
         if self._show_genres:
             self._setup_list_genres(self._list_one, update)
         else:
-            self._setup_list_artists(self._list_one, Type.ALL, update)
+            self._setup_list_artists(self._list_one, [Type.ALL], update)
 
     def _update_list_two(self, updater):
         """
@@ -393,11 +398,11 @@ class Container:
             @param updater as GObject
         """
         update = updater is not None
-        object_id = self._list_one.get_selected_id()
-        if object_id == Type.PLAYLISTS:
+        ids = self._list_one.get_selected_ids()
+        if ids and ids[0] == Type.PLAYLISTS:
             self._setup_list_playlists(update)
-        elif self._show_genres and object_id != Type.NONE:
-            self._setup_list_artists(self._list_two, object_id, update)
+        elif self._show_genres and ids:
+            self._setup_list_artists(self._list_two, ids, update)
 
     def _get_headers(self):
         """
@@ -439,16 +444,17 @@ class Container:
         loader = Loader(target=load, view=selection_list, on_finished=setup)
         loader.start()
 
-    def _setup_list_artists(self, selection_list, genre_id, update):
+    def _setup_list_artists(self, selection_list, genre_ids, update):
         """
             Setup list for artists
             @param list as SelectionList
+            @param genre ids as [int]
             @param update as bool, if True, just update entries
             @thread safe
         """
         def load():
-            artists = Lp().artists.get(genre_id)
-            compilations = Lp().albums.get_compilations(genre_id)
+            artists = Lp().artists.get(genre_ids)
+            compilations = Lp().albums.get_compilations(genre_ids)
             return (artists, compilations)
 
         def setup(artists, compilations):
@@ -515,22 +521,22 @@ class Container:
         self._stack.set_visible_child(child)
         self._stack.clean_old_views(child)
 
-    def _update_view_artists(self, artist_id, genre_id):
+    def _update_view_artists(self, artist_ids, genre_ids):
         """
             Update current view with artists view
             @param artist id as int
             @param genre id as int
         """
         def load():
-            if artist_id == Type.COMPILATIONS:
-                albums = Lp().albums.get_compilations(genre_id)
-            elif genre_id == Type.ALL:
-                albums = Lp().albums.get_ids(artist_id, None)
+            if artist_ids and artist_ids[0] == Type.COMPILATIONS:
+                albums = Lp().albums.get_compilations(genre_ids)
+            elif genre_ids and genre_ids[0] == Type.ALL:
+                albums = Lp().albums.get_ids(artist_ids, [])
             else:
-                albums = Lp().albums.get_ids(artist_id, genre_id)
+                albums = Lp().albums.get_ids(artist_ids, genre_ids)
             return albums
 
-        view = ArtistView(artist_id, genre_id)
+        view = ArtistView(artist_ids, genre_ids)
         loader = Loader(target=load, view=view)
         loader.start()
         view.show()
@@ -538,36 +544,36 @@ class Container:
         self._stack.set_visible_child(view)
         self._stack.clean_old_views(view)
 
-    def _update_view_albums(self, genre_id, is_compilation=False):
+    def _update_view_albums(self, genre_ids, is_compilation=False):
         """
             Update current view with albums view
-            @param genre id as int
+            @param genre ids as [int]
             @param is compilation as bool
         """
         def load():
             albums = []
-            if genre_id == Type.ALL:
+            if genre_ids and genre_ids[0] == Type.ALL:
                 if is_compilation:
-                    albums = Lp().albums.get_compilations(None)
+                    albums = Lp().albums.get_compilations()
                 else:
                     if Lp().settings.get_value('show-compilations'):
-                        albums = Lp().albums.get_compilations(None)
-                    albums += Lp().albums.get_ids(None, None)
-            elif genre_id == Type.POPULARS:
+                        albums = Lp().albums.get_compilations()
+                    albums += Lp().albums.get_ids()
+            elif genre_ids and genre_ids[0] == Type.POPULARS:
                 albums = Lp().albums.get_populars()
-            elif genre_id == Type.RECENTS:
+            elif genre_ids and genre_ids[0] == Type.RECENTS:
                 albums = Lp().albums.get_recents()
-            elif genre_id == Type.RANDOMS:
+            elif genre_ids and genre_ids[0] == Type.RANDOMS:
                 albums = Lp().albums.get_randoms()
             elif is_compilation:
-                albums = Lp().albums.get_compilations(genre_id)
+                albums = Lp().albums.get_compilations(genre_ids)
             else:
                 if Lp().settings.get_value('show-compilations'):
-                    albums = Lp().albums.get_compilations(genre_id)
-                albums += Lp().albums.get_ids(None, genre_id)
+                    albums = Lp().albums.get_compilations(genre_ids)
+                albums += Lp().albums.get_ids([], genre_ids)
             return albums
 
-        view = AlbumsView(genre_id, is_compilation)
+        view = AlbumsView(genre_ids, is_compilation)
         loader = Loader(target=load, view=view)
         loader.start()
         view.show()
@@ -668,44 +674,44 @@ class Container:
                 del self._devices[dev.id]
             break
 
-    def _on_list_one_selected(self, selection_list, selected_id):
+    def _on_list_one_selected(self, selection_list):
         """
             Update view based on selected object
             @param list as SelectionList
-            @param selected id as int
         """
-        if selected_id == Type.PLAYLISTS:
+        selected_ids = self._list_one.get_selected_ids()
+        if selected_ids[0] == Type.PLAYLISTS:
             self._list_two.clear()
             self._list_two.show()
             if not self._list_two.will_be_selected():
                 self._update_view_playlists(None)
             self._setup_list_playlists(False)
-        elif Type.DEVICES - 999 < selected_id < Type.DEVICES:
+        elif Type.DEVICES - 999 < selected_ids[0] < Type.DEVICES:
             self._list_two.hide()
             if not self._list_two.will_be_selected():
-                self._update_view_device(selected_id)
-        elif selected_id in [Type.POPULARS,
-                             Type.RECENTS,
-                             Type.RANDOMS]:
+                self._update_view_device(selected_ids[0])
+        elif selected_ids[0] in [Type.POPULARS,
+                                 Type.RECENTS,
+                                 Type.RANDOMS]:
             self._list_two.hide()
-            self._update_view_albums(selected_id)
-        elif selected_id == Type.RADIOS:
+            self._update_view_albums(selected_ids)
+        elif selected_ids[0] == Type.RADIOS:
             self._list_two.hide()
             self._update_view_radios()
         elif selection_list.is_marked_as_artists():
             self._list_two.hide()
-            if selected_id == Type.ALL:
-                self._update_view_albums(selected_id)
-            elif selected_id == Type.COMPILATIONS:
-                self._update_view_albums(None, True)
+            if selected_ids[0] == Type.ALL:
+                self._update_view_albums(selected_ids)
+            elif selected_ids[0] == Type.COMPILATIONS:
+                self._update_view_albums([], True)
             else:
-                self._update_view_artists(selected_id, None)
+                self._update_view_artists(selected_ids, [])
         else:
             self._list_two.clear()
-            self._setup_list_artists(self._list_two, selected_id, False)
+            self._setup_list_artists(self._list_two, selected_ids, False)
             self._list_two.show()
             if not self._list_two.will_be_selected():
-                self._update_view_albums(selected_id, False)
+                self._update_view_albums(selected_ids, False)
 
     def _on_list_populated(self, selection_list):
         """
@@ -715,19 +721,19 @@ class Container:
         for dev in self._devices.values():
             self._list_one.add_value((dev.id, dev.name))
 
-    def _on_list_two_selected(self, selection_list, selected_id):
+    def _on_list_two_selected(self, selection_list):
         """
             Update view based on selected object
             @param list as SelectionList
-            @param selected id as int
         """
-        genre_id = self._list_one.get_selected_id()
-        if genre_id == Type.PLAYLISTS:
-            self._update_view_playlists(selected_id)
-        elif selected_id == Type.COMPILATIONS:
-            self._update_view_albums(genre_id, True)
+        genre_ids = self._list_one.get_selected_ids()
+        selected_ids = self._list_two.get_selected_ids()
+        if genre_ids[0] == Type.PLAYLISTS:
+            self._update_view_playlists(selected_ids[0])
+        elif selected_ids[0] == Type.COMPILATIONS:
+            self._update_view_albums(genre_ids, True)
         else:
-            self._update_view_artists(selected_id, genre_id)
+            self._update_view_artists(selected_ids, genre_ids)
 
     def _on_mount_added(self, vm, mnt):
         """

@@ -25,15 +25,15 @@ class ArtistAlbumsView(View):
         Show artist albums and tracks
     """
 
-    def __init__(self, artist_id, genre_id):
+    def __init__(self, artist_ids, genre_ids):
         """
             Init ArtistAlbumsView
-            @param artist id as int (Current if None)
-            @param genre id as int
+            @param artist ids as [int]
+            @param genre ids as [int]
         """
         View.__init__(self)
-        self._artist_id = artist_id
-        self._genre_id = genre_id
+        self._artist_ids = artist_ids
+        self._genre_ids = genre_ids
 
         self._albumbox = Gtk.Grid()
         self._albumbox.set_row_spacing(20)
@@ -70,8 +70,9 @@ class ArtistAlbumsView(View):
         """
         size_group = Gtk.SizeGroup(mode=Gtk.SizeGroupMode.HORIZONTAL)
         widget = AlbumDetailedWidget(albums.pop(0),
-                                     self._genre_id,
-                                     self._artist_id is not None,
+                                     self._genre_ids,
+                                     self._artist_ids,
+                                     False,
                                      size_group)
         widget.connect('finished', self._on_album_finished, albums)
         widget.show()
