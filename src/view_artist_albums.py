@@ -135,7 +135,7 @@ class CurrentArtistAlbumsView(ViewContainer):
             Populate view and make it visible
             @param albums as [albums ids as int]
         """
-        view = ArtistAlbumsView(None, None)
+        view = ArtistAlbumsView([], [])
         view.show()
         view.populate(albums)
         self.add(view)
