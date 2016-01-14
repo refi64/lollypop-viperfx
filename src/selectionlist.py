@@ -278,6 +278,7 @@ class SelectionList(Gtk.ScrolledWindow):
         """
         for value in values:
             self._add_value(value)
+        self._to_select_ids = []
 
     def _get_icon_name(self, object_id):
         """
