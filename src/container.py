@@ -367,7 +367,8 @@ class Container:
             @param playlists as Playlists
             @param playlist_id as int
         """
-        if self._list_one.get_selected_id() == Type.PLAYLISTS:
+        ids = self._list_one.get_selected_ids()
+        if ids and ids[0] == Type.PLAYLISTS:
             if Lp().playlists.exists(playlist_id):
                 self._list_two.update_value(playlist_id,
                                             Lp().playlists.get_name(
