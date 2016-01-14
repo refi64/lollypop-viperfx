@@ -19,6 +19,8 @@
     <property name="headers_visible">False</property>
     <property name="headers_clickable">False</property>
     <property name="search_column">1</property>
+    <signal name="button-press-event" handler="_on_button_press_event" swapped="no"/>
+    <signal name="button-release-event" handler="_on_button_release_event" swapped="no"/>
     <signal name="focus-in-event" handler="_on_focus_in_event" swapped="no"/>
     <signal name="focus-out-event" handler="_on_focus_out_event" swapped="no"/>
     <signal name="leave-notify-event" handler="_on_leave_event" swapped="no"/>

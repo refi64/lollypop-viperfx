@@ -79,6 +79,7 @@ class SelectionList(Gtk.ScrolledWindow):
         self._previous_motion_y = 0.0
         self._timeout = None
         self._to_select_id = Type.NONE
+        self._modifier = False
         self._updating = False       # Sort disabled if False
         self._is_artists = False
         self._popover = SelectionPopover()
@@ -86,6 +87,7 @@ class SelectionList(Gtk.ScrolledWindow):
         builder.add_from_resource('/org/gnome/Lollypop/SelectionList.ui')
         builder.connect_signals(self)
         self._selection = builder.get_object('selection')
+        self._selection.set_select_function(self._selection_validation)
         self._model = builder.get_object('model')
         self._model.set_sort_column_id(0, Gtk.SortType.ASCENDING)
         self._model.set_sort_func(0, self._sort_items)
@@ -348,9 +350,47 @@ class SelectionList(Gtk.ScrolledWindow):
         """
         return model.get_value(iterator, 0) == Type.SEPARATOR
 
+    def _selection_validation(self, selection, model, path, current):
+        """
+            Keep track of last inserted item
+            @param selection as Gtk.TreeSelection
+            @param model as Gtk.TreeModel
+            @param path as Gtk.TreePath
+            @param current as bool
+            @return bool
+        """
+        if self._modifier:
+            ids = self.get_selected_ids()
+            iterator = self._model.get_iter(path)
+            value = self._model.get_value(iterator, 0)
+            if value < 0 and len(ids) > 1:
+                return False
+            else:
+                static = False
+                for i in ids:
+                    if i < 0:
+                        static = True
+                if static:
+                    return False
+                elif value > 0:
+                    return True
+                else:
+                    return False
+        else:
+            return True
+
+    def _on_button_press_event(self, view, event):
+        state = event.get_state()
+        if state & Gdk.ModifierType.CONTROL_MASK or\
+           state & Gdk.ModifierType.SHIFT_MASK:
+            self._modifier = True
+
+    def _on_button_release_event(self, view, event):
+        self._modifier = False
+
     def _on_selection_changed(self, selection):
         """
-            Forward as "item-selected" with items ids as arg
+            Forward as "item-selected"
             @param view as Gtk.TreeSelection
         """
         if not self._updating:
