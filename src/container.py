@@ -94,8 +94,10 @@ class Container:
         self._setup_scanner()
 
         (list_one_ids, list_two_ids) = self._get_saved_view_state()
-        self._list_one.select_ids(list_one_ids)
-        self._list_two.select_ids(list_two_ids)
+        if list_one_ids and list_one_ids[0] != Type.NONE:
+            self._list_one.select_ids(list_one_ids)
+        if list_two_ids and list_two_ids[0] != Type.NONE:
+            self._list_two.select_ids(list_two_ids)
 
         # Volume manager
         self._vm = Gio.VolumeMonitor.get()

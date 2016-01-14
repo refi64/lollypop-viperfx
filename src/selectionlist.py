@@ -78,7 +78,7 @@ class SelectionList(Gtk.ScrolledWindow):
         self._last_motion_event = None
         self._previous_motion_y = 0.0
         self._timeout = None
-        self._to_select_id = []
+        self._to_select_ids = []
         self._modifier = False
         self._updating = False       # Sort disabled if False
         self._is_artists = False
