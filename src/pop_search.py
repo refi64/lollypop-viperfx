@@ -340,6 +340,7 @@ class SearchPopover(Gtk.Popover):
             playlist_id = Lp().playlists.get_id(self._current_search)
             if playlist_id == Type.NONE:
                 Lp().playlists.add(self._current_search)
+                playlist_id = Lp().playlists.get_id(self._current_search)
             Lp().playlists.add_tracks(playlist_id, tracks)
 
     def _on_map(self, widget):

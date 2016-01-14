@@ -140,6 +140,9 @@ class Playlists(GObject.GObject):
             sql.execute("DELETE FROM playlists\
                         WHERE name=?",
                         (name,))
+            sql.execute("DELETE FROM tracks\
+                        WHERE playlist_id=?",
+                        (playlist_id,))
             sql.commit()
             GLib.idle_add(self.emit, 'playlists-changed', playlist_id)
 
