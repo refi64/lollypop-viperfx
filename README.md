@@ -49,3 +49,31 @@ $ ./autogen.sh
 $ make
 # make install
 ```
+
+In case you want the integration with [Last.fm](http://last.fm) to work you need to install `pylast`
+```
+# apt-get install python3-pip
+# pip3 install pylast
+```
+
+### On Debian (Jessie)
+```
+$ git clone https://github.com/gnumdk/lollypop.git
+$ cd lollypop
+# apt-get install autoconf
+# apt-get install libglib2.0-dev
+# apt-get install intltool
+# apt-get install yelp-tools 
+# apt-get install libgirepository1.0-dev
+# apt-get install libgtk-3-dev
+$ ./autogen.sh
+$ make
+# make install
+```
+
+Instead of `make install` you might want to use `checkinstall`
+```
+# apt-get checkinstall
+# checkinstall
+```
+This will allow you to uninstall Lollypop as a package, for example with `apt-get uninstall lollypop`.
