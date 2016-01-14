@@ -167,6 +167,7 @@ class AlbumSimpleWidget(Gtk.Frame, AlbumWidget):
         self.get_style_context().add_class('loading')
         self._album_id = album_id
         self._album = None
+        self._eventbox = None
         self._width = width
         if width != 0 and height != 0:
             self.set_size_request(width, height)
