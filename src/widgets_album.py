@@ -212,7 +212,7 @@ class AlbumSimpleWidget(Gtk.Frame, AlbumWidget):
         self.add(self._widget)
         self.set_cover()
         self.update_state()
-        self.set_property('halign', Gtk.Align.CENTER)
+        self._widget.set_property('halign', Gtk.Align.CENTER)
         self._widget.set_property('valign', Gtk.Align.CENTER)
         self.show_all()
 
