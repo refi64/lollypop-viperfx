@@ -34,7 +34,7 @@ class CoversPopover(Gtk.Popover):
         Gtk.Popover.__init__(self)
         self.connect('unmap', self._on_self_unmap)
         self._album = Album(album_id)
-        self._orig_pixbufs = {}
+        self._monster_pixbufs = {}
 
         self._stack = Gtk.Stack()
         self._stack.show()
@@ -71,10 +71,13 @@ class CoversPopover(Gtk.Popover):
         # First load local files
         urls = Lp().art.get_album_artworks(self._album)
         for url in urls:
-            pixbuf = GdkPixbuf.Pixbuf.new_from_file_at_size(url,
-                                                            ArtSize.MONSTER,
-                                                            ArtSize.MONSTER)
-            self._add_pixbuf(pixbuf)
+            monster = GdkPixbuf.Pixbuf.new_from_file_at_size(url,
+                                                             ArtSize.MONSTER,
+                                                             ArtSize.MONSTER)
+            big = GdkPixbuf.Pixbuf.new_from_file_at_size(url,
+                                                         ArtSize.BIG,
+                                                         ArtSize.BIG)
+            self._add_pixbuf(monster, big)
         if len(urls) > 0:
             self._stack.set_visible_child_name('main')
         # Then duckduckgo
@@ -109,16 +112,13 @@ class CoversPopover(Gtk.Popover):
         """
         if urls:
             url = urls.pop(0)
-            stream = None
             try:
                 f = Gio.File.new_for_uri(url)
                 (status, data, tag) = f.load_contents()
                 if status:
-                    stream = Gio.MemoryInputStream.new_from_data(data, None)
+                    GLib.idle_add(self._add_data, data)
             except Exception as e:
                 print("CoversPopover::_add_pixbufs: %s" % e)
-            if stream is not None:
-                GLib.idle_add(self._add_stream, stream)
             if self._thread:
                 self._add_pixbufs(urls)
 
@@ -130,39 +130,47 @@ class CoversPopover(Gtk.Popover):
             self._label.set_text(_("No cover found..."))
             self._stack.set_visible_child_name('notfound')
 
-    def _add_stream(self, stream):
+    def _add_data(self, data):
         """
-            Add stream to the view
+            Add data to the view
             @param stream as Gio.MemoryInputStream
         """
+        monster = big = None
         try:
-            pixbuf = GdkPixbuf.Pixbuf.new_from_stream_at_scale(
-                stream, ArtSize.MONSTER,
-                ArtSize.MONSTER,
-                False,
-                None)
-            self._add_pixbuf(pixbuf)
-            self._label.set_text(_("Select a cover art for this album"))
-            self._stack.set_visible_child_name('main')
+            stream = Gio.MemoryInputStream.new_from_data(data, None)
+            if stream is not None:
+                monster = GdkPixbuf.Pixbuf.new_from_stream_at_scale(
+                    stream, ArtSize.MONSTER,
+                    ArtSize.MONSTER,
+                    True,
+                    None)
+            stream = Gio.MemoryInputStream.new_from_data(data, None)
+            if stream is not None:
+                big = GdkPixbuf.Pixbuf.new_from_stream_at_scale(
+                    stream, ArtSize.BIG,
+                    ArtSize.BIG,
+                    True,
+                    None)
+            if monster is not None and big is not None:
+                self._add_pixbuf(monster, big)
+                self._label.set_text(_("Select a cover art for this album"))
+                self._stack.set_visible_child_name('main')
         except Exception as e:
-            print("CoversPopover::_add_stream: %s" % e)
+            print("CoversPopover::_add_data: %s" % e)
 
-    def _add_pixbuf(self, pixbuf):
+    def _add_pixbuf(self, monster, big):
         """
             Add pixbuf to the view
-            @param pixbuf as Gdk.Pixbuf
+            @param monster as Gdk.Pixbuf
+            @param big as Gdk.Pixbuf
         """
         image = Gtk.Image()
-        self._orig_pixbufs[image] = pixbuf
-        scaled_pixbuf = pixbuf.scale_simple(
-            ArtSize.BIG*self.get_scale_factor(),
-            ArtSize.BIG*self.get_scale_factor(),
-            2)
-        del pixbuf
-        surface = Gdk.cairo_surface_create_from_pixbuf(scaled_pixbuf,
+        self._monster_pixbufs[image] = monster
+        surface = Gdk.cairo_surface_create_from_pixbuf(big,
                                                        0,
                                                        None)
-        del scaled_pixbuf
+        del monster
+        del big
         image.set_from_surface(surface)
         del surface
         image.show()
@@ -181,7 +189,7 @@ class CoversPopover(Gtk.Popover):
             Use pixbuf as cover
             Reset cache and use player object to announce cover change
         """
-        pixbuf = self._orig_pixbufs[child.get_child()]
+        pixbuf = self._monster_pixbufs[child.get_child()]
         Lp().art.save_album_artwork(pixbuf, self._album.id)
         Lp().art.clean_album_cache(self._album)
         Lp().art.album_artwork_update(self._album.id)

@@ -40,6 +40,24 @@ class BaseArt(GObject.GObject):
 #######################
 # PRIVATE             #
 #######################
+    def _respect_ratio(self, path):
+        """
+            Check for aspect ratio based on size
+            @param path as str
+            @return respect aspect ratio as bool
+        """
+        cover = GdkPixbuf.Pixbuf.new_from_file(path)
+        cover_width = cover.get_width()
+        cover_height = cover.get_height()
+        if cover_width == cover_height:
+            return True
+        elif cover_width < cover_height:
+            cut = cover_height / 5
+            return cover_width < cover_height - cut
+        else:
+            cut = cover_width / 5
+            return cover_height < cover_width - cut
+
     def _create_cache(self):
         """
             Create cache dir

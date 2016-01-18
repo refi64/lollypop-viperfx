@@ -140,10 +140,11 @@ class AlbumArt(BaseArt, ArtDownloader, TagReader):
                     path = self.get_album_artwork_path(album)
                     # Look in album folder
                     if path is not None:
+                        ratio = self._respect_ratio(path)
                         pixbuf = GdkPixbuf.Pixbuf.new_from_file_at_scale(path,
                                                                          size,
                                                                          size,
-                                                                         False)
+                                                                         ratio)
                 # Use tags artwork
                 if pixbuf is None and album.tracks:
                     try:
@@ -157,10 +158,11 @@ class AlbumArt(BaseArt, ArtDownloader, TagReader):
                     path = self.get_first_album_artwork(album)
                     # Look in album folder
                     if path is not None:
+                        ratio = self._respect_ratio(path)
                         pixbuf = GdkPixbuf.Pixbuf.new_from_file_at_scale(path,
                                                                          size,
                                                                          size,
-                                                                         False)
+                                                                         path)
                 # Use default artwork
                 if pixbuf is None:
                     self.download_album_art(album.id)

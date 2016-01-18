@@ -188,6 +188,7 @@ class AlbumSimpleWidget(Gtk.Frame, AlbumWidget):
         grid1 = Gtk.Grid()
         grid1.get_style_context().add_class('white')
         frame = Gtk.Frame()
+        frame.set_property('halign', Gtk.Align.CENTER)
         frame.get_style_context().add_class('cover-frame')
         self._color = Gtk.Frame()
         self._color.get_style_context().add_class('cover-frame-border')
@@ -212,7 +213,7 @@ class AlbumSimpleWidget(Gtk.Frame, AlbumWidget):
         self.set_cover()
         self.update_state()
         self.set_property('halign', Gtk.Align.CENTER)
-        self.set_property('valign', Gtk.Align.START)
+        self._widget.set_property('valign', Gtk.Align.CENTER)
         self.show_all()
 
     def get_id(self):
