@@ -37,7 +37,6 @@ class ToolbarInfos(Gtk.Bin):
 
         self._pop_tunein = None
         self._pop_infos = None
-        self._cover_size = ArtSize.SMALL
 
         self._infobox = builder.get_object('infos')
         self._infobox.set_property('has-tooltip', True)
@@ -72,15 +71,15 @@ class ToolbarInfos(Gtk.Bin):
         if player.current_track.id == Type.RADIOS:
             art = Lp().art.get_radio_artwork(
                                    player.current_track.artist,
-                                   self._cover_size*self.get_scale_factor())
+                                   ArtSize.SMALL*self.get_scale_factor())
         elif player.current_track.id == Type.EXTERNALS:
             art = Lp().art.get_album_artwork2(
                     player.current_track.uri,
-                    self._cover_size*self.get_scale_factor())
+                    ArtSize.SMALL*self.get_scale_factor())
         elif player.current_track.id is not None:
             art = Lp().art.get_album_artwork(
                                    player.current_track.album,
-                                   self._cover_size*self.get_scale_factor())
+                                   ArtSize.SMALL*self.get_scale_factor())
         if art is not None:
             self._cover.set_from_surface(art)
             del art
@@ -108,7 +107,7 @@ class ToolbarInfos(Gtk.Bin):
         if Lp().player.current_track.album.id == album_id:
             surface = Lp().art.get_album_artwork(
                                        Lp().player.current_track.album,
-                                       self._cover_size)
+                                       ArtSize.SMALL)
             self._cover.set_from_surface(surface)
             del surface
 
@@ -118,8 +117,8 @@ class ToolbarInfos(Gtk.Bin):
             @param art as Art
             @param name as str
         """
-        if Lp().player.current_track.artist == name:
-            pixbuf = Lp().art.get_radio_artwork(name, self._cover_size)
+        if Lp().player.current_track.album_artist == name:
+            pixbuf = Lp().art.get_radio_artwork(name, ArtSize.SMALL)
             self._cover.set_from_surface(pixbuf)
             del pixbuf
 
@@ -183,6 +182,6 @@ class ToolbarInfos(Gtk.Bin):
         """
         style = self.get_style_context()
         padding = style.get_padding(style.get_state())
-        self._cover_size = self.get_allocated_height()\
+        ArtSize.SMALL = self.get_allocated_height()\
             - padding.top - padding.bottom - 2
         eventbox.get_window().set_cursor(Gdk.Cursor(Gdk.CursorType.HAND1))
