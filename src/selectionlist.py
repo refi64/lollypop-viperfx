@@ -138,6 +138,12 @@ class SelectionList(Gtk.ScrolledWindow):
         self.emit('populated')
         self._updating = False
 
+    def set_mode(self, mode):
+        """
+            Set selection mode
+        """
+        self._selection.set_mode(mode)
+
     def remove(self, object_id):
         """
             Remove row from model

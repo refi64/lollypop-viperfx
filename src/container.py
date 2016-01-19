@@ -686,6 +686,7 @@ class Container:
         selected_ids = self._list_one.get_selected_ids()
         if selected_ids[0] == Type.PLAYLISTS:
             self._list_two.clear()
+            self._list_two.set_mode(Gtk.SelectionMode.SINGLE)
             self._list_two.show()
             if not self._list_two.will_be_selected():
                 self._update_view_playlists(None)
@@ -712,6 +713,7 @@ class Container:
                 self._update_view_artists(selected_ids, [])
         else:
             self._list_two.clear()
+            self._list_two.set_mode(Gtk.SelectionMode.MULTIPLE)
             self._setup_list_artists(self._list_two, selected_ids, False)
             self._list_two.show()
             if not self._list_two.will_be_selected():
