@@ -39,6 +39,7 @@ class TuneinPopover(Gtk.Popover):
             self._radios_manager = Radios()
         self._current_url = None
         self._previous_urls = []
+        self._covers_to_download = []
 
         self._stack = Gtk.Stack()
         self._stack.set_property('expand', True)
@@ -124,14 +125,19 @@ class TuneinPopover(Gtk.Popover):
             @param items as [TuneItem]
             @thread safe
         """
-        for item in items:
-            GLib.idle_add(self._add_item, item)
+        GLib.idle_add(self._add_item, items)
 
-    def _add_item(self, item):
+    def _add_item(self, items):
         """
             Add item
-            @param item as TuneItem
+            @param items as [TuneItem]
         """
+        if not items:
+            t = Thread(target=self._download_images)
+            t.daemon = True
+            t.start()
+            return
+        item = items.pop(0)
         child = Gtk.Grid()
         child.set_column_spacing(5)
         child.set_property('halign', Gtk.Align.START)
@@ -152,10 +158,11 @@ class TuneinPopover(Gtk.Popover):
             button.show()
             child.add(button)
             image = Gtk.Image.new()
+            image.set_property('width-request', ArtSize.MEDIUM)
+            image.set_property('height-request', ArtSize.MEDIUM)
+            image.show()
             child.add(image)
-            t = Thread(target=self._download_image, args=(item, image))
-            t.daemon = True
-            t.start()
+            self._covers_to_download.append((item, image))
         else:
             link.set_tooltip_text('')
         child.add(link)
@@ -169,23 +176,26 @@ class TuneinPopover(Gtk.Popover):
             if self._current_url is not None:
                 self._back_btn.set_sensitive(True)
             self._home_btn.set_sensitive(True)
+        GLib.idle_add(self._add_items, items)
 
-    def _download_image(self, item, image):
+    def _download_images(self):
         """
             Download and set image for TuneItem
-            @param item as TuneItem
-            @param image as Gtk.Image
             @thread safe
         """
-        try:
-            f = Gio.File.new_for_uri(item.LOGO)
-            (status, data, tag) = f.load_contents()
-            if status:
-                stream = Gio.MemoryInputStream.new_from_data(data, None)
-                if stream is not None:
-                    GLib.idle_add(self._set_image, image, stream)
-        except Exception as e:
-            print("TuneinPopover::_download_image: %s" % e)
+        while self._covers_to_download:
+            (item, image) = self._covers_to_download.pop(0)
+            try:
+                f = Gio.File.new_for_uri(item.LOGO)
+                (status, data, tag) = f.load_contents()
+                if status:
+                    stream = Gio.MemoryInputStream.new_from_data(data, None)
+                    if stream is not None:
+                        # idle_add() doesn't work here, it's launched only
+                        # on user scroll (Gtk bug?)
+                        GLib.timeout_add(0, self._set_image, image, stream)
+            except Exception as e:
+                print("TuneinPopover::_download_images: %s" % e)
 
     def _set_image(self, image, stream):
         """
@@ -203,7 +213,6 @@ class TuneinPopover(Gtk.Popover):
                                                        None)
         del pixbuf
         image.set_from_surface(surface)
-        image.show()
         del surface
 
     def _clear(self):
