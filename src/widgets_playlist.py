@@ -34,6 +34,7 @@ class PlaylistWidget(Gtk.Bin):
             @param playlist name as str
         """
         Gtk.Bin.__init__(self)
+        self._playlist_id = playlist_id
         self._tracks1 = []
         self._tracks2 = []
         self._stop = False
