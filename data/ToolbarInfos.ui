@@ -45,6 +45,7 @@
             <property name="orientation">vertical</property>
             <child>
               <object class="GtkLabel" id="artist">
+                <property name="visible">True</property>
                 <property name="can_focus">False</property>
                 <property name="halign">start</property>
                 <property name="ellipsize">end</property>
@@ -62,6 +63,7 @@
             </child>
             <child>
               <object class="GtkLabel" id="title">
+                <property name="visible">True</property>
                 <property name="can_focus">False</property>
                 <property name="halign">start</property>
                 <property name="ellipsize">end</property>
