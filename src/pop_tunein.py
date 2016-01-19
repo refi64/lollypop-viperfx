@@ -10,7 +10,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-from gi.repository import Gtk, GLib, Gio
+from gi.repository import Gtk, GLib, Gio, GdkPixbuf, Gdk, Pango
 
 from threading import Thread
 from gettext import gettext as _
@@ -133,9 +133,12 @@ class TuneinPopover(Gtk.Popover):
             @param item as TuneItem
         """
         child = Gtk.Grid()
+        child.set_column_spacing(5)
         child.set_property('halign', Gtk.Align.START)
         child.show()
         link = Gtk.LinkButton.new_with_label(item.URL, item.TEXT)
+        # Hack
+        link.get_children()[0].set_ellipsize(Pango.EllipsizeMode.END)
         link.connect('activate-link', self._on_activate_link, item)
         link.show()
         if item.TYPE == "audio":
@@ -144,9 +147,15 @@ class TuneinPopover(Gtk.Popover):
                                                    Gtk.IconSize.MENU)
             button.connect('clicked', self._on_button_clicked, item)
             button.set_relief(Gtk.ReliefStyle.NONE)
+            button.set_property('valign', Gtk.Align.CENTER)
             button.set_tooltip_text(_("Add"))
             button.show()
             child.add(button)
+            image = Gtk.Image.new()
+            child.add(image)
+            t = Thread(target=self._download_image, args=(item, image))
+            t.daemon = True
+            t.start()
         else:
             link.set_tooltip_text('')
         child.add(link)
@@ -160,6 +169,42 @@ class TuneinPopover(Gtk.Popover):
             if self._current_url is not None:
                 self._back_btn.set_sensitive(True)
             self._home_btn.set_sensitive(True)
+
+    def _download_image(self, item, image):
+        """
+            Download and set image for TuneItem
+            @param item as TuneItem
+            @param image as Gtk.Image
+            @thread safe
+        """
+        try:
+            f = Gio.File.new_for_uri(item.LOGO)
+            (status, data, tag) = f.load_contents()
+            if status:
+                stream = Gio.MemoryInputStream.new_from_data(data, None)
+                if stream is not None:
+                    GLib.idle_add(self._set_image, image, stream)
+        except Exception as e:
+            print("TuneinPopover::_download_image: %s" % e)
+
+    def _set_image(self, image, stream):
+        """
+            Set image with stream
+            @param image as Gtk.Image
+            @param stream as Gio.MemoryInputStream
+        """
+        pixbuf = GdkPixbuf.Pixbuf.new_from_stream_at_scale(stream,
+                                                           ArtSize.MEDIUM,
+                                                           ArtSize.MEDIUM,
+                                                           True,
+                                                           None)
+        surface = Gdk.cairo_surface_create_from_pixbuf(pixbuf,
+                                                       0,
+                                                       None)
+        del pixbuf
+        image.set_from_surface(surface)
+        image.show()
+        del surface
 
     def _clear(self):
         """
