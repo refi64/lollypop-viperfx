@@ -84,7 +84,7 @@ class TuneinPopover(Gtk.Popover):
             @param url as string
         """
         if not self._view.get_children() or\
-           self._stack.set_visible_child_name() == "notfound":
+           self._stack.get_visible_child_name() == "notfound":
             self._stack.set_visible_child_name('spinner')
             self._current_url = url
             self._clear()
