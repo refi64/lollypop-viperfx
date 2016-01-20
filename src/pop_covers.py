@@ -57,7 +57,8 @@ class CoversPopover(Gtk.Popover):
 
         builder.get_object('viewport').add(self._view)
 
-        self._stack.add_named(builder.get_object('spinner'), 'spinner')
+        self._spinner = builder.get_object('spinner')
+        self._stack.add_named(self._spinner, 'spinner')
         self._stack.add_named(builder.get_object('notfound'), 'notfound')
         self._stack.add_named(builder.get_object('scrolled'), 'main')
         self._stack.set_visible_child_name('spinner')
@@ -151,7 +152,10 @@ class CoversPopover(Gtk.Popover):
                     ArtSize.BIG,
                     True,
                     None)
-            if monster is not None and big is not None:
+            # Remove spinner if exist
+            if self._stack.get_visible_child_name() == 'spinner' and\
+               monster is not None and big is not None:
+                self._spinner.stop()
                 self._add_pixbuf(monster, big)
                 self._label.set_text(_("Select a cover art for this album"))
                 self._stack.set_visible_child_name('main')
