@@ -38,7 +38,8 @@ class WebView(Gtk.Stack):
         # Use ressource from ArtistContent
         builder.add_from_resource('/org/gnome/Lollypop/ArtistContent.ui')
         self._view = WebKit2.WebView()
-        self.add_named(builder.get_object('spinner'), 'spinner')
+        self._spinner = builder.get_object('spinner')
+        self.add_named(self._spinner, 'spinner')
         self.set_visible_child_name('spinner')
         self.add_named(self._view, 'view')
         self._view.connect('load-changed', self._on_load_changed)
@@ -89,8 +90,10 @@ class WebView(Gtk.Stack):
         """
         if event == WebKit2.LoadEvent.STARTED:
             self.set_visible_child_name('spinner')
+            self._spinner.start()
         elif event == WebKit2.LoadEvent.FINISHED:
             self.set_visible_child_name('view')
+            self._spinner.stop()
 
     def _on_decide_policy(self, view, decision, decision_type):
         """
