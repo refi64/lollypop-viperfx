@@ -71,7 +71,8 @@ class ArtistContent(Gtk.Stack):
         self._image_frame = builder.get_object('frame')
         self.add_named(builder.get_object('widget'), 'widget')
         self.add_named(builder.get_object('notfound'), 'notfound')
-        self.add_named(builder.get_object('spinner'), 'spinner')
+        self._spinner = builder.get_object('spinner')
+        self.add_named(self._spinner, 'spinner')
         if not path.exists(self.CACHE_PATH):
             try:
                 mkdir(self.CACHE_PATH)
@@ -183,6 +184,7 @@ class ArtistContent(Gtk.Stack):
             self.set_visible_child_name('widget')
         else:
             self.set_visible_child_name('notfound')
+        self._spinner.stop()
 
     def _save_to_cache(self, artist, content, data, suffix):
         """
@@ -286,6 +288,7 @@ class WikipediaContent(ArtistContent):
         GLib.idle_add(self._setup_menu_strings, [artist])
         if not self._load_cache_content(artist, 'wikipedia'):
             GLib.idle_add(self.set_visible_child_name, 'spinner')
+            self._spinner.start()
             self._load_page_content(artist, artist)
         self._setup_menu(artist, album)
 
@@ -362,6 +365,7 @@ class WikipediaContent(ArtistContent):
         self.uncache(self._artist)
         ArtistContent.clear(self)
         self.set_visible_child_name('spinner')
+        self._spinner.start()
         t = Thread(target=self._load_page_content, args=(page, self._artist))
         t.daemon = True
         t.start()
@@ -389,6 +393,7 @@ class LastfmContent(ArtistContent):
         self._artist = artist
         if not self._load_cache_content(artist, 'lastfm'):
             GLib.idle_add(self.set_visible_child_name, 'spinner')
+            self._spinner.start()
             self._load_page_content(artist)
 
     def uncache(self, artist):
