@@ -146,8 +146,7 @@ class DeviceView(View):
         self._timeout_id = None
         text = combo.get_active_text()
         uri = "%s%s/Music/%s" % (self._device.uri, text, "lollypop")
-        on_disk_playlists = DeviceView.get_files(uri)
-        self._device_widget.set_playlists(on_disk_playlists, uri)
+        self._device_widget.set_uri(uri)
         self._device_widget.populate()
 
     def _set_combo_text(self, text_list):

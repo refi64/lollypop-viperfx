@@ -10,8 +10,9 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-from gi.repository import GLib, Gio, GObject
+from gi.repository import GLib, Gio, GObject, Gst
 
+import os.path
 from time import sleep
 
 from lollypop.define import Lp
@@ -32,6 +33,7 @@ class MtpSync:
         """
         self._syncing = False
         self._errors = False
+        self._convert = False
         self._errors_count = 0
         self._total = 0  # Total files to sync
         self._done = 0   # Handled files on sync
@@ -95,13 +97,15 @@ class MtpSync:
                                                          track))
         return children
 
-    def _sync(self, playlists):
+    def _sync(self, playlists, convert):
         """
             Sync playlists with device as this
             @param playlists as [str]
+            @param convert as bool
         """
         try:
             self._in_thread = True
+            self._convert = convert
             self._errors = False
             self._errors_count = 0
             self._copied_art_uris = []
@@ -215,6 +219,13 @@ class MtpSync:
                 track_name = GLib.uri_escape_string(GLib.basename(track.path),
                                                     "",
                                                     False)
+                # Check extension, if not mp3, convert
+                ext = os.path.splitext(track.path)[1]
+                if ext != ".mp3" and self._convert:
+                    convertion_needed = True
+                    track_name = track_name.replace(ext, ".mp3")
+                else:
+                    convertion_needed = False
                 src_track = Gio.File.new_for_path(track.path)
                 info = src_track.query_info('time::modified',
                                             Gio.FileQueryInfoFlags.NONE,
@@ -233,9 +244,30 @@ class MtpSync:
                                 (line.encode(encoding='UTF-8'), None))
                 dst_track = Gio.File.new_for_uri(dst_uri)
                 if not dst_track.query_exists(None):
-                    self._retry(src_track.copy,
-                                (dst_track, Gio.FileCopyFlags.OVERWRITE,
-                                 None, None))
+                    if convertion_needed:
+                        mp3_uri = "file:///tmp/%s" % track_name
+                        mp3_file = Gio.File.new_for_uri(mp3_uri)
+                        pipeline = self._convert_to_mp3(src_track, mp3_file)
+                        # Check if encoding is finished
+                        if pipeline is not None:
+                            status = Gst.State.PLAYING
+                            while status == Gst.State.PLAYING:
+                                status = pipeline.get_state(
+                                                           Gst.CLOCK_TIME_NONE)
+                                sleep(1)
+                            self._retry(
+                                    mp3_file.move,
+                                    (dst_track, Gio.FileCopyFlags.OVERWRITE,
+                                     None, None))
+                            # To be sure
+                            try:
+                                mp3_file.delete(None)
+                            except:
+                                pass
+                    else:
+                        self._retry(src_track.copy,
+                                    (dst_track, Gio.FileCopyFlags.OVERWRITE,
+                                     None, None))
                 else:
                     self._done += 1
                 self._done += 1
@@ -275,14 +307,17 @@ class MtpSync:
             artist_name = GLib.uri_escape_string(track.artist.lower(),
                                                  "",
                                                  False)
-            track_path = Lp().tracks.get_path(track_id)
             album_uri = "%s/tracks/%s_%s" % (self._uri,
                                              artist_name,
                                              album_name)
-            track_name = GLib.uri_escape_string(GLib.basename(track_path),
+            track_name = GLib.uri_escape_string(GLib.basename(track.path),
                                                 "",
                                                 False)
-            on_disk = Gio.File.new_for_path(track_path)
+            # Check extension, if not mp3, convert
+            ext = os.path.splitext(track.path)[1]
+            if ext != ".mp3" and self._convert:
+                track_name = track_name.replace(ext, ".mp3")
+            on_disk = Gio.File.new_for_path(track.path)
             info = on_disk.query_info('time::modified',
                                       Gio.FileQueryInfoFlags.NONE,
                                       None)
@@ -299,12 +334,31 @@ class MtpSync:
                 self._fraction = 1.0
                 self._in_thread = False
                 return
+
             if uri not in track_uris and uri not in self._copied_art_uris:
                 to_delete = Gio.File.new_for_uri(uri)
                 self._retry(to_delete.delete, (None,))
             self._done += 1
             self._fraction = self._done/self._total
             GLib.idle_add(self._update_progress)
+
+    def _convert_to_mp3(self, src, dst):
+        """
+            Convert file to mp3
+            @param src as Gio.File
+            @param dst as Gio.File
+            @return Gst.Pipeline
+        """
+        try:
+            pipeline = Gst.parse_launch('filesrc location="%s" ! decodebin\
+                                        ! audioconvert ! lamemp3enc !id3v2mux\
+                                        !    filesink location="%s"'
+                                        % (src.get_path(), dst.get_path()))
+            pipeline.set_state(Gst.State.PLAYING)
+            return pipeline
+        except Exception as e:
+            print("MtpSync::_convert_to_mp3(): %s" % e)
+            return None
 
     def _update_progress(self):
         """

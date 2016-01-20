@@ -511,7 +511,8 @@ class Container:
             @param device id as int
         """
         device = self._devices[device_id]
-
+        # For testing ;)
+        # device.uri = "file:///tmp/plop/"
         child = self._stack.get_child_by_name(device.uri)
         if child is None:
             if DeviceView.get_files(device.uri):

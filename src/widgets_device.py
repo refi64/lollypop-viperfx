@@ -43,7 +43,12 @@ class DeviceManagerWidget(Gtk.Bin, MtpSync):
         builder = Gtk.Builder()
         builder.add_from_resource('/org/gnome/Lollypop/DeviceManagerWidget.ui')
         self._error_label = builder.get_object('error-label')
-        self._switch = builder.get_object('switch')
+        self._switch_albums = builder.get_object('switch_albums')
+        self._switch_albums.set_state(Lp().settings.get_value('sync-albums'))
+        self._switch_mp3 = builder.get_object('switch_mp3')
+        self._switch_mp3.set_state(Lp().settings.get_value('convert-mp3'))
+        self._menu_items = builder.get_object('menu-items')
+        self._menu = builder.get_object('menu')
 
         self._model = Gtk.ListStore(bool, str, int)
         self._model.set_sort_column_id(1, Gtk.SortType.ASCENDING)
@@ -51,6 +56,7 @@ class DeviceManagerWidget(Gtk.Bin, MtpSync):
 
         self._view = builder.get_object('view')
         self._view.set_model(self._model)
+        self._view.set_sensitive(not Lp().settings.get_value('sync-albums'))
 
         builder.connect_signals(self)
 
@@ -83,9 +89,9 @@ class DeviceManagerWidget(Gtk.Bin, MtpSync):
         playlists += Lp().playlists.get()
         self._append_playlists(playlists)
 
-    def set_playlists(self, playlists, uri):
+    def set_uri(self, uri):
         """
-            Set available playlists
+            Set uri
             @param uri as str
         """
         self._uri = uri
@@ -103,9 +109,9 @@ class DeviceManagerWidget(Gtk.Bin, MtpSync):
         self._syncing = True
         self._progress.show()
         self._progress.set_fraction(0.0)
-        self._switch.set_sensitive(False)
+        self._menu.set_sensitive(False)
         playlists = []
-        if not self._switch.get_active():
+        if not self._switch_albums.get_active():
             self._view.set_sensitive(False)
             for item in self._model:
                 if item[0]:
@@ -113,7 +119,8 @@ class DeviceManagerWidget(Gtk.Bin, MtpSync):
         else:
             playlists.append(Type.ALL)
 
-        t = Thread(target=self._sync, args=(playlists,))
+        t = Thread(target=self._sync,
+                   args=(playlists, self._switch_mp3.get_active()))
         t.daemon = True
         t.start()
 
@@ -170,14 +177,28 @@ class DeviceManagerWidget(Gtk.Bin, MtpSync):
         else:
             GLib.timeout_add(1000, self._progress.hide)
 
+    def _pop_menu(self, button):
+        """
+            Popup menu for album
+            @param button as Gtk.Button
+            @param album id as int
+        """
+        parent = self._menu_items.get_parent()
+        if parent is not None:
+            parent.remove(self._menu_items)
+        popover = Gtk.Popover.new(button)
+        popover.set_position(Gtk.PositionType.BOTTOM)
+        popover.add(self._menu_items)
+        popover.show()
+
     def _on_finished(self):
         """
             Emit finished signal
         """
         MtpSync._on_finished(self)
-        if not self._switch.get_state():
+        if not self._switch_albums.get_state():
             self._view.set_sensitive(True)
-        self._switch.set_sensitive(True)
+        self._menu.set_sensitive(True)
         self.emit('sync-finished')
 
     def _on_errors(self):
@@ -199,16 +220,23 @@ class DeviceManagerWidget(Gtk.Bin, MtpSync):
         self._error_label.set_text(error_text)
         self._infobar.show()
 
-    def _on_switch_state_set(self, widget, state):
+    def _on_albums_state_set(self, widget, state):
         """
             Enable or disable playlist selection
+            Save option
             @param widget as Gtk.Switch
             @param state as bool
         """
-        if state:
-            self._view.set_sensitive(False)
-        else:
-            self._view.set_sensitive(True)
+        Lp().settings.set_value('sync-albums', GLib.Variant('b', state))
+        self._view.set_sensitive(not state)
+
+    def _on_mp3_state_set(self, widget, state):
+        """
+            Save option
+            @param widget as Gtk.Switch
+            @param state as bool
+        """
+        Lp().settings.set_value('convert-mp3', GLib.Variant('b', state))
 
     def _on_response(self, infobar, response_id):
         """
