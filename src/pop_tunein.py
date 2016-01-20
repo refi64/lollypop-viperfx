@@ -196,6 +196,9 @@ class TuneinPopover(Gtk.Popover):
                     if stream is not None:
                         GLib.idle_add(self._set_image, image, stream)
             except Exception as e:
+                GLib.idle_add(image.set_from_icon_name,
+                              "image-missing",
+                              Gtk.IconSize.LARGE_TOOLBAR)
                 print("TuneinPopover::_download_images: %s" % e)
 
     def _set_image(self, image, stream):
