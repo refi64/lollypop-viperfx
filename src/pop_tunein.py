@@ -62,11 +62,13 @@ class TuneinPopover(Gtk.Popover):
         self._view.set_property('expand', True)
         self._view.show()
 
+        self._spinner = builder.get_object('spinner')
+
         builder.get_object('viewport').add(self._view)
         builder.get_object('viewport').set_property('margin', 10)
 
         self._scrolled = builder.get_object('scrolled')
-        self._stack.add_named(builder.get_object('spinner'), 'spinner')
+        self._stack.add_named(self._spinner, 'spinner')
         self._stack.add_named(builder.get_object('notfound'), 'notfound')
         self._stack.add_named(self._scrolled, 'scrolled')
         self._stack.set_visible_child_name('spinner')
@@ -172,6 +174,7 @@ class TuneinPopover(Gtk.Popover):
         # Remove spinner if exist
         if self._stack.get_visible_child_name() == 'spinner':
             self._stack.set_visible_child_name('scrolled')
+            self._spinner.stop()
             self._label.set_text(_("Browse themes and add a new radio"))
             if self._current_url is not None:
                 self._back_btn.set_sensitive(True)
@@ -191,9 +194,7 @@ class TuneinPopover(Gtk.Popover):
                 if status:
                     stream = Gio.MemoryInputStream.new_from_data(data, None)
                     if stream is not None:
-                        # idle_add() doesn't work here, it's launched only
-                        # on user scroll (Gtk bug?)
-                        GLib.timeout_add(0, self._set_image, image, stream)
+                        GLib.idle_add(self._set_image, image, stream)
             except Exception as e:
                 print("TuneinPopover::_download_images: %s" % e)
 
@@ -280,6 +281,7 @@ class TuneinPopover(Gtk.Popover):
         """
         if item.TYPE == "link":
             self._stack.set_visible_child_name('spinner')
+            self._spinner.start()
             self._clear()
             self._scrolled.get_vadjustment().set_value(0.0)
             if self._current_url is not None:
