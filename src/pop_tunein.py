@@ -259,6 +259,7 @@ class TuneinPopover(Gtk.Popover):
         if self._previous_urls:
             url = self._previous_urls.pop()
         self._stack.set_visible_child_name('spinner')
+        self._spinner.start()
         self._clear()
         self.populate(url)
 
@@ -270,6 +271,7 @@ class TuneinPopover(Gtk.Popover):
         self._current_url = None
         self._previous_urls = []
         self._stack.set_visible_child_name('spinner')
+        self._spinner.start()
         self._clear()
         self.populate()
 
