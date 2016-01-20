@@ -71,7 +71,6 @@ class TuneinPopover(Gtk.Popover):
         self._stack.add_named(self._spinner, 'spinner')
         self._stack.add_named(builder.get_object('notfound'), 'notfound')
         self._stack.add_named(self._scrolled, 'scrolled')
-        self._stack.set_visible_child_name('spinner')
         self.add(widget)
         size_setting = Lp().settings.get_value('window-size')
         if isinstance(size_setting[1], int):
@@ -84,7 +83,9 @@ class TuneinPopover(Gtk.Popover):
             Populate views
             @param url as string
         """
-        if not self._view.get_children():
+        if not self._view.get_children() or\
+           self._stack.set_visible_child_name() == "notfound":
+            self._stack.set_visible_child_name('spinner')
             self._current_url = url
             self._clear()
             self._back_btn.set_sensitive(False)
