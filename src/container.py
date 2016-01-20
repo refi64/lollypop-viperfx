@@ -684,6 +684,8 @@ class Container:
             @param list as SelectionList
         """
         selected_ids = self._list_one.get_selected_ids()
+        if not selected_ids:
+            return
         if selected_ids[0] == Type.PLAYLISTS:
             self._list_two.clear()
             self._list_two.set_mode(Gtk.SelectionMode.SINGLE)
@@ -734,6 +736,8 @@ class Container:
         """
         genre_ids = self._list_one.get_selected_ids()
         selected_ids = self._list_two.get_selected_ids()
+        if not selected_ids or not genre_ids:
+            return
         if genre_ids[0] == Type.PLAYLISTS:
             self._update_view_playlists(selected_ids[0])
         elif selected_ids[0] == Type.COMPILATIONS:
