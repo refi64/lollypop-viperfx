@@ -65,7 +65,8 @@ class RadioPopover(Gtk.Popover):
         self._name_entry = builder.get_object('name')
         self._uri_entry = builder.get_object('uri')
         self._btn_add_modify = builder.get_object('btn_add_modify')
-        self._stack.add_named(builder.get_object('spinner'), 'spinner')
+        self._spinner = builder.get_object('spinner')
+        self._stack.add_named(self._spinner, 'spinner')
         self._stack.add_named(builder.get_object('notfound'), 'notfound')
         self._stack.add_named(builder.get_object('logo'), 'logo')
         self._stack.add_named(builder.get_object('widget'), 'widget')
@@ -175,6 +176,7 @@ class RadioPopover(Gtk.Popover):
             print(e)
             pass
         if self._stack.get_visible_child_name() == 'spinner':
+            self._spinner.stop()
             self._stack.set_visible_child_name('logo')
 
     def _on_map(self, widget):
