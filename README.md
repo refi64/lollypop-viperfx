@@ -73,7 +73,7 @@ $ make
 
 Instead of `make install` you might want to use `checkinstall`
 ```
-# apt-get checkinstall
+# apt-get install checkinstall
 # checkinstall
 ```
 This will allow you to uninstall Lollypop as a package, for example with `apt-get uninstall lollypop`.
