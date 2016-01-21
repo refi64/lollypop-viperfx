@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-01-21 13:40+0100\n"
+"POT-Creation-Date: 2016-01-22 08:52+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -282,22 +282,22 @@ msgid ""
 "    - Artist informations disabled"
 msgstr ""
 
-#: ../src/application.py:352
+#: ../src/application.py:358
 #, python-format
 msgid "%s artist(s)"
 msgstr ""
 
-#: ../src/application.py:354
+#: ../src/application.py:360
 #, python-format
 msgid "%s album(s)"
 msgstr ""
 
-#: ../src/application.py:356
+#: ../src/application.py:362
 #, python-format
 msgid "%s track(s)"
 msgstr ""
 
-#: ../src/application.py:372
+#: ../src/application.py:378
 msgid "Lollypop: You need to install yelp."
 msgstr ""
 
@@ -305,56 +305,56 @@ msgstr ""
 msgid "Your music is updating"
 msgstr ""
 
-#: ../src/container.py:416
+#: ../src/container.py:433
 msgid "Popular albums"
 msgstr ""
 
-#: ../src/container.py:417
+#: ../src/container.py:434
 msgid "Recently added albums"
 msgstr ""
 
-#: ../src/container.py:418
+#: ../src/container.py:435
 msgid "Random albums"
 msgstr ""
 
-#: ../src/container.py:419 ../src/pop_menu.py:368 ../src/pop_menu.py:445
+#: ../src/container.py:436 ../src/pop_menu.py:368 ../src/pop_menu.py:445
 #: ../src/pop_menu.py:464
 msgid "Playlists"
 msgstr ""
 
-#: ../src/container.py:420
+#: ../src/container.py:437
 msgid "Radios"
 msgstr ""
 
-#: ../src/container.py:422
+#: ../src/container.py:439
 msgid "All artists"
 msgstr ""
 
-#: ../src/container.py:424 ../data/DeviceManagerWidget.ui.h:1
+#: ../src/container.py:441 ../data/DeviceManagerWidget.ui.h:1
 msgid "All albums"
 msgstr ""
 
-#: ../src/container.py:471
+#: ../src/container.py:488
 msgid "Compilations"
 msgstr ""
 
-#: ../src/container.py:494
+#: ../src/container.py:511
 msgid "Popular tracks"
 msgstr ""
 
-#: ../src/container.py:495
+#: ../src/container.py:512
 msgid "Recently played"
 msgstr ""
 
-#: ../src/container.py:496
+#: ../src/container.py:513
 msgid "Never played"
 msgstr ""
 
-#: ../src/container.py:497
+#: ../src/container.py:514
 msgid "Random tracks"
 msgstr ""
 
-#: ../src/container.py:498 ../src/playlists.py:54
+#: ../src/container.py:515 ../src/playlists.py:54
 #: ../data/SettingsDialog.ui.h:7
 msgid "Network control"
 msgstr ""
@@ -523,12 +523,12 @@ msgstr ""
 msgid "The the"
 msgstr ""
 
-#: ../src/view_device.py:77 ../src/view_device.py:138
+#: ../src/view_device.py:77 ../src/view_device.py:137
 #, python-format
 msgid "Synchronize %s"
 msgstr ""
 
-#: ../src/view_device.py:127
+#: ../src/view_device.py:126
 msgid "Cancel synchronization"
 msgstr ""
 
@@ -552,11 +552,15 @@ msgstr ""
 msgid "Disc %s"
 msgstr ""
 
-#: ../src/widgets_device.py:209
+#: ../src/widgets_device.py:51
+msgid "You need to install gstreamer-plugins-ugly"
+msgstr ""
+
+#: ../src/widgets_device.py:219
 msgid "Unknown error while syncing, try to reboot your device"
 msgstr ""
 
-#: ../src/widgets_device.py:217
+#: ../src/widgets_device.py:227
 msgid "No free space available on device"
 msgstr ""
 
