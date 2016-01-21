@@ -175,7 +175,10 @@ class DeviceManagerWidget(Gtk.Bin, MtpSync):
         if current < self._fraction:
             self._progress.set_fraction(current+progress)
         if current < 1.0:
-            GLib.timeout_add(25, self._update_progress)
+            if progress < 0.0002:
+                GLib.timeout_add(500, self._update_progress)
+            else:
+                GLib.timeout_add(25, self._update_progress)
         else:
             GLib.timeout_add(1000, self._on_finished)
 
