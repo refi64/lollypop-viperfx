@@ -360,6 +360,15 @@ class MtpSync:
             print("MtpSync::_convert_to_mp3(): %s" % e)
             return None
 
+    def _check_encoder_status(self):
+        """
+            Check MP3 encode status
+            @return bool
+        """
+        if Gst.ElementFactory.find('lamemp3enc'):
+            return True
+        return False
+
     def _update_progress(self):
         """
             Update progress bar. Do nothing

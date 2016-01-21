@@ -46,7 +46,12 @@ class DeviceManagerWidget(Gtk.Bin, MtpSync):
         self._switch_albums = builder.get_object('switch_albums')
         self._switch_albums.set_state(Lp().settings.get_value('sync-albums'))
         self._switch_mp3 = builder.get_object('switch_mp3')
-        self._switch_mp3.set_state(Lp().settings.get_value('convert-mp3'))
+        if not self._check_encoder_status():
+            self._switch_mp3.set_sensitive(False)
+            self._switch_mp3.set_tooltip_text(_("You need to install " +
+                                              "gstreamer-plugins-ugly"))
+        else:
+            self._switch_mp3.set_state(Lp().settings.get_value('convert-mp3'))
         self._menu_items = builder.get_object('menu-items')
         self._menu = builder.get_object('menu')
 
