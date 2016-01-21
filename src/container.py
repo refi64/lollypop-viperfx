@@ -103,6 +103,8 @@ class Container:
         self._vm = Gio.VolumeMonitor.get()
         self._vm.connect('mount-added', self._on_mount_added)
         self._vm.connect('mount-removed', self._on_mount_removed)
+        for mount in self._vm.get_mounts():
+            self._add_device(mount, False)
 
         Lp().playlists.connect('playlists-changed',
                                self._update_playlists)
@@ -649,10 +651,11 @@ class Container:
         self._stack.set_visible_child(view)
         self._stack.clean_old_views(view)
 
-    def _add_device(self, mount):
+    def _add_device(self, mount, show=False):
         """
             Add a device
             @param mount as Gio.Mount
+            @param show as bool
         """
         if mount.get_volume() is None:
             return
@@ -669,7 +672,8 @@ class Container:
             dev.name = name
             dev.uri = uri
             self._devices[self._devices_index] = dev
-            self._list_one.add_value((dev.id, dev.name))
+            if show:
+                self._list_one.add_value((dev.id, dev.name))
 
     def _remove_device(self, mount):
         """
@@ -761,7 +765,7 @@ class Container:
             @param vm as Gio.VolumeMonitor
             @param mount as Gio.Mount
         """
-        self._add_device(mount)
+        self._add_device(mount, True)
 
     def _on_mount_removed(self, vm, mount):
         """
