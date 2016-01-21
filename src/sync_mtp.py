@@ -247,14 +247,16 @@ class MtpSync:
                         pipeline = self._convert_to_mp3(src_track, mp3_file)
                         # Check if encoding is finished
                         if pipeline is not None:
-                            while True and self._sync:
-                                position = pipeline.query_position(
-                                                            Gst.Format.TIME)[1]
-                                duration = pipeline.query_duration(
-                                                            Gst.Format.TIME)[1]
-                                if duration > 0 and duration == position:
-                                    break
+                            bus = pipeline.get_bus()
+                            bus.add_signal_watch()
+                            bus.connect('message::eos', self._on_bus_eos)
+                            self._encoding = True
+                            while self._encoding and self._sync:
                                 sleep(1)
+                            bus.disconnect_by_func(self._on_bus_eos)
+                            pipeline.set_state(Gst.State.PAUSED)
+                            pipeline.set_state(Gst.State.READY)
+                            pipeline.set_state(Gst.State.NULL)
                             self._retry(
                                     mp3_file.move,
                                     (dst_track, Gio.FileCopyFlags.OVERWRITE,
@@ -349,8 +351,8 @@ class MtpSync:
         """
         try:
             pipeline = Gst.parse_launch('filesrc location="%s" ! decodebin\
-                                        ! audioconvert ! lamemp3enc !id3v2mux\
-                                        !    filesink location="%s"'
+                                        ! audioconvert ! lamemp3enc ! id3v2mux\
+                                        ! filesink location="%s"'
                                         % (src.get_path(), dst.get_path()))
             pipeline.set_state(Gst.State.PLAYING)
             return pipeline
@@ -363,6 +365,14 @@ class MtpSync:
             Update progress bar. Do nothing
         """
         pass
+
+    def _on_bus_eos(self, bus, message):
+        """
+            Stop encoding
+            @param bus as Gst.Bus
+            @param message as Gst.Message
+        """
+        self._encoding = False
 
     def _on_finished(self):
         """
