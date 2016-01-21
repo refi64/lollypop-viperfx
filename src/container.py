@@ -649,42 +649,36 @@ class Container:
         self._stack.set_visible_child(view)
         self._stack.clean_old_views(view)
 
-    def _add_device(self, volume):
+    def _add_device(self, mount):
         """
-            Add volume to device list
-            @param volume as Gio.Volume
+            Add a device
+            @param mount as Gio.Mount
         """
-        if volume is None:
+        if mount.get_volume() is None:
             return
-        root = volume.get_activation_root()
-        if root is None:
-            return
-
-        uri = root.get_uri()
-        # Just to be sure
+        name = mount.get_name()
+        uri = mount.get_default_location().get_uri()
+        # Add / to uri if needed
         if uri is not None and len(uri) > 1 and uri[-1:] != '/':
             uri += '/'
+
         if uri is not None and uri.find('mtp:') != -1:
             self._devices_index -= 1
             dev = Device()
             dev.id = self._devices_index
-            dev.name = volume.get_name()
+            dev.name = name
             dev.uri = uri
             self._devices[self._devices_index] = dev
             self._list_one.add_value((dev.id, dev.name))
 
-    def _remove_device(self, volume):
+    def _remove_device(self, mount):
         """
             Remove volume from device list
-            @param volume as Gio.Volume
+            @param mount as Gio.Mount
         """
-        if volume is None:
+        if mount.get_volume() is None:
             return
-        root = volume.get_activation_root()
-        if root is None:
-            return
-
-        uri = root.get_uri()
+        uri = mount.get_default_location().get_uri()
         for dev in self._devices.values():
             if dev.uri == uri:
                 self._list_one.remove(dev.id)
@@ -761,18 +755,18 @@ class Container:
         else:
             self._update_view_artists(selected_ids, genre_ids)
 
-    def _on_mount_added(self, vm, mnt):
+    def _on_mount_added(self, vm, mount):
         """
             On volume mounter
             @param vm as Gio.VolumeMonitor
-            @param mnt as Gio.Mount
+            @param mount as Gio.Mount
         """
-        self._add_device(mnt.get_volume())
+        self._add_device(mount)
 
-    def _on_mount_removed(self, vm, mnt):
+    def _on_mount_removed(self, vm, mount):
         """
             On volume removed, clean selection list
             @param vm as Gio.VolumeMonitor
-            @param mnt as Gio.Mount
+            @param mount as Gio.Mount
         """
-        self._remove_device(mnt.get_volume())
+        self._remove_device(mount)
