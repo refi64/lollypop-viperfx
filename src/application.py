@@ -96,6 +96,10 @@ class Application(Gtk.Application):
             self.add_main_option("prev", b'p', GLib.OptionFlags.NONE,
                                  GLib.OptionArg.NONE, "Go to prev track",
                                  None)
+            self.add_main_option("emulate-phone", b'e', GLib.OptionFlags.NONE,
+                                 GLib.OptionArg.NONE,
+                                 "Emulate an Android Phone",
+                                 None)
         self.connect('command-line', self._on_command_line)
         self.register(None)
         if self.get_is_remote():
@@ -262,6 +266,8 @@ class Application(Gtk.Application):
             self.player.next()
         elif options.contains('prev'):
             self.player.prev()
+        elif options.contains('emulate-phone'):
+            self.window.add_fake_phone()
         args = app_cmd_line.get_arguments()
         if len(args) > 1:
             self.player.clear_externals()

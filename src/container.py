@@ -254,6 +254,23 @@ class Container:
         """
         self._update_lists(scanner)
 
+    def add_fake_phone(self):
+        """
+            Emulate an Android Phone
+        """
+        self._devices_index -= 1
+        dev = Device()
+        dev.id = self._devices_index
+        dev.name = "Android phone"
+        dev.uri = "file:///tmp/android/"
+        d = Gio.File.new_for_uri(dev.uri+"Internal Memory")
+        if not d.query_exists(None):
+            d.make_directory_with_parents(None)
+        d = Gio.File.new_for_uri(dev.uri+"SD Card")
+        if not d.query_exists(None):
+            d.make_directory_with_parents(None)
+        self._devices[self._devices_index] = dev
+
 ############
 # Private  #
 ############
@@ -511,8 +528,6 @@ class Container:
             @param device id as int
         """
         device = self._devices[device_id]
-        # For testing ;)
-        # device.uri = "file:///tmp/plop/"
         child = self._stack.get_child_by_name(device.uri)
         if child is None:
             if DeviceView.get_files(device.uri):
