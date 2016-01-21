@@ -247,10 +247,13 @@ class MtpSync:
                         pipeline = self._convert_to_mp3(src_track, mp3_file)
                         # Check if encoding is finished
                         if pipeline is not None:
-                            status = Gst.State.PLAYING
-                            while status == Gst.State.PLAYING:
-                                status = pipeline.get_state(
-                                                           Gst.CLOCK_TIME_NONE)
+                            while True:
+                                position = pipeline.query_position(
+                                                            Gst.Format.TIME)[1]
+                                duration = pipeline.query_duration(
+                                                            Gst.Format.TIME)[1]
+                                if duration > 0 and duration == position:
+                                    break
                                 sleep(1)
                             self._retry(
                                     mp3_file.move,
