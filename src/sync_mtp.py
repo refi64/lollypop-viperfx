@@ -10,7 +10,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-from gi.repository import GLib, Gio, GObject, Gst
+from gi.repository import GLib, Gio, Gst
 
 import os.path
 from time import sleep
@@ -23,10 +23,6 @@ class MtpSync:
     """
         Synchronisation to MTP devices
     """
-    __gsignals__ = {
-        'sync-finished': (GObject.SignalFlags.RUN_FIRST, None, ())
-    }
-
     def __init__(self):
         """
             Init MTP synchronisation
@@ -153,12 +149,13 @@ class MtpSync:
         except Exception as e:
             print("DeviceManagerWidget::_sync(): %s" % e)
         self._fraction = 1.0
-        GLib.idle_add(self._update_progress)
-        self._syncing = False
+        if self._syncing:
+            self._syncing = False
+        else:
+            GLib.idle_add(self._on_finished)
         self._in_thread = False
         if self._errors:
             GLib.idle_add(self._on_errors)
-        GLib.idle_add(self._on_finished)
 
     def _copy_to_device(self, playlists):
         """
@@ -272,7 +269,6 @@ class MtpSync:
                     self._done += 1
                 self._done += 1
                 self._fraction = self._done/self._total
-                GLib.idle_add(self._update_progress)
             if stream is not None:
                 stream.close()
             if m3u is not None:
@@ -340,7 +336,6 @@ class MtpSync:
                 self._retry(to_delete.delete, (None,))
             self._done += 1
             self._fraction = self._done/self._total
-            GLib.idle_add(self._update_progress)
 
     def _convert_to_mp3(self, src, dst):
         """

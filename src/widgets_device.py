@@ -165,20 +165,19 @@ class DeviceManagerWidget(Gtk.Bin, MtpSync):
         """
             Update progress bar smoothly
         """
+        if not self._progress.is_visible():
+            return
         current = self._progress.get_fraction()
         if self._syncing:
             progress = (self._fraction-current)/10000
         else:
-            progress = 0.001
-
+            progress = 0.00001
         if current < self._fraction:
             self._progress.set_fraction(current+progress)
-            if not self._progress.is_visible():
-                self._progress.show()
-        if self._syncing or current < 1.0:
+        if current < 1.0:
             GLib.idle_add(self._update_progress)
         else:
-            GLib.timeout_add(1000, self._progress.hide)
+            GLib.timeout_add(1000, self._on_finished)
 
     def _pop_menu(self, button):
         """

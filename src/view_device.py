@@ -121,7 +121,6 @@ class DeviceView(View):
         """
         if self._device_widget.is_syncing():
             self._device_widget.cancel_sync()
-            self._on_sync_finished(None)
         elif not self._progress.is_visible():
             self._memory_combo.hide()
             self._syncing_btn.set_label(_("Cancel synchronization"))
