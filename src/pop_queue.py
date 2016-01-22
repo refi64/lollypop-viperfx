@@ -92,7 +92,7 @@ class QueueWidget(Gtk.Popover):
         """
         if Lp().player.get_queue():
             self._clear_btn.set_sensitive(True)
-        GLib.idle_add(self._add_items, list(Lp().player.get_queue()))
+        self._add_items(Lp().player.get_queue())
 
 #######################
 # PRIVATE             #
@@ -102,8 +102,7 @@ class QueueWidget(Gtk.Popover):
             Add items to the view
             @param item ids as [int]
         """
-        if items:
-            track_id = items.pop(0)
+        for track_id in items:
             album_id = Lp().tracks.get_album_id(track_id)
             artist_id = Lp().albums.get_artist_id(album_id)
             artist_name = Lp().artists.get_name(artist_id)
@@ -115,7 +114,6 @@ class QueueWidget(Gtk.Popover):
                                 title,
                                 'user-trash-symbolic',
                                 track_id])
-            GLib.idle_add(self._add_items, items)
 
     def _on_map(self, widget):
         """
