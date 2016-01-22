@@ -227,12 +227,14 @@ class Container:
         """
             Reload current view
         """
+        values_two = self._list_two.get_selected_ids()
+        if not values_two:
+            values_one = self._list_one.get_selected_ids()
+            self._list_one.select_ids([])
+            self._list_one.select_ids(values_one)
         if self._list_two.is_visible():
-            values = self._list_two.get_selected_ids()
-            self._list_two.select_ids(values)
-        else:
-            values = self._list_one.get_selected_ids()
-            self._list_one.select_ids(values)
+            self._list_two.select_ids([])
+            self._list_two.select_ids(values_two)
 
     def pulse(self, pulse):
         """

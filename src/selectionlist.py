@@ -223,22 +223,25 @@ class SelectionList(Gtk.ScrolledWindow):
             @param object id as int
         """
         self._to_select_ids = []
-        try:
-            iters = []
-            for i in list(ids):
-                for item in self._model:
-                    if item[0] == i:
-                        iters.append(item.iter)
-                        ids.remove(i)
-            # Select later
-            if ids:
+        if ids:
+            try:
+                iters = []
+                for i in list(ids):
+                    for item in self._model:
+                        if item[0] == i:
+                            iters.append(item.iter)
+                            ids.remove(i)
+                # Select later
+                if ids:
+                    self._to_select_ids = ids
+                else:
+                    for i in iters:
+                        self._selection.select_iter(i)
+            except:
+                self._last_motion_event = None
                 self._to_select_ids = ids
-            else:
-                for i in iters:
-                    self._selection.select_iter(i)
-        except:
-            self._last_motion_event = None
-            self._to_select_ids = ids
+        else:
+            self._selection.unselect_all()
 
     def get_selected_ids(self):
         """
