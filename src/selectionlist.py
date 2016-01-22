@@ -389,6 +389,13 @@ class SelectionList(Gtk.ScrolledWindow):
         else:
             return True
 
+    def _hide_popover(self):
+        """
+            Hide popover
+        """
+        self._popover.hide()
+        self._timeout = None
+
     def _on_button_press_event(self, view, event):
         state = event.get_state()
         if state & Gdk.ModifierType.CONTROL_MASK or\
@@ -406,7 +413,7 @@ class SelectionList(Gtk.ScrolledWindow):
         if not self._updating and not self._to_select_ids:
             self.emit('item-selected')
 
-    def _on_focus_in_event(self, widget, event):
+    def _on_enter_notify(self, widget, event):
         """
             Disable shortcuts
             @param widget as Gtk.widget
@@ -414,22 +421,14 @@ class SelectionList(Gtk.ScrolledWindow):
         """
         Lp().window.enable_global_shorcuts(False)
 
-    def _on_focus_out_event(self, widget, event):
-        """
-            Enable shortcuts
-            @param widget as Gtk.widget
-            @param event as GdK.Event
-        """
-        Lp().window.enable_global_shorcuts(True)
-
-    def _on_leave_event(self, widget=None, event=None):
+    def _on_leave_notify(self, widget, event):
         """
             Hide popover
             @param widget as Gtk.widget
             @param event as GdK.Event
         """
-        self._popover.hide()
-        self._timeout = None
+        Lp().window.enable_global_shorcuts(True)
+        self._hide_popover()
 
     def _on_motion_notify(self, widget, event):
         """
@@ -439,7 +438,7 @@ class SelectionList(Gtk.ScrolledWindow):
         """
         if self._timeout is None:
             self._timeout = GLib.timeout_add(500,
-                                             self._on_leave_event)
+                                             self._hide_popover)
         if event.x < 0.0 or event.y < 0.0:
             return
         if self._last_motion_event is None:

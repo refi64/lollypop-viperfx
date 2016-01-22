@@ -48,7 +48,8 @@ class Window(Gtk.ApplicationWindow, Container):
         self._setup_content()
         self.setup_window()
         self._setup_media_keys()
-        self.enable_global_shorcuts(True)
+        self._enabled_shorcuts = True
+        self.enable_global_shorcuts(self._enabled_shorcuts)
 
         self.connect('destroy', self._on_destroyed_window)
         self.connect('realize', self._on_realize)
@@ -72,6 +73,9 @@ class Window(Gtk.ApplicationWindow, Container):
             Setup global shortcuts
             @param enable as bool
         """
+        if self._enabled_shorcuts == enable:
+            return
+        self._enabled_shorcuts = enable
         if enable:
             if Gtk.Widget.get_default_direction() == Gtk.TextDirection.RTL:
                 self._app.set_accels_for_action("app.seek(10)",
