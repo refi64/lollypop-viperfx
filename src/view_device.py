@@ -105,6 +105,12 @@ class DeviceView(View):
 #######################
 # PRIVATE             #
 #######################
+    def stop(self):
+        """
+            Stop syncing
+        """
+        self._device_widget.cancel_sync()
+
     def _on_destroy(self, widget):
         """
             Remove running timeout
