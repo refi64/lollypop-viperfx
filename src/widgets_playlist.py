@@ -243,7 +243,7 @@ class PlaylistsManagerWidget(Gtk.Bin):
             @thread safe
         """
         playlists = Lp().playlists.get()
-        GLib.idle_add(self._append_playlists, playlists)
+        self._append_playlists(playlists)
 
     def add_new_playlist(self):
         """
@@ -282,8 +282,7 @@ class PlaylistsManagerWidget(Gtk.Bin):
             @param playlists as [str]
             @param playlist selected as bool
         """
-        if playlists:
-            playlist = playlists.pop(0)
+        for playlist in playlists:
             if self._object_id != Type.NONE:
                 if self._is_album:
                     selected = Lp().playlists.exists_album(
@@ -299,11 +298,6 @@ class PlaylistsManagerWidget(Gtk.Bin):
                 selected = False
             self._model.append([selected, playlist[1],
                                'user-trash-symbolic', playlist[0]])
-            GLib.idle_add(self._append_playlists, playlists)
-        else:
-            selection = self._view.get_selection()
-            if selection is not None:
-                selection.unselect_all()
 
     def _show_infobar(self, path):
         """

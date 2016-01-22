@@ -87,7 +87,8 @@ class DeviceManagerWidget(Gtk.Bin, MtpSync):
 
     def populate(self):
         """
-            Populate playlists, thread safe
+            Populate playlists
+            @thread safe
         """
         self._model.clear()
         playlists = [(Type.LOVED, Lp().playlists._LOVED)]
@@ -155,16 +156,12 @@ class DeviceManagerWidget(Gtk.Bin, MtpSync):
             @param playlists as [(int, str)]
             @param playlist selected as bool
         """
-        if playlists:
-            playlist = playlists.pop(0)
+        for playlist in playlists:
             playlist_name = GLib.uri_escape_string(playlist[1], "", False)
             playlist_obj = Gio.File.new_for_uri(self._uri + "/" +
                                                 playlist_name + '.m3u')
             selected = playlist_obj.query_exists(None)
             self._model.append([selected, playlist[1], playlist[0]])
-            GLib.idle_add(self._append_playlists, playlists)
-        else:
-            self._view.get_selection().unselect_all()
 
     def _update_progress(self):
         """
