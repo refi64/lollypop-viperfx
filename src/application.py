@@ -196,7 +196,7 @@ class Application(Gtk.Application):
                 track_id = self.player.current_track.id
             self.settings.set_value('track-id', GLib.Variant('i',
                                                              track_id))
-        self.player.stop()
+        self.player.stop_all()
         if self.window:
             self.window.stop_all()
         self.quit()
