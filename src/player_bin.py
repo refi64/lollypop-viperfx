@@ -172,10 +172,9 @@ class BinPlayer(BasePlayer):
         """
         position = self._playbin.query_position(Gst.Format.TIME)[1] / 1000
         if Lp().settings.get_value('mix') and self._gst_duration > 0:
-            diff = self._gst_duration - position
-            if diff / 1000000 < Lp().settings.get_value(
-                                                   'mix-duration').get_int32():
-                self._do_crossfade()
+            diff = (self._gst_duration - position) / 1000000
+            if diff < Lp().settings.get_value('mix-duration').get_int32():
+                self._do_crossfade(diff)
         return position * 60
 
     def get_volume(self):
@@ -204,7 +203,7 @@ class BinPlayer(BasePlayer):
 #######################
 # PRIVATE             #
 #######################
-    def _volume_up(self, playbin):
+    def _volume_up(self, playbin, duration):
         """
             Make volume going up smoothly
         """
@@ -213,23 +212,22 @@ class BinPlayer(BasePlayer):
             playbin.set_volume(GstAudio.StreamVolumeFormat.LINEAR,
                                self._volume)
             return
-        position = playbin.query_position(Gst.Format.TIME)[1] / 1000000
-        duration = Lp().settings.get_value('mix-duration').get_int32() * 1000
-        end_in = (duration - position)
+        position = playbin.query_position(Gst.Format.TIME)[1] / 1000000000
+        print(duration, position)
+        end_in = (duration - position) * 1000
         if end_in > 0:
             vol = playbin.get_volume(GstAudio.StreamVolumeFormat.LINEAR)
             steps = end_in / 250
             vol_up = (1.0 - vol) / steps
             rate = vol + vol_up
-            if rate > 0:
+            if rate < 1.0:
                 playbin.set_volume(GstAudio.StreamVolumeFormat.LINEAR, rate)
-                GLib.timeout_add(250, self._volume_up, playbin)
+                GLib.timeout_add(250, self._volume_up, playbin, duration)
             else:
-                playbin.set_state(Gst.State.NULL)
                 playbin.set_volume(GstAudio.StreamVolumeFormat.LINEAR,
                                    self._volume)
 
-    def _volume_down(self, playbin):
+    def _volume_down(self, playbin, duration):
         """
             Make volume going down smoothly
         """
@@ -239,7 +237,6 @@ class BinPlayer(BasePlayer):
                                self._volume)
             return
         position = playbin.query_position(Gst.Format.TIME)[1] / 1000
-        duration = playbin.query_duration(Gst.Format.TIME)[1] / 1000
         end_in = (duration - position) / 1000
         if end_in > 0:
             vol = playbin.get_volume(GstAudio.StreamVolumeFormat.LINEAR)
@@ -248,19 +245,20 @@ class BinPlayer(BasePlayer):
             rate = vol - vol_down
             if rate > 0:
                 playbin.set_volume(GstAudio.StreamVolumeFormat.LINEAR, rate)
-                GLib.timeout_add(250, self._volume_down, playbin)
+                GLib.timeout_add(250, self._volume_down, playbin, duration)
             else:
                 playbin.set_state(Gst.State.NULL)
                 playbin.set_volume(GstAudio.StreamVolumeFormat.LINEAR,
                                    self._volume)
 
-    def _do_crossfade(self):
+    def _do_crossfade(self, duration):
         """
             Crossfade tracks
+            @param duration as int (time left)
         """
         if self.current_track.id == Type.RADIOS:
             return
-        GLib.idle_add(self._volume_down, self._playbin)
+        GLib.idle_add(self._volume_down, self._playbin, self._gst_duration)
         if self._playbin == self._playbin2:
             self._playbin = self._playbin1
         else:
@@ -272,7 +270,7 @@ class BinPlayer(BasePlayer):
             self.load(self.next_track)
             self._playbin.set_volume(GstAudio.StreamVolumeFormat.LINEAR,
                                      self._volume / 4)
-            GLib.idle_add(self._volume_up, self._playbin)
+            GLib.idle_add(self._volume_up, self._playbin, duration)
         self._track_finished(finished, finished_start_time)
 
     def _load_track(self, track):
