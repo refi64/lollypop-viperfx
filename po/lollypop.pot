@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-01-22 08:52+0100\n"
+"POT-Creation-Date: 2016-01-23 18:21+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -86,7 +86,7 @@ msgid ""
 "Reset this value will reset the database, popular albums will be restored"
 msgstr ""
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:18 ../data/SettingsDialog.ui.h:12
+#: ../data/org.gnome.Lollypop.gschema.xml.h:18 ../data/SettingsDialog.ui.h:14
 msgid "Albums cover size"
 msgstr ""
 
@@ -110,7 +110,7 @@ msgstr ""
 msgid "Convert to MP3(MTP)"
 msgstr ""
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:24 ../data/SettingsDialog.ui.h:2
+#: ../data/org.gnome.Lollypop.gschema.xml.h:24 ../data/SettingsDialog.ui.h:3
 msgid "Auto update music"
 msgstr ""
 
@@ -126,11 +126,11 @@ msgstr ""
 msgid "Disable the use client side window decorations (headerbar)"
 msgstr ""
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:28 ../data/SettingsDialog.ui.h:11
+#: ../data/org.gnome.Lollypop.gschema.xml.h:28 ../data/SettingsDialog.ui.h:13
 msgid "Show compilations in albums view"
 msgstr ""
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:29 ../data/SettingsDialog.ui.h:4
+#: ../data/org.gnome.Lollypop.gschema.xml.h:29 ../data/SettingsDialog.ui.h:5
 msgid "Continue playback when closed"
 msgstr ""
 
@@ -162,12 +162,24 @@ msgstr ""
 msgid "MPD network port"
 msgstr ""
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:37
+#: ../data/org.gnome.Lollypop.gschema.xml.h:37 ../data/SettingsDialog.ui.h:9
+msgid "Mix songs"
+msgstr ""
+
+#: ../data/org.gnome.Lollypop.gschema.xml.h:38
+msgid "Crossefade songs change"
+msgstr ""
+
+#: ../data/org.gnome.Lollypop.gschema.xml.h:39
+msgid "Mix duration"
+msgstr ""
+
+#: ../data/org.gnome.Lollypop.gschema.xml.h:40
 msgid "Shuffle mode"
 msgstr ""
 
 #. Translators: Don't translate allowed values, just the description in the brackets
-#: ../data/org.gnome.Lollypop.gschema.xml.h:39
+#: ../data/org.gnome.Lollypop.gschema.xml.h:42
 msgid ""
 "Value identifies whether to shuffle tracks/albums. Allowed values are: \"none"
 "\" (shuffle off), \"tracks\" (shuffle tracks) , \"albums\" (shuffle albums), "
@@ -230,7 +242,7 @@ msgstr ""
 msgid "Queue"
 msgstr ""
 
-#: ../data/lollypop.appdata.xml.in.h:10 ../data/SettingsDialog.ui.h:19
+#: ../data/lollypop.appdata.xml.in.h:10 ../data/SettingsDialog.ui.h:21
 #: ../data/ToolbarEnd.ui.h:8
 msgid "Party mode"
 msgstr ""
@@ -305,57 +317,56 @@ msgstr ""
 msgid "Your music is updating"
 msgstr ""
 
-#: ../src/container.py:433
+#: ../src/container.py:437
 msgid "Popular albums"
 msgstr ""
 
-#: ../src/container.py:434
+#: ../src/container.py:438
 msgid "Recently added albums"
 msgstr ""
 
-#: ../src/container.py:435
+#: ../src/container.py:439
 msgid "Random albums"
 msgstr ""
 
-#: ../src/container.py:436 ../src/pop_menu.py:368 ../src/pop_menu.py:445
+#: ../src/container.py:440 ../src/pop_menu.py:368 ../src/pop_menu.py:445
 #: ../src/pop_menu.py:464
 msgid "Playlists"
 msgstr ""
 
-#: ../src/container.py:437
+#: ../src/container.py:441
 msgid "Radios"
 msgstr ""
 
-#: ../src/container.py:439
+#: ../src/container.py:443
 msgid "All artists"
 msgstr ""
 
-#: ../src/container.py:441 ../data/DeviceManagerWidget.ui.h:1
+#: ../src/container.py:445 ../data/DeviceManagerWidget.ui.h:1
 msgid "All albums"
 msgstr ""
 
-#: ../src/container.py:488
+#: ../src/container.py:492
 msgid "Compilations"
 msgstr ""
 
-#: ../src/container.py:511
+#: ../src/container.py:515
 msgid "Popular tracks"
 msgstr ""
 
-#: ../src/container.py:512
+#: ../src/container.py:516
 msgid "Recently played"
 msgstr ""
 
-#: ../src/container.py:513
+#: ../src/container.py:517
 msgid "Never played"
 msgstr ""
 
-#: ../src/container.py:514
+#: ../src/container.py:518
 msgid "Random tracks"
 msgstr ""
 
-#: ../src/container.py:515 ../src/playlists.py:54
-#: ../data/SettingsDialog.ui.h:7
+#: ../src/container.py:519 ../src/playlists.py:54 ../data/SettingsDialog.ui.h:8
 msgid "Network control"
 msgstr ""
 
@@ -406,7 +417,7 @@ msgstr ""
 msgid "by %s, from %s"
 msgstr ""
 
-#: ../src/player_bin.py:280
+#: ../src/player_bin.py:358
 #, python-format
 msgid "File doesn't exist: %s"
 msgstr ""
@@ -509,11 +520,11 @@ msgstr ""
 msgid "Browse themes and add a new radio"
 msgstr ""
 
-#: ../src/settings.py:150
+#: ../src/settings.py:157
 msgid "Populars"
 msgstr ""
 
-#: ../src/settings.py:151
+#: ../src/settings.py:158
 msgid "Recently added"
 msgstr ""
 
@@ -523,12 +534,12 @@ msgstr ""
 msgid "The the"
 msgstr ""
 
-#: ../src/view_device.py:77 ../src/view_device.py:137
+#: ../src/view_device.py:77 ../src/view_device.py:143
 #, python-format
 msgid "Synchronize %s"
 msgstr ""
 
-#: ../src/view_device.py:126
+#: ../src/view_device.py:132
 msgid "Cancel synchronization"
 msgstr ""
 
@@ -556,11 +567,11 @@ msgstr ""
 msgid "You need to install gstreamer-plugins-ugly"
 msgstr ""
 
-#: ../src/widgets_device.py:219
+#: ../src/widgets_device.py:216
 msgid "Unknown error while syncing, try to reboot your device"
 msgstr ""
 
-#: ../src/widgets_device.py:227
+#: ../src/widgets_device.py:224
 msgid "No free space available on device"
 msgstr ""
 
@@ -569,12 +580,12 @@ msgid "New playlist "
 msgstr ""
 
 #. Need a copy, segfault on EOS 3.1
-#: ../src/widgets_playlist.py:315 ../src/widgets_playlist.py:553
+#: ../src/widgets_playlist.py:309 ../src/widgets_playlist.py:547
 #, python-format
 msgid "Remove \"%s\"?"
 msgstr ""
 
-#: ../src/widgets_playlist.py:598
+#: ../src/widgets_playlist.py:592
 msgid "Remove these tracks?"
 msgstr ""
 
@@ -727,70 +738,74 @@ msgid "Add to playlist"
 msgstr ""
 
 #: ../data/SettingsDialog.ui.h:1
+msgid "Mix duration in seconds"
+msgstr ""
+
+#: ../data/SettingsDialog.ui.h:2
 msgid "Preferences"
 msgstr ""
 
-#: ../data/SettingsDialog.ui.h:3
+#: ../data/SettingsDialog.ui.h:4
 msgid "Restore state on startup"
 msgstr ""
 
-#: ../data/SettingsDialog.ui.h:5
+#: ../data/SettingsDialog.ui.h:6
 msgid "Play albums on click"
 msgstr ""
 
-#: ../data/SettingsDialog.ui.h:6
+#: ../data/SettingsDialog.ui.h:7
 msgid "Control Lollypop with any MPD client"
 msgstr ""
 
-#: ../data/SettingsDialog.ui.h:8
+#: ../data/SettingsDialog.ui.h:10
 msgid "Behaviour"
 msgstr ""
 
-#: ../data/SettingsDialog.ui.h:9
+#: ../data/SettingsDialog.ui.h:11
 msgid "Use dark theme variant"
 msgstr ""
 
-#: ../data/SettingsDialog.ui.h:10
+#: ../data/SettingsDialog.ui.h:12
 msgid "Show genres"
 msgstr ""
 
-#: ../data/SettingsDialog.ui.h:13
+#: ../data/SettingsDialog.ui.h:15
 msgid "Appearance"
 msgstr ""
 
-#: ../data/SettingsDialog.ui.h:14
+#: ../data/SettingsDialog.ui.h:16
 msgid "Configure lollypop behaviour"
 msgstr ""
 
-#: ../data/SettingsDialog.ui.h:15
+#: ../data/SettingsDialog.ui.h:17
 msgid "Options"
 msgstr ""
 
-#: ../data/SettingsDialog.ui.h:16
+#: ../data/SettingsDialog.ui.h:18
 msgid "Select music folders"
 msgstr ""
 
-#: ../data/SettingsDialog.ui.h:17
+#: ../data/SettingsDialog.ui.h:19
 msgid "Music"
 msgstr ""
 
-#: ../data/SettingsDialog.ui.h:18
+#: ../data/SettingsDialog.ui.h:20
 msgid "Select what will be available in party mode"
 msgstr ""
 
-#: ../data/SettingsDialog.ui.h:20
+#: ../data/SettingsDialog.ui.h:22
 msgid "Login:"
 msgstr ""
 
-#: ../data/SettingsDialog.ui.h:21
+#: ../data/SettingsDialog.ui.h:23
 msgid "Password:"
 msgstr ""
 
-#: ../data/SettingsDialog.ui.h:22
+#: ../data/SettingsDialog.ui.h:24
 msgid "Connect"
 msgstr ""
 
-#: ../data/SettingsDialog.ui.h:23
+#: ../data/SettingsDialog.ui.h:25
 msgid "You need to install pylast and gi secret"
 msgstr ""
 
