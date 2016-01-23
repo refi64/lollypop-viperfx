@@ -207,10 +207,8 @@ class BinPlayer(BasePlayer):
         """
             Make volume going up smoothly
         """
-        # We are not the active playbin, stop all and restore volume
+        # We are not the active playbin, stop all
         if self._playbin != playbin:
-            playbin.set_volume(GstAudio.StreamVolumeFormat.LINEAR,
-                               self._volume)
             return
         position = playbin.query_position(Gst.Format.TIME)[1] / 1000000000
         end_in = (duration - position) * 1000
@@ -230,10 +228,8 @@ class BinPlayer(BasePlayer):
         """
             Make volume going down smoothly
         """
-        # We are again the active playbin, stop all and restore volume
+        # We are again the active playbin, stop all
         if self._playbin == playbin:
-            playbin.set_volume(GstAudio.StreamVolumeFormat.LINEAR,
-                               self._volume)
             return
         position = playbin.query_position(Gst.Format.TIME)[1] / 1000
         end_in = (duration - position) / 1000
