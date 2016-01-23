@@ -48,8 +48,8 @@ class Window(Gtk.ApplicationWindow, Container):
         self._setup_content()
         self.setup_window()
         self._setup_media_keys()
-        self._enabled_shorcuts = True
-        self.enable_global_shorcuts(self._enabled_shorcuts)
+        self._enabled_shorcuts = False
+        self.enable_global_shorcuts(True)
 
         self.connect('destroy', self._on_destroyed_window)
         self.connect('realize', self._on_realize)

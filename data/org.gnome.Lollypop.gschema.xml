@@ -188,6 +188,16 @@
             <summary>MPD network port</summary>
             <description></description>
         </key>
+        <key type="b" name="mix">
+            <default>false</default>
+            <summary>Mix songs</summary>
+            <description>Crossefade songs change</description>
+        </key>
+        <key type="i" name="mix-duration">
+            <default>3</default>
+            <summary>Mix duration</summary>
+            <description></description>
+        </key>
         <key enum="org.gnome.Lollypop.Shuffle" name="shuffle">
             <default>'none'</default>
             <summary>Shuffle mode</summary>

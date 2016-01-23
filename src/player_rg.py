@@ -26,45 +26,44 @@ class ReplayGainPlayer:
             Init replay gain on playbin
             @param playbin as Gst play bin
         """
-        self._rgfilter = Gst.ElementFactory.make("bin", "bin")
+        rgfilter = Gst.ElementFactory.make("bin", "bin")
 
-        self._rg_audioconvert1 = Gst.ElementFactory.make("audioconvert",
-                                                         "audioconvert1")
-        self._rg_audioconvert2 = Gst.ElementFactory.make("audioconvert",
-                                                         "audioconvert2")
+        rg_audioconvert1 = Gst.ElementFactory.make("audioconvert",
+                                                   "audioconvert1")
+        rg_audioconvert2 = Gst.ElementFactory.make("audioconvert",
+                                                   "audioconvert2")
 
-        self._rgvolume = Gst.ElementFactory.make("rgvolume",
-                                                 "rgvolume")
-        self._rglimiter = Gst.ElementFactory.make("rglimiter",
-                                                  "rglimiter")
-        self._rg_audiosink = Gst.ElementFactory.make("autoaudiosink",
-                                                     "autoaudiosink")
+        self.rgvolume = Gst.ElementFactory.make("rgvolume",
+                                                "rgvolume")
+        rglimiter = Gst.ElementFactory.make("rglimiter",
+                                            "rglimiter")
+        rg_audiosink = Gst.ElementFactory.make("autoaudiosink",
+                                               "autoaudiosink")
 
-        if not self._rgfilter or not self._rg_audioconvert1 or\
-           not self._rg_audioconvert2 or not self._rgvolume or\
-           not self._rglimiter or not self._rg_audiosink:
+        if not rgfilter or not rg_audioconvert1 or\
+           not rg_audioconvert2 or not self.rgvolume or\
+           not rglimiter or not rg_audiosink:
             print("Replay Gain not available, ")
             print("please check your gstreamer installation...")
             return
 
-        if self._rgvolume is not None:
-            self._rgvolume.props.album_mode = 1
-            self._rgvolume.props.pre_amp = Lp().settings.get_value(
+        if self.rgvolume is not None:
+            self.rgvolume.props.album_mode = 1
+            self.rgvolume.props.pre_amp = Lp().settings.get_value(
                 "replaygain").get_double()
 
-        self._rgfilter.add(self._rgvolume)
-        self._rgfilter.add(self._rg_audioconvert1)
-        self._rgfilter.add(self._rg_audioconvert2)
-        self._rgfilter.add(self._rglimiter)
-        self._rgfilter.add(self._rg_audiosink)
+        rgfilter.add(self.rgvolume)
+        rgfilter.add(rg_audioconvert1)
+        rgfilter.add(rg_audioconvert2)
+        rgfilter.add(rglimiter)
+        rgfilter.add(rg_audiosink)
 
-        self._rg_audioconvert1.link(self._rgvolume)
-        self._rgvolume.link(self._rg_audioconvert2)
-        self._rgvolume.link(self._rglimiter)
-        self._rg_audioconvert2.link(self._rg_audiosink)
+        rg_audioconvert1.link(self.rgvolume)
+        self.rgvolume.link(rg_audioconvert2)
+        self.rgvolume.link(rglimiter)
+        rg_audioconvert2.link(rg_audiosink)
 
-        self._rgfilter.add_pad(Gst.GhostPad.new(
+        rgfilter.add_pad(Gst.GhostPad.new(
                                "sink",
-                               self._rg_audioconvert1.get_static_pad("sink")))
-
-        playbin.set_property("audio-sink", self._rgfilter)
+                               rg_audioconvert1.get_static_pad("sink")))
+        playbin.set_property("audio-sink", rgfilter)

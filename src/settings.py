@@ -73,6 +73,10 @@ class SettingsDialog:
 
         builder = Gtk.Builder()
         builder.add_from_resource('/org/gnome/Lollypop/SettingsDialog.ui')
+        self._popover_content = builder.get_object('popover')
+        duration = builder.get_object('duration')
+        duration.set_range(1, 20)
+        duration.set_value(Lp().settings.get_value('mix-duration').get_int32())
 
         self._settings_dialog = builder.get_object('settings_dialog')
         self._settings_dialog.set_transient_for(Lp().window)
@@ -98,6 +102,9 @@ class SettingsDialog:
 
         switch_mpd = builder.get_object('switch_mpd')
         switch_mpd.set_state(not Lp().settings.get_value('disable-mpd'))
+
+        switch_mix = builder.get_object('switch_mix')
+        switch_mix.set_state(Lp().settings.get_value('mix'))
 
         switch_genres = builder.get_object('switch_genres')
         switch_genres.set_state(Lp().settings.get_value('show-genres'))
@@ -303,6 +310,29 @@ class SettingsDialog:
         else:
             Lp().mpd.quit()
             Lp().mpd = None
+
+    def _update_mix_setting(self, widget, state):
+        """
+            Update mix setting
+            @param widget as Gtk.Switch
+            @param state as bool
+        """
+        Lp().settings.set_value('mix', GLib.Variant('b', state))
+        if state:
+            popover = Gtk.Popover.new(widget)
+            if self._popover_content.get_parent() is None:
+                popover.add(self._popover_content)
+            else:
+                self._popover_content.reparent(popover)
+            popover.show_all()
+
+    def _update_mix_duration_setting(self, widget):
+        """
+            Update mix duration setting
+            @param widget as Gtk.Range
+        """
+        value = widget.get_value()
+        Lp().settings.set_value('mix-duration', GLib.Variant('i', value))
 
     def _update_compilations_setting(self, widget, state):
         """
