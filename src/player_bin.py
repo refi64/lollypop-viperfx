@@ -268,7 +268,7 @@ class BinPlayer(BasePlayer):
         if self.next_track.id is not None:
             self.load(self.next_track)
             self._playbin.set_volume(GstAudio.StreamVolumeFormat.LINEAR,
-                                     self._volume / 4)
+                                     0)
             GLib.idle_add(self._volume_up, self._playbin, duration)
         self._track_finished(finished, finished_start_time)
 
