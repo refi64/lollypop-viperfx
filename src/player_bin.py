@@ -204,7 +204,35 @@ class BinPlayer(BasePlayer):
 #######################
 # PRIVATE             #
 #######################
+    def _volume_up(self, playbin):
+        """
+            Make volume going up smoothly
+        """
+        # We are not the active playbin, stop all and restore volume
+        if self._playbin != playbin:
+            playbin.set_volume(GstAudio.StreamVolumeFormat.LINEAR,
+                               self._volume)
+            return
+        position = playbin.query_position(Gst.Format.TIME)[1] / 1000000
+        duration = Lp().settings.get_value('mix-duration').get_int32() * 1000
+        end_in = (duration - position)
+        if end_in > 0:
+            vol = playbin.get_volume(GstAudio.StreamVolumeFormat.LINEAR)
+            steps = end_in / 250
+            vol_up = (1.0 - vol) / steps
+            rate = vol + vol_up
+            if rate > 0:
+                playbin.set_volume(GstAudio.StreamVolumeFormat.LINEAR, rate)
+                GLib.timeout_add(250, self._volume_up, playbin)
+            else:
+                playbin.set_state(Gst.State.NULL)
+                playbin.set_volume(GstAudio.StreamVolumeFormat.LINEAR,
+                                   self._volume)
+
     def _volume_down(self, playbin):
+        """
+            Make volume going down smoothly
+        """
         # We are again the active playbin, stop all and restore volume
         if self._playbin == playbin:
             playbin.set_volume(GstAudio.StreamVolumeFormat.LINEAR,
@@ -227,6 +255,9 @@ class BinPlayer(BasePlayer):
                                    self._volume)
 
     def _do_crossfade(self):
+        """
+            Crossfade tracks
+        """
         if self.current_track.id == Type.RADIOS:
             return
         GLib.idle_add(self._volume_down, self._playbin)
@@ -240,7 +271,8 @@ class BinPlayer(BasePlayer):
         if self.next_track.id is not None:
             self.load(self.next_track)
             self._playbin.set_volume(GstAudio.StreamVolumeFormat.LINEAR,
-                                     self._volume)
+                                     self._volume / 4)
+            GLib.idle_add(self._volume_up, self._playbin)
         self._track_finished(finished, finished_start_time)
 
     def _load_track(self, track):
