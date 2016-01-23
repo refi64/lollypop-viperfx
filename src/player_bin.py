@@ -213,7 +213,6 @@ class BinPlayer(BasePlayer):
                                self._volume)
             return
         position = playbin.query_position(Gst.Format.TIME)[1] / 1000000000
-        print(duration, position)
         end_in = (duration - position) * 1000
         if end_in > 0:
             vol = playbin.get_volume(GstAudio.StreamVolumeFormat.LINEAR)
