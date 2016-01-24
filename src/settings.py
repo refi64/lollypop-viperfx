@@ -70,6 +70,7 @@ class SettingsDialog:
         """
         self._choosers = []
         self._timeout_id = None
+        self._popover = None
 
         builder = Gtk.Builder()
         builder.add_from_resource('/org/gnome/Lollypop/SettingsDialog.ui')
@@ -319,12 +320,13 @@ class SettingsDialog:
         """
         Lp().settings.set_value('mix', GLib.Variant('b', state))
         if state:
-            popover = Gtk.Popover.new(widget)
-            if self._popover_content.get_parent() is None:
-                popover.add(self._popover_content)
-            else:
-                self._popover_content.reparent(popover)
-            popover.show_all()
+            if self._popover is None:
+                self._popover = Gtk.Popover.new(widget)
+                self._popover.set_modal(False)
+                self._popover.add(self._popover_content)
+            self._popover.show_all()
+        else:
+            self._popover.hide()
 
     def _update_mix_duration_setting(self, widget):
         """
