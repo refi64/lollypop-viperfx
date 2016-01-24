@@ -215,9 +215,9 @@ class BinPlayer(BasePlayer):
         if duration > 0:
             vol = playbin.get_volume(GstAudio.StreamVolumeFormat.LINEAR)
             steps = duration / 0.25
-            vol_up = (1.0 - vol) / steps
+            vol_up = (self._volume - vol) / steps
             rate = vol + vol_up
-            if rate < 1.0:
+            if rate < self._volume:
                 playbin.set_volume(GstAudio.StreamVolumeFormat.LINEAR, rate)
                 GLib.timeout_add(250, self._volume_up,
                                  playbin, duration - 0.25)
