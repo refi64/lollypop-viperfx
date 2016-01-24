@@ -325,7 +325,7 @@ class SettingsDialog:
                 self._popover.set_modal(False)
                 self._popover.add(self._popover_content)
             self._popover.show_all()
-        else:
+        elif self._popover is not None:
             self._popover.hide()
 
     def _update_mix_duration_setting(self, widget):
