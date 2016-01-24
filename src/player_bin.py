@@ -172,9 +172,9 @@ class BinPlayer(BasePlayer):
         """
         position = self._playbin.query_position(Gst.Format.TIME)[1] / 1000
         if Lp().settings.get_value('mix') and self._gst_duration > 0:
-            diff = (self._gst_duration - position) / 1000000
-            if diff < Lp().settings.get_value('mix-duration').get_int32():
-                self._do_crossfade(diff)
+            duration = (self._gst_duration - position) / 1000000
+            if duration < Lp().settings.get_value('mix-duration').get_int32():
+                self._do_crossfade(duration)
         return position * 60
 
     def get_volume(self):
@@ -206,20 +206,21 @@ class BinPlayer(BasePlayer):
     def _volume_up(self, playbin, duration):
         """
             Make volume going up smoothly
+            @param playbin as Gst.Bin
+            @param duration as int
         """
         # We are not the active playbin, stop all
         if self._playbin != playbin:
             return
-        position = playbin.query_position(Gst.Format.TIME)[1] / 1000000000
-        end_in = (duration - position) * 1000
-        if end_in > 0:
+        if duration > 0:
             vol = playbin.get_volume(GstAudio.StreamVolumeFormat.LINEAR)
-            steps = end_in / 250
+            steps = duration / 0.25
             vol_up = (1.0 - vol) / steps
             rate = vol + vol_up
             if rate < 1.0:
                 playbin.set_volume(GstAudio.StreamVolumeFormat.LINEAR, rate)
-                GLib.timeout_add(250, self._volume_up, playbin, duration)
+                GLib.timeout_add(250, self._volume_up,
+                                 playbin, duration - 0.25)
             else:
                 playbin.set_volume(GstAudio.StreamVolumeFormat.LINEAR,
                                    self._volume)
@@ -227,33 +228,35 @@ class BinPlayer(BasePlayer):
     def _volume_down(self, playbin, duration):
         """
             Make volume going down smoothly
+            @param playbin as Gst.Bin
+            @param duration as int
         """
         # We are again the active playbin, stop all
         if self._playbin == playbin:
             return
-        position = playbin.query_position(Gst.Format.TIME)[1] / 1000
-        end_in = (duration - position) / 1000
-        if end_in > 0:
+        if duration > 0:
             vol = playbin.get_volume(GstAudio.StreamVolumeFormat.LINEAR)
-            steps = end_in / 250
+            steps = duration / 0.25
             vol_down = vol / steps
             rate = vol - vol_down
             if rate > 0:
                 playbin.set_volume(GstAudio.StreamVolumeFormat.LINEAR, rate)
-                GLib.timeout_add(250, self._volume_down, playbin, duration)
+                GLib.timeout_add(250, self._volume_down,
+                                 playbin, duration - 0.25)
             else:
                 playbin.set_state(Gst.State.NULL)
                 playbin.set_volume(GstAudio.StreamVolumeFormat.LINEAR,
                                    self._volume)
 
-    def _do_crossfade(self, duration):
+    def _do_crossfade(self, duration, next=True):
         """
             Crossfade tracks
-            @param duration as int (time left)
+            @param duration as int
+            @param next as bool
         """
         if self.current_track.id == Type.RADIOS:
             return
-        GLib.idle_add(self._volume_down, self._playbin, self._gst_duration)
+        GLib.idle_add(self._volume_down, self._playbin, duration)
         if self._playbin == self._playbin2:
             self._playbin = self._playbin1
         else:
@@ -261,8 +264,13 @@ class BinPlayer(BasePlayer):
 
         finished = self.current_track
         finished_start_time = self._start_time
-        if self.next_track.id is not None:
+        if next and self.next_track.id is not None:
             self.load(self.next_track)
+            self._playbin.set_volume(GstAudio.StreamVolumeFormat.LINEAR,
+                                     0)
+            GLib.idle_add(self._volume_up, self._playbin, duration)
+        elif self.prev_track.id is not None:
+            self.load(self.prev_track)
             self._playbin.set_volume(GstAudio.StreamVolumeFormat.LINEAR,
                                      0)
             GLib.idle_add(self._volume_up, self._playbin, duration)
