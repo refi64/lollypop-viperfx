@@ -49,8 +49,10 @@
                 <property name="can_focus">False</property>
                 <property name="halign">start</property>
                 <property name="ellipsize">end</property>
+                <property name="width_chars">20</property>
                 <property name="single_line_mode">True</property>
-                <property name="max_width_chars">30</property>
+                <property name="max_width_chars">20</property>
+                <property name="xalign">0</property>
                 <style>
                   <class name="lollypop-title"/>
                 </style>
@@ -67,8 +69,10 @@
                 <property name="can_focus">False</property>
                 <property name="halign">start</property>
                 <property name="ellipsize">end</property>
+                <property name="width_chars">20</property>
                 <property name="single_line_mode">True</property>
-                <property name="max_width_chars">30</property>
+                <property name="max_width_chars">20</property>
+                <property name="xalign">1.3411045074462891e-07</property>
                 <style>
                   <class name="lollypop-subtitle"/>
                   <class name="dim-label"/>
