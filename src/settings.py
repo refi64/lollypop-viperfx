@@ -424,6 +424,19 @@ class SettingsDialog:
                 pass
         Lp().settings.set_value('party-ids',  GLib.Variant('ai', ids))
 
+    def _on_mix_enter_notify(self, widget, event):
+        """
+            Show mix popover
+            @param widget as Gtk.Widget
+            @param event as Gdk.Event
+        """
+        if Lp().settings.get_value('mix'):
+            if self._popover is None:
+                self._popover = Gtk.Popover.new(widget)
+                self._popover.set_modal(False)
+                self._popover.add(self._popover_content)
+            self._popover.show_all()
+
     def _on_test_btn_clicked(self, button):
         """
             Test lastfm connection
