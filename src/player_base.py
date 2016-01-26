@@ -23,6 +23,7 @@ class BasePlayer(GObject.GObject):
     __gsignals__ = {
         'current-changed': (GObject.SignalFlags.RUN_FIRST, None, ()),
         'next-changed': (GObject.SignalFlags.RUN_FIRST, None, ()),
+        'prev-changed': (GObject.SignalFlags.RUN_FIRST, None, ()),
         'seeked': (GObject.SignalFlags.RUN_FIRST, None, (int,)),
         'status-changed': (GObject.SignalFlags.RUN_FIRST, None, ()),
         'volume-changed': (GObject.SignalFlags.RUN_FIRST, None, ()),

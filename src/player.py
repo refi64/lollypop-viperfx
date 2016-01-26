@@ -218,6 +218,7 @@ class Player(BinPlayer, QueuePlayer, UserPlaylistPlayer, RadioPlayer,
         # Get a linear track then
         if self.prev_track.id is None:
             self.prev_track = LinearPlayer.prev(self)
+        self.emit('prev-changed')
 
     def set_next(self):
         """

@@ -19,7 +19,7 @@ from lollypop.widgets_radio import RadioWidget
 from lollypop.radios import Radios
 from lollypop.pop_radio import RadioPopover
 from lollypop.pop_tunein import TuneinPopover
-from lollypop.define import Lp
+from lollypop.define import Lp, Type
 from lollypop.objects import Track
 
 
@@ -79,6 +79,10 @@ class RadiosView(View):
             Populate view with tracks from playlist
             Thread safe
         """
+        Lp().player.set_radios(self._radios_manager.get())
+        if Lp().player.current_track.id == Type.RADIOS:
+            Lp().player.set_next()  # We force next update
+            Lp().player.set_prev()  # We force prev update
         t = Thread(target=self._populate)
         t.daemon = True
         t.start()
@@ -176,6 +180,18 @@ class RadiosView(View):
             old_widget.destroy()
             if not self._radiobox.get_children():
                 self._show_stack([])
+
+        # Update player state based on current view
+        radios = []
+        for child in self._radiobox.get_children():
+            widget = child.get_child()
+            name = widget.get_name()
+            url = manager.get_url(name)
+            radios.append((name, url))
+        Lp().player.set_radios(radios)
+        if Lp().player.current_track.id == Type.RADIOS:
+            Lp().player.set_next()  # We force next update
+            Lp().player.set_prev()  # We force prev update
 
     def _on_logo_changed(self, player, name):
         """

@@ -22,6 +22,9 @@ class RadioPlayer(BasePlayer):
     """
         Radio player
         This class neeed the parent object to be a BinPlayer
+        We keep a version of available radios (set_radios()) because we
+        need to be in sync with current/last view and not with db (popularity
+        changes)
     """
 
     def __init__(self):
@@ -30,6 +33,7 @@ class RadioPlayer(BasePlayer):
         """
         BasePlayer.__init__(self)
         self._current = None
+        self._radios = []
 
     def load(self, track):
         """
@@ -57,20 +61,18 @@ class RadioPlayer(BasePlayer):
         if self.current_track.id != Type.RADIOS:
             return track
 
-        radios_manager = Radios()
-        radios = radios_manager.get()
         i = 0
-        for (name, url) in radios:
+        for (name, url) in self._radios:
             i += 1
             if self.current_track.album_artist == name:
                 break
 
         # Get next radio
-        if i >= len(radios):
+        if i >= len(self._radios):
             i = 0
 
-        name = radios[i][0]
-        url = radios[i][1]
+        name = self._radios[i][0]
+        url = self._radios[i][1]
         if url:
             track.set_radio(name, url)
         return track
@@ -84,23 +86,28 @@ class RadioPlayer(BasePlayer):
         if self.current_track.id != Type.RADIOS:
             return track
 
-        radios_manager = Radios()
-        radios = radios_manager.get()
-        i = len(radios) - 1
-        for (name, url) in reversed(radios):
+        i = len(self._radios) - 1
+        for (name, url) in reversed(self._radios):
             i -= 1
             if self.current_track.album_artist == name:
                 break
 
         # Get prev radio
         if i < 0:
-            i = len(radios) - 1
+            i = len(self._radios) - 1
 
-        name = radios[i][0]
-        url = radios[i][1]
+        name = self._radios[i][0]
+        url = self._radios[i][1]
         if url:
             track.set_radio(name, url)
         return track
+
+    def set_radios(self, radios):
+        """
+            Set available radios
+            @param radios as (name, url)
+        """
+        self._radios = radios
 
 #######################
 # PRIVATE             #

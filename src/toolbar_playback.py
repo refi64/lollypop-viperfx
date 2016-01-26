@@ -48,6 +48,12 @@ class ToolbarPlayback(Gtk.Bin):
         self._play_btn.set_sensitive(True)
         self._prev_btn.set_sensitive(True)
         self._next_btn.set_sensitive(True)
+
+    def on_prev_changed(self, player):
+        """
+            Update prev tooltip
+            @param player as Player
+        """
         # Can add a \n in markup
         # GTK bug => https://bugzilla.gnome.org/show_bug.cgi?id=749965
         if player.prev_track.id == Type.RADIOS:
@@ -63,7 +69,7 @@ class ToolbarPlayback(Gtk.Bin):
 
     def on_next_changed(self, player):
         """
-            Update next/prev tooltip
+            Update next tooltip
             @param player as Player
         """
         if player.next_track.id == Type.RADIOS:
