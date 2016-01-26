@@ -15,7 +15,7 @@ from gi.repository import Gtk
 from cgi import escape
 from gettext import gettext as _
 
-from lollypop.define import Lp
+from lollypop.define import Lp, Type
 
 
 class ToolbarPlayback(Gtk.Bin):
@@ -48,15 +48,11 @@ class ToolbarPlayback(Gtk.Bin):
         self._play_btn.set_sensitive(True)
         self._prev_btn.set_sensitive(True)
         self._next_btn.set_sensitive(True)
-
-    def on_next_changed(self, player):
-        """
-            Update next/prev tooltip
-            @param player as Player
-        """
         # Can add a \n in markup
         # GTK bug => https://bugzilla.gnome.org/show_bug.cgi?id=749965
-        if player.prev_track.id is not None:
+        if player.prev_track.id == Type.RADIOS:
+            self._prev_btn.set_tooltip_text(player.prev_track.album_artist)
+        elif player.prev_track.id is not None:
             prev_artist = escape(player.prev_track.artist)
             prev_title = escape(player.prev_track.title)
             self._prev_btn.set_tooltip_markup("<b>%s</b> - %s" %
@@ -64,7 +60,15 @@ class ToolbarPlayback(Gtk.Bin):
                                                prev_title))
         else:
             self._prev_btn.set_tooltip_text("")
-        if player.next_track.id is not None:
+
+    def on_next_changed(self, player):
+        """
+            Update next/prev tooltip
+            @param player as Player
+        """
+        if player.next_track.id == Type.RADIOS:
+            self._next_btn.set_tooltip_text(player.next_track.album_artist)
+        elif player.next_track.id is not None:
             next_artist = escape(player.next_track.artist)
             next_title = escape(player.next_track.title)
             self._next_btn.set_tooltip_markup("<b>%s</b> - %s" %
