@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-01-23 18:23+0100\n"
+"POT-Creation-Date: 2016-01-27 13:22+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -283,29 +283,14 @@ msgstr ""
 msgid "Tunein support"
 msgstr ""
 
-#: ../src/application.py:30
+#: ../src/application.py:31
 msgid ""
 "    - Scrobbler disabled\n"
 "    - Auto cover download disabled\n"
 "    - Artist informations disabled"
 msgstr ""
 
-#: ../src/application.py:358
-#, python-format
-msgid "%s artist(s)"
-msgstr ""
-
-#: ../src/application.py:360
-#, python-format
-msgid "%s album(s)"
-msgstr ""
-
-#: ../src/application.py:362
-#, python-format
-msgid "%s track(s)"
-msgstr ""
-
-#: ../src/application.py:378
+#: ../src/application.py:382
 msgid "Lollypop: You need to install yelp."
 msgstr ""
 
@@ -362,7 +347,8 @@ msgstr ""
 msgid "Random tracks"
 msgstr ""
 
-#: ../src/container.py:519 ../src/playlists.py:54 ../data/SettingsDialog.ui.h:8
+#: ../src/container.py:519 ../src/playlists.py:54
+#: ../data/SettingsDialog.ui.h:8
 msgid "Network control"
 msgstr ""
 
@@ -382,12 +368,12 @@ msgid "Many artists"
 msgstr ""
 
 #: ../src/fullscreen.py:92 ../src/fullscreen.py:280
-#: ../src/toolbar_playback.py:82 ../src/toolbar_playback.py:115
+#: ../src/toolbar_playback.py:92 ../src/toolbar_playback.py:125
 msgid "Pause"
 msgstr ""
 
 #: ../src/fullscreen.py:284 ../src/pop_tunein.py:154
-#: ../src/toolbar_playback.py:84 ../src/toolbar_playback.py:112
+#: ../src/toolbar_playback.py:94 ../src/toolbar_playback.py:122
 #: ../data/ToolbarPlayback.ui.h:2
 msgid "Play"
 msgstr ""
@@ -413,7 +399,7 @@ msgstr ""
 msgid "by %s, from %s"
 msgstr ""
 
-#: ../src/player_bin.py:358
+#: ../src/player_bin.py:403
 #, python-format
 msgid "File doesn't exist: %s"
 msgstr ""
@@ -516,11 +502,11 @@ msgstr ""
 msgid "Browse themes and add a new radio"
 msgstr ""
 
-#: ../src/settings.py:157
+#: ../src/settings.py:158
 msgid "Populars"
 msgstr ""
 
-#: ../src/settings.py:158
+#: ../src/settings.py:159
 msgid "Recently added"
 msgstr ""
 
