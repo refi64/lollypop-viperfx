@@ -360,11 +360,11 @@ class Application(Gtk.Application):
         albums = self.albums.count()
         tracks = self.tracks.count()
         builder.get_object('artists').set_text(
-                            __("%s artist", "%s artists", artists) % artists)
+                            __("%d artist", "%d artists", artists) % artists)
         builder.get_object('albums').set_text(
-                            __("%s album", "%s albums", albums) % albums)
+                            __("%d album", "%d albums", albums) % albums)
         builder.get_object('tracks').set_text(
-                            __("%s track", "%s tracks", tracks) % tracks)
+                            __("%d track", "%d tracks", tracks) % tracks)
         about = builder.get_object('about_dialog')
         about.set_transient_for(self.window)
         about.connect("response", self._about_response)
