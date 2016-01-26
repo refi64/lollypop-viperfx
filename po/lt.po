@@ -1,0 +1,847 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# 
+# Translators:
+# Moo, 2015-2016
+msgid ""
+msgstr ""
+"Project-Id-Version: lollypop\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2016-01-23 18:23+0100\n"
+"PO-Revision-Date: 2016-01-23 17:23+0000\n"
+"Last-Translator: Cédric Bellegarde <web@adishatz.org>\n"
+"Language-Team: Lithuanian (http://www.transifex.com/gnumdk/lollypop/language/lt/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: lt\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+
+#: ../data/org.gnome.Lollypop.gschema.xml.h:1
+msgid "Window size"
+msgstr "Lango dydis"
+
+#: ../data/org.gnome.Lollypop.gschema.xml.h:2
+msgid "Window size (width and height)."
+msgstr "Lango dydis (plotis ir aukštis)."
+
+#: ../data/org.gnome.Lollypop.gschema.xml.h:3
+msgid "Window position"
+msgstr "Lango vieta"
+
+#: ../data/org.gnome.Lollypop.gschema.xml.h:4
+msgid "Window position (x and y)."
+msgstr "Lango vieta (x ir y)."
+
+#: ../data/org.gnome.Lollypop.gschema.xml.h:5
+msgid "Window maximized"
+msgstr "Langas išdidintas"
+
+#: ../data/org.gnome.Lollypop.gschema.xml.h:6
+msgid "Window maximized state."
+msgstr "Lango išdidinimo būsena."
+
+#: ../data/org.gnome.Lollypop.gschema.xml.h:7
+msgid "Enabled genres in party mode"
+msgstr "Vakarėlio veiksenoje įjungia žanrus"
+
+#: ../data/org.gnome.Lollypop.gschema.xml.h:8
+msgid "Ids for genres."
+msgstr ""
+
+#: ../data/org.gnome.Lollypop.gschema.xml.h:9
+msgid "Music paths"
+msgstr "Muzikos keliai"
+
+#: ../data/org.gnome.Lollypop.gschema.xml.h:10
+msgid "When empty, use XDG_MUSIC_DIR"
+msgstr ""
+
+#: ../data/org.gnome.Lollypop.gschema.xml.h:11
+msgid "Last.fm login"
+msgstr "Last.fm prisijungimas"
+
+#: ../data/org.gnome.Lollypop.gschema.xml.h:12
+msgid "Favorite tag editor"
+msgstr "Mėgstamas žymių redaktorius"
+
+#: ../data/org.gnome.Lollypop.gschema.xml.h:13
+msgid "INTERNAL"
+msgstr ""
+
+#: ../data/org.gnome.Lollypop.gschema.xml.h:14
+msgid "Favorite cover file"
+msgstr "Mėgstamas viršelio failas"
+
+#: ../data/org.gnome.Lollypop.gschema.xml.h:15
+msgid "Restart needed"
+msgstr "Reikalingas paleidimas iš naujo"
+
+#: ../data/org.gnome.Lollypop.gschema.xml.h:16
+msgid "Database version"
+msgstr "Duomenų bazės versija"
+
+#: ../data/org.gnome.Lollypop.gschema.xml.h:17
+msgid ""
+"Reset this value will reset the database, popular albums will be restored"
+msgstr ""
+
+#: ../data/org.gnome.Lollypop.gschema.xml.h:18 ../data/SettingsDialog.ui.h:14
+msgid "Albums cover size"
+msgstr "Albumų viršelių dydis"
+
+#: ../data/org.gnome.Lollypop.gschema.xml.h:19
+msgid "Replay gain value in db"
+msgstr ""
+
+#: ../data/org.gnome.Lollypop.gschema.xml.h:20
+msgid "Between -15 and 15"
+msgstr "Tarp -15 ir 15"
+
+#: ../data/org.gnome.Lollypop.gschema.xml.h:21
+msgid "Disable mpd support"
+msgstr "Išjungti mpd palaikymą"
+
+#: ../data/org.gnome.Lollypop.gschema.xml.h:22
+msgid "Sync all albums(MTP)"
+msgstr "Sinchronizuoti visus albumus(MTP)"
+
+#: ../data/org.gnome.Lollypop.gschema.xml.h:23
+msgid "Convert to MP3(MTP)"
+msgstr "Konvertuoti į MP3(MTP)"
+
+#: ../data/org.gnome.Lollypop.gschema.xml.h:24 ../data/SettingsDialog.ui.h:3
+msgid "Auto update music"
+msgstr "Automatiškai atnaujinti muziką"
+
+#: ../data/org.gnome.Lollypop.gschema.xml.h:25
+msgid "Show genres list"
+msgstr "Rodyti žanrų sąrašą"
+
+#: ../data/org.gnome.Lollypop.gschema.xml.h:26
+msgid "Use dark gtk theme"
+msgstr "Naudoti tamsią gtk temą"
+
+#: ../data/org.gnome.Lollypop.gschema.xml.h:27
+msgid "Disable the use client side window decorations (headerbar)"
+msgstr ""
+
+#: ../data/org.gnome.Lollypop.gschema.xml.h:28 ../data/SettingsDialog.ui.h:13
+msgid "Show compilations in albums view"
+msgstr ""
+
+#: ../data/org.gnome.Lollypop.gschema.xml.h:29 ../data/SettingsDialog.ui.h:5
+msgid "Continue playback when closed"
+msgstr "Užvėrus, tęsti muzikos grojimą"
+
+#: ../data/org.gnome.Lollypop.gschema.xml.h:30
+msgid "Restore previous state"
+msgstr "Atkurti ankstesnę būseną"
+
+#: ../data/org.gnome.Lollypop.gschema.xml.h:31
+msgid "Auto play albums on click"
+msgstr "Automatiškai groti albumus, spustelėjus"
+
+#: ../data/org.gnome.Lollypop.gschema.xml.h:32
+msgid "Disable MPRIS"
+msgstr "Išjungti MPRIS"
+
+#: ../data/org.gnome.Lollypop.gschema.xml.h:33
+msgid "Disable notifications"
+msgstr "Išjungti pranešimus"
+
+#: ../data/org.gnome.Lollypop.gschema.xml.h:34
+msgid "Show track number from tags"
+msgstr "Rodyti takelių numerius iš žymių"
+
+#: ../data/org.gnome.Lollypop.gschema.xml.h:35
+msgid "MPD network interface"
+msgstr "MPD tinklo sąsaja"
+
+#: ../data/org.gnome.Lollypop.gschema.xml.h:36
+msgid "MPD network port"
+msgstr "MPD tinklo prievadas"
+
+#: ../data/org.gnome.Lollypop.gschema.xml.h:37 ../data/SettingsDialog.ui.h:9
+msgid "Mix songs"
+msgstr ""
+
+#: ../data/org.gnome.Lollypop.gschema.xml.h:38
+msgid "Mix duration"
+msgstr ""
+
+#: ../data/org.gnome.Lollypop.gschema.xml.h:39
+msgid "Shuffle mode"
+msgstr "Maišymo veiksena"
+
+#. Translators: Don't translate allowed values, just the description in the
+#. brackets
+#: ../data/org.gnome.Lollypop.gschema.xml.h:41
+msgid ""
+"Value identifies whether to shuffle tracks/albums. Allowed values are: "
+"\"none\" (shuffle off), \"tracks\" (shuffle tracks) , \"albums\" (shuffle "
+"albums), \"tracks_artist\" (shuffle tracks from artist), \"albums_artist\" "
+"(shuffle albums from artist)."
+msgstr "Reikšmė nurodo ar maišyti takelius/albumus. Galimos reikšmės yra: \"none\" (maišymas išjungtas), \"tracks\" (maišyti takelius) , \"albums\" (maišyti albumus), \"tracks_artist\" (maišyti atlikėjo takelius), \"albums_artist\" (maišyti atlikėjo albumus)."
+
+#: ../data/lollypop.desktop.in.h:1 ../data/lollypop.appdata.xml.in.h:1
+msgid "Lollypop"
+msgstr "Lollypop"
+
+#: ../data/lollypop.desktop.in.h:2
+msgid "Music Player"
+msgstr "Muzikos grotuvas"
+
+#: ../data/lollypop.desktop.in.h:3 ../data/lollypop.appdata.xml.in.h:2
+msgid "Play and organize your music collection"
+msgstr "Grokite ir tvarkykite savo muzikinę kolekciją"
+
+#: ../data/lollypop.desktop.in.h:4
+msgid "Play/Pause"
+msgstr "Groti/Pristabdyti"
+
+#: ../data/lollypop.desktop.in.h:5 ../src/notification.py:70
+#: ../data/ToolbarPlayback.ui.h:3
+msgid "Next"
+msgstr "Kitas"
+
+#: ../data/lollypop.desktop.in.h:6 ../src/notification.py:66
+#: ../data/ToolbarPlayback.ui.h:1
+msgid "Previous"
+msgstr "Ankstesnis"
+
+#: ../data/lollypop.appdata.xml.in.h:3
+msgid "Lollypop is a new GNOME music playing application."
+msgstr "Lollypop yra nauja GNOME muzikos atkūrimo programa."
+
+#: ../data/lollypop.appdata.xml.in.h:4
+msgid "It provides:"
+msgstr "Joje pateikiama:"
+
+#: ../data/lollypop.appdata.xml.in.h:5
+msgid "mp3/4, ogg and flac playback"
+msgstr "mp3/4, ogg ir flac atkūrimas"
+
+#: ../data/lollypop.appdata.xml.in.h:6
+msgid "Genre/Cover browsing"
+msgstr "Žanrų/Viršelių naršymas"
+
+#: ../data/lollypop.appdata.xml.in.h:7
+msgid "Genre/Artist/Cover browsing"
+msgstr "Žanrų/Atlikėjų/Viršelių naršymas"
+
+#: ../data/lollypop.appdata.xml.in.h:8 ../data/ToolbarEnd.ui.h:9
+msgid "Search"
+msgstr "Paieška"
+
+#: ../data/lollypop.appdata.xml.in.h:9 ../src/pop_menu.py:443
+#: ../src/pop_menu.py:462 ../data/ToolbarEnd.ui.h:10
+msgid "Queue"
+msgstr "Eilė"
+
+#: ../data/lollypop.appdata.xml.in.h:10 ../data/SettingsDialog.ui.h:21
+#: ../data/ToolbarEnd.ui.h:8
+msgid "Party mode"
+msgstr "Vakarėlio veiksena"
+
+#: ../data/lollypop.appdata.xml.in.h:11
+msgid "Replay gain"
+msgstr "Replay gain"
+
+#: ../data/lollypop.appdata.xml.in.h:12
+msgid "Cover art downloader"
+msgstr "Viršelių apipavidalinimų atsiuntimo įrankis"
+
+#: ../data/lollypop.appdata.xml.in.h:13
+msgid "Context artist view"
+msgstr "Kontekstinis atlikėjo rodinys"
+
+#: ../data/lollypop.appdata.xml.in.h:14
+msgid "MTP sync"
+msgstr "MTP sinchronizacija"
+
+#: ../data/lollypop.appdata.xml.in.h:15
+msgid "Fullscreen view"
+msgstr "Viso ekrano rodinys"
+
+#: ../data/lollypop.appdata.xml.in.h:16
+msgid "Radios support"
+msgstr "Radijų palaikymas"
+
+#: ../data/lollypop.appdata.xml.in.h:17
+msgid "Last.fm support"
+msgstr "Last.fm palaikymas"
+
+#: ../data/lollypop.appdata.xml.in.h:18
+msgid "Auto install codecs"
+msgstr "Automatinis kodekų įdiegimas"
+
+#: ../data/lollypop.appdata.xml.in.h:19
+msgid "HiDPI support"
+msgstr "HiDPI palaikymas"
+
+#: ../data/lollypop.appdata.xml.in.h:20
+msgid "Tunein support"
+msgstr "Tunein palaikymas"
+
+#: ../src/application.py:30
+msgid ""
+"    - Scrobbler disabled\n"
+"    - Auto cover download disabled\n"
+"    - Artist informations disabled"
+msgstr ""
+
+#: ../src/application.py:358
+#, python-format
+msgid "%s artist(s)"
+msgstr "%s atlikėjai(-ų)"
+
+#: ../src/application.py:360
+#, python-format
+msgid "%s album(s)"
+msgstr "%s albumai(-ų)"
+
+#: ../src/application.py:362
+#, python-format
+msgid "%s track(s)"
+msgstr "%s takeliai(-ių)"
+
+#: ../src/application.py:378
+msgid "Lollypop: You need to install yelp."
+msgstr "Lollypop: Jums reikia įdiegti yelp."
+
+#: ../src/collectionscanner.py:67
+msgid "Your music is updating"
+msgstr "Jūsų muzika yra atnaujinama"
+
+#: ../src/container.py:437
+msgid "Popular albums"
+msgstr "Populiarūs albumai"
+
+#: ../src/container.py:438
+msgid "Recently added albums"
+msgstr "Paskiausiai pridėti albumai"
+
+#: ../src/container.py:439
+msgid "Random albums"
+msgstr "Atsitiktiniai albumai"
+
+#: ../src/container.py:440 ../src/pop_menu.py:368 ../src/pop_menu.py:445
+#: ../src/pop_menu.py:464
+msgid "Playlists"
+msgstr "Grojaraščiai"
+
+#: ../src/container.py:441
+msgid "Radios"
+msgstr "Radijai"
+
+#: ../src/container.py:443
+msgid "All artists"
+msgstr "Visi atlikėjai"
+
+#: ../src/container.py:445 ../data/DeviceManagerWidget.ui.h:1
+msgid "All albums"
+msgstr "Visi albumai"
+
+#: ../src/container.py:492
+msgid "Compilations"
+msgstr ""
+
+#: ../src/container.py:515
+msgid "Popular tracks"
+msgstr "Populiarūs takeliai"
+
+#: ../src/container.py:516
+msgid "Recently played"
+msgstr "Paskiausiai groti"
+
+#: ../src/container.py:517
+msgid "Never played"
+msgstr "Niekada negroti"
+
+#: ../src/container.py:518
+msgid "Random tracks"
+msgstr "Atsitiktiniai takeliai"
+
+#: ../src/container.py:519 ../src/playlists.py:54
+#: ../data/SettingsDialog.ui.h:8
+msgid "Network control"
+msgstr "Tinklo valdymas"
+
+#: ../src/database_albums.py:270 ../src/database_artists.py:104
+#: ../src/database_genres.py:69 ../src/database_tracks.py:229
+#: ../src/tagreader.py:87 ../src/tagreader.py:118 ../src/tagreader.py:143
+#: ../src/tagreader.py:158
+msgid "Unknown"
+msgstr "Nežinoma"
+
+#: ../src/database_albums.py:286
+msgid "Compilation"
+msgstr ""
+
+#: ../src/database_artists.py:97
+msgid "Many artists"
+msgstr ""
+
+#: ../src/fullscreen.py:92 ../src/fullscreen.py:280
+#: ../src/toolbar_playback.py:82 ../src/toolbar_playback.py:115
+msgid "Pause"
+msgstr "Pristabdyti"
+
+#: ../src/fullscreen.py:284 ../src/pop_tunein.py:154
+#: ../src/toolbar_playback.py:84 ../src/toolbar_playback.py:112
+#: ../data/ToolbarPlayback.ui.h:2
+msgid "Play"
+msgstr "Groti"
+
+#: ../src/lastfm.py:23
+msgid "Last.fm authentication disabled"
+msgstr "Last.fm tapatybės nustatymas išjungtas"
+
+#: ../src/lastfm.py:289
+msgid "Wrong Last.fm credentials"
+msgstr "Neteisingi Last.fm prisijungimo duomenys"
+
+#. TRANSLATORS: by refers to the artist,
+#: ../src/notification.py:104
+#, python-format
+msgid "by %s"
+msgstr ""
+
+#. TRANSLATORS: by refers to the artist,
+#. from to the album
+#: ../src/notification.py:112
+#, python-format
+msgid "by %s, from %s"
+msgstr ""
+
+#: ../src/player_bin.py:358
+#, python-format
+msgid "File doesn't exist: %s"
+msgstr "Failo nėra: %s"
+
+#: ../src/playlists.py:53
+msgid "Loved tracks"
+msgstr "Pamėgti takeliai"
+
+#: ../src/pop_covers.py:56 ../src/pop_tunein.py:93 ../data/RadioPopover.ui.h:3
+msgid "Please wait..."
+msgstr "Prašome palaukti..."
+
+#: ../src/pop_covers.py:131
+msgid "No cover found..."
+msgstr "Viršelių nerasta..."
+
+#: ../src/pop_covers.py:160
+msgid "Select a cover art for this album"
+msgstr "Pasirinkite šiam albumui viršelio apipavidalinimą"
+
+#: ../src/pop_infos.py:33
+msgid "Advanced artist informations disabled"
+msgstr "Išplėstinė informacija apie atlikėja išjungta"
+
+#: ../src/pop_infos.py:41
+msgid "WebKit support disabled"
+msgstr "WebKit palaikymas išjungtas"
+
+#: ../src/pop_menu.py:69
+msgid "Continue playback"
+msgstr "Tęsti grojimą"
+
+#: ../src/pop_menu.py:74
+msgid "Stop after this track"
+msgstr "Stabdyti po šio takelio"
+
+#: ../src/pop_menu.py:79
+msgid "Stop after this album"
+msgstr "Stabdyti po šio albumo"
+
+#: ../src/pop_menu.py:84
+msgid "Stop after this artist"
+msgstr "Stabdyti po šio atlikėjo"
+
+#: ../src/pop_menu.py:175 ../data/SearchRow.ui.h:3
+msgid "Add to queue"
+msgstr "Pridėti į eilę"
+
+#: ../src/pop_menu.py:180
+msgid "Next tracks"
+msgstr "Kiti takeliai"
+
+#: ../src/pop_menu.py:182 ../data/NextPopover.ui.h:1
+msgid "Next track"
+msgstr "Kitas takelis"
+
+#: ../src/pop_menu.py:186
+msgid "Remove from queue"
+msgstr "Šalinti iš eilės"
+
+#: ../src/pop_menu.py:254
+msgid "Add to others"
+msgstr "Pridėti į kitus"
+
+#: ../src/pop_menu.py:271
+#, python-format
+msgid "Remove from \"%s\""
+msgstr "Šalinti iš \"%s\""
+
+#: ../src/pop_menu.py:277
+#, python-format
+msgid "Add to \"%s\""
+msgstr "Pridėti į \"%s\""
+
+#: ../src/pop_menu.py:366
+msgid "Playback"
+msgstr "Grojimas"
+
+#: ../src/pop_menu.py:403
+msgid "Modify informations"
+msgstr "Modifikuoti informaciją"
+
+#: ../src/pop_menu.py:447 ../data/PlaylistView.ui.h:1
+msgid "Edit"
+msgstr "Redaguoti"
+
+#: ../src/pop_radio.py:83 ../src/pop_tunein.py:160
+msgid "Add"
+msgstr "Pridėti"
+
+#: ../src/pop_radio.py:85 ../src/wikipedia.py:59
+msgid "Modify"
+msgstr "Modifikuoti"
+
+#: ../src/pop_tunein.py:105
+msgid "Can't connect to TuneIn..."
+msgstr "Nepavyksta prisijungti prie TuneIn..."
+
+#: ../src/pop_tunein.py:179
+msgid "Browse themes and add a new radio"
+msgstr "Naršykite temas ir pridėkite naują radiją"
+
+#: ../src/settings.py:157
+msgid "Populars"
+msgstr "Populiarūs"
+
+#: ../src/settings.py:158
+msgid "Recently added"
+msgstr "Paskiausiai pridėti"
+
+#. Handle language ordering
+#. Translators: Add here words that shoud be ignored for artist sort order
+#: ../src/utils.py:101
+msgid "The the"
+msgstr "The the"
+
+#: ../src/view_device.py:77 ../src/view_device.py:143
+#, python-format
+msgid "Synchronize %s"
+msgstr ""
+
+#: ../src/view_device.py:132
+msgid "Cancel synchronization"
+msgstr "Atšaukti sinchronizaciją"
+
+#: ../src/widgets_album.py:310
+#, python-format
+msgid "%s h  %s m"
+msgstr "%s val.  %s min."
+
+#: ../src/widgets_album.py:312
+#, python-format
+msgid "%s h"
+msgstr "%s val."
+
+#: ../src/widgets_album.py:314
+#, python-format
+msgid "%s m"
+msgstr "%s min."
+
+#: ../src/widgets_album.py:326
+#, python-format
+msgid "Disc %s"
+msgstr "Diskas %s"
+
+#: ../src/widgets_device.py:51
+msgid "You need to install gstreamer-plugins-ugly"
+msgstr "Jūs turite įdiegti gstreamer-plugins-ugly"
+
+#: ../src/widgets_device.py:216
+msgid "Unknown error while syncing, try to reboot your device"
+msgstr "Sinchronizuojant, įvyko nežinoma klaida, pabandykite iš naujo paleisti savo įrenginį"
+
+#: ../src/widgets_device.py:224
+msgid "No free space available on device"
+msgstr "Įrenginyje nėra prieinamos laisvos vietos"
+
+#: ../src/widgets_playlist.py:258 ../src/widgets_playlist.py:261
+msgid "New playlist "
+msgstr "Naujas grojaraštis"
+
+#. Need a copy, segfault on EOS 3.1
+#: ../src/widgets_playlist.py:309 ../src/widgets_playlist.py:547
+#, python-format
+msgid "Remove \"%s\"?"
+msgstr "Šalinti \"%s\"?"
+
+#: ../src/widgets_playlist.py:592
+msgid "Remove these tracks?"
+msgstr "Šalinti šiuos takelius?"
+
+#. Translators: Put here words added by wikipedia in band search
+#. Ex: Muse_(band), Peaches(musician)
+#. Unused be we keep this for now (as it's already translated)
+#: ../src/wikipedia.py:36
+msgid "musician;band"
+msgstr ""
+
+#: ../data/AboutDialog.ui.h:1
+msgid "A music player for GNOME."
+msgstr "Muzikos grotuvas, skirtas GNOME."
+
+#: ../data/AboutDialog.ui.h:2
+msgid "Visit Lollypop website"
+msgstr "Aplankyti Lollypop internetinę svetainę"
+
+#. Replace me with your names
+#: ../data/AboutDialog.ui.h:4
+msgid "Cédric Bellegarde <cedric.bellegarde@adishatz.org>"
+msgstr "Cédric Bellegarde <cedric.bellegarde@adishatz.org>"
+
+#: ../data/AlbumContextWidget.ui.h:1 ../data/AlbumDetailedWidget.ui.h:1
+msgid "Play this album"
+msgstr "Groti šį albumą"
+
+#: ../data/Appmenu.ui.h:1
+msgid "_Update music"
+msgstr "Atna_ujinti muziką"
+
+#: ../data/Appmenu.ui.h:2
+msgid "_Fullscreen"
+msgstr "_Visas ekranas"
+
+#: ../data/Appmenu.ui.h:3
+msgid "_Preferences"
+msgstr "_Nuostatos"
+
+#: ../data/Appmenu.ui.h:4
+msgid "_About"
+msgstr "_Apie"
+
+#: ../data/Appmenu.ui.h:5
+msgid "_Help"
+msgstr "Žin_ynas"
+
+#: ../data/Appmenu.ui.h:6
+msgid "_Quit"
+msgstr "_Išeiti"
+
+#: ../data/ArtistContent.ui.h:1
+msgid "No information for this artist..."
+msgstr "Šiam atlikėjui informacijos nėra"
+
+#: ../data/ArtistInfos.ui.h:1
+msgid "Albums"
+msgstr "Albumai"
+
+#: ../data/ArtistInfos.ui.h:2
+msgid "Last.fm"
+msgstr "Last.fm"
+
+#: ../data/ArtistInfos.ui.h:3
+msgid "Wikipedia"
+msgstr "Vikipedija"
+
+#: ../data/ArtistInfos.ui.h:4
+msgid "Wikia"
+msgstr "Wikia"
+
+#: ../data/ArtistInfos.ui.h:5
+msgid "DuckDuckGo"
+msgstr "DuckDuckGo"
+
+#: ../data/DeviceManagerView.ui.h:1
+msgid "Synchronize your device with this playlists"
+msgstr ""
+
+#: ../data/DeviceManagerView.ui.h:2
+msgid "Please unlock your device"
+msgstr "Prašome atrakinti savo įrenginį"
+
+#: ../data/DeviceManagerWidget.ui.h:2
+msgid "Convert to MP3"
+msgstr "Konvertuoti į MP3"
+
+#: ../data/PlaylistEditWidget.ui.h:1 ../data/PlaylistsManagerWidget.ui.h:1
+msgid "Confirm"
+msgstr "Patvirtinti"
+
+#: ../data/PlaylistsManagerView.ui.h:1
+msgid "New playlist"
+msgstr "Naujas grojaraštis"
+
+#: ../data/QueuePopover.ui.h:1
+msgid "Queue:"
+msgstr "Eilė:"
+
+#: ../data/QueuePopover.ui.h:2
+msgid "Clear queue"
+msgstr "Išvalyti eilę"
+
+#: ../data/RadioPopover.ui.h:1
+msgid "Select a logo  for this radio"
+msgstr "Pasirinkite šiam radijui logotipą"
+
+#: ../data/RadioPopover.ui.h:2
+msgid "No logo found..."
+msgstr "Logotipų nerasta..."
+
+#: ../data/RadioPopover.ui.h:4
+msgid "Name:"
+msgstr "Pavadinimas:"
+
+#: ../data/RadioPopover.ui.h:5
+msgid "Address:"
+msgstr "Adresas:"
+
+#: ../data/RadioPopover.ui.h:6
+msgid "Delete"
+msgstr "Ištrinti"
+
+#: ../data/RadiosView.ui.h:1
+msgid "No favorite radios"
+msgstr "Nėra mėgstamų radijų"
+
+#: ../data/RadiosView.ui.h:2
+msgid "New radio"
+msgstr "Naujas radijas"
+
+#: ../data/RadiosView.ui.h:3
+msgid "Search in TuneIn"
+msgstr "Ieškoti sistemoje TuneIn"
+
+#: ../data/SearchPopover.ui.h:1
+msgid "Play search"
+msgstr "Groti paiešką"
+
+#: ../data/SearchPopover.ui.h:2
+msgid "Create a new playlist based on search"
+msgstr "Sukurti naują, paieškos rezultatais paremtą, grojaraštį"
+
+#: ../data/SearchRow.ui.h:1
+msgid "artist"
+msgstr "atlikėjas"
+
+#: ../data/SearchRow.ui.h:2
+msgid "Add to playlist"
+msgstr "Pridėti į grojaraštį"
+
+#: ../data/SettingsDialog.ui.h:1
+msgid "Mix duration in seconds"
+msgstr ""
+
+#: ../data/SettingsDialog.ui.h:2
+msgid "Preferences"
+msgstr "Nuostatos"
+
+#: ../data/SettingsDialog.ui.h:4
+msgid "Restore state on startup"
+msgstr "Paleidus programą, atkurti būseną"
+
+#: ../data/SettingsDialog.ui.h:6
+msgid "Play albums on click"
+msgstr "Groti albumus, spustelėjus"
+
+#: ../data/SettingsDialog.ui.h:7
+msgid "Control Lollypop with any MPD client"
+msgstr "Valdyti Lollypop su bet kuriuo MPD klientu"
+
+#: ../data/SettingsDialog.ui.h:10
+msgid "Behaviour"
+msgstr "Elgsena"
+
+#: ../data/SettingsDialog.ui.h:11
+msgid "Use dark theme variant"
+msgstr "Naudoti tamsios temos variantą"
+
+#: ../data/SettingsDialog.ui.h:12
+msgid "Show genres"
+msgstr "Rodyti žanrus"
+
+#: ../data/SettingsDialog.ui.h:15
+msgid "Appearance"
+msgstr "Išvaizda"
+
+#: ../data/SettingsDialog.ui.h:16
+msgid "Configure lollypop behaviour"
+msgstr "Konfigūruoti lollypop elgseną"
+
+#: ../data/SettingsDialog.ui.h:17
+msgid "Options"
+msgstr "Parametrai"
+
+#: ../data/SettingsDialog.ui.h:18
+msgid "Select music folders"
+msgstr "Pasirinkti muzikos aplankus"
+
+#: ../data/SettingsDialog.ui.h:19
+msgid "Music"
+msgstr "Muzika"
+
+#: ../data/SettingsDialog.ui.h:20
+msgid "Select what will be available in party mode"
+msgstr "Pasirinkti kas bus prieinama vakarėlio veiksenoje"
+
+#: ../data/SettingsDialog.ui.h:22
+msgid "Login:"
+msgstr "Prisijungimas:"
+
+#: ../data/SettingsDialog.ui.h:23
+msgid "Password:"
+msgstr "Slaptažodis:"
+
+#: ../data/SettingsDialog.ui.h:24
+msgid "Connect"
+msgstr "Prisijungti"
+
+#: ../data/SettingsDialog.ui.h:25
+msgid "You need to install pylast and gi secret"
+msgstr "Jūs turite įdiegti pylast ir gi secret"
+
+#: ../data/ToolbarEnd.ui.h:1
+msgid "No shuffle"
+msgstr "Nemaišyti"
+
+#: ../data/ToolbarEnd.ui.h:2
+msgid "Shuffle albums"
+msgstr "Maišyti albumus"
+
+#: ../data/ToolbarEnd.ui.h:3
+msgid "Shuffle tracks"
+msgstr "Maišyti takelius"
+
+#: ../data/ToolbarEnd.ui.h:4
+msgid "Shuffle albums from artist"
+msgstr "Maišyti atlikėjo albumus"
+
+#: ../data/ToolbarEnd.ui.h:5
+msgid "Shuffle tracks from artist"
+msgstr "Maišyti atlikėjo takelius"
+
+#: ../data/ToolbarEnd.ui.h:6
+msgid "Settings"
+msgstr "Nustatymai"
+
+#: ../data/ToolbarEnd.ui.h:7
+msgid "Shuffle"
+msgstr "Maišyti"
+
+#: ../data/Unicode.ui.h:1
+msgid "Error"
+msgstr "Klaida"
+
+#: ../data/Unicode.ui.h:2
+msgid ""
+"Lollypop isn't designed to work without an unicode locale.\n"
+"Please fix your system."
+msgstr "Lollypop nėra sukurta darbui be unikodo lokalės.\nPrašome pataisyti savo sistemą."
