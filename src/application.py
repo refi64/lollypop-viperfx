@@ -19,7 +19,7 @@ from gi.repository import Gtk, Gio, GLib, Gdk, Gst, Notify, TotemPlParser
 
 from locale import getlocale
 from gettext import gettext as _
-from gettext import ngettext as __
+from gettext import ngettext as ngettext
 from threading import Thread
 import os
 
@@ -360,11 +360,11 @@ class Application(Gtk.Application):
         albums = self.albums.count()
         tracks = self.tracks.count()
         builder.get_object('artists').set_text(
-                            __("%d artist", "%d artists", artists) % artists)
+                        ngettext("%d artist", "%d artists", artists) % artists)
         builder.get_object('albums').set_text(
-                            __("%d album", "%d albums", albums) % albums)
+                            ngettext("%d album", "%d albums", albums) % albums)
         builder.get_object('tracks').set_text(
-                            __("%d track", "%d tracks", tracks) % tracks)
+                            ngettext("%d track", "%d tracks", tracks) % tracks)
         about = builder.get_object('about_dialog')
         about.set_transient_for(self.window)
         about.connect("response", self._about_response)
