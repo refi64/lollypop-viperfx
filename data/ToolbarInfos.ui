@@ -5,6 +5,7 @@
   <object class="GtkEventBox" id="infos">
     <property name="visible">True</property>
     <property name="can_focus">False</property>
+    <property name="halign">start</property>
     <signal name="button-press-event" handler="_on_infobox_clicked" swapped="no"/>
     <signal name="query-tooltip" handler="_on_query_tooltip" swapped="no"/>
     <signal name="realize" handler="_on_eventbox_realize" swapped="no"/>
@@ -49,10 +50,7 @@
                 <property name="can_focus">False</property>
                 <property name="halign">start</property>
                 <property name="ellipsize">end</property>
-                <property name="width_chars">20</property>
                 <property name="single_line_mode">True</property>
-                <property name="max_width_chars">20</property>
-                <property name="xalign">0</property>
                 <style>
                   <class name="lollypop-title"/>
                 </style>
@@ -69,10 +67,7 @@
                 <property name="can_focus">False</property>
                 <property name="halign">start</property>
                 <property name="ellipsize">end</property>
-                <property name="width_chars">20</property>
                 <property name="single_line_mode">True</property>
-                <property name="max_width_chars">20</property>
-                <property name="xalign">1.3411045074462891e-07</property>
                 <style>
                   <class name="lollypop-subtitle"/>
                   <class name="dim-label"/>

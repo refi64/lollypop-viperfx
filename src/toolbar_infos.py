@@ -34,9 +34,10 @@ class ToolbarInfos(Gtk.Bin):
         builder = Gtk.Builder()
         builder.add_from_resource('/org/gnome/Lollypop/ToolbarInfos.ui')
         builder.connect_signals(self)
-
         self._pop_tunein = None
         self._pop_infos = None
+
+        self.set_property('width-request', 200)
 
         self._infobox = builder.get_object('infos')
         self._infobox.set_property('has-tooltip', True)
@@ -57,6 +58,13 @@ class ToolbarInfos(Gtk.Bin):
             @return (int, int)
         """
         return self._labels.get_preferred_height()
+
+    def do_get_preferred_width(self):
+        """
+            We force preferred width
+            @return (int, int)
+        """
+        return (200, 200)
 
     def on_current_changed(self, player):
         """
