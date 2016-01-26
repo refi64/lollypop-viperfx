@@ -19,6 +19,7 @@ from gi.repository import Gtk, Gio, GLib, Gdk, Gst, Notify, TotemPlParser
 
 from locale import getlocale
 from gettext import gettext as _
+from gettext import ngettext as __
 from threading import Thread
 import os
 
@@ -355,12 +356,15 @@ class Application(Gtk.Application):
         """
         builder = Gtk.Builder()
         builder.add_from_resource('/org/gnome/Lollypop/AboutDialog.ui')
-        builder.get_object('artists').set_text(_("%s artist(s)") %
-                                               self.artists.count())
-        builder.get_object('albums').set_text(_("%s album(s)") %
-                                              self.albums.count())
-        builder.get_object('tracks').set_text(_("%s track(s)") %
-                                              self.tracks.count())
+        artists = self.artists.count()
+        albums = self.albums.count()
+        tracks = self.tracks.count()
+        builder.get_object('artists').set_text(
+                            __("%s artist", "%s artists", artists) % artists)
+        builder.get_object('albums').set_text(
+                            __("%s album", "%s albums", albums) % albums)
+        builder.get_object('tracks').set_text(
+                            __("%s track", "%s tracks", tracks) % tracks)
         about = builder.get_object('about_dialog')
         about.set_transient_for(self.window)
         about.connect("response", self._about_response)
