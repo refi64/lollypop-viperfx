@@ -66,7 +66,7 @@ class RadioPopover(Gtk.Popover):
         self._uri_entry = builder.get_object('uri')
         self._btn_add_modify = builder.get_object('btn_add_modify')
         self._spinner = builder.get_object('spinner')
-        self._stack.add_named(self._spinner, 'spinner')
+        self._stack.add_named(builder.get_object('spinner-grid'), 'spinner')
         self._stack.add_named(builder.get_object('notfound'), 'notfound')
         self._stack.add_named(builder.get_object('logo'), 'logo')
         self._stack.add_named(builder.get_object('widget'), 'widget')
