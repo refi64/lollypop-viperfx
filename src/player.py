@@ -45,7 +45,8 @@ class Player(BinPlayer, QueuePlayer, UserPlaylistPlayer, RadioPlayer,
             Play previous track
         """
         if self.prev_track.id is not None:
-            if Lp().settings.get_value('mix'):
+            if self.prev_track.id != Type.RADIOS and\
+               Lp().settings.get_value('mix'):
                 duration = Lp().settings.get_value(
                                                    'mix-duration').get_int32()
                 self._do_crossfade(duration, False)
@@ -57,7 +58,8 @@ class Player(BinPlayer, QueuePlayer, UserPlaylistPlayer, RadioPlayer,
             Play next track
         """
         if self.next_track.id is not None:
-            if Lp().settings.get_value('mix'):
+            if self.next_track.id != Type.RADIOS and\
+               Lp().settings.get_value('mix'):
                 duration = Lp().settings.get_value(
                                                    'mix-duration').get_int32()
                 self._do_crossfade(duration)
