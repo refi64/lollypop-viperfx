@@ -36,8 +36,7 @@ class ToolbarInfos(Gtk.Bin):
         builder.connect_signals(self)
         self._pop_tunein = None
         self._pop_infos = None
-
-        self.set_property('width-request', 200)
+        self._width = 0
 
         self._infobox = builder.get_object('infos')
         self._infobox.set_property('has-tooltip', True)
@@ -59,12 +58,20 @@ class ToolbarInfos(Gtk.Bin):
         """
         return self._labels.get_preferred_height()
 
+    def set_infos_width(self, width):
+        """
+            Set widget width
+            @param width as int
+        """
+        self.set_property('width-request', width)
+        self._width = width
+
     def do_get_preferred_width(self):
         """
             We force preferred width
             @return (int, int)
         """
-        return (200, 200)
+        return (self._width, self._width)
 
     def on_current_changed(self, player):
         """

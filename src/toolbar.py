@@ -68,12 +68,13 @@ class Toolbar(Gtk.HeaderBar):
         """
         self._toolbar_title._update_position(value)
 
-    def set_progress_width(self, width):
+    def set_content_width(self, width):
         """
-            Set Gtk.Scale progress width
-            @param width as int
+            Set content width
+            @param window width as int
         """
-        self._toolbar_title.set_progress_width(width)
+        self._toolbar_title.set_progress_width(width/4)
+        self._toolbar_infos.set_infos_width(width/6)
 
     def setup_menu_btn(self, menu):
         """
