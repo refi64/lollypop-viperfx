@@ -154,7 +154,7 @@ class ShufflePlayer(BasePlayer):
         """
         self._shuffle = Lp().settings.get_enum('shuffle')
 
-        if self._rgvolume is not None:
+        if self._rg1.rgvolume is not None and self._rg2.rgvolume is not None:
             if self._shuffle in [Shuffle.TRACKS, Shuffle.TRACKS_ARTIST] or\
                self._user_playlist:
                 self._rg1.rgvolume.props.album_mode = 0
