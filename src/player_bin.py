@@ -63,12 +63,8 @@ class BinPlayer(BasePlayer):
             bus.connect('message::element', self._on_bus_element)
             bus.connect('message::stream-start', self._on_stream_start)
             bus.connect("message::tag", self._on_bus_message_tag)
-            bus.connect("message::state", self.info)
         self._handled_error = None
         self._start_time = 0
-
-    def info(self, bus, message):
-        print(message.parse_state_changed())
 
     def is_playing(self):
         """
