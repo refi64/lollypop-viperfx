@@ -213,7 +213,6 @@ class BinPlayer(BasePlayer):
         self._in_volume_up = True
         # We are not the active playbin, stop all
         if self._playbin != playbin:
-            self._in_volume_up = False
             return
         if duration > 0:
             vol = playbin.get_volume(GstAudio.StreamVolumeFormat.LINEAR)
@@ -238,7 +237,6 @@ class BinPlayer(BasePlayer):
         self._in_volume_down = True
         # We are again the active playbin, stop all
         if self._playbin == playbin:
-            self._in_volume_down = False
             return
         if duration > 0:
             vol = playbin.get_volume(GstAudio.StreamVolumeFormat.LINEAR)
