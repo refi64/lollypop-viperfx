@@ -494,6 +494,13 @@ class SettingsDialog:
         except:
             pass
 
+    def _hide_popover(self, widget):
+        """
+            Hide popover
+            @param widget as Gtk.Widget
+        """
+        self._popover.hide()
+
 
 class ChooserWidget(Gtk.Grid):
     """
