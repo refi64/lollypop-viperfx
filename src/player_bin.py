@@ -44,10 +44,6 @@ class BinPlayer(BasePlayer):
         self._rg1 = ReplayGainPlayer(self._playbin1)
         self._rg2 = ReplayGainPlayer(self._playbin2)
         self._volume = 1.0
-        self._playbin1.set_volume(GstAudio.StreamVolumeFormat.LINEAR,
-                                  self._volume)
-        self._playbin2.set_volume(GstAudio.StreamVolumeFormat.LINEAR,
-                                  self._volume)
         for playbin in [self._playbin1, self._playbin2]:
             flags = playbin.get_property("flags")
             flags &= ~GstPlayFlags.GST_PLAY_FLAG_VIDEO
