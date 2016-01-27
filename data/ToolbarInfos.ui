@@ -43,6 +43,7 @@
           <object class="GtkBox" id="nowplaying_labels">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
+            <property name="valign">center</property>
             <property name="orientation">vertical</property>
             <child>
               <object class="GtkLabel" id="artist">

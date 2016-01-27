@@ -57,9 +57,14 @@ class Toolbar(Gtk.HeaderBar):
         """
         style = self.get_style_context()
         padding = style.get_padding(style.get_state())
+        playback_height = self._toolbar_playback.get_preferred_height()
         info_height = self._toolbar_infos.get_preferred_height()
-        return (info_height[0]+padding.top+padding.bottom,
-                info_height[1]+padding.top+padding.bottom)
+        if info_height[0] > playback_height[0]:
+            height = info_height
+        else:
+            height = playback_height
+        return (height[0]+padding.top+padding.bottom,
+                height[1]+padding.top+padding.bottom)
 
     def update_position(self, value=None):
         """
