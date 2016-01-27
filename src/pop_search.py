@@ -412,13 +412,25 @@ class SearchPopover(Gtk.Popover):
     def _on_activate(self, widget, row):
         """
             Play searched item when selected
-            If item is an album, play first track
             @param widget as Gtk.ListBox
             @param row as SearchRow
         """
-        t = Thread(target=self._play_search, args=(row.id, row.is_track))
-        t.daemon = True
-        t.start()
+        if Lp().player.is_party():
+            if row.is_track:
+                Lp().player.load(Track(row.id))
+            elif Gtk.get_minor_version() > 16:
+                popover = AlbumPopoverWidget(row.id, None)
+                popover.set_relative_to(row)
+                popover.show()
+            else:  # Remove Later (3.16)
+                t = Thread(target=self._play_search,
+                           args=(row.id, row.is_track))
+                t.daemon = True
+                t.start()
+        else:
+            t = Thread(target=self._play_search, args=(row.id, row.is_track))
+            t.daemon = True
+            t.start()
 
     def _on_button_press(self, widget, event):
         """
