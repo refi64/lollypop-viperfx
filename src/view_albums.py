@@ -275,16 +275,7 @@ class AlbumsView(View):
                                          self._genre_id)
             popover.set_relative_to(album_widget)
             popover.set_pointing_to(self._press_rect)
-            self._context_widget = popover.get_widget()
-            popover.connect('destroy', self._on_popover_destroyed)
             popover.show()
-
-    def _on_popover_destroyed(self, popover):
-        """
-            Remove from context
-            @param popover as AlbumPopoverWidget
-        """
-        self._context_widget = None
 
     def _on_button_press(self, flowbox, event):
         """

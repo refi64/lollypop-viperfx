@@ -79,6 +79,8 @@ class AlbumPopoverWidget(Gtk.Popover):
                                           size_group)
         self._widget.populate()
         self._widget.show()
+        self._signal_id = Lp().player.connect('current-changed',
+                                              self._on_current_changed)
         self.add(self._widget)
 
     def do_get_preferred_width(self):
@@ -92,20 +94,21 @@ class AlbumPopoverWidget(Gtk.Popover):
             width = 500
         return (width, width)
 
-    def get_widget(self):
-        """
-            Return widget
-            @return widget as AlbumContextWidget
-        """
-        return self._widget
-
 #######################
 # PRIVATE             #
 #######################
+    def _on_current_changed(self, player):
+        """
+            Update indicator
+            @param player as Player
+        """
+        self._widget.update_playing_indicator()
+
     def _on_hide(self, widget):
         """
             Destroy itself
             @param widget as Gtk.Widget
         """
-        self._widget.destroy()
-        self.destroy()
+        if self._signal_id is not None:
+            Lp().player.disconnect(self._signal_id)
+            self._signal_id = None
