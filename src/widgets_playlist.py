@@ -244,6 +244,7 @@ class PlaylistsManagerWidget(Gtk.Bin):
         """
         playlists = Lp().playlists.get()
         self._append_playlists(playlists)
+        GLib.idle_add(self._get_focus)
 
     def add_new_playlist(self):
         """
@@ -267,6 +268,13 @@ class PlaylistsManagerWidget(Gtk.Bin):
 #######################
 # PRIVATE             #
 #######################
+    def _get_focus(self):
+        """
+            Give focus to view
+        """
+        self._view.grab_focus()
+        self._view.get_selection().unselect_all()
+
     def _sort_items(self, model, itera, iterb, data):
         """
             Sort model
@@ -318,8 +326,7 @@ class PlaylistsManagerWidget(Gtk.Bin):
         """
         if response_id == Gtk.ResponseType.CLOSE:
             self._infobar.hide()
-            self._view.grab_focus()
-            self._view.get_selection().unselect_all()
+            self._get_focus()
 
     def _on_row_activated(self, view, path, column):
         """
@@ -342,8 +349,7 @@ class PlaylistsManagerWidget(Gtk.Bin):
             self._model.remove(iterator)
             self._deleted_path = None
             self._infobar.hide()
-            self._view.grab_focus()
-            self._view.get_selection().unselect_all()
+            self._get_focus()
 
     def _on_keyboard_event(self, widget, event):
         """
