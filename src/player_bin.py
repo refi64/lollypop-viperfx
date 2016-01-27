@@ -37,6 +37,7 @@ class BinPlayer(BasePlayer):
         BasePlayer.__init__(self)
         self._codecs = Codecs()
         self._gst_duration = 0
+        self._crossfading = False
         self._in_volume_up = self._in_volume_down = False
         self._playbin = self._playbin1 = Gst.ElementFactory.make(
                                                            'playbin', 'player')
@@ -168,7 +169,7 @@ class BinPlayer(BasePlayer):
             @return position as int
         """
         position = self._playbin.query_position(Gst.Format.TIME)[1] / 1000
-        if Lp().settings.get_value('mix') and self._gst_duration > 0:
+        if self._crossfading and self._gst_duration > 0:
             duration = (self._gst_duration - position) / 1000000
             if duration < Lp().settings.get_value('mix-duration').get_int32():
                 self._do_crossfade(duration)

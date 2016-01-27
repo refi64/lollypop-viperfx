@@ -26,6 +26,7 @@
       <packing>
         <property name="left_attach">0</property>
         <property name="top_attach">0</property>
+        <property name="width">2</property>
       </packing>
     </child>
     <child>
@@ -41,6 +42,42 @@
       <packing>
         <property name="left_attach">0</property>
         <property name="top_attach">1</property>
+        <property name="width">2</property>
+      </packing>
+    </child>
+    <child>
+      <object class="GtkSeparator" id="separator1">
+        <property name="visible">True</property>
+        <property name="can_focus">False</property>
+      </object>
+      <packing>
+        <property name="left_attach">0</property>
+        <property name="top_attach">2</property>
+        <property name="width">2</property>
+      </packing>
+    </child>
+    <child>
+      <object class="GtkSwitch" id="switch_mix_party">
+        <property name="visible">True</property>
+        <property name="can_focus">True</property>
+        <property name="halign">end</property>
+        <signal name="state-set" handler="_update_party_mix_setting" swapped="no"/>
+      </object>
+      <packing>
+        <property name="left_attach">1</property>
+        <property name="top_attach">3</property>
+      </packing>
+    </child>
+    <child>
+      <object class="GtkLabel" id="label9">
+        <property name="visible">True</property>
+        <property name="can_focus">False</property>
+        <property name="halign">start</property>
+        <property name="label" translatable="yes">Only in party mode</property>
+      </object>
+      <packing>
+        <property name="left_attach">0</property>
+        <property name="top_attach">3</property>
       </packing>
     </child>
   </object>

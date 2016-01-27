@@ -30,7 +30,7 @@ class Player(BinPlayer, QueuePlayer, UserPlaylistPlayer, RadioPlayer,
 
     def __init__(self):
         """
-            Create all objects
+            Init player
         """
         BinPlayer.__init__(self)
         QueuePlayer.__init__(self)
@@ -39,6 +39,7 @@ class Player(BinPlayer, QueuePlayer, UserPlaylistPlayer, RadioPlayer,
         UserPlaylistPlayer.__init__(self)
         RadioPlayer.__init__(self)
         ExternalsPlayer.__init__(self)
+        self.update_crossfading()
 
     def prev(self):
         """
@@ -59,7 +60,7 @@ class Player(BinPlayer, QueuePlayer, UserPlaylistPlayer, RadioPlayer,
         """
         if self.next_track.id is not None:
             if self.next_track.id != Type.RADIOS and\
-               Lp().settings.get_value('mix'):
+               self._crossfading:
                 duration = Lp().settings.get_value(
                                                    'mix-duration').get_int32()
                 self._do_crossfade(duration)
@@ -195,6 +196,7 @@ class Player(BinPlayer, QueuePlayer, UserPlaylistPlayer, RadioPlayer,
         self.set_prev()
         if self.is_playing():
             self.emit('next-changed')
+        self.update_crossfading()
 
     def set_prev(self):
         """
@@ -254,6 +256,15 @@ class Player(BinPlayer, QueuePlayer, UserPlaylistPlayer, RadioPlayer,
             else:
                 self.next_track = LinearPlayer.next(self)
         self.emit('next-changed')
+
+    def update_crossfading(self):
+        """
+            Calculate if crossfading is needed
+        """
+        mix = Lp().settings.get_value('mix')
+        party_mix = Lp().settings.get_value('party-mix')
+        self._crossfading = (mix and not party_mix) or\
+                            (party_mix and self._is_party)
 
 #######################
 # PRIVATE             #

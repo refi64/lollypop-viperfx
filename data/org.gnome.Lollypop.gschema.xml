@@ -193,6 +193,11 @@
             <summary>Mix songs</summary>
             <description></description>
         </key>
+        <key type="b" name="party-mix">
+            <default>false</default>
+            <summary>Mix songs only in party mode</summary>
+            <description></description>
+        </key>
         <key type="i" name="mix-duration">
             <default>3</default>
             <summary>Mix duration</summary>

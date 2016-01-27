@@ -107,6 +107,9 @@ class SettingsDialog:
         switch_mix = builder.get_object('switch_mix')
         switch_mix.set_state(Lp().settings.get_value('mix'))
 
+        switch_mix_party = builder.get_object('switch_mix_party')
+        switch_mix_party.set_state(Lp().settings.get_value('party-mix'))
+
         switch_genres = builder.get_object('switch_genres')
         switch_genres.set_state(Lp().settings.get_value('show-genres'))
 
@@ -319,6 +322,7 @@ class SettingsDialog:
             @param state as bool
         """
         Lp().settings.set_value('mix', GLib.Variant('b', state))
+        Lp().player.update_crossfading()
         if state:
             if self._popover is None:
                 self._popover = Gtk.Popover.new(widget)
@@ -327,6 +331,14 @@ class SettingsDialog:
             self._popover.show_all()
         elif self._popover is not None:
             self._popover.hide()
+
+    def _update_party_mix_setting(self, widget, state):
+        """
+            Update party mix setting
+            @param widget as Gtk.Range
+        """
+        Lp().settings.set_value('party-mix', GLib.Variant('b', state))
+        Lp().player.update_crossfading()
 
     def _update_mix_duration_setting(self, widget):
         """
