@@ -16,6 +16,7 @@
     <property name="margin_right">5</property>
     <property name="margin_top">5</property>
     <property name="margin_bottom">5</property>
+    <property name="row_spacing">5</property>
     <property name="column_spacing">14</property>
     <child>
       <object class="GtkLabel" id="label8">
