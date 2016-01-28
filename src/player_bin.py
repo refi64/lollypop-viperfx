@@ -38,13 +38,14 @@ class BinPlayer(BasePlayer):
         self._codecs = Codecs()
         self._gst_duration = 0
         self._crossfading = False
-        self._in_volume_up = self._in_volume_down = False
         self._playbin = self._playbin1 = Gst.ElementFactory.make(
                                                            'playbin', 'player')
         self._playbin2 = Gst.ElementFactory.make('playbin', 'player')
         self._rg1 = ReplayGainPlayer(self._playbin1)
         self._rg2 = ReplayGainPlayer(self._playbin2)
         self._volume = 1.0
+        self._volume_id = self._playbin.connect('notify::volume',
+                                                self._on_volume_changed)
         for playbin in [self._playbin1, self._playbin2]:
             flags = playbin.get_property("flags")
             flags &= ~GstPlayFlags.GST_PLAY_FLAG_VIDEO
@@ -207,7 +208,6 @@ class BinPlayer(BasePlayer):
             @param playbin as Gst.Bin
             @param duration as int
         """
-        self._in_volume_up = True
         # We are not the active playbin, stop all
         if self._playbin != playbin:
             return
@@ -223,7 +223,9 @@ class BinPlayer(BasePlayer):
             else:
                 playbin.set_volume(GstAudio.StreamVolumeFormat.LINEAR,
                                    self._volume)
-                self._in_volume_up = False
+                if self._volume_id is None:
+                    self._volume_id = playbin.connect('notify::volume',
+                                                      self._on_volume_changed)
 
     def _volume_down(self, playbin, duration):
         """
@@ -231,7 +233,6 @@ class BinPlayer(BasePlayer):
             @param playbin as Gst.Bin
             @param duration as int
         """
-        self._in_volume_down = True
         # We are again the active playbin, stop all
         if self._playbin == playbin:
             return
@@ -248,7 +249,6 @@ class BinPlayer(BasePlayer):
                 playbin.set_state(Gst.State.NULL)
                 playbin.set_volume(GstAudio.StreamVolumeFormat.LINEAR,
                                    self._volume)
-                self._in_volume_down = False
 
     def _do_crossfade(self, duration, next=True):
         """
@@ -258,8 +258,9 @@ class BinPlayer(BasePlayer):
         """
         if self.current_track.id == Type.RADIOS:
             return
-        if not self._in_volume_down and not self._in_volume_up:
-            self._volume = self.get_volume()
+        if self._volume_id is not None:
+            self._playbin.disconnect(self._volume_id)
+            self._volume_id = None
         GLib.idle_add(self._volume_down, self._playbin, duration)
         if self._playbin == self._playbin2:
             self._playbin = self._playbin1
@@ -338,6 +339,17 @@ class BinPlayer(BasePlayer):
                                      finished.title,
                                      int(finished_start_time),
                                      int(finished.duration))
+
+    def _on_volume_changed(self, playbin, sink):
+        """
+            Update volume
+            @param playbin as Gst.Bin
+            @param sink as Gst.Sink
+        """
+        volume = playbin.get_volume(GstAudio.StreamVolumeFormat.LINEAR)
+        if volume != self._volume:
+            self._volume = volume
+            self.emit('volume-changed')
 
     def _on_bus_message_tag(self, bus, message):
         """
