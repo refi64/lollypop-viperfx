@@ -181,7 +181,7 @@ class BinPlayer(BasePlayer):
             Return player volume rate
             @return rate as double
         """
-        return self._playbin.get_volume(GstAudio.StreamVolumeFormat.LINEAR)
+        return self._playbin.get_volume(GstAudio.StreamVolumeFormat.CUBIC)
 
     def set_volume(self, rate):
         """
@@ -189,8 +189,8 @@ class BinPlayer(BasePlayer):
             @param rate as double
         """
         self._volume = rate
-        self._playbin1.set_volume(GstAudio.StreamVolumeFormat.LINEAR, rate)
-        self._playbin2.set_volume(GstAudio.StreamVolumeFormat.LINEAR, rate)
+        self._playbin1.set_volume(GstAudio.StreamVolumeFormat.CUBIC, rate)
+        self._playbin2.set_volume(GstAudio.StreamVolumeFormat.CUBIC, rate)
         self.emit('volume-changed')
 
     def next(self):
