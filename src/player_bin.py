@@ -130,9 +130,20 @@ class BinPlayer(BasePlayer):
 
     def stop_all(self):
         """
-            Stop all bins
+            Stop all bins, lollypop should quit now
         """
         self._gst_duration = 0
+        # Stop crossfade
+        if self._playbin == self._playbin2:
+            self._playbin = self._playbin1
+        else:
+            self._playbin = self._playbin2
+        # Restore volume
+        self._playbin1.set_volume(GstAudio.StreamVolumeFormat.CUBIC,
+                                  self._volume)
+        self._playbin2.set_volume(GstAudio.StreamVolumeFormat.CUBIC,
+                                  self._volume)
+        # Stop
         self._playbin1.set_state(Gst.State.NULL)
         self._playbin2.set_state(Gst.State.NULL)
 
