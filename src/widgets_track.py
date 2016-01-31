@@ -193,6 +193,8 @@ class AlbumRow(Row):
         self._cover_frame = Gtk.Frame()
         self._cover_frame.set_shadow_type(Gtk.ShadowType.NONE)
         self._cover_frame.set_property('width-request', 50)
+        self._cover_frame.set_property('halign', Gtk.Align.CENTER)
+        self._cover_frame.set_property('valign', Gtk.Align.CENTER)
         self._cover_frame.get_style_context().add_class('small-cover-frame')
         self._cover_frame.add(self._cover)
         self._grid.attach(self._cover_frame, 0, 0, 1, 2)
