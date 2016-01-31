@@ -9,8 +9,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lollypop\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-01-23 18:23+0100\n"
-"PO-Revision-Date: 2016-01-23 17:23+0000\n"
+"POT-Creation-Date: 2016-01-28 13:59+0100\n"
+"PO-Revision-Date: 2016-01-28 13:03+0000\n"
 "Last-Translator: Cédric Bellegarde <web@adishatz.org>\n"
 "Language-Team: Chinese (China) (http://www.transifex.com/gnumdk/lollypop/language/zh_CN/)\n"
 "MIME-Version: 1.0\n"
@@ -88,7 +88,7 @@ msgid ""
 "Reset this value will reset the database, popular albums will be restored"
 msgstr "重置本值将重置数据库，流行专辑将被还原"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:18 ../data/SettingsDialog.ui.h:14
+#: ../data/org.gnome.Lollypop.gschema.xml.h:18 ../data/SettingsDialog.ui.h:15
 msgid "Albums cover size"
 msgstr "专辑封面大小"
 
@@ -112,7 +112,7 @@ msgstr ""
 msgid "Convert to MP3(MTP)"
 msgstr ""
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:24 ../data/SettingsDialog.ui.h:3
+#: ../data/org.gnome.Lollypop.gschema.xml.h:24 ../data/SettingsDialog.ui.h:4
 msgid "Auto update music"
 msgstr "自动更新音乐"
 
@@ -128,11 +128,11 @@ msgstr "使用黑色gtk主题"
 msgid "Disable the use client side window decorations (headerbar)"
 msgstr "不使用客户侧的窗口装饰(标题栏)"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:28 ../data/SettingsDialog.ui.h:13
+#: ../data/org.gnome.Lollypop.gschema.xml.h:28 ../data/SettingsDialog.ui.h:14
 msgid "Show compilations in albums view"
 msgstr "以专辑视图显示曲目"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:29 ../data/SettingsDialog.ui.h:5
+#: ../data/org.gnome.Lollypop.gschema.xml.h:29 ../data/SettingsDialog.ui.h:6
 msgid "Continue playback when closed"
 msgstr "关闭后继续播放"
 
@@ -164,21 +164,25 @@ msgstr "MPD网络界面"
 msgid "MPD network port"
 msgstr "MPD网络端口"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:37 ../data/SettingsDialog.ui.h:9
+#: ../data/org.gnome.Lollypop.gschema.xml.h:37 ../data/SettingsDialog.ui.h:10
 msgid "Mix songs"
 msgstr ""
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:38
-msgid "Mix duration"
+msgid "Mix songs only in party mode"
 msgstr ""
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:39
+msgid "Mix duration"
+msgstr ""
+
+#: ../data/org.gnome.Lollypop.gschema.xml.h:40
 msgid "Shuffle mode"
 msgstr "随机模式"
 
 #. Translators: Don't translate allowed values, just the description in the
 #. brackets
-#: ../data/org.gnome.Lollypop.gschema.xml.h:41
+#: ../data/org.gnome.Lollypop.gschema.xml.h:42
 msgid ""
 "Value identifies whether to shuffle tracks/albums. Allowed values are: "
 "\"none\" (shuffle off), \"tracks\" (shuffle tracks) , \"albums\" (shuffle "
@@ -241,7 +245,7 @@ msgstr "搜索"
 msgid "Queue"
 msgstr "排队"
 
-#: ../data/lollypop.appdata.xml.in.h:10 ../data/SettingsDialog.ui.h:21
+#: ../data/lollypop.appdata.xml.in.h:10 ../data/SettingsDialog.ui.h:22
 #: ../data/ToolbarEnd.ui.h:8
 msgid "Party mode"
 msgstr "派对模式"
@@ -286,29 +290,32 @@ msgstr "高分辨率支持"
 msgid "Tunein support"
 msgstr "调音支持"
 
-#: ../src/application.py:30
+#: ../src/application.py:31
 msgid ""
 "    - Scrobbler disabled\n"
 "    - Auto cover download disabled\n"
 "    - Artist informations disabled"
 msgstr "-收听习惯发布功能禁用\n-封面自动下载功能禁用\n-艺术家信息禁用"
 
-#: ../src/application.py:358
+#: ../src/application.py:363
 #, python-format
-msgid "%s artist(s)"
-msgstr "%s 艺术家(们)"
+msgid "%d artist"
+msgid_plural "%d artists"
+msgstr[0] ""
 
-#: ../src/application.py:360
+#: ../src/application.py:365
 #, python-format
-msgid "%s album(s)"
-msgstr "%s 专辑(多个专辑)"
+msgid "%d album"
+msgid_plural "%d albums"
+msgstr[0] ""
 
-#: ../src/application.py:362
+#: ../src/application.py:367
 #, python-format
-msgid "%s track(s)"
-msgstr "%s 曲目(多曲目)"
+msgid "%d track"
+msgid_plural "%d tracks"
+msgstr[0] ""
 
-#: ../src/application.py:378
+#: ../src/application.py:382
 msgid "Lollypop: You need to install yelp."
 msgstr "棒棒糖:您需要安装yelp"
 
@@ -366,7 +373,7 @@ msgid "Random tracks"
 msgstr "随机曲目"
 
 #: ../src/container.py:519 ../src/playlists.py:54
-#: ../data/SettingsDialog.ui.h:8
+#: ../data/SettingsDialog.ui.h:9
 msgid "Network control"
 msgstr "网络控制"
 
@@ -386,12 +393,12 @@ msgid "Many artists"
 msgstr "许多艺术家"
 
 #: ../src/fullscreen.py:92 ../src/fullscreen.py:280
-#: ../src/toolbar_playback.py:82 ../src/toolbar_playback.py:115
+#: ../src/toolbar_playback.py:92 ../src/toolbar_playback.py:125
 msgid "Pause"
 msgstr "暂停"
 
 #: ../src/fullscreen.py:284 ../src/pop_tunein.py:154
-#: ../src/toolbar_playback.py:84 ../src/toolbar_playback.py:112
+#: ../src/toolbar_playback.py:94 ../src/toolbar_playback.py:122
 #: ../data/ToolbarPlayback.ui.h:2
 msgid "Play"
 msgstr "播放"
@@ -417,7 +424,7 @@ msgstr "由%s"
 msgid "by %s, from %s"
 msgstr "由%s，来自%s"
 
-#: ../src/player_bin.py:358
+#: ../src/player_bin.py:407
 #, python-format
 msgid "File doesn't exist: %s"
 msgstr "文件不存在：%s"
@@ -520,11 +527,11 @@ msgstr "无法连接到TuneIn..."
 msgid "Browse themes and add a new radio"
 msgstr "浏览主题并增加一个新的电台"
 
-#: ../src/settings.py:157
+#: ../src/settings.py:161
 msgid "Populars"
 msgstr "流行"
 
-#: ../src/settings.py:158
+#: ../src/settings.py:162
 msgid "Recently added"
 msgstr "最近添加"
 
@@ -575,17 +582,17 @@ msgstr "同步时发生未知错误，请重启你的设备"
 msgid "No free space available on device"
 msgstr "设备空间不足"
 
-#: ../src/widgets_playlist.py:258 ../src/widgets_playlist.py:261
+#: ../src/widgets_playlist.py:259 ../src/widgets_playlist.py:262
 msgid "New playlist "
 msgstr "新的播放列表"
 
 #. Need a copy, segfault on EOS 3.1
-#: ../src/widgets_playlist.py:309 ../src/widgets_playlist.py:547
+#: ../src/widgets_playlist.py:317 ../src/widgets_playlist.py:553
 #, python-format
 msgid "Remove \"%s\"?"
 msgstr "删除“%s”？"
 
-#: ../src/widgets_playlist.py:592
+#: ../src/widgets_playlist.py:598
 msgid "Remove these tracks?"
 msgstr "删除这些曲目？"
 
@@ -742,70 +749,74 @@ msgid "Mix duration in seconds"
 msgstr ""
 
 #: ../data/SettingsDialog.ui.h:2
+msgid "Only in party mode"
+msgstr ""
+
+#: ../data/SettingsDialog.ui.h:3
 msgid "Preferences"
 msgstr "首选项"
 
-#: ../data/SettingsDialog.ui.h:4
+#: ../data/SettingsDialog.ui.h:5
 msgid "Restore state on startup"
 msgstr "启动后恢复到上次的播放状态"
 
-#: ../data/SettingsDialog.ui.h:6
+#: ../data/SettingsDialog.ui.h:7
 msgid "Play albums on click"
 msgstr "单击自动播放"
 
-#: ../data/SettingsDialog.ui.h:7
+#: ../data/SettingsDialog.ui.h:8
 msgid "Control Lollypop with any MPD client"
 msgstr "使用任意的MPD客户端控制Lollypop"
 
-#: ../data/SettingsDialog.ui.h:10
+#: ../data/SettingsDialog.ui.h:11
 msgid "Behaviour"
 msgstr "行为"
 
-#: ../data/SettingsDialog.ui.h:11
+#: ../data/SettingsDialog.ui.h:12
 msgid "Use dark theme variant"
 msgstr "使用暗色主题"
 
-#: ../data/SettingsDialog.ui.h:12
+#: ../data/SettingsDialog.ui.h:13
 msgid "Show genres"
 msgstr "查看分类"
 
-#: ../data/SettingsDialog.ui.h:15
+#: ../data/SettingsDialog.ui.h:16
 msgid "Appearance"
 msgstr "外观"
 
-#: ../data/SettingsDialog.ui.h:16
+#: ../data/SettingsDialog.ui.h:17
 msgid "Configure lollypop behaviour"
 msgstr "配置lollypo的行为"
 
-#: ../data/SettingsDialog.ui.h:17
+#: ../data/SettingsDialog.ui.h:18
 msgid "Options"
 msgstr "操作"
 
-#: ../data/SettingsDialog.ui.h:18
+#: ../data/SettingsDialog.ui.h:19
 msgid "Select music folders"
 msgstr "选择音乐文件夹"
 
-#: ../data/SettingsDialog.ui.h:19
+#: ../data/SettingsDialog.ui.h:20
 msgid "Music"
 msgstr "音乐"
 
-#: ../data/SettingsDialog.ui.h:20
+#: ../data/SettingsDialog.ui.h:21
 msgid "Select what will be available in party mode"
 msgstr "选择哪些内容可以用于派对模式"
 
-#: ../data/SettingsDialog.ui.h:22
+#: ../data/SettingsDialog.ui.h:23
 msgid "Login:"
 msgstr "登录："
 
-#: ../data/SettingsDialog.ui.h:23
+#: ../data/SettingsDialog.ui.h:24
 msgid "Password:"
 msgstr "密码："
 
-#: ../data/SettingsDialog.ui.h:24
+#: ../data/SettingsDialog.ui.h:25
 msgid "Connect"
 msgstr "连接"
 
-#: ../data/SettingsDialog.ui.h:25
+#: ../data/SettingsDialog.ui.h:26
 msgid "You need to install pylast and gi secret"
 msgstr "您需要安装pylast和gi secret"
 

@@ -11,8 +11,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lollypop\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-01-23 18:23+0100\n"
-"PO-Revision-Date: 2016-01-23 21:42+0000\n"
+"POT-Creation-Date: 2016-01-28 13:59+0100\n"
+"PO-Revision-Date: 2016-01-28 13:41+0000\n"
 "Last-Translator: Maxim Orlov <murmansksity@gmail.com>\n"
 "Language-Team: Russian (http://www.transifex.com/gnumdk/lollypop/language/ru/)\n"
 "MIME-Version: 1.0\n"
@@ -90,7 +90,7 @@ msgid ""
 "Reset this value will reset the database, popular albums will be restored"
 msgstr "Сброс этого значения очистит базу данных, популярные альбомы будут восстановлены"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:18 ../data/SettingsDialog.ui.h:14
+#: ../data/org.gnome.Lollypop.gschema.xml.h:18 ../data/SettingsDialog.ui.h:15
 msgid "Albums cover size"
 msgstr "Размер обложки альбома"
 
@@ -114,7 +114,7 @@ msgstr "Синхронизировать все альбомы (MTP)"
 msgid "Convert to MP3(MTP)"
 msgstr "Конвертировать в MP3 (MTP)"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:24 ../data/SettingsDialog.ui.h:3
+#: ../data/org.gnome.Lollypop.gschema.xml.h:24 ../data/SettingsDialog.ui.h:4
 msgid "Auto update music"
 msgstr "Автоматическое обновление музыки"
 
@@ -130,11 +130,11 @@ msgstr "Использовать темный вариант темы"
 msgid "Disable the use client side window decorations (headerbar)"
 msgstr "Отключить CSD (заголовок окна)"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:28 ../data/SettingsDialog.ui.h:13
+#: ../data/org.gnome.Lollypop.gschema.xml.h:28 ../data/SettingsDialog.ui.h:14
 msgid "Show compilations in albums view"
 msgstr "Показывать сборники в списке альбомов"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:29 ../data/SettingsDialog.ui.h:5
+#: ../data/org.gnome.Lollypop.gschema.xml.h:29 ../data/SettingsDialog.ui.h:6
 msgid "Continue playback when closed"
 msgstr "Продолжить воспроизведение после закрытия"
 
@@ -166,21 +166,25 @@ msgstr "MPD сетевой интерфейс"
 msgid "MPD network port"
 msgstr "MPD сетевой порт"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:37 ../data/SettingsDialog.ui.h:9
+#: ../data/org.gnome.Lollypop.gschema.xml.h:37 ../data/SettingsDialog.ui.h:10
 msgid "Mix songs"
 msgstr "Смешайте песни"
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:38
+msgid "Mix songs only in party mode"
+msgstr "Смешайте песни только в режиме \"вечеринки\""
+
+#: ../data/org.gnome.Lollypop.gschema.xml.h:39
 msgid "Mix duration"
 msgstr "Длительность смешивания"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:39
+#: ../data/org.gnome.Lollypop.gschema.xml.h:40
 msgid "Shuffle mode"
 msgstr "Режим перемешивания"
 
 #. Translators: Don't translate allowed values, just the description in the
 #. brackets
-#: ../data/org.gnome.Lollypop.gschema.xml.h:41
+#: ../data/org.gnome.Lollypop.gschema.xml.h:42
 msgid ""
 "Value identifies whether to shuffle tracks/albums. Allowed values are: "
 "\"none\" (shuffle off), \"tracks\" (shuffle tracks) , \"albums\" (shuffle "
@@ -243,7 +247,7 @@ msgstr "Поиск"
 msgid "Queue"
 msgstr "Очередь"
 
-#: ../data/lollypop.appdata.xml.in.h:10 ../data/SettingsDialog.ui.h:21
+#: ../data/lollypop.appdata.xml.in.h:10 ../data/SettingsDialog.ui.h:22
 #: ../data/ToolbarEnd.ui.h:8
 msgid "Party mode"
 msgstr "Режим \"вечеринки\""
@@ -288,29 +292,41 @@ msgstr "Поддержка HiDPI"
 msgid "Tunein support"
 msgstr "Поддержка Tunein"
 
-#: ../src/application.py:30
+#: ../src/application.py:31
 msgid ""
 "    - Scrobbler disabled\n"
 "    - Auto cover download disabled\n"
 "    - Artist informations disabled"
 msgstr "    - Скробблинг отключен\n    - Автоматическая загрузка обложек отключена\n    - Информация об исполнителе отключена"
 
-#: ../src/application.py:358
+#: ../src/application.py:363
 #, python-format
-msgid "%s artist(s)"
-msgstr "%s исполнитель(ей)"
+msgid "%d artist"
+msgid_plural "%d artists"
+msgstr[0] "%d исполнитель"
+msgstr[1] "%d исполнителей"
+msgstr[2] "%d исполнителей"
+msgstr[3] "%d исполнителей"
 
-#: ../src/application.py:360
+#: ../src/application.py:365
 #, python-format
-msgid "%s album(s)"
-msgstr "%s альбом(ов)"
+msgid "%d album"
+msgid_plural "%d albums"
+msgstr[0] "%d альбом"
+msgstr[1] "%d альбомов"
+msgstr[2] "%d альбомов"
+msgstr[3] "%d альбомов"
 
-#: ../src/application.py:362
+#: ../src/application.py:367
 #, python-format
-msgid "%s track(s)"
-msgstr "%s композиция(й)"
+msgid "%d track"
+msgid_plural "%d tracks"
+msgstr[0] "%d композиция"
+msgstr[1] "%d композиций"
+msgstr[2] "%d композиций"
+msgstr[3] "%d композиций"
 
-#: ../src/application.py:378
+#: ../src/application.py:382
 msgid "Lollypop: You need to install yelp."
 msgstr "Lollypop: Вам необходимо установить yelp."
 
@@ -368,7 +384,7 @@ msgid "Random tracks"
 msgstr "Случайные композиции"
 
 #: ../src/container.py:519 ../src/playlists.py:54
-#: ../data/SettingsDialog.ui.h:8
+#: ../data/SettingsDialog.ui.h:9
 msgid "Network control"
 msgstr "Сетевое управление"
 
@@ -388,12 +404,12 @@ msgid "Many artists"
 msgstr "Множество исполнителей"
 
 #: ../src/fullscreen.py:92 ../src/fullscreen.py:280
-#: ../src/toolbar_playback.py:82 ../src/toolbar_playback.py:115
+#: ../src/toolbar_playback.py:92 ../src/toolbar_playback.py:125
 msgid "Pause"
 msgstr "Пауза"
 
 #: ../src/fullscreen.py:284 ../src/pop_tunein.py:154
-#: ../src/toolbar_playback.py:84 ../src/toolbar_playback.py:112
+#: ../src/toolbar_playback.py:94 ../src/toolbar_playback.py:122
 #: ../data/ToolbarPlayback.ui.h:2
 msgid "Play"
 msgstr "Воспроизвести"
@@ -419,7 +435,7 @@ msgstr "от %s"
 msgid "by %s, from %s"
 msgstr "от %s, из %s"
 
-#: ../src/player_bin.py:358
+#: ../src/player_bin.py:407
 #, python-format
 msgid "File doesn't exist: %s"
 msgstr "Файл не существует: %s"
@@ -430,11 +446,11 @@ msgstr "Любимые композиции"
 
 #: ../src/pop_covers.py:56 ../src/pop_tunein.py:93 ../data/RadioPopover.ui.h:3
 msgid "Please wait..."
-msgstr "Пожалуйста, подождите..."
+msgstr "Пожалуйста, подождите…"
 
 #: ../src/pop_covers.py:131
 msgid "No cover found..."
-msgstr "Обложка не найдена..."
+msgstr "Обложка не найдена…"
 
 #: ../src/pop_covers.py:160
 msgid "Select a cover art for this album"
@@ -516,17 +532,17 @@ msgstr "Изменить"
 
 #: ../src/pop_tunein.py:105
 msgid "Can't connect to TuneIn..."
-msgstr "Не удается подключиться к TuneIn..."
+msgstr "Не удается подключиться к TuneIn…"
 
 #: ../src/pop_tunein.py:179
 msgid "Browse themes and add a new radio"
 msgstr "Посмотрите темы и добавьте новые радиостанции"
 
-#: ../src/settings.py:157
+#: ../src/settings.py:161
 msgid "Populars"
 msgstr "Популярное"
 
-#: ../src/settings.py:158
+#: ../src/settings.py:162
 msgid "Recently added"
 msgstr "Недавно добавленные"
 
@@ -577,17 +593,17 @@ msgstr "Неизвестная ошибка при синхронизации, �
 msgid "No free space available on device"
 msgstr "На устройстве не осталось свободного места"
 
-#: ../src/widgets_playlist.py:258 ../src/widgets_playlist.py:261
+#: ../src/widgets_playlist.py:259 ../src/widgets_playlist.py:262
 msgid "New playlist "
 msgstr "Новый плейлист"
 
 #. Need a copy, segfault on EOS 3.1
-#: ../src/widgets_playlist.py:309 ../src/widgets_playlist.py:547
+#: ../src/widgets_playlist.py:317 ../src/widgets_playlist.py:553
 #, python-format
 msgid "Remove \"%s\"?"
 msgstr "Удалить \"%s\"?"
 
-#: ../src/widgets_playlist.py:592
+#: ../src/widgets_playlist.py:598
 msgid "Remove these tracks?"
 msgstr "Удалить эти композиции?"
 
@@ -641,7 +657,7 @@ msgstr "_Закрыть"
 
 #: ../data/ArtistContent.ui.h:1
 msgid "No information for this artist..."
-msgstr "Нет информации об этом исполнителе..."
+msgstr "Нет информации об этом исполнителе…"
 
 #: ../data/ArtistInfos.ui.h:1
 msgid "Albums"
@@ -697,7 +713,7 @@ msgstr "Выберите логотип для этой радиостанции
 
 #: ../data/RadioPopover.ui.h:2
 msgid "No logo found..."
-msgstr "Логотип не найден..."
+msgstr "Логотип не найден…"
 
 #: ../data/RadioPopover.ui.h:4
 msgid "Name:"
@@ -741,73 +757,77 @@ msgstr "Добавить в плейлист"
 
 #: ../data/SettingsDialog.ui.h:1
 msgid "Mix duration in seconds"
-msgstr "Длительность  смешивания в секундах"
+msgstr "Длительность смешивания в секундах"
 
 #: ../data/SettingsDialog.ui.h:2
+msgid "Only in party mode"
+msgstr "Только в режиме \"вечеринки\""
+
+#: ../data/SettingsDialog.ui.h:3
 msgid "Preferences"
 msgstr "Настройки"
 
-#: ../data/SettingsDialog.ui.h:4
+#: ../data/SettingsDialog.ui.h:5
 msgid "Restore state on startup"
 msgstr "Востанавливать состояние при запуске"
 
-#: ../data/SettingsDialog.ui.h:6
+#: ../data/SettingsDialog.ui.h:7
 msgid "Play albums on click"
 msgstr "Проигрывать альбом по клику"
 
-#: ../data/SettingsDialog.ui.h:7
+#: ../data/SettingsDialog.ui.h:8
 msgid "Control Lollypop with any MPD client"
 msgstr "Управлять Lollypop при помощи любого MPD клиента"
 
-#: ../data/SettingsDialog.ui.h:10
+#: ../data/SettingsDialog.ui.h:11
 msgid "Behaviour"
 msgstr "Поведение"
 
-#: ../data/SettingsDialog.ui.h:11
+#: ../data/SettingsDialog.ui.h:12
 msgid "Use dark theme variant"
 msgstr "Использовать тёмный вариант темы"
 
-#: ../data/SettingsDialog.ui.h:12
+#: ../data/SettingsDialog.ui.h:13
 msgid "Show genres"
 msgstr "Показывать жанры"
 
-#: ../data/SettingsDialog.ui.h:15
+#: ../data/SettingsDialog.ui.h:16
 msgid "Appearance"
 msgstr "Внешний вид"
 
-#: ../data/SettingsDialog.ui.h:16
+#: ../data/SettingsDialog.ui.h:17
 msgid "Configure lollypop behaviour"
 msgstr "Настроить поведение Lollypop"
 
-#: ../data/SettingsDialog.ui.h:17
+#: ../data/SettingsDialog.ui.h:18
 msgid "Options"
 msgstr "Опции"
 
-#: ../data/SettingsDialog.ui.h:18
+#: ../data/SettingsDialog.ui.h:19
 msgid "Select music folders"
 msgstr "Выбрать директории с музыкой"
 
-#: ../data/SettingsDialog.ui.h:19
+#: ../data/SettingsDialog.ui.h:20
 msgid "Music"
 msgstr "Музыка"
 
-#: ../data/SettingsDialog.ui.h:20
+#: ../data/SettingsDialog.ui.h:21
 msgid "Select what will be available in party mode"
 msgstr "Выберите, что будет доступно в режиме \"вечеринки\""
 
-#: ../data/SettingsDialog.ui.h:22
+#: ../data/SettingsDialog.ui.h:23
 msgid "Login:"
 msgstr "Логин:"
 
-#: ../data/SettingsDialog.ui.h:23
+#: ../data/SettingsDialog.ui.h:24
 msgid "Password:"
 msgstr "Пароль:"
 
-#: ../data/SettingsDialog.ui.h:24
+#: ../data/SettingsDialog.ui.h:25
 msgid "Connect"
 msgstr "Подключение"
 
-#: ../data/SettingsDialog.ui.h:25
+#: ../data/SettingsDialog.ui.h:26
 msgid "You need to install pylast and gi secret"
 msgstr "Вам необходимо установить pylast и gi secret"
 

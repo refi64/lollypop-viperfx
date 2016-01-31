@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lollypop\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-01-23 18:23+0100\n"
-"PO-Revision-Date: 2016-01-24 12:59+0000\n"
+"POT-Creation-Date: 2016-01-28 13:59+0100\n"
+"PO-Revision-Date: 2016-01-28 20:24+0000\n"
 "Last-Translator: Марко М. Костић (Marko M. Kostić) <marko.m.kostic@gmail.com>\n"
 "Language-Team: Serbian (http://www.transifex.com/gnumdk/lollypop/language/sr/)\n"
 "MIME-Version: 1.0\n"
@@ -87,7 +87,7 @@ msgid ""
 "Reset this value will reset the database, popular albums will be restored"
 msgstr "Поновно постављање ове вредности ће вратити базу на почетно стање, Популарни албуми ће бити враћени"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:18 ../data/SettingsDialog.ui.h:14
+#: ../data/org.gnome.Lollypop.gschema.xml.h:18 ../data/SettingsDialog.ui.h:15
 msgid "Albums cover size"
 msgstr "Величина омота албума"
 
@@ -111,7 +111,7 @@ msgstr "Синхронизуј све албуме (МТП)"
 msgid "Convert to MP3(MTP)"
 msgstr "Претвори у МП3 (МТП)"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:24 ../data/SettingsDialog.ui.h:3
+#: ../data/org.gnome.Lollypop.gschema.xml.h:24 ../data/SettingsDialog.ui.h:4
 msgid "Auto update music"
 msgstr "Аутоматски ажурирај музику"
 
@@ -127,11 +127,11 @@ msgstr "Користи тамну ГТК тему"
 msgid "Disable the use client side window decorations (headerbar)"
 msgstr "Искључи клијентске декорације прозора (насловна трака)"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:28 ../data/SettingsDialog.ui.h:13
+#: ../data/org.gnome.Lollypop.gschema.xml.h:28 ../data/SettingsDialog.ui.h:14
 msgid "Show compilations in albums view"
 msgstr "Прикажи компилације у делу са албумима"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:29 ../data/SettingsDialog.ui.h:5
+#: ../data/org.gnome.Lollypop.gschema.xml.h:29 ../data/SettingsDialog.ui.h:6
 msgid "Continue playback when closed"
 msgstr "Настави са пуштањем песама након затварања програма"
 
@@ -163,21 +163,25 @@ msgstr "МПД мрежни интерфејс"
 msgid "MPD network port"
 msgstr "МПД мрежни порт"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:37 ../data/SettingsDialog.ui.h:9
+#: ../data/org.gnome.Lollypop.gschema.xml.h:37 ../data/SettingsDialog.ui.h:10
 msgid "Mix songs"
 msgstr "Мешај песме"
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:38
+msgid "Mix songs only in party mode"
+msgstr "Мешај песме само у режиму за журке"
+
+#: ../data/org.gnome.Lollypop.gschema.xml.h:39
 msgid "Mix duration"
 msgstr "Трајање мешања"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:39
+#: ../data/org.gnome.Lollypop.gschema.xml.h:40
 msgid "Shuffle mode"
 msgstr "Режим мешања песама"
 
 #. Translators: Don't translate allowed values, just the description in the
 #. brackets
-#: ../data/org.gnome.Lollypop.gschema.xml.h:41
+#: ../data/org.gnome.Lollypop.gschema.xml.h:42
 msgid ""
 "Value identifies whether to shuffle tracks/albums. Allowed values are: "
 "\"none\" (shuffle off), \"tracks\" (shuffle tracks) , \"albums\" (shuffle "
@@ -240,7 +244,7 @@ msgstr "Претрага"
 msgid "Queue"
 msgstr "Редослед"
 
-#: ../data/lollypop.appdata.xml.in.h:10 ../data/SettingsDialog.ui.h:21
+#: ../data/lollypop.appdata.xml.in.h:10 ../data/SettingsDialog.ui.h:22
 #: ../data/ToolbarEnd.ui.h:8
 msgid "Party mode"
 msgstr "Режим рада за журке"
@@ -285,29 +289,38 @@ msgstr "подршку за екране високе резолуције"
 msgid "Tunein support"
 msgstr "подршку за Tunein услугу"
 
-#: ../src/application.py:30
+#: ../src/application.py:31
 msgid ""
 "    - Scrobbler disabled\n"
 "    - Auto cover download disabled\n"
 "    - Artist informations disabled"
 msgstr "- Scrobbler је искључен\n- Аутоматско скидање омота искључено\n- Скидање података о извођачима искључено"
 
-#: ../src/application.py:358
+#: ../src/application.py:363
 #, python-format
-msgid "%s artist(s)"
-msgstr "%s извођач(а)"
+msgid "%d artist"
+msgid_plural "%d artists"
+msgstr[0] "%d извођач"
+msgstr[1] "%d извођача"
+msgstr[2] "%d извођача"
 
-#: ../src/application.py:360
+#: ../src/application.py:365
 #, python-format
-msgid "%s album(s)"
-msgstr "%s албум(а)"
+msgid "%d album"
+msgid_plural "%d albums"
+msgstr[0] "%d албум"
+msgstr[1] "%d албума"
+msgstr[2] "%d албума"
 
-#: ../src/application.py:362
+#: ../src/application.py:367
 #, python-format
-msgid "%s track(s)"
-msgstr "%s нумера (нумере)"
+msgid "%d track"
+msgid_plural "%d tracks"
+msgstr[0] "%d нумера"
+msgstr[1] "%d нумере"
+msgstr[2] "%d нумера"
 
-#: ../src/application.py:378
+#: ../src/application.py:382
 msgid "Lollypop: You need to install yelp."
 msgstr "Лолипоп: потребно је да инсталирате „Помоћ“ (yelp пакет)."
 
@@ -365,7 +378,7 @@ msgid "Random tracks"
 msgstr "Насумичне песме"
 
 #: ../src/container.py:519 ../src/playlists.py:54
-#: ../data/SettingsDialog.ui.h:8
+#: ../data/SettingsDialog.ui.h:9
 msgid "Network control"
 msgstr "Мрежно управљање"
 
@@ -385,12 +398,12 @@ msgid "Many artists"
 msgstr "Многи извођачи"
 
 #: ../src/fullscreen.py:92 ../src/fullscreen.py:280
-#: ../src/toolbar_playback.py:82 ../src/toolbar_playback.py:115
+#: ../src/toolbar_playback.py:92 ../src/toolbar_playback.py:125
 msgid "Pause"
 msgstr "Паузирај"
 
 #: ../src/fullscreen.py:284 ../src/pop_tunein.py:154
-#: ../src/toolbar_playback.py:84 ../src/toolbar_playback.py:112
+#: ../src/toolbar_playback.py:94 ../src/toolbar_playback.py:122
 #: ../data/ToolbarPlayback.ui.h:2
 msgid "Play"
 msgstr "Пусти"
@@ -416,7 +429,7 @@ msgstr "изводи %s"
 msgid "by %s, from %s"
 msgstr "изводи %s, са албума %s"
 
-#: ../src/player_bin.py:358
+#: ../src/player_bin.py:407
 #, python-format
 msgid "File doesn't exist: %s"
 msgstr "Датотека не постоји: %s"
@@ -519,11 +532,11 @@ msgstr "Не могу да се повежем на TuneIn услугу..."
 msgid "Browse themes and add a new radio"
 msgstr "Прегледај теме и додај нови радио"
 
-#: ../src/settings.py:157
+#: ../src/settings.py:161
 msgid "Populars"
 msgstr "Популарно"
 
-#: ../src/settings.py:158
+#: ../src/settings.py:162
 msgid "Recently added"
 msgstr "Скоро додато"
 
@@ -574,17 +587,17 @@ msgstr "Догодила се непозната грешка приликом �
 msgid "No free space available on device"
 msgstr "Нема довољно слободног простора на уређају"
 
-#: ../src/widgets_playlist.py:258 ../src/widgets_playlist.py:261
+#: ../src/widgets_playlist.py:259 ../src/widgets_playlist.py:262
 msgid "New playlist "
 msgstr "Нова листа песама"
 
 #. Need a copy, segfault on EOS 3.1
-#: ../src/widgets_playlist.py:309 ../src/widgets_playlist.py:547
+#: ../src/widgets_playlist.py:317 ../src/widgets_playlist.py:553
 #, python-format
 msgid "Remove \"%s\"?"
 msgstr "Уклонити \"%s\"?"
 
-#: ../src/widgets_playlist.py:592
+#: ../src/widgets_playlist.py:598
 msgid "Remove these tracks?"
 msgstr "Уклонити ове песме?"
 
@@ -741,70 +754,74 @@ msgid "Mix duration in seconds"
 msgstr "Трајање мешања у секундама"
 
 #: ../data/SettingsDialog.ui.h:2
+msgid "Only in party mode"
+msgstr "Само у режиму за журке"
+
+#: ../data/SettingsDialog.ui.h:3
 msgid "Preferences"
 msgstr "Поставке"
 
-#: ../data/SettingsDialog.ui.h:4
+#: ../data/SettingsDialog.ui.h:5
 msgid "Restore state on startup"
 msgstr "Поврати претходно стање програма приликом покретања програма"
 
-#: ../data/SettingsDialog.ui.h:6
+#: ../data/SettingsDialog.ui.h:7
 msgid "Play albums on click"
 msgstr "Пусти песме са албума на клик"
 
-#: ../data/SettingsDialog.ui.h:7
+#: ../data/SettingsDialog.ui.h:8
 msgid "Control Lollypop with any MPD client"
 msgstr "Управљајте Лолипопом преко МПД клијента"
 
-#: ../data/SettingsDialog.ui.h:10
+#: ../data/SettingsDialog.ui.h:11
 msgid "Behaviour"
 msgstr "Понашање програма"
 
-#: ../data/SettingsDialog.ui.h:11
+#: ../data/SettingsDialog.ui.h:12
 msgid "Use dark theme variant"
 msgstr "Користи тамну тему"
 
-#: ../data/SettingsDialog.ui.h:12
+#: ../data/SettingsDialog.ui.h:13
 msgid "Show genres"
 msgstr "Прикажи жанрове"
 
-#: ../data/SettingsDialog.ui.h:15
+#: ../data/SettingsDialog.ui.h:16
 msgid "Appearance"
 msgstr "Изглед"
 
-#: ../data/SettingsDialog.ui.h:16
+#: ../data/SettingsDialog.ui.h:17
 msgid "Configure lollypop behaviour"
 msgstr "Подешавање понашања Лолипопа"
 
-#: ../data/SettingsDialog.ui.h:17
+#: ../data/SettingsDialog.ui.h:18
 msgid "Options"
 msgstr "Подешавања"
 
-#: ../data/SettingsDialog.ui.h:18
+#: ../data/SettingsDialog.ui.h:19
 msgid "Select music folders"
 msgstr "Изабери директоријуме са музиком"
 
-#: ../data/SettingsDialog.ui.h:19
+#: ../data/SettingsDialog.ui.h:20
 msgid "Music"
 msgstr "Музика"
 
-#: ../data/SettingsDialog.ui.h:20
+#: ../data/SettingsDialog.ui.h:21
 msgid "Select what will be available in party mode"
 msgstr "Изабери шта ће бити доступно у режиму рада за журке"
 
-#: ../data/SettingsDialog.ui.h:22
+#: ../data/SettingsDialog.ui.h:23
 msgid "Login:"
 msgstr "Корисничко име:"
 
-#: ../data/SettingsDialog.ui.h:23
+#: ../data/SettingsDialog.ui.h:24
 msgid "Password:"
 msgstr "Лозинка:"
 
-#: ../data/SettingsDialog.ui.h:24
+#: ../data/SettingsDialog.ui.h:25
 msgid "Connect"
 msgstr "Повежи се"
 
-#: ../data/SettingsDialog.ui.h:25
+#: ../data/SettingsDialog.ui.h:26
 msgid "You need to install pylast and gi secret"
 msgstr "Потребно је да инсталирате пакете који садрже „pylast“ и „gi secret“"
 
