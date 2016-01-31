@@ -85,7 +85,7 @@ class FullScreen(Gtk.Window):
                                                self._on_current_changed)
         self._signal2_id = Lp().player.connect('status-changed',
                                                self._on_status_changed)
-        if Lp().player.current_track is None:
+        if Lp().player.current_track.id is None:
             Lp().player.set_party(True)
         else:
             if is_playing:
