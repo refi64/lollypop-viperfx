@@ -124,6 +124,10 @@ class Window(Gtk.ApplicationWindow, Container):
             self._app.set_accels_for_action("app.player::prev", [None])
 
     def do_get_preferred_width(self):
+        """
+            Override preferred width to allow snapping,
+            as toolbar width is based on window width
+        """
         screen = Gdk.Screen.get_default()
         monitor = screen.get_primary_monitor()
         geometry = screen.get_monitor_geometry(monitor)
