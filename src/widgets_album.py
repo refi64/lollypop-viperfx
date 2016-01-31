@@ -287,6 +287,7 @@ class AlbumDetailedWidget(Gtk.Bin, AlbumWidget):
         AlbumWidget.__init__(self, album_id, genre_ids)
         self._artist_ids = artist_ids
         self._pop_allowed = not popover or Gtk.get_minor_version() > 16
+        self.set_property('height-request', ArtSize.BIG)
         builder = Gtk.Builder()
         builder.add_from_resource('/org/gnome/Lollypop/%s.ui' %
                                   type(self).__name__)
