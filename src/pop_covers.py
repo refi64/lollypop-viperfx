@@ -152,11 +152,10 @@ class CoversPopover(Gtk.Popover):
                     ArtSize.BIG,
                     True,
                     None)
+            self._add_pixbuf(monster, big)
             # Remove spinner if exist
-            if self._stack.get_visible_child_name() == 'spinner' and\
-               monster is not None and big is not None:
+            if self._stack.get_visible_child_name() == 'spinner':
                 self._spinner.stop()
-                self._add_pixbuf(monster, big)
                 self._label.set_text(_("Select a cover art for this album"))
                 self._stack.set_visible_child_name('main')
         except Exception as e:
@@ -168,6 +167,8 @@ class CoversPopover(Gtk.Popover):
             @param monster as Gdk.Pixbuf
             @param big as Gdk.Pixbuf
         """
+        if monster is None or big is None:
+            return
         image = Gtk.Image()
         self._monster_pixbufs[image] = monster
         surface = Gdk.cairo_surface_create_from_pixbuf(big,
