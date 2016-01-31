@@ -98,10 +98,11 @@ class View(Gtk.Grid):
             Lp().scanner.disconnect(self._scan_signal)
             self._scan_signal = None
 
-    def _on_cover_changed(self, widget, album_id):
+    def _on_cover_changed(self, art, album_id):
         """
             Update album cover in view
-            @param widget as unused, album id as int
+            @param art as Art
+            @param album id as int
         """
         for widget in self._get_children():
             widget.update_cover(album_id)
