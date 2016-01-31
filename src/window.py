@@ -10,7 +10,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-from gi.repository import Gtk, Gio, GLib
+from gi.repository import Gtk, Gio, GLib, Gdk
 
 from lollypop.container import Container
 from lollypop.define import Lp, NextContext, Shuffle
@@ -122,6 +122,12 @@ class Window(Gtk.ApplicationWindow, Container):
             self._app.set_accels_for_action("app.player::next", [None])
             self._app.set_accels_for_action("app.player::next_album", [None])
             self._app.set_accels_for_action("app.player::prev", [None])
+
+    def do_get_preferred_width(self):
+        screen = Gdk.Screen.get_default()
+        monitor = screen.get_primary_monitor()
+        geometry = screen.get_monitor_geometry(monitor)
+        return (geometry.width/2, geometry.width/2)
 
     def do_hide(self):
         """
