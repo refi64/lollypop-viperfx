@@ -227,7 +227,6 @@ class AlbumRow(Row):
         """
             Show header
         """
-        self._row_widget.set_margin_top(10)
         self._num_label.set_property('valign', Gtk.Align.END)
         self._title_label.set_property('valign', Gtk.Align.END)
         self._duration_label.set_property('valign', Gtk.Align.END)
