@@ -12,7 +12,7 @@ msgstr ""
 "Project-Id-Version: lollypop\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2016-01-28 13:59+0100\n"
-"PO-Revision-Date: 2016-01-28 13:41+0000\n"
+"PO-Revision-Date: 2016-02-01 20:26+0000\n"
 "Last-Translator: Maxim Orlov <murmansksity@gmail.com>\n"
 "Language-Team: Russian (http://www.transifex.com/gnumdk/lollypop/language/ru/)\n"
 "MIME-Version: 1.0\n"
@@ -168,15 +168,15 @@ msgstr "MPD сетевой порт"
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:37 ../data/SettingsDialog.ui.h:10
 msgid "Mix songs"
-msgstr "Смешайте песни"
+msgstr "Плавный переход (кроссфейд)"
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:38
 msgid "Mix songs only in party mode"
-msgstr "Смешайте песни только в режиме \"вечеринки\""
+msgstr "Сводить песни только в режиме \"вечеринки\""
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:39
 msgid "Mix duration"
-msgstr "Длительность смешивания"
+msgstr "Длительность сведе́ния"
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:40
 msgid "Shuffle mode"
@@ -757,7 +757,7 @@ msgstr "Добавить в плейлист"
 
 #: ../data/SettingsDialog.ui.h:1
 msgid "Mix duration in seconds"
-msgstr "Длительность смешивания в секундах"
+msgstr "Длительность сведе́ния в секундах"
 
 #: ../data/SettingsDialog.ui.h:2
 msgid "Only in party mode"

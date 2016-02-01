@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: lollypop\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2016-01-28 13:59+0100\n"
-"PO-Revision-Date: 2016-01-28 20:24+0000\n"
+"PO-Revision-Date: 2016-02-01 17:54+0000\n"
 "Last-Translator: Марко М. Костић (Marko M. Kostić) <marko.m.kostic@gmail.com>\n"
 "Language-Team: Serbian (http://www.transifex.com/gnumdk/lollypop/language/sr/)\n"
 "MIME-Version: 1.0\n"
@@ -165,15 +165,15 @@ msgstr "МПД мрежни порт"
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:37 ../data/SettingsDialog.ui.h:10
 msgid "Mix songs"
-msgstr "Мешај песме"
+msgstr "Преклапај песме"
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:38
 msgid "Mix songs only in party mode"
-msgstr "Мешај песме само у режиму за журке"
+msgstr "Преклапај песме само у режиму за журке"
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:39
 msgid "Mix duration"
-msgstr "Трајање мешања"
+msgstr "Трајање преклапања"
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:40
 msgid "Shuffle mode"
@@ -751,7 +751,7 @@ msgstr "Додај у листу песама"
 
 #: ../data/SettingsDialog.ui.h:1
 msgid "Mix duration in seconds"
-msgstr "Трајање мешања у секундама"
+msgstr "Трајање преклапања у секундама"
 
 #: ../data/SettingsDialog.ui.h:2
 msgid "Only in party mode"

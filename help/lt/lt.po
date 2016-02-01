@@ -1,11 +1,11 @@
 # 
 # Translators:
-# Moo, 2015
+# Moo, 2015-2016
 msgid ""
 msgstr ""
 "Project-Id-Version: lollypop\n"
 "POT-Creation-Date: 2015-06-24 15:43+0200\n"
-"PO-Revision-Date: 2015-12-13 15:11+0000\n"
+"PO-Revision-Date: 2016-02-01 22:39+0000\n"
 "Last-Translator: Moo\n"
 "Language-Team: Lithuanian (http://www.transifex.com/gnumdk/lollypop/language/lt/)\n"
 "MIME-Version: 1.0\n"
@@ -22,7 +22,7 @@ msgstr "Moo"
 #. (itstool) path: info/desc
 #: C/index.page:7
 msgid "Help for the Lollypop music player."
-msgstr ""
+msgstr "Lollypop muzikos grotuvo žinynas."
 
 #. (itstool) path: info/title
 #: C/index.page:8
@@ -75,79 +75,79 @@ msgstr "Grojimas"
 #. (itstool) path: section/p
 #: C/index.page:31
 msgid "When you start playing a song, a contextual playlist is populated."
-msgstr ""
+msgstr "Kai pradedate groti dainą, yra sudaromas kontekstinis grojaraštis."
 
 #. (itstool) path: section/p
 #: C/index.page:32
 msgid ""
 "Contexts can be: an album, an artist, a genre, popular or recent albums, "
 "searches, playlists, ..."
-msgstr ""
+msgstr "Kontekstai gali būti: albumas, atlikėjas, žanras, populiarūs ar paskiausi albumai, paieškos, grojaraščiai, ..."
 
 #. (itstool) path: section/p
 #: C/index.page:33
 msgid "Shuffle interacts on current context."
-msgstr ""
+msgstr "Maišymas sąveikauja esamame kontekste."
 
 #. (itstool) path: section/title
 #: C/index.page:37
 msgid "Rate albums"
-msgstr ""
+msgstr "Įvertinti albumus"
 
 #. (itstool) path: section/p
 #: C/index.page:38
 msgid ""
 "Album popularity is based on how many tracks from an album you listen to."
-msgstr ""
+msgstr "Albumo populiarumas yra grindžiamas tuo, kiek takelių iš tam tikro albumo jūs klausotės."
 
 #. (itstool) path: section/p
 #: C/index.page:39
 msgid ""
 "Album rating will be influenced by album popularity. In other words, rate "
 "will decrease if you stop listening to an album."
-msgstr ""
+msgstr "Albumo įvertinimas bus veikiamas albumo populiarumo. Kitaip tariant, jeigu nustosite klausytis albumo, įvertinimas sumažės."
 
 #. (itstool) path: section/title
 #: C/index.page:43
 msgid "Download covers"
-msgstr ""
+msgstr "Atsisiųsti viršelius"
 
 #. (itstool) path: section/p
 #: C/index.page:44
 msgid ""
 "When hovering a cover, if mouse cursor changes to a pen, just click and "
 "select a new cover."
-msgstr ""
+msgstr "Kai užvedate pelės rodyklę ant viršelio, jeigu žymeklis pasikeičia į tušinuką, tuomet, tiesiog, spustelėkite ir pasirinkite naują viršelį."
 
 #. (itstool) path: section/p
 #: C/index.page:45
 msgid "You need an internet connection."
-msgstr ""
+msgstr "Jums reikės interneto ryšio."
 
 #. (itstool) path: section/title
 #: C/index.page:49
 msgid "Shortcuts"
-msgstr ""
+msgstr "Trumpiniai"
 
 #. (itstool) path: item/p
 #: C/index.page:51
 msgid "Control+s: Lollypop settings"
-msgstr ""
+msgstr "Vald+s: Lollypop nustatymai"
 
 #. (itstool) path: item/p
 #: C/index.page:52
 msgid "Control+f: Search"
-msgstr ""
+msgstr "Vald+f: Paieška"
 
 #. (itstool) path: item/p
 #: C/index.page:53
 msgid "Control+p: Party mode"
-msgstr ""
+msgstr "Vald+p: Vakarėlio veiksena"
 
 #. (itstool) path: item/p
 #: C/index.page:54
 msgid "Control+m or F11: Fullscreen"
-msgstr ""
+msgstr "Vald+m arba F11: Visas ekranas"
 
 #. (itstool) path: item/p
 #: C/index.page:55
@@ -177,7 +177,7 @@ msgstr "p: Ankstesnis takelis"
 #. (itstool) path: item/p
 #: C/index.page:60
 msgid "Control+n: Skip current album"
-msgstr ""
+msgstr "Vald+n: Praleisti esamą albumą"
 
 #. (itstool) path: item/p
 #: C/index.page:61
@@ -197,7 +197,7 @@ msgstr ""
 #. (itstool) path: license/p
 #: C/legal.xml:3
 msgid "This work is licensed under a <_:link-1/>."
-msgstr ""
+msgstr "Šis darbas yra licencijuotas pagal <_:link-1/>."
 
 #. (itstool) path: license/p
 #: C/legal.xml:6

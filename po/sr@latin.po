@@ -10,8 +10,8 @@ msgstr ""
 "Project-Id-Version: lollypop\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2016-01-28 13:59+0100\n"
-"PO-Revision-Date: 2016-01-28 13:03+0000\n"
-"Last-Translator: Cédric Bellegarde <web@adishatz.org>\n"
+"PO-Revision-Date: 2016-02-01 17:57+0000\n"
+"Last-Translator: Марко М. Костић (Marko M. Kostić) <marko.m.kostic@gmail.com>\n"
 "Language-Team: Serbian (Latin) (http://www.transifex.com/gnumdk/lollypop/language/sr@latin/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -166,15 +166,15 @@ msgstr "MPD mrežni port"
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:37 ../data/SettingsDialog.ui.h:10
 msgid "Mix songs"
-msgstr "Mešaj pesme"
+msgstr "Preklapaj pesme"
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:38
 msgid "Mix songs only in party mode"
-msgstr ""
+msgstr "Preklapaj pesme samo u režimu za žurke"
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:39
 msgid "Mix duration"
-msgstr "Trajanje mešanja"
+msgstr "Trajanje preklapanja"
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:40
 msgid "Shuffle mode"
@@ -301,25 +301,25 @@ msgstr "- Scrobbler je isključen\n- Automatsko skidanje omota isključeno\n- Sk
 #, python-format
 msgid "%d artist"
 msgid_plural "%d artists"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "%d izvođač"
+msgstr[1] "%d izvođača"
+msgstr[2] "%d izvođača"
 
 #: ../src/application.py:365
 #, python-format
 msgid "%d album"
 msgid_plural "%d albums"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "%d album"
+msgstr[1] "%d albuma"
+msgstr[2] "%d albuma"
 
 #: ../src/application.py:367
 #, python-format
 msgid "%d track"
 msgid_plural "%d tracks"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "%d numera"
+msgstr[1] "%d numere"
+msgstr[2] "%d numera"
 
 #: ../src/application.py:382
 msgid "Lollypop: You need to install yelp."
@@ -752,11 +752,11 @@ msgstr "Dodaj u listu pesama"
 
 #: ../data/SettingsDialog.ui.h:1
 msgid "Mix duration in seconds"
-msgstr "Trajanje mešanja u sekundama"
+msgstr "Trajanje preklapanja u sekundama"
 
 #: ../data/SettingsDialog.ui.h:2
 msgid "Only in party mode"
-msgstr ""
+msgstr "Samo u režimu za žurke"
 
 #: ../data/SettingsDialog.ui.h:3
 msgid "Preferences"
