@@ -192,12 +192,17 @@ class AlbumRow(Row):
         self._cover = Gtk.Image()
         self._cover_frame = Gtk.Frame()
         self._cover_frame.set_shadow_type(Gtk.ShadowType.NONE)
-        self._cover_frame.set_property('width-request', 50)
         self._cover_frame.set_property('halign', Gtk.Align.CENTER)
         self._cover_frame.set_property('valign', Gtk.Align.CENTER)
         self._cover_frame.get_style_context().add_class('small-cover-frame')
         self._cover_frame.add(self._cover)
-        self._grid.attach(self._cover_frame, 0, 0, 1, 2)
+        # We force width with a Box
+        box = Gtk.Box()
+        box.set_homogeneous(True)
+        box.add(self._cover_frame)
+        box.set_property('width-request', ArtSize.MEDIUM+2)
+        box.show()
+        self._grid.attach(box, 0, 0, 1, 2)
         self.show_all()
         self._header = Gtk.Grid()
         self._header.set_column_spacing(5)
@@ -222,7 +227,6 @@ class AlbumRow(Row):
         """
             Show header
         """
-        self._row_widget.set_margin_top(10)
         self._num_label.set_property('valign', Gtk.Align.END)
         self._title_label.set_property('valign', Gtk.Align.END)
         self._duration_label.set_property('valign', Gtk.Align.END)
