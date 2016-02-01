@@ -149,11 +149,9 @@ class MtpSync:
         except Exception as e:
             print("DeviceManagerWidget::_sync(): %s" % e)
         self._fraction = 1.0
-        if self._syncing:
-            self._syncing = False
-        else:
-            GLib.idle_add(self._on_finished)
+        self._syncing = False
         self._in_thread = False
+        GLib.idle_add(self._on_finished)
         if self._errors:
             GLib.idle_add(self._on_errors)
 
