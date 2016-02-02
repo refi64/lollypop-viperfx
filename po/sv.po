@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lollypop\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-01-28 13:59+0100\n"
-"PO-Revision-Date: 2016-01-28 13:03+0000\n"
+"POT-Creation-Date: 2016-02-02 20:48+0100\n"
+"PO-Revision-Date: 2016-02-03 07:50+0000\n"
 "Last-Translator: Cédric Bellegarde <web@adishatz.org>\n"
 "Language-Team: Swedish (http://www.transifex.com/gnumdk/lollypop/language/sv/)\n"
 "MIME-Version: 1.0\n"
@@ -86,7 +86,7 @@ msgid ""
 "Reset this value will reset the database, popular albums will be restored"
 msgstr ""
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:18 ../data/SettingsDialog.ui.h:15
+#: ../data/org.gnome.Lollypop.gschema.xml.h:18 ../data/SettingsDialog.ui.h:7
 msgid "Albums cover size"
 msgstr ""
 
@@ -110,7 +110,7 @@ msgstr ""
 msgid "Convert to MP3(MTP)"
 msgstr ""
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:24 ../data/SettingsDialog.ui.h:4
+#: ../data/org.gnome.Lollypop.gschema.xml.h:24 ../data/SettingsDialog.ui.h:10
 msgid "Auto update music"
 msgstr ""
 
@@ -126,11 +126,11 @@ msgstr ""
 msgid "Disable the use client side window decorations (headerbar)"
 msgstr ""
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:28 ../data/SettingsDialog.ui.h:14
+#: ../data/org.gnome.Lollypop.gschema.xml.h:28 ../data/SettingsDialog.ui.h:6
 msgid "Show compilations in albums view"
 msgstr ""
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:29 ../data/SettingsDialog.ui.h:6
+#: ../data/org.gnome.Lollypop.gschema.xml.h:29 ../data/SettingsDialog.ui.h:12
 msgid "Continue playback when closed"
 msgstr ""
 
@@ -162,7 +162,7 @@ msgstr ""
 msgid "MPD network port"
 msgstr ""
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:37 ../data/SettingsDialog.ui.h:10
+#: ../data/org.gnome.Lollypop.gschema.xml.h:37 ../data/SettingsDialog.ui.h:16
 msgid "Mix songs"
 msgstr ""
 
@@ -374,14 +374,14 @@ msgid "Random tracks"
 msgstr ""
 
 #: ../src/container.py:519 ../src/playlists.py:54
-#: ../data/SettingsDialog.ui.h:9
+#: ../data/SettingsDialog.ui.h:15
 msgid "Network control"
 msgstr ""
 
 #: ../src/database_albums.py:270 ../src/database_artists.py:104
 #: ../src/database_genres.py:69 ../src/database_tracks.py:229
-#: ../src/tagreader.py:87 ../src/tagreader.py:118 ../src/tagreader.py:143
-#: ../src/tagreader.py:158
+#: ../src/tagreader.py:87 ../src/tagreader.py:98 ../src/tagreader.py:120
+#: ../src/tagreader.py:131 ../src/tagreader.py:147 ../src/tagreader.py:162
 msgid "Unknown"
 msgstr ""
 
@@ -393,12 +393,12 @@ msgstr ""
 msgid "Many artists"
 msgstr ""
 
-#: ../src/fullscreen.py:92 ../src/fullscreen.py:280
+#: ../src/fullscreen.py:92 ../src/fullscreen.py:291
 #: ../src/toolbar_playback.py:92 ../src/toolbar_playback.py:125
 msgid "Pause"
 msgstr ""
 
-#: ../src/fullscreen.py:284 ../src/pop_tunein.py:154
+#: ../src/fullscreen.py:295 ../src/pop_tunein.py:154
 #: ../src/toolbar_playback.py:94 ../src/toolbar_playback.py:122
 #: ../data/ToolbarPlayback.ui.h:2
 msgid "Play"
@@ -425,7 +425,7 @@ msgstr ""
 msgid "by %s, from %s"
 msgstr ""
 
-#: ../src/player_bin.py:407
+#: ../src/player_bin.py:449
 #, python-format
 msgid "File doesn't exist: %s"
 msgstr ""
@@ -442,7 +442,7 @@ msgstr ""
 msgid "No cover found..."
 msgstr ""
 
-#: ../src/pop_covers.py:160
+#: ../src/pop_covers.py:159
 msgid "Select a cover art for this album"
 msgstr ""
 
@@ -551,22 +551,22 @@ msgstr ""
 msgid "Cancel synchronization"
 msgstr ""
 
-#: ../src/widgets_album.py:310
+#: ../src/widgets_album.py:311
 #, python-format
 msgid "%s h  %s m"
 msgstr ""
 
-#: ../src/widgets_album.py:312
+#: ../src/widgets_album.py:313
 #, python-format
 msgid "%s h"
 msgstr ""
 
-#: ../src/widgets_album.py:314
+#: ../src/widgets_album.py:315
 #, python-format
 msgid "%s m"
 msgstr ""
 
-#: ../src/widgets_album.py:326
+#: ../src/widgets_album.py:327
 #, python-format
 msgid "Disc %s"
 msgstr ""
@@ -746,7 +746,7 @@ msgid "Add to playlist"
 msgstr ""
 
 #: ../data/SettingsDialog.ui.h:1
-msgid "Mix duration in seconds"
+msgid "Preferences"
 msgstr ""
 
 #: ../data/SettingsDialog.ui.h:2
@@ -754,43 +754,43 @@ msgid "Only in party mode"
 msgstr ""
 
 #: ../data/SettingsDialog.ui.h:3
-msgid "Preferences"
+msgid "Mix duration in seconds"
 msgstr ""
 
-#: ../data/SettingsDialog.ui.h:5
-msgid "Restore state on startup"
-msgstr ""
-
-#: ../data/SettingsDialog.ui.h:7
-msgid "Play albums on click"
-msgstr ""
-
-#: ../data/SettingsDialog.ui.h:8
-msgid "Control Lollypop with any MPD client"
-msgstr ""
-
-#: ../data/SettingsDialog.ui.h:11
-msgid "Behaviour"
-msgstr ""
-
-#: ../data/SettingsDialog.ui.h:12
+#: ../data/SettingsDialog.ui.h:4
 msgid "Use dark theme variant"
 msgstr ""
 
-#: ../data/SettingsDialog.ui.h:13
+#: ../data/SettingsDialog.ui.h:5
 msgid "Show genres"
 msgstr ""
 
-#: ../data/SettingsDialog.ui.h:16
+#: ../data/SettingsDialog.ui.h:8
 msgid "Appearance"
 msgstr ""
 
+#: ../data/SettingsDialog.ui.h:9
+msgid "Configure lollypop appearance"
+msgstr ""
+
+#: ../data/SettingsDialog.ui.h:11
+msgid "Restore state on startup"
+msgstr ""
+
+#: ../data/SettingsDialog.ui.h:13
+msgid "Play albums on click"
+msgstr ""
+
+#: ../data/SettingsDialog.ui.h:14
+msgid "Control Lollypop with any MPD client"
+msgstr ""
+
 #: ../data/SettingsDialog.ui.h:17
-msgid "Configure lollypop behaviour"
+msgid "Behaviour"
 msgstr ""
 
 #: ../data/SettingsDialog.ui.h:18
-msgid "Options"
+msgid "Configure lollypop behaviour"
 msgstr ""
 
 #: ../data/SettingsDialog.ui.h:19
@@ -819,6 +819,10 @@ msgstr ""
 
 #: ../data/SettingsDialog.ui.h:26
 msgid "You need to install pylast and gi secret"
+msgstr ""
+
+#: ../data/SettingsDialog.ui.h:27
+msgid "Configure Last.fm credentials"
 msgstr ""
 
 #: ../data/ToolbarEnd.ui.h:1

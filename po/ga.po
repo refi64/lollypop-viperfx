@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lollypop\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-01-23 18:23+0100\n"
-"PO-Revision-Date: 2016-01-23 17:23+0000\n"
+"POT-Creation-Date: 2016-02-02 20:48+0100\n"
+"PO-Revision-Date: 2016-02-03 07:50+0000\n"
 "Last-Translator: Cédric Bellegarde <web@adishatz.org>\n"
 "Language-Team: Irish (http://www.transifex.com/gnumdk/lollypop/language/ga/)\n"
 "MIME-Version: 1.0\n"
@@ -87,7 +87,7 @@ msgid ""
 "Reset this value will reset the database, popular albums will be restored"
 msgstr "Athshocraigh an luach seo chun an bunachar sonraí a athshochrú. Athbhunófar albaim a bhfuil tóir orthu."
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:18 ../data/SettingsDialog.ui.h:14
+#: ../data/org.gnome.Lollypop.gschema.xml.h:18 ../data/SettingsDialog.ui.h:7
 msgid "Albums cover size"
 msgstr "Méid clúdach albam"
 
@@ -111,7 +111,7 @@ msgstr ""
 msgid "Convert to MP3(MTP)"
 msgstr ""
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:24 ../data/SettingsDialog.ui.h:3
+#: ../data/org.gnome.Lollypop.gschema.xml.h:24 ../data/SettingsDialog.ui.h:10
 msgid "Auto update music"
 msgstr "Uath-nuashonraigh ceol"
 
@@ -127,11 +127,11 @@ msgstr "Úsáid cuma dhorcha gtk"
 msgid "Disable the use client side window decorations (headerbar)"
 msgstr "Díchumasaigh maisiúcháin fhuinneoige an chliaint (barra ceanntáisc)"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:28 ../data/SettingsDialog.ui.h:13
+#: ../data/org.gnome.Lollypop.gschema.xml.h:28 ../data/SettingsDialog.ui.h:6
 msgid "Show compilations in albums view"
 msgstr "Taispeáin teaglaimí i radharc albam"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:29 ../data/SettingsDialog.ui.h:5
+#: ../data/org.gnome.Lollypop.gschema.xml.h:29 ../data/SettingsDialog.ui.h:12
 msgid "Continue playback when closed"
 msgstr "Lean ar athsheinm nuair dúnta"
 
@@ -163,21 +163,25 @@ msgstr "Comhéadan líonra MPD"
 msgid "MPD network port"
 msgstr "Port líonra MPD"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:37 ../data/SettingsDialog.ui.h:9
+#: ../data/org.gnome.Lollypop.gschema.xml.h:37 ../data/SettingsDialog.ui.h:16
 msgid "Mix songs"
 msgstr ""
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:38
-msgid "Mix duration"
+msgid "Mix songs only in party mode"
 msgstr ""
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:39
+msgid "Mix duration"
+msgstr ""
+
+#: ../data/org.gnome.Lollypop.gschema.xml.h:40
 msgid "Shuffle mode"
 msgstr "Mód suaite"
 
 #. Translators: Don't translate allowed values, just the description in the
 #. brackets
-#: ../data/org.gnome.Lollypop.gschema.xml.h:41
+#: ../data/org.gnome.Lollypop.gschema.xml.h:42
 msgid ""
 "Value identifies whether to shuffle tracks/albums. Allowed values are: "
 "\"none\" (shuffle off), \"tracks\" (shuffle tracks) , \"albums\" (shuffle "
@@ -240,7 +244,7 @@ msgstr "Cuardach"
 msgid "Queue"
 msgstr "Scuaine"
 
-#: ../data/lollypop.appdata.xml.in.h:10 ../data/SettingsDialog.ui.h:21
+#: ../data/lollypop.appdata.xml.in.h:10 ../data/SettingsDialog.ui.h:22
 #: ../data/ToolbarEnd.ui.h:8
 msgid "Party mode"
 msgstr "Modh cóisire"
@@ -285,29 +289,44 @@ msgstr "Tacaíocht HiDPI"
 msgid "Tunein support"
 msgstr "Tacaíocht TuneIn"
 
-#: ../src/application.py:30
+#: ../src/application.py:31
 msgid ""
 "    - Scrobbler disabled\n"
 "    - Auto cover download disabled\n"
 "    - Artist informations disabled"
 msgstr "    - Scrobbler díchumasaithe\n    - Uath-íoslódáil clúdaigh díchumasaithe\n    - Eolas ealaíontóra díchumasaithe"
 
-#: ../src/application.py:358
+#: ../src/application.py:363
 #, python-format
-msgid "%s artist(s)"
-msgstr "%s ealaíontóir"
+msgid "%d artist"
+msgid_plural "%d artists"
+msgstr[0] ""
+msgstr[1] ""
+msgstr[2] ""
+msgstr[3] ""
+msgstr[4] ""
 
-#: ../src/application.py:360
+#: ../src/application.py:365
 #, python-format
-msgid "%s album(s)"
-msgstr "%s albam"
+msgid "%d album"
+msgid_plural "%d albums"
+msgstr[0] ""
+msgstr[1] ""
+msgstr[2] ""
+msgstr[3] ""
+msgstr[4] ""
 
-#: ../src/application.py:362
+#: ../src/application.py:367
 #, python-format
-msgid "%s track(s)"
-msgstr "%s rian"
+msgid "%d track"
+msgid_plural "%d tracks"
+msgstr[0] ""
+msgstr[1] ""
+msgstr[2] ""
+msgstr[3] ""
+msgstr[4] ""
 
-#: ../src/application.py:378
+#: ../src/application.py:382
 msgid "Lollypop: You need to install yelp."
 msgstr "Lollypop: Cuirfidh tú yelp a shuiteáil."
 
@@ -365,14 +384,14 @@ msgid "Random tracks"
 msgstr "Rianta randamacha"
 
 #: ../src/container.py:519 ../src/playlists.py:54
-#: ../data/SettingsDialog.ui.h:8
+#: ../data/SettingsDialog.ui.h:15
 msgid "Network control"
 msgstr "Smacht líonra"
 
 #: ../src/database_albums.py:270 ../src/database_artists.py:104
 #: ../src/database_genres.py:69 ../src/database_tracks.py:229
-#: ../src/tagreader.py:87 ../src/tagreader.py:118 ../src/tagreader.py:143
-#: ../src/tagreader.py:158
+#: ../src/tagreader.py:87 ../src/tagreader.py:98 ../src/tagreader.py:120
+#: ../src/tagreader.py:131 ../src/tagreader.py:147 ../src/tagreader.py:162
 msgid "Unknown"
 msgstr "Anaithnid"
 
@@ -384,13 +403,13 @@ msgstr "Teaglaim"
 msgid "Many artists"
 msgstr "Go leor ealaíontóirí"
 
-#: ../src/fullscreen.py:92 ../src/fullscreen.py:280
-#: ../src/toolbar_playback.py:82 ../src/toolbar_playback.py:115
+#: ../src/fullscreen.py:92 ../src/fullscreen.py:291
+#: ../src/toolbar_playback.py:92 ../src/toolbar_playback.py:125
 msgid "Pause"
 msgstr "Cuir ar sos"
 
-#: ../src/fullscreen.py:284 ../src/pop_tunein.py:154
-#: ../src/toolbar_playback.py:84 ../src/toolbar_playback.py:112
+#: ../src/fullscreen.py:295 ../src/pop_tunein.py:154
+#: ../src/toolbar_playback.py:94 ../src/toolbar_playback.py:122
 #: ../data/ToolbarPlayback.ui.h:2
 msgid "Play"
 msgstr "Seinn"
@@ -416,7 +435,7 @@ msgstr "le %s"
 msgid "by %s, from %s"
 msgstr "le %s, ó %s"
 
-#: ../src/player_bin.py:358
+#: ../src/player_bin.py:449
 #, python-format
 msgid "File doesn't exist: %s"
 msgstr "Ní ann do chomhad: %s"
@@ -433,7 +452,7 @@ msgstr "Fan le do thoil..."
 msgid "No cover found..."
 msgstr "Gan clúdach aimsithe ar bith..."
 
-#: ../src/pop_covers.py:160
+#: ../src/pop_covers.py:159
 msgid "Select a cover art for this album"
 msgstr "Roghnaigh ealaín clúdaigh don albam seo"
 
@@ -519,11 +538,11 @@ msgstr "Ní féidir ceangal le TuneIn..."
 msgid "Browse themes and add a new radio"
 msgstr "Téigh ar amharc thart agus cuir raidió nua leis"
 
-#: ../src/settings.py:157
+#: ../src/settings.py:161
 msgid "Populars"
 msgstr "Rudaí móréilimh"
 
-#: ../src/settings.py:158
+#: ../src/settings.py:162
 msgid "Recently added"
 msgstr "Curtha le déanaí"
 
@@ -542,22 +561,22 @@ msgstr "Sioncrónaigh %s"
 msgid "Cancel synchronization"
 msgstr "Cealaigh sioncrónú"
 
-#: ../src/widgets_album.py:310
+#: ../src/widgets_album.py:311
 #, python-format
 msgid "%s h  %s m"
 msgstr "%s u %s n"
 
-#: ../src/widgets_album.py:312
+#: ../src/widgets_album.py:313
 #, python-format
 msgid "%s h"
 msgstr "%s u"
 
-#: ../src/widgets_album.py:314
+#: ../src/widgets_album.py:315
 #, python-format
 msgid "%s m"
 msgstr "%s n"
 
-#: ../src/widgets_album.py:326
+#: ../src/widgets_album.py:327
 #, python-format
 msgid "Disc %s"
 msgstr "Ceirnín %s"
@@ -574,17 +593,17 @@ msgstr "Botún anaithnid nuair ag sioncrónú, déan iarracht as atosú do ghlé
 msgid "No free space available on device"
 msgstr "Gan spás saor ar bith ar ghléas"
 
-#: ../src/widgets_playlist.py:258 ../src/widgets_playlist.py:261
+#: ../src/widgets_playlist.py:259 ../src/widgets_playlist.py:262
 msgid "New playlist "
 msgstr "Líosta seanma nua"
 
 #. Need a copy, segfault on EOS 3.1
-#: ../src/widgets_playlist.py:309 ../src/widgets_playlist.py:547
+#: ../src/widgets_playlist.py:317 ../src/widgets_playlist.py:553
 #, python-format
 msgid "Remove \"%s\"?"
 msgstr "Bain \"%s\"?"
 
-#: ../src/widgets_playlist.py:592
+#: ../src/widgets_playlist.py:598
 msgid "Remove these tracks?"
 msgstr "Bain na rianta seo?"
 
@@ -737,76 +756,84 @@ msgid "Add to playlist"
 msgstr "Cuir le líosta seanma"
 
 #: ../data/SettingsDialog.ui.h:1
-msgid "Mix duration in seconds"
-msgstr ""
-
-#: ../data/SettingsDialog.ui.h:2
 msgid "Preferences"
 msgstr "Sainroghanna"
 
+#: ../data/SettingsDialog.ui.h:2
+msgid "Only in party mode"
+msgstr ""
+
+#: ../data/SettingsDialog.ui.h:3
+msgid "Mix duration in seconds"
+msgstr ""
+
 #: ../data/SettingsDialog.ui.h:4
-msgid "Restore state on startup"
-msgstr "Athbhunaigh staid ar thosú"
-
-#: ../data/SettingsDialog.ui.h:6
-msgid "Play albums on click"
-msgstr "Seinn albaim ar chliceáil"
-
-#: ../data/SettingsDialog.ui.h:7
-msgid "Control Lollypop with any MPD client"
-msgstr "Smachtaigh Lollypop le cliant MPD ar bith"
-
-#: ../data/SettingsDialog.ui.h:10
-msgid "Behaviour"
-msgstr "Iompar"
-
-#: ../data/SettingsDialog.ui.h:11
 msgid "Use dark theme variant"
 msgstr "Úsáid leagan cuma dhorcha "
 
-#: ../data/SettingsDialog.ui.h:12
+#: ../data/SettingsDialog.ui.h:5
 msgid "Show genres"
 msgstr "Taispeáin seánraí"
 
-#: ../data/SettingsDialog.ui.h:15
+#: ../data/SettingsDialog.ui.h:8
 msgid "Appearance"
 msgstr "Cuma"
 
-#: ../data/SettingsDialog.ui.h:16
+#: ../data/SettingsDialog.ui.h:9
+msgid "Configure lollypop appearance"
+msgstr ""
+
+#: ../data/SettingsDialog.ui.h:11
+msgid "Restore state on startup"
+msgstr "Athbhunaigh staid ar thosú"
+
+#: ../data/SettingsDialog.ui.h:13
+msgid "Play albums on click"
+msgstr "Seinn albaim ar chliceáil"
+
+#: ../data/SettingsDialog.ui.h:14
+msgid "Control Lollypop with any MPD client"
+msgstr "Smachtaigh Lollypop le cliant MPD ar bith"
+
+#: ../data/SettingsDialog.ui.h:17
+msgid "Behaviour"
+msgstr "Iompar"
+
+#: ../data/SettingsDialog.ui.h:18
 msgid "Configure lollypop behaviour"
 msgstr "Cumraigh iompar Lollypop"
 
-#: ../data/SettingsDialog.ui.h:17
-msgid "Options"
-msgstr "Roghanna"
-
-#: ../data/SettingsDialog.ui.h:18
+#: ../data/SettingsDialog.ui.h:19
 msgid "Select music folders"
 msgstr "Roghnaigh fillteáin ceoil."
 
-#: ../data/SettingsDialog.ui.h:19
+#: ../data/SettingsDialog.ui.h:20
 msgid "Music"
 msgstr "Ceol"
 
-#: ../data/SettingsDialog.ui.h:20
+#: ../data/SettingsDialog.ui.h:21
 msgid "Select what will be available in party mode"
 msgstr "Roghnaigh a bheith ar fáil i mód cóisire"
 
-#: ../data/SettingsDialog.ui.h:22
+#: ../data/SettingsDialog.ui.h:23
 msgid "Login:"
 msgstr "Ainm úsáideora:"
 
-#: ../data/SettingsDialog.ui.h:23
+#: ../data/SettingsDialog.ui.h:24
 msgid "Password:"
 msgstr "Focal faire:"
 
-#: ../data/SettingsDialog.ui.h:24
+#: ../data/SettingsDialog.ui.h:25
 msgid "Connect"
 msgstr "Ceangail"
 
-#: ../data/SettingsDialog.ui.h:25
+#: ../data/SettingsDialog.ui.h:26
 msgid "You need to install pylast and gi secret"
 msgstr "Caithfidh tú pylast agus gi secret a shuiteáil"
+
+#: ../data/SettingsDialog.ui.h:27
+msgid "Configure Last.fm credentials"
+msgstr ""
 
 #: ../data/ToolbarEnd.ui.h:1
 msgid "No shuffle"

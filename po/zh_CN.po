@@ -9,8 +9,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lollypop\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-01-28 13:59+0100\n"
-"PO-Revision-Date: 2016-01-28 13:03+0000\n"
+"POT-Creation-Date: 2016-02-02 20:48+0100\n"
+"PO-Revision-Date: 2016-02-03 07:50+0000\n"
 "Last-Translator: Cédric Bellegarde <web@adishatz.org>\n"
 "Language-Team: Chinese (China) (http://www.transifex.com/gnumdk/lollypop/language/zh_CN/)\n"
 "MIME-Version: 1.0\n"
@@ -88,7 +88,7 @@ msgid ""
 "Reset this value will reset the database, popular albums will be restored"
 msgstr "重置本值将重置数据库，流行专辑将被还原"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:18 ../data/SettingsDialog.ui.h:15
+#: ../data/org.gnome.Lollypop.gschema.xml.h:18 ../data/SettingsDialog.ui.h:7
 msgid "Albums cover size"
 msgstr "专辑封面大小"
 
@@ -112,7 +112,7 @@ msgstr ""
 msgid "Convert to MP3(MTP)"
 msgstr ""
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:24 ../data/SettingsDialog.ui.h:4
+#: ../data/org.gnome.Lollypop.gschema.xml.h:24 ../data/SettingsDialog.ui.h:10
 msgid "Auto update music"
 msgstr "自动更新音乐"
 
@@ -128,11 +128,11 @@ msgstr "使用黑色gtk主题"
 msgid "Disable the use client side window decorations (headerbar)"
 msgstr "不使用客户侧的窗口装饰(标题栏)"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:28 ../data/SettingsDialog.ui.h:14
+#: ../data/org.gnome.Lollypop.gschema.xml.h:28 ../data/SettingsDialog.ui.h:6
 msgid "Show compilations in albums view"
 msgstr "以专辑视图显示曲目"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:29 ../data/SettingsDialog.ui.h:6
+#: ../data/org.gnome.Lollypop.gschema.xml.h:29 ../data/SettingsDialog.ui.h:12
 msgid "Continue playback when closed"
 msgstr "关闭后继续播放"
 
@@ -164,7 +164,7 @@ msgstr "MPD网络界面"
 msgid "MPD network port"
 msgstr "MPD网络端口"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:37 ../data/SettingsDialog.ui.h:10
+#: ../data/org.gnome.Lollypop.gschema.xml.h:37 ../data/SettingsDialog.ui.h:16
 msgid "Mix songs"
 msgstr ""
 
@@ -373,14 +373,14 @@ msgid "Random tracks"
 msgstr "随机曲目"
 
 #: ../src/container.py:519 ../src/playlists.py:54
-#: ../data/SettingsDialog.ui.h:9
+#: ../data/SettingsDialog.ui.h:15
 msgid "Network control"
 msgstr "网络控制"
 
 #: ../src/database_albums.py:270 ../src/database_artists.py:104
 #: ../src/database_genres.py:69 ../src/database_tracks.py:229
-#: ../src/tagreader.py:87 ../src/tagreader.py:118 ../src/tagreader.py:143
-#: ../src/tagreader.py:158
+#: ../src/tagreader.py:87 ../src/tagreader.py:98 ../src/tagreader.py:120
+#: ../src/tagreader.py:131 ../src/tagreader.py:147 ../src/tagreader.py:162
 msgid "Unknown"
 msgstr "未知"
 
@@ -392,12 +392,12 @@ msgstr "编辑"
 msgid "Many artists"
 msgstr "许多艺术家"
 
-#: ../src/fullscreen.py:92 ../src/fullscreen.py:280
+#: ../src/fullscreen.py:92 ../src/fullscreen.py:291
 #: ../src/toolbar_playback.py:92 ../src/toolbar_playback.py:125
 msgid "Pause"
 msgstr "暂停"
 
-#: ../src/fullscreen.py:284 ../src/pop_tunein.py:154
+#: ../src/fullscreen.py:295 ../src/pop_tunein.py:154
 #: ../src/toolbar_playback.py:94 ../src/toolbar_playback.py:122
 #: ../data/ToolbarPlayback.ui.h:2
 msgid "Play"
@@ -424,7 +424,7 @@ msgstr "由%s"
 msgid "by %s, from %s"
 msgstr "由%s，来自%s"
 
-#: ../src/player_bin.py:407
+#: ../src/player_bin.py:449
 #, python-format
 msgid "File doesn't exist: %s"
 msgstr "文件不存在：%s"
@@ -441,7 +441,7 @@ msgstr "请稍后"
 msgid "No cover found..."
 msgstr "未发现封面"
 
-#: ../src/pop_covers.py:160
+#: ../src/pop_covers.py:159
 msgid "Select a cover art for this album"
 msgstr "从相册选择封面"
 
@@ -550,22 +550,22 @@ msgstr "同步%s"
 msgid "Cancel synchronization"
 msgstr "取消同步"
 
-#: ../src/widgets_album.py:310
+#: ../src/widgets_album.py:311
 #, python-format
 msgid "%s h  %s m"
 msgstr "%s小时%s分钟"
 
-#: ../src/widgets_album.py:312
+#: ../src/widgets_album.py:313
 #, python-format
 msgid "%s h"
 msgstr "%s小时"
 
-#: ../src/widgets_album.py:314
+#: ../src/widgets_album.py:315
 #, python-format
 msgid "%s m"
 msgstr "%s分钟"
 
-#: ../src/widgets_album.py:326
+#: ../src/widgets_album.py:327
 #, python-format
 msgid "Disc %s"
 msgstr "光盘 %s"
@@ -745,52 +745,52 @@ msgid "Add to playlist"
 msgstr "添加到播放列表"
 
 #: ../data/SettingsDialog.ui.h:1
-msgid "Mix duration in seconds"
-msgstr ""
+msgid "Preferences"
+msgstr "首选项"
 
 #: ../data/SettingsDialog.ui.h:2
 msgid "Only in party mode"
 msgstr ""
 
 #: ../data/SettingsDialog.ui.h:3
-msgid "Preferences"
-msgstr "首选项"
+msgid "Mix duration in seconds"
+msgstr ""
 
-#: ../data/SettingsDialog.ui.h:5
-msgid "Restore state on startup"
-msgstr "启动后恢复到上次的播放状态"
-
-#: ../data/SettingsDialog.ui.h:7
-msgid "Play albums on click"
-msgstr "单击自动播放"
-
-#: ../data/SettingsDialog.ui.h:8
-msgid "Control Lollypop with any MPD client"
-msgstr "使用任意的MPD客户端控制Lollypop"
-
-#: ../data/SettingsDialog.ui.h:11
-msgid "Behaviour"
-msgstr "行为"
-
-#: ../data/SettingsDialog.ui.h:12
+#: ../data/SettingsDialog.ui.h:4
 msgid "Use dark theme variant"
 msgstr "使用暗色主题"
 
-#: ../data/SettingsDialog.ui.h:13
+#: ../data/SettingsDialog.ui.h:5
 msgid "Show genres"
 msgstr "查看分类"
 
-#: ../data/SettingsDialog.ui.h:16
+#: ../data/SettingsDialog.ui.h:8
 msgid "Appearance"
 msgstr "外观"
 
+#: ../data/SettingsDialog.ui.h:9
+msgid "Configure lollypop appearance"
+msgstr ""
+
+#: ../data/SettingsDialog.ui.h:11
+msgid "Restore state on startup"
+msgstr "启动后恢复到上次的播放状态"
+
+#: ../data/SettingsDialog.ui.h:13
+msgid "Play albums on click"
+msgstr "单击自动播放"
+
+#: ../data/SettingsDialog.ui.h:14
+msgid "Control Lollypop with any MPD client"
+msgstr "使用任意的MPD客户端控制Lollypop"
+
 #: ../data/SettingsDialog.ui.h:17
-msgid "Configure lollypop behaviour"
-msgstr "配置lollypo的行为"
+msgid "Behaviour"
+msgstr "行为"
 
 #: ../data/SettingsDialog.ui.h:18
-msgid "Options"
-msgstr "操作"
+msgid "Configure lollypop behaviour"
+msgstr "配置lollypo的行为"
 
 #: ../data/SettingsDialog.ui.h:19
 msgid "Select music folders"
@@ -819,6 +819,10 @@ msgstr "连接"
 #: ../data/SettingsDialog.ui.h:26
 msgid "You need to install pylast and gi secret"
 msgstr "您需要安装pylast和gi secret"
+
+#: ../data/SettingsDialog.ui.h:27
+msgid "Configure Last.fm credentials"
+msgstr ""
 
 #: ../data/ToolbarEnd.ui.h:1
 msgid "No shuffle"

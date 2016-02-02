@@ -9,8 +9,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lollypop\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-01-28 13:59+0100\n"
-"PO-Revision-Date: 2016-01-28 13:05+0000\n"
+"POT-Creation-Date: 2016-02-02 20:48+0100\n"
+"PO-Revision-Date: 2016-02-03 07:51+0000\n"
 "Last-Translator: Cédric Bellegarde <web@adishatz.org>\n"
 "Language-Team: French (http://www.transifex.com/gnumdk/lollypop/language/fr/)\n"
 "MIME-Version: 1.0\n"
@@ -88,7 +88,7 @@ msgid ""
 "Reset this value will reset the database, popular albums will be restored"
 msgstr "Remettre cette valeur à zéro réinitialisera votre base de donnee, les albums populaires seront restaurés"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:18 ../data/SettingsDialog.ui.h:15
+#: ../data/org.gnome.Lollypop.gschema.xml.h:18 ../data/SettingsDialog.ui.h:7
 msgid "Albums cover size"
 msgstr "Taille des pochettes d'albums"
 
@@ -112,7 +112,7 @@ msgstr "Synchroniser tous les albums(MTP)"
 msgid "Convert to MP3(MTP)"
 msgstr "Convertir en MP3(MTP)"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:24 ../data/SettingsDialog.ui.h:4
+#: ../data/org.gnome.Lollypop.gschema.xml.h:24 ../data/SettingsDialog.ui.h:10
 msgid "Auto update music"
 msgstr "Mise à jour automatique de la musique"
 
@@ -128,11 +128,11 @@ msgstr "Utiliser le thème gtk sombre"
 msgid "Disable the use client side window decorations (headerbar)"
 msgstr "Désactiver les décorations coté client (Barre de titre)"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:28 ../data/SettingsDialog.ui.h:14
+#: ../data/org.gnome.Lollypop.gschema.xml.h:28 ../data/SettingsDialog.ui.h:6
 msgid "Show compilations in albums view"
 msgstr "Afficher les compilations dans la vue des albums"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:29 ../data/SettingsDialog.ui.h:6
+#: ../data/org.gnome.Lollypop.gschema.xml.h:29 ../data/SettingsDialog.ui.h:12
 msgid "Continue playback when closed"
 msgstr "Continuer à lire à la fermeture"
 
@@ -164,7 +164,7 @@ msgstr "Interface réseau MPD"
 msgid "MPD network port"
 msgstr "Port réseau MPD"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:37 ../data/SettingsDialog.ui.h:10
+#: ../data/org.gnome.Lollypop.gschema.xml.h:37 ../data/SettingsDialog.ui.h:16
 msgid "Mix songs"
 msgstr "Enchaîner les morceaux"
 
@@ -376,14 +376,14 @@ msgid "Random tracks"
 msgstr "Morceaux aléatoires"
 
 #: ../src/container.py:519 ../src/playlists.py:54
-#: ../data/SettingsDialog.ui.h:9
+#: ../data/SettingsDialog.ui.h:15
 msgid "Network control"
 msgstr "Contrôle depuis le réseau"
 
 #: ../src/database_albums.py:270 ../src/database_artists.py:104
 #: ../src/database_genres.py:69 ../src/database_tracks.py:229
-#: ../src/tagreader.py:87 ../src/tagreader.py:118 ../src/tagreader.py:143
-#: ../src/tagreader.py:158
+#: ../src/tagreader.py:87 ../src/tagreader.py:98 ../src/tagreader.py:120
+#: ../src/tagreader.py:131 ../src/tagreader.py:147 ../src/tagreader.py:162
 msgid "Unknown"
 msgstr "Inconnu"
 
@@ -395,12 +395,12 @@ msgstr "Compilation"
 msgid "Many artists"
 msgstr "Plusieurs artistes"
 
-#: ../src/fullscreen.py:92 ../src/fullscreen.py:280
+#: ../src/fullscreen.py:92 ../src/fullscreen.py:291
 #: ../src/toolbar_playback.py:92 ../src/toolbar_playback.py:125
 msgid "Pause"
 msgstr "Pause"
 
-#: ../src/fullscreen.py:284 ../src/pop_tunein.py:154
+#: ../src/fullscreen.py:295 ../src/pop_tunein.py:154
 #: ../src/toolbar_playback.py:94 ../src/toolbar_playback.py:122
 #: ../data/ToolbarPlayback.ui.h:2
 msgid "Play"
@@ -427,7 +427,7 @@ msgstr "Par %s"
 msgid "by %s, from %s"
 msgstr "par %s, sur %s"
 
-#: ../src/player_bin.py:407
+#: ../src/player_bin.py:449
 #, python-format
 msgid "File doesn't exist: %s"
 msgstr "Le fichier n'existe pas: %s"
@@ -444,7 +444,7 @@ msgstr "Veuillez patienter..."
 msgid "No cover found..."
 msgstr "Aucune pochette trouvée..."
 
-#: ../src/pop_covers.py:160
+#: ../src/pop_covers.py:159
 msgid "Select a cover art for this album"
 msgstr "Sélectionnez une pochette pour cet album"
 
@@ -553,22 +553,22 @@ msgstr "Synchroniser %s"
 msgid "Cancel synchronization"
 msgstr "Annuler la synchronisation"
 
-#: ../src/widgets_album.py:310
+#: ../src/widgets_album.py:311
 #, python-format
 msgid "%s h  %s m"
 msgstr "%s h %s m"
 
-#: ../src/widgets_album.py:312
+#: ../src/widgets_album.py:313
 #, python-format
 msgid "%s h"
 msgstr "%s h"
 
-#: ../src/widgets_album.py:314
+#: ../src/widgets_album.py:315
 #, python-format
 msgid "%s m"
 msgstr "%s m"
 
-#: ../src/widgets_album.py:326
+#: ../src/widgets_album.py:327
 #, python-format
 msgid "Disc %s"
 msgstr "Disque %s"
@@ -748,52 +748,52 @@ msgid "Add to playlist"
 msgstr "Ajouter à la liste de lecture"
 
 #: ../data/SettingsDialog.ui.h:1
-msgid "Mix duration in seconds"
-msgstr "Durée de l'enchaînement en secondes"
+msgid "Preferences"
+msgstr "Préférences"
 
 #: ../data/SettingsDialog.ui.h:2
 msgid "Only in party mode"
 msgstr "Seulement en mode soirée"
 
 #: ../data/SettingsDialog.ui.h:3
-msgid "Preferences"
-msgstr "Préférences"
+msgid "Mix duration in seconds"
+msgstr "Durée de l'enchaînement en secondes"
 
-#: ../data/SettingsDialog.ui.h:5
-msgid "Restore state on startup"
-msgstr "Restaurer l'état au démarrage"
-
-#: ../data/SettingsDialog.ui.h:7
-msgid "Play albums on click"
-msgstr "Cliquer pour lire un album"
-
-#: ../data/SettingsDialog.ui.h:8
-msgid "Control Lollypop with any MPD client"
-msgstr "Contrôlez Lollypop avec n'importe quel client MPD"
-
-#: ../data/SettingsDialog.ui.h:11
-msgid "Behaviour"
-msgstr "Comportement"
-
-#: ../data/SettingsDialog.ui.h:12
+#: ../data/SettingsDialog.ui.h:4
 msgid "Use dark theme variant"
 msgstr "Utiliser une variante de thème foncée"
 
-#: ../data/SettingsDialog.ui.h:13
+#: ../data/SettingsDialog.ui.h:5
 msgid "Show genres"
 msgstr "Afficher les genres"
 
-#: ../data/SettingsDialog.ui.h:16
+#: ../data/SettingsDialog.ui.h:8
 msgid "Appearance"
 msgstr "Apparence"
 
+#: ../data/SettingsDialog.ui.h:9
+msgid "Configure lollypop appearance"
+msgstr "Configurer l'apparence de lollypop"
+
+#: ../data/SettingsDialog.ui.h:11
+msgid "Restore state on startup"
+msgstr "Restaurer l'état au démarrage"
+
+#: ../data/SettingsDialog.ui.h:13
+msgid "Play albums on click"
+msgstr "Cliquer pour lire un album"
+
+#: ../data/SettingsDialog.ui.h:14
+msgid "Control Lollypop with any MPD client"
+msgstr "Contrôlez Lollypop avec n'importe quel client MPD"
+
 #: ../data/SettingsDialog.ui.h:17
-msgid "Configure lollypop behaviour"
-msgstr "Configurer le comportement de lollypop"
+msgid "Behaviour"
+msgstr "Comportement"
 
 #: ../data/SettingsDialog.ui.h:18
-msgid "Options"
-msgstr "Options"
+msgid "Configure lollypop behaviour"
+msgstr "Configurer le comportement de lollypop"
 
 #: ../data/SettingsDialog.ui.h:19
 msgid "Select music folders"
@@ -822,6 +822,10 @@ msgstr "Connexion"
 #: ../data/SettingsDialog.ui.h:26
 msgid "You need to install pylast and gi secret"
 msgstr "Vous devez installer pylast et gi secret"
+
+#: ../data/SettingsDialog.ui.h:27
+msgid "Configure Last.fm credentials"
+msgstr "Configurer les identifiants Last.fm"
 
 #: ../data/ToolbarEnd.ui.h:1
 msgid "No shuffle"
