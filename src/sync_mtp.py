@@ -151,7 +151,6 @@ class MtpSync:
         self._fraction = 1.0
         self._syncing = False
         self._in_thread = False
-        GLib.idle_add(self._on_finished)
         if self._errors:
             GLib.idle_add(self._on_errors)
 
