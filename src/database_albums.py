@@ -752,9 +752,12 @@ class AlbumsDatabase:
             @return (popularity, mtime) as (int, int)
         """
         with SqlCursor(Lp().db) as sql:
-            sql.execute("CREATE TEMP TABLE stats (album_id INT,\
-                                                  count INT,\
-                                                  duration INT)")
+            try:
+                sql.execute("CREATE TEMP TABLE stats (album_id INT,\
+                                                      count INT,\
+                                                      duration INT)")
+            except:
+                sql.execute("DELETE FROM stats")
             sql.execute("INSERT INTO stats (album_id, count, duration)\
                             SELECT album_id,\
                                    COUNT(1),\
