@@ -179,12 +179,13 @@ class CollectionScanner(GObject.GObject, ScannerTagReader):
                         if mtime != mtimes[filepath]:
                             debug("Adding file: %s" % filepath)
                             infos = self.get_infos(filepath)
+                            track_id = Lp().tracks.get_id_by_path(filepath)
+                            self._del_from_db(track_id)
                             if infos is not None:
                                 self._add2db(filepath, mtime, infos)
                             else:
                                 print("Can't get infos for ", filepath)
-                        else:
-                            orig_tracks.remove(filepath)
+                        orig_tracks.remove(filepath)
 
                 except Exception as e:
                     print(ascii(filepath))
