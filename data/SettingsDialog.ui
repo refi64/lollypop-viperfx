@@ -237,8 +237,8 @@
           <object class="GtkLabel" id="label1">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
-            <property name="tooltip_text" translatable="yes">Configure lollypop behaviour</property>
             <property name="label" translatable="yes">Appearance</property>
+            <property name="tooltip_text" translatable="yes">Configure lollypop appearance</property>
           </object>
           <packing>
             <property name="tab_fill">False</property>
@@ -416,6 +416,7 @@
             <property name="visible">True</property>
             <property name="can_focus">False</property>
             <property name="label" translatable="yes">Behaviour</property>
+            <property name="tooltip_text" translatable="yes">Configure lollypop behaviour</property>
           </object>
           <packing>
             <property name="position">1</property>
