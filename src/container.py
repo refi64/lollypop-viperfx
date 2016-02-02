@@ -241,7 +241,7 @@ class Container:
             Make progress bar visible/pulse if pulse is True
             @param pulse as bool
         """
-        if pulse:
+        if pulse and not self._progress.is_visible():
             self._progress.show()
             if self._pulse_timeout is None:
                 self._pulse_timeout = GLib.timeout_add(500, self._pulse)
@@ -249,7 +249,7 @@ class Container:
             if self._pulse_timeout is not None:
                 GLib.source_remove(self._pulse_timeout)
                 self._pulse_timeout = None
-            self._progress.hide()
+                self._progress.hide()
 
     def on_scan_finished(self, scanner):
         """
