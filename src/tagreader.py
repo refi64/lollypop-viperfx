@@ -94,8 +94,6 @@ class ScannerTagReader(TagReader):
             artists += artist
             if i < size - 1:
                 artists += ";"
-        if artists == "":
-            artists = _("Unknown")
         return artists
 
     def get_artist_sortname(self, tags):
@@ -127,8 +125,6 @@ class ScannerTagReader(TagReader):
             album_artist += artist
             if i < size - 1:
                 album_artist += ", "
-        if album_artist == "":
-            album_artist = _("Unknown")
         return album_artist
 
     def get_album_name(self, tags):
