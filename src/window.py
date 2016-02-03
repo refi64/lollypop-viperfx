@@ -245,7 +245,9 @@ class Window(Gtk.ApplicationWindow, Container):
         self._toolbar.set_content_width(widget.get_size()[0])
         if self._timeout_configure:
             GLib.source_remove(self._timeout_configure)
-        self._timeout_configure = GLib.timeout_add(500,
+        if not self.is_maximized():
+            self._timeout_configure = GLib.timeout_add(
+                                                   500,
                                                    self._save_size_position,
                                                    widget)
 
