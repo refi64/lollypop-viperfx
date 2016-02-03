@@ -58,8 +58,8 @@ class Toolbar(Gtk.HeaderBar):
         style = self.get_style_context()
         padding = style.get_padding(style.get_state())
         info_height = self._toolbar_infos.get_preferred_height()
-        if info_height[0] > 47:
-            height = info_height[1]+padding.top+padding.bottom
+        if info_height[0]+padding.top+padding.bottom > 47:
+            height = info_height[0]+padding.top+padding.bottom
         else:
             height = 47
         return (height, height)
