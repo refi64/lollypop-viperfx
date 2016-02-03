@@ -51,6 +51,13 @@ class ToolbarInfos(Gtk.Bin):
         Lp().art.connect('album-artwork-changed', self._update_cover)
         Lp().art.connect('radio-artwork-changed', self._update_logo)
 
+    def do_get_preferred_width(self):
+        """
+            We force preferred width
+            @return (int, int)
+        """
+        return (self._width, self._width)
+
     def get_preferred_height(self):
         """
             Return preferred height
@@ -58,20 +65,13 @@ class ToolbarInfos(Gtk.Bin):
         """
         return self._labels.get_preferred_height()
 
-    def set_infos_width(self, width):
+    def set_width(self, width):
         """
             Set widget width
             @param width as int
         """
-        self.set_property('width-request', width)
         self._width = width
-
-    def do_get_preferred_width(self):
-        """
-            We force preferred width
-            @return (int, int)
-        """
-        return (self._width, self._width)
+        self.set_property('width-request', width)
 
     def on_current_changed(self, player):
         """

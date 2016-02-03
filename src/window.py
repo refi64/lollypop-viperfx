@@ -242,7 +242,7 @@ class Window(Gtk.ApplicationWindow, Container):
             @param: widget as Gtk.Window
             @param: event as Gdk.Event
         """
-        self._toolbar.set_content_width(widget.get_size()[0])
+        self._toolbar.set_content_width()
         if self._timeout_configure:
             GLib.source_remove(self._timeout_configure)
             self._timeout_configure = None

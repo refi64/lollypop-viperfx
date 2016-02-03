@@ -38,16 +38,17 @@ class ToolbarTitle(Gtk.Bin):
 
         self._progress = builder.get_object('progress_scale')
         self._progress.set_sensitive(False)
+        self._progress.set_hexpand(True)
 
         self._timelabel = builder.get_object('playback')
         self._total_time_label = builder.get_object('duration')
 
-    def set_progress_width(self, width):
+    def set_width(self, width):
         """
             Set Gtk.Scale progress width
             @param width as int
         """
-        self._progress.set_property("width_request", width)
+        self.set_property("width_request", width)
 
     def on_current_changed(self, player):
         """
@@ -57,16 +58,14 @@ class ToolbarTitle(Gtk.Bin):
         self._progress.set_value(0.0)
         if player.current_track.id == Type.RADIOS:
             self._progress.set_sensitive(False)
-            self._total_time_label.hide()
-            self._timelabel.hide()
+            self._total_time_label.set_text('')
+            self._timelabel.set_text('')
             self._progress.set_range(0.0, 0.0)
         else:
             self._progress.set_range(0.0, player.current_track.duration * 60)
             self._total_time_label.set_text(
                 seconds_to_string(player.current_track.duration))
-            self._total_time_label.show()
             self._timelabel.set_text("0:00")
-            self._timelabel.show()
 
     def on_status_changed(self, player):
         """

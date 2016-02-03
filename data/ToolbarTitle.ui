@@ -8,10 +8,10 @@
     <property name="column_spacing">5</property>
     <child>
       <object class="GtkLabel" id="playback">
+        <property name="visible">True</property>
         <property name="can_focus">False</property>
         <property name="halign">start</property>
         <property name="margin_start">10</property>
-        <property name="label">0:00</property>
         <property name="justify">right</property>
         <property name="width_chars">5</property>
       </object>
@@ -22,10 +22,10 @@
     </child>
     <child>
       <object class="GtkLabel" id="duration">
+        <property name="visible">True</property>
         <property name="can_focus">False</property>
         <property name="halign">start</property>
         <property name="margin_end">10</property>
-        <property name="label">0:00</property>
         <property name="width_chars">5</property>
       </object>
       <packing>

@@ -30,6 +30,7 @@ class Toolbar(Gtk.HeaderBar):
             @param app as Gtk.Application
         """
         Gtk.HeaderBar.__init__(self)
+        self._width = 700
 
         self._toolbar_playback = ToolbarPlayback()
         self._toolbar_playback.show()
@@ -64,20 +65,34 @@ class Toolbar(Gtk.HeaderBar):
             height = 47
         return (height, height)
 
+    def do_get_preferred_width(self):
+        """
+            Allow snapping for screen with width > 1400
+            @return (int, int)
+        """
+        return (700, self._width)
+
+    def set_content_width(self):
+        """
+            Calculate infos/title width
+        """
+        width = self._toolbar_playback.get_preferred_width()[1] + \
+            self._toolbar_end.get_preferred_width()[1]
+        window = self.get_window()
+        if window is not None:
+            available = window.get_width() - width
+            if available > 0:
+                title = available/2
+                self._toolbar_title.set_width(title)
+                self._toolbar_infos.set_width((available-title)/2)
+            self._width = window.get_width()
+
     def update_position(self, value=None):
         """
             Update progress bar position
             @param value as int
         """
         self._toolbar_title._update_position(value)
-
-    def set_content_width(self, width):
-        """
-            Set content width
-            @param window width as int
-        """
-        self._toolbar_title.set_progress_width(width/4)
-        self._toolbar_infos.set_infos_width(width/6)
 
     def setup_menu_btn(self, menu):
         """
