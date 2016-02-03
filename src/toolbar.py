@@ -76,8 +76,7 @@ class Toolbar(Gtk.HeaderBar):
             Set content width
             @param window width as int
         """
-        self._toolbar_title.set_progress_width(width/4)
-        self._toolbar_infos.set_infos_width(width/6)
+        self._toolbar_title.set_property("width_request", width/3)
 
     def setup_menu_btn(self, menu):
         """
