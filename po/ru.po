@@ -12,7 +12,7 @@ msgstr ""
 "Project-Id-Version: lollypop\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2016-02-02 20:48+0100\n"
-"PO-Revision-Date: 2016-02-03 09:10+0000\n"
+"PO-Revision-Date: 2016-02-03 19:26+0000\n"
 "Last-Translator: Maxim Orlov <murmansksity@gmail.com>\n"
 "Language-Team: Russian (http://www.transifex.com/gnumdk/lollypop/language/ru/)\n"
 "MIME-Version: 1.0\n"
@@ -124,7 +124,7 @@ msgstr "Показывать список жанров"
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:26
 msgid "Use dark gtk theme"
-msgstr "Использовать темный вариант темы"
+msgstr "Использовать тёмный вариант темы"
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:27
 msgid "Disable the use client side window decorations (headerbar)"
@@ -304,7 +304,7 @@ msgstr "    - Скробблинг отключен\n    - Автоматиче�
 msgid "%d artist"
 msgid_plural "%d artists"
 msgstr[0] "%d исполнитель"
-msgstr[1] "%d исполнителей"
+msgstr[1] "%d исполнителя"
 msgstr[2] "%d исполнителей"
 msgstr[3] "%d исполнителей"
 
@@ -313,7 +313,7 @@ msgstr[3] "%d исполнителей"
 msgid "%d album"
 msgid_plural "%d albums"
 msgstr[0] "%d альбом"
-msgstr[1] "%d альбомов"
+msgstr[1] "%d альбома"
 msgstr[2] "%d альбомов"
 msgstr[3] "%d альбомов"
 
@@ -322,7 +322,7 @@ msgstr[3] "%d альбомов"
 msgid "%d track"
 msgid_plural "%d tracks"
 msgstr[0] "%d композиция"
-msgstr[1] "%d композиций"
+msgstr[1] "%d композиции"
 msgstr[2] "%d композиций"
 msgstr[3] "%d композиций"
 
@@ -420,7 +420,7 @@ msgstr "Аутентификация Last.fm отключена"
 
 #: ../src/lastfm.py:289
 msgid "Wrong Last.fm credentials"
-msgstr "Неверные данные учетной записи Last.fm"
+msgstr "Неверные данные учётной записи Last.fm"
 
 #. TRANSLATORS: by refers to the artist,
 #: ../src/notification.py:104
@@ -833,7 +833,7 @@ msgstr "Вам необходимо установить pylast и gi secret"
 
 #: ../data/SettingsDialog.ui.h:27
 msgid "Configure Last.fm credentials"
-msgstr "Настроить учетные данные Last.fm"
+msgstr "Настроить учётные данные Last.fm"
 
 #: ../data/ToolbarEnd.ui.h:1
 msgid "No shuffle"
