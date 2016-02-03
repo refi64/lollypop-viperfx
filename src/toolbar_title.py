@@ -38,16 +38,10 @@ class ToolbarTitle(Gtk.Bin):
 
         self._progress = builder.get_object('progress_scale')
         self._progress.set_sensitive(False)
+        self._progress.set_hexpand(True)
 
         self._timelabel = builder.get_object('playback')
         self._total_time_label = builder.get_object('duration')
-
-    def set_progress_width(self, width):
-        """
-            Set Gtk.Scale progress width
-            @param width as int
-        """
-        self._progress.set_property("width_request", width)
 
     def on_current_changed(self, player):
         """
