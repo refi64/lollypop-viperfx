@@ -98,8 +98,9 @@ class ToolbarEnd(Gtk.Bin):
              Lp().settings.get_enum('shuffle') in [Shuffle.TRACKS,
                                                    Shuffle.TRACKS_ARTIST]):
             self._pop_next.update()
-            self._pop_next.set_relative_to(self)
-            self._pop_next.show()
+            if not self._pop_next.is_visible():
+                self._pop_next.set_relative_to(self)
+                self._pop_next.show()
         else:
             self._pop_next.hide()
 

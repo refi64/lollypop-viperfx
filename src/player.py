@@ -184,8 +184,6 @@ class Player(BinPlayer, QueuePlayer, UserPlaylistPlayer, RadioPlayer,
         ShufflePlayer.set_party(self, party)
         self.set_next()
         self.set_prev()
-        if self.is_playing():
-            self.emit('next-changed')
         self.update_crossfading()
 
     def set_prev(self):
