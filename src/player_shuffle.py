@@ -135,7 +135,6 @@ class ShufflePlayer(BasePlayer):
                 self.set_albums(self.current_track.id,
                                 [self.current_track.album_artist_id], [])
         self.emit('party-changed', party)
-        Lp().window.update_view()
 
     def is_party(self):
         """
