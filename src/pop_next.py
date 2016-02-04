@@ -12,7 +12,7 @@
 
 from gi.repository import Gtk
 
-from lollypop.define import Lp, ArtSize, Shuffle
+from lollypop.define import Lp, ArtSize
 
 
 class NextPopover(Gtk.Popover):
@@ -44,9 +44,6 @@ class NextPopover(Gtk.Popover):
         """
             Update widget with current track
         """
-        if Lp().player.is_party() or\
-                Lp().settings.get_enum('shuffle') == Shuffle.TRACKS:
-            self._skip_btn.show()
         self._artist_label.set_text(Lp().player.next_track.artist)
         self._title_label.set_text(Lp().player.next_track.title)
         art = Lp().art.get_album_artwork(
