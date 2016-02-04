@@ -90,13 +90,14 @@ class ToolbarEnd(Gtk.Bin):
             Update buttons on current changed
             @param player as Player
         """
-        # Do not show next popover non internal tracks as
+        # Do not show next popover for non internal tracks as
         # tags will be readed on the fly
         if player.next_track.id is not None and\
            player.next_track.id >= 0 and\
            player.is_playing() and\
             (player.is_party() or
-             Lp().settings.get_enum('shuffle') == Shuffle.TRACKS):
+             Lp().settings.get_enum('shuffle') in [Shuffle.TRACKS,
+                                                   Shuffle.TRACKS_ARTIST]):
             self._pop_next.update()
             self._pop_next.set_relative_to(self)
             self._pop_next.show()
@@ -127,7 +128,7 @@ class ToolbarEnd(Gtk.Bin):
             else:
                 self._shuffle_btn_image.get_style_context().remove_class(
                                                                     'selected')
-        if shuffle == Shuffle.TRACKS:
+        if shuffle in [Shuffle.TRACKS, Shuffle.TRACKS_ARTIST]:
             if Lp().player.next_track.id is not None and\
                not self._pop_next.is_visible():
                 self._pop_next.set_relative_to(self)
