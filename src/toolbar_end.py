@@ -128,15 +128,7 @@ class ToolbarEnd(Gtk.Bin):
             else:
                 self._shuffle_btn_image.get_style_context().remove_class(
                                                                     'selected')
-        if shuffle in [Shuffle.TRACKS, Shuffle.TRACKS_ARTIST]:
-            if Lp().player.next_track.id is not None and\
-               not self._pop_next.is_visible():
-                self._pop_next.set_relative_to(self)
-                self._pop_next.update()
-                self._pop_next.show()
-        elif Lp().player.is_playing():
-            self._pop_next.set_relative_to(None)
-            self._pop_next.hide()
+        self._on_button_enter_notify()
 
     def _shuffle_btn_aspect(self, settings, value):
         """
@@ -198,3 +190,20 @@ class ToolbarEnd(Gtk.Bin):
         """
         if self._party_btn.get_active() != is_party:
             self._activate_party_button()
+
+    def _on_button_enter_notify(self, button=None, event=None):
+        """
+            Show next popover if needed
+            @param button as Gtk.Button
+            @param event as Gdk.Event
+        """
+        shuffle = Lp().settings.get_enum('shuffle')
+        if shuffle in [Shuffle.TRACKS, Shuffle.TRACKS_ARTIST]:
+            if Lp().player.next_track.id is not None and\
+               not self._pop_next.is_visible():
+                self._pop_next.set_relative_to(self)
+                self._pop_next.update()
+                self._pop_next.show()
+        elif Lp().player.is_playing():
+            self._pop_next.set_relative_to(None)
+            self._pop_next.hide()
