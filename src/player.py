@@ -268,6 +268,8 @@ class Player(BinPlayer, QueuePlayer, UserPlaylistPlayer, RadioPlayer,
         if self._queue and self.current_track.id == self._queue[0]:
             self._queue.pop(0)
             self.emit("queue-changed")
-        self.set_next()
+        # Only set next if needed, not when user load a track in party mode
+        if not self._is_party or self.current_track == self.next_track:
+            self.set_next()
         self.set_prev()
         BinPlayer._on_stream_start(self, bus, message)
