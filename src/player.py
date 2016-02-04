@@ -107,8 +107,10 @@ class Player(BinPlayer, QueuePlayer, UserPlaylistPlayer, RadioPlayer,
         elif genre_ids and genre_ids[0] == Type.POPULARS:
             if self._shuffle in [Shuffle.TRACKS_ARTIST, Shuffle.ALBUMS_ARTIST]:
                 self._albums = []
+                self.next_track = Track()
                 for album_id in Lp().albums.get_populars():
-                    if Lp().albums.get_artist_id(album_id) in artist_ids:
+                    if Lp().albums.get_artist_id(album_id) == \
+                            album.artist_id:
                         self._albums.append(album_id)
             else:
                 self._albums = Lp().albums.get_populars()
