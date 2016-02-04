@@ -94,7 +94,6 @@ class ToolbarEnd(Gtk.Bin):
         # tags will be readed on the fly
         if player.next_track.id is not None and\
            player.next_track.id >= 0 and\
-           player.is_playing() and\
             (player.is_party() or
              Lp().settings.get_enum('shuffle') in [Shuffle.TRACKS,
                                                    Shuffle.TRACKS_ARTIST]):
