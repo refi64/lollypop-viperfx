@@ -68,23 +68,6 @@ class ToolbarEnd(Gtk.Bin):
         self._settings_button.show()
         self._settings_button.set_menu_model(menu)
 
-    def set_popover_visibility(self):
-        """
-            Hide or show popover
-        """
-        # Do not show next popover for non internal tracks as
-        # tags will be readed on the fly
-        if Lp().player.next_track.id is not None and\
-           Lp().player.next_track.id >= 0 and\
-            (Lp().player.is_party() or
-             Lp().settings.get_enum('shuffle') in [Shuffle.TRACKS,
-                                                   Shuffle.TRACKS_ARTIST]):
-            self._pop_next.set_relative_to(self)
-            self._pop_next.update()
-            self._pop_next.show()
-        else:
-            self._pop_next.hide()
-
     def on_status_changed(self, player):
         """
             Update buttons on status changed
@@ -95,13 +78,31 @@ class ToolbarEnd(Gtk.Bin):
             # via Fullscreen class, so check button state
             self._party_btn.set_active(player.is_party())
 
+    def do_realize(self):
+        """
+            Show popover if needed
+        """
+        Gtk.Bin.do_realize(self)
+        self._set_shuffle_icon()
+
     def on_next_changed(self, player):
         """
             Update buttons on current changed
             @param player as Player
         """
-        if self._pop_next.is_visible():
+        # Do not show next popover for non internal tracks as
+        # tags will be readed on the fly
+        if player.next_track.id is not None and\
+           player.next_track.id >= 0 and\
+            (player.is_party() or
+             Lp().settings.get_enum('shuffle') in [Shuffle.TRACKS,
+                                                   Shuffle.TRACKS_ARTIST]):
             self._pop_next.update()
+            if not self._pop_next.is_visible():
+                self._pop_next.set_relative_to(self)
+                self._pop_next.show()
+        else:
+            self._pop_next.hide()
 
 #######################
 # PRIVATE             #
@@ -129,13 +130,11 @@ class ToolbarEnd(Gtk.Bin):
                                                                     'selected')
         self._on_button_enter_notify()
 
-    def _shuffle_btn_aspect(self, settings, key):
+    def _shuffle_btn_aspect(self, settings, value):
         """
             Mark shuffle button as active when shuffle active
-            @param settings as Gio.Settings
-            @parma key as str
+            @param settings as Gio.Settings, value as str
         """
-        self.set_popover_visibility()
         self._set_shuffle_icon()
 
     def _activate_party_button(self, action=None, param=None):
@@ -189,7 +188,6 @@ class ToolbarEnd(Gtk.Bin):
             @param player as Player
             @param is party as bool
         """
-        self.set_popover_visibility()
         if self._party_btn.get_active() != is_party:
             self._activate_party_button()
 

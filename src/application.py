@@ -184,8 +184,6 @@ class Application(Gtk.Application):
             self.window.init_list_one()
             self.window.show()
             self.player.restore_state()
-            # Force toolbar to be updated
-            self.settings.emit('changed::shuffle', 'shuffle')
 
     def prepare_to_exit(self, action=None, param=None):
         """
