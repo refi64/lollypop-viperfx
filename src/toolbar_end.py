@@ -29,12 +29,10 @@ class ToolbarEnd(Gtk.Bin):
             @param app as Gtk.Application
         """
         Gtk.Bin.__init__(self)
+        self._pop_next = NextPopover()
         builder = Gtk.Builder()
         builder.add_from_resource('/org/gnome/Lollypop/ToolbarEnd.ui')
         builder.connect_signals(self)
-
-        self._pop_next = NextPopover()
-        self._popover_grid = builder.get_object('popover-grid')
 
         self.add(builder.get_object('end'))
 
@@ -81,8 +79,8 @@ class ToolbarEnd(Gtk.Bin):
             (Lp().player.is_party() or
              Lp().settings.get_enum('shuffle') in [Shuffle.TRACKS,
                                                    Shuffle.TRACKS_ARTIST]):
+            self._pop_next.set_relative_to(self)
             self._pop_next.update()
-            self._pop_next.set_relative_to(self._popover_grid)
             self._pop_next.show()
         else:
             self._pop_next.hide()
