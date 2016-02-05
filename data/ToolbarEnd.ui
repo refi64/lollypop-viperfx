@@ -59,7 +59,6 @@
     <child>
       <object class="GtkMenuButton" id="shuffle-button">
         <property name="visible">True</property>
-        <signal name="enter-notify-event" handler="_on_button_enter_notify" swapped="no"/>
         <property name="can_focus">True</property>
 		<property name="menu_model">shuffle-menu</property>
 	    <property name="valign">center</property>
@@ -84,7 +83,6 @@
         <child>
       <object class="GtkToggleButton" id="party-button">
         <signal name="toggled" handler="_on_party_btn_toggled" swapped="no"/>
-        <signal name="enter-notify-event" handler="_on_button_enter_notify" swapped="no"/>
         <property name="visible">True</property>
         <property name="can_focus">True</property>
     	<property name="valign">center</property>

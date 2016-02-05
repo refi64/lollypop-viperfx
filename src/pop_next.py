@@ -75,30 +75,6 @@ class NextPopover(Gtk.Popover):
         if self._signal_id is not None:
             Lp().player.disconnect(self._signal_id)
 
-    def _on_close_button_press(self, eventbox, event):
-        """
-            Close popover
-            @param eventbox as Gtk.EventBox
-            @param event as Gdk.Event
-        """
-        self.hide()
-
-    def _on_close_enter_notify(self, eventbox, event):
-        """
-            No opacity
-            @param eventbox as Gtk.EventBox
-            @param event as Gdk.Event
-        """
-        eventbox.set_opacity(1.0)
-
-    def _on_close_leave_notify(self, eventbox, event):
-        """
-            Some opacity
-            @param eventbox as Gtk.EventBox
-            @param event as Gdk.Event
-        """
-        eventbox.set_opacity(0.5)
-
     def _on_skip_btn_clicked(self, btn):
         """
             Skip next track
