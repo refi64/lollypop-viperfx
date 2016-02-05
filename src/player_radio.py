@@ -49,7 +49,8 @@ class RadioPlayer(BasePlayer):
                                    None, self._on_parse_finished, track)
             except Exception as e:
                 print("RadioPlayer::load(): ", e)
-            self.set_party(False)
+            if self.is_party():
+                self.set_party(False)
             self._albums = None
 
     def next(self):
