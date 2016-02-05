@@ -272,6 +272,7 @@ class Player(BinPlayer, QueuePlayer, UserPlaylistPlayer, RadioPlayer,
         if (not self._is_party and self._shuffle != Shuffle.TRACKS_ARTIST and
             self._shuffle != Shuffle.TRACKS) or\
                 self.current_track == self.next_track or\
+                self.current_track.id == Type.RADIOS or\
                 self.next_track.id is None:
             self.set_next()
         self.set_prev()

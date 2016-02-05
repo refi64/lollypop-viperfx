@@ -175,6 +175,7 @@ class ToolbarEnd(Gtk.Bin):
             Set party mode on if party button active
             @param obj as Gtk.button
         """
+        shuffle = Lp().settings.get_enum('shuffle')
         active = self._party_btn.get_active()
         self._shuffle_btn.set_sensitive(not active)
         if not Lp().settings.get_value('dark-ui'):
@@ -182,7 +183,8 @@ class ToolbarEnd(Gtk.Bin):
             settings.set_property("gtk-application-prefer-dark-theme", active)
         is_playing = Lp().player.is_playing()
         Lp().player.set_party(active)
-        if not active:
+        if not active and\
+           shuffle not in [Shuffle.TRACKS, Shuffle.TRACKS_ARTIST]:
             self._pop_next.set_relative_to(None)
             self._pop_next.hide()
         elif is_playing and not self._pop_next.is_visible():
