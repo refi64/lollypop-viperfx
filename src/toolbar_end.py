@@ -34,6 +34,7 @@ class ToolbarEnd(Gtk.Bin):
         builder.connect_signals(self)
 
         self._pop_next = NextPopover()
+        self._pop_next_show_queue = False
         self._popover_grid = builder.get_object('popover-grid')
 
         self.add(builder.get_object('end'))
@@ -70,23 +71,6 @@ class ToolbarEnd(Gtk.Bin):
         self._settings_button.show()
         self._settings_button.set_menu_model(menu)
 
-    def set_popover_visibility(self):
-        """
-            Hide or show popover
-        """
-        # Do not show next popover for non internal tracks as
-        # tags will be readed on the fly
-        if Lp().player.next_track.id is not None and\
-           Lp().player.next_track.id >= 0 and\
-            (Lp().player.is_party() or
-             Lp().settings.get_enum('shuffle') in [Shuffle.TRACKS,
-                                                   Shuffle.TRACKS_ARTIST]):
-            self._pop_next.update()
-            self._pop_next.set_relative_to(self._popover_grid)
-            self._pop_next.show()
-        else:
-            self._pop_next.hide()
-
     def on_status_changed(self, player):
         """
             Update buttons on status changed
@@ -102,12 +86,36 @@ class ToolbarEnd(Gtk.Bin):
             Update buttons on current changed
             @param player as Player
         """
+        if self._pop_next_show_queue and Lp().player.next_track.id >= 0:
+            self._pop_next.set_relative_to(self._popover_grid)
+            self._pop_next.show()
+            self._pop_next_show_queue = False
         if self._pop_next.is_visible():
             self._pop_next.update()
 
 #######################
 # PRIVATE             #
 #######################
+    def _set_popover_visibility(self):
+        """
+            Hide or show popover
+        """
+        # Do not show next popover for non internal tracks as
+        # tags will be readed on the fly
+        if Lp().player.next_track.id is not None and\
+           Lp().player.next_track.id >= 0 and\
+           (Lp().player.is_party() or
+            Lp().settings.get_enum('shuffle') in [Shuffle.TRACKS,
+                                                  Shuffle.TRACKS_ARTIST]):
+            self._pop_next.update()
+            self._pop_next.set_relative_to(self._popover_grid)
+            self._pop_next.show()
+        elif Lp().player.next_track.id is None:
+            self._pop_next_show_queue = True
+        else:
+            self._pop_next.hide()
+            self._pop_next_show_queue = False
+
     def _set_shuffle_icon(self):
         """
             Set shuffle icon
@@ -129,7 +137,6 @@ class ToolbarEnd(Gtk.Bin):
             else:
                 self._shuffle_btn_image.get_style_context().remove_class(
                                                                     'selected')
-        self.set_popover_visibility()
 
     def _shuffle_btn_aspect(self, settings, key):
         """
@@ -137,7 +144,7 @@ class ToolbarEnd(Gtk.Bin):
             @param settings as Gio.Settings
             @parma key as str
         """
-        self.set_popover_visibility()
+        self._set_popover_visibility()
         self._set_shuffle_icon()
 
     def _activate_party_button(self, action=None, param=None):
@@ -175,15 +182,7 @@ class ToolbarEnd(Gtk.Bin):
         if not Lp().settings.get_value('dark-ui'):
             settings = Gtk.Settings.get_default()
             settings.set_property("gtk-application-prefer-dark-theme", active)
-        is_playing = Lp().player.is_playing()
         Lp().player.set_party(active)
-        if not active:
-            self._pop_next.set_relative_to(None)
-            self._pop_next.hide()
-        elif is_playing and not self._pop_next.is_visible():
-            self._pop_next.set_relative_to(self)
-            self._pop_next.update()
-            self._pop_next.show()
 
     def _on_party_changed(self, player, is_party):
         """
@@ -191,7 +190,7 @@ class ToolbarEnd(Gtk.Bin):
             @param player as Player
             @param is party as bool
         """
-        self.set_popover_visibility()
+        self._set_popover_visibility()
         if self._party_btn.get_active() != is_party:
             self._activate_party_button()
 
@@ -201,4 +200,4 @@ class ToolbarEnd(Gtk.Bin):
             @param button as Gtk.Button
             @param event as Gdk.Event
         """
-        self.set_popover_visibility()
+        self._set_popover_visibility()
