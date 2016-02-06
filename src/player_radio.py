@@ -51,6 +51,8 @@ class RadioPlayer(BasePlayer):
                 print("RadioPlayer::load(): ", e)
             if self.is_party():
                 self.set_party(False)
+            self.next_track = Track()
+            self.emit('next-changed')
             self._albums = None
 
     def next(self):
