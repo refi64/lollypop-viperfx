@@ -15,16 +15,6 @@
     <property name="margin_bottom">5</property>
     <property name="column_spacing">5</property>
     <child>
-      <object class="GtkImage" id="cover">
-        <property name="can_focus">False</property>
-      </object>
-      <packing>
-        <property name="left_attach">0</property>
-        <property name="top_attach">2</property>
-        <property name="height">2</property>
-      </packing>
-    </child>
-    <child>
       <object class="GtkLabel" id="artist">
         <property name="visible">True</property>
         <property name="can_focus">False</property>
@@ -103,6 +93,30 @@
         <property name="left_attach">0</property>
         <property name="top_attach">0</property>
         <property name="width">3</property>
+      </packing>
+    </child>
+    <child>
+      <object class="GtkFrame" id="frame1">
+        <property name="visible">True</property>
+        <property name="can_focus">False</property>
+        <property name="label_xalign">0</property>
+        <property name="shadow_type">in</property>
+        <child>
+          <object class="GtkImage" id="cover">
+            <property name="can_focus">False</property>
+          </object>
+        </child>
+        <child type="label_item">
+          <placeholder/>
+        </child>
+        <style>
+          <class name="small-cover-frame"/>
+        </style>
+      </object>
+      <packing>
+        <property name="left_attach">0</property>
+        <property name="top_attach">2</property>
+        <property name="height">2</property>
       </packing>
     </child>
   </object>
