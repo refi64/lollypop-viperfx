@@ -400,7 +400,7 @@ class EditMenu(BaseMenu):
         self._app.add_action(edit_tag_action)
         edit_tag_action.connect('activate',
                                 self._edit_tag)
-        self.append(_("Modify informations"), 'app.edit_tag_action')
+        self.append(_("Modify information"), 'app.edit_tag_action')
 
     def _edit_tag(self, action, variant):
         """
