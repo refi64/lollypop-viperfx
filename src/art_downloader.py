@@ -26,6 +26,7 @@ class ArtDownloader:
             Init art downloader
         """
         self._albums_queue = []
+        self._albums_history = []
         self._in_albums_download = False
 
     def download_album_art(self, album_id):
@@ -33,6 +34,8 @@ class ArtDownloader:
             Download album artwork
             @param album id as int
         """
+        if album_id in self._albums_history:
+            return
         if Gio.NetworkMonitor.get_default().get_network_available():
             self._albums_queue.append(album_id)
             if not self._in_albums_download:
@@ -95,6 +98,7 @@ class ArtDownloader:
             if pixbuf is None:
                 pixbuf = self._get_album_art_lastfm(artist, album)
             if pixbuf is None:
+                self._albums_history.append(album_id)
                 continue
             try:
                     Lp().art.save_album_artwork(pixbuf, album_id)
@@ -102,6 +106,7 @@ class ArtDownloader:
                     GLib.idle_add(Lp().art.album_artwork_update, album_id)
             except Exception as e:
                 print("ArtDownloader::_download_albums_art: %s" % e)
+                self._albums_history.append(album_id)
         self._in_albums_download = False
         sql.close()
 
