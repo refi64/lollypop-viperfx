@@ -154,12 +154,10 @@ class AlbumSimpleWidget(Gtk.Frame, AlbumWidget):
         Album widget showing cover, artist and title
     """
 
-    def __init__(self, album_id, width=0, height=0):
+    def __init__(self, album_id):
         """
             Init simple album widget
             @param album id as int
-            @param width request as int
-            @param height request as int
         """
         # We do not use Gtk.Builder for speed reasons
         Gtk.Frame.__init__(self)
@@ -169,9 +167,6 @@ class AlbumSimpleWidget(Gtk.Frame, AlbumWidget):
         self._album = None
         self._cover = None
         self._eventbox = None
-        self._width = width
-        if width != 0 and height != 0:
-            self.set_size_request(width, height)
 
     def init_widget(self):
         """
@@ -229,11 +224,11 @@ class AlbumSimpleWidget(Gtk.Frame, AlbumWidget):
             Return preferred width
             @return (int, int)
         """
-        if self._width != 0:
-            return (self._width, self._width)
-        else:
+        if self._cover is not None:
             widths = self._cover.get_preferred_width()
             return (widths[0] + 8, widths[1] + 8)
+        else:
+            return (0, 0)
 
     def update_cursor(self):
         """

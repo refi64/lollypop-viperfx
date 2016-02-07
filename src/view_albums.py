@@ -110,16 +110,7 @@ class AlbumsView(View):
             Populate albums
             @param is compilation as bool
         """
-        # Add first album to get album size,
-        # used to precalculate next albums size
-        if albums:
-            widget = AlbumSimpleWidget(albums.pop(0))
-            widget.init_widget()
-            widget.show_all()
-            self._albumbox.insert(widget, -1)
-            # Keep album requisition
-            self._requisition = widget.get_preferred_size()[1]
-            self._add_albums(albums)
+        self._add_albums(albums)
 
 #######################
 # PRIVATE             #
@@ -162,9 +153,7 @@ class AlbumsView(View):
             @param [album ids as int]
         """
         if albums and not self._stop:
-            widget = AlbumSimpleWidget(albums.pop(0),
-                                       self._requisition.width,
-                                       self._requisition.height)
+            widget = AlbumSimpleWidget(albums.pop(0))
             self._albumbox.insert(widget, -1)
             widget.show_all()
             self._lazy_queue.append(widget)
