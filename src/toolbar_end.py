@@ -95,8 +95,7 @@ class ToolbarEnd(Gtk.Bin):
         if player.next_track.id is not None and\
            player.next_track.id >= 0 and\
             (player.is_party() or
-             Lp().settings.get_enum('shuffle') in [Shuffle.TRACKS,
-                                                   Shuffle.TRACKS_ARTIST]):
+             Lp().settings.get_enum('shuffle') == Shuffle.TRACKS):
             self._pop_next.update()
             if not self._pop_next.is_visible():
                 self._pop_next.set_relative_to(self)
@@ -122,13 +121,13 @@ class ToolbarEnd(Gtk.Bin):
             self._shuffle_btn_image.set_from_icon_name(
                 "media-playlist-shuffle-symbolic",
                 Gtk.IconSize.SMALL_TOOLBAR)
-            if shuffle in [Shuffle.TRACKS, Shuffle.TRACKS_ARTIST]:
+            if shuffle == Shuffle.TRACKS:
                 self._shuffle_btn_image.get_style_context().add_class(
                                                                     'selected')
             else:
                 self._shuffle_btn_image.get_style_context().remove_class(
                                                                     'selected')
-        if shuffle in [Shuffle.TRACKS, Shuffle.TRACKS_ARTIST]:
+        if shuffle == Shuffle.TRACKS:
             if Lp().player.next_track.id is not None and\
                not self._pop_next.is_visible():
                 self._pop_next.set_relative_to(self)
@@ -184,7 +183,7 @@ class ToolbarEnd(Gtk.Bin):
         is_playing = Lp().player.is_playing()
         Lp().player.set_party(active)
         if not active and\
-           shuffle not in [Shuffle.TRACKS, Shuffle.TRACKS_ARTIST]:
+           shuffle == Shuffle.TRACKS:
             self._pop_next.set_relative_to(None)
             self._pop_next.hide()
         elif is_playing and not self._pop_next.is_visible():

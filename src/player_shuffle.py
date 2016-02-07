@@ -55,8 +55,7 @@ class ShufflePlayer(BasePlayer):
             @return Track
         """
         track_id = None
-        if self._shuffle in [Shuffle.TRACKS, Shuffle.TRACKS_ARTIST] or\
-                self._is_party:
+        if self._shuffle == Shuffle.TRACKS or self._is_party:
             if self._history and self._history.has_next():
                 track_id = self._history.get_next().get_value()
             elif self._albums:
@@ -69,8 +68,7 @@ class ShufflePlayer(BasePlayer):
             @return Track
         """
         track_id = None
-        if self._shuffle in [Shuffle.TRACKS, Shuffle.TRACKS_ARTIST] or\
-                self._is_party:
+        if self._shuffle == Shuffle.TRACKS or self._is_party:
             if self._history and self._history.has_prev():
                 track_id = self._history.get_prev().get_value()
             else:
@@ -154,8 +152,7 @@ class ShufflePlayer(BasePlayer):
         self._shuffle = Lp().settings.get_enum('shuffle')
 
         if self._rg1.rgvolume is not None and self._rg2.rgvolume is not None:
-            if self._shuffle in [Shuffle.TRACKS, Shuffle.TRACKS_ARTIST] or\
-               self._user_playlist:
+            if self._shuffle == Shuffle.TRACKS or self._user_playlist:
                 self._rg1.rgvolume.props.album_mode = 0
                 self._rg2.rgvolume.props.album_mode = 0
             else:
@@ -175,7 +172,7 @@ class ShufflePlayer(BasePlayer):
         """
             Shuffle album list
         """
-        if self._shuffle in [Shuffle.ALBUMS, Shuffle.ALBUMS_ARTIST]:
+        if self._shuffle == Shuffle.ALBUMS:
             if self._albums and not self._albums_backup:
                 self._albums_backup = list(self._albums)
                 random.shuffle(self._albums)

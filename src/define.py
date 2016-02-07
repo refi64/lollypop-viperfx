@@ -67,8 +67,6 @@ class Shuffle:
     NONE = 0             # No shuffle
     TRACKS = 1           # Shuffle by tracks on genre
     ALBUMS = 2           # Shuffle by albums on genre
-    TRACKS_ARTIST = 3    # Shuffle by tracks on artist
-    ALBUMS_ARTIST = 4    # Shuffle by albums on artist
 
 
 # Order is important

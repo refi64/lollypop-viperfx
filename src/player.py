@@ -19,7 +19,6 @@ from lollypop.player_externals import ExternalsPlayer
 from lollypop.player_userplaylist import UserPlaylistPlayer
 from lollypop.objects import Track
 from lollypop.define import Lp, Type
-from lollypop.define import Shuffle
 
 
 class Player(BinPlayer, QueuePlayer, UserPlaylistPlayer, RadioPlayer,
@@ -105,15 +104,7 @@ class Player(BinPlayer, QueuePlayer, UserPlaylistPlayer, RadioPlayer,
             self._albums += Lp().albums.get_ids()
         # We are in populars view, add popular albums
         elif genre_ids and genre_ids[0] == Type.POPULARS:
-            if self._shuffle in [Shuffle.TRACKS_ARTIST, Shuffle.ALBUMS_ARTIST]:
-                self._albums = []
-                self.next_track = Track()
-                for album_id in Lp().albums.get_populars():
-                    if Lp().albums.get_artist_id(album_id) == \
-                            album.artist_id:
-                        self._albums.append(album_id)
-            else:
-                self._albums = Lp().albums.get_populars()
+            self._albums = Lp().albums.get_populars()
         # We are in recents view, add recent albums
         elif genre_ids and genre_ids[0] == Type.RECENTS:
             self._albums = Lp().albums.get_recents()
@@ -123,9 +114,6 @@ class Player(BinPlayer, QueuePlayer, UserPlaylistPlayer, RadioPlayer,
         # We are in compilation view without genre
         elif genre_ids and genre_ids[0] == Type.COMPILATIONS:
             self._albums = Lp().albums.get_compilations()
-        # Random tracks/albums for artist
-        elif self._shuffle in [Shuffle.TRACKS_ARTIST, Shuffle.ALBUMS_ARTIST]:
-            self._albums = Lp().albums.get_ids([album.artist_id], genre_ids)
         # Add all albums for genre
         else:
             if not artist_ids:
