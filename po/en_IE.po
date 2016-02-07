@@ -3,7 +3,7 @@
 # This file is distributed under the same license as the PACKAGE package.
 # 
 # Translators:
-# David Ó Laigheanáin, 2015
+# David Ó Laigheanáin, 2015i
 msgid ""
 msgstr ""
 "Project-Id-Version: lollypop\n"
@@ -293,8 +293,8 @@ msgstr "TuneIn support"
 msgid ""
 "    - Scrobbler disabled\n"
 "    - Auto cover download disabled\n"
-"    - Artist informations disabled"
-msgstr "    - Scrobbler disabled\n    - Auto cover download disabled\n    - Artist informations disabled"
+"    - Artist information disabled"
+msgstr "    - Scrobbler disabled\n    - Auto cover download disabled\n    - Artist information disabled"
 
 #: ../src/application.py:363
 #, python-format
@@ -448,7 +448,7 @@ msgid "Select a cover art for this album"
 msgstr "Select a cover art for this album"
 
 #: ../src/pop_infos.py:33
-msgid "Advanced artist informations disabled"
+msgid "Advanced artist information disabled"
 msgstr "Advanced artist information disabled"
 
 #: ../src/pop_infos.py:41
@@ -506,7 +506,7 @@ msgid "Playback"
 msgstr "Playback"
 
 #: ../src/pop_menu.py:403
-msgid "Modify informations"
+msgid "Modify information"
 msgstr "Modify information"
 
 #: ../src/pop_menu.py:447 ../data/PlaylistView.ui.h:1
