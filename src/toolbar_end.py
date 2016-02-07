@@ -36,6 +36,8 @@ class ToolbarEnd(Gtk.Bin):
 
         self.add(builder.get_object('end'))
 
+        self._grid_next = builder.get_object('grid-next')
+
         self._shuffle_btn = builder.get_object('shuffle-button')
         self._shuffle_btn_image = builder.get_object('shuffle-button-image')
         Lp().settings.connect('changed::shuffle', self._shuffle_btn_aspect)
@@ -98,7 +100,7 @@ class ToolbarEnd(Gtk.Bin):
              Lp().settings.get_enum('shuffle') == Shuffle.TRACKS):
             self._pop_next.update()
             if not self._pop_next.is_visible():
-                self._pop_next.set_relative_to(self)
+                self._pop_next.set_relative_to(self._grid_next)
                 self._pop_next.show()
         else:
             self._pop_next.hide()
@@ -130,7 +132,7 @@ class ToolbarEnd(Gtk.Bin):
         if shuffle == Shuffle.TRACKS:
             if Lp().player.next_track.id is not None and\
                not self._pop_next.is_visible():
-                self._pop_next.set_relative_to(self)
+                self._pop_next.set_relative_to(self._grid_next)
                 self._pop_next.update()
                 self._pop_next.show()
         elif Lp().player.is_playing():
@@ -187,7 +189,7 @@ class ToolbarEnd(Gtk.Bin):
             self._pop_next.set_relative_to(None)
             self._pop_next.hide()
         elif is_playing and not self._pop_next.is_visible():
-            self._pop_next.set_relative_to(self)
+            self._pop_next.set_relative_to(self._grid_next)
             self._pop_next.update()
             self._pop_next.show()
 
