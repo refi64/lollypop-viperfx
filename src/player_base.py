@@ -40,6 +40,9 @@ class BasePlayer(GObject.GObject):
         if not hasattr(self, '_albums'):
             GObject.GObject.__init__(self)
             self._base_init = True
+            # Keep track of artist/album finished
+            self._album_finished = False
+            self._artist_finished = False
             # A user playlist used as current playlist
             self._user_playlist = None
             # Used by shuffle tracks to restore user playlist before shuffle
