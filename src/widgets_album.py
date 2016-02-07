@@ -500,14 +500,9 @@ class AlbumDetailedWidget(Gtk.Bin, AlbumWidget):
         else:
             Lp().player.context.next = NextContext.NONE
             if not Lp().player.is_party():
-                if len(self._artist_ids) > 1:
-                    Lp().player.set_albums(track_id,
-                                           self._artist_ids,
-                                           self._album.genre_ids)
-                else:
-                    Lp().player.set_albums(track_id,
-                                           [],
-                                           self._album.genre_ids)
+                Lp().player.set_albums(track_id,
+                                       self._artist_ids,
+                                       self._album.genre_ids)
             Lp().player.load(Track(track_id))
             if self._button_state & Gdk.ModifierType.CONTROL_MASK:
                 Lp().player.context.next = NextContext.STOP_TRACK
