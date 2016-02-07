@@ -91,11 +91,7 @@ class AlbumPopoverWidget(Gtk.Popover):
         """
             Set maximum width
         """
-        size_setting = Lp().settings.get_value('window-size')
-        if isinstance(size_setting[0], int):
-            width = size_setting[0] * 0.6
-        else:
-            width = 500
+        width = Lp().window.get_size()[0] * 0.6
         return (width, width)
 
 #######################
