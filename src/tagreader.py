@@ -228,7 +228,7 @@ class ScannerTagReader(TagReader):
                 artist_id = Lp().artists.add(artist, sortname)
                 if artist == album_artist:
                     new_artist_ids.append(artist_id)
-            elif sortname != "":
+            else:
                 Lp().artists.set_sortname(artist_id, sortname)
             artist_ids.append(artist_id)
         return (artist_ids, new_artist_ids)
