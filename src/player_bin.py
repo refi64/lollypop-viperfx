@@ -139,9 +139,9 @@ class BinPlayer(BasePlayer):
         else:
             self._playbin = self._playbin2
         # Restore volume
-        self._playbin1.set_volume(GstAudio.StreamVolumeFormat.CUBIC,
+        self._playbin1.set_volume(GstAudio.StreamVolumeFormat.LINEAR,
                                   self._volume)
-        self._playbin2.set_volume(GstAudio.StreamVolumeFormat.CUBIC,
+        self._playbin2.set_volume(GstAudio.StreamVolumeFormat.LINEAR,
                                   self._volume)
         # Stop
         self._playbin1.set_state(Gst.State.NULL)
