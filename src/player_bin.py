@@ -95,7 +95,9 @@ class BinPlayer(BasePlayer):
             @param track as Track
             @param notify as bool
         """
-        if self._crossfading and self.current_track.id != Type.RADIOS:
+        if self._crossfading and\
+           self.current_track.id is not None and\
+           self.current_track.id != Type.RADIOS:
             duration = Lp().settings.get_value('mix-duration').get_int32()
             self._do_crossfade(duration, track, False, notify)
         else:
