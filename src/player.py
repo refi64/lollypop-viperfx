@@ -103,7 +103,8 @@ class Player(BinPlayer, QueuePlayer, UserPlaylistPlayer, RadioPlayer,
             if artist_ids and artist_ids[0] != Type.ALL:
                 self._albums += Lp().albums.get_ids(artist_ids, None)
             else:
-                self._albums = Lp().albums.get_compilations()
+                if Lp().settings.get_value('show-compilations'):
+                    self._albums = Lp().albums.get_compilations()
                 self._albums += Lp().albums.get_ids()
         # We are in populars view, add popular albums
         elif genre_ids and genre_ids[0] == Type.POPULARS:
@@ -119,7 +120,7 @@ class Player(BinPlayer, QueuePlayer, UserPlaylistPlayer, RadioPlayer,
             self._albums = Lp().albums.get_compilations()
         # Add all albums for genre
         else:
-            if not artist_ids:
+            if Lp().settings.get_value('show-compilations'):
                 self._albums = Lp().albums.get_compilations(genre_ids)
             self._albums += Lp().albums.get_ids(artist_ids, genre_ids)
 
