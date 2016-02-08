@@ -3,15 +3,15 @@
 # This file is distributed under the same license as the PACKAGE package.
 # 
 # Translators:
-# Yosef Or Boczko <yoseforb@gmail.com>, 2015
+# Yosef Or Boczko <yoseforb@gmail.com>, 2015-2016
 # Yosef Or Boczko <yoseforb@gnome.org>, 2015
 # יוֹסֵף אוֹר בּוֹצְ׳קוֹ <yoseforb@gnome.org>, 2015
 msgid ""
 msgstr ""
 "Project-Id-Version: lollypop\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-02-02 20:48+0100\n"
-"PO-Revision-Date: 2016-02-03 07:50+0000\n"
+"POT-Creation-Date: 2016-02-07 11:42+0100\n"
+"PO-Revision-Date: 2016-02-07 10:46+0000\n"
 "Last-Translator: Cédric Bellegarde <web@adishatz.org>\n"
 "Language-Team: Hebrew (http://www.transifex.com/gnumdk/lollypop/language/he/)\n"
 "MIME-Version: 1.0\n"
@@ -107,11 +107,11 @@ msgstr "Disable mpd support"
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:22
 msgid "Sync all albums(MTP)"
-msgstr ""
+msgstr "Sync all albums(MTP)"
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:23
 msgid "Convert to MP3(MTP)"
-msgstr ""
+msgstr "Convert to MP3(MTP)"
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:24 ../data/SettingsDialog.ui.h:10
 msgid "Auto update music"
@@ -167,15 +167,15 @@ msgstr "MPD network port"
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:37 ../data/SettingsDialog.ui.h:16
 msgid "Mix songs"
-msgstr ""
+msgstr "Mix songs"
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:38
 msgid "Mix songs only in party mode"
-msgstr ""
+msgstr "Mix songs only in party mode"
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:39
 msgid "Mix duration"
-msgstr ""
+msgstr "Mix duration"
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:40
 msgid "Shuffle mode"
@@ -383,8 +383,8 @@ msgstr "שליטת רשת"
 
 #: ../src/database_albums.py:270 ../src/database_artists.py:104
 #: ../src/database_genres.py:69 ../src/database_tracks.py:229
-#: ../src/tagreader.py:87 ../src/tagreader.py:98 ../src/tagreader.py:120
-#: ../src/tagreader.py:131 ../src/tagreader.py:147 ../src/tagreader.py:162
+#: ../src/tagreader.py:87 ../src/tagreader.py:118 ../src/tagreader.py:143
+#: ../src/tagreader.py:158
 msgid "Unknown"
 msgstr "לא ידוע"
 
@@ -508,8 +508,8 @@ msgid "Playback"
 msgstr "בִצוע מוקלט"
 
 #: ../src/pop_menu.py:403
-msgid "Modify informations"
-msgstr "שינוי מידע"
+msgid "Modify information"
+msgstr ""
 
 #: ../src/pop_menu.py:447 ../data/PlaylistView.ui.h:1
 msgid "Edit"
@@ -554,29 +554,29 @@ msgstr "מתאם %s"
 msgid "Cancel synchronization"
 msgstr "ביטול התיאום"
 
-#: ../src/widgets_album.py:311
+#: ../src/widgets_album.py:312
 #, python-format
 msgid "%s h  %s m"
 msgstr "%s ש׳ ו־%s דק׳"
 
-#: ../src/widgets_album.py:313
+#: ../src/widgets_album.py:314
 #, python-format
 msgid "%s h"
 msgstr "%s שעות"
 
-#: ../src/widgets_album.py:315
+#: ../src/widgets_album.py:316
 #, python-format
 msgid "%s m"
 msgstr "%s דקות"
 
-#: ../src/widgets_album.py:327
+#: ../src/widgets_album.py:328
 #, python-format
 msgid "Disc %s"
 msgstr "דיסק %s"
 
 #: ../src/widgets_device.py:51
 msgid "You need to install gstreamer-plugins-ugly"
-msgstr ""
+msgstr "יש להתקין את gstreamer-plugins-ugly"
 
 #: ../src/widgets_device.py:216
 msgid "Unknown error while syncing, try to reboot your device"
@@ -682,7 +682,7 @@ msgstr "יש לשחרר נעילת ההתקן שלל"
 
 #: ../data/DeviceManagerWidget.ui.h:2
 msgid "Convert to MP3"
-msgstr ""
+msgstr "המרה ל־‏MP3"
 
 #: ../data/PlaylistEditWidget.ui.h:1 ../data/PlaylistsManagerWidget.ui.h:1
 msgid "Confirm"
@@ -754,11 +754,11 @@ msgstr "העדפות"
 
 #: ../data/SettingsDialog.ui.h:2
 msgid "Only in party mode"
-msgstr ""
+msgstr "רק במצב מסיבה"
 
 #: ../data/SettingsDialog.ui.h:3
 msgid "Mix duration in seconds"
-msgstr ""
+msgstr "משך ערבוב בשניות"
 
 #: ../data/SettingsDialog.ui.h:4
 msgid "Use dark theme variant"
@@ -774,7 +774,7 @@ msgstr "מראה"
 
 #: ../data/SettingsDialog.ui.h:9
 msgid "Configure lollypop appearance"
-msgstr ""
+msgstr "תצורת המראה של lollypop"
 
 #: ../data/SettingsDialog.ui.h:11
 msgid "Restore state on startup"
@@ -826,7 +826,7 @@ msgstr "יש להתקין pylast ו־gi secret"
 
 #: ../data/SettingsDialog.ui.h:27
 msgid "Configure Last.fm credentials"
-msgstr ""
+msgstr "תצורת אישורי Last.fm"
 
 #: ../data/ToolbarEnd.ui.h:1
 msgid "No shuffle"

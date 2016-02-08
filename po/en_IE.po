@@ -3,13 +3,13 @@
 # This file is distributed under the same license as the PACKAGE package.
 # 
 # Translators:
-# David Ó Laigheanáin, 2015i
+# David Ó Laıġeanáın, 2015
 msgid ""
 msgstr ""
 "Project-Id-Version: lollypop\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-02-02 20:48+0100\n"
-"PO-Revision-Date: 2016-02-03 07:50+0000\n"
+"POT-Creation-Date: 2016-02-07 11:42+0100\n"
+"PO-Revision-Date: 2016-02-07 10:46+0000\n"
 "Last-Translator: Cédric Bellegarde <web@adishatz.org>\n"
 "Language-Team: English (Ireland) (http://www.transifex.com/gnumdk/lollypop/language/en_IE/)\n"
 "MIME-Version: 1.0\n"
@@ -293,8 +293,8 @@ msgstr "TuneIn support"
 msgid ""
 "    - Scrobbler disabled\n"
 "    - Auto cover download disabled\n"
-"    - Artist information disabled"
-msgstr "    - Scrobbler disabled\n    - Auto cover download disabled\n    - Artist information disabled"
+"    - Artist informations disabled"
+msgstr "    - Scrobbler disabled\n    - Auto cover download disabled\n    - Artist informations disabled"
 
 #: ../src/application.py:363
 #, python-format
@@ -381,8 +381,8 @@ msgstr ""
 
 #: ../src/database_albums.py:270 ../src/database_artists.py:104
 #: ../src/database_genres.py:69 ../src/database_tracks.py:229
-#: ../src/tagreader.py:87 ../src/tagreader.py:98 ../src/tagreader.py:120
-#: ../src/tagreader.py:131 ../src/tagreader.py:147 ../src/tagreader.py:162
+#: ../src/tagreader.py:87 ../src/tagreader.py:118 ../src/tagreader.py:143
+#: ../src/tagreader.py:158
 msgid "Unknown"
 msgstr "Unknown"
 
@@ -448,7 +448,7 @@ msgid "Select a cover art for this album"
 msgstr "Select a cover art for this album"
 
 #: ../src/pop_infos.py:33
-msgid "Advanced artist information disabled"
+msgid "Advanced artist informations disabled"
 msgstr "Advanced artist information disabled"
 
 #: ../src/pop_infos.py:41
@@ -507,7 +507,7 @@ msgstr "Playback"
 
 #: ../src/pop_menu.py:403
 msgid "Modify information"
-msgstr "Modify information"
+msgstr ""
 
 #: ../src/pop_menu.py:447 ../data/PlaylistView.ui.h:1
 msgid "Edit"
@@ -552,22 +552,22 @@ msgstr "Synchronise %s"
 msgid "Cancel synchronization"
 msgstr "Cancel synchronisation"
 
-#: ../src/widgets_album.py:311
+#: ../src/widgets_album.py:312
 #, python-format
 msgid "%s h  %s m"
 msgstr ""
 
-#: ../src/widgets_album.py:313
+#: ../src/widgets_album.py:314
 #, python-format
 msgid "%s h"
 msgstr ""
 
-#: ../src/widgets_album.py:315
+#: ../src/widgets_album.py:316
 #, python-format
 msgid "%s m"
 msgstr ""
 
-#: ../src/widgets_album.py:327
+#: ../src/widgets_album.py:328
 #, python-format
 msgid "Disc %s"
 msgstr "Disc %s"
