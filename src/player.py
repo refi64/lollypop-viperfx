@@ -118,10 +118,8 @@ class Player(BinPlayer, QueuePlayer, UserPlaylistPlayer, RadioPlayer,
         # We are in compilation view without genre
         elif genre_ids and genre_ids[0] == Type.COMPILATIONS:
             self._albums = Lp().albums.get_compilations()
-        # Add all albums for genre
+        # Add albums for artists/genres
         else:
-            if Lp().settings.get_value('show-compilations'):
-                self._albums = Lp().albums.get_compilations(genre_ids)
             self._albums += Lp().albums.get_ids(artist_ids, genre_ids)
 
         album.set_genre(genre_ids)
