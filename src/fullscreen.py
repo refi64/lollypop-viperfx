@@ -70,7 +70,7 @@ class FullScreen(Gtk.Window, InfosController,
         self._cover_frame = builder.get_object('frame')
         self._title_label = builder.get_object('title')
         self._artist_label = builder.get_object('artist')
-        self._album = builder.get_object('album')
+        self._album_label = builder.get_object('album')
 
         self._datetime = builder.get_object('datetime')
 
@@ -106,7 +106,7 @@ class FullScreen(Gtk.Window, InfosController,
                 self._timeout2 = GLib.timeout_add(60000, self._update_datetime)
         self._update_position()
         self.fullscreen()
-        self._next_popover.set_relative_to(self._album)
+        self._next_popover.set_relative_to(self._album_label)
         if Lp().player.next_track.id != Type.RADIOS:
             self._next_popover.show()
 
@@ -129,6 +129,26 @@ class FullScreen(Gtk.Window, InfosController,
         self._next_popover.set_relative_to(None)
         self._next_popover.hide()
 
+    def on_current_changed(self, player):
+        """
+            Update infos and show/hide popover
+            @param player as Player
+        """
+        InfosController.on_current_changed(self, player)
+        ProgressController.on_current_changed(self, player)
+        if player.current_track.id is not None:
+            album_name = player.current_track.album.name
+            if player.current_track.year != '':
+                album_name += " (%s)" % player.current_track.year
+            self._album_label.set_text(album_name)
+        # Do not show next popover non internal tracks as
+        # tags will be readed on the fly
+        if player.next_track.id >= 0:
+            self._next_popover.update()
+            self._next_popover.show()
+        else:
+            self._next_popover.hide()
+
 #######################
 # PRIVATE             #
 #######################
@@ -149,21 +169,6 @@ class FullScreen(Gtk.Window, InfosController,
             @param widget as Gtk.Button
         """
         self.destroy()
-
-    def on_current_changed(self, player):
-        """
-            Update infos and show/hide popover
-            @param player as Player
-        """
-        InfosController.on_current_changed(self, player)
-        ProgressController.on_current_changed(self, player)
-        # Do not show next popover non internal tracks as
-        # tags will be readed on the fly
-        if player.next_track.id >= 0:
-            self._next_popover.update()
-            self._next_popover.show()
-        else:
-            self._next_popover.hide()
 
     def _on_key_release_event(self, widget, event):
         """
