@@ -189,6 +189,8 @@ class Application(Gtk.Application):
         """
             Save window position and view
         """
+        if self._is_fs:
+            return
         if self.settings.get_value('save-state'):
             self.window.save_view_state()
             if self.player.current_track.id is None:
@@ -338,6 +340,8 @@ class Application(Gtk.Application):
             @param widget as Fullscreen
         """
         self._is_fs = False
+        if not self.window.is_visible():
+            self.prepare_to_exit()
 
     def _settings_dialog(self, action=None, param=None):
         """
