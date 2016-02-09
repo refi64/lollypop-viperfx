@@ -51,7 +51,8 @@ Lollypop music player</title>
         <item><p>Control+s: Lollypop settings</p></item>
         <item><p>Control+f: Search</p></item>
         <item><p>Control+p: Party mode</p></item>
-        <item><p>Control+m or F11: Fullscreen</p></item>
+        <item><p>F7 or F11: Fullscreen</p></item>
+        <item><p>Control+m: Mini player</p></item>
         <item><p>x: Play</p></item>
         <item><p>c: Pause</p></item>
         <item><p>v: Stop</p></item>
