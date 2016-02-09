@@ -151,7 +151,7 @@ class Window(Gtk.ApplicationWindow, Container):
            isinstance(size_setting[1], int):
             self.resize(size_setting[0], size_setting[1])
         else:
-            self.set_size_request(800, 600)
+            self.resize(800, 600)
         position_setting = Lp().settings.get_value('window-position')
         if len(position_setting) == 2 and\
            isinstance(position_setting[0], int) and\
@@ -176,6 +176,20 @@ class Window(Gtk.ApplicationWindow, Container):
         self._toolbar.set_content_width(size[0])
         if Lp().player.current_track.id is not None:
             self._show_miniplayer(size[0] < Mini.LIMIT)
+
+    def set_mini(self):
+        """
+            Set mini player on/off
+        """
+        if Lp().player.current_track.id is None:
+            return
+        if self._main_stack.get_visible_child_name() == 'main':
+            self.unmaximize()
+            self.resize(Mini.SMALL, Mini.SMALL)
+            self._show_miniplayer(True)
+        else:
+            self.maximize()
+            self._show_miniplayer(False)
 
 ############
 # Private  #

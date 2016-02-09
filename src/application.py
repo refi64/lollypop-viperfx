@@ -393,6 +393,15 @@ class Application(Gtk.Application):
         """
         dialog.destroy()
 
+    def set_mini(self, action, param):
+        """
+            Set mini player on/off
+            @param dialog as Gtk.Dialog
+            @param response id as int
+        """
+        if self.window is not None:
+            self.window.set_mini()
+
     def _setup_app_menu(self):
         """
             Setup application menu
@@ -418,8 +427,13 @@ class Application(Gtk.Application):
 
         fsAction = Gio.SimpleAction.new('fullscreen', None)
         fsAction.connect('activate', self._fullscreen)
-        self.set_accels_for_action('app.fullscreen', ["F11", "<Control>m"])
+        self.set_accels_for_action('app.fullscreen', ["F11", "F7"])
         self.add_action(fsAction)
+
+        mini_action = Gio.SimpleAction.new('mini', None)
+        mini_action.connect('activate', self.set_mini)
+        self.add_action(mini_action)
+        self.set_accels_for_action("app.mini", ["<Control>m"])
 
         aboutAction = Gio.SimpleAction.new('about', None)
         aboutAction.connect('activate', self._about)
