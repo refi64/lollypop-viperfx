@@ -224,8 +224,8 @@
             <property name="margin_end">5</property>
             <property name="hexpand">True</property>
             <property name="draw_value">False</property>
-            <signal name="button-press-event" handler="_on_progress_press_btn" swapped="no"/>
-            <signal name="button-release-event" handler="_on_progress_release_btn" swapped="no"/>
+            <signal name="button-press-event" handler="_on_progress_press_button" swapped="no"/>
+            <signal name="button-release-event" handler="_on_progress_release_button" swapped="no"/>
           </object>
           <packing>
             <property name="left_attach">1</property>

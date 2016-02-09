@@ -18,10 +18,11 @@ from lollypop.pop_tunein import TuneinPopover
 from lollypop.pop_externals import ExternalsPopover
 from lollypop.pop_infos import InfosPopover
 from lollypop.pop_menu import PopToolbarMenu
+from lollypop.controller import InfosController
 from lollypop.define import Lp, Type, ArtSize
 
 
-class ToolbarInfos(Gtk.Bin):
+class ToolbarInfos(Gtk.Bin, InfosController):
     """
         Informations toolbar
     """
@@ -31,6 +32,7 @@ class ToolbarInfos(Gtk.Bin):
             Init toolbar
         """
         Gtk.Bin.__init__(self)
+        InfosController.__init__(self, ArtSize.SMALL)
         builder = Gtk.Builder()
         builder.add_from_resource('/org/gnome/Lollypop/ToolbarInfos.ui')
         builder.connect_signals(self)
@@ -73,42 +75,6 @@ class ToolbarInfos(Gtk.Bin):
         self._width = width
         self.set_property('width-request', width)
 
-    def on_current_changed(self, player):
-        """
-            Update toolbar on current changed
-            @param player as Player
-        """
-        art = None
-
-        self._artist_label.set_text(player.current_track.artist)
-        self._title_label.set_text(player.current_track.title)
-
-        if player.current_track.id == Type.RADIOS:
-            art = Lp().art.get_radio_artwork(
-                                   player.current_track.artist,
-                                   ArtSize.SMALL*self.get_scale_factor())
-        elif player.current_track.id == Type.EXTERNALS:
-            art = Lp().art.get_album_artwork2(
-                    player.current_track.uri,
-                    ArtSize.SMALL*self.get_scale_factor())
-        elif player.current_track.id is not None:
-            art = Lp().art.get_album_artwork(
-                                   player.current_track.album,
-                                   ArtSize.SMALL*self.get_scale_factor())
-        if art is not None:
-            self._cover.set_from_surface(art)
-            del art
-            self._cover.set_tooltip_text(player.current_track.album.name)
-            self._cover_frame.show()
-        else:
-            self._cover_frame.hide()
-
-    def on_status_changed(self, player):
-        """
-            Update infos on status changed
-            @param player as Player
-        """
-        pass
 
 #######################
 # PRIVATE             #

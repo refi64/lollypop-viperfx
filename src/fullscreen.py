@@ -10,18 +10,18 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-from gi.repository import Gtk, Gdk, GLib, Gst
+from gi.repository import Gtk, Gdk, GLib
 
-from cgi import escape
-from gettext import gettext as _
 from datetime import datetime
 
 from lollypop.define import Lp, ArtSize, Type
-from lollypop.utils import seconds_to_string
 from lollypop.pop_next import NextPopover
+from lollypop.controller import InfosController, PlaybackController
+from lollypop.controller import ProgressController
 
 
-class FullScreen(Gtk.Window):
+class FullScreen(Gtk.Window, InfosController,
+                 PlaybackController, ProgressController):
     """
         Show a fullscreen window showing current track context
     """
@@ -33,6 +33,8 @@ class FullScreen(Gtk.Window):
             @param parent as Gtk.window
         """
         Gtk.Window.__init__(self)
+        PlaybackController.__init__(self)
+        ProgressController.__init__(self)
         self.set_application(app)
         self._timeout1 = None
         self._timeout2 = None
@@ -50,9 +52,10 @@ class FullScreen(Gtk.Window):
         geometry = screen.get_monitor_geometry(monitor)
         # We want 500 and 200 in full hd
         if geometry.width > geometry.height:
-            self._artsize = int(ArtSize.MONSTER*geometry.width/1920)
+            artsize = int(ArtSize.MONSTER*geometry.width/1920)
         else:
-            self._artsize = int(ArtSize.MONSTER*geometry.height/1920)
+            artsize = int(ArtSize.MONSTER*geometry.height/1920)
+        InfosController.__init__(self, artsize)
 
         self._play_btn = builder.get_object('play_btn')
         self._next_btn = builder.get_object('next_btn')
@@ -64,8 +67,9 @@ class FullScreen(Gtk.Window):
         close_btn = builder.get_object('close_btn')
         close_btn.connect('clicked', self._destroy)
         self._cover = builder.get_object('cover')
-        self._title = builder.get_object('title')
-        self._artist = builder.get_object('artist')
+        self._cover_frame = builder.get_object('frame')
+        self._title_label = builder.get_object('title')
+        self._artist_label = builder.get_object('artist')
         self._album = builder.get_object('album')
 
         self._datetime = builder.get_object('datetime')
@@ -80,19 +84,15 @@ class FullScreen(Gtk.Window):
         """
             Init signals, set color and go party mode if nothing is playing
         """
-        is_playing = Lp().player.is_playing()
         self._signal1_id = Lp().player.connect('current-changed',
-                                               self._on_current_changed)
+                                               self.on_current_changed)
         self._signal2_id = Lp().player.connect('status-changed',
-                                               self._on_status_changed)
+                                               self.on_status_changed)
         if Lp().player.current_track.id is None:
             Lp().player.set_party(True)
         else:
-            if is_playing:
-                self._change_play_btn_status(self._pause_image, _('Pause'))
-            else:
-                self._on_status_changed(Lp().player)
-            self._on_current_changed(Lp().player)
+            self.on_status_changed(Lp().player)
+            self.on_current_changed(Lp().player)
         if self._timeout1 is None:
             self._timeout1 = GLib.timeout_add(1000, self._update_position)
         Gtk.Window.do_show(self)
@@ -143,28 +143,6 @@ class FullScreen(Gtk.Window):
             return False
         return True
 
-    def _change_play_btn_status(self, image, status):
-        """
-            Update play button with image and status as tooltip
-            @param image as Gtk.Image
-            @param status as str
-        """
-        self._play_btn.set_image(image)
-        self._play_btn.set_tooltip_text(status)
-
-    def _update_position(self, value=None):
-        """
-            Update progress bar position
-            @param value as int
-        """
-        if not self._seeking and self._progress.is_visible():
-            if value is None and Lp().player.get_status() != Gst.State.PAUSED:
-                value = Lp().player.get_position_in_track()/1000000
-            if value is not None:
-                self._progress.set_value(value)
-                self._timelabel.set_text(seconds_to_string(value/60))
-        return True
-
     def _destroy(self, widget):
         """
             Destroy self
@@ -172,76 +150,20 @@ class FullScreen(Gtk.Window):
         """
         self.destroy()
 
-    def _on_current_changed(self, player):
+    def on_current_changed(self, player):
         """
-            Update View for current track
-                - Cover
-                - artist/title
-                - reset progress bar
-                - update time/total labels
+            Update infos and show/hide popover
             @param player as Player
         """
-        if player.current_track.id is not None:
-            if Lp().player.current_track.id == Type.RADIOS:
-                self._timelabel.hide()
-                self._total_time_label.hide()
-                self._progress.hide()
-                surface = Lp().art.get_radio_artwork(
-                    player.current_track.artist,
-                    self._artsize*self.get_scale_factor())
-            else:
-                self._timelabel.show()
-                self._total_time_label.show()
-                self._progress.show()
-                surface = Lp().art.get_album_artwork(
-                    player.current_track.album,
-                    self._artsize*self.get_scale_factor())
-            self._cover.set_from_surface(surface)
-            del surface
-
-            album_name = player.current_track.album.name
-            if player.current_track.year != '':
-                album_name += " (%s)" % player.current_track.year
-            self._title.set_text(player.current_track.title)
-            self._artist.set_text(player.current_track.artist)
-            self._album.set_text(album_name)
-            self._progress.set_value(0.0)
-            self._progress.set_range(0.0, player.current_track.duration * 60)
-            self._total_time_label.set_text(
-                seconds_to_string(player.current_track.duration))
-            self._timelabel.set_text("0:00")
-
-            # Can add a \n in markup
-            # GTK bug => https://bugzilla.gnome.org/show_bug.cgi?id=749965
-            if player.prev_track.id == Type.RADIOS:
-                self._prev_btn.set_tooltip_text(player.prev_track.album_artist)
-            elif player.prev_track.id is not None:
-                prev_artist = escape(player.prev_track.artist)
-                prev_title = escape(player.prev_track.title)
-                self._prev_btn.set_tooltip_markup("<b>%s</b> - %s" %
-                                                  (prev_artist,
-                                                   prev_title))
-            else:
-                self._prev_btn.set_tooltip_text("")
-
-            if player.next_track.id == Type.RADIOS:
-                self._next_btn.set_tooltip_text(player.next_track.album_artist)
-            elif player.next_track.id is not None:
-                next_artist = escape(player.next_track.artist)
-                next_title = escape(player.next_track.title)
-                self._next_btn.set_tooltip_markup("<b>%s</b> - %s" %
-                                                  (next_artist,
-                                                   next_title))
-            else:
-                self._prev_btn.set_tooltip_text("")
-
-            # Do not show next popover non internal tracks as
-            # tags will be readed on the fly
-            if player.next_track.id >= 0:
-                self._next_popover.update()
-                self._next_popover.show()
-            else:
-                self._next_popover.hide()
+        InfosController.on_current_changed(self, player)
+        ProgressController.on_current_changed(self, player)
+        # Do not show next popover non internal tracks as
+        # tags will be readed on the fly
+        if player.next_track.id >= 0:
+            self._next_popover.update()
+            self._next_popover.show()
+        else:
+            self._next_popover.hide()
 
     def _on_key_release_event(self, widget, event):
         """
@@ -251,63 +173,3 @@ class FullScreen(Gtk.Window):
         """
         if event.keyval == Gdk.KEY_Escape:
             self.destroy()
-
-    def _on_prev_btn_clicked(self, widget):
-        """
-            Go to prev track
-            @param widget as Gtk.Button
-        """
-        Lp().player.prev()
-
-    def _on_play_btn_clicked(self, widget):
-        """
-            Play/pause
-            @param widget as Gtk.Button
-        """
-        if Lp().player.is_playing():
-            Lp().player.pause()
-            widget.set_image(self._play_image)
-        else:
-            Lp().player.play()
-            widget.set_image(self._pause_image)
-
-    def _on_next_btn_clicked(self, widget):
-        """
-            Go to next track
-            @param widget as Gtk.Button
-        """
-        Lp().player.next()
-
-    def _on_status_changed(self, obj):
-        """
-            Update buttons and progress bar
-            @param obj as unused
-        """
-        is_playing = Lp().player.is_playing()
-        if Lp().player.current_track.id != Type.RADIOS:
-            self._progress.set_sensitive(is_playing)
-        if is_playing and not self._timeout1:
-            self._timeout1 = GLib.timeout_add(1000, self._update_position)
-            self._change_play_btn_status(self._pause_image, _("Pause"))
-        elif not is_playing and self._timeout1:
-            GLib.source_remove(self._timeout1)
-            self._timeout1 = None
-            self._change_play_btn_status(self._play_image, _("Play"))
-
-    def _on_progress_press_btn(self, scale, data):
-        """
-            On press, mark player as seeking
-            @param unused
-        """
-        self._seeking = True
-
-    def _on_progress_release_btn(self, scale, data):
-        """
-            Callback for scale release button
-            Seek player to scale value
-            @param scale as Gtk.Scale, data as unused
-        """
-        value = scale.get_value()
-        Lp().player.seek(value/60)
-        self._seeking = False
-        self._update_position(value)

@@ -11,6 +11,7 @@ app_PYTHON = \
     codecs.py\
     collectionscanner.py\
     container.py\
+    controller.py\
     database.py\
     database_albums.py\
     database_artists.py\

@@ -134,6 +134,5 @@ class Toolbar(Gtk.HeaderBar):
             @param player as Player
         """
         self._toolbar_playback.on_status_changed(player)
-        self._toolbar_infos.on_status_changed(player)
         self._toolbar_title.on_status_changed(player)
         self._toolbar_end.on_status_changed(player)
