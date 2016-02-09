@@ -189,6 +189,7 @@ class Window(Gtk.ApplicationWindow, Container):
             if self.is_maximized():
                 self.unmaximize()
             # Not working if running in current loop
+            self._main_stack.set_property('height-request', 400)
             GLib.idle_add(self.resize, Mini.SMALL, Mini.SMALL)
         elif self._was_maximized:
             self.maximize()
@@ -219,6 +220,7 @@ class Window(Gtk.ApplicationWindow, Container):
             mini.show()
             self._main_stack.set_visible_child_name('mini')
             self._toolbar.set_show_close_button(False)
+            self._main_stack.set_property('height-request', -1)
         elif mini is not None and not show and self._timeout is None:
             self._main_stack.set_visible_child_name('main')
             self._toolbar.set_show_close_button(True)
@@ -297,7 +299,6 @@ class Window(Gtk.ApplicationWindow, Container):
             self.add(self._main_stack)
         self._main_stack.add_named(self.main_widget(), 'main')
         self._main_stack.set_visible_child_name('main')
-        self._main_stack.set_property('height-request', 400)
 
     def _on_configure_event(self, widget, event):
         """

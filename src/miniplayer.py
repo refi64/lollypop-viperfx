@@ -38,6 +38,12 @@ class MiniPlayer(Gtk.Bin, InfosController):
         self.on_current_changed(Lp().player)
         self.add(builder.get_object('widget'))
 
+    def do_get_preferred_height(self):
+        """
+            Zero height
+        """
+        return (0, 0)
+
     def do_hide(self):
         """
             Remove signal
