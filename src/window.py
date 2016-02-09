@@ -33,7 +33,7 @@ class Window(Gtk.ApplicationWindow, Container):
         self._signal1 = None
         self._signal2 = None
         self._timeout = None
-        self._was_maximised = False
+        self._was_maximized = False
         Gtk.ApplicationWindow.__init__(self,
                                        application=app,
                                        title="Lollypop")
@@ -344,6 +344,9 @@ class Window(Gtk.ApplicationWindow, Container):
             Save paned widget width
             @param widget as unused, data as unused
         """
+        if self._was_maximized and\
+           self._main_stack.get_visible_child_name() == 'mini':
+            Lp().settings.set_boolean('window-maximized', True)
         Lp().settings.set_value('paned-mainlist-width',
                                 GLib.Variant('i',
                                              self._paned_main_list.
