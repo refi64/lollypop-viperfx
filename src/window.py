@@ -33,6 +33,7 @@ class Window(Gtk.ApplicationWindow, Container):
         self._signal1 = None
         self._signal2 = None
         self._timeout = None
+        self._was_maximised = False
         Gtk.ApplicationWindow.__init__(self,
                                        application=app,
                                        title="Lollypop")
@@ -183,13 +184,19 @@ class Window(Gtk.ApplicationWindow, Container):
         """
         if Lp().player.current_track.id is None:
             return
+        was_maximized = self.is_maximized()
         if self._main_stack.get_visible_child_name() == 'main':
-            self.unmaximize()
+            if self.is_maximized():
+                self.unmaximize()
             self.resize(Mini.SMALL, Mini.SMALL)
-            self._show_miniplayer(True)
-        else:
+        elif self._was_maximized:
             self.maximize()
-            self._show_miniplayer(False)
+        else:
+            size_setting = Lp().settings.get_value('window-size')
+            if isinstance(size_setting[0], int) and\
+               isinstance(size_setting[1], int):
+                self.resize(size_setting[0], size_setting[1])
+        self._was_maximized = was_maximized
 
 ############
 # Private  #
@@ -314,8 +321,9 @@ class Window(Gtk.ApplicationWindow, Container):
         """
         self._timeout_configure = None
         size = widget.get_size()
-        Lp().settings.set_value('window-size',
-                                GLib.Variant('ai', [size[0], size[1]]))
+        if size[0] > Mini.LIMIT and size[1] > Mini.LIMIT:
+            Lp().settings.set_value('window-size',
+                                    GLib.Variant('ai', [size[0], size[1]]))
 
         position = widget.get_position()
         Lp().settings.set_value('window-position',
