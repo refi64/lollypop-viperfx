@@ -45,16 +45,16 @@ class Player(BinPlayer, QueuePlayer, UserPlaylistPlayer, RadioPlayer,
             Play previous track
         """
         if self.prev_track.id is not None:
-            self.load(self.prev_track, False)
+            self.load(self.prev_track)
 
     def next(self):
         """
             Play next track
         """
         if self.next_track.id is not None:
-            self.load(self.next_track, False)
+            self.load(self.next_track)
 
-    def load(self, track, notify=True):
+    def load(self, track):
         """
             Stop current track, load track id and play it
             @param track as Track
@@ -66,7 +66,7 @@ class Player(BinPlayer, QueuePlayer, UserPlaylistPlayer, RadioPlayer,
                 Lp().window.pulse(True)
             RadioPlayer.load(self, track)
         else:
-            BinPlayer.load(self, track, notify)
+            BinPlayer.load(self, track)
 
     def play_album(self, album):
         """

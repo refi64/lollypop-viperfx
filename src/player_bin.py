@@ -89,19 +89,19 @@ class BinPlayer(BasePlayer):
             state = Gst.State.NULL
         return state
 
-    def load(self, track, notify=True):
+    def load(self, track):
         """
             Stop current track, load track id and play it
             @param track as Track
-            @param notify as bool
         """
         if self._crossfading and\
            self.current_track.id is not None and\
+           self.is_playing() and\
            self.current_track.id != Type.RADIOS:
             duration = Lp().settings.get_value('mix-duration').get_int32()
-            self._do_crossfade(duration, track, False, notify)
+            self._do_crossfade(duration, track, False)
         else:
-            self._load(track, notify)
+            self._load(track)
 
     def play(self):
         """
@@ -215,17 +215,18 @@ class BinPlayer(BasePlayer):
 #######################
 # PRIVATE             #
 #######################
-    def _load(self, track, notify=True):
+    def _load(self, track):
         """
             Stop current track, load track id and play it
             @param track as Track
         """
+        was_playing = self.is_playing()
         self._playbin.set_state(Gst.State.NULL)
         if self._load_track(track):
-            if notify:
-                self.play()
-            else:
+            if was_playing:
                 self._playbin.set_state(Gst.State.PLAYING)
+            else:
+                self.play()
 
     def _volume_up(self, playbin, duration):
         """
@@ -275,13 +276,12 @@ class BinPlayer(BasePlayer):
                 playbin.set_volume(GstAudio.StreamVolumeFormat.LINEAR,
                                    self._volume)
 
-    def _do_crossfade(self, duration, track=None, next=True, notify=True):
+    def _do_crossfade(self, duration, track=None, next=True):
         """
             Crossfade tracks
             @param duration as int
             @param next as bool
             @param track as Track
-            @param notify as bool
         """
         if self.current_track.id == Type.RADIOS:
             return
@@ -297,17 +297,17 @@ class BinPlayer(BasePlayer):
         finished = self.current_track
         finished_start_time = self._start_time
         if track is not None:
-            self._load(track, notify)
+            self._load(track)
             self._playbin.set_volume(GstAudio.StreamVolumeFormat.LINEAR,
                                      0)
             GLib.idle_add(self._volume_up, self._playbin, duration)
         elif next and self.next_track.id is not None:
-            self._load(self.next_track, notify)
+            self._load(self.next_track)
             self._playbin.set_volume(GstAudio.StreamVolumeFormat.LINEAR,
                                      0)
             GLib.idle_add(self._volume_up, self._playbin, duration)
         elif self.prev_track.id is not None:
-            self._load(self.prev_track, notify)
+            self._load(self.prev_track)
             self._playbin.set_volume(GstAudio.StreamVolumeFormat.LINEAR,
                                      0)
             GLib.idle_add(self._volume_up, self._playbin, duration)
