@@ -81,6 +81,10 @@ Gtk.ListBoxRow .menu-button:hover {
     border-radius: 5px;
 }
 
+.black {
+    background-color: black;
+}
+
 .hovereffect {
     opacity: 0.9;
 }

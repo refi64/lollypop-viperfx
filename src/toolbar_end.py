@@ -29,6 +29,8 @@ class ToolbarEnd(Gtk.Bin):
             @param app as Gtk.Application
         """
         Gtk.Bin.__init__(self)
+        self.connect('show', self._on_show)
+        self.connect('hide', self._on_hide)
         self._pop_next = NextPopover()
         builder = Gtk.Builder()
         builder.add_from_resource('/org/gnome/Lollypop/ToolbarEnd.ui')
@@ -80,18 +82,13 @@ class ToolbarEnd(Gtk.Bin):
             # via Fullscreen class, so check button state
             self._party_btn.set_active(player.is_party())
 
-    def do_realize(self):
-        """
-            Show popover if needed
-        """
-        Gtk.Bin.do_realize(self)
-        self._set_shuffle_icon()
-
     def on_next_changed(self, player):
         """
             Update buttons on current changed
             @param player as Player
         """
+        if not self.is_visible():
+            return
         # Do not show next popover for non internal tracks as
         # tags will be readed on the fly
         if player.next_track.id is not None and\
@@ -129,15 +126,7 @@ class ToolbarEnd(Gtk.Bin):
             else:
                 self._shuffle_btn_image.get_style_context().remove_class(
                                                                     'selected')
-        if shuffle == Shuffle.TRACKS:
-            if Lp().player.next_track.id is not None and\
-               not self._pop_next.is_visible():
-                self._pop_next.set_relative_to(self._grid_next)
-                self._pop_next.update()
-                self._pop_next.show()
-        elif Lp().player.is_playing():
-            self._pop_next.set_relative_to(None)
-            self._pop_next.hide()
+        self.on_next_changed(Lp().player)
 
     def _shuffle_btn_aspect(self, settings, value):
         """
@@ -153,6 +142,7 @@ class ToolbarEnd(Gtk.Bin):
             @param param as GLib.Variant
         """
         self._party_btn.set_active(not self._party_btn.get_active())
+        Lp().window.force_update()
 
     def _on_search_btn_clicked(self, obj, param=None):
         """
@@ -201,3 +191,17 @@ class ToolbarEnd(Gtk.Bin):
         """
         if self._party_btn.get_active() != is_party:
             self._activate_party_button()
+
+    def _on_show(self, widget):
+        """
+            Show popover if needed
+            @param widget as Gtk.Widget
+        """
+        self._set_shuffle_icon()
+
+    def _on_hide(self, widget):
+        """
+            Hide popover
+            @param widget as Gtk.Widget
+        """
+        self._pop_next.hide()

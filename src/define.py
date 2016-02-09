@@ -69,6 +69,13 @@ class Shuffle:
     ALBUMS = 2           # Shuffle by albums on genre
 
 
+class Mini:
+    SMALL = 400
+    MEDIUM = 500
+    LIMIT = 600
+    BIG = 700
+
+
 # Order is important
 class Type:
     NONE = -1

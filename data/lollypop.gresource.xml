@@ -11,6 +11,7 @@
     <file preprocess="xml-stripblanks">RadioWidget.ui</file>
     <file preprocess="xml-stripblanks">RadiosView.ui</file>
     <file preprocess="xml-stripblanks">RadioPopover.ui</file>
+    <file preprocess="xml-stripblanks">MiniPlayer.ui</file>
     <file preprocess="xml-stripblanks">PlaylistView.ui</file>
     <file preprocess="xml-stripblanks">PlaylistEditView.ui</file>
     <file preprocess="xml-stripblanks">PlaylistEditWidget.ui</file>

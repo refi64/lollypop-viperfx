@@ -12,7 +12,7 @@
 
 from gi.repository import Gtk
 
-from lollypop.define import Lp
+from lollypop.define import Lp, Mini
 from lollypop.toolbar_playback import ToolbarPlayback
 from lollypop.toolbar_infos import ToolbarInfos
 from lollypop.toolbar_title import ToolbarTitle
@@ -30,7 +30,7 @@ class Toolbar(Gtk.HeaderBar):
             @param app as Gtk.Application
         """
         Gtk.HeaderBar.__init__(self)
-        self._width = 700
+        self._width = Mini.SMALL
 
         self._toolbar_playback = ToolbarPlayback()
         self._toolbar_playback.show()
@@ -70,21 +70,34 @@ class Toolbar(Gtk.HeaderBar):
             Allow snapping for screen with width > 1400
             @return (int, int)
         """
-        return (700, self._width)
+        return (Mini.SMALL, self._width)
 
-    def set_content_width(self):
+    def set_content_width(self, window_width):
         """
             Calculate infos/title width
+            @param window width as int
         """
-        width = self._toolbar_playback.get_preferred_width()[1] + \
-            self._toolbar_end.get_preferred_width()[1]
+        width = self._toolbar_playback.get_preferred_width()[1]
+        if window_width < Mini.BIG:
+            self._toolbar_end.hide()
+        else:
+            width += self._toolbar_end.get_preferred_width()[1]
+            self._toolbar_end.show()
+        if window_width < Mini.MEDIUM:
+            self._toolbar_infos.hide()
+        else:
+            self._toolbar_infos.show()
         window = self.get_window()
         if window is not None:
             available = window.get_width() - width
             if available > 0:
-                title = available/2
+                if window_width >= Mini.MEDIUM:
+                    title = available/2
+                else:
+                    title = available
                 self._toolbar_title.set_width(title)
-                self._toolbar_infos.set_width((available-title)/2)
+                if window_width >= Mini.MEDIUM:
+                    self._toolbar_infos.set_width((available-title)/2)
             self._width = window.get_width()
 
     def update_position(self, value=None):

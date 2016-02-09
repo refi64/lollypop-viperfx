@@ -13,9 +13,10 @@
 from gi.repository import Gtk, Gio, GLib
 
 from lollypop.container import Container
-from lollypop.define import Lp, NextContext, Shuffle
+from lollypop.define import Lp, NextContext, Shuffle, Mini
 from lollypop.toolbar import Toolbar
 from lollypop.utils import is_unity
+from lollypop.miniplayer import MiniPlayer
 
 
 class Window(Gtk.ApplicationWindow, Container):
@@ -31,6 +32,7 @@ class Window(Gtk.ApplicationWindow, Container):
         self._app = app
         self._signal1 = None
         self._signal2 = None
+        self._timeout = None
         Gtk.ApplicationWindow.__init__(self,
                                        application=app,
                                        title="Lollypop")
@@ -44,6 +46,11 @@ class Window(Gtk.ApplicationWindow, Container):
                                              GLib.VariantType.new('s'))
         player_action.connect('activate', self._on_player_action)
         app.add_action(player_action)
+
+        self._main_stack = Gtk.Stack()
+        self._main_stack.set_transition_duration(1000)
+        self._main_stack.set_transition_type(Gtk.StackTransitionType.CROSSFADE)
+        self._main_stack.show()
 
         self._setup_content()
         self.setup_window()
@@ -161,9 +168,40 @@ class Window(Gtk.ApplicationWindow, Container):
             self._signal2 = self.connect("configure-event",
                                          self._on_configure_event)
 
+    def force_update(self):
+        """
+            Force toolbar update and load miniplayer if needed
+        """
+        size = self.get_size()
+        self._toolbar.set_content_width(size[0])
+        if Lp().player.current_track.id is not None:
+            self._show_miniplayer(size[0] < Mini.LIMIT)
+
 ############
 # Private  #
 ############
+    def _show_miniplayer(self, show):
+        """
+            Show/hide miniplayer
+            @param show as bool
+        """
+        mini = self._main_stack.get_child_by_name('mini')
+        if show:
+            if mini is not None:
+                if self._timeout is not None:
+                    GLib.source_remove(self._timeout)
+            else:
+                mini = MiniPlayer()
+                self._main_stack.add_named(mini, 'mini')
+            self._timeout = None
+            mini.show()
+            self._main_stack.set_visible_child_name('mini')
+            self._toolbar.set_show_close_button(False)
+        elif mini is not None and not show and self._timeout is None:
+            self._main_stack.set_visible_child_name('main')
+            self._toolbar.set_show_close_button(True)
+            self._timeout = GLib.timeout_add(1000, mini.destroy)
+
     def _setup_media_keys(self):
         """
             Setup media player keys
@@ -228,13 +266,16 @@ class Window(Gtk.ApplicationWindow, Container):
             vgrid = Gtk.Grid()
             vgrid.set_orientation(Gtk.Orientation.VERTICAL)
             vgrid.add(self._toolbar)
-            vgrid.add(self.main_widget())
+            vgrid.add(self._main_stack)
             vgrid.show()
             self.add(vgrid)
         else:
             self.set_titlebar(self._toolbar)
             self._toolbar.set_show_close_button(True)
-            self.add(self.main_widget())
+            self.add(self._main_stack)
+        self._main_stack.add_named(self.main_widget(), 'main')
+        self._main_stack.set_visible_child_name('main')
+        self._main_stack.set_property('height-request', 400)
 
     def _on_configure_event(self, widget, event):
         """
@@ -242,7 +283,7 @@ class Window(Gtk.ApplicationWindow, Container):
             @param: widget as Gtk.Window
             @param: event as Gdk.Event
         """
-        self._toolbar.set_content_width()
+        self.force_update()
         if self._timeout_configure:
             GLib.source_remove(self._timeout_configure)
             self._timeout_configure = None

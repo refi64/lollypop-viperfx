@@ -24,6 +24,7 @@ app_PYTHON = \
     inotify.py\
     lastfm.py\
     list.py\
+    miniplayer.py\
     mpd.py\
     mpris.py\
     notification.py\
