@@ -188,8 +188,8 @@ class Window(Gtk.ApplicationWindow, Container):
         if self._main_stack.get_visible_child_name() == 'main':
             if self.is_maximized():
                 self.unmaximize()
-            # Not working if running in current loop
             self._main_stack.set_property('height-request', 400)
+            # Not working if running in current loop
             GLib.idle_add(self.resize, Mini.SMALL, Mini.SMALL)
         elif self._was_maximized:
             self.maximize()
