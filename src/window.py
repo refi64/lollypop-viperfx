@@ -186,9 +186,9 @@ class Window(Gtk.ApplicationWindow, Container):
             return
         was_maximized = self.is_maximized()
         if self._main_stack.get_visible_child_name() == 'main':
+            self.resize(Mini.SMALL, Mini.SMALL)
             if self.is_maximized():
                 self.unmaximize()
-            self.resize(Mini.SMALL, Mini.SMALL)
         elif self._was_maximized:
             self.maximize()
         else:
