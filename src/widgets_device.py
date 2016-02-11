@@ -102,8 +102,11 @@ class DeviceManagerWidget(Gtk.Bin, MtpSync):
         """
         self._uri = uri
         d = Gio.File.new_for_uri(uri)
-        if not d.query_exists(None):
-            d.make_directory_with_parents(None)
+        try:
+            if not d.query_exists(None):
+                d.make_directory_with_parents(None)
+        except:
+            pass
 
     def is_syncing(self):
         """
