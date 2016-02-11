@@ -16,6 +16,16 @@
             <summary>Window position</summary>
             <description>Window position (x and y).</description>
         </key>
+        <key type="ai" name="mini-size">
+            <default>[1,1]</default>
+            <summary>Mini player size</summary>
+            <description>Window size (width and height).</description>
+        </key>
+        <key type="ai" name="mini-position">
+            <default>[]</default>
+            <summary>Mini player position</summary>
+            <description>Window position (x and y).</description>
+        </key>
         <key type="b" name="window-maximized">
             <default>true</default>
             <summary>Window maximized</summary>

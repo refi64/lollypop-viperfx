@@ -147,18 +147,7 @@ class Window(Gtk.ApplicationWindow, Container):
         """
             Setup window position and size, callbacks
         """
-        size_setting = Lp().settings.get_value('window-size')
-        if isinstance(size_setting[0], int) and\
-           isinstance(size_setting[1], int):
-            self.resize(size_setting[0], size_setting[1])
-        else:
-            self.resize(800, 600)
-        position_setting = Lp().settings.get_value('window-position')
-        if len(position_setting) == 2 and\
-           isinstance(position_setting[0], int) and\
-           isinstance(position_setting[1], int):
-            self.move(position_setting[0], position_setting[1])
-
+        self._setup_pos_size('window')
         if Lp().settings.get_value('window-maximized'):
             self.maximize()
 
@@ -188,16 +177,11 @@ class Window(Gtk.ApplicationWindow, Container):
         if self._main_stack.get_visible_child_name() == 'main':
             if self.is_maximized():
                 self.unmaximize()
-            self._main_stack.set_property('height-request', 400)
-            # Not working if running in current loop
-            GLib.idle_add(self.resize, Mini.SMALL, Mini.SMALL)
+            GLib.idle_add(self._setup_pos_size, 'mini')
         elif self._was_maximized:
             self.maximize()
         else:
-            size_setting = Lp().settings.get_value('window-size')
-            if isinstance(size_setting[0], int) and\
-               isinstance(size_setting[1], int):
-                self.resize(size_setting[0], size_setting[1])
+            self._setup_pos_size('window')
         self._was_maximized = was_maximized
 
 ############
@@ -220,11 +204,38 @@ class Window(Gtk.ApplicationWindow, Container):
             mini.show()
             self._main_stack.set_visible_child_name('mini')
             self._toolbar.set_show_close_button(False)
-            self._main_stack.set_property('height-request', -1)
         elif mini is not None and not show and self._timeout is None:
             self._main_stack.set_visible_child_name('main')
             self._toolbar.set_show_close_button(True)
             self._timeout = GLib.timeout_add(1000, mini.destroy)
+
+    def _setup_pos_size(self, name):
+        """
+            Set window pos and size based on name
+            @param name as str
+        """
+        size_setting = Lp().settings.get_value('%s-size' % name)
+        if len(size_setting) == 2 and\
+           isinstance(size_setting[0], int) and\
+           isinstance(size_setting[1], int):
+            self.resize(size_setting[0], size_setting[1])
+        if name == 'window':
+            self._setup_pos(name)
+        else:
+            # We need position to happen after resize as previous
+            # may be refused by window manager => mini player as bottom
+            GLib.idle_add(self._setup_pos, name)
+
+    def _setup_pos(self, name):
+        """
+            Set window position
+            @param name as str
+        """
+        position_setting = Lp().settings.get_value('%s-position' % name)
+        if len(position_setting) == 2 and\
+           isinstance(position_setting[0], int) and\
+           isinstance(position_setting[1], int):
+            self.move(position_setting[0], position_setting[1])
 
     def _setup_media_keys(self):
         """
@@ -312,7 +323,7 @@ class Window(Gtk.ApplicationWindow, Container):
             self._timeout_configure = None
         if not self.is_maximized():
             self._timeout_configure = GLib.timeout_add(
-                                                   500,
+                                                   1000,
                                                    self._save_size_position,
                                                    widget)
 
@@ -323,13 +334,17 @@ class Window(Gtk.ApplicationWindow, Container):
         """
         self._timeout_configure = None
         size = widget.get_size()
-        if size[0] > Mini.LIMIT and size[1] > Mini.LIMIT:
-            Lp().settings.set_value('window-size',
-                                    GLib.Variant('ai', [size[0], size[1]]))
+        if size[0] > Mini.LIMIT:
+            name = 'window'
+        else:
+            name = 'mini'
+        Lp().settings.set_value('%s-size' % name,
+                                GLib.Variant('ai', [size[0], size[1]]))
 
         position = widget.get_position()
-        Lp().settings.set_value('window-position',
-                                GLib.Variant('ai', [position[0], position[1]]))
+        Lp().settings.set_value('%s-position' % name,
+                                GLib.Variant('ai',
+                                             [position[0], position[1]]))
 
     def _on_window_state_event(self, widget, event):
         """
