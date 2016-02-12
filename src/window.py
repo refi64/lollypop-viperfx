@@ -177,7 +177,9 @@ class Window(Gtk.ApplicationWindow, Container):
         if self._main_stack.get_visible_child_name() == 'main':
             if self.is_maximized():
                 self.unmaximize()
-            GLib.idle_add(self._setup_pos_size, 'mini')
+                GLib.timeout_add(100, self._setup_pos_size, 'mini')
+            else:
+                self._setup_pos_size('mini')
         elif self._was_maximized:
             self.maximize()
         else:
