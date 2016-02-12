@@ -165,7 +165,7 @@ class Window(Gtk.ApplicationWindow, Container):
         size = self.get_size()
         self._toolbar.set_content_width(size[0])
         if Lp().player.current_track.id is not None:
-            self._show_miniplayer(size[0] < Mini.LIMIT)
+            self._show_miniplayer(size[0] < Mini.MEDIUM)
 
     def set_mini(self):
         """
@@ -334,7 +334,7 @@ class Window(Gtk.ApplicationWindow, Container):
         """
         self._timeout_configure = None
         size = widget.get_size()
-        if size[0] > Mini.LIMIT:
+        if size[0] > Mini.MEDIUM:
             name = 'window'
         else:
             name = 'mini'

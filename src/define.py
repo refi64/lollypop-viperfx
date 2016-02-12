@@ -72,7 +72,6 @@ class Shuffle:
 class Mini:
     SMALL = 400
     MEDIUM = 500
-    LIMIT = 600
     BIG = 700
 
 
