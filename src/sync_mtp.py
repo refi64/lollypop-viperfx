@@ -74,7 +74,7 @@ class MtpSync:
         while dir_uris:
             uri = dir_uris.pop(0)
             album_name = uri.replace(self._uri+"/tracks/", "")
-            album = escape(album_name, "", False)
+            album = escape(album_name)
             d = Gio.File.new_for_uri(self._uri+"/tracks/"+album)
             infos = d.enumerate_children(
                 'standard::name,standard::type',
@@ -84,7 +84,7 @@ class MtpSync:
                 if info.get_file_type() == Gio.FileType.DIRECTORY:
                     dir_uris.append(uri+info.get_name())
                 else:
-                    track = escape(info.get_name(), "", False)
+                    track = escape(info.get_name())
                     children.append("%s/tracks/%s/%s" % (self._uri,
                                                          album,
                                                          track))
@@ -181,8 +181,8 @@ class MtpSync:
                     self._in_thread = False
                     return
                 track = Track(track_id)
-                album_name = escape(track.album_name.lower(), "", False)
-                artist_name = escape(track.artist.lower(), "", False)
+                album_name = escape(track.album_name.lower())
+                artist_name = escape(track.artist.lower())
                 on_device_album_uri = "%s/tracks/%s_%s" %\
                                       (self._uri,
                                        artist_name,
@@ -203,7 +203,7 @@ class MtpSync:
                                     (dst_art, Gio.FileCopyFlags.OVERWRITE,
                                      None, None))
 
-                track_name = escape(GLib.basename(track.path), "", False)
+                track_name = escape(GLib.basename(track.path))
                 # Check extension, if not mp3, convert
                 ext = os.path.splitext(track.path)[1]
                 if ext != ".mp3" and self._convert:
@@ -265,7 +265,7 @@ class MtpSync:
             if stream is not None:
                 stream.close()
             if m3u is not None:
-                playlist_name = escape(playlist_name, "", False)
+                playlist_name = escape(playlist_name)
                 dst = Gio.File.new_for_uri(self._uri+'/'+playlist_name+'.m3u')
                 self._retry(m3u.move,
                             (dst, Gio.FileCopyFlags.OVERWRITE, None, None))
@@ -288,12 +288,12 @@ class MtpSync:
                 self._in_thread = False
                 return
             track = Track(track_id)
-            album_name = escape(track.album_name.lower(), "", False)
-            artist_name = escape(track.artist.lower(), "", False)
+            album_name = escape(track.album_name.lower())
+            artist_name = escape(track.artist.lower())
             album_uri = "%s/tracks/%s_%s" % (self._uri,
                                              artist_name,
                                              album_name)
-            track_name = escape(GLib.basename(track.path), "", False)
+            track_name = escape(GLib.basename(track.path))
             # Check extension, if not mp3, convert
             ext = os.path.splitext(track.path)[1]
             if ext != ".mp3" and self._convert:
