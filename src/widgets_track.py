@@ -59,19 +59,6 @@ class Row(Gtk.ListBoxRow):
         self.add(self._row_widget)
         self.get_style_context().add_class('trackrow')
 
-    def show_cover(self, show):
-        """
-            Show cover
-            @param show as bool
-        """
-        pass
-
-    def show_menu(self, show):
-        """
-            Show menu
-        """
-        pass
-
     def show_indicator(self, playing, loved):
         """
             Show indicator
@@ -260,10 +247,9 @@ class TrackRow(Row):
         A track row
     """
 
-    def __init__(self, show_menu, show_loved):
+    def __init__(self, show_loved):
         """
             Init row widget and show it
-            @parma show menu as bool
             @param show loved as bool
         """
         Row.__init__(self, show_loved)
@@ -276,17 +262,11 @@ class TrackRow(Row):
         button.get_style_context().add_class('menu-button')
         button.get_style_context().add_class('track-menu-button')
         button.get_image().set_opacity(0.2)
+        button.show()
         self._grid.add(button)
-        # TODO: Remove this test later
-        if show_menu:
-            button.show()
-            self._show_menu = True
-            self._row_widget.connect('button-press-event',
-                                     self._on_button_press)
-            button.connect('clicked', self._on_button_clicked)
-        else:
-            self._show_menu = False
-            button.hide()
+        self._row_widget.connect('button-press-event',
+                                 self._on_button_press)
+        button.connect('clicked', self._on_button_clicked)
 
     def set_object_id(self, object_id):
         """
@@ -357,10 +337,10 @@ class TracksWidget(Gtk.ListBox):
         'activated': (GObject.SignalFlags.RUN_FIRST, None, (int,))
     }
 
-    def __init__(self, show_menu=False, show_loved=False):
+    def __init__(self, show_loved=False):
         """
             Init track widget
-            @param show_menu as bool if menu need to be displayed
+            @param show_loved as bool
         """
         Gtk.ListBox.__init__(self)
         self.connect('destroy', self._on_destroy)
@@ -368,7 +348,6 @@ class TracksWidget(Gtk.ListBox):
                                                     self._update_pos_label)
         self._loved_signal_id = Lp().playlists.connect("playlist-changed",
                                                        self._update_loved_icon)
-        self._show_menu = show_menu
         self._show_loved = show_loved
         self.connect("row-activated", self._on_activate)
         self.get_style_context().add_class('trackswidget')
@@ -385,7 +364,7 @@ class TracksWidget(Gtk.ListBox):
             @param pos as int
             @param show cover as bool
         """
-        track_row = TrackRow(self._show_menu, self._show_loved)
+        track_row = TrackRow(self._show_loved)
 
         track_row.show_indicator(Lp().player.current_track.id == track_id,
                                  utils.is_loved(track_id))
