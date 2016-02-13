@@ -23,6 +23,16 @@ from lollypop.define import Lp, Type
 from lollypop.objects import Track
 
 
+def escape(str):
+    """
+        Escape string
+        @param string as str
+    """
+    return "".join([c for c in str if
+                    c.isalpha() or
+                    c.isdigit() or c == ' ']).rstrip()
+
+
 def debug(str):
     """
         Print debug
