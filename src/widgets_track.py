@@ -53,9 +53,19 @@ class Row(Gtk.ListBoxRow):
         self._num_label.set_ellipsize(Pango.EllipsizeMode.END)
         self._num_label.set_width_chars(4)
         self._num_label.get_style_context().add_class('dim-label')
+        button = Gtk.Button.new_from_icon_name('open-menu-symbolic',
+                                               Gtk.IconSize.MENU)
+        button.set_relief(Gtk.ReliefStyle.NONE)
+        button.get_style_context().add_class('menu-button')
+        button.get_style_context().add_class('track-menu-button')
+        button.get_image().set_opacity(0.2)
+        button.show()
+        self._row_widget.connect('button-press-event', self._on_button_press)
+        button.connect('clicked', self._on_button_clicked)
         self._grid.add(self._num_label)
         self._grid.add(self._title_label)
         self._grid.add(self._duration_label)
+        self._grid.add(button)
         self.add(self._row_widget)
         self.get_style_context().add_class('trackrow')
 
@@ -142,6 +152,54 @@ class Row(Gtk.ListBoxRow):
 #######################
 # PRIVATE             #
 #######################
+    def _on_button_press(self, widget, event):
+        """
+            Popup menu for track relative to track row
+            @param widget as Gtk.Widget
+            @param event as Gdk.Event
+        """
+        if event.button != 1:
+            window = widget.get_window()
+            if window == event.window:
+                self._popup_menu(widget, event.x, event.y)
+            # Happens when pressing button over menu btn
+            else:
+                self._popup_menu(self._menu_btn)
+            return True
+
+    def _on_button_clicked(self, widget):
+        """
+            Popup menu for track relative to button
+            @param widget as Gtk.Button
+        """
+        self._popup_menu(widget)
+
+    def _popup_menu(self, widget, xcoordinate=None, ycoordinate=None):
+        """
+            Popup menu for track
+            @param widget as Gtk.Button
+            @param xcoordinate as int (or None)
+            @param ycoordinate as int (or None)
+        """
+        popover = TrackMenuPopover(self._object_id, TrackMenu(self._object_id))
+        popover.set_relative_to(widget)
+        if xcoordinate is not None and ycoordinate is not None:
+            rect = widget.get_allocation()
+            rect.x = xcoordinate
+            rect.y = ycoordinate
+            rect.width = rect.height = 1
+            popover.set_pointing_to(rect)
+        popover.connect('closed', self._on_closed)
+        self.get_style_context().add_class('track-menu-selected')
+        popover.show()
+
+    def _on_closed(self, widget):
+        """
+            Remove selected style
+            @param widget as Gtk.Popover
+        """
+        self.get_style_context().remove_class('track-menu-selected')
+
     def _on_title_query_tooltip(self, widget, x, y, keyboard, tooltip):
         """
             Show tooltip if needed
@@ -256,17 +314,6 @@ class TrackRow(Row):
         self._grid.insert_column(0)
         self._grid.attach(self._indicator, 0, 0, 1, 1)
         self.show_all()
-        button = Gtk.Button.new_from_icon_name('open-menu-symbolic',
-                                               Gtk.IconSize.MENU)
-        button.set_relief(Gtk.ReliefStyle.NONE)
-        button.get_style_context().add_class('menu-button')
-        button.get_style_context().add_class('track-menu-button')
-        button.get_image().set_opacity(0.2)
-        button.show()
-        self._grid.add(button)
-        self._row_widget.connect('button-press-event',
-                                 self._on_button_press)
-        button.connect('clicked', self._on_button_clicked)
 
     def set_object_id(self, object_id):
         """
@@ -279,53 +326,6 @@ class TrackRow(Row):
 #######################
 # PRIVATE             #
 #######################
-    def _on_button_press(self, widget, event):
-        """
-            Popup menu for track relative to track row
-            @param widget as Gtk.Widget
-            @param event as Gdk.Event
-        """
-        if event.button != 1:
-            window = widget.get_window()
-            if window == event.window:
-                self._popup_menu(widget, event.x, event.y)
-            # Happens when pressing button over menu btn
-            else:
-                self._popup_menu(self._menu_btn)
-            return True
-
-    def _on_button_clicked(self, widget):
-        """
-            Popup menu for track relative to button
-            @param widget as Gtk.Button
-        """
-        self._popup_menu(widget)
-
-    def _popup_menu(self, widget, xcoordinate=None, ycoordinate=None):
-        """
-            Popup menu for track
-            @param widget as Gtk.Button
-            @param xcoordinate as int (or None)
-            @param ycoordinate as int (or None)
-        """
-        popover = TrackMenuPopover(self._object_id, TrackMenu(self._object_id))
-        popover.set_relative_to(widget)
-        if xcoordinate is not None and ycoordinate is not None:
-            rect = widget.get_allocation()
-            rect.x = xcoordinate
-            rect.y = ycoordinate
-            rect.width = rect.height = 1
-            popover.set_pointing_to(rect)
-        popover.connect('closed', self._on_closed)
-        self.get_style_context().add_class('track-menu-selected')
-        popover.show()
-
-    def _on_closed(self, widget):
-        """
-            Remove selected style
-            @param widget as Gtk.Popover
-        """
-        self.get_style_context().remove_class('track-menu-selected')
 
 
 class TracksWidget(Gtk.ListBox):
@@ -365,10 +365,8 @@ class TracksWidget(Gtk.ListBox):
             @param show cover as bool
         """
         track_row = TrackRow(self._show_loved)
-
         track_row.show_indicator(Lp().player.current_track.id == track_id,
                                  utils.is_loved(track_id))
-
         if pos:
             track_row.set_num_label(
                 '''<span foreground="%s"
@@ -394,7 +392,6 @@ class TracksWidget(Gtk.ListBox):
             @param title as str
             @param length as str
             @param pos as int
-            @param show cover as bool
         """
         album_row = AlbumRow(self._show_loved)
         album_row.show_indicator(Lp().player.current_track.id == track_id,

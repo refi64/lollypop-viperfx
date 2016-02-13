@@ -45,8 +45,8 @@ class PlaylistWidget(Gtk.Bin):
         main_widget.show()
 
         loved = playlist_id != Type.LOVED
-        self._tracks_widget1 = TracksWidget(False, loved)
-        self._tracks_widget2 = TracksWidget(False, loved)
+        self._tracks_widget1 = TracksWidget(loved)
+        self._tracks_widget2 = TracksWidget(loved)
         self._tracks_widget1.connect('activated',
                                      self._on_activated)
         self._tracks_widget2.connect('activated',
