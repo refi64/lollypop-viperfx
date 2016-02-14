@@ -83,6 +83,7 @@ class Container:
             Init container
         """
         self._pulse_timeout = None
+        self._list_two_allowed = True
         # Index will start at -VOLUMES
         self._devices = {}
         self._devices_index = Type.DEVICES
@@ -712,7 +713,8 @@ class Container:
         if selected_ids[0] == Type.PLAYLISTS:
             self._list_two.clear()
             self._list_two.set_mode(Gtk.SelectionMode.SINGLE)
-            self._list_two.show()
+            if self._list_two_allowed:
+                self._list_two.show()
             if not self._list_two.will_be_selected():
                 self._update_view_playlists(None)
             self._setup_list_playlists(False)
@@ -740,7 +742,8 @@ class Container:
             self._list_two.clear()
             self._list_two.set_mode(Gtk.SelectionMode.MULTIPLE)
             self._setup_list_artists(self._list_two, selected_ids, False)
-            self._list_two.show()
+            if self._list_two_allowed:
+                self._list_two.show()
             if not self._list_two.will_be_selected():
                 self._update_view_albums(selected_ids, False)
 

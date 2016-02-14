@@ -167,6 +167,11 @@ class Window(Gtk.ApplicationWindow, Container):
         view = self._stack.get_visible_child()
         if view:
             view.update_children_cover_visiblity()
+        if size[0] < WindowSize.BIG:
+            self._list_two_allowed = False
+            self._list_two.hide()
+        else:
+            self._list_two_allowed = True
         if Lp().player.current_track.id is not None:
             self._show_miniplayer(size[0] < WindowSize.MEDIUM)
             self._show_subtoolbar(size[0] < WindowSize.MONSTER and
