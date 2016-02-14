@@ -69,7 +69,7 @@ class Shuffle:
     ALBUMS = 2           # Shuffle by albums on genre
 
 
-class Mini:
+class WindowSize:
     SMALL = 400
     MEDIUM = 500
     BIG = 700

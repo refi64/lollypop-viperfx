@@ -13,7 +13,7 @@
 from gi.repository import Gtk
 
 from lollypop.controller import InfosController
-from lollypop.define import Lp, Mini
+from lollypop.define import Lp, WindowSize
 
 
 class MiniPlayer(Gtk.Bin, InfosController):
@@ -26,7 +26,7 @@ class MiniPlayer(Gtk.Bin, InfosController):
             Init toolbar
         """
         Gtk.Bin.__init__(self)
-        InfosController.__init__(self, Mini.SMALL)
+        InfosController.__init__(self, WindowSize.SMALL)
         builder = Gtk.Builder()
         builder.add_from_resource('/org/gnome/Lollypop/MiniPlayer.ui')
         self._grid = builder.get_object('grid')

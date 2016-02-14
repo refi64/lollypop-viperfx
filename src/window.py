@@ -13,7 +13,7 @@
 from gi.repository import Gtk, Gio, GLib
 
 from lollypop.container import Container
-from lollypop.define import Lp, NextContext, Shuffle, Mini
+from lollypop.define import Lp, NextContext, Shuffle, WindowSize
 from lollypop.toolbar import Toolbar
 from lollypop.utils import is_unity
 from lollypop.miniplayer import MiniPlayer
@@ -165,7 +165,7 @@ class Window(Gtk.ApplicationWindow, Container):
         size = self.get_size()
         self._toolbar.set_content_width(size[0])
         if Lp().player.current_track.id is not None:
-            self._show_miniplayer(size[0] < Mini.MEDIUM)
+            self._show_miniplayer(size[0] < WindowSize.MEDIUM)
 
     def set_mini(self):
         """
@@ -336,7 +336,7 @@ class Window(Gtk.ApplicationWindow, Container):
         """
         self._timeout_configure = None
         size = widget.get_size()
-        if size[0] > Mini.MEDIUM:
+        if size[0] > WindowSize.MEDIUM:
             name = 'window'
         else:
             name = 'mini'
