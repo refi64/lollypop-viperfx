@@ -34,6 +34,7 @@ class ArtistAlbumsView(View):
         View.__init__(self)
         self._artist_ids = artist_ids
         self._genre_ids = genre_ids
+        self._size_group = Gtk.SizeGroup(mode=Gtk.SizeGroupMode.HORIZONTAL)
 
         self._albumbox = Gtk.Grid()
         self._albumbox.set_row_spacing(20)
@@ -68,11 +69,10 @@ class ArtistAlbumsView(View):
             repeat operation until album list is empty
             @param [album ids as int]
         """
-        size_group = Gtk.SizeGroup(mode=Gtk.SizeGroupMode.HORIZONTAL)
         widget = AlbumDetailedWidget(albums.pop(0),
                                      self._genre_ids,
                                      self._artist_ids,
-                                     size_group)
+                                     self._size_group)
         widget.connect('finished', self._on_album_finished, albums)
         widget.show()
         t = Thread(target=widget.populate)
