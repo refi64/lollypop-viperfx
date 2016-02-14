@@ -166,7 +166,7 @@ class Window(Gtk.ApplicationWindow, Container):
         self._toolbar.set_content_width(size[0])
         view = self._stack.get_visible_child()
         if view:
-            view.update_children_cover_visiblity()
+            view.update_responsive_design()
         if size[0] < WindowSize.BIG:
             self._list_two_allowed = False
             self._list_two.hide()

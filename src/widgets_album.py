@@ -64,9 +64,9 @@ class AlbumWidget:
         self._cover.set_from_surface(surface)
         del surface
 
-    def update_cover_visibility(self):
+    def responsive_design(self):
         """
-            Update cover widget visiblity
+            Update the view based on current size
         """
         pass
 
@@ -316,12 +316,12 @@ class AlbumDetailedWidget(Gtk.Bin, AlbumWidget):
                 label.set_text(_("%s h") % hours)
         else:
             label.set_text(_("%s m") % mins)
-        box = Gtk.FlowBox()
-        box.set_selection_mode(Gtk.SelectionMode.NONE)
-        box.set_hexpand(True)
-        box.set_max_children_per_line(2)
-        box.show()
-        builder.get_object('albuminfos').add(box)
+        self._box = Gtk.FlowBox()
+        self._box.set_selection_mode(Gtk.SelectionMode.NONE)
+        self._box.set_hexpand(True)
+        self._box.set_max_children_per_line(2)
+        self._box.show()
+        builder.get_object('albuminfos').add(self._box)
         self._discs = self._album.discs
         self._tracks_left = {}
         self._tracks_right = {}
@@ -334,15 +334,15 @@ class AlbumDetailedWidget(Gtk.Bin, AlbumWidget):
                 label.set_property('halign', Gtk.Align.START)
                 label.get_style_context().add_class('dim-label')
                 label.show()
-                box.insert(label, -1)
+                self._box.insert(label, -1)
                 sep = Gtk.Separator()
                 sep.set_opacity(0.0)
                 sep.show()
-                box.insert(sep, -1)
+                self._box.insert(sep, -1)
             self._tracks_left[index] = TracksWidget(True)
             self._tracks_right[index] = TracksWidget(True)
-            box.insert(self._tracks_left[index], -1)
-            box.insert(self._tracks_right[index], -1)
+            self._box.insert(self._tracks_left[index], -1)
+            self._box.insert(self._tracks_right[index], -1)
             size_group.add_widget(self._tracks_left[index])
             size_group.add_widget(self._tracks_right[index])
 
@@ -359,6 +359,7 @@ class AlbumDetailedWidget(Gtk.Bin, AlbumWidget):
 
         self._cover = builder.get_object('cover')
         self._color = builder.get_object('color')
+        self.responsive_design()
         self.set_cover()
         self.update_state()
 
@@ -374,11 +375,16 @@ class AlbumDetailedWidget(Gtk.Bin, AlbumWidget):
         self._menu.connect('clicked', self._pop_menu)
         self._menu.show()
 
-    def update_cover_visibility(self):
+    def responsive_design(self):
         """
-            Update cover widget visiblity
+            Update the view based on current size
         """
-        if Lp().window.get_view_width() < WindowSize.MEDIUM:
+        width = Lp().window.get_view_width()
+        if width < WindowSize.MONSTER:
+            self._box.set_min_children_per_line(1)
+        else:
+            self._box.set_min_children_per_line(2)
+        if width < WindowSize.MEDIUM:
             self._coverbox.hide()
         else:
             self._coverbox.show()

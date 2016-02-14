@@ -59,11 +59,11 @@ class View(Gtk.Grid):
         """
         GLib.idle_add(self._update_widgets, self._get_children())
 
-    def update_children_cover_visiblity(self):
+    def update_responsive_design(self):
         """
-            Update children cover visbility
+            Update the view based on current size
         """
-        GLib.idle_add(self._update_widgets_cover_visibility,
+        GLib.idle_add(self._update_responsive_design,
                       self._get_children())
 
     def populate(self):
@@ -84,14 +84,14 @@ class View(Gtk.Grid):
             widget.update_playing_indicator()
             GLib.idle_add(self._update_widgets, widgets)
 
-    def _update_widgets_cover_visibility(self, widgets):
+    def _update_responsive_design(self, widgets):
         """
-            Update widgets cover visiblity
+            Update widgets
         """
         if widgets:
             widget = widgets.pop(0)
-            widget.update_cover_visibility()
-            GLib.idle_add(self._update_widgets_cover_visibility, widgets)
+            widget.responsive_design()
+            GLib.idle_add(self._update_responsive_design, widgets)
 
     def _get_children(self):
         """
