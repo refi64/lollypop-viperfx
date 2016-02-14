@@ -307,13 +307,16 @@ class AlbumDetailedWidget(Gtk.Bin, AlbumWidget):
                 label.set_text(_("%s h") % hours)
         else:
             label.set_text(_("%s m") % mins)
-
-        grid = builder.get_object('tracks')
+        box = Gtk.FlowBox()
+        box.set_selection_mode(Gtk.SelectionMode.NONE)
+        box.set_hexpand(True)
+        box.set_max_children_per_line(2)
+        box.show()
+        builder.get_object('albuminfos').add(box)
         self._discs = self._album.discs
         self._tracks_left = {}
         self._tracks_right = {}
         show_label = len(self._discs) > 1
-        i = 0
         for disc in self._discs:
             index = disc.number
             if show_label:
@@ -321,15 +324,16 @@ class AlbumDetailedWidget(Gtk.Bin, AlbumWidget):
                 label.set_text(_("Disc %s") % index)
                 label.set_property('halign', Gtk.Align.START)
                 label.get_style_context().add_class('dim-label')
-                if i:
-                    label.set_property('margin-top', 30)
                 label.show()
-                grid.attach(label, 0, i, 2, 1)
-                i += 1
+                box.insert(label, -1)
+                sep = Gtk.Separator()
+                sep.set_opacity(0.0)
+                sep.show()
+                box.insert(sep, -1)
             self._tracks_left[index] = TracksWidget(True)
             self._tracks_right[index] = TracksWidget(True)
-            grid.attach(self._tracks_left[index], 0, i, 1, 1)
-            grid.attach(self._tracks_right[index], 1, i, 1, 1)
+            box.insert(self._tracks_left[index], -1)
+            box.insert(self._tracks_right[index], -1)
             size_group.add_widget(self._tracks_left[index])
             size_group.add_widget(self._tracks_right[index])
 
@@ -343,7 +347,6 @@ class AlbumDetailedWidget(Gtk.Bin, AlbumWidget):
 
             self._tracks_left[index].show()
             self._tracks_right[index].show()
-            i += 1
 
         self._cover = builder.get_object('cover')
         self.set_cover()
