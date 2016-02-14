@@ -166,7 +166,7 @@ class Window(Gtk.ApplicationWindow, Container):
         self._toolbar.set_content_width(size[0])
         if Lp().player.current_track.id is not None:
             self._show_miniplayer(size[0] < WindowSize.MEDIUM)
-            self._show_subtoolbar(size[0] < WindowSize.BIG and
+            self._show_subtoolbar(size[0] < WindowSize.MONSTER and
                                   size[0] > WindowSize.MEDIUM)
 
     def set_mini(self):
@@ -327,8 +327,8 @@ class Window(Gtk.ApplicationWindow, Container):
         else:
             self.set_titlebar(self._toolbar)
             self._toolbar.set_show_close_button(True)
-        vgrid.add(self._subtoolbar)
         vgrid.add(self._main_stack)
+        vgrid.add(self._subtoolbar)
         self.add(vgrid)
         self._main_stack.add_named(self.main_widget(), 'main')
         self._main_stack.set_visible_child_name('main')

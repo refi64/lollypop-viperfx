@@ -73,6 +73,7 @@ class WindowSize:
     SMALL = 400
     MEDIUM = 500
     BIG = 700
+    MONSTER = 800
 
 
 # Order is important
