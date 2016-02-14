@@ -187,6 +187,13 @@ class Container:
         """
         return self._paned_main_list
 
+    def get_view_width(self):
+        """
+            Return view width
+            @return width as int
+        """
+        return self._stack.get_allocation().width
+
     def stop_all(self):
         """
             Stop current view from processing

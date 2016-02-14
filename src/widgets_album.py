@@ -15,7 +15,7 @@ from gi.repository import Gtk, GLib, GObject, Gdk, Pango
 from cgi import escape
 from gettext import gettext as _
 
-from lollypop.define import Lp, Type, ArtSize, NextContext
+from lollypop.define import Lp, Type, ArtSize, NextContext, WindowSize
 from lollypop.widgets_track import TracksWidget
 from lollypop.objects import Track
 from lollypop.widgets_rating import RatingWidget
@@ -63,6 +63,12 @@ class AlbumWidget:
                             ArtSize.BIG * self._cover.get_scale_factor())
         self._cover.set_from_surface(surface)
         del surface
+
+    def update_cover_visibility(self):
+        """
+            Update cover widget visiblity
+        """
+        pass
 
     def update_state(self):
         """
@@ -285,11 +291,14 @@ class AlbumDetailedWidget(Gtk.Bin, AlbumWidget):
         builder = Gtk.Builder()
         builder.add_from_resource('/org/gnome/Lollypop/%s.ui' %
                                   type(self).__name__)
-        self._color = builder.get_object('color')
+        builder.connect_signals(self)
+
         rating = RatingWidget(self._album)
         rating.show()
-        builder.get_object('coverbox').add(rating)
-        builder.connect_signals(self)
+        self._coverbox = builder.get_object('coverbox')
+        self._coverbox.add(rating)
+        if Lp().window.get_view_width() < WindowSize.MEDIUM:
+            self._coverbox.hide()
 
         self._artist_label = builder.get_object('artist')
         if len(artist_ids) > 1:
@@ -349,6 +358,7 @@ class AlbumDetailedWidget(Gtk.Bin, AlbumWidget):
             self._tracks_right[index].show()
 
         self._cover = builder.get_object('cover')
+        self._color = builder.get_object('color')
         self.set_cover()
         self.update_state()
 
@@ -363,6 +373,15 @@ class AlbumDetailedWidget(Gtk.Bin, AlbumWidget):
         self._menu = builder.get_object('menu')
         self._menu.connect('clicked', self._pop_menu)
         self._menu.show()
+
+    def update_cover_visibility(self):
+        """
+            Update cover widget visiblity
+        """
+        if Lp().window.get_view_width() < WindowSize.MEDIUM:
+            self._coverbox.hide()
+        else:
+            self._coverbox.show()
 
     def update_playing_indicator(self):
         """
