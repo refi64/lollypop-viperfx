@@ -319,7 +319,6 @@ class AlbumDetailedWidget(Gtk.Bin, AlbumWidget):
         self._box = Gtk.FlowBox()
         self._box.set_selection_mode(Gtk.SelectionMode.NONE)
         self._box.set_hexpand(True)
-        self._box.set_max_children_per_line(2)
         self._box.show()
         builder.get_object('albuminfos').add(self._box)
         self._discs = self._album.discs
@@ -382,8 +381,10 @@ class AlbumDetailedWidget(Gtk.Bin, AlbumWidget):
         width = Lp().window.get_view_width()
         if width < WindowSize.MONSTER:
             self._box.set_min_children_per_line(1)
+            self._box.set_max_children_per_line(1)
         else:
             self._box.set_min_children_per_line(2)
+            self._box.set_max_children_per_line(2)
         if width < WindowSize.MEDIUM:
             self._coverbox.hide()
         else:
