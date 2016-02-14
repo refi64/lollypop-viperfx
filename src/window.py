@@ -158,9 +158,9 @@ class Window(Gtk.ApplicationWindow, Container):
             self._signal2 = self.connect("configure-event",
                                          self._on_configure_event)
 
-    def force_update(self):
+    def responsive_design(self):
         """
-            Force toolbar update and load miniplayer if needed
+            Handle responsive design
         """
         size = self.get_size()
         self._toolbar.set_content_width(size[0])
@@ -172,6 +172,8 @@ class Window(Gtk.ApplicationWindow, Container):
             self._list_two.hide()
         else:
             self._list_two_allowed = True
+        if view and hasattr(view, "show_context"):
+            view.show_context(size[0] > WindowSize.MEDIUM)
         if Lp().player.current_track.id is not None:
             self._show_miniplayer(size[0] < WindowSize.MEDIUM)
             self._show_subtoolbar(size[0] < WindowSize.MONSTER and
@@ -347,7 +349,7 @@ class Window(Gtk.ApplicationWindow, Container):
             @param: widget as Gtk.Window
             @param: event as Gdk.Event
         """
-        self.force_update()
+        self.responsive_design()
         if self._timeout_configure:
             GLib.source_remove(self._timeout_configure)
             self._timeout_configure = None

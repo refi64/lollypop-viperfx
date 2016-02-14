@@ -142,7 +142,7 @@ class ToolbarEnd(Gtk.Bin):
             @param param as GLib.Variant
         """
         self._party_btn.set_active(not self._party_btn.get_active())
-        Lp().window.force_update()
+        Lp().window.responsive_design()
 
     def _on_search_btn_clicked(self, obj, param=None):
         """

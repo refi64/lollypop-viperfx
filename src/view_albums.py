@@ -112,6 +112,17 @@ class AlbumsView(View):
         """
         self._add_albums(albums)
 
+    def show_context(self, show):
+        """
+            Hide context widget
+            @param show as bool
+        """
+        if show:
+            if self._context_widget is not None:
+                self._context.show()
+        elif self._context_widget is not None:
+            self._context.hide()
+
 #######################
 # PRIVATE             #
 #######################
