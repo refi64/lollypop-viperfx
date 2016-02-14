@@ -80,18 +80,16 @@ class Toolbar(Gtk.HeaderBar):
         width = self._toolbar_playback.get_preferred_width()[1]
         if window_width < WindowSize.BIG:
             self._toolbar_end.hide()
+            self._toolbar_infos.hide()
         else:
             width += self._toolbar_end.get_preferred_width()[1]
             self._toolbar_end.show()
-        if window_width < WindowSize.MEDIUM:
-            self._toolbar_infos.hide()
-        else:
             self._toolbar_infos.show()
         window = self.get_window()
         if window is not None:
             available = window.get_width() - width
             if available > 0:
-                if window_width >= WindowSize.MEDIUM:
+                if window_width >= WindowSize.BIG:
                     title = available/2
                 else:
                     title = available

@@ -166,6 +166,8 @@ class Window(Gtk.ApplicationWindow, Container):
         self._toolbar.set_content_width(size[0])
         if Lp().player.current_track.id is not None:
             self._show_miniplayer(size[0] < WindowSize.MEDIUM)
+            self._show_subtoolbar(size[0] < WindowSize.BIG and
+                                  size[0] > WindowSize.MEDIUM)
 
     def set_mini(self):
         """
@@ -189,6 +191,23 @@ class Window(Gtk.ApplicationWindow, Container):
 ############
 # Private  #
 ############
+    def _show_subtoolbar(self, show):
+        """
+            Show/hide subtoolbar
+            @param show as bool
+        """
+        is_visible = self._subtoolbar.is_visible()
+        if show and not is_visible:
+            mini = MiniPlayer()
+            mini.show()
+            self._subtoolbar.add(mini)
+            self._subtoolbar.show()
+        elif not show and is_visible:
+            children = self._subtoolbar.get_children()
+            if children:
+                children[0].destroy()
+            self._subtoolbar.hide()
+
     def _show_miniplayer(self, show):
         """
             Show/hide miniplayer
@@ -297,19 +316,20 @@ class Window(Gtk.ApplicationWindow, Container):
             Setup window content
         """
         self.set_icon_name('lollypop')
+        vgrid = Gtk.Grid()
+        vgrid.set_orientation(Gtk.Orientation.VERTICAL)
+        vgrid.show()
         self._toolbar = Toolbar(self.get_application())
         self._toolbar.show()
+        self._subtoolbar = Gtk.Grid()
         if Lp().settings.get_value('disable-csd') or is_unity():
-            vgrid = Gtk.Grid()
-            vgrid.set_orientation(Gtk.Orientation.VERTICAL)
             vgrid.add(self._toolbar)
-            vgrid.add(self._main_stack)
-            vgrid.show()
-            self.add(vgrid)
         else:
             self.set_titlebar(self._toolbar)
             self._toolbar.set_show_close_button(True)
-            self.add(self._main_stack)
+        vgrid.add(self._subtoolbar)
+        vgrid.add(self._main_stack)
+        self.add(vgrid)
         self._main_stack.add_named(self.main_widget(), 'main')
         self._main_stack.set_visible_child_name('main')
 
