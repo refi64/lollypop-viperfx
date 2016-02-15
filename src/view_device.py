@@ -53,7 +53,12 @@ class DeviceView(View):
                 Gio.FileQueryInfoFlags.NONE,
                 None)
             for info in infos:
-                files.append(info.get_name())
+                suburi = uri + info.get_name()+"/Music/lollypop"
+                sub = Gio.File.new_for_uri(suburi)
+                if sub.query_exists(None):
+                    files.insert(0, info.get_name())
+                else:
+                    files.append(info.get_name())
             infos.close(None)
         except Exception as e:
             print("DeviceManagerView::_get_files: %s: %s" % (uri, e))
