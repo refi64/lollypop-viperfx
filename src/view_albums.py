@@ -84,7 +84,7 @@ class AlbumsView(View):
         self._viewport.set_property('valign', Gtk.Align.START)
         self._viewport.set_property('margin', 5)
         self._scrolled.set_property('expand', True)
-        self._scrolled.set_property('height-request', 50)
+        self._scrolled.set_property('height-request', 10)
         self._scrolled.get_vadjustment().connect('value-changed',
                                                  self._on_value_changed)
         self._context = ViewContainer(500)
