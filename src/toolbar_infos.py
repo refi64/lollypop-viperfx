@@ -18,7 +18,7 @@ from lollypop.pop_tunein import TuneinPopover
 from lollypop.pop_externals import ExternalsPopover
 from lollypop.pop_infos import InfosPopover
 from lollypop.pop_menu import PopToolbarMenu
-from lollypop.controller import InfosController
+from lollypop.controllers import InfosController
 from lollypop.define import Lp, Type, ArtSize
 
 

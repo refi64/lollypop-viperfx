@@ -12,7 +12,7 @@
 
 from gi.repository import Gtk
 
-from lollypop.controller import PlaybackController
+from lollypop.controllers import PlaybackController
 
 
 class ToolbarPlayback(Gtk.Bin, PlaybackController):

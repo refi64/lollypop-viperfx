@@ -12,7 +12,7 @@
 
 from gi.repository import Gtk
 
-from lollypop.controller import InfosController
+from lollypop.controllers import InfosController
 from lollypop.define import Lp, WindowSize
 
 

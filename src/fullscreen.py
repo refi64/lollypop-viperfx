@@ -16,8 +16,8 @@ from datetime import datetime
 
 from lollypop.define import Lp, ArtSize, Type
 from lollypop.pop_next import NextPopover
-from lollypop.controller import InfosController, PlaybackController
-from lollypop.controller import ProgressController
+from lollypop.controllers import InfosController, PlaybackController
+from lollypop.controllers import ProgressController
 
 
 class FullScreen(Gtk.Window, InfosController,
