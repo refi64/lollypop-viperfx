@@ -292,7 +292,10 @@ class MtpSync:
                 return
             track = Track(track_id)
             album_name = escape(track.album_name.lower())
-            artist_name = escape(track.artist.lower())
+            if track.album_artist_id == Type.COMPILATIONS:
+                artist_name = escape(track.artist.lower())
+            else:
+                artist_name = escape(track.album_artist.lower())
             album_uri = "%s/tracks/%s_%s" % (self._uri,
                                              artist_name,
                                              album_name)
