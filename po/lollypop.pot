@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-02-13 18:29+0100\n"
+"POT-Creation-Date: 2016-02-16 11:03+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -164,26 +164,30 @@ msgid "Show track number from tags"
 msgstr ""
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:37
-msgid "MPD network interface"
+msgid "UNUSED"
 msgstr ""
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:38
+msgid "MPD network interface"
+msgstr ""
+
+#: ../data/org.gnome.Lollypop.gschema.xml.h:39
 msgid "MPD network port"
 msgstr ""
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:39 ../data/SettingsDialog.ui.h:16
+#: ../data/org.gnome.Lollypop.gschema.xml.h:40 ../data/SettingsDialog.ui.h:16
 msgid "Mix songs"
 msgstr ""
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:40
+#: ../data/org.gnome.Lollypop.gschema.xml.h:41
 msgid "Mix songs only in party mode"
 msgstr ""
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:41
+#: ../data/org.gnome.Lollypop.gschema.xml.h:42
 msgid "Mix duration"
 msgstr ""
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:42
+#: ../data/org.gnome.Lollypop.gschema.xml.h:43
 msgid "Shuffle mode"
 msgstr ""
 
@@ -323,65 +327,65 @@ msgstr ""
 msgid "Your music is updating"
 msgstr ""
 
-#: ../src/container.py:437
+#: ../src/container.py:444
 msgid "Popular albums"
 msgstr ""
 
-#: ../src/container.py:438
+#: ../src/container.py:445
 msgid "Recently added albums"
 msgstr ""
 
-#: ../src/container.py:439
+#: ../src/container.py:446
 msgid "Random albums"
 msgstr ""
 
-#: ../src/container.py:440 ../src/pop_menu.py:368 ../src/pop_menu.py:445
+#: ../src/container.py:447 ../src/pop_menu.py:368 ../src/pop_menu.py:445
 #: ../src/pop_menu.py:464
 msgid "Playlists"
 msgstr ""
 
-#: ../src/container.py:441
+#: ../src/container.py:448
 msgid "Radios"
 msgstr ""
 
-#: ../src/container.py:443
+#: ../src/container.py:450
 msgid "All artists"
 msgstr ""
 
-#: ../src/container.py:445 ../data/DeviceManagerWidget.ui.h:1
+#: ../src/container.py:452 ../data/DeviceManagerWidget.ui.h:1
 msgid "All albums"
 msgstr ""
 
-#: ../src/container.py:492
+#: ../src/container.py:499
 msgid "Compilations"
 msgstr ""
 
-#: ../src/container.py:515
+#: ../src/container.py:522
 msgid "Popular tracks"
 msgstr ""
 
-#: ../src/container.py:516
+#: ../src/container.py:523
 msgid "Recently played"
 msgstr ""
 
-#: ../src/container.py:517
+#: ../src/container.py:524
 msgid "Never played"
 msgstr ""
 
-#: ../src/container.py:518
+#: ../src/container.py:525
 msgid "Random tracks"
 msgstr ""
 
-#: ../src/container.py:519 ../src/playlists.py:54
+#: ../src/container.py:526 ../src/playlists.py:54
 #: ../data/SettingsDialog.ui.h:15
 msgid "Network control"
 msgstr ""
 
-#: ../src/controller.py:82 ../src/controller.py:115
+#: ../src/controllers.py:82 ../src/controllers.py:115
 msgid "Pause"
 msgstr ""
 
-#: ../src/controller.py:84 ../src/controller.py:112 ../src/pop_tunein.py:154
+#: ../src/controllers.py:84 ../src/controllers.py:112 ../src/pop_tunein.py:154
 #: ../data/ToolbarPlayback.ui.h:2
 msgid "Play"
 msgstr ""
@@ -410,14 +414,14 @@ msgid "Wrong Last.fm credentials"
 msgstr ""
 
 #. TRANSLATORS: by refers to the artist,
-#: ../src/notification.py:104
+#: ../src/notification.py:99
 #, python-format
 msgid "by %s"
 msgstr ""
 
 #. TRANSLATORS: by refers to the artist,
 #. from to the album
-#: ../src/notification.py:112
+#: ../src/notification.py:107
 #, python-format
 msgid "by %s, from %s"
 msgstr ""
@@ -539,31 +543,31 @@ msgstr ""
 msgid "The the"
 msgstr ""
 
-#: ../src/view_device.py:77 ../src/view_device.py:143
+#: ../src/view_device.py:82 ../src/view_device.py:148
 #, python-format
 msgid "Synchronize %s"
 msgstr ""
 
-#: ../src/view_device.py:132
+#: ../src/view_device.py:137
 msgid "Cancel synchronization"
 msgstr ""
 
-#: ../src/widgets_album.py:305
+#: ../src/widgets_album.py:314
 #, python-format
 msgid "%s h  %s m"
 msgstr ""
 
-#: ../src/widgets_album.py:307
+#: ../src/widgets_album.py:316
 #, python-format
 msgid "%s h"
 msgstr ""
 
-#: ../src/widgets_album.py:309
+#: ../src/widgets_album.py:318
 #, python-format
 msgid "%s m"
 msgstr ""
 
-#: ../src/widgets_album.py:321
+#: ../src/widgets_album.py:332
 #, python-format
 msgid "Disc %s"
 msgstr ""
@@ -580,17 +584,17 @@ msgstr ""
 msgid "No free space available on device"
 msgstr ""
 
-#: ../src/widgets_playlist.py:259 ../src/widgets_playlist.py:262
+#: ../src/widgets_playlist.py:272 ../src/widgets_playlist.py:275
 msgid "New playlist "
 msgstr ""
 
 #. Need a copy, segfault on EOS 3.1
-#: ../src/widgets_playlist.py:317 ../src/widgets_playlist.py:553
+#: ../src/widgets_playlist.py:330 ../src/widgets_playlist.py:566
 #, python-format
 msgid "Remove \"%s\"?"
 msgstr ""
 
-#: ../src/widgets_playlist.py:598
+#: ../src/widgets_playlist.py:611
 msgid "Remove these tracks?"
 msgstr ""
 
