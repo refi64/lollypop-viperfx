@@ -16,7 +16,7 @@ from threading import Thread
 from cgi import escape
 from gettext import gettext as _
 
-from lollypop.define import Lp, Type
+from lollypop.define import Lp, Type, WindowSize
 from lollypop.cellrendereralbum import CellRendererAlbum
 from lollypop.widgets_track import TracksWidget
 from lollypop.objects import Track
@@ -39,10 +39,10 @@ class PlaylistWidget(Gtk.Bin):
         self._tracks2 = []
         self._stop = False
 
-        main_widget = Gtk.Grid()
-        main_widget.set_property('margin', 10)
-        main_widget.set_property('column-spacing', 10)
-        main_widget.show()
+        self._box = Gtk.FlowBox()
+        self._box.set_selection_mode(Gtk.SelectionMode.NONE)
+        self._box.set_hexpand(True)
+        self._box.show()
 
         loved = playlist_id != Type.LOVED
         self._tracks_widget1 = TracksWidget(loved)
@@ -58,9 +58,22 @@ class PlaylistWidget(Gtk.Bin):
         size_group.add_widget(self._tracks_widget1)
         size_group.add_widget(self._tracks_widget2)
 
-        main_widget.add(self._tracks_widget1)
-        main_widget.add(self._tracks_widget2)
-        self.add(main_widget)
+        self._box.add(self._tracks_widget1)
+        self._box.add(self._tracks_widget2)
+        self.add(self._box)
+        self.responsive_design()
+
+    def responsive_design(self):
+        """
+            Update the view based on current size
+        """
+        width = Lp().window.get_view_width()
+        if width < WindowSize.MONSTER:
+            self._box.set_min_children_per_line(1)
+            self._box.set_max_children_per_line(1)
+        else:
+            self._box.set_min_children_per_line(2)
+            self._box.set_max_children_per_line(2)
 
     def populate_list_left(self, tracks, pos):
         """

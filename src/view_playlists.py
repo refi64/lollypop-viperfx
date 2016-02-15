@@ -83,6 +83,11 @@ class PlaylistView(View):
 #######################
 # PRIVATE             #
 #######################
+    def _get_children(self):
+        """
+            Return view children
+        """
+        return [self._playlist_widget]
 
     def _update(self, manager, playlist_id):
         """
