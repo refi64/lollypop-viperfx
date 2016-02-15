@@ -167,7 +167,7 @@ class Window(Gtk.ApplicationWindow, Container):
         view = self._stack.get_visible_child()
         if view:
             view.update_responsive_design()
-        if view and hasattr(view, "show_context"):
+        if view and hasattr(view, 'show_context'):
             view.show_context(size[0] > WindowSize.MEDIUM)
         if Lp().player.current_track.id is not None:
             self._show_miniplayer(size[0] < WindowSize.MEDIUM)
