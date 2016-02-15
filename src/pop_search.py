@@ -418,15 +418,10 @@ class SearchPopover(Gtk.Popover):
         if Lp().player.is_party():
             if row.is_track:
                 Lp().player.load(Track(row.id))
-            elif Gtk.get_minor_version() > 16:
+            else:
                 popover = AlbumPopoverWidget(row.id, None)
                 popover.set_relative_to(row)
                 popover.show()
-            else:  # Remove Later (3.16)
-                t = Thread(target=self._play_search,
-                           args=(row.id, row.is_track))
-                t.daemon = True
-                t.start()
         else:
             t = Thread(target=self._play_search, args=(row.id, row.is_track))
             t.daemon = True
@@ -438,8 +433,7 @@ class SearchPopover(Gtk.Popover):
             @param widget as Gtk.ListBox
             @param event as Gdk.EventButton
         """
-        if event.button != 1 and\
-           Gtk.get_minor_version() > 16:
+        if event.button != 1:
             rect = widget.get_allocation()
             rect.x = event.x
             rect.y = event.y
