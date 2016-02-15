@@ -11,8 +11,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lollypop\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-02-13 18:29+0100\n"
-"PO-Revision-Date: 2016-02-13 20:14+0000\n"
+"POT-Creation-Date: 2016-02-16 11:03+0100\n"
+"PO-Revision-Date: 2016-02-16 10:55+0000\n"
 "Last-Translator: Maxim Orlov <murmansksity@gmail.com>\n"
 "Language-Team: Russian (http://www.transifex.com/gnumdk/lollypop/language/ru/)\n"
 "MIME-Version: 1.0\n"
@@ -167,26 +167,30 @@ msgid "Show track number from tags"
 msgstr "Показывать номер трека из тегов"
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:37
+msgid "UNUSED"
+msgstr "НЕИСПОЛЬЗУЕМЫЙ"
+
+#: ../data/org.gnome.Lollypop.gschema.xml.h:38
 msgid "MPD network interface"
 msgstr "MPD сетевой интерфейс"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:38
+#: ../data/org.gnome.Lollypop.gschema.xml.h:39
 msgid "MPD network port"
 msgstr "MPD сетевой порт"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:39 ../data/SettingsDialog.ui.h:16
+#: ../data/org.gnome.Lollypop.gschema.xml.h:40 ../data/SettingsDialog.ui.h:16
 msgid "Mix songs"
 msgstr "Плавный переход (кроссфейд)"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:40
+#: ../data/org.gnome.Lollypop.gschema.xml.h:41
 msgid "Mix songs only in party mode"
 msgstr "Сводить песни только в режиме \"вечеринки\""
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:41
+#: ../data/org.gnome.Lollypop.gschema.xml.h:42
 msgid "Mix duration"
 msgstr "Длительность сведе́ния"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:42
+#: ../data/org.gnome.Lollypop.gschema.xml.h:43
 msgid "Shuffle mode"
 msgstr "Режим перемешивания"
 
@@ -332,65 +336,65 @@ msgstr "Lollypop: Вам необходимо установить yelp."
 msgid "Your music is updating"
 msgstr "Ваши композиции обновляются"
 
-#: ../src/container.py:437
+#: ../src/container.py:444
 msgid "Popular albums"
 msgstr "Популярные альбомы"
 
-#: ../src/container.py:438
+#: ../src/container.py:445
 msgid "Recently added albums"
 msgstr "Недавно добавленные альбомы"
 
-#: ../src/container.py:439
+#: ../src/container.py:446
 msgid "Random albums"
 msgstr "Случайные альбомы"
 
-#: ../src/container.py:440 ../src/pop_menu.py:368 ../src/pop_menu.py:445
+#: ../src/container.py:447 ../src/pop_menu.py:368 ../src/pop_menu.py:445
 #: ../src/pop_menu.py:464
 msgid "Playlists"
 msgstr "Плейлисты"
 
-#: ../src/container.py:441
+#: ../src/container.py:448
 msgid "Radios"
 msgstr "Радиостанции"
 
-#: ../src/container.py:443
+#: ../src/container.py:450
 msgid "All artists"
 msgstr "Все исполнители"
 
-#: ../src/container.py:445 ../data/DeviceManagerWidget.ui.h:1
+#: ../src/container.py:452 ../data/DeviceManagerWidget.ui.h:1
 msgid "All albums"
 msgstr "Все альбомы"
 
-#: ../src/container.py:492
+#: ../src/container.py:499
 msgid "Compilations"
 msgstr "Подборки"
 
-#: ../src/container.py:515
+#: ../src/container.py:522
 msgid "Popular tracks"
 msgstr "Популярные композиции"
 
-#: ../src/container.py:516
+#: ../src/container.py:523
 msgid "Recently played"
 msgstr "Недавно прослушанные"
 
-#: ../src/container.py:517
+#: ../src/container.py:524
 msgid "Never played"
 msgstr "Ни разу не проигрывались"
 
-#: ../src/container.py:518
+#: ../src/container.py:525
 msgid "Random tracks"
 msgstr "Случайные композиции"
 
-#: ../src/container.py:519 ../src/playlists.py:54
+#: ../src/container.py:526 ../src/playlists.py:54
 #: ../data/SettingsDialog.ui.h:15
 msgid "Network control"
 msgstr "Сетевое управление"
 
-#: ../src/controller.py:82 ../src/controller.py:115
+#: ../src/controllers.py:82 ../src/controllers.py:115
 msgid "Pause"
 msgstr "Пауза"
 
-#: ../src/controller.py:84 ../src/controller.py:112 ../src/pop_tunein.py:154
+#: ../src/controllers.py:84 ../src/controllers.py:112 ../src/pop_tunein.py:154
 #: ../data/ToolbarPlayback.ui.h:2
 msgid "Play"
 msgstr "Воспроизвести"
@@ -419,14 +423,14 @@ msgid "Wrong Last.fm credentials"
 msgstr "Неверные данные учётной записи Last.fm"
 
 #. TRANSLATORS: by refers to the artist,
-#: ../src/notification.py:104
+#: ../src/notification.py:99
 #, python-format
 msgid "by %s"
 msgstr "от %s"
 
 #. TRANSLATORS: by refers to the artist,
 #. from to the album
-#: ../src/notification.py:112
+#: ../src/notification.py:107
 #, python-format
 msgid "by %s, from %s"
 msgstr "от %s, из %s"
@@ -548,31 +552,31 @@ msgstr "Недавно добавленные"
 msgid "The the"
 msgstr "The the"
 
-#: ../src/view_device.py:77 ../src/view_device.py:143
+#: ../src/view_device.py:82 ../src/view_device.py:148
 #, python-format
 msgid "Synchronize %s"
 msgstr "Синхронизировать %s"
 
-#: ../src/view_device.py:132
+#: ../src/view_device.py:137
 msgid "Cancel synchronization"
 msgstr "Отменить синхронизацию"
 
-#: ../src/widgets_album.py:305
+#: ../src/widgets_album.py:314
 #, python-format
 msgid "%s h  %s m"
 msgstr "%s ч %s мин"
 
-#: ../src/widgets_album.py:307
+#: ../src/widgets_album.py:316
 #, python-format
 msgid "%s h"
 msgstr "%s ч"
 
-#: ../src/widgets_album.py:309
+#: ../src/widgets_album.py:318
 #, python-format
 msgid "%s m"
 msgstr "%s мин"
 
-#: ../src/widgets_album.py:321
+#: ../src/widgets_album.py:332
 #, python-format
 msgid "Disc %s"
 msgstr "Диск %s"
@@ -589,17 +593,17 @@ msgstr "Неизвестная ошибка при синхронизации, �
 msgid "No free space available on device"
 msgstr "На устройстве не осталось свободного места"
 
-#: ../src/widgets_playlist.py:259 ../src/widgets_playlist.py:262
+#: ../src/widgets_playlist.py:272 ../src/widgets_playlist.py:275
 msgid "New playlist "
 msgstr "Новый плейлист"
 
 #. Need a copy, segfault on EOS 3.1
-#: ../src/widgets_playlist.py:317 ../src/widgets_playlist.py:553
+#: ../src/widgets_playlist.py:330 ../src/widgets_playlist.py:566
 #, python-format
 msgid "Remove \"%s\"?"
 msgstr "Удалить \"%s\"?"
 
-#: ../src/widgets_playlist.py:598
+#: ../src/widgets_playlist.py:611
 msgid "Remove these tracks?"
 msgstr "Удалить эти композиции?"
 

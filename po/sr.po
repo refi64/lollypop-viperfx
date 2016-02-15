@@ -8,9 +8,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lollypop\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-02-13 18:29+0100\n"
-"PO-Revision-Date: 2016-02-14 18:42+0000\n"
-"Last-Translator: Марко М. Костић (Marko M. Kostić) <marko.m.kostic@gmail.com>\n"
+"POT-Creation-Date: 2016-02-16 11:03+0100\n"
+"PO-Revision-Date: 2016-02-16 10:17+0000\n"
+"Last-Translator: Cédric Bellegarde <web@adishatz.org>\n"
 "Language-Team: Serbian (http://www.transifex.com/gnumdk/lollypop/language/sr/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -164,26 +164,30 @@ msgid "Show track number from tags"
 msgstr "Као број песме користи број из ознаке песме"
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:37
+msgid "UNUSED"
+msgstr ""
+
+#: ../data/org.gnome.Lollypop.gschema.xml.h:38
 msgid "MPD network interface"
 msgstr "МПД мрежни интерфејс"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:38
+#: ../data/org.gnome.Lollypop.gschema.xml.h:39
 msgid "MPD network port"
 msgstr "МПД мрежни порт"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:39 ../data/SettingsDialog.ui.h:16
+#: ../data/org.gnome.Lollypop.gschema.xml.h:40 ../data/SettingsDialog.ui.h:16
 msgid "Mix songs"
 msgstr "Преклапај песме"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:40
+#: ../data/org.gnome.Lollypop.gschema.xml.h:41
 msgid "Mix songs only in party mode"
 msgstr "Преклапај песме само у режиму за журке"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:41
+#: ../data/org.gnome.Lollypop.gschema.xml.h:42
 msgid "Mix duration"
 msgstr "Трајање преклапања"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:42
+#: ../data/org.gnome.Lollypop.gschema.xml.h:43
 msgid "Shuffle mode"
 msgstr "Режим мешања песама"
 
@@ -326,65 +330,65 @@ msgstr "Лолипоп: потребно је да инсталирате „П�
 msgid "Your music is updating"
 msgstr "Музичка библиотека се ажурира"
 
-#: ../src/container.py:437
+#: ../src/container.py:444
 msgid "Popular albums"
 msgstr "Популарни албуми"
 
-#: ../src/container.py:438
+#: ../src/container.py:445
 msgid "Recently added albums"
 msgstr "Скоро додати албуми"
 
-#: ../src/container.py:439
+#: ../src/container.py:446
 msgid "Random albums"
 msgstr "Насумични албуми"
 
-#: ../src/container.py:440 ../src/pop_menu.py:368 ../src/pop_menu.py:445
+#: ../src/container.py:447 ../src/pop_menu.py:368 ../src/pop_menu.py:445
 #: ../src/pop_menu.py:464
 msgid "Playlists"
 msgstr "Листе песама"
 
-#: ../src/container.py:441
+#: ../src/container.py:448
 msgid "Radios"
 msgstr "Радио станице"
 
-#: ../src/container.py:443
+#: ../src/container.py:450
 msgid "All artists"
 msgstr "Сви извођачи"
 
-#: ../src/container.py:445 ../data/DeviceManagerWidget.ui.h:1
+#: ../src/container.py:452 ../data/DeviceManagerWidget.ui.h:1
 msgid "All albums"
 msgstr "Сви албуми"
 
-#: ../src/container.py:492
+#: ../src/container.py:499
 msgid "Compilations"
 msgstr "Компилације"
 
-#: ../src/container.py:515
+#: ../src/container.py:522
 msgid "Popular tracks"
 msgstr "Популарне песме"
 
-#: ../src/container.py:516
+#: ../src/container.py:523
 msgid "Recently played"
 msgstr "Скоро слушано"
 
-#: ../src/container.py:517
+#: ../src/container.py:524
 msgid "Never played"
 msgstr "Никада слушано"
 
-#: ../src/container.py:518
+#: ../src/container.py:525
 msgid "Random tracks"
 msgstr "Насумичне песме"
 
-#: ../src/container.py:519 ../src/playlists.py:54
+#: ../src/container.py:526 ../src/playlists.py:54
 #: ../data/SettingsDialog.ui.h:15
 msgid "Network control"
 msgstr "Мрежно управљање"
 
-#: ../src/controller.py:82 ../src/controller.py:115
+#: ../src/controllers.py:82 ../src/controllers.py:115
 msgid "Pause"
 msgstr "Паузирај"
 
-#: ../src/controller.py:84 ../src/controller.py:112 ../src/pop_tunein.py:154
+#: ../src/controllers.py:84 ../src/controllers.py:112 ../src/pop_tunein.py:154
 #: ../data/ToolbarPlayback.ui.h:2
 msgid "Play"
 msgstr "Пусти"
@@ -413,14 +417,14 @@ msgid "Wrong Last.fm credentials"
 msgstr "Параметри за пријаву на Last.fm су нетачни"
 
 #. TRANSLATORS: by refers to the artist,
-#: ../src/notification.py:104
+#: ../src/notification.py:99
 #, python-format
 msgid "by %s"
 msgstr "изводи %s"
 
 #. TRANSLATORS: by refers to the artist,
 #. from to the album
-#: ../src/notification.py:112
+#: ../src/notification.py:107
 #, python-format
 msgid "by %s, from %s"
 msgstr "изводи %s, са албума %s"
@@ -542,31 +546,31 @@ msgstr "Скоро додато"
 msgid "The the"
 msgstr "Члан члан"
 
-#: ../src/view_device.py:77 ../src/view_device.py:143
+#: ../src/view_device.py:82 ../src/view_device.py:148
 #, python-format
 msgid "Synchronize %s"
 msgstr "Усклади %s"
 
-#: ../src/view_device.py:132
+#: ../src/view_device.py:137
 msgid "Cancel synchronization"
 msgstr "Откажи усклађивање"
 
-#: ../src/widgets_album.py:305
+#: ../src/widgets_album.py:314
 #, python-format
 msgid "%s h  %s m"
 msgstr "%s ч %s м"
 
-#: ../src/widgets_album.py:307
+#: ../src/widgets_album.py:316
 #, python-format
 msgid "%s h"
 msgstr "%s ч"
 
-#: ../src/widgets_album.py:309
+#: ../src/widgets_album.py:318
 #, python-format
 msgid "%s m"
 msgstr "%s м"
 
-#: ../src/widgets_album.py:321
+#: ../src/widgets_album.py:332
 #, python-format
 msgid "Disc %s"
 msgstr "Диск %s"
@@ -583,17 +587,17 @@ msgstr "Догодила се непозната грешка приликом �
 msgid "No free space available on device"
 msgstr "Нема довољно слободног простора на уређају"
 
-#: ../src/widgets_playlist.py:259 ../src/widgets_playlist.py:262
+#: ../src/widgets_playlist.py:272 ../src/widgets_playlist.py:275
 msgid "New playlist "
 msgstr "Нова листа песама"
 
 #. Need a copy, segfault on EOS 3.1
-#: ../src/widgets_playlist.py:317 ../src/widgets_playlist.py:553
+#: ../src/widgets_playlist.py:330 ../src/widgets_playlist.py:566
 #, python-format
 msgid "Remove \"%s\"?"
 msgstr "Уклонити \"%s\"?"
 
-#: ../src/widgets_playlist.py:598
+#: ../src/widgets_playlist.py:611
 msgid "Remove these tracks?"
 msgstr "Уклонити ове песме?"
 
