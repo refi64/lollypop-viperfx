@@ -13,7 +13,7 @@ src/art_radio.py
 src/codecs.py
 src/collectionscanner.py
 src/container.py
-src/controller.py
+src/controllers.py
 src/database_albums.py
 src/database_artists.py
 src/database_genres.py
