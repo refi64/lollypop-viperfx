@@ -42,6 +42,10 @@ class ToolbarEnd(Gtk.Bin):
 
         self._shuffle_btn = builder.get_object('shuffle-button')
         self._shuffle_btn_image = builder.get_object('shuffle-button-image')
+        shuffleAction = Gio.SimpleAction.new('shuffle-btn', None)
+        shuffleAction.connect('activate', self._activate_shuffle_button)
+        app.add_action(shuffleAction)
+        app.set_accels_for_action("app.shuffle-btn", ["<Control>r"])
         Lp().settings.connect('changed::shuffle', self._shuffle_btn_aspect)
 
         self._party_btn = builder.get_object('party-button')
@@ -147,6 +151,14 @@ class ToolbarEnd(Gtk.Bin):
         """
         self._party_btn.set_active(not self._party_btn.get_active())
         Lp().window.responsive_design()
+
+    def _activate_shuffle_button(self, action=None, param=None):
+        """
+            Activate shuffle button
+            @param action as Gio.SimpleAction
+            @param param as GLib.Variant
+        """
+        self._shuffle_btn.set_active(not self._shuffle_btn.get_active())
 
     def _on_search_btn_clicked(self, obj, param=None):
         """
