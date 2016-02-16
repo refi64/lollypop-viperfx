@@ -98,6 +98,7 @@ class ToolbarEnd(Gtk.Bin):
         """
         if not self.is_visible() or not self._pop_next.should_be_shown():
             if not force:
+                self._pop_next.hide()
                 return
         # Do not show next popover for non internal tracks as
         # tags will be readed on the fly
