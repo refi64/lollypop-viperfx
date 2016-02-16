@@ -2,73 +2,80 @@
 <!-- Generated with glade 3.19.0 -->
 <interface>
   <requires lib="gtk+" version="3.16"/>
-  <object class="GtkOverlay" id="widget">
+  <object class="GtkEventBox" id="widget">
     <property name="visible">True</property>
     <property name="can_focus">False</property>
+    <signal name="button-press-event" handler="_on_button_press" swapped="no"/>
     <child>
-      <object class="GtkFrame" id="frame">
+      <object class="GtkOverlay" id="overlay">
         <property name="visible">True</property>
         <property name="can_focus">False</property>
-        <property name="label_xalign">0</property>
-        <property name="shadow_type">none</property>
         <child>
-          <object class="GtkImage" id="cover">
+          <object class="GtkFrame" id="frame">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
-            <property name="stock">gtk-missing-image</property>
-          </object>
-        </child>
-        <child type="label_item">
-          <placeholder/>
-        </child>
-        <style>
-          <class name="cover-frame"/>
-        </style>
-      </object>
-      <packing>
-        <property name="index">-1</property>
-      </packing>
-    </child>
-    <child type="overlay">
-      <object class="GtkGrid" id="grid">
-        <property name="visible">True</property>
-        <property name="can_focus">False</property>
-        <property name="opacity">0.80000000000000004</property>
-        <property name="valign">end</property>
-        <child>
-          <object class="GtkLabel" id="artist">
-            <property name="visible">True</property>
-            <property name="can_focus">False</property>
-            <property name="hexpand">True</property>
-            <property name="ellipsize">end</property>
-            <attributes>
-              <attribute name="weight" value="bold"/>
-              <attribute name="foreground" value="#ffffffffffff"/>
-            </attributes>
+            <property name="label_xalign">0</property>
+            <property name="shadow_type">none</property>
+            <child>
+              <object class="GtkImage" id="cover">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="stock">gtk-missing-image</property>
+              </object>
+            </child>
+            <child type="label_item">
+              <placeholder/>
+            </child>
+            <style>
+              <class name="cover-frame"/>
+            </style>
           </object>
           <packing>
-            <property name="left_attach">0</property>
-            <property name="top_attach">0</property>
+            <property name="index">-1</property>
           </packing>
         </child>
-        <child>
-          <object class="GtkLabel" id="title">
+        <child type="overlay">
+          <object class="GtkGrid" id="grid">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
-            <property name="hexpand">True</property>
-            <property name="ellipsize">end</property>
-            <attributes>
-              <attribute name="foreground" value="#ffffffffffff"/>
-            </attributes>
+            <property name="opacity">0.80000000000000004</property>
+            <property name="valign">end</property>
+            <child>
+              <object class="GtkLabel" id="artist">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="hexpand">True</property>
+                <property name="ellipsize">end</property>
+                <attributes>
+                  <attribute name="weight" value="bold"/>
+                  <attribute name="foreground" value="#ffffffffffff"/>
+                </attributes>
+              </object>
+              <packing>
+                <property name="left_attach">0</property>
+                <property name="top_attach">0</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkLabel" id="title">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="hexpand">True</property>
+                <property name="ellipsize">end</property>
+                <attributes>
+                  <attribute name="foreground" value="#ffffffffffff"/>
+                </attributes>
+              </object>
+              <packing>
+                <property name="left_attach">0</property>
+                <property name="top_attach">1</property>
+              </packing>
+            </child>
+            <style>
+              <class name="black"/>
+            </style>
           </object>
-          <packing>
-            <property name="left_attach">0</property>
-            <property name="top_attach">1</property>
-          </packing>
         </child>
-        <style>
-          <class name="black"/>
-        </style>
       </object>
     </child>
   </object>

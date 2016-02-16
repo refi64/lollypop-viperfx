@@ -10,9 +10,10 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-from gi.repository import Gtk
+from gi.repository import Gtk, Gdk
 
 from lollypop.controllers import InfosController
+from lollypop.pop_menu import TrackMenuPopover, TrackMenu
 from lollypop.define import Lp, WindowSize
 
 
@@ -29,6 +30,7 @@ class MiniPlayer(Gtk.Bin, InfosController):
         InfosController.__init__(self, WindowSize.SMALL)
         builder = Gtk.Builder()
         builder.add_from_resource('/org/gnome/Lollypop/MiniPlayer.ui')
+        builder.connect_signals(self)
         self._grid = builder.get_object('grid')
         self._title_label = builder.get_object('title')
         self._artist_label = builder.get_object('artist')
@@ -51,3 +53,30 @@ class MiniPlayer(Gtk.Bin, InfosController):
         """
         Gtk.Bin.do_hide(self)
         Lp().player.disconnect(self._signal_id)
+
+#######################
+# PRIVATE             #
+#######################
+    def _on_button_press(self, button, event):
+        """
+            Show track menu
+            @param button as Gtk.Button
+            @param event as Gdk.Event
+        """
+        # Remove this the day X11 is dead!
+        allocation = self.get_allocation()
+        if allocation.height < WindowSize.SMALL - 50:
+            return
+        if Lp().player.current_track.id is not None:
+            if event.button != 1 and Lp().player.current_track.id >= 0:
+                popover = TrackMenuPopover(
+                            Lp().player.current_track.id,
+                            TrackMenu(Lp().player.current_track.id))
+                popover.set_relative_to(self)
+                press_rect = Gdk.Rectangle()
+                press_rect.x = event.x
+                press_rect.y = event.y
+                press_rect.width = press_rect.height = 1
+                popover.set_pointing_to(press_rect)
+                popover.show()
+        return True
