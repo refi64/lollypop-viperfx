@@ -32,6 +32,8 @@ class ToolbarEnd(Gtk.Bin):
         self.connect('show', self._on_show)
         self.connect('hide', self._on_hide)
         self._pop_next = NextPopover()
+        self._queue = None
+        self._search = None
         builder = Gtk.Builder()
         builder.add_from_resource('/org/gnome/Lollypop/ToolbarEnd.ui')
         builder.connect_signals(self)
@@ -54,9 +56,7 @@ class ToolbarEnd(Gtk.Bin):
         app.add_action(party_action)
         app.set_accels_for_action("app.party", ["<Control>p"])
 
-        search_button = builder.get_object('search-button')
-        self._search = SearchPopover(self)
-        self._search.set_relative_to(search_button)
+        self._search_button = builder.get_object('search-button')
         searchAction = Gio.SimpleAction.new('search', None)
         searchAction.connect('activate', self._on_search_btn_clicked)
         app.add_action(searchAction)
@@ -165,6 +165,9 @@ class ToolbarEnd(Gtk.Bin):
             Show search widget on search button clicked
             @param obj as Gtk.Button or Gtk.Action
         """
+        if self._search is None:
+            self._search = SearchPopover(self)
+        self._search.set_relative_to(self._search_button)
         self._search.show()
 
     def _on_queue_btn_clicked(self, button, param=None):
@@ -172,10 +175,10 @@ class ToolbarEnd(Gtk.Bin):
             Show queue widget on queue button clicked
             @param obj as Gtk.Button or Gtk.Action
         """
-        queue = QueueWidget()
-        queue.set_relative_to(self._queue_button)
-        queue.populate()
-        queue.show()
+        if self._queue is None:
+            self._queue = QueueWidget()
+        self._queue.set_relative_to(self._queue_button)
+        self._queue.show()
 
     def _on_party_btn_toggled(self, button):
         """
