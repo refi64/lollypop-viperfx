@@ -167,11 +167,6 @@ class Window(Gtk.ApplicationWindow, Container):
         view = self._stack.get_visible_child()
         if view:
             view.update_responsive_design()
-        if size[0] < WindowSize.BIG:
-            self._list_two_allowed = False
-            self._list_two.hide()
-        else:
-            self._list_two_allowed = True
         if view and hasattr(view, "show_context"):
             view.show_context(size[0] > WindowSize.MEDIUM)
         if Lp().player.current_track.id is not None:
