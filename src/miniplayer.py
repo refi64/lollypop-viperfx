@@ -13,7 +13,7 @@
 from gi.repository import Gtk, Gdk
 
 from lollypop.controllers import InfosController
-from lollypop.pop_menu import TrackMenuPopover, TrackMenu
+from lollypop.pop_menu import TrackMenuPopover, PopToolbarMenu
 from lollypop.define import Lp, WindowSize
 
 
@@ -71,7 +71,7 @@ class MiniPlayer(Gtk.Bin, InfosController):
             if event.button != 1 and Lp().player.current_track.id >= 0:
                 popover = TrackMenuPopover(
                             Lp().player.current_track.id,
-                            TrackMenu(Lp().player.current_track.id))
+                            PopToolbarMenu(Lp().player.current_track.id))
                 popover.set_relative_to(self)
                 press_rect = Gdk.Rectangle()
                 press_rect.x = event.x
