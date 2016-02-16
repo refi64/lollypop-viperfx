@@ -95,12 +95,7 @@ class AlbumsView(View):
         self._paned = Gtk.Paned.new(Gtk.Orientation.VERTICAL)
         self._paned.pack1(self._scrolled, True, False)
         self._paned.pack2(self._context, False, False)
-        height = Lp().settings.get_value('paned-context-height').get_int32()
-        # We set a stupid max value, safe as self._context is shrinked
-        if height == -1:
-            height = Lp().window.get_allocated_height()
-        self._paned.set_position(height)
-        self._paned.connect('notify::position', self._on_position_notify)
+        self._paned.set_position(Lp().window.get_allocated_height())
         self._paned.show()
         self.add(self._paned)
 
@@ -228,16 +223,6 @@ class AlbumsView(View):
         if not self._lazy_queue:
             return
         self._timeout_id = GLib.timeout_add(250, self._lazy_or_not)
-
-    def _on_position_notify(self, paned, param):
-        """
-            Save paned position
-            @param paned as Gtk.Paned
-            @param param as Gtk.Param
-        """
-        Lp().settings.set_value('paned-context-height',
-                                GLib.Variant('i', paned.get_position()))
-        return False
 
     def _on_album_activated(self, flowbox, child):
         """
