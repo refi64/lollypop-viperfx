@@ -42,6 +42,7 @@ class PlaylistWidget(Gtk.Bin):
         self._box = Gtk.FlowBox()
         self._box.set_selection_mode(Gtk.SelectionMode.NONE)
         self._box.set_hexpand(True)
+        self._box.set_property('valign', Gtk.Align.START)
         self._box.show()
 
         loved = playlist_id != Type.LOVED
