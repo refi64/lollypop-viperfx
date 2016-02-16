@@ -63,6 +63,13 @@ class PlaylistWidget(Gtk.Bin):
         self.add(self._box)
         self.responsive_design()
 
+    def get_id(self):
+        """
+            Return playlist widget id
+            @return int
+        """
+        return Type.PLAYLISTS
+
     def responsive_design(self):
         """
             Update the view based on current size
