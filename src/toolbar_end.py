@@ -59,6 +59,10 @@ class ToolbarEnd(Gtk.Bin):
         app.set_accels_for_action("app.search", ["<Control>f"])
 
         self._queue_button = builder.get_object('queue-button')
+        queueAction = Gio.SimpleAction.new('queue', None)
+        queueAction.connect('activate', self._on_queue_btn_clicked)
+        app.add_action(queueAction)
+        app.set_accels_for_action("app.queue", ["<Control>l"])
 
         self._settings_button = builder.get_object('settings-button')
 
@@ -151,10 +155,10 @@ class ToolbarEnd(Gtk.Bin):
         """
         self._search.show()
 
-    def _on_queue_btn_clicked(self, button):
+    def _on_queue_btn_clicked(self, button, param=None):
         """
             Show queue widget on queue button clicked
-            @param button as Gtk.Button
+            @param obj as Gtk.Button or Gtk.Action
         """
         queue = QueueWidget()
         queue.set_relative_to(self._queue_button)
