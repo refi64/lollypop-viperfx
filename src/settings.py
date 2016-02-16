@@ -10,7 +10,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-from gi.repository import Gtk, GLib, Gio, Pango
+from gi.repository import Gtk, Gdk, GLib, Gio, Pango
 try:
     from gi.repository import Secret
 except:
@@ -448,6 +448,15 @@ class SettingsDialog:
                 self._popover.set_modal(False)
                 self._popover.add(self._popover_content)
             self._popover.show_all()
+
+    def _on_key_release_event(self, widget, event):
+        """
+            Destroy window if Esc
+            @param widget as Gtk.Widget
+            @param event as Gdk.event
+        """
+        if event.keyval == Gdk.KEY_Escape:
+            self._settings_dialog.destroy()
 
     def _on_test_btn_clicked(self, button):
         """
