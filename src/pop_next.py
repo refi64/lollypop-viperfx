@@ -25,6 +25,7 @@ class NextPopover(Gtk.Popover):
             Init popover
         """
         Gtk.Popover.__init__(self)
+        self._should_be_shown = True
         self.set_position(Gtk.PositionType.BOTTOM)
         self.connect('map', self._on_map)
         self.connect('unmap', self._on_unmap)
@@ -56,6 +57,12 @@ class NextPopover(Gtk.Popover):
             self._cover.show()
         else:
             self._cover.hide()
+
+    def should_be_shown(self):
+        """
+            Return True if widget should be shown, not already closed by user
+        """
+        return self._should_be_shown
 
 #######################
 # PRIVATE             #
@@ -97,6 +104,7 @@ class NextPopover(Gtk.Popover):
             @param widget as Gtk.Widget
             @param event as Gdk.Event
         """
+        self._should_be_shown = False
         self.hide()
 
     def _on_skip_btn_clicked(self, btn):

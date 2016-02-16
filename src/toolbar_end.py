@@ -82,13 +82,15 @@ class ToolbarEnd(Gtk.Bin):
             # via Fullscreen class, so check button state
             self._party_btn.set_active(player.is_party())
 
-    def on_next_changed(self, player):
+    def on_next_changed(self, player, force=False):
         """
-            Update buttons on current changed
+            Show next popover
             @param player as Player
+            @param force to show the popover
         """
-        if not self.is_visible():
-            return
+        if not self.is_visible() or not self._pop_next.should_be_shown():
+            if not force:
+                return
         # Do not show next popover for non internal tracks as
         # tags will be readed on the fly
         if player.next_track.id is not None and\
@@ -105,6 +107,12 @@ class ToolbarEnd(Gtk.Bin):
 #######################
 # PRIVATE             #
 #######################
+    def _on_btn_enter_notify(self, button, event):
+        """
+            Show next popover
+        """
+        self.on_next_changed(Lp().player, True)
+
     def _set_shuffle_icon(self):
         """
             Set shuffle icon
