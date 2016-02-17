@@ -31,14 +31,17 @@ class UserPlaylistPlayer(BasePlayer):
         self._user_playlist = []
         self._user_playlist_backup = []
 
-    def load_in_playlist(self, track_id):
+    def load_in_playlist(self, track_id, play=True):
         """
             Load track from playlist
             @param track id as int
         """
         for track in self._user_playlist:
             if track.id == track_id:
-                self.load(track)
+                if play:
+                    self.load(track)
+                else:
+                    self._load_track(track)
                 break
 
     def set_user_playlist_id(self, playlist_id):
@@ -55,7 +58,7 @@ class UserPlaylistPlayer(BasePlayer):
         """
         return self._user_playlist_id
 
-    def set_user_playlist_by_id(self, playlist_id):
+    def populate_user_playlist_by_id(self, playlist_id):
         """
             Set user playlist as current playback playlist
             @param array of tracks as [Track]
@@ -72,7 +75,7 @@ class UserPlaylistPlayer(BasePlayer):
         self._user_playlist = tracks
         self._shuffle_playlist()
 
-    def set_user_playlist_by_tracks(self, tracks):
+    def populate_user_playlist_by_tracks(self, tracks):
         """
             Set user playlist as current playback playlist
             @param array of tracks as [Track]

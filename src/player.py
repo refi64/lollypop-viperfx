@@ -156,12 +156,17 @@ class Player(BinPlayer, QueuePlayer, UserPlaylistPlayer, RadioPlayer,
         """
             Restore player state
         """
-        track_id = Lp().settings.get_value('track-id').get_int32()
-        if Lp().settings.get_value('save-state') and track_id > 0:
+        if Lp().settings.get_value('save-state'):
+            track_id = Lp().settings.get_value('track-id').get_int32()
+            playlist_id = Lp().settings.get_value('playlist-id').get_int32()
             path = Lp().tracks.get_path(track_id)
             if path != "":
-                self._load_track(Track(track_id))
-                self.set_albums(track_id, [Type.ALL], [Type.ALL])
+                if playlist_id >= 0:
+                    Lp().player.populate_user_playlist_by_id(playlist_id)
+                    Lp().player.load_in_playlist(track_id, False)
+                else:
+                    self._load_track(Track(track_id))
+                    self.set_albums(track_id, [Type.ALL], [Type.ALL])
                 self.set_next()
                 self.set_prev()
                 self.emit('current-changed')

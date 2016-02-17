@@ -184,10 +184,10 @@ class PlaylistWidget(Gtk.Bin):
         elif self._playlist_id < 0:
             Lp().player.load(Track(track_id))
             Lp().player.set_user_playlist_id(self._playlist_id)
-            Lp().player.set_user_playlist_by_tracks(self._tracks1 +
-                                                    self._tracks2)
+            Lp().player.populate_user_playlist_by_tracks(self._tracks1 +
+                                                         self._tracks2)
         else:
-            Lp().player.set_user_playlist_by_id(self._playlist_id)
+            Lp().player.populate_user_playlist_by_id(self._playlist_id)
             Lp().player.load_in_playlist(track_id)
 
 

@@ -193,12 +193,20 @@ class Application(Gtk.Application):
             return
         if self.settings.get_value('save-state'):
             self.window.save_view_state()
+            # Save current track
             if self.player.current_track.id is None:
                 track_id = -1
             else:
                 track_id = self.player.current_track.id
             self.settings.set_value('track-id', GLib.Variant('i',
                                                              track_id))
+            # Save current playlist
+            if self.player.get_user_playlist_id() is None:
+                playlist_id = -1
+            else:
+                playlist_id = self.player.get_user_playlist_id()
+            self.settings.set_value('playlist-id', GLib.Variant('i',
+                                                                playlist_id))
         self.player.stop_all()
         if self.window:
             self.window.stop_all()

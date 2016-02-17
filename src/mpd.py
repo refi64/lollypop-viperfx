@@ -148,7 +148,7 @@ class MpdHandler(socketserver.StreamRequestHandler):
             @return msg as str
         """
         Lp().playlists.clear(Type.MPD, False)
-        Lp().player.set_user_playlist_by_id(Type.NONE)
+        Lp().player.populate_user_playlist_by_id(Type.NONE)
         GLib.idle_add(Lp().player.stop)
         Lp().player.current_track = Track()
         GLib.idle_add(Lp().player.emit, 'current-changed')
@@ -609,7 +609,7 @@ class MpdHandler(socketserver.StreamRequestHandler):
             tracks = []
             for track_id in tracks_ids:
                 tracks.append(Track(track_id))
-            Lp().player.set_user_playlist_by_id(Type.NONE)
+            Lp().player.populate_user_playlist_by_id(Type.NONE)
             Lp().playlists.add_tracks(Type.MPD, tracks, False)
         return ""
 
@@ -633,7 +633,7 @@ class MpdHandler(socketserver.StreamRequestHandler):
             tracks = []
             for track_id in tracks_ids:
                 tracks.append(Track(track_id))
-            Lp().player.set_user_playlist_by_id(Type.NONE)
+            Lp().player.populate_user_playlist_by_id(Type.NONE)
             Lp().playlists.add_tracks(Type.MPD, tracks, False)
         except:
             pass
@@ -1299,7 +1299,7 @@ class MpdServer(socketserver.ThreadingMixIn, socketserver.TCPServer):
             Init player playlist if needed
         """
         if not Lp().player.is_party():
-            Lp().player.set_user_playlist_by_id(Type.MPD)
+            Lp().player.populate_user_playlist_by_id(Type.MPD)
 
 #######################
 # PRIVATE             #
