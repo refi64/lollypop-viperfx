@@ -168,7 +168,7 @@
         </key>
         <key type="i" name="paned-context-height">
             <default>-1</default>
-            <summary>UNUSED</summary>
+            <summary>INTERNAL</summary>
             <description></description>
         </key>
 		<key type="ai" name="list-one-ids">
