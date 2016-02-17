@@ -73,8 +73,10 @@ class Player(BinPlayer, QueuePlayer, UserPlaylistPlayer, RadioPlayer,
             Play album
             @param album as Album
         """
-        # Empty user playlist
+        # We are not playing a user playlist anymore
         self._user_playlist = []
+        self._user_playlist_id = None
+        self._user
         Lp().player.load(album.tracks[0])
         if not Lp().player.is_party():
             self._albums = [album.id]
