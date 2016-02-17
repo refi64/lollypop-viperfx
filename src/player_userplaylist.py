@@ -108,6 +108,7 @@ class UserPlaylistPlayer(BasePlayer):
            self.current_track in self._user_playlist:
             idx = self._user_playlist.index(self.current_track)
             if idx + 1 >= len(self._user_playlist):
+                self._album_finished = True
                 idx = 0
             else:
                 idx += 1

@@ -61,22 +61,34 @@ class PlaybackMenu(BaseMenu):
         """
             Set playback actions
         """
+        # Reset context action and nothing more
         if Lp().player.context.next != NextContext.NONE:
             continue_play_action = Gio.SimpleAction(
                 name="continue_play_action")
             self._app.add_action(continue_play_action)
             continue_play_action.connect('activate', self._continue_playback)
             self.append(_("Continue playback"), 'app.continue_play_action')
+            return
+        # Playlist action and nothing more
+        if Lp().player.get_user_playlist_id() is not None:
+            stop_album_action = Gio.SimpleAction(name="stop_album_action")
+            self._app.add_action(stop_album_action)
+            stop_album_action.connect('activate', self._stop_album)
+            self.append(_("Stop after this playlist"), 'app.stop_album_action')
+            return
+        # Stop after track
         if Lp().player.context.next != NextContext.STOP_TRACK:
             stop_track_action = Gio.SimpleAction(name="stop_track_action")
             self._app.add_action(stop_track_action)
             stop_track_action.connect('activate', self._stop_track)
             self.append(_("Stop after this track"), 'app.stop_track_action')
+        # Stop after album
         if Lp().player.context.next != NextContext.STOP_ALBUM:
             stop_album_action = Gio.SimpleAction(name="stop_album_action")
             self._app.add_action(stop_album_action)
             stop_album_action.connect('activate', self._stop_album)
             self.append(_("Stop after this album"), 'app.stop_album_action')
+        # Stop after artist
         if Lp().player.context.next != NextContext.STOP_ARTIST:
             stop_artist_action = Gio.SimpleAction(name="stop_artist_action")
             self._app.add_action(stop_artist_action)
@@ -91,6 +103,14 @@ class PlaybackMenu(BaseMenu):
             @param album id as int
         """
         Lp().player.context.next = NextContext.NONE
+
+    def _stop_playlist(self, action, variant):
+        """
+            Tell player to stop after current playlist
+            @param SimpleAction
+            @param GVariant
+        """
+        Lp().player.context.next = NextContext.STOP_PLAYLIST
 
     def _stop_track(self, action, variant):
         """

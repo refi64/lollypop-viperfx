@@ -18,7 +18,7 @@ from lollypop.player_radio import RadioPlayer
 from lollypop.player_externals import ExternalsPlayer
 from lollypop.player_userplaylist import UserPlaylistPlayer
 from lollypop.objects import Track
-from lollypop.define import Lp, Type
+from lollypop.define import Lp, Type, NextContext
 
 
 class Player(BinPlayer, QueuePlayer, UserPlaylistPlayer, RadioPlayer,
@@ -76,7 +76,7 @@ class Player(BinPlayer, QueuePlayer, UserPlaylistPlayer, RadioPlayer,
         # We are not playing a user playlist anymore
         self._user_playlist = []
         self._user_playlist_id = None
-        self._user
+        self.context.next = NextContext.NONE
         Lp().player.load(album.tracks[0])
         if not Lp().player.is_party():
             self._albums = [album.id]
@@ -99,6 +99,7 @@ class Player(BinPlayer, QueuePlayer, UserPlaylistPlayer, RadioPlayer,
         # We are not playing a user playlist anymore
         self._user_playlist = []
         self._user_playlist_id = None
+        self.context.next = NextContext.NONE
         # We are in all artists
         if (genre_ids and genre_ids[0] == Type.ALL) or\
            (artist_ids and artist_ids[0] == Type.ALL):
