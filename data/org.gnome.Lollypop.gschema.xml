@@ -81,11 +81,6 @@
             <summary>Replay gain value in db</summary>
             <description>Between -15 and 15</description>
         </key>
-         <key type="b" name="disable-mpd">
-            <default>true</default>
-            <summary>Disable mpd support</summary>
-            <description></description>
-        </key>
          <key type="b" name="sync-albums">
             <default>false</default>
             <summary>Sync all albums(MTP)</summary>
@@ -189,16 +184,6 @@
         <key type="i" name="playlist-id">
             <default>-1</default>
             <summary>INTERNAL</summary>
-            <description></description>
-        </key>
-        <key type="s" name="mpd-eth">
-            <default>""</default>
-            <summary>MPD network interface</summary>
-            <description></description>
-        </key>
-        <key type="i" name="mpd-port">
-            <default>6600</default>
-            <summary>MPD network port</summary>
             <description></description>
         </key>
         <key type="b" name="mix">
