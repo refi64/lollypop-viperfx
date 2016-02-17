@@ -97,11 +97,6 @@ class AlbumsView(View):
         self._paned = Gtk.Paned.new(Gtk.Orientation.VERTICAL)
         self._paned.pack1(self._scrolled, True, False)
         self._paned.pack2(self._context, False, False)
-        height = Lp().settings.get_value('paned-context-height').get_int32()
-        # We set a stupid max value, safe as self._context is shrinked
-        if height == -1:
-            height = Lp().window.get_allocated_height()
-        self._paned.set_position(height)
         self._paned.connect('notify::position', self._on_position_notify)
         self._paned.show()
         self.add(self._paned)
@@ -127,6 +122,21 @@ class AlbumsView(View):
 #######################
 # PRIVATE             #
 #######################
+    def _init_context_position(self):
+        """
+            Init context position if needed
+            See _on_position_notify()
+        """
+        if self._paned.get_position() == 0:
+            height = Lp().settings.get_value(
+                                            'paned-context-height').get_int32()
+            # We set a stupid max value, safe as self._context is shrinked
+            if height == -1:
+                height = Lp().window.get_allocated_height()
+            else:
+                height = self._paned.get_allocated_height() - height
+            self._paned.set_position(height)
+
     def _get_children(self):
         """
             Return view children
@@ -237,8 +247,11 @@ class AlbumsView(View):
             @param paned as Gtk.Paned
             @param param as Gtk.Param
         """
+        # we want position of context, not of main view,
+        # because we do not get position notify if context hidden
+        position = paned.get_allocated_height() - paned.get_position()
         Lp().settings.set_value('paned-context-height',
-                                GLib.Variant('i', paned.get_position()))
+                                GLib.Variant('i', position))
         return False
 
     def _on_album_activated(self, flowbox, child):
@@ -262,6 +275,7 @@ class AlbumsView(View):
                     Lp().player.set_albums(track.id, None,
                                            self._genre_id)
                 else:
+                    self._init_context_position()
                     self._context_album_id = album_widget.get_id()
                     self._populate_context(self._context_album_id)
                     self._context.show()
