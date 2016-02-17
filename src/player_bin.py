@@ -252,6 +252,9 @@ class BinPlayer(BasePlayer):
                 if self._volume_id is None:
                     self._volume_id = playbin.connect('notify::volume',
                                                       self._on_volume_changed)
+        else:
+            playbin.set_volume(GstAudio.StreamVolumeFormat.LINEAR,
+                               self._volume)
 
     def _volume_down(self, playbin, duration):
         """
@@ -275,6 +278,9 @@ class BinPlayer(BasePlayer):
                 playbin.set_state(Gst.State.NULL)
                 playbin.set_volume(GstAudio.StreamVolumeFormat.LINEAR,
                                    self._volume)
+        else:
+            playbin.set_volume(GstAudio.StreamVolumeFormat.LINEAR,
+                               self._volume)
 
     def _do_crossfade(self, duration, track=None, next=True):
         """
