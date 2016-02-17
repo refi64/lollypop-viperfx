@@ -21,7 +21,6 @@ from gettext import gettext as _
 from threading import Thread
 
 from lollypop.define import Lp, Type, SecretSchema, SecretAttributes, ArtSize
-from lollypop.mpd import MpdServerDaemon
 
 
 class Settings(Gio.Settings):
@@ -100,9 +99,6 @@ class SettingsDialog:
 
         switch_autoplay = builder.get_object('switch_autoplay')
         switch_autoplay.set_state(Lp().settings.get_value('auto-play'))
-
-        switch_mpd = builder.get_object('switch_mpd')
-        switch_mpd.set_state(not Lp().settings.get_value('disable-mpd'))
 
         switch_mix = builder.get_object('switch_mix')
         switch_mix.set_state(Lp().settings.get_value('mix'))
@@ -299,21 +295,6 @@ class SettingsDialog:
         Lp().settings.set_value('auto-play',
                                 GLib.Variant('b', state))
         Lp().window.update_view()
-
-    def _update_mpd_setting(self, widget, state):
-        """
-            Update mpd setting
-            @param widget as unused, state as widget state
-        """
-        Lp().settings.set_value('disable-mpd',
-                                GLib.Variant('b', not state))
-        if Lp().mpd is None:
-            Lp().mpd = MpdServerDaemon(
-                               Lp().settings.get_value('mpd-eth').get_string(),
-                               Lp().settings.get_value('mpd-port').get_int32())
-        else:
-            Lp().mpd.quit()
-            Lp().mpd = None
 
     def _update_mix_setting(self, widget, state):
         """

@@ -52,7 +52,6 @@ from lollypop.playlists import Playlists
 from lollypop.radios import Radios
 from lollypop.collectionscanner import CollectionScanner
 from lollypop.fullscreen import FullScreen
-from lollypop.mpd import MpdServerDaemon
 
 
 class Application(Gtk.Application):
@@ -74,7 +73,6 @@ class Application(Gtk.Application):
         self.cursors = {}
         self.window = None
         self.notify = None
-        self.mpd = None
         self.lastfm = None
         self.debug = False
         self._externals_count = 0
@@ -136,10 +134,6 @@ class Application(Gtk.Application):
         self.art = Art()
         if not self.settings.get_value('disable-mpris'):
             MPRIS(self)
-        if not self.settings.get_value('disable-mpd'):
-            self.mpd = MpdServerDaemon(
-                               self.settings.get_value('mpd-eth').get_string(),
-                               self.settings.get_value('mpd-port').get_int32())
         if not self.settings.get_value('disable-notifications'):
             self.notify = NotificationManager()
 
@@ -216,8 +210,6 @@ class Application(Gtk.Application):
         """
             Quit lollypop
         """
-        if self.mpd is not None:
-            self.mpd.quit()
         if self.scanner.is_locked():
             self.scanner.stop()
             GLib.idle_add(self.quit)

@@ -16,7 +16,6 @@ app_PYTHON = \
     database_albums.py\
     database_artists.py\
     database_genres.py\
-    database_mpd.py\
     database_tracks.py\
     database_upgrade.py\
     define.py\
@@ -25,7 +24,6 @@ app_PYTHON = \
     lastfm.py\
     list.py\
     miniplayer.py\
-    mpd.py\
     mpris.py\
     notification.py\
     player_base.py\
