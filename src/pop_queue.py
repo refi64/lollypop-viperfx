@@ -120,6 +120,8 @@ class QueueWidget(Gtk.Popover):
             Connect signals
             @param widget as Gtk.Widget
         """
+        self._model.clear()
+        self.populate()
         self._signal_id1 = Lp().player.connect('current-changed',
                                                self._on_current_changed)
         self._signal_id2 = self._model.connect('row-deleted',
@@ -136,7 +138,6 @@ class QueueWidget(Gtk.Popover):
         if self._signal_id2:
             self._model.disconnect(self._signal_id2)
             self._signal_id2 = None
-        GLib.idle_add(self.destroy)
 
     def _on_keyboard_event(self, widget, event):
         """

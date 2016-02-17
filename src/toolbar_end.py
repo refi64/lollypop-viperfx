@@ -32,6 +32,8 @@ class ToolbarEnd(Gtk.Bin):
         self.connect('show', self._on_show)
         self.connect('hide', self._on_hide)
         self._pop_next = NextPopover()
+        self._queue = None
+        self._search = None
         builder = Gtk.Builder()
         builder.add_from_resource('/org/gnome/Lollypop/ToolbarEnd.ui')
         builder.connect_signals(self)
@@ -42,6 +44,10 @@ class ToolbarEnd(Gtk.Bin):
 
         self._shuffle_btn = builder.get_object('shuffle-button')
         self._shuffle_btn_image = builder.get_object('shuffle-button-image')
+        shuffleAction = Gio.SimpleAction.new('shuffle-btn', None)
+        shuffleAction.connect('activate', self._activate_shuffle_button)
+        app.add_action(shuffleAction)
+        app.set_accels_for_action("app.shuffle-btn", ["<Control>r"])
         Lp().settings.connect('changed::shuffle', self._shuffle_btn_aspect)
 
         self._party_btn = builder.get_object('party-button')
@@ -50,15 +56,17 @@ class ToolbarEnd(Gtk.Bin):
         app.add_action(party_action)
         app.set_accels_for_action("app.party", ["<Control>p"])
 
-        search_button = builder.get_object('search-button')
-        self._search = SearchPopover(self)
-        self._search.set_relative_to(search_button)
+        self._search_button = builder.get_object('search-button')
         searchAction = Gio.SimpleAction.new('search', None)
         searchAction.connect('activate', self._on_search_btn_clicked)
         app.add_action(searchAction)
         app.set_accels_for_action("app.search", ["<Control>f"])
 
         self._queue_button = builder.get_object('queue-button')
+        queueAction = Gio.SimpleAction.new('queue', None)
+        queueAction.connect('activate', self._on_queue_btn_clicked)
+        app.add_action(queueAction)
+        app.set_accels_for_action("app.queue", ["<Control>l"])
 
         self._settings_button = builder.get_object('settings-button')
 
@@ -152,22 +160,33 @@ class ToolbarEnd(Gtk.Bin):
         self._party_btn.set_active(not self._party_btn.get_active())
         Lp().window.responsive_design()
 
+    def _activate_shuffle_button(self, action=None, param=None):
+        """
+            Activate shuffle button
+            @param action as Gio.SimpleAction
+            @param param as GLib.Variant
+        """
+        self._shuffle_btn.set_active(not self._shuffle_btn.get_active())
+
     def _on_search_btn_clicked(self, obj, param=None):
         """
             Show search widget on search button clicked
             @param obj as Gtk.Button or Gtk.Action
         """
+        if self._search is None:
+            self._search = SearchPopover(self)
+        self._search.set_relative_to(self._search_button)
         self._search.show()
 
-    def _on_queue_btn_clicked(self, button):
+    def _on_queue_btn_clicked(self, button, param=None):
         """
             Show queue widget on queue button clicked
-            @param button as Gtk.Button
+            @param obj as Gtk.Button or Gtk.Action
         """
-        queue = QueueWidget()
-        queue.set_relative_to(self._queue_button)
-        queue.populate()
-        queue.show()
+        if self._queue is None:
+            self._queue = QueueWidget()
+        self._queue.set_relative_to(self._queue_button)
+        self._queue.show()
 
     def _on_party_btn_toggled(self, button):
         """
