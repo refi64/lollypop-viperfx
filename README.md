@@ -42,6 +42,8 @@ It provides:
 - python-pylast >= 1.0
 
 ##Building from git
+**Ubuntu 14.04/15.04 are not supported!**
+
 ```
 $ git clone https://github.com/gnumdk/lollypop.git
 $ cd lollypop
