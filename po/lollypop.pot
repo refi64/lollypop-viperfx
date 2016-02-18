@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-02-18 18:11+0100\n"
+"POT-Creation-Date: 2016-02-18 18:15+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -43,135 +43,139 @@ msgid "Mini player position"
 msgstr ""
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:7
-msgid "Window maximized"
+msgid "Repeat by default"
 msgstr ""
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:8
-msgid "Window maximized state."
+msgid "Window maximized"
 msgstr ""
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:9
-msgid "Enabled genres in party mode"
+msgid "Window maximized state."
 msgstr ""
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:10
-msgid "Ids for genres."
+msgid "Enabled genres in party mode"
 msgstr ""
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:11
-msgid "Music paths"
+msgid "Ids for genres."
 msgstr ""
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:12
-msgid "When empty, use XDG_MUSIC_DIR"
+msgid "Music paths"
 msgstr ""
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:13
-msgid "Last.fm login"
+msgid "When empty, use XDG_MUSIC_DIR"
 msgstr ""
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:14
-msgid "Favorite tag editor"
+msgid "Last.fm login"
 msgstr ""
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:15
-msgid "INTERNAL"
+msgid "Favorite tag editor"
 msgstr ""
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:16
-msgid "Favorite cover file"
+msgid "INTERNAL"
 msgstr ""
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:17
-msgid "Restart needed"
+msgid "Favorite cover file"
 msgstr ""
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:18
-msgid "Database version"
+msgid "Restart needed"
 msgstr ""
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:19
+msgid "Database version"
+msgstr ""
+
+#: ../data/org.gnome.Lollypop.gschema.xml.h:20
 msgid ""
 "Reset this value will reset the database, popular albums will be restored"
 msgstr ""
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:20 ../data/SettingsDialog.ui.h:7
+#: ../data/org.gnome.Lollypop.gschema.xml.h:21 ../data/SettingsDialog.ui.h:7
 msgid "Albums cover size"
 msgstr ""
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:21
+#: ../data/org.gnome.Lollypop.gschema.xml.h:22
 msgid "Replay gain value in db"
 msgstr ""
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:22
+#: ../data/org.gnome.Lollypop.gschema.xml.h:23
 msgid "Between -15 and 15"
 msgstr ""
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:23
+#: ../data/org.gnome.Lollypop.gschema.xml.h:24
 msgid "Sync all albums(MTP)"
 msgstr ""
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:24
+#: ../data/org.gnome.Lollypop.gschema.xml.h:25
 msgid "Convert to MP3(MTP)"
 msgstr ""
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:25 ../data/SettingsDialog.ui.h:10
+#: ../data/org.gnome.Lollypop.gschema.xml.h:26 ../data/SettingsDialog.ui.h:10
 msgid "Auto update music"
 msgstr ""
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:26
+#: ../data/org.gnome.Lollypop.gschema.xml.h:27
 msgid "Show genres list"
 msgstr ""
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:27
+#: ../data/org.gnome.Lollypop.gschema.xml.h:28
 msgid "Use dark gtk theme"
 msgstr ""
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:28
+#: ../data/org.gnome.Lollypop.gschema.xml.h:29
 msgid "Disable the use client side window decorations (headerbar)"
 msgstr ""
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:29 ../data/SettingsDialog.ui.h:6
+#: ../data/org.gnome.Lollypop.gschema.xml.h:30 ../data/SettingsDialog.ui.h:6
 msgid "Show compilations in albums view"
 msgstr ""
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:30 ../data/SettingsDialog.ui.h:12
+#: ../data/org.gnome.Lollypop.gschema.xml.h:31 ../data/SettingsDialog.ui.h:12
 msgid "Continue playback when closed"
 msgstr ""
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:31
+#: ../data/org.gnome.Lollypop.gschema.xml.h:32
 msgid "Restore previous state"
 msgstr ""
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:32
+#: ../data/org.gnome.Lollypop.gschema.xml.h:33
 msgid "Auto play albums on click"
 msgstr ""
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:33
+#: ../data/org.gnome.Lollypop.gschema.xml.h:34
 msgid "Disable MPRIS"
 msgstr ""
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:34
+#: ../data/org.gnome.Lollypop.gschema.xml.h:35
 msgid "Disable notifications"
 msgstr ""
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:35
+#: ../data/org.gnome.Lollypop.gschema.xml.h:36
 msgid "Show track number from tags"
 msgstr ""
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:36 ../data/SettingsDialog.ui.h:14
+#: ../data/org.gnome.Lollypop.gschema.xml.h:37 ../data/SettingsDialog.ui.h:14
 msgid "Mix songs"
 msgstr ""
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:37
+#: ../data/org.gnome.Lollypop.gschema.xml.h:38
 msgid "Mix songs only in party mode"
 msgstr ""
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:38
+#: ../data/org.gnome.Lollypop.gschema.xml.h:39
 msgid "Mix duration"
 msgstr ""
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:39
+#: ../data/org.gnome.Lollypop.gschema.xml.h:40
 msgid "Shuffle mode"
 msgstr ""
 
@@ -230,7 +234,7 @@ msgstr ""
 msgid "Queue"
 msgstr ""
 
-#: ../data/lollypop.appdata.xml.in.h:10 ../data/SettingsDialog.ui.h:20
+#: ../data/lollypop.appdata.xml.in.h:10 ../data/SettingsDialog.ui.h:21
 #: ../data/ToolbarEnd.ui.h:5
 msgid "Party mode"
 msgstr ""
@@ -774,42 +778,46 @@ msgid "Play albums on click"
 msgstr ""
 
 #: ../data/SettingsDialog.ui.h:15
-msgid "Configure lollypop behaviour"
+msgid "Do not repeat  by default"
 msgstr ""
 
 #: ../data/SettingsDialog.ui.h:16
-msgid "Behaviour"
+msgid "Configure lollypop behaviour"
 msgstr ""
 
 #: ../data/SettingsDialog.ui.h:17
-msgid "Select music folders"
+msgid "Behaviour"
 msgstr ""
 
 #: ../data/SettingsDialog.ui.h:18
-msgid "Music"
+msgid "Select music folders"
 msgstr ""
 
 #: ../data/SettingsDialog.ui.h:19
+msgid "Music"
+msgstr ""
+
+#: ../data/SettingsDialog.ui.h:20
 msgid "Select what will be available in party mode"
 msgstr ""
 
-#: ../data/SettingsDialog.ui.h:21
+#: ../data/SettingsDialog.ui.h:22
 msgid "Login:"
 msgstr ""
 
-#: ../data/SettingsDialog.ui.h:22
+#: ../data/SettingsDialog.ui.h:23
 msgid "Password:"
 msgstr ""
 
-#: ../data/SettingsDialog.ui.h:23
+#: ../data/SettingsDialog.ui.h:24
 msgid "Connect"
 msgstr ""
 
-#: ../data/SettingsDialog.ui.h:24
+#: ../data/SettingsDialog.ui.h:25
 msgid "You need to install pylast and gi secret"
 msgstr ""
 
-#: ../data/SettingsDialog.ui.h:25
+#: ../data/SettingsDialog.ui.h:26
 msgid "Configure Last.fm credentials"
 msgstr ""
 

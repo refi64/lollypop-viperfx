@@ -26,6 +26,11 @@
             <summary>Mini player position</summary>
             <description>Window position (x and y).</description>
         </key>
+        <key type="b" name="repeat">
+            <default>true</default>
+            <summary>Repeat by default</summary>
+            <description></description>
+        </key>
         <key type="b" name="window-maximized">
             <default>true</default>
             <summary>Window maximized</summary>
