@@ -327,7 +327,6 @@ class BinPlayer(BasePlayer):
         """
         if self.context.next != NextContext.NONE:
             stop = False
-            print(self.context.next, self._finished)
             # Stop if needed
             if self.context.next == NextContext.STOP_TRACK:
                 stop = True
