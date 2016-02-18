@@ -113,6 +113,9 @@ class SettingsDialog:
         switch_compilations.set_state(
             Lp().settings.get_value('show-compilations'))
 
+        switch_repeat = builder.get_object('switch_repeat')
+        switch_repeat.set_state(not Lp().settings.get_value('repeat'))
+
         scale_coversize = builder.get_object('scale_coversize')
         scale_coversize.set_range(100, 300)
         scale_coversize.set_value(
@@ -337,6 +340,14 @@ class SettingsDialog:
         Lp().settings.set_value('show-compilations',
                                 GLib.Variant('b', state))
         Lp().window.update_view()
+
+    def _update_repeat_setting(self, widget, state):
+        """
+            Update repeat setting
+            @param widget as unused, state as widget state
+        """
+        Lp().settings.set_value('repeat',
+                                GLib.Variant('b', not state))
 
     def _update_lastfm_settings(self, sync=False):
         """
