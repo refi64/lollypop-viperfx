@@ -65,6 +65,8 @@ class UserPlaylistPlayer(BasePlayer):
             @return track id as Track
             @thread safe
         """
+        if not Lp().settings.get_value('repeat'):
+            self.context.next = NextContext.STOP_ALL
         tracks = []
         self._user_playlist_id = playlist_id
         for track_id in Lp().playlists.get_tracks_ids(playlist_id):
@@ -81,6 +83,8 @@ class UserPlaylistPlayer(BasePlayer):
             @param array of tracks as [Track]
             @param track id as int
         """
+        if not Lp().settings.get_value('repeat'):
+            self.context.next = NextContext.STOP_ALL
         if Lp().player.is_party():
             Lp().player.set_party(False)
         self._user_playlist = []
