@@ -458,24 +458,17 @@ class BinPlayer(BasePlayer):
 
     def _on_bus_eos(self, bus, message):
         """
-            On end of stream, stop playing if user ask for,
+            On end of stream, stop playback
             go next otherwise
         """
         debug("Player::_on_bus_eos(): %s" % self.current_track.uri)
-        self._finished = NextContext.NONE
-        # We receive end of stream because we do not want to play
-        # Check to be sure
-        if self.context.next not in [NextContext.NONE,
-                                     NextContext.START_NEW_ALBUM]:
+        if self._playbin.get_bus() == bus:
             self.stop()
+            self._finished = NextContext.NONE
             self.context.next = NextContext.NONE
             if self.next_track.id is not None:
                 self._load_track(self.next_track)
             self.emit('current-changed')
-        # So, we are end of stream can happen in mix,
-        # otherwise force next
-        elif not Lp().settings.get_value('mix'):
-            self.next()
 
     def _on_stream_about_to_finish(self, playbin):
         """
