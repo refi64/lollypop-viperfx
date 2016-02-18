@@ -38,7 +38,7 @@ class NextContext:
     NONE = 0             # Continue playback
     STOP_TRACK = 1       # Stop after current track
     STOP_ALBUM = 2       # Stop after current album
-    STOP_ARTIST = 3      # Stop after current artist
+    STOP_ALL = 3         # Stop
     START_NEW_ALBUM = 4  # Start a new album
 
 

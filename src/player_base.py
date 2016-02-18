@@ -12,7 +12,7 @@
 
 from gi.repository import GObject
 
-from lollypop.define import PlayContext, Lp
+from lollypop.define import PlayContext, Lp, NextContext
 from lollypop.objects import Track
 
 
@@ -41,8 +41,7 @@ class BasePlayer(GObject.GObject):
             GObject.GObject.__init__(self)
             self._base_init = True
             # Keep track of artist/album finished
-            self._album_finished = False
-            self._artist_finished = False
+            self._finished = NextContext.NONE
             # A user playlist used as current playlist
             self._user_playlist = None
             # Used by shuffle tracks to restore user playlist before shuffle

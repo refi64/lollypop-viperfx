@@ -208,6 +208,7 @@ class ShufflePlayer(BasePlayer):
                 if album_id not in self._already_played_tracks.keys() or\
                    track not in self._already_played_tracks[album_id]:
                     return track
+            self._finished = NextContext.STOP_ALBUM
             # No new tracks for this album, remove it
             # If albums not in shuffle history, it's not present
             # in db anymore (update since shuffle set)
@@ -215,6 +216,7 @@ class ShufflePlayer(BasePlayer):
                 self._already_played_tracks.pop(album_id)
                 self._already_played_albums.append(album_id)
             self._albums.remove(album_id)
+        self._finished = NextContext.STOP_ALL
         return None
 
     def _add_to_shuffle_history(self, track):

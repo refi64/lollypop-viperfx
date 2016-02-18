@@ -522,7 +522,6 @@ class AlbumDetailedWidget(Gtk.Bin, AlbumWidget):
             Lp().player.clear_albums()
             Lp().player.load(Track(track_id))
         else:
-            Lp().player.context.next = NextContext.NONE
             if not Lp().player.is_party():
                 Lp().player.set_albums(track_id,
                                        self._artist_ids,

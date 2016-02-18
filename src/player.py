@@ -76,7 +76,8 @@ class Player(BinPlayer, QueuePlayer, UserPlaylistPlayer, RadioPlayer,
         # We are not playing a user playlist anymore
         self._user_playlist = []
         self._user_playlist_id = None
-        self.context.next = NextContext.NONE
+        if not Lp().settings.get_value('repeat'):
+            self.context.next = NextContext.STOP_ALL
         Lp().player.load(album.tracks[0])
         if not Lp().player.is_party():
             self._albums = [album.id]
@@ -99,7 +100,6 @@ class Player(BinPlayer, QueuePlayer, UserPlaylistPlayer, RadioPlayer,
         # We are not playing a user playlist anymore
         self._user_playlist = []
         self._user_playlist_id = None
-        self.context.next = NextContext.NONE
         # We are in all artists
         if (genre_ids and genre_ids[0] == Type.ALL) or\
            (artist_ids and artist_ids[0] == Type.ALL):
@@ -124,6 +124,9 @@ class Player(BinPlayer, QueuePlayer, UserPlaylistPlayer, RadioPlayer,
         # Add albums for artists/genres
         else:
             self._albums += Lp().albums.get_ids(artist_ids, genre_ids)
+
+        if not Lp().settings.get_value('repeat'):
+            self.context.next = NextContext.STOP_ALL
 
         album.set_genre(genre_ids)
         if track_id in album.tracks_ids:
@@ -265,6 +268,8 @@ class Player(BinPlayer, QueuePlayer, UserPlaylistPlayer, RadioPlayer,
             ShufflePlayer._on_stream_start(self, bus, message)
         if self._queue and self.current_track.id == self._queue[0]:
             self._queue.pop(0)
+            if not self._queue:
+                self._finished = NextContext.STOP_ALL
             self.emit("queue-changed")
         self.set_next()
         self.set_prev()

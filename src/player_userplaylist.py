@@ -12,7 +12,7 @@
 
 import random
 
-from lollypop.define import Shuffle, Lp
+from lollypop.define import Shuffle, Lp, NextContext
 from lollypop.player_base import BasePlayer
 from lollypop.objects import Track
 
@@ -111,7 +111,7 @@ class UserPlaylistPlayer(BasePlayer):
            self.current_track in self._user_playlist:
             idx = self._user_playlist.index(self.current_track)
             if idx + 1 >= len(self._user_playlist):
-                self._album_finished = True
+                self._finished = NextContext.STOP_ALL
                 idx = 0
             else:
                 idx += 1

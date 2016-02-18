@@ -47,11 +47,11 @@ class LinearPlayer(BasePlayer):
                     if self.context.next == NextContext.START_NEW_ALBUM:
                         self.context.next = NextContext.NONE
                     try:
-                        self._album_finished = True
+                        self._finished = NextContext.STOP_ALBUM
                         pos = self._albums.index(album.id)
                         # we are on last album, go to first
                         if pos + 1 >= len(self._albums):
-                            self._artist_finished = True
+                            self._finished = NextContext.STOP_ALL
                             pos = 0
                         else:
                             pos += 1

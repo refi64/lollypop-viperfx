@@ -11,6 +11,7 @@
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 from lollypop.objects import Track
+from lollypop.define import NextContext
 
 
 class QueuePlayer:
@@ -56,7 +57,7 @@ class QueuePlayer:
         if track_id in self._queue:
             self._queue.remove(track_id)
             if not self._queue:
-                self._album_finished = True
+                self._finished = NextContext.STOP_ALL
             self.set_next()
             self.emit("queue-changed")
 

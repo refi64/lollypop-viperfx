@@ -325,29 +325,19 @@ class BinPlayer(BasePlayer):
             @param track as Track
             @return False if track not loaded
         """
-        stop = False
-        # Stop if needed
-        if self.context.next == NextContext.STOP_TRACK:
-            stop = True
+        if self.context.next != NextContext.NONE:
+            stop = False
+            print(self.context.next, self._finished)
+            # Stop if needed
+            if self.context.next == NextContext.STOP_TRACK:
+                stop = True
+            elif self.context.next == self._finished:
+                stop = True
+            if stop and self.is_playing():
+                return False
+        self._finished = NextContext.NONE
 
-        # Stop if album changed
-        if self.context.next == NextContext.STOP_ALBUM and\
-           self._album_finished:
-            stop = True
-
-        # Stop if album_artist changed
-        if self.context.next == NextContext.STOP_ARTIST and (
-           self.current_track.album_artist_id != track.album_artist_id or
-           self._artist_finished):
-            stop = True
-
-        if stop and self.is_playing():
-            return False
-
-        self._album_finished = False
-        self._artist_finished = False
         self.current_track = track
-
         try:
             self._playbin.set_property('uri',
                                        self.current_track.uri)
