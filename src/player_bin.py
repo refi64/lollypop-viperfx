@@ -467,7 +467,6 @@ class BinPlayer(BasePlayer):
         # Check to be sure
         if self.context.next not in [NextContext.NONE,
                                      NextContext.START_NEW_ALBUM]:
-            print('stop')
             self.stop()
             self.context.next = NextContext.NONE
             if self.next_track.id is not None:
@@ -476,7 +475,6 @@ class BinPlayer(BasePlayer):
         # So, we are end of stream can happen in mix,
         # otherwise force next
         elif not Lp().settings.get_value('mix'):
-            print('next')
             self.next()
 
     def _on_stream_about_to_finish(self, playbin):

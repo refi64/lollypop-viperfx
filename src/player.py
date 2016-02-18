@@ -216,6 +216,9 @@ class Player(BinPlayer, QueuePlayer, UserPlaylistPlayer, RadioPlayer,
             Play next track
             @param sql as sqlite cursor
         """
+        # Reset finished context
+        self._finished = NextContext.NONE
+
         # Look at externals
         self.next_track = ExternalsPlayer.next(self)
 
