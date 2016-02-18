@@ -169,7 +169,10 @@ class ProgressController:
             elif player.current_track.id != Type.RADIOS and not self._timeout:
                 self._timeout = GLib.timeout_add(1000, self._update_position)
         else:
-            self._progress.set_opacity(0.5)
+            if player.get_status() == Gst.State.PAUSED:
+                self._progress.set_opacity(0.5)
+            else:
+                self._progress.set_sensitive(False)
             self._update_position()
             if self._timeout:
                 GLib.source_remove(self._timeout)
