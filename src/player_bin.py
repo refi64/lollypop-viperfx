@@ -289,7 +289,7 @@ class BinPlayer(BasePlayer):
             @param next as bool
             @param track as Track
         """
-        if self.current_track.id == Type.RADIOS:
+        if self.current_track.id == Type.RADIOS or self._need_to_stop():
             return
         if self._volume_id is not None:
             self._playbin.disconnect(self._volume_id)
@@ -319,23 +319,29 @@ class BinPlayer(BasePlayer):
             GLib.idle_add(self._volume_up, self._playbin, duration)
         self._track_finished(finished, finished_start_time)
 
+    def _need_to_stop(self):
+        """
+            Return True if playback needs to stop
+            @return bool
+        """
+        stop = False
+        if self.context.next != NextContext.NONE:
+            # Stop if needed
+            if self.context.next == NextContext.STOP_TRACK:
+                stop = True
+            elif self.context.next == self._finished:
+                stop = True
+        return stop and self.is_playing()
+
     def _load_track(self, track):
         """
             Load track
             @param track as Track
             @return False if track not loaded
         """
-        if self.context.next != NextContext.NONE:
-            stop = False
-            # Stop if needed
-            if self.context.next == NextContext.STOP_TRACK:
-                stop = True
-            elif self.context.next == self._finished:
-                stop = True
-            if stop and self.is_playing():
-                return False
-        self._finished = NextContext.NONE
-
+        if self._need_to_stop():
+            return False
+        debug("BinPlayer::_load_track(): %s" % track.uri)
         self.current_track = track
         try:
             self._playbin.set_property('uri',
@@ -343,7 +349,6 @@ class BinPlayer(BasePlayer):
         except Exception as e:  # Gstreamer error
             print("BinPlayer::_load_track(): ", e)
             return False
-
         return True
 
     def _track_finished(self, finished, finished_start_time):
@@ -457,14 +462,21 @@ class BinPlayer(BasePlayer):
             go next otherwise
         """
         debug("Player::_on_bus_eos(): %s" % self.current_track.uri)
+        self._finished = NextContext.NONE
+        # We receive end of stream because we do not want to play
+        # Check to be sure
         if self.context.next not in [NextContext.NONE,
                                      NextContext.START_NEW_ALBUM]:
+            print('stop')
             self.stop()
             self.context.next = NextContext.NONE
             if self.next_track.id is not None:
                 self._load_track(self.next_track)
             self.emit('current-changed')
+        # So, we are end of stream can happen in mix,
+        # otherwise force next
         elif not Lp().settings.get_value('mix'):
+            print('next')
             self.next()
 
     def _on_stream_about_to_finish(self, playbin):
@@ -472,6 +484,7 @@ class BinPlayer(BasePlayer):
             When stream is about to finish, switch to next track without gap
             @param playbin as Gst bin
         """
+        debug("Player::_on_stream_about_to_finish(): %s" % playbin)
         # Don't do anything if crossfade on
         if self._playbin != playbin:
             return
