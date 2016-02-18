@@ -236,25 +236,24 @@ class Player(BinPlayer, QueuePlayer, UserPlaylistPlayer, RadioPlayer,
         # Look at user playlist then
         if self.next_track.id is None:
             self.next_track = UserPlaylistPlayer.next(self)
-        elif queue and self.context.next_track is None:
+        if queue and self.context.next_track.id is None:
             self.context.next_track = UserPlaylistPlayer.next(self)
 
         # Get a random album/track then
         if self.next_track.id is None:
             self.next_track = ShufflePlayer.next(self)
-        elif queue and self.context.next_track is None:
+        if queue and self.context.next_track.id is None:
             self.context.next_track = ShufflePlayer.next(self)
 
         # Get a linear track then
         if self.next_track.id is None:
-            if self.context.next_track is not None:
+            if self.context.next_track.id is not None:
                 self.next_track = self.context.next_track
-                self.context.next_track = None
+                self.context.next_track = Track()
             else:
                 self.next_track = LinearPlayer.next(self)
-        elif queue and self.context.next_track is None:
+        if queue and self.context.next_track.id is None:
             self.context.next_track = LinearPlayer.next(self)
-
         self.emit('next-changed')
 
     def update_crossfading(self):
@@ -279,8 +278,6 @@ class Player(BinPlayer, QueuePlayer, UserPlaylistPlayer, RadioPlayer,
             ShufflePlayer._on_stream_start(self, bus, message)
         if self._queue and self.current_track.id == self._queue[0]:
             self._queue.pop(0)
-            if not self._queue:
-                self._finished = NextContext.STOP_ALL
             self.emit("queue-changed")
         self.set_next()
         self.set_prev()
