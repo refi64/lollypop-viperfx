@@ -35,6 +35,7 @@ class QueuePlayer:
         self._queue.append(track_id)
         self.set_next()
         self.emit("queue-changed")
+        self._init_current_if_need()
 
     def prepend_to_queue(self, track_id):
         """
@@ -47,6 +48,7 @@ class QueuePlayer:
         self._queue.insert(0, track_id)
         self.set_next()
         self.emit("queue-changed")
+        self._init_current_if_need()
 
     def del_from_queue(self, track_id):
         """
@@ -66,6 +68,7 @@ class QueuePlayer:
         self._queue = new_queue
         self.set_next()
         self.emit("queue-changed")
+        self._init_current_if_need()
 
     def get_queue(self):
         """
@@ -109,3 +112,12 @@ class QueuePlayer:
 #######################
 # PRIVATE             #
 #######################
+    def _init_current_if_need(self):
+        """
+            Init current track if needed
+        """
+        if self.current_track.id is None and self._queue:
+            self._load_track(QueuePlayer.next(self))
+            self.set_next()
+            self.set_prev()
+            self.emit('current-changed')
