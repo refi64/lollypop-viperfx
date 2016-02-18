@@ -11,8 +11,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lollypop\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-02-16 11:03+0100\n"
-"PO-Revision-Date: 2016-02-16 10:55+0000\n"
+"POT-Creation-Date: 2016-02-18 13:46+0100\n"
+"PO-Revision-Date: 2016-02-18 12:57+0000\n"
 "Last-Translator: Maxim Orlov <murmansksity@gmail.com>\n"
 "Language-Team: Russian (http://www.transifex.com/gnumdk/lollypop/language/ru/)\n"
 "MIME-Version: 1.0\n"
@@ -167,30 +167,26 @@ msgid "Show track number from tags"
 msgstr "Показывать номер трека из тегов"
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:37
-msgid "UNUSED"
-msgstr "НЕИСПОЛЬЗУЕМЫЙ"
-
-#: ../data/org.gnome.Lollypop.gschema.xml.h:38
 msgid "MPD network interface"
 msgstr "MPD сетевой интерфейс"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:39
+#: ../data/org.gnome.Lollypop.gschema.xml.h:38
 msgid "MPD network port"
 msgstr "MPD сетевой порт"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:40 ../data/SettingsDialog.ui.h:16
+#: ../data/org.gnome.Lollypop.gschema.xml.h:39 ../data/SettingsDialog.ui.h:16
 msgid "Mix songs"
 msgstr "Плавный переход (кроссфейд)"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:41
+#: ../data/org.gnome.Lollypop.gschema.xml.h:40
 msgid "Mix songs only in party mode"
 msgstr "Сводить песни только в режиме \"вечеринки\""
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:42
+#: ../data/org.gnome.Lollypop.gschema.xml.h:41
 msgid "Mix duration"
 msgstr "Длительность сведе́ния"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:43
+#: ../data/org.gnome.Lollypop.gschema.xml.h:42
 msgid "Shuffle mode"
 msgstr "Режим перемешивания"
 
@@ -244,8 +240,8 @@ msgstr "Жанр/Исполнитель/Просмотр обложки"
 msgid "Search"
 msgstr "Поиск"
 
-#: ../data/lollypop.appdata.xml.in.h:9 ../src/pop_menu.py:443
-#: ../src/pop_menu.py:462 ../data/ToolbarEnd.ui.h:8
+#: ../data/lollypop.appdata.xml.in.h:9 ../src/pop_menu.py:463
+#: ../src/pop_menu.py:482 ../data/ToolbarEnd.ui.h:8
 msgid "Queue"
 msgstr "Очередь"
 
@@ -301,7 +297,7 @@ msgid ""
 "    - Artist informations disabled"
 msgstr "    - Скробблинг отключен\n    - Автоматическая загрузка обложек отключена\n    - Информация об исполнителе отключена"
 
-#: ../src/application.py:367
+#: ../src/application.py:375
 #, python-format
 msgid "%d artist"
 msgid_plural "%d artists"
@@ -310,7 +306,7 @@ msgstr[1] "%d исполнителя"
 msgstr[2] "%d исполнителей"
 msgstr[3] "%d исполнителей"
 
-#: ../src/application.py:369
+#: ../src/application.py:377
 #, python-format
 msgid "%d album"
 msgid_plural "%d albums"
@@ -319,7 +315,7 @@ msgstr[1] "%d альбома"
 msgstr[2] "%d альбомов"
 msgstr[3] "%d альбомов"
 
-#: ../src/application.py:371
+#: ../src/application.py:379
 #, python-format
 msgid "%d track"
 msgid_plural "%d tracks"
@@ -328,7 +324,7 @@ msgstr[1] "%d композиции"
 msgstr[2] "%d композиций"
 msgstr[3] "%d композиций"
 
-#: ../src/application.py:386
+#: ../src/application.py:394
 msgid "Lollypop: You need to install yelp."
 msgstr "Lollypop: Вам необходимо установить yelp."
 
@@ -348,8 +344,8 @@ msgstr "Недавно добавленные альбомы"
 msgid "Random albums"
 msgstr "Случайные альбомы"
 
-#: ../src/container.py:447 ../src/pop_menu.py:368 ../src/pop_menu.py:445
-#: ../src/pop_menu.py:464
+#: ../src/container.py:447 ../src/pop_menu.py:388 ../src/pop_menu.py:465
+#: ../src/pop_menu.py:484
 msgid "Playlists"
 msgstr "Плейлисты"
 
@@ -435,7 +431,7 @@ msgstr "от %s"
 msgid "by %s, from %s"
 msgstr "от %s, из %s"
 
-#: ../src/player_bin.py:453
+#: ../src/player_bin.py:459
 #, python-format
 msgid "File doesn't exist: %s"
 msgstr "Файл не существует: %s"
@@ -464,61 +460,65 @@ msgstr "Подробная информация об исполнителе от
 msgid "WebKit support disabled"
 msgstr "Поддержка WebKit отключена"
 
-#: ../src/pop_menu.py:69
+#: ../src/pop_menu.py:70
 msgid "Continue playback"
 msgstr "Продолжить проигрывание"
 
-#: ../src/pop_menu.py:74
+#: ../src/pop_menu.py:77
+msgid "Stop after this playlist"
+msgstr "Остановить после этого плейлиста"
+
+#: ../src/pop_menu.py:84
 msgid "Stop after this track"
 msgstr "Остановить после этой композиции"
 
-#: ../src/pop_menu.py:79
+#: ../src/pop_menu.py:90
 msgid "Stop after this album"
 msgstr "Остановить после этого альбома"
 
-#: ../src/pop_menu.py:84
+#: ../src/pop_menu.py:96
 msgid "Stop after this artist"
 msgstr "Остановить после этого исполнителя"
 
-#: ../src/pop_menu.py:175 ../data/SearchRow.ui.h:3
+#: ../src/pop_menu.py:195 ../data/SearchRow.ui.h:3
 msgid "Add to queue"
 msgstr "Добавить в очередь"
 
-#: ../src/pop_menu.py:180
+#: ../src/pop_menu.py:200
 msgid "Next tracks"
 msgstr "Следующие композиции"
 
-#: ../src/pop_menu.py:182 ../data/NextPopover.ui.h:1
+#: ../src/pop_menu.py:202 ../data/NextPopover.ui.h:1
 msgid "Next track"
 msgstr "Следующая композиция"
 
-#: ../src/pop_menu.py:186
+#: ../src/pop_menu.py:206
 msgid "Remove from queue"
 msgstr "Удалить из очереди "
 
-#: ../src/pop_menu.py:254
+#: ../src/pop_menu.py:274
 msgid "Add to others"
 msgstr "Добавить к другим"
 
-#: ../src/pop_menu.py:271
+#: ../src/pop_menu.py:291
 #, python-format
 msgid "Remove from \"%s\""
 msgstr "Удалить из \"%s\""
 
-#: ../src/pop_menu.py:277
+#: ../src/pop_menu.py:297
 #, python-format
 msgid "Add to \"%s\""
 msgstr "Добавить к \"%s\" "
 
-#: ../src/pop_menu.py:366
+#: ../src/pop_menu.py:386
 msgid "Playback"
 msgstr "Проигрывание"
 
-#: ../src/pop_menu.py:403
+#: ../src/pop_menu.py:423
 msgid "Modify information"
 msgstr "Изменить информацию"
 
-#: ../src/pop_menu.py:447 ../data/PlaylistView.ui.h:1
+#: ../src/pop_menu.py:467 ../data/PlaylistView.ui.h:1
 msgid "Edit"
 msgstr "Редактировать"
 
@@ -593,17 +593,17 @@ msgstr "Неизвестная ошибка при синхронизации, �
 msgid "No free space available on device"
 msgstr "На устройстве не осталось свободного места"
 
-#: ../src/widgets_playlist.py:272 ../src/widgets_playlist.py:275
+#: ../src/widgets_playlist.py:280 ../src/widgets_playlist.py:283
 msgid "New playlist "
 msgstr "Новый плейлист"
 
 #. Need a copy, segfault on EOS 3.1
-#: ../src/widgets_playlist.py:330 ../src/widgets_playlist.py:566
+#: ../src/widgets_playlist.py:338 ../src/widgets_playlist.py:574
 #, python-format
 msgid "Remove \"%s\"?"
 msgstr "Удалить \"%s\"?"
 
-#: ../src/widgets_playlist.py:611
+#: ../src/widgets_playlist.py:619
 msgid "Remove these tracks?"
 msgstr "Удалить эти композиции?"
 
@@ -776,12 +776,12 @@ msgid "Show genres"
 msgstr "Показывать жанры"
 
 #: ../data/SettingsDialog.ui.h:8
-msgid "Appearance"
-msgstr "Внешний вид"
-
-#: ../data/SettingsDialog.ui.h:9
 msgid "Configure lollypop appearance"
 msgstr "Настроить внешний вид плеера"
+
+#: ../data/SettingsDialog.ui.h:9
+msgid "Appearance"
+msgstr "Внешний вид"
 
 #: ../data/SettingsDialog.ui.h:11
 msgid "Restore state on startup"
@@ -796,12 +796,12 @@ msgid "Control Lollypop with any MPD client"
 msgstr "Управлять Lollypop при помощи любого MPD клиента"
 
 #: ../data/SettingsDialog.ui.h:17
-msgid "Behaviour"
-msgstr "Поведение"
-
-#: ../data/SettingsDialog.ui.h:18
 msgid "Configure lollypop behaviour"
 msgstr "Настроить поведение плеера"
+
+#: ../data/SettingsDialog.ui.h:18
+msgid "Behaviour"
+msgstr "Поведение"
 
 #: ../data/SettingsDialog.ui.h:19
 msgid "Select music folders"
