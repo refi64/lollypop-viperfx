@@ -387,6 +387,7 @@
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="halign">end</property>
+                <signal name="state-set" handler="_update_repeat_setting" swapped="no"/>
               </object>
               <packing>
                 <property name="left_attach">1</property>
