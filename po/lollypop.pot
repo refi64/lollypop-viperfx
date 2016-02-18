@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-02-18 18:15+0100\n"
+"POT-Creation-Date: 2016-02-18 19:05+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -524,11 +524,11 @@ msgstr ""
 msgid "Browse themes and add a new radio"
 msgstr ""
 
-#: ../src/settings.py:157
+#: ../src/settings.py:160
 msgid "Populars"
 msgstr ""
 
-#: ../src/settings.py:158
+#: ../src/settings.py:161
 msgid "Recently added"
 msgstr ""
 
@@ -778,7 +778,7 @@ msgid "Play albums on click"
 msgstr ""
 
 #: ../data/SettingsDialog.ui.h:15
-msgid "Do not repeat  by default"
+msgid "Do not repeat by default"
 msgstr ""
 
 #: ../data/SettingsDialog.ui.h:16
