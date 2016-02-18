@@ -73,7 +73,7 @@ class PlaybackMenu(BaseMenu):
                 self.append(_("Continue playback"), 'app.continue_play_action')
                 return
             if not Lp().player.get_queue() and\
-               Lp().player.get_user_playlist_id is None:
+               Lp().player.get_user_playlist_id() is None:
                 # Stop after track
                 if Lp().player.context.next != NextContext.STOP_TRACK:
                     stop_track_action = Gio.SimpleAction(
