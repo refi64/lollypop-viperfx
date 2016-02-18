@@ -161,10 +161,8 @@ class ShufflePlayer(BasePlayer):
 
         if self._user_playlist:
             self._shuffle_playlist()
-        elif self.current_track.id is not None and self.current_track.id >= 0:
-            self.set_albums(self.current_track.id,
-                            self.context.artist_ids,
-                            self.context.genre_ids)
+        elif self._shuffle in [Shuffle.NONE, Shuffle.ALBUMS]:
+            self._shuffle_albums()
         if self.current_track.id is not None:
             self.set_next()
 
