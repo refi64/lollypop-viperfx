@@ -216,6 +216,7 @@ class Player(BinPlayer, QueuePlayer, UserPlaylistPlayer, RadioPlayer,
             Play next track
             @param sql as sqlite cursor
         """
+        queue = False
         # Reset finished context
         self._finished = NextContext.NONE
 
@@ -230,15 +231,19 @@ class Player(BinPlayer, QueuePlayer, UserPlaylistPlayer, RadioPlayer,
         if self.next_track.id is None:
             self.next_track = QueuePlayer.next(self)
             if self.next_track.id is not None:
-                self.context.next_track = LinearPlayer.next(self)
+                queue = True
 
         # Look at user playlist then
         if self.next_track.id is None:
             self.next_track = UserPlaylistPlayer.next(self)
+        elif queue and self.context.next_track is None:
+            self.context.next_track = UserPlaylistPlayer.next(self)
 
         # Get a random album/track then
         if self.next_track.id is None:
             self.next_track = ShufflePlayer.next(self)
+        elif queue and self.context.next_track is None:
+            self.context.next_track = ShufflePlayer.next(self)
 
         # Get a linear track then
         if self.next_track.id is None:
@@ -247,6 +252,9 @@ class Player(BinPlayer, QueuePlayer, UserPlaylistPlayer, RadioPlayer,
                 self.context.next_track = None
             else:
                 self.next_track = LinearPlayer.next(self)
+        elif queue and self.context.next_track is None:
+            self.context.next_track = LinearPlayer.next(self)
+
         self.emit('next-changed')
 
     def update_crossfading(self):
