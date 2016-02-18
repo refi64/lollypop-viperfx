@@ -55,6 +55,8 @@ class QueuePlayer:
         """
         if track_id in self._queue:
             self._queue.remove(track_id)
+            if not self._queue:
+                self._album_finished = True
             self.set_next()
             self.emit("queue-changed")
 

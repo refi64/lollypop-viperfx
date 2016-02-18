@@ -69,6 +69,13 @@ class PlaybackMenu(BaseMenu):
             continue_play_action.connect('activate', self._continue_playback)
             self.append(_("Continue playback"), 'app.continue_play_action')
             return
+        # Queue action and nothing more
+        if Lp().player.get_queue():
+            stop_album_action = Gio.SimpleAction(name="stop_album_action")
+            self._app.add_action(stop_album_action)
+            stop_album_action.connect('activate', self._stop_album)
+            self.append(_("Stop after queued tracks"), 'app.stop_album_action')
+            return
         # Playlist action and nothing more
         if Lp().player.get_user_playlist_id() is not None:
             stop_album_action = Gio.SimpleAction(name="stop_album_action")
