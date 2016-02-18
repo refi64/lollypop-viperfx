@@ -9,8 +9,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lollypop\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-02-18 19:05+0100\n"
-"PO-Revision-Date: 2016-02-18 18:05+0000\n"
+"POT-Creation-Date: 2016-02-18 21:48+0100\n"
+"PO-Revision-Date: 2016-02-18 20:49+0000\n"
 "Last-Translator: Cédric Bellegarde <web@adishatz.org>\n"
 "Language-Team: French (http://www.transifex.com/gnumdk/lollypop/language/fr/)\n"
 "MIME-Version: 1.0\n"
@@ -230,8 +230,8 @@ msgstr "Navigation par Genre/Artiste/Pochette"
 msgid "Search"
 msgstr "Recherche"
 
-#: ../data/lollypop.appdata.xml.in.h:9 ../src/pop_menu.py:470
-#: ../src/pop_menu.py:489 ../data/ToolbarEnd.ui.h:8
+#: ../data/lollypop.appdata.xml.in.h:9 ../src/pop_menu.py:466
+#: ../src/pop_menu.py:485 ../data/ToolbarEnd.ui.h:8
 msgid "Queue"
 msgstr "File d'attente"
 
@@ -328,8 +328,8 @@ msgstr "Albums ajoutés récemment"
 msgid "Random albums"
 msgstr "Albums aléatoires"
 
-#: ../src/container.py:447 ../src/pop_menu.py:395 ../src/pop_menu.py:472
-#: ../src/pop_menu.py:491
+#: ../src/container.py:447 ../src/pop_menu.py:391 ../src/pop_menu.py:468
+#: ../src/pop_menu.py:487
 msgid "Playlists"
 msgstr "Listes de lecture"
 
@@ -414,7 +414,7 @@ msgstr "Par %s"
 msgid "by %s, from %s"
 msgstr "par %s, sur %s"
 
-#: ../src/player_bin.py:459
+#: ../src/player_bin.py:448
 #, python-format
 msgid "File doesn't exist: %s"
 msgstr "Le fichier n'existe pas: %s"
@@ -443,69 +443,61 @@ msgstr "Informations avancées sur l'artiste désactivée"
 msgid "WebKit support disabled"
 msgstr "Support de WebKit désactivé"
 
-#: ../src/pop_menu.py:70
+#: ../src/pop_menu.py:73
 msgid "Continue playback"
 msgstr "Continuer la lecture"
 
-#: ../src/pop_menu.py:77
-msgid "Stop after queued tracks"
-msgstr "Arrêter après les morceaux en attente"
-
-#: ../src/pop_menu.py:84
-msgid "Stop after this playlist"
-msgstr "Arrêter après cette liste de lecture"
-
-#: ../src/pop_menu.py:91
+#: ../src/pop_menu.py:83
 msgid "Stop after this track"
 msgstr "Arrêter après ce morceau"
 
-#: ../src/pop_menu.py:97
+#: ../src/pop_menu.py:91
 msgid "Stop after this album"
 msgstr "Arrêter après cet album"
 
-#: ../src/pop_menu.py:103
-msgid "Stop after this artist"
-msgstr "Arrêter après cet artiste"
+#: ../src/pop_menu.py:99
+msgid "Do not repeat"
+msgstr "Ne pas répéter"
 
-#: ../src/pop_menu.py:202 ../data/SearchRow.ui.h:3
+#: ../src/pop_menu.py:198 ../data/SearchRow.ui.h:3
 msgid "Add to queue"
 msgstr "Ajouter à la file d'attente"
 
-#: ../src/pop_menu.py:207
+#: ../src/pop_menu.py:203
 msgid "Next tracks"
 msgstr "Morceaux suivants"
 
-#: ../src/pop_menu.py:209 ../data/NextPopover.ui.h:1
+#: ../src/pop_menu.py:205 ../data/NextPopover.ui.h:1
 msgid "Next track"
 msgstr "Morceau suivant"
 
-#: ../src/pop_menu.py:213
+#: ../src/pop_menu.py:209
 msgid "Remove from queue"
 msgstr "Supprimer de la liste d'attente"
 
-#: ../src/pop_menu.py:281
+#: ../src/pop_menu.py:277
 msgid "Add to others"
 msgstr "Ajouter aux autres"
 
-#: ../src/pop_menu.py:298
+#: ../src/pop_menu.py:294
 #, python-format
 msgid "Remove from \"%s\""
 msgstr "Supprimer de \"%s\""
 
-#: ../src/pop_menu.py:304
+#: ../src/pop_menu.py:300
 #, python-format
 msgid "Add to \"%s\""
 msgstr "Ajouter à \"%s\""
 
-#: ../src/pop_menu.py:393
+#: ../src/pop_menu.py:389
 msgid "Playback"
 msgstr "Lecture"
 
-#: ../src/pop_menu.py:430
+#: ../src/pop_menu.py:426
 msgid "Modify information"
 msgstr "Modifier les informations"
 
-#: ../src/pop_menu.py:474 ../data/PlaylistView.ui.h:1
+#: ../src/pop_menu.py:470 ../data/PlaylistView.ui.h:1
 msgid "Edit"
 msgstr "Editer"
 
