@@ -171,7 +171,7 @@ class Application(Gtk.Application):
             if is_gnome() or is_unity():
                 self.set_app_menu(menu)
             self.window = Window(self)
-            # If not GNOME add menu to toolbar
+            # If not GNOME/Unity add menu to toolbar
             if not is_gnome() and not is_unity():
                 self.window.setup_menu(menu)
             self.window.connect('delete-event', self._hide_on_delete)
