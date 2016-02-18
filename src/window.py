@@ -320,7 +320,7 @@ class Window(Gtk.ApplicationWindow, Container):
         """
             Setup window content
         """
-        self.set_icon_name('lollypop')
+        self.set_default_icon_name('lollypop')
         vgrid = Gtk.Grid()
         vgrid.set_orientation(Gtk.Orientation.VERTICAL)
         vgrid.show()
