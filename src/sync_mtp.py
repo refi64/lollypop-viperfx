@@ -336,10 +336,13 @@ class MtpSync:
             @return Gst.Pipeline
         """
         try:
+            # We need to escape \ in path
+            src_path = src.get_path().replace("\\", "\\\\\\")
+            dst_path = dst.get_path().replace("\\", "\\\\\\")
             pipeline = Gst.parse_launch('filesrc location="%s" ! decodebin\
                                         ! audioconvert ! lamemp3enc ! id3v2mux\
                                         ! filesink location="%s"'
-                                        % (src.get_path(), dst.get_path()))
+                                        % (src_path, dst_path))
             pipeline.set_state(Gst.State.PLAYING)
             return pipeline
         except Exception as e:
