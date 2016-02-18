@@ -79,11 +79,8 @@ class QueueWidget(Gtk.Popover):
         """
             Set widget size
         """
-        size_setting = Lp().settings.get_value('window-size')
-        if isinstance(size_setting[1], int):
-            self.set_size_request(400, size_setting[1]*0.7)
-        else:
-            self.set_size_request(400, 600)
+        height = Lp().window.get_size()[1]
+        self.set_size_request(400, height*0.7)
         Gtk.Popover.do_show(self)
 
     def populate(self):

@@ -63,11 +63,8 @@ class ExternalsPopover(Gtk.Popover):
         self.add(self._view)
         self._signal_id = Lp().player.connect('current-changed',
                                               self._on_current_changed)
-        size_setting = Lp().settings.get_value('window-size')
-        if isinstance(size_setting[1], int):
-            self.set_size_request(400, size_setting[1]*0.7)
-        else:
-            self.set_size_request(400, 600)
+        height = Lp().window.get_size()[1]
+        self.set_size_request(400, height*0.7)
 
     def populate(self):
         """
