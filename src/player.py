@@ -94,6 +94,7 @@ class Player(BinPlayer, QueuePlayer, UserPlaylistPlayer, RadioPlayer,
         if track_id is None:
             return
         album = Track(track_id).album
+        album.set_genre(genre_ids)
         self._albums = []
         ShufflePlayer.reset_history(self)
 
@@ -128,7 +129,6 @@ class Player(BinPlayer, QueuePlayer, UserPlaylistPlayer, RadioPlayer,
         if not Lp().settings.get_value('repeat'):
             self.context.next = NextContext.STOP_ALL
 
-        album.set_genre(genre_ids)
         if track_id in album.tracks_ids:
             self.context.artist_ids = artist_ids
             self.context.genre_ids = genre_ids
