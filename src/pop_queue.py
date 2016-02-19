@@ -13,9 +13,9 @@
 from gi.repository import Gtk, GLib, Pango
 from cgi import escape
 
-from lollypop.define import Lp, Type, Shuffle
+from lollypop.define import Lp
 from lollypop.cellrendereralbum import CellRendererAlbum
-from lollypop.objects import Track, Album
+from lollypop.objects import Track
 
 
 class QueueWidget(Gtk.Popover):
@@ -87,57 +87,30 @@ class QueueWidget(Gtk.Popover):
         """
             Populate view
         """
-        shuffle = Lp().settings.get_enum('shuffle')
         if Lp().player.get_queue():
             self._clear_btn.set_sensitive(True)
-            GLib.idle_add(self._add_tracks, Lp().player.get_queue())
-        elif Lp().player.get_albums() and shuffle != Shuffle.TRACKS:
-            self._clear_btn.set_sensitive(True)
-            GLib.idle_add(self._add_albums, Lp().player.get_albums())
+        self._add_items(Lp().player.get_queue())
 
 #######################
 # PRIVATE             #
 #######################
-    def _add_albums(self, album_ids):
+    def _add_items(self, items):
         """
-            Add albums to the view
-            @param album ids as int
-        """
-        if not album_ids or self._signal_id1 is None:
-            return
-        album_id = album_ids.pop(0)
-        album_name = Lp().albums.get_name(album_id)
-        artist_id = Lp().albums.get_artist_id(album_id)
-        artist_name = Lp().artists.get_name(artist_id)
-        title = "<b>%s</b>\n%s" %\
-            (escape(artist_name),
-             escape(album_name))
-        self._model.append([album_id,
-                            title,
-                            'user-trash-symbolic',
-                            Type.NONE])
-        GLib.idle_add(self._add_albums, album_ids)
-
-    def _add_tracks(self, track_ids):
-        """
-            Add tracks to the view
+            Add items to the view
             @param item ids as [int]
         """
-        if not track_ids or self._signal_id1 is None:
-            return
-        track_id = track_ids.pop(0)
-        album_id = Lp().tracks.get_album_id(track_id)
-        artist_id = Lp().albums.get_artist_id(album_id)
-        artist_name = Lp().artists.get_name(artist_id)
-        track_name = Lp().tracks.get_name(track_id)
-        title = "<b>%s</b>\n%s" %\
-            (escape(artist_name),
-             escape(track_name))
-        self._model.append([album_id,
-                            title,
-                            'user-trash-symbolic',
-                            track_id])
-        GLib.idle_add(self._add_tracks, track_ids)
+        for track_id in items:
+            album_id = Lp().tracks.get_album_id(track_id)
+            artist_id = Lp().albums.get_artist_id(album_id)
+            artist_name = Lp().artists.get_name(artist_id)
+            track_name = Lp().tracks.get_name(track_id)
+            title = "<b>%s</b>\n%s" %\
+                (escape(artist_name),
+                 escape(track_name))
+            self._model.append([album_id,
+                                title,
+                                'user-trash-symbolic',
+                                track_id])
 
     def _on_map(self, widget):
         """
@@ -168,7 +141,7 @@ class QueueWidget(Gtk.Popover):
             Delete item if Delete was pressed
             @param widget unused, Gdk.Event
         """
-        if len(self._model) > 0:
+        if Lp().player.get_queue():
             if event.keyval == 65535:
                 path, column = self._view.get_cursor()
                 iterator = self._model.get_iter(path)
@@ -180,18 +153,10 @@ class QueueWidget(Gtk.Popover):
             @param player object
         """
         if len(self._model) > 0:
-            start = self._model[0]
-            end = self._model[-1]
-            start_iter = self._model.get_iter(start.path)
-            end_iter = self._model.get_iter(end.path)
-            if start[3] == player.current_track.id:
-                self._model.remove(start_iter)
-            elif end[3] == Type.NONE and\
-                    end[0] == player.current_track.album_id:
-                self._model.move_before(end_iter, start_iter)
-            elif start[3] == Type.NONE and\
-                    start[0] != player.current_track.album_id:
-                self._model.move_after(start_iter, end_iter)
+            row = self._model[0]
+            if row[3] == player.current_track.id:
+                iter = self._model.get_iter(row.path)
+                self._model.remove(iter)
 
     def _on_drag_begin(self, widget, context):
         """
@@ -213,17 +178,12 @@ class QueueWidget(Gtk.Popover):
             @param path as Gtk.TreePath
             @param data as unused
         """
-        if Lp().player.get_queue():
-            queue = []
+        if self.is_visible():
+            new_queue = []
             for row in self._model:
-                if row[3] != Type.NONE:
-                    queue.append(row[3])
-            Lp().player.set_queue(queue)
-        elif Lp().player.get_albums():
-            albums = []
-            for row in self._model:
-                albums.append(row[0])
-            Lp().player.set_albums(albums)
+                if row[3]:
+                    new_queue.append(row[3])
+            Lp().player.set_queue(new_queue)
 
     def _delete_row(self, iterator):
         """
@@ -233,35 +193,6 @@ class QueueWidget(Gtk.Popover):
         self._model.remove(iterator)
         if len(self._model) == 0:
             self._clear_btn.set_sensitive(False)
-
-    def _move_all_after(self, album_id):
-        """
-            Move all entries after album
-            @param album id as int
-        """
-        for row in self._model:
-            if row[0] == album_id:
-                break
-            end = self._model[-1]
-            current_iter = self._model.get_iter(row.path)
-            end_iter = self._model.get_iter(end.path)
-            self._model.move_after(current_iter, end_iter)
-
-    def _play(self, iterator):
-        """
-            Play album/track for selected iter
-            @param GtkTreeIter
-        """
-        self._timeout = None
-        if not self._in_drag:
-            track_id = self._model.get_value(iterator, 3)
-            if track_id == Type.NONE:
-                album_id = self._model.get_value(iterator, 0)
-                album = Album(album_id)
-                Lp().player.load(album.tracks[0])
-                self._move_all_after(album_id)
-            else:
-                Lp().player.load(Track(track_id))
 
     def _on_row_activated(self, view, path, column):
         """
@@ -278,7 +209,7 @@ class QueueWidget(Gtk.Popover):
                 # We don't want to play if we are
                 # starting a drag & drop, so delay
                 self._timeout = GLib.timeout_add(500,
-                                                 self._play,
+                                                 self._play_track,
                                                  iterator)
 
     def _on_button_clicked(self, widget):
@@ -287,3 +218,14 @@ class QueueWidget(Gtk.Popover):
             @param widget as Gtk.Button
         """
         self._model.clear()
+
+    def _play_track(self, iterator):
+        """
+            Play track for selected iter
+            @param GtkTreeIter
+        """
+        self._timeout = None
+        if not self._in_drag:
+            value_id = self._model.get_value(iterator, 3)
+            self._model.remove(iterator)
+            Lp().player.load(Track(value_id))

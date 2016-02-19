@@ -272,8 +272,8 @@ class AlbumsView(View):
                     album = Album(album_widget.get_id())
                     track = Track(album.tracks_ids[0])
                     Lp().player.load(track)
-                    Lp().player.set_albums_by(track.id, None,
-                                              self._genre_id)
+                    Lp().player.set_albums(track.id, None,
+                                           self._genre_id)
                 else:
                     self._init_context_position()
                     self._context_album_id = album_widget.get_id()

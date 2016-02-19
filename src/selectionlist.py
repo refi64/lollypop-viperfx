@@ -130,6 +130,7 @@ class SelectionList(Gtk.ScrolledWindow):
         """
             Populate view with values
             @param [(int, str)], will be deleted
+            @thread safe
         """
         if len(self._model) > 0:
             self._updating = True

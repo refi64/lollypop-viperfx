@@ -83,7 +83,7 @@ class Player(BinPlayer, QueuePlayer, UserPlaylistPlayer, RadioPlayer,
             self._albums = [album.id]
             self.context.genre_ids = []
 
-    def set_albums_by(self, track_id, artist_ids, genre_ids):
+    def set_albums(self, track_id, artist_ids, genre_ids):
         """
             Set album list (for next/prev)
             @param track id as int
@@ -137,26 +137,6 @@ class Player(BinPlayer, QueuePlayer, UserPlaylistPlayer, RadioPlayer,
         else:  # Error
             self.stop()
 
-    def get_albums(self):
-        """
-            Get albums, current first
-            @return albums as [int]
-        """
-        if not self._albums:
-            return []
-
-        index = self._albums.index(self.current_track.album_id)
-        albums = self._albums[index:]+self._albums[:index]
-        return albums
-
-    def set_albums(self, albums):
-        """
-            Set albums
-            @param albums as [int]
-        """
-        self._albums = albums
-        self.set_next()
-
     def clear_albums(self):
         """
             Clear all albums
@@ -189,7 +169,7 @@ class Player(BinPlayer, QueuePlayer, UserPlaylistPlayer, RadioPlayer,
                     Lp().player.load_in_playlist(track_id, False)
                 else:
                     self._load_track(Track(track_id))
-                    self.set_albums_by(track_id, [Type.ALL], [Type.ALL])
+                    self.set_albums(track_id, [Type.ALL], [Type.ALL])
                 self.set_next()
                 self.set_prev()
                 self.emit('current-changed')
