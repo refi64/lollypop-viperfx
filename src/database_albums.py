@@ -595,7 +595,8 @@ class AlbumsDatabase:
             # Get albums for all artists
             if not artist_ids and not genre_ids:
                 result = sql.execute(
-                                 "SELECT albums.rowid FROM albums, artists\
+                                 "SELECT DISTINCT albums.rowid\
+                                  FROM albums, artists\
                                   WHERE artists.rowid=albums.artist_id\
                                   ORDER BY artists.sortname COLLATE NOCASE,\
                                   albums.year,\
@@ -603,7 +604,7 @@ class AlbumsDatabase:
             # Get albums for genre
             elif not artist_ids:
                 genres = tuple(genre_ids)
-                request = "SELECT albums.rowid FROM albums,\
+                request = "SELECT DISTINCT albums.rowid FROM albums,\
                            album_genres, artists\
                            WHERE artists.rowid=artist_id\
                            AND album_genres.album_id=albums.rowid AND ("
@@ -666,7 +667,8 @@ class AlbumsDatabase:
             else:
                 filters = (Type.COMPILATIONS,)
                 filters += tuple(genre_ids)
-                request = "SELECT albums.rowid FROM albums, album_genres\
+                request = "SELECT DISTINCT albums.rowid\
+                           FROM albums, album_genres\
                            WHERE album_genres.album_id=albums.rowid\
                            AND albums.artist_id=? AND ( "
                 for genre_id in genre_ids:
