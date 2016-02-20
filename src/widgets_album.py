@@ -316,17 +316,20 @@ class AlbumDetailedWidget(Gtk.Bin, AlbumWidget):
         'finished': (GObject.SignalFlags.RUN_FIRST, None, ())
     }
 
-    def __init__(self, album_id, genre_ids, artist_ids, size_group):
+    def __init__(self, album_id, genre_ids, artist_ids,
+                 size_group, update_albums=True):
         """
             Init detailed album widget
             @param album id as int
             @param genre ids as [int]
             @param artist ids as [int]
             @param size group as Gtk.SizeGroup
+            @param update albums as bool: update albums on play
         """
         Gtk.Bin.__init__(self)
         AlbumWidget.__init__(self, album_id, genre_ids)
         self._artist_ids = artist_ids
+        self._update_albums = update_albums
         self.set_property('height-request', ArtSize.BIG)
         builder = Gtk.Builder()
         builder.add_from_resource('/org/gnome/Lollypop/%s.ui' %
@@ -576,8 +579,10 @@ class AlbumDetailedWidget(Gtk.Bin, AlbumWidget):
             @param widget as TracksWidget
             @param track id as int
         """
+        if not self._update_albums:
+            Lp().player.load(Track(track_id))
         # Play track with no album, force repeat on track
-        if self._button_state & Gdk.ModifierType.SHIFT_MASK:
+        elif self._button_state & Gdk.ModifierType.SHIFT_MASK:
             Lp().player.clear_albums()
             Lp().player.load(Track(track_id))
         else:

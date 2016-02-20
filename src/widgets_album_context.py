@@ -22,14 +22,16 @@ class AlbumContextWidget(AlbumDetailedWidget):
         Widget with cover and tracks
     """
 
-    def __init__(self, album_id, genre_id, size_group):
+    def __init__(self, album_id, genre_id, size_group, update_albums=True):
         """
             Init detailed album widget
             @param album id as int
             @param genre id as int
             @param size group as Gtk.SizeGroup
+            @param update albums as bool: update albums on play
         """
-        AlbumDetailedWidget.__init__(self, album_id, genre_id, [], size_group)
+        AlbumDetailedWidget.__init__(self, album_id, genre_id, [],
+                                     size_group, update_albums)
         self._artist_label.set_text(self._album.artist_name)
         self._artist_label.show()
 
@@ -63,18 +65,20 @@ class AlbumPopoverWidget(Gtk.Popover):
         An AlbumContextWidget in a popover
     """
 
-    def __init__(self, album_id, genre_id):
+    def __init__(self, album_id, genre_id, update_albums=True):
         """
             Init popover
             @param album id as int
             @param genre id as int
+            @param update albums as bool: update albums on play
         """
         Gtk.Popover.__init__(self)
         self.connect('hide', self._on_hide)
         size_group = Gtk.SizeGroup(mode=Gtk.SizeGroupMode.HORIZONTAL)
         self._widget = AlbumContextWidget(album_id,
                                           genre_id,
-                                          size_group)
+                                          size_group,
+                                          update_albums)
         self._widget.populate()
         self._widget.show()
         self._current_signal = Lp().player.connect('current-changed',

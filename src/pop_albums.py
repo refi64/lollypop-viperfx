@@ -184,7 +184,7 @@ class AlbumsPopover(Gtk.Popover):
         self._timeout = None
         if not self._in_drag:
             album_id = self._model.get_value(iterator, 0)
-            popover = AlbumPopoverWidget(album_id, None)
+            popover = AlbumPopoverWidget(album_id, None, False)
             popover.set_relative_to(self._view)
             popover.set_pointing_to(self._rect)
             popover.show()
