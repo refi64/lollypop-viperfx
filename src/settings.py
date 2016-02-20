@@ -97,9 +97,6 @@ class SettingsDialog:
         switch_state = builder.get_object('switch_state')
         switch_state.set_state(Lp().settings.get_value('save-state'))
 
-        switch_autoplay = builder.get_object('switch_autoplay')
-        switch_autoplay.set_state(Lp().settings.get_value('auto-play'))
-
         switch_mix = builder.get_object('switch_mix')
         switch_mix.set_state(Lp().settings.get_value('mix'))
 
@@ -287,14 +284,6 @@ class SettingsDialog:
         """
         Lp().window.show_genres(state)
         Lp().settings.set_value('show-genres',
-                                GLib.Variant('b', state))
-
-    def _update_autoplay_setting(self, widget, state):
-        """
-            Update auto play setting
-            @param widget as unused, state as widget state
-        """
-        Lp().settings.set_value('auto-play',
                                 GLib.Variant('b', state))
 
     def _update_mix_setting(self, widget, state):

@@ -136,11 +136,6 @@
             <summary>Restore previous state</summary>
             <description></description>
         </key>
-        <key type="b" name="auto-play">
-            <default>false</default>
-            <summary>Auto play albums on click</summary>
-            <description></description>
-        </key>
         <key type="b" name="disable-mpris">
             <default>false</default>
             <summary>Disable MPRIS</summary>
