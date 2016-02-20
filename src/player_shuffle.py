@@ -141,6 +141,19 @@ class ShufflePlayer(BasePlayer):
         """
         return self._is_party
 
+    def shuffle_albums(self, shuffle):
+        """
+            Shuffle album list
+            @param shuffle as bool
+        """
+        if shuffle and self._shuffle == Shuffle.ALBUMS:
+            if self._albums:
+                self._albums_backup = list(self._albums)
+                random.shuffle(self._albums)
+        elif self._albums_backup:
+            self._albums = self._albums_backup
+            self._albums_backup = []
+
 #######################
 # PRIVATE             #
 #######################
@@ -161,23 +174,12 @@ class ShufflePlayer(BasePlayer):
 
         if self._user_playlist:
             self._shuffle_playlist()
-        elif self._shuffle in [Shuffle.NONE, Shuffle.ALBUMS]:
-            self._shuffle_albums()
+        elif self._shuffle == Shuffle.NONE:
+            self.shuffle_albums(False)
+        elif self._shuffle == Shuffle.ALBUMS:
+            self.shuffle_albums(True)
         if self.current_track.id is not None:
             self.set_next()
-
-    def _shuffle_albums(self):
-        """
-            Shuffle album list
-        """
-        if self._shuffle == Shuffle.ALBUMS:
-            if self._albums and not self._albums_backup:
-                self._albums_backup = list(self._albums)
-                random.shuffle(self._albums)
-        elif self._shuffle == Shuffle.NONE:
-            if self._albums_backup:
-                self._albums = self._albums_backup
-                self._albums_backup = []
 
     def _shuffle_next(self):
         """

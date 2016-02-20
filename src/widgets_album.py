@@ -215,7 +215,9 @@ class AlbumWidget:
         albums = Lp().player.get_albums()
         empty = len(albums) == 0
         if self._album.id not in albums:
-            albums.append(self._album.id)
+            Lp().player.shuffle_albums(False)
+            Lp().player.get_albums().append(self._album.id)
+            Lp().player.shuffle_albums(True)
             if empty:
                 Lp().player.load(self._album.tracks[0], False)
         self._append_button.hide()

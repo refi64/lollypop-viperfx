@@ -137,7 +137,7 @@ class Player(BinPlayer, QueuePlayer, UserPlaylistPlayer, RadioPlayer,
         if track_id in album.tracks_ids:
             self.context.genre_ids = genre_ids
             # Shuffle album list if needed
-            self._shuffle_albums()
+            self.shuffle_albums(True)
         else:  # Error
             self.stop()
 
@@ -146,7 +146,9 @@ class Player(BinPlayer, QueuePlayer, UserPlaylistPlayer, RadioPlayer,
             Set albums
             @param albums as [int]
         """
+        self.shuffle_albums(False)
         self._albums = albums
+        self.shuffle_albums(True)
         self.set_next()
 
     def get_albums(self):
