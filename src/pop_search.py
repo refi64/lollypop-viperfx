@@ -216,6 +216,21 @@ class SearchPopover(Gtk.Popover):
 
         tracks_non_album_artist = []
 
+        for track_id, track_name in Lp().tracks.search(
+                        self._current_search) + tracks_non_album_artist:
+            search_obj = SearchObject()
+            search_obj.title = track_name
+            search_obj.id = track_id
+            search_obj.album_id = Lp().tracks.get_album_id(track_id)
+            search_obj.is_track = True
+
+            artist_id = Lp().albums.get_artist_id(search_obj.album_id)
+            if artist_id == Type.COMPILATIONS:
+                search_obj.artist = Lp().tracks.get_artist_names(track_id)
+            else:
+                search_obj.artist = Lp().artists.get_name(artist_id)
+            results.append(search_obj)
+
         # Get all albums for all artists and non album_artist tracks
         for artist_id in Lp().artists.search(self._current_search):
             for album_id in Lp().albums.get_ids([artist_id], None):
@@ -234,22 +249,6 @@ class SearchPopover(Gtk.Popover):
             search_obj.count = Lp().albums.get_count(album_id, None)
             search_obj.id = album_id
             search_obj.album_id = album_id
-            results.append(search_obj)
-
-        for track_id, track_name in Lp().tracks.search(
-                        self._current_search) + tracks_non_album_artist:
-            search_obj = SearchObject()
-            search_obj.title = track_name
-            search_obj.id = track_id
-            search_obj.album_id = Lp().tracks.get_album_id(track_id)
-            search_obj.is_track = True
-
-            artist_id = Lp().albums.get_artist_id(search_obj.album_id)
-            if artist_id == Type.COMPILATIONS:
-                search_obj.artist = Lp().tracks.get_artist_names(track_id)
-            else:
-                search_obj.artist = Lp().artists.get_name(artist_id)
-
             results.append(search_obj)
 
         if not self._stop_thread:
@@ -277,7 +276,10 @@ class SearchPopover(Gtk.Popover):
                                      ArtSize.MEDIUM*self.get_scale_factor()))
                 search_row.id = result.id
                 search_row.is_track = result.is_track
-                self._view.add(search_row)
+                if search_row.is_track:
+                    self._view.prepend(search_row)
+                else:
+                    self._view.add(search_row)
             if self._stop_thread:
                 self._in_thread = False
                 self._stop_thread = False
