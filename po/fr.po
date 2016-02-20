@@ -9,8 +9,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lollypop\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-02-18 21:48+0100\n"
-"PO-Revision-Date: 2016-02-18 20:49+0000\n"
+"POT-Creation-Date: 2016-02-20 19:16+0100\n"
+"PO-Revision-Date: 2016-02-20 18:20+0000\n"
 "Last-Translator: Cédric Bellegarde <web@adishatz.org>\n"
 "Language-Team: French (http://www.transifex.com/gnumdk/lollypop/language/fr/)\n"
 "MIME-Version: 1.0\n"
@@ -374,9 +374,10 @@ msgid "Pause"
 msgstr "Pause"
 
 #: ../src/controllers.py:84 ../src/controllers.py:112 ../src/pop_tunein.py:154
+#: ../data/AlbumContextWidget.ui.h:1 ../data/AlbumDetailedWidget.ui.h:1
 #: ../data/ToolbarPlayback.ui.h:2
 msgid "Play"
-msgstr "Lecture"
+msgstr "Lire"
 
 #: ../src/database_albums.py:270 ../src/database_artists.py:104
 #: ../src/database_genres.py:69 ../src/database_tracks.py:229
@@ -414,7 +415,7 @@ msgstr "Par %s"
 msgid "by %s, from %s"
 msgstr "par %s, sur %s"
 
-#: ../src/player_bin.py:448
+#: ../src/player_bin.py:453
 #, python-format
 msgid "File doesn't exist: %s"
 msgstr "Le fichier n'existe pas: %s"
@@ -540,22 +541,22 @@ msgstr "Synchroniser %s"
 msgid "Cancel synchronization"
 msgstr "Annuler la synchronisation"
 
-#: ../src/widgets_album.py:314
+#: ../src/widgets_album.py:361
 #, python-format
 msgid "%s h  %s m"
 msgstr "%s h %s m"
 
-#: ../src/widgets_album.py:316
+#: ../src/widgets_album.py:363
 #, python-format
 msgid "%s h"
 msgstr "%s h"
 
-#: ../src/widgets_album.py:318
+#: ../src/widgets_album.py:365
 #, python-format
 msgid "%s m"
 msgstr "%s m"
 
-#: ../src/widgets_album.py:332
+#: ../src/widgets_album.py:379
 #, python-format
 msgid "Disc %s"
 msgstr "Disque %s"
@@ -606,9 +607,13 @@ msgstr "Visitez le site web de Lollypop"
 msgid "Cédric Bellegarde <cedric.bellegarde@adishatz.org>"
 msgstr "Cédric Bellegarde <cedric.bellegarde@adishatz.org>"
 
-#: ../data/AlbumContextWidget.ui.h:1 ../data/AlbumDetailedWidget.ui.h:1
-msgid "Play this album"
-msgstr "Lire cet album"
+#: ../data/AlbumContextWidget.ui.h:2 ../data/AlbumDetailedWidget.ui.h:2
+msgid "Change artwork"
+msgstr "Modifier la pochette"
+
+#: ../data/AlbumContextWidget.ui.h:3 ../data/AlbumDetailedWidget.ui.h:3
+msgid "Append"
+msgstr "Ajouter"
 
 #: ../data/Appmenu.ui.h:1
 msgid "_Update music"
@@ -685,6 +690,14 @@ msgstr "File d'attente:"
 #: ../data/QueuePopover.ui.h:2
 msgid "Clear queue"
 msgstr "Vider la file d'attente"
+
+#: ../data/AlbumsPopover.ui.h:1
+msgid "Albums playing:"
+msgstr "Albums en cours de lecture:"
+
+#: ../data/AlbumsPopover.ui.h:2
+msgid "Remove all albums"
+msgstr "Supprimer tous les albums"
 
 #: ../data/RadioPopover.ui.h:1
 msgid "Select a logo  for this radio"
