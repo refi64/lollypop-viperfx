@@ -204,6 +204,7 @@ class AlbumWidget:
         popover.populate()
         popover.connect('closed', self._on_pop_cover_closed)
         popover.show()
+        return True
 
     def _on_append_press_event(self, widget, event):
         """
@@ -219,6 +220,7 @@ class AlbumWidget:
                 Lp().player.load(self._album.tracks[0], False)
         self._append_button.hide()
         self._append_button.set_opacity(0)
+        return True
 
 
 class AlbumSimpleWidget(Gtk.Frame, AlbumWidget):
@@ -226,16 +228,18 @@ class AlbumSimpleWidget(Gtk.Frame, AlbumWidget):
         Album widget showing cover, artist and title
     """
 
-    def __init__(self, album_id):
+    def __init__(self, album_id, parent):
         """
             Init simple album widget
             @param album id as int
+            @parma parent as AlbumsView
         """
         # We do not use Gtk.Builder for speed reasons
         Gtk.Frame.__init__(self)
         self.set_shadow_type(Gtk.ShadowType.NONE)
         self.get_style_context().add_class('loading')
         self._album_id = album_id
+        self._parent = parent
         self._album = None
         self._cover = None
         self._eventbox = None
@@ -362,7 +366,8 @@ class AlbumSimpleWidget(Gtk.Frame, AlbumWidget):
             @param: widget as Gtk.EventBox
             @param: event as Gdk.Event
         """
-        pass
+        self._parent.play_album(self._album.id)
+        return True
 
     def _on_query_tooltip(self, widget, x, y, keyboard, tooltip):
         """
