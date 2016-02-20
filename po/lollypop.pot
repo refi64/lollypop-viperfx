@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-02-18 21:48+0100\n"
+"POT-Creation-Date: 2016-02-20 19:16+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -373,6 +373,7 @@ msgid "Pause"
 msgstr ""
 
 #: ../src/controllers.py:84 ../src/controllers.py:112 ../src/pop_tunein.py:154
+#: ../data/AlbumContextWidget.ui.h:1 ../data/AlbumDetailedWidget.ui.h:1
 #: ../data/ToolbarPlayback.ui.h:2
 msgid "Play"
 msgstr ""
@@ -413,7 +414,7 @@ msgstr ""
 msgid "by %s, from %s"
 msgstr ""
 
-#: ../src/player_bin.py:448
+#: ../src/player_bin.py:453
 #, python-format
 msgid "File doesn't exist: %s"
 msgstr ""
@@ -539,22 +540,22 @@ msgstr ""
 msgid "Cancel synchronization"
 msgstr ""
 
-#: ../src/widgets_album.py:314
+#: ../src/widgets_album.py:361
 #, python-format
 msgid "%s h  %s m"
 msgstr ""
 
-#: ../src/widgets_album.py:316
+#: ../src/widgets_album.py:363
 #, python-format
 msgid "%s h"
 msgstr ""
 
-#: ../src/widgets_album.py:318
+#: ../src/widgets_album.py:365
 #, python-format
 msgid "%s m"
 msgstr ""
 
-#: ../src/widgets_album.py:332
+#: ../src/widgets_album.py:379
 #, python-format
 msgid "Disc %s"
 msgstr ""
@@ -605,8 +606,12 @@ msgstr ""
 msgid "Cédric Bellegarde <cedric.bellegarde@adishatz.org>"
 msgstr ""
 
-#: ../data/AlbumContextWidget.ui.h:1 ../data/AlbumDetailedWidget.ui.h:1
-msgid "Play this album"
+#: ../data/AlbumContextWidget.ui.h:2 ../data/AlbumDetailedWidget.ui.h:2
+msgid "Change artwork"
+msgstr ""
+
+#: ../data/AlbumContextWidget.ui.h:3 ../data/AlbumDetailedWidget.ui.h:3
+msgid "Append"
 msgstr ""
 
 #: ../data/Appmenu.ui.h:1
@@ -683,6 +688,14 @@ msgstr ""
 
 #: ../data/QueuePopover.ui.h:2
 msgid "Clear queue"
+msgstr ""
+
+#: ../data/AlbumsPopover.ui.h:1
+msgid "Albums playing:"
+msgstr ""
+
+#: ../data/AlbumsPopover.ui.h:2
+msgid "Remove all albums"
 msgstr ""
 
 #: ../data/RadioPopover.ui.h:1
