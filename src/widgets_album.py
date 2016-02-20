@@ -666,7 +666,10 @@ class AlbumDetailedWidget(Gtk.Bin, AlbumWidget):
             Append album to current list if not present
         """
         albums = Lp().player.get_albums()
+        empty = len(albums) == 0
         if self._album.id not in albums:
             albums.append(self._album.id)
+            if empty:
+                Lp().player.load(self._album.tracks[0], False)
         self._append_button.hide()
         self._append_button.set_opacity(0)

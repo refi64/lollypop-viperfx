@@ -54,11 +54,11 @@ class Player(BinPlayer, QueuePlayer, UserPlaylistPlayer, RadioPlayer,
         if self.next_track.id is not None:
             self.load(self.next_track)
 
-    def load(self, track):
+    def load(self, track, play=True):
         """
             Stop current track, load track id and play it
             @param track as Track
-            @param notify as bool
+            @param play as bool, ignored for radios
         """
         if track.id == Type.RADIOS:
             if not Lp().scanner.is_locked():
@@ -66,7 +66,11 @@ class Player(BinPlayer, QueuePlayer, UserPlaylistPlayer, RadioPlayer,
                 Lp().window.pulse(True)
             RadioPlayer.load(self, track)
         else:
-            BinPlayer.load(self, track)
+            if play:
+                BinPlayer.load(self, track)
+            else:
+                BinPlayer._load_track(self, track)
+                self.emit('current-changed')
 
     def play_album(self, album):
         """
