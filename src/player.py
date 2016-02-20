@@ -135,7 +135,6 @@ class Player(BinPlayer, QueuePlayer, UserPlaylistPlayer, RadioPlayer,
             self.context.next = NextContext.STOP_ALL
 
         if track_id in album.tracks_ids:
-            self.context.artist_ids = artist_ids
             self.context.genre_ids = genre_ids
             # Shuffle album list if needed
             self._shuffle_albums()
