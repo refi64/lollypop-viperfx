@@ -117,6 +117,7 @@ class ToolbarInfos(Gtk.Bin, InfosController):
             self._pop_albums = AlbumsPopover()
             self._pop_albums.set_relative_to(self._cover)
         self._pop_albums.show()
+        return True
 
     def _on_title_clicked(self, eventbox, event):
         """
@@ -136,20 +137,20 @@ class ToolbarInfos(Gtk.Bin, InfosController):
                     if self._pop_tunein is None:
                         self._pop_tunein = TuneinPopover()
                         self._pop_tunein.populate()
-                        self._pop_tunein.set_relative_to(self._labels)
+                        self._pop_tunein.set_relative_to(eventbox)
                     self._pop_tunein.show()
                 else:
                     if self._pop_infos is None:
                         self._pop_infos = InfosPopover()
-                        self._pop_infos.set_relative_to(self._labels)
+                        self._pop_infos.set_relative_to(eventbox)
                     self._pop_infos.show()
             elif Lp().player.current_track.id >= 0:
                 popover = TrackMenuPopover(
                             Lp().player.current_track.id,
                             PopToolbarMenu(Lp().player.current_track.id))
-                popover.set_relative_to(self._infobox)
+                popover.set_relative_to(eventbox)
                 popover.show()
-            return True
+        return True
 
     def _on_query_tooltip(self, widget, x, y, keyboard, tooltip):
         """

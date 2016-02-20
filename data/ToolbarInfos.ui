@@ -10,7 +10,7 @@
       <object class="GtkEventBox" id="album_event">
         <property name="visible">True</property>
         <property name="can_focus">False</property>
-        <signal name="button-release-event" handler="_on_album_clicked" swapped="no"/>
+        <signal name="button-press-event" handler="_on_album_clicked" swapped="no"/>
         <signal name="realize" handler="_on_eventbox_realize" swapped="no"/>
         <child>
           <object class="GtkFrame" id="frame">
@@ -43,7 +43,7 @@
       <object class="GtkEventBox" id="label_event">
         <property name="visible">True</property>
         <property name="can_focus">False</property>
-        <signal name="button-release-event" handler="_on_title_clicked" swapped="no"/>
+        <signal name="button-press-event" handler="_on_title_clicked" swapped="no"/>
         <signal name="query-tooltip" handler="_on_query_tooltip" swapped="no"/>
         <signal name="realize" handler="_on_eventbox_realize" swapped="no"/>
         <child>
