@@ -38,6 +38,7 @@ src/player_rg.py
 src/player_shuffle.py
 src/player_userplaylist.py
 src/playlists.py
+src/pop_albums.py
 src/pop_covers.py
 src/pop_infos.py
 src/pop_menu.py
@@ -92,6 +93,7 @@ src/window.py
 [type: gettext/glade]data/PlaylistsManagerWidget.ui
 [type: gettext/glade]data/PlaylistView.ui
 [type: gettext/glade]data/QueuePopover.ui
+[type: gettext/glade]data/AlbumsPopover.ui
 [type: gettext/glade]data/RadioPopover.ui
 [type: gettext/glade]data/RadiosView.ui
 [type: gettext/glade]data/RadioWidget.ui

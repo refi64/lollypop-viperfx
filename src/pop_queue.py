@@ -36,6 +36,7 @@ class QueueWidget(Gtk.Popover):
         self._in_drag = False
         self._signal_id1 = None
         self._signal_id2 = None
+        self._stop = False
 
         builder = Gtk.Builder()
         builder.add_from_resource('/org/gnome/Lollypop/QueuePopover.ui')
@@ -99,7 +100,8 @@ class QueueWidget(Gtk.Popover):
             Add items to the view
             @param item ids as [int]
         """
-        for track_id in items:
+        if items and not self._stop:
+            track_id = items.pop(0)
             album_id = Lp().tracks.get_album_id(track_id)
             artist_id = Lp().albums.get_artist_id(album_id)
             artist_name = Lp().artists.get_name(artist_id)
@@ -111,12 +113,14 @@ class QueueWidget(Gtk.Popover):
                                 title,
                                 'user-trash-symbolic',
                                 track_id])
+            GLib.idle_add(self._add_items, items)
 
     def _on_map(self, widget):
         """
             Connect signals
             @param widget as Gtk.Widget
         """
+        self._stop = False
         self._model.clear()
         self.populate()
         self._signal_id1 = Lp().player.connect('current-changed',
@@ -129,10 +133,11 @@ class QueueWidget(Gtk.Popover):
             Disconnect signals
             @param widget as Gtk.Widget
         """
-        if self._signal_id1:
+        self._stop = True
+        if self._signal_id1 is not None:
             Lp().player.disconnect(self._signal_id1)
             self._signal_id1 = None
-        if self._signal_id2:
+        if self._signal_id2 is not None:
             self._model.disconnect(self._signal_id2)
             self._signal_id2 = None
 

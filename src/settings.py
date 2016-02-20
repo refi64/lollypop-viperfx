@@ -255,7 +255,6 @@ class SettingsDialog:
         if not Lp().player.is_party():
             settings = Gtk.Settings.get_default()
             settings.set_property("gtk-application-prefer-dark-theme", state)
-            Lp().window.update_view()
 
     def _update_scan_setting(self, widget, state):
         """
@@ -297,7 +296,6 @@ class SettingsDialog:
         """
         Lp().settings.set_value('auto-play',
                                 GLib.Variant('b', state))
-        Lp().window.update_view()
 
     def _update_mix_setting(self, widget, state):
         """
@@ -339,7 +337,6 @@ class SettingsDialog:
         """
         Lp().settings.set_value('show-compilations',
                                 GLib.Variant('b', state))
-        Lp().window.update_view()
 
     def _update_repeat_setting(self, widget, state):
         """
@@ -409,6 +406,7 @@ class SettingsDialog:
         self._settings_dialog.destroy()
         if set(previous) != set(paths):
             Lp().window.update_db()
+        Lp().window.update_view()
 
     def _party_switch_state(self, widget, state, genre_id):
         """

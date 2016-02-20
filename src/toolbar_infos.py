@@ -15,6 +15,7 @@ from cgi import escape
 
 from lollypop.pop_menu import TrackMenuPopover
 from lollypop.pop_tunein import TuneinPopover
+from lollypop.pop_albums import AlbumsPopover
 from lollypop.pop_externals import ExternalsPopover
 from lollypop.pop_infos import InfosPopover
 from lollypop.pop_menu import PopToolbarMenu
@@ -38,18 +39,20 @@ class ToolbarInfos(Gtk.Bin, InfosController):
         builder.connect_signals(self)
         self._pop_tunein = None
         self._pop_infos = None
+        self._pop_albums = None
         self._width = 0
 
         self._infobox = builder.get_object('infos')
-        self._infobox.set_property('has-tooltip', True)
         self.add(self._infobox)
 
+        builder.get_object('label_event').set_property('has-tooltip', True)
         self._labels = builder.get_object('nowplaying_labels')
         self._title_label = builder.get_object('title')
         self._artist_label = builder.get_object('artist')
         self._cover_frame = builder.get_object('frame')
         self._cover = builder.get_object('cover')
 
+        self.connect('realize', self._on_realize)
         Lp().art.connect('album-artwork-changed', self._update_cover)
         Lp().art.connect('radio-artwork-changed', self._update_logo)
 
@@ -103,9 +106,21 @@ class ToolbarInfos(Gtk.Bin, InfosController):
             self._cover.set_from_surface(pixbuf)
             del pixbuf
 
-    def _on_infobox_clicked(self, eventbox, event):
+    def _on_album_clicked(self, eventbox, event):
         """
-            Pop albums from current artistleft click
+            Pop curent albums
+            Show playlist menu on right
+            @param eventbox as Gtk.EventBox
+            @param event as Gdk.Event
+        """
+        if self._pop_albums is None:
+            self._pop_albums = AlbumsPopover()
+            self._pop_albums.set_relative_to(self._cover)
+        self._pop_albums.show()
+
+    def _on_title_clicked(self, eventbox, event):
+        """
+            Pop informations for current track
             Show playlist menu on right
             @param eventbox as Gtk.EventBox
             @param event as Gdk.Event
@@ -121,12 +136,12 @@ class ToolbarInfos(Gtk.Bin, InfosController):
                     if self._pop_tunein is None:
                         self._pop_tunein = TuneinPopover()
                         self._pop_tunein.populate()
-                        self._pop_tunein.set_relative_to(self._infobox)
+                        self._pop_tunein.set_relative_to(self._labels)
                     self._pop_tunein.show()
                 else:
                     if self._pop_infos is None:
                         self._pop_infos = InfosPopover()
-                        self._pop_infos.set_relative_to(self._infobox)
+                        self._pop_infos.set_relative_to(self._labels)
                     self._pop_infos.show()
             elif Lp().player.current_track.id >= 0:
                 popover = TrackMenuPopover(
@@ -157,12 +172,17 @@ class ToolbarInfos(Gtk.Bin, InfosController):
             return False
         return True
 
-    def _on_eventbox_realize(self, eventbox):
+    def _on_realize(self, toolbar):
         """
-            Show hand cursor over
+            @param toolbar as ToolbarInfos
         """
         style = self.get_style_context()
         padding = style.get_padding(style.get_state())
         ArtSize.SMALL = self.get_allocated_height()\
             - padding.top - padding.bottom - 2
+
+    def _on_eventbox_realize(self, eventbox):
+        """
+            Show hand cursor over
+        """
         eventbox.get_window().set_cursor(Gdk.Cursor(Gdk.CursorType.HAND1))

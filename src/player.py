@@ -137,6 +137,21 @@ class Player(BinPlayer, QueuePlayer, UserPlaylistPlayer, RadioPlayer,
         else:  # Error
             self.stop()
 
+    def set_albums2(self, albums):
+        """
+            Set albums
+            @param albums as [int]
+        """
+        self._albums = albums
+        self.set_next()
+
+    def get_albums(self):
+        """
+            Return albums
+            @return albums as [int]
+        """
+        return self._albums
+
     def clear_albums(self):
         """
             Clear all albums

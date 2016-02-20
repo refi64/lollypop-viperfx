@@ -2,18 +2,16 @@
 <!-- Generated with glade 3.19.0 -->
 <interface domain="lollypop">
   <requires lib="gtk+" version="3.10"/>
-  <object class="GtkEventBox" id="infos">
+  <object class="GtkBox" id="infos">
     <property name="visible">True</property>
     <property name="can_focus">False</property>
-    <property name="halign">start</property>
-    <signal name="button-press-event" handler="_on_infobox_clicked" swapped="no"/>
-    <signal name="query-tooltip" handler="_on_query_tooltip" swapped="no"/>
-    <signal name="realize" handler="_on_eventbox_realize" swapped="no"/>
+    <property name="valign">center</property>
     <child>
-      <object class="GtkBox" id="nowplaying">
+      <object class="GtkEventBox" id="album_event">
         <property name="visible">True</property>
         <property name="can_focus">False</property>
-        <property name="valign">center</property>
+        <signal name="button-release-event" handler="_on_album_clicked" swapped="no"/>
+        <signal name="realize" handler="_on_eventbox_realize" swapped="no"/>
         <child>
           <object class="GtkFrame" id="frame">
             <property name="can_focus">False</property>
@@ -33,12 +31,21 @@
               <class name="small-cover-frame"/>
             </style>
           </object>
-          <packing>
-            <property name="expand">False</property>
-            <property name="fill">True</property>
-            <property name="position">0</property>
-          </packing>
         </child>
+      </object>
+      <packing>
+        <property name="expand">False</property>
+        <property name="fill">True</property>
+        <property name="position">0</property>
+      </packing>
+    </child>
+    <child>
+      <object class="GtkEventBox" id="label_event">
+        <property name="visible">True</property>
+        <property name="can_focus">False</property>
+        <signal name="button-release-event" handler="_on_title_clicked" swapped="no"/>
+        <signal name="query-tooltip" handler="_on_query_tooltip" swapped="no"/>
+        <signal name="realize" handler="_on_eventbox_realize" swapped="no"/>
         <child>
           <object class="GtkBox" id="nowplaying_labels">
             <property name="visible">True</property>
@@ -81,13 +88,13 @@
               </packing>
             </child>
           </object>
-          <packing>
-            <property name="expand">False</property>
-            <property name="fill">False</property>
-            <property name="position">1</property>
-          </packing>
         </child>
       </object>
+      <packing>
+        <property name="expand">False</property>
+        <property name="fill">False</property>
+        <property name="position">1</property>
+      </packing>
     </child>
   </object>
 </interface>

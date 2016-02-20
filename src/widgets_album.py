@@ -91,6 +91,18 @@ class AlbumWidget:
         """
         pass
 
+    def clean_overlay(self):
+        """
+            Clean overlay icon
+        """
+        pass
+
+    def update_cursor(self):
+        """
+            Update widget's cursor
+        """
+        pass
+
     def stop(self):
         """
             Stop populating
@@ -112,47 +124,9 @@ class AlbumWidget:
         """
         return self._album.name
 
-    def update_cursor(self, cursor=Gdk.CursorType.LEFT_PTR):
-        """
-            Update widget's cursor
-            @param cursor as Gdk.CursorType
-        """
-        if self._eventbox is None:
-            return
-        window = self._eventbox.get_window()
-        if window is not None:
-            window.set_cursor(Gdk.Cursor(cursor))
-
 #######################
 # PRIVATE             #
 #######################
-    def _on_eventbox_realize(self, eventbox):
-        """
-            Change cursor over eventbox
-            @param eventbox as Gdk.Eventbox
-        """
-        self._eventbox = eventbox
-        self.update_cursor()
-
-    def _on_enter_notify(self, widget, event):
-        """
-            Add hover style
-            @param widget as Gtk.Widget
-            @param event es Gdk.Event
-        """
-        # https://bugzilla.gnome.org/show_bug.cgi?id=751076
-        # See application.css => white
-        self._cover.get_style_context().add_class('hovereffect')
-
-    def _on_leave_notify(self, widget, event):
-        """
-            Remove hover style
-            @param widget as Gtk.Widget
-            @param event es Gdk.Event
-        """
-        # https://bugzilla.gnome.org/show_bug.cgi?id=751076
-        # See application.css => white
-        self._cover.get_style_context().remove_class('hovereffect')
 
 
 class AlbumSimpleWidget(Gtk.Frame, AlbumWidget):
@@ -209,7 +183,16 @@ class AlbumSimpleWidget(Gtk.Frame, AlbumWidget):
         grid.add(self._title_label)
         grid.add(self._artist_label)
         frame.add(self._color)
-        self._color.add(grid1)
+        overlay = Gtk.Overlay.new()
+        overlay.add(grid1)
+        self._overlay_image = Gtk.Image.new_from_icon_name(
+                                           'media-playback-start-symbolic',
+                                           Gtk.IconSize.DND)
+        self._overlay_image.set_property('halign', Gtk.Align.CENTER)
+        self._overlay_image.set_property('valign', Gtk.Align.CENTER)
+        self._overlay_image.set_opacity(0)
+        overlay.add_overlay(self._overlay_image)
+        self._color.add(overlay)
         grid1.add(self._cover)
         self.add(self._widget)
         self.set_cover()
@@ -240,14 +223,71 @@ class AlbumSimpleWidget(Gtk.Frame, AlbumWidget):
         """
             Update album cursor
         """
-        if Lp().settings.get_value('auto-play'):
-            AlbumWidget.update_cursor(self, Gdk.CursorType.HAND1)
-        else:
-            AlbumWidget.update_cursor(self)
+        if self._eventbox is None:
+            return
+        window = self._eventbox.get_window()
+        if window is not None:
+            if Lp().settings.get_value('auto-play'):
+                cursor = Gdk.CursorType.HAND1
+            else:
+                cursor = Gdk.CursorType.LEFT_PTR
+            window.set_cursor(Gdk.Cursor(cursor))
+
+    def clean_overlay(self):
+        """
+            Clean overlay icon
+        """
+        self._cover.get_style_context().remove_class('hovereffect')
+        self._overlay_image.get_style_context().remove_class('rounded-icon')
+        self._overlay_image.set_opacity(0)
 
 #######################
 # PRIVATE             #
 #######################
+    def _on_enter_notify(self, widget, event):
+        """
+            Add hover style
+            @param widget as Gtk.Widget
+            @param event es Gdk.Event
+        """
+        # https://bugzilla.gnome.org/show_bug.cgi?id=751076
+        # See application.css => white
+        self._cover.get_style_context().add_class('hovereffect')
+        if Lp().settings.get_value('auto-play'):
+            if self._overlay_image.get_opacity() == 0:
+                self._overlay_image.set_opacity(1)
+                self._overlay_image.get_style_context().add_class(
+                                                                'rounded-icon')
+
+    def _on_leave_notify(self, widget, event):
+        """
+            Remove hover style
+            @param widget as Gtk.Widget
+            @param event es Gdk.Event
+        """
+        if Lp().settings.get_value('auto-play'):
+            allocation = widget.get_allocation()
+            if event.x < 0 or\
+               event.x > allocation.width or\
+               event.y < 0 or\
+               event.y > allocation.height:
+                # https://bugzilla.gnome.org/show_bug.cgi?id=751076
+                # See application.css => white
+                self._cover.get_style_context().remove_class('hovereffect')
+                self._overlay_image.get_style_context().remove_class(
+                                                            'rounded-icon')
+                self._overlay_image.set_opacity(0)
+        else:
+            self._cover.get_style_context().remove_class('hovereffect')
+
+    def _on_eventbox_realize(self, eventbox):
+        """
+            Change cursor over eventbox
+            @param eventbox as Gdk.Eventbox
+        """
+        self._eventbox = eventbox
+        self.update_cursor()
+
     def _on_query_tooltip(self, widget, x, y, keyboard, tooltip):
         """
             Show tooltip if needed
@@ -292,6 +332,10 @@ class AlbumDetailedWidget(Gtk.Bin, AlbumWidget):
         builder.add_from_resource('/org/gnome/Lollypop/%s.ui' %
                                   type(self).__name__)
         builder.connect_signals(self)
+
+        self._play_button = builder.get_object('play-button')
+        self._artwork_button = builder.get_object('artwork-button')
+        self._append_button = builder.get_object('append-button')
 
         rating = RatingWidget(self._album)
         rating.show()
@@ -439,12 +483,6 @@ class AlbumDetailedWidget(Gtk.Bin, AlbumWidget):
                       self._tracks_right[disc.number],
                       pos)
 
-    def update_cursor(self):
-        """
-            Update widget's cursor
-        """
-        AlbumWidget.update_cursor(self, Gdk.CursorType.HAND1)
-
 #######################
 # PRIVATE             #
 #######################
@@ -456,16 +494,9 @@ class AlbumDetailedWidget(Gtk.Bin, AlbumWidget):
         """
         pop_menu = AlbumMenu(self._album.id, self._album.genre_id)
         popover = Gtk.Popover.new_from_model(self._menu, pop_menu)
-        popover.connect('closed', self._on_closed)
+        popover.connect('closed', self._on_pop_menu_closed)
         self.get_style_context().add_class('album-menu-selected')
         popover.show()
-
-    def _on_closed(self, widget):
-        """
-            Remove selected style
-            @param widget as Gtk.Popover
-        """
-        self.get_style_context().remove_class('album-menu-selected')
 
     def _add_tracks(self, tracks, widget, i):
         """
@@ -511,6 +542,34 @@ class AlbumDetailedWidget(Gtk.Bin, AlbumWidget):
 
         GLib.idle_add(self._add_tracks, tracks, widget, i + 1)
 
+    def _on_eventbox_realize(self, eventbox):
+        """
+            Change cursor over eventbox
+            @param eventbox as Gdk.Eventbox
+        """
+        window = eventbox.get_window()
+        if window is not None:
+            window.set_cursor(Gdk.Cursor(Gdk.CursorType.HAND1))
+
+    def _on_pop_menu_closed(self, widget):
+        """
+            Remove selected style
+            @param widget as Gtk.Popover
+        """
+        self.get_style_context().remove_class('album-menu-selected')
+
+    def _on_pop_cover_closed(self, widget):
+        """
+            Remove selected style
+            @param widget as Gtk.Popover
+        """
+        self._play_button.set_opacity(0)
+        self._play_button.get_style_context().remove_class('rounded-icon')
+        self._artwork_button.set_opacity(0)
+        self._artwork_button.get_style_context().remove_class('squared-icon')
+        self._append_button.set_opacity(0)
+        self._append_button.get_style_context().remove_class('squared-icon')
+
     def _on_activated(self, widget, track_id):
         """
             On track activation, play track
@@ -538,17 +597,76 @@ class AlbumDetailedWidget(Gtk.Bin, AlbumWidget):
         """
         self._button_state = event.get_state()
 
-    def _on_cover_press_event(self, widget, event):
+    def _on_enter_notify(self, widget, event):
         """
-            Popover with album art downloaded from the web (in fact google :-/)
-            If no popover allowed or 'auto-play' is on, play album
+            Show special buttons
+            @param widget as Gtk.Widget
+            @param event es Gdk.Event
+        """
+        if self._play_button.get_opacity() == 0:
+            self._play_button.set_opacity(1)
+            self._play_button.get_style_context().add_class('rounded-icon')
+            self._play_button.show()
+            self._artwork_button.set_opacity(1)
+            self._artwork_button.get_style_context().add_class('squared-icon')
+            self._artwork_button.show()
+            if self._album.id not in Lp().player.get_albums():
+                self._append_button.set_opacity(1)
+                self._append_button.get_style_context().add_class(
+                                                               'squared-icon')
+                self._append_button.show()
+
+    def _on_leave_notify(self, widget, event):
+        """
+            Hide special buttons
+            @param widget as Gtk.Widget
+            @param event es Gdk.Event
+        """
+        allocation = widget.get_allocation()
+        if event.x < 10 or\
+           event.x > allocation.width - 10 or\
+           event.y < 10 or\
+           event.y > allocation.height - 10:
+            self._play_button.set_opacity(0)
+            self._play_button.hide()
+            self._play_button.get_style_context().remove_class('rounded-icon')
+            self._artwork_button.hide()
+            self._artwork_button.set_opacity(0)
+            self._artwork_button.get_style_context().remove_class(
+                                                               'squared-icon')
+            self._append_button.hide()
+            self._append_button.set_opacity(0)
+            self._append_button.get_style_context().remove_class(
+                                                               'squared-icon')
+
+    def _on_play_press_event(self, widget, event):
+        """
+            Play album
             @param: widget as Gtk.EventBox
             @param: event as Gdk.Event
         """
-        if event.button == 1:
-            Lp().player.play_album(self._album)
-        else:
-            popover = CoversPopover(self._album.artist_id, self._album.id)
-            popover.set_relative_to(widget)
-            popover.populate()
-            popover.show()
+        Lp().player.play_album(self._album)
+        self._append_button.hide()
+        self._append_button.set_opacity(0)
+
+    def _on_artwork_press_event(self, widget, event):
+        """
+            Popover with album art downloaded from the web (in fact google :-/)
+            @param: widget as Gtk.EventBox
+            @param: event as Gdk.Event
+        """
+        popover = CoversPopover(self._album.artist_id, self._album.id)
+        popover.set_relative_to(widget)
+        popover.populate()
+        popover.connect('closed', self._on_pop_cover_closed)
+        popover.show()
+
+    def _on_append_press_event(self, widget, event):
+        """
+            Append album to current list if not present
+        """
+        albums = Lp().player.get_albums()
+        if self._album.id not in albums:
+            albums.append(self._album.id)
+        self._append_button.hide()
+        self._append_button.set_opacity(0)

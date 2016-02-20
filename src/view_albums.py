@@ -289,6 +289,7 @@ class AlbumsView(View):
                                          self._genre_id)
             popover.set_relative_to(album_widget)
             popover.set_pointing_to(self._press_rect)
+            album_widget.clean_overlay()
             popover.show()
 
     def _on_button_press(self, flowbox, event):

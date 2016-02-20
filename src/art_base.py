@@ -17,10 +17,8 @@
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 from gi.repository import Gtk, Gdk, GObject, GdkPixbuf
-import cairo
 
 import os
-from math import pi
 
 
 class BaseArt(GObject.GObject):
@@ -76,38 +74,6 @@ class BaseArt(GObject.GObject):
             @return path as string
         """
         return "%s/%s_%s.jpg" % (self._CACHE_PATH, icon_name, size)
-
-    def _get_rounded_icon(self, size, icon_name):
-        """
-            Construct an rounded icon
-            @param size as int
-            @param icon_name as str
-            @return pixbuf as Gdk.Pixbuf
-        """
-        center = size / 2
-        surface = cairo.ImageSurface(cairo.FORMAT_ARGB32, size, size)
-        ctx = cairo.Context(surface)
-        ctx.save()
-        ctx.set_source_rgba(0.0, 0.0, 0.0, 0.0)
-        ctx.move_to(0, 0)
-        ctx.rectangle(0, 0, size, size)
-        ctx.fill()
-        ctx.save()
-        ctx.arc(center, center, size/2, 0.0, 2.0 * pi)
-        ctx.set_source_rgba(0.0, 0.0, 0.0, 1.0)
-        ctx.fill()
-        ctx.restore()
-        ctx.save()
-        icon_size = size/2
-        pixbuf = Gtk.IconTheme.get_default().load_icon(
-                                         'media-playback-start-symbolic',
-                                         icon_size,
-                                         Gtk.IconLookupFlags.FORCE_SVG)
-        Gdk.cairo_set_source_pixbuf(ctx, pixbuf,
-                                    center-icon_size/2, center-icon_size/2)
-        ctx.paint()
-        del pixbuf
-        return surface
 
     def _get_default_icon(self, size, icon_name):
         """

@@ -37,6 +37,7 @@ app_PYTHON = \
     player_shuffle.py\
     player_userplaylist.py\
     playlists.py\
+    pop_albums.py\
     pop_covers.py\
     pop_externals.py\
     pop_infos.py\
