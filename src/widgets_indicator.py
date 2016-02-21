@@ -39,7 +39,7 @@ class IndicatorWidget(Gtk.Stack):
         button.get_style_context().add_class('menu-button')
         button.get_style_context().add_class('track-menu-button')
         button.get_image().set_opacity(0.2)
-        button.set_tooltip_text(_("Next track"))
+        button.set_tooltip_text(_("Add to queue"))
         button.show()
         button.connect('clicked', self._on_button_clicked)
         play = Gtk.Image.new_from_icon_name('media-playback-start-symbolic',
