@@ -192,6 +192,16 @@ class AlbumWidget:
             self._append_button.get_style_context().remove_class(
                                                            self._squared_class)
 
+    def _on_play_press_event(self, widget, event):
+        """
+            Play album
+            @param: widget as Gtk.EventBox
+            @param: event as Gdk.Event
+        """
+        Lp().player.play_album(self._album)
+        self._append_button.hide()
+        self._append_button.set_opacity(0)
+
     def _on_artwork_press_event(self, widget, event):
         """
             Popover with album art downloaded from the web (in fact google :-/)
@@ -229,7 +239,7 @@ class AlbumSimpleWidget(Gtk.Frame, AlbumWidget):
         Album widget showing cover, artist and title
     """
 
-    def __init__(self, album_id, parent):
+    def __init__(self, album_id, genre_ids):
         """
             Init simple album widget
             @param album id as int
@@ -240,7 +250,7 @@ class AlbumSimpleWidget(Gtk.Frame, AlbumWidget):
         self.set_shadow_type(Gtk.ShadowType.NONE)
         self.get_style_context().add_class('loading')
         self._album_id = album_id
-        self._parent = parent
+        self._genre_ids = genre_ids
         self._album = None
         self._cover = None
 
@@ -249,7 +259,7 @@ class AlbumSimpleWidget(Gtk.Frame, AlbumWidget):
             Init widget content
         """
         self.get_style_context().remove_class('loading')
-        AlbumWidget.__init__(self, self._album_id)
+        AlbumWidget.__init__(self, self._album_id, self._genre_ids)
         self._rounded_class = "rounded-icon-small"
         self._widget = Gtk.EventBox()
         self._widget.connect('enter-notify-event', self._on_enter_notify)
@@ -360,15 +370,6 @@ class AlbumSimpleWidget(Gtk.Frame, AlbumWidget):
 #######################
 # PRIVATE             #
 #######################
-    def _on_play_press_event(self, widget, event):
-        """
-            Play album
-            @param: widget as Gtk.EventBox
-            @param: event as Gdk.Event
-        """
-        self._parent.play_album(self._album.id)
-        return True
-
     def _on_query_tooltip(self, widget, x, y, keyboard, tooltip):
         """
             Show tooltip if needed
@@ -661,13 +662,3 @@ class AlbumDetailedWidget(Gtk.Bin, AlbumWidget):
             @param event as Gdk.Event
         """
         self._button_state = event.get_state()
-
-    def _on_play_press_event(self, widget, event):
-        """
-            Play album
-            @param: widget as Gtk.EventBox
-            @param: event as Gdk.Event
-        """
-        Lp().player.play_album(self._album)
-        self._append_button.hide()
-        self._append_button.set_opacity(0)

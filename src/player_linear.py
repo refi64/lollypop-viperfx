@@ -10,7 +10,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-from lollypop.define import NextContext
+from lollypop.define import NextContext, Type
 from lollypop.player_base import BasePlayer
 from lollypop.objects import Track, Album
 
@@ -37,7 +37,11 @@ class LinearPlayer(BasePlayer):
 
         track = Track()
         if self._albums:
-            album = Album(self.current_track.album.id, self.context.genre_ids)
+            if self.current_track.album.id in self.context.genre_ids.keys():
+                genre_ids = self.context.genre_ids[self.current_track.album.id]
+            else:
+                genre_ids = self.context.genre_ids[Type.ALL]
+            album = Album(self.current_track.album.id, genre_ids)
             if self.current_track.id in album.tracks_ids:
                 new_track_position = album.tracks_ids.index(
                                                 self.current_track.id) + 1
@@ -57,8 +61,13 @@ class LinearPlayer(BasePlayer):
                             pos += 1
                     except:
                         pos = 0  # Happens if current album has been removed
+                    if self.current_track.album.id in\
+                            self.context.genre_ids.keys():
+                        genre_ids = self.context.genre_ids[self._albums[pos]]
+                    else:
+                        genre_ids = self.context.genre_ids[Type.ALL]
                     track = Album(self._albums[pos],
-                                  self.context.genre_ids).tracks[0]
+                                  genre_ids).tracks[0]
                 # next track
                 else:
                     track = album.tracks[new_track_position]
@@ -75,7 +84,11 @@ class LinearPlayer(BasePlayer):
 
         track = Track()
         if self._albums:
-            album = Album(self.current_track.album.id, self.context.genre_ids)
+            if self.current_track.album.id in self.context.genre_ids.keys():
+                genre_ids = self.context.genre_ids[self.current_track.album.id]
+            else:
+                genre_ids = self.context.genre_ids[Type.ALL]
+            album = Album(self.current_track.album.id, genre_ids)
             if self.current_track.id in album.tracks_ids:
                 new_track_position = album.tracks_ids.index(
                                                 self.current_track.id) - 1
@@ -89,8 +102,13 @@ class LinearPlayer(BasePlayer):
                             pos -= 1
                     except:
                         pos = 0  # Happens if current album has been removed
+                    if self.current_track.album.id in\
+                            self.context.genre_ids.keys():
+                        genre_ids = self.context.genre_ids[self._albums[pos]]
+                    else:
+                        genre_ids = self.context.genre_ids[Type.ALL]
                     track = Album(self._albums[pos],
-                                  self.context.genre_ids).tracks[-1]
+                                  genre_ids).tracks[-1]
                 # Previous track
                 else:
                     track = album.tracks[new_track_position]

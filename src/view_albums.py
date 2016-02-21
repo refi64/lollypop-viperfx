@@ -18,7 +18,6 @@ from lollypop.widgets_album import AlbumSimpleWidget
 from lollypop.widgets_album_context import AlbumContextWidget
 from lollypop.widgets_album_context import AlbumPopoverWidget
 from lollypop.define import Lp, ArtSize
-from lollypop.objects import Album, Track
 
 
 class AlbumContextView(View):
@@ -55,7 +54,7 @@ class AlbumsView(LazyLoadingView):
         Show albums in a box
     """
 
-    def __init__(self, genre_id, is_compilation):
+    def __init__(self, genre_ids, is_compilation):
         """
             Init album view
             @param genre id as int
@@ -64,7 +63,7 @@ class AlbumsView(LazyLoadingView):
         LazyLoadingView.__init__(self)
         self._signal = None
         self._context_album_id = None
-        self._genre_id = genre_id
+        self._genre_ids = genre_ids
         self._is_compilation = is_compilation
         self._albumsongs = None
         self._context_widget = None
@@ -114,17 +113,6 @@ class AlbumsView(LazyLoadingView):
         elif self._context_widget is not None:
             self._context.hide()
 
-    def play_album(self, album_id):
-        """
-            Play album
-            @param album_id as int
-        """
-        album = Album(album_id)
-        track = Track(album.tracks_ids[0])
-        Lp().player.load(track)
-        Lp().player.set_albums(track.id, None,
-                               self._genre_id)
-
 #######################
 # PRIVATE             #
 #######################
@@ -163,7 +151,7 @@ class AlbumsView(LazyLoadingView):
         """
         size_group = Gtk.SizeGroup(mode=Gtk.SizeGroupMode.HORIZONTAL)
         self._context_widget = AlbumContextWidget(album_id,
-                                                  self._genre_id,
+                                                  self._genre_ids,
                                                   size_group)
         self._context_widget.populate()
         self._context_widget.show()
@@ -180,7 +168,7 @@ class AlbumsView(LazyLoadingView):
             @param [album ids as int]
         """
         if albums and not self._stop:
-            widget = AlbumSimpleWidget(albums.pop(0), self)
+            widget = AlbumSimpleWidget(albums.pop(0), self._genre_ids)
             self._albumbox.insert(widget, -1)
             widget.show()
             self._lazy_queue.append(widget)
@@ -229,7 +217,7 @@ class AlbumsView(LazyLoadingView):
                 self._context_widget.destroy()
                 self._context_widget = None
             popover = AlbumPopoverWidget(album_widget.get_id(),
-                                         self._genre_id)
+                                         self._genre_ids)
             popover.set_relative_to(album_widget)
             popover.set_pointing_to(self._press_rect)
             album_widget.clean_overlay()

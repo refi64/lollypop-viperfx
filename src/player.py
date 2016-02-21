@@ -86,7 +86,8 @@ class Player(BinPlayer, QueuePlayer, UserPlaylistPlayer, RadioPlayer,
         Lp().player.load(album.tracks[0])
         if not Lp().player.is_party():
             self._albums = [album.id]
-            self.context.genre_ids = []
+            self.context.genre_ids = {}
+            self.context.genre_ids[album.id] = album.genre_ids
 
     def set_albums(self, track_id, artist_ids, genre_ids):
         """
@@ -101,6 +102,7 @@ class Player(BinPlayer, QueuePlayer, UserPlaylistPlayer, RadioPlayer,
         album = Track(track_id).album
         album.set_genre(genre_ids)
         self._albums = []
+        self.context.genre_ids = {}
         ShufflePlayer.reset_history(self)
 
         # We are not playing a user playlist anymore
@@ -135,7 +137,7 @@ class Player(BinPlayer, QueuePlayer, UserPlaylistPlayer, RadioPlayer,
             self.context.next = NextContext.STOP_ALL
 
         if track_id in album.tracks_ids:
-            self.context.genre_ids = genre_ids
+            self.context.genre_ids[Type.ALL] = genre_ids
             # Shuffle album list if needed
             self.shuffle_albums(True)
         else:  # Error

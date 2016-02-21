@@ -112,7 +112,7 @@ class ShufflePlayer(BasePlayer):
 
         if party:
             self._external_tracks = []
-            self.context.genre_ids = []
+            self.context.genre_ids = {}
             self.context.track_id = None
             party_ids = self.get_party_ids()
             if party_ids:
@@ -203,7 +203,11 @@ class ShufflePlayer(BasePlayer):
         """
         for album_id in sorted(self._albums,
                                key=lambda *args: random.random()):
-            tracks = Album(album_id, self.context.genre_ids).tracks_ids
+            if self.current_track.album.id in self.context.genre_ids.keys():
+                genre_ids = self.context.genre_ids[album_id]
+            else:
+                genre_ids = self.context.genre_ids[Type.ALL]
+            tracks = Album(album_id, genre_ids).tracks_ids
             for track in sorted(tracks, key=lambda *args: random.random()):
                 if album_id not in self._already_played_tracks.keys() or\
                    track not in self._already_played_tracks[album_id]:
