@@ -125,6 +125,12 @@ class RadioWidget(Gtk.Bin, AlbumWidget):
         self._popover.set_relative_to(widget)
         self._popover.show()
 
+    def clean_overlay(self):
+        """
+            No overlay for radios
+        """
+        pass
+
 #######################
 # PRIVATE             #
 #######################
@@ -144,6 +150,22 @@ class RadioWidget(Gtk.Bin, AlbumWidget):
         """
         if event.button != 1:
             self.edit(widget)
+
+    def _on_enter_notify(self, widget, event):
+        """
+            Show special buttons
+            @param widget as Gtk.Widget
+            @param event es Gdk.Event
+        """
+        self._cover.get_style_context().add_class('hovereffect')
+
+    def _on_leave_notify(self, widget, event):
+        """
+            Hide special buttons
+            @param widget as Gtk.Widget
+            @param event es Gdk.Event
+        """
+        self._cover.get_style_context().remove_class('hovereffect')
 
     def _on_eventbox_realize1(self, eventbox):
         """
