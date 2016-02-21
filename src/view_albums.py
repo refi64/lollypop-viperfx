@@ -188,7 +188,8 @@ class AlbumsView(LazyLoadingView):
         else:
             self._stop = False
             GLib.idle_add(self._lazy_loading)
-            self._viewport.add(self._albumbox)
+            if self._viewport.get_child() is None:
+                self._viewport.add(self._albumbox)
 
     def _on_position_notify(self, paned, param):
         """
