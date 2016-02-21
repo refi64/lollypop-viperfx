@@ -201,6 +201,7 @@ class AlbumWidget:
         Lp().player.play_album(self._album)
         self._append_button.hide()
         self._append_button.set_opacity(0)
+        return True
 
     def _on_artwork_press_event(self, widget, event):
         """
