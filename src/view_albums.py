@@ -18,6 +18,7 @@ from lollypop.widgets_album import AlbumSimpleWidget
 from lollypop.widgets_album_context import AlbumContextWidget
 from lollypop.widgets_album_context import AlbumPopoverWidget
 from lollypop.define import Lp, ArtSize
+from lollypop.objects import Album, Track
 
 
 class AlbumContextView(View):
@@ -113,6 +114,17 @@ class AlbumsView(LazyLoadingView):
         elif self._context_widget is not None:
             self._context.hide()
 
+    def play_album(self, album_id):
+        """
+            Play album
+            @param album_id as int
+        """
+        album = Album(album_id)
+        track = Track(album.tracks_ids[0])
+        Lp().player.load(track)
+        Lp().player.set_albums(track.id, None,
+                               self._genre_ids)
+
 #######################
 # PRIVATE             #
 #######################
@@ -168,7 +180,7 @@ class AlbumsView(LazyLoadingView):
             @param [album ids as int]
         """
         if albums and not self._stop:
-            widget = AlbumSimpleWidget(albums.pop(0), self._genre_ids)
+            widget = AlbumSimpleWidget(albums.pop(0), self)
             self._albumbox.insert(widget, -1)
             widget.show()
             self._lazy_queue.append(widget)
