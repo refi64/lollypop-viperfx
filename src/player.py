@@ -207,8 +207,12 @@ class Player(BinPlayer, QueuePlayer, UserPlaylistPlayer, RadioPlayer,
                     Lp().player.populate_user_playlist_by_id(playlist_id)
                     Lp().player.load_in_playlist(track_id, False)
                 else:
-                    self._load_track(Track(track_id))
-                    self.set_albums(track_id, [Type.ALL], [Type.ALL])
+                    track = Track(track_id)
+                    self._load_track(track)
+                    self._albums = Lp().artists.get_albums(
+                                                         track.album_artist_id)
+                    self.context.genre_ids = {}
+                    self.context.genre_ids[Type.ALL] = [Type.ALL]
                 self.set_next()
                 self.set_prev()
                 self.emit('current-changed')
