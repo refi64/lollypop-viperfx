@@ -69,6 +69,7 @@ src/widgets_album.py
 src/widgets_album_context.py
 src/widgets_artist.py
 src/widgets_device.py
+src/widgets_indicator.py
 src/widgets_playlist.py
 src/widgets_radio.py
 src/widgets_track.py

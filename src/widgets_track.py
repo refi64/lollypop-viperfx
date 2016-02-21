@@ -36,7 +36,7 @@ class Row(Gtk.ListBoxRow):
         Gtk.ListBoxRow.__init__(self)
         self._indicator = IndicatorWidget()
         self._show_loved = show_loved
-        self._object_id = None
+        self._id = None
         self._number = 0
         self._row_widget = Gtk.EventBox()
         self._grid = Gtk.Grid()
@@ -113,19 +113,20 @@ class Row(Gtk.ListBoxRow):
         """
         self._duration_label.set_text(label)
 
-    def set_object_id(self, object_id):
+    def set_id(self, id):
         """
             Store current object id
-            @param object id as int
+            @param id as int
         """
-        self._object_id = object_id
+        self._id = id
+        self._indicator.set_id(id)
 
-    def get_object_id(self):
+    def get_id(self):
         """
             Get object id
-            @return Current object id as int
+            @return Current id as int
         """
-        return self._object_id
+        return self._id
 
     def set_number(self, num):
         """
@@ -181,7 +182,7 @@ class Row(Gtk.ListBoxRow):
             @param xcoordinate as int (or None)
             @param ycoordinate as int (or None)
         """
-        popover = TrackMenuPopover(self._object_id, TrackMenu(self._object_id))
+        popover = TrackMenuPopover(self._id, TrackMenu(self._id))
         popover.set_relative_to(widget)
         if xcoordinate is not None and ycoordinate is not None:
             rect = widget.get_allocation()
@@ -260,13 +261,13 @@ class AlbumRow(Row):
         self._header.add(self._artist_label)
         self._header.add(self._album_label)
 
-    def set_object_id(self, object_id):
+    def set_id(self, id):
         """
             Store current object and show row
-            @param object id as int
+            @param id as int
         """
-        Row.set_object_id(self, object_id)
-        self._object = Album(self._object_id)
+        Row.set_id(self, id)
+        self._object = Album(self._id)
 
     def show_header(self):
         """
@@ -315,13 +316,13 @@ class TrackRow(Row):
         self._grid.attach(self._indicator, 0, 0, 1, 1)
         self.show_all()
 
-    def set_object_id(self, object_id):
+    def set_id(self, id):
         """
-            Store current object id and object
-            @param object id as int
+            Store current id and object
+            @param id as int
         """
-        Row.set_object_id(self, object_id)
-        self._object = Track(self._object_id)
+        Row.set_id(self, id)
+        self._object = Track(self._id)
 
 #######################
 # PRIVATE             #
@@ -379,7 +380,7 @@ class TracksWidget(Gtk.ListBox):
         track_row.set_number(num)
         track_row.set_title_label(title)
         track_row.set_duration_label(seconds_to_string(length))
-        track_row.set_object_id(track_id)
+        track_row.set_id(track_id)
         track_row.show()
         self.add(track_row)
 
@@ -407,7 +408,7 @@ class TracksWidget(Gtk.ListBox):
         album_row.set_number(num)
         album_row.set_title_label(title)
         album_row.set_duration_label(seconds_to_string(length))
-        album_row.set_object_id(track_id)
+        album_row.set_id(track_id)
         if album is not None:
             album_row.set_album_and_artist(album.id)
             surface = Lp().art.get_album_artwork(
@@ -425,8 +426,8 @@ class TracksWidget(Gtk.ListBox):
             @param track id as int
         """
         for row in self.get_children():
-            row.show_indicator(row.get_object_id() == track_id,
-                               utils.is_loved(row.get_object_id()))
+            row.show_indicator(row.get_id() == track_id,
+                               utils.is_loved(row.get_id()))
 
 #######################
 # PRIVATE             #
@@ -438,7 +439,7 @@ class TracksWidget(Gtk.ListBox):
             @param track id as int
         """
         for row in self.get_children():
-            track_id = row.get_object_id()
+            track_id = row.get_id()
             if Lp().player.is_in_queue(track_id):
                 pos = Lp().player.get_track_position(track_id)
                 row.set_num_label(
@@ -459,7 +460,7 @@ class TracksWidget(Gtk.ListBox):
             return
 
         for row in self.get_children():
-            track_id = row.get_object_id()
+            track_id = row.get_id()
             row.show_indicator(track_id == Lp().player.current_track.id,
                                utils.is_loved(track_id))
 
@@ -481,4 +482,4 @@ class TracksWidget(Gtk.ListBox):
             @param widget as TracksWidget
             @param row as TrackRow
         """
-        self.emit('activated', row.get_object_id())
+        self.emit('activated', row.get_id())

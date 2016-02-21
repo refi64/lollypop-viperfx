@@ -12,6 +12,10 @@
 
 from gi.repository import Gtk, GLib
 
+from gettext import gettext as _
+
+from lollypop.define import Lp
+
 
 class IndicatorWidget(Gtk.Stack):
     """
@@ -23,26 +27,42 @@ class IndicatorWidget(Gtk.Stack):
             Init indicator widget
         """
         Gtk.Stack.__init__(self)
+        self._id = None
         self.connect('destroy', self._on_destroy)
         self._pass = 1
         self.set_transition_duration(500)
         self.set_transition_type(Gtk.StackTransitionType.CROSSFADE)
         self._timeout_id = None
-        empty = Gtk.Image.new()
+        button = Gtk.Button.new_from_icon_name('list-add-symbolic',
+                                               Gtk.IconSize.MENU)
+        button.set_relief(Gtk.ReliefStyle.NONE)
+        button.get_style_context().add_class('menu-button')
+        button.get_style_context().add_class('track-menu-button')
+        button.get_image().set_opacity(0.2)
+        button.set_tooltip_text(_("Next track"))
+        button.show()
+        button.connect('clicked', self._on_button_clicked)
         play = Gtk.Image.new_from_icon_name('media-playback-start-symbolic',
                                             Gtk.IconSize.MENU)
         loved = Gtk.Image.new_from_icon_name('emblem-favorite-symbolic',
                                              Gtk.IconSize.MENU)
-        self.add_named(empty, 'empty')
+        self.add_named(button, 'button')
         self.add_named(play, 'play')
         self.add_named(loved, 'loved')
         self.show_all()
+
+    def set_id(self, id):
+        """
+            Store current object id
+            @param id as int
+        """
+        self._id = id
 
     def empty(self):
         """
             Show no indicator
         """
-        self.set_visible_child_name('empty')
+        self.set_visible_child_name('button')
 
     def play(self):
         """
@@ -75,6 +95,13 @@ class IndicatorWidget(Gtk.Stack):
 #######################
 # PRIVATE             #
 #######################
+    def _on_button_clicked(self, widget):
+        """
+            Popup menu for track relative to button
+            @param widget as Gtk.Button
+        """
+        Lp().player.append_to_queue(self._id)
+
     def _on_destroy(self, widget):
         """
             Clear timeout
