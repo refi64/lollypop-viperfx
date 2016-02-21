@@ -37,6 +37,7 @@ class AlbumWidget:
         self._selected = None
         self._stop = False
         self._cover = None
+        self._popover = False
         self._squared_class = "squared-icon"
         self._rounded_class = "rounded-icon"
 
@@ -96,6 +97,8 @@ class AlbumWidget:
         """
             Clean overlay icon
         """
+        if self._popover:
+            return
         self._on_pop_cover_closed(self)
 
     def stop(self):
@@ -136,6 +139,7 @@ class AlbumWidget:
             Remove selected style
             @param widget as Gtk.Popover
         """
+        self._popover = False
         self._play_button.set_opacity(0)
         self._play_button.get_style_context().remove_class(self._rounded_class)
         self._artwork_button.set_opacity(0)
@@ -209,6 +213,7 @@ class AlbumWidget:
             @param: widget as Gtk.EventBox
             @param: event as Gdk.Event
         """
+        self._popover = True
         popover = CoversPopover(self._album.artist_id, self._album.id)
         popover.set_relative_to(widget)
         popover.populate()
