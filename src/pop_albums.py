@@ -266,3 +266,4 @@ class AlbumsPopover(Gtk.Popover):
         self._model.clear()
         self._connect_signals()
         self._set_albums()
+        self._clear_btn.set_sensitive(False)
