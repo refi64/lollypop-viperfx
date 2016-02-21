@@ -233,7 +233,8 @@ class RadiosView(LazyLoadingView):
         else:
             self._stop = False
             GLib.idle_add(self._lazy_loading)
-            self._viewport.add(self._radiobox)
+            if self._viewport.get_child() is None:
+                self._viewport.add(self._radiobox)
 
     def _on_album_activated(self, flowbox, child):
         """
