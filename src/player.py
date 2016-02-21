@@ -78,9 +78,15 @@ class Player(BinPlayer, QueuePlayer, UserPlaylistPlayer, RadioPlayer,
             @param album as Album
         """
         Lp().player.shuffle_albums(False)
-        self._albums.append(album.id)
+        # If album already exists, merge genres
+        if album.id in self._albums:
+            genre_ids = self.context.genre_ids[album.id]
+            self.context.genre_ids[album.id] =\
+                genre_ids + list(set(album.genre_ids) - set(genre_ids))
+        else:
+            self._albums.append(album.id)
+            self.context.genre_ids[album.id] = album.genre_ids
         Lp().player.shuffle_albums(True)
-        self.context.genre_ids[album.id] = album.genre_ids
 
     def play_album(self, album):
         """
