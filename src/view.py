@@ -12,7 +12,7 @@
 
 from gi.repository import Gtk, GLib
 
-from lollypop.define import Lp
+from lollypop.define import Lp, ArtSize
 
 
 class View(Gtk.Grid):
@@ -139,3 +139,80 @@ class View(Gtk.Grid):
         for child in self._get_children():
             if album_id == child.get_id():
                 child.set_sensitive(False)
+
+
+class LazyLoadingView(View):
+    """
+        Lazy loading for view
+    """
+    def __init__(self):
+        """
+            Init lazy loading
+        """
+        View.__init__(self)
+        self._lazy_queue = []  # Widgets not initialized
+        self._scroll_value = 0
+        self._timeout_id = None
+        self._scrolled.get_vadjustment().connect('value-changed',
+                                                 self._on_value_changed)
+
+#######################
+# PRIVATE             #
+#######################
+    def _lazy_loading(self, widgets=[], scroll_value=0):
+        """
+            Load the view in a lazy way:
+                - widgets first
+                - _waiting_init then
+            @param widgets as [AlbumSimpleWidgets]
+            @param scroll_value as float
+        """
+        widget = None
+        if self._stop or self._scroll_value != scroll_value:
+            return
+        if widgets:
+            widget = widgets.pop(0)
+            self._lazy_queue.remove(widget)
+        elif self._lazy_queue:
+            widget = self._lazy_queue.pop(0)
+        if widget is not None:
+            widget.init_widget()
+            GLib.idle_add(self._lazy_loading, widgets, scroll_value)
+
+    def _is_visible(self, widget):
+        """
+            Is widget visible in scrolled
+            @param widget as Gtk.Widget
+        """
+        widget_alloc = widget.get_allocation()
+        scrolled_alloc = self._scrolled.get_allocation()
+        try:
+            (x, y) = widget.translate_coordinates(self._scrolled, 0, 0)
+            return (y > -widget_alloc.height-ArtSize.BIG or y >= 0) and\
+                y < scrolled_alloc.height+ArtSize.BIG
+        except:
+            return True
+
+    def _lazy_or_not(self):
+        """
+            Add visible widgets to lazy queue
+        """
+        self._timeout_id = None
+        widgets = []
+        for child in self._lazy_queue:
+            if self._is_visible(child):
+                widgets.append(child)
+        GLib.idle_add(self._lazy_loading, widgets, self._scroll_value)
+
+    def _on_value_changed(self, adj):
+        """
+            Update scroll value and check for lazy queue
+            @param adj as Gtk.Adjustment
+        """
+        if self._timeout_id is not None:
+            GLib.source_remove(self._timeout_id)
+            self._timeout_id = None
+        self._scroll_value = adj.get_value()
+        if not self._lazy_queue:
+            return
+        self._timeout_id = GLib.timeout_add(250, self._lazy_or_not)

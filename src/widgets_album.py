@@ -37,7 +37,6 @@ class AlbumWidget:
         self._selected = None
         self._stop = False
         self._cover = None
-        self._eventbox = None
         self._squared_class = "squared-icon"
         self._rounded_class = "rounded-icon"
 
@@ -244,7 +243,6 @@ class AlbumSimpleWidget(Gtk.Frame, AlbumWidget):
         self._parent = parent
         self._album = None
         self._cover = None
-        self._eventbox = None
 
     def init_widget(self):
         """

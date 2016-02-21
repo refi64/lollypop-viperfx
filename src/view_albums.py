@@ -12,7 +12,7 @@
 
 from gi.repository import Gtk, GLib, Gdk
 
-from lollypop.view import View
+from lollypop.view import View, LazyLoadingView
 from lollypop.view_container import ViewContainer
 from lollypop.widgets_album import AlbumSimpleWidget
 from lollypop.widgets_album_context import AlbumContextWidget
@@ -50,7 +50,7 @@ class AlbumContextView(View):
         return [self._widget]
 
 
-class AlbumsView(View):
+class AlbumsView(LazyLoadingView):
     """
         Show albums in a box
     """
@@ -61,7 +61,7 @@ class AlbumsView(View):
             @param genre id as int
             @param is compilation as bool
         """
-        View.__init__(self)
+        LazyLoadingView.__init__(self)
         self._signal = None
         self._context_album_id = None
         self._genre_id = genre_id
@@ -69,9 +69,6 @@ class AlbumsView(View):
         self._albumsongs = None
         self._context_widget = None
         self._press_rect = None
-        self._lazy_queue = []  # Widgets not initialized
-        self._scroll_value = 0
-        self._timeout_id = None
 
         self._albumbox = Gtk.FlowBox()
         self._albumbox.set_selection_mode(Gtk.SelectionMode.NONE)
@@ -87,8 +84,6 @@ class AlbumsView(View):
         self._viewport.set_property('margin', 5)
         self._scrolled.set_property('expand', True)
         self._scrolled.set_property('height-request', 10)
-        self._scrolled.get_vadjustment().connect('value-changed',
-                                                 self._on_value_changed)
         self._context = ViewContainer(500)
 
         separator = Gtk.Separator()
@@ -187,70 +182,13 @@ class AlbumsView(View):
         if albums and not self._stop:
             widget = AlbumSimpleWidget(albums.pop(0), self)
             self._albumbox.insert(widget, -1)
-            widget.show_all()
+            widget.show()
             self._lazy_queue.append(widget)
             GLib.idle_add(self._add_albums, albums)
         else:
+            self._stop = False
             GLib.idle_add(self._lazy_loading)
             self._viewport.add(self._albumbox)
-
-    def _lazy_loading(self, widgets=[], scroll_value=0):
-        """
-            Load the view in a lazy way:
-                - widgets first
-                - _waiting_init then
-            @param widgets as [AlbumSimpleWidgets]
-            @param scroll_value as float
-        """
-        widget = None
-        if self._stop or self._scroll_value != scroll_value:
-            return
-        if widgets:
-            widget = widgets.pop(0)
-            self._lazy_queue.remove(widget)
-        elif self._lazy_queue:
-            widget = self._lazy_queue.pop(0)
-        if widget is not None:
-            widget.init_widget()
-            GLib.idle_add(self._lazy_loading, widgets, scroll_value)
-
-    def _is_visible(self, widget):
-        """
-            Is widget visible in scrolled
-            @param widget as Gtk.Widget
-        """
-        widget_alloc = widget.get_allocation()
-        scrolled_alloc = self._scrolled.get_allocation()
-        try:
-            (x, y) = widget.translate_coordinates(self._scrolled, 0, 0)
-            return (y > -widget_alloc.height-ArtSize.BIG or y >= 0) and\
-                y < scrolled_alloc.height+ArtSize.BIG
-        except:
-            return True
-
-    def _lazy_or_not(self):
-        """
-            Add visible widgets to lazy queue
-        """
-        self._timeout_id = None
-        widgets = []
-        for child in self._lazy_queue:
-            if self._is_visible(child):
-                widgets.append(child)
-        GLib.idle_add(self._lazy_loading, widgets, self._scroll_value)
-
-    def _on_value_changed(self, adj):
-        """
-            Update scroll value and check for lazy queue
-            @param adj as Gtk.Adjustment
-        """
-        if self._timeout_id is not None:
-            GLib.source_remove(self._timeout_id)
-            self._timeout_id = None
-        self._scroll_value = adj.get_value()
-        if not self._lazy_queue:
-            return
-        self._timeout_id = GLib.timeout_add(250, self._lazy_or_not)
 
     def _on_position_notify(self, paned, param):
         """

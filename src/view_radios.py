@@ -14,7 +14,7 @@ from gi.repository import Gtk, GLib
 
 from threading import Thread
 
-from lollypop.view import View
+from lollypop.view import LazyLoadingView
 from lollypop.widgets_radio import RadioWidget
 from lollypop.radios import Radios
 from lollypop.pop_radio import RadioPopover
@@ -23,7 +23,7 @@ from lollypop.define import Lp, Type
 from lollypop.objects import Track
 
 
-class RadiosView(View):
+class RadiosView(LazyLoadingView):
     """
         Show radios in a grid
     """
@@ -32,7 +32,7 @@ class RadiosView(View):
         """
             Init view
         """
-        View.__init__(self)
+        LazyLoadingView.__init__(self)
         self._signal = Lp().art.connect('radio-artwork-changed',
                                         self._on_logo_changed)
 
@@ -47,8 +47,6 @@ class RadiosView(View):
 
         self._pop_tunein = TuneinPopover(self._radios_manager)
         self._pop_tunein.set_relative_to(builder.get_object('search_btn'))
-
-        self._sizegroup = Gtk.SizeGroup(mode=Gtk.SizeGroupMode.BOTH)
 
         self._radiobox = Gtk.FlowBox()
         self._radiobox.set_selection_mode(Gtk.SelectionMode.NONE)
@@ -68,7 +66,6 @@ class RadiosView(View):
 
         self._viewport.set_property("valign", Gtk.Align.START)
         self._viewport.set_property('margin', 5)
-        self._viewport.add(self._radiobox)
         self._scrolled.set_property('expand', True)
 
         self.add(widget)
@@ -227,7 +224,7 @@ class RadiosView(View):
             widget = RadioWidget(radio,
                                  self._radios_manager)
             widget.show()
-            self._sizegroup.add_widget(widget)
+            self._lazy_queue.append(widget)
             if first:
                 self._radiobox.insert(widget, 0)
             else:
@@ -235,7 +232,8 @@ class RadiosView(View):
             GLib.idle_add(self._add_radios, radios)
         else:
             self._stop = False
-        return None
+            GLib.idle_add(self._lazy_loading)
+            self._viewport.add(self._radiobox)
 
     def _on_album_activated(self, flowbox, child):
         """
