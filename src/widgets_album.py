@@ -76,7 +76,7 @@ class AlbumWidget:
         """
             Update widget state
         """
-        if self._album is None:
+        if self._cover is None:
             return
         selected = self._album.id == Lp().player.current_track.album.id
         if selected != self._selected:
@@ -97,7 +97,7 @@ class AlbumWidget:
         """
             Clean overlay icon
         """
-        if self._popover:
+        if self._cover is None or self._popover:
             return
         self._on_pop_cover_closed(self)
 
@@ -253,17 +253,14 @@ class AlbumSimpleWidget(Gtk.Frame, AlbumWidget):
         Gtk.Frame.__init__(self)
         self.set_shadow_type(Gtk.ShadowType.NONE)
         self.get_style_context().add_class('loading')
-        self._album_id = album_id
         self._parent = parent
-        self._album = None
-        self._cover = None
+        AlbumWidget.__init__(self, album_id, [])
 
     def init_widget(self):
         """
             Init widget content
         """
         self.get_style_context().remove_class('loading')
-        AlbumWidget.__init__(self, self._album_id, [])
         self._rounded_class = "rounded-icon-small"
         self._widget = Gtk.EventBox()
         self._widget.connect('enter-notify-event', self._on_enter_notify)
