@@ -61,8 +61,7 @@ class LinearPlayer(BasePlayer):
                             pos += 1
                     except:
                         pos = 0  # Happens if current album has been removed
-                    if self.current_track.album.id in\
-                            self.context.genre_ids.keys():
+                    if self._albums[pos] in self.context.genre_ids.keys():
                         genre_ids = self.context.genre_ids[self._albums[pos]]
                     else:
                         genre_ids = self.context.genre_ids[Type.ALL]
@@ -102,8 +101,7 @@ class LinearPlayer(BasePlayer):
                             pos -= 1
                     except:
                         pos = 0  # Happens if current album has been removed
-                    if self.current_track.album.id in\
-                            self.context.genre_ids.keys():
+                    if self._albums[pos] in self.context.genre_ids.keys():
                         genre_ids = self.context.genre_ids[self._albums[pos]]
                     else:
                         genre_ids = self.context.genre_ids[Type.ALL]
