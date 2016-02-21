@@ -35,6 +35,10 @@ class LinearPlayer(BasePlayer):
         if not self._albums:
             return self.current_track
 
+        # Album removed, skip it
+        if self.current_track.album.id not in self._albums:
+            self.context.next = NextContext.START_NEW_ALBUM
+
         track = Track()
         if self._albums:
             if self.current_track.album.id in self.context.genre_ids.keys():
