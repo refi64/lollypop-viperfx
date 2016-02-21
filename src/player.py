@@ -72,6 +72,16 @@ class Player(BinPlayer, QueuePlayer, UserPlaylistPlayer, RadioPlayer,
                 BinPlayer._load_track(self, track)
                 self.emit('current-changed')
 
+    def add_album(self, album):
+        """
+            Add album
+            @param album as Album
+        """
+        Lp().player.shuffle_albums(False)
+        self._albums.append(album.id)
+        Lp().player.shuffle_albums(True)
+        self.context.genre_ids[album.id] = album.genre_ids
+
     def play_album(self, album):
         """
             Play album
