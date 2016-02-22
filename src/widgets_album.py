@@ -93,9 +93,9 @@ class AlbumWidget:
         """
         pass
 
-    def clean_overlay(self):
+    def update_overlay(self):
         """
-            Clean overlay icon
+            Update overlay icon
         """
         if self._cover is None or self._popover:
             return

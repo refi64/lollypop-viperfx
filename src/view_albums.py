@@ -128,14 +128,14 @@ class AlbumsView(LazyLoadingView):
 #######################
 # PRIVATE             #
 #######################
-    def _clean_overlays(self, widgets):
+    def _update_overlays(self, widgets):
         """
-            Clean children's overlay
+            Update children's overlay
             @param widgets as AlbumWidget
         """
         if self._context_widget in widgets:
             widgets.remove(self._context_widget)
-        View._clean_overlays(self, widgets)
+        View._update_overlays(self, widgets)
 
     def _init_context_position(self):
         """

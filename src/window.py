@@ -37,6 +37,7 @@ class Window(Gtk.ApplicationWindow, Container):
         Gtk.ApplicationWindow.__init__(self,
                                        application=app,
                                        title="Lollypop")
+        self.connect('notify::is-active', self._on_active)
         self._nullwidget = Gtk.Label()  # Use to get selected background color
         self._timeout_configure = None
         seek_action = Gio.SimpleAction.new('seek',
@@ -454,3 +455,12 @@ class Window(Gtk.ApplicationWindow, Container):
             # No idea why, maybe scanner using Gstpbutils before Gstreamer
             # initialisation is finished...
             GLib.timeout_add(2000, self.update_db)
+
+    def _on_active(self, window, active):
+        """
+            Clean overlays if not active
+            @param widget as Gtk.Window
+            @param active as boolean
+        """
+        if not window.is_active():
+            self.update_overlays()

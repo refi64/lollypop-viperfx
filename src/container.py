@@ -222,6 +222,14 @@ class Container:
                 self._stack.clean_old_views(child)
                 break
 
+    def update_overlays(self):
+        """
+            Update current view
+        """
+        view = self._stack.get_visible_child()
+        if view:
+            view.update_overlays()
+
     def update_view(self):
         """
             Update current view

@@ -60,6 +60,12 @@ class View(Gtk.Grid):
         """
         GLib.idle_add(self._update_widgets, self._get_children())
 
+    def update_overlays(self):
+        """
+            Update overlays
+        """
+        GLib.idle_add(self._update_overlays, self._get_children())
+
     def update_responsive_design(self):
         """
             Update the view based on current size
@@ -75,24 +81,24 @@ class View(Gtk.Grid):
 #######################
     def _on_leave_event(self, widget, event):
         """
-            Clean children's overlay
+            Update children's overlay
         """
         allocation = widget.get_allocation()
         if event.x < 5 or\
            event.x > allocation.width - 5 or\
            event.y < 5 or\
            event.y > allocation.height - 5:
-            self._clean_overlays(self._get_children())
+            self._update_overlays(self._get_children())
 
-    def _clean_overlays(self, widgets):
+    def _update_overlays(self, widgets):
         """
-            Clean children's overlay
+            Update children's overlay
             @param widgets as AlbumWidget
         """
         if widgets:
             widget = widgets.pop(0)
-            widget.clean_overlay()
-            GLib.idle_add(self._clean_overlays, widgets)
+            widget.update_overlay()
+            GLib.idle_add(self._update_overlays, widgets)
 
     def _update_widgets(self, widgets):
         """
@@ -103,7 +109,6 @@ class View(Gtk.Grid):
             widget = widgets.pop(0)
             widget.update_state()
             widget.update_playing_indicator()
-            widget.clean_overlay()
             GLib.idle_add(self._update_widgets, widgets)
 
     def _update_responsive_design(self, widgets):
