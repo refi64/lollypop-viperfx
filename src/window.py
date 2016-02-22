@@ -15,7 +15,7 @@ from gi.repository import Gtk, Gio, GLib
 from lollypop.container import Container
 from lollypop.define import Lp, NextContext, Shuffle, WindowSize
 from lollypop.toolbar import Toolbar
-from lollypop.utils import is_unity
+from lollypop.utils import disable_csd
 from lollypop.miniplayer import MiniPlayer
 
 
@@ -232,7 +232,8 @@ class Window(Gtk.ApplicationWindow, Container):
             self._toolbar.set_show_close_button(False)
         elif mini is not None and not show and self._timeout is None:
             self._main_stack.set_visible_child_name('main')
-            self._toolbar.set_show_close_button(True)
+            self._toolbar.set_show_close_button(
+                                    not disable_csd())
             self._timeout = GLib.timeout_add(1000, mini.destroy)
 
     def _setup_pos_size(self, name):
@@ -327,7 +328,7 @@ class Window(Gtk.ApplicationWindow, Container):
         self._toolbar = Toolbar(self.get_application())
         self._toolbar.show()
         self._subtoolbar = Gtk.Grid()
-        if Lp().settings.get_value('disable-csd') or is_unity():
+        if disable_csd():
             vgrid.add(self._toolbar)
         else:
             self.set_titlebar(self._toolbar)
