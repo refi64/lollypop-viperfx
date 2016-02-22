@@ -355,7 +355,7 @@ class AlbumSimpleWidget(Gtk.Frame, AlbumWidget):
             Return album id
             @return int
         """
-        return self._album_id
+        return self._album.id
 
     def do_get_preferred_width(self):
         """
