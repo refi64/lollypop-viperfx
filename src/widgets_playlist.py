@@ -83,7 +83,7 @@ class PlaylistWidget(Gtk.Bin):
             self._box.set_min_children_per_line(2)
             self._box.set_max_children_per_line(2)
 
-    def clean_overlay(self):
+    def update_overlay(self):
         """
             No overlay here now
         """

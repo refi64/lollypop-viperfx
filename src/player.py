@@ -17,6 +17,7 @@ from lollypop.player_shuffle import ShufflePlayer
 from lollypop.player_radio import RadioPlayer
 from lollypop.player_externals import ExternalsPlayer
 from lollypop.player_userplaylist import UserPlaylistPlayer
+from lollypop.radios import Radios
 from lollypop.objects import Track
 from lollypop.define import Lp, Type, NextContext
 
@@ -209,8 +210,14 @@ class Player(BinPlayer, QueuePlayer, UserPlaylistPlayer, RadioPlayer,
         if Lp().settings.get_value('save-state'):
             track_id = Lp().settings.get_value('track-id').get_int32()
             playlist_id = Lp().settings.get_value('playlist-id').get_int32()
-            path = Lp().tracks.get_path(track_id)
-            if path != "":
+            if playlist_id == Type.RADIOS:
+                radios = Radios()
+                track = Track()
+                name = radios.get_name(track_id)
+                url = radios.get_url(name)
+                track.set_radio(name, url)
+                Lp().player.load(track)
+            elif Lp().tracks.get_path(track_id) != "":
                 if playlist_id >= 0:
                     Lp().player.populate_user_playlist_by_id(playlist_id)
                     Lp().player.load_in_playlist(track_id, False)

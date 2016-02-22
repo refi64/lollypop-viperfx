@@ -142,7 +142,7 @@ class DeviceManagerWidget(Gtk.Bin, MtpSync):
         """
         self._syncing = False
 
-    def clean_overlay(self):
+    def update_overlay(self):
         """
             No overlay here now
         """

@@ -202,6 +202,34 @@ class Radios(GObject.GObject):
             except:  # Database is locked
                 pass
 
+    def get_id(self, name):
+        """
+            Get radio id by name
+            @param name as str
+        """
+        with SqlCursor(self) as sql:
+            result = sql.execute("SELECT id\
+                                 FROM radios WHERE\
+                                 name=?", (name,))
+            v = result.fetchone()
+            if v is not None:
+                return v[0]
+            return 0
+
+    def get_name(self, radio_id):
+        """
+            Get name by id
+            @param radio id as int
+        """
+        with SqlCursor(self) as sql:
+            result = sql.execute("SELECT name\
+                                 FROM radios WHERE\
+                                 id=?", (radio_id,))
+            v = result.fetchone()
+            if v is not None:
+                return v[0]
+            return 0
+
     def get_popularity(self, name):
         """
             Get popularity
@@ -212,7 +240,6 @@ class Radios(GObject.GObject):
             result = sql.execute("SELECT popularity\
                                  FROM radios WHERE\
                                  name=?", (name,))
-
             v = result.fetchone()
             if v is not None:
                 return v[0]

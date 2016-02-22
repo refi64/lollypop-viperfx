@@ -35,7 +35,7 @@ except Exception as e:
     LastFM = None
 
 from lollypop.utils import is_gnome, is_unity
-from lollypop.define import ArtSize
+from lollypop.define import ArtSize, Type
 from lollypop.window import Window
 from lollypop.database import Database
 from lollypop.player import Player
@@ -190,12 +190,18 @@ class Application(Gtk.Application):
             # Save current track
             if self.player.current_track.id is None:
                 track_id = -1
+            elif self.player.current_track.id == Type.RADIOS:
+                radios = Radios()
+                track_id = radios.get_id(
+                                        self.player.current_track.album_artist)
             else:
                 track_id = self.player.current_track.id
             self.settings.set_value('track-id', GLib.Variant('i',
                                                              track_id))
             # Save current playlist
-            if self.player.get_user_playlist_id() is None:
+            if self.player.current_track.id == Type.RADIOS:
+                playlist_id = Type.RADIOS
+            elif self.player.get_user_playlist_id() is None:
                 playlist_id = -1
             else:
                 playlist_id = self.player.get_user_playlist_id()
