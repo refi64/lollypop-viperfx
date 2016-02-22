@@ -140,13 +140,15 @@ class AlbumWidget:
             @param widget as Gtk.Popover
         """
         self._popover = False
-        self._play_button.set_opacity(0)
-        self._play_button.get_style_context().remove_class(self._rounded_class)
-        self._artwork_button.set_opacity(0)
-        self._artwork_button.get_style_context().remove_class(
+        if self._play_button.get_opacity() == 1:
+            self._play_button.set_opacity(0)
+            self._play_button.get_style_context().remove_class(
+                                                           self._rounded_class)
+            self._artwork_button.set_opacity(0)
+            self._artwork_button.get_style_context().remove_class(
                                                            self._squared_class)
-        self._append_button.set_opacity(0)
-        self._append_button.get_style_context().remove_class(
+            self._append_button.set_opacity(0)
+            self._append_button.get_style_context().remove_class(
                                                            self._squared_class)
 
     def _on_enter_notify(self, widget, event):

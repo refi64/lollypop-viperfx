@@ -191,6 +191,15 @@ class AlbumsView(LazyLoadingView):
             if self._viewport.get_child() is None:
                 self._viewport.add(self._albumbox)
 
+    def _clean_overlays(self, widgets):
+        """
+            Clean children's overlay
+            @param widgets as AlbumWidget
+        """
+        if self._context_widget in widgets:
+            widgets.remove(self._context_widget)
+        View._clean_overlays(self, widgets)
+
     def _on_position_notify(self, paned, param):
         """
             Save paned position
