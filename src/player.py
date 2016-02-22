@@ -223,6 +223,10 @@ class Player(BinPlayer, QueuePlayer, UserPlaylistPlayer, RadioPlayer,
                     self.context.genre_ids[Type.ALL] = []
                 self.set_next()
                 self.set_prev()
+                if Lp().settings.get_value('repeat'):
+                    self.context.next = NextContext.NONE
+                else:
+                    self.context.next = NextContext.STOP_ALL
                 self.emit('current-changed')
             else:
                 print("Player::restore_state(): track missing")
