@@ -218,10 +218,10 @@ class RadioWidget(Gtk.Frame, AlbumWidget):
             @param event es Gdk.Event
         """
         allocation = widget.get_allocation()
-        if event.x < 10 or\
-           event.x > allocation.width - 10 or\
-           event.y < 10 or\
-           event.y > allocation.height - 10:
+        if event.x < 5 or\
+           event.x > allocation.width - 5 or\
+           event.y < 5 or\
+           event.y > allocation.height - 5:
             self._cover.get_style_context().remove_class('hovereffect')
             self._play_button.set_opacity(0)
             self._play_button.hide()
