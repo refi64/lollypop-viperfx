@@ -73,7 +73,6 @@ class View(Gtk.Grid):
 #######################
 # PRIVATE             #
 #######################
-
     def _on_leave_event(self, widget, event):
         """
             Clean children's overlay
@@ -99,6 +98,7 @@ class View(Gtk.Grid):
             widget = widgets.pop(0)
             widget.update_state()
             widget.update_playing_indicator()
+            widget.clean_overlay()
             GLib.idle_add(self._update_widgets, widgets)
 
     def _update_responsive_design(self, widgets):
