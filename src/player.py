@@ -77,6 +77,9 @@ class Player(BinPlayer, QueuePlayer, UserPlaylistPlayer, RadioPlayer,
             Add album
             @param album as Album
         """
+        if not self._albums:
+            if not Lp().settings.get_value('repeat'):
+                self.context.next = NextContext.STOP_ALL
         Lp().player.shuffle_albums(False)
         # If album already exists, merge genres
         if album.id in self._albums:
@@ -88,8 +91,6 @@ class Player(BinPlayer, QueuePlayer, UserPlaylistPlayer, RadioPlayer,
             self.context.genre_ids[album.id] = album.genre_ids
         Lp().player.shuffle_albums(True)
         self.set_next()
-        if not Lp().settings.get_value('repeat'):
-            self.context.next = NextContext.STOP_ALL
 
     def play_album(self, album):
         """
@@ -100,7 +101,9 @@ class Player(BinPlayer, QueuePlayer, UserPlaylistPlayer, RadioPlayer,
         # We are not playing a user playlist anymore
         self._user_playlist = []
         self._user_playlist_id = None
-        if not Lp().settings.get_value('repeat'):
+        if Lp().settings.get_value('repeat'):
+            self.context.next = NextContext.NONE
+        else:
             self.context.next = NextContext.STOP_ALL
         Lp().player.load(album.tracks[0])
         if not Lp().player.is_party():
@@ -152,7 +155,9 @@ class Player(BinPlayer, QueuePlayer, UserPlaylistPlayer, RadioPlayer,
         else:
             self._albums += Lp().albums.get_ids(artist_ids, genre_ids)
 
-        if not Lp().settings.get_value('repeat'):
+        if Lp().settings.get_value('repeat'):
+            self.context.next = NextContext.NONE
+        else:
             self.context.next = NextContext.STOP_ALL
 
         if track_id in album.tracks_ids:
