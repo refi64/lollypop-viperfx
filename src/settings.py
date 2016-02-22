@@ -69,11 +69,12 @@ class SettingsDialog:
         """
         self._choosers = []
         self._timeout_id = None
-        self._popover = None
+        self._popover = Gtk.Popover.new()
 
         builder = Gtk.Builder()
         builder.add_from_resource('/org/gnome/Lollypop/SettingsDialog.ui')
         self._popover_content = builder.get_object('popover')
+        self._popover.add(self._popover_content)
         duration = builder.get_object('duration')
         duration.set_range(1, 20)
         duration.set_value(Lp().settings.get_value('mix-duration').get_int32())
@@ -295,12 +296,10 @@ class SettingsDialog:
         Lp().settings.set_value('mix', GLib.Variant('b', state))
         Lp().player.update_crossfading()
         if state:
-            if self._popover is None:
-                self._popover = Gtk.Popover.new(widget)
-                self._popover.set_modal(False)
-                self._popover.add(self._popover_content)
+            self._popover.set_modal(False)
+            self._popover.set_relative_to(widget)
             self._popover.show_all()
-        elif self._popover is not None:
+        else:
             self._popover.hide()
 
     def _update_party_mix_setting(self, widget, state):
@@ -420,23 +419,12 @@ class SettingsDialog:
             If no popover, refuse event
             Allow touch screen to show popover
         """
-        if Lp().settings.get_value('mix') and (
-                self._popover is None or
-                not self._popover.is_visible()):
-            return True
-
-    def _on_mix_enter_notify(self, widget, event):
-        """
-            Show mix popover
-            @param widget as Gtk.Widget
-            @param event as Gdk.Event
-        """
         if Lp().settings.get_value('mix'):
-            if self._popover is None:
-                self._popover = Gtk.Popover.new(widget)
+            if not self._popover.is_visible():
                 self._popover.set_modal(False)
-                self._popover.add(self._popover_content)
-            self._popover.show_all()
+                self._popover.set_relative_to(widget)
+                self._popover.show_all()
+                return True
 
     def _on_key_release_event(self, widget, event):
         """
