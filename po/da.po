@@ -1,0 +1,857 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# 
+# Translators:
+# Chris Darnell <chris@cedeel.com>, 2016
+msgid ""
+msgstr ""
+"Project-Id-Version: lollypop\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2016-02-20 19:16+0100\n"
+"PO-Revision-Date: 2016-02-22 13:34+0000\n"
+"Last-Translator: Chris Darnell <chris@cedeel.com>\n"
+"Language-Team: Danish (http://www.transifex.com/gnumdk/lollypop/language/da/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: da\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: ../data/org.gnome.Lollypop.gschema.xml.h:1
+msgid "Window size"
+msgstr "Vinduesstørrelse"
+
+#: ../data/org.gnome.Lollypop.gschema.xml.h:2
+msgid "Window size (width and height)."
+msgstr "Vinduesstørrelse (bredde og højde)."
+
+#: ../data/org.gnome.Lollypop.gschema.xml.h:3
+msgid "Window position"
+msgstr "Vinduesposition"
+
+#: ../data/org.gnome.Lollypop.gschema.xml.h:4
+msgid "Window position (x and y)."
+msgstr "Vinduesposition (x og y)."
+
+#: ../data/org.gnome.Lollypop.gschema.xml.h:5
+msgid "Mini player size"
+msgstr "Miniafspillerstørrelse"
+
+#: ../data/org.gnome.Lollypop.gschema.xml.h:6
+msgid "Mini player position"
+msgstr "Miniafspillerposition"
+
+#: ../data/org.gnome.Lollypop.gschema.xml.h:7
+msgid "Repeat by default"
+msgstr "Gentag som standard"
+
+#: ../data/org.gnome.Lollypop.gschema.xml.h:8
+msgid "Window maximized"
+msgstr "Vindue maksimeret"
+
+#: ../data/org.gnome.Lollypop.gschema.xml.h:9
+msgid "Window maximized state."
+msgstr "Vindue is maksimeret tilstand."
+
+#: ../data/org.gnome.Lollypop.gschema.xml.h:10
+msgid "Enabled genres in party mode"
+msgstr "Genrer i festtilstand slået til"
+
+#: ../data/org.gnome.Lollypop.gschema.xml.h:11
+msgid "Ids for genres."
+msgstr "Id'er til genrer"
+
+#: ../data/org.gnome.Lollypop.gschema.xml.h:12
+msgid "Music paths"
+msgstr "Musikstier"
+
+#: ../data/org.gnome.Lollypop.gschema.xml.h:13
+msgid "When empty, use XDG_MUSIC_DIR"
+msgstr "Når tom, benyt XDG_MIUSIC_DIR"
+
+#: ../data/org.gnome.Lollypop.gschema.xml.h:14
+msgid "Last.fm login"
+msgstr "Last.fm login"
+
+#: ../data/org.gnome.Lollypop.gschema.xml.h:15
+msgid "Favorite tag editor"
+msgstr "Foretrukken tag-redigeringsprogram"
+
+#: ../data/org.gnome.Lollypop.gschema.xml.h:16
+msgid "INTERNAL"
+msgstr "INTERN"
+
+#: ../data/org.gnome.Lollypop.gschema.xml.h:17
+msgid "Favorite cover file"
+msgstr "Foretrukken omslagsfil"
+
+#: ../data/org.gnome.Lollypop.gschema.xml.h:18
+msgid "Restart needed"
+msgstr "Genstart nødvendig"
+
+#: ../data/org.gnome.Lollypop.gschema.xml.h:19
+msgid "Database version"
+msgstr "Databaseversion"
+
+#: ../data/org.gnome.Lollypop.gschema.xml.h:20
+msgid ""
+"Reset this value will reset the database, popular albums will be restored"
+msgstr "Nulstilling af denne værdi vil nulstille databasen; populære albummer vil blive gendannede"
+
+#: ../data/org.gnome.Lollypop.gschema.xml.h:21 ../data/SettingsDialog.ui.h:7
+msgid "Albums cover size"
+msgstr "Albummers omslagsstørrelse"
+
+#: ../data/org.gnome.Lollypop.gschema.xml.h:22
+msgid "Replay gain value in db"
+msgstr "Lydforøgelse i dB"
+
+#: ../data/org.gnome.Lollypop.gschema.xml.h:23
+msgid "Between -15 and 15"
+msgstr "Mellem -15 og 15"
+
+#: ../data/org.gnome.Lollypop.gschema.xml.h:24
+msgid "Sync all albums(MTP)"
+msgstr "Synkronisér alle album (MTP)"
+
+#: ../data/org.gnome.Lollypop.gschema.xml.h:25
+msgid "Convert to MP3(MTP)"
+msgstr "Konvertér til MP3 (MTP)"
+
+#: ../data/org.gnome.Lollypop.gschema.xml.h:26 ../data/SettingsDialog.ui.h:10
+msgid "Auto update music"
+msgstr "Opdater musik automatisk"
+
+#: ../data/org.gnome.Lollypop.gschema.xml.h:27
+msgid "Show genres list"
+msgstr "Vis genreliste"
+
+#: ../data/org.gnome.Lollypop.gschema.xml.h:28
+msgid "Use dark gtk theme"
+msgstr "Benyt mørkt GTK-tema"
+
+#: ../data/org.gnome.Lollypop.gschema.xml.h:29
+msgid "Disable the use client side window decorations (headerbar)"
+msgstr "Slå brug af klientside-dekorationer fra (headerbar)"
+
+#: ../data/org.gnome.Lollypop.gschema.xml.h:30 ../data/SettingsDialog.ui.h:6
+msgid "Show compilations in albums view"
+msgstr "Vis samlinger i albumvisning"
+
+#: ../data/org.gnome.Lollypop.gschema.xml.h:31 ../data/SettingsDialog.ui.h:12
+msgid "Continue playback when closed"
+msgstr "Fortsæt afspilining når lukket"
+
+#: ../data/org.gnome.Lollypop.gschema.xml.h:32
+msgid "Restore previous state"
+msgstr "Gendan tidligere tilstand"
+
+#: ../data/org.gnome.Lollypop.gschema.xml.h:33
+msgid "Auto play albums on click"
+msgstr "Spil automatisk album ved klik"
+
+#: ../data/org.gnome.Lollypop.gschema.xml.h:34
+msgid "Disable MPRIS"
+msgstr "Slå MPRIS fra"
+
+#: ../data/org.gnome.Lollypop.gschema.xml.h:35
+msgid "Disable notifications"
+msgstr "Slå notifikationer fra"
+
+#: ../data/org.gnome.Lollypop.gschema.xml.h:36
+msgid "Show track number from tags"
+msgstr "Vis spornummer fra tags"
+
+#: ../data/org.gnome.Lollypop.gschema.xml.h:37 ../data/SettingsDialog.ui.h:14
+msgid "Mix songs"
+msgstr "Bland sange"
+
+#: ../data/org.gnome.Lollypop.gschema.xml.h:38
+msgid "Mix songs only in party mode"
+msgstr "Bland kun sange i festtilstand"
+
+#: ../data/org.gnome.Lollypop.gschema.xml.h:39
+msgid "Mix duration"
+msgstr "Bland varighed"
+
+#: ../data/org.gnome.Lollypop.gschema.xml.h:40
+msgid "Shuffle mode"
+msgstr "Blandingstilstand"
+
+#: ../data/lollypop.desktop.in.h:1 ../data/lollypop.appdata.xml.in.h:1
+msgid "Lollypop"
+msgstr "Lollypop"
+
+#: ../data/lollypop.desktop.in.h:2
+msgid "Music Player"
+msgstr "Musikafspiller"
+
+#: ../data/lollypop.desktop.in.h:3 ../data/lollypop.appdata.xml.in.h:2
+msgid "Play and organize your music collection"
+msgstr "Afspil og organisér din musiksamling"
+
+#: ../data/lollypop.desktop.in.h:4
+msgid "Play/Pause"
+msgstr "Afspil/pause"
+
+#: ../data/lollypop.desktop.in.h:5 ../src/notification.py:70
+#: ../data/ToolbarPlayback.ui.h:3
+msgid "Next"
+msgstr "Næste"
+
+#: ../data/lollypop.desktop.in.h:6 ../src/notification.py:66
+#: ../data/ToolbarPlayback.ui.h:1
+msgid "Previous"
+msgstr "Forrige"
+
+#: ../data/lollypop.appdata.xml.in.h:3
+msgid "Lollypop is a new GNOME music playing application."
+msgstr "Lollypop er en ny GNOME-musikafspiller"
+
+#: ../data/lollypop.appdata.xml.in.h:4
+msgid "It provides:"
+msgstr "Det giver:"
+
+#: ../data/lollypop.appdata.xml.in.h:5
+msgid "mp3/4, ogg and flac playback"
+msgstr "MP3/4-, Ogg- og FLAC-afspilning"
+
+#: ../data/lollypop.appdata.xml.in.h:6
+msgid "Genre/Cover browsing"
+msgstr "Genre-/omslagsgennemsyn"
+
+#: ../data/lollypop.appdata.xml.in.h:7
+msgid "Genre/Artist/Cover browsing"
+msgstr "Genre-/kunstner-/omslagsgennemsyn"
+
+#: ../data/lollypop.appdata.xml.in.h:8 ../data/ToolbarEnd.ui.h:7
+msgid "Search"
+msgstr "Søg"
+
+#: ../data/lollypop.appdata.xml.in.h:9 ../src/pop_menu.py:466
+#: ../src/pop_menu.py:485 ../data/ToolbarEnd.ui.h:8
+msgid "Queue"
+msgstr "Kø"
+
+#: ../data/lollypop.appdata.xml.in.h:10 ../data/SettingsDialog.ui.h:21
+#: ../data/ToolbarEnd.ui.h:5
+msgid "Party mode"
+msgstr "Festtilstand"
+
+#: ../data/lollypop.appdata.xml.in.h:11
+msgid "Replay gain"
+msgstr "Lydforøgelse"
+
+#: ../data/lollypop.appdata.xml.in.h:12
+msgid "Cover art downloader"
+msgstr "Omslagsdownloader"
+
+#: ../data/lollypop.appdata.xml.in.h:13
+msgid "Context artist view"
+msgstr "Kontekstafhængig kunstnervisning"
+
+#: ../data/lollypop.appdata.xml.in.h:14
+msgid "MTP sync"
+msgstr "MTP-synkronisering"
+
+#: ../data/lollypop.appdata.xml.in.h:15
+msgid "Fullscreen view"
+msgstr "Fuld skærm"
+
+#: ../data/lollypop.appdata.xml.in.h:16
+msgid "Radios support"
+msgstr "Radiounderstøttelse"
+
+#: ../data/lollypop.appdata.xml.in.h:17
+msgid "Last.fm support"
+msgstr "Understøttelse af Last.fm"
+
+#: ../data/lollypop.appdata.xml.in.h:18
+msgid "Auto install codecs"
+msgstr "Installér automatisk codecs"
+
+#: ../data/lollypop.appdata.xml.in.h:19
+msgid "HiDPI support"
+msgstr "Understøttelse af HiDPI"
+
+#: ../data/lollypop.appdata.xml.in.h:20
+msgid "Tunein support"
+msgstr "Understøttelse af TuneIn"
+
+#: ../src/application.py:31
+msgid ""
+"    - Scrobbler disabled\n"
+"    - Auto cover download disabled\n"
+"    - Artist informations disabled"
+msgstr "- Scrobbler slået fra\n- Automatisk hentning af omslag slået fra\n- Kunstnerinformation slået fra"
+
+#: ../src/application.py:367
+#, python-format
+msgid "%d artist"
+msgid_plural "%d artists"
+msgstr[0] "%d kunstner"
+msgstr[1] "%d kunstnere"
+
+#: ../src/application.py:369
+#, python-format
+msgid "%d album"
+msgid_plural "%d albums"
+msgstr[0] "%d album"
+msgstr[1] "%d albummer"
+
+#: ../src/application.py:371
+#, python-format
+msgid "%d track"
+msgid_plural "%d tracks"
+msgstr[0] "%d nummer"
+msgstr[1] "%d numre"
+
+#: ../src/application.py:386
+msgid "Lollypop: You need to install yelp."
+msgstr "Lollypop: Du skal installere Yelp."
+
+#: ../src/collectionscanner.py:67
+msgid "Your music is updating"
+msgstr "Din musik opdateres"
+
+#: ../src/container.py:444
+msgid "Popular albums"
+msgstr "Populære albummer"
+
+#: ../src/container.py:445
+msgid "Recently added albums"
+msgstr "Nyligt tilføjede albummer"
+
+#: ../src/container.py:446
+msgid "Random albums"
+msgstr "Tilfældige albummer"
+
+#: ../src/container.py:447 ../src/pop_menu.py:391 ../src/pop_menu.py:468
+#: ../src/pop_menu.py:487
+msgid "Playlists"
+msgstr "Afspilningslister"
+
+#: ../src/container.py:448
+msgid "Radios"
+msgstr "Radioer"
+
+#: ../src/container.py:450
+msgid "All artists"
+msgstr "Alle kunstnere"
+
+#: ../src/container.py:452 ../data/DeviceManagerWidget.ui.h:1
+msgid "All albums"
+msgstr "Alle albummer"
+
+#: ../src/container.py:499
+msgid "Compilations"
+msgstr "Samlinger"
+
+#: ../src/container.py:522
+msgid "Popular tracks"
+msgstr "Populære numre"
+
+#: ../src/container.py:523
+msgid "Recently played"
+msgstr "Nyligt afspillede"
+
+#: ../src/container.py:524
+msgid "Never played"
+msgstr "Aldrig afspillede"
+
+#: ../src/container.py:525
+msgid "Random tracks"
+msgstr "Tilfældige numre"
+
+#: ../src/container.py:526 ../src/playlists.py:54
+msgid "Network control"
+msgstr "Netværkskontrol"
+
+#: ../src/controllers.py:82 ../src/controllers.py:115
+msgid "Pause"
+msgstr "Pause"
+
+#: ../src/controllers.py:84 ../src/controllers.py:112 ../src/pop_tunein.py:154
+#: ../data/AlbumContextWidget.ui.h:1 ../data/AlbumDetailedWidget.ui.h:1
+#: ../data/ToolbarPlayback.ui.h:2
+msgid "Play"
+msgstr "Afspil"
+
+#: ../src/database_albums.py:270 ../src/database_artists.py:104
+#: ../src/database_genres.py:69 ../src/database_tracks.py:229
+#: ../src/tagreader.py:87 ../src/tagreader.py:118 ../src/tagreader.py:143
+#: ../src/tagreader.py:158
+msgid "Unknown"
+msgstr "Ukendt"
+
+#: ../src/database_albums.py:286
+msgid "Compilation"
+msgstr "Samling"
+
+#: ../src/database_artists.py:97
+msgid "Many artists"
+msgstr "Mange kunstnere"
+
+#: ../src/lastfm.py:23
+msgid "Last.fm authentication disabled"
+msgstr "Last.fm-autentificering slået fra"
+
+#: ../src/lastfm.py:289
+msgid "Wrong Last.fm credentials"
+msgstr "Forkerte legitimationsoplysninger til Last.fm"
+
+#. TRANSLATORS: by refers to the artist,
+#: ../src/notification.py:99
+#, python-format
+msgid "by %s"
+msgstr "af %s"
+
+#. TRANSLATORS: by refers to the artist,
+#. from to the album
+#: ../src/notification.py:107
+#, python-format
+msgid "by %s, from %s"
+msgstr "af %s, fra %s"
+
+#: ../src/player_bin.py:453
+#, python-format
+msgid "File doesn't exist: %s"
+msgstr "Fil findes ikke: %s"
+
+#: ../src/playlists.py:53
+msgid "Loved tracks"
+msgstr "Ælskede numre"
+
+#: ../src/pop_covers.py:56 ../src/pop_tunein.py:93 ../data/RadioPopover.ui.h:3
+msgid "Please wait..."
+msgstr "Vent venligst ..."
+
+#: ../src/pop_covers.py:131
+msgid "No cover found..."
+msgstr "Intet omslag fundet ..."
+
+#: ../src/pop_covers.py:159
+msgid "Select a cover art for this album"
+msgstr "Vælg et omslag til dette album"
+
+#: ../src/pop_infos.py:33
+msgid "Advanced artist informations disabled"
+msgstr "Avanceret kunstnerinformation slået fra"
+
+#: ../src/pop_infos.py:41
+msgid "WebKit support disabled"
+msgstr "WebKit-understøttelse slået fra"
+
+#: ../src/pop_menu.py:73
+msgid "Continue playback"
+msgstr "Fortsæt afspilning"
+
+#: ../src/pop_menu.py:83
+msgid "Stop after this track"
+msgstr "Stop efter dette nummer"
+
+#: ../src/pop_menu.py:91
+msgid "Stop after this album"
+msgstr "Stop efter dette album"
+
+#: ../src/pop_menu.py:99
+msgid "Do not repeat"
+msgstr "Gentag ikke"
+
+#: ../src/pop_menu.py:198 ../data/SearchRow.ui.h:3
+msgid "Add to queue"
+msgstr "Tilføj til kø"
+
+#: ../src/pop_menu.py:203
+msgid "Next tracks"
+msgstr "Næste numre"
+
+#: ../src/pop_menu.py:205 ../data/NextPopover.ui.h:1
+msgid "Next track"
+msgstr "Næste nummer"
+
+#: ../src/pop_menu.py:209
+msgid "Remove from queue"
+msgstr "Fjern fra kø"
+
+#: ../src/pop_menu.py:277
+msgid "Add to others"
+msgstr "Tilføj til andre"
+
+#: ../src/pop_menu.py:294
+#, python-format
+msgid "Remove from \"%s\""
+msgstr "Fjern fra \"%s\""
+
+#: ../src/pop_menu.py:300
+#, python-format
+msgid "Add to \"%s\""
+msgstr "Tilføj til \"%s\""
+
+#: ../src/pop_menu.py:389
+msgid "Playback"
+msgstr "Afspilning"
+
+#: ../src/pop_menu.py:426
+msgid "Modify information"
+msgstr "Rediger informationer"
+
+#: ../src/pop_menu.py:470 ../data/PlaylistView.ui.h:1
+msgid "Edit"
+msgstr "Rediger"
+
+#: ../src/pop_radio.py:83 ../src/pop_tunein.py:160
+msgid "Add"
+msgstr "Tilføj"
+
+#: ../src/pop_radio.py:85 ../src/wikipedia.py:59
+msgid "Modify"
+msgstr "Rediger"
+
+#: ../src/pop_tunein.py:105
+msgid "Can't connect to TuneIn..."
+msgstr "Kan ikke forbinde til TuneIn ..."
+
+#: ../src/pop_tunein.py:179
+msgid "Browse themes and add a new radio"
+msgstr "Gennemse temaer og tilføj en ny radio"
+
+#: ../src/settings.py:160
+msgid "Populars"
+msgstr "Populære"
+
+#: ../src/settings.py:161
+msgid "Recently added"
+msgstr "Nyligt tilføjede"
+
+#. Handle language ordering
+#. Translators: Add here words that shoud be ignored for artist sort order
+#: ../src/utils.py:111
+msgid "The the"
+msgstr "The the den de"
+
+#: ../src/view_device.py:82 ../src/view_device.py:148
+#, python-format
+msgid "Synchronize %s"
+msgstr "Synkronisér %s"
+
+#: ../src/view_device.py:137
+msgid "Cancel synchronization"
+msgstr "Annulér synkronisering"
+
+#: ../src/widgets_album.py:361
+#, python-format
+msgid "%s h  %s m"
+msgstr "%s t %s m"
+
+#: ../src/widgets_album.py:363
+#, python-format
+msgid "%s h"
+msgstr "%s t"
+
+#: ../src/widgets_album.py:365
+#, python-format
+msgid "%s m"
+msgstr "%s m"
+
+#: ../src/widgets_album.py:379
+#, python-format
+msgid "Disc %s"
+msgstr "Skive %s"
+
+#: ../src/widgets_device.py:51
+msgid "You need to install gstreamer-plugins-ugly"
+msgstr "Du skal installere gstreamer-plugins-ugly"
+
+#: ../src/widgets_device.py:219
+msgid "Unknown error while syncing, try to reboot your device"
+msgstr "Ukendt fejl ved synkronisering; forsøg at genstarte din enhed"
+
+#: ../src/widgets_device.py:227
+msgid "No free space available on device"
+msgstr "Ingen fri plads på enheden"
+
+#: ../src/widgets_playlist.py:280 ../src/widgets_playlist.py:283
+msgid "New playlist "
+msgstr "Ny afspilningsliste"
+
+#. Need a copy, segfault on EOS 3.1
+#: ../src/widgets_playlist.py:338 ../src/widgets_playlist.py:574
+#, python-format
+msgid "Remove \"%s\"?"
+msgstr "Fjern \"%s\"?"
+
+#: ../src/widgets_playlist.py:619
+msgid "Remove these tracks?"
+msgstr "Fjern disse numre?"
+
+#. Translators: Put here words added by wikipedia in band search
+#. Ex: Muse_(band), Peaches(musician)
+#. Unused be we keep this for now (as it's already translated)
+#: ../src/wikipedia.py:36
+msgid "musician;band"
+msgstr "musiker;band"
+
+#: ../data/AboutDialog.ui.h:1
+msgid "A music player for GNOME."
+msgstr "En musikafspiller til GNOME."
+
+#: ../data/AboutDialog.ui.h:2
+msgid "Visit Lollypop website"
+msgstr "Besøg Lollypops hjemmeside"
+
+#. Replace me with your names
+#: ../data/AboutDialog.ui.h:4
+msgid "Cédric Bellegarde <cedric.bellegarde@adishatz.org>"
+msgstr "Chris Darnell <cedeel@gmail.com>"
+
+#: ../data/AlbumContextWidget.ui.h:2 ../data/AlbumDetailedWidget.ui.h:2
+msgid "Change artwork"
+msgstr "Udskift kunst"
+
+#: ../data/AlbumContextWidget.ui.h:3 ../data/AlbumDetailedWidget.ui.h:3
+msgid "Append"
+msgstr "Tilføj"
+
+#: ../data/Appmenu.ui.h:1
+msgid "_Update music"
+msgstr "_Opdater musik"
+
+#: ../data/Appmenu.ui.h:2
+msgid "_Fullscreen"
+msgstr "_Fuld skærm"
+
+#: ../data/Appmenu.ui.h:3
+msgid "_Preferences"
+msgstr "_Indstillinger"
+
+#: ../data/Appmenu.ui.h:4
+msgid "_About"
+msgstr "Om"
+
+#: ../data/Appmenu.ui.h:5
+msgid "_Help"
+msgstr "_Hjælp"
+
+#: ../data/Appmenu.ui.h:6
+msgid "_Quit"
+msgstr "_Afslut"
+
+#: ../data/ArtistContent.ui.h:1
+msgid "No information for this artist..."
+msgstr "Ingen information om denne kunstner ..."
+
+#: ../data/ArtistInfos.ui.h:1
+msgid "Albums"
+msgstr "Albummer"
+
+#: ../data/ArtistInfos.ui.h:2
+msgid "Last.fm"
+msgstr "Last.fm"
+
+#: ../data/ArtistInfos.ui.h:3
+msgid "Wikipedia"
+msgstr "Wikipedia"
+
+#: ../data/ArtistInfos.ui.h:4
+msgid "Wikia"
+msgstr "Wikia"
+
+#: ../data/ArtistInfos.ui.h:5
+msgid "DuckDuckGo"
+msgstr "DuckDuckGo"
+
+#: ../data/DeviceManagerView.ui.h:1
+msgid "Synchronize your device with this playlists"
+msgstr "Synkronisér din enhed med denne afspilningsliste"
+
+#: ../data/DeviceManagerView.ui.h:2
+msgid "Please unlock your device"
+msgstr "Lås venligst din enhed op"
+
+#: ../data/DeviceManagerWidget.ui.h:2
+msgid "Convert to MP3"
+msgstr "Konverter til MP3"
+
+#: ../data/PlaylistEditWidget.ui.h:1 ../data/PlaylistsManagerWidget.ui.h:1
+msgid "Confirm"
+msgstr "Bekræft"
+
+#: ../data/PlaylistsManagerView.ui.h:1
+msgid "New playlist"
+msgstr "Ny afspilningsliste"
+
+#: ../data/QueuePopover.ui.h:1
+msgid "Queue:"
+msgstr "Kø:"
+
+#: ../data/QueuePopover.ui.h:2
+msgid "Clear queue"
+msgstr "Ryd kø"
+
+#: ../data/AlbumsPopover.ui.h:1
+msgid "Albums playing:"
+msgstr "Albummer som afspilles:"
+
+#: ../data/AlbumsPopover.ui.h:2
+msgid "Remove all albums"
+msgstr "Fjern alle albummer"
+
+#: ../data/RadioPopover.ui.h:1
+msgid "Select a logo  for this radio"
+msgstr "Vælg et logo til denne radio"
+
+#: ../data/RadioPopover.ui.h:2
+msgid "No logo found..."
+msgstr "Intet logo fundet ..."
+
+#: ../data/RadioPopover.ui.h:4
+msgid "Name:"
+msgstr "Navn:"
+
+#: ../data/RadioPopover.ui.h:5
+msgid "Address:"
+msgstr "Adresse:"
+
+#: ../data/RadioPopover.ui.h:6
+msgid "Delete"
+msgstr "Slet"
+
+#: ../data/RadiosView.ui.h:1
+msgid "No favorite radios"
+msgstr "Ingen yndlingsradioer"
+
+#: ../data/RadiosView.ui.h:2
+msgid "New radio"
+msgstr "Ny radio"
+
+#: ../data/RadiosView.ui.h:3
+msgid "Search in TuneIn"
+msgstr "Søg i TuneIn"
+
+#: ../data/SearchPopover.ui.h:1
+msgid "Play search"
+msgstr "Afspil søgning"
+
+#: ../data/SearchPopover.ui.h:2
+msgid "Create a new playlist based on search"
+msgstr "Lav en ny afspilningsliste fra denne søgning"
+
+#: ../data/SearchRow.ui.h:1
+msgid "artist"
+msgstr "kunstner"
+
+#: ../data/SearchRow.ui.h:2
+msgid "Add to playlist"
+msgstr "Tilføj til afspilningsliste"
+
+#: ../data/SettingsDialog.ui.h:1
+msgid "Preferences"
+msgstr "Indstillinger"
+
+#: ../data/SettingsDialog.ui.h:2
+msgid "Only in party mode"
+msgstr "Kun i festtilstand"
+
+#: ../data/SettingsDialog.ui.h:3
+msgid "Mix duration in seconds"
+msgstr "Bland varighed i sekunder"
+
+#: ../data/SettingsDialog.ui.h:4
+msgid "Use dark theme variant"
+msgstr "Benyt mørk temavariant"
+
+#: ../data/SettingsDialog.ui.h:5
+msgid "Show genres"
+msgstr "Vis genrer"
+
+#: ../data/SettingsDialog.ui.h:8
+msgid "Configure lollypop appearance"
+msgstr "Konfigurer Lollypops udseende"
+
+#: ../data/SettingsDialog.ui.h:9
+msgid "Appearance"
+msgstr "Udseende"
+
+#: ../data/SettingsDialog.ui.h:11
+msgid "Restore state on startup"
+msgstr "Gendan tilstand ved start"
+
+#: ../data/SettingsDialog.ui.h:13
+msgid "Play albums on click"
+msgstr "Spil albummer ved klik"
+
+#: ../data/SettingsDialog.ui.h:15
+msgid "Do not repeat by default"
+msgstr "Gentag ikke som standard"
+
+#: ../data/SettingsDialog.ui.h:16
+msgid "Configure lollypop behaviour"
+msgstr "Konfigurer Lollypops opførsel"
+
+#: ../data/SettingsDialog.ui.h:17
+msgid "Behaviour"
+msgstr "Opførsel"
+
+#: ../data/SettingsDialog.ui.h:18
+msgid "Select music folders"
+msgstr "Vælg musikmapper"
+
+#: ../data/SettingsDialog.ui.h:19
+msgid "Music"
+msgstr "Musik"
+
+#: ../data/SettingsDialog.ui.h:20
+msgid "Select what will be available in party mode"
+msgstr "Vælg hvad der skal være tilgængeligt i festtilstand"
+
+#: ../data/SettingsDialog.ui.h:22
+msgid "Login:"
+msgstr "Login:"
+
+#: ../data/SettingsDialog.ui.h:23
+msgid "Password:"
+msgstr "Kodeord:"
+
+#: ../data/SettingsDialog.ui.h:24
+msgid "Connect"
+msgstr "Forbind"
+
+#: ../data/SettingsDialog.ui.h:25
+msgid "You need to install pylast and gi secret"
+msgstr "Du skal installere pylast og gi-secret"
+
+#: ../data/SettingsDialog.ui.h:26
+msgid "Configure Last.fm credentials"
+msgstr "Konfigurer Last.fm-legitimationsoplysninger"
+
+#: ../data/ToolbarEnd.ui.h:1
+msgid "No shuffle"
+msgstr "Ingen blanding"
+
+#: ../data/ToolbarEnd.ui.h:2
+msgid "Shuffle albums"
+msgstr "Bland albummer"
+
+#: ../data/ToolbarEnd.ui.h:3
+msgid "Shuffle tracks"
+msgstr "Bland numre"
+
+#: ../data/ToolbarEnd.ui.h:4
+msgid "Settings"
+msgstr "Indstillinger"
+
+#: ../data/ToolbarEnd.ui.h:6
+msgid "Shuffle"
+msgstr "Bland"
+
+#: ../data/Unicode.ui.h:1
+msgid "Error"
+msgstr "Fejl"
+
+#: ../data/Unicode.ui.h:2
+msgid ""
+"Lollypop isn't designed to work without an unicode locale.\n"
+"Please fix your system."
+msgstr "Lollypop er ikke beregnet til at virke uden et unicode-locale.\nOrdn venligst dit system."
