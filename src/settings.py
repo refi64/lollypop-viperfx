@@ -415,6 +415,14 @@ class SettingsDialog:
                 pass
         Lp().settings.set_value('party-ids',  GLib.Variant('ai', ids))
 
+    def _on_mix_button_press(self, widget, event):
+        """
+            If no popover, refuse event
+            Allow touch screen to show popover
+        """
+        if self._popover is None and self._popover.is_visible():
+            return True
+
     def _on_mix_enter_notify(self, widget, event):
         """
             Show mix popover
