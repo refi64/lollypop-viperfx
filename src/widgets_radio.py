@@ -15,6 +15,7 @@ from gi.repository import Gtk, Pango
 from gettext import gettext as _
 
 from lollypop.define import Lp, ArtSize, Type
+from lollypop.objects import Track
 from lollypop.widgets_album import AlbumWidget
 from lollypop.pop_radio import RadioPopover
 
@@ -44,7 +45,6 @@ class RadioWidget(Gtk.Frame, AlbumWidget):
         self.get_style_context().remove_class('loading')
         AlbumWidget.__init__(self, None)
         self._widget = Gtk.EventBox()
-        self._widget.connect('realize', self._on_eventbox_realize)
         self._widget.connect('enter-notify-event', self._on_enter_notify)
         self._widget.connect('leave-notify-event', self._on_leave_notify)
         grid = Gtk.Grid()
@@ -73,6 +73,9 @@ class RadioWidget(Gtk.Frame, AlbumWidget):
         play_event.set_hexpand(True)
         play_event.set_property('valign', Gtk.Align.CENTER)
         play_event.set_property('halign', Gtk.Align.CENTER)
+        play_event.connect('realize', self._on_eventbox_realize)
+        play_event.connect('button-press-event',
+                           self._on_play_press_event)
         self._play_button = Gtk.Image.new_from_icon_name(
                                            'media-playback-start-symbolic',
                                            Gtk.IconSize.DND)
@@ -231,6 +234,18 @@ class RadioWidget(Gtk.Frame, AlbumWidget):
             self._edit_button.set_opacity(0)
             self._edit_button.get_style_context().remove_class(
                                                            self._squared_class)
+
+    def _on_play_press_event(self, widget, event):
+        """
+            Play radio
+            @param: widget as Gtk.EventBox
+            @param: event as Gdk.Event
+        """
+        url = self._radios_manager.get_url(self._name)
+        if url:
+            track = Track()
+            track.set_radio(self._name, url)
+            Lp().player.load(track)
 
     def _on_edit_press_event(self, widget, event):
         """

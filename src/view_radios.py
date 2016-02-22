@@ -20,7 +20,6 @@ from lollypop.radios import Radios
 from lollypop.pop_radio import RadioPopover
 from lollypop.pop_tunein import TuneinPopover
 from lollypop.define import Lp, Type
-from lollypop.objects import Track
 
 
 class RadiosView(LazyLoadingView):
@@ -50,7 +49,6 @@ class RadiosView(LazyLoadingView):
 
         self._radiobox = Gtk.FlowBox()
         self._radiobox.set_selection_mode(Gtk.SelectionMode.NONE)
-        self._radiobox.connect("child-activated", self._on_album_activated)
         self._radiobox.set_property('column-spacing', 5)
         self._radiobox.set_property('row-spacing', 5)
         self._radiobox.set_homogeneous(True)
@@ -235,16 +233,3 @@ class RadiosView(LazyLoadingView):
             GLib.idle_add(self._lazy_loading)
             if self._viewport.get_child() is None:
                 self._viewport.add(self._radiobox)
-
-    def _on_album_activated(self, flowbox, child):
-        """
-            Play album
-            @param flowbox as Gtk.Flowbox
-            @child as Gtk.FlowboxChild
-        """
-        name = child.get_child().get_name()
-        url = self._radios_manager.get_url(name)
-        if url:
-            track = Track()
-            track.set_radio(name, url)
-            Lp().player.load(track)
