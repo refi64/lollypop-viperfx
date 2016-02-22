@@ -122,8 +122,6 @@ class RadioPlayer(BasePlayer):
         """
         self._playbin.set_state(Gst.State.NULL)
         self._playbin.set_property('uri', track.uri)
-        self.context.genre_ids = {}
-        self.context.genre_ids[Type.ALL] = []
         Radios().set_more_popular(track.album_artist)
         self.current_track = track
         self._current = None
