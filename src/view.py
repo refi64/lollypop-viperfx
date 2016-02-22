@@ -77,7 +77,12 @@ class View(Gtk.Grid):
         """
             Clean children's overlay
         """
-        self._clean_overlays(self._get_children())
+        allocation = widget.get_allocation()
+        if event.x < 5 or\
+           event.x > allocation.width - 5 or\
+           event.y < 5 or\
+           event.y > allocation.height - 5:
+            self._clean_overlays(self._get_children())
 
     def _clean_overlays(self, widgets):
         """
