@@ -119,7 +119,8 @@ class ShufflePlayer(BasePlayer):
                 self._albums = Lp().albums.get_party_ids(party_ids)
             else:
                 self._albums = Lp().albums.get_ids()
-
+            self.context.genre_ids = {}
+            self.context.genre_ids[Type.ALL] = []
             # Start a new song if not playing
             if (self.current_track.id in [None, Type.RADIOS])\
                     and self._albums:
