@@ -231,7 +231,7 @@ class AlbumWidget:
         empty = len(albums) == 0
         if self._album.id not in albums:
             Lp().player.add_album(self._album)
-            if empty:
+            if empty and Lp().player.current_track.id is None:
                 Lp().player.load(self._album.tracks[0], False)
         self._append_button.hide()
         self._append_button.set_opacity(0)
