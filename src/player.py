@@ -87,6 +87,7 @@ class Player(BinPlayer, QueuePlayer, UserPlaylistPlayer, RadioPlayer,
             self._albums.append(album.id)
             self.context.genre_ids[album.id] = album.genre_ids
         Lp().player.shuffle_albums(True)
+        self.set_next()
 
     def play_album(self, album):
         """
