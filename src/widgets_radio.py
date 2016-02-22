@@ -208,6 +208,7 @@ class RadioWidget(Gtk.Frame, AlbumWidget):
             Remove selected style
             @param widget as Gtk.Popover
         """
+        self._popover = False
         self._play_button.set_opacity(0)
         self._play_button.get_style_context().remove_class(self._rounded_class)
         self._edit_button.set_opacity(0)
@@ -253,6 +254,8 @@ class RadioWidget(Gtk.Frame, AlbumWidget):
             @param: widget as Gtk.EventBox
             @param: event as Gdk.Event
         """
-        self._popover = RadioPopover(self._name, self._radios_manager)
-        self._popover.set_relative_to(widget)
-        self._popover.show()
+        self._popover = True
+        popover = RadioPopover(self._name, self._radios_manager)
+        popover.set_relative_to(widget)
+        popover.connect('closed', self._on_pop_cover_closed)
+        popover.show()
