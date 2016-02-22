@@ -128,6 +128,15 @@ class AlbumsView(LazyLoadingView):
 #######################
 # PRIVATE             #
 #######################
+    def _clean_overlays(self, widgets):
+        """
+            Clean children's overlay
+            @param widgets as AlbumWidget
+        """
+        if self._context_widget in widgets:
+            widgets.remove(self._context_widget)
+        View._clean_overlays(self, widgets)
+
     def _init_context_position(self):
         """
             Init context position if needed
@@ -168,8 +177,6 @@ class AlbumsView(LazyLoadingView):
         self._context_widget.populate()
         self._context_widget.show()
         view = AlbumContextView(self._context_widget)
-        view._scrolled.connect('enter-notify-event',
-                               self._on_context_enter_event)
         view.show()
         self._context.add(view)
         self._context.set_visible_child(view)
@@ -192,17 +199,6 @@ class AlbumsView(LazyLoadingView):
             GLib.idle_add(self._lazy_loading)
             if self._viewport.get_child() is None:
                 self._viewport.add(self._albumbox)
-
-    def _on_context_enter_event(self, context, event):
-        """
-            Clean overlays
-            @param widget as Gtk.Widget
-            @param event as Gdk.Event
-        """
-        widgets = []
-        for child in self._albumbox.get_children():
-            widgets.append(child.get_child())
-        self._clean_overlays(widgets)
 
     def _on_position_notify(self, paned, param):
         """
