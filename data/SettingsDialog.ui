@@ -350,7 +350,6 @@
                 <property name="can_focus">True</property>
                 <property name="halign">end</property>
                 <signal name="enter-notify-event" handler="_on_mix_enter_notify" swapped="no"/>
-        	<signal name="button-press-event" handler="_on_mix_button_press" swapped="no"/>
                 <signal name="state-set" handler="_update_mix_setting" swapped="no"/>
               </object>
               <packing>
