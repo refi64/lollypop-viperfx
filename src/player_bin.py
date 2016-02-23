@@ -100,7 +100,6 @@ class BinPlayer(BasePlayer):
             duration = Lp().settings.get_value('mix-duration').get_int32()
             self._do_crossfade(duration, track, False)
         else:
-            self._plugins.volume.props.volume = 1.0
             self._load(track)
 
     def play(self):
@@ -204,14 +203,15 @@ class BinPlayer(BasePlayer):
 #######################
 # PRIVATE             #
 #######################
-    def _load(self, track):
+    def _load(self, track, init_volume=True):
         """
             Stop current track, load track id and play it
+            If was playing, do not use play as status doesn't changed
             @param track as Track
         """
         was_playing = self.is_playing()
         self._playbin.set_state(Gst.State.NULL)
-        if self._load_track(track):
+        if self._load_track(track, init_volume):
             if was_playing:
                 self._playbin.set_state(Gst.State.PLAYING)
             else:
@@ -280,17 +280,17 @@ class BinPlayer(BasePlayer):
         finished = self.current_track
         finished_start_time = self._start_time
         if track is not None:
-            self._load(track)
+            self._load(track, False)
             self._plugins.volume.props.volume = 0
             GLib.idle_add(self._volume_up, self._playbin,
                           self._plugins, duration)
         elif next and self.next_track.id is not None:
-            self._load(self.next_track)
+            self._load(self.next_track, False)
             self._plugins.volume.props.volume = 0
             GLib.idle_add(self._volume_up, self._playbin,
                           self._plugins, duration)
         elif self.prev_track.id is not None:
-            self._load(self.prev_track)
+            self._load(self.prev_track, False)
             self._plugins.volume.props.volume = 0
             GLib.idle_add(self._volume_up, self._playbin,
                           self._plugins, duration)
@@ -310,14 +310,17 @@ class BinPlayer(BasePlayer):
                 stop = True
         return stop and self.is_playing()
 
-    def _load_track(self, track):
+    def _load_track(self, track, init_volume=True):
         """
             Load track
             @param track as Track
+            @param init volume as bool
             @return False if track not loaded
         """
         if self._need_to_stop():
             return False
+        if init_volume:
+            self._plugins.volume.props.volume = 1.0
         debug("BinPlayer::_load_track(): %s" % track.uri)
         self.current_track = track
         try:
