@@ -45,12 +45,18 @@ class ToolbarInfos(Gtk.Bin, InfosController):
         self._infobox = builder.get_object('infos')
         self.add(self._infobox)
 
-        builder.get_object('label_event').set_property('has-tooltip', True)
+        self._labels_event = builder.get_object('label_event')
+        self._labels_event.set_property('has-tooltip', True)
         self._labels = builder.get_object('nowplaying_labels')
+
         self._title_label = builder.get_object('title')
         self._artist_label = builder.get_object('artist')
         self._cover_frame = builder.get_object('frame')
         self._cover = builder.get_object('cover')
+
+        # Gesture for touchscreen
+        gesture = Gtk.GestureLongPress.new(self._labels_event)
+        gesture.connect('pressed', self._on_title_pressed)
 
         self.connect('realize', self._on_realize)
         Lp().art.connect('album-artwork-changed', self._update_cover)
@@ -119,6 +125,18 @@ class ToolbarInfos(Gtk.Bin, InfosController):
         self._pop_albums.show()
         return True
 
+    def _on_title_pressed(self, *args):
+        """
+            Show track menu
+        """
+        if Lp().player.current_track.id >= 0:
+            popover = TrackMenuPopover(
+                        Lp().player.current_track.id,
+                        PopToolbarMenu(Lp().player.current_track.id))
+            popover.set_relative_to(self._labels_event)
+            popover.show()
+        return True
+
     def _on_title_clicked(self, eventbox, event):
         """
             Pop informations for current track
@@ -144,12 +162,8 @@ class ToolbarInfos(Gtk.Bin, InfosController):
                         self._pop_infos = InfosPopover()
                         self._pop_infos.set_relative_to(eventbox)
                     self._pop_infos.show()
-            elif Lp().player.current_track.id >= 0:
-                popover = TrackMenuPopover(
-                            Lp().player.current_track.id,
-                            PopToolbarMenu(Lp().player.current_track.id))
-                popover.set_relative_to(eventbox)
-                popover.show()
+            else:
+                self._on_title_pressed()
         return True
 
     def _on_query_tooltip(self, widget, x, y, keyboard, tooltip):
