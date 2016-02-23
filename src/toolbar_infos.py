@@ -56,6 +56,7 @@ class ToolbarInfos(Gtk.Bin, InfosController):
 
         # Gesture for touchscreen
         gesture = Gtk.GestureLongPress.new(self._labels_event)
+        gesture.set_propagation_phase(Gtk.PropagationPhase.CAPTURE)
         gesture.connect('pressed', self._on_title_pressed)
 
         self.connect('realize', self._on_realize)
