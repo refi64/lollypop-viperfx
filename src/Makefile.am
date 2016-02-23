@@ -33,7 +33,7 @@ app_PYTHON = \
     player.py\
     player_queue.py\
     player_radio.py\
-    player_rg.py\
+    player_plugins.py\
     player_shuffle.py\
     player_userplaylist.py\
     playlists.py\

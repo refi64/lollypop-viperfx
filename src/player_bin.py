@@ -17,7 +17,7 @@ from time import time
 
 from lollypop.player_base import BasePlayer
 from lollypop.tagreader import ScannerTagReader
-from lollypop.player_rg import ReplayGainPlayer
+from lollypop.player_plugins import PluginsPlayer
 from lollypop.define import GstPlayFlags, NextContext, Lp
 from lollypop.codecs import Codecs
 from lollypop.define import Type
@@ -41,8 +41,8 @@ class BinPlayer(BasePlayer):
         self._playbin = self._playbin1 = Gst.ElementFactory.make(
                                                            'playbin', 'player')
         self._playbin2 = Gst.ElementFactory.make('playbin', 'player')
-        self._rg1 = ReplayGainPlayer(self._playbin1)
-        self._rg2 = ReplayGainPlayer(self._playbin2)
+        self._plugins = self.plugins1 = PluginsPlayer(self._playbin1)
+        self.plugins2 = PluginsPlayer(self._playbin2)
         self._volume = 1.0
         self._volume_id = self._playbin.connect('notify::volume',
                                                 self._on_volume_changed)
@@ -135,16 +135,6 @@ class BinPlayer(BasePlayer):
             Stop all bins, lollypop should quit now
         """
         self._gst_duration = 0
-        # Stop crossfade
-        if self._playbin == self._playbin2:
-            self._playbin = self._playbin1
-        else:
-            self._playbin = self._playbin2
-        # Restore volume
-        self._playbin1.set_volume(GstAudio.StreamVolumeFormat.LINEAR,
-                                  self._volume)
-        self._playbin2.set_volume(GstAudio.StreamVolumeFormat.LINEAR,
-                                  self._volume)
         # Stop
         self._playbin1.set_state(Gst.State.NULL)
         self._playbin2.set_state(Gst.State.NULL)
@@ -228,59 +218,47 @@ class BinPlayer(BasePlayer):
             else:
                 self.play()
 
-    def _volume_up(self, playbin, duration):
+    def _volume_up(self, playbin, plugins, duration):
         """
             Make volume going up smoothly
             @param playbin as Gst.Bin
+            @param plugins as PluginsPlayer
             @param duration as int
         """
         # We are not the active playbin, stop all
         if self._playbin != playbin:
             return
         if duration > 0:
-            vol = playbin.get_volume(GstAudio.StreamVolumeFormat.LINEAR)
+            vol = plugins.volume.props.volume
             steps = duration / 0.25
-            vol_up = (self._volume - vol) / steps
+            vol_up = (1.0 - vol) / steps
             rate = vol + vol_up
-            if rate < self._volume:
-                playbin.set_volume(GstAudio.StreamVolumeFormat.LINEAR, rate)
+            if rate < 1.0:
+                plugins.volume.props.volume = rate
                 GLib.timeout_add(250, self._volume_up,
-                                 playbin, duration - 0.25)
-            else:
-                playbin.set_volume(GstAudio.StreamVolumeFormat.LINEAR,
-                                   self._volume)
-                if self._volume_id is None:
-                    self._volume_id = playbin.connect('notify::volume',
-                                                      self._on_volume_changed)
-        else:
-            playbin.set_volume(GstAudio.StreamVolumeFormat.LINEAR,
-                               self._volume)
+                                 playbin, plugins, duration - 0.25)
 
-    def _volume_down(self, playbin, duration):
+    def _volume_down(self, playbin, plugins, duration):
         """
             Make volume going down smoothly
             @param playbin as Gst.Bin
+            @param plugins as PluginsPlayer
             @param duration as int
         """
         # We are again the active playbin, stop all
         if self._playbin == playbin:
             return
         if duration > 0:
-            vol = playbin.get_volume(GstAudio.StreamVolumeFormat.LINEAR)
+            vol = plugins.volume.props.volume
             steps = duration / 0.25
             vol_down = vol / steps
             rate = vol - vol_down
             if rate > 0:
-                playbin.set_volume(GstAudio.StreamVolumeFormat.LINEAR, rate)
+                plugins.volume.props.volume = rate
                 GLib.timeout_add(250, self._volume_down,
-                                 playbin, duration - 0.25)
+                                 playbin, plugins, duration - 0.25)
             else:
                 playbin.set_state(Gst.State.NULL)
-                playbin.set_volume(GstAudio.StreamVolumeFormat.LINEAR,
-                                   self._volume)
-        else:
-            playbin.set_volume(GstAudio.StreamVolumeFormat.LINEAR,
-                               self._volume)
 
     def _do_crossfade(self, duration, track=None, next=True):
         """
@@ -291,32 +269,32 @@ class BinPlayer(BasePlayer):
         """
         if self.current_track.id == Type.RADIOS or self._need_to_stop():
             return
-        if self._volume_id is not None:
-            self._playbin.disconnect(self._volume_id)
-            self._volume_id = None
-        GLib.idle_add(self._volume_down, self._playbin, duration)
+        GLib.idle_add(self._volume_down, self._playbin,
+                      self._plugins, duration)
         if self._playbin == self._playbin2:
             self._playbin = self._playbin1
+            self._plugins = self.plugins1
         else:
             self._playbin = self._playbin2
+            self._plugins = self.plugins2
 
         finished = self.current_track
         finished_start_time = self._start_time
         if track is not None:
             self._load(track)
-            self._playbin.set_volume(GstAudio.StreamVolumeFormat.LINEAR,
-                                     0)
-            GLib.idle_add(self._volume_up, self._playbin, duration)
+            self._plugins.volume.props.volume = 0
+            GLib.idle_add(self._volume_up, self._playbin,
+                          self._plugins, duration)
         elif next and self.next_track.id is not None:
             self._load(self.next_track)
-            self._playbin.set_volume(GstAudio.StreamVolumeFormat.LINEAR,
-                                     0)
-            GLib.idle_add(self._volume_up, self._playbin, duration)
+            self._plugins.volume.props.volume = 0
+            GLib.idle_add(self._volume_up, self._playbin,
+                          self._plugins, duration)
         elif self.prev_track.id is not None:
             self._load(self.prev_track)
-            self._playbin.set_volume(GstAudio.StreamVolumeFormat.LINEAR,
-                                     0)
-            GLib.idle_add(self._volume_up, self._playbin, duration)
+            self._plugins.volume.props.volume = 0
+            GLib.idle_add(self._volume_up, self._playbin,
+                          self._plugins, duration)
         self._track_finished(finished, finished_start_time)
 
     def _need_to_stop(self):
