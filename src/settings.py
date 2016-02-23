@@ -420,9 +420,7 @@ class SettingsDialog:
             If no popover, refuse event
             Allow touch screen to show popover
         """
-        if Lp().settings.get_value('mix') and (
-                self._popover is None or
-                not self._popover.is_visible()):
+        if self._popover is None and self._popover.is_visible():
             return True
 
     def _on_mix_enter_notify(self, widget, event):
