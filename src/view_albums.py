@@ -241,7 +241,7 @@ class AlbumsView(LazyLoadingView):
                                          self._genre_ids)
             popover.set_relative_to(album_widget)
             popover.set_pointing_to(self._press_rect)
-            album_widget.clean_overlay()
+            album_widget.update_overlay()
             popover.show()
 
     def _on_button_press(self, flowbox, event):
