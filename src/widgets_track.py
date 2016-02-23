@@ -53,19 +53,19 @@ class Row(Gtk.ListBoxRow):
         self._num_label.set_ellipsize(Pango.EllipsizeMode.END)
         self._num_label.set_width_chars(4)
         self._num_label.get_style_context().add_class('dim-label')
-        button = Gtk.Button.new_from_icon_name('open-menu-symbolic',
-                                               Gtk.IconSize.MENU)
-        button.set_relief(Gtk.ReliefStyle.NONE)
-        button.get_style_context().add_class('menu-button')
-        button.get_style_context().add_class('track-menu-button')
-        button.get_image().set_opacity(0.2)
-        button.show()
+        self._menu_button = Gtk.Button.new_from_icon_name('open-menu-symbolic',
+                                                          Gtk.IconSize.MENU)
+        self._menu_button.set_relief(Gtk.ReliefStyle.NONE)
+        self._menu_button.get_style_context().add_class('menu-button')
+        self._menu_button.get_style_context().add_class('track-menu-button')
+        self._menu_button.get_image().set_opacity(0.2)
+        self._menu_button.show()
         self._row_widget.connect('button-press-event', self._on_button_press)
-        button.connect('clicked', self._on_button_clicked)
+        self._menu_button.connect('clicked', self._on_button_clicked)
         self._grid.add(self._num_label)
         self._grid.add(self._title_label)
         self._grid.add(self._duration_label)
-        self._grid.add(button)
+        self._grid.add(self._menu_button)
         self.add(self._row_widget)
         self.get_style_context().add_class('trackrow')
 
@@ -165,7 +165,7 @@ class Row(Gtk.ListBoxRow):
                 self._popup_menu(widget, event.x, event.y)
             # Happens when pressing button over menu btn
             else:
-                self._popup_menu(self._menu_btn)
+                self._popup_menu(self._menu_button)
             return True
 
     def _on_button_clicked(self, widget):
