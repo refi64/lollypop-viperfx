@@ -460,7 +460,7 @@ class BinPlayer(BasePlayer):
         """
         debug("Player::_on_stream_about_to_finish(): %s" % playbin)
         # Don't do anything if crossfade on
-        if self._playbin != playbin:
+        if self._crossfading:
             return
         if self.current_track.id == Type.RADIOS:
             return
