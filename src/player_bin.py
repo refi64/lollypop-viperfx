@@ -236,6 +236,10 @@ class BinPlayer(BasePlayer):
                 plugins.volume.props.volume = rate
                 GLib.timeout_add(250, self._volume_up,
                                  playbin, plugins, duration - 0.25)
+            else:
+                plugins.volume.props.volume = 1.0
+        else:
+            plugins.volume.props.volume = 1.0
 
     def _volume_down(self, playbin, plugins, duration):
         """
@@ -257,7 +261,10 @@ class BinPlayer(BasePlayer):
                 GLib.timeout_add(250, self._volume_down,
                                  playbin, plugins, duration - 0.25)
             else:
+                plugins.volume.props.volume = 0.0
                 playbin.set_state(Gst.State.NULL)
+        else:
+            plugins.volume.props.volume = 0.0
 
     def _do_crossfade(self, duration, track=None, next=True):
         """
