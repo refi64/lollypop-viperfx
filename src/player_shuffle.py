@@ -97,6 +97,12 @@ class ShufflePlayer(BasePlayer):
             Play a new random track if not already playing
             @param party as bool
         """
+        if party != self._is_party:
+            Lp().window.update_overlays()
+        else:
+            return
+        self._is_party = party
+
         self.reset_history()
 
         if self.plugins1.rgvolume is not None and\
@@ -108,10 +114,6 @@ class ShufflePlayer(BasePlayer):
             else:
                 self.plugins1.rgvolume.props.album_mode = 1
                 self.plugins2.rgvolume.props.album_mode = 1
-
-        if party != self._is_party:
-            Lp().window.update_overlays()
-        self._is_party = party
 
         if party:
             self._external_tracks = []
