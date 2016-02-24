@@ -2,12 +2,13 @@
 # Translators:
 # Denis Morozov <www.strelookpb09@mail.ru>, 2015
 # Maxim Orlov <murmansksity@gmail.com>, 2015
+# Maxim Orlov <murmansksity@gmail.com>, 2016
 # Олег <legunt@yandex.ru>, 2015
 msgid ""
 msgstr ""
 "Project-Id-Version: lollypop\n"
 "POT-Creation-Date: 2015-06-24 15:43+0200\n"
-"PO-Revision-Date: 2015-10-05 20:21+0000\n"
+"PO-Revision-Date: 2016-02-24 10:26+0000\n"
 "Last-Translator: Maxim Orlov <murmansksity@gmail.com>\n"
 "Language-Team: Russian (http://www.transifex.com/gnumdk/lollypop/language/ru/)\n"
 "MIME-Version: 1.0\n"
@@ -144,7 +145,7 @@ msgstr "Control+f: Поиск"
 #. (itstool) path: item/p
 #: C/index.page:53
 msgid "Control+p: Party mode"
-msgstr "Control+p: Режим \"вечеринки\""
+msgstr "Control+p: Режим вечеринки"
 
 #. (itstool) path: item/p
 #: C/index.page:54

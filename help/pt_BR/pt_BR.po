@@ -1,13 +1,13 @@
 # 
 # Translators:
 # Laís Figueiredo <laisfigsantos@gmail.com>, 2016
-# Ricardo Borges Jr. <ricardoborges.jr@gmail.com>, 2015
+# Ricardo Borges Jr. <ricardoborges.jr@gmail.com>, 2015-2016
 msgid ""
 msgstr ""
 "Project-Id-Version: lollypop\n"
 "POT-Creation-Date: 2015-06-24 15:43+0200\n"
-"PO-Revision-Date: 2016-01-04 19:50+0000\n"
-"Last-Translator: Laís Figueiredo <laisfigsantos@gmail.com>\n"
+"PO-Revision-Date: 2016-02-22 18:52+0000\n"
+"Last-Translator: Ricardo Borges Jr. <ricardoborges.jr@gmail.com>\n"
 "Language-Team: Portuguese (Brazil) (http://www.transifex.com/gnumdk/lollypop/language/pt_BR/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -123,7 +123,7 @@ msgstr ""
 #. (itstool) path: section/p
 #: C/index.page:45
 msgid "You need an internet connection."
-msgstr ""
+msgstr "Você precisa de uma conexão com a internet."
 
 #. (itstool) path: section/title
 #: C/index.page:49
@@ -133,12 +133,12 @@ msgstr "Atalhos"
 #. (itstool) path: item/p
 #: C/index.page:51
 msgid "Control+s: Lollypop settings"
-msgstr ""
+msgstr "Control+s: configurações do Lollypop"
 
 #. (itstool) path: item/p
 #: C/index.page:52
 msgid "Control+f: Search"
-msgstr ""
+msgstr "Control+f: Busca"
 
 #. (itstool) path: item/p
 #: C/index.page:53

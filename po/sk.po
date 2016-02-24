@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lollypop\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-02-18 19:05+0100\n"
-"PO-Revision-Date: 2016-02-18 18:11+0000\n"
+"POT-Creation-Date: 2016-02-20 19:16+0100\n"
+"PO-Revision-Date: 2016-02-23 10:42+0000\n"
 "Last-Translator: Dušan Kazik <prescott66@gmail.com>\n"
 "Language-Team: Slovak (http://www.transifex.com/gnumdk/lollypop/language/sk/)\n"
 "MIME-Version: 1.0\n"
@@ -229,8 +229,8 @@ msgstr "Prehliadanie žánrov/interpretov/obalov"
 msgid "Search"
 msgstr "Vyhľadá"
 
-#: ../data/lollypop.appdata.xml.in.h:9 ../src/pop_menu.py:470
-#: ../src/pop_menu.py:489 ../data/ToolbarEnd.ui.h:8
+#: ../data/lollypop.appdata.xml.in.h:9 ../src/pop_menu.py:466
+#: ../src/pop_menu.py:485 ../data/ToolbarEnd.ui.h:8
 msgid "Queue"
 msgstr "Fronta"
 
@@ -330,8 +330,8 @@ msgstr "Nedávno pridané albumy"
 msgid "Random albums"
 msgstr "Náhodné albumy"
 
-#: ../src/container.py:447 ../src/pop_menu.py:395 ../src/pop_menu.py:472
-#: ../src/pop_menu.py:491
+#: ../src/container.py:447 ../src/pop_menu.py:391 ../src/pop_menu.py:468
+#: ../src/pop_menu.py:487
 msgid "Playlists"
 msgstr "Zoznamy skladieb"
 
@@ -376,6 +376,7 @@ msgid "Pause"
 msgstr "Pozastaví"
 
 #: ../src/controllers.py:84 ../src/controllers.py:112 ../src/pop_tunein.py:154
+#: ../data/AlbumContextWidget.ui.h:1 ../data/AlbumDetailedWidget.ui.h:1
 #: ../data/ToolbarPlayback.ui.h:2
 msgid "Play"
 msgstr "Prehrá"
@@ -416,7 +417,7 @@ msgstr "od interpreta %s"
 msgid "by %s, from %s"
 msgstr "od interpreta %s, z albumu %s"
 
-#: ../src/player_bin.py:459
+#: ../src/player_bin.py:453
 #, python-format
 msgid "File doesn't exist: %s"
 msgstr "Súbor neexistuje: %s"
@@ -445,69 +446,61 @@ msgstr "Pokročilé informácie o interpretovi zakázané"
 msgid "WebKit support disabled"
 msgstr "Podpora nástroja WebKit zakázaná"
 
-#: ../src/pop_menu.py:70
+#: ../src/pop_menu.py:73
 msgid "Continue playback"
 msgstr "Pokračovať v prehrávaní"
 
-#: ../src/pop_menu.py:77
-msgid "Stop after queued tracks"
-msgstr "Zastaviť po prehraní skladieb vo fronte"
-
-#: ../src/pop_menu.py:84
-msgid "Stop after this playlist"
-msgstr "Zastaviť po prehraní tohoto zoznamu skladieb"
-
-#: ../src/pop_menu.py:91
+#: ../src/pop_menu.py:83
 msgid "Stop after this track"
 msgstr "Zastaviť po tejto skladbe"
 
-#: ../src/pop_menu.py:97
+#: ../src/pop_menu.py:91
 msgid "Stop after this album"
 msgstr "Zastaviť po tomto albume"
 
-#: ../src/pop_menu.py:103
-msgid "Stop after this artist"
-msgstr "Zastaviť po tomto interpretovi"
+#: ../src/pop_menu.py:99
+msgid "Do not repeat"
+msgstr "Neopakovať"
 
-#: ../src/pop_menu.py:202 ../data/SearchRow.ui.h:3
+#: ../src/pop_menu.py:198 ../data/SearchRow.ui.h:3
 msgid "Add to queue"
 msgstr "Pridať do fronty"
 
-#: ../src/pop_menu.py:207
+#: ../src/pop_menu.py:203
 msgid "Next tracks"
 msgstr "Nasledujúce skladby"
 
-#: ../src/pop_menu.py:209 ../data/NextPopover.ui.h:1
+#: ../src/pop_menu.py:205 ../data/NextPopover.ui.h:1
 msgid "Next track"
 msgstr "Nasledujúca skladba"
 
-#: ../src/pop_menu.py:213
+#: ../src/pop_menu.py:209
 msgid "Remove from queue"
 msgstr "Odstrániť z fronty"
 
-#: ../src/pop_menu.py:281
+#: ../src/pop_menu.py:277
 msgid "Add to others"
 msgstr "Pridať k ostatným"
 
-#: ../src/pop_menu.py:298
+#: ../src/pop_menu.py:294
 #, python-format
 msgid "Remove from \"%s\""
 msgstr "„%s“"
 
-#: ../src/pop_menu.py:304
+#: ../src/pop_menu.py:300
 #, python-format
 msgid "Add to \"%s\""
 msgstr "Pridať do „%s“"
 
-#: ../src/pop_menu.py:393
+#: ../src/pop_menu.py:389
 msgid "Playback"
 msgstr "Prehrávanie"
 
-#: ../src/pop_menu.py:430
+#: ../src/pop_menu.py:426
 msgid "Modify information"
 msgstr "Upraviť informáciu"
 
-#: ../src/pop_menu.py:474 ../data/PlaylistView.ui.h:1
+#: ../src/pop_menu.py:470 ../data/PlaylistView.ui.h:1
 msgid "Edit"
 msgstr "Upraví"
 
@@ -550,22 +543,22 @@ msgstr "Synchronizovať %s"
 msgid "Cancel synchronization"
 msgstr "Zrušiť synchronizáciu"
 
-#: ../src/widgets_album.py:314
+#: ../src/widgets_album.py:361
 #, python-format
 msgid "%s h  %s m"
 msgstr "%s h  %s m"
 
-#: ../src/widgets_album.py:316
+#: ../src/widgets_album.py:363
 #, python-format
 msgid "%s h"
 msgstr "%s h"
 
-#: ../src/widgets_album.py:318
+#: ../src/widgets_album.py:365
 #, python-format
 msgid "%s m"
 msgstr "%s m"
 
-#: ../src/widgets_album.py:332
+#: ../src/widgets_album.py:379
 #, python-format
 msgid "Disc %s"
 msgstr "Disk %s"
@@ -616,9 +609,13 @@ msgstr "Navštíviť domovskú stránku prehrávača Lollypop"
 msgid "Cédric Bellegarde <cedric.bellegarde@adishatz.org>"
 msgstr "Dušan Kazik <prescott66@gmail.com>"
 
-#: ../data/AlbumContextWidget.ui.h:1 ../data/AlbumDetailedWidget.ui.h:1
-msgid "Play this album"
-msgstr "Prehrá tento album"
+#: ../data/AlbumContextWidget.ui.h:2 ../data/AlbumDetailedWidget.ui.h:2
+msgid "Change artwork"
+msgstr "Zmení obrázok"
+
+#: ../data/AlbumContextWidget.ui.h:3 ../data/AlbumDetailedWidget.ui.h:3
+msgid "Append"
+msgstr "Pridá"
 
 #: ../data/Appmenu.ui.h:1
 msgid "_Update music"
@@ -695,6 +692,14 @@ msgstr "Fronta:"
 #: ../data/QueuePopover.ui.h:2
 msgid "Clear queue"
 msgstr "Vymaže frontu"
+
+#: ../data/AlbumsPopover.ui.h:1
+msgid "Albums playing:"
+msgstr "Prehrávané albumy:"
+
+#: ../data/AlbumsPopover.ui.h:2
+msgid "Remove all albums"
+msgstr "Odstráni všetky albumy"
 
 #: ../data/RadioPopover.ui.h:1
 msgid "Select a logo  for this radio"

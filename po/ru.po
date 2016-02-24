@@ -11,8 +11,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lollypop\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-02-18 19:05+0100\n"
-"PO-Revision-Date: 2016-02-18 18:06+0000\n"
+"POT-Creation-Date: 2016-02-20 19:16+0100\n"
+"PO-Revision-Date: 2016-02-24 15:26+0000\n"
 "Last-Translator: Maxim Orlov <murmansksity@gmail.com>\n"
 "Language-Team: Russian (http://www.transifex.com/gnumdk/lollypop/language/ru/)\n"
 "MIME-Version: 1.0\n"
@@ -31,19 +31,19 @@ msgstr "Размер окна (ширина и высота)"
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:3
 msgid "Window position"
-msgstr "Положение окна"
+msgstr "Позиция окна"
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:4
 msgid "Window position (x and y)."
-msgstr "Положение окна (x, y)"
+msgstr "Позиция окна (x, y)"
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:5
 msgid "Mini player size"
-msgstr "Мини-плеер: размер"
+msgstr "Размер Мини-плеера"
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:6
 msgid "Mini player position"
-msgstr "Мини-плеер: позиция"
+msgstr "Позиция Мини-плеера"
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:7
 msgid "Repeat by default"
@@ -136,7 +136,7 @@ msgstr "Использовать тёмный вариант темы"
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:29
 msgid "Disable the use client side window decorations (headerbar)"
-msgstr "Отключить CSD (заголовок окна)"
+msgstr "Отключить декорирование на стороне клиента (CSD)"
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:30 ../data/SettingsDialog.ui.h:6
 msgid "Show compilations in albums view"
@@ -172,11 +172,11 @@ msgstr "Плавный переход (кроссфейд)"
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:38
 msgid "Mix songs only in party mode"
-msgstr "Сводить песни только в режиме \"вечеринки\""
+msgstr "Сводить песни только в режиме вечеринки"
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:39
 msgid "Mix duration"
-msgstr "Длительность сведе́ния"
+msgstr "Длительность сведения"
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:40
 msgid "Shuffle mode"
@@ -232,15 +232,15 @@ msgstr "Жанр/Исполнитель/Просмотр обложки"
 msgid "Search"
 msgstr "Поиск"
 
-#: ../data/lollypop.appdata.xml.in.h:9 ../src/pop_menu.py:470
-#: ../src/pop_menu.py:489 ../data/ToolbarEnd.ui.h:8
+#: ../data/lollypop.appdata.xml.in.h:9 ../src/pop_menu.py:466
+#: ../src/pop_menu.py:485 ../data/ToolbarEnd.ui.h:8
 msgid "Queue"
 msgstr "Очередь"
 
 #: ../data/lollypop.appdata.xml.in.h:10 ../data/SettingsDialog.ui.h:21
 #: ../data/ToolbarEnd.ui.h:5
 msgid "Party mode"
-msgstr "Режим \"вечеринки\""
+msgstr "Режим вечеринки"
 
 #: ../data/lollypop.appdata.xml.in.h:11
 msgid "Replay gain"
@@ -248,7 +248,7 @@ msgstr "Режим Replay Gain"
 
 #: ../data/lollypop.appdata.xml.in.h:12
 msgid "Cover art downloader"
-msgstr "Загрузчик обложек альбомов"
+msgstr "Загрузка обложек альбомов"
 
 #: ../data/lollypop.appdata.xml.in.h:13
 msgid "Context artist view"
@@ -336,8 +336,8 @@ msgstr "Недавно добавленные альбомы"
 msgid "Random albums"
 msgstr "Случайные альбомы"
 
-#: ../src/container.py:447 ../src/pop_menu.py:395 ../src/pop_menu.py:472
-#: ../src/pop_menu.py:491
+#: ../src/container.py:447 ../src/pop_menu.py:391 ../src/pop_menu.py:468
+#: ../src/pop_menu.py:487
 msgid "Playlists"
 msgstr "Плейлисты"
 
@@ -382,6 +382,7 @@ msgid "Pause"
 msgstr "Пауза"
 
 #: ../src/controllers.py:84 ../src/controllers.py:112 ../src/pop_tunein.py:154
+#: ../data/AlbumContextWidget.ui.h:1 ../data/AlbumDetailedWidget.ui.h:1
 #: ../data/ToolbarPlayback.ui.h:2
 msgid "Play"
 msgstr "Воспроизвести"
@@ -422,7 +423,7 @@ msgstr "от %s"
 msgid "by %s, from %s"
 msgstr "от %s, из %s"
 
-#: ../src/player_bin.py:459
+#: ../src/player_bin.py:453
 #, python-format
 msgid "File doesn't exist: %s"
 msgstr "Файл не существует: %s"
@@ -451,69 +452,61 @@ msgstr "Подробная информация об исполнителе от
 msgid "WebKit support disabled"
 msgstr "Поддержка WebKit отключена"
 
-#: ../src/pop_menu.py:70
+#: ../src/pop_menu.py:73
 msgid "Continue playback"
 msgstr "Продолжить проигрывание"
 
-#: ../src/pop_menu.py:77
-msgid "Stop after queued tracks"
-msgstr "Остановить после очереди композиций"
-
-#: ../src/pop_menu.py:84
-msgid "Stop after this playlist"
-msgstr "Остановить после этого плейлиста"
-
-#: ../src/pop_menu.py:91
+#: ../src/pop_menu.py:83
 msgid "Stop after this track"
 msgstr "Остановить после этой композиции"
 
-#: ../src/pop_menu.py:97
+#: ../src/pop_menu.py:91
 msgid "Stop after this album"
 msgstr "Остановить после этого альбома"
 
-#: ../src/pop_menu.py:103
-msgid "Stop after this artist"
-msgstr "Остановить после этого исполнителя"
+#: ../src/pop_menu.py:99
+msgid "Do not repeat"
+msgstr "Не повторять"
 
-#: ../src/pop_menu.py:202 ../data/SearchRow.ui.h:3
+#: ../src/pop_menu.py:198 ../data/SearchRow.ui.h:3
 msgid "Add to queue"
 msgstr "Добавить в очередь"
 
-#: ../src/pop_menu.py:207
+#: ../src/pop_menu.py:203
 msgid "Next tracks"
 msgstr "Следующие композиции"
 
-#: ../src/pop_menu.py:209 ../data/NextPopover.ui.h:1
+#: ../src/pop_menu.py:205 ../data/NextPopover.ui.h:1
 msgid "Next track"
 msgstr "Следующая композиция"
 
-#: ../src/pop_menu.py:213
+#: ../src/pop_menu.py:209
 msgid "Remove from queue"
 msgstr "Удалить из очереди "
 
-#: ../src/pop_menu.py:281
+#: ../src/pop_menu.py:277
 msgid "Add to others"
 msgstr "Добавить к другим"
 
-#: ../src/pop_menu.py:298
+#: ../src/pop_menu.py:294
 #, python-format
 msgid "Remove from \"%s\""
 msgstr "Удалить из \"%s\""
 
-#: ../src/pop_menu.py:304
+#: ../src/pop_menu.py:300
 #, python-format
 msgid "Add to \"%s\""
 msgstr "Добавить к \"%s\" "
 
-#: ../src/pop_menu.py:393
+#: ../src/pop_menu.py:389
 msgid "Playback"
 msgstr "Проигрывание"
 
-#: ../src/pop_menu.py:430
+#: ../src/pop_menu.py:426
 msgid "Modify information"
 msgstr "Изменить информацию"
 
-#: ../src/pop_menu.py:474 ../data/PlaylistView.ui.h:1
+#: ../src/pop_menu.py:470 ../data/PlaylistView.ui.h:1
 msgid "Edit"
 msgstr "Редактировать"
 
@@ -556,22 +549,22 @@ msgstr "Синхронизировать %s"
 msgid "Cancel synchronization"
 msgstr "Отменить синхронизацию"
 
-#: ../src/widgets_album.py:314
+#: ../src/widgets_album.py:361
 #, python-format
 msgid "%s h  %s m"
 msgstr "%s ч %s мин"
 
-#: ../src/widgets_album.py:316
+#: ../src/widgets_album.py:363
 #, python-format
 msgid "%s h"
 msgstr "%s ч"
 
-#: ../src/widgets_album.py:318
+#: ../src/widgets_album.py:365
 #, python-format
 msgid "%s m"
 msgstr "%s мин"
 
-#: ../src/widgets_album.py:332
+#: ../src/widgets_album.py:379
 #, python-format
 msgid "Disc %s"
 msgstr "Диск %s"
@@ -622,9 +615,13 @@ msgstr "Посетить сайт Lollypop"
 msgid "Cédric Bellegarde <cedric.bellegarde@adishatz.org>"
 msgstr "Derpy Crabs <derpycrabs@gmail.com>\nMaxim Orlov <murmansksity@gmail.com>"
 
-#: ../data/AlbumContextWidget.ui.h:1 ../data/AlbumDetailedWidget.ui.h:1
-msgid "Play this album"
-msgstr "Играть этот альбом"
+#: ../data/AlbumContextWidget.ui.h:2 ../data/AlbumDetailedWidget.ui.h:2
+msgid "Change artwork"
+msgstr "Изменить"
+
+#: ../data/AlbumContextWidget.ui.h:3 ../data/AlbumDetailedWidget.ui.h:3
+msgid "Append"
+msgstr "Добавить"
 
 #: ../data/Appmenu.ui.h:1
 msgid "_Update music"
@@ -702,6 +699,14 @@ msgstr "Очередь:"
 msgid "Clear queue"
 msgstr "Очистить очередь"
 
+#: ../data/AlbumsPopover.ui.h:1
+msgid "Albums playing:"
+msgstr "Альбомы играют:"
+
+#: ../data/AlbumsPopover.ui.h:2
+msgid "Remove all albums"
+msgstr "Удалить все альбомы"
+
 #: ../data/RadioPopover.ui.h:1
 msgid "Select a logo  for this radio"
 msgstr "Выберите логотип для этой радиостанции"
@@ -756,11 +761,11 @@ msgstr "Настройки"
 
 #: ../data/SettingsDialog.ui.h:2
 msgid "Only in party mode"
-msgstr "Только в режиме \"вечеринки\""
+msgstr "Только в режиме вечеринки"
 
 #: ../data/SettingsDialog.ui.h:3
 msgid "Mix duration in seconds"
-msgstr "Длительность сведе́ния в секундах"
+msgstr "Длительность сведения в секундах"
 
 #: ../data/SettingsDialog.ui.h:4
 msgid "Use dark theme variant"
@@ -788,7 +793,7 @@ msgstr "Проигрывать альбом по клику"
 
 #: ../data/SettingsDialog.ui.h:15
 msgid "Do not repeat by default"
-msgstr "Нет повтора по умолчанию"
+msgstr "Не повторять по умолчанию"
 
 #: ../data/SettingsDialog.ui.h:16
 msgid "Configure lollypop behaviour"
@@ -808,7 +813,7 @@ msgstr "Музыка"
 
 #: ../data/SettingsDialog.ui.h:20
 msgid "Select what will be available in party mode"
-msgstr "Выберите, что будет доступно в режиме \"вечеринки\""
+msgstr "Выберите, что будет доступно в режиме вечеринки"
 
 #: ../data/SettingsDialog.ui.h:22
 msgid "Login:"
