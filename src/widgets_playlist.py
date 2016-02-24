@@ -655,11 +655,11 @@ class PlaylistEditWidget(Gtk.Bin):
         for row in rows:
             iterator = self._model.get_iter(row.get_path())
             track = Track(self._model.get_value(iterator, 3))
-            if track.album.artist_id == Type.COMPILATIONS:
-                artist_name = track.artist_names
-            else:
-                artist_name = track.album.artist_name
-            if Lp().lastfm is not None:
+            if self._playlist_id == Type.LOVED and Lp().lastfm is not None:
+                if track.album.artist_id == Type.COMPILATIONS:
+                    artist_name = track.artist_names
+                else:
+                    artist_name = track.album.artist_name
                 t = Thread(target=Lp().lastfm.unlove,
                            args=(artist_name, track.name))
                 t.daemon = True
