@@ -10,7 +10,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-from gi.repository import Gtk, Gio
+from gi.repository import Gtk, Gio, GLib
 
 from lollypop.pop_next import NextPopover
 from lollypop.pop_queue import QueueWidget
@@ -34,6 +34,7 @@ class ToolbarEnd(Gtk.Bin):
         self._pop_next = NextPopover()
         self._queue = None
         self._search = None
+        self._timeout_id = None
         builder = Gtk.Builder()
         builder.add_from_resource('/org/gnome/Lollypop/ToolbarEnd.ui')
         builder.connect_signals(self)
@@ -96,6 +97,7 @@ class ToolbarEnd(Gtk.Bin):
             @param player as Player
             @param force to show the popover
         """
+        self._timeout_id = None
         if not self.is_visible() or not self._pop_next.should_be_shown():
             if not force:
                 self._pop_next.hide()
@@ -116,11 +118,26 @@ class ToolbarEnd(Gtk.Bin):
 #######################
 # PRIVATE             #
 #######################
-    def _on_btn_enter_notify(self, button, event):
+    def _on_button_press(self, button, event):
         """
-            Show next popover
+            Show next popover on long press
+            @param widget as Gtk.Widget
+            @param event as Gdk.Event
         """
-        self.on_next_changed(Lp().player, True)
+        self._timeout_id = GLib.timeout_add(500, self.on_next_changed,
+                                            Lp().player, True)
+
+    def _on_button_release(self, button, event):
+        """
+            If next popover shown, block event
+            @param widget as Gtk.Widget
+            @param event as Gdk.Event
+        """
+        if self._timeout_id is None:
+            return True
+        else:
+            GLib.source_remove(self._timeout_id)
+            self._timeout_id = None
 
     def _set_shuffle_icon(self):
         """
