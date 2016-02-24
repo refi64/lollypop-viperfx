@@ -568,7 +568,7 @@ class PlaylistEditWidget(Gtk.Bin):
             Update playlist on disk
         """
         def update():
-            Lp().playlists.clear(self._playlist_id, True)
+            Lp().playlists.clear(self._playlist_id, len(self._model) == 0)
             tracks = []
             for item in self._model:
                 tracks.append(Track(item[3]))
