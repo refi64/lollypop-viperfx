@@ -416,14 +416,26 @@ class SettingsDialog:
                 pass
         Lp().settings.set_value('party-ids',  GLib.Variant('ai', ids))
 
+    def _show_mix_popover(self, widget):
+        """
+            Show mix popover
+            @param widget as Gtk.Widget
+        """
+        self._mix_tid = None
+        if Lp().settings.get_value('mix'):
+            if self._popover is None:
+                self._popover = Gtk.Popover.new(widget)
+                self._popover.set_modal(False)
+                self._popover.add(self._popover_content)
+            self._popover.show_all()
+
     def _on_mix_button_press(self, widget, event):
         """
             Show mix popover on long press
             @param widget as Gtk.Widget
             @param event as Gdk.Event
         """
-        self._mix_tid = GLib.timeout_add(500, self._on_mix_enter_notify,
-                                         widget, event)
+        self._mix_tid = GLib.timeout_add(500, self._show_mix_popover, widget)
 
     def _on_mix_button_release(self, widget, event):
         """
@@ -436,20 +448,6 @@ class SettingsDialog:
         else:
             GLib.source_remove(self._mix_tid)
             self._mix_tid = None
-
-    def _on_mix_enter_notify(self, widget, event):
-        """
-            Show mix popover
-            @param widget as Gtk.Widget
-            @param event as Gdk.Event
-        """
-        self._mix_tid = None
-        if Lp().settings.get_value('mix'):
-            if self._popover is None:
-                self._popover = Gtk.Popover.new(widget)
-                self._popover.set_modal(False)
-                self._popover.add(self._popover_content)
-            self._popover.show_all()
 
     def _on_key_release_event(self, widget, event):
         """
