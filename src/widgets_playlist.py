@@ -89,6 +89,12 @@ class PlaylistWidget(Gtk.Bin):
         """
         pass
 
+    def update_state(self):
+        """
+            No state to update
+        """
+        pass
+
     def populate_list_left(self, tracks, pos):
         """
             Populate left list
