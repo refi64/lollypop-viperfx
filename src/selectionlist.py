@@ -13,6 +13,7 @@
 from gi.repository import Gtk, Gdk, GLib, GObject, Pango
 
 from cgi import escape
+from gettext import gettext as _
 
 from lollypop.define import Type, Lp
 
@@ -272,8 +273,12 @@ class SelectionList(Gtk.ScrolledWindow):
             @param value as [int, str]
             @thread safe
         """
+        if value[1] == "":
+            string = _("Unknown")
+        else:
+            string = value[1]
         i = self._model.append([value[0],
-                                value[1],
+                                string,
                                 self._get_icon_name(value[0])])
         if value[0] in self._to_select_ids:
             self._to_select_ids.remove(value[0])
