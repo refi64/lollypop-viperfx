@@ -109,6 +109,8 @@ class ShufflePlayer(BasePlayer):
                 self.plugins1.rgvolume.props.album_mode = 1
                 self.plugins2.rgvolume.props.album_mode = 1
 
+        if party != self._is_party:
+            Lp().window.update_overlays()
         self._is_party = party
 
         if party:
@@ -133,7 +135,6 @@ class ShufflePlayer(BasePlayer):
                 self.set_albums(self.current_track.id,
                                 [self.current_track.album_artist_id], [])
         self.emit('party-changed', party)
-        Lp().window.update_overlays()
 
     def is_party(self):
         """
