@@ -100,6 +100,7 @@ class BinPlayer(BasePlayer):
             duration = Lp().settings.get_value('mix-duration').get_int32()
             self._do_crossfade(duration, track, False)
         else:
+            self._plugins.volume.props.volume = 1.0
             self._load(track)
 
     def play(self):

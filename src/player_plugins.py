@@ -36,7 +36,7 @@ class PluginsPlayer:
                                                    "audioconvert3")
         self.volume = Gst.ElementFactory.make("volume",
                                               "volume")
-        self.volume.props.volume = 1.0
+        self.volume.props.volume = 0.0
         self.rgvolume = Gst.ElementFactory.make("rgvolume",
                                                 "rgvolume")
         rglimiter = Gst.ElementFactory.make("rglimiter",
