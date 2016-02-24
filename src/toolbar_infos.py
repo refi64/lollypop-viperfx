@@ -10,7 +10,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-from gi.repository import Gtk, Gdk
+from gi.repository import Gtk, Gdk, GLib
 from cgi import escape
 
 from lollypop.pop_menu import TrackMenuPopover
@@ -40,6 +40,7 @@ class ToolbarInfos(Gtk.Bin, InfosController):
         self._pop_tunein = None
         self._pop_infos = None
         self._pop_albums = None
+        self._timeout_id = None
         self._width = 0
 
         self._infobox = builder.get_object('infos')
@@ -113,7 +114,19 @@ class ToolbarInfos(Gtk.Bin, InfosController):
             self._cover.set_from_surface(pixbuf)
             del pixbuf
 
-    def _on_album_clicked(self, eventbox, event):
+    def _show_track_menu(self):
+        """
+            Show current track menu
+        """
+        self._timeout_id = None
+        if Lp().player.current_track.id >= 0:
+            popover = TrackMenuPopover(
+                        Lp().player.current_track.id,
+                        PopToolbarMenu(Lp().player.current_track.id))
+            popover.set_relative_to(self._labels_event)
+            popover.show()
+
+    def _on_album_press_event(self, eventbox, event):
         """
             Pop curent albums
             Show playlist menu on right
@@ -126,45 +139,46 @@ class ToolbarInfos(Gtk.Bin, InfosController):
         self._pop_albums.show()
         return True
 
-    def _on_title_pressed(self, *args):
+    def _on_title_press_event(self, widget, event):
         """
-            Show track menu
+            On long press: show current track menu
+            @param widget as Gtk.Widget
+            @param event as Gdk.Event
+
         """
-        if Lp().player.current_track.id >= 0:
-            popover = TrackMenuPopover(
-                        Lp().player.current_track.id,
-                        PopToolbarMenu(Lp().player.current_track.id))
-            popover.set_relative_to(self._labels_event)
-            popover.show()
+        self._timeout_id = GLib.timeout_add(500, self._show_track_menu)
         return True
 
-    def _on_title_clicked(self, eventbox, event):
+    def _on_title_release_event(self, widget, event):
         """
-            Pop informations for current track
-            Show playlist menu on right
-            @param eventbox as Gtk.EventBox
+            Show track information popover
+            On long press/right click: show current track menu
+            @param widget as Gtk.Widget
             @param event as Gdk.Event
         """
-        if Lp().player.current_track.id == Type.EXTERNALS:
-            expopover = ExternalsPopover()
-            expopover.set_relative_to(eventbox)
-            expopover.populate()
-            expopover.show()
-        elif Lp().player.current_track.id is not None:
-            if event.button == 1:
-                if Lp().player.current_track.id == Type.RADIOS:
-                    if self._pop_tunein is None:
-                        self._pop_tunein = TuneinPopover()
-                        self._pop_tunein.populate()
-                        self._pop_tunein.set_relative_to(eventbox)
-                    self._pop_tunein.show()
+        if self._timeout_id is not None:
+            GLib.source_remove(self._timeout_id)
+            self._timeout_id = None
+            if Lp().player.current_track.id == Type.EXTERNALS:
+                expopover = ExternalsPopover()
+                expopover.set_relative_to(widget)
+                expopover.populate()
+                expopover.show()
+            elif Lp().player.current_track.id is not None:
+                if event.button == 1:
+                    if Lp().player.current_track.id == Type.RADIOS:
+                        if self._pop_tunein is None:
+                            self._pop_tunein = TuneinPopover()
+                            self._pop_tunein.populate()
+                            self._pop_tunein.set_relative_to(widget)
+                        self._pop_tunein.show()
+                    else:
+                        if self._pop_infos is None:
+                            self._pop_infos = InfosPopover()
+                            self._pop_infos.set_relative_to(widget)
+                        self._pop_infos.show()
                 else:
-                    if self._pop_infos is None:
-                        self._pop_infos = InfosPopover()
-                        self._pop_infos.set_relative_to(eventbox)
-                    self._pop_infos.show()
-            else:
-                self._on_title_pressed()
+                    self._show_track_menu()
         return True
 
     def _on_query_tooltip(self, widget, x, y, keyboard, tooltip):
