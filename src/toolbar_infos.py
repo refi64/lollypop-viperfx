@@ -55,9 +55,9 @@ class ToolbarInfos(Gtk.Bin, InfosController):
         self._cover = builder.get_object('cover')
 
         # Gesture for touchscreen
-        gesture = Gtk.GestureLongPress.new(self._labels_event)
-        gesture.set_propagation_phase(Gtk.PropagationPhase.CAPTURE)
-        gesture.connect('pressed', self._on_title_pressed)
+        # gesture = Gtk.GestureLongPress.new(self._labels_event)
+        # gesture.connect('pressed', self._on_title_pressed)
+        # gesture.set_propagation_phase(Gtk.PropagationPhase.BUBBLE)
 
         self.connect('realize', self._on_realize)
         Lp().art.connect('album-artwork-changed', self._update_cover)
