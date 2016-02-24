@@ -356,6 +356,12 @@ class BinPlayer(BasePlayer):
             @param playbin as Gst.Bin
             @param sink as Gst.Sink
         """
+        if playbin == self._playbin1:
+            vol = self._playbin1.get_volume(GstAudio.StreamVolumeFormat.CUBIC)
+            self._playbin2.set_volume(GstAudio.StreamVolumeFormat.CUBIC, vol)
+        else:
+            vol = self._playbin2.get_volume(GstAudio.StreamVolumeFormat.CUBIC)
+            self._playbin1.set_volume(GstAudio.StreamVolumeFormat.CUBIC, vol)
         self.emit('volume-changed')
 
     def _on_bus_message_tag(self, bus, message):
