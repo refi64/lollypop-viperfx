@@ -68,7 +68,8 @@ class SettingsDialog:
             Init dialog
         """
         self._choosers = []
-        self._timeout_id = None
+        self._cover_tid = None
+        self._mix_tid = None
         self._popover = None
 
         builder = Gtk.Builder()
@@ -225,19 +226,19 @@ class SettingsDialog:
             Delayed update cover size
             @param widget as Gtk.Range
         """
-        if self._timeout_id is not None:
-            GLib.source_remove(self._timeout_id)
-            self._timeout_id = None
-        self._timeout_id = GLib.timeout_add(500,
-                                            self._really_update_coversize,
-                                            widget)
+        if self._cover_tid is not None:
+            GLib.source_remove(self._cover_tid)
+            self._cover_tid = None
+        self._cover_tid = GLib.timeout_add(500,
+                                           self._really_update_coversize,
+                                           widget)
 
     def _really_update_coversize(self, widget):
         """
             Update cover size
             @param widget as Gtk.Range
         """
-        self._timeout_id = None
+        self._cover_tid = None
         value = widget.get_value()
         Lp().settings.set_value('cover-size', GLib.Variant('i', value))
         ArtSize.BIG = value
@@ -415,12 +416,34 @@ class SettingsDialog:
                 pass
         Lp().settings.set_value('party-ids',  GLib.Variant('ai', ids))
 
+    def _on_mix_button_press(self, widget, event):
+        """
+            Show mix popover on long press
+            @param widget as Gtk.Widget
+            @param event as Gdk.Event
+        """
+        self._mix_tid = GLib.timeout_add(500, self._on_mix_enter_notify,
+                                         widget, event)
+
+    def _on_mix_button_release(self, widget, event):
+        """
+            If no popover shown, pass event
+            @param widget as Gtk.Widget
+            @param event as Gdk.Event
+        """
+        if self._mix_tid is None:
+            return True
+        else:
+            GLib.source_remove(self._mix_tid)
+            self._mix_tid = None
+
     def _on_mix_enter_notify(self, widget, event):
         """
             Show mix popover
             @param widget as Gtk.Widget
             @param event as Gdk.Event
         """
+        self._mix_tid = None
         if Lp().settings.get_value('mix'):
             if self._popover is None:
                 self._popover = Gtk.Popover.new(widget)
