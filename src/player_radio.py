@@ -120,6 +120,7 @@ class RadioPlayer(BasePlayer):
             Start playing track
             @param track as Track:
         """
+        self._plugins.volume.props.volume = 1.0
         self._playbin.set_state(Gst.State.NULL)
         self._playbin.set_property('uri', track.uri)
         Radios().set_more_popular(track.album_artist)
