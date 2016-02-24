@@ -128,8 +128,15 @@ class InfosPopover(Gtk.Popover):
         """
         self._timeout_id = None
         if self._signal_id is None:
+            Lp().settings.set_value('infosreload', GLib.Variant('b', True))
+            self._signal_id = Lp().player.connect("current-changed",
+                                                  self._on_current_changed)
             widget.get_style_context().add_class('selected')
         else:
+            Lp().player.disconnect(self._signal_id)
+            self._signal_id = None
+            Lp().settings.set_value('infosreload',
+                                    GLib.Variant('b', False))
             widget.get_style_context().remove_class('selected')
 
     def _load_web(self, widget, url, mobile, private):
@@ -172,17 +179,7 @@ class InfosPopover(Gtk.Popover):
             @param widget as Gtk.Widget
             @param event as Gdk.Event
         """
-        if self._timeout_id is None:
-            if self._signal_id is None:
-                Lp().settings.set_value('infosreload', GLib.Variant('b', True))
-                self._signal_id = Lp().player.connect("current-changed",
-                                                      self._on_current_changed)
-            else:
-                Lp().player.disconnect(self._signal_id)
-                self._signal_id = None
-                Lp().settings.set_value('infosreload',
-                                        GLib.Variant('b', False))
-        else:
+        if self._timeout_id is not None:
             GLib.source_remove(self._timeout_id)
             self._timeout_id = None
             self._on_current_changed(Lp().player, True)
