@@ -107,10 +107,9 @@ class Player(BinPlayer, QueuePlayer, UserPlaylistPlayer, RadioPlayer,
         else:
             self.context.next = NextContext.STOP_ALL
         Lp().player.load(album.tracks[0])
-        if not Lp().player.is_party():
-            self._albums = [album.id]
-            self.context.genre_ids = {}
-            self.context.genre_ids[album.id] = album.genre_ids
+        self._albums = [album.id]
+        self.context.genre_ids = {}
+        self.context.genre_ids[album.id] = album.genre_ids
 
     def set_albums(self, track_id, artist_ids, genre_ids):
         """

@@ -119,6 +119,7 @@ class AlbumsView(LazyLoadingView):
             Play album
             @param album_id as int
         """
+        Lp().player.set_party(False)
         album = Album(album_id)
         track = Track(album.tracks_ids[0])
         Lp().player.load(track)
