@@ -164,7 +164,7 @@ class Row(Gtk.ListBoxRow):
             @param widget as Gtk.Widget
             @param event as Gdk.Event
         """
-        if event.button != 1:
+        if event.button == 3:
             window = widget.get_window()
             if window == event.window:
                 self._popup_menu(widget, event.x, event.y)
@@ -172,6 +172,11 @@ class Row(Gtk.ListBoxRow):
             else:
                 self._popup_menu(self._menu_button)
             return True
+        elif event.button == 2:
+            if self._id in Lp().player.get_queue():
+                Lp().player.del_from_queue(self._id)
+            else:
+                Lp().player.append_to_queue(self._id)
 
     def _on_button_clicked(self, widget):
         """
