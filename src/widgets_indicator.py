@@ -33,12 +33,13 @@ class IndicatorWidget(Gtk.Stack):
         self.set_transition_duration(500)
         self.set_transition_type(Gtk.StackTransitionType.CROSSFADE)
         self._timeout_id = None
-        self._button = Gtk.Button.new_from_icon_name('list-add-symbolic',
-                                                     Gtk.IconSize.MENU)
+        self._button = Gtk.Button.new()
+        self._image = Gtk.Image.new()
+        self._button.set_image(self._image)
         self._button.set_relief(Gtk.ReliefStyle.NONE)
         self._button.get_style_context().add_class('menu-button')
         self._button.get_style_context().add_class('track-menu-button')
-        self._button.get_image().set_opacity(0.2)
+        self._image.set_opacity(0.2)
         self._button.show()
         self._button.connect('clicked', self._on_button_clicked)
         play = Gtk.Image.new_from_icon_name('media-playback-start-symbolic',
@@ -102,12 +103,12 @@ class IndicatorWidget(Gtk.Stack):
         """
         if self._id in Lp().player.get_queue():
             self._button.set_tooltip_text(_("Remove from queue"))
-            self._button.get_image().set_from_icon_name('list-remove-symbolic',
-                                                        Gtk.IconSize.MENU)
+            self._image.set_from_icon_name('list-remove-symbolic',
+                                           Gtk.IconSize.MENU)
         else:
             self._button.set_tooltip_text(_("Add to queue"))
-            self._button.get_image().set_from_icon_name('list-add-symbolic',
-                                                        Gtk.IconSize.MENU)
+            self._image.set_from_icon_name('list-add-symbolic',
+                                           Gtk.IconSize.MENU)
 
     def _on_queue_changed(self, player):
         """
