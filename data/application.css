@@ -143,6 +143,7 @@ Gtk.ListBoxRow .menu-button:hover {
 }
 
 .trackrow {
+    padding: 0px;
 	background-color: transparent;
   	color: inherit;
 }
