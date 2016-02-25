@@ -250,8 +250,8 @@ Gtk.ListBoxRow .menu-button:hover {
 
 .menu-button {
 	box-shadow: none;
-	padding-top: 0px;
-	padding-bottom: 0px;
+	padding-top: 4px;
+	padding-bottom: 4px;
 	background-image: none;
     color: inherit;
 }
