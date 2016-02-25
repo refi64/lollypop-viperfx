@@ -33,23 +33,23 @@ class IndicatorWidget(Gtk.Stack):
         self.set_transition_duration(500)
         self.set_transition_type(Gtk.StackTransitionType.CROSSFADE)
         self._timeout_id = None
-        button = Gtk.Button.new_from_icon_name('list-add-symbolic',
-                                               Gtk.IconSize.MENU)
-        button.set_relief(Gtk.ReliefStyle.NONE)
-        button.get_style_context().add_class('menu-button')
-        button.get_style_context().add_class('track-menu-button')
-        button.get_image().set_opacity(0.2)
-        button.set_tooltip_text(_("Add to queue"))
-        button.show()
-        button.connect('clicked', self._on_button_clicked)
+        self._button = Gtk.Button.new_from_icon_name('list-add-symbolic',
+                                                     Gtk.IconSize.MENU)
+        self._button.set_relief(Gtk.ReliefStyle.NONE)
+        self._button.get_style_context().add_class('menu-button')
+        self._button.get_style_context().add_class('track-menu-button')
+        self._button.get_image().set_opacity(0.2)
+        self._button.show()
+        self._button.connect('clicked', self._on_button_clicked)
         play = Gtk.Image.new_from_icon_name('media-playback-start-symbolic',
                                             Gtk.IconSize.MENU)
         loved = Gtk.Image.new_from_icon_name('emblem-favorite-symbolic',
                                              Gtk.IconSize.MENU)
-        self.add_named(button, 'button')
+        self.add_named(self._button, 'button')
         self.add_named(play, 'play')
         self.add_named(loved, 'loved')
         self.show_all()
+        Lp().player.connect('queue-changed', self._on_queue_changed)
 
     def set_id(self, id):
         """
@@ -57,6 +57,7 @@ class IndicatorWidget(Gtk.Stack):
             @param id as int
         """
         self._id = id
+        self._update_button()
 
     def empty(self):
         """
@@ -95,12 +96,36 @@ class IndicatorWidget(Gtk.Stack):
 #######################
 # PRIVATE             #
 #######################
+    def _update_button(self):
+        """
+            Update button based on queue status
+        """
+        if self._id in Lp().player.get_queue():
+            self._button.set_tooltip_text(_("Remove from queue"))
+            self._button.get_image().set_from_icon_name('list-remove-symbolic',
+                                                        Gtk.IconSize.MENU)
+        else:
+            self._button.set_tooltip_text(_("Add to queue"))
+            self._button.get_image().set_from_icon_name('list-add-symbolic',
+                                                        Gtk.IconSize.MENU)
+
+    def _on_queue_changed(self, player):
+        """
+            Update button widget
+            @param player as Player
+            @param is party as bool
+        """
+        self._update_button()
+
     def _on_button_clicked(self, widget):
         """
             Popup menu for track relative to button
             @param widget as Gtk.Button
         """
-        Lp().player.append_to_queue(self._id)
+        if self._id in Lp().player.get_queue():
+            Lp().player.del_from_queue(self._id)
+        else:
+            Lp().player.append_to_queue(self._id)
 
     def _on_destroy(self, widget):
         """
