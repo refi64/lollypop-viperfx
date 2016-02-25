@@ -93,6 +93,14 @@ class Player(BinPlayer, QueuePlayer, UserPlaylistPlayer, RadioPlayer,
         Lp().player.shuffle_albums(True)
         self.set_next()
 
+    def remove_album(self, album_id):
+        """
+            Remove album from albums
+            @param album id as int
+        """
+        if album_id in self._albums:
+            self._albums.remove(album_id)
+
     def play_album(self, album):
         """
             Play album

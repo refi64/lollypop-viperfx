@@ -125,6 +125,17 @@ class AlbumWidget:
 #######################
 # PRIVATE             #
 #######################
+    def _show_append(self, append):
+        """
+            Show append button if append, else remove button
+        """
+        if append:
+            self._action_button.set_from_icon_name('list-add-symbolic',
+                                                   Gtk.IconSize.BUTTON)
+        else:
+            self._action_button.set_from_icon_name('list-remove-symbolic',
+                                                   Gtk.IconSize.BUTTON)
+
     def _on_eventbox_realize(self, eventbox):
         """
             Change cursor over eventbox
@@ -147,8 +158,8 @@ class AlbumWidget:
             self._artwork_button.set_opacity(0)
             self._artwork_button.get_style_context().remove_class(
                                                            self._squared_class)
-            self._append_button.set_opacity(0)
-            self._append_button.get_style_context().remove_class(
+            self._action_button.set_opacity(0)
+            self._action_button.get_style_context().remove_class(
                                                            self._squared_class)
 
     def _on_enter_notify(self, widget, event):
@@ -167,11 +178,11 @@ class AlbumWidget:
             self._artwork_button.get_style_context().add_class(
                                                            self._squared_class)
             self._artwork_button.show()
-            if self._album.id not in Lp().player.get_albums():
-                self._append_button.set_opacity(1)
-                self._append_button.get_style_context().add_class(
-                                                           self._squared_class)
-                self._append_button.show()
+            self._show_append(self._album.id not in Lp().player.get_albums())
+            self._action_button.set_opacity(1)
+            self._action_button.get_style_context().add_class(
+                                                       self._squared_class)
+            self._action_button.show()
 
     def _on_leave_notify(self, widget, event):
         """
@@ -193,9 +204,9 @@ class AlbumWidget:
             self._artwork_button.set_opacity(0)
             self._artwork_button.get_style_context().remove_class(
                                                            self._squared_class)
-            self._append_button.hide()
-            self._append_button.set_opacity(0)
-            self._append_button.get_style_context().remove_class(
+            self._action_button.hide()
+            self._action_button.set_opacity(0)
+            self._action_button.get_style_context().remove_class(
                                                            self._squared_class)
 
     def _on_play_press_event(self, widget, event):
@@ -205,8 +216,7 @@ class AlbumWidget:
             @param: event as Gdk.Event
         """
         Lp().player.play_album(self._album)
-        self._append_button.hide()
-        self._append_button.set_opacity(0)
+        self._show_append(False)
         return True
 
     def _on_artwork_press_event(self, widget, event):
@@ -223,20 +233,23 @@ class AlbumWidget:
         popover.show()
         return True
 
-    def _on_append_press_event(self, widget, event):
+    def _on_action_press_event(self, widget, event):
         """
             Append album to current list if not present
+            Remove it if present
             @param: widget as Gtk.EventBox
             @param: event as Gdk.Event
         """
         albums = Lp().player.get_albums()
         empty = len(albums) == 0
-        if self._album.id not in albums:
+        if self._album.id in albums:
+            Lp().player.remove_album(self._album.id)
+            self._show_append(True)
+        else:
             Lp().player.add_album(self._album)
             if empty and Lp().player.current_track.id is None:
                 Lp().player.load(self._album.tracks[0], False)
-        self._append_button.hide()
-        self._append_button.set_opacity(0)
+            self._show_append(False)
         return True
 
 
@@ -324,11 +337,11 @@ class AlbumSimpleWidget(Gtk.Frame, AlbumWidget):
         append_event.set_property('halign', Gtk.Align.END)
         append_event.connect('realize', self._on_eventbox_realize)
         append_event.connect('button-press-event',
-                             self._on_append_press_event)
-        self._append_button = Gtk.Image.new_from_icon_name(
+                             self._on_action_press_event)
+        self._action_button = Gtk.Image.new_from_icon_name(
                                            'list-add-symbolic',
                                            Gtk.IconSize.BUTTON)
-        self._append_button.set_opacity(0)
+        self._action_button.set_opacity(0)
         icon_grid = Gtk.Grid()
         icon_grid.set_column_spacing(5)
         icon_grid.set_property('margin-bottom', 2)
@@ -350,7 +363,7 @@ class AlbumSimpleWidget(Gtk.Frame, AlbumWidget):
         self.show_all()
         play_event.add(self._play_button)
         artwork_event.add(self._artwork_button)
-        append_event.add(self._append_button)
+        append_event.add(self._action_button)
 
     def get_id(self):
         """
@@ -432,7 +445,7 @@ class AlbumDetailedWidget(Gtk.Bin, AlbumWidget):
 
         self._play_button = builder.get_object('play-button')
         self._artwork_button = builder.get_object('artwork-button')
-        self._append_button = builder.get_object('append-button')
+        self._action_button = builder.get_object('append-button')
 
         rating = RatingWidget(self._album)
         rating.show()
