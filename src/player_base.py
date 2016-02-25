@@ -22,6 +22,7 @@ class BasePlayer(GObject.GObject):
     """
     __gsignals__ = {
         'current-changed': (GObject.SignalFlags.RUN_FIRST, None, ()),
+        'album-added': (GObject.SignalFlags.RUN_FIRST, None, (int,)),
         'next-changed': (GObject.SignalFlags.RUN_FIRST, None, ()),
         'prev-changed': (GObject.SignalFlags.RUN_FIRST, None, ()),
         'seeked': (GObject.SignalFlags.RUN_FIRST, None, (int,)),

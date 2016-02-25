@@ -20,7 +20,54 @@ from lollypop.pop_externals import ExternalsPopover
 from lollypop.pop_infos import InfosPopover
 from lollypop.pop_menu import PopToolbarMenu
 from lollypop.controllers import InfosController
+from lollypop.objects import Album
 from lollypop.define import Lp, Type, ArtSize
+
+
+class AddedPopover(Gtk.Popover):
+    """
+        Little popover showing an album
+    """
+    def __init__(self, builder):
+        """
+            Init popover
+            @param builder as Gtk.Builder
+        """
+        Gtk.Popover.__init__(self)
+        self.get_style_context().add_class('osd-popover')
+        self._timeout_id = None
+        self._cover = builder.get_object('added_cover')
+        self._artist = builder.get_object('added_artist')
+        self._album = builder.get_object('added_album')
+        self.add(builder.get_object('added'))
+        Lp().player.connect('album-added', self._on_album_added)
+
+#######################
+# PRIVATE             #
+#######################
+    def _hide(self):
+        """
+            Hide popover
+        """
+        self._timeout_id = None
+        self.hide()
+
+    def _on_album_added(self, player, album_id):
+        """
+            Show album
+            @param player as Player
+            @param album id as int
+        """
+        if self._timeout_id is not None:
+            GLib.source_remove(self._timeout_id)
+            self._timeout_id = None
+        album = Album(album_id)
+        surface = Lp().art.get_album_artwork(album, ArtSize.MEDIUM)
+        self._cover.set_from_surface(surface)
+        self._artist.set_text(album.artist_name)
+        self._album.set_text(album.name)
+        self.show()
+        GLib.timeout_add(1000, self._hide)
 
 
 class ToolbarInfos(Gtk.Bin, InfosController):
@@ -54,6 +101,10 @@ class ToolbarInfos(Gtk.Bin, InfosController):
         self._artist_label = builder.get_object('artist')
         self._cover_frame = builder.get_object('frame')
         self._cover = builder.get_object('cover')
+
+        self._popover = AddedPopover(builder)
+        self._popover.set_relative_to(self._cover)
+        self._popover.set_position(Gtk.PositionType.BOTTOM)
 
         # Gesture for touchscreen
         # gesture = Gtk.GestureLongPress.new(self._labels_event)

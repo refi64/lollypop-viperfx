@@ -92,6 +92,7 @@ class Player(BinPlayer, QueuePlayer, UserPlaylistPlayer, RadioPlayer,
             self.context.genre_ids[album.id] = album.genre_ids
         Lp().player.shuffle_albums(True)
         self.set_next()
+        self.emit('album-added', album.id)
 
     def remove_album(self, album_id):
         """
