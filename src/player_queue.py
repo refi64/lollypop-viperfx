@@ -118,6 +118,8 @@ class QueuePlayer:
         """
         if self.current_track.id is None and self._queue:
             self._load_track(QueuePlayer.next(self))
-            self.del_from_queue(self.current_track.id)
+            if self.current_track.id in self._queue:
+                self._queue.remove(self.current_track.id)
             self.set_next()
             self.set_prev()
+            self.emit('current-changed')
