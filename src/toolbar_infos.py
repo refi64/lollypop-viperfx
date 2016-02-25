@@ -34,6 +34,7 @@ class AddedPopover(Gtk.Popover):
             @param builder as Gtk.Builder
         """
         Gtk.Popover.__init__(self)
+        self.set_modal(False)
         self.get_style_context().add_class('osd-popover')
         self._timeout_id = None
         self._cover = builder.get_object('added_cover')
