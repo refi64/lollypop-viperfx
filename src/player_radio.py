@@ -53,7 +53,6 @@ class RadioPlayer(BasePlayer):
                 self.set_party(False)
             self.next_track = Track()
             self.emit('next-changed')
-            self._albums = []
 
     def next(self):
         """
