@@ -38,7 +38,6 @@ class Window(Gtk.ApplicationWindow, Container):
                                        application=app,
                                        title="Lollypop")
         self.connect('notify::is-active', self._on_active)
-        self._nullwidget = Gtk.Label()  # Use to get selected background color
         self._timeout_configure = None
         seek_action = Gio.SimpleAction.new('seek',
                                            GLib.VariantType.new('i'))
@@ -69,13 +68,6 @@ class Window(Gtk.ApplicationWindow, Container):
             @parma: menu as Gio.Menu
         """
         self._toolbar.setup_menu(menu)
-
-    def get_selected_color(self):
-        """
-            Return selected color
-        """
-        return self._nullwidget.get_style_context().\
-            get_background_color(Gtk.StateFlags.SELECTED)
 
     def enable_global_shorcuts(self, enable):
         """

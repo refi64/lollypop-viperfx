@@ -17,7 +17,7 @@ from cgi import escape
 from lollypop.define import Lp, ArtSize, Type
 from lollypop.pop_menu import TrackMenuPopover, TrackMenu
 from lollypop.widgets_indicator import IndicatorWidget
-from lollypop.utils import seconds_to_string, rgba_to_hex
+from lollypop.utils import seconds_to_string
 from lollypop.objects import Track, Album
 from lollypop import utils
 
@@ -51,6 +51,7 @@ class Row(Gtk.ListBoxRow):
         self._duration_label.get_style_context().add_class('dim-label')
         self._num_label = Gtk.Label()
         self._num_label.set_ellipsize(Pango.EllipsizeMode.END)
+        self._num_label.set_property('valign', Gtk.Align.CENTER)
         self._num_label.set_width_chars(4)
         self._num_label.get_style_context().add_class('dim-label')
         self._menu_button = Gtk.Button.new_from_icon_name('open-menu-symbolic',
@@ -92,11 +93,15 @@ class Row(Gtk.ListBoxRow):
             else:
                 self._indicator.empty()
 
-    def set_num_label(self, label):
+    def set_num_label(self, label, queued=False):
         """
             Set num label
             @param label as string
         """
+        if queued:
+            self._num_label.get_style_context().add_class('queued')
+        else:
+            self._num_label.get_style_context().remove_class('queued')
         self._num_label.set_markup(label)
 
     def set_title_label(self, label):
@@ -345,46 +350,38 @@ class TracksWidget(Gtk.ListBox):
         """
         Gtk.ListBox.__init__(self)
         self.connect('destroy', self._on_destroy)
-        self._queue_signal_id = Lp().player.connect("queue-changed",
-                                                    self._update_pos_label)
-        self._loved_signal_id = Lp().playlists.connect("playlist-changed",
-                                                       self._update_loved_icon)
+        self._queue_signal_id = Lp().player.connect('queue-changed',
+                                                    self._on_queue_changed)
+        self._loved_signal_id = Lp().playlists.connect(
+                                               'playlist-changed',
+                                               self._on_loved_playlist_changed)
         self._show_loved = show_loved
         self.connect("row-activated", self._on_activate)
         self.get_style_context().add_class('trackswidget')
         self.set_property('hexpand', True)
         self.set_property('selection-mode', Gtk.SelectionMode.NONE)
 
-    def add_track(self, track_id, num, title, length, pos):
+    def add_track(self, track_id, num, title, length):
         """
             Add track to list
             @param track id as int
             @param track number as int
             @param title as str
             @param length as str
-            @param pos as int
             @param show cover as bool
         """
         track_row = TrackRow(self._show_loved)
         track_row.show_indicator(Lp().player.current_track.id == track_id,
                                  utils.is_loved(track_id))
-        if pos:
-            track_row.set_num_label(
-                '''<span foreground="%s"
-                font_desc="Bold">%s</span>''' %
-                (rgba_to_hex(Lp().window.get_selected_color()),
-                 str(pos)))
-        elif num > 0:
-            track_row.set_num_label(str(num))
-
         track_row.set_number(num)
+        self._update_pos_label(track_row, track_id)
         track_row.set_title_label(title)
         track_row.set_duration_label(seconds_to_string(length))
         track_row.set_id(track_id)
         track_row.show()
         self.add(track_row)
 
-    def add_album(self, track_id, album, num, title, length, pos):
+    def add_album(self, track_id, album, num, title, length):
         """
             Add album row to the list
             @param track id as int
@@ -392,20 +389,12 @@ class TracksWidget(Gtk.ListBox):
             @param track number as int
             @param title as str
             @param length as str
-            @param pos as int
         """
         album_row = AlbumRow(self._show_loved)
         album_row.show_indicator(Lp().player.current_track.id == track_id,
                                  utils.is_loved(track_id))
-        if pos:
-            album_row.set_num_label(
-                '''<span foreground="%s"
-                font_desc="Bold">%s</span>''' %
-                (rgba_to_hex(Lp().window.get_selected_color()),
-                 str(pos)))
-        elif num > 0:
-            album_row.set_num_label(str(num))
         album_row.set_number(num)
+        self._update_pos_label(album_row, track_id)
         album_row.set_title_label(title)
         album_row.set_duration_label(seconds_to_string(length))
         album_row.set_id(track_id)
@@ -432,27 +421,31 @@ class TracksWidget(Gtk.ListBox):
 #######################
 # PRIVATE             #
 #######################
-    def _update_pos_label(self, widget):
+    def _update_pos_label(self, row, track_id):
         """
-            Update position label
+            Update position label for row
+            @param row as Row
+            @param track id as int
+        """
+        if Lp().player.is_in_queue(track_id):
+            pos = Lp().player.get_track_position(track_id)
+            row.set_num_label(str(pos), True)
+        elif row.get_number() > 0:
+            row.set_num_label(str(row.get_number()))
+        else:
+            row.set_num_label('')
+
+    def _on_queue_changed(self, widget):
+        """
+            Update all position labels
             @param player
             @param track id as int
         """
         for row in self.get_children():
             track_id = row.get_id()
-            if Lp().player.is_in_queue(track_id):
-                pos = Lp().player.get_track_position(track_id)
-                row.set_num_label(
-                    '''<span foreground="%s"
-                    font_desc="Bold">%s</span>''' %
-                    (rgba_to_hex(Lp().window.get_selected_color()),
-                     str(pos)))
-            elif row.get_number() > 0:
-                row.set_num_label(str(row.get_number()))
-            else:
-                row.set_num_label('')
+            self._update_pos_label(row, track_id)
 
-    def _update_loved_icon(self, widget, playlist_id):
+    def _on_loved_playlist_changed(self, widget, playlist_id):
         """
             Updates the loved icon
         """

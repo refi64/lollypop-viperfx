@@ -621,11 +621,6 @@ class AlbumDetailedWidget(Gtk.Bin, AlbumWidget):
                 title = "<b>%s</b>\n%s" % (escape(track.artist_names),
                                            title)
 
-        # Get track position in queue
-        pos = None
-        if Lp().player.is_in_queue(track.id):
-            pos = Lp().player.get_track_position(track.id)
-
         if not Lp().settings.get_value('show-tag-tracknumber'):
             track_number = i
         else:
@@ -634,8 +629,7 @@ class AlbumDetailedWidget(Gtk.Bin, AlbumWidget):
         widget.add_track(track.id,
                          track_number,
                          title,
-                         track.duration,
-                         pos)
+                         track.duration)
 
         GLib.idle_add(self._add_tracks, tracks, widget, i + 1)
 

@@ -180,9 +180,9 @@ class PlaylistWidget(Gtk.Bin):
 
         if album.id != previous_album_id:
             widget.add_album(track.id, album, pos,
-                             name, track.duration, None)
+                             name, track.duration)
         else:
-            widget.add_album(track.id, None, pos, name, track.duration, None)
+            widget.add_album(track.id, None, pos, name, track.duration)
         GLib.idle_add(self._add_tracks, tracks, widget, pos + 1, album.id)
 
     def _on_activated(self, widget, track_id):
