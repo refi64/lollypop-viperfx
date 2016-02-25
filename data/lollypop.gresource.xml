@@ -9,7 +9,6 @@
     <file preprocess="xml-stripblanks">AlbumsPopover.ui</file>
     <file preprocess="xml-stripblanks">RatingWidget.ui</file>
     <file preprocess="xml-stripblanks">LovedWidget.ui</file>
-    <file preprocess="xml-stripblanks">RadioWidget.ui</file>
     <file preprocess="xml-stripblanks">RadiosView.ui</file>
     <file preprocess="xml-stripblanks">RadioPopover.ui</file>
     <file preprocess="xml-stripblanks">MiniPlayer.ui</file>
