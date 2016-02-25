@@ -67,7 +67,7 @@
             <property name="valign">center</property>
             <signal name="button-press-event" handler="_on_button_press" swapped="no"/>
             <signal name="button-release-event" handler="_on_button_release" swapped="no"/>
-            <signal name="toggled" handler="_on_party_btn_toggled" swapped="no"/>
+            <signal name="toggled" handler="_on_party_button_toggled" swapped="no"/>
             <child>
               <object class="GtkImage" id="party-button-image">
                 <property name="visible">True</property>
@@ -126,7 +126,7 @@
         <property name="receives_default">False</property>
         <property name="tooltip_text" translatable="yes">Search</property>
         <property name="valign">center</property>
-        <signal name="clicked" handler="_on_search_btn_clicked" swapped="no"/>
+        <signal name="clicked" handler="_on_search_button_clicked" swapped="no"/>
         <child>
           <object class="GtkImage" id="search-button-image">
             <property name="visible">True</property>
@@ -153,7 +153,7 @@
         <property name="receives_default">False</property>
         <property name="tooltip_text" translatable="yes">Queue</property>
         <property name="valign">center</property>
-        <signal name="clicked" handler="_on_queue_btn_clicked" swapped="no"/>
+        <signal name="clicked" handler="_on_queue_button_clicked" swapped="no"/>
         <child>
           <object class="GtkImage" id="playlist-button-image">
             <property name="visible">True</property>
