@@ -144,6 +144,7 @@ class Player(BinPlayer, QueuePlayer, UserPlaylistPlayer, RadioPlayer,
             @param album as Album
         """
         self.set_party(False)
+        self.reset_history()
         # We are not playing a user playlist anymore
         self._user_playlist = []
         self._user_playlist_id = None
