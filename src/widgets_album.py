@@ -178,7 +178,7 @@ class AlbumWidget:
             self._artwork_button.get_style_context().add_class(
                                                            self._squared_class)
             self._artwork_button.show()
-            self._show_append(self._album.id not in Lp().player.get_albums())
+            self._show_append(not Lp().player.is_album_present(self._album))
             self._action_button.set_opacity(1)
             self._action_button.get_style_context().add_class(
                                                        self._squared_class)
@@ -242,8 +242,8 @@ class AlbumWidget:
         """
         albums = Lp().player.get_albums()
         empty = len(albums) == 0
-        if self._album.id in albums:
-            Lp().player.remove_album(self._album.id)
+        if Lp().player.is_album_present(self._album):
+            Lp().player.remove_album(self._album)
             self._show_append(True)
         else:
             Lp().player.add_album(self._album)
@@ -258,7 +258,7 @@ class AlbumSimpleWidget(Gtk.Frame, AlbumWidget):
         Album widget showing cover, artist and title
     """
 
-    def __init__(self, album_id, parent):
+    def __init__(self, album_id, genre_ids):
         """
             Init simple album widget
             @param album id as int
@@ -268,8 +268,7 @@ class AlbumSimpleWidget(Gtk.Frame, AlbumWidget):
         Gtk.Frame.__init__(self)
         self.set_shadow_type(Gtk.ShadowType.NONE)
         self.get_style_context().add_class('loading')
-        self._parent = parent
-        AlbumWidget.__init__(self, album_id, [])
+        AlbumWidget.__init__(self, album_id, genre_ids)
 
     def init_widget(self):
         """
@@ -278,8 +277,6 @@ class AlbumSimpleWidget(Gtk.Frame, AlbumWidget):
         self.get_style_context().remove_class('loading')
         self._rounded_class = "rounded-icon-small"
         self._widget = Gtk.EventBox()
-        self._widget.connect('enter-notify-event', self._on_enter_notify)
-        self._widget.connect('leave-notify-event', self._on_leave_notify)
         grid = Gtk.Grid()
         grid.set_orientation(Gtk.Orientation.VERTICAL)
         white = Gtk.Grid()
@@ -330,13 +327,13 @@ class AlbumSimpleWidget(Gtk.Frame, AlbumWidget):
                                            'image-x-generic-symbolic',
                                            Gtk.IconSize.BUTTON)
         self._artwork_button.set_opacity(0)
-        # Append button
-        append_event = Gtk.EventBox()
-        append_event.set_property('has-tooltip', True)
-        append_event.set_tooltip_text(_("Append"))
-        append_event.set_property('halign', Gtk.Align.END)
-        append_event.connect('realize', self._on_eventbox_realize)
-        append_event.connect('button-press-event',
+        # Action button
+        action_event = Gtk.EventBox()
+        action_event.set_property('has-tooltip', True)
+        action_event.set_tooltip_text(_("Append"))
+        action_event.set_property('halign', Gtk.Align.END)
+        action_event.connect('realize', self._on_eventbox_realize)
+        action_event.connect('button-press-event',
                              self._on_action_press_event)
         self._action_button = Gtk.Image.new_from_icon_name(
                                            'list-add-symbolic',
@@ -349,7 +346,7 @@ class AlbumSimpleWidget(Gtk.Frame, AlbumWidget):
         icon_grid.set_property('margin-end', 2)
         icon_grid.set_property('valign', Gtk.Align.END)
         icon_grid.add(play_event)
-        icon_grid.add(append_event)
+        icon_grid.add(action_event)
         icon_grid.add(artwork_event)
         white.add(self._cover)
         overlay.add(white)
@@ -363,7 +360,9 @@ class AlbumSimpleWidget(Gtk.Frame, AlbumWidget):
         self.show_all()
         play_event.add(self._play_button)
         artwork_event.add(self._artwork_button)
-        append_event.add(self._action_button)
+        action_event.add(self._action_button)
+        self._widget.connect('enter-notify-event', self._on_enter_notify)
+        self._widget.connect('leave-notify-event', self._on_leave_notify)
 
     def get_id(self):
         """
@@ -386,15 +385,6 @@ class AlbumSimpleWidget(Gtk.Frame, AlbumWidget):
 #######################
 # PRIVATE             #
 #######################
-    def _on_play_press_event(self, widget, event):
-        """
-            Play album
-            @param: widget as Gtk.EventBox
-            @param: event as Gdk.Event
-        """
-        self._parent.play_album(self._album.id)
-        return True
-
     def _on_query_tooltip(self, widget, x, y, keyboard, tooltip):
         """
             Show tooltip if needed
@@ -441,11 +431,10 @@ class AlbumDetailedWidget(Gtk.Bin, AlbumWidget):
         builder = Gtk.Builder()
         builder.add_from_resource('/org/gnome/Lollypop/%s.ui' %
                                   type(self).__name__)
-        builder.connect_signals(self)
-
         self._play_button = builder.get_object('play-button')
         self._artwork_button = builder.get_object('artwork-button')
-        self._action_button = builder.get_object('append-button')
+        self._action_button = builder.get_object('action-button')
+        builder.connect_signals(self)
 
         rating = RatingWidget(self._album)
         rating.show()

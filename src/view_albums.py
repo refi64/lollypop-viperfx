@@ -190,7 +190,7 @@ class AlbumsView(LazyLoadingView):
             @param [album ids as int]
         """
         if albums and not self._stop:
-            widget = AlbumSimpleWidget(albums.pop(0), self)
+            widget = AlbumSimpleWidget(albums.pop(0), self._genre_ids)
             self._albumbox.insert(widget, -1)
             widget.show()
             self._lazy_queue.append(widget)

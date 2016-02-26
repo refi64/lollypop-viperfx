@@ -91,16 +91,52 @@ class Player(BinPlayer, QueuePlayer, UserPlaylistPlayer, RadioPlayer,
             self._albums.append(album.id)
             self.context.genre_ids[album.id] = album.genre_ids
         Lp().player.shuffle_albums(True)
-        self.set_next()
+        if self.current_track.id is not None and self.current_track.id > 0:
+            self.set_next()
         self.emit('album-added', album.id)
 
-    def remove_album(self, album_id):
+    def remove_album(self, album):
         """
             Remove album from albums
-            @param album id as int
+            @param album as Album
         """
-        if album_id in self._albums:
-            self._albums.remove(album_id)
+        try:
+            # Remove genre ids from context
+            genre_ids = self.context.genre_ids[album.id]
+            for genre_id in album.genre_ids:
+                if genre_id in genre_ids:
+                    genre_ids.remove(genre_id)
+            if not genre_ids:
+                self._albums.remove(album.id)
+        except Exception as e:
+            print("Player::remove_album():", e)
+
+    def get_genre_ids(self, album_id):
+        """
+            Return genre ids for album
+            @param album id as int
+            @return genre ids as [int]
+        """
+        if album_id in self.context.genre_ids.keys():
+            return self.context.genre_ids[album_id]
+        else:
+            return []
+
+    def is_album_present(self, album):
+        """
+            Check if album is present in albums, with context
+            @param album as Album
+            @return bool
+        """
+        is_present = True
+        if album.id in self._albums:
+            for genre_id in album.genre_ids:
+                if album.id in self.context.genre_ids.keys() and\
+                        genre_id not in self.context.genre_ids[album.id]:
+                    is_present = False
+        else:
+            is_present = False
+        return is_present
 
     def play_album(self, album):
         """
@@ -169,12 +205,14 @@ class Player(BinPlayer, QueuePlayer, UserPlaylistPlayer, RadioPlayer,
         else:
             self.context.next = NextContext.STOP_ALL
 
-        if track_id in album.tracks_ids:
-            self.context.genre_ids[Type.ALL] = genre_ids
-            # Shuffle album list if needed
-            self.shuffle_albums(True)
-        else:  # Error
-            self.stop()
+        # We do not store genre_ids for ALL/POPULARS/...
+        if genre_ids and genre_ids[0] < 0:
+            genre_ids = []
+        # Set context for each album
+        for album_id in self._albums:
+            self.context.genre_ids[album_id] = genre_ids
+        # Shuffle album list if needed
+        self.shuffle_albums(True)
 
     def set_albums2(self, albums):
         """
@@ -235,7 +273,6 @@ class Player(BinPlayer, QueuePlayer, UserPlaylistPlayer, RadioPlayer,
                     self._albums = Lp().artists.get_albums(
                                                          track.album_artist_id)
                     self.context.genre_ids = {}
-                    self.context.genre_ids[Type.ALL] = []
                 self.set_next()
                 self.set_prev()
                 if Lp().settings.get_value('repeat'):

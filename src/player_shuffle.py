@@ -206,13 +206,7 @@ class ShufflePlayer(BasePlayer):
         """
         for album_id in sorted(self._albums,
                                key=lambda *args: random.random()):
-            keys = self.context.genre_ids.keys()
-            if self.current_track.album.id in keys:
-                genre_ids = self.context.genre_ids[album_id]
-            elif Type.ALL in keys:
-                genre_ids = self.context.genre_ids[Type.ALL]
-            else:
-                genre_ids = []
+            genre_ids = self.context.genre_ids[album_id]
             tracks = Album(album_id, genre_ids).tracks_ids
             for track in sorted(tracks, key=lambda *args: random.random()):
                 if album_id not in self._already_played_tracks.keys() or\
