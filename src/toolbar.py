@@ -107,12 +107,12 @@ class Toolbar(Gtk.HeaderBar):
         """
         self._toolbar_title._update_position(value)
 
-    def setup_menu_btn(self, menu):
+    def setup_menu(self, menu):
         """
             Add an application menu to menu button
             @parma: menu as Gio.Menu
         """
-        self._toolbar_end.setup_menu_btn(menu)
+        self._toolbar_end.setup_menu(menu)
 
 #######################
 # PRIVATE             #

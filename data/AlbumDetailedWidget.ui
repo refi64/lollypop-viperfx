@@ -183,6 +183,7 @@
                                 <property name="tooltip_text" translatable="yes">Play</property>
                                 <property name="opacity">0</property>
                                 <property name="icon_name">media-playback-start-symbolic</property>
+                                <property name="icon_size">5</property>
                               </object>
                             </child>
                           </object>

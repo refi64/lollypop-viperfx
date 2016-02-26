@@ -43,15 +43,15 @@ class ToolbarEnd(Gtk.Bin):
 
         self._grid_next = builder.get_object('grid-next')
 
-        self._shuffle_btn = builder.get_object('shuffle-button')
-        self._shuffle_btn_image = builder.get_object('shuffle-button-image')
-        shuffleAction = Gio.SimpleAction.new('shuffle-btn', None)
+        self._shuffle_button = builder.get_object('shuffle-button')
+        self._shuffle_image = builder.get_object('shuffle-button-image')
+        shuffleAction = Gio.SimpleAction.new('shuffle-button', None)
         shuffleAction.connect('activate', self._activate_shuffle_button)
         app.add_action(shuffleAction)
-        app.set_accels_for_action("app.shuffle-btn", ["<Control>r"])
-        Lp().settings.connect('changed::shuffle', self._shuffle_btn_aspect)
+        app.set_accels_for_action("app.shuffle-button", ["<Control>r"])
+        Lp().settings.connect('changed::shuffle', self._shuffle_button_aspect)
 
-        self._party_btn = builder.get_object('party-button')
+        self._party_button = builder.get_object('party-button')
         party_action = Gio.SimpleAction.new('party', None)
         party_action.connect('activate', self._activate_party_button)
         app.add_action(party_action)
@@ -59,21 +59,22 @@ class ToolbarEnd(Gtk.Bin):
 
         self._search_button = builder.get_object('search-button')
         searchAction = Gio.SimpleAction.new('search', None)
-        searchAction.connect('activate', self._on_search_btn_clicked)
+        searchAction.connect('activate', self._on_search_button_clicked)
         app.add_action(searchAction)
         app.set_accels_for_action("app.search", ["<Control>f"])
 
         self._queue_button = builder.get_object('queue-button')
         queueAction = Gio.SimpleAction.new('queue', None)
-        queueAction.connect('activate', self._on_queue_btn_clicked)
+        queueAction.connect('activate', self._on_queue_button_clicked)
         app.add_action(queueAction)
         app.set_accels_for_action("app.queue", ["<Control>l"])
 
         self._settings_button = builder.get_object('settings-button')
 
         Lp().player.connect('party-changed', self._on_party_changed)
+        Lp().player.connect('queue-changed', self._on_queue_changed)
 
-    def setup_menu_btn(self, menu):
+    def setup_menu(self, menu):
         """
             Add an application menu to menu button
             @parma: menu as Gio.Menu
@@ -89,7 +90,7 @@ class ToolbarEnd(Gtk.Bin):
         if player.is_playing():
             # Party mode can be activated
             # via Fullscreen class, so check button state
-            self._party_btn.set_active(player.is_party())
+            self._party_button.set_active(player.is_party())
 
     def on_next_changed(self, player, force=False):
         """
@@ -145,24 +146,24 @@ class ToolbarEnd(Gtk.Bin):
         """
         shuffle = Lp().settings.get_enum('shuffle')
         if shuffle == Shuffle.NONE:
-            self._shuffle_btn_image.get_style_context().remove_class(
+            self._shuffle_image.get_style_context().remove_class(
                                                                     'selected')
-            self._shuffle_btn_image.set_from_icon_name(
+            self._shuffle_image.set_from_icon_name(
                 "media-playlist-consecutive-symbolic",
                 Gtk.IconSize.SMALL_TOOLBAR)
         else:
-            self._shuffle_btn_image.set_from_icon_name(
+            self._shuffle_image.set_from_icon_name(
                 "media-playlist-shuffle-symbolic",
                 Gtk.IconSize.SMALL_TOOLBAR)
             if shuffle == Shuffle.TRACKS:
-                self._shuffle_btn_image.get_style_context().add_class(
+                self._shuffle_image.get_style_context().add_class(
                                                                     'selected')
             else:
-                self._shuffle_btn_image.get_style_context().remove_class(
+                self._shuffle_image.get_style_context().remove_class(
                                                                     'selected')
         self.on_next_changed(Lp().player)
 
-    def _shuffle_btn_aspect(self, settings, value):
+    def _shuffle_button_aspect(self, settings, value):
         """
             Mark shuffle button as active when shuffle active
             @param settings as Gio.Settings, value as str
@@ -175,7 +176,7 @@ class ToolbarEnd(Gtk.Bin):
             @param action as Gio.SimpleAction
             @param param as GLib.Variant
         """
-        self._party_btn.set_active(not self._party_btn.get_active())
+        self._party_button.set_active(not self._party_button.get_active())
         Lp().window.responsive_design()
 
     def _activate_shuffle_button(self, action=None, param=None):
@@ -184,9 +185,9 @@ class ToolbarEnd(Gtk.Bin):
             @param action as Gio.SimpleAction
             @param param as GLib.Variant
         """
-        self._shuffle_btn.set_active(not self._shuffle_btn.get_active())
+        self._shuffle_button.set_active(not self._shuffle_button.get_active())
 
-    def _on_search_btn_clicked(self, obj, param=None):
+    def _on_search_button_clicked(self, obj, param=None):
         """
             Show search widget on search button clicked
             @param obj as Gtk.Button or Gtk.Action
@@ -196,7 +197,7 @@ class ToolbarEnd(Gtk.Bin):
         self._search.set_relative_to(self._search_button)
         self._search.show()
 
-    def _on_queue_btn_clicked(self, button, param=None):
+    def _on_queue_button_clicked(self, button, param=None):
         """
             Show queue widget on queue button clicked
             @param obj as Gtk.Button or Gtk.Action
@@ -206,18 +207,29 @@ class ToolbarEnd(Gtk.Bin):
         self._queue.set_relative_to(self._queue_button)
         self._queue.show()
 
-    def _on_party_btn_toggled(self, button):
+    def _on_party_button_toggled(self, button):
         """
             Set party mode on if party button active
             @param obj as Gtk.button
         """
-        active = self._party_btn.get_active()
-        self._shuffle_btn.set_sensitive(not active)
+        active = self._party_button.get_active()
+        self._shuffle_button.set_sensitive(not active)
         if not Lp().settings.get_value('dark-ui'):
             settings = Gtk.Settings.get_default()
             settings.set_property("gtk-application-prefer-dark-theme", active)
         Lp().player.set_party(active)
         self.on_next_changed(Lp().player)
+
+    def _on_queue_changed(self, player):
+        """
+            On queue changed, change buttno aspect
+            @param player as Player
+            @param is party as bool
+        """
+        if player.get_queue():
+            self._queue_button.get_style_context().add_class('selected')
+        else:
+            self._queue_button.get_style_context().remove_class('selected')
 
     def _on_party_changed(self, player, is_party):
         """
@@ -225,7 +237,7 @@ class ToolbarEnd(Gtk.Bin):
             @param player as Player
             @param is party as bool
         """
-        if self._party_btn.get_active() != is_party:
+        if self._party_button.get_active() != is_party:
             self._activate_party_button()
 
     def _on_show(self, widget):

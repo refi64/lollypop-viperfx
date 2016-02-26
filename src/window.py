@@ -68,7 +68,7 @@ class Window(Gtk.ApplicationWindow, Container):
             Add an application menu to window
             @parma: menu as Gio.Menu
         """
-        self._toolbar.setup_menu_btn(menu)
+        self._toolbar.setup_menu(menu)
 
     def get_selected_color(self):
         """
