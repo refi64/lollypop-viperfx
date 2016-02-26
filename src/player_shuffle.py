@@ -206,7 +206,12 @@ class ShufflePlayer(BasePlayer):
         """
         for album_id in sorted(self._albums,
                                key=lambda *args: random.random()):
-            genre_ids = self.context.genre_ids[album_id]
+            # We need to check this as in party mode, some items do not
+            # have a valid genre (Populars, ...)
+            if album_id in self.context.genre_ids.keys():
+                genre_ids = self.context.genre_ids[album_id]
+            else:
+                genre_ids = []
             tracks = Album(album_id, genre_ids).tracks_ids
             for track in sorted(tracks, key=lambda *args: random.random()):
                 if album_id not in self._already_played_tracks.keys() or\
