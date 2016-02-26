@@ -49,7 +49,7 @@ class ToolbarEnd(Gtk.Bin):
         shuffleAction.connect('activate', self._activate_shuffle_button)
         app.add_action(shuffleAction)
         app.set_accels_for_action("app.shuffle-button", ["<Control>r"])
-        Lp().settings.connect('changed::shuffle', self._shuffle_button_aspect)
+        Lp().settings.connect('changed::shuffle', self._on_shuffle_changed)
 
         self._party_button = builder.get_object('party-button')
         party_action = Gio.SimpleAction.new('party', None)
@@ -99,16 +99,7 @@ class ToolbarEnd(Gtk.Bin):
             @param force to show the popover
         """
         self._timeout_id = None
-        if not self.is_visible() or not self._pop_next.should_be_shown():
-            if not force:
-                self._pop_next.hide()
-                return
-        # Do not show next popover for non internal tracks as
-        # tags will be readed on the fly
-        if player.next_track.id is not None and\
-           player.next_track.id >= 0 and\
-            (player.is_party() or
-             Lp().settings.get_enum('shuffle') == Shuffle.TRACKS):
+        if self._pop_next.should_be_shown() or force:
             self._pop_next.update()
             if not self._pop_next.is_visible():
                 self._pop_next.set_relative_to(self._grid_next)
@@ -146,8 +137,7 @@ class ToolbarEnd(Gtk.Bin):
         """
         shuffle = Lp().settings.get_enum('shuffle')
         if shuffle == Shuffle.NONE:
-            self._shuffle_image.get_style_context().remove_class(
-                                                                    'selected')
+            self._shuffle_image.get_style_context().remove_class('selected')
             self._shuffle_image.set_from_icon_name(
                 "media-playlist-consecutive-symbolic",
                 Gtk.IconSize.SMALL_TOOLBAR)
@@ -156,19 +146,10 @@ class ToolbarEnd(Gtk.Bin):
                 "media-playlist-shuffle-symbolic",
                 Gtk.IconSize.SMALL_TOOLBAR)
             if shuffle == Shuffle.TRACKS:
-                self._shuffle_image.get_style_context().add_class(
-                                                                    'selected')
+                self._shuffle_image.get_style_context().add_class('selected')
             else:
                 self._shuffle_image.get_style_context().remove_class(
                                                                     'selected')
-        self.on_next_changed(Lp().player)
-
-    def _shuffle_button_aspect(self, settings, value):
-        """
-            Mark shuffle button as active when shuffle active
-            @param settings as Gio.Settings, value as str
-        """
-        self._set_shuffle_icon()
 
     def _activate_party_button(self, action=None, param=None):
         """
@@ -186,6 +167,15 @@ class ToolbarEnd(Gtk.Bin):
             @param param as GLib.Variant
         """
         self._shuffle_button.set_active(not self._shuffle_button.get_active())
+
+    def _on_shuffle_changed(self, settings, value):
+        """
+            Mark shuffle button as active when shuffle active
+            @param settings as Gio.Settings, value as str
+        """
+        self._set_shuffle_icon()
+        if value != Shuffle.TRACKS:
+            self._pop_next.hide()
 
     def _on_search_button_clicked(self, obj, param=None):
         """

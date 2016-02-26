@@ -12,7 +12,7 @@
 
 from gi.repository import Gtk
 
-from lollypop.define import Lp, ArtSize
+from lollypop.define import Lp, ArtSize, Shuffle
 
 
 class NextPopover(Gtk.Popover):
@@ -62,7 +62,11 @@ class NextPopover(Gtk.Popover):
         """
             Return True if widget should be shown, not already closed by user
         """
-        return self._should_be_shown
+        return self._should_be_shown and (
+                Lp().player.is_party or
+                Lp().settings.get_value('shuffle') == Shuffle.TRACKS) and\
+            Lp().player.next_track.id is not None and\
+            Lp().player.next_track.id >= 0
 
 #######################
 # PRIVATE             #
