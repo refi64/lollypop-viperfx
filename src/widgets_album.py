@@ -385,6 +385,19 @@ class AlbumSimpleWidget(Gtk.Frame, AlbumWidget):
 #######################
 # PRIVATE             #
 #######################
+    def _on_play_press_event(self, widget, event):
+        """
+            Play album with context
+            @param: widget as Gtk.EventBox
+            @param: event as Gdk.Event
+        """
+        Lp().player.set_party(False)
+        track = Track(self._album.tracks_ids[0])
+        Lp().player.load(track)
+        Lp().player.set_albums(track.id, None,
+                               self._album.genre_ids)
+        return True
+
     def _on_query_tooltip(self, widget, x, y, keyboard, tooltip):
         """
             Show tooltip if needed
