@@ -125,7 +125,7 @@ class RadioPlayer(BasePlayer):
         Radios().set_more_popular(track.album_artist)
         self.current_track = track
         self._current = None
-        self.play()
+        self._playbin.set_state(Gst.State.PLAYING)
 
     def _on_parse_finished(self, parser, result, track):
         """

@@ -134,7 +134,7 @@ class ProgressController:
         # Prevent updating progress while seeking
         self._seeking = False
         # Update pogress position
-        self._timeout = None
+        self._timeout_id = None
 
     def on_current_changed(self, player):
         """
@@ -160,25 +160,25 @@ class ProgressController:
             Update buttons and progress bar
             @param player as Player
         """
-        if player.current_track.id != Type.RADIOS:
-            self._progress.set_sensitive(player.current_track.id is not None)
-
         if player.is_playing():
             self._progress.set_opacity(1)
-            if player.current_track.id == Type.RADIOS and self._timeout:
-                GLib.source_remove(self._timeout)
-                self._timeout = None
-            elif player.current_track.id != Type.RADIOS and not self._timeout:
-                self._timeout = GLib.timeout_add(1000, self._update_position)
+            if player.current_track.id == Type.RADIOS and\
+                    self._timeout_id is not None:
+                GLib.source_remove(self._timeout_id)
+                self._timeout_id = None
+            elif player.current_track.id != Type.RADIOS and\
+                    self._timeout_id is None:
+                self._timeout_id = GLib.timeout_add(1000,
+                                                    self._update_position)
         else:
             if player.get_status() == Gst.State.PAUSED:
                 self._progress.set_opacity(0.5)
             else:
                 self._progress.set_sensitive(False)
             self._update_position()
-            if self._timeout:
-                GLib.source_remove(self._timeout)
-                self._timeout = None
+            if self._timeout_id is not None:
+                GLib.source_remove(self._timeout_id)
+                self._timeout_id = None
 
 #######################
 # PRIVATE             #
@@ -188,7 +188,7 @@ class ProgressController:
             Update progress bar position
             @param value as int
         """
-        if not self._seeking:
+        if not self._seeking and Lp().player.current_track.id != Type.RADIOS:
             if value is None and Lp().player.get_status() != Gst.State.PAUSED:
                 value = Lp().player.get_position_in_track()/1000000
             if value is not None:
