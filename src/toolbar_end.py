@@ -98,6 +98,9 @@ class ToolbarEnd(Gtk.Bin):
             @param player as Player
             @param force to show the popover
         """
+        # Do not show popover is this menu is active
+        if self._shuffle_button.get_active():
+            return
         self._timeout_id = None
         if self._pop_next.should_be_shown() or force:
             self._pop_next.update()
@@ -174,8 +177,7 @@ class ToolbarEnd(Gtk.Bin):
             @param settings as Gio.Settings, value as str
         """
         self._set_shuffle_icon()
-        if value != Shuffle.TRACKS:
-            self._pop_next.hide()
+        self._pop_next.hide()
 
     def _on_search_button_clicked(self, obj, param=None):
         """
