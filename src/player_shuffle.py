@@ -102,6 +102,7 @@ class ShufflePlayer(BasePlayer):
         self._is_party = party
 
         self.reset_history()
+        self.context.genre_ids = {}
 
         if self.plugins1.rgvolume is not None and\
            self.plugins2.rgvolume is not None:
@@ -122,6 +123,14 @@ class ShufflePlayer(BasePlayer):
                 self._albums = Lp().albums.get_party_ids(party_ids)
             else:
                 self._albums = Lp().albums.get_ids()
+            # We do not store genre_ids for ALL/POPULARS/...
+            genre_ids = []
+            for genre_id in party_ids:
+                if genre_id > 0:
+                    genre_ids.append(genre_id)
+            # Set context for each album
+            for album_id in self._albums:
+                self.context.genre_ids[album_id] = genre_ids
             # Start a new song if not playing
             if (self.current_track.id in [None, Type.RADIOS])\
                     and self._albums:
