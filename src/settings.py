@@ -21,6 +21,7 @@ from gettext import gettext as _
 from threading import Thread
 
 from lollypop.define import Lp, Type, SecretSchema, SecretAttributes, ArtSize
+from lollypop.utils import disable_csd
 
 
 class Settings(Gio.Settings):
@@ -82,8 +83,8 @@ class SettingsDialog:
         self._settings_dialog = builder.get_object('settings_dialog')
         self._settings_dialog.set_transient_for(Lp().window)
 
-        if Lp().settings.get_value('disable-csd'):
-            self.set_title(_("Preferences"))
+        if disable_csd():
+            self._settings_dialog.set_title(_("Preferences"))
         else:
             headerbar = builder.get_object('header_bar')
             headerbar.set_title(_("Preferences"))
