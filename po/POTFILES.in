@@ -34,7 +34,6 @@ src/player_linear.py
 src/player.py
 src/player_queue.py
 src/player_radio.py
-src/player_rg.py
 src/player_shuffle.py
 src/player_userplaylist.py
 src/playlists.py
@@ -97,7 +96,6 @@ src/window.py
 [type: gettext/glade]data/AlbumsPopover.ui
 [type: gettext/glade]data/RadioPopover.ui
 [type: gettext/glade]data/RadiosView.ui
-[type: gettext/glade]data/RadioWidget.ui
 [type: gettext/glade]data/SearchPopover.ui
 [type: gettext/glade]data/SearchRow.ui
 [type: gettext/glade]data/SelectionList.ui
