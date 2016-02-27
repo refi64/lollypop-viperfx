@@ -220,9 +220,14 @@ class Player(BinPlayer, QueuePlayer, UserPlaylistPlayer, RadioPlayer,
             Set albums
             @param albums as [int]
         """
-        self.shuffle_albums(False)
+        # if current album removed, skip it
+        if self.current_track.album.id not in albums:
+            if self.current_track.album.id in self._albums_backup:
+                self._albums_backup.remove(self.current_track.album.id)
+            self.context.next = NextContext.START_NEW_ALBUM
+            self.set_next()
+            self.next()
         self._albums = albums
-        self.shuffle_albums(True)
         self.set_next()
 
     def get_albums(self):
