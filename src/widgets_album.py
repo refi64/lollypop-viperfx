@@ -481,7 +481,7 @@ class AlbumDetailedWidget(Gtk.Bin, AlbumWidget):
         Gtk.Bin.__init__(self)
         AlbumWidget.__init__(self, album_id, genre_ids)
         self._artist_ids = artist_ids
-        self._update_albums = update_albums
+        self._limit_to_current = not update_albums
         self.set_property('height-request', ArtSize.BIG)
         builder = Gtk.Builder()
         builder.add_from_resource('/org/gnome/Lollypop/%s.ui' %
@@ -709,7 +709,6 @@ class AlbumDetailedWidget(Gtk.Bin, AlbumWidget):
             Lp().player.load(Track(track_id))
         else:
             if not Lp().player.is_party() and\
-               not self._update_albums and\
                not self._limit_to_current and\
                not Lp().player.is_album_present(self._album):
                 Lp().player.set_albums(track_id,
