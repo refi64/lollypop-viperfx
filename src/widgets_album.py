@@ -15,7 +15,7 @@ from gi.repository import Gtk, GLib, GObject, Gdk, Pango
 from cgi import escape
 from gettext import gettext as _
 
-from lollypop.define import Lp, Type, ArtSize, NextContext, WindowSize
+from lollypop.define import Lp, Type, ArtSize, NextContext, WindowSize, Shuffle
 from lollypop.widgets_track import TracksWidget
 from lollypop.objects import Track
 from lollypop.widgets_rating import RatingWidget
@@ -39,6 +39,7 @@ class AlbumWidget:
         self._cover = None
         self._popover = False
         self._limit_to_current = False
+        self._play_all_button = None
         self._squared_class = "squared-icon"
         self._rounded_class = "rounded-icon"
 
@@ -156,6 +157,10 @@ class AlbumWidget:
             self._play_button.set_opacity(0)
             self._play_button.get_style_context().remove_class(
                                                            self._rounded_class)
+            if self._play_all_button is not None:
+                self._play_all_button.set_opacity(0)
+                self._play_all_button.get_style_context().remove_class(
+                                                           self._rounded_class)
             self._artwork_button.set_opacity(0)
             self._artwork_button.get_style_context().remove_class(
                                                            self._squared_class)
@@ -175,6 +180,12 @@ class AlbumWidget:
             self._play_button.get_style_context().add_class(
                                                            self._rounded_class)
             self._play_button.show()
+            if self._play_all_button is not None:
+                self._play_all_button.set_opacity(1)
+                self._play_all_button.get_style_context().add_class(
+                                                           self._squared_class)
+                self._set_play_all_image()
+                self._play_all_button.show()
             self._artwork_button.set_opacity(1)
             self._artwork_button.get_style_context().add_class(
                                                            self._squared_class)
@@ -201,6 +212,11 @@ class AlbumWidget:
             self._play_button.hide()
             self._play_button.get_style_context().remove_class(
                                                            self._rounded_class)
+            if self._play_all_button is not None:
+                self._play_all_button.set_opacity(0)
+                self._play_all_button.hide()
+                self._play_all_button.get_style_context().remove_class(
+                                                           self._squared_class)
             self._artwork_button.hide()
             self._artwork_button.set_opacity(0)
             self._artwork_button.get_style_context().remove_class(
@@ -317,6 +333,16 @@ class AlbumSimpleWidget(Gtk.Frame, AlbumWidget):
                                            'media-playback-start-symbolic',
                                            Gtk.IconSize.BUTTON)
         self._play_button.set_opacity(0)
+        # Play all button
+        play_all_event = Gtk.EventBox()
+        play_all_event.set_property('has-tooltip', True)
+        play_all_event.set_tooltip_text(_("Play albums"))
+        play_all_event.set_property('halign', Gtk.Align.END)
+        play_all_event.connect('realize', self._on_eventbox_realize)
+        play_all_event.connect('button-press-event',
+                               self._on_play_all_press_event)
+        self._play_all_button = Gtk.Image.new()
+        self._play_all_button.set_opacity(0)
         # Artwork button
         artwork_event = Gtk.EventBox()
         artwork_event.set_property('has-tooltip', True)
@@ -337,9 +363,7 @@ class AlbumSimpleWidget(Gtk.Frame, AlbumWidget):
         action_event.connect('realize', self._on_eventbox_realize)
         action_event.connect('button-press-event',
                              self._on_action_press_event)
-        self._action_button = Gtk.Image.new_from_icon_name(
-                                           'list-add-symbolic',
-                                           Gtk.IconSize.BUTTON)
+        self._action_button = Gtk.Image.new()
         self._action_button.set_opacity(0)
         icon_grid = Gtk.Grid()
         icon_grid.set_column_spacing(5)
@@ -348,6 +372,7 @@ class AlbumSimpleWidget(Gtk.Frame, AlbumWidget):
         icon_grid.set_property('margin-end', 2)
         icon_grid.set_property('valign', Gtk.Align.END)
         icon_grid.add(play_event)
+        icon_grid.add(play_all_event)
         icon_grid.add(action_event)
         icon_grid.add(artwork_event)
         white.add(self._cover)
@@ -361,6 +386,7 @@ class AlbumSimpleWidget(Gtk.Frame, AlbumWidget):
         self._widget.set_property('valign', Gtk.Align.CENTER)
         self.show_all()
         play_event.add(self._play_button)
+        play_all_event.add(self._play_all_button)
         artwork_event.add(self._artwork_button)
         action_event.add(self._action_button)
         self._widget.connect('enter-notify-event', self._on_enter_notify)
@@ -387,7 +413,20 @@ class AlbumSimpleWidget(Gtk.Frame, AlbumWidget):
 #######################
 # PRIVATE             #
 #######################
-    def _on_play_press_event(self, widget, event):
+    def _set_play_all_image(self):
+        """
+            Set play all image based on current shuffle status
+        """
+        if Lp().settings.get_enum('shuffle') == Shuffle.NONE:
+            self._play_all_button.set_from_icon_name(
+                                        'media-playlist-consecutive-symbolic',
+                                        Gtk.IconSize.BUTTON)
+        else:
+            self._play_all_button.set_from_icon_name(
+                                        'media-playlist-shuffle-symbolic',
+                                        Gtk.IconSize.BUTTON)
+
+    def _on_play_all_press_event(self, widget, event):
         """
             Play album with context
             @param: widget as Gtk.EventBox

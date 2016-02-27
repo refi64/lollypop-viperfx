@@ -115,7 +115,7 @@ class SettingsDialog:
         switch_repeat.set_state(not Lp().settings.get_value('repeat'))
 
         scale_coversize = builder.get_object('scale_coversize')
-        scale_coversize.set_range(100, 300)
+        scale_coversize.set_range(150, 400)
         scale_coversize.set_value(
                             Lp().settings.get_value('cover-size').get_int32())
         self._settings_dialog.connect('destroy', self._edit_settings_close)
