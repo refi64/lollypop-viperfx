@@ -229,6 +229,7 @@ class Player(BinPlayer, QueuePlayer, UserPlaylistPlayer, RadioPlayer,
             self.next()
         self._albums = albums
         self.set_next()
+        self.set_prev()
 
     def get_albums(self):
         """
