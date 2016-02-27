@@ -171,10 +171,7 @@ class ProgressController:
                 self._timeout_id = GLib.timeout_add(1000,
                                                     self._update_position)
         else:
-            if player.get_status() == Gst.State.PAUSED:
-                self._progress.set_opacity(0.5)
-            else:
-                self._progress.set_sensitive(False)
+            self._progress.set_opacity(0.5)
             self._update_position()
             if self._timeout_id is not None:
                 GLib.source_remove(self._timeout_id)
