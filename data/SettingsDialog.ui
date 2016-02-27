@@ -221,6 +221,7 @@
             </child>
             <child>
               <object class="GtkScale" id="scale_coversize">
+                <property name="width_request">200</property>
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="halign">end</property>
@@ -348,6 +349,7 @@
               <object class="GtkSwitch" id="switch_mix">
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
+                <property name="tooltip_text" translatable="yes">Long press to show options</property>
                 <property name="halign">end</property>
                 <signal name="button-press-event" handler="_on_mix_button_press" swapped="no"/>
                 <signal name="button-release-event" handler="_on_mix_button_release" swapped="no"/>
@@ -654,12 +656,6 @@
     <widgets>
       <widget name="grid3"/>
       <widget name="grid1"/>
-    </widgets>
-  </object>
-  <object class="GtkSizeGroup" id="sizegroup2">
-    <widgets>
-      <widget name="switch_compilations"/>
-      <widget name="scale_coversize"/>
     </widgets>
   </object>
 </interface>
