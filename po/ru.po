@@ -11,8 +11,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lollypop\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-02-20 19:16+0100\n"
-"PO-Revision-Date: 2016-02-24 15:26+0000\n"
+"POT-Creation-Date: 2016-02-27 11:13+0100\n"
+"PO-Revision-Date: 2016-02-27 16:57+0000\n"
 "Last-Translator: Maxim Orlov <murmansksity@gmail.com>\n"
 "Language-Team: Russian (http://www.transifex.com/gnumdk/lollypop/language/ru/)\n"
 "MIME-Version: 1.0\n"
@@ -151,34 +151,30 @@ msgid "Restore previous state"
 msgstr "Восстанавливать предыдущее состояние"
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:33
-msgid "Auto play albums on click"
-msgstr "Автопроигрывание альбомов при нажатии"
-
-#: ../data/org.gnome.Lollypop.gschema.xml.h:34
 msgid "Disable MPRIS"
 msgstr "Отключить MPRIS"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:35
+#: ../data/org.gnome.Lollypop.gschema.xml.h:34
 msgid "Disable notifications"
 msgstr "Отключить уведомления"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:36
+#: ../data/org.gnome.Lollypop.gschema.xml.h:35
 msgid "Show track number from tags"
 msgstr "Показывать номер трека из тегов"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:37 ../data/SettingsDialog.ui.h:14
+#: ../data/org.gnome.Lollypop.gschema.xml.h:36 ../data/SettingsDialog.ui.h:13
 msgid "Mix songs"
 msgstr "Плавный переход (кроссфейд)"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:38
+#: ../data/org.gnome.Lollypop.gschema.xml.h:37
 msgid "Mix songs only in party mode"
 msgstr "Сводить песни только в режиме вечеринки"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:39
+#: ../data/org.gnome.Lollypop.gschema.xml.h:38
 msgid "Mix duration"
 msgstr "Длительность сведения"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:40
+#: ../data/org.gnome.Lollypop.gschema.xml.h:39
 msgid "Shuffle mode"
 msgstr "Режим перемешивания"
 
@@ -289,7 +285,7 @@ msgid ""
 "    - Artist informations disabled"
 msgstr "    - Скробблинг отключен\n    - Автоматическая загрузка обложек отключена\n    - Информация об исполнителе отключена"
 
-#: ../src/application.py:367
+#: ../src/application.py:373
 #, python-format
 msgid "%d artist"
 msgid_plural "%d artists"
@@ -298,7 +294,7 @@ msgstr[1] "%d исполнителя"
 msgstr[2] "%d исполнителей"
 msgstr[3] "%d исполнителей"
 
-#: ../src/application.py:369
+#: ../src/application.py:375
 #, python-format
 msgid "%d album"
 msgid_plural "%d albums"
@@ -307,7 +303,7 @@ msgstr[1] "%d альбома"
 msgstr[2] "%d альбомов"
 msgstr[3] "%d альбомов"
 
-#: ../src/application.py:371
+#: ../src/application.py:377
 #, python-format
 msgid "%d track"
 msgid_plural "%d tracks"
@@ -316,7 +312,7 @@ msgstr[1] "%d композиции"
 msgstr[2] "%d композиций"
 msgstr[3] "%d композиций"
 
-#: ../src/application.py:386
+#: ../src/application.py:392
 msgid "Lollypop: You need to install yelp."
 msgstr "Lollypop: Вам необходимо установить yelp."
 
@@ -324,56 +320,56 @@ msgstr "Lollypop: Вам необходимо установить yelp."
 msgid "Your music is updating"
 msgstr "Ваши композиции обновляются"
 
-#: ../src/container.py:444
+#: ../src/container.py:452
 msgid "Popular albums"
 msgstr "Популярные альбомы"
 
-#: ../src/container.py:445
+#: ../src/container.py:453
 msgid "Recently added albums"
 msgstr "Недавно добавленные альбомы"
 
-#: ../src/container.py:446
+#: ../src/container.py:454
 msgid "Random albums"
 msgstr "Случайные альбомы"
 
-#: ../src/container.py:447 ../src/pop_menu.py:391 ../src/pop_menu.py:468
+#: ../src/container.py:455 ../src/pop_menu.py:391 ../src/pop_menu.py:468
 #: ../src/pop_menu.py:487
 msgid "Playlists"
 msgstr "Плейлисты"
 
-#: ../src/container.py:448
+#: ../src/container.py:456
 msgid "Radios"
 msgstr "Радиостанции"
 
-#: ../src/container.py:450
+#: ../src/container.py:458
 msgid "All artists"
 msgstr "Все исполнители"
 
-#: ../src/container.py:452 ../data/DeviceManagerWidget.ui.h:1
+#: ../src/container.py:460 ../data/DeviceManagerWidget.ui.h:1
 msgid "All albums"
 msgstr "Все альбомы"
 
-#: ../src/container.py:499
+#: ../src/container.py:507
 msgid "Compilations"
 msgstr "Подборки"
 
-#: ../src/container.py:522
+#: ../src/container.py:530
 msgid "Popular tracks"
 msgstr "Популярные композиции"
 
-#: ../src/container.py:523
+#: ../src/container.py:531
 msgid "Recently played"
 msgstr "Недавно прослушанные"
 
-#: ../src/container.py:524
+#: ../src/container.py:532
 msgid "Never played"
 msgstr "Ни разу не проигрывались"
 
-#: ../src/container.py:525
+#: ../src/container.py:533
 msgid "Random tracks"
 msgstr "Случайные композиции"
 
-#: ../src/container.py:526 ../src/playlists.py:54
+#: ../src/container.py:534 ../src/playlists.py:54
 msgid "Network control"
 msgstr "Сетевое управление"
 
@@ -382,6 +378,7 @@ msgid "Pause"
 msgstr "Пауза"
 
 #: ../src/controllers.py:84 ../src/controllers.py:112 ../src/pop_tunein.py:154
+#: ../src/widgets_album.py:326 ../src/widgets_radio.py:72
 #: ../data/AlbumContextWidget.ui.h:1 ../data/AlbumDetailedWidget.ui.h:1
 #: ../data/ToolbarPlayback.ui.h:2
 msgid "Play"
@@ -389,8 +386,8 @@ msgstr "Воспроизвести"
 
 #: ../src/database_albums.py:270 ../src/database_artists.py:104
 #: ../src/database_genres.py:69 ../src/database_tracks.py:229
-#: ../src/tagreader.py:87 ../src/tagreader.py:118 ../src/tagreader.py:143
-#: ../src/tagreader.py:158
+#: ../src/selectionlist.py:277 ../src/tagreader.py:87 ../src/tagreader.py:118
+#: ../src/tagreader.py:143 ../src/tagreader.py:158
 msgid "Unknown"
 msgstr "Неизвестный"
 
@@ -423,7 +420,7 @@ msgstr "от %s"
 msgid "by %s, from %s"
 msgstr "от %s, из %s"
 
-#: ../src/player_bin.py:453
+#: ../src/player_bin.py:443
 #, python-format
 msgid "File doesn't exist: %s"
 msgstr "Файл не существует: %s"
@@ -468,7 +465,8 @@ msgstr "Остановить после этого альбома"
 msgid "Do not repeat"
 msgstr "Не повторять"
 
-#: ../src/pop_menu.py:198 ../data/SearchRow.ui.h:3
+#: ../src/pop_menu.py:198 ../src/widgets_indicator.py:109
+#: ../data/SearchRow.ui.h:3
 msgid "Add to queue"
 msgstr "Добавить в очередь"
 
@@ -480,7 +478,7 @@ msgstr "Следующие композиции"
 msgid "Next track"
 msgstr "Следующая композиция"
 
-#: ../src/pop_menu.py:209
+#: ../src/pop_menu.py:209 ../src/widgets_indicator.py:105
 msgid "Remove from queue"
 msgstr "Удалить из очереди "
 
@@ -526,17 +524,21 @@ msgstr "Не удается подключиться к TuneIn…"
 msgid "Browse themes and add a new radio"
 msgstr "Посмотрите темы и добавьте новые радиостанции"
 
-#: ../src/settings.py:160
+#: ../src/settings.py:87 ../src/settings.py:90 ../data/SettingsDialog.ui.h:3
+msgid "Preferences"
+msgstr "Настройки"
+
+#: ../src/settings.py:162
 msgid "Populars"
 msgstr "Популярное"
 
-#: ../src/settings.py:161
+#: ../src/settings.py:163
 msgid "Recently added"
 msgstr "Недавно добавленные"
 
 #. Handle language ordering
 #. Translators: Add here words that shoud be ignored for artist sort order
-#: ../src/utils.py:111
+#: ../src/utils.py:121
 msgid "The the"
 msgstr "The the"
 
@@ -549,22 +551,36 @@ msgstr "Синхронизировать %s"
 msgid "Cancel synchronization"
 msgstr "Отменить синхронизацию"
 
-#: ../src/widgets_album.py:361
+#: ../src/widgets_album.py:339
+msgid "Play albums"
+msgstr "Проиграть альбомы"
+
+#: ../src/widgets_album.py:349 ../src/widgets_radio.py:86
+#: ../data/AlbumContextWidget.ui.h:2 ../data/AlbumDetailedWidget.ui.h:2
+msgid "Change artwork"
+msgstr "Изменить"
+
+#: ../src/widgets_album.py:361 ../data/AlbumContextWidget.ui.h:3
+#: ../data/AlbumDetailedWidget.ui.h:3
+msgid "Append"
+msgstr "Добавить"
+
+#: ../src/widgets_album.py:511
 #, python-format
 msgid "%s h  %s m"
 msgstr "%s ч %s мин"
 
-#: ../src/widgets_album.py:363
+#: ../src/widgets_album.py:513
 #, python-format
 msgid "%s h"
 msgstr "%s ч"
 
-#: ../src/widgets_album.py:365
+#: ../src/widgets_album.py:515
 #, python-format
 msgid "%s m"
 msgstr "%s мин"
 
-#: ../src/widgets_album.py:379
+#: ../src/widgets_album.py:529
 #, python-format
 msgid "Disc %s"
 msgstr "Диск %s"
@@ -573,25 +589,25 @@ msgstr "Диск %s"
 msgid "You need to install gstreamer-plugins-ugly"
 msgstr "Вам нужно установить gstreamer-plugins-ugly"
 
-#: ../src/widgets_device.py:219
+#: ../src/widgets_device.py:225
 msgid "Unknown error while syncing, try to reboot your device"
 msgstr "Неизвестная ошибка при синхронизации, попробуйте перезагрузить ваше устройство"
 
-#: ../src/widgets_device.py:227
+#: ../src/widgets_device.py:233
 msgid "No free space available on device"
 msgstr "На устройстве не осталось свободного места"
 
-#: ../src/widgets_playlist.py:280 ../src/widgets_playlist.py:283
+#: ../src/widgets_playlist.py:292 ../src/widgets_playlist.py:295
 msgid "New playlist "
 msgstr "Новый плейлист"
 
 #. Need a copy, segfault on EOS 3.1
-#: ../src/widgets_playlist.py:338 ../src/widgets_playlist.py:574
+#: ../src/widgets_playlist.py:350 ../src/widgets_playlist.py:586
 #, python-format
 msgid "Remove \"%s\"?"
 msgstr "Удалить \"%s\"?"
 
-#: ../src/widgets_playlist.py:619
+#: ../src/widgets_playlist.py:631
 msgid "Remove these tracks?"
 msgstr "Удалить эти композиции?"
 
@@ -614,14 +630,6 @@ msgstr "Посетить сайт Lollypop"
 #: ../data/AboutDialog.ui.h:4
 msgid "Cédric Bellegarde <cedric.bellegarde@adishatz.org>"
 msgstr "Derpy Crabs <derpycrabs@gmail.com>\nMaxim Orlov <murmansksity@gmail.com>"
-
-#: ../data/AlbumContextWidget.ui.h:2 ../data/AlbumDetailedWidget.ui.h:2
-msgid "Change artwork"
-msgstr "Изменить"
-
-#: ../data/AlbumContextWidget.ui.h:3 ../data/AlbumDetailedWidget.ui.h:3
-msgid "Append"
-msgstr "Добавить"
 
 #: ../data/Appmenu.ui.h:1
 msgid "_Update music"
@@ -756,14 +764,10 @@ msgid "Add to playlist"
 msgstr "Добавить в плейлист"
 
 #: ../data/SettingsDialog.ui.h:1
-msgid "Preferences"
-msgstr "Настройки"
-
-#: ../data/SettingsDialog.ui.h:2
 msgid "Only in party mode"
 msgstr "Только в режиме вечеринки"
 
-#: ../data/SettingsDialog.ui.h:3
+#: ../data/SettingsDialog.ui.h:2
 msgid "Mix duration in seconds"
 msgstr "Длительность сведения в секундах"
 
@@ -787,9 +791,9 @@ msgstr "Внешний вид"
 msgid "Restore state on startup"
 msgstr "Восстанавливать состояние при запуске"
 
-#: ../data/SettingsDialog.ui.h:13
-msgid "Play albums on click"
-msgstr "Проигрывать альбом по клику"
+#: ../data/SettingsDialog.ui.h:14
+msgid "Long press to show options"
+msgstr "Длительное нажатие для выбора параметров"
 
 #: ../data/SettingsDialog.ui.h:15
 msgid "Do not repeat by default"

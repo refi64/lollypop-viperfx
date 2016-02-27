@@ -10,8 +10,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lollypop\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-02-18 19:05+0100\n"
-"PO-Revision-Date: 2016-02-18 18:04+0000\n"
+"POT-Creation-Date: 2016-02-27 11:13+0100\n"
+"PO-Revision-Date: 2016-02-27 10:14+0000\n"
 "Last-Translator: Cédric Bellegarde <web@adishatz.org>\n"
 "Language-Team: Hebrew (http://www.transifex.com/gnumdk/lollypop/language/he/)\n"
 "MIME-Version: 1.0\n"
@@ -150,34 +150,30 @@ msgid "Restore previous state"
 msgstr "Restore previous state"
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:33
-msgid "Auto play albums on click"
-msgstr "Auto play albums on click"
-
-#: ../data/org.gnome.Lollypop.gschema.xml.h:34
 msgid "Disable MPRIS"
 msgstr "Disable MPRIS"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:35
+#: ../data/org.gnome.Lollypop.gschema.xml.h:34
 msgid "Disable notifications"
 msgstr "Disable notifications"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:36
+#: ../data/org.gnome.Lollypop.gschema.xml.h:35
 msgid "Show track number from tags"
 msgstr "Show track number from tags"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:37 ../data/SettingsDialog.ui.h:14
+#: ../data/org.gnome.Lollypop.gschema.xml.h:36 ../data/SettingsDialog.ui.h:13
 msgid "Mix songs"
 msgstr "Mix songs"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:38
+#: ../data/org.gnome.Lollypop.gschema.xml.h:37
 msgid "Mix songs only in party mode"
 msgstr "Mix songs only in party mode"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:39
+#: ../data/org.gnome.Lollypop.gschema.xml.h:38
 msgid "Mix duration"
 msgstr "Mix duration"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:40
+#: ../data/org.gnome.Lollypop.gschema.xml.h:39
 msgid "Shuffle mode"
 msgstr "Shuffle mode"
 
@@ -231,8 +227,8 @@ msgstr "דפדוף סוגה/אמן/כיסוי"
 msgid "Search"
 msgstr "חיפוש"
 
-#: ../data/lollypop.appdata.xml.in.h:9 ../src/pop_menu.py:470
-#: ../src/pop_menu.py:489 ../data/ToolbarEnd.ui.h:8
+#: ../data/lollypop.appdata.xml.in.h:9 ../src/pop_menu.py:466
+#: ../src/pop_menu.py:485 ../data/ToolbarEnd.ui.h:8
 msgid "Queue"
 msgstr "תור"
 
@@ -288,28 +284,28 @@ msgid ""
 "    - Artist informations disabled"
 msgstr "- Scrobbler disabled\n- Auto cover download disabled\n- Artist informations disabled"
 
-#: ../src/application.py:367
+#: ../src/application.py:373
 #, python-format
 msgid "%d artist"
 msgid_plural "%d artists"
 msgstr[0] ""
 msgstr[1] ""
 
-#: ../src/application.py:369
+#: ../src/application.py:375
 #, python-format
 msgid "%d album"
 msgid_plural "%d albums"
 msgstr[0] ""
 msgstr[1] ""
 
-#: ../src/application.py:371
+#: ../src/application.py:377
 #, python-format
 msgid "%d track"
 msgid_plural "%d tracks"
 msgstr[0] ""
 msgstr[1] ""
 
-#: ../src/application.py:386
+#: ../src/application.py:392
 msgid "Lollypop: You need to install yelp."
 msgstr "‏ Lollypop: יש להתקין את yelp."
 
@@ -317,56 +313,56 @@ msgstr "‏ Lollypop: יש להתקין את yelp."
 msgid "Your music is updating"
 msgstr "המוזיקה שלך מתעדכנת"
 
-#: ../src/container.py:444
+#: ../src/container.py:452
 msgid "Popular albums"
 msgstr "אלבומים אהובים"
 
-#: ../src/container.py:445
+#: ../src/container.py:453
 msgid "Recently added albums"
 msgstr "אלבומים שנוספו לאחרונה"
 
-#: ../src/container.py:446
+#: ../src/container.py:454
 msgid "Random albums"
 msgstr "אלבומים אקראיים"
 
-#: ../src/container.py:447 ../src/pop_menu.py:395 ../src/pop_menu.py:472
-#: ../src/pop_menu.py:491
+#: ../src/container.py:455 ../src/pop_menu.py:391 ../src/pop_menu.py:468
+#: ../src/pop_menu.py:487
 msgid "Playlists"
 msgstr "רשימות השמעה"
 
-#: ../src/container.py:448
+#: ../src/container.py:456
 msgid "Radios"
 msgstr "תחנות רדיו"
 
-#: ../src/container.py:450
+#: ../src/container.py:458
 msgid "All artists"
 msgstr "כל האמנים"
 
-#: ../src/container.py:452 ../data/DeviceManagerWidget.ui.h:1
+#: ../src/container.py:460 ../data/DeviceManagerWidget.ui.h:1
 msgid "All albums"
 msgstr "כל האלבומים"
 
-#: ../src/container.py:499
+#: ../src/container.py:507
 msgid "Compilations"
 msgstr "אוספים"
 
-#: ../src/container.py:522
+#: ../src/container.py:530
 msgid "Popular tracks"
 msgstr "רצועות אהובות"
 
-#: ../src/container.py:523
+#: ../src/container.py:531
 msgid "Recently played"
 msgstr "נוגן לאחרונה"
 
-#: ../src/container.py:524
+#: ../src/container.py:532
 msgid "Never played"
 msgstr "לעולם לא נוגן"
 
-#: ../src/container.py:525
+#: ../src/container.py:533
 msgid "Random tracks"
 msgstr "רצועות אקראיות"
 
-#: ../src/container.py:526 ../src/playlists.py:54
+#: ../src/container.py:534 ../src/playlists.py:54
 msgid "Network control"
 msgstr "שליטת רשת"
 
@@ -375,14 +371,16 @@ msgid "Pause"
 msgstr "השהיה"
 
 #: ../src/controllers.py:84 ../src/controllers.py:112 ../src/pop_tunein.py:154
+#: ../src/widgets_album.py:326 ../src/widgets_radio.py:72
+#: ../data/AlbumContextWidget.ui.h:1 ../data/AlbumDetailedWidget.ui.h:1
 #: ../data/ToolbarPlayback.ui.h:2
 msgid "Play"
 msgstr "ניגון"
 
 #: ../src/database_albums.py:270 ../src/database_artists.py:104
 #: ../src/database_genres.py:69 ../src/database_tracks.py:229
-#: ../src/tagreader.py:87 ../src/tagreader.py:118 ../src/tagreader.py:143
-#: ../src/tagreader.py:158
+#: ../src/selectionlist.py:277 ../src/tagreader.py:87 ../src/tagreader.py:118
+#: ../src/tagreader.py:143 ../src/tagreader.py:158
 msgid "Unknown"
 msgstr "לא ידוע"
 
@@ -415,7 +413,7 @@ msgstr "מאת %s"
 msgid "by %s, from %s"
 msgstr "מאת %s, מתוך %s"
 
-#: ../src/player_bin.py:459
+#: ../src/player_bin.py:443
 #, python-format
 msgid "File doesn't exist: %s"
 msgstr "קובץ אינו קיים: %s"
@@ -444,69 +442,62 @@ msgstr "מידע מתקדם אודות אמן מושבת"
 msgid "WebKit support disabled"
 msgstr "תמיכה ב־WebKit מושבתת"
 
-#: ../src/pop_menu.py:70
+#: ../src/pop_menu.py:73
 msgid "Continue playback"
 msgstr "להמשיך השמעה"
 
-#: ../src/pop_menu.py:77
-msgid "Stop after queued tracks"
-msgstr ""
-
-#: ../src/pop_menu.py:84
-msgid "Stop after this playlist"
-msgstr ""
-
-#: ../src/pop_menu.py:91
+#: ../src/pop_menu.py:83
 msgid "Stop after this track"
 msgstr "עצירה לאחר רצועה זו"
 
-#: ../src/pop_menu.py:97
+#: ../src/pop_menu.py:91
 msgid "Stop after this album"
 msgstr "עצירה לאחר אלבום זה"
 
-#: ../src/pop_menu.py:103
-msgid "Stop after this artist"
-msgstr "עצירה לאחר אמן זה"
+#: ../src/pop_menu.py:99
+msgid "Do not repeat"
+msgstr ""
 
-#: ../src/pop_menu.py:202 ../data/SearchRow.ui.h:3
+#: ../src/pop_menu.py:198 ../src/widgets_indicator.py:109
+#: ../data/SearchRow.ui.h:3
 msgid "Add to queue"
 msgstr "הוספה לתור"
 
-#: ../src/pop_menu.py:207
+#: ../src/pop_menu.py:203
 msgid "Next tracks"
 msgstr "רצועות הבאות"
 
-#: ../src/pop_menu.py:209 ../data/NextPopover.ui.h:1
+#: ../src/pop_menu.py:205 ../data/NextPopover.ui.h:1
 msgid "Next track"
 msgstr "רצועה הבאה"
 
-#: ../src/pop_menu.py:213
+#: ../src/pop_menu.py:209 ../src/widgets_indicator.py:105
 msgid "Remove from queue"
 msgstr "הסרה מהתור"
 
-#: ../src/pop_menu.py:281
+#: ../src/pop_menu.py:277
 msgid "Add to others"
 msgstr "הוספה לאחרים"
 
-#: ../src/pop_menu.py:298
+#: ../src/pop_menu.py:294
 #, python-format
 msgid "Remove from \"%s\""
 msgstr "הסרה מתוך „%s"
 
-#: ../src/pop_menu.py:304
+#: ../src/pop_menu.py:300
 #, python-format
 msgid "Add to \"%s\""
 msgstr "הוספה אל „%s”"
 
-#: ../src/pop_menu.py:393
+#: ../src/pop_menu.py:389
 msgid "Playback"
 msgstr "בִצוע מוקלט"
 
-#: ../src/pop_menu.py:430
+#: ../src/pop_menu.py:426
 msgid "Modify information"
 msgstr ""
 
-#: ../src/pop_menu.py:474 ../data/PlaylistView.ui.h:1
+#: ../src/pop_menu.py:470 ../data/PlaylistView.ui.h:1
 msgid "Edit"
 msgstr "עריכה"
 
@@ -526,17 +517,21 @@ msgstr "לא ניתן להתחבר ל־TuneIn…"
 msgid "Browse themes and add a new radio"
 msgstr "חיפוש נושאים והוספת תחנות רדיו חדשות"
 
-#: ../src/settings.py:160
+#: ../src/settings.py:87 ../src/settings.py:90 ../data/SettingsDialog.ui.h:3
+msgid "Preferences"
+msgstr "העדפות"
+
+#: ../src/settings.py:162
 msgid "Populars"
 msgstr "חביבים"
 
-#: ../src/settings.py:161
+#: ../src/settings.py:163
 msgid "Recently added"
 msgstr "נוסף לאחרונה"
 
 #. Handle language ordering
 #. Translators: Add here words that shoud be ignored for artist sort order
-#: ../src/utils.py:111
+#: ../src/utils.py:121
 msgid "The the"
 msgstr " ו"
 
@@ -549,22 +544,36 @@ msgstr "מתאם %s"
 msgid "Cancel synchronization"
 msgstr "ביטול התיאום"
 
-#: ../src/widgets_album.py:314
+#: ../src/widgets_album.py:339
+msgid "Play albums"
+msgstr ""
+
+#: ../src/widgets_album.py:349 ../src/widgets_radio.py:86
+#: ../data/AlbumContextWidget.ui.h:2 ../data/AlbumDetailedWidget.ui.h:2
+msgid "Change artwork"
+msgstr ""
+
+#: ../src/widgets_album.py:361 ../data/AlbumContextWidget.ui.h:3
+#: ../data/AlbumDetailedWidget.ui.h:3
+msgid "Append"
+msgstr ""
+
+#: ../src/widgets_album.py:511
 #, python-format
 msgid "%s h  %s m"
 msgstr "%s ש׳ ו־%s דק׳"
 
-#: ../src/widgets_album.py:316
+#: ../src/widgets_album.py:513
 #, python-format
 msgid "%s h"
 msgstr "%s שעות"
 
-#: ../src/widgets_album.py:318
+#: ../src/widgets_album.py:515
 #, python-format
 msgid "%s m"
 msgstr "%s דקות"
 
-#: ../src/widgets_album.py:332
+#: ../src/widgets_album.py:529
 #, python-format
 msgid "Disc %s"
 msgstr "דיסק %s"
@@ -573,25 +582,25 @@ msgstr "דיסק %s"
 msgid "You need to install gstreamer-plugins-ugly"
 msgstr "יש להתקין את gstreamer-plugins-ugly"
 
-#: ../src/widgets_device.py:219
+#: ../src/widgets_device.py:225
 msgid "Unknown error while syncing, try to reboot your device"
 msgstr "שגיאה בלתי ידועה אירעה בעת התיאום, יש לנסות להפעיל מחדש את ההתקן שלך"
 
-#: ../src/widgets_device.py:227
+#: ../src/widgets_device.py:233
 msgid "No free space available on device"
 msgstr "אין שטח פנוי זמן על ההתקן"
 
-#: ../src/widgets_playlist.py:280 ../src/widgets_playlist.py:283
+#: ../src/widgets_playlist.py:292 ../src/widgets_playlist.py:295
 msgid "New playlist "
 msgstr "רשימת השמעה חדשה"
 
 #. Need a copy, segfault on EOS 3.1
-#: ../src/widgets_playlist.py:338 ../src/widgets_playlist.py:574
+#: ../src/widgets_playlist.py:350 ../src/widgets_playlist.py:586
 #, python-format
 msgid "Remove \"%s\"?"
 msgstr "להסיר את „%s”?"
 
-#: ../src/widgets_playlist.py:619
+#: ../src/widgets_playlist.py:631
 msgid "Remove these tracks?"
 msgstr "להסיר רצועות אלו?"
 
@@ -614,10 +623,6 @@ msgstr "לבקר באתר של Lollypop"
 #: ../data/AboutDialog.ui.h:4
 msgid "Cédric Bellegarde <cedric.bellegarde@adishatz.org>"
 msgstr "יוסף אור בוצ׳קו <yoseforb@gnome.org>"
-
-#: ../data/AlbumContextWidget.ui.h:1 ../data/AlbumDetailedWidget.ui.h:1
-msgid "Play this album"
-msgstr "לנגן אלבום זה"
 
 #: ../data/Appmenu.ui.h:1
 msgid "_Update music"
@@ -695,6 +700,14 @@ msgstr "תור:"
 msgid "Clear queue"
 msgstr "ניקוי התור"
 
+#: ../data/AlbumsPopover.ui.h:1
+msgid "Albums playing:"
+msgstr ""
+
+#: ../data/AlbumsPopover.ui.h:2
+msgid "Remove all albums"
+msgstr ""
+
 #: ../data/RadioPopover.ui.h:1
 msgid "Select a logo  for this radio"
 msgstr "בחירת סמליל עבור תחנת רדיו זו"
@@ -744,14 +757,10 @@ msgid "Add to playlist"
 msgstr "הוספה לרשימת השמעה"
 
 #: ../data/SettingsDialog.ui.h:1
-msgid "Preferences"
-msgstr "העדפות"
-
-#: ../data/SettingsDialog.ui.h:2
 msgid "Only in party mode"
 msgstr "רק במצב מסיבה"
 
-#: ../data/SettingsDialog.ui.h:3
+#: ../data/SettingsDialog.ui.h:2
 msgid "Mix duration in seconds"
 msgstr "משך ערבוב בשניות"
 
@@ -775,9 +784,9 @@ msgstr "מראה"
 msgid "Restore state on startup"
 msgstr "שחזור מצב עם הפעלה"
 
-#: ../data/SettingsDialog.ui.h:13
-msgid "Play albums on click"
-msgstr "ניגון אלבום בלחיצה"
+#: ../data/SettingsDialog.ui.h:14
+msgid "Long press to show options"
+msgstr ""
 
 #: ../data/SettingsDialog.ui.h:15
 msgid "Do not repeat by default"
