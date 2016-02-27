@@ -432,6 +432,7 @@ class AlbumSimpleWidget(Gtk.Frame, AlbumWidget):
             @param: widget as Gtk.EventBox
             @param: event as Gdk.Event
         """
+        self._show_append(False)
         Lp().player.set_party(False)
         track = Track(self._album.tracks_ids[0])
         Lp().player.load(track)
