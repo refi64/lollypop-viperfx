@@ -38,6 +38,7 @@ class AlbumWidget:
         self._stop = False
         self._cover = None
         self._popover = False
+        self._limit_to_current = False
         self._squared_class = "squared-icon"
         self._rounded_class = "rounded-icon"
 
@@ -215,6 +216,7 @@ class AlbumWidget:
             @param: widget as Gtk.EventBox
             @param: event as Gdk.Event
         """
+        self._limit_to_current = True
         Lp().player.play_album(self._album)
         self._show_append(False)
         return True
@@ -668,7 +670,7 @@ class AlbumDetailedWidget(Gtk.Bin, AlbumWidget):
             Lp().player.clear_albums()
             Lp().player.load(Track(track_id))
         else:
-            if not Lp().player.is_party():
+            if not Lp().player.is_party() and not self._limit_to_current:
                 Lp().player.set_albums(track_id,
                                        self._artist_ids,
                                        self._album.genre_ids)
