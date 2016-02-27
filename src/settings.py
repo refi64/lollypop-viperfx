@@ -82,9 +82,12 @@ class SettingsDialog:
         self._settings_dialog = builder.get_object('settings_dialog')
         self._settings_dialog.set_transient_for(Lp().window)
 
-        if not Lp().settings.get_value('disable-csd'):
-            self._settings_dialog.set_titlebar(
-                builder.get_object('header_bar'))
+        if Lp().settings.get_value('disable-csd'):
+            self.set_title(_("Preferences"))
+        else:
+            headerbar = builder.get_object('header_bar')
+            headerbar.set_title(_("Preferences"))
+            self._settings_dialog.set_titlebar(headerbar)
 
         switch_scan = builder.get_object('switch_scan')
         switch_scan.set_state(Lp().settings.get_value('auto-update'))
