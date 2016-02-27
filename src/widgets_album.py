@@ -702,14 +702,15 @@ class AlbumDetailedWidget(Gtk.Bin, AlbumWidget):
             @param widget as TracksWidget
             @param track id as int
         """
-        if not self._update_albums:
-            Lp().player.load(Track(track_id))
         # Play track with no album, force repeat on track
-        elif self._button_state & Gdk.ModifierType.SHIFT_MASK:
+        if self._button_state & Gdk.ModifierType.SHIFT_MASK:
             Lp().player.clear_albums()
             Lp().player.load(Track(track_id))
         else:
-            if not Lp().player.is_party() and not self._limit_to_current:
+            if not Lp().player.is_party() and\
+               not self._update_albums and\
+               not self._limit_to_current and\
+               not Lp().player.is_album_present(self._album):
                 Lp().player.set_albums(track_id,
                                        self._artist_ids,
                                        self._album.genre_ids)

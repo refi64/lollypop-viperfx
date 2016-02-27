@@ -132,6 +132,7 @@ class Player(BinPlayer, QueuePlayer, UserPlaylistPlayer, RadioPlayer,
         if album.id in self._albums:
             for genre_id in album.genre_ids:
                 if album.id in self.context.genre_ids.keys() and\
+                        self.context.genre_ids[album.id] and\
                         genre_id not in self.context.genre_ids[album.id]:
                     is_present = False
         else:
