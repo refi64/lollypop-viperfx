@@ -159,7 +159,6 @@ class SearchPopover(Gtk.Popover):
         builder.add_from_resource('/org/gnome/Lollypop/SearchPopover.ui')
         builder.connect_signals(self)
 
-        self._play_btn = builder.get_object('play_btn')
         self._new_btn = builder.get_object('new_btn')
 
         self._view = Gtk.ListBox()
@@ -372,12 +371,10 @@ class SearchPopover(Gtk.Popover):
 
         self._current_search = widget.get_text()
         if self._current_search != "":
-            self._play_btn.set_sensitive(True)
             self._new_btn.set_sensitive(True)
             self._timeout = GLib.timeout_add(100,
                                              self._on_search_changed_thread)
         else:
-            self._play_btn.set_sensitive(False)
             self._new_btn.set_sensitive(False)
             self._clear([])
 
@@ -388,15 +385,6 @@ class SearchPopover(Gtk.Popover):
         self._timeout = None
         self._in_thread = True
         t = Thread(target=self._populate)
-        t.daemon = True
-        t.start()
-
-    def _on_play_btn_clicked(self, button):
-        """
-            Start playback base on current search
-            @param button as Gtk.Button
-        """
-        t = Thread(target=self._play_search)
         t.daemon = True
         t.start()
 
