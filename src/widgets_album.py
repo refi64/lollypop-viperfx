@@ -53,6 +53,7 @@ class AlbumWidget:
                             self._album,
                             ArtSize.BIG * self._cover.get_scale_factor())
         self._cover.set_from_surface(surface)
+        self._cover.set_size_request(100, 100)
         if surface.get_height() > surface.get_width():
             self._set_overlay_orientation(Gtk.Orientation.VERTICAL)
         else:
