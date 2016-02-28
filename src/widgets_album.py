@@ -53,6 +53,10 @@ class AlbumWidget:
                             self._album,
                             ArtSize.BIG * self._cover.get_scale_factor())
         self._cover.set_from_surface(surface)
+        if surface.get_height() > surface.get_width():
+            self._set_overlay_orientation(Gtk.Orientation.VERTICAL)
+        else:
+            self._set_overlay_orientation(Gtk.Orientation.HORIZONTAL)
         del surface
 
     def update_cover(self, album_id):
@@ -66,6 +70,10 @@ class AlbumWidget:
                             self._album,
                             ArtSize.BIG * self._cover.get_scale_factor())
         self._cover.set_from_surface(surface)
+        if surface.get_height() > surface.get_width():
+            self._set_overlay_orientation(Gtk.Orientation.VERTICAL)
+        else:
+            self._set_overlay_orientation(Gtk.Orientation.HORIZONTAL)
         del surface
 
     def responsive_design(self):
@@ -127,6 +135,13 @@ class AlbumWidget:
 #######################
 # PRIVATE             #
 #######################
+    def _set_overlay_orientation(self, orientation):
+        """
+            Set overlay orientation
+            @param orientation as Gtk.Orientation
+        """
+        pass
+
     def _set_play_all_image(self):
         """
             Set play all image based on current shuffle status
@@ -333,62 +348,56 @@ class AlbumSimpleWidget(Gtk.Frame, AlbumWidget):
         overlay = Gtk.Overlay.new()
         overlay.get_style_context().add_class('white')
         # Play button
-        play_event = Gtk.EventBox()
-        play_event.set_property('has-tooltip', True)
-        play_event.set_tooltip_text(_("Play"))
-        play_event.set_property('halign', Gtk.Align.START)
-        play_event.set_hexpand(True)
-        play_event.connect('realize', self._on_eventbox_realize)
-        play_event.connect('button-press-event',
-                           self._on_play_press_event)
+        self._play_event = Gtk.EventBox()
+        self._play_event.set_property('has-tooltip', True)
+        self._play_event.set_tooltip_text(_("Play"))
+        self._play_event.connect('realize', self._on_eventbox_realize)
+        self._play_event.connect('button-press-event',
+                                 self._on_play_press_event)
         self._play_button = Gtk.Image.new_from_icon_name(
                                            'media-playback-start-symbolic',
                                            Gtk.IconSize.BUTTON)
         self._play_button.set_opacity(0)
         # Play all button
-        play_all_event = Gtk.EventBox()
-        play_all_event.set_property('has-tooltip', True)
-        play_all_event.set_tooltip_text(_("Play albums"))
-        play_all_event.set_property('halign', Gtk.Align.END)
-        play_all_event.connect('realize', self._on_eventbox_realize)
-        play_all_event.connect('button-press-event',
-                               self._on_play_all_press_event)
+        self._play_all_event = Gtk.EventBox()
+        self._play_all_event.set_property('has-tooltip', True)
+        self._play_all_event.set_tooltip_text(_("Play albums"))
+        self._play_all_event.set_property('halign', Gtk.Align.END)
+        self._play_all_event.connect('realize', self._on_eventbox_realize)
+        self._play_all_event.connect('button-press-event',
+                                     self._on_play_all_press_event)
         self._play_all_button = Gtk.Image.new()
         self._play_all_button.set_opacity(0)
         # Artwork button
-        artwork_event = Gtk.EventBox()
-        artwork_event.set_property('has-tooltip', True)
-        artwork_event.set_tooltip_text(_("Change artwork"))
-        artwork_event.set_property('halign', Gtk.Align.END)
-        artwork_event.connect('realize', self._on_eventbox_realize)
-        artwork_event.connect('button-press-event',
-                              self._on_artwork_press_event)
+        self._artwork_event = Gtk.EventBox()
+        self._artwork_event.set_property('has-tooltip', True)
+        self._artwork_event.set_tooltip_text(_("Change artwork"))
+        self._artwork_event.set_property('halign', Gtk.Align.END)
+        self._artwork_event.connect('realize', self._on_eventbox_realize)
+        self._artwork_event.connect('button-press-event',
+                                    self._on_artwork_press_event)
         self._artwork_button = Gtk.Image.new_from_icon_name(
                                            'image-x-generic-symbolic',
                                            Gtk.IconSize.BUTTON)
         self._artwork_button.set_opacity(0)
         # Action button
-        action_event = Gtk.EventBox()
-        action_event.set_property('has-tooltip', True)
-        action_event.set_tooltip_text(_("Append"))
-        action_event.set_property('halign', Gtk.Align.END)
-        action_event.connect('realize', self._on_eventbox_realize)
-        action_event.connect('button-press-event',
-                             self._on_action_press_event)
+        self._action_event = Gtk.EventBox()
+        self._action_event.set_property('has-tooltip', True)
+        self._action_event.set_tooltip_text(_("Append"))
+        self._action_event.set_property('halign', Gtk.Align.END)
+        self._action_event.connect('realize', self._on_eventbox_realize)
+        self._action_event.connect('button-press-event',
+                                   self._on_action_press_event)
         self._action_button = Gtk.Image.new()
         self._action_button.set_opacity(0)
-        icon_grid = Gtk.Grid()
-        icon_grid.set_column_spacing(5)
-        icon_grid.set_property('margin-bottom', 2)
-        icon_grid.set_property('margin-start', 2)
-        icon_grid.set_property('margin-end', 2)
-        icon_grid.set_property('valign', Gtk.Align.END)
-        icon_grid.add(play_event)
-        icon_grid.add(play_all_event)
-        icon_grid.add(action_event)
-        icon_grid.add(artwork_event)
+        self._overlay_grid = Gtk.Grid()
+        self._overlay_grid.set_column_spacing(5)
+        self._overlay_grid.set_row_spacing(5)
+        self._overlay_grid.set_property('margin-bottom', 2)
+        self._overlay_grid.set_property('margin-start', 2)
+        self._overlay_grid.set_property('margin-end', 2)
         overlay.add(self._cover)
-        overlay.add_overlay(icon_grid)
+        overlay.add_overlay(self._overlay_grid)
         self._color.add(overlay)
         self.add(self._widget)
         self.set_cover()
@@ -396,10 +405,10 @@ class AlbumSimpleWidget(Gtk.Frame, AlbumWidget):
         self._widget.set_property('halign', Gtk.Align.CENTER)
         self._widget.set_property('valign', Gtk.Align.CENTER)
         self.show_all()
-        play_event.add(self._play_button)
-        play_all_event.add(self._play_all_button)
-        artwork_event.add(self._artwork_button)
-        action_event.add(self._action_button)
+        self._play_event.add(self._play_button)
+        self._play_all_event.add(self._play_all_button)
+        self._artwork_event.add(self._artwork_button)
+        self._action_event.add(self._action_button)
         self._widget.connect('enter-notify-event', self._on_enter_notify)
         self._widget.connect('leave-notify-event', self._on_leave_notify)
 
@@ -424,6 +433,34 @@ class AlbumSimpleWidget(Gtk.Frame, AlbumWidget):
 #######################
 # PRIVATE             #
 #######################
+    def _set_overlay_orientation(self, orientation):
+        """
+            Set overlay orientation
+            @param orientation as Gtk.Orientation
+        """
+        for child in self._overlay_grid.get_children():
+            self._overlay_grid.remove(child)
+
+        self._overlay_grid.set_orientation(orientation)
+        if orientation == Gtk.Orientation.VERTICAL:
+            self._play_event.set_hexpand(False)
+            self._play_event.set_vexpand(True)
+            self._play_event.set_property('halign', Gtk.Align.END)
+            self._play_event.set_property('valign', Gtk.Align.START)
+            self._overlay_grid.set_property('valign', Gtk.Align.FILL)
+            self._overlay_grid.set_property('halign', Gtk.Align.END)
+        else:
+            self._play_event.set_hexpand(True)
+            self._play_event.set_vexpand(False)
+            self._play_event.set_property('halign', Gtk.Align.START)
+            self._play_event.set_property('valign', Gtk.Align.END)
+            self._overlay_grid.set_property('halign', Gtk.Align.FILL)
+            self._overlay_grid.set_property('valign', Gtk.Align.END)
+        self._overlay_grid.add(self._play_event)
+        self._overlay_grid.add(self._play_all_event)
+        self._overlay_grid.add(self._action_event)
+        self._overlay_grid.add(self._artwork_event)
+
     def _on_play_all_press_event(self, widget, event):
         """
             Play album with context
