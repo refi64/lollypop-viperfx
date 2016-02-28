@@ -90,9 +90,9 @@ class Player(BinPlayer, QueuePlayer, UserPlaylistPlayer, RadioPlayer,
         else:
             self._albums.append(album.id)
             self.context.genre_ids[album.id] = album.genre_ids
+        self.shuffle_albums(True)
         if self.current_track.album.id in self._albums:
             self._albums.remove(self.current_track.album.id)
-        self.shuffle_albums(True)
         self._albums.insert(0, self.current_track.album.id)
         if self.current_track.id is not None and self.current_track.id > 0:
             self.set_next()
