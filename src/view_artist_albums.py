@@ -34,6 +34,7 @@ class ArtistAlbumsView(View):
         View.__init__(self)
         self._artist_ids = artist_ids
         self._genre_ids = genre_ids
+        self._albums_count = 0
 
         self._albumbox = Gtk.Grid()
         self._albumbox.set_row_spacing(20)
@@ -50,6 +51,7 @@ class ArtistAlbumsView(View):
             Populate the view
         """
         if albums:
+            self._albums_count = len(albums)
             self._add_albums(albums)
 
 #######################
@@ -73,6 +75,9 @@ class ArtistAlbumsView(View):
                                      self._genre_ids,
                                      self._artist_ids,
                                      size_group)
+        # Not needed if only one album
+        if self._albums_count == 1:
+            widget.disable_play_all()
         widget.connect('finished', self._on_album_finished, albums)
         widget.show()
         t = Thread(target=widget.populate)

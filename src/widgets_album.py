@@ -127,6 +127,19 @@ class AlbumWidget:
 #######################
 # PRIVATE             #
 #######################
+    def _set_play_all_image(self):
+        """
+            Set play all image based on current shuffle status
+        """
+        if Lp().settings.get_enum('shuffle') == Shuffle.NONE:
+            self._play_all_button.set_from_icon_name(
+                                        'media-playlist-consecutive-symbolic',
+                                        Gtk.IconSize.BUTTON)
+        else:
+            self._play_all_button.set_from_icon_name(
+                                        'media-playlist-shuffle-symbolic',
+                                        Gtk.IconSize.BUTTON)
+
     def _show_append(self, append):
         """
             Show append button if append, else remove button
@@ -413,19 +426,6 @@ class AlbumSimpleWidget(Gtk.Frame, AlbumWidget):
 #######################
 # PRIVATE             #
 #######################
-    def _set_play_all_image(self):
-        """
-            Set play all image based on current shuffle status
-        """
-        if Lp().settings.get_enum('shuffle') == Shuffle.NONE:
-            self._play_all_button.set_from_icon_name(
-                                        'media-playlist-consecutive-symbolic',
-                                        Gtk.IconSize.BUTTON)
-        else:
-            self._play_all_button.set_from_icon_name(
-                                        'media-playlist-shuffle-symbolic',
-                                        Gtk.IconSize.BUTTON)
-
     def _on_play_all_press_event(self, widget, event):
         """
             Play album with context
@@ -487,6 +487,7 @@ class AlbumDetailedWidget(Gtk.Bin, AlbumWidget):
         builder.add_from_resource('/org/gnome/Lollypop/%s.ui' %
                                   type(self).__name__)
         self._play_button = builder.get_object('play-button')
+        self._play_all_button = builder.get_object('playall-button')
         self._artwork_button = builder.get_object('artwork-button')
         self._action_button = builder.get_object('action-button')
         builder.connect_signals(self)
@@ -571,6 +572,12 @@ class AlbumDetailedWidget(Gtk.Bin, AlbumWidget):
         self._menu = builder.get_object('menu')
         self._menu.connect('clicked', self._pop_menu)
         self._menu.show()
+
+    def disable_play_all(self):
+        """
+            Disable play all albums button
+        """
+        self._play_all_button = None
 
     def responsive_design(self):
         """
@@ -717,6 +724,20 @@ class AlbumDetailedWidget(Gtk.Bin, AlbumWidget):
             Lp().player.load(Track(track_id))
             if self._button_state & Gdk.ModifierType.CONTROL_MASK:
                 Lp().player.context.next = NextContext.STOP_TRACK
+
+    def _on_play_all_press_event(self, widget, event):
+        """
+            Play album with context
+            @param: widget as Gtk.EventBox
+            @param: event as Gdk.Event
+        """
+        self._show_append(False)
+        Lp().player.set_party(False)
+        track = Track(self._album.tracks_ids[0])
+        Lp().player.load(track)
+        Lp().player.set_albums(track.id, self._artist_ids,
+                               self._album.genre_ids)
+        return True
 
     def _on_button_press_event(self, widget, event):
         """

@@ -213,7 +213,7 @@
                                 </child>
                               </object>
                               <packing>
-                                <property name="left_attach">1</property>
+                                <property name="left_attach">2</property>
                                 <property name="top_attach">0</property>
                               </packing>
                             </child>
@@ -229,6 +229,25 @@
                                     <property name="tooltip_text" translatable="yes">Append</property>
                                     <property name="opacity">0</property>
                                     <property name="icon_name">list-add-symbolic</property>
+                                  </object>
+                                </child>
+                              </object>
+                              <packing>
+                                <property name="left_attach">1</property>
+                                <property name="top_attach">0</property>
+                              </packing>
+                            </child>
+                            <child>
+                              <object class="GtkEventBox" id="eventbox4">
+                                <property name="visible">True</property>
+                                <property name="can_focus">False</property>
+                                <signal name="button-press-event" handler="_on_play_all_press_event" swapped="no"/>
+                                <signal name="realize" handler="_on_eventbox_realize" swapped="no"/>
+                                <child>
+                                  <object class="GtkImage" id="playall-button">
+                                    <property name="can_focus">False</property>
+                                    <property name="tooltip_text" translatable="yes">Play albums</property>
+                                    <property name="opacity">0</property>
                                   </object>
                                 </child>
                               </object>
