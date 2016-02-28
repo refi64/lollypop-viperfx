@@ -49,8 +49,6 @@ class RadioWidget(Gtk.Frame, AlbumWidget):
         self._widget.connect('leave-notify-event', self._on_leave_notify)
         grid = Gtk.Grid()
         grid.set_orientation(Gtk.Orientation.VERTICAL)
-        white = Gtk.Grid()
-        white.get_style_context().add_class('white')
         frame = Gtk.Frame()
         frame.set_property('halign', Gtk.Align.CENTER)
         frame.get_style_context().add_class('cover-frame')
@@ -66,6 +64,7 @@ class RadioWidget(Gtk.Frame, AlbumWidget):
         grid.add(self._title_label)
         frame.add(self._color)
         overlay = Gtk.Overlay.new()
+        overlay.get_style_context().add_class('white')
         # Play button
         play_event = Gtk.EventBox()
         play_event.set_property('has-tooltip', True)
@@ -94,8 +93,7 @@ class RadioWidget(Gtk.Frame, AlbumWidget):
                                            'document-properties-symbolic',
                                            Gtk.IconSize.BUTTON)
         self._edit_button.set_opacity(0)
-        white.add(self._cover)
-        overlay.add(white)
+        overlay.add(self._cover)
         overlay.add_overlay(play_event)
         overlay.add_overlay(edit_event)
         self._color.add(overlay)
