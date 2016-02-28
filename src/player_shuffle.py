@@ -161,6 +161,10 @@ class ShufflePlayer(BasePlayer):
             if self._albums:
                 self._albums_backup = list(self._albums)
                 random.shuffle(self._albums)
+                # In album shuffle, keep current album on top
+                if self.current_track.album.id in self._albums:
+                    self._albums.remove(self.current_track.album.id)
+                    self._albums.insert(0, self.current_track.album.id)
         elif self._albums_backup:
             self._albums = self._albums_backup
             self._albums_backup = []
