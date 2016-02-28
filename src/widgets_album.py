@@ -264,9 +264,9 @@ class AlbumWidget:
             Lp().player.remove_album(self._album)
             self._show_append(True)
         else:
-            Lp().player.add_album(self._album)
             if empty and Lp().player.current_track.id is None:
                 Lp().player.load(self._album.tracks[0], False)
+            Lp().player.add_album(self._album)
             self._show_append(False)
         return True
 
