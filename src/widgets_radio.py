@@ -137,7 +137,7 @@ class RadioWidget(Gtk.Frame, AlbumWidget):
             @param name as string
         """
         self._name = name
-        self._title.set_label(name)
+        self._title_label.set_label(name)
 
     def get_name(self):
         """
