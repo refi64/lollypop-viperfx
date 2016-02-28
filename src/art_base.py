@@ -49,6 +49,7 @@ class BaseArt(GObject.GObject):
         cover = GdkPixbuf.Pixbuf.new_from_file(path)
         cover_width = cover.get_width()
         cover_height = cover.get_height()
+        del cover
         if cover_width == cover_height:
             return True
         elif cover_width < cover_height:
