@@ -81,7 +81,7 @@ class Player(BinPlayer, QueuePlayer, UserPlaylistPlayer, RadioPlayer,
         if not self._albums:
             if not Lp().settings.get_value('repeat'):
                 self.context.next = NextContext.STOP_ALL
-        Lp().player.shuffle_albums(False)
+        self.shuffle_albums(False)
         # If album already exists, merge genres
         if album.id in self._albums:
             genre_ids = self.context.genre_ids[album.id]
@@ -90,7 +90,7 @@ class Player(BinPlayer, QueuePlayer, UserPlaylistPlayer, RadioPlayer,
         else:
             self._albums.append(album.id)
             self.context.genre_ids[album.id] = album.genre_ids
-        Lp().player.shuffle_albums(True)
+        self.shuffle_albums(True)
         if self.current_track.id is not None and self.current_track.id > 0:
             self.set_next()
         self.emit('album-added', album.id)
@@ -154,7 +154,7 @@ class Player(BinPlayer, QueuePlayer, UserPlaylistPlayer, RadioPlayer,
             self.context.next = NextContext.NONE
         else:
             self.context.next = NextContext.STOP_ALL
-        Lp().player.load(album.tracks[0])
+        self.load(album.tracks[0])
         self._albums = [album.id]
         self.context.genre_ids = {}
         self.context.genre_ids[album.id] = album.genre_ids
@@ -271,11 +271,11 @@ class Player(BinPlayer, QueuePlayer, UserPlaylistPlayer, RadioPlayer,
                 name = radios.get_name(track_id)
                 url = radios.get_url(name)
                 track.set_radio(name, url)
-                Lp().player.load(track)
+                self.load(track)
             elif Lp().tracks.get_path(track_id) != "":
                 if playlist_id >= 0:
-                    Lp().player.populate_user_playlist_by_id(playlist_id)
-                    Lp().player.load_in_playlist(track_id, False)
+                    self.populate_user_playlist_by_id(playlist_id)
+                    self.load_in_playlist(track_id, False)
                 else:
                     track = Track(track_id)
                     self._load_track(track)
