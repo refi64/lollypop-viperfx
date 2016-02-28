@@ -221,6 +221,8 @@
                               <object class="GtkEventBox" id="eventbox3">
                                 <property name="visible">True</property>
                                 <property name="can_focus">False</property>
+                                <signal name="button-press-event" handler="_on_action_press_event" swapped="no"/>
+                                <signal name="realize" handler="_on_eventbox_realize" swapped="no"/>
                                 <child>
                                   <object class="GtkImage" id="action-button">
                                     <property name="can_focus">False</property>
