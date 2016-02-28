@@ -19,7 +19,7 @@ from lollypop.player_externals import ExternalsPlayer
 from lollypop.player_userplaylist import UserPlaylistPlayer
 from lollypop.radios import Radios
 from lollypop.objects import Track
-from lollypop.define import Lp, Type, NextContext
+from lollypop.define import Lp, Type, NextContext, Shuffle
 
 
 class Player(BinPlayer, QueuePlayer, UserPlaylistPlayer, RadioPlayer,
@@ -91,9 +91,11 @@ class Player(BinPlayer, QueuePlayer, UserPlaylistPlayer, RadioPlayer,
             self._albums.append(album.id)
             self.context.genre_ids[album.id] = album.genre_ids
         self.shuffle_albums(True)
-        if self.current_track.album.id in self._albums:
-            self._albums.remove(self.current_track.album.id)
-        self._albums.insert(0, self.current_track.album.id)
+        # In album shuffle, keep current album on top
+        if Lp().settings.get_enum('shuffle') == Shuffle.ALBUMS:
+            if self.current_track.album.id in self._albums:
+                self._albums.remove(self.current_track.album.id)
+            self._albums.insert(0, self.current_track.album.id)
         if self.current_track.id is not None and self.current_track.id > 0:
             self.set_next()
         self.emit('album-added', album.id)
