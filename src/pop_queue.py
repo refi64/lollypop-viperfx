@@ -90,7 +90,7 @@ class QueueWidget(Gtk.Popover):
         """
         if Lp().player.get_queue():
             self._clear_btn.set_sensitive(True)
-        self._add_items(Lp().player.get_queue())
+        self._add_items(list(Lp().player.get_queue()))
 
 #######################
 # PRIVATE             #
