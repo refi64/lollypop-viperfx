@@ -82,28 +82,9 @@ class RadioArt(BaseArt):
             else:
                 path = self._get_radio_art_path(name)
                 if path is not None:
-                    pixbuf = GdkPixbuf.Pixbuf.new(GdkPixbuf.Colorspace.RGB,
-                                                  True,
-                                                  8,
-                                                  size,
-                                                  size)
-                    pixbuf.fill(0xffffffff)
-                    cover = GdkPixbuf.Pixbuf.new_from_file_at_size(path,
-                                                                   size,
-                                                                   size)
-                    cover_width = cover.get_width()
-                    cover_height = cover.get_height()
-                    cover.composite(pixbuf,
-                                    (size-cover_width)/2,
-                                    (size-cover_height)/2,
-                                    cover_width,
-                                    cover_height,
-                                    (size-cover_width)/2,
-                                    (size-cover_height)/2,
-                                    1,
-                                    1,
-                                    GdkPixbuf.InterpType.HYPER,
-                                    255)
+                    pixbuf = GdkPixbuf.Pixbuf.new_from_file_at_size(path,
+                                                                    size,
+                                                                    size)
             if pixbuf is None:
                 return self._get_default_icon(
                                              size,

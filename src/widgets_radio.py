@@ -55,6 +55,8 @@ class RadioWidget(Gtk.Frame, AlbumWidget):
         self._color = Gtk.Frame()
         self._color.get_style_context().add_class('cover-frame-border')
         self._cover = Gtk.Image()
+        self._cover.set_size_request(ArtSize.BIG, ArtSize.BIG)
+        self._cover.get_style_context().add_class('white')
         self._title_label = Gtk.Label()
         self._title_label.set_ellipsize(Pango.EllipsizeMode.END)
         self._title_label.set_property('halign', Gtk.Align.CENTER)
