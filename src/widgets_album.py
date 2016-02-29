@@ -163,9 +163,11 @@ class AlbumWidget:
         if append:
             self._action_button.set_from_icon_name('list-add-symbolic',
                                                    Gtk.IconSize.BUTTON)
+            self._action_event.set_tooltip_text(_("Append"))
         else:
             self._action_button.set_from_icon_name('list-remove-symbolic',
                                                    Gtk.IconSize.BUTTON)
+            self._action_event.set_tooltip_text(_("Remove"))
 
     def _on_eventbox_realize(self, eventbox):
         """
@@ -384,7 +386,6 @@ class AlbumSimpleWidget(Gtk.Frame, AlbumWidget):
         # Action button
         self._action_event = Gtk.EventBox()
         self._action_event.set_property('has-tooltip', True)
-        self._action_event.set_tooltip_text(_("Append"))
         self._action_event.set_property('halign', Gtk.Align.END)
         self._action_event.connect('realize', self._on_eventbox_realize)
         self._action_event.connect('button-press-event',

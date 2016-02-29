@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-02-27 11:13+0100\n"
+"POT-Creation-Date: 2016-03-01 09:38+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -282,28 +282,28 @@ msgid ""
 "    - Artist informations disabled"
 msgstr ""
 
-#: ../src/application.py:373
+#: ../src/application.py:375
 #, python-format
 msgid "%d artist"
 msgid_plural "%d artists"
 msgstr[0] ""
 msgstr[1] ""
 
-#: ../src/application.py:375
+#: ../src/application.py:377
 #, python-format
 msgid "%d album"
 msgid_plural "%d albums"
 msgstr[0] ""
 msgstr[1] ""
 
-#: ../src/application.py:377
+#: ../src/application.py:379
 #, python-format
 msgid "%d track"
 msgid_plural "%d tracks"
 msgstr[0] ""
 msgstr[1] ""
 
-#: ../src/application.py:392
+#: ../src/application.py:394
 msgid "Lollypop: You need to install yelp."
 msgstr ""
 
@@ -369,7 +369,7 @@ msgid "Pause"
 msgstr ""
 
 #: ../src/controllers.py:84 ../src/controllers.py:112 ../src/pop_tunein.py:154
-#: ../src/widgets_album.py:326 ../src/widgets_radio.py:72
+#: ../src/widgets_album.py:356 ../src/widgets_radio.py:73
 #: ../data/AlbumContextWidget.ui.h:1 ../data/AlbumDetailedWidget.ui.h:1
 #: ../data/ToolbarPlayback.ui.h:2
 msgid "Play"
@@ -411,7 +411,7 @@ msgstr ""
 msgid "by %s, from %s"
 msgstr ""
 
-#: ../src/player_bin.py:443
+#: ../src/player_bin.py:444
 #, python-format
 msgid "File doesn't exist: %s"
 msgstr ""
@@ -515,21 +515,21 @@ msgstr ""
 msgid "Browse themes and add a new radio"
 msgstr ""
 
-#: ../src/settings.py:87 ../src/settings.py:90 ../data/SettingsDialog.ui.h:3
+#: ../src/settings.py:86 ../src/settings.py:89 ../data/SettingsDialog.ui.h:3
 msgid "Preferences"
 msgstr ""
 
-#: ../src/settings.py:162
+#: ../src/settings.py:161
 msgid "Populars"
 msgstr ""
 
-#: ../src/settings.py:163
+#: ../src/settings.py:162
 msgid "Recently added"
 msgstr ""
 
 #. Handle language ordering
 #. Translators: Add here words that shoud be ignored for artist sort order
-#: ../src/utils.py:121
+#: ../src/utils.py:111
 msgid "The the"
 msgstr ""
 
@@ -542,36 +542,40 @@ msgstr ""
 msgid "Cancel synchronization"
 msgstr ""
 
-#: ../src/widgets_album.py:339
-msgid "Play albums"
-msgstr ""
-
-#: ../src/widgets_album.py:349 ../src/widgets_radio.py:86
-#: ../data/AlbumContextWidget.ui.h:2 ../data/AlbumDetailedWidget.ui.h:2
-msgid "Change artwork"
-msgstr ""
-
-#: ../src/widgets_album.py:361 ../data/AlbumContextWidget.ui.h:3
+#: ../src/widgets_album.py:166 ../data/AlbumContextWidget.ui.h:3
 #: ../data/AlbumDetailedWidget.ui.h:3
 msgid "Append"
 msgstr ""
 
-#: ../src/widgets_album.py:511
+#: ../src/widgets_album.py:170
+msgid "Remove"
+msgstr ""
+
+#: ../src/widgets_album.py:367 ../data/AlbumDetailedWidget.ui.h:4
+msgid "Play albums"
+msgstr ""
+
+#: ../src/widgets_album.py:377 ../src/widgets_radio.py:87
+#: ../data/AlbumContextWidget.ui.h:2 ../data/AlbumDetailedWidget.ui.h:2
+msgid "Change artwork"
+msgstr ""
+
+#: ../src/widgets_album.py:550
 #, python-format
 msgid "%s h  %s m"
 msgstr ""
 
-#: ../src/widgets_album.py:513
+#: ../src/widgets_album.py:552
 #, python-format
 msgid "%s h"
 msgstr ""
 
-#: ../src/widgets_album.py:515
+#: ../src/widgets_album.py:554
 #, python-format
 msgid "%s m"
 msgstr ""
 
-#: ../src/widgets_album.py:529
+#: ../src/widgets_album.py:568
 #, python-format
 msgid "Disc %s"
 msgstr ""
@@ -739,10 +743,6 @@ msgid "Search in TuneIn"
 msgstr ""
 
 #: ../data/SearchPopover.ui.h:1
-msgid "Play search"
-msgstr ""
-
-#: ../data/SearchPopover.ui.h:2
 msgid "Create a new playlist based on search"
 msgstr ""
 
