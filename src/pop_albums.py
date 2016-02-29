@@ -139,34 +139,6 @@ class AlbumsPopover(Gtk.Popover):
             self._model.disconnect(self._signal_id2)
             self._signal_id2 = None
 
-    def _on_map(self, widget):
-        """
-            Connect signals
-            @param widget as Gtk.Widget
-        """
-        self._stop = False
-        self.populate()
-
-    def _on_unmap(self, widget):
-        """
-            Disconnect signals
-            @param widget as Gtk.Widget
-        """
-        self._stop = True
-        self._disconnect_signals()
-        self._model.clear()
-
-    def _on_keyboard_event(self, widget, event):
-        """
-            Delete item if Delete was pressed
-            @param widget unused, Gdk.Event
-        """
-        if Lp().player.get_queue():
-            if event.keyval == 65535:
-                path, column = self._view.get_cursor()
-                iterator = self._model.get_iter(path)
-                self._model.remove(iterator)
-
     def _delete_row(self, iterator):
         """
             Delete row
@@ -199,6 +171,34 @@ class AlbumsPopover(Gtk.Popover):
         for row in self._model:
             albums.append(row[0])
         Lp().player.set_albums2(albums)
+
+    def _on_map(self, widget):
+        """
+            Connect signals
+            @param widget as Gtk.Widget
+        """
+        self._stop = False
+        self.populate()
+
+    def _on_unmap(self, widget):
+        """
+            Disconnect signals
+            @param widget as Gtk.Widget
+        """
+        self._stop = True
+        self._disconnect_signals()
+        self._model.clear()
+
+    def _on_keyboard_event(self, widget, event):
+        """
+            Delete item if Delete was pressed
+            @param widget unused, Gdk.Event
+        """
+        if Lp().player.get_queue():
+            if event.keyval == 65535:
+                path, column = self._view.get_cursor()
+                iterator = self._model.get_iter(path)
+                self._model.remove(iterator)
 
     def _on_row_deleted(self, path, data):
         """
