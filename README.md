@@ -27,7 +27,7 @@ It provides:
 - Tunein support
 
 ##Depends on
-- gtk3
+- gtk3 >= 3.16
 - gobject-introspection
 - gir1.2-gstreamer-1.0 (Debian)
 - python3
