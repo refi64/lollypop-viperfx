@@ -407,7 +407,7 @@ class SearchPopover(Gtk.Popover):
             if row.is_track:
                 Lp().player.load(Track(row.id))
             else:
-                popover = AlbumPopoverWidget(row.id, None)
+                popover = AlbumPopoverWidget(row.id, [])
                 popover.set_relative_to(row)
                 popover.show()
         else:
