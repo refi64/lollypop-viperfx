@@ -527,6 +527,7 @@ class AlbumDetailedWidget(Gtk.Bin, AlbumWidget):
         self._play_all_button = builder.get_object('playall-button')
         self._artwork_button = builder.get_object('artwork-button')
         self._action_button = builder.get_object('action-button')
+        self._action_event = builder.get_object('action-event')
         builder.connect_signals(self)
 
         rating = RatingWidget(self._album)
