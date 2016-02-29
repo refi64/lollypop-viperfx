@@ -225,7 +225,8 @@ class Window(Gtk.ApplicationWindow, Container):
             self._toolbar.set_show_close_button(False)
         elif mini is not None and not show and self._timeout is None:
             self._main_stack.set_visible_child_name('main')
-            self._toolbar.set_show_close_button(True)
+            self._toolbar.set_show_close_button(
+                                    not Lp().settings.get_value('disable-csd'))
             self._timeout = GLib.timeout_add(1000, mini.destroy)
 
     def _setup_pos_size(self, name):
