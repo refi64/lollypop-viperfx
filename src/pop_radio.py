@@ -184,7 +184,7 @@ class RadioPopover(Gtk.Popover):
             Grab focus/Disable global shortcuts
             @param widget as Gtk.Widget
         """
-        self._name_entry.grab_focus()
+        GLib.idle_add(self._name_entry.grab_focus)
         Lp().window.enable_global_shorcuts(False)
 
     def _on_unmap(self, widget):
