@@ -128,7 +128,7 @@ class Album(Base):
     FIELDS = ['name', 'artist_name', 'artist_id', 'year', 'path', 'duration']
     DEFAULTS = ['', '', None, '', '', 0]
 
-    def __init__(self, album_id=None, genre_ids=None):
+    def __init__(self, album_id=None, genre_ids=[]):
         """
             Init album
             @param album_id as int
