@@ -99,7 +99,9 @@ class ToolbarEnd(Gtk.Bin):
             @param force to show the popover
         """
         # Do not show popover is this menu is active
-        if self._shuffle_button.get_active():
+        # or if we are hidden
+        if self._shuffle_button.get_active() or\
+           not self._grid_next.is_visible():
             return
         self._timeout_id = None
         if self._pop_next.should_be_shown() or force:
