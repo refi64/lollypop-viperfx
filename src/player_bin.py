@@ -265,6 +265,7 @@ class BinPlayer(BasePlayer):
                 playbin.set_state(Gst.State.NULL)
         else:
             plugins.volume.props.volume = 0.0
+            playbin.set_state(Gst.State.NULL)
 
     def _do_crossfade(self, duration, track=None, next=True):
         """
