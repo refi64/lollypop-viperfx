@@ -67,16 +67,6 @@ def is_gnome():
     return os.environ.get("XDG_CURRENT_DESKTOP") == "GNOME"
 
 
-def disable_csd():
-    """
-        Return True if we need to disable csd
-    """
-    desktop = os.environ.get("XDG_CURRENT_DESKTOP")
-    return desktop is None or\
-        desktop.lower() in ["unity", "kde", "x-cinnamon"] or\
-        Lp().settings.get_user_value('disable-csd')
-
-
 def is_audio(f):
     """
         Return True if files is audio
