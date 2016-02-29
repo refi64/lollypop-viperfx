@@ -70,6 +70,8 @@ class Application(Gtk.Application):
                             self,
                             application_id='org.gnome.Lollypop',
                             flags=Gio.ApplicationFlags.HANDLES_COMMAND_LINE)
+        os.environ['PULSE_PROP_media.role'] = 'music'
+        os.environ['PULSE_PROP_application.icon_name'] = 'lollypop'
         self.cursors = {}
         self.window = None
         self.notify = None
