@@ -281,7 +281,8 @@ class Player(BinPlayer, QueuePlayer, UserPlaylistPlayer, RadioPlayer,
                     self._load_track(track)
                     self._albums = Lp().artists.get_albums(
                                                          track.album_artist_id)
-                    self.context.genre_ids = {}
+                    for album_id in self._albums:
+                        self.context.genre_ids[album_id] = []
                 self.set_next()
                 self.set_prev()
                 if Lp().settings.get_value('repeat'):
