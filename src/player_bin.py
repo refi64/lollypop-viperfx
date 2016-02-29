@@ -276,6 +276,9 @@ class BinPlayer(BasePlayer):
         """
         if self.current_track.id == Type.RADIOS or self._need_to_stop():
             return
+        if self._playbin.query_position(
+           Gst.Format.TIME)[1] / 1000000000 > self.current_track.duration - 10:
+            self._track_finished(self.current_track, self._start_time)
         GLib.idle_add(self._volume_down, self._playbin,
                       self._plugins, duration)
         if self._playbin == self._playbin2:
@@ -285,8 +288,6 @@ class BinPlayer(BasePlayer):
             self._playbin = self._playbin2
             self._plugins = self.plugins2
 
-        finished = self.current_track
-        finished_start_time = self._start_time
         if track is not None:
             self._load(track, False)
             self._plugins.volume.props.volume = 0
@@ -302,7 +303,6 @@ class BinPlayer(BasePlayer):
             self._plugins.volume.props.volume = 0
             GLib.idle_add(self._volume_up, self._playbin,
                           self._plugins, duration)
-        self._track_finished(finished, finished_start_time)
 
     def _need_to_stop(self):
         """
