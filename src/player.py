@@ -201,6 +201,8 @@ class Player(BinPlayer, QueuePlayer, UserPlaylistPlayer, RadioPlayer,
             self._albums = Lp().albums.get_compilations()
         # Add albums for artists/genres
         else:
+            if Lp().settings.get_value('show-compilations'):
+                self._albums += Lp().albums.get_compilations(genre_ids)
             self._albums += Lp().albums.get_ids(artist_ids, genre_ids)
 
         if Lp().settings.get_value('repeat'):
