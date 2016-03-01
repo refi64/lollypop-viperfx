@@ -201,7 +201,10 @@ class Player(BinPlayer, QueuePlayer, UserPlaylistPlayer, RadioPlayer,
             self._albums = Lp().albums.get_compilations()
         # Add albums for artists/genres
         else:
-            if Lp().settings.get_value('show-compilations'):
+            # If we are not in compilation view and show compilation is on,
+            # add compilations
+            if (not artist_ids or artist_ids[0] != Type.COMPILATIONS) and\
+               Lp().settings.get_value('show-compilations'):
                 self._albums += Lp().albums.get_compilations(genre_ids)
             self._albums += Lp().albums.get_ids(artist_ids, genre_ids)
 
@@ -209,7 +212,6 @@ class Player(BinPlayer, QueuePlayer, UserPlaylistPlayer, RadioPlayer,
             self.context.next = NextContext.NONE
         else:
             self.context.next = NextContext.STOP_ALL
-
         # We do not store genre_ids for ALL/POPULARS/...
         if genre_ids and genre_ids[0] < 0:
             genre_ids = []
