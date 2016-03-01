@@ -531,7 +531,6 @@ class Container:
         playlists.append((Type.RECENTS, _("Recently played")))
         playlists.append((Type.NEVER, _("Never played")))
         playlists.append((Type.RANDOMS, _("Random tracks")))
-        playlists.append((Type.MPD, _("Network control")))
         playlists.append((Type.SEPARATOR, ''))
         playlists += Lp().playlists.get()
         if update:

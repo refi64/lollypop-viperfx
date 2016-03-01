@@ -51,7 +51,6 @@ class Playlists(GObject.GObject):
         """
         GObject.GObject.__init__(self)
         self._LOVED = _("Loved tracks")
-        self._MPD = _("Network control")
         try_import = not os.path.exists(self.DB_PATH)
         # Create db schema
         try:
@@ -213,8 +212,6 @@ class Playlists(GObject.GObject):
         """
         if playlist_name == self._LOVED:
             return Type.LOVED
-        elif playlist_name == self._MPD:
-            return Type.MPD
 
         with SqlCursor(self) as sql:
             result = sql.execute("SELECT rowid\
@@ -233,8 +230,6 @@ class Playlists(GObject.GObject):
         """
         if playlist_id == Type.LOVED:
             return self._LOVED
-        elif playlist_id == Type.MPD:
-            return self._MPD
 
         with SqlCursor(self) as sql:
             result = sql.execute("SELECT name\

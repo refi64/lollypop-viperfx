@@ -85,7 +85,6 @@ class Type:
     RADIOS = -6
     EXTERNALS = -7
     ALL = -8
-    MPD = -996
     LOVED = -997
     NEVER = -998
     DEVICES = -1000
