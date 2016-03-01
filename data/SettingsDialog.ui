@@ -353,7 +353,7 @@
                 <property name="halign">end</property>
                 <signal name="button-press-event" handler="_on_mix_button_press" swapped="no"/>
                 <signal name="button-release-event" handler="_on_mix_button_release" swapped="no"/>
-                <signal name="state-set" handler="_update_mix_setting" swapped="no"/>
+                <signal name="state-set" handler="_update_mix_setting" object="switch_mix_party" swapped="no"/>
               </object>
               <packing>
                 <property name="left_attach">1</property>

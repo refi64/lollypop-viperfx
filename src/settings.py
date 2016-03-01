@@ -293,8 +293,9 @@ class SettingsDialog:
     def _update_mix_setting(self, widget, state):
         """
             Update mix setting
-            @param widget as Gtk.Switch
+            @param widget as Gtk.Switch (user data)
             @param state as bool
+            @param switch_party as Gtk.Switch
         """
         Lp().settings.set_value('mix', GLib.Variant('b', state))
         Lp().player.update_crossfading()
@@ -305,6 +306,7 @@ class SettingsDialog:
                 self._popover.add(self._popover_content)
             self._popover.show_all()
         elif self._popover is not None:
+            widget.set_state(False)
             self._popover.hide()
 
     def _update_party_mix_setting(self, widget, state):
