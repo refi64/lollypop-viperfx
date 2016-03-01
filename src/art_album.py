@@ -162,7 +162,7 @@ class AlbumArt(BaseArt, ArtDownloader, TagReader):
                         pixbuf = GdkPixbuf.Pixbuf.new_from_file_at_scale(path,
                                                                          size,
                                                                          size,
-                                                                         path)
+                                                                         ratio)
                 # Use default artwork
                 if pixbuf is None:
                     self.download_album_art(album.id)
