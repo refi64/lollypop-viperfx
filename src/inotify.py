@@ -57,10 +57,11 @@ class Inotify:
         """
             Prepare thread to handle changes
         """
+        update = False
         # Stop collection scanner and wait
         if Lp().scanner.is_locked():
             Lp().scanner.stop()
-            GLib.timeout_add(1000,
+            GLib.timeout_add(self._TIMEOUT,
                              self._on_dir_changed,
                              monitor,
                              changed_file,
@@ -70,18 +71,22 @@ class Inotify:
         else:
             path = changed_file.get_path()
             # If a directory, monitor it
-            if os.path.exists(path) and\
-               changed_file.query_file_type(Gio.FileQueryInfoFlags.NONE,
+            if os.path.exists(path):
+                if changed_file.query_file_type(
+                                            Gio.FileQueryInfoFlags.NONE,
                                             None) == Gio.FileType.DIRECTORY:
-                self.add_monitor(path)
-            # If not an audio file, exit
-            elif not is_audio(changed_file):
-                return
-            if self._timeout is not None:
-                GLib.source_remove(self._timeout)
-                self._timeout = None
-            self._timeout = GLib.timeout_add(self._TIMEOUT,
-                                             self._run_collection_update)
+                    self.add_monitor(path)
+                # If not an audio file, exit
+                elif is_audio(changed_file):
+                    update = True
+            else:
+                update = True
+            if update:
+                if self._timeout is not None:
+                    GLib.source_remove(self._timeout)
+                    self._timeout = None
+                self._timeout = GLib.timeout_add(self._TIMEOUT,
+                                                 self._run_collection_update)
 
     def _run_collection_update(self):
         """
