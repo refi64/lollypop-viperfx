@@ -54,17 +54,17 @@ class AlbumsView(LazyLoadingView):
         Show albums in a box
     """
 
-    def __init__(self, genre_ids, is_compilation):
+    def __init__(self, genre_ids, artist_ids):
         """
             Init album view
-            @param genre id as int
-            @param is compilation as bool
+            @param genre ids as [int]
+            @param artist ids as [int]
         """
         LazyLoadingView.__init__(self)
         self._signal = None
         self._context_album_id = None
         self._genre_ids = genre_ids
-        self._is_compilation = is_compilation
+        self._artist_ids = artist_ids
         self._albumsongs = None
         self._context_widget = None
         self._press_rect = None
@@ -161,6 +161,7 @@ class AlbumsView(LazyLoadingView):
         size_group = Gtk.SizeGroup(mode=Gtk.SizeGroupMode.HORIZONTAL)
         self._context_widget = AlbumContextWidget(album_id,
                                                   self._genre_ids,
+                                                  self._artist_ids,
                                                   size_group)
         self._context_widget.populate()
         self._context_widget.show()
@@ -177,7 +178,9 @@ class AlbumsView(LazyLoadingView):
             @param [album ids as int]
         """
         if albums and not self._stop:
-            widget = AlbumSimpleWidget(albums.pop(0), self._genre_ids)
+            widget = AlbumSimpleWidget(albums.pop(0),
+                                       self._genre_ids,
+                                       self._artist_ids)
             self._albumbox.insert(widget, -1)
             widget.show()
             self._lazy_queue.append(widget)
@@ -226,7 +229,8 @@ class AlbumsView(LazyLoadingView):
                 self._context_widget.destroy()
                 self._context_widget = None
             popover = AlbumPopoverWidget(album_widget.get_id(),
-                                         self._genre_ids)
+                                         self._genre_ids,
+                                         self._artist_ids)
             popover.set_relative_to(album_widget)
             popover.set_pointing_to(self._press_rect)
             album_widget.update_overlay()

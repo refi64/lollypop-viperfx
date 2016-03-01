@@ -612,7 +612,10 @@ class Container:
                 albums += Lp().albums.get_ids([], genre_ids)
             return albums
 
-        view = AlbumsView(genre_ids, is_compilation)
+        artist_ids = []
+        if is_compilation:
+            artist_ids.append(Type.COMPILATIONS)
+        view = AlbumsView(genre_ids, artist_ids)
         loader = Loader(target=load, view=view)
         loader.start()
         view.show()

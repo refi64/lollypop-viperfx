@@ -307,14 +307,16 @@ class AlbumSimpleWidget(Gtk.Frame, AlbumWidget):
         Album widget showing cover, artist and title
     """
 
-    def __init__(self, album_id, genre_ids):
+    def __init__(self, album_id, genre_ids, artist_ids):
         """
             Init simple album widget
             @param album id as int
-            @parma parent as AlbumsView
+            @param genre ids as [int]
+            @param artist_ids as [int]
         """
         # We do not use Gtk.Builder for speed reasons
         Gtk.Frame.__init__(self)
+        self._artist_ids = artist_ids
         self.set_shadow_type(Gtk.ShadowType.NONE)
         self.get_style_context().add_class('loading')
         AlbumWidget.__init__(self, album_id, genre_ids)
@@ -473,7 +475,7 @@ class AlbumSimpleWidget(Gtk.Frame, AlbumWidget):
         Lp().player.set_party(False)
         track = Track(self._album.tracks_ids[0])
         Lp().player.load(track)
-        Lp().player.set_albums(track.id, None,
+        Lp().player.set_albums(track.id, self._artist_ids,
                                self._album.genre_ids)
         return True
 

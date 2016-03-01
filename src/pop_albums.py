@@ -158,6 +158,7 @@ class AlbumsPopover(Gtk.Popover):
             album_id = self._model.get_value(iterator, 0)
             popover = AlbumPopoverWidget(album_id,
                                          Lp().player.get_genre_ids(album_id),
+                                         [],
                                          False)
             popover.set_relative_to(self._view)
             popover.set_pointing_to(self._rect)

@@ -407,7 +407,7 @@ class SearchPopover(Gtk.Popover):
             if row.is_track:
                 Lp().player.load(Track(row.id))
             else:
-                popover = AlbumPopoverWidget(row.id, [])
+                popover = AlbumPopoverWidget(row.id, [], [])
                 popover.set_relative_to(row)
                 popover.show()
         else:
@@ -433,7 +433,7 @@ class SearchPopover(Gtk.Popover):
                 popover.set_pointing_to(rect)
                 popover.show()
             else:
-                popover = AlbumPopoverWidget(row.id, None)
+                popover = AlbumPopoverWidget(row.id, [], [])
                 popover.set_relative_to(widget)
                 popover.set_pointing_to(rect)
                 popover.show()

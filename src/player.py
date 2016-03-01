@@ -182,7 +182,7 @@ class Player(BinPlayer, QueuePlayer, UserPlaylistPlayer, RadioPlayer,
         if (genre_ids and genre_ids[0] == Type.ALL) or\
            (artist_ids and artist_ids[0] == Type.ALL):
             if artist_ids and artist_ids[0] != Type.ALL:
-                self._albums += Lp().albums.get_ids(artist_ids, None)
+                self._albums += Lp().albums.get_ids(artist_ids)
             else:
                 if Lp().settings.get_value('show-compilations'):
                     self._albums = Lp().albums.get_compilations()
