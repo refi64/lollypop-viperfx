@@ -161,31 +161,21 @@ class CollectionScanner(GObject.GObject, ScannerTagReader):
                     return
                 GLib.idle_add(self._update_progress, i, count)
                 try:
-                    if filepath not in orig_tracks:
-                        try:
-                            debug("Adding file: %s" % filepath)
-                            infos = self.get_infos(filepath)
-                            self._add2db(filepath, infos)
-                        except Exception as e:
-                            debug("Error scanning: %s, %s" % (filepath, e))
-                            string = "%s" % e
-                            if string.startswith('gst-core-error-quark'):
-                                self._missing_codecs = filepath
-                    else:
-                        mtime = int(os.path.getmtime(filepath))
-                        # Update tags by removing song and readd it
-                        if mtime != mtimes[filepath]:
-                            debug("Adding file: %s" % filepath)
-                            infos = self.get_infos(filepath)
-                            if infos is not None:
-                                self._add2db(filepath, infos, False)
-                            else:
-                                print("Can't get infos for ", filepath)
+                    debug("Adding file: %s" % filepath)
+                    new = filepath not in orig_tracks
+                    # If songs exists and mtime unchanged, continue
+                    if not new:
                         orig_tracks.remove(filepath)
-
+                        mtime = int(os.path.getmtime(filepath))
+                        if mtime == mtimes[filepath]:
+                            continue
+                    infos = self.get_infos(filepath)
+                    self._add2db(filepath, infos, new)
                 except Exception as e:
-                    print(ascii(filepath))
-                    print("CollectionScanner::_scan(): %s" % e)
+                    debug("Error scanning: %s, %s" % (filepath, e))
+                    string = "%s" % e
+                    if string.startswith('gst-core-error-quark'):
+                        self._missing_codecs = filepath
                 i += 1
 
             # Clean deleted files
