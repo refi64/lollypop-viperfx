@@ -161,26 +161,24 @@ class CollectionScanner(GObject.GObject, ScannerTagReader):
                     return
                 GLib.idle_add(self._update_progress, i, count)
                 try:
-                    mtime = int(os.path.getmtime(filepath))
                     if filepath not in orig_tracks:
                         try:
                             debug("Adding file: %s" % filepath)
                             infos = self.get_infos(filepath)
-                            self._add2db(filepath, mtime, infos)
+                            self._add2db(filepath, infos)
                         except Exception as e:
                             debug("Error scanning: %s, %s" % (filepath, e))
                             string = "%s" % e
                             if string.startswith('gst-core-error-quark'):
                                 self._missing_codecs = filepath
                     else:
+                        mtime = int(os.path.getmtime(filepath))
                         # Update tags by removing song and readd it
                         if mtime != mtimes[filepath]:
                             debug("Adding file: %s" % filepath)
                             infos = self.get_infos(filepath)
-                            track_id = Lp().tracks.get_id_by_path(filepath)
-                            self._del_from_db(track_id)
                             if infos is not None:
-                                self._add2db(filepath, mtime, infos)
+                                self._add2db(filepath, infos, False)
                             else:
                                 print("Can't get infos for ", filepath)
                         orig_tracks.remove(filepath)
@@ -198,12 +196,12 @@ class CollectionScanner(GObject.GObject, ScannerTagReader):
             sql.commit()
         GLib.idle_add(self._finish)
 
-    def _add2db(self, filepath, mtime, infos):
+    def _add2db(self, filepath, infos, new=True):
         """
             Add new file to db with informations
             @param filepath as string
-            @param file modification time as int
             @param infos as GstPbutils.DiscovererInfo
+            @param new as bool
             @return track id as int
         """
         tags = infos.get_tags()
@@ -218,6 +216,17 @@ class CollectionScanner(GObject.GObject, ScannerTagReader):
         tracknumber = self.get_tracknumber(tags)
         year = self.get_year(tags)
         duration = int(infos.get_duration()/1000000000)
+
+        # Restore stats
+        (track_pop, track_ltime, album_pop, mtime) = Lp(
+                                         ).tracks.get_stats(filepath, duration)
+        # If nothing in stats, set mtime
+        if mtime == 0:
+            mtime = int(os.path.getmtime(filepath))
+        # We have stats, remove previous track_id
+        if not new:
+            track_id = Lp().tracks.get_id_by_path(filepath)
+            self._del_from_db(track_id)
 
         (artist_ids, new_artist_ids) = self.add_artists(artists,
                                                         album_artist,
@@ -234,14 +243,15 @@ class CollectionScanner(GObject.GObject, ScannerTagReader):
 
         (album_id, new_album) = self.add_album(album_name, album_artist_id,
                                                no_album_artist, year, filepath,
-                                               0, mtime)
+                                               album_pop, mtime)
 
         (genre_ids, new_genre_ids) = self.add_genres(genres, album_id)
 
         # Add track to db
         track_id = Lp().tracks.add(title, filepath, duration,
                                    tracknumber, discnumber,
-                                   album_id, year, 0, 0, mtime)
+                                   album_id, year, track_pop,
+                                   track_ltime, mtime)
         self.update_track(track_id, artist_ids, genre_ids)
 
         # Notify about new artists/genres
