@@ -36,11 +36,6 @@ def install_excepthook():
         sys.exit()
     sys.excepthook = new_hook
 
-def signal_handler(signal, frame):
-    """ Properly quit """
-    app.player.stop_all()
-    sys.exit(-1)
-
 if __name__ == "__main__":
     install_excepthook()
     
@@ -53,7 +48,7 @@ if __name__ == "__main__":
     Gio.Resource._register(resource)
 
     app = Application()
-    signal.signal(signal.SIGINT, signal_handler)
+    signal.signal(signal.SIGINT, signal.SIG_DFL)
     if 'LOLLYPOP_TRACE' in os.environ:
         graphviz = GraphvizOutput()
         graphviz.output_file = 'lollypop.png'
