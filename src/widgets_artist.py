@@ -14,13 +14,13 @@ from gi.repository import Gtk, Gdk, GdkPixbuf, GLib, Gio
 
 from threading import Thread
 from cgi import escape
-from os import mkdir, path
 
 try:
     from lollypop.wikipedia import Wikipedia
 except:
     pass
 from lollypop.define import Lp, Type
+from lollypop.art import ArtistCache
 
 
 class ArtistContent(Gtk.Stack):
@@ -28,39 +28,12 @@ class ArtistContent(Gtk.Stack):
         Widget showing artist image and bio
     """
 
-    CACHE_PATH = path.expanduser("~") + "/.cache/lollypop_infos"
-
-    def exists_in_cache(artist):
-        """
-            Return True if an artist is cached
-            @param artist as string
-        """
-        return ArtistContent.get_artwork(artist, "lastfm") != "" or\
-            ArtistContent.get_artwork(artist, "wikipedia") != ""
-
-    def get_artwork(artist, suffix):
-        """
-            Return path for artwork, empty if none
-            @param artist as string
-            @param suffix as string
-            @return path as string
-        """
-        filepath = "%s/%s_%s.jpg" % (ArtistContent.CACHE_PATH,
-                                     "".join([c for c in artist if
-                                              c.isalpha() or
-                                              c.isdigit() or
-                                              c == ' ']).rstrip(),
-                                     suffix)
-        if path.exists(filepath):
-            return filepath
-        else:
-            return ""
-
     def __init__(self):
         """
             Init artist content
         """
         Gtk.Stack.__init__(self)
+        ArtistCache.init()
         self._artist = Type.NONE
         self.set_transition_duration(500)
         self.set_transition_type(Gtk.StackTransitionType.CROSSFADE)
@@ -73,11 +46,7 @@ class ArtistContent(Gtk.Stack):
         self.add_named(builder.get_object('notfound'), 'notfound')
         self._spinner = builder.get_object('spinner')
         self.add_named(self._spinner, 'spinner')
-        if not path.exists(self.CACHE_PATH):
-            try:
-                mkdir(self.CACHE_PATH)
-            except:
-                print("Can't create %s" % self.CACHE_PATH)
+        
 
     def should_update(self, artist):
         """
@@ -120,38 +89,11 @@ class ArtistContent(Gtk.Stack):
                     if status:
                         stream = Gio.MemoryInputStream.new_from_data(data,
                                                                      None)
-                self._save_to_cache(self._artist, content, data, suffix)
+                ArtistCache.cache(self._artist, content, data, suffix)
             GLib.idle_add(self._set_content, content, stream)
         except Exception as e:
             print("ArtistContent::populate: %s" % e)
 
-    def uncache(self, artist, suffix):
-        """
-            Remove artist from cache
-            @param artist as string
-            @param suffix as string
-        """
-        filepath = "%s/%s_%s.txt" % (self.CACHE_PATH,
-                                     "".join(
-                                        [c for c in artist if
-                                         c.isalpha() or
-                                         c.isdigit() or c == ' ']).rstrip(),
-                                     suffix)
-        f = Gio.File.new_for_path(filepath)
-        try:
-            f.delete(None)
-        except:
-            pass
-        filepath = "%s/%s_%s" % (self.CACHE_PATH,
-                                 "".join([c for c in artist if
-                                          c.isalpha() or
-                                          c.isdigit() or c == ' ']).rstrip(),
-                                 suffix)
-        f = Gio.File.new_for_path(filepath)
-        try:
-            f.delete(None)
-        except:
-            pass
 
 #######################
 # PRIVATE             #
@@ -186,37 +128,6 @@ class ArtistContent(Gtk.Stack):
             self.set_visible_child_name('notfound')
         self._spinner.stop()
 
-    def _save_to_cache(self, artist, content, data, suffix):
-        """
-            Save data to cache
-            @param content as string
-            @param data as bytes
-            @param suffix as string
-        """
-        if content is None:
-            return
-
-        filepath = "%s/%s_%s" % (self.CACHE_PATH,
-                                 "".join([c for c in artist if
-                                          c.isalpha() or
-                                          c.isdigit() or c == ' ']).rstrip(),
-                                 suffix)
-        f = Gio.File.new_for_path(filepath+".txt")
-        fstream = f.replace(None, False,
-                            Gio.FileCreateFlags.REPLACE_DESTINATION, None)
-        if fstream is not None:
-            fstream.write(content, None)
-            fstream.close()
-        if data is not None:
-            stream = Gio.MemoryInputStream.new_from_data(data, None)
-            pixbuf = GdkPixbuf.Pixbuf.new_from_stream_at_scale(stream,
-                                                               800,
-                                                               -1,
-                                                               True,
-                                                               None)
-            pixbuf.savev(filepath+".jpg", "jpeg", ["quality"], ["90"])
-            del pixbuf
-
     def _load_cache_content(self, artist, suffix):
         """
             Load from cache
@@ -224,7 +135,7 @@ class ArtistContent(Gtk.Stack):
             @param suffix as str
             @return True if loaded
         """
-        (content, data) = self._load_from_cache(artist, suffix)
+        (content, data) = ArtistCache.get(artist, suffix)
         if content:
             stream = None
             if data is not None:
@@ -233,30 +144,6 @@ class ArtistContent(Gtk.Stack):
             return True
         return False
 
-    def _load_from_cache(self, artist, suffix):
-        """
-            Load content from cache
-            @return (content as string, data as bytes)
-        """
-        filepath = "%s/%s_%s" % (self.CACHE_PATH,
-                                 "".join([c for c in artist if
-                                          c.isalpha() or
-                                          c.isdigit() or c == ' ']).rstrip(),
-                                 suffix)
-        content = None
-        data = None
-        if path.exists(filepath+".txt"):
-            f = Gio.File.new_for_path(filepath+".txt")
-            (status, content, tag) = f.load_contents()
-            if status and path.exists(filepath+".jpg"):
-                f = Gio.File.new_for_path(filepath+".jpg")
-                (status, data, tag) = f.load_contents()
-                if not status:
-                    data = None
-        if content is None:
-            return (None, None)
-        else:
-            return (content, data)
 
 
 class WikipediaContent(ArtistContent):
@@ -306,7 +193,7 @@ class WikipediaContent(ArtistContent):
         """
         if artist is None:
             artist = Lp().player.get_current_artist()
-        ArtistContent.uncache(self, artist, 'wikipedia')
+        ArtistCache.uncache(artist, 'wikipedia')
 
 #######################
 # PRIVATE             #
@@ -401,7 +288,7 @@ class LastfmContent(ArtistContent):
         """
         if artist is None:
             artist = Lp().player.get_current_artist()
-        ArtistContent.uncache(self, artist, 'lastfm')
+        ArtistCache.uncache(artist, 'lastfm')
 
 #######################
 # PRIVATE             #
