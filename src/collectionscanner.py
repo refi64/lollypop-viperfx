@@ -32,7 +32,7 @@ class CollectionScanner(GObject.GObject, ScannerTagReader):
         'scan-finished': (GObject.SignalFlags.RUN_FIRST, None, ()),
         'artist-update': (GObject.SignalFlags.RUN_FIRST, None, (int, int)),
         'genre-update': (GObject.SignalFlags.RUN_FIRST, None, (int,)),
-        'album-update': (GObject.SignalFlags.RUN_FIRST, None, (int, bool))
+        'album-update': (GObject.SignalFlags.RUN_FIRST, None, (int,))
     }
 
     def __init__(self):
@@ -261,7 +261,7 @@ class CollectionScanner(GObject.GObject, ScannerTagReader):
             for artist_id in new_artist_ids:
                 GLib.idle_add(self.emit, 'artist-update', artist_id, album_id)
             if new_album:
-                GLib.idle_add(self.emit, 'album-update', album_id, False)
+                GLib.idle_add(self.emit, 'album-update', album_id)
         return track_id
 
     def _del_from_db(self, track_id):

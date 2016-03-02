@@ -172,7 +172,7 @@ class AlbumWidget:
                                                    Gtk.IconSize.BUTTON)
             self._action_event.set_tooltip_text(_("Remove"))
 
-    def _on_album_update(self, scanner, album_id, deleted):
+    def _on_album_update(self, scanner, album_id):
         """
             On album modified, disable it
             @param scanner as CollectionScanner
@@ -181,8 +181,7 @@ class AlbumWidget:
         """
         if self._widget is None or self._album.id != album_id:
             return
-        if deleted:
-            self._widget.set_sensitive(False)
+        self._widget.set_sensitive(False)
 
     def _on_eventbox_realize(self, eventbox):
         """
