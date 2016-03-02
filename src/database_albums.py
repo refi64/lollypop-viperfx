@@ -96,17 +96,6 @@ class AlbumsDatabase:
             sql.execute("UPDATE albums SET path=? WHERE rowid=?",
                         (path, album_id))
 
-    def set_mtime(self, album_id, mtime):
-        """
-            Set mtime
-            @param album_id as int
-            @param mtime as int
-            @warning: commit needed
-        """
-        with SqlCursor(Lp().db) as sql:
-            sql.execute("UPDATE albums set mtime=? WHERE rowid=?",
-                        (mtime, album_id))
-
     def set_popularity(self, album_id, popularity, commit=False):
         """
             Set popularity
@@ -745,40 +734,6 @@ class AlbumsDatabase:
             if v is not None:
                 return v[0]
             return 0
-
-    def get_stats(self, duration, count):
-        """
-            Get stats for album with same duration and track count
-            @param path as str
-            @param duration as int
-            @return (popularity, mtime) as (int, int)
-        """
-        with SqlCursor(Lp().db) as sql:
-            try:
-                sql.execute("CREATE TEMP TABLE stats (album_id INT,\
-                                                      count INT,\
-                                                      duration INT)")
-            except:
-                sql.execute("DELETE FROM stats")
-            sql.execute("INSERT INTO stats (album_id, count, duration)\
-                            SELECT album_id,\
-                                   COUNT(1),\
-                                   SUM(tracks.duration)\
-                            FROM tracks GROUP BY album_id")
-            result = sql.execute("SELECT album_id\
-                                  FROM stats\
-                                  WHERE count=? and duration=?",
-                                 (count, duration))
-            v = result.fetchone()
-            ret = None
-            if v is not None:
-                result = sql.execute("SELECT popularity, mtime\
-                                      FROM albums\
-                                      WHERE rowid=?", (v[0],))
-                v = result.fetchone()
-                if v is not None:
-                    ret = v
-            return ret
 
     def clean(self, album_id):
         """

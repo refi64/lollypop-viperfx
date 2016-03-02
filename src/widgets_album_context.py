@@ -89,8 +89,6 @@ class AlbumPopoverWidget(Gtk.Popover):
                                                    self._on_current_changed)
         self._cover_signal = Lp().art.connect('album-artwork-changed',
                                               self._on_cover_changed)
-        self._scan_signal = Lp().scanner.connect('album-modified',
-                                                 self._on_album_modified)
         self.add(self._widget)
 
     def do_get_preferred_width(self):
@@ -117,14 +115,6 @@ class AlbumPopoverWidget(Gtk.Popover):
             @param album id as int
         """
         self._widget.update_cover(album_id)
-
-    def _on_album_modified(self, scanner, album_id):
-        """
-            On album modified, disable it
-            @param scanner as CollectionScanner
-            @param album id as int
-        """
-        self._widget.set_sensitive(False)
 
     def _on_hide(self, widget):
         """

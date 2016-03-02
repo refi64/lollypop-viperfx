@@ -32,8 +32,6 @@ class View(Gtk.Grid):
                                                    self._on_current_changed)
         self._cover_signal = Lp().art.connect('album-artwork-changed',
                                               self._on_cover_changed)
-        self._scan_signal = Lp().scanner.connect('album-modified',
-                                                 self._on_album_modified)
 
         # Stop populate thread
         self._stop = False
@@ -137,9 +135,6 @@ class View(Gtk.Grid):
         if self._cover_signal:
             Lp().art.disconnect(self._cover_signal)
             self._cover_signal = None
-        if self._scan_signal:
-            Lp().scanner.disconnect(self._scan_signal)
-            self._scan_signal = None
 
     def _on_cover_changed(self, art, album_id):
         """
@@ -156,16 +151,6 @@ class View(Gtk.Grid):
             @param player as Player
         """
         GLib.idle_add(self._update_widgets, self._get_children())
-
-    def _on_album_modified(self, scanner, album_id):
-        """
-            On album modified, disable it
-            @param scanner as CollectionScanner
-            @param album id as int
-        """
-        for child in self._get_children():
-            if album_id == child.get_id():
-                child.set_sensitive(False)
 
 
 class LazyLoadingView(View):

@@ -32,7 +32,7 @@ class CollectionScanner(GObject.GObject, ScannerTagReader):
         'scan-finished': (GObject.SignalFlags.RUN_FIRST, None, ()),
         'artist-update': (GObject.SignalFlags.RUN_FIRST, None, (int, int)),
         'genre-update': (GObject.SignalFlags.RUN_FIRST, None, (int,)),
-        'album-modified': (GObject.SignalFlags.RUN_FIRST, None, (int,))
+        'album-update': (GObject.SignalFlags.RUN_FIRST, None, (int, bool))
     }
 
     def __init__(self):
@@ -145,10 +145,8 @@ class CollectionScanner(GObject.GObject, ScannerTagReader):
             @param paths as [string], paths to scan
             @thread safe
         """
-        self._new_albums = []
         mtimes = Lp().tracks.get_mtimes()
         orig_tracks = Lp().tracks.get_paths()
-        is_empty = len(orig_tracks) == 0
 
         # Add monitors on dirs
         (new_tracks, new_dirs, count) = self._get_objects_for_paths(paths)
@@ -192,16 +190,6 @@ class CollectionScanner(GObject.GObject, ScannerTagReader):
                     print("CollectionScanner::_scan(): %s" % e)
                 i += 1
 
-            # Restore stats for new albums
-            if not is_empty:
-                for album_id in self._new_albums:
-                    duration = Lp().albums.get_duration(album_id, None)
-                    count = Lp().albums.get_count(album_id, None)
-                    value = Lp().albums.get_stats(duration, count)
-                    if value is not None:
-                        Lp().albums.set_popularity(album_id, value[0])
-                        Lp().albums.set_mtime(album_id, value[1])
-
             # Clean deleted files
             for filepath in orig_tracks:
                 track_id = Lp().tracks.get_id_by_path(filepath)
@@ -244,11 +232,9 @@ class CollectionScanner(GObject.GObject, ScannerTagReader):
             album_artist_id = artist_ids[0]
             no_album_artist = True
 
-        (album_id, new) = self.add_album(album_name, album_artist_id,
-                                         no_album_artist, year, filepath, 0,
-                                         mtime)
-        if new:
-            self._new_albums.append(album_id)
+        (album_id, new_album) = self.add_album(album_name, album_artist_id,
+                                               no_album_artist, year, filepath,
+                                               0, mtime)
 
         (genre_ids, new_genre_ids) = self.add_genres(genres, album_id)
 
@@ -267,13 +253,15 @@ class CollectionScanner(GObject.GObject, ScannerTagReader):
         self.update_track(track_id, artist_ids, genre_ids)
 
         # Notify about new artists/genres
-        if new_genre_ids or new_artist_ids:
+        if new_genre_ids or new_artist_ids or new_album:
             with SqlCursor(Lp().db) as sql:
                 sql.commit()
             for genre_id in new_genre_ids:
                 GLib.idle_add(self.emit, 'genre-update', genre_id)
             for artist_id in new_artist_ids:
                 GLib.idle_add(self.emit, 'artist-update', artist_id, album_id)
+            if new_album:
+                GLib.idle_add(self.emit, 'album-update', album_id, False)
         return track_id
 
     def _del_from_db(self, track_id):
@@ -289,7 +277,9 @@ class CollectionScanner(GObject.GObject, ScannerTagReader):
         Lp().tracks.clean(track_id)
         modified = Lp().albums.clean(album_id)
         if modified:
-            GLib.idle_add(self.emit, 'album-modified', album_id)
+            with SqlCursor(Lp().db) as sql:
+                sql.commit()
+            GLib.idle_add(self.emit, 'album-update', album_id, True)
         for artist_id in [album_artist_id] + artist_ids:
             Lp().artists.clean(artist_id)
         for genre_id in genre_ids:

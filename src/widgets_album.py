@@ -37,17 +37,20 @@ class AlbumWidget:
         self._selected = None
         self._stop = False
         self._cover = None
+        self._widget = None
         self._popover = False
         self._limit_to_current = False
         self._play_all_button = None
         self._squared_class = "squared-icon"
         self._rounded_class = "rounded-icon"
+        self._scan_signal = Lp().scanner.connect('album-update',
+                                                 self._on_album_update)
 
     def set_cover(self):
         """
             Set cover for album if state changed
         """
-        if self._cover is None:
+        if self._widget is None:
             return
         surface = Lp().art.get_album_artwork(
                             self._album,
@@ -65,7 +68,7 @@ class AlbumWidget:
             Update cover for album id id needed
             @param album id as int
         """
-        if self._cover is None:
+        if self._widget is None:
             return
         surface = Lp().art.get_album_artwork(
                             self._album,
@@ -87,7 +90,7 @@ class AlbumWidget:
         """
             Update widget state
         """
-        if self._cover is None:
+        if self._widget is None:
             return
         selected = self._album.id == Lp().player.current_track.album.id
         if selected != self._selected:
@@ -108,7 +111,7 @@ class AlbumWidget:
         """
             Update overlay icon
         """
-        if self._cover is None or self._popover:
+        if self._widget is None or self._popover:
             return
         self._on_pop_cover_closed(self)
 
@@ -168,6 +171,18 @@ class AlbumWidget:
             self._action_button.set_from_icon_name('list-remove-symbolic',
                                                    Gtk.IconSize.BUTTON)
             self._action_event.set_tooltip_text(_("Remove"))
+
+    def _on_album_update(self, scanner, album_id, deleted):
+        """
+            On album modified, disable it
+            @param scanner as CollectionScanner
+            @param album id as int
+            @param deleted as bool
+        """
+        if self._widget is None or self._album.id != album_id:
+            return
+        if deleted:
+            self._widget.set_sensitive(False)
 
     def _on_eventbox_realize(self, eventbox):
         """
@@ -525,6 +540,7 @@ class AlbumDetailedWidget(Gtk.Bin, AlbumWidget):
         builder = Gtk.Builder()
         builder.add_from_resource('/org/gnome/Lollypop/%s.ui' %
                                   type(self).__name__)
+        self._widget = builder.get_object('widget')
         self._play_button = builder.get_object('play-button')
         self._play_all_button = builder.get_object('playall-button')
         self._artwork_button = builder.get_object('artwork-button')
@@ -607,7 +623,7 @@ class AlbumDetailedWidget(Gtk.Bin, AlbumWidget):
             year.set_label(self._album.year)
             year.show()
 
-        self.add(builder.get_object('widget'))
+        self.add(self._widget)
 
         self._menu = builder.get_object('menu')
         self._menu.connect('clicked', self._pop_menu)
