@@ -23,7 +23,8 @@ class History:
     """
     LOCAL_PATH = os.path.expanduser("~") + "/.local/share/lollypop"
     DB_PATH = "%s/history.db" % LOCAL_PATH
-
+    LIMIT = 1000000  # Delete when limit is reached
+    DELETE = 100     # How many elements to delete
     create_history = '''CREATE TABLE history (
                             id INTEGER PRIMARY KEY,
                             name TEXT NOT NULL,
@@ -44,6 +45,16 @@ class History:
                 sql.commit()
         except:
             pass
+        with SqlCursor(self) as sql:
+            result = sql.execute("SELECT COUNT(*)\
+                                  FROM history")
+            v = result.fetchone()
+            if v is not None and v[0] > self.LIMIT:
+                sql.execute("DELETE FROM history\
+                             WHERE rowid IN (SELECT rowid\
+                                             FROM history\
+                                             LIMIT %s)" % self.DELETE)
+                sql.commit()
 
     def add(self, name, duration, popularity, ltime, mtime, album_popularity):
         """
