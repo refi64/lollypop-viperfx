@@ -260,8 +260,6 @@ class CollectionScanner(GObject.GObject, ScannerTagReader):
                 GLib.idle_add(self.emit, 'genre-added', genre_id)
             for artist_id in new_artist_ids:
                 GLib.idle_add(self.emit, 'artist-added', artist_id, album_id)
-            if new_album:
-                GLib.idle_add(self.emit, 'album-update', album_id)
         return track_id
 
     def _del_from_db(self, track_id):
