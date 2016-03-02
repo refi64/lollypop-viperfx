@@ -18,7 +18,7 @@ import json
 from lollypop.objects import Album
 from lollypop.define import Lp, ArtSize
 
-    
+
 class ArtDownloader:
     """
         Download artwork from the web

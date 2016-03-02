@@ -46,7 +46,6 @@ class ArtistContent(Gtk.Stack):
         self.add_named(builder.get_object('notfound'), 'notfound')
         self._spinner = builder.get_object('spinner')
         self.add_named(self._spinner, 'spinner')
-        
 
     def should_update(self, artist):
         """
@@ -143,7 +142,6 @@ class ArtistContent(Gtk.Stack):
             GLib.idle_add(self._set_content, content, stream)
             return True
         return False
-
 
 
 class WikipediaContent(ArtistContent):

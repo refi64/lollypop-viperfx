@@ -86,7 +86,6 @@ class ArtistCache:
         else:
             return ""
 
-
     def get(artist, suffix):
         """
             Get content from cache
@@ -114,7 +113,7 @@ class ArtistCache:
 
     def cache(artist, content, data, suffix):
         """
-            Save data to cache
+            Cache datas
             @param content as string
             @param data as bytes
             @param suffix as string
