@@ -16,6 +16,7 @@ app_PYTHON = \
     database_albums.py\
     database_artists.py\
     database_genres.py\
+    database_history.py\
     database_tracks.py\
     database_upgrade.py\
     define.py\

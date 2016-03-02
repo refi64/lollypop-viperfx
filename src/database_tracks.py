@@ -529,7 +529,34 @@ class TracksDatabase:
         with SqlCursor(Lp().db) as sql:
             result = sql.execute("SELECT popularity FROM tracks WHERE\
                                  rowid=?", (track_id,))
+            v = result.fetchone()
+            if v is not None:
+                return v[0]
+            return 0
 
+    def get_ltime(self, track_id):
+        """
+            Get listen time
+            @param track id  as int
+            @return listen time as int
+        """
+        with SqlCursor(Lp().db) as sql:
+            result = sql.execute("SELECT ltime FROM tracks WHERE\
+                                 rowid=?", (track_id,))
+            v = result.fetchone()
+            if v is not None:
+                return v[0]
+            return 0
+
+    def get_mtime(self, track_id):
+        """
+            Get modification time
+            @param track id  as int
+            @return popularity as int
+        """
+        with SqlCursor(Lp().db) as sql:
+            result = sql.execute("SELECT mtime FROM tracks WHERE\
+                                 rowid=?", (track_id,))
             v = result.fetchone()
             if v is not None:
                 return v[0]
@@ -570,28 +597,6 @@ class TracksDatabase:
                                   WHERE name LIKE ? LIMIT 25",
                                  ('%' + searched + '%',))
             return list(result)
-
-    def get_stats(self, path, duration):
-        """
-            Get stats for track with filename and duration
-            @param path as str
-            @param duration as int
-            @return (track popularity, track ltime,
-                     album popularity, album mtime) as (int, int, int, int)
-        """
-        with SqlCursor(Lp().db) as sql:
-            name = GLib.path_get_basename(path)
-            result = sql.execute("SELECT tracks.popularity, tracks.ltime,\
-                                  albums.popularity, albums.mtime\
-                                  FROM tracks, albums\
-                                  WHERE filepath LIKE ?\
-                                  AND albums.rowid = tracks.album_id\
-                                  AND duration=?",
-                                 ('%' + name + '%', duration))
-            v = result.fetchone()
-            if v is not None:
-                return v
-            return (0, 0, 0, 0)
 
     def search_track(self, artist, title):
         """
