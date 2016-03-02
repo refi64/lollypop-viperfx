@@ -10,7 +10,6 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-from gi.repository import GLib
 
 import os
 import sqlite3
@@ -33,7 +32,7 @@ class History:
                             popularity INT NOT NULL,
                             mtime INT NOT NULL,
                             album_popularity INT NOT NULL)'''
-                  
+
     def __init__(self):
         """
             Init playlists manager
@@ -45,7 +44,6 @@ class History:
                 sql.commit()
         except:
             pass
-
 
     def add(self, name, duration, popularity, ltime, mtime, album_popularity):
         """
@@ -64,8 +62,8 @@ class History:
                              SET popularity=?,ltime=?,\
                              mtime=?,album_popularity=?\
                              WHERE name=? AND duration=?",
-                             (popularity, ltime, mtime,
-                              album_popularity, name, duration))
+                            (popularity, ltime, mtime,
+                             album_popularity, name, duration))
             else:
                 sql.execute("INSERT INTO history\
                              (name, duration, popularity, ltime,\
@@ -84,7 +82,6 @@ class History:
              as (int, int, int, int)
         """
         with SqlCursor(self) as sql:
-            name = GLib.path_get_basename(path)
             result = sql.execute("SELECT popularity, ltime,\
                                   mtime, album_popularity\
                                   FROM history\
@@ -108,7 +105,7 @@ class History:
                                   FROM history\
                                   WHERE name=?\
                                   AND duration=?",
-                                 (name,duration))
+                                 (name, duration))
             v = result.fetchone()
             if v is not None:
                 return True

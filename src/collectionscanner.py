@@ -166,12 +166,13 @@ class CollectionScanner(GObject.GObject, ScannerTagReader):
                 GLib.idle_add(self._update_progress, i, count)
                 try:
                     debug("Adding file: %s" % filepath)
-                    # If songs exists and mtime unchanged, continue, 
+                    # If songs exists and mtime unchanged, continue,
                     # else rescan
                     if filepath in orig_tracks:
                         orig_tracks.remove(filepath)
                         mtime = int(os.path.getmtime(filepath))
                         if mtime == mtimes[filepath]:
+                            i += 1
                             continue
                         else:
                             self._del_from_db(filepath)
@@ -213,16 +214,14 @@ class CollectionScanner(GObject.GObject, ScannerTagReader):
         year = self.get_year(tags)
         duration = int(infos.get_duration()/1000000000)
         mtime = int(os.path.getmtime(filepath))
+        name = GLib.path_get_basename(filepath)
 
         # Restore stats
-        (track_pop, track_ltime, album_pop, amtime) = self._history.get(
-                                                            filepath, duration)
+        (track_pop, track_ltime, amtime, album_pop) = self._history.get(
+                                                            name, duration)
         # If nothing in stats, set mtime
         if amtime == 0:
             amtime = mtime
-
-       
-
         (artist_ids, new_artist_ids) = self.add_artists(artists,
                                                         album_artist,
                                                         sortname)
@@ -272,7 +271,7 @@ class CollectionScanner(GObject.GObject, ScannerTagReader):
         artist_ids = Lp().tracks.get_artist_ids(track_id)
         popularity = Lp().tracks.get_popularity(track_id)
         ltime = Lp().tracks.get_ltime(track_id)
-        mtime = Lp().tracks.get_mtime(track_id)
+        mtime = Lp().albums.get_mtime(album_id)
         duration = Lp().tracks.get_duration(track_id)
         album_popularity = Lp().albums.get_popularity(album_id)
         self._history.add(name, duration, popularity,

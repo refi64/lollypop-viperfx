@@ -112,6 +112,21 @@ class AlbumsDatabase:
             except:  # Database is locked
                 pass
 
+    def get_mtime(self, album_id):
+        """
+            Get modification time
+            @param album_id as int
+            @return modification time as int
+        """
+        with SqlCursor(Lp().db) as sql:
+            result = sql.execute("SELECT mtime FROM albums WHERE\
+                                 rowid=?", (album_id,))
+
+            v = result.fetchone()
+            if v is not None:
+                return v[0]
+            return 0
+
     def get_popularity(self, album_id):
         """
             Get popularity
