@@ -279,7 +279,7 @@ class CollectionScanner(GObject.GObject, ScannerTagReader):
         if modified:
             with SqlCursor(Lp().db) as sql:
                 sql.commit()
-            GLib.idle_add(self.emit, 'album-update', album_id, True)
+            GLib.idle_add(self.emit, 'album-update', album_id)
         for artist_id in [album_artist_id] + artist_ids:
             Lp().artists.clean(artist_id)
         for genre_id in genre_ids:
