@@ -152,8 +152,10 @@ class CollectionScanner(GObject.GObject, ScannerTagReader):
         mtimes = Lp().tracks.get_mtimes()
         orig_tracks = Lp().tracks.get_paths()
 
-        # Add monitors on dirs
         (new_tracks, new_dirs, count) = self._get_objects_for_paths(paths)
+        count += len(orig_tracks)
+
+        # Add monitors on dirs
         if self._inotify is not None:
             for d in new_dirs:
                 self._inotify.add_monitor(d)
@@ -170,6 +172,7 @@ class CollectionScanner(GObject.GObject, ScannerTagReader):
                     # else rescan
                     if filepath in orig_tracks:
                         orig_tracks.remove(filepath)
+                        i += 1
                         mtime = int(os.path.getmtime(filepath))
                         if mtime == mtimes[filepath]:
                             i += 1
@@ -187,6 +190,8 @@ class CollectionScanner(GObject.GObject, ScannerTagReader):
 
             # Clean deleted files
             for filepath in orig_tracks:
+                i += 1
+                GLib.idle_add(self._update_progress, i, count)
                 self._del_from_db(filepath)
 
             sql.commit()
