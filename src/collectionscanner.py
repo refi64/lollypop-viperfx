@@ -253,7 +253,7 @@ class CollectionScanner(GObject.GObject, ScannerTagReader):
         self.update_track(track_id, artist_ids, genre_ids)
 
         # Notify about new artists/genres
-        if new_genre_ids or new_artist_ids or new_album:
+        if new_genre_ids or new_artist_ids:
             with SqlCursor(Lp().db) as sql:
                 sql.commit()
             for genre_id in new_genre_ids:
