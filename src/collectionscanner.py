@@ -30,8 +30,8 @@ class CollectionScanner(GObject.GObject, ScannerTagReader):
     """
     __gsignals__ = {
         'scan-finished': (GObject.SignalFlags.RUN_FIRST, None, ()),
-        'artist-update': (GObject.SignalFlags.RUN_FIRST, None, (int, int)),
-        'genre-update': (GObject.SignalFlags.RUN_FIRST, None, (int,)),
+        'artist-added': (GObject.SignalFlags.RUN_FIRST, None, (int, int)),
+        'genre-added': (GObject.SignalFlags.RUN_FIRST, None, (int,)),
         'album-update': (GObject.SignalFlags.RUN_FIRST, None, (int,))
     }
 
@@ -257,9 +257,9 @@ class CollectionScanner(GObject.GObject, ScannerTagReader):
             with SqlCursor(Lp().db) as sql:
                 sql.commit()
             for genre_id in new_genre_ids:
-                GLib.idle_add(self.emit, 'genre-update', genre_id)
+                GLib.idle_add(self.emit, 'genre-added', genre_id)
             for artist_id in new_artist_ids:
-                GLib.idle_add(self.emit, 'artist-update', artist_id, album_id)
+                GLib.idle_add(self.emit, 'artist-added', artist_id, album_id)
             if new_album:
                 GLib.idle_add(self.emit, 'album-update', album_id)
         return track_id

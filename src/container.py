@@ -395,8 +395,8 @@ class Container:
             @return True if hard scan is running
         """
         Lp().scanner.connect('scan-finished', self.on_scan_finished)
-        Lp().scanner.connect('genre-update', self._add_genre)
-        Lp().scanner.connect('artist-update', self._add_artist)
+        Lp().scanner.connect('genre-added', self._add_genre)
+        Lp().scanner.connect('artist-added', self._add_artist)
 
     def _update_playlists(self, playlists, playlist_id):
         """
