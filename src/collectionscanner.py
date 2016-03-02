@@ -238,18 +238,10 @@ class CollectionScanner(GObject.GObject, ScannerTagReader):
 
         (genre_ids, new_genre_ids) = self.add_genres(genres, album_id)
 
-        # Restore stats
-        value = Lp().tracks.get_stats(filepath, duration)
-        if value is None:
-            popularity = 0
-            ltime = 0
-        else:
-            popularity = value[0]
-            ltime = value[1]
         # Add track to db
         track_id = Lp().tracks.add(title, filepath, duration,
                                    tracknumber, discnumber,
-                                   album_id, year, popularity, ltime, mtime)
+                                   album_id, year, 0, 0, mtime)
         self.update_track(track_id, artist_ids, genre_ids)
 
         # Notify about new artists/genres

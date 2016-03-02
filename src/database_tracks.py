@@ -10,8 +10,6 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-from gi.repository import GLib
-
 from gettext import gettext as _
 import itertools
 
@@ -570,25 +568,6 @@ class TracksDatabase:
                                   WHERE name LIKE ? LIMIT 25",
                                  ('%' + searched + '%',))
             return list(result)
-
-    def get_stats(self, path, duration):
-        """
-            Get stats for track with filename and duration
-            @param path as str
-            @param duration as int
-            @return (popularity, mtime) as (int, int)
-        """
-        with SqlCursor(Lp().db) as sql:
-            name = GLib.path_get_basename(path)
-            result = sql.execute("SELECT popularity, ltime\
-                                  FROM tracks\
-                                  WHERE filepath LIKE ?\
-                                  AND duration=?",
-                                 ('%' + name + '%', duration))
-            v = result.fetchone()
-            if v is not None:
-                return v
-            return None
 
     def search_track(self, artist, title):
         """
