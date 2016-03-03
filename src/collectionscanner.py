@@ -151,6 +151,7 @@ class CollectionScanner(GObject.GObject, ScannerTagReader):
             self._history = History()
         mtimes = Lp().tracks.get_mtimes()
         orig_tracks = Lp().tracks.get_paths()
+        was_empty = len(orig_tracks) == 0
 
         (new_tracks, new_dirs, count) = self._get_objects_for_paths(paths)
         count += len(orig_tracks)
@@ -180,7 +181,13 @@ class CollectionScanner(GObject.GObject, ScannerTagReader):
                         else:
                             self._del_from_db(filepath)
                     infos = self.get_infos(filepath)
-                    self._add2db(filepath, infos)
+                    # On first scan, use modification time
+                    # Else, use current time
+                    if was_empty:
+                        mtime = int(os.path.getmtime(filepath))
+                    else:
+                        mtime = int(time())
+                    self._add2db(filepath, infos, mtime)
                 except Exception as e:
                     debug("Error scanning: %s, %s" % (filepath, e))
                     string = "%s" % e
@@ -199,11 +206,12 @@ class CollectionScanner(GObject.GObject, ScannerTagReader):
         del self._history
         self._history = None
 
-    def _add2db(self, filepath, infos):
+    def _add2db(self, filepath, infos, mtime):
         """
             Add new file to db with informations
             @param filepath as string
             @param infos as GstPbutils.DiscovererInfo
+            @param mtime as int
             @return track id as int
         """
         tags = infos.get_tags()
@@ -218,7 +226,6 @@ class CollectionScanner(GObject.GObject, ScannerTagReader):
         tracknumber = self.get_tracknumber(tags)
         year = self.get_year(tags)
         duration = int(infos.get_duration()/1000000000)
-        mtime = int(os.path.getmtime(filepath))
         name = GLib.path_get_basename(filepath)
 
         # Restore stats
