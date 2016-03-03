@@ -133,7 +133,6 @@ class CollectionScanner(GObject.GObject, ScannerTagReader):
         """
             Notify from main thread when scan finished
         """
-        Lp().settings.set_value('db-mtime', GLib.Variant('i', int(time())))
         self.stop()
         self.emit("scan-finished")
         if self._missing_codecs is not None:

@@ -96,11 +96,6 @@
             <summary>Convert to MP3(MTP)</summary>
             <description></description>
         </key>
-        <key type="i" name="db-mtime">
-            <default>0</default>
-            <summary>INTERNAL</summary>
-            <description></description>
-        </key>
          <key type="b" name="auto-update">
             <default>true</default>
             <summary>Auto update music</summary>
