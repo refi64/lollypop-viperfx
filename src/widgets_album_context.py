@@ -127,6 +127,3 @@ class AlbumPopoverWidget(Gtk.Popover):
         if self._cover_signal:
             Lp().art.disconnect(self._cover_signal)
             self._cover_signal = None
-        if self._scan_signal:
-            Lp().scanner.disconnect(self._scan_signal)
-            self._scan_signal = None
