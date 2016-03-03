@@ -185,10 +185,16 @@ class ToolbarInfos(Gtk.Bin, InfosController):
             @param eventbox as Gtk.EventBox
             @param event as Gdk.Event
         """
-        if self._pop_albums is None:
-            self._pop_albums = AlbumsPopover()
-            self._pop_albums.set_relative_to(self._cover)
-        self._pop_albums.show()
+        if Lp().player.current_track.id == Type.EXTERNALS:
+                expopover = ExternalsPopover()
+                expopover.set_relative_to(self._cover)
+                expopover.populate()
+                expopover.show()
+        else:
+            if self._pop_albums is None:
+                self._pop_albums = AlbumsPopover()
+                self._pop_albums.set_relative_to(self._cover)
+            self._pop_albums.show()
         return True
 
     def _on_title_press_event(self, widget, event):
