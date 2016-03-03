@@ -80,12 +80,6 @@ class AlbumWidget:
             self._set_overlay_orientation(Gtk.Orientation.HORIZONTAL)
         del surface
 
-    def responsive_design(self):
-        """
-            Update the view based on current size
-        """
-        pass
-
     def update_state(self):
         """
             Update widget state
@@ -537,6 +531,7 @@ class AlbumDetailedWidget(Gtk.Bin, AlbumWidget):
         self._artist_ids = artist_ids
         self._limit_to_current = not update_albums
         self.set_property('height-request', ArtSize.BIG)
+        self.connect('size-allocate', self._on_size_allocate)
         builder = Gtk.Builder()
         builder.add_from_resource('/org/gnome/Lollypop/%s.ui' %
                                   type(self).__name__)
@@ -613,7 +608,6 @@ class AlbumDetailedWidget(Gtk.Bin, AlbumWidget):
 
         self._cover = builder.get_object('cover')
         self._color = builder.get_object('color')
-        self.responsive_design()
         self.set_cover()
         self.update_state()
 
@@ -634,22 +628,6 @@ class AlbumDetailedWidget(Gtk.Bin, AlbumWidget):
             Disable play all albums button
         """
         self._play_all_button = None
-
-    def responsive_design(self):
-        """
-            Update the view based on current size
-        """
-        width = Lp().window.get_view_width()
-        if width < WindowSize.MONSTER:
-            self._box.set_min_children_per_line(1)
-            self._box.set_max_children_per_line(1)
-        else:
-            self._box.set_min_children_per_line(2)
-            self._box.set_max_children_per_line(2)
-        if width < WindowSize.MEDIUM:
-            self._coverbox.hide()
-        else:
-            self._coverbox.show()
 
     def update_playing_indicator(self):
         """
@@ -752,6 +730,23 @@ class AlbumDetailedWidget(Gtk.Bin, AlbumWidget):
                          track.duration)
 
         GLib.idle_add(self._add_tracks, tracks, widget, i + 1)
+
+    def _on_size_allocate(self, widget, allocation):
+        """
+            Change box max/min children
+            @param widget as Gtk.Widget
+            @param allocation as Gtk.Allocation
+        """
+        if allocation.width < WindowSize.BIG:
+            self._box.set_min_children_per_line(1)
+            self._box.set_max_children_per_line(1)
+        else:
+            self._box.set_min_children_per_line(2)
+            self._box.set_max_children_per_line(2)
+        if allocation.width < WindowSize.MEDIUM:
+            self._coverbox.hide()
+        else:
+            self._coverbox.show()
 
     def _on_pop_menu_closed(self, widget):
         """

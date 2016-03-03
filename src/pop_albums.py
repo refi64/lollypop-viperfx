@@ -20,7 +20,7 @@ from lollypop.widgets_album_context import AlbumPopoverWidget
 
 class AlbumsPopover(Gtk.Popover):
     """
-        Popover with queue management
+        Popover showing current albums
         @Warning: destroy it self on close
     """
 
@@ -183,12 +183,13 @@ class AlbumsPopover(Gtk.Popover):
 
     def _on_unmap(self, widget):
         """
-            Disconnect signals
+            Disconnect signals, clear view
             @param widget as Gtk.Widget
         """
         self._stop = True
         self._disconnect_signals()
         self._model.clear()
+        self.destroy()
 
     def _on_keyboard_event(self, widget, event):
         """

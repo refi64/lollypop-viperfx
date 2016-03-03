@@ -64,13 +64,6 @@ class View(Gtk.Grid):
         """
         GLib.idle_add(self._update_overlays, self._get_children())
 
-    def update_responsive_design(self):
-        """
-            Update the view based on current size
-        """
-        GLib.idle_add(self._update_responsive_design,
-                      self._get_children())
-
     def populate(self):
         pass
 
@@ -108,15 +101,6 @@ class View(Gtk.Grid):
             widget.update_state()
             widget.update_playing_indicator()
             GLib.idle_add(self._update_widgets, widgets)
-
-    def _update_responsive_design(self, widgets):
-        """
-            Update widgets
-        """
-        if widgets:
-            widget = widgets.pop(0)
-            widget.responsive_design()
-            GLib.idle_add(self._update_responsive_design, widgets)
 
     def _get_children(self):
         """

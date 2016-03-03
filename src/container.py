@@ -12,10 +12,10 @@
 
 from gi.repository import Gtk, Gio, GLib
 
-from threading import Thread, Lock
 from gettext import gettext as _
 
 from lollypop.define import Lp, Type
+from lollypop.loader import Loader
 from lollypop.selectionlist import SelectionList
 from lollypop.view_container import ViewContainer
 from lollypop.view_albums import AlbumsView
@@ -31,47 +31,6 @@ class Device:
     id = None
     name = None
     uri = None
-
-
-class Loader(Thread):
-    """
-        Helper to load data on a separate thread and
-        dispatch it to the UI thread
-    """
-    active = {}
-    active_lock = Lock()
-
-    def __init__(self, target, view=None, on_finished=None):
-        Thread.__init__(self)
-        self.daemon = True
-        self._target = target
-        self._view = view
-        self._on_finished = on_finished
-        self._invalidated = False
-        self._invalidated_lock = Lock()
-
-    def is_invalidated(self):
-        with self._invalidated_lock:
-            return self._invalidated
-
-    def invalidate(self):
-        with self._invalidated_lock:
-            self._invalidated = True
-
-    def run(self):
-        with Loader.active_lock:
-            active = Loader.active.get(self._view, None)
-            if active:
-                active.invalidate()
-            Loader.active[self._view] = self
-        result = self._target()
-        if not self.is_invalidated():
-            if self._on_finished:
-                GLib.idle_add(self._on_finished, (result))
-            elif self._view:
-                GLib.idle_add(self._view.populate, (result))
-            with Loader.active_lock:
-                Loader.active.pop(self._view, None)
 
 
 class Container:

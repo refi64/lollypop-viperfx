@@ -45,6 +45,8 @@ class PlaylistWidget(Gtk.Bin):
         self._box.set_property('valign', Gtk.Align.START)
         self._box.show()
 
+        self.connect('size-allocate', self._on_size_allocate)
+
         loved = playlist_id != Type.LOVED
         self._tracks_widget1 = TracksWidget(loved)
         self._tracks_widget2 = TracksWidget(loved)
@@ -62,7 +64,6 @@ class PlaylistWidget(Gtk.Bin):
         self._box.add(self._tracks_widget1)
         self._box.add(self._tracks_widget2)
         self.add(self._box)
-        self.responsive_design()
 
     def get_id(self):
         """
@@ -70,18 +71,6 @@ class PlaylistWidget(Gtk.Bin):
             @return int
         """
         return Type.PLAYLISTS
-
-    def responsive_design(self):
-        """
-            Update the view based on current size
-        """
-        width = Lp().window.get_view_width()
-        if width < WindowSize.MONSTER:
-            self._box.set_min_children_per_line(1)
-            self._box.set_max_children_per_line(1)
-        else:
-            self._box.set_min_children_per_line(2)
-            self._box.set_max_children_per_line(2)
 
     def update_overlay(self):
         """
@@ -184,6 +173,19 @@ class PlaylistWidget(Gtk.Bin):
         else:
             widget.add_album(track.id, None, pos, name, track.duration)
         GLib.idle_add(self._add_tracks, tracks, widget, pos + 1, album.id)
+
+    def _on_size_allocate(self, widget, allocation):
+        """
+            Change box max/min children
+            @param widget as Gtk.Widget
+            @param allocation as Gtk.Allocation
+        """
+        if allocation.width < WindowSize.BIG:
+            self._box.set_min_children_per_line(1)
+            self._box.set_max_children_per_line(1)
+        else:
+            self._box.set_min_children_per_line(2)
+            self._box.set_max_children_per_line(2)
 
     def _on_activated(self, widget, track_id):
         """

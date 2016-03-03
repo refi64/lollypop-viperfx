@@ -16,6 +16,7 @@ from cgi import escape
 from lollypop.pop_menu import TrackMenuPopover
 from lollypop.pop_tunein import TuneinPopover
 from lollypop.pop_albums import AlbumsPopover
+from lollypop.pop_playlist import PlaylistPopover
 from lollypop.pop_externals import ExternalsPopover
 from lollypop.pop_infos import InfosPopover
 from lollypop.pop_menu import PopToolbarMenu
@@ -87,7 +88,6 @@ class ToolbarInfos(Gtk.Bin, InfosController):
         builder.connect_signals(self)
         self._pop_tunein = None
         self._pop_infos = None
-        self._pop_albums = None
         self._timeout_id = None
         self._width = 0
 
@@ -180,21 +180,29 @@ class ToolbarInfos(Gtk.Bin, InfosController):
 
     def _on_album_press_event(self, eventbox, event):
         """
-            Pop curent albums
-            Show playlist menu on right
+            Pop albums/radios/playlists/externals
             @param eventbox as Gtk.EventBox
             @param event as Gdk.Event
         """
         if Lp().player.current_track.id == Type.EXTERNALS:
-                expopover = ExternalsPopover()
-                expopover.set_relative_to(self._cover)
-                expopover.populate()
-                expopover.show()
+            expopover = ExternalsPopover()
+            expopover.set_relative_to(self._cover)
+            expopover.populate()
+            expopover.show()
+        elif Lp().player.current_track.id == Type.RADIOS:
+            if self._pop_tunein is None:
+                self._pop_tunein = TuneinPopover()
+                self._pop_tunein.populate()
+                self._pop_tunein.set_relative_to(self._cover)
+                self._pop_tunein.show()
+        elif Lp().player.get_user_playlist_id() is not None:
+            pop_playlist = PlaylistPopover()
+            pop_playlist.set_relative_to(self._cover)
+            pop_playlist.show()
         else:
-            if self._pop_albums is None:
-                self._pop_albums = AlbumsPopover()
-                self._pop_albums.set_relative_to(self._cover)
-            self._pop_albums.show()
+            pop_albums = AlbumsPopover()
+            pop_albums.set_relative_to(self._cover)
+            pop_albums.show()
         return True
 
     def _on_title_press_event(self, widget, event):

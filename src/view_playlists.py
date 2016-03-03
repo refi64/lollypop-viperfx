@@ -25,10 +25,11 @@ class PlaylistView(View):
         Show playlist tracks
     """
 
-    def __init__(self, playlist_id):
+    def __init__(self, playlist_id, show_edit=True):
         """
             Init PlaylistView
             @parma playlist id as int
+            @param show edit as bool
         """
         View.__init__(self)
         self._playlist_id = playlist_id
@@ -43,7 +44,7 @@ class PlaylistView(View):
 
         self._edit_btn = builder.get_object('edit_btn')
 
-        if playlist_id < 0 and playlist_id != Type.LOVED:
+        if playlist_id < 0 and playlist_id != Type.LOVED or not show_edit:
             self._edit_btn.hide()
         self._back_btn = builder.get_object('back_btn')
         self._title = builder.get_object('title')
@@ -113,6 +114,7 @@ class PlaylistView(View):
             Disconnect signals
             @param widget as Gtk.Widget
         """
+        View._on_destroy(self, widget)
         if self._signal_id:
             Lp().playlists.disconnect(self._signal_id)
             self._signal_id = None

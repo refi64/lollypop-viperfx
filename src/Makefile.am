@@ -24,6 +24,7 @@ app_PYTHON = \
     inotify.py\
     lastfm.py\
     list.py\
+    loader.py\
     miniplayer.py\
     mpris.py\
     notification.py\
@@ -44,6 +45,7 @@ app_PYTHON = \
     pop_infos.py\
     pop_menu.py\
     pop_next.py\
+    pop_playlist.py\
     pop_queue.py\
     pop_radio.py\
     pop_search.py\
