@@ -43,7 +43,7 @@ class ViewContainer(Gtk.Stack):
                 if not isinstance(child, DeviceView):
                     # Delayed destroy as we may have an animation running
                     # Gtk.StackTransitionType.CROSSFADE
-                    GLib.timeout_add(self._duration,
+                    GLib.timeout_add(self._duration*5,
                                      self._delayedclean_view,
                                      child)
 
