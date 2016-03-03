@@ -84,6 +84,19 @@ class PlaylistWidget(Gtk.Bin):
         """
         pass
 
+    def get_current_coordinates(self):
+        """
+            If current track in widget, return it coordinates,
+            else return (0, 0)
+            @return (x, y) as (int, int)
+        """
+        coord = (0, 0)
+        for child in self._tracks_widget1.get_children() + \
+                self._tracks_widget2.get_children():
+            if child.get_id() == Lp().player.current_track.id:
+                coord = child.translate_coordinates(self, 0, 0)
+        return coord
+
     def populate_list_left(self, tracks, pos):
         """
             Populate left list

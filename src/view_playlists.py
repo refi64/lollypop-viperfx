@@ -25,14 +25,15 @@ class PlaylistView(View):
         Show playlist tracks
     """
 
-    def __init__(self, playlist_id, show_edit=True):
+    def __init__(self, playlist_id, popover=False):
         """
             Init PlaylistView
             @parma playlist id as int
-            @param show edit as bool
+            @param popover as bool
         """
         View.__init__(self)
         self._playlist_id = playlist_id
+        self._popover = popover
         self._signal_id = Lp().playlists.connect('playlist-changed',
                                                  self._update)
 
@@ -44,7 +45,7 @@ class PlaylistView(View):
 
         self._edit_btn = builder.get_object('edit_btn')
 
-        if playlist_id < 0 and playlist_id != Type.LOVED or not show_edit:
+        if playlist_id < 0 and playlist_id != Type.LOVED or popover:
             self._edit_btn.hide()
         self._back_btn = builder.get_object('back_btn')
         self._title = builder.get_object('title')
@@ -132,6 +133,10 @@ class PlaylistView(View):
             Current song changed
             @param player as Player
         """
+        # Scroll to track if in popover
+        if self._popover:
+            self._scrolled.get_vadjustment().set_value(
+                            self._playlist_widget.get_current_coordinates()[1])
         self._playlist_widget.update_playing_indicator()
 
 
