@@ -87,7 +87,7 @@ class UserPlaylistPlayer(BasePlayer):
             Next Track
             @return Track
         """
-        track = self.current_track
+        track = Track()
         if self._user_playlist and\
            self.current_track.id in self._user_playlist:
             idx = self._user_playlist.index(self.current_track.id)
@@ -104,7 +104,7 @@ class UserPlaylistPlayer(BasePlayer):
             Prev track id
             @return Track
         """
-        track = self.current_track
+        track = Track()
         if self._user_playlist and\
            self.current_track.id in self._user_playlist:
             idx = self._user_playlist.index(self.current_track.id)
