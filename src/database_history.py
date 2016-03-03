@@ -55,6 +55,7 @@ class History:
                                              FROM history\
                                              LIMIT %s)" % self.DELETE)
                 sql.commit()
+                sql.execute('VACUUM')
 
     def add(self, name, duration, popularity, ltime, mtime, album_popularity):
         """
