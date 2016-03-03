@@ -31,26 +31,6 @@ class UserPlaylistPlayer(BasePlayer):
         self._user_playlist = []
         self._user_playlist_backup = []
 
-    def load_in_playlist(self, track_id, play=True):
-        """
-            Load track from playlist
-            @param track id as int
-        """
-        for track in self._user_playlist:
-            if track.id == track_id:
-                if play:
-                    self.load(track)
-                else:
-                    self._load_track(track)
-                break
-
-    def set_user_playlist_id(self, playlist_id):
-        """
-            Set user playlist id
-            @param playlist id as int
-        """
-        self._user_playlist_id = playlist_id
-
     def get_user_playlist_id(self):
         """
             Get playlist id
@@ -70,30 +50,25 @@ class UserPlaylistPlayer(BasePlayer):
         tracks = []
         self._user_playlist_id = playlist_id
         for track_id in Lp().playlists.get_tracks_ids(playlist_id):
-            if track_id == Lp().player.current_track.id:
-                tracks.append(Lp().player.current_track)
-            else:
-                tracks.append(Track(track_id))
+            tracks.append(track_id)
         self._user_playlist = tracks
         self._shuffle_playlist()
         self._albums = []
 
-    def populate_user_playlist_by_tracks(self, tracks):
+    def populate_user_playlist_by_tracks(self, track_ids, playlist_id):
         """
             Set user playlist as current playback playlist
-            @param array of tracks as [Track]
-            @param track id as int
+            @param array of track ids as [int]
+            @param playlist id as int
         """
+        self._user_playlist_id = playlist_id
         if not Lp().settings.get_value('repeat'):
             self.context.next = NextContext.STOP_ALL
         if Lp().player.is_party():
             Lp().player.set_party(False)
         self._user_playlist = []
-        for track in tracks:
-            if track.id == Lp().player.current_track.id:
-                self._user_playlist.append(Lp().player.current_track)
-            else:
-                self._user_playlist.append(track)
+        for track_id in track_ids:
+            self._user_playlist.append(track_id)
         self._shuffle_playlist()
         self._albums = []
 
@@ -112,16 +87,16 @@ class UserPlaylistPlayer(BasePlayer):
             Next Track
             @return Track
         """
-        track = Track()
+        track = self.current_track
         if self._user_playlist and\
-           self.current_track in self._user_playlist:
-            idx = self._user_playlist.index(self.current_track)
+           self.current_track.id in self._user_playlist:
+            idx = self._user_playlist.index(self.current_track.id)
             if idx + 1 >= len(self._user_playlist):
                 self._finished = NextContext.STOP_ALL
                 idx = 0
             else:
                 idx += 1
-            track = self._user_playlist[idx]
+            track = Track(self._user_playlist[idx])
         return track
 
     def prev(self):
@@ -129,15 +104,15 @@ class UserPlaylistPlayer(BasePlayer):
             Prev track id
             @return Track
         """
-        track = Track()
+        track = self.current_track
         if self._user_playlist and\
-           self.current_track in self._user_playlist:
-            idx = self._user_playlist.index(self.current_track)
+           self.current_track.id in self._user_playlist:
+            idx = self._user_playlist.index(self.current_track.id)
             if idx - 1 < 0:
                 idx = len(self._user_playlist) - 1
             else:
                 idx -= 1
-            track = self._user_playlist[idx]
+            track = Track(self._user_playlist[idx])
         return track
 
 #######################

@@ -587,8 +587,10 @@ class Container:
             @param playlist id as int
         """
         def load():
-            if playlist_id == Lp().player.get_user_playlist_id():
-                tracks = [t.id for t in Lp().player.get_user_playlist()]
+            current_playlist_id = Lp().player.get_user_playlist_id()
+            # If a dynamic playlist is playing, do not look in database
+            if current_playlist_id is not None and current_playlist_id < 0:
+                tracks = Lp().player.get_user_playlist()
             elif playlist_id == Type.POPULARS:
                 tracks = Lp().tracks.get_populars()
             elif playlist_id == Type.RECENTS:

@@ -278,12 +278,11 @@ class Player(BinPlayer, QueuePlayer, UserPlaylistPlayer, RadioPlayer,
                 track.set_radio(name, url)
                 self.load(track)
             elif Lp().tracks.get_path(track_id) != "":
+                track = Track(track_id)
+                self._load_track(track)
                 if playlist_id >= 0:
                     self.populate_user_playlist_by_id(playlist_id)
-                    self.load_in_playlist(track_id, False)
                 else:
-                    track = Track(track_id)
-                    self._load_track(track)
                     self._albums = Lp().artists.get_albums(
                                                          track.album_artist_id)
                     for album_id in self._albums:

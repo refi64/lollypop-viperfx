@@ -163,9 +163,9 @@ class PlaylistWidget(Gtk.Bin):
             name = "<b>%s</b>\n%s" % (escape(track.artist_names), name)
 
         if widget == self._tracks_widget1:
-            self._tracks1.append(track)
+            self._tracks1.append(track.id)
         else:
-            self._tracks2.append(track)
+            self._tracks2.append(track.id)
 
         if album.id != previous_album_id:
             widget.add_album(track.id, album, pos,
@@ -193,16 +193,11 @@ class PlaylistWidget(Gtk.Bin):
             @param widget as TracksWidget
             @param track as Track
         """
-        if Lp().player.is_party():
-            Lp().player.load(Track(track_id))
-        elif self._playlist_id < 0:
-            Lp().player.load(Track(track_id))
-            Lp().player.set_user_playlist_id(self._playlist_id)
+        Lp().player.load(Track(track_id))
+        if not Lp().player.is_party():
             Lp().player.populate_user_playlist_by_tracks(self._tracks1 +
-                                                         self._tracks2)
-        else:
-            Lp().player.populate_user_playlist_by_id(self._playlist_id)
-            Lp().player.load_in_playlist(track_id)
+                                                         self._tracks2,
+                                                         self._playlist_id)
 
 
 class PlaylistsManagerWidget(Gtk.Bin):
