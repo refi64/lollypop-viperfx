@@ -208,6 +208,7 @@ class BinPlayer(BasePlayer):
             Stop current track, load track id and play it
             If was playing, do not use play as status doesn't changed
             @param track as Track
+            @param init volume as bool
         """
         was_playing = self.is_playing()
         self._playbin.set_state(Gst.State.NULL)
@@ -271,10 +272,11 @@ class BinPlayer(BasePlayer):
         """
             Crossfade tracks
             @param duration as int
-            @param next as bool
             @param track as Track
+            @param next as bool
         """
-        if self.current_track.id == Type.RADIOS or self._need_to_stop():
+        # No cossfading if we need to stop
+        if self._need_to_stop() and next:
             return
         if self._playbin.query_position(
            Gst.Format.TIME)[1] / 1000000000 > self.current_track.duration - 10:
