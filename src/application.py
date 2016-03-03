@@ -303,7 +303,7 @@ class Application(Gtk.Application):
         """
         self.player.load_external(uri)
         if self._externals_count == 0:
-            if self.is_party():
+            if self.player.is_party():
                 self.player.set_party(False)
             self.player.play_first_external()
         self._externals_count += 1

@@ -486,7 +486,7 @@ class AlbumSimpleWidget(Gtk.Frame, AlbumWidget):
             @param: event as Gdk.Event
         """
         self._show_append(False)
-        if self.is_party():
+        if Lp().player.is_party():
             Lp().player.set_party(False)
         track = Track(self._album.tracks_ids[0])
         Lp().player.load(track)
@@ -788,7 +788,7 @@ class AlbumDetailedWidget(Gtk.Bin, AlbumWidget):
             @param: event as Gdk.Event
         """
         self._show_append(False)
-        if self.is_party():
+        if Lp().player.is_party():
             Lp().player.set_party(False)
         track = Track(self._album.tracks_ids[0])
         Lp().player.load(track)
