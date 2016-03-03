@@ -135,8 +135,9 @@ class PlaylistView(View):
         """
         # Scroll to track if in popover
         if self._popover:
-            self._scrolled.get_vadjustment().set_value(
-                            self._playlist_widget.get_current_coordinates()[1])
+            y = self._playlist_widget.get_current_coordinates()[1]
+            if y != -1:
+                self._scrolled.get_vadjustment().set_value(y)
         self._playlist_widget.update_playing_indicator()
 
 

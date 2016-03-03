@@ -38,6 +38,7 @@ class PlaylistWidget(Gtk.Bin):
         self._tracks1 = []
         self._tracks2 = []
         self._stop = False
+        self._return_invalid_coordinates = False
 
         self._box = Gtk.FlowBox()
         self._box.set_selection_mode(Gtk.SelectionMode.NONE)
@@ -87,14 +88,16 @@ class PlaylistWidget(Gtk.Bin):
     def get_current_coordinates(self):
         """
             If current track in widget, return it coordinates,
-            else return (0, 0)
+            else return (-1, -1)
             @return (x, y) as (int, int)
         """
-        coord = (0, 0)
-        for child in self._tracks_widget1.get_children() + \
-                self._tracks_widget2.get_children():
-            if child.get_id() == Lp().player.current_track.id:
-                coord = child.translate_coordinates(self, 0, 0)
+        coord = (-1, -1)
+        if not self._return_invalid_coordinates:
+            for child in self._tracks_widget1.get_children() + \
+                    self._tracks_widget2.get_children():
+                if child.get_id() == Lp().player.current_track.id:
+                    coord = child.translate_coordinates(self, 0, 0)
+        self._return_invalid_coordinates = False
         return coord
 
     def populate_list_left(self, tracks, pos):
@@ -206,6 +209,7 @@ class PlaylistWidget(Gtk.Bin):
             @param widget as TracksWidget
             @param track as Track
         """
+        self._return_invalid_coordinates = True
         Lp().player.load(Track(track_id))
         if not Lp().player.is_party():
             Lp().player.populate_user_playlist_by_tracks(self._tracks1 +
