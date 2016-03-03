@@ -189,7 +189,11 @@ class LazyLoadingView(View):
             widget = self._lazy_queue.pop(0)
         if widget is not None:
             widget.init_widget()
-            GLib.idle_add(self._lazy_loading, widgets, scroll_value)
+            if self._timeout_id is None:
+                GLib.idle_add(self._lazy_loading, widgets, scroll_value)
+            else:
+                GLib.timeout_add(50, self._lazy_loading,
+                                 widgets, scroll_value)
 
     def _is_visible(self, widget):
         """
@@ -205,11 +209,13 @@ class LazyLoadingView(View):
         except:
             return True
 
-    def _lazy_or_not(self):
+    def _lazy_or_not(self, adj):
         """
             Add visible widgets to lazy queue
+            @param adj as Gtk.Adjustment
         """
         self._timeout_id = None
+        self._scroll_value = adj.get_value()
         widgets = []
         for child in self._lazy_queue:
             if self._is_visible(child):
@@ -224,7 +230,6 @@ class LazyLoadingView(View):
         if self._timeout_id is not None:
             GLib.source_remove(self._timeout_id)
             self._timeout_id = None
-        self._scroll_value = adj.get_value()
         if not self._lazy_queue:
             return
-        self._timeout_id = GLib.timeout_add(250, self._lazy_or_not)
+        self._timeout_id = GLib.timeout_add(250, self._lazy_or_not, adj)
