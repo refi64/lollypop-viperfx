@@ -45,6 +45,7 @@ class AlbumWidget:
         self._rounded_class = "rounded-icon"
         self._scan_signal = Lp().scanner.connect('album-update',
                                                  self._on_album_update)
+        self.connect('unmap', self._on_unmap)
 
     def set_cover(self):
         """
@@ -165,6 +166,14 @@ class AlbumWidget:
             self._action_button.set_from_icon_name('list-remove-symbolic',
                                                    Gtk.IconSize.BUTTON)
             self._action_event.set_tooltip_text(_("Remove"))
+
+    def _on_unmap(self, widget):
+        """
+            Disconnect signal
+            @param widget as Gtk.Widget
+        """
+        if self._scan_signal is not None:
+            Lp().scanner.disconnect(self._scan_signal)
 
     def _on_album_update(self, scanner, album_id):
         """
