@@ -52,8 +52,8 @@ class UserPlaylistPlayer(BasePlayer):
         for track_id in Lp().playlists.get_tracks_ids(playlist_id):
             tracks.append(track_id)
         self._user_playlist = tracks
-        self._shuffle_playlist()
         self._albums = []
+        self._shuffle_playlist()
 
     def populate_user_playlist_by_tracks(self, track_ids, playlist_id):
         """
@@ -69,8 +69,8 @@ class UserPlaylistPlayer(BasePlayer):
         self._user_playlist = []
         for track_id in track_ids:
             self._user_playlist.append(track_id)
-        self._shuffle_playlist()
         self._albums = []
+        self._shuffle_playlist()
 
     def get_user_playlist(self):
         """

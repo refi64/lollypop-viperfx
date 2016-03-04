@@ -288,15 +288,15 @@ class SearchPopover(Gtk.Popover):
             self._in_thread = False
             self._stop_thread = False
 
-    def _populate_user_playlist_by_tracks(self, tracks, track_id):
+    def _populate_user_playlist_by_tracks(self, track_ids, track_id):
         """
             Set user playlist
-            @param tracks as [Track]
+            @param track_ids as [int]
             @param track id as int
             @thread safe
         """
         Lp().player.load(Track(track_id))
-        Lp().player.populate_user_playlist_by_tracks(tracks)
+        Lp().player.populate_user_playlist_by_tracks(track_ids, Type.NONE)
 
     def _play_search(self, object_id=None, is_track=True):
         """
@@ -304,24 +304,24 @@ class SearchPopover(Gtk.Popover):
             @param started object id as int
             @param is track as bool
         """
-        tracks = []
+        track_ids = []
         track_id = None
         for child in self._view.get_children():
             if child.is_track:
-                tracks.append(Track(child.id))
+                track_ids.append(child.id)
             else:
                 album_tracks = Lp().albums.get_tracks(child.id, None)
                 if not is_track and child.id == object_id and album_tracks:
                     track_id = album_tracks[0]
                 for tid in album_tracks:
-                    tracks.append(Track(tid))
-        if tracks:
+                    track_ids.append(tid)
+        if track_ids:
             if object_id is not None and is_track:
                 track_id = object_id
             elif track_id is None:
-                track_id = tracks[0].id
+                track_id = track_ids[0]
             GLib.idle_add(self._populate_user_playlist_by_tracks,
-                          tracks, track_id)
+                          track_ids, track_id)
 
     def _new_playlist(self):
         """
