@@ -17,12 +17,12 @@ from gettext import gettext as _
 from threading import Thread
 
 from lollypop.view import View
-from lollypop.widgets_playlist import PlaylistWidget, PlaylistEditWidget
+from lollypop.widgets_playlist import PlaylistsWidget, PlaylistEditWidget
 from lollypop.widgets_playlist import PlaylistsManagerWidget
 from lollypop.define import Lp, Type
 
 
-class PlaylistView(View):
+class PlaylistsView(View):
     """
         Show playlist tracks
     """
@@ -35,7 +35,6 @@ class PlaylistView(View):
         """
         View.__init__(self)
         self._playlist_ids = playlist_ids
-        self._popover = popover
         self._signal_id = Lp().playlists.connect('playlist-changed',
                                                  self._update)
 
@@ -67,11 +66,13 @@ class PlaylistView(View):
         self._back_btn = builder.get_object('back_btn')
         self._title = builder.get_object('title')
 
-        self._playlist_widget = PlaylistWidget(playlist_ids)
-        self._playlist_widget.show()
+        self._playlists_widget = PlaylistsWidget(playlist_ids)
+        if popover:
+            self._playlists_widget.get_style_context().add_class('popover')
+        self._playlists_widget.show()
 
         self.add(builder.get_object('widget'))
-        self._viewport.add(self._playlist_widget)
+        self._viewport.add(self._playlists_widget)
         self._scrolled.set_property('expand', True)
         self.add(self._scrolled)
 
@@ -81,10 +82,10 @@ class PlaylistView(View):
             Thread safe
         """
         mid_tracks = int(0.5+len(tracks)/2)
-        self._playlist_widget.populate_list_left(tracks[:mid_tracks],
-                                                 1)
-        self._playlist_widget.populate_list_right(tracks[mid_tracks:],
-                                                  mid_tracks + 1)
+        self._playlists_widget.populate_list_left(tracks[:mid_tracks],
+                                                  1)
+        self._playlists_widget.populate_list_right(tracks[mid_tracks:],
+                                                   mid_tracks + 1)
 
     def get_ids(self):
         """
@@ -97,7 +98,7 @@ class PlaylistView(View):
         """
             Stop populating
         """
-        self._playlist_widget.stop()
+        self._playlists_widget.stop()
 
 #######################
 # PRIVATE             #
@@ -106,7 +107,7 @@ class PlaylistView(View):
         """
             Return view children
         """
-        return [self._playlist_widget]
+        return [self._playlists_widget]
 
     def _update(self, manager, playlist_id):
         """
@@ -115,7 +116,7 @@ class PlaylistView(View):
             @param playlist id as int
         """
         if playlist_id in self._playlist_ids:
-            self._playlist_widget.clear()
+            self._playlists_widget.clear()
             t = Thread(target=self._update_view)
             t.daemon = True
             t.start()
@@ -152,12 +153,7 @@ class PlaylistView(View):
             Current song changed
             @param player as Player
         """
-        # Scroll to track if in popover
-        if self._popover:
-            y = self._playlist_widget.get_current_coordinates()[1]
-            if y != -1:
-                self._scrolled.get_vadjustment().set_value(y)
-        self._playlist_widget.update_playing_indicator()
+        self._playlists_widget.update_playing_indicator()
 
 
 class PlaylistsManageView(View):
