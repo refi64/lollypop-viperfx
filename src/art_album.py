@@ -212,6 +212,7 @@ class AlbumArt(BaseArt, ArtDownloader, TagReader):
             else:
                 artpath = os.path.join(album.path, self._favorite)
             pixbuf.savev(artpath, "jpeg", ["quality"], ["90"])
+            del pixbuf
         except Exception as e:
             print("Art::save_album_artwork(): %s" % e)
 
