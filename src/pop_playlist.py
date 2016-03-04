@@ -48,8 +48,14 @@ class PlaylistPopover(Gtk.Popover):
             Populate view
         """
         def load():
-            return Lp().playlists.get_tracks_ids(
+            current_playlist_id = Lp().player.get_user_playlist_id()
+            # If a dynamic playlist is playing, do not look in database
+            if current_playlist_id is not None and current_playlist_id < 0:
+                tracks = Lp().player.get_user_playlist()
+            else:
+                tracks = Lp().playlists.get_tracks_ids(
                                             Lp().player.get_user_playlist_id())
+            return tracks
         loader = Loader(target=load, view=self._widget)
         loader.start()
 
