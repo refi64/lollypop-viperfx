@@ -35,6 +35,8 @@ class PlaylistsView(View):
         """
         View.__init__(self)
         self._playlist_ids = playlist_ids
+        self._popover = popover
+        self._populated = False
         self._signal_id = Lp().playlists.connect('playlist-changed',
                                                  self._update)
 
@@ -67,8 +69,7 @@ class PlaylistsView(View):
         self._title = builder.get_object('title')
 
         self._playlists_widget = PlaylistsWidget(playlist_ids)
-        if popover:
-            self._playlists_widget.get_style_context().add_class('popover')
+        self._playlists_widget.connect('populated', self._on_populated)
         self._playlists_widget.show()
 
         self.add(builder.get_object('widget'))
@@ -129,6 +130,20 @@ class PlaylistsView(View):
         for playlist_id in self._playlist_ids:
             tracks = Lp().playlists.get_tracks_ids(playlist_id)
         self.populate(tracks)
+
+    def _on_populated(self, widget):
+        """
+            Show current track
+            @param widget as Gtk.Widget
+        """
+        # Ignore first list
+        if not self._populated:
+            self._populated = True
+        # Scroll to track if in popover
+        if self._popover:
+            y = self._playlists_widget.get_current_coordinates()[1]
+            if y != -1:
+                self._scrolled.get_vadjustment().set_value(y)
 
     def _on_destroy(self, widget):
         """

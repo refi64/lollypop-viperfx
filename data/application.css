@@ -176,14 +176,6 @@ Gtk.ListBoxRow .menu-button:hover {
   	color: inherit;
 }
 
-.popover .trackrowplaying {
-    border-radius: 5px;
-    outline-radius: 5px;
-    padding: 0px;
-	background-color: alpha(@theme_selected_bg_color, 0.5);
-  	color: inherit;
-}
-
 .trackrowplaying .loved-button {
 	background-color: transparent;
 	border-color: transparent;

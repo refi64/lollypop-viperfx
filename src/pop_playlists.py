@@ -17,7 +17,7 @@ from lollypop.define import Lp
 from lollypop.view_playlists import PlaylistsView
 
 
-class PlaylistPopover(Gtk.Popover):
+class PlaylistsPopover(Gtk.Popover):
     """
         Popover showing current albums
         @Warning: destroy it self on close

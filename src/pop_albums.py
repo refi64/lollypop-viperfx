@@ -35,8 +35,7 @@ class AlbumsPopover(Gtk.Popover):
         self._rect = Gdk.Rectangle()
         self._timeout = None
         self._in_drag = False
-        self._signal_id1 = None
-        self._signal_id2 = None
+        self._signal_id = None
         self._stop = False
 
         builder = Gtk.Builder()
@@ -48,7 +47,7 @@ class AlbumsPopover(Gtk.Popover):
         self._model = Gtk.ListStore(int,               # Album id
                                     str,               # Artist
                                     str)              # icon
-        self._model.connect('row-deleted', self._on_row_deleted)
+
         self._view = builder.get_object('view')
         self._view.set_model(self._model)
         self._view.set_property('fixed_height_mode', True)
@@ -114,7 +113,26 @@ class AlbumsPopover(Gtk.Popover):
                                 'user-trash-symbolic'])
             GLib.idle_add(self._add_albums, albums)
         else:
-            self._on_current_changed(Lp().player)
+            for row in self._model:
+                if row[0] == Lp().player.current_track.album_id:
+                    self._view.set_cursor(row.path)
+            self._connect_signals()
+
+    def _connect_signals(self):
+        """
+            Connect signals
+        """
+        if self._signal_id is None:
+                self._signal_id = self._model.connect('row-deleted',
+                                                      self._on_row_deleted)
+
+    def _disconnect_signals(self):
+        """
+            Disconnect signals
+        """
+        if self._signal_id is not None:
+            self._model.disconnect(self._signal_id)
+            self._signal_id = None
 
     def _delete_row(self, iterator):
         """
@@ -152,7 +170,7 @@ class AlbumsPopover(Gtk.Popover):
 
     def _on_map(self, widget):
         """
-            Populate
+            Connect signals
             @param widget as Gtk.Widget
         """
         self._stop = False
@@ -160,10 +178,11 @@ class AlbumsPopover(Gtk.Popover):
 
     def _on_unmap(self, widget):
         """
-            Clear view and destroy
+            Disconnect signals, clear view
             @param widget as Gtk.Widget
         """
         self._stop = True
+        self._disconnect_signals()
         self._model.clear()
         self.destroy()
 
@@ -199,15 +218,6 @@ class AlbumsPopover(Gtk.Popover):
             @param unused
         """
         self._in_drag = False
-
-    def _on_current_changed(self, player):
-        """
-            Pop first item in queue if it's current track id
-            @param player object
-        """
-        for row in self._model:
-            if row[0] == Lp().player.current_track.album_id:
-                self._view.set_cursor(row.path)
 
     def _on_row_activated(self, view, path, column):
         """
