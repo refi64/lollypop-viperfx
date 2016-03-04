@@ -22,7 +22,7 @@ from lollypop.widgets_track import TracksWidget
 from lollypop.objects import Track
 
 
-class PlaylistWidget(Gtk.Bin):
+class PlaylistsWidget(Gtk.Bin):
     """
         Show playlist tracks/albums
     """
