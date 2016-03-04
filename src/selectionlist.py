@@ -139,12 +139,6 @@ class SelectionList(Gtk.ScrolledWindow):
         self.emit('populated')
         self._updating = False
 
-    def set_mode(self, mode):
-        """
-            Set selection mode
-        """
-        self._selection.set_mode(mode)
-
     def remove(self, object_id):
         """
             Remove row from model
@@ -366,7 +360,7 @@ class SelectionList(Gtk.ScrolledWindow):
 
     def _selection_validation(self, selection, model, path, current):
         """
-            Keep track of last inserted item
+            Check if selection is valid
             @param selection as Gtk.TreeSelection
             @param model as Gtk.TreeModel
             @param path as Gtk.TreePath
