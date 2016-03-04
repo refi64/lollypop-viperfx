@@ -85,6 +85,12 @@ class PlaylistWidget(Gtk.Bin):
         """
         pass
 
+    def update_cover(self):
+        """
+            No update cover for now
+        """
+        pass
+
     def get_current_coordinates(self):
         """
             If current track in widget, return it coordinates,
