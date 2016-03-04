@@ -48,7 +48,7 @@ class AlbumsPopover(Gtk.Popover):
         self._model = Gtk.ListStore(int,               # Album id
                                     str,               # Artist
                                     str)              # icon
-
+        self._model.connect('row-deleted', self._on_row_deleted)
         self._view = builder.get_object('view')
         self._view.set_model(self._model)
         self._view.set_property('fixed_height_mode', True)
@@ -115,29 +115,6 @@ class AlbumsPopover(Gtk.Popover):
             GLib.idle_add(self._add_albums, albums)
         else:
             self._on_current_changed(Lp().player)
-            self._connect_signals()
-
-    def _connect_signals(self):
-        """
-            Connect signals
-        """
-        if self._signal_id1 is None:
-            self._signal_id1 = Lp().player.connect('current-changed',
-                                                   self._on_current_changed)
-        if self._signal_id2 is None:
-                self._signal_id2 = self._model.connect('row-deleted',
-                                                       self._on_row_deleted)
-
-    def _disconnect_signals(self):
-        """
-            Disconnect signals
-        """
-        if self._signal_id1 is not None:
-            Lp().player.disconnect(self._signal_id1)
-            self._signal_id1 = None
-        if self._signal_id2 is not None:
-            self._model.disconnect(self._signal_id2)
-            self._signal_id2 = None
 
     def _delete_row(self, iterator):
         """
@@ -175,7 +152,7 @@ class AlbumsPopover(Gtk.Popover):
 
     def _on_map(self, widget):
         """
-            Connect signals
+            Populate
             @param widget as Gtk.Widget
         """
         self._stop = False
@@ -183,11 +160,10 @@ class AlbumsPopover(Gtk.Popover):
 
     def _on_unmap(self, widget):
         """
-            Disconnect signals, clear view
+            Clear view and destroy
             @param widget as Gtk.Widget
         """
         self._stop = True
-        self._disconnect_signals()
         self._model.clear()
         self.destroy()
 

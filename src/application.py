@@ -204,7 +204,7 @@ class Application(Gtk.Application):
             if self.player.current_track.id == Type.RADIOS:
                 playlist_ids = [Type.RADIOS]
             elif not self.player.get_user_playlist_ids():
-                playlist_ids = [Type.NONE]
+                playlist_ids = []
             else:
                 playlist_ids = self.player.get_user_playlist_ids()
             self.settings.set_value('playlist-ids', GLib.Variant('ai',
