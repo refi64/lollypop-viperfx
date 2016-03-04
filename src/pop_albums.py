@@ -269,5 +269,5 @@ class AlbumsPopover(Gtk.Popover):
         self._disconnect_signals()
         self._model.clear()
         self._connect_signals()
-        self._set_albums()
+        Lp().player.clear_albums()
         self._clear_btn.set_sensitive(False)

@@ -234,7 +234,10 @@ class Player(BinPlayer, QueuePlayer, UserPlaylistPlayer, RadioPlayer,
             self.context.next = NextContext.START_NEW_ALBUM
             self.set_next()
             self.next()
-        self._albums = albums
+        if not albums:
+            self.clear_albums()
+        else:
+            self._albums = albums
         self.set_next()
         self.set_prev()
 
@@ -250,6 +253,7 @@ class Player(BinPlayer, QueuePlayer, UserPlaylistPlayer, RadioPlayer,
             Clear all albums
         """
         self._albums = []
+        self.context.next = NextContext.STOP_TRACK
 
     def get_current_artist(self):
         """
