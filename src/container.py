@@ -14,7 +14,7 @@ from gi.repository import Gtk, Gio, GLib
 
 from gettext import gettext as _
 
-from lollypop.define import Lp, Type
+from lollypop.define import Lp, Type, SelectionMode
 from lollypop.loader import Loader
 from lollypop.selectionlist import SelectionList
 from lollypop.view_container import ViewContainer
@@ -276,9 +276,9 @@ class Container:
         vgrid = Gtk.Grid()
         vgrid.set_orientation(Gtk.Orientation.VERTICAL)
 
-        self._list_one = SelectionList()
+        self._list_one = SelectionList(SelectionMode.LIMITED)
         self._list_one.show()
-        self._list_two = SelectionList()
+        self._list_two = SelectionList(SelectionMode.NORMAL)
         self._list_one.connect('item-selected', self._on_list_one_selected)
         self._list_one.connect('populated', self._on_list_populated)
         self._list_two.connect('item-selected', self._on_list_two_selected)
@@ -581,40 +581,41 @@ class Container:
         self._stack.set_visible_child(view)
         self._stack.clean_old_views(view)
 
-    def _update_view_playlists(self, playlist_id):
+    def _update_view_playlists(self, playlist_ids=[]):
         """
             Update current view with playlist view
-            @param playlist id as int
+            @param playlist ids as [int]
         """
         def load():
-            if playlist_id == Type.POPULARS:
-                tracks = Lp().tracks.get_populars()
-            elif playlist_id == Type.RECENTS:
-                tracks = Lp().tracks.get_recently_listened_to()
-            elif playlist_id == Type.NEVER:
-                tracks = Lp().tracks.get_never_listened_to()
-            elif playlist_id == Type.RANDOMS:
-                tracks = Lp().tracks.get_randoms()
-            else:
-                tracks = Lp().playlists.get_tracks_ids(playlist_id)
-            return tracks
+            track_ids = []
+            for playlist_id in playlist_ids:
+                if playlist_id == Type.POPULARS:
+                    tracks = Lp().tracks.get_populars()
+                elif playlist_id == Type.RECENTS:
+                    tracks = Lp().tracks.get_recently_listened_to()
+                elif playlist_id == Type.NEVER:
+                    tracks = Lp().tracks.get_never_listened_to()
+                elif playlist_id == Type.RANDOMS:
+                    tracks = Lp().tracks.get_randoms()
+                else:
+                    tracks = Lp().playlists.get_tracks_ids(playlist_id)
+                for track_id in tracks:
+                    if track_id not in track_ids:
+                        track_ids.append(track_id)
+            return track_ids
 
         view = None
-        if playlist_id is not None:
-            view = PlaylistView(playlist_id)
+        if playlist_ids:
+            view = PlaylistView(playlist_ids)
+            loader = Loader(target=load, view=view)
+            loader.start()
         else:
             view = PlaylistsManageView(Type.NONE, None, False)
-        if view:
-            # Management or user playlist
-            if playlist_id is None:
-                view.populate()
-            else:
-                loader = Loader(target=load, view=view)
-                loader.start()
-            view.show()
-            self._stack.add(view)
-            self._stack.set_visible_child(view)
-            self._stack.clean_old_views(view)
+            view.populate()
+        view.show()
+        self._stack.add(view)
+        self._stack.set_visible_child(view)
+        self._stack.clean_old_views(view)
 
     def _update_view_radios(self):
         """
@@ -680,7 +681,7 @@ class Container:
             self._list_two.clear()
             self._list_two.show()
             if not self._list_two.will_be_selected():
-                self._update_view_playlists(None)
+                self._update_view_playlists()
             self._setup_list_playlists(False)
         elif Type.DEVICES - 999 < selected_ids[0] < Type.DEVICES:
             self._list_two.hide()
@@ -727,7 +728,7 @@ class Container:
         if not selected_ids or not genre_ids:
             return
         if genre_ids[0] == Type.PLAYLISTS:
-            self._update_view_playlists(selected_ids[0])
+            self._update_view_playlists(selected_ids)
         elif selected_ids[0] == Type.COMPILATIONS:
             self._update_view_albums(genre_ids, True)
         else:

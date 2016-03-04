@@ -176,8 +176,8 @@
             <summary>INTERNAL</summary>
             <description></description>
         </key>
-        <key type="i" name="playlist-id">
-            <default>-1</default>
+        <key type="ai" name="playlist-ids">
+            <default>[]</default>
             <summary>INTERNAL</summary>
             <description></description>
         </key>

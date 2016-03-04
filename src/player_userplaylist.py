@@ -27,41 +27,24 @@ class UserPlaylistPlayer(BasePlayer):
             Init user playlist
         """
         BasePlayer.__init__(self)
-        self._user_playlist_id = None
+        self._user_playlist_ids = []
         self._user_playlist = []
         self._user_playlist_backup = []
 
-    def get_user_playlist_id(self):
+    def get_user_playlist_ids(self):
         """
             Get playlist id
             @return id as int
         """
-        return self._user_playlist_id
+        return self._user_playlist_ids
 
-    def populate_user_playlist_by_id(self, playlist_id):
-        """
-            Set user playlist as current playback playlist
-            @param array of tracks as [Track]
-            @return track id as Track
-            @thread safe
-        """
-        if not Lp().settings.get_value('repeat'):
-            self.context.next = NextContext.STOP_ALL
-        tracks = []
-        self._user_playlist_id = playlist_id
-        for track_id in Lp().playlists.get_tracks_ids(playlist_id):
-            tracks.append(track_id)
-        self._user_playlist = tracks
-        self._albums = []
-        self._shuffle_playlist()
-
-    def populate_user_playlist_by_tracks(self, track_ids, playlist_id):
+    def populate_user_playlist_by_tracks(self, track_ids, playlist_ids):
         """
             Set user playlist as current playback playlist
             @param array of track ids as [int]
-            @param playlist id as int
+            @param playlist ids as [int]
         """
-        self._user_playlist_id = playlist_id
+        self._user_playlist_ids = playlist_ids
         if not Lp().settings.get_value('repeat'):
             self.context.next = NextContext.STOP_ALL
         if Lp().player.is_party():

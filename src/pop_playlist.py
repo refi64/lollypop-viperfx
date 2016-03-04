@@ -31,7 +31,7 @@ class PlaylistPopover(Gtk.Popover):
         self.set_position(Gtk.PositionType.BOTTOM)
         self.connect('map', self._on_map)
         self.connect('unmap', self._on_unmap)
-        self._widget = PlaylistView(Lp().player.get_user_playlist_id(), True)
+        self._widget = PlaylistView(Lp().player.get_user_playlist_ids(), True)
         self._widget.show()
         self.add(self._widget)
 
@@ -40,7 +40,7 @@ class PlaylistPopover(Gtk.Popover):
             Set widget size
         """
         height = Lp().window.get_size()[1]
-        self.set_size_request(400, height*0.7)
+        self.set_size_request(500, height*0.7)
         Gtk.Popover.do_show(self)
 
     def populate(self):
@@ -48,14 +48,7 @@ class PlaylistPopover(Gtk.Popover):
             Populate view
         """
         def load():
-            current_playlist_id = Lp().player.get_user_playlist_id()
-            # If a dynamic playlist is playing, do not look in database
-            if current_playlist_id is not None and current_playlist_id < 0:
-                tracks = Lp().player.get_user_playlist()
-            else:
-                tracks = Lp().playlists.get_tracks_ids(
-                                            Lp().player.get_user_playlist_id())
-            return tracks
+            return Lp().player.get_user_playlist()
         loader = Loader(target=load, view=self._widget)
         loader.start()
 

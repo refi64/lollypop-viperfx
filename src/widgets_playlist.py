@@ -27,14 +27,14 @@ class PlaylistWidget(Gtk.Bin):
         Show playlist tracks/albums
     """
 
-    def __init__(self, playlist_id):
+    def __init__(self, playlist_ids):
         """
             Init playlist Widget
-            @param playlist id as int
+            @param playlist ids as [int]
             @param playlist name as str
         """
         Gtk.Bin.__init__(self)
-        self._playlist_id = playlist_id
+        self._playlist_ids = playlist_ids
         self._tracks1 = []
         self._tracks2 = []
         self._stop = False
@@ -48,7 +48,7 @@ class PlaylistWidget(Gtk.Bin):
 
         self.connect('size-allocate', self._on_size_allocate)
 
-        loved = playlist_id != Type.LOVED
+        loved = playlist_ids and playlist_ids[0] != Type.LOVED
         self._tracks_widget1 = TracksWidget(loved)
         self._tracks_widget2 = TracksWidget(loved)
         self._tracks_widget1.connect('activated',
@@ -220,7 +220,7 @@ class PlaylistWidget(Gtk.Bin):
         if not Lp().player.is_party():
             Lp().player.populate_user_playlist_by_tracks(self._tracks1 +
                                                          self._tracks2,
-                                                         self._playlist_id)
+                                                         self._playlist_ids)
 
 
 class PlaylistsManagerWidget(Gtk.Bin):

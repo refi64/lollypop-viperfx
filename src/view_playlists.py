@@ -27,14 +27,14 @@ class PlaylistView(View):
         Show playlist tracks
     """
 
-    def __init__(self, playlist_id, popover=False):
+    def __init__(self, playlist_ids, popover=False):
         """
             Init PlaylistView
-            @parma playlist id as int
+            @parma playlist ids as [int]
             @param popover as bool
         """
         View.__init__(self)
-        self._playlist_id = playlist_id
+        self._playlist_ids = playlist_ids
         self._popover = popover
         self._signal_id = Lp().playlists.connect('playlist-changed',
                                                  self._update)
@@ -43,28 +43,31 @@ class PlaylistView(View):
         builder.add_from_resource('/org/gnome/Lollypop/PlaylistView.ui')
         builder.connect_signals(self)
 
-        if playlist_id == Type.POPULARS:
-            name = _("Popular tracks")
-        elif playlist_id == Type.RECENTS:
-            name = _("Recently played")
-        elif playlist_id == Type.NEVER:
-            name = _("Never played")
-        elif playlist_id == Type.RANDOMS:
-            name = _("Random tracks")
-        elif playlist_id == Type.SEARCH:
-            name = _("Search")
-        else:
-            name = Lp().playlists.get_name(playlist_id)
-        builder.get_object('title').set_label(name)
+        name = ""
+        for playlist_id in playlist_ids:
+            if playlist_id == Type.POPULARS:
+                name += _("Popular tracks")+", "
+            elif playlist_id == Type.RECENTS:
+                name += _("Recently played")+", "
+            elif playlist_id == Type.NEVER:
+                name += _("Never played")+", "
+            elif playlist_id == Type.RANDOMS:
+                name += _("Random tracks")+", "
+            elif playlist_id == Type.SEARCH:
+                name += _("Search")+", "
+            else:
+                name += Lp().playlists.get_name(playlist_id)+", "
+        builder.get_object('title').set_label(name[:-2])
 
         self._edit_btn = builder.get_object('edit_btn')
 
-        if playlist_id < 0 and playlist_id != Type.LOVED or popover:
+        if len(playlist_ids) > 1 or (
+           playlist_ids[0] < 0 and playlist_ids[0] != Type.LOVED) or popover:
             self._edit_btn.hide()
         self._back_btn = builder.get_object('back_btn')
         self._title = builder.get_object('title')
 
-        self._playlist_widget = PlaylistWidget(playlist_id)
+        self._playlist_widget = PlaylistWidget(playlist_ids)
         self._playlist_widget.show()
 
         self.add(builder.get_object('widget'))
@@ -83,12 +86,12 @@ class PlaylistView(View):
         self._playlist_widget.populate_list_right(tracks[mid_tracks:],
                                                   mid_tracks + 1)
 
-    def get_id(self):
+    def get_ids(self):
         """
-            Return playlist id
-            @return id as int
+            Return playlist ids
+            @return id as [int]
         """
-        return self._playlist_id
+        return self._playlist_ids
 
     def stop(self):
         """
@@ -111,7 +114,7 @@ class PlaylistView(View):
             @param manager as PlaylistsManager
             @param playlist id as int
         """
-        if playlist_id == self._playlist_id:
+        if playlist_id in self._playlist_ids:
             self._playlist_widget.clear()
             t = Thread(target=self._update_view)
             t.daemon = True
@@ -121,7 +124,9 @@ class PlaylistView(View):
         """
             Update tracks widgets
         """
-        tracks = Lp().playlists.get_tracks_ids(self._playlist_id)
+        tracks = []
+        for playlist_id in self._playlist_ids:
+            tracks = Lp().playlists.get_tracks_ids(playlist_id)
         self.populate(tracks)
 
     def _on_destroy(self, widget):
@@ -140,7 +145,7 @@ class PlaylistView(View):
             @param button as Gtk.Button
             @param playlist name as str
         """
-        Lp().window.show_playlist_editor(self._playlist_id)
+        Lp().window.show_playlist_editor(self._playlist_ids[0])
 
     def _on_current_changed(self, player):
         """

@@ -150,7 +150,7 @@ class Player(BinPlayer, QueuePlayer, UserPlaylistPlayer, RadioPlayer,
         self.reset_history()
         # We are not playing a user playlist anymore
         self._user_playlist = []
-        self._user_playlist_id = None
+        self._user_playlist_id = []
         if Lp().settings.get_value('repeat'):
             self.context.next = NextContext.NONE
         else:
@@ -178,7 +178,7 @@ class Player(BinPlayer, QueuePlayer, UserPlaylistPlayer, RadioPlayer,
 
         # We are not playing a user playlist anymore
         self._user_playlist = []
-        self._user_playlist_id = None
+        self._user_playlist_id = []
         # We are in all artists
         if (genre_ids and genre_ids[0] == Type.ALL) or\
            (artist_ids and artist_ids[0] == Type.ALL):
@@ -273,8 +273,8 @@ class Player(BinPlayer, QueuePlayer, UserPlaylistPlayer, RadioPlayer,
         """
         if Lp().settings.get_value('save-state'):
             track_id = Lp().settings.get_value('track-id').get_int32()
-            playlist_id = Lp().settings.get_value('playlist-id').get_int32()
-            if playlist_id == Type.RADIOS:
+            playlist_ids = Lp().settings.get_value('playlist-ids')
+            if playlist_ids and playlist_ids[0] == Type.RADIOS:
                 radios = Radios()
                 track = Track()
                 name = radios.get_name(track_id)
@@ -284,8 +284,31 @@ class Player(BinPlayer, QueuePlayer, UserPlaylistPlayer, RadioPlayer,
             elif Lp().tracks.get_path(track_id) != "":
                 track = Track(track_id)
                 self._load_track(track)
-                if playlist_id >= 0:
-                    self.populate_user_playlist_by_id(playlist_id)
+                if playlist_ids:
+                    try:
+                        pids = []
+                        for playlist_id in playlist_ids:
+                            pids.append(int(playlist_id))
+                        track_ids = []
+                        for playlist_id in playlist_ids:
+                            if playlist_id == Type.POPULARS:
+                                tracks = Lp().tracks.get_populars()
+                            elif playlist_id == Type.RECENTS:
+                                tracks = Lp().tracks.get_recently_listened_to()
+                            elif playlist_id == Type.NEVER:
+                                tracks = Lp().tracks.get_never_listened_to()
+                            elif playlist_id == Type.RANDOMS:
+                                tracks = Lp().tracks.get_randoms()
+                            else:
+                                tracks = Lp().playlists.get_tracks_ids(
+                                                                   playlist_id)
+                            for track_id in tracks:
+                                if track_id not in track_ids:
+                                    track_ids.append(track_id)
+                            self.populate_user_playlist_by_tracks(track_ids,
+                                                                  pids)
+                    except:
+                        pass  # User set non int in gsettings
                 else:
                     self._albums = Lp().artists.get_albums(
                                                          track.album_artist_id)

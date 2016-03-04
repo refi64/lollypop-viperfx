@@ -195,7 +195,7 @@ class ToolbarInfos(Gtk.Bin, InfosController):
                 self._pop_tunein.populate()
                 self._pop_tunein.set_relative_to(self._cover)
                 self._pop_tunein.show()
-        elif Lp().player.get_user_playlist_id() is not None:
+        elif Lp().player.get_user_playlist_ids():
             pop_playlist = PlaylistPopover()
             pop_playlist.set_relative_to(self._cover)
             pop_playlist.show()

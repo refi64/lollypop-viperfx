@@ -202,13 +202,13 @@ class Application(Gtk.Application):
                                                              track_id))
             # Save current playlist
             if self.player.current_track.id == Type.RADIOS:
-                playlist_id = Type.RADIOS
-            elif self.player.get_user_playlist_id() is None:
-                playlist_id = -1
+                playlist_ids = [Type.RADIOS]
+            elif not self.player.get_user_playlist_ids():
+                playlist_ids = [Type.NONE]
             else:
-                playlist_id = self.player.get_user_playlist_id()
-            self.settings.set_value('playlist-id', GLib.Variant('i',
-                                                                playlist_id))
+                playlist_ids = self.player.get_user_playlist_ids()
+            self.settings.set_value('playlist-ids', GLib.Variant('ai',
+                                                                 playlist_ids))
         self.player.stop_all()
         if self.window:
             self.window.stop_all()

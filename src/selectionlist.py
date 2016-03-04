@@ -15,7 +15,7 @@ from gi.repository import Gtk, Gdk, GLib, GObject, Pango
 from cgi import escape
 from gettext import gettext as _
 
-from lollypop.define import Type, Lp
+from lollypop.define import Type, Lp, SelectionMode
 
 
 class SelectionPopover(Gtk.Popover):
@@ -69,14 +69,17 @@ class SelectionList(Gtk.ScrolledWindow):
         'populated': (GObject.SignalFlags.RUN_FIRST, None, ()),
     }
 
-    def __init__(self):
+    def __init__(self, mode):
         """
             Init Selection list ui
+            @param mode as SelectionMode
         """
         Gtk.ScrolledWindow.__init__(self)
         self.set_policy(Gtk.PolicyType.NEVER,
                         Gtk.PolicyType.AUTOMATIC)
+        self._mode = mode
         self._last_motion_event = None
+        self._mode = SelectionMode.NORMAL
         self._previous_motion_y = 0.0
         self._timeout = None
         self._to_select_ids = []
@@ -368,7 +371,7 @@ class SelectionList(Gtk.ScrolledWindow):
             @return bool
         """
         ids = self.get_selected_ids()
-        if not ids:
+        if not ids or self._mode == SelectionMode.NORMAL:
             return True
         elif self._modifier:
             iterator = self._model.get_iter(path)
