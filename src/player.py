@@ -150,7 +150,7 @@ class Player(BinPlayer, QueuePlayer, UserPlaylistPlayer, RadioPlayer,
         self.reset_history()
         # We are not playing a user playlist anymore
         self._user_playlist = []
-        self._user_playlist_id = []
+        self._user_playlist_ids = []
         if Lp().settings.get_value('repeat'):
             self.context.next = NextContext.NONE
         else:
@@ -178,7 +178,7 @@ class Player(BinPlayer, QueuePlayer, UserPlaylistPlayer, RadioPlayer,
 
         # We are not playing a user playlist anymore
         self._user_playlist = []
-        self._user_playlist_id = []
+        self._user_playlist_ids = []
         # We are in all artists
         if (genre_ids and genre_ids[0] == Type.ALL) or\
            (artist_ids and artist_ids[0] == Type.ALL):
