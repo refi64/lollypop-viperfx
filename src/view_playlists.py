@@ -12,6 +12,8 @@
 
 from gi.repository import Gtk
 
+from gettext import gettext as _
+
 from threading import Thread
 
 from lollypop.view import View
@@ -39,9 +41,21 @@ class PlaylistView(View):
 
         builder = Gtk.Builder()
         builder.add_from_resource('/org/gnome/Lollypop/PlaylistView.ui')
-        builder.get_object('title').set_label(
-                                          Lp().playlists.get_name(playlist_id))
         builder.connect_signals(self)
+
+        if playlist_id == Type.POPULARS:
+            name = _("Popular tracks")
+        elif playlist_id == Type.RECENTS:
+            name = _("Recently played")
+        elif playlist_id == Type.NEVER:
+            name = _("Never played")
+        elif playlist_id == Type.RANDOMS:
+            name = _("Random tracks")
+        elif playlist_id == Type.SEARCH:
+            name = _("Search")
+        else:
+            name = Lp().playlists.get_name(playlist_id)
+        builder.get_object('title').set_label(name)
 
         self._edit_btn = builder.get_object('edit_btn')
 

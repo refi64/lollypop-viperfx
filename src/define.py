@@ -84,7 +84,8 @@ class Type:
     PLAYLISTS = -5
     RADIOS = -6
     EXTERNALS = -7
-    ALL = -8
+    SEARCH = -8
+    ALL = -9
     LOVED = -997
     NEVER = -998
     DEVICES = -1000

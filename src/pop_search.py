@@ -296,7 +296,7 @@ class SearchPopover(Gtk.Popover):
             @thread safe
         """
         Lp().player.load(Track(track_id))
-        Lp().player.populate_user_playlist_by_tracks(track_ids, Type.NONE)
+        Lp().player.populate_user_playlist_by_tracks(track_ids, Type.SEARCH)
 
     def _play_search(self, object_id=None, is_track=True):
         """
