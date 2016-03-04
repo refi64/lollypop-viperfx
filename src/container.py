@@ -21,7 +21,7 @@ from lollypop.view_container import ViewContainer
 from lollypop.view_albums import AlbumsView
 from lollypop.view_artist import ArtistView
 from lollypop.view_radios import RadiosView
-from lollypop.view_playlists import PlaylistsView
+from lollypop.view_playlists import PlaylistView
 from lollypop.view_playlists import PlaylistsManageView, PlaylistEditView
 from lollypop.view_device import DeviceView, DeviceLocked
 
@@ -606,7 +606,7 @@ class Container:
 
         view = None
         if playlist_ids:
-            view = PlaylistsView(playlist_ids)
+            view = PlaylistView(playlist_ids)
             loader = Loader(target=load, view=view)
             loader.start()
         else:
