@@ -746,7 +746,7 @@ class AlbumDetailedWidget(Gtk.Bin, AlbumWidget):
             @param widget as Gtk.Widget
             @param allocation as Gtk.Allocation
         """
-        if allocation.width < WindowSize.BIG:
+        if allocation.width < WindowSize.MONSTER:
             self._box.set_min_children_per_line(1)
             self._box.set_max_children_per_line(1)
         else:
