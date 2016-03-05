@@ -22,6 +22,17 @@ from lollypop.widgets_track import TracksWidget
 from lollypop.objects import Track
 
 
+class FlowBox(Gtk.FlowBox):
+    """
+        Special flowbox ignoring user input
+    """
+    def __init__(self):
+        Gtk.FlowBox.__init__(self)
+
+    def do_button_press_event(self, event):
+        pass
+
+
 class PlaylistsWidget(Gtk.Bin):
     """
         Show playlist tracks/albums
@@ -43,7 +54,7 @@ class PlaylistsWidget(Gtk.Bin):
         self._stop = False
         self._return_invalid_coordinates = False
 
-        self._box = Gtk.FlowBox()
+        self._box = FlowBox()
         self._box.set_selection_mode(Gtk.SelectionMode.NONE)
         self._box.set_hexpand(True)
         self._box.set_property('valign', Gtk.Align.START)
@@ -54,6 +65,8 @@ class PlaylistsWidget(Gtk.Bin):
         loved = playlist_ids and playlist_ids[0] != Type.LOVED
         self._tracks_widget1 = TracksWidget(loved)
         self._tracks_widget2 = TracksWidget(loved)
+        self._tracks_widget1.connect('track-moved', self._on_track_moved)
+        self._tracks_widget2.connect('track-moved', self._on_track_moved)
         self._tracks_widget1.connect('activated',
                                      self._on_activated)
         self._tracks_widget2.connect('activated',
@@ -167,6 +180,7 @@ class PlaylistsWidget(Gtk.Bin):
             @param tracks id as array of [int]
             @param widget TracksWidget
             @param track position as int
+            @param pos as int
             @param previous album id as int
         """
         if not tracks or self._stop:
@@ -194,11 +208,157 @@ class PlaylistsWidget(Gtk.Bin):
             self._tracks2.append(track.id)
 
         if album.id != previous_album_id:
-            widget.add_album(track.id, album, pos,
-                             name, track.duration)
+            widget.add_track_playlist(track.id, album, pos,
+                                      name, track.duration)
         else:
-            widget.add_album(track.id, None, pos, name, track.duration)
+            widget.add_track_playlist(track.id, None, pos,
+                                      name, track.duration)
         GLib.idle_add(self._add_tracks, tracks, widget, pos + 1, album.id)
+
+    def _recalculate_tracks(self):
+        """
+            Recalculate tracks based on current widget
+        """
+        # Recalculate tracks
+        self._tracks1 = []
+        self._tracks2 = []
+        for child in self._tracks_widget1.get_children():
+            self._tracks1.append(child.get_id())
+        for child in self._tracks_widget2.get_children():
+            self._tracks2.append(child.get_id())
+
+    def _move_track(self, dst, src, up):
+        """
+            Move track from src to row
+            @param dst as int
+            @param src as int
+            @param up as bool
+            @return (dst_widget as TracksWidget,
+                     src index as int, dst index as int)
+        """
+        tracks1_len = len(self._tracks1)
+        tracks2_len = len(self._tracks2)
+        if src in self._tracks1:
+            src_widget = self._tracks_widget1
+            src_index = self._tracks1.index(src) - 1
+        else:
+            src_widget = self._tracks_widget2
+            src_index = self._tracks2.index(src) - 1
+        if tracks1_len == 0 or dst in self._tracks1:
+            dst_widget = self._tracks_widget1
+            dst_tracks = self._tracks1
+        elif tracks2_len == 0 or dst in self._tracks2:
+            dst_widget = self._tracks_widget2
+            dst_tracks = self._tracks2
+        else:
+            return
+        # Remove src from src_widget
+        for child in src_widget.get_children():
+            if child.get_id() == src:
+                child.destroy()
+                break
+        src_track = Track(src)
+        prev_track = Track()
+        name = escape(src_track.name)
+        index = 0
+        # Get previous track
+        if dst != -1:
+            for child in dst_widget.get_children():
+                if child.get_id() == dst:
+                    break
+                index += 1
+            if not up:
+                index += 1
+            # Get previous track (in dst context)
+            prev_index = dst_tracks.index(dst)
+            if up:
+                prev_index -= 1
+            prev_track = Track(dst_tracks[prev_index])
+            # If we are listening to a compilation, prepend artist name
+            if (src_track.album.artist_id == Type.COMPILATIONS or
+                    len(src_track.artist_ids) > 1 or
+                    src_track.album.artist_id not in src_track.artist_ids):
+                name = "<b>%s</b>\n%s" % (escape(src_track.artist_names), name)
+            self._tracks1.insert(index, src_track.id)
+        # Add track
+        if index == 0 or src_track.album.id != prev_track.album.id:
+            dst_widget.add_track_playlist(src_track.id, src_track.album,
+                                          index, name, src_track.duration)
+        else:
+            dst_widget.add_track_playlist(src_track.id, None, index,
+                                          name, src_track.duration)
+        return (src_widget, dst_widget, src_index, index)
+
+    def _reload_at_index(self, widget, index):
+        """
+            Reload track at index in widget
+            @param widget as TracksWidget
+            @param index as int or None
+        """
+        try:
+            track = Track(widget.get_children()[index].get_id())
+            next_track = Track(widget.get_children()[index+1].get_id())
+            name = escape(next_track.name)
+            # If we are listening to a compilation, prepend artist name
+            if (next_track.album.artist_id == Type.COMPILATIONS or
+                    len(next_track.artist_ids) > 1 or
+                    next_track.album.artist_id not in next_track.artist_ids):
+                name = "<b>%s</b>\n%s" % (escape(next_track.artist_names),
+                                          name)
+            # Delete track
+            widget.get_children()[index+1].destroy()
+            # Add track
+            if next_track.album.id != track.album.id:
+                widget.add_track_playlist(next_track.id, next_track.album,
+                                          index+1, name,
+                                          next_track.duration)
+            else:
+                widget.add_track_playlist(next_track.id, None, index+1,
+                                          name, next_track.duration)
+        except:
+            pass
+
+    def _on_track_moved(self, widget, dst, src, up):
+        """
+            Move track from src to row
+            Recalculate track position
+            @param widget as TracksWidget
+            @param dst as int
+            @param src as int
+            @param up as bool
+        """
+        (src_widget, dst_widget, src_index, dst_index) = \
+            self._move_track(dst, src, up)
+        if src_index:
+            self._reload_at_index(src_widget, src_index)
+        if dst_index:
+            self._reload_at_index(dst_widget, dst_index)
+        self._recalculate_tracks()
+        len_tracks1 = len(self._tracks1)
+        len_tracks2 = len(self._tracks2)
+        # Take first track from tracks2 and put it at the end of tracks1
+        if len_tracks2 > len_tracks1:
+            src = self._tracks2[0]
+            if self._tracks1:
+                dst = self._tracks1[-1]
+            else:
+                dst = -1
+            self._move_track(dst, src, False)
+        # Take last track of tracks1 and put it at the bottom of tracks2
+        elif len_tracks1 - 1 > len_tracks2:
+            src = self._tracks1[-1]
+            if self._tracks2:
+                dst = self._tracks2[0]
+            else:
+                dst = -1
+            self._move_track(dst, src, True)
+        self._recalculate_tracks()
+        self._tracks_widget1.update_indexes(1)
+        self._tracks_widget2.update_indexes(len(self._tracks1) + 1)
+        if Lp().player.get_user_playlist_ids() == self._playlist_ids:
+            Lp().player.populate_user_playlist_by_tracks(self._tracks1 +
+                                                         self._tracks2,
+                                                         self._playlist_ids)
 
     def _on_size_allocate(self, widget, allocation):
         """

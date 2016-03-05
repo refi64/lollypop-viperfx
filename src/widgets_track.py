@@ -10,7 +10,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-from gi.repository import GObject, Gtk, Pango
+from gi.repository import GObject, Gtk, Gdk, Pango
 
 from cgi import escape
 
@@ -26,7 +26,6 @@ class Row(Gtk.ListBoxRow):
     """
         A row
     """
-
     def __init__(self, show_loved):
         """
             Init row widgets
@@ -228,10 +227,13 @@ class Row(Gtk.ListBoxRow):
             self._title_label.set_tooltip_text('')
 
 
-class AlbumRow(Row):
+class PlaylistRow(Row):
     """
         A track row with album cover
     """
+    __gsignals__ = {
+        'track-moved': (GObject.SignalFlags.RUN_FIRST, None, (int, int, int))
+    }
 
     def __init__(self, show_loved):
         """
@@ -271,6 +273,48 @@ class AlbumRow(Row):
         self._album_label.get_style_context().add_class('dim-label')
         self._header.add(self._artist_label)
         self._header.add(self._album_label)
+
+        self.drag_source_set(Gdk.ModifierType.BUTTON1_MASK, [],
+                             Gdk.DragAction.MOVE)
+        self.drag_source_add_text_targets()
+        self.drag_dest_set(Gtk.DestDefaults.ALL, [], Gdk.DragAction.MOVE)
+        self.drag_dest_add_text_targets()
+        self.connect('drag-begin', self._on_drag_begin)
+        self.connect('drag-data-get', self._on_drag_data_get)
+        self.connect('drag-data-received', self._on_drag_data_received)
+
+    def _on_drag_begin(self, widget, context):
+        """
+            Set icon
+            @param widget as Gtk.Widget
+            @param context as Gdk.DragContext
+        """
+        widget.drag_source_set_icon_name('emblem-music-symbolic')
+
+    def _on_drag_data_get(self, widget, context, data, info, time):
+        """
+            Send track id
+            @param widget as Gtk.Widget
+            @param context as Gdk.DragContext
+            @param data as Gtk.SelectionData
+            @param info as int
+            @param time as int
+        """
+        track_id = str(self._id)
+        data.set_text(track_id, len(track_id))
+
+    def _on_drag_data_received(self, widget, context, x, y, data, info, time):
+        """
+            Move track
+            @param widget as Gtk.Widget
+            @param context as Gdk.DragContext
+            @param x as int
+            @param y as int
+            @param data as Gtk.SelectionData
+            @param info as int
+            @param time as int
+        """
+        self.emit('track-moved', int(data.get_text()), x, y)
 
     def set_id(self, id):
         """
@@ -346,7 +390,8 @@ class TracksWidget(Gtk.ListBox):
     """
 
     __gsignals__ = {
-        'activated': (GObject.SignalFlags.RUN_FIRST, None, (int,))
+        'activated': (GObject.SignalFlags.RUN_FIRST, None, (int,)),
+        'track-moved': (GObject.SignalFlags.RUN_FIRST, None, (int, int, bool))
     }
 
     def __init__(self, show_loved=False):
@@ -387,16 +432,17 @@ class TracksWidget(Gtk.ListBox):
         track_row.show()
         self.add(track_row)
 
-    def add_album(self, track_id, album, num, title, length):
+    def add_track_playlist(self, track_id, album, num, title, length):
         """
             Add album row to the list
             @param track id as int
-            @param album as album (None)
+            @param album as Album or None
             @param track number as int
             @param title as str
             @param length as str
         """
-        album_row = AlbumRow(self._show_loved)
+        album_row = PlaylistRow(self._show_loved)
+        album_row.connect('track-moved', self._on_track_moved)
         album_row.show_indicator(Lp().player.current_track.id == track_id,
                                  utils.is_loved(track_id))
         album_row.set_number(num)
@@ -413,7 +459,16 @@ class TracksWidget(Gtk.ListBox):
             del surface
             album_row.show_header()
         album_row.show()
-        self.add(album_row)
+        self.insert(album_row, num)
+
+    def update_indexes(self, start):
+        """
+            Update indexes
+            @param start index as int
+        """
+        for row in self.get_children():
+            row.set_num_label(str(start))
+            start += 1
 
     def update_playing(self, track_id):
         """
@@ -440,6 +495,23 @@ class TracksWidget(Gtk.ListBox):
             row.set_num_label(str(row.get_number()))
         else:
             row.set_num_label('')
+
+    def _on_track_moved(self, row, src, x, y):
+        """
+            Pass signal
+            @param row as PlaylistRow
+            @param src as int
+            @param x as int
+            @param y as int
+        """
+        if row.get_id() == src:
+            return
+        height = row.get_allocated_height()
+        if y > height/2:
+            up = False
+        else:
+            up = True
+        self.emit('track-moved', row.get_id(), src, up)
 
     def _on_queue_changed(self, widget):
         """
