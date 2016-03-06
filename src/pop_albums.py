@@ -290,12 +290,18 @@ class AlbumsPopover(Gtk.Popover):
             @param widget as Gtk.ListBox
             @param row as AlbumRow
         """
-        popover = AlbumPopoverWidget(row.get_id(),
-                                     Lp().player.get_genre_ids(row.get_id()),
+        genre_ids = Lp().player.get_genre_ids(row.get_id())
+        if Gtk.get_minor_version() > 16:
+            popover = AlbumPopoverWidget(
+                                     row.get_id(),
+                                     genre_ids,
                                      [],
                                      False)
-        popover.set_relative_to(row)
-        popover.show()
+            popover.set_relative_to(row)
+            popover.show()
+        else:
+            album = Album(row.get_id(), genre_ids)
+            Lp().player.load(album.tracks[0])
 
     def _on_button_clicked(self, widget):
         """
