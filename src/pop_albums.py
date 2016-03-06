@@ -13,6 +13,7 @@
 from gi.repository import Gtk, GLib, Gdk, GObject
 from cgi import escape
 
+from lollypop.widgets_album_context import AlbumPopoverWidget
 from lollypop.define import Lp, ArtSize
 from lollypop.objects import Album
 
@@ -289,7 +290,12 @@ class AlbumsPopover(Gtk.Popover):
             @param widget as Gtk.ListBox
             @param row as AlbumRow
         """
-        pass
+        popover = AlbumPopoverWidget(row.get_id(),
+                                     Lp().player.get_genre_ids(row.get_id()),
+                                     [],
+                                     False)
+        popover.set_relative_to(row)
+        popover.show()
 
     def _on_button_clicked(self, widget):
         """
