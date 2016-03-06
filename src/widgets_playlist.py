@@ -355,8 +355,8 @@ class PlaylistsWidget(Gtk.Bin):
         self._recalculate_tracks()
         self._tracks_widget1.update_indexes(1)
         self._tracks_widget2.update_indexes(len(self._tracks1) + 1)
-        # Save playlist in db
-        if self._playlist_ids[0] >= 0:
+        # Save playlist in db only if one playlist visible
+        if len(self._playlist_ids) == 1 and self._playlist_ids[0] >= 0:
             Lp().playlists.clear(self._playlist_ids[0], False)
             tracks = []
             for track_id in self._tracks1 + self._tracks2:
