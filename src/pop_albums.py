@@ -291,6 +291,7 @@ class AlbumsPopover(Gtk.Popover):
             @param row as AlbumRow
         """
         genre_ids = Lp().player.get_genre_ids(row.get_id())
+        # TODO Remove this later
         if Gtk.get_minor_version() > 16:
             popover = AlbumPopoverWidget(
                                      row.get_id(),

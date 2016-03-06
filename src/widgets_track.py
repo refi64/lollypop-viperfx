@@ -65,7 +65,11 @@ class Row(Gtk.ListBoxRow):
         self._grid.add(self._num_label)
         self._grid.add(self._title_label)
         self._grid.add(self._duration_label)
-        self._grid.add(self._menu_button)
+        # TODO Remove this later
+        if Gtk.get_minor_version() > 16:
+            self._grid.add(self._menu_button)
+        else:
+            self.connect('map', self._on_map)
         self.add(self._row_widget)
         self.get_style_context().add_class('trackrow')
 
@@ -157,6 +161,19 @@ class Row(Gtk.ListBoxRow):
 #######################
 # PRIVATE             #
 #######################
+    def _on_map(self, widget):
+        """
+            Fix for Gtk < 3.18,
+            if we are in a popover, do not show menu button
+        """
+        widget = self.get_parent()
+        while widget is not None:
+            if isinstance(widget, Gtk.Popover):
+                break
+            widget = widget.get_parent()
+        if widget is None:
+            self._grid.add(self._menu_button)
+
     def _on_button_press(self, widget, event):
         """
             Popup menu for track relative to track row

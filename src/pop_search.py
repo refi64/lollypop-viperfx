@@ -404,10 +404,15 @@ class SearchPopover(Gtk.Popover):
         if Lp().player.is_party():
             if row.is_track:
                 Lp().player.load(Track(row.id))
-            else:
+            elif Gtk.get_minor_version() > 18:
                 popover = AlbumPopoverWidget(row.id, [], [])
                 popover.set_relative_to(row)
                 popover.show()
+            else:
+                t = Thread(target=self._play_search, args=(row.id,
+                                                           row.is_track))
+                t.daemon = True
+                t.start()
         else:
             t = Thread(target=self._play_search, args=(row.id, row.is_track))
             t.daemon = True

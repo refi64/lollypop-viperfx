@@ -630,7 +630,11 @@ class AlbumDetailedWidget(Gtk.Bin, AlbumWidget):
 
         self._menu = builder.get_object('menu')
         self._menu.connect('clicked', self._pop_menu)
-        self._menu.show()
+        # TODO Remove this later
+        if Gtk.get_minor_version() > 16:
+            self._menu.show()
+        else:
+            self.connect('map', self._on_map)
 
     def disable_play_all(self):
         """
@@ -739,6 +743,19 @@ class AlbumDetailedWidget(Gtk.Bin, AlbumWidget):
                          track.duration)
 
         GLib.idle_add(self._add_tracks, tracks, widget, i + 1)
+
+    def _on_map(self, widget):
+        """
+            Fix for Gtk < 3.18,
+            if we are in a popover, do not show menu button
+        """
+        widget = self.get_parent()
+        while widget is not None:
+            if isinstance(widget, Gtk.Popover):
+                break
+            widget = widget.get_parent()
+        if widget is None:
+            self._menu.show()
 
     def _on_size_allocate(self, widget, allocation):
         """
