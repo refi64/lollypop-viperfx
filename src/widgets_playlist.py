@@ -355,6 +355,15 @@ class PlaylistsWidget(Gtk.Bin):
         self._recalculate_tracks()
         self._tracks_widget1.update_indexes(1)
         self._tracks_widget2.update_indexes(len(self._tracks1) + 1)
+        # Save playlist in db
+        if self._playlist_ids[0] >= 0:
+            Lp().playlists.clear(self._playlist_ids[0], False)
+            tracks = []
+            for track_id in self._tracks1 + self._tracks2:
+                tracks.append(Track(track_id))
+            Lp().playlists.add_tracks(self._playlist_ids[0],
+                                      tracks,
+                                      False)
         if Lp().player.get_user_playlist_ids() == self._playlist_ids:
             Lp().player.populate_user_playlist_by_tracks(self._tracks1 +
                                                          self._tracks2,
