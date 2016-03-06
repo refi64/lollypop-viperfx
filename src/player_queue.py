@@ -24,51 +24,59 @@ class QueuePlayer:
         """
         self._queue = []
 
-    def append_to_queue(self, track_id):
+    def append_to_queue(self, track_id, notify=True):
         """
             Append track to queue,
             remove previous track if exist
             @param track id as int
+            @param notify as bool
         """
         if track_id in self._queue:
             self._queue.remove(track_id)
         self._queue.append(track_id)
         self.set_next()
         self._init_current_if_needed()
-        self.emit("queue-changed")
+        if notify:
+            self.emit("queue-changed")
 
-    def prepend_to_queue(self, track_id):
+    def insert_in_queue(self, track_id, pos=0, notify=True):
         """
             Prepend track to queue,
             remove previous track if exist
             @param track id as int
+            @param notify as bool
         """
         if track_id in self._queue:
             self._queue.remove(track_id)
-        self._queue.insert(0, track_id)
+        self._queue.insert(pos, track_id)
         self.set_next()
         self._init_current_if_needed()
-        self.emit("queue-changed")
+        if notify:
+            self.emit("queue-changed")
 
-    def del_from_queue(self, track_id):
+    def del_from_queue(self, track_id, notify=True):
         """
             Remove track from queue
             @param track id as int
+            @param notify as bool
         """
         if track_id in self._queue:
             self._queue.remove(track_id)
             self.set_next()
+        if notify:
             self.emit("queue-changed")
 
-    def set_queue(self, new_queue):
+    def set_queue(self, new_queue, notify=True):
         """
             Set queue
             @param [ids as int]
+            @param notify as bool
         """
         self._queue = new_queue
         self.set_next()
         self._init_current_if_needed()
-        self.emit("queue-changed")
+        if notify:
+            self.emit("queue-changed")
 
     def get_queue(self):
         """

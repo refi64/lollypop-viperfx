@@ -31,7 +31,7 @@ class QueueRow(Gtk.ListBoxRow):
             @param track_id as int
         """
         Gtk.ListBoxRow.__init__(self)
-        self.id = track_id
+        self._id = track_id
         builder = Gtk.Builder()
         builder.add_from_resource('/org/gnome/Lollypop/QueueRow.ui')
         builder.connect_signals(self)
@@ -50,6 +50,14 @@ class QueueRow(Gtk.ListBoxRow):
         self.connect('drag-begin', self._on_drag_begin)
         self.connect('drag-data-get', self._on_drag_data_get)
         self.connect('drag-data-received', self._on_drag_data_received)
+        self.get_style_context().add_class('trackrow')
+
+    def get_id(self):
+        """
+            Get row id
+            @return row id as int
+        """
+        return self._id
 
     def set_text(self, artist, title):
         """
@@ -77,7 +85,7 @@ class QueueRow(Gtk.ListBoxRow):
             @param widget as Gtk.Widget
             @param context as Gdk.DragContext
         """
-        widget.drag_source_set_icon_name('view-list-symbolic')
+        widget.drag_source_set_icon_name('emblem-music-symbolic')
 
     def _on_drag_data_get(self, widget, context, data, info, time):
         """
@@ -88,7 +96,7 @@ class QueueRow(Gtk.ListBoxRow):
             @param info as int
             @param time as int
         """
-        track_id = str(self.id)
+        track_id = str(self._id)
         data.set_text(track_id, len(track_id))
 
     def _on_drag_data_received(self, widget, context, x, y, data, info, time):
@@ -109,7 +117,7 @@ class QueueRow(Gtk.ListBoxRow):
             Delete track from queue
             @param button as Gtk.Button
         """
-        Lp().player.del_from_queue(self.id)
+        Lp().player.del_from_queue(self._id)
         self.destroy()
 
     def _on_query_tooltip(self, widget, x, y, keyboard, tooltip):
@@ -152,7 +160,7 @@ class QueuePopover(Gtk.Popover):
         self._clear_button = builder.get_object('clear-button')
 
         self._view = Gtk.ListBox()
-        self._view.connect('button-press-event', self._plop)
+        self._view.get_style_context().add_class('trackswidget')
         self._view.set_selection_mode(Gtk.SelectionMode.NONE)
         self._view.set_activate_on_single_click(False)
         self._view.connect("row-activated", self._on_row_activated)
@@ -160,9 +168,6 @@ class QueuePopover(Gtk.Popover):
 
         builder.get_object('scrolled').add(self._view)
         self.add(builder.get_object('widget'))
-
-    def _plop(self, widget, event):
-        return True
 
     def do_show(self):
         """
@@ -199,20 +204,28 @@ class QueuePopover(Gtk.Popover):
         """
         if items and not self._stop:
             track_id = items.pop(0)
-            album_id = Lp().tracks.get_album_id(track_id)
-            artist_id = Lp().albums.get_artist_id(album_id)
-            artist_name = Lp().artists.get_name(artist_id)
-            track_name = Lp().tracks.get_name(track_id)
-            track_row = QueueRow(track_id)
-            track_row.set_text(artist_name, track_name)
-            track_row.set_cover(Lp().art.get_album_artwork(
-                                    Album(album_id),
-                                    ArtSize.MEDIUM*self.get_scale_factor()))
-            track_row.show()
-            track_row.connect('destroy', self._on_child_destroyed)
-            track_row.connect('track-moved', self._on_track_moved)
-            self._view.add(track_row)
+            row = self._row_for_track_id(track_id)
+            self._view.add(row)
             GLib.idle_add(self._add_items, items)
+
+    def _row_for_track_id(self, track_id):
+        """
+            Get a row for track id
+            @param track id as int
+        """
+        album_id = Lp().tracks.get_album_id(track_id)
+        artist_id = Lp().albums.get_artist_id(album_id)
+        artist_name = Lp().artists.get_name(artist_id)
+        track_name = Lp().tracks.get_name(track_id)
+        row = QueueRow(track_id)
+        row.set_text(artist_name, track_name)
+        row.set_cover(Lp().art.get_album_artwork(
+                                Album(album_id),
+                                ArtSize.MEDIUM*self.get_scale_factor()))
+        row.show()
+        row.connect('destroy', self._on_child_destroyed)
+        row.connect('track-moved', self._on_track_moved)
+        return row
 
     def _on_map(self, widget):
         """
@@ -242,7 +255,7 @@ class QueuePopover(Gtk.Popover):
         """
         if len(self._view.get_children()) > 0:
             row = self._view.get_children()[0]
-            if row.id == player.current_track.id:
+            if row.get_id() == player.current_track.id:
                 row.destroy()
 
     def _updated_rows(self, path, data):
@@ -271,7 +284,7 @@ class QueuePopover(Gtk.Popover):
             @param widget as Gtk.ListBox
             @param row as SearchRow
         """
-        Lp().player.load(Track(row.id))
+        Lp().player.load(Track(row.get_id()))
 
     def _on_button_clicked(self, widget):
         """
@@ -295,6 +308,19 @@ class QueuePopover(Gtk.Popover):
             up = False
         else:
             up = True
-        print(row)
-        return
-        self.emit('track-moved', row.get_id(), src, up)
+        src_row = self._row_for_track_id(src)
+        # Destroy current src row
+        i = 0
+        row_index = -1
+        for child in self._view.get_children():
+            if child != row:
+                row_index = i
+            if child.get_id() == src:
+                Lp().player.del_from_queue(src, False)
+                child.destroy()
+        # Add new row
+        if row_index != -1:
+            if not up:
+                row_index += 1
+            self._view.insert(src_row, row_index)
+            Lp().player.insert_in_queue(src, row_index)
