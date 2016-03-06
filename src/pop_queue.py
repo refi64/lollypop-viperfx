@@ -10,10 +10,10 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-from gi.repository import Gtk, GLib, Gdk, GObject
+from gi.repository import Gtk, GLib, Gdk, Pango, GObject
 from cgi import escape
 
-from lollypop.define import Lp, ArtSize
+from lollypop.define import Lp, ArtSize, Type
 from lollypop.objects import Track, Album
 
 
@@ -32,16 +32,59 @@ class QueueRow(Gtk.ListBoxRow):
         """
         Gtk.ListBoxRow.__init__(self)
         self._id = track_id
-        builder = Gtk.Builder()
-        builder.add_from_resource('/org/gnome/Lollypop/QueueRow.ui')
-        builder.connect_signals(self)
-        self.set_property('has-tooltip', True)
-        self.connect('query-tooltip', self._on_query_tooltip)
-        self._row_widget = builder.get_object('row')
-        self._artist = builder.get_object('artist')
-        self._title = builder.get_object('title')
-        self._cover = builder.get_object('cover')
+        self._number = 0
+        self._row_widget = Gtk.EventBox()
+        self._row_widget.set_margin_start(10)
+        self._row_widget.set_margin_end(10)
+        self._grid = Gtk.Grid()
+        self._grid.set_column_spacing(5)
+        self._row_widget.add(self._grid)
+        self._cover = Gtk.Image()
+        self._cover_frame = Gtk.Frame()
+        self._cover_frame.set_shadow_type(Gtk.ShadowType.NONE)
+        self._cover_frame.set_property('halign', Gtk.Align.CENTER)
+        self._cover_frame.set_property('valign', Gtk.Align.CENTER)
+        self._cover_frame.get_style_context().add_class('small-cover-frame')
+        self._cover_frame.add(self._cover)
+        # We force width with a Box
+        box = Gtk.Box()
+        box.set_homogeneous(True)
+        box.add(self._cover_frame)
+        box.set_property('width-request', ArtSize.MEDIUM+2)
+        box.show()
+        self._title_label = Gtk.Label()
+        self._title_label.set_margin_start(20)
+        self._title_label.set_property('has-tooltip', True)
+        self._title_label.set_property('hexpand', True)
+        self._title_label.set_property('halign', Gtk.Align.START)
+        self._title_label.set_ellipsize(Pango.EllipsizeMode.END)
+        self._menu_button = Gtk.Button.new_from_icon_name(
+                                                         'user-trash-symbolic',
+                                                         Gtk.IconSize.MENU)
+        self._menu_button.set_relief(Gtk.ReliefStyle.NONE)
+        self._menu_button.get_style_context().add_class('menu-button')
+        self._menu_button.get_style_context().add_class('track-menu-button')
+        self._menu_button.get_image().set_opacity(0.2)
+        self._menu_button.show()
+        self._menu_button.connect('clicked', self._on_delete_clicked)
+        self._grid.add(box)
+        self._grid.add(self._title_label)
+        self._grid.add(self._menu_button)
         self.add(self._row_widget)
+        self.show_all()
+        self._header = Gtk.Grid()
+        self._header.set_column_spacing(5)
+        self._artist_label = Gtk.Label()
+        self._artist_label.set_ellipsize(Pango.EllipsizeMode.END)
+        self._artist_label.get_style_context().add_class('dim-label')
+        self._album_label = Gtk.Label()
+        self._album_label.set_ellipsize(Pango.EllipsizeMode.END)
+        self._album_label.get_style_context().add_class('dim-label')
+        self._header.add(self._artist_label)
+        self._header.add(self._album_label)
+        self._title_label.set_property('valign', Gtk.Align.END)
+        self._grid.attach(self._header, 1, 0, 1, 1)
+        self.get_style_context().add_class('trackrow')
         self.drag_source_set(Gdk.ModifierType.BUTTON1_MASK, [],
                              Gdk.DragAction.MOVE)
         self.drag_source_add_text_targets()
@@ -52,6 +95,15 @@ class QueueRow(Gtk.ListBoxRow):
         self.connect('drag-data-received', self._on_drag_data_received)
         self.get_style_context().add_class('trackrow')
 
+    def show_header(self, show):
+        """
+            Show header
+        """
+        if show:
+            self._header.show_all()
+        else:
+            self._header.hide()
+
     def get_id(self):
         """
             Get row id
@@ -59,22 +111,36 @@ class QueueRow(Gtk.ListBoxRow):
         """
         return self._id
 
-    def set_text(self, artist, title):
+    def set_labels(self):
         """
-            Set artist and title label
-            @param artist name as string
-            @param item name as string
+            Set artist, album and title label
         """
-        self._artist.set_text(artist)
-        self._title.set_text(title)
+        track = Track(self._id)
+        self._artist_label.set_markup(
+                                  "<b>"+escape(track.album.artist_name)+"</b>")
+        self._album_label.set_text(track.album.name)
+        # If we are listening to a compilation, prepend artist name
+        title = escape(track.name)
+        if track.album.artist_id == Type.COMPILATIONS or\
+           len(track.artist_ids) > 1 or\
+           track.album.artist_id not in track.artist_ids:
+            if track.artist_names != track.album.artist_name:
+                title = "<b>%s</b>\n%s" % (escape(track.artist_names),
+                                           title)
+        self._title_label.set_markup(title)
 
     def set_cover(self, surface):
         """
             Set cover surface
-            @param surface as cairo surface
+            @param surface as cairo.Surface
         """
-        self._cover.set_from_surface(surface)
-        del surface
+        if surface is None:
+            self._cover.clear()
+            self._cover_frame.set_shadow_type(Gtk.ShadowType.NONE)
+        else:
+            self._cover.set_from_surface(surface)
+            self._cover_frame.set_shadow_type(Gtk.ShadowType.IN)
+            del surface
 
 #######################
 # PRIVATE             #
@@ -197,32 +263,31 @@ class QueuePopover(Gtk.Popover):
         if clear_queue:
             Lp().player.set_queue([])
 
-    def _add_items(self, items):
+    def _add_items(self, items, prev_album_id=None):
         """
             Add items to the view
             @param item ids as [int]
         """
         if items and not self._stop:
             track_id = items.pop(0)
+            album_id = Lp().tracks.get_album_id(track_id)
             row = self._row_for_track_id(track_id)
+            if album_id != prev_album_id:
+                surface = Lp().art.get_album_artwork(
+                                        Album(album_id),
+                                        ArtSize.MEDIUM*self.get_scale_factor())
+                row.set_cover(surface)
+                row.show_header(True)
             self._view.add(row)
-            GLib.idle_add(self._add_items, items)
+            GLib.idle_add(self._add_items, items, album_id)
 
     def _row_for_track_id(self, track_id):
         """
             Get a row for track id
             @param track id as int
         """
-        album_id = Lp().tracks.get_album_id(track_id)
-        artist_id = Lp().albums.get_artist_id(album_id)
-        artist_name = Lp().artists.get_name(artist_id)
-        track_name = Lp().tracks.get_name(track_id)
         row = QueueRow(track_id)
-        row.set_text(artist_name, track_name)
-        row.set_cover(Lp().art.get_album_artwork(
-                                Album(album_id),
-                                ArtSize.MEDIUM*self.get_scale_factor()))
-        row.show()
+        row.set_labels()
         row.connect('destroy', self._on_child_destroyed)
         row.connect('track-moved', self._on_track_moved)
         return row
@@ -258,18 +323,23 @@ class QueuePopover(Gtk.Popover):
             if row.get_id() == player.current_track.id:
                 row.destroy()
 
-    def _updated_rows(self, path, data):
+    def _update_headers(self):
         """
-            Update queue when a row has been deleted
-            @param path as Gtk.TreePath
-            @param data as unused
+            Update row headers based on current queue
         """
-        if self.is_visible():
-            new_queue = []
-            for row in self._model:
-                if row[3]:
-                    new_queue.append(row[3])
-            Lp().player.set_queue(new_queue)
+        prev_album_id = None
+        for child in self._view.get_children():
+            track = Track(child.get_id())
+            if track.album.id == prev_album_id:
+                child.set_cover(None)
+                child.show_header(False)
+            else:
+                surface = Lp().art.get_album_artwork(
+                                        Album(track.album.id),
+                                        ArtSize.MEDIUM*self.get_scale_factor())
+                child.set_cover(surface)
+                child.show_header(True)
+            prev_album_id = track.album.id
 
     def _on_child_destroyed(self, row):
         """
@@ -277,6 +347,7 @@ class QueuePopover(Gtk.Popover):
             @param row as QueueRow
         """
         self._clear_button.set_sensitive(len(self._view.get_children()) != 0)
+        self._update_headers()
 
     def _on_row_activated(self, widget, row):
         """
@@ -313,14 +384,18 @@ class QueuePopover(Gtk.Popover):
         i = 0
         row_index = -1
         for child in self._view.get_children():
-            if child != row:
+            if child == row:
                 row_index = i
             if child.get_id() == src:
                 Lp().player.del_from_queue(src, False)
+                child.disconnect_by_func(self._on_child_destroyed)
                 child.destroy()
+            i += 1
+
         # Add new row
         if row_index != -1:
             if not up:
                 row_index += 1
             self._view.insert(src_row, row_index)
             Lp().player.insert_in_queue(src, row_index)
+        self._update_headers()

@@ -273,7 +273,11 @@ class PlaylistRow(Row):
         self._album_label.get_style_context().add_class('dim-label')
         self._header.add(self._artist_label)
         self._header.add(self._album_label)
-
+        self._num_label.set_property('valign', Gtk.Align.END)
+        self._title_label.set_property('valign', Gtk.Align.END)
+        self._duration_label.set_property('valign', Gtk.Align.END)
+        self._indicator.set_property('valign', Gtk.Align.END)
+        self._grid.attach(self._header, 1, 0, 4, 1)
         self.drag_source_set(Gdk.ModifierType.BUTTON1_MASK, [],
                              Gdk.DragAction.MOVE)
         self.drag_source_add_text_targets()
@@ -291,16 +295,15 @@ class PlaylistRow(Row):
         Row.set_id(self, id)
         self._object = Album(self._id)
 
-    def show_header(self):
+    def show_header(self, show):
         """
             Show header
+            @param show as bool
         """
-        self._num_label.set_property('valign', Gtk.Align.END)
-        self._title_label.set_property('valign', Gtk.Align.END)
-        self._duration_label.set_property('valign', Gtk.Align.END)
-        self._indicator.set_property('valign', Gtk.Align.END)
-        self._grid.attach(self._header, 1, 0, 4, 1)
-        self._header.show_all()
+        if show:
+            self._header.show_all()
+        else:
+            self._header.hide()
 
     def set_cover(self, surface, tooltip):
         """
@@ -308,9 +311,13 @@ class PlaylistRow(Row):
             @param cover as cairo.Surface
             @param tooltip as str
         """
-        self._cover.set_from_surface(surface)
         self._cover.set_tooltip_text(tooltip)
-        self._cover_frame.set_shadow_type(Gtk.ShadowType.IN)
+        if surface is None:
+            self._cover.clear()
+            self._cover_frame.set_shadow_type(Gtk.ShadowType.NONE)
+        else:
+            self._cover.set_from_surface(surface)
+            self._cover_frame.set_shadow_type(Gtk.ShadowType.IN)
 
     def set_album_and_artist(self, album_id):
         """
@@ -460,9 +467,27 @@ class TracksWidget(Gtk.ListBox):
                         ArtSize.MEDIUM*album_row.get_scale_factor())
             album_row.set_cover(surface, Lp().albums.get_name(album.id))
             del surface
-            album_row.show_header()
+            album_row.show_header(True)
         album_row.show()
         self.insert(album_row, num)
+
+    def update_headers(self):
+        """
+            Update headers
+        """
+        prev_album_id = None
+        for child in self.get_children():
+            track = Track(child.get_id())
+            if track.album.id == prev_album_id:
+                child.set_cover(None, '')
+                child.show_header(False)
+            else:
+                surface = Lp().art.get_album_artwork(
+                                        Album(track.album.id),
+                                        ArtSize.MEDIUM*self.get_scale_factor())
+                child.set_cover(surface, Lp().albums.get_name(track.album.id))
+                child.show_header(True)
+            prev_album_id = track.album.id
 
     def update_indexes(self, start):
         """

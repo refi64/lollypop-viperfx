@@ -166,9 +166,8 @@ class PlaylistsWidget(Gtk.Bin):
             Clear tracks
         """
         self._tracks = []
-        for child in self._tracks_widget1.get_children():
-            child.destroy()
-        for child in self._tracks_widget2.get_children():
+        for child in self._tracks_widget1.get_children() + \
+                self._tracks_widget2.get_children():
             child.destroy()
 
 #######################
@@ -289,35 +288,6 @@ class PlaylistsWidget(Gtk.Bin):
                                           name, src_track.duration)
         return (src_widget, dst_widget, src_index, index)
 
-    def _reload_at_index(self, widget, index):
-        """
-            Reload track at index in widget
-            @param widget as TracksWidget
-            @param index as int or None
-        """
-        try:
-            track = Track(widget.get_children()[index].get_id())
-            next_track = Track(widget.get_children()[index+1].get_id())
-            name = escape(next_track.name)
-            # If we are listening to a compilation, prepend artist name
-            if (next_track.album.artist_id == Type.COMPILATIONS or
-                    len(next_track.artist_ids) > 1 or
-                    next_track.album.artist_id not in next_track.artist_ids):
-                name = "<b>%s</b>\n%s" % (escape(next_track.artist_names),
-                                          name)
-            # Delete track
-            widget.get_children()[index+1].destroy()
-            # Add track
-            if next_track.album.id != track.album.id:
-                widget.add_track_playlist(next_track.id, next_track.album,
-                                          index+1, name,
-                                          next_track.duration)
-            else:
-                widget.add_track_playlist(next_track.id, None, index+1,
-                                          name, next_track.duration)
-        except:
-            pass
-
     def _on_track_moved(self, widget, dst, src, up):
         """
             Move track from src to row
@@ -329,10 +299,8 @@ class PlaylistsWidget(Gtk.Bin):
         """
         (src_widget, dst_widget, src_index, dst_index) = \
             self._move_track(dst, src, up)
-        if src_index:
-            self._reload_at_index(src_widget, src_index)
-        if dst_index:
-            self._reload_at_index(dst_widget, dst_index)
+        self._tracks_widget1.update_headers()
+        self._tracks_widget2.update_headers()
         self._recalculate_tracks()
         len_tracks1 = len(self._tracks1)
         len_tracks2 = len(self._tracks2)
