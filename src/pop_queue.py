@@ -84,7 +84,6 @@ class QueueRow(Gtk.ListBoxRow):
         self._header.add(self._album_label)
         self._title_label.set_property('valign', Gtk.Align.END)
         self._grid.attach(self._header, 1, 0, 1, 1)
-        self.get_style_context().add_class('trackrow')
         self.drag_source_set(Gdk.ModifierType.BUTTON1_MASK, [],
                              Gdk.DragAction.MOVE)
         self.drag_source_add_text_targets()
@@ -207,7 +206,7 @@ class QueueRow(Gtk.ListBoxRow):
 
 class QueuePopover(Gtk.Popover):
     """
-        Popover showing queue with a filtering widget
+        Popover showing queue
     """
 
     def __init__(self):
@@ -298,7 +297,6 @@ class QueuePopover(Gtk.Popover):
             @param widget as Gtk.Widget
         """
         self._stop = False
-        self._clear()
         self.populate()
         self._signal_id1 = Lp().player.connect('current-changed',
                                                self._on_current_changed)
@@ -308,6 +306,7 @@ class QueuePopover(Gtk.Popover):
             Disconnect signals
             @param widget as Gtk.Widget
         """
+        self._clear()
         self._stop = True
         if self._signal_id1 is not None:
             Lp().player.disconnect(self._signal_id1)
@@ -351,9 +350,9 @@ class QueuePopover(Gtk.Popover):
 
     def _on_row_activated(self, widget, row):
         """
-            Play searched item when selected
+            Play item
             @param widget as Gtk.ListBox
-            @param row as SearchRow
+            @param row as QueueRow
         """
         Lp().player.load(Track(row.get_id()))
 
