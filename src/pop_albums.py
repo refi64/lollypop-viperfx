@@ -39,6 +39,8 @@ class AlbumRow(Gtk.ListBoxRow):
         self.set_property('has-tooltip', True)
         self.connect('query-tooltip', self._on_query_tooltip)
         self._row_widget = builder.get_object('row')
+        self._row_widget.set_margin_top(2)
+        self._row_widget.set_margin_end(2)
         self._artist_label = builder.get_object('artist')
         self._title_label = builder.get_object('title')
         self._cover = builder.get_object('cover')
