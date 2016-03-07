@@ -64,14 +64,7 @@ class ArtistView(ArtistAlbumsView):
         """
             Scroll to album
         """
-        widget = None
-        for child in self._albumbox.get_children():
-            if child.get_id() == Lp().player.current_track.album.id:
-                widget = child
-                break
-        if widget is not None:
-            y = widget.translate_coordinates(self._albumbox, 0, 0)[1]
-            self._scrolled.get_vadjustment().set_value(y)
+        self.jump_to_current()
 
     def _on_album_finished(self, album, albums):
         """

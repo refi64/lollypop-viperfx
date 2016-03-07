@@ -187,8 +187,13 @@ class InfosPopover(Gtk.Popover):
 
     def _on_jump_button_clicked(self, widget):
         """
+            Go to current album
         """
-        pass
+        try:
+            self._stack.get_visible_child().get_child_at(
+                                                        0, 0).jump_to_current()
+        except Exception as e:
+            print(e)
 
     def _on_self_map(self, widget):
         """
@@ -224,7 +229,7 @@ class InfosPopover(Gtk.Popover):
     def _on_map_albums(self, widget, force=False):
         """
             Load on map
-            @param widget as Gtk.Bin
+            @param widget as Gtk.Grid
             @param force as bool
         """
         self._menu.hide()
