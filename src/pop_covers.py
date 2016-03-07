@@ -72,13 +72,18 @@ class CoversPopover(Gtk.Popover):
         # First load local files
         urls = Lp().art.get_album_artworks(self._album)
         for url in urls:
-            monster = GdkPixbuf.Pixbuf.new_from_file_at_size(url,
+            try:
+                monster = GdkPixbuf.Pixbuf.new_from_file_at_size(
+                                                             url,
                                                              ArtSize.MONSTER,
                                                              ArtSize.MONSTER)
-            big = GdkPixbuf.Pixbuf.new_from_file_at_size(url,
-                                                         ArtSize.BIG,
-                                                         ArtSize.BIG)
-            self._add_pixbuf(monster, big)
+                big = GdkPixbuf.Pixbuf.new_from_file_at_size(url,
+                                                             ArtSize.BIG,
+                                                             ArtSize.BIG)
+                self._add_pixbuf(monster, big)
+            except Exception as e:
+                print("CoversPopover::populate()", e)
+
         if len(urls) > 0:
             self._stack.set_visible_child_name('main')
         # Then duckduckgo
