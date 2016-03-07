@@ -400,7 +400,8 @@ class AlbumsPopover(Gtk.Popover):
             if child.get_id() == src:
                 child.disconnect_by_func(self._on_child_destroyed)
                 child.destroy()
-            i += 1
+            else:
+                i += 1
 
         # Add new row
         if row_index != -1:

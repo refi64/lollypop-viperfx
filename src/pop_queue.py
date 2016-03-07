@@ -422,7 +422,8 @@ class QueuePopover(Gtk.Popover):
                 Lp().player.del_from_queue(src, False)
                 child.disconnect_by_func(self._on_child_destroyed)
                 child.destroy()
-            i += 1
+            else:
+                i += 1
 
         # Add new row
         if row_index != -1:
