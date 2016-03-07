@@ -45,7 +45,7 @@ class AlbumWidget:
         self._rounded_class = "rounded-icon"
         self._scan_signal = Lp().scanner.connect('album-update',
                                                  self._on_album_update)
-        self.connect('unmap', self._on_unmap)
+        self.connect('destroy', self._on_destroy)
 
     def set_cover(self):
         """
@@ -167,7 +167,7 @@ class AlbumWidget:
                                                    Gtk.IconSize.BUTTON)
             self._action_event.set_tooltip_text(_("Remove"))
 
-    def _on_unmap(self, widget):
+    def _on_destroy(self, widget):
         """
             Disconnect signal
             @param widget as Gtk.Widget
