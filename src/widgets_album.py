@@ -15,7 +15,7 @@ from gi.repository import Gtk, GLib, GObject, Gdk, Pango
 from cgi import escape
 from gettext import gettext as _
 
-from lollypop.define import Lp, Type, ArtSize, NextContext, WindowSize, Shuffle
+from lollypop.define import Lp, ArtSize, NextContext, WindowSize, Shuffle
 from lollypop.widgets_track import TracksWidget
 from lollypop.objects import Track
 from lollypop.widgets_rating import RatingWidget
@@ -728,7 +728,7 @@ class AlbumDetailedWidget(Gtk.Bin, AlbumWidget):
     def _add_tracks(self, tracks, widget, i):
         """
             Add tracks for to tracks widget
-            @param tracks as [(track_id, title, length, [artist ids])]
+            @param tracks as [int]
             @param widget as TracksWidget
             @param i as int
         """
@@ -743,25 +743,12 @@ class AlbumDetailedWidget(Gtk.Bin, AlbumWidget):
             return
 
         track = tracks.pop(0)
-
-        # If we are listening to a compilation, prepend artist name
-        title = escape(track.name)
-        if self._album.artist_id == Type.COMPILATIONS or\
-           len(track.artist_ids) > 1 or\
-           self._album.artist_id not in track.artist_ids:
-            if track.artist_names != self._album.artist_name:
-                title = "<b>%s</b>\n%s" % (escape(track.artist_names),
-                                           title)
-
         if not Lp().settings.get_value('show-tag-tracknumber'):
             track_number = i
         else:
             track_number = track.number
 
-        widget.add_track(track.id,
-                         track_number,
-                         title,
-                         track.duration)
+        widget.add_track(track.id, track_number)
 
         GLib.idle_add(self._add_tracks, tracks, widget, i + 1)
 

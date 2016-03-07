@@ -11,8 +11,9 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-
 from gi.repository import GLib
+
+from cgi import escape
 
 from lollypop.radios import Radios
 from lollypop.define import Lp, Type
@@ -207,6 +208,20 @@ class Track(Base):
         Base.__init__(self, Lp().tracks)
         self.id = track_id
         self._uri = None
+
+    def formated_name(self):
+        """
+            Return formated name (title \n artist)
+            @return str
+        """
+        name = escape(self.name)
+        if self.album.artist_id == Type.COMPILATIONS or\
+           len(self.artist_ids) > 1 or\
+           self.album.artist_id not in self.artist_ids:
+            if self.artist_names != self.album.artist_name:
+                name = "<b>%s</b>\n%s" % (escape(self.artist_names),
+                                          name)
+        return name
 
     @property
     def title(self):

@@ -194,31 +194,15 @@ class PlaylistsWidget(Gtk.Bin):
 
         track = Track(tracks.pop(0))
 
-        if track.id is None:
-            GLib.idle_add(self._add_tracks, tracks,
-                          widget, pos + 1, previous_album_id)
-            return
-
-        name = escape(track.name)
-        album = track.album
-        # If we are listening to a compilation, prepend artist name
-        if (album.artist_id == Type.COMPILATIONS or
-                len(track.artist_ids) > 1 or
-                album.artist_id not in track.artist_ids):
-            name = "<b>%s</b>\n%s" % (escape(track.artist_names), name)
-
         if widget == self._tracks_widget_left:
             self._tracks1.append(track.id)
         else:
             self._tracks2.append(track.id)
 
-        if album.id != previous_album_id:
-            widget.add_track_playlist(track.id, album, pos,
-                                      name, track.duration)
-        else:
-            widget.add_track_playlist(track.id, None, pos,
-                                      name, track.duration)
-        GLib.idle_add(self._add_tracks, tracks, widget, pos + 1, album.id)
+        widget.add_track_playlist(track.id, pos,
+                                  track.album.id != previous_album_id)
+        GLib.idle_add(self._add_tracks, tracks, widget,
+                      pos + 1, track.album.id)
 
     def _recalculate_tracks(self):
         """

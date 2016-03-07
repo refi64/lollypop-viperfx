@@ -469,27 +469,21 @@ class TracksWidget(Gtk.ListBox):
         self.set_property('hexpand', True)
         self.set_property('selection-mode', Gtk.SelectionMode.NONE)
 
-    def add_track(self, track_id, num, title, length):
+    def add_track(self, track_id, pos):
         """
             Add track to list
             @param track id as int
-            @param track number as int
+            @param track position as int
             @param title as str
             @param length as str
             @param show cover as bool
         """
-        track_row = TrackRow(self._show_loved)
-        track_row.show_indicator(Lp().player.current_track.id == track_id,
-                                 utils.is_loved(track_id))
-        track_row.set_number(num)
-        self._update_pos_label(track_row, track_id)
-        track_row.set_title_label(title)
-        track_row.set_duration_label(seconds_to_string(length))
-        track_row.set_id(track_id)
-        track_row.show()
-        self.add(track_row)
+        row = TrackRow(self._show_loved)
+        self.set_row(row, track_id, pos)
+        row.show()
+        self.add(row)
 
-    def add_track_playlist(self, track_id, album, num, title, length):
+    def add_track_playlist(self, track_id, pos, show_cover):
         """
             Add album row to the list
             @param track id as int
@@ -498,25 +492,11 @@ class TracksWidget(Gtk.ListBox):
             @param title as str
             @param length as str
         """
-        album_row = PlaylistRow(self._show_loved)
-        album_row.connect('track-moved', self._on_track_moved)
-        album_row.show_indicator(Lp().player.current_track.id == track_id,
-                                 utils.is_loved(track_id))
-        album_row.set_number(num)
-        self._update_pos_label(album_row, track_id)
-        album_row.set_title_label(title)
-        album_row.set_duration_label(seconds_to_string(length))
-        album_row.set_id(track_id)
-        if album is not None:
-            album_row.set_album_and_artist(album.id)
-            surface = Lp().art.get_album_artwork(
-                        album,
-                        ArtSize.MEDIUM*album_row.get_scale_factor())
-            album_row.set_cover(surface, Lp().albums.get_name(album.id))
-            del surface
-            album_row.show_header(True)
-        album_row.show()
-        self.insert(album_row, num)
+        row = PlaylistRow(self._show_loved)
+        row.connect('track-moved', self._on_track_moved)
+        self.set_row(row, track_id, pos, show_cover)
+        row.show()
+        self.insert(row, pos)
 
     def update_headers(self, prev_album_id=None):
         """
@@ -557,6 +537,31 @@ class TracksWidget(Gtk.ListBox):
 #######################
 # PRIVATE             #
 #######################
+    def set_row(self, row, track_id, pos, show_cover=False):
+        """
+            Set row content
+            @param row as Row
+            @param track id as int
+            @param pos as position
+            @param show cover as bool
+        """
+        track = Track(track_id)
+        row.show_indicator(Lp().player.current_track.id == track_id,
+                           utils.is_loved(track_id))
+        row.set_number(pos)
+        self._update_pos_label(row, track_id)
+        row.set_title_label(track.formated_name())
+        row.set_duration_label(seconds_to_string(track.duration))
+        row.set_id(track_id)
+        if show_cover:
+            row.set_album_and_artist(track.album.id)
+            surface = Lp().art.get_album_artwork(
+                        track.album,
+                        ArtSize.MEDIUM*row.get_scale_factor())
+            row.set_cover(surface, track.album.name)
+            del surface
+            row.show_header(True)
+
     def _update_pos_label(self, row, track_id):
         """
             Update position label for row
