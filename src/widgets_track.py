@@ -283,39 +283,6 @@ class PlaylistRow(Row):
         self.connect('drag-data-get', self._on_drag_data_get)
         self.connect('drag-data-received', self._on_drag_data_received)
 
-    def _on_drag_begin(self, widget, context):
-        """
-            Set icon
-            @param widget as Gtk.Widget
-            @param context as Gdk.DragContext
-        """
-        widget.drag_source_set_icon_name('emblem-music-symbolic')
-
-    def _on_drag_data_get(self, widget, context, data, info, time):
-        """
-            Send track id
-            @param widget as Gtk.Widget
-            @param context as Gdk.DragContext
-            @param data as Gtk.SelectionData
-            @param info as int
-            @param time as int
-        """
-        track_id = str(self._id)
-        data.set_text(track_id, len(track_id))
-
-    def _on_drag_data_received(self, widget, context, x, y, data, info, time):
-        """
-            Move track
-            @param widget as Gtk.Widget
-            @param context as Gdk.DragContext
-            @param x as int
-            @param y as int
-            @param data as Gtk.SelectionData
-            @param info as int
-            @param time as int
-        """
-        self.emit('track-moved', int(data.get_text()), x, y)
-
     def set_id(self, id):
         """
             Store current object and show row
@@ -354,6 +321,42 @@ class PlaylistRow(Row):
         album = Lp().albums.get_name(album_id)
         self._artist_label.set_markup("<b>"+escape(artist)+"</b>")
         self._album_label.set_text(escape(album))
+
+#######################
+# PRIVATE             #
+#######################
+    def _on_drag_begin(self, widget, context):
+        """
+            Set icon
+            @param widget as Gtk.Widget
+            @param context as Gdk.DragContext
+        """
+        widget.drag_source_set_icon_name('emblem-music-symbolic')
+
+    def _on_drag_data_get(self, widget, context, data, info, time):
+        """
+            Send track id
+            @param widget as Gtk.Widget
+            @param context as Gdk.DragContext
+            @param data as Gtk.SelectionData
+            @param info as int
+            @param time as int
+        """
+        track_id = str(self._id)
+        data.set_text(track_id, len(track_id))
+
+    def _on_drag_data_received(self, widget, context, x, y, data, info, time):
+        """
+            Move track
+            @param widget as Gtk.Widget
+            @param context as Gdk.DragContext
+            @param x as int
+            @param y as int
+            @param data as Gtk.SelectionData
+            @param info as int
+            @param time as int
+        """
+        self.emit('track-moved', int(data.get_text()), x, y)
 
 
 class TrackRow(Row):
