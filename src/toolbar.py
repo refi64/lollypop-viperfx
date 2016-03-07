@@ -31,7 +31,7 @@ class Toolbar(Gtk.HeaderBar):
         """
         Gtk.HeaderBar.__init__(self)
         self._width = WindowSize.SMALL
-
+        self.set_title("Lollypop")
         self._toolbar_playback = ToolbarPlayback()
         self._toolbar_playback.show()
         self._toolbar_infos = ToolbarInfos()
