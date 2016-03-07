@@ -115,7 +115,7 @@ class PlaylistsWidget(Gtk.Bin):
         for child in self._tracks_widget1.get_children() + \
                 self._tracks_widget2.get_children():
             if child.get_id() == Lp().player.current_track.id:
-                ordinate = child.translate_coordinates(self, 0, 0)[1]
+                ordinate = child.translate_coordinates(self._box, 0, 0)[1]
         return ordinate
 
     def populate_list_left(self, tracks, pos):

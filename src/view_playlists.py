@@ -13,7 +13,7 @@
 from gi.repository import Gtk
 
 from gettext import gettext as _
-
+from cgi import escape
 from threading import Thread
 
 from lollypop.view import View
@@ -34,6 +34,7 @@ class PlaylistsView(View):
             @param editable as bool
         """
         View.__init__(self)
+        self._tracks = []
         self._playlist_ids = playlist_ids
         self._populated = False
         self._signal_id = Lp().playlists.connect('playlist-changed',
@@ -60,7 +61,7 @@ class PlaylistsView(View):
         builder.get_object('title').set_label(name[:-2])
 
         self._edit_button = builder.get_object('edit-button')
-        self._playing_button = builder.get_object('playing-button')
+        self._jump_button = builder.get_object('jump-button')
 
         if len(playlist_ids) > 1 or (
            playlist_ids[0] < 0 and playlist_ids[0] != Type.LOVED) or\
@@ -82,6 +83,7 @@ class PlaylistsView(View):
             Populate view with tracks from playlist
             Thread safe
         """
+        self._tracks = tracks
         mid_tracks = int(0.5+len(tracks)/2)
         self._playlists_widget.populate_list_left(tracks[:mid_tracks],
                                                   1)
@@ -131,6 +133,19 @@ class PlaylistsView(View):
             tracks = Lp().playlists.get_tracks_ids(playlist_id)
         self.populate(tracks)
 
+    def _update_jump_button(self):
+        """
+            Update jump button status
+        """
+        if Lp().player.current_track.id in self._tracks:
+            self._jump_button.set_sensitive(True)
+            self._jump_button.set_tooltip_markup(
+             "<b>%s</b>\n%s" % (escape(Lp().player.current_track.artist_names),
+                                escape(Lp().player.current_track.name)))
+        else:
+            self._jump_button.set_sensitive(False)
+            self._jump_button.set_tooltip_text('')
+
     def _on_populated(self, widget):
         """
             Show current track
@@ -139,6 +154,8 @@ class PlaylistsView(View):
         # Ignore first list
         if not self._populated:
             self._populated = True
+            return
+        self._update_jump_button()
 
     def _on_destroy(self, widget):
         """
@@ -150,7 +167,7 @@ class PlaylistsView(View):
             Lp().playlists.disconnect(self._signal_id)
             self._signal_id = None
 
-    def _on_playing_button_clicked(self, button):
+    def _on_jump_button_clicked(self, button):
         """
             Scroll to current track
             @param button as Gtk.Button
@@ -168,10 +185,11 @@ class PlaylistsView(View):
 
     def _on_current_changed(self, player):
         """
-            Current song changed
+            Current song changed, update playing button
             @param player as Player
         """
-        self._playlists_widget.update_playing_indicator()
+        View._on_current_changed(self, player)
+        self._update_jump_button()
 
 
 class PlaylistsManageView(View):

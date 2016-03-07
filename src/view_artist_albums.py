@@ -34,6 +34,7 @@ class ArtistAlbumsView(View):
         View.__init__(self)
         self._artist_ids = artist_ids
         self._genre_ids = genre_ids
+        self._albums = []
         self._albums_count = 0
 
         self._albumbox = Gtk.Grid()
@@ -50,6 +51,7 @@ class ArtistAlbumsView(View):
         """
             Populate the view
         """
+        self._albums = list(albums)
         if albums:
             self._albums_count = len(albums)
             self._add_albums(albums)

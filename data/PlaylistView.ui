@@ -26,7 +26,6 @@
         <property name="visible">True</property>
         <property name="can_focus">False</property>
         <property name="margin_top">2</property>
-        <property name="hexpand">True</property>
         <child>
           <object class="GtkLabel" id="title">
             <property name="height_request">32</property>
@@ -35,6 +34,7 @@
             <property name="halign">start</property>
             <property name="margin_start">6</property>
             <property name="margin_end">5</property>
+            <property name="hexpand">True</property>
             <property name="label">title</property>
             <property name="ellipsize">end</property>
             <property name="track_visited_links">False</property>
@@ -57,6 +57,7 @@
             <property name="can_focus">True</property>
             <property name="receives_default">True</property>
             <property name="tooltip_text" translatable="yes">Edit</property>
+            <property name="halign">end</property>
             <property name="margin_start">5</property>
             <property name="image">image1</property>
             <property name="relief">none</property>
@@ -64,21 +65,23 @@
             <signal name="clicked" handler="_on_edit_button_clicked" swapped="no"/>
           </object>
           <packing>
-            <property name="left_attach">1</property>
+            <property name="left_attach">2</property>
             <property name="top_attach">0</property>
           </packing>
         </child>
         <child>
-          <object class="GtkButton" id="playing-button">
+          <object class="GtkButton" id="jump-button">
             <property name="visible">True</property>
+            <property name="sensitive">False</property>
             <property name="can_focus">True</property>
             <property name="receives_default">True</property>
+            <property name="halign">end</property>
             <property name="image">image2</property>
             <property name="relief">none</property>
-            <signal name="clicked" handler="_on_playing_button_clicked" swapped="no"/>
+            <signal name="clicked" handler="_on_jump_button_clicked" swapped="no"/>
           </object>
           <packing>
-            <property name="left_attach">2</property>
+            <property name="left_attach">1</property>
             <property name="top_attach">0</property>
           </packing>
         </child>

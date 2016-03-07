@@ -182,7 +182,7 @@ class AlbumsPopover(Gtk.Popover):
         builder.connect_signals(self)
 
         self._clear_button = builder.get_object('clear-button')
-        self._playing_button = builder.get_object('playing-button')
+        self._jump_button = builder.get_object('jump-button')
         self._view = Gtk.ListBox()
         self._view.get_style_context().add_class('trackswidget')
         self._view.set_vexpand(True)
@@ -207,7 +207,7 @@ class AlbumsPopover(Gtk.Popover):
             Populate widget with album rows
         """
         albums = list(Lp().player.get_albums())
-        self._playing_button.set_sensitive(False)
+        self._jump_button.set_sensitive(False)
         if albums:
             self._clear_button.set_sensitive(True)
         self._add_items(albums)
@@ -236,8 +236,8 @@ class AlbumsPopover(Gtk.Popover):
             GLib.idle_add(self._add_items, items, album_id)
         else:
             if Lp().player.current_track.album.id in Lp().player.get_albums():
-                self._playing_button.set_sensitive(True)
-                self._playing_button.set_tooltip_text(
+                self._jump_button.set_sensitive(True)
+                self._jump_button.set_tooltip_text(
                                           Lp().player.current_track.album.name)
 
     def _row_for_album_id(self, album_id):
@@ -263,8 +263,7 @@ class AlbumsPopover(Gtk.Popover):
         y = None
         for child in self._view.get_children():
             if child.get_id() == Lp().player.current_track.album.id:
-                y = child.translate_coordinates(self, 0, 0)[1] -\
-                        child.get_allocated_height()
+                y = child.translate_coordinates(self._view, 0, 0)[1]
         return y
 
     def _on_map(self, widget):
@@ -293,8 +292,8 @@ class AlbumsPopover(Gtk.Popover):
             Show tracks in a popover
             @param player object
         """
-        if self._playing_button.get_sensitive():
-            self._playing_button.set_tooltip_text(
+        if self._jump_button.get_sensitive():
+            self._jump_button.set_tooltip_text(
                                           Lp().player.current_track.album.name)
         for child in self._view.get_children():
             child.show_play_indicator(child.get_id() ==
@@ -306,8 +305,8 @@ class AlbumsPopover(Gtk.Popover):
             @param row as AlbumRow
         """
         if row.get_id() != Lp().player.current_track.album.id:
-            self._playing_button.set_sensitive(False)
-            self._playing_button.set_tooltip_text('')
+            self._jump_button.set_sensitive(False)
+            self._jump_button.set_tooltip_text('')
         self._clear_button.set_sensitive(len(self._view.get_children()) != 0)
 
     def _on_row_activated(self, widget, row):
@@ -330,7 +329,7 @@ class AlbumsPopover(Gtk.Popover):
             album = Album(row.get_id(), genre_ids)
             Lp().player.load(album.tracks[0])
 
-    def _on_playing_clicked(self, widget):
+    def _on_jump_button_clicked(self, widget):
         """
             Scroll to album
         """
