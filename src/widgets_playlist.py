@@ -128,6 +128,7 @@ class PlaylistsWidget(Gtk.Bin):
             @param track position as int
             @thread safe
         """
+        self._tracks1 = list(tracks)
         GLib.idle_add(self._add_tracks,
                       tracks,
                       self._tracks_widget_left,
@@ -140,6 +141,7 @@ class PlaylistsWidget(Gtk.Bin):
             @param track position as int
             @thread safe
         """
+        self._tracks2 = list(tracks)
         # If we are showing only one column, wait for widget1
         if self._box.get_min_children_per_line() == 1 and\
            self._locked_widget2:
@@ -193,12 +195,6 @@ class PlaylistsWidget(Gtk.Bin):
             return
 
         track = Track(tracks.pop(0))
-
-        if widget == self._tracks_widget_left:
-            self._tracks1.append(track.id)
-        else:
-            self._tracks2.append(track.id)
-
         widget.add_track_playlist(track.id, pos,
                                   track.album.id != previous_album_id)
         GLib.idle_add(self._add_tracks, tracks, widget,
