@@ -538,6 +538,7 @@ class AlbumDetailedWidget(Gtk.Bin, AlbumWidget):
         Gtk.Bin.__init__(self)
         AlbumWidget.__init__(self, album_id, genre_ids)
         self._width = None
+        self._locked_widget_right = True
         self._artist_ids = artist_ids
         self._limit_to_current = not update_albums
         self.set_property('height-request', ArtSize.BIG)
@@ -687,10 +688,15 @@ class AlbumDetailedWidget(Gtk.Bin, AlbumWidget):
             @param disc as Disc
             @param pos as int
         """
-        GLib.idle_add(self._add_tracks,
-                      tracks,
-                      self._tracks_right[disc.number],
-                      pos)
+        # If we are showing only one column, wait for widget1
+        if self._box.get_min_children_per_line() == 1 and\
+           self._locked_widget_right:
+            GLib.timeout_add(100, self.populate_list_right, tracks, disc, pos)
+        else:
+            GLib.idle_add(self._add_tracks,
+                          tracks,
+                          self._tracks_right[disc.number],
+                          pos)
 
     def get_current_ordinate(self, parent):
         """
@@ -732,6 +738,8 @@ class AlbumDetailedWidget(Gtk.Bin, AlbumWidget):
             # the right tracks widget
             if widget == self._tracks_right[self._discs[-1].number]:
                 self.emit('finished')
+            else:
+                self._locked_widget_right = False
             return
 
         track = tracks.pop(0)

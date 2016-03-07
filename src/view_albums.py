@@ -163,13 +163,14 @@ class AlbumsView(LazyLoadingView):
                                                   self._genre_ids,
                                                   self._artist_ids,
                                                   size_group)
-        self._context_widget.populate()
         self._context_widget.show()
         view = AlbumContextView(self._context_widget)
         view.show()
         self._context.add(view)
         self._context.set_visible_child(view)
         self._context.clean_old_views(view)
+        # We delay populate() to be sure widget get it size allocated
+        GLib.idle_add(self._context_widget.populate)
 
     def _add_albums(self, albums):
         """
