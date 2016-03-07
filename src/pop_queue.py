@@ -363,6 +363,7 @@ class QueuePopover(Gtk.Popover):
             Clear queue
             @param widget as Gtk.Button
         """
+        self._stop = True
         self._clear(True)
 
     def _on_track_moved(self, row, src, x, y):

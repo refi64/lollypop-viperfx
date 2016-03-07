@@ -182,7 +182,7 @@ class AlbumsPopover(Gtk.Popover):
         builder.connect_signals(self)
 
         self._clear_button = builder.get_object('clear-button')
-
+        self._playing_button = builder.get_object('playing-button')
         self._view = Gtk.ListBox()
         self._view.get_style_context().add_class('trackswidget')
         self._view.set_vexpand(True)
@@ -190,8 +190,8 @@ class AlbumsPopover(Gtk.Popover):
         self._view.set_activate_on_single_click(True)
         self._view.connect("row-activated", self._on_row_activated)
         self._view.show()
-
-        builder.get_object('scrolled').add(self._view)
+        self._scrolled = builder.get_object('scrolled')
+        self._scrolled.add(self._view)
         self.add(builder.get_object('widget'))
 
     def do_show(self):
@@ -207,6 +207,7 @@ class AlbumsPopover(Gtk.Popover):
             Populate widget with album rows
         """
         albums = list(Lp().player.get_albums())
+        self._playing_button.set_sensitive(False)
         if albums:
             self._clear_button.set_sensitive(True)
         self._add_items(albums)
@@ -233,6 +234,11 @@ class AlbumsPopover(Gtk.Popover):
             row = self._row_for_album_id(album_id)
             self._view.add(row)
             GLib.idle_add(self._add_items, items, album_id)
+        else:
+            if Lp().player.current_track.album.id in Lp().player.get_albums():
+                self._playing_button.set_sensitive(True)
+                self._playing_button.set_tooltip_text(
+                                          Lp().player.current_track.album.name)
 
     def _row_for_album_id(self, album_id):
         """
@@ -248,6 +254,18 @@ class AlbumsPopover(Gtk.Popover):
         row.connect('destroy', self._on_child_destroyed)
         row.connect('track-moved', self._on_track_moved)
         return row
+
+    def _get_current_ordinate(self):
+        """
+            If current track in widget, return it ordinate,
+            @return y as int
+        """
+        y = None
+        for child in self._view.get_children():
+            if child.get_id() == Lp().player.current_track.album.id:
+                y = child.translate_coordinates(self, 0, 0)[1] -\
+                        child.get_allocated_height()
+        return y
 
     def _on_map(self, widget):
         """
@@ -275,6 +293,9 @@ class AlbumsPopover(Gtk.Popover):
             Show tracks in a popover
             @param player object
         """
+        if self._playing_button.get_sensitive():
+            self._playing_button.set_tooltip_text(
+                                          Lp().player.current_track.album.name)
         for child in self._view.get_children():
             child.show_play_indicator(child.get_id() ==
                                       Lp().player.current_track.album.id)
@@ -284,6 +305,9 @@ class AlbumsPopover(Gtk.Popover):
             Check clear button aspect
             @param row as AlbumRow
         """
+        if row.get_id() != Lp().player.current_track.album.id:
+            self._playing_button.set_sensitive(False)
+            self._playing_button.set_tooltip_text('')
         self._clear_button.set_sensitive(len(self._view.get_children()) != 0)
 
     def _on_row_activated(self, widget, row):
@@ -306,11 +330,20 @@ class AlbumsPopover(Gtk.Popover):
             album = Album(row.get_id(), genre_ids)
             Lp().player.load(album.tracks[0])
 
-    def _on_button_clicked(self, widget):
+    def _on_playing_clicked(self, widget):
+        """
+            Scroll to album
+        """
+        y = self._get_current_ordinate()
+        if y is not None:
+            self._scrolled.get_vadjustment().set_value(y)
+
+    def _on_clear_clicked(self, widget):
         """
             Clear albums
             @param widget as Gtk.Button
         """
+        self._stop = True
         self._clear(True)
 
     def _on_track_moved(self, row, src, x, y):
