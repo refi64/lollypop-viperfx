@@ -10,8 +10,8 @@
   <object class="GtkGrid" id="widget">
     <property name="visible">True</property>
     <property name="can_focus">False</property>
-    <property name="margin_top">5</property>
-    <property name="row_spacing">5</property>
+    <property name="margin_top">2</property>
+    <property name="row_spacing">2</property>
     <property name="column_spacing">5</property>
     <child>
       <object class="GtkSearchEntry" id="searchentry1">
@@ -19,7 +19,7 @@
         <property name="can_focus">True</property>
         <property name="has_focus">True</property>
         <property name="is_focus">True</property>
-        <property name="margin_start">5</property>
+        <property name="margin_start">2</property>
         <property name="hexpand">True</property>
         <property name="primary_icon_name">edit-find-symbolic</property>
         <property name="primary_icon_activatable">False</property>
@@ -38,7 +38,7 @@
         <property name="can_focus">True</property>
         <property name="receives_default">True</property>
         <property name="tooltip_text" translatable="yes">Create a new playlist based on search</property>
-        <property name="margin_end">5</property>
+        <property name="margin_end">2</property>
         <property name="image">image2</property>
         <property name="relief">none</property>
         <signal name="clicked" handler="_on_new_btn_clicked" swapped="no"/>
