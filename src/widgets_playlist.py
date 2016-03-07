@@ -143,7 +143,7 @@ class PlaylistsWidget(Gtk.Bin):
         # If we are showing only one column, wait for widget1
         if self._box.get_min_children_per_line() == 1 and\
            self._locked_widget2:
-            GLib.timeout_add(250, self.populate_list_right, tracks, pos)
+            GLib.timeout_add(100, self.populate_list_right, tracks, pos)
         else:
             GLib.idle_add(self._add_tracks,
                           tracks,
