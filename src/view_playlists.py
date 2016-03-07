@@ -37,7 +37,7 @@ class PlaylistsView(View):
         self._tracks = []
         self._playlist_ids = playlist_ids
         self._signal_id = Lp().playlists.connect('playlist-changed',
-                                                 self._update)
+                                                 self._on_playlist_changed)
 
         builder = Gtk.Builder()
         builder.add_from_resource('/org/gnome/Lollypop/PlaylistView.ui')
@@ -111,21 +111,10 @@ class PlaylistsView(View):
         """
         return [self._playlists_widget]
 
-    def _update(self, manager, playlist_id):
-        """
-            Update tracks widgets
-            @param manager as PlaylistsManager
-            @param playlist id as int
-        """
-        if playlist_id in self._playlist_ids:
-            self._playlists_widget.clear()
-            t = Thread(target=self._update_view)
-            t.daemon = True
-            t.start()
-
     def _update_view(self):
         """
             Update tracks widgets
+            @thread safe
         """
         tracks = []
         for playlist_id in self._playlist_ids:
@@ -144,6 +133,18 @@ class PlaylistsView(View):
         else:
             self._jump_button.set_sensitive(False)
             self._jump_button.set_tooltip_text('')
+
+    def _on_playlist_changed(self, manager, playlist_id):
+        """
+            Update tracks widgets
+            @param manager as PlaylistsManager
+            @param playlist id as int
+        """
+        if playlist_id in self._playlist_ids:
+            self._playlists_widget.clear()
+            t = Thread(target=self._update_view)
+            t.daemon = True
+            t.start()
 
     def _on_populated(self, widget):
         """
