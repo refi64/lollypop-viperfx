@@ -68,6 +68,7 @@ class InfosPopover(Gtk.Popover):
         builder.add_from_resource('/org/gnome/Lollypop/ArtistInfos.ui')
         builder.connect_signals(self)
         self._menu = builder.get_object('menu')
+        self._jump_button = builder.get_object('jump-button')
         self._stack = builder.get_object('stack')
         self.add(builder.get_object('widget'))
         if Lp().settings.get_value('infosreload'):
@@ -184,6 +185,11 @@ class InfosPopover(Gtk.Popover):
             self._timeout_id = None
             self._on_current_changed(Lp().player, True)
 
+    def _on_jump_button_clicked(self, widget):
+        """
+        """
+        pass
+
     def _on_self_map(self, widget):
         """
             Connect signals
@@ -222,6 +228,7 @@ class InfosPopover(Gtk.Popover):
             @param force as bool
         """
         self._menu.hide()
+        self._jump_button.show()
         if self._current is None:
             self._current = self._get_current()
         Lp().settings.set_value('infoswitch',
@@ -244,6 +251,7 @@ class InfosPopover(Gtk.Popover):
             @param force as bool
         """
         self._menu.hide()
+        self._jump_button.hide()
         if self._current is None:
             self._current = self._get_current()
         artist = Lp().artists.get_name(self._current[0])
@@ -268,6 +276,7 @@ class InfosPopover(Gtk.Popover):
             @param widget as Gtk.Viewport
             @param force as bool
         """
+        self._jump_button.hide()
         if self._current is None:
             self._current = self._get_current()
         artist = Lp().artists.get_name(self._current[0])
@@ -299,6 +308,7 @@ class InfosPopover(Gtk.Popover):
             @param widget as Gtk.Viewport
             @param force as bool
         """
+        self._jump_button.hide()
         self._menu.hide()
         if self._current is None:
             self._current = self._get_current()
@@ -316,6 +326,7 @@ class InfosPopover(Gtk.Popover):
             Load on map
             @param widget as Gtk.Viewport
         """
+        self._jump_button.hide()
         self._menu.hide()
         if self._current is None:
             self._current = self._get_current()
