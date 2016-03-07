@@ -36,7 +36,6 @@ class PlaylistsView(View):
         View.__init__(self)
         self._tracks = []
         self._playlist_ids = playlist_ids
-        self._populated = False
         self._signal_id = Lp().playlists.connect('playlist-changed',
                                                  self._update)
 
@@ -151,10 +150,6 @@ class PlaylistsView(View):
             Show current track
             @param widget as Gtk.Widget
         """
-        # Ignore first list
-        if not self._populated:
-            self._populated = True
-            return
         self._update_jump_button()
 
     def _on_destroy(self, widget):

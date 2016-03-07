@@ -53,6 +53,8 @@ class PlaylistsWidget(Gtk.Bin):
         self._tracks2 = []
         self._width = None
         self._stop = False
+        # Used to block widget2 populate while showing one column
+        self._locked_widget2 = True
 
         self._box = FlowBox()
         self._box.set_selection_mode(Gtk.SelectionMode.NONE)
@@ -126,7 +128,6 @@ class PlaylistsWidget(Gtk.Bin):
             @param track position as int
             @thread safe
         """
-        self._stop = False
         GLib.idle_add(self._add_tracks,
                       tracks,
                       self._tracks_widget1,
@@ -139,11 +140,15 @@ class PlaylistsWidget(Gtk.Bin):
             @param track position as int
             @thread safe
         """
-        self._stop = False
-        GLib.idle_add(self._add_tracks,
-                      tracks,
-                      self._tracks_widget2,
-                      pos)
+        # If we are showing only one column, wait for widget1
+        if self._box.get_min_children_per_line() == 1 and\
+           self._locked_widget2:
+            GLib.timeout_add(250, self.populate_list_right, tracks, pos)
+        else:
+            GLib.idle_add(self._add_tracks,
+                          tracks,
+                          self._tracks_widget2,
+                          pos)
 
     def update_playing_indicator(self):
         """
@@ -180,7 +185,10 @@ class PlaylistsWidget(Gtk.Bin):
             @param previous album id as int
         """
         if not tracks or self._stop:
-            self.emit('populated')
+            if widget == self._tracks_widget2:
+                self.emit('populated')
+            else:
+                self._locked_widget2 = False
             return
 
         track = Track(tracks.pop(0))
