@@ -537,6 +537,7 @@ class AlbumDetailedWidget(Gtk.Bin, AlbumWidget):
         """
         Gtk.Bin.__init__(self)
         AlbumWidget.__init__(self, album_id, genre_ids)
+        self._width = None
         self._artist_ids = artist_ids
         self._limit_to_current = not update_albums
         self.set_property('height-request', ArtSize.BIG)
@@ -775,6 +776,9 @@ class AlbumDetailedWidget(Gtk.Bin, AlbumWidget):
             @param widget as Gtk.Widget
             @param allocation as Gtk.Allocation
         """
+        if self._width == allocation.width:
+            return
+        self._width = allocation.width
         if allocation.width < WindowSize.MONSTER:
             self._box.set_min_children_per_line(1)
             self._box.set_max_children_per_line(1)

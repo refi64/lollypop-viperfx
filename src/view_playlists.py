@@ -85,15 +85,10 @@ class PlaylistsView(View):
         """
         self._tracks = tracks
         mid_tracks = int(0.5+len(tracks)/2)
-        # First element will be ignored by widget
-        self._playlists_widget.populate_list_left(
-                                               [Type.NONE]+tracks[:mid_tracks],
-                                               1)
-        # Add last element from list left
-        # to be able to calculate previous album
-        if tracks[mid_tracks-1:]:
-            self._playlists_widget.populate_list_right(tracks[mid_tracks-1:],
-                                                       mid_tracks + 1)
+        self._playlists_widget.populate_list_left(tracks[:mid_tracks],
+                                                  1)
+        self._playlists_widget.populate_list_right(tracks[mid_tracks:],
+                                                   mid_tracks + 1)
 
     def get_ids(self):
         """

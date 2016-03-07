@@ -518,11 +518,11 @@ class TracksWidget(Gtk.ListBox):
         album_row.show()
         self.insert(album_row, num)
 
-    def update_headers(self):
+    def update_headers(self, prev_album_id=None):
         """
             Update headers
+            @param previous album id as int
         """
-        prev_album_id = None
         for child in self.get_children():
             track = Track(child.get_id())
             if track.album.id == prev_album_id:

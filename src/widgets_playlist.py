@@ -51,6 +51,7 @@ class PlaylistsWidget(Gtk.Bin):
         self._playlist_ids = playlist_ids
         self._tracks1 = []
         self._tracks2 = []
+        self._width = None
         self._stop = False
 
         self._box = FlowBox()
@@ -120,35 +121,29 @@ class PlaylistsWidget(Gtk.Bin):
 
     def populate_list_left(self, tracks, pos):
         """
-            Populate left list, first element used to calculate
-            previous album
+            Populate left list
             @param track's ids as array of int (not null)
             @param track position as int
             @thread safe
         """
         self._stop = False
-        track = Track(tracks.pop(0))
         GLib.idle_add(self._add_tracks,
                       tracks,
                       self._tracks_widget1,
-                      pos,
-                      track.album.id)
+                      pos)
 
     def populate_list_right(self, tracks, pos):
         """
-            Populate right list, first element used to calculate
-            previous album
+            Populate right list
             @param track's ids as array of int (not null)
             @param track position as int
             @thread safe
         """
         self._stop = False
-        track = Track(tracks.pop(0))
         GLib.idle_add(self._add_tracks,
                       tracks,
                       self._tracks_widget2,
-                      pos,
-                      track.album.id)
+                      pos)
 
     def update_playing_indicator(self):
         """
@@ -345,12 +340,23 @@ class PlaylistsWidget(Gtk.Bin):
             @param widget as Gtk.Widget
             @param allocation as Gtk.Allocation
         """
+        if self._width == allocation.width:
+            return
+        self._width = allocation.width
         if allocation.width < WindowSize.BIG:
             self._box.set_min_children_per_line(1)
             self._box.set_max_children_per_line(1)
+            self._tracks_widget1.update_headers()
+            if self._tracks1:
+                prev_album_id = Track(self._tracks1[-1]).album.id
+            else:
+                prev_album_id = None
+            self._tracks_widget2.update_headers(prev_album_id)
         else:
             self._box.set_min_children_per_line(2)
             self._box.set_max_children_per_line(2)
+            self._tracks_widget1.update_headers()
+            self._tracks_widget2.update_headers()
 
     def _on_activated(self, widget, track_id):
         """
