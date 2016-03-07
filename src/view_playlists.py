@@ -27,15 +27,14 @@ class PlaylistsView(View):
         Show playlist tracks
     """
 
-    def __init__(self, playlist_ids, popover=False):
+    def __init__(self, playlist_ids, editable=True):
         """
             Init PlaylistView
             @parma playlist ids as [int]
-            @param popover as bool
+            @param editable as bool
         """
         View.__init__(self)
         self._playlist_ids = playlist_ids
-        self._popover = popover
         self._populated = False
         self._signal_id = Lp().playlists.connect('playlist-changed',
                                                  self._update)
@@ -60,12 +59,13 @@ class PlaylistsView(View):
                 name += Lp().playlists.get_name(playlist_id)+", "
         builder.get_object('title').set_label(name[:-2])
 
-        self._edit_btn = builder.get_object('edit_btn')
+        self._edit_button = builder.get_object('edit-button')
+        self._playing_button = builder.get_object('playing-button')
 
         if len(playlist_ids) > 1 or (
-           playlist_ids[0] < 0 and playlist_ids[0] != Type.LOVED) or popover:
-            self._edit_btn.hide()
-        self._back_btn = builder.get_object('back_btn')
+           playlist_ids[0] < 0 and playlist_ids[0] != Type.LOVED) or\
+                not editable:
+            self._edit_button.hide()
         self._title = builder.get_object('title')
 
         self._playlists_widget = PlaylistsWidget(playlist_ids)
@@ -139,11 +139,6 @@ class PlaylistsView(View):
         # Ignore first list
         if not self._populated:
             self._populated = True
-        # Scroll to track if in popover
-        if self._popover:
-            y = self._playlists_widget.get_current_coordinates()[1]
-            if y != -1:
-                self._scrolled.get_vadjustment().set_value(y)
 
     def _on_destroy(self, widget):
         """
@@ -155,11 +150,19 @@ class PlaylistsView(View):
             Lp().playlists.disconnect(self._signal_id)
             self._signal_id = None
 
-    def _on_edit_btn_clicked(self, button):
+    def _on_playing_button_clicked(self, button):
+        """
+            Scroll to current track
+            @param button as Gtk.Button
+        """
+        y = self._playlists_widget.get_current_ordinate()
+        if y is not None:
+            self._scrolled.get_vadjustment().set_value(y)
+
+    def _on_edit_button_clicked(self, button):
         """
             Edit playlist
             @param button as Gtk.Button
-            @param playlist name as str
         """
         Lp().window.show_playlist_editor(self._playlist_ids[0])
 

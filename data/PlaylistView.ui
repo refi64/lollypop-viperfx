@@ -1,11 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Generated with glade 3.18.3 -->
+<!-- Generated with glade 3.19.0 -->
 <interface>
   <requires lib="gtk+" version="3.12"/>
   <object class="GtkImage" id="image1">
     <property name="visible">True</property>
     <property name="can_focus">False</property>
     <property name="icon_name">emblem-system-symbolic</property>
+  </object>
+  <object class="GtkImage" id="image2">
+    <property name="visible">True</property>
+    <property name="can_focus">False</property>
+    <property name="icon_name">go-jump-symbolic</property>
   </object>
   <object class="GtkGrid" id="widget">
     <property name="visible">True</property>
@@ -21,6 +26,7 @@
         <property name="visible">True</property>
         <property name="can_focus">False</property>
         <property name="margin_top">2</property>
+        <property name="hexpand">True</property>
         <child>
           <object class="GtkLabel" id="title">
             <property name="height_request">32</property>
@@ -46,7 +52,7 @@
           </packing>
         </child>
         <child>
-          <object class="GtkButton" id="edit_btn">
+          <object class="GtkButton" id="edit-button">
             <property name="visible">True</property>
             <property name="can_focus">True</property>
             <property name="receives_default">True</property>
@@ -55,10 +61,24 @@
             <property name="image">image1</property>
             <property name="relief">none</property>
             <property name="always_show_image">True</property>
-            <signal name="clicked" handler="_on_edit_btn_clicked" swapped="no"/>
+            <signal name="clicked" handler="_on_edit_button_clicked" swapped="no"/>
           </object>
           <packing>
             <property name="left_attach">1</property>
+            <property name="top_attach">0</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkButton" id="playing-button">
+            <property name="visible">True</property>
+            <property name="can_focus">True</property>
+            <property name="receives_default">True</property>
+            <property name="image">image2</property>
+            <property name="relief">none</property>
+            <signal name="clicked" handler="_on_playing_button_clicked" swapped="no"/>
+          </object>
+          <packing>
+            <property name="left_attach">2</property>
             <property name="top_attach">0</property>
           </packing>
         </child>
