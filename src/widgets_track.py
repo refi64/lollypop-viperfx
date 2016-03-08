@@ -313,7 +313,6 @@ class PlaylistRow(Row):
             @param id as int
         """
         Row.set_id(self, id)
-        self._object = Album(self._id)
 
     def show_header(self, show):
         """
@@ -339,15 +338,13 @@ class PlaylistRow(Row):
             self._cover.set_from_surface(surface)
             self._cover_frame.set_shadow_type(Gtk.ShadowType.IN)
 
-    def set_album_and_artist(self, album_id):
+    def set_album_and_artist(self):
         """
             Set artist and album labels
-            @param album id as int
         """
-        artist = Lp().albums.get_artist_name(album_id)
-        album = Lp().albums.get_name(album_id)
-        self._artist_label.set_markup("<b>"+escape(artist)+"</b>")
-        self._album_label.set_text(escape(album))
+        album = Album(self._id)
+        self._artist_label.set_markup("<b>"+escape(album.artist_name)+"</b>")
+        self._album_label.set_text(escape(album.name))
 
 #######################
 # PRIVATE             #
@@ -434,7 +431,6 @@ class TrackRow(Row):
             @param id as int
         """
         Row.set_id(self, id)
-        self._object = Track(self._id)
 
 #######################
 # PRIVATE             #
@@ -498,6 +494,7 @@ class TracksWidget(Gtk.ListBox):
         row = PlaylistRow(self._show_loved)
         row.connect('track-moved', self._on_track_moved)
         self.set_row(row, track_id, pos, show_cover)
+        row.set_album_and_artist()
         row.show()
         self.insert(row, pos)
 
@@ -556,7 +553,6 @@ class TracksWidget(Gtk.ListBox):
         row.set_title_label(track.formated_name())
         row.set_duration_label(seconds_to_string(track.duration))
         row.set_id(track_id)
-        row.set_album_and_artist(track.album.id)
         if show_cover:
             surface = Lp().art.get_album_artwork(
                         track.album,
