@@ -275,9 +275,3 @@ class PlaylistEditView(View):
 #######################
 # PRIVATE             #
 #######################
-    def _on_back_btn_clicked(self, button):
-        """
-            Restore previous view
-            @param button as Gtk.Button
-        """
-        Lp().window.destroy_current_view()
