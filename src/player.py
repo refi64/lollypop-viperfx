@@ -95,6 +95,15 @@ class Player(BinPlayer, QueuePlayer, UserPlaylistPlayer, RadioPlayer,
             self.set_next()
         self.emit('album-added', album.id)
 
+    def move_album(self, album_id, position):
+        """
+            Move album to position
+            @param album id as int
+            @param position as int
+        """
+        index = self._albums.index(album_id)
+        self._albums.insert(position, self._albums.pop(index))
+
     def remove_album(self, album):
         """
             Remove album from albums
@@ -221,25 +230,6 @@ class Player(BinPlayer, QueuePlayer, UserPlaylistPlayer, RadioPlayer,
             self.context.genre_ids[album_id] = genre_ids
         # Shuffle album list if needed
         self.shuffle_albums(True)
-
-    def set_albums2(self, albums):
-        """
-            Set albums
-            @param albums as [int]
-        """
-        # if current album removed, skip it
-        if albums and self.current_track.album.id not in albums:
-            if self.current_track.album.id in self._albums_backup:
-                self._albums_backup.remove(self.current_track.album.id)
-            self.context.next = NextContext.START_NEW_ALBUM
-            self.set_next()
-            self.next()
-        if not albums:
-            self.clear_albums()
-        else:
-            self._albums = albums
-        self.set_next()
-        self.set_prev()
 
     def get_albums(self):
         """

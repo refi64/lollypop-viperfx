@@ -26,13 +26,11 @@ class SearchRow(Gtk.ListBoxRow):
         Album/Track search row
     """
 
-    def __init__(self, parent):
+    def __init__(self):
         """
             Init row widgets
-            @param parent as Gtk.Widget
         """
         Gtk.ListBoxRow.__init__(self)
-        self._parent = parent
         self.id = None
         self.is_track = False
         builder = Gtk.Builder()
@@ -41,11 +39,14 @@ class SearchRow(Gtk.ListBoxRow):
         self.set_property('has-tooltip', True)
         self.connect('query-tooltip', self._on_query_tooltip)
         self._row_widget = builder.get_object('row')
+        self._row_widget.set_margin_top(2)
+        self._row_widget.set_margin_end(2)
         self._artist = builder.get_object('artist')
         self._title = builder.get_object('item')
         self._cover = builder.get_object('cover')
         self.add(self._row_widget)
         self.show()
+        self.get_style_context().add_class('trackrow')
 
     def set_text(self, artist, title):
         """
@@ -140,16 +141,14 @@ class SearchPopover(Gtk.Popover):
         Popover allowing user to search for tracks/albums
     """
 
-    def __init__(self, parent):
+    def __init__(self):
         """
             Init Popover
-            @param parent as Gtk.Widget
         """
         Gtk.Popover.__init__(self)
         self.set_position(Gtk.PositionType.BOTTOM)
         self.connect('map', self._on_map)
         self.connect('unmap', self._on_unmap)
-        self._parent = parent
         self._in_thread = False
         self._stop_thread = False
         self._timeout = None
@@ -162,8 +161,9 @@ class SearchPopover(Gtk.Popover):
         self._new_btn = builder.get_object('new_btn')
 
         self._view = Gtk.ListBox()
+        self._view.get_style_context().add_class('trackswidget')
         self._view.connect("button-press-event", self._on_button_press)
-        self._view.connect("row-activated", self._on_activate)
+        self._view.connect("row-activated", self._on_row_activated)
         self._view.show()
 
         builder.get_object('scrolled').add(self._view)
@@ -207,7 +207,7 @@ class SearchPopover(Gtk.Popover):
 
     def _populate(self):
         """
-            Populate treeview searching items
+            Populate searching items
             in db based on text entry current text
         """
         results = []
@@ -265,7 +265,7 @@ class SearchPopover(Gtk.Popover):
         if results:
             result = results.pop(0)
             if not self._exists(result):
-                search_row = SearchRow(self._parent)
+                search_row = SearchRow()
                 if result.count != -1:
                     result.title += " (%s)" % result.count
                 search_row.set_text(result.artist, result.title)
@@ -397,7 +397,7 @@ class SearchPopover(Gtk.Popover):
         t.daemon = True
         t.start()
 
-    def _on_activate(self, widget, row):
+    def _on_row_activated(self, widget, row):
         """
             Play searched item when selected
             @param widget as Gtk.ListBox
@@ -406,10 +406,15 @@ class SearchPopover(Gtk.Popover):
         if Lp().player.is_party():
             if row.is_track:
                 Lp().player.load(Track(row.id))
-            else:
+            elif Gtk.get_minor_version() > 18:
                 popover = AlbumPopoverWidget(row.id, [], [])
                 popover.set_relative_to(row)
                 popover.show()
+            else:
+                t = Thread(target=self._play_search, args=(row.id,
+                                                           row.is_track))
+                t.daemon = True
+                t.start()
         else:
             t = Thread(target=self._play_search, args=(row.id, row.is_track))
             t.daemon = True

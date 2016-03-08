@@ -34,6 +34,7 @@ class ArtistAlbumsView(View):
         View.__init__(self)
         self._artist_ids = artist_ids
         self._genre_ids = genre_ids
+        self._albums = []
         self._albums_count = 0
 
         self._albumbox = Gtk.Grid()
@@ -50,9 +51,23 @@ class ArtistAlbumsView(View):
         """
             Populate the view
         """
+        self._albums = list(albums)
         if albums:
             self._albums_count = len(albums)
             self._add_albums(albums)
+
+    def jump_to_current(self):
+        """
+            Jump to current album
+        """
+        widget = None
+        for child in self._albumbox.get_children():
+            if child.get_id() == Lp().player.current_track.album.id:
+                widget = child
+                break
+        if widget is not None:
+            y = widget.get_current_ordinate(self._albumbox)
+            self._scrolled.get_vadjustment().set_value(y)
 
 #######################
 # PRIVATE             #
@@ -123,6 +138,12 @@ class CurrentArtistAlbumsView(ViewContainer):
             else:
                 albums = [album_id]
             GLib.idle_add(self._populate, albums)
+
+    def jump_to_current(self):
+        """
+            Jump to current track
+        """
+        self.get_visible_child().jump_to_current()
 
 #######################
 # PRIVATE             #

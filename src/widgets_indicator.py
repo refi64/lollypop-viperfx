@@ -15,9 +15,10 @@ from gi.repository import Gtk, GLib
 from gettext import gettext as _
 
 from lollypop.define import Lp
+from lollypop.utils import is_loved
 
 
-class IndicatorWidget(Gtk.Stack):
+class IndicatorWidget(Gtk.EventBox):
     """
         Show play/loved indicator
     """
@@ -26,13 +27,16 @@ class IndicatorWidget(Gtk.Stack):
         """
             Init indicator widget
         """
-        Gtk.Stack.__init__(self)
+        Gtk.EventBox.__init__(self)
         self._id = None
-        self.connect('destroy', self._on_destroy)
         self._pass = 1
-        self.set_transition_duration(500)
-        self.set_transition_type(Gtk.StackTransitionType.CROSSFADE)
         self._timeout_id = None
+        self.connect('destroy', self._on_destroy)
+        self.connect('enter-notify-event', self._on_enter_notify)
+        self.connect('leave-notify-event', self._on_leave_notify)
+        self._stack = Gtk.Stack()
+        self._stack.set_transition_duration(500)
+        self._stack.set_transition_type(Gtk.StackTransitionType.CROSSFADE)
         self._button = Gtk.Button.new()
         self._image = Gtk.Image.new()
         self._button.set_image(self._image)
@@ -46,9 +50,10 @@ class IndicatorWidget(Gtk.Stack):
                                             Gtk.IconSize.MENU)
         loved = Gtk.Image.new_from_icon_name('emblem-favorite-symbolic',
                                              Gtk.IconSize.MENU)
-        self.add_named(self._button, 'button')
-        self.add_named(play, 'play')
-        self.add_named(loved, 'loved')
+        self._stack.add_named(self._button, 'button')
+        self._stack.add_named(play, 'play')
+        self._stack.add_named(loved, 'loved')
+        self.add(self._stack)
         self.show_all()
         Lp().player.connect('queue-changed', self._on_queue_changed)
 
@@ -64,19 +69,19 @@ class IndicatorWidget(Gtk.Stack):
         """
             Show no indicator
         """
-        self.set_visible_child_name('button')
+        self._stack.set_visible_child_name('button')
 
     def play(self):
         """
             Show play indicator
         """
-        self.set_visible_child_name('play')
+        self._stack.set_visible_child_name('play')
 
     def loved(self):
         """
             Show loved indicator
         """
-        self.set_visible_child_name('loved')
+        self._stack.set_visible_child_name('loved')
 
     def play_loved(self):
         """
@@ -110,6 +115,21 @@ class IndicatorWidget(Gtk.Stack):
             self._image.set_from_icon_name('list-add-symbolic',
                                            Gtk.IconSize.MENU)
 
+    def _on_enter_notify(self, widget, event):
+        """
+            Show queue button
+        """
+        self.empty()
+
+    def _on_leave_notify(self, widget, event):
+        """
+            Show love button or play button again
+        """
+        if self._id == Lp().player.current_track.id:
+            self.play()
+        elif is_loved(self._id):
+            self.loved()
+
     def _on_queue_changed(self, player):
         """
             Update button widget
@@ -141,7 +161,7 @@ class IndicatorWidget(Gtk.Stack):
         """
         if self._timeout_id is None:
             return False
-        if self.get_visible_child_name() == 'play':
+        if self._stack.get_visible_child_name() == 'play':
             if self._pass == 10:
                 self._pass = 0
                 self.loved()

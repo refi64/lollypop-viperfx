@@ -29,15 +29,16 @@ class ArtistView(ArtistAlbumsView):
             @param genre id as int
         """
         ArtistAlbumsView.__init__(self, artist_ids, genre_ids)
+        self._signal_id = None
         if len(artist_ids) > 1:
             self._artist_id = None
         else:
             self._artist_id = artist_ids[0]
-        self._signal_id = None
 
         builder = Gtk.Builder()
         builder.add_from_resource('/org/gnome/Lollypop/ArtistView.ui')
         builder.connect_signals(self)
+        self._jump_button = builder.get_object('jump-button')
         self.attach(builder.get_object('ArtistView'), 0, 0, 1, 1)
         artists = ""
         for artist_id in artist_ids:
@@ -47,6 +48,42 @@ class ArtistView(ArtistAlbumsView):
 #######################
 # PRIVATE             #
 #######################
+    def _update_jump_button(self):
+        """
+            Update jump button status
+        """
+        if Lp().player.current_track.album.id in self._albums:
+            self._jump_button.set_sensitive(True)
+            self._jump_button.set_tooltip_text(
+                                          Lp().player.current_track.name)
+        else:
+            self._jump_button.set_sensitive(False)
+            self._jump_button.set_tooltip_text('')
+
+    def _on_jump_button_clicked(self, widget):
+        """
+            Scroll to album
+        """
+        self.jump_to_current()
+
+    def _on_album_finished(self, album, albums):
+        """
+            Add another album
+            @param album as AlbumDetailedWidget
+            @param [album ids as int]
+        """
+        if not albums:
+            self._update_jump_button()
+        ArtistAlbumsView._on_album_finished(self, album, albums)
+
+    def _on_current_changed(self, player):
+        """
+            Set playing button status
+            @param player as Player
+        """
+        ArtistAlbumsView._on_current_changed(self, player)
+        self._update_jump_button()
+
     def _on_label_realize(self, eventbox):
         """
             Change pointer on label

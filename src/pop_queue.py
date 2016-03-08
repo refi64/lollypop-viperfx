@@ -10,18 +10,235 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-from gi.repository import Gtk, GLib, Pango
+from gi.repository import Gtk, GLib, Gdk, Pango, GObject
 from cgi import escape
 
-from lollypop.define import Lp
-from lollypop.cellrendereralbum import CellRendererAlbum
-from lollypop.objects import Track
+from lollypop.define import Lp, ArtSize, Type
+from lollypop.objects import Track, Album
 
 
-class QueueWidget(Gtk.Popover):
+class QueueRow(Gtk.ListBoxRow):
     """
-        Popover with queue management
-        @Warning: destroy it self on close
+        Queue row (a track)
+    """
+    __gsignals__ = {
+        'track-moved': (GObject.SignalFlags.RUN_FIRST, None, (int, int, int))
+    }
+
+    def __init__(self, track_id):
+        """
+            Init row widgets
+            @param track_id as int
+        """
+        Gtk.ListBoxRow.__init__(self)
+        self._id = track_id
+        self._number = 0
+        self._row_widget = Gtk.EventBox()
+        self._row_widget.set_margin_start(10)
+        self._row_widget.set_margin_end(10)
+        self._row_widget.set_margin_top(2)
+        self._row_widget.set_margin_end(2)
+        self._grid = Gtk.Grid()
+        self._grid.set_column_spacing(5)
+        self._row_widget.add(self._grid)
+        self._cover = Gtk.Image()
+        self._cover_frame = Gtk.Frame()
+        self._cover_frame.set_shadow_type(Gtk.ShadowType.NONE)
+        self._cover_frame.set_property('halign', Gtk.Align.CENTER)
+        self._cover_frame.set_property('valign', Gtk.Align.CENTER)
+        self._cover_frame.get_style_context().add_class('small-cover-frame')
+        self._cover_frame.add(self._cover)
+        # We force width with a Box
+        box = Gtk.Box()
+        box.set_homogeneous(True)
+        box.add(self._cover_frame)
+        box.set_property('width-request', ArtSize.MEDIUM+2)
+        box.show()
+        self._title_label = Gtk.Label()
+        self._title_label.set_margin_start(20)
+        self._title_label.set_property('has-tooltip', True)
+        self._title_label.set_property('hexpand', True)
+        self._title_label.set_property('halign', Gtk.Align.START)
+        self._title_label.set_ellipsize(Pango.EllipsizeMode.END)
+        self._menu_button = Gtk.Button.new_from_icon_name(
+                                                         'user-trash-symbolic',
+                                                         Gtk.IconSize.MENU)
+        self._menu_button.set_relief(Gtk.ReliefStyle.NONE)
+        self._menu_button.get_style_context().add_class('menu-button')
+        self._menu_button.get_style_context().add_class('track-menu-button')
+        self._menu_button.get_image().set_opacity(0.2)
+        self._menu_button.show()
+        self._menu_button.connect('clicked', self._on_delete_clicked)
+        self._grid.add(box)
+        self._grid.add(self._title_label)
+        self._grid.add(self._menu_button)
+        self.add(self._row_widget)
+        self.show_all()
+        self._header = Gtk.Grid()
+        self._header.set_column_spacing(5)
+        self._artist_label = Gtk.Label()
+        self._artist_label.set_ellipsize(Pango.EllipsizeMode.END)
+        self._artist_label.get_style_context().add_class('dim-label')
+        self._album_label = Gtk.Label()
+        self._album_label.set_ellipsize(Pango.EllipsizeMode.END)
+        self._album_label.get_style_context().add_class('dim-label')
+        self._header.add(self._artist_label)
+        self._header.add(self._album_label)
+        self._title_label.set_property('valign', Gtk.Align.END)
+        self._grid.attach(self._header, 1, 0, 1, 1)
+        self.drag_source_set(Gdk.ModifierType.BUTTON1_MASK, [],
+                             Gdk.DragAction.MOVE)
+        self.drag_source_add_text_targets()
+        self.drag_dest_set(Gtk.DestDefaults.DROP | Gtk.DestDefaults.MOTION,
+                           [], Gdk.DragAction.MOVE)
+        self.drag_dest_add_text_targets()
+        self.connect('drag-begin', self._on_drag_begin)
+        self.connect('drag-data-get', self._on_drag_data_get)
+        self.connect('drag-data-received', self._on_drag_data_received)
+        self.connect('drag-motion', self._on_drag_motion)
+        self.connect('drag-leave', self._on_drag_leave)
+        self.get_style_context().add_class('trackrow')
+
+    def show_header(self, show):
+        """
+            Show header
+        """
+        if show:
+            self._header.show_all()
+        else:
+            self._header.hide()
+
+    def get_id(self):
+        """
+            Get row id
+            @return row id as int
+        """
+        return self._id
+
+    def set_labels(self):
+        """
+            Set artist, album and title label
+        """
+        track = Track(self._id)
+        self._artist_label.set_markup(
+                                  "<b>"+escape(track.album.artist_name)+"</b>")
+        self._album_label.set_text(track.album.name)
+        # If we are listening to a compilation, prepend artist name
+        title = escape(track.name)
+        if track.album.artist_id == Type.COMPILATIONS or\
+           len(track.artist_ids) > 1 or\
+           track.album.artist_id not in track.artist_ids:
+            if track.artist_names != track.album.artist_name:
+                title = "<b>%s</b>\n%s" % (escape(track.artist_names),
+                                           title)
+        self._title_label.set_markup(title)
+
+    def set_cover(self, surface):
+        """
+            Set cover surface
+            @param surface as cairo.Surface
+        """
+        if surface is None:
+            self._cover.clear()
+            self._cover_frame.set_shadow_type(Gtk.ShadowType.NONE)
+        else:
+            self._cover.set_from_surface(surface)
+            self._cover_frame.set_shadow_type(Gtk.ShadowType.IN)
+            del surface
+
+#######################
+# PRIVATE             #
+#######################
+    def _on_drag_begin(self, widget, context):
+        """
+            Set icon
+            @param widget as Gtk.Widget
+            @param context as Gdk.DragContext
+        """
+        widget.drag_source_set_icon_name('emblem-music-symbolic')
+
+    def _on_drag_data_get(self, widget, context, data, info, time):
+        """
+            Send track id
+            @param widget as Gtk.Widget
+            @param context as Gdk.DragContext
+            @param data as Gtk.SelectionData
+            @param info as int
+            @param time as int
+        """
+        track_id = str(self._id)
+        data.set_text(track_id, len(track_id))
+
+    def _on_drag_data_received(self, widget, context, x, y, data, info, time):
+        """
+            Move track
+            @param widget as Gtk.Widget
+            @param context as Gdk.DragContext
+            @param x as int
+            @param y as int
+            @param data as Gtk.SelectionData
+            @param info as int
+            @param time as int
+        """
+        self.emit('track-moved', int(data.get_text()), x, y)
+
+    def _on_drag_motion(self, widget, context, x, y, time):
+        """
+            Add style
+            @param widget as Gtk.Widget
+            @param context as Gdk.DragContext
+            @param x as int
+            @param y as int
+            @param time as int
+        """
+        height = self.get_allocated_height()
+        if y > height/2:
+            self.get_style_context().add_class('drag-up')
+            self.get_style_context().remove_class('drag-down')
+        else:
+            self.get_style_context().remove_class('drag-up')
+            self.get_style_context().add_class('drag-down')
+
+    def _on_drag_leave(self, widget, context, time):
+        """
+            Remove style
+            @param widget as Gtk.Widget
+            @param context as Gdk.DragContext
+            @param time as int
+        """
+        self.get_style_context().remove_class('drag-up')
+        self.get_style_context().remove_class('drag-down')
+
+    def _on_delete_clicked(self, button):
+        """
+            Delete track from queue
+            @param button as Gtk.Button
+        """
+        Lp().player.del_from_queue(self._id)
+        self.destroy()
+
+    def _on_query_tooltip(self, widget, x, y, keyboard, tooltip):
+        """
+            Show tooltip if needed
+            @param widget as Gtk.Widget
+            @param x as int
+            @param y as int
+            @param keyboard as bool
+            @param tooltip as Gtk.Tooltip
+        """
+        layout_title = self._title.get_layout()
+        layout_artist = self._artist.get_layout()
+        if layout_title.is_ellipsized() or layout_artist.is_ellipsized():
+            artist = escape(self._artist.get_text())
+            title = escape(self._title.get_text())
+            self.set_tooltip_markup("<b>%s</b>\n%s" % (artist, title))
+        else:
+            self.set_tooltip_text('')
+
+
+class QueuePopover(Gtk.Popover):
+    """
+        Popover showing queue
     """
 
     def __init__(self):
@@ -32,49 +249,22 @@ class QueueWidget(Gtk.Popover):
         self.set_position(Gtk.PositionType.BOTTOM)
         self.connect('map', self._on_map)
         self.connect('unmap', self._on_unmap)
-        self._timeout = None
-        self._in_drag = False
-        self._signal_id1 = None
-        self._signal_id2 = None
-        self._stop = False
 
         builder = Gtk.Builder()
         builder.add_from_resource('/org/gnome/Lollypop/QueuePopover.ui')
         builder.connect_signals(self)
 
-        self._clear_btn = builder.get_object('clear_btn')
+        self._clear_button = builder.get_object('clear-button')
 
-        self._model = Gtk.ListStore(int,               # Album id
-                                    str,               # Artist
-                                    str,               # icon
-                                    int)               # id
+        self._view = Gtk.ListBox()
+        self._view.get_style_context().add_class('trackswidget')
+        self._view.set_selection_mode(Gtk.SelectionMode.NONE)
+        self._view.set_activate_on_single_click(False)
+        self._view.connect("row-activated", self._on_row_activated)
+        self._view.show()
 
-        self._view = builder.get_object('view')
-        self._view.set_model(self._model)
-        self._view.set_property('fixed_height_mode', True)
-
-        self._widget = builder.get_object('widget')
-
-        renderer0 = CellRendererAlbum()
-        renderer1 = Gtk.CellRendererText()
-        renderer1.set_property('ellipsize-set', True)
-        renderer1.set_property('ellipsize', Pango.EllipsizeMode.END)
-        renderer2 = Gtk.CellRendererPixbuf()
-        column0 = Gtk.TreeViewColumn('pixbuf', renderer0, album=0)
-        column0.set_sizing(Gtk.TreeViewColumnSizing.FIXED)
-        column1 = Gtk.TreeViewColumn('text', renderer1, markup=1)
-        column1.set_sizing(Gtk.TreeViewColumnSizing.FIXED)
-        column1.set_expand(True)
-        column2 = Gtk.TreeViewColumn('delete', renderer2)
-        column2.add_attribute(renderer2, 'icon-name', 2)
-        column2.set_sizing(Gtk.TreeViewColumnSizing.FIXED)
-        column2.set_property('fixed_width', 50)
-
-        self._view.append_column(column0)
-        self._view.append_column(column1)
-        self._view.append_column(column2)
-
-        self.add(self._widget)
+        builder.get_object('scrolled').add(self._view)
+        self.add(builder.get_object('widget'))
 
     def do_show(self):
         """
@@ -86,16 +276,25 @@ class QueueWidget(Gtk.Popover):
 
     def populate(self):
         """
-            Populate view
+            Populate widget with queue rows
         """
         if Lp().player.get_queue():
-            self._clear_btn.set_sensitive(True)
+            self._clear_button.set_sensitive(True)
         self._add_items(list(Lp().player.get_queue()))
 
 #######################
 # PRIVATE             #
 #######################
-    def _add_items(self, items):
+    def _clear(self, clear_queue=False):
+        """
+            Clear the view
+        """
+        for child in self._view.get_children():
+            child.destroy()
+        if clear_queue:
+            Lp().player.set_queue([])
+
+    def _add_items(self, items, prev_album_id=None):
         """
             Add items to the view
             @param item ids as [int]
@@ -103,17 +302,26 @@ class QueueWidget(Gtk.Popover):
         if items and not self._stop:
             track_id = items.pop(0)
             album_id = Lp().tracks.get_album_id(track_id)
-            artist_id = Lp().albums.get_artist_id(album_id)
-            artist_name = Lp().artists.get_name(artist_id)
-            track_name = Lp().tracks.get_name(track_id)
-            title = "<b>%s</b>\n%s" %\
-                (escape(artist_name),
-                 escape(track_name))
-            self._model.append([album_id,
-                                title,
-                                'user-trash-symbolic',
-                                track_id])
-            GLib.idle_add(self._add_items, items)
+            row = self._row_for_track_id(track_id)
+            if album_id != prev_album_id:
+                surface = Lp().art.get_album_artwork(
+                                        Album(album_id),
+                                        ArtSize.MEDIUM*self.get_scale_factor())
+                row.set_cover(surface)
+                row.show_header(True)
+            self._view.add(row)
+            GLib.idle_add(self._add_items, items, album_id)
+
+    def _row_for_track_id(self, track_id):
+        """
+            Get a row for track id
+            @param track id as int
+        """
+        row = QueueRow(track_id)
+        row.set_labels()
+        row.connect('destroy', self._on_child_destroyed)
+        row.connect('track-moved', self._on_track_moved)
+        return row
 
     def _on_map(self, widget):
         """
@@ -121,116 +329,106 @@ class QueueWidget(Gtk.Popover):
             @param widget as Gtk.Widget
         """
         self._stop = False
-        self._model.clear()
         self.populate()
         self._signal_id1 = Lp().player.connect('current-changed',
                                                self._on_current_changed)
-        self._signal_id2 = self._model.connect('row-deleted',
-                                               self._updated_rows)
 
     def _on_unmap(self, widget):
         """
             Disconnect signals
             @param widget as Gtk.Widget
         """
+        self._clear()
         self._stop = True
         if self._signal_id1 is not None:
             Lp().player.disconnect(self._signal_id1)
             self._signal_id1 = None
-        if self._signal_id2 is not None:
-            self._model.disconnect(self._signal_id2)
-            self._signal_id2 = None
-
-    def _on_keyboard_event(self, widget, event):
-        """
-            Delete item if Delete was pressed
-            @param widget unused, Gdk.Event
-        """
-        if Lp().player.get_queue():
-            if event.keyval == 65535:
-                path, column = self._view.get_cursor()
-                iterator = self._model.get_iter(path)
-                self._model.remove(iterator)
 
     def _on_current_changed(self, player):
         """
             Pop first item in queue if it's current track id
             @param player object
         """
-        if len(self._model) > 0:
-            row = self._model[0]
-            if row[3] == player.current_track.id:
-                iter = self._model.get_iter(row.path)
-                self._model.remove(iter)
+        if len(self._view.get_children()) > 0:
+            row = self._view.get_children()[0]
+            if row.get_id() == player.current_track.id:
+                row.destroy()
 
-    def _on_drag_begin(self, widget, context):
+    def _update_headers(self):
         """
-            Mark as in drag
-            @param unused
+            Update row headers based on current queue
         """
-        self._in_drag = True
-
-    def _on_drag_end(self, widget, context):
-        """
-            Mark as not in drag
-            @param unused
-        """
-        self._in_drag = False
-
-    def _updated_rows(self, path, data):
-        """
-            Update queue when a row has been deleted
-            @param path as Gtk.TreePath
-            @param data as unused
-        """
-        if self.is_visible():
-            new_queue = []
-            for row in self._model:
-                if row[3]:
-                    new_queue.append(row[3])
-            Lp().player.set_queue(new_queue)
-
-    def _delete_row(self, iterator):
-        """
-            Delete row
-            @param GtkTreeIter
-        """
-        self._model.remove(iterator)
-        if len(self._model) == 0:
-            self._clear_btn.set_sensitive(False)
-
-    def _on_row_activated(self, view, path, column):
-        """
-            Play clicked item
-            @param TreeView, TreePath, TreeViewColumn
-        """
-        if self._timeout:
-            return
-        iterator = self._model.get_iter(path)
-        if iterator:
-            if column.get_title() == "delete":
-                self._delete_row(iterator)
+        prev_album_id = None
+        for child in self._view.get_children():
+            track = Track(child.get_id())
+            if track.album.id == prev_album_id:
+                child.set_cover(None)
+                child.show_header(False)
             else:
-                # We don't want to play if we are
-                # starting a drag & drop, so delay
-                self._timeout = GLib.timeout_add(250,
-                                                 self._play_track,
-                                                 iterator)
+                surface = Lp().art.get_album_artwork(
+                                        Album(track.album.id),
+                                        ArtSize.MEDIUM*self.get_scale_factor())
+                child.set_cover(surface)
+                child.show_header(True)
+            prev_album_id = track.album.id
+
+    def _on_child_destroyed(self, row):
+        """
+            Check clear button aspect
+            @param row as QueueRow
+        """
+        self._clear_button.set_sensitive(len(self._view.get_children()) != 0)
+        self._update_headers()
+
+    def _on_row_activated(self, widget, row):
+        """
+            Play item
+            @param widget as Gtk.ListBox
+            @param row as QueueRow
+        """
+        Lp().player.load(Track(row.get_id()))
 
     def _on_button_clicked(self, widget):
         """
             Clear queue
             @param widget as Gtk.Button
         """
-        self._model.clear()
+        self._stop = True
+        self._clear(True)
 
-    def _play_track(self, iterator):
+    def _on_track_moved(self, row, src, x, y):
         """
-            Play track for selected iter
-            @param GtkTreeIter
+            Pass signal
+            @param row as PlaylistRow
+            @param src as int
+            @param x as int
+            @param y as int
         """
-        self._timeout = None
-        if not self._in_drag:
-            value_id = self._model.get_value(iterator, 3)
-            self._model.remove(iterator)
-            Lp().player.load(Track(value_id))
+        if row.get_id() == src:
+            return
+        height = row.get_allocated_height()
+        if y > height/2:
+            up = False
+        else:
+            up = True
+        src_row = self._row_for_track_id(src)
+        # Destroy current src row
+        i = 0
+        row_index = -1
+        for child in self._view.get_children():
+            if child == row:
+                row_index = i
+            if child.get_id() == src:
+                Lp().player.del_from_queue(src, False)
+                child.disconnect_by_func(self._on_child_destroyed)
+                child.destroy()
+            else:
+                i += 1
+
+        # Add new row
+        if row_index != -1:
+            if not up:
+                row_index += 1
+            self._view.insert(src_row, row_index)
+            Lp().player.insert_in_queue(src, row_index)
+        self._update_headers()

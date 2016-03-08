@@ -144,6 +144,24 @@ Gtk.ListBoxRow .menu-button:hover {
     border-color: @theme_selected_bg_color;
 }
 
+.drag-up {
+    background-image: -gtk-gradient (linear,
+                                     left top,
+                                     left bottom,
+                                     from (@theme_bg_color),
+                                     color-stop (0.9, @theme_bg_color),
+                                     to (@theme_selected_bg_color));
+}
+
+.drag-down {
+    background-image: -gtk-gradient (linear,
+                                     left top,
+                                     left bottom,
+                                     from (@theme_selected_bg_color),
+                                     color-stop (0.1, @theme_bg_color),
+                                     to (@theme_bg_color));
+}
+
 .trackswidget {
 	background-color: transparent;
 }

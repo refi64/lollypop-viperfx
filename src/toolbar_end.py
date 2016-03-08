@@ -13,7 +13,7 @@
 from gi.repository import Gtk, Gio, GLib
 
 from lollypop.pop_next import NextPopover
-from lollypop.pop_queue import QueueWidget
+from lollypop.pop_queue import QueuePopover
 from lollypop.pop_search import SearchPopover
 from lollypop.define import Lp, Shuffle
 
@@ -187,7 +187,7 @@ class ToolbarEnd(Gtk.Bin):
             @param obj as Gtk.Button or Gtk.Action
         """
         if self._search is None:
-            self._search = SearchPopover(self)
+            self._search = SearchPopover()
         self._search.set_relative_to(self._search_button)
         self._search.show()
 
@@ -197,7 +197,7 @@ class ToolbarEnd(Gtk.Bin):
             @param obj as Gtk.Button or Gtk.Action
         """
         if self._queue is None:
-            self._queue = QueueWidget()
+            self._queue = QueuePopover()
         self._queue.set_relative_to(self._queue_button)
         self._queue.show()
 

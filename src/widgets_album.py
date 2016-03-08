@@ -45,7 +45,7 @@ class AlbumWidget:
         self._rounded_class = "rounded-icon"
         self._scan_signal = Lp().scanner.connect('album-update',
                                                  self._on_album_update)
-        self.connect('unmap', self._on_unmap)
+        self.connect('destroy', self._on_destroy)
 
     def set_cover(self):
         """
@@ -167,7 +167,7 @@ class AlbumWidget:
                                                    Gtk.IconSize.BUTTON)
             self._action_event.set_tooltip_text(_("Remove"))
 
-    def _on_unmap(self, widget):
+    def _on_destroy(self, widget):
         """
             Disconnect signal
             @param widget as Gtk.Widget
@@ -630,7 +630,11 @@ class AlbumDetailedWidget(Gtk.Bin, AlbumWidget):
 
         self._menu = builder.get_object('menu')
         self._menu.connect('clicked', self._pop_menu)
-        self._menu.show()
+        # TODO Remove this later
+        if Gtk.get_minor_version() > 16:
+            self._menu.show()
+        else:
+            self.connect('map', self._on_map)
 
     def disable_play_all(self):
         """
@@ -687,6 +691,18 @@ class AlbumDetailedWidget(Gtk.Bin, AlbumWidget):
                       self._tracks_right[disc.number],
                       pos)
 
+    def get_current_ordinate(self, parent):
+        """
+            If current track in widget, return it ordinate,
+            @param parent widget as Gtk.Widget
+            @return y as int
+        """
+        for box_child in self._box.get_children():
+            for child in box_child.get_child().get_children():
+                if child.get_id() == Lp().player.current_track.id:
+                    return child.translate_coordinates(parent, 0, 0)[1]
+        return None
+
 #######################
 # PRIVATE             #
 #######################
@@ -739,6 +755,19 @@ class AlbumDetailedWidget(Gtk.Bin, AlbumWidget):
                          track.duration)
 
         GLib.idle_add(self._add_tracks, tracks, widget, i + 1)
+
+    def _on_map(self, widget):
+        """
+            Fix for Gtk < 3.18,
+            if we are in a popover, do not show menu button
+        """
+        widget = self.get_parent()
+        while widget is not None:
+            if isinstance(widget, Gtk.Popover):
+                break
+            widget = widget.get_parent()
+        if widget is None:
+            self._menu.show()
 
     def _on_size_allocate(self, widget, allocation):
         """

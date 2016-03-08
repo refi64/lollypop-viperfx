@@ -71,6 +71,7 @@
         <signal name="clicked" handler="_on_playlist_clicked" swapped="no"/>
         <style>
           <class name="menu-button"/>
+          <class name="track-menu-button"/>
         </style>
       </object>
       <packing>
@@ -89,6 +90,7 @@
         <signal name="clicked" handler="_on_queue_clicked" swapped="no"/>
         <style>
           <class name="menu-button"/>
+          <class name="track-menu-button"/>
         </style>
       </object>
       <packing>

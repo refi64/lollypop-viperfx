@@ -198,7 +198,7 @@ class QueueMenu(BaseMenu):
             self.append(_("Add to queue"), 'app.append_queue_action')
         if prepend:
             prepend_queue_action.connect('activate',
-                                         self._prepend_to_queue)
+                                         self._insert_in_queue)
             if self._is_album:
                 self.append(_("Next tracks"), 'app.prepend_queue_action')
             else:
@@ -221,7 +221,7 @@ class QueueMenu(BaseMenu):
         else:
             Lp().player.append_to_queue(self._object_id)
 
-    def _prepend_to_queue(self, action, variant):
+    def _insert_in_queue(self, action, variant):
         """
             Prepend track id to queue
             @param SimpleAction
@@ -230,9 +230,9 @@ class QueueMenu(BaseMenu):
         if self._is_album:
             for track_id in reversed(Lp().albums.get_tracks(self._object_id,
                                                             self._genre_id)):
-                Lp().player.prepend_to_queue(track_id)
+                Lp().player.insert_in_queue(track_id)
         else:
-            Lp().player.prepend_to_queue(self._object_id)
+            Lp().player.insert_in_queue(self._object_id)
 
     def _del_from_queue(self, action, variant):
         """
