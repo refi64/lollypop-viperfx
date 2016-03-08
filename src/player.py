@@ -79,8 +79,9 @@ class Player(BinPlayer, QueuePlayer, UserPlaylistPlayer, RadioPlayer,
             @param album as Album
         """
         if not self._albums:
-            if not Lp().settings.get_value('repeat'):
-                self.context.next = NextContext.STOP_ALL
+            self.context.genre_ids[self.current_track.album.id] = []
+            self._user_playlist = []
+            self._user_playlist_ids = []
         self.shuffle_albums(False)
         # If album already exists, merge genres
         if album.id in self._albums:
@@ -93,6 +94,8 @@ class Player(BinPlayer, QueuePlayer, UserPlaylistPlayer, RadioPlayer,
         self.shuffle_albums(True)
         if self.current_track.id is not None and self.current_track.id > 0:
             self.set_next()
+            self.set_prev()
+        self.context.genre_ids.pop(self.current_track.album.id, None)
         self.emit('album-added', album.id)
 
     def move_album(self, album_id, position):
@@ -116,6 +119,7 @@ class Player(BinPlayer, QueuePlayer, UserPlaylistPlayer, RadioPlayer,
                 if genre_id in genre_ids:
                     genre_ids.remove(genre_id)
             if not genre_ids:
+                self.context.genre_ids.pop(album.id, None)
                 self._albums.remove(album.id)
         except Exception as e:
             print("Player::remove_album():", e)
