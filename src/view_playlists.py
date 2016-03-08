@@ -280,4 +280,4 @@ class PlaylistEditView(View):
             Restore previous view
             @param button as Gtk.Button
         """
-        Lp().window.destroy_current_view()
+        Lp().window.reload_view()

@@ -137,6 +137,7 @@ class Container:
         view.show()
         self._stack.add(view)
         self._stack.set_visible_child(view)
+        self._stack.clean_old_views(view)
         view.populate()
 
     def main_widget(self):
