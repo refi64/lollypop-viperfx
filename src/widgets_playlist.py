@@ -120,29 +120,35 @@ class PlaylistsWidget(Gtk.Bin):
 
     def populate_list_left(self, tracks, pos):
         """
-            Populate left list
-            @param track's ids as array of int
+            Populate left list, first element used to calculate
+            previous album
+            @param track's ids as array of int (not null)
             @param track position as int
             @thread safe
         """
         self._stop = False
+        track = Track(tracks.pop(0))
         GLib.idle_add(self._add_tracks,
                       tracks,
                       self._tracks_widget1,
-                      pos)
+                      pos,
+                      track.album.id)
 
     def populate_list_right(self, tracks, pos):
         """
-            Populate right list
-            @param track's ids as array of int
+            Populate right list, first element used to calculate
+            previous album
+            @param track's ids as array of int (not null)
             @param track position as int
             @thread safe
         """
         self._stop = False
+        track = Track(tracks.pop(0))
         GLib.idle_add(self._add_tracks,
                       tracks,
                       self._tracks_widget2,
-                      pos)
+                      pos,
+                      track.album.id)
 
     def update_playing_indicator(self):
         """
@@ -183,14 +189,14 @@ class PlaylistsWidget(Gtk.Bin):
             return
 
         track = Track(tracks.pop(0))
-        name = escape(track.name)
-        album = track.album
 
         if track.id is None:
             GLib.idle_add(self._add_tracks, tracks,
                           widget, pos + 1, previous_album_id)
             return
 
+        name = escape(track.name)
+        album = track.album
         # If we are listening to a compilation, prepend artist name
         if (album.artist_id == Type.COMPILATIONS or
                 len(track.artist_ids) > 1 or
