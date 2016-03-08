@@ -298,7 +298,8 @@ class PlaylistRow(Row):
         self.drag_source_set(Gdk.ModifierType.BUTTON1_MASK, [],
                              Gdk.DragAction.MOVE)
         self.drag_source_add_text_targets()
-        self.drag_dest_set(Gtk.DestDefaults.MOTION, [], Gdk.DragAction.MOVE)
+        self.drag_dest_set(Gtk.DestDefaults.DROP | Gtk.DestDefaults.MOTION,
+                           [], Gdk.DragAction.MOVE)
         self.drag_dest_add_text_targets()
         self.connect('drag-begin', self._on_drag_begin)
         self.connect('drag-data-get', self._on_drag_data_get)

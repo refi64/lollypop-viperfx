@@ -89,11 +89,14 @@ class QueueRow(Gtk.ListBoxRow):
         self.drag_source_set(Gdk.ModifierType.BUTTON1_MASK, [],
                              Gdk.DragAction.MOVE)
         self.drag_source_add_text_targets()
-        self.drag_dest_set(Gtk.DestDefaults.ALL, [], Gdk.DragAction.MOVE)
+        self.drag_dest_set(Gtk.DestDefaults.DROP | Gtk.DestDefaults.MOTION,
+                           [], Gdk.DragAction.MOVE)
         self.drag_dest_add_text_targets()
         self.connect('drag-begin', self._on_drag_begin)
         self.connect('drag-data-get', self._on_drag_data_get)
         self.connect('drag-data-received', self._on_drag_data_received)
+        self.connect('drag-motion', self._on_drag_motion)
+        self.connect('drag-leave', self._on_drag_leave)
         self.get_style_context().add_class('trackrow')
 
     def show_header(self, show):
@@ -178,6 +181,33 @@ class QueueRow(Gtk.ListBoxRow):
             @param time as int
         """
         self.emit('track-moved', int(data.get_text()), x, y)
+
+    def _on_drag_motion(self, widget, context, x, y, time):
+        """
+            Add style
+            @param widget as Gtk.Widget
+            @param context as Gdk.DragContext
+            @param x as int
+            @param y as int
+            @param time as int
+        """
+        height = self.get_allocated_height()
+        if y > height/2:
+            self.get_style_context().add_class('drag-up')
+            self.get_style_context().remove_class('drag-down')
+        else:
+            self.get_style_context().remove_class('drag-up')
+            self.get_style_context().add_class('drag-down')
+
+    def _on_drag_leave(self, widget, context, time):
+        """
+            Remove style
+            @param widget as Gtk.Widget
+            @param context as Gdk.DragContext
+            @param time as int
+        """
+        self.get_style_context().remove_class('drag-up')
+        self.get_style_context().remove_class('drag-down')
 
     def _on_delete_clicked(self, button):
         """
