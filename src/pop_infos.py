@@ -234,6 +234,7 @@ class InfosPopover(Gtk.Popover):
         """
         self._menu.hide()
         self._jump_button.show()
+        self._jump_button.set_tooltip_text(Lp().player.current_track.name)
         if self._current is None:
             self._current = self._get_current()
         Lp().settings.set_value('infoswitch',
