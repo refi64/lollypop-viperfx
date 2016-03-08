@@ -174,7 +174,14 @@ class PlaylistsWidget(Gtk.Bin):
             Add track to widget
             @param track id as int
         """
-        pass
+        self._add_tracks([track_id],
+                         self._tracks_widget_right,
+                         -1)
+        self._update_tracks()
+        self._update_position()
+        self._update_headers()
+        self._tracks_widget_left.update_indexes(1)
+        self._tracks_widget_right.update_indexes(len(self._tracks1) + 1)
 
     def remove(self, track_id):
         """
