@@ -55,7 +55,7 @@ class ArtistView(ArtistAlbumsView):
         if Lp().player.current_track.album.id in self._albums:
             self._jump_button.set_sensitive(True)
             self._jump_button.set_tooltip_text(
-                                          Lp().player.current_track.album.name)
+                                          Lp().player.current_track.name)
         else:
             self._jump_button.set_sensitive(False)
             self._jump_button.set_tooltip_text('')

@@ -691,6 +691,18 @@ class AlbumDetailedWidget(Gtk.Bin, AlbumWidget):
                       self._tracks_right[disc.number],
                       pos)
 
+    def get_current_ordinate(self, parent):
+        """
+            If current track in widget, return it ordinate,
+            @param parent widget as Gtk.Widget
+            @return y as int
+        """
+        for box_child in self._box.get_children():
+            for child in box_child.get_child().get_children():
+                if child.get_id() == Lp().player.current_track.id:
+                    return child.translate_coordinates(parent, 0, 0)[1]
+        return None
+
 #######################
 # PRIVATE             #
 #######################

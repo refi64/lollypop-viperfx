@@ -66,7 +66,7 @@ class ArtistAlbumsView(View):
                 widget = child
                 break
         if widget is not None:
-            y = widget.translate_coordinates(self._albumbox, 0, 0)[1]
+            y = widget.get_current_ordinate(self._albumbox)
             self._scrolled.get_vadjustment().set_value(y)
 
 #######################
