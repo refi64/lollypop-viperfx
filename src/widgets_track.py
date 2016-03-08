@@ -342,7 +342,7 @@ class PlaylistRow(Row):
         """
             Set artist and album labels
         """
-        album = Album(self._id)
+        album = Track(self._id).album
         self._artist_label.set_markup("<b>"+escape(album.artist_name)+"</b>")
         self._album_label.set_text(escape(album.name))
 
