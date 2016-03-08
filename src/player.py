@@ -78,11 +78,12 @@ class Player(BinPlayer, QueuePlayer, UserPlaylistPlayer, RadioPlayer,
             Add album
             @param album as Album
         """
+        self.shuffle_albums(False)
         if not self._albums:
+            self._albums = [self.current_track.album.id]
             self.context.genre_ids[self.current_track.album.id] = []
             self._user_playlist = []
             self._user_playlist_ids = []
-        self.shuffle_albums(False)
         # If album already exists, merge genres
         if album.id in self._albums:
             genre_ids = self.context.genre_ids[album.id]
@@ -95,7 +96,6 @@ class Player(BinPlayer, QueuePlayer, UserPlaylistPlayer, RadioPlayer,
         if self.current_track.id is not None and self.current_track.id > 0:
             self.set_next()
             self.set_prev()
-        self.context.genre_ids.pop(self.current_track.album.id, None)
         self.emit('album-added', album.id)
 
     def move_album(self, album_id, position):
