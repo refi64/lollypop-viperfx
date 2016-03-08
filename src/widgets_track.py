@@ -460,8 +460,11 @@ class TracksWidget(Gtk.ListBox):
         self.connect('destroy', self._on_destroy)
         self._queue_signal_id = Lp().player.connect('queue-changed',
                                                     self._on_queue_changed)
-        self._loved_signal_id = Lp().playlists.connect(
-                                               'playlist-changed',
+        self._loved_signal_id1 = Lp().playlists.connect(
+                                               'playlist-add',
+                                               self._on_loved_playlist_changed)
+        self._loved_signal_id2 = Lp().playlists.connect(
+                                               'playlist-del',
                                                self._on_loved_playlist_changed)
         self._show_loved = show_loved
         self.connect("row-activated", self._on_activate)
@@ -553,8 +556,8 @@ class TracksWidget(Gtk.ListBox):
         row.set_title_label(track.formated_name())
         row.set_duration_label(seconds_to_string(track.duration))
         row.set_id(track_id)
+        row.set_album_and_artist(track.album.id)
         if show_cover:
-            row.set_album_and_artist(track.album.id)
             surface = Lp().art.get_album_artwork(
                         track.album,
                         ArtSize.MEDIUM*row.get_scale_factor())
@@ -603,17 +606,20 @@ class TracksWidget(Gtk.ListBox):
             track_id = row.get_id()
             self._update_pos_label(row, track_id)
 
-    def _on_loved_playlist_changed(self, widget, playlist_id):
+    def _on_loved_playlist_changed(self, widget, playlist_id, track_id):
         """
             Updates the loved icon
+            @param playlist as Playlist
+            @param playlist id as int
+            @param track id as int
         """
         if playlist_id != Type.LOVED:
             return
 
         for row in self.get_children():
-            track_id = row.get_id()
-            row.show_indicator(track_id == Lp().player.current_track.id,
-                               utils.is_loved(track_id))
+            if track_id == row.get_id():
+                row.show_indicator(track_id == Lp().player.current_track.id,
+                                   utils.is_loved(track_id))
 
     def _on_destroy(self, widget):
         """
@@ -623,9 +629,12 @@ class TracksWidget(Gtk.ListBox):
         if self._queue_signal_id is not None:
             Lp().player.disconnect(self._queue_signal_id)
             self._queue_signal_id = None
-        if self._loved_signal_id is not None:
-            Lp().playlists.disconnect(self._loved_signal_id)
-            self._loved_signal_id = None
+        if self._loved_signal_id1 is not None:
+            Lp().playlists.disconnect(self._loved_signal_id1)
+            self._loved_signal_id1 = None
+        if self._loved_signal_id2 is not None:
+            Lp().playlists.disconnect(self._loved_signal_id2)
+            self._loved_signal_id2 = None
 
     def _on_activate(self, widget, row):
         """

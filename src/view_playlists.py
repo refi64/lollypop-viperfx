@@ -14,7 +14,6 @@ from gi.repository import Gtk
 
 from gettext import gettext as _
 from cgi import escape
-from threading import Thread
 
 from lollypop.view import View
 from lollypop.widgets_playlist import PlaylistsWidget, PlaylistEditWidget
@@ -36,8 +35,10 @@ class PlaylistsView(View):
         View.__init__(self)
         self._tracks = []
         self._playlist_ids = playlist_ids
-        self._signal_id = Lp().playlists.connect('playlist-changed',
-                                                 self._on_playlist_changed)
+        self._signal_id1 = Lp().playlists.connect('playlist-add',
+                                                  self._on_playlist_add)
+        self._signal_id2 = Lp().playlists.connect('playlist-del',
+                                                  self._on_playlist_del)
 
         builder = Gtk.Builder()
         builder.add_from_resource('/org/gnome/Lollypop/PlaylistView.ui')
@@ -110,16 +111,6 @@ class PlaylistsView(View):
         """
         return [self._playlists_widget]
 
-    def _update_view(self):
-        """
-            Update tracks widgets
-            @thread safe
-        """
-        tracks = []
-        for playlist_id in self._playlist_ids:
-            tracks = Lp().playlists.get_tracks_ids(playlist_id)
-        self.populate(tracks)
-
     def _update_jump_button(self):
         """
             Update jump button status
@@ -133,17 +124,25 @@ class PlaylistsView(View):
             self._jump_button.set_sensitive(False)
             self._jump_button.set_tooltip_text('')
 
-    def _on_playlist_changed(self, manager, playlist_id):
+    def _on_playlist_add(self, manager, playlist_id, track_id):
         """
             Update tracks widgets
             @param manager as PlaylistsManager
             @param playlist id as int
+            @param track id as int
         """
         if playlist_id in self._playlist_ids:
-            self._playlists_widget.clear()
-            t = Thread(target=self._update_view)
-            t.daemon = True
-            t.start()
+            self._playlists_widget.append(track_id)
+
+    def _on_playlist_del(self, manager, playlist_id, track_id):
+        """
+            Update tracks widgets
+            @param manager as PlaylistsManager
+            @param playlist id as int
+            @param track id as int
+        """
+        if playlist_id in self._playlist_ids:
+            self._playlists_widget.remove(track_id)
 
     def _on_populated(self, widget):
         """
@@ -158,9 +157,12 @@ class PlaylistsView(View):
             @param widget as Gtk.Widget
         """
         View._on_destroy(self, widget)
-        if self._signal_id:
-            Lp().playlists.disconnect(self._signal_id)
-            self._signal_id = None
+        if self._signal_id1:
+            Lp().playlists.disconnect(self._signal_id1)
+            self._signal_id1 = None
+        if self._signal_id2:
+            Lp().playlists.disconnect(self._signal_id2)
+            self._signal_id2 = None
 
     def _on_jump_button_clicked(self, button):
         """

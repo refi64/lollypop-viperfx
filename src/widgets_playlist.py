@@ -169,14 +169,35 @@ class PlaylistsWidget(Gtk.Bin):
         """
         self._stop = True
 
-    def clear(self):
+    def append(self, track_id):
         """
-            Clear tracks
+            Add track to widget
+            @param track id as int
         """
-        self._tracks = []
-        for child in self._tracks_widget_left.get_children() + \
-                self._tracks_widget_right.get_children():
-            child.destroy()
+        pass
+
+    def remove(self, track_id):
+        """
+            Del track from widget
+            @param track id as int
+        """
+        children = self._tracks_widget_left.get_children() + \
+            self._tracks_widget_right.get_children()
+        # Clear the widget
+        if track_id is None:
+            for child in children:
+                child.destroy()
+            self._update_tracks()
+        else:
+            for child in children:
+                if child.get_id() == track_id:
+                    child.destroy()
+                    break
+            self._update_tracks()
+            self._update_position()
+            self._update_headers()
+            self._tracks_widget_left.update_indexes(1)
+            self._tracks_widget_right.update_indexes(len(self._tracks1) + 1)
 
 #######################
 # PRIVATE             #
@@ -204,9 +225,9 @@ class PlaylistsWidget(Gtk.Bin):
         GLib.idle_add(self._add_tracks, tracks, widget,
                       pos + 1, track.album.id)
 
-    def _recalculate_tracks(self):
+    def _update_tracks(self):
         """
-            Recalculate tracks based on current widget
+            Update tracks based on current widget
         """
         # Recalculate tracks
         self._tracks1 = []
@@ -215,6 +236,41 @@ class PlaylistsWidget(Gtk.Bin):
             self._tracks1.append(child.get_id())
         for child in self._tracks_widget_right.get_children():
             self._tracks2.append(child.get_id())
+
+    def _update_position(self):
+        """
+            Update widget position
+        """
+        len_tracks1 = len(self._tracks1)
+        len_tracks2 = len(self._tracks2)
+        # Take first track from tracks2 and put it at the end of tracks1
+        if len_tracks2 > len_tracks1:
+            src = self._tracks2[0]
+            if self._tracks1:
+                dst = self._tracks1[-1]
+            else:
+                dst = -1
+            self._move_track(dst, src, False)
+        # Take last track of tracks1 and put it at the bottom of tracks2
+        elif len_tracks1 - 1 > len_tracks2:
+            src = self._tracks1[-1]
+            if self._tracks2:
+                dst = self._tracks2[0]
+            else:
+                dst = -1
+            self._move_track(dst, src, True)
+        self._update_tracks()
+
+    def _update_headers(self):
+        """
+            Update headers for all tracks
+        """
+        self._tracks_widget_left.update_headers()
+        prev_album_id = None
+        if self._box.get_min_children_per_line() == 1:
+            if self._tracks1:
+                prev_album_id = Track(self._tracks1[-1]).album.id
+        self._tracks_widget_right.update_headers(prev_album_id)
 
     def _move_track(self, dst, src, up):
         """
@@ -285,32 +341,9 @@ class PlaylistsWidget(Gtk.Bin):
         """
         (src_widget, dst_widget, src_index, dst_index) = \
             self._move_track(dst, src, up)
-        self._recalculate_tracks()
-        len_tracks1 = len(self._tracks1)
-        len_tracks2 = len(self._tracks2)
-        # Take first track from tracks2 and put it at the end of tracks1
-        if len_tracks2 > len_tracks1:
-            src = self._tracks2[0]
-            if self._tracks1:
-                dst = self._tracks1[-1]
-            else:
-                dst = -1
-            self._move_track(dst, src, False)
-        # Take last track of tracks1 and put it at the bottom of tracks2
-        elif len_tracks1 - 1 > len_tracks2:
-            src = self._tracks1[-1]
-            if self._tracks2:
-                dst = self._tracks2[0]
-            else:
-                dst = -1
-            self._move_track(dst, src, True)
-        self._recalculate_tracks()
-        self._tracks_widget_left.update_headers()
-        prev_album_id = None
-        if self._box.get_min_children_per_line() == 1:
-            if self._tracks1:
-                prev_album_id = Track(self._tracks1[-1]).album.id
-        self._tracks_widget_right.update_headers(prev_album_id)
+        self._update_tracks()
+        self._update_position()
+        self._update_headers()
         self._tracks_widget_left.update_indexes(1)
         self._tracks_widget_right.update_indexes(len(self._tracks1) + 1)
         # Save playlist in db only if one playlist visible
@@ -339,12 +372,7 @@ class PlaylistsWidget(Gtk.Bin):
         if allocation.width < WindowSize.BIG:
             self._box.set_min_children_per_line(1)
             self._box.set_max_children_per_line(1)
-            self._tracks_widget_left.update_headers()
-            if self._tracks1:
-                prev_album_id = Track(self._tracks1[-1]).album.id
-            else:
-                prev_album_id = None
-            self._tracks_widget_right.update_headers(prev_album_id)
+            self._update_headers()
         else:
             self._box.set_min_children_per_line(2)
             self._box.set_max_children_per_line(2)
