@@ -70,7 +70,7 @@ class PlaylistsView(View):
 
         self._playlists_widget = PlaylistsWidget(playlist_ids)
         self._playlists_widget.connect('populated', self._on_populated)
-
+        self._playlists_widget.show()
         self.add(builder.get_object('widget'))
         self._viewport.add(self._playlists_widget)
         self._scrolled.set_property('expand', True)
@@ -87,7 +87,6 @@ class PlaylistsView(View):
                                                   1)
         self._playlists_widget.populate_list_right(tracks[mid_tracks:],
                                                    mid_tracks + 1)
-        self._playlists_widget.show()
 
     def get_ids(self):
         """

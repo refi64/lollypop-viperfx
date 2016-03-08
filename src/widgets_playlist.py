@@ -128,6 +128,8 @@ class PlaylistsWidget(Gtk.Bin):
             @param track position as int
             @thread safe
         """
+        # We reset width here to allow size allocation code to run
+        self._width = None
         self._tracks1 = list(tracks)
         GLib.idle_add(self._add_tracks,
                       tracks,
@@ -147,6 +149,8 @@ class PlaylistsWidget(Gtk.Bin):
            self._locked_widget2:
             GLib.timeout_add(100, self.populate_list_right, tracks, pos)
         else:
+            # We reset width here to allow size allocation code to run
+            self._width = None
             GLib.idle_add(self._add_tracks,
                           tracks,
                           self._tracks_widget_right,
@@ -265,13 +269,9 @@ class PlaylistsWidget(Gtk.Bin):
                     src_track.album.artist_id not in src_track.artist_ids):
                 name = "<b>%s</b>\n%s" % (escape(src_track.artist_names), name)
             self._tracks1.insert(index, src_track.id)
-        # Add track
-        if index == 0 or src_track.album.id != prev_track.album.id:
-            dst_widget.add_track_playlist(src_track.id, src_track.album,
-                                          index, name, src_track.duration)
-        else:
-            dst_widget.add_track_playlist(src_track.id, None, index,
-                                          name, src_track.duration)
+        dst_widget.add_track_playlist(
+                       src_track.id, index,
+                       index == 0 or src_track.album.id != prev_track.album.id)
         return (src_widget, dst_widget, src_index, index)
 
     def _on_track_moved(self, widget, dst, src, up):
@@ -285,8 +285,6 @@ class PlaylistsWidget(Gtk.Bin):
         """
         (src_widget, dst_widget, src_index, dst_index) = \
             self._move_track(dst, src, up)
-        self._tracks_widget_left.update_headers()
-        self._tracks_widget_right.update_headers()
         self._recalculate_tracks()
         len_tracks1 = len(self._tracks1)
         len_tracks2 = len(self._tracks2)
@@ -307,6 +305,12 @@ class PlaylistsWidget(Gtk.Bin):
                 dst = -1
             self._move_track(dst, src, True)
         self._recalculate_tracks()
+        self._tracks_widget_left.update_headers()
+        prev_album_id = None
+        if self._box.get_min_children_per_line() == 1:
+            if self._tracks1:
+                prev_album_id = Track(self._tracks1[-1]).album.id
+        self._tracks_widget_right.update_headers(prev_album_id)
         self._tracks_widget_left.update_indexes(1)
         self._tracks_widget_right.update_indexes(len(self._tracks1) + 1)
         # Save playlist in db only if one playlist visible
