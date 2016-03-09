@@ -43,6 +43,8 @@ class Row(Gtk.ListBoxRow):
         self._row_widget.add(self._grid)
         self._title_label = Gtk.Label()
         self._title_label.set_property('has-tooltip', True)
+        self._title_label.connect('query-tooltip',
+                                  self._on_title_query_tooltip)
         self._title_label.set_property('hexpand', True)
         self._title_label.set_property('halign', Gtk.Align.START)
         self._title_label.set_ellipsize(Pango.EllipsizeMode.END)
