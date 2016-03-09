@@ -174,7 +174,7 @@ class CollectionScanner(GObject.GObject, ScannerTagReader):
                         orig_tracks.remove(filepath)
                         i += 1
                         mtime = int(os.path.getmtime(filepath))
-                        if mtime == mtimes[filepath]:
+                        if mtime <= mtimes[filepath]:
                             i += 1
                             continue
                         else:
