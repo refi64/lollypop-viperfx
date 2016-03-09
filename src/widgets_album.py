@@ -743,7 +743,8 @@ class AlbumDetailedWidget(Gtk.Bin, AlbumWidget):
             if widget == self._tracks_right[self._discs[-1].number]:
                 self.emit('finished')
                 self._stop = False
-                GLib.idle_add(self._lazy.lazy_loading)
+                if self._lazy is not None:
+                    GLib.idle_add(self._lazy.lazy_loading)
             else:
                 self._locked_widget_right = False
             return
@@ -756,7 +757,10 @@ class AlbumDetailedWidget(Gtk.Bin, AlbumWidget):
 
         row = TrackRow(track.id, track_number, self._child_height)
         row.show()
-        self._lazy.append(row)
+        if self._lazy is not None:
+            self._lazy.append(row)
+        else:
+            row.init_widget()
         widget.add(row)
         GLib.idle_add(self._add_tracks, tracks, widget, i + 1)
 
