@@ -541,7 +541,8 @@ class AlbumDetailedWidget(Gtk.Bin, AlbumWidget):
         self._locked_widget_right = True
         self._artist_ids = artist_ids
         self._limit_to_current = not update_albums
-        self.set_property('height-request', ArtSize.BIG)
+        self.set_property('height-request',
+                          ArtSize.BIG * self.get_scale_factor())
         self.connect('size-allocate', self._on_size_allocate)
         builder = Gtk.Builder()
         builder.add_from_resource('/org/gnome/Lollypop/%s.ui' %
@@ -557,6 +558,9 @@ class AlbumDetailedWidget(Gtk.Bin, AlbumWidget):
         rating = RatingWidget(self._album)
         rating.show()
         self._coverbox = builder.get_object('coverbox')
+        # 6 for 2*3px (application.css)
+        self._coverbox.set_property('width-request',
+                                    ArtSize.BIG * self.get_scale_factor() + 6)
         self._coverbox.add(rating)
         if Lp().window.get_view_width() < WindowSize.MEDIUM:
             self._coverbox.hide()
