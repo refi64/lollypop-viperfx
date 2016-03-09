@@ -29,7 +29,26 @@ class AlbumRow(Gtk.ListBoxRow):
         'track-moved': (GObject.SignalFlags.RUN_FIRST, None, (int, int, int))
     }
 
-    def __init__(self, album_id):
+    MARGIN = 2
+
+    def get_preferred_height(widget):
+        """
+            Helper to pass object it's preferred height
+            @param widget as Gtk.Widget
+        """
+        ctx = widget.get_pango_context()
+        layout = Pango.Layout.new(ctx)
+        layout.set_text("a", 1)
+        font_height = int(AlbumRow.MARGIN * 2 + 2 * layout.get_pixel_size()[1])
+        cover_height = AlbumRow.MARGIN * 2 +\
+            ArtSize.MEDIUM * widget.get_scale_factor()
+        if font_height > cover_height:
+            return font_height
+        else:
+            print(font_height, cover_height)
+            return cover_height
+
+    def __init__(self, album_id, height):
         """
             Init row widgets
             @param album id as int
@@ -37,9 +56,8 @@ class AlbumRow(Gtk.ListBoxRow):
         Gtk.ListBoxRow.__init__(self)
         self._album = Album(album_id)
         self.get_style_context().add_class('loading')
-        # Cover size + row_widget margins less loading black border
-        self.set_property('height-request',
-                          ArtSize.MEDIUM*self.get_scale_factor() + 10)
+        self._height = height
+        self.set_property('height-request', height)
 
     def init_widget(self):
         """
@@ -50,8 +68,8 @@ class AlbumRow(Gtk.ListBoxRow):
         self.connect('query-tooltip', self._on_query_tooltip)
         row_widget = Gtk.EventBox()
         row_widget.set_property('valign', Gtk.Align.CENTER)
-        row_widget.set_margin_top(2)
-        row_widget.set_margin_end(2)
+        row_widget.set_margin_top(self.MARGIN)
+        row_widget.set_margin_end(self.MARGIN)
         grid = Gtk.Grid()
         grid.set_column_spacing(8)
         self._artist_label = Gtk.Label.new("<b>%s</b>" %
@@ -69,6 +87,7 @@ class AlbumRow(Gtk.ListBoxRow):
         cover.set_from_surface(surface)
         del surface
         cover_frame = Gtk.Frame()
+        cover_frame.set_property('valign', Gtk.Align.CENTER)
         cover_frame.add(cover)
         self._play_indicator = Gtk.Image.new_from_icon_name(
                                                'media-playback-start-symbolic',
@@ -105,6 +124,13 @@ class AlbumRow(Gtk.ListBoxRow):
         self.connect('drag-motion', self._on_drag_motion)
         self.connect('drag-leave', self._on_drag_leave)
         self.get_style_context().add_class('trackrow')
+
+    def do_get_preferred_height(self):
+        """
+            Return preferred height
+            @return (int, int)
+        """
+        return (self._height, self._height)
 
     def get_id(self):
         """
@@ -226,6 +252,9 @@ class AlbumsView(LazyLoadingView):
             Init Popover
         """
         LazyLoadingView.__init__(self)
+        # Calculate default album height based on current pango context
+        # We may need to listen to screen changes
+        self._height = AlbumRow.get_preferred_height(self)
         self.connect('map', self._on_map)
         self.connect('unmap', self._on_unmap)
         self._clear_button = Gtk.Button.new_from_icon_name(
@@ -305,7 +334,7 @@ class AlbumsView(LazyLoadingView):
             Get a row for track id
             @param album id as int
         """
-        row = AlbumRow(album_id)
+        row = AlbumRow(album_id, self._height)
         row.connect('destroy', self._on_child_destroyed)
         row.connect('track-moved', self._on_track_moved)
         return row
