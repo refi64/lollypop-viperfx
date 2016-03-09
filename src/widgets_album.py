@@ -741,7 +741,8 @@ class AlbumDetailedWidget(Gtk.Bin, AlbumWidget):
             # Emit finished signal if we are on the last disc for
             # the right tracks widget
             if widget == self._tracks_right[self._discs[-1].number]:
-                GLib.idle_add(self._lazy.lazy_loading)
+                if self._lazy is not None:
+                    GLib.idle_add(self._lazy.lazy_loading)
                 self._stop = False
             else:
                 self._locked_widget_right = False
