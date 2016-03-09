@@ -10,10 +10,13 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-from gi.repository import Gtk, GLib, Gdk, GObject
+from gi.repository import Gtk, GLib, Gdk, Pango, GObject
+
 from cgi import escape
+from gettext import gettext as _
 
 from lollypop.widgets_album_context import AlbumPopoverWidget
+from lollypop.view import LazyLoadingView
 from lollypop.define import Lp, ArtSize
 from lollypop.objects import Album
 
@@ -33,23 +36,63 @@ class AlbumRow(Gtk.ListBoxRow):
         """
         Gtk.ListBoxRow.__init__(self)
         self._album = Album(album_id)
-        builder = Gtk.Builder()
-        builder.add_from_resource('/org/gnome/Lollypop/AlbumRow.ui')
-        builder.connect_signals(self)
+        self.get_style_context().add_class('loading')
+        # Cover size + row_widget margins less loading black border
+        self.set_property('height-request',
+                          ArtSize.MEDIUM*self.get_scale_factor() + 10)
+
+    def init_widget(self):
+        """
+            Init widget content
+        """
+        self.get_style_context().remove_class('loading')
         self.set_property('has-tooltip', True)
         self.connect('query-tooltip', self._on_query_tooltip)
-        self._row_widget = builder.get_object('row')
-        self._row_widget.set_margin_top(2)
-        self._row_widget.set_margin_end(2)
-        self._artist_label = builder.get_object('artist')
-        self._title_label = builder.get_object('title')
-        self._cover = builder.get_object('cover')
-        self._cover_frame = builder.get_object('frame')
-        self._play_indicator = builder.get_object('play-indicator')
-        self.add(self._row_widget)
+        row_widget = Gtk.EventBox()
+        row_widget.set_property('valign', Gtk.Align.CENTER)
+        row_widget.set_margin_top(2)
+        row_widget.set_margin_end(2)
+        grid = Gtk.Grid()
+        grid.set_column_spacing(8)
+        self._artist_label = Gtk.Label.new("<b>%s</b>" %
+                                           escape(self._album.artist_name))
+        self._artist_label.set_use_markup(True)
+        self._artist_label.set_hexpand(True)
+        self._artist_label.set_property('halign', Gtk.Align.START)
+        self._artist_label.set_ellipsize(Pango.EllipsizeMode.END)
+        self._title_label = Gtk.Label.new(self._album.name)
+        self._title_label.set_ellipsize(Pango.EllipsizeMode.END)
+        cover = Gtk.Image()
+        surface = Lp().art.get_album_artwork(
+                                        self._album,
+                                        ArtSize.MEDIUM*self.get_scale_factor())
+        cover.set_from_surface(surface)
+        del surface
+        cover_frame = Gtk.Frame()
+        cover_frame.add(cover)
+        self._play_indicator = Gtk.Image.new_from_icon_name(
+                                               'media-playback-start-symbolic',
+                                               Gtk.IconSize.MENU)
+        delete_button = Gtk.Button.new_from_icon_name('user-trash-symbolic',
+                                                      Gtk.IconSize.MENU)
+        delete_button.get_image().set_opacity(0.2)
+        delete_button.set_relief(Gtk.ReliefStyle.NONE)
+        delete_button.get_style_context().add_class('menu-button')
+        delete_button.get_style_context().add_class('track-menu-button')
+        delete_button.set_property('valign', Gtk.Align.CENTER)
+        vgrid = Gtk.Grid()
+        vgrid.set_column_spacing(5)
+        vgrid.add(self._play_indicator)
+        vgrid.add(self._title_label)
+        grid.attach(self._artist_label, 1, 0, 1, 1)
+        grid.attach(delete_button, 2, 0, 1, 2)
+        grid.attach(cover_frame, 0, 0, 1, 2)
+        grid.attach(vgrid, 1, 1, 1, 1)
+        row_widget.add(grid)
+        self.add(row_widget)
+        self.show_all()
         self.show_play_indicator(self._album.id ==
                                  Lp().player.current_track.album.id)
-        self.show()
         self.drag_source_set(Gdk.ModifierType.BUTTON1_MASK, [],
                              Gdk.DragAction.MOVE)
         self.drag_source_add_text_targets()
@@ -70,13 +113,6 @@ class AlbumRow(Gtk.ListBoxRow):
         """
         return self._album.id
 
-    def set_labels(self):
-        """
-            Set artist, album and title label
-        """
-        self._title_label.set_text(self._album.name)
-        self._artist_label.set_markup(escape(self._album.artist_name))
-
     def show_play_indicator(self, show):
         """
             Show play indicator
@@ -89,23 +125,10 @@ class AlbumRow(Gtk.ListBoxRow):
             self._play_indicator.set_opacity(0)
             self.get_style_context().add_class('trackrow')
             self.get_style_context().remove_class('trackrowplaying')
-
-    def set_cover(self, surface):
-        """
-            Set cover surface
-            @param surface as cairo.Surface
-        """
-        if surface is None:
-            self._cover.clear()
-            self._cover_frame.set_shadow_type(Gtk.ShadowType.NONE)
-        else:
-            self._cover.set_from_surface(surface)
-            self._cover_frame.set_shadow_type(Gtk.ShadowType.IN)
-            del surface
-
 #######################
 # PRIVATE             #
 #######################
+
     def _on_drag_begin(self, widget, context):
         """
             Set icon
@@ -193,26 +216,36 @@ class AlbumRow(Gtk.ListBoxRow):
             self.set_tooltip_text('')
 
 
-class AlbumsPopover(Gtk.Popover):
+class AlbumsView(LazyLoadingView):
     """
-        Popover showing albums
+        View showing albums
     """
 
     def __init__(self):
         """
             Init Popover
         """
-        Gtk.Popover.__init__(self)
-        self.set_position(Gtk.PositionType.BOTTOM)
+        LazyLoadingView.__init__(self)
         self.connect('map', self._on_map)
         self.connect('unmap', self._on_unmap)
-
-        builder = Gtk.Builder()
-        builder.add_from_resource('/org/gnome/Lollypop/AlbumsPopover.ui')
-        builder.connect_signals(self)
-
-        self._clear_button = builder.get_object('clear-button')
-        self._jump_button = builder.get_object('jump-button')
+        self._clear_button = Gtk.Button.new_from_icon_name(
+                                                    'edit-clear-all-symbolic',
+                                                    Gtk.IconSize.MENU)
+        self._clear_button.set_relief(Gtk.ReliefStyle.NONE)
+        self._jump_button = Gtk.Button.new_from_icon_name(
+                                                    'go-jump-symbolic',
+                                                    Gtk.IconSize.MENU)
+        self._jump_button.set_relief(Gtk.ReliefStyle.NONE)
+        label = Gtk.Label.new(_("Albums playing:"))
+        label.set_hexpand(True)
+        label.set_property('halign', Gtk.Align.START)
+        self.set_row_spacing(2)
+        grid = Gtk.Grid()
+        grid.set_column_spacing(5)
+        grid.add(label)
+        grid.add(self._jump_button)
+        grid.add(self._clear_button)
+        grid.show_all()
         self._view = Gtk.ListBox()
         self._view.get_style_context().add_class('trackswidget')
         self._view.set_vexpand(True)
@@ -220,17 +253,9 @@ class AlbumsPopover(Gtk.Popover):
         self._view.set_activate_on_single_click(True)
         self._view.connect("row-activated", self._on_row_activated)
         self._view.show()
-        self._scrolled = builder.get_object('scrolled')
-        self._scrolled.add(self._view)
-        self.add(builder.get_object('widget'))
-
-    def do_show(self):
-        """
-            Set widget size
-        """
-        height = Lp().window.get_size()[1]
-        self.set_size_request(400, height*0.7)
-        Gtk.Popover.do_show(self)
+        self.add(grid)
+        self._scrolled.set_property('expand', True)
+        self.add(self._scrolled)
 
     def populate(self):
         """
@@ -262,9 +287,14 @@ class AlbumsPopover(Gtk.Popover):
         if items and not self._stop:
             album_id = items.pop(0)
             row = self._row_for_album_id(album_id)
+            row.show()
             self._view.add(row)
+            self._lazy_queue.append(row)
             GLib.idle_add(self._add_items, items, album_id)
         else:
+            GLib.idle_add(self._lazy_loading)
+            if self._viewport.get_child() is None:
+                self._viewport.add(self._view)
             if Lp().player.current_track.album.id in Lp().player.get_albums():
                 self._jump_button.set_sensitive(True)
                 self._jump_button.set_tooltip_text(
@@ -276,11 +306,6 @@ class AlbumsPopover(Gtk.Popover):
             @param album id as int
         """
         row = AlbumRow(album_id)
-        surface = Lp().art.get_album_artwork(
-                                    Album(album_id),
-                                    ArtSize.MEDIUM*self.get_scale_factor())
-        row.set_cover(surface)
-        row.set_labels()
         row.connect('destroy', self._on_child_destroyed)
         row.connect('track-moved', self._on_track_moved)
         return row
@@ -391,6 +416,7 @@ class AlbumsPopover(Gtk.Popover):
         else:
             up = True
         src_row = self._row_for_album_id(src)
+        src_row.init_widget()
         # Destroy current src row
         i = 0
         row_index = -1
@@ -409,3 +435,27 @@ class AlbumsPopover(Gtk.Popover):
                 row_index += 1
             self._view.insert(src_row, row_index)
             Lp().player.move_album(src, row_index)
+
+
+class AlbumsPopover(Gtk.Popover):
+    """
+        Popover showing Albums View
+    """
+
+    def __init__(self):
+        """
+            Init popover
+        """
+        Gtk.Popover.__init__(self)
+        self.set_position(Gtk.PositionType.BOTTOM)
+        view = AlbumsView()
+        view.show()
+        self.add(view)
+
+    def do_show(self):
+        """
+            Set widget size
+        """
+        height = Lp().window.get_size()[1]
+        self.set_size_request(400, height*0.7)
+        Gtk.Popover.do_show(self)

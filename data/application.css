@@ -55,6 +55,7 @@ Gtk.ListBoxRow .menu-button:hover {
 
 .loading {
     background-color: shade(@theme_bg_color, 1.2);
+    border: 1px solid @theme_bg_color;
 }
 
 .selected {
