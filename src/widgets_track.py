@@ -83,6 +83,7 @@ class Row(Gtk.ListBoxRow):
         self._num_label.set_property('valign', Gtk.Align.CENTER)
         self._num_label.set_width_chars(4)
         self._num_label.get_style_context().add_class('dim-label')
+        self.update_num_label()
         self._menu_button = Gtk.Button.new_from_icon_name('open-menu-symbolic',
                                                           Gtk.IconSize.MENU)
         self._menu_button.set_relief(Gtk.ReliefStyle.NONE)
