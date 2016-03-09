@@ -31,6 +31,8 @@ class IndicatorWidget(Gtk.EventBox):
         self._id = None
         self._pass = 1
         self._timeout_id = None
+        self._signal_id = Lp().player.connect('queue-changed',
+                                              self._on_queue_changed)
         self.connect('destroy', self._on_destroy)
         self.connect('enter-notify-event', self._on_enter_notify)
         self.connect('leave-notify-event', self._on_leave_notify)
@@ -55,7 +57,6 @@ class IndicatorWidget(Gtk.EventBox):
         self._stack.add_named(loved, 'loved')
         self.add(self._stack)
         self.show_all()
-        Lp().player.connect('queue-changed', self._on_queue_changed)
 
     def set_id(self, id):
         """
@@ -153,6 +154,8 @@ class IndicatorWidget(Gtk.EventBox):
             Clear timeout
             @param widget as Gtk.Widget
         """
+        if self._signal_id is not None:
+            Lp().player.disconnect(self._signal_id)
         self.clear()
 
     def _play_loved(self):
