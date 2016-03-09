@@ -54,6 +54,7 @@ class AlbumRow(Gtk.ListBoxRow):
         """
         Gtk.ListBoxRow.__init__(self)
         self._album = Album(album_id)
+        self.set_sensitive(False)
         self.get_style_context().add_class('loading')
         self._height = height
         self.set_property('height-request', height)
@@ -63,6 +64,7 @@ class AlbumRow(Gtk.ListBoxRow):
             Init widget content
         """
         self.get_style_context().remove_class('loading')
+        self.set_sensitive(True)
         self.set_property('has-tooltip', True)
         self.connect('query-tooltip', self._on_query_tooltip)
         row_widget = Gtk.EventBox()
