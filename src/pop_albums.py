@@ -45,7 +45,6 @@ class AlbumRow(Gtk.ListBoxRow):
         if font_height > cover_height:
             return font_height
         else:
-            print(font_height, cover_height)
             return cover_height
 
     def __init__(self, album_id, height):
