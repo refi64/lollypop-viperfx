@@ -230,6 +230,6 @@ class RadiosView(LazyLoadingView):
             GLib.idle_add(self._add_radios, radios)
         else:
             self._stop = False
-            GLib.idle_add(self._lazy_loading)
+            GLib.idle_add(self.lazy_loading)
             if self._viewport.get_child() is None:
                 self._viewport.add(self._radiobox)

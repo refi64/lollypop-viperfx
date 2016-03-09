@@ -188,7 +188,7 @@ class AlbumsView(LazyLoadingView):
             GLib.idle_add(self._add_albums, albums)
         else:
             self._stop = False
-            GLib.idle_add(self._lazy_loading)
+            GLib.idle_add(self.lazy_loading)
             if self._viewport.get_child() is None:
                 self._viewport.add(self._albumbox)
 

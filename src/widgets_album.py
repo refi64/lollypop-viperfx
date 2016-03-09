@@ -16,7 +16,7 @@ from cgi import escape
 from gettext import gettext as _
 
 from lollypop.define import Lp, ArtSize, NextContext, WindowSize, Shuffle
-from lollypop.widgets_track import TracksWidget
+from lollypop.widgets_track import TracksWidget, TrackRow
 from lollypop.objects import Track
 from lollypop.widgets_rating import RatingWidget
 from lollypop.pop_menu import AlbumMenu
@@ -525,19 +525,24 @@ class AlbumDetailedWidget(Gtk.Bin, AlbumWidget):
         'finished': (GObject.SignalFlags.RUN_FIRST, None, ())
     }
 
-    def __init__(self, album_id, genre_ids, artist_ids,
+    def __init__(self, album_id, genre_ids, artist_ids, lazy,
                  size_group, update_albums=True):
         """
             Init detailed album widget
             @param album id as int
             @param genre ids as [int]
             @param artist ids as [int]
+            @param lazy as LazyLoadingView
             @param size group as Gtk.SizeGroup
             @param update albums as bool: update albums on play
         """
         Gtk.Bin.__init__(self)
         AlbumWidget.__init__(self, album_id, genre_ids)
         self._width = None
+        self._lazy = lazy
+        # Calculate default album height based on current pango context
+        # We may need to listen to screen changes
+        self._child_height = TrackRow.get_best_height(self)
         self._locked_widget_right = True
         self._artist_ids = artist_ids
         self._limit_to_current = not update_albums
@@ -599,8 +604,8 @@ class AlbumDetailedWidget(Gtk.Bin, AlbumWidget):
                 sep.set_opacity(0.0)
                 sep.show()
                 self._box.insert(sep, -1)
-            self._tracks_left[index] = TracksWidget(True)
-            self._tracks_right[index] = TracksWidget(True)
+            self._tracks_left[index] = TracksWidget()
+            self._tracks_right[index] = TracksWidget()
             self._box.insert(self._tracks_left[index], -1)
             self._box.insert(self._tracks_right[index], -1)
             size_group.add_widget(self._tracks_left[index])
@@ -733,11 +738,12 @@ class AlbumDetailedWidget(Gtk.Bin, AlbumWidget):
             @param i as int
         """
         if not tracks or self._stop:
-            self._stop = False
             # Emit finished signal if we are on the last disc for
             # the right tracks widget
             if widget == self._tracks_right[self._discs[-1].number]:
                 self.emit('finished')
+                self._stop = False
+                GLib.idle_add(self._lazy.lazy_loading)
             else:
                 self._locked_widget_right = False
             return
@@ -748,8 +754,10 @@ class AlbumDetailedWidget(Gtk.Bin, AlbumWidget):
         else:
             track_number = track.number
 
-        widget.add_track(track.id, track_number)
-
+        row = TrackRow(track.id, track_number, self._child_height)
+        row.show()
+        self._lazy.append(row)
+        widget.add(row)
         GLib.idle_add(self._add_tracks, tracks, widget, i + 1)
 
     def _on_map(self, widget):

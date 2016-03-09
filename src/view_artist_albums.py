@@ -14,13 +14,13 @@ from gi.repository import Gtk, GLib
 
 from threading import Thread
 
-from lollypop.view import View
+from lollypop.view import LazyLoadingView
 from lollypop.view_container import ViewContainer
 from lollypop.define import Lp, Type
 from lollypop.widgets_album import AlbumDetailedWidget
 
 
-class ArtistAlbumsView(View):
+class ArtistAlbumsView(LazyLoadingView):
     """
         Show artist albums and tracks
     """
@@ -31,7 +31,7 @@ class ArtistAlbumsView(View):
             @param artist ids as [int]
             @param genre ids as [int]
         """
-        View.__init__(self)
+        LazyLoadingView.__init__(self)
         self._artist_ids = artist_ids
         self._genre_ids = genre_ids
         self._albums = []
@@ -89,6 +89,7 @@ class ArtistAlbumsView(View):
         widget = AlbumDetailedWidget(albums.pop(0),
                                      self._genre_ids,
                                      self._artist_ids,
+                                     self,
                                      size_group)
         # Not needed if only one album
         if self._albums_count == 1:

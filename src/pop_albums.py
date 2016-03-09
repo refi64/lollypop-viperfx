@@ -31,7 +31,7 @@ class AlbumRow(Gtk.ListBoxRow):
 
     MARGIN = 2
 
-    def get_preferred_height(widget):
+    def get_best_height(widget):
         """
             Helper to pass object it's preferred height
             @param widget as Gtk.Widget
@@ -256,7 +256,7 @@ class AlbumsView(LazyLoadingView):
         LazyLoadingView.__init__(self)
         # Calculate default album height based on current pango context
         # We may need to listen to screen changes
-        self._height = AlbumRow.get_preferred_height(self)
+        self._height = AlbumRow.get_best_height(self)
         self.connect('map', self._on_map)
         self.connect('unmap', self._on_unmap)
         self._clear_button = Gtk.Button.new_from_icon_name(
@@ -323,7 +323,7 @@ class AlbumsView(LazyLoadingView):
             self._lazy_queue.append(row)
             GLib.idle_add(self._add_items, items, album_id)
         else:
-            GLib.idle_add(self._lazy_loading)
+            GLib.idle_add(self.lazy_loading)
             if self._viewport.get_child() is None:
                 self._viewport.add(self._view)
             if Lp().player.current_track.album.id in Lp().player.get_albums():
