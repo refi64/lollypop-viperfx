@@ -54,7 +54,6 @@ class Row(Gtk.ListBoxRow):
         # We do not use Gtk.Builder for speed reasons
         Gtk.ListBoxRow.__init__(self)
         self.set_sensitive(False)
-        self._indicator = IndicatorWidget()
         self._track = Track(rowid)
         self._number = num
 
@@ -62,6 +61,7 @@ class Row(Gtk.ListBoxRow):
         """
             Init widget content
         """
+        self._indicator = IndicatorWidget()
         self.set_sensitive(True)
         self._indicator.set_id(self._track.id)
         self._row_widget = Gtk.EventBox()
