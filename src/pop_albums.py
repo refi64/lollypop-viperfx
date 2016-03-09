@@ -98,6 +98,7 @@ class AlbumRow(Gtk.ListBoxRow):
         delete_button.get_style_context().add_class('menu-button')
         delete_button.get_style_context().add_class('track-menu-button')
         delete_button.set_property('valign', Gtk.Align.CENTER)
+        delete_button.connect('clicked', self._on_delete_clicked)
         vgrid = Gtk.Grid()
         vgrid.set_column_spacing(5)
         vgrid.add(self._play_indicator)
@@ -150,10 +151,10 @@ class AlbumRow(Gtk.ListBoxRow):
             self._play_indicator.set_opacity(0)
             self.get_style_context().add_class('trackrow')
             self.get_style_context().remove_class('trackrowplaying')
+
 #######################
 # PRIVATE             #
 #######################
-
     def _on_drag_begin(self, widget, context):
         """
             Set icon
