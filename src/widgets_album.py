@@ -775,8 +775,7 @@ class AlbumDetailedWidget(Gtk.Bin, AlbumWidget):
         row = TrackRow(track.id, track_number)
         row.show()
         widget[disc_number].add(row)
-        GLib.idle_add(self._add_tracks, tracks, widget, disc_number, i + 1,
-                      priority=GLib.PRIORITY_DEFAULT_IDLE)
+        GLib.idle_add(self._add_tracks, tracks, widget, disc_number, i + 1)
 
     def _on_map(self, widget):
         """
