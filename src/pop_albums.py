@@ -263,10 +263,12 @@ class AlbumsView(LazyLoadingView):
                                                     'edit-clear-all-symbolic',
                                                     Gtk.IconSize.MENU)
         self._clear_button.set_relief(Gtk.ReliefStyle.NONE)
+        self._clear_button.connect('clicked', self._on_clear_clicked)
         self._jump_button = Gtk.Button.new_from_icon_name(
                                                     'go-jump-symbolic',
                                                     Gtk.IconSize.MENU)
         self._jump_button.set_relief(Gtk.ReliefStyle.NONE)
+        self._jump_button.connect('clicked', self._on_jump_clicked)
         label = Gtk.Label.new(_("Albums playing:"))
         label.set_hexpand(True)
         label.set_property('halign', Gtk.Align.START)
@@ -416,7 +418,7 @@ class AlbumsView(LazyLoadingView):
             album = Album(row.get_id(), genre_ids)
             Lp().player.load(album.tracks[0])
 
-    def _on_jump_button_clicked(self, widget):
+    def _on_jump_clicked(self, widget):
         """
             Scroll to album
         """
