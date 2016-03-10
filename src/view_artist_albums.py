@@ -14,13 +14,13 @@ from gi.repository import Gtk, GLib
 
 from threading import Thread
 
-from lollypop.view import LazyLoadingView
+from lollypop.view import View
 from lollypop.view_container import ViewContainer
 from lollypop.define import Lp, Type
 from lollypop.widgets_album import AlbumDetailedWidget
 
 
-class ArtistAlbumsView(LazyLoadingView):
+class ArtistAlbumsView(View):
     """
         Show artist albums and tracks
     """
@@ -31,8 +31,7 @@ class ArtistAlbumsView(LazyLoadingView):
             @param artist ids as [int]
             @param genre ids as [int]
         """
-        LazyLoadingView.__init__(self)
-        self.connect('populated', self._on_populated)
+        View.__init__(self)
         self._artist_ids = artist_ids
         self._genre_ids = genre_ids
         self._albums = []
@@ -98,8 +97,8 @@ class ArtistAlbumsView(LazyLoadingView):
         widget = AlbumDetailedWidget(self._albums.pop(0),
                                      self._genre_ids,
                                      self._artist_ids,
-                                     self,
                                      size_group)
+        widget.connect('populated', self._on_populated)
         # Not needed if only one album
         if self._albums_count == 1:
             widget.disable_play_all()
@@ -109,14 +108,13 @@ class ArtistAlbumsView(LazyLoadingView):
         t.start()
         self._albumbox.add(widget)
 
-    def _on_populated(self, view):
+    def _on_populated(self, widget):
         """
-            Add another album
-            @param album as LazyLoadingView
+            Add another album/disc
+            @param widget as AlbumDetailedWidget
         """
-        last_child = self._albumbox.get_children()[-1]
-        if not last_child.is_populated():
-            t = Thread(target=last_child.populate)
+        if not widget.is_populated():
+            t = Thread(target=widget.populate)
             t.daemon = True
             t.start()
         elif self._albums and not self._stop:

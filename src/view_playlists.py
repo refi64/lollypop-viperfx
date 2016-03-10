@@ -15,13 +15,13 @@ from gi.repository import Gtk
 from gettext import gettext as _
 from cgi import escape
 
-from lollypop.view import LazyLoadingView, View
+from lollypop.view import View
 from lollypop.widgets_playlist import PlaylistsWidget, PlaylistEditWidget
 from lollypop.widgets_playlist import PlaylistsManagerWidget
 from lollypop.define import Lp, Type
 
 
-class PlaylistsView(LazyLoadingView):
+class PlaylistsView(View):
     """
         Show playlist tracks
     """
@@ -32,8 +32,7 @@ class PlaylistsView(LazyLoadingView):
             @parma playlist ids as [int]
             @param editable as bool
         """
-        LazyLoadingView.__init__(self)
-        self.connect('populated', self._on_populated)
+        View.__init__(self)
         self._tracks = []
         self._playlist_ids = playlist_ids
         self._signal_id1 = Lp().playlists.connect('playlist-add',
@@ -70,7 +69,7 @@ class PlaylistsView(LazyLoadingView):
             self._edit_button.hide()
         self._title = builder.get_object('title')
 
-        self._playlists_widget = PlaylistsWidget(playlist_ids, self)
+        self._playlists_widget = PlaylistsWidget(playlist_ids)
         self._playlists_widget.show()
         self.add(builder.get_object('widget'))
         self._viewport.add(self._playlists_widget)
@@ -83,6 +82,7 @@ class PlaylistsView(LazyLoadingView):
             Thread safe
         """
         self._tracks = tracks
+        self._update_jump_button()
         mid_tracks = int(0.5+len(tracks)/2)
         self._playlists_widget.populate_list_left(tracks[:mid_tracks],
                                                   1)

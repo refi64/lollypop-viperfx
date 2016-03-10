@@ -10,7 +10,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-from gi.repository import Gtk, GLib, Gdk, Pango
+from gi.repository import Gtk, GLib, Gdk, GObject, Pango
 
 from cgi import escape
 from gettext import gettext as _
@@ -520,8 +520,11 @@ class AlbumDetailedWidget(Gtk.Bin, AlbumWidget):
     """
         Widget with cover and tracks
     """
+    __gsignals__ = {
+        'populated': (GObject.SignalFlags.RUN_FIRST, None, ())
+    }
 
-    def __init__(self, album_id, genre_ids, artist_ids, lazy,
+    def __init__(self, album_id, genre_ids, artist_ids,
                  size_group, update_albums=True):
         """
             Init detailed album widget
@@ -535,13 +538,9 @@ class AlbumDetailedWidget(Gtk.Bin, AlbumWidget):
         Gtk.Bin.__init__(self)
         AlbumWidget.__init__(self, album_id, genre_ids)
         self._width = None
-        self._lazy = lazy
         self._stop = False
         # Discs to load, will be emptied
         self._discs = self._album.discs
-        # Calculate default album height based on current pango context
-        # We may need to listen to screen changes
-        self._child_height = TrackRow.get_best_height(self)
         self._locked_widget_right = True
         self._artist_ids = artist_ids
         self._limit_to_current = not update_albums
@@ -756,8 +755,7 @@ class AlbumDetailedWidget(Gtk.Bin, AlbumWidget):
             return
         if not tracks:
             if widget == self._tracks_right:
-                if self._lazy is not None:
-                    GLib.idle_add(self._lazy.lazy_loading)
+                self.emit('populated')
             else:
                 self._locked_widget_right = False
             return
@@ -768,12 +766,8 @@ class AlbumDetailedWidget(Gtk.Bin, AlbumWidget):
         else:
             track_number = track.number
 
-        row = TrackRow(track.id, track_number, self._child_height)
+        row = TrackRow(track.id, track_number)
         row.show()
-        if self._lazy is not None:
-            self._lazy.append(row)
-        else:
-            row.init_widget()
         widget[disc_number].add(row)
         GLib.idle_add(self._add_tracks, tracks, widget, disc_number, i + 1)
 

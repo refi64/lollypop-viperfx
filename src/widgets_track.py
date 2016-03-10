@@ -27,23 +27,6 @@ class Row(Gtk.ListBoxRow):
         A row
     """
 
-    def get_best_height(widget):
-        """
-            Helper to pass object it's preferred height
-            @param widget as Gtk.Widget
-        """
-        ctx = widget.get_pango_context()
-        layout = Pango.Layout.new(ctx)
-        layout.set_text("a", 1)
-        font_height = int(layout.get_pixel_size()[1])
-        # Gtk.IconSize.MENU + .menu-button padding (application.css)
-        menu_height = 16 + 8
-        image_spacing = Gtk.Button().style_get_property('image-spacing')
-        if font_height > menu_height + image_spacing:
-            return font_height
-        else:
-            return menu_height + image_spacing
-
     def __init__(self, rowid, num):
         """
             Init row widgets
@@ -56,11 +39,6 @@ class Row(Gtk.ListBoxRow):
         self.set_sensitive(False)
         self._track = Track(rowid)
         self._number = num
-
-    def init_widget(self):
-        """
-            Init widget content
-        """
         self._indicator = IndicatorWidget(self._track.id)
         self.set_sensitive(True)
         self._row_widget = Gtk.EventBox()
@@ -248,59 +226,18 @@ class PlaylistRow(Row):
         'track-moved': (GObject.SignalFlags.RUN_FIRST, None, (int, int, bool))
     }
 
-    MARGIN_TOP = 2
-
-    def get_best_height(widget, headers):
-        """
-            Helper to pass object it's preferred height
-            @param widget as Gtk.Widget
-            @param headers as bool
-        """
-        ctx = widget.get_pango_context()
-        layout = Pango.Layout.new(ctx)
-        layout.set_text("a", 1)
-        font_height = int(layout.get_pixel_size()[1])
-        # Gtk.IconSize.MENU + .menu-button padding (application.css)
-        menu_height = 16 + 8 + Gtk.Button().style_get_property('image-spacing')
-        if font_height > menu_height:
-            height = font_height
-        else:
-            height = menu_height
-        if headers and ArtSize.MEDIUM*widget.get_scale_factor() > height:
-            height = ArtSize.MEDIUM*widget.get_scale_factor()
-        return height + PlaylistRow.MARGIN_TOP*2
-
-    def __init__(self, rowid, num, show_headers, height):
+    def __init__(self, rowid, num, show_headers):
         """
             Init row widget
             @param rowid as int
             @param num as int
             @param show headers as bool
-            @param height as (int, int)
         """
         Row.__init__(self, rowid, num)
-        self._height = height
-        if show_headers:
-            self.set_property('height-request', self._height[1])
-        else:
-            self.set_property('height-request', self._height[0])
         self._show_headers = show_headers
-
-    def do_get_preferred_height(self):
-        """
-            Return preferred height
-            @return (int, int)
-        """
-        return self._height
-
-    def init_widget(self):
-        """
-            Init widget content
-        """
-        Row.init_widget(self)
         self._indicator.set_margin_start(5)
         self._row_widget.set_margin_start(10)
-        self._row_widget.set_margin_top(self.MARGIN_TOP)
+        self._row_widget.set_margin_top(2)
         self._row_widget.set_margin_end(10)
         self._grid.insert_row(0)
         self._grid.insert_column(0)
@@ -317,7 +254,7 @@ class PlaylistRow(Row):
         box = Gtk.Box()
         box.set_homogeneous(True)
         box.add(self._cover_frame)
-        box.set_property('width-request', ArtSize.MEDIUM+self.MARGIN_TOP)
+        box.set_property('width-request', ArtSize.MEDIUM+2)
         self._grid.attach(box, 0, 0, 1, 2)
         self.show_all()
         self._header = Gtk.Grid()
@@ -371,7 +308,6 @@ class PlaylistRow(Row):
             return
         self._show_headers = show
         if show:
-            self.set_property('height-request', self._height[1])
             self._cover_frame.set_shadow_type(Gtk.ShadowType.IN)
             self._cover.set_tooltip_text(self._track.album.name)
             surface = Lp().art.get_album_artwork(
@@ -381,7 +317,6 @@ class PlaylistRow(Row):
             del surface
             self._header.show_all()
         else:
-            self.set_property('height-request', self._height[0])
             self._cover_frame.set_shadow_type(Gtk.ShadowType.NONE)
             self._cover.set_tooltip_text('')
             self._cover.clear()
@@ -464,40 +399,16 @@ class TrackRow(Row):
         A track row
     """
 
-    def __init__(self, rowid, num, height):
+    def __init__(self, rowid, num):
         """
             Init row widget and show it
             @param rowid as int
             @param num as int
-            @param height as int
         """
-        self._height = height
         Row.__init__(self, rowid, num)
-        self.set_property('height-request', self._height)
-        self.show()
-
-    def do_get_preferred_height(self):
-        """
-            Return preferred height
-            @return (int, int)
-        """
-        return (self._height, self._height)
-
-    def init_widget(self):
-        """
-            Init widget content
-        """
-        Row.init_widget(self)
         self._grid.insert_column(0)
         self._grid.attach(self._indicator, 0, 0, 1, 1)
         self.show_all()
-
-    def set_id(self, id):
-        """
-            Store current id and object
-            @param id as int
-        """
-        Row.set_id(self, id)
 
 #######################
 # PRIVATE             #

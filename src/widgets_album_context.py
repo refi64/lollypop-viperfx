@@ -33,7 +33,7 @@ class AlbumContextWidget(AlbumDetailedWidget):
             @param update albums as bool: update albums on play
         """
         AlbumDetailedWidget.__init__(self, album_id, genre_ids, artist_ids,
-                                     None, size_group, update_albums)
+                                     size_group, update_albums)
         self._artist_label.set_text(self._album.artist_name)
         self._artist_label.show()
 

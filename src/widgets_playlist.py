@@ -38,19 +38,12 @@ class PlaylistsWidget(Gtk.Bin):
         Show playlist tracks/albums
     """
 
-    def __init__(self, playlist_ids, lazy):
+    def __init__(self, playlist_ids):
         """
             Init playlist Widget
             @param playlist ids as [int]
-            @param playlist name as str
-            @param lazy as LazyLoadingView
         """
         Gtk.Bin.__init__(self)
-        self._lazy = lazy
-        # Calculate default album height based on current pango context
-        # We may need to listen to screen changes
-        self._height = (PlaylistRow.get_best_height(self, False),
-                        PlaylistRow.get_best_height(self, True))
         self._playlist_ids = playlist_ids
         self._tracks1 = []
         self._tracks2 = []
@@ -221,18 +214,15 @@ class PlaylistsWidget(Gtk.Bin):
         if not tracks or self._stop:
             if widget == self._tracks_widget_right:
                 self._stop = False
-                GLib.idle_add(self._lazy.lazy_loading)
             else:
                 self._locked_widget2 = False
             return
 
         track = Track(tracks.pop(0))
         row = PlaylistRow(track.id, pos,
-                          track.album.id != previous_album_id,
-                          self._height)
+                          track.album.id != previous_album_id)
         row.connect('track-moved', self._on_track_moved)
         row.show()
-        self._lazy.append(row)
         widget.insert(row, pos)
         GLib.idle_add(self._add_tracks, tracks, widget,
                       pos + 1, track.album.id)
