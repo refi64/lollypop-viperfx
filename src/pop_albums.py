@@ -368,6 +368,7 @@ class AlbumsView(LazyLoadingView):
             @param widget as Gtk.Widget
         """
         self._stop = True
+        self._lazy_queue = []
         self._clear()
         if self._signal_id1 is not None:
             Lp().player.disconnect(self._signal_id1)
