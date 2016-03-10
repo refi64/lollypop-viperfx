@@ -116,7 +116,7 @@ class ArtistAlbumsView(LazyLoadingView):
             @param [album ids as int]
         """
         if self._albums and not self._stop:
-            self._add_albums(self._albums)
+            self._add_albums()
         else:
             self._stop = False
 
