@@ -332,7 +332,6 @@ class PlaylistsWidget(Gtk.Bin):
                           index == 0 or
                           src_track.album.id != prev_track.album.id)
         row.connect('track-moved', self._on_track_moved)
-        row.init_widget()
         row.show()
         dst_widget.insert(row, index)
         return (src_widget, dst_widget, src_index, index)
