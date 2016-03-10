@@ -114,7 +114,12 @@ class ArtistAlbumsView(LazyLoadingView):
             Add another album
             @param album as LazyLoadingView
         """
-        if self._albums and not self._stop:
+        last_child = self._albumbox.get_children()[-1]
+        if not last_child.is_populated():
+            t = Thread(target=last_child.populate)
+            t.daemon = True
+            t.start()
+        elif self._albums and not self._stop:
             self._add_albums()
         else:
             self._stop = False

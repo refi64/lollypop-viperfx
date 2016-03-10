@@ -536,6 +536,8 @@ class AlbumDetailedWidget(Gtk.Bin, AlbumWidget):
         AlbumWidget.__init__(self, album_id, genre_ids)
         self._width = None
         self._lazy = lazy
+        # Discs to load, will be emptied
+        self._discs = self._album.discs
         # Calculate default album height based on current pango context
         # We may need to listen to screen changes
         self._child_height = TrackRow.get_best_height(self)
@@ -587,11 +589,11 @@ class AlbumDetailedWidget(Gtk.Bin, AlbumWidget):
         self._box.set_hexpand(True)
         self._box.show()
         builder.get_object('albuminfos').add(self._box)
-        self._discs = self._album.discs
+
         self._tracks_left = {}
         self._tracks_right = {}
-        show_label = len(self._discs) > 1
-        for disc in self._discs:
+        show_label = len(self._album.discs) > 1
+        for disc in self._album.discs:
             index = disc.number
             if show_label:
                 label = Gtk.Label()
@@ -653,7 +655,7 @@ class AlbumDetailedWidget(Gtk.Bin, AlbumWidget):
         """
             Update playing indicator
         """
-        for disc in self._discs:
+        for disc in self._album.discs:
             self._tracks_left[disc.number].update_playing(
                 Lp().player.current_track.id)
             self._tracks_right[disc.number].update_playing(
@@ -665,7 +667,8 @@ class AlbumDetailedWidget(Gtk.Bin, AlbumWidget):
             @thread safe
         """
         self._stop = False
-        for disc in self._discs:
+        if self._discs:
+            disc = self._discs.pop(0)
             mid_tracks = int(0.5 + len(disc.tracks) / 2)
             self.populate_list_left(disc.tracks[:mid_tracks],
                                     disc,
@@ -673,6 +676,13 @@ class AlbumDetailedWidget(Gtk.Bin, AlbumWidget):
             self.populate_list_right(disc.tracks[mid_tracks:],
                                      disc,
                                      mid_tracks + 1)
+
+    def is_populated(self):
+        """
+            Return True if populated
+            @return bool
+        """
+        return len(self._discs) == 0
 
     def populate_list_left(self, tracks, disc, pos):
         """
@@ -683,7 +693,8 @@ class AlbumDetailedWidget(Gtk.Bin, AlbumWidget):
         """
         GLib.idle_add(self._add_tracks,
                       tracks,
-                      self._tracks_left[disc.number],
+                      self._tracks_left,
+                      disc.number,
                       pos)
 
     def populate_list_right(self, tracks, disc, pos):
@@ -698,9 +709,11 @@ class AlbumDetailedWidget(Gtk.Bin, AlbumWidget):
            self._locked_widget_right:
             GLib.timeout_add(100, self.populate_list_right, tracks, disc, pos)
         else:
+            self._locked_widget_right = False
             GLib.idle_add(self._add_tracks,
                           tracks,
-                          self._tracks_right[disc.number],
+                          self._tracks_right,
+                          disc.number,
                           pos)
 
     def get_current_ordinate(self, parent):
@@ -730,20 +743,21 @@ class AlbumDetailedWidget(Gtk.Bin, AlbumWidget):
         self.get_style_context().add_class('album-menu-selected')
         popover.show()
 
-    def _add_tracks(self, tracks, widget, i):
+    def _add_tracks(self, tracks, widget, disc_number, i):
         """
             Add tracks for to tracks widget
             @param tracks as [int]
             @param widget as TracksWidget
+            @param disc number as int
             @param i as int
         """
-        if not tracks or self._stop:
-            # Emit finished signal if we are on the last disc for
-            # the right tracks widget
-            if widget == self._tracks_right[self._discs[-1].number]:
+        if self._stop:
+            self._stop = False
+            return
+        if not tracks:
+            if widget == self._tracks_right:
                 if self._lazy is not None:
                     GLib.idle_add(self._lazy.lazy_loading)
-                self._stop = False
             else:
                 self._locked_widget_right = False
             return
@@ -760,8 +774,8 @@ class AlbumDetailedWidget(Gtk.Bin, AlbumWidget):
             self._lazy.append(row)
         else:
             row.init_widget()
-        widget.add(row)
-        GLib.idle_add(self._add_tracks, tracks, widget, i + 1)
+        widget[disc_number].add(row)
+        GLib.idle_add(self._add_tracks, tracks, widget, disc_number, i + 1)
 
     def _on_map(self, widget):
         """
