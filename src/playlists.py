@@ -10,7 +10,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-from gi.repository import GObject, GLib, Gio, TotemPlParser
+from gi.repository import GObject, GLib
 
 import os
 from gettext import gettext as _
@@ -52,7 +52,6 @@ class Playlists(GObject.GObject):
         """
         GObject.GObject.__init__(self)
         self._LOVED = _("Loved tracks")
-        try_import = not os.path.exists(self.DB_PATH)
         # Create db schema
         try:
             with SqlCursor(self) as sql:
@@ -61,29 +60,6 @@ class Playlists(GObject.GObject):
                 sql.commit()
         except:
             pass
-
-        # We import playlists from lollypop < 0.9.60
-        if try_import:
-            try:
-                d = Gio.File.new_for_path(self.LOCAL_PATH + "/playlists")
-                infos = d.enumerate_children(
-                    'standard::name',
-                    Gio.FileQueryInfoFlags.NOFOLLOW_SYMLINKS,
-                    None)
-                for info in infos:
-                    f = info.get_name()
-                    if f.endswith(".m3u"):
-                        if f[:-4] != self._LOVED:
-                            self.add(f[:-4])
-                        playlist_id = self.get_id(f[:-4])
-                        parser = TotemPlParser.Parser.new()
-                        parser.connect('entry-parsed',
-                                       self._on_entry_parsed,
-                                       playlist_id)
-                        parser.parse_async(d.get_uri() + "/%s" % f,
-                                           True, None, None)
-            except:
-                pass
 
     def add(self, name):
         """
