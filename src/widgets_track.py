@@ -90,7 +90,6 @@ class Row(Gtk.ListBoxRow):
         self._menu_button.get_style_context().add_class('menu-button')
         self._menu_button.get_style_context().add_class('track-menu-button')
         self._menu_button.get_image().set_opacity(0.2)
-        self._menu_button.show()
         self._row_widget.connect('button-press-event', self._on_button_press)
         self._menu_button.connect('clicked', self._on_button_clicked)
         self._grid.add(self._num_label)
@@ -104,7 +103,7 @@ class Row(Gtk.ListBoxRow):
         self.add(self._row_widget)
         self.get_style_context().add_class('trackrow')
 
-    def show_indicator(self, playing, loved):
+    def set_indicator(self, playing, loved):
         """
             Show indicator
             @param widget name as str
@@ -280,8 +279,8 @@ class PlaylistRow(Row):
             @param show headers as bool
             @param height as (int, int)
         """
-        self._height = height
         Row.__init__(self, rowid, num)
+        self._height = height
         if show_headers:
             self.set_property('height-request', self._height[1])
         else:
@@ -320,7 +319,6 @@ class PlaylistRow(Row):
         box.set_homogeneous(True)
         box.add(self._cover_frame)
         box.set_property('width-request', ArtSize.MEDIUM+self.MARGIN_TOP)
-        box.show()
         self._grid.attach(box, 0, 0, 1, 2)
         self.show_all()
         self._header = Gtk.Grid()
@@ -341,8 +339,8 @@ class PlaylistRow(Row):
         self._duration_label.set_property('valign', Gtk.Align.END)
         self._indicator.set_property('valign', Gtk.Align.END)
         self._grid.attach(self._header, 1, 0, 4, 1)
-        self.show_indicator(Lp().player.current_track.id == self._track.id,
-                            utils.is_loved(self._track.id))
+        self.set_indicator(Lp().player.current_track.id == self._track.id,
+                           utils.is_loved(self._track.id))
         self.show_headers(self._show_headers)
         self.drag_source_set(Gdk.ModifierType.BUTTON1_MASK, [],
                              Gdk.DragAction.MOVE)
@@ -477,7 +475,7 @@ class TrackRow(Row):
         self._height = height
         Row.__init__(self, rowid, num)
         self.set_property('height-request', self._height)
-        self.show_all()
+        self.show()
 
     def do_get_preferred_height(self):
         """
@@ -565,8 +563,8 @@ class TracksWidget(Gtk.ListBox):
             @param track id as int
         """
         for row in self.get_children():
-            row.show_indicator(row.get_id() == track_id,
-                               utils.is_loved(row.get_id()))
+            row.set_indicator(row.get_id() == track_id,
+                              utils.is_loved(row.get_id()))
 
 #######################
 # PRIVATE             #
@@ -592,8 +590,8 @@ class TracksWidget(Gtk.ListBox):
 
         for row in self.get_children():
             if track_id == row.get_id():
-                row.show_indicator(track_id == Lp().player.current_track.id,
-                                   utils.is_loved(track_id))
+                row.set_indicator(track_id == Lp().player.current_track.id,
+                                  utils.is_loved(track_id))
 
     def _on_destroy(self, widget):
         """

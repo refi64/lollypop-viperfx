@@ -111,9 +111,9 @@ class AlbumRow(Gtk.ListBoxRow):
         grid.attach(vgrid, 1, 1, 1, 1)
         row_widget.add(grid)
         self.add(row_widget)
-        self.show_all()
         self.show_play_indicator(self._album.id ==
                                  Lp().player.current_track.album.id)
+        self.show_all()
         self.drag_source_set(Gdk.ModifierType.BUTTON1_MASK, [],
                              Gdk.DragAction.MOVE)
         self.drag_source_add_text_targets()
