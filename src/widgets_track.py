@@ -132,7 +132,7 @@ class Row(Gtk.ListBoxRow):
             Set number
             @param number as int
         """
-        self.number = num
+        self._number = num
 
     def update_num_label(self):
         """
