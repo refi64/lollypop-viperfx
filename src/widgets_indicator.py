@@ -58,7 +58,10 @@ class IndicatorWidget(Gtk.EventBox):
         self._stack.add_named(loved, 'loved')
         self.add(self._stack)
         self.show_all()
-        self._update_button()
+        if Lp().player.current_track.id == self._id:
+            self.play()
+        else:
+            self._update_button()
 
     def empty(self):
         """
