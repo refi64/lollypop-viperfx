@@ -69,6 +69,14 @@ class ArtistAlbumsView(LazyLoadingView):
             y = widget.get_current_ordinate(self._albumbox)
             self._scrolled.get_vadjustment().set_value(y)
 
+    def stop(self):
+        """
+            Stop loading
+        """
+        self._lazy_queue = []
+        for child in self._get_children():
+            child.stop()
+
 #######################
 # PRIVATE             #
 #######################
