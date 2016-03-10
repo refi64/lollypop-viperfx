@@ -350,7 +350,10 @@ class Player(BinPlayer, QueuePlayer, UserPlaylistPlayer, RadioPlayer,
 
         # Get a linear track then
         if self.prev_track.id is None:
-            self.prev_track = LinearPlayer.prev(self)
+            if self.context.prev_track.id is not None:
+                self.prev_track = self.context.prev_track
+            else:
+                self.prev_track = LinearPlayer.prev(self)
         self.emit('prev-changed')
 
     def set_next(self):
@@ -396,6 +399,8 @@ class Player(BinPlayer, QueuePlayer, UserPlaylistPlayer, RadioPlayer,
                 self.next_track = LinearPlayer.next(self)
         if queue and self.context.next_track.id is None:
             self.context.next_track = LinearPlayer.next(self)
+        if queue and self.context.prev_track.id is None:
+            self.context.prev_track = self.current_track
         self.emit('next-changed')
 
     def update_crossfading(self):

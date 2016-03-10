@@ -40,7 +40,8 @@ class LinearPlayer(BasePlayer):
             self.context.next = NextContext.START_NEW_ALBUM
 
         track = Track()
-        if self._albums:
+        if self.current_track.album.id in self.context.genre_ids and \
+                self._albums:
             genre_ids = self.context.genre_ids[self.current_track.album.id]
             album = Album(self.current_track.album.id, genre_ids)
             if self.current_track.id in album.tracks_ids:
@@ -80,7 +81,8 @@ class LinearPlayer(BasePlayer):
             return self.current_track
 
         track = Track()
-        if self._albums:
+        if self.current_track.album.id in self.context.genre_ids and \
+                self._albums:
             genre_ids = self.context.genre_ids[self.current_track.album.id]
             album = Album(self.current_track.album.id, genre_ids)
             if self.current_track.id in album.tracks_ids:
