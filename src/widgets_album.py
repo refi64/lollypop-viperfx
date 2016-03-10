@@ -589,7 +589,7 @@ class AlbumDetailedWidget(Gtk.Bin, AlbumWidget):
         self._box.set_selection_mode(Gtk.SelectionMode.NONE)
         self._box.set_hexpand(True)
         self._box.show()
-        builder.get_object('albuminfos').add(self._box)
+        builder.get_object('albuminfo').add(self._box)
 
         self._tracks_left = {}
         self._tracks_right = {}
