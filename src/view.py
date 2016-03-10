@@ -182,12 +182,9 @@ class LazyLoadingView(View):
         if widget is not None:
             widget.init_widget()
             if self._timeout_id is None:
-                GLib.idle_add(self.lazy_loading, widgets,
-                              scroll_value, priority=GLib.PRIORITY_LOW)
+                GLib.idle_add(self.lazy_loading, widgets, scroll_value)
             else:
-                GLib.timeout_add(50, self.lazy_loading,
-                                 widgets, scroll_value,
-                                 priority=GLib.PRIORITY_LOW)
+                GLib.timeout_add(50, self.lazy_loading, widgets, scroll_value)
 
     def _is_visible(self, widget):
         """
