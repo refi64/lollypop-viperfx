@@ -587,6 +587,7 @@ class AlbumDetailedWidget(Gtk.Bin, AlbumWidget):
             label.set_text(_("%s m") % mins)
         self._box = Gtk.FlowBox()
         self._box.set_selection_mode(Gtk.SelectionMode.NONE)
+        self._box.set_activate_on_single_click(False)
         self._box.set_hexpand(True)
         self._box.show()
         builder.get_object('albuminfo').add(self._box)

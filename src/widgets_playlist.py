@@ -330,8 +330,7 @@ class PlaylistsWidget(Gtk.Bin):
         row = PlaylistRow(src_track.id,
                           index,
                           index == 0 or
-                          src_track.album.id != prev_track.album.id,
-                          self._height)
+                          src_track.album.id != prev_track.album.id)
         row.connect('track-moved', self._on_track_moved)
         row.init_widget()
         row.show()
