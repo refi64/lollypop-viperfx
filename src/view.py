@@ -152,10 +152,17 @@ class LazyLoadingView(View):
         self._scrolled.get_vadjustment().connect('value-changed',
                                                  self._on_value_changed)
 
+    def append(self, row):
+        """
+            Append row to lazy queue
+            @param row as Row
+        """
+        self._lazy_queue.append(row)
+
 #######################
 # PRIVATE             #
 #######################
-    def _lazy_loading(self, widgets=[], scroll_value=0):
+    def lazy_loading(self, widgets=[], scroll_value=0):
         """
             Load the view in a lazy way:
                 - widgets first
@@ -174,10 +181,12 @@ class LazyLoadingView(View):
         if widget is not None:
             widget.init_widget()
             if self._timeout_id is None:
-                GLib.idle_add(self._lazy_loading, widgets, scroll_value)
+                GLib.idle_add(self.lazy_loading, widgets,
+                              scroll_value, priority=GLib.PRIORITY_LOW)
             else:
-                GLib.timeout_add(50, self._lazy_loading,
-                                 widgets, scroll_value)
+                GLib.timeout_add(50, self.lazy_loading,
+                                 widgets, scroll_value,
+                                 priority=GLib.PRIORITY_LOW)
 
     def _is_visible(self, widget):
         """
@@ -204,7 +213,7 @@ class LazyLoadingView(View):
         for child in self._lazy_queue:
             if self._is_visible(child):
                 widgets.append(child)
-        GLib.idle_add(self._lazy_loading, widgets, self._scroll_value)
+        GLib.idle_add(self.lazy_loading, widgets, self._scroll_value)
 
     def _on_value_changed(self, adj):
         """

@@ -113,6 +113,14 @@ class AlbumsView(LazyLoadingView):
         elif self._context_widget is not None:
             self._context.hide()
 
+    def stop(self):
+        """
+            Stop loading
+        """
+        self._lazy_queue = []
+        for child in self._get_children():
+            child.stop()
+
 #######################
 # PRIVATE             #
 #######################
@@ -188,7 +196,7 @@ class AlbumsView(LazyLoadingView):
             GLib.idle_add(self._add_albums, albums)
         else:
             self._stop = False
-            GLib.idle_add(self._lazy_loading)
+            GLib.idle_add(self.lazy_loading)
             if self._viewport.get_child() is None:
                 self._viewport.add(self._albumbox)
 

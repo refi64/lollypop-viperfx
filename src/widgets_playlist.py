@@ -18,7 +18,7 @@ from gettext import gettext as _
 
 from lollypop.define import Lp, Type, WindowSize
 from lollypop.cellrendereralbum import CellRendererAlbum
-from lollypop.widgets_track import TracksWidget
+from lollypop.widgets_track import TracksWidget, PlaylistRow
 from lollypop.objects import Track
 
 
@@ -41,13 +41,19 @@ class PlaylistsWidget(Gtk.Bin):
         'populated': (GObject.SignalFlags.RUN_FIRST, None, ())
     }
 
-    def __init__(self, playlist_ids):
+    def __init__(self, playlist_ids, lazy):
         """
             Init playlist Widget
             @param playlist ids as [int]
             @param playlist name as str
+            @param lazy as LazyLoadingView
         """
         Gtk.Bin.__init__(self)
+        self._lazy = lazy
+        # Calculate default album height based on current pango context
+        # We may need to listen to screen changes
+        self._height = (PlaylistRow.get_best_height(self, False),
+                        PlaylistRow.get_best_height(self, True))
         self._playlist_ids = playlist_ids
         self._tracks1 = []
         self._tracks2 = []
@@ -64,11 +70,8 @@ class PlaylistsWidget(Gtk.Bin):
 
         self.connect('size-allocate', self._on_size_allocate)
 
-        loved = playlist_ids and playlist_ids[0] != Type.LOVED
-        self._tracks_widget_left = TracksWidget(loved)
-        self._tracks_widget_right = TracksWidget(loved)
-        self._tracks_widget_left.connect('track-moved', self._on_track_moved)
-        self._tracks_widget_right.connect('track-moved', self._on_track_moved)
+        self._tracks_widget_left = TracksWidget()
+        self._tracks_widget_right = TracksWidget()
         self._tracks_widget_left.connect('activated',
                                          self._on_activated)
         self._tracks_widget_right.connect('activated',
@@ -222,13 +225,19 @@ class PlaylistsWidget(Gtk.Bin):
             if widget == self._tracks_widget_right:
                 self.emit('populated')
                 self._stop = False
+                GLib.idle_add(self._lazy.lazy_loading)
             else:
                 self._locked_widget2 = False
             return
 
         track = Track(tracks.pop(0))
-        widget.add_track_playlist(track.id, pos,
-                                  track.album.id != previous_album_id)
+        row = PlaylistRow(track.id, pos,
+                          track.album.id != previous_album_id,
+                          self._height)
+        row.connect('track-moved', self._on_track_moved)
+        row.show()
+        self._lazy.append(row)
+        widget.insert(row, pos)
         GLib.idle_add(self._add_tracks, tracks, widget,
                       pos + 1, track.album.id)
 
@@ -332,9 +341,15 @@ class PlaylistsWidget(Gtk.Bin):
                     src_track.album.artist_id not in src_track.artist_ids):
                 name = "<b>%s</b>\n%s" % (escape(src_track.artist_names), name)
             self._tracks1.insert(index, src_track.id)
-        dst_widget.add_track_playlist(
-                       src_track.id, index,
-                       index == 0 or src_track.album.id != prev_track.album.id)
+        row = PlaylistRow(src_track.id,
+                          index,
+                          index == 0 or
+                          src_track.album.id != prev_track.album.id,
+                          self._height)
+        row.connect('track-moved', self._on_track_moved)
+        row.init_widget()
+        row.show()
+        dst_widget.insert(row, index)
         return (src_widget, dst_widget, src_index, index)
 
     def _on_track_moved(self, widget, dst, src, up):
@@ -379,12 +394,10 @@ class PlaylistsWidget(Gtk.Bin):
         if allocation.width < WindowSize.BIG:
             self._box.set_min_children_per_line(1)
             self._box.set_max_children_per_line(1)
-            self._update_headers()
         else:
             self._box.set_min_children_per_line(2)
             self._box.set_max_children_per_line(2)
-            self._tracks_widget_left.update_headers()
-            self._tracks_widget_right.update_headers()
+        self._update_headers()
 
     def _on_activated(self, widget, track_id):
         """

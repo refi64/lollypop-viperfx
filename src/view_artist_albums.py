@@ -14,13 +14,13 @@ from gi.repository import Gtk, GLib
 
 from threading import Thread
 
-from lollypop.view import View
+from lollypop.view import LazyLoadingView
 from lollypop.view_container import ViewContainer
 from lollypop.define import Lp, Type
 from lollypop.widgets_album import AlbumDetailedWidget
 
 
-class ArtistAlbumsView(View):
+class ArtistAlbumsView(LazyLoadingView):
     """
         Show artist albums and tracks
     """
@@ -31,7 +31,7 @@ class ArtistAlbumsView(View):
             @param artist ids as [int]
             @param genre ids as [int]
         """
-        View.__init__(self)
+        LazyLoadingView.__init__(self)
         self._artist_ids = artist_ids
         self._genre_ids = genre_ids
         self._albums = []
@@ -54,7 +54,7 @@ class ArtistAlbumsView(View):
         self._albums = list(albums)
         if albums:
             self._albums_count = len(albums)
-            self._add_albums(albums)
+            self._add_albums()
 
     def jump_to_current(self):
         """
@@ -69,6 +69,14 @@ class ArtistAlbumsView(View):
             y = widget.get_current_ordinate(self._albumbox)
             self._scrolled.get_vadjustment().set_value(y)
 
+    def stop(self):
+        """
+            Stop loading
+        """
+        self._lazy_queue = []
+        for child in self._get_children():
+            child.stop()
+
 #######################
 # PRIVATE             #
 #######################
@@ -79,36 +87,37 @@ class ArtistAlbumsView(View):
         """
         return self._albumbox.get_children()
 
-    def _add_albums(self, albums):
+    def _add_albums(self):
         """
             Pop an album and add it to the view,
             repeat operation until album list is empty
             @param [album ids as int]
         """
         size_group = Gtk.SizeGroup(mode=Gtk.SizeGroupMode.HORIZONTAL)
-        widget = AlbumDetailedWidget(albums.pop(0),
+        widget = AlbumDetailedWidget(self._albums.pop(0),
                                      self._genre_ids,
                                      self._artist_ids,
+                                     self,
                                      size_group)
         # Not needed if only one album
         if self._albums_count == 1:
             widget.disable_play_all()
-        widget.connect('finished', self._on_album_finished, albums)
+        widget.connect('finished', self._on_album_finished)
         widget.show()
         t = Thread(target=widget.populate)
         t.daemon = True
         t.start()
         self._albumbox.add(widget)
 
-    def _on_album_finished(self, album, albums):
+    def _on_album_finished(self, album):
         """
             Add another album
             @param album as AlbumDetailedWidget
-            @param [album ids as int]
         """
-        if albums and not self._stop:
-            self._add_albums(albums)
+        if self._albums and not self._stop:
+            self._add_albums()
         else:
+            GLib.idle_add(self.lazy_loading)
             self._stop = False
 
 
