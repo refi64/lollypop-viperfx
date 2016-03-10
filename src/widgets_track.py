@@ -61,9 +61,8 @@ class Row(Gtk.ListBoxRow):
         """
             Init widget content
         """
-        self._indicator = IndicatorWidget()
+        self._indicator = IndicatorWidget(self._track.id)
         self.set_sensitive(True)
-        self._indicator.set_id(self._track.id)
         self._row_widget = Gtk.EventBox()
         self._grid = Gtk.Grid()
         self._grid.set_column_spacing(5)

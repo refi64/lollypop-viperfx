@@ -23,12 +23,13 @@ class IndicatorWidget(Gtk.EventBox):
         Show play/loved indicator
     """
 
-    def __init__(self):
+    def __init__(self, track_id):
         """
             Init indicator widget
+            @param track id as int
         """
         Gtk.EventBox.__init__(self)
-        self._id = None
+        self._id = track_id
         self._pass = 1
         self._timeout_id = None
         self._signal_id = Lp().player.connect('queue-changed',
@@ -57,13 +58,6 @@ class IndicatorWidget(Gtk.EventBox):
         self._stack.add_named(loved, 'loved')
         self.add(self._stack)
         self.show_all()
-
-    def set_id(self, id):
-        """
-            Store current object id
-            @param id as int
-        """
-        self._id = id
         self._update_button()
 
     def empty(self):
