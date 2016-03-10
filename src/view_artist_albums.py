@@ -55,7 +55,7 @@ class ArtistAlbumsView(LazyLoadingView):
         self._albums = list(albums)
         if albums:
             self._albums_count = len(albums)
-            self._add_albums(albums)
+            self._add_albums()
 
     def jump_to_current(self):
         """
@@ -88,14 +88,14 @@ class ArtistAlbumsView(LazyLoadingView):
         """
         return self._albumbox.get_children()
 
-    def _add_albums(self, albums):
+    def _add_albums(self):
         """
             Pop an album and add it to the view,
             repeat operation until album list is empty
             @param [album ids as int]
         """
         size_group = Gtk.SizeGroup(mode=Gtk.SizeGroupMode.HORIZONTAL)
-        widget = AlbumDetailedWidget(albums.pop(0),
+        widget = AlbumDetailedWidget(self._albums.pop(0),
                                      self._genre_ids,
                                      self._artist_ids,
                                      self,
