@@ -290,13 +290,6 @@ class PlaylistRow(Row):
         self.connect('drag-motion', self._on_drag_motion)
         self.connect('drag-leave', self._on_drag_leave)
 
-    def set_id(self, id):
-        """
-            Store current object and show row
-            @param id as int
-        """
-        Row.set_id(self, id)
-
     def show_headers(self, show):
         """
             Show header
