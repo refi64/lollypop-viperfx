@@ -40,8 +40,12 @@ class Row(Gtk.ListBoxRow):
         self._track = Track(rowid)
         self._number = num
         self._indicator = IndicatorWidget(self._track.id)
+        self.set_indicator(Lp().player.current_track.id == self._track.id,
+                           utils.is_loved(self._track.id))
         self.set_sensitive(True)
         self._row_widget = Gtk.EventBox()
+        self._row_widget.connect('button-press-event', self._on_button_press)
+        self._row_widget.connect('enter-notify-event', self._on_enter_notify)
         self._grid = Gtk.Grid()
         self._grid.set_column_spacing(5)
         self._row_widget.add(self._grid)
@@ -61,13 +65,13 @@ class Row(Gtk.ListBoxRow):
         self._num_label.set_width_chars(4)
         self._num_label.get_style_context().add_class('dim-label')
         self.update_num_label()
-        self._menu_button = Gtk.Button.new_from_icon_name('open-menu-symbolic',
-                                                          Gtk.IconSize.MENU)
+        self._menu_image = Gtk.Image.new()
+        self._menu_image.set_opacity(0.2)
+        self._menu_button = Gtk.Button.new()
         self._menu_button.set_relief(Gtk.ReliefStyle.NONE)
         self._menu_button.get_style_context().add_class('menu-button')
         self._menu_button.get_style_context().add_class('track-menu-button')
-        self._menu_button.get_image().set_opacity(0.2)
-        self._row_widget.connect('button-press-event', self._on_button_press)
+        self._menu_button.set_image(self._menu_image)
         self._menu_button.connect('clicked', self._on_button_clicked)
         self._grid.add(self._num_label)
         self._grid.add(self._title_label)
@@ -148,6 +152,17 @@ class Row(Gtk.ListBoxRow):
         if widget is None:
             self._grid.add(self._menu_button)
 
+    def _on_enter_notify(self, widget, event):
+        """
+            Set image on buttons now, speed reason
+            @param widget as Gtk.Widget
+            @param event as Gdk.Event
+        """
+        if self._menu_image.get_pixbuf() is None:
+            self._menu_image.set_from_icon_name('open-menu-symbolic',
+                                                Gtk.IconSize.MENU)
+            self._indicator.update_button()
+
     def _on_button_press(self, widget, event):
         """
             Popup menu for track relative to track row
@@ -213,7 +228,7 @@ class Row(Gtk.ListBoxRow):
         layout = self._title_label.get_layout()
         if layout.is_ellipsized():
             label = self._title_label.get_label()
-            self._title_label.set_tooltip_markup(label)
+            self._title_label.set_tooltip_markup(escape(label))
         else:
             self._title_label.set_tooltip_text('')
 

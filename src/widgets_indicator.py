@@ -58,10 +58,6 @@ class IndicatorWidget(Gtk.EventBox):
         self._stack.add_named(loved, 'loved')
         self.add(self._stack)
         self.show_all()
-        if Lp().player.current_track.id == self._id:
-            self.play()
-        else:
-            self._update_button()
 
     def empty(self):
         """
@@ -97,10 +93,7 @@ class IndicatorWidget(Gtk.EventBox):
             GLib.source_remove(self._timeout_id)
             self._timeout_id = None
 
-#######################
-# PRIVATE             #
-#######################
-    def _update_button(self):
+    def update_button(self):
         """
             Update button based on queue status
         """
@@ -113,15 +106,22 @@ class IndicatorWidget(Gtk.EventBox):
             self._image.set_from_icon_name('list-add-symbolic',
                                            Gtk.IconSize.MENU)
 
+#######################
+# PRIVATE             #
+#######################
     def _on_enter_notify(self, widget, event):
         """
             Show queue button
+            @param widget as Gtk.Widget
+            @param event as Gdk.Event
         """
         self.empty()
 
     def _on_leave_notify(self, widget, event):
         """
             Show love button or play button again
+            @param widget as Gtk.Widget
+            @param event as Gdk.Event
         """
         if self._id == Lp().player.current_track.id:
             self.play()
@@ -134,7 +134,7 @@ class IndicatorWidget(Gtk.EventBox):
             @param player as Player
             @param is party as bool
         """
-        self._update_button()
+        self.update_button()
 
     def _on_button_clicked(self, widget):
         """
