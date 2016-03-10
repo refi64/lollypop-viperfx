@@ -10,7 +10,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-from gi.repository import Gtk, GLib, GObject
+from gi.repository import Gtk, GLib
 
 from lollypop.define import Lp, ArtSize
 
@@ -141,10 +141,6 @@ class LazyLoadingView(View):
     """
         Lazy loading for view
     """
-    __gsignals__ = {
-        'populated': (GObject.SignalFlags.RUN_FIRST, None, ())
-    }
-
     def __init__(self):
         """
             Init lazy loading
@@ -191,8 +187,6 @@ class LazyLoadingView(View):
                 GLib.timeout_add(50, self.lazy_loading,
                                  widgets, scroll_value,
                                  priority=GLib.PRIORITY_LOW)
-        else:
-            self.emit('populated')
 
     def _is_visible(self, widget):
         """

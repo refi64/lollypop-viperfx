@@ -10,7 +10,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-from gi.repository import Gtk, GLib, Pango
+from gi.repository import Gtk, GLib, GObject, Pango
 
 from threading import Thread
 from cgi import escape
@@ -37,6 +37,9 @@ class PlaylistsWidget(Gtk.Bin):
     """
         Show playlist tracks/albums
     """
+    __gsignals__ = {
+        'populated': (GObject.SignalFlags.RUN_FIRST, None, ())
+    }
 
     def __init__(self, playlist_ids, lazy):
         """
@@ -220,6 +223,7 @@ class PlaylistsWidget(Gtk.Bin):
         """
         if not tracks or self._stop:
             if widget == self._tracks_widget_right:
+                self.emit('populated')
                 self._stop = False
                 GLib.idle_add(self._lazy.lazy_loading)
             else:

@@ -66,15 +66,14 @@ class ArtistView(ArtistAlbumsView):
         """
         self.jump_to_current()
 
-    def _on_album_finished(self, album, albums):
+    def _on_album_finished(self, album):
         """
             Add another album
             @param album as AlbumDetailedWidget
-            @param [album ids as int]
         """
-        if not albums:
+        if not self._albums:
             self._update_jump_button()
-        ArtistAlbumsView._on_album_finished(self, album, albums)
+        ArtistAlbumsView._on_album_finished(self, album)
 
     def _on_current_changed(self, player):
         """

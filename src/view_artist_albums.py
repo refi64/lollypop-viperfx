@@ -32,7 +32,6 @@ class ArtistAlbumsView(LazyLoadingView):
             @param genre ids as [int]
         """
         LazyLoadingView.__init__(self)
-        self.connect('populated', self._on_populated)
         self._artist_ids = artist_ids
         self._genre_ids = genre_ids
         self._albums = []
@@ -103,21 +102,22 @@ class ArtistAlbumsView(LazyLoadingView):
         # Not needed if only one album
         if self._albums_count == 1:
             widget.disable_play_all()
+        widget.connect('finished', self._on_album_finished)
         widget.show()
         t = Thread(target=widget.populate)
         t.daemon = True
         t.start()
         self._albumbox.add(widget)
 
-    def _on_populated(self, view):
+    def _on_album_finished(self, album):
         """
             Add another album
-            @param view as LazyLoadingView
-            @param [album ids as int]
+            @param album as AlbumDetailedWidget
         """
         if self._albums and not self._stop:
             self._add_albums()
         else:
+            GLib.idle_add(self.lazy_loading)
             self._stop = False
 
 
