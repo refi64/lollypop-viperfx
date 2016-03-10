@@ -536,6 +536,7 @@ class AlbumDetailedWidget(Gtk.Bin, AlbumWidget):
         AlbumWidget.__init__(self, album_id, genre_ids)
         self._width = None
         self._lazy = lazy
+        self._stop = False
         # Discs to load, will be emptied
         self._discs = self._album.discs
         # Calculate default album height based on current pango context
@@ -666,7 +667,6 @@ class AlbumDetailedWidget(Gtk.Bin, AlbumWidget):
             Populate tracks
             @thread safe
         """
-        self._stop = False
         if self._discs:
             disc = self._discs.pop(0)
             mid_tracks = int(0.5 + len(disc.tracks) / 2)
