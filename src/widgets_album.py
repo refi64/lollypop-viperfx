@@ -538,6 +538,7 @@ class AlbumDetailedWidget(Gtk.Bin, AlbumWidget):
         Gtk.Bin.__init__(self)
         AlbumWidget.__init__(self, album_id, genre_ids)
         self._width = None
+        self._size_group = size_group
         self._stop = False
         # Discs to load, will be emptied
         self._discs = self._album.discs
@@ -592,37 +593,6 @@ class AlbumDetailedWidget(Gtk.Bin, AlbumWidget):
 
         self._tracks_left = {}
         self._tracks_right = {}
-        show_label = len(self._album.discs) > 1
-        for disc in self._album.discs:
-            index = disc.number
-            if show_label:
-                label = Gtk.Label()
-                label.set_text(_("Disc %s") % index)
-                label.set_property('halign', Gtk.Align.START)
-                label.get_style_context().add_class('dim-label')
-                label.show()
-                self._box.insert(label, -1)
-                sep = Gtk.Separator()
-                sep.set_opacity(0.0)
-                sep.show()
-                self._box.insert(sep, -1)
-            self._tracks_left[index] = TracksWidget()
-            self._tracks_right[index] = TracksWidget()
-            self._box.insert(self._tracks_left[index], -1)
-            self._box.insert(self._tracks_right[index], -1)
-            size_group.add_widget(self._tracks_left[index])
-            size_group.add_widget(self._tracks_right[index])
-
-            self._tracks_left[index].connect('activated',
-                                             self._on_activated)
-            self._tracks_left[index].connect('button-press-event',
-                                             self._on_button_press_event)
-            self._tracks_right[index].connect('activated', self._on_activated)
-            self._tracks_right[index].connect('button-press-event',
-                                              self._on_button_press_event)
-
-            self._tracks_left[index].show()
-            self._tracks_right[index].show()
 
         self._cover = builder.get_object('cover')
         self._color = builder.get_object('color')
@@ -668,6 +638,7 @@ class AlbumDetailedWidget(Gtk.Bin, AlbumWidget):
         """
         if self._discs:
             disc = self._discs.pop(0)
+            self._add_disc_container(disc.number)
             mid_tracks = int(0.5 + len(disc.tracks) / 2)
             self.populate_list_left(disc.tracks[:mid_tracks],
                                     disc,
@@ -730,6 +701,41 @@ class AlbumDetailedWidget(Gtk.Bin, AlbumWidget):
 #######################
 # PRIVATE             #
 #######################
+    def _add_disc_container(self, disc_number):
+        """
+            Add disc container to box
+            @param disc number as int
+        """
+        show_label = len(self._album.discs) > 1
+        if show_label:
+            label = Gtk.Label()
+            label.set_text(_("Disc %s") % disc_number)
+            label.set_property('halign', Gtk.Align.START)
+            label.get_style_context().add_class('dim-label')
+            label.show()
+            self._box.insert(label, -1)
+            sep = Gtk.Separator()
+            sep.set_opacity(0.0)
+            sep.show()
+            self._box.insert(sep, -1)
+        self._tracks_left[disc_number] = TracksWidget()
+        self._tracks_right[disc_number] = TracksWidget()
+        self._box.insert(self._tracks_left[disc_number], -1)
+        self._box.insert(self._tracks_right[disc_number], -1)
+        self._size_group.add_widget(self._tracks_left[disc_number])
+        self._size_group.add_widget(self._tracks_right[disc_number])
+
+        self._tracks_left[disc_number].connect('activated',
+                                               self._on_activated)
+        self._tracks_left[disc_number].connect('button-press-event',
+                                               self._on_button_press_event)
+        self._tracks_right[disc_number].connect('activated',
+                                                self._on_activated)
+        self._tracks_right[disc_number].connect('button-press-event',
+                                                self._on_button_press_event)
+        self._tracks_left[disc_number].show()
+        self._tracks_right[disc_number].show()
+
     def _pop_menu(self, widget):
         """
             Popup menu for album

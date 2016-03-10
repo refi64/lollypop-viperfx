@@ -12,8 +12,6 @@
 
 from gi.repository import Gtk, GLib
 
-from threading import Thread
-
 from lollypop.view import View
 from lollypop.view_container import ViewContainer
 from lollypop.define import Lp, Type
@@ -103,9 +101,7 @@ class ArtistAlbumsView(View):
         if self._albums_count == 1:
             widget.disable_play_all()
         widget.show()
-        t = Thread(target=widget.populate)
-        t.daemon = True
-        t.start()
+        widget.populate()
         self._albumbox.add(widget)
 
     def _on_populated(self, widget):
@@ -114,9 +110,7 @@ class ArtistAlbumsView(View):
             @param widget as AlbumDetailedWidget
         """
         if not widget.is_populated():
-            t = Thread(target=widget.populate)
-            t.daemon = True
-            t.start()
+            widget.populate()
         elif self._albums and not self._stop:
             self._add_albums()
         else:
