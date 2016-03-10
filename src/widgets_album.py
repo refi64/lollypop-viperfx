@@ -10,7 +10,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-from gi.repository import Gtk, GLib, GObject, Gdk, Pango
+from gi.repository import Gtk, GLib, Gdk, Pango
 
 from cgi import escape
 from gettext import gettext as _
@@ -521,10 +521,6 @@ class AlbumDetailedWidget(Gtk.Bin, AlbumWidget):
         Widget with cover and tracks
     """
 
-    __gsignals__ = {
-        'finished': (GObject.SignalFlags.RUN_FIRST, None, ())
-    }
-
     def __init__(self, album_id, genre_ids, artist_ids, lazy,
                  size_group, update_albums=True):
         """
@@ -741,7 +737,6 @@ class AlbumDetailedWidget(Gtk.Bin, AlbumWidget):
             # Emit finished signal if we are on the last disc for
             # the right tracks widget
             if widget == self._tracks_right[self._discs[-1].number]:
-                self.emit('finished')
                 self._stop = False
                 if self._lazy is not None:
                     GLib.idle_add(self._lazy.lazy_loading)

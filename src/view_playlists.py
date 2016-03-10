@@ -33,6 +33,7 @@ class PlaylistsView(LazyLoadingView):
             @param editable as bool
         """
         LazyLoadingView.__init__(self)
+        self.connect('populated', self._on_populated)
         self._tracks = []
         self._playlist_ids = playlist_ids
         self._signal_id1 = Lp().playlists.connect('playlist-add',
@@ -70,7 +71,6 @@ class PlaylistsView(LazyLoadingView):
         self._title = builder.get_object('title')
 
         self._playlists_widget = PlaylistsWidget(playlist_ids, self)
-        self._playlists_widget.connect('populated', self._on_populated)
         self._playlists_widget.show()
         self.add(builder.get_object('widget'))
         self._viewport.add(self._playlists_widget)
