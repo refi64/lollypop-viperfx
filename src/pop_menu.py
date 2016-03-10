@@ -217,9 +217,10 @@ class QueueMenu(BaseMenu):
         if self._is_album:
             for track_id in Lp().albums.get_tracks(self._object_id,
                                                    self._genre_id):
-                Lp().player.append_to_queue(track_id)
+                Lp().player.append_to_queue(track_id, False)
         else:
-            Lp().player.append_to_queue(self._object_id)
+            Lp().player.append_to_queue(self._object_id, False)
+        Lp().player.emit('queue-changed')
 
     def _insert_in_queue(self, action, variant):
         """
@@ -230,9 +231,10 @@ class QueueMenu(BaseMenu):
         if self._is_album:
             for track_id in reversed(Lp().albums.get_tracks(self._object_id,
                                                             self._genre_id)):
-                Lp().player.insert_in_queue(track_id)
+                Lp().player.insert_in_queue(track_id, 0, False)
         else:
-            Lp().player.insert_in_queue(self._object_id)
+            Lp().player.insert_in_queue(self._object_id, 0, False)
+        Lp().player.emit('queue-changed')
 
     def _del_from_queue(self, action, variant):
         """
@@ -243,9 +245,10 @@ class QueueMenu(BaseMenu):
         if self._is_album:
             for track_id in Lp().albums.get_tracks(self._object_id,
                                                    self._genre_id):
-                Lp().player.del_from_queue(track_id)
+                Lp().player.del_from_queue(track_id, False)
         else:
-            Lp().player.del_from_queue(self._object_id)
+            Lp().player.del_from_queue(self._object_id, False)
+        Lp().player.emit('queue-changed')
 
 
 class PlaylistsMenu(BaseMenu):
