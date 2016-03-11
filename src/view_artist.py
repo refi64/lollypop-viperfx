@@ -52,7 +52,12 @@ class ArtistView(ArtistAlbumsView):
         """
             Update jump button status
         """
-        if Lp().player.current_track.album.id in self._albums:
+        found = False
+        for child in self._get_children():
+            if child.get_id() == Lp().player.current_track.album.id:
+                found = True
+                break
+        if found:
             self._jump_button.set_sensitive(True)
             self._jump_button.set_tooltip_text(
                                           Lp().player.current_track.name)
@@ -66,14 +71,13 @@ class ArtistView(ArtistAlbumsView):
         """
         self.jump_to_current()
 
-    def _on_album_finished(self, album):
+    def _on_populated(self, album):
         """
             Add another album
             @param album as AlbumDetailedWidget
         """
-        if not self._albums:
-            self._update_jump_button()
-        ArtistAlbumsView._on_album_finished(self, album)
+        self._update_jump_button()
+        ArtistAlbumsView._on_populated(self, album)
 
     def _on_current_changed(self, player):
         """
