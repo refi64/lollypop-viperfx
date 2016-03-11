@@ -524,21 +524,19 @@ class AlbumDetailedWidget(Gtk.Bin, AlbumWidget):
         'populated': (GObject.SignalFlags.RUN_FIRST, None, ())
     }
 
-    def __init__(self, album_id, genre_ids, artist_ids,
-                 size_group, update_albums=True):
+    def __init__(self, album_id, genre_ids, artist_ids, update_albums=True):
         """
             Init detailed album widget
             @param album id as int
             @param genre ids as [int]
             @param artist ids as [int]
             @param lazy as LazyLoadingView
-            @param size group as Gtk.SizeGroup
             @param update albums as bool: update albums on play
         """
         Gtk.Bin.__init__(self)
         AlbumWidget.__init__(self, album_id, genre_ids)
         self._width = None
-        self._size_group = size_group
+        self._size_group = Gtk.SizeGroup(mode=Gtk.SizeGroupMode.VERTICAL)
         self._stop = False
         # Discs to load, will be emptied
         self._discs = self._album.discs
@@ -589,11 +587,13 @@ class AlbumDetailedWidget(Gtk.Bin, AlbumWidget):
         self._box.set_selection_mode(Gtk.SelectionMode.NONE)
         self._box.set_activate_on_single_click(False)
         self._box.set_hexpand(True)
+        self._box.set_homogeneous(True)
         self._box.show()
         builder.get_object('albuminfo').add(self._box)
 
         self._tracks_left = {}
         self._tracks_right = {}
+        self._fake_labels = {}
 
         self._cover = builder.get_object('cover')
         self._color = builder.get_object('color')
@@ -708,23 +708,32 @@ class AlbumDetailedWidget(Gtk.Bin, AlbumWidget):
             @param disc number as int
         """
         show_label = len(self._album.discs) > 1
+        grid_left = Gtk.Grid()
+        grid_left.set_orientation(Gtk.Orientation.VERTICAL)
+        grid_left.show()
+        grid_right = Gtk.Grid()
+        grid_right.set_orientation(Gtk.Orientation.VERTICAL)
+        grid_right.show()
         if show_label:
             label = Gtk.Label()
             label.set_text(_("Disc %s") % disc_number)
             label.set_property('halign', Gtk.Align.START)
             label.get_style_context().add_class('dim-label')
             label.show()
-            self._box.insert(label, -1)
-            sep = Gtk.Separator()
-            sep.set_opacity(0.0)
-            sep.show()
-            self._box.insert(sep, -1)
+            self._size_group.add_widget(label)
+            grid_left.add(label)
+            self._fake_labels[disc_number] = Gtk.Label()
+            if self._box.get_min_children_per_line() == 2:
+                self._fake_labels[disc_number].show()
+            self._size_group.add_widget(self._fake_labels[disc_number])
+            grid_right.add(self._fake_labels[disc_number])
+
         self._tracks_left[disc_number] = TracksWidget()
+        grid_left.add(self._tracks_left[disc_number])
         self._tracks_right[disc_number] = TracksWidget()
-        self._box.insert(self._tracks_left[disc_number], -1)
-        self._box.insert(self._tracks_right[disc_number], -1)
-        self._size_group.add_widget(self._tracks_left[disc_number])
-        self._size_group.add_widget(self._tracks_right[disc_number])
+        grid_right.add(self._tracks_right[disc_number])
+        self._box.insert(grid_left, -1)
+        self._box.insert(grid_right, -1)
 
         self._tracks_left[disc_number].connect('activated',
                                                self._on_activated)
@@ -803,7 +812,11 @@ class AlbumDetailedWidget(Gtk.Bin, AlbumWidget):
         if allocation.width < WindowSize.MONSTER:
             self._box.set_min_children_per_line(1)
             self._box.set_max_children_per_line(1)
+            for fake in self._fake_labels.values():
+                fake.hide()
         else:
+            for fake in self._fake_labels.values():
+                fake.show()
             self._box.set_min_children_per_line(2)
             self._box.set_max_children_per_line(2)
         if allocation.width < WindowSize.MEDIUM:

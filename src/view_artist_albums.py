@@ -91,11 +91,9 @@ class ArtistAlbumsView(View):
             repeat operation until album list is empty
             @param [album ids as int]
         """
-        size_group = Gtk.SizeGroup(mode=Gtk.SizeGroupMode.HORIZONTAL)
         widget = AlbumDetailedWidget(self._albums.pop(0),
                                      self._genre_ids,
-                                     self._artist_ids,
-                                     size_group)
+                                     self._artist_ids)
         widget.connect('populated', self._on_populated)
         # Not needed if only one album
         if self._albums_count == 1:
