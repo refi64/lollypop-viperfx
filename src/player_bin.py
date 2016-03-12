@@ -36,7 +36,6 @@ class BinPlayer(BasePlayer):
         Gst.init(None)
         BasePlayer.__init__(self)
         self._codecs = Codecs()
-        self._gst_duration = 0
         self._crossfading = False
         self._playbin = self._playbin1 = Gst.ElementFactory.make(
                                                            'playbin', 'player')
@@ -125,7 +124,6 @@ class BinPlayer(BasePlayer):
         """
             Change player state to STOPPED
         """
-        self._gst_duration = 0
         self._playbin.set_state(Gst.State.NULL)
         self.emit("status-changed")
 
@@ -133,7 +131,6 @@ class BinPlayer(BasePlayer):
         """
             Stop all bins, lollypop should quit now
         """
-        self._gst_duration = 0
         # Stop
         self._playbin1.set_state(Gst.State.NULL)
         self._playbin2.set_state(Gst.State.NULL)
@@ -172,8 +169,8 @@ class BinPlayer(BasePlayer):
             @return position as int
         """
         position = self._playbin.query_position(Gst.Format.TIME)[1] / 1000
-        if self._crossfading and self._gst_duration > 0:
-            duration = (self._gst_duration - position) / 1000000
+        if self._crossfading and self.current_track.duration > 0:
+            duration = self.current_track.duration - position / 1000000
             if duration < Lp().settings.get_value('mix-duration').get_int32():
                 self._do_crossfade(duration)
         return position * 60
@@ -488,8 +485,6 @@ class BinPlayer(BasePlayer):
             @param message as Gst.Message
         """
         self._start_time = time()
-        self._gst_duration = self._playbin.query_duration(
-                                                    Gst.Format.TIME)[1] / 1000
         debug("Player::_on_stream_start(): %s" % self.current_track.uri)
         self.emit('current-changed')
         # Update now playing on lastfm
