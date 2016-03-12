@@ -410,7 +410,7 @@ class Player(BinPlayer, QueuePlayer, UserPlaylistPlayer, RadioPlayer,
         mix = Lp().settings.get_value('mix')
         party_mix = Lp().settings.get_value('party-mix')
         self._crossfading = (mix and not party_mix) or\
-                            (party_mix and self._is_party)
+                            (mix and party_mix and self._is_party)
 
 #######################
 # PRIVATE             #
