@@ -14,7 +14,7 @@
     <property name="website_label" translatable="yes">Visit Lollypop website</property>
     <property name="authors">Cédric Bellegarde &lt;cedric.bellegarde@adishatz.org&gt;
 </property>
-    <property name="translator_credits" translatable="yes" comments="Replace me with your names">Cédric Bellegarde &lt;cedric.bellegarde@adishatz.org&gt;</property>
+    <property name="translator_credits" translatable="yes" context="Translation credits here, put your name here!" comments="Replace me with your names">Cédric Bellegarde &lt;cedric.bellegarde@adishatz.org&gt;</property>
     <property name="artists"> Reda Lazri https://plus.google.com/u/0/+RedaLazri/posts
     </property>
     <property name="logo_icon_name">lollypop</property>
