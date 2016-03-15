@@ -79,7 +79,6 @@ class SelectionList(Gtk.ScrolledWindow):
                         Gtk.PolicyType.AUTOMATIC)
         self._mode = mode
         self._last_motion_event = None
-        self._mode = SelectionMode.NORMAL
         self._previous_motion_y = 0.0
         self._timeout = None
         self._to_select_ids = []
