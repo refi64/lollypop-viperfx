@@ -160,9 +160,6 @@ class LazyLoadingView(View):
         """
         self._lazy_queue.append(row)
 
-#######################
-# PRIVATE             #
-#######################
     def lazy_loading(self, widgets=[], scroll_value=0):
         """
             Load the view in a lazy way:
@@ -180,12 +177,15 @@ class LazyLoadingView(View):
         elif self._lazy_queue:
             widget = self._lazy_queue.pop(0)
         if widget is not None:
-            widget.init_widget()
+            widget.populate()
             if self._timeout_id is None:
                 GLib.idle_add(self.lazy_loading, widgets, scroll_value)
             else:
                 GLib.timeout_add(50, self.lazy_loading, widgets, scroll_value)
 
+#######################
+# PRIVATE             #
+#######################
     def _is_visible(self, widget):
         """
             Is widget visible in scrolled

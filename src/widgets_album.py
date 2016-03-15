@@ -338,9 +338,9 @@ class AlbumSimpleWidget(Gtk.Frame, AlbumWidget):
         self.get_style_context().add_class('loading')
         AlbumWidget.__init__(self, album_id, genre_ids)
 
-    def init_widget(self):
+    def populate(self):
         """
-            Init widget content
+            Populate widget content
         """
         self.get_style_context().remove_class('loading')
         self._rounded_class = "rounded-icon-small"
@@ -552,6 +552,7 @@ class AlbumDetailedWidget(Gtk.Bin, AlbumWidget):
         self._width = None
         self._size_group = Gtk.SizeGroup(mode=Gtk.SizeGroupMode.HORIZONTAL)
         self._stop = False
+        self._child_height = TrackRow.get_best_height(self)
         # Discs to load, will be emptied
         self._discs = self._album.discs
         self._locked_widget_right = True
@@ -601,12 +602,12 @@ class AlbumDetailedWidget(Gtk.Bin, AlbumWidget):
         self._box.set_selection_mode(Gtk.SelectionMode.NONE)
         self._box.set_activate_on_single_click(False)
         self._box.set_hexpand(True)
+        self._box.set_property('valign', Gtk.Align.START)
         self._box.show()
         builder.get_object('albuminfo').add(self._box)
 
         self._tracks_left = {}
         self._tracks_right = {}
-        self._fake_labels = {}
 
         self._cover = builder.get_object('cover')
         self._color = builder.get_object('color')
@@ -618,6 +619,10 @@ class AlbumDetailedWidget(Gtk.Bin, AlbumWidget):
             year = builder.get_object('year')
             year.set_label(self._album.year)
             year.show()
+
+        for disc in self._discs:
+            self._add_disc_container(disc.number)
+            self._set_disc_height(disc)
 
         self.add(self._widget)
 
@@ -652,7 +657,6 @@ class AlbumDetailedWidget(Gtk.Bin, AlbumWidget):
         """
         if self._discs:
             disc = self._discs.pop(0)
-            self._add_disc_container(disc.number)
             mid_tracks = int(0.5 + len(disc.tracks) / 2)
             self.populate_list_left(disc.tracks[:mid_tracks],
                                     disc,
@@ -716,10 +720,24 @@ class AlbumDetailedWidget(Gtk.Bin, AlbumWidget):
 #######################
 # PRIVATE             #
 #######################
+    def _set_disc_height(self, disc):
+        """
+            Set disc widget height
+            @param disc as Disc
+        """
+        count_tracks = len(disc.tracks)
+        mid_tracks = int(0.5 + count_tracks / 2)
+        left_height = self._child_height * mid_tracks
+        right_height = self._child_height * (count_tracks - mid_tracks)
+        self._tracks_left[disc.number].set_property('height-request',
+                                                    left_height)
+        self._tracks_right[disc.number].set_property('height-request',
+                                                     right_height)
+
     def _add_disc_container(self, disc_number):
         """
             Add disc container to box
-            @param disc number as int
+            @param disc_number as int
         """
         show_label = len(self._album.discs) > 1
         if show_label:
@@ -816,11 +834,7 @@ class AlbumDetailedWidget(Gtk.Bin, AlbumWidget):
         if allocation.width < WindowSize.MONSTER:
             self._box.set_min_children_per_line(1)
             self._box.set_max_children_per_line(1)
-            for fake in self._fake_labels.values():
-                fake.hide()
         else:
-            for fake in self._fake_labels.values():
-                fake.show()
             self._box.set_min_children_per_line(2)
             self._box.set_max_children_per_line(2)
         if allocation.width < WindowSize.MEDIUM:

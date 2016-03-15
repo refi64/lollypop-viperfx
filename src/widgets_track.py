@@ -407,6 +407,24 @@ class TrackRow(Row):
         A track row
     """
 
+    def get_best_height(widget):
+        """
+            Calculate widget height
+            @param widget as Gtk.Widget
+        """
+        ctx = widget.get_pango_context()
+        layout = Pango.Layout.new(ctx)
+        layout.set_text("a", 1)
+        font_height = int(layout.get_pixel_size()[1])
+        # Gtk.IconSize.MENU + .menu-button padding (application.css)
+        menu_height = 16 + 8
+        image_spacing = Gtk.Button().style_get_property('image-spacing')
+        if font_height > menu_height + image_spacing:
+            height = font_height
+        else:
+            height = menu_height + image_spacing
+        return height
+
     def __init__(self, rowid, num):
         """
             Init row widget and show it

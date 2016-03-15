@@ -60,9 +60,9 @@ class AlbumRow(Gtk.ListBoxRow):
         self._height = height
         self.set_property('height-request', height)
 
-    def init_widget(self):
+    def populate(self):
         """
-            Init widget content
+            Populate widget content
         """
         self.get_style_context().remove_class('loading')
         self.set_sensitive(True)

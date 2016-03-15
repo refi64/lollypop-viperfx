@@ -71,13 +71,15 @@ class ArtistView(ArtistAlbumsView):
         """
         self.jump_to_current()
 
-    def _on_populated(self, album):
+    def _on_populated(self, widget, widgets, scroll_value):
         """
-            Add another album
-            @param album as AlbumDetailedWidget
+            Set jump button state
+            @param widget as AlbumDetailedWidget
+            @param widgets as pending AlbumDetailedWidgets
+            @param scroll value as float
         """
         self._update_jump_button()
-        ArtistAlbumsView._on_populated(self, album)
+        ArtistAlbumsView._on_populated(self, widget, widgets, scroll_value)
 
     def _on_current_changed(self, player):
         """

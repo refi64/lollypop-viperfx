@@ -12,13 +12,13 @@
 
 from gi.repository import Gtk, GLib
 
-from lollypop.view import View
+from lollypop.view import LazyLoadingView
 from lollypop.view_container import ViewContainer
 from lollypop.define import Lp, Type
 from lollypop.widgets_album import AlbumDetailedWidget
 
 
-class ArtistAlbumsView(View):
+class ArtistAlbumsView(LazyLoadingView):
     """
         Show artist albums and tracks
     """
@@ -29,10 +29,9 @@ class ArtistAlbumsView(View):
             @param artist ids as [int]
             @param genre ids as [int]
         """
-        View.__init__(self)
+        LazyLoadingView.__init__(self)
         self._artist_ids = artist_ids
         self._genre_ids = genre_ids
-        self._albums = []
         self._albums_count = 0
 
         self._albumbox = Gtk.Grid()
@@ -48,11 +47,11 @@ class ArtistAlbumsView(View):
     def populate(self, albums):
         """
             Populate the view
+            @param albums as [int]
         """
-        self._albums = list(albums)
         if albums:
             self._albums_count = len(albums)
-            self._add_albums()
+            self._add_albums(albums)
 
     def jump_to_current(self):
         """
@@ -72,12 +71,32 @@ class ArtistAlbumsView(View):
             Stop loading
         """
         self._lazy_queue = []
-        for child in self._get_children():
-            child.stop()
+        LazyLoadingView.stop(self)
 
 #######################
 # PRIVATE             #
 #######################
+    def lazy_loading(self, widgets=[], scroll_value=0):
+        """
+            Load the view in a lazy way:
+                - widgets first
+                - _waiting_init then
+            @param widgets as [AlbumSimpleWidgets]
+            @param scroll_value as float
+        """
+        widget = None
+        if self._stop or self._scroll_value != scroll_value:
+            return
+        if widgets:
+            widget = widgets.pop(0)
+            self._lazy_queue.remove(widget)
+        elif self._lazy_queue:
+            widget = self._lazy_queue.pop(0)
+        if widget is not None:
+            widget.connect('populated', self._on_populated,
+                           widgets, scroll_value)
+            widget.populate()
+
     def _get_children(self):
         """
             Return view children
@@ -85,32 +104,38 @@ class ArtistAlbumsView(View):
         """
         return self._albumbox.get_children()
 
-    def _add_albums(self):
+    def _add_albums(self, albums):
         """
             Pop an album and add it to the view,
             repeat operation until album list is empty
             @param [album ids as int]
         """
-        widget = AlbumDetailedWidget(self._albums.pop(0),
-                                     self._genre_ids,
-                                     self._artist_ids)
-        widget.connect('populated', self._on_populated)
-        # Not needed if only one album
-        if self._albums_count == 1:
-            widget.disable_play_all()
-        widget.show()
-        widget.populate()
-        self._albumbox.add(widget)
+        if albums and not self._stop:
+            album_id = albums.pop(0)
+            widget = AlbumDetailedWidget(album_id,
+                                         self._genre_ids,
+                                         self._artist_ids)
+            self._lazy_queue.append(widget)
+            # Not needed if only one album
+            if self._albums_count == 1:
+                widget.disable_play_all()
+            widget.show()
+            self._albumbox.add(widget)
+            GLib.idle_add(self._add_albums, albums)
+        else:
+            GLib.idle_add(self.lazy_loading)
 
-    def _on_populated(self, widget):
+    def _on_populated(self, widget, widgets, scroll_value):
         """
             Add another album/disc
             @param widget as AlbumDetailedWidget
+            @param widgets as pending AlbumDetailedWidgets
+            @param scroll value as float
         """
         if not widget.is_populated():
             widget.populate()
-        elif self._albums and not self._stop:
-            self._add_albums()
+        elif not self._stop:
+            GLib.idle_add(self.lazy_loading, widgets, scroll_value)
         else:
             self._stop = False
 

@@ -443,37 +443,6 @@ class AlbumsDatabase:
                 return v[0]
             return 0
 
-    def get_count_for_disc(self, album_id, genre_ids, disc):
-        """
-            Get number of tracks for album_id/disc
-            @param album id as int
-            @param genre ids as [int]
-            @param disc number as int
-            @return list of int
-        """
-        with SqlCursor(Lp().db) as sql:
-            if genre_ids and genre_ids[0] > 0:
-                filters = (album_id, disc)
-                filters += tuple(genre_ids)
-                request = "SELECT COUNT(1)\
-                           FROM tracks, track_genres\
-                           WHERE tracks.album_id=?\
-                           AND track_genres.track_id = tracks.rowid\
-                           AND discnumber=? AND ("
-                for genre_id in genre_ids:
-                    request += "track_genres.genre_id=? OR "
-                request += "1=0)"
-                result = sql.execute(request, filters)
-            else:
-                result = sql.execute("SELECT COUNT(1)\
-                                      FROM tracks\
-                                      WHERE tracks.album_id=?\
-                                      AND discnumber=?", (album_id, disc))
-            v = result.fetchone()
-            if v is not None:
-                return v[0]
-            return 0
-
     def get_discs(self, album_id, genre_ids):
         """
             Get disc numbers
