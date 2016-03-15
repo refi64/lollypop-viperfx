@@ -168,10 +168,12 @@ class Player(BinPlayer, QueuePlayer, UserPlaylistPlayer, RadioPlayer,
             self.context.next = NextContext.NONE
         else:
             self.context.next = NextContext.STOP_ALL
-        self.load(album.tracks[0])
-        self._albums = [album.id]
         self.context.genre_ids = {}
         self.context.genre_ids[album.id] = album.genre_ids
+        self.context.prev_track = Track()
+        self.context.next_track = Track()
+        self.load(album.tracks[0])
+        self._albums = [album.id]
 
     def set_albums(self, track_id, artist_ids, genre_ids):
         """
@@ -187,6 +189,8 @@ class Player(BinPlayer, QueuePlayer, UserPlaylistPlayer, RadioPlayer,
         album.set_genre(genre_ids)
         self._albums = []
         self.context.genre_ids = {}
+        self.context.prev_track = Track()
+        self.context.next_track = Track()
         ShufflePlayer.reset_history(self)
 
         # We are not playing a user playlist anymore
