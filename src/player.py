@@ -247,7 +247,7 @@ class Player(BinPlayer, QueuePlayer, UserPlaylistPlayer, RadioPlayer,
             self.context.genre_ids[album_id] = []
             for genre_id in genre_ids:
                 if genre_id >= 0:
-                    self.context.genre_ids[album.id].append(genre_id)
+                    self.context.genre_ids[album_id].append(genre_id)
         # Shuffle album list if needed
         self.shuffle_albums(True)
 
