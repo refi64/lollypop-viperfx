@@ -406,7 +406,7 @@ class SearchPopover(Gtk.Popover):
         if Lp().player.is_party():
             if row.is_track:
                 Lp().player.load(Track(row.id))
-            elif Gtk.get_minor_version() > 18:
+            elif Gtk.get_minor_version() > 16:
                 popover = AlbumPopoverWidget(row.id, [], [])
                 popover.set_relative_to(row)
                 popover.show()
