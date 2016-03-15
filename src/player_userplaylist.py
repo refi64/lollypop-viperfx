@@ -44,7 +44,6 @@ class UserPlaylistPlayer(BasePlayer):
             @param array of track ids as [int]
             @param playlist ids as [int]
         """
-        self._user_playlist_ids = playlist_ids
         if not Lp().settings.get_value('repeat'):
             self.context.next = NextContext.STOP_ALL
         if Lp().player.is_party():
@@ -53,6 +52,8 @@ class UserPlaylistPlayer(BasePlayer):
         for track_id in track_ids:
             self._user_playlist.append(track_id)
         self._albums = []
+        self._user_playlist_ids = playlist_ids
+        self._user_playlist_backup = []
         self._shuffle_playlist()
 
     def get_user_playlist(self):
