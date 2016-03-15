@@ -516,6 +516,20 @@ class AlbumSimpleWidget(Gtk.Frame, AlbumWidget):
             self.set_tooltip_text('')
 
 
+class FlowBox(Gtk.FlowBox):
+    """
+        Special flowbox ignoring user input
+    """
+    def __init__(self):
+        Gtk.FlowBox.__init__(self)
+
+    def do_button_press_event(self, event):
+        pass
+
+    def do_button_release_event(self, event):
+        pass
+
+
 class AlbumDetailedWidget(Gtk.Bin, AlbumWidget):
     """
         Widget with cover and tracks
@@ -583,7 +597,7 @@ class AlbumDetailedWidget(Gtk.Bin, AlbumWidget):
                 label.set_text(_("%s h") % hours)
         else:
             label.set_text(_("%s m") % mins)
-        self._box = Gtk.FlowBox()
+        self._box = FlowBox()
         self._box.set_selection_mode(Gtk.SelectionMode.NONE)
         self._box.set_activate_on_single_click(False)
         self._box.set_hexpand(True)
