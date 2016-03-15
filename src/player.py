@@ -87,8 +87,9 @@ class Player(BinPlayer, QueuePlayer, UserPlaylistPlayer, RadioPlayer,
         # If album already exists, merge genres
         if album.id in self._albums:
             genre_ids = self.context.genre_ids[album.id]
-            self.context.genre_ids[album.id] =\
-                genre_ids + list(set(album.genre_ids) - set(genre_ids))
+            for genre_id in album.genre_ids:
+                if genre_id >= 0 and genre_id not in genre_ids:
+                    self.context.genre_ids[album.id].append(genre_id)
         else:
             self._albums.append(album.id)
             self.context.genre_ids[album.id] = album.genre_ids
@@ -174,7 +175,10 @@ class Player(BinPlayer, QueuePlayer, UserPlaylistPlayer, RadioPlayer,
         else:
             self.context.next = NextContext.STOP_ALL
         self.context.genre_ids = {}
-        self.context.genre_ids[album.id] = album.genre_ids
+        self.context.genre_ids[album.id] = []
+        for genre_id in album.genre_ids:
+            if genre_id >= 0:
+                self.context.genre_ids[album.id].append(genre_id)
         self.context.prev_track = Track()
         self.context.next_track = Track()
         self.load(album.tracks[0])
@@ -240,7 +244,10 @@ class Player(BinPlayer, QueuePlayer, UserPlaylistPlayer, RadioPlayer,
             genre_ids = []
         # Set context for each album
         for album_id in self._albums:
-            self.context.genre_ids[album_id] = genre_ids
+            self.context.genre_ids[album_id] = []
+            for genre_id in genre_ids:
+                if genre_id >= 0:
+                    self.context.genre_ids[album.id].append(genre_id)
         # Shuffle album list if needed
         self.shuffle_albums(True)
 
