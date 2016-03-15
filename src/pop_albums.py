@@ -54,6 +54,7 @@ class AlbumRow(Gtk.ListBoxRow):
         """
         Gtk.ListBoxRow.__init__(self)
         self._album = Album(album_id)
+        self._row_widget = None
         self.set_sensitive(False)
         self.get_style_context().add_class('loading')
         self._height = height
@@ -145,6 +146,8 @@ class AlbumRow(Gtk.ListBoxRow):
         """
             Show play indicator
         """
+        if self._row_widget is None:
+            return
         if show:
             self._play_indicator.set_opacity(1)
             self.get_style_context().remove_class('trackrow')
