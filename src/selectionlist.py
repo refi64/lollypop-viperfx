@@ -400,6 +400,7 @@ class SelectionList(Gtk.ScrolledWindow):
         self._timeout = None
 
     def _on_button_press_event(self, view, event):
+        view.grab_focus()
         state = event.get_state()
         if state & Gdk.ModifierType.CONTROL_MASK or\
            state & Gdk.ModifierType.SHIFT_MASK:
