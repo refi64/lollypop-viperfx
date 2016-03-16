@@ -68,6 +68,21 @@
         <property name="top_attach">0</property>
       </packing>
     </child>
+    <child>
+      <object class="GtkLabel" id="added_title">
+        <property name="visible">True</property>
+        <property name="can_focus">False</property>
+        <property name="ellipsize">end</property>
+        <property name="max_width_chars">20</property>
+        <style>
+          <class name="dim-label"/>
+        </style>
+      </object>
+      <packing>
+        <property name="left_attach">1</property>
+        <property name="top_attach">1</property>
+      </packing>
+    </child>
   </object>
   <object class="GtkBox" id="end">
     <property name="visible">True</property>
