@@ -58,7 +58,7 @@ class PlaylistsView(View):
                 name += _("Search")+", "
             else:
                 name += Lp().playlists.get_name(playlist_id)+", "
-        builder.get_object('title').set_label(name[:-2])
+        builder.get_object('title').set_label(name[:-2]+':')
 
         self._edit_button = builder.get_object('edit-button')
         self._jump_button = builder.get_object('jump-button')
