@@ -14,7 +14,80 @@ from gi.repository import Gtk, Gio, GLib
 
 from lollypop.pop_next import NextPopover
 from lollypop.pop_search import SearchPopover
-from lollypop.define import Lp, Shuffle
+from lollypop.pop_albums import AlbumsPopover
+from lollypop.pop_playlists import PlaylistsPopover
+from lollypop.pop_queue import QueuePopover
+from lollypop.pop_tunein import TuneinPopover
+from lollypop.pop_externals import ExternalsPopover
+from lollypop.objects import Album, Track
+from lollypop.define import Lp, Shuffle, Type, ArtSize
+
+
+class AddedPopover(Gtk.Popover):
+    """
+        Little popover showing an album
+    """
+    def __init__(self, builder):
+        """
+            Init popover
+            @param builder as Gtk.Builder
+        """
+        Gtk.Popover.__init__(self)
+        self.set_modal(False)
+        self.get_style_context().add_class('osd-popover')
+        self._timeout_id = None
+        self._cover = builder.get_object('added_cover')
+        self._artist = builder.get_object('added_artist')
+        self._title = builder.get_object('added_title')
+        self.add(builder.get_object('added'))
+        Lp().player.connect('album-added', self._on_album_added)
+        Lp().player.connect('queue-changed', self._on_queue_changed)
+
+#######################
+# PRIVATE             #
+#######################
+    def _hide(self):
+        """
+            Hide popover
+        """
+        self._timeout_id = None
+        self.hide()
+
+    def _on_album_added(self, player, album_id):
+        """
+            Show album
+            @param player as Player
+            @param album id as int
+        """
+        if self._timeout_id is not None:
+            GLib.source_remove(self._timeout_id)
+            self._timeout_id = None
+        album = Album(album_id)
+        surface = Lp().art.get_album_artwork(album, ArtSize.MEDIUM)
+        self._cover.set_from_surface(surface)
+        self._artist.set_text(album.artist_name)
+        self._title.set_text(album.name)
+        self.show()
+        self._timeout_id = GLib.timeout_add(1000, self._hide)
+
+    def _on_queue_changed(self, player, track_id):
+        """
+            Show track if needed
+            @param player as Player
+            @param track id as int
+        """
+        if track_id == Type.NONE:
+            return
+        if self._timeout_id is not None:
+            GLib.source_remove(self._timeout_id)
+            self._timeout_id = None
+        track = Track(track_id)
+        surface = Lp().art.get_album_artwork(track.album, ArtSize.MEDIUM)
+        self._cover.set_from_surface(surface)
+        self._artist.set_text(track.artist_names)
+        self._title.set_text(track.name)
+        self.show()
+        self._timeout_id = GLib.timeout_add(1000, self._hide)
 
 
 class ToolbarEnd(Gtk.Bin):
@@ -56,12 +129,22 @@ class ToolbarEnd(Gtk.Bin):
         app.set_accels_for_action("app.party", ["<Control>p"])
 
         self._search_button = builder.get_object('search-button')
-        searchAction = Gio.SimpleAction.new('search', None)
-        searchAction.connect('activate', self._on_search_button_clicked)
-        app.add_action(searchAction)
+        search_action = Gio.SimpleAction.new('search', None)
+        search_action.connect('activate', self._on_search_button_clicked)
+        app.add_action(search_action)
         app.set_accels_for_action("app.search", ["<Control>f"])
 
         self._settings_button = builder.get_object('settings-button')
+
+        self._list_button = builder.get_object('list-button')
+        list_action = Gio.SimpleAction.new('list', None)
+        list_action.connect('activate', self._on_list_button_clicked)
+        app.add_action(list_action)
+        app.set_accels_for_action("app.list", ["<Control>l"])
+
+        self._popover = AddedPopover(builder)
+        self._popover.set_relative_to(self._list_button)
+        self._popover.set_position(Gtk.PositionType.BOTTOM)
 
         Lp().player.connect('party-changed', self._on_party_changed)
 
@@ -203,6 +286,36 @@ class ToolbarEnd(Gtk.Bin):
         """
         if self._party_button.get_active() != is_party:
             self._activate_party_button()
+
+    def _on_list_button_clicked(self, widget, unused=None):
+        """
+            Show current playback context popover
+            @param widget as Gtk.Widget
+        """
+        if Lp().player.current_track.id == Type.EXTERNALS:
+            expopover = ExternalsPopover()
+            expopover.set_relative_to(self._list_button)
+            expopover.populate()
+            expopover.show()
+        elif Lp().player.current_track.id == Type.RADIOS:
+            if self._pop_tunein is None:
+                self._pop_tunein = TuneinPopover()
+                self._pop_tunein.populate()
+                self._pop_tunein.set_relative_to(self._list_button)
+                self._pop_tunein.show()
+        elif Lp().player.get_queue():
+            pop_queue = QueuePopover()
+            pop_queue.set_relative_to(self._list_button)
+            pop_queue.show()
+        elif Lp().player.get_user_playlist_ids():
+            pop_playlist = PlaylistsPopover()
+            pop_playlist.set_relative_to(self._list_button)
+            pop_playlist.show()
+        else:
+            pop_albums = AlbumsPopover()
+            pop_albums.set_relative_to(self._list_button)
+            pop_albums.show()
+        return True
 
     def _on_show(self, widget):
         """

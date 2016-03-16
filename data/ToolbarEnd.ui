@@ -18,7 +18,57 @@
       <attribute name="action">app.shuffle</attribute>
       <attribute name="target">tracks</attribute>
     </item>
-  </menu>
+   </menu>
+   <object class="GtkGrid" id="added">
+    <property name="visible">True</property>
+    <property name="can_focus">False</property>
+    <property name="margin_left">5</property>
+    <property name="margin_right">5</property>
+    <property name="margin_top">5</property>
+    <property name="margin_bottom">5</property>
+    <property name="row_spacing">5</property>
+    <property name="column_spacing">5</property>
+    <child>
+      <object class="GtkFrame" id="frame1">
+        <property name="visible">True</property>
+        <property name="can_focus">False</property>
+        <property name="label_xalign">0</property>
+        <property name="shadow_type">in</property>
+        <child>
+          <object class="GtkImage" id="added_cover">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <style>
+              <class name="small-cover-frame"/>
+            </style>
+          </object>
+        </child>
+        <child type="label_item">
+          <placeholder/>
+        </child>
+      </object>
+      <packing>
+        <property name="left_attach">0</property>
+        <property name="top_attach">0</property>
+        <property name="height">2</property>
+      </packing>
+    </child>
+    <child>
+      <object class="GtkLabel" id="added_artist">
+        <property name="visible">True</property>
+        <property name="can_focus">False</property>
+        <property name="ellipsize">end</property>
+        <property name="max_width_chars">20</property>
+        <attributes>
+          <attribute name="weight" value="bold"/>
+        </attributes>
+      </object>
+      <packing>
+        <property name="left_attach">1</property>
+        <property name="top_attach">0</property>
+      </packing>
+    </child>
+  </object>
   <object class="GtkBox" id="end">
     <property name="visible">True</property>
     <property name="can_focus">False</property>
@@ -146,5 +196,31 @@
         <property name="position">3</property>
       </packing>
     </child>
- </object>
+    <child>
+      <object class="GtkButton" id="list-button">
+        <property name="visible">True</property>
+        <property name="can_focus">False</property>
+        <property name="receives_default">False</property>
+        <property name="valign">center</property>
+        <signal name="clicked" handler="_on_list_button_clicked" swapped="no"/>
+        <child>
+          <object class="GtkImage" id="playlist-button-image">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <property name="icon_name">view-list-symbolic</property>
+            <property name="icon_size">1</property>
+          </object>
+        </child>
+        <style>
+          <class name="image-button"/>
+        </style>
+      </object>
+      <packing>
+        <property name="expand">False</property>
+        <property name="fill">True</property>
+        <property name="pack_type">end</property>
+        <property name="position">4</property>
+      </packing>
+    </child>
+  </object>
 </interface>

@@ -2,81 +2,20 @@
 <!-- Generated with glade 3.19.0 -->
 <interface domain="lollypop">
   <requires lib="gtk+" version="3.14"/>
-  <object class="GtkGrid" id="added">
+  <object class="GtkEventBox" id="infos">
     <property name="visible">True</property>
     <property name="can_focus">False</property>
-    <property name="margin_left">5</property>
-    <property name="margin_right">5</property>
-    <property name="margin_top">5</property>
-    <property name="margin_bottom">5</property>
-    <property name="row_spacing">5</property>
-    <property name="column_spacing">5</property>
+    <property name="halign">start</property>
+    <signal name="button-press-event" handler="_on_title_press_event" swapped="no"/>
+    <signal name="button-release-event" handler="_on_title_release_event" swapped="no"/>
+    <signal name="query-tooltip" handler="_on_query_tooltip" swapped="no"/>
+    <signal name="realize" handler="_on_eventbox_realize" swapped="no"/>
     <child>
-      <object class="GtkFrame" id="frame1">
+      <object class="GtkBox" id="box">
         <property name="visible">True</property>
         <property name="can_focus">False</property>
-        <property name="label_xalign">0</property>
-        <property name="shadow_type">in</property>
-        <child>
-          <object class="GtkImage" id="added_cover">
-            <property name="visible">True</property>
-            <property name="can_focus">False</property>
-            <style>
-              <class name="small-cover-frame"/>
-            </style>
-          </object>
-        </child>
-        <child type="label_item">
-          <placeholder/>
-        </child>
-      </object>
-      <packing>
-        <property name="left_attach">0</property>
-        <property name="top_attach">0</property>
-        <property name="height">2</property>
-      </packing>
-    </child>
-    <child>
-      <object class="GtkLabel" id="added_artist">
-        <property name="visible">True</property>
-        <property name="can_focus">False</property>
-        <property name="ellipsize">end</property>
-        <property name="max_width_chars">20</property>
-        <attributes>
-          <attribute name="weight" value="bold"/>
-        </attributes>
-      </object>
-      <packing>
-        <property name="left_attach">1</property>
-        <property name="top_attach">0</property>
-      </packing>
-    </child>
-    <child>
-      <object class="GtkLabel" id="added_title">
-        <property name="visible">True</property>
-        <property name="can_focus">False</property>
-        <property name="ellipsize">end</property>
-        <property name="max_width_chars">20</property>
-        <style>
-          <class name="dim-label"/>
-        </style>
-      </object>
-      <packing>
-        <property name="left_attach">1</property>
-        <property name="top_attach">1</property>
-      </packing>
-    </child>
-  </object>
-  <object class="GtkBox" id="infos">
-    <property name="visible">True</property>
-    <property name="can_focus">False</property>
-    <property name="valign">center</property>
-    <child>
-      <object class="GtkEventBox" id="album_event">
-        <property name="visible">True</property>
-        <property name="can_focus">False</property>
-        <signal name="button-press-event" handler="_on_album_press_event" swapped="no"/>
-        <signal name="realize" handler="_on_eventbox_realize" swapped="no"/>
+        <property name="halign">start</property>
+        <property name="valign">center</property>
         <child>
           <object class="GtkFrame" id="frame">
             <property name="can_focus">False</property>
@@ -96,22 +35,12 @@
               <class name="small-cover-frame"/>
             </style>
           </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="position">0</property>
+          </packing>
         </child>
-      </object>
-      <packing>
-        <property name="expand">False</property>
-        <property name="fill">True</property>
-        <property name="position">0</property>
-      </packing>
-    </child>
-    <child>
-      <object class="GtkEventBox" id="label_event">
-        <property name="visible">True</property>
-        <property name="can_focus">False</property>
-        <signal name="button-press-event" handler="_on_title_press_event" swapped="no"/>
-        <signal name="button-release-event" handler="_on_title_release_event" swapped="no"/>
-        <signal name="query-tooltip" handler="_on_query_tooltip" swapped="no"/>
-        <signal name="realize" handler="_on_eventbox_realize" swapped="no"/>
         <child>
           <object class="GtkBox" id="nowplaying_labels">
             <property name="visible">True</property>
@@ -154,13 +83,13 @@
               </packing>
             </child>
           </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="position">2</property>
+          </packing>
         </child>
       </object>
-      <packing>
-        <property name="expand">False</property>
-        <property name="fill">False</property>
-        <property name="position">1</property>
-      </packing>
     </child>
   </object>
 </interface>
