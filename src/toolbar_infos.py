@@ -69,7 +69,7 @@ class AddedPopover(Gtk.Popover):
         self._artist.set_text(album.artist_name)
         self._album.set_text(album.name)
         self.show()
-        GLib.timeout_add(1000, self._hide)
+        self._timeout_id = GLib.timeout_add(1000, self._hide)
 
 
 class ToolbarInfos(Gtk.Bin, InfosController):
