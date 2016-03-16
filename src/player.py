@@ -114,11 +114,6 @@ class Player(BinPlayer, QueuePlayer, UserPlaylistPlayer, RadioPlayer,
             @param album as Album
         """
         try:
-            # Reset context if needed
-            if album.id == self.context.prev_track.album.id:
-                self.context.prev_track = Track()
-            if album.id == self.context.next_track.album.id:
-                self.context.next_track = Track()
             # Remove genre ids from context
             genre_ids = self.context.genre_ids[album.id]
             for genre_id in album.genre_ids:
@@ -127,6 +122,8 @@ class Player(BinPlayer, QueuePlayer, UserPlaylistPlayer, RadioPlayer,
             if not genre_ids:
                 self.context.genre_ids.pop(album.id, None)
                 self._albums.remove(album.id)
+            self.set_prev()
+            self.set_next()
         except Exception as e:
             print("Player::remove_album():", e)
 

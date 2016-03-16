@@ -18,6 +18,7 @@ from lollypop.pop_tunein import TuneinPopover
 from lollypop.pop_albums import AlbumsPopover
 from lollypop.pop_playlists import PlaylistsPopover
 from lollypop.pop_externals import ExternalsPopover
+from lollypop.pop_queue import QueuePopover
 from lollypop.pop_infos import InfosPopover
 from lollypop.pop_menu import PopToolbarMenu
 from lollypop.controllers import InfosController
@@ -195,6 +196,10 @@ class ToolbarInfos(Gtk.Bin, InfosController):
                 self._pop_tunein.populate()
                 self._pop_tunein.set_relative_to(self._cover)
                 self._pop_tunein.show()
+        elif Lp().player.get_queue():
+            pop_queue = QueuePopover()
+            pop_queue.set_relative_to(self._cover)
+            pop_queue.show()
         elif Lp().player.get_user_playlist_ids():
             pop_playlist = PlaylistsPopover()
             pop_playlist.set_relative_to(self._cover)

@@ -13,7 +13,6 @@
 from gi.repository import Gtk, Gio, GLib
 
 from lollypop.pop_next import NextPopover
-from lollypop.pop_queue import QueuePopover
 from lollypop.pop_search import SearchPopover
 from lollypop.define import Lp, Shuffle
 
@@ -32,7 +31,6 @@ class ToolbarEnd(Gtk.Bin):
         self.connect('show', self._on_show)
         self.connect('hide', self._on_hide)
         self._pop_next = NextPopover()
-        self._queue = None
         self._search = None
         self._timeout_id = None
         builder = Gtk.Builder()
@@ -63,16 +61,9 @@ class ToolbarEnd(Gtk.Bin):
         app.add_action(searchAction)
         app.set_accels_for_action("app.search", ["<Control>f"])
 
-        self._queue_button = builder.get_object('queue-button')
-        queueAction = Gio.SimpleAction.new('queue', None)
-        queueAction.connect('activate', self._on_queue_button_clicked)
-        app.add_action(queueAction)
-        app.set_accels_for_action("app.queue", ["<Control>l"])
-
         self._settings_button = builder.get_object('settings-button')
 
         Lp().player.connect('party-changed', self._on_party_changed)
-        Lp().player.connect('queue-changed', self._on_queue_changed)
 
     def setup_menu(self, menu):
         """
@@ -191,16 +182,6 @@ class ToolbarEnd(Gtk.Bin):
         self._search.set_relative_to(self._search_button)
         self._search.show()
 
-    def _on_queue_button_clicked(self, button, param=None):
-        """
-            Show queue widget on queue button clicked
-            @param obj as Gtk.Button or Gtk.Action
-        """
-        if self._queue is None:
-            self._queue = QueuePopover()
-        self._queue.set_relative_to(self._queue_button)
-        self._queue.show()
-
     def _on_party_button_toggled(self, button):
         """
             Set party mode on if party button active
@@ -213,17 +194,6 @@ class ToolbarEnd(Gtk.Bin):
             settings.set_property("gtk-application-prefer-dark-theme", active)
         Lp().player.set_party(active)
         self.on_next_changed(Lp().player)
-
-    def _on_queue_changed(self, player):
-        """
-            On queue changed, change buttno aspect
-            @param player as Player
-            @param is party as bool
-        """
-        if player.get_queue():
-            self._queue_button.get_style_context().add_class('selected')
-        else:
-            self._queue_button.get_style_context().remove_class('selected')
 
     def _on_party_changed(self, player, is_party):
         """
