@@ -277,6 +277,7 @@ class AlbumsView(LazyLoadingView):
         label = Gtk.Label.new("<b>"+text[:-1]+"</b>")
         label.set_use_markup(True)
         label.set_hexpand(True)
+        label.set_margin_start(2)
         label.get_style_context().add_class('dim-label')
         label.set_property('halign', Gtk.Align.START)
         self.set_row_spacing(2)
