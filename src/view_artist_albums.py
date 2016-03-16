@@ -232,9 +232,3 @@ class CurrentArtistAlbumsView(ViewContainer):
         self.add(view)
         self.set_visible_child(view)
         self.clean_old_views(view)
-
-    def do_get_preferred_width(self):
-        """
-            Set 0 to force popover to not expand
-        """
-        return (0, 0)
