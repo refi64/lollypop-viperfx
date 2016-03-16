@@ -55,17 +55,20 @@ class PlaylistsWidget(Gtk.Bin):
         # Used to block widget2 populate while showing one column
         self._locked_widget2 = True
 
+        size_group = Gtk.SizeGroup(mode=Gtk.SizeGroupMode.HORIZONTAL)
+
         self._box = FlowBox()
         self._box.set_selection_mode(Gtk.SelectionMode.NONE)
         self._box.set_activate_on_single_click(False)
         self._box.set_hexpand(True)
-        self._box.set_homogeneous(True)
         self._box.show()
 
         self.connect('size-allocate', self._on_size_allocate)
 
         self._tracks_widget_left = TracksWidget()
         self._tracks_widget_right = TracksWidget()
+        size_group.add_widget(self._tracks_widget_left)
+        size_group.add_widget(self._tracks_widget_right)
         self._tracks_widget_left.connect('activated',
                                          self._on_activated)
         self._tracks_widget_right.connect('activated',
