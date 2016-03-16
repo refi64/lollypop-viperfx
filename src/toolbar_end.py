@@ -17,7 +17,6 @@ from lollypop.pop_search import SearchPopover
 from lollypop.pop_albums import AlbumsPopover
 from lollypop.pop_playlists import PlaylistsPopover
 from lollypop.pop_queue import QueuePopover
-from lollypop.pop_tunein import TuneinPopover
 from lollypop.pop_externals import ExternalsPopover
 from lollypop.objects import Album, Track
 from lollypop.define import Lp, Shuffle, Type, ArtSize
@@ -303,12 +302,6 @@ class ToolbarEnd(Gtk.Bin):
             expopover.set_relative_to(self._list_button)
             expopover.populate()
             expopover.show()
-        elif Lp().player.current_track.id == Type.RADIOS:
-            if self._pop_tunein is None:
-                self._pop_tunein = TuneinPopover()
-                self._pop_tunein.populate()
-                self._pop_tunein.set_relative_to(self._list_button)
-                self._pop_tunein.show()
         elif Lp().player.get_queue():
             pop_queue = QueuePopover()
             pop_queue.set_relative_to(self._list_button)
