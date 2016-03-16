@@ -146,6 +146,7 @@ class ToolbarEnd(Gtk.Bin):
         list_action.connect('activate', self._on_list_button_clicked)
         app.add_action(list_action)
         app.set_accels_for_action("app.list", ["<Control>l"])
+        self._list_popover = None
 
         self._popover = AddedPopover(builder, self._pop_next)
         self._popover.set_relative_to(self._list_button)
@@ -297,24 +298,34 @@ class ToolbarEnd(Gtk.Bin):
             Show current playback context popover
             @param widget as Gtk.Widget
         """
+        if self._list_popover is not None:
+            return
         if Lp().player.current_track.id == Type.EXTERNALS:
-            expopover = ExternalsPopover()
-            expopover.set_relative_to(self._list_button)
-            expopover.populate()
-            expopover.show()
+            self._list_popover = ExternalsPopover()
+            self._list_popover.set_relative_to(self._list_button)
+            self._list_popover.populate()
+            self._list_popover.show()
         elif Lp().player.get_queue():
-            pop_queue = QueuePopover()
-            pop_queue.set_relative_to(self._list_button)
-            pop_queue.show()
+            self._list_popover = QueuePopover()
+            self._list_popover.set_relative_to(self._list_button)
+            self._list_popover.show()
         elif Lp().player.get_user_playlist_ids():
-            pop_playlist = PlaylistsPopover()
-            pop_playlist.set_relative_to(self._list_button)
-            pop_playlist.show()
+            self._list_popover = PlaylistsPopover()
+            self._list_popover.set_relative_to(self._list_button)
+            self._list_popover.show()
         else:
-            pop_albums = AlbumsPopover()
-            pop_albums.set_relative_to(self._list_button)
-            pop_albums.show()
+            self._list_popover = AlbumsPopover()
+            self._list_popover.set_relative_to(self._list_button)
+            self._list_popover.show()
+        self._list_popover.connect('closed', self._on_list_popover_closed)
         return True
+
+    def _on_list_popover_closed(self, popover):
+        """
+            Reset variable
+            @param popover as Gtk.Popover
+        """
+        self._list_popover = None
 
     def _on_show(self, widget):
         """
