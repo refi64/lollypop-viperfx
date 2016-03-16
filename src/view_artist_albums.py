@@ -10,9 +10,9 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-from gi.repository import Gtk, GLib
+from gi.repository import Gtk, GLib, GObject
 
-from lollypop.view import LazyLoadingView
+from lollypop.view import LazyLoadingView, View
 from lollypop.view_container import ViewContainer
 from lollypop.define import Lp, Type
 from lollypop.widgets_album import AlbumDetailedWidget
@@ -22,6 +22,9 @@ class ArtistAlbumsView(LazyLoadingView):
     """
         Show artist albums and tracks
     """
+    __gsignals__ = {
+        'populated': (GObject.SignalFlags.RUN_FIRST, None, ()),
+    }
 
     def __init__(self, artist_ids, genre_ids):
         """
@@ -124,6 +127,7 @@ class ArtistAlbumsView(LazyLoadingView):
         else:
             if self._viewport.get_child() is None:
                 self._viewport.add(self._albumbox)
+            self.emit('populated')
             GLib.idle_add(self.lazy_loading)
 
     def _on_populated(self, widget, widgets, scroll_value):
@@ -189,12 +193,23 @@ class CurrentArtistAlbumsView(ViewContainer):
             Populate view and make it visible
             @param albums as [albums ids as int]
         """
-        view = ArtistAlbumsView([self._current[0]], [])
-        view.show()
-        view.populate(albums)
+        # Add a loading indicator
+        view = View()
+        spinner = Gtk.Spinner()
+        spinner.set_hexpand(True)
+        spinner.set_property('halign', Gtk.Align.END)
+        spinner.start()
+        view.add(spinner)
+        view.show_all()
         self.add(view)
         self.set_visible_child(view)
         self.clean_old_views(view)
+
+        # Populate artist albums view
+        view = ArtistAlbumsView([self._current[0]], [])
+        view.connect('populated', self._on_populated, spinner)
+        view.show()
+        view.populate(albums)
 
     def _get_albums(self, artist_id):
         """
@@ -206,6 +221,17 @@ class CurrentArtistAlbumsView(ViewContainer):
         else:
             albums = Lp().artists.get_albums(artist_id)
         return albums
+
+    def _on_populated(self, view, spinner):
+        """
+            Show the view
+            @param view as View
+            @param spinner as Gtk.Spinner
+        """
+        spinner.stop()
+        self.add(view)
+        self.set_visible_child(view)
+        self.clean_old_views(view)
 
     def do_get_preferred_width(self):
         """

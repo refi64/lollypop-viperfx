@@ -39,6 +39,7 @@ class ArtistView(ArtistAlbumsView):
         builder.add_from_resource('/org/gnome/Lollypop/ArtistView.ui')
         builder.connect_signals(self)
         self._jump_button = builder.get_object('jump-button')
+        self._spinner = builder.get_object('spinner')
         self.attach(builder.get_object('ArtistView'), 0, 0, 1, 1)
         artists = ""
         for artist_id in artist_ids:
@@ -79,6 +80,7 @@ class ArtistView(ArtistAlbumsView):
             @param scroll value as float
         """
         self._update_jump_button()
+        self._spinner.stop()
         ArtistAlbumsView._on_populated(self, widget, widgets, scroll_value)
 
     def _on_current_changed(self, player):
