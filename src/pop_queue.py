@@ -260,7 +260,7 @@ class QueuePopover(Gtk.Popover):
         self._view = Gtk.ListBox()
         self._view.get_style_context().add_class('trackswidget')
         self._view.set_selection_mode(Gtk.SelectionMode.NONE)
-        self._view.set_activate_on_single_click(False)
+        self._view.set_activate_on_single_click(True)
         self._view.connect("row-activated", self._on_row_activated)
         self._view.show()
 
