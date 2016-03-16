@@ -272,7 +272,9 @@ class AlbumsView(LazyLoadingView):
                                                     Gtk.IconSize.MENU)
         self._jump_button.set_relief(Gtk.ReliefStyle.NONE)
         self._jump_button.connect('clicked', self._on_jump_clicked)
-        label = Gtk.Label.new("<b>"+_("Albums playing:")+"</b>")
+        # FIXME Translation breakage
+        text = _("Albums playing:")
+        label = Gtk.Label.new("<b>"+text[:-1]+"</b>")
         label.set_use_markup(True)
         label.set_hexpand(True)
         label.get_style_context().add_class('dim-label')
