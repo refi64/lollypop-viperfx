@@ -65,7 +65,7 @@ class QueuePlayer:
             self._queue.remove(track_id)
             self.set_next()
         if notify:
-            self.emit("queue-changed", Type.NONE)
+            self.emit("queue-changed", track_id)
 
     def set_queue(self, new_queue, notify=True):
         """
