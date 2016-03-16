@@ -219,8 +219,8 @@ class Track(Base):
            len(self.artist_ids) > 1 or\
            self.album.artist_id not in self.artist_ids:
             if self.artist_names != self.album.artist_name:
-                name = "<b>%s</b>\n%s" % (escape(self.artist_names),
-                                          name)
+                name = "<b>%s</b> - %s" % (escape(self.artist_names),
+                                           name)
         return name
 
     @property

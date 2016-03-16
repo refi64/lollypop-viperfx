@@ -49,7 +49,8 @@ class Row(Gtk.ListBoxRow):
         self._grid = Gtk.Grid()
         self._grid.set_column_spacing(5)
         self._row_widget.add(self._grid)
-        self._title_label = Gtk.Label.new(self._track.name)
+        self._title_label = Gtk.Label.new(self._track.formated_name())
+        self._title_label.set_use_markup(True)
         self._title_label.set_property('has-tooltip', True)
         self._title_label.connect('query-tooltip',
                                   self._on_title_query_tooltip)
@@ -228,7 +229,7 @@ class Row(Gtk.ListBoxRow):
         layout = self._title_label.get_layout()
         if layout.is_ellipsized():
             label = self._title_label.get_label()
-            self._title_label.set_tooltip_markup(escape(label))
+            self._title_label.set_tooltip_markup(label)
         else:
             self._title_label.set_tooltip_text('')
 
