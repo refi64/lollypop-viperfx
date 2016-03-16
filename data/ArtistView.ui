@@ -44,7 +44,7 @@
         <property name="can_focus">True</property>
         <property name="receives_default">True</property>
         <property name="halign">end</property>
-        <property name="margin_right">2</property>
+        <property name="margin_end">2</property>
         <property name="image">image2</property>
         <property name="relief">none</property>
         <signal name="clicked" handler="_on_jump_button_clicked" swapped="no"/>
