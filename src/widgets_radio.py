@@ -38,7 +38,7 @@ class RadioWidget(Gtk.Frame, AlbumWidget):
         self._cover = None
         self._radios_manager = radios_manager
 
-    def init_widget(self):
+    def populate(self):
         """
             Init widget content
         """
