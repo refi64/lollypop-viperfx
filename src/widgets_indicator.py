@@ -128,11 +128,9 @@ class IndicatorWidget(Gtk.EventBox):
         elif is_loved(self._id):
             self.loved()
 
-    def _on_queue_changed(self, player, track_id):
+    def _on_queue_changed(self, unused):
         """
             Update button widget
-            @param player as Player
-            @param track id as int
         """
         self.update_button()
 

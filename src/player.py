@@ -438,7 +438,7 @@ class Player(BinPlayer, QueuePlayer, UserPlaylistPlayer, RadioPlayer,
             ShufflePlayer._on_stream_start(self, bus, message)
         if self._queue and self.current_track.id == self._queue[0]:
             self._queue.pop(0)
-            self.emit("queue-changed", Type.NONE)
+            self.emit("queue-changed")
         self.set_next()
         self.set_prev()
         BinPlayer._on_stream_start(self, bus, message)

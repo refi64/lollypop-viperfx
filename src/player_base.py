@@ -28,7 +28,7 @@ class BasePlayer(GObject.GObject):
         'seeked': (GObject.SignalFlags.RUN_FIRST, None, (int,)),
         'status-changed': (GObject.SignalFlags.RUN_FIRST, None, ()),
         'volume-changed': (GObject.SignalFlags.RUN_FIRST, None, ()),
-        'queue-changed': (GObject.SignalFlags.RUN_FIRST, None, (int,)),
+        'queue-changed': (GObject.SignalFlags.RUN_FIRST, None, ()),
         'party-changed': (GObject.SignalFlags.RUN_FIRST, None, (bool,))
     }
 

@@ -11,7 +11,6 @@
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 from lollypop.objects import Track
-from lollypop.define import Type
 
 
 class QueuePlayer:
@@ -38,7 +37,7 @@ class QueuePlayer:
         self.set_next()
         self._init_current_if_needed()
         if notify:
-            self.emit("queue-changed", track_id)
+            self.emit('queue-changed')
 
     def insert_in_queue(self, track_id, pos=0, notify=True):
         """
@@ -53,7 +52,7 @@ class QueuePlayer:
         self.set_next()
         self._init_current_if_needed()
         if notify:
-            self.emit("queue-changed", track_id)
+            self.emit('queue-changed')
 
     def del_from_queue(self, track_id, notify=True):
         """
@@ -65,7 +64,7 @@ class QueuePlayer:
             self._queue.remove(track_id)
             self.set_next()
         if notify:
-            self.emit("queue-changed", track_id)
+            self.emit('queue-changed')
 
     def set_queue(self, new_queue, notify=True):
         """
@@ -77,7 +76,7 @@ class QueuePlayer:
         self.set_next()
         self._init_current_if_needed()
         if notify:
-            self.emit("queue-changed", Type.NONE)
+            self.emit('queue-changed')
 
     def get_queue(self):
         """

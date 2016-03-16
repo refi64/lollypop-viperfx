@@ -13,7 +13,7 @@
 from gi.repository import Gtk, Gio, GLib
 
 from lollypop.container import Container
-from lollypop.define import Lp, NextContext, Shuffle, WindowSize, Type
+from lollypop.define import Lp, NextContext, Shuffle, WindowSize
 from lollypop.toolbar import Toolbar
 from lollypop.utils import is_unity
 from lollypop.miniplayer import MiniPlayer
@@ -427,7 +427,7 @@ class Window(Gtk.ApplicationWindow, Container):
                     Lp().settings.get_enum('shuffle') == Shuffle.TRACKS:
                 Lp().player.set_next()
                 # We send this signal to update next popover
-                Lp().player.emit("queue-changed", Type.NONE)
+                Lp().player.emit('queue-changed')
             else:
                 Lp().player.context.next = NextContext.START_NEW_ALBUM
                 Lp().player.set_next()
