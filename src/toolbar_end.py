@@ -108,7 +108,7 @@ class ToolbarEnd(Gtk.Bin):
         Gtk.Bin.__init__(self)
         self.connect('show', self._on_show)
         self.connect('hide', self._on_hide)
-        self._pop_next = NextPopover()
+        self._next_popover = NextPopover()
         self._search = None
         self._timeout_id = None
         builder = Gtk.Builder()
@@ -148,7 +148,7 @@ class ToolbarEnd(Gtk.Bin):
         app.set_accels_for_action("app.list", ["<Control>l"])
         self._list_popover = None
 
-        self._popover = AddedPopover(builder, self._pop_next)
+        self._popover = AddedPopover(builder, self._next_popover)
         self._popover.set_relative_to(self._list_button)
         self._popover.set_position(Gtk.PositionType.BOTTOM)
 
@@ -184,13 +184,13 @@ class ToolbarEnd(Gtk.Bin):
            not self._grid_next.is_visible():
             return
         self._timeout_id = None
-        if self._pop_next.should_be_shown() or force:
-            self._pop_next.update()
-            if not self._pop_next.is_visible():
-                self._pop_next.set_relative_to(self._grid_next)
-                self._pop_next.show()
+        if self._next_popover.should_be_shown() or force:
+            self._next_popover.update()
+            if not self._next_popover.is_visible():
+                self._next_popover.set_relative_to(self._grid_next)
+                self._next_popover.show()
         else:
-            self._pop_next.hide()
+            self._next_popover.hide()
 
 #######################
 # PRIVATE             #
@@ -259,7 +259,7 @@ class ToolbarEnd(Gtk.Bin):
             @param settings as Gio.Settings, value as str
         """
         self._set_shuffle_icon()
-        self._pop_next.hide()
+        self._next_popover.hide()
 
     def _on_search_button_clicked(self, obj, param=None):
         """
@@ -268,7 +268,9 @@ class ToolbarEnd(Gtk.Bin):
         """
         if self._search is None:
             self._search = SearchPopover()
+            self._search.connect('closed', self._on_popover_closed)
         self._search.set_relative_to(self._search_button)
+        self._next_popover.hide()
         self._search.show()
 
     def _on_party_button_toggled(self, button):
@@ -300,6 +302,7 @@ class ToolbarEnd(Gtk.Bin):
         """
         if self._list_popover is not None:
             return
+        self._next_popover.hide()
         if Lp().player.current_track.id == Type.EXTERNALS:
             self._list_popover = ExternalsPopover()
             self._list_popover.set_relative_to(self._list_button)
@@ -326,6 +329,15 @@ class ToolbarEnd(Gtk.Bin):
             @param popover as Gtk.Popover
         """
         self._list_popover = None
+        self._on_popover_closed(popover)
+
+    def _on_popover_closed(self, popover):
+        """
+            Restore next popover if needed
+            @param popover as Gtk.Popover
+        """
+        if self._next_popover.should_be_shown():
+            self._next_popover.show()
 
     def _on_show(self, widget):
         """
@@ -339,4 +351,4 @@ class ToolbarEnd(Gtk.Bin):
             Hide popover
             @param widget as Gtk.Widget
         """
-        self._pop_next.hide()
+        self._next_popover.hide()
