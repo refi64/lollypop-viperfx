@@ -195,10 +195,17 @@ class ToolbarEnd(Gtk.Bin):
 #######################
 # PRIVATE             #
 #######################
+    def _on_shuffle_button_clicked(self, button):
+        """
+            Hide next popover
+            @param button as Gtk.Button
+        """
+        self._next_popover.hide()
+
     def _on_button_press(self, button, event):
         """
             Show next popover on long press
-            @param widget as Gtk.Widget
+            @param button as Gtk.Button
             @param event as Gdk.Event
         """
         self._timeout_id = GLib.timeout_add(500, self.on_next_changed,
@@ -207,7 +214,7 @@ class ToolbarEnd(Gtk.Bin):
     def _on_button_release(self, button, event):
         """
             If next popover shown, block event
-            @param widget as Gtk.Widget
+            @param button as Gtk.Button
             @param event as Gdk.Event
         """
         if self._timeout_id is None:

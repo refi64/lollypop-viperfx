@@ -160,6 +160,7 @@
             <property name="menu_model">shuffle-menu</property>
             <signal name="button-press-event" handler="_on_button_press" swapped="no"/>
             <signal name="button-release-event" handler="_on_button_release" swapped="no"/>
+            <signal name="clicked" handler="_on_shuffle_button_clicked" swapped="no"/>
             <child>
               <object class="GtkImage" id="shuffle-button-image">
                 <property name="visible">True</property>
