@@ -27,12 +27,14 @@ class AddedPopover(Gtk.Popover):
     """
         Little popover showing an album
     """
-    def __init__(self, builder):
+    def __init__(self, builder, next_popover):
         """
             Init popover
             @param builder as Gtk.Builder
+            @param next_popover as Gtk.popover
         """
         Gtk.Popover.__init__(self)
+        self._next_popover = next_popover
         self.set_modal(False)
         self.get_style_context().add_class('osd-popover')
         self._timeout_id = None
@@ -52,6 +54,8 @@ class AddedPopover(Gtk.Popover):
         """
         self._timeout_id = None
         self.hide()
+        if self._next_popover.should_be_shown():
+            self._next_popover.show()
 
     def _on_album_added(self, player, album_id):
         """
@@ -67,6 +71,7 @@ class AddedPopover(Gtk.Popover):
         self._cover.set_from_surface(surface)
         self._artist.set_text(album.artist_name)
         self._title.set_text(album.name)
+        self._next_popover.hide()
         self.show()
         self._timeout_id = GLib.timeout_add(1000, self._hide)
 
@@ -86,6 +91,7 @@ class AddedPopover(Gtk.Popover):
         self._cover.set_from_surface(surface)
         self._artist.set_text(track.artist_names)
         self._title.set_text(track.name)
+        self._next_popover.hide()
         self.show()
         self._timeout_id = GLib.timeout_add(1000, self._hide)
 
@@ -142,7 +148,7 @@ class ToolbarEnd(Gtk.Bin):
         app.add_action(list_action)
         app.set_accels_for_action("app.list", ["<Control>l"])
 
-        self._popover = AddedPopover(builder)
+        self._popover = AddedPopover(builder, self._pop_next)
         self._popover.set_relative_to(self._list_button)
         self._popover.set_position(Gtk.PositionType.BOTTOM)
 
