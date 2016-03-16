@@ -505,10 +505,10 @@ class TracksWidget(Gtk.ListBox):
 #######################
 # PRIVATE             #
 #######################
-    def _on_queue_changed(self, widget):
+    def _on_queue_changed(self, player, track_id):
         """
             Update all position labels
-            @param player
+            @param player as Player
             @param track id as int
         """
         for row in self.get_children():

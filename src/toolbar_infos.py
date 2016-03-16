@@ -22,7 +22,7 @@ from lollypop.pop_queue import QueuePopover
 from lollypop.pop_infos import InfosPopover
 from lollypop.pop_menu import PopToolbarMenu
 from lollypop.controllers import InfosController
-from lollypop.objects import Album
+from lollypop.objects import Album, Track
 from lollypop.define import Lp, Type, ArtSize
 
 
@@ -41,9 +41,10 @@ class AddedPopover(Gtk.Popover):
         self._timeout_id = None
         self._cover = builder.get_object('added_cover')
         self._artist = builder.get_object('added_artist')
-        self._album = builder.get_object('added_album')
+        self._title = builder.get_object('added_title')
         self.add(builder.get_object('added'))
         Lp().player.connect('album-added', self._on_album_added)
+        Lp().player.connect('queue-changed', self._on_queue_changed)
 
 #######################
 # PRIVATE             #
@@ -68,7 +69,24 @@ class AddedPopover(Gtk.Popover):
         surface = Lp().art.get_album_artwork(album, ArtSize.MEDIUM)
         self._cover.set_from_surface(surface)
         self._artist.set_text(album.artist_name)
-        self._album.set_text(album.name)
+        self._title.set_text(album.name)
+        self.show()
+        self._timeout_id = GLib.timeout_add(1000, self._hide)
+
+    def _on_queue_changed(self, player, track_id):
+        """
+            Show track if needed
+            @param player as Player
+            @param track id as int
+        """
+        if self._timeout_id is not None:
+            GLib.source_remove(self._timeout_id)
+            self._timeout_id = None
+        track = Track(track_id)
+        surface = Lp().art.get_album_artwork(track.album, ArtSize.MEDIUM)
+        self._cover.set_from_surface(surface)
+        self._artist.set_text(track.artist_names)
+        self._title.set_text(track.name)
         self.show()
         self._timeout_id = GLib.timeout_add(1000, self._hide)
 

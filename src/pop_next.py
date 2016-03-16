@@ -12,7 +12,7 @@
 
 from gi.repository import Gtk
 
-from lollypop.define import Lp, ArtSize, Shuffle
+from lollypop.define import Lp, ArtSize, Shuffle, Type
 
 
 class NextPopover(Gtk.Popover):
@@ -39,11 +39,10 @@ class NextPopover(Gtk.Popover):
         self._artist_label = builder.get_object('artist')
         self._cover = builder.get_object('cover')
         self._skip_btn = builder.get_object('skip_btn')
-        self._signal_id = Lp().player.connect('queue-changed', self.update)
 
-    def update(self, player=None):
+    def update(self, player=None, track_id=None):
         """
-            Update widget with current track
+            Update widget with next track
         """
         self._artist_label.set_text(Lp().player.next_track.artist)
         self._title_label.set_text(Lp().player.next_track.title)
@@ -91,6 +90,7 @@ class NextPopover(Gtk.Popover):
         """
         if self._signal_id is not None:
             Lp().player.disconnect(self._signal_id)
+            self._signal_id = None
 
     def _on_enter_notify(self, widget, event):
         """
@@ -123,4 +123,4 @@ class NextPopover(Gtk.Popover):
             @param btn as Gtk.Button
         """
         Lp().player.set_next()
-        Lp().player.emit('queue-changed')
+        Lp().player.emit('queue-changed', Type.NONE)

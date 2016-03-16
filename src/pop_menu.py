@@ -220,7 +220,6 @@ class QueueMenu(BaseMenu):
                 Lp().player.append_to_queue(track_id, False)
         else:
             Lp().player.append_to_queue(self._object_id, False)
-        Lp().player.emit('queue-changed')
 
     def _insert_in_queue(self, action, variant):
         """
@@ -234,7 +233,6 @@ class QueueMenu(BaseMenu):
                 Lp().player.insert_in_queue(track_id, 0, False)
         else:
             Lp().player.insert_in_queue(self._object_id, 0, False)
-        Lp().player.emit('queue-changed')
 
     def _del_from_queue(self, action, variant):
         """
@@ -248,7 +246,6 @@ class QueueMenu(BaseMenu):
                 Lp().player.del_from_queue(track_id, False)
         else:
             Lp().player.del_from_queue(self._object_id, False)
-        Lp().player.emit('queue-changed')
 
 
 class PlaylistsMenu(BaseMenu):
