@@ -41,7 +41,6 @@ class ArtistAlbumsView(LazyLoadingView):
 
         self._scrolled.set_property('expand', True)
         self._viewport.set_property("valign", Gtk.Align.START)
-        self._viewport.add(self._albumbox)
         self.attach(self._scrolled, 0, 1, 1, 1)
 
     def populate(self, albums):
@@ -123,6 +122,8 @@ class ArtistAlbumsView(LazyLoadingView):
             self._albumbox.add(widget)
             GLib.idle_add(self._add_albums, albums)
         else:
+            if self._viewport.get_child() is None:
+                self._viewport.add(self._albumbox)
             GLib.idle_add(self.lazy_loading)
 
     def _on_populated(self, widget, widgets, scroll_value):
