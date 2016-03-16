@@ -79,6 +79,8 @@ class AddedPopover(Gtk.Popover):
             @param player as Player
             @param track id as int
         """
+        if track_id == Type.NONE:
+            return
         if self._timeout_id is not None:
             GLib.source_remove(self._timeout_id)
             self._timeout_id = None
