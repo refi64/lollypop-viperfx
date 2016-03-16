@@ -346,6 +346,15 @@ class Player(BinPlayer, QueuePlayer, UserPlaylistPlayer, RadioPlayer,
         """
             Set previous track
         """
+        # Special case to return from queue
+        if self._queue and self.context.prev_track.id is None:
+            self.context.prev_track = self.current_track
+        elif not self._queue and self.context.prev_track.id is not None:
+            self.prev_track = self.context.prev_track
+            self.context.prev_track = Track()
+            self.emit('prev-changed')
+            return
+
         # Look at externals
         self.prev_track = ExternalsPlayer.prev(self)
 
@@ -363,10 +372,7 @@ class Player(BinPlayer, QueuePlayer, UserPlaylistPlayer, RadioPlayer,
 
         # Get a linear track then
         if self.prev_track.id is None:
-            if self.context.prev_track.id is not None:
-                self.prev_track = self.context.prev_track
-            else:
-                self.prev_track = LinearPlayer.prev(self)
+            self.prev_track = LinearPlayer.prev(self)
         self.emit('prev-changed')
 
     def set_next(self):
@@ -374,9 +380,17 @@ class Player(BinPlayer, QueuePlayer, UserPlaylistPlayer, RadioPlayer,
             Play next track
             @param sql as sqlite cursor
         """
-        queue = False
         # Reset finished context
         self._finished = NextContext.NONE
+
+        # Special case to return from queue
+        if self._queue and self.context.next_track.id is None:
+            self.context.next_track = self.next_track
+        elif not self._queue and self.context.next_track.id is not None:
+            self.next_track = self.context.next_track
+            self.context.next_track = Track()
+            self.emit('next-changed')
+            return
 
         # Look at externals
         self.next_track = ExternalsPlayer.next(self)
@@ -388,32 +402,19 @@ class Player(BinPlayer, QueuePlayer, UserPlaylistPlayer, RadioPlayer,
         # Look first at user queue
         if self.next_track.id is None:
             self.next_track = QueuePlayer.next(self)
-            if self.next_track.id is not None:
-                queue = True
 
         # Look at user playlist then
         if self.next_track.id is None:
             self.next_track = UserPlaylistPlayer.next(self)
-        if queue and self.context.next_track.id is None:
-            self.context.next_track = UserPlaylistPlayer.next(self)
 
         # Get a random album/track then
         if self.next_track.id is None:
             self.next_track = ShufflePlayer.next(self)
-        if queue and self.context.next_track.id is None:
-            self.context.next_track = ShufflePlayer.next(self)
 
         # Get a linear track then
         if self.next_track.id is None:
-            if self.context.next_track.id is not None:
-                self.next_track = self.context.next_track
-                self.context.next_track = Track()
-            else:
-                self.next_track = LinearPlayer.next(self)
-        if queue and self.context.next_track.id is None:
-            self.context.next_track = LinearPlayer.next(self)
-        if queue and self.context.prev_track.id is None:
-            self.context.prev_track = self.current_track
+            self.next_track = LinearPlayer.next(self)
+
         self.emit('next-changed')
 
     def update_crossfading(self):
