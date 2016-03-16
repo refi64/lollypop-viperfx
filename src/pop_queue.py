@@ -396,6 +396,7 @@ class QueuePopover(Gtk.Popover):
         """
         self._stop = True
         self._clear(True)
+        self.hide()
 
     def _on_track_moved(self, row, src, x, y):
         """
