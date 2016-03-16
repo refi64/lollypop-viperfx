@@ -526,12 +526,13 @@ class Container:
             @param genre id as int
         """
         def load():
-            if artist_ids and artist_ids[0] == Type.COMPILATIONS:
-                albums = Lp().albums.get_compilations(genre_ids)
-            elif genre_ids and genre_ids[0] == Type.ALL:
+            if genre_ids and genre_ids[0] == Type.ALL:
                 albums = Lp().albums.get_ids(artist_ids, [])
             else:
-                albums = Lp().albums.get_ids(artist_ids, genre_ids)
+                albums = []
+                if artist_ids and artist_ids[0] == Type.COMPILATIONS:
+                    albums += Lp().albums.get_compilations(genre_ids)
+                albums += Lp().albums.get_ids(artist_ids, genre_ids)
             return albums
 
         view = ArtistView(artist_ids, genre_ids)
@@ -700,7 +701,8 @@ class Container:
             self._list_two.hide()
             if selected_ids[0] == Type.ALL:
                 self._update_view_albums(selected_ids)
-            elif selected_ids[0] == Type.COMPILATIONS:
+            elif selected_ids[0] == Type.COMPILATIONS and\
+                    len(selected_ids) == 1:
                 self._update_view_albums([], True)
             else:
                 self._update_view_artists(selected_ids, [])
@@ -730,7 +732,8 @@ class Container:
             return
         if genre_ids[0] == Type.PLAYLISTS:
             self._update_view_playlists(selected_ids)
-        elif selected_ids[0] == Type.COMPILATIONS:
+        elif selected_ids[0] == Type.COMPILATIONS and\
+                len(selected_ids) == 1:
             self._update_view_albums(genre_ids, True)
         else:
             self._update_view_artists(selected_ids, genre_ids)
