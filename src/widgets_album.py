@@ -550,7 +550,7 @@ class AlbumDetailedWidget(Gtk.Bin, AlbumWidget):
         Gtk.Bin.__init__(self)
         AlbumWidget.__init__(self, album_id, genre_ids)
         self._width = None
-        self._size_group = Gtk.SizeGroup(mode=Gtk.SizeGroupMode.VERTICAL)
+        self._size_group = Gtk.SizeGroup(mode=Gtk.SizeGroupMode.HORIZONTAL)
         self._stop = False
         # Discs to load, will be emptied
         self._discs = self._album.discs
@@ -601,7 +601,6 @@ class AlbumDetailedWidget(Gtk.Bin, AlbumWidget):
         self._box.set_selection_mode(Gtk.SelectionMode.NONE)
         self._box.set_activate_on_single_click(False)
         self._box.set_hexpand(True)
-        self._box.set_homogeneous(True)
         self._box.show()
         builder.get_object('albuminfo').add(self._box)
 
@@ -723,33 +722,23 @@ class AlbumDetailedWidget(Gtk.Bin, AlbumWidget):
             @param disc number as int
         """
         show_label = len(self._album.discs) > 1
-        grid_left = Gtk.Grid()
-        grid_left.set_orientation(Gtk.Orientation.VERTICAL)
-        grid_left.show()
-        grid_right = Gtk.Grid()
-        grid_right.set_orientation(Gtk.Orientation.VERTICAL)
-        grid_right.show()
         if show_label:
             label = Gtk.Label()
             label.set_text(_("Disc %s") % disc_number)
             label.set_property('halign', Gtk.Align.START)
             label.get_style_context().add_class('dim-label')
             label.show()
-            self._size_group.add_widget(label)
-            grid_left.add(label)
-            self._fake_labels[disc_number] = Gtk.Label()
-            if self._box.get_min_children_per_line() == 2:
-                self._fake_labels[disc_number].show()
-            self._size_group.add_widget(self._fake_labels[disc_number])
-            grid_right.add(self._fake_labels[disc_number])
-
+            self._box.insert(label, -1)
+            sep = Gtk.Separator()
+            sep.set_opacity(0.0)
+            sep.show()
+            self._box.insert(sep, -1)
         self._tracks_left[disc_number] = TracksWidget()
-        grid_left.add(self._tracks_left[disc_number])
         self._tracks_right[disc_number] = TracksWidget()
-        grid_right.add(self._tracks_right[disc_number])
-        self._box.insert(grid_left, -1)
-        self._box.insert(grid_right, -1)
-
+        self._size_group.add_widget(self._tracks_left[disc_number])
+        self._size_group.add_widget(self._tracks_right[disc_number])
+        self._box.insert(self._tracks_left[disc_number], -1)
+        self._box.insert(self._tracks_right[disc_number], -1)
         self._tracks_left[disc_number].connect('activated',
                                                self._on_activated)
         self._tracks_left[disc_number].connect('button-press-event',
