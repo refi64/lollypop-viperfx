@@ -58,6 +58,8 @@ class NotificationManager:
         """
             Set notification actions
         """
+        self._notification.set_hint("transient",
+                                    GLib.Variant.new_boolean(True))
         if "action-icons" in self._caps:
             self._notification.set_hint('action-icons',
                                         GLib.Variant('b', True))
