@@ -631,7 +631,7 @@ class AlbumsDatabase:
         with SqlCursor(Lp().db) as sql:
             result = []
             # Get all compilations
-            if not genre_ids or genre_ids[0] == Type.ALL:
+            if not genre_ids:
                 result = sql.execute("SELECT albums.rowid FROM albums\
                                       WHERE artist_id=?\
                                       ORDER BY albums.name, albums.year",

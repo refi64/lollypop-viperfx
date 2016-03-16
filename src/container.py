@@ -390,7 +390,7 @@ class Container:
         if self._show_genres:
             self._setup_list_genres(self._list_one, update)
         else:
-            self._setup_list_artists(self._list_one, [Type.ALL], update)
+            self._setup_list_artists(self._list_one, [], update)
 
     def _update_list_two(self, updater):
         """

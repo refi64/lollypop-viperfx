@@ -140,7 +140,7 @@ class ArtistsDatabase:
         """
         with SqlCursor(Lp().db) as sql:
             result = []
-            if genre_ids[0] == Type.ALL or not genre_ids:
+            if not genre_ids:
                 # Only artist that really have an album
                 result = sql.execute(
                                  "SELECT DISTINCT artists.rowid,\
