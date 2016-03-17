@@ -219,8 +219,6 @@ class CollectionScanner(GObject.GObject, ScannerTagReader):
         artists = self.get_artists(tags)
         sortname = self.get_artist_sortname(tags)
         album_artist = self.get_album_artist(tags)
-        if artists == '':
-            artists = album_artist
         album_name = self.get_album_name(tags)
         genres = self.get_genres(tags)
         discnumber = self.get_discnumber(tags)
@@ -228,6 +226,10 @@ class CollectionScanner(GObject.GObject, ScannerTagReader):
         year = self.get_year(tags)
         duration = int(infos.get_duration()/1000000000)
         name = GLib.path_get_basename(filepath)
+
+        # If no artists tag, use album artist
+        if artists == '':
+            artists = album_artist
 
         # Restore stats
         (track_pop, track_ltime, amtime, album_pop) = self._history.get(
