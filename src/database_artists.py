@@ -133,14 +133,12 @@ class ArtistsDatabase:
     def get(self, genre_ids):
         """
             Get all available artists
-            @param None
-            or
-            @param Filter genre ids as [int]/Type.ALL/None
+            @param genre ids as [int]
             @return Array of (artist id as int, artist name as string)
         """
         with SqlCursor(Lp().db) as sql:
             result = []
-            if genre_ids[0] == Type.ALL or not genre_ids:
+            if not genre_ids or genre_ids[0] == Type.ALL:
                 # Only artist that really have an album
                 result = sql.execute(
                                  "SELECT DISTINCT artists.rowid,\
