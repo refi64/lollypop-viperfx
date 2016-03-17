@@ -174,6 +174,8 @@ class RadioWidget(Gtk.Frame, AlbumWidget):
         """
             Update widget state
         """
+        if self._cover is None:
+            return
         selected = Lp().player.current_track.id == Type.RADIOS and\
             self._name == Lp().player.current_track.album_artist
         if selected:
