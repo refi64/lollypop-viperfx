@@ -309,9 +309,10 @@ class AlbumWidget:
         albums = Lp().player.get_albums()
         empty = len(albums) == 0
         if Lp().player.is_album_present(self._album):
-            Lp().player.context.next = NextContext.START_NEW_ALBUM
-            Lp().player.set_next()
-            Lp().player.next()
+            if Lp().player.current_track.album.id == self._album.id:
+                Lp().player.context.next = NextContext.START_NEW_ALBUM
+                Lp().player.set_next()
+                Lp().player.next()
             Lp().player.remove_album(self._album)
             self._show_append(True)
         else:
