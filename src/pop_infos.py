@@ -14,6 +14,7 @@ from gi.repository import Gtk, GLib
 
 from gettext import gettext as _
 from threading import Thread
+from cgi import escape
 
 from lollypop.define import Lp, Type
 from lollypop.widgets_artist import WikipediaContent, LastfmContent
@@ -234,7 +235,12 @@ class InfosPopover(Gtk.Popover):
         """
         self._menu.hide()
         self._jump_button.show()
-        self._jump_button.set_tooltip_text(Lp().player.current_track.name)
+        self._jump_button.set_tooltip_markup(
+                                      "<b>%s</b> - " %
+                                      escape(
+                                        Lp().player.current_track.artist_names
+                                        ) +
+                                      Lp().player.current_track.name)
         if self._current is None:
             self._current = self._get_current()
         Lp().settings.set_value('infoswitch',

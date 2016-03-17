@@ -12,6 +12,8 @@
 
 from gi.repository import Gtk, Gdk
 
+from cgi import escape
+
 from lollypop.define import Lp
 from lollypop.pop_infos import InfosPopover
 from lollypop.view_artist_albums import ArtistAlbumsView
@@ -60,8 +62,12 @@ class ArtistView(ArtistAlbumsView):
                 break
         if found:
             self._jump_button.set_sensitive(True)
-            self._jump_button.set_tooltip_text(
-                                          Lp().player.current_track.name)
+            self._jump_button.set_tooltip_markup(
+                                      "<b>%s</b> - " %
+                                      escape(
+                                        Lp().player.current_track.artist_names
+                                        ) +
+                                      Lp().player.current_track.name)
         else:
             self._jump_button.set_sensitive(False)
             self._jump_button.set_tooltip_text('')

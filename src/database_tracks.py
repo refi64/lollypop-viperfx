@@ -250,6 +250,12 @@ class TracksDatabase:
                                   AND track_artists.artist_id=artists.rowid",
                                  (track_id,))
             artists = [row[0] for row in result]
+            album_id = self.get_album_id(track_id)
+            artist_id = Lp().albums.get_artist_id(album_id)
+            if artist_id != Type.COMPILATIONS:
+                artist_name = Lp().albums.get_artist_name(album_id)
+                if artist_name not in artists:
+                    artists.insert(0, artist_name)
             return ", ".join(artists)
 
     def get_genre_ids(self, track_id):
