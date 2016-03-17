@@ -33,11 +33,11 @@ class QueueRow(Gtk.ListBoxRow):
         Gtk.ListBoxRow.__init__(self)
         self._id = track_id
         self._number = 0
+        self.set_margin_start(5)
+        self.set_margin_end(5)
+        self.set_margin_top(2)
+        self.set_margin_end(2)
         self._row_widget = Gtk.EventBox()
-        self._row_widget.set_margin_start(10)
-        self._row_widget.set_margin_end(10)
-        self._row_widget.set_margin_top(2)
-        self._row_widget.set_margin_end(2)
         self._grid = Gtk.Grid()
         self._grid.set_column_spacing(5)
         self._row_widget.add(self._grid)

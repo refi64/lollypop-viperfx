@@ -252,9 +252,9 @@ class PlaylistRow(Row):
         Row.__init__(self, rowid, num)
         self._show_headers = show_headers
         self._indicator.set_margin_start(5)
-        self._row_widget.set_margin_start(10)
+        self._row_widget.set_margin_start(5)
         self._row_widget.set_margin_top(2)
-        self._row_widget.set_margin_end(10)
+        self._row_widget.set_margin_end(5)
         self._grid.insert_row(0)
         self._grid.insert_column(0)
         self._grid.insert_column(1)
