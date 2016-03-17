@@ -61,6 +61,7 @@ class PlaylistsWidget(Gtk.Bin):
         self._box.set_selection_mode(Gtk.SelectionMode.NONE)
         self._box.set_activate_on_single_click(False)
         self._box.set_hexpand(True)
+        self._box.set_property('valign', Gtk.Align.START)
         self._box.show()
 
         self.connect('size-allocate', self._on_size_allocate)
