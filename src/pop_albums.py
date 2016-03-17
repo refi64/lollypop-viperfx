@@ -467,7 +467,7 @@ class AlbumsView(LazyLoadingView):
         else:
             up = True
         src_row = self._row_for_album_id(src)
-        src_row.init_widget()
+        src_row.populate()
         # Destroy current src row
         i = 0
         row_index = -1
