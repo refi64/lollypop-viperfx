@@ -17,7 +17,7 @@ from gettext import gettext as _
 
 from lollypop.widgets_album_context import AlbumPopoverWidget
 from lollypop.view import LazyLoadingView
-from lollypop.define import Lp, ArtSize
+from lollypop.define import Lp, ArtSize, NextContext
 from lollypop.objects import Album
 
 
@@ -230,6 +230,9 @@ class AlbumRow(Gtk.ListBoxRow):
             Delete album
             @param button as Gtk.Button
         """
+        Lp().player.context.next = NextContext.START_NEW_ALBUM
+        Lp().player.set_next()
+        Lp().player.next()
         Lp().player.remove_album(self._album)
         self.destroy()
 
