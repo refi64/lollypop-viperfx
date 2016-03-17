@@ -87,8 +87,11 @@ class AlbumRow(Gtk.ListBoxRow):
                                         self._album,
                                         ArtSize.MEDIUM*self.get_scale_factor())
         cover.set_from_surface(surface)
+        cover.set_size_request(ArtSize.MEDIUM*self.get_scale_factor(),
+                               ArtSize.MEDIUM*self.get_scale_factor())
         del surface
         cover_frame = Gtk.Frame()
+        cover_frame.get_style_context().add_class('small-cover-frame')
         cover_frame.set_property('valign', Gtk.Align.CENTER)
         cover_frame.add(cover)
         self._play_indicator = Gtk.Image.new_from_icon_name(
