@@ -197,16 +197,15 @@ class AlbumsDatabase:
             @return Album id as int
         """
         with SqlCursor(Lp().db) as sql:
+            filters = (album_name, artist_id)
+            request = "SELECT rowid FROM albums where name=?\
+                       AND artist_id=? "
             if year is None:
-                result = sql.execute("SELECT rowid FROM albums where name=?\
-                                      AND artist_id=?\
-                                      AND year is null",
-                                     (album_name, artist_id))
+                request += "AND year is null"
             else:
-                result = sql.execute("SELECT rowid FROM albums where name=?\
-                                      AND artist_id=?\
-                                      AND year =?",
-                                     (album_name, artist_id, year))
+                request += "AND year =?"
+                filters += (year,)
+            result = sql.execute(request, filters)
             v = result.fetchone()
             if v is not None:
                 return v[0]
@@ -226,14 +225,14 @@ class AlbumsDatabase:
             request = "SELECT albums.rowid FROM albums, album_artists\
                        WHERE name=? AND\
                        no_album_artist=0 AND\
-                       album_artists.album_id=albums.rowid AND "
+                       album_artists.album_id=albums.rowid AND (1=0 "
             for artist_id in artist_ids:
-                request += "artist_id=? AND "
+                request += "OR artist_id=? "
             if year is None:
-                request += "year is null"
+                request += ") AND year is null"
             else:
                 filters += (year,)
-                request += "year =?"
+                request += ") AND year=?"
             result = sql.execute(request, filters)
             v = result.fetchone()
             if v is not None:
@@ -694,8 +693,10 @@ class AlbumsDatabase:
             return: Array of (id as int, artist_id as int)
         """
         with SqlCursor(Lp().db) as sql:
-            result = sql.execute("SELECT rowid, artist_id FROM albums\
+            result = sql.execute("SELECT albums.rowid, artist_id\
+                                  FROM albums, album_artists\
                                   WHERE name LIKE ?\
+                                  AND albums.rowid=album_artists.album_id\
                                   LIMIT 25", ('%' + string + '%',))
             return list(result)
 
@@ -762,5 +763,8 @@ class AlbumsDatabase:
             # Album empty, remove it
             if not v:
                 ret = True
+                sql.execute("DELETE FROM album_artists\
+                            WHERE album_id=?",
+                            (album_id,))
                 sql.execute("DELETE FROM albums WHERE rowid=?", (album_id,))
             return ret

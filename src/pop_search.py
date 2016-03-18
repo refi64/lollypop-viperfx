@@ -232,11 +232,14 @@ class SearchPopover(Gtk.Popover):
             search_obj.album_id = Lp().tracks.get_album_id(track_id)
             search_obj.is_track = True
 
-            artist_id = Lp().albums.get_artist_id(search_obj.album_id)
-            if artist_id == Type.COMPILATIONS:
-                search_obj.artist = Lp().tracks.get_artist_names(track_id)
+            artist_ids = Lp().albums.get_artist_ids(search_obj.album_id)
+            if artist_ids[0] == Type.COMPILATIONS:
+                search_obj.artist = Lp().tracks.get_artists(track_id)
             else:
-                search_obj.artist = Lp().artists.get_name(artist_id)
+                names = []
+                for artist_id in artist_ids:
+                    names.append(Lp().artists.get_name(artist_id))
+                search_obj.artist = ", ".join(names)
             results.append(search_obj)
 
         albums += Lp().albums.search(self._current_search)

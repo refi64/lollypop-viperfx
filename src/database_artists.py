@@ -103,31 +103,38 @@ class ArtistsDatabase:
                 return v[0]
             return _("Unknown")
 
-    def get_albums(self, artist_id):
+    def get_albums(self, artist_ids):
         """
             Get all availables albums for artist
             @return Array of id as int
         """
         with SqlCursor(Lp().db) as sql:
-            result = sql.execute("SELECT rowid FROM albums\
-                                  WHERE artist_id=?\
-                                  ORDER BY year", (artist_id,))
+            request = "SELECT albums.rowid\
+                       FROM album_artists, albums\
+                       WHERE albums.rowid=album_artists.album_id AND (1=0 "
+            for artist_id in artist_ids:
+                request += "OR album_artists.artist_id=%s " % artist_id
+            request += ") ORDER BY year"
+            result = sql.execute(request)
             return list(itertools.chain(*result))
 
-    def get_compilations(self, artist_id):
+    def get_compilations(self, artist_ids):
         """
             Get all availables compilations for artist
             @return Array of id as int
         """
         with SqlCursor(Lp().db) as sql:
-            result = sql.execute("SELECT DISTINCT albums.rowid FROM albums,\
-                                  tracks, track_artists\
-                                  WHERE track_artists.artist_id=?\
-                                  AND track_artists.track_id=tracks.rowid\
-                                  AND albums.rowid=tracks.album_id\
-                                  AND albums.artist_id=?\
-                                  ORDER BY albums.year", (artist_id,
-                                                          Type.COMPILATIONS))
+            request = "SELECT DISTINCT albums.rowid FROM albums,\
+                       tracks, track_artists, album_artists\
+                       WHERE track_artists.track_id=tracks.rowid\
+                       AND album_artists.artists_id=%s\
+                       AND album_artists.album_id=albums.rowid\
+                       AND albums.rowid=tracks.album_id AND (1=0 " %\
+                       Type.COMPILATIONS
+            for artist_id in artist_ids:
+                request += "OR track_artists.artist_id=%s " % artist_id
+            request += ") ORDER BY albums.year"
+            result = sql.execute(request)
             return list(itertools.chain(*result))
 
     def get(self, genre_ids):
@@ -206,7 +213,7 @@ class ArtistsDatabase:
             @warning commit needed
         """
         with SqlCursor(Lp().db) as sql:
-            result = sql.execute("SELECT rowid from albums\
+            result = sql.execute("SELECT album_id from album_artists\
                                   WHERE artist_id=?\
                                   LIMIT 1", (artist_id,))
             v = result.fetchone()

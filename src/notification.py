@@ -107,7 +107,7 @@ class NotificationManager:
                 # TRANSLATORS: by refers to the artist,
                 # from to the album
                 _("by %s, from %s") %
-                ('<b>' + player.current_track.artist + '</b>',
+                ('<b>' + player.current_track.artists + '</b>',
                  '<i>' + player.current_track.album.name + '</i>'),
                 cover_path)
         try:

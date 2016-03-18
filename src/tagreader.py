@@ -234,10 +234,11 @@ class ScannerTagReader(TagReader):
                 # Get album artist id, add it if missing
                 artist_id = Lp().artists.get_id(artist)
                 if artist_id is None:
-                    artist_ids.append(Lp().artists.add(
-                                                   artist,
-                                                   format_artist_name(artist)))
-                    new_artist_ids.append(artist_id)
+                    album_artist_id = Lp().artists.add(artist,
+                                                       format_artist_name(
+                                                                       artist))
+                    artist_ids.append(album_artist_id)
+                    new_artist_ids.append(album_artist_id)
                 else:
                     artist_ids.append(artist_id)
         return (artist_ids, new_artist_ids)
