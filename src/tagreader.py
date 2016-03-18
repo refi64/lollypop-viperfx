@@ -91,18 +91,18 @@ class ScannerTagReader(TagReader):
             artists = ""
         return artists
 
-    def get_artist_sortname(self, tags):
+    def get_artist_sortnames(self, tags):
         """
             Return artist sort name
             @param tags as Gst.TagList
-            @return artist sort name as string
+            @return artist sort names as string;string
         """
         if tags is not None:
-            (exists, sortname) = tags.get_string_index('artist-sortname',
-                                                       self._index)
+            (exists, sortnames) = tags.get_string_index('artist-sortname',
+                                                        self._index)
         if not exists:
-            sortname = ""
-        return sortname
+            sortnames = ""
+        return sortnames
 
     def get_album_artist(self, tags):
         """
@@ -189,50 +189,58 @@ class ScannerTagReader(TagReader):
             year = None
         return year
 
-    def add_artists(self, artists, album_artist, sortname):
+    def add_artists(self, artists, album_artists, sortnames):
         """
             Add artists to db
             @param artists as [string]
-            @param album artist as string
-            @param sortname as string
+            @param album artists as [string]
+            @param sortnames as [string]
             @commit needed
             @param return ([artist ids as int], [new artist ids as int])
         """
         new_artist_ids = []
-        # Get all artist ids
         artist_ids = []
+        sortsplit = sortnames.split(';')
+        sortlen = len(sortsplit)
+        i = 0
         for artist in artists.split(';'):
             # Get artist id, add it if missing
             artist_id = Lp().artists.get_id(artist)
-            if sortname == "":
+            if i >= sortlen or sortsplit[i] == "":
                 sortname = format_artist_name(artist)
+            else:
+                sortname = sortsplit[i]
             if artist_id is None:
                 artist_id = Lp().artists.add(artist, sortname)
-                if artist == album_artist:
+                if artist in album_artists:
                     new_artist_ids.append(artist_id)
             else:
                 Lp().artists.set_sortname(artist_id, sortname)
+            i += 1
             artist_ids.append(artist_id)
         return (artist_ids, new_artist_ids)
 
-    def add_album_artist(self, album_artist):
+    def add_album_artist(self, artists):
         """
             Add album artist to db
-            @param album_artist as string
+            @param artists as [string]
             @param return ([album artist ids as int], [new as bool])
             @commit needed
         """
-        album_artist_id = None
-        new = False
-        if album_artist:
-            # Get album artist id, add it if missing
-            album_artist_id = Lp().artists.get_id(album_artist)
-            if album_artist_id is None:
-                album_artist_id = Lp().artists.add(album_artist,
-                                                   format_artist_name(
-                                                                 album_artist))
-                new = True
-        return (album_artist_id, new)
+        artist_ids = []
+        new_artist_ids = []
+        for artist in artists.split(';'):
+            if artist != '':
+                # Get album artist id, add it if missing
+                artist_id = Lp().artists.get_id(artist)
+                if artist_id is None:
+                    artist_ids.append(Lp().artists.add(
+                                                   artist,
+                                                   format_artist_name(artist)))
+                    new_artist_ids.append(artist_id)
+                else:
+                    artist_ids.append(artist_id)
+        return (artist_ids, new_artist_ids)
 
     def add_genres(self, genres, album_id):
         """
@@ -256,12 +264,12 @@ class ScannerTagReader(TagReader):
             Lp().albums.add_genre(album_id, genre_id)
         return (genre_ids, new_genre_ids)
 
-    def add_album(self, album_name, artist_id, no_album_artist,
+    def add_album(self, album_name, artist_ids, no_album_artist,
                   year, filepath, popularity, mtime):
         """
             Add album to db
             @param album name as string
-            @param album artist id as int
+            @param album artist ids as [int]
             @param no album artist as bool
             @param path to an album track as string
             @param year as int
@@ -276,11 +284,11 @@ class ScannerTagReader(TagReader):
             album_id = Lp().albums.get_compilation_id(album_name, year)
         else:
             album_id = Lp().albums.get_non_compilation_id(album_name,
-                                                          artist_id,
+                                                          artist_ids,
                                                           year)
         if album_id is None:
             new = True
-            album_id = Lp().albums.add(album_name, artist_id, no_album_artist,
+            album_id = Lp().albums.add(album_name, artist_ids, no_album_artist,
                                        year, path, popularity, mtime)
         # Now we have our album id, check if path doesn't change
         if Lp().albums.get_path(album_id) != path:
@@ -289,11 +297,11 @@ class ScannerTagReader(TagReader):
         # If no album artist, handle album artist id for compilations
         if no_album_artist:
             if Lp().albums.is_compilation(album_id):
-                Lp().albums.set_artist_id(album_id,
-                                          Type.COMPILATIONS)
+                Lp().albums.set_artist_ids(album_id,
+                                           [Type.COMPILATIONS])
             else:
-                Lp().albums.set_artist_id(album_id,
-                                          artist_id)
+                Lp().albums.set_artist_ids(album_id,
+                                           artist_ids)
         return (album_id, new)
 
     def update_track(self, track_id, artist_ids, genre_ids):

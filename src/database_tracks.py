@@ -15,7 +15,7 @@ from gettext import gettext as _
 import itertools
 
 from lollypop.sqlcursor import SqlCursor
-from lollypop.define import Lp, Type
+from lollypop.define import Lp
 
 
 class TracksDatabase:
@@ -238,7 +238,7 @@ class TracksDatabase:
                                   WHERE track_id=?", (track_id,))
             return list(itertools.chain(*result))
 
-    def get_artist_names(self, track_id):
+    def get_artists(self, track_id):
         """
             Get artist names
             @param track id as int
@@ -250,12 +250,6 @@ class TracksDatabase:
                                   AND track_artists.artist_id=artists.rowid",
                                  (track_id,))
             artists = [row[0] for row in result]
-            album_id = self.get_album_id(track_id)
-            artist_id = Lp().albums.get_artist_id(album_id)
-            if artist_id != Type.COMPILATIONS:
-                artist_name = Lp().albums.get_artist_name(album_id)
-                if artist_name not in artists:
-                    artists.insert(0, artist_name)
             return ", ".join(artists)
 
     def get_genre_ids(self, track_id):
@@ -314,22 +308,19 @@ class TracksDatabase:
                 return v
             return (None, None, None, None)
 
-    def get_album_artist_id(self, track_id):
+    def get_album_artist_ids(self, track_id):
         """
             Get album_artist id for track id
             @param Track id as int
             @return Performer id as int
         """
         with SqlCursor(Lp().db) as sql:
-            result = sql.execute("SELECT albums.artist_id from albums,tracks\
-                                  WHERE tracks.rowid=?\
-                                  AND tracks.album_id ==\
-                                  albums.rowid", (track_id,))
-            v = result.fetchone()
-
-            if v is not None:
-                return v[0]
-            return Type.COMPILATIONS
+            result = sql.execute("SELECT album_artists.artist_id\
+                                 FROM album_artists, tracks\
+                                 WHERE tracks.rowid=? AND\
+                                 tracks.album_id == album_artists.album_id",
+                                 (track_id,))
+            return list(itertools.chain(*result))
 
     def get_paths(self):
         """
