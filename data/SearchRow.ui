@@ -34,9 +34,6 @@
         <property name="single_line_mode">True</property>
         <property name="xalign">0</property>
         <property name="yalign">0</property>
-        <style>
-          <class name="dim-label"/>
-        </style>
       </object>
       <packing>
         <property name="left_attach">1</property>
@@ -53,6 +50,12 @@
         <property name="label" translatable="yes">artist</property>
         <property name="ellipsize">end</property>
         <property name="single_line_mode">True</property>
+        <attributes>
+          <attribute name="weight" value="bold"/>
+        </attributes>
+        <style>
+          <class name="dim-label"/>
+        </style>
       </object>
       <packing>
         <property name="left_attach">1</property>
