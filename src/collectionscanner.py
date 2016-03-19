@@ -244,7 +244,7 @@ class CollectionScanner(GObject.GObject, ScannerTagReader):
                                                         sortnames)
         debug("CollectionScanner::add2db(): "
               "Add album artists %s" % album_artists)
-        (album_artist_ids, new_album_artist_ids) = self.add_album_artist(
+        (album_artist_ids, new_album_artist_ids) = self.add_album_artists(
                                                                  album_artists)
         new_artist_ids += new_album_artist_ids
 

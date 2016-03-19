@@ -273,7 +273,8 @@ class Track(Base):
             @return str
         """
         if getattr(self, "_album_artists") is None:
-            self._album_artists = Lp().albums.get_artists(self.album_id)
+            self._album_artists = ", ".join(Lp().albums.get_artists(
+                                                                self.album_id))
         return self._album_artists
 
     @property
@@ -285,12 +286,12 @@ class Track(Base):
         """
         return self.genre_names
 
-    def set_album_artist(self, name):
+    def set_album_artists(self, name):
         """
             Set album artist
             @param name as string
         """
-        self._album_artist = name
+        self._album_artists = name
 
     def set_uri(self, uri):
         """
@@ -310,5 +311,5 @@ class Track(Base):
             @param uri as string
         """
         self.id = Type.RADIOS
-        self._album_artist = name
+        self._album_artists = name
         self._uri = uri

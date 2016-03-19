@@ -290,7 +290,7 @@ class AlbumsDatabase:
         """
             Get artist names
             @param Album id as int
-            @return Artist name as string
+            @return artists as [str]
         """
         with SqlCursor(Lp().db) as sql:
             result = sql.execute("SELECT artists.name\

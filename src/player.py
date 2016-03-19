@@ -262,16 +262,16 @@ class Player(BinPlayer, QueuePlayer, UserPlaylistPlayer, RadioPlayer,
         self._albums = []
         self.context.next = NextContext.STOP_TRACK
 
-    def get_current_artist(self):
+    def get_current_artists(self):
         """
             Get current artist
             @return artist as string
         """
-        artist_id = self.current_track.album_artist_id
-        if artist_id == Type.COMPILATIONS:
-            artist = self.current_track.artist
+        artist_ids = self.current_track.album_artist_ids
+        if artist_ids[0] == Type.COMPILATIONS:
+            artist = self.current_track.artists
         else:
-            artist = self.current_track.album_artist
+            artist = self.current_track.album_artists
         return artist
 
     def restore_state(self):

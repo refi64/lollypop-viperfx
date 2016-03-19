@@ -55,7 +55,7 @@ class AlbumContextWidget(AlbumDetailedWidget):
         """
         if InfosPopover.should_be_shown() and\
                 self._album.artist_ids[0] != Type.COMPILATIONS:
-            pop = InfosPopover(self._album.artist_id)
+            pop = InfosPopover(self._album.artist_ids)
             pop.set_relative_to(eventbox)
             pop.show()
 

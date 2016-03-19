@@ -220,7 +220,7 @@ class ScannerTagReader(TagReader):
             artist_ids.append(artist_id)
         return (artist_ids, new_artist_ids)
 
-    def add_album_artist(self, artists):
+    def add_album_artists(self, artists):
         """
             Add album artist to db
             @param artists as [string]
