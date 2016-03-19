@@ -171,6 +171,8 @@ class AlbumsView(LazyLoadingView):
                                                   self._genre_ids,
                                                   self._artist_ids,
                                                   size_group)
+        self._context_widget.connect('populated',
+                                     self._on_context_populated)
         self._context_widget.show()
         view = AlbumContextView(self._context_widget)
         view.show()
@@ -199,6 +201,18 @@ class AlbumsView(LazyLoadingView):
             GLib.idle_add(self.lazy_loading)
             if self._viewport.get_child() is None:
                 self._viewport.add(self._albumbox)
+
+    def _on_context_populated(self, widget):
+        """
+            Populate again if needed
+            @param widget as AlbumContextWidget
+        """
+        if not widget.is_populated():
+            widget.populate()
+        elif not self._stop:
+            GLib.idle_add(self._context_widget.populate)
+        else:
+            self._stop = False
 
     def _on_position_notify(self, paned, param):
         """
