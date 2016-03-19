@@ -269,6 +269,7 @@ class CollectionScanner(GObject.GObject, ScannerTagReader):
                                    track_ltime, mtime)
 
         debug("CollectionScanner::add2db(): Update tracks")
+        self.update_album(album_id, artist_ids, genre_ids)
         self.update_track(track_id, artist_ids, genre_ids)
         # Notify about new artists/genres
         if new_genre_ids or new_artist_ids:

@@ -55,6 +55,20 @@ class AlbumsDatabase:
                              VALUES (?, ?)", (result.lastrowid, artist_id))
             return result.lastrowid
 
+    def add_artist(self, album_id, artist_id):
+        """
+            Add artist to track
+            @param album id as int
+            @param artist id as int
+            @warning: commit needed
+        """
+        with SqlCursor(Lp().db) as sql:
+            artists = self.get_artist_ids(album_id)
+            if artist_id not in artists:
+                sql.execute("INSERT INTO "
+                            "album_artists (album_id, artist_id)"
+                            "VALUES (?, ?)", (album_id, artist_id))
+
     def add_genre(self, album_id, genre_id):
         """
             Add genre to album
