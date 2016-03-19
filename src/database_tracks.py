@@ -397,8 +397,12 @@ class TracksDatabase:
                                  WHERE album_artists.album_id=tracks.album_id\
                                  AND track_artists.artist_id=?\
                                  AND track_artists.track_id=tracks.rowid\
-                                 AND album_artists.artist_id != ?",
-                                 (artist_id, artist_id))
+                                 AND NOT EXISTS (\
+                                  SELECT artist_id\
+                                  FROM album_artists\
+                                  WHERE artist_id=track_artists.artist_id\
+                                  AND album_id=tracks.album_id)",
+                                 (artist_id,))
             return list(result)
 
     def get_populars(self):
