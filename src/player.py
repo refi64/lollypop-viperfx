@@ -215,7 +215,6 @@ class Player(BinPlayer, QueuePlayer, UserPlaylistPlayer, RadioPlayer,
             @param artist id as int
             @param genre id as int
         """
-        print(artist_ids, genre_ids)
         # Invalid track
         if track_id is None:
             return
