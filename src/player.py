@@ -227,8 +227,7 @@ class Player(BinPlayer, QueuePlayer, UserPlaylistPlayer, RadioPlayer,
         else:
             # If we are not in compilation view and show compilation is on,
             # add compilations
-            if (not artist_ids or artist_ids[0] != Type.COMPILATIONS) and\
-               Lp().settings.get_value('show-compilations'):
+            if not artist_ids and Lp().settings.get_value('show-compilations'):
                 self._albums += Lp().albums.get_compilations(genre_ids)
             self._albums += Lp().albums.get_ids(artist_ids, genre_ids)
 
