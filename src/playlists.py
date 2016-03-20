@@ -304,30 +304,22 @@ class Playlists(GObject.GObject):
                 return True
             return False
 
-    def exists_album(self, playlist_id, album_id, genre_id):
+    def exists_album(self, playlist_id, album_id, genre_ids, artist_ids):
         """
             Return True if object_id is already present in playlist
             @param playlist id as int
             @param album id as int
-            @parma genre id as int
+            @param genre ids as [int]
+            @param artist ids as [int]
             @param sql as sqlite cursor
             @return bool
         """
         # We do not use Album object for performance reasons
         playlist_paths = self.get_tracks(playlist_id)
-        tracks_paths = Lp().albums.get_tracks_path(album_id,
-                                                   genre_id)
-        found = 0
-        len_tracks = len(tracks_paths)
-        for filepath in tracks_paths:
-            if filepath in playlist_paths:
-                found += 1
-                if found >= len_tracks:
-                    break
-        if found == len_tracks:
-            return True
-        else:
-            return False
+        track_paths = Lp().albums.get_tracks_path(album_id,
+                                                  genre_ids,
+                                                  artist_ids)
+        return len(set(playlist_paths) & set(track_paths)) == len(track_paths)
 
     def get_cursor(self):
         """

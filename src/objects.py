@@ -100,17 +100,21 @@ class Disc:
         self.db = Lp().albums
         self.album = album
         self.number = disc_number
+        self._track_ids = []
 
     @property
-    def tracks_ids(self):
+    def track_ids(self):
         """
             Get all tracks ids of the disc
 
             @return list of int
         """
-        return self.db.get_disc_tracks(self.album.id,
-                                       self.album.genre_ids,
-                                       self.number)
+        if not self._track_ids:
+            self._track_ids = self.db.get_disc_tracks(self.album.id,
+                                                      self.album.genre_ids,
+                                                      self.album.artist_ids,
+                                                      self.number)
+        return self._track_ids
 
     @property
     def tracks(self):
@@ -119,7 +123,7 @@ class Disc:
 
             @return list of Track
         """
-        return [Track(id) for id in self.tracks_ids]
+        return [Track(id) for id in self.track_ids]
 
 
 class Album(Base):
@@ -129,7 +133,7 @@ class Album(Base):
     FIELDS = ['name', 'artists', 'artist_ids', 'year', 'path', 'duration']
     DEFAULTS = ['', '', [], '', '', 0]
 
-    def __init__(self, album_id=None, genre_ids=[]):
+    def __init__(self, album_id=None, genre_ids=[], artist_ids=[]):
         """
             Init album
             @param album_id as int
@@ -138,17 +142,26 @@ class Album(Base):
         Base.__init__(self, Lp().albums)
         self.id = album_id
         self.genre_ids = genre_ids
+        # Use artist ids from db else
+        if artist_ids:
+            self.artist_ids = artist_ids
 
-    def set_genre(self, genre_ids):
+    def set_genres(self, genre_ids):
         """
-            Change current genre to lookup
-            tracks
-
+            Set album genres
             @param genre_ids as [int]
             @return None
         """
         self.genre_ids = genre_ids
         self._tracks_ids = None
+        self._tracks = None
+
+    def set_artists(self, artist_ids):
+        """
+            Set album artists
+        """
+        self.artist_ids = artist_ids
+        self._track_ids = None
         self._tracks = None
 
     @property
@@ -167,7 +180,8 @@ class Album(Base):
         """
         if getattr(self, "_tracks_ids") is None:
             self._tracks_ids = self.db.get_tracks(self.id,
-                                                  self.genre_ids)
+                                                  self.genre_ids,
+                                                  self.artist_ids)
         return self._tracks_ids
 
     @property

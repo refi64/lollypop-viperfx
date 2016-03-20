@@ -405,15 +405,17 @@ class PlaylistsManagerWidget(Gtk.Bin):
         Widget for playlists management
     """
 
-    def __init__(self, object_id, genre_id, is_album):
+    def __init__(self, object_id, genre_ids, artist_ids, is_album):
         """
             Init widget
             @param object id as int
-            @param genre id as int
+            @param genre ids as [int]
+            @param artist ids as [int]
             @param is album as bool
         """
         Gtk.Bin.__init__(self)
-        self._genre_id = genre_id
+        self._genre_ids = genre_ids
+        self._artist_ids = artist_ids
         self._object_id = object_id
         self._is_album = is_album
         self._deleted_path = None
@@ -526,7 +528,8 @@ class PlaylistsManagerWidget(Gtk.Bin):
                     selected = Lp().playlists.exists_album(
                                                        playlist[0],
                                                        self._object_id,
-                                                       self._genre_id)
+                                                       self._genre_ids,
+                                                       self._artist_ids)
                 else:
 
                     selected = Lp().playlists.exists_track(
@@ -612,7 +615,8 @@ class PlaylistsManagerWidget(Gtk.Bin):
             tracks = []
             if self._is_album:
                 tracks_ids = Lp().albums.get_tracks(self._object_id,
-                                                    self._genre_id)
+                                                    self._genre_ids,
+                                                    self._artist_ids)
                 for track_id in tracks_ids:
                     tracks.append(Track(track_id))
             else:

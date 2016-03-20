@@ -28,7 +28,7 @@ class BaseMenu(Gio.Menu):
         Base menu for all menus
     """
 
-    def __init__(self, object_id, genre_id, is_album):
+    def __init__(self, object_id, genre_ids, artist_ids, is_album):
         """
             Init variable
             @param object id as int
@@ -36,7 +36,8 @@ class BaseMenu(Gio.Menu):
             @param is album as bool
         """
         Gio.Menu.__init__(self)
-        self._genre_id = genre_id
+        self._genre_ids = genre_ids
+        self._artist_ids = artist_ids
         self._object_id = object_id
         self._is_album = is_album
         self._app = Gio.Application.get_default()
@@ -145,14 +146,15 @@ class QueueMenu(BaseMenu):
         Contextual menu for queue
     """
 
-    def __init__(self, object_id, genre_id, is_album):
+    def __init__(self, object_id, genre_ids, artist_ids, is_album):
         """
             Init playlists menu
             @param object id as int
-            @param genre id as int
+            @param genre ids as [int]
+            @param artist ids as [int]
             @param is album as bool
         """
-        BaseMenu.__init__(self, object_id, genre_id, is_album)
+        BaseMenu.__init__(self, object_id, genre_ids, artist_ids, is_album)
         self._set_queue_actions()
 
 #######################
@@ -178,7 +180,8 @@ class QueueMenu(BaseMenu):
         else:
 
             tracks = Lp().albums.get_tracks(self._object_id,
-                                            self._genre_id)
+                                            self._genre_ids,
+                                            self._artist_ids)
             union = set(queue) & set(tracks)
             if len(union) == len(tracks):
                 append = False
@@ -216,7 +219,8 @@ class QueueMenu(BaseMenu):
         """
         if self._is_album:
             for track_id in Lp().albums.get_tracks(self._object_id,
-                                                   self._genre_id):
+                                                   self._genre_ids,
+                                                   self._artist_ids):
                 Lp().player.append_to_queue(track_id, False)
         else:
             Lp().player.append_to_queue(self._object_id, False)
@@ -230,7 +234,8 @@ class QueueMenu(BaseMenu):
         """
         if self._is_album:
             for track_id in reversed(Lp().albums.get_tracks(self._object_id,
-                                                            self._genre_id)):
+                                                            self._genre_ids,
+                                                            self._artist_ids)):
                 Lp().player.insert_in_queue(track_id, 0, False)
         else:
             Lp().player.insert_in_queue(self._object_id, 0, False)
@@ -244,7 +249,8 @@ class QueueMenu(BaseMenu):
         """
         if self._is_album:
             for track_id in Lp().albums.get_tracks(self._object_id,
-                                                   self._genre_id):
+                                                   self._genre_ids,
+                                                   self._artist_ids):
                 Lp().player.del_from_queue(track_id, False)
         else:
             Lp().player.del_from_queue(self._object_id, False)
@@ -256,14 +262,15 @@ class PlaylistsMenu(BaseMenu):
         Contextual menu for playlists
     """
 
-    def __init__(self, object_id, genre_id, is_album):
+    def __init__(self, object_id, genre_ids, artist_ids, is_album):
         """
             Init playlist menu
             @param object id as int
-            @param genre id as int
+            @param genre ids as [int]
+            @param artist ids as [int]
             @param is album as bool
         """
-        BaseMenu.__init__(self, object_id, genre_id, is_album)
+        BaseMenu.__init__(self, object_id, genre_ids, artist_ids, is_album)
         self._set_playlist_actions()
 
 #######################
@@ -286,7 +293,8 @@ class PlaylistsMenu(BaseMenu):
             if self._is_album:
                 exists = Lp().playlists.exists_album(playlist[0],
                                                      self._object_id,
-                                                     self._genre_id)
+                                                     self._genre_ids,
+                                                     self._artist_ids)
             else:
                 exists = Lp().playlists.exists_track(playlist[0],
                                                      self._object_id)
@@ -311,7 +319,8 @@ class PlaylistsMenu(BaseMenu):
             @param GVariant
         """
         Lp().window.show_playlist_manager(self._object_id,
-                                          self._genre_id,
+                                          self._genre_ids,
+                                          self._artist_ids,
                                           self._is_album)
 
     def _add_to_playlist(self, action, variant, playlist_id):
@@ -325,7 +334,8 @@ class PlaylistsMenu(BaseMenu):
             tracks = []
             if self._is_album:
                 tracks_ids = Lp().albums.get_tracks(self._object_id,
-                                                    self._genre_id)
+                                                    self._genre_ids,
+                                                    self._artist_ids)
                 for track_id in tracks_ids:
                     tracks.append(Track(track_id))
             else:
@@ -348,7 +358,8 @@ class PlaylistsMenu(BaseMenu):
             tracks = []
             if self._is_album:
                 tracks_ids = Lp().albums.get_tracks(self._object_id,
-                                                    self._genre_id)
+                                                    self._genre_ids,
+                                                    self._artist_ids)
                 for track_id in tracks_ids:
                     tracks.append(Track(track_id))
             else:
@@ -401,14 +412,13 @@ class EditMenu(BaseMenu):
     """
     _TAG_EDITORS = ['exfalso', 'easytag', 'picard', 'puddletag', 'kid3-qt']
 
-    def __init__(self, object_id, genre_id, is_album):
+    def __init__(self, object_id, is_album):
         """
             Init edit menu
             @param object id as int
-            @param genre id as int
             @param is album as bool
         """
-        BaseMenu.__init__(self, object_id, genre_id, is_album)
+        BaseMenu.__init__(self, object_id, [], [], is_album)
 
         if is_album:
             favorite = Lp().settings.get_value('tag-editor').get_string()
@@ -459,19 +469,20 @@ class AlbumMenu(Gio.Menu):
         Contextual menu for album
     """
 
-    def __init__(self, object_id, genre_id):
+    def __init__(self, album):
         """
             Init menu model
-            @param object id as int
-            @param genre id as int
+            @param album as Album
         """
         Gio.Menu.__init__(self)
         self.insert_section(0, _("Queue"),
-                            QueueMenu(object_id, genre_id, True))
+                            QueueMenu(album.id, album.genre_ids,
+                                      album.artist_ids, True))
         self.insert_section(1, _("Playlists"),
-                            PlaylistsMenu(object_id, genre_id, True))
+                            PlaylistsMenu(album.id, album.genre_ids,
+                                          album.artist_ids, True))
         self.insert_section(2, _("Edit"),
-                            EditMenu(object_id, genre_id, True))
+                            EditMenu(album.id, True))
 
 
 class TrackMenu(Gio.Menu):
@@ -486,9 +497,9 @@ class TrackMenu(Gio.Menu):
         """
         Gio.Menu.__init__(self)
         self.insert_section(0, _("Queue"),
-                            QueueMenu(object_id, None, False))
+                            QueueMenu(object_id, [], False))
         self.insert_section(1, _("Playlists"),
-                            PlaylistsMenu(object_id, None, False))
+                            PlaylistsMenu(object_id, [], False))
 
 
 class TrackMenuPopover(Gtk.Popover):

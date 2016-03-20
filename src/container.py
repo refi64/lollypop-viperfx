@@ -112,15 +112,17 @@ class Container:
                             GLib.Variant('ai',
                                          self._list_two.get_selected_ids()))
 
-    def show_playlist_manager(self, object_id, genre_id, is_album):
+    def show_playlist_manager(self, object_id, genre_ids,
+                              artist_ids, is_album):
         """
             Show playlist manager for object_id
             Current view stay present in ViewContainer
             @param object id as int
-            @param genre id as int
+            @param genre ids as [int]
+            @param artist ids as [int]
             @param is_album as bool
         """
-        view = PlaylistsManageView(object_id, genre_id, is_album)
+        view = PlaylistsManageView(object_id, genre_ids, artist_ids, is_album)
         view.populate()
         view.show()
         self._stack.add(view)
@@ -535,7 +537,7 @@ class Container:
                 albums += Lp().albums.get_ids(artist_ids, genre_ids)
             return albums
 
-        view = ArtistView(artist_ids, genre_ids)
+        view = ArtistView(artist_ids, self._remove_static_genres(genre_ids))
         loader = Loader(target=load, view=view)
         loader.start()
         view.show()
@@ -575,7 +577,7 @@ class Container:
         artist_ids = []
         if is_compilation:
             artist_ids.append(Type.COMPILATIONS)
-        view = AlbumsView(genre_ids, artist_ids)
+        view = AlbumsView(self._remove_static_genres(genre_ids), artist_ids)
         loader = Loader(target=load, view=view)
         loader.start()
         view.show()
@@ -670,6 +672,13 @@ class Container:
                     child.destroy()
                 del self._devices[dev.id]
             break
+
+    def _remove_static_genres(self, genre_ids):
+        """
+            Remove static genre ids
+            @param genre ids as [int]
+        """
+        return [item for item in genre_ids if item >= 0]
 
     def _on_list_one_selected(self, selection_list):
         """

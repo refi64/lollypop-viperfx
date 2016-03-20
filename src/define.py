@@ -50,6 +50,7 @@ class SelectionMode:
 # Represent playback context
 class PlayContext:
     genre_ids = {}
+    artist_ids = {}
     next_track = None  # Needed to return from queue
     prev_track = None  # Needed to return from queue
     next = NextContext.NONE

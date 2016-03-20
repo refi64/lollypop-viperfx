@@ -355,7 +355,7 @@ class AlbumsDatabase:
             if v is not None:
                 path = v[0]
             if path != "" and not os.path.exists(path):
-                tracks = self.get_tracks(album_id, None)
+                tracks = self.get_tracks(album_id, [], [])
                 if tracks:
                     filepath = Lp().tracks.get_path(tracks[0])
                     path = os.path.dirname(filepath)
@@ -447,21 +447,18 @@ class AlbumsDatabase:
             @return count as int
         """
         with SqlCursor(Lp().db) as sql:
-            if genre_ids and genre_ids[0] > 0:
-                filters = (album_id,)
-                filters += tuple(genre_ids)
-                request = "SELECT COUNT(1)\
-                           FROM tracks, track_genres\
-                           WHERE tracks.album_id=?\
-                           AND track_genres.track_id = tracks.rowid AND ("
+            filters = (album_id,)
+            filters += tuple(genre_ids)
+            request = "SELECT COUNT(1)\
+                       FROM tracks, track_genres\
+                       WHERE tracks.album_id=?\
+                       AND track_genres.track_id = tracks.rowid"
+            if genre_ids:
+                request += " AND ("
                 for genre_id in genre_ids:
                     request += "track_genres.genre_id=? OR "
                 request += "1=0)"
-                result = sql.execute(request, filters)
-            else:
-                result = sql.execute("SELECT COUNT(1)\
-                                      FROM tracks\
-                                      WHERE tracks.album_id=?", (album_id,))
+            result = sql.execute(request, filters)
             v = result.fetchone()
             if v is not None:
                 return v[0]
@@ -475,109 +472,138 @@ class AlbumsDatabase:
             @return [disc as int]
         """
         with SqlCursor(Lp().db) as sql:
-            if genre_ids and genre_ids[0] > 0:
-                filters = (album_id,)
-                filters += tuple(genre_ids)
-                request = "SELECT DISTINCT discnumber\
-                           FROM tracks, track_genres\
-                           WHERE tracks.album_id=?\
-                           AND track_genres.track_id = tracks.rowid AND ("
+            filters = (album_id,)
+            filters += tuple(genre_ids)
+            request = "SELECT DISTINCT discnumber\
+                       FROM tracks, track_genres\
+                       WHERE tracks.album_id=?\
+                       AND track_genres.track_id = tracks.rowid"
+            if genre_ids:
+                request += " AND ("
                 for genre_id in genre_ids:
                     request += "track_genres.genre_id=? OR "
-                request += "1=0) ORDER BY discnumber"
-                result = sql.execute(request, filters)
-            else:
-                result = sql.execute("SELECT DISTINCT discnumber\
-                                      FROM tracks\
-                                      WHERE tracks.album_id=?\
-                                      ORDER BY discnumber", (album_id,))
+                request += "1=0)"
+            request += " ORDER BY discnumber"
+            result = sql.execute(request, filters)
             return list(itertools.chain(*result))
 
-    def get_tracks(self, album_id, genre_ids):
+    def get_tracks(self, album_id, genre_ids, artist_ids):
         """
             Get tracks for album id
             @param album id as int
             @param genre ids as [int]
+            @param artist_ids as [int]
             @return Arrays of tracks id as int
         """
+        # Reset filters if not needed
+        if not self._has_genres(album_id):
+            genre_ids = []
+        if not self._has_artists(album_id):
+            artist_ids = []
         with SqlCursor(Lp().db) as sql:
-            if genre_ids and genre_ids[0] > 0:
-                filters = (album_id,)
+            filters = (album_id,)
+            request = "SELECT DISTINCT tracks.rowid\
+                       FROM tracks"
+            if genre_ids:
+                request += ", track_genres"
                 filters += tuple(genre_ids)
-                request = "SELECT tracks.rowid\
-                           FROM tracks, track_genres\
-                           WHERE album_id=?\
-                           AND track_genres.track_id = tracks.rowid AND ("
+            if artist_ids:
+                request += ", track_artists"
+                filters += tuple(artist_ids)
+            request += " WHERE album_id=? "
+            if genre_ids:
+                request += "AND track_genres.track_id=tracks.rowid AND ("
                 for genre_id in genre_ids:
                     request += "track_genres.genre_id=? OR "
-                request += "1=0) ORDER BY discnumber, tracknumber"
-                result = sql.execute(request, filters)
-            else:
-                result = sql.execute("SELECT rowid FROM tracks\
-                                      WHERE album_id=?\
-                                      ORDER BY discnumber, tracknumber",
-                                     (album_id,))
+                request += "1=0)"
+            if artist_ids:
+                request += "AND track_artists.track_id=tracks.rowid AND ("
+                for artist_id in artist_ids:
+                    request += "track_artists.artist_id=? OR "
+                request += "1=0)"
+            request += " ORDER BY discnumber, tracknumber"
+            result = sql.execute(request, filters)
             return list(itertools.chain(*result))
 
-    def get_tracks_path(self, album_id, genre_ids):
+    def get_tracks_path(self, album_id, genre_ids, artist_ids):
         """
             Get tracks path for album id/disc
             Will search track from albums from same artist
             with same name and different genre
             @param album id as int
             @param genre ids as [int]
+            @param artist_ids as [int]
             @return Arrays of tracks id as int
         """
+        # Reset filters if not needed
+        if not self._has_genres(album_id):
+            genre_ids = []
+        if not self._has_artists(album_id):
+            artist_ids = []
         with SqlCursor(Lp().db) as sql:
-            if genre_ids and genre_ids[0] > 0:
-                filters = (album_id,)
+            filters = (album_id,)
+            request = "SELECT DISTINCT tracks.filepath\
+                       FROM tracks"
+            if genre_ids:
+                request += ", track_genres"
                 filters += tuple(genre_ids)
-                request = "SELECT tracks.filepath\
-                           FROM tracks, track_genres\
-                           WHERE album_id=?\
-                           AND track_genres.track_id = tracks.rowid AND ("
+            if artist_ids:
+                request += ", track_artists"
+                filters += tuple(artist_ids)
+            request += " WHERE album_id=? "
+            if genre_ids:
+                request += "AND track_genres.track_id = tracks.rowid AND ("
                 for genre_id in genre_ids:
                     request += "track_genres.genre_id=? OR "
-                request += "1=0) ORDER BY discnumber, tracknumber"
-                result = sql.execute(request, filters)
-            else:
-                result = sql.execute("SELECT tracks.filepath\
-                                      FROM tracks\
-                                      WHERE album_id=?\
-                                      ORDER BY discnumber, tracknumber",
-                                     (album_id,))
+                request += "1=0)"
+            if artist_ids:
+                request += "AND track_artists.track_id=tracks.rowid AND ("
+                for artist_id in artist_ids:
+                    request += "track_artists.artist_id=? OR "
+                request += "1=0)"
+            request += " ORDER BY discnumber, tracknumber"
+            result = sql.execute(request, filters)
             return list(itertools.chain(*result))
 
-    def get_disc_tracks(self, album_id, genre_ids, disc):
+    def get_disc_tracks(self, album_id, genre_ids, artist_ids, disc):
         """
             Get tracks ids for album id disc
 
-            @param album_id as int
-            @param genre_ids as [int]
+            @param album id as int
+            @param genre ids as [int]
+            @param artist ids as [int]
             @param disc as int
             @return [int]
         """
+        # Reset filters if not needed
+        if not self._has_genres(album_id):
+            genre_ids = []
+        if not self._has_artists(album_id):
+            artist_ids = []
         with SqlCursor(Lp().db) as sql:
-            if genre_ids and genre_ids[0] > 0:
-                filters = (album_id, disc)
+            filters = (album_id, disc)
+            request = "SELECT tracks.rowid\
+                       FROM tracks"
+            if genre_ids:
+                request += ", track_genres"
                 filters += tuple(genre_ids)
-                request = "SELECT tracks.rowid\
-                           FROM tracks, track_genres\
-                           WHERE album_id=?\
-                           AND discnumber=?\
-                           AND track_genres.track_id = tracks.rowid AND ("
+            if artist_ids:
+                request += ", track_artists"
+                filters += tuple(artist_ids)
+            request += " WHERE album_id=?\
+                       AND discnumber=?"
+            if genre_ids:
+                request += " AND track_genres.track_id = tracks.rowid AND ("
                 for genre_id in genre_ids:
                     request += "track_genres.genre_id=? OR "
-                request += "1=0) ORDER BY discnumber, tracknumber"
-                result = sql.execute(request, filters)
-            else:
-                result = sql.execute("SELECT tracks.rowid\
-                                      FROM tracks\
-                                      WHERE tracks.album_id = ?\
-                                      AND discnumber=?\
-                                      ORDER BY discnumber, tracknumber",
-                                     (album_id, disc))
-
+                request += "1=0)"
+            if artist_ids:
+                request += " AND track_artists.track_id=tracks.rowid AND ("
+                for artist_id in artist_ids:
+                    request += "track_artists.artist_id=? OR "
+                request += "1=0)"
+            request += " ORDER BY discnumber, tracknumber"
+            result = sql.execute(request, filters)
             return list(itertools.chain(*result))
 
     def get_ids(self, artist_ids=[], genre_ids=[]):
@@ -782,3 +808,38 @@ class AlbumsDatabase:
                             (album_id,))
                 sql.execute("DELETE FROM albums WHERE rowid=?", (album_id,))
             return ret
+
+#######################
+# PRIVATE             #
+#######################
+    def _has_genres(self, album_id):
+        """
+            Return True if album has more than one genre
+            @param album id as int
+            @return bool
+        """
+        with SqlCursor(Lp().db) as sql:
+            result = sql.execute("SELECT COUNT(*)\
+                                 FROM album_genres\
+                                 WHERE album_id=?\
+                                 LIMIT 2", (album_id,))
+        v = result.fetchone()
+        if v is not None:
+            return v[0] > 1
+        return False
+
+    def _has_artists(self, album_id):
+        """
+            Return True if album has more than one artist
+            @param album id as int
+            @return bool
+        """
+        with SqlCursor(Lp().db) as sql:
+            result = sql.execute("SELECT COUNT(*)\
+                                 FROM album_artists\
+                                 WHERE album_id=?\
+                                 LIMIT 2", (album_id,))
+        v = result.fetchone()
+        if v is not None:
+            return v[0] > 1
+        return False
