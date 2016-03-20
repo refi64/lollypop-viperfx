@@ -1,3 +1,7 @@
+* {
+	-GtkButton-image-spacing: 2;
+}
+
 GtkWidget {
 	outline-width: 0px;
     text-shadow: none;
