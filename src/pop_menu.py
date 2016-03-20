@@ -52,7 +52,7 @@ class PlaybackMenu(BaseMenu):
         """
             Init playback menu
         """
-        BaseMenu.__init__(self, None, None, None)
+        BaseMenu.__init__(self, None, [], [], False)
         self._set_playback_actions()
 
 #######################
@@ -403,7 +403,7 @@ class PopToolbarMenu(Gio.Menu):
             self.insert_section(0, _("Playback"),
                                 PlaybackMenu())
         self.insert_section(1, _("Playlists"),
-                            PlaylistsMenu(object_id, None, False))
+                            PlaylistsMenu(object_id, [], [], False))
 
 
 class EditMenu(BaseMenu):
