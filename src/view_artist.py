@@ -13,6 +13,7 @@
 from gi.repository import Gtk, Gdk
 
 from cgi import escape
+from gettext import gettext as _
 
 from lollypop.define import Lp
 from lollypop.pop_infos import InfosPopover
@@ -43,10 +44,11 @@ class ArtistView(ArtistAlbumsView):
         self._jump_button = builder.get_object('jump-button')
         self._spinner = builder.get_object('spinner')
         self.attach(builder.get_object('ArtistView'), 0, 0, 1, 1)
-        artists = ""
-        for artist_id in artist_ids:
-            artists += Lp().artists.get_name(artist_id) + ", "
-        builder.get_object('artist').set_label(artists[:-2])
+        if len(artist_ids) == 1:
+            artist = Lp().artists.get_name(artist_ids[0])
+        else:
+            artist = _("Many artists")
+        builder.get_object('artist').set_label(artist)
 
 #######################
 # PRIVATE             #
