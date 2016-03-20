@@ -46,13 +46,9 @@ class Database:
     create_album_artists = '''CREATE TABLE album_artists (
                                                 album_id INT NOT NULL,
                                                 artist_id INT NOT NULL)'''
-    create_album_artists_idx = '''CREATE INDEX idx_aa
-                                  ON album_artists(artist_id)'''
     create_album_genres = '''CREATE TABLE album_genres (
                                                 album_id INT NOT NULL,
                                                 genre_id INT NOT NULL)'''
-    create_album_genres_idx = '''CREATE INDEX idx_ag
-                                  ON album_genres(genre_id)'''
     create_tracks = '''CREATE TABLE tracks (id INTEGER PRIMARY KEY,
                         name TEXT NOT NULL,
                         filepath TEXT NOT NULL,
@@ -67,13 +63,9 @@ class Database:
     create_track_artists = '''CREATE TABLE track_artists (
                                                 track_id INT NOT NULL,
                                                 artist_id INT NOT NULL)'''
-    create_track_artists_idx = '''CREATE INDEX idx_ta
-                                  ON track_artists(artist_id)'''
     create_track_genres = '''CREATE TABLE track_genres (
                                                 track_id INT NOT NULL,
                                                 genre_id INT NOT NULL)'''
-    create_track_genres_idx = '''CREATE INDEX idx_tg
-                                  ON track_genres(genre_id)'''
 
     def __init__(self):
         """
@@ -97,13 +89,9 @@ class Database:
                     sql.execute(self.create_genres)
                     sql.execute(self.create_album_genres)
                     sql.execute(self.create_album_artists)
-                    sql.execute(self.create_album_artists_idx)
-                    sql.execute(self.create_album_genres_idx)
                     sql.execute(self.create_tracks)
                     sql.execute(self.create_track_artists)
                     sql.execute(self.create_track_genres)
-                    sql.execute(self.create_track_artists_idx)
-                    sql.execute(self.create_track_genres_idx)
                     sql.commit()
             except Exception as e:
                 print("Database::__init__(): %s" % e)
