@@ -554,7 +554,7 @@ class AlbumDetailedWidget(Gtk.Bin, AlbumWidget):
         Gtk.Bin.__init__(self)
         AlbumWidget.__init__(self, album_id, genre_ids)
         self._width = None
-        self._size_group = Gtk.SizeGroup(mode=Gtk.SizeGroupMode.HORIZONTAL)
+        self._orientation = None
         self._stop = False
         self._child_height = TrackRow.get_best_height(self)
         # Discs to load, will be emptied
@@ -602,10 +602,9 @@ class AlbumDetailedWidget(Gtk.Bin, AlbumWidget):
                 label.set_text(_("%s h") % hours)
         else:
             label.set_text(_("%s m") % mins)
-        self._box = FlowBox()
-        self._box.set_selection_mode(Gtk.SelectionMode.NONE)
-        self._box.set_activate_on_single_click(False)
-        self._box.set_hexpand(True)
+
+        self._box = Gtk.Grid()
+        self._box.set_column_homogeneous(True)
         self._box.set_property('valign', Gtk.Align.START)
         self._box.show()
         builder.get_object('albuminfo').add(self._box)
@@ -697,7 +696,7 @@ class AlbumDetailedWidget(Gtk.Bin, AlbumWidget):
             @param pos as int
         """
         # If we are showing only one column, wait for widget1
-        if self._box.get_min_children_per_line() == 1 and\
+        if self._box.get_orientation() == Gtk.Orientation.VERTICAL and\
            self._locked_widget_right:
             GLib.timeout_add(100, self.populate_list_right, tracks, disc, pos)
         else:
@@ -757,10 +756,6 @@ class AlbumDetailedWidget(Gtk.Bin, AlbumWidget):
             self._box.insert(sep, -1)
         self._tracks_left[disc_number] = TracksWidget()
         self._tracks_right[disc_number] = TracksWidget()
-        self._size_group.add_widget(self._tracks_left[disc_number])
-        self._size_group.add_widget(self._tracks_right[disc_number])
-        self._box.insert(self._tracks_left[disc_number], -1)
-        self._box.insert(self._tracks_right[disc_number], -1)
         self._tracks_left[disc_number].connect('activated',
                                                self._on_activated)
         self._tracks_left[disc_number].connect('button-press-event',
@@ -835,12 +830,21 @@ class AlbumDetailedWidget(Gtk.Bin, AlbumWidget):
         if self._width == allocation.width:
             return
         self._width = allocation.width
+        redraw = False
         if allocation.width < WindowSize.MONSTER:
-            self._box.set_min_children_per_line(1)
-            self._box.set_max_children_per_line(1)
+            orientation = Gtk.Orientation.VERTICAL
         else:
-            self._box.set_min_children_per_line(2)
-            self._box.set_max_children_per_line(2)
+            orientation = Gtk.Orientation.HORIZONTAL
+        if orientation != self._orientation:
+            self._orientation = orientation
+            redraw = True
+        self._box.set_orientation(orientation)
+        if redraw:
+            for child in self._box.get_children():
+                self._box.remove(child)
+            for disc in self._album.discs:
+                self._box.add(self._tracks_left[disc.number])
+                self._box.add(self._tracks_right[disc.number])
         if allocation.width < WindowSize.MEDIUM:
             self._coverbox.hide()
         else:
