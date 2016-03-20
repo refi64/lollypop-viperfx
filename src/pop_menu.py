@@ -497,9 +497,9 @@ class TrackMenu(Gio.Menu):
         """
         Gio.Menu.__init__(self)
         self.insert_section(0, _("Queue"),
-                            QueueMenu(object_id, [], False))
+                            QueueMenu(object_id, [], [], False))
         self.insert_section(1, _("Playlists"),
-                            PlaylistsMenu(object_id, [], False))
+                            PlaylistsMenu(object_id, [], [], False))
 
 
 class TrackMenuPopover(Gtk.Popover):
