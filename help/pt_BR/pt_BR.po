@@ -1,13 +1,14 @@
 # 
 # Translators:
 # Laís Figueiredo <laisfigsantos@gmail.com>, 2016
+# Lucas Miranda <Liddack@outlook.com>, 2016
 # Ricardo Borges Jr. <ricardoborges.jr@gmail.com>, 2015-2016
 msgid ""
 msgstr ""
 "Project-Id-Version: lollypop\n"
 "POT-Creation-Date: 2015-06-24 15:43+0200\n"
-"PO-Revision-Date: 2016-02-22 18:52+0000\n"
-"Last-Translator: Ricardo Borges Jr. <ricardoborges.jr@gmail.com>\n"
+"PO-Revision-Date: 2016-03-19 19:54+0000\n"
+"Last-Translator: Lucas Miranda <Liddack@outlook.com>\n"
 "Language-Team: Portuguese (Brazil) (http://www.transifex.com/gnumdk/lollypop/language/pt_BR/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -18,7 +19,7 @@ msgstr ""
 #. Put one translator per line, in the form NAME <EMAIL>, YEAR1, YEAR2
 msgctxt "_"
 msgid "translator-credits"
-msgstr ""
+msgstr "translator-credits"
 
 #. (itstool) path: info/desc
 #: C/index.page:7
@@ -66,7 +67,7 @@ msgstr "Cheque se você tem o gstreamer-libav e o gstreamer-fleundo instalados"
 msgid ""
 "Go to the application menu: \"<sys>Settings -&gt; Music</sys>\" and add your"
 " music folder"
-msgstr ""
+msgstr "Vá para o menu do aplicativo: \"<sys>Configurações -&gt; Músicas</sys>\" e adicione sua pasta de músicas"
 
 #. (itstool) path: section/title
 #: C/index.page:30
@@ -76,49 +77,49 @@ msgstr "Reprodução"
 #. (itstool) path: section/p
 #: C/index.page:31
 msgid "When you start playing a song, a contextual playlist is populated."
-msgstr ""
+msgstr "Quando você começa a reproduzir uma música, uma playlist contextual é povoada."
 
 #. (itstool) path: section/p
 #: C/index.page:32
 msgid ""
 "Contexts can be: an album, an artist, a genre, popular or recent albums, "
 "searches, playlists, ..."
-msgstr ""
+msgstr "Os contextos podem ser: um álbum, um artista, um gênero, álbuns populares ou recentes, pesquisas, playlists, ..."
 
 #. (itstool) path: section/p
 #: C/index.page:33
 msgid "Shuffle interacts on current context."
-msgstr ""
+msgstr "O modo de mistura interage com o contexto atual."
 
 #. (itstool) path: section/title
 #: C/index.page:37
 msgid "Rate albums"
-msgstr ""
+msgstr "Classificar álbuns"
 
 #. (itstool) path: section/p
 #: C/index.page:38
 msgid ""
 "Album popularity is based on how many tracks from an album you listen to."
-msgstr ""
+msgstr "A popularidade de um álbum é baseada em quantas faixas desse álbum você escuta."
 
 #. (itstool) path: section/p
 #: C/index.page:39
 msgid ""
 "Album rating will be influenced by album popularity. In other words, rate "
 "will decrease if you stop listening to an album."
-msgstr ""
+msgstr "A classificação de um álbum será influenciada pela sua popularidade. Em outras palavras, a classificação irá diminuir se você parar de escutar esse álbum"
 
 #. (itstool) path: section/title
 #: C/index.page:43
 msgid "Download covers"
-msgstr ""
+msgstr "Baixar capas"
 
 #. (itstool) path: section/p
 #: C/index.page:44
 msgid ""
 "When hovering a cover, if mouse cursor changes to a pen, just click and "
 "select a new cover."
-msgstr ""
+msgstr "Se você passar o ponteiro do mouse por cima de uma capa e o ponteiro mudar para uma caneta, apenas clique para selecionar uma nova capa."
 
 #. (itstool) path: section/p
 #: C/index.page:45
@@ -183,12 +184,12 @@ msgstr "Control+n: Pular álbum atual"
 #. (itstool) path: item/p
 #: C/index.page:61
 msgid "Left key: Skip backward in track"
-msgstr ""
+msgstr "Seta para a esquerda: retroceder uma faixa"
 
 #. (itstool) path: item/p
 #: C/index.page:62
 msgid "Right key: Skip forward in track"
-msgstr ""
+msgstr "Seta para a direita: avançar a faixa rapidamente"
 
 #. (itstool) path: p/link
 #: C/legal.xml:4
@@ -206,4 +207,4 @@ msgid ""
 "As a special exception, the copyright holders give you permission to copy, "
 "modify, and distribute the example code contained in this document under the"
 " terms of your choosing, without restriction."
-msgstr ""
+msgstr "Como uma exceção especial, o detentor dos direitos autorais te dá permissão para copiar, modificar e distribuir o código de exemplo contido neste documento sob os termos de sua escolha, sem restrições."

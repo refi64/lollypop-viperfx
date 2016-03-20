@@ -1,12 +1,13 @@
 # 
 # Translators:
+# Adolfo Jayme Barrientos, 2016
 # Ricardo Enrique Lugo Ochoa <ricardol8a@hotmail.com>, 2015
 msgid ""
 msgstr ""
 "Project-Id-Version: lollypop\n"
 "POT-Creation-Date: 2015-06-24 15:43+0200\n"
-"PO-Revision-Date: 2015-07-30 01:22+0000\n"
-"Last-Translator: Ricardo Enrique Lugo Ochoa <ricardol8a@hotmail.com>\n"
+"PO-Revision-Date: 2016-03-21 05:36+0000\n"
+"Last-Translator: Adolfo Jayme Barrientos\n"
 "Language-Team: Spanish (http://www.transifex.com/gnumdk/lollypop/language/es/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -17,18 +18,18 @@ msgstr ""
 #. Put one translator per line, in the form NAME <EMAIL>, YEAR1, YEAR2
 msgctxt "_"
 msgid "translator-credits"
-msgstr "traductor-créditos"
+msgstr "Adolfo Jayme Barrientos <fitojb@ubuntu.com>, 2016.\nRicardo Enrique Lugo Ochoa, 2015."
 
 #. (itstool) path: info/desc
 #: C/index.page:7
 msgid "Help for the Lollypop music player."
-msgstr "Ayuda para el Reproductor de Música Lollypop"
+msgstr "Ayuda para el reproductor musical Lollypop"
 
 #. (itstool) path: info/title
 #: C/index.page:8
 msgctxt "text"
 msgid "Lollypop music player"
-msgstr "Reproductor de Música Lollypop"
+msgstr "Reproductor musical Lollypop"
 
 #. (itstool) path: credit/name
 #: C/index.page:11
@@ -43,29 +44,29 @@ msgstr "2015"
 #. (itstool) path: page/title
 #: C/index.page:18
 msgid "<_:media-1/> Lollypop music player"
-msgstr "<_:media-1/> Reproductor de Música Lollypop"
+msgstr "<_:media-1/> Reproductor musical Lollypop"
 
 #. (itstool) path: section/title
 #: C/index.page:21
 msgid "Add music"
-msgstr "Agregar música"
+msgstr "Añadir música"
 
 #. (itstool) path: section/p
 #: C/index.page:22
 msgid "If lollypop fails to detect your music:"
-msgstr "Si lollypop falla en detectar tu música:"
+msgstr "Si lollypop no puede detectar su música:"
 
 #. (itstool) path: item/p
 #: C/index.page:24
 msgid "Check you have gstreamer-libav or gstreamer-fluendo installed"
-msgstr "Revisa el gstreamer-libav o el gstreamer-fluendo instalado"
+msgstr "Compruebe que ha instalado «gstreamer-libav» o «gstreamer-fluendo»"
 
 #. (itstool) path: item/p
 #: C/index.page:25
 msgid ""
 "Go to the application menu: \"<sys>Settings -&gt; Music</sys>\" and add your"
 " music folder"
-msgstr "Ir al menú de la aplicación: \"<sys>Opciones -&gt; Música</sys>\" y agrega tu carpeta de música"
+msgstr "Vaya al menú de la aplicación, seleccione <sys>Configuración ▸ Música</sys> y añada su carpeta de música"
 
 #. (itstool) path: section/title
 #: C/index.page:30
@@ -75,14 +76,14 @@ msgstr "Reproducción"
 #. (itstool) path: section/p
 #: C/index.page:31
 msgid "When you start playing a song, a contextual playlist is populated."
-msgstr "Cuando inicies la reproducción de una canción, una lista de reproducción relacionada se crea."
+msgstr "Cuando comience a reproducir una canción, se creará una lista de reproducción contextual."
 
 #. (itstool) path: section/p
 #: C/index.page:32
 msgid ""
 "Contexts can be: an album, an artist, a genre, popular or recent albums, "
 "searches, playlists, ..."
-msgstr "El contexto puede ser: un álbum, un artista, un género, álbumes populares o recientes, búsquedas, listas de reproducción, ..."
+msgstr "Entre los contextos se encuentran: el álbum, el artista, el género, los álbumes populares o recientes, búsquedas, otras listas…"
 
 #. (itstool) path: section/p
 #: C/index.page:33
@@ -92,20 +93,20 @@ msgstr "Interacciones aleatorias sobre el contexto actual."
 #. (itstool) path: section/title
 #: C/index.page:37
 msgid "Rate albums"
-msgstr "Puntúa álbumes"
+msgstr "Valorar álbumes"
 
 #. (itstool) path: section/p
 #: C/index.page:38
 msgid ""
 "Album popularity is based on how many tracks from an album you listen to."
-msgstr "La popularidad de un álbum se basa en cuantas pistas del mismo tu escuchas."
+msgstr "La popularidad de un álbum se calcula según cuántas de sus pistas escuche."
 
 #. (itstool) path: section/p
 #: C/index.page:39
 msgid ""
 "Album rating will be influenced by album popularity. In other words, rate "
 "will decrease if you stop listening to an album."
-msgstr "La puntuación de una álbum será afectada por su popularidad. En otras palabras, el puntaje disminuirá si dejas de escuchar el álbum."
+msgstr "La popularidad de un álbum influirá en su valoración. Dicho de otro modo, la puntuación disminuirá a medida que deje de escucharlo."
 
 #. (itstool) path: section/title
 #: C/index.page:43
