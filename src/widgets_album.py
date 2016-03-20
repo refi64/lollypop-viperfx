@@ -847,8 +847,8 @@ class AlbumDetailedWidget(Gtk.Bin, AlbumWidget):
             for child in self._box.get_children():
                 self._box.remove(child)
             for disc in self._album.discs:
-                self._box.add(self._tracks_left[disc.number])
-                self._box.add(self._tracks_right[disc.number])
+                GLib.idle_add(self._box.add, self._tracks_left[disc.number])
+                GLib.idle_add(self._box.add, self._tracks_right[disc.number])
         if allocation.width < WindowSize.MEDIUM:
             self._coverbox.hide()
         else:

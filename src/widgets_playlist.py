@@ -371,8 +371,8 @@ class PlaylistsWidget(Gtk.Bin):
         if redraw:
             for child in self._box.get_children():
                 self._box.remove(child)
-            self._box.add(self._tracks_widget_left)
-            self._box.add(self._tracks_widget_right)
+            GLib.idle_add(self._box.add, self._tracks_widget_left)
+            GLib.idle_add(self._box.add, self._tracks_widget_right)
         self._update_headers()
 
     def _on_activated(self, widget, track_id):
