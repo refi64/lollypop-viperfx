@@ -363,9 +363,10 @@ class SearchPopover(Gtk.Popover):
         tracks = []
         for child in self._view.get_children():
             if child.is_track:
-                tracks.append(Track(child.id))
+                tracks.append(Track(child.get_id()))
             else:
-                for track_id in Lp().albums.get_tracks(child.id, None):
+                for track_id in Lp().albums.get_tracks(child.get_id(), [],
+                                                       child.get_artist_ids()):
                     tracks.append(Track(track_id))
         if tracks:
             playlist_id = Lp().playlists.get_id(self._current_search)
