@@ -147,6 +147,14 @@ def is_loved(track_id):
                                        track_id)
 
 
+def remove_static_genres(genre_ids):
+    """
+        Remove static genre ids
+        @param genre ids as [int]
+    """
+    return [item for item in genre_ids if item >= 0]
+
+
 def set_loved(track_id, loved):
     """
         Add or remove track from loved playlist

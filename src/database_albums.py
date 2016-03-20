@@ -16,6 +16,7 @@ import itertools
 
 from lollypop.sqlcursor import SqlCursor
 from lollypop.define import Lp, Type
+from lollypop.utils import remove_static_genres
 
 
 class AlbumsDatabase:
@@ -446,6 +447,7 @@ class AlbumsDatabase:
             @param genre ids as [int]
             @return count as int
         """
+        genre_ids = remove_static_genres(genre_ids)
         with SqlCursor(Lp().db) as sql:
             filters = (album_id,)
             filters += tuple(genre_ids)
@@ -471,6 +473,7 @@ class AlbumsDatabase:
             @param genre id as int
             @return [disc as int]
         """
+        genre_ids = remove_static_genres(genre_ids)
         with SqlCursor(Lp().db) as sql:
             filters = (album_id,)
             filters += tuple(genre_ids)
@@ -495,6 +498,7 @@ class AlbumsDatabase:
             @param artist_ids as [int]
             @return Arrays of tracks id as int
         """
+        genre_ids = remove_static_genres(genre_ids)
         # Reset filters if not needed
         if not self._has_genres(album_id):
             genre_ids = []
@@ -535,6 +539,7 @@ class AlbumsDatabase:
             @param artist_ids as [int]
             @return Arrays of tracks id as int
         """
+        genre_ids = remove_static_genres(genre_ids)
         # Reset filters if not needed
         if not self._has_genres(album_id):
             genre_ids = []
@@ -575,6 +580,7 @@ class AlbumsDatabase:
             @param disc as int
             @return [int]
         """
+        genre_ids = remove_static_genres(genre_ids)
         # Reset filters if not needed
         if not self._has_genres(album_id):
             genre_ids = []
@@ -613,6 +619,7 @@ class AlbumsDatabase:
             @param genre ids as [int]
             @return Array of album ids as int
         """
+        genre_ids = remove_static_genres(genre_ids)
         with SqlCursor(Lp().db) as sql:
             result = []
             # Get albums for all artists

@@ -537,7 +537,7 @@ class Container:
                 albums += Lp().albums.get_ids(artist_ids, genre_ids)
             return albums
 
-        view = ArtistView(artist_ids, self._remove_static_genres(genre_ids))
+        view = ArtistView(artist_ids, genre_ids)
         loader = Loader(target=load, view=view)
         loader.start()
         view.show()
@@ -577,7 +577,7 @@ class Container:
         artist_ids = []
         if is_compilation:
             artist_ids.append(Type.COMPILATIONS)
-        view = AlbumsView(self._remove_static_genres(genre_ids), artist_ids)
+        view = AlbumsView(genre_ids, artist_ids)
         loader = Loader(target=load, view=view)
         loader.start()
         view.show()
@@ -672,13 +672,6 @@ class Container:
                     child.destroy()
                 del self._devices[dev.id]
             break
-
-    def _remove_static_genres(self, genre_ids):
-        """
-            Remove static genre ids
-            @param genre ids as [int]
-        """
-        return [item for item in genre_ids if item >= 0]
 
     def _on_list_one_selected(self, selection_list):
         """
