@@ -618,6 +618,9 @@ class AlbumDetailedWidget(Gtk.Bin, AlbumWidget):
             self._set_disc_height(disc)
 
         self.add(self._widget)
+        # We start transparent, we switch opaque at size allocation
+        # This prevent artifacts
+        self.set_opacity(0)
 
         self._menu = builder.get_object('menu')
         self._menu.connect('clicked', self._pop_menu)
@@ -848,6 +851,7 @@ class AlbumDetailedWidget(Gtk.Bin, AlbumWidget):
                               self._tracks_right[disc.number],
                               pos, idx, 1, 1)
                 idx += 1
+                GLib.idle_add(self.set_opacity, 1)
         if allocation.width < WindowSize.MEDIUM:
             self._coverbox.hide()
         else:
