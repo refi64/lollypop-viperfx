@@ -614,7 +614,7 @@ class Container:
             loader = Loader(target=load, view=view)
             loader.start()
         else:
-            view = PlaylistsManageView(Type.NONE, None, False)
+            view = PlaylistsManageView(Type.NONE, [], [], False)
             view.populate()
         view.show()
         self._stack.add(view)

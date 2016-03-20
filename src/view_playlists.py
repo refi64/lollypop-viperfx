@@ -118,7 +118,7 @@ class PlaylistsView(View):
         if Lp().player.current_track.id in self._tracks:
             self._jump_button.set_sensitive(True)
             self._jump_button.set_tooltip_markup(
-             "<b>%s</b>\n%s" % (escape(Lp().player.current_track.artist_names),
+             "<b>%s</b>\n%s" % (escape(Lp().player.current_track.artists),
                                 escape(Lp().player.current_track.name)))
         else:
             self._jump_button.set_sensitive(False)
