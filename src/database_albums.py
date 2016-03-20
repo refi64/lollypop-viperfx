@@ -729,16 +729,15 @@ class AlbumsDatabase:
     def search(self, string):
         """
             Search for albums looking like string
-            @param string
-            return: Array of (id as int, artist_id as int)
+            @param search as str
+            @return album ids as [int]
         """
         with SqlCursor(Lp().db) as sql:
-            result = sql.execute("SELECT albums.rowid, artist_id\
-                                  FROM albums, album_artists\
+            result = sql.execute("SELECT albums.rowid\
+                                  FROM albums\
                                   WHERE name LIKE ?\
-                                  AND albums.rowid=album_artists.album_id\
                                   LIMIT 25", ('%' + string + '%',))
-            return list(result)
+            return list(itertools.chain(*result))
 
     def is_compilation(self, album_id):
         """

@@ -329,7 +329,8 @@ class PlaylistsWidget(Gtk.Bin):
             if (src_track.album.artist_id == Type.COMPILATIONS or
                     len(src_track.artist_ids) > 1 or
                     src_track.album.artist_id not in src_track.artist_ids):
-                name = "<b>%s</b>\n%s" % (escape(src_track.artist_names), name)
+                name = "<b>%s</b>\n%s" % (escape(", ".join(src_track.artists)),
+                                          name)
             self._tracks1.insert(index, src_track.id)
         row = PlaylistRow(src_track.id,
                           index,
