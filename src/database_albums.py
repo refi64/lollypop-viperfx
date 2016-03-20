@@ -823,9 +823,9 @@ class AlbumsDatabase:
                                  FROM album_genres\
                                  WHERE album_id=?\
                                  LIMIT 2", (album_id,))
-        v = result.fetchone()
-        if v is not None:
-            return v[0] > 1
+            v = result.fetchone()
+            if v is not None:
+                return v[0] > 1
         return False
 
     def _has_artists(self, album_id):
@@ -839,7 +839,7 @@ class AlbumsDatabase:
                                  FROM album_artists\
                                  WHERE album_id=?\
                                  LIMIT 2", (album_id,))
-        v = result.fetchone()
-        if v is not None:
-            return v[0] > 1
+            v = result.fetchone()
+            if v is not None:
+                return v[0] > 1
         return False
