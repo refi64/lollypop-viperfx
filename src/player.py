@@ -93,7 +93,7 @@ class Player(BinPlayer, QueuePlayer, UserPlaylistPlayer, RadioPlayer,
             artist_ids = self.context.artist_ids[album.id]
             for artist_id in album.artist_ids:
                 if artist_id >= 0 and artist_id not in artist_ids:
-                    self.context.artist_ids[album.id].append(artist_ids)
+                    self.context.artist_ids[album.id].append(artist_id)
         else:
             self._albums.append(album.id)
             self.context.genre_ids[album.id] = album.genre_ids
