@@ -77,7 +77,8 @@ class AlbumRow(Gtk.ListBoxRow):
         grid = Gtk.Grid()
         grid.set_column_spacing(8)
         self._artist_label = Gtk.Label.new("<b>%s</b>" %
-                                           escape(self._album.artist_name))
+                                           escape(", ".join(
+                                                         self._album.artists)))
         self._artist_label.set_use_markup(True)
         self._artist_label.set_hexpand(True)
         self._artist_label.set_property('halign', Gtk.Align.START)

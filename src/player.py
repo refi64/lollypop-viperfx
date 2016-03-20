@@ -84,15 +84,20 @@ class Player(BinPlayer, QueuePlayer, UserPlaylistPlayer, RadioPlayer,
             self.context.genre_ids[self.current_track.album.id] = []
             self._user_playlist = []
             self._user_playlist_ids = []
-        # If album already exists, merge genres
+        # If album already exists, merge genres/artists
         if album.id in self._albums:
             genre_ids = self.context.genre_ids[album.id]
             for genre_id in album.genre_ids:
                 if genre_id >= 0 and genre_id not in genre_ids:
                     self.context.genre_ids[album.id].append(genre_id)
+            artist_ids = self.context.artist_ids[album.id]
+            for artist_id in album.artist_ids:
+                if artist_id >= 0 and artist_id not in artist_ids:
+                    self.context.artist_ids[album.id].append(artist_ids)
         else:
             self._albums.append(album.id)
             self.context.genre_ids[album.id] = album.genre_ids
+            self.context.artist_ids[album.id] = album.artist_ids
         self.shuffle_albums(True)
         if self.current_track.id is not None and self.current_track.id > 0:
             self.set_next()
