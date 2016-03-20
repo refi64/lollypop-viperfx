@@ -22,20 +22,6 @@ from lollypop.widgets_track import TracksWidget, PlaylistRow
 from lollypop.objects import Track
 
 
-class FlowBox(Gtk.FlowBox):
-    """
-        Special flowbox ignoring user input
-    """
-    def __init__(self):
-        Gtk.FlowBox.__init__(self)
-
-    def do_button_press_event(self, event):
-        pass
-
-    def do_button_release_event(self, event):
-        pass
-
-
 class PlaylistsWidget(Gtk.Bin):
     """
         Show playlist tracks/albums
@@ -51,16 +37,13 @@ class PlaylistsWidget(Gtk.Bin):
         self._tracks1 = []
         self._tracks2 = []
         self._width = None
+        self._orientation = None
         self._stop = False
         # Used to block widget2 populate while showing one column
         self._locked_widget2 = True
 
-        size_group = Gtk.SizeGroup(mode=Gtk.SizeGroupMode.HORIZONTAL)
-
-        self._box = FlowBox()
-        self._box.set_selection_mode(Gtk.SelectionMode.NONE)
-        self._box.set_activate_on_single_click(False)
-        self._box.set_hexpand(True)
+        self._box = Gtk.Grid()
+        self._box.set_column_homogeneous(True)
         self._box.set_property('valign', Gtk.Align.START)
         self._box.show()
 
@@ -68,8 +51,6 @@ class PlaylistsWidget(Gtk.Bin):
 
         self._tracks_widget_left = TracksWidget()
         self._tracks_widget_right = TracksWidget()
-        size_group.add_widget(self._tracks_widget_left)
-        size_group.add_widget(self._tracks_widget_right)
         self._tracks_widget_left.connect('activated',
                                          self._on_activated)
         self._tracks_widget_right.connect('activated',
@@ -77,8 +58,6 @@ class PlaylistsWidget(Gtk.Bin):
         self._tracks_widget_left.show()
         self._tracks_widget_right.show()
 
-        self._box.add(self._tracks_widget_left)
-        self._box.add(self._tracks_widget_right)
         self.add(self._box)
 
     def get_id(self):
@@ -142,7 +121,7 @@ class PlaylistsWidget(Gtk.Bin):
         """
         self._tracks2 = list(tracks)
         # If we are showing only one column, wait for widget1
-        if self._box.get_min_children_per_line() == 1 and\
+        if self._orientation == Gtk.Orientation.VERTICAL and\
            self._locked_widget2:
             GLib.timeout_add(100, self.populate_list_right, tracks, pos)
         else:
@@ -273,7 +252,7 @@ class PlaylistsWidget(Gtk.Bin):
         """
         self._tracks_widget_left.update_headers()
         prev_album_id = None
-        if self._box.get_min_children_per_line() == 1:
+        if self._orientation == Gtk.Orientation.VERTICAL:
             if self._tracks1:
                 prev_album_id = Track(self._tracks1[-1]).album.id
         self._tracks_widget_right.update_headers(prev_album_id)
@@ -379,12 +358,20 @@ class PlaylistsWidget(Gtk.Bin):
         if self._width == allocation.width:
             return
         self._width = allocation.width
-        if allocation.width < WindowSize.BIG:
-            self._box.set_min_children_per_line(1)
-            self._box.set_max_children_per_line(1)
+        redraw = False
+        if allocation.width < WindowSize.MONSTER:
+            orientation = Gtk.Orientation.VERTICAL
         else:
-            self._box.set_min_children_per_line(2)
-            self._box.set_max_children_per_line(2)
+            orientation = Gtk.Orientation.HORIZONTAL
+        if orientation != self._orientation:
+            self._orientation = orientation
+            redraw = True
+        self._box.set_orientation(orientation)
+        if redraw:
+            for child in self._box.get_children():
+                self._box.remove(child)
+            self._box.add(self._tracks_widget_left)
+            self._box.add(self._tracks_widget_right)
         self._update_headers()
 
     def _on_activated(self, widget, track_id):

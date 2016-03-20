@@ -696,7 +696,7 @@ class AlbumDetailedWidget(Gtk.Bin, AlbumWidget):
             @param pos as int
         """
         # If we are showing only one column, wait for widget1
-        if self._box.get_orientation() == Gtk.Orientation.VERTICAL and\
+        if self._orientation == Gtk.Orientation.VERTICAL and\
            self._locked_widget_right:
             GLib.timeout_add(100, self.populate_list_right, tracks, disc, pos)
         else:
