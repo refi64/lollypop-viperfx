@@ -742,18 +742,6 @@ class AlbumDetailedWidget(Gtk.Bin, AlbumWidget):
             Add disc container to box
             @param disc_number as int
         """
-        show_label = len(self._album.discs) > 1
-        if show_label:
-            label = Gtk.Label()
-            label.set_text(_("Disc %s") % disc_number)
-            label.set_property('halign', Gtk.Align.START)
-            label.get_style_context().add_class('dim-label')
-            label.show()
-            self._box.insert(label, -1)
-            sep = Gtk.Separator()
-            sep.set_opacity(0.0)
-            sep.show()
-            self._box.insert(sep, -1)
         self._tracks_left[disc_number] = TracksWidget()
         self._tracks_right[disc_number] = TracksWidget()
         self._tracks_left[disc_number].connect('activated',
@@ -838,13 +826,38 @@ class AlbumDetailedWidget(Gtk.Bin, AlbumWidget):
         if orientation != self._orientation:
             self._orientation = orientation
             redraw = True
-        self._box.set_orientation(orientation)
+
         if redraw:
             for child in self._box.get_children():
                 self._box.remove(child)
+            # Grid index
+            idx = 0
+            # Disc label width / right box position
+            if orientation == Gtk.Orientation.VERTICAL:
+                width = 1
+                pos = 0
+            else:
+                width = 2
+                pos = 1
             for disc in self._album.discs:
-                GLib.idle_add(self._box.add, self._tracks_left[disc.number])
-                GLib.idle_add(self._box.add, self._tracks_right[disc.number])
+                show_label = len(self._album.discs) > 1
+                if show_label:
+                    label = Gtk.Label()
+                    label.set_text(_("Disc %s") % disc.number)
+                    label.set_property('halign', Gtk.Align.START)
+                    label.get_style_context().add_class('dim-label')
+                    label.show()
+                    self._box.attach(label, 0, idx, width, 1)
+                    idx += 1
+                GLib.idle_add(self._box.attach,
+                              self._tracks_left[disc.number],
+                              0, idx, 1, 1)
+                if orientation == Gtk.Orientation.VERTICAL:
+                    idx += 1
+                GLib.idle_add(self._box.attach,
+                              self._tracks_right[disc.number],
+                              pos, idx, 1, 1)
+                idx += 1
         if allocation.width < WindowSize.MEDIUM:
             self._coverbox.hide()
         else:
