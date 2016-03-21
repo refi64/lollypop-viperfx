@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-03-21 19:37+0100\n"
+"POT-Creation-Date: 2016-03-21 19:45+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -415,7 +415,7 @@ msgid "Loved tracks"
 msgstr ""
 
 #: ../src/pop_albums.py:279
-msgid "Clear all"
+msgid "Clear albums"
 msgstr ""
 
 #: ../src/pop_albums.py:287 ../src/view_artist.py:44
