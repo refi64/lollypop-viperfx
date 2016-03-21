@@ -9,8 +9,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lollypop\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-03-21 19:37+0100\n"
-"PO-Revision-Date: 2016-03-21 18:39+0000\n"
+"POT-Creation-Date: 2016-03-21 19:45+0100\n"
+"PO-Revision-Date: 2016-03-21 18:45+0000\n"
 "Last-Translator: Cédric Bellegarde <web@adishatz.org>\n"
 "Language-Team: French (http://www.transifex.com/gnumdk/lollypop/language/fr/)\n"
 "MIME-Version: 1.0\n"
@@ -417,8 +417,8 @@ msgid "Loved tracks"
 msgstr "Coups de coeur"
 
 #: ../src/pop_albums.py:279
-msgid "Clear all"
-msgstr "Tout enlever"
+msgid "Clear albums"
+msgstr "Vider la liste des albums"
 
 #: ../src/pop_albums.py:287 ../src/view_artist.py:44
 msgid "Go to current track"
