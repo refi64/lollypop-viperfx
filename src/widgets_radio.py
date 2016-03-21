@@ -74,6 +74,8 @@ class RadioWidget(Gtk.Frame, AlbumWidget):
         self._play_button.set_opacity(0)
         # Edit button
         edit_event = Gtk.EventBox()
+        edit_event.set_margin_bottom(5)
+        edit_event.set_margin_end(5)
         edit_event.set_property('has-tooltip', True)
         edit_event.set_tooltip_text(_("Change artwork"))
         edit_event.set_property('halign', Gtk.Align.END)
