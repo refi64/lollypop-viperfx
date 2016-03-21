@@ -12,6 +12,8 @@
 
 from gi.repository import Gtk, Gio, GLib
 
+from gettext import gettext as _
+
 from lollypop.pop_next import NextPopover
 from lollypop.pop_search import SearchPopover
 from lollypop.pop_albums import AlbumsPopover
@@ -68,6 +70,9 @@ class ToolbarEnd(Gtk.Bin):
         self._settings_button = builder.get_object('settings-button')
 
         self._list_button = builder.get_object('list-button')
+        self._list_button.set_property('has-tooltip', True)
+        self._list_button.connect('query-tooltip',
+                                  self._on_list_button_query_tooltip)
         list_action = Gio.SimpleAction.new('list', None)
         list_action.connect('activate', self._on_list_button_clicked)
         app.add_action(list_action)
@@ -280,3 +285,21 @@ class ToolbarEnd(Gtk.Bin):
             @param widget as Gtk.Widget
         """
         self._next_popover.hide()
+
+    def _on_list_button_query_tooltip(self, widget, x, y, keyboard, tooltip):
+        """
+            Show tooltip
+            @param widget as Gtk.Widget
+            @param x as int
+            @param y as int
+            @param keyboard as bool
+            @param tooltip as Gtk.Tooltip
+        """
+        if Lp().player.current_track.id == Type.EXTERNALS:
+            widget.set_tooltip_text(_("Externals tracks playing"))
+        elif Lp().player.get_queue():
+            widget.set_tooltip_text(_("Queue"))
+        elif Lp().player.get_user_playlist_ids():
+            widget.set_tooltip_text(_("Playlists playing"))
+        else:
+            widget.set_tooltip_text(_("Albums playing"))

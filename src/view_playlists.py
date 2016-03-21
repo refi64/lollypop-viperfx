@@ -12,7 +12,6 @@
 
 from gi.repository import Gtk
 
-from gettext import gettext as _
 from cgi import escape
 
 from lollypop.view import View
@@ -44,21 +43,8 @@ class PlaylistsView(View):
         builder.add_from_resource('/org/gnome/Lollypop/PlaylistView.ui')
         builder.connect_signals(self)
 
-        name = ""
-        for playlist_id in playlist_ids:
-            if playlist_id == Type.POPULARS:
-                name += _("Popular tracks")+", "
-            elif playlist_id == Type.RECENTS:
-                name += _("Recently played")+", "
-            elif playlist_id == Type.NEVER:
-                name += _("Never played")+", "
-            elif playlist_id == Type.RANDOMS:
-                name += _("Random tracks")+", "
-            elif playlist_id == Type.SEARCH:
-                name += _("Search")+", "
-            else:
-                name += Lp().playlists.get_name(playlist_id)+", "
-        builder.get_object('title').set_label(name[:-2])
+        builder.get_object('title').set_label(
+                             ", ".join(Lp().playlists.get_names(playlist_ids)))
 
         self._edit_button = builder.get_object('edit-button')
         self._jump_button = builder.get_object('jump-button')
@@ -67,7 +53,6 @@ class PlaylistsView(View):
            playlist_ids[0] < 0 and playlist_ids[0] != Type.LOVED) or\
                 not editable:
             self._edit_button.hide()
-        self._title = builder.get_object('title')
 
         self._playlists_widget = PlaylistsWidget(playlist_ids)
         self._playlists_widget.show()
