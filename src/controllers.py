@@ -161,7 +161,6 @@ class ProgressController:
             @param player as Player
         """
         if player.is_playing():
-            self._progress.set_show_fill_level(False)
             if player.current_track.id == Type.RADIOS and\
                     self._timeout_id is not None:
                 GLib.source_remove(self._timeout_id)
@@ -171,7 +170,6 @@ class ProgressController:
                 self._timeout_id = GLib.timeout_add(1000,
                                                     self._update_position)
         else:
-            self._progress.set_show_fill_level(True)
             self._update_position()
             if self._timeout_id is not None:
                 GLib.source_remove(self._timeout_id)
