@@ -270,5 +270,6 @@ class AlbumArt(BaseArt, ArtDownloader, TagReader):
             Get a uniq string for album
             @param album as Album
         """
-        path = album.name + "_" + album.artist_name
+        # FIXME special chars
+        path = album.name + "_".join(album.artists)
         return path[0:240].replace("/", "_")

@@ -32,7 +32,7 @@ class AlbumContextWidget(AlbumDetailedWidget):
         """
         AlbumDetailedWidget.__init__(self, album_id, genre_ids, artist_ids,
                                      update_albums)
-        self._artist_label.set_text(self._album.artist_name)
+        self._artist_label.set_text(", ".join(self._album.artists))
         self._artist_label.show()
 
 #######################
@@ -44,7 +44,7 @@ class AlbumContextWidget(AlbumDetailedWidget):
             @param eventbox as Gtk.EventBox
         """
         if InfosPopover.should_be_shown() and\
-                self._album.artist_id != Type.COMPILATIONS:
+                self._album.artist_ids[0] != Type.COMPILATIONS:
             eventbox.get_window().set_cursor(Gdk.Cursor(Gdk.CursorType.HAND1))
 
     def _on_label_button_release(self, eventbox, event):
@@ -54,7 +54,7 @@ class AlbumContextWidget(AlbumDetailedWidget):
             @param event as Gdk.Event
         """
         if InfosPopover.should_be_shown() and\
-                self._album.artist_id != Type.COMPILATIONS:
+                self._album.artist_ids[0] != Type.COMPILATIONS:
             pop = InfosPopover(self._album.artist_id)
             pop.set_relative_to(eventbox)
             pop.show()

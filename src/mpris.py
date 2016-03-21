@@ -174,9 +174,9 @@ class MPRIS(dbus.service.Object):
             self._metadata['xesam:title'] = Lp().player.current_track.name
             self._metadata['xesam:album'] = Lp(
                                               ).player.current_track.album.name
-            self._metadata['xesam:artist'] = [Lp().player.current_track.artist]
-            self._metadata['xesam:albumArtist'] = [
-                Lp().player.current_track.album_artist]
+            self._metadata['xesam:artist'] = Lp().player.current_track.artists
+            self._metadata['xesam:albumArtist'] = \
+                Lp().player.current_track.album_artists
             self._metadata['mpris:length'] = dbus.Int64(
                 Lp().player.current_track.duration * 1000000)
             self._metadata['xesam:genre'] = [Lp().player.current_track.genre]

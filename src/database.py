@@ -33,7 +33,6 @@ class Database:
     # this make VACUUM not destroy rowids...
     create_albums = '''CREATE TABLE albums (id INTEGER PRIMARY KEY,
                         name TEXT NOT NULL,
-                        artist_id INT NOT NULL,
                         no_album_artist BOOLEAN NOT NULL,
                         year INT,
                         path TEXT NOT NULL,
@@ -44,6 +43,9 @@ class Database:
                                               sortname TEXT NOT NULL)'''
     create_genres = '''CREATE TABLE genres (id INTEGER PRIMARY KEY,
                                             name TEXT NOT NULL)'''
+    create_album_artists = '''CREATE TABLE album_artists (
+                                                album_id INT NOT NULL,
+                                                artist_id INT NOT NULL)'''
     create_album_genres = '''CREATE TABLE album_genres (
                                                 album_id INT NOT NULL,
                                                 genre_id INT NOT NULL)'''
@@ -86,6 +88,7 @@ class Database:
                     sql.execute(self.create_artists)
                     sql.execute(self.create_genres)
                     sql.execute(self.create_album_genres)
+                    sql.execute(self.create_album_artists)
                     sql.execute(self.create_tracks)
                     sql.execute(self.create_track_artists)
                     sql.execute(self.create_track_genres)

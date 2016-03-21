@@ -143,15 +143,17 @@ class ArtistsDatabase:
                 result = sql.execute(
                                  "SELECT DISTINCT artists.rowid,\
                                   artists.name\
-                                  FROM artists, albums\
-                                  WHERE albums.artist_id = artists.rowid\
+                                  FROM artists, albums, album_artists\
+                                  WHERE album_artists.artist_id=artists.rowid\
+                                  AND album_artists.album_id=albums.rowid\
                                   ORDER BY artists.sortname COLLATE NOCASE")
             else:
                 genres = tuple(genre_ids)
                 request = "SELECT DISTINCT artists.rowid,\
                            artists.name\
-                           FROM artists, albums, album_genres\
-                           WHERE artists.rowid == albums.artist_id\
+                           FROM artists, albums, album_genres, album_artists\
+                           WHERE artists.rowid=album_artists.artist_id\
+                           AND albums.rowid=album_artists.album_id\
                            AND album_genres.album_id=albums.rowid AND ("
                 for genre_id in genre_ids:
                     request += "album_genres.genre_id=? OR "

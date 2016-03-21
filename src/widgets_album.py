@@ -364,7 +364,7 @@ class AlbumSimpleWidget(Gtk.Frame, AlbumWidget):
         self._artist_label = Gtk.Label()
         self._artist_label.set_ellipsize(Pango.EllipsizeMode.END)
         self._artist_label.set_property('halign', Gtk.Align.CENTER)
-        self._artist_label.set_text(self._album.artist_name)
+        self._artist_label.set_text(", ".join(self._album.artists))
         self._artist_label.get_style_context().add_class('dim-label')
         self._widget.add(grid)
         grid.add(frame)

@@ -217,7 +217,7 @@ class CollectionScanner(GObject.GObject, ScannerTagReader):
 
         title = self.get_title(tags, filepath)
         artists = self.get_artists(tags)
-        sortname = self.get_artist_sortname(tags)
+        sortnames = self.get_artist_sortnames(tags)
         album_artist = self.get_album_artist(tags)
         album_name = self.get_album_name(tags)
         genres = self.get_genres(tags)
@@ -237,20 +237,22 @@ class CollectionScanner(GObject.GObject, ScannerTagReader):
         # If nothing in stats, set mtime
         if amtime == 0:
             amtime = mtime
+
         (artist_ids, new_artist_ids) = self.add_artists(artists,
                                                         album_artist,
-                                                        sortname)
-        (album_artist_id, new) = self.add_album_artist(album_artist)
-        if new:
-            new_artist_ids.append(album_artist_id)
+                                                        sortnames)
+
+        (album_artist_ids, new_album_artist_ids) = self.add_album_artist(
+                                                                  album_artist)
+        new_artist_ids += new_album_artist_ids
 
         # Check for album artist, if none, use first available artist
         no_album_artist = False
-        if album_artist_id is None:
-            album_artist_id = artist_ids[0]
+        if not album_artist_ids:
+            album_artist_ids = artist_ids
             no_album_artist = True
 
-        (album_id, new_album) = self.add_album(album_name, album_artist_id,
+        (album_id, new_album) = self.add_album(album_name, album_artist_ids,
                                                no_album_artist, year, filepath,
                                                album_pop, amtime)
 
@@ -261,6 +263,7 @@ class CollectionScanner(GObject.GObject, ScannerTagReader):
                                    tracknumber, discnumber,
                                    album_id, year, track_pop,
                                    track_ltime, mtime)
+
         self.update_track(track_id, artist_ids, genre_ids)
 
         # Notify about new artists/genres

@@ -29,12 +29,12 @@ class AlbumsDatabase:
         """
         self._cached_randoms = []
 
-    def add(self, name, artist_id, no_album_artist, year,
+    def add(self, name, artist_ids, no_album_artist, year,
             path, popularity, mtime):
         """
             Add a new album to database
             @param Album name as string
-            @param artist id as int,
+            @param artist ids as int,
             @param no_album_artist as bool,
             @param year as int
             @param path as string
@@ -44,11 +44,15 @@ class AlbumsDatabase:
         """
         with SqlCursor(Lp().db) as sql:
             result = sql.execute("INSERT INTO albums\
-                                  (name, artist_id, no_album_artist, year,\
+                                  (name, no_album_artist, year,\
                                   path, popularity, mtime)\
-                                  VALUES (?, ?, ?, ?, ?, ?, ?)",
-                                 (name, artist_id, no_album_artist, year,
+                                  VALUES (?, ?, ?, ?, ?, ?)",
+                                 (name, no_album_artist, year,
                                   path, popularity, mtime))
+            for artist_id in artist_ids:
+                sql.execute("INSERT INTO album_artists\
+                             (album_id, artist_id)\
+                             VALUES (?, ?)", (result.lastrowid, artist_id))
             return result.lastrowid
 
     def add_genre(self, album_id, genre_id):
@@ -65,15 +69,23 @@ class AlbumsDatabase:
                             "album_genres (album_id, genre_id)"
                             "VALUES (?, ?)", (album_id, genre_id))
 
-    def set_artist_id(self, album_id, artist_id):
+    def set_artist_ids(self, album_id, artist_ids):
         """
             Set artist id
-            @param album id as int, artist_id as int
+            @param album id as int
+            @param artist_ids as [int]
             @warning: commit needed
         """
         with SqlCursor(Lp().db) as sql:
-            sql.execute("UPDATE albums SET artist_id=? WHERE rowid=?",
-                        (artist_id, album_id))
+            currents = self.get_artist_ids(album_id)
+            if len(currents) != len(artist_ids) or\
+                    len(set(currents) & set(artist_ids)) != len(artist_ids):
+                sql.execute("DELETE FROM album_artists\
+                            WHERE album_id=?", (album_id,))
+                for artist_id in artist_ids:
+                    sql.execute("INSERT INTO album_artists\
+                                (album_id, artist_id)\
+                                VALUES (?, ?)", (album_id, artist_id))
 
     def set_year(self, album_id, year):
         """
@@ -200,27 +212,29 @@ class AlbumsDatabase:
                 return v[0]
             return None
 
-    def get_non_compilation_id(self, album_name, artist_id, year):
+    def get_non_compilation_id(self, album_name, artist_ids, year):
         """
             Get non compilation album id
             @param Album name as string,
-            @param artist id as int
+            @param artist ids as [int]
             @param year as int
             @return Album id as int
         """
         with SqlCursor(Lp().db) as sql:
+            filters = (album_name,)
+            filters += tuple(artist_ids)
+            request = "SELECT albums.rowid FROM albums, album_artists\
+                       WHERE name=? AND\
+                       no_album_artist=0 AND\
+                       album_artists.album_id=albums.rowid AND "
+            for artist_id in artist_ids:
+                request += "artist_id=? AND "
             if year is None:
-                result = sql.execute("SELECT rowid FROM albums where name=?\
-                                      AND artist_id=?\
-                                      AND year is null\
-                                      AND no_album_artist=0",
-                                     (album_name, artist_id))
+                request += "year is null"
             else:
-                result = sql.execute("SELECT rowid FROM albums where name=?\
-                                      AND artist_id=?\
-                                      AND year =?\
-                                      AND no_album_artist=0",
-                                     (album_name, artist_id, year))
+                filters += (year,)
+                request += "year =?"
+            result = sql.execute(request, filters)
             v = result.fetchone()
             if v is not None:
                 return v[0]
@@ -273,35 +287,32 @@ class AlbumsDatabase:
 
             return _("Unknown")
 
-    def get_artist_name(self, album_id):
+    def get_artists(self, album_id):
         """
-            Get artist name
+            Get artist names
             @param Album id as int
             @return Artist name as string
         """
         with SqlCursor(Lp().db) as sql:
-            result = sql.execute("SELECT artists.name from artists, albums\
-                                  WHERE albums.rowid=? AND albums.artist_id ==\
-                                  artists.rowid", (album_id,))
-            v = result.fetchone()
-            if v is not None:
-                return v[0]
+            result = sql.execute("SELECT artists.name\
+                                 FROM artists, album_artists\
+                                 WHERE album_artists.album_id=?\
+                                 AND album_artists.artist_id=artists.rowid",
+                                 (album_id,))
+            return list(itertools.chain(*result))
 
-        return _("Compilation")
-
-    def get_artist_id(self, album_id):
+    def get_artist_ids(self, album_id):
         """
             Get album artist id
             @param album_id
-            @return artist id
+            @return artist ids as [int]
         """
         with SqlCursor(Lp().db) as sql:
-            result = sql.execute("SELECT artist_id FROM albums where rowid=?",
+            result = sql.execute("SELECT artist_id\
+                                  FROM album_artists\
+                                  WHERE album_id=?",
                                  (album_id,))
-            v = result.fetchone()
-            if v is not None:
-                return v[0]
-            return None
+            return list(itertools.chain(*result))
 
     def get_year(self, album_id):
         """
@@ -569,8 +580,9 @@ class AlbumsDatabase:
             if not artist_ids and not genre_ids:
                 result = sql.execute(
                                  "SELECT DISTINCT albums.rowid\
-                                  FROM albums, artists\
-                                  WHERE artists.rowid=albums.artist_id\
+                                  FROM albums, artists, album_artists\
+                                  WHERE artists.rowid=album_artists.artist_id\
+                                  AND albums.rowid=album_artists.album_id\
                                   ORDER BY artists.sortname COLLATE NOCASE,\
                                   albums.year,\
                                   albums.name COLLATE NOCASE")
@@ -578,8 +590,9 @@ class AlbumsDatabase:
             elif not artist_ids:
                 genres = tuple(genre_ids)
                 request = "SELECT DISTINCT albums.rowid FROM albums,\
-                           album_genres, artists\
-                           WHERE artists.rowid=artist_id\
+                           album_genres, artists, album_artists\
+                           WHERE artists.rowid=album_artists.artist_id\
+                           AND albums.rowid=album_artists.album_id\
                            AND album_genres.album_id=albums.rowid AND ("
                 for genre_id in genre_ids:
                     request += "album_genres.genre_id=? OR "
@@ -591,34 +604,28 @@ class AlbumsDatabase:
             elif not genre_ids:
                 artists = tuple(artist_ids)
                 request = "SELECT DISTINCT albums.rowid\
-                           FROM albums, artists WHERE ("
+                           FROM albums, artists, album_artists WHERE\
+                           album_artists.album_id=albums.rowid AND ("
                 for artist_id in artist_ids:
-                    request += "artist_id=? OR "
-                if len(artist_ids) > 1:
-                    request += "1=0) AND artists.rowid=albums.artist_id\
-                                ORDER BY artists.name COLLATE NOCASE,\
-                                year, albums.name COLLATE NOCASE"
-                else:
-                    request += "1=0) ORDER BY year, albums.name COLLATE NOCASE"
+                    request += "album_artists.artist_id=? OR "
+                request += "1=0) ORDER BY artists.name COLLATE NOCASE,\
+                            year, albums.name COLLATE NOCASE"
                 result = sql.execute(request, artists)
             # Get albums for artist id and genre id
             else:
                 filters = tuple(artist_ids)
                 filters += tuple(genre_ids)
                 request = "SELECT DISTINCT albums.rowid\
-                           FROM albums, album_genres, artists\
-                           WHERE album_genres.album_id=albums.rowid AND ("
+                           FROM albums, album_genres, artists, album_artists\
+                           WHERE album_genres.album_id=albums.rowid AND\
+                           album_artists.album_id=albums.rowid AND ("
                 for artist_id in artist_ids:
-                    request += "albums.artist_id=? OR "
+                    request += "album_artists.artist_id=? OR "
                 request += "1=0) AND ("
                 for genre_id in genre_ids:
                     request += "album_genres.genre_id=? OR "
-                if len(artist_ids) > 1:
-                    request += "1=0) AND artists.rowid=albums.artist_id\
-                                ORDER BY artists.name COLLATE NOCASE,\
-                                year, albums.name COLLATE NOCASE"
-                else:
-                    request += "1=0) ORDER BY year, albums.name COLLATE NOCASE"
+                request += "1=0) ORDER BY artists.name COLLATE NOCASE,\
+                            year, albums.name COLLATE NOCASE"
                 result = sql.execute(request, filters)
             return list(itertools.chain(*result))
 
@@ -632,8 +639,10 @@ class AlbumsDatabase:
             result = []
             # Get all compilations
             if not genre_ids or genre_ids[0] == Type.ALL:
-                result = sql.execute("SELECT albums.rowid FROM albums\
-                                      WHERE artist_id=?\
+                result = sql.execute("SELECT albums.rowid\
+                                      FROM albums, album_artists\
+                                      WHERE album_artists.artist_id=?\
+                                      AND album_artists.album_id=albums.rowid\
                                       ORDER BY albums.name, albums.year",
                                      (Type.COMPILATIONS,))
             # Get compilation for genre id
@@ -641,9 +650,10 @@ class AlbumsDatabase:
                 filters = (Type.COMPILATIONS,)
                 filters += tuple(genre_ids)
                 request = "SELECT DISTINCT albums.rowid\
-                           FROM albums, album_genres\
+                           FROM albums, album_genres, album_artists\
                            WHERE album_genres.album_id=albums.rowid\
-                           AND albums.artist_id=? AND ( "
+                           AND album_artists.album_id=albums.rowid\
+                           AND album_artists.artist_id=? AND ( "
                 for genre_id in genre_ids:
                     request += "album_genres.genre_id=? OR "
                 request += "1==0) ORDER BY albums.name,albums.year"

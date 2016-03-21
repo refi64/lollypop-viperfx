@@ -126,8 +126,8 @@ class Album(Base):
     """
         Represent an album
     """
-    FIELDS = ['name', 'artist_name', 'artist_id', 'year', 'path', 'duration']
-    DEFAULTS = ['', '', None, '', '', 0]
+    FIELDS = ['name', 'artists', 'artist_ids', 'year', 'path', 'duration']
+    DEFAULTS = ['', '', [], '', '', 0]
 
     def __init__(self, album_id=None, genre_ids=[]):
         """
@@ -195,10 +195,10 @@ class Track(Base):
     """
         Represent a track
     """
-    FIELDS = ['name', 'album_id', 'album_artist_id',
-              'artist_ids', 'album_name', 'artist_names',
+    FIELDS = ['name', 'album_id', 'album_artist_ids',
+              'artist_ids', 'album_name', 'artists',
               'genre_names', 'duration', 'number', 'path', 'position']
-    DEFAULTS = ['', None, None, [], '', '', '', 0.0, None, '', 0]
+    DEFAULTS = ['', None, [], [], '', '', '', 0.0, None, '', 0]
 
     def __init__(self, track_id=None):
         """
@@ -215,12 +215,9 @@ class Track(Base):
             @return str
         """
         name = escape(self.name)
-        if self.album.artist_id == Type.COMPILATIONS or\
-           len(self.artist_ids) > 1 or\
-           self.album.artist_id not in self.artist_ids:
-            if self.artist_names != self.album.artist_name:
-                name = "%s [<b>%s</b>]" % (name,
-                                           escape(self.artist_names))
+        if len(set(self.album.artist_ids) & set(self.artist_ids)) !=\
+                len(self.artist_ids):
+            name = "%s [<b>%s</b>]" % (name, escape(self.artists))
         return name
 
     @property
@@ -270,23 +267,14 @@ class Track(Base):
         return self.album.year
 
     @property
-    def album_artist(self):
+    def album_artists(self):
         """
             Get track artist name
             @return str
         """
-        if getattr(self, "_album_artist") is None:
-            self._album_artist = Lp().artists.get_name(self.album_artist_id)
-        return self._album_artist
-
-    @property
-    def artist(self):
-        """
-            Get track artist(s) name(s)
-            Alias to Track.artist_names
-            @return str
-        """
-        return self.artist_names
+        if getattr(self, "_album_artists") is None:
+            self._album_artists = Lp().albums.get_artists(self.album_id)
+        return self._album_artists
 
     @property
     def genre(self):
