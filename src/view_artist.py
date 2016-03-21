@@ -12,7 +12,6 @@
 
 from gi.repository import Gtk, Gdk
 
-from cgi import escape
 from gettext import gettext as _
 
 from lollypop.define import Lp
@@ -42,6 +41,7 @@ class ArtistView(ArtistAlbumsView):
         builder.add_from_resource('/org/gnome/Lollypop/ArtistView.ui')
         builder.connect_signals(self)
         self._jump_button = builder.get_object('jump-button')
+        self._jump_button.set_tooltip_text(_("Go to current track"))
         self._spinner = builder.get_object('spinner')
         self.attach(builder.get_object('ArtistView'), 0, 0, 1, 1)
         if len(artist_ids) == 1:
@@ -64,15 +64,8 @@ class ArtistView(ArtistAlbumsView):
                 break
         if found:
             self._jump_button.set_sensitive(True)
-            self._jump_button.set_tooltip_markup(
-                                      "<b>%s</b> - " %
-                                      escape(
-                                        Lp().player.current_track.artists
-                                        ) +
-                                      Lp().player.current_track.name)
         else:
             self._jump_button.set_sensitive(False)
-            self._jump_button.set_tooltip_text('')
 
     def _on_jump_button_clicked(self, widget):
         """
