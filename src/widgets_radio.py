@@ -58,6 +58,8 @@ class RadioWidget(Gtk.Frame, AlbumWidget):
         self._title_label.set_text(self._name)
         overlay = Gtk.Overlay.new()
         overlay.get_style_context().add_class('white')
+        overlay.set_property('halign', Gtk.Align.CENTER)
+        overlay.set_property('valign', Gtk.Align.CENTER)
         # Play button
         play_event = Gtk.EventBox()
         play_event.set_property('has-tooltip', True)

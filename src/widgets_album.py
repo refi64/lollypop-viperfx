@@ -365,6 +365,8 @@ class AlbumSimpleWidget(Gtk.Frame, AlbumWidget):
         self._artist_label.get_style_context().add_class('dim-label')
         self._widget.add(grid)
         overlay = Gtk.Overlay.new()
+        overlay.set_property('halign', Gtk.Align.CENTER)
+        overlay.set_property('valign', Gtk.Align.CENTER)
         overlay.get_style_context().add_class('white')
         # Play button
         self._play_event = Gtk.EventBox()
