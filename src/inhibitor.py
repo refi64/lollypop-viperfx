@@ -45,6 +45,7 @@ class Inhibitor:
                                       'org.gnome.SessionManager')
         except:
             self._sm = None
+        Lp().player.connect('status-changed', self._on_status_changed)
 
     def uninhibit(self, flag):
         """
@@ -81,6 +82,16 @@ class Inhibitor:
 #######################
 # PRIVATE             #
 #######################
+    def _on_status_changed(self, player):
+        """
+            Disallow suspend on playback
+            @param player as Player
+        """
+        if player.is_playing():
+            self.inhibit(Inhibitor.SUSPENDING)
+        else:
+            self.uninhibit(Inhibitor.SUSPENDING)
+
     def _set_flags(self):
         """
             Set inhibite flags
