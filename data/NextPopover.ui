@@ -96,30 +96,6 @@
       </packing>
     </child>
     <child>
-      <object class="GtkFrame" id="frame1">
-        <property name="visible">True</property>
-        <property name="can_focus">False</property>
-        <property name="label_xalign">0</property>
-        <property name="shadow_type">in</property>
-        <child>
-          <object class="GtkImage" id="cover">
-            <property name="can_focus">False</property>
-          </object>
-        </child>
-        <child type="label_item">
-          <placeholder/>
-        </child>
-        <style>
-          <class name="small-cover-frame"/>
-        </style>
-      </object>
-      <packing>
-        <property name="left_attach">0</property>
-        <property name="top_attach">2</property>
-        <property name="height">2</property>
-      </packing>
-    </child>
-    <child>
       <object class="GtkEventBox" id="eventbox1">
         <property name="visible">True</property>
         <property name="can_focus">False</property>
@@ -139,6 +115,19 @@
       <packing>
         <property name="left_attach">2</property>
         <property name="top_attach">0</property>
+      </packing>
+    </child>
+    <child>
+      <object class="GtkImage" id="cover">
+        <property name="can_focus">False</property>
+        <style>
+          <class name="small-cover-frame"/>
+        </style>
+      </object>
+      <packing>
+        <property name="left_attach">0</property>
+        <property name="top_attach">2</property>
+        <property name="height">2</property>
       </packing>
     </child>
   </object>
