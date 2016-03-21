@@ -140,8 +140,10 @@ class QueueRow(Gtk.ListBoxRow):
         """
         if surface is None:
             self._cover.clear()
+            self._cover.hide()
         else:
             self._cover.set_from_surface(surface)
+            self._cover.show()
             del surface
 
 #######################
