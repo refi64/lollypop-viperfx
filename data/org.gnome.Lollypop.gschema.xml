@@ -61,7 +61,7 @@
             <summary>INTERNAL</summary>
             <description></description>
         </key>
-        <key type="b" name="infosreload">
+        <key type="b" name="inforeload">
             <default>false</default>
             <summary>INTERNAL</summary>
             <description></description>

@@ -48,7 +48,7 @@ class ArtistCache:
     """
         Cache artist code
     """
-    CACHE_PATH = path.expanduser("~") + "/.cache/lollypop_infos"
+    CACHE_PATH = path.expanduser("~") + "/.cache/lollypop_info"
 
     def init():
         """

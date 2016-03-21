@@ -15,7 +15,7 @@ from gi.repository import Gtk, Gdk
 from gettext import gettext as _
 
 from lollypop.define import Lp
-from lollypop.pop_infos import InfosPopover
+from lollypop.pop_info import InfoPopover
 from lollypop.view_artist_albums import ArtistAlbumsView
 
 
@@ -97,7 +97,7 @@ class ArtistView(ArtistAlbumsView):
             Change pointer on label
             @param eventbox as Gtk.EventBox
         """
-        if InfosPopover.should_be_shown() and\
+        if InfoPopover.should_be_shown() and\
                 self._artist_id is not None:
             eventbox.get_window().set_cursor(Gdk.Cursor(Gdk.CursorType.HAND1))
 
@@ -107,8 +107,8 @@ class ArtistView(ArtistAlbumsView):
             @param eventbox as Gtk.EventBox
             @param event as Gdk.Event
         """
-        if InfosPopover.should_be_shown() and\
+        if InfoPopover.should_be_shown() and\
                 self._artist_id is not None:
-            pop = InfosPopover([self._artist_id], False)
+            pop = InfoPopover([self._artist_id], False)
             pop.set_relative_to(eventbox)
             pop.show()

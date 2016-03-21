@@ -43,7 +43,7 @@ app_PYTHON = \
     pop_albums.py\
     pop_covers.py\
     pop_externals.py\
-    pop_infos.py\
+    pop_info.py\
     pop_menu.py\
     pop_next.py\
     pop_playlists.py\

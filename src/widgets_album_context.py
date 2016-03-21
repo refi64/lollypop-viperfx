@@ -13,7 +13,7 @@
 from gi.repository import Gtk, Gdk
 
 from lollypop.define import Type, Lp
-from lollypop.pop_infos import InfosPopover
+from lollypop.pop_info import InfoPopover
 from lollypop.widgets_album import AlbumDetailedWidget
 
 
@@ -43,7 +43,7 @@ class AlbumContextWidget(AlbumDetailedWidget):
             Change pointer on label
             @param eventbox as Gtk.EventBox
         """
-        if InfosPopover.should_be_shown() and\
+        if InfoPopover.should_be_shown() and\
                 self._album.artist_ids[0] != Type.COMPILATIONS:
             eventbox.get_window().set_cursor(Gdk.Cursor(Gdk.CursorType.HAND1))
 
@@ -53,9 +53,9 @@ class AlbumContextWidget(AlbumDetailedWidget):
             @param eventbox as Gtk.EventBox
             @param event as Gdk.Event
         """
-        if InfosPopover.should_be_shown() and\
+        if InfoPopover.should_be_shown() and\
                 self._album.artist_ids[0] != Type.COMPILATIONS:
-            pop = InfosPopover(self._album.artist_ids)
+            pop = InfoPopover(self._album.artist_ids)
             pop.set_relative_to(eventbox)
             pop.show()
 

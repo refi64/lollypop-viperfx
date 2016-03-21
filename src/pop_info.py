@@ -21,7 +21,7 @@ from lollypop.widgets_artist import WikipediaContent, LastfmContent
 from lollypop.view_artist_albums import CurrentArtistAlbumsView
 
 
-class InfosPopover(Gtk.Popover):
+class InfoPopover(Gtk.Popover):
     """
         Popover with artist informations
         @Warning: Auto destroy on hide if artist id is not None
@@ -47,8 +47,8 @@ class InfosPopover(Gtk.Popover):
             True if we can show popover
         """
         return Lp().lastfm is not None or\
-            InfosPopover.Wikipedia is not None or\
-            InfosPopover.WebView is not None
+            InfoPopover.Wikipedia is not None or\
+            InfoPopover.WebView is not None
 
     def __init__(self, artist_ids=[], show_albums=True):
         """
@@ -66,24 +66,24 @@ class InfosPopover(Gtk.Popover):
         self._signal_id = None
 
         builder = Gtk.Builder()
-        builder.add_from_resource('/org/gnome/Lollypop/ArtistInfos.ui')
+        builder.add_from_resource('/org/gnome/Lollypop/ArtistInfo.ui')
         builder.connect_signals(self)
         self._menu = builder.get_object('menu')
         self._jump_button = builder.get_object('jump-button')
         self._stack = builder.get_object('stack')
         self.add(builder.get_object('widget'))
-        if Lp().settings.get_value('infosreload'):
+        if Lp().settings.get_value('inforeload'):
             builder.get_object('reload').get_style_context().add_class(
                                                                     'selected')
         if not show_albums:
             self._stack.get_child_by_name('albums').destroy()
-        if InfosPopover.Wikipedia is None:
+        if InfoPopover.Wikipedia is None:
             self._stack.get_child_by_name('wikipedia').destroy()
         if Lp().lastfm is None:
             self._stack.get_child_by_name('lastfm').destroy()
-        if InfosPopover.WebView is None or artist_ids:
+        if InfoPopover.WebView is None or artist_ids:
             self._stack.get_child_by_name('wikia').destroy()
-        if InfosPopover.WebView is None:
+        if InfoPopover.WebView is None:
             self._stack.get_child_by_name('duck').destroy()
         self._stack.set_visible_child_name(
             Lp().settings.get_value('infoswitch').get_string())
@@ -132,14 +132,14 @@ class InfosPopover(Gtk.Popover):
         """
         self._timeout_id = None
         if self._signal_id is None:
-            Lp().settings.set_value('infosreload', GLib.Variant('b', True))
+            Lp().settings.set_value('inforeload', GLib.Variant('b', True))
             self._signal_id = Lp().player.connect("current-changed",
                                                   self._on_current_changed)
             widget.get_style_context().add_class('selected')
         else:
             Lp().player.disconnect(self._signal_id)
             self._signal_id = None
-            Lp().settings.set_value('infosreload',
+            Lp().settings.set_value('inforeload',
                                     GLib.Variant('b', False))
             widget.get_style_context().remove_class('selected')
 
@@ -203,7 +203,7 @@ class InfosPopover(Gtk.Popover):
             Connect signals
             @param widget as Gtk.Widget
         """
-        if Lp().settings.get_value('infosreload') and not self._artist_ids:
+        if Lp().settings.get_value('inforeload') and not self._artist_ids:
             self._signal_id = Lp().player.connect("current-changed",
                                                   self._on_current_changed)
 
