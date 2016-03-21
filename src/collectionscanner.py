@@ -240,7 +240,7 @@ class CollectionScanner(GObject.GObject, ScannerTagReader):
             album_artists = composers
             if artists == '':
                 artists = album_artists
-        print(artists, album_artists)
+
         debug("CollectionScanner::add2db(): Restore stats")
         # Restore stats
         (track_pop, track_ltime, amtime, album_pop) = self._history.get(

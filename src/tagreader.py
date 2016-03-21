@@ -31,7 +31,6 @@ class TagReader:
         """
             Init tag reader
         """
-        self._index = 0
         self.init_discover()
 
     def init_discover(self):
@@ -73,7 +72,7 @@ class ScannerTagReader(TagReader):
         """
         if tags is None:
             return os.path.basename(filepath)
-        (exists, title) = tags.get_string_index('title', self._index)
+        (exists, title) = tags.get_string_index('title', 0)
         if not exists:
             title = os.path.basename(filepath)
         return title
@@ -86,10 +85,12 @@ class ScannerTagReader(TagReader):
         """
         if tags is None:
             return _("Unknown")
-        (exists, artists) = tags.get_string_index('artist', self._index)
-        if not exists:
-            artists = ""
-        return artists
+        artists = []
+        for i in range(tags.get_tag_size('artist')):
+            (exists, read) = tags.get_string_index('artist', i)
+            if exists:
+                artists.append(read)
+        return "; ".join(artists)
 
     def get_composers(self, tags):
         """
@@ -99,10 +100,12 @@ class ScannerTagReader(TagReader):
         """
         if tags is None:
             return _("Unknown")
-        (exists, composers) = tags.get_string_index('composer', self._index)
-        if not exists:
-            composers = ""
-        return composers
+        composers = []
+        for i in range(tags.get_tag_size('composer')):
+            (exists, read) = tags.get_string_index('composer', i)
+            if exists:
+                composers.append(read)
+        return "; ".join(composers)
 
     def get_performers(self, tags):
         """
@@ -112,10 +115,12 @@ class ScannerTagReader(TagReader):
         """
         if tags is None:
             return _("Unknown")
-        (exists, performers) = tags.get_string_index('performer', self._index)
-        if not exists:
-            performers = ""
-        return performers
+        performers = []
+        for i in range(tags.get_tag_size('performer')):
+            (exists, read) = tags.get_string_index('performer', i)
+            if exists:
+                performers.append(read)
+        return "; ".join(performers)
 
     def get_artist_sortnames(self, tags):
         """
@@ -124,8 +129,7 @@ class ScannerTagReader(TagReader):
             @return artist sort names as string;string
         """
         if tags is not None:
-            (exists, sortnames) = tags.get_string_index('artist-sortname',
-                                                        self._index)
+            (exists, sortnames) = tags.get_string_index('artist-sortname', 0)
         if not exists:
             sortnames = ""
         return sortnames
@@ -138,10 +142,12 @@ class ScannerTagReader(TagReader):
         """
         if tags is None:
             return _("Unknown")
-        (exists, artist) = tags.get_string_index('album-artist', self._index)
-        if not exists:
-            artist = ""
-        return artist
+        artists = []
+        for i in range(tags.get_tag_size('album-artist')):
+            (exists, read) = tags.get_string_index('album-artist', i)
+            if exists:
+                artists.append(read)
+        return "; ".join(artists)
 
     def get_album_name(self, tags):
         """
@@ -151,7 +157,7 @@ class ScannerTagReader(TagReader):
         """
         if tags is None:
             return _("Unknown")
-        (exists, album_name) = tags.get_string_index('album', self._index)
+        (exists, album_name) = tags.get_string_index('album', 0)
         if not exists:
             album_name = _("Unknown")
         return album_name
@@ -164,7 +170,7 @@ class ScannerTagReader(TagReader):
         """
         if tags is None:
             return _("Unknown")
-        (exists, genres) = tags.get_string_index('genre', self._index)
+        (exists, genres) = tags.get_string_index('genre', 0)
         if not exists:
             genres = _("Unknown")
         return genres
@@ -177,8 +183,7 @@ class ScannerTagReader(TagReader):
         """
         if tags is None:
             return 0
-        (exists, discnumber) = tags.get_uint_index('album-disc-number',
-                                                   self._index)
+        (exists, discnumber) = tags.get_uint_index('album-disc-number', 0)
         if not exists:
             discnumber = 0
         return discnumber
@@ -191,8 +196,7 @@ class ScannerTagReader(TagReader):
         """
         if tags is None:
             return 0
-        (exists, tracknumber) = tags.get_uint_index('track-number',
-                                                    self._index)
+        (exists, tracknumber) = tags.get_uint_index('track-number', 0)
         if not exists:
             tracknumber = 0
         return tracknumber
@@ -205,10 +209,9 @@ class ScannerTagReader(TagReader):
         """
         if tags is None:
             return None
-        (exists, date) = tags.get_date_index('date', self._index)
+        (exists, date) = tags.get_date_index('date', 0)
         if not exists:
-            (exists, date) = tags.get_date_time_index('datetime',
-                                                      self._index)
+            (exists, date) = tags.get_date_time_index('datetime', 0)
         if exists:
             year = date.get_year()
         else:
