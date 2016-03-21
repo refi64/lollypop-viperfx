@@ -93,7 +93,7 @@ class ArtDownloader:
         while self._albums_queue:
             album_id = self._albums_queue.pop()
             album = Lp().albums.get_name(album_id)
-            artist = Lp().albums.get_artists(album_id)
+            artist = ", ".join(Lp().albums.get_artists(album_id))
             pixbuf = self._get_album_art_spotify(artist, album)
             if pixbuf is None:
                 pixbuf = self._get_album_art_itunes(artist, album)
