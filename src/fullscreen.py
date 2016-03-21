@@ -69,7 +69,6 @@ class FullScreen(Gtk.Window, InfosController,
         close_btn = builder.get_object('close_btn')
         close_btn.connect('clicked', self._destroy)
         self._cover = builder.get_object('cover')
-        self._cover_frame = builder.get_object('frame')
         self._title_label = builder.get_object('title')
         self._artist_label = builder.get_object('artist')
         self._album_label = builder.get_object('album')

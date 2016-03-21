@@ -269,6 +269,6 @@ class InfosController:
             self._cover.set_from_surface(art)
             del art
             self._cover.set_tooltip_text(player.current_track.album.name)
-            self._cover_frame.show()
+            self._cover.show()
         else:
-            self._cover_frame.hide()
+            self._cover.hide()
