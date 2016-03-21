@@ -40,6 +40,7 @@ from lollypop.window import Window
 from lollypop.database import Database
 from lollypop.player import Player
 from lollypop.art import Art
+from lollypop.inhibitor import Inhibitor
 from lollypop.sqlcursor import SqlCursor
 from lollypop.settings import Settings, SettingsDialog
 from lollypop.mpris import MPRIS
@@ -180,6 +181,8 @@ class Application(Gtk.Application):
             self.window.init_list_one()
             self.window.show()
             self.player.restore_state()
+            # Will not start sooner
+            self.inhibitor = Inhibitor()
 
     def prepare_to_exit(self, action=None, param=None):
         """

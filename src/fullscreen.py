@@ -14,6 +14,7 @@ from gi.repository import Gtk, Gdk, GLib
 
 from datetime import datetime
 
+from lollypop.inhibitor import Inhibitor
 from lollypop.define import Lp, ArtSize, Type
 from lollypop.pop_next import NextPopover
 from lollypop.controllers import InfosController, PlaybackController
@@ -42,6 +43,7 @@ class FullScreen(Gtk.Window, InfosController,
         self._signal1_id = None
         self._signal2_id = None
         self.set_decorated(False)
+
         builder = Gtk.Builder()
         builder.add_from_resource('/org/gnome/Lollypop/FullScreen.ui')
         builder.connect_signals(self)
@@ -109,6 +111,8 @@ class FullScreen(Gtk.Window, InfosController,
         self._next_popover.set_relative_to(self._album_label)
         if Lp().player.next_track.id != Type.RADIOS:
             self._next_popover.show()
+        # Disable idle
+        Lp().inhibitor.inhibit(Inhibitor.IDLE)
 
     def do_hide(self):
         """
@@ -128,6 +132,8 @@ class FullScreen(Gtk.Window, InfosController,
             GLib.source_remove(self._timeout2)
         self._next_popover.set_relative_to(None)
         self._next_popover.hide()
+        # Enable idle
+        Lp().inhibitor.uninhibit(Inhibitor.IDLE)
 
     def on_current_changed(self, player):
         """

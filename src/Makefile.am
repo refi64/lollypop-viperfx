@@ -21,6 +21,7 @@ app_PYTHON = \
     database_upgrade.py\
     define.py\
     fullscreen.py\
+    inhibitor.py\
     inotify.py\
     lastfm.py\
     list.py\
