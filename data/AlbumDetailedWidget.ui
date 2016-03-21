@@ -142,142 +142,113 @@
             <signal name="enter-notify-event" handler="_on_enter_notify" swapped="no"/>
             <signal name="leave-notify-event" handler="_on_leave_notify" swapped="no"/>
             <child>
-              <object class="GtkFrame" id="frame1">
+              <object class="GtkOverlay" id="overlay1">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
-                <property name="halign">center</property>
-                <property name="label_xalign">0</property>
-                <property name="shadow_type">in</property>
                 <child>
-                  <object class="GtkFrame" id="color">
+                  <object class="GtkImage" id="cover">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
-                    <property name="label_xalign">0</property>
-                    <property name="shadow_type">in</property>
-                    <child>
-                      <object class="GtkOverlay" id="overlay1">
-                        <property name="visible">True</property>
-                        <property name="can_focus">False</property>
-                        <child>
-                          <object class="GtkImage" id="cover">
-                            <property name="visible">True</property>
-                            <property name="can_focus">False</property>
-                            <property name="valign">baseline</property>
-                            <style>
-                              <class name="cover"/>
-                            </style>
-                          </object>
-                          <packing>
-                            <property name="index">-1</property>
-                          </packing>
-                        </child>
-                        <child type="overlay">
-                          <object class="GtkEventBox" id="eventbox1">
-                            <property name="visible">True</property>
-                            <property name="can_focus">False</property>
-                            <property name="halign">center</property>
-                            <property name="valign">center</property>
-                            <signal name="button-press-event" handler="_on_play_press_event" swapped="no"/>
-                            <signal name="realize" handler="_on_eventbox_realize" swapped="no"/>
-                            <child>
-                              <object class="GtkImage" id="play-button">
-                                <property name="can_focus">False</property>
-                                <property name="tooltip_text" translatable="yes">Play</property>
-                                <property name="opacity">0</property>
-                                <property name="icon_name">media-playback-start-symbolic</property>
-                                <property name="icon_size">5</property>
-                              </object>
-                            </child>
-                          </object>
-                        </child>
-                        <child type="overlay">
-                          <object class="GtkGrid" id="grid2">
-                            <property name="visible">True</property>
-                            <property name="can_focus">False</property>
-                            <property name="halign">end</property>
-                            <property name="valign">end</property>
-                            <property name="margin_end">5</property>
-                            <property name="margin_bottom">5</property>
-                            <property name="column_spacing">5</property>
-                            <child>
-                              <object class="GtkEventBox" id="eventbox2">
-                                <property name="visible">True</property>
-                                <property name="can_focus">False</property>
-                                <signal name="button-press-event" handler="_on_artwork_press_event" swapped="no"/>
-                                <signal name="realize" handler="_on_eventbox_realize" swapped="no"/>
-                                <child>
-                                  <object class="GtkImage" id="artwork-button">
-                                    <property name="can_focus">False</property>
-                                    <property name="tooltip_text" translatable="yes">Change artwork</property>
-                                    <property name="opacity">0</property>
-                                    <property name="icon_name">image-x-generic-symbolic</property>
-                                  </object>
-                                </child>
-                              </object>
-                              <packing>
-                                <property name="left_attach">2</property>
-                                <property name="top_attach">0</property>
-                              </packing>
-                            </child>
-                            <child>
-                              <object class="GtkEventBox" id="action-event">
-                                <property name="visible">True</property>
-                                <property name="can_focus">False</property>
-                                <signal name="button-press-event" handler="_on_action_press_event" swapped="no"/>
-                                <signal name="realize" handler="_on_eventbox_realize" swapped="no"/>
-                                <child>
-                                  <object class="GtkImage" id="action-button">
-                                    <property name="can_focus">False</property>
-                                    <property name="opacity">0</property>
-                                    <property name="icon_name">list-add-symbolic</property>
-                                  </object>
-                                </child>
-                              </object>
-                              <packing>
-                                <property name="left_attach">1</property>
-                                <property name="top_attach">0</property>
-                              </packing>
-                            </child>
-                            <child>
-                              <object class="GtkEventBox" id="eventbox4">
-                                <property name="visible">True</property>
-                                <property name="can_focus">False</property>
-                                <signal name="button-press-event" handler="_on_play_all_press_event" swapped="no"/>
-                                <signal name="realize" handler="_on_eventbox_realize" swapped="no"/>
-                                <child>
-                                  <object class="GtkImage" id="playall-button">
-                                    <property name="can_focus">False</property>
-                                    <property name="tooltip_text" translatable="yes">Play albums</property>
-                                    <property name="opacity">0</property>
-                                  </object>
-                                </child>
-                              </object>
-                              <packing>
-                                <property name="left_attach">0</property>
-                                <property name="top_attach">0</property>
-                              </packing>
-                            </child>
-                          </object>
-                          <packing>
-                            <property name="index">1</property>
-                          </packing>
-                        </child>
-                      </object>
-                    </child>
-                    <child type="label_item">
-                      <placeholder/>
-                    </child>
+                    <property name="valign">baseline</property>
                     <style>
-                      <class name="cover-frame-border"/>
+                      <class name="cover"/>
                     </style>
                   </object>
+                  <packing>
+                    <property name="index">-1</property>
+                  </packing>
                 </child>
-                <child type="label_item">
-                  <placeholder/>
+                <child type="overlay">
+                  <object class="GtkEventBox" id="eventbox1">
+                    <property name="visible">True</property>
+                    <property name="can_focus">False</property>
+                    <property name="halign">center</property>
+                    <property name="valign">center</property>
+                    <signal name="button-press-event" handler="_on_play_press_event" swapped="no"/>
+                    <signal name="realize" handler="_on_eventbox_realize" swapped="no"/>
+                    <child>
+                      <object class="GtkImage" id="play-button">
+                        <property name="can_focus">False</property>
+                        <property name="tooltip_text" translatable="yes">Play</property>
+                        <property name="opacity">0</property>
+                        <property name="icon_name">media-playback-start-symbolic</property>
+                        <property name="icon_size">5</property>
+                      </object>
+                    </child>
+                  </object>
                 </child>
-                <style>
-                  <class name="cover-frame"/>
-                </style>
+                <child type="overlay">
+                  <object class="GtkGrid" id="grid2">
+                    <property name="visible">True</property>
+                    <property name="can_focus">False</property>
+                    <property name="halign">end</property>
+                    <property name="valign">end</property>
+                    <property name="margin_end">5</property>
+                    <property name="margin_bottom">5</property>
+                    <property name="column_spacing">5</property>
+                    <child>
+                      <object class="GtkEventBox" id="eventbox2">
+                        <property name="visible">True</property>
+                        <property name="can_focus">False</property>
+                        <signal name="button-press-event" handler="_on_artwork_press_event" swapped="no"/>
+                        <signal name="realize" handler="_on_eventbox_realize" swapped="no"/>
+                        <child>
+                          <object class="GtkImage" id="artwork-button">
+                            <property name="can_focus">False</property>
+                            <property name="tooltip_text" translatable="yes">Change artwork</property>
+                            <property name="opacity">0</property>
+                            <property name="icon_name">image-x-generic-symbolic</property>
+                          </object>
+                        </child>
+                      </object>
+                      <packing>
+                        <property name="left_attach">2</property>
+                        <property name="top_attach">0</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <object class="GtkEventBox" id="action-event">
+                        <property name="visible">True</property>
+                        <property name="can_focus">False</property>
+                        <signal name="button-press-event" handler="_on_action_press_event" swapped="no"/>
+                        <signal name="realize" handler="_on_eventbox_realize" swapped="no"/>
+                        <child>
+                          <object class="GtkImage" id="action-button">
+                            <property name="can_focus">False</property>
+                            <property name="opacity">0</property>
+                            <property name="icon_name">list-add-symbolic</property>
+                          </object>
+                        </child>
+                      </object>
+                      <packing>
+                        <property name="left_attach">1</property>
+                        <property name="top_attach">0</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <object class="GtkEventBox" id="eventbox4">
+                        <property name="visible">True</property>
+                        <property name="can_focus">False</property>
+                        <signal name="button-press-event" handler="_on_play_all_press_event" swapped="no"/>
+                        <signal name="realize" handler="_on_eventbox_realize" swapped="no"/>
+                        <child>
+                          <object class="GtkImage" id="playall-button">
+                            <property name="can_focus">False</property>
+                            <property name="tooltip_text" translatable="yes">Play albums</property>
+                            <property name="opacity">0</property>
+                          </object>
+                        </child>
+                      </object>
+                      <packing>
+                        <property name="left_attach">0</property>
+                        <property name="top_attach">0</property>
+                      </packing>
+                    </child>
+                  </object>
+                  <packing>
+                    <property name="index">1</property>
+                  </packing>
+                </child>
               </object>
             </child>
           </object>

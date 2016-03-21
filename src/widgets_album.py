@@ -90,10 +90,10 @@ class AlbumWidget:
         selected = self._album.id == Lp().player.current_track.album.id
         if selected != self._selected:
             if selected:
-                self._color.get_style_context().add_class(
+                self._cover.get_style_context().add_class(
                                                     'cover-frame-selected')
             else:
-                self._color.get_style_context().remove_class(
+                self._cover.get_style_context().remove_class(
                                                     'cover-frame-selected')
 
     def update_playing_indicator(self):
@@ -323,7 +323,7 @@ class AlbumWidget:
         return True
 
 
-class AlbumSimpleWidget(Gtk.Frame, AlbumWidget):
+class AlbumSimpleWidget(Gtk.Bin, AlbumWidget):
     """
         Album widget showing cover, artist and title
     """
@@ -351,12 +351,9 @@ class AlbumSimpleWidget(Gtk.Frame, AlbumWidget):
         self._widget = Gtk.EventBox()
         grid = Gtk.Grid()
         grid.set_orientation(Gtk.Orientation.VERTICAL)
-        frame = Gtk.Frame()
-        frame.set_property('halign', Gtk.Align.CENTER)
-        frame.get_style_context().add_class('cover-frame')
-        self._color = Gtk.Frame()
-        self._color.get_style_context().add_class('cover-frame-border')
         self._cover = Gtk.Image()
+        self._cover.set_property('halign', Gtk.Align.CENTER)
+        self._cover.get_style_context().add_class('cover-frame')
         self._title_label = Gtk.Label()
         self._title_label.set_ellipsize(Pango.EllipsizeMode.END)
         self._title_label.set_property('halign', Gtk.Align.CENTER)
@@ -367,10 +364,6 @@ class AlbumSimpleWidget(Gtk.Frame, AlbumWidget):
         self._artist_label.set_text(", ".join(self._album.artists))
         self._artist_label.get_style_context().add_class('dim-label')
         self._widget.add(grid)
-        grid.add(frame)
-        grid.add(self._title_label)
-        grid.add(self._artist_label)
-        frame.add(self._color)
         overlay = Gtk.Overlay.new()
         overlay.get_style_context().add_class('white')
         # Play button
@@ -423,7 +416,9 @@ class AlbumSimpleWidget(Gtk.Frame, AlbumWidget):
         self._overlay_grid.set_property('margin-end', 2)
         overlay.add(self._cover)
         overlay.add_overlay(self._overlay_grid)
-        self._color.add(overlay)
+        grid.add(overlay)
+        grid.add(self._title_label)
+        grid.add(self._artist_label)
         self.add(self._widget)
         self.set_cover()
         self.update_state()
@@ -603,7 +598,7 @@ class AlbumDetailedWidget(Gtk.Bin, AlbumWidget):
         self._tracks_right = {}
 
         self._cover = builder.get_object('cover')
-        self._color = builder.get_object('color')
+        self._cover.get_style_context().add_class('cover-frame')
         self.set_cover()
         self.update_state()
 

@@ -89,6 +89,26 @@ Gtk.ListBoxRow .menu-button:hover {
     border-radius: 5px;
 }
 
+
+
+.cover-frame {
+    transition: 0.2s linear;
+    border: 1px solid shade(@theme_bg_color, 0.7);
+    background-color: white;
+    padding: 3px;
+    border-radius: 3px;
+}
+
+.small-cover-frame {
+    border-radius: 3px;
+    border-color: shade(@theme_bg_color, 0.8)
+}
+
+.cover-frame-selected {
+    border-color: @theme_selected_bg_color;
+    background-color: @theme_selected_bg_color;
+}
+
 .rounded-icon {
     transition: 0.2s linear;
     border: 3px solid white;
@@ -133,24 +153,7 @@ Gtk.ListBoxRow .menu-button:hover {
     opacity: 0.9;
 }
 
-.small-cover-frame {
-    border-radius: 3px;
-    border-color: shade(@theme_bg_color, 0.8)
-}
 
-.cover-frame {
-    border-radius: 5px;
-}
-
-.cover-frame-border {
-    border-radius: 3px;
-    border-color: shade(@theme_bg_color, 1.5);
-    border-width: 3px;
-}
-
-.cover-frame-selected {
-    border-color: @theme_selected_bg_color;
-}
 
 .drag-up {
     background-image: -gtk-gradient (linear,
