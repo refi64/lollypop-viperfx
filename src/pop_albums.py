@@ -276,7 +276,7 @@ class AlbumsView(LazyLoadingView):
                                                     'edit-clear-all-symbolic',
                                                     Gtk.IconSize.MENU)
         self._clear_button.set_relief(Gtk.ReliefStyle.NONE)
-        self._clear_button.set_tooltip_text(_("Clear all"))
+        self._clear_button.set_tooltip_text(_("Clear albums"))
         self._clear_button.set_sensitive(False)
         self._clear_button.connect('clicked', self._on_clear_clicked)
         self._jump_button = Gtk.Button.new_from_icon_name(
