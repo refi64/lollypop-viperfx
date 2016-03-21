@@ -86,6 +86,7 @@ class AlbumRow(Gtk.ListBoxRow):
         self._title_label = Gtk.Label.new(self._album.name)
         self._title_label.set_ellipsize(Pango.EllipsizeMode.END)
         cover = Gtk.Image()
+        cover.get_style_context().add_class('small-cover-frame')
         surface = Lp().art.get_album_artwork(
                                         self._album,
                                         ArtSize.MEDIUM*self.get_scale_factor())
@@ -93,10 +94,6 @@ class AlbumRow(Gtk.ListBoxRow):
         cover.set_size_request(ArtSize.MEDIUM*self.get_scale_factor(),
                                ArtSize.MEDIUM*self.get_scale_factor())
         del surface
-        cover_frame = Gtk.Frame()
-        cover_frame.get_style_context().add_class('small-cover-frame')
-        cover_frame.set_property('valign', Gtk.Align.CENTER)
-        cover_frame.add(cover)
         self._play_indicator = Gtk.Image.new_from_icon_name(
                                                'media-playback-start-symbolic',
                                                Gtk.IconSize.MENU)
@@ -114,7 +111,7 @@ class AlbumRow(Gtk.ListBoxRow):
         vgrid.add(self._title_label)
         grid.attach(self._artist_label, 1, 0, 1, 1)
         grid.attach(delete_button, 2, 0, 1, 2)
-        grid.attach(cover_frame, 0, 0, 1, 2)
+        grid.attach(cover, 0, 0, 1, 2)
         grid.attach(vgrid, 1, 1, 1, 1)
         row_widget.add(grid)
         self.add(row_widget)
