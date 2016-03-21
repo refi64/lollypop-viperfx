@@ -260,16 +260,14 @@ class PlaylistRow(Row):
         self._grid.insert_column(1)
         self._grid.attach(self._indicator, 1, 1, 1, 2)
         self._cover = Gtk.Image()
-        self._cover_frame = Gtk.Frame()
-        self._cover_frame.set_shadow_type(Gtk.ShadowType.NONE)
-        self._cover_frame.set_property('halign', Gtk.Align.CENTER)
-        self._cover_frame.set_property('valign', Gtk.Align.CENTER)
-        self._cover_frame.get_style_context().add_class('small-cover-frame')
-        self._cover_frame.add(self._cover)
+        self._cover.set_property('halign', Gtk.Align.CENTER)
+        self._cover.set_property('valign', Gtk.Align.CENTER)
+        self._cover.get_style_context().add_class('small-cover-frame')
+        self._cover.set_no_show_all(True)
         # We force width with a Box
         box = Gtk.Box()
         box.set_homogeneous(True)
-        box.add(self._cover_frame)
+        box.add(self._cover)
         box.set_property('width-request', ArtSize.MEDIUM+2)
         self._grid.attach(box, 0, 0, 1, 2)
         self.show_all()
@@ -318,18 +316,18 @@ class PlaylistRow(Row):
             return
         self._show_headers = show
         if show:
-            self._cover_frame.set_shadow_type(Gtk.ShadowType.IN)
             self._cover.set_tooltip_text(self._track.album.name)
             surface = Lp().art.get_album_artwork(
                                         self._track.album,
                                         ArtSize.MEDIUM*self.get_scale_factor())
             self._cover.set_from_surface(surface)
+            self._cover.show()
             del surface
             self._header.show_all()
         else:
-            self._cover_frame.set_shadow_type(Gtk.ShadowType.NONE)
             self._cover.set_tooltip_text('')
             self._cover.clear()
+            self._cover.hide()
             self._header.hide()
 
 #######################
