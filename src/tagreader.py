@@ -220,7 +220,7 @@ class ScannerTagReader(TagReader):
             artist_ids.append(artist_id)
         return (artist_ids, new_artist_ids)
 
-    def add_album_artist(self, artists):
+    def add_album_artists(self, artists):
         """
             Add album artist to db
             @param artists as [string]
@@ -234,10 +234,11 @@ class ScannerTagReader(TagReader):
                 # Get album artist id, add it if missing
                 artist_id = Lp().artists.get_id(artist)
                 if artist_id is None:
-                    artist_ids.append(Lp().artists.add(
-                                                   artist,
-                                                   format_artist_name(artist)))
-                    new_artist_ids.append(artist_id)
+                    album_artist_id = Lp().artists.add(artist,
+                                                       format_artist_name(
+                                                                       artist))
+                    artist_ids.append(album_artist_id)
+                    new_artist_ids.append(album_artist_id)
                 else:
                     artist_ids.append(artist_id)
         return (artist_ids, new_artist_ids)
@@ -259,9 +260,6 @@ class ScannerTagReader(TagReader):
                 genre_id = Lp().genres.add(genre)
                 new_genre_ids.append(genre_id)
             genre_ids.append(genre_id)
-
-        for genre_id in genre_ids:
-            Lp().albums.add_genre(album_id, genre_id)
         return (genre_ids, new_genre_ids)
 
     def add_album(self, album_name, artist_ids, no_album_artist,
@@ -303,6 +301,20 @@ class ScannerTagReader(TagReader):
                 Lp().albums.set_artist_ids(album_id,
                                            artist_ids)
         return (album_id, new)
+
+    def update_album(self, album_id, artist_ids, genre_ids):
+        """
+            Set album artists
+            @param album id as int
+            @param artist ids as [int]
+            @param genre ids as [int]
+            @commit needed
+        """
+        # Set artists/genres for album
+        for artist_id in artist_ids:
+            Lp().albums.add_artist(album_id, artist_id)
+        for genre_id in genre_ids:
+            Lp().albums.add_genre(album_id, genre_id)
 
     def update_track(self, track_id, artist_ids, genre_ids):
         """

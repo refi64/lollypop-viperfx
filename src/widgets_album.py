@@ -238,7 +238,7 @@ class AlbumWidget:
             self._artwork_button.get_style_context().add_class(
                                                            self._squared_class)
             self._artwork_button.show()
-            self._show_append(not Lp().player.is_album_present(self._album))
+            self._show_append(not Lp().player.has_album(self._album))
             self._action_button.set_opacity(1)
             self._action_button.get_style_context().add_class(
                                                        self._squared_class)
@@ -308,7 +308,7 @@ class AlbumWidget:
         """
         albums = Lp().player.get_albums()
         empty = len(albums) == 0
-        if Lp().player.is_album_present(self._album):
+        if Lp().player.has_album(self._album):
             if Lp().player.current_track.album.id == self._album.id:
                 Lp().player.context.next = NextContext.START_NEW_ALBUM
                 Lp().player.set_next()
@@ -520,20 +520,6 @@ class AlbumSimpleWidget(Gtk.Frame, AlbumWidget):
             self.set_tooltip_text('')
 
 
-class FlowBox(Gtk.FlowBox):
-    """
-        Special flowbox ignoring user input
-    """
-    def __init__(self):
-        Gtk.FlowBox.__init__(self)
-
-    def do_button_press_event(self, event):
-        pass
-
-    def do_button_release_event(self, event):
-        pass
-
-
 class AlbumDetailedWidget(Gtk.Bin, AlbumWidget):
     """
         Widget with cover and tracks
@@ -553,6 +539,10 @@ class AlbumDetailedWidget(Gtk.Bin, AlbumWidget):
         """
         Gtk.Bin.__init__(self)
         AlbumWidget.__init__(self, album_id, genre_ids)
+        # Check if we need to limit the view to artist album
+        for artist_id in self._album.artist_ids:
+            if artist_id in artist_ids:
+                self._album.set_artists(artist_ids)
         self._width = None
         self._orientation = None
         self._stop = False
@@ -588,7 +578,7 @@ class AlbumDetailedWidget(Gtk.Bin, AlbumWidget):
 
         self._artist_label = builder.get_object('artist')
         if len(artist_ids) > 1:
-            self._artist_label.set_text(self._album.artist_name)
+            self._artist_label.set_text(", ".join(self._album.artists))
             self._artist_label.show()
         label = builder.get_object('duration')
         duration = Lp().albums.get_duration(album_id, genre_ids)
@@ -761,7 +751,7 @@ class AlbumDetailedWidget(Gtk.Bin, AlbumWidget):
             @param widget as Gtk.Button
             @param album id as int
         """
-        pop_menu = AlbumMenu(self._album.id, self._album.genre_id)
+        pop_menu = AlbumMenu(self._album)
         popover = Gtk.Popover.new_from_model(self._menu, pop_menu)
         popover.connect('closed', self._on_pop_menu_closed)
         self.get_style_context().add_class('album-menu-selected')
@@ -883,7 +873,7 @@ class AlbumDetailedWidget(Gtk.Bin, AlbumWidget):
         else:
             if not Lp().player.is_party() and\
                not self._limit_to_current and\
-               not Lp().player.is_album_present(self._album):
+               not Lp().player.has_album(self._album):
                 Lp().player.set_albums(track_id,
                                        self._artist_ids,
                                        self._album.genre_ids)

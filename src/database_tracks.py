@@ -242,7 +242,7 @@ class TracksDatabase:
         """
             Get artist names
             @param track id as int
-            @return Genre name as str "artist1, artist2, ..."
+            @return artist names as str "artist1, artist2, ..."
         """
         with SqlCursor(Lp().db) as sql:
             result = sql.execute("SELECT name FROM artists, track_artists\
@@ -393,12 +393,16 @@ class TracksDatabase:
         """
         with SqlCursor(Lp().db) as sql:
             result = sql.execute("SELECT tracks.rowid, tracks.name\
-                                  FROM tracks, track_artists, albums\
-                                  WHERE albums.rowid == tracks.album_id\
-                                  AND track_artists.artist_id=?\
-                                  AND track_artists.track_id=tracks.rowid\
-                                  AND albums.artist_id != ?", (artist_id,
-                                                               artist_id))
+                                 FROM tracks, track_artists, album_artists\
+                                 WHERE album_artists.album_id=tracks.album_id\
+                                 AND track_artists.artist_id=?\
+                                 AND track_artists.track_id=tracks.rowid\
+                                 AND NOT EXISTS (\
+                                  SELECT artist_id\
+                                  FROM album_artists\
+                                  WHERE artist_id=track_artists.artist_id\
+                                  AND album_id=tracks.album_id)",
+                                 (artist_id,))
             return list(result)
 
     def get_populars(self):
@@ -609,7 +613,7 @@ class TracksDatabase:
             album_artist_name = Lp().artists.get_name(album_artist)
             if album_artist_name == artist:
                 return track_id
-            artist_name = Lp().tracks.get_artist_names(track_id)
+            artist_name = Lp().tracks.get_artists(track_id)
             if artist_name == artist:
                 return track_id
         return None

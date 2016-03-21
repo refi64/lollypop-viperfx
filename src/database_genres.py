@@ -124,4 +124,5 @@ class GenresDatabase:
                                  LIMIT 1", (genre_id,))
             v = result.fetchone()
             if not v:
-                sql.execute("DELETE FROM genres WHERE rowid=?", (genre_id,))
+                sql.execute("DELETE FROM genres\
+                            WHERE rowid=?", (genre_id,))

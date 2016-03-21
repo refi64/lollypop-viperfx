@@ -122,7 +122,8 @@ class QueueRow(Gtk.ListBoxRow):
         """
         track = Track(self._id)
         self._artist_label.set_markup(
-                                  "<b>"+escape(track.album.artist_name)+"</b>")
+                                 "<b>"+escape(
+                                        ", ".join(track.album.artists))+"</b>")
         self._album_label.set_text(track.album.name)
         # If we are listening to a compilation, prepend artist name
         title = escape(track.name)

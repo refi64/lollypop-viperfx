@@ -31,8 +31,9 @@ class SearchRow(Gtk.ListBoxRow):
             Init row widgets
         """
         Gtk.ListBoxRow.__init__(self)
-        self.id = None
-        self.is_track = False
+        self._id = None
+        self._is_track = True
+        self._artist_ids = None
         builder = Gtk.Builder()
         builder.add_from_resource('/org/gnome/Lollypop/SearchRow.ui')
         builder.connect_signals(self)
@@ -48,14 +49,42 @@ class SearchRow(Gtk.ListBoxRow):
         self.show()
         self.get_style_context().add_class('trackrow')
 
-    def set_text(self, artist, title):
+    def get_id(self):
         """
-            Set artist and title label
-            @param artist name as string
-            @param item name as string
+            Return row id
+            @return int
         """
-        self._artist.set_text(artist)
-        self._title.set_text(title)
+        return self._id
+
+    def set_id(self, rowid, is_track):
+        """
+            Set row id
+            @param rowid as int
+            @param is track as bool
+        """
+        self._id = rowid
+        self._is_track = is_track
+        if self._is_track:
+            self._title.set_text("♫ " + Track(self._id).name)
+        else:
+            self._title.set_text(Album(self._id).name)
+
+    def get_artist_ids(self):
+        """
+            Return row artist ids
+            @return artist ids as [int]
+        """
+        return self._artist_ids
+
+    def set_artist_ids(self, artist_ids):
+        """
+            Set row artist ids
+        """
+        self._artist_ids = artist_ids
+        artists = []
+        for artist_id in artist_ids:
+            artists.append(Lp().artists.get_name(artist_id))
+        self._artist.set_text(", ".join(artists))
 
     def set_cover(self, surface):
         """
@@ -65,6 +94,13 @@ class SearchRow(Gtk.ListBoxRow):
         self._cover.set_from_surface(surface)
         del surface
 
+    def is_track(self):
+        """
+            True if a track
+            @return bool
+        """
+        return self._is_track
+
     def exists(self, items):
         """
             Return True if self exists in items
@@ -72,12 +108,12 @@ class SearchRow(Gtk.ListBoxRow):
         """
         found = False
         for item in items:
-            if item.is_track and self.is_track:
-                if item.id == self.id:
+            if item.is_track and self._is_track:
+                if item.id == self._id:
                     found = True
                     break
-            elif not item.is_track and not self.is_track:
-                if item.id == self.id:
+            elif not item.is_track and not self._is_track:
+                if item.id == self._id:
                     found = True
                     break
         return found
@@ -128,12 +164,9 @@ class SearchObject:
         Represent a search object
     """
     def __init__(self):
-        self.artist = None
-        self.title = None
-        self.count = -1
         self.id = None
-        self.album_id = None
         self.is_track = False
+        self.artist_ids = []
 
 
 class SearchPopover(Gtk.Popover):
@@ -195,12 +228,12 @@ class SearchPopover(Gtk.Popover):
         """
         found = False
         for child in self._view.get_children():
-            if item.is_track and child.is_track:
-                if item.id == child.id:
+            if item.is_track and child.is_track():
+                if item.id == child.get_id():
                     found = True
                     break
-            elif not item.is_track and not child.is_track:
-                if item.id == child.id:
+            elif not item.is_track and not child.is_track():
+                if item.id == child.get_id():
                     found = True
                     break
         return found
@@ -212,7 +245,6 @@ class SearchPopover(Gtk.Popover):
         """
         results = []
         albums = []
-
         tracks_non_album_artist = []
 
         # Get all albums for all artists and non album_artist tracks
@@ -227,27 +259,24 @@ class SearchPopover(Gtk.Popover):
         for track_id, track_name in Lp().tracks.search(
                         self._current_search) + tracks_non_album_artist:
             search_obj = SearchObject()
-            search_obj.title = track_name
             search_obj.id = track_id
-            search_obj.album_id = Lp().tracks.get_album_id(track_id)
             search_obj.is_track = True
-
-            artist_id = Lp().albums.get_artist_id(search_obj.album_id)
-            if artist_id == Type.COMPILATIONS:
-                search_obj.artist = Lp().tracks.get_artist_names(track_id)
-            else:
-                search_obj.artist = Lp().artists.get_name(artist_id)
+            search_obj.artist_ids = Lp().tracks.get_artist_ids(track_id)
             results.append(search_obj)
-
-        albums += Lp().albums.search(self._current_search)
 
         for album_id, artist_id in albums:
             search_obj = SearchObject()
-            search_obj.artist = Lp().artists.get_name(artist_id)
-            search_obj.title = Lp().albums.get_name(album_id)
-            search_obj.count = Lp().albums.get_count(album_id, None)
             search_obj.id = album_id
-            search_obj.album_id = album_id
+            search_obj.is_track = False
+            search_obj.artist_ids = [artist_id]
+            results.append(search_obj)
+
+        albums = Lp().albums.search(self._current_search)
+        for album_id in albums:
+            search_obj = SearchObject()
+            search_obj.id = album_id
+            search_obj.is_track = False
+            search_obj.artist_ids = Lp().albums.get_artist_ids(album_id)
             results.append(search_obj)
 
         if not self._stop_thread:
@@ -266,16 +295,19 @@ class SearchPopover(Gtk.Popover):
             result = results.pop(0)
             if not self._exists(result):
                 search_row = SearchRow()
-                if result.count != -1:
-                    result.title += " (%s)" % result.count
-                search_row.set_text(result.artist, result.title)
+                if result.is_track:
+                    obj = Track(result.id)
+                    album_id = obj.album_id
+                else:
+                    obj = Album(result.id)
+                    album_id = obj.id
+                search_row.set_id(result.id, result.is_track)
+                search_row.set_artist_ids(result.artist_ids)
                 search_row.set_cover(
                         Lp().art.get_album_artwork(
-                                     Album(result.album_id),
+                                     Album(album_id),
                                      ArtSize.MEDIUM*self.get_scale_factor()))
-                search_row.id = result.id
-                search_row.is_track = result.is_track
-                if search_row.is_track:
+                if result.is_track:
                     self._view.prepend(search_row)
                 else:
                     self._view.add(search_row)
@@ -307,11 +339,12 @@ class SearchPopover(Gtk.Popover):
         track_ids = []
         track_id = None
         for child in self._view.get_children():
-            if child.is_track:
-                track_ids.append(child.id)
+            if child.is_track():
+                track_ids.append(child.get_id())
             else:
-                album_tracks = Lp().albums.get_tracks(child.id, None)
-                if not is_track and child.id == object_id and album_tracks:
+                album_tracks = Lp().albums.get_tracks(child.get_id(), [], [])
+                if not is_track and child.get_id() == object_id and\
+                        album_tracks:
                     track_id = album_tracks[0]
                 for tid in album_tracks:
                     track_ids.append(tid)
@@ -330,9 +363,10 @@ class SearchPopover(Gtk.Popover):
         tracks = []
         for child in self._view.get_children():
             if child.is_track:
-                tracks.append(Track(child.id))
+                tracks.append(Track(child.get_id()))
             else:
-                for track_id in Lp().albums.get_tracks(child.id, None):
+                for track_id in Lp().albums.get_tracks(child.get_id(), [],
+                                                       child.get_artist_ids()):
                     tracks.append(Track(track_id))
         if tracks:
             playlist_id = Lp().playlists.get_id(self._current_search)
@@ -405,18 +439,19 @@ class SearchPopover(Gtk.Popover):
         """
         if Lp().player.is_party():
             if row.is_track:
-                Lp().player.load(Track(row.id))
+                Lp().player.load(Track(row.get_id()))
             elif Gtk.get_minor_version() > 16:
-                popover = AlbumPopoverWidget(row.id, [], [])
+                popover = AlbumPopoverWidget(row.get_id(), [], [])
                 popover.set_relative_to(row)
                 popover.show()
             else:
-                t = Thread(target=self._play_search, args=(row.id,
-                                                           row.is_track))
+                t = Thread(target=self._play_search, args=(row.get_id(),
+                                                           row.is_track()))
                 t.daemon = True
                 t.start()
         else:
-            t = Thread(target=self._play_search, args=(row.id, row.is_track))
+            t = Thread(target=self._play_search, args=(row.get_id(),
+                                                       row.is_track()))
             t.daemon = True
             t.start()
 
@@ -432,13 +467,15 @@ class SearchPopover(Gtk.Popover):
             rect.y = event.y
             rect.width = rect.height = 1
             row = widget.get_row_at_y(event.y)
-            if row.is_track:
-                popover = TrackMenuPopover(row.id, TrackMenu(row.id))
+            if row.is_track():
+                popover = TrackMenuPopover(row.get_id(),
+                                           TrackMenu(row.get_id()))
                 popover.set_relative_to(widget)
                 popover.set_pointing_to(rect)
                 popover.show()
             else:
-                popover = AlbumPopoverWidget(row.id, [], [])
+                popover = AlbumPopoverWidget(row.get_id(), [],
+                                             row.get_artist_ids())
                 popover.set_relative_to(widget)
                 popover.set_pointing_to(rect)
                 popover.show()

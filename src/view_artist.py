@@ -65,7 +65,7 @@ class ArtistView(ArtistAlbumsView):
             self._jump_button.set_tooltip_markup(
                                       "<b>%s</b> - " %
                                       escape(
-                                        Lp().player.current_track.artist_names
+                                        Lp().player.current_track.artists
                                         ) +
                                       Lp().player.current_track.name)
         else:
@@ -114,6 +114,6 @@ class ArtistView(ArtistAlbumsView):
         """
         if InfosPopover.should_be_shown() and\
                 self._artist_id is not None:
-            pop = InfosPopover(self._artist_id, False)
+            pop = InfosPopover([self._artist_id], False)
             pop.set_relative_to(eventbox)
             pop.show()

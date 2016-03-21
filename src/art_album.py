@@ -80,8 +80,9 @@ class AlbumArt(BaseArt, ArtDownloader, TagReader):
             paths = [
                 os.path.join(album.path, self._favorite),
                 # Used when having muliple albums in same folder
-                os.path.join(album.path, "{}_{}.jpg".format(album.artist_name,
-                                                            album.name))
+                os.path.join(album.path, "{}_{}.jpg".format(
+                                                    ", ".join(album.artists),
+                                                    album.name))
             ]
             for path in paths:
                 if os.path.exists(path):
@@ -271,5 +272,5 @@ class AlbumArt(BaseArt, ArtDownloader, TagReader):
             @param album as Album
         """
         # FIXME special chars
-        path = album.name + "_".join(album.artists)
+        path = "_".join(album.artists) + "_" + album.name
         return path[0:240].replace("/", "_")

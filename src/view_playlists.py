@@ -118,7 +118,7 @@ class PlaylistsView(View):
         if Lp().player.current_track.id in self._tracks:
             self._jump_button.set_sensitive(True)
             self._jump_button.set_tooltip_markup(
-             "<b>%s</b>\n%s" % (escape(Lp().player.current_track.artist_names),
+             "<b>%s</b>\n%s" % (escape(Lp().player.current_track.artists),
                                 escape(Lp().player.current_track.name)))
         else:
             self._jump_button.set_sensitive(False)
@@ -194,11 +194,12 @@ class PlaylistsManageView(View):
         Playlist view used to manage playlists
     """
 
-    def __init__(self, object_id, genre_id, is_album):
+    def __init__(self, object_id, genre_ids, artist_ids, is_album):
         """
             Init View
             @param object id as int
-            @param genre id as int
+            @param genre ids as [int]
+            @param artist ids as [int]
             @param is album as bool
             @param width as int
         """
@@ -210,7 +211,8 @@ class PlaylistsManageView(View):
             builder.get_object('back_btn').show()
         builder.connect_signals(self)
         self._manage_widget = PlaylistsManagerWidget(object_id,
-                                                     genre_id,
+                                                     genre_ids,
+                                                     artist_ids,
                                                      is_album)
         self._manage_widget.show()
         self._viewport.add(self._manage_widget)

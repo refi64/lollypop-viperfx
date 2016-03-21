@@ -412,9 +412,9 @@ class BinPlayer(BasePlayer):
             if self.current_track.album_name is None:
                 self.current_track.album_name = ''
             self.current_track.artist_names = reader.get_artists(tags)
-            self.current_track.set_album_artist(reader.get_album_artist(tags))
+            self.current_track.set_album_artists(reader.get_album_artist(tags))
             if self.current_track.album_artist == '':
-                self.current_track.set_album_artist(self.current_track.artist)
+                self.current_track.set_album_artists(self.current_track.artist)
             self.current_track.genre_name = reader.get_genres(tags)
         self.emit('current-changed')
 

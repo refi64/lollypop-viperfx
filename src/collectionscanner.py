@@ -167,7 +167,6 @@ class CollectionScanner(GObject.GObject, ScannerTagReader):
                     return
                 GLib.idle_add(self._update_progress, i, count)
                 try:
-                    debug("Adding file: %s" % filepath)
                     # If songs exists and mtime unchanged, continue,
                     # else rescan
                     if filepath in orig_tracks:
@@ -186,6 +185,7 @@ class CollectionScanner(GObject.GObject, ScannerTagReader):
                         mtime = int(os.path.getmtime(filepath))
                     else:
                         mtime = int(time())
+                    debug("Adding file: %s" % filepath)
                     self._add2db(filepath, infos, mtime)
                 except Exception as e:
                     debug("Error scanning: %s, %s" % (filepath, e))
@@ -213,12 +213,13 @@ class CollectionScanner(GObject.GObject, ScannerTagReader):
             @param mtime as int
             @return track id as int
         """
+        debug("CollectionScanner::add2db(): Read tags")
         tags = infos.get_tags()
 
         title = self.get_title(tags, filepath)
         artists = self.get_artists(tags)
         sortnames = self.get_artist_sortnames(tags)
-        album_artist = self.get_album_artist(tags)
+        album_artists = self.get_album_artist(tags)
         album_name = self.get_album_name(tags)
         genres = self.get_genres(tags)
         discnumber = self.get_discnumber(tags)
@@ -229,21 +230,22 @@ class CollectionScanner(GObject.GObject, ScannerTagReader):
 
         # If no artists tag, use album artist
         if artists == '':
-            artists = album_artist
-
+            artists = album_artists
+        debug("CollectionScanner::add2db(): Restore stats")
         # Restore stats
         (track_pop, track_ltime, amtime, album_pop) = self._history.get(
                                                             name, duration)
         # If nothing in stats, set mtime
         if amtime == 0:
             amtime = mtime
-
+        debug("CollectionScanner::add2db(): Add artists %s" % artists)
         (artist_ids, new_artist_ids) = self.add_artists(artists,
-                                                        album_artist,
+                                                        album_artists,
                                                         sortnames)
-
-        (album_artist_ids, new_album_artist_ids) = self.add_album_artist(
-                                                                  album_artist)
+        debug("CollectionScanner::add2db(): "
+              "Add album artists %s" % album_artists)
+        (album_artist_ids, new_album_artist_ids) = self.add_album_artists(
+                                                                 album_artists)
         new_artist_ids += new_album_artist_ids
 
         # Check for album artist, if none, use first available artist
@@ -251,7 +253,8 @@ class CollectionScanner(GObject.GObject, ScannerTagReader):
         if not album_artist_ids:
             album_artist_ids = artist_ids
             no_album_artist = True
-
+        debug("CollectionScanner::add2db(): Add album: "
+              "%s, %s, %s" % (album_name, album_artist_ids, year))
         (album_id, new_album) = self.add_album(album_name, album_artist_ids,
                                                no_album_artist, year, filepath,
                                                album_pop, amtime)
@@ -259,13 +262,15 @@ class CollectionScanner(GObject.GObject, ScannerTagReader):
         (genre_ids, new_genre_ids) = self.add_genres(genres, album_id)
 
         # Add track to db
+        debug("CollectionScanner::add2db(): Add track")
         track_id = Lp().tracks.add(title, filepath, duration,
                                    tracknumber, discnumber,
                                    album_id, year, track_pop,
                                    track_ltime, mtime)
 
+        debug("CollectionScanner::add2db(): Update tracks")
+        self.update_album(album_id, artist_ids, genre_ids)
         self.update_track(track_id, artist_ids, genre_ids)
-
         # Notify about new artists/genres
         if new_genre_ids or new_artist_ids:
             with SqlCursor(Lp().db) as sql:
@@ -285,7 +290,7 @@ class CollectionScanner(GObject.GObject, ScannerTagReader):
         track_id = Lp().tracks.get_id_by_path(filepath)
         album_id = Lp().tracks.get_album_id(track_id)
         genre_ids = Lp().tracks.get_genre_ids(track_id)
-        album_artist_id = Lp().albums.get_artist_id(album_id)
+        album_artist_ids = Lp().albums.get_artist_ids(album_id)
         artist_ids = Lp().tracks.get_artist_ids(track_id)
         popularity = Lp().tracks.get_popularity(track_id)
         ltime = Lp().tracks.get_ltime(track_id)
@@ -301,7 +306,7 @@ class CollectionScanner(GObject.GObject, ScannerTagReader):
             with SqlCursor(Lp().db) as sql:
                 sql.commit()
             GLib.idle_add(self.emit, 'album-update', album_id)
-        for artist_id in [album_artist_id] + artist_ids:
+        for artist_id in album_artist_ids + artist_ids:
             Lp().artists.clean(artist_id)
         for genre_id in genre_ids:
             Lp().genres.clean(genre_id)

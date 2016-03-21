@@ -77,7 +77,8 @@ class AlbumRow(Gtk.ListBoxRow):
         grid = Gtk.Grid()
         grid.set_column_spacing(8)
         self._artist_label = Gtk.Label.new("<b>%s</b>" %
-                                           escape(self._album.artist_name))
+                                           escape(", ".join(
+                                                         self._album.artists)))
         self._artist_label.set_use_markup(True)
         self._artist_label.set_hexpand(True)
         self._artist_label.set_property('halign', Gtk.Align.START)
@@ -422,6 +423,7 @@ class AlbumsView(LazyLoadingView):
             @param row as AlbumRow
         """
         genre_ids = Lp().player.get_genre_ids(row.get_id())
+        artist_ids = Lp().player.get_artist_ids(row.get_id())
         # TODO Remove this later
         if Gtk.get_minor_version() > 16:
             popover = AlbumPopoverWidget(
@@ -432,7 +434,7 @@ class AlbumsView(LazyLoadingView):
             popover.set_relative_to(row)
             popover.show()
         else:
-            album = Album(row.get_id(), genre_ids)
+            album = Album(row.get_id(), genre_ids, artist_ids)
             Lp().player.load(album.tracks[0])
 
     def _on_jump_clicked(self, widget):

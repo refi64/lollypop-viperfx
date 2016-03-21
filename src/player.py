@@ -84,15 +84,20 @@ class Player(BinPlayer, QueuePlayer, UserPlaylistPlayer, RadioPlayer,
             self.context.genre_ids[self.current_track.album.id] = []
             self._user_playlist = []
             self._user_playlist_ids = []
-        # If album already exists, merge genres
+        # If album already exists, merge genres/artists
         if album.id in self._albums:
             genre_ids = self.context.genre_ids[album.id]
             for genre_id in album.genre_ids:
                 if genre_id >= 0 and genre_id not in genre_ids:
                     self.context.genre_ids[album.id].append(genre_id)
+            artist_ids = self.context.artist_ids[album.id]
+            for artist_id in album.artist_ids:
+                if artist_id >= 0 and artist_id not in artist_ids:
+                    self.context.artist_ids[album.id].append(artist_id)
         else:
             self._albums.append(album.id)
             self.context.genre_ids[album.id] = album.genre_ids
+            self.context.artist_ids[album.id] = album.artist_ids
         self.shuffle_albums(True)
         if self.current_track.id is not None and self.current_track.id > 0:
             self.set_next()
@@ -138,23 +143,40 @@ class Player(BinPlayer, QueuePlayer, UserPlaylistPlayer, RadioPlayer,
         else:
             return []
 
-    def is_album_present(self, album):
+    def get_artist_ids(self, album_id):
         """
-            Check if album is present in albums, with context
+            Return artist ids for album
+            @param album id as int
+            @return genre ids as [int]
+        """
+        if album_id in self.context.artist_ids.keys():
+            return self.context.artist_ids[album_id]
+        else:
+            return []
+
+    def has_album(self, album):
+        """
+            Check if player has album
             @param album as Album
             @return bool
         """
-        is_present = True
+        is_genres = True
+        is_artists = True
         if album.id in self._albums:
             for genre_id in album.genre_ids:
-                if genre_id >= 0 and\
-                        album.id in self.context.genre_ids.keys() and\
-                        self.context.genre_ids[album.id] and\
-                        genre_id not in self.context.genre_ids[album.id]:
-                    is_present = False
+                if album.id in self.context.genre_ids.keys() and\
+                   self.context.genre_ids[album.id] and\
+                   genre_id not in self.context.genre_ids[album.id]:
+                    is_genres = False
+            for artist_id in album.artist_ids:
+                if album.id in self.context.artist_ids.keys() and\
+                   self.context.artist_ids[album.id] and\
+                   artist_id not in self.context.artist_ids[album.id]:
+                    is_artists = False
         else:
-            is_present = False
-        return is_present
+            is_genres = False
+            is_artists = False
+        return is_genres and is_artists
 
     def play_album(self, album):
         """
@@ -172,10 +194,15 @@ class Player(BinPlayer, QueuePlayer, UserPlaylistPlayer, RadioPlayer,
         else:
             self.context.next = NextContext.STOP_ALL
         self.context.genre_ids = {}
+        self.context.artist_ids = {}
         self.context.genre_ids[album.id] = []
+        self.context.artist_ids[album.id] = []
         for genre_id in album.genre_ids:
             if genre_id >= 0:
                 self.context.genre_ids[album.id].append(genre_id)
+        for artist_id in album.artist_ids:
+            if artist_id >= 0:
+                self.context.artist_ids[album.id].append(artist_id)
         self.context.prev_track = Track()
         self.context.next_track = Track()
         self.load(album.tracks[0])
@@ -191,10 +218,9 @@ class Player(BinPlayer, QueuePlayer, UserPlaylistPlayer, RadioPlayer,
         # Invalid track
         if track_id is None:
             return
-        album = Track(track_id).album
-        album.set_genre(genre_ids)
         self._albums = []
         self.context.genre_ids = {}
+        self.context.aritst_ids = {}
         self.context.prev_track = Track()
         self.context.next_track = Track()
         ShufflePlayer.reset_history(self)
@@ -242,9 +268,13 @@ class Player(BinPlayer, QueuePlayer, UserPlaylistPlayer, RadioPlayer,
         # Set context for each album
         for album_id in self._albums:
             self.context.genre_ids[album_id] = []
+            self.context.artist_ids[album_id] = []
             for genre_id in genre_ids:
                 if genre_id >= 0:
                     self.context.genre_ids[album_id].append(genre_id)
+            for artist_id in artist_ids:
+                if artist_id >= 0:
+                    self.context.artist_ids[album_id].append(artist_id)
         # Shuffle album list if needed
         self.shuffle_albums(True)
 
@@ -262,16 +292,16 @@ class Player(BinPlayer, QueuePlayer, UserPlaylistPlayer, RadioPlayer,
         self._albums = []
         self.context.next = NextContext.STOP_TRACK
 
-    def get_current_artist(self):
+    def get_current_artists(self):
         """
             Get current artist
             @return artist as string
         """
-        artist_id = self.current_track.album_artist_id
-        if artist_id == Type.COMPILATIONS:
-            artist = self.current_track.artist
+        artist_ids = self.current_track.album_artist_ids
+        if artist_ids[0] == Type.COMPILATIONS:
+            artist = self.current_track.artists
         else:
-            artist = self.current_track.album_artist
+            artist = self.current_track.album_artists
         return artist
 
     def restore_state(self):
@@ -318,9 +348,10 @@ class Player(BinPlayer, QueuePlayer, UserPlaylistPlayer, RadioPlayer,
                         pass  # User set non int in gsettings
                 else:
                     self._albums = Lp().artists.get_albums(
-                                                         track.album_artist_id)
+                                                        track.album_artist_ids)
                     for album_id in self._albums:
                         self.context.genre_ids[album_id] = []
+                        self.context.artist_ids[album_id] = []
                 self.set_next()
                 self.set_prev()
                 if Lp().settings.get_value('repeat'):

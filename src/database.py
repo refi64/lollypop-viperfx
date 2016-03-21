@@ -93,8 +93,8 @@ class Database:
                     sql.execute(self.create_track_artists)
                     sql.execute(self.create_track_genres)
                     sql.commit()
-            except:
-                print("Database::__init__(): %s" % self.LOCAL_PATH)
+            except Exception as e:
+                print("Database::__init__(): %s" % e)
 
     def get_cursor(self):
         """

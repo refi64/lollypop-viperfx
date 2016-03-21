@@ -10,6 +10,8 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
+import itertools
+
 from lollypop.sqlcursor import SqlCursor
 from lollypop.utils import translate_artist_name
 
@@ -32,7 +34,8 @@ class DatabaseUpgrade:
         self._UPGRADES = {
             1: "UPDATE tracks SET duration=CAST(duration as INTEGER);",
             2: "UPDATE albums SET artist_id=-2001 where artist_id=-999;",
-            3: self._upgrade_3
+            3: self._upgrade_3,
+            4: self._upgrade_4
                          }
 
     """
@@ -77,4 +80,59 @@ class DatabaseUpgrade:
                             (translated, row[0]))
                 sql.execute("UPDATE artists SET sortname=? WHERE rowid=?",
                             (row[1], row[0]))
+            sql.commit()
+
+    def _upgrade_4(self):
+        """
+            Add album artists table
+        """
+        with SqlCursor(self._db) as sql:
+            sql.execute("CREATE TABLE album_artists (\
+                                                album_id INT NOT NULL,\
+                                                artist_id INT NOT NULL)")
+            result = sql.execute("SELECT rowid from albums")
+            for album_id in list(itertools.chain(*result)):
+                result = sql.execute("SELECT artist_id\
+                                     FROM albums\
+                                     WHERE rowid=?",
+                                     (album_id,))
+                v = result.fetchone()
+                if v is not None:
+                    artist_id = v[0]
+                    sql.execute("INSERT INTO album_artists\
+                                (album_id, artist_id)\
+                                VALUES(?, ?)",
+                                (album_id, artist_id))
+            sql.execute("CREATE TEMPORARY TABLE backup(id,\
+                                                       name,\
+                                                       no_album_artist,\
+                                                       year,\
+                                                       path,\
+                                                       popularity,\
+                                                       mtime)")
+            sql.execute("INSERT INTO backup\
+                        SELECT id,\
+                               name,\
+                               no_album_artist,\
+                               year,\
+                               path,\
+                               popularity,\
+                               mtime FROM albums")
+            sql.execute("DROP TABLE albums")
+            sql.execute("CREATE TABLE albums (id INTEGER PRIMARY KEY,\
+                        name TEXT NOT NULL,\
+                        no_album_artist BOOLEAN NOT NULL,\
+                        year INT,\
+                        path TEXT NOT NULL,\
+                        popularity INT NOT NULL,\
+                        mtime INT NOT NULL)")
+            sql.execute("INSERT INTO albums\
+                        SELECT id,\
+                               name,\
+                               no_album_artist,\
+                               year,\
+                               path,\
+                               popularity,\
+                               mtime FROM backup")
+            sql.execute("DROP TABLE backup")
             sql.commit()
