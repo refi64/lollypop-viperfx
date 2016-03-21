@@ -42,16 +42,14 @@ class QueueRow(Gtk.ListBoxRow):
         self._grid.set_column_spacing(5)
         self._row_widget.add(self._grid)
         self._cover = Gtk.Image()
-        self._cover_frame = Gtk.Frame()
-        self._cover_frame.set_shadow_type(Gtk.ShadowType.NONE)
-        self._cover_frame.set_property('halign', Gtk.Align.CENTER)
-        self._cover_frame.set_property('valign', Gtk.Align.CENTER)
-        self._cover_frame.get_style_context().add_class('small-cover-frame')
-        self._cover_frame.add(self._cover)
+        self._cover.set_no_show_all(True)
+        self._cover.set_property('halign', Gtk.Align.CENTER)
+        self._cover.set_property('valign', Gtk.Align.CENTER)
+        self._cover.get_style_context().add_class('small-cover-frame')
         # We force width with a Box
         box = Gtk.Box()
         box.set_homogeneous(True)
-        box.add(self._cover_frame)
+        box.add(self._cover)
         box.set_property('width-request', ArtSize.MEDIUM+2)
         box.show()
         self._title_label = Gtk.Label()
@@ -142,10 +140,8 @@ class QueueRow(Gtk.ListBoxRow):
         """
         if surface is None:
             self._cover.clear()
-            self._cover_frame.set_shadow_type(Gtk.ShadowType.NONE)
         else:
             self._cover.set_from_surface(surface)
-            self._cover_frame.set_shadow_type(Gtk.ShadowType.IN)
             del surface
 
 #######################
