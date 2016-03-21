@@ -91,6 +91,32 @@ class ScannerTagReader(TagReader):
             artists = ""
         return artists
 
+    def get_composers(self, tags):
+        """
+            Return composers for tags
+            @param tags as Gst.TagList
+            @return string like "composer1;composer2;..."
+        """
+        if tags is None:
+            return _("Unknown")
+        (exists, composers) = tags.get_string_index('composer', self._index)
+        if not exists:
+            composers = ""
+        return composers
+
+    def get_performers(self, tags):
+        """
+            Return performers for tags
+            @param tags as Gst.TagList
+            @return string like "performer1;performer2;..."
+        """
+        if tags is None:
+            return _("Unknown")
+        (exists, performers) = tags.get_string_index('performer', self._index)
+        if not exists:
+            performers = ""
+        return performers
+
     def get_artist_sortnames(self, tags):
         """
             Return artist sort name
