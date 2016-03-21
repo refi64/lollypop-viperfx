@@ -150,6 +150,9 @@ class RadioPopover(Gtk.Popover):
                 True,
                 None)
             image = Gtk.Image()
+            image.get_style_context().add_class('cover-frame')
+            image.set_property('halign', Gtk.Align.CENTER)
+            image.set_property('valign', Gtk.Align.CENTER)
             self._orig_pixbufs[image] = pixbuf
             # Scale preserving aspect ratio
             width = pixbuf.get_width()
