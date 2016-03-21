@@ -41,7 +41,6 @@ class ArtistContent(Gtk.Stack):
         builder.add_from_resource('/org/gnome/Lollypop/ArtistContent.ui')
         self._content = builder.get_object('content')
         self._image = builder.get_object('image')
-        self._image_frame = builder.get_object('frame')
         self.add_named(builder.get_object('widget'), 'widget')
         self.add_named(builder.get_object('notfound'), 'notfound')
         self._spinner = builder.get_object('spinner')
@@ -67,7 +66,7 @@ class ArtistContent(Gtk.Stack):
             Clear content
         """
         self._content.set_text('')
-        self._image_frame.hide()
+        self._image.hide()
         self._image.clear()
 
     def populate(self, content, image_url, suffix):
@@ -121,7 +120,7 @@ class ArtistContent(Gtk.Stack):
                 del pixbuf
                 self._image.set_from_surface(surface)
                 del surface
-                self._image_frame.show()
+                self._image.show()
             self.set_visible_child_name('widget')
         else:
             self.set_visible_child_name('notfound')
