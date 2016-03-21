@@ -241,6 +241,7 @@ class InfosController:
         """
             Init controller
         """
+        self._infobox = None
         self._artsize = artsize
 
     def on_current_changed(self, player):
@@ -249,6 +250,12 @@ class InfosController:
             @param player as Player
         """
         art = None
+
+        if player.current_track.id is None:
+            if self._infobox is not None:
+                self._infobox.hide()
+            self._cover.hide()
+            return
 
         self._artist_label.set_text(player.current_track.artists)
         self._title_label.set_text(player.current_track.title)
@@ -272,3 +279,5 @@ class InfosController:
             self._cover.show()
         else:
             self._cover.hide()
+        if self._infobox is not None:
+            self._infobox.show()
