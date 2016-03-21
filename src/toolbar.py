@@ -14,7 +14,7 @@ from gi.repository import Gtk
 
 from lollypop.define import Lp, WindowSize
 from lollypop.toolbar_playback import ToolbarPlayback
-from lollypop.toolbar_infos import ToolbarInfos
+from lollypop.toolbar_info import ToolbarInfo
 from lollypop.toolbar_title import ToolbarTitle
 from lollypop.toolbar_end import ToolbarEnd
 
@@ -34,14 +34,14 @@ class Toolbar(Gtk.HeaderBar):
         self.set_title("Lollypop")
         self._toolbar_playback = ToolbarPlayback()
         self._toolbar_playback.show()
-        self._toolbar_infos = ToolbarInfos()
-        self._toolbar_infos.show()
+        self._toolbar_info = ToolbarInfo()
+        self._toolbar_info.show()
         self._toolbar_title = ToolbarTitle()
         self._toolbar_title.show()
         self._toolbar_end = ToolbarEnd(app)
         self._toolbar_end.show()
         self.pack_start(self._toolbar_playback)
-        self.pack_start(self._toolbar_infos)
+        self.pack_start(self._toolbar_info)
         self.set_custom_title(self._toolbar_title)
         self.pack_end(self._toolbar_end)
 
@@ -58,7 +58,7 @@ class Toolbar(Gtk.HeaderBar):
         """
         style = self.get_style_context()
         padding = style.get_padding(style.get_state())
-        info_height = self._toolbar_infos.get_preferred_height()
+        info_height = self._toolbar_info.get_preferred_height()
         if info_height[0]+padding.top+padding.bottom > 47:
             height = info_height[0]+padding.top+padding.bottom
         else:
@@ -79,9 +79,9 @@ class Toolbar(Gtk.HeaderBar):
         """
         width = self._toolbar_playback.get_preferred_width()[1]
         if window_width < WindowSize.MONSTER:
-            self._toolbar_infos.hide()
+            self._toolbar_info.hide()
         else:
-            self._toolbar_infos.show()
+            self._toolbar_info.show()
         if window_width < WindowSize.BIG:
             self._toolbar_end.hide()
         else:
@@ -97,7 +97,7 @@ class Toolbar(Gtk.HeaderBar):
                     title = available
                 self._toolbar_title.set_width(title)
                 if window_width >= WindowSize.MEDIUM:
-                    self._toolbar_infos.set_width((available-title)/2)
+                    self._toolbar_info.set_width((available-title)/2)
             self._width = window.get_width()
 
     def update_position(self, value=None):
@@ -123,7 +123,7 @@ class Toolbar(Gtk.HeaderBar):
             @param player as Player
         """
         self._toolbar_playback.on_current_changed(player)
-        self._toolbar_infos.on_current_changed(player)
+        self._toolbar_info.on_current_changed(player)
         self._toolbar_title.on_current_changed(player)
 
     def _on_prev_changed(self, player):

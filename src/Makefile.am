@@ -58,7 +58,7 @@ app_PYTHON = \
     sync_mtp.py\
     tagreader.py\
     toolbar_end.py\
-    toolbar_infos.py\
+    toolbar_info.py\
     toolbar_playback.py\
     toolbar.py\
     toolbar_title.py\
