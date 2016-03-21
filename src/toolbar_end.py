@@ -300,6 +300,6 @@ class ToolbarEnd(Gtk.Bin):
         elif Lp().player.get_queue():
             widget.set_tooltip_text(_("Queue"))
         elif Lp().player.get_user_playlist_ids():
-            widget.set_tooltip_text(_("Playlists playing"))
+            widget.set_tooltip_text(_("Playing playlists"))
         else:
-            widget.set_tooltip_text(_("Albums playing"))
+            widget.set_tooltip_text(_("Playing albums"))
