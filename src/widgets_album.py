@@ -520,20 +520,6 @@ class AlbumSimpleWidget(Gtk.Frame, AlbumWidget):
             self.set_tooltip_text('')
 
 
-class FlowBox(Gtk.FlowBox):
-    """
-        Special flowbox ignoring user input
-    """
-    def __init__(self):
-        Gtk.FlowBox.__init__(self)
-
-    def do_button_press_event(self, event):
-        pass
-
-    def do_button_release_event(self, event):
-        pass
-
-
 class AlbumDetailedWidget(Gtk.Bin, AlbumWidget):
     """
         Widget with cover and tracks
