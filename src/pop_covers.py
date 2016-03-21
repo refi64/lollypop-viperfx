@@ -175,6 +175,9 @@ class CoversPopover(Gtk.Popover):
         if monster is None or big is None:
             return
         image = Gtk.Image()
+        image.get_style_context().add_class('cover-frame')
+        image.set_property('halign', Gtk.Align.CENTER)
+        image.set_property('valign', Gtk.Align.CENTER)
         self._monster_pixbufs[image] = monster
         surface = Gdk.cairo_surface_create_from_pixbuf(big,
                                                        0,
