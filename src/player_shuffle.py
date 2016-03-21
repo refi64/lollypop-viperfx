@@ -132,6 +132,7 @@ class ShufflePlayer(BasePlayer):
             # Set context for each album
             for album_id in self._albums:
                 self.context.genre_ids[album_id] = genre_ids
+                self.context.artist_ids[album_id] = []
             # Start a new song if not playing
             if (self.current_track.id in [None, Type.RADIOS])\
                     and self._albums:
