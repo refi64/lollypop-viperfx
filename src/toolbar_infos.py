@@ -187,7 +187,7 @@ class ToolbarInfos(Gtk.Bin, InfosController):
         """
         style = self.get_style_context()
         padding = style.get_padding(style.get_state())
-        ArtSize.SMALL = self.get_allocated_height()\
+        self._artsize = self.get_allocated_height()\
             - padding.top - padding.bottom - 2
 
     def _on_eventbox_realize(self, eventbox):
