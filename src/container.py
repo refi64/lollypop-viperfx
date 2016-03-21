@@ -207,6 +207,8 @@ class Container:
         values_two = self._list_two.get_selected_ids()
         if not values_two:
             values_one = self._list_one.get_selected_ids()
+            if not values_one:
+                values_one = [Type.POPULARS]
             self._list_one.select_ids([])
             self._list_one.select_ids(values_one)
         if self._list_two.is_visible():
