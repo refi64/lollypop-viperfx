@@ -47,24 +47,15 @@ class RadioWidget(Gtk.Frame, AlbumWidget):
         self._widget = Gtk.EventBox()
         self._widget.connect('enter-notify-event', self._on_enter_notify)
         self._widget.connect('leave-notify-event', self._on_leave_notify)
-        grid = Gtk.Grid()
-        grid.set_orientation(Gtk.Orientation.VERTICAL)
-        frame = Gtk.Frame()
-        frame.set_property('halign', Gtk.Align.CENTER)
-        frame.get_style_context().add_class('cover-frame')
-        self._color = Gtk.Frame()
-        self._color.get_style_context().add_class('cover-frame-border')
         self._cover = Gtk.Image()
+        self._cover.get_style_context().add_class('cover-frame')
+        self._cover.set_property('halign', Gtk.Align.CENTER)
         self._cover.set_size_request(ArtSize.BIG, ArtSize.BIG)
         self._cover.get_style_context().add_class('white')
         self._title_label = Gtk.Label()
         self._title_label.set_ellipsize(Pango.EllipsizeMode.END)
         self._title_label.set_property('halign', Gtk.Align.CENTER)
         self._title_label.set_text(self._name)
-        self._widget.add(grid)
-        grid.add(frame)
-        grid.add(self._title_label)
-        frame.add(self._color)
         overlay = Gtk.Overlay.new()
         overlay.get_style_context().add_class('white')
         # Play button
@@ -98,12 +89,16 @@ class RadioWidget(Gtk.Frame, AlbumWidget):
         overlay.add(self._cover)
         overlay.add_overlay(play_event)
         overlay.add_overlay(edit_event)
-        self._color.add(overlay)
+        grid = Gtk.Grid()
+        grid.set_orientation(Gtk.Orientation.VERTICAL)
+        grid.add(overlay)
+        grid.add(self._title_label)
+        self._widget.add(grid)
+        self._widget.set_property('halign', Gtk.Align.CENTER)
+        self._widget.set_property('valign', Gtk.Align.CENTER)
         self.add(self._widget)
         self.set_cover()
         self.update_state()
-        self._widget.set_property('halign', Gtk.Align.CENTER)
-        self._widget.set_property('valign', Gtk.Align.CENTER)
         self.show_all()
         play_event.add(self._play_button)
         edit_event.add(self._edit_button)
@@ -179,10 +174,10 @@ class RadioWidget(Gtk.Frame, AlbumWidget):
         selected = Lp().player.current_track.id == Type.RADIOS and\
             self._name == Lp().player.current_track.album_artist
         if selected:
-            self._color.get_style_context().add_class(
+            self._cover.get_style_context().add_class(
                                                     'cover-frame-selected')
         else:
-            self._color.get_style_context().remove_class(
+            self._cover.get_style_context().remove_class(
                                                     'cover-frame-selected')
 
 #######################
