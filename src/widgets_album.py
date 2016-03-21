@@ -323,7 +323,7 @@ class AlbumWidget:
         return True
 
 
-class AlbumSimpleWidget(Gtk.Bin, AlbumWidget):
+class AlbumSimpleWidget(Gtk.Frame, AlbumWidget):
     """
         Album widget showing cover, artist and title
     """
