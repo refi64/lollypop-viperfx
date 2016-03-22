@@ -119,9 +119,9 @@ class AlbumsView(LazyLoadingView):
         # FIXME: Report a bug and check always true
         (x, y) = child.translate_coordinates(self._scrolled, 0, 0)
         if y < 0:
-            y = child.translate_coordinates(self._scrolled, 0, 0)[1]
-            if y is not None:
-                self._scrolled.get_vadjustment().set_value(y)
+            y = child.translate_coordinates(self._albumbox, 0, 0)[1]
+            self._scrolled.get_allocation().height + y
+            self._scrolled.get_vadjustment().set_value(y)
         self._popover = AlbumPopoverWidget(album_widget.get_id(),
                                            self._genre_ids,
                                            self._artist_ids,
