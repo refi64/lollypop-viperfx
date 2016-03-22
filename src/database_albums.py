@@ -588,7 +588,7 @@ class AlbumsDatabase:
             artist_ids = []
         with SqlCursor(Lp().db) as sql:
             filters = (album_id, disc)
-            request = "SELECT tracks.rowid\
+            request = "SELECT DISTINCT tracks.rowid\
                        FROM tracks"
             if genre_ids:
                 request += ", track_genres"
