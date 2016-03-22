@@ -179,10 +179,10 @@ class Row(Gtk.ListBoxRow):
                 self._popup_menu(self._menu_button)
             return True
         elif event.button == 2:
-            if self._id in Lp().player.get_queue():
-                Lp().player.del_from_queue(self._id)
+            if self._track.id in Lp().player.get_queue():
+                Lp().player.del_from_queue(self._track.id)
             else:
-                Lp().player.append_to_queue(self._id)
+                Lp().player.append_to_queue(self._track.id)
 
     def _on_button_clicked(self, widget):
         """
