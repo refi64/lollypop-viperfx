@@ -418,13 +418,13 @@ class TrackRow(Row):
         layout = Pango.Layout.new(ctx)
         layout.set_text("a", 1)
         font_height = int(layout.get_pixel_size()[1])
-        # Gtk.IconSize.MENU + .menu-button padding + border (application.css)
-        menu_height = 16 + 8
-        image_spacing = Gtk.Button().style_get_property('image-spacing')
-        if font_height > menu_height + image_spacing:
+        # Gtk.IconSize.MENU + .menu-button padding + border +
+        # image spacing(application.css)
+        menu_height = 16 + 8 + 2
+        if font_height > menu_height:
             height = font_height
         else:
-            height = menu_height + image_spacing
+            height = menu_height
         return height
 
     def __init__(self, rowid, num):

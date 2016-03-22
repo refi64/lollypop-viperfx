@@ -1,3 +1,6 @@
+/* Settings this seems to have no effect.
+ * But default value seems to be 2 => TrackRow::get_best_height()
+ */
 * {
 	-GtkButton-image-spacing: 2;
 }
