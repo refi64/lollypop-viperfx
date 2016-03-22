@@ -98,7 +98,7 @@ class AlbumPopoverWidget(Gtk.Popover):
         """
             Set maximum width
         """
-        width = min(900, self._width)
+        width = min(900, self._width * 0.8)
         return (width, width)
 
 #######################
