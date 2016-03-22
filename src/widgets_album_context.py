@@ -65,7 +65,8 @@ class AlbumPopoverWidget(Gtk.Popover):
         An AlbumContextWidget in a popover
     """
 
-    def __init__(self, album_id, genre_ids, artist_ids, show_cover=True):
+    def __init__(self, album_id, genre_ids, artist_ids,
+                 width=800, show_cover=True):
         """
             Init popover
             @param album id as int
@@ -74,6 +75,7 @@ class AlbumPopoverWidget(Gtk.Popover):
             @param show cover as bool
         """
         Gtk.Popover.__init__(self)
+        self._width = width
         self.get_style_context().add_class('box-shadow')
         self.connect('hide', self._on_hide)
         self._widget = AlbumContextWidget(album_id,
@@ -96,7 +98,7 @@ class AlbumPopoverWidget(Gtk.Popover):
         """
             Set maximum width
         """
-        width = min(900, Lp().window.get_size()[0] - 10)
+        width = min(900, self._width)
         return (width, width)
 
 #######################
