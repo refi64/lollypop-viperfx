@@ -131,7 +131,7 @@ class AlbumsView(LazyLoadingView):
         self._popover.set_position(Gtk.PositionType.BOTTOM)
         self._popover.connect('closed', self._on_popover_closed, cover)
         self._popover.show()
-        cover.set_opacity(0.85)
+        cover.set_opacity(0.9)
         album_widget.update_overlay()
 
     def _on_popover_closed(self, popover, image):

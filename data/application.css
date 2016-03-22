@@ -151,12 +151,6 @@ Gtk.ListBoxRow .menu-button:hover {
     background-color: @theme_selected_bg_color;
 }
 
-.hovereffect {
-    opacity: 0.9;
-}
-
-
-
 .drag-up {
     background-image: -gtk-gradient (linear,
                                      left top,

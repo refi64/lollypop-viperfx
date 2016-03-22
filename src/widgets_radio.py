@@ -194,7 +194,7 @@ class RadioWidget(Gtk.Frame, AlbumWidget):
             @param event es Gdk.Event
         """
         if self._play_button.get_opacity() == 0:
-            self._cover.get_style_context().add_class('hovereffect')
+            self._cover.set_opacity(0.9)
             self._play_button.set_opacity(1)
             self._play_button.get_style_context().add_class(
                                                            self._rounded_class)
@@ -227,7 +227,7 @@ class RadioWidget(Gtk.Frame, AlbumWidget):
            event.x > allocation.width - 5 or\
            event.y < 5 or\
            event.y > allocation.height - 5:
-            self._cover.get_style_context().remove_class('hovereffect')
+            self._cover.set_opacity(1)
             self._play_button.set_opacity(0)
             self._play_button.hide()
             self._play_button.get_style_context().remove_class(
