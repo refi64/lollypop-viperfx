@@ -276,12 +276,15 @@ class AlbumsView(LazyLoadingView):
                                                     'edit-clear-all-symbolic',
                                                     Gtk.IconSize.MENU)
         self._clear_button.set_relief(Gtk.ReliefStyle.NONE)
+        self._clear_button.set_tooltip_text(_("Clear albums"))
+        self._clear_button.set_sensitive(False)
         self._clear_button.connect('clicked', self._on_clear_clicked)
         self._jump_button = Gtk.Button.new_from_icon_name(
                                                     'go-jump-symbolic',
                                                     Gtk.IconSize.MENU)
         self._jump_button.set_relief(Gtk.ReliefStyle.NONE)
         self._jump_button.connect('clicked', self._on_jump_clicked)
+        self._jump_button.set_tooltip_text(_("Go to current track"))
         label = Gtk.Label.new("<b>"+_("Playing albums")+"</b>")
         label.set_use_markup(True)
         label.set_hexpand(True)
@@ -327,6 +330,7 @@ class AlbumsView(LazyLoadingView):
             child.destroy()
         if clear_albums:
             Lp().player.clear_albums()
+        self._clear_button.set_sensitive(False)
 
     def _add_items(self, items, prev_album_id=None):
         """
@@ -346,8 +350,6 @@ class AlbumsView(LazyLoadingView):
                 self._viewport.add(self._view)
             if Lp().player.current_track.album.id in Lp().player.get_albums():
                 self._jump_button.set_sensitive(True)
-                self._jump_button.set_tooltip_text(
-                                          Lp().player.current_track.album.name)
 
     def _row_for_album_id(self, album_id):
         """
@@ -397,9 +399,6 @@ class AlbumsView(LazyLoadingView):
             Show tracks in a popover
             @param player object
         """
-        if self._jump_button.get_sensitive():
-            self._jump_button.set_tooltip_text(
-                                          Lp().player.current_track.album.name)
         for child in self._view.get_children():
             child.show_play_indicator(child.get_id() ==
                                       Lp().player.current_track.album.id)
@@ -411,7 +410,6 @@ class AlbumsView(LazyLoadingView):
         """
         if row.get_id() != Lp().player.current_track.album.id:
             self._jump_button.set_sensitive(False)
-            self._jump_button.set_tooltip_text('')
         self._clear_button.set_sensitive(len(self._view.get_children()) != 0)
 
     def _on_row_activated(self, widget, row):

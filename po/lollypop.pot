@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-03-21 15:22+0100\n"
+"POT-Creation-Date: 2016-03-21 19:45+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -283,28 +283,28 @@ msgid ""
 "    - Artist informations disabled"
 msgstr ""
 
-#: ../src/application.py:376
+#: ../src/application.py:379
 #, python-format
 msgid "%d artist"
 msgid_plural "%d artists"
 msgstr[0] ""
 msgstr[1] ""
 
-#: ../src/application.py:378
+#: ../src/application.py:381
 #, python-format
 msgid "%d album"
 msgid_plural "%d albums"
 msgstr[0] ""
 msgstr[1] ""
 
-#: ../src/application.py:380
+#: ../src/application.py:383
 #, python-format
 msgid "%d track"
 msgid_plural "%d tracks"
 msgstr[0] ""
 msgstr[1] ""
 
-#: ../src/application.py:395
+#: ../src/application.py:398
 msgid "Lollypop: You need to install yelp."
 msgstr ""
 
@@ -374,9 +374,9 @@ msgstr ""
 
 #: ../src/database_albums.py:302 ../src/database_artists.py:104
 #: ../src/database_genres.py:69 ../src/database_tracks.py:228
-#: ../src/selectionlist.py:273 ../src/tagreader.py:88 ../src/tagreader.py:114
-#: ../src/tagreader.py:127 ../src/tagreader.py:130 ../src/tagreader.py:140
-#: ../src/tagreader.py:143
+#: ../src/selectionlist.py:273 ../src/tagreader.py:88 ../src/tagreader.py:101
+#: ../src/tagreader.py:114 ../src/tagreader.py:140 ../src/tagreader.py:153
+#: ../src/tagreader.py:156 ../src/tagreader.py:166 ../src/tagreader.py:169
 msgid "Unknown"
 msgstr ""
 
@@ -414,7 +414,15 @@ msgstr ""
 msgid "Loved tracks"
 msgstr ""
 
-#: ../src/pop_albums.py:285 ../src/toolbar_end.py:305
+#: ../src/pop_albums.py:279
+msgid "Clear albums"
+msgstr ""
+
+#: ../src/pop_albums.py:287 ../src/view_artist.py:44
+msgid "Go to current track"
+msgstr ""
+
+#: ../src/pop_albums.py:288 ../src/toolbar_end.py:305
 msgid "Playing albums"
 msgstr ""
 

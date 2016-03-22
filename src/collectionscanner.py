@@ -218,6 +218,8 @@ class CollectionScanner(GObject.GObject, ScannerTagReader):
 
         title = self.get_title(tags, filepath)
         artists = self.get_artists(tags)
+        composers = self.get_composers(tags)
+        performers = self.get_performers(tags)
         sortnames = self.get_artist_sortnames(tags)
         album_artists = self.get_album_artist(tags)
         album_name = self.get_album_name(tags)
@@ -231,6 +233,14 @@ class CollectionScanner(GObject.GObject, ScannerTagReader):
         # If no artists tag, use album artist
         if artists == '':
             artists = album_artists
+        # if artists is always null, no album artists too,
+        # use composer/performer
+        if artists == '':
+            artists = performers
+            album_artists = composers
+            if artists == '':
+                artists = album_artists
+
         debug("CollectionScanner::add2db(): Restore stats")
         # Restore stats
         (track_pop, track_ltime, amtime, album_pop) = self._history.get(
@@ -269,7 +279,7 @@ class CollectionScanner(GObject.GObject, ScannerTagReader):
                                    track_ltime, mtime)
 
         debug("CollectionScanner::add2db(): Update tracks")
-        self.update_album(album_id, artist_ids, genre_ids)
+        self.update_album(album_id, album_artist_ids, genre_ids)
         self.update_track(track_id, artist_ids, genre_ids)
         # Notify about new artists/genres
         if new_genre_ids or new_artist_ids:
