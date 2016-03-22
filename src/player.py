@@ -82,6 +82,7 @@ class Player(BinPlayer, QueuePlayer, UserPlaylistPlayer, RadioPlayer,
         if not self._albums:
             self._albums = [self.current_track.album.id]
             self.context.genre_ids[self.current_track.album.id] = []
+            self.context.artist_ids[self.current_track.album.id] = []
             self._user_playlist = []
             self._user_playlist_ids = []
         # If album already exists, merge genres/artists
