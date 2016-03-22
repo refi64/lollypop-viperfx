@@ -83,12 +83,15 @@ class Player(BinPlayer, QueuePlayer, UserPlaylistPlayer, RadioPlayer,
             @param album as Album
         """
         self.shuffle_albums(False)
-        if not self._albums:
-            self._albums = [self.current_track.album.id]
-            self.context.genre_ids[self.current_track.album.id] = []
-            self.context.artist_ids[self.current_track.album.id] = []
-            self._user_playlist = []
-            self._user_playlist_ids = []
+        # Add album to main playlist if nothing playing
+        # Do not start to play
+        if not self._albums and self.current_track.id is None:
+                self.load(album.tracks[0], False)
+                self._albums = [self.current_track.album.id]
+                self.context.genre_ids[self.current_track.album.id] = []
+                self.context.artist_ids[self.current_track.album.id] = []
+                self._user_playlist = []
+                self._user_playlist_ids = []
         # If album already exists, merge genres/artists
         if album.id in self._albums:
             genre_ids = self.context.genre_ids[album.id]
@@ -134,10 +137,12 @@ class Player(BinPlayer, QueuePlayer, UserPlaylistPlayer, RadioPlayer,
             for artist_id in album.artist_ids:
                 if artist_id in artist_ids:
                     artist_ids.remove(artist_id)
-            if not genre_ids and not artist_ids:
+            if not genre_ids or not artist_ids:
                 self.context.genre_ids.pop(album.id, None)
                 self.context.artist_ids.pop(album.id, None)
                 self._albums.remove(album.id)
+                if album.id in self._albums_backup:
+                    self._albums_backup.remove(album.id)
             self.set_prev()
             self.set_next()
         except Exception as e:

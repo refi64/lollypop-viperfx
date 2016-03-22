@@ -304,8 +304,6 @@ class AlbumWidget:
             @param: widget as Gtk.EventBox
             @param: event as Gdk.Event
         """
-        albums = Lp().player.get_albums()
-        empty = len(albums) == 0
         if Lp().player.has_album(self._album):
             if Lp().player.current_track.album.id == self._album.id:
                 # If not last album, skip it
@@ -323,8 +321,6 @@ class AlbumWidget:
                 Lp().player.remove_album(self._album)
             self._show_append(True)
         else:
-            if empty and Lp().player.current_track.id is None:
-                Lp().player.load(self._album.tracks[0], False)
             Lp().player.add_album(self._album)
             self._show_append(False)
         return True
