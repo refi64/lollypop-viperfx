@@ -49,8 +49,6 @@ class RadiosView(LazyLoadingView):
 
         self._radiobox = Gtk.FlowBox()
         self._radiobox.set_selection_mode(Gtk.SelectionMode.NONE)
-        self._radiobox.set_property('column-spacing', 5)
-        self._radiobox.set_property('row-spacing', 5)
         self._radiobox.set_homogeneous(True)
         self._radiobox.set_max_children_per_line(1000)
         self._radiobox.show()

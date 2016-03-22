@@ -73,8 +73,6 @@ class AlbumsView(LazyLoadingView):
         self._albumbox.set_selection_mode(Gtk.SelectionMode.NONE)
         self._albumbox.connect('child-activated', self._on_album_activated)
         self._albumbox.connect('button-press-event', self._on_button_press)
-        self._albumbox.set_property('column-spacing', 5)
-        self._albumbox.set_property('row-spacing', 5)
         self._albumbox.set_homogeneous(True)
         self._albumbox.set_max_children_per_line(1000)
         self._albumbox.show()
