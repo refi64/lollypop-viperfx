@@ -15,6 +15,8 @@ from gi.repository import Gtk, GLib, Gdk
 from lollypop.view import View, LazyLoadingView
 from lollypop.widgets_album import AlbumSimpleWidget
 from lollypop.widgets_album_context import AlbumPopoverWidget
+from lollypop.pop_menu import AlbumMenu
+from lollypop.objects import Album
 
 
 class AlbumsView(LazyLoadingView):
@@ -122,15 +124,21 @@ class AlbumsView(LazyLoadingView):
             y = child.translate_coordinates(self._albumbox, 0, 0)[1]
             self._scrolled.get_allocation().height + y
             self._scrolled.get_vadjustment().set_value(y)
-        self._popover = AlbumPopoverWidget(album_widget.get_id(),
-                                           self._genre_ids,
-                                           self._artist_ids,
-                                           self.get_allocation().width,
-                                           False)
-        self._popover.set_relative_to(cover)
-        self._popover.set_position(Gtk.PositionType.BOTTOM)
-        self._popover.connect('closed', self._on_popover_closed, cover)
-        self._popover.show()
+        if self._press_rect is not None:
+            pop_menu = AlbumMenu(Album(album_widget.get_id()))
+            popover = Gtk.Popover.new_from_model(cover, pop_menu)
+            popover.set_position(Gtk.PositionType.BOTTOM)
+            popover.set_pointing_to(self._press_rect)
+        else:
+            popover = AlbumPopoverWidget(album_widget.get_id(),
+                                         self._genre_ids,
+                                         self._artist_ids,
+                                         self.get_allocation().width,
+                                         False)
+            popover.set_relative_to(cover)
+            popover.set_position(Gtk.PositionType.BOTTOM)
+        popover.connect('closed', self._on_popover_closed, cover)
+        popover.show()
         cover.set_opacity(0.9)
         album_widget.update_overlay()
 
