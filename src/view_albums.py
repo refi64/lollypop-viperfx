@@ -124,7 +124,8 @@ class AlbumsView(LazyLoadingView):
                 self._scrolled.get_vadjustment().set_value(y)
         self._popover = AlbumPopoverWidget(album_widget.get_id(),
                                            self._genre_ids,
-                                           self._artist_ids)
+                                           self._artist_ids,
+                                           False)
         self._popover.set_relative_to(cover)
         self._popover.set_position(Gtk.PositionType.BOTTOM)
         self._popover.connect('closed', self._on_popover_closed)

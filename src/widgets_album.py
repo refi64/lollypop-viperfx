@@ -39,7 +39,6 @@ class AlbumWidget:
         self._cover = None
         self._widget = None
         self._popover = False
-        self._limit_to_current = False
         self._play_all_button = None
         self._squared_class = "squared-icon"
         self._rounded_class = "rounded-icon"
@@ -51,7 +50,7 @@ class AlbumWidget:
         """
             Set cover for album if state changed
         """
-        if self._widget is None:
+        if self._cover is None:
             return
         surface = Lp().art.get_album_artwork(
                             self._album,
@@ -69,7 +68,7 @@ class AlbumWidget:
             Update cover for album id id needed
             @param album id as int
         """
-        if self._widget is None:
+        if self._cover is None:
             return
         surface = Lp().art.get_album_artwork(
                             self._album,
@@ -85,7 +84,7 @@ class AlbumWidget:
         """
             Update widget state
         """
-        if self._widget is None:
+        if self._cover is None:
             return
         selected = self._album.id == Lp().player.current_track.album.id
         if selected != self._selected:
@@ -106,7 +105,7 @@ class AlbumWidget:
         """
             Update overlay icon
         """
-        if self._widget is None or self._popover:
+        if self._cover is None or self._popover:
             return
         self._on_pop_cover_closed(self)
 
@@ -182,7 +181,7 @@ class AlbumWidget:
             @param album id as int
             @param deleted as bool
         """
-        if self._widget is None or self._album.id != album_id:
+        if self._cover is None or self._album.id != album_id:
             return
         self._widget.set_sensitive(False)
 
@@ -280,7 +279,6 @@ class AlbumWidget:
             @param: widget as Gtk.EventBox
             @param: event as Gdk.Event
         """
-        self._limit_to_current = True
         Lp().player.play_album(self._album)
         self._show_append(False)
         return True
@@ -532,14 +530,14 @@ class AlbumDetailedWidget(Gtk.Bin, AlbumWidget):
         'populated': (GObject.SignalFlags.RUN_FIRST, None, ())
     }
 
-    def __init__(self, album_id, genre_ids, artist_ids, update_albums=True):
+    def __init__(self, album_id, genre_ids, artist_ids, show_cover=True):
         """
             Init detailed album widget
             @param album id as int
             @param genre ids as [int]
             @param artist ids as [int]
             @param lazy as LazyLoadingView
-            @param update albums as bool: update albums on play
+            @param show cover as bool
         """
         Gtk.Bin.__init__(self)
         AlbumWidget.__init__(self, album_id, genre_ids)
@@ -557,7 +555,6 @@ class AlbumDetailedWidget(Gtk.Bin, AlbumWidget):
         self._discs = self._album.discs
         self._locked_widget_right = True
         self._artist_ids = artist_ids
-        self._limit_to_current = not update_albums
         self.set_property('height-request',
                           ArtSize.BIG * self.get_scale_factor())
         self.connect('size-allocate', self._on_size_allocate)
@@ -570,17 +567,29 @@ class AlbumDetailedWidget(Gtk.Bin, AlbumWidget):
         self._artwork_button = builder.get_object('artwork-button')
         self._action_button = builder.get_object('action-button')
         self._action_event = builder.get_object('action-event')
-        builder.connect_signals(self)
 
+        builder.connect_signals(self)
         rating = RatingWidget(self._album)
         rating.show()
-        self._coverbox = builder.get_object('coverbox')
-        # 6 for 2*3px (application.css)
-        self._coverbox.set_property('width-request',
-                                    ArtSize.BIG * self.get_scale_factor() + 6)
-        self._coverbox.add(rating)
-        if Lp().window.get_view_width() < WindowSize.MEDIUM:
-            self._coverbox.hide()
+        if show_cover:
+            self._cover = builder.get_object('cover')
+            builder.get_object('duration').set_hexpand(True)
+            self._cover.get_style_context().add_class('cover-frame')
+            self._coverbox = builder.get_object('coverbox')
+            self._coverbox.show()
+            # 6 for 2*3px (application.css)
+            self._coverbox.set_property('width-request',
+                                        ArtSize.BIG *
+                                        self.get_scale_factor() + 6)
+            self._coverbox.add(rating)
+            if Lp().window.get_view_width() < WindowSize.MEDIUM:
+                self._coverbox.hide()
+        else:
+            builder.get_object('header').attach(rating, 4, 0, 1, 1)
+            rating.set_hexpand(True)
+            rating.set_property('halign', Gtk.Align.END)
+            rating.set_property('valign', Gtk.Align.CENTER)
+            self._cover = None
 
         self._artist_label = builder.get_object('artist')
         if len(artist_ids) > 1:
@@ -608,8 +617,6 @@ class AlbumDetailedWidget(Gtk.Bin, AlbumWidget):
         self._tracks_left = {}
         self._tracks_right = {}
 
-        self._cover = builder.get_object('cover')
-        self._cover.get_style_context().add_class('cover-frame')
         self.set_cover()
         self.update_state()
 
@@ -869,10 +876,11 @@ class AlbumDetailedWidget(Gtk.Bin, AlbumWidget):
                               pos, idx, 1, 1)
                 idx += 1
                 GLib.idle_add(self.set_opacity, 1)
-        if allocation.width < WindowSize.MEDIUM:
-            self._coverbox.hide()
-        else:
-            self._coverbox.show()
+        if self._cover is not None:
+            if allocation.width < WindowSize.MEDIUM:
+                self._coverbox.hide()
+            else:
+                self._coverbox.show()
 
     def _on_pop_menu_closed(self, widget):
         """
@@ -893,7 +901,6 @@ class AlbumDetailedWidget(Gtk.Bin, AlbumWidget):
             Lp().player.load(Track(track_id))
         else:
             if not Lp().player.is_party() and\
-               not self._limit_to_current and\
                not Lp().player.has_album(self._album):
                 Lp().player.set_albums(track_id,
                                        self._artist_ids,

@@ -18,6 +18,7 @@
       <object class="GtkGrid" id="grid">
         <property name="visible">True</property>
         <property name="can_focus">False</property>
+        <property name="vexpand">True</property>
         <property name="orientation">vertical</property>
         <property name="column_homogeneous">True</property>
         <child>
@@ -98,10 +99,9 @@
                             <property name="opacity">0.29999999776482583</property>
                             <property name="halign">end</property>
                             <property name="margin_end">10</property>
-                            <property name="hexpand">True</property>
                           </object>
                           <packing>
-                            <property name="left_attach">4</property>
+                            <property name="left_attach">5</property>
                             <property name="top_attach">0</property>
                           </packing>
                         </child>
@@ -164,7 +164,6 @@
     </child>
     <child>
       <object class="GtkGrid" id="coverbox">
-        <property name="visible">True</property>
         <property name="can_focus">False</property>
         <property name="margin_top">5</property>
         <property name="orientation">vertical</property>

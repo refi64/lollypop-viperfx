@@ -422,8 +422,7 @@ class AlbumsView(LazyLoadingView):
             popover = AlbumPopoverWidget(
                                      row.get_id(),
                                      genre_ids,
-                                     [],
-                                     False)
+                                     [])
             popover.set_relative_to(row)
             popover.show()
         else:

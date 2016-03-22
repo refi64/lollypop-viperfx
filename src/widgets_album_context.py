@@ -22,16 +22,16 @@ class AlbumContextWidget(AlbumDetailedWidget):
         Widget with cover and tracks
     """
 
-    def __init__(self, album_id, genre_ids, artist_ids, update_albums=True):
+    def __init__(self, album_id, genre_ids, artist_ids, show_cover):
         """
             Init detailed album widget
             @param album id as int
             @param genre ids as [int]
             @param artist ids as [int]
-            @param update albums as bool: update albums on play
+            @param show cover as bool
         """
         AlbumDetailedWidget.__init__(self, album_id, genre_ids, artist_ids,
-                                     update_albums)
+                                     show_cover)
         self._artist_label.set_text(", ".join(self._album.artists))
         self._artist_label.show()
 
@@ -65,13 +65,13 @@ class AlbumPopoverWidget(Gtk.Popover):
         An AlbumContextWidget in a popover
     """
 
-    def __init__(self, album_id, genre_ids, artist_ids, update_albums=True):
+    def __init__(self, album_id, genre_ids, artist_ids, show_cover=True):
         """
             Init popover
             @param album id as int
             @param genre ids as [int]
             @param artist ids as [int]
-            @param update albums as bool: update albums on play
+            @param show cover as bool
         """
         Gtk.Popover.__init__(self)
         self.get_style_context().add_class('box-shadow')
@@ -79,7 +79,7 @@ class AlbumPopoverWidget(Gtk.Popover):
         self._widget = AlbumContextWidget(album_id,
                                           genre_ids,
                                           artist_ids,
-                                          update_albums)
+                                          show_cover)
         self._widget.connect('populated', self._on_populated)
         self._widget.populate()
         self._widget.show()
