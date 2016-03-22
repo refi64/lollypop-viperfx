@@ -60,6 +60,10 @@ Gtk.ListBoxRow .menu-button:hover {
 	border-color: alpha(@theme_fg_color, 0.1);
 }
 
+.box-shadow {
+    box-shadow: 1px 1px 5px 5px alpha(black, 0.4);
+}
+
 .loading {
     background-color: shade(@theme_bg_color, 1.2);
     border: 1px solid @theme_bg_color;
@@ -94,6 +98,11 @@ Gtk.ListBoxRow .menu-button:hover {
     background-color: white;
     padding: 3px;
     border-radius: 2px;
+}
+
+.dim-cover {
+    opacity: 0.5;
+    background-color: black;
 }
 
 .small-cover-frame {

@@ -441,6 +441,13 @@ class AlbumSimpleWidget(Gtk.Frame, AlbumWidget):
         """
         return self._album.id
 
+    def get_cover(self):
+        """
+            Get album cover
+            @return cover as Gtk.Image
+        """
+        return self._cover
+
     def do_get_preferred_width(self):
         """
             Return preferred width
@@ -544,6 +551,8 @@ class AlbumDetailedWidget(Gtk.Bin, AlbumWidget):
         self._orientation = None
         self._stop = False
         self._child_height = TrackRow.get_best_height(self)
+        # Header + separator + spacing
+        self._requested_height = self._child_height + 3
         # Discs to load, will be emptied
         self._discs = self._album.discs
         self._locked_widget_right = True
@@ -710,6 +719,13 @@ class AlbumDetailedWidget(Gtk.Bin, AlbumWidget):
                         return child.translate_coordinates(parent, 0, 0)[1]
         return None
 
+    @property
+    def requested_height(self):
+        """
+            Requested height
+        """
+        return self._requested_height
+
 #######################
 # PRIVATE             #
 #######################
@@ -722,6 +738,10 @@ class AlbumDetailedWidget(Gtk.Bin, AlbumWidget):
         mid_tracks = int(0.5 + count_tracks / 2)
         left_height = self._child_height * mid_tracks
         right_height = self._child_height * (count_tracks - mid_tracks)
+        if left_height > right_height:
+            self._requested_height += left_height
+        else:
+            self._requested_height += right_height
         self._tracks_left[disc.number].set_property('height-request',
                                                     left_height)
         self._tracks_right[disc.number].set_property('height-request',

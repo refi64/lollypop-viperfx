@@ -13,40 +13,8 @@
 from gi.repository import Gtk, GLib, Gdk
 
 from lollypop.view import View, LazyLoadingView
-from lollypop.view_container import ViewContainer
 from lollypop.widgets_album import AlbumSimpleWidget
-from lollypop.widgets_album_context import AlbumContextWidget
 from lollypop.widgets_album_context import AlbumPopoverWidget
-from lollypop.define import Lp, ArtSize
-
-
-class AlbumContextView(View):
-    """
-        Album contextual view
-    """
-
-    def __init__(self, widget):
-        """
-            Init context
-            @param main view widget
-        """
-        View.__init__(self)
-        self._widget = widget
-        self._viewport.add(widget)
-        self._viewport.show()
-        self._scrolled.set_min_content_height(ArtSize.BIG+35)
-        self._scrolled.show()
-        self.add(self._scrolled)
-
-#######################
-# PRIVATE             #
-#######################
-    def _get_children(self):
-        """
-            Return view children
-            @return [AlbumWidget]
-        """
-        return [self._widget]
 
 
 class AlbumsView(LazyLoadingView):
@@ -65,8 +33,6 @@ class AlbumsView(LazyLoadingView):
         self._context_album_id = None
         self._genre_ids = genre_ids
         self._artist_ids = artist_ids
-        self._albumsongs = None
-        self._context_widget = None
         self._press_rect = None
 
         self._albumbox = Gtk.FlowBox()
@@ -81,17 +47,7 @@ class AlbumsView(LazyLoadingView):
         self._viewport.set_property('margin', 5)
         self._scrolled.set_property('expand', True)
         self._scrolled.set_property('height-request', 10)
-        self._context = ViewContainer(500)
-
-        separator = Gtk.Separator()
-        separator.show()
-
-        self._paned = Gtk.Paned.new(Gtk.Orientation.VERTICAL)
-        self._paned.pack1(self._scrolled, True, False)
-        self._paned.pack2(self._context, False, False)
-        self._paned.connect('notify::position', self._on_position_notify)
-        self._paned.show()
-        self.add(self._paned)
+        self.add(self._scrolled)
 
     def populate(self, albums):
         """
@@ -99,17 +55,6 @@ class AlbumsView(LazyLoadingView):
             @param is compilation as bool
         """
         self._add_albums(albums)
-
-    def show_context(self, show):
-        """
-            Hide context widget
-            @param show as bool
-        """
-        if show:
-            if self._context_widget is not None:
-                self._context.show()
-        elif self._context_widget is not None:
-            self._context.hide()
 
     def stop(self):
         """
@@ -127,24 +72,7 @@ class AlbumsView(LazyLoadingView):
             Update children's overlay
             @param widgets as AlbumWidget
         """
-        if self._context_widget in widgets:
-            widgets.remove(self._context_widget)
         View._update_overlays(self, widgets)
-
-    def _init_context_position(self):
-        """
-            Init context position if needed
-            See _on_position_notify()
-        """
-        if self._paned.get_position() == 0:
-            height = Lp().settings.get_value(
-                                            'paned-context-height').get_int32()
-            # We set a stupid max value, safe as self._context is shrinked
-            if height == -1:
-                height = Lp().window.get_allocated_height()
-            else:
-                height = self._paned.get_allocated_height() - height
-            self._paned.set_position(height)
 
     def _get_children(self):
         """
@@ -155,30 +83,7 @@ class AlbumsView(LazyLoadingView):
         for child in self._albumbox.get_children():
             widget = child.get_child()
             children.append(widget)
-        if self._context_widget is not None:
-            children.append(self._context_widget)
         return children
-
-    def _populate_context(self, album_id):
-        """
-            populate context view
-            @param album id as int
-        """
-        size_group = Gtk.SizeGroup(mode=Gtk.SizeGroupMode.HORIZONTAL)
-        self._context_widget = AlbumContextWidget(album_id,
-                                                  self._genre_ids,
-                                                  self._artist_ids,
-                                                  size_group)
-        self._context_widget.connect('populated',
-                                     self._on_context_populated)
-        self._context_widget.show()
-        view = AlbumContextView(self._context_widget)
-        view.show()
-        self._context.add(view)
-        self._context.set_visible_child(view)
-        self._context.clean_old_views(view)
-        # We delay populate() to be sure widget get it size allocated
-        GLib.idle_add(self._context_widget.populate)
 
     def _add_albums(self, albums):
         """
@@ -200,31 +105,6 @@ class AlbumsView(LazyLoadingView):
             if self._viewport.get_child() is None:
                 self._viewport.add(self._albumbox)
 
-    def _on_context_populated(self, widget):
-        """
-            Populate again if needed
-            @param widget as AlbumContextWidget
-        """
-        if not widget.is_populated():
-            widget.populate()
-        elif not self._stop:
-            GLib.idle_add(self._context_widget.populate)
-        else:
-            self._stop = False
-
-    def _on_position_notify(self, paned, param):
-        """
-            Save paned position
-            @param paned as Gtk.Paned
-            @param param as Gtk.Param
-        """
-        # we want position of context, not of main view,
-        # because we do not get position notify if context hidden
-        position = paned.get_allocated_height() - paned.get_position()
-        Lp().settings.set_value('paned-context-height',
-                                GLib.Variant('i', position))
-        return False
-
     def _on_album_activated(self, flowbox, child):
         """
             Show Context view for activated album
@@ -232,30 +112,30 @@ class AlbumsView(LazyLoadingView):
             @param child as Gtk.FlowboxChild
         """
         album_widget = child.get_child()
-        if self._press_rect is None:
-            if self._context_album_id == album_widget.get_id():
-                self._context_album_id = None
-                self._context.hide()
-                self._context_widget.destroy()
-                self._context_widget = None
-            else:
-                self._init_context_position()
-                self._context_album_id = album_widget.get_id()
-                self._populate_context(self._context_album_id)
-                self._context.show()
-        else:
-            if self._context_album_id is not None:
-                self._context_album_id = None
-                self._context.hide()
-                self._context_widget.destroy()
-                self._context_widget = None
-            popover = AlbumPopoverWidget(album_widget.get_id(),
-                                         self._genre_ids,
-                                         self._artist_ids)
-            popover.set_relative_to(album_widget)
-            popover.set_pointing_to(self._press_rect)
-            album_widget.update_overlay()
-            popover.show()
+        cover = album_widget.get_cover()
+        if cover is None:
+            return
+        # If widget top not on screen, popover will fail to show
+        # FIXME: Report a bug and check always true
+        (x, y) = child.translate_coordinates(self._scrolled, 0, 0)
+        if y < 0:
+            y = child.translate_coordinates(self._scrolled, 0, 0)[1]
+            if y is not None:
+                self._scrolled.get_vadjustment().set_value(y)
+        self._popover = AlbumPopoverWidget(album_widget.get_id(),
+                                           self._genre_ids,
+                                           self._artist_ids)
+        self._popover.set_relative_to(cover)
+        self._popover.set_position(Gtk.PositionType.BOTTOM)
+        self._popover.connect('closed', self._on_popover_closed)
+        self._popover.show()
+        album_widget.update_overlay()
+
+    def _on_popover_closed(self, popover):
+        """
+            @param popover as Gtk.Popover
+        """
+        pass
 
     def _on_button_press(self, flowbox, event):
         """

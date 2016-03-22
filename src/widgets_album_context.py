@@ -10,7 +10,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-from gi.repository import Gtk, Gdk
+from gi.repository import Gtk, Gdk, GLib
 
 from lollypop.define import Type, Lp
 from lollypop.pop_info import InfoPopover
@@ -74,17 +74,22 @@ class AlbumPopoverWidget(Gtk.Popover):
             @param update albums as bool: update albums on play
         """
         Gtk.Popover.__init__(self)
+        self.get_style_context().add_class('box-shadow')
         self.connect('hide', self._on_hide)
         self._widget = AlbumContextWidget(album_id,
                                           genre_ids,
                                           artist_ids,
                                           update_albums)
+        self._widget.connect('populated', self._on_populated)
         self._widget.populate()
         self._widget.show()
         self._current_signal = Lp().player.connect('current-changed',
                                                    self._on_current_changed)
         self._cover_signal = Lp().art.connect('album-artwork-changed',
                                               self._on_cover_changed)
+        height = min(400, self._widget.requested_height)
+        # 40 for popover root
+        self.set_property('height-request', height + 40)
         self.add(self._widget)
 
     def do_get_preferred_width(self):
@@ -97,6 +102,14 @@ class AlbumPopoverWidget(Gtk.Popover):
 #######################
 # PRIVATE             #
 #######################
+    def _on_populated(self, widget):
+        """
+            Populate if needed
+            @param widget as AlbumContextWidget
+        """
+        if not widget.is_populated():
+            GLib.idle_add(widget.populate)
+
     def _on_current_changed(self, player):
         """
             Update indicator
