@@ -249,6 +249,10 @@ class AlbumArt(BaseArt, ArtDownloader, TagReader):
             exist = False
             if infos is not None:
                 (exist, sample) = infos.get_tags().get_sample_index('image', 0)
+                # Some file store it in a preview-image tag
+                if not exist:
+                    (exist, sample) = infos.get_tags().get_sample_index(
+                                                            'preview-image', 0)
             if exist:
                 (exist, mapflags) = sample.get_buffer().map(Gst.MapFlags.READ)
             if exist:
@@ -259,8 +263,8 @@ class AlbumArt(BaseArt, ArtDownloader, TagReader):
                                                                    size,
                                                                    False,
                                                                    None)
-        except:
-            pass
+        except Exception as e:
+            print("AlbumArt::pixbuf_from_tags():", e)
         return pixbuf
 
 #######################
