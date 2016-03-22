@@ -129,15 +129,17 @@ class AlbumsView(LazyLoadingView):
                                            False)
         self._popover.set_relative_to(cover)
         self._popover.set_position(Gtk.PositionType.BOTTOM)
-        self._popover.connect('closed', self._on_popover_closed)
+        self._popover.connect('closed', self._on_popover_closed, cover)
         self._popover.show()
+        cover.set_opacity(0.85)
         album_widget.update_overlay()
 
-    def _on_popover_closed(self, popover):
+    def _on_popover_closed(self, popover, image):
         """
             @param popover as Gtk.Popover
+            @param image as Gtk.Image
         """
-        pass
+        image.set_opacity(1)
 
     def _on_button_press(self, flowbox, event):
         """
