@@ -14,6 +14,7 @@ from gi.repository import Gtk, Gdk, GLib, GObject, Pango
 
 from cgi import escape
 from gettext import gettext as _
+from locale import strcoll
 
 from lollypop.define import Type, Lp, SelectionMode
 
@@ -350,7 +351,7 @@ class SelectionList(Gtk.ScrolledWindow):
             else:
                 a = model.get_value(itera, 1)
                 b = model.get_value(iterb, 1)
-            return a.lower() > b.lower()
+            return strcoll(a, b)
 
     def _row_separator_func(self, model, iterator):
         """

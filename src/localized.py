@@ -10,7 +10,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-import locale
+from locale import strcoll
 
 
 class LocalizedCollation(object):
@@ -23,4 +23,4 @@ class LocalizedCollation(object):
         pass
 
     def __call__(self, v1, v2):
-        return locale.strcoll(v1, v2)
+        return strcoll(v1, v2)
