@@ -76,7 +76,8 @@ class GenresDatabase:
         with SqlCursor(Lp().db) as sql:
             result = sql.execute("SELECT name\
                                  FROM genres\
-                                 ORDER BY name COLLATE NOCASE")
+                                 ORDER BY name\
+                                 COLLATE NOCASE COLLATE LOCALIZED")
             return list(itertools.chain(*result))
 
     def get_albums(self, genre_id):
@@ -99,7 +100,8 @@ class GenresDatabase:
         """
         with SqlCursor(Lp().db) as sql:
             result = sql.execute("SELECT rowid, name FROM genres\
-                                  ORDER BY name COLLATE NOCASE")
+                                  ORDER BY name\
+                                  COLLATE NOCASE COLLATE LOCALIZED")
             return list(result)
 
     def get_ids(self):
@@ -109,7 +111,8 @@ class GenresDatabase:
         """
         with SqlCursor(Lp().db) as sql:
             result = sql.execute("SELECT rowid FROM genres\
-                                  ORDER BY name COLLATE NOCASE")
+                                  ORDER BY name\
+                                  COLLATE NOCASE COLLATE LOCALIZED")
             return list(itertools.chain(*result))
 
     def clean(self, genre_id):

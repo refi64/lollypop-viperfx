@@ -17,6 +17,7 @@ from gi.repository import GLib
 from lollypop.define import Lp
 from lollypop.database_upgrade import DatabaseUpgrade
 from lollypop.sqlcursor import SqlCursor
+from lollypop.localized import LocalizedCollation
 
 
 class Database:
@@ -101,6 +102,8 @@ class Database:
             Return a new sqlite cursor
         """
         try:
-            return sqlite3.connect(self.DB_PATH, 600.0)
+            c = sqlite3.connect(self.DB_PATH, 600.0)
+            c.create_collation('LOCALIZED', LocalizedCollation())
+            return c
         except:
             exit(-1)

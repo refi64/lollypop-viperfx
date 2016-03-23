@@ -153,7 +153,8 @@ class ArtistsDatabase:
                                   FROM artists, albums, album_artists\
                                   WHERE album_artists.artist_id=artists.rowid\
                                   AND album_artists.album_id=albums.rowid\
-                                  ORDER BY artists.sortname COLLATE NOCASE")
+                                  ORDER BY artists.sortname\
+                                  COLLATE NOCASE COLLATE LOCALIZED")
             else:
                 genres = tuple(genre_ids)
                 request = "SELECT DISTINCT artists.rowid,\
@@ -165,7 +166,7 @@ class ArtistsDatabase:
                 for genre_id in genre_ids:
                     request += "album_genres.genre_id=? OR "
                 request += "1=0) ORDER BY artists.sortname\
-                            COLLATE NOCASE"
+                            COLLATE NOCASE COLLATE LOCALIZED"
                 result = sql.execute(request, genres)
             return [(row[0], row[1]) for row in result]
 

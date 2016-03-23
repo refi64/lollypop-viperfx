@@ -130,7 +130,8 @@ class Playlists(GObject.GObject):
         with SqlCursor(self) as sql:
             result = sql.execute("SELECT rowid, name\
                                   FROM playlists\
-                                  ORDER BY name COLLATE NOCASE")
+                                  ORDER BY name\
+                                  COLLATE NOCASE COLLATE LOCALIZED")
             return list(result)
 
     def get_last(self):

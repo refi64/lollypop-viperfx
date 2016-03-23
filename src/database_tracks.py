@@ -109,7 +109,8 @@ class TracksDatabase:
         """
         with SqlCursor(Lp().db) as sql:
             result = sql.execute("SELECT rowid\
-                                  FROM tracks WHERE name=? COLLATE NOCASE",
+                                  FROM tracks WHERE name=?\
+                                  COLLATE NOCASE COLLATE LOCALIZED",
                                  (name,))
             return list(itertools.chain(*result))
 

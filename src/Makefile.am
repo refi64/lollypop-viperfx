@@ -26,6 +26,7 @@ app_PYTHON = \
     lastfm.py\
     list.py\
     loader.py\
+    localized.py\
     miniplayer.py\
     mpris.py\
     notification.py\

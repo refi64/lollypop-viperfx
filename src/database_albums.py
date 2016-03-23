@@ -629,9 +629,11 @@ class AlbumsDatabase:
                                   FROM albums, artists, album_artists\
                                   WHERE artists.rowid=album_artists.artist_id\
                                   AND albums.rowid=album_artists.album_id\
-                                  ORDER BY artists.sortname COLLATE NOCASE,\
+                                  ORDER BY artists.sortname\
+                                  COLLATE NOCASE COLLATE LOCALIZED,\
                                   albums.year,\
-                                  albums.name COLLATE NOCASE")
+                                  albums.name\
+                                  COLLATE NOCASE COLLATE LOCALIZED")
             # Get albums for genre
             elif not artist_ids:
                 genres = tuple(genre_ids)
@@ -642,9 +644,10 @@ class AlbumsDatabase:
                            AND album_genres.album_id=albums.rowid AND ("
                 for genre_id in genre_ids:
                     request += "album_genres.genre_id=? OR "
-                request += "1=0) ORDER BY artists.sortname COLLATE NOCASE,\
+                request += "1=0) ORDER BY artists.sortname\
+                            COLLATE NOCASE COLLATE LOCALIZED,\
                             albums.year,\
-                            albums.name COLLATE NOCASE"
+                            albums.name COLLATE NOCASE COLLATE LOCALIZED"
                 result = sql.execute(request, genres)
             # Get albums for artist
             elif not genre_ids:
@@ -654,8 +657,8 @@ class AlbumsDatabase:
                            album_artists.album_id=albums.rowid AND ("
                 for artist_id in artist_ids:
                     request += "album_artists.artist_id=? OR "
-                request += "1=0) ORDER BY artists.name COLLATE NOCASE,\
-                            year, albums.name COLLATE NOCASE"
+                request += "1=0) ORDER BY artists.name COLLATE NOCASE COLLATE LOCALIZED,\
+                            year, albums.name COLLATE NOCASE COLLATE LOCALIZED"
                 result = sql.execute(request, artists)
             # Get albums for artist id and genre id
             else:
@@ -670,8 +673,9 @@ class AlbumsDatabase:
                 request += "1=0) AND ("
                 for genre_id in genre_ids:
                     request += "album_genres.genre_id=? OR "
-                request += "1=0) ORDER BY artists.name COLLATE NOCASE,\
-                            year, albums.name COLLATE NOCASE"
+                request += "1=0) ORDER BY artists.name\
+                            COLLATE NOCASE COLLATE LOCALIZED,\
+                            year, albums.name COLLATE NOCASE COLLATE LOCALIZED"
                 result = sql.execute(request, filters)
             return list(itertools.chain(*result))
 
