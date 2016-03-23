@@ -57,6 +57,7 @@ class Inhibitor:
         try:
             if self._cookie is not None:
                 self._sm.Uninhibit(self._cookie)
+                self._cookie = None
             if flag in self._flags:
                 self._flags.remove(flag)
             self._set_flags()
@@ -73,6 +74,7 @@ class Inhibitor:
         try:
             if self._cookie is not None:
                 self._sm.Uninhibit(self._cookie)
+                self._cookie = None
             if flag not in self._flags:
                 self._flags.append(flag)
             self._set_flags()
