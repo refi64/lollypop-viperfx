@@ -152,7 +152,7 @@ class BinPlayer(BasePlayer):
         """
         # Seems gstreamer doesn't like seeking to end, sometimes
         # doesn't go to next track
-        if position > self.current_track.duration - 1:
+        if position >= self.current_track.duration:
             self.next()
         else:
             self._playbin.seek_simple(Gst.Format.TIME,
