@@ -129,8 +129,14 @@ class Player(BinPlayer, QueuePlayer, UserPlaylistPlayer, RadioPlayer,
             for genre_id in album.genre_ids:
                 if genre_id in genre_ids:
                     genre_ids.remove(genre_id)
-            if not genre_ids:
+            artist_ids = self.context.artist_ids[album.id]
+            # Remove artist ids from context
+            for artist_id in album.artist_ids:
+                if artist_id in artist_ids:
+                    artist_ids.remove(artist_id)
+            if not genre_ids and not artist_ids:
                 self.context.genre_ids.pop(album.id, None)
+                self.context.artist_ids.pop(album.id, None)
                 self._albums.remove(album.id)
             self.set_prev()
             self.set_next()
