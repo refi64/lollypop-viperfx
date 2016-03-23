@@ -33,8 +33,7 @@ class LinearPlayer(BasePlayer):
         """
         # If no album available, repeat current track
         if not self._albums:
-            return self.current_track
-
+            return Track()
         track = Track()
         if self.current_track.album.id in self.context.genre_ids and\
            self._albums:
@@ -75,8 +74,7 @@ class LinearPlayer(BasePlayer):
         """
         # If no album available, repeat current track
         if not self._albums:
-            return self.current_track
-
+            return Track()
         track = Track()
         if self.current_track.album.id in self.context.genre_ids and \
            self._albums:

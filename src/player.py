@@ -47,6 +47,8 @@ class Player(BinPlayer, QueuePlayer, UserPlaylistPlayer, RadioPlayer,
         """
         if self.prev_track.id is not None:
             self.load(self.prev_track)
+        else:
+            self.stop()
 
     def next(self):
         """
@@ -54,6 +56,8 @@ class Player(BinPlayer, QueuePlayer, UserPlaylistPlayer, RadioPlayer,
         """
         if self.next_track.id is not None:
             self.load(self.next_track)
+        else:
+            self.stop()
 
     def load(self, track, play=True):
         """

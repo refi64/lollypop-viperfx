@@ -228,11 +228,11 @@ class AlbumRow(Gtk.ListBoxRow):
             Delete album
             @param button as Gtk.Button
         """
+        Lp().player.remove_album(self._album)
         if Lp().player.current_track.album.id == self._album.id:
             Lp().player.context.next = NextContext.START_NEW_ALBUM
             Lp().player.set_next()
             Lp().player.next()
-        Lp().player.remove_album(self._album)
         self.destroy()
 
     def _on_query_tooltip(self, widget, x, y, keyboard, tooltip):
