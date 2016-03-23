@@ -9,9 +9,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lollypop\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-02-27 11:13+0100\n"
-"PO-Revision-Date: 2016-02-27 10:14+0000\n"
-"Last-Translator: Cédric Bellegarde <web@adishatz.org>\n"
+"POT-Creation-Date: 2016-03-21 19:45+0100\n"
+"PO-Revision-Date: 2016-03-23 10:44+0000\n"
+"Last-Translator: David Ó Laıġeanáın\n"
 "Language-Team: Irish (http://www.transifex.com/gnumdk/lollypop/language/ga/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -192,12 +192,12 @@ msgstr "Seinn agus eagraigh do bhailiúchán ceoil"
 msgid "Play/Pause"
 msgstr "Seinn/Cuir ar sos"
 
-#: ../data/lollypop.desktop.in.h:5 ../src/notification.py:70
+#: ../data/lollypop.desktop.in.h:5 ../src/notification.py:72
 #: ../data/ToolbarPlayback.ui.h:3
 msgid "Next"
 msgstr "An chéad rian eile"
 
-#: ../data/lollypop.desktop.in.h:6 ../src/notification.py:66
+#: ../data/lollypop.desktop.in.h:6 ../src/notification.py:68
 #: ../data/ToolbarPlayback.ui.h:1
 msgid "Previous"
 msgstr "An rian roimhe"
@@ -222,12 +222,14 @@ msgstr "Brabhsáil ar Sheánra/Chlúdach"
 msgid "Genre/Artist/Cover browsing"
 msgstr "Brabhsáil ar Sheánra/Ealaíontóir/Chlúdach"
 
-#: ../data/lollypop.appdata.xml.in.h:8 ../data/ToolbarEnd.ui.h:7
+#: ../data/lollypop.appdata.xml.in.h:8 ../src/playlists.py:237
+#: ../data/ToolbarEnd.ui.h:7
 msgid "Search"
 msgstr "Cuardach"
 
-#: ../data/lollypop.appdata.xml.in.h:9 ../src/pop_menu.py:466
-#: ../src/pop_menu.py:485 ../data/ToolbarEnd.ui.h:8
+#: ../data/lollypop.appdata.xml.in.h:9 ../src/pop_menu.py:478
+#: ../src/pop_menu.py:499 ../src/toolbar_end.py:301
+#: ../data/QueuePopover.ui.h:2
 msgid "Queue"
 msgstr "Scuaine"
 
@@ -283,7 +285,7 @@ msgid ""
 "    - Artist informations disabled"
 msgstr "    - Scrobbler díchumasaithe\n    - Uath-íoslódáil clúdaigh díchumasaithe\n    - Eolas ealaíontóra díchumasaithe"
 
-#: ../src/application.py:373
+#: ../src/application.py:379
 #, python-format
 msgid "%d artist"
 msgid_plural "%d artists"
@@ -293,7 +295,7 @@ msgstr[2] "%d ealaíontóir"
 msgstr[3] "%d ealaíontóir"
 msgstr[4] "%d ealaíontóir"
 
-#: ../src/application.py:375
+#: ../src/application.py:381
 #, python-format
 msgid "%d album"
 msgid_plural "%d albums"
@@ -303,7 +305,7 @@ msgstr[2] "%d albam"
 msgstr[3] "%d albam"
 msgstr[4] "%d albam"
 
-#: ../src/application.py:377
+#: ../src/application.py:383
 #, python-format
 msgid "%d track"
 msgid_plural "%d tracks"
@@ -313,90 +315,83 @@ msgstr[2] "%d rian"
 msgstr[3] "%d rian"
 msgstr[4] "%d rian"
 
-#: ../src/application.py:392
+#: ../src/application.py:398
 msgid "Lollypop: You need to install yelp."
 msgstr "Lollypop: Caithfidh tú yelp a shuiteáil."
 
-#: ../src/collectionscanner.py:67
+#: ../src/collectionscanner.py:69
 msgid "Your music is updating"
 msgstr "Tá do chuid ceoil á nuashonrú"
 
-#: ../src/container.py:452
+#: ../src/container.py:414
 msgid "Popular albums"
 msgstr "Albaim móréilimh"
 
-#: ../src/container.py:453
+#: ../src/container.py:415
 msgid "Recently added albums"
 msgstr "Albaim a bhfuil curtha le déanaí"
 
-#: ../src/container.py:454
+#: ../src/container.py:416
 msgid "Random albums"
 msgstr "Albaim randamacha"
 
-#: ../src/container.py:455 ../src/pop_menu.py:391 ../src/pop_menu.py:468
-#: ../src/pop_menu.py:487
+#: ../src/container.py:417 ../src/pop_menu.py:405 ../src/pop_menu.py:481
+#: ../src/pop_menu.py:501
 msgid "Playlists"
 msgstr "Seinnliostaí"
 
-#: ../src/container.py:456
+#: ../src/container.py:418
 msgid "Radios"
 msgstr "Raidiónna"
 
-#: ../src/container.py:458
+#: ../src/container.py:420
 msgid "All artists"
 msgstr "Ealaíontóirí go léir"
 
-#: ../src/container.py:460 ../data/DeviceManagerWidget.ui.h:1
+#: ../src/container.py:422 ../data/DeviceManagerWidget.ui.h:1
 msgid "All albums"
 msgstr "Albaim go léir"
 
-#: ../src/container.py:507
+#: ../src/container.py:469
 msgid "Compilations"
 msgstr "Teaglaimí"
 
-#: ../src/container.py:530
+#: ../src/container.py:492 ../src/playlists.py:229
 msgid "Popular tracks"
 msgstr "Rianta móréilimh"
 
-#: ../src/container.py:531
+#: ../src/container.py:493 ../src/playlists.py:231
 msgid "Recently played"
 msgstr "Seinnte le déanaí"
 
-#: ../src/container.py:532
+#: ../src/container.py:494 ../src/playlists.py:233
 msgid "Never played"
 msgstr "Seinnte riamh"
 
-#: ../src/container.py:533
+#: ../src/container.py:495 ../src/playlists.py:235
 msgid "Random tracks"
 msgstr "Rianta randamacha"
-
-#: ../src/container.py:534 ../src/playlists.py:54
-msgid "Network control"
-msgstr "Smacht líonra"
 
 #: ../src/controllers.py:82 ../src/controllers.py:115
 msgid "Pause"
 msgstr "Cuir ar sos"
 
 #: ../src/controllers.py:84 ../src/controllers.py:112 ../src/pop_tunein.py:154
-#: ../src/widgets_album.py:326 ../src/widgets_radio.py:72
+#: ../src/widgets_album.py:379 ../src/widgets_radio.py:73
 #: ../data/AlbumContextWidget.ui.h:1 ../data/AlbumDetailedWidget.ui.h:1
 #: ../data/ToolbarPlayback.ui.h:2
 msgid "Play"
 msgstr "Seinn"
 
-#: ../src/database_albums.py:270 ../src/database_artists.py:104
-#: ../src/database_genres.py:69 ../src/database_tracks.py:229
-#: ../src/selectionlist.py:277 ../src/tagreader.py:87 ../src/tagreader.py:118
-#: ../src/tagreader.py:143 ../src/tagreader.py:158
+#: ../src/database_albums.py:302 ../src/database_artists.py:104
+#: ../src/database_genres.py:69 ../src/database_tracks.py:228
+#: ../src/selectionlist.py:273 ../src/tagreader.py:88 ../src/tagreader.py:101
+#: ../src/tagreader.py:114 ../src/tagreader.py:140 ../src/tagreader.py:153
+#: ../src/tagreader.py:156 ../src/tagreader.py:166 ../src/tagreader.py:169
 msgid "Unknown"
 msgstr "Anaithnid"
 
-#: ../src/database_albums.py:286
-msgid "Compilation"
-msgstr "Teaglaim"
-
-#: ../src/database_artists.py:97
+#: ../src/database_artists.py:97 ../src/view_artist.py:50
 msgid "Many artists"
 msgstr "Go leor ealaíontóirí"
 
@@ -409,14 +404,14 @@ msgid "Wrong Last.fm credentials"
 msgstr "Cáipéisí Last.fm mhíchearta"
 
 #. TRANSLATORS: by refers to the artist,
-#: ../src/notification.py:99
+#: ../src/notification.py:101
 #, python-format
 msgid "by %s"
 msgstr "le %s"
 
 #. TRANSLATORS: by refers to the artist,
 #. from to the album
-#: ../src/notification.py:107
+#: ../src/notification.py:109
 #, python-format
 msgid "by %s, from %s"
 msgstr "le %s, ó %s"
@@ -426,86 +421,98 @@ msgstr "le %s, ó %s"
 msgid "File doesn't exist: %s"
 msgstr "Ní ann do chomhad: %s"
 
-#: ../src/playlists.py:53
+#: ../src/playlists.py:54
 msgid "Loved tracks"
 msgstr "Rianta is fearr"
+
+#: ../src/pop_albums.py:279
+msgid "Clear albums"
+msgstr "Glan albaim"
+
+#: ../src/pop_albums.py:287 ../src/view_artist.py:44
+msgid "Go to current track"
+msgstr "Téigh chuig an rian reatha"
+
+#: ../src/pop_albums.py:288 ../src/toolbar_end.py:305
+msgid "Playing albums"
+msgstr "Albaim á sheinm"
 
 #: ../src/pop_covers.py:56 ../src/pop_tunein.py:93 ../data/RadioPopover.ui.h:3
 msgid "Please wait..."
 msgstr "Fan le do thoil..."
 
-#: ../src/pop_covers.py:131
+#: ../src/pop_covers.py:136
 msgid "No cover found..."
 msgstr "Gan clúdach aimsithe ar bith..."
 
-#: ../src/pop_covers.py:159
+#: ../src/pop_covers.py:164
 msgid "Select a cover art for this album"
 msgstr "Roghnaigh ealaín clúdaigh don albam seo"
 
-#: ../src/pop_infos.py:33
+#: ../src/pop_infos.py:34
 msgid "Advanced artist informations disabled"
 msgstr "Eolas casta ealaíontóra díchumasaithe"
 
-#: ../src/pop_infos.py:41
+#: ../src/pop_infos.py:42
 msgid "WebKit support disabled"
 msgstr "Tacaíocht WebKit díchumasaithe"
 
-#: ../src/pop_menu.py:73
+#: ../src/pop_menu.py:74
 msgid "Continue playback"
 msgstr "Lean leis an athsheinm"
 
-#: ../src/pop_menu.py:83
+#: ../src/pop_menu.py:84
 msgid "Stop after this track"
 msgstr "Stad i ndiadh an riain seo"
 
-#: ../src/pop_menu.py:91
+#: ../src/pop_menu.py:92
 msgid "Stop after this album"
 msgstr "Stad i ndiaidh an albaim seo"
 
-#: ../src/pop_menu.py:99
+#: ../src/pop_menu.py:100
 msgid "Do not repeat"
 msgstr "Ná seinn arís"
 
-#: ../src/pop_menu.py:198 ../src/widgets_indicator.py:109
+#: ../src/pop_menu.py:201 ../src/widgets_indicator.py:105
 #: ../data/SearchRow.ui.h:3
 msgid "Add to queue"
 msgstr "Cuir le scuaine"
 
-#: ../src/pop_menu.py:203
+#: ../src/pop_menu.py:206
 msgid "Next tracks"
 msgstr "Na chéad rianta eile"
 
-#: ../src/pop_menu.py:205 ../data/NextPopover.ui.h:1
+#: ../src/pop_menu.py:208 ../data/NextPopover.ui.h:1
 msgid "Next track"
 msgstr "An chéad rian eile"
 
-#: ../src/pop_menu.py:209 ../src/widgets_indicator.py:105
+#: ../src/pop_menu.py:212 ../src/widgets_indicator.py:101
 msgid "Remove from queue"
 msgstr "Bain de scuaine"
 
-#: ../src/pop_menu.py:277
+#: ../src/pop_menu.py:287
 msgid "Add to others"
 msgstr "Cuir le rudaí eile"
 
-#: ../src/pop_menu.py:294
+#: ../src/pop_menu.py:305
 #, python-format
 msgid "Remove from \"%s\""
 msgstr "Bain de \"%s\""
 
-#: ../src/pop_menu.py:300
+#: ../src/pop_menu.py:311
 #, python-format
 msgid "Add to \"%s\""
 msgstr "Cuir le \"%s\""
 
-#: ../src/pop_menu.py:389
+#: ../src/pop_menu.py:403
 msgid "Playback"
 msgstr "Athsheinm"
 
-#: ../src/pop_menu.py:426
+#: ../src/pop_menu.py:439
 msgid "Modify information"
 msgstr "Mionathraigh eolas"
 
-#: ../src/pop_menu.py:470 ../data/PlaylistView.ui.h:1
+#: ../src/pop_menu.py:484 ../data/PlaylistView.ui.h:1
 msgid "Edit"
 msgstr "Eagar"
 
@@ -525,21 +532,29 @@ msgstr "Ní féidir ceangal le TuneIn..."
 msgid "Browse themes and add a new radio"
 msgstr "Téigh ar amharc thart agus cuir raidió nua leis"
 
-#: ../src/settings.py:87 ../src/settings.py:90 ../data/SettingsDialog.ui.h:3
+#: ../src/settings.py:86 ../src/settings.py:89 ../data/SettingsDialog.ui.h:3
 msgid "Preferences"
 msgstr "Sainroghanna"
 
-#: ../src/settings.py:162
+#: ../src/settings.py:161
 msgid "Populars"
 msgstr "Rudaí móréilimh"
 
-#: ../src/settings.py:163
+#: ../src/settings.py:162
 msgid "Recently added"
 msgstr "Curtha le déanaí"
 
+#: ../src/toolbar_end.py:299
+msgid "Externals tracks playing"
+msgstr "Rianta seachtracha á sheinm"
+
+#: ../src/toolbar_end.py:303
+msgid "Playing playlists"
+msgstr "Seinnliostaí á sheinm"
+
 #. Handle language ordering
 #. Translators: Add here words that shoud be ignored for artist sort order
-#: ../src/utils.py:121
+#: ../src/utils.py:111
 msgid "The the"
 msgstr "An an Na na"
 
@@ -552,36 +567,39 @@ msgstr "Sioncrónaigh %s"
 msgid "Cancel synchronization"
 msgstr "Cealaigh sioncrónú"
 
-#: ../src/widgets_album.py:339
-msgid "Play albums"
-msgstr ""
+#: ../src/widgets_album.py:164
+msgid "Append"
+msgstr "Iarcheangail"
 
-#: ../src/widgets_album.py:349 ../src/widgets_radio.py:86
+#: ../src/widgets_album.py:168
+msgid "Remove"
+msgstr "Bain"
+
+#: ../src/widgets_album.py:390 ../data/AlbumDetailedWidget.ui.h:3
+msgid "Play albums"
+msgstr "Seinn albaim"
+
+#: ../src/widgets_album.py:400 ../src/widgets_radio.py:87
 #: ../data/AlbumContextWidget.ui.h:2 ../data/AlbumDetailedWidget.ui.h:2
 msgid "Change artwork"
 msgstr "Athraigh saothar ealaíne"
 
-#: ../src/widgets_album.py:361 ../data/AlbumContextWidget.ui.h:3
-#: ../data/AlbumDetailedWidget.ui.h:3
-msgid "Append"
-msgstr "Iarcheangail"
-
-#: ../src/widgets_album.py:511
+#: ../src/widgets_album.py:590
 #, python-format
 msgid "%s h  %s m"
 msgstr "%s u %s n"
 
-#: ../src/widgets_album.py:513
+#: ../src/widgets_album.py:592
 #, python-format
 msgid "%s h"
 msgstr "%s u"
 
-#: ../src/widgets_album.py:515
+#: ../src/widgets_album.py:594
 #, python-format
 msgid "%s m"
 msgstr "%s n"
 
-#: ../src/widgets_album.py:529
+#: ../src/widgets_album.py:839
 #, python-format
 msgid "Disc %s"
 msgstr "Ceirnín %s"
@@ -598,17 +616,17 @@ msgstr "Botún anaithnid nuair ag sioncrónú, déan iarracht as atosú do ghlé
 msgid "No free space available on device"
 msgstr "Gan spás saor ar bith ar ghléas"
 
-#: ../src/widgets_playlist.py:292 ../src/widgets_playlist.py:295
+#: ../src/widgets_playlist.py:479 ../src/widgets_playlist.py:482
 msgid "New playlist "
 msgstr "Seinnliosta nua"
 
 #. Need a copy, segfault on EOS 3.1
-#: ../src/widgets_playlist.py:350 ../src/widgets_playlist.py:586
+#: ../src/widgets_playlist.py:538 ../src/widgets_playlist.py:785
 #, python-format
 msgid "Remove \"%s\"?"
 msgstr "Bain \"%s\"?"
 
-#: ../src/widgets_playlist.py:631
+#: ../src/widgets_playlist.py:791
 msgid "Remove these tracks?"
 msgstr "Bain na rianta seo?"
 
@@ -629,6 +647,7 @@ msgstr "Tabhair cuirt ar shuíomh gréasáin Lollypop"
 
 #. Replace me with your names
 #: ../data/AboutDialog.ui.h:4
+msgctxt "Translation credits here, put your name here!"
 msgid "Cédric Bellegarde <cedric.bellegarde@adishatz.org>"
 msgstr "David Ó Laıġeanáın <david.lynam@redbrick.dcu.ie>"
 
@@ -701,20 +720,8 @@ msgid "New playlist"
 msgstr "Seinnliosta nua"
 
 #: ../data/QueuePopover.ui.h:1
-msgid "Queue:"
-msgstr "Scuaine:"
-
-#: ../data/QueuePopover.ui.h:2
 msgid "Clear queue"
 msgstr "Glan scuaine"
-
-#: ../data/AlbumsPopover.ui.h:1
-msgid "Albums playing:"
-msgstr "Albaim á sheinm:"
-
-#: ../data/AlbumsPopover.ui.h:2
-msgid "Remove all albums"
-msgstr "Bain albaim go léir"
 
 #: ../data/RadioPopover.ui.h:1
 msgid "Select a logo  for this radio"
@@ -749,10 +756,6 @@ msgid "Search in TuneIn"
 msgstr "Cuardaigh i dTuneIn"
 
 #: ../data/SearchPopover.ui.h:1
-msgid "Play search"
-msgstr "Seinn cuardach"
-
-#: ../data/SearchPopover.ui.h:2
 msgid "Create a new playlist based on search"
 msgstr "Déan seinnliosta nua atá bunaithe ar chuardach"
 
@@ -794,7 +797,7 @@ msgstr "Athbhunaigh staid ar thosú"
 
 #: ../data/SettingsDialog.ui.h:14
 msgid "Long press to show options"
-msgstr ""
+msgstr "Brú fada chun roghanna a thaispeáint"
 
 #: ../data/SettingsDialog.ui.h:15
 msgid "Do not repeat by default"

@@ -10,8 +10,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lollypop\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-02-27 11:13+0100\n"
-"PO-Revision-Date: 2016-02-27 10:14+0000\n"
+"POT-Creation-Date: 2016-03-21 19:45+0100\n"
+"PO-Revision-Date: 2016-03-21 18:45+0000\n"
 "Last-Translator: Cédric Bellegarde <web@adishatz.org>\n"
 "Language-Team: Turkish (Turkey) (http://www.transifex.com/gnumdk/lollypop/language/tr_TR/)\n"
 "MIME-Version: 1.0\n"
@@ -46,7 +46,7 @@ msgstr ""
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:7
 msgid "Repeat by default"
-msgstr ""
+msgstr "Varsayılan olarak tekrarla"
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:8
 msgid "Window maximized"
@@ -193,12 +193,12 @@ msgstr "Müzik koleksiyonunu çal ve düzenle"
 msgid "Play/Pause"
 msgstr "Oynat/Duraklat"
 
-#: ../data/lollypop.desktop.in.h:5 ../src/notification.py:70
+#: ../data/lollypop.desktop.in.h:5 ../src/notification.py:72
 #: ../data/ToolbarPlayback.ui.h:3
 msgid "Next"
 msgstr "Sonraki"
 
-#: ../data/lollypop.desktop.in.h:6 ../src/notification.py:66
+#: ../data/lollypop.desktop.in.h:6 ../src/notification.py:68
 #: ../data/ToolbarPlayback.ui.h:1
 msgid "Previous"
 msgstr "Önceki"
@@ -223,12 +223,14 @@ msgstr "Tür/Kapak gezinimi"
 msgid "Genre/Artist/Cover browsing"
 msgstr "Tür/Sanatçı/Kapak gezinimi"
 
-#: ../data/lollypop.appdata.xml.in.h:8 ../data/ToolbarEnd.ui.h:7
+#: ../data/lollypop.appdata.xml.in.h:8 ../src/playlists.py:237
+#: ../data/ToolbarEnd.ui.h:7
 msgid "Search"
 msgstr "Ara"
 
-#: ../data/lollypop.appdata.xml.in.h:9 ../src/pop_menu.py:466
-#: ../src/pop_menu.py:485 ../data/ToolbarEnd.ui.h:8
+#: ../data/lollypop.appdata.xml.in.h:9 ../src/pop_menu.py:478
+#: ../src/pop_menu.py:499 ../src/toolbar_end.py:301
+#: ../data/QueuePopover.ui.h:2
 msgid "Queue"
 msgstr "Sıra"
 
@@ -284,108 +286,101 @@ msgid ""
 "    - Artist informations disabled"
 msgstr " - Skroplamayı etkinsizleştir\n- Otomatik kapak indirmeyi etkinsizleştir\n- Şarkıcı bilgilerini etkinsizleştir"
 
-#: ../src/application.py:373
+#: ../src/application.py:379
 #, python-format
 msgid "%d artist"
 msgid_plural "%d artists"
 msgstr[0] "%d sanatçı"
 
-#: ../src/application.py:375
+#: ../src/application.py:381
 #, python-format
 msgid "%d album"
 msgid_plural "%d albums"
 msgstr[0] "%d albüm"
 
-#: ../src/application.py:377
+#: ../src/application.py:383
 #, python-format
 msgid "%d track"
 msgid_plural "%d tracks"
 msgstr[0] "%d şarkı"
 
-#: ../src/application.py:392
+#: ../src/application.py:398
 msgid "Lollypop: You need to install yelp."
 msgstr "Lollypop: Yelp'i indirmeniz gerekmektedir."
 
-#: ../src/collectionscanner.py:67
+#: ../src/collectionscanner.py:69
 msgid "Your music is updating"
 msgstr "Müziğin güncelleniyor"
 
-#: ../src/container.py:452
+#: ../src/container.py:414
 msgid "Popular albums"
 msgstr "Popüler albümler"
 
-#: ../src/container.py:453
+#: ../src/container.py:415
 msgid "Recently added albums"
 msgstr "Son eklenen albümler"
 
-#: ../src/container.py:454
+#: ../src/container.py:416
 msgid "Random albums"
 msgstr "Rastgele albümler"
 
-#: ../src/container.py:455 ../src/pop_menu.py:391 ../src/pop_menu.py:468
-#: ../src/pop_menu.py:487
+#: ../src/container.py:417 ../src/pop_menu.py:405 ../src/pop_menu.py:481
+#: ../src/pop_menu.py:501
 msgid "Playlists"
 msgstr "Çalma listeleri"
 
-#: ../src/container.py:456
+#: ../src/container.py:418
 msgid "Radios"
 msgstr "Radyolar"
 
-#: ../src/container.py:458
+#: ../src/container.py:420
 msgid "All artists"
 msgstr "Bütün şarkıcılar"
 
-#: ../src/container.py:460 ../data/DeviceManagerWidget.ui.h:1
+#: ../src/container.py:422 ../data/DeviceManagerWidget.ui.h:1
 msgid "All albums"
-msgstr "Bütü albümler"
+msgstr "Bütün albümler"
 
-#: ../src/container.py:507
+#: ../src/container.py:469
 msgid "Compilations"
 msgstr "Derlemeler"
 
-#: ../src/container.py:530
+#: ../src/container.py:492 ../src/playlists.py:229
 msgid "Popular tracks"
 msgstr "Popüler şarkılar"
 
-#: ../src/container.py:531
+#: ../src/container.py:493 ../src/playlists.py:231
 msgid "Recently played"
 msgstr "Son çalınanlar"
 
-#: ../src/container.py:532
+#: ../src/container.py:494 ../src/playlists.py:233
 msgid "Never played"
 msgstr "Hiç çalınmayanlar"
 
-#: ../src/container.py:533
+#: ../src/container.py:495 ../src/playlists.py:235
 msgid "Random tracks"
 msgstr "Rastgele şarkılar"
-
-#: ../src/container.py:534 ../src/playlists.py:54
-msgid "Network control"
-msgstr "Ağ denetimi"
 
 #: ../src/controllers.py:82 ../src/controllers.py:115
 msgid "Pause"
 msgstr "Duraklat"
 
 #: ../src/controllers.py:84 ../src/controllers.py:112 ../src/pop_tunein.py:154
-#: ../src/widgets_album.py:326 ../src/widgets_radio.py:72
+#: ../src/widgets_album.py:379 ../src/widgets_radio.py:73
 #: ../data/AlbumContextWidget.ui.h:1 ../data/AlbumDetailedWidget.ui.h:1
 #: ../data/ToolbarPlayback.ui.h:2
 msgid "Play"
 msgstr "Oynat"
 
-#: ../src/database_albums.py:270 ../src/database_artists.py:104
-#: ../src/database_genres.py:69 ../src/database_tracks.py:229
-#: ../src/selectionlist.py:277 ../src/tagreader.py:87 ../src/tagreader.py:118
-#: ../src/tagreader.py:143 ../src/tagreader.py:158
+#: ../src/database_albums.py:302 ../src/database_artists.py:104
+#: ../src/database_genres.py:69 ../src/database_tracks.py:228
+#: ../src/selectionlist.py:273 ../src/tagreader.py:88 ../src/tagreader.py:101
+#: ../src/tagreader.py:114 ../src/tagreader.py:140 ../src/tagreader.py:153
+#: ../src/tagreader.py:156 ../src/tagreader.py:166 ../src/tagreader.py:169
 msgid "Unknown"
 msgstr "Bilinmeyen"
 
-#: ../src/database_albums.py:286
-msgid "Compilation"
-msgstr "Derleme"
-
-#: ../src/database_artists.py:97
+#: ../src/database_artists.py:97 ../src/view_artist.py:50
 msgid "Many artists"
 msgstr "Birçok şarkıcı"
 
@@ -398,14 +393,14 @@ msgid "Wrong Last.fm credentials"
 msgstr "Yanlış Last.fm kimliği"
 
 #. TRANSLATORS: by refers to the artist,
-#: ../src/notification.py:99
+#: ../src/notification.py:101
 #, python-format
 msgid "by %s"
 msgstr "%s dan"
 
 #. TRANSLATORS: by refers to the artist,
 #. from to the album
-#: ../src/notification.py:107
+#: ../src/notification.py:109
 #, python-format
 msgid "by %s, from %s"
 msgstr "%s'a, %s'dan"
@@ -415,86 +410,98 @@ msgstr "%s'a, %s'dan"
 msgid "File doesn't exist: %s"
 msgstr "Dosya bulunamıyor: %s"
 
-#: ../src/playlists.py:53
+#: ../src/playlists.py:54
 msgid "Loved tracks"
 msgstr "Sevilen parçalar"
+
+#: ../src/pop_albums.py:279
+msgid "Clear albums"
+msgstr ""
+
+#: ../src/pop_albums.py:287 ../src/view_artist.py:44
+msgid "Go to current track"
+msgstr ""
+
+#: ../src/pop_albums.py:288 ../src/toolbar_end.py:305
+msgid "Playing albums"
+msgstr ""
 
 #: ../src/pop_covers.py:56 ../src/pop_tunein.py:93 ../data/RadioPopover.ui.h:3
 msgid "Please wait..."
 msgstr "Lütfen bekleyin..."
 
-#: ../src/pop_covers.py:131
+#: ../src/pop_covers.py:136
 msgid "No cover found..."
 msgstr "Kapak resmi bulunamadı..."
 
-#: ../src/pop_covers.py:159
+#: ../src/pop_covers.py:164
 msgid "Select a cover art for this album"
 msgstr "Bu albüm için bir kapak resmi seçin"
 
-#: ../src/pop_infos.py:33
+#: ../src/pop_infos.py:34
 msgid "Advanced artist informations disabled"
 msgstr "Gelişmiş sanatçı bilgileri etkisizleştirildi"
 
-#: ../src/pop_infos.py:41
+#: ../src/pop_infos.py:42
 msgid "WebKit support disabled"
 msgstr "WebKit desteği devredışı bırakıldı"
 
-#: ../src/pop_menu.py:73
+#: ../src/pop_menu.py:74
 msgid "Continue playback"
 msgstr "Çalmaya devam et"
 
-#: ../src/pop_menu.py:83
+#: ../src/pop_menu.py:84
 msgid "Stop after this track"
 msgstr "Bu parçadan sonra durdur"
 
-#: ../src/pop_menu.py:91
+#: ../src/pop_menu.py:92
 msgid "Stop after this album"
 msgstr "Bu albümden sonra durdur"
 
-#: ../src/pop_menu.py:99
+#: ../src/pop_menu.py:100
 msgid "Do not repeat"
-msgstr ""
+msgstr "Tekrarlama"
 
-#: ../src/pop_menu.py:198 ../src/widgets_indicator.py:109
+#: ../src/pop_menu.py:201 ../src/widgets_indicator.py:105
 #: ../data/SearchRow.ui.h:3
 msgid "Add to queue"
 msgstr "Sıraya ekle"
 
-#: ../src/pop_menu.py:203
+#: ../src/pop_menu.py:206
 msgid "Next tracks"
 msgstr "Sonraki parçalar"
 
-#: ../src/pop_menu.py:205 ../data/NextPopover.ui.h:1
+#: ../src/pop_menu.py:208 ../data/NextPopover.ui.h:1
 msgid "Next track"
 msgstr "Sonraki parça"
 
-#: ../src/pop_menu.py:209 ../src/widgets_indicator.py:105
+#: ../src/pop_menu.py:212 ../src/widgets_indicator.py:101
 msgid "Remove from queue"
 msgstr "Sıradan kaldır"
 
-#: ../src/pop_menu.py:277
+#: ../src/pop_menu.py:287
 msgid "Add to others"
 msgstr "Diğerlerine ekle"
 
-#: ../src/pop_menu.py:294
+#: ../src/pop_menu.py:305
 #, python-format
 msgid "Remove from \"%s\""
 msgstr "\"%s\"dan kaldır"
 
-#: ../src/pop_menu.py:300
+#: ../src/pop_menu.py:311
 #, python-format
 msgid "Add to \"%s\""
 msgstr "\"%s\"e ekle"
 
-#: ../src/pop_menu.py:389
+#: ../src/pop_menu.py:403
 msgid "Playback"
 msgstr "Kayıttan çal"
 
-#: ../src/pop_menu.py:426
+#: ../src/pop_menu.py:439
 msgid "Modify information"
 msgstr "Bilgileri değiştir"
 
-#: ../src/pop_menu.py:470 ../data/PlaylistView.ui.h:1
+#: ../src/pop_menu.py:484 ../data/PlaylistView.ui.h:1
 msgid "Edit"
 msgstr "Düzenle"
 
@@ -514,21 +521,29 @@ msgstr "Tuneln'e bağlanamıyor..."
 msgid "Browse themes and add a new radio"
 msgstr "Temalara göz at ve yeni bir radyo ekle"
 
-#: ../src/settings.py:87 ../src/settings.py:90 ../data/SettingsDialog.ui.h:3
+#: ../src/settings.py:86 ../src/settings.py:89 ../data/SettingsDialog.ui.h:3
 msgid "Preferences"
 msgstr "Tercihler"
 
-#: ../src/settings.py:162
+#: ../src/settings.py:161
 msgid "Populars"
 msgstr "Popüler olanlar"
 
-#: ../src/settings.py:163
+#: ../src/settings.py:162
 msgid "Recently added"
 msgstr "Son eklenenler"
 
+#: ../src/toolbar_end.py:299
+msgid "Externals tracks playing"
+msgstr ""
+
+#: ../src/toolbar_end.py:303
+msgid "Playing playlists"
+msgstr ""
+
 #. Handle language ordering
 #. Translators: Add here words that shoud be ignored for artist sort order
-#: ../src/utils.py:121
+#: ../src/utils.py:111
 msgid "The the"
 msgstr "_"
 
@@ -541,36 +556,39 @@ msgstr "%s eşitle"
 msgid "Cancel synchronization"
 msgstr "Eşitlemeyi iptal et"
 
-#: ../src/widgets_album.py:339
-msgid "Play albums"
+#: ../src/widgets_album.py:164
+msgid "Append"
 msgstr ""
 
-#: ../src/widgets_album.py:349 ../src/widgets_radio.py:86
+#: ../src/widgets_album.py:168
+msgid "Remove"
+msgstr "Kaldır"
+
+#: ../src/widgets_album.py:390 ../data/AlbumDetailedWidget.ui.h:3
+msgid "Play albums"
+msgstr "Albümleri çal"
+
+#: ../src/widgets_album.py:400 ../src/widgets_radio.py:87
 #: ../data/AlbumContextWidget.ui.h:2 ../data/AlbumDetailedWidget.ui.h:2
 msgid "Change artwork"
 msgstr ""
 
-#: ../src/widgets_album.py:361 ../data/AlbumContextWidget.ui.h:3
-#: ../data/AlbumDetailedWidget.ui.h:3
-msgid "Append"
-msgstr ""
-
-#: ../src/widgets_album.py:511
+#: ../src/widgets_album.py:590
 #, python-format
 msgid "%s h  %s m"
 msgstr "%s s  %s d"
 
-#: ../src/widgets_album.py:513
+#: ../src/widgets_album.py:592
 #, python-format
 msgid "%s h"
 msgstr "%s s"
 
-#: ../src/widgets_album.py:515
+#: ../src/widgets_album.py:594
 #, python-format
 msgid "%s m"
 msgstr "%s d"
 
-#: ../src/widgets_album.py:529
+#: ../src/widgets_album.py:839
 #, python-format
 msgid "Disc %s"
 msgstr "Disk %s"
@@ -587,17 +605,17 @@ msgstr "Eşitlenirken bilinmeyen hata, cihazını yeniden başlatmayı deneyin"
 msgid "No free space available on device"
 msgstr "Cihazda yeterli boş alan yok"
 
-#: ../src/widgets_playlist.py:292 ../src/widgets_playlist.py:295
+#: ../src/widgets_playlist.py:479 ../src/widgets_playlist.py:482
 msgid "New playlist "
 msgstr "Yeni şarkı listesi"
 
 #. Need a copy, segfault on EOS 3.1
-#: ../src/widgets_playlist.py:350 ../src/widgets_playlist.py:586
+#: ../src/widgets_playlist.py:538 ../src/widgets_playlist.py:785
 #, python-format
 msgid "Remove \"%s\"?"
 msgstr "\"%s\" kaldır?"
 
-#: ../src/widgets_playlist.py:631
+#: ../src/widgets_playlist.py:791
 msgid "Remove these tracks?"
 msgstr "Bu parçaları kaldır?"
 
@@ -618,6 +636,7 @@ msgstr "Lollypop internet adresini ziyaret et"
 
 #. Replace me with your names
 #: ../data/AboutDialog.ui.h:4
+msgctxt "Translation credits here, put your name here!"
 msgid "Cédric Bellegarde <cedric.bellegarde@adishatz.org>"
 msgstr "Cédric Bellegarde <cedric.bellegarde@adishatz.org>"
 
@@ -690,20 +709,8 @@ msgid "New playlist"
 msgstr "Yeni şarkı listesi"
 
 #: ../data/QueuePopover.ui.h:1
-msgid "Queue:"
-msgstr "Sıra:"
-
-#: ../data/QueuePopover.ui.h:2
 msgid "Clear queue"
 msgstr "Sırayı sil"
-
-#: ../data/AlbumsPopover.ui.h:1
-msgid "Albums playing:"
-msgstr ""
-
-#: ../data/AlbumsPopover.ui.h:2
-msgid "Remove all albums"
-msgstr ""
 
 #: ../data/RadioPopover.ui.h:1
 msgid "Select a logo  for this radio"
@@ -738,10 +745,6 @@ msgid "Search in TuneIn"
 msgstr "Tuneln'de ara"
 
 #: ../data/SearchPopover.ui.h:1
-msgid "Play search"
-msgstr "Aramayı oyna"
-
-#: ../data/SearchPopover.ui.h:2
 msgid "Create a new playlist based on search"
 msgstr "Aramaya dayalı çalma listesi oluştur"
 
@@ -787,7 +790,7 @@ msgstr ""
 
 #: ../data/SettingsDialog.ui.h:15
 msgid "Do not repeat by default"
-msgstr ""
+msgstr "Varsayılan olarak tekrarlama"
 
 #: ../data/SettingsDialog.ui.h:16
 msgid "Configure lollypop behaviour"

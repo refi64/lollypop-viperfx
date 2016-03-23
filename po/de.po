@@ -12,9 +12,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lollypop\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-02-27 11:13+0100\n"
-"PO-Revision-Date: 2016-02-27 16:57+0000\n"
-"Last-Translator: Florian Zorbach <florian0@project-hazard.org>\n"
+"POT-Creation-Date: 2016-03-21 19:45+0100\n"
+"PO-Revision-Date: 2016-03-21 18:45+0000\n"
+"Last-Translator: Cédric Bellegarde <web@adishatz.org>\n"
 "Language-Team: German (http://www.transifex.com/gnumdk/lollypop/language/de/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -40,11 +40,11 @@ msgstr "Fensterposition (x und y)"
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:5
 msgid "Mini player size"
-msgstr ""
+msgstr "Größe des kleinen Players"
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:6
 msgid "Mini player position"
-msgstr ""
+msgstr "Position des kleinen Players"
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:7
 msgid "Repeat by default"
@@ -117,7 +117,7 @@ msgstr "Zwischen -15 und 15"
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:24
 msgid "Sync all albums(MTP)"
-msgstr ""
+msgstr "Alle Alben synchronisieren(MTP)"
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:25
 msgid "Convert to MP3(MTP)"
@@ -165,15 +165,15 @@ msgstr "Titelnummern aus Tags anzeigen"
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:36 ../data/SettingsDialog.ui.h:13
 msgid "Mix songs"
-msgstr ""
+msgstr "Titel überblenden"
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:37
 msgid "Mix songs only in party mode"
-msgstr ""
+msgstr "Titel nur im Partymodus überblenden"
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:38
 msgid "Mix duration"
-msgstr ""
+msgstr "Überblendzeit"
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:39
 msgid "Shuffle mode"
@@ -195,12 +195,12 @@ msgstr "Spiele und organisiere deine Musiksammlung"
 msgid "Play/Pause"
 msgstr "Play/Pause"
 
-#: ../data/lollypop.desktop.in.h:5 ../src/notification.py:70
+#: ../data/lollypop.desktop.in.h:5 ../src/notification.py:72
 #: ../data/ToolbarPlayback.ui.h:3
 msgid "Next"
 msgstr "Nächster Titel"
 
-#: ../data/lollypop.desktop.in.h:6 ../src/notification.py:66
+#: ../data/lollypop.desktop.in.h:6 ../src/notification.py:68
 #: ../data/ToolbarPlayback.ui.h:1
 msgid "Previous"
 msgstr "Vorheriger Titel"
@@ -225,12 +225,14 @@ msgstr "Genre/Cover-Browsing"
 msgid "Genre/Artist/Cover browsing"
 msgstr "Genre/Künstler/Cover-Browsing"
 
-#: ../data/lollypop.appdata.xml.in.h:8 ../data/ToolbarEnd.ui.h:7
+#: ../data/lollypop.appdata.xml.in.h:8 ../src/playlists.py:237
+#: ../data/ToolbarEnd.ui.h:7
 msgid "Search"
 msgstr "Suche"
 
-#: ../data/lollypop.appdata.xml.in.h:9 ../src/pop_menu.py:466
-#: ../src/pop_menu.py:485 ../data/ToolbarEnd.ui.h:8
+#: ../data/lollypop.appdata.xml.in.h:9 ../src/pop_menu.py:478
+#: ../src/pop_menu.py:499 ../src/toolbar_end.py:301
+#: ../data/QueuePopover.ui.h:2
 msgid "Queue"
 msgstr "Warteschlange"
 
@@ -286,111 +288,104 @@ msgid ""
 "    - Artist informations disabled"
 msgstr "- Scrobbler deaktiviert\n- Automatischer Cover-Download deaktiviert\n- Künster-Informationen deaktivert"
 
-#: ../src/application.py:373
+#: ../src/application.py:379
 #, python-format
 msgid "%d artist"
 msgid_plural "%d artists"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%d Künstler"
+msgstr[1] "%d Künstler"
 
-#: ../src/application.py:375
+#: ../src/application.py:381
 #, python-format
 msgid "%d album"
 msgid_plural "%d albums"
 msgstr[0] "%d Album"
 msgstr[1] "%d Alben"
 
-#: ../src/application.py:377
+#: ../src/application.py:383
 #, python-format
 msgid "%d track"
 msgid_plural "%d tracks"
 msgstr[0] "%d Titel"
 msgstr[1] "%d Titel"
 
-#: ../src/application.py:392
+#: ../src/application.py:398
 msgid "Lollypop: You need to install yelp."
 msgstr "Lollypop: Das Paket yelp muss installiert sein."
 
-#: ../src/collectionscanner.py:67
+#: ../src/collectionscanner.py:69
 msgid "Your music is updating"
 msgstr "Deine Musik wird gerade aktualisiert"
 
-#: ../src/container.py:452
+#: ../src/container.py:414
 msgid "Popular albums"
 msgstr "Beliebte Alben"
 
-#: ../src/container.py:453
+#: ../src/container.py:415
 msgid "Recently added albums"
 msgstr "Kürzlich hinzugefügte Alben"
 
-#: ../src/container.py:454
+#: ../src/container.py:416
 msgid "Random albums"
 msgstr "Zufällige Alben"
 
-#: ../src/container.py:455 ../src/pop_menu.py:391 ../src/pop_menu.py:468
-#: ../src/pop_menu.py:487
+#: ../src/container.py:417 ../src/pop_menu.py:405 ../src/pop_menu.py:481
+#: ../src/pop_menu.py:501
 msgid "Playlists"
 msgstr "Wiedergabelisten"
 
-#: ../src/container.py:456
+#: ../src/container.py:418
 msgid "Radios"
 msgstr "Stationen"
 
-#: ../src/container.py:458
+#: ../src/container.py:420
 msgid "All artists"
 msgstr "Alle Künstler"
 
-#: ../src/container.py:460 ../data/DeviceManagerWidget.ui.h:1
+#: ../src/container.py:422 ../data/DeviceManagerWidget.ui.h:1
 msgid "All albums"
 msgstr "Alle Alben"
 
-#: ../src/container.py:507
+#: ../src/container.py:469
 msgid "Compilations"
 msgstr "Kompilationen"
 
-#: ../src/container.py:530
+#: ../src/container.py:492 ../src/playlists.py:229
 msgid "Popular tracks"
 msgstr "Beliebte Titel"
 
-#: ../src/container.py:531
+#: ../src/container.py:493 ../src/playlists.py:231
 msgid "Recently played"
 msgstr "Kürzlich abgespielt"
 
-#: ../src/container.py:532
+#: ../src/container.py:494 ../src/playlists.py:233
 msgid "Never played"
 msgstr "Noch nie abgespielt"
 
-#: ../src/container.py:533
+#: ../src/container.py:495 ../src/playlists.py:235
 msgid "Random tracks"
 msgstr "Zufällige Titel"
-
-#: ../src/container.py:534 ../src/playlists.py:54
-msgid "Network control"
-msgstr "Netzwerkeinstellungen"
 
 #: ../src/controllers.py:82 ../src/controllers.py:115
 msgid "Pause"
 msgstr "Pause"
 
 #: ../src/controllers.py:84 ../src/controllers.py:112 ../src/pop_tunein.py:154
-#: ../src/widgets_album.py:326 ../src/widgets_radio.py:72
+#: ../src/widgets_album.py:379 ../src/widgets_radio.py:73
 #: ../data/AlbumContextWidget.ui.h:1 ../data/AlbumDetailedWidget.ui.h:1
 #: ../data/ToolbarPlayback.ui.h:2
 msgid "Play"
 msgstr "Wiedergabe"
 
-#: ../src/database_albums.py:270 ../src/database_artists.py:104
-#: ../src/database_genres.py:69 ../src/database_tracks.py:229
-#: ../src/selectionlist.py:277 ../src/tagreader.py:87 ../src/tagreader.py:118
-#: ../src/tagreader.py:143 ../src/tagreader.py:158
+#: ../src/database_albums.py:302 ../src/database_artists.py:104
+#: ../src/database_genres.py:69 ../src/database_tracks.py:228
+#: ../src/selectionlist.py:273 ../src/tagreader.py:88 ../src/tagreader.py:101
+#: ../src/tagreader.py:114 ../src/tagreader.py:140 ../src/tagreader.py:153
+#: ../src/tagreader.py:156 ../src/tagreader.py:166 ../src/tagreader.py:169
 msgid "Unknown"
 msgstr "Unbekannt"
 
-#: ../src/database_albums.py:286
-msgid "Compilation"
-msgstr "Kompilation"
-
-#: ../src/database_artists.py:97
+#: ../src/database_artists.py:97 ../src/view_artist.py:50
 msgid "Many artists"
 msgstr "Viele Künstler"
 
@@ -403,14 +398,14 @@ msgid "Wrong Last.fm credentials"
 msgstr "Falsche Last.fm Anmeldedaten"
 
 #. TRANSLATORS: by refers to the artist,
-#: ../src/notification.py:99
+#: ../src/notification.py:101
 #, python-format
 msgid "by %s"
 msgstr "von %s"
 
 #. TRANSLATORS: by refers to the artist,
 #. from to the album
-#: ../src/notification.py:107
+#: ../src/notification.py:109
 #, python-format
 msgid "by %s, from %s"
 msgstr "von %s, aus %s"
@@ -420,86 +415,98 @@ msgstr "von %s, aus %s"
 msgid "File doesn't exist: %s"
 msgstr "Datei nicht vorhanden: %s"
 
-#: ../src/playlists.py:53
+#: ../src/playlists.py:54
 msgid "Loved tracks"
 msgstr "Geliebte Titel"
+
+#: ../src/pop_albums.py:279
+msgid "Clear albums"
+msgstr ""
+
+#: ../src/pop_albums.py:287 ../src/view_artist.py:44
+msgid "Go to current track"
+msgstr ""
+
+#: ../src/pop_albums.py:288 ../src/toolbar_end.py:305
+msgid "Playing albums"
+msgstr ""
 
 #: ../src/pop_covers.py:56 ../src/pop_tunein.py:93 ../data/RadioPopover.ui.h:3
 msgid "Please wait..."
 msgstr "Bitte warten ..."
 
-#: ../src/pop_covers.py:131
+#: ../src/pop_covers.py:136
 msgid "No cover found..."
 msgstr "Kein Cover gefunden ..."
 
-#: ../src/pop_covers.py:159
+#: ../src/pop_covers.py:164
 msgid "Select a cover art for this album"
 msgstr "Wähle ein Cover für dieses Album"
 
-#: ../src/pop_infos.py:33
+#: ../src/pop_infos.py:34
 msgid "Advanced artist informations disabled"
 msgstr "Weiterführende Künstler-Informationen deaktiviert"
 
-#: ../src/pop_infos.py:41
+#: ../src/pop_infos.py:42
 msgid "WebKit support disabled"
 msgstr "WebKit-Unterstützung deaktiviert"
 
-#: ../src/pop_menu.py:73
+#: ../src/pop_menu.py:74
 msgid "Continue playback"
 msgstr "Wiedergabe fortführen"
 
-#: ../src/pop_menu.py:83
+#: ../src/pop_menu.py:84
 msgid "Stop after this track"
 msgstr "Nach Wiedergabe dieses Titels stoppen"
 
-#: ../src/pop_menu.py:91
+#: ../src/pop_menu.py:92
 msgid "Stop after this album"
 msgstr "Nach Wiedergabe dieses Albums stoppen"
 
-#: ../src/pop_menu.py:99
+#: ../src/pop_menu.py:100
 msgid "Do not repeat"
 msgstr "Nicht wiederholen"
 
-#: ../src/pop_menu.py:198 ../src/widgets_indicator.py:109
+#: ../src/pop_menu.py:201 ../src/widgets_indicator.py:105
 #: ../data/SearchRow.ui.h:3
 msgid "Add to queue"
 msgstr "Zur Warteschlange hinzufügen"
 
-#: ../src/pop_menu.py:203
+#: ../src/pop_menu.py:206
 msgid "Next tracks"
 msgstr "Nächste Titel"
 
-#: ../src/pop_menu.py:205 ../data/NextPopover.ui.h:1
+#: ../src/pop_menu.py:208 ../data/NextPopover.ui.h:1
 msgid "Next track"
 msgstr "Nächster Titel"
 
-#: ../src/pop_menu.py:209 ../src/widgets_indicator.py:105
+#: ../src/pop_menu.py:212 ../src/widgets_indicator.py:101
 msgid "Remove from queue"
 msgstr "Aus Warteschlange entfernen"
 
-#: ../src/pop_menu.py:277
+#: ../src/pop_menu.py:287
 msgid "Add to others"
 msgstr "Anderen hinzufügen"
 
-#: ../src/pop_menu.py:294
+#: ../src/pop_menu.py:305
 #, python-format
 msgid "Remove from \"%s\""
 msgstr "Aus \"%s\" entfernen"
 
-#: ../src/pop_menu.py:300
+#: ../src/pop_menu.py:311
 #, python-format
 msgid "Add to \"%s\""
 msgstr "Zu \"%s\" hinzufügen"
 
-#: ../src/pop_menu.py:389
+#: ../src/pop_menu.py:403
 msgid "Playback"
 msgstr "Wiedergabe"
 
-#: ../src/pop_menu.py:426
+#: ../src/pop_menu.py:439
 msgid "Modify information"
-msgstr ""
+msgstr "Informationen bearbeiten"
 
-#: ../src/pop_menu.py:470 ../data/PlaylistView.ui.h:1
+#: ../src/pop_menu.py:484 ../data/PlaylistView.ui.h:1
 msgid "Edit"
 msgstr "Bearbeiten"
 
@@ -519,21 +526,29 @@ msgstr "Kann keine Verbindung zu TuneIn herstellen ..."
 msgid "Browse themes and add a new radio"
 msgstr "Kategorien durchsuchen und einen neuen Radio-Sender hinzufügen"
 
-#: ../src/settings.py:87 ../src/settings.py:90 ../data/SettingsDialog.ui.h:3
+#: ../src/settings.py:86 ../src/settings.py:89 ../data/SettingsDialog.ui.h:3
 msgid "Preferences"
 msgstr "Einstellungen"
 
-#: ../src/settings.py:162
+#: ../src/settings.py:161
 msgid "Populars"
 msgstr "Beliebte"
 
-#: ../src/settings.py:163
+#: ../src/settings.py:162
 msgid "Recently added"
 msgstr "Kürzlich hinzugefügt"
 
+#: ../src/toolbar_end.py:299
+msgid "Externals tracks playing"
+msgstr ""
+
+#: ../src/toolbar_end.py:303
+msgid "Playing playlists"
+msgstr ""
+
 #. Handle language ordering
 #. Translators: Add here words that shoud be ignored for artist sort order
-#: ../src/utils.py:121
+#: ../src/utils.py:111
 msgid "The the"
 msgstr "Der der"
 
@@ -546,43 +561,46 @@ msgstr "%s synchronisieren"
 msgid "Cancel synchronization"
 msgstr "Synchronisation abbrechen"
 
-#: ../src/widgets_album.py:339
-msgid "Play albums"
-msgstr ""
+#: ../src/widgets_album.py:164
+msgid "Append"
+msgstr "Anhängen"
 
-#: ../src/widgets_album.py:349 ../src/widgets_radio.py:86
+#: ../src/widgets_album.py:168
+msgid "Remove"
+msgstr "Entfernen"
+
+#: ../src/widgets_album.py:390 ../data/AlbumDetailedWidget.ui.h:3
+msgid "Play albums"
+msgstr "Album wiedergeben"
+
+#: ../src/widgets_album.py:400 ../src/widgets_radio.py:87
 #: ../data/AlbumContextWidget.ui.h:2 ../data/AlbumDetailedWidget.ui.h:2
 msgid "Change artwork"
-msgstr ""
+msgstr "Coverbild ändern"
 
-#: ../src/widgets_album.py:361 ../data/AlbumContextWidget.ui.h:3
-#: ../data/AlbumDetailedWidget.ui.h:3
-msgid "Append"
-msgstr ""
-
-#: ../src/widgets_album.py:511
+#: ../src/widgets_album.py:590
 #, python-format
 msgid "%s h  %s m"
 msgstr "%s h %s m"
 
-#: ../src/widgets_album.py:513
+#: ../src/widgets_album.py:592
 #, python-format
 msgid "%s h"
 msgstr "%s h"
 
-#: ../src/widgets_album.py:515
+#: ../src/widgets_album.py:594
 #, python-format
 msgid "%s m"
 msgstr "%s m"
 
-#: ../src/widgets_album.py:529
+#: ../src/widgets_album.py:839
 #, python-format
 msgid "Disc %s"
 msgstr "CD %s"
 
 #: ../src/widgets_device.py:51
 msgid "You need to install gstreamer-plugins-ugly"
-msgstr ""
+msgstr "Die Installation von gstreamer-plugins-ugly ist erforderlich"
 
 #: ../src/widgets_device.py:225
 msgid "Unknown error while syncing, try to reboot your device"
@@ -592,17 +610,17 @@ msgstr "Unbekannter Fehler während der Synchronisation. Versuche dein Gerät ne
 msgid "No free space available on device"
 msgstr "Kein freier Speicherplatz verfügbar auf diesem Gerät"
 
-#: ../src/widgets_playlist.py:292 ../src/widgets_playlist.py:295
+#: ../src/widgets_playlist.py:479 ../src/widgets_playlist.py:482
 msgid "New playlist "
 msgstr "Neue Wiedergabeliste"
 
 #. Need a copy, segfault on EOS 3.1
-#: ../src/widgets_playlist.py:350 ../src/widgets_playlist.py:586
+#: ../src/widgets_playlist.py:538 ../src/widgets_playlist.py:785
 #, python-format
 msgid "Remove \"%s\"?"
 msgstr "\"%s\" entfernen?"
 
-#: ../src/widgets_playlist.py:631
+#: ../src/widgets_playlist.py:791
 msgid "Remove these tracks?"
 msgstr "Diese Titel entfernen?"
 
@@ -623,6 +641,7 @@ msgstr "Besuche die Lollypop-Webseite"
 
 #. Replace me with your names
 #: ../data/AboutDialog.ui.h:4
+msgctxt "Translation credits here, put your name here!"
 msgid "Cédric Bellegarde <cedric.bellegarde@adishatz.org>"
 msgstr "Cédric Bellegarde <cedric.bellegarde@adishatz.org>"
 
@@ -680,11 +699,11 @@ msgstr "Synchronisiere dein Gerät mit dieser Wiedergabeliste"
 
 #: ../data/DeviceManagerView.ui.h:2
 msgid "Please unlock your device"
-msgstr "Bitte entsperren Sie Ihr Gerät"
+msgstr "Bitte entsperre dein Gerät"
 
 #: ../data/DeviceManagerWidget.ui.h:2
 msgid "Convert to MP3"
-msgstr ""
+msgstr "Umwandeln zu MP3"
 
 #: ../data/PlaylistEditWidget.ui.h:1 ../data/PlaylistsManagerWidget.ui.h:1
 msgid "Confirm"
@@ -695,20 +714,8 @@ msgid "New playlist"
 msgstr "Neue Wiedergabeliste"
 
 #: ../data/QueuePopover.ui.h:1
-msgid "Queue:"
-msgstr "Warteschlange:"
-
-#: ../data/QueuePopover.ui.h:2
 msgid "Clear queue"
 msgstr "Warteschlange leeren"
-
-#: ../data/AlbumsPopover.ui.h:1
-msgid "Albums playing:"
-msgstr ""
-
-#: ../data/AlbumsPopover.ui.h:2
-msgid "Remove all albums"
-msgstr "Alle Alben entfernen"
 
 #: ../data/RadioPopover.ui.h:1
 msgid "Select a logo  for this radio"
@@ -743,10 +750,6 @@ msgid "Search in TuneIn"
 msgstr "In TuneIn suchen"
 
 #: ../data/SearchPopover.ui.h:1
-msgid "Play search"
-msgstr "Suchergebnisse abspielen"
-
-#: ../data/SearchPopover.ui.h:2
 msgid "Create a new playlist based on search"
 msgstr "Eine neue Wiedergabeliste auf Basis der Suchergebnisse erstellen"
 
@@ -760,11 +763,11 @@ msgstr "Zur Wiedergabeliste hinzufügen"
 
 #: ../data/SettingsDialog.ui.h:1
 msgid "Only in party mode"
-msgstr ""
+msgstr "Nur im Partymodus"
 
 #: ../data/SettingsDialog.ui.h:2
 msgid "Mix duration in seconds"
-msgstr ""
+msgstr "Überblendzeit in Sekunden"
 
 #: ../data/SettingsDialog.ui.h:4
 msgid "Use dark theme variant"
@@ -776,7 +779,7 @@ msgstr "Genres anzeigen"
 
 #: ../data/SettingsDialog.ui.h:8
 msgid "Configure lollypop appearance"
-msgstr ""
+msgstr "Konfiguriere das Aussehen von Lollypop"
 
 #: ../data/SettingsDialog.ui.h:9
 msgid "Appearance"
@@ -788,11 +791,11 @@ msgstr "Zustand beim Start wiederherstellen"
 
 #: ../data/SettingsDialog.ui.h:14
 msgid "Long press to show options"
-msgstr ""
+msgstr "Lange drücken, um die Optionen zu öffnen"
 
 #: ../data/SettingsDialog.ui.h:15
 msgid "Do not repeat by default"
-msgstr ""
+msgstr "Standardmäßig nicht wiederholen"
 
 #: ../data/SettingsDialog.ui.h:16
 msgid "Configure lollypop behaviour"
@@ -832,7 +835,7 @@ msgstr "Die Installation von pylast und gi secret wird benötigt"
 
 #: ../data/SettingsDialog.ui.h:26
 msgid "Configure Last.fm credentials"
-msgstr ""
+msgstr "Last.fm Anmeldedaten konfigurieren"
 
 #: ../data/ToolbarEnd.ui.h:1
 msgid "No shuffle"
