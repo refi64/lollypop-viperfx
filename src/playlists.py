@@ -22,6 +22,7 @@ from lollypop.database import Database
 from lollypop.define import Lp, Type
 from lollypop.objects import Track
 from lollypop.sqlcursor import SqlCursor
+from lollypop.localized import LocalizedCollation
 
 
 class Playlists(GObject.GObject):
@@ -351,6 +352,7 @@ class Playlists(GObject.GObject):
         try:
             sql = sqlite3.connect(self.DB_PATH, 600.0)
             sql.execute("ATTACH DATABASE '%s' AS music" % Database.DB_PATH)
+            sql.create_collation('LOCALIZED', LocalizedCollation())
             return sql
         except:
             exit(-1)
