@@ -26,9 +26,6 @@
             <child type="label_item">
               <placeholder/>
             </child>
-            <style>
-              <class name="cover-frame"/>
-            </style>
           </object>
           <packing>
             <property name="index">-1</property>
