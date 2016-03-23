@@ -127,7 +127,8 @@ class View(Gtk.Grid):
             @param album id as int
         """
         for widget in self._get_children():
-            widget.update_cover(album_id)
+            if album_id == widget.get_id():
+                widget.update_cover()
 
     def _on_current_changed(self, player):
         """

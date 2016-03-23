@@ -63,10 +63,9 @@ class AlbumWidget:
             self._set_overlay_orientation(Gtk.Orientation.HORIZONTAL)
         del surface
 
-    def update_cover(self, album_id):
+    def update_cover(self):
         """
             Update cover for album id id needed
-            @param album id as int
         """
         if self._cover is None:
             return
