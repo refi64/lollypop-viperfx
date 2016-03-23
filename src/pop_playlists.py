@@ -41,7 +41,7 @@ class PlaylistsPopover(Gtk.Popover):
             Set widget size
         """
         height = Lp().window.get_size()[1]
-        self.set_size_request(500, height*0.7)
+        self.set_size_request(400, height*0.7)
         Gtk.Popover.do_show(self)
 
     def populate(self):
