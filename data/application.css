@@ -3,6 +3,37 @@
     text-shadow: none;
 }
 
+/*********** GTK < 3.20 **********/
+GtkTreeView {
+    padding: 2px 2px 2px 2px;
+}
+
+GtkTreeView:selected:hover {
+        background-color: shade(@theme_selected_bg_color, 0.9);
+        color: @theme_selected_fg_color;
+}
+
+GtkTreeView:hover {
+    background-color: alpha(@theme_fg_color, 0.05);
+    color: @theme_fg_color;
+}
+
+GtkTreeView.separator {
+    color: shade(@theme_bg_color, 0.8);
+}
+
+GtkTreeView .image{
+    color: alpha(@theme_fg_color, 0.8);
+}
+
+GtkTreeView .image:backdrop{
+    color: alpha(@theme_fg_color, 0.6);
+}
+
+GtkTreeView .image:selected{
+    color: @theme_selected_fg_color;
+}
+/*********** GTK >= 3.20 **********/
 treeview {
     padding: 2px 2px 2px 2px;
 }
@@ -32,6 +63,7 @@ treeview .image:backdrop{
 treeview .image:selected{
     color: @theme_selected_fg_color;
 }
+/******************************/
 
 Gtk.ListBoxRow .loved-button {
 	border-color: transparent;
