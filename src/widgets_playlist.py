@@ -329,6 +329,20 @@ class PlaylistsWidget(Gtk.Bin):
             @param src as int
             @param up as bool
         """
+        def update_playlist():
+            # Save playlist in db only if one playlist visible
+            if len(self._playlist_ids) == 1 and self._playlist_ids[0] >= 0:
+                Lp().playlists.clear(self._playlist_ids[0], False)
+                tracks = []
+                for track_id in self._tracks1 + self._tracks2:
+                    tracks.append(Track(track_id))
+                Lp().playlists.add_tracks(self._playlist_ids[0],
+                                          tracks,
+                                          False)
+            if not (set(self._playlist_ids) -
+               set(Lp().player.get_user_playlist_ids())):
+                Lp().player.update_user_playlist(self._tracks1 + self._tracks2)
+
         (src_widget, dst_widget, src_index, dst_index) = \
             self._move_track(dst, src, up)
         self._update_tracks()
@@ -336,18 +350,9 @@ class PlaylistsWidget(Gtk.Bin):
         self._update_headers()
         self._tracks_widget_left.update_indexes(1)
         self._tracks_widget_right.update_indexes(len(self._tracks1) + 1)
-        # Save playlist in db only if one playlist visible
-        if len(self._playlist_ids) == 1 and self._playlist_ids[0] >= 0:
-            Lp().playlists.clear(self._playlist_ids[0], False)
-            tracks = []
-            for track_id in self._tracks1 + self._tracks2:
-                tracks.append(Track(track_id))
-            Lp().playlists.add_tracks(self._playlist_ids[0],
-                                      tracks,
-                                      False)
-        if not (set(self._playlist_ids) -
-           set(Lp().player.get_user_playlist_ids())):
-            Lp().player.update_user_playlist(self._tracks1 + self._tracks2)
+        t = Thread(target=update_playlist)
+        t.daemon = True
+        t.start()
 
     def _on_size_allocate(self, widget, allocation):
         """
