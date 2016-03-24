@@ -43,6 +43,9 @@ class IndicatorWidget(Gtk.EventBox):
         self._button = Gtk.Button.new()
         self._image = Gtk.Image.new()
         self._button.set_image(self._image)
+        # Here a hack to make old Gtk version support min-height css attribute
+        # min-height = 24px, borders = 2px
+        self._button.set_property('height-request', 26)
         self._button.set_relief(Gtk.ReliefStyle.NONE)
         self._button.get_style_context().add_class('menu-button')
         self._button.get_style_context().add_class('track-menu-button')
