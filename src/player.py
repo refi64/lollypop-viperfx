@@ -356,7 +356,7 @@ class Player(BinPlayer, QueuePlayer, UserPlaylistPlayer, RadioPlayer,
                             elif playlist_id == Type.RANDOMS:
                                 tracks = Lp().tracks.get_randoms()
                             else:
-                                tracks = Lp().playlists.get_tracks_ids(
+                                tracks = Lp().playlists.get_track_ids(
                                                                    playlist_id)
                             for track_id in tracks:
                                 if track_id not in track_ids:

@@ -56,6 +56,21 @@ class UserPlaylistPlayer(BasePlayer):
         self._user_playlist_backup = []
         self._shuffle_playlist()
 
+    def update_user_playlist(self):
+        """
+            Update user playlist content based on db
+        """
+        if self._albums:
+            return
+        self._user_playlist = []
+        for playlist_id in self._user_playlist_ids:
+            if playlist_id < 0:
+                continue
+            for track_id in Lp().playlists.get_track_ids(playlist_id):
+                self._user_playlist.append(track_id)
+        self._user_playlist_backup = []
+        self._shuffle_playlist()
+
     def get_user_playlist(self):
         """
             Get user playlist

@@ -345,6 +345,9 @@ class PlaylistsWidget(Gtk.Bin):
             Lp().playlists.add_tracks(self._playlist_ids[0],
                                       tracks,
                                       False)
+            if set(self._playlist_ids) -\
+               set(Lp().player.get_user_playlist_ids()):
+                Lp().player.update_user_playlist()
         if Lp().player.get_user_playlist_ids() == self._playlist_ids:
             Lp().player.populate_user_playlist_by_tracks(self._tracks1 +
                                                          self._tracks2,
@@ -726,7 +729,7 @@ class PlaylistEditWidget(Gtk.Bin):
         """
             Append tracks
         """
-        track_ids = Lp().playlists.get_tracks_ids(self._playlist_id)
+        track_ids = Lp().playlists.get_track_ids(self._playlist_id)
         GLib.idle_add(self._append_track, track_ids)
 
     def _append_track(self, track_ids):

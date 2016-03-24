@@ -163,9 +163,9 @@ class Playlists(GObject.GObject):
                                       WHERE playlist_id=?", (playlist_id,))
                 return list(itertools.chain(*result))
 
-    def get_tracks_ids(self, playlist_id):
+    def get_track_ids(self, playlist_id):
         """
-            Return availables tracks id for playlist
+            Return availables track ids for playlist
             If playlist name == Type.ALL, then return all tracks from db
             @param playlist id as int
             @return array of track id as int
@@ -302,7 +302,7 @@ class Playlists(GObject.GObject):
             @return position as int
         """
         i = 0
-        for tid in self.get_tracks_ids(playlist_id):
+        for tid in self.get_track_ids(playlist_id):
             if track_id == tid:
                 break
             i += 1

@@ -604,7 +604,7 @@ class Container:
                 elif playlist_id == Type.RANDOMS:
                     tracks = Lp().tracks.get_randoms()
                 else:
-                    tracks = Lp().playlists.get_tracks_ids(playlist_id)
+                    tracks = Lp().playlists.get_track_ids(playlist_id)
                 for track_id in tracks:
                     if track_id not in track_ids:
                         track_ids.append(track_id)

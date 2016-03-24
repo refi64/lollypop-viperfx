@@ -341,6 +341,8 @@ class PlaylistsMenu(BaseMenu):
             else:
                 tracks = [Track(self._object_id)]
             Lp().playlists.add_tracks(playlist_id, tracks)
+            if playlist_id in Lp().player.get_user_playlist_ids():
+                Lp().player.update_user_playlist()
         t = Thread(target=add, args=(playlist_id,))
         t.daemon = True
         t.start()
@@ -365,6 +367,8 @@ class PlaylistsMenu(BaseMenu):
             else:
                 tracks = [Track(self._object_id)]
             Lp().playlists.remove_tracks(playlist_id, tracks)
+            if playlist_id in Lp().player.get_user_playlist_ids():
+                Lp().player.update_user_playlist()
         t = Thread(target=remove, args=(playlist_id,))
         t.daemon = True
         t.start()

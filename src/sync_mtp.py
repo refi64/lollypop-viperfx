@@ -172,7 +172,7 @@ class MtpSync:
                 stream = None
 
             # Start copying
-            tracks_ids = Lp().playlists.get_tracks_ids(playlist)
+            tracks_ids = Lp().playlists.get_track_ids(playlist)
             for track_id in tracks_ids:
                 if track_id is None:
                     continue
@@ -282,7 +282,7 @@ class MtpSync:
 
         # Get tracks ids
         for playlist in playlists:
-            tracks_ids += Lp().playlists.get_tracks_ids(playlist)
+            tracks_ids += Lp().playlists.get_track_ids(playlist)
 
         # Get tracks uris
         for track_id in tracks_ids:
