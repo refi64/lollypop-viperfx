@@ -37,6 +37,7 @@ class Window(Gtk.ApplicationWindow, Container):
         Gtk.ApplicationWindow.__init__(self,
                                        application=app,
                                        title="Lollypop")
+        self.connect('hide', self._on_hide)
         self.connect('notify::is-active', self._on_active)
         self._timeout_configure = None
         seek_action = Gio.SimpleAction.new('seek',
@@ -123,18 +124,6 @@ class Window(Gtk.ApplicationWindow, Container):
             self._app.set_accels_for_action("app.player::next", [None])
             self._app.set_accels_for_action("app.player::next_album", [None])
             self._app.set_accels_for_action("app.player::prev", [None])
-
-    def do_hide(self):
-        """
-            Remove callbacks (we don't want to save an invalid value on hide
-        """
-        if self._signal1 is not None:
-            self.disconnect(self._signal1)
-            self._signal1 = None
-        if self._signal2 is not None:
-            self.disconnect(self._signal2)
-            self._signal2 = None
-        Gtk.ApplicationWindow.do_hide(self)
 
     def setup_window(self):
         """
@@ -329,6 +318,18 @@ class Window(Gtk.ApplicationWindow, Container):
         self.add(vgrid)
         self._main_stack.add_named(self.main_widget(), 'main')
         self._main_stack.set_visible_child_name('main')
+
+    def _on_hide(self, window):
+        """
+            Remove callbacks (we don't want to save an invalid value on hide
+            @param window as GtkApplicationWindow
+        """
+        if self._signal1 is not None:
+            self.disconnect(self._signal1)
+            self._signal1 = None
+        if self._signal2 is not None:
+            self.disconnect(self._signal2)
+            self._signal2 = None
 
     def _on_configure_event(self, widget, event):
         """
