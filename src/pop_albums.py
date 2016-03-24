@@ -99,6 +99,9 @@ class AlbumRow(Gtk.ListBoxRow):
                                                Gtk.IconSize.MENU)
         delete_button = Gtk.Button.new_from_icon_name('user-trash-symbolic',
                                                       Gtk.IconSize.MENU)
+        # Here a hack to make old Gtk version support min-height css attribute
+        # min-height = 24px, borders = 2px
+        delete_button.set_property('height-request', 26)
         delete_button.get_image().set_opacity(0.2)
         delete_button.set_relief(Gtk.ReliefStyle.NONE)
         delete_button.get_style_context().add_class('menu-button')
