@@ -1,9 +1,8 @@
-* {
-    outline-width: 0px;
+GtkWidget {
+	outline-width: 0px;
     text-shadow: none;
 }
 
-/*********** GTK < 3.20 **********/
 GtkTreeView {
     padding: 2px 2px 2px 2px;
 }
@@ -33,37 +32,6 @@ GtkTreeView .image:backdrop{
 GtkTreeView .image:selected{
     color: @theme_selected_fg_color;
 }
-/*********** GTK >= 3.20 **********/
-treeview {
-    padding: 2px 2px 2px 2px;
-}
-
-treeview:selected:hover {
-        background-color: shade(@theme_selected_bg_color, 0.9);
-        color: @theme_selected_fg_color;
-}
-
-treeview:hover {
-    background-color: alpha(@theme_fg_color, 0.05);
-    color: @theme_fg_color;
-}
-
-treeview.separator {
-    color: shade(@theme_bg_color, 0.8);
-}
-
-treeview .image{
-    color: alpha(@theme_fg_color, 0.8);
-}
-
-treeview .image:backdrop{
-    color: alpha(@theme_fg_color, 0.6);
-}
-
-treeview .image:selected{
-    color: @theme_selected_fg_color;
-}
-/******************************/
 
 Gtk.ListBoxRow .loved-button {
 	border-color: transparent;
@@ -210,18 +178,21 @@ Gtk.ListBoxRow .menu-button:hover {
 
 .trackrow:hover {
     border-radius: 5px;
+    outline-radius: 5px;
 	background-color: alpha(@theme_fg_color, 0.03);
   	color: inherit;
 }
 
 .trackrow:selected {
     border-radius: 5px;
+    outline-radius: 5px;
 	background-color: alpha(@theme_fg_color, 0.05);
   	color: inherit;
 }
 
 .trackrowplaying {
     border-radius: 5px;
+    outline-radius: 5px;
     padding: 0px;
 	background-color: alpha(@theme_fg_color, 0.05);
   	color: inherit;
@@ -307,9 +278,8 @@ Gtk.ListBoxRow .menu-button:hover {
 
 .menu-button {
 	box-shadow: none;
-	min-height: 24px;
-	padding-left: 4px;
-	padding-right: 4px;
+	padding-left: 8px;
+	padding-right: 8px;
 	padding-top: 0px;
 	padding-bottom: 0px;
 	background-image: none;

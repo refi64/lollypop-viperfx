@@ -61,6 +61,7 @@
             </child>
             <child>
               <object class="GtkButton" id="menu">
+                <property name="height_request">26</property>
                 <property name="can_focus">True</property>
                 <property name="receives_default">True</property>
                 <property name="image">image</property>

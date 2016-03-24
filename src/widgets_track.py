@@ -72,6 +72,9 @@ class Row(Gtk.ListBoxRow):
         self._menu_image = Gtk.Image.new()
         self._menu_image.set_opacity(0.2)
         self._menu_button = Gtk.Button.new()
+        # Here a hack to make old Gtk version support min-height css attribute
+        # min-height = 24px, borders = 2px
+        self._menu_button.set_property('height-request', 26)
         self._menu_button.set_relief(Gtk.ReliefStyle.NONE)
         self._menu_button.get_style_context().add_class('menu-button')
         self._menu_button.get_style_context().add_class('track-menu-button')
@@ -423,9 +426,8 @@ class TrackRow(Row):
         layout = Pango.Layout.new(ctx)
         layout.set_text("a", 1)
         font_height = int(layout.get_pixel_size()[1])
-        # Gtk.IconSize.MENU + .menu-button padding + border +
-        # image spacing(application.css)
-        menu_height = 16 + 8 + 2
+        # Button min height + borders (application.css)
+        menu_height = 24 + 2
         if font_height > menu_height:
             height = font_height
         else:

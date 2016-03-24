@@ -114,8 +114,12 @@ class Application(Gtk.Application):
         """
             Init main application
         """
-        cssProviderFile = Gio.File.new_for_uri(
-            'resource:///org/gnome/Lollypop/application.css')
+        if Gtk.get_minor_version() > 18:
+            cssProviderFile = Gio.File.new_for_uri(
+                'resource:///org/gnome/Lollypop/application.css')
+        else:
+            cssProviderFile = Gio.File.new_for_uri(
+                'resource:///org/gnome/Lollypop/application-legacy.css')
         cssProvider = Gtk.CssProvider()
         cssProvider.load_from_file(cssProviderFile)
         screen = Gdk.Screen.get_default()
