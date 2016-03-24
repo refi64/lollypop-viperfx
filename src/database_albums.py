@@ -624,7 +624,7 @@ class AlbumsDatabase:
             # Get albums for all artists
             if not artist_ids and not genre_ids:
                 result = sql.execute(
-                                 "SELECT DISTINCT albums.rowid\
+                                 "SELECT albums.rowid\
                                   FROM albums, artists, album_artists\
                                   WHERE artists.rowid=album_artists.artist_id\
                                   AND albums.rowid=album_artists.album_id\
@@ -636,7 +636,7 @@ class AlbumsDatabase:
             # Get albums for genre
             elif not artist_ids:
                 genres = tuple(genre_ids)
-                request = "SELECT DISTINCT albums.rowid FROM albums,\
+                request = "SELECT albums.rowid FROM albums,\
                            album_genres, artists, album_artists\
                            WHERE artists.rowid=album_artists.artist_id\
                            AND albums.rowid=album_artists.album_id\
@@ -651,8 +651,9 @@ class AlbumsDatabase:
             # Get albums for artist
             elif not genre_ids:
                 artists = tuple(artist_ids)
-                request = "SELECT DISTINCT albums.rowid\
+                request = "SELECT albums.rowid\
                            FROM albums, artists, album_artists WHERE\
+                           artists.rowid=album_artists.artist_id AND\
                            album_artists.album_id=albums.rowid AND ("
                 for artist_id in artist_ids:
                     request += "album_artists.artist_id=? OR "
@@ -663,9 +664,10 @@ class AlbumsDatabase:
             else:
                 filters = tuple(artist_ids)
                 filters += tuple(genre_ids)
-                request = "SELECT DISTINCT albums.rowid\
+                request = "SELECT albums.rowid\
                            FROM albums, album_genres, artists, album_artists\
                            WHERE album_genres.album_id=albums.rowid AND\
+                           artists.rowid=album_artists.artist_id AND\
                            album_artists.album_id=albums.rowid AND ("
                 for artist_id in artist_ids:
                     request += "album_artists.artist_id=? OR "
