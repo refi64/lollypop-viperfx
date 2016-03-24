@@ -559,7 +559,7 @@ class AlbumDetailedWidget(Gtk.Bin, AlbumWidget):
         self._stop = False
         self._child_height = TrackRow.get_best_height(self)
         # Header + separator + spacing + margin
-        self._requested_height = self._child_height + 5
+        self._requested_height = self._child_height + 6
         # Discs to load, will be emptied
         self._discs = self._album.discs
         self._locked_widget_right = True
