@@ -231,7 +231,7 @@ class Track(Base):
         name = escape(self.name)
         if len(set(self.album.artist_ids) & set(self.artist_ids)) !=\
                 len(self.artist_ids):
-            name = "%s [<b>%s</b>]" % (name, escape(self.artists))
+            name = "<b>%s</b> - %s" % (escape(self.artists), name)
         return name
 
     @property
