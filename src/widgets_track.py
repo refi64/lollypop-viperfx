@@ -236,9 +236,8 @@ class Row(Gtk.ListBoxRow):
         if layout.is_ellipsized():
             self._title_label.set_tooltip_markup(self._track.formated_name())
         elif not self._title_label.get_use_markup() and\
-                len(set(self._track.artist_ids) &
-                    set(self._track.album_artist_ids)) !=\
-                len(self._track.artist_ids):
+                set(self._track.artist_ids) -\
+                set(self._track.album_artist_ids):
             self._title_label.set_tooltip_text(self._track.artists)
         else:
             self._title_label.set_tooltip_text('')

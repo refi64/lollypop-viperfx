@@ -229,8 +229,7 @@ class Track(Base):
             @return str
         """
         name = escape(self.name)
-        if len(set(self.album.artist_ids) & set(self.artist_ids)) !=\
-                len(self.artist_ids):
+        if set(self.album.artist_ids) - set(self.artist_ids):
             name = "<b>%s</b> - %s" % (escape(self.artists), name)
         return name
 

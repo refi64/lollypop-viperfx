@@ -93,8 +93,7 @@ class AlbumsDatabase:
         """
         with SqlCursor(Lp().db) as sql:
             currents = self.get_artist_ids(album_id)
-            if len(currents) != len(artist_ids) or\
-                    len(set(currents) & set(artist_ids)) != len(artist_ids):
+            if set(currents) - set(artist_ids):
                 sql.execute("DELETE FROM album_artists\
                             WHERE album_id=?", (album_id,))
                 for artist_id in artist_ids:
