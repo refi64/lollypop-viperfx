@@ -19,7 +19,7 @@ from lollypop.objects import Album
 
 
 class CellRendererAlbum(Gtk.CellRenderer):
-    album = GObject.property(type=int)
+    album = GObject.Property(type=int)
 
     def __init__(self):
         Gtk.CellRenderer.__init__(self)
