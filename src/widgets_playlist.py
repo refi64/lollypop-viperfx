@@ -345,13 +345,9 @@ class PlaylistsWidget(Gtk.Bin):
             Lp().playlists.add_tracks(self._playlist_ids[0],
                                       tracks,
                                       False)
-            if set(self._playlist_ids) -\
-               set(Lp().player.get_user_playlist_ids()):
-                Lp().player.update_user_playlist()
-        if Lp().player.get_user_playlist_ids() == self._playlist_ids:
-            Lp().player.populate_user_playlist_by_tracks(self._tracks1 +
-                                                         self._tracks2,
-                                                         self._playlist_ids)
+        if not (set(self._playlist_ids) -
+           set(Lp().player.get_user_playlist_ids())):
+            Lp().player.update_user_playlist(self._tracks1 + self._tracks2)
 
     def _on_size_allocate(self, widget, allocation):
         """
