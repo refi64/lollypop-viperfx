@@ -450,18 +450,6 @@ class EditMenu(BaseMenu):
                                 None, argv, None,
                                 GLib.SpawnFlags.SEARCH_PATH |
                                 GLib.SpawnFlags.DO_NOT_REAP_CHILD, None)
-        GLib.child_watch_add(GLib.PRIORITY_DEFAULT_IDLE,
-                             pid,
-                             self._on_exit)
-
-    def _on_exit(self, pid, status):
-        """
-            Update database
-            @param pid as int
-            @param status as int
-        """
-        if status == 0:
-            Lp().window.update_db()
 
 
 class AlbumMenu(Gio.Menu):
