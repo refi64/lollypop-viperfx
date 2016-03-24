@@ -736,13 +736,13 @@ class PlaylistEditWidget(Gtk.Bin):
         """
         if track_ids:
             track = Track(track_ids.pop(0))
-            if track.album.artist_id == Type.COMPILATIONS:
-                artist_name = track.artist_names
+            if track.album.artist_ids[0] == Type.COMPILATIONS:
+                artists = track.artists
             else:
-                artist_name = track.album.artist_name
+                artists = ", ".join(track.album.artists)
             self._model.append([track.album.id,
                                "<b>%s</b>\n%s" % (
-                                   escape(artist_name),
+                                   escape(artists),
                                    escape(track.name)),
                                 'user-trash-symbolic', track.id])
             GLib.idle_add(self._append_track, track_ids)
