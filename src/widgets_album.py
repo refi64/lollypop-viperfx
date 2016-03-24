@@ -341,6 +341,7 @@ class AlbumSimpleWidget(Gtk.Frame, AlbumWidget):
         Gtk.Frame.__init__(self)
         self._artist_ids = artist_ids
         self.set_shadow_type(Gtk.ShadowType.NONE)
+        self.set_size_request(ArtSize.BIG, ArtSize.BIG)
         self.get_style_context().add_class('loading')
         AlbumWidget.__init__(self, album_id, genre_ids)
 
