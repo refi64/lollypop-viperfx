@@ -17,6 +17,7 @@ gi.require_version('Notify', '0.7')
 gi.require_version('TotemPlParser', '1.0')
 from gi.repository import Gtk, Gio, GLib, Gdk, Gst, Notify, TotemPlParser
 
+from pickle import dump
 from locale import getlocale
 from gettext import gettext as _
 from gettext import ngettext as ngettext
@@ -62,6 +63,8 @@ class Application(Gtk.Application):
             - Handle command line
             - Create main window
     """
+
+    DATA_PATH = os.path.expanduser("~") + "/.local/share/lollypop"
 
     def __init__(self):
         """
@@ -201,6 +204,15 @@ class Application(Gtk.Application):
                                         self.player.current_track.album_artist)
             else:
                 track_id = self.player.current_track.id
+                try:
+                    dump(self.player.context.genre_ids,
+                         open(self.DATA_PATH + "/genre_ids.bin", "wb"))
+                    dump(self.player.context.genre_ids,
+                         open(self.DATA_PATH + "/artist_ids.bin", "wb"))
+                    dump(self.player.get_albums(),
+                         open(self.DATA_PATH + "/albums.bin", "wb"))
+                except:
+                    pass
             self.settings.set_value('track-id', GLib.Variant('i',
                                                              track_id))
             # Save current playlist

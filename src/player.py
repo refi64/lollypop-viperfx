@@ -21,12 +21,16 @@ from lollypop.radios import Radios
 from lollypop.objects import Track
 from lollypop.define import Lp, Type, NextContext
 
+from pickle import load
+from os import path
+
 
 class Player(BinPlayer, QueuePlayer, UserPlaylistPlayer, RadioPlayer,
              LinearPlayer, ShufflePlayer, ExternalsPlayer):
     """
         Player object used to manage playback and playlists
     """
+    DATA_PATH = path.expanduser("~") + "/.local/share/lollypop"
 
     def __init__(self):
         """
@@ -362,11 +366,18 @@ class Player(BinPlayer, QueuePlayer, UserPlaylistPlayer, RadioPlayer,
                     except:
                         pass  # User set non int in gsettings
                 else:
-                    self._albums = Lp().artists.get_albums(
-                                                        track.album_artist_ids)
-                    for album_id in self._albums:
-                        self.context.genre_ids[album_id] = []
-                        self.context.artist_ids[album_id] = []
+                    try:
+                        self._albums = load(open(
+                                            self.DATA_PATH + "/albums.bin",
+                                            "rb"))
+                        self.context.genre_ids = load(open(
+                                            self.DATA_PATH + "/genre_ids.bin",
+                                            "rb"))
+                        self.context.artist_ids = load(open(
+                                            self.DATA_PATH + "/artist_ids.bin",
+                                            "rb"))
+                    except:
+                        pass
                 self.set_next()
                 self.set_prev()
                 if Lp().settings.get_value('repeat'):
