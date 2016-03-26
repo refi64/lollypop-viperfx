@@ -157,7 +157,8 @@ class CurrentArtistAlbumsView(ViewContainer):
         """
         ViewContainer.__init__(self, 1000)
         self.connect('destroy', self._on_destroy)
-        self._current = (Type.NONE, Type.NONE)
+        self._artist_ids = []
+        self._album_id = Type.NONE
 
     def populate(self, artist_ids, album_id):
         """
@@ -166,8 +167,9 @@ class CurrentArtistAlbumsView(ViewContainer):
             @param album id as int
             @thread safe
         """
-        if (artist_ids, album_id) != self._current:
-            self._current = (artist_ids, album_id)
+        if (artist_ids, album_id) != (self._artist_ids, self._album_id):
+            self._artist_ids = artist_ids
+            self._album_id = album_id
             if album_id == Type.NONE:
                 albums = self._get_albums(artist_ids)
             else:
@@ -212,7 +214,7 @@ class CurrentArtistAlbumsView(ViewContainer):
         self.clean_old_views(view)
 
         # Populate artist albums view
-        view = ArtistAlbumsView([self._current[0]], [])
+        view = ArtistAlbumsView(self._artist_ids, [])
         view.connect('populated', self._on_populated, spinner)
         view.show()
         view.populate(albums)
