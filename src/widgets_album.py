@@ -34,6 +34,7 @@ class AlbumWidget:
             Init widget
         """
         self._album = Album(album_id, genre_ids)
+        self._artist_ids = []
         self._selected = None
         self._stop = False
         self._cover = None
@@ -165,21 +166,6 @@ class AlbumWidget:
                                                    Gtk.IconSize.BUTTON)
             self._action_event.set_tooltip_text(_("Remove"))
 
-    def _on_play_all_press_event(self, widget, event):
-        """
-            Play album with context
-            @param: widget as Gtk.EventBox
-            @param: event as Gdk.Event
-        """
-        self._show_append(False)
-        if Lp().player.is_party():
-            Lp().player.set_party(False)
-        track = Track(self._album.tracks_ids[0])
-        Lp().player.load(track)
-        Lp().player.set_albums(track.id, self._artist_ids,
-                               self._album.genre_ids)
-        return True
-
     def _on_destroy(self, widget):
         """
             Disconnect signal
@@ -297,6 +283,21 @@ class AlbumWidget:
         self._show_append(False)
         return True
 
+    def _on_play_all_press_event(self, widget, event):
+        """
+            Play album with context
+            @param: widget as Gtk.EventBox
+            @param: event as Gdk.Event
+        """
+        self._show_append(False)
+        if Lp().player.is_party():
+            Lp().player.set_party(False)
+        track = Track(self._album.tracks_ids[0])
+        Lp().player.load(track)
+        Lp().player.set_albums(track.id, self._artist_ids,
+                               self._album.genre_ids)
+        return True
+
     def _on_artwork_press_event(self, widget, event):
         """
             Popover with album art downloaded from the web (in fact google :-/)
@@ -354,11 +355,11 @@ class AlbumSimpleWidget(Gtk.Frame, AlbumWidget):
         """
         # We do not use Gtk.Builder for speed reasons
         Gtk.Frame.__init__(self)
-        self._artist_ids = artist_ids
         self.set_shadow_type(Gtk.ShadowType.NONE)
         self.set_size_request(ArtSize.BIG, ArtSize.BIG)
         self.get_style_context().add_class('loading')
         AlbumWidget.__init__(self, album_id, genre_ids)
+        self._artist_ids = artist_ids
 
     def populate(self):
         """

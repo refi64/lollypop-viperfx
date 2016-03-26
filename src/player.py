@@ -273,9 +273,12 @@ class Player(BinPlayer, QueuePlayer, UserPlaylistPlayer, RadioPlayer,
         else:
             # If we are not in compilation view and show compilation is on,
             # add compilations
-            if not artist_ids and Lp().settings.get_value('show-compilations'):
+            if artist_ids and artist_ids[0] == Type.COMPILATIONS:
                 self._albums += Lp().albums.get_compilations(genre_ids)
-            self._albums += Lp().albums.get_ids(artist_ids, genre_ids)
+            else:
+                if Lp().settings.get_value('show-compilations'):
+                    self._albums += Lp().albums.get_compilations(genre_ids)
+                self._albums += Lp().albums.get_ids(artist_ids, genre_ids)
 
         if Lp().settings.get_value('repeat'):
             self.context.next = NextContext.NONE
