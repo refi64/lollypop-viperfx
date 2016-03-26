@@ -165,6 +165,21 @@ class AlbumWidget:
                                                    Gtk.IconSize.BUTTON)
             self._action_event.set_tooltip_text(_("Remove"))
 
+    def _on_play_all_press_event(self, widget, event):
+        """
+            Play album with context
+            @param: widget as Gtk.EventBox
+            @param: event as Gdk.Event
+        """
+        self._show_append(False)
+        if Lp().player.is_party():
+            Lp().player.set_party(False)
+        track = Track(self._album.tracks_ids[0])
+        Lp().player.load(track)
+        Lp().player.set_albums(track.id, self._artist_ids,
+                               self._album.genre_ids)
+        return True
+
     def _on_destroy(self, widget):
         """
             Disconnect signal
@@ -496,21 +511,6 @@ class AlbumSimpleWidget(Gtk.Frame, AlbumWidget):
         self._overlay_grid.add(self._play_all_event)
         self._overlay_grid.add(self._action_event)
         self._overlay_grid.add(self._artwork_event)
-
-    def _on_play_all_press_event(self, widget, event):
-        """
-            Play album with context
-            @param: widget as Gtk.EventBox
-            @param: event as Gdk.Event
-        """
-        self._show_append(False)
-        if Lp().player.is_party():
-            Lp().player.set_party(False)
-        track = Track(self._album.tracks_ids[0])
-        Lp().player.load(track)
-        Lp().player.set_albums(track.id, self._artist_ids,
-                               self._album.genre_ids)
-        return True
 
     def _on_query_tooltip(self, widget, x, y, keyboard, tooltip):
         """
@@ -917,21 +917,6 @@ class AlbumDetailedWidget(Gtk.Bin, AlbumWidget):
             Lp().player.load(Track(track_id))
             if self._button_state & Gdk.ModifierType.CONTROL_MASK:
                 Lp().player.context.next = NextContext.STOP_TRACK
-
-    def _on_play_all_press_event(self, widget, event):
-        """
-            Play album with context
-            @param: widget as Gtk.EventBox
-            @param: event as Gdk.Event
-        """
-        self._show_append(False)
-        if Lp().player.is_party():
-            Lp().player.set_party(False)
-        track = Track(self._album.tracks_ids[0])
-        Lp().player.load(track)
-        Lp().player.set_albums(track.id, self._artist_ids,
-                               self._album.genre_ids)
-        return True
 
     def _on_button_press_event(self, widget, event):
         """
