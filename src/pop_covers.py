@@ -195,16 +195,16 @@ class CoversPopover(Gtk.Popover):
             @param widget as Gtk.Widget
         """
         self._thread = False
-        GLib.idle_add(self.destroy)
 
     def _on_activate(self, flowbox, child):
         """
             Use pixbuf as cover
             Reset cache and use player object to announce cover change
         """
+        self.hide()
+        self.set_relative_to(None)
         pixbuf = self._monster_pixbufs[child.get_child()]
         Lp().art.save_album_artwork(pixbuf, self._album.id)
         Lp().art.clean_album_cache(self._album)
         Lp().art.album_artwork_update(self._album.id)
-        self.hide()
         self._streams = {}
