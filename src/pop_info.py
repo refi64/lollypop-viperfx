@@ -113,12 +113,12 @@ class InfoPopover(Gtk.Popover):
         track_id = Type.NONE
         if not self._artist_ids:
             if Lp().player.current_track.id is not None and\
-               Lp().player.current_track.album_artist_ids[0] ==\
+               Lp().player.current_track.album.artist_ids[0] ==\
                     Type.COMPILATIONS:
                 album_id = Lp().player.current_track.album_id
                 artist_ids = Lp().player.current_track.artist_ids
             else:
-                artist_ids = Lp().player.current_track.album_artist_ids
+                artist_ids = Lp().player.current_track.album.artist_ids
             track_id = Lp().player.current_track.id
         else:
             artist_ids = self._artist_ids

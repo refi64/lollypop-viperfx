@@ -47,9 +47,10 @@ class PlaybackController:
         # Can add a \n in markup
         # GTK bug => https://bugzilla.gnome.org/show_bug.cgi?id=749965
         if player.prev_track.id == Type.RADIOS:
-            self._prev_btn.set_tooltip_text(player.prev_track.album_artists)
+            self._prev_btn.set_tooltip_text(
+                                    ", ".join(player.prev_track.album_artists))
         elif player.prev_track.id is not None:
-            prev_artists = escape(player.prev_track.artists)
+            prev_artists = escape(", ".join(player.prev_track.artists))
             prev_title = escape(player.prev_track.title)
             self._prev_btn.set_tooltip_markup("<b>%s</b> - %s" %
                                               (prev_artists,
@@ -63,9 +64,10 @@ class PlaybackController:
             @param player as Player
         """
         if player.next_track.id == Type.RADIOS:
-            self._next_btn.set_tooltip_text(player.next_track.album_artists)
+            self._next_btn.set_tooltip_text(
+                                    ", ".join(player.next_track.album_artists))
         elif player.next_track.id is not None:
-            next_artists = escape(player.next_track.artists)
+            next_artists = escape(", ".join(player.next_track.artists))
             next_title = escape(player.next_track.title)
             self._next_btn.set_tooltip_markup("<b>%s</b> - %s" %
                                               (next_artists,
@@ -257,12 +259,12 @@ class InfosController:
             self._cover.hide()
             return
 
-        self._artist_label.set_text(player.current_track.artists)
+        self._artist_label.set_text(", ".join(player.current_track.artists))
         self._title_label.set_text(player.current_track.title)
 
         if player.current_track.id == Type.RADIOS:
             art = Lp().art.get_radio_artwork(
-                                   player.current_track.artists,
+                                   ", ".join(player.current_track.artists),
                                    self._artsize*self.get_scale_factor())
         elif player.current_track.id == Type.EXTERNALS:
             art = Lp().art.get_album_artwork2(

@@ -176,7 +176,7 @@ class MPRIS(dbus.service.Object):
                                               ).player.current_track.album.name
             self._metadata['xesam:artist'] = Lp().player.current_track.artists
             self._metadata['xesam:albumArtist'] = \
-                Lp().player.current_track.album_artists
+                ", ".join(Lp().player.current_track.album_artists)
             self._metadata['mpris:length'] = dbus.Int64(
                 Lp().player.current_track.duration * 1000000)
             self._metadata['xesam:genre'] = [Lp().player.current_track.genre]
@@ -185,7 +185,7 @@ class MPRIS(dbus.service.Object):
                 Lp().player.current_track.get_popularity() / 5
             if Lp().player.current_track.id == Type.RADIOS:
                 cover_path = Lp().art.get_radio_cache_path(
-                    Lp().player.current_track.artist, ArtSize.BIG)
+                     ", ".join(Lp().player.current_track.artists), ArtSize.BIG)
             elif Lp().player.current_track.id == Type.EXTERNALS:
                 cover_path = "/tmp/lollypop_mpris.jpg"
                 pixbuf = Lp().art.pixbuf_from_tags(

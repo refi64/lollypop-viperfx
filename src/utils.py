@@ -195,7 +195,7 @@ def _set_loved_on_lastfm(track_id, loved):
         artist_id = Lp().albums.get_artist_id(album_id)
 
         if artist_id == Type.COMPILATIONS:
-            artist = Lp().tracks.get_artist_names(track_id)
+            artist = Lp().tracks.get_artists(track_id)
         else:
             artist = Lp().artists.get_name(artist_id)
 

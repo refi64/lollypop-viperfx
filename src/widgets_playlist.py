@@ -741,7 +741,7 @@ class PlaylistEditWidget(Gtk.Bin):
         if track_ids:
             track = Track(track_ids.pop(0))
             if track.album.artist_ids[0] == Type.COMPILATIONS:
-                artists = track.artists
+                artists = ", ".join(track.artists)
             else:
                 artists = ", ".join(track.album.artists)
             self._model.append([track.album.id,
@@ -815,9 +815,9 @@ class PlaylistEditWidget(Gtk.Bin):
             tracks.append(track)
             if self._playlist_id == Type.LOVED and Lp().lastfm is not None:
                 if track.album.artist_id == Type.COMPILATIONS:
-                    artist_name = track.artist_names
+                    artist_name = ", ".join(track.artists)
                 else:
-                    artist_name = track.album.artist_name
+                    artist_name = ", ".join(track.album.artists)
                 t = Thread(target=Lp().lastfm.unlove,
                            args=(artist_name, track.name))
                 t.daemon = True

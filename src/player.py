@@ -319,12 +319,12 @@ class Player(BinPlayer, QueuePlayer, UserPlaylistPlayer, RadioPlayer,
             Get current artist
             @return artist as string
         """
-        artist_ids = self.current_track.album_artist_ids
+        artist_ids = self.current_track.album.artist_ids
         if artist_ids[0] == Type.COMPILATIONS:
-            artist = self.current_track.artists
+            artists = ", ".join(self.current_track.artists)
         else:
-            artist = self.current_track.album_artists
-        return artist
+            artists = ", ".join(self.current_track.album_artists)
+        return artists
 
     def restore_state(self):
         """

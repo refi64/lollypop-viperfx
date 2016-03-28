@@ -179,7 +179,7 @@ class RadioWidget(Gtk.Frame, AlbumWidget):
         if self._cover is None:
             return
         selected = Lp().player.current_track.id == Type.RADIOS and\
-            self._name == Lp().player.current_track.album_artists
+            self._name == Lp().player.current_track.album_artists[0]
         if selected:
             self._cover_frame.get_style_context().add_class(
                                                     'cover-frame-selected')

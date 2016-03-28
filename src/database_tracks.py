@@ -243,15 +243,14 @@ class TracksDatabase:
         """
             Get artist names
             @param track id as int
-            @return artist names as str "artist1, artist2, ..."
+            @return artists as [str]
         """
         with SqlCursor(Lp().db) as sql:
             result = sql.execute("SELECT name FROM artists, track_artists\
                                   WHERE track_artists.track_id=?\
                                   AND track_artists.artist_id=artists.rowid",
                                  (track_id,))
-            artists = [row[0] for row in result]
-            return ", ".join(artists)
+            return list(itertools.chain(*result))
 
     def get_genre_ids(self, track_id):
         """
@@ -308,20 +307,6 @@ class TracksDatabase:
             if v is not None:
                 return v
             return (None, None, None, None)
-
-    def get_album_artist_ids(self, track_id):
-        """
-            Get album_artist id for track id
-            @param Track id as int
-            @return Performer id as int
-        """
-        with SqlCursor(Lp().db) as sql:
-            result = sql.execute("SELECT album_artists.artist_id\
-                                 FROM album_artists, tracks\
-                                 WHERE tracks.rowid=? AND\
-                                 tracks.album_id == album_artists.album_id",
-                                 (track_id,))
-            return list(itertools.chain(*result))
 
     def get_paths(self):
         """

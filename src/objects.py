@@ -67,7 +67,7 @@ class Base:
             radios = Radios()
             avg_popularity = radios.get_avg_popularity()
             if avg_popularity > 0:
-                popularity = radios.get_popularity(self._album_artists)
+                popularity = radios.get_popularity(self._album_artists[0])
         return popularity * 5 / avg_popularity + 0.5
 
     def set_popularity(self, popularity):
@@ -86,7 +86,7 @@ class Base:
                 radios = Radios()
                 avg_popularity = radios.get_avg_popularity()
                 popularity = int((popularity * avg_popularity / 5) + 0.5)
-                radios.set_popularity(self._album_artists, popularity)
+                radios.set_popularity(self._album_artists[0], popularity)
         except Exception as e:
             print("Base::set_popularity(): %s" % e)
 
@@ -282,12 +282,12 @@ class Track(Base):
     @property
     def album_artists(self):
         """
-            Get track artist name
+            Get track album artists, can be != than album.artists as track
+            may not have any album (radio, externals, ...)
             @return str
         """
         if getattr(self, "_album_artists") is None:
-            self._album_artists = ", ".join(Lp().albums.get_artists(
-                                                                self.album_id))
+            self._album_artists = self.album.artists
         return self._album_artists
 
     @property
@@ -299,12 +299,12 @@ class Track(Base):
         """
         return self.genre_names
 
-    def set_album_artists(self, name):
+    def set_album_artists(self, artists):
         """
             Set album artist
-            @param name as string
+            @param artists as [int]
         """
-        self._album_artists = name
+        self._album_artists = artists
 
     def set_uri(self, uri):
         """
@@ -324,5 +324,5 @@ class Track(Base):
             @param uri as string
         """
         self.id = Type.RADIOS
-        self._album_artists = name
+        self._album_artists = [name]
         self._uri = uri

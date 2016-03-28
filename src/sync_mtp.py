@@ -183,12 +183,12 @@ class MtpSync:
                 track = Track(track_id)
                 album_name = escape(track.album_name.lower())
                 if track.album_artist_id == Type.COMPILATIONS:
-                    artist_name = escape(track.artist.lower())
+                    artists = escape(", ".join(track.artists).lower())
                 else:
-                    artist_name = escape(track.album_artist.lower())
+                    artists = escape(", ".join(track.album.artists).lower())
                 on_device_album_uri = "%s/tracks/%s_%s" %\
                                       (self._uri,
-                                       artist_name,
+                                       artists,
                                        album_name)
 
                 d = Gio.File.new_for_uri(on_device_album_uri)
@@ -224,7 +224,7 @@ class MtpSync:
                                         mtime, track_name)
                 if stream is not None:
                     line = "tracks/%s_%s/%s_%s\n" %\
-                            (artist_name.lower(),
+                            (artists.lower(),
                              album_name.lower(),
                              mtime,
                              track_name)

@@ -78,10 +78,8 @@ class Container:
             GLib.timeout_add(250, self.update_db)
         else:
             # Something (device manager) is using progress bar
-            progress = None
             if not self._progress.is_visible():
-                progress = self._progress
-            Lp().scanner.update(progress)
+                Lp().scanner.update(self._progress)
 
     def get_genre_id(self):
         """

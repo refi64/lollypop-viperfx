@@ -66,7 +66,7 @@ class RadioPlayer(BasePlayer):
         i = 0
         for (name, url) in self._radios:
             i += 1
-            if self.current_track.album_artists == name:
+            if self.current_track.album_artists[0] == name:
                 break
 
         # Get next radio
@@ -91,7 +91,7 @@ class RadioPlayer(BasePlayer):
         i = len(self._radios) - 1
         for (name, url) in reversed(self._radios):
             i -= 1
-            if self.current_track.album_artists == name:
+            if self.current_track.album_artists[0] == name:
                 break
 
         # Get prev radio
@@ -122,10 +122,11 @@ class RadioPlayer(BasePlayer):
         self._plugins.volume.props.volume = 1.0
         self._playbin.set_state(Gst.State.NULL)
         self._playbin.set_property('uri', track.uri)
-        Radios().set_more_popular(track.album_artist)
+        Radios().set_more_popular(track.album_artists[0])
         self.current_track = track
         self._current = None
         self._playbin.set_state(Gst.State.PLAYING)
+        self.emit('status-changed')
 
     def _on_parse_finished(self, parser, result, track):
         """
@@ -150,5 +151,5 @@ class RadioPlayer(BasePlayer):
         """
         # Only start playing if context always True
         if self._current == track:
-            track.set_radio(track.album_artists, uri)
+            track.set_radio(track.album_artists[0], uri)
             self._start_playback(track)

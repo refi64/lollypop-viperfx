@@ -144,7 +144,7 @@ class ShufflePlayer(BasePlayer):
             # We need to put some context, take first available genre
             if self.current_track.id is not None:
                 self.set_albums(self.current_track.id,
-                                self.current_track.album_artist_ids, [])
+                                self.current_track.album.artist_ids, [])
         self.emit('party-changed', party)
 
     def is_party(self):

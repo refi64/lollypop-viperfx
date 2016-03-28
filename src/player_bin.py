@@ -395,8 +395,8 @@ class BinPlayer(BasePlayer):
             self.current_track.name = self.current_track.uri
         artists = reader.get_artists(tags)
         if artists != '':
-            self.current_track.artists = artists
-        if self.current_track.artists == '':
+            self.current_track.artists = artists.split(',')
+        if not self.current_track.artists:
             self.current_track.artists = self.current_track.album_artists
 
         if self.current_track.id == Type.EXTERNALS:
@@ -409,9 +409,11 @@ class BinPlayer(BasePlayer):
             if self.current_track.album_name is None:
                 self.current_track.album_name = ''
             self.current_track.artists = reader.get_artists(tags)
-            self.current_track.set_album_artists(reader.get_album_artist(tags))
+            self.current_track.set_album_artists(
+                                      reader.get_album_artist(tags).split(','))
             if self.current_track.album_artist == '':
-                self.current_track.set_album_artists(self.current_track.artist)
+                self.current_track.set_album_artists(
+                                                    self.current_track.artists)
             self.current_track.genre_name = reader.get_genres(tags)
         self.emit('current-changed')
 
@@ -486,7 +488,7 @@ class BinPlayer(BasePlayer):
         self.emit('current-changed')
         # Update now playing on lastfm
         if Lp().lastfm is not None and self.current_track.id >= 0:
-            if self.current_track.album_artist_ids[0] == Type.COMPILATIONS:
+            if self.current_track.album.artist_ids[0] == Type.COMPILATIONS:
                 artist = self.current_track.artist
             else:
                 artist = self.current_track.album_artist
