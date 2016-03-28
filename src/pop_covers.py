@@ -103,7 +103,7 @@ class CoversPopover(Gtk.Popover):
         urls = []
         if Gio.NetworkMonitor.get_default().get_network_available():
             urls = Lp().art.get_duck_arts("%s+%s" % (
-                                                   self._album.artist_name,
+                                                   self._album.artists,
                                                    self._album.name))
         if urls:
             self._add_pixbufs(urls)
