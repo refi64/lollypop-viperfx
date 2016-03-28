@@ -34,7 +34,7 @@ class AlbumWidget:
             Init widget
         """
         self._album = Album(album_id, genre_ids)
-        self._artist_ids = []
+        self._filter_ids = []
         self._selected = None
         self._stop = False
         self._cover = None
@@ -294,7 +294,7 @@ class AlbumWidget:
             Lp().player.set_party(False)
         track = Track(self._album.tracks_ids[0])
         Lp().player.load(track)
-        Lp().player.set_albums(track.id, self._artist_ids,
+        Lp().player.set_albums(track.id, self._filter_ids,
                                self._album.genre_ids)
         return True
 
@@ -359,7 +359,7 @@ class AlbumSimpleWidget(Gtk.Frame, AlbumWidget):
         self.set_size_request(ArtSize.BIG, ArtSize.BIG)
         self.get_style_context().add_class('loading')
         AlbumWidget.__init__(self, album_id, genre_ids)
-        self._artist_ids = artist_ids
+        self._filter_ids = artist_ids
 
     def populate(self):
         """
@@ -564,7 +564,7 @@ class AlbumDetailedWidget(Gtk.Bin, AlbumWidget):
         # Discs to load, will be emptied
         self._discs = self._album.discs
         self._locked_widget_right = True
-        self._artist_ids = artist_ids
+        self._filter_ids = artist_ids
         self.set_property('height-request',
                           ArtSize.BIG * self.get_scale_factor())
         self.connect('size-allocate', self._on_size_allocate)
@@ -913,7 +913,7 @@ class AlbumDetailedWidget(Gtk.Bin, AlbumWidget):
             if not Lp().player.is_party() and\
                not Lp().player.has_album(self._album):
                 Lp().player.set_albums(track_id,
-                                       self._artist_ids,
+                                       self._filter_ids,
                                        self._album.genre_ids)
             Lp().player.load(Track(track_id))
             if self._button_state & Gdk.ModifierType.CONTROL_MASK:
