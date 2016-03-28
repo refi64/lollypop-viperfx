@@ -20,9 +20,6 @@
             <property name="can_focus">True</property>
             <property name="halign">center</property>
             <property name="valign">center</property>
-            <style>
-              <class name="small-cover-frame"/>
-            </style>
           </object>
           <packing>
             <property name="expand">False</property>

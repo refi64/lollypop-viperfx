@@ -51,6 +51,11 @@ class ToolbarInfo(Gtk.Bin, InfosController):
         self._cover_frame = builder.get_object('frame')
         self._cover = builder.get_object('cover')
         self._cover.set_property('has-tooltip', True)
+        # Since GTK 3.20, we can set cover full height
+        if Gtk.get_minor_version() > 18:
+            self._cover.get_style_context().add_class('toolbar-cover-frame')
+        else:
+            self._cover.get_style_context().add_class('small-cover-frame')
 
         self.connect('realize', self._on_realize)
         Lp().art.connect('album-artwork-changed', self._update_cover)
@@ -188,7 +193,10 @@ class ToolbarInfo(Gtk.Bin, InfosController):
         style = self.get_style_context()
         padding = style.get_padding(style.get_state())
         self._artsize = self.get_allocated_height()\
-            - padding.top - padding.bottom - 2
+            - padding.top - padding.bottom
+        # Since GTK 3.20, we can set cover full height
+        if Gtk.get_minor_version() < 20:
+            self._artsize -= 2
 
     def _on_eventbox_realize(self, eventbox):
         """
