@@ -205,7 +205,7 @@ class Application(Gtk.Application):
             elif self.player.current_track.id == Type.RADIOS:
                 radios = Radios()
                 track_id = radios.get_id(
-                                        self.player.current_track.album_artist)
+                            ", ".join(self.player.current_track.album_artists))
             else:
                 track_id = self.player.current_track.id
                 try:
