@@ -126,6 +126,8 @@ class RadioPlayer(BasePlayer):
         self.current_track = track
         self._current = None
         self._playbin.set_state(Gst.State.PLAYING)
+        if not self._radios:
+            self._radios = Radios().get()
         self.emit('status-changed')
 
     def _on_parse_finished(self, parser, result, track):
