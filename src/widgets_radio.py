@@ -47,11 +47,14 @@ class RadioWidget(Gtk.Frame, AlbumWidget):
         self._widget = Gtk.EventBox()
         self._widget.connect('enter-notify-event', self._on_enter_notify)
         self._widget.connect('leave-notify-event', self._on_leave_notify)
+        self._cover_frame = Gtk.Frame()
+        self._cover_frame.set_shadow_type(Gtk.ShadowType.NONE)
+        self._cover_frame.get_style_context().add_class('cover-frame')
         self._cover = Gtk.Image()
-        self._cover.get_style_context().add_class('cover-frame')
         self._cover.set_property('halign', Gtk.Align.CENTER)
         self._cover.set_size_request(ArtSize.BIG, ArtSize.BIG)
         self._cover.get_style_context().add_class('white')
+        self._cover_frame.add(self._cover)
         self._title_label = Gtk.Label()
         self._title_label.set_ellipsize(Pango.EllipsizeMode.END)
         self._title_label.set_property('halign', Gtk.Align.CENTER)
@@ -90,7 +93,7 @@ class RadioWidget(Gtk.Frame, AlbumWidget):
                                            'document-properties-symbolic',
                                            Gtk.IconSize.BUTTON)
         self._edit_button.set_opacity(0)
-        overlay.add(self._cover)
+        overlay.add(self._cover_frame)
         overlay.add_overlay(play_event)
         overlay.add_overlay(edit_event)
         grid = Gtk.Grid()
@@ -176,12 +179,12 @@ class RadioWidget(Gtk.Frame, AlbumWidget):
         if self._cover is None:
             return
         selected = Lp().player.current_track.id == Type.RADIOS and\
-            self._name == Lp().player.current_track.album_artist
+            self._name == Lp().player.current_track.album_artists
         if selected:
-            self._cover.get_style_context().add_class(
+            self._cover_frame.get_style_context().add_class(
                                                     'cover-frame-selected')
         else:
-            self._cover.get_style_context().remove_class(
+            self._cover_frame.get_style_context().remove_class(
                                                     'cover-frame-selected')
 
 #######################
