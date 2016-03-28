@@ -88,7 +88,7 @@ class NotificationManager:
             return
         if player.current_track.id == Type.RADIOS:
             cover_path = Lp().art.get_radio_cache_path(
-                player.current_track.artist, ArtSize.BIG)
+                player.current_track.album_artists, ArtSize.BIG)
         else:
             cover_path = Lp().art.get_album_cache_path(
                 player.current_track.album, ArtSize.BIG)
@@ -99,7 +99,7 @@ class NotificationManager:
                 player.current_track.title,
                 # TRANSLATORS: by refers to the artist,
                 _("by %s") %
-                '<b>' + player.current_track.artist + '</b>',
+                '<b>' + player.current_track.artists + '</b>',
                 cover_path)
         else:
             self._notification.update(

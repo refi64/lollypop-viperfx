@@ -393,14 +393,11 @@ class BinPlayer(BasePlayer):
             self.current_track.name = title
         if self.current_track.name == '':
             self.current_track.name = self.current_track.uri
-
-        artist = reader.get_artists(tags)
-        if artist != '':
-            self.current_track.artist_names = artist
-
-        # If title set, force artist
-        if self.current_track.title != '' and self.current_track.artist == '':
-            self.current_track.artist_names = self.current_track.album_artist
+        artists = reader.get_artists(tags)
+        if artists != '':
+            self.current_track.artists = artists
+        if self.current_track.artists == '':
+            self.current_track.artists = self.current_track.album_artists
 
         if self.current_track.id == Type.EXTERNALS:
             (b, duration) = self._playbin.query_duration(Gst.Format.TIME)
@@ -411,7 +408,7 @@ class BinPlayer(BasePlayer):
                                                                   0)[1]
             if self.current_track.album_name is None:
                 self.current_track.album_name = ''
-            self.current_track.artist_names = reader.get_artists(tags)
+            self.current_track.artists = reader.get_artists(tags)
             self.current_track.set_album_artists(reader.get_album_artist(tags))
             if self.current_track.album_artist == '':
                 self.current_track.set_album_artists(self.current_track.artist)
