@@ -67,7 +67,7 @@ class Base:
             radios = Radios()
             avg_popularity = radios.get_avg_popularity()
             if avg_popularity > 0:
-                popularity = radios.get_popularity(self._album_artist)
+                popularity = radios.get_popularity(self._album_artists)
         return popularity * 5 / avg_popularity + 0.5
 
     def set_popularity(self, popularity):
@@ -86,7 +86,7 @@ class Base:
                 radios = Radios()
                 avg_popularity = radios.get_avg_popularity()
                 popularity = int((popularity * avg_popularity / 5) + 0.5)
-                radios.set_popularity(self._album_artist, popularity)
+                radios.set_popularity(self._album_artists, popularity)
         except Exception as e:
             print("Base::set_popularity(): %s" % e)
 
