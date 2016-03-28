@@ -60,7 +60,7 @@ class RadioPlayer(BasePlayer):
             @return Track
         """
         track = Track()
-        if self.current_track.id != Type.RADIOS:
+        if self.current_track.id != Type.RADIOS or not self._radios:
             return track
 
         i = 0
@@ -85,7 +85,7 @@ class RadioPlayer(BasePlayer):
             @return Track
         """
         track = Track()
-        if self.current_track.id != Type.RADIOS:
+        if self.current_track.id != Type.RADIOS or not self._radios:
             return track
 
         i = len(self._radios) - 1
