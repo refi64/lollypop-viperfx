@@ -43,9 +43,9 @@ class AlbumRow(Gtk.ListBoxRow):
         cover_height = AlbumRow.MARGIN * 2 +\
             ArtSize.MEDIUM * widget.get_scale_factor()
         if font_height > cover_height:
-            return font_height
+            return font_height + 2
         else:
-            return cover_height
+            return cover_height + 2
 
     def __init__(self, album_id, height):
         """
