@@ -96,12 +96,6 @@ class InfoPopover(Gtk.Popover):
                               size[1]*0.7)
         Gtk.Popover.do_show(self)
 
-    def do_get_preferred_width(self):
-        """
-            Preferred width
-        """
-        return (700, 700)
-
 #######################
 # PRIVATE             #
 #######################
