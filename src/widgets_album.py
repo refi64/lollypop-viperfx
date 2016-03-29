@@ -743,7 +743,10 @@ class AlbumDetailedWidget(Gtk.Bin, AlbumWidget):
         """
             Requested height
         """
-        return self._requested_height
+        if self._requested_height < ArtSize.BIG * self.get_scale_factor():
+            return ArtSize.BIG * self.get_scale_factor()
+        else:
+            return self._requested_height
 
 #######################
 # PRIVATE             #

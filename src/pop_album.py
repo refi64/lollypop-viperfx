@@ -35,8 +35,7 @@ class AlbumPopover(Gtk.Popover):
         self._view = ArtistAlbumsView(artist_ids, genre_ids, show_cover)
         self._view.populate([album_id])
         height = min(400, self._view.requested_height)
-        # 40 for popover root
-        self.set_property('height-request', height + 40)
+        self._view.set_property('height-request', height)
         self._view.show()
         self.add(self._view)
 
