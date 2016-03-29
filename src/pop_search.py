@@ -18,7 +18,7 @@ from threading import Thread
 from lollypop.define import Lp, ArtSize, Type
 from lollypop.objects import Track, Album
 from lollypop.pop_menu import TrackMenuPopover, TrackMenu
-from lollypop.widgets_album_context import AlbumPopoverWidget
+from lollypop.pop_album import AlbumPopover
 
 
 class SearchRow(Gtk.ListBoxRow):
@@ -441,7 +441,7 @@ class SearchPopover(Gtk.Popover):
             if row.is_track:
                 Lp().player.load(Track(row.get_id()))
             elif Gtk.get_minor_version() > 16:
-                popover = AlbumPopoverWidget(row.get_id(), [], [])
+                popover = AlbumPopover(row.get_id(), [], [])
                 popover.set_relative_to(row)
                 popover.show()
             else:
@@ -474,8 +474,8 @@ class SearchPopover(Gtk.Popover):
                 popover.set_pointing_to(rect)
                 popover.show()
             else:
-                popover = AlbumPopoverWidget(row.get_id(), [],
-                                             row.get_artist_ids())
+                popover = AlbumPopover(row.get_id(), [],
+                                       row.get_artist_ids())
                 popover.set_relative_to(widget)
                 popover.set_pointing_to(rect)
                 popover.show()

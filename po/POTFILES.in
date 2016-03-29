@@ -37,6 +37,7 @@ src/player_radio.py
 src/player_shuffle.py
 src/player_userplaylist.py
 src/playlists.py
+src/pop_album.py
 src/pop_albums.py
 src/pop_covers.py
 src/pop_infos.py
@@ -65,7 +66,6 @@ src/view_playlists.py
 src/view.py
 src/view_radios.py
 src/widgets_album.py
-src/widgets_album_context.py
 src/widgets_artist.py
 src/widgets_device.py
 src/widgets_indicator.py
@@ -76,7 +76,6 @@ src/widgets_web.py
 src/wikipedia.py
 src/window.py
 [type: gettext/glade]data/AboutDialog.ui
-[type: gettext/glade]data/AlbumContextWidget.ui
 [type: gettext/glade]data/AlbumDetailedWidget.ui
 [type: gettext/glade]data/Appmenu.ui
 [type: gettext/glade]data/ArtistContent.ui

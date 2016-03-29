@@ -14,7 +14,7 @@ from gi.repository import Gtk, GLib, Gdk
 
 from lollypop.view import View, LazyLoadingView
 from lollypop.widgets_album import AlbumSimpleWidget
-from lollypop.widgets_album_context import AlbumPopoverWidget
+from lollypop.pop_album import AlbumPopover
 from lollypop.pop_menu import AlbumMenu
 from lollypop.objects import Album
 
@@ -130,11 +130,11 @@ class AlbumsView(LazyLoadingView):
             popover.set_position(Gtk.PositionType.BOTTOM)
             popover.set_pointing_to(self._press_rect)
         else:
-            popover = AlbumPopoverWidget(album_widget.get_id(),
-                                         self._genre_ids,
-                                         self._artist_ids,
-                                         self.get_allocation().width,
-                                         False)
+            popover = AlbumPopover(album_widget.get_id(),
+                                   self._genre_ids,
+                                   self._artist_ids,
+                                   self.get_allocation().width,
+                                   False)
             popover.set_relative_to(cover)
             popover.set_position(Gtk.PositionType.BOTTOM)
         popover.connect('closed', self._on_popover_closed, cover)

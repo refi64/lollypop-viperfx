@@ -15,12 +15,13 @@ from gi.repository import Gtk, GLib, Gdk, GObject, Pango
 from cgi import escape
 from gettext import gettext as _
 
-from lollypop.define import Lp, ArtSize, NextContext, WindowSize, Shuffle
+from lollypop.define import Lp, ArtSize, NextContext, WindowSize, Shuffle, Type
 from lollypop.widgets_track import TracksWidget, TrackRow
 from lollypop.objects import Track
 from lollypop.widgets_rating import RatingWidget
 from lollypop.pop_menu import AlbumMenu
 from lollypop.pop_covers import CoversPopover
+from lollypop.pop_info import InfoPopover
 from lollypop.objects import Album
 
 
@@ -540,7 +541,7 @@ class AlbumDetailedWidget(Gtk.Bin, AlbumWidget):
         'populated': (GObject.SignalFlags.RUN_FIRST, None, ())
     }
 
-    def __init__(self, album_id, genre_ids, artist_ids, show_cover=True):
+    def __init__(self, album_id, genre_ids, artist_ids, show_cover):
         """
             Init detailed album widget
             @param album id as int
@@ -569,8 +570,7 @@ class AlbumDetailedWidget(Gtk.Bin, AlbumWidget):
                           ArtSize.BIG * self.get_scale_factor())
         self.connect('size-allocate', self._on_size_allocate)
         builder = Gtk.Builder()
-        builder.add_from_resource('/org/gnome/Lollypop/%s.ui' %
-                                  type(self).__name__)
+        builder.add_from_resource('/org/gnome/Lollypop/AlbumDetailedWidget.ui')
         self._widget = builder.get_object('widget')
         self._play_button = builder.get_object('play-button')
         self._play_all_button = builder.get_object('playall-button')
@@ -581,6 +581,8 @@ class AlbumDetailedWidget(Gtk.Bin, AlbumWidget):
         builder.connect_signals(self)
         rating = RatingWidget(self._album)
         rating.show()
+
+        self._artist_label = builder.get_object('artist')
         if show_cover:
             self._cover = builder.get_object('cover')
             builder.get_object('duration').set_hexpand(True)
@@ -594,17 +596,18 @@ class AlbumDetailedWidget(Gtk.Bin, AlbumWidget):
             self._coverbox.add(rating)
             if Lp().window.get_view_width() < WindowSize.MEDIUM:
                 self._coverbox.hide()
+            if len(artist_ids) > 1:
+                self._artist_label.set_text(", ".join(self._album.artists))
+                self._artist_label.show()
         else:
             builder.get_object('header').attach(rating, 4, 0, 1, 1)
             rating.set_hexpand(True)
             rating.set_property('halign', Gtk.Align.END)
             rating.set_property('valign', Gtk.Align.CENTER)
-            self._cover = None
-
-        self._artist_label = builder.get_object('artist')
-        if len(artist_ids) > 1:
             self._artist_label.set_text(", ".join(self._album.artists))
             self._artist_label.show()
+            self._cover = None
+
         label = builder.get_object('duration')
         duration = Lp().albums.get_duration(album_id, genre_ids)
         hours = int(duration / 3600)
@@ -926,3 +929,24 @@ class AlbumDetailedWidget(Gtk.Bin, AlbumWidget):
             @param event as Gdk.Event
         """
         self._button_state = event.get_state()
+
+    def _on_label_realize(self, eventbox):
+        """
+            Change pointer on label
+            @param eventbox as Gtk.EventBox
+        """
+        if InfoPopover.should_be_shown() and\
+                self._album.artist_ids[0] != Type.COMPILATIONS:
+            eventbox.get_window().set_cursor(Gdk.Cursor(Gdk.CursorType.HAND1))
+
+    def _on_label_button_release(self, eventbox, event):
+        """
+            On clicked label, show artist informations in a popover
+            @param eventbox as Gtk.EventBox
+            @param event as Gdk.Event
+        """
+        if InfoPopover.should_be_shown() and\
+                self._album.artist_ids[0] != Type.COMPILATIONS:
+            pop = InfoPopover(self._album.artist_ids)
+            pop.set_relative_to(eventbox)
+            pop.show()

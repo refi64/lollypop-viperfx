@@ -230,7 +230,7 @@ class Track(Base):
         """
         name = escape(self.name)
         if set(self.album.artist_ids) - set(self.artist_ids):
-            name = "<b>%s</b> - %s" % (escape(self.artists), name)
+            name = "<b>%s</b> - %s" % (escape(", ".join(self.artists)), name)
         return name
 
     @property

@@ -15,7 +15,7 @@ from gi.repository import Gtk, GLib, Gdk, Pango, GObject
 from cgi import escape
 from gettext import gettext as _
 
-from lollypop.widgets_album_context import AlbumPopoverWidget
+from lollypop.pop_album import AlbumPopover
 from lollypop.view import LazyLoadingView
 from lollypop.define import Lp, ArtSize, NextContext
 from lollypop.objects import Album
@@ -431,7 +431,7 @@ class AlbumsView(LazyLoadingView):
         artist_ids = Lp().player.get_artist_ids(row.get_id())
         # TODO Remove this later
         if Gtk.get_minor_version() > 16:
-            popover = AlbumPopoverWidget(
+            popover = AlbumPopover(
                                      row.get_id(),
                                      genre_ids,
                                      [])

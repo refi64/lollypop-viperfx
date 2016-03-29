@@ -26,15 +26,17 @@ class ArtistAlbumsView(LazyLoadingView):
         'populated': (GObject.SignalFlags.RUN_FIRST, None, ()),
     }
 
-    def __init__(self, artist_ids, genre_ids):
+    def __init__(self, artist_ids, genre_ids, show_cover=True):
         """
             Init ArtistAlbumsView
             @param artist ids as [int]
             @param genre ids as [int]
+            @param show cover as bool
         """
         LazyLoadingView.__init__(self)
         self._artist_ids = artist_ids
         self._genre_ids = genre_ids
+        self._show_cover = show_cover
         self._albums_count = 0
 
         self._albumbox = Gtk.Grid()
@@ -74,6 +76,17 @@ class ArtistAlbumsView(LazyLoadingView):
         """
         self._lazy_queue = []
         LazyLoadingView.stop(self)
+
+    @property
+    def requested_height(self):
+        """
+            Requested height for children
+            @return height as int
+        """
+        height = 0
+        for child in self._albumbox.get_children():
+            height += child.requested_height
+        return height
 
 #######################
 # PRIVATE             #
@@ -116,7 +129,8 @@ class ArtistAlbumsView(LazyLoadingView):
             album_id = albums.pop(0)
             widget = AlbumDetailedWidget(album_id,
                                          self._genre_ids,
-                                         self._artist_ids)
+                                         self._artist_ids,
+                                         self._show_cover)
             self._lazy_queue.append(widget)
             # Not needed if only one album
             if self._albums_count == 1:
