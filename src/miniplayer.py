@@ -63,10 +63,6 @@ class MiniPlayer(Gtk.Bin, InfosController):
             @param button as Gtk.Button
             @param event as Gdk.Event
         """
-        # Remove this the day X11 is dead!
-        allocation = self.get_allocation()
-        if allocation.height < WindowSize.SMALL - 50:
-            return
         if Lp().player.current_track.id is not None:
             if event.button != 1 and Lp().player.current_track.id >= 0:
                 popover = TrackMenuPopover(
