@@ -556,6 +556,8 @@ class AlbumDetailedWidget(Gtk.Bin, AlbumWidget):
             if artist_id in artist_ids:
                 self._album.set_artists(artist_ids)
         self._width = None
+        # Cover + rating + spacing
+        self._height = ArtSize.BIG * self.get_scale_factor() + 26
         self._orientation = None
         self._stop = False
         self._child_height = TrackRow.get_best_height(self)
@@ -565,8 +567,7 @@ class AlbumDetailedWidget(Gtk.Bin, AlbumWidget):
         self._discs = self._album.discs
         self._locked_widget_right = True
         self._filter_ids = artist_ids
-        self.set_property('height-request',
-                          ArtSize.BIG * self.get_scale_factor())
+        self.set_property('height-request', self._height)
         self.connect('size-allocate', self._on_size_allocate)
         builder = Gtk.Builder()
         builder.add_from_resource('/org/gnome/Lollypop/AlbumDetailedWidget.ui')
@@ -743,8 +744,8 @@ class AlbumDetailedWidget(Gtk.Bin, AlbumWidget):
         """
             Requested height
         """
-        if self._requested_height < ArtSize.BIG * self.get_scale_factor():
-            return ArtSize.BIG * self.get_scale_factor()
+        if self._requested_height < self._height:
+            return self._height
         else:
             return self._requested_height
 
