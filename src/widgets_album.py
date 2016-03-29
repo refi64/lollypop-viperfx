@@ -15,7 +15,7 @@ from gi.repository import Gtk, GLib, Gdk, GObject, Pango
 from cgi import escape
 from gettext import gettext as _
 
-from lollypop.define import Lp, ArtSize, NextContext, WindowSize, Shuffle, Type
+from lollypop.define import Lp, ArtSize, NextContext, WindowSize, Shuffle
 from lollypop.widgets_track import TracksWidget, TrackRow
 from lollypop.objects import Track
 from lollypop.widgets_rating import RatingWidget
