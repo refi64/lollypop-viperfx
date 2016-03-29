@@ -21,7 +21,7 @@ class AlbumPopover(Gtk.Popover):
     """
 
     def __init__(self, album_id, genre_ids,
-                 artist_ids, width=900, show_cover=True):
+                 artist_ids, width=1125, show_cover=True):
         """
             Init popover
             @param album id as int
