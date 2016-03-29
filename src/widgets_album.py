@@ -21,7 +21,6 @@ from lollypop.objects import Track
 from lollypop.widgets_rating import RatingWidget
 from lollypop.pop_menu import AlbumMenu
 from lollypop.pop_covers import CoversPopover
-from lollypop.pop_info import InfoPopover
 from lollypop.objects import Album
 
 
@@ -929,24 +928,3 @@ class AlbumDetailedWidget(Gtk.Bin, AlbumWidget):
             @param event as Gdk.Event
         """
         self._button_state = event.get_state()
-
-    def _on_label_realize(self, eventbox):
-        """
-            Change pointer on label
-            @param eventbox as Gtk.EventBox
-        """
-        if InfoPopover.should_be_shown() and\
-                self._album.artist_ids[0] != Type.COMPILATIONS:
-            eventbox.get_window().set_cursor(Gdk.Cursor(Gdk.CursorType.HAND1))
-
-    def _on_label_button_release(self, eventbox, event):
-        """
-            On clicked label, show artist informations in a popover
-            @param eventbox as Gtk.EventBox
-            @param event as Gdk.Event
-        """
-        if InfoPopover.should_be_shown() and\
-                self._album.artist_ids[0] != Type.COMPILATIONS:
-            pop = InfoPopover(self._album.artist_ids)
-            pop.set_relative_to(eventbox)
-            pop.show()
