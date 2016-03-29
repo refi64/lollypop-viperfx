@@ -36,13 +36,11 @@ class Row(Gtk.ListBoxRow):
         """
         # We do not use Gtk.Builder for speed reasons
         Gtk.ListBoxRow.__init__(self)
-        self.set_sensitive(False)
         self._track = Track(rowid)
         self._number = num
         self._indicator = IndicatorWidget(self._track.id)
         self.set_indicator(Lp().player.current_track.id == self._track.id,
                            utils.is_loved(self._track.id))
-        self.set_sensitive(True)
         self._row_widget = Gtk.EventBox()
         self._row_widget.connect('button-press-event', self._on_button_press)
         self._row_widget.connect('enter-notify-event', self._on_enter_notify)
