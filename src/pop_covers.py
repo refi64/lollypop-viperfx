@@ -36,14 +36,11 @@ class CoversPopover(Gtk.Popover):
         self._album = Album(album_id)
         self._monster_pixbufs = {}
 
-        self._stack = Gtk.Stack()
-        self._stack.show()
-
         builder = Gtk.Builder()
         builder.add_from_resource('/org/gnome/Lollypop/CoversPopover.ui')
         builder.connect_signals(self)
         widget = builder.get_object('widget')
-        widget.add(self._stack)
+        self._stack = builder.get_object('stack')
 
         self._view = Gtk.FlowBox()
         self._view.set_selection_mode(Gtk.SelectionMode.NONE)

@@ -54,6 +54,21 @@
         <property name="top_attach">0</property>
       </packing>
     </child>
+    <child>
+      <object class="GtkStack" id="stack">
+        <property name="visible">True</property>
+        <property name="can_focus">False</property>
+        <property name="transition_type">crossfade</property>
+        <child>
+          <placeholder/>
+        </child>
+      </object>
+      <packing>
+        <property name="left_attach">0</property>
+        <property name="top_attach">2</property>
+        <property name="width">2</property>
+      </packing>
+    </child>
   </object>
   <object class="GtkImage" id="notfound">
     <property name="visible">True</property>
