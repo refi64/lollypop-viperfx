@@ -44,6 +44,8 @@
         <property name="receives_default">True</property>
         <property name="tooltip_text" translatable="yes">Select a local file</property>
         <property name="halign">end</property>
+        <property name="margin_right">2</property>
+        <property name="margin_top">1</property>
         <property name="image">image1</property>
         <property name="relief">none</property>
         <property name="yalign">0.51999998092651367</property>
