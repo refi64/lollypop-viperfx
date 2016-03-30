@@ -38,13 +38,10 @@ class IndicatorWidget(Gtk.EventBox):
         self.connect('destroy', self._on_destroy)
         self.connect('enter-notify-event', self._on_enter_notify)
         self.connect('leave-notify-event', self._on_leave_notify)
-        self._stack = Gtk.Stack()
         # Here a hack to make old Gtk version support min-height css attribute
         # min-height = 24px, borders = 2px, we set directly on stack
         # min-width = 24px, borders = 2px, padding = 8px
-        self._stack.set_size_request(34, 26)
-        self.add(self._stack)
-        self.show_all()
+        self.set_size_request(34, 26)
 
     def empty(self):
         """
@@ -107,6 +104,7 @@ class IndicatorWidget(Gtk.EventBox):
         """
         if self._button is not None:
             return
+        self._stack = Gtk.Stack()
         self._stack.set_transition_duration(500)
         self._stack.set_transition_type(Gtk.StackTransitionType.CROSSFADE)
         self._button = Gtk.Button.new()
@@ -125,6 +123,7 @@ class IndicatorWidget(Gtk.EventBox):
         self._stack.add_named(self._button, 'button')
         self._stack.add_named(play, 'play')
         self._stack.add_named(loved, 'loved')
+        self.add(self._stack)
         self.show_all()
 
     def _on_enter_notify(self, widget, event):
