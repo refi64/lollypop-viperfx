@@ -73,6 +73,8 @@ class Row(Gtk.ListBoxRow):
         # min-width = 24px, borders = 2px, padding = 8px
         self._menu_button.set_size_request(34, 26)
         self._menu_button.set_relief(Gtk.ReliefStyle.NONE)
+        self._menu_button.get_style_context().add_class('menu-button')
+        self._menu_button.get_style_context().add_class('track-menu-button')
         self._grid.add(self._num_label)
         self._grid.add(self._title_label)
         self._grid.add(self._duration_label)
@@ -161,9 +163,6 @@ class Row(Gtk.ListBoxRow):
                                                  Gtk.IconSize.MENU)
             image.set_opacity(0.2)
             self._menu_button.set_image(image)
-            self._menu_button.get_style_context().add_class('menu-button')
-            self._menu_button.get_style_context().add_class(
-                                                           'track-menu-button')
             self._menu_button.connect('clicked', self._on_button_clicked)
             self._indicator.update_button()
 

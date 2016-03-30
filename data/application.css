@@ -313,6 +313,7 @@ Gtk.ListBoxRow .menu-button:hover {
 .menu-button {
 	box-shadow: none;
 	min-height: 24px;
+	min-width: 24px;
 	padding-left: 4px;
 	padding-right: 4px;
 	padding-top: 0px;
