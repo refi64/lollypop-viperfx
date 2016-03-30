@@ -106,6 +106,8 @@ class Row(Gtk.ListBoxRow):
             self.get_style_context().add_class('trackrow')
             if loved:
                 self._indicator.loved()
+            else:
+                self._indicator.empty()
 
     def set_number(self, num):
         """

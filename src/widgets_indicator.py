@@ -50,8 +50,8 @@ class IndicatorWidget(Gtk.EventBox):
         """
             Show no indicator
         """
-        self._init()
-        self._stack.set_visible_child_name('button')
+        if self._button is not None:
+            self._stack.set_visible_child_name('button')
 
     def play(self):
         """
