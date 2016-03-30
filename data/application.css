@@ -52,14 +52,6 @@ treeview.separator {
     color: shade(@theme_bg_color, 0.8);
 }
 
-treeview .image{
-    color: alpha(@theme_fg_color, 0.8);
-}
-
-treeview .image:backdrop{
-    color: alpha(@theme_fg_color, 0.6);
-}
-
 treeview .image:selected{
     color: @theme_selected_fg_color;
 }
