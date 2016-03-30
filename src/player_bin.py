@@ -353,7 +353,7 @@ class BinPlayer(BasePlayer):
             if finished.album_artist_ids[0] == Type.COMPILATIONS:
                 artists = ", ".join(finished.artists)
             else:
-                artists = ", ".join(finished.album_artists)
+                artists = ", ".join(finished.album.artists)
             if time() - finished_start_time > 30:
                 Lp().lastfm.scrobble(artists,
                                      finished.album_name,
