@@ -192,14 +192,14 @@ def _set_loved_on_lastfm(track_id, loved):
             Lp().lastfm.is_auth():
         title = Lp().tracks.get_name(track_id)
         album_id = Lp().tracks.get_album_id(track_id)
-        artist_id = Lp().albums.get_artist_id(album_id)
+        artist_ids = Lp().albums.get_artist_ids(album_id)
 
-        if artist_id == Type.COMPILATIONS:
-            artist = Lp().tracks.get_artists(track_id)
+        if artist_ids[0] == Type.COMPILATIONS:
+            artists = ", ".join(Lp().tracks.get_artists(track_id))
         else:
-            artist = Lp().artists.get_name(artist_id)
+            artists = ", ".join(Lp().albums.get_artists(album_id))
 
         if loved:
-            Lp().lastfm.love(artist, title)
+            Lp().lastfm.love(artists, title)
         else:
-            Lp().lastfm.unlove(artist, title)
+            Lp().lastfm.unlove(artists, title)
