@@ -350,12 +350,12 @@ class BinPlayer(BasePlayer):
             Lp().albums.set_more_popular(finished.album_id)
         # Scrobble on lastfm
         if Lp().lastfm is not None:
-            if finished.album_artist_id == Type.COMPILATIONS:
-                artist = finished.artist
+            if finished.album_artist_ids[0] == Type.COMPILATIONS:
+                artists = ", ".join(finished.artists)
             else:
-                artist = finished.album_artist
+                artists = ", ".join(finished.album_artists)
             if time() - finished_start_time > 30:
-                Lp().lastfm.scrobble(artist,
+                Lp().lastfm.scrobble(artists,
                                      finished.album_name,
                                      finished.title,
                                      int(finished_start_time),
