@@ -67,17 +67,12 @@ class Row(Gtk.ListBoxRow):
         self._num_label.set_width_chars(4)
         self._num_label.get_style_context().add_class('dim-label')
         self.update_num_label()
-        self._menu_image = Gtk.Image.new()
-        self._menu_image.set_opacity(0.2)
         self._menu_button = Gtk.Button.new()
         # Here a hack to make old Gtk version support min-height css attribute
-        # min-height = 24px, borders = 2px
-        self._menu_button.set_property('height-request', 26)
+        # min-height = 24px, borders = 2px, we set directly on stack
+        # min-width = 24px, borders = 2px, padding = 8px
+        self._menu_button.set_size_request(34, 26)
         self._menu_button.set_relief(Gtk.ReliefStyle.NONE)
-        self._menu_button.get_style_context().add_class('menu-button')
-        self._menu_button.get_style_context().add_class('track-menu-button')
-        self._menu_button.set_image(self._menu_image)
-        self._menu_button.connect('clicked', self._on_button_clicked)
         self._grid.add(self._num_label)
         self._grid.add(self._title_label)
         self._grid.add(self._duration_label)
@@ -109,8 +104,6 @@ class Row(Gtk.ListBoxRow):
             self.get_style_context().add_class('trackrow')
             if loved:
                 self._indicator.loved()
-            else:
-                self._indicator.empty()
 
     def set_number(self, num):
         """
@@ -163,9 +156,15 @@ class Row(Gtk.ListBoxRow):
             @param widget as Gtk.Widget
             @param event as Gdk.Event
         """
-        if self._menu_image.get_pixbuf() is None:
-            self._menu_image.set_from_icon_name('open-menu-symbolic',
-                                                Gtk.IconSize.MENU)
+        if self._menu_button.get_image() is None:
+            image = Gtk.Image.new_from_icon_name('open-menu-symbolic',
+                                                 Gtk.IconSize.MENU)
+            image.set_opacity(0.2)
+            self._menu_button.set_image(image)
+            self._menu_button.get_style_context().add_class('menu-button')
+            self._menu_button.get_style_context().add_class(
+                                                           'track-menu-button')
+            self._menu_button.connect('clicked', self._on_button_clicked)
             self._indicator.update_button()
 
     def _on_button_press(self, widget, event):

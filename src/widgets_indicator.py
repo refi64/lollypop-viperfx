@@ -25,40 +25,24 @@ class IndicatorWidget(Gtk.EventBox):
 
     def __init__(self, track_id):
         """
-            Init indicator widget
+            Init indicator widget, ui will be set when needed
             @param track id as int
         """
         Gtk.EventBox.__init__(self)
         self._id = track_id
         self._pass = 1
         self._timeout_id = None
+        self._button = None
         self._signal_id = Lp().player.connect('queue-changed',
                                               self._on_queue_changed)
         self.connect('destroy', self._on_destroy)
         self.connect('enter-notify-event', self._on_enter_notify)
         self.connect('leave-notify-event', self._on_leave_notify)
         self._stack = Gtk.Stack()
-        self._stack.set_transition_duration(500)
-        self._stack.set_transition_type(Gtk.StackTransitionType.CROSSFADE)
-        self._button = Gtk.Button.new()
-        self._image = Gtk.Image.new()
-        self._button.set_image(self._image)
         # Here a hack to make old Gtk version support min-height css attribute
-        # min-height = 24px, borders = 2px
-        self._button.set_property('height-request', 26)
-        self._button.set_relief(Gtk.ReliefStyle.NONE)
-        self._button.get_style_context().add_class('menu-button')
-        self._button.get_style_context().add_class('track-menu-button')
-        self._image.set_opacity(0.2)
-        self._button.show()
-        self._button.connect('clicked', self._on_button_clicked)
-        play = Gtk.Image.new_from_icon_name('media-playback-start-symbolic',
-                                            Gtk.IconSize.MENU)
-        loved = Gtk.Image.new_from_icon_name('emblem-favorite-symbolic',
-                                             Gtk.IconSize.MENU)
-        self._stack.add_named(self._button, 'button')
-        self._stack.add_named(play, 'play')
-        self._stack.add_named(loved, 'loved')
+        # min-height = 24px, borders = 2px, we set directly on stack
+        # min-width = 24px, borders = 2px, padding = 8px
+        self._stack.set_size_request(34, 26)
         self.add(self._stack)
         self.show_all()
 
@@ -66,24 +50,28 @@ class IndicatorWidget(Gtk.EventBox):
         """
             Show no indicator
         """
+        self._init()
         self._stack.set_visible_child_name('button')
 
     def play(self):
         """
             Show play indicator
         """
+        self._init()
         self._stack.set_visible_child_name('play')
 
     def loved(self):
         """
             Show loved indicator
         """
+        self._init()
         self._stack.set_visible_child_name('loved')
 
     def play_loved(self):
         """
             Show play/loved indicator
         """
+        self._init()
         self._pass = 1
         self.play()
         self._timeout_id = GLib.timeout_add(500, self._play_loved)
@@ -100,6 +88,7 @@ class IndicatorWidget(Gtk.EventBox):
         """
             Update button based on queue status
         """
+        self._init()
         if self._id in Lp().player.get_queue():
             self._button.set_tooltip_text(_("Remove from queue"))
             self._image.set_from_icon_name('list-remove-symbolic',
@@ -112,6 +101,32 @@ class IndicatorWidget(Gtk.EventBox):
 #######################
 # PRIVATE             #
 #######################
+    def _init(self):
+        """
+            Init widget content if needed
+        """
+        if self._button is not None:
+            return
+        self._stack.set_transition_duration(500)
+        self._stack.set_transition_type(Gtk.StackTransitionType.CROSSFADE)
+        self._button = Gtk.Button.new()
+        self._image = Gtk.Image.new()
+        self._button.set_image(self._image)
+        self._button.set_relief(Gtk.ReliefStyle.NONE)
+        self._button.get_style_context().add_class('menu-button')
+        self._button.get_style_context().add_class('track-menu-button')
+        self._image.set_opacity(0.2)
+        self._button.show()
+        self._button.connect('clicked', self._on_button_clicked)
+        play = Gtk.Image.new_from_icon_name('media-playback-start-symbolic',
+                                            Gtk.IconSize.MENU)
+        loved = Gtk.Image.new_from_icon_name('emblem-favorite-symbolic',
+                                             Gtk.IconSize.MENU)
+        self._stack.add_named(self._button, 'button')
+        self._stack.add_named(play, 'play')
+        self._stack.add_named(loved, 'loved')
+        self.show_all()
+
     def _on_enter_notify(self, widget, event):
         """
             Show queue button
