@@ -12,7 +12,7 @@
 
 from gi.repository import Gtk, GLib, GObject
 
-from lollypop.view import LazyLoadingView, View
+from lollypop.view import LazyLoadingView
 from lollypop.view_container import ViewContainer
 from lollypop.define import Lp, Type
 from lollypop.widgets_album import AlbumDetailedWidget
@@ -212,26 +212,13 @@ class CurrentArtistAlbumsView(ViewContainer):
             Populate view and make it visible
             @param albums as [albums ids as int]
         """
-        # Add a loading indicator
-        view = View()
-        spinner = Gtk.Spinner()
-        spinner.set_hexpand(True)
-        spinner.set_vexpand(True)
-        spinner.set_size_request(100, 100)
-        spinner.set_property('halign', Gtk.Align.CENTER)
-        spinner.set_property('valign', Gtk.Align.CENTER)
-        spinner.start()
-        view.add(spinner)
-        view.show_all()
+        # Populate artist albums view
+        view = ArtistAlbumsView(self._artist_ids, [])
+        view.show()
+        view.populate(albums)
         self.add(view)
         self.set_visible_child(view)
         self.clean_old_views(view)
-
-        # Populate artist albums view
-        view = ArtistAlbumsView(self._artist_ids, [])
-        view.connect('populated', self._on_populated, spinner)
-        view.show()
-        view.populate(albums)
 
     def _get_albums(self, artist_ids):
         """
@@ -244,14 +231,3 @@ class CurrentArtistAlbumsView(ViewContainer):
         else:
             albums = Lp().artists.get_albums(artist_ids)
         return albums
-
-    def _on_populated(self, view, spinner):
-        """
-            Show the view
-            @param view as View
-            @param spinner as Gtk.Spinner
-        """
-        spinner.stop()
-        self.add(view)
-        self.set_visible_child(view)
-        self.clean_old_views(view)
