@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-03-21 19:45+0100\n"
+"POT-Creation-Date: 2016-03-30 17:40+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -221,13 +221,13 @@ msgstr ""
 msgid "Genre/Artist/Cover browsing"
 msgstr ""
 
-#: ../data/lollypop.appdata.xml.in.h:8 ../src/playlists.py:237
+#: ../data/lollypop.appdata.xml.in.h:8 ../src/playlists.py:239
 #: ../data/ToolbarEnd.ui.h:7
 msgid "Search"
 msgstr ""
 
-#: ../data/lollypop.appdata.xml.in.h:9 ../src/pop_menu.py:478
-#: ../src/pop_menu.py:499 ../src/toolbar_end.py:301 ../data/QueuePopover.ui.h:2
+#: ../data/lollypop.appdata.xml.in.h:9 ../src/pop_menu.py:472
+#: ../src/pop_menu.py:493 ../src/toolbar_end.py:301 ../data/QueuePopover.ui.h:2
 msgid "Queue"
 msgstr ""
 
@@ -276,35 +276,35 @@ msgstr ""
 msgid "Tunein support"
 msgstr ""
 
-#: ../src/application.py:31
+#: ../src/application.py:32
 msgid ""
 "    - Scrobbler disabled\n"
 "    - Auto cover download disabled\n"
 "    - Artist informations disabled"
 msgstr ""
 
-#: ../src/application.py:379
+#: ../src/application.py:395
 #, python-format
 msgid "%d artist"
 msgid_plural "%d artists"
 msgstr[0] ""
 msgstr[1] ""
 
-#: ../src/application.py:381
+#: ../src/application.py:397
 #, python-format
 msgid "%d album"
 msgid_plural "%d albums"
 msgstr[0] ""
 msgstr[1] ""
 
-#: ../src/application.py:383
+#: ../src/application.py:399
 #, python-format
 msgid "%d track"
 msgid_plural "%d tracks"
 msgstr[0] ""
 msgstr[1] ""
 
-#: ../src/application.py:398
+#: ../src/application.py:414
 msgid "Lollypop: You need to install yelp."
 msgstr ""
 
@@ -324,8 +324,8 @@ msgstr ""
 msgid "Random albums"
 msgstr ""
 
-#: ../src/container.py:417 ../src/pop_menu.py:405 ../src/pop_menu.py:481
-#: ../src/pop_menu.py:501
+#: ../src/container.py:417 ../src/pop_menu.py:411 ../src/pop_menu.py:475
+#: ../src/pop_menu.py:495
 msgid "Playlists"
 msgstr ""
 
@@ -345,38 +345,37 @@ msgstr ""
 msgid "Compilations"
 msgstr ""
 
-#: ../src/container.py:492 ../src/playlists.py:229
+#: ../src/container.py:492 ../src/playlists.py:231
 msgid "Popular tracks"
 msgstr ""
 
-#: ../src/container.py:493 ../src/playlists.py:231
+#: ../src/container.py:493 ../src/playlists.py:233
 msgid "Recently played"
 msgstr ""
 
-#: ../src/container.py:494 ../src/playlists.py:233
+#: ../src/container.py:494 ../src/playlists.py:235
 msgid "Never played"
 msgstr ""
 
-#: ../src/container.py:495 ../src/playlists.py:235
+#: ../src/container.py:495 ../src/playlists.py:237
 msgid "Random tracks"
 msgstr ""
 
-#: ../src/controllers.py:82 ../src/controllers.py:115
+#: ../src/controllers.py:84 ../src/controllers.py:117
 msgid "Pause"
 msgstr ""
 
-#: ../src/controllers.py:84 ../src/controllers.py:112 ../src/pop_tunein.py:154
-#: ../src/widgets_album.py:379 ../src/widgets_radio.py:73
-#: ../data/AlbumContextWidget.ui.h:1 ../data/AlbumDetailedWidget.ui.h:1
-#: ../data/ToolbarPlayback.ui.h:2
+#: ../src/controllers.py:86 ../src/controllers.py:114 ../src/pop_tunein.py:154
+#: ../src/widgets_album.py:392 ../src/widgets_radio.py:69
+#: ../data/AlbumDetailedWidget.ui.h:1 ../data/ToolbarPlayback.ui.h:2
 msgid "Play"
 msgstr ""
 
-#: ../src/database_albums.py:302 ../src/database_artists.py:104
-#: ../src/database_genres.py:69 ../src/database_tracks.py:228
-#: ../src/selectionlist.py:273 ../src/tagreader.py:88 ../src/tagreader.py:101
-#: ../src/tagreader.py:114 ../src/tagreader.py:140 ../src/tagreader.py:153
-#: ../src/tagreader.py:156 ../src/tagreader.py:166 ../src/tagreader.py:169
+#: ../src/database_albums.py:301 ../src/database_artists.py:104
+#: ../src/database_genres.py:69 ../src/database_tracks.py:229
+#: ../src/selectionlist.py:274 ../src/tagreader.py:87 ../src/tagreader.py:102
+#: ../src/tagreader.py:117 ../src/tagreader.py:144 ../src/tagreader.py:159
+#: ../src/tagreader.py:162 ../src/tagreader.py:172 ../src/tagreader.py:175
 msgid "Unknown"
 msgstr ""
 
@@ -405,24 +404,24 @@ msgstr ""
 msgid "by %s, from %s"
 msgstr ""
 
-#: ../src/player_bin.py:443
+#: ../src/player_bin.py:442
 #, python-format
 msgid "File doesn't exist: %s"
 msgstr ""
 
-#: ../src/playlists.py:54
+#: ../src/playlists.py:55
 msgid "Loved tracks"
 msgstr ""
 
-#: ../src/pop_albums.py:279
+#: ../src/pop_albums.py:288
 msgid "Clear albums"
 msgstr ""
 
-#: ../src/pop_albums.py:287 ../src/view_artist.py:44
+#: ../src/pop_albums.py:296 ../src/pop_info.py:233 ../src/view_artist.py:44
 msgid "Go to current track"
 msgstr ""
 
-#: ../src/pop_albums.py:288 ../src/toolbar_end.py:305
+#: ../src/pop_albums.py:297 ../src/toolbar_end.py:305
 msgid "Playing albums"
 msgstr ""
 
@@ -438,11 +437,11 @@ msgstr ""
 msgid "Select a cover art for this album"
 msgstr ""
 
-#: ../src/pop_infos.py:34
+#: ../src/pop_info.py:33
 msgid "Advanced artist informations disabled"
 msgstr ""
 
-#: ../src/pop_infos.py:42
+#: ../src/pop_info.py:41
 msgid "WebKit support disabled"
 msgstr ""
 
@@ -462,7 +461,7 @@ msgstr ""
 msgid "Do not repeat"
 msgstr ""
 
-#: ../src/pop_menu.py:201 ../src/widgets_indicator.py:105
+#: ../src/pop_menu.py:201 ../src/widgets_indicator.py:97
 #: ../data/SearchRow.ui.h:3
 msgid "Add to queue"
 msgstr ""
@@ -475,7 +474,7 @@ msgstr ""
 msgid "Next track"
 msgstr ""
 
-#: ../src/pop_menu.py:212 ../src/widgets_indicator.py:101
+#: ../src/pop_menu.py:212 ../src/widgets_indicator.py:93
 msgid "Remove from queue"
 msgstr ""
 
@@ -493,15 +492,15 @@ msgstr ""
 msgid "Add to \"%s\""
 msgstr ""
 
-#: ../src/pop_menu.py:403
+#: ../src/pop_menu.py:409
 msgid "Playback"
 msgstr ""
 
-#: ../src/pop_menu.py:439
+#: ../src/pop_menu.py:445
 msgid "Modify information"
 msgstr ""
 
-#: ../src/pop_menu.py:484 ../data/PlaylistView.ui.h:1
+#: ../src/pop_menu.py:478 ../data/PlaylistView.ui.h:1
 msgid "Edit"
 msgstr ""
 
@@ -556,39 +555,39 @@ msgstr ""
 msgid "Cancel synchronization"
 msgstr ""
 
-#: ../src/widgets_album.py:164
+#: ../src/widgets_album.py:163
 msgid "Append"
 msgstr ""
 
-#: ../src/widgets_album.py:168
+#: ../src/widgets_album.py:167
 msgid "Remove"
 msgstr ""
 
-#: ../src/widgets_album.py:390 ../data/AlbumDetailedWidget.ui.h:3
+#: ../src/widgets_album.py:403 ../data/AlbumDetailedWidget.ui.h:3
 msgid "Play albums"
 msgstr ""
 
-#: ../src/widgets_album.py:400 ../src/widgets_radio.py:87
-#: ../data/AlbumContextWidget.ui.h:2 ../data/AlbumDetailedWidget.ui.h:2
+#: ../src/widgets_album.py:413 ../src/widgets_radio.py:85
+#: ../data/AlbumDetailedWidget.ui.h:2
 msgid "Change artwork"
 msgstr ""
 
-#: ../src/widgets_album.py:590
+#: ../src/widgets_album.py:618
 #, python-format
 msgid "%s h  %s m"
 msgstr ""
 
-#: ../src/widgets_album.py:592
+#: ../src/widgets_album.py:620
 #, python-format
 msgid "%s h"
 msgstr ""
 
-#: ../src/widgets_album.py:594
+#: ../src/widgets_album.py:622
 #, python-format
 msgid "%s m"
 msgstr ""
 
-#: ../src/widgets_album.py:839
+#: ../src/widgets_album.py:879
 #, python-format
 msgid "Disc %s"
 msgstr ""
@@ -605,17 +604,17 @@ msgstr ""
 msgid "No free space available on device"
 msgstr ""
 
-#: ../src/widgets_playlist.py:479 ../src/widgets_playlist.py:482
+#: ../src/widgets_playlist.py:483 ../src/widgets_playlist.py:486
 msgid "New playlist "
 msgstr ""
 
 #. Need a copy, segfault on EOS 3.1
-#: ../src/widgets_playlist.py:538 ../src/widgets_playlist.py:785
+#: ../src/widgets_playlist.py:542 ../src/widgets_playlist.py:789
 #, python-format
 msgid "Remove \"%s\"?"
 msgstr ""
 
-#: ../src/widgets_playlist.py:791
+#: ../src/widgets_playlist.py:795
 msgid "Remove these tracks?"
 msgstr ""
 
@@ -668,24 +667,28 @@ msgstr ""
 msgid "No information for this artist..."
 msgstr ""
 
-#: ../data/ArtistInfos.ui.h:1
+#: ../data/ArtistInfo.ui.h:1
 msgid "Albums"
 msgstr ""
 
-#: ../data/ArtistInfos.ui.h:2
+#: ../data/ArtistInfo.ui.h:2
 msgid "Last.fm"
 msgstr ""
 
-#: ../data/ArtistInfos.ui.h:3
+#: ../data/ArtistInfo.ui.h:3
 msgid "Wikipedia"
 msgstr ""
 
-#: ../data/ArtistInfos.ui.h:4
+#: ../data/ArtistInfo.ui.h:4
 msgid "Wikia"
 msgstr ""
 
-#: ../data/ArtistInfos.ui.h:5
+#: ../data/ArtistInfo.ui.h:5
 msgid "DuckDuckGo"
+msgstr ""
+
+#: ../data/CoversPopover.ui.h:1
+msgid "Select a local file"
 msgstr ""
 
 #: ../data/DeviceManagerView.ui.h:1

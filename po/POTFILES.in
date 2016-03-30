@@ -40,7 +40,7 @@ src/playlists.py
 src/pop_album.py
 src/pop_albums.py
 src/pop_covers.py
-src/pop_infos.py
+src/pop_info.py
 src/pop_menu.py
 src/pop_next.py
 src/pop_queue.py
@@ -51,7 +51,7 @@ src/selectionlist.py
 src/settings.py
 src/tagreader.py
 src/toolbar_end.py
-src/toolbar_infos.py
+src/toolbar_info.py
 src/toolbar_playback.py
 src/toolbar.py
 src/toolbar_title.py
@@ -79,7 +79,7 @@ src/window.py
 [type: gettext/glade]data/AlbumDetailedWidget.ui
 [type: gettext/glade]data/Appmenu.ui
 [type: gettext/glade]data/ArtistContent.ui
-[type: gettext/glade]data/ArtistInfos.ui
+[type: gettext/glade]data/ArtistInfo.ui
 [type: gettext/glade]data/ArtistView.ui
 [type: gettext/glade]data/CoversPopover.ui
 [type: gettext/glade]data/DeviceManagerView.ui
@@ -99,7 +99,7 @@ src/window.py
 [type: gettext/glade]data/SelectionList.ui
 [type: gettext/glade]data/SettingsDialog.ui
 [type: gettext/glade]data/ToolbarEnd.ui
-[type: gettext/glade]data/ToolbarInfos.ui
+[type: gettext/glade]data/ToolbarInfo.ui
 [type: gettext/glade]data/ToolbarPlayback.ui
 [type: gettext/glade]data/ToolbarTitle.ui
 [type: gettext/glade]data/TuneinPopover.ui
