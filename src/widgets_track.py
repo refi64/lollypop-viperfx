@@ -283,7 +283,7 @@ class PlaylistRow(Row):
         self._artist_label = Gtk.Label()
         self._artist_label.set_markup(
                                  "<b>" +
-                                 escape(", ".join(self._track.album.artists)) +
+                                 escape(", ".join(self._track.artists)) +
                                  "</b>")
         self._artist_label.set_ellipsize(Pango.EllipsizeMode.END)
         self._artist_label.get_style_context().add_class('dim-label')
