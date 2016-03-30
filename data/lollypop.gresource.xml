@@ -17,7 +17,6 @@
     <file preprocess="xml-stripblanks">DeviceManagerWidget.ui</file>
     <file preprocess="xml-stripblanks">DeviceManagerView.ui</file>
     <file preprocess="xml-stripblanks">AlbumDetailedWidget.ui</file>
-    <file preprocess="xml-stripblanks">AlbumContextWidget.ui</file>
     <file preprocess="xml-stripblanks">CoversPopover.ui</file>
     <file preprocess="xml-stripblanks">FullScreen.ui</file>
     <file preprocess="xml-stripblanks">Unicode.ui</file>

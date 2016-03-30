@@ -41,7 +41,7 @@ class CoversPopover(Gtk.Popover):
 
         builder = Gtk.Builder()
         builder.add_from_resource('/org/gnome/Lollypop/CoversPopover.ui')
-
+        builder.connect_signals(self)
         widget = builder.get_object('widget')
         widget.add(self._stack)
 
@@ -208,3 +208,26 @@ class CoversPopover(Gtk.Popover):
         Lp().art.clean_album_cache(self._album)
         Lp().art.album_artwork_update(self._album.id)
         self._streams = {}
+
+    def _on_button_clicked(self, button):
+        """
+            Show file chooser
+            @param button as Gtk.button
+        """
+        dialog = Gtk.FileChooserDialog(
+                                    "", Lp().window,
+                                    Gtk.FileChooserAction.OPEN,
+                                    (Gtk.STOCK_CANCEL, Gtk.ResponseType.CANCEL,
+                                     Gtk.STOCK_OPEN, Gtk.ResponseType.OK))
+        self.hide()
+        response = dialog.run()
+        if response == Gtk.ResponseType.OK:
+            try:
+                pixbuf = GdkPixbuf.Pixbuf.new_from_file(dialog.get_filename())
+                Lp().art.save_album_artwork(pixbuf, self._album.id)
+                Lp().art.clean_album_cache(self._album)
+                Lp().art.album_artwork_update(self._album.id)
+                self._streams = {}
+            except Exception as e:
+                print("CoversPopover::_on_button_clicked():", e)
+        dialog.destroy()
