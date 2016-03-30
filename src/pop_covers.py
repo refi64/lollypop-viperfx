@@ -214,11 +214,10 @@ class CoversPopover(Gtk.Popover):
             Show file chooser
             @param button as Gtk.button
         """
-        dialog = Gtk.FileChooserDialog(
-                                    "", Lp().window,
-                                    Gtk.FileChooserAction.OPEN,
-                                    (Gtk.STOCK_CANCEL, Gtk.ResponseType.CANCEL,
-                                     Gtk.STOCK_OPEN, Gtk.ResponseType.OK))
+        dialog = Gtk.FileChooserDialog()
+        dialog.add_buttons(Gtk.STOCK_CANCEL, Gtk.ResponseType.CANCEL)
+        dialog.add_buttons(Gtk.STOCK_OPEN, Gtk.ResponseType.OK)
+        dialog.set_transient_for(Lp().window)
         self.hide()
         response = dialog.run()
         if response == Gtk.ResponseType.OK:
