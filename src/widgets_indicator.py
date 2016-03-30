@@ -36,8 +36,6 @@ class IndicatorWidget(Gtk.EventBox):
         self._signal_id = Lp().player.connect('queue-changed',
                                               self._on_queue_changed)
         self.connect('destroy', self._on_destroy)
-        self.connect('enter-notify-event', self._on_enter_notify)
-        self.connect('leave-notify-event', self._on_leave_notify)
         # Here a hack to make old Gtk version support min-height css attribute
         # min-height = 24px, borders = 2px, we set directly on stack
         # min-width = 24px, borders = 2px, padding = 8px
@@ -124,6 +122,8 @@ class IndicatorWidget(Gtk.EventBox):
         self._stack.add_named(play, 'play')
         self._stack.add_named(loved, 'loved')
         self.add(self._stack)
+        self.connect('enter-notify-event', self._on_enter_notify)
+        self.connect('leave-notify-event', self._on_leave_notify)
         self.show_all()
 
     def _on_enter_notify(self, widget, event):
