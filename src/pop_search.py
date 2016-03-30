@@ -195,6 +195,8 @@ class SearchPopover(Gtk.Popover):
         self._view = Gtk.ListBox()
         self._view.connect("button-press-event", self._on_button_press)
         self._view.connect("row-activated", self._on_row_activated)
+        self._view.set_selection_mode(Gtk.SelectionMode.NONE)
+        self._view.set_activate_on_single_click(True)
         self._view.show()
 
         builder.get_object('scrolled').add(self._view)
