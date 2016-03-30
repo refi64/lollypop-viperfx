@@ -191,14 +191,7 @@ def _set_loved_on_lastfm(track_id, loved):
     if Gio.NetworkMonitor.get_default().get_network_available() and\
             Lp().lastfm.is_auth():
         title = Lp().tracks.get_name(track_id)
-        album_id = Lp().tracks.get_album_id(track_id)
-        artist_ids = Lp().albums.get_artist_ids(album_id)
-
-        if artist_ids[0] == Type.COMPILATIONS:
-            artists = ", ".join(Lp().tracks.get_artists(track_id))
-        else:
-            artists = ", ".join(Lp().albums.get_artists(album_id))
-
+        artists = ", ".join(Lp().tracks.get_artists(track_id))
         if loved:
             Lp().lastfm.love(artists, title)
         else:
