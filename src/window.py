@@ -38,7 +38,7 @@ class Window(Gtk.ApplicationWindow, Container):
                                        application=app,
                                        title="Lollypop")
         self.connect('hide', self._on_hide)
-        self.connect('notify::is-active', self._on_active)
+        self.connect('leave-notify-event', self._on_leave_notify)
         self._timeout_configure = None
         seek_action = Gio.SimpleAction.new('seek',
                                            GLib.VariantType.new('i'))
@@ -447,11 +447,10 @@ class Window(Gtk.ApplicationWindow, Container):
             # initialisation is finished...
             GLib.timeout_add(2000, self.update_db)
 
-    def _on_active(self, window, active):
+    def _on_leave_notify(self, widget, event):
         """
-            Clean overlays if not active
-            @param widget as Gtk.Window
-            @param active as boolean
+            Update overlays as internal widget may not have received the signal
+            @param widget as Gtk.Widget
+            @param event as Gdk.event
         """
-        if window.is_active():
-            self.update_overlays()
+        self.update_overlays()
