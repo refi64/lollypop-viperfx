@@ -130,10 +130,20 @@ class AlbumsView(LazyLoadingView):
             popover.set_position(Gtk.PositionType.BOTTOM)
             popover.set_pointing_to(self._press_rect)
         else:
+            allocation = self.get_allocation()
+            (x, top_height) = child.translate_coordinates(self, 0, 0)
+            bottom_height = allocation.height -\
+                child.get_allocation().height -\
+                top_height
+            if bottom_height > top_height:
+                height = bottom_height
+            else:
+                height = top_height
             popover = AlbumPopover(album_widget.get_id(),
                                    self._genre_ids,
                                    self._artist_ids,
-                                   self.get_allocation().width,
+                                   allocation.width,
+                                   height,
                                    False)
             popover.set_relative_to(cover)
             popover.set_position(Gtk.PositionType.BOTTOM)
