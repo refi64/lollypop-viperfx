@@ -125,7 +125,7 @@ class SearchRow(Gtk.ListBoxRow):
             Prepend track to queue
             @param button as Gtk.Button
         """
-        Lp().window.show_playlist_manager(self.id, None, not self.is_track)
+        Lp().window.show_playlist_manager(self._id, None, not self.is_track)
 
     def _on_queue_clicked(self, button):
         """
@@ -133,9 +133,9 @@ class SearchRow(Gtk.ListBoxRow):
             @param button as Gtk.Button
         """
         if self.is_track:
-            Lp().player.append_to_queue(self.id)
+            Lp().player.append_to_queue(self._id)
         else:
-            for track in Lp().albums.get_tracks(self.id, None):
+            for track in Lp().albums.get_tracks(self._id, None):
                 Lp().player.append_to_queue(track)
         button.hide()
 
