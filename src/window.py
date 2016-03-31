@@ -453,5 +453,5 @@ class Window(Gtk.ApplicationWindow, Container):
             @param widget as Gtk.Window
             @param active as boolean
         """
-        if not window.is_active():
+        if window.is_active():
             self.update_overlays()
