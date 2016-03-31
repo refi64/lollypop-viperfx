@@ -223,8 +223,7 @@ class Player(BinPlayer, QueuePlayer, UserPlaylistPlayer, RadioPlayer,
         for artist_id in album.artist_ids:
             if artist_id >= 0:
                 self.context.artist_ids[album.id].append(artist_id)
-        self.context.prev_track = Track()
-        self.context.next_track = Track()
+        self._reset_queue_context()
         self.load(album.tracks[0])
         self._albums = [album.id]
 
@@ -241,8 +240,7 @@ class Player(BinPlayer, QueuePlayer, UserPlaylistPlayer, RadioPlayer,
         self._albums = []
         self.context.genre_ids = {}
         self.context.aritst_ids = {}
-        self.context.prev_track = Track()
-        self.context.next_track = Track()
+        self._reset_queue_context()
         ShufflePlayer.reset_history(self)
 
         # We are not playing a user playlist anymore
@@ -406,14 +404,7 @@ class Player(BinPlayer, QueuePlayer, UserPlaylistPlayer, RadioPlayer,
         """
             Set previous track
         """
-        # Special case to return from queue
-        if self._queue and self.context.prev_track.id is None:
-            self.context.prev_track = self.current_track
-        elif not self._queue and self.context.prev_track.id is not None:
-            self.prev_track = self.context.prev_track
-            self.context.prev_track = Track()
-            self.emit('prev-changed')
-            return
+        current_prev_id = self.prev_track.id
 
         # Look at externals
         self.prev_track = ExternalsPlayer.prev(self)
@@ -421,6 +412,10 @@ class Player(BinPlayer, QueuePlayer, UserPlaylistPlayer, RadioPlayer,
         # Look at radio
         if self.prev_track.id is None:
             self.prev_track = RadioPlayer.prev(self)
+
+        # Look at queue
+        if self.prev_track.id is None:
+            self.prev_track = QueuePlayer.prev(self, current_prev_id)
 
         # Look at user playlist then
         if self.prev_track.id is None:
@@ -440,17 +435,10 @@ class Player(BinPlayer, QueuePlayer, UserPlaylistPlayer, RadioPlayer,
             Play next track
             @param sql as sqlite cursor
         """
+        current_next_id = self.next_track.id
+
         # Reset finished context
         self._finished = NextContext.NONE
-
-        # Special case to return from queue
-        if self._queue and self.context.next_track.id is None:
-            self.context.next_track = self.next_track
-        elif not self._queue and self.context.next_track.id is not None:
-            self.next_track = self.context.next_track
-            self.context.next_track = Track()
-            self.emit('next-changed')
-            return
 
         # Look at externals
         self.next_track = ExternalsPlayer.next(self)
@@ -459,9 +447,9 @@ class Player(BinPlayer, QueuePlayer, UserPlaylistPlayer, RadioPlayer,
         if self.next_track.id is None:
             self.next_track = RadioPlayer.next(self)
 
-        # Look first at user queue
+        # Look at queue
         if self.next_track.id is None:
-            self.next_track = QueuePlayer.next(self)
+            self.next_track = QueuePlayer.next(self, current_next_id)
 
         # Look at user playlist then
         if self.next_track.id is None:
@@ -489,6 +477,13 @@ class Player(BinPlayer, QueuePlayer, UserPlaylistPlayer, RadioPlayer,
 #######################
 # PRIVATE             #
 #######################
+    def _reset_queue_context(self):
+        """
+            Reset queue context
+        """
+        self._prev_id = None
+        self._next_id = None
+
     def _on_stream_start(self, bus, message):
         """
             On stream start, set next and previous track

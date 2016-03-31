@@ -23,6 +23,8 @@ class QueuePlayer:
             Init queue
         """
         self._queue = []
+        self._prev_id = None
+        self._next_id = None
 
     def append_to_queue(self, track_id, notify=True):
         """
@@ -111,14 +113,34 @@ class QueuePlayer:
         """
         return self._queue.index(track_id) + 1
 
-    def next(self):
+    def next(self, current_next_id):
         """
             Get next track id
+            @param current next track id as int
             @return Track
         """
         track_id = None
         if self._queue:
             track_id = self._queue[0]
+            if self._next_id is None:
+                self._next_id = current_next_id
+        elif self._next_id is not None:
+            track_id = self._next_id
+            self._next_id = None
+        return Track(track_id)
+
+    def prev(self, current_prev_id):
+        """
+            Get prev next track id
+            @param current prev track id as int
+            @return Track
+        """
+        track_id = None
+        if self._queue and self._prev_id is None:
+            self._prev_id = current_prev_id
+        elif not self._queue and self._prev_id is not None:
+            track_id = self._prev_id
+            self._prev_id = None
         return Track(track_id)
 
 #######################

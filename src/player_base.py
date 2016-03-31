@@ -51,8 +51,6 @@ class BasePlayer(GObject.GObject):
             self.next_track = Track()
             self.prev_track = Track()
             self.context = PlayContext()
-            self.context.next_track = Track()
-            self.context.prev_track = Track()
             # Albums in current playlist
             self._albums = []
             # Current shuffle mode
