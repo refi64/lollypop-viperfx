@@ -54,7 +54,7 @@ class DeviceView(View):
                 None)
             for info in infos:
                 # We look to this folder to select an already synced path
-                suburi = uri + info.get_name()+"/Music/lollypop/tracks/"
+                suburi = uri + info.get_name()+"/Music/lollypop/tracks"
                 sub = Gio.File.new_for_uri(suburi)
                 if sub.query_exists(None):
                     files.insert(0, info.get_name())
@@ -165,6 +165,8 @@ class DeviceView(View):
             Set combobox text
             @param text list as [str]
         """
+        if self._memory_combo.get_active_text() is not None:
+            return
         for text in text_list:
             self._memory_combo.append_text(text)
         self._memory_combo.set_active(0)
