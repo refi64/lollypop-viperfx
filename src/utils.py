@@ -30,7 +30,7 @@ def escape(str):
     """
     return "".join([c for c in str if
                     c.isalpha() or
-                    c.isdigit() or c in [' ', '.']]).rstrip()
+                    c.isdigit() or c in ['_', '-', ' ', '.']]).rstrip()
 
 
 def debug(str):

@@ -16,7 +16,7 @@ import os.path
 from time import sleep
 
 from lollypop.utils import escape
-from lollypop.define import Lp, Type
+from lollypop.define import Lp
 from lollypop.objects import Track
 
 
@@ -64,30 +64,34 @@ class MtpSync:
             sleep(5)
             self._retry(func, args, t-1)
 
-    def _get_tracks_files(self):
+    def _get_track_files(self):
         """
-            Return children uris for uri
+            Return files in self._uri/tracks
             @return [str]
         """
         children = []
         dir_uris = [self._uri+'/tracks/']
+
         while dir_uris:
-            uri = dir_uris.pop(0)
-            album_name = uri.replace(self._uri+"/tracks/", "")
-            album = escape(album_name)
-            d = Gio.File.new_for_uri(self._uri+"/tracks/"+album)
-            infos = d.enumerate_children(
-                'standard::name,standard::type',
-                Gio.FileQueryInfoFlags.NOFOLLOW_SYMLINKS,
-                None)
-            for info in infos:
-                if info.get_file_type() == Gio.FileType.DIRECTORY:
-                    dir_uris.append(uri+info.get_name())
-                else:
-                    track = escape(info.get_name())
-                    children.append("%s/tracks/%s/%s" % (self._uri,
-                                                         album,
-                                                         track))
+            try:
+                uri = dir_uris.pop(0)
+                album_name = uri.replace(self._uri+"/tracks/", "")
+                album = escape(album_name)
+                d = Gio.File.new_for_uri(self._uri+"/tracks/"+album)
+                infos = d.enumerate_children(
+                    'standard::name,standard::type',
+                    Gio.FileQueryInfoFlags.NOFOLLOW_SYMLINKS,
+                    None)
+                for info in infos:
+                    if info.get_file_type() == Gio.FileType.DIRECTORY:
+                        dir_uris.append(uri+info.get_name())
+                    else:
+                        track = escape(info.get_name())
+                        children.append("%s/tracks/%s/%s" % (self._uri,
+                                                             album,
+                                                             track))
+            except Exception as e:
+                print("MtpSync::_get_track_files():", e, uri)
         return children
 
     def _sync(self, playlists, convert):
@@ -116,7 +120,7 @@ class MtpSync:
 
             # Old tracks
             try:
-                children = self._get_tracks_files()
+                children = self._get_track_files()
                 self._total += len(children)
             except:
                 pass
@@ -182,10 +186,7 @@ class MtpSync:
                     return
                 track = Track(track_id)
                 album_name = escape(track.album_name.lower())
-                if track.album_artist_id == Type.COMPILATIONS:
-                    artists = escape(", ".join(track.artists).lower())
-                else:
-                    artists = escape(", ".join(track.album.artists).lower())
+                artists = escape(", ".join(track.artists).lower())
                 on_device_album_uri = "%s/tracks/%s_%s" %\
                                       (self._uri,
                                        artists,
@@ -224,8 +225,8 @@ class MtpSync:
                                         mtime, track_name)
                 if stream is not None:
                     line = "tracks/%s_%s/%s_%s\n" %\
-                            (artists.lower(),
-                             album_name.lower(),
+                            (artists,
+                             album_name,
                              mtime,
                              track_name)
                     self._retry(stream.get_output_stream().write,
@@ -292,12 +293,9 @@ class MtpSync:
                 return
             track = Track(track_id)
             album_name = escape(track.album_name.lower())
-            if track.album_artist_id == Type.COMPILATIONS:
-                artist_name = escape(track.artist.lower())
-            else:
-                artist_name = escape(track.album_artist.lower())
+            artists = escape(", ".join(track.artists).lower())
             album_uri = "%s/tracks/%s_%s" % (self._uri,
-                                             artist_name,
+                                             artists,
                                              album_name)
             track_name = escape(GLib.basename(track.path))
             # Check extension, if not mp3, convert
@@ -313,7 +311,7 @@ class MtpSync:
             dst_uri = "%s/%s_%s" % (album_uri, mtime, track_name)
             track_uris.append(dst_uri)
 
-        on_mtp_files = self._get_tracks_files()
+        on_mtp_files = self._get_track_files()
 
         # Delete file on device and not in playlists
         for uri in on_mtp_files:
