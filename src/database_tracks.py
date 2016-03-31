@@ -595,12 +595,13 @@ class TracksDatabase:
         """
         track_ids = self.get_ids_for_name(title)
         for track_id in track_ids:
-            album_artist = self.get_album_artist_id(track_id)
-            album_artist_name = Lp().artists.get_name(album_artist)
-            if album_artist_name == artist:
-                return track_id
-            artist_name = Lp().tracks.get_artists(track_id)
-            if artist_name == artist:
+            album_id = Lp().tracks.get_album_id(track_id)
+            artist_ids = set(Lp().albums.get_artist_ids(album_id)) &\
+                set(Lp().tracks.get_artist_ids(track_id))
+            for artist_id in artist_ids:
+                if artist == Lp().artists.get_name(artist_id):
+                    return track_id
+            if ", ".join(Lp().tracks.get_artists(track_id)) == artist:
                 return track_id
         return None
 

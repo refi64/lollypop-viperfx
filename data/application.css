@@ -3,37 +3,6 @@
     text-shadow: none;
 }
 
-/*********** GTK < 3.20 **********/
-GtkTreeView {
-    padding: 2px 2px 2px 2px;
-}
-
-GtkTreeView:selected:hover {
-        background-color: shade(@theme_selected_bg_color, 0.9);
-        color: @theme_selected_fg_color;
-}
-
-GtkTreeView:hover {
-    background-color: alpha(@theme_fg_color, 0.05);
-    color: @theme_fg_color;
-}
-
-GtkTreeView.separator {
-    color: shade(@theme_bg_color, 0.8);
-}
-
-GtkTreeView .image{
-    color: alpha(@theme_fg_color, 0.8);
-}
-
-GtkTreeView .image:backdrop{
-    color: alpha(@theme_fg_color, 0.6);
-}
-
-GtkTreeView .image:selected{
-    color: @theme_selected_fg_color;
-}
-/*********** GTK >= 3.20 **********/
 treeview {
     padding: 2px 2px 2px 2px;
 }
@@ -52,18 +21,9 @@ treeview.separator {
     color: shade(@theme_bg_color, 0.8);
 }
 
-treeview .image{
-    color: alpha(@theme_fg_color, 0.8);
-}
-
-treeview .image:backdrop{
-    color: alpha(@theme_fg_color, 0.6);
-}
-
 treeview .image:selected{
     color: @theme_selected_fg_color;
 }
-/******************************/
 
 Gtk.ListBoxRow .loved-button {
 	border-color: transparent;
@@ -83,6 +43,10 @@ Gtk.ListBoxRow .menu-button {
 
 Gtk.ListBoxRow .menu-button:hover {
 	border-color: alpha(@theme_fg_color, 0.1);
+}
+
+popover.background separator {
+    margin: 0px;
 }
 
 .box-shadow {
@@ -127,11 +91,6 @@ Gtk.ListBoxRow .menu-button:hover {
     background-color: shade(@theme_bg_color, 1.5);
     padding: 3px;
     border-radius: 2px;
-}
-
-.dim-cover {
-    opacity: 0.5;
-    background-color: black;
 }
 
 .toolbar-cover-frame {
@@ -313,6 +272,7 @@ Gtk.ListBoxRow .menu-button:hover {
 .menu-button {
 	box-shadow: none;
 	min-height: 24px;
+	min-width: 24px;
 	padding-left: 4px;
 	padding-right: 4px;
 	padding-top: 0px;
