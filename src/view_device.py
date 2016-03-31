@@ -53,7 +53,8 @@ class DeviceView(View):
                 Gio.FileQueryInfoFlags.NONE,
                 None)
             for info in infos:
-                suburi = uri + info.get_name()+"/Music/lollypop"
+                # We look to this folder to select an already synced path
+                suburi = uri + info.get_name()+"/Music/lollypop/tracks/"
                 sub = Gio.File.new_for_uri(suburi)
                 if sub.query_exists(None):
                     files.insert(0, info.get_name())
