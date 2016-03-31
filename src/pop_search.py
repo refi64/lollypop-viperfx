@@ -125,7 +125,7 @@ class SearchRow(Gtk.ListBoxRow):
             Prepend track to queue
             @param button as Gtk.Button
         """
-        Lp().window.show_playlist_manager(self._id, None, not self.is_track)
+        Lp().window.show_playlist_manager(self._id, [], [], not self._is_track)
 
     def _on_queue_clicked(self, button):
         """
