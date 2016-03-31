@@ -485,14 +485,11 @@ class BinPlayer(BasePlayer):
         self.emit('current-changed')
         # Update now playing on lastfm
         if Lp().lastfm is not None and self.current_track.id >= 0:
-            if self.current_track.album.artist_ids[0] == Type.COMPILATIONS:
-                artist = self.current_track.artist
-            else:
-                artist = self.current_track.album_artist
-                Lp().lastfm.now_playing(artist,
-                                        self.current_track.album_name,
-                                        self.current_track.title,
-                                        int(self.current_track.duration))
+            artists = ", ".join(self.current_track.album.artists)
+            Lp().lastfm.now_playing(artists,
+                                    self.current_track.album_name,
+                                    self.current_track.title,
+                                    int(self.current_track.duration))
         if not Lp().scanner.is_locked():
             Lp().tracks.set_listened_at(self.current_track.id, int(time()))
         self._handled_error = None
