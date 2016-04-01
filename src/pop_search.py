@@ -137,7 +137,8 @@ class SearchRow(Gtk.ListBoxRow):
         else:
             for track in Lp().albums.get_tracks(self._id, None):
                 Lp().player.append_to_queue(track)
-        button.hide()
+        button.set_sensitive(False)
+        button.set_opacity(0.4)
 
     def _on_query_tooltip(self, widget, x, y, keyboard, tooltip):
         """
