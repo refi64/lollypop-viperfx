@@ -234,20 +234,21 @@ class ScannerTagReader(TagReader):
         i = 0
         for artist in artists.split(';'):
             artist = artist.strip()
-            # Get artist id, add it if missing
-            artist_id = Lp().artists.get_id(artist)
-            if i >= sortlen or sortsplit[i] == "":
-                sortname = format_artist_name(artist)
-            else:
-                sortname = sortsplit[i].strip()
-            if artist_id is None:
-                artist_id = Lp().artists.add(artist, sortname)
-                if artist in album_artists:
-                    new_artist_ids.append(artist_id)
-            else:
-                Lp().artists.set_sortname(artist_id, sortname)
-            i += 1
-            artist_ids.append(artist_id)
+            if artist != '':
+                # Get artist id, add it if missing
+                artist_id = Lp().artists.get_id(artist)
+                if i >= sortlen or sortsplit[i] == "":
+                    sortname = format_artist_name(artist)
+                else:
+                    sortname = sortsplit[i].strip()
+                if artist_id is None:
+                    artist_id = Lp().artists.add(artist, sortname)
+                    if artist in album_artists:
+                        new_artist_ids.append(artist_id)
+                else:
+                    Lp().artists.set_sortname(artist_id, sortname)
+                i += 1
+                artist_ids.append(artist_id)
         return (artist_ids, new_artist_ids)
 
     def add_album_artists(self, artists):
