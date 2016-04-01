@@ -233,13 +233,13 @@ class ScannerTagReader(TagReader):
         sortlen = len(sortsplit)
         i = 0
         for artist in artists.split(';'):
-            artist = artist.lstrip().rstrip()
+            artist = artist.strip()
             # Get artist id, add it if missing
             artist_id = Lp().artists.get_id(artist)
             if i >= sortlen or sortsplit[i] == "":
                 sortname = format_artist_name(artist)
             else:
-                sortname = sortsplit[i].lstrip().rstrip()
+                sortname = sortsplit[i].strip()
             if artist_id is None:
                 artist_id = Lp().artists.add(artist, sortname)
                 if artist in album_artists:
@@ -260,8 +260,8 @@ class ScannerTagReader(TagReader):
         artist_ids = []
         new_artist_ids = []
         for artist in artists.split(';'):
+            artist = artist.strip()
             if artist != '':
-                artist = artist.lstrip().rstrip()
                 # Get album artist id, add it if missing
                 artist_id = Lp().artists.get_id(artist)
                 if artist_id is None:
@@ -285,7 +285,7 @@ class ScannerTagReader(TagReader):
         genre_ids = []
         new_genre_ids = []
         for genre in genres.split(';'):
-            genre = genre.lstrip().rstrip()
+            genre = genre.strip()
             # Get genre id, add genre if missing
             genre_id = Lp().genres.get_id(genre)
             if genre_id is None:
