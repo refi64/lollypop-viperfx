@@ -287,12 +287,13 @@ class ScannerTagReader(TagReader):
         new_genre_ids = []
         for genre in genres.split(';'):
             genre = genre.strip()
-            # Get genre id, add genre if missing
-            genre_id = Lp().genres.get_id(genre)
-            if genre_id is None:
-                genre_id = Lp().genres.add(genre)
-                new_genre_ids.append(genre_id)
-            genre_ids.append(genre_id)
+            if genre != '':
+                # Get genre id, add genre if missing
+                genre_id = Lp().genres.get_id(genre)
+                if genre_id is None:
+                    genre_id = Lp().genres.add(genre)
+                    new_genre_ids.append(genre_id)
+                genre_ids.append(genre_id)
         return (genre_ids, new_genre_ids)
 
     def add_album(self, album_name, artist_ids, no_album_artist,
