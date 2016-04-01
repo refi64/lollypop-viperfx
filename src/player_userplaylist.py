@@ -54,7 +54,6 @@ class UserPlaylistPlayer(BasePlayer):
         self._albums = []
         self._user_playlist_ids = playlist_ids
         self._user_playlist_backup = []
-        self._reset_queue_context()
         self._shuffle_playlist()
 
     def update_user_playlist(self, track_ids):
