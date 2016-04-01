@@ -72,11 +72,13 @@ class MtpSync:
         children = []
         dir_uris = [self._uri+'/tracks/']
 
+        d = Gio.File.new_for_uri(self._uri+'/tracks/')
+        if not d.query_exists(None):
+            self._retry(d.make_directory_with_parents, (None,))
         while dir_uris:
             try:
                 uri = dir_uris.pop(0)
-                album_name = uri.replace(self._uri+"/tracks/", "")
-                album = escape(album_name)
+                album = uri.replace(self._uri+"/tracks/", "")
                 d = Gio.File.new_for_uri(self._uri+"/tracks/"+album)
                 infos = d.enumerate_children(
                     'standard::name,standard::type',
@@ -86,7 +88,7 @@ class MtpSync:
                     if info.get_file_type() == Gio.FileType.DIRECTORY:
                         dir_uris.append(uri+info.get_name())
                     else:
-                        track = escape(info.get_name())
+                        track = info.get_name()
                         children.append("%s/tracks/%s/%s" % (self._uri,
                                                              album,
                                                              track))
