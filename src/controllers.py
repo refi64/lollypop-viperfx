@@ -187,7 +187,7 @@ class ProgressController:
         """
         if not self._seeking and Lp().player.current_track.id != Type.RADIOS:
             if value is None and Lp().player.get_status() != Gst.State.PAUSED:
-                value = Lp().player.get_position_in_track()/1000000
+                value = Lp().player.position/1000000
             if value is not None:
                 self._progress.set_value(value)
                 self._timelabel.set_text(seconds_to_string(value/60))
@@ -221,7 +221,7 @@ class ProgressController:
         """
         (smooth, x, y) = event.get_scroll_deltas()
         if smooth and Lp().player.is_playing():
-            position = Lp().player.get_position_in_track()
+            position = Lp().player.position
             if y > 0:
                 seek = position/1000000/60-5
             else:

@@ -398,7 +398,7 @@ class Window(Gtk.ApplicationWindow, Container):
             @param param as GLib.Variant
         """
         seconds = param.get_int32()
-        position = Lp().player.get_position_in_track()
+        position = Lp().player.position
         seek = position/1000000/60+seconds
         if seek < 0:
             seek = 0

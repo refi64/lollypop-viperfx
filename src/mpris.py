@@ -112,9 +112,9 @@ class MPRIS(dbus.service.Object):
                 'Rate': dbus.Double(1.0),
                 'Shuffle': True,
                 'Metadata': dbus.Dictionary(self._metadata, signature='sv'),
-                'Volume': dbus.Double(Lp().player.get_volume()),
+                'Volume': dbus.Double(Lp().player.volume),
                 'Position': dbus.Int64(
-                                     Lp().player.get_position_in_track() / 60),
+                                     Lp().player.position / 60),
                 'MinimumRate': dbus.Double(1.0),
                 'MaximumRate': dbus.Double(1.0),
                 'CanGoNext': Lp().player.current_track.id is not None,
@@ -208,7 +208,7 @@ class MPRIS(dbus.service.Object):
     def _on_volume_changed(self, player, data=None):
         self.PropertiesChanged(self.MPRIS_PLAYER_IFACE,
                                {'Volume': dbus.Double(
-                                Lp().player.get_volume()), },
+                                Lp().player.volume), },
                                [])
 
     def _on_current_changed(self, player):

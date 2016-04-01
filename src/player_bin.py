@@ -161,7 +161,8 @@ class BinPlayer(BasePlayer):
                                       position * Gst.SECOND)
             self.emit("seeked", position)
 
-    def get_position_in_track(self):
+    @property
+    def position(self):
         """
             Return bin playback position
             @HACK handle crossefade here, as we know we're going to be
@@ -175,7 +176,8 @@ class BinPlayer(BasePlayer):
                 self._do_crossfade(duration)
         return position * 60
 
-    def get_volume(self):
+    @property
+    def volume(self):
         """
             Return player volume rate
             @return rate as double
