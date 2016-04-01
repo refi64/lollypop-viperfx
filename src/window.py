@@ -430,7 +430,7 @@ class Window(Gtk.ApplicationWindow, Container):
                 # We send this signal to update next popover
                 Lp().player.emit('queue-changed')
             else:
-                Lp().player.context.next = NextContext.START_NEW_ALBUM
+                Lp().player.set_next_context(NextContext.START_NEW_ALBUM)
                 Lp().player.set_next()
                 Lp().player.next()
         elif string == "prev":

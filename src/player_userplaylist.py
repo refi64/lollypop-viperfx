@@ -45,7 +45,7 @@ class UserPlaylistPlayer(BasePlayer):
             @param playlist ids as [int]
         """
         if not Lp().settings.get_value('repeat'):
-            self.context.next = NextContext.STOP_ALL
+            self._context.next = NextContext.STOP_ALL
         if Lp().player.is_party():
             Lp().player.set_party(False)
         self._user_playlist = []
@@ -84,8 +84,8 @@ class UserPlaylistPlayer(BasePlayer):
         """
         track = Track()
         if self._user_playlist and\
-           self.current_track.id in self._user_playlist:
-            idx = self._user_playlist.index(self.current_track.id)
+           self._current_track.id in self._user_playlist:
+            idx = self._user_playlist.index(self._current_track.id)
             if idx + 1 >= len(self._user_playlist):
                 self._finished = NextContext.STOP_ALL
                 idx = 0
@@ -101,8 +101,8 @@ class UserPlaylistPlayer(BasePlayer):
         """
         track = Track()
         if self._user_playlist and\
-           self.current_track.id in self._user_playlist:
-            idx = self._user_playlist.index(self.current_track.id)
+           self._current_track.id in self._user_playlist:
+            idx = self._user_playlist.index(self._current_track.id)
             if idx - 1 < 0:
                 idx = len(self._user_playlist) - 1
             else:

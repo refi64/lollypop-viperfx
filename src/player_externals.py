@@ -94,8 +94,8 @@ class ExternalsPlayer(BasePlayer):
         """
         track = Track()
         if self._external_tracks and\
-           self.current_track in self._external_tracks:
-            idx = self._external_tracks.index(self.current_track)
+           self._current_track in self._external_tracks:
+            idx = self._external_tracks.index(self._current_track)
             if idx + 1 >= len(self._external_tracks):
                 idx = 0
             else:
@@ -109,13 +109,13 @@ class ExternalsPlayer(BasePlayer):
             @return Track
         """
         # If no prev, current
-        if self.current_track.id == Type.EXTERNALS and\
+        if self._current_track.id == Type.EXTERNALS and\
                 not self._external_tracks:
-            return self.current_track
+            return self._current_track
         track = Track()
         if self._external_tracks and\
-           self.current_track in self._external_tracks:
-            idx = self._external_tracks.index(self.current_track)
+           self._current_track in self._external_tracks:
+            idx = self._external_tracks.index(self._current_track)
             if idx - 1 < 0:
                 idx = len(self._external_tracks) - 1
             else:

@@ -323,7 +323,7 @@ class AlbumWidget:
             if Lp().player.current_track.album.id == self._album.id:
                 # If not last album, skip it
                 if len(Lp().player.get_albums()) > 1:
-                    Lp().player.context.next = NextContext.START_NEW_ALBUM
+                    Lp().player.set_next_context(NextContext.START_NEW_ALBUM)
                     Lp().player.set_next()
                     Lp().player.next()
                     Lp().player.remove_album(self._album)
@@ -923,7 +923,7 @@ class AlbumDetailedWidget(Gtk.Bin, AlbumWidget):
                                        self._album.genre_ids)
             Lp().player.load(Track(track_id))
             if self._button_state & Gdk.ModifierType.CONTROL_MASK:
-                Lp().player.context.next = NextContext.STOP_TRACK
+                Lp().player.set_next_context(NextContext.STOP_TRACK)
 
     def _on_button_press_event(self, widget, event):
         """

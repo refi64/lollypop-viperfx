@@ -73,7 +73,7 @@ class ShufflePlayer(BasePlayer):
             if self._history and self._history.has_prev():
                 track_id = self._history.get_prev().get_value()
             else:
-                track_id = self.current_track.id
+                track_id = self._current_track.id
         return Track(track_id)
 
     def get_party_ids(self):
@@ -103,12 +103,12 @@ class ShufflePlayer(BasePlayer):
         self._is_party = party
 
         self.reset_history()
-        self.context.genre_ids = {}
+        self._context.genre_ids = {}
 
         if self.plugins1.rgvolume is not None and\
            self.plugins2.rgvolume is not None:
             if party:
-                self.context.next = NextContext.NONE
+                self._context.next = NextContext.NONE
                 self.plugins1.rgvolume.props.album_mode = 0
                 self.plugins2.rgvolume.props.album_mode = 0
             else:
@@ -117,8 +117,8 @@ class ShufflePlayer(BasePlayer):
 
         if party:
             self._external_tracks = []
-            self.context.genre_ids = {}
-            self.context.track_id = None
+            self._context.genre_ids = {}
+            self._context.track_id = None
             party_ids = self.get_party_ids()
             if party_ids:
                 self._albums = Lp().albums.get_party_ids(party_ids)
@@ -131,10 +131,10 @@ class ShufflePlayer(BasePlayer):
                     genre_ids.append(genre_id)
             # Set context for each album
             for album_id in self._albums:
-                self.context.genre_ids[album_id] = genre_ids
-                self.context.artist_ids[album_id] = []
+                self._context.genre_ids[album_id] = genre_ids
+                self._context.artist_ids[album_id] = []
             # Start a new song if not playing
-            if (self.current_track.id in [None, Type.RADIOS])\
+            if (self._current_track.id in [None, Type.RADIOS])\
                     and self._albums:
                 track_id = self._get_random()
                 self.load(Track(track_id))
@@ -142,9 +142,9 @@ class ShufflePlayer(BasePlayer):
                 self.play()
         else:
             # We need to put some context, take first available genre
-            if self.current_track.id is not None:
-                self.set_albums(self.current_track.id,
-                                self.current_track.album.artist_ids, [])
+            if self._current_track.id is not None:
+                self.set_albums(self._current_track.id,
+                                self._current_track.album.artist_ids, [])
         self.emit('party-changed', party)
 
     def is_party(self):
@@ -164,9 +164,9 @@ class ShufflePlayer(BasePlayer):
                 self._albums_backup = list(self._albums)
                 random.shuffle(self._albums)
                 # In album shuffle, keep current album on top
-                if self.current_track.album.id in self._albums:
-                    self._albums.remove(self.current_track.album.id)
-                    self._albums.insert(0, self.current_track.album.id)
+                if self._current_track.album.id in self._albums:
+                    self._albums.remove(self._current_track.album.id)
+                    self._albums.insert(0, self._current_track.album.id)
         elif self._albums_backup:
             self._albums = self._albums_backup
             self._albums_backup = []
@@ -196,7 +196,7 @@ class ShufflePlayer(BasePlayer):
             self.shuffle_albums(False)
         elif self._shuffle == Shuffle.ALBUMS:
             self.shuffle_albums(True)
-        if self.current_track.id is not None:
+        if self._current_track.id is not None:
             self.set_next()
 
     def _shuffle_next(self):
@@ -223,8 +223,8 @@ class ShufflePlayer(BasePlayer):
                                key=lambda *args: random.random()):
             # We need to check this as in party mode, some items do not
             # have a valid genre (Populars, ...)
-            if album_id in self.context.genre_ids.keys():
-                genre_ids = self.context.genre_ids[album_id]
+            if album_id in self._context.genre_ids.keys():
+                genre_ids = self._context.genre_ids[album_id]
             else:
                 genre_ids = []
             tracks = Album(album_id, genre_ids).tracks_ids
@@ -264,23 +264,23 @@ class ShufflePlayer(BasePlayer):
                 prev = self._history.get_prev()
                 # Next track
                 if next is not None and\
-                        self.current_track.id == next.get_value():
+                        self._current_track.id == next.get_value():
                     next = self._history.get_next()
                     next.set_prev(self._history)
                     self._history = next
                 # Previous track
                 elif prev is not None and\
-                        self.current_track.id == prev.get_value():
+                        self._current_track.id == prev.get_value():
                     prev = self._history.get_prev()
                     prev.set_next(self._history)
                     self._history = prev
                 # New track
-                elif self._history.get_value() != self.current_track.id:
-                    new_list = LinkedList(self.current_track.id,
+                elif self._history.get_value() != self._current_track.id:
+                    new_list = LinkedList(self._current_track.id,
                                           None,
                                           self._history)
                     self._history = new_list
             else:
-                new_list = LinkedList(self.current_track.id)
+                new_list = LinkedList(self._current_track.id)
                 self._history = new_list
-            self._add_to_shuffle_history(self.current_track)
+            self._add_to_shuffle_history(self._current_track)

@@ -45,12 +45,43 @@ class Player(BinPlayer, QueuePlayer, UserPlaylistPlayer, RadioPlayer,
         ExternalsPlayer.__init__(self)
         self.update_crossfading()
 
+    @property
+    def current_track(self):
+        """
+            Current track
+        """
+        if self._queue_track is not None:
+            return self._queue_track
+        else:
+            return self._current_track
+
+    @property
+    def next_track(self):
+        """
+            Current track
+        """
+        return self._current_track
+
+    @property
+    def prev_track(self):
+        """
+            Current track
+        """
+        return self._current_track
+
+    @property
+    def context(self):
+        """
+            Current track
+        """
+        return self._context
+
     def prev(self):
         """
             Play previous track
         """
-        if self.prev_track.id is not None:
-            self.load(self.prev_track)
+        if self._prev_track.id is not None:
+            self.load(self._prev_track)
         else:
             self.stop()
 
@@ -58,8 +89,8 @@ class Player(BinPlayer, QueuePlayer, UserPlaylistPlayer, RadioPlayer,
         """
             Play next track
         """
-        if self.next_track.id is not None:
-            self.load(self.next_track)
+        if self._next_track.id is not None:
+            self.load(self._next_track)
         else:
             self.stop()
 
@@ -89,29 +120,29 @@ class Player(BinPlayer, QueuePlayer, UserPlaylistPlayer, RadioPlayer,
         self.shuffle_albums(False)
         # Add album to main playlist if nothing playing
         # Do not start to play
-        if not self._albums and self.current_track.id is None:
+        if not self._albums and self._current_track.id is None:
                 self.load(album.tracks[0], False)
-                self._albums = [self.current_track.album.id]
-                self.context.genre_ids[self.current_track.album.id] = []
-                self.context.artist_ids[self.current_track.album.id] = []
+                self._albums = [self._current_track.album.id]
+                self._context.genre_ids[self._current_track.album.id] = []
+                self._context.artist_ids[self._current_track.album.id] = []
                 self._user_playlist = []
                 self._user_playlist_ids = []
         # If album already exists, merge genres/artists
         if album.id in self._albums:
-            genre_ids = self.context.genre_ids[album.id]
+            genre_ids = self._context.genre_ids[album.id]
             for genre_id in album.genre_ids:
                 if genre_id >= 0 and genre_id not in genre_ids:
-                    self.context.genre_ids[album.id].append(genre_id)
-            artist_ids = self.context.artist_ids[album.id]
+                    self._context.genre_ids[album.id].append(genre_id)
+            artist_ids = self._context.artist_ids[album.id]
             for artist_id in album.artist_ids:
                 if artist_id >= 0 and artist_id not in artist_ids:
-                    self.context.artist_ids[album.id].append(artist_id)
+                    self._context.artist_ids[album.id].append(artist_id)
         else:
             self._albums.append(album.id)
-            self.context.genre_ids[album.id] = album.genre_ids
-            self.context.artist_ids[album.id] = album.artist_ids
+            self._context.genre_ids[album.id] = album.genre_ids
+            self._context.artist_ids[album.id] = album.artist_ids
         self.shuffle_albums(True)
-        if self.current_track.id is not None and self.current_track.id > 0:
+        if self._current_track.id is not None and self._current_track.id > 0:
             self.set_next()
             self.set_prev()
         self.emit('album-added', album.id)
@@ -132,18 +163,18 @@ class Player(BinPlayer, QueuePlayer, UserPlaylistPlayer, RadioPlayer,
         """
         try:
             # Remove genre ids from context
-            genre_ids = self.context.genre_ids[album.id]
+            genre_ids = self._context.genre_ids[album.id]
             for genre_id in album.genre_ids:
                 if genre_id in genre_ids:
                     genre_ids.remove(genre_id)
-            artist_ids = self.context.artist_ids[album.id]
+            artist_ids = self._context.artist_ids[album.id]
             # Remove artist ids from context
             for artist_id in album.artist_ids:
                 if artist_id in artist_ids:
                     artist_ids.remove(artist_id)
             if not genre_ids or not artist_ids:
-                self.context.genre_ids.pop(album.id, None)
-                self.context.artist_ids.pop(album.id, None)
+                self._context.genre_ids.pop(album.id, None)
+                self._context.artist_ids.pop(album.id, None)
                 self._albums.remove(album.id)
                 if album.id in self._albums_backup:
                     self._albums_backup.remove(album.id)
@@ -158,8 +189,8 @@ class Player(BinPlayer, QueuePlayer, UserPlaylistPlayer, RadioPlayer,
             @param album id as int
             @return genre ids as [int]
         """
-        if album_id in self.context.genre_ids.keys():
-            return self.context.genre_ids[album_id]
+        if album_id in self._context.genre_ids.keys():
+            return self._context.genre_ids[album_id]
         else:
             return []
 
@@ -169,8 +200,8 @@ class Player(BinPlayer, QueuePlayer, UserPlaylistPlayer, RadioPlayer,
             @param album id as int
             @return genre ids as [int]
         """
-        if album_id in self.context.artist_ids.keys():
-            return self.context.artist_ids[album_id]
+        if album_id in self._context.artist_ids.keys():
+            return self._context.artist_ids[album_id]
         else:
             return []
 
@@ -184,14 +215,14 @@ class Player(BinPlayer, QueuePlayer, UserPlaylistPlayer, RadioPlayer,
         is_artists = True
         if album.id in self._albums:
             for genre_id in album.genre_ids:
-                if album.id in self.context.genre_ids.keys() and\
-                   self.context.genre_ids[album.id] and\
-                   genre_id not in self.context.genre_ids[album.id]:
+                if album.id in self._context.genre_ids.keys() and\
+                   self._context.genre_ids[album.id] and\
+                   genre_id not in self._context.genre_ids[album.id]:
                     is_genres = False
             for artist_id in album.artist_ids:
-                if album.id in self.context.artist_ids.keys() and\
-                   self.context.artist_ids[album.id] and\
-                   artist_id not in self.context.artist_ids[album.id]:
+                if album.id in self._context.artist_ids.keys() and\
+                   self._context.artist_ids[album.id] and\
+                   artist_id not in self._context.artist_ids[album.id]:
                     is_artists = False
         else:
             is_genres = False
@@ -210,21 +241,21 @@ class Player(BinPlayer, QueuePlayer, UserPlaylistPlayer, RadioPlayer,
         self._user_playlist = []
         self._user_playlist_ids = []
         if Lp().settings.get_value('repeat'):
-            self.context.next = NextContext.NONE
+            self._context.next = NextContext.NONE
         else:
-            self.context.next = NextContext.STOP_ALL
-        self.context.genre_ids = {}
-        self.context.artist_ids = {}
-        self.context.genre_ids[album.id] = []
-        self.context.artist_ids[album.id] = []
+            self._context.next = NextContext.STOP_ALL
+        self._context.genre_ids = {}
+        self._context.artist_ids = {}
+        self._context.genre_ids[album.id] = []
+        self._context.artist_ids[album.id] = []
         for genre_id in album.genre_ids:
             if genre_id >= 0:
-                self.context.genre_ids[album.id].append(genre_id)
+                self._context.genre_ids[album.id].append(genre_id)
         for artist_id in album.artist_ids:
             if artist_id >= 0:
-                self.context.artist_ids[album.id].append(artist_id)
-        self.context.prev_track = Track()
-        self.context.next_track = Track()
+                self._context.artist_ids[album.id].append(artist_id)
+        self._context.prev_track = Track()
+        self._context.next_track = Track()
         self.load(album.tracks[0])
         self._albums = [album.id]
 
@@ -239,10 +270,10 @@ class Player(BinPlayer, QueuePlayer, UserPlaylistPlayer, RadioPlayer,
         if track_id is None:
             return
         self._albums = []
-        self.context.genre_ids = {}
-        self.context.aritst_ids = {}
-        self.context.prev_track = Track()
-        self.context.next_track = Track()
+        self._context.genre_ids = {}
+        self._context.aritst_ids = {}
+        self._context.prev_track = Track()
+        self._context.next_track = Track()
         ShufflePlayer.reset_history(self)
 
         # We are not playing a user playlist anymore
@@ -281,22 +312,22 @@ class Player(BinPlayer, QueuePlayer, UserPlaylistPlayer, RadioPlayer,
                 self._albums += Lp().albums.get_ids(artist_ids, genre_ids)
 
         if Lp().settings.get_value('repeat'):
-            self.context.next = NextContext.NONE
+            self._context.next = NextContext.NONE
         else:
-            self.context.next = NextContext.STOP_ALL
+            self._context.next = NextContext.STOP_ALL
         # We do not store genre_ids for ALL/POPULARS/...
         if genre_ids and genre_ids[0] < 0:
             genre_ids = []
         # Set context for each album
         for album_id in self._albums:
-            self.context.genre_ids[album_id] = []
-            self.context.artist_ids[album_id] = []
+            self._context.genre_ids[album_id] = []
+            self._context.artist_ids[album_id] = []
             for genre_id in genre_ids:
                 if genre_id >= 0:
-                    self.context.genre_ids[album_id].append(genre_id)
+                    self._context.genre_ids[album_id].append(genre_id)
             for artist_id in artist_ids:
                 if artist_id >= 0:
-                    self.context.artist_ids[album_id].append(artist_id)
+                    self._context.artist_ids[album_id].append(artist_id)
         # Shuffle album list if needed
         self.shuffle_albums(True)
 
@@ -312,18 +343,18 @@ class Player(BinPlayer, QueuePlayer, UserPlaylistPlayer, RadioPlayer,
             Clear all albums
         """
         self._albums = []
-        self.context.next = NextContext.STOP_TRACK
+        self._context.next = NextContext.STOP_TRACK
 
     def get_current_artists(self):
         """
             Get current artist
             @return artist as string
         """
-        artist_ids = self.current_track.album.artist_ids
+        artist_ids = self._current_track.album.artist_ids
         if artist_ids[0] == Type.COMPILATIONS:
-            artists = ", ".join(self.current_track.artists)
+            artists = ", ".join(self._current_track.artists)
         else:
-            artists = ", ".join(self.current_track.album_artists)
+            artists = ", ".join(self._current_track.album_artists)
         return artists
 
     def restore_state(self):
@@ -373,10 +404,10 @@ class Player(BinPlayer, QueuePlayer, UserPlaylistPlayer, RadioPlayer,
                         self._albums = load(open(
                                             self.DATA_PATH + "/albums.bin",
                                             "rb"))
-                        self.context.genre_ids = load(open(
+                        self._context.genre_ids = load(open(
                                             self.DATA_PATH + "/genre_ids.bin",
                                             "rb"))
-                        self.context.artist_ids = load(open(
+                        self._context.artist_ids = load(open(
                                             self.DATA_PATH + "/artist_ids.bin",
                                             "rb"))
                     except:
@@ -384,12 +415,19 @@ class Player(BinPlayer, QueuePlayer, UserPlaylistPlayer, RadioPlayer,
                 self.set_next()
                 self.set_prev()
                 if Lp().settings.get_value('repeat'):
-                    self.context.next = NextContext.NONE
+                    self._context.next = NextContext.NONE
                 else:
-                    self.context.next = NextContext.STOP_ALL
+                    self._context.next = NextContext.STOP_ALL
                 self.emit('current-changed')
             else:
                 print("Player::restore_state(): track missing")
+
+    def set_next_context(self, value):
+        """
+            Set next context
+            @param context as int
+        """
+        self._context.next = value
 
     def set_party(self, party):
         """
@@ -406,33 +444,24 @@ class Player(BinPlayer, QueuePlayer, UserPlaylistPlayer, RadioPlayer,
         """
             Set previous track
         """
-        # Special case to return from queue
-        if self._queue and self.context.prev_track.id is None:
-            self.context.prev_track = self.current_track
-        elif not self._queue and self.context.prev_track.id is not None:
-            self.prev_track = self.context.prev_track
-            self.context.prev_track = Track()
-            self.emit('prev-changed')
-            return
-
         # Look at externals
-        self.prev_track = ExternalsPlayer.prev(self)
+        self._prev_track = ExternalsPlayer.prev(self)
 
         # Look at radio
-        if self.prev_track.id is None:
-            self.prev_track = RadioPlayer.prev(self)
+        if self._prev_track.id is None:
+            self._prev_track = RadioPlayer.prev(self)
 
         # Look at user playlist then
-        if self.prev_track.id is None:
-            self.prev_track = UserPlaylistPlayer.prev(self)
+        if self._prev_track.id is None:
+            self._prev_track = UserPlaylistPlayer.prev(self)
 
         # Look at shuffle
-        if self.prev_track.id is None:
-            self.prev_track = ShufflePlayer.prev(self)
+        if self._prev_track.id is None:
+            self._prev_track = ShufflePlayer.prev(self)
 
         # Get a linear track then
-        if self.prev_track.id is None:
-            self.prev_track = LinearPlayer.prev(self)
+        if self._prev_track.id is None:
+            self._prev_track = LinearPlayer.prev(self)
         self.emit('prev-changed')
 
     def set_next(self):
@@ -443,37 +472,28 @@ class Player(BinPlayer, QueuePlayer, UserPlaylistPlayer, RadioPlayer,
         # Reset finished context
         self._finished = NextContext.NONE
 
-        # Special case to return from queue
-        if self._queue and self.context.next_track.id is None:
-            self.context.next_track = self.next_track
-        elif not self._queue and self.context.next_track.id is not None:
-            self.next_track = self.context.next_track
-            self.context.next_track = Track()
-            self.emit('next-changed')
-            return
-
         # Look at externals
-        self.next_track = ExternalsPlayer.next(self)
+        self._next_track = ExternalsPlayer.next(self)
 
         # Look at radio
-        if self.next_track.id is None:
-            self.next_track = RadioPlayer.next(self)
+        if self._next_track.id is None:
+            self._next_track = RadioPlayer.next(self)
 
         # Look first at user queue
-        if self.next_track.id is None:
-            self.next_track = QueuePlayer.next(self)
+        if self._next_track.id is None:
+            self._next_track = QueuePlayer.next(self)
 
         # Look at user playlist then
-        if self.next_track.id is None:
-            self.next_track = UserPlaylistPlayer.next(self)
+        if self._next_track.id is None:
+            self._next_track = UserPlaylistPlayer.next(self)
 
         # Get a random album/track then
-        if self.next_track.id is None:
-            self.next_track = ShufflePlayer.next(self)
+        if self._next_track.id is None:
+            self._next_track = ShufflePlayer.next(self)
 
         # Get a linear track then
-        if self.next_track.id is None:
-            self.next_track = LinearPlayer.next(self)
+        if self._next_track.id is None:
+            self._next_track = LinearPlayer.next(self)
 
         self.emit('next-changed')
 
@@ -495,11 +515,8 @@ class Player(BinPlayer, QueuePlayer, UserPlaylistPlayer, RadioPlayer,
         """
         if not Lp().scanner.is_locked():
             Lp().window.pulse(False)
-        if self.current_track.id >= 0:
+        if self._current_track.id >= 0:
             ShufflePlayer._on_stream_start(self, bus, message)
-        if self._queue and self.current_track.id == self._queue[0]:
-            self._queue.pop(0)
-            self.emit("queue-changed")
         self.set_next()
         self.set_prev()
         BinPlayer._on_stream_start(self, bus, message)

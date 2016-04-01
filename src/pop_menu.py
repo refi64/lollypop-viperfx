@@ -106,7 +106,7 @@ class PlaybackMenu(BaseMenu):
             @param GVariant
             @param album id as int
         """
-        Lp().player.context.next = NextContext.NONE
+        Lp().player.set_next_context(NextContext.NONE)
 
     def _stop_playlist(self, action, variant):
         """
@@ -114,7 +114,7 @@ class PlaybackMenu(BaseMenu):
             @param SimpleAction
             @param GVariant
         """
-        Lp().player.context.next = NextContext.STOP_PLAYLIST
+        Lp().player.set_next_context(NextContext.STOP_PLAYLIST)
 
     def _stop_track(self, action, variant):
         """
@@ -122,7 +122,7 @@ class PlaybackMenu(BaseMenu):
             @param SimpleAction
             @param GVariant
         """
-        Lp().player.context.next = NextContext.STOP_TRACK
+        Lp().player.set_next_context(NextContext.STOP_TRACK)
 
     def _stop_album(self, action, variant):
         """
@@ -130,7 +130,7 @@ class PlaybackMenu(BaseMenu):
             @param SimpleAction
             @param GVariant
         """
-        Lp().player.context.next = NextContext.STOP_ALBUM
+        Lp().player.set_next_context(NextContext.STOP_ALBUM)
 
     def _do_not_repeat(self, action, variant):
         """
@@ -138,7 +138,7 @@ class PlaybackMenu(BaseMenu):
             @param SimpleAction
             @param GVariant
         """
-        Lp().player.context.next = NextContext.STOP_ALL
+        Lp().player.set_next_context(NextContext.STOP_ALL)
 
 
 class QueueMenu(BaseMenu):

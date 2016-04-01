@@ -234,7 +234,7 @@ class AlbumRow(Gtk.ListBoxRow):
         if Lp().player.current_track.album.id == self._album.id:
             # If not last album, skip it
             if len(Lp().player.get_albums()) > 1:
-                Lp().player.context.next = NextContext.START_NEW_ALBUM
+                Lp().player.set_next_context(NextContext.START_NEW_ALBUM)
                 Lp().player.set_next()
                 Lp().player.next()
                 Lp().player.remove_album(self._album)

@@ -36,22 +36,22 @@ class LinearPlayer(BasePlayer):
         if not self._albums:
             return Track()
         track = Track()
-        if self.current_track.album.id in self.context.genre_ids and\
+        if self._current_track.album.id in self._context.genre_ids and\
            self._albums:
-            genre_ids = self.context.genre_ids[self.current_track.album.id]
-            artist_ids = self.context.artist_ids[self.current_track.album.id]
-            album = Album(self.current_track.album.id, genre_ids, artist_ids)
-            if self.current_track.id in album.tracks_ids:
+            genre_ids = self._context.genre_ids[self._current_track.album.id]
+            artist_ids = self._context.artist_ids[self._current_track.album.id]
+            album = Album(self._current_track.album.id, genre_ids, artist_ids)
+            if self._current_track.id in album.tracks_ids:
                 new_track_position = album.tracks_ids.index(
-                                                self.current_track.id) + 1
+                                                self._current_track.id) + 1
                 # next album
                 if new_track_position >= len(album.tracks) or\
-                   self.context.next == NextContext.START_NEW_ALBUM:
-                    if self.context.next == NextContext.START_NEW_ALBUM:
+                   self._context.next == NextContext.START_NEW_ALBUM:
+                    if self._context.next == NextContext.START_NEW_ALBUM:
                         if Lp().settings.get_value('repeat'):
-                            self.context.next = NextContext.NONE
+                            self._context.next = NextContext.NONE
                         else:
-                            self.context.next = NextContext.STOP_ALL
+                            self._context.next = NextContext.STOP_ALL
                     try:
                         self._finished = NextContext.STOP_ALBUM
                         pos = self._albums.index(album.id)
@@ -63,7 +63,7 @@ class LinearPlayer(BasePlayer):
                             pos += 1
                     except:
                         pos = 0  # Happens if current album has been removed
-                    genre_ids = self.context.genre_ids[self._albums[pos]]
+                    genre_ids = self._context.genre_ids[self._albums[pos]]
                     track = Album(self._albums[pos],
                                   genre_ids, artist_ids).tracks[0]
                 # next track
@@ -80,14 +80,14 @@ class LinearPlayer(BasePlayer):
         if not self._albums:
             return Track()
         track = Track()
-        if self.current_track.album.id in self.context.genre_ids and \
+        if self._current_track.album.id in self._context.genre_ids and \
            self._albums:
-            genre_ids = self.context.genre_ids[self.current_track.album.id]
-            artist_ids = self.context.artist_ids[self.current_track.album.id]
-            album = Album(self.current_track.album.id, genre_ids, artist_ids)
-            if self.current_track.id in album.tracks_ids:
+            genre_ids = self._context.genre_ids[self._current_track.album.id]
+            artist_ids = self._context.artist_ids[self._current_track.album.id]
+            album = Album(self._current_track.album.id, genre_ids, artist_ids)
+            if self._current_track.id in album.tracks_ids:
                 new_track_position = album.tracks_ids.index(
-                                                self.current_track.id) - 1
+                                                self._current_track.id) - 1
                 # Previous album
                 if new_track_position < 0:
                     try:
@@ -98,7 +98,7 @@ class LinearPlayer(BasePlayer):
                             pos -= 1
                     except:
                         pos = 0  # Happens if current album has been removed
-                    genre_ids = self.context.genre_ids[self._albums[pos]]
+                    genre_ids = self._context.genre_ids[self._albums[pos]]
                     track = Album(self._albums[pos],
                                   genre_ids, artist_ids).tracks[-1]
                 # Previous track
