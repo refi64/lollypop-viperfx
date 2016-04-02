@@ -249,11 +249,12 @@ class AlbumWidget:
             @param widget as Gtk.Widget
             @param event es Gdk.Event
         """
-        allocation = widget.get_allocation()
-        if event.x < 5 or\
-           event.x > allocation.width - 5 or\
-           event.y < 5 or\
-           event.y > allocation.height - 5:
+        (x, y) = self._overlay.translate_coordinates(widget, 0, 0)
+        allocation = self._overlay.get_allocation()
+        if event.x < x or\
+           event.x > x + allocation.width or\
+           event.y < y or\
+           event.y > y + allocation.height:
             self._cover.set_opacity(1)
             self._play_button.set_opacity(0)
             self._play_button.hide()
@@ -428,14 +429,14 @@ class AlbumSimpleWidget(Gtk.Frame, AlbumWidget):
                                    self._on_action_press_event)
         self._action_button = Gtk.Image.new()
         self._action_button.set_opacity(0)
-        self._overlay_grid = Gtk.Grid()
-        self._overlay_grid.set_column_spacing(6)
-        self._overlay_grid.set_row_spacing(6)
-        self._overlay_grid.set_margin_bottom(6)
-        self._overlay_grid.set_margin_start(6)
-        self._overlay_grid.set_margin_end(6)
+        self._overlay = Gtk.Grid()
+        self._overlay.set_column_spacing(6)
+        self._overlay.set_row_spacing(6)
+        self._overlay.set_margin_bottom(6)
+        self._overlay.set_margin_start(6)
+        self._overlay.set_margin_end(6)
         overlay.add(self._cover)
-        overlay.add_overlay(self._overlay_grid)
+        overlay.add_overlay(self._overlay)
         color = Gtk.Grid()
         color.set_property('halign', Gtk.Align.CENTER)
         color.set_property('valign', Gtk.Align.CENTER)
@@ -490,28 +491,28 @@ class AlbumSimpleWidget(Gtk.Frame, AlbumWidget):
             Set overlay orientation
             @param orientation as Gtk.Orientation
         """
-        for child in self._overlay_grid.get_children():
-            self._overlay_grid.remove(child)
+        for child in self._overlay.get_children():
+            self._overlay.remove(child)
 
-        self._overlay_grid.set_orientation(orientation)
+        self._overlay.set_orientation(orientation)
         if orientation == Gtk.Orientation.VERTICAL:
             self._play_event.set_hexpand(False)
             self._play_event.set_vexpand(True)
             self._play_event.set_property('halign', Gtk.Align.END)
             self._play_event.set_property('valign', Gtk.Align.START)
-            self._overlay_grid.set_property('valign', Gtk.Align.FILL)
-            self._overlay_grid.set_property('halign', Gtk.Align.END)
+            self._overlay.set_property('valign', Gtk.Align.FILL)
+            self._overlay.set_property('halign', Gtk.Align.END)
         else:
             self._play_event.set_hexpand(True)
             self._play_event.set_vexpand(False)
             self._play_event.set_property('halign', Gtk.Align.START)
             self._play_event.set_property('valign', Gtk.Align.END)
-            self._overlay_grid.set_property('halign', Gtk.Align.FILL)
-            self._overlay_grid.set_property('valign', Gtk.Align.END)
-        self._overlay_grid.add(self._play_event)
-        self._overlay_grid.add(self._play_all_event)
-        self._overlay_grid.add(self._action_event)
-        self._overlay_grid.add(self._artwork_event)
+            self._overlay.set_property('halign', Gtk.Align.FILL)
+            self._overlay.set_property('valign', Gtk.Align.END)
+        self._overlay.add(self._play_event)
+        self._overlay.add(self._play_all_event)
+        self._overlay.add(self._action_event)
+        self._overlay.add(self._artwork_event)
 
     def _on_query_tooltip(self, widget, x, y, keyboard, tooltip):
         """
@@ -572,6 +573,7 @@ class AlbumDetailedWidget(Gtk.Bin, AlbumWidget):
         builder = Gtk.Builder()
         builder.add_from_resource('/org/gnome/Lollypop/AlbumDetailedWidget.ui')
         self._widget = builder.get_object('widget')
+        self._overlay = builder.get_object('overlay')
         self._play_button = builder.get_object('play-button')
         self._play_all_button = builder.get_object('playall-button')
         self._artwork_button = builder.get_object('artwork-button')
