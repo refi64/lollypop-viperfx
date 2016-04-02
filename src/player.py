@@ -60,14 +60,14 @@ class Player(BinPlayer, QueuePlayer, UserPlaylistPlayer, RadioPlayer,
         """
             Current track
         """
-        return self._current_track
+        return self._next_track
 
     @property
     def prev_track(self):
         """
             Current track
         """
-        return self._current_track
+        return self._prev_track
 
     @property
     def context(self):
