@@ -108,7 +108,7 @@ Gtk.ListBoxRow .menu-button:hover {
 }
 
 .rounded-icon {
-    transition: 0.2s linear;
+    transition: 70ms linear;
     border: 3px solid white;
     background-color: black;
     color: white;
@@ -118,7 +118,7 @@ Gtk.ListBoxRow .menu-button:hover {
 }
 
 .rounded-icon-small {
-    transition: 0.2s linear;
+    transition: 70ms linear;
     border: 2px solid white;
     background-color: black;
     color: white;
@@ -128,7 +128,7 @@ Gtk.ListBoxRow .menu-button:hover {
 }
 
 .squared-icon {
-    transition: 0.2s linear;
+    transition:70ms linear;
     border: 2px solid white;
     background-color: black;
     color: white;
