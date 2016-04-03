@@ -940,11 +940,16 @@ class AlbumDetailedWidget(Gtk.Bin, AlbumWidget):
             Lp().player.clear_albums()
             Lp().player.load(Track(track_id))
         else:
-            if not Lp().player.is_party() and\
-               not Lp().player.has_album(self._album):
-                Lp().player.set_albums(track_id,
-                                       self._filter_ids,
-                                       self._album.genre_ids)
+            # Do not modify album list if in party mode
+            if not Lp().player.is_party():
+                # If in artist view, reset album list
+                if self._filter_ids:
+                    Lp().player.set_albums(track_id,
+                                           self._filter_ids,
+                                           self._album.genre_ids)
+                # Else, add album if missing
+                elif not Lp().player.has_album(self._album):
+                    Lp().player.add_album(self._album)
             Lp().player.load(Track(track_id))
             if self._button_state & Gdk.ModifierType.CONTROL_MASK:
                 Lp().player.set_next_context(NextContext.STOP_TRACK)
