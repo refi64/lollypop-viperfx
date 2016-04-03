@@ -12,7 +12,7 @@
 
 from gi.repository import Gtk, GLib
 
-from lollypop.define import Lp
+from lollypop.define import Lp, ArtSize
 
 
 class View(Gtk.Grid):
@@ -208,7 +208,7 @@ class LazyLoadingView(View):
         """
         if not self._lazy_queue:
             return False
-        wanted = self.get_allocation().height / 2
+        wanted = ArtSize.BIG * self.get_scale_factor()
         scroll_value = adj.get_value()
         diff = self._prev_scroll_value - scroll_value
         if diff > wanted or diff < -wanted:
