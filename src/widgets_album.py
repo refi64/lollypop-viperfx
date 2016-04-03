@@ -39,7 +39,6 @@ class AlbumWidget:
         self._stop = False
         self._cover = None
         self._widget = None
-        self._popover = False
         self._play_all_button = None
         self._show_overlay = False
         self._overlay_orientation = Gtk.Orientation.HORIZONTAL
@@ -107,9 +106,8 @@ class AlbumWidget:
         """
             Update overlay icon
         """
-        if self._cover is None or self._popover:
+        if self._cover is None:
             return
-        self._on_pop_cover_closed(self)
 
     def stop(self):
         """
@@ -166,6 +164,7 @@ class AlbumWidget:
             Set overlay
             @param set as bool
         """
+        self._show_overlay = set
         if set:
             self._play_button.set_opacity(1)
             self._play_button.get_style_context().add_class(
@@ -238,22 +237,8 @@ class AlbumWidget:
             Remove selected style
             @param widget as Gtk.Popover
         """
-        self._popover = False
         if self._show_overlay:
-            self._show_overlay = False
-            self._play_button.set_opacity(0)
-            self._play_button.get_style_context().remove_class(
-                                                           self._rounded_class)
-            if self._play_all_button is not None:
-                self._play_all_button.set_opacity(0)
-                self._play_all_button.get_style_context().remove_class(
-                                                           self._rounded_class)
-            self._artwork_button.set_opacity(0)
-            self._artwork_button.get_style_context().remove_class(
-                                                           self._squared_class)
-            self._action_button.set_opacity(0)
-            self._action_button.get_style_context().remove_class(
-                                                           self._squared_class)
+            GLib.idle_add(self._set_overlay, False)
 
     def _on_enter_notify(self, widget, event):
         """
@@ -262,7 +247,6 @@ class AlbumWidget:
             @param event es Gdk.Event
         """
         if not self._show_overlay:
-            self._show_overlay = True
             self._set_overlay(True)
             self._cover.set_opacity(0.9)
 
@@ -279,7 +263,6 @@ class AlbumWidget:
                event.x > x + allocation.width or
                event.y < y or
                event.y > y + allocation.height):
-            self._show_overlay = False
             self._cover.set_opacity(1)
             self._set_overlay(False)
 
@@ -314,7 +297,6 @@ class AlbumWidget:
             @param: widget as Gtk.EventBox
             @param: event as Gdk.Event
         """
-        self._popover = True
         popover = CoversPopover(self._album.artist_id, self._album.id)
         popover.set_relative_to(widget)
         popover.populate()
