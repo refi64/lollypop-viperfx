@@ -557,7 +557,8 @@ class Container:
                 if is_compilation or\
                         Lp().settings.get_value('show-compilations'):
                     albums = Lp().albums.get_compilations()
-                albums += Lp().albums.get_ids()
+                if not is_compilation:
+                    albums += Lp().albums.get_ids()
             elif genre_ids and genre_ids[0] == Type.POPULARS:
                 albums = Lp().albums.get_populars()
             elif genre_ids and genre_ids[0] == Type.RECENTS:
