@@ -20,6 +20,7 @@ from lollypop.art_downloader import ArtDownloader
 from lollypop.tagreader import TagReader
 from lollypop.define import Lp
 from lollypop.objects import Album
+from lollypop.utils import escape
 
 
 class AlbumArt(BaseArt, ArtDownloader, TagReader):
@@ -77,12 +78,11 @@ class AlbumArt(BaseArt, ArtDownloader, TagReader):
         if album.id is None:
             return None
         try:
+            filename = self._get_album_cache_name(album) + ".jpg"
             paths = [
                 os.path.join(album.path, self._favorite),
                 # Used when having muliple albums in same folder
-                os.path.join(album.path, "{}_{}.jpg".format(
-                                                    ", ".join(album.artists),
-                                                    album.name))
+                os.path.join(album.path, filename)
             ]
             for path in paths:
                 if os.path.exists(path):
@@ -206,8 +206,8 @@ class AlbumArt(BaseArt, ArtDownloader, TagReader):
             path_count = Lp().albums.get_path_count(album.path)
             # Many albums with same path, suffix with artist_album name
             if path_count > 1:
-                artpath = os.path.join(album.path, "{}_{}.jpg".format(
-                                       album.artist_name, album.name))
+                filename = self._get_album_cache_name(album) + ".jpg"
+                artpath = os.path.join(album.path, filename)
                 if os.path.exists(os.path.join(album.path, self._favorite)):
                     os.remove(os.path.join(album.path, self._favorite))
             else:
@@ -276,5 +276,5 @@ class AlbumArt(BaseArt, ArtDownloader, TagReader):
             @param album as Album
         """
         # FIXME special chars
-        path = "_".join(album.artists) + "_" + album.name
-        return path[0:240].replace("/", "_")
+        name = "_".join(album.artists) + "_" + album.name
+        return escape(name)
