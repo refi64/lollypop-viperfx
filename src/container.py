@@ -182,13 +182,13 @@ class Container:
                 self._stack.clean_old_views(child)
                 break
 
-    def update_overlays(self):
+    def disable_overlays(self):
         """
-            Update current view
+            Disable overlays
         """
         view = self._stack.get_visible_child()
         if view:
-            view.update_overlays()
+            view.disable_overlays()
 
     def update_view(self):
         """

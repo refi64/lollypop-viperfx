@@ -38,6 +38,7 @@ class Window(Gtk.ApplicationWindow, Container):
                                        application=app,
                                        title="Lollypop")
         self.connect('hide', self._on_hide)
+        self.connect('leave-notify-event', self._on_leave_notify)
         self._timeout_configure = None
         seek_action = Gio.SimpleAction.new('seek',
                                            GLib.VariantType.new('i'))
@@ -445,3 +446,11 @@ class Window(Gtk.ApplicationWindow, Container):
             # No idea why, maybe scanner using Gstpbutils before Gstreamer
             # initialisation is finished...
             GLib.timeout_add(2000, self.update_db)
+
+    def _on_leave_notify(self, widget, event):
+        """
+            Update overlays as internal widget may not have received the signal
+            @param widget as Gtk.Widget
+            @param event as Gdk.event
+        """
+        self.disable_overlays()

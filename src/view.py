@@ -57,11 +57,11 @@ class View(Gtk.Grid):
         """
         GLib.idle_add(self._update_widgets, self._get_children())
 
-    def update_overlays(self):
+    def disable_overlays(self):
         """
-            Update overlays
+            Disable children's overlay
         """
-        GLib.idle_add(self._update_overlays, self._get_children())
+        GLib.idle_add(self._disable_overlays, self._get_children())
 
     def populate(self):
         pass
@@ -69,15 +69,15 @@ class View(Gtk.Grid):
 #######################
 # PRIVATE             #
 #######################
-    def _update_overlays(self, widgets):
+    def _disable_overlays(self, widgets):
         """
-            Update children's overlay
+            Disable children's overlay
             @param widgets as AlbumWidget
         """
         if widgets:
             widget = widgets.pop(0)
-            widget.update_overlay()
-            GLib.idle_add(self._update_overlays, widgets)
+            widget.set_overlay(False)
+            GLib.idle_add(self._disable_overlays, widgets)
 
     def _update_widgets(self, widgets):
         """

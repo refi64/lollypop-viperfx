@@ -103,13 +103,6 @@ class AlbumWidget:
         """
         pass
 
-    def update_overlay(self):
-        """
-            Update overlay icon
-        """
-        if self._cover is None:
-            return
-
     def stop(self):
         """
             Stop populating
@@ -131,36 +124,7 @@ class AlbumWidget:
         """
         return self._album.name
 
-#######################
-# PRIVATE             #
-#######################
-    def _set_play_all_image(self):
-        """
-            Set play all image based on current shuffle status
-        """
-        if Lp().settings.get_enum('shuffle') == Shuffle.NONE:
-            self._play_all_button.set_from_icon_name(
-                                        'media-playlist-consecutive-symbolic',
-                                        Gtk.IconSize.BUTTON)
-        else:
-            self._play_all_button.set_from_icon_name(
-                                        'media-playlist-shuffle-symbolic',
-                                        Gtk.IconSize.BUTTON)
-
-    def _show_append(self, append):
-        """
-            Show append button if append, else remove button
-        """
-        if append:
-            self._action_button.set_from_icon_name('list-add-symbolic',
-                                                   Gtk.IconSize.BUTTON)
-            self._action_event.set_tooltip_text(_("Append"))
-        else:
-            self._action_button.set_from_icon_name('list-remove-symbolic',
-                                                   Gtk.IconSize.BUTTON)
-            self._action_event.set_tooltip_text(_("Remove"))
-
-    def _set_overlay(self, set):
+    def set_overlay(self, set):
         """
             Set overlay
             @param set as bool
@@ -204,6 +168,35 @@ class AlbumWidget:
             self._action_button.set_opacity(0)
             self._action_button.get_style_context().remove_class(
                                                            self._squared_class)
+
+#######################
+# PRIVATE             #
+#######################
+    def _set_play_all_image(self):
+        """
+            Set play all image based on current shuffle status
+        """
+        if Lp().settings.get_enum('shuffle') == Shuffle.NONE:
+            self._play_all_button.set_from_icon_name(
+                                        'media-playlist-consecutive-symbolic',
+                                        Gtk.IconSize.BUTTON)
+        else:
+            self._play_all_button.set_from_icon_name(
+                                        'media-playlist-shuffle-symbolic',
+                                        Gtk.IconSize.BUTTON)
+
+    def _show_append(self, append):
+        """
+            Show append button if append, else remove button
+        """
+        if append:
+            self._action_button.set_from_icon_name('list-add-symbolic',
+                                                   Gtk.IconSize.BUTTON)
+            self._action_event.set_tooltip_text(_("Append"))
+        else:
+            self._action_button.set_from_icon_name('list-remove-symbolic',
+                                                   Gtk.IconSize.BUTTON)
+            self._action_event.set_tooltip_text(_("Remove"))
 
     def _on_destroy(self, widget):
         """
@@ -258,7 +251,7 @@ class AlbumWidget:
         """
         self._timeout_id = None
         if not self._show_overlay:
-            self._set_overlay(True)
+            self.set_overlay(True)
 
     def _on_leave_notify(self, widget, event):
         """
@@ -279,7 +272,7 @@ class AlbumWidget:
                 GLib.source_remove(self._timeout_id)
                 self._timeout_id = None
             if self._show_overlay:
-                self._set_overlay(False)
+                self.set_overlay(False)
 
     def _on_play_press_event(self, widget, event):
         """
@@ -444,12 +437,12 @@ class AlbumSimpleWidget(Gtk.Frame, AlbumWidget):
 #######################
 # PRIVATE             #
 #######################
-    def _set_overlay(self, set):
+    def set_overlay(self, set):
         """
             Set overlay
             @param set as bool
         """
-        if set:
+        if set and not self._show_overlay:
             # Play button
             self._play_event = Gtk.EventBox()
             self._play_event.set_property('has-tooltip', True)
@@ -516,9 +509,9 @@ class AlbumSimpleWidget(Gtk.Frame, AlbumWidget):
             self._overlay.add(self._action_event)
             self._overlay.add(self._artwork_event)
             self._overlay.show_all()
-            AlbumWidget._set_overlay(self, True)
-        else:
-            AlbumWidget._set_overlay(self, False)
+            AlbumWidget.set_overlay(self, True)
+        elif self._show_overlay:
+            AlbumWidget.set_overlay(self, False)
             self._play_event.destroy()
             self._play_event = None
             self._play_button.destroy()

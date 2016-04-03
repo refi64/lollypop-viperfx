@@ -69,12 +69,12 @@ class AlbumsView(LazyLoadingView):
 #######################
 # PRIVATE             #
 #######################
-    def _update_overlays(self, widgets):
+    def _disable_overlays(self, widgets):
         """
-            Update children's overlay
+            Disable children's overlay
             @param widgets as AlbumWidget
         """
-        View._update_overlays(self, widgets)
+        View._disable_overlays(self, widgets)
 
     def _get_children(self):
         """
@@ -150,7 +150,7 @@ class AlbumsView(LazyLoadingView):
         popover.connect('closed', self._on_popover_closed, cover)
         popover.show()
         cover.set_opacity(0.9)
-        album_widget.update_overlay()
+        album_widget.set_overlay(False)
 
     def _on_popover_closed(self, popover, image):
         """
