@@ -11,9 +11,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lollypop\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-03-21 19:45+0100\n"
-"PO-Revision-Date: 2016-03-21 18:53+0000\n"
-"Last-Translator: Nathan Follens\n"
+"POT-Creation-Date: 2016-03-30 17:40+0200\n"
+"PO-Revision-Date: 2016-03-30 15:43+0000\n"
+"Last-Translator: Cédric Bellegarde <web@adishatz.org>\n"
 "Language-Team: Dutch (http://www.transifex.com/gnumdk/lollypop/language/nl/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -224,13 +224,13 @@ msgstr "Bladeren door genres/albumhoezen"
 msgid "Genre/Artist/Cover browsing"
 msgstr "Bladeren door genres/artiesten/albumhoezen"
 
-#: ../data/lollypop.appdata.xml.in.h:8 ../src/playlists.py:237
+#: ../data/lollypop.appdata.xml.in.h:8 ../src/playlists.py:239
 #: ../data/ToolbarEnd.ui.h:7
 msgid "Search"
 msgstr "Zoeken"
 
-#: ../data/lollypop.appdata.xml.in.h:9 ../src/pop_menu.py:478
-#: ../src/pop_menu.py:499 ../src/toolbar_end.py:301
+#: ../data/lollypop.appdata.xml.in.h:9 ../src/pop_menu.py:472
+#: ../src/pop_menu.py:493 ../src/toolbar_end.py:301
 #: ../data/QueuePopover.ui.h:2
 msgid "Queue"
 msgstr "Wachtrij"
@@ -280,35 +280,35 @@ msgstr "HiDPI-ondersteuning"
 msgid "Tunein support"
 msgstr "Tunein-ondersteuning"
 
-#: ../src/application.py:31
+#: ../src/application.py:32
 msgid ""
 "    - Scrobbler disabled\n"
 "    - Auto cover download disabled\n"
 "    - Artist informations disabled"
 msgstr "    - Scrobbler uitgeschakeld\n    - Automatisch downloaden van albumhoezen uitgeschakeld\n    - Artiestinformatie uitgeschakeld"
 
-#: ../src/application.py:379
+#: ../src/application.py:395
 #, python-format
 msgid "%d artist"
 msgid_plural "%d artists"
 msgstr[0] "%d artiest"
 msgstr[1] "%d artiesten"
 
-#: ../src/application.py:381
+#: ../src/application.py:397
 #, python-format
 msgid "%d album"
 msgid_plural "%d albums"
 msgstr[0] "%d album"
 msgstr[1] "%d albums"
 
-#: ../src/application.py:383
+#: ../src/application.py:399
 #, python-format
 msgid "%d track"
 msgid_plural "%d tracks"
 msgstr[0] "%d nummer"
 msgstr[1] "%d nummers"
 
-#: ../src/application.py:398
+#: ../src/application.py:414
 msgid "Lollypop: You need to install yelp."
 msgstr "Lollypop: je moet yelp installeren."
 
@@ -328,8 +328,8 @@ msgstr "Recent toegevoegde albums"
 msgid "Random albums"
 msgstr "Willekeurige albums"
 
-#: ../src/container.py:417 ../src/pop_menu.py:405 ../src/pop_menu.py:481
-#: ../src/pop_menu.py:501
+#: ../src/container.py:417 ../src/pop_menu.py:411 ../src/pop_menu.py:475
+#: ../src/pop_menu.py:495
 msgid "Playlists"
 msgstr "Afspeellijsten"
 
@@ -349,38 +349,37 @@ msgstr "Alle albums"
 msgid "Compilations"
 msgstr "Compilaties"
 
-#: ../src/container.py:492 ../src/playlists.py:229
+#: ../src/container.py:492 ../src/playlists.py:231
 msgid "Popular tracks"
 msgstr "Populaire nummers"
 
-#: ../src/container.py:493 ../src/playlists.py:231
+#: ../src/container.py:493 ../src/playlists.py:233
 msgid "Recently played"
 msgstr "Recent afgespeeld"
 
-#: ../src/container.py:494 ../src/playlists.py:233
+#: ../src/container.py:494 ../src/playlists.py:235
 msgid "Never played"
 msgstr "Nooit afgespeeld"
 
-#: ../src/container.py:495 ../src/playlists.py:235
+#: ../src/container.py:495 ../src/playlists.py:237
 msgid "Random tracks"
 msgstr "Willekeurige nummers"
 
-#: ../src/controllers.py:82 ../src/controllers.py:115
+#: ../src/controllers.py:84 ../src/controllers.py:117
 msgid "Pause"
 msgstr "Pauzeren"
 
-#: ../src/controllers.py:84 ../src/controllers.py:112 ../src/pop_tunein.py:154
-#: ../src/widgets_album.py:379 ../src/widgets_radio.py:73
-#: ../data/AlbumContextWidget.ui.h:1 ../data/AlbumDetailedWidget.ui.h:1
-#: ../data/ToolbarPlayback.ui.h:2
+#: ../src/controllers.py:86 ../src/controllers.py:114 ../src/pop_tunein.py:154
+#: ../src/widgets_album.py:392 ../src/widgets_radio.py:69
+#: ../data/AlbumDetailedWidget.ui.h:1 ../data/ToolbarPlayback.ui.h:2
 msgid "Play"
 msgstr "Afspelen"
 
-#: ../src/database_albums.py:302 ../src/database_artists.py:104
-#: ../src/database_genres.py:69 ../src/database_tracks.py:228
-#: ../src/selectionlist.py:273 ../src/tagreader.py:88 ../src/tagreader.py:101
-#: ../src/tagreader.py:114 ../src/tagreader.py:140 ../src/tagreader.py:153
-#: ../src/tagreader.py:156 ../src/tagreader.py:166 ../src/tagreader.py:169
+#: ../src/database_albums.py:301 ../src/database_artists.py:104
+#: ../src/database_genres.py:69 ../src/database_tracks.py:229
+#: ../src/selectionlist.py:274 ../src/tagreader.py:87 ../src/tagreader.py:102
+#: ../src/tagreader.py:117 ../src/tagreader.py:144 ../src/tagreader.py:159
+#: ../src/tagreader.py:162 ../src/tagreader.py:172 ../src/tagreader.py:175
 msgid "Unknown"
 msgstr "Onbekend"
 
@@ -409,24 +408,24 @@ msgstr "door %s"
 msgid "by %s, from %s"
 msgstr "door %s, van %s"
 
-#: ../src/player_bin.py:443
+#: ../src/player_bin.py:442
 #, python-format
 msgid "File doesn't exist: %s"
 msgstr "Bestand bestaat niet: %s"
 
-#: ../src/playlists.py:54
+#: ../src/playlists.py:55
 msgid "Loved tracks"
 msgstr "Lievelingsnummers"
 
-#: ../src/pop_albums.py:279
+#: ../src/pop_albums.py:288
 msgid "Clear albums"
 msgstr "Albums wissen"
 
-#: ../src/pop_albums.py:287 ../src/view_artist.py:44
+#: ../src/pop_albums.py:296 ../src/pop_info.py:233 ../src/view_artist.py:44
 msgid "Go to current track"
 msgstr "Ga naar huidig nummer"
 
-#: ../src/pop_albums.py:288 ../src/toolbar_end.py:305
+#: ../src/pop_albums.py:297 ../src/toolbar_end.py:305
 msgid "Playing albums"
 msgstr "Afspelende albums"
 
@@ -442,11 +441,11 @@ msgstr "Geen hoes gevonden..."
 msgid "Select a cover art for this album"
 msgstr "Kies een albumhoes voor dit album"
 
-#: ../src/pop_infos.py:34
+#: ../src/pop_info.py:33
 msgid "Advanced artist informations disabled"
 msgstr "Uitgebreide artiestinformatie uitgeschakeld"
 
-#: ../src/pop_infos.py:42
+#: ../src/pop_info.py:41
 msgid "WebKit support disabled"
 msgstr "WebKit-ondersteuning uitgeschakeld"
 
@@ -466,7 +465,7 @@ msgstr "Stoppen na dit album"
 msgid "Do not repeat"
 msgstr "Niet herhalen"
 
-#: ../src/pop_menu.py:201 ../src/widgets_indicator.py:105
+#: ../src/pop_menu.py:201 ../src/widgets_indicator.py:97
 #: ../data/SearchRow.ui.h:3
 msgid "Add to queue"
 msgstr "Toevoegen aan wachtrij"
@@ -479,7 +478,7 @@ msgstr "Toevoegen als volgende nummers"
 msgid "Next track"
 msgstr "Toevoegen als volgend nummer"
 
-#: ../src/pop_menu.py:212 ../src/widgets_indicator.py:101
+#: ../src/pop_menu.py:212 ../src/widgets_indicator.py:93
 msgid "Remove from queue"
 msgstr "Verwijderen uit wachtrij"
 
@@ -497,15 +496,15 @@ msgstr "Verwijderen uit \"%s\""
 msgid "Add to \"%s\""
 msgstr "Toevoegen aan \"%s\""
 
-#: ../src/pop_menu.py:403
+#: ../src/pop_menu.py:409
 msgid "Playback"
 msgstr "Afspelen"
 
-#: ../src/pop_menu.py:439
+#: ../src/pop_menu.py:445
 msgid "Modify information"
 msgstr "Gegevens bewerken"
 
-#: ../src/pop_menu.py:484 ../data/PlaylistView.ui.h:1
+#: ../src/pop_menu.py:478 ../data/PlaylistView.ui.h:1
 msgid "Edit"
 msgstr "Bewerken"
 
@@ -560,39 +559,39 @@ msgstr "%s synchroniseren"
 msgid "Cancel synchronization"
 msgstr "Synchronisatie annuleren"
 
-#: ../src/widgets_album.py:164
+#: ../src/widgets_album.py:163
 msgid "Append"
 msgstr "Toevoegen"
 
-#: ../src/widgets_album.py:168
+#: ../src/widgets_album.py:167
 msgid "Remove"
 msgstr "Verwijderen"
 
-#: ../src/widgets_album.py:390 ../data/AlbumDetailedWidget.ui.h:3
+#: ../src/widgets_album.py:403 ../data/AlbumDetailedWidget.ui.h:3
 msgid "Play albums"
 msgstr "Albums afspelen"
 
-#: ../src/widgets_album.py:400 ../src/widgets_radio.py:87
-#: ../data/AlbumContextWidget.ui.h:2 ../data/AlbumDetailedWidget.ui.h:2
+#: ../src/widgets_album.py:413 ../src/widgets_radio.py:85
+#: ../data/AlbumDetailedWidget.ui.h:2
 msgid "Change artwork"
 msgstr "Albumhoes wijzigen"
 
-#: ../src/widgets_album.py:590
+#: ../src/widgets_album.py:618
 #, python-format
 msgid "%s h  %s m"
 msgstr "%s u %s m"
 
-#: ../src/widgets_album.py:592
+#: ../src/widgets_album.py:620
 #, python-format
 msgid "%s h"
 msgstr "%s u"
 
-#: ../src/widgets_album.py:594
+#: ../src/widgets_album.py:622
 #, python-format
 msgid "%s m"
 msgstr "%s m"
 
-#: ../src/widgets_album.py:839
+#: ../src/widgets_album.py:879
 #, python-format
 msgid "Disc %s"
 msgstr "Schijf %s"
@@ -609,17 +608,17 @@ msgstr "Onbekende fout bij synchroniseren, probeer je apparaat te herstarten"
 msgid "No free space available on device"
 msgstr "Geen vrije ruimte beschikbaar op apparaat"
 
-#: ../src/widgets_playlist.py:479 ../src/widgets_playlist.py:482
+#: ../src/widgets_playlist.py:483 ../src/widgets_playlist.py:486
 msgid "New playlist "
 msgstr "Nieuwe afspeellijst"
 
 #. Need a copy, segfault on EOS 3.1
-#: ../src/widgets_playlist.py:538 ../src/widgets_playlist.py:785
+#: ../src/widgets_playlist.py:542 ../src/widgets_playlist.py:789
 #, python-format
 msgid "Remove \"%s\"?"
 msgstr "\"%s\" verwijderen?"
 
-#: ../src/widgets_playlist.py:791
+#: ../src/widgets_playlist.py:795
 msgid "Remove these tracks?"
 msgstr "Deze nummers verwijderen?"
 
@@ -672,25 +671,29 @@ msgstr "_Afsluiten"
 msgid "No information for this artist..."
 msgstr "Geen informatie voor deze artiest..."
 
-#: ../data/ArtistInfos.ui.h:1
+#: ../data/ArtistInfo.ui.h:1
 msgid "Albums"
 msgstr "Albums"
 
-#: ../data/ArtistInfos.ui.h:2
+#: ../data/ArtistInfo.ui.h:2
 msgid "Last.fm"
 msgstr "Last.fm"
 
-#: ../data/ArtistInfos.ui.h:3
+#: ../data/ArtistInfo.ui.h:3
 msgid "Wikipedia"
 msgstr "Wikipedia"
 
-#: ../data/ArtistInfos.ui.h:4
+#: ../data/ArtistInfo.ui.h:4
 msgid "Wikia"
 msgstr "Wikia"
 
-#: ../data/ArtistInfos.ui.h:5
+#: ../data/ArtistInfo.ui.h:5
 msgid "DuckDuckGo"
 msgstr "DuckDuckGo"
+
+#: ../data/CoversPopover.ui.h:1
+msgid "Select a local file"
+msgstr ""
 
 #: ../data/DeviceManagerView.ui.h:1
 msgid "Synchronize your device with this playlists"

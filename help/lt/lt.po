@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lollypop\n"
 "POT-Creation-Date: 2015-06-24 15:43+0200\n"
-"PO-Revision-Date: 2016-02-23 18:55+0000\n"
+"PO-Revision-Date: 2016-03-31 15:21+0000\n"
 "Last-Translator: Moo\n"
 "Language-Team: Lithuanian (http://www.transifex.com/gnumdk/lollypop/language/lt/)\n"
 "MIME-Version: 1.0\n"
@@ -182,12 +182,12 @@ msgstr "Vald+n: Praleisti esamą albumą"
 #. (itstool) path: item/p
 #: C/index.page:61
 msgid "Left key: Skip backward in track"
-msgstr ""
+msgstr "Klavišas kairėn: Peršokti takelyje atgal"
 
 #. (itstool) path: item/p
 #: C/index.page:62
 msgid "Right key: Skip forward in track"
-msgstr ""
+msgstr "Klavišas dešinėn: Peršokti takelyje pirmyn"
 
 #. (itstool) path: p/link
 #: C/legal.xml:4
@@ -205,4 +205,4 @@ msgid ""
 "As a special exception, the copyright holders give you permission to copy, "
 "modify, and distribute the example code contained in this document under the"
 " terms of your choosing, without restriction."
-msgstr ""
+msgstr "Kaip ypatinga išimtis, licenciarai leidžia jums kopijuoti, modifikuoti ir platinti šiame dokumente esantį pavyzdinį kodą pagal jūsų pasirinktas sąlygas."
