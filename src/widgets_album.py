@@ -41,6 +41,7 @@ class AlbumWidget:
         self._widget = None
         self._play_all_button = None
         self._show_overlay = False
+        self._timeout_id = None
         self._overlay_orientation = Gtk.Orientation.HORIZONTAL
         self._squared_class = "squared-icon"
         self._rounded_class = "rounded-icon"
@@ -242,29 +243,43 @@ class AlbumWidget:
 
     def _on_enter_notify(self, widget, event):
         """
-            Show special buttons
+            Show overlay buttons after a timeout
             @param widget as Gtk.Widget
             @param event es Gdk.Event
         """
+        self._cover.set_opacity(0.9)
+        if self._timeout_id is None:
+            self._timeout_id = GLib.timeout_add(250,
+                                                self._on_enter_notify_timeout)
+
+    def _on_enter_notify_timeout(self):
+        """
+            Show overlay buttons
+        """
+        self._timeout_id = None
         if not self._show_overlay:
             self._set_overlay(True)
-            self._cover.set_opacity(0.9)
 
     def _on_leave_notify(self, widget, event):
         """
-            Hide special buttons
+            Hide overlay buttons
             @param widget as Gtk.Widget
             @param event es Gdk.Event
         """
+        # We are going to check if event happend in a child
         (x, y) = self._overlay.translate_coordinates(widget, 0, 0)
         allocation = self._overlay.get_allocation()
-        if self._show_overlay and (
-               event.x < x or
-               event.x > x + allocation.width or
-               event.y < y or
-               event.y > y + allocation.height):
+        if event.x < x or\
+           event.x > x + allocation.width or\
+           event.y < y or\
+           event.y > y + allocation.height:
             self._cover.set_opacity(1)
-            self._set_overlay(False)
+            # Remove enter notify timeout
+            if self._timeout_id is not None:
+                GLib.source_remove(self._timeout_id)
+                self._timeout_id = None
+            if self._show_overlay:
+                self._set_overlay(False)
 
     def _on_play_press_event(self, widget, event):
         """
