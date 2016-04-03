@@ -80,8 +80,6 @@ class InfoPopover(Gtk.Popover):
             self._stack.get_child_by_name('wikipedia').destroy()
         if Lp().lastfm is None:
             self._stack.get_child_by_name('lastfm').destroy()
-        if InfoPopover.WebView is None or artist_ids:
-            self._stack.get_child_by_name('wikia').destroy()
         if InfoPopover.WebView is None:
             self._stack.get_child_by_name('duck').destroy()
         self._stack.set_visible_child_name(
@@ -309,29 +307,6 @@ class InfoPopover(Gtk.Popover):
             t = Thread(target=content_widget.populate, args=(artist, album))
             t.daemon = True
             t.start()
-
-    def _on_map_wikia(self, widget, force=False):
-        """
-            Load on map
-            @param widget as Gtk.Viewport
-            @param force as bool
-        """
-        self._jump_button.hide()
-        self._menu.hide()
-        if self._current is None:
-            self._current = self._get_current()
-        artist_list = []
-        for artist_id in self._current[0]:
-            artist_list.append(Lp().artists.get_name(artist_id))
-        artists = ", ".join(artist_list)
-        title = Lp().tracks.get_name(self._current[2])
-        Lp().settings.set_value('infoswitch',
-                                GLib.Variant('s', 'wikia'))
-        url = "http://lyrics.wikia.com/wiki/%s:%s" % (
-                                                     artists.replace(' ', '_'),
-                                                     title.replace(' ', '_'))
-        # Delayed load due to WebKit memory loading
-        GLib.timeout_add(250, self._load_web, widget, url, True, True)
 
     def _on_map_duck(self, widget, force=False):
         """

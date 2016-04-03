@@ -111,25 +111,6 @@
               </packing>
             </child>
             <child>
-              <object class="GtkScrolledWindow" id="scrollwikia">
-                <property name="visible">True</property>
-                <property name="can_focus">False</property>
-                <child>
-                  <object class="GtkViewport" id="wikia">
-                    <property name="visible">True</property>
-                    <property name="can_focus">False</property>
-                    <signal name="map" handler="_on_map_wikia" swapped="no"/>
-                    <signal name="unmap" handler="_on_unmap" swapped="no"/>
-                  </object>
-                </child>
-              </object>
-              <packing>
-                <property name="name">wikia</property>
-                <property name="title" translatable="yes">Wikia</property>
-                <property name="position">3</property>
-              </packing>
-            </child>
-            <child>
               <object class="GtkScrolledWindow" id="scrollduck">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
