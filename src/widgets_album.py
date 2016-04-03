@@ -41,6 +41,7 @@ class AlbumWidget:
         self._widget = None
         self._popover = False
         self._play_all_button = None
+        self._overlay_orientation = Gtk.Orientation.HORIZONTAL
         self._squared_class = "squared-icon"
         self._rounded_class = "rounded-icon"
         self._scan_signal = Lp().scanner.connect('album-update',
@@ -59,9 +60,9 @@ class AlbumWidget:
         self._cover.set_from_surface(surface)
         self._cover.set_size_request(100, 100)
         if surface.get_height() > surface.get_width():
-            self._set_overlay_orientation(Gtk.Orientation.VERTICAL)
+            self._overlay_orientation = Gtk.Orientation.VERTICAL
         else:
-            self._set_overlay_orientation(Gtk.Orientation.HORIZONTAL)
+            self._overlay_orientation = Gtk.Orientation.HORIZONTAL
         del surface
 
     def update_cover(self):
@@ -75,9 +76,9 @@ class AlbumWidget:
                             ArtSize.BIG * self._cover.get_scale_factor())
         self._cover.set_from_surface(surface)
         if surface.get_height() > surface.get_width():
-            self._set_overlay_orientation(Gtk.Orientation.VERTICAL)
+            self._overlay_orientation = Gtk.Orientation.VERTICAL
         else:
-            self._set_overlay_orientation(Gtk.Orientation.HORIZONTAL)
+            self._overlay_orientation = Gtk.Orientation.HORIZONTAL
         del surface
 
     def update_state(self):
@@ -133,13 +134,6 @@ class AlbumWidget:
 #######################
 # PRIVATE             #
 #######################
-    def _set_overlay_orientation(self, orientation):
-        """
-            Set overlay orientation
-            @param orientation as Gtk.Orientation
-        """
-        pass
-
     def _set_play_all_image(self):
         """
             Set play all image based on current shuffle status
@@ -165,6 +159,50 @@ class AlbumWidget:
             self._action_button.set_from_icon_name('list-remove-symbolic',
                                                    Gtk.IconSize.BUTTON)
             self._action_event.set_tooltip_text(_("Remove"))
+
+    def _set_overlay(self, set):
+        """
+            Set overlay
+            @param set as bool
+        """
+        if set:
+            self._play_button.set_opacity(1)
+            self._play_button.get_style_context().add_class(
+                                                           self._rounded_class)
+            self._play_button.show()
+            if self._play_all_button is not None:
+                self._play_all_button.set_opacity(1)
+                self._play_all_button.get_style_context().add_class(
+                                                           self._squared_class)
+                self._set_play_all_image()
+                self._play_all_button.show()
+            self._artwork_button.set_opacity(1)
+            self._artwork_button.get_style_context().add_class(
+                                                           self._squared_class)
+            self._artwork_button.show()
+            self._show_append(not Lp().player.has_album(self._album))
+            self._action_button.set_opacity(1)
+            self._action_button.get_style_context().add_class(
+                                                       self._squared_class)
+            self._action_button.show()
+        else:
+            self._play_button.set_opacity(0)
+            self._play_button.hide()
+            self._play_button.get_style_context().remove_class(
+                                                           self._rounded_class)
+            if self._play_all_button is not None:
+                self._play_all_button.set_opacity(0)
+                self._play_all_button.hide()
+                self._play_all_button.get_style_context().remove_class(
+                                                           self._squared_class)
+            self._artwork_button.hide()
+            self._artwork_button.set_opacity(0)
+            self._artwork_button.get_style_context().remove_class(
+                                                           self._squared_class)
+            self._action_button.hide()
+            self._action_button.set_opacity(0)
+            self._action_button.get_style_context().remove_class(
+                                                           self._squared_class)
 
     def _on_destroy(self, widget):
         """
@@ -222,26 +260,8 @@ class AlbumWidget:
             @param event es Gdk.Event
         """
         if self._play_button.get_opacity() == 0:
+            self._set_overlay(True)
             self._cover.set_opacity(0.9)
-            self._play_button.set_opacity(1)
-            self._play_button.get_style_context().add_class(
-                                                           self._rounded_class)
-            self._play_button.show()
-            if self._play_all_button is not None:
-                self._play_all_button.set_opacity(1)
-                self._play_all_button.get_style_context().add_class(
-                                                           self._squared_class)
-                self._set_play_all_image()
-                self._play_all_button.show()
-            self._artwork_button.set_opacity(1)
-            self._artwork_button.get_style_context().add_class(
-                                                           self._squared_class)
-            self._artwork_button.show()
-            self._show_append(not Lp().player.has_album(self._album))
-            self._action_button.set_opacity(1)
-            self._action_button.get_style_context().add_class(
-                                                       self._squared_class)
-            self._action_button.show()
 
     def _on_leave_notify(self, widget, event):
         """
@@ -256,23 +276,7 @@ class AlbumWidget:
            event.y < y or\
            event.y > y + allocation.height:
             self._cover.set_opacity(1)
-            self._play_button.set_opacity(0)
-            self._play_button.hide()
-            self._play_button.get_style_context().remove_class(
-                                                           self._rounded_class)
-            if self._play_all_button is not None:
-                self._play_all_button.set_opacity(0)
-                self._play_all_button.hide()
-                self._play_all_button.get_style_context().remove_class(
-                                                           self._squared_class)
-            self._artwork_button.hide()
-            self._artwork_button.set_opacity(0)
-            self._artwork_button.get_style_context().remove_class(
-                                                           self._squared_class)
-            self._action_button.hide()
-            self._action_button.set_opacity(0)
-            self._action_button.get_style_context().remove_class(
-                                                           self._squared_class)
+            self._set_overlay(False)
 
     def _on_play_press_event(self, widget, event):
         """
@@ -477,39 +481,43 @@ class AlbumSimpleWidget(Gtk.Frame, AlbumWidget):
             Return preferred width
             @return (int, int)
         """
-        width = ArtSize.BIG * self.get_scale_factor()
+        # Padding: 3px, border: 1px
+        width = (ArtSize.BIG + 8) * self.get_scale_factor()
         return (width, width)
 
 #######################
 # PRIVATE             #
 #######################
-    def _set_overlay_orientation(self, orientation):
+    def _set_overlay(self, set):
         """
-            Set overlay orientation
-            @param orientation as Gtk.Orientation
+            Set overlay
+            @param set as bool
         """
-        for child in self._overlay.get_children():
-            self._overlay.remove(child)
-
-        self._overlay.set_orientation(orientation)
-        if orientation == Gtk.Orientation.VERTICAL:
-            self._play_event.set_hexpand(False)
-            self._play_event.set_vexpand(True)
-            self._play_event.set_property('halign', Gtk.Align.END)
-            self._play_event.set_property('valign', Gtk.Align.START)
-            self._overlay.set_property('valign', Gtk.Align.FILL)
-            self._overlay.set_property('halign', Gtk.Align.END)
+        if set:
+            self._overlay.set_orientation(self._overlay_orientation)
+            if self._overlay_orientation == Gtk.Orientation.VERTICAL:
+                self._play_event.set_hexpand(False)
+                self._play_event.set_vexpand(True)
+                self._play_event.set_property('halign', Gtk.Align.END)
+                self._play_event.set_property('valign', Gtk.Align.START)
+                self._overlay.set_property('valign', Gtk.Align.FILL)
+                self._overlay.set_property('halign', Gtk.Align.END)
+            else:
+                self._play_event.set_hexpand(True)
+                self._play_event.set_vexpand(False)
+                self._play_event.set_property('halign', Gtk.Align.START)
+                self._play_event.set_property('valign', Gtk.Align.END)
+                self._overlay.set_property('halign', Gtk.Align.FILL)
+                self._overlay.set_property('valign', Gtk.Align.END)
+            self._overlay.add(self._play_event)
+            self._overlay.add(self._play_all_event)
+            self._overlay.add(self._action_event)
+            self._overlay.add(self._artwork_event)
+            self._overlay.show_all()
         else:
-            self._play_event.set_hexpand(True)
-            self._play_event.set_vexpand(False)
-            self._play_event.set_property('halign', Gtk.Align.START)
-            self._play_event.set_property('valign', Gtk.Align.END)
-            self._overlay.set_property('halign', Gtk.Align.FILL)
-            self._overlay.set_property('valign', Gtk.Align.END)
-        self._overlay.add(self._play_event)
-        self._overlay.add(self._play_all_event)
-        self._overlay.add(self._action_event)
-        self._overlay.add(self._artwork_event)
+            for child in self._overlay.get_children():
+                self._overlay.remove(child)
+        AlbumWidget._set_overlay(self, set)
 
     def _on_query_tooltip(self, widget, x, y, keyboard, tooltip):
         """
