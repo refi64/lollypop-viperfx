@@ -410,6 +410,7 @@ class Player(BinPlayer, QueuePlayer, UserPlaylistPlayer, RadioPlayer,
                         self._albums = load(open(
                                             self.DATA_PATH + "/albums.bin",
                                             "rb"))
+                        self.shuffle_albums(True)
                         self._context.genre_ids = load(open(
                                             self.DATA_PATH + "/genre_ids.bin",
                                             "rb"))

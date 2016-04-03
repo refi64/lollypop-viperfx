@@ -213,6 +213,7 @@ class Application(Gtk.Application):
                          open(self.DATA_PATH + "/genre_ids.bin", "wb"))
                     dump(self.player.context.genre_ids,
                          open(self.DATA_PATH + "/artist_ids.bin", "wb"))
+                    self.player.shuffle_albums(False)
                     dump(self.player.get_albums(),
                          open(self.DATA_PATH + "/albums.bin", "wb"))
                 except:
