@@ -160,11 +160,6 @@ class RadioWidget(Gtk.Frame, AlbumWidget):
         self._cover.set_from_surface(surface)
         del surface
 
-    def disable_overlay(self):
-        """
-            Disable overlay
-        """
-        
     def update_cover(self):
         """
             Update cover for radio
