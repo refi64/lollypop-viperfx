@@ -20,6 +20,7 @@ try:
 except:
     pass
 from lollypop.define import Lp, Type
+from lollypop.lyrics import Lyrics
 from lollypop.cache import InfoCache
 
 
@@ -321,6 +322,7 @@ class LastfmContent(InfoContent):
         if artists == self._artists:
             InfoContent.populate(self, content, image_url, 'lastfm')
 
+
 class LyricsContent(InfoContent):
     """
         Show lyrics content
@@ -338,13 +340,11 @@ class LyricsContent(InfoContent):
             @param track id as int
             @thread safe
         """
-        if not artists:
-            artists = Lp().player.get_current_artists()
-        self._ = artists
-        if not self._load_cache_content(artists, title, 'lyrics'):
-            GLib.idle_add(self.set_visible_child_name, 'spinner')
-            self._spinner.start()
-            self._load_page_content(artists, title,)
+        pass
+        # if not self._load_cache_content(artists, title, 'lyrics'):
+        #    GLib.idle_add(self.set_visible_child_name, 'spinner')
+        #    self._spinner.start()
+        # self._load_page_content(artists, title,)
 
     def should_update(self, artists):
         """
@@ -354,6 +354,7 @@ class LyricsContent(InfoContent):
         if not artists:
             artists = Lp().player.get_current_artists()
         return artists != self._artists
+
 #######################
 # PRIVATE             #
 #######################
@@ -363,5 +364,5 @@ class LyricsContent(InfoContent):
             @param artists as str
         """
         lyrics = Lyrics()
-        l = lyrics.get(artists, title)
+        content = lyrics.get(artists, title)
         InfoContent.populate(self, content, None, 'lyrics')

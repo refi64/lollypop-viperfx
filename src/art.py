@@ -13,6 +13,8 @@
 from lollypop.art_album import AlbumArt
 from lollypop.art_radio import RadioArt
 
+from shutil import rmtree
+
 
 class Art(AlbumArt, RadioArt):
     """

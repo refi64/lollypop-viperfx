@@ -15,8 +15,7 @@ from gi.repository import Gtk, GLib
 from gettext import gettext as _
 from threading import Thread
 
-from lollypop.define import Lp, Type
-from lollypop.lyrics import Lyrics
+from lollypop.define import Lp
 from lollypop.objects import Track
 from lollypop.widgets_info import WikipediaContent, LastfmContent
 from lollypop.view_artist_albums import CurrentArtistAlbumsView
@@ -266,7 +265,7 @@ class InfoPopover(Gtk.Popover):
             content_widget.uncache(artists)
         if content_widget.should_update(artists) or force:
             content_widget.clear()
-            t = Thread(target=content_widget.populate, args=(artists, 
+            t = Thread(target=content_widget.populate, args=(artists,
                                                              track.album.name))
             t.daemon = True
             t.start()
@@ -280,17 +279,17 @@ class InfoPopover(Gtk.Popover):
         self._menu.hide()
         if self._current_track_id is None:
             self._current_track_id = Lp().player.current_track.id
-        artists = ", ".join(Lp().player.current_track.artists)
+        # artists = ", ".join(Lp().player.current_track.artists)
         Lp().settings.set_value('infoswitch',
                                 GLib.Variant('s', 'lyrics'))
-        content_widget = widget.get_child()
-        #if content_widget is None:
+        # content_widget = widget.get_child()
+        # if content_widget is None:
         #    content_widget = WikipediaContent(self._menu)
         #    content_widget.show()
         #    widget.add(content_widget)
-        #if force:
+        # if force:
         #    content_widget.uncache(artists+title)
-        #if content_widget.should_update(artists+title) or force:
+        # if content_widget.should_update(artists+title) or force:
         #    content_widget.clear()
         #    t = Thread(target=content_widget.populate, args=(artist, album))
         #    t.daemon = True

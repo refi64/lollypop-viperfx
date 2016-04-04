@@ -12,7 +12,6 @@
 
 from gi.repository import Gio, GdkPixbuf
 
-from shutil import rmtree
 from os import mkdir, path
 
 
