@@ -57,6 +57,15 @@ class WebView(Gtk.Stack):
             settings.set_property('enable-private-browsing', True)
             settings.set_property('print-backgrounds', False)
         settings.set_property('enable-plugins', False)
+        settings.set_property('enable-fullscreen', False)
+        settings.set_property('enable-html5-database', False)
+        settings.set_property('enable-html5-local-storage', False)
+        settings.set_property('enable-media-stream', False)
+        settings.set_property('enable-mediasource', False)
+        settings.set_property('enable-offline-web-application-cache', False)
+        settings.set_property('enable-page-cache', False)
+        settings.set_property('enable-webaudio', False)
+        settings.set_property('enable-webgl', False)
         if mobile:
             settings.set_property('user-agent',
                                   "Mozilla/5.0 (Linux; Ubuntu 14.04;"
