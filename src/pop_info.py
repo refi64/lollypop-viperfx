@@ -317,6 +317,8 @@ class InfoPopover(Gtk.Popover):
             Load on map
             @param widget as Gtk.Viewport
         """
+        self._jump_button.hide()
+        self._menu.hide()
         if self._current is None:
             self._current = self._get_current()
         artist_list = []
