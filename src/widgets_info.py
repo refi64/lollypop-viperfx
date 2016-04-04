@@ -19,7 +19,7 @@ try:
     from lollypop.wikipedia import Wikipedia
 except:
     pass
-from lollypop.define import Lp, Type
+from lollypop.define import Lp
 from lollypop.cache import InfoCache
 
 
@@ -36,7 +36,7 @@ class InfoContent(Gtk.Stack):
         InfoCache.init()
         self._stop = False
         self._cancel = Gio.Cancellable.new()
-        self._artists = Type.NONE
+        self._artist = ""
         self.set_transition_duration(500)
         self.set_transition_type(Gtk.StackTransitionType.CROSSFADE)
         builder = Gtk.Builder()
@@ -48,12 +48,6 @@ class InfoContent(Gtk.Stack):
         self.add_named(builder.get_object('notfound'), 'notfound')
         self._spinner = builder.get_object('spinner')
         self.add_named(self._spinner, 'spinner')
-
-    def clear_artist(self):
-        """
-            Clear current artist
-        """
-        self._artists = []
 
     def clear(self):
         """
@@ -69,6 +63,13 @@ class InfoContent(Gtk.Stack):
         """
         self._stop = True
         self._cancel.cancel()
+
+    @property
+    def artist(self):
+        """
+            Current artist on screen as str
+        """
+        return self._artist
 
     def set_content(self, prefix, content, image_url, suffix):
         """
@@ -165,6 +166,7 @@ class WikipediaContent(InfoContent):
             @param album as str
             @thread safe
         """
+        self._artist = artist
         GLib.idle_add(self._setup_menu_strings, [artist])
         if not self._load_cache_content(artist, 'wikipedia'):
             GLib.idle_add(self.set_visible_child_name, 'spinner')
@@ -256,6 +258,7 @@ class LastfmContent(InfoContent):
             @param artist as str
             @thread safe
         """
+        self._artist = artist
         if not self._load_cache_content(artist, 'lastfm'):
             GLib.idle_add(self.set_visible_child_name, 'spinner')
             self._spinner.start()

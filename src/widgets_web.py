@@ -40,6 +40,7 @@ class WebView(Gtk.Stack):
         self.set_transition_duration(500)
         self.set_transition_type(Gtk.StackTransitionType.CROSSFADE)
         self._current_domain = ''
+        self._url = ''
         self._open_links = OpenLink.NEW
         builder = Gtk.Builder()
         # Use ressource from ArtistContent
@@ -80,6 +81,13 @@ class WebView(Gtk.Stack):
         self._view.set_property('vexpand', True)
         self._view.show()
 
+    @property
+    def url(self):
+        """
+            domain as str
+        """
+        return self._url
+
     def load(self, url, open_link):
         """
             Load url
@@ -87,6 +95,7 @@ class WebView(Gtk.Stack):
             @param open link as OpenLink
         """
         self._open_link = open_link
+        self._url = url
         self._current_domain = self._get_domain(url)
         self._view.grab_focus()
         self._view.load_uri(url)
@@ -160,8 +169,6 @@ class WebView(Gtk.Stack):
             elif self._open_link == OpenLink.NONE:
                 decision.ignore()
                 return True
-            else:
-                self._open_link = OpenLink.NONE
         # If external domain, do not load
         elif self._get_domain(url) != self._current_domain:
             decision.ignore()

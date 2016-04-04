@@ -231,10 +231,16 @@ class InfoPopover(Gtk.Popover):
             @param widget as Gtk.Viewport
             @param force as bool
         """
-        self._on_child_unmap(widget)
-        self._jump_button.hide()
         if self._current_track.id is None:
             self._current_track = Lp().player.current_track
+        # Check if update is needed
+        widgets_artists = []
+        for child in widget.get_children():
+            widgets_artists.append(child.artist)
+        if widgets_artists == self._current_track.artists:
+            return
+        self._on_child_unmap(widget)
+        self._jump_button.hide()
         Lp().settings.set_value('infoswitch',
                                 GLib.Variant('s', 'lastfm'))
         for artist in self._current_track.artists:
@@ -253,10 +259,16 @@ class InfoPopover(Gtk.Popover):
             @param widget as Gtk.Viewport
             @param force as bool
         """
-        self._on_child_unmap(widget)
-        self._jump_button.hide()
         if self._current_track.id is None:
             self._current_track = Lp().player.current_track
+        # Check if update is needed
+        widgets_artists = []
+        for child in widget.get_children():
+            widgets_artists.append(child.artist)
+        if widgets_artists == self._current_track.artists:
+            return
+        self._on_child_unmap(widget)
+        self._jump_button.hide()
         Lp().settings.set_value('infoswitch',
                                 GLib.Variant('s', 'wikipedia'))
         for artist in self._current_track.artists:
@@ -275,17 +287,31 @@ class InfoPopover(Gtk.Popover):
             Load on map
             @param widget as Gtk.Viewport
         """
-        self._on_child_unmap(widget)
+        Lp().settings.set_value('infoswitch',
+                                GLib.Variant('s', 'lyrics'))
         self._jump_button.hide()
         if self._current_track.id is None:
             self._current_track = Lp().player.current_track
         artists = ", ".join(Lp().player.current_track.artists)
-        Lp().settings.set_value('infoswitch',
-                                GLib.Variant('s', 'lyrics'))
         title = self._current_track.name
-        url = "https://duckduckgo.com/?q=%s&kl=%s&kd=-1&k5=2&kp=1&k1=-1"\
+        # If already searching in genius, search with duckduckgo
+        # Vice versa
+        duckurl = "https://duckduckgo.com/?q=%s&kl=%s&kd=-1&k5=2&kp=1&k1=-1"\
             % (artists+"+"+title+" lyrics",
                Gtk.get_default_language().to_string())
+        geniusurl = url = "http://genius.com/search?q=%s" % artists+" "+title
+        children = widget.get_children()
+        # First time genius
+        if not children:
+            url = geniusurl
+        elif children[0].url == duckurl:
+            url = geniusurl
+        elif children[0].url == geniusurl:
+            url = duckurl
+        else:
+            url = geniusurl
+
+        self._on_child_unmap(widget)
         # Delayed load due to WebKit memory loading
         GLib.timeout_add(250, self._load_web, widget,
                          url, True, True, OpenLink.OPEN)
