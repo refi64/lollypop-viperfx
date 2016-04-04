@@ -12,7 +12,7 @@
 
 from gi.repository import Gtk, GLib
 
-from lollypop.define import Lp, ArtSize
+from lollypop.define import Lp
 
 
 class View(Gtk.Grid):
@@ -184,8 +184,8 @@ class LazyLoadingView(View):
         scrolled_alloc = self._scrolled.get_allocation()
         try:
             (x, y) = widget.translate_coordinates(self._scrolled, 0, 0)
-            return (y > -widget_alloc.height-ArtSize.BIG or y >= 0) and\
-                y < scrolled_alloc.height+ArtSize.BIG
+            return (y > -widget_alloc.height or y >= 0) and\
+                y < scrolled_alloc.height
         except:
             return True
 
