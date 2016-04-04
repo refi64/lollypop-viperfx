@@ -304,13 +304,16 @@ class InfoPopover(Gtk.Popover):
         self._menu.hide()
         if self._current_track_id is None:
             self._current_track_id = Lp().player.current_track.id
-        artists = ", ".join(Lp().player.current_track.artists)
         Lp().settings.set_value('infoswitch',
                                 GLib.Variant('s', 'duck'))
-        if self._current_track_id is None:
-            search = artists
+        if self._artist_ids:
+            artists = []
+            for artist_id in self._artist_ids:
+                artists.append(Lp().artists.get_name(artist_id))
+            search = ", ".join(artists)
         else:
             title = Lp().tracks.get_name(self._current_track_id)
+            artists = ", ".join(Lp().player.current_track.artists)
             search = "%s+%s" % (artists, title)
         url = "https://duckduckgo.com/?q=%s&kl=%s&kd=-1&k5=2&kp=1&k1=-1"\
               % (search, Gtk.get_default_language().to_string())
