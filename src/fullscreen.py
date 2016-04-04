@@ -105,7 +105,7 @@ class FullScreen(Gtk.Window, InfosController,
                 GLib.timeout_add((60-second)*1000, self._update_datetime)
             else:
                 self._timeout2 = GLib.timeout_add(60000, self._update_datetime)
-        self._update_position()
+        self._update_position(Lp().player.position/1000000)
         self.fullscreen()
         self._next_popover.set_relative_to(self._album_label)
         if Lp().player.next_track.id != Type.RADIOS:
