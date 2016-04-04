@@ -71,7 +71,6 @@ class InfoPopover(Gtk.Popover):
         builder.add_from_resource('/org/gnome/Lollypop/ArtistInfo.ui')
         builder.connect_signals(self)
         self._lyrics_label = builder.get_object('lyrics_label')
-        self._menu = builder.get_object('menu')
         self._jump_button = builder.get_object('jump-button')
         self._stack = builder.get_object('stack')
         self.add(builder.get_object('widget'))
@@ -208,7 +207,6 @@ class InfoPopover(Gtk.Popover):
             @param force as bool
         """
         self._on_child_unmap(widget)
-        self._menu.hide()
         self._jump_button.show()
         self._jump_button.set_tooltip_text(_("Go to current track"))
         if self._current_track.id is None:
@@ -232,7 +230,6 @@ class InfoPopover(Gtk.Popover):
             @param force as bool
         """
         self._on_child_unmap(widget)
-        self._menu.hide()
         self._jump_button.hide()
         if self._current_track.id is None:
             self._current_track = Lp().player.current_track
@@ -261,7 +258,7 @@ class InfoPopover(Gtk.Popover):
         Lp().settings.set_value('infoswitch',
                                 GLib.Variant('s', 'wikipedia'))
         for artist in self._current_track.artists:
-            content = WikipediaContent(self._menu)
+            content = WikipediaContent()
             content.show()
             widget.add(content)
             if force:
@@ -278,7 +275,6 @@ class InfoPopover(Gtk.Popover):
         """
         self._on_child_unmap(widget)
         self._jump_button.hide()
-        self._menu.hide()
         if self._current_track.id is None:
             self._current_track = Lp().player.current_track
         # artists = ", ".join(Lp().player.current_track.artists)
@@ -301,7 +297,6 @@ class InfoPopover(Gtk.Popover):
         """
         self._on_child_unmap(widget)
         self._jump_button.hide()
-        self._menu.hide()
         if self._current_track.id is None:
             self._current_track = Lp().player.current_track
         Lp().settings.set_value('infoswitch',

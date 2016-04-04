@@ -32,6 +32,21 @@
         <property name="top_attach">0</property>
       </packing>
     </child>
+    <child>
+      <object class="GtkMenuButton" id="menu">
+	<property name="visible">False</property>
+        <property name="can_focus">True</property>
+        <property name="receives_default">True</property>
+        <property name="relief">none</property>
+        <child>
+          <object class="GtkImage" id="image1">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <property name="icon_name">edit-find-symbolic</property>
+          </object>
+        </child>
+      </object>
+    </child>
   </object>
   <object class="GtkSpinner" id="spinner">
     <property name="width_request">100</property>

@@ -41,6 +41,7 @@ class InfoContent(Gtk.Stack):
         builder.add_from_resource('/org/gnome/Lollypop/InfoContent.ui')
         self._content = builder.get_object('content')
         self._image = builder.get_object('image')
+        self._menu = builder.get_object('menu')
         self.add_named(builder.get_object('widget'), 'widget')
         self.add_named(builder.get_object('notfound'), 'notfound')
         self._spinner = builder.get_object('spinner')
@@ -136,13 +137,12 @@ class WikipediaContent(InfoContent):
         Show wikipedia content
     """
 
-    def __init__(self, menu):
+    def __init__(self):
         """
             Init widget
-            @param menu as Gtk.MenuButton
         """
         InfoContent.__init__(self)
-        self._menu = menu
+        self._menu.show()
         self._menu_model = Gio.Menu()
         self._menu.set_menu_model(self._menu_model)
         self._app = Gio.Application.get_default()

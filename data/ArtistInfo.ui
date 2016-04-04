@@ -206,26 +206,5 @@
         </child>
       </object>
     </child>
-    <child type="overlay">
-      <object class="GtkMenuButton" id="menu">
-        <property name="can_focus">True</property>
-        <property name="receives_default">True</property>
-        <property name="relief">none</property>
-        <property name="margin_top">3</property>
-        <property name="margin_start">3</property>
-        <property name="halign">start</property>
-        <property name="valign">start</property>
-        <child>
-          <object class="GtkImage" id="image1">
-            <property name="visible">True</property>
-            <property name="can_focus">False</property>
-            <property name="icon_name">edit-find-symbolic</property>
-          </object>
-        </child>
-      </object>
-      <packing>
-        <property name="index">1</property>
-      </packing>
-    </child>
   </object>
 </interface>
