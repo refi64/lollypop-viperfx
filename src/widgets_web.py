@@ -160,15 +160,14 @@ class WebView(Gtk.Stack):
 
         # On clicked, if external wanted, launch user browser and stop
         # If navigation not allowed, stop
-        if decision.get_navigation_action().get_navigation_type() ==\
-           WebKit2.NavigationType.LINK_CLICKED:
-            if self._open_link == OpenLink.NEW:
-                GLib.spawn_command_line_async("xdg-open \"%s\"" % url)
-                decision.ignore()
-                return True
-            elif self._open_link == OpenLink.NONE:
-                decision.ignore()
-                return True
+        if self._open_link == OpenLink.NEW and\
+                self._get_domain(url) != self._current_domain:
+            GLib.spawn_command_line_async("xdg-open \"%s\"" % url)
+            decision.ignore()
+            return True
+        elif self._open_link == OpenLink.NONE:
+            decision.ignore()
+            return True
         # If external domain, do not load
         elif self._get_domain(url) != self._current_domain:
             decision.ignore()
