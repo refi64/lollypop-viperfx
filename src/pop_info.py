@@ -206,7 +206,6 @@ class InfoPopover(Gtk.Popover):
             @param widget as Gtk.Grid
             @param force as bool
         """
-        self._on_child_unmap(widget)
         self._jump_button.show()
         self._jump_button.set_tooltip_text(_("Go to current track"))
         if self._current_track.id is None:
