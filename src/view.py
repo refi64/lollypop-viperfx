@@ -167,7 +167,10 @@ class LazyLoadingView(View):
             widget = self._lazy_queue.pop(0)
         if widget is not None:
             widget.populate()
-            GLib.idle_add(self.lazy_loading, widgets, scroll_value)
+            if widgets:
+                GLib.timeout_add(10, self.lazy_loading, widgets, scroll_value)
+            else:
+                GLib.idle_add(self.lazy_loading, widgets, scroll_value)
 
 #######################
 # PRIVATE             #
