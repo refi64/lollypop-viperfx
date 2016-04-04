@@ -91,6 +91,12 @@ class WebView(Gtk.Stack):
         self._view.grab_focus()
         self._view.load_uri(url)
 
+    def stop(self):
+        """
+            Stop loading
+        """
+        self._view.stop_loading()
+
 #######################
 # PRIVATE             #
 #######################

@@ -185,6 +185,12 @@ class CurrentArtistAlbumsView(ViewContainer):
             albums = self._get_albums()
             GLib.idle_add(self._populate, albums)
 
+    def stop(self):
+        """
+            Stop loading
+        """
+        self.get_visible_child().stop()
+
     def jump_to_current(self):
         """
             Jump to current track

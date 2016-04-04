@@ -200,6 +200,7 @@ class InfoPopover(Gtk.Popover):
             @param widget as Gtk.Widget
         """
         for child in widget.get_children():
+            child.stop()
             child.destroy()
 
     def _on_map_albums(self, widget, force=False):

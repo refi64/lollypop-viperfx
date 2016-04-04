@@ -34,6 +34,8 @@ class InfoContent(Gtk.Stack):
         """
         Gtk.Stack.__init__(self)
         InfoCache.init()
+        self._stop = False
+        self._cancel = Gio.Cancellable.new()
         self._artists = Type.NONE
         self.set_transition_duration(500)
         self.set_transition_type(Gtk.StackTransitionType.CROSSFADE)
@@ -61,6 +63,13 @@ class InfoContent(Gtk.Stack):
         self._image.hide()
         self._image.clear()
 
+    def stop(self):
+        """
+            Stop loading
+        """
+        self._stop = True
+        self._cancel.cancel()
+
     def set_content(self, prefix, content, image_url, suffix):
         """
             populate widget with content
@@ -76,10 +85,12 @@ class InfoContent(Gtk.Stack):
             if content is not None:
                 if image_url is not None:
                     f = Gio.File.new_for_uri(image_url)
-                    (status, data, tag) = f.load_contents()
+                    (status, data, tag) = f.load_contents(self._cancel)
                     if status:
                         stream = Gio.MemoryInputStream.new_from_data(data,
                                                                      None)
+                    else:
+                        data = None
                 InfoCache.cache(prefix, content, data, suffix)
             GLib.idle_add(self._set_content, content, stream)
         except Exception as e:
@@ -178,7 +189,9 @@ class WikipediaContent(InfoContent):
         """
         wp = Wikipedia()
         (url, image_url, content) = wp.get_page_infos(artist)
-        InfoContent.set_content(self, artist, content, image_url, 'wikipedia')
+        if not self._stop:
+            InfoContent.set_content(self, artist, content,
+                                    image_url, 'wikipedia')
 
     def _setup_menu(self, artist, album):
         """
@@ -257,4 +270,5 @@ class LastfmContent(InfoContent):
             @param artist as str
         """
         (url, image_url, content) = Lp().lastfm.get_artist_infos(artist)
-        InfoContent.set_content(self, artist, content, image_url, 'lastfm')
+        if not self._stop:
+            InfoContent.set_content(self, artist, content, image_url, 'lastfm')
