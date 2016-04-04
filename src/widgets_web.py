@@ -53,7 +53,9 @@ class WebView(Gtk.Stack):
         settings = self._view.get_settings()
         # Private browsing make duckduckgo fail to switch translations
         if private:
+            settings.set_property('auto-load-images', False)
             settings.set_property('enable-private-browsing', True)
+            settings.set_property('print-backgrounds', False)
         settings.set_property('enable-plugins', False)
         if mobile:
             settings.set_property('user-agent',

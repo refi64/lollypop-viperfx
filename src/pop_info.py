@@ -103,7 +103,6 @@ class InfoPopover(Gtk.Popover):
 #######################
 # PRIVATE             #
 #######################
-
     def _set_autoload(self, widget):
         """
             Mark as autoload
@@ -190,11 +189,17 @@ class InfoPopover(Gtk.Popover):
             @param widget as Gtk.Widget
         """
         self._current_track = Track()
-        for child in widget.get_children():
-            child.destroy()
         if self._signal_id is not None:
             Lp().player.disconnect(self._signal_id)
             self._signal_id = None
+
+    def _on_child_unmap(self, widget):
+        """
+            Destroy child children
+            @param widget as Gtk.Widget
+        """
+        for child in widget.get_children():
+            child.destroy()
 
     def _on_map_albums(self, widget, force=False):
         """
@@ -202,6 +207,7 @@ class InfoPopover(Gtk.Popover):
             @param widget as Gtk.Grid
             @param force as bool
         """
+        self._on_child_unmap(widget)
         self._menu.hide()
         self._jump_button.show()
         self._jump_button.set_tooltip_text(_("Go to current track"))
@@ -225,6 +231,7 @@ class InfoPopover(Gtk.Popover):
             @param widget as Gtk.Viewport
             @param force as bool
         """
+        self._on_child_unmap(widget)
         self._menu.hide()
         self._jump_button.hide()
         if self._current_track.id is None:
@@ -247,6 +254,7 @@ class InfoPopover(Gtk.Popover):
             @param widget as Gtk.Viewport
             @param force as bool
         """
+        self._on_child_unmap(widget)
         self._jump_button.hide()
         if self._current_track.id is None:
             self._current_track = Lp().player.current_track
@@ -268,6 +276,7 @@ class InfoPopover(Gtk.Popover):
             Load on map
             @param widget as Gtk.Viewport
         """
+        self._on_child_unmap(widget)
         self._jump_button.hide()
         self._menu.hide()
         if self._current_track.id is None:
@@ -290,6 +299,7 @@ class InfoPopover(Gtk.Popover):
             Load on map
             @param widget as Gtk.Viewport
         """
+        self._on_child_unmap(widget)
         self._jump_button.hide()
         self._menu.hide()
         if self._current_track.id is None:
@@ -302,7 +312,7 @@ class InfoPopover(Gtk.Popover):
                 artists.append(Lp().artists.get_name(artist_id))
             search = ", ".join(artists)
         else:
-            title = Lp().tracks.get_name(self._current_track)
+            title = self._current_track.name
             artists = ", ".join(Lp().player.current_track.artists)
             search = "%s+%s" % (artists, title)
         url = "https://duckduckgo.com/?q=%s&kl=%s&kd=-1&k5=2&kp=1&k1=-1"\

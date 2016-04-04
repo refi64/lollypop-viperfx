@@ -178,7 +178,6 @@ class WikipediaContent(InfoContent):
         """
         wp = Wikipedia()
         (url, image_url, content) = wp.get_page_infos(artist)
-        print(content)
         InfoContent.set_content(self, artist, content, image_url, 'wikipedia')
 
     def _setup_menu(self, artist, album):

@@ -174,13 +174,12 @@ class CurrentArtistAlbumsView(ViewContainer):
         self.connect('destroy', self._on_destroy)
         self._track = Track()
 
-    def populate(self, track_id):
+    def populate(self, track):
         """
             Populate the view
-            @param track id as int
+            @param track as Track
             @thread safe
         """
-        track = Track(track_id)
         if track.album.artist_ids != self._track.album.artist_ids:
             self._track = track
             albums = self._get_albums()
