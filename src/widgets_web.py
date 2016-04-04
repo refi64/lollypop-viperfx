@@ -39,7 +39,7 @@ class WebView(Gtk.Stack):
         self.connect('destroy', self._on_destroy)
         self.set_transition_duration(500)
         self.set_transition_type(Gtk.StackTransitionType.CROSSFADE)
-        self._current = ''
+        self._current_domain = ''
         self._open_links = OpenLink.NEW
         builder = Gtk.Builder()
         # Use ressource from ArtistContent
@@ -53,7 +53,6 @@ class WebView(Gtk.Stack):
         settings = self._view.get_settings()
         # Private browsing make duckduckgo fail to switch translations
         if private:
-            settings.set_property('auto-load-images', False)
             settings.set_property('enable-private-browsing', True)
             settings.set_property('print-backgrounds', False)
         settings.set_property('enable-plugins', False)
@@ -75,7 +74,8 @@ class WebView(Gtk.Stack):
         # FIXME TLS is broken in WebKit2, don't know how to fix this
         self._view.get_context().set_tls_errors_policy(
                                                 WebKit2.TLSErrorsPolicy.IGNORE)
-        self._view.connect('decide_policy', self._on_decide_policy)
+        self._view.connect('decide-policy', self._on_decide_policy)
+        self._view.connect('context-menu', self._on_context_menu)
         self._view.set_property('hexpand', True)
         self._view.set_property('vexpand', True)
         self._view.show()
@@ -87,13 +87,22 @@ class WebView(Gtk.Stack):
             @param open link as OpenLink
         """
         self._open_link = open_link
-        self._current = urlsplit(url)[1]
+        self._current_domain = self._get_domain(url)
         self._view.grab_focus()
         self._view.load_uri(url)
 
 #######################
 # PRIVATE             #
 #######################
+    def _get_domain(self, url):
+        """
+            Return domain for url
+            @param url as str
+        """
+        hostname = urlsplit(url)[1]
+        split = hostname.split('.')
+        return split[-2] + "." + split[-1]
+
     def _on_destroy(self, widget):
         """
             Destroy webkit view to stop any audio playback
@@ -117,27 +126,50 @@ class WebView(Gtk.Stack):
 
     def _on_decide_policy(self, view, decision, decision_type):
         """
-            Disallow navigation, launch in external browser
+            Navigation policy
             @param view as WebKit2.WebView
             @param decision as WebKit2.NavigationPolicyDecision
             @param decision_type as WebKit2.PolicyDecisionType
             @return bool
         """
-        if self._open_link == OpenLink.NEW and\
-                decision_type == WebKit2.PolicyDecisionType.NAVIGATION_ACTION:
-            if decision.get_navigation_action().get_navigation_type() ==\
-               WebKit2.NavigationType.LINK_CLICKED or (self._current not
-               in decision.get_navigation_action().get_request().get_uri() and
-               decision.get_navigation_action().get_request().get_uri() !=
-               'about:blank'):
-                decision.ignore()
-                GLib.spawn_command_line_async("xdg-open \"%s\"" %
-                                              decision.get_request().get_uri())
-            return True
-        # Only allow one level navigation
-        elif self._open_link == OpenLink.OPEN:
+        # Always accept response
+        if decision_type == WebKit2.PolicyDecisionType.RESPONSE:
             decision.use()
-            self._open_link = OpenLink.NONE
             return False
-        else:
+
+        url = decision.get_navigation_action().get_request().get_uri()
+        # WTF is this?
+        if url == "about:blank":
+            decision.ignore()
             return True
+
+        # On clicked, is external wanted, launch user browser and stop
+        # If navigation not allowed, stop
+        if decision.get_navigation_action().get_navigation_type() ==\
+           WebKit2.NavigationType.LINK_CLICKED:
+            if self._open_link == OpenLink.NEW:
+                GLib.spawn_command_line_async("xdg-open \"%s\"" % url)
+                decision.ignore()
+                return True
+            elif self._open_link == OpenLink.NONE:
+                decision.ignore()
+                return True
+            else:
+                self._open_link = OpenLink.NONE
+        # If external domain, do not load
+        elif self._get_domain(url) != self._current_domain:
+            decision.ignore()
+            return True
+        self._current_domain = self._get_domain(url)
+        decision.use()
+        return False
+
+    def _on_context_menu(self, view, menu, event, hit):
+        """
+            No menu
+            @param view as WebKit2.WebView
+            @param menu as WebKit2.ContextMenu
+            @param event as Gdk.Event
+            @param hit as WebKit2.HitTestResult
+        """
+        return True
