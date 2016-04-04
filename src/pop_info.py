@@ -276,18 +276,16 @@ class InfoPopover(Gtk.Popover):
         self._jump_button.hide()
         if self._current_track.id is None:
             self._current_track = Lp().player.current_track
-        # artists = ", ".join(Lp().player.current_track.artists)
+        artists = ", ".join(Lp().player.current_track.artists)
         Lp().settings.set_value('infoswitch',
                                 GLib.Variant('s', 'lyrics'))
         title = self._current_track.name
-        for artist in self._current_track.artists:
-            url = "https://duckduckgo.com/?q=%s&kl=%s&kd=-1&k5=2&kp=1&k1=-1"\
-              % (artist+"+"+title+" lyrics",
-                 Gtk.get_default_language().to_string())
-            # Delayed load due to WebKit memory loading
-            GLib.timeout_add(250, self._load_web, widget,
-                             url, True, True, OpenLink.OPEN)
-            break
+        url = "https://duckduckgo.com/?q=%s&kl=%s&kd=-1&k5=2&kp=1&k1=-1"\
+            % (artists+"+"+title+" lyrics",
+               Gtk.get_default_language().to_string())
+        # Delayed load due to WebKit memory loading
+        GLib.timeout_add(250, self._load_web, widget,
+                         url, True, True, OpenLink.OPEN)
 
     def _on_map_duck(self, widget, force=False):
         """
