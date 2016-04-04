@@ -130,11 +130,10 @@ class InfoPopover(Gtk.Popover):
         widget.add(web)
         web.load(url, open_link)
 
-    def _on_current_changed(self, player, force=False):
+    def _on_current_changed(self, player):
         """
             Update content on track changed
             @param player as Player
-            @param force as bool
         """
         self._current_track = Lp().player.current_track
         name = self._stack.get_visible_child_name()
@@ -144,7 +143,7 @@ class InfoPopover(Gtk.Popover):
         else:
             # stack -> scrolled -> viewport -> grid
             visible = self._stack.get_visible_child().get_child().get_child()
-        getattr(self, '_on_map_%s' % name)(visible, force)
+        getattr(self, '_on_map_%s' % name)(visible)
 
     def _on_btn_press(self, widget, event):
         """
@@ -163,7 +162,15 @@ class InfoPopover(Gtk.Popover):
         if self._timeout_id is not None:
             GLib.source_remove(self._timeout_id)
             self._timeout_id = None
-            self._on_current_changed(Lp().player, True)
+            visible_name = self._stack.get_visible_child_name()
+            # Clear cache if needed
+            if visible_name in ['lastfm', 'wikipedia']:
+                for artist in self._current_track.artists:
+                    InfoCache.uncache(artist, visible_name)
+                # stack -> scrolled -> viewport -> grid
+                self._on_child_unmap(
+                       self._stack.get_visible_child().get_child().get_child())
+            self._on_current_changed(Lp().player)
 
     def _on_jump_button_clicked(self, widget):
         """
@@ -203,11 +210,10 @@ class InfoPopover(Gtk.Popover):
             child.stop()
             child.destroy()
 
-    def _on_map_albums(self, widget, force=False):
+    def _on_map_albums(self, widget):
         """
             Load on map
             @param widget as Gtk.Grid
-            @param force as bool
         """
         self._jump_button.show()
         self._jump_button.set_tooltip_text(_("Go to current track"))
@@ -225,11 +231,10 @@ class InfoPopover(Gtk.Popover):
         t.daemon = True
         t.start()
 
-    def _on_map_lastfm(self, widget, force=False):
+    def _on_map_lastfm(self, widget):
         """
             Load on map
             @param widget as Gtk.Viewport
-            @param force as bool
         """
         if self._current_track.id is None:
             self._current_track = Lp().player.current_track
@@ -247,17 +252,14 @@ class InfoPopover(Gtk.Popover):
             content = LastfmContent()
             content.show()
             widget.add(content)
-            if force:
-                InfoCache.uncache(artist, 'lastfm')
             t = Thread(target=content.populate, args=(artist, ))
             t.daemon = True
             t.start()
 
-    def _on_map_wikipedia(self, widget, force=False):
+    def _on_map_wikipedia(self, widget):
         """
             Load on map
             @param widget as Gtk.Viewport
-            @param force as bool
         """
         if self._current_track.id is None:
             self._current_track = Lp().player.current_track
@@ -275,14 +277,12 @@ class InfoPopover(Gtk.Popover):
             content = WikipediaContent()
             content.show()
             widget.add(content)
-            if force:
-                InfoCache.uncache(artist, 'wikipedia')
             t = Thread(target=content.populate,
                        args=(artist, self._current_track.album.name))
             t.daemon = True
             t.start()
 
-    def _on_map_lyrics(self, widget, force=False):
+    def _on_map_lyrics(self, widget):
         """
             Load on map
             @param widget as Gtk.Viewport
@@ -316,7 +316,7 @@ class InfoPopover(Gtk.Popover):
         GLib.timeout_add(250, self._load_web, widget,
                          url, True, True, OpenLink.OPEN)
 
-    def _on_map_duck(self, widget, force=False):
+    def _on_map_duck(self, widget):
         """
             Load on map
             @param widget as Gtk.Viewport
