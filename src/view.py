@@ -138,7 +138,7 @@ class LazyLoadingView(View):
         View.__init__(self)
         self._lazy_queue = []  # Widgets not initialized
         self._scroll_value = 0
-        self._timeout_id = None
+        self._prev_scroll_value = 0
         self._scrolled.get_vadjustment().connect('value-changed',
                                                  self._on_value_changed)
 
@@ -167,10 +167,7 @@ class LazyLoadingView(View):
             widget = self._lazy_queue.pop(0)
         if widget is not None:
             widget.populate()
-            if self._timeout_id is None:
-                GLib.idle_add(self.lazy_loading, widgets, scroll_value)
-            else:
-                GLib.timeout_add(50, self.lazy_loading, widgets, scroll_value)
+            GLib.idle_add(self.lazy_loading, widgets, scroll_value)
 
 #######################
 # PRIVATE             #
@@ -189,13 +186,12 @@ class LazyLoadingView(View):
         except:
             return True
 
-    def _lazy_or_not(self, adj):
+    def _lazy_or_not(self, scroll_value):
         """
             Add visible widgets to lazy queue
-            @param adj as Gtk.Adjustment
+            @param scroll value as float
         """
-        self._timeout_id = None
-        self._scroll_value = adj.get_value()
+        self._scroll_value = scroll_value
         widgets = []
         for child in self._lazy_queue:
             if self._is_visible(child):
@@ -207,9 +203,12 @@ class LazyLoadingView(View):
             Update scroll value and check for lazy queue
             @param adj as Gtk.Adjustment
         """
-        if self._timeout_id is not None:
-            GLib.source_remove(self._timeout_id)
-            self._timeout_id = None
         if not self._lazy_queue:
             return
-        self._timeout_id = GLib.timeout_add(250, self._lazy_or_not, adj)
+        wanted = self.get_allocation().height / 2
+        scroll_value = adj.get_value()
+        diff = self._prev_scroll_value - scroll_value
+        if diff > wanted or diff < -wanted:
+            self._prev_scroll_value = scroll_value
+            GLib.idle_add(self._lazy_or_not,
+                          scroll_value)
