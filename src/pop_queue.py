@@ -68,7 +68,7 @@ class QueueRow(Gtk.ListBoxRow):
         self._menu_button.get_style_context().add_class('menu-button')
         self._menu_button.get_style_context().add_class('track-menu-button')
         self._menu_button.get_image().set_opacity(0.2)
-        self._menu_button.set_property('valign', Gtk.Align.CENTER)
+        self._menu_button.set_property('valign', Gtk.Align.END)
         self._menu_button.show()
         self._menu_button.connect('clicked', self._on_delete_clicked)
         self._grid.add(box)
