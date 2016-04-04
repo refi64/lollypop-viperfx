@@ -139,9 +139,11 @@ class InfoPopover(Gtk.Popover):
         self._current_track = Lp().player.current_track
         name = self._stack.get_visible_child_name()
         if name == "albums":
+            # stack -> grid
             visible = self._stack.get_visible_child()
         else:
-            visible = self._stack.get_visible_child().get_child()
+            # stack -> scrolled -> viewport -> grid
+            visible = self._stack.get_visible_child().get_child().get_child()
         getattr(self, '_on_map_%s' % name)(visible, force)
 
     def _on_btn_press(self, widget, event):
