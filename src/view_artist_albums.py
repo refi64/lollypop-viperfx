@@ -15,6 +15,7 @@ from gi.repository import Gtk, GLib, GObject
 from lollypop.view import LazyLoadingView
 from lollypop.view_container import ViewContainer
 from lollypop.define import Lp, Type
+from lollypop.objects import Track
 from lollypop.widgets_album import AlbumDetailedWidget
 
 
@@ -172,23 +173,17 @@ class CurrentArtistAlbumsView(ViewContainer):
         ViewContainer.__init__(self, 1000)
         self.connect('destroy', self._on_destroy)
         self._artist_ids = []
-        self._album_id = Type.NONE
 
-    def populate(self, artist_ids, album_id):
+    def populate(self, track_id):
         """
             Populate the view
-            @param artist ids as [int]
-            @param album id as int
+            @param track id as int
             @thread safe
         """
-        if (artist_ids, album_id) != (self._artist_ids, self._album_id):
-            self._artist_ids = artist_ids
-            self._album_id = album_id
-            if album_id == Type.NONE:
-                albums = self._get_albums(artist_ids)
-            else:
-                # FIXME
-                albums = [album_id]
+        track = Track(track_id)
+        if track.artist_ids != self._artist_ids:
+            self._artist_ids = track.artist_ids
+            albums = self._get_albums(track.artist_ids)
             GLib.idle_add(self._populate, albums)
 
     def jump_to_current(self):

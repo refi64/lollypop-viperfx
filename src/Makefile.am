@@ -7,6 +7,7 @@ app_PYTHON = \
     art_downloader.py\
     art.py\
     art_radio.py\
+    cache.py\
     cellrendereralbum.py\
     codecs.py\
     collectionscanner.py\
@@ -76,10 +77,10 @@ app_PYTHON = \
     view.py\
     view_radios.py\
     widgets_album.py\
-    widgets_artist.py\
     view_artist_albums.py\
     widgets_device.py\
     widgets_indicator.py\
+    widgets_info.py\
     widgets_loved.py\
     widgets_playlist.py\
     widgets_radio.py\

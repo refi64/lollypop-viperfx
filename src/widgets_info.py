@@ -20,10 +20,10 @@ try:
 except:
     pass
 from lollypop.define import Lp, Type
-from lollypop.art import ArtistCache
+from lollypop.cache import InfoCache
 
 
-class ArtistContent(Gtk.Stack):
+class InfoContent(Gtk.Stack):
     """
         Widget showing artist image and bio
     """
@@ -33,12 +33,12 @@ class ArtistContent(Gtk.Stack):
             Init artists content
         """
         Gtk.Stack.__init__(self)
-        ArtistCache.init()
+        InfoCache.init()
         self._artists = Type.NONE
         self.set_transition_duration(500)
         self.set_transition_type(Gtk.StackTransitionType.CROSSFADE)
         builder = Gtk.Builder()
-        builder.add_from_resource('/org/gnome/Lollypop/ArtistContent.ui')
+        builder.add_from_resource('/org/gnome/Lollypop/InfoContent.ui')
         self._content = builder.get_object('content')
         self._image = builder.get_object('image')
         self.add_named(builder.get_object('widget'), 'widget')
@@ -46,20 +46,18 @@ class ArtistContent(Gtk.Stack):
         self._spinner = builder.get_object('spinner')
         self.add_named(self._spinner, 'spinner')
 
-    def should_update(self, artists):
+    def should_update(self, filter):
         """
             Should widget be updated
-            @param artists as str
+            @param filter as str
         """
-        if artists is None:
-            artists = Lp().player.get_current_artists()
-        return artists != self._artists
+        return True
 
     def clear_artist(self):
         """
             Clear current artist
         """
-        self._artists = Type.NONE
+        self._artists = []
 
     def clear(self):
         """
@@ -87,11 +85,17 @@ class ArtistContent(Gtk.Stack):
                     if status:
                         stream = Gio.MemoryInputStream.new_from_data(data,
                                                                      None)
-                ArtistCache.cache(self._artists, content, data, suffix)
+                InfoCache.cache(self._artists, content, data, suffix)
             GLib.idle_add(self._set_content, content, stream)
         except Exception as e:
-            print("ArtistContent::populate: %s" % e)
+            print("InfoContent::populate: %s" % e)
 
+    def uncache(self, artists):
+        """
+            Remove artists from cache
+            @param artists as string
+        """
+        pass
 
 #######################
 # PRIVATE             #
@@ -133,7 +137,7 @@ class ArtistContent(Gtk.Stack):
             @param suffix as str
             @return True if loaded
         """
-        (content, data) = ArtistCache.get(artists, suffix)
+        (content, data) = InfoCache.get(artists, suffix)
         if content:
             stream = None
             if data is not None:
@@ -143,7 +147,7 @@ class ArtistContent(Gtk.Stack):
         return False
 
 
-class WikipediaContent(ArtistContent):
+class WikipediaContent(InfoContent):
     """
         Show wikipedia content
     """
@@ -153,7 +157,7 @@ class WikipediaContent(ArtistContent):
             Init widget
             @param menu as Gtk.MenuButton
         """
-        ArtistContent.__init__(self)
+        InfoContent.__init__(self)
         self._menu = menu
         self._menu_model = Gio.Menu()
         self._menu.set_menu_model(self._menu_model)
@@ -166,7 +170,7 @@ class WikipediaContent(ArtistContent):
             @param album as str
             @thread safe
         """
-        if artists is None:
+        if not artists:
             artists = Lp().player.get_current_artists()
         self._artists = artists
         GLib.idle_add(self._setup_menu_strings, [artists])
@@ -176,12 +180,21 @@ class WikipediaContent(ArtistContent):
             self._load_page_content(artists, artists)
         self._setup_menu(artists, album)
 
+    def should_update(self, artists):
+        """
+            Should widget be updated
+            @param filter as str
+        """
+        if not artists:
+            artists = Lp().player.get_current_artists()
+        return artists != self._artists
+
     def clear(self):
         """
             Clear model and then content
         """
         self._menu_model.remove_all()
-        ArtistContent.clear(self)
+        InfoContent.clear(self)
 
     def uncache(self, artists):
         """
@@ -190,7 +203,7 @@ class WikipediaContent(ArtistContent):
         """
         if artists is None:
             artists = Lp().player.get_current_artists()
-        ArtistCache.uncache(artists, 'wikipedia')
+        InfoCache.uncache(artists, 'wikipedia')
 
 #######################
 # PRIVATE             #
@@ -204,7 +217,7 @@ class WikipediaContent(ArtistContent):
         wp = Wikipedia()
         (url, image_url, content) = wp.get_page_infos(page)
         if artists == self._artists:
-            ArtistContent.populate(self, content, image_url, 'wikipedia')
+            InfoContent.populate(self, content, image_url, 'wikipedia')
 
     def _setup_menu(self, artists, album):
         """
@@ -245,7 +258,7 @@ class WikipediaContent(ArtistContent):
             @param GVariant
         """
         self.uncache(self._artists)
-        ArtistContent.clear(self)
+        InfoContent.clear(self)
         self.set_visible_child_name('spinner')
         self._spinner.start()
         t = Thread(target=self._load_page_content, args=(page, self._artists))
@@ -253,7 +266,7 @@ class WikipediaContent(ArtistContent):
         t.start()
 
 
-class LastfmContent(ArtistContent):
+class LastfmContent(InfoContent):
     """
         Show lastfm content
     """
@@ -262,7 +275,7 @@ class LastfmContent(ArtistContent):
         """
             Init widget
         """
-        ArtistContent.__init__(self)
+        InfoContent.__init__(self)
 
     def populate(self, artists):
         """
@@ -285,7 +298,16 @@ class LastfmContent(ArtistContent):
         """
         if artists is None:
             artists = Lp().player.get_current_artists()
-        ArtistCache.uncache(artists, 'lastfm')
+        InfoCache.uncache(artists, 'lastfm')
+
+    def should_update(self, artists):
+        """
+            Should widget be updated
+            @param filter as str
+        """
+        if not artists:
+            artists = Lp().player.get_current_artists()
+        return artists != self._artists
 
 #######################
 # PRIVATE             #
@@ -297,4 +319,49 @@ class LastfmContent(ArtistContent):
         """
         (url, image_url, content) = Lp().lastfm.get_artist_infos(artists)
         if artists == self._artists:
-            ArtistContent.populate(self, content, image_url, 'lastfm')
+            InfoContent.populate(self, content, image_url, 'lastfm')
+
+class LyricsContent(InfoContent):
+    """
+        Show lyrics content
+    """
+
+    def __init__(self):
+        """
+            Init widget
+        """
+        InfoContent.__init__(self)
+
+    def populate(self, track_id):
+        """
+            Populate content
+            @param track id as int
+            @thread safe
+        """
+        if not artists:
+            artists = Lp().player.get_current_artists()
+        self._ = artists
+        if not self._load_cache_content(artists, title, 'lyrics'):
+            GLib.idle_add(self.set_visible_child_name, 'spinner')
+            self._spinner.start()
+            self._load_page_content(artists, title,)
+
+    def should_update(self, artists):
+        """
+            Should widget be updated
+            @param filter as str
+        """
+        if not artists:
+            artists = Lp().player.get_current_artists()
+        return artists != self._artists
+#######################
+# PRIVATE             #
+#######################
+    def _load_page_content(self, artists, title, stream):
+        """
+            Load artists page content
+            @param artists as str
+        """
+        lyrics = Lyrics()
+        l = lyrics.get(artists, title)
+        InfoContent.populate(self, content, None, 'lyrics')

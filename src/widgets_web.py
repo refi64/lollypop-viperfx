@@ -36,7 +36,7 @@ class WebView(Gtk.Stack):
         self._current = ''
         builder = Gtk.Builder()
         # Use ressource from ArtistContent
-        builder.add_from_resource('/org/gnome/Lollypop/ArtistContent.ui')
+        builder.add_from_resource('/org/gnome/Lollypop/InfoContent.ui')
         self._view = WebKit2.WebView()
         self._spinner = builder.get_object('spinner')
         self.add_named(self._spinner, 'spinner')

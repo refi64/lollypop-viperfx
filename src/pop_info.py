@@ -17,7 +17,8 @@ from threading import Thread
 
 from lollypop.define import Lp, Type
 from lollypop.lyrics import Lyrics
-from lollypop.widgets_artist import WikipediaContent, LastfmContent
+from lollypop.objects import Track
+from lollypop.widgets_info import WikipediaContent, LastfmContent
 from lollypop.view_artist_albums import CurrentArtistAlbumsView
 
 
@@ -58,10 +59,10 @@ class InfoPopover(Gtk.Popover):
         """
         Gtk.Popover.__init__(self)
         self.set_position(Gtk.PositionType.BOTTOM)
-        self.connect('map', self._on_self_map)
-        self.connect('unmap', self._on_self_unmap)
+        self.connect('map', self._on_map)
+        self.connect('unmap', self._on_unmap)
         self._artist_ids = artist_ids
-        self._current = None
+        self._current_track_id = None
         self._timeout_id = None
         self._signal_id = None
 
@@ -101,24 +102,6 @@ class InfoPopover(Gtk.Popover):
 #######################
 # PRIVATE             #
 #######################
-    def _get_current(self):
-        """
-            Update current track
-        """
-        album_id = Type.NONE
-        track_id = Type.NONE
-        if not self._artist_ids:
-            if Lp().player.current_track.id is not None and\
-               Lp().player.current_track.album.artist_ids[0] ==\
-                    Type.COMPILATIONS:
-                album_id = Lp().player.current_track.album_id
-                artist_ids = Lp().player.current_track.artist_ids
-            else:
-                artist_ids = Lp().player.current_track.album.artist_ids
-            track_id = Lp().player.current_track.id
-        else:
-            artist_ids = self._artist_ids
-        return (artist_ids, album_id, track_id)
 
     def _set_autoload(self, widget):
         """
@@ -156,7 +139,7 @@ class InfoPopover(Gtk.Popover):
             @param player as Player
             @param force as bool
         """
-        self._current = self._get_current()
+        self._current_track_id = Lp().player.current_track.id
         name = self._stack.get_visible_child_name()
         if name == "albums":
             visible = self._stack.get_visible_child()
@@ -193,36 +176,24 @@ class InfoPopover(Gtk.Popover):
         except Exception as e:
             print(e)
 
-    def _on_self_map(self, widget):
+    def _on_map(self, widget):
         """
             Connect signals
             @param widget as Gtk.Widget
         """
-        if Lp().settings.get_value('inforeload') and not self._artist_ids:
+        if Lp().settings.get_value('inforeload'):
             self._signal_id = Lp().player.connect("current-changed",
                                                   self._on_current_changed)
 
-    def _on_self_unmap(self, widget):
+    def _on_unmap(self, widget):
         """
             Destroy self if needed and disconnect signals
             @param widget as Gtk.Widget
         """
-        self._current = None
+        self._current_track_id = None
         if self._signal_id is not None:
             Lp().player.disconnect(self._signal_id)
             self._signal_id = None
-        if self._artist_ids:
-            GLib.idle_add(self.destroy)
-
-    def _on_unmap(self, widget):
-        """
-            Destroy child
-            @param widget as Gtk.Widget
-        """
-        for child in widget.get_children():
-            if hasattr(child, 'clear_artist'):
-                child.clear_artist()
-            child.destroy()
 
     def _on_map_albums(self, widget, force=False):
         """
@@ -233,8 +204,8 @@ class InfoPopover(Gtk.Popover):
         self._menu.hide()
         self._jump_button.show()
         self._jump_button.set_tooltip_text(_("Go to current track"))
-        if self._current is None:
-            self._current = self._get_current()
+        if self._current_track_id is None:
+            self._current_track_id = Lp().player.current_track.id
         Lp().settings.set_value('infoswitch',
                                 GLib.Variant('s', 'albums'))
         view = widget.get_child_at(0, 0)
@@ -243,8 +214,7 @@ class InfoPopover(Gtk.Popover):
             view.set_property('expand', True)
             view.show()
             widget.add(view)
-        t = Thread(target=view.populate,
-                   args=(self._current[0], self._current[1]))
+        t = Thread(target=view.populate, args=(self._current_track_id,))
         t.daemon = True
         t.start()
 
@@ -256,24 +226,21 @@ class InfoPopover(Gtk.Popover):
         """
         self._menu.hide()
         self._jump_button.hide()
-        if self._current is None:
-            self._current = self._get_current()
-        names = []
-        for artist_id in self._current[0]:
-            names.append(Lp().artists.get_name(artist_id))
-        artist = ", ".join(names)
+        if self._current_track_id is None:
+            self._current_track_id = Lp().player.current_track.id
         Lp().settings.set_value('infoswitch',
                                 GLib.Variant('s', 'lastfm'))
+        artists = ", ".join(Lp().player.current_track.artists)
         content_widget = widget.get_child()
         if content_widget is None:
             content_widget = LastfmContent()
             content_widget.show()
             widget.add(content_widget)
         if force:
-            content_widget.uncache(artist)
-        if content_widget.should_update(artist) or force:
+            content_widget.uncache(artists)
+        if content_widget.should_update(artists) or force:
             content_widget.clear()
-            t = Thread(target=content_widget.populate, args=(artist,))
+            t = Thread(target=content_widget.populate, args=(artists,))
             t.daemon = True
             t.start()
 
@@ -284,19 +251,10 @@ class InfoPopover(Gtk.Popover):
             @param force as bool
         """
         self._jump_button.hide()
-        if self._current is None:
-            self._current = self._get_current()
-        names = []
-        for artist_id in self._current[0]:
-            names.append(Lp().artists.get_name(artist_id))
-        artist = ", ".join(names)
-        # Get one album from artist
-        if self._current[1] == Type.NONE:
-            ids = Lp().artists.get_albums(self._current[0])
-            if ids:
-                album = Lp().albums.get_name(ids[0])
-        else:
-            album = Lp().albums.get_name(self._current[1])
+        if self._current_track_id is None:
+            self._current_track_id = Lp().player.current_track.id
+        artists = ", ".join(Lp().player.current_track.artists)
+        track = Track(self._current_track_id)
         Lp().settings.set_value('infoswitch',
                                 GLib.Variant('s', 'wikipedia'))
         content_widget = widget.get_child()
@@ -305,10 +263,11 @@ class InfoPopover(Gtk.Popover):
             content_widget.show()
             widget.add(content_widget)
         if force:
-            content_widget.uncache(artist)
-        if content_widget.should_update(artist) or force:
+            content_widget.uncache(artists)
+        if content_widget.should_update(artists) or force:
             content_widget.clear()
-            t = Thread(target=content_widget.populate, args=(artist, album))
+            t = Thread(target=content_widget.populate, args=(artists, 
+                                                             track.album.name))
             t.daemon = True
             t.start()
 
@@ -319,16 +278,23 @@ class InfoPopover(Gtk.Popover):
         """
         self._jump_button.hide()
         self._menu.hide()
-        if self._current is None:
-            self._current = self._get_current()
-        artist_list = []
-        for artist_id in self._current[0]:
-            artist_list.append(Lp().artists.get_name(artist_id))
-        artists = ", ".join(artist_list)
-        title = Lp().tracks.get_name(self._current[2])
-        lyrics = Lyrics()
-        l = lyrics.get(artists, title)
-        self._lyrics_label.set_text(l)
+        if self._current_track_id is None:
+            self._current_track_id = Lp().player.current_track.id
+        artists = ", ".join(Lp().player.current_track.artists)
+        Lp().settings.set_value('infoswitch',
+                                GLib.Variant('s', 'lyrics'))
+        content_widget = widget.get_child()
+        #if content_widget is None:
+        #    content_widget = WikipediaContent(self._menu)
+        #    content_widget.show()
+        #    widget.add(content_widget)
+        #if force:
+        #    content_widget.uncache(artists+title)
+        #if content_widget.should_update(artists+title) or force:
+        #    content_widget.clear()
+        #    t = Thread(target=content_widget.populate, args=(artist, album))
+        #    t.daemon = True
+        #    t.start()
 
     def _on_map_duck(self, widget, force=False):
         """
@@ -337,18 +303,15 @@ class InfoPopover(Gtk.Popover):
         """
         self._jump_button.hide()
         self._menu.hide()
-        if self._current is None:
-            self._current = self._get_current()
-        artist_list = []
-        for artist_id in self._current[0]:
-            artist_list.append(Lp().artists.get_name(artist_id))
-        artists = ", ".join(artist_list)
+        if self._current_track_id is None:
+            self._current_track_id = Lp().player.current_track.id
+        artists = ", ".join(Lp().player.current_track.artists)
         Lp().settings.set_value('infoswitch',
                                 GLib.Variant('s', 'duck'))
-        if self._current[2] == Type.NONE:
+        if self._current_track_id is None:
             search = artists
         else:
-            title = Lp().tracks.get_name(self._current[2])
+            title = Lp().tracks.get_name(self._current_track_id)
             search = "%s+%s" % (artists, title)
         url = "https://duckduckgo.com/?q=%s&kl=%s&kd=-1&k5=2&kp=1&k1=-1"\
               % (search, Gtk.get_default_language().to_string())
