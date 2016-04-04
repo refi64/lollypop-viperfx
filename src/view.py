@@ -159,7 +159,7 @@ class LazyLoadingView(View):
         """
         widget = None
         if self._stop or self._scroll_value != scroll_value:
-            return
+            return False
         if widgets:
             widget = widgets.pop(0)
             self._lazy_queue.remove(widget)
@@ -207,7 +207,7 @@ class LazyLoadingView(View):
             @param adj as Gtk.Adjustment
         """
         if not self._lazy_queue:
-            return
+            return False
         wanted = self.get_allocation().height / 2
         scroll_value = adj.get_value()
         diff = self._prev_scroll_value - scroll_value
