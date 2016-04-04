@@ -143,7 +143,7 @@ class WebView(Gtk.Stack):
             decision.ignore()
             return True
 
-        # On clicked, is external wanted, launch user browser and stop
+        # On clicked, if external wanted, launch user browser and stop
         # If navigation not allowed, stop
         if decision.get_navigation_action().get_navigation_type() ==\
            WebKit2.NavigationType.LINK_CLICKED:
