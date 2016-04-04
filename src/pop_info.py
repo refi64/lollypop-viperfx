@@ -16,6 +16,7 @@ from gettext import gettext as _
 from threading import Thread
 
 from lollypop.define import Lp, Type
+from lollypop.lyrics import Lyrics
 from lollypop.widgets_artist import WikipediaContent, LastfmContent
 from lollypop.view_artist_albums import CurrentArtistAlbumsView
 
@@ -67,6 +68,7 @@ class InfoPopover(Gtk.Popover):
         builder = Gtk.Builder()
         builder.add_from_resource('/org/gnome/Lollypop/ArtistInfo.ui')
         builder.connect_signals(self)
+        self._lyrics_label = builder.get_object('lyrics_label')
         self._menu = builder.get_object('menu')
         self._jump_button = builder.get_object('jump-button')
         self._stack = builder.get_object('stack')
@@ -80,6 +82,8 @@ class InfoPopover(Gtk.Popover):
             self._stack.get_child_by_name('wikipedia').destroy()
         if Lp().lastfm is None:
             self._stack.get_child_by_name('lastfm').destroy()
+        if artist_ids:
+            self._stack.get_child_by_name('lyrics').destroy()
         if InfoPopover.WebView is None:
             self._stack.get_child_by_name('duck').destroy()
         self._stack.set_visible_child_name(
@@ -307,6 +311,22 @@ class InfoPopover(Gtk.Popover):
             t = Thread(target=content_widget.populate, args=(artist, album))
             t.daemon = True
             t.start()
+
+    def _on_map_lyrics(self, widget, force=False):
+        """
+            Load on map
+            @param widget as Gtk.Viewport
+        """
+        if self._current is None:
+            self._current = self._get_current()
+        artist_list = []
+        for artist_id in self._current[0]:
+            artist_list.append(Lp().artists.get_name(artist_id))
+        artists = ", ".join(artist_list)
+        title = Lp().tracks.get_name(self._current[2])
+        lyrics = Lyrics()
+        l = lyrics.get(artists, title)
+        self._lyrics_label.set_text(l)
 
     def _on_map_duck(self, widget, force=False):
         """

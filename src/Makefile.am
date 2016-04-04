@@ -27,6 +27,7 @@ app_PYTHON = \
     list.py\
     loader.py\
     localized.py\
+    lyrics.py\
     miniplayer.py\
     mpris.py\
     notification.py\

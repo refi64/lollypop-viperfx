@@ -111,6 +111,40 @@
               </packing>
             </child>
             <child>
+              <object class="GtkScrolledWindow" id="scrolllyrics">
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <child>
+                  <object class="GtkViewport" id="lyrics">
+                    <property name="visible">True</property>
+                    <property name="can_focus">False</property>
+                    <signal name="map" handler="_on_map_lyrics" swapped="no"/>
+                    <child>
+                      <object class="GtkLabel" id="lyrics_label">
+                        <property name="visible">True</property>
+                        <property name="can_focus">False</property>
+                        <property name="halign">center</property>
+                        <property name="valign">center</property>
+                        <property name="margin_left">10</property>
+                        <property name="margin_right">10</property>
+                        <property name="margin_top">10</property>
+                        <property name="margin_bottom">10</property>
+                        <property name="hexpand">True</property>
+                        <property name="vexpand">True</property>
+                        <property name="ellipsize">start</property>
+                        <property name="width_chars">2</property>
+                      </object>
+                    </child>
+                  </object>
+                </child>
+              </object>
+              <packing>
+                <property name="name">lyrics</property>
+                <property name="title" translatable="yes">Lyrics</property>
+                <property name="position">3</property>
+              </packing>
+            </child>
+            <child>
               <object class="GtkScrolledWindow" id="scrollduck">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
