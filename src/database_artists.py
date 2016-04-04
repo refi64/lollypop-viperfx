@@ -109,7 +109,7 @@ class ArtistsDatabase:
             @return Array of id as int
         """
         with SqlCursor(Lp().db) as sql:
-            request = "SELECT albums.rowid\
+            request = "SELECT DISTINCT albums.rowid\
                        FROM album_artists, albums\
                        WHERE albums.rowid=album_artists.album_id AND (1=0 "
             for artist_id in artist_ids:
