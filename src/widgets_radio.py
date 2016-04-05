@@ -20,7 +20,7 @@ from lollypop.widgets_album import AlbumWidget
 from lollypop.pop_radio import RadioPopover
 
 
-class RadioWidget(Gtk.Frame, AlbumWidget):
+class RadioWidget(Gtk.FlowBoxChild, AlbumWidget):
     """
         Widget with radio cover and title
     """
@@ -31,8 +31,7 @@ class RadioWidget(Gtk.Frame, AlbumWidget):
             @param name as string
             @param radios_manager as RadiosManager
         """
-        Gtk.Frame.__init__(self)
-        self.set_shadow_type(Gtk.ShadowType.NONE)
+        Gtk.FlowBoxChild.__init__(self)
         self.get_style_context().add_class('loading')
         self._name = name
         self._cover = None
@@ -48,7 +47,6 @@ class RadioWidget(Gtk.Frame, AlbumWidget):
         self._widget.connect('enter-notify-event', self._on_enter_notify)
         self._widget.connect('leave-notify-event', self._on_leave_notify)
         self._overlay = Gtk.Frame()
-        self._overlay.set_shadow_type(Gtk.ShadowType.NONE)
         self._overlay.get_style_context().add_class('cover-frame')
         self._cover = Gtk.Image()
         self._cover.set_property('halign', Gtk.Align.CENTER)

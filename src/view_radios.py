@@ -101,8 +101,7 @@ class RadiosView(LazyLoadingView):
         """
         children = []
         for child in self._radiobox.get_children():
-            widget = child.get_child()
-            children.append(widget)
+            children.append(child)
         return children
 
     def _on_destroy(self, widget):

@@ -82,8 +82,7 @@ class AlbumsView(LazyLoadingView):
         """
         children = []
         for child in self._albumbox.get_children():
-            widget = child.get_child()
-            children.append(widget)
+            children.append(child)
         return children
 
     def _add_albums(self, albums):

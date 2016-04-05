@@ -349,7 +349,7 @@ class AlbumWidget:
         return True
 
 
-class AlbumSimpleWidget(Gtk.Frame, AlbumWidget):
+class AlbumSimpleWidget(Gtk.FlowBoxChild, AlbumWidget):
     """
         Album widget showing cover, artist and title
     """
@@ -362,8 +362,7 @@ class AlbumSimpleWidget(Gtk.Frame, AlbumWidget):
             @param artist_ids as [int]
         """
         # We do not use Gtk.Builder for speed reasons
-        Gtk.Frame.__init__(self)
-        self.set_shadow_type(Gtk.ShadowType.NONE)
+        Gtk.FlowBoxChild.__init__(self)
         self.set_size_request(ArtSize.BIG, ArtSize.BIG)
         self.get_style_context().add_class('loading')
         AlbumWidget.__init__(self, album_id, genre_ids)
