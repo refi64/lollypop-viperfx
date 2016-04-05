@@ -19,6 +19,7 @@ from lollypop.toolbar_playback import ToolbarPlayback
 from lollypop.toolbar_info import ToolbarInfo
 from lollypop.toolbar_title import ToolbarTitle
 from lollypop.toolbar_end import ToolbarEnd
+from lollypop.utils import debug
 
 
 class Toolbar(Gtk.HeaderBar):
@@ -135,6 +136,7 @@ class Toolbar(Gtk.HeaderBar):
             Update toolbar
             @param player as Player
         """
+        debug("Toolbar::_on_current_changed")
         self._toolbar_playback.on_current_changed(player)
         self._toolbar_info.on_current_changed(player)
         self._toolbar_title.on_current_changed(player)

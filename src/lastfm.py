@@ -274,16 +274,16 @@ class LastFM(LastFMNetwork):
             @param first is internal
             @thread safe
         """
-        debug("LastFM::_now_playing(): %s, %s, %s, %s" % (artist,
-                                                          album,
-                                                          title,
-                                                          duration))
         try:
             LastFMNetwork.update_now_playing(self,
                                              artist=artist,
                                              album=album,
                                              title=title,
                                              duration=duration)
+            debug("LastFM::_now_playing(): %s, %s, %s, %s" % (artist,
+                                                              album,
+                                                              title,
+                                                              duration))
         except BadAuthenticationError:
             if Lp().notify is not None:
                 GLib.idle_add(Lp().notify.send, _("Wrong Last.fm credentials"))
