@@ -105,21 +105,20 @@ class AlbumsView(LazyLoadingView):
             if self._viewport.get_child() is None:
                 self._viewport.add(self._albumbox)
 
-    def _on_album_activated(self, flowbox, child):
+    def _on_album_activated(self, flowbox, album_widget):
         """
             Show Context view for activated album
             @param flowbox as Gtk.Flowbox
-            @param child as Gtk.FlowboxChild
+            @param album_widget as AlbumSimpleWidget
         """
-        album_widget = child.get_child()
         cover = album_widget.get_cover()
         if cover is None:
             return
         # If widget top not on screen, popover will fail to show
         # FIXME: Report a bug and check always true
-        (x, y) = child.translate_coordinates(self._scrolled, 0, 0)
+        (x, y) = album_widget.translate_coordinates(self._scrolled, 0, 0)
         if y < 0:
-            y = child.translate_coordinates(self._albumbox, 0, 0)[1]
+            y = album_widget.translate_coordinates(self._albumbox, 0, 0)[1]
             self._scrolled.get_allocation().height + y
             self._scrolled.get_vadjustment().set_value(y)
         if self._press_rect is not None:
@@ -129,9 +128,9 @@ class AlbumsView(LazyLoadingView):
             popover.set_pointing_to(self._press_rect)
         else:
             allocation = self.get_allocation()
-            (x, top_height) = child.translate_coordinates(self, 0, 0)
+            (x, top_height) = album_widget.translate_coordinates(self, 0, 0)
             bottom_height = allocation.height -\
-                child.get_allocation().height -\
+                album_widget.get_allocation().height -\
                 top_height
             if bottom_height > top_height:
                 height = bottom_height
