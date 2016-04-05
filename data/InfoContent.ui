@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Generated with glade 3.19.0 -->
+<!-- Generated with glade 3.20.0 -->
 <interface>
   <requires lib="gtk+" version="3.12"/>
   <object class="GtkGrid" id="notfound">
@@ -33,8 +33,7 @@
       </packing>
     </child>
     <child>
-      <object class="GtkMenuButton" id="menu">
-	<property name="visible">False</property>
+      <object class="GtkMenuButton" id="menu-not-found">
         <property name="can_focus">True</property>
         <property name="receives_default">True</property>
         <property name="relief">none</property>
@@ -46,6 +45,10 @@
           </object>
         </child>
       </object>
+      <packing>
+        <property name="left_attach">2</property>
+        <property name="top_attach">0</property>
+      </packing>
     </child>
   </object>
   <object class="GtkSpinner" id="spinner">
@@ -83,19 +86,47 @@
       </packing>
     </child>
     <child>
-      <object class="GtkImage" id="image">
-        <property name="halign">start</property>
-        <property name="valign">start</property>
+      <object class="GtkGrid">
+        <property name="width_request">40</property>
+        <property name="visible">True</property>
         <property name="can_focus">False</property>
-        <property name="margin_start">20</property>
-        <property name="margin_end">20</property>
-        <property name="margin_top">20</property>
-        <property name="margin_bottom">20</property>
-        <property name="halign">center</property>
-        <property name="valign">center</property>
-        <style>
- 	       <class name="cover-frame"/>
-        </style>
+        <child>
+          <object class="GtkImage" id="image">
+            <property name="can_focus">False</property>
+            <property name="halign">center</property>
+            <property name="valign">start</property>
+            <property name="margin_start">20</property>
+            <property name="margin_end">20</property>
+            <property name="margin_top">20</property>
+            <style>
+              <class name="cover-frame"/>
+            </style>
+          </object>
+          <packing>
+            <property name="left_attach">0</property>
+            <property name="top_attach">0</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkMenuButton" id="menu-found">
+            <property name="can_focus">True</property>
+            <property name="receives_default">True</property>
+            <property name="halign">center</property>
+            <property name="valign">start</property>
+            <property name="relief">none</property>
+            <child>
+              <object class="GtkImage" id="image2">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="icon_name">edit-find-symbolic</property>
+              </object>
+            </child>
+          </object>
+          <packing>
+            <property name="left_attach">0</property>
+            <property name="top_attach">1</property>
+          </packing>
+        </child>
       </object>
       <packing>
         <property name="left_attach">0</property>

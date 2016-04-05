@@ -43,7 +43,8 @@ class InfoContent(Gtk.Stack):
         builder.add_from_resource('/org/gnome/Lollypop/InfoContent.ui')
         self._content = builder.get_object('content')
         self._image = builder.get_object('image')
-        self._menu = builder.get_object('menu')
+        self._menu_found = builder.get_object('menu-found')
+        self._menu_not_found = builder.get_object('menu-not-found')
         self.add_named(builder.get_object('widget'), 'widget')
         self.add_named(builder.get_object('notfound'), 'notfound')
         self._spinner = builder.get_object('spinner')
@@ -124,7 +125,7 @@ class InfoContent(Gtk.Stack):
                 self._image.show()
             self.set_visible_child_name('widget')
         else:
-            self.set_visible_child_name('notfound')
+            self._on_not_found()
         self._spinner.stop()
 
     def _load_cache_content(self, prefix, suffix):
@@ -143,6 +144,12 @@ class InfoContent(Gtk.Stack):
             return True
         return False
 
+    def _on_not_found(self):
+        """
+            Show not found child
+        """
+        self.set_visible_child_name('notfound')
+
 
 class WikipediaContent(InfoContent):
     """
@@ -154,9 +161,10 @@ class WikipediaContent(InfoContent):
             Init widget
         """
         InfoContent.__init__(self)
-        self._menu.show()
+        self._album = ""
         self._menu_model = Gio.Menu()
-        self._menu.set_menu_model(self._menu_model)
+        self._menu_not_found.set_menu_model(self._menu_model)
+        self._menu_found.set_menu_model(self._menu_model)
         self._app = Gio.Application.get_default()
 
     def populate(self, artist, album):
@@ -167,12 +175,11 @@ class WikipediaContent(InfoContent):
             @thread safe
         """
         self._artist = artist
-        GLib.idle_add(self._setup_menu_strings, [artist])
+        self._album = album
         if not self._load_cache_content(artist, 'wikipedia'):
             GLib.idle_add(self.set_visible_child_name, 'spinner')
             self._spinner.start()
             self._load_page_content(artist)
-        self._setup_menu(artist, album)
 
     def clear(self):
         """
@@ -189,11 +196,16 @@ class WikipediaContent(InfoContent):
             Load artist page content
             @param artist as str
         """
+        self._menu_model.remove_all()
         wp = Wikipedia()
         (url, image_url, content) = wp.get_page_infos(artist)
         if not self._stop:
             InfoContent.set_content(self, artist, content,
                                     image_url, 'wikipedia')
+            t = Thread(target=self._setup_menu,
+                       args=(self._artist, self._album))
+            t.daemon = True
+            t.start()
 
     def _setup_menu(self, artist, album):
         """
@@ -214,6 +226,11 @@ class WikipediaContent(InfoContent):
             Setup a menu with strings
             @param strings as [str]
         """
+        if strings:
+            self._menu_not_found.show()
+            self._menu_found.show()
+        else:
+            return
         i = 0
         for string in strings:
             action = Gio.SimpleAction(name="wikipedia_%s" % i)
@@ -223,7 +240,6 @@ class WikipediaContent(InfoContent):
                            string)
             self._menu_model.append(string, "app.wikipedia_%s" % i)
             i += 1
-        self._menu.show()
 
     def _on_search_activated(self, action, variant, artist):
         """
@@ -237,6 +253,15 @@ class WikipediaContent(InfoContent):
         self.set_visible_child_name('spinner')
         self._spinner.start()
         t = Thread(target=self._load_page_content, args=(artist,))
+        t.daemon = True
+        t.start()
+
+    def _on_not_found(self):
+        """
+            Show not found child
+        """
+        self.set_visible_child_name('notfound')
+        t = Thread(target=self._setup_menu, args=(self._artist, self._album))
         t.daemon = True
         t.start()
 
