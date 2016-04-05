@@ -20,7 +20,6 @@ try:
 except:
     pass
 from lollypop.define import Lp, Type
-from lollypop.lyrics import Lyrics
 from lollypop.cache import InfoCache
 
 
@@ -47,13 +46,6 @@ class InfoContent(Gtk.Stack):
         self._spinner = builder.get_object('spinner')
         self.add_named(self._spinner, 'spinner')
 
-    def should_update(self, filter):
-        """
-            Should widget be updated
-            @param filter as str
-        """
-        return True
-
     def clear_artist(self):
         """
             Clear current artist
@@ -68,12 +60,13 @@ class InfoContent(Gtk.Stack):
         self._image.hide()
         self._image.clear()
 
-    def populate(self, content, image_url, suffix):
+    def set_content(self, prefix, content, image_url, suffix):
         """
             populate widget with content
-            @param content as string
-            @param image url as string
-            @param suffix as string
+            @param prefix as str
+            @param content as str
+            @param image url as str
+            @param suffix as str
             @thread safe
         """
         try:
@@ -86,17 +79,10 @@ class InfoContent(Gtk.Stack):
                     if status:
                         stream = Gio.MemoryInputStream.new_from_data(data,
                                                                      None)
-                InfoCache.cache(self._artists, content, data, suffix)
+                InfoCache.cache(prefix, content, data, suffix)
             GLib.idle_add(self._set_content, content, stream)
         except Exception as e:
-            print("InfoContent::populate: %s" % e)
-
-    def uncache(self, artists):
-        """
-            Remove artists from cache
-            @param artists as string
-        """
-        pass
+            print("InfoContent::set_content: %s" % e)
 
 #######################
 # PRIVATE             #
@@ -107,9 +93,6 @@ class InfoContent(Gtk.Stack):
             @param content as string
             @param data as Gio.MemoryInputStream
         """
-        # Happens if widget is destroyed while loading content from the web
-        if self.get_child_by_name('widget') is None:
-            return
         if content is not None:
             self._content.set_markup(escape(content.decode('utf-8')))
             if stream is not None:
@@ -131,14 +114,14 @@ class InfoContent(Gtk.Stack):
             self.set_visible_child_name('notfound')
         self._spinner.stop()
 
-    def _load_cache_content(self, artists, suffix):
+    def _load_cache_content(self, prefix, suffix):
         """
             Load from cache
-            @param artists as str
+            @param prefix as str
             @param suffix as str
             @return True if loaded
         """
-        (content, data) = InfoCache.get(artists, suffix)
+        (content, data) = InfoCache.get(prefix, suffix)
         if content:
             stream = None
             if data is not None:
@@ -164,31 +147,19 @@ class WikipediaContent(InfoContent):
         self._menu.set_menu_model(self._menu_model)
         self._app = Gio.Application.get_default()
 
-    def populate(self, artists, album):
+    def populate(self, artist, album):
         """
             Populate content
-            @param artists as str
+            @param artist as str
             @param album as str
             @thread safe
         """
-        if not artists:
-            artists = Lp().player.get_current_artists()
-        self._artists = artists
-        GLib.idle_add(self._setup_menu_strings, [artists])
-        if not self._load_cache_content(artists, 'wikipedia'):
+        GLib.idle_add(self._setup_menu_strings, [artist])
+        if not self._load_cache_content(artist, 'wikipedia'):
             GLib.idle_add(self.set_visible_child_name, 'spinner')
             self._spinner.start()
-            self._load_page_content(artists, artists)
-        self._setup_menu(artists, album)
-
-    def should_update(self, artists):
-        """
-            Should widget be updated
-            @param filter as str
-        """
-        if not artists:
-            artists = Lp().player.get_current_artists()
-        return artists != self._artists
+            self._load_page_content(artist)
+        self._setup_menu(artist, album)
 
     def clear(self):
         """
@@ -197,72 +168,61 @@ class WikipediaContent(InfoContent):
         self._menu_model.remove_all()
         InfoContent.clear(self)
 
-    def uncache(self, artists):
-        """
-            Remove artists from cache
-            @param artists as string
-        """
-        if artists is None:
-            artists = Lp().player.get_current_artists()
-        InfoCache.uncache(artists, 'wikipedia')
-
 #######################
 # PRIVATE             #
 #######################
-    def _load_page_content(self, page, artists):
+    def _load_page_content(self, artist):
         """
-            Load artists page content
-            @param page as str
-            @param artists as str
+            Load artist page content
+            @param artist as str
         """
         wp = Wikipedia()
-        (url, image_url, content) = wp.get_page_infos(page)
-        if artists == self._artists:
-            InfoContent.populate(self, content, image_url, 'wikipedia')
+        (url, image_url, content) = wp.get_page_infos(artist)
+        print(content)
+        InfoContent.set_content(self, artist, content, image_url, 'wikipedia')
 
-    def _setup_menu(self, artists, album):
+    def _setup_menu(self, artist, album):
         """
             Setup menu for artist
-            @param artists as str
+            @param artist as str
             @param album as str
         """
-        if artists == self._artists:
-            wp = Wikipedia()
-            result = wp.search(artists)
-            result += wp.search(artists + ' ' + album)
-            cleaned = list(set(result))
-            if artists in cleaned:
-                cleaned.remove(artists)
-            GLib.idle_add(self._setup_menu_strings, cleaned)
+        wp = Wikipedia()
+        result = wp.search(artist)
+        result += wp.search(artist + ' ' + album)
+        cleaned = list(set(result))
+        if artist in cleaned:
+            cleaned.remove(artist)
+        GLib.idle_add(self._setup_menu_strings, cleaned)
 
     def _setup_menu_strings(self, strings):
         """
             Setup a menu with strings
             @param strings as [str]
         """
-        if self._artists != Type.NONE:
-            i = 0
-            for string in strings:
-                action = Gio.SimpleAction(name="wikipedia_%s" % i)
-                self._app.add_action(action)
-                action.connect('activate',
-                               self._on_search_activated,
-                               string)
-                self._menu_model.append(string, "app.wikipedia_%s" % i)
-                i += 1
-            self._menu.show()
+        i = 0
+        for string in strings:
+            action = Gio.SimpleAction(name="wikipedia_%s" % i)
+            self._app.add_action(action)
+            action.connect('activate',
+                           self._on_search_activated,
+                           string)
+            self._menu_model.append(string, "app.wikipedia_%s" % i)
+            i += 1
+        self._menu.show()
 
-    def _on_search_activated(self, action, variant, page):
+    def _on_search_activated(self, action, variant, artist):
         """
             Switch to page
-            @param SimpleAction
-            @param GVariant
+            @param action as SimpleAction
+            @param variant as GVariant
+            @param artist as str
         """
-        self.uncache(self._artists)
+        InfoCache.uncache(artist, 'wikipedia')
         InfoContent.clear(self)
         self.set_visible_child_name('spinner')
         self._spinner.start()
-        t = Thread(target=self._load_page_content, args=(page, self._artists))
+        t = Thread(target=self._load_page_content, args=(artist,))
         t.daemon = True
         t.start()
 
@@ -278,91 +238,24 @@ class LastfmContent(InfoContent):
         """
         InfoContent.__init__(self)
 
-    def populate(self, artists):
+    def populate(self, artist):
         """
             Populate content
-            @param artists as string
+            @param artist as str
             @thread safe
         """
-        if artists is None:
-            artists = Lp().player.get_current_artists()
-        self._artists = artists
-        if not self._load_cache_content(artists, 'lastfm'):
+        if not self._load_cache_content(artist, 'lastfm'):
             GLib.idle_add(self.set_visible_child_name, 'spinner')
             self._spinner.start()
-            self._load_page_content(artists)
-
-    def uncache(self, artists):
-        """
-            Remove artists from cache
-            @param artists as string
-        """
-        if artists is None:
-            artists = Lp().player.get_current_artists()
-        InfoCache.uncache(artists, 'lastfm')
-
-    def should_update(self, artists):
-        """
-            Should widget be updated
-            @param filter as str
-        """
-        if not artists:
-            artists = Lp().player.get_current_artists()
-        return artists != self._artists
+            self._load_page_content(artist)
 
 #######################
 # PRIVATE             #
 #######################
-    def _load_page_content(self, artists):
+    def _load_page_content(self, artist):
         """
             Load artists page content
-            @param artists as str
+            @param artist as str
         """
-        (url, image_url, content) = Lp().lastfm.get_artist_infos(artists)
-        if artists == self._artists:
-            InfoContent.populate(self, content, image_url, 'lastfm')
-
-
-class LyricsContent(InfoContent):
-    """
-        Show lyrics content
-    """
-
-    def __init__(self):
-        """
-            Init widget
-        """
-        InfoContent.__init__(self)
-
-    def populate(self, track_id):
-        """
-            Populate content
-            @param track id as int
-            @thread safe
-        """
-        pass
-        # if not self._load_cache_content(artists, title, 'lyrics'):
-        #    GLib.idle_add(self.set_visible_child_name, 'spinner')
-        #    self._spinner.start()
-        # self._load_page_content(artists, title,)
-
-    def should_update(self, artists):
-        """
-            Should widget be updated
-            @param filter as str
-        """
-        if not artists:
-            artists = Lp().player.get_current_artists()
-        return artists != self._artists
-
-#######################
-# PRIVATE             #
-#######################
-    def _load_page_content(self, artists, title, stream):
-        """
-            Load artists page content
-            @param artists as str
-        """
-        lyrics = Lyrics()
-        content = lyrics.get(artists, title)
-        InfoContent.populate(self, content, None, 'lyrics')
+        (url, image_url, content) = Lp().lastfm.get_artist_infos(artist)
+        InfoContent.set_content(self, artist, content, image_url, 'lastfm')

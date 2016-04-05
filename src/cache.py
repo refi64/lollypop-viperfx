@@ -14,6 +14,8 @@ from gi.repository import Gio, GdkPixbuf
 
 from os import mkdir, path
 
+from lollypop.utils import escape
+
 
 class InfoCache:
     """
@@ -31,41 +33,38 @@ class InfoCache:
             except:
                 print("Can't create %s" % InfoCache.CACHE_PATH)
 
-    def exists_in_cache(info):
+    def exists_in_cache(prefix):
         """
             Return True if an info is cached
-            @param info as string
+            @param prefix as string
         """
-        return InfoCache.get_artwork(info, "lastfm") != "" or\
-            InfoCache.get_artwork(info, "wikipedia") != ""
+        return InfoCache.get_artwork(prefix, "lastfm") != "" or\
+            InfoCache.get_artwork(prefix, "wikipedia") != ""
 
-    def get_artwork(info, suffix):
+    def get_artwork(prefix, suffix):
         """
             Return path for artwork, empty if none
-            @param info as string
+            @param prefix as string
             @param suffix as string
             @return path as string
         """
         filepath = "%s/%s_%s.jpg" % (InfoCache.CACHE_PATH,
-                                     "".join([c for c in info if
-                                              c.isalpha() or
-                                              c.isdigit() or
-                                              c == ' ']).rstrip(),
+                                     escape(prefix),
                                      suffix)
         if path.exists(filepath):
             return filepath
         else:
             return ""
 
-    def get(info, suffix):
+    def get(prefix, suffix):
         """
             Get content from cache
+            @param prefix as str
+            @param suffix as str
             @return (content as string, data as bytes)
         """
         filepath = "%s/%s_%s" % (InfoCache.CACHE_PATH,
-                                 "".join([c for c in info if
-                                          c.isalpha() or
-                                          c.isdigit() or c == ' ']).rstrip(),
+                                 escape(prefix),
                                  suffix)
         content = None
         data = None
@@ -82,20 +81,19 @@ class InfoCache:
         else:
             return (content, data)
 
-    def cache(info, content, data, suffix):
+    def cache(prefix, content, data, suffix):
         """
             Cache datas
-            @param content as string
+            @param prefix as str
+            @param content as str
             @param data as bytes
-            @param suffix as string
+            @param suffix as str
         """
         if content is None:
             return
 
         filepath = "%s/%s_%s" % (InfoCache.CACHE_PATH,
-                                 "".join([c for c in info if
-                                          c.isalpha() or
-                                          c.isdigit() or c == ' ']).rstrip(),
+                                 escape(prefix),
                                  suffix)
         f = Gio.File.new_for_path(filepath+".txt")
         fstream = f.replace(None, False,
@@ -113,17 +111,14 @@ class InfoCache:
             pixbuf.savev(filepath+".jpg", "jpeg", ["quality"], ["90"])
             del pixbuf
 
-    def uncache(info, suffix):
+    def uncache(prefix, suffix):
         """
             Remove info from cache
-            @param info as string
-            @param suffix as string
+            @param prefix as str
+            @param suffix as str
         """
         filepath = "%s/%s_%s.txt" % (InfoCache.CACHE_PATH,
-                                     "".join(
-                                        [c for c in info if
-                                         c.isalpha() or
-                                         c.isdigit() or c == ' ']).rstrip(),
+                                     escape(prefix),
                                      suffix)
         f = Gio.File.new_for_path(filepath)
         try:
@@ -131,9 +126,7 @@ class InfoCache:
         except:
             pass
         filepath = "%s/%s_%s" % (InfoCache.CACHE_PATH,
-                                 "".join([c for c in info if
-                                          c.isalpha() or
-                                          c.isdigit() or c == ' ']).rstrip(),
+                                 escape(prefix),
                                  suffix)
         f = Gio.File.new_for_path(filepath)
         try:

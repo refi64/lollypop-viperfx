@@ -37,35 +37,9 @@
               <object class="GtkGrid" id="albums">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
+                        <property name="orientation">vertical</property>
                 <signal name="map" handler="_on_map_albums" swapped="no"/>
                 <signal name="unmap" handler="_on_unmap" swapped="no"/>
-                <child>
-                  <placeholder/>
-                </child>
-                <child>
-                  <placeholder/>
-                </child>
-                <child>
-                  <placeholder/>
-                </child>
-                <child>
-                  <placeholder/>
-                </child>
-                <child>
-                  <placeholder/>
-                </child>
-                <child>
-                  <placeholder/>
-                </child>
-                <child>
-                  <placeholder/>
-                </child>
-                <child>
-                  <placeholder/>
-                </child>
-                <child>
-                  <placeholder/>
-                </child>
               </object>
               <packing>
                 <property name="name">albums</property>
@@ -77,11 +51,18 @@
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
                 <child>
-                  <object class="GtkViewport" id="lastfm">
+                  <object class="GtkViewport" id="viewlastfm">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
-                    <signal name="map" handler="_on_map_lastfm" swapped="no"/>
-                    <signal name="unmap" handler="_on_unmap" swapped="no"/>
+                    <child>
+                      <object class="GtkGrid" id="lastfm">
+             m          <property name="visible">True</property>
+                        <property name="orientation">vertical</property>
+                        <property name="can_focus">False</property>
+                        <signal name="map" handler="_on_map_lastfm" swapped="no"/>
+                        <signal name="unmap" handler="_on_unmap" swapped="no"/>
+                      </object>
+                    </child>
                   </object>
                 </child>
               </object>
@@ -96,11 +77,18 @@
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
                 <child>
-                  <object class="GtkViewport" id="wikipedia">
+                  <object class="GtkViewport" id="viewwikipedia">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
-                    <signal name="map" handler="_on_map_wikipedia" swapped="no"/>
-                    <signal name="unmap" handler="_on_unmap" swapped="no"/>
+                    <child>
+                      <object class="GtkGrid" id="wikipedia">
+                        <property name="visible">True</property>
+                        <property name="orientation">vertical</property>
+                        <property name="can_focus">False</property>
+                        <signal name="map" handler="_on_map_wikipedia" swapped="no"/>
+                        <signal name="unmap" handler="_on_unmap" swapped="no"/>
+                      </object>
+                    </child>
                   </object>
                 </child>
               </object>
@@ -115,10 +103,18 @@
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <child>
-                  <object class="GtkViewport" id="lyrics">
+                  <object class="GtkViewport" id="viewlyrics">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
-                    <signal name="map" handler="_on_map_lyrics" swapped="no"/>
+                    <child>
+                      <object class="GtkGrid" id="lyrics">
+                        <property name="visible">True</property>
+                        <property name="orientation">vertical</property>
+                        <property name="can_focus">False</property>
+                        <signal name="map" handler="_on_map_lyrics" swapped="no"/>
+                        <signal name="unmap" handler="_on_unmap" swapped="no"/>
+                      </object>
+                    </child>
                   </object>
                 </child>
               </object>
@@ -133,17 +129,24 @@
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
                 <child>
-                  <object class="GtkViewport" id="duck">
+                  <object class="GtkViewport" id="viewduck">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
-                    <signal name="map" handler="_on_map_duck" swapped="no"/>
-                    <signal name="unmap" handler="_on_unmap" swapped="no"/>
+                    <child>
+                      <object class="GtkGrid" id="duck">
+                        <property name="visible">True</property>
+                        <property name="orientation">vertical</property>
+                        <property name="can_focus">False</property>
+                        <signal name="map" handler="_on_map_duck" swapped="no"/>
+                        <signal name="unmap" handler="_on_unmap" swapped="no"/>
+                      </object>
+                    </child>
                   </object>
                 </child>
               </object>
               <packing>
                 <property name="name">duck</property>
-                <property name="title" translatable="yes">DuckDuckGo</property>
+                <property name="title" translatable="yes">Search</property>
                 <property name="position">4</property>
               </packing>
             </child>

@@ -18,6 +18,8 @@ from threading import Thread
 from lollypop.define import Lp
 from lollypop.objects import Track
 from lollypop.widgets_info import WikipediaContent, LastfmContent
+from lollypop.widgets_web import OpenLink
+from lollypop.cache import InfoCache
 from lollypop.view_artist_albums import CurrentArtistAlbumsView
 
 
@@ -61,7 +63,7 @@ class InfoPopover(Gtk.Popover):
         self.connect('map', self._on_map)
         self.connect('unmap', self._on_unmap)
         self._artist_ids = artist_ids
-        self._current_track_id = None
+        self._current_track = Track()
         self._timeout_id = None
         self._signal_id = None
 
@@ -120,17 +122,15 @@ class InfoPopover(Gtk.Popover):
                                     GLib.Variant('b', False))
             widget.get_style_context().remove_class('selected')
 
-    def _load_web(self, widget, url, mobile, private):
+    def _load_web(self, widget, url, mobile, private, open_link):
         """
             Load url in widget
             @param widget as Gtk.Viewport
         """
-        web = widget.get_child()
-        if web is None:
-            web = self.WebView(mobile, private)
-            web.show()
-            widget.add(web)
-        web.load(url)
+        web = self.WebView(mobile, private)
+        web.show()
+        widget.add(web)
+        web.load(url, open_link)
 
     def _on_current_changed(self, player, force=False):
         """
@@ -138,7 +138,7 @@ class InfoPopover(Gtk.Popover):
             @param player as Player
             @param force as bool
         """
-        self._current_track_id = Lp().player.current_track.id
+        self._current_track = Lp().player.current_track
         name = self._stack.get_visible_child_name()
         if name == "albums":
             visible = self._stack.get_visible_child()
@@ -189,7 +189,9 @@ class InfoPopover(Gtk.Popover):
             Destroy self if needed and disconnect signals
             @param widget as Gtk.Widget
         """
-        self._current_track_id = None
+        self._current_track = Track()
+        for child in widget.get_children():
+            child.destroy()
         if self._signal_id is not None:
             Lp().player.disconnect(self._signal_id)
             self._signal_id = None
@@ -203,8 +205,8 @@ class InfoPopover(Gtk.Popover):
         self._menu.hide()
         self._jump_button.show()
         self._jump_button.set_tooltip_text(_("Go to current track"))
-        if self._current_track_id is None:
-            self._current_track_id = Lp().player.current_track.id
+        if self._current_track.id is None:
+            self._current_track = Lp().player.current_track
         Lp().settings.set_value('infoswitch',
                                 GLib.Variant('s', 'albums'))
         view = widget.get_child_at(0, 0)
@@ -213,7 +215,7 @@ class InfoPopover(Gtk.Popover):
             view.set_property('expand', True)
             view.show()
             widget.add(view)
-        t = Thread(target=view.populate, args=(self._current_track_id,))
+        t = Thread(target=view.populate, args=(self._current_track,))
         t.daemon = True
         t.start()
 
@@ -225,21 +227,17 @@ class InfoPopover(Gtk.Popover):
         """
         self._menu.hide()
         self._jump_button.hide()
-        if self._current_track_id is None:
-            self._current_track_id = Lp().player.current_track.id
+        if self._current_track.id is None:
+            self._current_track = Lp().player.current_track
         Lp().settings.set_value('infoswitch',
                                 GLib.Variant('s', 'lastfm'))
-        artists = ", ".join(Lp().player.current_track.artists)
-        content_widget = widget.get_child()
-        if content_widget is None:
-            content_widget = LastfmContent()
-            content_widget.show()
-            widget.add(content_widget)
-        if force:
-            content_widget.uncache(artists)
-        if content_widget.should_update(artists) or force:
-            content_widget.clear()
-            t = Thread(target=content_widget.populate, args=(artists,))
+        for artist in self._current_track.artists:
+            content = LastfmContent()
+            content.show()
+            widget.add(content)
+            if force:
+                InfoCache.uncache(artist, 'lastfm')
+            t = Thread(target=content.populate, args=(artist, ))
             t.daemon = True
             t.start()
 
@@ -250,23 +248,18 @@ class InfoPopover(Gtk.Popover):
             @param force as bool
         """
         self._jump_button.hide()
-        if self._current_track_id is None:
-            self._current_track_id = Lp().player.current_track.id
-        artists = ", ".join(Lp().player.current_track.artists)
-        track = Track(self._current_track_id)
+        if self._current_track.id is None:
+            self._current_track = Lp().player.current_track
         Lp().settings.set_value('infoswitch',
                                 GLib.Variant('s', 'wikipedia'))
-        content_widget = widget.get_child()
-        if content_widget is None:
-            content_widget = WikipediaContent(self._menu)
-            content_widget.show()
-            widget.add(content_widget)
-        if force:
-            content_widget.uncache(artists)
-        if content_widget.should_update(artists) or force:
-            content_widget.clear()
-            t = Thread(target=content_widget.populate, args=(artists,
-                                                             track.album.name))
+        for artist in self._current_track.artists:
+            content = WikipediaContent(self._menu)
+            content.show()
+            widget.add(content)
+            if force:
+                InfoCache.uncache(artist, 'wikipedia')
+            t = Thread(target=content.populate,
+                       args=(artist, self._current_track.album.name))
             t.daemon = True
             t.start()
 
@@ -277,23 +270,20 @@ class InfoPopover(Gtk.Popover):
         """
         self._jump_button.hide()
         self._menu.hide()
-        if self._current_track_id is None:
-            self._current_track_id = Lp().player.current_track.id
+        if self._current_track.id is None:
+            self._current_track = Lp().player.current_track
         # artists = ", ".join(Lp().player.current_track.artists)
         Lp().settings.set_value('infoswitch',
                                 GLib.Variant('s', 'lyrics'))
-        # content_widget = widget.get_child()
-        # if content_widget is None:
-        #    content_widget = WikipediaContent(self._menu)
-        #    content_widget.show()
-        #    widget.add(content_widget)
-        # if force:
-        #    content_widget.uncache(artists+title)
-        # if content_widget.should_update(artists+title) or force:
-        #    content_widget.clear()
-        #    t = Thread(target=content_widget.populate, args=(artist, album))
-        #    t.daemon = True
-        #    t.start()
+        title = self._current_track.name
+        for artist in self._current_track.artists:
+            url = "https://duckduckgo.com/?q=%s&kl=%s&kd=-1&k5=2&kp=1&k1=-1"\
+              % (artist+"+"+title+" lyrics",
+                 Gtk.get_default_language().to_string())
+            # Delayed load due to WebKit memory loading
+            GLib.timeout_add(250, self._load_web, widget,
+                             url, True, True, OpenLink.OPEN)
+            break
 
     def _on_map_duck(self, widget, force=False):
         """
@@ -302,8 +292,8 @@ class InfoPopover(Gtk.Popover):
         """
         self._jump_button.hide()
         self._menu.hide()
-        if self._current_track_id is None:
-            self._current_track_id = Lp().player.current_track.id
+        if self._current_track.id is None:
+            self._current_track = Lp().player.current_track
         Lp().settings.set_value('infoswitch',
                                 GLib.Variant('s', 'duck'))
         if self._artist_ids:
@@ -312,10 +302,11 @@ class InfoPopover(Gtk.Popover):
                 artists.append(Lp().artists.get_name(artist_id))
             search = ", ".join(artists)
         else:
-            title = Lp().tracks.get_name(self._current_track_id)
+            title = Lp().tracks.get_name(self._current_track)
             artists = ", ".join(Lp().player.current_track.artists)
             search = "%s+%s" % (artists, title)
         url = "https://duckduckgo.com/?q=%s&kl=%s&kd=-1&k5=2&kp=1&k1=-1"\
               % (search, Gtk.get_default_language().to_string())
         # Delayed load due to WebKit memory loading
-        GLib.timeout_add(250, self._load_web, widget, url, False, False)
+        GLib.timeout_add(250, self._load_web, widget, url,
+                         False, False, OpenLink.NEW)

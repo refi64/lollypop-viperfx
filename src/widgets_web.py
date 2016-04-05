@@ -17,6 +17,12 @@ from gi.repository import Gtk, WebKit2, GLib
 from urllib.parse import urlsplit
 
 
+class OpenLink:
+    NONE = 0
+    OPEN = 1
+    NEW = 2
+
+
 class WebView(Gtk.Stack):
     """
         Webkit view with loading scrobbler
@@ -34,6 +40,7 @@ class WebView(Gtk.Stack):
         self.set_transition_duration(500)
         self.set_transition_type(Gtk.StackTransitionType.CROSSFADE)
         self._current = ''
+        self._open_links = OpenLink.NEW
         builder = Gtk.Builder()
         # Use ressource from ArtistContent
         builder.add_from_resource('/org/gnome/Lollypop/InfoContent.ui')
@@ -62,11 +69,13 @@ class WebView(Gtk.Stack):
         self._view.set_property('vexpand', True)
         self._view.show()
 
-    def load(self, url):
+    def load(self, url, open_link):
         """
             Load url
             @param url as string
+            @param open link as OpenLink
         """
+        self._open_link = open_link
         self._current = urlsplit(url)[1]
         self._view.grab_focus()
         self._view.load_uri(url)
@@ -103,7 +112,8 @@ class WebView(Gtk.Stack):
             @param decision_type as WebKit2.PolicyDecisionType
             @return bool
         """
-        if decision_type == WebKit2.PolicyDecisionType.NAVIGATION_ACTION:
+        if self._open_link == OpenLink.NEW and\
+                decision_type == WebKit2.PolicyDecisionType.NAVIGATION_ACTION:
             if decision.get_navigation_action().get_navigation_type() ==\
                WebKit2.NavigationType.LINK_CLICKED or (self._current not
                in decision.get_navigation_action().get_request().get_uri() and
@@ -113,5 +123,10 @@ class WebView(Gtk.Stack):
                 GLib.spawn_command_line_async("xdg-open \"%s\"" %
                                               decision.get_request().get_uri())
             return True
-        decision.use()
-        return False
+        # Only allow one level navigation
+        elif self._open_link == OpenLink.OPEN:
+            decision.use()
+            self._open_link = OpenLink.NONE
+            return False
+        else:
+            return True
