@@ -57,6 +57,7 @@ class WebView(Gtk.Stack):
         if private:
             settings.set_property('enable-private-browsing', True)
             settings.set_property('print-backgrounds', False)
+        settings.set_property('enable-smooth-scrolling', True)
         settings.set_property('enable-plugins', False)
         settings.set_property('enable-fullscreen', False)
         settings.set_property('enable-html5-database', False)
