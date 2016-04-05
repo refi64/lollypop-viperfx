@@ -143,6 +143,7 @@ class ProgressController:
             Update scale on current changed
             @param player as Player
         """
+        self._progress.clear_marks()
         if player.current_track.id != Type.RADIOS:
             self._progress.set_sensitive(player.current_track.id is not None)
         self._progress.set_value(0.0)

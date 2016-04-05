@@ -15,6 +15,8 @@
 
 from gi.repository import Gio
 
+from os import path
+
 try:
     from gi.repository import Secret
 
@@ -29,6 +31,7 @@ except:
     SecretSchema = None
     SecretAttributes = None
 
+DataPath = path.expanduser("~") + "/.local/share/lollypop"
 
 Lp = Gio.Application.get_default
 

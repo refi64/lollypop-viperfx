@@ -12,7 +12,9 @@
 
 from gi.repository import Gtk
 
-from lollypop.define import Lp, WindowSize
+from pickle import load
+
+from lollypop.define import Lp, WindowSize, DataPath
 from lollypop.toolbar_playback import ToolbarPlayback
 from lollypop.toolbar_info import ToolbarInfo
 from lollypop.toolbar_title import ToolbarTitle
@@ -113,6 +115,17 @@ class Toolbar(Gtk.HeaderBar):
             @parma: menu as Gio.Menu
         """
         self._toolbar_end.setup_menu(menu)
+
+    def set_mark(self):
+        """
+            Mark toolbar with previously saved position
+        """
+        try:
+            if Lp().settings.get_value('save-state'):
+                position = load(open(DataPath + "/position.bin", "rb"))
+                self._toolbar_title.add_mark(position/1000000)
+        except Exception as e:
+            print("Toolbar::restore_state():", e)
 
 #######################
 # PRIVATE             #

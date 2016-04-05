@@ -173,6 +173,13 @@ class Window(Gtk.ApplicationWindow, Container):
             self._setup_pos_size('window')
         self._was_maximized = was_maximized
 
+    @property
+    def toolbar(self):
+        """
+            toolbar as Toolbar
+        """
+        return self._toolbar
+
 ############
 # Private  #
 ############

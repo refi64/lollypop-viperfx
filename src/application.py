@@ -36,7 +36,7 @@ except Exception as e:
     LastFM = None
 
 from lollypop.utils import is_gnome, is_unity
-from lollypop.define import ArtSize, Type
+from lollypop.define import ArtSize, Type, DataPath
 from lollypop.window import Window
 from lollypop.database import Database
 from lollypop.player import Player
@@ -63,8 +63,6 @@ class Application(Gtk.Application):
             - Handle command line
             - Create main window
     """
-
-    DATA_PATH = os.path.expanduser("~") + "/.local/share/lollypop"
 
     def __init__(self):
         """
@@ -188,6 +186,9 @@ class Application(Gtk.Application):
             self.window.init_list_one()
             self.window.show()
             self.player.restore_state()
+            # We add to mainloop as we want to run
+            # after player::restore_state() signals
+            GLib.idle_add(self.window.toolbar.set_mark)
             # Will not start sooner
             self.inhibitor = Inhibitor()
 
@@ -211,15 +212,15 @@ class Application(Gtk.Application):
                 # Save albums context
                 try:
                     dump(self.player.context.genre_ids,
-                         open(self.DATA_PATH + "/genre_ids.bin", "wb"))
+                         open(DataPath + "/genre_ids.bin", "wb"))
                     dump(self.player.context.genre_ids,
-                         open(self.DATA_PATH + "/artist_ids.bin", "wb"))
+                         open(DataPath + "/artist_ids.bin", "wb"))
                     self.player.shuffle_albums(False)
                     dump(self.player.get_albums(),
-                         open(self.DATA_PATH + "/albums.bin", "wb"))
+                         open(DataPath + "/albums.bin", "wb"))
                 except Exception as e:
                     print("Application::prepare_to_exit()", e)
-            dump(track_id, open(self.DATA_PATH + "/track_id.bin", "wb"))
+            dump(track_id, open(DataPath + "/track_id.bin", "wb"))
             # Save current playlist
             if self.player.current_track.id == Type.RADIOS:
                 playlist_ids = [Type.RADIOS]
@@ -228,12 +229,12 @@ class Application(Gtk.Application):
             else:
                 playlist_ids = self.player.get_user_playlist_ids()
             dump(playlist_ids,
-                 open(self.DATA_PATH + "/playlist_ids.bin", "wb"))
+                 open(DataPath + "/playlist_ids.bin", "wb"))
         if self.player.is_playing():
             position = self.player.position
         else:
             position = 0
-        dump(position, open(self.DATA_PATH + "/position.bin", "wb"))
+        dump(position, open(DataPath + "/position.bin", "wb"))
         self.player.stop_all()
         if self.window:
             self.window.stop_all()

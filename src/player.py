@@ -19,10 +19,9 @@ from lollypop.player_externals import ExternalsPlayer
 from lollypop.player_userplaylist import UserPlaylistPlayer
 from lollypop.radios import Radios
 from lollypop.objects import Track
-from lollypop.define import Lp, Type, NextContext
+from lollypop.define import Lp, Type, NextContext, DataPath
 
 from pickle import load
-from os import path
 
 
 class Player(BinPlayer, QueuePlayer, UserPlaylistPlayer, RadioPlayer,
@@ -30,7 +29,6 @@ class Player(BinPlayer, QueuePlayer, UserPlaylistPlayer, RadioPlayer,
     """
         Player object used to manage playback and playlists
     """
-    DATA_PATH = path.expanduser("~") + "/.local/share/lollypop"
 
     def __init__(self):
         """
@@ -369,8 +367,8 @@ class Player(BinPlayer, QueuePlayer, UserPlaylistPlayer, RadioPlayer,
         """
         try:
             if Lp().settings.get_value('save-state'):
-                track_id = load(open(self.DATA_PATH + "/track_id.bin", "rb"))
-                playlist_ids = load(open(self.DATA_PATH + "/playlist_ids.bin",
+                track_id = load(open(DataPath + "/track_id.bin", "rb"))
+                playlist_ids = load(open(DataPath + "/playlist_ids.bin",
                                     "rb"))
                 if playlist_ids and playlist_ids[0] == Type.RADIOS:
                     radios = Radios()
@@ -382,6 +380,9 @@ class Player(BinPlayer, QueuePlayer, UserPlaylistPlayer, RadioPlayer,
                 elif Lp().tracks.get_path(track_id) != "":
                     track = Track(track_id)
                     self._load_track(track)
+                    # We set this initial state
+                    # because seek while failed otherwise
+                    self.pause()
                     if playlist_ids:
                         pids = []
                         for playlist_id in playlist_ids:
@@ -406,14 +407,14 @@ class Player(BinPlayer, QueuePlayer, UserPlaylistPlayer, RadioPlayer,
                                                                   pids)
                     else:
                         self._albums = load(open(
-                                            self.DATA_PATH + "/albums.bin",
+                                            DataPath + "/albums.bin",
                                             "rb"))
                         self.shuffle_albums(True)
                         self._context.genre_ids = load(open(
-                                            self.DATA_PATH + "/genre_ids.bin",
+                                            DataPath + "/genre_ids.bin",
                                             "rb"))
                         self._context.artist_ids = load(open(
-                                            self.DATA_PATH + "/artist_ids.bin",
+                                            DataPath + "/artist_ids.bin",
                                             "rb"))
                     self.set_next()
                     self.set_prev()
@@ -421,7 +422,6 @@ class Player(BinPlayer, QueuePlayer, UserPlaylistPlayer, RadioPlayer,
                         self._context.next = NextContext.NONE
                     else:
                         self._context.next = NextContext.STOP_ALL
-                    self.emit('current-changed')
                 else:
                     print("Player::restore_state(): track missing")
         except Exception as e:
