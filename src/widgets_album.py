@@ -40,6 +40,7 @@ class AlbumWidget:
         self._cover = None
         self._widget = None
         self._play_all_button = None
+        self._artwork_button = None
         self._show_overlay = False
         self._timeout_id = None
         self._overlay_orientation = Gtk.Orientation.HORIZONTAL
@@ -129,6 +130,8 @@ class AlbumWidget:
             Set overlay
             @param set as bool
         """
+        if self._show_overlay == set:
+            return
         self._show_overlay = set
         if set:
             self._play_button.set_opacity(1)
@@ -141,10 +144,11 @@ class AlbumWidget:
                                                            self._squared_class)
                 self._set_play_all_image()
                 self._play_all_button.show()
-            self._artwork_button.set_opacity(1)
-            self._artwork_button.get_style_context().add_class(
+            if self._artwork_button is not None:
+                self._artwork_button.set_opacity(1)
+                self._artwork_button.get_style_context().add_class(
                                                            self._squared_class)
-            self._artwork_button.show()
+                self._artwork_button.show()
             self._show_append(not Lp().player.has_album(self._album))
             self._action_button.set_opacity(1)
             self._action_button.get_style_context().add_class(
@@ -160,9 +164,10 @@ class AlbumWidget:
                 self._play_all_button.hide()
                 self._play_all_button.get_style_context().remove_class(
                                                            self._squared_class)
-            self._artwork_button.hide()
-            self._artwork_button.set_opacity(0)
-            self._artwork_button.get_style_context().remove_class(
+            if self._artwork_button is not None:
+                self._artwork_button.hide()
+                self._artwork_button.set_opacity(0)
+                self._artwork_button.get_style_context().remove_class(
                                                            self._squared_class)
             self._action_button.hide()
             self._action_button.set_opacity(0)
@@ -231,8 +236,9 @@ class AlbumWidget:
             Remove selected style
             @param widget as Gtk.Popover
         """
-        if self._show_overlay:
-            GLib.idle_add(self._set_overlay, False)
+        # Enable hidding overlay
+        self._show_overlay = True
+        GLib.idle_add(self.set_overlay, False)
 
     def _on_enter_notify(self, widget, event):
         """
@@ -309,6 +315,8 @@ class AlbumWidget:
         popover.set_relative_to(widget)
         popover.populate()
         popover.connect('closed', self._on_pop_cover_closed)
+        # Disable hidding overlay
+        self._show_overlay = False
         popover.show()
         return True
 
@@ -434,15 +442,14 @@ class AlbumSimpleWidget(Gtk.Frame, AlbumWidget):
         width = (ArtSize.BIG + 8) * self.get_scale_factor()
         return (width, width)
 
-#######################
-# PRIVATE             #
-#######################
     def set_overlay(self, set):
         """
             Set overlay
             @param set as bool
         """
-        if set and not self._show_overlay:
+        if self._show_overlay == set:
+            return
+        if set:
             # Play button
             self._play_event = Gtk.EventBox()
             self._play_event.set_property('has-tooltip', True)
@@ -510,7 +517,7 @@ class AlbumSimpleWidget(Gtk.Frame, AlbumWidget):
             self._overlay.add(self._artwork_event)
             self._overlay.show_all()
             AlbumWidget.set_overlay(self, True)
-        elif self._show_overlay:
+        else:
             AlbumWidget.set_overlay(self, False)
             self._play_event.destroy()
             self._play_event = None
@@ -529,6 +536,9 @@ class AlbumSimpleWidget(Gtk.Frame, AlbumWidget):
             self._artwork_button.destroy()
             self._artwork_button = None
 
+#######################
+# PRIVATE             #
+#######################
     def _on_query_tooltip(self, widget, x, y, keyboard, tooltip):
         """
             Show tooltip if needed

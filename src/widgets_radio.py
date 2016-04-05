@@ -47,14 +47,14 @@ class RadioWidget(Gtk.Frame, AlbumWidget):
         self._widget = Gtk.EventBox()
         self._widget.connect('enter-notify-event', self._on_enter_notify)
         self._widget.connect('leave-notify-event', self._on_leave_notify)
-        self._cover_frame = Gtk.Frame()
-        self._cover_frame.set_shadow_type(Gtk.ShadowType.NONE)
-        self._cover_frame.get_style_context().add_class('cover-frame')
+        self._overlay = Gtk.Frame()
+        self._overlay.set_shadow_type(Gtk.ShadowType.NONE)
+        self._overlay.get_style_context().add_class('cover-frame')
         self._cover = Gtk.Image()
         self._cover.set_property('halign', Gtk.Align.CENTER)
         self._cover.set_size_request(ArtSize.BIG, ArtSize.BIG)
         self._cover.get_style_context().add_class('white')
-        self._cover_frame.add(self._cover)
+        self._overlay.add(self._cover)
         self._title_label = Gtk.Label()
         self._title_label.set_ellipsize(Pango.EllipsizeMode.END)
         self._title_label.set_property('halign', Gtk.Align.CENTER)
@@ -78,24 +78,24 @@ class RadioWidget(Gtk.Frame, AlbumWidget):
                                            Gtk.IconSize.DND)
         self._play_button.set_opacity(0)
         # Edit button
-        edit_event = Gtk.EventBox()
-        edit_event.set_margin_bottom(5)
-        edit_event.set_margin_end(5)
-        edit_event.set_property('has-tooltip', True)
-        edit_event.set_tooltip_text(_("Change artwork"))
-        edit_event.set_property('halign', Gtk.Align.END)
-        edit_event.connect('realize', self._on_eventbox_realize)
-        edit_event.connect('button-press-event',
-                           self._on_edit_press_event)
-        edit_event.set_property('valign', Gtk.Align.END)
-        edit_event.set_property('halign', Gtk.Align.END)
-        self._edit_button = Gtk.Image.new_from_icon_name(
+        self._action_event = Gtk.EventBox()
+        self._action_event.set_margin_bottom(5)
+        self._action_event.set_margin_end(5)
+        self._action_event.set_property('has-tooltip', True)
+        self._action_event.set_tooltip_text(_("Change artwork"))
+        self._action_event.set_property('halign', Gtk.Align.END)
+        self._action_event.connect('realize', self._on_eventbox_realize)
+        self._action_event.connect('button-press-event',
+                                   self._on_edit_press_event)
+        self._action_event.set_property('valign', Gtk.Align.END)
+        self._action_event.set_property('halign', Gtk.Align.END)
+        self._action_button = Gtk.Image.new_from_icon_name(
                                            'document-properties-symbolic',
                                            Gtk.IconSize.BUTTON)
-        self._edit_button.set_opacity(0)
-        overlay.add(self._cover_frame)
+        self._action_button.set_opacity(0)
+        overlay.add(self._overlay)
         overlay.add_overlay(play_event)
-        overlay.add_overlay(edit_event)
+        overlay.add_overlay(self._action_event)
         grid = Gtk.Grid()
         grid.set_orientation(Gtk.Orientation.VERTICAL)
         grid.add(overlay)
@@ -108,7 +108,7 @@ class RadioWidget(Gtk.Frame, AlbumWidget):
         self.update_state()
         self.show_all()
         play_event.add(self._play_button)
-        edit_event.add(self._edit_button)
+        self._action_event.add(self._action_button)
 
     def set_sensitive(self, b):
         """
@@ -181,65 +181,15 @@ class RadioWidget(Gtk.Frame, AlbumWidget):
         selected = Lp().player.current_track.id == Type.RADIOS and\
             self._name == Lp().player.current_track.album_artists[0]
         if selected:
-            self._cover_frame.get_style_context().add_class(
+            self._overlay.get_style_context().add_class(
                                                     'cover-frame-selected')
         else:
-            self._cover_frame.get_style_context().remove_class(
+            self._overlay.get_style_context().remove_class(
                                                     'cover-frame-selected')
 
 #######################
 # PRIVATE             #
 #######################
-    def _on_enter_notify(self, widget, event):
-        """
-            Show special buttons
-            @param widget as Gtk.Widget
-            @param event es Gdk.Event
-        """
-        if self._play_button.get_opacity() == 0:
-            self._cover.set_opacity(0.9)
-            self._play_button.set_opacity(1)
-            self._play_button.get_style_context().add_class(
-                                                           self._rounded_class)
-            self._play_button.show()
-            self._edit_button.set_opacity(1)
-            self._edit_button.get_style_context().add_class(
-                                                           self._squared_class)
-            self._edit_button.show()
-
-    def _on_pop_cover_closed(self, widget):
-        """
-            Remove selected style
-            @param widget as Gtk.Popover
-        """
-        self._popover = False
-        self._play_button.set_opacity(0)
-        self._play_button.get_style_context().remove_class(self._rounded_class)
-        self._edit_button.set_opacity(0)
-        self._edit_button.get_style_context().remove_class(
-                                                           self._squared_class)
-
-    def _on_leave_notify(self, widget, event):
-        """
-            Hide special buttons
-            @param widget as Gtk.Widget
-            @param event es Gdk.Event
-        """
-        allocation = widget.get_allocation()
-        if event.x < 5 or\
-           event.x > allocation.width - 5 or\
-           event.y < 5 or\
-           event.y > allocation.height - 5:
-            self._cover.set_opacity(1)
-            self._play_button.set_opacity(0)
-            self._play_button.hide()
-            self._play_button.get_style_context().remove_class(
-                                                           self._rounded_class)
-            self._edit_button.hide()
-            self._edit_button.set_opacity(0)
-            self._edit_button.get_style_context().remove_class(
-                                                           self._squared_class)
-
     def _on_play_press_event(self, widget, event):
         """
             Play radio
@@ -258,8 +208,9 @@ class RadioWidget(Gtk.Frame, AlbumWidget):
             @param: widget as Gtk.EventBox
             @param: event as Gdk.Event
         """
-        self._popover = True
         popover = RadioPopover(self._name, self._radios_manager)
         popover.set_relative_to(widget)
         popover.connect('closed', self._on_pop_cover_closed)
+        # Disable hidding overlay
+        self._show_overlay = False
         popover.show()
