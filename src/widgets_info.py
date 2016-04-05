@@ -200,7 +200,7 @@ class WikipediaContent(InfoContent):
         wp = Wikipedia()
         (url, image_url, content) = wp.get_page_infos(artist)
         if not self._stop:
-            InfoContent.set_content(self, artist, content,
+            InfoContent.set_content(self, self._artist, content,
                                     image_url, 'wikipedia')
             t = Thread(target=self._setup_menu,
                        args=(self._artist, self._album))
