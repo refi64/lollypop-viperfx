@@ -180,6 +180,11 @@ class WikipediaContent(InfoContent):
             GLib.idle_add(self.set_visible_child_name, 'spinner')
             self._spinner.start()
             self._load_page_content(artist)
+        else:
+            t = Thread(target=self._setup_menu,
+                       args=(self._artist, self._album))
+            t.daemon = True
+            t.start()
 
     def clear(self):
         """
