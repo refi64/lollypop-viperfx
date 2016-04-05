@@ -213,7 +213,7 @@ class Application(Gtk.Application):
                 try:
                     dump(self.player.context.genre_ids,
                          open(DataPath + "/genre_ids.bin", "wb"))
-                    dump(self.player.context.genre_ids,
+                    dump(self.player.context.artist_ids,
                          open(DataPath + "/artist_ids.bin", "wb"))
                     self.player.shuffle_albums(False)
                     dump(self.player.get_albums(),
