@@ -168,6 +168,11 @@ class WebView(Gtk.Stack):
         elif self._open_link == OpenLink.NONE:
             decision.ignore()
             return True
+        # Use click, load page
+        elif decision.get_navigation_action().get_navigation_type() ==\
+                WebKit2.NavigationType.LINK_CLICKED:
+            decision.use()
+            return False
         # If external domain, do not load
         elif self._get_domain(url) != self._current_domain:
             decision.ignore()
