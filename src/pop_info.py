@@ -120,16 +120,6 @@ class InfoPopover(Gtk.Popover):
                                     GLib.Variant('b', False))
             widget.get_style_context().remove_class('selected')
 
-    def _load_web(self, widget, url, mobile, private, open_link):
-        """
-            Load url in widget
-            @param widget as Gtk.Viewport
-        """
-        web = self.WebView(mobile, private)
-        web.show()
-        widget.add(web)
-        web.load(url, open_link)
-
     def _on_current_changed(self, player):
         """
             Update content on track changed
@@ -310,11 +300,14 @@ class InfoPopover(Gtk.Popover):
             url = duckurl
         else:
             url = geniusurl
-
         self._on_child_unmap(widget)
-        # Delayed load due to WebKit memory loading
-        GLib.timeout_add(250, self._load_web, widget,
-                         url, True, True, OpenLink.OPEN)
+        # Delayed load due to WebKit memory loading and Gtk animation
+        web = self.WebView(True, True)
+        web.add_word('search')
+        web.add_word('lyrics')
+        web.show()
+        widget.add(web)
+        GLib.timeout_add(250, web.load, url, OpenLink.OPEN)
 
     def _on_map_duck(self, widget):
         """
@@ -338,6 +331,8 @@ class InfoPopover(Gtk.Popover):
             search = "%s+%s" % (artists, title)
         url = "https://duckduckgo.com/?q=%s&kl=%s&kd=-1&k5=2&kp=1&k1=-1"\
               % (search, Gtk.get_default_language().to_string())
-        # Delayed load due to WebKit memory loading
-        GLib.timeout_add(250, self._load_web, widget, url,
-                         False, False, OpenLink.NEW)
+        # Delayed load due to WebKit memory loading and Gtk animation
+        web = self.WebView(False, True)
+        web.show()
+        widget.add(web)
+        GLib.timeout_add(250, web.load, url, OpenLink.NEW)

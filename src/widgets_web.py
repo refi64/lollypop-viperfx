@@ -41,6 +41,7 @@ class WebView(Gtk.Stack):
         self.set_transition_type(Gtk.StackTransitionType.CROSSFADE)
         self._current_domain = ''
         self._url = ''
+        self._allowed_words = []
         self._open_links = OpenLink.NEW
         builder = Gtk.Builder()
         # Use ressource from ArtistContent
@@ -87,6 +88,13 @@ class WebView(Gtk.Stack):
             domain as str
         """
         return self._url
+
+    def add_word(self, word):
+        """
+            Add a word to allowed urls, only urls with this word will
+            get a navigation token
+        """
+        self._allowed_words.append(word)
 
     def load(self, url, open_link):
         """
@@ -155,6 +163,16 @@ class WebView(Gtk.Stack):
         url = decision.get_navigation_action().get_request().get_uri()
         # WTF is this?
         if url == "about:blank":
+            decision.ignore()
+            return True
+
+        # Refused non allowed words
+        found = False
+        for word in self._allowed_words:
+            if word in url:
+                found = True
+                break
+        if self._allowed_words and not found:
             decision.ignore()
             return True
 
