@@ -532,7 +532,6 @@
         </child>
         <child>
           <object class="GtkGrid" id="lastfm_grid">
-            <property name="visible">True</property>
             <property name="sensitive">False</property>
             <property name="can_focus">False</property>
             <property name="halign">center</property>

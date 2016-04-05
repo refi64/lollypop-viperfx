@@ -12,7 +12,8 @@
 
 import gi
 gi.require_version('Secret', '1')
-from gi.repository import GLib, Gio
+gi.require_version('Goa', '1.0')
+from gi.repository import GLib, Gio, Goa
 
 from gettext import gettext as _
 
@@ -63,6 +64,7 @@ class LastFM(LastFMNetwork):
         self._is_auth = False
         self._password = None
         self._check_for_proxy()
+        self._goa = self._get_goa_oauth()
         self.connect(None)
 
     def connect(self, password):
@@ -70,21 +72,26 @@ class LastFM(LastFMNetwork):
             Connect lastfm
             @param password as str/None
         """
-        if Secret is None or\
-                not Gio.NetworkMonitor.get_default().get_network_available():
-            return
-        self._username = Lp().settings.get_value('lastfm-login').get_string()
-        if password is None:
-            schema = Secret.Schema.new("org.gnome.Lollypop",
-                                       Secret.SchemaFlags.NONE,
-                                       SecretSchema)
-            Secret.password_lookup(schema, SecretAttributes, None,
-                                   self._on_password_lookup)
-        else:
-            t = Thread(target=self._connect, args=(self._username,
-                                                   password, True))
+        if self._goa:
+            t = Thread(target=self._connect, args=('', '', True))
             t.daemon = True
             t.start()
+        # Get username/password from GSettings/Secret
+        elif Secret is not None and\
+                Gio.NetworkMonitor.get_default().get_network_available():
+            self._username = Lp().settings.get_value(
+                                                   'lastfm-login').get_string()
+            if password is None:
+                schema = Secret.Schema.new("org.gnome.Lollypop",
+                                           Secret.SchemaFlags.NONE,
+                                           SecretSchema)
+                Secret.password_lookup(schema, SecretAttributes, None,
+                                       self._on_password_lookup)
+            else:
+                t = Thread(target=self._connect, args=(self._username,
+                                                       password, True))
+                t.daemon = True
+                t.start()
 
     def connect_sync(self, password):
         """
@@ -168,7 +175,7 @@ class LastFM(LastFMNetwork):
         """
         # Love the track on lastfm
         if Gio.NetworkMonitor.get_default().get_network_available() and\
-           self.is_auth():
+           self._is_auth:
             track = self.get_track(artist, title)
             try:
                 track.love()
@@ -184,23 +191,43 @@ class LastFM(LastFMNetwork):
         """
         # Love the track on lastfm
         if Gio.NetworkMonitor.get_default().get_network_available() and\
-           self.is_auth():
+           self._is_auth:
             track = self.get_track(artist, title)
             try:
                 track.unlove()
             except Exception as e:
                 print("Lastfm::unlove(): %s" % e)
 
+    @property
     def is_auth(self):
         """
-            Return True if valid authentication send
-            @return bool
+            True if valid authentication send
         """
         return self._is_auth
+
+    @property
+    def is_goa(self):
+        """
+            True if using Gnome Online Account
+        """
+        return self._goa is not None
 
 #######################
 # PRIVATE             #
 #######################
+    def _get_goa_oauth(self):
+        """
+            Init Gnome Online Account
+            @return get_oauth2_based()/None
+        """
+        try:
+            c = Goa.Client.new_sync()
+            for proxy in c.get_accounts():
+                if proxy.get_account().props.provider_name == "Last.fm":
+                    return proxy.get_oauth2_based()
+        except:
+            return None
+
     def _check_for_proxy(self):
         """
             Enable proxy if needed
@@ -221,18 +248,25 @@ class LastFM(LastFMNetwork):
             @thread safe
         """
         self._username = username
-        if password != '' and username != '':
+        if self._goa is not None or (password != '' and username != ''):
             self._is_auth = True
         else:
             self._is_auth = False
         try:
             self._check_for_proxy()
-            LastFMNetwork.__init__(
-                self,
-                api_key=self._API_KEY,
-                api_secret=self._API_SECRET,
-                username=Lp().settings.get_value('lastfm-login').get_string(),
-                password_hash=md5(password))
+            if self._goa is None:
+                LastFMNetwork.__init__(
+                    self,
+                    api_key=self._API_KEY,
+                    api_secret=self._API_SECRET,
+                    username=self._username,
+                    password_hash=md5(password))
+            else:
+                LastFMNetwork.__init__(
+                    self,
+                    api_key=self._API_KEY,
+                    api_secret=self._API_SECRET,
+                    session_key=self._goa.call_get_access_token_sync(None)[0])
             if populate_loved:
                 self._populate_loved_tracks()
         except Exception as e:
