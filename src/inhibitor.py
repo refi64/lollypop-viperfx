@@ -10,11 +10,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-import gi
-gi.require_version('GdkX11', '3.0')
-from gi.repository import GdkX11
-
-import dbus
+from gi.repository import Gio, GLib
 
 from lollypop.define import Lp
 
@@ -27,24 +23,18 @@ class Inhibitor:
     SUSPENDING = 4
     IDLE = 8
 
+    _DESTINATION = "org.gnome.SessionManager"
+    _PATH = "/org/gnome/SessionManager"
+    _INTERFACE = "org.gnome.SessionManager"
+
     def __init__(self):
         """
             Init dbus objects
         """
-        # Just to make pep8/flake8 happy
-        GdkX11.x11_get_default_root_xwindow()
-        # Dbus interface to disable screenlock
-        bus = dbus.SessionBus()
-        self._sm = None
+        # Bus to disable screenlock
+        self._bus = Gio.bus_get_sync(Gio.BusType.SESSION, None)
         self._cookie = None
         self._flags = []
-        try:
-            bus_object = bus.get_object('org.gnome.SessionManager',
-                                        '/org/gnome/SessionManager')
-            self._sm = dbus.Interface(bus_object,
-                                      'org.gnome.SessionManager')
-        except:
-            self._sm = None
         Lp().player.connect('status-changed', self._on_status_changed)
 
     def uninhibit(self, flag):
@@ -52,11 +42,17 @@ class Inhibitor:
             Uninhibit flag
             @param flag as int
         """
-        if self._sm is None:
-            return
         try:
             if self._cookie is not None:
-                self._sm.Uninhibit(self._cookie)
+                self._bus.call_sync(self._DESTINATION,
+                                    self._PATH,
+                                    self._INTERFACE,
+                                    'Uninhibit',
+                                    GLib.Variant('(u)', (self._cookie,)),
+                                    None,
+                                    Gio.DBusCallFlags.NONE,
+                                    -1,
+                                    None)
                 self._cookie = None
             if flag in self._flags:
                 self._flags.remove(flag)
@@ -69,11 +65,17 @@ class Inhibitor:
             Inhibit flag
             @param flag as int
         """
-        if self._sm is None:
-            return
         try:
             if self._cookie is not None:
-                self._sm.Uninhibit(self._cookie)
+                self._bus.call_sync(self._DESTINATION,
+                                    self._PATH,
+                                    self._INTERFACE,
+                                    'Uninhibit',
+                                    GLib.Variant('(u)', (self._cookie,)),
+                                    None,
+                                    Gio.DBusCallFlags.NONE,
+                                    -1,
+                                    None)
                 self._cookie = None
             if flag not in self._flags:
                 self._flags.append(flag)
@@ -104,7 +106,19 @@ class Inhibitor:
             for flag in self._flags:
                 flags += flag
             if flags > 0:
-                self._cookie = self._sm.Inhibit("Lollypop", xid,
-                                                "OnDemand", flags)
+                self._cookie = self._bus.call_sync(
+                                               self._DESTINATION,
+                                               self._PATH,
+                                               self._INTERFACE,
+                                               'Inhibit',
+                                               GLib.Variant('(susu)',
+                                                            ('Lollypop',
+                                                             xid,
+                                                             'OnDemand',
+                                                             flags)),
+                                               GLib.VariantType.new('(u)'),
+                                               Gio.DBusCallFlags.NONE,
+                                               -1,
+                                               None)[0]
         except Exception as e:
             print("Inhibator::_set_flags:", e)
