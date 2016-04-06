@@ -265,7 +265,6 @@ class LastFM(LastFMNetwork):
                     username=self._username,
                     password_hash=md5(password))
             else:
-                print(self._goa.call_get_access_token_sync(None)[0])
                 LastFMNetwork.__init__(
                     self,
                     api_key=self._API_KEY,
