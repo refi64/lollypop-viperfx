@@ -48,7 +48,6 @@ class AlbumsView(LazyLoadingView):
         self._viewport.set_property('valign', Gtk.Align.START)
         self._viewport.set_property('margin', 5)
         self._scrolled.set_property('expand', True)
-        self._scrolled.set_property('height-request', 10)
         self.add(self._scrolled)
 
     def populate(self, albums):
