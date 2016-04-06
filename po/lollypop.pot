@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-04-06 16:27+0200\n"
+"POT-Creation-Date: 2016-04-06 23:19+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -417,7 +417,7 @@ msgstr ""
 msgid "Clear albums"
 msgstr ""
 
-#: ../src/pop_albums.py:296 ../src/pop_info.py:209 ../src/view_artist.py:44
+#: ../src/pop_albums.py:296 ../src/pop_info.py:208 ../src/view_artist.py:44
 msgid "Go to current track"
 msgstr ""
 
@@ -437,11 +437,11 @@ msgstr ""
 msgid "Select a cover art for this album"
 msgstr ""
 
-#: ../src/pop_info.py:36
+#: ../src/pop_info.py:35
 msgid "Advanced artist informations disabled"
 msgstr ""
 
-#: ../src/pop_info.py:44
+#: ../src/pop_info.py:43
 msgid "WebKit support disabled"
 msgstr ""
 
@@ -849,6 +849,14 @@ msgstr ""
 
 #: ../data/ToolbarEnd.ui.h:6
 msgid "Shuffle"
+msgstr ""
+
+#: ../data/TuneinPopover.ui.h:1
+msgid "Go back"
+msgstr ""
+
+#: ../data/TuneinPopover.ui.h:2
+msgid "Go home"
 msgstr ""
 
 #: ../data/Unicode.ui.h:1
