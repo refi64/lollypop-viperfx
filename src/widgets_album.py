@@ -439,7 +439,7 @@ class AlbumSimpleWidget(Gtk.Frame, AlbumWidget):
             @return (int, int)
         """
         # Padding: 3px, border: 1px
-        width = (ArtSize.BIG + 8) * self.get_scale_factor()
+        width = ArtSize.BIG + 8
         return (width, width)
 
     def set_overlay(self, set):
@@ -583,7 +583,7 @@ class AlbumDetailedWidget(Gtk.Bin, AlbumWidget):
                 self._album.set_artists(artist_ids)
         self._width = None
         # Cover + rating + spacing
-        self._height = ArtSize.BIG * self.get_scale_factor() + 26
+        self._height = ArtSize.BIG + 26
         self._orientation = None
         self._stop = False
         self._child_height = TrackRow.get_best_height(self)
@@ -617,9 +617,7 @@ class AlbumDetailedWidget(Gtk.Bin, AlbumWidget):
             self._coverbox = builder.get_object('coverbox')
             self._coverbox.show()
             # 6 for 2*3px (application.css)
-            self._coverbox.set_property('width-request',
-                                        ArtSize.BIG *
-                                        self.get_scale_factor() + 6)
+            self._coverbox.set_property('width-request', ArtSize.BIG + 6)
             self._coverbox.add(rating)
             if Lp().window.get_view_width() < WindowSize.MEDIUM:
                 self._coverbox.hide()
