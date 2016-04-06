@@ -276,5 +276,5 @@ class AlbumArt(BaseArt, ArtDownloader, TagReader):
             @param album as Album
         """
         # FIXME special chars
-        name = "_".join(album.artists) + "_" + album.name
+        name = "_".join(album.artists) + "_" + album.name + "_" + album.year
         return escape(name)
