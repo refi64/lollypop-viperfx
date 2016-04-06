@@ -126,8 +126,6 @@ class Application(Gtk.Application):
                                              Gtk.STYLE_PROVIDER_PRIORITY_USER)
         self.settings = Settings.new()
         ArtSize.BIG = self.settings.get_value('cover-size').get_int32()
-        if LastFM is not None:
-            self.lastfm = LastFM()
         self.db = Database()
         self.playlists = Playlists()
         # We store cursors for main thread
@@ -140,6 +138,8 @@ class Application(Gtk.Application):
         self.player = Player()
         self.scanner = CollectionScanner()
         self.art = Art()
+        if LastFM is not None:
+            self.lastfm = LastFM()
         if not self.settings.get_value('disable-mpris'):
             MPRIS(self)
         if not self.settings.get_value('disable-notifications'):

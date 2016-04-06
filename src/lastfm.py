@@ -46,9 +46,6 @@ class LastFM(LastFMNetwork):
        really have much option :).
     """
 
-    _API_KEY = '7a9619a850ccf7377c46cf233c51e3c6'
-    _API_SECRET = '9254319364d73bec6c59ace485a95c98'
-
     def __init__(self):
         """
             Init lastfm support
@@ -57,14 +54,20 @@ class LastFM(LastFMNetwork):
             self._settings = Gio.Settings.new('org.gnome.system.proxy.http')
         except:
             self._settings = None
-        LastFMNetwork.__init__(self,
-                               api_key=self._API_KEY,
-                               api_secret=self._API_SECRET)
         self._username = ''
         self._is_auth = False
         self._password = None
         self._check_for_proxy()
         self._goa = self._get_goa_oauth()
+        if self._goa is not None:
+            self._API_KEY = self._goa.props.client_id
+            self._API_SECRET = self._goa.props.client_secret
+        else:
+            self._API_KEY = '7a9619a850ccf7377c46cf233c51e3c6'
+            self._API_SECRET = '9254319364d73bec6c59ace485a95c98'
+        LastFMNetwork.__init__(self,
+                               api_key=self._API_KEY,
+                               api_secret=self._API_SECRET)
         self.connect(None)
 
     def connect(self, password):
@@ -262,6 +265,7 @@ class LastFM(LastFMNetwork):
                     username=self._username,
                     password_hash=md5(password))
             else:
+                print(self._goa.call_get_access_token_sync(None)[0])
                 LastFMNetwork.__init__(
                     self,
                     api_key=self._API_KEY,
@@ -272,7 +276,7 @@ class LastFM(LastFMNetwork):
         except Exception as e:
             print("Lastfm::_connect(): %s" % e)
 
-    def _scrobble(self, artist, album, title, timestamp, duration):
+    def _scrobble(self, artist, album, title, timestamp, duration, first=True):
         """
             Scrobble track
             @param artist as str
@@ -280,6 +284,7 @@ class LastFM(LastFMNetwork):
             @param album_title as str
             @param timestamp as int
             @param duration as int
+            @param first is internal
             @thread safe
         """
         debug("LastFM::_scrobble(): %s, %s, %s, %s, %s" % (artist,
@@ -293,10 +298,13 @@ class LastFM(LastFMNetwork):
                                    album=album,
                                    title=title,
                                    timestamp=timestamp)
-        except BadAuthenticationError:
+        except BadAuthenticationError as e:
             pass
-        except:
-            self._connect(self._username, self._password)
+        except Exception as e:
+            print("Lastfm::scrobble():", e)
+            # Scrobble sometimes fails
+            if first:
+                self._connect(self._username, self._password)
 
     def _now_playing(self, artist, album, title, duration, first=True):
         """
@@ -321,7 +329,8 @@ class LastFM(LastFMNetwork):
         except BadAuthenticationError:
             if Lp().notify is not None:
                 GLib.idle_add(Lp().notify.send, _("Wrong Last.fm credentials"))
-        except:
+        except Exception as e:
+            print("Lastfm::scrobble():", e)
             # now playing sometimes fails
             if first:
                 self._connect(self._username, self._password)
