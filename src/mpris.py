@@ -297,6 +297,8 @@ class MPRIS(Server):
                 'CanSeek': GLib.Variant('b', True),
                 'CanControl': GLib.Variant('b', True),
             }
+        else:
+            return {}
 
     def Set(self, interface, property_name, new_value):
         if property_name == 'Volume':
