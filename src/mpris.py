@@ -178,9 +178,13 @@ class MPRIS(Server):
         self._app.quit()
 
     def Next(self):
+        if Lp().notify is not None:
+            Lp().notify.inhibit()
         Lp().player.next()
 
     def Previous(self):
+        if Lp().notify is not None:
+            Lp().notify.inhibit()
         Lp().player.prev()
 
     def Pause(self):

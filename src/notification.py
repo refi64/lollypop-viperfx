@@ -26,7 +26,7 @@ class NotificationManager:
             Init notification object with lollypop infos
         """
         self._caps = Notify.get_server_caps()
-
+        self._inhibitor = False
         self._notification = Notify.Notification()
         self._notification.set_category('x-gnome.music')
         self._notification.set_hint('desktop-entry',
@@ -50,6 +50,12 @@ class NotificationManager:
         except:
             pass
         self._set_actions()
+
+    def inhibit(self):
+        """
+            Inhibit notifications for one shot
+        """
+        self._inhibitor = True
 
 #######################
 # PRIVATE             #
@@ -78,7 +84,8 @@ class NotificationManager:
             Update notification with track_id infos
             @param player Player
         """
-        if player.current_track.title == '':
+        if player.current_track.title == '' or self._inhibitor:
+            self._inhibitor = False
             return
         state = Lp().window.get_window().get_state()
         app = Lp().window.get_application()
