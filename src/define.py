@@ -50,6 +50,12 @@ class SelectionMode:
     LIMITED = 1
 
 
+class OpenLink:
+    NONE = 0
+    OPEN = 1
+    NEW = 2
+
+
 # Represent playback context
 class PlayContext:
     genre_ids = {}
