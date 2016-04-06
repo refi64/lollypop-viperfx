@@ -263,19 +263,18 @@ class TracksDatabase:
                                   WHERE track_id=?", (track_id,))
             return list(itertools.chain(*result))
 
-    def get_genre_names(self, track_id):
+    def get_genres(self, track_id):
         """
-            Get genre names
+            Get genres
             @param track id as int
-            @return Genre name as str "genre1, genre2..."
+            @return [str]
         """
         with SqlCursor(Lp().db) as sql:
             result = sql.execute("SELECT name FROM genres, track_genres\
                                   WHERE track_genres.track_id=?\
                                   AND track_genres.genre_id=genres.rowid",
                                  (track_id,))
-            genres = [row[0] for row in result]
-            return ", ".join(genres)
+            return list(itertools.chain(*result))
 
     def get_mtimes(self):
         """

@@ -420,7 +420,7 @@ class BinPlayer(BasePlayer):
             if self._current_track.album_artist == '':
                 self._current_track.set_album_artists(
                                                    self._current_track.artists)
-            self._current_track.genre_name = reader.get_genres(tags)
+            self._current_track.genres = reader.get_genres(tags).split(',')
         self.emit('current-changed')
 
     def _on_bus_element(self, bus, message):

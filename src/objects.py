@@ -211,7 +211,7 @@ class Track(Base):
     """
     FIELDS = ['name', 'album_id', 'album_artist_ids',
               'artist_ids', 'album_name', 'artists',
-              'genre_names', 'duration', 'number', 'path', 'position']
+              'genres', 'duration', 'number', 'path', 'position']
     DEFAULTS = ['', None, [], [], '', '', '', 0.0, None, '', 0]
 
     def __init__(self, track_id=None):
@@ -289,15 +289,6 @@ class Track(Base):
         if getattr(self, "_album_artists") is None:
             self._album_artists = self.album.artists
         return self._album_artists
-
-    @property
-    def genre(self):
-        """
-            Get track genres
-            Alias to Track.genre_names
-            @return str
-        """
-        return self.genre_names
 
     def set_album_artists(self, artists):
         """
