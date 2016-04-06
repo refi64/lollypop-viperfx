@@ -101,7 +101,6 @@ class Inhibitor:
             Set inhibite flags
         """
         try:
-            xid = Lp().window.get_window().get_xid()
             flags = 0
             for flag in self._flags:
                 flags += flag
@@ -113,7 +112,7 @@ class Inhibitor:
                                                'Inhibit',
                                                GLib.Variant('(susu)',
                                                             ('Lollypop',
-                                                             xid,
+                                                             0,
                                                              'OnDemand',
                                                              flags)),
                                                GLib.VariantType.new('(u)'),
