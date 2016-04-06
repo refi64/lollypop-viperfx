@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lollypop\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-03-30 17:40+0200\n"
-"PO-Revision-Date: 2016-03-30 17:07+0000\n"
+"POT-Creation-Date: 2016-04-05 12:03+0200\n"
+"PO-Revision-Date: 2016-04-05 10:47+0000\n"
 "Last-Translator: Jiri Grönroos <jiri.gronroos@iki.fi>\n"
 "Language-Team: Finnish (http://www.transifex.com/gnumdk/lollypop/language/fi/)\n"
 "MIME-Version: 1.0\n"
@@ -222,7 +222,7 @@ msgid "Genre/Artist/Cover browsing"
 msgstr "Tyylilajin/esittäjän/kannen perusteella selaaminen"
 
 #: ../data/lollypop.appdata.xml.in.h:8 ../src/playlists.py:239
-#: ../data/ToolbarEnd.ui.h:7
+#: ../data/ArtistInfo.ui.h:5 ../data/ToolbarEnd.ui.h:7
 msgid "Search"
 msgstr "Etsi"
 
@@ -284,28 +284,28 @@ msgid ""
 "    - Artist informations disabled"
 msgstr "    - Kuuntelujen lähetystiedot pois käytöstä\n    - Kansikuvien automaattinen lataus pois käytöstä\n    - Esittäjien tiedot pois käytöstä"
 
-#: ../src/application.py:395
+#: ../src/application.py:396
 #, python-format
 msgid "%d artist"
 msgid_plural "%d artists"
 msgstr[0] "%d esittäjä"
 msgstr[1] "%d esittäjää"
 
-#: ../src/application.py:397
+#: ../src/application.py:398
 #, python-format
 msgid "%d album"
 msgid_plural "%d albums"
 msgstr[0] "%d albumi"
 msgstr[1] "%d albumia"
 
-#: ../src/application.py:399
+#: ../src/application.py:400
 #, python-format
 msgid "%d track"
 msgid_plural "%d tracks"
 msgstr[0] "%d kappale"
 msgstr[1] "%d kappaletta"
 
-#: ../src/application.py:414
+#: ../src/application.py:415
 msgid "Lollypop: You need to install yelp."
 msgstr "Lollypop: Ohje vaatii yelp-ohjelman asennuksen."
 
@@ -367,7 +367,7 @@ msgid "Pause"
 msgstr "Keskeytä"
 
 #: ../src/controllers.py:86 ../src/controllers.py:114 ../src/pop_tunein.py:154
-#: ../src/widgets_album.py:392 ../src/widgets_radio.py:69
+#: ../src/widgets_album.py:456 ../src/widgets_radio.py:69
 #: ../data/AlbumDetailedWidget.ui.h:1 ../data/ToolbarPlayback.ui.h:2
 msgid "Play"
 msgstr "Toista"
@@ -405,7 +405,7 @@ msgstr "esittäjä %s"
 msgid "by %s, from %s"
 msgstr "esittäjän %s albumilta %s"
 
-#: ../src/player_bin.py:442
+#: ../src/player_bin.py:448
 #, python-format
 msgid "File doesn't exist: %s"
 msgstr "Tiedostoa ei ole olemassa: %s"
@@ -418,7 +418,7 @@ msgstr "Tykätyt kappaleet"
 msgid "Clear albums"
 msgstr "Tyhjennä albumit"
 
-#: ../src/pop_albums.py:296 ../src/pop_info.py:233 ../src/view_artist.py:44
+#: ../src/pop_albums.py:296 ../src/pop_info.py:212 ../src/view_artist.py:44
 msgid "Go to current track"
 msgstr "Siirry parhaillaan soivaan kappaleeseen"
 
@@ -426,23 +426,23 @@ msgstr "Siirry parhaillaan soivaan kappaleeseen"
 msgid "Playing albums"
 msgstr "Toistetaan albumit"
 
-#: ../src/pop_covers.py:56 ../src/pop_tunein.py:93 ../data/RadioPopover.ui.h:3
+#: ../src/pop_covers.py:53 ../src/pop_tunein.py:93 ../data/RadioPopover.ui.h:3
 msgid "Please wait..."
 msgstr "Odota hetki..."
 
-#: ../src/pop_covers.py:136
+#: ../src/pop_covers.py:133
 msgid "No cover found..."
 msgstr "Kansikuvaa ei löytynyt..."
 
-#: ../src/pop_covers.py:164
+#: ../src/pop_covers.py:161
 msgid "Select a cover art for this album"
 msgstr "Valitse kansikuva tälle albumille"
 
-#: ../src/pop_info.py:33
+#: ../src/pop_info.py:36
 msgid "Advanced artist informations disabled"
 msgstr "Esittäjien lisätiedot pois käytöstä"
 
-#: ../src/pop_info.py:41
+#: ../src/pop_info.py:44
 msgid "WebKit support disabled"
 msgstr "WebKit-tuki poistettu käytöstä"
 
@@ -462,8 +462,8 @@ msgstr "Lopeta tämän albumin jälkeen"
 msgid "Do not repeat"
 msgstr "Älä kertaa"
 
-#: ../src/pop_menu.py:201 ../src/widgets_indicator.py:97
-#: ../data/SearchRow.ui.h:3
+#: ../src/pop_menu.py:201 ../src/widgets_indicator.py:92
+#: ../data/SearchRow.ui.h:2
 msgid "Add to queue"
 msgstr "Lisää jonoon"
 
@@ -475,7 +475,7 @@ msgstr "Seuraavat kappaleet"
 msgid "Next track"
 msgstr "Seuraava kappale"
 
-#: ../src/pop_menu.py:212 ../src/widgets_indicator.py:93
+#: ../src/pop_menu.py:212 ../src/widgets_indicator.py:88
 msgid "Remove from queue"
 msgstr "Poista jonosta"
 
@@ -547,48 +547,48 @@ msgstr "Toistetaan soittolistat"
 msgid "The the"
 msgstr ""
 
-#: ../src/view_device.py:82 ../src/view_device.py:148
+#: ../src/view_device.py:83 ../src/view_device.py:149
 #, python-format
 msgid "Synchronize %s"
 msgstr "Synkronoi %s"
 
-#: ../src/view_device.py:137
+#: ../src/view_device.py:138
 msgid "Cancel synchronization"
 msgstr "Peru synkronointi"
 
-#: ../src/widgets_album.py:163
+#: ../src/widgets_album.py:200
 msgid "Append"
 msgstr "Lisää"
 
-#: ../src/widgets_album.py:167
+#: ../src/widgets_album.py:204
 msgid "Remove"
 msgstr "Poista"
 
-#: ../src/widgets_album.py:403 ../data/AlbumDetailedWidget.ui.h:3
+#: ../src/widgets_album.py:467 ../data/AlbumDetailedWidget.ui.h:3
 msgid "Play albums"
 msgstr "Toista albumit"
 
-#: ../src/widgets_album.py:413 ../src/widgets_radio.py:85
+#: ../src/widgets_album.py:477 ../src/widgets_radio.py:85
 #: ../data/AlbumDetailedWidget.ui.h:2
 msgid "Change artwork"
 msgstr "Vaihda kuvitusta"
 
-#: ../src/widgets_album.py:618
+#: ../src/widgets_album.py:645
 #, python-format
 msgid "%s h  %s m"
 msgstr "%s t  %s min"
 
-#: ../src/widgets_album.py:620
+#: ../src/widgets_album.py:647
 #, python-format
 msgid "%s h"
 msgstr "%s t"
 
-#: ../src/widgets_album.py:622
+#: ../src/widgets_album.py:649
 #, python-format
 msgid "%s m"
 msgstr "%s min"
 
-#: ../src/widgets_album.py:879
+#: ../src/widgets_album.py:906
 #, python-format
 msgid "Disc %s"
 msgstr "Levy %s"
@@ -664,7 +664,7 @@ msgstr "_Ohje"
 msgid "_Quit"
 msgstr "_Lopeta"
 
-#: ../data/ArtistContent.ui.h:1
+#: ../data/InfoContent.ui.h:1
 msgid "No information for this artist..."
 msgstr "Tästä esittäjästä ei ole tietoja..."
 
@@ -681,12 +681,8 @@ msgid "Wikipedia"
 msgstr "Wikipedia"
 
 #: ../data/ArtistInfo.ui.h:4
-msgid "Wikia"
-msgstr "Wikia"
-
-#: ../data/ArtistInfo.ui.h:5
-msgid "DuckDuckGo"
-msgstr "DuckDuckGo"
+msgid "Lyrics"
+msgstr "Sanoitukset"
 
 #: ../data/CoversPopover.ui.h:1
 msgid "Select a local file"
@@ -753,10 +749,6 @@ msgid "Create a new playlist based on search"
 msgstr "Luo uusi soittolista perustuen hakuun"
 
 #: ../data/SearchRow.ui.h:1
-msgid "artist"
-msgstr "esittäjä"
-
-#: ../data/SearchRow.ui.h:2
 msgid "Add to playlist"
 msgstr "Lisää soittolistalle"
 

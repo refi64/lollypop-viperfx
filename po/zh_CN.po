@@ -11,8 +11,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lollypop\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-03-30 17:40+0200\n"
-"PO-Revision-Date: 2016-03-30 15:43+0000\n"
+"POT-Creation-Date: 2016-04-05 12:03+0200\n"
+"PO-Revision-Date: 2016-04-05 10:05+0000\n"
 "Last-Translator: Cédric Bellegarde <web@adishatz.org>\n"
 "Language-Team: Chinese (China) (http://www.transifex.com/gnumdk/lollypop/language/zh_CN/)\n"
 "MIME-Version: 1.0\n"
@@ -225,7 +225,7 @@ msgid "Genre/Artist/Cover browsing"
 msgstr "流派/艺术家/封面浏览"
 
 #: ../data/lollypop.appdata.xml.in.h:8 ../src/playlists.py:239
-#: ../data/ToolbarEnd.ui.h:7
+#: ../data/ArtistInfo.ui.h:5 ../data/ToolbarEnd.ui.h:7
 msgid "Search"
 msgstr "搜索"
 
@@ -287,25 +287,25 @@ msgid ""
 "    - Artist informations disabled"
 msgstr "-收听习惯发布功能禁用\n-封面自动下载功能禁用\n-艺术家信息禁用"
 
-#: ../src/application.py:395
+#: ../src/application.py:396
 #, python-format
 msgid "%d artist"
 msgid_plural "%d artists"
 msgstr[0] "%d 个艺术家"
 
-#: ../src/application.py:397
+#: ../src/application.py:398
 #, python-format
 msgid "%d album"
 msgid_plural "%d albums"
 msgstr[0] "%d 个专辑"
 
-#: ../src/application.py:399
+#: ../src/application.py:400
 #, python-format
 msgid "%d track"
 msgid_plural "%d tracks"
 msgstr[0] "%d 个音轨"
 
-#: ../src/application.py:414
+#: ../src/application.py:415
 msgid "Lollypop: You need to install yelp."
 msgstr "棒棒糖:您需要安装yelp"
 
@@ -367,7 +367,7 @@ msgid "Pause"
 msgstr "暂停"
 
 #: ../src/controllers.py:86 ../src/controllers.py:114 ../src/pop_tunein.py:154
-#: ../src/widgets_album.py:392 ../src/widgets_radio.py:69
+#: ../src/widgets_album.py:456 ../src/widgets_radio.py:69
 #: ../data/AlbumDetailedWidget.ui.h:1 ../data/ToolbarPlayback.ui.h:2
 msgid "Play"
 msgstr "播放"
@@ -405,7 +405,7 @@ msgstr "由%s"
 msgid "by %s, from %s"
 msgstr "由%s，来自%s"
 
-#: ../src/player_bin.py:442
+#: ../src/player_bin.py:448
 #, python-format
 msgid "File doesn't exist: %s"
 msgstr "文件不存在：%s"
@@ -418,7 +418,7 @@ msgstr "喜欢的曲目"
 msgid "Clear albums"
 msgstr "清除专辑"
 
-#: ../src/pop_albums.py:296 ../src/pop_info.py:233 ../src/view_artist.py:44
+#: ../src/pop_albums.py:296 ../src/pop_info.py:212 ../src/view_artist.py:44
 msgid "Go to current track"
 msgstr "转到当前曲目"
 
@@ -426,23 +426,23 @@ msgstr "转到当前曲目"
 msgid "Playing albums"
 msgstr "正在播放专辑"
 
-#: ../src/pop_covers.py:56 ../src/pop_tunein.py:93 ../data/RadioPopover.ui.h:3
+#: ../src/pop_covers.py:53 ../src/pop_tunein.py:93 ../data/RadioPopover.ui.h:3
 msgid "Please wait..."
 msgstr "请稍后"
 
-#: ../src/pop_covers.py:136
+#: ../src/pop_covers.py:133
 msgid "No cover found..."
 msgstr "未发现封面"
 
-#: ../src/pop_covers.py:164
+#: ../src/pop_covers.py:161
 msgid "Select a cover art for this album"
 msgstr "从相册选择封面"
 
-#: ../src/pop_info.py:33
+#: ../src/pop_info.py:36
 msgid "Advanced artist informations disabled"
 msgstr "禁用高级艺术家信息"
 
-#: ../src/pop_info.py:41
+#: ../src/pop_info.py:44
 msgid "WebKit support disabled"
 msgstr "关闭WebKit 支持"
 
@@ -462,8 +462,8 @@ msgstr "本专辑播完后停止"
 msgid "Do not repeat"
 msgstr "不要循环播放"
 
-#: ../src/pop_menu.py:201 ../src/widgets_indicator.py:97
-#: ../data/SearchRow.ui.h:3
+#: ../src/pop_menu.py:201 ../src/widgets_indicator.py:92
+#: ../data/SearchRow.ui.h:2
 msgid "Add to queue"
 msgstr "添加到等候播放的曲目中"
 
@@ -475,7 +475,7 @@ msgstr "下一批曲目"
 msgid "Next track"
 msgstr "下一首曲目"
 
-#: ../src/pop_menu.py:212 ../src/widgets_indicator.py:93
+#: ../src/pop_menu.py:212 ../src/widgets_indicator.py:88
 msgid "Remove from queue"
 msgstr "从排队清单中移除"
 
@@ -547,48 +547,48 @@ msgstr "正在播放播放列表"
 msgid "The the"
 msgstr "The the"
 
-#: ../src/view_device.py:82 ../src/view_device.py:148
+#: ../src/view_device.py:83 ../src/view_device.py:149
 #, python-format
 msgid "Synchronize %s"
 msgstr "同步%s"
 
-#: ../src/view_device.py:137
+#: ../src/view_device.py:138
 msgid "Cancel synchronization"
 msgstr "取消同步"
 
-#: ../src/widgets_album.py:163
+#: ../src/widgets_album.py:200
 msgid "Append"
 msgstr "追加"
 
-#: ../src/widgets_album.py:167
+#: ../src/widgets_album.py:204
 msgid "Remove"
 msgstr "移除"
 
-#: ../src/widgets_album.py:403 ../data/AlbumDetailedWidget.ui.h:3
+#: ../src/widgets_album.py:467 ../data/AlbumDetailedWidget.ui.h:3
 msgid "Play albums"
 msgstr "播放专辑"
 
-#: ../src/widgets_album.py:413 ../src/widgets_radio.py:85
+#: ../src/widgets_album.py:477 ../src/widgets_radio.py:85
 #: ../data/AlbumDetailedWidget.ui.h:2
 msgid "Change artwork"
 msgstr "更改专辑封面"
 
-#: ../src/widgets_album.py:618
+#: ../src/widgets_album.py:645
 #, python-format
 msgid "%s h  %s m"
 msgstr "%s小时%s分钟"
 
-#: ../src/widgets_album.py:620
+#: ../src/widgets_album.py:647
 #, python-format
 msgid "%s h"
 msgstr "%s小时"
 
-#: ../src/widgets_album.py:622
+#: ../src/widgets_album.py:649
 #, python-format
 msgid "%s m"
 msgstr "%s分钟"
 
-#: ../src/widgets_album.py:879
+#: ../src/widgets_album.py:906
 #, python-format
 msgid "Disc %s"
 msgstr "光盘 %s"
@@ -664,7 +664,7 @@ msgstr "_帮助"
 msgid "_Quit"
 msgstr "_退出"
 
-#: ../data/ArtistContent.ui.h:1
+#: ../data/InfoContent.ui.h:1
 msgid "No information for this artist..."
 msgstr "没有找到该艺术家的信息"
 
@@ -681,12 +681,8 @@ msgid "Wikipedia"
 msgstr "维基百科"
 
 #: ../data/ArtistInfo.ui.h:4
-msgid "Wikia"
-msgstr "维基亚"
-
-#: ../data/ArtistInfo.ui.h:5
-msgid "DuckDuckGo"
-msgstr "DuckDuckGo搜索引擎"
+msgid "Lyrics"
+msgstr ""
 
 #: ../data/CoversPopover.ui.h:1
 msgid "Select a local file"
@@ -753,10 +749,6 @@ msgid "Create a new playlist based on search"
 msgstr "根据查询内容创建一个新的播放列表"
 
 #: ../data/SearchRow.ui.h:1
-msgid "artist"
-msgstr "艺术家"
-
-#: ../data/SearchRow.ui.h:2
 msgid "Add to playlist"
 msgstr "添加到播放列表"
 

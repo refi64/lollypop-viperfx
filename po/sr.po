@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lollypop\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-03-30 17:40+0200\n"
-"PO-Revision-Date: 2016-03-31 07:02+0000\n"
+"POT-Creation-Date: 2016-04-05 12:03+0200\n"
+"PO-Revision-Date: 2016-04-05 10:22+0000\n"
 "Last-Translator: Марко М. Костић (Marko M. Kostić) <marko.m.kostic@gmail.com>\n"
 "Language-Team: Serbian (http://www.transifex.com/gnumdk/lollypop/language/sr/)\n"
 "MIME-Version: 1.0\n"
@@ -222,7 +222,7 @@ msgid "Genre/Artist/Cover browsing"
 msgstr "прегледање по жанру, извођачу и омоту"
 
 #: ../data/lollypop.appdata.xml.in.h:8 ../src/playlists.py:239
-#: ../data/ToolbarEnd.ui.h:7
+#: ../data/ArtistInfo.ui.h:5 ../data/ToolbarEnd.ui.h:7
 msgid "Search"
 msgstr "Претрага"
 
@@ -284,7 +284,7 @@ msgid ""
 "    - Artist informations disabled"
 msgstr "- Scrobbler је искључен\n- Аутоматско скидање омота искључено\n- Скидање података о извођачима искључено"
 
-#: ../src/application.py:395
+#: ../src/application.py:396
 #, python-format
 msgid "%d artist"
 msgid_plural "%d artists"
@@ -292,7 +292,7 @@ msgstr[0] "%d извођач"
 msgstr[1] "%d извођача"
 msgstr[2] "%d извођача"
 
-#: ../src/application.py:397
+#: ../src/application.py:398
 #, python-format
 msgid "%d album"
 msgid_plural "%d albums"
@@ -300,7 +300,7 @@ msgstr[0] "%d албум"
 msgstr[1] "%d албума"
 msgstr[2] "%d албума"
 
-#: ../src/application.py:399
+#: ../src/application.py:400
 #, python-format
 msgid "%d track"
 msgid_plural "%d tracks"
@@ -308,7 +308,7 @@ msgstr[0] "%d нумера"
 msgstr[1] "%d нумере"
 msgstr[2] "%d нумера"
 
-#: ../src/application.py:414
+#: ../src/application.py:415
 msgid "Lollypop: You need to install yelp."
 msgstr "Лолипоп: потребно је да инсталирате „Помоћ“ (yelp пакет)."
 
@@ -370,7 +370,7 @@ msgid "Pause"
 msgstr "Паузирај"
 
 #: ../src/controllers.py:86 ../src/controllers.py:114 ../src/pop_tunein.py:154
-#: ../src/widgets_album.py:392 ../src/widgets_radio.py:69
+#: ../src/widgets_album.py:456 ../src/widgets_radio.py:69
 #: ../data/AlbumDetailedWidget.ui.h:1 ../data/ToolbarPlayback.ui.h:2
 msgid "Play"
 msgstr "Пусти"
@@ -408,7 +408,7 @@ msgstr "изводи %s"
 msgid "by %s, from %s"
 msgstr "изводи %s, са албума %s"
 
-#: ../src/player_bin.py:442
+#: ../src/player_bin.py:448
 #, python-format
 msgid "File doesn't exist: %s"
 msgstr "Датотека не постоји: %s"
@@ -421,7 +421,7 @@ msgstr "Омиљене песме"
 msgid "Clear albums"
 msgstr "Очисти албуме"
 
-#: ../src/pop_albums.py:296 ../src/pop_info.py:233 ../src/view_artist.py:44
+#: ../src/pop_albums.py:296 ../src/pop_info.py:212 ../src/view_artist.py:44
 msgid "Go to current track"
 msgstr "Иди на тренутну нумеру"
 
@@ -429,23 +429,23 @@ msgstr "Иди на тренутну нумеру"
 msgid "Playing albums"
 msgstr "Пуштени албуми"
 
-#: ../src/pop_covers.py:56 ../src/pop_tunein.py:93 ../data/RadioPopover.ui.h:3
+#: ../src/pop_covers.py:53 ../src/pop_tunein.py:93 ../data/RadioPopover.ui.h:3
 msgid "Please wait..."
 msgstr "Сачекајте..."
 
-#: ../src/pop_covers.py:136
+#: ../src/pop_covers.py:133
 msgid "No cover found..."
 msgstr "Нисам пронашао омот..."
 
-#: ../src/pop_covers.py:164
+#: ../src/pop_covers.py:161
 msgid "Select a cover art for this album"
 msgstr "Изабери омот за овај албум"
 
-#: ../src/pop_info.py:33
+#: ../src/pop_info.py:36
 msgid "Advanced artist informations disabled"
 msgstr "Напредан приказ података о извођачу је искључен"
 
-#: ../src/pop_info.py:41
+#: ../src/pop_info.py:44
 msgid "WebKit support disabled"
 msgstr "Вебкит подршка онемогућена"
 
@@ -465,8 +465,8 @@ msgstr "Стани након овог албума"
 msgid "Do not repeat"
 msgstr "Не понављај"
 
-#: ../src/pop_menu.py:201 ../src/widgets_indicator.py:97
-#: ../data/SearchRow.ui.h:3
+#: ../src/pop_menu.py:201 ../src/widgets_indicator.py:92
+#: ../data/SearchRow.ui.h:2
 msgid "Add to queue"
 msgstr "Додај у редослед"
 
@@ -478,7 +478,7 @@ msgstr "Следеће песме"
 msgid "Next track"
 msgstr "Следећа песма"
 
-#: ../src/pop_menu.py:212 ../src/widgets_indicator.py:93
+#: ../src/pop_menu.py:212 ../src/widgets_indicator.py:88
 msgid "Remove from queue"
 msgstr "Избаци из редоследа"
 
@@ -550,48 +550,48 @@ msgstr "Пуштени спискови песама"
 msgid "The the"
 msgstr "Члан члан"
 
-#: ../src/view_device.py:82 ../src/view_device.py:148
+#: ../src/view_device.py:83 ../src/view_device.py:149
 #, python-format
 msgid "Synchronize %s"
 msgstr "Усклади %s"
 
-#: ../src/view_device.py:137
+#: ../src/view_device.py:138
 msgid "Cancel synchronization"
 msgstr "Откажи усклађивање"
 
-#: ../src/widgets_album.py:163
+#: ../src/widgets_album.py:200
 msgid "Append"
 msgstr "Додај"
 
-#: ../src/widgets_album.py:167
+#: ../src/widgets_album.py:204
 msgid "Remove"
 msgstr "Уклони"
 
-#: ../src/widgets_album.py:403 ../data/AlbumDetailedWidget.ui.h:3
+#: ../src/widgets_album.py:467 ../data/AlbumDetailedWidget.ui.h:3
 msgid "Play albums"
 msgstr "Пусти албуме"
 
-#: ../src/widgets_album.py:413 ../src/widgets_radio.py:85
+#: ../src/widgets_album.py:477 ../src/widgets_radio.py:85
 #: ../data/AlbumDetailedWidget.ui.h:2
 msgid "Change artwork"
 msgstr "Промени омот"
 
-#: ../src/widgets_album.py:618
+#: ../src/widgets_album.py:645
 #, python-format
 msgid "%s h  %s m"
 msgstr "%s ч %s м"
 
-#: ../src/widgets_album.py:620
+#: ../src/widgets_album.py:647
 #, python-format
 msgid "%s h"
 msgstr "%s ч"
 
-#: ../src/widgets_album.py:622
+#: ../src/widgets_album.py:649
 #, python-format
 msgid "%s m"
 msgstr "%s м"
 
-#: ../src/widgets_album.py:879
+#: ../src/widgets_album.py:906
 #, python-format
 msgid "Disc %s"
 msgstr "Диск %s"
@@ -667,7 +667,7 @@ msgstr "По_моћ"
 msgid "_Quit"
 msgstr "_Излаз"
 
-#: ../data/ArtistContent.ui.h:1
+#: ../data/InfoContent.ui.h:1
 msgid "No information for this artist..."
 msgstr "Нема података о овом извођачу..."
 
@@ -684,12 +684,8 @@ msgid "Wikipedia"
 msgstr "Википедија"
 
 #: ../data/ArtistInfo.ui.h:4
-msgid "Wikia"
-msgstr "Викија"
-
-#: ../data/ArtistInfo.ui.h:5
-msgid "DuckDuckGo"
-msgstr "DuckDuckGo"
+msgid "Lyrics"
+msgstr "Текст песме"
 
 #: ../data/CoversPopover.ui.h:1
 msgid "Select a local file"
@@ -756,10 +752,6 @@ msgid "Create a new playlist based on search"
 msgstr "Направи нову листу песама на основу резултата из претраге"
 
 #: ../data/SearchRow.ui.h:1
-msgid "artist"
-msgstr "извођач"
-
-#: ../data/SearchRow.ui.h:2
 msgid "Add to playlist"
 msgstr "Додај у листу песама"
 

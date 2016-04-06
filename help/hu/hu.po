@@ -1,11 +1,11 @@
 # 
 # Translators:
-# naren93 <m.renato93@gmail.com>, 2015
+# naren93 <m.renato93@gmail.com>, 2015-2016
 msgid ""
 msgstr ""
 "Project-Id-Version: lollypop\n"
 "POT-Creation-Date: 2015-06-24 15:43+0200\n"
-"PO-Revision-Date: 2015-12-12 23:03+0000\n"
+"PO-Revision-Date: 2016-04-05 16:12+0000\n"
 "Last-Translator: naren93 <m.renato93@gmail.com>\n"
 "Language-Team: Hungarian (http://www.transifex.com/gnumdk/lollypop/language/hu/)\n"
 "MIME-Version: 1.0\n"
@@ -17,7 +17,7 @@ msgstr ""
 #. Put one translator per line, in the form NAME <EMAIL>, YEAR1, YEAR2
 msgctxt "_"
 msgid "translator-credits"
-msgstr "translator-credits"
+msgstr "Renato Molnár <m.renato93@gmail.com>, 2015, 2016"
 
 #. (itstool) path: info/desc
 #: C/index.page:7

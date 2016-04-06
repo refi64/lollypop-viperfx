@@ -6,15 +6,15 @@
 # florian0 <florian0@project-hazard.org>, 2016
 # Mark Gerlach, 2015
 # Mathias Rudolf <manifre.rudolf@gmail.com>, 2015-2016
-# Noah Hüsser <yatekii@yatekii.ch>, 2015
+# Noah Hüsser <yatekii@yatekii.ch>, 2015-2016
 # HumHumXX <xhummuhx+transifex@gmail.com>, 2015
 msgid ""
 msgstr ""
 "Project-Id-Version: lollypop\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-03-30 17:40+0200\n"
-"PO-Revision-Date: 2016-03-30 15:43+0000\n"
-"Last-Translator: Cédric Bellegarde <web@adishatz.org>\n"
+"POT-Creation-Date: 2016-04-05 12:03+0200\n"
+"PO-Revision-Date: 2016-04-05 10:23+0000\n"
+"Last-Translator: Noah Hüsser <yatekii@yatekii.ch>\n"
 "Language-Team: German (http://www.transifex.com/gnumdk/lollypop/language/de/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -137,7 +137,7 @@ msgstr "Dunkles GTK-Theme verwenden"
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:29
 msgid "Disable the use client side window decorations (headerbar)"
-msgstr "Die Nutzung von Client-Side-Fensterdekorationen abschalten (Kopfleiste)"
+msgstr "Die Nutzung von Client-Side-Fensterdekorationen ausschalten (Kopfleiste)"
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:30 ../data/SettingsDialog.ui.h:6
 msgid "Show compilations in albums view"
@@ -226,7 +226,7 @@ msgid "Genre/Artist/Cover browsing"
 msgstr "Genre/Künstler/Cover-Browsing"
 
 #: ../data/lollypop.appdata.xml.in.h:8 ../src/playlists.py:239
-#: ../data/ToolbarEnd.ui.h:7
+#: ../data/ArtistInfo.ui.h:5 ../data/ToolbarEnd.ui.h:7
 msgid "Search"
 msgstr "Suche"
 
@@ -288,30 +288,30 @@ msgid ""
 "    - Artist informations disabled"
 msgstr "- Scrobbler deaktiviert\n- Automatischer Cover-Download deaktiviert\n- Künster-Informationen deaktivert"
 
-#: ../src/application.py:395
+#: ../src/application.py:396
 #, python-format
 msgid "%d artist"
 msgid_plural "%d artists"
 msgstr[0] "%d Künstler"
 msgstr[1] "%d Künstler"
 
-#: ../src/application.py:397
+#: ../src/application.py:398
 #, python-format
 msgid "%d album"
 msgid_plural "%d albums"
 msgstr[0] "%d Album"
 msgstr[1] "%d Alben"
 
-#: ../src/application.py:399
+#: ../src/application.py:400
 #, python-format
 msgid "%d track"
 msgid_plural "%d tracks"
 msgstr[0] "%d Titel"
 msgstr[1] "%d Titel"
 
-#: ../src/application.py:414
+#: ../src/application.py:415
 msgid "Lollypop: You need to install yelp."
-msgstr "Lollypop: Das Paket yelp muss installiert sein."
+msgstr "Lollypop: Yelp muss installiert sein."
 
 #: ../src/collectionscanner.py:69
 msgid "Your music is updating"
@@ -371,7 +371,7 @@ msgid "Pause"
 msgstr "Pause"
 
 #: ../src/controllers.py:86 ../src/controllers.py:114 ../src/pop_tunein.py:154
-#: ../src/widgets_album.py:392 ../src/widgets_radio.py:69
+#: ../src/widgets_album.py:456 ../src/widgets_radio.py:69
 #: ../data/AlbumDetailedWidget.ui.h:1 ../data/ToolbarPlayback.ui.h:2
 msgid "Play"
 msgstr "Wiedergabe"
@@ -409,44 +409,44 @@ msgstr "von %s"
 msgid "by %s, from %s"
 msgstr "von %s, aus %s"
 
-#: ../src/player_bin.py:442
+#: ../src/player_bin.py:448
 #, python-format
 msgid "File doesn't exist: %s"
 msgstr "Datei nicht vorhanden: %s"
 
 #: ../src/playlists.py:55
 msgid "Loved tracks"
-msgstr "Geliebte Titel"
+msgstr "Beliebte Titel"
 
 #: ../src/pop_albums.py:288
 msgid "Clear albums"
-msgstr ""
+msgstr "Leere Alben"
 
-#: ../src/pop_albums.py:296 ../src/pop_info.py:233 ../src/view_artist.py:44
+#: ../src/pop_albums.py:296 ../src/pop_info.py:212 ../src/view_artist.py:44
 msgid "Go to current track"
-msgstr ""
+msgstr "Zu aktuellem Titel wechseln"
 
 #: ../src/pop_albums.py:297 ../src/toolbar_end.py:305
 msgid "Playing albums"
-msgstr ""
+msgstr "Spiele Alben"
 
-#: ../src/pop_covers.py:56 ../src/pop_tunein.py:93 ../data/RadioPopover.ui.h:3
+#: ../src/pop_covers.py:53 ../src/pop_tunein.py:93 ../data/RadioPopover.ui.h:3
 msgid "Please wait..."
 msgstr "Bitte warten ..."
 
-#: ../src/pop_covers.py:136
+#: ../src/pop_covers.py:133
 msgid "No cover found..."
 msgstr "Kein Cover gefunden ..."
 
-#: ../src/pop_covers.py:164
+#: ../src/pop_covers.py:161
 msgid "Select a cover art for this album"
 msgstr "Wähle ein Cover für dieses Album"
 
-#: ../src/pop_info.py:33
+#: ../src/pop_info.py:36
 msgid "Advanced artist informations disabled"
 msgstr "Weiterführende Künstler-Informationen deaktiviert"
 
-#: ../src/pop_info.py:41
+#: ../src/pop_info.py:44
 msgid "WebKit support disabled"
 msgstr "WebKit-Unterstützung deaktiviert"
 
@@ -466,8 +466,8 @@ msgstr "Nach Wiedergabe dieses Albums stoppen"
 msgid "Do not repeat"
 msgstr "Nicht wiederholen"
 
-#: ../src/pop_menu.py:201 ../src/widgets_indicator.py:97
-#: ../data/SearchRow.ui.h:3
+#: ../src/pop_menu.py:201 ../src/widgets_indicator.py:92
+#: ../data/SearchRow.ui.h:2
 msgid "Add to queue"
 msgstr "Zur Warteschlange hinzufügen"
 
@@ -479,7 +479,7 @@ msgstr "Nächste Titel"
 msgid "Next track"
 msgstr "Nächster Titel"
 
-#: ../src/pop_menu.py:212 ../src/widgets_indicator.py:93
+#: ../src/pop_menu.py:212 ../src/widgets_indicator.py:88
 msgid "Remove from queue"
 msgstr "Aus Warteschlange entfernen"
 
@@ -539,11 +539,11 @@ msgstr "Kürzlich hinzugefügt"
 
 #: ../src/toolbar_end.py:299
 msgid "Externals tracks playing"
-msgstr ""
+msgstr "Spiele externe Titel"
 
 #: ../src/toolbar_end.py:303
 msgid "Playing playlists"
-msgstr ""
+msgstr "Spiele Wiedergabelisten"
 
 #. Handle language ordering
 #. Translators: Add here words that shoud be ignored for artist sort order
@@ -551,48 +551,48 @@ msgstr ""
 msgid "The the"
 msgstr "Der der"
 
-#: ../src/view_device.py:82 ../src/view_device.py:148
+#: ../src/view_device.py:83 ../src/view_device.py:149
 #, python-format
 msgid "Synchronize %s"
 msgstr "%s synchronisieren"
 
-#: ../src/view_device.py:137
+#: ../src/view_device.py:138
 msgid "Cancel synchronization"
 msgstr "Synchronisation abbrechen"
 
-#: ../src/widgets_album.py:163
+#: ../src/widgets_album.py:200
 msgid "Append"
 msgstr "Anhängen"
 
-#: ../src/widgets_album.py:167
+#: ../src/widgets_album.py:204
 msgid "Remove"
 msgstr "Entfernen"
 
-#: ../src/widgets_album.py:403 ../data/AlbumDetailedWidget.ui.h:3
+#: ../src/widgets_album.py:467 ../data/AlbumDetailedWidget.ui.h:3
 msgid "Play albums"
 msgstr "Album wiedergeben"
 
-#: ../src/widgets_album.py:413 ../src/widgets_radio.py:85
+#: ../src/widgets_album.py:477 ../src/widgets_radio.py:85
 #: ../data/AlbumDetailedWidget.ui.h:2
 msgid "Change artwork"
 msgstr "Coverbild ändern"
 
-#: ../src/widgets_album.py:618
+#: ../src/widgets_album.py:645
 #, python-format
 msgid "%s h  %s m"
 msgstr "%s h %s m"
 
-#: ../src/widgets_album.py:620
+#: ../src/widgets_album.py:647
 #, python-format
 msgid "%s h"
 msgstr "%s h"
 
-#: ../src/widgets_album.py:622
+#: ../src/widgets_album.py:649
 #, python-format
 msgid "%s m"
 msgstr "%s m"
 
-#: ../src/widgets_album.py:879
+#: ../src/widgets_album.py:906
 #, python-format
 msgid "Disc %s"
 msgstr "CD %s"
@@ -668,7 +668,7 @@ msgstr "_Hilfe"
 msgid "_Quit"
 msgstr "_Beenden"
 
-#: ../data/ArtistContent.ui.h:1
+#: ../data/InfoContent.ui.h:1
 msgid "No information for this artist..."
 msgstr "Keine Informationen über diesen Künstler..."
 
@@ -685,16 +685,12 @@ msgid "Wikipedia"
 msgstr "Wikipedia"
 
 #: ../data/ArtistInfo.ui.h:4
-msgid "Wikia"
-msgstr "Wikia"
-
-#: ../data/ArtistInfo.ui.h:5
-msgid "DuckDuckGo"
-msgstr "DuckDuckGo"
+msgid "Lyrics"
+msgstr "Liedtexte"
 
 #: ../data/CoversPopover.ui.h:1
 msgid "Select a local file"
-msgstr ""
+msgstr "Wähle eine lokale Datei"
 
 #: ../data/DeviceManagerView.ui.h:1
 msgid "Synchronize your device with this playlists"
@@ -757,10 +753,6 @@ msgid "Create a new playlist based on search"
 msgstr "Eine neue Wiedergabeliste auf Basis der Suchergebnisse erstellen"
 
 #: ../data/SearchRow.ui.h:1
-msgid "artist"
-msgstr "Künstler"
-
-#: ../data/SearchRow.ui.h:2
 msgid "Add to playlist"
 msgstr "Zur Wiedergabeliste hinzufügen"
 
@@ -822,7 +814,7 @@ msgstr "Wähle die Inhalte für den Partymodus aus"
 
 #: ../data/SettingsDialog.ui.h:22
 msgid "Login:"
-msgstr "Anmeldung:"
+msgstr "Benutzername:"
 
 #: ../data/SettingsDialog.ui.h:23
 msgid "Password:"

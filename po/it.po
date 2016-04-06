@@ -10,8 +10,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lollypop\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-03-30 17:40+0200\n"
-"PO-Revision-Date: 2016-03-30 21:47+0000\n"
+"POT-Creation-Date: 2016-04-05 12:03+0200\n"
+"PO-Revision-Date: 2016-04-05 10:37+0000\n"
 "Last-Translator: Gianvito Cavasoli <gianvito@gmx.it>\n"
 "Language-Team: Italian (http://www.transifex.com/gnumdk/lollypop/language/it/)\n"
 "MIME-Version: 1.0\n"
@@ -224,7 +224,7 @@ msgid "Genre/Artist/Cover browsing"
 msgstr "Esplorare i generi/artisti/copertine"
 
 #: ../data/lollypop.appdata.xml.in.h:8 ../src/playlists.py:239
-#: ../data/ToolbarEnd.ui.h:7
+#: ../data/ArtistInfo.ui.h:5 ../data/ToolbarEnd.ui.h:7
 msgid "Search"
 msgstr "Cerca"
 
@@ -286,28 +286,28 @@ msgid ""
 "    - Artist informations disabled"
 msgstr "    - Scrobbler disabilitato\n    - Scaricamento automatico della copertina disabilitato\n    - Informazioni sull'artista disabilitate"
 
-#: ../src/application.py:395
+#: ../src/application.py:396
 #, python-format
 msgid "%d artist"
 msgid_plural "%d artists"
 msgstr[0] "%d artista"
 msgstr[1] "%d artisti"
 
-#: ../src/application.py:397
+#: ../src/application.py:398
 #, python-format
 msgid "%d album"
 msgid_plural "%d albums"
 msgstr[0] "%d album"
 msgstr[1] "%d album"
 
-#: ../src/application.py:399
+#: ../src/application.py:400
 #, python-format
 msgid "%d track"
 msgid_plural "%d tracks"
 msgstr[0] "%d traccia"
 msgstr[1] "%d tracce"
 
-#: ../src/application.py:414
+#: ../src/application.py:415
 msgid "Lollypop: You need to install yelp."
 msgstr "Lollypop: è necessario installare «yelp»."
 
@@ -369,7 +369,7 @@ msgid "Pause"
 msgstr "Pausa"
 
 #: ../src/controllers.py:86 ../src/controllers.py:114 ../src/pop_tunein.py:154
-#: ../src/widgets_album.py:392 ../src/widgets_radio.py:69
+#: ../src/widgets_album.py:456 ../src/widgets_radio.py:69
 #: ../data/AlbumDetailedWidget.ui.h:1 ../data/ToolbarPlayback.ui.h:2
 msgid "Play"
 msgstr "Riproduci"
@@ -407,7 +407,7 @@ msgstr "di %s"
 msgid "by %s, from %s"
 msgstr "di %s, da %s"
 
-#: ../src/player_bin.py:442
+#: ../src/player_bin.py:448
 #, python-format
 msgid "File doesn't exist: %s"
 msgstr "Il file non esiste: %s"
@@ -420,7 +420,7 @@ msgstr "Tracce piaciute"
 msgid "Clear albums"
 msgstr "Pulisce album"
 
-#: ../src/pop_albums.py:296 ../src/pop_info.py:233 ../src/view_artist.py:44
+#: ../src/pop_albums.py:296 ../src/pop_info.py:212 ../src/view_artist.py:44
 msgid "Go to current track"
 msgstr "Va all'attuale traccia"
 
@@ -428,23 +428,23 @@ msgstr "Va all'attuale traccia"
 msgid "Playing albums"
 msgstr "Riproduzione album"
 
-#: ../src/pop_covers.py:56 ../src/pop_tunein.py:93 ../data/RadioPopover.ui.h:3
+#: ../src/pop_covers.py:53 ../src/pop_tunein.py:93 ../data/RadioPopover.ui.h:3
 msgid "Please wait..."
 msgstr "Attendere..."
 
-#: ../src/pop_covers.py:136
+#: ../src/pop_covers.py:133
 msgid "No cover found..."
 msgstr "Copertina non trovata..."
 
-#: ../src/pop_covers.py:164
+#: ../src/pop_covers.py:161
 msgid "Select a cover art for this album"
 msgstr "Seleziona una copertina per questo album"
 
-#: ../src/pop_info.py:33
+#: ../src/pop_info.py:36
 msgid "Advanced artist informations disabled"
 msgstr "Informazioni avanzate dell'artista disabilitate"
 
-#: ../src/pop_info.py:41
+#: ../src/pop_info.py:44
 msgid "WebKit support disabled"
 msgstr "Supporto WebKit disabilitato"
 
@@ -464,8 +464,8 @@ msgstr "Interrompi dopo questo album"
 msgid "Do not repeat"
 msgstr "Non ripetere"
 
-#: ../src/pop_menu.py:201 ../src/widgets_indicator.py:97
-#: ../data/SearchRow.ui.h:3
+#: ../src/pop_menu.py:201 ../src/widgets_indicator.py:92
+#: ../data/SearchRow.ui.h:2
 msgid "Add to queue"
 msgstr "Aggiungi alla coda"
 
@@ -477,7 +477,7 @@ msgstr "Prossime tracce"
 msgid "Next track"
 msgstr "Prossima traccia"
 
-#: ../src/pop_menu.py:212 ../src/widgets_indicator.py:93
+#: ../src/pop_menu.py:212 ../src/widgets_indicator.py:88
 msgid "Remove from queue"
 msgstr "Rimuovi dalla coda"
 
@@ -549,48 +549,48 @@ msgstr "Riproduzione scalette"
 msgid "The the"
 msgstr "The the"
 
-#: ../src/view_device.py:82 ../src/view_device.py:148
+#: ../src/view_device.py:83 ../src/view_device.py:149
 #, python-format
 msgid "Synchronize %s"
 msgstr "Sincronizza %s"
 
-#: ../src/view_device.py:137
+#: ../src/view_device.py:138
 msgid "Cancel synchronization"
 msgstr "Annulla sincronizzazione"
 
-#: ../src/widgets_album.py:163
+#: ../src/widgets_album.py:200
 msgid "Append"
 msgstr "Accoda"
 
-#: ../src/widgets_album.py:167
+#: ../src/widgets_album.py:204
 msgid "Remove"
 msgstr "Rimuovi"
 
-#: ../src/widgets_album.py:403 ../data/AlbumDetailedWidget.ui.h:3
+#: ../src/widgets_album.py:467 ../data/AlbumDetailedWidget.ui.h:3
 msgid "Play albums"
 msgstr "Riproduci album"
 
-#: ../src/widgets_album.py:413 ../src/widgets_radio.py:85
+#: ../src/widgets_album.py:477 ../src/widgets_radio.py:85
 #: ../data/AlbumDetailedWidget.ui.h:2
 msgid "Change artwork"
 msgstr "Cambia copertina"
 
-#: ../src/widgets_album.py:618
+#: ../src/widgets_album.py:645
 #, python-format
 msgid "%s h  %s m"
 msgstr "%s ora  %s min"
 
-#: ../src/widgets_album.py:620
+#: ../src/widgets_album.py:647
 #, python-format
 msgid "%s h"
 msgstr "%s ora"
 
-#: ../src/widgets_album.py:622
+#: ../src/widgets_album.py:649
 #, python-format
 msgid "%s m"
 msgstr "%s min"
 
-#: ../src/widgets_album.py:879
+#: ../src/widgets_album.py:906
 #, python-format
 msgid "Disc %s"
 msgstr "Disco %s"
@@ -666,7 +666,7 @@ msgstr "A_iuto"
 msgid "_Quit"
 msgstr "_Esci"
 
-#: ../data/ArtistContent.ui.h:1
+#: ../data/InfoContent.ui.h:1
 msgid "No information for this artist..."
 msgstr "Nessuna informazione per questo artista..."
 
@@ -683,12 +683,8 @@ msgid "Wikipedia"
 msgstr "Wikipedia"
 
 #: ../data/ArtistInfo.ui.h:4
-msgid "Wikia"
-msgstr "Wikia"
-
-#: ../data/ArtistInfo.ui.h:5
-msgid "DuckDuckGo"
-msgstr "DuckDuckGo"
+msgid "Lyrics"
+msgstr "Testi"
 
 #: ../data/CoversPopover.ui.h:1
 msgid "Select a local file"
@@ -755,10 +751,6 @@ msgid "Create a new playlist based on search"
 msgstr "Crea una nuova scaletta basata sulla ricerca"
 
 #: ../data/SearchRow.ui.h:1
-msgid "artist"
-msgstr "artista"
-
-#: ../data/SearchRow.ui.h:2
 msgid "Add to playlist"
 msgstr "Aggiungi alla scaletta"
 
