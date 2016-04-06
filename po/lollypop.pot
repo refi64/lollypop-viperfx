@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-04-05 12:03+0200\n"
+"POT-Creation-Date: 2016-04-06 16:27+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -283,28 +283,28 @@ msgid ""
 "    - Artist informations disabled"
 msgstr ""
 
-#: ../src/application.py:396
+#: ../src/application.py:402
 #, python-format
 msgid "%d artist"
 msgid_plural "%d artists"
 msgstr[0] ""
 msgstr[1] ""
 
-#: ../src/application.py:398
+#: ../src/application.py:404
 #, python-format
 msgid "%d album"
 msgid_plural "%d albums"
 msgstr[0] ""
 msgstr[1] ""
 
-#: ../src/application.py:400
+#: ../src/application.py:406
 #, python-format
 msgid "%d track"
 msgid_plural "%d tracks"
 msgstr[0] ""
 msgstr[1] ""
 
-#: ../src/application.py:415
+#: ../src/application.py:421
 msgid "Lollypop: You need to install yelp."
 msgstr ""
 
@@ -366,7 +366,7 @@ msgid "Pause"
 msgstr ""
 
 #: ../src/controllers.py:86 ../src/controllers.py:114 ../src/pop_tunein.py:154
-#: ../src/widgets_album.py:456 ../src/widgets_radio.py:69
+#: ../src/widgets_album.py:455 ../src/widgets_radio.py:67
 #: ../data/AlbumDetailedWidget.ui.h:1 ../data/ToolbarPlayback.ui.h:2
 msgid "Play"
 msgstr ""
@@ -383,11 +383,11 @@ msgstr ""
 msgid "Many artists"
 msgstr ""
 
-#: ../src/lastfm.py:23
+#: ../src/lastfm.py:24
 msgid "Last.fm authentication disabled"
 msgstr ""
 
-#: ../src/lastfm.py:289
+#: ../src/lastfm.py:331
 msgid "Wrong Last.fm credentials"
 msgstr ""
 
@@ -417,7 +417,7 @@ msgstr ""
 msgid "Clear albums"
 msgstr ""
 
-#: ../src/pop_albums.py:296 ../src/pop_info.py:212 ../src/view_artist.py:44
+#: ../src/pop_albums.py:296 ../src/pop_info.py:209 ../src/view_artist.py:44
 msgid "Go to current track"
 msgstr ""
 
@@ -520,15 +520,15 @@ msgstr ""
 msgid "Browse themes and add a new radio"
 msgstr ""
 
-#: ../src/settings.py:86 ../src/settings.py:89 ../data/SettingsDialog.ui.h:3
+#: ../src/settings.py:88 ../src/settings.py:91 ../data/SettingsDialog.ui.h:3
 msgid "Preferences"
 msgstr ""
 
-#: ../src/settings.py:161
+#: ../src/settings.py:163
 msgid "Populars"
 msgstr ""
 
-#: ../src/settings.py:162
+#: ../src/settings.py:164
 msgid "Recently added"
 msgstr ""
 
@@ -563,31 +563,31 @@ msgstr ""
 msgid "Remove"
 msgstr ""
 
-#: ../src/widgets_album.py:467 ../data/AlbumDetailedWidget.ui.h:3
+#: ../src/widgets_album.py:466 ../data/AlbumDetailedWidget.ui.h:3
 msgid "Play albums"
 msgstr ""
 
-#: ../src/widgets_album.py:477 ../src/widgets_radio.py:85
+#: ../src/widgets_album.py:476 ../src/widgets_radio.py:83
 #: ../data/AlbumDetailedWidget.ui.h:2
 msgid "Change artwork"
 msgstr ""
 
-#: ../src/widgets_album.py:645
+#: ../src/widgets_album.py:642
 #, python-format
 msgid "%s h  %s m"
 msgstr ""
 
-#: ../src/widgets_album.py:647
+#: ../src/widgets_album.py:644
 #, python-format
 msgid "%s h"
 msgstr ""
 
-#: ../src/widgets_album.py:649
+#: ../src/widgets_album.py:646
 #, python-format
 msgid "%s m"
 msgstr ""
 
-#: ../src/widgets_album.py:906
+#: ../src/widgets_album.py:903
 #, python-format
 msgid "Disc %s"
 msgstr ""
@@ -681,6 +681,10 @@ msgstr ""
 
 #: ../data/ArtistInfo.ui.h:4
 msgid "Lyrics"
+msgstr ""
+
+#: ../data/ArtistInfo.ui.h:6
+msgid "Reload informations. Long press to activate auto reload"
 msgstr ""
 
 #: ../data/CoversPopover.ui.h:1
