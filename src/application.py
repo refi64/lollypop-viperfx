@@ -229,6 +229,11 @@ class Application(Gtk.Application):
                 playlist_ids = self.player.get_user_playlist_ids()
             dump(playlist_ids,
                  open(self.DATA_PATH + "/playlist_ids.bin", "wb"))
+        if self.player.is_playing():
+            position = self.player.position
+        else:
+            position = 0
+        dump(position, open(self.DATA_PATH + "/position.bin", "wb"))
         self.player.stop_all()
         if self.window:
             self.window.stop_all()
