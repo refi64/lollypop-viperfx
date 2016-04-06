@@ -199,13 +199,13 @@ class MPRIS(Server):
     def __init__(self, app):
         self._app = app
         self._metadata = {}
-        self._con = Gio.bus_get_sync(Gio.BusType.SESSION, None)
-        Gio.bus_own_name_on_connection(self._con,
+        self._bus = Gio.bus_get_sync(Gio.BusType.SESSION, None)
+        Gio.bus_own_name_on_connection(self._bus,
                                        self._MPRIS_LOLLYPOP,
                                        Gio.BusNameOwnerFlags.NONE,
                                        None,
                                        None)
-        super().__init__(self._con, self._MPRIS_PATH)
+        super().__init__(self._bus, self._MPRIS_PATH)
         Lp().player.connect('current-changed', self._on_current_changed)
         Lp().player.connect('seeked', self._on_seeked)
         Lp().player.connect('status-changed', self._on_status_changed)
@@ -245,7 +245,7 @@ class MPRIS(Server):
         pass
 
     def Seeked(self, position):
-        self._con.emit_signal(
+        self._bus.emit_signal(
                           None,
                           self._MPRIS_PATH,
                           self._MPRIS_PLAYER_IFACE,
@@ -306,7 +306,7 @@ class MPRIS(Server):
 
     def PropertiesChanged(self, interface_name, changed_properties,
                           invalidated_properties):
-        self._con.emit_signal(None,
+        self._bus.emit_signal(None,
                               self._MPRIS_PATH,
                               'org.freedesktop.DBus.Properties',
                               'PropertiesChanged',
