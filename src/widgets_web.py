@@ -16,11 +16,7 @@ from gi.repository import Gtk, WebKit2, GLib
 
 from urllib.parse import urlsplit
 
-
-class OpenLink:
-    NONE = 0
-    OPEN = 1
-    NEW = 2
+from lollypop.define import OpenLink
 
 
 class WebView(Gtk.Stack):

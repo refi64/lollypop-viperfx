@@ -15,10 +15,9 @@ from gi.repository import Gtk, GLib
 from gettext import gettext as _
 from threading import Thread
 
-from lollypop.define import Lp
+from lollypop.define import Lp, OpenLink
 from lollypop.objects import Track
 from lollypop.widgets_info import WikipediaContent, LastfmContent
-from lollypop.widgets_web import OpenLink
 from lollypop.cache import InfoCache
 from lollypop.view_artist_albums import CurrentArtistAlbumsView
 
