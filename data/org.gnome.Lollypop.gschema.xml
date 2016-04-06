@@ -166,16 +166,6 @@
             <summary>INTERNAL</summary>
             <description></description>
         </key>
-        <key type="i" name="track-id">
-            <default>-1</default>
-            <summary>INTERNAL</summary>
-            <description></description>
-        </key>
-        <key type="ai" name="playlist-ids">
-            <default>[]</default>
-            <summary>INTERNAL</summary>
-            <description></description>
-        </key>
         <key type="b" name="mix">
             <default>false</default>
             <summary>Mix songs</summary>

@@ -367,21 +367,22 @@ class Player(BinPlayer, QueuePlayer, UserPlaylistPlayer, RadioPlayer,
         """
             Restore player state
         """
-        if Lp().settings.get_value('save-state'):
-            track_id = Lp().settings.get_value('track-id').get_int32()
-            playlist_ids = Lp().settings.get_value('playlist-ids')
-            if playlist_ids and playlist_ids[0] == Type.RADIOS:
-                radios = Radios()
-                track = Track()
-                name = radios.get_name(track_id)
-                url = radios.get_url(name)
-                track.set_radio(name, url)
-                self.load(track)
-            elif Lp().tracks.get_path(track_id) != "":
-                track = Track(track_id)
-                self._load_track(track)
-                if playlist_ids:
-                    try:
+        try:
+            if Lp().settings.get_value('save-state'):
+                track_id = load(open(self.DATA_PATH + "/track_id.bin", "rb"))
+                playlist_ids = load(open(self.DATA_PATH + "/playlist_ids.bin",
+                                    "rb"))
+                if playlist_ids and playlist_ids[0] == Type.RADIOS:
+                    radios = Radios()
+                    track = Track()
+                    name = radios.get_name(track_id)
+                    url = radios.get_url(name)
+                    track.set_radio(name, url)
+                    self.load(track)
+                elif Lp().tracks.get_path(track_id) != "":
+                    track = Track(track_id)
+                    self._load_track(track)
+                    if playlist_ids:
                         pids = []
                         for playlist_id in playlist_ids:
                             pids.append(int(playlist_id))
@@ -403,10 +404,7 @@ class Player(BinPlayer, QueuePlayer, UserPlaylistPlayer, RadioPlayer,
                                     track_ids.append(track_id)
                             self.populate_user_playlist_by_tracks(track_ids,
                                                                   pids)
-                    except:
-                        pass  # User set non int in gsettings
-                else:
-                    try:
+                    else:
                         self._albums = load(open(
                                             self.DATA_PATH + "/albums.bin",
                                             "rb"))
@@ -417,17 +415,17 @@ class Player(BinPlayer, QueuePlayer, UserPlaylistPlayer, RadioPlayer,
                         self._context.artist_ids = load(open(
                                             self.DATA_PATH + "/artist_ids.bin",
                                             "rb"))
-                    except:
-                        pass
-                self.set_next()
-                self.set_prev()
-                if Lp().settings.get_value('repeat'):
-                    self._context.next = NextContext.NONE
+                    self.set_next()
+                    self.set_prev()
+                    if Lp().settings.get_value('repeat'):
+                        self._context.next = NextContext.NONE
+                    else:
+                        self._context.next = NextContext.STOP_ALL
+                    self.emit('current-changed')
                 else:
-                    self._context.next = NextContext.STOP_ALL
-                self.emit('current-changed')
-            else:
-                print("Player::restore_state(): track missing")
+                    print("Player::restore_state(): track missing")
+        except Exception as e:
+            print("Player::restore_state()", e)
 
     def set_next_context(self, value):
         """

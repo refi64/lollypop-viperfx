@@ -205,9 +205,10 @@ class Application(Gtk.Application):
             elif self.player.current_track.id == Type.RADIOS:
                 radios = Radios()
                 track_id = radios.get_id(
-                            ", ".join(self.player.current_track.album_artists))
+                                    self.player.current_track.album_artists[0])
             else:
                 track_id = self.player.current_track.id
+                # Save albums context
                 try:
                     dump(self.player.context.genre_ids,
                          open(self.DATA_PATH + "/genre_ids.bin", "wb"))
@@ -216,10 +217,9 @@ class Application(Gtk.Application):
                     self.player.shuffle_albums(False)
                     dump(self.player.get_albums(),
                          open(self.DATA_PATH + "/albums.bin", "wb"))
-                except:
-                    pass
-            self.settings.set_value('track-id', GLib.Variant('i',
-                                                             track_id))
+                except Exception as e:
+                    print("Application::prepare_to_exit()", e)
+            dump(track_id, open(self.DATA_PATH + "/track_id.bin", "wb"))
             # Save current playlist
             if self.player.current_track.id == Type.RADIOS:
                 playlist_ids = [Type.RADIOS]
@@ -227,8 +227,8 @@ class Application(Gtk.Application):
                 playlist_ids = []
             else:
                 playlist_ids = self.player.get_user_playlist_ids()
-            self.settings.set_value('playlist-ids', GLib.Variant('ai',
-                                                                 playlist_ids))
+            dump(playlist_ids,
+                 open(self.DATA_PATH + "/playlist_ids.bin", "wb"))
         self.player.stop_all()
         if self.window:
             self.window.stop_all()
