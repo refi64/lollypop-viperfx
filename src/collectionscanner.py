@@ -258,15 +258,10 @@ class CollectionScanner(GObject.GObject, ScannerTagReader):
                                                                  album_artists)
         new_artist_ids += new_album_artist_ids
 
-        # Check for album artist, if none, use first available artist
-        no_album_artist = False
-        if not album_artist_ids:
-            album_artist_ids = artist_ids
-            no_album_artist = True
         debug("CollectionScanner::add2db(): Add album: "
               "%s, %s, %s" % (album_name, album_artist_ids, year))
         (album_id, new_album) = self.add_album(album_name, album_artist_ids,
-                                               no_album_artist, year, filepath,
+                                               year, filepath,
                                                album_pop, amtime)
 
         (genre_ids, new_genre_ids) = self.add_genres(genres, album_id)
@@ -279,8 +274,8 @@ class CollectionScanner(GObject.GObject, ScannerTagReader):
                                    track_ltime, mtime)
 
         debug("CollectionScanner::add2db(): Update tracks")
-        self.update_album(album_id, album_artist_ids, genre_ids)
         self.update_track(track_id, artist_ids, genre_ids)
+        self.update_album(album_id, album_artist_ids, genre_ids)
         # Notify about new artists/genres
         if new_genre_ids or new_artist_ids:
             with SqlCursor(Lp().db) as sql:

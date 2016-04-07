@@ -18,7 +18,7 @@ import os
 
 from gettext import gettext as _
 
-from lollypop.define import Lp, Type
+from lollypop.define import Lp
 from lollypop.utils import format_artist_name
 
 
@@ -296,13 +296,12 @@ class ScannerTagReader(TagReader):
                 genre_ids.append(genre_id)
         return (genre_ids, new_genre_ids)
 
-    def add_album(self, album_name, artist_ids, no_album_artist,
+    def add_album(self, album_name, artist_ids,
                   year, filepath, popularity, mtime):
         """
             Add album to db
             @param album name as string
             @param album artist ids as [int]
-            @param no album artist as bool
             @param path to an album track as string
             @param year as int
             @param popularity as int
@@ -312,28 +311,20 @@ class ScannerTagReader(TagReader):
         """
         path = os.path.dirname(filepath)
         new = False
-        if no_album_artist:
-            album_id = Lp().albums.get_compilation_id(album_name, year)
-        else:
+        if artist_ids:
             album_id = Lp().albums.get_non_compilation_id(album_name,
                                                           artist_ids,
                                                           year)
+        else:
+            album_id = Lp().albums.get_compilation_id(album_name, year)
         if album_id is None:
             new = True
-            album_id = Lp().albums.add(album_name, artist_ids, no_album_artist,
+            album_id = Lp().albums.add(album_name, artist_ids,
                                        year, path, popularity, mtime)
         # Now we have our album id, check if path doesn't change
         if Lp().albums.get_path(album_id) != path:
             Lp().albums.set_path(album_id, path)
 
-        # If no album artist, handle album artist id for compilations
-        if no_album_artist:
-            if Lp().albums.is_compilation(album_id):
-                Lp().albums.set_artist_ids(album_id,
-                                           [Type.COMPILATIONS])
-            else:
-                Lp().albums.set_artist_ids(album_id,
-                                           artist_ids)
         return (album_id, new)
 
     def update_album(self, album_id, artist_ids, genre_ids):
@@ -344,9 +335,12 @@ class ScannerTagReader(TagReader):
             @param genre ids as [int]
             @commit needed
         """
-        # Set artists/genres for album
-        for artist_id in artist_ids:
-            Lp().albums.add_artist(album_id, artist_id)
+        # Set artist ids based on content
+        if not artist_ids:
+            Lp().albums.set_artist_ids(
+                                    album_id,
+                                    Lp().albums.calculate_artist_ids(album_id))
+        # Update album genres
         for genre_id in genre_ids:
             Lp().albums.add_genre(album_id, genre_id)
 

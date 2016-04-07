@@ -30,13 +30,11 @@ class AlbumsDatabase:
         """
         self._cached_randoms = []
 
-    def add(self, name, artist_ids, no_album_artist, year,
-            path, popularity, mtime):
+    def add(self, name, artist_ids, year, path, popularity, mtime):
         """
             Add a new album to database
             @param Album name as string
-            @param artist ids as int,
-            @param no_album_artist as bool,
+            @param artist ids as int
             @param year as int
             @param path as string
             @param mtime as int
@@ -48,7 +46,7 @@ class AlbumsDatabase:
                                   (name, no_album_artist, year,\
                                   path, popularity, mtime)\
                                   VALUES (?, ?, ?, ?, ?, ?)",
-                                 (name, no_album_artist, year,
+                                 (name, artist_ids == [], year,
                                   path, popularity, mtime))
             for artist_id in artist_ids:
                 sql.execute("INSERT INTO album_artists\
@@ -64,8 +62,8 @@ class AlbumsDatabase:
             @warning: commit needed
         """
         with SqlCursor(Lp().db) as sql:
-            artists = self.get_artist_ids(album_id)
-            if artist_id not in artists:
+            artist_ids = self.get_artist_ids(album_id)
+            if artist_id not in artist_ids:
                 sql.execute("INSERT INTO "
                             "album_artists (album_id, artist_id)"
                             "VALUES (?, ?)", (album_id, artist_id))
@@ -93,7 +91,7 @@ class AlbumsDatabase:
         """
         with SqlCursor(Lp().db) as sql:
             currents = self.get_artist_ids(album_id)
-            if set(currents) - set(artist_ids):
+            if not currents or set(currents) - set(artist_ids):
                 sql.execute("DELETE FROM album_artists\
                             WHERE album_id=?", (album_id,))
                 for artist_id in artist_ids:
@@ -495,7 +493,7 @@ class AlbumsDatabase:
             @param album id as int
             @param genre ids as [int]
             @param artist_ids as [int]
-            @return Arrays of tracks id as int
+            @return track ids as [int]
         """
         genre_ids = remove_static_genres(genre_ids)
         # Reset filters if not needed
@@ -624,7 +622,7 @@ class AlbumsDatabase:
             # Get albums for all artists
             if not artist_ids and not genre_ids:
                 result = sql.execute(
-                                 "SELECT albums.rowid\
+                                 "SELECT DISTINCT albums.rowid\
                                   FROM albums, artists, album_artists\
                                   WHERE artists.rowid=album_artists.artist_id\
                                   AND albums.rowid=album_artists.album_id\
@@ -636,7 +634,7 @@ class AlbumsDatabase:
             # Get albums for genre
             elif not artist_ids:
                 genres = tuple(genre_ids)
-                request = "SELECT albums.rowid FROM albums,\
+                request = "SELECT DISTINCT albums.rowid FROM albums,\
                            album_genres, artists, album_artists\
                            WHERE artists.rowid=album_artists.artist_id\
                            AND albums.rowid=album_artists.album_id\
@@ -651,7 +649,7 @@ class AlbumsDatabase:
             # Get albums for artist
             elif not genre_ids:
                 artists = tuple(artist_ids)
-                request = "SELECT albums.rowid\
+                request = "SELECT DISTINCT albums.rowid\
                            FROM albums, artists, album_artists WHERE\
                            artists.rowid=album_artists.artist_id AND\
                            album_artists.album_id=albums.rowid AND ("
@@ -664,7 +662,7 @@ class AlbumsDatabase:
             else:
                 filters = tuple(artist_ids)
                 filters += tuple(genre_ids)
-                request = "SELECT albums.rowid\
+                request = "SELECT DISTINCT albums.rowid\
                            FROM albums, album_genres, artists, album_artists\
                            WHERE album_genres.album_id=albums.rowid AND\
                            artists.rowid=album_artists.artist_id AND\
@@ -690,7 +688,7 @@ class AlbumsDatabase:
             result = []
             # Get all compilations
             if not genre_ids or genre_ids[0] == Type.ALL:
-                result = sql.execute("SELECT albums.rowid\
+                result = sql.execute("SELECT DISTINCT albums.rowid\
                                       FROM albums, album_artists\
                                       WHERE album_artists.artist_id=?\
                                       AND album_artists.album_id=albums.rowid\
@@ -751,23 +749,26 @@ class AlbumsDatabase:
                                   LIMIT 25", ('%' + string + '%',))
             return list(itertools.chain(*result))
 
-    def is_compilation(self, album_id):
+    def calculate_artist_ids(self, album_id):
         """
-            True if is a compilation
+            Calculate artist ids based on tracks
+            @WARNING Be sure album already have a track
             @param album id as int
-            @return is compilation as bool
+            @return artist_ids as [int]
         """
-        with SqlCursor(Lp().db) as sql:
-            result = sql.execute(
-                            "SELECT COUNT(DISTINCT track_artists.artist_id)\
-                             FROM tracks, track_artists\
-                             WHERE tracks.album_id=?\
-                             AND tracks.rowid = track_artists.track_id",
-                            (album_id,))
-            v = result.fetchone()
-            if v is not None:
-                return v[0] > 1
-            return False
+        try:
+            ret = []
+            for track_id in self.get_tracks(album_id, [], []):
+                artist_ids = Lp().tracks.get_artist_ids(track_id)
+                # Check if previous track and
+                # track do not have same artists
+                if ret:
+                    if not set(ret) & set(artist_ids):
+                        return [Type.COMPILATIONS]
+                ret = artist_ids
+        except Exception as e:
+            print("AlbumsDatabase::calculate_artist_ids()", e)
+        return ret
 
     def count(self):
         """
