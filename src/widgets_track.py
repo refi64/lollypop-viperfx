@@ -174,7 +174,7 @@ class Row(Gtk.ListBoxRow):
             @param widget as Gtk.Widget
             @param event as Gdk.Event
         """
-        if event.button == 3:
+        if event.button == 3 and Gtk.get_minor_version() > 16:
             window = widget.get_window()
             if window == event.window:
                 self._popup_menu(widget, event.x, event.y)
