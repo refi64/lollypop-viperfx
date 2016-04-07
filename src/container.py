@@ -521,11 +521,11 @@ class Container:
         self._stack.set_visible_child(child)
         self._stack.clean_old_views(child)
 
-    def _update_view_artists(self, artist_ids, genre_ids):
+    def _update_view_artists(self, genre_ids, artist_ids):
         """
             Update current view with artists view
-            @param artist id as int
-            @param genre id as int
+            @param genre ids as [int]
+            @param artist ids as [int]
         """
         def load():
             if genre_ids and genre_ids[0] == Type.ALL:
@@ -545,7 +545,7 @@ class Container:
         self._stack.set_visible_child(view)
         self._stack.clean_old_views(view)
 
-    def _update_view_albums(self, genre_ids, is_compilation=False):
+    def _update_view_albums(self, genre_ids, artist_ids):
         """
             Update current view with albums view
             @param genre ids as [int]
@@ -553,6 +553,7 @@ class Container:
         """
         def load():
             albums = []
+            is_compilation = artist_ids and artist_ids[0] == Type.COMPILATIONS
             if genre_ids and genre_ids[0] == Type.ALL:
                 if is_compilation or\
                         Lp().settings.get_value('show-compilations'):
@@ -573,9 +574,6 @@ class Container:
                     albums += Lp().albums.get_ids([], genre_ids)
             return albums
 
-        artist_ids = []
-        if is_compilation:
-            artist_ids.append(Type.COMPILATIONS)
         view = AlbumsView(genre_ids, artist_ids)
         loader = Loader(target=load, view=view)
         loader.start()
@@ -694,25 +692,24 @@ class Container:
                                  Type.RECENTS,
                                  Type.RANDOMS]:
             self._list_two.hide()
-            self._update_view_albums(selected_ids)
+            self._update_view_albums(selected_ids, [])
         elif selected_ids[0] == Type.RADIOS:
             self._list_two.hide()
             self._update_view_radios()
         elif selection_list.is_marked_as_artists():
             self._list_two.hide()
             if selected_ids[0] == Type.ALL:
-                self._update_view_albums(selected_ids)
-            elif selected_ids[0] == Type.COMPILATIONS and\
-                    len(selected_ids) == 1:
-                self._update_view_albums([], True)
+                self._update_view_albums(selected_ids, [])
+            elif selected_ids[0] == Type.COMPILATIONS:
+                self._update_view_albums([], selected_ids)
             else:
-                self._update_view_artists(selected_ids, [])
+                self._update_view_artists([], selected_ids)
         else:
             self._list_two.clear()
             self._setup_list_artists(self._list_two, selected_ids, False)
             self._list_two.show()
             if not self._list_two.will_be_selected():
-                self._update_view_albums(selected_ids, False)
+                self._update_view_albums(selected_ids, [])
 
     def _on_list_populated(self, selection_list):
         """
@@ -733,11 +730,10 @@ class Container:
             return
         if genre_ids[0] == Type.PLAYLISTS:
             self._update_view_playlists(selected_ids)
-        elif selected_ids[0] == Type.COMPILATIONS and\
-                len(selected_ids) == 1:
-            self._update_view_albums(genre_ids, True)
+        elif selected_ids[0] == Type.COMPILATIONS:
+            self._update_view_albums(genre_ids, selected_ids)
         else:
-            self._update_view_artists(selected_ids, genre_ids)
+            self._update_view_artists(genre_ids, selected_ids)
 
     def _on_mount_added(self, vm, mount):
         """
