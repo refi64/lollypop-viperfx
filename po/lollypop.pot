@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-04-07 17:19+0200\n"
+"POT-Creation-Date: 2016-04-07 17:22+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -687,7 +687,7 @@ msgid "Lyrics"
 msgstr ""
 
 #: ../data/ArtistInfo.ui.h:6
-msgid "Reload informations. Long press to activate auto reload"
+msgid "Reload information. Long press to activate auto reload"
 msgstr ""
 
 #: ../data/CoversPopover.ui.h:1
