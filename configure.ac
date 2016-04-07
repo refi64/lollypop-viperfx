@@ -20,10 +20,6 @@ AC_DEFINE_UNQUOTED(GETTEXT_PACKAGE, "$GETTEXT_PACKAGE",
                    [The prefix for our gettext translation domains.])
 IT_PROG_INTLTOOL(0.26)
 
-AC_PROG_CC
-AM_PROG_CC_C_O
-LT_INIT([disable-static])
-
 PKG_PROG_PKG_CONFIG([0.22])
 
 GLIB_GSETTINGS
