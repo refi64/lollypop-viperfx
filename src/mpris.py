@@ -202,7 +202,7 @@ class MPRIS(Server):
                                        Gio.BusNameOwnerFlags.NONE,
                                        None,
                                        None)
-        super().__init__(self._bus, self._MPRIS_PATH)
+        Server.__init__(self._bus, self._MPRIS_PATH)
         Lp().player.connect('current-changed', self._on_current_changed)
         Lp().player.connect('seeked', self._on_seeked)
         Lp().player.connect('status-changed', self._on_status_changed)
