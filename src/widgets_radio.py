@@ -46,57 +46,22 @@ class RadioWidget(Gtk.FlowBoxChild, AlbumWidget):
         self._widget = Gtk.EventBox()
         self._widget.connect('enter-notify-event', self._on_enter_notify)
         self._widget.connect('leave-notify-event', self._on_leave_notify)
-        self._overlay = Gtk.Frame()
-        self._overlay.get_style_context().add_class('cover-frame')
         self._cover = Gtk.Image()
         self._cover.set_property('halign', Gtk.Align.CENTER)
         self._cover.set_size_request(ArtSize.BIG, ArtSize.BIG)
-        self._cover.get_style_context().add_class('white')
-        self._overlay.add(self._cover)
         self._title_label = Gtk.Label()
         self._title_label.set_ellipsize(Pango.EllipsizeMode.END)
         self._title_label.set_property('halign', Gtk.Align.CENTER)
         self._title_label.set_text(self._name)
-        overlay = Gtk.Overlay.new()
-        overlay.get_style_context().add_class('white')
-        overlay.set_property('halign', Gtk.Align.CENTER)
-        overlay.set_property('valign', Gtk.Align.CENTER)
-        # Play button
-        play_event = Gtk.EventBox()
-        play_event.set_property('has-tooltip', True)
-        play_event.set_tooltip_text(_("Play"))
-        play_event.set_hexpand(True)
-        play_event.set_property('valign', Gtk.Align.CENTER)
-        play_event.set_property('halign', Gtk.Align.CENTER)
-        play_event.connect('realize', self._on_eventbox_realize)
-        play_event.connect('button-press-event',
-                           self._on_play_press_event)
-        self._play_button = Gtk.Image.new_from_icon_name(
-                                           'media-playback-start-symbolic',
-                                           Gtk.IconSize.DND)
-        self._play_button.set_opacity(0)
-        # Edit button
-        self._action_event = Gtk.EventBox()
-        self._action_event.set_margin_bottom(5)
-        self._action_event.set_margin_end(5)
-        self._action_event.set_property('has-tooltip', True)
-        self._action_event.set_tooltip_text(_("Change artwork"))
-        self._action_event.set_property('halign', Gtk.Align.END)
-        self._action_event.connect('realize', self._on_eventbox_realize)
-        self._action_event.connect('button-press-event',
-                                   self._on_edit_press_event)
-        self._action_event.set_property('valign', Gtk.Align.END)
-        self._action_event.set_property('halign', Gtk.Align.END)
-        self._action_button = Gtk.Image.new_from_icon_name(
-                                           'document-properties-symbolic',
-                                           Gtk.IconSize.BUTTON)
-        self._action_button.set_opacity(0)
-        overlay.add(self._overlay)
-        overlay.add_overlay(play_event)
-        overlay.add_overlay(self._action_event)
+        self._overlay = Gtk.Overlay()
+        frame = Gtk.Frame()
+        frame.get_style_context().add_class('cover-frame')
+        frame.add(self._cover)
+        self._overlay.add(frame)
         grid = Gtk.Grid()
         grid.set_orientation(Gtk.Orientation.VERTICAL)
-        grid.add(overlay)
+        self._overlay.get_style_context().add_class('white')
+        grid.add(self._overlay)
         grid.add(self._title_label)
         self._widget.add(grid)
         self._widget.set_property('halign', Gtk.Align.CENTER)
@@ -105,8 +70,6 @@ class RadioWidget(Gtk.FlowBoxChild, AlbumWidget):
         self.set_cover()
         self.update_state()
         self.show_all()
-        play_event.add(self._play_button)
-        self._action_event.add(self._action_button)
 
     def set_sensitive(self, b):
         """
@@ -184,6 +147,61 @@ class RadioWidget(Gtk.FlowBoxChild, AlbumWidget):
         else:
             self._overlay.get_style_context().remove_class(
                                                     'cover-frame-selected')
+
+    def set_overlay(self, set):
+        """
+            Set overlay
+            @param set as bool
+        """
+        if self._show_overlay == set:
+            return
+        if set:
+            # Play button
+            self._play_event = Gtk.EventBox()
+            self._play_event.set_property('has-tooltip', True)
+            self._play_event.set_tooltip_text(_("Play"))
+            self._play_event.set_hexpand(True)
+            self._play_event.set_property('valign', Gtk.Align.CENTER)
+            self._play_event.set_property('halign', Gtk.Align.CENTER)
+            self._play_event.connect('realize', self._on_eventbox_realize)
+            self._play_event.connect('button-press-event',
+                                     self._on_play_press_event)
+            self._play_button = Gtk.Image.new_from_icon_name(
+                                               'media-playback-start-symbolic',
+                                               Gtk.IconSize.DND)
+            self._play_button.set_opacity(0)
+            # Edit button
+            self._artwork_event = Gtk.EventBox()
+            self._artwork_event.set_margin_bottom(5)
+            self._artwork_event.set_margin_end(5)
+            self._artwork_event.set_property('has-tooltip', True)
+            self._artwork_event.set_tooltip_text(_("Modify radio"))
+            self._artwork_event.set_property('halign', Gtk.Align.END)
+            self._artwork_event.connect('realize', self._on_eventbox_realize)
+            self._artwork_event.connect('button-press-event',
+                                        self._on_edit_press_event)
+            self._artwork_event.set_property('valign', Gtk.Align.END)
+            self._artwork_event.set_property('halign', Gtk.Align.END)
+            self._artwork_button = Gtk.Image.new_from_icon_name(
+                                               'document-properties-symbolic',
+                                               Gtk.IconSize.BUTTON)
+            self._artwork_button.set_opacity(0)
+            self._play_event.add(self._play_button)
+            self._artwork_event.add(self._artwork_button)
+            self._overlay.add_overlay(self._play_event)
+            self._overlay.add_overlay(self._artwork_event)
+            self._overlay.show_all()
+            AlbumWidget.set_overlay(self, True)
+        else:
+            AlbumWidget.set_overlay(self, False)
+            self._play_event.destroy()
+            self._play_event = None
+            self._play_button.destroy()
+            self._play_button = None
+            self._artwork_event.destroy()
+            self._artwork_event = None
+            self._artwork_button.destroy()
+            self._artwork_button = None
 
 #######################
 # PRIVATE             #
