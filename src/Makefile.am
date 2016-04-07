@@ -23,6 +23,7 @@ app_PYTHON = \
     define.py\
     fullscreen.py\
     inhibitor.py\
+    inhibitor_legacy.py\
     inotify.py\
     lastfm.py\
     list.py\
@@ -30,6 +31,7 @@ app_PYTHON = \
     localized.py\
     miniplayer.py\
     mpris.py\
+    mpris_legacy.py\
     notification.py\
     player_base.py\
     player_bin.py\

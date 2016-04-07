@@ -41,10 +41,9 @@ from lollypop.window import Window
 from lollypop.database import Database
 from lollypop.player import Player
 from lollypop.art import Art
-from lollypop.inhibitor import Inhibitor
+
 from lollypop.sqlcursor import SqlCursor
 from lollypop.settings import Settings, SettingsDialog
-from lollypop.mpris import MPRIS
 from lollypop.notification import NotificationManager
 from lollypop.database_albums import AlbumsDatabase
 from lollypop.database_artists import ArtistsDatabase
@@ -54,6 +53,16 @@ from lollypop.playlists import Playlists
 from lollypop.radios import Radios
 from lollypop.collectionscanner import CollectionScanner
 from lollypop.fullscreen import FullScreen
+
+
+# Ubuntu 16.04 and more
+if Gtk.get_minor_version() > 16:
+    from lollypop.mpris import MPRIS
+    from lollypop.inhibitor import Inhibitor
+# Ubuntu 14.04, Debian Jessie, ElementaryOS
+else:
+    from lollypop.mpris_legacy import MPRIS
+    from lollypop.inhibitor_legacy import Inhibitor
 
 
 class Application(Gtk.Application):
