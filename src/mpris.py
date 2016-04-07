@@ -193,9 +193,6 @@ class MPRIS(Server):
     _MPRIS_LOLLYPOP = 'org.mpris.MediaPlayer2.Lollypop'
     _MPRIS_PATH = '/org/mpris/MediaPlayer2'
 
-    def __repr__(self):
-        return '<MediaPlayer2Service>'
-
     def __init__(self, app):
         self._app = app
         self._metadata = {}
