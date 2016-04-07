@@ -72,10 +72,10 @@ class Database:
         """
             Create database tables or manage update if needed
         """
+        db_version = Lp().settings.get_value('db-version').get_int32()
+        upgrade = DatabaseUpgrade(db_version, self)
         if os.path.exists(self.DB_PATH):
             with SqlCursor(self) as sql:
-                db_version = Lp().settings.get_value('db-version').get_int32()
-                upgrade = DatabaseUpgrade(db_version, self)
                 upgrade.do_db_upgrade()
                 Lp().settings.set_value('db-version',
                                         GLib.Variant('i', upgrade.count()))
@@ -94,6 +94,8 @@ class Database:
                     sql.execute(self.create_track_artists)
                     sql.execute(self.create_track_genres)
                     sql.commit()
+                    Lp().settings.set_value('db-version',
+                                            GLib.Variant('i', upgrade.count()))
             except Exception as e:
                 print("Database::__init__(): %s" % e)
 
