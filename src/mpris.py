@@ -217,52 +217,71 @@ class MPRIS(Server):
                           GLib.Variant.new_tuple(GLib.Variant('x', position)))
 
     def Get(self, interface, property_name):
-        return self.GetAll(interface)[property_name]
+        if property_name in ["CanQuit", "CanRaise", "CanSeek", "CanControl"]:
+            return GLib.Variant('b', True)
+        elif property_name in ["HasTrackList", "Shuffle"]:
+            return GLib.Variant('b', False)
+        elif property_name in ["Rate", "MinimumRate", "MaximumRate"]:
+            return GLib.Variant('d', 1.0)
+        elif property_name == "Identity":
+            return GLib.Variant('s', 'Lollypop')
+        elif property_name == "DesktopEntry":
+            return GLib.Variant('s', 'lollypop')
+        elif property_name == "SupportedUriSchemes":
+            return GLib.Variant('as', ['file', 'http'])
+        elif property_name == "SupportedMimeTypes":
+            return GLib.Variant('as', ['application/ogg',
+                                       'audio/x-vorbis+ogg',
+                                       'audio/x-flac',
+                                       'audio/mpeg'])
+        elif property_name == "PlaybackStatus":
+            return GLib.Variant('s', self._get_status())
+        elif property_name == "LoopStatus":
+            return GLib.Variant('s', 'Playlist')
+        elif property_name == "Metadata":
+            return GLib.Variant('a{sv}', self._metadata)
+        elif property_name == "Volume":
+            return GLib.Variant('d', Lp().player.volume)
+        elif property_name == "Position":
+            return GLib.Variant('x', Lp().player.position / 60)
+        elif property_name == "CanGoNext":
+            return GLib.Variant('b', Lp().player.next_track.id is not None)
+        elif property_name == "CanGoPrevious":
+            return GLib.Variant('b', Lp().player.prev_track.id is not None)
+        elif property_name == "CanPlay":
+            return GLib.Variant('b', Lp().player.current_track.id is not None)
+        elif property_name == "CanPause":
+            return GLib.Variant('b', Lp().player.is_playing())
 
     def GetAll(self, interface):
+        ret = {}
         if interface == self._MPRIS_IFACE:
-            return {
-                'CanQuit': GLib.Variant('b', True),
-                'CanRaise': GLib.Variant('b', True),
-                'HasTrackList': GLib.Variant('b', False),
-                'Identity': GLib.Variant('s', 'Lollypop'),
-                'DesktopEntry': GLib.Variant('s', 'lollypop'),
-                'SupportedUriSchemes': GLib.Variant('as', [
-                    'file', 'http',
-                ]),
-                'SupportedMimeTypes': GLib.Variant('as', [
-                    'application/ogg',
-                    'audio/x-vorbis+ogg',
-                    'audio/x-flac',
-                    'audio/mpeg'
-                ]),
-            }
+            for property_name in ['CanQuit',
+                                  'CanRaise',
+                                  'HasTrackList',
+                                  'Identity',
+                                  'DesktopEntry',
+                                  'SupportedUriSchemes',
+                                  'SupportedMimeTypes']:
+                ret[property_name] = self.Get(interface, property_name)
         elif interface == self._MPRIS_PLAYER_IFACE:
-            return {
-                'PlaybackStatus': GLib.Variant('s', self._get_status()),
-                'LoopStatus': GLib.Variant('s', 'Playlist'),
-                'Rate': GLib.Variant('d', 1.0),
-                'Shuffle': GLib.Variant('b', False),  # FIXME
-                'Metadata': GLib.Variant('a{sv}', self._metadata),
-                'Volume': GLib.Variant('d', Lp().player.volume),
-                'Position': GLib.Variant('x', Lp().player.position / 60),
-                'MinimumRate': GLib.Variant('d', 1.0),
-                'MaximumRate': GLib.Variant('d', 1.0),
-                'CanGoNext': GLib.Variant(
-                                        'b',
-                                        Lp().player.next_track.id is not None),
-                'CanGoPrevious': GLib.Variant(
-                                        'b',
-                                        Lp().player.prev_track.id is not None),
-                'CanPlay': GLib.Variant(
-                                     'b',
-                                     Lp().player.current_track.id is not None),
-                'CanPause': GLib.Variant('b', Lp().player.is_playing()),
-                'CanSeek': GLib.Variant('b', True),
-                'CanControl': GLib.Variant('b', True),
-            }
-        else:
-            return {}
+            for property_name in ['PlaybackStatus',
+                                  'LoopStatus',
+                                  'Rate',
+                                  'Shuffle',
+                                  'Metadata',
+                                  'Volume',
+                                  'Position',
+                                  'MinimumRate',
+                                  'MaximumRate',
+                                  'CanGoNext',
+                                  'CanGoPrevious',
+                                  'CanPlay',
+                                  'CanPause',
+                                  'CanSeek',
+                                  'CanControl']:
+                ret[property_name] = self.Get(interface, property_name)
+        return ret
 
     def Set(self, interface, property_name, new_value):
         if property_name == 'Volume':
