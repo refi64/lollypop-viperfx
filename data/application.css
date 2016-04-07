@@ -18,7 +18,7 @@ treeview:hover {
 }
 
 treeview.separator {
-    color: shade(@theme_bg_color, 0.8);
+    color: alpha(@theme_fg_color, 0.1);
 }
 
 treeview .image:selected{
