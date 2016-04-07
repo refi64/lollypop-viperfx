@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-04-05 12:03+0200\n"
+"POT-Creation-Date: 2016-04-07 17:16+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -366,7 +366,7 @@ msgid "Pause"
 msgstr ""
 
 #: ../src/controllers.py:86 ../src/controllers.py:114 ../src/pop_tunein.py:154
-#: ../src/widgets_album.py:456 ../src/widgets_radio.py:69
+#: ../src/widgets_album.py:459 ../src/widgets_radio.py:163
 #: ../data/AlbumDetailedWidget.ui.h:1 ../data/ToolbarPlayback.ui.h:2
 msgid "Play"
 msgstr ""
@@ -417,7 +417,7 @@ msgstr ""
 msgid "Clear albums"
 msgstr ""
 
-#: ../src/pop_albums.py:296 ../src/pop_info.py:212 ../src/view_artist.py:44
+#: ../src/pop_albums.py:296 ../src/pop_info.py:208 ../src/view_artist.py:44
 msgid "Go to current track"
 msgstr ""
 
@@ -437,11 +437,11 @@ msgstr ""
 msgid "Select a cover art for this album"
 msgstr ""
 
-#: ../src/pop_info.py:36
+#: ../src/pop_info.py:35
 msgid "Advanced artist informations disabled"
 msgstr ""
 
-#: ../src/pop_info.py:44
+#: ../src/pop_info.py:43
 msgid "WebKit support disabled"
 msgstr ""
 
@@ -555,39 +555,38 @@ msgstr ""
 msgid "Cancel synchronization"
 msgstr ""
 
-#: ../src/widgets_album.py:200
+#: ../src/widgets_album.py:203
 msgid "Append"
 msgstr ""
 
-#: ../src/widgets_album.py:204
+#: ../src/widgets_album.py:207
 msgid "Remove"
 msgstr ""
 
-#: ../src/widgets_album.py:467 ../data/AlbumDetailedWidget.ui.h:3
+#: ../src/widgets_album.py:470 ../data/AlbumDetailedWidget.ui.h:3
 msgid "Play albums"
 msgstr ""
 
-#: ../src/widgets_album.py:477 ../src/widgets_radio.py:85
-#: ../data/AlbumDetailedWidget.ui.h:2
+#: ../src/widgets_album.py:480 ../data/AlbumDetailedWidget.ui.h:2
 msgid "Change artwork"
 msgstr ""
 
-#: ../src/widgets_album.py:645
+#: ../src/widgets_album.py:646
 #, python-format
 msgid "%s h  %s m"
 msgstr ""
 
-#: ../src/widgets_album.py:647
+#: ../src/widgets_album.py:648
 #, python-format
 msgid "%s h"
 msgstr ""
 
-#: ../src/widgets_album.py:649
+#: ../src/widgets_album.py:650
 #, python-format
 msgid "%s m"
 msgstr ""
 
-#: ../src/widgets_album.py:906
+#: ../src/widgets_album.py:907
 #, python-format
 msgid "Disc %s"
 msgstr ""
@@ -616,6 +615,10 @@ msgstr ""
 
 #: ../src/widgets_playlist.py:795
 msgid "Remove these tracks?"
+msgstr ""
+
+#: ../src/widgets_radio.py:179
+msgid "Modify radio"
 msgstr ""
 
 #. Translators: Put here words added by wikipedia in band search

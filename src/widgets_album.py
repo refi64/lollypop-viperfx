@@ -41,6 +41,7 @@ class AlbumWidget:
         self._widget = None
         self._play_all_button = None
         self._artwork_button = None
+        self._action_button = None
         self._show_overlay = False
         self._timeout_id = None
         self._overlay_orientation = Gtk.Orientation.HORIZONTAL
@@ -149,11 +150,12 @@ class AlbumWidget:
                 self._artwork_button.get_style_context().add_class(
                                                            self._squared_class)
                 self._artwork_button.show()
-            self._show_append(not Lp().player.has_album(self._album))
-            self._action_button.set_opacity(1)
-            self._action_button.get_style_context().add_class(
+            if self._action_button is not None:
+                self._show_append(not Lp().player.has_album(self._album))
+                self._action_button.set_opacity(1)
+                self._action_button.get_style_context().add_class(
                                                        self._squared_class)
-            self._action_button.show()
+                self._action_button.show()
         else:
             self._play_button.set_opacity(0)
             self._play_button.hide()
@@ -169,9 +171,10 @@ class AlbumWidget:
                 self._artwork_button.set_opacity(0)
                 self._artwork_button.get_style_context().remove_class(
                                                            self._squared_class)
-            self._action_button.hide()
-            self._action_button.set_opacity(0)
-            self._action_button.get_style_context().remove_class(
+            if self._action_button is not None:
+                self._action_button.hide()
+                self._action_button.set_opacity(0)
+                self._action_button.get_style_context().remove_class(
                                                            self._squared_class)
 
 #######################
