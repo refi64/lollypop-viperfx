@@ -361,7 +361,9 @@ class MPRIS(Server):
 
     def _on_current_changed(self, player):
         self._update_metadata()
-        properties = {'Metadata': GLib.Variant('a{sv}', self._metadata)}
+        properties = {'Metadata': GLib.Variant('a{sv}', self._metadata),
+                      'CanPlay': GLib.Variant('b', True),
+                      'CanPause': GLib.Variant('b', True)}
         try:
             self.PropertiesChanged(self._MPRIS_PLAYER_IFACE, properties, [])
         except Exception as e:
