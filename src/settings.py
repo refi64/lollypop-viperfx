@@ -74,7 +74,7 @@ class SettingsDialog:
 
         builder = Gtk.Builder()
         builder.add_from_resource('/org/gnome/Lollypop/SettingsDialog.ui')
-        if not Lp().lastfm.is_goa:
+        if Lp().lastfm and not Lp().lastfm.is_goa:
             builder.get_object('lastfm_grid').show()
         self._popover_content = builder.get_object('popover')
         duration = builder.get_object('duration')
