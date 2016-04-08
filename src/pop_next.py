@@ -79,6 +79,13 @@ class NextPopover(Gtk.Popover):
         """
         self._inhibited = i
 
+    @property
+    def inhibited(self):
+        """
+            Inhibited as bool
+        """
+        return self._inhibited
+
 #######################
 # PRIVATE             #
 #######################

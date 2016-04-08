@@ -39,6 +39,7 @@ class ToolbarEnd(Gtk.Bin):
         self._next_popover = NextPopover()
         self._search = None
         self._timeout_id = None
+        self._next_was_inhibited = False
         builder = Gtk.Builder()
         builder.add_from_resource('/org/gnome/Lollypop/ToolbarEnd.ui')
         builder.connect_signals(self)
@@ -199,6 +200,7 @@ class ToolbarEnd(Gtk.Bin):
             Show search widget on search button clicked
             @param obj as Gtk.Button or Gtk.Action
         """
+        self._next_was_inhibited = self._next_popover.inhibited
         self._next_popover.hide()
         self._next_popover.inhibit(True)
         if self._search is None:
@@ -236,6 +238,7 @@ class ToolbarEnd(Gtk.Bin):
         """
         if self._list_popover is not None:
             return
+        self._next_was_inhibited = self._next_popover.inhibited
         self._next_popover.hide()
         self._next_popover.inhibit(True)
         if Lp().player.current_track.id == Type.EXTERNALS:
@@ -271,7 +274,8 @@ class ToolbarEnd(Gtk.Bin):
             Restore next popover if needed
             @param popover as Gtk.Popover
         """
-        self._next_popover.inhibit(False)
+        if not self._next_was_inhibited:
+            self._next_popover.inhibit(False)
         if self._next_popover.should_be_shown():
             self._next_popover.show()
 
