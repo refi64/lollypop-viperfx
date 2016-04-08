@@ -199,11 +199,12 @@ class ToolbarEnd(Gtk.Bin):
             Show search widget on search button clicked
             @param obj as Gtk.Button or Gtk.Action
         """
+        self._next_popover.hide()
+        self._next_popover.inhibit(True)
         if self._search is None:
             self._search = SearchPopover()
             self._search.connect('closed', self._on_popover_closed)
         self._search.set_relative_to(self._search_button)
-        self._next_popover.hide()
         self._search.show()
 
     def _on_party_button_toggled(self, button):
@@ -236,6 +237,7 @@ class ToolbarEnd(Gtk.Bin):
         if self._list_popover is not None:
             return
         self._next_popover.hide()
+        self._next_popover.inhibit(True)
         if Lp().player.current_track.id == Type.EXTERNALS:
             self._list_popover = ExternalsPopover()
             self._list_popover.set_relative_to(self._list_button)
@@ -269,6 +271,7 @@ class ToolbarEnd(Gtk.Bin):
             Restore next popover if needed
             @param popover as Gtk.Popover
         """
+        self._next_popover.inhibit(False)
         if self._next_popover.should_be_shown():
             self._next_popover.show()
 

@@ -25,7 +25,7 @@ class NextPopover(Gtk.Popover):
             Init popover
         """
         Gtk.Popover.__init__(self)
-        self._should_be_shown = True
+        self._inhibited = False
         self.set_position(Gtk.PositionType.BOTTOM)
         self.connect('map', self._on_map)
         self.connect('unmap', self._on_unmap)
@@ -66,11 +66,18 @@ class NextPopover(Gtk.Popover):
         """
             Return True if widget should be shown, not already closed by user
         """
-        return self._should_be_shown and (
+        return not self._inhibited and (
                 Lp().player.is_party() or
                 Lp().settings.get_enum('shuffle') == Shuffle.TRACKS) and\
             Lp().player.next_track.id is not None and\
             Lp().player.next_track.id >= 0
+
+    def inhibit(self, i):
+        """
+            Inhibit popover
+            @param i as bool
+        """
+        self._inhibited = i
 
 #######################
 # PRIVATE             #
@@ -80,7 +87,7 @@ class NextPopover(Gtk.Popover):
             Connect signal
             @param widget as Gtk.Widget
         """
-        self._should_be_shown = True
+        self._inhibited = False
         self._signal_id = Lp().player.connect('queue-changed', self.update)
 
     def _on_unmap(self, widget):
@@ -114,7 +121,7 @@ class NextPopover(Gtk.Popover):
             @param widget as Gtk.Widget
             @param event as Gdk.Event
         """
-        self._should_be_shown = False
+        self._inhibited = True
         self.hide()
 
     def _on_skip_btn_clicked(self, btn):
