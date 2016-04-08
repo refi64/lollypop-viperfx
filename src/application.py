@@ -55,11 +55,11 @@ from lollypop.collectionscanner import CollectionScanner
 from lollypop.fullscreen import FullScreen
 
 
-# Ubuntu 16.04 and more
-if Gtk.get_minor_version() > 16:
+# Ubuntu > 16.04
+if Gtk.get_minor_version() > 18:
     from lollypop.mpris import MPRIS
     from lollypop.inhibitor import Inhibitor
-# Ubuntu 14.04, Debian Jessie, ElementaryOS
+# Ubuntu <= 16.04, Debian Jessie, ElementaryOS
 else:
     from lollypop.mpris_legacy import MPRIS
     from lollypop.inhibitor_legacy import Inhibitor
