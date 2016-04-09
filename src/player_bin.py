@@ -414,7 +414,7 @@ class BinPlayer(BasePlayer):
                                                                    0)[1]
             if self._current_track.album_name is None:
                 self._current_track.album_name = ''
-            self._current_track.artists = reader.get_artists(tags)
+            self._current_track.artists = reader.get_artists(tags).split(',')
             self._current_track.set_album_artists(
                                       reader.get_album_artist(tags).split(','))
             if self._current_track.album_artist == '':
