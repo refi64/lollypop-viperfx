@@ -44,6 +44,7 @@ class FullScreen(Gtk.Window, InfosController,
         self._signal1_id = None
         self._signal2_id = None
         self.set_decorated(False)
+        self._parent = parent
 
         builder = Gtk.Builder()
         builder.add_from_resource('/org/gnome/Lollypop/FullScreen.ui')
@@ -98,6 +99,8 @@ class FullScreen(Gtk.Window, InfosController,
         if self._timeout1 is None:
             self._timeout1 = GLib.timeout_add(1000, self._update_position)
         Gtk.Window.do_show(self)
+        self._parent.set_skip_pager_hint(True)
+        self._parent.set_skip_taskbar_hint(True)
         now = datetime.now()
         self._datetime.set_label(now.strftime('%a %d %b, %X')[:-3])
         if self._timeout2 is None:
@@ -119,6 +122,8 @@ class FullScreen(Gtk.Window, InfosController,
             Remove signals and unset color
         """
         Gtk.Window.do_hide(self)
+        self._parent.set_skip_pager_hint(False)
+        self._parent.set_skip_taskbar_hint(False)
         if self._signal1_id is not None:
             Lp().player.disconnect(self._signal1_id)
             self._signal1_id = None
