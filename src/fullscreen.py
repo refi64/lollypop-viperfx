@@ -34,6 +34,7 @@ class FullScreen(Gtk.Window, InfosController,
             @param parent as Gtk.window
         """
         Gtk.Window.__init__(self)
+        self.set_title("Lollypop")
         PlaybackController.__init__(self)
         ProgressController.__init__(self)
         self.set_application(app)
