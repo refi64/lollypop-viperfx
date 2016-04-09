@@ -479,7 +479,12 @@ class SelectionList(Gtk.ScrolledWindow):
         if row_iter is None or self._model.get_value(row_iter, 0) < 0:
             return
 
-        text = self._model.get_value(row_iter, 1)
+        # We need to get artist sortname
+        if self._is_artists:
+            rowid = self._model.get_value(row_iter, 0)
+            text = Lp().artists.get_sortname(rowid)
+        else:
+            text = self._model.get_value(row_iter, 1)
         if text:
             self._popover.set_text("  %s  " % text[0].upper())
             self._popover.set_relative_to(self)
