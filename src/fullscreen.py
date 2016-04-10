@@ -154,7 +154,7 @@ class FullScreen(Gtk.Window, InfosController,
             self._album_label.set_text(album_name)
         # Do not show next popover non internal tracks as
         # tags will be readed on the fly
-        if player.next_track.id >= 0:
+        if player.next_track.id is not None and player.next_track.id >= 0:
             self._next_popover.update()
             self._next_popover.show()
         else:
