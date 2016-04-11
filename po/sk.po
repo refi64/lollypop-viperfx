@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lollypop\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-04-05 12:03+0200\n"
-"PO-Revision-Date: 2016-04-05 20:17+0000\n"
+"POT-Creation-Date: 2016-04-07 17:25+0200\n"
+"PO-Revision-Date: 2016-04-08 05:05+0000\n"
 "Last-Translator: Dušan Kazik <prescott66@gmail.com>\n"
 "Language-Team: Slovak (http://www.transifex.com/gnumdk/lollypop/language/sk/)\n"
 "MIME-Version: 1.0\n"
@@ -191,12 +191,12 @@ msgstr "Prehráva a organizuje vašu hudobnú zbierku"
 msgid "Play/Pause"
 msgstr "Prehrať/pozastaviť"
 
-#: ../data/lollypop.desktop.in.h:5 ../src/notification.py:72
+#: ../data/lollypop.desktop.in.h:5 ../src/notification.py:78
 #: ../data/ToolbarPlayback.ui.h:3
 msgid "Next"
 msgstr "Nasledujúca"
 
-#: ../data/lollypop.desktop.in.h:6 ../src/notification.py:68
+#: ../data/lollypop.desktop.in.h:6 ../src/notification.py:74
 #: ../data/ToolbarPlayback.ui.h:1
 msgid "Previous"
 msgstr "Predchádzajúca"
@@ -284,7 +284,7 @@ msgid ""
 "    - Artist informations disabled"
 msgstr "    - Scrobbler zakázaný\n    - Automatické prevzatie obalu zakázané\n    - Informácie o interpretoch zakázané"
 
-#: ../src/application.py:396
+#: ../src/application.py:402
 #, python-format
 msgid "%d artist"
 msgid_plural "%d artists"
@@ -292,7 +292,7 @@ msgstr[0] "%d interpret"
 msgstr[1] "%d interpreti"
 msgstr[2] "%d interpretov"
 
-#: ../src/application.py:398
+#: ../src/application.py:404
 #, python-format
 msgid "%d album"
 msgid_plural "%d albums"
@@ -300,7 +300,7 @@ msgstr[0] "%d album"
 msgstr[1] "%d albumy"
 msgstr[2] "%d albumov"
 
-#: ../src/application.py:400
+#: ../src/application.py:406
 #, python-format
 msgid "%d track"
 msgid_plural "%d tracks"
@@ -308,7 +308,7 @@ msgstr[0] "%d skladba"
 msgstr[1] "%d skladby"
 msgstr[2] "%d skladby"
 
-#: ../src/application.py:415
+#: ../src/application.py:421
 msgid "Lollypop: You need to install yelp."
 msgstr "Lollypop: Musíte nainštalovať knižnicu yelp."
 
@@ -370,7 +370,7 @@ msgid "Pause"
 msgstr "Pozastaví"
 
 #: ../src/controllers.py:86 ../src/controllers.py:114 ../src/pop_tunein.py:154
-#: ../src/widgets_album.py:456 ../src/widgets_radio.py:69
+#: ../src/widgets_album.py:458 ../src/widgets_radio.py:162
 #: ../data/AlbumDetailedWidget.ui.h:1 ../data/ToolbarPlayback.ui.h:2
 msgid "Play"
 msgstr "Prehrá"
@@ -387,23 +387,23 @@ msgstr "Neznáme"
 msgid "Many artists"
 msgstr "Mnoho interpretov"
 
-#: ../src/lastfm.py:23
+#: ../src/lastfm.py:24
 msgid "Last.fm authentication disabled"
 msgstr "Overenie totožnosti služby Last.fm zakázané"
 
-#: ../src/lastfm.py:289
+#: ../src/lastfm.py:330
 msgid "Wrong Last.fm credentials"
 msgstr "Nesprávne poverenia pre službu Last.fm"
 
 #. TRANSLATORS: by refers to the artist,
-#: ../src/notification.py:101
+#: ../src/notification.py:108
 #, python-format
 msgid "by %s"
 msgstr "od interpreta %s"
 
 #. TRANSLATORS: by refers to the artist,
 #. from to the album
-#: ../src/notification.py:109
+#: ../src/notification.py:116
 #, python-format
 msgid "by %s, from %s"
 msgstr "od interpreta %s, z albumu %s"
@@ -421,7 +421,7 @@ msgstr "Obľúbené skladby"
 msgid "Clear albums"
 msgstr "Vymaže albumy"
 
-#: ../src/pop_albums.py:296 ../src/pop_info.py:212 ../src/view_artist.py:44
+#: ../src/pop_albums.py:296 ../src/pop_info.py:208 ../src/view_artist.py:44
 msgid "Go to current track"
 msgstr "Prejde na aktuálnu skladbu"
 
@@ -441,11 +441,11 @@ msgstr "Nenašiel sa žiadny obal..."
 msgid "Select a cover art for this album"
 msgstr "Vyberte obrázok pre tento album"
 
-#: ../src/pop_info.py:36
+#: ../src/pop_info.py:35
 msgid "Advanced artist informations disabled"
 msgstr "Pokročilé informácie o interpretovi zakázané"
 
-#: ../src/pop_info.py:44
+#: ../src/pop_info.py:43
 msgid "WebKit support disabled"
 msgstr "Podpora nástroja WebKit zakázaná"
 
@@ -524,15 +524,15 @@ msgstr "Nedá sa pripojiť k službe TuneIn..."
 msgid "Browse themes and add a new radio"
 msgstr "Vyhľadajte témy a pridajte nové rádio"
 
-#: ../src/settings.py:86 ../src/settings.py:89 ../data/SettingsDialog.ui.h:3
+#: ../src/settings.py:88 ../src/settings.py:91 ../data/SettingsDialog.ui.h:3
 msgid "Preferences"
 msgstr "Nastavenia"
 
-#: ../src/settings.py:161
+#: ../src/settings.py:163
 msgid "Populars"
 msgstr "Obľúbené"
 
-#: ../src/settings.py:162
+#: ../src/settings.py:164
 msgid "Recently added"
 msgstr "Nedávno pridané"
 
@@ -559,20 +559,19 @@ msgstr "Synchronizovať %s"
 msgid "Cancel synchronization"
 msgstr "Zrušiť synchronizáciu"
 
-#: ../src/widgets_album.py:200
+#: ../src/widgets_album.py:203
 msgid "Append"
 msgstr "Pridá"
 
-#: ../src/widgets_album.py:204
+#: ../src/widgets_album.py:207
 msgid "Remove"
 msgstr "Odstráni"
 
-#: ../src/widgets_album.py:467 ../data/AlbumDetailedWidget.ui.h:3
+#: ../src/widgets_album.py:469 ../data/AlbumDetailedWidget.ui.h:3
 msgid "Play albums"
 msgstr "Prehrá albumy"
 
-#: ../src/widgets_album.py:477 ../src/widgets_radio.py:85
-#: ../data/AlbumDetailedWidget.ui.h:2
+#: ../src/widgets_album.py:479 ../data/AlbumDetailedWidget.ui.h:2
 msgid "Change artwork"
 msgstr "Zmení obrázok"
 
@@ -621,6 +620,10 @@ msgstr "Odstrániť „%s“?"
 #: ../src/widgets_playlist.py:795
 msgid "Remove these tracks?"
 msgstr "Odstrániť tieto skladby?"
+
+#: ../src/widgets_radio.py:178
+msgid "Modify radio"
+msgstr "Upraví rádio"
 
 #. Translators: Put here words added by wikipedia in band search
 #. Ex: Muse_(band), Peaches(musician)
@@ -686,6 +689,12 @@ msgstr "Wikipedia"
 #: ../data/ArtistInfo.ui.h:4
 msgid "Lyrics"
 msgstr "Text skladby"
+
+#: ../data/ArtistInfo.ui.h:6
+msgid ""
+"Reload information\n"
+"Long press to activate auto reload"
+msgstr "Znovu načíta informácie\nDlhým stlačením sa aktivuje automatické znovu načítanie"
 
 #: ../data/CoversPopover.ui.h:1
 msgid "Select a local file"
@@ -850,6 +859,14 @@ msgstr "Nastavenia"
 #: ../data/ToolbarEnd.ui.h:6
 msgid "Shuffle"
 msgstr "Zamieša"
+
+#: ../data/TuneinPopover.ui.h:1
+msgid "Go back"
+msgstr "Prejde späť"
+
+#: ../data/TuneinPopover.ui.h:2
+msgid "Go home"
+msgstr "Prejde domov"
 
 #: ../data/Unicode.ui.h:1
 msgid "Error"

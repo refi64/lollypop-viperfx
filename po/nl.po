@@ -11,9 +11,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lollypop\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-04-05 12:03+0200\n"
-"PO-Revision-Date: 2016-04-05 10:05+0000\n"
-"Last-Translator: Cédric Bellegarde <web@adishatz.org>\n"
+"POT-Creation-Date: 2016-04-07 17:25+0200\n"
+"PO-Revision-Date: 2016-04-07 15:54+0000\n"
+"Last-Translator: Nathan Follens\n"
 "Language-Team: Dutch (http://www.transifex.com/gnumdk/lollypop/language/nl/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -194,12 +194,12 @@ msgstr "Je muziekverzameling beluisteren en beheren"
 msgid "Play/Pause"
 msgstr "Afspelen/pauzeren"
 
-#: ../data/lollypop.desktop.in.h:5 ../src/notification.py:72
+#: ../data/lollypop.desktop.in.h:5 ../src/notification.py:78
 #: ../data/ToolbarPlayback.ui.h:3
 msgid "Next"
 msgstr "Volgende"
 
-#: ../data/lollypop.desktop.in.h:6 ../src/notification.py:68
+#: ../data/lollypop.desktop.in.h:6 ../src/notification.py:74
 #: ../data/ToolbarPlayback.ui.h:1
 msgid "Previous"
 msgstr "Vorige"
@@ -287,28 +287,28 @@ msgid ""
 "    - Artist informations disabled"
 msgstr "    - Scrobbler uitgeschakeld\n    - Automatisch downloaden van albumhoezen uitgeschakeld\n    - Artiestinformatie uitgeschakeld"
 
-#: ../src/application.py:396
+#: ../src/application.py:402
 #, python-format
 msgid "%d artist"
 msgid_plural "%d artists"
 msgstr[0] "%d artiest"
 msgstr[1] "%d artiesten"
 
-#: ../src/application.py:398
+#: ../src/application.py:404
 #, python-format
 msgid "%d album"
 msgid_plural "%d albums"
 msgstr[0] "%d album"
 msgstr[1] "%d albums"
 
-#: ../src/application.py:400
+#: ../src/application.py:406
 #, python-format
 msgid "%d track"
 msgid_plural "%d tracks"
 msgstr[0] "%d nummer"
 msgstr[1] "%d nummers"
 
-#: ../src/application.py:415
+#: ../src/application.py:421
 msgid "Lollypop: You need to install yelp."
 msgstr "Lollypop: je moet yelp installeren."
 
@@ -370,7 +370,7 @@ msgid "Pause"
 msgstr "Pauzeren"
 
 #: ../src/controllers.py:86 ../src/controllers.py:114 ../src/pop_tunein.py:154
-#: ../src/widgets_album.py:456 ../src/widgets_radio.py:69
+#: ../src/widgets_album.py:458 ../src/widgets_radio.py:162
 #: ../data/AlbumDetailedWidget.ui.h:1 ../data/ToolbarPlayback.ui.h:2
 msgid "Play"
 msgstr "Afspelen"
@@ -387,23 +387,23 @@ msgstr "Onbekend"
 msgid "Many artists"
 msgstr "Meerdere artiesten"
 
-#: ../src/lastfm.py:23
+#: ../src/lastfm.py:24
 msgid "Last.fm authentication disabled"
 msgstr "Last.fm-authenticatie uitgeschakeld"
 
-#: ../src/lastfm.py:289
+#: ../src/lastfm.py:330
 msgid "Wrong Last.fm credentials"
 msgstr "Verkeerde Last.fm-referenties"
 
 #. TRANSLATORS: by refers to the artist,
-#: ../src/notification.py:101
+#: ../src/notification.py:108
 #, python-format
 msgid "by %s"
 msgstr "door %s"
 
 #. TRANSLATORS: by refers to the artist,
 #. from to the album
-#: ../src/notification.py:109
+#: ../src/notification.py:116
 #, python-format
 msgid "by %s, from %s"
 msgstr "door %s, van %s"
@@ -421,7 +421,7 @@ msgstr "Lievelingsnummers"
 msgid "Clear albums"
 msgstr "Albums wissen"
 
-#: ../src/pop_albums.py:296 ../src/pop_info.py:212 ../src/view_artist.py:44
+#: ../src/pop_albums.py:296 ../src/pop_info.py:208 ../src/view_artist.py:44
 msgid "Go to current track"
 msgstr "Ga naar huidig nummer"
 
@@ -441,11 +441,11 @@ msgstr "Geen hoes gevonden..."
 msgid "Select a cover art for this album"
 msgstr "Kies een albumhoes voor dit album"
 
-#: ../src/pop_info.py:36
+#: ../src/pop_info.py:35
 msgid "Advanced artist informations disabled"
 msgstr "Uitgebreide artiestinformatie uitgeschakeld"
 
-#: ../src/pop_info.py:44
+#: ../src/pop_info.py:43
 msgid "WebKit support disabled"
 msgstr "WebKit-ondersteuning uitgeschakeld"
 
@@ -524,15 +524,15 @@ msgstr "Kan geen verbinding maken met TuneIn..."
 msgid "Browse themes and add a new radio"
 msgstr "Blader door thema's en voeg een nieuwe radio toe"
 
-#: ../src/settings.py:86 ../src/settings.py:89 ../data/SettingsDialog.ui.h:3
+#: ../src/settings.py:88 ../src/settings.py:91 ../data/SettingsDialog.ui.h:3
 msgid "Preferences"
 msgstr "Voorkeuren"
 
-#: ../src/settings.py:161
+#: ../src/settings.py:163
 msgid "Populars"
 msgstr "Populair"
 
-#: ../src/settings.py:162
+#: ../src/settings.py:164
 msgid "Recently added"
 msgstr "Recent toegevoegd"
 
@@ -559,20 +559,19 @@ msgstr "%s synchroniseren"
 msgid "Cancel synchronization"
 msgstr "Synchronisatie annuleren"
 
-#: ../src/widgets_album.py:200
+#: ../src/widgets_album.py:203
 msgid "Append"
 msgstr "Toevoegen"
 
-#: ../src/widgets_album.py:204
+#: ../src/widgets_album.py:207
 msgid "Remove"
 msgstr "Verwijderen"
 
-#: ../src/widgets_album.py:467 ../data/AlbumDetailedWidget.ui.h:3
+#: ../src/widgets_album.py:469 ../data/AlbumDetailedWidget.ui.h:3
 msgid "Play albums"
 msgstr "Albums afspelen"
 
-#: ../src/widgets_album.py:477 ../src/widgets_radio.py:85
-#: ../data/AlbumDetailedWidget.ui.h:2
+#: ../src/widgets_album.py:479 ../data/AlbumDetailedWidget.ui.h:2
 msgid "Change artwork"
 msgstr "Albumhoes wijzigen"
 
@@ -621,6 +620,10 @@ msgstr "\"%s\" verwijderen?"
 #: ../src/widgets_playlist.py:795
 msgid "Remove these tracks?"
 msgstr "Deze nummers verwijderen?"
+
+#: ../src/widgets_radio.py:178
+msgid "Modify radio"
+msgstr "Radio bewerken"
 
 #. Translators: Put here words added by wikipedia in band search
 #. Ex: Muse_(band), Peaches(musician)
@@ -685,7 +688,13 @@ msgstr "Wikipedia"
 
 #: ../data/ArtistInfo.ui.h:4
 msgid "Lyrics"
-msgstr ""
+msgstr "Songtekst"
+
+#: ../data/ArtistInfo.ui.h:6
+msgid ""
+"Reload information\n"
+"Long press to activate auto reload"
+msgstr "Gegevens herladen\nHou lang ingedrukt om automatisch herladen te activeren"
 
 #: ../data/CoversPopover.ui.h:1
 msgid "Select a local file"
@@ -850,6 +859,14 @@ msgstr "Instellingen"
 #: ../data/ToolbarEnd.ui.h:6
 msgid "Shuffle"
 msgstr "Willekeurige volgorde"
+
+#: ../data/TuneinPopover.ui.h:1
+msgid "Go back"
+msgstr "Terug"
+
+#: ../data/TuneinPopover.ui.h:2
+msgid "Go home"
+msgstr "Terug naar beginscherm"
 
 #: ../data/Unicode.ui.h:1
 msgid "Error"

@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lollypop\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-04-05 12:03+0200\n"
-"PO-Revision-Date: 2016-04-05 10:47+0000\n"
+"POT-Creation-Date: 2016-04-07 17:25+0200\n"
+"PO-Revision-Date: 2016-04-07 16:41+0000\n"
 "Last-Translator: Jiri Grönroos <jiri.gronroos@iki.fi>\n"
 "Language-Team: Finnish (http://www.transifex.com/gnumdk/lollypop/language/fi/)\n"
 "MIME-Version: 1.0\n"
@@ -191,12 +191,12 @@ msgstr "Kuuntele ja hallitse musiikkikokoelmaasi"
 msgid "Play/Pause"
 msgstr "Toista/keskeytä"
 
-#: ../data/lollypop.desktop.in.h:5 ../src/notification.py:72
+#: ../data/lollypop.desktop.in.h:5 ../src/notification.py:78
 #: ../data/ToolbarPlayback.ui.h:3
 msgid "Next"
 msgstr "Seuraava"
 
-#: ../data/lollypop.desktop.in.h:6 ../src/notification.py:68
+#: ../data/lollypop.desktop.in.h:6 ../src/notification.py:74
 #: ../data/ToolbarPlayback.ui.h:1
 msgid "Previous"
 msgstr "Edellinen"
@@ -284,28 +284,28 @@ msgid ""
 "    - Artist informations disabled"
 msgstr "    - Kuuntelujen lähetystiedot pois käytöstä\n    - Kansikuvien automaattinen lataus pois käytöstä\n    - Esittäjien tiedot pois käytöstä"
 
-#: ../src/application.py:396
+#: ../src/application.py:402
 #, python-format
 msgid "%d artist"
 msgid_plural "%d artists"
 msgstr[0] "%d esittäjä"
 msgstr[1] "%d esittäjää"
 
-#: ../src/application.py:398
+#: ../src/application.py:404
 #, python-format
 msgid "%d album"
 msgid_plural "%d albums"
 msgstr[0] "%d albumi"
 msgstr[1] "%d albumia"
 
-#: ../src/application.py:400
+#: ../src/application.py:406
 #, python-format
 msgid "%d track"
 msgid_plural "%d tracks"
 msgstr[0] "%d kappale"
 msgstr[1] "%d kappaletta"
 
-#: ../src/application.py:415
+#: ../src/application.py:421
 msgid "Lollypop: You need to install yelp."
 msgstr "Lollypop: Ohje vaatii yelp-ohjelman asennuksen."
 
@@ -367,7 +367,7 @@ msgid "Pause"
 msgstr "Keskeytä"
 
 #: ../src/controllers.py:86 ../src/controllers.py:114 ../src/pop_tunein.py:154
-#: ../src/widgets_album.py:456 ../src/widgets_radio.py:69
+#: ../src/widgets_album.py:458 ../src/widgets_radio.py:162
 #: ../data/AlbumDetailedWidget.ui.h:1 ../data/ToolbarPlayback.ui.h:2
 msgid "Play"
 msgstr "Toista"
@@ -384,23 +384,23 @@ msgstr "Tuntematon"
 msgid "Many artists"
 msgstr "Useita esittäjiä"
 
-#: ../src/lastfm.py:23
+#: ../src/lastfm.py:24
 msgid "Last.fm authentication disabled"
 msgstr "Last.fm-tunnistautuminen pois käytöstä"
 
-#: ../src/lastfm.py:289
+#: ../src/lastfm.py:330
 msgid "Wrong Last.fm credentials"
 msgstr "Last.fm-kirjautumistiedot olivat väärin"
 
 #. TRANSLATORS: by refers to the artist,
-#: ../src/notification.py:101
+#: ../src/notification.py:108
 #, python-format
 msgid "by %s"
 msgstr "esittäjä %s"
 
 #. TRANSLATORS: by refers to the artist,
 #. from to the album
-#: ../src/notification.py:109
+#: ../src/notification.py:116
 #, python-format
 msgid "by %s, from %s"
 msgstr "esittäjän %s albumilta %s"
@@ -418,7 +418,7 @@ msgstr "Tykätyt kappaleet"
 msgid "Clear albums"
 msgstr "Tyhjennä albumit"
 
-#: ../src/pop_albums.py:296 ../src/pop_info.py:212 ../src/view_artist.py:44
+#: ../src/pop_albums.py:296 ../src/pop_info.py:208 ../src/view_artist.py:44
 msgid "Go to current track"
 msgstr "Siirry parhaillaan soivaan kappaleeseen"
 
@@ -438,11 +438,11 @@ msgstr "Kansikuvaa ei löytynyt..."
 msgid "Select a cover art for this album"
 msgstr "Valitse kansikuva tälle albumille"
 
-#: ../src/pop_info.py:36
+#: ../src/pop_info.py:35
 msgid "Advanced artist informations disabled"
 msgstr "Esittäjien lisätiedot pois käytöstä"
 
-#: ../src/pop_info.py:44
+#: ../src/pop_info.py:43
 msgid "WebKit support disabled"
 msgstr "WebKit-tuki poistettu käytöstä"
 
@@ -521,15 +521,15 @@ msgstr "Yhteys TuneIniin ei onnistu..."
 msgid "Browse themes and add a new radio"
 msgstr "Selaa teemoja ja lisää uusi radiokanava"
 
-#: ../src/settings.py:86 ../src/settings.py:89 ../data/SettingsDialog.ui.h:3
+#: ../src/settings.py:88 ../src/settings.py:91 ../data/SettingsDialog.ui.h:3
 msgid "Preferences"
 msgstr "Asetukset"
 
-#: ../src/settings.py:161
+#: ../src/settings.py:163
 msgid "Populars"
 msgstr "Suositut"
 
-#: ../src/settings.py:162
+#: ../src/settings.py:164
 msgid "Recently added"
 msgstr "Viimeksi lisätty"
 
@@ -556,20 +556,19 @@ msgstr "Synkronoi %s"
 msgid "Cancel synchronization"
 msgstr "Peru synkronointi"
 
-#: ../src/widgets_album.py:200
+#: ../src/widgets_album.py:203
 msgid "Append"
 msgstr "Lisää"
 
-#: ../src/widgets_album.py:204
+#: ../src/widgets_album.py:207
 msgid "Remove"
 msgstr "Poista"
 
-#: ../src/widgets_album.py:467 ../data/AlbumDetailedWidget.ui.h:3
+#: ../src/widgets_album.py:469 ../data/AlbumDetailedWidget.ui.h:3
 msgid "Play albums"
 msgstr "Toista albumit"
 
-#: ../src/widgets_album.py:477 ../src/widgets_radio.py:85
-#: ../data/AlbumDetailedWidget.ui.h:2
+#: ../src/widgets_album.py:479 ../data/AlbumDetailedWidget.ui.h:2
 msgid "Change artwork"
 msgstr "Vaihda kuvitusta"
 
@@ -618,6 +617,10 @@ msgstr "Poistetaanko \"%s\"?"
 #: ../src/widgets_playlist.py:795
 msgid "Remove these tracks?"
 msgstr "Poistetaanko nämä kappaleet?"
+
+#: ../src/widgets_radio.py:178
+msgid "Modify radio"
+msgstr "Muokkaa radioa"
 
 #. Translators: Put here words added by wikipedia in band search
 #. Ex: Muse_(band), Peaches(musician)
@@ -683,6 +686,12 @@ msgstr "Wikipedia"
 #: ../data/ArtistInfo.ui.h:4
 msgid "Lyrics"
 msgstr "Sanoitukset"
+
+#: ../data/ArtistInfo.ui.h:6
+msgid ""
+"Reload information\n"
+"Long press to activate auto reload"
+msgstr "Päivitä tiedot\nPitkä painallus aktivoi automaattipäivityksen"
 
 #: ../data/CoversPopover.ui.h:1
 msgid "Select a local file"
@@ -847,6 +856,14 @@ msgstr "Asetukset"
 #: ../data/ToolbarEnd.ui.h:6
 msgid "Shuffle"
 msgstr "Sekoita"
+
+#: ../data/TuneinPopover.ui.h:1
+msgid "Go back"
+msgstr "Takaisin"
+
+#: ../data/TuneinPopover.ui.h:2
+msgid "Go home"
+msgstr "Kotiin"
 
 #: ../data/Unicode.ui.h:1
 msgid "Error"

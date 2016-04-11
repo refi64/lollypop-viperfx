@@ -9,8 +9,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lollypop\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-04-05 12:03+0200\n"
-"PO-Revision-Date: 2016-04-05 10:22+0000\n"
+"POT-Creation-Date: 2016-04-07 17:25+0200\n"
+"PO-Revision-Date: 2016-04-08 18:41+0000\n"
 "Last-Translator: Марко М. Костић (Marko M. Kostić) <marko.m.kostic@gmail.com>\n"
 "Language-Team: Serbian (Latin) (http://www.transifex.com/gnumdk/lollypop/language/sr@latin/)\n"
 "MIME-Version: 1.0\n"
@@ -192,12 +192,12 @@ msgstr "Puštajte i organizujte vašu muzičku biblioteku"
 msgid "Play/Pause"
 msgstr "Pusti/Zaustavi"
 
-#: ../data/lollypop.desktop.in.h:5 ../src/notification.py:72
+#: ../data/lollypop.desktop.in.h:5 ../src/notification.py:78
 #: ../data/ToolbarPlayback.ui.h:3
 msgid "Next"
 msgstr "Sledeća"
 
-#: ../data/lollypop.desktop.in.h:6 ../src/notification.py:68
+#: ../data/lollypop.desktop.in.h:6 ../src/notification.py:74
 #: ../data/ToolbarPlayback.ui.h:1
 msgid "Previous"
 msgstr "Prethodna"
@@ -285,7 +285,7 @@ msgid ""
 "    - Artist informations disabled"
 msgstr "- Scrobbler je isključen\n- Automatsko skidanje omota isključeno\n- Skidanje podataka o izvođačima isključeno"
 
-#: ../src/application.py:396
+#: ../src/application.py:402
 #, python-format
 msgid "%d artist"
 msgid_plural "%d artists"
@@ -293,7 +293,7 @@ msgstr[0] "%d izvođač"
 msgstr[1] "%d izvođača"
 msgstr[2] "%d izvođača"
 
-#: ../src/application.py:398
+#: ../src/application.py:404
 #, python-format
 msgid "%d album"
 msgid_plural "%d albums"
@@ -301,7 +301,7 @@ msgstr[0] "%d album"
 msgstr[1] "%d albuma"
 msgstr[2] "%d albuma"
 
-#: ../src/application.py:400
+#: ../src/application.py:406
 #, python-format
 msgid "%d track"
 msgid_plural "%d tracks"
@@ -309,7 +309,7 @@ msgstr[0] "%d numera"
 msgstr[1] "%d numere"
 msgstr[2] "%d numera"
 
-#: ../src/application.py:415
+#: ../src/application.py:421
 msgid "Lollypop: You need to install yelp."
 msgstr "Lolipop: potrebno je da instalirate „Pomoć“ (yelp paket)."
 
@@ -371,7 +371,7 @@ msgid "Pause"
 msgstr "Pauziraj"
 
 #: ../src/controllers.py:86 ../src/controllers.py:114 ../src/pop_tunein.py:154
-#: ../src/widgets_album.py:456 ../src/widgets_radio.py:69
+#: ../src/widgets_album.py:458 ../src/widgets_radio.py:162
 #: ../data/AlbumDetailedWidget.ui.h:1 ../data/ToolbarPlayback.ui.h:2
 msgid "Play"
 msgstr "Pusti"
@@ -388,23 +388,23 @@ msgstr "Nepoznato"
 msgid "Many artists"
 msgstr "Mnogi izvođači"
 
-#: ../src/lastfm.py:23
+#: ../src/lastfm.py:24
 msgid "Last.fm authentication disabled"
 msgstr "Prijava na Last.fm je onemogućena"
 
-#: ../src/lastfm.py:289
+#: ../src/lastfm.py:330
 msgid "Wrong Last.fm credentials"
 msgstr "Parametri za prijavu na Last.fm su netačni"
 
 #. TRANSLATORS: by refers to the artist,
-#: ../src/notification.py:101
+#: ../src/notification.py:108
 #, python-format
 msgid "by %s"
 msgstr "izvodi %s"
 
 #. TRANSLATORS: by refers to the artist,
 #. from to the album
-#: ../src/notification.py:109
+#: ../src/notification.py:116
 #, python-format
 msgid "by %s, from %s"
 msgstr "izvodi %s, sa albuma %s"
@@ -422,7 +422,7 @@ msgstr "Omiljene pesme"
 msgid "Clear albums"
 msgstr "Očisti albume"
 
-#: ../src/pop_albums.py:296 ../src/pop_info.py:212 ../src/view_artist.py:44
+#: ../src/pop_albums.py:296 ../src/pop_info.py:208 ../src/view_artist.py:44
 msgid "Go to current track"
 msgstr "Idi na trenutnu numeru"
 
@@ -442,11 +442,11 @@ msgstr "Nisam pronašao omot..."
 msgid "Select a cover art for this album"
 msgstr "Izaberi omot za ovaj album"
 
-#: ../src/pop_info.py:36
+#: ../src/pop_info.py:35
 msgid "Advanced artist informations disabled"
 msgstr "Napredan prikaz podataka o izvođaču je isključen"
 
-#: ../src/pop_info.py:44
+#: ../src/pop_info.py:43
 msgid "WebKit support disabled"
 msgstr "Vebkit podrška onemogućena"
 
@@ -525,15 +525,15 @@ msgstr "Ne mogu da se povežem na TuneIn uslugu..."
 msgid "Browse themes and add a new radio"
 msgstr "Pregledaj teme i dodaj novi radio"
 
-#: ../src/settings.py:86 ../src/settings.py:89 ../data/SettingsDialog.ui.h:3
+#: ../src/settings.py:88 ../src/settings.py:91 ../data/SettingsDialog.ui.h:3
 msgid "Preferences"
 msgstr "Postavke"
 
-#: ../src/settings.py:161
+#: ../src/settings.py:163
 msgid "Populars"
 msgstr "Popularno"
 
-#: ../src/settings.py:162
+#: ../src/settings.py:164
 msgid "Recently added"
 msgstr "Skoro dodato"
 
@@ -560,20 +560,19 @@ msgstr "Uskladi %s"
 msgid "Cancel synchronization"
 msgstr "Otkaži usklađivanje"
 
-#: ../src/widgets_album.py:200
+#: ../src/widgets_album.py:203
 msgid "Append"
 msgstr "Dodaj"
 
-#: ../src/widgets_album.py:204
+#: ../src/widgets_album.py:207
 msgid "Remove"
 msgstr "Ukloni"
 
-#: ../src/widgets_album.py:467 ../data/AlbumDetailedWidget.ui.h:3
+#: ../src/widgets_album.py:469 ../data/AlbumDetailedWidget.ui.h:3
 msgid "Play albums"
 msgstr "Pusti albume"
 
-#: ../src/widgets_album.py:477 ../src/widgets_radio.py:85
-#: ../data/AlbumDetailedWidget.ui.h:2
+#: ../src/widgets_album.py:479 ../data/AlbumDetailedWidget.ui.h:2
 msgid "Change artwork"
 msgstr "Promeni omot"
 
@@ -622,6 +621,10 @@ msgstr "Ukloniti \"%s\"?"
 #: ../src/widgets_playlist.py:795
 msgid "Remove these tracks?"
 msgstr "Ukloniti ove pesme?"
+
+#: ../src/widgets_radio.py:178
+msgid "Modify radio"
+msgstr "Izmeni stanicu"
 
 #. Translators: Put here words added by wikipedia in band search
 #. Ex: Muse_(band), Peaches(musician)
@@ -687,6 +690,12 @@ msgstr "Vikipedija"
 #: ../data/ArtistInfo.ui.h:4
 msgid "Lyrics"
 msgstr "Tekst pesme"
+
+#: ../data/ArtistInfo.ui.h:6
+msgid ""
+"Reload information\n"
+"Long press to activate auto reload"
+msgstr "Ponovo učitaj podatke\nDuže pritisnite da biste pokrenuli automatsko ponovno učitavanje"
 
 #: ../data/CoversPopover.ui.h:1
 msgid "Select a local file"
@@ -851,6 +860,14 @@ msgstr "Podešavanja"
 #: ../data/ToolbarEnd.ui.h:6
 msgid "Shuffle"
 msgstr "Mešanje pesama"
+
+#: ../data/TuneinPopover.ui.h:1
+msgid "Go back"
+msgstr "Idi nazad"
+
+#: ../data/TuneinPopover.ui.h:2
+msgid "Go home"
+msgstr "Idi na početnu"
 
 #: ../data/Unicode.ui.h:1
 msgid "Error"

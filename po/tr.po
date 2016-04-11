@@ -12,8 +12,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lollypop\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-04-05 12:03+0200\n"
-"PO-Revision-Date: 2016-04-05 10:05+0000\n"
+"POT-Creation-Date: 2016-04-07 17:25+0200\n"
+"PO-Revision-Date: 2016-04-07 15:26+0000\n"
 "Last-Translator: Cédric Bellegarde <web@adishatz.org>\n"
 "Language-Team: Turkish (http://www.transifex.com/gnumdk/lollypop/language/tr/)\n"
 "MIME-Version: 1.0\n"
@@ -195,12 +195,12 @@ msgstr "Müzik koleksiyonunu çal ve düzenle"
 msgid "Play/Pause"
 msgstr "Oynat/Duraklat"
 
-#: ../data/lollypop.desktop.in.h:5 ../src/notification.py:72
+#: ../data/lollypop.desktop.in.h:5 ../src/notification.py:78
 #: ../data/ToolbarPlayback.ui.h:3
 msgid "Next"
 msgstr "Sonraki"
 
-#: ../data/lollypop.desktop.in.h:6 ../src/notification.py:68
+#: ../data/lollypop.desktop.in.h:6 ../src/notification.py:74
 #: ../data/ToolbarPlayback.ui.h:1
 msgid "Previous"
 msgstr "Önceki"
@@ -288,28 +288,28 @@ msgid ""
 "    - Artist informations disabled"
 msgstr " - Skroplamayı etkinsizleştir\n- Otomatik kapak indirmeyi etkinsizleştir\n- Şarkıcı bilgilerini etkinsizleştir"
 
-#: ../src/application.py:396
+#: ../src/application.py:402
 #, python-format
 msgid "%d artist"
 msgid_plural "%d artists"
 msgstr[0] "%d sanatçı"
 msgstr[1] "%d sanatçı"
 
-#: ../src/application.py:398
+#: ../src/application.py:404
 #, python-format
 msgid "%d album"
 msgid_plural "%d albums"
 msgstr[0] "%d albüm"
 msgstr[1] "%d albüm"
 
-#: ../src/application.py:400
+#: ../src/application.py:406
 #, python-format
 msgid "%d track"
 msgid_plural "%d tracks"
 msgstr[0] "%d parça"
 msgstr[1] "%d parça"
 
-#: ../src/application.py:415
+#: ../src/application.py:421
 msgid "Lollypop: You need to install yelp."
 msgstr "Lollypop: Yelp'i indirmeniz gerekmektedir."
 
@@ -371,7 +371,7 @@ msgid "Pause"
 msgstr "Duraklat"
 
 #: ../src/controllers.py:86 ../src/controllers.py:114 ../src/pop_tunein.py:154
-#: ../src/widgets_album.py:456 ../src/widgets_radio.py:69
+#: ../src/widgets_album.py:458 ../src/widgets_radio.py:162
 #: ../data/AlbumDetailedWidget.ui.h:1 ../data/ToolbarPlayback.ui.h:2
 msgid "Play"
 msgstr "Oynat"
@@ -388,23 +388,23 @@ msgstr "Bilinmeyen"
 msgid "Many artists"
 msgstr "Birçok şarkıcı"
 
-#: ../src/lastfm.py:23
+#: ../src/lastfm.py:24
 msgid "Last.fm authentication disabled"
 msgstr "Last.fm kimlik doğrulamayı etkinsizleştir"
 
-#: ../src/lastfm.py:289
+#: ../src/lastfm.py:330
 msgid "Wrong Last.fm credentials"
 msgstr "Yanlış Last.fm kimliği"
 
 #. TRANSLATORS: by refers to the artist,
-#: ../src/notification.py:101
+#: ../src/notification.py:108
 #, python-format
 msgid "by %s"
 msgstr "%s dan"
 
 #. TRANSLATORS: by refers to the artist,
 #. from to the album
-#: ../src/notification.py:109
+#: ../src/notification.py:116
 #, python-format
 msgid "by %s, from %s"
 msgstr "%s'a, %s'dan"
@@ -422,7 +422,7 @@ msgstr "Sevilen parçalar"
 msgid "Clear albums"
 msgstr ""
 
-#: ../src/pop_albums.py:296 ../src/pop_info.py:212 ../src/view_artist.py:44
+#: ../src/pop_albums.py:296 ../src/pop_info.py:208 ../src/view_artist.py:44
 msgid "Go to current track"
 msgstr ""
 
@@ -442,11 +442,11 @@ msgstr "Kapak resmi bulunamadı..."
 msgid "Select a cover art for this album"
 msgstr "Bu albüm için bir kapak resmi seçin"
 
-#: ../src/pop_info.py:36
+#: ../src/pop_info.py:35
 msgid "Advanced artist informations disabled"
 msgstr "Gelişmiş sanatçı bilgileri etkisizleştirildi"
 
-#: ../src/pop_info.py:44
+#: ../src/pop_info.py:43
 msgid "WebKit support disabled"
 msgstr "WebKit desteğini kapat"
 
@@ -525,15 +525,15 @@ msgstr "Tuneln'e bağlanamıyor..."
 msgid "Browse themes and add a new radio"
 msgstr "Temalara göz at ve yeni bir radyo ekle"
 
-#: ../src/settings.py:86 ../src/settings.py:89 ../data/SettingsDialog.ui.h:3
+#: ../src/settings.py:88 ../src/settings.py:91 ../data/SettingsDialog.ui.h:3
 msgid "Preferences"
 msgstr "Tercihler"
 
-#: ../src/settings.py:161
+#: ../src/settings.py:163
 msgid "Populars"
 msgstr "Popüler olanlar"
 
-#: ../src/settings.py:162
+#: ../src/settings.py:164
 msgid "Recently added"
 msgstr "Son eklenenler"
 
@@ -560,20 +560,19 @@ msgstr "%s eşitle"
 msgid "Cancel synchronization"
 msgstr "Eşitlemeyi iptal et"
 
-#: ../src/widgets_album.py:200
+#: ../src/widgets_album.py:203
 msgid "Append"
 msgstr "Ekle"
 
-#: ../src/widgets_album.py:204
+#: ../src/widgets_album.py:207
 msgid "Remove"
 msgstr "Sil"
 
-#: ../src/widgets_album.py:467 ../data/AlbumDetailedWidget.ui.h:3
+#: ../src/widgets_album.py:469 ../data/AlbumDetailedWidget.ui.h:3
 msgid "Play albums"
 msgstr "Albümleri oynat"
 
-#: ../src/widgets_album.py:477 ../src/widgets_radio.py:85
-#: ../data/AlbumDetailedWidget.ui.h:2
+#: ../src/widgets_album.py:479 ../data/AlbumDetailedWidget.ui.h:2
 msgid "Change artwork"
 msgstr ""
 
@@ -622,6 +621,10 @@ msgstr "\"%s\" kaldır?"
 #: ../src/widgets_playlist.py:795
 msgid "Remove these tracks?"
 msgstr "Bu parçaları kaldır?"
+
+#: ../src/widgets_radio.py:178
+msgid "Modify radio"
+msgstr ""
 
 #. Translators: Put here words added by wikipedia in band search
 #. Ex: Muse_(band), Peaches(musician)
@@ -686,6 +689,12 @@ msgstr "Wikipedia"
 
 #: ../data/ArtistInfo.ui.h:4
 msgid "Lyrics"
+msgstr ""
+
+#: ../data/ArtistInfo.ui.h:6
+msgid ""
+"Reload information\n"
+"Long press to activate auto reload"
 msgstr ""
 
 #: ../data/CoversPopover.ui.h:1
@@ -851,6 +860,14 @@ msgstr "Ayarlar"
 #: ../data/ToolbarEnd.ui.h:6
 msgid "Shuffle"
 msgstr "Karıştır"
+
+#: ../data/TuneinPopover.ui.h:1
+msgid "Go back"
+msgstr ""
+
+#: ../data/TuneinPopover.ui.h:2
+msgid "Go home"
+msgstr ""
 
 #: ../data/Unicode.ui.h:1
 msgid "Error"
