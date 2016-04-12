@@ -121,9 +121,9 @@ class FullScreen(Gtk.Window, InfosController,
         """
             Remove signals and unset color
         """
-        Gtk.Window.do_hide(self)
         self._parent.set_skip_pager_hint(False)
         self._parent.set_skip_taskbar_hint(False)
+        Gtk.Window.do_hide(self)
         if self._signal1_id is not None:
             Lp().player.disconnect(self._signal1_id)
             self._signal1_id = None
