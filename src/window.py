@@ -146,9 +146,6 @@ class Window(Gtk.ApplicationWindow, Container):
         """
         size = self.get_size()
         self._toolbar.set_content_width(size[0])
-        view = self._stack.get_visible_child()
-        if view and hasattr(view, 'show_context'):
-            view.show_context(size[0] > WindowSize.MEDIUM)
         if Lp().player.current_track.id is not None:
             self._show_miniplayer(size[0] < WindowSize.MEDIUM)
             self._show_subtoolbar(size[0] < WindowSize.MONSTER and
