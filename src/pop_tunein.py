@@ -297,7 +297,8 @@ class TuneinPopover(Gtk.Popover):
             # Only toolbar will get this one, so only create small in cache
             if Gio.NetworkMonitor.get_default().get_network_available():
                 t = Thread(target=Lp().art.copy_uri_to_cache,
-                           args=(item.LOGO, item.TEXT, ArtSize.SMALL))
+                           args=(item.LOGO, item.TEXT,
+                                 Lp().window.toolbar.artsize))
                 t.daemon = True
                 t.start()
             Lp().player.load_external(item.URL, item.TEXT)

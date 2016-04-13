@@ -284,3 +284,10 @@ class InfosController:
             self._cover.hide()
         if self._infobox is not None:
             self._infobox.show()
+
+    @property
+    def artsize(self):
+        """
+            Art size as int
+        """
+        return self._artsize

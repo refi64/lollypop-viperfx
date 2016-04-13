@@ -83,7 +83,6 @@ class ToolbarInfo(Gtk.Bin, InfosController):
         self._width = width
         self.set_property('width-request', width)
 
-
 #######################
 # PRIVATE             #
 #######################

@@ -128,6 +128,13 @@ class Toolbar(Gtk.HeaderBar):
         except Exception as e:
             print("Toolbar::restore_state():", e)
 
+    @property
+    def artsize(self):
+        """
+            Art size as int
+        """
+        return self._toolbar_info.artsize
+
 #######################
 # PRIVATE             #
 #######################
