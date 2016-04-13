@@ -137,7 +137,6 @@ class RadiosView(LazyLoadingView):
         radios_name = []
         currents = []
         new_name = None
-        old_widget = None
         old_child = None
 
         # Get radios name
@@ -146,12 +145,10 @@ class RadiosView(LazyLoadingView):
 
         # Get currents widget less removed
         for child in self._radiobox.get_children():
-            widget = child.get_child()
-            if widget.get_name() not in radios_name:
-                old_widget = widget
+            if child.get_name() not in radios_name:
                 old_child = child
             else:
-                currents.append(widget.get_name())
+                currents.append(child.get_name())
 
         # Add the new radio
         for name in radios_name:
@@ -161,23 +158,21 @@ class RadiosView(LazyLoadingView):
 
         # Rename widget
         if new_name is not None:
-            if old_widget is not None:
-                old_widget.set_name(new_name)
+            if old_child is not None:
+                old_child.set_name(new_name)
             else:
                 radios = [new_name]
                 self._show_stack(radios)
         # Delete widget
-        elif old_widget is not None:
-            self._radiobox.remove(old_child)
-            old_widget.destroy()
+        elif old_child is not None:
+            old_child.destroy()
             if not self._radiobox.get_children():
                 self._show_stack([])
 
         # Update player state based on current view
         radios = []
         for child in self._radiobox.get_children():
-            widget = child.get_child()
-            name = widget.get_name()
+            name = child.get_name()
             url = manager.get_url(name)
             radios.append((name, url))
         Lp().player.set_radios(radios)
@@ -192,9 +187,8 @@ class RadiosView(LazyLoadingView):
             @param name as string
         """
         for child in self._radiobox.get_children():
-            widget = child.get_child()
-            if widget.get_name() == name:
-                widget.update_cover()
+            if child.get_name() == name:
+                child.update_cover()
 
     def _show_stack(self, radios):
         """
