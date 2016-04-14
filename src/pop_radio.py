@@ -256,3 +256,25 @@ class RadioPopover(Gtk.Popover):
             self._btn_add_modify.set_sensitive(True)
         else:
             self._btn_add_modify.set_sensitive(False)
+
+    def _on_button_clicked(self, button):
+        """
+            Show file chooser
+            @param button as Gtk.button
+        """
+        dialog = Gtk.FileChooserDialog()
+        dialog.add_buttons(Gtk.STOCK_CANCEL, Gtk.ResponseType.CANCEL)
+        dialog.add_buttons(Gtk.STOCK_OPEN, Gtk.ResponseType.OK)
+        dialog.set_transient_for(Lp().window)
+        self.hide()
+        response = dialog.run()
+        if response == Gtk.ResponseType.OK:
+            try:
+                pixbuf = GdkPixbuf.Pixbuf.new_from_file(dialog.get_filename())
+                Lp().art.save_radio_artwork(pixbuf, self._name)
+                Lp().art.clean_radio_cache(self._name)
+                Lp().art.radio_artwork_update(self._name)
+                self._streams = {}
+            except Exception as e:
+                print("CoversPopover::_on_button_clicked():", e)
+        dialog.destroy()
