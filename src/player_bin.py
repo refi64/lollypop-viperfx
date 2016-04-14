@@ -494,7 +494,7 @@ class BinPlayer(BasePlayer):
         self.emit('current-changed')
         # Update now playing on lastfm
         if Lp().lastfm is not None and self._current_track.id >= 0:
-            artists = ", ".join(self._current_track.album.artists)
+            artists = ", ".join(self._current_track.artists)
             Lp().lastfm.now_playing(artists,
                                     self._current_track.album_name,
                                     self._current_track.title,
