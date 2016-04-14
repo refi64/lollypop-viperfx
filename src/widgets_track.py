@@ -47,11 +47,8 @@ class Row(Gtk.ListBoxRow):
         self._grid = Gtk.Grid()
         self._grid.set_column_spacing(5)
         self._row_widget.add(self._grid)
-        if self._track.album.artist_ids[0] == Type.COMPILATIONS:
-            self._title_label = Gtk.Label.new(self._track.formated_name())
-            self._title_label.set_use_markup(True)
-        else:
-            self._title_label = Gtk.Label.new(self._track.name)
+        self._title_label = Gtk.Label.new(self._track.formated_name())
+        self._title_label.set_use_markup(True)
         self._title_label.set_property('has-tooltip', True)
         self._title_label.connect('query-tooltip',
                                   self._on_title_query_tooltip)
@@ -233,10 +230,9 @@ class Row(Gtk.ListBoxRow):
         layout = self._title_label.get_layout()
         if layout.is_ellipsized():
             self._title_label.set_tooltip_markup(self._track.formated_name())
-        elif not self._title_label.get_use_markup() and\
-                set(self._track.artist_ids) -\
-                set(self._track.album.artist_ids):
-            self._title_label.set_tooltip_text(", ".join(self._track.artists))
+        elif len(self._track.artists) > 1:
+            self._title_label.set_tooltip_text(
+                                           ", ".join(self._track.artists[1:]))
         else:
             self._title_label.set_tooltip_text('')
 

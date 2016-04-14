@@ -229,8 +229,15 @@ class Track(Base):
             @return str
         """
         name = escape(self.name)
-        if set(self.album.artist_ids) - set(self.artist_ids):
-            name = "<b>%s</b> - %s" % (escape(", ".join(self.artists)), name)
+        artists = []
+        # Show all artists for compilations
+        if self.album.artist_ids[0] == Type.COMPILATIONS:
+            artists = self.artists
+        # Show only non album artist for albums (and only if one)
+        elif len(self.artists) > 1:
+            artists = [self.artists[1]] + ["..."]
+        if artists:
+            name = "<b>%s</b> - %s" % (escape(", ".join(artists)), name)
         return name
 
     @property
