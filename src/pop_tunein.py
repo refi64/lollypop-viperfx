@@ -136,6 +136,7 @@ class TuneinPopover(Gtk.Popover):
             @param items as [TuneItem]
         """
         if not items:
+            self._home_btn.set_sensitive(self._current_url is not None)
             t = Thread(target=self._download_images)
             t.daemon = True
             t.start()
@@ -179,7 +180,6 @@ class TuneinPopover(Gtk.Popover):
             self._label.set_text(_("Browse themes and add a new radio"))
             if self._current_url is not None:
                 self._back_btn.set_sensitive(True)
-            self._home_btn.set_sensitive(True)
         GLib.idle_add(self._add_items, items)
 
     def _download_images(self):
