@@ -128,11 +128,17 @@ class ScannerTagReader(TagReader):
             @param tags as Gst.TagList
             @return artist sort names as string;string
         """
-        if tags is not None:
-            (exists, sortnames) = tags.get_string_index('artist-sortname', 0)
-        if not exists:
-            sortnames = ""
-        return sortnames
+        if tags is None:
+            return ""
+        sortnames = []
+        for i in range(tags.get_tag_size('album-artist-sortname')):
+            (exists, read) = tags.get_string_index('album-artist-sortname', i)
+            if exists:
+                sortnames.append(read)
+        if not sortnames:
+            for i in range(tags.get_tag_size('artist-sortname')):
+                (exists, read) = tags.get_string_index('artist-sortname', i)
+        return "; ".join(sortnames)
 
     def get_album_artist(self, tags):
         """
@@ -170,10 +176,12 @@ class ScannerTagReader(TagReader):
         """
         if tags is None:
             return _("Unknown")
-        (exists, genres) = tags.get_string_index('genre', 0)
-        if not exists:
-            genres = _("Unknown")
-        return genres
+        genres = []
+        for i in range(tags.get_tag_size('genre')):
+            (exists, read) = tags.get_string_index('genre', 0)
+            if exists:
+                genres.append(read)
+        return "; ".join(genres)
 
     def get_discnumber(self, tags):
         """
