@@ -228,13 +228,12 @@ class Row(Gtk.ListBoxRow):
             @param tooltip as Gtk.Tooltip
         """
         layout = self._title_label.get_layout()
+        text = ''
+        if len(self._track.artists) > 1:
+            text = "<b>" + escape(", ".join(self._track.artists)) + "</b>"
         if layout.is_ellipsized():
-            self._title_label.set_tooltip_markup(self._track.formated_name())
-        elif len(self._track.artists) > 1:
-            self._title_label.set_tooltip_text(
-                                           ", ".join(self._track.artists[1:]))
-        else:
-            self._title_label.set_tooltip_text('')
+            text += " - " + self._track.name
+        self._title_label.set_tooltip_markup(text)
 
 
 class PlaylistRow(Row):
