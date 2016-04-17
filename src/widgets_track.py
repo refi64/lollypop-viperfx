@@ -232,7 +232,9 @@ class Row(Gtk.ListBoxRow):
         if len(self._track.artists) > 1:
             text = "<b>" + escape(", ".join(self._track.artists)) + "</b>"
         if layout.is_ellipsized():
-            text += " - " + self._track.name
+            if text:
+                text += " - "
+            text += self._track.name
         self._title_label.set_tooltip_markup(text)
 
 
