@@ -34,7 +34,6 @@ class MiniPlayer(Gtk.Bin, InfosController):
         self._grid = builder.get_object('grid')
         self._title_label = builder.get_object('title')
         self._artist_label = builder.get_object('artist')
-        self._cover_frame = builder.get_object('frame')
         self._cover = builder.get_object('cover')
         self._signal_id = Lp().player.connect('current-changed',
                                               self.on_current_changed)
