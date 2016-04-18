@@ -224,7 +224,9 @@ class CurrentArtistAlbumsView(ViewContainer):
         view.add(spinner)
         view.show_all()
         self.add(view)
+        self.set_transition_type(Gtk.StackTransitionType.NONE)
         self.set_visible_child(view)
+        self.set_transition_type(Gtk.StackTransitionType.CROSSFADE)
         self.clean_old_views(view)
 
         # Populate artist albums view

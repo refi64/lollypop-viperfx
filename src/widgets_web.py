@@ -138,8 +138,10 @@ class WebView(Gtk.Stack):
             @param event as WebKit2.LoadEvent
         """
         if event == WebKit2.LoadEvent.STARTED:
+            self.set_transition_type(Gtk.StackTransitionType.NONE)
             self.set_visible_child_name('spinner')
             self._spinner.start()
+            self.set_transition_type(Gtk.StackTransitionType.CROSSFADE)
         elif event == WebKit2.LoadEvent.FINISHED:
             self.set_visible_child_name('view')
             self._spinner.stop()
