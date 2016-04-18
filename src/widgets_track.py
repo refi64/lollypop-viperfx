@@ -229,11 +229,16 @@ class Row(Gtk.ListBoxRow):
         """
         layout = self._title_label.get_layout()
         text = ''
+        # Add artists if album have many artists
         if len(self._track.artists) > 1:
             text = "<b>" + escape(", ".join(self._track.artists)) + "</b>"
         if layout.is_ellipsized():
             if text:
                 text += " - "
+            # Finnaly add artists if we are a compilation
+            elif self._track.album.artist_ids[0] == Type.COMPILATIONS:
+                text = "<b>" + escape(", ".join(self._track.artists)) +\
+                       "</b> - "
             text += self._track.name
         self._title_label.set_tooltip_markup(text)
 
