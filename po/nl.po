@@ -11,9 +11,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lollypop\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-04-07 17:25+0200\n"
-"PO-Revision-Date: 2016-04-07 15:54+0000\n"
-"Last-Translator: Nathan Follens\n"
+"POT-Creation-Date: 2016-04-18 16:20+0200\n"
+"PO-Revision-Date: 2016-04-18 14:21+0000\n"
+"Last-Translator: Cédric Bellegarde <web@adishatz.org>\n"
 "Language-Team: Dutch (http://www.transifex.com/gnumdk/lollypop/language/nl/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -122,7 +122,7 @@ msgstr "Alle albums synchroniseren (MTP)"
 msgid "Convert to MP3(MTP)"
 msgstr "Converteren naar MP3 (MTP)"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:26 ../data/SettingsDialog.ui.h:10
+#: ../data/org.gnome.Lollypop.gschema.xml.h:26 ../data/SettingsDialog.ui.h:11
 msgid "Auto update music"
 msgstr "Muziek automatisch bijwerken"
 
@@ -130,51 +130,55 @@ msgstr "Muziek automatisch bijwerken"
 msgid "Show genres list"
 msgstr "Genrelijst weergeven"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:28
+#: ../data/org.gnome.Lollypop.gschema.xml.h:28 ../data/SettingsDialog.ui.h:8
+msgid "Hide track own artists"
+msgstr ""
+
+#: ../data/org.gnome.Lollypop.gschema.xml.h:29
 msgid "Use dark gtk theme"
 msgstr "Donker GTK-thema gebruiken"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:29
+#: ../data/org.gnome.Lollypop.gschema.xml.h:30
 msgid "Disable the use client side window decorations (headerbar)"
 msgstr "Client side window decorations (headerbar) uitschakelen"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:30 ../data/SettingsDialog.ui.h:6
+#: ../data/org.gnome.Lollypop.gschema.xml.h:31 ../data/SettingsDialog.ui.h:6
 msgid "Show compilations in albums view"
 msgstr "Compilaties in albumoverzicht weergeven"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:31 ../data/SettingsDialog.ui.h:12
+#: ../data/org.gnome.Lollypop.gschema.xml.h:32 ../data/SettingsDialog.ui.h:13
 msgid "Continue playback when closed"
 msgstr "Doorgaan met afspelen wanneer gesloten"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:32
+#: ../data/org.gnome.Lollypop.gschema.xml.h:33
 msgid "Restore previous state"
 msgstr "Vorige toestand herstellen"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:33
+#: ../data/org.gnome.Lollypop.gschema.xml.h:34
 msgid "Disable MPRIS"
 msgstr "MPRIS uitschakelen"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:34
+#: ../data/org.gnome.Lollypop.gschema.xml.h:35
 msgid "Disable notifications"
 msgstr "Meldingen uitschakelen"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:35
+#: ../data/org.gnome.Lollypop.gschema.xml.h:36
 msgid "Show track number from tags"
 msgstr "Tracknummer uit tags weergeven"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:36 ../data/SettingsDialog.ui.h:13
+#: ../data/org.gnome.Lollypop.gschema.xml.h:37 ../data/SettingsDialog.ui.h:14
 msgid "Mix songs"
 msgstr "Nummers mengen"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:37
+#: ../data/org.gnome.Lollypop.gschema.xml.h:38
 msgid "Mix songs only in party mode"
 msgstr "Nummers enkel mengen in feestmodus"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:38
+#: ../data/org.gnome.Lollypop.gschema.xml.h:39
 msgid "Mix duration"
 msgstr "Mengduur"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:39
+#: ../data/org.gnome.Lollypop.gschema.xml.h:40
 msgid "Shuffle mode"
 msgstr "Willekeurige volgorde-modus"
 
@@ -230,12 +234,12 @@ msgid "Search"
 msgstr "Zoeken"
 
 #: ../data/lollypop.appdata.xml.in.h:9 ../src/pop_menu.py:472
-#: ../src/pop_menu.py:493 ../src/toolbar_end.py:301
+#: ../src/pop_menu.py:493 ../src/toolbar_end.py:308
 #: ../data/QueuePopover.ui.h:2
 msgid "Queue"
 msgstr "Wachtrij"
 
-#: ../data/lollypop.appdata.xml.in.h:10 ../data/SettingsDialog.ui.h:21
+#: ../data/lollypop.appdata.xml.in.h:10 ../data/SettingsDialog.ui.h:22
 #: ../data/ToolbarEnd.ui.h:5
 msgid "Party mode"
 msgstr "Feestmodus"
@@ -287,28 +291,28 @@ msgid ""
 "    - Artist informations disabled"
 msgstr "    - Scrobbler uitgeschakeld\n    - Automatisch downloaden van albumhoezen uitgeschakeld\n    - Artiestinformatie uitgeschakeld"
 
-#: ../src/application.py:402
+#: ../src/application.py:411
 #, python-format
 msgid "%d artist"
 msgid_plural "%d artists"
 msgstr[0] "%d artiest"
 msgstr[1] "%d artiesten"
 
-#: ../src/application.py:404
+#: ../src/application.py:413
 #, python-format
 msgid "%d album"
 msgid_plural "%d albums"
 msgstr[0] "%d album"
 msgstr[1] "%d albums"
 
-#: ../src/application.py:406
+#: ../src/application.py:415
 #, python-format
 msgid "%d track"
 msgid_plural "%d tracks"
 msgstr[0] "%d nummer"
 msgstr[1] "%d nummers"
 
-#: ../src/application.py:421
+#: ../src/application.py:430
 msgid "Lollypop: You need to install yelp."
 msgstr "Lollypop: je moet yelp installeren."
 
@@ -369,17 +373,17 @@ msgstr "Willekeurige nummers"
 msgid "Pause"
 msgstr "Pauzeren"
 
-#: ../src/controllers.py:86 ../src/controllers.py:114 ../src/pop_tunein.py:154
+#: ../src/controllers.py:86 ../src/controllers.py:114 ../src/pop_tunein.py:155
 #: ../src/widgets_album.py:458 ../src/widgets_radio.py:162
 #: ../data/AlbumDetailedWidget.ui.h:1 ../data/ToolbarPlayback.ui.h:2
 msgid "Play"
 msgstr "Afspelen"
 
-#: ../src/database_albums.py:301 ../src/database_artists.py:104
+#: ../src/database_albums.py:299 ../src/database_artists.py:104
 #: ../src/database_genres.py:69 ../src/database_tracks.py:229
 #: ../src/selectionlist.py:274 ../src/tagreader.py:87 ../src/tagreader.py:102
-#: ../src/tagreader.py:117 ../src/tagreader.py:144 ../src/tagreader.py:159
-#: ../src/tagreader.py:162 ../src/tagreader.py:172 ../src/tagreader.py:175
+#: ../src/tagreader.py:117 ../src/tagreader.py:150 ../src/tagreader.py:165
+#: ../src/tagreader.py:168 ../src/tagreader.py:178
 msgid "Unknown"
 msgstr "Onbekend"
 
@@ -425,11 +429,11 @@ msgstr "Albums wissen"
 msgid "Go to current track"
 msgstr "Ga naar huidig nummer"
 
-#: ../src/pop_albums.py:297 ../src/toolbar_end.py:305
+#: ../src/pop_albums.py:297 ../src/toolbar_end.py:312
 msgid "Playing albums"
 msgstr "Afspelende albums"
 
-#: ../src/pop_covers.py:53 ../src/pop_tunein.py:93 ../data/RadioPopover.ui.h:3
+#: ../src/pop_covers.py:53 ../src/pop_tunein.py:93 ../data/RadioPopover.ui.h:1
 msgid "Please wait..."
 msgstr "Even geduld..."
 
@@ -508,7 +512,7 @@ msgstr "Gegevens bewerken"
 msgid "Edit"
 msgstr "Bewerken"
 
-#: ../src/pop_radio.py:83 ../src/pop_tunein.py:160
+#: ../src/pop_radio.py:83 ../src/pop_tunein.py:161
 msgid "Add"
 msgstr "Toevoegen"
 
@@ -520,7 +524,7 @@ msgstr "Bewerken"
 msgid "Can't connect to TuneIn..."
 msgstr "Kan geen verbinding maken met TuneIn..."
 
-#: ../src/pop_tunein.py:179
+#: ../src/pop_tunein.py:180
 msgid "Browse themes and add a new radio"
 msgstr "Blader door thema's en voeg een nieuwe radio toe"
 
@@ -528,19 +532,19 @@ msgstr "Blader door thema's en voeg een nieuwe radio toe"
 msgid "Preferences"
 msgstr "Voorkeuren"
 
-#: ../src/settings.py:163
+#: ../src/settings.py:166
 msgid "Populars"
 msgstr "Populair"
 
-#: ../src/settings.py:164
+#: ../src/settings.py:167
 msgid "Recently added"
 msgstr "Recent toegevoegd"
 
-#: ../src/toolbar_end.py:299
+#: ../src/toolbar_end.py:306
 msgid "Externals tracks playing"
 msgstr "Afspelende externe nummers"
 
-#: ../src/toolbar_end.py:303
+#: ../src/toolbar_end.py:310
 msgid "Playing playlists"
 msgstr "Afspelende afspeellijsten"
 
@@ -590,7 +594,7 @@ msgstr "%s u"
 msgid "%s m"
 msgstr "%s m"
 
-#: ../src/widgets_album.py:906
+#: ../src/widgets_album.py:908
 #, python-format
 msgid "Disc %s"
 msgstr "Schijf %s"
@@ -696,7 +700,7 @@ msgid ""
 "Long press to activate auto reload"
 msgstr "Gegevens herladen\nHou lang ingedrukt om automatisch herladen te activeren"
 
-#: ../data/CoversPopover.ui.h:1
+#: ../data/CoversPopover.ui.h:1 ../data/RadioPopover.ui.h:2
 msgid "Select a local file"
 msgstr "Kies een lokaal bestand"
 
@@ -724,23 +728,23 @@ msgstr "Nieuwe afspeellijst"
 msgid "Clear queue"
 msgstr "Wachtrij wissen"
 
-#: ../data/RadioPopover.ui.h:1
-msgid "Select a logo  for this radio"
-msgstr "Kies een logo voor deze radio"
-
-#: ../data/RadioPopover.ui.h:2
+#: ../data/RadioPopover.ui.h:3
 msgid "No logo found..."
 msgstr "Geen logo gevonden..."
 
 #: ../data/RadioPopover.ui.h:4
+msgid "Select a logo  for this radio"
+msgstr "Kies een logo voor deze radio"
+
+#: ../data/RadioPopover.ui.h:5
 msgid "Name:"
 msgstr "Naam:"
 
-#: ../data/RadioPopover.ui.h:5
+#: ../data/RadioPopover.ui.h:6
 msgid "Address:"
 msgstr "Adres:"
 
-#: ../data/RadioPopover.ui.h:6
+#: ../data/RadioPopover.ui.h:7
 msgid "Delete"
 msgstr "Verwijderen"
 
@@ -780,63 +784,63 @@ msgstr "Donkere thema-variant gebruiken"
 msgid "Show genres"
 msgstr "Genres weergeven"
 
-#: ../data/SettingsDialog.ui.h:8
+#: ../data/SettingsDialog.ui.h:9
 msgid "Configure lollypop appearance"
 msgstr "Pas uiterlijk van lollypop aan"
 
-#: ../data/SettingsDialog.ui.h:9
+#: ../data/SettingsDialog.ui.h:10
 msgid "Appearance"
 msgstr "Uiterlijk"
 
-#: ../data/SettingsDialog.ui.h:11
+#: ../data/SettingsDialog.ui.h:12
 msgid "Restore state on startup"
 msgstr "Toestand herstellen bij opstarten"
 
-#: ../data/SettingsDialog.ui.h:14
+#: ../data/SettingsDialog.ui.h:15
 msgid "Long press to show options"
 msgstr "Hou lang ingedrukt om opties weer te geven"
 
-#: ../data/SettingsDialog.ui.h:15
+#: ../data/SettingsDialog.ui.h:16
 msgid "Do not repeat by default"
 msgstr "Standaard niet herhalen"
 
-#: ../data/SettingsDialog.ui.h:16
+#: ../data/SettingsDialog.ui.h:17
 msgid "Configure lollypop behaviour"
 msgstr "Pas gedrag van lollypop aan"
 
-#: ../data/SettingsDialog.ui.h:17
+#: ../data/SettingsDialog.ui.h:18
 msgid "Behaviour"
 msgstr "Gedrag"
 
-#: ../data/SettingsDialog.ui.h:18
+#: ../data/SettingsDialog.ui.h:19
 msgid "Select music folders"
 msgstr "Kies muziekmappen"
 
-#: ../data/SettingsDialog.ui.h:19
+#: ../data/SettingsDialog.ui.h:20
 msgid "Music"
 msgstr "Muziek"
 
-#: ../data/SettingsDialog.ui.h:20
+#: ../data/SettingsDialog.ui.h:21
 msgid "Select what will be available in party mode"
 msgstr "Kies wat beschikbaar is in feestmodus"
 
-#: ../data/SettingsDialog.ui.h:22
+#: ../data/SettingsDialog.ui.h:23
 msgid "Login:"
 msgstr "Gebruikersnaam:"
 
-#: ../data/SettingsDialog.ui.h:23
+#: ../data/SettingsDialog.ui.h:24
 msgid "Password:"
 msgstr "Wachtwoord:"
 
-#: ../data/SettingsDialog.ui.h:24
+#: ../data/SettingsDialog.ui.h:25
 msgid "Connect"
 msgstr "Verbinden"
 
-#: ../data/SettingsDialog.ui.h:25
+#: ../data/SettingsDialog.ui.h:26
 msgid "You need to install pylast and gi secret"
 msgstr "Je moet pylast en gi secret installeren"
 
-#: ../data/SettingsDialog.ui.h:26
+#: ../data/SettingsDialog.ui.h:27
 msgid "Configure Last.fm credentials"
 msgstr "Stel Last.fm-referenties in"
 
