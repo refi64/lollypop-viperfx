@@ -116,6 +116,9 @@ class SettingsDialog:
         switch_compilations.set_state(
             Lp().settings.get_value('show-compilations'))
 
+        switch_artists = builder.get_object('switch_artists')
+        switch_artists.set_state(Lp().settings.get_value('hide-artists'))
+
         switch_repeat = builder.get_object('switch_repeat')
         switch_repeat.set_state(not Lp().settings.get_value('repeat'))
 
@@ -332,6 +335,14 @@ class SettingsDialog:
             @param widget as unused, state as widget state
         """
         Lp().settings.set_value('show-compilations',
+                                GLib.Variant('b', state))
+
+    def _update_artists_setting(self, widget, state):
+        """
+            Update compilations setting
+            @param widget as unused, state as widget state
+        """
+        Lp().settings.set_value('hide-artists',
                                 GLib.Variant('b', state))
 
     def _update_repeat_setting(self, widget, state):

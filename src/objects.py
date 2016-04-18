@@ -235,7 +235,8 @@ class Track(Base):
         if album_artist_ids[0] == Type.COMPILATIONS:
             artists = self.artists
         # Show only non album artist for albums (and only if one)
-        elif len(self.artists) > 1:
+        elif not Lp().settings.get_value('hide-artists') and\
+                len(self.artists) > 1:
             for artist in self.artists:
                 if artist not in self.album_artists:
                     artists.append(artist)
