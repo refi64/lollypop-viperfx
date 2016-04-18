@@ -26,10 +26,12 @@
             <property name="can_focus">False</property>
             <property name="opacity">0.80000000000000004</property>
             <property name="valign">end</property>
+            <property name="row_spacing">5</property>
             <child>
               <object class="GtkLabel" id="artist">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
+                <property name="margin_top">2</property>
                 <property name="hexpand">True</property>
                 <property name="ellipsize">end</property>
                 <attributes>
@@ -46,6 +48,7 @@
               <object class="GtkLabel" id="title">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
+                <property name="margin_bottom">2</property>
                 <property name="hexpand">True</property>
                 <property name="ellipsize">end</property>
                 <attributes>
