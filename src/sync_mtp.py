@@ -16,7 +16,7 @@ import os.path
 from time import sleep
 
 from lollypop.utils import escape
-from lollypop.define import Lp
+from lollypop.define import Lp, Type
 from lollypop.objects import Track
 
 
@@ -188,7 +188,10 @@ class MtpSync:
                     return
                 track = Track(track_id)
                 album_name = escape(track.album_name.lower())
-                artists = escape(", ".join(track.artists).lower())
+                if track.album.artist_ids[0] == Type.COMPILATIONS:
+                    artists = escape(", ".join(track.artists).lower())
+                else:
+                    artists = escape(", ".join(track.album.artists).lower())
                 on_device_album_uri = "%s/tracks/%s_%s" %\
                                       (self._uri,
                                        artists,
@@ -295,7 +298,10 @@ class MtpSync:
                 return
             track = Track(track_id)
             album_name = escape(track.album_name.lower())
-            artists = escape(", ".join(track.artists).lower())
+            if track.album.artist_ids[0] == Type.COMPILATIONS:
+                artists = escape(", ".join(track.artists).lower())
+            else:
+                artists = escape(", ".join(track.album.artists).lower())
             album_uri = "%s/tracks/%s_%s" % (self._uri,
                                              artists,
                                              album_name)
