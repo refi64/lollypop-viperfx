@@ -879,7 +879,9 @@ class AlbumDetailedWidget(Gtk.Bin, AlbumWidget):
             return
         self._width = allocation.width
         redraw = False
-        if allocation.width < WindowSize.MONSTER:
+        if allocation.width < WindowSize.MEDIUM or (
+                allocation.width < WindowSize.MONSTER and
+                self._cover is not None):
             orientation = Gtk.Orientation.VERTICAL
         else:
             orientation = Gtk.Orientation.HORIZONTAL

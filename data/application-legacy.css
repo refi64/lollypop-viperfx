@@ -174,14 +174,14 @@ Gtk.ListBoxRow .menu-button:hover {
 .trackrow:hover {
     border-radius: 5px;
     outline-radius: 5px;
-	background-color: alpha(@theme_fg_color, 0.03);
+	background-color: alpha(@theme_fg_color, 0.05);
   	color: inherit;
 }
 
 .trackrow:selected {
     border-radius: 5px;
     outline-radius: 5px;
-	background-color: alpha(@theme_fg_color, 0.05);
+	background-color: alpha(@theme_fg_color, 0.07);
   	color: inherit;
 }
 
@@ -189,7 +189,7 @@ Gtk.ListBoxRow .menu-button:hover {
     border-radius: 5px;
     outline-radius: 5px;
     padding: 0px;
-	background-color: alpha(@theme_fg_color, 0.05);
+	background-color: alpha(@theme_fg_color, 0.07);
   	color: inherit;
 }
 

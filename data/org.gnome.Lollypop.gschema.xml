@@ -106,7 +106,13 @@
             <summary>Show genres list</summary>
             <description></description>
         </key>
-		 <key type="b" name="dark-ui">
+	<key type="b" name="hide-artists">
+	    <default>false</default>
+            <summary>Hide track own artists</summary>
+            <description></description>
+        </key>
+
+	 <key type="b" name="dark-ui">
             <default>false</default>
             <summary>Use dark gtk theme</summary>
             <description></description>
