@@ -229,7 +229,8 @@ class LastFM(LastFMNetwork):
                 if proxy.get_account().props.provider_name == "Last.fm":
                     return proxy.get_oauth2_based()
         except:
-            return None
+            pass
+        return None
 
     def _check_for_proxy(self):
         """
