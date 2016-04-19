@@ -86,6 +86,7 @@ class InfoPopover(Gtk.Popover):
             self._stack.get_child_by_name('lyrics').destroy()
         if InfoPopover.WebView is None:
             self._stack.get_child_by_name('duck').destroy()
+            self._stack.get_child_by_name('lyrics').destroy()
         self._stack.set_visible_child_name(
             Lp().settings.get_value('infoswitch').get_string())
 
