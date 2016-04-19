@@ -53,6 +53,8 @@ class RadioWidget(Gtk.FlowBoxChild, AlbumWidget):
         self._title_label.set_ellipsize(Pango.EllipsizeMode.END)
         self._title_label.set_property('halign', Gtk.Align.CENTER)
         self._title_label.set_text(self._name)
+        self._title_label.set_property('has-tooltip', True)
+        self._title_label.connect('query-tooltip', self._on_query_tooltip)
         self._overlay = Gtk.Overlay()
         frame = Gtk.Frame()
         frame.get_style_context().add_class('cover-frame')
@@ -206,6 +208,21 @@ class RadioWidget(Gtk.FlowBoxChild, AlbumWidget):
 #######################
 # PRIVATE             #
 #######################
+    def _on_query_tooltip(self, widget, x, y, keyboard, tooltip):
+        """
+            Show tooltip if needed
+            @param widget as Gtk.Widget
+            @param x as int
+            @param y as int
+            @param keyboard as bool
+            @param tooltip as Gtk.Tooltip
+        """
+        layout = widget.get_layout()
+        if layout.is_ellipsized():
+            widget.set_tooltip_text(widget.get_text())
+        else:
+            widget.set_tooltip_text('')
+
     def _on_play_press_event(self, widget, event):
         """
             Play radio
