@@ -12,8 +12,7 @@
 
 import gi
 gi.require_version('Secret', '1')
-gi.require_version('Goa', '1.0')
-from gi.repository import GLib, Gio, Goa
+from gi.repository import GLib, Gio
 
 from gettext import gettext as _
 
@@ -23,6 +22,12 @@ except Exception as e:
     print(e)
     print(_("Last.fm authentication disabled"))
     Secret = None
+
+try:
+    gi.require_version('Goa', '1.0')
+    from gi.repository import Goa
+except:
+    pass
 
 from pylast import LastFMNetwork, md5, BadAuthenticationError
 from gettext import gettext as _
