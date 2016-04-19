@@ -387,11 +387,15 @@ class AlbumSimpleWidget(Gtk.FlowBoxChild, AlbumWidget):
         self._title_label.set_ellipsize(Pango.EllipsizeMode.END)
         self._title_label.set_property('halign', Gtk.Align.CENTER)
         self._title_label.set_markup("<b>"+escape(self._album.name)+"</b>")
+        self._title_label.set_property('has-tooltip', True)
+        self._title_label.connect('query-tooltip', self._on_query_tooltip)
         self._artist_label = Gtk.Label()
         self._artist_label.set_ellipsize(Pango.EllipsizeMode.END)
         self._artist_label.set_property('halign', Gtk.Align.CENTER)
         self._artist_label.set_text(", ".join(self._album.artists))
         self._artist_label.get_style_context().add_class('dim-label')
+        self._artist_label.set_property('has-tooltip', True)
+        self._artist_label.connect('query-tooltip', self._on_query_tooltip)
         self._widget.add(grid)
         overlay = Gtk.Overlay.new()
         overlay.set_property('halign', Gtk.Align.CENTER)
@@ -550,14 +554,15 @@ class AlbumSimpleWidget(Gtk.FlowBoxChild, AlbumWidget):
             @param keyboard as bool
             @param tooltip as Gtk.Tooltip
         """
-        layout_title = self._title_label.get_layout()
-        layout_artist = self._artist_label.get_layout()
-        if layout_title.is_ellipsized() or layout_artist.is_ellipsized():
-            artist = escape(self._artist_label.get_text())
-            title = escape(self._title_label.get_text())
-            self.set_tooltip_markup("<b>%s</b>\n%s" % (artist, title))
+        layout = widget.get_layout()
+        if layout.is_ellipsized():
+            if widget.get_use_markup():
+                text = "<b>%s</b>" % escape(widget.get_text())
+            else:
+                text = escape(widget.get_text())
+            widget.set_tooltip_markup(text)
         else:
-            self.set_tooltip_text('')
+            widget.set_tooltip_text('')
 
 
 class AlbumDetailedWidget(Gtk.Bin, AlbumWidget):
