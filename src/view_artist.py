@@ -32,10 +32,7 @@ class ArtistView(ArtistAlbumsView):
         """
         ArtistAlbumsView.__init__(self, artist_ids, genre_ids)
         self._signal_id = None
-        if len(artist_ids) > 1:
-            self._artist_id = None
-        else:
-            self._artist_id = artist_ids[0]
+        self._artist_ids = artist_ids
 
         builder = Gtk.Builder()
         builder.add_from_resource('/org/gnome/Lollypop/ArtistView.ui')
@@ -44,11 +41,11 @@ class ArtistView(ArtistAlbumsView):
         self._jump_button.set_tooltip_text(_("Go to current track"))
         self._spinner = builder.get_object('spinner')
         self.attach(builder.get_object('ArtistView'), 0, 0, 1, 1)
-        if len(artist_ids) == 1:
-            artist = Lp().artists.get_name(artist_ids[0])
-        else:
-            artist = _("Many artists")
-        builder.get_object('artist').set_label(artist)
+
+        artists = []
+        for artist_id in artist_ids:
+            artists.append(Lp().artists.get_name(artist_id))
+        builder.get_object('artist').set_label(", ".join(artists))
 
 #######################
 # PRIVATE             #
@@ -97,8 +94,7 @@ class ArtistView(ArtistAlbumsView):
             Change pointer on label
             @param eventbox as Gtk.EventBox
         """
-        if InfoPopover.should_be_shown() and\
-                self._artist_id is not None:
+        if InfoPopover.should_be_shown() and self._artist_ids:
             eventbox.get_window().set_cursor(Gdk.Cursor(Gdk.CursorType.HAND1))
 
     def _on_label_button_release(self, eventbox, event):
@@ -107,8 +103,7 @@ class ArtistView(ArtistAlbumsView):
             @param eventbox as Gtk.EventBox
             @param event as Gdk.Event
         """
-        if InfoPopover.should_be_shown() and\
-                self._artist_id is not None:
-            pop = InfoPopover([self._artist_id], False)
+        if InfoPopover.should_be_shown() and self._artist_ids:
+            pop = InfoPopover(self._artist_ids, False)
             pop.set_relative_to(eventbox)
             pop.show()
