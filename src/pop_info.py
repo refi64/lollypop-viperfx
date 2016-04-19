@@ -238,7 +238,13 @@ class InfoPopover(Gtk.Popover):
         self._jump_button.hide()
         Lp().settings.set_value('infoswitch',
                                 GLib.Variant('s', 'lastfm'))
-        for artist in self._current_track.artists:
+        if self._artist_ids:
+            artists = []
+            for artist_id in self._artist_ids:
+                artists.append(Lp().artists.get_name(artist_id))
+        else:
+            artists = self._current_track.artists
+        for artist in artists:
             content = LastfmContent()
             content.show()
             widget.add(content)
@@ -263,7 +269,13 @@ class InfoPopover(Gtk.Popover):
         self._jump_button.hide()
         Lp().settings.set_value('infoswitch',
                                 GLib.Variant('s', 'wikipedia'))
-        for artist in self._current_track.artists:
+        if self._artist_ids:
+            artists = []
+            for artist_id in self._artist_ids:
+                artists.append(Lp().artists.get_name(artist_id))
+        else:
+            artists = self._current_track.artists
+        for artist in artists:
             content = WikipediaContent()
             content.show()
             widget.add(content)
