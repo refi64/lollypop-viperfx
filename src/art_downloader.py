@@ -45,6 +45,25 @@ class ArtDownloader:
                 t.daemon = True
                 t.start()
 
+    def get_spotify_artist_artwork(self, artist):
+        """
+            Return spotify artwork url
+            @param artist as str
+            @return url as str/None
+        """
+        try:
+            artist_formated = GLib.uri_escape_string(
+                                artist, None, True).replace(' ', '+')
+            s = Gio.File.new_for_uri("https://api.spotify.com/v1/search?q=%s"
+                                     "&type=artist" % artist_formated)
+            (status, data, tag) = s.load_contents()
+            if status:
+                decode = json.loads(data.decode('utf-8'))
+                return decode['artists']['items'][0]['images'][0]['url']
+        except Exception as e:
+            print("ArtDownloader::get_spotify_artist_artwork():", e)
+        return None
+
     def get_duck_arts(self, search):
         """
             Get arts on duck image corresponding to search

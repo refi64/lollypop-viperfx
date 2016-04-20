@@ -204,6 +204,10 @@ class WikipediaContent(InfoContent):
         self._menu_model.remove_all()
         wp = Wikipedia()
         (url, image_url, content) = wp.get_page_infos(artist)
+        # If we get a result without an image,
+        # we try to get artist artwork from spotify
+        if content is not None and image_url is None:
+            image_url = Lp().art.get_spotify_artist_artwork(artist)
         if not self._stop:
             InfoContent.set_content(self, self._artist, content,
                                     image_url, 'wikipedia')
