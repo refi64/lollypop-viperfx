@@ -94,7 +94,7 @@
               </object>
               <packing>
                 <property name="name">artwork</property>
-                <property name="title" translatable="yes">Artwork</property>
+                <property name="title" translatable="yes">Photo</property>
                 <property name="position">5</property>
               </packing>
             </child>
