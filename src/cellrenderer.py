@@ -67,14 +67,14 @@ class CellRendererArtist(Gtk.CellRendererText):
         self._is_artists = is_artists
 
     def do_render(self, ctx, widget, background_area, cell_area, flags):
-        size = ArtSize.ARTIST * widget.get_scale_factor()
+        size = ArtSize.ARTIST_SMALL * widget.get_scale_factor()
         if self._is_artists and self.rowid >= 0:
-            cell_area.width -= ArtSize.ARTIST
-            cell_area.x = ArtSize.ARTIST
+            cell_area.width -= ArtSize.ARTIST_SMALL
+            cell_area.x = ArtSize.ARTIST_SMALL
         Gtk.CellRendererText.do_render(self, ctx, widget,
                                        cell_area, cell_area, flags)
         if self._is_artists and self.rowid >= 0:
-            cell_area.width = ArtSize.ARTIST
+            cell_area.width = ArtSize.ARTIST_SMALL
             cell_area.x = 0
             self.do_own_render(ctx, widget, cell_area, size)
 
@@ -82,8 +82,8 @@ class CellRendererArtist(Gtk.CellRendererText):
         surface = None
         alpha = False
         for suffix in ["lastfm", "spotify", "wikipedia"]:
-            uri = InfoCache.get_artwork(self.artist, suffix, True)
-            if uri:
+            uri = InfoCache.get_artwork(self.artist, suffix, size)
+            if uri is not None:
                 pixbuf = GdkPixbuf.Pixbuf.new_from_file_at_size(uri,
                                                                 size,
                                                                 size)
@@ -96,14 +96,15 @@ class CellRendererArtist(Gtk.CellRendererText):
             alpha = True
             surface = Gtk.IconTheme.get_default().load_surface(
                                              'media-optical-cd-audio-symbolic',
-                                             ArtSize.ARTIST,
+                                             ArtSize.ARTIST_SMALL,
                                              1,
                                              widget.get_window(),
                                              0)
         ctx.translate(cell_area.x, cell_area.y)
         ctx.new_sub_path()
-        radius = ArtSize.ARTIST / 2 - 2
-        ctx.arc(ArtSize.ARTIST/2, ArtSize.ARTIST/2, radius, 0, 2 * pi)
+        radius = ArtSize.ARTIST_SMALL / 2 - 2
+        ctx.arc(ArtSize.ARTIST_SMALL/2, ArtSize.ARTIST_SMALL/2,
+                radius, 0, 2 * pi)
         ctx.set_source_rgb(1, 1, 1)
         ctx.fill_preserve()
         ctx.set_line_width(2)
@@ -118,7 +119,7 @@ class CellRendererArtist(Gtk.CellRendererText):
 
     def do_get_preferred_height_for_width(self, widget, width):
         if self._is_artists and self.rowid >= 0:
-            return (ArtSize.ARTIST, ArtSize.ARTIST)
+            return (ArtSize.ARTIST_SMALL, ArtSize.ARTIST_SMALL)
         else:
             return Gtk.CellRendererText.do_get_preferred_height_for_width(
                                                            self, widget, width)

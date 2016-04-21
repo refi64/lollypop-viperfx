@@ -34,52 +34,70 @@ class InfoCache:
             except:
                 print("Can't create %s" % InfoCache.CACHE_PATH)
 
-    def exists_in_cache(prefix, small=False):
+    def exists_in_cache(prefix):
         """
             Return True if an info is cached
             @param prefix as string
         """
-        return InfoCache.get_artwork(prefix, "lastfm", small) is not None or\
-            InfoCache.get_artwork(prefix, "wikipedia", small) is not None or\
-            InfoCache.get_artwork(prefix, "spotify", small) is not None
+        return InfoCache.get_artwork(prefix, "lastfm") is not None or\
+            InfoCache.get_artwork(prefix, "wikipedia") is not None or\
+            InfoCache.get_artwork(prefix, "spotify") is not None
 
-    def get_artwork(prefix, suffix, small=False):
+    def get_artwork(prefix, suffix, size=ArtSize.ARTIST):
         """
             Return path for artwork, empty if none
             @param prefix as string
             @param suffix as string
-            @param small as bool
-            @return path as string
+            @param size as int
+            @return path as string/None
         """
-        if small:
-            filepath = "%s/%s_%s_small.jpg" % (InfoCache.CACHE_PATH,
-                                               escape(prefix),
-                                               suffix)
-        else:
-            filepath = "%s/%s_%s.jpg" % (InfoCache.CACHE_PATH,
-                                         escape(prefix),
-                                         suffix)
-        if path.exists(filepath):
-            return filepath
-        else:
+        filepath = "%s/%s_%s.jpg" % (InfoCache.CACHE_PATH,
+                                     escape(prefix),
+                                     suffix)
+        filepath_at_size = "%s/%s_%s_%s.jpg" % (InfoCache.CACHE_PATH,
+                                                escape(prefix),
+                                                suffix,
+                                                size)
+        if not path.exists(filepath) or path.getsize(filepath) == 0:
             return None
+        # Make cache for this size
+        if not path.exists(filepath_at_size):
+            pixbuf = GdkPixbuf.Pixbuf.new_from_file_at_size(filepath,
+                                                            size,
+                                                            size)
+            extract = GdkPixbuf.Pixbuf.new(GdkPixbuf.Colorspace.RGB,
+                                           True, 8,
+                                           size, size)
+            if pixbuf.get_height() > pixbuf.get_width():
+                diff = pixbuf.get_height() - size
+                pixbuf.copy_area(0, diff/2,
+                                 pixbuf.get_width(),
+                                 size,
+                                 extract,
+                                 0, 0)
+            else:
+                diff = pixbuf.get_width() - size
+                pixbuf.copy_area(diff/2, 0,
+                                 size,
+                                 pixbuf.get_height(),
+                                 extract,
+                                 0, 0)
 
-    def get(prefix, suffix, small=False):
+            extract.savev(filepath_at_size, "jpeg", ["quality"], ["90"])
+            del pixbuf
+            del extract
+        return filepath_at_size
+
+    def get(prefix, suffix):
         """
             Get content from cache
             @param prefix as str
             @param suffix as str
-            @param small as bool
             @return (content as string, data as bytes)
         """
-        if small:
-            filepath = "%s/%s_%s_small" % (InfoCache.CACHE_PATH,
-                                           escape(prefix),
-                                           suffix)
-        else:
-            filepath = "%s/%s_%s" % (InfoCache.CACHE_PATH,
-                                     escape(prefix),
-                                     suffix)
+        filepath = "%s/%s_%s" % (InfoCache.CACHE_PATH,
+                                 escape(prefix),
+                                 suffix)
         content = None
         data = None
         if path.exists(filepath+".txt"):
@@ -120,51 +138,12 @@ class InfoCache:
         else:
             stream = Gio.MemoryInputStream.new_from_data(data, None)
             pixbuf = GdkPixbuf.Pixbuf.new_from_stream_at_scale(stream,
-                                                               800,
-                                                               -1,
-                                                               True,
-                                                               None)
-            pixbuf.savev(filepath+".jpg", "jpeg", ["quality"], ["90"])
-            if pixbuf.get_width() > pixbuf.get_height():
-                vertical = False
-            else:
-                vertical = True
-            del pixbuf
-
-            # Small jpg
-            stream = Gio.MemoryInputStream.new_from_data(data, None)
-            extract = GdkPixbuf.Pixbuf.new(GdkPixbuf.Colorspace.RGB,
-                                           True, 8,
-                                           ArtSize.ARTIST, ArtSize.ARTIST)
-            if vertical:
-                pixbuf = GdkPixbuf.Pixbuf.new_from_stream_at_scale(
-                                                               stream,
                                                                ArtSize.ARTIST,
                                                                -1,
                                                                True,
                                                                None)
-                diff = pixbuf.get_height() - ArtSize.ARTIST
-                pixbuf.copy_area(0, diff/2,
-                                 pixbuf.get_width(),
-                                 ArtSize.ARTIST,
-                                 extract,
-                                 0, 0)
-            else:
-                pixbuf = GdkPixbuf.Pixbuf.new_from_stream_at_scale(
-                                                               stream,
-                                                               -1,
-                                                               ArtSize.ARTIST,
-                                                               True,
-                                                               None)
-                diff = pixbuf.get_width() - ArtSize.ARTIST
-                pixbuf.copy_area(diff/2, 0,
-                                 ArtSize.ARTIST,
-                                 pixbuf.get_height(),
-                                 extract,
-                                 0, 0)
-
-            extract.savev(filepath+"_small"+".jpg",
-                          "jpeg", ["quality"], ["90"])
+            pixbuf.savev(filepath+"_"+str(ArtSize.ARTIST)+".jpg",
+                         "jpeg", ["quality"], ["90"])
             del pixbuf
 
     def uncache(prefix, suffix):

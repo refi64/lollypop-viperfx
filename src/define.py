@@ -72,9 +72,10 @@ class GstPlayFlags:
 class ArtSize:
     SMALL = 33
     MEDIUM = 48  # If changed, adapt width request in AlbumRow
-    ARTIST = 60
+    ARTIST_SMALL = 60
     BIG = 200
     MONSTER = 500
+    ARTIST = 800
 
 
 class Shuffle:
