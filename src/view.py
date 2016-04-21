@@ -208,10 +208,9 @@ class LazyLoadingView(View):
         """
         if not self._lazy_queue:
             return False
-        wanted = ArtSize.BIG * self.get_scale_factor()
         scroll_value = adj.get_value()
         diff = self._prev_scroll_value - scroll_value
-        if diff > wanted or diff < -wanted:
+        if diff > ArtSize.BIG or diff < -ArtSize.BIG:
             self._prev_scroll_value = scroll_value
             GLib.idle_add(self._lazy_or_not,
                           scroll_value)

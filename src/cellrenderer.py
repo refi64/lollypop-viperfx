@@ -87,9 +87,10 @@ class CellRendererArtist(Gtk.CellRendererText):
                 pixbuf = GdkPixbuf.Pixbuf.new_from_file_at_size(uri,
                                                                 size,
                                                                 size)
-                surface = Gdk.cairo_surface_create_from_pixbuf(pixbuf,
-                                                               0,
-                                                               None)
+                surface = Gdk.cairo_surface_create_from_pixbuf(
+                                                     pixbuf,
+                                                     widget.get_scale_factor(),
+                                                     None)
                 del pixbuf
                 break
         if surface is None:

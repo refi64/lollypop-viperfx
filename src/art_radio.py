@@ -62,13 +62,15 @@ class RadioArt(BaseArt):
             print("Art::get_radio_cache_path(): %s" % e, ascii(filename))
             return None
 
-    def get_radio_artwork(self, name, size):
+    def get_radio_artwork(self, name, size, scale):
         """
             Return a cairo surface for radio name
             @param radio name as string
             @param pixbuf size as int
+            @param scale factor as int
             @return cairo surface
         """
+        size *= scale
         filename = self._get_radio_cache_name(name)
         cache_path_png = "%s/%s_%s.png" % (self._CACHE_PATH, filename, size)
         pixbuf = None
@@ -87,17 +89,19 @@ class RadioArt(BaseArt):
                                                                     size)
             if pixbuf is None:
                 return self._get_default_icon(
+                                             'audio-input-microphone-symbolic',
                                              size,
-                                             'audio-input-microphone-symbolic')
+                                             scale)
             pixbuf.savev(cache_path_png, "png", [None], [None])
-            surface = Gdk.cairo_surface_create_from_pixbuf(pixbuf, 0, None)
+            surface = Gdk.cairo_surface_create_from_pixbuf(pixbuf, scale, None)
             del pixbuf
             return surface
 
         except Exception as e:
             print(e)
-            return self._get_default_icon(size,
-                                          'audio-input-microphone-symbolic')
+            return self._get_default_icon('audio-input-microphone-symbolic',
+                                          size,
+                                          scale)
 
     def copy_uri_to_cache(self, uri, name, size):
         """

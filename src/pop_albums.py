@@ -40,8 +40,7 @@ class AlbumRow(Gtk.ListBoxRow):
         layout = Pango.Layout.new(ctx)
         layout.set_text("a", 1)
         font_height = int(AlbumRow.MARGIN * 2 + 2 * layout.get_pixel_size()[1])
-        cover_height = AlbumRow.MARGIN * 2 +\
-            ArtSize.MEDIUM * widget.get_scale_factor()
+        cover_height = AlbumRow.MARGIN * 2 + ArtSize.MEDIUM
         if font_height > cover_height:
             return font_height + 2
         else:
@@ -89,10 +88,10 @@ class AlbumRow(Gtk.ListBoxRow):
         cover.get_style_context().add_class('small-cover-frame')
         surface = Lp().art.get_album_artwork(
                                         self._album,
-                                        ArtSize.MEDIUM*self.get_scale_factor())
+                                        ArtSize.MEDIUM,
+                                        self.get_scale_factor())
         cover.set_from_surface(surface)
-        cover.set_size_request(ArtSize.MEDIUM*self.get_scale_factor(),
-                               ArtSize.MEDIUM*self.get_scale_factor())
+        cover.set_size_request(ArtSize.MEDIUM, ArtSize.MEDIUM)
         del surface
         self._play_indicator = Gtk.Image.new_from_icon_name(
                                                'media-playback-start-symbolic',

@@ -59,7 +59,8 @@ class AlbumWidget:
             return
         surface = Lp().art.get_album_artwork(
                             self._album,
-                            ArtSize.BIG * self._cover.get_scale_factor())
+                            ArtSize.BIG,
+                            self._cover.get_scale_factor())
         self._cover.set_from_surface(surface)
         self._cover.set_size_request(100, 100)
         if surface.get_height() > surface.get_width():
@@ -76,7 +77,8 @@ class AlbumWidget:
             return
         surface = Lp().art.get_album_artwork(
                             self._album,
-                            ArtSize.BIG * self._cover.get_scale_factor())
+                            ArtSize.BIG,
+                            self._cover.get_scale_factor())
         self._cover.set_from_surface(surface)
         if surface.get_height() > surface.get_width():
             self._overlay_orientation = Gtk.Orientation.VERTICAL

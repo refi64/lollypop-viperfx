@@ -307,7 +307,8 @@ class SearchPopover(Gtk.Popover):
                 search_row.set_cover(
                         Lp().art.get_album_artwork(
                                      Album(album_id),
-                                     ArtSize.MEDIUM*self.get_scale_factor()))
+                                     ArtSize.MEDIUM,
+                                     self.get_scale_factor()))
                 if result.is_track:
                     self._view.prepend(search_row)
                 else:

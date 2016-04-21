@@ -309,7 +309,8 @@ class QueuePopover(Gtk.Popover):
             if album_id != prev_album_id:
                 surface = Lp().art.get_album_artwork(
                                         Album(album_id),
-                                        ArtSize.MEDIUM*self.get_scale_factor())
+                                        ArtSize.MEDIUM,
+                                        self.get_scale_factor())
                 row.set_cover(surface)
                 row.show_header(True)
             self._view.add(row)
@@ -370,7 +371,8 @@ class QueuePopover(Gtk.Popover):
             else:
                 surface = Lp().art.get_album_artwork(
                                         Album(track.album.id),
-                                        ArtSize.MEDIUM*self.get_scale_factor())
+                                        ArtSize.MEDIUM,
+                                        self.get_scale_factor())
                 child.set_cover(surface)
                 child.show_header(True)
             prev_album_id = track.album.id

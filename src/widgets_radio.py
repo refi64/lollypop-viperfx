@@ -119,7 +119,8 @@ class RadioWidget(Gtk.FlowBoxChild, AlbumWidget):
             return
         surface = Lp().art.get_radio_artwork(
                     self._name,
-                    ArtSize.BIG*self._cover.get_scale_factor())
+                    ArtSize.BIG,
+                    self._cover.get_scale_factor())
         self._cover.set_from_surface(surface)
         del surface
 
@@ -131,7 +132,8 @@ class RadioWidget(Gtk.FlowBoxChild, AlbumWidget):
             return
         surface = Lp().art.get_radio_artwork(
                     self._name,
-                    ArtSize.BIG*self._cover.get_scale_factor())
+                    ArtSize.BIG,
+                    self._cover.get_scale_factor())
         self._cover.set_from_surface(surface)
         del surface
 

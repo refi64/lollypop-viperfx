@@ -121,7 +121,7 @@ class InfoContent(Gtk.Stack):
                                True,
                                None)
                     surface = Gdk.cairo_surface_create_from_pixbuf(pixbuf,
-                                                                   0,
+                                                                   scale,
                                                                    None)
                     del pixbuf
                     self._image.set_from_surface(surface)

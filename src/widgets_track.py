@@ -328,7 +328,8 @@ class PlaylistRow(Row):
             self._cover.set_tooltip_text(self._track.album.name)
             surface = Lp().art.get_album_artwork(
                                         self._track.album,
-                                        ArtSize.MEDIUM*self.get_scale_factor())
+                                        ArtSize.MEDIUM,
+                                        self.get_scale_factor())
             self._cover.set_from_surface(surface)
             self._cover.show()
             del surface

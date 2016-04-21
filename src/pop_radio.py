@@ -167,9 +167,10 @@ class RadioPopover(Gtk.Popover):
                                                 height,
                                                 GdkPixbuf.InterpType.BILINEAR)
             del pixbuf
-            surface = Gdk.cairo_surface_create_from_pixbuf(scaled_pixbuf,
-                                                           0,
-                                                           None)
+            surface = Gdk.cairo_surface_create_from_pixbuf(
+                                                       scaled_pixbuf,
+                                                       self.get_scale_factor(),
+                                                       None)
             del scaled_pixbuf
             image.set_from_surface(surface)
             del surface

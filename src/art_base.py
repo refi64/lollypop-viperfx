@@ -76,14 +76,16 @@ class BaseArt(GObject.GObject):
         """
         return "%s/%s_%s.jpg" % (self._CACHE_PATH, icon_name, size)
 
-    def _get_default_icon(self, size, icon_name):
+    def _get_default_icon(self, icon_name, size, scale):
         """
             Construct an empty cover album,
             code forked Gnome Music, see copyright header
-            @param size as int
             @param icon_name as str
+            @param size as int
+            @param scale factor as int
             @return pixbuf as cairo.Surface
         """
+        size *= scale
         # First look in cache
         cache_path_jpg = self._get_default_icon_path(size, icon_name)
         if os.path.exists(cache_path_jpg):
@@ -120,6 +122,6 @@ class BaseArt(GObject.GObject):
             except:
                 pixbuf.savev(cache_path_jpg, "jpeg",
                              ["quality"], ["90"])
-        surface = Gdk.cairo_surface_create_from_pixbuf(pixbuf, 0, None)
+        surface = Gdk.cairo_surface_create_from_pixbuf(pixbuf, scale, None)
         del pixbuf
         return surface

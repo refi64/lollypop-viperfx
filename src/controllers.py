@@ -266,15 +266,18 @@ class InfosController:
         if player.current_track.id == Type.RADIOS:
             art = Lp().art.get_radio_artwork(
                                    ", ".join(player.current_track.artists),
-                                   self._artsize*self.get_scale_factor())
+                                   self._artsize,
+                                   self.get_scale_factor())
         elif player.current_track.id == Type.EXTERNALS:
             art = Lp().art.get_album_artwork2(
                     player.current_track.uri,
-                    self._artsize*self.get_scale_factor())
+                    self._artsize,
+                    self.get_scale_factor())
         elif player.current_track.id is not None:
             art = Lp().art.get_album_artwork(
                                    player.current_track.album,
-                                   self._artsize*self.get_scale_factor())
+                                   self._artsize,
+                                   self.get_scale_factor())
         if art is not None:
             self._cover.set_from_surface(art)
             del art
