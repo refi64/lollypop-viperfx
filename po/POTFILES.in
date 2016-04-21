@@ -82,7 +82,7 @@ src/window.py
 [type: gettext/glade]data/InfoContent.ui
 [type: gettext/glade]data/ArtistInfo.ui
 [type: gettext/glade]data/ArtistView.ui
-[type: gettext/glade]data/CoversPopover.ui
+[type: gettext/glade]data/ArtworkSearch.ui
 [type: gettext/glade]data/DeviceManagerView.ui
 [type: gettext/glade]data/DeviceManagerWidget.ui
 [type: gettext/glade]data/FullScreen.ui
