@@ -51,9 +51,10 @@ class InfoCache:
             @param size as int
             @return path as string/None
         """
-        filepath = "%s/%s_%s.jpg" % (InfoCache.CACHE_PATH,
-                                     escape(prefix),
-                                     suffix)
+        filepath = "%s/%s_%s_%s.jpg" % (InfoCache.CACHE_PATH,
+                                        escape(prefix),
+                                        suffix,
+                                        ArtSize.ARTIST)
         filepath_at_size = "%s/%s_%s_%s.jpg" % (InfoCache.CACHE_PATH,
                                                 escape(prefix),
                                                 suffix,
@@ -105,8 +106,9 @@ class InfoCache:
             (status, content, tag) = f.load_contents()
             if not status:
                 content = None
-            if path.exists(filepath+".jpg"):
-                f = Gio.File.new_for_path(filepath+".jpg")
+            image_path = filepath+"_"+str(ArtSize.ARTIST)+".jpg"
+            if path.exists(image_path):
+                f = Gio.File.new_for_path(image_path)
                 (status, data, tag) = f.load_contents()
                 if not status:
                     data = None
