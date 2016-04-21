@@ -443,8 +443,8 @@ class AlbumSimpleWidget(Gtk.FlowBoxChild, AlbumWidget):
             Return preferred width
             @return (int, int)
         """
-        # Padding: 3px, border: 1px
-        width = ArtSize.BIG + 8
+        # Padding: 3px, border: 1px + spacing
+        width = ArtSize.BIG + 12
         return (width, width)
 
     def set_overlay(self, set):
