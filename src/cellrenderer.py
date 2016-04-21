@@ -69,12 +69,12 @@ class CellRendererArtist(Gtk.CellRendererText):
     def do_render(self, ctx, widget, background_area, cell_area, flags):
         size = ArtSize.ARTIST * widget.get_scale_factor()
         if self._is_artists and self.rowid >= 0:
-            cell_area.width -= size
-            cell_area.x = size
+            cell_area.width -= ArtSize.ARTIST
+            cell_area.x = ArtSize.ARTIST
         Gtk.CellRendererText.do_render(self, ctx, widget,
                                        cell_area, cell_area, flags)
         if self._is_artists and self.rowid >= 0:
-            cell_area.width = size
+            cell_area.width = ArtSize.ARTIST
             cell_area.x = 0
             self.do_own_render(ctx, widget, cell_area, size)
 
@@ -96,13 +96,13 @@ class CellRendererArtist(Gtk.CellRendererText):
             alpha = True
             surface = Gtk.IconTheme.get_default().load_surface(
                                              'media-optical-cd-audio-symbolic',
-                                             size,
+                                             ArtSize.ARTIST,
                                              1,
                                              widget.get_window(),
                                              0)
         ctx.translate(cell_area.x, cell_area.y)
         ctx.new_sub_path()
-        radius = size / 2 - 2
+        radius = ArtSize.ARTIST / 2 - 2
         ctx.arc(ArtSize.ARTIST/2, ArtSize.ARTIST/2, radius, 0, 2 * pi)
         ctx.set_source_rgb(1, 1, 1)
         ctx.fill_preserve()
