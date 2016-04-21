@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-04-18 16:20+0200\n"
+"POT-Creation-Date: 2016-04-22 10:30+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -119,7 +119,7 @@ msgstr ""
 msgid "Convert to MP3(MTP)"
 msgstr ""
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:26 ../data/SettingsDialog.ui.h:11
+#: ../data/org.gnome.Lollypop.gschema.xml.h:26 ../data/SettingsDialog.ui.h:12
 msgid "Auto update music"
 msgstr ""
 
@@ -131,51 +131,55 @@ msgstr ""
 msgid "Hide track own artists"
 msgstr ""
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:29
-msgid "Use dark gtk theme"
+#: ../data/org.gnome.Lollypop.gschema.xml.h:29 ../data/SettingsDialog.ui.h:9
+msgid "Show artist artwork"
 msgstr ""
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:30
+msgid "Use dark gtk theme"
+msgstr ""
+
+#: ../data/org.gnome.Lollypop.gschema.xml.h:31
 msgid "Disable the use client side window decorations (headerbar)"
 msgstr ""
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:31 ../data/SettingsDialog.ui.h:6
+#: ../data/org.gnome.Lollypop.gschema.xml.h:32 ../data/SettingsDialog.ui.h:6
 msgid "Show compilations in albums view"
 msgstr ""
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:32 ../data/SettingsDialog.ui.h:13
+#: ../data/org.gnome.Lollypop.gschema.xml.h:33 ../data/SettingsDialog.ui.h:14
 msgid "Continue playback when closed"
 msgstr ""
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:33
+#: ../data/org.gnome.Lollypop.gschema.xml.h:34
 msgid "Restore previous state"
 msgstr ""
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:34
+#: ../data/org.gnome.Lollypop.gschema.xml.h:35
 msgid "Disable MPRIS"
 msgstr ""
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:35
+#: ../data/org.gnome.Lollypop.gschema.xml.h:36
 msgid "Disable notifications"
 msgstr ""
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:36
+#: ../data/org.gnome.Lollypop.gschema.xml.h:37
 msgid "Show track number from tags"
 msgstr ""
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:37 ../data/SettingsDialog.ui.h:14
+#: ../data/org.gnome.Lollypop.gschema.xml.h:38 ../data/SettingsDialog.ui.h:15
 msgid "Mix songs"
 msgstr ""
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:38
+#: ../data/org.gnome.Lollypop.gschema.xml.h:39
 msgid "Mix songs only in party mode"
 msgstr ""
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:39
+#: ../data/org.gnome.Lollypop.gschema.xml.h:40
 msgid "Mix duration"
 msgstr ""
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:40
+#: ../data/org.gnome.Lollypop.gschema.xml.h:41
 msgid "Shuffle mode"
 msgstr ""
 
@@ -226,7 +230,7 @@ msgid "Genre/Artist/Cover browsing"
 msgstr ""
 
 #: ../data/lollypop.appdata.xml.in.h:8 ../src/playlists.py:239
-#: ../data/ArtistInfo.ui.h:5 ../data/ToolbarEnd.ui.h:7
+#: ../data/ArtistInfo.ui.h:6 ../data/ToolbarEnd.ui.h:7
 msgid "Search"
 msgstr ""
 
@@ -235,7 +239,7 @@ msgstr ""
 msgid "Queue"
 msgstr ""
 
-#: ../data/lollypop.appdata.xml.in.h:10 ../data/SettingsDialog.ui.h:22
+#: ../data/lollypop.appdata.xml.in.h:10 ../data/SettingsDialog.ui.h:23
 #: ../data/ToolbarEnd.ui.h:5
 msgid "Party mode"
 msgstr ""
@@ -287,29 +291,41 @@ msgid ""
 "    - Artist informations disabled"
 msgstr ""
 
-#: ../src/application.py:411
+#: ../src/application.py:413
 #, python-format
 msgid "%d artist"
 msgid_plural "%d artists"
 msgstr[0] ""
 msgstr[1] ""
 
-#: ../src/application.py:413
+#: ../src/application.py:415
 #, python-format
 msgid "%d album"
 msgid_plural "%d albums"
 msgstr[0] ""
 msgstr[1] ""
 
-#: ../src/application.py:415
+#: ../src/application.py:417
 #, python-format
 msgid "%d track"
 msgid_plural "%d tracks"
 msgstr[0] ""
 msgstr[1] ""
 
-#: ../src/application.py:430
+#: ../src/application.py:432
 msgid "Lollypop: You need to install yelp."
+msgstr ""
+
+#: ../src/art_widgets.py:53 ../src/pop_tunein.py:93 ../data/RadioPopover.ui.h:1
+msgid "Please wait..."
+msgstr ""
+
+#: ../src/art_widgets.py:143
+msgid "No cover found..."
+msgstr ""
+
+#: ../src/art_widgets.py:185
+msgid "Select artwork"
 msgstr ""
 
 #: ../src/collectionscanner.py:69
@@ -370,7 +386,7 @@ msgid "Pause"
 msgstr ""
 
 #: ../src/controllers.py:86 ../src/controllers.py:114 ../src/pop_tunein.py:155
-#: ../src/widgets_album.py:458 ../src/widgets_radio.py:162
+#: ../src/widgets_album.py:461 ../src/widgets_radio.py:164
 #: ../data/AlbumDetailedWidget.ui.h:1 ../data/ToolbarPlayback.ui.h:2
 msgid "Play"
 msgstr ""
@@ -383,15 +399,15 @@ msgstr ""
 msgid "Unknown"
 msgstr ""
 
-#: ../src/database_artists.py:97 ../src/view_artist.py:50
+#: ../src/database_artists.py:97
 msgid "Many artists"
 msgstr ""
 
-#: ../src/lastfm.py:24
+#: ../src/lastfm.py:23
 msgid "Last.fm authentication disabled"
 msgstr ""
 
-#: ../src/lastfm.py:330
+#: ../src/lastfm.py:332
 msgid "Wrong Last.fm credentials"
 msgstr ""
 
@@ -421,7 +437,7 @@ msgstr ""
 msgid "Clear albums"
 msgstr ""
 
-#: ../src/pop_albums.py:296 ../src/pop_info.py:208 ../src/view_artist.py:44
+#: ../src/pop_albums.py:296 ../src/pop_info.py:209 ../src/view_artist.py:41
 msgid "Go to current track"
 msgstr ""
 
@@ -429,23 +445,11 @@ msgstr ""
 msgid "Playing albums"
 msgstr ""
 
-#: ../src/pop_covers.py:53 ../src/pop_tunein.py:93 ../data/RadioPopover.ui.h:1
-msgid "Please wait..."
-msgstr ""
-
-#: ../src/pop_covers.py:133
-msgid "No cover found..."
-msgstr ""
-
-#: ../src/pop_covers.py:161
-msgid "Select a cover art for this album"
-msgstr ""
-
-#: ../src/pop_info.py:35
+#: ../src/pop_info.py:36
 msgid "Advanced artist informations disabled"
 msgstr ""
 
-#: ../src/pop_info.py:43
+#: ../src/pop_info.py:44
 msgid "WebKit support disabled"
 msgstr ""
 
@@ -512,7 +516,7 @@ msgstr ""
 msgid "Add"
 msgstr ""
 
-#: ../src/pop_radio.py:85 ../src/wikipedia.py:59
+#: ../src/pop_radio.py:85 ../src/wikipedia.py:58
 msgid "Modify"
 msgstr ""
 
@@ -528,11 +532,11 @@ msgstr ""
 msgid "Preferences"
 msgstr ""
 
-#: ../src/settings.py:166
+#: ../src/settings.py:169
 msgid "Populars"
 msgstr ""
 
-#: ../src/settings.py:167
+#: ../src/settings.py:170
 msgid "Recently added"
 msgstr ""
 
@@ -567,30 +571,30 @@ msgstr ""
 msgid "Remove"
 msgstr ""
 
-#: ../src/widgets_album.py:469 ../data/AlbumDetailedWidget.ui.h:3
+#: ../src/widgets_album.py:472 ../data/AlbumDetailedWidget.ui.h:3
 msgid "Play albums"
 msgstr ""
 
-#: ../src/widgets_album.py:479 ../data/AlbumDetailedWidget.ui.h:2
+#: ../src/widgets_album.py:482 ../data/AlbumDetailedWidget.ui.h:2
 msgid "Change artwork"
-msgstr ""
-
-#: ../src/widgets_album.py:645
-#, python-format
-msgid "%s h  %s m"
-msgstr ""
-
-#: ../src/widgets_album.py:647
-#, python-format
-msgid "%s h"
 msgstr ""
 
 #: ../src/widgets_album.py:649
 #, python-format
+msgid "%s h  %s m"
+msgstr ""
+
+#: ../src/widgets_album.py:651
+#, python-format
+msgid "%s h"
+msgstr ""
+
+#: ../src/widgets_album.py:653
+#, python-format
 msgid "%s m"
 msgstr ""
 
-#: ../src/widgets_album.py:908
+#: ../src/widgets_album.py:912
 #, python-format
 msgid "Disc %s"
 msgstr ""
@@ -621,7 +625,7 @@ msgstr ""
 msgid "Remove these tracks?"
 msgstr ""
 
-#: ../src/widgets_radio.py:178
+#: ../src/widgets_radio.py:180
 msgid "Modify radio"
 msgstr ""
 
@@ -683,20 +687,24 @@ msgid "Last.fm"
 msgstr ""
 
 #: ../data/ArtistInfo.ui.h:3
-msgid "Wikipedia"
+msgid "Artwork"
 msgstr ""
 
 #: ../data/ArtistInfo.ui.h:4
+msgid "Wikipedia"
+msgstr ""
+
+#: ../data/ArtistInfo.ui.h:5
 msgid "Lyrics"
 msgstr ""
 
-#: ../data/ArtistInfo.ui.h:6
+#: ../data/ArtistInfo.ui.h:7
 msgid ""
 "Reload information\n"
 "Long press to activate auto reload"
 msgstr ""
 
-#: ../data/CoversPopover.ui.h:1 ../data/RadioPopover.ui.h:2
+#: ../data/ArtworkSearch.ui.h:1 ../data/RadioPopover.ui.h:2
 msgid "Select a local file"
 msgstr ""
 
@@ -780,63 +788,63 @@ msgstr ""
 msgid "Show genres"
 msgstr ""
 
-#: ../data/SettingsDialog.ui.h:9
+#: ../data/SettingsDialog.ui.h:10
 msgid "Configure lollypop appearance"
 msgstr ""
 
-#: ../data/SettingsDialog.ui.h:10
+#: ../data/SettingsDialog.ui.h:11
 msgid "Appearance"
 msgstr ""
 
-#: ../data/SettingsDialog.ui.h:12
+#: ../data/SettingsDialog.ui.h:13
 msgid "Restore state on startup"
 msgstr ""
 
-#: ../data/SettingsDialog.ui.h:15
+#: ../data/SettingsDialog.ui.h:16
 msgid "Long press to show options"
 msgstr ""
 
-#: ../data/SettingsDialog.ui.h:16
+#: ../data/SettingsDialog.ui.h:17
 msgid "Do not repeat by default"
 msgstr ""
 
-#: ../data/SettingsDialog.ui.h:17
+#: ../data/SettingsDialog.ui.h:18
 msgid "Configure lollypop behaviour"
 msgstr ""
 
-#: ../data/SettingsDialog.ui.h:18
+#: ../data/SettingsDialog.ui.h:19
 msgid "Behaviour"
 msgstr ""
 
-#: ../data/SettingsDialog.ui.h:19
+#: ../data/SettingsDialog.ui.h:20
 msgid "Select music folders"
 msgstr ""
 
-#: ../data/SettingsDialog.ui.h:20
+#: ../data/SettingsDialog.ui.h:21
 msgid "Music"
 msgstr ""
 
-#: ../data/SettingsDialog.ui.h:21
+#: ../data/SettingsDialog.ui.h:22
 msgid "Select what will be available in party mode"
 msgstr ""
 
-#: ../data/SettingsDialog.ui.h:23
+#: ../data/SettingsDialog.ui.h:24
 msgid "Login:"
 msgstr ""
 
-#: ../data/SettingsDialog.ui.h:24
+#: ../data/SettingsDialog.ui.h:25
 msgid "Password:"
 msgstr ""
 
-#: ../data/SettingsDialog.ui.h:25
+#: ../data/SettingsDialog.ui.h:26
 msgid "Connect"
 msgstr ""
 
-#: ../data/SettingsDialog.ui.h:26
+#: ../data/SettingsDialog.ui.h:27
 msgid "You need to install pylast and gi secret"
 msgstr ""
 
-#: ../data/SettingsDialog.ui.h:27
+#: ../data/SettingsDialog.ui.h:28
 msgid "Configure Last.fm credentials"
 msgstr ""
 
