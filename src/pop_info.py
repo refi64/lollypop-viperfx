@@ -77,6 +77,8 @@ class InfoPopover(Gtk.Popover):
         if Lp().settings.get_value('inforeload'):
             builder.get_object('reload').get_style_context().add_class(
                                                                     'selected')
+        if self._artist_ids:
+            self._stack.get_child_by_name('artwork').show()
         if show_albums:
             self._stack.get_child_by_name('albums').show()
         if InfoPopover.Wikipedia is not None:
