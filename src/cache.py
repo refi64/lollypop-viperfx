@@ -66,10 +66,19 @@ class InfoCache:
             pixbuf = GdkPixbuf.Pixbuf.new_from_file_at_size(filepath,
                                                             size,
                                                             size)
+            if pixbuf.get_height() > pixbuf.get_width():
+                vertical = True
+            else:
+                vertical = False
+            del pixbuf
             extract = GdkPixbuf.Pixbuf.new(GdkPixbuf.Colorspace.RGB,
                                            True, 8,
                                            size, size)
-            if pixbuf.get_height() > pixbuf.get_width():
+            if vertical:
+                pixbuf = GdkPixbuf.Pixbuf.new_from_file_at_scale(filepath,
+                                                                 size,
+                                                                 -1,
+                                                                 True)
                 diff = pixbuf.get_height() - size
                 pixbuf.copy_area(0, diff/2,
                                  pixbuf.get_width(),
@@ -77,13 +86,16 @@ class InfoCache:
                                  extract,
                                  0, 0)
             else:
+                pixbuf = GdkPixbuf.Pixbuf.new_from_file_at_scale(filepath,
+                                                                 -1,
+                                                                 size,
+                                                                 True)
                 diff = pixbuf.get_width() - size
                 pixbuf.copy_area(diff/2, 0,
                                  size,
                                  pixbuf.get_height(),
                                  extract,
                                  0, 0)
-
             extract.savev(filepath_at_size, "jpeg", ["quality"], ["90"])
             del pixbuf
             del extract
