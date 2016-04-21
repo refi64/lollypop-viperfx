@@ -7,8 +7,9 @@ app_PYTHON = \
     art_downloader.py\
     art.py\
     art_radio.py\
+    art_widgets.py\
     cache.py\
-    cellrendereralbum.py\
+    cellrenderer.py\
     codecs.py\
     collectionscanner.py\
     container.py\

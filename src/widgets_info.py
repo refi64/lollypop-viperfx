@@ -111,18 +111,24 @@ class InfoContent(Gtk.Stack):
             self._content.set_markup(escape(content.decode('utf-8')))
             if stream is not None:
                 scale = self._image.get_scale_factor()
-                pixbuf = GdkPixbuf.Pixbuf.new_from_stream_at_scale(
-                           stream,
-                           Lp().settings.get_value(
+                # Will happen if cache is broken or when reading empty files
+                try:
+                    pixbuf = GdkPixbuf.Pixbuf.new_from_stream_at_scale(
+                               stream,
+                               Lp().settings.get_value(
                                         'cover-size').get_int32() + 50 * scale,
-                           -1,
-                           True,
-                           None)
-                surface = Gdk.cairo_surface_create_from_pixbuf(pixbuf, 0, None)
-                del pixbuf
-                self._image.set_from_surface(surface)
-                del surface
-                self._image.show()
+                               -1,
+                               True,
+                               None)
+                    surface = Gdk.cairo_surface_create_from_pixbuf(pixbuf,
+                                                                   0,
+                                                                   None)
+                    del pixbuf
+                    self._image.set_from_surface(surface)
+                    del surface
+                    self._image.show()
+                except:
+                    pass
             self.set_visible_child_name('widget')
         else:
             self._on_not_found()
@@ -136,7 +142,7 @@ class InfoContent(Gtk.Stack):
             @return True if loaded
         """
         (content, data) = InfoCache.get(prefix, suffix)
-        if content:
+        if content is not None:
             stream = None
             if data is not None:
                 stream = Gio.MemoryInputStream.new_from_data(data, None)
@@ -203,14 +209,13 @@ class WikipediaContent(InfoContent):
         """
         self._menu_model.remove_all()
         wp = Wikipedia()
-        (url, image_url, content) = wp.get_page_infos(artist)
-        # If we get a result without an image,
-        # we try to get artist artwork from spotify
-        if content is not None and image_url is None:
-            image_url = Lp().art.get_spotify_artist_artwork(artist)
+        try:
+            (url, content) = wp.get_page_infos(artist)
+        except:
+            url = content = None
         if not self._stop:
             InfoContent.set_content(self, self._artist, content,
-                                    image_url, 'wikipedia')
+                                    url, 'wikipedia')
             t = Thread(target=self._setup_menu,
                        args=(self._artist, self._album))
             t.daemon = True
@@ -306,6 +311,9 @@ class LastfmContent(InfoContent):
             Load artists page content
             @param artist as str
         """
-        (url, image_url, content) = Lp().lastfm.get_artist_infos(artist)
+        try:
+            (url, content) = Lp().lastfm.get_artist_infos(artist)
+        except:
+            url = content = None
         if not self._stop:
-            InfoContent.set_content(self, artist, content, image_url, 'lastfm')
+            InfoContent.set_content(self, artist, content, url, 'lastfm')

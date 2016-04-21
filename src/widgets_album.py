@@ -316,7 +316,6 @@ class AlbumWidget:
         """
         popover = CoversPopover(self._album.artist_id, self._album.id)
         popover.set_relative_to(widget)
-        popover.populate()
         popover.connect('closed', self._on_pop_cover_closed)
         # Disable hidding overlay
         self._show_overlay = False

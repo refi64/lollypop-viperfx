@@ -119,6 +119,9 @@ class SettingsDialog:
         switch_artists = builder.get_object('switch_artists')
         switch_artists.set_state(Lp().settings.get_value('hide-artists'))
 
+        switch_artwork = builder.get_object('switch_artwork')
+        switch_artwork.set_state(Lp().settings.get_value('artist-artwork'))
+
         switch_repeat = builder.get_object('switch_repeat')
         switch_repeat.set_state(not Lp().settings.get_value('repeat'))
 
@@ -344,6 +347,18 @@ class SettingsDialog:
         """
         Lp().settings.set_value('hide-artists',
                                 GLib.Variant('b', state))
+
+    def _update_artwork_setting(self, widget, state):
+        """
+            Update artist artwork setting
+            @param widget as unused, state as widget state
+        """
+        Lp().settings.set_value('artist-artwork',
+                                GLib.Variant('b', state))
+        Lp().window.show_genres(Lp().settings.get_value('show-genres'))
+        Lp().window.reload_view()
+        if state:
+            Lp().art.cache_artists_art()
 
     def _update_repeat_setting(self, widget, state):
         """

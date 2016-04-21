@@ -16,7 +16,8 @@ from cgi import escape
 from gettext import gettext as _
 from locale import strcoll
 
-from lollypop.define import Type, Lp, SelectionMode
+from lollypop.cellrenderer import CellRendererArtist
+from lollypop.define import Type, Lp, SelectionMode, ArtSize
 
 
 class SelectionPopover(Gtk.Popover):
@@ -97,23 +98,21 @@ class SelectionList(Gtk.ScrolledWindow):
         self._model.set_sort_func(0, self._sort_items)
         self._view = builder.get_object('view')
         self._view.set_row_separator_func(self._row_separator_func)
-
-        self._renderer0 = Gtk.CellRendererText()
+        self._renderer0 = CellRendererArtist()
         self._renderer0.set_property('ellipsize-set', True)
         self._renderer0.set_property('ellipsize', Pango.EllipsizeMode.END)
-        renderer1 = Gtk.CellRendererPixbuf()
+        self._renderer1 = Gtk.CellRendererPixbuf()
         column = Gtk.TreeViewColumn('')
-        column.pack_start(self._renderer0, True)
-        column.pack_start(renderer1, False)
-        column.add_attribute(self._renderer0, 'text', 1)
-        column.add_attribute(renderer1, 'icon-name', 2)
         column.set_expand(True)
-        column.set_sizing(Gtk.TreeViewColumnSizing.FIXED)
-
+        column.pack_start(self._renderer0, True)
+        column.add_attribute(self._renderer0, 'text', 1)
+        column.add_attribute(self._renderer0, 'artist', 1)
+        column.add_attribute(self._renderer0, 'rowid', 0)
+        column.pack_start(self._renderer1, False)
+        column.add_attribute(self._renderer1, 'icon-name', 2)
         self._view.append_column(column)
         self._view.connect('motion_notify_event', self._on_motion_notify)
         self._view.set_property('has_tooltip', True)
-
         self.add(self._view)
         self.get_vadjustment().connect('value_changed', self._on_scroll)
 
@@ -123,6 +122,7 @@ class SelectionList(Gtk.ScrolledWindow):
             @param is_artists as bool
         """
         self._is_artists = is_artists
+        self._renderer0.set_is_artists(is_artists)
 
     def is_marked_as_artists(self):
         """
@@ -521,6 +521,9 @@ class SelectionList(Gtk.ScrolledWindow):
                 text = self._model.get_value(iterator, 1)
                 column = self._view.get_column(0)
                 (position, width) = column.cell_get_position(self._renderer0)
+                if Lp().settings.get_value('artist-artwork') and\
+                        self._is_artists:
+                    width -= ArtSize.ARTIST
                 layout.set_ellipsize(Pango.EllipsizeMode.END)
                 layout.set_width(Pango.units_from_double(width-8))
                 layout.set_text(text, -1)

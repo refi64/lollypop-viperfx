@@ -47,33 +47,28 @@ class Wikipedia:
         """
             Get page infos
             @param page name as str
-            @return (url as str, image url as str, content as str)
+            @return (url as str, content as str)
         """
         if not Gio.NetworkMonitor.get_default().get_network_available():
-            return (None, None, None)
-        try:
-            page = wikipedia.page(name)
-            if page is None:
-                return (None, None, None)
-            content = page.content
-            content = re.sub(r'%s ==' % _('Modify'), ' ==', content)
-            url = page.url
-            jpegs = []
-            shuffle(page.images)
-            for image in page.images:
-                if image.lower().endswith('.jpg'):
-                    jpegs.append(image)
-                # Search specific string in urls
-                if name.replace(' ', '_').lower() in image.lower():
-                    return (url, image, content.encode(encoding='UTF-8'))
-            # If we only found one jpg, then use it
-            image = None
-            if jpegs:
-                image = jpegs[0]
-            return (url, image, content.encode(encoding='UTF-8'))
-        except Exception as e:
-            print("Wikipedia::get_page_infos(): %s" % e)
-            return (None, None, None)
+            return (None, None)
+        page = wikipedia.page(name)
+        if page is None:
+            return (None, None)
+        content = page.content
+        content = re.sub(r'%s ==' % _('Modify'), ' ==', content)
+        jpegs = []
+        shuffle(page.images)
+        for url in page.images:
+            if url.lower().endswith('.jpg'):
+                jpegs.append(url)
+            # Search specific string in urls
+            if name.replace(' ', '_').lower() in url.lower():
+                return (url, content.encode(encoding='UTF-8'))
+        # If we only found one jpg, then use it
+        url = None
+        if jpegs:
+            url = jpegs[0]
+        return (url, content.encode(encoding='UTF-8'))
 
 #######################
 # PRIVATE             #

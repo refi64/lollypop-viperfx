@@ -19,6 +19,7 @@ from lollypop.define import Lp, OpenLink
 from lollypop.objects import Track
 from lollypop.widgets_info import WikipediaContent, LastfmContent
 from lollypop.cache import InfoCache
+from lollypop.art_widgets import ArtworkSearch
 from lollypop.view_artist_albums import CurrentArtistAlbumsView
 
 
@@ -76,17 +77,16 @@ class InfoPopover(Gtk.Popover):
         if Lp().settings.get_value('inforeload'):
             builder.get_object('reload').get_style_context().add_class(
                                                                     'selected')
-        if not show_albums:
-            self._stack.get_child_by_name('albums').destroy()
-        if InfoPopover.Wikipedia is None:
-            self._stack.get_child_by_name('wikipedia').destroy()
-        if Lp().lastfm is None:
-            self._stack.get_child_by_name('lastfm').destroy()
-        if artist_ids:
-            self._stack.get_child_by_name('lyrics').destroy()
-        if InfoPopover.WebView is None:
-            self._stack.get_child_by_name('duck').destroy()
-            self._stack.get_child_by_name('lyrics').destroy()
+        if show_albums:
+            self._stack.get_child_by_name('albums').show()
+        if InfoPopover.Wikipedia is not None:
+            self._stack.get_child_by_name('wikipedia').show()
+        if Lp().lastfm is not None:
+            self._stack.get_child_by_name('lastfm').show()
+        if InfoPopover.WebView is not None:
+            self._stack.get_child_by_name('duck').show()
+            if not artist_ids:
+                self._stack.get_child_by_name('lyrics').show()
         self._stack.set_visible_child_name(
             Lp().settings.get_value('infoswitch').get_string())
 
@@ -220,6 +220,17 @@ class InfoPopover(Gtk.Popover):
         t = Thread(target=view.populate, args=(self._current_track,))
         t.daemon = True
         t.start()
+
+    def _on_map_artwork(self, widget):
+        """
+            Load on map
+            @param widget as Gtk.Grid
+        """
+        artist = Lp().artists.get_name(self._artist_ids[0])
+        search = ArtworkSearch(artist, None)
+        search.show()
+        search.populate()
+        widget.add(search)
 
     def _on_map_lastfm(self, widget):
         """

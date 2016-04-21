@@ -15,6 +15,7 @@ from gi.repository import Gio, GdkPixbuf
 from os import mkdir, path
 
 from lollypop.utils import escape
+from lollypop.define import ArtSize
 
 
 class InfoCache:
@@ -33,53 +34,65 @@ class InfoCache:
             except:
                 print("Can't create %s" % InfoCache.CACHE_PATH)
 
-    def exists_in_cache(prefix):
+    def exists_in_cache(prefix, small=False):
         """
             Return True if an info is cached
             @param prefix as string
         """
-        return InfoCache.get_artwork(prefix, "lastfm") != "" or\
-            InfoCache.get_artwork(prefix, "wikipedia") != ""
+        return InfoCache.get_artwork(prefix, "lastfm", small) is not None or\
+            InfoCache.get_artwork(prefix, "wikipedia", small) is not None or\
+            InfoCache.get_artwork(prefix, "spotify", small) is not None
 
-    def get_artwork(prefix, suffix):
+    def get_artwork(prefix, suffix, small=False):
         """
             Return path for artwork, empty if none
             @param prefix as string
             @param suffix as string
+            @param small as bool
             @return path as string
         """
-        filepath = "%s/%s_%s.jpg" % (InfoCache.CACHE_PATH,
-                                     escape(prefix),
-                                     suffix)
+        if small:
+            filepath = "%s/%s_%s_small.jpg" % (InfoCache.CACHE_PATH,
+                                               escape(prefix),
+                                               suffix)
+        else:
+            filepath = "%s/%s_%s.jpg" % (InfoCache.CACHE_PATH,
+                                         escape(prefix),
+                                         suffix)
         if path.exists(filepath):
             return filepath
         else:
-            return ""
+            return None
 
-    def get(prefix, suffix):
+    def get(prefix, suffix, small=False):
         """
             Get content from cache
             @param prefix as str
             @param suffix as str
+            @param small as bool
             @return (content as string, data as bytes)
         """
-        filepath = "%s/%s_%s" % (InfoCache.CACHE_PATH,
-                                 escape(prefix),
-                                 suffix)
+        if small:
+            filepath = "%s/%s_%s_small" % (InfoCache.CACHE_PATH,
+                                           escape(prefix),
+                                           suffix)
+        else:
+            filepath = "%s/%s_%s" % (InfoCache.CACHE_PATH,
+                                     escape(prefix),
+                                     suffix)
         content = None
         data = None
         if path.exists(filepath+".txt"):
             f = Gio.File.new_for_path(filepath+".txt")
             (status, content, tag) = f.load_contents()
-            if status and path.exists(filepath+".jpg"):
+            if not status:
+                content = None
+            if path.exists(filepath+".jpg"):
                 f = Gio.File.new_for_path(filepath+".jpg")
                 (status, data, tag) = f.load_contents()
                 if not status:
                     data = None
-        if content is None:
-            return (None, None)
-        else:
-            return (content, data)
+        return (content, data)
 
     def cache(prefix, content, data, suffix):
         """
@@ -89,19 +102,22 @@ class InfoCache:
             @param data as bytes
             @param suffix as str
         """
-        if content is None:
-            return
-
         filepath = "%s/%s_%s" % (InfoCache.CACHE_PATH,
                                  escape(prefix),
                                  suffix)
-        f = Gio.File.new_for_path(filepath+".txt")
-        fstream = f.replace(None, False,
-                            Gio.FileCreateFlags.REPLACE_DESTINATION, None)
-        if fstream is not None:
-            fstream.write(content, None)
+        if content is not None:
+            f = Gio.File.new_for_path(filepath+".txt")
+            fstream = f.replace(None, False,
+                                Gio.FileCreateFlags.REPLACE_DESTINATION, None)
+            if fstream is not None:
+                fstream.write(content, None)
+                fstream.close()
+        if data is None:
+            f = Gio.File.new_for_path(filepath+".jpg")
+            fstream = f.replace(None, False,
+                                Gio.FileCreateFlags.REPLACE_DESTINATION, None)
             fstream.close()
-        if data is not None:
+        else:
             stream = Gio.MemoryInputStream.new_from_data(data, None)
             pixbuf = GdkPixbuf.Pixbuf.new_from_stream_at_scale(stream,
                                                                800,
@@ -109,6 +125,46 @@ class InfoCache:
                                                                True,
                                                                None)
             pixbuf.savev(filepath+".jpg", "jpeg", ["quality"], ["90"])
+            if pixbuf.get_width() > pixbuf.get_height():
+                vertical = False
+            else:
+                vertical = True
+            del pixbuf
+
+            # Small jpg
+            stream = Gio.MemoryInputStream.new_from_data(data, None)
+            extract = GdkPixbuf.Pixbuf.new(GdkPixbuf.Colorspace.RGB,
+                                           True, 8,
+                                           ArtSize.ARTIST, ArtSize.ARTIST)
+            if vertical:
+                pixbuf = GdkPixbuf.Pixbuf.new_from_stream_at_scale(
+                                                               stream,
+                                                               ArtSize.ARTIST,
+                                                               -1,
+                                                               True,
+                                                               None)
+                diff = pixbuf.get_height() - ArtSize.ARTIST
+                pixbuf.copy_area(0, diff/2,
+                                 pixbuf.get_width(),
+                                 ArtSize.ARTIST,
+                                 extract,
+                                 0, 0)
+            else:
+                pixbuf = GdkPixbuf.Pixbuf.new_from_stream_at_scale(
+                                                               stream,
+                                                               -1,
+                                                               ArtSize.ARTIST,
+                                                               True,
+                                                               None)
+                diff = pixbuf.get_width() - ArtSize.ARTIST
+                pixbuf.copy_area(diff/2, 0,
+                                 ArtSize.ARTIST,
+                                 pixbuf.get_height(),
+                                 extract,
+                                 0, 0)
+
+            extract.savev(filepath+"_small"+".jpg",
+                          "jpeg", ["quality"], ["90"])
             del pixbuf
 
     def uncache(prefix, suffix):
@@ -125,9 +181,9 @@ class InfoCache:
             f.delete(None)
         except:
             pass
-        filepath = "%s/%s_%s" % (InfoCache.CACHE_PATH,
-                                 escape(prefix),
-                                 suffix)
+        filepath = "%s/%s_%s.jpg" % (InfoCache.CACHE_PATH,
+                                     escape(prefix),
+                                     suffix)
         f = Gio.File.new_for_path(filepath)
         try:
             f.delete(None)

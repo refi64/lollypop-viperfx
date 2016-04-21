@@ -147,6 +147,8 @@ class Application(Gtk.Application):
         self.player = Player()
         self.scanner = CollectionScanner()
         self.art = Art()
+        if self.settings.get_value('artist-artwork'):
+            GLib.timeout_add(5000, self.art.cache_artists_art)
         if LastFM is not None:
             self.lastfm = LastFM()
         if not self.settings.get_value('disable-mpris'):

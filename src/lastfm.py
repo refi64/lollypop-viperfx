@@ -118,23 +118,19 @@ class LastFM(LastFMNetwork):
         """
             Get artist infos
             @param artist as str
-            @return (url as str, image url as str, content as str)
+            @return (url as str, content as str)
         """
         if not Gio.NetworkMonitor.get_default().get_network_available():
             return (None, None, None)
+        last_artist = self.get_artist(artist)
         try:
-            last_artist = self.get_artist(artist)
-            url = last_artist.get_url()
-            try:
-                content = last_artist.get_bio_content(
-                    language=getdefaultlocale()[0][0:2])
-            except:
-                content = last_artist.get_bio_content()
-            content = re.sub(r'<.*Last.fm.*>.', '', content)
-            image_url = last_artist.get_cover_image(3)
-            return (url, image_url, content.encode(encoding='UTF-8'))
+            content = last_artist.get_bio_content(
+                language=getdefaultlocale()[0][0:2])
         except:
-            return (None, None, None)
+            content = last_artist.get_bio_content()
+        content = re.sub(r'<.*Last.fm.*>.', '', content)
+        url = last_artist.get_cover_image(3)
+        return (url, content.encode(encoding='UTF-8'))
 
     def scrobble(self, artist, album, title, timestamp, duration):
         """

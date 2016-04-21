@@ -18,7 +18,7 @@ import os
 from lollypop.art_base import BaseArt
 from lollypop.art_downloader import ArtDownloader
 from lollypop.tagreader import TagReader
-from lollypop.define import Lp
+from lollypop.define import Lp, ArtSize
 from lollypop.objects import Album
 from lollypop.utils import escape
 
@@ -195,10 +195,10 @@ class AlbumArt(BaseArt, ArtDownloader, TagReader):
         else:
             return self._get_default_icon(size, 'folder-music-symbolic')
 
-    def save_album_artwork(self, pixbuf, album_id):
+    def save_album_artwork(self, data, album_id):
         """
-            Save pixbuf for album id
-            @param pixbuf as Gdk.Pixbuf
+            Save data for album id
+            @param data as bytes
             @param album id as int
         """
         try:
@@ -212,6 +212,12 @@ class AlbumArt(BaseArt, ArtDownloader, TagReader):
                     os.remove(os.path.join(album.path, self._favorite))
             else:
                 artpath = os.path.join(album.path, self._favorite)
+            stream = Gio.MemoryInputStream.new_from_data(data, None)
+            pixbuf = GdkPixbuf.Pixbuf.new_from_stream_at_scale(stream,
+                                                               ArtSize.MONSTER,
+                                                               ArtSize.MONSTER,
+                                                               False,
+                                                               None)
             pixbuf.savev(artpath, "jpeg", ["quality"], ["90"])
             del pixbuf
         except Exception as e:

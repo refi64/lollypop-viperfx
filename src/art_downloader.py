@@ -10,19 +10,26 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-from gi.repository import GLib, Gio, GdkPixbuf
+from gi.repository import GLib, Gio
 
 from threading import Thread
 import json
 
 from lollypop.objects import Album
-from lollypop.define import Lp, ArtSize
+from lollypop.cache import InfoCache
+from lollypop.define import Lp
+from lollypop.utils import debug
 
 
 class ArtDownloader:
     """
         Download artwork from the web
     """
+    try:
+        from lollypop.wikipedia import Wikipedia
+    except:
+        Wikipedia = None
+
     def __init__(self):
         """
             Init art downloader
@@ -30,6 +37,7 @@ class ArtDownloader:
         self._albums_queue = []
         self._albums_history = []
         self._in_albums_download = False
+        self._cache_artists_running = False
 
     def download_album_art(self, album_id):
         """
@@ -44,6 +52,17 @@ class ArtDownloader:
                 t = Thread(target=self._download_albums_art)
                 t.daemon = True
                 t.start()
+
+    def cache_artists_art(self):
+        """
+            Cache artwork for all artists
+        """
+        if self._cache_artists_running:
+            return
+        self._cache_artists_running = True
+        t = Thread(target=self._cache_artists_art)
+        t.daemon = True
+        t.start()
 
     def get_spotify_artist_artwork(self, artist):
         """
@@ -61,7 +80,7 @@ class ArtDownloader:
                 decode = json.loads(data.decode('utf-8'))
                 return decode['artists']['items'][0]['images'][0]['url']
         except Exception as e:
-            print("ArtDownloader::get_spotify_artist_artwork():", e)
+            debug("ArtDownloader::get_spotify_artist_artwork(): %s" % e)
         return None
 
     def get_duck_arts(self, search):
@@ -102,6 +121,49 @@ class ArtDownloader:
 #######################
 # PRIVATE             #
 #######################
+    def _cache_artists_art(self):
+        """
+            Cache artwork for all artists
+        """
+        # We create cache if needed
+        InfoCache.init()
+        # Then cache artwork for lastfm/wikipedia/spotify
+        # We cache content as the same time
+        # TODO Make this code more generic
+        for (artist_id, artist) in Lp().artists.get([]):
+            debug("ArtDownloader::_cache_artists_art(): %s" % artist)
+            if not Gio.NetworkMonitor.get_default().get_network_available() or\
+                    InfoCache.exists_in_cache(artist):
+                continue
+            if Lp().lastfm is not None:
+                try:
+                    (url, content) = Lp().lastfm.get_artist_infos(artist)
+                    if url is not None:
+                        s = Gio.File.new_for_uri(url)
+                        (status, data, tag) = s.load_contents()
+                        if status:
+                            InfoCache.cache(artist, content, data, "lastfm")
+                except:
+                    InfoCache.cache(artist, None, None, "lastfm")
+            if ArtDownloader.Wikipedia is not None:
+                try:
+                    wp = ArtDownloader.Wikipedia()
+                    (url, content) = wp.get_page_infos(artist)
+                    if url is not None:
+                        s = Gio.File.new_for_uri(url)
+                        (status, data, tag) = s.load_contents()
+                        if status:
+                            InfoCache.cache(artist, content, data, "wikipedia")
+                except:
+                    InfoCache.cache(artist, None, None, "wikipedia")
+            url = self.get_spotify_artist_artwork(artist)
+            if url is not None:
+                s = Gio.File.new_for_uri(url)
+                (status, data, tag) = s.load_contents()
+                if status:
+                    InfoCache.cache(artist, None, data, "spotify")
+        self._cache_artists_running = False
+
     def _download_albums_art(self):
         """
             Download albums artwork (from queue)
@@ -113,16 +175,16 @@ class ArtDownloader:
             album_id = self._albums_queue.pop()
             album = Lp().albums.get_name(album_id)
             artist = ", ".join(Lp().albums.get_artists(album_id))
-            pixbuf = self._get_album_art_spotify(artist, album)
-            if pixbuf is None:
-                pixbuf = self._get_album_art_itunes(artist, album)
-            if pixbuf is None:
-                pixbuf = self._get_album_art_lastfm(artist, album)
-            if pixbuf is None:
+            data = self._get_album_art_spotify(artist, album)
+            if data is None:
+                data = self._get_album_art_itunes(artist, album)
+            if data is None:
+                data = self._get_album_art_lastfm(artist, album)
+            if data is None:
                 self._albums_history.append(album_id)
                 continue
             try:
-                    Lp().art.save_album_artwork(pixbuf, album_id)
+                    Lp().art.save_album_artwork(data, album_id)
                     Lp().art.clean_album_cache(Album(album_id))
                     GLib.idle_add(Lp().art.album_artwork_update, album_id)
             except Exception as e:
@@ -136,10 +198,10 @@ class ArtDownloader:
             Get album artwork from itunes
             @param artist as string
             @param album as string
-            @return pixbuf as GdkPixbuf.Pixbuf
+            @return data as bytes
             @tread safe
         """
-        pixbuf = None
+        data = None
         artists_spotify_ids = []
         try:
             artist_formated = GLib.uri_escape_string(
@@ -167,28 +229,20 @@ class ArtDownloader:
                     if url is not None:
                         s = Gio.File.new_for_uri(url)
                         (status, data, tag) = s.load_contents()
-                        if status:
-                            stream = Gio.MemoryInputStream.new_from_data(data,
-                                                                         None)
-                            pixbuf = GdkPixbuf.Pixbuf.new_from_stream_at_scale(
-                                        stream, ArtSize.MONSTER,
-                                        ArtSize.MONSTER,
-                                        False,
-                                        None)
                     break
         except Exception as e:
             print("ArtDownloader::_get_album_art_spotify: %s" % e)
-        return pixbuf
+        return data
 
     def _get_album_art_itunes(self, artist, album):
         """
             Get album artwork from itunes
             @param artist as string
             @param album as string
-            @return pixbuf as GdkPixbuf.Pixbuf
+            @return data as bytes
             @tread safe
         """
-        pixbuf = None
+        data = None
         try:
             album_formated = GLib.uri_escape_string(
                                 album, None, True).replace(' ', '+')
@@ -203,28 +257,20 @@ class ArtDownloader:
                                                            '512x512')
                         s = Gio.File.new_for_uri(url)
                         (status, data, tag) = s.load_contents()
-                        if status:
-                            stream = Gio.MemoryInputStream.new_from_data(data,
-                                                                         None)
-                            pixbuf = GdkPixbuf.Pixbuf.new_from_stream_at_scale(
-                                        stream, ArtSize.MONSTER,
-                                        ArtSize.MONSTER,
-                                        False,
-                                        None)
                         break
         except Exception as e:
             print("ArtDownloader::_get_album_art_itunes: %s" % e)
-        return pixbuf
+        return data
 
     def _get_album_art_lastfm(self, artist, album):
         """
             Get album artwork from lastfm
             @param artist as string
             @param album as string
-            @return pixbuf as GdkPixbuf.Pixbuf
+            @return data as bytes
             @tread safe
         """
-        pixbuf = None
+        data = None
         if Lp().lastfm is not None:
             try:
                 last_album = Lp().lastfm.get_album(artist, album)
@@ -232,14 +278,6 @@ class ArtDownloader:
                 if url is not None:
                     s = Gio.File.new_for_uri(url)
                     (status, data, tag) = s.load_contents()
-                    if status:
-                        stream = Gio.MemoryInputStream.new_from_data(data,
-                                                                     None)
-                        pixbuf = GdkPixbuf.Pixbuf.new_from_stream_at_scale(
-                                    stream, ArtSize.MONSTER,
-                                    ArtSize.MONSTER,
-                                    False,
-                                    None)
             except Exception as e:
                 print("ArtDownloader::_get_album_art_lastfm: %s" % e)
-        return pixbuf
+        return data

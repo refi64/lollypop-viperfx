@@ -17,7 +17,7 @@ from cgi import escape
 from gettext import gettext as _
 
 from lollypop.define import Lp, Type, WindowSize
-from lollypop.cellrendereralbum import CellRendererAlbum
+from lollypop.cellrenderer import CellRendererAlbum
 from lollypop.widgets_track import TracksWidget, PlaylistRow
 from lollypop.objects import Track
 

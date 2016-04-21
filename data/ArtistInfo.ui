@@ -35,7 +35,7 @@
             <property name="transition_type">crossfade</property>
             <child>
               <object class="GtkGrid" id="albums">
-                <property name="visible">True</property>
+                <property name="visible">False</property>
                 <property name="can_focus">False</property>
                         <property name="orientation">vertical</property>
                 <signal name="map" handler="_on_map_albums" swapped="no"/>
@@ -48,7 +48,7 @@
             </child>
             <child>
               <object class="GtkScrolledWindow" id="scrolllastfm">
-                <property name="visible">True</property>
+                <property name="visible">False</property>
                 <property name="can_focus">False</property>
                 <child>
                   <object class="GtkViewport" id="viewlastfm">
@@ -73,8 +73,34 @@
               </packing>
             </child>
             <child>
-              <object class="GtkScrolledWindow" id="scrollwikipedia">
+              <object class="GtkScrolledWindow" id="scrollartwork">
                 <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <child>
+                  <object class="GtkViewport" id="viewartwork">
+                    <property name="visible">True</property>
+                    <property name="can_focus">False</property>
+                    <child>
+                      <object class="GtkGrid" id="artwork">
+                        <property name="visible">True</property>
+                        <property name="orientation">vertical</property>
+                        <property name="can_focus">False</property>
+                        <signal name="map" handler="_on_map_artwork" swapped="no"/>
+                        <signal name="unmap" handler="_on_child_unmap" swapped="no"/>
+                      </object>
+                    </child>
+                  </object>
+                </child>
+              </object>
+              <packing>
+                <property name="name">artwork</property>
+                <property name="title" translatable="yes">Artwork</property>
+                <property name="position">5</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkScrolledWindow" id="scrollwikipedia">
+                <property name="visible">False</property>
                 <property name="can_focus">False</property>
                 <child>
                   <object class="GtkViewport" id="viewwikipedia">
@@ -100,7 +126,7 @@
             </child>
             <child>
               <object class="GtkScrolledWindow" id="scrolllyrics">
-                <property name="visible">True</property>
+                <property name="visible">False</property>
                 <property name="can_focus">True</property>
                 <child>
                   <object class="GtkViewport" id="viewlyrics">
@@ -126,7 +152,7 @@
             </child>
             <child>
               <object class="GtkScrolledWindow" id="scrollduck">
-                <property name="visible">True</property>
+                <property name="visible">False</property>
                 <property name="can_focus">False</property>
                 <child>
                   <object class="GtkViewport" id="viewduck">
