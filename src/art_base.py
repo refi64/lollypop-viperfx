@@ -28,6 +28,8 @@ class BaseArt(GObject.GObject):
     _CACHE_PATH = os.path.expanduser("~") + "/.cache/lollypop"
     __gsignals__ = {
         'album-artwork-changed': (GObject.SignalFlags.RUN_FIRST, None, (int,)),
+        'artist-artwork-changed': (GObject.SignalFlags.RUN_FIRST,
+                                   None, (str,)),
         'radio-artwork-changed': (GObject.SignalFlags.RUN_FIRST, None, (str,))
     }
 

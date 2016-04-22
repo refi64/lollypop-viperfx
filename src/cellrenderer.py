@@ -62,6 +62,9 @@ class CellRendererArtist(Gtk.CellRendererText):
     def __init__(self):
         Gtk.CellRendererText.__init__(self)
         self._is_artists = False
+        self._surfaces = {}
+        Lp().art.connect('artist-artwork-changed',
+                         self._on_artist_artwork_changed)
 
     def set_is_artists(self, is_artists):
         self._is_artists = is_artists
@@ -84,18 +87,22 @@ class CellRendererArtist(Gtk.CellRendererText):
     def do_own_render(self, ctx, widget, cell_area, size):
         surface = None
         alpha = False
-        for suffix in ["lastfm", "spotify", "wikipedia"]:
-            uri = InfoCache.get_artwork(self.artist, suffix, size)
-            if uri is not None:
-                pixbuf = GdkPixbuf.Pixbuf.new_from_file_at_size(uri,
-                                                                size,
-                                                                size)
-                surface = Gdk.cairo_surface_create_from_pixbuf(
+        if self.rowid in self._surfaces.keys():
+            surface = self._surfaces[self.rowid]
+        if surface is None:
+            for suffix in ["lastfm", "spotify", "wikipedia"]:
+                uri = InfoCache.get_artwork(self.artist, suffix, size)
+                if uri is not None:
+                    pixbuf = GdkPixbuf.Pixbuf.new_from_file_at_size(uri,
+                                                                    size,
+                                                                    size)
+                    surface = Gdk.cairo_surface_create_from_pixbuf(
                                                      pixbuf,
                                                      widget.get_scale_factor(),
                                                      None)
-                del pixbuf
-                break
+                    self._surfaces[self.rowid] = surface
+                    del pixbuf
+                    break
         if surface is None:
             alpha = True
             surface = Gtk.IconTheme.get_default().load_surface(
@@ -104,6 +111,7 @@ class CellRendererArtist(Gtk.CellRendererText):
                                              1,
                                              widget.get_window(),
                                              0)
+            self._surfaces[self.rowid] = surface
         ctx.translate(cell_area.x, cell_area.y)
         ctx.new_sub_path()
         radius = ArtSize.ARTIST_SMALL / 2 - 2
@@ -130,3 +138,8 @@ class CellRendererArtist(Gtk.CellRendererText):
         else:
             return Gtk.CellRendererText.do_get_preferred_height_for_width(
                                                            self, widget, width)
+
+    def _on_artist_artwork_changed(self, art, artist):
+        artist_id = Lp().artists.get_id(artist)
+        if artist_id in self._surfaces.keys():
+            self._surfaces.pop(artist_id)

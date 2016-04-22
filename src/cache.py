@@ -15,7 +15,7 @@ from gi.repository import Gio, GdkPixbuf
 from os import mkdir, path
 
 from lollypop.utils import escape
-from lollypop.define import ArtSize
+from lollypop.define import ArtSize, Lp
 
 
 class InfoCache:
@@ -207,3 +207,4 @@ class InfoCache:
             f.delete(None)
         except:
             pass
+        Lp().art.emit('artist-artwork-changed', prefix)
