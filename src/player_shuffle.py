@@ -61,6 +61,8 @@ class ShufflePlayer(BasePlayer):
                 track_id = self._history.get_next().get_value()
             elif self._albums:
                 track_id = self._shuffle_next()
+            else:
+                track_id = self.current_track.id
         return Track(track_id)
 
     def prev(self):

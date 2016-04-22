@@ -347,7 +347,6 @@ class Player(BinPlayer, QueuePlayer, UserPlaylistPlayer, RadioPlayer,
             Clear all albums
         """
         self._albums = []
-        self._context.next = NextContext.STOP_TRACK
 
     def get_current_artists(self):
         """
