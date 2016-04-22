@@ -204,6 +204,8 @@ class ArtworkSearch(Gtk.Bin):
             Lp().art.album_artwork_update(self._album.id)
         else:
             for suffix in ["lastfm", "wikipedia", "spotify"]:
+                InfoCache.uncache_artwork(self._artist, suffix,
+                                          flowbox.get_scale_factor())
                 InfoCache.cache(self._artist, None, data, suffix)
         self._streams = {}
 
@@ -229,6 +231,8 @@ class ArtworkSearch(Gtk.Bin):
                     Lp().art.album_artwork_update(self._album.id)
                 else:
                     for suffix in ["lastfm", "wikipedia", "spotify"]:
+                        InfoCache.uncache_artwork(self._artist, suffix,
+                                                  button.get_scale_factor())
                         InfoCache.cache(self._artist, None, data, suffix)
                 self._streams = {}
             except Exception as e:

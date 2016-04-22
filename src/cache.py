@@ -182,3 +182,28 @@ class InfoCache:
             f.delete(None)
         except:
             pass
+
+    def uncache_artwork(prefix, suffix, scale):
+        """
+            Remove info from cache
+            @param prefix as str
+            @param suffix as str
+            @param scale factor as int
+        """
+        filepath = "%s/%s_%s.jpg" % (InfoCache.CACHE_PATH,
+                                     escape(prefix),
+                                     suffix)
+        f = Gio.File.new_for_path(filepath)
+        try:
+            f.delete(None)
+        except:
+            pass
+        filepath = "%s/%s_%s_%s.jpg" % (InfoCache.CACHE_PATH,
+                                        escape(prefix),
+                                        suffix,
+                                        ArtSize.ARTIST_SMALL*scale)
+        f = Gio.File.new_for_path(filepath)
+        try:
+            f.delete(None)
+        except:
+            pass
