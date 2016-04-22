@@ -111,7 +111,6 @@ class CellRendererArtist(Gtk.CellRendererText):
                                              1,
                                              widget.get_window(),
                                              0)
-            self._surfaces[self.rowid] = surface
         ctx.translate(cell_area.x, cell_area.y)
         ctx.new_sub_path()
         radius = ArtSize.ARTIST_SMALL / 2 - 2
