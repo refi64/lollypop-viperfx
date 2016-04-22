@@ -85,7 +85,6 @@ class BaseArt(GObject.GObject):
             @param scale factor as int
             @return pixbuf as cairo.Surface
         """
-        size *= scale
         # First look in cache
         cache_path_jpg = self._get_default_icon_path(size, icon_name)
         if os.path.exists(cache_path_jpg):
