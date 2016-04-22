@@ -355,8 +355,9 @@ class SettingsDialog:
         """
         Lp().settings.set_value('artist-artwork',
                                 GLib.Variant('b', state))
-        Lp().window.show_genres(Lp().settings.get_value('show-genres'))
         Lp().window.reload_view()
+        if not Lp().settings.get_value('show-genres'):
+            Lp().window.show_genres(False)
         if state:
             Lp().art.cache_artists_art()
 

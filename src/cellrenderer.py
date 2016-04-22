@@ -68,12 +68,15 @@ class CellRendererArtist(Gtk.CellRendererText):
 
     def do_render(self, ctx, widget, background_area, cell_area, flags):
         size = ArtSize.ARTIST_SMALL * widget.get_scale_factor()
-        if self._is_artists and self.rowid >= 0:
+        draw_artwork = self._is_artists and\
+            self.rowid >= 0 and\
+            Lp().settings.get_value('artist-artwork')
+        if draw_artwork:
             cell_area.width -= ArtSize.ARTIST_SMALL
             cell_area.x = ArtSize.ARTIST_SMALL
         Gtk.CellRendererText.do_render(self, ctx, widget,
                                        cell_area, cell_area, flags)
-        if self._is_artists and self.rowid >= 0:
+        if draw_artwork:
             cell_area.width = ArtSize.ARTIST_SMALL
             cell_area.x = 0
             self.do_own_render(ctx, widget, cell_area, size)
@@ -119,7 +122,10 @@ class CellRendererArtist(Gtk.CellRendererText):
             ctx.paint()
 
     def do_get_preferred_height_for_width(self, widget, width):
-        if self._is_artists and self.rowid >= 0:
+        draw_artwork = self._is_artists and\
+                       self.rowid >= 0 and\
+                       Lp().settings.get_value('artist-artwork')
+        if draw_artwork:
             return (ArtSize.ARTIST_SMALL, ArtSize.ARTIST_SMALL)
         else:
             return Gtk.CellRendererText.do_get_preferred_height_for_width(
