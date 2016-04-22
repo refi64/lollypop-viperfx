@@ -170,7 +170,6 @@ class ArtDownloader:
             @thread safe
         """
         self._in_albums_download = True
-        sql = Lp().db.get_cursor()
         while self._albums_queue:
             album_id = self._albums_queue.pop()
             album = Lp().albums.get_name(album_id)
@@ -191,7 +190,6 @@ class ArtDownloader:
                 print("ArtDownloader::_download_albums_art: %s" % e)
                 self._albums_history.append(album_id)
         self._in_albums_download = False
-        sql.close()
 
     def _get_album_art_spotify(self, artist, album):
         """
