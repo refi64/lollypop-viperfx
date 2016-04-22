@@ -79,6 +79,7 @@ class InfoPopover(Gtk.Popover):
                                                                     'selected')
         if self._artist_ids:
             self._stack.get_child_by_name('artwork').show()
+            builder.get_object('reload').hide()
         if show_albums:
             self._stack.get_child_by_name('albums').show()
         if InfoPopover.Wikipedia is not None:
@@ -127,6 +128,8 @@ class InfoPopover(Gtk.Popover):
             Update content on track changed
             @param player as Player
         """
+        if self._artist_ids:
+            return
         self._current_track = Lp().player.current_track
         name = self._stack.get_visible_child_name()
         if name == "albums":
