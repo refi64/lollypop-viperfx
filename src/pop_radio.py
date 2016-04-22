@@ -277,5 +277,5 @@ class RadioPopover(Gtk.Popover):
                 Lp().art.radio_artwork_update(self._name)
                 self._streams = {}
             except Exception as e:
-                print("CoversPopover::_on_button_clicked():", e)
+                print("RadioPopover::_on_button_clicked():", e)
         dialog.destroy()

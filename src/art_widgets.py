@@ -15,7 +15,6 @@ from gi.repository import Gtk, Gdk, GLib, Gio, GdkPixbuf
 from threading import Thread
 from gettext import gettext as _
 
-from lollypop.objects import Album
 from lollypop.cache import InfoCache
 from lollypop.define import Lp, ArtSize
 
@@ -25,16 +24,17 @@ class ArtworkSearch(Gtk.Bin):
         Search for artwork
     """
 
-    def __init__(self, artist, album_id):
+    def __init__(self, artist_id, album):
         """
             Init search
-            @param artist as str/None
-            @param album id as int/None
+            @param artist id as int/None
+            @param album as Album/None
         """
         Gtk.Bin.__init__(self)
         self.connect('unmap', self._on_self_unmap)
-        self._album = Album(album_id)
-        self._artist = artist
+        self._album = album
+        self._artist_id = artist_id
+        self._artist = Lp().artists.get_name(artist_id)
         self._datas = {}
         builder = Gtk.Builder()
         builder.add_from_resource('/org/gnome/Lollypop/ArtworkSearch.ui')
@@ -67,7 +67,7 @@ class ArtworkSearch(Gtk.Bin):
             Populate view
         """
         # First load local files
-        if self._album.id is not None:
+        if self._album is not None:
             urls = Lp().art.get_album_artworks(self._album)
             for url in urls:
                 try:
@@ -80,7 +80,7 @@ class ArtworkSearch(Gtk.Bin):
                                                                  ArtSize.BIG)
                     self._add_pixbuf(monster, big)
                 except Exception as e:
-                    print("CoversPopover::populate()", e)
+                    print("ArtworkSearch::populate()", e)
 
             if len(urls) > 0:
                 self._stack.set_visible_child_name('main')
@@ -106,12 +106,17 @@ class ArtworkSearch(Gtk.Bin):
         """
         urls = []
         if Gio.NetworkMonitor.get_default().get_network_available():
-            if self._album.id is not None:
+            if self._album is not None:
                 urls = Lp().art.get_duck_arts("%s+%s" % (
-                                                   self._album.artists,
-                                                   self._album.name))
-            else:
-                urls = Lp().art.get_duck_arts(self._artist)
+                                               self._artist,
+                                               self._album.name))
+            elif self._artist_id is not None:
+                for album_id in Lp().artists.get_albums([self._artist_id]):
+                    for genre_id in Lp().albums.get_genre_ids(album_id):
+                        genre = Lp().genres.get_name(genre_id)
+                        urls += Lp().art.get_duck_arts("%s+%s" % (self._artist,
+                                                                  genre))
+                urls += Lp().art.get_duck_arts(self._artist)
         if urls:
             self._add_pixbufs(urls)
         else:
@@ -131,7 +136,7 @@ class ArtworkSearch(Gtk.Bin):
                 if status:
                     GLib.idle_add(self._add_pixbuf, data)
             except Exception as e:
-                print("CoversPopover::_add_pixbufs: %s" % e)
+                print("ArtworkSearch::_add_pixbufs: %s" % e)
             if self._thread:
                 self._add_pixbufs(urls)
 
@@ -178,7 +183,7 @@ class ArtworkSearch(Gtk.Bin):
             image.show()
             self._view.add(image)
         except Exception as e:
-            print("CoversPopover::_add_pixbuf: %s" % e)
+            print("ArtworkSearch::_add_pixbuf: %s" % e)
         # Remove spinner if exist
         if self._stack.get_visible_child_name() == 'spinner':
             self._spinner.stop()
@@ -198,7 +203,7 @@ class ArtworkSearch(Gtk.Bin):
             Reset cache and use player object to announce cover change
         """
         data = self._datas[child.get_child()]
-        if self._album.id is not None:
+        if self._album is not None:
             Lp().art.save_album_artwork(data, self._album.id)
             Lp().art.clean_album_cache(self._album)
             Lp().art.album_artwork_update(self._album.id)
@@ -236,5 +241,5 @@ class ArtworkSearch(Gtk.Bin):
                         InfoCache.cache(self._artist, None, data, suffix)
                 self._streams = {}
             except Exception as e:
-                print("CoversPopover::_on_button_clicked():", e)
+                print("ArtworkSearch::_on_button_clicked():", e)
         dialog.destroy()

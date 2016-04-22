@@ -105,7 +105,7 @@ class ArtistsDatabase:
 
     def get_albums(self, artist_ids):
         """
-            Get all availables albums for artist
+            Get all availables albums for artists
             @return Array of id as int
         """
         with SqlCursor(Lp().db) as sql:

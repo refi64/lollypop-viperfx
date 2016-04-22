@@ -316,7 +316,7 @@ class AlbumWidget:
             @param: widget as Gtk.EventBox
             @param: event as Gdk.Event
         """
-        popover = CoversPopover(self._album.artist_id, self._album.id)
+        popover = CoversPopover(self._album)
         popover.set_relative_to(widget)
         popover.connect('closed', self._on_pop_cover_closed)
         # Disable hidding overlay

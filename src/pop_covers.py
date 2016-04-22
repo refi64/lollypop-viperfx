@@ -12,8 +12,6 @@
 
 from gi.repository import Gtk
 
-
-from lollypop.objects import Album
 from lollypop.art_widgets import ArtworkSearch
 
 
@@ -23,16 +21,17 @@ class CoversPopover(Gtk.Popover):
         @Warning: Destroy it self on close
     """
 
-    def __init__(self, artist, album_id):
+    def __init__(self, album):
         """
             Init Popover
-            @param artist as str/None
-            @param album id as int/None
+            @param album as album
         """
         Gtk.Popover.__init__(self)
-        self._album = Album(album_id)
+        self._album = album
         self._monster_pixbufs = {}
-        widget = ArtworkSearch(artist, album_id)
+        # We only search with first artist, should be ok
+        widget = ArtworkSearch(self._album.artist_ids[0],
+                               self._album)
         widget.show()
         self.add(widget)
         self.set_size_request(700, 400)

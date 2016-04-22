@@ -231,8 +231,8 @@ class InfoPopover(Gtk.Popover):
             Load on map
             @param widget as Gtk.Grid
         """
-        artist = Lp().artists.get_name(self._artist_ids[0])
-        search = ArtworkSearch(artist, None)
+        # We only search with first artist, should be ok
+        search = ArtworkSearch(self._artist_ids[0], None)
         search.show()
         search.populate()
         widget.add(search)
