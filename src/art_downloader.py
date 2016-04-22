@@ -198,10 +198,10 @@ class ArtDownloader:
             Get album artwork from itunes
             @param artist as string
             @param album as string
-            @return data as bytes
+            @return image as bytes
             @tread safe
         """
-        data = None
+        image = None
         artists_spotify_ids = []
         try:
             artist_formated = GLib.uri_escape_string(
@@ -228,21 +228,21 @@ class ArtDownloader:
 
                     if url is not None:
                         s = Gio.File.new_for_uri(url)
-                        (status, data, tag) = s.load_contents()
+                        (status, image, tag) = s.load_contents()
                     break
         except Exception as e:
             print("ArtDownloader::_get_album_art_spotify: %s" % e)
-        return data
+        return image
 
     def _get_album_art_itunes(self, artist, album):
         """
             Get album artwork from itunes
             @param artist as string
             @param album as string
-            @return data as bytes
+            @return image as bytes
             @tread safe
         """
-        data = None
+        image = None
         try:
             album_formated = GLib.uri_escape_string(
                                 album, None, True).replace(' ', '+')
@@ -256,11 +256,11 @@ class ArtDownloader:
                         url = item['artworkUrl60'].replace('60x60',
                                                            '512x512')
                         s = Gio.File.new_for_uri(url)
-                        (status, data, tag) = s.load_contents()
+                        (status, image, tag) = s.load_contents()
                         break
         except Exception as e:
             print("ArtDownloader::_get_album_art_itunes: %s" % e)
-        return data
+        return image
 
     def _get_album_art_lastfm(self, artist, album):
         """
@@ -270,14 +270,14 @@ class ArtDownloader:
             @return data as bytes
             @tread safe
         """
-        data = None
+        image = None
         if Lp().lastfm is not None:
             try:
                 last_album = Lp().lastfm.get_album(artist, album)
                 url = last_album.get_cover_image(4)
                 if url is not None:
                     s = Gio.File.new_for_uri(url)
-                    (status, data, tag) = s.load_contents()
+                    (status, image, tag) = s.load_contents()
             except Exception as e:
                 print("ArtDownloader::_get_album_art_lastfm: %s" % e)
-        return data
+        return image
