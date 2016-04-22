@@ -158,6 +158,7 @@ class InfoCache:
                                                                None)
             pixbuf.savev(filepath+"_"+str(ArtSize.ARTIST)+".jpg",
                          "jpeg", ["quality"], ["90"])
+            Lp().art.emit('artist-artwork-changed', prefix)
             del pixbuf
 
     def uncache(prefix, suffix):
@@ -182,6 +183,7 @@ class InfoCache:
             f.delete(None)
         except:
             pass
+        Lp().art.emit('artist-artwork-changed', prefix)
 
     def uncache_artwork(prefix, suffix, scale):
         """
