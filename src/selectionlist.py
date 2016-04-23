@@ -433,6 +433,7 @@ class SelectionList(Gtk.ScrolledWindow):
         """
         Lp().window.enable_global_shorcuts(True)
         self._hide_popover()
+        self._last_motion_event = None
 
     def _on_motion_notify(self, widget, event):
         """
@@ -444,6 +445,7 @@ class SelectionList(Gtk.ScrolledWindow):
             self._timeout = GLib.timeout_add(500,
                                              self._hide_popover)
         if event.x < 0.0 or event.y < 0.0:
+            self._last_motion_event = None
             return
         if self._last_motion_event is None:
             self._last_motion_event = MotionEvent()
