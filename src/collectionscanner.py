@@ -136,7 +136,7 @@ class CollectionScanner(GObject.GObject, ScannerTagReader):
         self.stop()
         self.emit("scan-finished")
         if Lp().settings.get_value('artist-artwork'):
-            self.art.cache_artists_art()
+            Lp().art.cache_artists_art()
         if self._missing_codecs is not None:
             Lp().player.load_external(
                                     GLib.filename_to_uri(self._missing_codecs))
