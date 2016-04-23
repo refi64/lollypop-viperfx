@@ -70,18 +70,19 @@ class CellRendererArtist(Gtk.CellRendererText):
         self._is_artists = is_artists
 
     def do_render(self, ctx, widget, background_area, cell_area, flags):
+        x_shift = 4
         size = ArtSize.ARTIST_SMALL * widget.get_scale_factor()
         draw_artwork = self._is_artists and\
             self.rowid >= 0 and\
             Lp().settings.get_value('artist-artwork')
         if draw_artwork:
             cell_area.width -= ArtSize.ARTIST_SMALL
-            cell_area.x = ArtSize.ARTIST_SMALL
+            cell_area.x = ArtSize.ARTIST_SMALL + x_shift * 2
         Gtk.CellRendererText.do_render(self, ctx, widget,
                                        cell_area, cell_area, flags)
         if draw_artwork:
             cell_area.width = ArtSize.ARTIST_SMALL
-            cell_area.x = 0
+            cell_area.x = x_shift
             self.do_own_render(ctx, widget, cell_area, size)
 
     def do_own_render(self, ctx, widget, cell_area, size):
@@ -113,7 +114,7 @@ class CellRendererArtist(Gtk.CellRendererText):
                                              0)
         ctx.translate(cell_area.x, cell_area.y)
         ctx.new_sub_path()
-        radius = ArtSize.ARTIST_SMALL / 2 - 2
+        radius = ArtSize.ARTIST_SMALL / 2
         ctx.arc(ArtSize.ARTIST_SMALL/2, ArtSize.ARTIST_SMALL/2,
                 radius, 0, 2 * pi)
         ctx.set_source_rgb(1, 1, 1)
