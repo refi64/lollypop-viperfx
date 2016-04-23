@@ -71,14 +71,9 @@ class ArtworkSearch(Gtk.Bin):
             urls = Lp().art.get_album_artworks(self._album)
             for url in urls:
                 try:
-                    monster = GdkPixbuf.Pixbuf.new_from_file_at_size(
-                                                             url,
-                                                             ArtSize.MONSTER,
-                                                             ArtSize.MONSTER)
-                    big = GdkPixbuf.Pixbuf.new_from_file_at_size(url,
-                                                                 ArtSize.BIG,
-                                                                 ArtSize.BIG)
-                    self._add_pixbuf(monster, big)
+                    f = Gio.File.new_for_uri(url)
+                    (status, data, tag) = f.load_contents()
+                    self._add_pixbuf(data)
                 except Exception as e:
                     print("ArtworkSearch::populate()", e)
 
@@ -190,6 +185,17 @@ class ArtworkSearch(Gtk.Bin):
             self._label.set_text(_("Select artwork"))
             self._stack.set_visible_child_name('main')
 
+    def _close_popover(self):
+        """
+            Search for a popover in parents and close it
+        """
+        widget = self.get_parent()
+        while widget is not None:
+            if isinstance(widget, Gtk.Popover):
+                widget.hide()
+                break
+            widget = widget.get_parent()
+
     def _on_self_unmap(self, widget):
         """
             Kill thread
@@ -203,6 +209,7 @@ class ArtworkSearch(Gtk.Bin):
             Reset cache and use player object to announce cover change
         """
         data = self._datas[child.get_child()]
+        self._close_popover()
         if self._album is not None:
             Lp().art.save_album_artwork(data, self._album.id)
             Lp().art.clean_album_cache(self._album)
@@ -223,6 +230,7 @@ class ArtworkSearch(Gtk.Bin):
         dialog.add_buttons(Gtk.STOCK_CANCEL, Gtk.ResponseType.CANCEL)
         dialog.add_buttons(Gtk.STOCK_OPEN, Gtk.ResponseType.OK)
         dialog.set_transient_for(Lp().window)
+        self._close_popover()
         response = dialog.run()
         if response == Gtk.ResponseType.OK:
             try:
