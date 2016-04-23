@@ -525,7 +525,8 @@ class SelectionList(Gtk.ScrolledWindow):
                 (position, width) = column.cell_get_position(self._renderer0)
                 if Lp().settings.get_value('artist-artwork') and\
                         self._is_artists:
-                    width -= ArtSize.ARTIST
+                    width -= ArtSize.ARTIST_SMALL +\
+                             CellRendererArtist.xshift * 2
                 layout.set_ellipsize(Pango.EllipsizeMode.END)
                 layout.set_width(Pango.units_from_double(width-8))
                 layout.set_text(text, -1)

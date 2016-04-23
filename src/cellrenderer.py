@@ -58,6 +58,7 @@ class CellRendererAlbum(Gtk.CellRenderer):
 class CellRendererArtist(Gtk.CellRendererText):
     rowid = GObject.Property(type=int)
     artist = GObject.Property(type=str)
+    xshift = 4
 
     def __init__(self):
         Gtk.CellRendererText.__init__(self)
@@ -70,19 +71,18 @@ class CellRendererArtist(Gtk.CellRendererText):
         self._is_artists = is_artists
 
     def do_render(self, ctx, widget, background_area, cell_area, flags):
-        x_shift = 4
         size = ArtSize.ARTIST_SMALL * widget.get_scale_factor()
         draw_artwork = self._is_artists and\
             self.rowid >= 0 and\
             Lp().settings.get_value('artist-artwork')
         if draw_artwork:
             cell_area.width -= ArtSize.ARTIST_SMALL
-            cell_area.x = ArtSize.ARTIST_SMALL + x_shift * 2
+            cell_area.x = ArtSize.ARTIST_SMALL + self.xshift * 2
         Gtk.CellRendererText.do_render(self, ctx, widget,
                                        cell_area, cell_area, flags)
         if draw_artwork:
             cell_area.width = ArtSize.ARTIST_SMALL
-            cell_area.x = x_shift
+            cell_area.x = self.xshift
             self.do_own_render(ctx, widget, cell_area, size)
 
     def do_own_render(self, ctx, widget, cell_area, size):
