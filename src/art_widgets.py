@@ -230,7 +230,7 @@ class ArtworkSearch(Gtk.Bin):
                 (status, data, tag) = f.load_contents()
                 if not status:
                     raise
-                if self._album.id is not None:
+                if self._album is not None:
                     Lp().art.save_album_artwork(data, self._album.id)
                     Lp().art.clean_album_cache(self._album)
                     Lp().art.album_artwork_update(self._album.id)
