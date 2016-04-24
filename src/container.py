@@ -172,6 +172,7 @@ class Container:
         self._list_two.clear()
         self._list_two.hide()
         self._update_list_one(None)
+        self._list_one.select_ids([Type.POPULARS])
 
     def destroy_current_view(self):
         """
