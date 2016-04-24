@@ -169,6 +169,8 @@ class Container:
         """
         self._show_genres = show
         self._list_one.clear()
+        self._list_two.clear()
+        self._list_two.hide()
         self._update_list_one(None)
 
     def destroy_current_view(self):
