@@ -36,6 +36,7 @@
             </attributes>
             <style>
               <class name="dim-label"/>
+              <class name="background"/>
             </style>
           </object>
         </child>
@@ -56,6 +57,9 @@
         <property name="image">image2</property>
         <property name="relief">none</property>
         <signal name="clicked" handler="_on_jump_button_clicked" swapped="no"/>
+        <style>
+          <class name="background"/>
+        </style>
       </object>
       <packing>
         <property name="left_attach">3</property>
@@ -87,8 +91,5 @@
         <property name="top_attach">0</property>
       </packing>
     </child>
-    <style>
-      <class name="background"/>
-    </style>
   </object>
 </interface>
