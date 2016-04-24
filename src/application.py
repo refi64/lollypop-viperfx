@@ -113,6 +113,7 @@ class Application(Gtk.Application):
                                  "Emulate an Android Phone",
                                  None)
         self.connect('command-line', self._on_command_line)
+        self.connect('activate', self._on_activate)
         self.register(None)
         if self.get_is_remote():
             Gdk.notify_startup_complete()
@@ -388,6 +389,13 @@ class Application(Gtk.Application):
         self._is_fs = False
         if not self.window.is_visible():
             self.prepare_to_exit()
+
+    def _on_activate(self, application):
+        """
+            Call default handler
+            @param application as Gio.Application
+        """
+        self.window.present()
 
     def _settings_dialog(self, action=None, param=None):
         """
