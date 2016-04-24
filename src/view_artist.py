@@ -49,7 +49,8 @@ class ArtistView(ArtistAlbumsView):
             artist = Lp().artists.get_name(artist_ids[0])
             for suffix in ["lastfm", "spotify", "wikipedia"]:
                 uri = InfoCache.get_artwork(artist, suffix,
-                                            ArtSize.ARTIST_SMALL*2)
+                                            ArtSize.ARTIST_SMALL * 2 *
+                                            self._artwork.get_scale_factor())
                 if uri is not None:
                     self._artwork.set_from_file(uri)
                     self._artwork.show()
