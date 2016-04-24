@@ -239,7 +239,7 @@ class Row(Gtk.ListBoxRow):
             elif self._track.album.artist_ids[0] == Type.COMPILATIONS:
                 text = "<b>" + escape(", ".join(self._track.artists)) +\
                        "</b> - "
-            text += self._track.name
+            text += escape(self._track.name)
         self._title_label.set_tooltip_markup(text)
 
 
