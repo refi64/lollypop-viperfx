@@ -242,6 +242,8 @@ class CollectionScanner(GObject.GObject, ScannerTagReader):
             album_artists = composers
             if artists == '':
                 artists = album_artists
+            if artists == '':
+                artists = _("Unknown")
 
         debug("CollectionScanner::add2db(): Restore stats")
         # Restore stats
