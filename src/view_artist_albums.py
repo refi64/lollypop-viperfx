@@ -145,6 +145,17 @@ class ArtistAlbumsView(LazyLoadingView):
             self.emit('populated')
             GLib.idle_add(self.lazy_loading)
 
+    def _on_value_changed(self, adj):
+        """
+            Update scroll value and check for lazy queue
+            @param adj as Gtk.Adjustment
+        """
+        LazyLoadingView._on_value_changed(self, adj)
+        if adj.get_value() == adj.get_lower():
+            self._artwork.show()
+        else:
+            self._artwork.hide()
+
     def _on_populated(self, widget, widgets, scroll_value):
         """
             Add another album/disc

@@ -39,7 +39,7 @@ class ArtistView(ArtistAlbumsView):
         builder = Gtk.Builder()
         builder.add_from_resource('/org/gnome/Lollypop/ArtistView.ui')
         builder.connect_signals(self)
-        artwork = builder.get_object('artwork')
+        self._artwork = builder.get_object('artwork')
         self._jump_button = builder.get_object('jump-button')
         self._jump_button.set_tooltip_text(_("Go to current track"))
         self._spinner = builder.get_object('spinner')
@@ -51,8 +51,8 @@ class ArtistView(ArtistAlbumsView):
                 uri = InfoCache.get_artwork(artist, suffix,
                                             ArtSize.ARTIST_SMALL*2)
                 if uri is not None:
-                    artwork.set_from_file(uri)
-                    artwork.show()
+                    self._artwork.set_from_file(uri)
+                    self._artwork.show()
                     break
 
         artists = []
