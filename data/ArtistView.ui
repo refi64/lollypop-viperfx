@@ -7,7 +7,7 @@
     <property name="can_focus">False</property>
     <property name="icon_name">go-jump-symbolic</property>
   </object>
-  <object class="GtkGrid" id="ArtistView">
+  <object class="GtkGrid" id="header">
     <property name="visible">True</property>
     <property name="can_focus">False</property>
     <property name="margin_start">10</property>
@@ -87,5 +87,8 @@
         <property name="top_attach">0</property>
       </packing>
     </child>
+    <style>
+      <class name="background"/>
+    </style>
   </object>
 </interface>

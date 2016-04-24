@@ -47,7 +47,10 @@ class ArtistAlbumsView(LazyLoadingView):
 
         self._scrolled.set_property('expand', True)
         self._viewport.set_property("valign", Gtk.Align.START)
-        self.attach(self._scrolled, 0, 1, 1, 1)
+        self._overlay = Gtk.Overlay.new()
+        self._overlay.add(self._scrolled)
+        self._overlay.show()
+        self.add(self._overlay)
 
     def populate(self, albums):
         """
@@ -118,7 +121,11 @@ class ArtistAlbumsView(LazyLoadingView):
             Return view children
             @return [AlbumWidget]
         """
-        return self._albumbox.get_children()
+        children = []
+        for child in self._albumbox.get_children():
+            if isinstance(child, AlbumDetailedWidget):
+                children.append(child)
+        return children
 
     def _add_albums(self, albums):
         """
@@ -144,17 +151,6 @@ class ArtistAlbumsView(LazyLoadingView):
                 self._viewport.add(self._albumbox)
             self.emit('populated')
             GLib.idle_add(self.lazy_loading)
-
-    def _on_value_changed(self, adj):
-        """
-            Update scroll value and check for lazy queue
-            @param adj as Gtk.Adjustment
-        """
-        LazyLoadingView._on_value_changed(self, adj)
-        if adj.get_value() == adj.get_lower():
-            self._artwork.show()
-        else:
-            self._artwork.hide()
 
     def _on_populated(self, widget, widgets, scroll_value):
         """

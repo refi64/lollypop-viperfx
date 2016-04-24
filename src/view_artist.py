@@ -36,6 +36,11 @@ class ArtistView(ArtistAlbumsView):
         self._signal_id = None
         self._artist_ids = artist_ids
 
+        empty = Gtk.Grid()
+        empty.set_property('height-request', ArtSize.ARTIST_SMALL * 2)
+        empty.show()
+        self._albumbox.add(empty)
+
         builder = Gtk.Builder()
         builder.add_from_resource('/org/gnome/Lollypop/ArtistView.ui')
         builder.connect_signals(self)
@@ -43,8 +48,10 @@ class ArtistView(ArtistAlbumsView):
         self._jump_button = builder.get_object('jump-button')
         self._jump_button.set_tooltip_text(_("Go to current track"))
         self._spinner = builder.get_object('spinner')
-        self.attach(builder.get_object('ArtistView'), 0, 0, 1, 1)
-
+        header = builder.get_object('header')
+        header.set_property('valign', Gtk.Align.START)
+        self._overlay.add_overlay(header)
+        self._overlay.set_overlay_pass_through(header, True)
         if len(artist_ids) == 1 and Lp().settings.get_value('artist-artwork'):
             artist = Lp().artists.get_name(artist_ids[0])
             for suffix in ["lastfm", "spotify", "wikipedia"]:
@@ -83,6 +90,17 @@ class ArtistView(ArtistAlbumsView):
             Scroll to album
         """
         self.jump_to_current()
+
+    def _on_value_changed(self, adj):
+        """
+            Update scroll value and check for lazy queue
+            @param adj as Gtk.Adjustment
+        """
+        ArtistAlbumsView._on_value_changed(self, adj)
+        if adj.get_value() == adj.get_lower():
+            self._artwork.show()
+        else:
+            self._artwork.hide()
 
     def _on_populated(self, widget, widgets, scroll_value):
         """
