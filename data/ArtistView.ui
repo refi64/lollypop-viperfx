@@ -26,6 +26,7 @@
           <object class="GtkLabel" id="artist">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
+            <property name="margin_right">2</property>
             <property name="ellipsize">end</property>
             <property name="xalign">0</property>
             <attributes>
