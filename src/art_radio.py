@@ -51,7 +51,7 @@ class RadioArt(BaseArt):
             if os.path.exists(cache_path_png):
                 return cache_path_png
             else:
-                self.get_radio_artwork(name, size)
+                self.get_radio_artwork(name, size, 1)
                 if os.path.exists(cache_path_png):
                     return cache_path_png
                 else:
