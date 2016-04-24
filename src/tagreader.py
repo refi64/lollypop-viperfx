@@ -178,9 +178,11 @@ class ScannerTagReader(TagReader):
             return _("Unknown")
         genres = []
         for i in range(tags.get_tag_size('genre')):
-            (exists, read) = tags.get_string_index('genre', 0)
+            (exists, read) = tags.get_string_index('genre', i)
             if exists:
                 genres.append(read)
+        if not genres:
+            return _("Unknown")
         return "; ".join(genres)
 
     def get_discnumber(self, tags):
