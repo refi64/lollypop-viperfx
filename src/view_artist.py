@@ -13,9 +13,11 @@
 from gi.repository import Gtk, Gdk
 
 from gettext import gettext as _
+from math import pi
 
-from lollypop.define import Lp
+from lollypop.define import Lp, ArtSize
 from lollypop.pop_info import InfoPopover
+from lollypop.cache import InfoCache
 from lollypop.view_artist_albums import ArtistAlbumsView
 
 
@@ -37,10 +39,21 @@ class ArtistView(ArtistAlbumsView):
         builder = Gtk.Builder()
         builder.add_from_resource('/org/gnome/Lollypop/ArtistView.ui')
         builder.connect_signals(self)
+        artwork = builder.get_object('artwork')
         self._jump_button = builder.get_object('jump-button')
         self._jump_button.set_tooltip_text(_("Go to current track"))
         self._spinner = builder.get_object('spinner')
         self.attach(builder.get_object('ArtistView'), 0, 0, 1, 1)
+
+        if len(artist_ids) == 1 and Lp().settings.get_value('artist-artwork'):
+            artist = Lp().artists.get_name(artist_ids[0])
+            for suffix in ["lastfm", "spotify", "wikipedia"]:
+                uri = InfoCache.get_artwork(artist, suffix,
+                                            ArtSize.ARTIST_SMALL*2)
+                if uri is not None:
+                    artwork.set_from_file(uri)
+                    artwork.show()
+                    break
 
         artists = []
         for artist_id in artist_ids:
@@ -107,3 +120,32 @@ class ArtistView(ArtistAlbumsView):
             pop = InfoPopover(self._artist_ids, False)
             pop.set_relative_to(eventbox)
             pop.show()
+
+    def _on_artwork_draw(self, image, ctx):
+        """
+            Draw rounded image
+            @param image as Gtk.Image
+            @param ctx as cairo.Context
+        """
+        pixbuf = image.get_pixbuf()
+        if pixbuf is None:
+            return
+
+        surface = Gdk.cairo_surface_create_from_pixbuf(
+                                                     pixbuf,
+                                                     image.get_scale_factor(),
+                                                     None)
+        ctx.translate(2, 2)
+        size = ArtSize.ARTIST_SMALL * 2 - 4
+        ctx.new_sub_path()
+        radius = size / 2
+        ctx.arc(size/2, size/2, radius, 0, 2 * pi)
+        ctx.set_source_rgb(1, 1, 1)
+        ctx.fill_preserve()
+        ctx.set_line_width(2)
+        ctx.set_source_rgba(0, 0, 0, 0.3)
+        ctx.stroke_preserve()
+        ctx.set_source_surface(surface, 0, 0)
+        ctx.clip()
+        ctx.paint()
+        return True

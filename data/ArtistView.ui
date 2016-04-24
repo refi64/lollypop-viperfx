@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Generated with glade 3.20.0 -->
+<!-- Generated with glade 3.19.0 -->
 <interface>
   <requires lib="gtk+" version="3.12"/>
   <object class="GtkImage" id="image2">
@@ -11,14 +11,15 @@
     <property name="visible">True</property>
     <property name="can_focus">False</property>
     <property name="margin_start">10</property>
-    <property name="margin_top">10</property>
     <property name="orientation">vertical</property>
     <property name="column_spacing">10</property>
     <child>
       <object class="GtkEventBox" id="eventbox1">
         <property name="visible">True</property>
         <property name="can_focus">False</property>
-        <property name="halign">start</property>
+        <property name="halign">end</property>
+        <property name="valign">center</property>
+        <property name="hexpand">True</property>
         <signal name="button-release-event" handler="_on_label_button_release" swapped="no"/>
         <signal name="realize" handler="_on_label_realize" swapped="no"/>
         <child>
@@ -28,8 +29,13 @@
             <property name="ellipsize">end</property>
             <property name="xalign">0</property>
             <attributes>
+              <attribute name="style" value="oblique"/>
               <attribute name="weight" value="bold"/>
+              <attribute name="scale" value="2"/>
             </attributes>
+            <style>
+              <class name="dim-label"/>
+            </style>
           </object>
         </child>
       </object>
@@ -44,9 +50,8 @@
         <property name="sensitive">False</property>
         <property name="can_focus">True</property>
         <property name="receives_default">True</property>
-        <property name="halign">end</property>
+        <property name="valign">end</property>
         <property name="margin_end">2</property>
-        <property name="hexpand">True</property>
         <property name="image">image2</property>
         <property name="relief">none</property>
         <signal name="clicked" handler="_on_jump_button_clicked" swapped="no"/>
@@ -64,17 +69,20 @@
         <property name="active">True</property>
       </object>
       <packing>
-        <property name="left_attach">2</property>
+        <property name="left_attach">1</property>
         <property name="top_attach">0</property>
       </packing>
     </child>
     <child>
-      <object class="GtkGrid" id="art-grid">
-        <property name="visible">True</property>
+      <object class="GtkImage" id="artwork">
         <property name="can_focus">False</property>
+        <property name="margin_right">5</property>
+        <property name="margin_top">5</property>
+        <property name="margin_bottom">5</property>
+        <signal name="draw" handler="_on_artwork_draw" swapped="no"/>
       </object>
       <packing>
-        <property name="left_attach">1</property>
+        <property name="left_attach">2</property>
         <property name="top_attach">0</property>
       </packing>
     </child>
