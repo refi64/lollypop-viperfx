@@ -35,6 +35,8 @@ class ArtistView(ArtistAlbumsView):
         ArtistAlbumsView.__init__(self, artist_ids, genre_ids)
         self._signal_id = None
         self._artist_ids = artist_ids
+        self.connect('map', self._on_map)
+        self.connect('unmap', self._on_unmap)
 
         builder = Gtk.Builder()
         builder.add_from_resource('/org/gnome/Lollypop/ArtistView.ui')
@@ -57,16 +59,10 @@ class ArtistView(ArtistAlbumsView):
         empty.show()
 
         self._albumbox.add(empty)
-        if len(artist_ids) == 1 and Lp().settings.get_value('artist-artwork'):
-            artist = Lp().artists.get_name(artist_ids[0])
-            for suffix in ["lastfm", "spotify", "wikipedia"]:
-                uri = InfoCache.get_artwork(artist, suffix,
-                                            ArtSize.ARTIST_SMALL * 2 *
-                                            self._artwork.get_scale_factor())
-                if uri is not None:
-                    self._artwork.set_from_file(uri)
-                    self._artwork.show()
-                    break
+        if len(self._artist_ids) == 1 and\
+                Lp().settings.get_value('artist-artwork'):
+            artist = Lp().artists.get_name(self._artist_ids[0])
+            self._set_artwork(artist)
 
         artists = []
         for artist_id in artist_ids:
@@ -76,6 +72,20 @@ class ArtistView(ArtistAlbumsView):
 #######################
 # PRIVATE             #
 #######################
+    def _set_artwork(self, artist):
+        """
+            Set artist artwork
+            @param artist as str
+        """
+        for suffix in ["lastfm", "spotify", "wikipedia"]:
+            uri = InfoCache.get_artwork(artist, suffix,
+                                        ArtSize.ARTIST_SMALL * 2 *
+                                        self._artwork.get_scale_factor())
+            if uri is not None:
+                self._artwork.set_from_file(uri)
+                self._artwork.show()
+                break
+
     def _update_jump_button(self):
         """
             Update jump button status
@@ -89,6 +99,35 @@ class ArtistView(ArtistAlbumsView):
             self._jump_button.set_sensitive(True)
         else:
             self._jump_button.set_sensitive(False)
+
+    def _on_map(self, widget):
+        """
+            Connect signal
+            @param widget as Gtk.Widget
+        """
+        self._signal_id = Lp().art.connect('artist-artwork-changed',
+                                           self._on_artist_artwork_changed)
+
+    def _on_unmap(self, widget):
+        """
+            Disconnect signal
+            @param widget as Gtk.Widget
+        """
+        if self._signal_id is not None:
+            Lp().art.disconnect(self._signal_id)
+            self._signal_id = None
+
+    def _on_artist_artwork_changed(self, art, prefix):
+        """
+            Update artwork if needed
+            @param art as Art
+            @param prefix as str
+        """
+        if len(self._artist_ids) == 1 and\
+                Lp().settings.get_value('artist-artwork'):
+            artist = Lp().artists.get_name(self._artist_ids[0])
+            if artist == prefix:
+                self._set_artwork(artist)
 
     def _on_jump_button_clicked(self, widget):
         """

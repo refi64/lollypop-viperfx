@@ -183,7 +183,6 @@ class InfoCache:
             f.delete(None)
         except:
             pass
-        Lp().art.emit('artist-artwork-changed', prefix)
 
     def uncache_artwork(prefix, suffix, scale):
         """
@@ -210,4 +209,3 @@ class InfoCache:
                 f.delete(None)
             except:
                 pass
-        Lp().art.emit('artist-artwork-changed', prefix)
