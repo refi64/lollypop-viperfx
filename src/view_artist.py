@@ -37,7 +37,10 @@ class ArtistView(ArtistAlbumsView):
         self._artist_ids = artist_ids
 
         empty = Gtk.Grid()
-        empty.set_property('height-request', ArtSize.ARTIST_SMALL * 2)
+        if Lp().settings.get_value('artist-artwork'):
+            empty.set_property('height-request', ArtSize.ARTIST_SMALL * 2)
+        else:
+            empty.set_property('height-request', ArtSize.ARTIST_SMALL)
         empty.show()
         self._albumbox.add(empty)
 
@@ -45,6 +48,7 @@ class ArtistView(ArtistAlbumsView):
         builder.add_from_resource('/org/gnome/Lollypop/ArtistView.ui')
         builder.connect_signals(self)
         self._artwork = builder.get_object('artwork')
+        self._label = builder.get_object('artist')
         self._jump_button = builder.get_object('jump-button')
         self._jump_button.set_tooltip_text(_("Go to current track"))
         self._spinner = builder.get_object('spinner')
@@ -66,7 +70,7 @@ class ArtistView(ArtistAlbumsView):
         artists = []
         for artist_id in artist_ids:
             artists.append(Lp().artists.get_name(artist_id))
-        builder.get_object('artist').set_label(", ".join(artists))
+        self._label.set_label(", ".join(artists))
 
 #######################
 # PRIVATE             #
@@ -99,8 +103,14 @@ class ArtistView(ArtistAlbumsView):
         ArtistAlbumsView._on_value_changed(self, adj)
         if adj.get_value() == adj.get_lower():
             self._artwork.show()
+            self._label.get_style_context().remove_class('header')
+            self._jump_button.get_style_context().remove_class('header')
+            self._jump_button.set_property('valign', Gtk.Align.END)
         else:
             self._artwork.hide()
+            self._label.get_style_context().add_class('header')
+            self._jump_button.get_style_context().add_class('header')
+            self._jump_button.set_property('valign', Gtk.Align.START)
 
     def _on_populated(self, widget, widgets, scroll_value):
         """

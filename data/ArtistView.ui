@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Generated with glade 3.19.0 -->
+<!-- Generated with glade 3.20.0 -->
 <interface>
   <requires lib="gtk+" version="3.12"/>
   <object class="GtkImage" id="image2">
@@ -10,6 +10,8 @@
   <object class="GtkGrid" id="header">
     <property name="visible">True</property>
     <property name="can_focus">False</property>
+    <property name="margin_left">10</property>
+    <property name="margin_right">10</property>
     <property name="margin_start">10</property>
     <property name="orientation">vertical</property>
     <property name="column_spacing">10</property>
@@ -19,7 +21,6 @@
         <property name="can_focus">False</property>
         <property name="halign">end</property>
         <property name="valign">center</property>
-        <property name="hexpand">True</property>
         <signal name="button-release-event" handler="_on_label_button_release" swapped="no"/>
         <signal name="realize" handler="_on_label_realize" swapped="no"/>
         <child>
@@ -35,8 +36,7 @@
               <attribute name="scale" value="2"/>
             </attributes>
             <style>
-              <class name="dim-label"/>
-              <class name="background"/>
+              <class name="header-tools"/>
             </style>
           </object>
         </child>
@@ -58,7 +58,7 @@
         <property name="relief">none</property>
         <signal name="clicked" handler="_on_jump_button_clicked" swapped="no"/>
         <style>
-          <class name="background"/>
+          <class name="header-tools"/>
         </style>
       </object>
       <packing>
