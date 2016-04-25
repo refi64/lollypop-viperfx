@@ -200,13 +200,14 @@ class InfoCache:
             f.delete(None)
         except:
             pass
-        filepath = "%s/%s_%s_%s.jpg" % (InfoCache.CACHE_PATH,
-                                        escape(prefix),
-                                        suffix,
-                                        ArtSize.ARTIST_SMALL*scale)
-        f = Gio.File.new_for_path(filepath)
-        try:
-            f.delete(None)
-        except:
-            pass
+        for i in [1, 2]:
+            filepath = "%s/%s_%s_%s.jpg" % (InfoCache.CACHE_PATH,
+                                            escape(prefix),
+                                            suffix,
+                                            ArtSize.ARTIST_SMALL*scale*i)
+            f = Gio.File.new_for_path(filepath)
+            try:
+                f.delete(None)
+            except:
+                pass
         Lp().art.emit('artist-artwork-changed', prefix)
