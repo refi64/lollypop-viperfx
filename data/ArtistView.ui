@@ -37,6 +37,7 @@
             </attributes>
             <style>
               <class name="header-tools"/>
+              <class name="header-tools-dim"/>
             </style>
           </object>
         </child>
