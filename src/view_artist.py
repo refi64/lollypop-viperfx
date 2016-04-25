@@ -35,8 +35,8 @@ class ArtistView(ArtistAlbumsView):
         ArtistAlbumsView.__init__(self, artist_ids, genre_ids)
         self._signal_id = None
         self._artist_ids = artist_ids
-        self.connect('map', self._on_map)
-        self.connect('unmap', self._on_unmap)
+        self.connect('realize', self._on_realize)
+        self.connect('unrealize', self._on_unrealize)
 
         builder = Gtk.Builder()
         builder.add_from_resource('/org/gnome/Lollypop/ArtistView.ui')
@@ -100,7 +100,7 @@ class ArtistView(ArtistAlbumsView):
         else:
             self._jump_button.set_sensitive(False)
 
-    def _on_map(self, widget):
+    def _on_realize(self, widget):
         """
             Connect signal
             @param widget as Gtk.Widget
@@ -108,7 +108,7 @@ class ArtistView(ArtistAlbumsView):
         self._signal_id = Lp().art.connect('artist-artwork-changed',
                                            self._on_artist_artwork_changed)
 
-    def _on_unmap(self, widget):
+    def _on_unrealize(self, widget):
         """
             Disconnect signal
             @param widget as Gtk.Widget
