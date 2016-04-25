@@ -36,14 +36,6 @@ class ArtistView(ArtistAlbumsView):
         self._signal_id = None
         self._artist_ids = artist_ids
 
-        empty = Gtk.Grid()
-        if Lp().settings.get_value('artist-artwork'):
-            empty.set_property('height-request', ArtSize.ARTIST_SMALL * 2)
-        else:
-            empty.set_property('height-request', ArtSize.ARTIST_SMALL)
-        empty.show()
-        self._albumbox.add(empty)
-
         builder = Gtk.Builder()
         builder.add_from_resource('/org/gnome/Lollypop/ArtistView.ui')
         builder.connect_signals(self)
@@ -56,6 +48,15 @@ class ArtistView(ArtistAlbumsView):
         header.set_property('valign', Gtk.Align.START)
         self._overlay.add_overlay(header)
         self._overlay.set_overlay_pass_through(header, True)
+
+        empty = Gtk.Grid()
+        if Lp().settings.get_value('artist-artwork'):
+            empty.set_property('height-request', ArtSize.ARTIST_SMALL * 2)
+        else:
+            empty.set_property('height-request', ArtSize.ARTIST_SMALL)
+        empty.show()
+
+        self._albumbox.add(empty)
         if len(artist_ids) == 1 and Lp().settings.get_value('artist-artwork'):
             artist = Lp().artists.get_name(artist_ids[0])
             for suffix in ["lastfm", "spotify", "wikipedia"]:
@@ -102,7 +103,8 @@ class ArtistView(ArtistAlbumsView):
         """
         ArtistAlbumsView._on_value_changed(self, adj)
         if adj.get_value() == adj.get_lower():
-            self._artwork.show()
+            if Lp().settings.get_value('artist-artwork'):
+                self._artwork.show()
             self._label.get_style_context().remove_class('header')
             self._jump_button.get_style_context().remove_class('header')
             self._jump_button.set_property('valign', Gtk.Align.END)
