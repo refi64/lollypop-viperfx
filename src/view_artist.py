@@ -105,12 +105,17 @@ class ArtistView(ArtistAlbumsView):
         if adj.get_value() == adj.get_lower():
             if Lp().settings.get_value('artist-artwork'):
                 self._artwork.show()
-            self._label.get_style_context().remove_class('header')
-            self._jump_button.get_style_context().remove_class('header')
+            self._label.get_style_context().remove_class('header-borders')
+            self._label.get_style_context().add_class('header')
+            self._jump_button.get_style_context().remove_class(
+                                                              'header-borders')
+            self._jump_button.get_style_context().add_class('header')
         else:
             self._artwork.hide()
-            self._label.get_style_context().add_class('header')
-            self._jump_button.get_style_context().add_class('header')
+            self._label.get_style_context().add_class('header-borders')
+            self._label.get_style_context().remove_class('header')
+            self._jump_button.get_style_context().add_class('header-borders')
+            self._jump_button.get_style_context().remove_class('header')
 
     def _on_populated(self, widget, widgets, scroll_value):
         """
