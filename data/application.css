@@ -99,9 +99,8 @@ popover.background separator {
 }
 
 .header {
-    border: 1px solid @theme_bg_color;
+    border: 1px solid alpha(@theme_bg_color, 0);
     border-radius: 4px;
-    border-top: none;
     border-top-left-radius: 0px;
     border-top-right-radius: 0px;
     padding-left: 5px;
@@ -111,7 +110,6 @@ popover.background separator {
 .header:hover {
     border: 1px solid shade(@theme_bg_color, 0.7);
     border-radius: 4px;
-    border-top: none;
     border-top-left-radius: 0px;
     border-top-right-radius: 0px;
     padding-left: 5px;
