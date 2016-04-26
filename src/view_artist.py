@@ -51,23 +51,23 @@ class ArtistView(ArtistAlbumsView):
         self._overlay.add_overlay(header)
         self._overlay.set_overlay_pass_through(header, True)
 
-        # Create an empty widget with header height
+        # Create an self._empty widget with header height
         ctx = self._label.get_pango_context()
         layout = Pango.Layout.new(ctx)
         layout.set_text("a", 1)
         font_height = int(layout.get_pixel_size()[1])
-        empty = Gtk.Grid()
+        self._empty = Gtk.Grid()
         if Lp().settings.get_value('artist-artwork'):
             artwork_height = ArtSize.ARTIST_SMALL * 2
         else:
             artwork_height = 0
         if artwork_height > font_height:
-            empty.set_property('height-request', artwork_height)
+            self._empty.set_property('height-request', artwork_height)
         else:
-            empty.set_property('height-request', font_height)
-        empty.show()
+            self._empty.set_property('height-request', font_height)
+        self._empty.show()
 
-        self._albumbox.add(empty)
+        self._albumbox.add(self._empty)
         if len(self._artist_ids) == 1 and\
                 Lp().settings.get_value('artist-artwork'):
             artist = Lp().artists.get_name(self._artist_ids[0])
