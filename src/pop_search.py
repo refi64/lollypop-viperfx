@@ -393,8 +393,7 @@ class SearchPopover(Gtk.Popover):
 
     def _on_search_changed(self, widget):
         """
-            Timeout filtering, call _really_do_filterting()
-            after timeout
+            Timeout filtering
             @param widget as Gtk.TextEntry
         """
         if self._in_thread:
@@ -416,7 +415,7 @@ class SearchPopover(Gtk.Popover):
 
     def _on_search_changed_thread(self):
         """
-            Just run _reallyon_entry_changed in a thread
+            Populate widget
         """
         self._timeout = None
         self._in_thread = True

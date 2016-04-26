@@ -14,6 +14,7 @@ from gi.repository import Gtk, GLib, Gio, GdkPixbuf, Gdk, Pango
 
 from threading import Thread
 from gettext import gettext as _
+from cgi import escape
 
 from lollypop.radios import Radios
 from lollypop.tunein import TuneIn
@@ -38,6 +39,7 @@ class TuneinPopover(Gtk.Popover):
         else:
             self._radios_manager = Radios()
         self._current_url = None
+        self._timeout_id = None
         self._previous_urls = []
         self._covers_to_download = []
 
@@ -49,7 +51,7 @@ class TuneinPopover(Gtk.Popover):
         builder.add_from_resource('/org/gnome/Lollypop/TuneinPopover.ui')
         builder.connect_signals(self)
         widget = builder.get_object('widget')
-        widget.attach(self._stack, 0, 2, 4, 1)
+        widget.attach(self._stack, 0, 2, 5, 1)
 
         self._back_btn = builder.get_object('back_btn')
         self._home_btn = builder.get_object('home_btn')
@@ -113,7 +115,8 @@ class TuneinPopover(Gtk.Popover):
             @thread safe
         """
         if url is None:
-            items = self._tunein.get_items()
+            items = self._tunein.get_items(
+                                    "http://opml.radiotime.com/Browse.ashx?c=")
         else:
             items = self._tunein.get_items(url)
 
@@ -315,3 +318,36 @@ class TuneinPopover(Gtk.Popover):
         t.daemon = True
         t.start()
         self.hide()
+
+    def _on_search_changed(self, widget):
+        """
+            Timeout filtering, call _really_do_filterting()
+            after timeout
+            @param widget as Gtk.TextEntry
+        """
+        if self._timeout_id is not None:
+            GLib.source_remove(self._timeout_id)
+            self._timeout_id = None
+
+        text = widget.get_text()
+        if text != "":
+            self._timeout_id = GLib.timeout_add(1000,
+                                                self._on_search_changed_thread,
+                                                text)
+        else:
+            GLib.timeout_add(1000, self._on_home_btn_clicked, None)
+
+    def _on_search_changed_thread(self, string):
+        """
+            Populate widget
+            @param string as str
+        """
+        self._timeout_id = None
+        self._stack.set_visible_child_name('spinner')
+        self._spinner.start()
+        self._clear()
+        self._current_url = "http://opml.radiotime.com/Search.ashx?query=%s"\
+            % escape(string)
+        t = Thread(target=self._populate, args=(self._current_url,))
+        t.daemon = True
+        t.start()

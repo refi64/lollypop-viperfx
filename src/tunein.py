@@ -32,7 +32,7 @@ class TuneIn:
         """
         pass
 
-    def get_items(self, url="http://opml.radiotime.com/Browse.ashx?c="):
+    def get_items(self, url):
         """
             Get radio entries for uri
             @param uri as string
