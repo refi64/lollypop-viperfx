@@ -10,7 +10,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-from gi.repository import Gtk, Gdk
+from gi.repository import Gtk, Gdk, Pango
 
 from gettext import gettext as _
 from math import pi
@@ -51,11 +51,20 @@ class ArtistView(ArtistAlbumsView):
         self._overlay.add_overlay(header)
         self._overlay.set_overlay_pass_through(header, True)
 
+        # Create an empty widget with header height
+        ctx = self._label.get_pango_context()
+        layout = Pango.Layout.new(ctx)
+        layout.set_text("a", 1)
+        font_height = int(layout.get_pixel_size()[1])
         empty = Gtk.Grid()
         if Lp().settings.get_value('artist-artwork'):
-            empty.set_property('height-request', ArtSize.ARTIST_SMALL * 2)
+            artwork_height = ArtSize.ARTIST_SMALL * 2
         else:
-            empty.set_property('height-request', ArtSize.ARTIST_SMALL)
+            artwork_height = 0
+        if artwork_height > font_height:
+            empty.set_property('height-request', artwork_height)
+        else:
+            empty.set_property('height-request', font_height)
         empty.show()
 
         self._albumbox.add(empty)

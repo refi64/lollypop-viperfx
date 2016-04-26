@@ -57,7 +57,7 @@
         <property name="relief">none</property>
         <signal name="clicked" handler="_on_jump_button_clicked" swapped="no"/>
         <style>
-          <class name="header-tools"/>
+          <class name="header"/>
         </style>
       </object>
       <packing>
