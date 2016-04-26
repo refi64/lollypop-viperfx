@@ -159,12 +159,14 @@ class ArtistView(ArtistAlbumsView):
             self._jump_button.get_style_context().remove_class(
                                                               'header-borders')
             self._jump_button.get_style_context().add_class('header')
+            self._jump_button.set_property('valign', Gtk.Align.CENTER)
         else:
             self._artwork.hide()
             self._label.get_style_context().add_class('header-borders')
             self._label.get_style_context().remove_class('header')
             self._jump_button.get_style_context().add_class('header-borders')
             self._jump_button.get_style_context().remove_class('header')
+            self._jump_button.set_property('valign', Gtk.Align.START)
 
     def _on_populated(self, widget, widgets, scroll_value):
         """
