@@ -180,7 +180,7 @@ class TuneinPopover(Gtk.Popover):
         if self._stack.get_visible_child_name() == 'spinner':
             self._stack.set_visible_child_name('scrolled')
             self._spinner.stop()
-            self._label.set_text(_("Browse themes and add a new radio"))
+            self._label.set_text("")
             if self._current_url is not None:
                 self._back_btn.set_sensitive(True)
         GLib.idle_add(self._add_items, items)
