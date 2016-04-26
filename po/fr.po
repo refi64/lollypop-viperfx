@@ -9,8 +9,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lollypop\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-04-22 10:33+0200\n"
-"PO-Revision-Date: 2016-04-22 08:44+0000\n"
+"POT-Creation-Date: 2016-04-26 21:45+0200\n"
+"PO-Revision-Date: 2016-04-26 19:48+0000\n"
 "Last-Translator: Cédric Bellegarde <web@adishatz.org>\n"
 "Language-Team: French (http://www.transifex.com/gnumdk/lollypop/language/fr/)\n"
 "MIME-Version: 1.0\n"
@@ -129,8 +129,8 @@ msgid "Show genres list"
 msgstr "Afficher la liste des genres"
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:28 ../data/SettingsDialog.ui.h:8
-msgid "Hide track own artists"
-msgstr "Cacher les artistes propres au morceau"
+msgid "Hide track artist if different from album artist"
+msgstr "Cacher l'artiste du morceau si différent de l'artiste de l'album"
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:29 ../data/SettingsDialog.ui.h:9
 msgid "Show artist artwork"
@@ -293,32 +293,32 @@ msgid ""
 "    - Artist informations disabled"
 msgstr "- Scrobbler désactivé\n- Téléchargement automatique des pochettes désactivé\n- Informations sur les artistes désactivée"
 
-#: ../src/application.py:413
+#: ../src/application.py:421
 #, python-format
 msgid "%d artist"
 msgid_plural "%d artists"
 msgstr[0] "%d artiste"
 msgstr[1] "%d artistes"
 
-#: ../src/application.py:415
+#: ../src/application.py:423
 #, python-format
 msgid "%d album"
 msgid_plural "%d albums"
 msgstr[0] "%d album"
 msgstr[1] "%d albums"
 
-#: ../src/application.py:417
+#: ../src/application.py:425
 #, python-format
 msgid "%d track"
 msgid_plural "%d tracks"
 msgstr[0] "%d morceau"
 msgstr[1] "%d morceaux"
 
-#: ../src/application.py:432
+#: ../src/application.py:440
 msgid "Lollypop: You need to install yelp."
 msgstr "Lollypop: Vous devez installer yelp."
 
-#: ../src/art_widgets.py:53 ../src/pop_tunein.py:93
+#: ../src/art_widgets.py:53 ../src/pop_tunein.py:95
 #: ../data/RadioPopover.ui.h:1
 msgid "Please wait..."
 msgstr "Veuillez patienter..."
@@ -335,52 +335,61 @@ msgstr "Choisissez une image"
 msgid "Your music is updating"
 msgstr "Mise à jour de votre musique"
 
-#: ../src/container.py:414
+#: ../src/collectionscanner.py:246 ../src/database_albums.py:299
+#: ../src/database_artists.py:104 ../src/database_genres.py:69
+#: ../src/database_tracks.py:229 ../src/selectionlist.py:274
+#: ../src/tagreader.py:87 ../src/tagreader.py:102 ../src/tagreader.py:117
+#: ../src/tagreader.py:150 ../src/tagreader.py:165 ../src/tagreader.py:168
+#: ../src/tagreader.py:178 ../src/tagreader.py:185
+msgid "Unknown"
+msgstr "Inconnu"
+
+#: ../src/container.py:417
 msgid "Popular albums"
 msgstr "Albums populaires"
 
-#: ../src/container.py:415
+#: ../src/container.py:418
 msgid "Recently added albums"
 msgstr "Albums ajoutés récemment"
 
-#: ../src/container.py:416
+#: ../src/container.py:419
 msgid "Random albums"
 msgstr "Albums aléatoires"
 
-#: ../src/container.py:417 ../src/pop_menu.py:411 ../src/pop_menu.py:475
+#: ../src/container.py:420 ../src/pop_menu.py:411 ../src/pop_menu.py:475
 #: ../src/pop_menu.py:495
 msgid "Playlists"
 msgstr "Listes de lecture"
 
-#: ../src/container.py:418
+#: ../src/container.py:421
 msgid "Radios"
 msgstr "Radios"
 
-#: ../src/container.py:420
+#: ../src/container.py:423
 msgid "All artists"
 msgstr "Tous les artistes"
 
-#: ../src/container.py:422 ../data/DeviceManagerWidget.ui.h:1
+#: ../src/container.py:425 ../data/DeviceManagerWidget.ui.h:1
 msgid "All albums"
 msgstr "Tous les albums"
 
-#: ../src/container.py:469
+#: ../src/container.py:472
 msgid "Compilations"
 msgstr "Compilations"
 
-#: ../src/container.py:492 ../src/playlists.py:231
+#: ../src/container.py:495 ../src/playlists.py:231
 msgid "Popular tracks"
 msgstr "Morceaux populaires"
 
-#: ../src/container.py:493 ../src/playlists.py:233
+#: ../src/container.py:496 ../src/playlists.py:233
 msgid "Recently played"
 msgstr "Jouées récemment"
 
-#: ../src/container.py:494 ../src/playlists.py:235
+#: ../src/container.py:497 ../src/playlists.py:235
 msgid "Never played"
 msgstr "Jamais jouées"
 
-#: ../src/container.py:495 ../src/playlists.py:237
+#: ../src/container.py:498 ../src/playlists.py:237
 msgid "Random tracks"
 msgstr "Morceaux aléatoires"
 
@@ -388,19 +397,11 @@ msgstr "Morceaux aléatoires"
 msgid "Pause"
 msgstr "Pause"
 
-#: ../src/controllers.py:86 ../src/controllers.py:114 ../src/pop_tunein.py:155
-#: ../src/widgets_album.py:461 ../src/widgets_radio.py:164
+#: ../src/controllers.py:86 ../src/controllers.py:114 ../src/pop_tunein.py:158
+#: ../src/widgets_album.py:463 ../src/widgets_radio.py:166
 #: ../data/AlbumDetailedWidget.ui.h:1 ../data/ToolbarPlayback.ui.h:2
 msgid "Play"
 msgstr "Lire"
-
-#: ../src/database_albums.py:299 ../src/database_artists.py:104
-#: ../src/database_genres.py:69 ../src/database_tracks.py:229
-#: ../src/selectionlist.py:274 ../src/tagreader.py:87 ../src/tagreader.py:102
-#: ../src/tagreader.py:117 ../src/tagreader.py:150 ../src/tagreader.py:165
-#: ../src/tagreader.py:168 ../src/tagreader.py:178
-msgid "Unknown"
-msgstr "Inconnu"
 
 #: ../src/database_artists.py:97
 msgid "Many artists"
@@ -436,15 +437,15 @@ msgstr "Le fichier n'existe pas: %s"
 msgid "Loved tracks"
 msgstr "Coups de coeur"
 
-#: ../src/pop_albums.py:288
+#: ../src/pop_albums.py:287
 msgid "Clear albums"
 msgstr "Vider la liste des albums"
 
-#: ../src/pop_albums.py:296 ../src/pop_info.py:209 ../src/view_artist.py:41
+#: ../src/pop_albums.py:295 ../src/pop_info.py:214 ../src/view_artist.py:47
 msgid "Go to current track"
 msgstr "Aller au morceau courant"
 
-#: ../src/pop_albums.py:297 ../src/toolbar_end.py:312
+#: ../src/pop_albums.py:296 ../src/toolbar_end.py:312
 msgid "Playing albums"
 msgstr "Albums en cours de lecture"
 
@@ -515,7 +516,7 @@ msgstr "Modifier les informations"
 msgid "Edit"
 msgstr "Editer"
 
-#: ../src/pop_radio.py:83 ../src/pop_tunein.py:161
+#: ../src/pop_radio.py:83 ../src/pop_tunein.py:164
 msgid "Add"
 msgstr "Ajouter"
 
@@ -523,13 +524,9 @@ msgstr "Ajouter"
 msgid "Modify"
 msgstr "Modifier"
 
-#: ../src/pop_tunein.py:105
+#: ../src/pop_tunein.py:107
 msgid "Can't connect to TuneIn..."
 msgstr "Impossible de se connecter à TuneIn..."
-
-#: ../src/pop_tunein.py:180
-msgid "Browse themes and add a new radio"
-msgstr "Parcourez les thèmes et ajoutez une nouvelle radio"
 
 #: ../src/settings.py:88 ../src/settings.py:91 ../data/SettingsDialog.ui.h:3
 msgid "Preferences"
@@ -566,38 +563,38 @@ msgstr "Synchroniser %s"
 msgid "Cancel synchronization"
 msgstr "Annuler la synchronisation"
 
-#: ../src/widgets_album.py:203
+#: ../src/widgets_album.py:205
 msgid "Append"
 msgstr "Ajouter"
 
-#: ../src/widgets_album.py:207
+#: ../src/widgets_album.py:209
 msgid "Remove"
 msgstr "Enlever"
 
-#: ../src/widgets_album.py:472 ../data/AlbumDetailedWidget.ui.h:3
+#: ../src/widgets_album.py:474 ../data/AlbumDetailedWidget.ui.h:3
 msgid "Play albums"
 msgstr "Lire les albums"
 
-#: ../src/widgets_album.py:482 ../data/AlbumDetailedWidget.ui.h:2
+#: ../src/widgets_album.py:484 ../data/AlbumDetailedWidget.ui.h:2
 msgid "Change artwork"
 msgstr "Modifier la pochette"
 
-#: ../src/widgets_album.py:649
+#: ../src/widgets_album.py:651
 #, python-format
 msgid "%s h  %s m"
 msgstr "%s h %s m"
 
-#: ../src/widgets_album.py:651
+#: ../src/widgets_album.py:653
 #, python-format
 msgid "%s h"
 msgstr "%s h"
 
-#: ../src/widgets_album.py:653
+#: ../src/widgets_album.py:655
 #, python-format
 msgid "%s m"
 msgstr "%s m"
 
-#: ../src/widgets_album.py:912
+#: ../src/widgets_album.py:914
 #, python-format
 msgid "Disc %s"
 msgstr "Disque %s"
@@ -628,7 +625,7 @@ msgstr "Supprimer \"%s\"?"
 msgid "Remove these tracks?"
 msgstr "Supprimer ces morceaux?"
 
-#: ../src/widgets_radio.py:180
+#: ../src/widgets_radio.py:182
 msgid "Modify radio"
 msgstr "Modifier la radio"
 
