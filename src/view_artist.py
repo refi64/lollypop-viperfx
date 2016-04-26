@@ -55,7 +55,8 @@ class ArtistView(ArtistAlbumsView):
         ctx = self._label.get_pango_context()
         layout = Pango.Layout.new(ctx)
         layout.set_text("a", 1)
-        font_height = int(layout.get_pixel_size()[1])
+        # Font scale 2
+        font_height = int(layout.get_pixel_size()[1]) * 2
         self._empty = Gtk.Grid()
         if Lp().settings.get_value('artist-artwork'):
             artwork_height = ArtSize.ARTIST_SMALL * 2
