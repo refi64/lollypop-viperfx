@@ -335,7 +335,9 @@ class TuneinPopover(Gtk.Popover):
                                                 self._on_search_changed_thread,
                                                 text)
         else:
-            GLib.timeout_add(1000, self._on_home_btn_clicked, None)
+            self._timeout_id = GLib.timeout_add(1000,
+                                                self._on_home_btn_clicked,
+                                                None)
 
     def _on_search_changed_thread(self, string):
         """
