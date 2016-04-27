@@ -51,6 +51,7 @@ class InfoCache:
             @param size as int
             @return path as string/None
         """
+        extract = None
         filepath = "%s/%s_%s_%s.jpg" % (InfoCache.CACHE_PATH,
                                         escape(prefix),
                                         suffix,
@@ -68,36 +69,39 @@ class InfoCache:
                                                             size)
             if pixbuf.get_height() > pixbuf.get_width():
                 vertical = True
-            else:
+            elif pixbuf.get_height() < pixbuf.get_width():
                 vertical = False
-            del pixbuf
-            extract = GdkPixbuf.Pixbuf.new(GdkPixbuf.Colorspace.RGB,
-                                           True, 8,
-                                           size, size)
-            if vertical:
-                pixbuf = GdkPixbuf.Pixbuf.new_from_file_at_scale(filepath,
-                                                                 size,
-                                                                 -1,
-                                                                 True)
-                diff = pixbuf.get_height() - size
-                pixbuf.copy_area(0, diff/2,
-                                 pixbuf.get_width(),
-                                 size,
-                                 extract,
-                                 0, 0)
             else:
-                pixbuf = GdkPixbuf.Pixbuf.new_from_file_at_scale(filepath,
-                                                                 -1,
-                                                                 size,
-                                                                 True)
-                diff = pixbuf.get_width() - size
-                pixbuf.copy_area(diff/2, 0,
-                                 size,
-                                 pixbuf.get_height(),
-                                 extract,
-                                 0, 0)
+                extract = pixbuf
+            if extract is None:
+                del pixbuf
+                extract = GdkPixbuf.Pixbuf.new(GdkPixbuf.Colorspace.RGB,
+                                               True, 8,
+                                               size, size)
+                if vertical:
+                    pixbuf = GdkPixbuf.Pixbuf.new_from_file_at_scale(filepath,
+                                                                     size,
+                                                                     -1,
+                                                                     True)
+                    diff = pixbuf.get_height() - size
+                    pixbuf.copy_area(0, diff/2,
+                                     pixbuf.get_width(),
+                                     size,
+                                     extract,
+                                     0, 0)
+                else:
+                    pixbuf = GdkPixbuf.Pixbuf.new_from_file_at_scale(filepath,
+                                                                     -1,
+                                                                     size,
+                                                                     True)
+                    diff = pixbuf.get_width() - size
+                    pixbuf.copy_area(diff/2, 0,
+                                     size,
+                                     pixbuf.get_height(),
+                                     extract,
+                                     0, 0)
+                del pixbuf
             extract.savev(filepath_at_size, "jpeg", ["quality"], ["90"])
-            del pixbuf
             del extract
         return filepath_at_size
 
