@@ -147,7 +147,7 @@ popover.background separator {
     border: 2px solid #bebebe;
     background-color: white;
     color: #bebebe;
-    border-radius: 16px;
+    border-radius: 20px;
 }
 
 .rounded-icon {
