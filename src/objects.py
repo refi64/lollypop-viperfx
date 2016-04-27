@@ -231,6 +231,7 @@ class Track(Base):
         Base.__init__(self, Lp().tracks)
         self.id = track_id
         self._uri = None
+        self._non_album_artists = []
 
     @property
     def non_album_artists(self):
@@ -238,16 +239,16 @@ class Track(Base):
             Return formated name (title \n artist)
             @return str
         """
-        artists = []
-        # Show all artists for compilations
-        if self.album.artist_ids[0] == Type.COMPILATIONS:
-            artists = self.artists
-        # Show only non album artist for albums (and only if one)
-        elif len(self.artists) > 1:
-            for artist in self.artists:
-                if artist not in self.album_artists:
-                    artists.append(artist)
-        return artists
+        if not self._non_album_artists:
+            # Show all artists for compilations
+            if self.album.artist_ids[0] == Type.COMPILATIONS:
+                self._non_album_artists = self.artists
+            # Show only non album artist for albums (and only if one)
+            elif len(self.artists) > 1:
+                for artist in self.artists:
+                    if artist not in self.album_artists:
+                        self._non_album_artists.append(artist)
+        return self._non_album_artists
 
     @property
     def title(self):
