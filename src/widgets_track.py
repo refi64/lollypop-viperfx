@@ -26,7 +26,6 @@ class Row(Gtk.ListBoxRow):
     """
         A row
     """
-
     def __init__(self, rowid, num):
         """
             Init row widgets

@@ -236,7 +236,7 @@ class Track(Base):
     @property
     def non_album_artists(self):
         """
-            Return formated name (title \n artist)
+            Return non album artists
             @return str
         """
         if not self._non_album_artists:
