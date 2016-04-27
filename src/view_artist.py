@@ -62,6 +62,20 @@ class ArtistView(ArtistAlbumsView):
             artists.append(Lp().artists.get_name(artist_id))
         self._label.set_label(", ".join(artists))
 
+    def jump_to_current(self):
+        """
+            Jump to current album
+        """
+        widget = None
+        for child in self._albumbox.get_children():
+            if child.get_id() == Lp().player.current_track.album.id:
+                widget = child
+                break
+        if widget is not None:
+            y = widget.get_current_ordinate(self._albumbox)
+            self._scrolled.get_vadjustment().set_value(
+                                y - self._empty.get_property('height-request'))
+
 #######################
 # PRIVATE             #
 #######################

@@ -72,8 +72,7 @@ class ArtistAlbumsView(LazyLoadingView):
                 break
         if widget is not None:
             y = widget.get_current_ordinate(self._albumbox)
-            self._scrolled.get_vadjustment().set_value(
-                                y - self._empty.get_property('height-request'))
+            self._scrolled.get_vadjustment().set_value(y)
 
     def stop(self):
         """
