@@ -52,14 +52,37 @@ class ArtistView(ArtistAlbumsView):
         self._overlay.set_overlay_pass_through(header, True)
 
         self._empty = Gtk.Grid()
+        self._empty.show()
         self._albumbox.add(self._empty)
 
+        self._set_artwork()
+
+        artists = []
+        for artist_id in artist_ids:
+            artists.append(Lp().artists.get_name(artist_id))
+        self._label.set_label(", ".join(artists))
+
+#######################
+# PRIVATE             #
+#######################
+    def _set_artwork(self):
+        """
+            Set artist artwork
+        """
         artwork_height = 0
         if len(self._artist_ids) == 1 and\
                 Lp().settings.get_value('artist-artwork'):
             artist = Lp().artists.get_name(self._artist_ids[0])
-            if self._set_artwork(artist):
-                artwork_height = ArtSize.ARTIST_SMALL * 2
+
+            for suffix in ["lastfm", "spotify", "wikipedia"]:
+                uri = InfoCache.get_artwork(artist, suffix,
+                                            ArtSize.ARTIST_SMALL * 2 *
+                                            self._artwork.get_scale_factor())
+                if uri is not None:
+                    self._artwork.set_from_file(uri)
+                    artwork_height = ArtSize.ARTIST_SMALL * 2
+                    self._artwork.show()
+                    break
 
         # Create an self._empty widget with header height
         ctx = self._label.get_pango_context()
@@ -72,32 +95,6 @@ class ArtistView(ArtistAlbumsView):
             self._empty.set_property('height-request', artwork_height)
         else:
             self._empty.set_property('height-request', font_height)
-        self._empty.show()
-
-        artists = []
-        for artist_id in artist_ids:
-            artists.append(Lp().artists.get_name(artist_id))
-        self._label.set_label(", ".join(artists))
-
-#######################
-# PRIVATE             #
-#######################
-    def _set_artwork(self, artist):
-        """
-            Set artist artwork
-            @param artist as str
-            @return set as bool
-        """
-        for suffix in ["lastfm", "spotify", "wikipedia"]:
-            uri = InfoCache.get_artwork(artist, suffix,
-                                        ArtSize.ARTIST_SMALL * 2 *
-                                        self._artwork.get_scale_factor())
-            if uri is not None:
-                self._artwork.set_from_file(uri)
-                self._artwork.show()
-                return True
-        self._artwork.hide()
-        return False
 
     def _update_jump_button(self):
         """
@@ -136,11 +133,7 @@ class ArtistView(ArtistAlbumsView):
             @param art as Art
             @param prefix as str
         """
-        if len(self._artist_ids) == 1 and\
-                Lp().settings.get_value('artist-artwork'):
-            artist = Lp().artists.get_name(self._artist_ids[0])
-            if artist == prefix:
-                self._set_artwork(artist)
+        self._set_artwork()
 
     def _on_jump_button_clicked(self, widget):
         """
