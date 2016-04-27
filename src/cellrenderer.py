@@ -87,7 +87,6 @@ class CellRendererArtist(Gtk.CellRendererText):
 
     def do_own_render(self, ctx, widget, cell_area, size):
         surface = None
-        alpha = False
         if self.rowid in self._surfaces.keys():
             surface = self._surfaces[self.rowid]
         if surface is None:
@@ -105,9 +104,8 @@ class CellRendererArtist(Gtk.CellRendererText):
                     del pixbuf
                     break
         if surface is None:
-            alpha = True
             surface = Gtk.IconTheme.get_default().load_surface(
-                                             'media-optical-cd-audio-symbolic',
+                                             'avatar-default-symbolic',
                                              ArtSize.ARTIST_SMALL,
                                              1,
                                              widget.get_window(),
@@ -124,10 +122,7 @@ class CellRendererArtist(Gtk.CellRendererText):
         ctx.stroke_preserve()
         ctx.set_source_surface(surface, 0, 0)
         ctx.clip()
-        if alpha:
-            ctx.paint_with_alpha(0.5)
-        else:
-            ctx.paint()
+        ctx.paint()
 
     def do_get_preferred_height_for_width(self, widget, width):
         draw_artwork = self._is_artists and\
