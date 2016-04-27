@@ -142,6 +142,13 @@ Gtk.ListBoxRow .menu-button:hover {
     background-color: @theme_selected_bg_color;
 }
 
+.artwork-icon {
+    border: 2px solid #bebebe;
+    background-color: white;
+    color: #bebebe;
+    border-radius: 20px;
+}
+
 .rounded-icon {
     transition: 70ms linear;
     border: 3px solid white;
