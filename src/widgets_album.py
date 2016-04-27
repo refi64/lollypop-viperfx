@@ -585,10 +585,7 @@ class AlbumDetailedWidget(Gtk.Bin, AlbumWidget):
         """
         Gtk.Bin.__init__(self)
         AlbumWidget.__init__(self, album_id, genre_ids)
-        # Check if we need to limit the view to artist album
-        for artist_id in self._album.artist_ids:
-            if artist_id in artist_ids:
-                self._album.set_artists(artist_ids)
+        self._album.set_artists(artist_ids)
         self._width = None
         # Cover + rating + spacing
         self._height = ArtSize.BIG + 26
