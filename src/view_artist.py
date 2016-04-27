@@ -85,25 +85,28 @@ class ArtistView(ArtistAlbumsView):
             Set artist artwork
         """
         artwork_height = 0
-        if len(self._artist_ids) == 1 and\
-                Lp().settings.get_value('artist-artwork'):
-            artist = Lp().artists.get_name(self._artist_ids[0])
+        if Lp().settings.get_value('artist-artwork'):
+            if len(self._artist_ids) == 1 and\
+                    Lp().settings.get_value('artist-artwork'):
+                artist = Lp().artists.get_name(self._artist_ids[0])
 
-            for suffix in ["lastfm", "spotify", "wikipedia"]:
-                uri = InfoCache.get_artwork(artist, suffix,
+                for suffix in ["lastfm", "spotify", "wikipedia"]:
+                    uri = InfoCache.get_artwork(
+                                            artist, suffix,
                                             ArtSize.ARTIST_SMALL * 2 *
                                             self._artwork.get_scale_factor())
-                if uri is not None:
-                    self._artwork.set_from_file(uri)
-                    artwork_height = ArtSize.ARTIST_SMALL * 2
-                    self._artwork.show()
-                    break
-        # Add a default icon
-        if len(self._artist_ids) == 1 and artwork_height == 0:
-            self._artwork.set_from_icon_name('media-optical-cd-audio-symbolic',
-                                             Gtk.IconSize.DND)
-            artwork_height = 32
-            self._artwork.show()
+                    if uri is not None:
+                        self._artwork.set_from_file(uri)
+                        artwork_height = ArtSize.ARTIST_SMALL * 2
+                        self._artwork.show()
+                        break
+            # Add a default icon
+            if len(self._artist_ids) == 1 and artwork_height == 0:
+                self._artwork.set_from_icon_name(
+                                            'media-optical-cd-audio-symbolic',
+                                            Gtk.IconSize.DND)
+                artwork_height = 32
+                self._artwork.show()
 
         # Create an self._empty widget with header height
         ctx = self._label.get_pango_context()
