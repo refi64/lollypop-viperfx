@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lollypop\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-04-18 16:20+0200\n"
-"PO-Revision-Date: 2016-04-18 14:21+0000\n"
+"POT-Creation-Date: 2016-04-27 10:41+0200\n"
+"PO-Revision-Date: 2016-04-27 08:43+0000\n"
 "Last-Translator: Cédric Bellegarde <web@adishatz.org>\n"
 "Language-Team: Hungarian (http://www.transifex.com/gnumdk/lollypop/language/hu/)\n"
 "MIME-Version: 1.0\n"
@@ -128,8 +128,8 @@ msgid "Show genres list"
 msgstr "Műfajok listájának engedélyezése"
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:28 ../data/SettingsDialog.ui.h:8
-msgid "Hide track own artists"
-msgstr ""
+msgid "Show artist artwork"
+msgstr "Előadó képének megjelenítése"
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:29
 msgid "Use dark gtk theme"
@@ -226,7 +226,7 @@ msgid "Genre/Artist/Cover browsing"
 msgstr "Műfaj/Előadó/Borító böngészés"
 
 #: ../data/lollypop.appdata.xml.in.h:8 ../src/playlists.py:239
-#: ../data/ArtistInfo.ui.h:5 ../data/ToolbarEnd.ui.h:7
+#: ../data/ArtistInfo.ui.h:6 ../data/ToolbarEnd.ui.h:7
 msgid "Search"
 msgstr "Keresés"
 
@@ -288,81 +288,103 @@ msgid ""
 "    - Artist informations disabled"
 msgstr "- Scrobbler kikapcsolva\n- Automatikus borító letöltés kikapcsolva\n- Előadó információk kikapcsolva"
 
-#: ../src/application.py:411
+#: ../src/application.py:421
 #, python-format
 msgid "%d artist"
 msgid_plural "%d artists"
 msgstr[0] "%d előadó"
 msgstr[1] "%d előadó"
 
-#: ../src/application.py:413
+#: ../src/application.py:423
 #, python-format
 msgid "%d album"
 msgid_plural "%d albums"
 msgstr[0] "%d album"
 msgstr[1] "%d album"
 
-#: ../src/application.py:415
+#: ../src/application.py:425
 #, python-format
 msgid "%d track"
 msgid_plural "%d tracks"
 msgstr[0] "%d szám"
 msgstr[1] "%d szám"
 
-#: ../src/application.py:430
+#: ../src/application.py:440
 msgid "Lollypop: You need to install yelp."
 msgstr "Lollypop: yelp telepítése szükséges"
+
+#: ../src/art_widgets.py:53 ../src/pop_tunein.py:95
+#: ../data/RadioPopover.ui.h:1
+msgid "Please wait..."
+msgstr "Kérlek várj..."
+
+#: ../src/art_widgets.py:143
+msgid "No cover found..."
+msgstr "Nem található borító"
+
+#: ../src/art_widgets.py:185
+msgid "Select artwork"
+msgstr "Kép kiválasztása"
 
 #: ../src/collectionscanner.py:69
 msgid "Your music is updating"
 msgstr "A zenék frissítés alatt"
 
-#: ../src/container.py:414
+#: ../src/collectionscanner.py:246 ../src/database_albums.py:299
+#: ../src/database_artists.py:104 ../src/database_genres.py:69
+#: ../src/database_tracks.py:229 ../src/selectionlist.py:274
+#: ../src/tagreader.py:87 ../src/tagreader.py:102 ../src/tagreader.py:117
+#: ../src/tagreader.py:150 ../src/tagreader.py:165 ../src/tagreader.py:168
+#: ../src/tagreader.py:178 ../src/tagreader.py:185
+msgid "Unknown"
+msgstr "Ismeretlen"
+
+#: ../src/container.py:417
 msgid "Popular albums"
 msgstr "Népszerű albumok"
 
-#: ../src/container.py:415
+#: ../src/container.py:418
 msgid "Recently added albums"
 msgstr "Legutóbb hozzáadott albumok"
 
-#: ../src/container.py:416
+#: ../src/container.py:419
 msgid "Random albums"
 msgstr "Véletlen album"
 
-#: ../src/container.py:417 ../src/pop_menu.py:411 ../src/pop_menu.py:475
+#: ../src/container.py:420 ../src/pop_menu.py:411 ../src/pop_menu.py:475
 #: ../src/pop_menu.py:495
 msgid "Playlists"
 msgstr "Lejátszási listák"
 
-#: ../src/container.py:418
+#: ../src/container.py:421
 msgid "Radios"
 msgstr "Rádiók"
 
-#: ../src/container.py:420
+#: ../src/container.py:423
 msgid "All artists"
 msgstr "Minden előadó"
 
-#: ../src/container.py:422 ../data/DeviceManagerWidget.ui.h:1
+#: ../src/container.py:425 ../data/DeviceManagerWidget.ui.h:1
 msgid "All albums"
 msgstr "Minden album"
 
-#: ../src/container.py:469
+#: ../src/container.py:472
 msgid "Compilations"
 msgstr "Összeállítások"
 
-#: ../src/container.py:492 ../src/playlists.py:231
+#: ../src/container.py:495 ../src/playlists.py:231
 msgid "Popular tracks"
 msgstr "Népszerű"
 
-#: ../src/container.py:493 ../src/playlists.py:233
+#: ../src/container.py:496 ../src/playlists.py:233
 msgid "Recently played"
 msgstr "Legutóbb lejátszott"
 
-#: ../src/container.py:494 ../src/playlists.py:235
+#: ../src/container.py:497 ../src/playlists.py:235
 msgid "Never played"
 msgstr "Soha nem játszott"
 
-#: ../src/container.py:495 ../src/playlists.py:237
+#: ../src/container.py:498 ../src/playlists.py:237
 msgid "Random tracks"
 msgstr "Véletlenszerű"
 
@@ -370,29 +392,21 @@ msgstr "Véletlenszerű"
 msgid "Pause"
 msgstr "Szünet"
 
-#: ../src/controllers.py:86 ../src/controllers.py:114 ../src/pop_tunein.py:155
-#: ../src/widgets_album.py:458 ../src/widgets_radio.py:162
+#: ../src/controllers.py:86 ../src/controllers.py:114 ../src/pop_tunein.py:158
+#: ../src/widgets_album.py:463 ../src/widgets_radio.py:166
 #: ../data/AlbumDetailedWidget.ui.h:1 ../data/ToolbarPlayback.ui.h:2
 msgid "Play"
 msgstr "Lejátszás"
 
-#: ../src/database_albums.py:299 ../src/database_artists.py:104
-#: ../src/database_genres.py:69 ../src/database_tracks.py:229
-#: ../src/selectionlist.py:274 ../src/tagreader.py:87 ../src/tagreader.py:102
-#: ../src/tagreader.py:117 ../src/tagreader.py:150 ../src/tagreader.py:165
-#: ../src/tagreader.py:168 ../src/tagreader.py:178
-msgid "Unknown"
-msgstr "Ismeretlen"
-
-#: ../src/database_artists.py:97 ../src/view_artist.py:50
+#: ../src/database_artists.py:97
 msgid "Many artists"
 msgstr "Sok előadó"
 
-#: ../src/lastfm.py:24
+#: ../src/lastfm.py:23
 msgid "Last.fm authentication disabled"
 msgstr "Last.fm bejelentkezés letiltva"
 
-#: ../src/lastfm.py:330
+#: ../src/lastfm.py:332
 msgid "Wrong Last.fm credentials"
 msgstr "Hibás Last.fm felhasználónév vagy jelszó"
 
@@ -418,35 +432,23 @@ msgstr "Fájl nem létezik: %s"
 msgid "Loved tracks"
 msgstr "Kedvelt számok"
 
-#: ../src/pop_albums.py:288
+#: ../src/pop_albums.py:287
 msgid "Clear albums"
 msgstr "Albumok törlése a listáról"
 
-#: ../src/pop_albums.py:296 ../src/pop_info.py:208 ../src/view_artist.py:44
+#: ../src/pop_albums.py:295 ../src/pop_info.py:214 ../src/view_artist.py:47
 msgid "Go to current track"
 msgstr "Ugorj a most játszottra"
 
-#: ../src/pop_albums.py:297 ../src/toolbar_end.py:312
+#: ../src/pop_albums.py:296 ../src/toolbar_end.py:312
 msgid "Playing albums"
 msgstr "Albumok lejátszása"
 
-#: ../src/pop_covers.py:53 ../src/pop_tunein.py:93 ../data/RadioPopover.ui.h:1
-msgid "Please wait..."
-msgstr "Kérlek várj..."
-
-#: ../src/pop_covers.py:133
-msgid "No cover found..."
-msgstr "Nem található borító"
-
-#: ../src/pop_covers.py:161
-msgid "Select a cover art for this album"
-msgstr "Válassz borítót az albumhoz"
-
-#: ../src/pop_info.py:35
+#: ../src/pop_info.py:36
 msgid "Advanced artist informations disabled"
 msgstr "Kiterjesztett előadó információk kikapcsolva"
 
-#: ../src/pop_info.py:43
+#: ../src/pop_info.py:44
 msgid "WebKit support disabled"
 msgstr "WebKit támogatás kikapcsolva"
 
@@ -509,21 +511,17 @@ msgstr "Információ szerkesztése"
 msgid "Edit"
 msgstr "Szerkesztés"
 
-#: ../src/pop_radio.py:83 ../src/pop_tunein.py:161
+#: ../src/pop_radio.py:83 ../src/pop_tunein.py:164
 msgid "Add"
 msgstr "Hozzáadás"
 
-#: ../src/pop_radio.py:85 ../src/wikipedia.py:59
+#: ../src/pop_radio.py:85 ../src/wikipedia.py:58
 msgid "Modify"
 msgstr "Módosítás"
 
-#: ../src/pop_tunein.py:105
+#: ../src/pop_tunein.py:107
 msgid "Can't connect to TuneIn..."
 msgstr "Nem sikerült kapcsolatot létesíteni: TuneIn"
-
-#: ../src/pop_tunein.py:180
-msgid "Browse themes and add a new radio"
-msgstr "Böngéssz a témák között és adj hozzá egy új rádiót"
 
 #: ../src/settings.py:88 ../src/settings.py:91 ../data/SettingsDialog.ui.h:3
 msgid "Preferences"
@@ -560,38 +558,38 @@ msgstr "%s szinkronizálása"
 msgid "Cancel synchronization"
 msgstr "Szinkronizáció megszakítása"
 
-#: ../src/widgets_album.py:203
+#: ../src/widgets_album.py:205
 msgid "Append"
 msgstr "Hozzáadás"
 
-#: ../src/widgets_album.py:207
+#: ../src/widgets_album.py:209
 msgid "Remove"
 msgstr "Eltávolítás"
 
-#: ../src/widgets_album.py:469 ../data/AlbumDetailedWidget.ui.h:3
+#: ../src/widgets_album.py:474 ../data/AlbumDetailedWidget.ui.h:3
 msgid "Play albums"
 msgstr "Albumok lejátszása"
 
-#: ../src/widgets_album.py:479 ../data/AlbumDetailedWidget.ui.h:2
+#: ../src/widgets_album.py:484 ../data/AlbumDetailedWidget.ui.h:2
 msgid "Change artwork"
 msgstr "Borító cseréje"
 
-#: ../src/widgets_album.py:645
+#: ../src/widgets_album.py:651
 #, python-format
 msgid "%s h  %s m"
 msgstr "%s h %s m"
 
-#: ../src/widgets_album.py:647
+#: ../src/widgets_album.py:653
 #, python-format
 msgid "%s h"
 msgstr "%s h"
 
-#: ../src/widgets_album.py:649
+#: ../src/widgets_album.py:655
 #, python-format
 msgid "%s m"
 msgstr "%s m"
 
-#: ../src/widgets_album.py:908
+#: ../src/widgets_album.py:914
 #, python-format
 msgid "Disc %s"
 msgstr "%s. lemez"
@@ -622,7 +620,7 @@ msgstr "Eltávolítás: \"%s\"?"
 msgid "Remove these tracks?"
 msgstr "Eltávolítod ezeket a számokat?"
 
-#: ../src/widgets_radio.py:178
+#: ../src/widgets_radio.py:182
 msgid "Modify radio"
 msgstr "Adó módosítása"
 
@@ -684,20 +682,24 @@ msgid "Last.fm"
 msgstr "Last.fm"
 
 #: ../data/ArtistInfo.ui.h:3
+msgid "Photo"
+msgstr "Fotó"
+
+#: ../data/ArtistInfo.ui.h:4
 msgid "Wikipedia"
 msgstr "Wikipédia"
 
-#: ../data/ArtistInfo.ui.h:4
+#: ../data/ArtistInfo.ui.h:5
 msgid "Lyrics"
 msgstr "Dalszöveg"
 
-#: ../data/ArtistInfo.ui.h:6
+#: ../data/ArtistInfo.ui.h:7
 msgid ""
 "Reload information\n"
 "Long press to activate auto reload"
 msgstr "Információ újratöltése\nNyomj hosszan az automatikus újratöltés bekapcsolásához"
 
-#: ../data/CoversPopover.ui.h:1 ../data/RadioPopover.ui.h:2
+#: ../data/ArtworkSearch.ui.h:1 ../data/RadioPopover.ui.h:2
 msgid "Select a local file"
 msgstr "Válassz egy helyi fájlt"
 
