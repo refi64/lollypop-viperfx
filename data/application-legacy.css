@@ -146,7 +146,7 @@ Gtk.ListBoxRow .menu-button:hover {
     border: 2px solid #bebebe;
     background-color: white;
     color: #bebebe;
-    border-radius: 20px;
+    border-radius: 16px;
 }
 
 .rounded-icon {
@@ -156,7 +156,7 @@ Gtk.ListBoxRow .menu-button:hover {
     color: white;
     padding: 12px;
     opacity: 0.7;
-    border-radius: 36px;
+    border-radius: 30px;
 }
 
 .rounded-icon-small {
@@ -166,7 +166,7 @@ Gtk.ListBoxRow .menu-button:hover {
     color: white;
     opacity: 0.7;
     padding: 5px;
-    border-radius: 20px;
+    border-radius: 16px;
 }
 
 .squared-icon {
