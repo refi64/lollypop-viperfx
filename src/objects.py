@@ -114,7 +114,8 @@ class Disc:
                                                       self.number)
             # If user tagged track with an artist not present in album
             if not self._track_ids:
-                print("%s missing an album artist in artists" % self.name)
+                print("%s missing an album artist in artists" %
+                      self.album.name)
                 self._track_ids = self.db.get_disc_tracks(self.album.id,
                                                           self.album.genre_ids,
                                                           [],
