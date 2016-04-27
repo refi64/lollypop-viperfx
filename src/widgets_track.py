@@ -36,6 +36,7 @@ class Row(Gtk.ListBoxRow):
         """
         # We do not use Gtk.Builder for speed reasons
         Gtk.ListBoxRow.__init__(self)
+        self._artists_label = None
         self._track = Track(rowid)
         self._number = num
         self._indicator = IndicatorWidget(self._track.id)
@@ -47,14 +48,25 @@ class Row(Gtk.ListBoxRow):
         self._grid = Gtk.Grid()
         self._grid.set_column_spacing(5)
         self._row_widget.add(self._grid)
-        self._title_label = Gtk.Label.new(self._track.formated_name())
-        self._title_label.set_use_markup(True)
+        self._title_label = Gtk.Label.new(self._track.name)
         self._title_label.set_property('has-tooltip', True)
         self._title_label.connect('query-tooltip',
-                                  self._on_title_query_tooltip)
+                                  self._on_query_tooltip)
         self._title_label.set_property('hexpand', True)
         self._title_label.set_property('halign', Gtk.Align.START)
         self._title_label.set_ellipsize(Pango.EllipsizeMode.END)
+        if self._track.non_album_artists:
+            self._artists_label = Gtk.Label.new(escape(
+                                     ", ".join(self._track.non_album_artists)))
+            self._artists_label.set_use_markup(True)
+            self._artists_label.set_property('has-tooltip', True)
+            self._artists_label.connect('query-tooltip',
+                                        self._on_query_tooltip)
+            self._artists_label.set_property('hexpand', True)
+            self._artists_label.set_property('halign', Gtk.Align.END)
+            self._artists_label.set_ellipsize(Pango.EllipsizeMode.END)
+            self._artists_label.set_opacity(0.3)
+            self._artists_label.show()
         self._duration_label = Gtk.Label.new(
                                        seconds_to_string(self._track.duration))
         self._duration_label.get_style_context().add_class('dim-label')
@@ -74,6 +86,8 @@ class Row(Gtk.ListBoxRow):
         self._menu_button.get_style_context().add_class('track-menu-button')
         self._grid.add(self._num_label)
         self._grid.add(self._title_label)
+        if self._artists_label is not None:
+            self._grid.add(self._artists_label)
         self._grid.add(self._duration_label)
         # TODO Remove this later
         if Gtk.get_minor_version() > 16:
@@ -218,7 +232,7 @@ class Row(Gtk.ListBoxRow):
         """
         self.get_style_context().remove_class('track-menu-selected')
 
-    def _on_title_query_tooltip(self, widget, x, y, keyboard, tooltip):
+    def _on_query_tooltip(self, widget, x, y, keyboard, tooltip):
         """
             Show tooltip if needed
             @param widget as Gtk.Widget
@@ -227,20 +241,12 @@ class Row(Gtk.ListBoxRow):
             @param keyboard as bool
             @param tooltip as Gtk.Tooltip
         """
-        layout = self._title_label.get_layout()
         text = ''
-        # Add artists if album have many artists
-        if len(self._track.artists) > 1:
-            text = "<b>" + escape(", ".join(self._track.artists)) + "</b>"
+        layout = widget.get_layout()
+        label = widget.get_text()
         if layout.is_ellipsized():
-            if text:
-                text += " - "
-            # Finnaly add artists if we are a compilation
-            elif self._track.album.artist_ids[0] == Type.COMPILATIONS:
-                text = "<b>" + escape(", ".join(self._track.artists)) +\
-                       "</b> - "
-            text += escape(self._track.name)
-        self._title_label.set_tooltip_markup(text)
+            text = "%s" % (escape(label))
+        widget.set_tooltip_markup(text)
 
 
 class PlaylistRow(Row):
@@ -282,20 +288,23 @@ class PlaylistRow(Row):
         self.show_all()
         self._header = Gtk.Grid()
         self._header.set_column_spacing(5)
-        self._artist_label = Gtk.Label()
-        self._artist_label.set_markup(
+        if self._track.album.artist_ids[0] != Type.COMPILATIONS:
+            self._album_artist_label = Gtk.Label()
+            self._album_artist_label.set_markup(
                                  "<b>" +
-                                 escape(", ".join(self._track.artists)) +
+                                 escape(", ".join(self._track.album.artists)) +
                                  "</b>")
-        self._artist_label.set_ellipsize(Pango.EllipsizeMode.END)
-        self._artist_label.get_style_context().add_class('dim-label')
+            self._album_artist_label.set_ellipsize(Pango.EllipsizeMode.END)
+            self._album_artist_label.get_style_context().add_class('dim-label')
+            self._header.add(self._album_artist_label)
         self._album_label = Gtk.Label.new(self._track.album.name)
         self._album_label.set_ellipsize(Pango.EllipsizeMode.END)
         self._album_label.get_style_context().add_class('dim-label')
-        self._header.add(self._artist_label)
         self._header.add(self._album_label)
         self._num_label.set_property('valign', Gtk.Align.END)
         self._title_label.set_property('valign', Gtk.Align.END)
+        if self._artists_label is not None:
+            self._artists_label.set_property('valign', Gtk.Align.END)
         self._duration_label.set_property('valign', Gtk.Align.END)
         self._indicator.set_property('valign', Gtk.Align.END)
         self._grid.attach(self._header, 1, 0, 4, 1)

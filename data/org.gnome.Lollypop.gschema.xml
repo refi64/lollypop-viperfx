@@ -106,11 +106,6 @@
             <summary>Show genres list</summary>
             <description></description>
         </key>
-	<key type="b" name="hide-artists">
-	    <default>false</default>
-            <summary>Hide track artist if different from album artist</summary>
-            <description></description>
-        </key>
 	<key type="b" name="artist-artwork">
             <default>false</default>
             <summary>Show artist artwork</summary>

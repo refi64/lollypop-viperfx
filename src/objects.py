@@ -13,8 +13,6 @@
 
 from gi.repository import GLib
 
-from cgi import escape
-
 from lollypop.radios import Radios
 from lollypop.define import Lp, Type
 
@@ -223,26 +221,22 @@ class Track(Base):
         self.id = track_id
         self._uri = None
 
-    def formated_name(self):
+    @property
+    def non_album_artists(self):
         """
             Return formated name (title \n artist)
             @return str
         """
-        name = escape(self.name)
         artists = []
-        album_artist_ids = self.album.artist_ids
         # Show all artists for compilations
-        if album_artist_ids[0] == Type.COMPILATIONS:
+        if self.album.artist_ids[0] == Type.COMPILATIONS:
             artists = self.artists
         # Show only non album artist for albums (and only if one)
-        elif not Lp().settings.get_value('hide-artists') and\
-                len(self.artists) > 1:
+        elif len(self.artists) > 1:
             for artist in self.artists:
                 if artist not in self.album_artists:
                     artists.append(artist)
-        if artists:
-            name = "<b>%s</b> - %s" % (escape(", ".join(artists)), name)
-        return name
+        return artists
 
     @property
     def title(self):
