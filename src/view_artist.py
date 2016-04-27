@@ -51,28 +51,28 @@ class ArtistView(ArtistAlbumsView):
         self._overlay.add_overlay(header)
         self._overlay.set_overlay_pass_through(header, True)
 
+        self._empty = Gtk.Grid()
+        self._albumbox.add(self._empty)
+
+        artwork_height = 0
+        if len(self._artist_ids) == 1 and\
+                Lp().settings.get_value('artist-artwork'):
+            artist = Lp().artists.get_name(self._artist_ids[0])
+            if self._set_artwork(artist):
+                artwork_height = ArtSize.ARTIST_SMALL * 2
+
         # Create an self._empty widget with header height
         ctx = self._label.get_pango_context()
         layout = Pango.Layout.new(ctx)
         layout.set_text("a", 1)
         # Font scale 2
         font_height = int(layout.get_pixel_size()[1]) * 2
-        self._empty = Gtk.Grid()
-        if Lp().settings.get_value('artist-artwork'):
-            artwork_height = ArtSize.ARTIST_SMALL * 2
-        else:
-            artwork_height = 0
+
         if artwork_height > font_height:
             self._empty.set_property('height-request', artwork_height)
         else:
             self._empty.set_property('height-request', font_height)
         self._empty.show()
-
-        self._albumbox.add(self._empty)
-        if len(self._artist_ids) == 1 and\
-                Lp().settings.get_value('artist-artwork'):
-            artist = Lp().artists.get_name(self._artist_ids[0])
-            self._set_artwork(artist)
 
         artists = []
         for artist_id in artist_ids:
@@ -86,6 +86,7 @@ class ArtistView(ArtistAlbumsView):
         """
             Set artist artwork
             @param artist as str
+            @return set as bool
         """
         for suffix in ["lastfm", "spotify", "wikipedia"]:
             uri = InfoCache.get_artwork(artist, suffix,
@@ -94,7 +95,9 @@ class ArtistView(ArtistAlbumsView):
             if uri is not None:
                 self._artwork.set_from_file(uri)
                 self._artwork.show()
-                break
+                return True
+        self._artwork.hide()
+        return False
 
     def _update_jump_button(self):
         """
