@@ -35,7 +35,9 @@ class DatabaseUpgrade:
             1: "UPDATE tracks SET duration=CAST(duration as INTEGER);",
             2: "UPDATE albums SET artist_id=-2001 where artist_id=-999;",
             3: self._upgrade_3,
-            4: self._upgrade_4
+            4: self._upgrade_4,
+            5: "CREATE index idx_aa ON album_artists(album_id)",
+            6: "CREATE index idx_ta ON track_artists(track_id)"
                          }
 
     """
