@@ -112,6 +112,12 @@ class Disc:
                                                       self.album.genre_ids,
                                                       self.album.artist_ids,
                                                       self.number)
+            # If user tagged track with an artist not present in album
+            if not self._track_ids:
+                self._track_ids = self.db.get_disc_tracks(self.album.id,
+                                                          self.album.genre_ids,
+                                                          [],
+                                                          self.number)
         return self._track_ids
 
     @property
@@ -180,6 +186,11 @@ class Album(Base):
             self._tracks_ids = self.db.get_tracks(self.id,
                                                   self.genre_ids,
                                                   self.artist_ids)
+            # If user tagged track with an artist not present in album
+            if not self._tracks_ids:
+                self._tracks_ids = self.db.get_tracks(self.id,
+                                                      self.genre_ids,
+                                                      [])
         return self._tracks_ids
 
     @property
