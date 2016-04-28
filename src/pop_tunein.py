@@ -321,6 +321,7 @@ class TuneinPopover(Gtk.Popover):
             @param link as Gtk.Button
             @param item as TuneIn Item
         """
+        self._timeout_id = None
         t = Thread(target=self._add_radio, args=(item,))
         t.daemon = True
         t.start()
@@ -332,6 +333,7 @@ class TuneinPopover(Gtk.Popover):
             after timeout
             @param widget as Gtk.TextEntry
         """
+        self._current_url = None
         if self._timeout_id is not None:
             GLib.source_remove(self._timeout_id)
             self._timeout_id = None
