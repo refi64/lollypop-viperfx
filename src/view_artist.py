@@ -53,7 +53,6 @@ class ArtistView(ArtistAlbumsView):
         header = builder.get_object('header')
         header.set_property('valign', Gtk.Align.START)
         self._overlay.add_overlay(header)
-        self._overlay.set_overlay_pass_through(header, True)
         self._empty = Gtk.Grid()
         self._empty.show()
         self._albumbox.add(self._empty)
