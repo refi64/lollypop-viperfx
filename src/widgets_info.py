@@ -207,7 +207,7 @@ class WikipediaContent(InfoContent):
             Load artist page content
             @param artist as str
         """
-        self._menu_model.remove_all()
+        GLib.idle_add(self._menu_model.remove_all)
         wp = Wikipedia()
         try:
             (url, content) = wp.get_page_infos(artist)
