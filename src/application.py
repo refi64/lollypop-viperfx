@@ -44,6 +44,7 @@ from lollypop.art import Art
 from lollypop.sqlcursor import SqlCursor
 from lollypop.settings import Settings, SettingsDialog
 from lollypop.notification import NotificationManager
+from lollypop.database_history import History
 from lollypop.database_albums import AlbumsDatabase
 from lollypop.database_artists import ArtistsDatabase
 from lollypop.database_genres import GenresDatabase
@@ -414,7 +415,11 @@ class Application(Gtk.Application):
         """
         builder = Gtk.Builder()
         builder.add_from_resource('/org/gnome/Lollypop/AboutDialog.ui')
-        builder.connect_signals(self)
+        if self.scanner.is_locked():
+            builder.get_object('button').set_sensitive(False)
+        builder.get_object('button').connect('clicked',
+                                             self._on_reset_clicked,
+                                             builder.get_object('progress'))
         artists = self.artists.count()
         albums = self.albums.count()
         tracks = self.tracks.count()
@@ -505,10 +510,45 @@ class Application(Gtk.Application):
 
         return menu
 
-    def _on_reset_clicked(self, widget):
+    def _reset_database(self, track_ids, count, history, progress):
+        """
+            Backup database and reset
+            @param track ids as [int]
+            @param count as int
+            @param history as History
+            @param progress as Gtk.ProgressBar
+        """
+        if track_ids:
+            track_id = track_ids.pop(0)
+            filepath = self.tracks.get_path(track_id)
+            name = GLib.path_get_basename(filepath)
+            album_id = self.tracks.get_album_id(track_id)
+            popularity = self.tracks.get_popularity(track_id)
+            ltime = self.tracks.get_ltime(track_id)
+            mtime = self.albums.get_mtime(album_id)
+            duration = self.tracks.get_duration(track_id)
+            album_popularity = self.albums.get_popularity(album_id)
+            history.add(name, duration, popularity,
+                        ltime, mtime, album_popularity)
+            progress.set_fraction((count - len(track_ids))/count)
+            GLib.idle_add(self._reset_database, track_ids,
+                          count, history, progress)
+        else:
+            progress.hide()
+            for artist in self.artists.get([]):
+                self.art.emit('artist-artwork-changed', artist[1])
+            os.remove(Database.DB_PATH)
+            self.db = Database()
+            self.window.show_genres(self.settings.get_value('show-genres'))
+            self.window.show()
+            self.window.update_db()
+            progress.get_toplevel().set_deletable(True)
+
+    def _on_reset_clicked(self, widget, progress):
         """
             Reset database
             @param widget as Gtk.Widget
+            @param progress as Gtk.ProgressBar
         """
         try:
             self.player.stop()
@@ -517,9 +557,11 @@ class Application(Gtk.Application):
             self.player.emit('prev-changed')
             self.player.emit('next-changed')
             self.cursors = {}
-            os.remove(Database.DB_PATH)
-            self.db = Database()
-            self.window.show_genres(self.settings.get_value('show-genres'))
-            self.window.update_db()
+            track_ids = self.tracks.get_ids()
+            progress.show()
+            history = History()
+            widget.get_toplevel().set_deletable(False)
+            widget.set_sensitive(False)
+            self._reset_database(track_ids, len(track_ids), history, progress)
         except Exception as e:
             print("Application::_on_reset_clicked():", e)
