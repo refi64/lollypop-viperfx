@@ -41,7 +41,6 @@ from lollypop.window import Window
 from lollypop.database import Database
 from lollypop.player import Player
 from lollypop.art import Art
-
 from lollypop.sqlcursor import SqlCursor
 from lollypop.settings import Settings, SettingsDialog
 from lollypop.notification import NotificationManager
@@ -413,6 +412,7 @@ class Application(Gtk.Application):
         """
         builder = Gtk.Builder()
         builder.add_from_resource('/org/gnome/Lollypop/AboutDialog.ui')
+        builder.connect_signals(self)
         artists = self.artists.count()
         albums = self.albums.count()
         tracks = self.tracks.count()
@@ -502,3 +502,22 @@ class Application(Gtk.Application):
         self.add_action(quitAction)
 
         return menu
+
+    def _on_reset_clicked(self, widget):
+        """
+            Reset database
+            @param widget as Gtk.Widget
+        """
+        try:
+            self.player.stop()
+            self.player.reset_pcn()
+            self.player.emit('current-changed')
+            self.player.emit('prev-changed')
+            self.player.emit('next-changed')
+            self.cursors = {}
+            os.remove(Database.DB_PATH)
+            self.db = Database()
+            self.window.show_genres(self.settings.get_value('show-genres'))
+            self.window.update_db()
+        except Exception as e:
+            print("Application::_on_reset_clicked():", e)

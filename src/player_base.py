@@ -61,6 +61,14 @@ class BasePlayer(GObject.GObject):
             # For tracks from the cmd line
             self._external_tracks = []
 
+    def reset_pcn(self):
+        """
+            Reset prev, current, next
+        """
+        self._current_track = Track()
+        self._prev_track = Track()
+        self._next_track = Track()
+
     def set_next(self):
         """
             Set next track
