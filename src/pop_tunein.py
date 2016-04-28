@@ -103,7 +103,8 @@ class TuneinPopover(Gtk.Popover):
         """
             Show not found message
         """
-        self._label.set_text(_("Can't connect to TuneIn..."))
+        # TODO Add a string
+        self._label.set_text("")
         self._stack.set_visible_child_name('notfound')
         self._home_btn.set_sensitive(True)
 
@@ -121,26 +122,30 @@ class TuneinPopover(Gtk.Popover):
 
         if self._current_url == url:
             if items:
-                self._add_items(items)
+                self._add_items(items, url)
             else:
                 GLib.idle_add(self._show_not_found)
 
-    def _add_items(self, items):
+    def _add_items(self, items, url):
         """
             Add current items
             @param items as [TuneItem]
+            @parma url as str
             @thread safe
         """
-        GLib.idle_add(self._add_item, items)
+        GLib.idle_add(self._add_item, items, url)
 
-    def _add_item(self, items):
+    def _add_item(self, items, url):
         """
             Add item
             @param items as [TuneItem]
+            @param url as str
         """
+        if url != self._current_url:
+            return
         if not items:
             self._home_btn.set_sensitive(self._current_url is not None)
-            t = Thread(target=self._download_images)
+            t = Thread(target=self._download_images, args=(url,))
             t.daemon = True
             t.start()
             return
@@ -183,14 +188,15 @@ class TuneinPopover(Gtk.Popover):
             self._label.set_text("")
             if self._current_url is not None:
                 self._back_btn.set_sensitive(True)
-        GLib.idle_add(self._add_items, items)
+        GLib.idle_add(self._add_items, items, url)
 
-    def _download_images(self):
+    def _download_images(self, url):
         """
             Download and set image for TuneItem
+            @param url as str
             @thread safe
         """
-        while self._covers_to_download:
+        while self._covers_to_download and url == self._current_url:
             (item, image) = self._covers_to_download.pop(0)
             try:
                 f = Gio.File.new_for_uri(item.LOGO)
