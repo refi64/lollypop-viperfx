@@ -8,9 +8,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lollypop\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-04-27 10:41+0200\n"
-"PO-Revision-Date: 2016-04-27 08:43+0000\n"
-"Last-Translator: Cédric Bellegarde <web@adishatz.org>\n"
+"POT-Creation-Date: 2016-04-28 16:55+0200\n"
+"PO-Revision-Date: 2016-04-28 19:10+0000\n"
+"Last-Translator: Moo\n"
 "Language-Team: Lithuanian (http://www.transifex.com/gnumdk/lollypop/language/lt/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -226,7 +226,7 @@ msgid "Genre/Artist/Cover browsing"
 msgstr "Žanrų/Atlikėjų/Viršelių naršymas"
 
 #: ../data/lollypop.appdata.xml.in.h:8 ../src/playlists.py:239
-#: ../data/ArtistInfo.ui.h:6 ../data/ToolbarEnd.ui.h:7
+#: ../data/ArtistInfo.ui.h:5 ../data/ToolbarEnd.ui.h:7
 msgid "Search"
 msgstr "Paieška"
 
@@ -288,7 +288,7 @@ msgid ""
 "    - Artist informations disabled"
 msgstr "    - \"Scrobbler\" paslauga išjungta\n    - Automatinis viršelių atsiuntimas išjungtas\n    - Atlikėjų informacija išjungta"
 
-#: ../src/application.py:421
+#: ../src/application.py:422
 #, python-format
 msgid "%d artist"
 msgid_plural "%d artists"
@@ -296,7 +296,7 @@ msgstr[0] "%d atlikėjas"
 msgstr[1] "%d atlikėjai"
 msgstr[2] "%d atlikėjų"
 
-#: ../src/application.py:423
+#: ../src/application.py:424
 #, python-format
 msgid "%d album"
 msgid_plural "%d albums"
@@ -304,7 +304,7 @@ msgstr[0] "%d albumas"
 msgstr[1] "%d albumai"
 msgstr[2] "%d albumų"
 
-#: ../src/application.py:425
+#: ../src/application.py:426
 #, python-format
 msgid "%d track"
 msgid_plural "%d tracks"
@@ -312,7 +312,7 @@ msgstr[0] "%d takelis"
 msgstr[1] "%d takeliai"
 msgstr[2] "%d takelių"
 
-#: ../src/application.py:440
+#: ../src/application.py:441
 msgid "Lollypop: You need to install yelp."
 msgstr "Lollypop: Jums reikia įdiegti yelp."
 
@@ -342,52 +342,52 @@ msgstr "Jūsų muzika yra atnaujinama"
 msgid "Unknown"
 msgstr "Nežinoma"
 
-#: ../src/container.py:417
+#: ../src/container.py:421
 msgid "Popular albums"
 msgstr "Populiarūs albumai"
 
-#: ../src/container.py:418
+#: ../src/container.py:422
 msgid "Recently added albums"
 msgstr "Paskiausiai pridėti albumai"
 
-#: ../src/container.py:419
+#: ../src/container.py:423
 msgid "Random albums"
 msgstr "Atsitiktiniai albumai"
 
-#: ../src/container.py:420 ../src/pop_menu.py:411 ../src/pop_menu.py:475
+#: ../src/container.py:424 ../src/pop_menu.py:411 ../src/pop_menu.py:475
 #: ../src/pop_menu.py:495
 msgid "Playlists"
 msgstr "Grojaraščiai"
 
-#: ../src/container.py:421
+#: ../src/container.py:425
 msgid "Radios"
 msgstr "Radijai"
 
-#: ../src/container.py:423
+#: ../src/container.py:427
 msgid "All artists"
 msgstr "Visi atlikėjai"
 
-#: ../src/container.py:425 ../data/DeviceManagerWidget.ui.h:1
+#: ../src/container.py:429 ../data/DeviceManagerWidget.ui.h:1
 msgid "All albums"
 msgstr "Visi albumai"
 
-#: ../src/container.py:472
+#: ../src/container.py:476
 msgid "Compilations"
 msgstr "Rinkiniai"
 
-#: ../src/container.py:495 ../src/playlists.py:231
+#: ../src/container.py:499 ../src/playlists.py:231
 msgid "Popular tracks"
 msgstr "Populiarūs takeliai"
 
-#: ../src/container.py:496 ../src/playlists.py:233
+#: ../src/container.py:500 ../src/playlists.py:233
 msgid "Recently played"
 msgstr "Paskiausiai groti"
 
-#: ../src/container.py:497 ../src/playlists.py:235
+#: ../src/container.py:501 ../src/playlists.py:235
 msgid "Never played"
 msgstr "Niekada negroti"
 
-#: ../src/container.py:498 ../src/playlists.py:237
+#: ../src/container.py:502 ../src/playlists.py:237
 msgid "Random tracks"
 msgstr "Atsitiktiniai takeliai"
 
@@ -439,7 +439,8 @@ msgstr "Pamėgti takeliai"
 msgid "Clear albums"
 msgstr "Išvalyti albumus"
 
-#: ../src/pop_albums.py:295 ../src/pop_info.py:214 ../src/view_artist.py:47
+#: ../src/pop_albums.py:295 ../src/view_artist.py:48 ../data/ArtistInfo.ui.h:8
+#: ../data/ArtistView.ui.h:2
 msgid "Go to current track"
 msgstr "Pereiti prie esamo takelio"
 
@@ -447,11 +448,11 @@ msgstr "Pereiti prie esamo takelio"
 msgid "Playing albums"
 msgstr "Grojami albumai"
 
-#: ../src/pop_info.py:36
+#: ../src/pop_info.py:35
 msgid "Advanced artist informations disabled"
 msgstr "Išplėstinė informacija apie atlikėja išjungta"
 
-#: ../src/pop_info.py:44
+#: ../src/pop_info.py:43
 msgid "WebKit support disabled"
 msgstr "WebKit palaikymas išjungtas"
 
@@ -526,15 +527,15 @@ msgstr "Modifikuoti"
 msgid "Can't connect to TuneIn..."
 msgstr "Nepavyksta prisijungti prie TuneIn..."
 
-#: ../src/settings.py:88 ../src/settings.py:91 ../data/SettingsDialog.ui.h:3
+#: ../src/settings.py:89 ../src/settings.py:92 ../data/SettingsDialog.ui.h:3
 msgid "Preferences"
 msgstr "Nuostatos"
 
-#: ../src/settings.py:166
+#: ../src/settings.py:167
 msgid "Populars"
 msgstr "Populiarūs"
 
-#: ../src/settings.py:167
+#: ../src/settings.py:168
 msgid "Recently added"
 msgstr "Paskiausiai pridėti"
 
@@ -577,22 +578,22 @@ msgstr "Groti albumus"
 msgid "Change artwork"
 msgstr "Keisti iliustraciją"
 
-#: ../src/widgets_album.py:651
+#: ../src/widgets_album.py:648
 #, python-format
 msgid "%s h  %s m"
 msgstr "%s val.  %s min."
 
-#: ../src/widgets_album.py:653
+#: ../src/widgets_album.py:650
 #, python-format
 msgid "%s h"
 msgstr "%s val."
 
-#: ../src/widgets_album.py:655
+#: ../src/widgets_album.py:652
 #, python-format
 msgid "%s m"
 msgstr "%s min."
 
-#: ../src/widgets_album.py:914
+#: ../src/widgets_album.py:911
 #, python-format
 msgid "Disc %s"
 msgstr "Diskas %s"
@@ -648,6 +649,10 @@ msgctxt "Translation credits here, put your name here!"
 msgid "Cédric Bellegarde <cedric.bellegarde@adishatz.org>"
 msgstr "Cédric Bellegarde <cedric.bellegarde@adishatz.org>"
 
+#: ../data/AboutDialog.ui.h:5
+msgid "Reset database"
+msgstr "Atstatyti duomenų bazę"
+
 #: ../data/Appmenu.ui.h:1
 msgid "_Update music"
 msgstr "Atna_ujinti muziką"
@@ -685,22 +690,22 @@ msgid "Last.fm"
 msgstr "Last.fm"
 
 #: ../data/ArtistInfo.ui.h:3
-msgid "Photo"
-msgstr "Nuotrauka"
-
-#: ../data/ArtistInfo.ui.h:4
 msgid "Wikipedia"
 msgstr "Vikipedija"
 
-#: ../data/ArtistInfo.ui.h:5
+#: ../data/ArtistInfo.ui.h:4
 msgid "Lyrics"
 msgstr "Dainos žodžiai"
 
-#: ../data/ArtistInfo.ui.h:7
+#: ../data/ArtistInfo.ui.h:6
 msgid ""
 "Reload information\n"
 "Long press to activate auto reload"
 msgstr "Iš naujo įkelti informaciją\nIlgas nuspaudimas, kad būtų aktyvuotas automatinis įkelimas iš naujo"
+
+#: ../data/ArtistView.ui.h:1
+msgid "Photo"
+msgstr "Nuotrauka"
 
 #: ../data/ArtworkSearch.ui.h:1 ../data/RadioPopover.ui.h:2
 msgid "Select a local file"

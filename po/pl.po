@@ -13,8 +13,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lollypop\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-04-27 10:41+0200\n"
-"PO-Revision-Date: 2016-04-27 08:43+0000\n"
+"POT-Creation-Date: 2016-04-28 16:55+0200\n"
+"PO-Revision-Date: 2016-04-28 15:03+0000\n"
 "Last-Translator: Cédric Bellegarde <web@adishatz.org>\n"
 "Language-Team: Polish (http://www.transifex.com/gnumdk/lollypop/language/pl/)\n"
 "MIME-Version: 1.0\n"
@@ -231,7 +231,7 @@ msgid "Genre/Artist/Cover browsing"
 msgstr "przeglądanie gatunków/wykonawców/okładek albumów,"
 
 #: ../data/lollypop.appdata.xml.in.h:8 ../src/playlists.py:239
-#: ../data/ArtistInfo.ui.h:6 ../data/ToolbarEnd.ui.h:7
+#: ../data/ArtistInfo.ui.h:5 ../data/ToolbarEnd.ui.h:7
 msgid "Search"
 msgstr "Wyszukuje nagrania"
 
@@ -293,7 +293,7 @@ msgid ""
 "    - Artist informations disabled"
 msgstr "- Scrobblowanie wyłączone\n- Automatyczne pobieranie okładek wyłączone\n- Automatyczne pobieranie danych wyłączone"
 
-#: ../src/application.py:421
+#: ../src/application.py:422
 #, python-format
 msgid "%d artist"
 msgid_plural "%d artists"
@@ -301,7 +301,7 @@ msgstr[0] "%d wykonawca"
 msgstr[1] "%d wykonawców"
 msgstr[2] "%d wykonawców"
 
-#: ../src/application.py:423
+#: ../src/application.py:424
 #, python-format
 msgid "%d album"
 msgid_plural "%d albums"
@@ -309,7 +309,7 @@ msgstr[0] "%d album"
 msgstr[1] "%d albumy"
 msgstr[2] "%d albumów"
 
-#: ../src/application.py:425
+#: ../src/application.py:426
 #, python-format
 msgid "%d track"
 msgid_plural "%d tracks"
@@ -317,7 +317,7 @@ msgstr[0] "%d utwór"
 msgstr[1] "%d utwory"
 msgstr[2] "%d utworów"
 
-#: ../src/application.py:440
+#: ../src/application.py:441
 msgid "Lollypop: You need to install yelp."
 msgstr "Lollypop: należy zainstalować yelp."
 
@@ -347,52 +347,52 @@ msgstr "Uaktualnianie kolekcji"
 msgid "Unknown"
 msgstr "Nieznany"
 
-#: ../src/container.py:417
+#: ../src/container.py:421
 msgid "Popular albums"
 msgstr "Popularne albumy"
 
-#: ../src/container.py:418
+#: ../src/container.py:422
 msgid "Recently added albums"
 msgstr "Ostatnio dodane albumy"
 
-#: ../src/container.py:419
+#: ../src/container.py:423
 msgid "Random albums"
 msgstr "Losowe albumy"
 
-#: ../src/container.py:420 ../src/pop_menu.py:411 ../src/pop_menu.py:475
+#: ../src/container.py:424 ../src/pop_menu.py:411 ../src/pop_menu.py:475
 #: ../src/pop_menu.py:495
 msgid "Playlists"
 msgstr "Listy odtwarzania"
 
-#: ../src/container.py:421
+#: ../src/container.py:425
 msgid "Radios"
 msgstr "Radio"
 
-#: ../src/container.py:423
+#: ../src/container.py:427
 msgid "All artists"
 msgstr "Wszyscy wykonawcy"
 
-#: ../src/container.py:425 ../data/DeviceManagerWidget.ui.h:1
+#: ../src/container.py:429 ../data/DeviceManagerWidget.ui.h:1
 msgid "All albums"
 msgstr "Wszystkie albumy"
 
-#: ../src/container.py:472
+#: ../src/container.py:476
 msgid "Compilations"
 msgstr "Kompilacje"
 
-#: ../src/container.py:495 ../src/playlists.py:231
+#: ../src/container.py:499 ../src/playlists.py:231
 msgid "Popular tracks"
 msgstr "Popularne utwory"
 
-#: ../src/container.py:496 ../src/playlists.py:233
+#: ../src/container.py:500 ../src/playlists.py:233
 msgid "Recently played"
 msgstr "Ostatnio odtwarzane"
 
-#: ../src/container.py:497 ../src/playlists.py:235
+#: ../src/container.py:501 ../src/playlists.py:235
 msgid "Never played"
 msgstr "Nie odtwarzane"
 
-#: ../src/container.py:498 ../src/playlists.py:237
+#: ../src/container.py:502 ../src/playlists.py:237
 msgid "Random tracks"
 msgstr "Losowe utwory"
 
@@ -444,7 +444,8 @@ msgstr "Ulubione utwory"
 msgid "Clear albums"
 msgstr "Czyści albumy"
 
-#: ../src/pop_albums.py:295 ../src/pop_info.py:214 ../src/view_artist.py:47
+#: ../src/pop_albums.py:295 ../src/view_artist.py:48 ../data/ArtistInfo.ui.h:8
+#: ../data/ArtistView.ui.h:2
 msgid "Go to current track"
 msgstr "Przechodzi do bieżącego utworu"
 
@@ -452,11 +453,11 @@ msgstr "Przechodzi do bieżącego utworu"
 msgid "Playing albums"
 msgstr "Odtwarza albumy"
 
-#: ../src/pop_info.py:36
+#: ../src/pop_info.py:35
 msgid "Advanced artist informations disabled"
 msgstr "Zaawansowane informacje o artyście wyłączone"
 
-#: ../src/pop_info.py:44
+#: ../src/pop_info.py:43
 msgid "WebKit support disabled"
 msgstr "Wyłączona obsługa WebKit"
 
@@ -531,15 +532,15 @@ msgstr "Zmień"
 msgid "Can't connect to TuneIn..."
 msgstr "Nie można połączyć z TuneIn..."
 
-#: ../src/settings.py:88 ../src/settings.py:91 ../data/SettingsDialog.ui.h:3
+#: ../src/settings.py:89 ../src/settings.py:92 ../data/SettingsDialog.ui.h:3
 msgid "Preferences"
 msgstr "Preferencje"
 
-#: ../src/settings.py:166
+#: ../src/settings.py:167
 msgid "Populars"
 msgstr "Popularne"
 
-#: ../src/settings.py:167
+#: ../src/settings.py:168
 msgid "Recently added"
 msgstr "Ostatnio dodane"
 
@@ -582,22 +583,22 @@ msgstr "Odtwórz albumy"
 msgid "Change artwork"
 msgstr "Zmień okładkę"
 
-#: ../src/widgets_album.py:651
+#: ../src/widgets_album.py:648
 #, python-format
 msgid "%s h  %s m"
 msgstr "%s h  %s m"
 
-#: ../src/widgets_album.py:653
+#: ../src/widgets_album.py:650
 #, python-format
 msgid "%s h"
 msgstr "%s h"
 
-#: ../src/widgets_album.py:655
+#: ../src/widgets_album.py:652
 #, python-format
 msgid "%s m"
 msgstr "%s m"
 
-#: ../src/widgets_album.py:914
+#: ../src/widgets_album.py:911
 #, python-format
 msgid "Disc %s"
 msgstr "Płyta %s"
@@ -653,6 +654,10 @@ msgctxt "Translation credits here, put your name here!"
 msgid "Cédric Bellegarde <cedric.bellegarde@adishatz.org>"
 msgstr "Cédric Bellegarde <cedric.bellegarde@adishatz.org>\nPiotr Sokół <psokol.l10n@gmail.com>, 2015, 2016."
 
+#: ../data/AboutDialog.ui.h:5
+msgid "Reset database"
+msgstr ""
+
 #: ../data/Appmenu.ui.h:1
 msgid "_Update music"
 msgstr "_Uaktualnij kolekcję"
@@ -690,21 +695,21 @@ msgid "Last.fm"
 msgstr "Last.fm"
 
 #: ../data/ArtistInfo.ui.h:3
-msgid "Photo"
-msgstr ""
-
-#: ../data/ArtistInfo.ui.h:4
 msgid "Wikipedia"
 msgstr "Wikipedia"
 
-#: ../data/ArtistInfo.ui.h:5
+#: ../data/ArtistInfo.ui.h:4
 msgid "Lyrics"
 msgstr "Tekst"
 
-#: ../data/ArtistInfo.ui.h:7
+#: ../data/ArtistInfo.ui.h:6
 msgid ""
 "Reload information\n"
 "Long press to activate auto reload"
+msgstr ""
+
+#: ../data/ArtistView.ui.h:1
+msgid "Photo"
 msgstr ""
 
 #: ../data/ArtworkSearch.ui.h:1 ../data/RadioPopover.ui.h:2
