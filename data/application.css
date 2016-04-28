@@ -95,7 +95,6 @@ popover.background separator {
     padding-left: 5px;
     padding-right: 5px;
     background-color: shade(@theme_bg_color, 0.95);
-    opacity: 0.95;
 }
 
 .header {
