@@ -135,6 +135,8 @@ class Application(Gtk.Application):
                                              Gtk.STYLE_PROVIDER_PRIORITY_USER)
         self.settings = Settings.new()
         ArtSize.BIG = self.settings.get_value('cover-size').get_int32()
+        # For a 200 album artwork, we want a 60 artist artwork
+        ArtSize.ARTIST_SMALL = ArtSize.BIG * 60 / 200
         self.db = Database()
         self.playlists = Playlists()
         # We store cursors for main thread
