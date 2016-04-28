@@ -187,26 +187,33 @@ Long press to activate auto reload</property>
       </object>
     </child>
     <child type="overlay">
-      <object class="GtkButton" id="jump-button">
+       <object class="GtkEventBox" id="eventbox1">
         <property name="visible">True</property>
-        <property name="can_focus">True</property>
-        <property name="receives_default">True</property>
         <property name="halign">start</property>
         <property name="valign">start</property>
+        <property name="can_focus">False</property>
         <property name="margin_top">3</property>
         <property name="margin_start">3</property>
-        <property name="image">jump_image</property>
-        <property name="relief">none</property>
-        <property name="always_show_image">True</property>
-        <signal name="clicked" handler="_on_jump_button_clicked" swapped="no"/>
+	    <property name="tooltip_text" translatable="yes">Go to current track</property>
         <child>
-          <object class="GtkImage" id="jump_image">
+          <object class="GtkButton" id="jump-button">
             <property name="visible">True</property>
-            <property name="can_focus">False</property>
-            <property name="icon_name">go-jump-symbolic</property>
+            <property name="can_focus">True</property>
+            <property name="receives_default">True</property>
+            <property name="image">jump_image</property>
+            <property name="relief">none</property>
+            <property name="always_show_image">True</property>
+            <signal name="clicked" handler="_on_jump_button_clicked" swapped="no"/>
+            <child>
+                <object class="GtkImage" id="jump_image">
+                    <property name="visible">True</property>
+                    <property name="can_focus">False</property>
+                    <property name="icon_name">go-jump-symbolic</property>
+                </object>
+            </child>
           </object>
         </child>
-      </object>
+     </object>
     </child>
   </object>
 </interface>

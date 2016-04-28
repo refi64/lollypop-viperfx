@@ -207,7 +207,6 @@ class InfoPopover(Gtk.Popover):
             @param widget as Gtk.Grid
         """
         self._jump_button.show()
-        self._jump_button.set_tooltip_text(_("Go to current track"))
         if self._current_track.id is None:
             self._current_track = Lp().player.current_track
         Lp().settings.set_value('infoswitch',
