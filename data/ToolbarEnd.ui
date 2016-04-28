@@ -64,7 +64,6 @@
             <property name="can_focus">True</property>
             <property name="receives_default">True</property>
             <property name="tooltip_text" translatable="yes">Party mode</property>
-            <property name="valign">center</property>
             <signal name="button-press-event" handler="_on_button_press" swapped="no"/>
             <signal name="button-release-event" handler="_on_button_release" swapped="no"/>
             <signal name="toggled" handler="_on_party_button_toggled" swapped="no"/>
@@ -91,7 +90,6 @@
             <property name="can_focus">True</property>
             <property name="receives_default">True</property>
             <property name="tooltip_text" translatable="yes">Shuffle</property>
-            <property name="valign">center</property>
             <property name="menu_model">shuffle-menu</property>
             <signal name="button-press-event" handler="_on_button_press" swapped="no"/>
             <signal name="button-release-event" handler="_on_button_release" swapped="no"/>
