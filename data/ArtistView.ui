@@ -48,26 +48,6 @@
       </packing>
     </child>
     <child>
-      <object class="GtkButton" id="jump-button">
-        <property name="visible">True</property>
-        <property name="sensitive">False</property>
-        <property name="can_focus">True</property>
-        <property name="receives_default">True</property>
-        <property name="valign">center</property>
-        <property name="margin_end">2</property>
-        <property name="image">image2</property>
-        <property name="relief">none</property>
-        <signal name="clicked" handler="_on_jump_button_clicked" swapped="no"/>
-        <style>
-          <class name="header"/>
-        </style>
-      </object>
-      <packing>
-        <property name="left_attach">1</property>
-        <property name="top_attach">0</property>
-      </packing>
-    </child>
-    <child>
       <object class="GtkSpinner" id="spinner">
         <property name="visible">True</property>
         <property name="can_focus">False</property>
@@ -83,6 +63,7 @@
       <object class="GtkEventBox" id="eventbox2">
         <property name="visible">True</property>
         <property name="can_focus">False</property>
+        <property name="tooltip_text" translatable="yes">Photo</property>
         <signal name="button-release-event" handler="_on_image_button_release" swapped="no"/>
         <signal name="realize" handler="_on_artwork_realize" swapped="no"/>
         <child>
@@ -97,6 +78,33 @@
       </object>
       <packing>
         <property name="left_attach">2</property>
+        <property name="top_attach">0</property>
+      </packing>
+    </child>
+    <child>
+      <object class="GtkEventBox" id="eventbox3">
+        <property name="visible">True</property>
+        <property name="can_focus">False</property>
+        <property name="tooltip_text" translatable="yes">Go to current track</property>
+        <child>
+          <object class="GtkButton" id="jump-button">
+            <property name="visible">True</property>
+            <property name="sensitive">False</property>
+            <property name="can_focus">True</property>
+            <property name="receives_default">True</property>
+            <property name="valign">center</property>
+            <property name="margin_end">2</property>
+            <property name="image">image2</property>
+            <property name="relief">none</property>
+            <signal name="clicked" handler="_on_jump_button_clicked" swapped="no"/>
+            <style>
+              <class name="header"/>
+            </style>
+          </object>
+        </child>
+      </object>
+      <packing>
+        <property name="left_attach">1</property>
         <property name="top_attach">0</property>
       </packing>
     </child>
