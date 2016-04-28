@@ -39,27 +39,23 @@ class TuneIn:
         """
         items = []
         if not Gio.NetworkMonitor.get_default().get_network_available():
-            return items
-        try:
-            f = Gio.File.new_for_uri(url)
-            (status, data, tag) = f.load_contents()
-            if not status:
-                return []
-
-            root = xml.fromstring(data)
-            for child in root.iter('outline'):
+            raise
+        f = Gio.File.new_for_uri(url)
+        (status, data, tag) = f.load_contents()
+        if not status:
+            raise
+        root = xml.fromstring(data)
+        for child in root.iter('outline'):
+            try:
+                item = TuneItem()
+                item.URL = child.attrib['URL']
+                item.TEXT = child.attrib['text']
                 try:
-                    item = TuneItem()
-                    item.URL = child.attrib['URL']
-                    item.TEXT = child.attrib['text']
-                    try:
-                        item.LOGO = child.attrib['image']
-                    except:
-                        pass
-                    item.TYPE = child.attrib['type']
-                    items.append(item)
+                    item.LOGO = child.attrib['image']
                 except:
-                    del item
-        except Exception as e:
-            print("TuneIn::get_radios: %s" % e)
+                    pass
+                item.TYPE = child.attrib['type']
+                items.append(item)
+            except:
+                del item
         return items

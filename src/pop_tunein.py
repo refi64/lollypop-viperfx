@@ -85,6 +85,8 @@ class TuneinPopover(Gtk.Popover):
             Populate views
             @param url as string
         """
+        if url is None and self._current_url is not None:
+            return
         self._spinner.start()
         self._clear()
         self._stack.set_visible_child_name('spinner')
@@ -99,12 +101,13 @@ class TuneinPopover(Gtk.Popover):
 #######################
 # PRIVATE             #
 #######################
-    def _show_not_found(self):
+    def _show_not_found(self, message=""):
         """
             Show not found message
+            @param message as str
         """
         # TODO Add a string
-        self._label.set_text("")
+        self._label.set_text(message)
         self._stack.set_visible_child_name('notfound')
         self._home_btn.set_sensitive(True)
 
@@ -114,17 +117,21 @@ class TuneinPopover(Gtk.Popover):
             @param url as string
             @thread safe
         """
-        if url is None:
-            items = self._tunein.get_items(
+        try:
+            if url is None:
+                items = self._tunein.get_items(
                                     "http://opml.radiotime.com/Browse.ashx?c=")
-        else:
-            items = self._tunein.get_items(url)
-
-        if self._current_url == url:
-            if items:
-                self._add_items(items, url)
             else:
-                GLib.idle_add(self._show_not_found)
+                items = self._tunein.get_items(url)
+
+            if self._current_url == url:
+                if items:
+                    self._add_items(items, url)
+                else:
+                    GLib.idle_add(self._show_not_found)
+        except:
+            GLib.idle_add(self._show_not_found,
+                          _("Can't connect to TuneIn..."))
 
     def _add_items(self, items, url):
         """
