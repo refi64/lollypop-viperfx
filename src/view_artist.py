@@ -98,6 +98,12 @@ class ArtistView(ArtistAlbumsView):
                     artwork_height = ArtSize.ARTIST_SMALL * 2
                     self._artwork.show()
                     break
+        # Add a default icon
+        if not self._artwork.is_visible():
+            self._artwork.set_from_icon_name('media-optical-cd-audio-symbolic',
+                                             Gtk.IconSize.DND)
+            artwork_height = 32
+            self._artwork.show()
 
         # Create an self._empty widget with header height
         ctx = self._label.get_pango_context()
