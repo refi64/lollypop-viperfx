@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Generated with glade 3.20.0 -->
+<!-- Generated with glade 3.19.0 -->
 <interface>
   <requires lib="gtk+" version="3.12"/>
   <object class="GtkImage" id="image1">
@@ -33,6 +33,7 @@
             <property name="visible">True</property>
             <property name="can_focus">False</property>
             <property name="valign">center</property>
+            <property name="margin_left">3</property>
             <signal name="button-release-event" handler="_on_label_button_release" swapped="no"/>
             <signal name="realize" handler="_on_label_realize" swapped="no"/>
             <child>
@@ -97,8 +98,11 @@
           <object class="GtkBox" id="box-button">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
-            <property name="halign">center</property>
             <property name="valign">center</property>
+            <property name="margin_left">3</property>
+            <property name="margin_right">3</property>
+            <property name="margin_top">2</property>
+            <property name="margin_bottom">4</property>
             <child>
               <object class="GtkButton" id="play-button">
                 <property name="width_request">-1</property>
