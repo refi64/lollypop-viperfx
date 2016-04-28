@@ -73,32 +73,6 @@
               </packing>
             </child>
             <child>
-              <object class="GtkScrolledWindow" id="scrollartwork">
-                <property name="visible">False</property>
-                <property name="can_focus">False</property>
-                <child>
-                  <object class="GtkViewport" id="viewartwork">
-                    <property name="visible">True</property>
-                    <property name="can_focus">False</property>
-                    <child>
-                      <object class="GtkGrid" id="artwork">
-                        <property name="visible">True</property>
-                        <property name="orientation">vertical</property>
-                        <property name="can_focus">False</property>
-                        <signal name="map" handler="_on_map_artwork" swapped="no"/>
-                        <signal name="unmap" handler="_on_child_unmap" swapped="no"/>
-                      </object>
-                    </child>
-                  </object>
-                </child>
-              </object>
-              <packing>
-                <property name="name">artwork</property>
-                <property name="title" translatable="yes">Photo</property>
-                <property name="position">5</property>
-              </packing>
-            </child>
-            <child>
               <object class="GtkScrolledWindow" id="scrollwikipedia">
                 <property name="visible">False</property>
                 <property name="can_focus">False</property>

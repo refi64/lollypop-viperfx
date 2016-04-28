@@ -18,7 +18,6 @@ from lollypop.art_widgets import ArtworkSearch
 class CoversPopover(Gtk.Popover):
     """
         Popover with album covers from the web
-        @Warning: Destroy it self on close
     """
 
     def __init__(self, album):
@@ -27,11 +26,27 @@ class CoversPopover(Gtk.Popover):
             @param album as album
         """
         Gtk.Popover.__init__(self)
-        self._album = album
-        self._monster_pixbufs = {}
-        # We only search with first artist, should be ok
-        widget = ArtworkSearch(self._album.artist_ids[0],
-                               self._album)
+        # FIXME We only search with first artist
+        widget = ArtworkSearch(album.artist_ids[0],
+                               album)
+        widget.show()
+        self.add(widget)
+        self.set_size_request(700, 400)
+        widget.populate()
+
+
+class ArtworkPopover(Gtk.Popover):
+    """
+        Popover with artist-artwork from the web
+    """
+
+    def __init__(self, artist_id):
+        """
+            Init Popover
+            @param album as album
+        """
+        Gtk.Popover.__init__(self)
+        widget = ArtworkSearch(artist_id, None)
         widget.show()
         self.add(widget)
         self.set_size_request(700, 400)

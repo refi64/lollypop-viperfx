@@ -18,6 +18,7 @@ from math import pi
 from lollypop.define import Lp, ArtSize
 from lollypop.pop_info import InfoPopover
 from lollypop.cache import InfoCache
+from lollypop.pop_artwork import ArtworkPopover
 from lollypop.view_artist_albums import ArtistAlbumsView
 
 
@@ -199,20 +200,38 @@ class ArtistView(ArtistAlbumsView):
 
     def _on_label_realize(self, eventbox):
         """
-            Change pointer on label
+            Change cursor on label
             @param eventbox as Gtk.EventBox
         """
         if InfoPopover.should_be_shown() and self._artist_ids:
             eventbox.get_window().set_cursor(Gdk.Cursor(Gdk.CursorType.HAND1))
 
+    def _on_artwork_realize(self, eventbox):
+        """
+            Change cursor on image
+            @param eventbox as Gtk.EventBox
+        """
+        eventbox.get_window().set_cursor(Gdk.Cursor(Gdk.CursorType.HAND1))
+
     def _on_label_button_release(self, eventbox, event):
         """
-            On clicked label, show artist informations in a popover
+            Show artists information
             @param eventbox as Gtk.EventBox
             @param event as Gdk.Event
         """
         if InfoPopover.should_be_shown() and self._artist_ids:
             pop = InfoPopover(self._artist_ids, False)
+            pop.set_relative_to(eventbox)
+            pop.show()
+
+    def _on_image_button_release(self, eventbox, event):
+        """
+            Show artist artwork manager
+            @param eventbox as Gtk.EventBox
+            @param event as Gdk.Event
+        """
+        if InfoPopover.should_be_shown() and self._artist_ids:
+            pop = ArtworkPopover(self._artist_ids[0])
             pop.set_relative_to(eventbox)
             pop.show()
 

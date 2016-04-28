@@ -19,7 +19,6 @@ from lollypop.define import Lp, OpenLink
 from lollypop.objects import Track
 from lollypop.widgets_info import WikipediaContent, LastfmContent
 from lollypop.cache import InfoCache
-from lollypop.art_widgets import ArtworkSearch
 from lollypop.view_artist_albums import CurrentArtistAlbumsView
 
 
@@ -77,9 +76,6 @@ class InfoPopover(Gtk.Popover):
         if Lp().settings.get_value('inforeload'):
             builder.get_object('reload').get_style_context().add_class(
                                                                     'selected')
-        if self._artist_ids:
-            self._stack.get_child_by_name('artwork').show()
-            builder.get_object('reload').hide()
         if show_albums:
             self._stack.get_child_by_name('albums').show()
         if InfoPopover.Wikipedia is not None:
@@ -225,17 +221,6 @@ class InfoPopover(Gtk.Popover):
         t = Thread(target=view.populate, args=(self._current_track,))
         t.daemon = True
         t.start()
-
-    def _on_map_artwork(self, widget):
-        """
-            Load on map
-            @param widget as Gtk.Grid
-        """
-        # We only search with first artist, should be ok
-        search = ArtworkSearch(self._artist_ids[0], None)
-        search.show()
-        search.populate()
-        widget.add(search)
 
     def _on_map_lastfm(self, widget):
         """

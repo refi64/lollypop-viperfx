@@ -40,7 +40,7 @@ src/player_userplaylist.py
 src/playlists.py
 src/pop_album.py
 src/pop_albums.py
-src/pop_covers.py
+src/pop_artwork.py
 src/pop_info.py
 src/pop_menu.py
 src/pop_next.py

@@ -20,7 +20,7 @@ from lollypop.widgets_track import TracksWidget, TrackRow
 from lollypop.objects import Track
 from lollypop.widgets_rating import RatingWidget
 from lollypop.pop_menu import AlbumMenu
-from lollypop.pop_covers import CoversPopover
+from lollypop.pop_artwork import CoversPopover
 from lollypop.objects import Album
 
 
