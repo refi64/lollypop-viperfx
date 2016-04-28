@@ -340,10 +340,12 @@ class TuneinPopover(Gtk.Popover):
 
         text = widget.get_text()
         if text != "":
+            self._home_btn.set_sensitive(True)
             self._timeout_id = GLib.timeout_add(1000,
                                                 self._on_search_changed_thread,
                                                 text)
         else:
+            self._home_btn.set_sensitive(False)
             self._timeout_id = GLib.timeout_add(1000,
                                                 self._on_home_btn_clicked,
                                                 None)
