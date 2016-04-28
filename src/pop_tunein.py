@@ -85,17 +85,16 @@ class TuneinPopover(Gtk.Popover):
             Populate views
             @param url as string
         """
-        if not self._view.get_children() or\
-           self._stack.get_visible_child_name() == "notfound":
-            self._stack.set_visible_child_name('spinner')
-            self._current_url = url
-            self._clear()
-            self._back_btn.set_sensitive(False)
-            self._home_btn.set_sensitive(False)
-            self._label.set_text(_("Please wait..."))
-            t = Thread(target=self._populate, args=(url,))
-            t.daemon = True
-            t.start()
+        self._spinner.start()
+        self._clear()
+        self._stack.set_visible_child_name('spinner')
+        self._current_url = url
+        self._back_btn.set_sensitive(False)
+        self._home_btn.set_sensitive(False)
+        self._label.set_text(_("Please wait..."))
+        t = Thread(target=self._populate, args=(url,))
+        t.daemon = True
+        t.start()
 
 #######################
 # PRIVATE             #
@@ -120,10 +119,11 @@ class TuneinPopover(Gtk.Popover):
         else:
             items = self._tunein.get_items(url)
 
-        if items and self._current_url == url:
-            self._add_items(items)
-        else:
-            GLib.idle_add(self._show_not_found)
+        if self._current_url == url:
+            if items:
+                self._add_items(items)
+            else:
+                GLib.idle_add(self._show_not_found)
 
     def _add_items(self, items):
         """
@@ -277,9 +277,6 @@ class TuneinPopover(Gtk.Popover):
         """
         self._current_url = None
         self._previous_urls = []
-        self._stack.set_visible_child_name('spinner')
-        self._spinner.start()
-        self._clear()
         self.populate()
 
     def _on_activate_link(self, link, item):
@@ -289,9 +286,6 @@ class TuneinPopover(Gtk.Popover):
             @param item as TuneIn Item
         """
         if item.TYPE == "link":
-            self._stack.set_visible_child_name('spinner')
-            self._spinner.start()
-            self._clear()
             self._scrolled.get_vadjustment().set_value(0.0)
             if self._current_url is not None:
                 self._previous_urls.append(self._current_url)
@@ -345,10 +339,5 @@ class TuneinPopover(Gtk.Popover):
             @param string as str
         """
         self._timeout_id = None
-        self._stack.set_visible_child_name('spinner')
-        self._spinner.start()
-        self._clear()
         url = "http://opml.radiotime.com/Search.ashx?query=%s" % escape(string)
-        t = Thread(target=self._populate, args=(url,))
-        t.daemon = True
-        t.start()
+        self.populate(url)
