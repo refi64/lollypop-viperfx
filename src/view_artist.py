@@ -99,7 +99,7 @@ class ArtistView(ArtistAlbumsView):
                     self._artwork.show()
                     break
         # Add a default icon
-        if artwork_height == 0:
+        if len(self._artist_ids) == 1 and artwork_height == 0:
             self._artwork.set_from_icon_name('media-optical-cd-audio-symbolic',
                                              Gtk.IconSize.DND)
             artwork_height = 32
