@@ -316,7 +316,8 @@ class Window(Gtk.ApplicationWindow, Container):
             vgrid.add(self._toolbar)
         else:
             self.set_titlebar(self._toolbar)
-            self._toolbar.set_show_close_button(True)
+            self._toolbar.set_show_close_button(
+                                    not Lp().settings.get_value('disable-csd'))
         vgrid.add(self._main_stack)
         vgrid.add(self._subtoolbar)
         self.add(vgrid)
