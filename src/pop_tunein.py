@@ -120,7 +120,7 @@ class TuneinPopover(Gtk.Popover):
         else:
             items = self._tunein.get_items(url)
 
-        if items:
+        if items and self._current_url == url:
             self._add_items(items)
         else:
             GLib.idle_add(self._show_not_found)
@@ -348,8 +348,7 @@ class TuneinPopover(Gtk.Popover):
         self._stack.set_visible_child_name('spinner')
         self._spinner.start()
         self._clear()
-        self._current_url = "http://opml.radiotime.com/Search.ashx?query=%s"\
-            % escape(string)
-        t = Thread(target=self._populate, args=(self._current_url,))
+        url = "http://opml.radiotime.com/Search.ashx?query=%s" % escape(string)
+        t = Thread(target=self._populate, args=(url,))
         t.daemon = True
         t.start()
