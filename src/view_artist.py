@@ -148,7 +148,7 @@ class ArtistView(ArtistAlbumsView):
         """
         albums = Lp().albums.get_ids(self._artist_ids, self._genre_ids)
         player_albums = Lp().player.get_albums()
-        if list(set(albums) & set(player_albums)) == albums:
+        if len(set(albums) & set(player_albums)) == len(albums):
             self._add_button.set_tooltip_text(_("Remove"))
             self._add_button.get_image().set_from_icon_name(
                                                         'list-remove-symbolic',
