@@ -1,21 +1,30 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Generated with glade 3.19.0 -->
+<!-- Generated with glade 3.20.0 -->
 <interface>
   <requires lib="gtk+" version="3.12"/>
+  <object class="GtkImage" id="image1">
+    <property name="visible">True</property>
+    <property name="can_focus">False</property>
+    <property name="icon_name">media-playback-start-symbolic</property>
+  </object>
   <object class="GtkImage" id="image2">
     <property name="visible">True</property>
     <property name="can_focus">False</property>
     <property name="icon_name">go-jump-symbolic</property>
   </object>
+  <object class="GtkImage" id="image3">
+    <property name="visible">True</property>
+    <property name="can_focus">False</property>
+    <property name="icon_name">list-add-symbolic</property>
+  </object>
   <object class="GtkEventBox" id="header">
     <property name="visible">True</property>
     <property name="can_focus">False</property>
+    <property name="halign">start</property>
     <child>
-      <object class="GtkGrid" id="header_grid">
+      <object class="GtkGrid" id="header-grid">
         <property name="visible">True</property>
         <property name="can_focus">False</property>
-        <property name="margin_left">10</property>
-        <property name="margin_right">10</property>
         <property name="margin_start">10</property>
         <property name="orientation">vertical</property>
         <property name="column_spacing">10</property>
@@ -40,7 +49,6 @@
                   <attribute name="scale" value="2"/>
                 </attributes>
                 <style>
-                  <class name="header"/>
                   <class name="header-dim"/>
                 </style>
               </object>
@@ -59,12 +67,12 @@
             <property name="active">True</property>
           </object>
           <packing>
-            <property name="left_attach">3</property>
+            <property name="left_attach">2</property>
             <property name="top_attach">0</property>
           </packing>
         </child>
         <child>
-          <object class="GtkEventBox" id="eventbox3">
+          <object class="GtkEventBox" id="artwork-box">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
             <property name="tooltip_text" translatable="yes">Photo</property>
@@ -81,24 +89,66 @@
             </child>
           </object>
           <packing>
-            <property name="left_attach">2</property>
+            <property name="left_attach">3</property>
             <property name="top_attach">0</property>
           </packing>
         </child>
         <child>
-          <object class="GtkButton" id="jump-button">
+          <object class="GtkBox" id="box-button">
             <property name="visible">True</property>
-            <property name="sensitive">False</property>
-            <property name="can_focus">True</property>
-            <property name="receives_default">True</property>
-            <property name="tooltip_text" translatable="yes">Go to current track</property>
+            <property name="can_focus">False</property>
+            <property name="halign">center</property>
             <property name="valign">center</property>
-            <property name="margin_end">2</property>
-            <property name="image">image2</property>
-            <property name="relief">none</property>
-            <signal name="clicked" handler="_on_jump_button_clicked" swapped="no"/>
+            <child>
+              <object class="GtkButton" id="play-button">
+                <property name="width_request">-1</property>
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="receives_default">True</property>
+                <property name="tooltip_text" translatable="yes">Play</property>
+                <property name="image">image1</property>
+                <signal name="clicked" handler="_on_play_clicked" swapped="no"/>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">True</property>
+                <property name="position">0</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkButton" id="add-button">
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="receives_default">True</property>
+                <property name="tooltip_text" translatable="yes">Add</property>
+                <property name="image">image3</property>
+                <signal name="clicked" handler="_on_add_clicked" swapped="no"/>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">True</property>
+                <property name="position">1</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkButton" id="jump-button">
+                <property name="visible">True</property>
+                <property name="sensitive">False</property>
+                <property name="can_focus">True</property>
+                <property name="receives_default">True</property>
+                <property name="tooltip_text" translatable="yes">Go to current track</property>
+                <property name="margin_end">2</property>
+                <property name="image">image2</property>
+                <signal name="clicked" handler="_on_jump_button_clicked" swapped="no"/>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">True</property>
+                <property name="position">2</property>
+              </packing>
+            </child>
             <style>
-              <class name="header"/>
+              <class name="linked"/>
             </style>
           </object>
           <packing>
@@ -106,6 +156,9 @@
             <property name="top_attach">0</property>
           </packing>
         </child>
+        <style>
+          <class name="header"/>
+        </style>
       </object>
     </child>
   </object>

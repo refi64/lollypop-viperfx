@@ -16,6 +16,7 @@ from gettext import gettext as _
 from math import pi
 
 from lollypop.define import Lp, ArtSize
+from lollypop.objects import Track, Album
 from lollypop.pop_info import InfoPopover
 from lollypop.cache import InfoCache
 from lollypop.pop_artwork import ArtworkPopover
@@ -34,8 +35,7 @@ class ArtistView(ArtistAlbumsView):
             @param genre id as int
         """
         ArtistAlbumsView.__init__(self, artist_ids, genre_ids)
-        self._signal_id = None
-        self._artist_ids = artist_ids
+        self._art_signal_id = None
         self.connect('realize', self._on_realize)
         self.connect('unrealize', self._on_unrealize)
 
@@ -43,20 +43,23 @@ class ArtistView(ArtistAlbumsView):
         builder.add_from_resource('/org/gnome/Lollypop/ArtistView.ui')
         builder.connect_signals(self)
         self._artwork = builder.get_object('artwork')
+        self._artwork_box = builder.get_object('artwork-box')
         self._label = builder.get_object('artist')
         self._jump_button = builder.get_object('jump-button')
         self._jump_button.set_tooltip_text(_("Go to current track"))
+        self._add_button = builder.get_object('add-button')
+        self._grid = builder.get_object('header-grid')
         self._spinner = builder.get_object('spinner')
         header = builder.get_object('header')
         header.set_property('valign', Gtk.Align.START)
         self._overlay.add_overlay(header)
         self._overlay.set_overlay_pass_through(header, True)
-
         self._empty = Gtk.Grid()
         self._empty.show()
         self._albumbox.add(self._empty)
 
         self._set_artwork()
+        self._set_add_icon()
 
         artists = []
         for artist_id in artist_ids:
@@ -101,6 +104,7 @@ class ArtistView(ArtistAlbumsView):
                         self._artwork.get_style_context().remove_class(
                                                                 'artwork-icon')
                         self._artwork.show()
+                        self._artwork_box.show()
                         break
             # Add a default icon
             if len(self._artist_ids) == 1 and artwork_height == 0:
@@ -110,6 +114,7 @@ class ArtistView(ArtistAlbumsView):
                 artwork_height = 32
                 self._artwork.get_style_context().add_class('artwork-icon')
                 self._artwork.show()
+                self._artwork_box.show()
 
         # Create an self._empty widget with header height
         ctx = self._label.get_pango_context()
@@ -137,22 +142,54 @@ class ArtistView(ArtistAlbumsView):
         else:
             self._jump_button.set_sensitive(False)
 
+    def _set_add_icon(self):
+        """
+            Set add icon based on player albums
+        """
+        albums = Lp().albums.get_ids(self._artist_ids, self._genre_ids)
+        player_albums = Lp().player.get_albums()
+        if list(set(albums) & set(player_albums)) == albums:
+            self._add_button.set_tooltip_text(_("Remove"))
+            self._add_button.get_image().set_from_icon_name(
+                                                        'list-remove-symbolic',
+                                                        Gtk.IconSize.MENU)
+        else:
+            self._add_button.set_tooltip_text(_("Add"))
+            self._add_button.get_image().set_from_icon_name(
+                                                           'list-add-symbolic',
+                                                           Gtk.IconSize.MENU)
+
     def _on_realize(self, widget):
         """
             Connect signal
             @param widget as Gtk.Widget
         """
-        self._signal_id = Lp().art.connect('artist-artwork-changed',
-                                           self._on_artist_artwork_changed)
+        self._art_signal_id = Lp().art.connect('artist-artwork-changed',
+                                               self._on_artist_artwork_changed)
+        self._party_signal_id = Lp().player.connect('party-changed',
+                                                    self._on_party_changed)
 
     def _on_unrealize(self, widget):
         """
             Disconnect signal
             @param widget as Gtk.Widget
         """
-        if self._signal_id is not None:
-            Lp().art.disconnect(self._signal_id)
-            self._signal_id = None
+        if self._art_signal_id is not None:
+            Lp().art.disconnect(self._art_signal_id)
+            self._art_signal_id = None
+        if self._party_signal_id is not None:
+            Lp().player.disconnect(self._party_signal_id)
+            self._party_signal_id = None
+
+    def _on_party_changed(self, player, party):
+        """
+            Update add icon
+            @param player as Player
+            @param party as bool
+        """
+        # Leaving party doesn't change album list
+        if party:
+            self._set_add_icon()
 
     def _on_artist_artwork_changed(self, art, prefix):
         """
@@ -177,19 +214,16 @@ class ArtistView(ArtistAlbumsView):
         if adj.get_value() == adj.get_lower():
             if Lp().settings.get_value('artist-artwork'):
                 self._artwork.show()
-            self._label.get_style_context().remove_class('header-borders')
-            self._label.get_style_context().add_class('header')
-            self._jump_button.get_style_context().remove_class(
-                                                              'header-borders')
-            self._jump_button.get_style_context().add_class('header')
-            self._jump_button.set_property('valign', Gtk.Align.CENTER)
+                self._artwork_box.show()
+            self._grid.get_style_context().remove_class('header-borders')
+            self._grid.get_style_context().add_class('header')
+            self._grid.set_property('valign', Gtk.Align.CENTER)
         else:
             self._artwork.hide()
-            self._label.get_style_context().add_class('header-borders')
-            self._label.get_style_context().remove_class('header')
-            self._jump_button.get_style_context().add_class('header-borders')
-            self._jump_button.get_style_context().remove_class('header')
-            self._jump_button.set_property('valign', Gtk.Align.START)
+            self._artwork_box.hide()
+            self._grid.get_style_context().add_class('header-borders')
+            self._grid.get_style_context().remove_class('header')
+            self._grid.set_property('valign', Gtk.Align.START)
 
     def _on_populated(self, widget, widgets, scroll_value):
         """
@@ -200,6 +234,7 @@ class ArtistView(ArtistAlbumsView):
         """
         self._update_jump_button()
         self._spinner.stop()
+        self._spinner.hide()
         ArtistAlbumsView._on_populated(self, widget, widgets, scroll_value)
 
     def _on_current_changed(self, player):
@@ -246,6 +281,37 @@ class ArtistView(ArtistAlbumsView):
             pop = ArtworkPopover(self._artist_ids[0])
             pop.set_relative_to(eventbox)
             pop.show()
+
+    def _on_play_clicked(self, widget):
+        """
+            Play artist albums
+        """
+        if Lp().player.is_party():
+            Lp().player.set_party(False)
+        album_id = Lp().albums.get_ids(self._artist_ids, self._genre_ids)[0]
+        track = Track(Album(album_id).tracks_ids[0])
+        Lp().player.load(track)
+        Lp().player.set_albums(track.id, self._artist_ids,
+                               self._genre_ids)
+        self._set_add_icon()
+
+    def _on_add_clicked(self, widget):
+        """
+            Add artist albums
+        """
+        albums = Lp().albums.get_ids(self._artist_ids, self._genre_ids)
+        if self._add_button.get_image().get_icon_name(
+                                                   )[0] == 'list-add-symbolic':
+            for album_id in albums:
+                album = Album(album_id)
+                if not Lp().player.has_album(album):
+                    Lp().player.add_album(album)
+        else:
+            for album_id in albums:
+                album = Album(album_id)
+                if Lp().player.has_album(album):
+                    Lp().player.remove_album(album)
+        self._set_add_icon()
 
     def _on_artwork_draw(self, image, ctx):
         """
