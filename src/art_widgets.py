@@ -32,6 +32,7 @@ class ArtworkSearch(Gtk.Bin):
         """
         Gtk.Bin.__init__(self)
         self.connect('unmap', self._on_self_unmap)
+        self._timeout_id = None
         self._album = album
         self._artist_id = artist_id
         self._artist = Lp().artists.get_name(artist_id)
@@ -41,6 +42,7 @@ class ArtworkSearch(Gtk.Bin):
         builder.connect_signals(self)
         widget = builder.get_object('widget')
         self._stack = builder.get_object('stack')
+        self._entry = builder.get_object('entry')
 
         self._view = Gtk.FlowBox()
         self._view.set_selection_mode(Gtk.SelectionMode.SINGLE)
@@ -94,14 +96,17 @@ class ArtworkSearch(Gtk.Bin):
 #######################
 # PRIVATE             #
 #######################
-    def _populate(self):
+    def _populate(self, search=""):
         """
             Same as populate
+            @param search as str
             @thread safe
         """
         urls = []
         if Gio.NetworkMonitor.get_default().get_network_available():
-            if self._album is not None:
+            if search != "":
+                urls = Lp().art.get_duck_arts(search)
+            elif self._album is not None:
                 urls = Lp().art.get_duck_arts("%s+%s" % (
                                                self._artist,
                                                self._album.name))
@@ -113,16 +118,19 @@ class ArtworkSearch(Gtk.Bin):
                                                                   genre))
                 urls += Lp().art.get_duck_arts(self._artist)
         if urls:
-            self._add_pixbufs(urls)
+            self._add_pixbufs(urls, search)
         else:
             GLib.idle_add(self._show_not_found)
 
-    def _add_pixbufs(self, urls):
+    def _add_pixbufs(self, urls, search):
         """
             Add urls to the view
-            @parma urls as [string]
+            @param urls as [string]
+            @param search as str
             @param duck api start as int
         """
+        if search != self._entry.get_text():
+            return
         if urls:
             url = urls.pop(0)
             try:
@@ -133,7 +141,7 @@ class ArtworkSearch(Gtk.Bin):
             except Exception as e:
                 print("ArtworkSearch::_add_pixbufs: %s" % e)
             if self._thread:
-                self._add_pixbufs(urls)
+                self._add_pixbufs(urls, search)
 
     def _show_not_found(self):
         """
@@ -220,6 +228,32 @@ class ArtworkSearch(Gtk.Bin):
                                           flowbox.get_scale_factor())
                 InfoCache.cache(self._artist, None, data, suffix)
         self._streams = {}
+
+    def _on_search_changed(self, entry):
+        """
+            Launch search based on current text
+            @param entry as Gtk.Entry
+        """
+        if self._timeout_id is not None:
+            GLib.source_remove(self._timeout_id)
+        self._timeout_id = GLib.timeout_add(1000,
+                                            self._on_search_timeout,
+                                            entry.get_text())
+
+    def _on_search_timeout(self, string):
+        """
+            Populate widget
+            @param string as str
+        """
+        for child in self._view.get_children():
+            child.destroy()
+        self._stack.set_visible_child_name('spinner')
+        self._spinner.start()
+        self._timeout_id = None
+        self._thread = True
+        t = Thread(target=self._populate, args=(string,))
+        t.daemon = True
+        t.start()
 
     def _on_button_clicked(self, button):
         """

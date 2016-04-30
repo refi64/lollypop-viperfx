@@ -342,7 +342,7 @@ class TuneinPopover(Gtk.Popover):
         if text != "":
             self._home_btn.set_sensitive(True)
             self._timeout_id = GLib.timeout_add(1000,
-                                                self._on_search_changed_thread,
+                                                self._on_search_timeout,
                                                 text)
         else:
             self._home_btn.set_sensitive(False)
@@ -350,7 +350,7 @@ class TuneinPopover(Gtk.Popover):
                                                 self._on_home_btn_clicked,
                                                 None)
 
-    def _on_search_changed_thread(self, string):
+    def _on_search_timeout(self, string):
         """
             Populate widget
             @param string as str
