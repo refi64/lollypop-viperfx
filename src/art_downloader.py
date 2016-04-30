@@ -64,25 +64,6 @@ class ArtDownloader:
         t.daemon = True
         t.start()
 
-    def get_spotify_artist_artwork(self, artist):
-        """
-            Return spotify artwork url
-            @param artist as str
-            @return url as str/None
-        """
-        try:
-            artist_formated = GLib.uri_escape_string(
-                                artist, None, True).replace(' ', '+')
-            s = Gio.File.new_for_uri("https://api.spotify.com/v1/search?q=%s"
-                                     "&type=artist" % artist_formated)
-            (status, data, tag) = s.load_contents()
-            if status:
-                decode = json.loads(data.decode('utf-8'))
-                return decode['artists']['items'][0]['images'][0]['url']
-        except Exception as e:
-            debug("ArtDownloader::get_spotify_artist_artwork(): %s" % e)
-        return None
-
     def get_duck_arts(self, search):
         """
             Get arts on duck image corresponding to search
@@ -121,6 +102,27 @@ class ArtDownloader:
 #######################
 # PRIVATE             #
 #######################
+    def _get_spotify_artist_artwork(self, artist):
+        """
+            Return spotify artwork url
+            @param artist as str
+            @return url as str/None
+        """
+        try:
+            artist_formated = GLib.uri_escape_string(
+                                artist, None, True).replace(' ', '+')
+            s = Gio.File.new_for_uri("https://api.spotify.com/v1/search?q=%s"
+                                     "&type=artist" % artist_formated)
+            (status, data, tag) = s.load_contents()
+            if status:
+                decode = json.loads(data.decode('utf-8'))
+                for item in decode['artists']['items']:
+                    if item['name'].lower() == artist.lower():
+                        return item['images'][0]['url']
+        except Exception as e:
+            debug("ArtDownloader::get_spotify_artist_artwork(): %s" % e)
+        return None
+
     def _cache_artists_art(self):
         """
             Cache artwork for all artists
@@ -156,7 +158,7 @@ class ArtDownloader:
                             InfoCache.cache(artist, content, data, "wikipedia")
                 except:
                     InfoCache.cache(artist, None, None, "wikipedia")
-            url = self.get_spotify_artist_artwork(artist)
+            url = self._get_spotify_artist_artwork(artist)
             if url is not None:
                 s = Gio.File.new_for_uri(url)
                 (status, data, tag) = s.load_contents()
