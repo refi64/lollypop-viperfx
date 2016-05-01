@@ -11,12 +11,13 @@
     <property name="visible">True</property>
     <property name="can_focus">False</property>
     <property name="orientation">vertical</property>
-    <property name="row_spacing">1</property>
-    <property name="column_spacing">2</property>
+    <property name="row_spacing">2</property>
+    <property name="column_spacing">5</property>
     <child>
       <object class="GtkLabel" id="label">
         <property name="visible">True</property>
         <property name="can_focus">False</property>
+        <property name="halign">end</property>
         <property name="margin_top">2</property>
         <property name="margin_bottom">2</property>
         <property name="hexpand">True</property>
@@ -46,7 +47,7 @@
         <property name="tooltip_text" translatable="yes">Select a local file</property>
         <property name="halign">end</property>
         <property name="margin_right">2</property>
-        <property name="margin_top">1</property>
+        <property name="margin_top">2</property>
         <property name="image">image1</property>
         <property name="relief">none</property>
         <property name="yalign">0.51999998092651367</property>
@@ -76,6 +77,7 @@
       <object class="GtkSearchEntry" id="entry">
         <property name="visible">True</property>
         <property name="can_focus">True</property>
+        <property name="margin_top">2</property>
         <property name="primary_icon_name">edit-find-symbolic</property>
         <property name="primary_icon_activatable">False</property>
         <property name="primary_icon_sensitive">False</property>
@@ -90,7 +92,9 @@
       <object class="GtkSpinner" id="spinner">
         <property name="visible">True</property>
         <property name="can_focus">False</property>
+        <property name="halign">start</property>
         <property name="margin_right">2</property>
+        <property name="hexpand">True</property>
         <property name="active">True</property>
       </object>
       <packing>

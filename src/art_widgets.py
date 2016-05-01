@@ -154,7 +154,6 @@ class ArtworkSearch(Gtk.Bin):
                 self._add_pixbufs(urls, search)
         else:
             self._spinner.stop()
-            self._spinner.hide()
 
     def _show_not_found(self):
         """
@@ -164,7 +163,6 @@ class ArtworkSearch(Gtk.Bin):
             self._label.set_text(_("No cover found..."))
             self._stack.set_visible_child_name('notfound')
         self._spinner.stop()
-        self._spinner.hide()
 
     def _add_pixbuf(self, data):
         """
