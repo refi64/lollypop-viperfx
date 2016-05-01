@@ -240,7 +240,7 @@ class ArtworkSearch(Gtk.Bin):
                     InfoCache.cache(self._artist, None, data, suffix)
             self._streams = {}
         except:
-            self._infobar_label.set_text(_("Reset cover?"))
+            self._infobar_label.set_text(_("Reset artwork?"))
             self._infobar.show()
 
     def _on_search_changed(self, entry):
