@@ -120,7 +120,7 @@ class ArtDownloader:
                     if item['name'].lower() == artist.lower():
                         return item['images'][0]['url']
         except Exception as e:
-            debug("ArtDownloader::get_spotify_artist_artwork(): %s" % e)
+            debug("ArtDownloader::get_spotify_artist_artwork(): %s [%s]" % (e, artist))
         return None
 
     def _cache_artists_art(self):
@@ -231,7 +231,7 @@ class ArtDownloader:
                         (status, image, tag) = s.load_contents()
                     break
         except Exception as e:
-            print("ArtDownloader::_get_album_art_spotify: %s" % e)
+            print("ArtDownloader::_get_album_art_spotify: %s [%s/%s]" % (e, artist, album))
         return image
 
     def _get_album_art_itunes(self, artist, album):
@@ -259,7 +259,7 @@ class ArtDownloader:
                         (status, image, tag) = s.load_contents()
                         break
         except Exception as e:
-            print("ArtDownloader::_get_album_art_itunes: %s" % e)
+            print("ArtDownloader::_get_album_art_itunes: %s [%s/%s]" % (e, artist, album))
         return image
 
     def _get_album_art_lastfm(self, artist, album):
@@ -279,5 +279,5 @@ class ArtDownloader:
                     s = Gio.File.new_for_uri(url)
                     (status, image, tag) = s.load_contents()
             except Exception as e:
-                print("ArtDownloader::_get_album_art_lastfm: %s" % e)
+                print("ArtDownloader::_get_album_art_lastfm: %s [%s/%s]" % (e, artist, album))
         return image
