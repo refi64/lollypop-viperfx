@@ -179,9 +179,10 @@ class InfoCache:
             f.delete(None)
         except:
             pass
-        filepath = "%s/%s_%s.jpg" % (InfoCache.CACHE_PATH,
-                                     escape(prefix),
-                                     suffix)
+        filepath = "%s/%s_%s_%s.jpg" % (InfoCache.CACHE_PATH,
+                                        escape(prefix),
+                                        suffix,
+                                        ArtSize.ARTIST)
         f = Gio.File.new_for_path(filepath)
         try:
             f.delete(None)
@@ -195,9 +196,10 @@ class InfoCache:
             @param suffix as str
             @param scale factor as int
         """
-        filepath = "%s/%s_%s.jpg" % (InfoCache.CACHE_PATH,
-                                     escape(prefix),
-                                     suffix)
+        filepath = "%s/%s_%s_%s.jpg" % (InfoCache.CACHE_PATH,
+                                        escape(prefix),
+                                        suffix,
+                                        ArtSize.ARTIST)
         f = Gio.File.new_for_path(filepath)
         try:
             f.delete(None)
