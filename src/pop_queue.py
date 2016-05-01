@@ -392,6 +392,7 @@ class QueuePopover(Gtk.Popover):
             @param row as QueueRow
         """
         Lp().player.load(Track(row.get_id()))
+        GLib.idle_add(row.destroy)
 
     def _on_button_clicked(self, widget):
         """
