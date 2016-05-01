@@ -74,6 +74,7 @@ class ArtworkSearch(Gtk.Bin):
                                             ArtSize.BIG,
                                             self.get_scale_factor())
         image.set_from_surface(surface)
+        image.get_style_context().add_class('cover-frame')
         image.show()
         self._view.add(image)
 
