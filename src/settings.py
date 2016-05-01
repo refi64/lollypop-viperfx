@@ -302,7 +302,6 @@ class SettingsDialog:
         Lp().window.show_genres(state)
         Lp().settings.set_value('show-genres',
                                 GLib.Variant('b', state))
-        Lp().window.reload_view()
 
     def _update_mix_setting(self, widget, state):
         """
