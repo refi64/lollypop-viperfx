@@ -105,10 +105,11 @@ class Container:
                             "list-one-ids",
                             GLib.Variant('ai',
                                          self._list_one.get_selected_ids()))
-        Lp().settings.set_value(
-                            "list-two-ids",
-                            GLib.Variant('ai',
-                                         self._list_two.get_selected_ids()))
+        list_two_ids = []
+        if self._list_two.is_visible():
+            list_two_ids = self._list_two.get_selected_ids()
+        Lp().settings.set_value("list-two-ids",
+                                GLib.Variant('ai', list_two_ids))
 
     def show_playlist_manager(self, object_id, genre_ids,
                               artist_ids, is_album):
