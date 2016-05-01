@@ -95,7 +95,8 @@ class ToolbarInfo(Gtk.Bin, InfosController):
         if Lp().player.current_track.album.id == album_id:
             surface = Lp().art.get_album_artwork(
                                        Lp().player.current_track.album,
-                                       ArtSize.SMALL)
+                                       ArtSize.SMALL,
+                                       self._cover.get_scale_factor())
             self._cover.set_from_surface(surface)
             del surface
 
