@@ -15,7 +15,7 @@ import os
 import itertools
 
 from lollypop.sqlcursor import SqlCursor
-from lollypop.define import Lp, Type
+from lollypop.define import Lp, Type, OrderBy
 from lollypop.utils import remove_static_genres
 
 
@@ -591,6 +591,25 @@ class AlbumsDatabase:
             @return Array of album ids as int
         """
         genre_ids = remove_static_genres(genre_ids)
+        orderby = Lp().settings.get_enum('orderby')
+        if orderby == OrderBy.ARTIST:
+            order = "ORDER BY artists.sortname\
+                     COLLATE NOCASE COLLATE LOCALIZED,\
+                     albums.year,\
+                     albums.name\
+                     COLLATE NOCASE COLLATE LOCALIZED"
+        elif orderby == OrderBy.NAME:
+            order = "ORDER BY albums.name\
+                     COLLATE NOCASE COLLATE LOCALIZED"
+        elif orderby == OrderBy.YEAR:
+            order = "ORDER BY albums.year,\
+                     albums.name\
+                     COLLATE NOCASE COLLATE LOCALIZED"
+        else:
+            order = "ORDER BY albums.popularity DESC,\
+                     albums.name\
+                     COLLATE NOCASE COLLATE LOCALIZED"
+
         with SqlCursor(Lp().db) as sql:
             result = []
             # Get albums for all artists
@@ -600,11 +619,7 @@ class AlbumsDatabase:
                                   FROM albums, artists, album_artists\
                                   WHERE artists.rowid=album_artists.artist_id\
                                   AND albums.rowid=album_artists.album_id\
-                                  ORDER BY artists.sortname\
-                                  COLLATE NOCASE COLLATE LOCALIZED,\
-                                  albums.year,\
-                                  albums.name\
-                                  COLLATE NOCASE COLLATE LOCALIZED")
+                                  %s" % order)
             # Get albums for genre
             elif not artist_ids:
                 genres = tuple(genre_ids)
@@ -615,10 +630,7 @@ class AlbumsDatabase:
                            AND album_genres.album_id=albums.rowid AND ("
                 for genre_id in genre_ids:
                     request += "album_genres.genre_id=? OR "
-                request += "1=0) ORDER BY artists.sortname\
-                            COLLATE NOCASE COLLATE LOCALIZED,\
-                            albums.year,\
-                            albums.name COLLATE NOCASE COLLATE LOCALIZED"
+                request += "1=0) %s" % order
                 result = sql.execute(request, genres)
             # Get albums for artist
             elif not genre_ids:
@@ -629,8 +641,7 @@ class AlbumsDatabase:
                            album_artists.album_id=albums.rowid AND ("
                 for artist_id in artist_ids:
                     request += "album_artists.artist_id=? OR "
-                request += "1=0) ORDER BY artists.name COLLATE NOCASE COLLATE LOCALIZED,\
-                            year, albums.name COLLATE NOCASE COLLATE LOCALIZED"
+                request += "1=0) %s" % order
                 result = sql.execute(request, artists)
             # Get albums for artist id and genre id
             else:
@@ -646,9 +657,7 @@ class AlbumsDatabase:
                 request += "1=0) AND ("
                 for genre_id in genre_ids:
                     request += "album_genres.genre_id=? OR "
-                request += "1=0) ORDER BY artists.name\
-                            COLLATE NOCASE COLLATE LOCALIZED,\
-                            year, albums.name COLLATE NOCASE COLLATE LOCALIZED"
+                request += "1=0) %s" % order
                 result = sql.execute(request, filters)
             return list(itertools.chain(*result))
 

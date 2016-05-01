@@ -91,6 +91,13 @@ class WindowSize:
     MONSTER = 800
 
 
+class OrderBy:
+    ARTIST = 0
+    NAME = 1
+    YEAR = 2
+    POPULARITY = 3
+
+
 # Order is important
 class Type:
     NONE = -1

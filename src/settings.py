@@ -123,6 +123,9 @@ class SettingsDialog:
         switch_repeat = builder.get_object('switch_repeat')
         switch_repeat.set_state(not Lp().settings.get_value('repeat'))
 
+        combo_orderby = builder.get_object('orderby')
+        combo_orderby.set_active(Lp().settings.get_enum(('orderby')))
+
         scale_coversize = builder.get_object('scale_coversize')
         scale_coversize.set_range(150, 300)
         scale_coversize.set_value(
@@ -263,7 +266,8 @@ class SettingsDialog:
     def _update_ui_setting(self, widget, state):
         """
             Update view setting
-            @param widget as unused, state as widget state
+            @param widget as Gtk.Switch
+            @param state as bool
         """
         Lp().settings.set_value('dark-ui', GLib.Variant('b', state))
         if not Lp().player.is_party():
@@ -273,7 +277,8 @@ class SettingsDialog:
     def _update_scan_setting(self, widget, state):
         """
             Update scan setting
-            @param widget as unused, state as widget state
+            @param widget as Gtk.Switch
+            @param state as bool
         """
         Lp().settings.set_value('auto-update',
                                 GLib.Variant('b', state))
@@ -281,7 +286,8 @@ class SettingsDialog:
     def _update_background_setting(self, widget, state):
         """
             Update background mode setting
-            @param widget as unused, state as widget state
+            @param widget as Gtk.Switch
+            @param state as bool
         """
         Lp().settings.set_value('background-mode',
                                 GLib.Variant('b', state))
@@ -289,7 +295,8 @@ class SettingsDialog:
     def _update_state_setting(self, widget, state):
         """
             Update save state setting
-            @param widget as unused, state as widget state
+            @param widget as Gtk.Switch
+            @param state as bool
         """
         Lp().settings.set_value('save-state',
                                 GLib.Variant('b', state))
@@ -297,7 +304,8 @@ class SettingsDialog:
     def _update_genres_setting(self, widget, state):
         """
             Update show genre setting
-            @param widget as unused, state as widget state
+            @param widget as Gtk.Switch
+            @param state as bool
         """
         Lp().window.show_genres(state)
         Lp().settings.set_value('show-genres',
@@ -339,7 +347,8 @@ class SettingsDialog:
     def _update_compilations_setting(self, widget, state):
         """
             Update compilations setting
-            @param widget as unused, state as widget state
+            @param widget as Gtk.Switch
+            @param state as bool
         """
         Lp().settings.set_value('show-compilations',
                                 GLib.Variant('b', state))
@@ -347,7 +356,8 @@ class SettingsDialog:
     def _update_artwork_setting(self, widget, state):
         """
             Update artist artwork setting
-            @param widget as unused, state as widget state
+            @param widget as Gtk.Switch
+            @param state as bool
         """
         Lp().settings.set_value('artist-artwork',
                                 GLib.Variant('b', state))
@@ -358,10 +368,18 @@ class SettingsDialog:
     def _update_repeat_setting(self, widget, state):
         """
             Update repeat setting
-            @param widget as unused, state as widget state
+            @param widget as Gtk.Switch
+            @param state as bool
         """
         Lp().settings.set_value('repeat',
                                 GLib.Variant('b', not state))
+
+    def _update_orderby_setting(self, widget):
+        """
+            Update orderby setting
+            @param widget as Gtk.ComboBoxText
+        """
+        Lp().settings.set_enum('orderby', widget.get_active())
 
     def _update_lastfm_settings(self, sync=False):
         """
@@ -429,7 +447,8 @@ class SettingsDialog:
     def _party_switch_state(self, widget, state, genre_id):
         """
             Update party ids when use change a switch in dialog
-            @param widget as unused, state as widget state, genre id as int
+            @param widget as Gtk.Switch
+            @param state as bool, genre id as int
         """
         ids = Lp().player.get_party_ids()
         if state:

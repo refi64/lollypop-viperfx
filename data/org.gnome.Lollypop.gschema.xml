@@ -5,6 +5,12 @@
        <value nick="tracks" value="1"/>
        <value nick="albums" value="2"/>
     </enum>
+    <enum id="org.gnome.Lollypop.OrderBy">
+       <value nick="artist" value="0"/>
+       <value nick="album" value="1"/>
+       <value nick="year" value="2"/>
+       <value nick="popularity" value="3"/>
+    </enum>
     <schema path="/org/gnome/Lollypop/" id="org.gnome.Lollypop" gettext-domain="lollypop">
         <key type="ai" name="window-size">
             <default>[768, 600]</default>
@@ -189,6 +195,11 @@
         <key enum="org.gnome.Lollypop.Shuffle" name="shuffle">
             <default>'none'</default>
             <summary>Shuffle mode</summary>
+            <description></description>
+        </key>
+	<key enum="org.gnome.Lollypop.OrderBy" name="orderby">
+            <default>'artist'</default>
+            <summary>Order albums by</summary>
             <description></description>
         </key>
     </schema>
