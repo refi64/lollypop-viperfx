@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lollypop\n"
 "POT-Creation-Date: 2015-06-24 15:43+0200\n"
-"PO-Revision-Date: 2016-02-14 12:37+0000\n"
+"PO-Revision-Date: 2016-05-01 08:08+0000\n"
 "Last-Translator: Piotr Sokół <psokol.l10n@gmail.com>\n"
 "Language-Team: Polish (http://www.transifex.com/gnumdk/lollypop/language/pl/)\n"
 "MIME-Version: 1.0\n"
@@ -65,7 +65,7 @@ msgstr "proszę sprawdzić czy zainstalowano pakiety gstreamer-libav lub gstream
 msgid ""
 "Go to the application menu: \"<sys>Settings -&gt; Music</sys>\" and add your"
 " music folder"
-msgstr "przejść do menu programu \"<sys>Preferencje -&gt; Kolekcja</sys>\" i wskazać katalog z plikami muzycznymi."
+msgstr "przejść do menu programu „<sys>Preferencje -&gt; Kolekcja</sys>” i wskazać katalog z plikami muzycznymi."
 
 #. (itstool) path: section/title
 #: C/index.page:30
@@ -75,42 +75,42 @@ msgstr "Odtwarzanie"
 #. (itstool) path: section/p
 #: C/index.page:31
 msgid "When you start playing a song, a contextual playlist is populated."
-msgstr ""
+msgstr "Wraz z rozpoczęciem odtwarzania utworu, tworzona jest kontekstowa lista odtwarzania."
 
 #. (itstool) path: section/p
 #: C/index.page:32
 msgid ""
 "Contexts can be: an album, an artist, a genre, popular or recent albums, "
 "searches, playlists, ..."
-msgstr ""
+msgstr "Kontekstem może być: album, wykonawca, gatunek, popularne lub ostatnie albumy, wyniki wyszukiwania, listy odtwarzania, ..."
 
 #. (itstool) path: section/p
 #: C/index.page:33
 msgid "Shuffle interacts on current context."
-msgstr ""
+msgstr "Losowanie wpływa na bieżący kontekst."
 
 #. (itstool) path: section/title
 #: C/index.page:37
 msgid "Rate albums"
-msgstr ""
+msgstr "Ocenianie albumów"
 
 #. (itstool) path: section/p
 #: C/index.page:38
 msgid ""
 "Album popularity is based on how many tracks from an album you listen to."
-msgstr ""
+msgstr "Popularność albumów szacowana jest na podstawie ilości odtworzeń utworów pochodzących z danego albumu."
 
 #. (itstool) path: section/p
 #: C/index.page:39
 msgid ""
 "Album rating will be influenced by album popularity. In other words, rate "
 "will decrease if you stop listening to an album."
-msgstr ""
+msgstr "Na oceny albumów ma wpływ ich popularność. Innymi słowy ocena zostanie obniżona jeśli album przestanie być odsłuchiwany."
 
 #. (itstool) path: section/title
 #: C/index.page:43
 msgid "Download covers"
-msgstr ""
+msgstr "Pobieranie okładek"
 
 #. (itstool) path: section/p
 #: C/index.page:44
@@ -122,82 +122,82 @@ msgstr ""
 #. (itstool) path: section/p
 #: C/index.page:45
 msgid "You need an internet connection."
-msgstr ""
+msgstr "Wymagane jest aktywne połączenie sieciowe."
 
 #. (itstool) path: section/title
 #: C/index.page:49
 msgid "Shortcuts"
-msgstr ""
+msgstr "Skróty klawiszowe"
 
 #. (itstool) path: item/p
 #: C/index.page:51
 msgid "Control+s: Lollypop settings"
-msgstr ""
+msgstr "Control+s: Wyświetlenie preferencji programu"
 
 #. (itstool) path: item/p
 #: C/index.page:52
 msgid "Control+f: Search"
-msgstr ""
+msgstr "Control+f: Wyszukanie"
 
 #. (itstool) path: item/p
 #: C/index.page:53
 msgid "Control+p: Party mode"
-msgstr ""
+msgstr "Control+p: Przełączenie trybu imprezowego"
 
 #. (itstool) path: item/p
 #: C/index.page:54
 msgid "Control+m or F11: Fullscreen"
-msgstr ""
+msgstr "Control+m lub F11: Przełączenie tryby pełnego ekranu"
 
 #. (itstool) path: item/p
 #: C/index.page:55
 msgid "x: Play"
-msgstr ""
+msgstr "x: Rozpoczęcie odtwarzania"
 
 #. (itstool) path: item/p
 #: C/index.page:56
 msgid "c: Pause"
-msgstr ""
+msgstr "c: Wstrzymanie odtwarzania"
 
 #. (itstool) path: item/p
 #: C/index.page:57
 msgid "v: Stop"
-msgstr ""
+msgstr "v: Zatrzymanie odtwarzania"
 
 #. (itstool) path: item/p
 #: C/index.page:58
 msgid "n: Next track"
-msgstr ""
+msgstr "n: Przejście do następnego utworu"
 
 #. (itstool) path: item/p
 #: C/index.page:59
 msgid "p: Previous track"
-msgstr ""
+msgstr "p: Przejście do poprzedniego utworu"
 
 #. (itstool) path: item/p
 #: C/index.page:60
 msgid "Control+n: Skip current album"
-msgstr ""
+msgstr "Control+n: Pominięcie bieżącego albumu"
 
 #. (itstool) path: item/p
 #: C/index.page:61
 msgid "Left key: Skip backward in track"
-msgstr ""
+msgstr "Lewo: Przejście wstecz odtwarzanego utworu"
 
 #. (itstool) path: item/p
 #: C/index.page:62
 msgid "Right key: Skip forward in track"
-msgstr ""
+msgstr "Prawo: Przejście naprzód odtwarzanego utworu"
 
 #. (itstool) path: p/link
 #: C/legal.xml:4
 msgid "Creative Commons Attribution-Share Alike 3.0 United States License"
-msgstr ""
+msgstr "Creative Commons uznanie autorstwa-na tych samych warunkach 3.0 Stany Zjednoczone"
 
 #. (itstool) path: license/p
 #: C/legal.xml:3
 msgid "This work is licensed under a <_:link-1/>."
-msgstr ""
+msgstr "Ta praca została wydana na warunkach licencji <_:link-1/>."
 
 #. (itstool) path: license/p
 #: C/legal.xml:6
@@ -205,4 +205,4 @@ msgid ""
 "As a special exception, the copyright holders give you permission to copy, "
 "modify, and distribute the example code contained in this document under the"
 " terms of your choosing, without restriction."
-msgstr ""
+msgstr "W drodze wyjątku zezwala się na kopiowanie, modyfikowanie i dystrybuowanie przykładowego kodu zawartego w tym dokumencie na dowolnych warunkach, bez ograniczeń."

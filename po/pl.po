@@ -8,14 +8,14 @@
 # Marcin Gałązka <marcin.r.galazka@gmail.com>, 2016
 # Paweł Adamczak <pawel.ad@gmail.com>, 2015-2016
 # Piotr Sokół <psokol.l10n@gmail.com>, 2015
-# Piotr Sokół <psokol.l10n@gmail.com>, 2016
+# Piotr Sokół <psokol.l10n@gmail.com>, 2015-2016
 msgid ""
 msgstr ""
 "Project-Id-Version: lollypop\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2016-04-28 16:55+0200\n"
-"PO-Revision-Date: 2016-04-28 15:03+0000\n"
-"Last-Translator: Cédric Bellegarde <web@adishatz.org>\n"
+"PO-Revision-Date: 2016-05-01 08:12+0000\n"
+"Last-Translator: Piotr Sokół <psokol.l10n@gmail.com>\n"
 "Language-Team: Polish (http://www.transifex.com/gnumdk/lollypop/language/pl/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -49,7 +49,7 @@ msgstr "Położenie małego odtwarzacza"
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:7
 msgid "Repeat by default"
-msgstr "Domyślnie powtarzaj"
+msgstr "Domyślne powtarzanie"
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:8
 msgid "Window maximized"
@@ -110,7 +110,7 @@ msgstr "Rozmiar okładek albumów"
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:22
 msgid "Replay gain value in db"
-msgstr ""
+msgstr "Wartość Replay gain w db"
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:23
 msgid "Between -15 and 15"
@@ -134,7 +134,7 @@ msgstr "Lista gatunków"
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:28 ../data/SettingsDialog.ui.h:8
 msgid "Show artist artwork"
-msgstr ""
+msgstr "Obrazy wykonawców"
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:29
 msgid "Use dark gtk theme"
@@ -233,7 +233,7 @@ msgstr "przeglądanie gatunków/wykonawców/okładek albumów,"
 #: ../data/lollypop.appdata.xml.in.h:8 ../src/playlists.py:239
 #: ../data/ArtistInfo.ui.h:5 ../data/ToolbarEnd.ui.h:7
 msgid "Search"
-msgstr "Wyszukuje nagrania"
+msgstr "Wyszukiwanie"
 
 #: ../data/lollypop.appdata.xml.in.h:9 ../src/pop_menu.py:472
 #: ../src/pop_menu.py:493 ../src/toolbar_end.py:308
@@ -244,7 +244,7 @@ msgstr "Kolejka odtwarzania"
 #: ../data/lollypop.appdata.xml.in.h:10 ../data/SettingsDialog.ui.h:22
 #: ../data/ToolbarEnd.ui.h:5
 msgid "Party mode"
-msgstr "Przełącza tryb imprezowy"
+msgstr "Tryb imprezowy"
 
 #: ../data/lollypop.appdata.xml.in.h:11
 msgid "Replay gain"
@@ -332,7 +332,7 @@ msgstr "Nie odnaleziono okładki..."
 
 #: ../src/art_widgets.py:185
 msgid "Select artwork"
-msgstr ""
+msgstr "Wybór okładki"
 
 #: ../src/collectionscanner.py:69
 msgid "Your music is updating"
@@ -451,11 +451,11 @@ msgstr "Przechodzi do bieżącego utworu"
 
 #: ../src/pop_albums.py:296 ../src/toolbar_end.py:312
 msgid "Playing albums"
-msgstr "Odtwarza albumy"
+msgstr "Odtwarzane albumy"
 
 #: ../src/pop_info.py:35
 msgid "Advanced artist informations disabled"
-msgstr "Zaawansowane informacje o artyście wyłączone"
+msgstr "Zaawansowane informacje o wykonawcy wyłączone"
 
 #: ../src/pop_info.py:43
 msgid "WebKit support disabled"
@@ -546,11 +546,11 @@ msgstr "Ostatnio dodane"
 
 #: ../src/toolbar_end.py:306
 msgid "Externals tracks playing"
-msgstr ""
+msgstr "Odtwarzanie zewnętrznych utworów"
 
 #: ../src/toolbar_end.py:310
 msgid "Playing playlists"
-msgstr ""
+msgstr "Odtwarzanie list odtwarzania"
 
 #. Handle language ordering
 #. Translators: Add here words that shoud be ignored for artist sort order
@@ -569,19 +569,19 @@ msgstr "Anuluj synchronizowanie"
 
 #: ../src/widgets_album.py:205
 msgid "Append"
-msgstr "Dodaj"
+msgstr "Dodaje do kolejki"
 
 #: ../src/widgets_album.py:209
 msgid "Remove"
-msgstr "Usuń"
+msgstr "Usuwa z kolejki"
 
 #: ../src/widgets_album.py:474 ../data/AlbumDetailedWidget.ui.h:3
 msgid "Play albums"
-msgstr "Odtwórz albumy"
+msgstr "Odtwarza albumy"
 
 #: ../src/widgets_album.py:484 ../data/AlbumDetailedWidget.ui.h:2
 msgid "Change artwork"
-msgstr "Zmień okładkę"
+msgstr "Zmienia okładkę"
 
 #: ../src/widgets_album.py:648
 #, python-format
@@ -631,7 +631,7 @@ msgstr "Usunąć te utwory?"
 
 #: ../src/widgets_radio.py:182
 msgid "Modify radio"
-msgstr "Zmodyfikuj radio"
+msgstr "Modyfikuje radio"
 
 #. Translators: Put here words added by wikipedia in band search
 #. Ex: Muse_(band), Peaches(musician)
@@ -656,7 +656,7 @@ msgstr "Cédric Bellegarde <cedric.bellegarde@adishatz.org>\nPiotr Sokół <psok
 
 #: ../data/AboutDialog.ui.h:5
 msgid "Reset database"
-msgstr ""
+msgstr "Wyczyść bazę danych"
 
 #: ../data/Appmenu.ui.h:1
 msgid "_Update music"
@@ -710,7 +710,7 @@ msgstr ""
 
 #: ../data/ArtistView.ui.h:1
 msgid "Photo"
-msgstr ""
+msgstr "Wybiera zdjęcie wykonawcy"
 
 #: ../data/ArtworkSearch.ui.h:1 ../data/RadioPopover.ui.h:2
 msgid "Select a local file"
@@ -746,7 +746,7 @@ msgstr "Nie odnaleziono logo"
 
 #: ../data/RadioPopover.ui.h:4
 msgid "Select a logo  for this radio"
-msgstr "Wybór logo do radia"
+msgstr "Wybór logo radia"
 
 #: ../data/RadioPopover.ui.h:5
 msgid "Name:"
@@ -810,7 +810,7 @@ msgstr "Przywrócenie stanu podczas uruchamiania"
 
 #: ../data/SettingsDialog.ui.h:15
 msgid "Long press to show options"
-msgstr "Przyciśnij dłużej żeby pokazać opcje"
+msgstr "Dłuższe przyciśnięcie wyświetli opcje"
 
 #: ../data/SettingsDialog.ui.h:16
 msgid "Do not repeat by default"
@@ -826,7 +826,7 @@ msgstr "Zachowanie"
 
 #: ../data/SettingsDialog.ui.h:19
 msgid "Select music folders"
-msgstr "Wybiera ścieżki do katalogów z muzyką"
+msgstr "Wybiera ścieżki katalogów z muzyką"
 
 #: ../data/SettingsDialog.ui.h:20
 msgid "Music"
