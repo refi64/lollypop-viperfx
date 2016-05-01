@@ -220,7 +220,7 @@ class AlbumArt(BaseArt, ArtDownloader, TagReader):
             pixbuf = GdkPixbuf.Pixbuf.new_from_stream_at_scale(stream,
                                                                ArtSize.MONSTER,
                                                                ArtSize.MONSTER,
-                                                               False,
+                                                               True,
                                                                None)
             pixbuf.savev(artpath, "jpeg", ["quality"], ["90"])
             del pixbuf
