@@ -40,6 +40,8 @@ class ArtworkSearch(Gtk.Bin):
         builder = Gtk.Builder()
         builder.add_from_resource('/org/gnome/Lollypop/ArtworkSearch.ui')
         builder.connect_signals(self)
+        self._infobar = builder.get_object('infobar')
+        self._infobar_label = builder.get_object('infobarlabel')
         widget = builder.get_object('widget')
         self._stack = builder.get_object('stack')
         self._entry = builder.get_object('entry')
@@ -67,6 +69,14 @@ class ArtworkSearch(Gtk.Bin):
         """
             Populate view
         """
+        image = Gtk.Image()
+        surface = Lp().art.get_default_icon('edit-clear-all-symbolic',
+                                            ArtSize.BIG,
+                                            self.get_scale_factor())
+        image.set_from_surface(surface)
+        image.show()
+        self._view.add(image)
+
         # First load local files
         if self._album is not None:
             urls = Lp().art.get_album_artworks(self._album)
@@ -215,18 +225,22 @@ class ArtworkSearch(Gtk.Bin):
             Use pixbuf as cover
             Reset cache and use player object to announce cover change
         """
-        data = self._datas[child.get_child()]
-        self._close_popover()
-        if self._album is not None:
-            Lp().art.save_album_artwork(data, self._album.id)
-            Lp().art.clean_album_cache(self._album)
-            Lp().art.album_artwork_update(self._album.id)
-        else:
-            for suffix in ["lastfm", "wikipedia", "spotify"]:
-                InfoCache.uncache_artwork(self._artist, suffix,
-                                          flowbox.get_scale_factor())
-                InfoCache.cache(self._artist, None, data, suffix)
-        self._streams = {}
+        try:
+            data = self._datas[child.get_child()]
+            self._close_popover()
+            if self._album is not None:
+                Lp().art.save_album_artwork(data, self._album.id)
+                Lp().art.clean_album_cache(self._album)
+                Lp().art.album_artwork_update(self._album.id)
+            else:
+                for suffix in ["lastfm", "wikipedia", "spotify"]:
+                    InfoCache.uncache_artwork(self._artist, suffix,
+                                              flowbox.get_scale_factor())
+                    InfoCache.cache(self._artist, None, data, suffix)
+            self._streams = {}
+        except:
+            self._infobar_label.set_text(_("Reset cover?"))
+            self._infobar.show()
 
     def _on_search_changed(self, entry):
         """
@@ -284,3 +298,25 @@ class ArtworkSearch(Gtk.Bin):
             except Exception as e:
                 print("ArtworkSearch::_on_button_clicked():", e)
         dialog.destroy()
+
+    def _on_reset_confirm(self, button):
+        """
+            Reset cover
+            @param button as Gtk.Button
+        """
+        self._infobar.hide()
+        if self._album is not None:
+            Lp().art.remove_album_artwork(self._album)
+            Lp().art.clean_album_cache(self._album)
+            Lp().art.emit('album-artwork-changed', self._album.id)
+        self._close_popover()
+
+    def _on_info_response(self, infobar, response_id):
+        """
+            Hide infobar
+            @param widget as Gtk.Infobar
+            @param reponse id as int
+        """
+        if response_id == Gtk.ResponseType.CLOSE:
+            self._infobar.hide()
+            self._view.unselect_all()

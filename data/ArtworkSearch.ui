@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Generated with glade 3.20.0 -->
+<!-- Generated with glade 3.19.0 -->
 <interface>
   <requires lib="gtk+" version="3.12"/>
   <object class="GtkImage" id="image1">
@@ -23,7 +23,7 @@
       </object>
       <packing>
         <property name="left_attach">0</property>
-        <property name="top_attach">0</property>
+        <property name="top_attach">1</property>
       </packing>
     </child>
     <child>
@@ -34,7 +34,7 @@
       </object>
       <packing>
         <property name="left_attach">0</property>
-        <property name="top_attach">1</property>
+        <property name="top_attach">2</property>
         <property name="width">4</property>
       </packing>
     </child>
@@ -54,7 +54,7 @@
       </object>
       <packing>
         <property name="left_attach">3</property>
-        <property name="top_attach">0</property>
+        <property name="top_attach">1</property>
       </packing>
     </child>
     <child>
@@ -68,7 +68,7 @@
       </object>
       <packing>
         <property name="left_attach">0</property>
-        <property name="top_attach">2</property>
+        <property name="top_attach">3</property>
         <property name="width">4</property>
       </packing>
     </child>
@@ -83,7 +83,7 @@
       </object>
       <packing>
         <property name="left_attach">2</property>
-        <property name="top_attach">0</property>
+        <property name="top_attach">1</property>
       </packing>
     </child>
     <child>
@@ -95,7 +95,84 @@
       </object>
       <packing>
         <property name="left_attach">1</property>
+        <property name="top_attach">1</property>
+      </packing>
+    </child>
+    <child>
+      <object class="GtkInfoBar" id="infobar">
+        <property name="app_paintable">True</property>
+        <property name="can_focus">False</property>
+        <property name="show_close_button">True</property>
+        <signal name="response" handler="_on_info_response" swapped="no"/>
+        <child internal-child="action_area">
+          <object class="GtkButtonBox" id="infobar-action_area1">
+            <property name="can_focus">False</property>
+            <property name="spacing">6</property>
+            <property name="layout_style">end</property>
+            <child>
+              <placeholder/>
+            </child>
+            <child>
+              <placeholder/>
+            </child>
+            <child>
+              <placeholder/>
+            </child>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">False</property>
+            <property name="position">0</property>
+          </packing>
+        </child>
+        <child internal-child="content_area">
+          <object class="GtkBox" id="infobar-content_area1">
+            <property name="can_focus">False</property>
+            <property name="spacing">16</property>
+            <child>
+              <object class="GtkButton" id="button2">
+                <property name="label" translatable="yes">Confirm</property>
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="receives_default">True</property>
+                <signal name="clicked" handler="_on_reset_confirm" swapped="no"/>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">True</property>
+                <property name="position">0</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkLabel" id="infobarlabel">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="ellipsize">end</property>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">True</property>
+                <property name="position">1</property>
+              </packing>
+            </child>
+            <child>
+              <placeholder/>
+            </child>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">False</property>
+            <property name="position">0</property>
+          </packing>
+        </child>
+        <child>
+          <placeholder/>
+        </child>
+      </object>
+      <packing>
+        <property name="left_attach">0</property>
         <property name="top_attach">0</property>
+        <property name="width">4</property>
       </packing>
     </child>
   </object>

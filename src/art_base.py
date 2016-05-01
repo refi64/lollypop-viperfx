@@ -39,46 +39,7 @@ class BaseArt(GObject.GObject):
         """
         GObject.GObject.__init__(self)
 
-#######################
-# PRIVATE             #
-#######################
-    def _respect_ratio(self, path):
-        """
-            Check for aspect ratio based on size
-            @param path as str
-            @return respect aspect ratio as bool
-        """
-        cover = GdkPixbuf.Pixbuf.new_from_file(path)
-        cover_width = cover.get_width()
-        cover_height = cover.get_height()
-        del cover
-        if cover_width == cover_height:
-            return True
-        elif cover_width < cover_height:
-            cut = cover_height / 5
-            return cover_width < cover_height - cut
-        else:
-            cut = cover_width / 5
-            return cover_height < cover_width - cut
-
-    def _create_cache(self):
-        """
-            Create cache dir
-        """
-        if not os.path.exists(self._CACHE_PATH):
-            try:
-                os.mkdir(self._CACHE_PATH)
-            except:
-                print("Can't create %s" % self._CACHE_PATH)
-
-    def _get_default_icon_path(self, size, icon_name):
-        """
-            Return default icon path
-            @return path as string
-        """
-        return "%s/%s_%s.jpg" % (self._CACHE_PATH, icon_name, size)
-
-    def _get_default_icon(self, icon_name, size, scale):
+    def get_default_icon(self, icon_name, size, scale):
         """
             Construct an empty cover album,
             code forked Gnome Music, see copyright header
@@ -126,3 +87,42 @@ class BaseArt(GObject.GObject):
         surface = Gdk.cairo_surface_create_from_pixbuf(pixbuf, scale, None)
         del pixbuf
         return surface
+
+#######################
+# PRIVATE             #
+#######################
+    def _respect_ratio(self, path):
+        """
+            Check for aspect ratio based on size
+            @param path as str
+            @return respect aspect ratio as bool
+        """
+        cover = GdkPixbuf.Pixbuf.new_from_file(path)
+        cover_width = cover.get_width()
+        cover_height = cover.get_height()
+        del cover
+        if cover_width == cover_height:
+            return True
+        elif cover_width < cover_height:
+            cut = cover_height / 5
+            return cover_width < cover_height - cut
+        else:
+            cut = cover_width / 5
+            return cover_height < cover_width - cut
+
+    def _create_cache(self):
+        """
+            Create cache dir
+        """
+        if not os.path.exists(self._CACHE_PATH):
+            try:
+                os.mkdir(self._CACHE_PATH)
+            except:
+                print("Can't create %s" % self._CACHE_PATH)
+
+    def _get_default_icon_path(self, size, icon_name):
+        """
+            Return default icon path
+            @return path as string
+        """
+        return "%s/%s_%s.jpg" % (self._CACHE_PATH, icon_name, size)

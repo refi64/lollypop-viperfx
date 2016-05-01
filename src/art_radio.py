@@ -88,7 +88,7 @@ class RadioArt(BaseArt):
                                                                     size,
                                                                     size)
             if pixbuf is None:
-                return self._get_default_icon(
+                return self.get_default_icon(
                                              'audio-input-microphone-symbolic',
                                              size,
                                              scale)
@@ -99,9 +99,9 @@ class RadioArt(BaseArt):
 
         except Exception as e:
             print(e)
-            return self._get_default_icon('audio-input-microphone-symbolic',
-                                          size,
-                                          scale)
+            return self.get_default_icon('audio-input-microphone-symbolic',
+                                         size,
+                                         scale)
 
     def copy_uri_to_cache(self, uri, name, size):
         """

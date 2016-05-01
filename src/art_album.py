@@ -114,8 +114,7 @@ class AlbumArt(BaseArt, ArtDownloader, TagReader):
         paths = []
         for path in filter(lambda p: p.lower().endswith(self._MIMES),
                            all_paths):
-            if not path.endswith(self._favorite):
-                paths.append(path)
+            paths.append(path)
         return paths
 
     def get_album_artwork(self, album, size, scale):
@@ -169,9 +168,9 @@ class AlbumArt(BaseArt, ArtDownloader, TagReader):
                 # Use default artwork
                 if pixbuf is None:
                     self.download_album_art(album.id)
-                    return self._get_default_icon('folder-music-symbolic',
-                                                  size,
-                                                  scale)
+                    return self.get_default_icon('folder-music-symbolic',
+                                                 size,
+                                                 scale)
                 else:
                     pixbuf.savev(cache_path_jpg, "jpeg", ["quality"], ["90"])
             surface = Gdk.cairo_surface_create_from_pixbuf(pixbuf, scale, None)
@@ -180,7 +179,7 @@ class AlbumArt(BaseArt, ArtDownloader, TagReader):
 
         except Exception as e:
             print(e)
-            return self._get_default_icon('folder-music-symbolic', size, scale)
+            return self.get_default_icon('folder-music-symbolic', size, scale)
 
     def get_album_artwork2(self, uri, size, scale):
         """
@@ -198,7 +197,7 @@ class AlbumArt(BaseArt, ArtDownloader, TagReader):
             del pixbuf
             return surface
         else:
-            return self._get_default_icon('folder-music-symbolic', size, scale)
+            return self.get_default_icon('folder-music-symbolic', size, scale)
 
     def save_album_artwork(self, data, album_id):
         """
@@ -234,6 +233,17 @@ class AlbumArt(BaseArt, ArtDownloader, TagReader):
             @param album id as int
         """
         self.emit('album-artwork-changed', album_id)
+
+    def remove_album_artwork(self, album):
+        """
+            Remove album artwork
+            @param album as Album
+        """
+        try:
+            for artwork in self.get_album_artworks(album):
+                os.remove(os.path.join(album.path, artwork))
+        except Exception as e:
+            print("AlbumArt::remove_album_artwork():", e)
 
     def clean_album_cache(self, album):
         """
