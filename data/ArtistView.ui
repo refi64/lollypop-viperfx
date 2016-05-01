@@ -25,7 +25,6 @@
       <object class="GtkGrid" id="header-grid">
         <property name="visible">True</property>
         <property name="can_focus">False</property>
-        <property name="margin_start">10</property>
         <property name="orientation">vertical</property>
         <property name="column_spacing">10</property>
         <child>
@@ -42,6 +41,7 @@
                 <property name="can_focus">False</property>
                 <property name="valign">center</property>
                 <property name="margin_right">2</property>
+        	<property name="margin_left">3</property>
                 <property name="ellipsize">end</property>
                 <property name="xalign">0</property>
                 <attributes>
@@ -102,7 +102,7 @@
             <property name="margin_left">3</property>
             <property name="margin_right">3</property>
             <property name="margin_top">3</property>
-            <property name="margin_bottom">3</property>
+            <property name="margin_bottom">4</property>
             <child>
               <object class="GtkButton" id="play-button">
                 <property name="width_request">-1</property>
