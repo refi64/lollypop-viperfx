@@ -298,6 +298,9 @@ class MPRIS(Server):
                                    GLib.Variant('a{sv}', changed_properties),
                                    GLib.Variant('as', invalidated_properties)))
 
+    def Introspect(self):
+        return self.__doc__
+
 #######################
 # PRIVATE             #
 #######################
