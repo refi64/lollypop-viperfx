@@ -244,14 +244,9 @@ class MPRIS(Server):
             return GLib.Variant('d', Lp().player.volume)
         elif property_name == "Position":
             return GLib.Variant('x', Lp().player.position / 60)
-        elif property_name == "CanGoNext":
-            return GLib.Variant('b', Lp().player.next_track.id is not None)
-        elif property_name == "CanGoPrevious":
-            return GLib.Variant('b', Lp().player.prev_track.id is not None)
-        elif property_name == "CanPlay":
-            return GLib.Variant('b', Lp().player.current_track.id is not None)
-        elif property_name == "CanPause":
-            return GLib.Variant('b', Lp().player.is_playing())
+        elif property_name in ["CanGoNext", "CanGoPrevious",
+                               "CanPlay", "CanPause"]:
+            return GLib.Variant('b', True)
 
     def GetAll(self, interface):
         ret = {}
