@@ -684,8 +684,8 @@ class Container:
         selected_ids = self._list_one.get_selected_ids()
         if not selected_ids:
             return
+        self._list_two.clear()
         if selected_ids[0] == Type.PLAYLISTS:
-            self._list_two.clear()
             self._list_two.show()
             if not self._list_two.will_be_selected():
                 self._update_view_playlists()
@@ -711,7 +711,6 @@ class Container:
             else:
                 self._update_view_artists([], selected_ids)
         else:
-            self._list_two.clear()
             self._setup_list_artists(self._list_two, selected_ids, False)
             self._list_two.show()
             if not self._list_two.will_be_selected():
