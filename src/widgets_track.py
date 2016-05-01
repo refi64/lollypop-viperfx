@@ -163,6 +163,7 @@ class Row(Gtk.ListBoxRow):
             widget = widget.get_parent()
         if widget is None:
             self._grid.add(self._menu_button)
+            self._menu_button.show()
 
     def _on_enter_notify(self, widget, event):
         """
