@@ -157,7 +157,7 @@ class RadioWidget(Gtk.FlowBoxChild, AlbumWidget):
             Set overlay
             @param set as bool
         """
-        if self._show_overlay == set:
+        if self._lock_overlay or self._show_overlay == set:
             return
         if set:
             # Play button
@@ -246,6 +246,5 @@ class RadioWidget(Gtk.FlowBoxChild, AlbumWidget):
         popover = RadioPopover(self._name, self._radios_manager)
         popover.set_relative_to(widget)
         popover.connect('closed', self._on_pop_cover_closed)
-        # Disable hidding overlay
-        self._show_overlay = False
+        self._lock_overlay = True
         popover.show()
