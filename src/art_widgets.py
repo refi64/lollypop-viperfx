@@ -74,6 +74,8 @@ class ArtworkSearch(Gtk.Bin):
                                             ArtSize.BIG,
                                             self.get_scale_factor())
         image.set_from_surface(surface)
+        image.set_property('valign', Gtk.Align.CENTER)
+        image.set_property('halign', Gtk.Align.CENTER)
         image.get_style_context().add_class('cover-frame')
         image.show()
         self._view.add(image)
