@@ -137,10 +137,11 @@ class AlbumWidget:
             return
         self._show_overlay = set
         if set:
-            self._play_button.set_opacity(1)
-            self._play_button.get_style_context().add_class(
+            if self._play_button is not None:
+                self._play_button.set_opacity(1)
+                self._play_button.get_style_context().add_class(
                                                            self._rounded_class)
-            self._play_button.show()
+                self._play_button.show()
             if self._play_all_button is not None:
                 self._play_all_button.set_opacity(1)
                 self._play_all_button.get_style_context().add_class(
@@ -159,9 +160,10 @@ class AlbumWidget:
                                                        self._squared_class)
                 self._action_button.show()
         else:
-            self._play_button.set_opacity(0)
-            self._play_button.hide()
-            self._play_button.get_style_context().remove_class(
+            if self._play_button is not None:
+                self._play_button.set_opacity(0)
+                self._play_button.hide()
+                self._play_button.get_style_context().remove_class(
                                                            self._rounded_class)
             if self._play_all_button is not None:
                 self._play_all_button.set_opacity(0)
