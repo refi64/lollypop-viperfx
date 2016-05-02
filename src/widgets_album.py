@@ -43,6 +43,7 @@ class AlbumWidget:
         self._artwork_button = None
         self._action_button = None
         self._show_overlay = False
+        self._lock_overlay = False
         self._timeout_id = None
         self._overlay_orientation = Gtk.Orientation.HORIZONTAL
         self._squared_class = "squared-icon"
@@ -133,7 +134,7 @@ class AlbumWidget:
             Set overlay
             @param set as bool
         """
-        if self._show_overlay == set:
+        if self._lock_overlay or self._show_overlay == set:
             return
         self._show_overlay = set
         if set:
@@ -243,8 +244,7 @@ class AlbumWidget:
             Remove selected style
             @param widget as Gtk.Popover
         """
-        # Enable hidding overlay
-        self._show_overlay = True
+        self._lock_overlay = False
         GLib.idle_add(self.show_overlay, False)
 
     def _on_enter_notify(self, widget, event):
@@ -321,8 +321,7 @@ class AlbumWidget:
         popover = CoversPopover(self._album)
         popover.set_relative_to(widget)
         popover.connect('closed', self._on_pop_cover_closed)
-        # Disable hidding overlay
-        self._show_overlay = False
+        self._lock_overlay = True
         popover.show()
         return True
 
@@ -456,7 +455,7 @@ class AlbumSimpleWidget(Gtk.FlowBoxChild, AlbumWidget):
             Set overlay
             @param set as bool
         """
-        if self._show_overlay == set:
+        if self._lock_overlay or self._show_overlay == set:
             return
         if set:
             # Play button
