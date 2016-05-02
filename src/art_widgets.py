@@ -52,15 +52,14 @@ class ArtworkSearch(Gtk.Bin):
         self._view.show()
 
         self._label = builder.get_object('label')
-        self._label.set_text(_("Please wait..."))
+        self._label.set_text(_("Select artwork"))
 
         builder.get_object('viewport').add(self._view)
 
         self._spinner = builder.get_object('spinner')
-        self._stack.add_named(self._spinner, 'spinner')
         self._stack.add_named(builder.get_object('notfound'), 'notfound')
         self._stack.add_named(builder.get_object('scrolled'), 'main')
-        self._stack.set_visible_child_name('spinner')
+        self._stack.set_visible_child_name('main')
         self.add(widget)
         self.set_size_request(700, 400)
 
@@ -142,6 +141,9 @@ class ArtworkSearch(Gtk.Bin):
                 print("ArtworkSearch::_add_pixbufs: %s" % e)
             if self._thread:
                 self._add_pixbufs(urls, search)
+        else:
+            self._spinner.stop()
+            self._spinner.hide()
 
     def _show_not_found(self):
         """
@@ -150,6 +152,8 @@ class ArtworkSearch(Gtk.Bin):
         if len(self._view.get_children()) == 0:
             self._label.set_text(_("No cover found..."))
             self._stack.set_visible_child_name('notfound')
+        self._spinner.stop()
+        self._spinner.hide()
 
     def _add_pixbuf(self, data):
         """
@@ -187,11 +191,6 @@ class ArtworkSearch(Gtk.Bin):
             self._view.add(image)
         except Exception as e:
             print("ArtworkSearch::_add_pixbuf: %s" % e)
-        # Remove spinner if exist
-        if self._stack.get_visible_child_name() == 'spinner':
-            self._spinner.stop()
-            self._label.set_text(_("Select artwork"))
-            self._stack.set_visible_child_name('main')
 
     def _close_popover(self):
         """
@@ -247,8 +246,8 @@ class ArtworkSearch(Gtk.Bin):
         """
         for child in self._view.get_children():
             child.destroy()
-        self._stack.set_visible_child_name('spinner')
         self._spinner.start()
+        self._spinner.show()
         self._timeout_id = None
         self._thread = True
         t = Thread(target=self._populate, args=(string,))
