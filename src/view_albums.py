@@ -147,7 +147,7 @@ class AlbumsView(LazyLoadingView):
         popover.connect('closed', self._on_popover_closed, cover)
         popover.show()
         cover.set_opacity(0.9)
-        album_widget.set_overlay(False)
+        album_widget.show_overlay(False)
 
     def _on_popover_closed(self, popover, image):
         """

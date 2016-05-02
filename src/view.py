@@ -76,7 +76,7 @@ class View(Gtk.Grid):
         """
         if widgets:
             widget = widgets.pop(0)
-            widget.set_overlay(False)
+            widget.show_overlay(False)
             GLib.idle_add(self._disable_overlays, widgets)
 
     def _update_widgets(self, widgets):

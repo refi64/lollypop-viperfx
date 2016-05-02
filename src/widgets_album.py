@@ -128,7 +128,7 @@ class AlbumWidget:
         """
         return self._album.name
 
-    def set_overlay(self, set):
+    def show_overlay(self, set):
         """
             Set overlay
             @param set as bool
@@ -245,7 +245,7 @@ class AlbumWidget:
         """
         # Enable hidding overlay
         self._show_overlay = True
-        GLib.idle_add(self.set_overlay, False)
+        GLib.idle_add(self.show_overlay, False)
 
     def _on_enter_notify(self, widget, event):
         """
@@ -264,7 +264,7 @@ class AlbumWidget:
         """
         self._timeout_id = None
         if not self._show_overlay:
-            self.set_overlay(True)
+            self.show_overlay(True)
 
     def _on_leave_notify(self, widget, event):
         """
@@ -285,7 +285,7 @@ class AlbumWidget:
                 GLib.source_remove(self._timeout_id)
                 self._timeout_id = None
             if self._show_overlay:
-                self.set_overlay(False)
+                self.show_overlay(False)
 
     def _on_play_press_event(self, widget, event):
         """
@@ -451,7 +451,7 @@ class AlbumSimpleWidget(Gtk.FlowBoxChild, AlbumWidget):
         width = ArtSize.BIG + 12
         return (width, width)
 
-    def set_overlay(self, set):
+    def show_overlay(self, set):
         """
             Set overlay
             @param set as bool
@@ -525,9 +525,9 @@ class AlbumSimpleWidget(Gtk.FlowBoxChild, AlbumWidget):
             self._overlay.add(self._action_event)
             self._overlay.add(self._artwork_event)
             self._overlay.show_all()
-            AlbumWidget.set_overlay(self, True)
+            AlbumWidget.show_overlay(self, True)
         else:
-            AlbumWidget.set_overlay(self, False)
+            AlbumWidget.show_overlay(self, False)
             self._play_event.destroy()
             self._play_event = None
             self._play_button.destroy()

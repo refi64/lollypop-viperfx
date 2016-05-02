@@ -152,7 +152,7 @@ class RadioWidget(Gtk.FlowBoxChild, AlbumWidget):
             self._overlay.get_style_context().remove_class(
                                                     'cover-frame-selected')
 
-    def set_overlay(self, set):
+    def show_overlay(self, set):
         """
             Set overlay
             @param set as bool
@@ -195,9 +195,9 @@ class RadioWidget(Gtk.FlowBoxChild, AlbumWidget):
             self._overlay.add_overlay(self._play_event)
             self._overlay.add_overlay(self._artwork_event)
             self._overlay.show_all()
-            AlbumWidget.set_overlay(self, True)
+            AlbumWidget.show_overlay(self, True)
         else:
-            AlbumWidget.set_overlay(self, False)
+            AlbumWidget.show_overlay(self, False)
             self._play_event.destroy()
             self._play_event = None
             self._play_button.destroy()

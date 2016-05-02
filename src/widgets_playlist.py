@@ -67,7 +67,7 @@ class PlaylistsWidget(Gtk.Bin):
         """
         return Type.PLAYLISTS
 
-    def set_overlay(self, bool):
+    def show_overlay(self, bool):
         """
             No overlay here now
         """
