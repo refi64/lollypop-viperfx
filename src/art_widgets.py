@@ -242,6 +242,8 @@ class ArtworkSearch(Gtk.Bin):
         except:
             self._infobar_label.set_text(_("Reset artwork?"))
             self._infobar.show()
+            # GTK 3.20 https://bugzilla.gnome.org/show_bug.cgi?id=710888
+            self._infobar.queue_resize()
 
     def _on_search_changed(self, entry):
         """

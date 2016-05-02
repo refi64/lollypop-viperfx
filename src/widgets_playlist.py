@@ -542,6 +542,8 @@ class PlaylistsManagerWidget(Gtk.Bin):
         self._infobar_label.set_text(_("Remove \"%s\"?") %
                                      self._model.get_value(iterator, 1))
         self._infobar.show()
+        # GTK 3.20 https://bugzilla.gnome.org/show_bug.cgi?id=710888
+        self._infobar.queue_resize()
 
     def _on_response(self, infobar, response_id):
         """
@@ -791,9 +793,13 @@ class PlaylistEditWidget(Gtk.Bin):
                                                            1).replace('\n',
                                                                       ' - '))
             self._infobar.show()
+            # GTK 3.20 https://bugzilla.gnome.org/show_bug.cgi?id=710888
+            self._infobar.queue_resize()
         elif count > 0:
             self._infobar_label.set_markup(_("Remove these tracks?"))
             self._infobar.show()
+            # GTK 3.20 https://bugzilla.gnome.org/show_bug.cgi?id=710888
+            self._infobar.queue_resize()
         else:
             self._infobar.hide()
 
