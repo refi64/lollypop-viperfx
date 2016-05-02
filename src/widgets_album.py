@@ -129,6 +129,13 @@ class AlbumWidget:
         """
         return self._album.name
 
+    def lock_overlay(self, lock):
+        """
+            Lock overlay
+            @param lock as bool
+        """
+        self._lock_overlay = lock
+
     def show_overlay(self, set):
         """
             Set overlay
@@ -253,7 +260,6 @@ class AlbumWidget:
             @param widget as Gtk.Widget
             @param event es Gdk.Event
         """
-        self._lock_overlay = False
         self._cover.set_opacity(0.9)
         if self._timeout_id is None:
             self._timeout_id = GLib.timeout_add(250,
@@ -287,7 +293,6 @@ class AlbumWidget:
                 self._timeout_id = None
             if self._show_overlay:
                 self.show_overlay(False)
-            self._lock_overlay = True
 
     def _on_play_press_event(self, widget, event):
         """
