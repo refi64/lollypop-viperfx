@@ -91,7 +91,10 @@ class AlbumsView(LazyLoadingView):
             Start lazy loading
             @param [album ids as int]
         """
-        if albums and not self._stop:
+        if self._stop:
+            self._stop = False
+            return
+        if albums:
             widget = AlbumSimpleWidget(albums.pop(0),
                                        self._genre_ids,
                                        self._artist_ids)
@@ -100,7 +103,6 @@ class AlbumsView(LazyLoadingView):
             self._lazy_queue.append(widget)
             GLib.idle_add(self._add_albums, albums)
         else:
-            self._stop = False
             GLib.idle_add(self.lazy_loading)
             if self._viewport.get_child() is None:
                 self._viewport.add(self._albumbox)

@@ -208,7 +208,10 @@ class RadiosView(LazyLoadingView):
             @param [radio names as string]
             @param first as bool
         """
-        if radios and not self._stop:
+        if self._stop:
+            self._stop = False
+            return
+        if radios:
             radio = radios.pop(0)
             widget = RadioWidget(radio,
                                  self._radios_manager)
@@ -220,7 +223,6 @@ class RadiosView(LazyLoadingView):
                 self._radiobox.insert(widget, -1)
             GLib.idle_add(self._add_radios, radios)
         else:
-            self._stop = False
             GLib.idle_add(self.lazy_loading)
             if self._viewport.get_child() is None:
                 self._viewport.add(self._radiobox)
