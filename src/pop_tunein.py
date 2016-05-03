@@ -311,6 +311,11 @@ class TuneinPopover(Gtk.Popover):
                                  Lp().window.toolbar.artsize))
                 t.daemon = True
                 t.start()
+                t = Thread(target=Lp().art.copy_uri_to_cache,
+                           args=(item.LOGO, item.TEXT,
+                                 ArtSize.BIG))
+                t.daemon = True
+                t.start()
             Lp().player.load_external(item.URL, item.TEXT)
             Lp().player.play_this_external(item.URL)
         return True
