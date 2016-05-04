@@ -101,10 +101,16 @@ class Disc:
         self._track_ids = []
 
     @property
+    def name(self):
+        """
+            Disc name
+            @return disc name as str
+        """
+
+    @property
     def track_ids(self):
         """
             Get all tracks ids of the disc
-
             @return list of int
         """
         if not self._track_ids:
@@ -205,6 +211,14 @@ class Album(Base):
         if not self._tracks and self.tracks_ids:
             self._tracks = [Track(track_id) for track_id in self.tracks_ids]
         return self._tracks
+
+    def disc_names(self, disc):
+        """
+            Disc names
+            @param disc as int
+            @return disc names as [str]
+        """
+        return self.db.get_disc_names(self.id, disc)
 
     @property
     def discs(self):

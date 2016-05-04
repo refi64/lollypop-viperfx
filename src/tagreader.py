@@ -185,6 +185,22 @@ class ScannerTagReader(TagReader):
             return _("Unknown")
         return "; ".join(genres)
 
+    def get_discname(self, tags):
+        """
+            Return disc name
+            @param tags as Gst.TagList
+            @return disc name as str
+        """
+        if tags is None:
+            return 0
+        discname = ""
+        for i in range(tags.get_tag_size('extended-comment')):
+            (exists, read) = tags.get_string_index('extended-comment', i)
+            if exists and read.startswith("DISCSUBTITLE"):
+                discname = read.replace("DISCSUBTITLE=", "")
+                break
+        return discname
+
     def get_discnumber(self, tags):
         """
             Return disc number for tags

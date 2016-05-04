@@ -37,7 +37,8 @@ class DatabaseUpgrade:
             3: self._upgrade_3,
             4: self._upgrade_4,
             5: "CREATE index idx_aa ON album_artists(album_id)",
-            6: "CREATE index idx_ta ON track_artists(track_id)"
+            6: "CREATE index idx_ta ON track_artists(track_id)",
+            7: "ALTER TABLE tracks ADD discname TEXT"
                          }
 
     """

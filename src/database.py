@@ -56,6 +56,7 @@ class Database:
                         duration INT,
                         tracknumber INT,
                         discnumber INT,
+                        discname TEXT,
                         album_id INT NOT NULL,
                         year INT,
                         popularity INT NOT NULL,

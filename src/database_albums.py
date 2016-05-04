@@ -437,6 +437,23 @@ class AlbumsDatabase:
                     albums.append(album)
         return albums
 
+    def get_disc_names(self, album_id, disc):
+        """
+            Get disc names
+            @param album id as int
+            @param disc as int
+            @return name as str
+        """
+        with SqlCursor(Lp().db) as sql:
+            request = "SELECT DISTINCT discname\
+                       FROM tracks\
+                       WHERE tracks.album_id=?\
+                       AND tracks.discnumber=?\
+                       AND discname!=''"
+            filters = (album_id, disc)
+            result = sql.execute(request, filters)
+            return list(itertools.chain(*result))
+
     def get_discs(self, album_id, genre_ids):
         """
             Get disc numbers

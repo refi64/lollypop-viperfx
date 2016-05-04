@@ -30,7 +30,7 @@ class TracksDatabase:
         """
         pass
 
-    def add(self, name, filepath, duration, tracknumber, discnumber,
+    def add(self, name, filepath, duration, tracknumber, discnumber, discname,
             album_id, year, popularity, ltime, mtime):
         """
             Add a new track to database
@@ -39,6 +39,7 @@ class TracksDatabase:
             @param duration as int
             @param tracknumber as int
             @param discnumber as int
+            @param discname as str
             @param album_id as int
             @param genre_id as int
             @param year as int
@@ -51,17 +52,19 @@ class TracksDatabase:
         with SqlCursor(Lp().db) as sql:
             result = sql.execute(
                 "INSERT INTO tracks (name, filepath, duration, tracknumber,\
-                discnumber, album_id, year, popularity, ltime, mtime) VALUES\
-                (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", (name,
-                                                  filepath,
-                                                  duration,
-                                                  tracknumber,
-                                                  discnumber,
-                                                  album_id,
-                                                  year,
-                                                  popularity,
-                                                  ltime,
-                                                  mtime))
+                discnumber, discname, album_id,\
+                year, popularity, ltime, mtime) VALUES\
+                (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", (name,
+                                                     filepath,
+                                                     duration,
+                                                     tracknumber,
+                                                     discnumber,
+                                                     discname,
+                                                     album_id,
+                                                     year,
+                                                     popularity,
+                                                     ltime,
+                                                     mtime))
             return result.lastrowid
 
     def add_artist(self, track_id, artist_id):

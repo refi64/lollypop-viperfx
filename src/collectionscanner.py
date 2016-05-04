@@ -227,6 +227,7 @@ class CollectionScanner(GObject.GObject, ScannerTagReader):
         album_name = self.get_album_name(tags)
         genres = self.get_genres(tags)
         discnumber = self.get_discnumber(tags)
+        discname = self.get_discname(tags)
         tracknumber = self.get_tracknumber(tags)
         year = self.get_year(tags)
         duration = int(infos.get_duration()/1000000000)
@@ -273,7 +274,7 @@ class CollectionScanner(GObject.GObject, ScannerTagReader):
         # Add track to db
         debug("CollectionScanner::add2db(): Add track")
         track_id = Lp().tracks.add(title, filepath, duration,
-                                   tracknumber, discnumber,
+                                   tracknumber, discnumber, discname,
                                    album_id, year, track_pop,
                                    track_ltime, mtime)
 
