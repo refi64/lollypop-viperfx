@@ -10,8 +10,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lollypop\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-04-28 16:55+0200\n"
-"PO-Revision-Date: 2016-04-28 15:03+0000\n"
+"POT-Creation-Date: 2016-05-02 12:26+0200\n"
+"PO-Revision-Date: 2016-05-02 10:27+0000\n"
 "Last-Translator: Cédric Bellegarde <web@adishatz.org>\n"
 "Language-Team: Hebrew (http://www.transifex.com/gnumdk/lollypop/language/he/)\n"
 "MIME-Version: 1.0\n"
@@ -121,7 +121,7 @@ msgstr "Sync all albums(MTP)"
 msgid "Convert to MP3(MTP)"
 msgstr "Convert to MP3(MTP)"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:26 ../data/SettingsDialog.ui.h:11
+#: ../data/org.gnome.Lollypop.gschema.xml.h:26 ../data/SettingsDialog.ui.h:16
 msgid "Auto update music"
 msgstr "עדכון מוזיקה באופן אוטומטי"
 
@@ -145,7 +145,7 @@ msgstr "Disable the use client side window decorations (headerbar)"
 msgid "Show compilations in albums view"
 msgstr "הצגת אוספים בתצוגת האלבומים"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:32 ../data/SettingsDialog.ui.h:13
+#: ../data/org.gnome.Lollypop.gschema.xml.h:32 ../data/SettingsDialog.ui.h:18
 msgid "Continue playback when closed"
 msgstr "להמשיך השמעה עם סגירה"
 
@@ -165,7 +165,7 @@ msgstr "Disable notifications"
 msgid "Show track number from tags"
 msgstr "Show track number from tags"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:37 ../data/SettingsDialog.ui.h:14
+#: ../data/org.gnome.Lollypop.gschema.xml.h:37 ../data/SettingsDialog.ui.h:19
 msgid "Mix songs"
 msgstr "Mix songs"
 
@@ -180,6 +180,10 @@ msgstr "Mix duration"
 #: ../data/org.gnome.Lollypop.gschema.xml.h:40
 msgid "Shuffle mode"
 msgstr "Shuffle mode"
+
+#: ../data/org.gnome.Lollypop.gschema.xml.h:41 ../data/SettingsDialog.ui.h:9
+msgid "Order albums by"
+msgstr ""
 
 #: ../data/lollypop.desktop.in.h:1 ../data/lollypop.appdata.xml.in.h:1
 msgid "Lollypop"
@@ -238,7 +242,7 @@ msgstr "חיפוש"
 msgid "Queue"
 msgstr "תור"
 
-#: ../data/lollypop.appdata.xml.in.h:10 ../data/SettingsDialog.ui.h:22
+#: ../data/lollypop.appdata.xml.in.h:10 ../data/SettingsDialog.ui.h:27
 #: ../data/ToolbarEnd.ui.h:5
 msgid "Party mode"
 msgstr "מצב מסיבה"
@@ -290,42 +294,41 @@ msgid ""
 "    - Artist informations disabled"
 msgstr "- Scrobbler disabled\n- Auto cover download disabled\n- Artist informations disabled"
 
-#: ../src/application.py:422
+#: ../src/application.py:427
 #, python-format
 msgid "%d artist"
 msgid_plural "%d artists"
 msgstr[0] "%d אמנים"
 msgstr[1] "%d אמנים"
 
-#: ../src/application.py:424
+#: ../src/application.py:429
 #, python-format
 msgid "%d album"
 msgid_plural "%d albums"
 msgstr[0] "%d אלבומים"
 msgstr[1] "%d אלבומים"
 
-#: ../src/application.py:426
+#: ../src/application.py:431
 #, python-format
 msgid "%d track"
 msgid_plural "%d tracks"
 msgstr[0] "%d רצועות"
 msgstr[1] "%d רצועות"
 
-#: ../src/application.py:441
+#: ../src/application.py:446
 msgid "Lollypop: You need to install yelp."
 msgstr "‏ Lollypop: יש להתקין את yelp."
 
-#: ../src/art_widgets.py:53 ../src/pop_tunein.py:95
-#: ../data/RadioPopover.ui.h:1
-msgid "Please wait..."
-msgstr "נא להמתין…"
+#: ../src/art_widgets.py:57
+msgid "Select artwork"
+msgstr ""
 
-#: ../src/art_widgets.py:143
+#: ../src/art_widgets.py:164
 msgid "No cover found..."
 msgstr "לא נמצאה עטיפה…"
 
-#: ../src/art_widgets.py:185
-msgid "Select artwork"
+#: ../src/art_widgets.py:243
+msgid "Reset artwork?"
 msgstr ""
 
 #: ../src/collectionscanner.py:69
@@ -394,9 +397,10 @@ msgstr "רצועות אקראיות"
 msgid "Pause"
 msgstr "השהיה"
 
-#: ../src/controllers.py:86 ../src/controllers.py:114 ../src/pop_tunein.py:158
-#: ../src/widgets_album.py:463 ../src/widgets_radio.py:166
-#: ../data/AlbumDetailedWidget.ui.h:1 ../data/ToolbarPlayback.ui.h:2
+#: ../src/controllers.py:86 ../src/controllers.py:114 ../src/pop_tunein.py:170
+#: ../src/widgets_album.py:465 ../src/widgets_radio.py:166
+#: ../data/AlbumDetailedWidget.ui.h:1 ../data/ArtistView.ui.h:2
+#: ../data/ToolbarPlayback.ui.h:2
 msgid "Play"
 msgstr "ניגון"
 
@@ -438,8 +442,8 @@ msgstr "רצועות אהובות"
 msgid "Clear albums"
 msgstr "ניקוי אלבומים"
 
-#: ../src/pop_albums.py:295 ../src/view_artist.py:48 ../data/ArtistInfo.ui.h:8
-#: ../data/ArtistView.ui.h:2
+#: ../src/pop_albums.py:295 ../src/view_artist.py:49 ../data/ArtistInfo.ui.h:8
+#: ../data/ArtistView.ui.h:4
 msgid "Go to current track"
 msgstr "חזרה לרצועה הנוכחית"
 
@@ -514,7 +518,8 @@ msgstr "שינוי מידע"
 msgid "Edit"
 msgstr "עריכה"
 
-#: ../src/pop_radio.py:83 ../src/pop_tunein.py:164
+#: ../src/pop_radio.py:83 ../src/pop_tunein.py:176 ../src/view_artist.py:156
+#: ../data/ArtistView.ui.h:3
 msgid "Add"
 msgstr "הוספה"
 
@@ -522,7 +527,11 @@ msgstr "הוספה"
 msgid "Modify"
 msgstr "שינוי"
 
-#: ../src/pop_tunein.py:107
+#: ../src/pop_tunein.py:96 ../data/RadioPopover.ui.h:1
+msgid "Please wait..."
+msgstr "נא להמתין…"
+
+#: ../src/pop_tunein.py:134
 msgid "Can't connect to TuneIn..."
 msgstr "לא ניתן להתחבר ל־TuneIn…"
 
@@ -530,11 +539,11 @@ msgstr "לא ניתן להתחבר ל־TuneIn…"
 msgid "Preferences"
 msgstr "העדפות"
 
-#: ../src/settings.py:167
+#: ../src/settings.py:170
 msgid "Populars"
 msgstr "חביבים"
 
-#: ../src/settings.py:168
+#: ../src/settings.py:171
 msgid "Recently added"
 msgstr "נוסף לאחרונה"
 
@@ -552,6 +561,10 @@ msgstr "ניגון רשימות השמעה"
 msgid "The the"
 msgstr " ו"
 
+#: ../src/view_artist.py:151 ../src/widgets_album.py:211
+msgid "Remove"
+msgstr "הסרה"
+
 #: ../src/view_device.py:83 ../src/view_device.py:149
 #, python-format
 msgid "Synchronize %s"
@@ -561,38 +574,34 @@ msgstr "מתאם %s"
 msgid "Cancel synchronization"
 msgstr "ביטול התיאום"
 
-#: ../src/widgets_album.py:205
+#: ../src/widgets_album.py:207
 msgid "Append"
 msgstr "הוספה"
 
-#: ../src/widgets_album.py:209
-msgid "Remove"
-msgstr "הסרה"
-
-#: ../src/widgets_album.py:474 ../data/AlbumDetailedWidget.ui.h:3
+#: ../src/widgets_album.py:476 ../data/AlbumDetailedWidget.ui.h:3
 msgid "Play albums"
 msgstr "ניגון אלבומים"
 
-#: ../src/widgets_album.py:484 ../data/AlbumDetailedWidget.ui.h:2
+#: ../src/widgets_album.py:486 ../data/AlbumDetailedWidget.ui.h:2
 msgid "Change artwork"
 msgstr "שינוי עטיפה"
 
-#: ../src/widgets_album.py:648
+#: ../src/widgets_album.py:650
 #, python-format
 msgid "%s h  %s m"
 msgstr "%s ש׳ ו־%s דק׳"
 
-#: ../src/widgets_album.py:650
+#: ../src/widgets_album.py:652
 #, python-format
 msgid "%s h"
 msgstr "%s שעות"
 
-#: ../src/widgets_album.py:652
+#: ../src/widgets_album.py:654
 #, python-format
 msgid "%s m"
 msgstr "%s דקות"
 
-#: ../src/widgets_album.py:911
+#: ../src/widgets_album.py:913
 #, python-format
 msgid "Disc %s"
 msgstr "דיסק %s"
@@ -710,6 +719,11 @@ msgstr ""
 msgid "Select a local file"
 msgstr ""
 
+#: ../data/ArtworkSearch.ui.h:2 ../data/PlaylistEditWidget.ui.h:1
+#: ../data/PlaylistsManagerWidget.ui.h:1
+msgid "Confirm"
+msgstr "אימות"
+
 #: ../data/DeviceManagerView.ui.h:1
 msgid "Synchronize your device with this playlists"
 msgstr "התאמת ההתקן שלך עם רשימת השמעה זו"
@@ -721,10 +735,6 @@ msgstr "יש לשחרר נעילת ההתקן שלל"
 #: ../data/DeviceManagerWidget.ui.h:2
 msgid "Convert to MP3"
 msgstr "המרה ל־‏MP3"
-
-#: ../data/PlaylistEditWidget.ui.h:1 ../data/PlaylistsManagerWidget.ui.h:1
-msgid "Confirm"
-msgstr "אימות"
 
 #: ../data/PlaylistsManagerView.ui.h:1
 msgid "New playlist"
@@ -790,63 +800,79 @@ msgstr "שימוש בערכת נושא כהה"
 msgid "Show genres"
 msgstr "הצגת סוגה"
 
-#: ../data/SettingsDialog.ui.h:9
+#: ../data/SettingsDialog.ui.h:10
+msgid "Artist"
+msgstr ""
+
+#: ../data/SettingsDialog.ui.h:11
+msgid "Name"
+msgstr ""
+
+#: ../data/SettingsDialog.ui.h:12
+msgid "Year"
+msgstr ""
+
+#: ../data/SettingsDialog.ui.h:13
+msgid "Popularity"
+msgstr ""
+
+#: ../data/SettingsDialog.ui.h:14
 msgid "Configure lollypop appearance"
 msgstr "תצורת המראה של lollypop"
 
-#: ../data/SettingsDialog.ui.h:10
+#: ../data/SettingsDialog.ui.h:15
 msgid "Appearance"
 msgstr "מראה"
 
-#: ../data/SettingsDialog.ui.h:12
+#: ../data/SettingsDialog.ui.h:17
 msgid "Restore state on startup"
 msgstr "שחזור מצב עם הפעלה"
 
-#: ../data/SettingsDialog.ui.h:15
+#: ../data/SettingsDialog.ui.h:20
 msgid "Long press to show options"
 msgstr "לחיצה ארוכה להצגת אפשרויות"
 
-#: ../data/SettingsDialog.ui.h:16
+#: ../data/SettingsDialog.ui.h:21
 msgid "Do not repeat by default"
 msgstr "לא לחזור כברירת מחדל"
 
-#: ../data/SettingsDialog.ui.h:17
+#: ../data/SettingsDialog.ui.h:22
 msgid "Configure lollypop behaviour"
 msgstr "תצורת התנהגות lollypop"
 
-#: ../data/SettingsDialog.ui.h:18
+#: ../data/SettingsDialog.ui.h:23
 msgid "Behaviour"
 msgstr "התנהגות"
 
-#: ../data/SettingsDialog.ui.h:19
+#: ../data/SettingsDialog.ui.h:24
 msgid "Select music folders"
 msgstr "בחירת תיקיית מוזיקה"
 
-#: ../data/SettingsDialog.ui.h:20
+#: ../data/SettingsDialog.ui.h:25
 msgid "Music"
 msgstr "מוזיקה"
 
-#: ../data/SettingsDialog.ui.h:21
+#: ../data/SettingsDialog.ui.h:26
 msgid "Select what will be available in party mode"
 msgstr "בחירה מה יהיה זמין במצב מסיבה"
 
-#: ../data/SettingsDialog.ui.h:23
+#: ../data/SettingsDialog.ui.h:28
 msgid "Login:"
 msgstr "התחברות:"
 
-#: ../data/SettingsDialog.ui.h:24
+#: ../data/SettingsDialog.ui.h:29
 msgid "Password:"
 msgstr "ססמה:"
 
-#: ../data/SettingsDialog.ui.h:25
+#: ../data/SettingsDialog.ui.h:30
 msgid "Connect"
 msgstr "התחברות"
 
-#: ../data/SettingsDialog.ui.h:26
+#: ../data/SettingsDialog.ui.h:31
 msgid "You need to install pylast and gi secret"
 msgstr "יש להתקין pylast ו־gi secret"
 
-#: ../data/SettingsDialog.ui.h:27
+#: ../data/SettingsDialog.ui.h:32
 msgid "Configure Last.fm credentials"
 msgstr "תצורת אישורי Last.fm"
 

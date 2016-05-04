@@ -8,9 +8,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lollypop\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-04-28 16:55+0200\n"
-"PO-Revision-Date: 2016-04-28 15:03+0000\n"
-"Last-Translator: Cédric Bellegarde <web@adishatz.org>\n"
+"POT-Creation-Date: 2016-05-02 12:26+0200\n"
+"PO-Revision-Date: 2016-05-02 10:32+0000\n"
+"Last-Translator: Jiri Grönroos <jiri.gronroos@iki.fi>\n"
 "Language-Team: Finnish (http://www.transifex.com/gnumdk/lollypop/language/fi/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -119,7 +119,7 @@ msgstr "Synkronoi kaikki albumit (MTP)"
 msgid "Convert to MP3(MTP)"
 msgstr "Muunna MP3-muotoon (MTP)"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:26 ../data/SettingsDialog.ui.h:11
+#: ../data/org.gnome.Lollypop.gschema.xml.h:26 ../data/SettingsDialog.ui.h:16
 msgid "Auto update music"
 msgstr "Päivitä musiikkikirjasto automaattisesti"
 
@@ -143,7 +143,7 @@ msgstr "Poista käytöstä sovelluksen hallitsemat reunukset (CSD)."
 msgid "Show compilations in albums view"
 msgstr "Näytä kokoelmalevyt albuminäkymässä"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:32 ../data/SettingsDialog.ui.h:13
+#: ../data/org.gnome.Lollypop.gschema.xml.h:32 ../data/SettingsDialog.ui.h:18
 msgid "Continue playback when closed"
 msgstr "Jatka toistoa, kun sovellus suljetaan"
 
@@ -163,7 +163,7 @@ msgstr "Poista ilmoitukset käytöstä"
 msgid "Show track number from tags"
 msgstr "Näytä kappaleen numero tunnistetiedoista"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:37 ../data/SettingsDialog.ui.h:14
+#: ../data/org.gnome.Lollypop.gschema.xml.h:37 ../data/SettingsDialog.ui.h:19
 msgid "Mix songs"
 msgstr "Miksaa kappaleet"
 
@@ -178,6 +178,10 @@ msgstr ""
 #: ../data/org.gnome.Lollypop.gschema.xml.h:40
 msgid "Shuffle mode"
 msgstr "Sekoitustila"
+
+#: ../data/org.gnome.Lollypop.gschema.xml.h:41 ../data/SettingsDialog.ui.h:9
+msgid "Order albums by"
+msgstr "Albumien järjestys"
 
 #: ../data/lollypop.desktop.in.h:1 ../data/lollypop.appdata.xml.in.h:1
 msgid "Lollypop"
@@ -236,7 +240,7 @@ msgstr "Etsi"
 msgid "Queue"
 msgstr "Jono"
 
-#: ../data/lollypop.appdata.xml.in.h:10 ../data/SettingsDialog.ui.h:22
+#: ../data/lollypop.appdata.xml.in.h:10 ../data/SettingsDialog.ui.h:27
 #: ../data/ToolbarEnd.ui.h:5
 msgid "Party mode"
 msgstr "Biletila"
@@ -288,43 +292,42 @@ msgid ""
 "    - Artist informations disabled"
 msgstr "    - Kuuntelujen lähetystiedot pois käytöstä\n    - Kansikuvien automaattinen lataus pois käytöstä\n    - Esittäjien tiedot pois käytöstä"
 
-#: ../src/application.py:422
+#: ../src/application.py:427
 #, python-format
 msgid "%d artist"
 msgid_plural "%d artists"
 msgstr[0] "%d esittäjä"
 msgstr[1] "%d esittäjää"
 
-#: ../src/application.py:424
+#: ../src/application.py:429
 #, python-format
 msgid "%d album"
 msgid_plural "%d albums"
 msgstr[0] "%d albumi"
 msgstr[1] "%d albumia"
 
-#: ../src/application.py:426
+#: ../src/application.py:431
 #, python-format
 msgid "%d track"
 msgid_plural "%d tracks"
 msgstr[0] "%d kappale"
 msgstr[1] "%d kappaletta"
 
-#: ../src/application.py:441
+#: ../src/application.py:446
 msgid "Lollypop: You need to install yelp."
 msgstr "Lollypop: Ohje vaatii yelp-ohjelman asennuksen."
 
-#: ../src/art_widgets.py:53 ../src/pop_tunein.py:95
-#: ../data/RadioPopover.ui.h:1
-msgid "Please wait..."
-msgstr "Odota hetki..."
+#: ../src/art_widgets.py:57
+msgid "Select artwork"
+msgstr "Valitse kuvitus"
 
-#: ../src/art_widgets.py:143
+#: ../src/art_widgets.py:164
 msgid "No cover found..."
 msgstr "Kansikuvaa ei löytynyt..."
 
-#: ../src/art_widgets.py:185
-msgid "Select artwork"
-msgstr "Valitse kuvitus"
+#: ../src/art_widgets.py:243
+msgid "Reset artwork?"
+msgstr "Nollataanko kuvitus?"
 
 #: ../src/collectionscanner.py:69
 msgid "Your music is updating"
@@ -392,9 +395,10 @@ msgstr "Satunnaiset kappaleet"
 msgid "Pause"
 msgstr "Keskeytä"
 
-#: ../src/controllers.py:86 ../src/controllers.py:114 ../src/pop_tunein.py:158
-#: ../src/widgets_album.py:463 ../src/widgets_radio.py:166
-#: ../data/AlbumDetailedWidget.ui.h:1 ../data/ToolbarPlayback.ui.h:2
+#: ../src/controllers.py:86 ../src/controllers.py:114 ../src/pop_tunein.py:170
+#: ../src/widgets_album.py:465 ../src/widgets_radio.py:166
+#: ../data/AlbumDetailedWidget.ui.h:1 ../data/ArtistView.ui.h:2
+#: ../data/ToolbarPlayback.ui.h:2
 msgid "Play"
 msgstr "Toista"
 
@@ -436,8 +440,8 @@ msgstr "Tykätyt kappaleet"
 msgid "Clear albums"
 msgstr "Tyhjennä albumit"
 
-#: ../src/pop_albums.py:295 ../src/view_artist.py:48 ../data/ArtistInfo.ui.h:8
-#: ../data/ArtistView.ui.h:2
+#: ../src/pop_albums.py:295 ../src/view_artist.py:49 ../data/ArtistInfo.ui.h:8
+#: ../data/ArtistView.ui.h:4
 msgid "Go to current track"
 msgstr "Siirry parhaillaan soivaan kappaleeseen"
 
@@ -512,7 +516,8 @@ msgstr "Muokkaa tietoja"
 msgid "Edit"
 msgstr "Muokkaa"
 
-#: ../src/pop_radio.py:83 ../src/pop_tunein.py:164
+#: ../src/pop_radio.py:83 ../src/pop_tunein.py:176 ../src/view_artist.py:156
+#: ../data/ArtistView.ui.h:3
 msgid "Add"
 msgstr "Lisää"
 
@@ -520,7 +525,11 @@ msgstr "Lisää"
 msgid "Modify"
 msgstr "Muokkaa"
 
-#: ../src/pop_tunein.py:107
+#: ../src/pop_tunein.py:96 ../data/RadioPopover.ui.h:1
+msgid "Please wait..."
+msgstr "Odota hetki..."
+
+#: ../src/pop_tunein.py:134
 msgid "Can't connect to TuneIn..."
 msgstr "Yhteys TuneIniin ei onnistu..."
 
@@ -528,11 +537,11 @@ msgstr "Yhteys TuneIniin ei onnistu..."
 msgid "Preferences"
 msgstr "Asetukset"
 
-#: ../src/settings.py:167
+#: ../src/settings.py:170
 msgid "Populars"
 msgstr "Suositut"
 
-#: ../src/settings.py:168
+#: ../src/settings.py:171
 msgid "Recently added"
 msgstr "Viimeksi lisätty"
 
@@ -550,6 +559,10 @@ msgstr "Toistetaan soittolistat"
 msgid "The the"
 msgstr ""
 
+#: ../src/view_artist.py:151 ../src/widgets_album.py:211
+msgid "Remove"
+msgstr "Poista"
+
 #: ../src/view_device.py:83 ../src/view_device.py:149
 #, python-format
 msgid "Synchronize %s"
@@ -559,38 +572,34 @@ msgstr "Synkronoi %s"
 msgid "Cancel synchronization"
 msgstr "Peru synkronointi"
 
-#: ../src/widgets_album.py:205
+#: ../src/widgets_album.py:207
 msgid "Append"
 msgstr "Lisää"
 
-#: ../src/widgets_album.py:209
-msgid "Remove"
-msgstr "Poista"
-
-#: ../src/widgets_album.py:474 ../data/AlbumDetailedWidget.ui.h:3
+#: ../src/widgets_album.py:476 ../data/AlbumDetailedWidget.ui.h:3
 msgid "Play albums"
 msgstr "Toista albumit"
 
-#: ../src/widgets_album.py:484 ../data/AlbumDetailedWidget.ui.h:2
+#: ../src/widgets_album.py:486 ../data/AlbumDetailedWidget.ui.h:2
 msgid "Change artwork"
 msgstr "Vaihda kuvitusta"
 
-#: ../src/widgets_album.py:648
+#: ../src/widgets_album.py:650
 #, python-format
 msgid "%s h  %s m"
 msgstr "%s t  %s min"
 
-#: ../src/widgets_album.py:650
+#: ../src/widgets_album.py:652
 #, python-format
 msgid "%s h"
 msgstr "%s t"
 
-#: ../src/widgets_album.py:652
+#: ../src/widgets_album.py:654
 #, python-format
 msgid "%s m"
 msgstr "%s min"
 
-#: ../src/widgets_album.py:911
+#: ../src/widgets_album.py:913
 #, python-format
 msgid "Disc %s"
 msgstr "Levy %s"
@@ -648,7 +657,7 @@ msgstr "Cédric Bellegarde <cedric.bellegarde@adishatz.org>"
 
 #: ../data/AboutDialog.ui.h:5
 msgid "Reset database"
-msgstr ""
+msgstr "Nollaa tietokanta"
 
 #: ../data/Appmenu.ui.h:1
 msgid "_Update music"
@@ -708,6 +717,11 @@ msgstr "Kuva"
 msgid "Select a local file"
 msgstr "Valitse paikallinen tiedosto"
 
+#: ../data/ArtworkSearch.ui.h:2 ../data/PlaylistEditWidget.ui.h:1
+#: ../data/PlaylistsManagerWidget.ui.h:1
+msgid "Confirm"
+msgstr "Vahvista"
+
 #: ../data/DeviceManagerView.ui.h:1
 msgid "Synchronize your device with this playlists"
 msgstr "Synkronoi laitteesi tämän soittolistan kanssa"
@@ -719,10 +733,6 @@ msgstr "Avaa laitteesi lukitus"
 #: ../data/DeviceManagerWidget.ui.h:2
 msgid "Convert to MP3"
 msgstr "Muunna MP3-muotoon"
-
-#: ../data/PlaylistEditWidget.ui.h:1 ../data/PlaylistsManagerWidget.ui.h:1
-msgid "Confirm"
-msgstr "Vahvista"
 
 #: ../data/PlaylistsManagerView.ui.h:1
 msgid "New playlist"
@@ -788,63 +798,79 @@ msgstr "Käytä tumman teeman muunnelmaa"
 msgid "Show genres"
 msgstr "Näytä tyylilajit"
 
-#: ../data/SettingsDialog.ui.h:9
+#: ../data/SettingsDialog.ui.h:10
+msgid "Artist"
+msgstr "Esittäjä"
+
+#: ../data/SettingsDialog.ui.h:11
+msgid "Name"
+msgstr "Nimi"
+
+#: ../data/SettingsDialog.ui.h:12
+msgid "Year"
+msgstr "Vuosi"
+
+#: ../data/SettingsDialog.ui.h:13
+msgid "Popularity"
+msgstr "Suosio"
+
+#: ../data/SettingsDialog.ui.h:14
 msgid "Configure lollypop appearance"
 msgstr "Muokkaa Lollypopin ulkoasua"
 
-#: ../data/SettingsDialog.ui.h:10
+#: ../data/SettingsDialog.ui.h:15
 msgid "Appearance"
 msgstr "Ulkoasu"
 
-#: ../data/SettingsDialog.ui.h:12
+#: ../data/SettingsDialog.ui.h:17
 msgid "Restore state on startup"
 msgstr "Palauta tila käynnistyksen yhteydessä"
 
-#: ../data/SettingsDialog.ui.h:15
+#: ../data/SettingsDialog.ui.h:20
 msgid "Long press to show options"
 msgstr "Pitkä painallus nähdäksesi valinnat"
 
-#: ../data/SettingsDialog.ui.h:16
+#: ../data/SettingsDialog.ui.h:21
 msgid "Do not repeat by default"
 msgstr "Älä kertaa oletuksena"
 
-#: ../data/SettingsDialog.ui.h:17
+#: ../data/SettingsDialog.ui.h:22
 msgid "Configure lollypop behaviour"
 msgstr "Muokkaa Lollypopin toimintoja"
 
-#: ../data/SettingsDialog.ui.h:18
+#: ../data/SettingsDialog.ui.h:23
 msgid "Behaviour"
 msgstr "Toiminta"
 
-#: ../data/SettingsDialog.ui.h:19
+#: ../data/SettingsDialog.ui.h:24
 msgid "Select music folders"
 msgstr "Valitse musiikkikansiot"
 
-#: ../data/SettingsDialog.ui.h:20
+#: ../data/SettingsDialog.ui.h:25
 msgid "Music"
 msgstr "Musiikki"
 
-#: ../data/SettingsDialog.ui.h:21
+#: ../data/SettingsDialog.ui.h:26
 msgid "Select what will be available in party mode"
 msgstr "Valitse mitä biletilassa on käytettävissä"
 
-#: ../data/SettingsDialog.ui.h:23
+#: ../data/SettingsDialog.ui.h:28
 msgid "Login:"
 msgstr "Käyttäjätunnus:"
 
-#: ../data/SettingsDialog.ui.h:24
+#: ../data/SettingsDialog.ui.h:29
 msgid "Password:"
 msgstr "Salasana:"
 
-#: ../data/SettingsDialog.ui.h:25
+#: ../data/SettingsDialog.ui.h:30
 msgid "Connect"
 msgstr "Yhdistä"
 
-#: ../data/SettingsDialog.ui.h:26
+#: ../data/SettingsDialog.ui.h:31
 msgid "You need to install pylast and gi secret"
 msgstr "Asenna pylast ja gi secret"
 
-#: ../data/SettingsDialog.ui.h:27
+#: ../data/SettingsDialog.ui.h:32
 msgid "Configure Last.fm credentials"
 msgstr "Muokkaa Last.fm-kirjautumistietoja"
 
