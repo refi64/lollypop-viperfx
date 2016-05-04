@@ -146,7 +146,7 @@ class AlbumsView(LazyLoadingView):
                                    False)
             popover.set_relative_to(cover)
             popover.set_position(Gtk.PositionType.BOTTOM)
-            album_widget.show_overlay(False)
+        album_widget.show_overlay(False)
         album_widget.lock_overlay(True)
         popover.connect('closed', self._on_popover_closed, album_widget)
         popover.show()
