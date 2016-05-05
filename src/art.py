@@ -28,6 +28,7 @@ class Art(AlbumArt, RadioArt):
         AlbumArt.__init__(self)
         RadioArt.__init__(self)
         self._create_cache()
+        self._create_store()
 
     def clean_all_cache(self):
         """

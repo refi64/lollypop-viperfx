@@ -26,6 +26,8 @@ class BaseArt(GObject.GObject):
         Base art manager
     """
     _CACHE_PATH = os.path.expanduser("~") + "/.cache/lollypop"
+    # Fallback when album dir is readonly
+    _STORE_PATH = os.path.expanduser("~") + "/.local/share/lollypop/store"
     __gsignals__ = {
         'album-artwork-changed': (GObject.SignalFlags.RUN_FIRST, None, (int,)),
         'artist-artwork-changed': (GObject.SignalFlags.RUN_FIRST,
@@ -109,6 +111,16 @@ class BaseArt(GObject.GObject):
         else:
             cut = cover_width / 5
             return cover_height < cover_width - cut
+
+    def _create_store(self):
+        """
+            Create store dir
+        """
+        if not os.path.exists(self._STORE_PATH):
+            try:
+                os.mkdir(self._STORE_PATH)
+            except:
+                print("Can't create %s" % self._STORE_PATH)
 
     def _create_cache(self):
         """

@@ -138,6 +138,17 @@ def seconds_to_string(duration):
     return '%i:%02i' % (minutes, seconds)
 
 
+def is_readonly(path):
+    """
+        Check if path is readonly
+    """
+    f = Gio.File.new_for_path(path)
+    info = f.query_info('access::can-write',
+                        Gio.FileQueryInfoFlags.NONE,
+                        None)
+    return not info.get_attribute_boolean('access::can-write')
+
+
 def is_loved(track_id):
     """
         Check if object is in loved playlist

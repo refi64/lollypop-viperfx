@@ -20,7 +20,7 @@ from lollypop.art_downloader import ArtDownloader
 from lollypop.tagreader import TagReader
 from lollypop.define import Lp, ArtSize
 from lollypop.objects import Album
-from lollypop.utils import escape
+from lollypop.utils import escape, is_readonly
 
 
 class AlbumArt(BaseArt, ArtDownloader, TagReader):
@@ -80,9 +80,12 @@ class AlbumArt(BaseArt, ArtDownloader, TagReader):
         try:
             filename = self._get_album_cache_name(album) + ".jpg"
             paths = [
+                # Used when album.path is readonly
+                os.path.join(self._STORE_PATH, filename),
+                # Default favorite artwork
                 os.path.join(album.path, self._favorite),
                 # Used when having muliple albums in same folder
-                os.path.join(album.path, filename)
+                os.path.join(album.path, filename),
             ]
             for path in paths:
                 if os.path.exists(path):
@@ -208,12 +211,14 @@ class AlbumArt(BaseArt, ArtDownloader, TagReader):
         try:
             album = Album(album_id)
             path_count = Lp().albums.get_path_count(album.path)
+            filename = self._get_album_cache_name(album) + ".jpg"
             # Many albums with same path, suffix with artist_album name
             if path_count > 1:
-                filename = self._get_album_cache_name(album) + ".jpg"
                 artpath = os.path.join(album.path, filename)
                 if os.path.exists(os.path.join(album.path, self._favorite)):
                     os.remove(os.path.join(album.path, self._favorite))
+            elif is_readonly(album.path):
+                artpath = os.path.join(self._STORE_PATH, filename)
             else:
                 artpath = os.path.join(album.path, self._favorite)
             stream = Gio.MemoryInputStream.new_from_data(data, None)
