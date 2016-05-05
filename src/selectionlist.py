@@ -526,7 +526,9 @@ class SelectionList(Gtk.ScrolledWindow):
                     width -= ArtSize.ARTIST_SMALL +\
                              CellRendererArtist.xshift * 2
                 layout.set_ellipsize(Pango.EllipsizeMode.END)
-                layout.set_width(Pango.units_from_double(width-8))
+                if self._model.get_value(iterator, 0) < 0:
+                    width -= 8
+                layout.set_width(Pango.units_from_double(width))
                 layout.set_text(text, -1)
                 if layout.is_ellipsized():
                     tooltip.set_markup(escape(text))
