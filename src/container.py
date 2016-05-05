@@ -468,11 +468,13 @@ class Container:
         def setup(artists, compilations):
             if selection_list == self._list_one:
                 items = self._get_headers()
-                items.append((Type.SEPARATOR, ''))
+                if not compilations:
+                    items.append((Type.SEPARATOR, ''))
             else:
                 items = []
             if compilations:
                 items.append((Type.COMPILATIONS, _("Compilations")))
+                items.append((Type.SEPARATOR, ''))
             items += artists
             selection_list.mark_as_artists(True)
             if update:
