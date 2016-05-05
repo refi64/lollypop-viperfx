@@ -297,9 +297,7 @@ class SelectionList(Gtk.ScrolledWindow):
             @param ojbect_id as id
         """
         icon = ''
-        if object_id >= 0:
-            icon = 'go-next-symbolic'
-        elif object_id == Type.POPULARS:
+        if object_id == Type.POPULARS:
             icon = 'starred-symbolic'
         elif object_id == Type.PLAYLISTS:
             icon = 'emblem-documents-symbolic'
