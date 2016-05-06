@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lollypop\n"
 "POT-Creation-Date: 2015-06-24 15:43+0200\n"
-"PO-Revision-Date: 2016-04-05 16:12+0000\n"
+"PO-Revision-Date: 2016-05-04 20:28+0000\n"
 "Last-Translator: naren93 <m.renato93@gmail.com>\n"
 "Language-Team: Hungarian (http://www.transifex.com/gnumdk/lollypop/language/hu/)\n"
 "MIME-Version: 1.0\n"
@@ -43,7 +43,7 @@ msgstr "2015"
 #. (itstool) path: page/title
 #: C/index.page:18
 msgid "<_:media-1/> Lollypop music player"
-msgstr "<_:media-1/> Lollypop zene lejátszó"
+msgstr "<_:media-1/> Lollypop zenelejátszó"
 
 #. (itstool) path: section/title
 #: C/index.page:21

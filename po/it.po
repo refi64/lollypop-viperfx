@@ -11,7 +11,7 @@ msgstr ""
 "Project-Id-Version: lollypop\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2016-05-02 12:26+0200\n"
-"PO-Revision-Date: 2016-05-03 12:50+0000\n"
+"PO-Revision-Date: 2016-05-05 08:41+0000\n"
 "Last-Translator: Gianvito Cavasoli <gianvito@gmx.it>\n"
 "Language-Team: Italian (http://www.transifex.com/gnumdk/lollypop/language/it/)\n"
 "MIME-Version: 1.0\n"
@@ -131,7 +131,7 @@ msgstr "Mostra l'elenco dei generi"
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:28 ../data/SettingsDialog.ui.h:8
 msgid "Show artist artwork"
-msgstr "Mostrare il ritratto dell'artista"
+msgstr "Mostrare la foto dell'artista"
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:29
 msgid "Use dark gtk theme"
@@ -321,7 +321,7 @@ msgstr "Lollypop: è necessario installare «yelp»."
 
 #: ../src/art_widgets.py:57
 msgid "Select artwork"
-msgstr "Seleziona ritratto"
+msgstr "Seleziona copertina"
 
 #: ../src/art_widgets.py:164
 msgid "No cover found..."

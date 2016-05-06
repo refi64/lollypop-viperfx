@@ -9,8 +9,8 @@ msgstr ""
 "Project-Id-Version: lollypop\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2016-05-02 12:26+0200\n"
-"PO-Revision-Date: 2016-05-02 10:27+0000\n"
-"Last-Translator: Cédric Bellegarde <web@adishatz.org>\n"
+"PO-Revision-Date: 2016-05-04 20:27+0000\n"
+"Last-Translator: naren93 <m.renato93@gmail.com>\n"
 "Language-Team: Hungarian (http://www.transifex.com/gnumdk/lollypop/language/hu/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -129,11 +129,11 @@ msgstr "Műfajok listájának engedélyezése"
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:28 ../data/SettingsDialog.ui.h:8
 msgid "Show artist artwork"
-msgstr "Előadó képének megjelenítése"
+msgstr "Előadó grafika megjelenítése"
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:29
 msgid "Use dark gtk theme"
-msgstr "Sötét téma használata"
+msgstr "Sötét gtk téma használata"
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:30
 msgid "Disable the use client side window decorations (headerbar)"
@@ -181,7 +181,7 @@ msgstr "Véletlenszerű sorrend"
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:41 ../data/SettingsDialog.ui.h:9
 msgid "Order albums by"
-msgstr ""
+msgstr "Albumok rendezése: "
 
 #: ../data/lollypop.desktop.in.h:1 ../data/lollypop.appdata.xml.in.h:1
 msgid "Lollypop"
@@ -319,7 +319,7 @@ msgstr "Lollypop: yelp telepítése szükséges"
 
 #: ../src/art_widgets.py:57
 msgid "Select artwork"
-msgstr "Kép kiválasztása"
+msgstr "Grafika kiválasztása"
 
 #: ../src/art_widgets.py:164
 msgid "No cover found..."
@@ -327,7 +327,7 @@ msgstr "Nem található borító"
 
 #: ../src/art_widgets.py:243
 msgid "Reset artwork?"
-msgstr ""
+msgstr "Grafika visszaállítása?"
 
 #: ../src/collectionscanner.py:69
 msgid "Your music is updating"
@@ -582,7 +582,7 @@ msgstr "Albumok lejátszása"
 
 #: ../src/widgets_album.py:486 ../data/AlbumDetailedWidget.ui.h:2
 msgid "Change artwork"
-msgstr "Borító cseréje"
+msgstr "Grafika módosítása"
 
 #: ../src/widgets_album.py:650
 #, python-format
@@ -657,7 +657,7 @@ msgstr "Renato Molnár <m.renato93@gmail.com>"
 
 #: ../data/AboutDialog.ui.h:5
 msgid "Reset database"
-msgstr ""
+msgstr "Adatbázis visszaállítása alapállapotba"
 
 #: ../data/Appmenu.ui.h:1
 msgid "_Update music"
@@ -715,7 +715,7 @@ msgstr "Fotó"
 
 #: ../data/ArtworkSearch.ui.h:1 ../data/RadioPopover.ui.h:2
 msgid "Select a local file"
-msgstr "Válassz egy helyi fájlt"
+msgstr "Helyi fájl választása"
 
 #: ../data/ArtworkSearch.ui.h:2 ../data/PlaylistEditWidget.ui.h:1
 #: ../data/PlaylistsManagerWidget.ui.h:1
@@ -800,19 +800,19 @@ msgstr "Műfajok megjelenítése"
 
 #: ../data/SettingsDialog.ui.h:10
 msgid "Artist"
-msgstr ""
+msgstr "Előadó"
 
 #: ../data/SettingsDialog.ui.h:11
 msgid "Name"
-msgstr ""
+msgstr "Név"
 
 #: ../data/SettingsDialog.ui.h:12
 msgid "Year"
-msgstr ""
+msgstr "Év"
 
 #: ../data/SettingsDialog.ui.h:13
 msgid "Popularity"
-msgstr ""
+msgstr "Népszerűség"
 
 #: ../data/SettingsDialog.ui.h:14
 msgid "Configure lollypop appearance"

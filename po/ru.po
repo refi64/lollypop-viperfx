@@ -13,7 +13,7 @@ msgstr ""
 "Project-Id-Version: lollypop\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2016-05-02 12:26+0200\n"
-"PO-Revision-Date: 2016-05-02 10:53+0000\n"
+"PO-Revision-Date: 2016-05-04 19:14+0000\n"
 "Last-Translator: Maxim region51 <murmansksity@gmail.com>\n"
 "Language-Team: Russian (http://www.transifex.com/gnumdk/lollypop/language/ru/)\n"
 "MIME-Version: 1.0\n"
@@ -810,19 +810,19 @@ msgstr "Показывать жанры"
 
 #: ../data/SettingsDialog.ui.h:10
 msgid "Artist"
-msgstr "Исполнитель"
+msgstr "по исполнителю"
 
 #: ../data/SettingsDialog.ui.h:11
 msgid "Name"
-msgstr "Имя"
+msgstr "по имени"
 
 #: ../data/SettingsDialog.ui.h:12
 msgid "Year"
-msgstr "Год"
+msgstr "по году"
 
 #: ../data/SettingsDialog.ui.h:13
 msgid "Popularity"
-msgstr "Популярность"
+msgstr "по популярности"
 
 #: ../data/SettingsDialog.ui.h:14
 msgid "Configure lollypop appearance"
