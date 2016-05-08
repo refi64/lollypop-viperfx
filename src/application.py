@@ -434,6 +434,19 @@ class Application(Gtk.Application):
         about.connect("response", self._about_response)
         about.show()
 
+    def _shortcuts(self, action, param):
+        """
+            Show help in yelp
+            @param action as Gio.SimpleAction
+            @param param as GLib.Variant
+        """
+        try:
+            builder = Gtk.Builder()
+            builder.add_from_resource('/org/gnome/Lollypop/Shortcuts.ui')
+            builder.get_object('shortcuts').show()
+        except:  # GTK < 3.20
+            self._help(action, param)
+
     def _help(self, action, param):
         """
             Show help in yelp
@@ -468,9 +481,7 @@ class Application(Gtk.Application):
             @return menu as Gio.Menu
         """
         builder = Gtk.Builder()
-
         builder.add_from_resource('/org/gnome/Lollypop/Appmenu.ui')
-
         menu = builder.get_object('app-menu')
 
         settingsAction = Gio.SimpleAction.new('settings', None)
@@ -495,8 +506,13 @@ class Application(Gtk.Application):
 
         aboutAction = Gio.SimpleAction.new('about', None)
         aboutAction.connect('activate', self._about)
-        self.set_accels_for_action('app.about', ["F2"])
+        self.set_accels_for_action('app.about', ["F3"])
         self.add_action(aboutAction)
+
+        shortcutsAction = Gio.SimpleAction.new('shortcuts', None)
+        shortcutsAction.connect('activate', self._shortcuts)
+        self.set_accels_for_action('app.shortcuts', ["F2"])
+        self.add_action(shortcutsAction)
 
         helpAction = Gio.SimpleAction.new('help', None)
         helpAction.connect('activate', self._help)

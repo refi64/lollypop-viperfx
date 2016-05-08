@@ -36,5 +36,6 @@
     <file preprocess="xml-stripblanks">ToolbarTitle.ui</file>
     <file preprocess="xml-stripblanks">NextPopover.ui</file>
     <file preprocess="xml-stripblanks">SettingsDialog.ui</file>
+    <file compressed="true" preprocess="xml-stripblanks">Shortcuts.ui</file>
   </gresource>
 </gresources>
