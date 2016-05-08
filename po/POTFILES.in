@@ -105,3 +105,4 @@ src/window.py
 [type: gettext/glade]data/ToolbarTitle.ui
 [type: gettext/glade]data/TuneinPopover.ui
 [type: gettext/glade]data/Unicode.ui
+[type: gettext/glade]data/Shortcuts.ui
