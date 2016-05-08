@@ -83,15 +83,15 @@
             <child>
               <object class="GtkShortcutsShortcut">
                 <property name="visible">True</property>
-                <property name="title" translatable="yes" context="shortcut window">Skip current album</property>
-                <property name="accelerator">&lt;Primary&gt;n</property>
+                <property name="title" translatable="yes" context="shortcut window">Previous track</property>
+                <property name="accelerator">p</property>
               </object>
             </child>
             <child>
               <object class="GtkShortcutsShortcut">
                 <property name="visible">True</property>
-                <property name="title" translatable="yes" context="shortcut window">Previous track</property>
-                <property name="accelerator">p</property>
+                <property name="title" translatable="yes" context="shortcut window">Skip current album</property>
+                <property name="accelerator">&lt;Primary&gt;n</property>
               </object>
             </child>
             <child>
