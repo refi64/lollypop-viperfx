@@ -70,7 +70,7 @@
               <object class="GtkShortcutsShortcut">
                 <property name="visible">True</property>
                 <property name="title" translatable="yes" context="shortcut window">Pause</property>
-                <property name="accelerator">c</property>
+                <property name="accelerator">c space</property>
               </object>
             </child>
             <child>
