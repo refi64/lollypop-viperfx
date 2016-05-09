@@ -129,7 +129,6 @@ class NextPopover(Gtk.Popover):
             @param widget as Gtk.Widget
             @param event as Gdk.Event
         """
-        self._inhibited = True
         self.hide()
 
     def _on_skip_btn_clicked(self, btn):
