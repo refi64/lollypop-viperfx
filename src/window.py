@@ -15,7 +15,7 @@ from gi.repository import Gtk, Gio, GLib
 from lollypop.container import Container
 from lollypop.define import Lp, NextContext, Shuffle, WindowSize
 from lollypop.toolbar import Toolbar
-from lollypop.utils import is_unity
+from lollypop.utils import is_unity, set_loved
 from lollypop.miniplayer import MiniPlayer
 
 
@@ -110,6 +110,8 @@ class Window(Gtk.ApplicationWindow, Container):
                                             ["<Control>n"])
             self._app.set_accels_for_action("app.player::prev",
                                             ["p"])
+            self._app.set_accels_for_action("app.player::loved",
+                                            ["l"])
         else:
             self._app.set_accels_for_action("app.seek(10)", [None])
             self._app.set_accels_for_action("app.seek(20)", [None])
@@ -124,6 +126,7 @@ class Window(Gtk.ApplicationWindow, Container):
             self._app.set_accels_for_action("app.player::next", [None])
             self._app.set_accels_for_action("app.player::next_album", [None])
             self._app.set_accels_for_action("app.player::prev", [None])
+            self._app.set_accels_for_action("app.player::loved", [None])
 
     def setup_window(self):
         """
@@ -440,6 +443,9 @@ class Window(Gtk.ApplicationWindow, Container):
                 Lp().player.next()
         elif string == "prev":
             Lp().player.prev()
+        elif string == "loved":
+            if Lp().player.current_track.id is not None:
+                set_loved(Lp().player.current_track.id, True)
 
     def _on_realize(self, widget):
         """

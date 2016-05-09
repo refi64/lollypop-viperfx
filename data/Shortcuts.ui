@@ -46,6 +46,13 @@
                 <property name="accelerator">F11</property>
               </object>
             </child>
+            <child>
+              <object class="GtkShortcutsShortcut">
+                <property name="visible">True</property>
+                <property name="title" translatable="yes" context="shortcut window">Love current track</property>
+                <property name="accelerator">l</property>
+              </object>
+            </child>
           </object>
         </child>
         <child>
