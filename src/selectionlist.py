@@ -111,10 +111,12 @@ class SelectionList(Gtk.ScrolledWindow):
         column.pack_start(self._renderer1, False)
         column.add_attribute(self._renderer1, 'icon-name', 2)
         self._view.append_column(column)
-        self._view.connect('motion_notify_event', self._on_motion_notify)
         self._view.set_property('has_tooltip', True)
         self.add(self._view)
+        self.connect('motion_notify_event', self._on_motion_notify)
         self.get_vadjustment().connect('value_changed', self._on_scroll)
+        self.connect('enter-notify-event', self._on_enter_notify)
+        self.connect('leave-notify-event', self._on_leave_notify)
 
     def mark_as_artists(self, is_artists):
         """

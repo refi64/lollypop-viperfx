@@ -21,8 +21,6 @@
     <property name="search_column">1</property>
     <signal name="button-press-event" handler="_on_button_press_event" swapped="no"/>
     <signal name="button-release-event" handler="_on_button_release_event" swapped="no"/>
-    <signal name="enter-notify-event" handler="_on_enter_notify" swapped="no"/>
-    <signal name="leave-notify-event" handler="_on_leave_notify" swapped="no"/>
     <signal name="query-tooltip" handler="_on_query_tooltip" swapped="no"/>
     <child internal-child="selection">
       <object class="GtkTreeSelection" id="selection">
