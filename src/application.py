@@ -443,6 +443,7 @@ class Application(Gtk.Application):
         try:
             builder = Gtk.Builder()
             builder.add_from_resource('/org/gnome/Lollypop/Shortcuts.ui')
+            builder.get_object('shortcuts').set_transient_for(self.window)
             builder.get_object('shortcuts').show()
         except:  # GTK < 3.20
             self._help(action, param)
