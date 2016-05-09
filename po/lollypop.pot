@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-05-09 15:36+0200\n"
+"POT-Creation-Date: 2016-05-09 17:29+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -334,7 +334,7 @@ msgstr ""
 
 #: ../src/collectionscanner.py:247 ../src/database_albums.py:299
 #: ../src/database_artists.py:104 ../src/database_genres.py:69
-#: ../src/database_tracks.py:232 ../src/selectionlist.py:274
+#: ../src/database_tracks.py:232 ../src/selectionlist.py:276
 #: ../src/tagreader.py:87 ../src/tagreader.py:102 ../src/tagreader.py:117
 #: ../src/tagreader.py:150 ../src/tagreader.py:165 ../src/tagreader.py:168
 #: ../src/tagreader.py:178 ../src/tagreader.py:185
@@ -947,32 +947,32 @@ msgstr ""
 
 #: ../data/Shortcuts.ui.h:7
 msgctxt "shortcut window"
-msgid "Playback"
+msgid "Love current track"
 msgstr ""
 
 #: ../data/Shortcuts.ui.h:8
 msgctxt "shortcut window"
-msgid "Play"
+msgid "Playback"
 msgstr ""
 
 #: ../data/Shortcuts.ui.h:9
 msgctxt "shortcut window"
-msgid "Pause"
+msgid "Play"
 msgstr ""
 
 #: ../data/Shortcuts.ui.h:10
 msgctxt "shortcut window"
-msgid "Stop"
+msgid "Pause"
 msgstr ""
 
 #: ../data/Shortcuts.ui.h:11
 msgctxt "shortcut window"
-msgid "Next track"
+msgid "Stop"
 msgstr ""
 
 #: ../data/Shortcuts.ui.h:12
 msgctxt "shortcut window"
-msgid "Skip current album"
+msgid "Next track"
 msgstr ""
 
 #: ../data/Shortcuts.ui.h:13
@@ -982,15 +982,20 @@ msgstr ""
 
 #: ../data/Shortcuts.ui.h:14
 msgctxt "shortcut window"
-msgid "Repeat track"
+msgid "Skip current album"
 msgstr ""
 
 #: ../data/Shortcuts.ui.h:15
 msgctxt "shortcut window"
-msgid "Skip backward in track"
+msgid "Repeat track"
 msgstr ""
 
 #: ../data/Shortcuts.ui.h:16
+msgctxt "shortcut window"
+msgid "Skip backward in track"
+msgstr ""
+
+#: ../data/Shortcuts.ui.h:17
 msgctxt "shortcut window"
 msgid "Skip forward in track"
 msgstr ""
