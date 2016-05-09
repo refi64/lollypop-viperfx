@@ -15,7 +15,7 @@ from gi.repository import Gtk, Gio, GLib
 from lollypop.container import Container
 from lollypop.define import Lp, NextContext, Shuffle, WindowSize
 from lollypop.toolbar import Toolbar
-from lollypop.utils import is_unity, set_loved
+from lollypop.utils import is_unity, set_loved, is_loved
 from lollypop.miniplayer import MiniPlayer
 
 
@@ -445,7 +445,17 @@ class Window(Gtk.ApplicationWindow, Container):
             Lp().player.prev()
         elif string == "loved":
             if Lp().player.current_track.id is not None:
-                set_loved(Lp().player.current_track.id, True)
+                isloved = is_loved(Lp().player.current_track.id)
+                set_loved(Lp().player.current_track.id, not isloved)
+                if Lp().notify is not None:
+                    if isloved:
+                        heart = "♡"
+                    else:
+                        heart = "❤"
+                    Lp().notify.send("%s - %s: %s" % (
+                                ", ".join(Lp().player.current_track.artists),
+                                Lp().player.current_track.name,
+                                heart))
 
     def _on_realize(self, widget):
         """
