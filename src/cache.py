@@ -149,7 +149,7 @@ class InfoCache:
                 fstream.write(content, None)
                 fstream.close()
         if data is None:
-            f = Gio.File.new_for_path(filepath+".jpg")
+            f = Gio.File.new_for_path(filepath+"_"+str(ArtSize.ARTIST)+".jpg")
             fstream = f.replace(None, False,
                                 Gio.FileCreateFlags.REPLACE_DESTINATION, None)
             fstream.close()
