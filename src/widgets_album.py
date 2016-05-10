@@ -283,9 +283,9 @@ class AlbumWidget:
         (x, y) = self._overlay.translate_coordinates(widget, 0, 0)
         allocation = self._overlay.get_allocation()
         if event.x < x or\
-           event.x > x + allocation.width or\
+           event.x >= x + allocation.width or\
            event.y < y or\
-           event.y > y + allocation.height:
+           event.y >= y + allocation.height:
             self._cover.set_opacity(1)
             # Remove enter notify timeout
             if self._timeout_id is not None:
