@@ -196,7 +196,9 @@ class ArtistView(ArtistAlbumsView):
             @param art as Art
             @param prefix as str
         """
-        self._set_artwork()
+        artist = Lp().artists.get_name(self._artist_ids[0])
+        if prefix == artist:
+            self._set_artwork()
 
     def _on_jump_button_clicked(self, widget):
         """

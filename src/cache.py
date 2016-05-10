@@ -15,7 +15,7 @@ from gi.repository import Gio, GdkPixbuf
 from os import mkdir, path
 
 from lollypop.utils import escape
-from lollypop.define import ArtSize, Lp
+from lollypop.define import ArtSize
 
 
 class InfoCache:
@@ -168,7 +168,6 @@ class InfoCache:
                                                                None)
             pixbuf.savev(filepath+"_"+str(ArtSize.ARTIST)+".jpg",
                          "jpeg", ["quality"], ["90"])
-            Lp().art.emit('artist-artwork-changed', prefix)
             del pixbuf
 
     def uncache(prefix, suffix):
