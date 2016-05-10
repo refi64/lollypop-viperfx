@@ -198,6 +198,7 @@ class ArtistView(ArtistAlbumsView):
         """
         artist = Lp().artists.get_name(self._artist_ids[0])
         if prefix == artist:
+            self._artwork.clear()
             self._set_artwork()
 
     def _on_jump_button_clicked(self, widget):
@@ -320,6 +321,8 @@ class ArtistView(ArtistAlbumsView):
             @param image as Gtk.Image
             @param ctx as cairo.Context
         """
+        if not image.is_drawable():
+            return
         pixbuf = image.get_pixbuf()
         if pixbuf is None:
             return
