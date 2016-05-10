@@ -316,6 +316,7 @@ class ArtworkSearch(Gtk.Bin):
             for suffix in ["lastfm", "wikipedia", "spotify"]:
                 InfoCache.uncache_artwork(self._artist, suffix,
                                           button.get_scale_factor())
+                InfoCache.cache(self._artist, None, None, suffix)
                 Lp().art.emit('artist-artwork-changed', self._artist)
         self._close_popover()
 
