@@ -39,9 +39,15 @@ class InfoCache:
             Return True if an info is cached
             @param prefix as string
         """
-        return InfoCache.get_artwork(prefix, "lastfm") is not None or\
-            InfoCache.get_artwork(prefix, "wikipedia") is not None or\
-            InfoCache.get_artwork(prefix, "spotify") is not None
+        exists = False
+        for suffix in ["lastfm", "wikipedia", "spotify"]:
+            filepath = "%s/%s_%s_%s.jpg" % (InfoCache.CACHE_PATH,
+                                            escape(prefix),
+                                            suffix,
+                                            ArtSize.ARTIST)
+            if path.exists(filepath):
+                exists = True
+        return exists
 
     def get_artwork(prefix, suffix, size=ArtSize.ARTIST):
         """

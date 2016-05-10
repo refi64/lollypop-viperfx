@@ -146,6 +146,8 @@ class ArtDownloader:
                         (status, data, tag) = s.load_contents()
                         if status:
                             InfoCache.cache(artist, content, data, "lastfm")
+                        else:
+                            InfoCache.cache(artist, None, None, "lastfm")
                 except:
                     InfoCache.cache(artist, None, None, "lastfm")
             if ArtDownloader.Wikipedia is not None:
@@ -157,6 +159,8 @@ class ArtDownloader:
                         (status, data, tag) = s.load_contents()
                         if status:
                             InfoCache.cache(artist, content, data, "wikipedia")
+                        else:
+                            InfoCache.cache(artist, None, None, "wikipedia")
                 except:
                     InfoCache.cache(artist, None, None, "wikipedia")
             url = self._get_spotify_artist_artwork(artist)
@@ -165,6 +169,8 @@ class ArtDownloader:
                 (status, data, tag) = s.load_contents()
                 if status:
                     InfoCache.cache(artist, None, data, "spotify")
+                else:
+                    InfoCache.cache(artist, None, None, "spotify")
         self._cache_artists_running = False
 
     def _download_albums_art(self):
