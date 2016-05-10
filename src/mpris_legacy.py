@@ -185,18 +185,19 @@ class MPRIS(dbus.service.Object):
                 Lp().player.current_track.get_popularity() / 5
             if Lp().player.current_track.id == Type.RADIOS:
                 cover_path = Lp().art.get_radio_cache_path(
-                     ", ".join(Lp().player.current_track.artists), ArtSize.BIG)
+                     ", ".join(Lp().player.current_track.artists),
+                     ArtSize.MONSTER)
             elif Lp().player.current_track.id == Type.EXTERNALS:
                 cover_path = "/tmp/lollypop_mpris.jpg"
                 pixbuf = Lp().art.pixbuf_from_tags(
                     GLib.filename_from_uri(Lp().player.current_track.uri)[0],
-                    ArtSize.BIG)
+                    ArtSize.MONSTER)
                 if pixbuf is not None:
                     pixbuf.savev(cover_path, "jpeg",
                                  ["quality"], ["90"])
             else:
                 cover_path = Lp().art.get_album_cache_path(
-                    Lp().player.current_track.album, ArtSize.BIG)
+                    Lp().player.current_track.album, ArtSize.MONSTER)
             if cover_path is not None:
                 self._metadata['mpris:artUrl'] = "file://" + cover_path
             elif 'mpris:artUrl' in self._metadata:
