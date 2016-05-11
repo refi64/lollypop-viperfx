@@ -183,7 +183,7 @@ class AlbumArt(BaseArt, ArtDownloader, TagReader):
             return surface
 
         except Exception as e:
-            print(e)
+            print("AlbumArt::get_album_artwork()", e)
             return self.get_default_icon('folder-music-symbolic', size, scale)
 
     def get_album_artwork2(self, uri, size, scale):

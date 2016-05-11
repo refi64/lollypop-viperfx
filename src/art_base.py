@@ -20,6 +20,8 @@ from gi.repository import Gtk, Gdk, GObject, GdkPixbuf
 
 import os
 
+from lollypop.define import ArtSize
+
 
 class BaseArt(GObject.GObject):
     """
@@ -50,45 +52,51 @@ class BaseArt(GObject.GObject):
             @param scale factor as int
             @return pixbuf as cairo.Surface
         """
-        # First look in cache
-        cache_path_jpg = self._get_default_icon_path(size, icon_name)
-        if os.path.exists(cache_path_jpg):
-            pixbuf = GdkPixbuf.Pixbuf.new_from_file_at_scale(cache_path_jpg,
-                                                             size,
-                                                             size,
-                                                             False)
-        else:
-            # get a small pixbuf with the given path
-            icon_size = size / 4
-            icon = Gtk.IconTheme.get_default().load_icon(icon_name,
-                                                         icon_size, 0)
-            # create an empty pixbuf with the requested size
-            pixbuf = GdkPixbuf.Pixbuf.new(icon.get_colorspace(),
-                                          True,
-                                          icon.get_bits_per_sample(),
-                                          size,
-                                          size)
-            pixbuf.fill(0xffffffff)
-            icon.composite(pixbuf,
-                           icon_size * 3 / 2,
-                           icon_size * 3 / 2,
-                           icon_size,
-                           icon_size,
-                           icon_size * 3 / 2,
-                           icon_size * 3 / 2,
-                           1, 1,
-                           GdkPixbuf.InterpType.NEAREST, 255)
-            # Gdk < 3.15 was missing save method
-            # > 3.15 is missing savev method
-            try:
-                pixbuf.save(cache_path_jpg, "jpeg",
-                            ["quality"], ["90"])
-            except:
-                pixbuf.savev(cache_path_jpg, "jpeg",
-                             ["quality"], ["90"])
-        surface = Gdk.cairo_surface_create_from_pixbuf(pixbuf, scale, None)
-        del pixbuf
-        return surface
+        try:
+            # First look in cache
+            cache_path_jpg = self._get_default_icon_path(size, icon_name)
+            if os.path.exists(cache_path_jpg):
+                pixbuf = GdkPixbuf.Pixbuf.new_from_file_at_scale(
+                                                                cache_path_jpg,
+                                                                size,
+                                                                size,
+                                                                False)
+            else:
+                # get a small pixbuf with the given path
+                icon_size = size / 4
+                icon = Gtk.IconTheme.get_default().load_icon(icon_name,
+                                                             icon_size, 0)
+                # create an empty pixbuf with the requested size
+                pixbuf = GdkPixbuf.Pixbuf.new(icon.get_colorspace(),
+                                              True,
+                                              icon.get_bits_per_sample(),
+                                              size,
+                                              size)
+                pixbuf.fill(0xffffffff)
+                icon.composite(pixbuf,
+                               icon_size * 3 / 2,
+                               icon_size * 3 / 2,
+                               icon_size,
+                               icon_size,
+                               icon_size * 3 / 2,
+                               icon_size * 3 / 2,
+                               1, 1,
+                               GdkPixbuf.InterpType.NEAREST, 255)
+                # Gdk < 3.15 was missing save method
+                # > 3.15 is missing savev method
+                try:
+                    pixbuf.save(cache_path_jpg, "jpeg",
+                                ["quality"], ["90"])
+                except:
+                    pixbuf.savev(cache_path_jpg, "jpeg",
+                                 ["quality"], ["90"])
+            surface = Gdk.cairo_surface_create_from_pixbuf(pixbuf, scale, None)
+            del pixbuf
+            return surface
+        except:
+            return self.get_default_icon('computer-fail-symbolic',
+                                         ArtSize.MEDIUM,
+                                         scale)
 
 #######################
 # PRIVATE             #
