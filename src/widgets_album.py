@@ -313,7 +313,7 @@ class AlbumWidget:
         self._show_append(False)
         if Lp().player.is_party():
             Lp().player.set_party(False)
-        track = Track(self._album.tracks_ids[0])
+        track = Track(self._album.track_ids[0])
         Lp().player.load(track)
         Lp().player.set_albums(track.id, self._filter_ids,
                                self._album.genre_ids)

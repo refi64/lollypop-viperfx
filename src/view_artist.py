@@ -291,7 +291,7 @@ class ArtistView(ArtistAlbumsView):
         if Lp().player.is_party():
             Lp().player.set_party(False)
         album_id = Lp().albums.get_ids(self._artist_ids, self._genre_ids)[0]
-        track = Track(Album(album_id).tracks_ids[0])
+        track = Track(Album(album_id).track_ids[0])
         Lp().player.load(track)
         Lp().player.set_albums(track.id, self._artist_ids,
                                self._genre_ids)

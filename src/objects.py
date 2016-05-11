@@ -165,7 +165,7 @@ class Album(Base):
             @return None
         """
         self.genre_ids = genre_ids
-        self._tracks_ids = None
+        self._track_ids = None
         self._tracks = None
 
     def set_artists(self, artist_ids):
@@ -185,22 +185,22 @@ class Album(Base):
         return self.name
 
     @property
-    def tracks_ids(self):
+    def track_ids(self):
         """
             Get album tracks id
             @return list of int
         """
-        if getattr(self, "_tracks_ids") is None:
-            self._tracks_ids = self.db.get_tracks(self.id,
-                                                  self.genre_ids,
-                                                  self.artist_ids)
+        if getattr(self, "_track_ids") is None:
+            self._track_ids = self.db.get_tracks(self.id,
+                                                 self.genre_ids,
+                                                 self.artist_ids)
             # If user tagged track with an artist not present in album
-            if not self._tracks_ids:
+            if not self._track_ids:
                 print("%s missing an album artist in artists" % self.name)
-                self._tracks_ids = self.db.get_tracks(self.id,
-                                                      self.genre_ids,
-                                                      [])
-        return self._tracks_ids
+                self._track_ids = self.db.get_tracks(self.id,
+                                                     self.genre_ids,
+                                                     [])
+        return self._track_ids
 
     @property
     def tracks(self):
@@ -208,8 +208,8 @@ class Album(Base):
             Get album tracks
             @return list of Track
         """
-        if not self._tracks and self.tracks_ids:
-            self._tracks = [Track(track_id) for track_id in self.tracks_ids]
+        if not self._tracks and self.track_ids:
+            self._tracks = [Track(track_id) for track_id in self.track_ids]
         return self._tracks
 
     def disc_names(self, disc):

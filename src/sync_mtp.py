@@ -178,8 +178,8 @@ class MtpSync:
                 stream = None
 
             # Start copying
-            tracks_ids = Lp().playlists.get_track_ids(playlist)
-            for track_id in tracks_ids:
+            track_ids = Lp().playlists.get_track_ids(playlist)
+            for track_id in track_ids:
                 if track_id is None:
                     continue
                 if not self._syncing:
@@ -284,14 +284,14 @@ class MtpSync:
             Delete files not available in playlist
         """
         track_uris = []
-        tracks_ids = []
+        track_ids = []
 
         # Get tracks ids
         for playlist in playlists:
-            tracks_ids += Lp().playlists.get_track_ids(playlist)
+            track_ids += Lp().playlists.get_track_ids(playlist)
 
         # Get tracks uris
-        for track_id in tracks_ids:
+        for track_id in track_ids:
             if not self._syncing:
                 self._fraction = 1.0
                 self._in_thread = False

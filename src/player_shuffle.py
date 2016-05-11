@@ -229,7 +229,7 @@ class ShufflePlayer(BasePlayer):
                 genre_ids = self._context.genre_ids[album_id]
             else:
                 genre_ids = []
-            tracks = Album(album_id, genre_ids).tracks_ids
+            tracks = Album(album_id, genre_ids).track_ids
             for track in sorted(tracks, key=lambda *args: random.random()):
                 if album_id not in self._already_played_tracks.keys() or\
                    track not in self._already_played_tracks[album_id]:

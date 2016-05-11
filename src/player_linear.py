@@ -41,8 +41,8 @@ class LinearPlayer(BasePlayer):
             genre_ids = self._context.genre_ids[self._current_track.album.id]
             artist_ids = self._context.artist_ids[self._current_track.album.id]
             album = Album(self._current_track.album.id, genre_ids, artist_ids)
-            if self._current_track.id in album.tracks_ids:
-                new_track_position = album.tracks_ids.index(
+            if self._current_track.id in album.track_ids:
+                new_track_position = album.track_ids.index(
                                                 self._current_track.id) + 1
                 # next album
                 if new_track_position >= len(album.tracks) or\
@@ -85,8 +85,8 @@ class LinearPlayer(BasePlayer):
             genre_ids = self._context.genre_ids[self._current_track.album.id]
             artist_ids = self._context.artist_ids[self._current_track.album.id]
             album = Album(self._current_track.album.id, genre_ids, artist_ids)
-            if self._current_track.id in album.tracks_ids:
-                new_track_position = album.tracks_ids.index(
+            if self._current_track.id in album.track_ids:
+                new_track_position = album.track_ids.index(
                                                 self._current_track.id) - 1
                 # Previous album
                 if new_track_position < 0:
