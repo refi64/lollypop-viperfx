@@ -231,8 +231,6 @@ class ArtworkSearch(Gtk.Bin):
             self._close_popover()
             if self._album is not None:
                 Lp().art.save_album_artwork(data, self._album.id)
-                Lp().art.clean_album_cache(self._album)
-                Lp().art.album_artwork_update(self._album.id)
             else:
                 for suffix in ["lastfm", "wikipedia", "spotify"]:
                     InfoCache.uncache_artwork(self._artist, suffix,
@@ -291,8 +289,6 @@ class ArtworkSearch(Gtk.Bin):
                     raise
                 if self._album is not None:
                     Lp().art.save_album_artwork(data, self._album.id)
-                    Lp().art.clean_album_cache(self._album)
-                    Lp().art.album_artwork_update(self._album.id)
                 else:
                     for suffix in ["lastfm", "wikipedia", "spotify"]:
                         InfoCache.uncache_artwork(self._artist, suffix,

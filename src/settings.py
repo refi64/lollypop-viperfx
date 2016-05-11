@@ -19,6 +19,7 @@ except:
 
 from gettext import gettext as _
 from threading import Thread
+from shutil import which
 
 from lollypop.define import Lp, Type, SecretSchema, SecretAttributes, ArtSize
 from lollypop.cache import InfoCache
@@ -109,6 +110,15 @@ class SettingsDialog:
 
         switch_mix_party = builder.get_object('switch_mix_party')
         switch_mix_party.set_state(Lp().settings.get_value('party-mix'))
+
+        switch_artwork_tags = builder.get_object('switch_artwork_tags')
+        if which("kid3-cli") is None:
+            switch_artwork_tags.set_sensitive(False)
+            switch_artwork_tags.set_tooltip_text(
+                                            _("You need to install kid3-cli"))
+        else:
+            switch_artwork_tags.set_state(
+                                      Lp().settings.get_value('artwork-tags'))
 
         switch_genres = builder.get_object('switch_genres')
         switch_genres.set_state(Lp().settings.get_value('show-genres'))
@@ -343,6 +353,14 @@ class SettingsDialog:
         """
         value = widget.get_value()
         Lp().settings.set_value('mix-duration', GLib.Variant('i', value))
+
+    def _update_artwork_tags(self, widget, state):
+        """
+            Update artwork in tags setting
+            @param widget as Gtk.Switch
+            @param state as bool
+        """
+        Lp().settings.set_value('artwork-tags', GLib.Variant('b', state))
 
     def _update_compilations_setting(self, widget, state):
         """

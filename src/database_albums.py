@@ -517,9 +517,9 @@ class AlbumsDatabase:
             result = sql.execute(request, filters)
             return list(itertools.chain(*result))
 
-    def get_tracks_path(self, album_id, genre_ids, artist_ids):
+    def get_track_paths(self, album_id, genre_ids, artist_ids):
         """
-            Get tracks path for album id/disc
+            Get track paths for album id/disc
             Will search track from albums from same artist
             with same name and different genre
             @param album id as int

@@ -15,7 +15,6 @@ from gi.repository import GLib, Gio
 from threading import Thread
 import json
 
-from lollypop.objects import Album
 from lollypop.cache import InfoCache
 from lollypop.define import Lp
 from lollypop.utils import debug
@@ -199,8 +198,6 @@ class ArtDownloader:
                 continue
             try:
                     Lp().art.save_album_artwork(data, album_id)
-                    Lp().art.clean_album_cache(Album(album_id))
-                    GLib.idle_add(Lp().art.album_artwork_update, album_id)
             except Exception as e:
                 print("ArtDownloader::_download_albums_art: %s" % e)
                 self._albums_history.append(album_id)

@@ -32,6 +32,11 @@
             <summary>Mini player position</summary>
             <description>Window position (x and y).</description>
         </key>
+        <key type="b" name="artwork-tags">
+            <default>false</default>
+            <summary>Save artwork in tags</summary>
+            <description></description>
+        </key>
         <key type="b" name="repeat">
             <default>true</default>
             <summary>Repeat by default</summary>

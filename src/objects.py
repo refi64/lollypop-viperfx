@@ -154,6 +154,7 @@ class Album(Base):
         Base.__init__(self, Lp().albums)
         self.id = album_id
         self.genre_ids = genre_ids
+        self._track_ids = None
         # Use artist ids from db else
         if artist_ids:
             self.artist_ids = artist_ids
@@ -187,10 +188,10 @@ class Album(Base):
     @property
     def track_ids(self):
         """
-            Get album tracks id
+            Get album track ids
             @return list of int
         """
-        if getattr(self, "_track_ids") is None:
+        if self._track_ids is None:
             self._track_ids = self.db.get_tracks(self.id,
                                                  self.genre_ids,
                                                  self.artist_ids)

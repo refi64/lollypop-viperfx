@@ -14,6 +14,8 @@ from gi.repository import GLib, Gdk, GdkPixbuf, Gio, Gst
 
 import re
 import os
+from shutil import which
+from threading import Thread
 
 from lollypop.art_base import BaseArt
 from lollypop.art_downloader import ArtDownloader
@@ -209,11 +211,18 @@ class AlbumArt(BaseArt, ArtDownloader, TagReader):
             @param album id as int
         """
         try:
+            artpath = None
             album = Album(album_id)
             path_count = Lp().albums.get_path_count(album.path)
             filename = self._get_album_cache_name(album) + ".jpg"
+            if Lp().settings.get_value('artwork-tags') and\
+                    which("kid3-cli") is not None:
+                t = Thread(target=self._save_artwork_tags,
+                           args=(data, album))
+                t.daemon = True
+                t.start()
             # Many albums with same path, suffix with artist_album name
-            if path_count > 1:
+            elif path_count > 1:
                 artpath = os.path.join(album.path, filename)
                 if os.path.exists(os.path.join(album.path, self._favorite)):
                     os.remove(os.path.join(album.path, self._favorite))
@@ -221,14 +230,18 @@ class AlbumArt(BaseArt, ArtDownloader, TagReader):
                 artpath = os.path.join(self._STORE_PATH, filename)
             else:
                 artpath = os.path.join(album.path, self._favorite)
-            stream = Gio.MemoryInputStream.new_from_data(data, None)
-            pixbuf = GdkPixbuf.Pixbuf.new_from_stream_at_scale(stream,
+            if artpath is not None:
+                stream = Gio.MemoryInputStream.new_from_data(data, None)
+                pixbuf = GdkPixbuf.Pixbuf.new_from_stream_at_scale(
+                                                               stream,
                                                                ArtSize.MONSTER,
                                                                ArtSize.MONSTER,
                                                                True,
                                                                None)
-            pixbuf.savev(artpath, "jpeg", ["quality"], ["90"])
-            del pixbuf
+                pixbuf.savev(artpath, "jpeg", ["quality"], ["90"])
+                del pixbuf
+                self.clean_album_cache(album)
+                GLib.idle_add(self.album_artwork_update, album.id)
         except Exception as e:
             print("Art::save_album_artwork(): %s" % e)
 
@@ -247,6 +260,15 @@ class AlbumArt(BaseArt, ArtDownloader, TagReader):
         try:
             for artwork in self.get_album_artworks(album):
                 os.remove(os.path.join(album.path, artwork))
+            if Lp().settings.get_value('artwork-tags') and\
+                    which("kid3-cli") is not None:
+                argv = ["kid3-cli", "-c", "select all", "-c",
+                        "set picture:'' ''"]
+                for path in Lp().albums.get_track_paths(album.id, [], []):
+                    argv.append(path)
+                argv.append(None)
+                GLib.spawn_sync(None, argv, None,
+                                GLib.SpawnFlags.SEARCH_PATH, None)
         except Exception as e:
             print("AlbumArt::remove_album_artwork():", e)
 
@@ -296,6 +318,33 @@ class AlbumArt(BaseArt, ArtDownloader, TagReader):
 #######################
 # PRIVATE             #
 #######################
+    def _save_artwork_tags(self, data, album):
+        """
+            Save artwork in tags
+            @param data as bytes
+            @param album as Album
+        """
+        stream = Gio.MemoryInputStream.new_from_data(data, None)
+        pixbuf = GdkPixbuf.Pixbuf.new_from_stream_at_scale(stream,
+                                                           ArtSize.MONSTER,
+                                                           ArtSize.MONSTER,
+                                                           True,
+                                                           None)
+        pixbuf.savev("/tmp/lollypop_cover_tags.jpg",
+                     "jpeg", ["quality"], ["90"])
+        del pixbuf
+        if os.path.exists("/tmp/lollypop_cover_tags.jpg"):
+            argv = ["kid3-cli", "-c", "select all", "-c",
+                    "set picture:'/tmp/lollypop_cover_tags.jpg' ''"]
+            for path in Lp().albums.get_track_paths(album.id, [], []):
+                argv.append(path)
+            argv.append(None)
+            GLib.spawn_sync(None, argv, None,
+                            GLib.SpawnFlags.SEARCH_PATH, None)
+            os.remove("/tmp/lollypop_cover_tags.jpg")
+            self.clean_album_cache(album)
+            GLib.idle_add(self.album_artwork_update, album.id)
+
     def _get_album_cache_name(self, album):
         """
             Get a uniq string for album

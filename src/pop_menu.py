@@ -452,7 +452,7 @@ class EditMenu(BaseMenu):
         """
         album_path = Lp().albums.get_path(self._object_id)
         argv = [self._tag_editor, album_path, None]
-        (s, pid, i, o, e) = GLib.spawn_async_with_pipes(
+        GLib.spawn_async_with_pipes(
                                 None, argv, None,
                                 GLib.SpawnFlags.SEARCH_PATH |
                                 GLib.SpawnFlags.DO_NOT_REAP_CHILD, None)
