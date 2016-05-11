@@ -744,7 +744,8 @@ class AlbumDetailedWidget(Gtk.Bin, AlbumWidget):
                       tracks,
                       self._tracks_left,
                       disc.number,
-                      pos)
+                      pos,
+                      priority=GLib.PRIORITY_LOW)
 
     def populate_list_right(self, tracks, disc, pos):
         """
@@ -763,7 +764,8 @@ class AlbumDetailedWidget(Gtk.Bin, AlbumWidget):
                           tracks,
                           self._tracks_right,
                           disc.number,
-                          pos)
+                          pos,
+                          priority=GLib.PRIORITY_LOW)
 
     def get_current_ordinate(self, parent):
         """
@@ -930,14 +932,14 @@ class AlbumDetailedWidget(Gtk.Bin, AlbumWidget):
                     idx += 1
                 GLib.idle_add(self._box.attach,
                               self._tracks_left[disc.number],
-                              0, idx, 1, 1)
+                              0, idx, 1, 1, priority=GLib.PRIORITY_LOW)
                 if orientation == Gtk.Orientation.VERTICAL:
                     idx += 1
                 GLib.idle_add(self._box.attach,
                               self._tracks_right[disc.number],
-                              pos, idx, 1, 1)
+                              pos, idx, 1, 1, priority=GLib.PRIORITY_LOW)
                 idx += 1
-                GLib.idle_add(self.set_opacity, 1)
+                GLib.idle_add(self.set_opacity, 1, priority=GLib.PRIORITY_LOW)
         if self._cover is not None:
             if allocation.width < WindowSize.MEDIUM:
                 self._coverbox.hide()

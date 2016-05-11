@@ -59,7 +59,8 @@ class ArtistAlbumsView(LazyLoadingView):
         """
         if albums:
             self._albums_count = len(albums)
-            self._add_albums(albums)
+            GLib.idle_add(self._add_albums, albums,
+                          priority=GLib.PRIORITY_LOW)
 
     def jump_to_current(self):
         """

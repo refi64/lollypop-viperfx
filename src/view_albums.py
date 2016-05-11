@@ -55,7 +55,8 @@ class AlbumsView(LazyLoadingView):
             Populate albums
             @param is compilation as bool
         """
-        self._add_albums(albums)
+        GLib.idle_add(self._add_albums, albums,
+                      priority=GLib.PRIORITY_LOW)
 
     def stop(self):
         """

@@ -77,7 +77,8 @@ class View(Gtk.Grid):
         if widgets:
             widget = widgets.pop(0)
             widget.show_overlay(False)
-            GLib.idle_add(self._disable_overlays, widgets)
+            GLib.idle_add(self._disable_overlays, widgets,
+                          priority=GLib.PRIORITY_LOW)
 
     def _update_widgets(self, widgets):
         """
@@ -88,7 +89,8 @@ class View(Gtk.Grid):
             widget = widgets.pop(0)
             widget.update_state()
             widget.update_playing_indicator()
-            GLib.idle_add(self._update_widgets, widgets)
+            GLib.idle_add(self._update_widgets, widgets,
+                          priority=GLib.PRIORITY_LOW)
 
     def _get_children(self):
         """
@@ -123,7 +125,8 @@ class View(Gtk.Grid):
             Current song changed
             @param player as Player
         """
-        GLib.idle_add(self._update_widgets, self._get_children())
+        GLib.idle_add(self._update_widgets, self._get_children(),
+                      priority=GLib.PRIORITY_LOW)
 
 
 class LazyLoadingView(View):
@@ -157,6 +160,20 @@ class LazyLoadingView(View):
             @param widgets as [AlbumSimpleWidgets]
             @param scroll_value as float
         """
+        GLib.idle_add(self._lazy_loading, widgets, scroll_value,
+                      priority=GLib.PRIORITY_LOW)
+
+#######################
+# PRIVATE             #
+#######################
+    def _lazy_loading(self, widgets=[], scroll_value=0):
+        """
+            Load the view in a lazy way:
+                - widgets first
+                - _waiting_init then
+            @param widgets as [AlbumSimpleWidgets]
+            @param scroll_value as float
+        """
         widget = None
         if self._stop or self._scroll_value != scroll_value:
             return False
@@ -167,14 +184,9 @@ class LazyLoadingView(View):
             widget = self._lazy_queue.pop(0)
         if widget is not None:
             widget.populate()
-            if widgets:
-                GLib.timeout_add(10, self.lazy_loading, widgets, scroll_value)
-            else:
-                GLib.idle_add(self.lazy_loading, widgets, scroll_value)
+            GLib.idle_add(self.lazy_loading, widgets, scroll_value,
+                          priority=GLib.PRIORITY_LOW)
 
-#######################
-# PRIVATE             #
-#######################
     def _is_visible(self, widget):
         """
             Is widget visible in scrolled

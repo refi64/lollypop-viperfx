@@ -110,7 +110,8 @@ class PlaylistsWidget(Gtk.Bin):
         GLib.idle_add(self._add_tracks,
                       tracks,
                       self._tracks_widget_left,
-                      pos)
+                      pos,
+                      priority=GLib.PRIORITY_LOW)
 
     def populate_list_right(self, tracks, pos):
         """
@@ -130,7 +131,8 @@ class PlaylistsWidget(Gtk.Bin):
             GLib.idle_add(self._add_tracks,
                           tracks,
                           self._tracks_widget_right,
-                          pos)
+                          pos,
+                          priority=GLib.PRIORITY_LOW)
 
     def update_playing_indicator(self):
         """
@@ -208,7 +210,7 @@ class PlaylistsWidget(Gtk.Bin):
         row.show()
         widget.insert(row, pos)
         GLib.idle_add(self._add_tracks, tracks, widget,
-                      pos + 1, track.album.id)
+                      pos + 1, track.album.id, priority=GLib.PRIORITY_LOW)
 
     def _update_tracks(self):
         """
@@ -375,8 +377,10 @@ class PlaylistsWidget(Gtk.Bin):
         if redraw:
             for child in self._box.get_children():
                 self._box.remove(child)
-            GLib.idle_add(self._box.add, self._tracks_widget_left)
-            GLib.idle_add(self._box.add, self._tracks_widget_right)
+            GLib.idle_add(self._box.add, self._tracks_widget_left,
+                          priority=GLib.PRIORITY_LOW)
+            GLib.idle_add(self._box.add, self._tracks_widget_right,
+                          priority=GLib.PRIORITY_LOW)
         self._update_headers()
 
     def _on_activated(self, widget, track_id):
@@ -468,7 +472,7 @@ class PlaylistsManagerWidget(Gtk.Bin):
         """
         playlists = Lp().playlists.get()
         self._append_playlists(playlists)
-        GLib.idle_add(self._get_focus)
+        GLib.idle_add(self._get_focus, priority=GLib.PRIORITY_LOW)
 
     def add_new_playlist(self):
         """
@@ -733,7 +737,8 @@ class PlaylistEditWidget(Gtk.Bin):
             Append tracks
         """
         track_ids = Lp().playlists.get_track_ids(self._playlist_id)
-        GLib.idle_add(self._append_track, track_ids)
+        GLib.idle_add(self._append_track, track_ids,
+                      priority=GLib.PRIORITY_LOW)
 
     def _append_track(self, track_ids):
         """
@@ -751,7 +756,8 @@ class PlaylistEditWidget(Gtk.Bin):
                                    escape(artists),
                                    escape(track.name)),
                                 'user-trash-symbolic', track.id])
-            GLib.idle_add(self._append_track, track_ids)
+            GLib.idle_add(self._append_track, track_ids,
+                          priority=GLib.PRIORITY_LOW)
         else:
             self._view.grab_focus()
             self._in_thread = False
