@@ -14,6 +14,7 @@ from gi.repository import Gtk, Gdk, Pango
 
 from gettext import gettext as _
 from math import pi
+from cgi import escape
 
 from lollypop.define import Lp, ArtSize
 from lollypop.objects import Track, Album
@@ -63,7 +64,14 @@ class ArtistView(ArtistAlbumsView):
         artists = []
         for artist_id in artist_ids:
             artists.append(Lp().artists.get_name(artist_id))
-        self._label.set_label(", ".join(artists))
+        if Lp().settings.get_value('artist-artwork'):
+            self._label.set_markup("<span size='x-large' weight='bold'>" +
+                                   escape(", ".join(artists)) +
+                                   "</span>")
+        else:
+            self._label.set_markup("<span size='large' weight='bold'>" +
+                                   escape(", ".join(artists)) +
+                                   "</span>")
 
     def jump_to_current(self):
         """
