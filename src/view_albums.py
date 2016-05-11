@@ -101,7 +101,8 @@ class AlbumsView(LazyLoadingView):
             self._albumbox.insert(widget, -1)
             widget.show()
             self._lazy_queue.append(widget)
-            GLib.idle_add(self._add_albums, albums)
+            GLib.idle_add(self._add_albums, albums,
+                          priority=GLib.PRIORITY_DEFAULT)
         else:
             GLib.idle_add(self.lazy_loading)
             if self._viewport.get_child() is None:
