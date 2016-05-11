@@ -212,17 +212,19 @@ class AlbumArt(BaseArt, ArtDownloader, TagReader):
         """
         try:
             artpath = None
+            save_to_tags = Lp().settings.get_value('artwork-tags') and\
+                which("kid3-cli") is not None
             album = Album(album_id)
             path_count = Lp().albums.get_path_count(album.path)
             filename = self._get_album_cache_name(album) + ".jpg"
-            if Lp().settings.get_value('artwork-tags') and\
-                    which("kid3-cli") is not None:
+            if save_to_tags:
                 t = Thread(target=self._save_artwork_tags,
                            args=(data, album))
                 t.daemon = True
                 t.start()
+
             # Many albums with same path, suffix with artist_album name
-            elif path_count > 1:
+            if path_count > 1:
                 artpath = os.path.join(album.path, filename)
                 if os.path.exists(os.path.join(album.path, self._favorite)):
                     os.remove(os.path.join(album.path, self._favorite))
@@ -230,7 +232,8 @@ class AlbumArt(BaseArt, ArtDownloader, TagReader):
                 artpath = os.path.join(self._STORE_PATH, filename)
             else:
                 artpath = os.path.join(album.path, self._favorite)
-            if artpath is not None:
+            # Update cover file if exists event if we have written to tags
+            if not save_to_tags or os.path.exists(artpath):
                 stream = Gio.MemoryInputStream.new_from_data(data, None)
                 pixbuf = GdkPixbuf.Pixbuf.new_from_stream_at_scale(
                                                                stream,
