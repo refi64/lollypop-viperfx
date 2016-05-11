@@ -244,7 +244,6 @@ class ArtistView(ArtistAlbumsView):
         """
         self._update_jump_button()
         self._spinner.stop()
-        self._spinner.hide()
         ArtistAlbumsView._on_populated(self, widget, widgets, scroll_value)
 
     def _on_current_changed(self, player):

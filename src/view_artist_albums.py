@@ -146,7 +146,7 @@ class ArtistAlbumsView(LazyLoadingView):
             widget.show()
             self._albumbox.add(widget)
             GLib.idle_add(self._add_albums, albums,
-                          priority=GLib.PRIORITY_DEFAULT)
+                          priority=GLib.PRIORITY_LOW)
         else:
             if self._viewport.get_child() is None:
                 self._viewport.add(self._albumbox)
