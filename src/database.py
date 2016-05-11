@@ -72,6 +72,10 @@ class Database:
                                                 album_id)'''
     create_track_artists_idx = '''CREATE index idx_ta ON track_artists(
                                                 track_id)'''
+    create_album_genres_idx = '''CREATE index idx_ag ON album_genres(
+                                                album_id)'''
+    create_track_genres_idx = '''CREATE index idx_tg ON track_genres(
+                                                track_id)'''
 
     def __init__(self):
         """
@@ -100,6 +104,8 @@ class Database:
                     sql.execute(self.create_track_genres)
                     sql.execute(self.create_album_artists_idx)
                     sql.execute(self.create_track_artists_idx)
+                    sql.execute(self.create_album_genres_idx)
+                    sql.execute(self.create_track_genres_idx)
                     sql.commit()
                     Lp().settings.set_value('db-version',
                                             GLib.Variant('i', upgrade.count()))
