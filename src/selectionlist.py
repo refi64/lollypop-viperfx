@@ -117,6 +117,8 @@ class SelectionList(Gtk.ScrolledWindow):
         self.get_vadjustment().connect('value_changed', self._on_scroll)
         self.connect('enter-notify-event', self._on_enter_notify)
         self.connect('leave-notify-event', self._on_leave_notify)
+        Lp().art.connect('artist-artwork-changed',
+                         self._on_artist_artwork_changed)
 
     def mark_as_artists(self, is_artists):
         """
@@ -498,6 +500,17 @@ class SelectionList(Gtk.ScrolledWindow):
             self._popover.set_pointing_to(r)
             self._popover.set_position(Gtk.PositionType.RIGHT)
             self._popover.show()
+
+    def _on_artist_artwork_changed(self, art, artist):
+        """
+            Update row
+        """
+        if self._is_artists:
+            self._renderer0.on_artist_artwork_changed(artist)
+            for item in self._model:
+                if item[1] == artist:
+                    item[1] = artist
+                    break
 
     def _on_query_tooltip(self, widget, x, y, keyboard, tooltip):
         """

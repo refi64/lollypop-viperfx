@@ -138,6 +138,8 @@ class ScannerTagReader(TagReader):
         if not sortnames:
             for i in range(tags.get_tag_size('artist-sortname')):
                 (exists, read) = tags.get_string_index('artist-sortname', i)
+                if exists:
+                    sortnames.append(read)
         return "; ".join(sortnames)
 
     def get_album_artist(self, tags):

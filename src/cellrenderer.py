@@ -65,8 +65,6 @@ class CellRendererArtist(Gtk.CellRendererText):
         Gtk.CellRendererText.__init__(self)
         self._is_artists = False
         self._surfaces = {}
-        Lp().art.connect('artist-artwork-changed',
-                         self._on_artist_artwork_changed)
 
     def set_is_artists(self, is_artists):
         self._is_artists = is_artists
@@ -135,7 +133,7 @@ class CellRendererArtist(Gtk.CellRendererText):
             return Gtk.CellRendererText.do_get_preferred_height_for_width(
                                                            self, widget, width)
 
-    def _on_artist_artwork_changed(self, art, artist):
+    def on_artist_artwork_changed(self, artist):
         artist_id = Lp().artists.get_id(artist)
         if artist_id in self._surfaces.keys():
             self._surfaces.pop(artist_id)

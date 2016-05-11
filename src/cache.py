@@ -15,7 +15,7 @@ from gi.repository import Gio, GdkPixbuf
 from os import mkdir, path
 
 from lollypop.utils import escape
-from lollypop.define import ArtSize, Lp
+from lollypop.define import ArtSize
 
 
 class InfoCache:
@@ -39,9 +39,15 @@ class InfoCache:
             Return True if an info is cached
             @param prefix as string
         """
-        return InfoCache.get_artwork(prefix, "lastfm") is not None or\
-            InfoCache.get_artwork(prefix, "wikipedia") is not None or\
-            InfoCache.get_artwork(prefix, "spotify") is not None
+        exists = False
+        for suffix in ["lastfm", "wikipedia", "spotify"]:
+            filepath = "%s/%s_%s_%s.jpg" % (InfoCache.CACHE_PATH,
+                                            escape(prefix),
+                                            suffix,
+                                            ArtSize.ARTIST)
+            if path.exists(filepath):
+                exists = True
+        return exists
 
     def get_artwork(prefix, suffix, size=ArtSize.ARTIST):
         """
@@ -149,7 +155,7 @@ class InfoCache:
                 fstream.write(content, None)
                 fstream.close()
         if data is None:
-            f = Gio.File.new_for_path(filepath+".jpg")
+            f = Gio.File.new_for_path(filepath+"_"+str(ArtSize.ARTIST)+".jpg")
             fstream = f.replace(None, False,
                                 Gio.FileCreateFlags.REPLACE_DESTINATION, None)
             fstream.close()
@@ -162,7 +168,6 @@ class InfoCache:
                                                                None)
             pixbuf.savev(filepath+"_"+str(ArtSize.ARTIST)+".jpg",
                          "jpeg", ["quality"], ["90"])
-            Lp().art.emit('artist-artwork-changed', prefix)
             del pixbuf
 
     def uncache(prefix, suffix):

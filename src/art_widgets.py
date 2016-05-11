@@ -238,6 +238,7 @@ class ArtworkSearch(Gtk.Bin):
                     InfoCache.uncache_artwork(self._artist, suffix,
                                               flowbox.get_scale_factor())
                     InfoCache.cache(self._artist, None, data, suffix)
+                Lp().art.emit('artist-artwork-changed', self._artist)
             self._streams = {}
         except:
             self._infobar_label.set_text(_("Reset artwork?"))
@@ -297,6 +298,7 @@ class ArtworkSearch(Gtk.Bin):
                         InfoCache.uncache_artwork(self._artist, suffix,
                                                   button.get_scale_factor())
                         InfoCache.cache(self._artist, None, data, suffix)
+                    Lp().art.emit('artist-artwork-changed', self._artist)
                 self._streams = {}
             except Exception as e:
                 print("ArtworkSearch::_on_button_clicked():", e)
@@ -316,6 +318,7 @@ class ArtworkSearch(Gtk.Bin):
             for suffix in ["lastfm", "wikipedia", "spotify"]:
                 InfoCache.uncache_artwork(self._artist, suffix,
                                           button.get_scale_factor())
+                InfoCache.cache(self._artist, None, None, suffix)
                 Lp().art.emit('artist-artwork-changed', self._artist)
         self._close_popover()
 
