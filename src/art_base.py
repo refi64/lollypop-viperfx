@@ -20,7 +20,7 @@ from gi.repository import Gtk, Gdk, GObject, GdkPixbuf
 
 import os
 
-from lollypop.define import ArtSize
+from lollypop.define import ArtSize, Lp
 
 
 class BaseArt(GObject.GObject):
@@ -42,6 +42,18 @@ class BaseArt(GObject.GObject):
             Init base art
         """
         GObject.GObject.__init__(self)
+
+    def update_art_size(self):
+        """
+            Update value with some check
+        """
+        value = Lp().settings.get_value('cover-size').get_int32()
+        # Check value as user can enter bad value via dconf
+        if value < ArtSize.SMALL or value > ArtSize.MAX:
+            value = 200
+        ArtSize.BIG = value
+        # For a 200 album artwork, we want a 60 artist artwork
+        ArtSize.ARTIST_SMALL = ArtSize.BIG * 60 / 200
 
     def get_default_icon(self, icon_name, size, scale):
         """

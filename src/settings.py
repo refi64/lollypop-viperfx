@@ -21,7 +21,7 @@ from gettext import gettext as _
 from threading import Thread
 from shutil import which
 
-from lollypop.define import Lp, Type, SecretSchema, SecretAttributes, ArtSize
+from lollypop.define import Lp, Type, SecretSchema, SecretAttributes
 from lollypop.cache import InfoCache
 
 
@@ -263,14 +263,12 @@ class SettingsDialog:
         self._cover_tid = None
         value = widget.get_value()
         Lp().settings.set_value('cover-size', GLib.Variant('i', value))
-        ArtSize.BIG = value
+        Lp().art.update_art_size()
         for suffix in ["lastfm", "wikipedia", "spotify"]:
             for artist in Lp().artists.get([]):
                 InfoCache.uncache_artwork(artist[1], suffix,
                                           widget.get_scale_factor())
                 Lp().art.emit('artist-artwork-changed', artist[1])
-        # For a 200 album artwork, we want a 60 artist artwork
-        ArtSize.ARTIST_SMALL = ArtSize.BIG * 60 / 200
         Lp().window.reload_view()
 
     def _update_ui_setting(self, widget, state):

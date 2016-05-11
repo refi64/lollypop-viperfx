@@ -76,6 +76,7 @@ class ArtSize:
     BIG = 200
     ARTIST = 800
     MONSTER = 900
+    MAX = 4000
 
 
 class Shuffle:

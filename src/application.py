@@ -36,7 +36,7 @@ except Exception as e:
     LastFM = None
 
 from lollypop.utils import is_gnome, is_unity
-from lollypop.define import ArtSize, Type, DataPath
+from lollypop.define import Type, DataPath
 from lollypop.window import Window
 from lollypop.database import Database
 from lollypop.player import Player
@@ -135,9 +135,6 @@ class Application(Gtk.Application):
         styleContext.add_provider_for_screen(screen, cssProvider,
                                              Gtk.STYLE_PROVIDER_PRIORITY_USER)
         self.settings = Settings.new()
-        ArtSize.BIG = self.settings.get_value('cover-size').get_int32()
-        # For a 200 album artwork, we want a 60 artist artwork
-        ArtSize.ARTIST_SMALL = ArtSize.BIG * 60 / 200
         self.db = Database()
         self.playlists = Playlists()
         # We store cursors for main thread
@@ -150,6 +147,7 @@ class Application(Gtk.Application):
         self.player = Player()
         self.scanner = CollectionScanner()
         self.art = Art()
+        self.art.update_art_size()
         if self.settings.get_value('artist-artwork'):
             GLib.timeout_add(5000, self.art.cache_artists_art)
         if LastFM is not None:
