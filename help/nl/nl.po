@@ -1,11 +1,11 @@
 # 
 # Translators:
-# Nathan Follens, 2015
+# Nathan Follens, 2015-2016
 msgid ""
 msgstr ""
 "Project-Id-Version: lollypop\n"
-"POT-Creation-Date: 2015-06-24 15:43+0200\n"
-"PO-Revision-Date: 2015-06-25 09:45+0000\n"
+"POT-Creation-Date: 2016-05-09 15:53+0200\n"
+"PO-Revision-Date: 2016-05-09 15:22+0000\n"
 "Last-Translator: Nathan Follens\n"
 "Language-Team: Dutch (http://www.transifex.com/gnumdk/lollypop/language/nl/)\n"
 "MIME-Version: 1.0\n"
@@ -146,46 +146,51 @@ msgstr "Control+f: Feestmodus"
 
 #. (itstool) path: item/p
 #: C/index.page:54
-msgid "Control+m or F11: Fullscreen"
-msgstr "Control+m of F11: Volledig scherm"
+msgid "F7 or F11: Fullscreen"
+msgstr "F7 of F11: Volledig scherm"
 
 #. (itstool) path: item/p
 #: C/index.page:55
+msgid "Control+m: Mini player"
+msgstr "Control+m: Minispeler"
+
+#. (itstool) path: item/p
+#: C/index.page:56
 msgid "x: Play"
 msgstr "x: Afspelen"
 
 #. (itstool) path: item/p
-#: C/index.page:56
+#: C/index.page:57
 msgid "c: Pause"
 msgstr "c: Pauzeren"
 
 #. (itstool) path: item/p
-#: C/index.page:57
+#: C/index.page:58
 msgid "v: Stop"
-msgstr "v: Afspelen beëindigen"
+msgstr "v: Stoppen"
 
 #. (itstool) path: item/p
-#: C/index.page:58
+#: C/index.page:59
 msgid "n: Next track"
 msgstr "n: Volgend nummer"
 
 #. (itstool) path: item/p
-#: C/index.page:59
+#: C/index.page:60
 msgid "p: Previous track"
 msgstr "p: Vorig nummer"
 
 #. (itstool) path: item/p
-#: C/index.page:60
+#: C/index.page:61
 msgid "Control+n: Skip current album"
 msgstr "Control+n: Huidig album overslaan"
 
 #. (itstool) path: item/p
-#: C/index.page:61
+#: C/index.page:62
 msgid "Left key: Skip backward in track"
 msgstr "Links pijltje: Terugspoelen in nummer"
 
 #. (itstool) path: item/p
-#: C/index.page:62
+#: C/index.page:63
 msgid "Right key: Skip forward in track"
 msgstr "Rechts pijltje: Doorspoelen in nummer"
 

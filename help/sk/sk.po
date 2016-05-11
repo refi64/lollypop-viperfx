@@ -4,9 +4,9 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: lollypop\n"
-"POT-Creation-Date: 2015-06-24 15:43+0200\n"
-"PO-Revision-Date: 2015-10-22 19:57+0000\n"
-"Last-Translator: Dušan Kazik <prescott66@gmail.com>\n"
+"POT-Creation-Date: 2016-05-09 15:53+0200\n"
+"PO-Revision-Date: 2016-05-09 13:54+0000\n"
+"Last-Translator: Cédric Bellegarde <web@adishatz.org>\n"
 "Language-Team: Slovak (http://www.transifex.com/gnumdk/lollypop/language/sk/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -146,46 +146,51 @@ msgstr "Control+p: Párty režim"
 
 #. (itstool) path: item/p
 #: C/index.page:54
-msgid "Control+m or F11: Fullscreen"
-msgstr "Control+m alebo F11: Režim na celú obrazovku"
+msgid "F7 or F11: Fullscreen"
+msgstr ""
 
 #. (itstool) path: item/p
 #: C/index.page:55
+msgid "Control+m: Mini player"
+msgstr ""
+
+#. (itstool) path: item/p
+#: C/index.page:56
 msgid "x: Play"
 msgstr "x: Prehrávanie"
 
 #. (itstool) path: item/p
-#: C/index.page:56
+#: C/index.page:57
 msgid "c: Pause"
 msgstr "c: Pozastavenie"
 
 #. (itstool) path: item/p
-#: C/index.page:57
+#: C/index.page:58
 msgid "v: Stop"
 msgstr "v: Zastavenie"
 
 #. (itstool) path: item/p
-#: C/index.page:58
+#: C/index.page:59
 msgid "n: Next track"
 msgstr "n: Nasledujúca stopa"
 
 #. (itstool) path: item/p
-#: C/index.page:59
+#: C/index.page:60
 msgid "p: Previous track"
 msgstr "p: Predchádzajúca stopa"
 
 #. (itstool) path: item/p
-#: C/index.page:60
+#: C/index.page:61
 msgid "Control+n: Skip current album"
 msgstr "Control+n: Preskočenie aktuálneho albumu"
 
 #. (itstool) path: item/p
-#: C/index.page:61
+#: C/index.page:62
 msgid "Left key: Skip backward in track"
 msgstr "Šípka vľavo: Preskočenie späť v stope"
 
 #. (itstool) path: item/p
-#: C/index.page:62
+#: C/index.page:63
 msgid "Right key: Skip forward in track"
 msgstr "Šípka vpravo: Preskočenie dopredu v stope"
 

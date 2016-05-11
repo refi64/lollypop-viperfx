@@ -12,8 +12,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lollypop\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-05-02 12:26+0200\n"
-"PO-Revision-Date: 2016-05-02 10:27+0000\n"
+"POT-Creation-Date: 2016-05-09 17:29+0200\n"
+"PO-Revision-Date: 2016-05-09 16:18+0000\n"
 "Last-Translator: Cédric Bellegarde <web@adishatz.org>\n"
 "Language-Team: German (http://www.transifex.com/gnumdk/lollypop/language/de/)\n"
 "MIME-Version: 1.0\n"
@@ -317,7 +317,7 @@ msgid_plural "%d tracks"
 msgstr[0] "%d Titel"
 msgstr[1] "%d Titel"
 
-#: ../src/application.py:446
+#: ../src/application.py:459
 msgid "Lollypop: You need to install yelp."
 msgstr "Lollypop: Yelp muss installiert sein."
 
@@ -325,7 +325,7 @@ msgstr "Lollypop: Yelp muss installiert sein."
 msgid "Select artwork"
 msgstr "Bild wählen"
 
-#: ../src/art_widgets.py:164
+#: ../src/art_widgets.py:165
 msgid "No cover found..."
 msgstr "Kein Cover gefunden ..."
 
@@ -337,41 +337,41 @@ msgstr ""
 msgid "Your music is updating"
 msgstr "Deine Musik wird gerade aktualisiert"
 
-#: ../src/collectionscanner.py:246 ../src/database_albums.py:299
+#: ../src/collectionscanner.py:247 ../src/database_albums.py:299
 #: ../src/database_artists.py:104 ../src/database_genres.py:69
-#: ../src/database_tracks.py:229 ../src/selectionlist.py:274
+#: ../src/database_tracks.py:232 ../src/selectionlist.py:276
 #: ../src/tagreader.py:87 ../src/tagreader.py:102 ../src/tagreader.py:117
 #: ../src/tagreader.py:150 ../src/tagreader.py:165 ../src/tagreader.py:168
 #: ../src/tagreader.py:178 ../src/tagreader.py:185
 msgid "Unknown"
 msgstr "Unbekannt"
 
-#: ../src/container.py:421
+#: ../src/container.py:420
 msgid "Popular albums"
 msgstr "Beliebte Alben"
 
-#: ../src/container.py:422
+#: ../src/container.py:421
 msgid "Recently added albums"
 msgstr "Kürzlich hinzugefügte Alben"
 
-#: ../src/container.py:423
+#: ../src/container.py:422
 msgid "Random albums"
 msgstr "Zufällige Alben"
 
-#: ../src/container.py:424 ../src/pop_menu.py:411 ../src/pop_menu.py:475
+#: ../src/container.py:423 ../src/pop_menu.py:411 ../src/pop_menu.py:475
 #: ../src/pop_menu.py:495
 msgid "Playlists"
 msgstr "Wiedergabelisten"
 
-#: ../src/container.py:425
+#: ../src/container.py:424
 msgid "Radios"
 msgstr "Stationen"
 
-#: ../src/container.py:427
+#: ../src/container.py:426
 msgid "All artists"
 msgstr "Alle Künstler"
 
-#: ../src/container.py:429 ../data/DeviceManagerWidget.ui.h:1
+#: ../src/container.py:428 ../data/DeviceManagerWidget.ui.h:1
 msgid "All albums"
 msgstr "Alle Alben"
 
@@ -379,19 +379,19 @@ msgstr "Alle Alben"
 msgid "Compilations"
 msgstr "Kompilationen"
 
-#: ../src/container.py:499 ../src/playlists.py:231
+#: ../src/container.py:500 ../src/playlists.py:231
 msgid "Popular tracks"
 msgstr "Beliebte Titel"
 
-#: ../src/container.py:500 ../src/playlists.py:233
+#: ../src/container.py:501 ../src/playlists.py:233
 msgid "Recently played"
 msgstr "Kürzlich abgespielt"
 
-#: ../src/container.py:501 ../src/playlists.py:235
+#: ../src/container.py:502 ../src/playlists.py:235
 msgid "Never played"
 msgstr "Noch nie abgespielt"
 
-#: ../src/container.py:502 ../src/playlists.py:237
+#: ../src/container.py:503 ../src/playlists.py:237
 msgid "Random tracks"
 msgstr "Zufällige Titel"
 
@@ -400,7 +400,7 @@ msgid "Pause"
 msgstr "Pause"
 
 #: ../src/controllers.py:86 ../src/controllers.py:114 ../src/pop_tunein.py:170
-#: ../src/widgets_album.py:465 ../src/widgets_radio.py:166
+#: ../src/widgets_album.py:471 ../src/widgets_radio.py:166
 #: ../data/AlbumDetailedWidget.ui.h:1 ../data/ArtistView.ui.h:2
 #: ../data/ToolbarPlayback.ui.h:2
 msgid "Play"
@@ -563,7 +563,7 @@ msgstr "Spiele Wiedergabelisten"
 msgid "The the"
 msgstr "Der der"
 
-#: ../src/view_artist.py:151 ../src/widgets_album.py:211
+#: ../src/view_artist.py:151 ../src/widgets_album.py:219
 msgid "Remove"
 msgstr "Entfernen"
 
@@ -576,34 +576,34 @@ msgstr "%s synchronisieren"
 msgid "Cancel synchronization"
 msgstr "Synchronisation abbrechen"
 
-#: ../src/widgets_album.py:207
+#: ../src/widgets_album.py:215
 msgid "Append"
 msgstr "Anhängen"
 
-#: ../src/widgets_album.py:476 ../data/AlbumDetailedWidget.ui.h:3
+#: ../src/widgets_album.py:482 ../data/AlbumDetailedWidget.ui.h:3
 msgid "Play albums"
 msgstr "Album wiedergeben"
 
-#: ../src/widgets_album.py:486 ../data/AlbumDetailedWidget.ui.h:2
+#: ../src/widgets_album.py:492 ../data/AlbumDetailedWidget.ui.h:2
 msgid "Change artwork"
 msgstr "Coverbild ändern"
 
-#: ../src/widgets_album.py:650
+#: ../src/widgets_album.py:656
 #, python-format
 msgid "%s h  %s m"
 msgstr "%s h %s m"
 
-#: ../src/widgets_album.py:652
+#: ../src/widgets_album.py:658
 #, python-format
 msgid "%s h"
 msgstr "%s h"
 
-#: ../src/widgets_album.py:654
+#: ../src/widgets_album.py:660
 #, python-format
 msgid "%s m"
 msgstr "%s m"
 
-#: ../src/widgets_album.py:913
+#: ../src/widgets_album.py:919
 #, python-format
 msgid "Disc %s"
 msgstr "CD %s"
@@ -625,12 +625,12 @@ msgid "New playlist "
 msgstr "Neue Wiedergabeliste"
 
 #. Need a copy, segfault on EOS 3.1
-#: ../src/widgets_playlist.py:542 ../src/widgets_playlist.py:789
+#: ../src/widgets_playlist.py:542 ../src/widgets_playlist.py:791
 #, python-format
 msgid "Remove \"%s\"?"
 msgstr "\"%s\" entfernen?"
 
-#: ../src/widgets_playlist.py:795
+#: ../src/widgets_playlist.py:799
 msgid "Remove these tracks?"
 msgstr "Diese Titel entfernen?"
 
@@ -676,14 +676,18 @@ msgid "_Preferences"
 msgstr "_Einstellungen"
 
 #: ../data/Appmenu.ui.h:4
-msgid "_About"
-msgstr "_Über"
+msgid "_Keyboard Shortcuts"
+msgstr ""
 
 #: ../data/Appmenu.ui.h:5
 msgid "_Help"
 msgstr "_Hilfe"
 
 #: ../data/Appmenu.ui.h:6
+msgid "_About"
+msgstr "_Über"
+
+#: ../data/Appmenu.ui.h:7
 msgid "_Quit"
 msgstr "_Beenden"
 
@@ -915,3 +919,88 @@ msgid ""
 "Lollypop isn't designed to work without an unicode locale.\n"
 "Please fix your system."
 msgstr "Ohne Unicode-Locale wird Lollypop nicht (richtig) funktionieren.\nBitte behebe das in deinem System."
+
+#: ../data/Shortcuts.ui.h:1
+msgctxt "shortcut window"
+msgid "General"
+msgstr ""
+
+#: ../data/Shortcuts.ui.h:2
+msgctxt "shortcut window"
+msgid "Settings"
+msgstr "Einstellungen"
+
+#: ../data/Shortcuts.ui.h:3
+msgctxt "shortcut window"
+msgid "Search"
+msgstr "Suche"
+
+#: ../data/Shortcuts.ui.h:4
+msgctxt "shortcut window"
+msgid "Party mode"
+msgstr "Partymodus"
+
+#: ../data/Shortcuts.ui.h:5
+msgctxt "shortcut window"
+msgid "Mini Player"
+msgstr ""
+
+#: ../data/Shortcuts.ui.h:6
+msgctxt "shortcut window"
+msgid "Fullscreen"
+msgstr ""
+
+#: ../data/Shortcuts.ui.h:7
+msgctxt "shortcut window"
+msgid "Love current track"
+msgstr ""
+
+#: ../data/Shortcuts.ui.h:8
+msgctxt "shortcut window"
+msgid "Playback"
+msgstr "Wiedergabe"
+
+#: ../data/Shortcuts.ui.h:9
+msgctxt "shortcut window"
+msgid "Play"
+msgstr "Wiedergabe"
+
+#: ../data/Shortcuts.ui.h:10
+msgctxt "shortcut window"
+msgid "Pause"
+msgstr "Pause"
+
+#: ../data/Shortcuts.ui.h:11
+msgctxt "shortcut window"
+msgid "Stop"
+msgstr ""
+
+#: ../data/Shortcuts.ui.h:12
+msgctxt "shortcut window"
+msgid "Next track"
+msgstr "Nächster Titel"
+
+#: ../data/Shortcuts.ui.h:13
+msgctxt "shortcut window"
+msgid "Previous track"
+msgstr ""
+
+#: ../data/Shortcuts.ui.h:14
+msgctxt "shortcut window"
+msgid "Skip current album"
+msgstr ""
+
+#: ../data/Shortcuts.ui.h:15
+msgctxt "shortcut window"
+msgid "Repeat track"
+msgstr ""
+
+#: ../data/Shortcuts.ui.h:16
+msgctxt "shortcut window"
+msgid "Skip backward in track"
+msgstr ""
+
+#: ../data/Shortcuts.ui.h:17
+msgctxt "shortcut window"
+msgid "Skip forward in track"
+msgstr ""

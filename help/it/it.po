@@ -1,12 +1,13 @@
 # 
 # Translators:
+# Gianvito Cavasoli <gianvito@gmx.it>, 2016
 # Pietro Acinapura <pietro.ac@gmail.com>, 2015
 msgid ""
 msgstr ""
 "Project-Id-Version: lollypop\n"
-"POT-Creation-Date: 2015-06-24 15:43+0200\n"
-"PO-Revision-Date: 2015-06-25 10:36+0000\n"
-"Last-Translator: Pietro Acinapura <pietro.ac@gmail.com>\n"
+"POT-Creation-Date: 2016-05-09 15:53+0200\n"
+"PO-Revision-Date: 2016-05-11 11:31+0000\n"
+"Last-Translator: Gianvito Cavasoli <gianvito@gmx.it>\n"
 "Language-Team: Italian (http://www.transifex.com/gnumdk/lollypop/language/it/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -17,7 +18,7 @@ msgstr ""
 #. Put one translator per line, in the form NAME <EMAIL>, YEAR1, YEAR2
 msgctxt "_"
 msgid "translator-credits"
-msgstr "Pietro Acinapura"
+msgstr "Gianvito Cavasoli <gianvito@gmx.it>"
 
 #. (itstool) path: info/desc
 #: C/index.page:7
@@ -28,7 +29,7 @@ msgstr "Aiuto per il riproduttore musicale Lollypop"
 #: C/index.page:8
 msgctxt "text"
 msgid "Lollypop music player"
-msgstr "Riproduttore di musica Lollypop"
+msgstr "Riproduttore musicale Lollypop"
 
 #. (itstool) path: credit/name
 #: C/index.page:11
@@ -43,51 +44,51 @@ msgstr "2015"
 #. (itstool) path: page/title
 #: C/index.page:18
 msgid "<_:media-1/> Lollypop music player"
-msgstr "<_:media-1/> Riproduttore di musica Lollypop"
+msgstr "<_:media-1/> Riproduttore musicale Lollypop"
 
 #. (itstool) path: section/title
 #: C/index.page:21
 msgid "Add music"
-msgstr "Aggiungi musica"
+msgstr "Aggiungere musica"
 
 #. (itstool) path: section/p
 #: C/index.page:22
 msgid "If lollypop fails to detect your music:"
-msgstr "Se Lollypop fallisce nell'individuare la tua musica:"
+msgstr "Se l'applicazione fallisce nell'individuare la musica:"
 
 #. (itstool) path: item/p
 #: C/index.page:24
 msgid "Check you have gstreamer-libav or gstreamer-fluendo installed"
-msgstr "Controlla se gstreamer-libav o gstreamer-fluendo sono installati"
+msgstr "Verifica che gstreamer-libav o gstreamer-fluendo siano installati"
 
 #. (itstool) path: item/p
 #: C/index.page:25
 msgid ""
 "Go to the application menu: \"<sys>Settings -&gt; Music</sys>\" and add your"
 " music folder"
-msgstr "Vai nel menu applicazione: \"<sys>Impostazioni -&gt; Musica</sys>\" e aggiungi la tua cartella di musica"
+msgstr "Vai nel menu dell'applicazione: \"<sys>Impostazioni -&gt; Musica</sys>\" e aggiungi la cartella della musica"
 
 #. (itstool) path: section/title
 #: C/index.page:30
 msgid "Playback"
-msgstr "Riproduci"
+msgstr "Riproduzione"
 
 #. (itstool) path: section/p
 #: C/index.page:31
 msgid "When you start playing a song, a contextual playlist is populated."
-msgstr "Quando si avvia la riproduzione di un brano, una playlist contestuale viene popolata."
+msgstr "Quando si avvia la riproduzione di un brano, una scaletta contestuale viene popolata."
 
 #. (itstool) path: section/p
 #: C/index.page:32
 msgid ""
 "Contexts can be: an album, an artist, a genre, popular or recent albums, "
 "searches, playlists, ..."
-msgstr "I contesti posso essere: un album, un artista, un genere, album recenti o popolari, ricerche, playlist, ..."
+msgstr "I contesti possono essere: un album, un artista, un genere, album popolari o recenti, ricerche, scalette, ..."
 
 #. (itstool) path: section/p
 #: C/index.page:33
 msgid "Shuffle interacts on current context."
-msgstr "Casuale interagisce sul contesto attuale."
+msgstr "Mischiare interagisce sul contesto attuale."
 
 #. (itstool) path: section/title
 #: C/index.page:37
@@ -98,96 +99,101 @@ msgstr "Vota gli album"
 #: C/index.page:38
 msgid ""
 "Album popularity is based on how many tracks from an album you listen to."
-msgstr "La popolarità dell'album si basa su quanti brani di un album si ascolta."
+msgstr "La popolarità dell'album si basa su quante tracce di un album si ascoltano."
 
 #. (itstool) path: section/p
 #: C/index.page:39
 msgid ""
 "Album rating will be influenced by album popularity. In other words, rate "
 "will decrease if you stop listening to an album."
-msgstr "La valutazione dell'album sarà influenzata dalla popolarità dell'album. In altre parole, il tasso diminuisce se interrompi l'ascolto di un album."
+msgstr "La valutazione dell'album sarà influenzata dalla popolarità dell'album. In altre parole, il valutazione diminuisce se smetti di ascoltare un album."
 
 #. (itstool) path: section/title
 #: C/index.page:43
 msgid "Download covers"
-msgstr "Scarica le copertine"
+msgstr "Scaricamento copertine"
 
 #. (itstool) path: section/p
 #: C/index.page:44
 msgid ""
 "When hovering a cover, if mouse cursor changes to a pen, just click and "
 "select a new cover."
-msgstr "Quando passi col mouse su una copertina, se il cursore si trasforma in una penna, basta cliccare e selezionare una nuova copertina."
+msgstr "Quando passi col mouse su una copertina, e il cursore si trasforma in una penna, basta fare clic e selezionare una nuova copertina."
 
 #. (itstool) path: section/p
 #: C/index.page:45
 msgid "You need an internet connection."
-msgstr "Hai bisogno di una connessione a Internet"
+msgstr "È necessaria una connessione a Internet."
 
 #. (itstool) path: section/title
 #: C/index.page:49
 msgid "Shortcuts"
-msgstr "Collegamenti"
+msgstr "Scorciatoie"
 
 #. (itstool) path: item/p
 #: C/index.page:51
 msgid "Control+s: Lollypop settings"
-msgstr "Control+s: Impostazioni di Lollypop"
+msgstr "Control+s: impostazioni dell'applicazione"
 
 #. (itstool) path: item/p
 #: C/index.page:52
 msgid "Control+f: Search"
-msgstr "Control+f: Cerca"
+msgstr "Control+f: cerca"
 
 #. (itstool) path: item/p
 #: C/index.page:53
 msgid "Control+p: Party mode"
-msgstr "Control+p: modalità Party"
+msgstr "Control+p: modalità party"
 
 #. (itstool) path: item/p
 #: C/index.page:54
-msgid "Control+m or F11: Fullscreen"
-msgstr "Control+m o F11: Schermo intero"
+msgid "F7 or F11: Fullscreen"
+msgstr "F7 o F11: schermo intero"
 
 #. (itstool) path: item/p
 #: C/index.page:55
+msgid "Control+m: Mini player"
+msgstr "Control+m: riproduttore piccolo"
+
+#. (itstool) path: item/p
+#: C/index.page:56
 msgid "x: Play"
 msgstr "x: Riproduci"
 
 #. (itstool) path: item/p
-#: C/index.page:56
+#: C/index.page:57
 msgid "c: Pause"
 msgstr "c: Pausa"
 
 #. (itstool) path: item/p
-#: C/index.page:57
+#: C/index.page:58
 msgid "v: Stop"
 msgstr "v: Stop"
 
 #. (itstool) path: item/p
-#: C/index.page:58
-msgid "n: Next track"
-msgstr "n: Traccia successiva"
-
-#. (itstool) path: item/p
 #: C/index.page:59
-msgid "p: Previous track"
-msgstr "p: Traccia precedente"
+msgid "n: Next track"
+msgstr "n: traccia successiva"
 
 #. (itstool) path: item/p
 #: C/index.page:60
-msgid "Control+n: Skip current album"
-msgstr "Control+n: Salta l'album corrente"
+msgid "p: Previous track"
+msgstr "p: traccia precedente"
 
 #. (itstool) path: item/p
 #: C/index.page:61
-msgid "Left key: Skip backward in track"
-msgstr "Tasto sinistro: Scorri la traccia indietro"
+msgid "Control+n: Skip current album"
+msgstr "Control+n: salta l'album attuale"
 
 #. (itstool) path: item/p
 #: C/index.page:62
+msgid "Left key: Skip backward in track"
+msgstr "Tasto sinistro: scorre la traccia indietro"
+
+#. (itstool) path: item/p
+#: C/index.page:63
 msgid "Right key: Skip forward in track"
-msgstr "Tasto destro: Scorri la traccia avanti"
+msgstr "Tasto destro: scorre la traccia in avanti"
 
 #. (itstool) path: p/link
 #: C/legal.xml:4
@@ -197,7 +203,7 @@ msgstr "Creative Commons Attribution-Share Alike 3.0 United States License"
 #. (itstool) path: license/p
 #: C/legal.xml:3
 msgid "This work is licensed under a <_:link-1/>."
-msgstr "Questo lavoro è pubblicata sotto licenza <_:link-1/>."
+msgstr "Questo lavoro è pubblicato sotto licenza <_:link-1/>."
 
 #. (itstool) path: license/p
 #: C/legal.xml:6
@@ -205,4 +211,4 @@ msgid ""
 "As a special exception, the copyright holders give you permission to copy, "
 "modify, and distribute the example code contained in this document under the"
 " terms of your choosing, without restriction."
-msgstr "Come eccezione speciale, i titolari dei diritti ti danno il permesso di copiare, modificare e distribuire il codice di esempio contenuto in questo documento secondo i termini della vostra scelta, senza restrizioni."
+msgstr "Come eccezione speciale, i titolari dei diritti danno il permesso di copiare, modificare e distribuire il codice di esempio contenuto in questo documento sotto i termini da voi scelti, senza restrizioni."

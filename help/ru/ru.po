@@ -3,12 +3,13 @@
 # Denis Morozov <www.strelookpb09@mail.ru>, 2015
 # Maxim region51 <murmansksity@gmail.com>, 2015
 # Maxim region51 <murmansksity@gmail.com>, 2016
+# Maxim region51 <murmansksity@gmail.com>, 2016
 # Олег <legunt@yandex.ru>, 2015
 msgid ""
 msgstr ""
 "Project-Id-Version: lollypop\n"
-"POT-Creation-Date: 2015-06-24 15:43+0200\n"
-"PO-Revision-Date: 2016-03-06 17:44+0000\n"
+"POT-Creation-Date: 2016-05-09 15:53+0200\n"
+"PO-Revision-Date: 2016-05-09 14:36+0000\n"
 "Last-Translator: Maxim region51 <murmansksity@gmail.com>\n"
 "Language-Team: Russian (http://www.transifex.com/gnumdk/lollypop/language/ru/)\n"
 "MIME-Version: 1.0\n"
@@ -149,48 +150,53 @@ msgstr "Control+p: Режим вечеринки"
 
 #. (itstool) path: item/p
 #: C/index.page:54
-msgid "Control+m or F11: Fullscreen"
-msgstr "Control+m или F11: Полноэкранный режим"
+msgid "F7 or F11: Fullscreen"
+msgstr "F7 или F11: Полноэкранный режим"
 
 #. (itstool) path: item/p
 #: C/index.page:55
+msgid "Control+m: Mini player"
+msgstr "Control+m: Мини-плеер"
+
+#. (itstool) path: item/p
+#: C/index.page:56
 msgid "x: Play"
 msgstr "x: Воспроизвести"
 
 #. (itstool) path: item/p
-#: C/index.page:56
+#: C/index.page:57
 msgid "c: Pause"
 msgstr "c: Пауза"
 
 #. (itstool) path: item/p
-#: C/index.page:57
+#: C/index.page:58
 msgid "v: Stop"
 msgstr "v: Стоп"
 
 #. (itstool) path: item/p
-#: C/index.page:58
-msgid "n: Next track"
-msgstr "n: Следующая композиция"
-
-#. (itstool) path: item/p
 #: C/index.page:59
-msgid "p: Previous track"
-msgstr "p: Предыдущая композиция"
+msgid "n: Next track"
+msgstr "n: Следующий трек"
 
 #. (itstool) path: item/p
 #: C/index.page:60
+msgid "p: Previous track"
+msgstr "p: Предыдущий трек"
+
+#. (itstool) path: item/p
+#: C/index.page:61
 msgid "Control+n: Skip current album"
 msgstr "Control+n: Пропустить текущий альбом"
 
 #. (itstool) path: item/p
-#: C/index.page:61
+#: C/index.page:62
 msgid "Left key: Skip backward in track"
-msgstr "Левая клавиша: Перейти назад"
+msgstr "Левая клавиша: Перемотать назад"
 
 #. (itstool) path: item/p
-#: C/index.page:62
+#: C/index.page:63
 msgid "Right key: Skip forward in track"
-msgstr "Правая клавиша: Перейти вперед"
+msgstr "Правая клавиша:  Перемотать вперёд"
 
 #. (itstool) path: p/link
 #: C/legal.xml:4

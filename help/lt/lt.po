@@ -4,8 +4,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: lollypop\n"
-"POT-Creation-Date: 2015-06-24 15:43+0200\n"
-"PO-Revision-Date: 2016-03-31 15:21+0000\n"
+"POT-Creation-Date: 2016-05-09 15:53+0200\n"
+"PO-Revision-Date: 2016-05-09 19:19+0000\n"
 "Last-Translator: Moo\n"
 "Language-Team: Lithuanian (http://www.transifex.com/gnumdk/lollypop/language/lt/)\n"
 "MIME-Version: 1.0\n"
@@ -146,46 +146,51 @@ msgstr "Vald+p: Vakarėlio veiksena"
 
 #. (itstool) path: item/p
 #: C/index.page:54
-msgid "Control+m or F11: Fullscreen"
-msgstr "Vald+m arba F11: Visas ekranas"
+msgid "F7 or F11: Fullscreen"
+msgstr "F7 ar F11: Visas ekranas"
 
 #. (itstool) path: item/p
 #: C/index.page:55
+msgid "Control+m: Mini player"
+msgstr "Vald+m: Mini grotuvas"
+
+#. (itstool) path: item/p
+#: C/index.page:56
 msgid "x: Play"
 msgstr "x: Groti"
 
 #. (itstool) path: item/p
-#: C/index.page:56
+#: C/index.page:57
 msgid "c: Pause"
 msgstr "c: Pristabdyti"
 
 #. (itstool) path: item/p
-#: C/index.page:57
+#: C/index.page:58
 msgid "v: Stop"
 msgstr "v: Stabdyti"
 
 #. (itstool) path: item/p
-#: C/index.page:58
+#: C/index.page:59
 msgid "n: Next track"
 msgstr "n: Kitas takelis"
 
 #. (itstool) path: item/p
-#: C/index.page:59
+#: C/index.page:60
 msgid "p: Previous track"
 msgstr "p: Ankstesnis takelis"
 
 #. (itstool) path: item/p
-#: C/index.page:60
+#: C/index.page:61
 msgid "Control+n: Skip current album"
 msgstr "Vald+n: Praleisti esamą albumą"
 
 #. (itstool) path: item/p
-#: C/index.page:61
+#: C/index.page:62
 msgid "Left key: Skip backward in track"
 msgstr "Klavišas kairėn: Peršokti takelyje atgal"
 
 #. (itstool) path: item/p
-#: C/index.page:62
+#: C/index.page:63
 msgid "Right key: Skip forward in track"
 msgstr "Klavišas dešinėn: Peršokti takelyje pirmyn"
 

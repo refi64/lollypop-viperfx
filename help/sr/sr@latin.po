@@ -1,12 +1,12 @@
 # 
 # Translators:
 # Марко М. Костић (Marko M. Kostić) <marko.m.kostic@gmail.com>, 2015
-# Марко М. Костић (Marko M. Kostić) <marko.m.kostic@gmail.com>, 2015
+# Марко М. Костић (Marko M. Kostić) <marko.m.kostic@gmail.com>, 2015-2016
 msgid ""
 msgstr ""
 "Project-Id-Version: lollypop\n"
-"POT-Creation-Date: 2015-06-24 15:43+0200\n"
-"PO-Revision-Date: 2015-09-21 23:53+0000\n"
+"POT-Creation-Date: 2016-05-09 15:53+0200\n"
+"PO-Revision-Date: 2016-05-09 18:04+0000\n"
 "Last-Translator: Марко М. Костић (Marko M. Kostić) <marko.m.kostic@gmail.com>\n"
 "Language-Team: Serbian (Latin) (http://www.transifex.com/gnumdk/lollypop/language/sr@latin/)\n"
 "MIME-Version: 1.0\n"
@@ -147,46 +147,51 @@ msgstr "Ctrl+P: Režim rada za žurke"
 
 #. (itstool) path: item/p
 #: C/index.page:54
-msgid "Control+m or F11: Fullscreen"
-msgstr "Ctrl+M ili F11: Preko celog ekrana"
+msgid "F7 or F11: Fullscreen"
+msgstr "F7 ili F11: preko celog ekrana"
 
 #. (itstool) path: item/p
 #: C/index.page:55
+msgid "Control+m: Mini player"
+msgstr "Ctrl+M: mini puštač"
+
+#. (itstool) path: item/p
+#: C/index.page:56
 msgid "x: Play"
 msgstr "X: Pusti"
 
 #. (itstool) path: item/p
-#: C/index.page:56
+#: C/index.page:57
 msgid "c: Pause"
 msgstr "C: Pauziraj"
 
 #. (itstool) path: item/p
-#: C/index.page:57
+#: C/index.page:58
 msgid "v: Stop"
 msgstr "V: Zaustavi"
 
 #. (itstool) path: item/p
-#: C/index.page:58
+#: C/index.page:59
 msgid "n: Next track"
 msgstr "N: Sledeća pesma"
 
 #. (itstool) path: item/p
-#: C/index.page:59
+#: C/index.page:60
 msgid "p: Previous track"
 msgstr "P: Prethodna pesma"
 
 #. (itstool) path: item/p
-#: C/index.page:60
+#: C/index.page:61
 msgid "Control+n: Skip current album"
 msgstr "Ctrl+N: Preskoči trenutni album"
 
 #. (itstool) path: item/p
-#: C/index.page:61
+#: C/index.page:62
 msgid "Left key: Skip backward in track"
 msgstr "Levi klik: Premotaj nešto nazad pesmu"
 
 #. (itstool) path: item/p
-#: C/index.page:62
+#: C/index.page:63
 msgid "Right key: Skip forward in track"
 msgstr "Desni klik: Premotaj nešto napred pesmu"
 

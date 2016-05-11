@@ -4,8 +4,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: lollypop\n"
-"POT-Creation-Date: 2015-06-24 15:43+0200\n"
-"PO-Revision-Date: 2016-04-28 18:00+0000\n"
+"POT-Creation-Date: 2016-05-09 15:53+0200\n"
+"PO-Revision-Date: 2016-05-10 17:07+0000\n"
 "Last-Translator: Ferran Roig <forums@ferranroig.com>\n"
 "Language-Team: Catalan (http://www.transifex.com/gnumdk/lollypop/language/ca/)\n"
 "MIME-Version: 1.0\n"
@@ -82,122 +82,127 @@ msgstr "Quant comenceu a reproduir música, es generarà una llista de reproducc
 msgid ""
 "Contexts can be: an album, an artist, a genre, popular or recent albums, "
 "searches, playlists, ..."
-msgstr ""
+msgstr "El context pot ser: un àlbum, un artista, un gènere, popularitat o àlbums recents, cerques, llistes de reproducció, ..."
 
 #. (itstool) path: section/p
 #: C/index.page:33
 msgid "Shuffle interacts on current context."
-msgstr ""
+msgstr "Ordre aleatori interactua en el context actual."
 
 #. (itstool) path: section/title
 #: C/index.page:37
 msgid "Rate albums"
-msgstr ""
+msgstr "Valoració dels àlbums"
 
 #. (itstool) path: section/p
 #: C/index.page:38
 msgid ""
 "Album popularity is based on how many tracks from an album you listen to."
-msgstr ""
+msgstr "La popularitat de l'àlbum es basa en la quantitat de pistes escoltades."
 
 #. (itstool) path: section/p
 #: C/index.page:39
 msgid ""
 "Album rating will be influenced by album popularity. In other words, rate "
 "will decrease if you stop listening to an album."
-msgstr ""
+msgstr "Valoració de l'àlbum serà influenciada per la popularitat de l'àlbum. Dit d'una altre manera, la valoració disminueix si atureu la reproducció d'un àlbum."
 
 #. (itstool) path: section/title
 #: C/index.page:43
 msgid "Download covers"
-msgstr ""
+msgstr "Descàrrega de caràtules"
 
 #. (itstool) path: section/p
 #: C/index.page:44
 msgid ""
 "When hovering a cover, if mouse cursor changes to a pen, just click and "
 "select a new cover."
-msgstr ""
+msgstr "Quan passeu el ratolí per sobre una caràtula i el cursor canvia a un llapis, simplement cliqueu i seleccioneu una caràtula nova."
 
 #. (itstool) path: section/p
 #: C/index.page:45
 msgid "You need an internet connection."
-msgstr ""
+msgstr "Cal connexió a Internet"
 
 #. (itstool) path: section/title
 #: C/index.page:49
 msgid "Shortcuts"
-msgstr ""
+msgstr "Dreceres"
 
 #. (itstool) path: item/p
 #: C/index.page:51
 msgid "Control+s: Lollypop settings"
-msgstr ""
+msgstr "Control+s: Configuració"
 
 #. (itstool) path: item/p
 #: C/index.page:52
 msgid "Control+f: Search"
-msgstr ""
+msgstr "Control+f: Cerca"
 
 #. (itstool) path: item/p
 #: C/index.page:53
 msgid "Control+p: Party mode"
-msgstr ""
+msgstr "Control+p: Mode festa"
 
 #. (itstool) path: item/p
 #: C/index.page:54
-msgid "Control+m or F11: Fullscreen"
-msgstr ""
+msgid "F7 or F11: Fullscreen"
+msgstr "F7 o F11: Pantalla completa"
 
 #. (itstool) path: item/p
 #: C/index.page:55
-msgid "x: Play"
-msgstr ""
+msgid "Control+m: Mini player"
+msgstr "Control+m: Mini reproductor"
 
 #. (itstool) path: item/p
 #: C/index.page:56
-msgid "c: Pause"
-msgstr ""
+msgid "x: Play"
+msgstr "x: Reprodueix"
 
 #. (itstool) path: item/p
 #: C/index.page:57
-msgid "v: Stop"
-msgstr ""
+msgid "c: Pause"
+msgstr "c: Pausa"
 
 #. (itstool) path: item/p
 #: C/index.page:58
-msgid "n: Next track"
-msgstr ""
+msgid "v: Stop"
+msgstr "v: Atura"
 
 #. (itstool) path: item/p
 #: C/index.page:59
-msgid "p: Previous track"
-msgstr ""
+msgid "n: Next track"
+msgstr "n: Pista seguent"
 
 #. (itstool) path: item/p
 #: C/index.page:60
-msgid "Control+n: Skip current album"
-msgstr ""
+msgid "p: Previous track"
+msgstr "p: Pista anterior"
 
 #. (itstool) path: item/p
 #: C/index.page:61
-msgid "Left key: Skip backward in track"
-msgstr ""
+msgid "Control+n: Skip current album"
+msgstr "Control+n: Salta al àlbum següent "
 
 #. (itstool) path: item/p
 #: C/index.page:62
+msgid "Left key: Skip backward in track"
+msgstr "Fletxa esquerra: Rebobina la pista"
+
+#. (itstool) path: item/p
+#: C/index.page:63
 msgid "Right key: Skip forward in track"
-msgstr ""
+msgstr "Fletxa dreta: Avança la pista"
 
 #. (itstool) path: p/link
 #: C/legal.xml:4
 msgid "Creative Commons Attribution-Share Alike 3.0 United States License"
-msgstr ""
+msgstr "Llicència Creative Commons Attribution-Share Alike 3.0 dels Estat Units"
 
 #. (itstool) path: license/p
 #: C/legal.xml:3
 msgid "This work is licensed under a <_:link-1/>."
-msgstr ""
+msgstr "Aquesta feinada està protegida sota llicència <_:link-1/>."
 
 #. (itstool) path: license/p
 #: C/legal.xml:6
@@ -205,4 +210,4 @@ msgid ""
 "As a special exception, the copyright holders give you permission to copy, "
 "modify, and distribute the example code contained in this document under the"
 " terms of your choosing, without restriction."
-msgstr ""
+msgstr "Com a excepció especial, els propietaris dels drets d'autor us donen permís per copiar, modificar, i distribuir el codi contingut en aquest document sota les condicions que trieu, sense cap restricció."

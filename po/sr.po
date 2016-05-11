@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lollypop\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-05-02 12:26+0200\n"
-"PO-Revision-Date: 2016-05-05 16:43+0000\n"
+"POT-Creation-Date: 2016-05-09 17:29+0200\n"
+"PO-Revision-Date: 2016-05-09 18:04+0000\n"
 "Last-Translator: Марко М. Костић (Marko M. Kostić) <marko.m.kostic@gmail.com>\n"
 "Language-Team: Serbian (http://www.transifex.com/gnumdk/lollypop/language/sr/)\n"
 "MIME-Version: 1.0\n"
@@ -316,7 +316,7 @@ msgstr[0] "%d нумера"
 msgstr[1] "%d нумере"
 msgstr[2] "%d нумера"
 
-#: ../src/application.py:446
+#: ../src/application.py:459
 msgid "Lollypop: You need to install yelp."
 msgstr "Лолипоп: потребно је да инсталирате „Помоћ“ (yelp пакет)."
 
@@ -324,7 +324,7 @@ msgstr "Лолипоп: потребно је да инсталирате „П�
 msgid "Select artwork"
 msgstr "Изабери портрет"
 
-#: ../src/art_widgets.py:164
+#: ../src/art_widgets.py:165
 msgid "No cover found..."
 msgstr "Нисам пронашао омот..."
 
@@ -336,41 +336,41 @@ msgstr "Ресетуј омот?"
 msgid "Your music is updating"
 msgstr "Музичка библиотека се ажурира"
 
-#: ../src/collectionscanner.py:246 ../src/database_albums.py:299
+#: ../src/collectionscanner.py:247 ../src/database_albums.py:299
 #: ../src/database_artists.py:104 ../src/database_genres.py:69
-#: ../src/database_tracks.py:229 ../src/selectionlist.py:274
+#: ../src/database_tracks.py:232 ../src/selectionlist.py:276
 #: ../src/tagreader.py:87 ../src/tagreader.py:102 ../src/tagreader.py:117
 #: ../src/tagreader.py:150 ../src/tagreader.py:165 ../src/tagreader.py:168
 #: ../src/tagreader.py:178 ../src/tagreader.py:185
 msgid "Unknown"
 msgstr "Непознато"
 
-#: ../src/container.py:421
+#: ../src/container.py:420
 msgid "Popular albums"
 msgstr "Популарни албуми"
 
-#: ../src/container.py:422
+#: ../src/container.py:421
 msgid "Recently added albums"
 msgstr "Скоро додати албуми"
 
-#: ../src/container.py:423
+#: ../src/container.py:422
 msgid "Random albums"
 msgstr "Насумични албуми"
 
-#: ../src/container.py:424 ../src/pop_menu.py:411 ../src/pop_menu.py:475
+#: ../src/container.py:423 ../src/pop_menu.py:411 ../src/pop_menu.py:475
 #: ../src/pop_menu.py:495
 msgid "Playlists"
 msgstr "Листе песама"
 
-#: ../src/container.py:425
+#: ../src/container.py:424
 msgid "Radios"
 msgstr "Радио станице"
 
-#: ../src/container.py:427
+#: ../src/container.py:426
 msgid "All artists"
 msgstr "Сви извођачи"
 
-#: ../src/container.py:429 ../data/DeviceManagerWidget.ui.h:1
+#: ../src/container.py:428 ../data/DeviceManagerWidget.ui.h:1
 msgid "All albums"
 msgstr "Сви албуми"
 
@@ -378,19 +378,19 @@ msgstr "Сви албуми"
 msgid "Compilations"
 msgstr "Компилације"
 
-#: ../src/container.py:499 ../src/playlists.py:231
+#: ../src/container.py:500 ../src/playlists.py:231
 msgid "Popular tracks"
 msgstr "Популарне песме"
 
-#: ../src/container.py:500 ../src/playlists.py:233
+#: ../src/container.py:501 ../src/playlists.py:233
 msgid "Recently played"
 msgstr "Скоро слушано"
 
-#: ../src/container.py:501 ../src/playlists.py:235
+#: ../src/container.py:502 ../src/playlists.py:235
 msgid "Never played"
 msgstr "Никада слушано"
 
-#: ../src/container.py:502 ../src/playlists.py:237
+#: ../src/container.py:503 ../src/playlists.py:237
 msgid "Random tracks"
 msgstr "Насумичне песме"
 
@@ -399,7 +399,7 @@ msgid "Pause"
 msgstr "Паузирај"
 
 #: ../src/controllers.py:86 ../src/controllers.py:114 ../src/pop_tunein.py:170
-#: ../src/widgets_album.py:465 ../src/widgets_radio.py:166
+#: ../src/widgets_album.py:471 ../src/widgets_radio.py:166
 #: ../data/AlbumDetailedWidget.ui.h:1 ../data/ArtistView.ui.h:2
 #: ../data/ToolbarPlayback.ui.h:2
 msgid "Play"
@@ -562,7 +562,7 @@ msgstr "Пуштени спискови песама"
 msgid "The the"
 msgstr "Члан члан"
 
-#: ../src/view_artist.py:151 ../src/widgets_album.py:211
+#: ../src/view_artist.py:151 ../src/widgets_album.py:219
 msgid "Remove"
 msgstr "Уклони"
 
@@ -575,34 +575,34 @@ msgstr "Усклади %s"
 msgid "Cancel synchronization"
 msgstr "Откажи усклађивање"
 
-#: ../src/widgets_album.py:207
+#: ../src/widgets_album.py:215
 msgid "Append"
 msgstr "Додај"
 
-#: ../src/widgets_album.py:476 ../data/AlbumDetailedWidget.ui.h:3
+#: ../src/widgets_album.py:482 ../data/AlbumDetailedWidget.ui.h:3
 msgid "Play albums"
 msgstr "Пусти албуме"
 
-#: ../src/widgets_album.py:486 ../data/AlbumDetailedWidget.ui.h:2
+#: ../src/widgets_album.py:492 ../data/AlbumDetailedWidget.ui.h:2
 msgid "Change artwork"
 msgstr "Промени омот"
 
-#: ../src/widgets_album.py:650
+#: ../src/widgets_album.py:656
 #, python-format
 msgid "%s h  %s m"
 msgstr "%s ч %s м"
 
-#: ../src/widgets_album.py:652
+#: ../src/widgets_album.py:658
 #, python-format
 msgid "%s h"
 msgstr "%s ч"
 
-#: ../src/widgets_album.py:654
+#: ../src/widgets_album.py:660
 #, python-format
 msgid "%s m"
 msgstr "%s м"
 
-#: ../src/widgets_album.py:913
+#: ../src/widgets_album.py:919
 #, python-format
 msgid "Disc %s"
 msgstr "Диск %s"
@@ -624,12 +624,12 @@ msgid "New playlist "
 msgstr "Нова листа песама"
 
 #. Need a copy, segfault on EOS 3.1
-#: ../src/widgets_playlist.py:542 ../src/widgets_playlist.py:789
+#: ../src/widgets_playlist.py:542 ../src/widgets_playlist.py:791
 #, python-format
 msgid "Remove \"%s\"?"
 msgstr "Уклонити \"%s\"?"
 
-#: ../src/widgets_playlist.py:795
+#: ../src/widgets_playlist.py:799
 msgid "Remove these tracks?"
 msgstr "Уклонити ове песме?"
 
@@ -675,14 +675,18 @@ msgid "_Preferences"
 msgstr "П_оставке"
 
 #: ../data/Appmenu.ui.h:4
-msgid "_About"
-msgstr "О п_рограму"
+msgid "_Keyboard Shortcuts"
+msgstr "_Пречице на тастатури"
 
 #: ../data/Appmenu.ui.h:5
 msgid "_Help"
 msgstr "По_моћ"
 
 #: ../data/Appmenu.ui.h:6
+msgid "_About"
+msgstr "О п_рограму"
+
+#: ../data/Appmenu.ui.h:7
 msgid "_Quit"
 msgstr "_Излаз"
 
@@ -914,3 +918,88 @@ msgid ""
 "Lollypop isn't designed to work without an unicode locale.\n"
 "Please fix your system."
 msgstr "Лолипоп није написан тако да може да ради на систему без Уникод локалног стандарда.\nСредите ваш оперативни систем."
+
+#: ../data/Shortcuts.ui.h:1
+msgctxt "shortcut window"
+msgid "General"
+msgstr "Опште"
+
+#: ../data/Shortcuts.ui.h:2
+msgctxt "shortcut window"
+msgid "Settings"
+msgstr "Подешавања"
+
+#: ../data/Shortcuts.ui.h:3
+msgctxt "shortcut window"
+msgid "Search"
+msgstr "Претрага"
+
+#: ../data/Shortcuts.ui.h:4
+msgctxt "shortcut window"
+msgid "Party mode"
+msgstr "Режим рада за журке"
+
+#: ../data/Shortcuts.ui.h:5
+msgctxt "shortcut window"
+msgid "Mini Player"
+msgstr "Мини пуштач"
+
+#: ../data/Shortcuts.ui.h:6
+msgctxt "shortcut window"
+msgid "Fullscreen"
+msgstr "Преко целог екрана"
+
+#: ../data/Shortcuts.ui.h:7
+msgctxt "shortcut window"
+msgid "Love current track"
+msgstr "Заволи тренутну песму"
+
+#: ../data/Shortcuts.ui.h:8
+msgctxt "shortcut window"
+msgid "Playback"
+msgstr "Пуштање музике"
+
+#: ../data/Shortcuts.ui.h:9
+msgctxt "shortcut window"
+msgid "Play"
+msgstr "Пусти"
+
+#: ../data/Shortcuts.ui.h:10
+msgctxt "shortcut window"
+msgid "Pause"
+msgstr "Паузирај"
+
+#: ../data/Shortcuts.ui.h:11
+msgctxt "shortcut window"
+msgid "Stop"
+msgstr "Заустави"
+
+#: ../data/Shortcuts.ui.h:12
+msgctxt "shortcut window"
+msgid "Next track"
+msgstr "Следећа песма"
+
+#: ../data/Shortcuts.ui.h:13
+msgctxt "shortcut window"
+msgid "Previous track"
+msgstr "Претходна песма"
+
+#: ../data/Shortcuts.ui.h:14
+msgctxt "shortcut window"
+msgid "Skip current album"
+msgstr "Прескочи тренутни албум"
+
+#: ../data/Shortcuts.ui.h:15
+msgctxt "shortcut window"
+msgid "Repeat track"
+msgstr "Понови песму"
+
+#: ../data/Shortcuts.ui.h:16
+msgctxt "shortcut window"
+msgid "Skip backward in track"
+msgstr "Премотај назад песму"
+
+#: ../data/Shortcuts.ui.h:17
+msgctxt "shortcut window"
+msgid "Skip forward in track"
+msgstr "Премотај напред песму"

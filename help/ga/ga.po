@@ -1,12 +1,13 @@
 # 
 # Translators:
+# David Ó Laıġeanáın, 2016
 # David Ó Laıġeanáın, 2015
 msgid ""
 msgstr ""
 "Project-Id-Version: lollypop\n"
-"POT-Creation-Date: 2015-06-24 15:43+0200\n"
-"PO-Revision-Date: 2015-11-24 14:13+0000\n"
-"Last-Translator: David Ó Laıġeanáın\n"
+"POT-Creation-Date: 2016-05-09 15:53+0200\n"
+"PO-Revision-Date: 2016-05-09 13:54+0000\n"
+"Last-Translator: Cédric Bellegarde <web@adishatz.org>\n"
 "Language-Team: Irish (http://www.transifex.com/gnumdk/lollypop/language/ga/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -75,14 +76,14 @@ msgstr "Athsheinm"
 #. (itstool) path: section/p
 #: C/index.page:31
 msgid "When you start playing a song, a contextual playlist is populated."
-msgstr "Agus a thosaítear amhrán á sheinm, pobalaítear líosta seanma comhthéacsúil."
+msgstr "Agus a thosaítear amhrán á sheinm, pobalaítear seinnliosta comhthéacsúil."
 
 #. (itstool) path: section/p
 #: C/index.page:32
 msgid ""
 "Contexts can be: an album, an artist, a genre, popular or recent albums, "
 "searches, playlists, ..."
-msgstr "D'fhéadfadh comhthéacsanna mar: albam, ealaíontóir, seánra, albaim a bhí ann le déanaí nó a bhfuil an-tóir orthu, cuardaigh, líostaí seanma, ..."
+msgstr "D'fhéadfadh comhthéacsanna mar: albam, ealaíontóir, seánra, albaim a bhí ann le déanaí nó a bhfuil an-tóir orthu, cuardaigh, seinnliostaí, ..."
 
 #. (itstool) path: section/p
 #: C/index.page:33
@@ -146,46 +147,51 @@ msgstr "Control+p: Mód cóisire"
 
 #. (itstool) path: item/p
 #: C/index.page:54
-msgid "Control+m or F11: Fullscreen"
-msgstr "Control+m nó F11: Lánscáileán"
+msgid "F7 or F11: Fullscreen"
+msgstr ""
 
 #. (itstool) path: item/p
 #: C/index.page:55
+msgid "Control+m: Mini player"
+msgstr ""
+
+#. (itstool) path: item/p
+#: C/index.page:56
 msgid "x: Play"
 msgstr "x: Seinn"
 
 #. (itstool) path: item/p
-#: C/index.page:56
+#: C/index.page:57
 msgid "c: Pause"
 msgstr "c: Cuir ar sos"
 
 #. (itstool) path: item/p
-#: C/index.page:57
+#: C/index.page:58
 msgid "v: Stop"
 msgstr "v: Stad"
 
 #. (itstool) path: item/p
-#: C/index.page:58
+#: C/index.page:59
 msgid "n: Next track"
 msgstr "n: An chéad rian eile"
 
 #. (itstool) path: item/p
-#: C/index.page:59
+#: C/index.page:60
 msgid "p: Previous track"
 msgstr "p: An rian roimhe"
 
 #. (itstool) path: item/p
-#: C/index.page:60
+#: C/index.page:61
 msgid "Control+n: Skip current album"
 msgstr "Control+n: Léim an albam seo"
 
 #. (itstool) path: item/p
-#: C/index.page:61
+#: C/index.page:62
 msgid "Left key: Skip backward in track"
 msgstr "Cnaipe ar chlé: Léim ar ais i rian"
 
 #. (itstool) path: item/p
-#: C/index.page:62
+#: C/index.page:63
 msgid "Right key: Skip forward in track"
 msgstr "Cnaipe ar dheis: Léim ar aghaidh i rian"
 
