@@ -40,15 +40,29 @@ class ArtistAlbumsView(LazyLoadingView):
         self._show_cover = show_cover
         self._albums_count = 0
 
+        self._stack = Gtk.Stack()
+        self._stack.set_property("expand", True)
+        self._stack.set_transition_duration(500)
+        self._stack.set_transition_type(Gtk.StackTransitionType.CROSSFADE)
+        self._stack.show()
+
+        self._spinner = Gtk.Spinner()
+        self._spinner.start()
+        self._spinner.show()
+
+        self._stack.add(self._spinner)
+        self._stack.add(self._scrolled)
+
         self._albumbox = Gtk.Grid()
         self._albumbox.set_row_spacing(20)
         self._albumbox.set_property("orientation", Gtk.Orientation.VERTICAL)
         self._albumbox.show()
+        self._viewport.add(self._albumbox)
 
         self._scrolled.set_property('expand', True)
         self._viewport.set_property("valign", Gtk.Align.START)
         self._overlay = Gtk.Overlay.new()
-        self._overlay.add(self._scrolled)
+        self._overlay.add(self._stack)
         self._overlay.show()
         self.add(self._overlay)
 
@@ -148,8 +162,8 @@ class ArtistAlbumsView(LazyLoadingView):
             GLib.idle_add(self._add_albums, albums,
                           priority=GLib.PRIORITY_LOW)
         else:
-            if self._viewport.get_child() is None:
-                self._viewport.add(self._albumbox)
+            self._stack.set_visible_child(self._scrolled)
+            self._spinner.stop()
             self.emit('populated')
             GLib.idle_add(self.lazy_loading)
 

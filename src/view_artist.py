@@ -50,7 +50,6 @@ class ArtistView(ArtistAlbumsView):
         self._jump_button.set_tooltip_text(_("Go to current track"))
         self._add_button = builder.get_object('add-button')
         self._grid = builder.get_object('header-grid')
-        self._spinner = builder.get_object('spinner')
         header = builder.get_object('header')
         header.set_property('valign', Gtk.Align.START)
         self._overlay.add_overlay(header)
@@ -243,7 +242,6 @@ class ArtistView(ArtistAlbumsView):
             @param scroll value as float
         """
         self._update_jump_button()
-        self._spinner.stop()
         ArtistAlbumsView._on_populated(self, widget, widgets, scroll_value)
 
     def _on_current_changed(self, player):
