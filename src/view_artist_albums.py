@@ -42,12 +42,9 @@ class ArtistAlbumsView(LazyLoadingView):
 
         self._stack = Gtk.Stack()
         self._stack.set_property("expand", True)
-        self._stack.set_transition_duration(500)
-        self._stack.set_transition_type(Gtk.StackTransitionType.CROSSFADE)
         self._stack.show()
 
         self._spinner = Gtk.Spinner()
-        self._spinner.start()
         self._spinner.show()
 
         self._stack.add(self._spinner)
@@ -73,6 +70,11 @@ class ArtistAlbumsView(LazyLoadingView):
         """
         if albums:
             self._albums_count = len(albums)
+            if self._albums_count != 1:
+                self._spinner.start()
+                self._stack.set_transition_duration(500)
+                self._stack.set_transition_type(
+                                            Gtk.StackTransitionType.CROSSFADE)
             self._add_albums(albums)
 
     def jump_to_current(self):
