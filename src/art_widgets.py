@@ -83,17 +83,14 @@ class ArtworkSearch(Gtk.Bin):
 
         # First load local files
         if self._album is not None:
-            urls = Lp().art.get_album_artworks(self._album)
-            for url in urls:
+            paths = Lp().art.get_album_artworks(self._album)
+            for path in paths:
                 try:
-                    f = Gio.File.new_for_uri(url)
+                    f = Gio.File.new_for_path(path)
                     (status, data, tag) = f.load_contents()
                     self._add_pixbuf(data)
                 except Exception as e:
                     print("ArtworkSearch::populate()", e)
-
-            if len(urls) > 0:
-                self._stack.set_visible_child_name('main')
         # Then duckduckgo
         self._loading = True
         t = Thread(target=self._populate)
