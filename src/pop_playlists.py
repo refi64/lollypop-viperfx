@@ -36,14 +36,6 @@ class PlaylistsPopover(Gtk.Popover):
         self._widget.show()
         self.add(self._widget)
 
-    def do_show(self):
-        """
-            Set widget size
-        """
-        height = Lp().window.get_size()[1]
-        self.set_size_request(400, height*0.7)
-        Gtk.Popover.do_show(self)
-
     def populate(self):
         """
             Populate view
@@ -58,11 +50,13 @@ class PlaylistsPopover(Gtk.Popover):
 #######################
     def _on_map(self, widget):
         """
-            Connect signals
+            Connect signals, populate and resize
             @param widget as Gtk.Widget
         """
         self._stop = False
         self.populate()
+        height = Lp().window.get_size()[1]
+        self.set_size_request(400, height*0.7)
 
     def _on_unmap(self, widget):
         """

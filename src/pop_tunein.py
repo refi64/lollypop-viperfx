@@ -74,11 +74,7 @@ class TuneinPopover(Gtk.Popover):
         self._stack.add_named(builder.get_object('notfound'), 'notfound')
         self._stack.add_named(self._scrolled, 'scrolled')
         self.add(widget)
-        size_setting = Lp().settings.get_value('window-size')
-        if isinstance(size_setting[1], int):
-            self.set_size_request(700, size_setting[1]*0.7)
-        else:
-            self.set_size_request(700, 400)
+        self.connect('map', self._on_map)
 
     def populate(self, url=None):
         """
@@ -268,6 +264,14 @@ class TuneinPopover(Gtk.Popover):
         except Exception as e:
             print("TuneinPopover::_add_radio: %s" % e)
         self._radios_manager.add(item.TEXT.replace('/', '-'), url)
+
+    def _on_map(self, widget):
+        """
+            Resize
+            @param widget as Gtk.Widget
+        """
+        size = Lp().window.get_size()
+        self.set_size_request(size[0]*0.5, size[1]*0.7)
 
     def _on_back_btn_clicked(self, btn):
         """

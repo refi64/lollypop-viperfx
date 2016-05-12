@@ -89,15 +89,6 @@ class InfoPopover(Gtk.Popover):
         self._stack.set_visible_child_name(
             Lp().settings.get_value('infoswitch').get_string())
 
-    def do_show(self):
-        """
-            Set widget size
-        """
-        size = Lp().window.get_size()
-        self.set_size_request(size[0]*0.6,
-                              size[1]*0.7)
-        Gtk.Popover.do_show(self)
-
 #######################
 # PRIVATE             #
 #######################
@@ -175,9 +166,12 @@ class InfoPopover(Gtk.Popover):
 
     def _on_map(self, widget):
         """
-            Connect signals
+            Connect signals and resize
             @param widget as Gtk.Widget
         """
+        size = Lp().window.get_size()
+        self.set_size_request(size[0]*0.6,
+                              size[1]*0.7)
         if Lp().settings.get_value('inforeload'):
             self._signal_id = Lp().player.connect("current-changed",
                                                   self._on_current_changed)

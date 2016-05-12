@@ -203,14 +203,6 @@ class SearchPopover(Gtk.Popover):
         builder.get_object('scrolled').add(self._view)
         self.add(builder.get_object('widget'))
 
-    def do_show(self):
-        """
-            Set widget size
-        """
-        height = Lp().window.get_size()[1]
-        self.set_size_request(400, height*0.7)
-        Gtk.Popover.do_show(self)
-
 #######################
 # PRIVATE             #
 #######################
@@ -379,10 +371,12 @@ class SearchPopover(Gtk.Popover):
 
     def _on_map(self, widget):
         """
-            Disable global shortcuts
+            Disable global shortcuts and resize
             @param widget as Gtk.Widget
         """
         Lp().window.enable_global_shorcuts(False)
+        height = Lp().window.get_size()[1]
+        self.set_size_request(400, height*0.7)
 
     def _on_unmap(self, widget):
         """

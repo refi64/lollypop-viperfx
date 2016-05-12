@@ -503,15 +503,17 @@ class AlbumsPopover(Gtk.Popover):
             Init popover
         """
         Gtk.Popover.__init__(self)
-        self.set_position(Gtk.PositionType.BOTTOM)
         view = AlbumsView()
         view.show()
+        self.set_position(Gtk.PositionType.BOTTOM)
+        self.connect('map', self._on_map)
         self.add(view)
 
-    def do_show(self):
+    def _on_map(self, widget):
         """
-            Set widget size
+            Resize
+            @param widget as Gtk.Widget
         """
+        Lp().window.enable_global_shorcuts(False)
         height = Lp().window.get_size()[1]
         self.set_size_request(400, height*0.7)
-        Gtk.Popover.do_show(self)

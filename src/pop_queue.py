@@ -269,14 +269,6 @@ class QueuePopover(Gtk.Popover):
         builder.get_object('scrolled').add(self._view)
         self.add(builder.get_object('widget'))
 
-    def do_show(self):
-        """
-            Set widget size
-        """
-        height = Lp().window.get_size()[1]
-        self.set_size_request(400, height*0.7)
-        Gtk.Popover.do_show(self)
-
     def populate(self):
         """
             Populate widget with queue rows
@@ -329,10 +321,12 @@ class QueuePopover(Gtk.Popover):
 
     def _on_map(self, widget):
         """
-            Connect signals
+            Connect signals, populate, and resize
             @param widget as Gtk.Widget
         """
         self._stop = False
+        height = Lp().window.get_size()[1]
+        self.set_size_request(400, height*0.7)
         self.populate()
         self._signal_id1 = Lp().player.connect('current-changed',
                                                self._on_current_changed)
