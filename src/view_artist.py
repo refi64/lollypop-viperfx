@@ -221,15 +221,13 @@ class ArtistView(ArtistAlbumsView):
         """
         ArtistAlbumsView._on_value_changed(self, adj)
         if adj.get_value() == adj.get_lower():
-            if Lp().settings.get_value('artist-artwork'):
+            if self._artwork.get_pixbuf() is not None:
                 self._artwork.show()
                 self._artwork_box.show()
             self._grid.get_style_context().remove_class('header-borders')
             self._grid.get_style_context().add_class('header')
             self._grid.set_property('valign', Gtk.Align.CENTER)
         else:
-            self._artwork.hide()
-            self._artwork_box.hide()
             self._grid.get_style_context().add_class('header-borders')
             self._grid.get_style_context().remove_class('header')
             self._grid.set_property('valign', Gtk.Align.START)
