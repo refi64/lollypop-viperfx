@@ -143,7 +143,7 @@ class ArtworkSearch(Gtk.Bin):
         """
         if search != self._entry.get_text():
             return
-        if urls:
+        if urls and self._thread:
             url = urls.pop(0)
             try:
                 f = Gio.File.new_for_uri(url)

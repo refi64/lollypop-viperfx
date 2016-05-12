@@ -13,9 +13,43 @@
 from gi.repository import Gtk
 
 from lollypop.art_widgets import ArtworkSearch
+from lollypop.define import Lp
 
 
-class CoversPopover(Gtk.Popover):
+class CommonPopover(Gtk.Popover):
+    """
+        Resized popover
+    """
+
+    def __init__(self):
+        """
+            Connect map signal
+        """
+        Gtk.Popover.__init__(self)
+        self.connect('map', self._on_map)
+        self.connect('unmap', self._on_unmap)
+
+#######################
+# PRIVATE             #
+#######################
+    def _on_map(self, widget):
+        """
+            Resize
+            @param widget as Gtk.Widget
+        """
+        size = Lp().window.get_size()
+        self.set_size_request(size[0]*0.4,
+                              size[1]*0.5)
+
+    def _on_unmap(self, widget):
+        """
+            Stop loading
+            @param widget as Gtk.Widget
+        """
+        self._widget.stop()
+
+
+class CoversPopover(CommonPopover):
     """
         Popover with album covers from the web
     """
@@ -25,17 +59,16 @@ class CoversPopover(Gtk.Popover):
             Init Popover
             @param album as album
         """
-        Gtk.Popover.__init__(self)
+        CommonPopover.__init__(self)
         # FIXME We only search with first artist
-        widget = ArtworkSearch(album.artist_ids[0],
-                               album)
-        widget.show()
-        self.add(widget)
-        self.set_size_request(700, 400)
-        widget.populate()
+        self._widget = ArtworkSearch(album.artist_ids[0],
+                                     album)
+        self._widget.show()
+        self.add(self._widget)
+        self._widget.populate()
 
 
-class ArtworkPopover(Gtk.Popover):
+class ArtworkPopover(CommonPopover):
     """
         Popover with artist-artwork from the web
     """
@@ -45,9 +78,8 @@ class ArtworkPopover(Gtk.Popover):
             Init Popover
             @param album as album
         """
-        Gtk.Popover.__init__(self)
-        widget = ArtworkSearch(artist_id, None)
-        widget.show()
-        self.add(widget)
-        self.set_size_request(700, 400)
-        widget.populate()
+        CommonPopover.__init__(self)
+        self._widget = ArtworkSearch(artist_id, None)
+        self._widget.show()
+        self.add(self._widget)
+        self._widget.populate()
