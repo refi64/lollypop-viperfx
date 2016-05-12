@@ -1,1 +1,7 @@
-Pas de recherche au démarrage
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.5/site-packages/lollypop/view.py", line 79, in _disable_overlays
+    widget.show_overlay(False)
+  File "/usr/local/lib/python3.5/site-packages/lollypop/widgets_radio.py", line 160, in show_overlay
+    if self._lock_overlay or self._show_overlay == set:
+AttributeError: 'RadioWidget' object has no attribute '_lock_overlay'
+
