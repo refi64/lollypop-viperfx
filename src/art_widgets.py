@@ -33,6 +33,7 @@ class ArtworkSearch(Gtk.Bin):
         Gtk.Bin.__init__(self)
         self.connect('unmap', self._on_self_unmap)
         self._timeout_id = None
+        self._loading = False
         self._album = album
         self._artist_id = artist_id
         self._artist = Lp().artists.get_name(artist_id)
@@ -94,7 +95,7 @@ class ArtworkSearch(Gtk.Bin):
             if len(urls) > 0:
                 self._stack.set_visible_child_name('main')
         # Then duckduckgo
-        self._thread = True
+        self._loading = True
         t = Thread(target=self._populate)
         t.daemon = True
         t.start()
@@ -103,7 +104,7 @@ class ArtworkSearch(Gtk.Bin):
         """
             Stop loading
         """
-        self._thread = False
+        self._loading = False
 
 #######################
 # PRIVATE             #
@@ -143,7 +144,7 @@ class ArtworkSearch(Gtk.Bin):
         """
         if search != self._entry.get_text():
             return
-        if urls and self._thread:
+        if urls and self._loading:
             url = urls.pop(0)
             try:
                 f = Gio.File.new_for_uri(url)
@@ -152,7 +153,7 @@ class ArtworkSearch(Gtk.Bin):
                     GLib.idle_add(self._add_pixbuf, data)
             except Exception as e:
                 print("ArtworkSearch::_add_pixbufs: %s" % e)
-            if self._thread:
+            if self._loading:
                 self._add_pixbufs(urls, search)
         else:
             self._spinner.stop()
@@ -265,7 +266,7 @@ class ArtworkSearch(Gtk.Bin):
         self._spinner.start()
         self._spinner.show()
         self._timeout_id = None
-        self._thread = True
+        self._loading = True
         t = Thread(target=self._populate, args=(string,))
         t.daemon = True
         t.start()
