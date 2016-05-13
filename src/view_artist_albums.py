@@ -49,8 +49,7 @@ class ArtistAlbumsView(LazyLoadingView):
         self._albumbox.show()
         self._viewport.add(self._albumbox)
 
-        self._scrolled.set_property('expand', True)
-        self._viewport.set_property("valign", Gtk.Align.START)
+        self._albumbox.set_property("valign", Gtk.Align.START)
         self._overlay = Gtk.Overlay.new()
         self._overlay.add(self._scrolled)
         self._overlay.add_overlay(self._spinner)
