@@ -228,6 +228,9 @@ class ArtistView(ArtistAlbumsView):
             self._grid.get_style_context().add_class('header')
             self._grid.set_property('valign', Gtk.Align.CENTER)
         else:
+            if self._artwork.get_pixbuf() is not None:
+                self._artwork.hide()
+                self._artwork_box.hide()
             self._grid.get_style_context().add_class('header-borders')
             self._grid.get_style_context().remove_class('header')
             self._grid.set_property('valign', Gtk.Align.START)
