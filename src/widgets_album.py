@@ -920,7 +920,7 @@ class AlbumDetailedWidget(Gtk.Bin, AlbumWidget):
                 show_label = len(self._album.discs) > 1
                 if show_label:
                     label = Gtk.Label()
-                    disc_text = _("Disc %s" % disc.number)
+                    disc_text = _("Disc %s") % disc.number
                     disc_names = self._album.disc_names(disc.number)
                     if disc_names:
                         disc_text += ": " + ", ".join(disc_names)
