@@ -41,6 +41,11 @@ class ArtistAlbumsView(LazyLoadingView):
         self._albums_count = 0
 
         self._spinner = Gtk.Spinner()
+        self._spinner.set_hexpand(True)
+        self._spinner.set_vexpand(True)
+        self._spinner.set_size_request(100, 100)
+        self._spinner.set_property('halign', Gtk.Align.CENTER)
+        self._spinner.set_property('valign', Gtk.Align.CENTER)
         self._spinner.show()
 
         self._albumbox = Gtk.Grid()
