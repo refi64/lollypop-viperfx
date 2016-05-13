@@ -246,7 +246,7 @@ class MPRIS(Server):
             return GLib.Variant('x', Lp().player.position / 60)
         elif property_name in ["CanGoNext", "CanGoPrevious",
                                "CanPlay", "CanPause"]:
-            return GLib.Variant('b', True)
+            return GLib.Variant('b', Lp().player.current_track.id is not None)
 
     def GetAll(self, interface):
         ret = {}
@@ -385,7 +385,9 @@ class MPRIS(Server):
         self._update_metadata()
         properties = {'Metadata': GLib.Variant('a{sv}', self._metadata),
                       'CanPlay': GLib.Variant('b', True),
-                      'CanPause': GLib.Variant('b', True)}
+                      'CanPause': GLib.Variant('b', True),
+                      'CanGoNext': GLib.Variant('b', True),
+                      'CanGoPrevious': GLib.Variant('b', True)}
         try:
             self.PropertiesChanged(self._MPRIS_PLAYER_IFACE, properties, [])
         except Exception as e:
