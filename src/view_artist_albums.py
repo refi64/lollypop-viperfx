@@ -14,7 +14,7 @@ from gi.repository import Gtk, GLib, GObject
 
 from lollypop.view import LazyLoadingView, View
 from lollypop.view_container import ViewContainer
-from lollypop.define import Lp, Type
+from lollypop.define import Lp, Type, ArtSize
 from lollypop.objects import Track
 from lollypop.widgets_album import AlbumDetailedWidget
 
@@ -43,7 +43,8 @@ class ArtistAlbumsView(LazyLoadingView):
         self._spinner = Gtk.Spinner()
         self._spinner.set_hexpand(True)
         self._spinner.set_vexpand(True)
-        self._spinner.set_size_request(100, 100)
+        spinner_size = int(ArtSize.BIG / 3)
+        self._spinner.set_size_request(spinner_size, spinner_size)
         self._spinner.set_property('halign', Gtk.Align.CENTER)
         self._spinner.set_property('valign', Gtk.Align.CENTER)
         self._spinner.show()
@@ -236,7 +237,8 @@ class CurrentArtistAlbumsView(ViewContainer):
         spinner = Gtk.Spinner()
         spinner.set_hexpand(True)
         spinner.set_vexpand(True)
-        spinner.set_size_request(100, 100)
+        spinner_size = int(ArtSize.BIG / 3)
+        spinner.set_size_request(spinner_size, spinner_size)
         spinner.set_property('halign', Gtk.Align.CENTER)
         spinner.set_property('valign', Gtk.Align.CENTER)
         spinner.start()
