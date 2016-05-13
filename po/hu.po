@@ -8,9 +8,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lollypop\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-05-09 17:29+0200\n"
-"PO-Revision-Date: 2016-05-09 16:18+0000\n"
-"Last-Translator: Cédric Bellegarde <web@adishatz.org>\n"
+"POT-Creation-Date: 2016-05-11 23:55+0200\n"
+"PO-Revision-Date: 2016-05-13 16:57+0000\n"
+"Last-Translator: naren93 <m.renato93@gmail.com>\n"
 "Language-Team: Hungarian (http://www.transifex.com/gnumdk/lollypop/language/hu/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -43,143 +43,147 @@ msgid "Mini player position"
 msgstr "Mini lejátszó elhelyezése"
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:7
+msgid "Save artwork in tags"
+msgstr "Grafika mentése tag-ekbe"
+
+#: ../data/org.gnome.Lollypop.gschema.xml.h:8
 msgid "Repeat by default"
 msgstr "Alapértelmezetten ismétlés"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:8
+#: ../data/org.gnome.Lollypop.gschema.xml.h:9
 msgid "Window maximized"
 msgstr "Ablak maximalizálva"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:9
+#: ../data/org.gnome.Lollypop.gschema.xml.h:10
 msgid "Window maximized state."
 msgstr "Ablak maximalizált állapot."
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:10
+#: ../data/org.gnome.Lollypop.gschema.xml.h:11
 msgid "Enabled genres in party mode"
 msgstr "Műfajok engedélyezése parti módban"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:11
+#: ../data/org.gnome.Lollypop.gschema.xml.h:12
 msgid "Ids for genres."
 msgstr "Műfaj azonosítók."
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:12
+#: ../data/org.gnome.Lollypop.gschema.xml.h:13
 msgid "Music paths"
 msgstr "Zene mappák"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:13
+#: ../data/org.gnome.Lollypop.gschema.xml.h:14
 msgid "When empty, use XDG_MUSIC_DIR"
 msgstr "Ha üres az XDG_MUSIC_DIR lesz használva"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:14
+#: ../data/org.gnome.Lollypop.gschema.xml.h:15
 msgid "Last.fm login"
 msgstr "Last.fm fiók"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:15
+#: ../data/org.gnome.Lollypop.gschema.xml.h:16
 msgid "Favorite tag editor"
 msgstr "Kedvenc tag szerkesztő"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:16
+#: ../data/org.gnome.Lollypop.gschema.xml.h:17
 msgid "INTERNAL"
 msgstr "BELSŐ"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:17
+#: ../data/org.gnome.Lollypop.gschema.xml.h:18
 msgid "Favorite cover file"
 msgstr "Kedvenc borító fájl"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:18
+#: ../data/org.gnome.Lollypop.gschema.xml.h:19
 msgid "Restart needed"
 msgstr "Újraindítás szükséges"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:19
+#: ../data/org.gnome.Lollypop.gschema.xml.h:20
 msgid "Database version"
 msgstr "Adatbázis verzió"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:20
+#: ../data/org.gnome.Lollypop.gschema.xml.h:21
 msgid ""
 "Reset this value will reset the database, popular albums will be restored"
 msgstr "Az érték alapértelmezésre állítása, alapértelmezettre állítja az adatbázist, a népszerű albumok eltárolásra kerülnek."
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:21 ../data/SettingsDialog.ui.h:7
+#: ../data/org.gnome.Lollypop.gschema.xml.h:22 ../data/SettingsDialog.ui.h:7
 msgid "Albums cover size"
 msgstr "Album borító mérete"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:22
+#: ../data/org.gnome.Lollypop.gschema.xml.h:23
 msgid "Replay gain value in db"
 msgstr "Replay gain értéke dB-ben"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:23
+#: ../data/org.gnome.Lollypop.gschema.xml.h:24
 msgid "Between -15 and 15"
 msgstr "-15 és 15 között"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:24
+#: ../data/org.gnome.Lollypop.gschema.xml.h:25
 msgid "Sync all albums(MTP)"
 msgstr "Minden album szinkronizálása (MTP)"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:25
+#: ../data/org.gnome.Lollypop.gschema.xml.h:26
 msgid "Convert to MP3(MTP)"
 msgstr "Konvertálás MP3-ba (MTP)"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:26 ../data/SettingsDialog.ui.h:16
+#: ../data/org.gnome.Lollypop.gschema.xml.h:27 ../data/SettingsDialog.ui.h:16
 msgid "Auto update music"
 msgstr "Zene automatikus frissítése"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:27
+#: ../data/org.gnome.Lollypop.gschema.xml.h:28
 msgid "Show genres list"
 msgstr "Műfajok listájának engedélyezése"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:28 ../data/SettingsDialog.ui.h:8
+#: ../data/org.gnome.Lollypop.gschema.xml.h:29 ../data/SettingsDialog.ui.h:8
 msgid "Show artist artwork"
 msgstr "Előadó grafika megjelenítése"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:29
+#: ../data/org.gnome.Lollypop.gschema.xml.h:30
 msgid "Use dark gtk theme"
 msgstr "Sötét gtk téma használata"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:30
+#: ../data/org.gnome.Lollypop.gschema.xml.h:31
 msgid "Disable the use client side window decorations (headerbar)"
 msgstr "Kliensoldali dekoráció használatának tiltása (headerbar)"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:31 ../data/SettingsDialog.ui.h:6
+#: ../data/org.gnome.Lollypop.gschema.xml.h:32 ../data/SettingsDialog.ui.h:6
 msgid "Show compilations in albums view"
 msgstr "Válogatások mutatása album nézetben"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:32 ../data/SettingsDialog.ui.h:18
+#: ../data/org.gnome.Lollypop.gschema.xml.h:33 ../data/SettingsDialog.ui.h:18
 msgid "Continue playback when closed"
 msgstr "Lejátszás folytatása bezárás után"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:33
+#: ../data/org.gnome.Lollypop.gschema.xml.h:34
 msgid "Restore previous state"
 msgstr "Előző állapot visszaállítása"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:34
+#: ../data/org.gnome.Lollypop.gschema.xml.h:35
 msgid "Disable MPRIS"
 msgstr "MPRIS kikapcsolása"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:35
+#: ../data/org.gnome.Lollypop.gschema.xml.h:36
 msgid "Disable notifications"
 msgstr "Értesítések kikapcsolása"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:36
+#: ../data/org.gnome.Lollypop.gschema.xml.h:37
 msgid "Show track number from tags"
 msgstr "Számok sorszáma kiolvasása a tag-ekből"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:37 ../data/SettingsDialog.ui.h:19
+#: ../data/org.gnome.Lollypop.gschema.xml.h:38 ../data/SettingsDialog.ui.h:19
 msgid "Mix songs"
 msgstr "Számok átfedése"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:38
+#: ../data/org.gnome.Lollypop.gschema.xml.h:39
 msgid "Mix songs only in party mode"
 msgstr "Számok átfedése csak parti módban"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:39
+#: ../data/org.gnome.Lollypop.gschema.xml.h:40
 msgid "Mix duration"
 msgstr "Átfedés hossza"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:40
+#: ../data/org.gnome.Lollypop.gschema.xml.h:41
 msgid "Shuffle mode"
 msgstr "Véletlenszerű sorrend"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:41 ../data/SettingsDialog.ui.h:9
+#: ../data/org.gnome.Lollypop.gschema.xml.h:42 ../data/SettingsDialog.ui.h:9
 msgid "Order albums by"
 msgstr "Albumok rendezése: "
 
@@ -235,12 +239,12 @@ msgid "Search"
 msgstr "Keresés"
 
 #: ../data/lollypop.appdata.xml.in.h:9 ../src/pop_menu.py:472
-#: ../src/pop_menu.py:493 ../src/toolbar_end.py:308
+#: ../src/pop_menu.py:493 ../src/toolbar_end.py:285
 #: ../data/QueuePopover.ui.h:2
 msgid "Queue"
 msgstr "Lejátszási sor"
 
-#: ../data/lollypop.appdata.xml.in.h:10 ../data/SettingsDialog.ui.h:27
+#: ../data/lollypop.appdata.xml.in.h:10 ../data/SettingsDialog.ui.h:28
 #: ../data/ToolbarEnd.ui.h:5
 msgid "Party mode"
 msgstr "Parti mód"
@@ -313,7 +317,7 @@ msgid_plural "%d tracks"
 msgstr[0] "%d szám"
 msgstr[1] "%d szám"
 
-#: ../src/application.py:459
+#: ../src/application.py:460
 msgid "Lollypop: You need to install yelp."
 msgstr "Lollypop: yelp telepítése szükséges"
 
@@ -325,7 +329,7 @@ msgstr "Grafika kiválasztása"
 msgid "No cover found..."
 msgstr "Nem található borító"
 
-#: ../src/art_widgets.py:243
+#: ../src/art_widgets.py:242
 msgid "Reset artwork?"
 msgstr "Grafika visszaállítása?"
 
@@ -335,10 +339,10 @@ msgstr "A zenék frissítés alatt"
 
 #: ../src/collectionscanner.py:247 ../src/database_albums.py:299
 #: ../src/database_artists.py:104 ../src/database_genres.py:69
-#: ../src/database_tracks.py:232 ../src/selectionlist.py:276
+#: ../src/database_tracks.py:232 ../src/selectionlist.py:278
 #: ../src/tagreader.py:87 ../src/tagreader.py:102 ../src/tagreader.py:117
-#: ../src/tagreader.py:150 ../src/tagreader.py:165 ../src/tagreader.py:168
-#: ../src/tagreader.py:178 ../src/tagreader.py:185
+#: ../src/tagreader.py:152 ../src/tagreader.py:167 ../src/tagreader.py:170
+#: ../src/tagreader.py:180 ../src/tagreader.py:187
 msgid "Unknown"
 msgstr "Ismeretlen"
 
@@ -396,7 +400,7 @@ msgid "Pause"
 msgstr "Szünet"
 
 #: ../src/controllers.py:86 ../src/controllers.py:114 ../src/pop_tunein.py:170
-#: ../src/widgets_album.py:471 ../src/widgets_radio.py:166
+#: ../src/widgets_album.py:472 ../src/widgets_radio.py:166
 #: ../data/AlbumDetailedWidget.ui.h:1 ../data/ArtistView.ui.h:2
 #: ../data/ToolbarPlayback.ui.h:2
 msgid "Play"
@@ -445,7 +449,7 @@ msgstr "Albumok törlése a listáról"
 msgid "Go to current track"
 msgstr "Ugorj a most játszottra"
 
-#: ../src/pop_albums.py:296 ../src/toolbar_end.py:312
+#: ../src/pop_albums.py:296 ../src/toolbar_end.py:289
 msgid "Playing albums"
 msgstr "Albumok lejátszása"
 
@@ -533,23 +537,27 @@ msgstr "Kérlek várj..."
 msgid "Can't connect to TuneIn..."
 msgstr "Nem sikerült kapcsolatot létesíteni: TuneIn"
 
-#: ../src/settings.py:89 ../src/settings.py:92 ../data/SettingsDialog.ui.h:3
+#: ../src/settings.py:90 ../src/settings.py:93 ../data/SettingsDialog.ui.h:3
 msgid "Preferences"
 msgstr "Beállítások"
 
-#: ../src/settings.py:170
+#: ../src/settings.py:118
+msgid "You need to install kid3-cli"
+msgstr "Telepítsd a kid3-cli-t"
+
+#: ../src/settings.py:180
 msgid "Populars"
 msgstr "Népszerű"
 
-#: ../src/settings.py:171
+#: ../src/settings.py:181
 msgid "Recently added"
 msgstr "Nemrég hozzáadott"
 
-#: ../src/toolbar_end.py:306
+#: ../src/toolbar_end.py:283
 msgid "Externals tracks playing"
 msgstr "Külső szám lejátszása"
 
-#: ../src/toolbar_end.py:310
+#: ../src/toolbar_end.py:287
 msgid "Playing playlists"
 msgstr "Lista lejátszása"
 
@@ -576,30 +584,30 @@ msgstr "Szinkronizáció megszakítása"
 msgid "Append"
 msgstr "Hozzáadás"
 
-#: ../src/widgets_album.py:482 ../data/AlbumDetailedWidget.ui.h:3
+#: ../src/widgets_album.py:483 ../data/AlbumDetailedWidget.ui.h:3
 msgid "Play albums"
 msgstr "Albumok lejátszása"
 
-#: ../src/widgets_album.py:492 ../data/AlbumDetailedWidget.ui.h:2
+#: ../src/widgets_album.py:493 ../data/AlbumDetailedWidget.ui.h:2
 msgid "Change artwork"
 msgstr "Grafika módosítása"
 
-#: ../src/widgets_album.py:656
+#: ../src/widgets_album.py:657
 #, python-format
 msgid "%s h  %s m"
 msgstr "%s h %s m"
 
-#: ../src/widgets_album.py:658
+#: ../src/widgets_album.py:659
 #, python-format
 msgid "%s h"
 msgstr "%s h"
 
-#: ../src/widgets_album.py:660
+#: ../src/widgets_album.py:661
 #, python-format
 msgid "%s m"
 msgstr "%s m"
 
-#: ../src/widgets_album.py:919
+#: ../src/widgets_album.py:920
 #, python-format
 msgid "Disc %s"
 msgstr "%s. lemez"
@@ -673,7 +681,7 @@ msgstr "_Beállítások"
 
 #: ../data/Appmenu.ui.h:4
 msgid "_Keyboard Shortcuts"
-msgstr ""
+msgstr "_Gyorsbillentyűk"
 
 #: ../data/Appmenu.ui.h:5
 msgid "_Help"
@@ -839,42 +847,46 @@ msgid "Do not repeat by default"
 msgstr "Alapértelmezetten nincs ismétlés"
 
 #: ../data/SettingsDialog.ui.h:22
+msgid "Save artwork in files"
+msgstr "Grafika mentése fáljba"
+
+#: ../data/SettingsDialog.ui.h:23
 msgid "Configure lollypop behaviour"
 msgstr "Viselkedés módosítása"
 
-#: ../data/SettingsDialog.ui.h:23
+#: ../data/SettingsDialog.ui.h:24
 msgid "Behaviour"
 msgstr "Viselkedés"
 
-#: ../data/SettingsDialog.ui.h:24
+#: ../data/SettingsDialog.ui.h:25
 msgid "Select music folders"
 msgstr "Zenét tartalmazó mappák kiválasztása"
 
-#: ../data/SettingsDialog.ui.h:25
+#: ../data/SettingsDialog.ui.h:26
 msgid "Music"
 msgstr "Zene"
 
-#: ../data/SettingsDialog.ui.h:26
+#: ../data/SettingsDialog.ui.h:27
 msgid "Select what will be available in party mode"
 msgstr "Parti mód beállítása"
 
-#: ../data/SettingsDialog.ui.h:28
+#: ../data/SettingsDialog.ui.h:29
 msgid "Login:"
 msgstr "Felhasználónév:"
 
-#: ../data/SettingsDialog.ui.h:29
+#: ../data/SettingsDialog.ui.h:30
 msgid "Password:"
 msgstr "Jelszó:"
 
-#: ../data/SettingsDialog.ui.h:30
+#: ../data/SettingsDialog.ui.h:31
 msgid "Connect"
 msgstr "Csatlakozás"
 
-#: ../data/SettingsDialog.ui.h:31
+#: ../data/SettingsDialog.ui.h:32
 msgid "You need to install pylast and gi secret"
 msgstr "Telepítsd a \"pylast\" és a \"gi secret\" csomagot"
 
-#: ../data/SettingsDialog.ui.h:32
+#: ../data/SettingsDialog.ui.h:33
 msgid "Configure Last.fm credentials"
 msgstr "Last.fm beállítása"
 
@@ -919,7 +931,7 @@ msgstr "A Lollypop nem tud unicode nyelv nélkül működni.\nKérlek módosíts
 #: ../data/Shortcuts.ui.h:1
 msgctxt "shortcut window"
 msgid "General"
-msgstr ""
+msgstr "Általános"
 
 #: ../data/Shortcuts.ui.h:2
 msgctxt "shortcut window"
@@ -939,12 +951,12 @@ msgstr "Parti mód"
 #: ../data/Shortcuts.ui.h:5
 msgctxt "shortcut window"
 msgid "Mini Player"
-msgstr ""
+msgstr "Mini lejátszó"
 
 #: ../data/Shortcuts.ui.h:6
 msgctxt "shortcut window"
 msgid "Fullscreen"
-msgstr ""
+msgstr "Teljes képernyő"
 
 #: ../data/Shortcuts.ui.h:7
 msgctxt "shortcut window"
@@ -969,7 +981,7 @@ msgstr "Szünet"
 #: ../data/Shortcuts.ui.h:11
 msgctxt "shortcut window"
 msgid "Stop"
-msgstr ""
+msgstr "Megállítás"
 
 #: ../data/Shortcuts.ui.h:12
 msgctxt "shortcut window"
@@ -979,24 +991,24 @@ msgstr "Következő szám"
 #: ../data/Shortcuts.ui.h:13
 msgctxt "shortcut window"
 msgid "Previous track"
-msgstr ""
+msgstr "Előző szám"
 
 #: ../data/Shortcuts.ui.h:14
 msgctxt "shortcut window"
 msgid "Skip current album"
-msgstr ""
+msgstr "Most játszott album kihagyása"
 
 #: ../data/Shortcuts.ui.h:15
 msgctxt "shortcut window"
 msgid "Repeat track"
-msgstr ""
+msgstr "Szám ismétlése"
 
 #: ../data/Shortcuts.ui.h:16
 msgctxt "shortcut window"
 msgid "Skip backward in track"
-msgstr ""
+msgstr "Visszaugrás a számban"
 
 #: ../data/Shortcuts.ui.h:17
 msgctxt "shortcut window"
 msgid "Skip forward in track"
-msgstr ""
+msgstr "Előreugrás a számban"

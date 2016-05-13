@@ -9,8 +9,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lollypop\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-05-09 17:29+0200\n"
-"PO-Revision-Date: 2016-05-09 18:04+0000\n"
+"POT-Creation-Date: 2016-05-11 23:55+0200\n"
+"PO-Revision-Date: 2016-05-12 15:43+0000\n"
 "Last-Translator: Марко М. Костић (Marko M. Kostić) <marko.m.kostic@gmail.com>\n"
 "Language-Team: Serbian (Latin) (http://www.transifex.com/gnumdk/lollypop/language/sr@latin/)\n"
 "MIME-Version: 1.0\n"
@@ -44,143 +44,147 @@ msgid "Mini player position"
 msgstr "Položaj mini puštača"
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:7
+msgid "Save artwork in tags"
+msgstr "Sačuvaj omot unutar oznaka"
+
+#: ../data/org.gnome.Lollypop.gschema.xml.h:8
 msgid "Repeat by default"
 msgstr "Podrazumevano ponavljaj"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:8
+#: ../data/org.gnome.Lollypop.gschema.xml.h:9
 msgid "Window maximized"
 msgstr "Uvećan prozor"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:9
+#: ../data/org.gnome.Lollypop.gschema.xml.h:10
 msgid "Window maximized state."
 msgstr "Stanje prozora kada je uvećan."
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:10
+#: ../data/org.gnome.Lollypop.gschema.xml.h:11
 msgid "Enabled genres in party mode"
 msgstr "Omogućeni žanrovi pesama u režimu rada za žurke"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:11
+#: ../data/org.gnome.Lollypop.gschema.xml.h:12
 msgid "Ids for genres."
 msgstr "IB-ovi za žanrove pesama."
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:12
+#: ../data/org.gnome.Lollypop.gschema.xml.h:13
 msgid "Music paths"
 msgstr "Putanja do muzike"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:13
+#: ../data/org.gnome.Lollypop.gschema.xml.h:14
 msgid "When empty, use XDG_MUSIC_DIR"
 msgstr "Kada je prazna, koristi XDG_MUSIC_DIR promenljivu"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:14
+#: ../data/org.gnome.Lollypop.gschema.xml.h:15
 msgid "Last.fm login"
 msgstr "Last.fm prijava"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:15
+#: ../data/org.gnome.Lollypop.gschema.xml.h:16
 msgid "Favorite tag editor"
 msgstr "Omiljeni uređivač oznaka na pesmama"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:16
+#: ../data/org.gnome.Lollypop.gschema.xml.h:17
 msgid "INTERNAL"
 msgstr "INTERNO"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:17
+#: ../data/org.gnome.Lollypop.gschema.xml.h:18
 msgid "Favorite cover file"
 msgstr "Datoteka sa omiljenim omotom albuma"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:18
+#: ../data/org.gnome.Lollypop.gschema.xml.h:19
 msgid "Restart needed"
 msgstr "Potrebno je ponovo pokrenuti program"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:19
+#: ../data/org.gnome.Lollypop.gschema.xml.h:20
 msgid "Database version"
 msgstr "Izdanje baze podataka"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:20
+#: ../data/org.gnome.Lollypop.gschema.xml.h:21
 msgid ""
 "Reset this value will reset the database, popular albums will be restored"
 msgstr "Ponovno postavljanje ove vrednosti će vratiti bazu na početno stanje, Popularni albumi će biti vraćeni"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:21 ../data/SettingsDialog.ui.h:7
+#: ../data/org.gnome.Lollypop.gschema.xml.h:22 ../data/SettingsDialog.ui.h:7
 msgid "Albums cover size"
 msgstr "Veličina omota albuma"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:22
+#: ../data/org.gnome.Lollypop.gschema.xml.h:23
 msgid "Replay gain value in db"
 msgstr "Vrednost pojačanja u decibelima"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:23
+#: ../data/org.gnome.Lollypop.gschema.xml.h:24
 msgid "Between -15 and 15"
 msgstr "Između -15 i 15"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:24
+#: ../data/org.gnome.Lollypop.gschema.xml.h:25
 msgid "Sync all albums(MTP)"
 msgstr "Sinhronizuj sve albume (MTP)"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:25
+#: ../data/org.gnome.Lollypop.gschema.xml.h:26
 msgid "Convert to MP3(MTP)"
 msgstr "Pretvori u MP3 (MTP)"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:26 ../data/SettingsDialog.ui.h:16
+#: ../data/org.gnome.Lollypop.gschema.xml.h:27 ../data/SettingsDialog.ui.h:16
 msgid "Auto update music"
 msgstr "Automatski ažuriraj muziku"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:27
+#: ../data/org.gnome.Lollypop.gschema.xml.h:28
 msgid "Show genres list"
 msgstr "Prikaži listu žanrova"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:28 ../data/SettingsDialog.ui.h:8
+#: ../data/org.gnome.Lollypop.gschema.xml.h:29 ../data/SettingsDialog.ui.h:8
 msgid "Show artist artwork"
 msgstr "Prikaži portret izvođača"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:29
+#: ../data/org.gnome.Lollypop.gschema.xml.h:30
 msgid "Use dark gtk theme"
 msgstr "Koristi tamnu GTK temu"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:30
+#: ../data/org.gnome.Lollypop.gschema.xml.h:31
 msgid "Disable the use client side window decorations (headerbar)"
 msgstr "Isključi klijentske dekoracije prozora (naslovna traka)"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:31 ../data/SettingsDialog.ui.h:6
+#: ../data/org.gnome.Lollypop.gschema.xml.h:32 ../data/SettingsDialog.ui.h:6
 msgid "Show compilations in albums view"
 msgstr "Prikaži kompilacije u delu sa albumima"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:32 ../data/SettingsDialog.ui.h:18
+#: ../data/org.gnome.Lollypop.gschema.xml.h:33 ../data/SettingsDialog.ui.h:18
 msgid "Continue playback when closed"
 msgstr "Nastavi sa puštanjem pesama nakon zatvaranja programa"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:33
+#: ../data/org.gnome.Lollypop.gschema.xml.h:34
 msgid "Restore previous state"
 msgstr "Povrati prethodno stanje programa"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:34
+#: ../data/org.gnome.Lollypop.gschema.xml.h:35
 msgid "Disable MPRIS"
 msgstr "Isključi MPRIS kontrole"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:35
+#: ../data/org.gnome.Lollypop.gschema.xml.h:36
 msgid "Disable notifications"
 msgstr "Isključi obaveštenja"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:36
+#: ../data/org.gnome.Lollypop.gschema.xml.h:37
 msgid "Show track number from tags"
 msgstr "Kao broj pesme koristi broj iz oznake pesme"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:37 ../data/SettingsDialog.ui.h:19
+#: ../data/org.gnome.Lollypop.gschema.xml.h:38 ../data/SettingsDialog.ui.h:19
 msgid "Mix songs"
 msgstr "Preklapaj pesme"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:38
+#: ../data/org.gnome.Lollypop.gschema.xml.h:39
 msgid "Mix songs only in party mode"
 msgstr "Preklapaj pesme samo u režimu za žurke"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:39
+#: ../data/org.gnome.Lollypop.gschema.xml.h:40
 msgid "Mix duration"
 msgstr "Trajanje preklapanja"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:40
+#: ../data/org.gnome.Lollypop.gschema.xml.h:41
 msgid "Shuffle mode"
 msgstr "Režim mešanja pesama"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:41 ../data/SettingsDialog.ui.h:9
+#: ../data/org.gnome.Lollypop.gschema.xml.h:42 ../data/SettingsDialog.ui.h:9
 msgid "Order albums by"
 msgstr "Poređaj albume po"
 
@@ -236,12 +240,12 @@ msgid "Search"
 msgstr "Pretraga"
 
 #: ../data/lollypop.appdata.xml.in.h:9 ../src/pop_menu.py:472
-#: ../src/pop_menu.py:493 ../src/toolbar_end.py:308
+#: ../src/pop_menu.py:493 ../src/toolbar_end.py:285
 #: ../data/QueuePopover.ui.h:2
 msgid "Queue"
 msgstr "Redosled"
 
-#: ../data/lollypop.appdata.xml.in.h:10 ../data/SettingsDialog.ui.h:27
+#: ../data/lollypop.appdata.xml.in.h:10 ../data/SettingsDialog.ui.h:28
 #: ../data/ToolbarEnd.ui.h:5
 msgid "Party mode"
 msgstr "Režim rada za žurke"
@@ -317,7 +321,7 @@ msgstr[0] "%d numera"
 msgstr[1] "%d numere"
 msgstr[2] "%d numera"
 
-#: ../src/application.py:459
+#: ../src/application.py:460
 msgid "Lollypop: You need to install yelp."
 msgstr "Lolipop: potrebno je da instalirate „Pomoć“ (yelp paket)."
 
@@ -329,7 +333,7 @@ msgstr "Izaberi portret"
 msgid "No cover found..."
 msgstr "Nisam pronašao omot..."
 
-#: ../src/art_widgets.py:243
+#: ../src/art_widgets.py:242
 msgid "Reset artwork?"
 msgstr "Resetuj omot?"
 
@@ -339,10 +343,10 @@ msgstr "Muzička biblioteka se ažurira"
 
 #: ../src/collectionscanner.py:247 ../src/database_albums.py:299
 #: ../src/database_artists.py:104 ../src/database_genres.py:69
-#: ../src/database_tracks.py:232 ../src/selectionlist.py:276
+#: ../src/database_tracks.py:232 ../src/selectionlist.py:278
 #: ../src/tagreader.py:87 ../src/tagreader.py:102 ../src/tagreader.py:117
-#: ../src/tagreader.py:150 ../src/tagreader.py:165 ../src/tagreader.py:168
-#: ../src/tagreader.py:178 ../src/tagreader.py:185
+#: ../src/tagreader.py:152 ../src/tagreader.py:167 ../src/tagreader.py:170
+#: ../src/tagreader.py:180 ../src/tagreader.py:187
 msgid "Unknown"
 msgstr "Nepoznato"
 
@@ -400,7 +404,7 @@ msgid "Pause"
 msgstr "Pauziraj"
 
 #: ../src/controllers.py:86 ../src/controllers.py:114 ../src/pop_tunein.py:170
-#: ../src/widgets_album.py:471 ../src/widgets_radio.py:166
+#: ../src/widgets_album.py:472 ../src/widgets_radio.py:166
 #: ../data/AlbumDetailedWidget.ui.h:1 ../data/ArtistView.ui.h:2
 #: ../data/ToolbarPlayback.ui.h:2
 msgid "Play"
@@ -449,7 +453,7 @@ msgstr "Očisti albume"
 msgid "Go to current track"
 msgstr "Idi na trenutnu numeru"
 
-#: ../src/pop_albums.py:296 ../src/toolbar_end.py:312
+#: ../src/pop_albums.py:296 ../src/toolbar_end.py:289
 msgid "Playing albums"
 msgstr "Pušteni albumi"
 
@@ -537,23 +541,27 @@ msgstr "Sačekajte..."
 msgid "Can't connect to TuneIn..."
 msgstr "Ne mogu da se povežem na TuneIn uslugu..."
 
-#: ../src/settings.py:89 ../src/settings.py:92 ../data/SettingsDialog.ui.h:3
+#: ../src/settings.py:90 ../src/settings.py:93 ../data/SettingsDialog.ui.h:3
 msgid "Preferences"
 msgstr "Postavke"
 
-#: ../src/settings.py:170
+#: ../src/settings.py:118
+msgid "You need to install kid3-cli"
+msgstr "Potrebno je da instalirate kid3-cli"
+
+#: ../src/settings.py:180
 msgid "Populars"
 msgstr "Popularno"
 
-#: ../src/settings.py:171
+#: ../src/settings.py:181
 msgid "Recently added"
 msgstr "Skoro dodato"
 
-#: ../src/toolbar_end.py:306
+#: ../src/toolbar_end.py:283
 msgid "Externals tracks playing"
 msgstr "Puštene spoljne numere"
 
-#: ../src/toolbar_end.py:310
+#: ../src/toolbar_end.py:287
 msgid "Playing playlists"
 msgstr "Pušteni spiskovi pesama"
 
@@ -580,30 +588,30 @@ msgstr "Otkaži usklađivanje"
 msgid "Append"
 msgstr "Dodaj"
 
-#: ../src/widgets_album.py:482 ../data/AlbumDetailedWidget.ui.h:3
+#: ../src/widgets_album.py:483 ../data/AlbumDetailedWidget.ui.h:3
 msgid "Play albums"
 msgstr "Pusti albume"
 
-#: ../src/widgets_album.py:492 ../data/AlbumDetailedWidget.ui.h:2
+#: ../src/widgets_album.py:493 ../data/AlbumDetailedWidget.ui.h:2
 msgid "Change artwork"
 msgstr "Promeni omot"
 
-#: ../src/widgets_album.py:656
+#: ../src/widgets_album.py:657
 #, python-format
 msgid "%s h  %s m"
 msgstr "%s s %s m"
 
-#: ../src/widgets_album.py:658
+#: ../src/widgets_album.py:659
 #, python-format
 msgid "%s h"
 msgstr "%s s"
 
-#: ../src/widgets_album.py:660
+#: ../src/widgets_album.py:661
 #, python-format
 msgid "%s m"
 msgstr "%s m"
 
-#: ../src/widgets_album.py:919
+#: ../src/widgets_album.py:920
 #, python-format
 msgid "Disc %s"
 msgstr "Disk %s"
@@ -843,42 +851,46 @@ msgid "Do not repeat by default"
 msgstr "Podrazumevano ne ponavljaj"
 
 #: ../data/SettingsDialog.ui.h:22
+msgid "Save artwork in files"
+msgstr "Sačuvaj omot unutar datoteka"
+
+#: ../data/SettingsDialog.ui.h:23
 msgid "Configure lollypop behaviour"
 msgstr "Podesi ponašanje Lolipopa"
 
-#: ../data/SettingsDialog.ui.h:23
+#: ../data/SettingsDialog.ui.h:24
 msgid "Behaviour"
 msgstr "Ponašanje programa"
 
-#: ../data/SettingsDialog.ui.h:24
+#: ../data/SettingsDialog.ui.h:25
 msgid "Select music folders"
 msgstr "Izaberi direktorijume sa muzikom"
 
-#: ../data/SettingsDialog.ui.h:25
+#: ../data/SettingsDialog.ui.h:26
 msgid "Music"
 msgstr "Muzika"
 
-#: ../data/SettingsDialog.ui.h:26
+#: ../data/SettingsDialog.ui.h:27
 msgid "Select what will be available in party mode"
 msgstr "Izaberi šta će biti dostupno u režimu rada za žurke"
 
-#: ../data/SettingsDialog.ui.h:28
+#: ../data/SettingsDialog.ui.h:29
 msgid "Login:"
 msgstr "Korisničko ime:"
 
-#: ../data/SettingsDialog.ui.h:29
+#: ../data/SettingsDialog.ui.h:30
 msgid "Password:"
 msgstr "Lozinka:"
 
-#: ../data/SettingsDialog.ui.h:30
+#: ../data/SettingsDialog.ui.h:31
 msgid "Connect"
 msgstr "Poveži se"
 
-#: ../data/SettingsDialog.ui.h:31
+#: ../data/SettingsDialog.ui.h:32
 msgid "You need to install pylast and gi secret"
 msgstr "Potrebno je da instalirate pakete koji sadrže „pylast“ i „gi secret“"
 
-#: ../data/SettingsDialog.ui.h:32
+#: ../data/SettingsDialog.ui.h:33
 msgid "Configure Last.fm credentials"
 msgstr "Podesi Last.fm akreditive"
 

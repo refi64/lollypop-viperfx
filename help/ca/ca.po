@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lollypop\n"
 "POT-Creation-Date: 2016-05-09 15:53+0200\n"
-"PO-Revision-Date: 2016-05-10 17:07+0000\n"
+"PO-Revision-Date: 2016-05-12 13:49+0000\n"
 "Last-Translator: Ferran Roig <forums@ferranroig.com>\n"
 "Language-Team: Catalan (http://www.transifex.com/gnumdk/lollypop/language/ca/)\n"
 "MIME-Version: 1.0\n"
@@ -22,13 +22,13 @@ msgstr "credits-traductor"
 #. (itstool) path: info/desc
 #: C/index.page:7
 msgid "Help for the Lollypop music player."
-msgstr "Ajuda pel reproductor de música Lollypop"
+msgstr "Ajuda del reproductor de música Lollypop"
 
 #. (itstool) path: info/title
 #: C/index.page:8
 msgctxt "text"
 msgid "Lollypop music player"
-msgstr "Reproductor Lollypop"
+msgstr "Reproductor de música Lollypop"
 
 #. (itstool) path: credit/name
 #: C/index.page:11
@@ -43,7 +43,7 @@ msgstr "2015"
 #. (itstool) path: page/title
 #: C/index.page:18
 msgid "<_:media-1/> Lollypop music player"
-msgstr "<_:media-1/> Reproductor Lollypop"
+msgstr "<_:media-1/> Reproductor de música Lollypop"
 
 #. (itstool) path: section/title
 #: C/index.page:21
@@ -65,7 +65,7 @@ msgstr "Comproveu que teniu instal·lat gstreamer-libav o bé gstreamer-fluendo"
 msgid ""
 "Go to the application menu: \"<sys>Settings -&gt; Music</sys>\" and add your"
 " music folder"
-msgstr "Aneu al menú de l'aplicació: \"<sys>Configuració -&gt; Música</sys>\" "
+msgstr "Aneu al menú de l'aplicació: \"<sys>Preferències-&gt; Música</sys>\"  i afegiu la carpeta on teniu la música "
 
 #. (itstool) path: section/title
 #: C/index.page:30
@@ -75,7 +75,7 @@ msgstr "Reproducció"
 #. (itstool) path: section/p
 #: C/index.page:31
 msgid "When you start playing a song, a contextual playlist is populated."
-msgstr "Quant comenceu a reproduir música, es generarà una llista de reproducció contextual."
+msgstr "Quant escolteu una cançó, es genera una llista de reproducció contextual."
 
 #. (itstool) path: section/p
 #: C/index.page:32
@@ -87,7 +87,7 @@ msgstr "El context pot ser: un àlbum, un artista, un gènere, popularitat o àl
 #. (itstool) path: section/p
 #: C/index.page:33
 msgid "Shuffle interacts on current context."
-msgstr "Ordre aleatori interactua en el context actual."
+msgstr "Ordre aleatori interactua amb el context actual."
 
 #. (itstool) path: section/title
 #: C/index.page:37
@@ -98,7 +98,7 @@ msgstr "Valoració dels àlbums"
 #: C/index.page:38
 msgid ""
 "Album popularity is based on how many tracks from an album you listen to."
-msgstr "La popularitat de l'àlbum es basa en la quantitat de pistes escoltades."
+msgstr "La popularitat de l'àlbum es basa en la quantitat de pistes escoltades d'aquest àlbum."
 
 #. (itstool) path: section/p
 #: C/index.page:39
