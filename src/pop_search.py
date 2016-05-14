@@ -374,6 +374,7 @@ class SearchPopover(Gtk.Popover):
             Disable global shortcuts and resize
             @param widget as Gtk.Widget
         """
+        # FIXME Not needed with GTK >= 3.18
         Lp().window.enable_global_shorcuts(False)
         height = Lp().window.get_size()[1]
         self.set_size_request(400, height*0.7)
@@ -383,6 +384,7 @@ class SearchPopover(Gtk.Popover):
             Enable global shortcuts
             @param widget as Gtk.Widget
         """
+        # FIXME Not needed with GTK >= 3.18
         Lp().window.enable_global_shorcuts(True)
 
     def _on_search_changed(self, widget):

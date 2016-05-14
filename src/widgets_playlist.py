@@ -653,6 +653,7 @@ class PlaylistsManagerWidget(Gtk.Bin):
             @param editable as Gtk.CellEditable
             @param path as str representation of Gtk.TreePath
         """
+        # FIXME Not needed with GTK >= 3.18
         Lp().window.enable_global_shorcuts(False)
 
     def _on_playlist_editing_cancel(self, widget):
@@ -660,6 +661,7 @@ class PlaylistsManagerWidget(Gtk.Bin):
             Enable global shortcuts
             @param widget as cell renderer
         """
+        # FIXME Not needed with GTK >= 3.18
         Lp().window.enable_global_shorcuts(True)
 
 
