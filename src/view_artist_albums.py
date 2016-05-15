@@ -38,7 +38,6 @@ class ArtistAlbumsView(LazyLoadingView):
         self._artist_ids = artist_ids
         self._genre_ids = genre_ids
         self._show_cover = show_cover
-        self._albums_count = 0
 
         self._spinner = Gtk.Spinner()
         self._spinner.set_hexpand(True)
@@ -68,8 +67,7 @@ class ArtistAlbumsView(LazyLoadingView):
             @param albums as [int]
         """
         if albums:
-            self._albums_count = len(albums)
-            if self._albums_count != 1:
+            if len(albums) != 1:
                 self._spinner.start()
             self._add_albums(albums)
 
@@ -152,9 +150,6 @@ class ArtistAlbumsView(LazyLoadingView):
                                          self._artist_ids,
                                          self._show_cover)
             self._lazy_queue.append(widget)
-            # Not needed if only one album
-            if self._albums_count == 1:
-                widget.disable_play_all()
             widget.show()
             self._albumbox.add(widget)
             GLib.idle_add(self._add_albums, albums,
