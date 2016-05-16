@@ -132,10 +132,10 @@ class SearchRow(Gtk.ListBoxRow):
             Add track to queue
             @param button as Gtk.Button
         """
-        if self.is_track:
+        if self._is_track:
             Lp().player.append_to_queue(self._id)
         else:
-            for track in Lp().albums.get_tracks(self._id, None):
+            for track in Lp().albums.get_tracks(self._id, [], []):
                 Lp().player.append_to_queue(track)
         button.set_sensitive(False)
         button.set_opacity(0.4)
