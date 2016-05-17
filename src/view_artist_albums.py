@@ -14,7 +14,7 @@ from gi.repository import Gtk, GLib, GObject
 
 from lollypop.view import LazyLoadingView, View
 from lollypop.view_container import ViewContainer
-from lollypop.define import Lp, Type
+from lollypop.define import Lp, Type, ArtSize
 from lollypop.objects import Track
 from lollypop.widgets_album import AlbumDetailedWidget
 
@@ -38,9 +38,14 @@ class ArtistAlbumsView(LazyLoadingView):
         self._artist_ids = artist_ids
         self._genre_ids = genre_ids
         self._show_cover = show_cover
-        self._albums_count = 0
 
         self._spinner = Gtk.Spinner()
+        self._spinner.set_hexpand(True)
+        self._spinner.set_vexpand(True)
+        spinner_size = int(ArtSize.BIG / 3)
+        self._spinner.set_size_request(spinner_size, spinner_size)
+        self._spinner.set_property('halign', Gtk.Align.CENTER)
+        self._spinner.set_property('valign', Gtk.Align.CENTER)
         self._spinner.show()
 
         self._albumbox = Gtk.Grid()
@@ -62,8 +67,7 @@ class ArtistAlbumsView(LazyLoadingView):
             @param albums as [int]
         """
         if albums:
-            self._albums_count = len(albums)
-            if self._albums_count != 1:
+            if len(albums) != 1:
                 self._spinner.start()
             self._add_albums(albums)
 
@@ -146,9 +150,6 @@ class ArtistAlbumsView(LazyLoadingView):
                                          self._artist_ids,
                                          self._show_cover)
             self._lazy_queue.append(widget)
-            # Not needed if only one album
-            if self._albums_count == 1:
-                widget.disable_play_all()
             widget.show()
             self._albumbox.add(widget)
             GLib.idle_add(self._add_albums, albums,
@@ -231,7 +232,8 @@ class CurrentArtistAlbumsView(ViewContainer):
         spinner = Gtk.Spinner()
         spinner.set_hexpand(True)
         spinner.set_vexpand(True)
-        spinner.set_size_request(100, 100)
+        spinner_size = int(ArtSize.BIG / 3)
+        spinner.set_size_request(spinner_size, spinner_size)
         spinner.set_property('halign', Gtk.Align.CENTER)
         spinner.set_property('valign', Gtk.Align.CENTER)
         spinner.start()

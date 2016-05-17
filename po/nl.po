@@ -11,8 +11,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lollypop\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-05-09 17:29+0200\n"
-"PO-Revision-Date: 2016-05-09 16:18+0000\n"
+"POT-Creation-Date: 2016-05-11 23:55+0200\n"
+"PO-Revision-Date: 2016-05-12 10:07+0000\n"
 "Last-Translator: Cédric Bellegarde <web@adishatz.org>\n"
 "Language-Team: Dutch (http://www.transifex.com/gnumdk/lollypop/language/nl/)\n"
 "MIME-Version: 1.0\n"
@@ -46,143 +46,147 @@ msgid "Mini player position"
 msgstr "Positie van minispeler"
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:7
+msgid "Save artwork in tags"
+msgstr ""
+
+#: ../data/org.gnome.Lollypop.gschema.xml.h:8
 msgid "Repeat by default"
 msgstr "Standaard herhalen"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:8
+#: ../data/org.gnome.Lollypop.gschema.xml.h:9
 msgid "Window maximized"
 msgstr "Venster gemaximaliseerd"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:9
+#: ../data/org.gnome.Lollypop.gschema.xml.h:10
 msgid "Window maximized state."
 msgstr "Venster is gemaximaliseerd."
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:10
+#: ../data/org.gnome.Lollypop.gschema.xml.h:11
 msgid "Enabled genres in party mode"
 msgstr "Genres in feestmodus ingeschakeld"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:11
+#: ../data/org.gnome.Lollypop.gschema.xml.h:12
 msgid "Ids for genres."
 msgstr "ID's voor genres."
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:12
+#: ../data/org.gnome.Lollypop.gschema.xml.h:13
 msgid "Music paths"
 msgstr "Muziekpaden"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:13
+#: ../data/org.gnome.Lollypop.gschema.xml.h:14
 msgid "When empty, use XDG_MUSIC_DIR"
 msgstr "Gebruik XDG_MUSIC_DIR wanneer leeg"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:14
+#: ../data/org.gnome.Lollypop.gschema.xml.h:15
 msgid "Last.fm login"
 msgstr "Last.fm-account"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:15
+#: ../data/org.gnome.Lollypop.gschema.xml.h:16
 msgid "Favorite tag editor"
 msgstr "Favoriete tagbewerker"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:16
+#: ../data/org.gnome.Lollypop.gschema.xml.h:17
 msgid "INTERNAL"
 msgstr "INTERN"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:17
+#: ../data/org.gnome.Lollypop.gschema.xml.h:18
 msgid "Favorite cover file"
 msgstr "Favoriete albumhoes"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:18
+#: ../data/org.gnome.Lollypop.gschema.xml.h:19
 msgid "Restart needed"
 msgstr "Opnieuw opstarten van Lollypop vereist"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:19
+#: ../data/org.gnome.Lollypop.gschema.xml.h:20
 msgid "Database version"
 msgstr "Databaseversie"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:20
+#: ../data/org.gnome.Lollypop.gschema.xml.h:21
 msgid ""
 "Reset this value will reset the database, popular albums will be restored"
 msgstr "Deze waarde opnieuw instellen zal de database opnieuw instellen, populaire albums zullen hersteld worden"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:21 ../data/SettingsDialog.ui.h:7
+#: ../data/org.gnome.Lollypop.gschema.xml.h:22 ../data/SettingsDialog.ui.h:7
 msgid "Albums cover size"
 msgstr "Albumhoesgrootte"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:22
+#: ../data/org.gnome.Lollypop.gschema.xml.h:23
 msgid "Replay gain value in db"
 msgstr "ReplayGain-waarde in dB"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:23
+#: ../data/org.gnome.Lollypop.gschema.xml.h:24
 msgid "Between -15 and 15"
 msgstr "Tussen -15 en 15"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:24
+#: ../data/org.gnome.Lollypop.gschema.xml.h:25
 msgid "Sync all albums(MTP)"
 msgstr "Alle albums synchroniseren (MTP)"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:25
+#: ../data/org.gnome.Lollypop.gschema.xml.h:26
 msgid "Convert to MP3(MTP)"
 msgstr "Converteren naar MP3 (MTP)"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:26 ../data/SettingsDialog.ui.h:16
+#: ../data/org.gnome.Lollypop.gschema.xml.h:27 ../data/SettingsDialog.ui.h:16
 msgid "Auto update music"
 msgstr "Muziek automatisch bijwerken"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:27
+#: ../data/org.gnome.Lollypop.gschema.xml.h:28
 msgid "Show genres list"
 msgstr "Genrelijst weergeven"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:28 ../data/SettingsDialog.ui.h:8
+#: ../data/org.gnome.Lollypop.gschema.xml.h:29 ../data/SettingsDialog.ui.h:8
 msgid "Show artist artwork"
 msgstr "Foto van artiest weergeven"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:29
+#: ../data/org.gnome.Lollypop.gschema.xml.h:30
 msgid "Use dark gtk theme"
 msgstr "Donker GTK-thema gebruiken"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:30
+#: ../data/org.gnome.Lollypop.gschema.xml.h:31
 msgid "Disable the use client side window decorations (headerbar)"
 msgstr "Client side window decorations (headerbar) uitschakelen"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:31 ../data/SettingsDialog.ui.h:6
+#: ../data/org.gnome.Lollypop.gschema.xml.h:32 ../data/SettingsDialog.ui.h:6
 msgid "Show compilations in albums view"
 msgstr "Compilaties in albumoverzicht weergeven"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:32 ../data/SettingsDialog.ui.h:18
+#: ../data/org.gnome.Lollypop.gschema.xml.h:33 ../data/SettingsDialog.ui.h:18
 msgid "Continue playback when closed"
 msgstr "Doorgaan met afspelen wanneer gesloten"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:33
+#: ../data/org.gnome.Lollypop.gschema.xml.h:34
 msgid "Restore previous state"
 msgstr "Vorige toestand herstellen"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:34
+#: ../data/org.gnome.Lollypop.gschema.xml.h:35
 msgid "Disable MPRIS"
 msgstr "MPRIS uitschakelen"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:35
+#: ../data/org.gnome.Lollypop.gschema.xml.h:36
 msgid "Disable notifications"
 msgstr "Meldingen uitschakelen"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:36
+#: ../data/org.gnome.Lollypop.gschema.xml.h:37
 msgid "Show track number from tags"
 msgstr "Tracknummer uit tags weergeven"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:37 ../data/SettingsDialog.ui.h:19
+#: ../data/org.gnome.Lollypop.gschema.xml.h:38 ../data/SettingsDialog.ui.h:19
 msgid "Mix songs"
 msgstr "Nummers mengen"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:38
+#: ../data/org.gnome.Lollypop.gschema.xml.h:39
 msgid "Mix songs only in party mode"
 msgstr "Nummers enkel mengen in feestmodus"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:39
+#: ../data/org.gnome.Lollypop.gschema.xml.h:40
 msgid "Mix duration"
 msgstr "Mengduur"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:40
+#: ../data/org.gnome.Lollypop.gschema.xml.h:41
 msgid "Shuffle mode"
 msgstr "Willekeurige volgorde-modus"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:41 ../data/SettingsDialog.ui.h:9
+#: ../data/org.gnome.Lollypop.gschema.xml.h:42 ../data/SettingsDialog.ui.h:9
 msgid "Order albums by"
 msgstr "Albums rangschikken op"
 
@@ -238,12 +242,12 @@ msgid "Search"
 msgstr "Zoeken"
 
 #: ../data/lollypop.appdata.xml.in.h:9 ../src/pop_menu.py:472
-#: ../src/pop_menu.py:493 ../src/toolbar_end.py:308
+#: ../src/pop_menu.py:493 ../src/toolbar_end.py:285
 #: ../data/QueuePopover.ui.h:2
 msgid "Queue"
 msgstr "Wachtrij"
 
-#: ../data/lollypop.appdata.xml.in.h:10 ../data/SettingsDialog.ui.h:27
+#: ../data/lollypop.appdata.xml.in.h:10 ../data/SettingsDialog.ui.h:28
 #: ../data/ToolbarEnd.ui.h:5
 msgid "Party mode"
 msgstr "Feestmodus"
@@ -316,7 +320,7 @@ msgid_plural "%d tracks"
 msgstr[0] "%d nummer"
 msgstr[1] "%d nummers"
 
-#: ../src/application.py:459
+#: ../src/application.py:460
 msgid "Lollypop: You need to install yelp."
 msgstr "Lollypop: je moet yelp installeren."
 
@@ -328,7 +332,7 @@ msgstr "Albumhoes kiezen"
 msgid "No cover found..."
 msgstr "Geen hoes gevonden..."
 
-#: ../src/art_widgets.py:243
+#: ../src/art_widgets.py:242
 msgid "Reset artwork?"
 msgstr "Albumhoes opnieuw instellen?"
 
@@ -338,10 +342,10 @@ msgstr "Je muziek wordt bijgewerkt"
 
 #: ../src/collectionscanner.py:247 ../src/database_albums.py:299
 #: ../src/database_artists.py:104 ../src/database_genres.py:69
-#: ../src/database_tracks.py:232 ../src/selectionlist.py:276
+#: ../src/database_tracks.py:232 ../src/selectionlist.py:278
 #: ../src/tagreader.py:87 ../src/tagreader.py:102 ../src/tagreader.py:117
-#: ../src/tagreader.py:150 ../src/tagreader.py:165 ../src/tagreader.py:168
-#: ../src/tagreader.py:178 ../src/tagreader.py:185
+#: ../src/tagreader.py:152 ../src/tagreader.py:167 ../src/tagreader.py:170
+#: ../src/tagreader.py:180 ../src/tagreader.py:187
 msgid "Unknown"
 msgstr "Onbekend"
 
@@ -399,7 +403,7 @@ msgid "Pause"
 msgstr "Pauzeren"
 
 #: ../src/controllers.py:86 ../src/controllers.py:114 ../src/pop_tunein.py:170
-#: ../src/widgets_album.py:471 ../src/widgets_radio.py:166
+#: ../src/widgets_album.py:472 ../src/widgets_radio.py:166
 #: ../data/AlbumDetailedWidget.ui.h:1 ../data/ArtistView.ui.h:2
 #: ../data/ToolbarPlayback.ui.h:2
 msgid "Play"
@@ -448,7 +452,7 @@ msgstr "Albums wissen"
 msgid "Go to current track"
 msgstr "Ga naar huidig nummer"
 
-#: ../src/pop_albums.py:296 ../src/toolbar_end.py:312
+#: ../src/pop_albums.py:296 ../src/toolbar_end.py:289
 msgid "Playing albums"
 msgstr "Afspelende albums"
 
@@ -536,23 +540,27 @@ msgstr "Even geduld..."
 msgid "Can't connect to TuneIn..."
 msgstr "Kan geen verbinding maken met TuneIn..."
 
-#: ../src/settings.py:89 ../src/settings.py:92 ../data/SettingsDialog.ui.h:3
+#: ../src/settings.py:90 ../src/settings.py:93 ../data/SettingsDialog.ui.h:3
 msgid "Preferences"
 msgstr "Voorkeuren"
 
-#: ../src/settings.py:170
+#: ../src/settings.py:118
+msgid "You need to install kid3-cli"
+msgstr ""
+
+#: ../src/settings.py:180
 msgid "Populars"
 msgstr "Populair"
 
-#: ../src/settings.py:171
+#: ../src/settings.py:181
 msgid "Recently added"
 msgstr "Recent toegevoegd"
 
-#: ../src/toolbar_end.py:306
+#: ../src/toolbar_end.py:283
 msgid "Externals tracks playing"
 msgstr "Afspelende externe nummers"
 
-#: ../src/toolbar_end.py:310
+#: ../src/toolbar_end.py:287
 msgid "Playing playlists"
 msgstr "Afspelende afspeellijsten"
 
@@ -579,30 +587,30 @@ msgstr "Synchronisatie annuleren"
 msgid "Append"
 msgstr "Toevoegen"
 
-#: ../src/widgets_album.py:482 ../data/AlbumDetailedWidget.ui.h:3
+#: ../src/widgets_album.py:483 ../data/AlbumDetailedWidget.ui.h:3
 msgid "Play albums"
 msgstr "Albums afspelen"
 
-#: ../src/widgets_album.py:492 ../data/AlbumDetailedWidget.ui.h:2
+#: ../src/widgets_album.py:493 ../data/AlbumDetailedWidget.ui.h:2
 msgid "Change artwork"
 msgstr "Albumhoes wijzigen"
 
-#: ../src/widgets_album.py:656
+#: ../src/widgets_album.py:657
 #, python-format
 msgid "%s h  %s m"
 msgstr "%s u %s m"
 
-#: ../src/widgets_album.py:658
+#: ../src/widgets_album.py:659
 #, python-format
 msgid "%s h"
 msgstr "%s u"
 
-#: ../src/widgets_album.py:660
+#: ../src/widgets_album.py:661
 #, python-format
 msgid "%s m"
 msgstr "%s m"
 
-#: ../src/widgets_album.py:919
+#: ../src/widgets_album.py:920
 #, python-format
 msgid "Disc %s"
 msgstr "Schijf %s"
@@ -842,42 +850,46 @@ msgid "Do not repeat by default"
 msgstr "Standaard niet herhalen"
 
 #: ../data/SettingsDialog.ui.h:22
+msgid "Save artwork in files"
+msgstr ""
+
+#: ../data/SettingsDialog.ui.h:23
 msgid "Configure lollypop behaviour"
 msgstr "Pas gedrag van lollypop aan"
 
-#: ../data/SettingsDialog.ui.h:23
+#: ../data/SettingsDialog.ui.h:24
 msgid "Behaviour"
 msgstr "Gedrag"
 
-#: ../data/SettingsDialog.ui.h:24
+#: ../data/SettingsDialog.ui.h:25
 msgid "Select music folders"
 msgstr "Kies muziekmappen"
 
-#: ../data/SettingsDialog.ui.h:25
+#: ../data/SettingsDialog.ui.h:26
 msgid "Music"
 msgstr "Muziek"
 
-#: ../data/SettingsDialog.ui.h:26
+#: ../data/SettingsDialog.ui.h:27
 msgid "Select what will be available in party mode"
 msgstr "Kies wat beschikbaar is in feestmodus"
 
-#: ../data/SettingsDialog.ui.h:28
+#: ../data/SettingsDialog.ui.h:29
 msgid "Login:"
 msgstr "Gebruikersnaam:"
 
-#: ../data/SettingsDialog.ui.h:29
+#: ../data/SettingsDialog.ui.h:30
 msgid "Password:"
 msgstr "Wachtwoord:"
 
-#: ../data/SettingsDialog.ui.h:30
+#: ../data/SettingsDialog.ui.h:31
 msgid "Connect"
 msgstr "Verbinden"
 
-#: ../data/SettingsDialog.ui.h:31
+#: ../data/SettingsDialog.ui.h:32
 msgid "You need to install pylast and gi secret"
 msgstr "Je moet pylast en gi secret installeren"
 
-#: ../data/SettingsDialog.ui.h:32
+#: ../data/SettingsDialog.ui.h:33
 msgid "Configure Last.fm credentials"
 msgstr "Stel Last.fm-referenties in"
 

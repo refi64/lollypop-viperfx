@@ -425,6 +425,7 @@ class SelectionList(Gtk.ScrolledWindow):
             @param widget as Gtk.widget
             @param event as Gdk.Event
         """
+        # FIXME Not needed with GTK >= 3.18
         Lp().window.enable_global_shorcuts(False)
 
     def _on_leave_notify(self, widget, event):
@@ -433,6 +434,7 @@ class SelectionList(Gtk.ScrolledWindow):
             @param widget as Gtk.widget
             @param event as GdK.Event
         """
+        # FIXME Not needed with GTK >= 3.18
         Lp().window.enable_global_shorcuts(True)
         self._hide_popover()
         self._last_motion_event = None

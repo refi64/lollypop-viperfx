@@ -91,11 +91,9 @@ class RadioWidget(Gtk.FlowBoxChild, AlbumWidget):
             Return preferred width
             @return (int, int)
         """
-        if self._cover is not None:
-            widths = self._cover.get_preferred_width()
-            return (widths[0] + 8, widths[1] + 8)
-        else:
-            return (0, 0)
+        # Padding: 3px, border: 1px + spacing
+        width = ArtSize.BIG + 16
+        return (width, width)
 
     def set_name(self, name):
         """

@@ -614,7 +614,6 @@ class AlbumDetailedWidget(Gtk.Bin, AlbumWidget):
         self._widget = builder.get_object('widget')
         self._overlay = builder.get_object('overlay')
         self._play_button = builder.get_object('play-button')
-        self._play_all_button = builder.get_object('playall-button')
         self._artwork_button = builder.get_object('artwork-button')
         self._action_button = builder.get_object('action-button')
         self._action_event = builder.get_object('action-event')
@@ -696,12 +695,6 @@ class AlbumDetailedWidget(Gtk.Bin, AlbumWidget):
             self._menu.show()
         else:
             self.connect('map', self._on_map)
-
-    def disable_play_all(self):
-        """
-            Disable play all albums button
-        """
-        self._play_all_button = None
 
     def update_playing_indicator(self):
         """
@@ -924,7 +917,7 @@ class AlbumDetailedWidget(Gtk.Bin, AlbumWidget):
                 show_label = len(self._album.discs) > 1
                 if show_label:
                     label = Gtk.Label()
-                    disc_text = _("Disc %s" % disc.number)
+                    disc_text = _("Disc %s") % disc.number
                     disc_names = self._album.disc_names(disc.number)
                     if disc_names:
                         disc_text += ": " + ", ".join(disc_names)

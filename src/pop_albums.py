@@ -514,6 +514,5 @@ class AlbumsPopover(Gtk.Popover):
             Resize
             @param widget as Gtk.Widget
         """
-        Lp().window.enable_global_shorcuts(False)
         height = Lp().window.get_size()[1]
         self.set_size_request(400, height*0.7)
