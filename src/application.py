@@ -242,7 +242,7 @@ class Application(Gtk.Application):
                 playlist_ids = self.player.get_user_playlist_ids()
             dump(playlist_ids,
                  open(DataPath + "/playlist_ids.bin", "wb"))
-        if self.player.is_playing():
+        if self.player.current_track.id is not None:
             position = self.player.position
         else:
             position = 0
