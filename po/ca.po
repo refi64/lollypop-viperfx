@@ -11,7 +11,7 @@ msgstr ""
 "Project-Id-Version: lollypop\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2016-05-11 23:55+0200\n"
-"PO-Revision-Date: 2016-05-13 06:42+0000\n"
+"PO-Revision-Date: 2016-05-18 10:15+0000\n"
 "Last-Translator: Ferran Roig <forums@ferranroig.com>\n"
 "Language-Team: Catalan (http://www.transifex.com/gnumdk/lollypop/language/ca/)\n"
 "MIME-Version: 1.0\n"
@@ -46,7 +46,7 @@ msgstr "Posició del minireproductor"
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:7
 msgid "Save artwork in tags"
-msgstr "Desa il·lustracions en l'etiqueta"
+msgstr "Desa caràtula en l'etiqueta"
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:8
 msgid "Repeat by default"

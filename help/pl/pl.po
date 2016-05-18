@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lollypop\n"
 "POT-Creation-Date: 2016-05-09 15:53+0200\n"
-"PO-Revision-Date: 2016-05-09 13:54+0000\n"
-"Last-Translator: Cédric Bellegarde <web@adishatz.org>\n"
+"PO-Revision-Date: 2016-05-14 11:14+0000\n"
+"Last-Translator: Marcin Gałązka <marcin.r.galazka@gmail.com>\n"
 "Language-Team: Polish (http://www.transifex.com/gnumdk/lollypop/language/pl/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -148,12 +148,12 @@ msgstr "Control+p: Przełączenie trybu imprezowego"
 #. (itstool) path: item/p
 #: C/index.page:54
 msgid "F7 or F11: Fullscreen"
-msgstr ""
+msgstr "F7 or F11: Pełny ekran"
 
 #. (itstool) path: item/p
 #: C/index.page:55
 msgid "Control+m: Mini player"
-msgstr ""
+msgstr "Control+m: Mały odtwarzacz"
 
 #. (itstool) path: item/p
 #: C/index.page:56
