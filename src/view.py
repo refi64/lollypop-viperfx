@@ -77,8 +77,7 @@ class View(Gtk.Grid):
         if widgets:
             widget = widgets.pop(0)
             widget.show_overlay(False)
-            GLib.idle_add(self._disable_overlays, widgets,
-                          priority=GLib.PRIORITY_LOW)
+            GLib.idle_add(self._disable_overlays, widgets)
 
     def _update_widgets(self, widgets):
         """
@@ -89,8 +88,7 @@ class View(Gtk.Grid):
             widget = widgets.pop(0)
             widget.update_state()
             widget.update_playing_indicator()
-            GLib.idle_add(self._update_widgets, widgets,
-                          priority=GLib.PRIORITY_LOW)
+            GLib.idle_add(self._update_widgets, widgets)
 
     def _get_children(self):
         """
@@ -125,8 +123,7 @@ class View(Gtk.Grid):
             Current song changed
             @param player as Player
         """
-        GLib.idle_add(self._update_widgets, self._get_children(),
-                      priority=GLib.PRIORITY_LOW)
+        GLib.idle_add(self._update_widgets, self._get_children())
 
 
 class LazyLoadingView(View):
@@ -160,8 +157,7 @@ class LazyLoadingView(View):
             @param widgets as [AlbumSimpleWidgets]
             @param scroll_value as float
         """
-        GLib.idle_add(self._lazy_loading, widgets, scroll_value,
-                      priority=GLib.PRIORITY_LOW)
+        GLib.idle_add(self._lazy_loading, widgets, scroll_value)
 
 #######################
 # PRIVATE             #
@@ -184,8 +180,10 @@ class LazyLoadingView(View):
             widget = self._lazy_queue.pop(0)
         if widget is not None:
             widget.populate()
-            GLib.idle_add(self.lazy_loading, widgets, scroll_value,
-                          priority=GLib.PRIORITY_LOW)
+            if widgets:
+                GLib.timeout_add(10, self.lazy_loading, widgets, scroll_value)
+            else:
+                GLib.idle_add(self.lazy_loading, widgets, scroll_value)
 
     def _is_visible(self, widget):
         """

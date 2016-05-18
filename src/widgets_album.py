@@ -739,8 +739,7 @@ class AlbumDetailedWidget(Gtk.Bin, AlbumWidget):
                       tracks,
                       self._tracks_left,
                       disc.number,
-                      pos,
-                      priority=GLib.PRIORITY_LOW)
+                      pos)
 
     def populate_list_right(self, tracks, disc, pos):
         """
@@ -759,8 +758,7 @@ class AlbumDetailedWidget(Gtk.Bin, AlbumWidget):
                           tracks,
                           self._tracks_right,
                           disc.number,
-                          pos,
-                          priority=GLib.PRIORITY_LOW)
+                          pos)
 
     def get_current_ordinate(self, parent):
         """
@@ -865,8 +863,7 @@ class AlbumDetailedWidget(Gtk.Bin, AlbumWidget):
         row = TrackRow(track.id, track_number)
         row.show()
         widget[disc_number].add(row)
-        GLib.idle_add(self._add_tracks, tracks, widget, disc_number, i + 1,
-                      priority=GLib.PRIORITY_LOW)
+        GLib.idle_add(self._add_tracks, tracks, widget, disc_number, i + 1)
 
     def _on_map(self, widget):
         """
@@ -929,14 +926,14 @@ class AlbumDetailedWidget(Gtk.Bin, AlbumWidget):
                     idx += 1
                 GLib.idle_add(self._box.attach,
                               self._tracks_left[disc.number],
-                              0, idx, 1, 1, priority=GLib.PRIORITY_LOW)
+                              0, idx, 1, 1)
                 if orientation == Gtk.Orientation.VERTICAL:
                     idx += 1
                 GLib.idle_add(self._box.attach,
                               self._tracks_right[disc.number],
-                              pos, idx, 1, 1, priority=GLib.PRIORITY_LOW)
+                              pos, idx, 1, 1)
                 idx += 1
-                GLib.idle_add(self.set_opacity, 1, priority=GLib.PRIORITY_LOW)
+                GLib.idle_add(self.set_opacity, 1)
         if self._cover is not None:
             if allocation.width < WindowSize.MEDIUM:
                 self._coverbox.hide()

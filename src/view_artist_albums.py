@@ -152,8 +152,7 @@ class ArtistAlbumsView(LazyLoadingView):
             self._lazy_queue.append(widget)
             widget.show()
             self._albumbox.add(widget)
-            GLib.idle_add(self._add_albums, albums,
-                          priority=GLib.PRIORITY_LOW)
+            GLib.idle_add(self._add_albums, albums)
         else:
             self._spinner.stop()
             self._spinner.hide()

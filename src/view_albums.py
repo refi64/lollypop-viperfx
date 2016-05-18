@@ -55,8 +55,7 @@ class AlbumsView(LazyLoadingView):
             Populate albums
             @param is compilation as bool
         """
-        GLib.idle_add(self._add_albums, albums,
-                      priority=GLib.PRIORITY_LOW)
+        GLib.idle_add(self._add_albums, albums)
 
     def stop(self):
         """
@@ -102,8 +101,7 @@ class AlbumsView(LazyLoadingView):
             self._albumbox.insert(widget, -1)
             widget.show()
             self._lazy_queue.append(widget)
-            GLib.idle_add(self._add_albums, albums,
-                          priority=GLib.PRIORITY_LOW)
+            GLib.idle_add(self._add_albums, albums)
         else:
             GLib.idle_add(self.lazy_loading)
             if self._viewport.get_child() is None:
