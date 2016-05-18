@@ -117,6 +117,7 @@ class AlbumRow(Gtk.ListBoxRow):
         grid.attach(vgrid, 1, 1, 1, 1)
         row_widget.add(grid)
         self.add(row_widget)
+        self.get_style_context().add_class('trackrow')
         self.show_play_indicator(self._album.id ==
                                  Lp().player.current_track.album.id)
         self.show_all()
@@ -131,7 +132,6 @@ class AlbumRow(Gtk.ListBoxRow):
         self.connect('drag-data-received', self._on_drag_data_received)
         self.connect('drag-motion', self._on_drag_motion)
         self.connect('drag-leave', self._on_drag_leave)
-        self.get_style_context().add_class('trackrow')
 
     def do_get_preferred_height(self):
         """
