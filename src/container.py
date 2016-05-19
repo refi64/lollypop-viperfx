@@ -23,7 +23,7 @@ from lollypop.view_artist import ArtistView
 from lollypop.view_radios import RadiosView
 from lollypop.view_playlists import PlaylistsView
 from lollypop.view_playlists import PlaylistsManageView, PlaylistEditView
-from lollypop.view_device import DeviceView, DeviceLocked
+from lollypop.view_device import DeviceView, DeviceLocked, DeviceMigration
 
 
 # This is a multimedia device
@@ -518,9 +518,15 @@ class Container:
         device = self._devices[device_id]
         child = self._stack.get_child_by_name(device.uri)
         if child is None:
-            if DeviceView.get_files(device.uri):
-                child = DeviceView(device, self._progress)
-                self._stack.add_named(child, device.uri)
+            files = DeviceView.get_files(device.uri)
+            if files:
+                for f in files:
+                    if DeviceView.exists_old_sync(device.uri+f):
+                        child = DeviceMigration()
+                        self._stack.add(child)
+                if child is None:
+                    child = DeviceView(device, self._progress)
+                    self._stack.add_named(child, device.uri)
             else:
                 child = DeviceLocked()
                 self._stack.add(child)

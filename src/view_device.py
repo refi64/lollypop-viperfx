@@ -29,13 +29,40 @@ class DeviceLocked(View):
         View.__init__(self)
         builder = Gtk.Builder()
         builder.add_from_resource('/org/gnome/Lollypop/DeviceManagerView.ui')
-        self.add(builder.get_object('nodevice'))
+        self.add(builder.get_object('message'))
+        builder.get_object('label').set_text(_("Please unlock your device"))
+
+
+# FIXME Remove this later
+class DeviceMigration(View):
+    """
+        Show a message about old lollypop sync
+    """
+    def __init__(self):
+        """
+            Init view
+        """
+        View.__init__(self)
+        builder = Gtk.Builder()
+        builder.add_from_resource('/org/gnome/Lollypop/DeviceManagerView.ui')
+        self.add(builder.get_object('message'))
+        builder.get_object('label').set_text(
+            _("Lollypop sync changed due to limitations in some devices.\n"
+              "Please remove Music/lollypop folder on your device..."))
 
 
 class DeviceView(View):
     """
         Playlist synchronisation to MTP
     """
+    def exists_old_sync(uri):
+        """
+            True if exists an old sync on device
+            @param uri as str
+            @return bool
+        """
+        d = Gio.File.new_for_uri(uri+"/Music/lollypop/tracks")
+        return d.query_exists(None)
 
     def get_files(uri):
         """
