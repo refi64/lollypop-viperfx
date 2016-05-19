@@ -86,7 +86,8 @@ class MtpSync:
                     None)
                 for info in infos:
                     if info.get_file_type() == Gio.FileType.DIRECTORY:
-                        dir_uris.append(uri+info.get_name())
+                        if info.get_name() != "unsync":
+                            dir_uris.append(uri+info.get_name())
                     else:
                         track = info.get_name()
                         if not track.endswith('m3u'):
