@@ -70,16 +70,16 @@ class MtpSync:
             @return [str]
         """
         children = []
-        dir_uris = [self._uri+'/tracks/']
+        dir_uris = [self._uri]
 
-        d = Gio.File.new_for_uri(self._uri+'/tracks/')
+        d = Gio.File.new_for_uri(self._uri)
         if not d.query_exists(None):
             self._retry(d.make_directory_with_parents, (None,))
         while dir_uris:
             try:
                 uri = dir_uris.pop(0)
-                album = uri.replace(self._uri+"/tracks/", "")
-                d = Gio.File.new_for_uri(self._uri+"/tracks/"+album)
+                album = uri.replace(self._uri, "")
+                d = Gio.File.new_for_uri(self._uri+"/"+album)
                 infos = d.enumerate_children(
                     'standard::name,standard::type',
                     Gio.FileQueryInfoFlags.NOFOLLOW_SYMLINKS,
@@ -89,9 +89,10 @@ class MtpSync:
                         dir_uris.append(uri+info.get_name())
                     else:
                         track = info.get_name()
-                        children.append("%s/tracks/%s/%s" % (self._uri,
-                                                             album,
-                                                             track))
+                        if not track.endswith('m3u'):
+                            children.append("%s/%s/%s" % (self._uri,
+                                                          album,
+                                                          track))
             except Exception as e:
                 print("MtpSync::_get_track_files():", e, uri)
         return children
@@ -149,6 +150,9 @@ class MtpSync:
                     d = Gio.File.new_for_uri(uri)
                     self._retry(d.delete, (None,))
 
+            d = Gio.File.new_for_uri(self._uri+"/unsync")
+            if not d.query_exists(None):
+                self._retry(d.make_directory_with_parents, (None,))
         except Exception as e:
             print("DeviceManagerWidget::_sync(): %s" % e)
         self._fraction = 1.0
@@ -192,7 +196,7 @@ class MtpSync:
                     artists = escape(", ".join(track.artists).lower())
                 else:
                     artists = escape(", ".join(track.album.artists).lower())
-                on_device_album_uri = "%s/tracks/%s_%s" %\
+                on_device_album_uri = "%s/%s_%s" %\
                                       (self._uri,
                                        artists,
                                        album_name)
@@ -229,7 +233,7 @@ class MtpSync:
                 dst_uri = "%s/%s_%s" % (on_device_album_uri,
                                         mtime, track_name)
                 if stream is not None:
-                    line = "tracks/%s_%s/%s_%s\n" %\
+                    line = "%s_%s/%s_%s\n" %\
                             (artists,
                              album_name,
                              mtime,
@@ -302,9 +306,9 @@ class MtpSync:
                 artists = escape(", ".join(track.artists).lower())
             else:
                 artists = escape(", ".join(track.album.artists).lower())
-            album_uri = "%s/tracks/%s_%s" % (self._uri,
-                                             artists,
-                                             album_name)
+            album_uri = "%s/%s_%s" % (self._uri,
+                                      artists,
+                                      album_name)
             track_name = escape(GLib.basename(track.path))
             # Check extension, if not mp3, convert
             ext = os.path.splitext(track.path)[1]

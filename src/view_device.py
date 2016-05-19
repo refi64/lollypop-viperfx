@@ -54,7 +54,7 @@ class DeviceView(View):
                 None)
             for info in infos:
                 # We look to this folder to select an already synced path
-                suburi = uri + info.get_name()+"/Music/lollypop/tracks"
+                suburi = uri + info.get_name()+"/Music/unsync"
                 sub = Gio.File.new_for_uri(suburi)
                 if sub.query_exists(None):
                     files.insert(0, info.get_name())
@@ -156,7 +156,7 @@ class DeviceView(View):
         """
         self._timeout_id = None
         text = combo.get_active_text()
-        uri = "%s%s/Music/%s" % (self._device.uri, text, "lollypop")
+        uri = "%s%s/Music" % (self._device.uri, text)
         self._device_widget.set_uri(uri)
         self._device_widget.populate()
 
