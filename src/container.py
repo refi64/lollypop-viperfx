@@ -13,7 +13,6 @@
 from gi.repository import Gtk, Gio, GLib
 
 from gettext import gettext as _
-import re
 
 from lollypop.define import Lp, Type, SelectionMode
 from lollypop.loader import Loader
@@ -654,25 +653,13 @@ class Container:
             return
         name = mount.get_name()
         uri = mount.get_default_location().get_uri()
-        # Add / to uri if needed
-        if uri is not None and len(uri) > 1 and uri[-1:] != '/':
-            uri += '/'
 
         if uri is not None:
             self._devices_index -= 1
             dev = Device()
             dev.id = self._devices_index
             dev.name = name
-            # Mtp device contain a virtual folder
-            # For others, just go up in path
-            if uri.find('mtp:') != -1:
-                dev.uri = uri
-            else:
-                m = re.search('(.*)/[^/]*/', uri)
-                if m:
-                    dev.uri = m.group(1) + "/"
-                else:
-                    dev.uri = uri
+            dev.uri = uri
             self._devices[self._devices_index] = dev
             if show:
                 self._list_one.add_value((dev.id, dev.name))
@@ -682,8 +669,6 @@ class Container:
             Remove volume from device list
             @param mount as Gio.Mount
         """
-        if mount.get_volume() is None:
-            return
         uri = mount.get_default_location().get_uri()
         for dev in self._devices.values():
             if dev.uri == uri:
