@@ -13,6 +13,7 @@
 from gi.repository import Gtk, Gio, GLib
 
 from gettext import gettext as _
+import re
 
 from lollypop.define import Lp, Type, SelectionMode
 from lollypop.loader import Loader
@@ -649,7 +650,7 @@ class Container:
             @param mount as Gio.Mount
             @param show as bool
         """
-        if mount.get_volume() is None:
+        if mount.get_volume() is None or not mount.can_eject():
             return
         name = mount.get_name()
         uri = mount.get_default_location().get_uri()
@@ -657,12 +658,21 @@ class Container:
         if uri is not None and len(uri) > 1 and uri[-1:] != '/':
             uri += '/'
 
-        if uri is not None and uri.find('mtp:') != -1:
+        if uri is not None:
             self._devices_index -= 1
             dev = Device()
             dev.id = self._devices_index
             dev.name = name
-            dev.uri = uri
+            # Mtp device contain a virtual folder
+            # For others, just go up in path
+            if uri.find('mtp:') != -1:
+                dev.uri = uri
+            else:
+                m = re.search('(.*)/[^/]*/', uri)
+                if m:
+                    dev.uri = m.group(1) + "/"
+                else:
+                    dev.uri = uri
             self._devices[self._devices_index] = dev
             if show:
                 self._list_one.add_value((dev.id, dev.name))

@@ -76,10 +76,12 @@ class DeviceView(View):
             if not d.query_exists(None):
                 d.make_directory_with_parents(None)
             infos = d.enumerate_children(
-                'standard::name',
+                'standard::name,standard::type',
                 Gio.FileQueryInfoFlags.NONE,
                 None)
             for info in infos:
+                if info.get_file_type() != Gio.FileType.DIRECTORY:
+                    continue
                 # We look to this folder to select an already synced path
                 suburi = uri + info.get_name()+"/Music/unsync"
                 sub = Gio.File.new_for_uri(suburi)
