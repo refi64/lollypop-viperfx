@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-05-11 23:55+0200\n"
+"POT-Creation-Date: 2016-05-20 13:25+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -295,40 +295,40 @@ msgid ""
 "    - Artist informations disabled"
 msgstr ""
 
-#: ../src/application.py:427
+#: ../src/application.py:425
 #, python-format
 msgid "%d artist"
 msgid_plural "%d artists"
 msgstr[0] ""
 msgstr[1] ""
 
-#: ../src/application.py:429
+#: ../src/application.py:427
 #, python-format
 msgid "%d album"
 msgid_plural "%d albums"
 msgstr[0] ""
 msgstr[1] ""
 
-#: ../src/application.py:431
+#: ../src/application.py:429
 #, python-format
 msgid "%d track"
 msgid_plural "%d tracks"
 msgstr[0] ""
 msgstr[1] ""
 
-#: ../src/application.py:460
+#: ../src/application.py:458
 msgid "Lollypop: You need to install yelp."
 msgstr ""
 
-#: ../src/art_widgets.py:57
+#: ../src/art_widgets.py:58
 msgid "Select artwork"
 msgstr ""
 
-#: ../src/art_widgets.py:165
+#: ../src/art_widgets.py:163
 msgid "No cover found..."
 msgstr ""
 
-#: ../src/art_widgets.py:242
+#: ../src/art_widgets.py:240
 msgid "Reset artwork?"
 msgstr ""
 
@@ -398,8 +398,8 @@ msgstr ""
 msgid "Pause"
 msgstr ""
 
-#: ../src/controllers.py:86 ../src/controllers.py:114 ../src/pop_tunein.py:170
-#: ../src/widgets_album.py:472 ../src/widgets_radio.py:166
+#: ../src/controllers.py:86 ../src/controllers.py:114 ../src/pop_tunein.py:167
+#: ../src/widgets_album.py:470 ../src/widgets_radio.py:165
 #: ../data/AlbumDetailedWidget.ui.h:1 ../data/ArtistView.ui.h:2
 #: ../data/ToolbarPlayback.ui.h:2
 msgid "Play"
@@ -443,7 +443,7 @@ msgstr ""
 msgid "Clear albums"
 msgstr ""
 
-#: ../src/pop_albums.py:295 ../src/view_artist.py:49 ../data/ArtistInfo.ui.h:8
+#: ../src/pop_albums.py:295 ../src/view_artist.py:50 ../data/ArtistInfo.ui.h:8
 #: ../data/ArtistView.ui.h:4
 msgid "Go to current track"
 msgstr ""
@@ -519,7 +519,7 @@ msgstr ""
 msgid "Edit"
 msgstr ""
 
-#: ../src/pop_radio.py:83 ../src/pop_tunein.py:176 ../src/view_artist.py:156
+#: ../src/pop_radio.py:83 ../src/pop_tunein.py:173 ../src/view_artist.py:163
 #: ../data/ArtistView.ui.h:3
 msgid "Add"
 msgstr ""
@@ -528,11 +528,11 @@ msgstr ""
 msgid "Modify"
 msgstr ""
 
-#: ../src/pop_tunein.py:96 ../data/RadioPopover.ui.h:1
+#: ../src/pop_tunein.py:93 ../data/RadioPopover.ui.h:1
 msgid "Please wait..."
 msgstr ""
 
-#: ../src/pop_tunein.py:134
+#: ../src/pop_tunein.py:131
 msgid "Can't connect to TuneIn..."
 msgstr ""
 
@@ -566,16 +566,26 @@ msgstr ""
 msgid "The the"
 msgstr ""
 
-#: ../src/view_artist.py:151 ../src/widgets_album.py:219
+#: ../src/view_artist.py:158 ../src/widgets_album.py:219
 msgid "Remove"
 msgstr ""
 
-#: ../src/view_device.py:83 ../src/view_device.py:149
+#: ../src/view_device.py:33
+msgid "Please unlock your device"
+msgstr ""
+
+#: ../src/view_device.py:50
+msgid ""
+"Lollypop sync changed due to limitations in some devices.\n"
+"Please remove Music/lollypop folder on your device..."
+msgstr ""
+
+#: ../src/view_device.py:110 ../src/view_device.py:176
 #, python-format
 msgid "Synchronize %s"
 msgstr ""
 
-#: ../src/view_device.py:138
+#: ../src/view_device.py:165
 msgid "Cancel synchronization"
 msgstr ""
 
@@ -583,30 +593,30 @@ msgstr ""
 msgid "Append"
 msgstr ""
 
-#: ../src/widgets_album.py:483 ../data/AlbumDetailedWidget.ui.h:3
+#: ../src/widgets_album.py:481
 msgid "Play albums"
 msgstr ""
 
-#: ../src/widgets_album.py:493 ../data/AlbumDetailedWidget.ui.h:2
+#: ../src/widgets_album.py:491 ../data/AlbumDetailedWidget.ui.h:2
 msgid "Change artwork"
 msgstr ""
 
-#: ../src/widgets_album.py:657
+#: ../src/widgets_album.py:654
 #, python-format
 msgid "%s h  %s m"
 msgstr ""
 
-#: ../src/widgets_album.py:659
+#: ../src/widgets_album.py:656
 #, python-format
 msgid "%s h"
 msgstr ""
 
-#: ../src/widgets_album.py:661
+#: ../src/widgets_album.py:658
 #, python-format
 msgid "%s m"
 msgstr ""
 
-#: ../src/widgets_album.py:920
+#: ../src/widgets_album.py:915
 #, python-format
 msgid "Disc %s"
 msgstr ""
@@ -628,16 +638,16 @@ msgid "New playlist "
 msgstr ""
 
 #. Need a copy, segfault on EOS 3.1
-#: ../src/widgets_playlist.py:542 ../src/widgets_playlist.py:791
+#: ../src/widgets_playlist.py:542 ../src/widgets_playlist.py:793
 #, python-format
 msgid "Remove \"%s\"?"
 msgstr ""
 
-#: ../src/widgets_playlist.py:799
+#: ../src/widgets_playlist.py:801
 msgid "Remove these tracks?"
 msgstr ""
 
-#: ../src/widgets_radio.py:182
+#: ../src/widgets_radio.py:181
 msgid "Modify radio"
 msgstr ""
 
@@ -735,10 +745,6 @@ msgstr ""
 
 #: ../data/DeviceManagerView.ui.h:1
 msgid "Synchronize your device with this playlists"
-msgstr ""
-
-#: ../data/DeviceManagerView.ui.h:2
-msgid "Please unlock your device"
 msgstr ""
 
 #: ../data/DeviceManagerWidget.ui.h:2
