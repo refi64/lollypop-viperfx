@@ -13,6 +13,7 @@
 from gi.repository import Gtk, GLib, Gio
 
 from gettext import gettext as _
+import re
 
 from lollypop.view import View
 from lollypop.widgets_device import DeviceManagerWidget
@@ -118,6 +119,7 @@ class DeviceView(View):
         self._device_widget.show()
         self._viewport.add(self._device_widget)
         self.add(self._scrolled)
+        self._sanitize_non_mtp()
 
     def populate(self):
         """
@@ -140,6 +142,18 @@ class DeviceView(View):
 #######################
 # PRIVATE             #
 #######################
+    def _sanitize_non_mtp(self):
+        """
+            Sanitize non MTP device by changing uri and creating a default
+            folder
+        """
+        # Mtp device contain a virtual folder
+        # For others, just go up in path
+        if self._device.uri.find('mtp:') == -1:
+            m = re.search('(.*)/[^/]*', self._device.uri)
+            if m:
+                self._device.uri = m.group(1)
+
     def stop(self):
         """
             Stop syncing

@@ -519,7 +519,7 @@ class Container:
         child = self._stack.get_child_by_name(device.uri)
         if child is None:
             files = DeviceView.get_files(device.uri)
-            if files:
+            if files or device.uri.startswith("file:"):
                 for f in files:
                     if DeviceView.exists_old_sync(device.uri+f):
                         child = DeviceMigration()
