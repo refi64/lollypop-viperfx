@@ -222,7 +222,8 @@ class CollectionScanner(GObject.GObject, ScannerTagReader):
         artists = self.get_artists(tags)
         composers = self.get_composers(tags)
         performers = self.get_performers(tags)
-        sortnames = self.get_artist_sortnames(tags)
+        a_sortnames = self.get_artist_sortnames(tags)
+        aa_sortnames = self.get_album_artist_sortnames(tags)
         album_artists = self.get_album_artist(tags)
         album_name = self.get_album_name(tags)
         genres = self.get_genres(tags)
@@ -256,11 +257,12 @@ class CollectionScanner(GObject.GObject, ScannerTagReader):
         debug("CollectionScanner::add2db(): Add artists %s" % artists)
         (artist_ids, new_artist_ids) = self.add_artists(artists,
                                                         album_artists,
-                                                        sortnames)
+                                                        a_sortnames)
         debug("CollectionScanner::add2db(): "
               "Add album artists %s" % album_artists)
         (album_artist_ids, new_album_artist_ids) = self.add_album_artists(
-                                                                 album_artists)
+                                                                 album_artists,
+                                                                 aa_sortnames)
         new_artist_ids += new_album_artist_ids
 
         debug("CollectionScanner::add2db(): Add album: "

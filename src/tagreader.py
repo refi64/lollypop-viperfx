@@ -124,7 +124,22 @@ class ScannerTagReader(TagReader):
 
     def get_artist_sortnames(self, tags):
         """
-            Return artist sort name
+            Return artist sort names
+            @param tags as Gst.TagList
+            @return artist sort names as string;string
+        """
+        if tags is None:
+            return ""
+        sortnames = []
+        for i in range(tags.get_tag_size('artist-sortname')):
+            (exists, read) = tags.get_string_index('artist-sortname', i)
+            if exists:
+                sortnames.append(read)
+        return "; ".join(sortnames)
+
+    def get_album_artist_sortnames(self, tags):
+        """
+            Return album artist sort names
             @param tags as Gst.TagList
             @return artist sort names as string;string
         """
@@ -135,11 +150,6 @@ class ScannerTagReader(TagReader):
             (exists, read) = tags.get_string_index('album-artist-sortname', i)
             if exists:
                 sortnames.append(read)
-        if not sortnames:
-            for i in range(tags.get_tag_size('artist-sortname')):
-                (exists, read) = tags.get_string_index('artist-sortname', i)
-                if exists:
-                    sortnames.append(read)
         return "; ".join(sortnames)
 
     def get_album_artist(self, tags):
@@ -252,8 +262,8 @@ class ScannerTagReader(TagReader):
             @param artists as [string]
             @param album artists as [string]
             @param sortnames as [string]
+            @return ([artist ids as int], [new artist ids as int])
             @commit needed
-            @param return ([artist ids as int], [new artist ids as int])
         """
         new_artist_ids = []
         artist_ids = []
@@ -279,28 +289,36 @@ class ScannerTagReader(TagReader):
                 artist_ids.append(artist_id)
         return (artist_ids, new_artist_ids)
 
-    def add_album_artists(self, artists):
+    def add_album_artists(self, artists, sortnames):
         """
             Add album artist to db
             @param artists as [string]
+            @param sortnames as [string]
             @param return ([album artist ids as int], [new as bool])
             @commit needed
         """
         artist_ids = []
         new_artist_ids = []
+        sortsplit = sortnames.split(';')
+        sortlen = len(sortsplit)
+        i = 0
         for artist in artists.split(';'):
             artist = artist.strip()
             if artist != '':
                 # Get album artist id, add it if missing
                 artist_id = Lp().artists.get_id(artist)
+                if i >= sortlen or sortsplit[i] == "":
+                    sortname = format_artist_name(artist)
+                else:
+                    sortname = sortsplit[i].strip()
                 if artist_id is None:
                     album_artist_id = Lp().artists.add(artist,
-                                                       format_artist_name(
-                                                                       artist))
-                    artist_ids.append(album_artist_id)
+                                                       sortname)
                     new_artist_ids.append(album_artist_id)
                 else:
-                    artist_ids.append(artist_id)
+                    Lp().artists.set_sortname(artist_id, sortname)
+                i += 1
+                artist_ids.append(artist_id)
         return (artist_ids, new_artist_ids)
 
     def add_genres(self, genres, album_id):
