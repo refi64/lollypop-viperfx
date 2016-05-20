@@ -430,8 +430,7 @@ class BinPlayer(BasePlayer):
             @param message as Gst.Message
         """
         if GstPbutils.is_missing_plugin_message(message):
-            if self._codecs is not None:
-                self._codecs.append(message)
+            self._codecs.append(message)
 
     def _on_bus_error(self, bus, message):
         """
