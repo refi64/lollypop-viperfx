@@ -147,12 +147,17 @@ class DeviceView(View):
             Sanitize non MTP device by changing uri and creating a default
             folder
         """
+        uri = self._device.uri
         # Mtp device contain a virtual folder
         # For others, just go up in path
-        if self._device.uri.find('mtp:') == -1:
-            m = re.search('(.*)/[^/]*', self._device.uri)
+        if uri.find('mtp:') == -1:
+            m = re.search('(.*)/[^/]*', uri)
             if m:
-                self._device.uri = m.group(1)
+                uri = m.group(1)
+        # Add / to uri if needed, some gvfs modules add one and some not
+        if uri is not None and len(uri) > 1 and uri[-1:] != '/':
+            uri += '/'
+        self._device.uri = uri
 
     def stop(self):
         """
@@ -199,7 +204,7 @@ class DeviceView(View):
         """
         self._timeout_id = None
         text = combo.get_active_text()
-        uri = "%s/%s/Music" % (self._device.uri, text)
+        uri = "%s%s/Music" % (self._device.uri, text)
         self._device_widget.set_uri(uri)
         self._device_widget.populate()
 

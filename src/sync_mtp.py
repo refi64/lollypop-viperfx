@@ -71,7 +71,6 @@ class MtpSync:
         """
         children = []
         dir_uris = [self._uri]
-
         d = Gio.File.new_for_uri(self._uri)
         if not d.query_exists(None):
             self._retry(d.make_directory_with_parents, (None,))

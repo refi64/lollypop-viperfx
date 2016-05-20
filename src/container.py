@@ -653,7 +653,6 @@ class Container:
             return
         name = mount.get_name()
         uri = mount.get_default_location().get_uri()
-
         if uri is not None and (
                 mount.can_eject() or uri.startswith('mtp')):
             self._devices_index -= 1
