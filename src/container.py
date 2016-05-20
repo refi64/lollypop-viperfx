@@ -649,12 +649,13 @@ class Container:
             @param mount as Gio.Mount
             @param show as bool
         """
-        if mount.get_volume() is None or not mount.can_eject():
+        if mount.get_volume() is None:
             return
         name = mount.get_name()
         uri = mount.get_default_location().get_uri()
 
-        if uri is not None:
+        if uri is not None and (
+                mount.can_eject() or uri.startswith('mtp')):
             self._devices_index -= 1
             dev = Device()
             dev.id = self._devices_index
