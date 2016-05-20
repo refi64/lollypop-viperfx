@@ -45,6 +45,8 @@ class ToolbarInfo(Gtk.Bin, InfosController):
         self.add(self._infobox)
 
         self._labels = builder.get_object('nowplaying_labels')
+        self._labels.connect('query-tooltip', self._on_query_tooltip)
+        self._labels.set_property('has-tooltip', True)
 
         self._title_label = builder.get_object('title')
         self._artist_label = builder.get_object('artist')
