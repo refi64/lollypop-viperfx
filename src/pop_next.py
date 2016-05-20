@@ -29,6 +29,7 @@ class NextPopover(Gtk.Popover):
         self.set_position(Gtk.PositionType.BOTTOM)
         self.connect('map', self._on_map)
         self.connect('unmap', self._on_unmap)
+        self.connect('enter-notify-event', self._on_enter_notify)
         self.set_modal(False)
         self.get_style_context().add_class('osd-popover')
         builder = Gtk.Builder()
@@ -109,13 +110,21 @@ class NextPopover(Gtk.Popover):
 
     def _on_enter_notify(self, widget, event):
         """
+            Disable overlays
+            @param widget as Gtk.Widget
+            @param event as Gdk.Event
+        """
+        Lp().window.disable_overlays()
+
+    def _on_button_enter_notify(self, widget, event):
+        """
             Change opacity
             @param widget as Gtk.Widget
             @param event as Gdk.Event
         """
         widget.set_opacity(0.8)
 
-    def _on_leave_notify(self, widget, event):
+    def _on_button_leave_notify(self, widget, event):
         """
             Change opacity
             @param widget as Gtk.Widget
