@@ -65,6 +65,7 @@ class Row(Gtk.ListBoxRow):
             self._artists_label.set_property('halign', Gtk.Align.END)
             self._artists_label.set_ellipsize(Pango.EllipsizeMode.END)
             self._artists_label.set_opacity(0.3)
+            self._artists_label.set_margin_end(5)
             self._artists_label.show()
         self._duration_label = Gtk.Label.new(
                                        seconds_to_string(self._track.duration))
