@@ -2,6 +2,10 @@ Lollypop is about albums, designed for album playback.
 Playlists are presents for later usage (phone sync, specific party, ...)
 If you really need a player designed around playlists, Lollypop is a bad choice ;)
 
+WONTFIX:
+- Showing bitrate
+- Cloud playback
+
 -Lollypop version:
 -Gtk Version:
 -Linux distribution:
