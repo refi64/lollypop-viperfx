@@ -260,7 +260,7 @@ class ShufflePlayer(BasePlayer):
             On stream start add to shuffle history
         """
         # Add track to shuffle history if needed
-        if self._shuffle != Shuffle.NONE or self._is_party:
+        if self._shuffle == Shuffle.TRACKS or self._is_party:
             if self._history:
                 next = self._history.get_next()
                 prev = self._history.get_prev()
