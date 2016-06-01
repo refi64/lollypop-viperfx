@@ -147,16 +147,15 @@ class ProgressController:
         if player.current_track.id != Type.RADIOS:
             self._progress.set_sensitive(player.current_track.id is not None)
         self._progress.set_value(0.0)
+        self._timelabel.set_text("0:00")
         if player.current_track.id == Type.RADIOS:
             self._progress.set_sensitive(False)
             self._total_time_label.set_text('')
-            self._timelabel.set_text('')
             self._progress.set_range(0.0, 0.0)
         else:
             self._progress.set_range(0.0, player.current_track.duration * 60)
             self._total_time_label.set_text(
                 seconds_to_string(player.current_track.duration))
-            self._timelabel.set_text("0:00")
 
     def on_status_changed(self, player):
         """
@@ -164,12 +163,7 @@ class ProgressController:
             @param player as Player
         """
         if player.is_playing():
-            if player.current_track.id == Type.RADIOS and\
-                    self._timeout_id is not None:
-                GLib.source_remove(self._timeout_id)
-                self._timeout_id = None
-            elif player.current_track.id != Type.RADIOS and\
-                    self._timeout_id is None:
+            if self._timeout_id is None:
                 self._timeout_id = GLib.timeout_add(1000,
                                                     self._update_position)
         else:
@@ -186,7 +180,7 @@ class ProgressController:
             Update progress bar position
             @param value as int
         """
-        if not self._seeking and Lp().player.current_track.id != Type.RADIOS:
+        if not self._seeking:
             if value is None and Lp().player.get_status() != Gst.State.PAUSED:
                 value = Lp().player.position/1000000
             if value is not None:
