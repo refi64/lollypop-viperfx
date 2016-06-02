@@ -170,8 +170,7 @@ class Application(Gtk.Application):
 
     def do_startup(self):
         """
-            Add startup notification and
-            build gnome-shell menu after Gtk.Application startup
+            Init application
         """
         Gtk.Application.do_startup(self)
         Notify.init("Lollypop")
