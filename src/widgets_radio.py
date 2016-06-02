@@ -36,6 +36,7 @@ class RadioWidget(Gtk.FlowBoxChild, AlbumWidget):
         self._name = name
         self._cover = None
         self._lock_overlay = False
+        self._show_overlay = False
         self._radios_manager = radios_manager
 
     def populate(self):
