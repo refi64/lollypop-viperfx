@@ -64,7 +64,7 @@ def is_gnome():
     """
         Return True if desktop is Gnome
     """
-    return os.environ.get("XDG_CURRENT_DESKTOP") == "GNOME"
+    return os.environ.get("XDG_CURRENT_DESKTOP").lower() in ["gnome", "gnome-wayland"]
 
 
 def is_audio(f):
