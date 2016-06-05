@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Generated with glade 3.19.0 -->
+<!-- Generated with glade 3.20.0 -->
 <interface>
   <requires lib="gtk+" version="3.14"/>
   <object class="GtkImage" id="image1">
@@ -197,7 +197,7 @@
       <object class="GtkLabel" id="label1">
         <property name="visible">True</property>
         <property name="can_focus">False</property>
-        <property name="halign">end</property>
+        <property name="halign">start</property>
         <property name="label" translatable="yes">All albums</property>
       </object>
       <packing>
@@ -221,7 +221,7 @@
       <object class="GtkLabel" id="label2">
         <property name="visible">True</property>
         <property name="can_focus">False</property>
-        <property name="halign">end</property>
+        <property name="halign">start</property>
         <property name="label" translatable="yes">Convert to MP3</property>
       </object>
       <packing>
@@ -239,6 +239,30 @@
       <packing>
         <property name="left_attach">1</property>
         <property name="top_attach">1</property>
+      </packing>
+    </child>
+    <child>
+      <object class="GtkLabel" id="label3">
+        <property name="visible">True</property>
+        <property name="can_focus">False</property>
+        <property name="halign">start</property>
+        <property name="label" translatable="yes">Normalize MP3</property>
+      </object>
+      <packing>
+        <property name="left_attach">0</property>
+        <property name="top_attach">2</property>
+      </packing>
+    </child>
+    <child>
+      <object class="GtkSwitch" id="switch_normalize">
+        <property name="visible">True</property>
+        <property name="can_focus">True</property>
+        <property name="halign">start</property>
+        <signal name="state-set" handler="_on_normalize_state_set" swapped="no"/>
+      </object>
+      <packing>
+        <property name="left_attach">1</property>
+        <property name="top_attach">2</property>
       </packing>
     </child>
   </object>

@@ -31,6 +31,7 @@ class MtpSync:
         self._syncing = False
         self._errors = False
         self._convert = False
+        self._normalize = False
         self._errors_count = 0
         self._total = 0  # Total files to sync
         self._done = 0   # Handled files on sync
@@ -97,15 +98,17 @@ class MtpSync:
                 print("MtpSync::_get_track_files():", e, uri)
         return children
 
-    def _sync(self, playlists, convert):
+    def _sync(self, playlists, convert, normalize):
         """
             Sync playlists with device as this
             @param playlists as [str]
             @param convert as bool
+            @param normalize as bool
         """
         try:
             self._in_thread = True
             self._convert = convert
+            self._normalize = normalize
             self._errors = False
             self._errors_count = 0
             self._copied_art_uris = []
@@ -219,7 +222,7 @@ class MtpSync:
                 track_name = escape(GLib.basename(track.path))
                 # Check extension, if not mp3, convert
                 ext = os.path.splitext(track.path)[1]
-                if ext != ".mp3" and self._convert:
+                if (ext != ".mp3" or self._normalize) and self._convert:
                     convertion_needed = True
                     track_name = track_name.replace(ext, ".mp3")
                 else:
@@ -349,7 +352,18 @@ class MtpSync:
             # We need to escape \ in path
             src_path = src.get_path().replace("\\", "\\\\\\")
             dst_path = dst.get_path().replace("\\", "\\\\\\")
-            pipeline = Gst.parse_launch('filesrc location="%s" ! decodebin\
+            if self._normalize:
+                pipeline = Gst.parse_launch(
+                                        'filesrc location="%s" ! decodebin\
+                                        ! audioconvert\
+                                        ! rgvolume pre-amp=6.0 headroom=10.0\
+                                        ! rglimiter ! audioconvert\
+                                        ! lamemp3enc ! id3v2mux\
+                                        ! filesink location="%s"'
+                                        % (src_path, dst_path))
+            else:
+                pipeline = Gst.parse_launch(
+                                        'filesrc location="%s" ! decodebin\
                                         ! audioconvert ! lamemp3enc ! id3v2mux\
                                         ! filesink location="%s"'
                                         % (src_path, dst_path))

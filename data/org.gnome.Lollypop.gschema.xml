@@ -107,6 +107,11 @@
             <summary>Convert to MP3(MTP)</summary>
             <description></description>
         </key>
+         <key type="b" name="normalize-mp3">
+            <default>false</default>
+            <summary>Normalize MP3(MTP)</summary>
+            <description></description>
+        </key>
          <key type="b" name="auto-update">
             <default>true</default>
             <summary>Auto update music</summary>

@@ -46,8 +46,10 @@ class DeviceManagerWidget(Gtk.Bin, MtpSync):
         self._switch_albums = builder.get_object('switch_albums')
         self._switch_albums.set_state(Lp().settings.get_value('sync-albums'))
         self._switch_mp3 = builder.get_object('switch_mp3')
+        self._switch_normalize = builder.get_object('switch_normalize')
         if not self._check_encoder_status():
             self._switch_mp3.set_sensitive(False)
+            self._switch_normalize.set_sensitive(False)
             self._switch_mp3.set_tooltip_text(_("You need to install " +
                                               "gstreamer-plugins-ugly"))
         else:
@@ -132,7 +134,9 @@ class DeviceManagerWidget(Gtk.Bin, MtpSync):
             playlists.append(Type.ALL)
 
         t = Thread(target=self._sync,
-                   args=(playlists, self._switch_mp3.get_active()))
+                   args=(playlists,
+                         self._switch_mp3.get_active(),
+                         self._switch_normalize.get_active()))
         t.daemon = True
         t.start()
 
@@ -253,6 +257,21 @@ class DeviceManagerWidget(Gtk.Bin, MtpSync):
             @param state as bool
         """
         Lp().settings.set_value('convert-mp3', GLib.Variant('b', state))
+        if not state:
+            self._switch_normalize.set_active(False)
+            Lp().settings.set_value('normalize-mp3',
+                                    GLib.Variant('b', False))
+
+    def _on_normalize_state_set(self, widget, state):
+        """
+            Save option
+            @param widget as Gtk.Switch
+            @param state as bool
+        """
+        Lp().settings.set_value('normalize-mp3', GLib.Variant('b', state))
+        if state:
+            self._switch_mp3.set_active(True)
+            Lp().settings.set_value('convert-mp3', GLib.Variant('b', True))
 
     def _on_response(self, infobar, response_id):
         """
