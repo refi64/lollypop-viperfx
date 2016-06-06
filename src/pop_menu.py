@@ -18,7 +18,7 @@ from threading import Thread
 
 from lollypop.widgets_rating import RatingWidget
 from lollypop.widgets_loved import LovedWidget
-from lollypop.define import Lp, NextContext, Shuffle
+from lollypop.define import Lp
 from lollypop.objects import Track
 from lollypop import utils
 
@@ -40,106 +40,6 @@ class BaseMenu(Gio.Menu):
         self._artist_ids = artist_ids
         self._object_id = object_id
         self._is_album = is_album
-        self._app = Gio.Application.get_default()
-
-
-class PlaybackMenu(BaseMenu):
-    """
-        Contextual menu for playback
-    """
-
-    def __init__(self):
-        """
-            Init playback menu
-        """
-        BaseMenu.__init__(self, None, [], [], False)
-        self._set_playback_actions()
-
-#######################
-# PRIVATE             #
-#######################
-    def _set_playback_actions(self):
-        """
-            Set playback actions
-        """
-        shuffle = Lp().settings.get_enum('shuffle')
-        if shuffle != Shuffle.TRACKS:
-            # Reset context action and nothing more
-            if Lp().player.context.next != NextContext.NONE:
-                continue_play_action = Gio.SimpleAction(
-                    name="continue_play_action")
-                self._app.add_action(continue_play_action)
-                continue_play_action.connect('activate',
-                                             self._continue_playback)
-                self.append(_("Continuous playback"),
-                            'app.continue_play_action')
-                return
-            if not Lp().player.get_queue() and\
-               not Lp().player.get_user_playlist_ids():
-                # Stop after track
-                if Lp().player.context.next != NextContext.STOP_TRACK:
-                    stop_track_action = Gio.SimpleAction(
-                                                      name="stop_track_action")
-                    self._app.add_action(stop_track_action)
-                    stop_track_action.connect('activate', self._stop_track)
-                    self.append(_("Stop after this track"),
-                                'app.stop_track_action')
-                # Stop after album
-                if Lp().player.context.next != NextContext.STOP_ALBUM:
-                    stop_album_action = Gio.SimpleAction(
-                                                      name="stop_album_action")
-                    self._app.add_action(stop_album_action)
-                    stop_album_action.connect('activate', self._stop_album)
-                    self.append(_("Stop after this album"),
-                                'app.stop_album_action')
-        # Do not repeat
-        if Lp().player.context.next != NextContext.STOP_ALL:
-            do_not_repeat_action = Gio.SimpleAction(
-                                                   name="do_not_repeat_action")
-            self._app.add_action(do_not_repeat_action)
-            do_not_repeat_action.connect('activate', self._do_not_repeat)
-            self.append(_("Do not repeat"), 'app.do_not_repeat_action')
-
-    def _continue_playback(self, action, variant):
-        """
-            Tell player to continue playback
-            @param SimpleAction
-            @param GVariant
-            @param album id as int
-        """
-        Lp().player.set_next_context(NextContext.NONE)
-
-    def _stop_playlist(self, action, variant):
-        """
-            Tell player to stop after current playlist
-            @param SimpleAction
-            @param GVariant
-        """
-        Lp().player.set_next_context(NextContext.STOP_PLAYLIST)
-
-    def _stop_track(self, action, variant):
-        """
-            Tell player to stop after current track
-            @param SimpleAction
-            @param GVariant
-        """
-        Lp().player.set_next_context(NextContext.STOP_TRACK)
-
-    def _stop_album(self, action, variant):
-        """
-            Tell player to stop after current album
-            @param SimpleAction
-            @param GVariant
-        """
-        Lp().player.set_next_context(NextContext.STOP_ALBUM)
-
-    def _do_not_repeat(self, action, variant):
-        """
-            Tell player to stop after current artist
-            @param SimpleAction
-            @param GVariant
-        """
-        Lp().player.set_next_context(NextContext.STOP_ALL)
 
 
 class QueueMenu(BaseMenu):
@@ -191,11 +91,11 @@ class QueueMenu(BaseMenu):
                 delete = False
 
         append_queue_action = Gio.SimpleAction(name="append_queue_action")
-        self._app.add_action(append_queue_action)
+        Lp().add_action(append_queue_action)
         prepend_queue_action = Gio.SimpleAction(name="prepend_queue_action")
-        self._app.add_action(prepend_queue_action)
+        Lp().add_action(prepend_queue_action)
         del_queue_action = Gio.SimpleAction(name="del_queue_action")
-        self._app.add_action(del_queue_action)
+        Lp().add_action(del_queue_action)
         if append:
             append_queue_action.connect('activate',
                                         self._append_to_queue)
@@ -282,7 +182,7 @@ class PlaylistsMenu(BaseMenu):
             Set playlist actions
         """
         playlist_action = Gio.SimpleAction(name="playlist_action")
-        self._app.add_action(playlist_action)
+        Lp().add_action(playlist_action)
         playlist_action.connect('activate',
                                 self._add_to_playlists)
         self.append(_("Add to others"), 'app.playlist_action')
@@ -290,7 +190,7 @@ class PlaylistsMenu(BaseMenu):
         i = 0
         for playlist in Lp().playlists.get_last():
             action = Gio.SimpleAction(name="playlist%s" % i)
-            self._app.add_action(action)
+            Lp().add_action(action)
             if self._is_album:
                 exists = Lp().playlists.exists_album(playlist[0],
                                                      self._object_id,
@@ -407,10 +307,28 @@ class PopToolbarMenu(Gio.Menu):
         """
         Gio.Menu.__init__(self)
         if not Lp().player.is_party():
+            builder = Gtk.Builder()
+            builder.add_from_resource('/org/gnome/Lollypop/PlaybackMenu.ui')
+            playback_menu = builder.get_object('playback-menu')
+            playback_action = Gio.SimpleAction.new_stateful(
+                            'playback',
+                            GLib.VariantType.new("s"),
+                            GLib.Variant("s", str(Lp().player.context.next)))
+            playback_action.connect('change-state', self._on_change_state)
+            Lp().add_action(playback_action)
             self.insert_section(0, _("Playback"),
-                                PlaybackMenu())
+                                playback_menu)
         self.insert_section(1, _("Playlists"),
                             PlaylistsMenu(object_id, [], [], False))
+
+    def _on_change_state(self, action, value):
+        """
+            Update playback value
+            @param action as Gio.SimpleAction
+            @param param as GLib.Variant
+        """
+        action.set_state(value)
+        Lp().player.set_next_context(int(value.get_string()))
 
 
 class EditMenu(BaseMenu):
@@ -440,7 +358,7 @@ class EditMenu(BaseMenu):
             Set edit actions
         """
         edit_tag_action = Gio.SimpleAction(name="edit_tag_action")
-        self._app.add_action(edit_tag_action)
+        Lp().add_action(edit_tag_action)
         edit_tag_action.connect('activate',
                                 self._edit_tag)
         self.append(_("Modify information"), 'app.edit_tag_action')
