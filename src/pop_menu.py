@@ -71,7 +71,8 @@ class PlaybackMenu(BaseMenu):
                 self._app.add_action(continue_play_action)
                 continue_play_action.connect('activate',
                                              self._continue_playback)
-                self.append(_("Continue playback"), 'app.continue_play_action')
+                self.append(_("Continuous playback"),
+                            'app.continue_play_action')
                 return
             if not Lp().player.get_queue() and\
                not Lp().player.get_user_playlist_ids():
