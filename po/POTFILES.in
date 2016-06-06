@@ -76,6 +76,7 @@ src/widgets_track.py
 src/widgets_web.py
 src/wikipedia.py
 src/window.py
+[type: gettext/glade]data/PlaybackMenu.ui
 [type: gettext/glade]data/AboutDialog.ui
 [type: gettext/glade]data/AlbumDetailedWidget.ui
 [type: gettext/glade]data/Appmenu.ui
