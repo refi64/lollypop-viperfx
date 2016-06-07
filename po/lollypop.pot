@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-06-07 12:31+0200\n"
+"POT-Creation-Date: 2016-06-08 10:51+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -403,7 +403,7 @@ msgid "Pause"
 msgstr ""
 
 #: ../src/controllers.py:86 ../src/controllers.py:114 ../src/pop_tunein.py:167
-#: ../src/widgets_album.py:470 ../src/widgets_radio.py:166
+#: ../src/widgets_album.py:474 ../src/widgets_radio.py:168
 #: ../data/AlbumDetailedWidget.ui.h:1 ../data/ArtistView.ui.h:2
 #: ../data/ToolbarPlayback.ui.h:2
 msgid "Play"
@@ -507,7 +507,7 @@ msgstr ""
 msgid "Edit"
 msgstr ""
 
-#: ../src/pop_radio.py:83 ../src/pop_tunein.py:173 ../src/view_artist.py:163
+#: ../src/pop_radio.py:83 ../src/pop_tunein.py:173 ../src/view_artist.py:165
 #: ../data/ArtistView.ui.h:3
 msgid "Add"
 msgstr ""
@@ -554,7 +554,7 @@ msgstr ""
 msgid "The the"
 msgstr ""
 
-#: ../src/view_artist.py:158 ../src/widgets_album.py:219
+#: ../src/view_artist.py:160 ../src/widgets_album.py:221
 msgid "Remove"
 msgstr ""
 
@@ -577,34 +577,34 @@ msgstr ""
 msgid "Cancel synchronization"
 msgstr ""
 
-#: ../src/widgets_album.py:215
+#: ../src/widgets_album.py:217
 msgid "Append"
 msgstr ""
 
-#: ../src/widgets_album.py:481
+#: ../src/widgets_album.py:485
 msgid "Play albums"
 msgstr ""
 
-#: ../src/widgets_album.py:491 ../data/AlbumDetailedWidget.ui.h:2
+#: ../src/widgets_album.py:495 ../data/AlbumDetailedWidget.ui.h:2
 msgid "Change artwork"
-msgstr ""
-
-#: ../src/widgets_album.py:654
-#, python-format
-msgid "%s h  %s m"
-msgstr ""
-
-#: ../src/widgets_album.py:656
-#, python-format
-msgid "%s h"
 msgstr ""
 
 #: ../src/widgets_album.py:658
 #, python-format
+msgid "%s h  %s m"
+msgstr ""
+
+#: ../src/widgets_album.py:660
+#, python-format
+msgid "%s h"
+msgstr ""
+
+#: ../src/widgets_album.py:662
+#, python-format
 msgid "%s m"
 msgstr ""
 
-#: ../src/widgets_album.py:915
+#: ../src/widgets_album.py:919
 #, python-format
 msgid "Disc %s"
 msgstr ""
@@ -621,21 +621,21 @@ msgstr ""
 msgid "No free space available on device"
 msgstr ""
 
-#: ../src/widgets_playlist.py:483 ../src/widgets_playlist.py:486
+#: ../src/widgets_playlist.py:491 ../src/widgets_playlist.py:494
 msgid "New playlist "
 msgstr ""
 
 #. Need a copy, segfault on EOS 3.1
-#: ../src/widgets_playlist.py:542 ../src/widgets_playlist.py:793
+#: ../src/widgets_playlist.py:550 ../src/widgets_playlist.py:801
 #, python-format
 msgid "Remove \"%s\"?"
 msgstr ""
 
-#: ../src/widgets_playlist.py:801
+#: ../src/widgets_playlist.py:809
 msgid "Remove these tracks?"
 msgstr ""
 
-#: ../src/widgets_radio.py:182
+#: ../src/widgets_radio.py:184
 msgid "Modify radio"
 msgstr ""
 
@@ -978,50 +978,55 @@ msgstr ""
 
 #: ../data/Shortcuts.ui.h:8
 msgctxt "shortcut window"
-msgid "Playback"
+msgid "Lock playback"
 msgstr ""
 
 #: ../data/Shortcuts.ui.h:9
 msgctxt "shortcut window"
-msgid "Play"
+msgid "Playback"
 msgstr ""
 
 #: ../data/Shortcuts.ui.h:10
 msgctxt "shortcut window"
-msgid "Pause"
+msgid "Play"
 msgstr ""
 
 #: ../data/Shortcuts.ui.h:11
 msgctxt "shortcut window"
-msgid "Stop"
+msgid "Pause"
 msgstr ""
 
 #: ../data/Shortcuts.ui.h:12
 msgctxt "shortcut window"
-msgid "Next track"
+msgid "Stop"
 msgstr ""
 
 #: ../data/Shortcuts.ui.h:13
 msgctxt "shortcut window"
-msgid "Previous track"
+msgid "Next track"
 msgstr ""
 
 #: ../data/Shortcuts.ui.h:14
 msgctxt "shortcut window"
-msgid "Skip current album"
+msgid "Previous track"
 msgstr ""
 
 #: ../data/Shortcuts.ui.h:15
 msgctxt "shortcut window"
-msgid "Repeat track"
+msgid "Skip current album"
 msgstr ""
 
 #: ../data/Shortcuts.ui.h:16
 msgctxt "shortcut window"
-msgid "Skip backward in track"
+msgid "Repeat track"
 msgstr ""
 
 #: ../data/Shortcuts.ui.h:17
+msgctxt "shortcut window"
+msgid "Skip backward in track"
+msgstr ""
+
+#: ../data/Shortcuts.ui.h:18
 msgctxt "shortcut window"
 msgid "Skip forward in track"
 msgstr ""
