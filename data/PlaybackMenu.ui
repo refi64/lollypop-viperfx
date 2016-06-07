@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Generated with glade 3.19.0 -->
+<interface domain="lollypop">
+  <requires lib="gtk+" version="3.10"/>
+    <menu id="playback-menu">
+    <item>
+      <attribute name="label" translatable="yes">Continuous playback</attribute>
+      <attribute name="action">app.playback</attribute>
+      <attribute name="target">0</attribute>
+    </item>
+    <item>
+      <attribute name="label" translatable="yes">Stop after this track</attribute>
+      <attribute name="action">app.playback</attribute>
+      <attribute name="target">1</attribute>
+    </item>
+    <item>
+      <attribute name="label" translatable="yes">Stop after this album</attribute>
+      <attribute name="action">app.playback</attribute>
+      <attribute name="target">2</attribute>
+    </item>
+    <item>
+      <attribute name="label" translatable="yes">Do not repeat</attribute>
+      <attribute name="action">app.playback</attribute>
+      <attribute name="target">3</attribute>
+    </item>
+   </menu>
+</interface>
