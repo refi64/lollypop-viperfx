@@ -157,7 +157,9 @@ class RadioWidget(Gtk.FlowBoxChild, AlbumWidget):
             Set overlay
             @param set as bool
         """
-        if self._lock_overlay or self._show_overlay == set:
+        if self._lock_overlay or\
+           self._show_overlay == set or\
+           (set is True and Lp().player.locked):
             return
         if set:
             # Play button

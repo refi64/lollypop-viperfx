@@ -76,7 +76,7 @@ class ToolbarEnd(Gtk.Bin):
         list_action = Gio.SimpleAction.new('list', None)
         list_action.connect('activate', self._on_list_button_clicked)
         app.add_action(list_action)
-        app.set_accels_for_action("app.list", ["<Control>l"])
+        app.set_accels_for_action("app.list", ["<Control>i"])
         self._list_popover = None
         Lp().player.connect('party-changed', self._on_party_changed)
 

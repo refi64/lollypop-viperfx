@@ -49,6 +49,7 @@ class ArtistView(ArtistAlbumsView):
         self._jump_button = builder.get_object('jump-button')
         self._jump_button.set_tooltip_text(_("Go to current track"))
         self._add_button = builder.get_object('add-button')
+        self._play_button = builder.get_object('play-button')
         self._grid = builder.get_object('header-grid')
         header = builder.get_object('header')
         header.set_property('valign', Gtk.Align.START)
@@ -59,6 +60,7 @@ class ArtistView(ArtistAlbumsView):
 
         self._set_artwork()
         self._set_add_icon()
+        self._on_lock_changed(Lp().player)
 
         artists = []
         for artist_id in artist_ids:
@@ -174,6 +176,8 @@ class ArtistView(ArtistAlbumsView):
                                                self._on_artist_artwork_changed)
         self._party_signal_id = Lp().player.connect('party-changed',
                                                     self._on_party_changed)
+        self._lock_signal_id = Lp().player.connect('lock-changed',
+                                                   self._on_lock_changed)
 
     def _on_unrealize(self, widget):
         """
@@ -186,6 +190,9 @@ class ArtistView(ArtistAlbumsView):
         if self._party_signal_id is not None:
             Lp().player.disconnect(self._party_signal_id)
             self._party_signal_id = None
+        if self._lock_signal_id is not None:
+            Lp().player.disconnect(self._lock_signal_id)
+            self._lock_signal_id = None
 
     def _on_party_changed(self, player, party):
         """
@@ -196,6 +203,14 @@ class ArtistView(ArtistAlbumsView):
         # Leaving party doesn't change album list
         if party:
             self._set_add_icon()
+
+    def _on_lock_changed(self, player):
+        """
+            Lock buttons
+            @param player as Player
+        """
+        self._add_button.set_sensitive(not player.locked)
+        self._play_button.set_sensitive(not player.locked)
 
     def _on_artist_artwork_changed(self, art, prefix):
         """

@@ -53,6 +53,13 @@
                 <property name="accelerator">l</property>
               </object>
             </child>
+            <child>
+              <object class="GtkShortcutsShortcut">
+                <property name="visible">True</property>
+                <property name="title" translatable="yes" context="shortcut window">Lock playback</property>
+                <property name="accelerator">&lt;Primary&gt;l</property>
+              </object>
+            </child>
           </object>
         </child>
         <child>

@@ -112,6 +112,8 @@ class Window(Gtk.ApplicationWindow, Container):
                                             ["p"])
             self._app.set_accels_for_action("app.player::loved",
                                             ["l"])
+            self._app.set_accels_for_action("app.player::locked",
+                                            ["<Control>l"])
         else:
             self._app.set_accels_for_action("app.seek(10)", [None])
             self._app.set_accels_for_action("app.seek(20)", [None])
@@ -443,6 +445,8 @@ class Window(Gtk.ApplicationWindow, Container):
                 Lp().player.next()
         elif string == "prev":
             Lp().player.prev()
+        elif string == "locked":
+            Lp().player.lock()
         elif string == "loved":
             if Lp().player.current_track.id is not None:
                 isloved = is_loved(Lp().player.current_track.id)

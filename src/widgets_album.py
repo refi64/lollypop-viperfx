@@ -141,7 +141,9 @@ class AlbumWidget:
             Set overlay
             @param set as bool
         """
-        if self._lock_overlay or self._show_overlay == set:
+        if self._lock_overlay or\
+           self._show_overlay == set or\
+           (set is True and Lp().player.locked):
             return
         self._show_overlay = set
         if set:
@@ -461,7 +463,9 @@ class AlbumSimpleWidget(Gtk.FlowBoxChild, AlbumWidget):
             Set overlay
             @param set as bool
         """
-        if self._lock_overlay or self._show_overlay == set:
+        if self._lock_overlay or\
+           self._show_overlay == set or\
+           (set is True and Lp().player.locked):
             return
         if set:
             # Play button
@@ -951,8 +955,14 @@ class AlbumDetailedWidget(Gtk.Bin, AlbumWidget):
             @param widget as TracksWidget
             @param track id as int
         """
+        # Add to queue by default
+        if Lp().player.locked:
+            if track_id in Lp().player.get_queue():
+                Lp().player.del_from_queue(track_id)
+            else:
+                Lp().player.append_to_queue(track_id)
         # Play track with no album, force repeat on track
-        if self._button_state & Gdk.ModifierType.SHIFT_MASK:
+        elif self._button_state & Gdk.ModifierType.SHIFT_MASK:
             Lp().player.clear_albums()
             Lp().player.load(Track(track_id))
         else:

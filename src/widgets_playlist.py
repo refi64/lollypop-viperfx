@@ -385,11 +385,19 @@ class PlaylistsWidget(Gtk.Bin):
             @param widget as TracksWidget
             @param track as Track
         """
-        Lp().player.load(Track(track_id))
-        if not Lp().player.is_party():
-            Lp().player.populate_user_playlist_by_tracks(self._tracks1 +
-                                                         self._tracks2,
-                                                         self._playlist_ids)
+        # Add to queue by default
+        if Lp().player.locked:
+            if track_id in Lp().player.get_queue():
+                Lp().player.del_from_queue(track_id)
+            else:
+                Lp().player.append_to_queue(track_id)
+        else:
+            Lp().player.load(Track(track_id))
+            if not Lp().player.is_party():
+                Lp().player.populate_user_playlist_by_tracks(
+                                                            self._tracks1 +
+                                                            self._tracks2,
+                                                            self._playlist_ids)
 
 
 class PlaylistsManagerWidget(Gtk.Bin):

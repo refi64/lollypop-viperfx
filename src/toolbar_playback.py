@@ -12,6 +12,7 @@
 
 from gi.repository import Gtk
 
+from lollypop.define import Lp
 from lollypop.controllers import PlaybackController
 
 
@@ -38,6 +39,15 @@ class ToolbarPlayback(Gtk.Bin, PlaybackController):
         self._play_image = builder.get_object('play_image')
         self._pause_image = builder.get_object('pause_image')
 
+        Lp().player.connect('lock-changed', self._on_lock_changed)
+
 #######################
 # PRIVATE             #
 #######################
+    def _on_lock_changed(self, player):
+        """
+            Lock toolbar
+            @param player as Player
+        """
+        self._prev_btn.set_sensitive(not player.locked)
+        self._next_btn.set_sensitive(not player.locked)

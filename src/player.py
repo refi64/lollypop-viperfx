@@ -78,6 +78,8 @@ class Player(BinPlayer, QueuePlayer, UserPlaylistPlayer, RadioPlayer,
         """
             Play previous track
         """
+        if self._locked:
+            return
         if self._prev_track.id is not None:
             self.load(self._prev_track)
         else:
@@ -87,6 +89,8 @@ class Player(BinPlayer, QueuePlayer, UserPlaylistPlayer, RadioPlayer,
         """
             Play next track
         """
+        if self._locked:
+            return
         if self._next_track.id is not None:
             self.load(self._next_track)
         else:
