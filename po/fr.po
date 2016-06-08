@@ -9,8 +9,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lollypop\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-06-07 12:31+0200\n"
-"PO-Revision-Date: 2016-06-07 10:32+0000\n"
+"POT-Creation-Date: 2016-06-08 10:51+0200\n"
+"PO-Revision-Date: 2016-06-08 08:54+0000\n"
 "Last-Translator: Cédric Bellegarde <web@adishatz.org>\n"
 "Language-Team: French (http://www.transifex.com/gnumdk/lollypop/language/fr/)\n"
 "MIME-Version: 1.0\n"
@@ -405,7 +405,7 @@ msgid "Pause"
 msgstr "Pause"
 
 #: ../src/controllers.py:86 ../src/controllers.py:114 ../src/pop_tunein.py:167
-#: ../src/widgets_album.py:470 ../src/widgets_radio.py:166
+#: ../src/widgets_album.py:474 ../src/widgets_radio.py:168
 #: ../data/AlbumDetailedWidget.ui.h:1 ../data/ArtistView.ui.h:2
 #: ../data/ToolbarPlayback.ui.h:2
 msgid "Play"
@@ -509,7 +509,7 @@ msgstr "Modifier les informations"
 msgid "Edit"
 msgstr "Editer"
 
-#: ../src/pop_radio.py:83 ../src/pop_tunein.py:173 ../src/view_artist.py:163
+#: ../src/pop_radio.py:83 ../src/pop_tunein.py:173 ../src/view_artist.py:165
 #: ../data/ArtistView.ui.h:3
 msgid "Add"
 msgstr "Ajouter"
@@ -556,7 +556,7 @@ msgstr "Listes de lecture en cours"
 msgid "The the"
 msgstr "The the"
 
-#: ../src/view_artist.py:158 ../src/widgets_album.py:219
+#: ../src/view_artist.py:160 ../src/widgets_album.py:221
 msgid "Remove"
 msgstr "Enlever"
 
@@ -579,34 +579,34 @@ msgstr "Synchroniser %s"
 msgid "Cancel synchronization"
 msgstr "Annuler la synchronisation"
 
-#: ../src/widgets_album.py:215
+#: ../src/widgets_album.py:217
 msgid "Append"
 msgstr "Ajouter"
 
-#: ../src/widgets_album.py:481
+#: ../src/widgets_album.py:485
 msgid "Play albums"
 msgstr "Lire les albums"
 
-#: ../src/widgets_album.py:491 ../data/AlbumDetailedWidget.ui.h:2
+#: ../src/widgets_album.py:495 ../data/AlbumDetailedWidget.ui.h:2
 msgid "Change artwork"
 msgstr "Modifier la pochette"
 
-#: ../src/widgets_album.py:654
+#: ../src/widgets_album.py:658
 #, python-format
 msgid "%s h  %s m"
 msgstr "%s h %s m"
 
-#: ../src/widgets_album.py:656
+#: ../src/widgets_album.py:660
 #, python-format
 msgid "%s h"
 msgstr "%s h"
 
-#: ../src/widgets_album.py:658
+#: ../src/widgets_album.py:662
 #, python-format
 msgid "%s m"
 msgstr "%s m"
 
-#: ../src/widgets_album.py:915
+#: ../src/widgets_album.py:919
 #, python-format
 msgid "Disc %s"
 msgstr "Disque %s"
@@ -623,21 +623,21 @@ msgstr "Erreur inconnue lors de la synchronisation, essayez de redémarrer votre
 msgid "No free space available on device"
 msgstr "Pas d'espace disponible sur l'appareil"
 
-#: ../src/widgets_playlist.py:483 ../src/widgets_playlist.py:486
+#: ../src/widgets_playlist.py:491 ../src/widgets_playlist.py:494
 msgid "New playlist "
 msgstr "Nouvelle liste de lecture "
 
 #. Need a copy, segfault on EOS 3.1
-#: ../src/widgets_playlist.py:542 ../src/widgets_playlist.py:793
+#: ../src/widgets_playlist.py:550 ../src/widgets_playlist.py:801
 #, python-format
 msgid "Remove \"%s\"?"
 msgstr "Supprimer \"%s\"?"
 
-#: ../src/widgets_playlist.py:801
+#: ../src/widgets_playlist.py:809
 msgid "Remove these tracks?"
 msgstr "Supprimer ces morceaux?"
 
-#: ../src/widgets_radio.py:182
+#: ../src/widgets_radio.py:184
 msgid "Modify radio"
 msgstr "Modifier la radio"
 
@@ -980,50 +980,55 @@ msgstr "Aimer le morceau en cours"
 
 #: ../data/Shortcuts.ui.h:8
 msgctxt "shortcut window"
+msgid "Lock playback"
+msgstr "Verrouiller la lecture"
+
+#: ../data/Shortcuts.ui.h:9
+msgctxt "shortcut window"
 msgid "Playback"
 msgstr "Lecture"
 
-#: ../data/Shortcuts.ui.h:9
+#: ../data/Shortcuts.ui.h:10
 msgctxt "shortcut window"
 msgid "Play"
 msgstr "Lire"
 
-#: ../data/Shortcuts.ui.h:10
+#: ../data/Shortcuts.ui.h:11
 msgctxt "shortcut window"
 msgid "Pause"
 msgstr "Pause"
 
-#: ../data/Shortcuts.ui.h:11
+#: ../data/Shortcuts.ui.h:12
 msgctxt "shortcut window"
 msgid "Stop"
 msgstr "Stop"
 
-#: ../data/Shortcuts.ui.h:12
+#: ../data/Shortcuts.ui.h:13
 msgctxt "shortcut window"
 msgid "Next track"
 msgstr "Morceau suivant"
 
-#: ../data/Shortcuts.ui.h:13
+#: ../data/Shortcuts.ui.h:14
 msgctxt "shortcut window"
 msgid "Previous track"
 msgstr "Morceau précédent"
 
-#: ../data/Shortcuts.ui.h:14
+#: ../data/Shortcuts.ui.h:15
 msgctxt "shortcut window"
 msgid "Skip current album"
 msgstr "Saute l'album courant"
 
-#: ../data/Shortcuts.ui.h:15
+#: ../data/Shortcuts.ui.h:16
 msgctxt "shortcut window"
 msgid "Repeat track"
 msgstr "Répéter le morceau"
 
-#: ../data/Shortcuts.ui.h:16
+#: ../data/Shortcuts.ui.h:17
 msgctxt "shortcut window"
 msgid "Skip backward in track"
 msgstr "Recule dans le morceau"
 
-#: ../data/Shortcuts.ui.h:17
+#: ../data/Shortcuts.ui.h:18
 msgctxt "shortcut window"
 msgid "Skip forward in track"
 msgstr "Avance dans le morceau"
