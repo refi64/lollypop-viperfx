@@ -434,9 +434,16 @@ class SearchPopover(Gtk.Popover):
             @param widget as Gtk.ListBox
             @param row as SearchRow
         """
-        if Lp().player.is_party():
+        if Lp().player.is_party() or Lp().player.locked:
             if row.is_track():
-                Lp().player.load(Track(row.get_id()))
+                if Lp().player.locked:
+                    if row.get_id() in Lp().player.get_queue():
+                        Lp().player.del_from_queue(row.get_id())
+                    else:
+                        Lp().player.append_to_queue(row.get_id())
+                    row.destroy()
+                else:
+                    Lp().player.load(Track(row.get_id()))
             elif Gtk.get_minor_version() > 16:
                 popover = AlbumPopover(row.get_id(), [], [])
                 popover.set_relative_to(row)
