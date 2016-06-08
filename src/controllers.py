@@ -36,8 +36,8 @@ class PlaybackController:
             @param player as Player
         """
         self._play_btn.set_sensitive(True)
-        self._prev_btn.set_sensitive(True)
-        self._next_btn.set_sensitive(True)
+        self._prev_btn.set_sensitive(not Lp().player.locked)
+        self._next_btn.set_sensitive(not Lp().player.locked)
 
     def on_prev_changed(self, player):
         """
