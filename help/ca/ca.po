@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lollypop\n"
 "POT-Creation-Date: 2016-05-09 15:53+0200\n"
-"PO-Revision-Date: 2016-05-12 13:49+0000\n"
+"PO-Revision-Date: 2016-05-24 15:45+0000\n"
 "Last-Translator: Ferran Roig <forums@ferranroig.com>\n"
 "Language-Team: Catalan (http://www.transifex.com/gnumdk/lollypop/language/ca/)\n"
 "MIME-Version: 1.0\n"
@@ -105,7 +105,7 @@ msgstr "La popularitat de l'àlbum es basa en la quantitat de pistes escoltades 
 msgid ""
 "Album rating will be influenced by album popularity. In other words, rate "
 "will decrease if you stop listening to an album."
-msgstr "Valoració de l'àlbum serà influenciada per la popularitat de l'àlbum. Dit d'una altre manera, la valoració disminueix si atureu la reproducció d'un àlbum."
+msgstr "Valoració de l'àlbum serà influenciada per la seva popularitat. Dit d'una altra manera, la valoració disminueix si atureu la reproducció d'un àlbum."
 
 #. (itstool) path: section/title
 #: C/index.page:43
@@ -117,7 +117,7 @@ msgstr "Descàrrega de caràtules"
 msgid ""
 "When hovering a cover, if mouse cursor changes to a pen, just click and "
 "select a new cover."
-msgstr "Quan passeu el ratolí per sobre una caràtula i el cursor canvia a un llapis, simplement cliqueu i seleccioneu una caràtula nova."
+msgstr "Quan passeu el ratolí per sobre una caràtula, si el cursor canvia a un llapis, simplement cliqueu i seleccioneu una caràtula nova."
 
 #. (itstool) path: section/p
 #: C/index.page:45
@@ -172,7 +172,7 @@ msgstr "v: Atura"
 #. (itstool) path: item/p
 #: C/index.page:59
 msgid "n: Next track"
-msgstr "n: Pista seguent"
+msgstr "n: Pista següent"
 
 #. (itstool) path: item/p
 #: C/index.page:60
@@ -182,7 +182,7 @@ msgstr "p: Pista anterior"
 #. (itstool) path: item/p
 #: C/index.page:61
 msgid "Control+n: Skip current album"
-msgstr "Control+n: Salta al àlbum següent "
+msgstr "Control+n: Salta l'àlbum actual"
 
 #. (itstool) path: item/p
 #: C/index.page:62
