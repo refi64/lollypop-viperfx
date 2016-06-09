@@ -281,13 +281,11 @@ class AlbumWidget:
             @param widget as Gtk.Widget
             @param event es Gdk.Event
         """
-        # We are going to check if event happend in a child
-        (x, y) = self._overlay.translate_coordinates(widget, 0, 0)
-        allocation = self._overlay.get_allocation()
-        if event.x < x or\
-           event.x >= x + allocation.width or\
-           event.y < y or\
-           event.y >= y + allocation.height:
+        allocation = widget.get_allocation()
+        if event.x <= 0 or\
+           event.x >= allocation.width or\
+           event.y <= 0 or\
+           event.y >= allocation.height:
             self._cover.set_opacity(1)
             # Remove enter notify timeout
             if self._timeout_id is not None:
@@ -398,15 +396,13 @@ class AlbumSimpleWidget(Gtk.FlowBoxChild, AlbumWidget):
         self._title_label.set_ellipsize(Pango.EllipsizeMode.END)
         self._title_label.set_property('halign', Gtk.Align.CENTER)
         self._title_label.set_markup("<b>"+escape(self._album.name)+"</b>")
-        self._title_label.set_property('has-tooltip', True)
-        self._title_label.connect('query-tooltip', self._on_query_tooltip)
         self._artist_label = Gtk.Label()
         self._artist_label.set_ellipsize(Pango.EllipsizeMode.END)
         self._artist_label.set_property('halign', Gtk.Align.CENTER)
         self._artist_label.set_text(", ".join(self._album.artists))
         self._artist_label.get_style_context().add_class('dim-label')
-        self._artist_label.set_property('has-tooltip', True)
-        self._artist_label.connect('query-tooltip', self._on_query_tooltip)
+        self._widget.set_property('has-tooltip', True)
+        self._widget.connect('query-tooltip', self._on_query_tooltip)
         self._widget.add(grid)
         self._overlay = Gtk.Overlay.new()
         self._overlay.set_property('halign', Gtk.Align.CENTER)

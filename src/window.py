@@ -10,7 +10,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-from gi.repository import Gtk, Gio, GLib
+from gi.repository import Gtk, Gio, Gdk, GLib
 
 from lollypop.container import Container
 from lollypop.define import Lp, NextContext, Shuffle, WindowSize
@@ -38,7 +38,6 @@ class Window(Gtk.ApplicationWindow, Container):
                                        application=app,
                                        title="Lollypop")
         self.connect('hide', self._on_hide)
-        self.connect('leave-notify-event', self._on_leave_notify)
         self._timeout_configure = None
         seek_action = Gio.SimpleAction.new('seek',
                                            GLib.VariantType.new('i'))
@@ -181,6 +180,16 @@ class Window(Gtk.ApplicationWindow, Container):
             toolbar as Toolbar
         """
         return self._toolbar
+
+    def do_event(self, event):
+        """
+            Update overlays as internal widget may not have received the signal
+            @param widget as Gtk.Widget
+            @param event as Gdk.event
+        """
+        if event.type == Gdk.EventType.FOCUS_CHANGE:
+            self.disable_overlays()
+        Gtk.ApplicationWindow.do_event(self, event)
 
 ############
 # Private  #
@@ -471,11 +480,3 @@ class Window(Gtk.ApplicationWindow, Container):
             # No idea why, maybe scanner using Gstpbutils before Gstreamer
             # initialisation is finished...
             GLib.timeout_add(2000, self.update_db)
-
-    def _on_leave_notify(self, widget, event):
-        """
-            Update overlays as internal widget may not have received the signal
-            @param widget as Gtk.Widget
-            @param event as Gdk.event
-        """
-        self.disable_overlays()
