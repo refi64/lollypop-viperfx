@@ -120,11 +120,13 @@ class Container:
             @param artist ids as [int]
             @param is_album as bool
         """
+        current = self._stack.get_visible_child()
         view = PlaylistsManageView(object_id, genre_ids, artist_ids, is_album)
         view.populate()
         view.show()
         self._stack.add(view)
         self._stack.set_visible_child(view)
+        current.disable_overlays()
 
     def show_playlist_editor(self, playlist_id):
         """
