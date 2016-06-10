@@ -38,6 +38,7 @@ class View(Gtk.Grid):
         self._new_ids = []
 
         self._scrolled = Gtk.ScrolledWindow()
+        self._scrolled.connect('leave-notify-event', self._on_leave_notify)
         self._scrolled.show()
         self._viewport = Gtk.Viewport()
         self._scrolled.add(self._viewport)
@@ -95,6 +96,19 @@ class View(Gtk.Grid):
             Return view children
         """
         return []
+
+    def _on_leave_notify(self, widget, event):
+        """
+            Update overlays as internal widget may not have received the signal
+            @param widget as Gtk.Widget
+            @param event as Gdk.event
+        """
+        allocation = widget.get_allocation()
+        if event.x <= 0 or\
+           event.x >= allocation.width or\
+           event.y <= 0 or\
+           event.y >= allocation.height:
+            self.disable_overlays()
 
     def _on_destroy(self, widget):
         """
