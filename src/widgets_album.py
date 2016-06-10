@@ -141,6 +141,33 @@ class AlbumWidget:
             Set overlay
             @param set as bool
         """
+        # Remove enter notify timeout
+        if self._timeout_id is not None:
+            GLib.source_remove(self._timeout_id)
+            self._timeout_id = None
+        self._show_overlay_func(set)
+
+#######################
+# PRIVATE             #
+#######################
+    def _set_play_all_image(self):
+        """
+            Set play all image based on current shuffle status
+        """
+        if Lp().settings.get_enum('shuffle') == Shuffle.NONE:
+            self._play_all_button.set_from_icon_name(
+                                        'media-playlist-consecutive-symbolic',
+                                        Gtk.IconSize.BUTTON)
+        else:
+            self._play_all_button.set_from_icon_name(
+                                        'media-playlist-shuffle-symbolic',
+                                        Gtk.IconSize.BUTTON)
+
+    def _show_overlay_func(self, set):
+        """
+            Set overlay
+            @param set as bool
+        """
         if self._lock_overlay or\
            self._show_overlay == set or\
            (set is True and Lp().player.locked):
@@ -190,22 +217,6 @@ class AlbumWidget:
                 self._action_button.set_opacity(0)
                 self._action_button.get_style_context().remove_class(
                                                            self._squared_class)
-
-#######################
-# PRIVATE             #
-#######################
-    def _set_play_all_image(self):
-        """
-            Set play all image based on current shuffle status
-        """
-        if Lp().settings.get_enum('shuffle') == Shuffle.NONE:
-            self._play_all_button.set_from_icon_name(
-                                        'media-playlist-consecutive-symbolic',
-                                        Gtk.IconSize.BUTTON)
-        else:
-            self._play_all_button.set_from_icon_name(
-                                        'media-playlist-shuffle-symbolic',
-                                        Gtk.IconSize.BUTTON)
 
     def _show_append(self, append):
         """
@@ -273,7 +284,7 @@ class AlbumWidget:
         """
         self._timeout_id = None
         if not self._show_overlay:
-            self.show_overlay(True)
+            self._show_overlay_func(True)
 
     def _on_leave_notify(self, widget, event):
         """
@@ -292,7 +303,7 @@ class AlbumWidget:
                 GLib.source_remove(self._timeout_id)
                 self._timeout_id = None
             if self._show_overlay:
-                self.show_overlay(False)
+                self._show_overlay_func(False)
 
     def _on_play_press_event(self, widget, event):
         """
@@ -456,7 +467,7 @@ class AlbumSimpleWidget(Gtk.FlowBoxChild, AlbumWidget):
         width = ArtSize.BIG + 12
         return (width, width)
 
-    def show_overlay(self, set):
+    def _show_overlay_func(self, set):
         """
             Set overlay
             @param set as bool
@@ -532,9 +543,9 @@ class AlbumSimpleWidget(Gtk.FlowBoxChild, AlbumWidget):
             self._overlay_grid.add(self._action_event)
             self._overlay_grid.add(self._artwork_event)
             self._overlay_grid.show_all()
-            AlbumWidget.show_overlay(self, True)
+            AlbumWidget._show_overlay_func(self, True)
         else:
-            AlbumWidget.show_overlay(self, False)
+            AlbumWidget._show_overlay_func(self, False)
             self._play_event.destroy()
             self._play_event = None
             self._play_button.destroy()
