@@ -312,9 +312,8 @@ class ScannerTagReader(TagReader):
                 else:
                     sortname = sortsplit[i].strip()
                 if artist_id is None:
-                    album_artist_id = Lp().artists.add(artist,
-                                                       sortname)
-                    new_artist_ids.append(album_artist_id)
+                    artist_id = Lp().artists.add(artist, sortname)
+                    new_artist_ids.append(artist_id)
                 else:
                     Lp().artists.set_sortname(artist_id, sortname)
                 i += 1
