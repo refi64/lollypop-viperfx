@@ -673,8 +673,6 @@ class AlbumDetailedWidget(Gtk.Bin, AlbumWidget):
         self._box = Gtk.Grid()
         self._box.set_column_homogeneous(True)
         self._box.set_property('valign', Gtk.Align.START)
-        self._box.set_sensitive(False)
-        self._box.set_opacity(0)
         self._box.show()
         builder.get_object('albuminfo').add(self._box)
 
@@ -859,8 +857,6 @@ class AlbumDetailedWidget(Gtk.Bin, AlbumWidget):
         if not tracks:
             if widget == self._tracks_right:
                 self.emit('populated')
-                self._box.set_sensitive(True)
-                self._box.set_opacity(1)
             else:
                 self._locked_widget_right = False
             return
