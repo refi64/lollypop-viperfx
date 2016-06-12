@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-06-08 10:51+0200\n"
+"POT-Creation-Date: 2016-06-13 14:30+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -349,52 +349,52 @@ msgstr ""
 msgid "Unknown"
 msgstr ""
 
-#: ../src/container.py:420
+#: ../src/container.py:422
 msgid "Popular albums"
 msgstr ""
 
-#: ../src/container.py:421
+#: ../src/container.py:423
 msgid "Recently added albums"
 msgstr ""
 
-#: ../src/container.py:422
+#: ../src/container.py:424
 msgid "Random albums"
 msgstr ""
 
-#: ../src/container.py:423 ../src/pop_menu.py:321 ../src/pop_menu.py:394
+#: ../src/container.py:425 ../src/pop_menu.py:321 ../src/pop_menu.py:394
 #: ../src/pop_menu.py:414
 msgid "Playlists"
 msgstr ""
 
-#: ../src/container.py:424
+#: ../src/container.py:426
 msgid "Radios"
 msgstr ""
 
-#: ../src/container.py:426
+#: ../src/container.py:428
 msgid "All artists"
 msgstr ""
 
-#: ../src/container.py:428 ../data/DeviceManagerWidget.ui.h:1
+#: ../src/container.py:430 ../data/DeviceManagerWidget.ui.h:1
 msgid "All albums"
 msgstr ""
 
-#: ../src/container.py:476
+#: ../src/container.py:478
 msgid "Compilations"
 msgstr ""
 
-#: ../src/container.py:500 ../src/playlists.py:231
+#: ../src/container.py:502 ../src/playlists.py:231
 msgid "Popular tracks"
 msgstr ""
 
-#: ../src/container.py:501 ../src/playlists.py:233
+#: ../src/container.py:503 ../src/playlists.py:233
 msgid "Recently played"
 msgstr ""
 
-#: ../src/container.py:502 ../src/playlists.py:235
+#: ../src/container.py:504 ../src/playlists.py:235
 msgid "Never played"
 msgstr ""
 
-#: ../src/container.py:503 ../src/playlists.py:237
+#: ../src/container.py:505 ../src/playlists.py:237
 msgid "Random tracks"
 msgstr ""
 
@@ -403,7 +403,7 @@ msgid "Pause"
 msgstr ""
 
 #: ../src/controllers.py:86 ../src/controllers.py:114 ../src/pop_tunein.py:167
-#: ../src/widgets_album.py:474 ../src/widgets_radio.py:168
+#: ../src/widgets_album.py:483 ../src/widgets_radio.py:168
 #: ../data/AlbumDetailedWidget.ui.h:1 ../data/ArtistView.ui.h:2
 #: ../data/ToolbarPlayback.ui.h:2
 msgid "Play"
@@ -554,8 +554,12 @@ msgstr ""
 msgid "The the"
 msgstr ""
 
-#: ../src/view_artist.py:160 ../src/widgets_album.py:221
+#: ../src/view_artist.py:160 ../src/widgets_album.py:232
 msgid "Remove"
+msgstr ""
+
+#: ../src/view_artist_albums.py:58 ../src/view_playlists.py:63
+msgid "Go top"
 msgstr ""
 
 #: ../src/view_device.py:34
@@ -577,34 +581,34 @@ msgstr ""
 msgid "Cancel synchronization"
 msgstr ""
 
-#: ../src/widgets_album.py:217
+#: ../src/widgets_album.py:228
 msgid "Append"
 msgstr ""
 
-#: ../src/widgets_album.py:485
+#: ../src/widgets_album.py:494
 msgid "Play albums"
 msgstr ""
 
-#: ../src/widgets_album.py:495 ../data/AlbumDetailedWidget.ui.h:2
+#: ../src/widgets_album.py:504 ../data/AlbumDetailedWidget.ui.h:2
 msgid "Change artwork"
 msgstr ""
 
-#: ../src/widgets_album.py:658
+#: ../src/widgets_album.py:667
 #, python-format
 msgid "%s h  %s m"
 msgstr ""
 
-#: ../src/widgets_album.py:660
+#: ../src/widgets_album.py:669
 #, python-format
 msgid "%s h"
 msgstr ""
 
-#: ../src/widgets_album.py:662
+#: ../src/widgets_album.py:671
 #, python-format
 msgid "%s m"
 msgstr ""
 
-#: ../src/widgets_album.py:919
+#: ../src/widgets_album.py:924
 #, python-format
 msgid "Disc %s"
 msgstr ""
@@ -621,17 +625,17 @@ msgstr ""
 msgid "No free space available on device"
 msgstr ""
 
-#: ../src/widgets_playlist.py:491 ../src/widgets_playlist.py:494
+#: ../src/widgets_playlist.py:492 ../src/widgets_playlist.py:495
 msgid "New playlist "
 msgstr ""
 
 #. Need a copy, segfault on EOS 3.1
-#: ../src/widgets_playlist.py:550 ../src/widgets_playlist.py:801
+#: ../src/widgets_playlist.py:551 ../src/widgets_playlist.py:802
 #, python-format
 msgid "Remove \"%s\"?"
 msgstr ""
 
-#: ../src/widgets_playlist.py:809
+#: ../src/widgets_playlist.py:810
 msgid "Remove these tracks?"
 msgstr ""
 
