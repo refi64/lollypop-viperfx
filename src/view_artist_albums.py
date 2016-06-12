@@ -12,6 +12,8 @@
 
 from gi.repository import Gtk, GLib, GObject
 
+from gettext import gettext as _
+
 from lollypop.view import LazyLoadingView, View
 from lollypop.view_container import ViewContainer
 from lollypop.define import Lp, Type, ArtSize
@@ -47,6 +49,14 @@ class ArtistAlbumsView(LazyLoadingView):
         self._spinner.set_property('halign', Gtk.Align.CENTER)
         self._spinner.set_property('valign', Gtk.Align.CENTER)
         self._spinner.show()
+
+        self._up_btn = Gtk.Button.new_from_icon_name('go-top-symbolic',
+                                                     Gtk.IconSize.MENU)
+        self._up_btn.set_property('halign', Gtk.Align.CENTER)
+        self._up_btn.set_property('valign', Gtk.Align.END)
+        self._up_btn.get_style_context().add_class('up-btn')
+        self._up_btn.set_tooltip_text(_("Go top"))
+        self._up_btn.connect('clicked', self._on_up_btn_clicked)
 
         self._albumbox = Gtk.Grid()
         self._albumbox.set_row_spacing(20)
@@ -157,7 +167,19 @@ class ArtistAlbumsView(LazyLoadingView):
             self._spinner.stop()
             self._spinner.hide()
             self.emit('populated')
+            self._albumbox.add(self._up_btn)
             GLib.idle_add(self.lazy_loading)
+
+    def _on_value_changed(self, adj):
+        """
+            Show/Hide go top button
+            @param adj as Gtk.Adjustment
+        """
+        LazyLoadingView._on_value_changed(self, adj)
+        if adj.get_value() + adj.get_page_size() == adj.get_upper():
+            self._up_btn.show()
+        else:
+            self._up_btn.hide()
 
     def _on_populated(self, widget, widgets, scroll_value):
         """

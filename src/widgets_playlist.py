@@ -22,7 +22,7 @@ from lollypop.widgets_track import TracksWidget, PlaylistRow
 from lollypop.objects import Track
 
 
-class PlaylistsWidget(Gtk.Bin):
+class PlaylistsWidget(Gtk.Grid):
     """
         Show playlist tracks/albums
     """
@@ -32,7 +32,8 @@ class PlaylistsWidget(Gtk.Bin):
             Init playlist Widget
             @param playlist ids as [int]
         """
-        Gtk.Bin.__init__(self)
+        Gtk.Grid.__init__(self)
+        self.set_orientation(Gtk.Orientation.VERTICAL)
         self._playlist_ids = playlist_ids
         self._tracks1 = []
         self._tracks2 = []

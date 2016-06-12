@@ -12,6 +12,7 @@
 
 from gi.repository import Gtk
 
+from gettext import gettext as _
 from cgi import escape
 
 from lollypop.view import View
@@ -54,11 +55,22 @@ class PlaylistsView(View):
                 not editable:
             self._edit_button.hide()
 
+        self._up_btn = Gtk.Button.new_from_icon_name('go-top-symbolic',
+                                                     Gtk.IconSize.MENU)
+        self._up_btn.set_property('halign', Gtk.Align.CENTER)
+        self._up_btn.set_property('valign', Gtk.Align.END)
+        self._up_btn.get_style_context().add_class('up-btn')
+        self._up_btn.set_tooltip_text(_("Go top"))
+        self._up_btn.connect('clicked', self._on_up_btn_clicked)
+
         self._playlists_widget = PlaylistsWidget(playlist_ids)
+        self._playlists_widget.add(self._up_btn)
         self._playlists_widget.show()
         self.add(builder.get_object('widget'))
         self._viewport.add(self._playlists_widget)
         self._scrolled.set_property('expand', True)
+        self._scrolled.get_vadjustment().connect('value-changed',
+                                                 self._on_value_changed)
         self.add(self._scrolled)
 
     def populate(self, tracks):
@@ -110,6 +122,16 @@ class PlaylistsView(View):
             self._jump_button.set_sensitive(False)
             self._jump_button.set_tooltip_text('')
 
+    def _on_value_changed(self, adj):
+        """
+            Show/hide go up button
+            @param adj as Gtk.Adjustment
+        """
+        if adj.get_value() + adj.get_page_size() == adj.get_upper():
+            self._up_btn.show()
+        else:
+            self._up_btn.hide()
+
     def _on_playlist_add(self, manager, playlist_id, track_id):
         """
             Update tracks widgets
@@ -129,13 +151,6 @@ class PlaylistsView(View):
         """
         if playlist_id in self._playlist_ids:
             self._playlists_widget.remove(track_id)
-
-    def _on_populated(self, widget):
-        """
-            Show current track
-            @param widget as LazyLoadingView
-        """
-        self._update_jump_button()
 
     def _on_destroy(self, widget):
         """
