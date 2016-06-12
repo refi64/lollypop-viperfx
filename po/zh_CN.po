@@ -3,7 +3,7 @@
 # This file is distributed under the same license as the PACKAGE package.
 # 
 # Translators:
-# mabier <ma_120420@msn.com>, 2015
+# mabier <ma_120420@msn.com>, 2015-2016
 # Mingcong Bai <jeffbai@aosc.xyz>, 2016
 # orange <orau9e@outlook.com>, 2015
 # Mingcong Bai <jeffbai@aosc.xyz>, 2016
@@ -12,8 +12,8 @@ msgstr ""
 "Project-Id-Version: lollypop\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2016-06-08 10:51+0200\n"
-"PO-Revision-Date: 2016-06-08 08:53+0000\n"
-"Last-Translator: Cédric Bellegarde <web@adishatz.org>\n"
+"PO-Revision-Date: 2016-06-11 15:17+0000\n"
+"Last-Translator: mabier <ma_120420@msn.com>\n"
 "Language-Team: Chinese (China) (http://www.transifex.com/gnumdk/lollypop/language/zh_CN/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -47,7 +47,7 @@ msgstr "迷你播放器位置"
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:7
 msgid "Save artwork in tags"
-msgstr ""
+msgstr "在标签中存储图片"
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:8
 msgid "Repeat by default"
@@ -128,7 +128,7 @@ msgstr "转换为 MP3 (MTP)"
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:27
 msgid "Normalize MP3(MTP)"
-msgstr ""
+msgstr "调制MP3(MTP)"
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:28 ../data/SettingsDialog.ui.h:16
 msgid "Auto update music"
@@ -140,7 +140,7 @@ msgstr "查看分类列表"
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:30 ../data/SettingsDialog.ui.h:8
 msgid "Show artist artwork"
-msgstr ""
+msgstr "显示艺术家图片"
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:31
 msgid "Use dark gtk theme"
@@ -192,7 +192,7 @@ msgstr "随机模式"
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:43 ../data/SettingsDialog.ui.h:9
 msgid "Order albums by"
-msgstr ""
+msgstr "专辑分类方式"
 
 #: ../data/lollypop.desktop.in.h:1 ../data/lollypop.appdata.xml.in.h:1
 msgid "Lollypop"
@@ -327,7 +327,7 @@ msgstr "棒棒糖:您需要安装yelp"
 
 #: ../src/art_widgets.py:58
 msgid "Select artwork"
-msgstr ""
+msgstr "选择图片"
 
 #: ../src/art_widgets.py:163
 msgid "No cover found..."
@@ -335,7 +335,7 @@ msgstr "未发现封面"
 
 #: ../src/art_widgets.py:240
 msgid "Reset artwork?"
-msgstr ""
+msgstr "重置图片吗？"
 
 #: ../src/collectionscanner.py:69
 msgid "Your music is updating"
@@ -531,7 +531,7 @@ msgstr "首选项"
 
 #: ../src/settings.py:118
 msgid "You need to install kid3-cli"
-msgstr ""
+msgstr "您需要安装kid3-cli"
 
 #: ../src/settings.py:180
 msgid "Populars"
@@ -567,7 +567,7 @@ msgstr "请解锁您的设备"
 msgid ""
 "Lollypop sync changed due to limitations in some devices.\n"
 "Please remove Music/lollypop folder on your device..."
-msgstr ""
+msgstr "由于某些设备的限制，Lollypop同步已被更改。\n请删除您设备上的音乐/lollypop文件夹..."
 
 #: ../src/view_device.py:113 ../src/view_device.py:197
 #, python-format
@@ -638,7 +638,7 @@ msgstr "删除这些曲目？"
 
 #: ../src/widgets_radio.py:184
 msgid "Modify radio"
-msgstr ""
+msgstr "更改广播电台"
 
 #. Translators: Put here words added by wikipedia in band search
 #. Ex: Muse_(band), Peaches(musician)
@@ -649,7 +649,7 @@ msgstr "音乐家；乐队"
 
 #: ../data/PlaybackMenu.ui.h:1
 msgid "Continuous playback"
-msgstr ""
+msgstr "连续播放"
 
 #: ../data/PlaybackMenu.ui.h:2
 msgid "Stop after this track"
@@ -679,7 +679,7 @@ msgstr "塞居克.贝勒伽德 <cedric.bellegarde@adishatz.org>"
 
 #: ../data/AboutDialog.ui.h:5
 msgid "Reset database"
-msgstr ""
+msgstr "重置数据库"
 
 #: ../data/Appmenu.ui.h:1
 msgid "_Update music"
@@ -695,7 +695,7 @@ msgstr "_偏好"
 
 #: ../data/Appmenu.ui.h:4
 msgid "_Keyboard Shortcuts"
-msgstr ""
+msgstr "_键盘快捷键"
 
 #: ../data/Appmenu.ui.h:5
 msgid "_Help"
@@ -727,21 +727,21 @@ msgstr "维基百科"
 
 #: ../data/ArtistInfo.ui.h:4
 msgid "Lyrics"
-msgstr ""
+msgstr "歌词"
 
 #: ../data/ArtistInfo.ui.h:6
 msgid ""
 "Reload information\n"
 "Long press to activate auto reload"
-msgstr ""
+msgstr "重新载入信息\n长按以便启动自动重载选项"
 
 #: ../data/ArtistView.ui.h:1
 msgid "Photo"
-msgstr ""
+msgstr "照片"
 
 #: ../data/ArtworkSearch.ui.h:1 ../data/RadioPopover.ui.h:2
 msgid "Select a local file"
-msgstr ""
+msgstr "选择一个本地文件"
 
 #: ../data/ArtworkSearch.ui.h:2 ../data/PlaylistEditWidget.ui.h:1
 #: ../data/PlaylistsManagerWidget.ui.h:1
@@ -758,7 +758,7 @@ msgstr "转换为 MP3"
 
 #: ../data/DeviceManagerWidget.ui.h:3
 msgid "Normalize MP3"
-msgstr ""
+msgstr "调制MP3"
 
 #: ../data/PlaylistsManagerView.ui.h:1
 msgid "New playlist"
@@ -826,19 +826,19 @@ msgstr "查看分类"
 
 #: ../data/SettingsDialog.ui.h:10
 msgid "Artist"
-msgstr ""
+msgstr "艺术家"
 
 #: ../data/SettingsDialog.ui.h:11
 msgid "Name"
-msgstr ""
+msgstr "姓名"
 
 #: ../data/SettingsDialog.ui.h:12
 msgid "Year"
-msgstr ""
+msgstr "年份"
 
 #: ../data/SettingsDialog.ui.h:13
 msgid "Popularity"
-msgstr ""
+msgstr "流行度"
 
 #: ../data/SettingsDialog.ui.h:14
 msgid "Configure lollypop appearance"
@@ -862,7 +862,7 @@ msgstr "默认不循环播放"
 
 #: ../data/SettingsDialog.ui.h:22
 msgid "Save artwork in files"
-msgstr ""
+msgstr "将图片存入文档"
 
 #: ../data/SettingsDialog.ui.h:23
 msgid "Configure lollypop behaviour"
@@ -926,11 +926,11 @@ msgstr "随机"
 
 #: ../data/TuneinPopover.ui.h:1
 msgid "Go back"
-msgstr ""
+msgstr "返回"
 
 #: ../data/TuneinPopover.ui.h:2
 msgid "Go home"
-msgstr ""
+msgstr "回到主页"
 
 #: ../data/Unicode.ui.h:1
 msgid "Error"
@@ -945,7 +945,7 @@ msgstr "Lollypop无法识别万国码地域设置。\n请调配您的系统。"
 #: ../data/Shortcuts.ui.h:1
 msgctxt "shortcut window"
 msgid "General"
-msgstr ""
+msgstr "通用"
 
 #: ../data/Shortcuts.ui.h:2
 msgctxt "shortcut window"
@@ -965,22 +965,22 @@ msgstr "派对模式"
 #: ../data/Shortcuts.ui.h:5
 msgctxt "shortcut window"
 msgid "Mini Player"
-msgstr ""
+msgstr "迷你播放器"
 
 #: ../data/Shortcuts.ui.h:6
 msgctxt "shortcut window"
 msgid "Fullscreen"
-msgstr ""
+msgstr "全屏"
 
 #: ../data/Shortcuts.ui.h:7
 msgctxt "shortcut window"
 msgid "Love current track"
-msgstr ""
+msgstr "喜欢当前曲目"
 
 #: ../data/Shortcuts.ui.h:8
 msgctxt "shortcut window"
 msgid "Lock playback"
-msgstr ""
+msgstr "锁定播放"
 
 #: ../data/Shortcuts.ui.h:9
 msgctxt "shortcut window"
@@ -1000,7 +1000,7 @@ msgstr "暂停"
 #: ../data/Shortcuts.ui.h:12
 msgctxt "shortcut window"
 msgid "Stop"
-msgstr ""
+msgstr "停止"
 
 #: ../data/Shortcuts.ui.h:13
 msgctxt "shortcut window"
@@ -1010,24 +1010,24 @@ msgstr "下一首曲目"
 #: ../data/Shortcuts.ui.h:14
 msgctxt "shortcut window"
 msgid "Previous track"
-msgstr ""
+msgstr "上一首曲目"
 
 #: ../data/Shortcuts.ui.h:15
 msgctxt "shortcut window"
 msgid "Skip current album"
-msgstr ""
+msgstr "跳过当前专辑"
 
 #: ../data/Shortcuts.ui.h:16
 msgctxt "shortcut window"
 msgid "Repeat track"
-msgstr ""
+msgstr "重复曲目"
 
 #: ../data/Shortcuts.ui.h:17
 msgctxt "shortcut window"
 msgid "Skip backward in track"
-msgstr ""
+msgstr "在曲目中逆向跳跃"
 
 #: ../data/Shortcuts.ui.h:18
 msgctxt "shortcut window"
 msgid "Skip forward in track"
-msgstr ""
+msgstr "在曲目中顺向跳跃"

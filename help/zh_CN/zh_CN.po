@@ -1,13 +1,13 @@
 # 
 # Translators:
-# mabier <ma_120420@msn.com>, 2015
+# mabier <ma_120420@msn.com>, 2015-2016
 # orange <orau9e@outlook.com>, 2015
 msgid ""
 msgstr ""
 "Project-Id-Version: lollypop\n"
 "POT-Creation-Date: 2016-05-09 15:53+0200\n"
-"PO-Revision-Date: 2016-05-09 13:54+0000\n"
-"Last-Translator: Cédric Bellegarde <web@adishatz.org>\n"
+"PO-Revision-Date: 2016-06-11 15:18+0000\n"
+"Last-Translator: mabier <ma_120420@msn.com>\n"
 "Language-Team: Chinese (China) (http://www.transifex.com/gnumdk/lollypop/language/zh_CN/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -148,12 +148,12 @@ msgstr "Control+p: 派对模式"
 #. (itstool) path: item/p
 #: C/index.page:54
 msgid "F7 or F11: Fullscreen"
-msgstr ""
+msgstr "F7或F11：全屏"
 
 #. (itstool) path: item/p
 #: C/index.page:55
 msgid "Control+m: Mini player"
-msgstr ""
+msgstr "Control+m：迷你播放器"
 
 #. (itstool) path: item/p
 #: C/index.page:56

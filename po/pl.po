@@ -14,8 +14,8 @@ msgstr ""
 "Project-Id-Version: lollypop\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2016-06-08 10:51+0200\n"
-"PO-Revision-Date: 2016-06-08 08:53+0000\n"
-"Last-Translator: Cédric Bellegarde <web@adishatz.org>\n"
+"PO-Revision-Date: 2016-06-12 17:20+0000\n"
+"Last-Translator: Piotr Sokół <psokol.l10n@gmail.com>\n"
 "Language-Team: Polish (http://www.transifex.com/gnumdk/lollypop/language/pl/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -245,7 +245,7 @@ msgstr "przeglądanie gatunków/wykonawców/okładek albumów,"
 #: ../data/lollypop.appdata.xml.in.h:8 ../src/playlists.py:239
 #: ../data/ArtistInfo.ui.h:5 ../data/ToolbarEnd.ui.h:7
 msgid "Search"
-msgstr "Wyszukiwanie"
+msgstr "Wyszukuje muzykę"
 
 #: ../data/lollypop.appdata.xml.in.h:9 ../src/pop_menu.py:391
 #: ../src/pop_menu.py:412 ../src/toolbar_end.py:285
@@ -480,11 +480,11 @@ msgstr "Dodaj do kolejki"
 
 #: ../src/pop_menu.py:107
 msgid "Next tracks"
-msgstr "Jako następne"
+msgstr "Odtwórz jako następne"
 
 #: ../src/pop_menu.py:109 ../data/NextPopover.ui.h:1
 msgid "Next track"
-msgstr "Jako następny"
+msgstr "Odtwórz jako następny"
 
 #: ../src/pop_menu.py:113 ../src/widgets_indicator.py:88
 msgid "Remove from queue"
@@ -657,7 +657,7 @@ msgstr "muzyk;zespół"
 
 #: ../data/PlaybackMenu.ui.h:1
 msgid "Continuous playback"
-msgstr ""
+msgstr "Nieprzerwane odtwarzanie"
 
 #: ../data/PlaybackMenu.ui.h:2
 msgid "Stop after this track"
@@ -958,12 +958,12 @@ msgstr "Ogólne"
 #: ../data/Shortcuts.ui.h:2
 msgctxt "shortcut window"
 msgid "Settings"
-msgstr "Preferencje"
+msgstr "Wyświetlenie preferencji programu"
 
 #: ../data/Shortcuts.ui.h:3
 msgctxt "shortcut window"
 msgid "Search"
-msgstr "Wyszukiwanie"
+msgstr "Wyszukanie muzyki"
 
 #: ../data/Shortcuts.ui.h:4
 msgctxt "shortcut window"
@@ -973,7 +973,7 @@ msgstr "Tryb imprezowy"
 #: ../data/Shortcuts.ui.h:5
 msgctxt "shortcut window"
 msgid "Mini Player"
-msgstr "Mały odtwarzacz"
+msgstr "Przełączenie trybu małego odtwarzacza"
 
 #: ../data/Shortcuts.ui.h:6
 msgctxt "shortcut window"
@@ -988,7 +988,7 @@ msgstr "Polubienie bieżącego utworu"
 #: ../data/Shortcuts.ui.h:8
 msgctxt "shortcut window"
 msgid "Lock playback"
-msgstr ""
+msgstr "Przełączenie blokady odtwarzania"
 
 #: ../data/Shortcuts.ui.h:9
 msgctxt "shortcut window"
@@ -1013,7 +1013,7 @@ msgstr "Zatrzymanie odtwarzania"
 #: ../data/Shortcuts.ui.h:13
 msgctxt "shortcut window"
 msgid "Next track"
-msgstr "Jako następny"
+msgstr "Dodanie do kolejki odtwarzania"
 
 #: ../data/Shortcuts.ui.h:14
 msgctxt "shortcut window"
