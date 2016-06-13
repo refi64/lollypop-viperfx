@@ -57,6 +57,7 @@ class ArtistView(ArtistAlbumsView):
         self._empty = Gtk.Grid()
         self._empty.show()
         self._albumbox.add(self._empty)
+        self._albumbox.set_row_spacing(20)
 
         self._set_artwork()
         self._set_add_icon()

@@ -64,13 +64,11 @@ class PlaylistsView(View):
         self._up_btn.connect('clicked', self._on_up_btn_clicked)
 
         self._playlists_widget = PlaylistsWidget(playlist_ids)
-        self._playlists_widget.add(self._up_btn)
+        self._playlists_widget.connect('populated', self._on_populated)
         self._playlists_widget.show()
         self.add(builder.get_object('widget'))
         self._viewport.add(self._playlists_widget)
         self._scrolled.set_property('expand', True)
-        self._scrolled.get_vadjustment().connect('value-changed',
-                                                 self._on_value_changed)
         self.add(self._scrolled)
 
     def populate(self, tracks):
@@ -122,15 +120,14 @@ class PlaylistsView(View):
             self._jump_button.set_sensitive(False)
             self._jump_button.set_tooltip_text('')
 
-    def _on_value_changed(self, adj):
+    def _on_populated(self, widget):
         """
-            Show/hide go up button
-            @param adj as Gtk.Adjustment
+            Show go top button if needed
         """
-        if adj.get_value() + adj.get_page_size() == adj.get_upper():
+        if widget.get_allocation().height >\
+                self._viewport.get_allocation().height:
+            self._playlists_widget.add(self._up_btn)
             self._up_btn.show()
-        else:
-            self._up_btn.hide()
 
     def _on_playlist_add(self, manager, playlist_id, track_id):
         """

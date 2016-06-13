@@ -59,7 +59,7 @@ class ArtistAlbumsView(LazyLoadingView):
         self._up_btn.connect('clicked', self._on_up_btn_clicked)
 
         self._albumbox = Gtk.Grid()
-        self._albumbox.set_row_spacing(20)
+        self._albumbox.set_row_spacing(5)
         self._albumbox.set_property("orientation", Gtk.Orientation.VERTICAL)
         self._albumbox.show()
         self._viewport.add(self._albumbox)
@@ -108,7 +108,7 @@ class ArtistAlbumsView(LazyLoadingView):
             @return height as int
         """
         height = 0
-        for child in self._albumbox.get_children():
+        for child in self._get_children():
             height += child.requested_height
         return height
 
@@ -167,19 +167,10 @@ class ArtistAlbumsView(LazyLoadingView):
             self._spinner.stop()
             self._spinner.hide()
             self.emit('populated')
-            self._albumbox.add(self._up_btn)
+            if self.get_allocation().height < self.requested_height:
+                self._albumbox.add(self._up_btn)
+                self._up_btn.show()
             GLib.idle_add(self.lazy_loading)
-
-    def _on_value_changed(self, adj):
-        """
-            Show/Hide go top button
-            @param adj as Gtk.Adjustment
-        """
-        LazyLoadingView._on_value_changed(self, adj)
-        if adj.get_value() + adj.get_page_size() == adj.get_upper():
-            self._up_btn.show()
-        else:
-            self._up_btn.hide()
 
     def _on_populated(self, widget, widgets, scroll_value):
         """
