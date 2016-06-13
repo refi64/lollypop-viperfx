@@ -19,6 +19,7 @@ from lollypop.view import View
 from lollypop.widgets_playlist import PlaylistsWidget, PlaylistEditWidget
 from lollypop.widgets_playlist import PlaylistsManagerWidget
 from lollypop.define import Lp, Type
+from lollypop.objects import Track
 
 
 class PlaylistsView(View):
@@ -76,9 +77,34 @@ class PlaylistsView(View):
             Populate view with tracks from playlist
             Thread safe
         """
+        # We are looking for middle
+        # Ponderate with this:
+        # Tracks with cover == 2
+        # Tracks without cover == 1
+        prev_album_id = None
+        heights = {}
+        total = 0
+        idx = 0
+        for track_id in tracks:
+            track = Track(track_id)
+            if track.album_id != prev_album_id:
+                heights[idx] = 2
+                total += 2
+            else:
+                heights[idx] = 1
+                total += 1
+            prev_album_id = track.album_id
+            idx += 1
+        half = int(total / 2 + 0.5)
+        mid_tracks = 1
+        count = 0
+        for height in heights.values():
+            count += height
+            if count > half:
+                break
+            mid_tracks += 1
         self._tracks = tracks
         self._update_jump_button()
-        mid_tracks = int(0.5+len(tracks)/2)
         self._playlists_widget.populate_list_left(tracks[:mid_tracks],
                                                   1)
         self._playlists_widget.populate_list_right(tracks[mid_tracks:],
