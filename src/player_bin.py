@@ -150,6 +150,8 @@ class BinPlayer(BasePlayer):
             Seek current track to position
             @param position as seconds
         """
+        if self.locked:
+            return
         # Seems gstreamer doesn't like seeking to end, sometimes
         # doesn't go to next track
         if position >= self.current_track.duration:
