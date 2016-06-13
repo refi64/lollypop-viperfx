@@ -15,7 +15,8 @@ from gi.repository import Gtk, GLib, Gdk, GObject, Pango
 from cgi import escape
 from gettext import gettext as _
 
-from lollypop.define import Lp, ArtSize, NextContext, WindowSize, Shuffle
+from lollypop.define import Lp, ArtSize, NextContext
+from lollypop.define import WindowSize, Shuffle, Loading
 from lollypop.widgets_track import TracksWidget, TrackRow
 from lollypop.objects import Track
 from lollypop.widgets_rating import RatingWidget
@@ -36,7 +37,7 @@ class AlbumWidget:
         self._album = Album(album_id, genre_ids)
         self._filter_ids = []
         self._selected = None
-        self._stop = False
+        self._loading = Loading.NONE
         self._cover = None
         self._widget = None
         self._play_all_button = None
@@ -112,7 +113,7 @@ class AlbumWidget:
         """
             Stop populating
         """
-        self._stop = True
+        self._loading = Loading.STOP
 
     def get_id(self):
         """
@@ -610,7 +611,6 @@ class AlbumDetailedWidget(Gtk.Bin, AlbumWidget):
         # Cover + rating + spacing
         self._height = ArtSize.BIG + 26
         self._orientation = None
-        self._stop = False
         self._child_height = TrackRow.get_best_height(self)
         # Header + separator + spacing + margin
         self._requested_height = self._child_height + 6
@@ -762,7 +762,6 @@ class AlbumDetailedWidget(Gtk.Bin, AlbumWidget):
            self._locked_widget_right:
             GLib.timeout_add(100, self.populate_list_right, tracks, disc, pos)
         else:
-            self._locked_widget_right = False
             GLib.idle_add(self._add_tracks,
                           tracks,
                           self._tracks_right,
@@ -851,14 +850,17 @@ class AlbumDetailedWidget(Gtk.Bin, AlbumWidget):
             @param disc number as int
             @param i as int
         """
-        if self._stop:
-            self._stop = False
+        if self._loading == Loading.STOP:
+            self._loading = Loading.NONE
             return
         if not tracks:
             if widget == self._tracks_right:
+                self._loading |= Loading.RIGHT
+            elif widget == self._tracks_left:
+                self._loading |= Loading.LEFT
+            if self._loading == Loading.ALL:
                 self.emit('populated')
-            else:
-                self._locked_widget_right = False
+            self._locked_widget_right = False
             return
 
         track = tracks.pop(0)

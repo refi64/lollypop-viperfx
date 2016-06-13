@@ -16,7 +16,7 @@ from threading import Thread
 from cgi import escape
 from gettext import gettext as _
 
-from lollypop.define import Lp, Type, WindowSize
+from lollypop.define import Lp, Type, WindowSize, Loading
 from lollypop.cellrenderer import CellRendererAlbum
 from lollypop.widgets_track import TracksWidget, PlaylistRow
 from lollypop.objects import Track
@@ -39,13 +39,13 @@ class PlaylistsWidget(Gtk.Grid):
         self.set_row_spacing(5)
         self.set_orientation(Gtk.Orientation.VERTICAL)
         self._playlist_ids = playlist_ids
-        self._tracks1 = []
-        self._tracks2 = []
+        self._tracks_left = []
+        self._tracks_right = []
         self._width = None
         self._orientation = None
-        self._stop = False
+        self._loading = Loading.NONE
         # Used to block widget2 populate while showing one column
-        self._locked_widget2 = True
+        self._locked_widget_right = True
 
         self._box = Gtk.Grid()
         self._box.set_column_homogeneous(True)
@@ -111,7 +111,7 @@ class PlaylistsWidget(Gtk.Grid):
         """
         # We reset width here to allow size allocation code to run
         self._width = None
-        self._tracks1 = list(tracks)
+        self._tracks_left = list(tracks)
         GLib.idle_add(self._add_tracks,
                       tracks,
                       self._tracks_widget_left,
@@ -124,10 +124,10 @@ class PlaylistsWidget(Gtk.Grid):
             @param track position as int
             @thread safe
         """
-        self._tracks2 = list(tracks)
+        self._tracks_right = list(tracks)
         # If we are showing only one column, wait for widget1
         if self._orientation == Gtk.Orientation.VERTICAL and\
-           self._locked_widget2:
+           self._locked_widget_right:
             GLib.timeout_add(100, self.populate_list_right, tracks, pos)
         else:
             # We reset width here to allow size allocation code to run
@@ -148,7 +148,7 @@ class PlaylistsWidget(Gtk.Grid):
         """
             Stop loading
         """
-        self._stop = True
+        self._loading = Loading.STOP
 
     def append(self, track_id):
         """
@@ -162,7 +162,7 @@ class PlaylistsWidget(Gtk.Grid):
         self._update_position()
         self._update_headers()
         self._tracks_widget_left.update_indexes(1)
-        self._tracks_widget_right.update_indexes(len(self._tracks1) + 1)
+        self._tracks_widget_right.update_indexes(len(self._tracks_left) + 1)
 
     def remove(self, track_id):
         """
@@ -185,7 +185,8 @@ class PlaylistsWidget(Gtk.Grid):
             self._update_position()
             self._update_headers()
             self._tracks_widget_left.update_indexes(1)
-            self._tracks_widget_right.update_indexes(len(self._tracks1) + 1)
+            self._tracks_widget_right.update_indexes(
+                                                    len(self._tracks_left) + 1)
 
 #######################
 # PRIVATE             #
@@ -199,12 +200,17 @@ class PlaylistsWidget(Gtk.Grid):
             @param pos as int
             @param previous album id as int
         """
-        if not tracks or self._stop:
+        if self._loading == Loading.STOP:
+            self._loading = Loading.NONE
+            return
+        if not tracks:
             if widget == self._tracks_widget_right:
-                self._stop = False
+                self._loading |= Loading.RIGHT
+            elif widget == self._tracks_widget_left:
+                self._loading |= Loading.LEFT
+            if self._loading == Loading.ALL:
                 self.emit('populated')
-            else:
-                self._locked_widget2 = False
+            self._locked_widget_right = False
             return
 
         track = Track(tracks.pop(0))
@@ -221,32 +227,32 @@ class PlaylistsWidget(Gtk.Grid):
             Update tracks based on current widget
         """
         # Recalculate tracks
-        self._tracks1 = []
-        self._tracks2 = []
+        self._tracks_left = []
+        self._tracks_right = []
         for child in self._tracks_widget_left.get_children():
-            self._tracks1.append(child.get_id())
+            self._tracks_left.append(child.get_id())
         for child in self._tracks_widget_right.get_children():
-            self._tracks2.append(child.get_id())
+            self._tracks_right.append(child.get_id())
 
     def _update_position(self):
         """
             Update widget position
         """
-        len_tracks1 = len(self._tracks1)
-        len_tracks2 = len(self._tracks2)
+        len_tracks1 = len(self._tracks_left)
+        len_tracks2 = len(self._tracks_right)
         # Take first track from tracks2 and put it at the end of tracks1
         if len_tracks2 > len_tracks1:
-            src = self._tracks2[0]
-            if self._tracks1:
-                dst = self._tracks1[-1]
+            src = self._tracks_right[0]
+            if self._tracks_left:
+                dst = self._tracks_left[-1]
             else:
                 dst = -1
             self._move_track(dst, src, False)
         # Take last track of tracks1 and put it at the bottom of tracks2
         elif len_tracks1 - 1 > len_tracks2:
-            src = self._tracks1[-1]
-            if self._tracks2:
-                dst = self._tracks2[0]
+            src = self._tracks_left[-1]
+            if self._tracks_right:
+                dst = self._tracks_right[0]
             else:
                 dst = -1
             self._move_track(dst, src, True)
@@ -259,8 +265,8 @@ class PlaylistsWidget(Gtk.Grid):
         self._tracks_widget_left.update_headers()
         prev_album_id = None
         if self._orientation == Gtk.Orientation.VERTICAL:
-            if self._tracks1:
-                prev_album_id = Track(self._tracks1[-1]).album.id
+            if self._tracks_left:
+                prev_album_id = Track(self._tracks_left[-1]).album.id
         self._tracks_widget_right.update_headers(prev_album_id)
 
     def _move_track(self, dst, src, up):
@@ -272,20 +278,20 @@ class PlaylistsWidget(Gtk.Grid):
             @return (dst_widget as TracksWidget,
                      src index as int, dst index as int)
         """
-        tracks1_len = len(self._tracks1)
-        tracks2_len = len(self._tracks2)
-        if src in self._tracks1:
+        tracks1_len = len(self._tracks_left)
+        tracks2_len = len(self._tracks_right)
+        if src in self._tracks_left:
             src_widget = self._tracks_widget_left
-            src_index = self._tracks1.index(src) - 1
+            src_index = self._tracks_left.index(src) - 1
         else:
             src_widget = self._tracks_widget_right
-            src_index = self._tracks2.index(src) - 1
-        if tracks1_len == 0 or dst in self._tracks1:
+            src_index = self._tracks_right.index(src) - 1
+        if tracks1_len == 0 or dst in self._tracks_left:
             dst_widget = self._tracks_widget_left
-            dst_tracks = self._tracks1
-        elif tracks2_len == 0 or dst in self._tracks2:
+            dst_tracks = self._tracks_left
+        elif tracks2_len == 0 or dst in self._tracks_right:
             dst_widget = self._tracks_widget_right
-            dst_tracks = self._tracks2
+            dst_tracks = self._tracks_right
         else:
             return
         # Remove src from src_widget
@@ -316,7 +322,7 @@ class PlaylistsWidget(Gtk.Grid):
                     src_track.album.artist_id not in src_track.artist_ids):
                 name = "<b>%s</b>\n%s" % (escape(", ".join(src_track.artists)),
                                           name)
-            self._tracks1.insert(index, src_track.id)
+            self._tracks_left.insert(index, src_track.id)
         row = PlaylistRow(src_track.id,
                           index,
                           index == 0 or
@@ -340,14 +346,15 @@ class PlaylistsWidget(Gtk.Grid):
             if len(self._playlist_ids) == 1 and self._playlist_ids[0] >= 0:
                 Lp().playlists.clear(self._playlist_ids[0], False)
                 tracks = []
-                for track_id in self._tracks1 + self._tracks2:
+                for track_id in self._tracks_left + self._tracks_right:
                     tracks.append(Track(track_id))
                 Lp().playlists.add_tracks(self._playlist_ids[0],
                                           tracks,
                                           False)
             if not (set(self._playlist_ids) -
                set(Lp().player.get_user_playlist_ids())):
-                Lp().player.update_user_playlist(self._tracks1 + self._tracks2)
+                Lp().player.update_user_playlist(self._tracks_left +
+                                                 self._tracks_right)
 
         (src_widget, dst_widget, src_index, dst_index) = \
             self._move_track(dst, src, up)
@@ -355,7 +362,7 @@ class PlaylistsWidget(Gtk.Grid):
         self._update_position()
         self._update_headers()
         self._tracks_widget_left.update_indexes(1)
-        self._tracks_widget_right.update_indexes(len(self._tracks1) + 1)
+        self._tracks_widget_right.update_indexes(len(self._tracks_left) + 1)
         t = Thread(target=update_playlist)
         t.daemon = True
         t.start()
@@ -401,8 +408,8 @@ class PlaylistsWidget(Gtk.Grid):
             Lp().player.load(Track(track_id))
             if not Lp().player.is_party():
                 Lp().player.populate_user_playlist_by_tracks(
-                                                            self._tracks1 +
-                                                            self._tracks2,
+                                                            self._tracks_left +
+                                                            self._tracks_right,
                                                             self._playlist_ids)
 
 
