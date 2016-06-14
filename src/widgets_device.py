@@ -75,13 +75,15 @@ class DeviceManagerWidget(Gtk.Bin, MtpSync):
         renderer0 = Gtk.CellRendererToggle()
         renderer0.set_property('activatable', True)
         renderer0.connect('toggled', self._on_playlist_toggled)
-        column0 = Gtk.TreeViewColumn("toggle", renderer0, active=0)
+        column0 = Gtk.TreeViewColumn(" ✓", renderer0, active=0)
+        column0.set_clickable(True)
+        column0.connect('clicked', self._on_column0_clicked)
 
         renderer1 = Gtk.CellRendererText()
         renderer1.set_property('ellipsize-set', True)
         renderer1.set_property('ellipsize', Pango.EllipsizeMode.END)
         renderer1.set_property('editable', True)
-        column1 = Gtk.TreeViewColumn('text', renderer1, text=1)
+        column1 = Gtk.TreeViewColumn(_("Playlists"), renderer1, text=1)
         column1.set_expand(True)
 
         self._view.append_column(column0)
@@ -281,6 +283,18 @@ class DeviceManagerWidget(Gtk.Bin, MtpSync):
         """
         if response_id == Gtk.ResponseType.CLOSE:
             self._infobar.hide()
+
+    def _on_column0_clicked(self, column):
+        """
+            Select/Unselect all playlists
+            @param column as Gtk.TreeViewColumn
+        """
+        selected = False
+        for item in self._model:
+            if item[0]:
+                selected = True
+        for item in self._model:
+            item[0] = not selected
 
     def _on_playlist_toggled(self, view, path):
         """
