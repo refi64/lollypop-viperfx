@@ -5,8 +5,6 @@
   <object class="GtkImage" id="image1">
     <property name="visible">True</property>
     <property name="can_focus">False</property>
-    <property name="xpad">5</property>
-    <property name="ypad">5</property>
     <property name="icon_name">preferences-system-symbolic</property>
   </object>
   <object class="GtkGrid" id="widget">
