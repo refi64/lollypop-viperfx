@@ -176,7 +176,11 @@ class ArtistView(ArtistAlbumsView):
         self._art_signal_id = Lp().art.connect('artist-artwork-changed',
                                                self._on_artist_artwork_changed)
         self._party_signal_id = Lp().player.connect('party-changed',
-                                                    self._on_party_changed)
+                                                    self._on_album_changed)
+        self._added_signal_id = Lp().player.connect('album-added',
+                                                    self._on_album_changed)
+        self._removed_signal_id = Lp().player.connect('album-removed',
+                                                      self._on_album_changed)
         self._lock_signal_id = Lp().player.connect('lock-changed',
                                                    self._on_lock_changed)
 
@@ -191,19 +195,23 @@ class ArtistView(ArtistAlbumsView):
         if self._party_signal_id is not None:
             Lp().player.disconnect(self._party_signal_id)
             self._party_signal_id = None
+        if self._added_signal_id is not None:
+            Lp().player.disconnect(self._added_signal_id)
+            self._added_signal_id = None
+        if self._removed_signal_id is not None:
+            Lp().player.disconnect(self._removed_signal_id)
+            self._removed_signal_id = None
         if self._lock_signal_id is not None:
             Lp().player.disconnect(self._lock_signal_id)
             self._lock_signal_id = None
 
-    def _on_party_changed(self, player, party):
+    def _on_album_changed(self, player, unused):
         """
             Update add icon
             @param player as Player
-            @param party as bool
+            @param unused
         """
-        # Leaving party doesn't change album list
-        if party:
-            self._set_add_icon()
+        self._set_add_icon()
 
     def _on_lock_changed(self, player):
         """

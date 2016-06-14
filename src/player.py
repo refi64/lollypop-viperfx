@@ -182,6 +182,7 @@ class Player(BinPlayer, QueuePlayer, UserPlaylistPlayer, RadioPlayer,
                     self._albums_backup.remove(album.id)
             self.set_prev()
             self.set_next()
+            self.emit('album-added', album.id)
         except Exception as e:
             print("Player::remove_album():", e)
 
