@@ -149,8 +149,9 @@ class PlaylistsView(View):
     def _on_populated(self, widget):
         """
             Show go top button if needed
+            @param widget as PlaylistsWidget
         """
-        if widget.get_allocation().height >\
+        if widget.get_preferred_height()[0] >\
                 self._viewport.get_allocation().height:
             self._playlists_widget.add(self._up_btn)
             self._up_btn.show()
