@@ -458,7 +458,9 @@ class PlaylistsManagerWidget(Gtk.Bin):
             renderer0 = Gtk.CellRendererToggle()
             renderer0.set_property('activatable', True)
             renderer0.connect('toggled', self._on_playlist_toggled)
-            column0 = Gtk.TreeViewColumn("toggle", renderer0, active=0)
+            column0 = Gtk.TreeViewColumn(" ✓", renderer0, active=0)
+            column0.set_clickable(True)
+            column0.connect('clicked', self._on_column0_clicked)
 
         renderer1 = Gtk.CellRendererText()
         renderer1.set_property('ellipsize-set', True)
@@ -467,12 +469,12 @@ class PlaylistsManagerWidget(Gtk.Bin):
         renderer1.connect('edited', self._on_playlist_edited)
         renderer1.connect('editing-started', self._on_playlist_editing_start)
         renderer1.connect('editing-canceled', self._on_playlist_editing_cancel)
-        column1 = Gtk.TreeViewColumn('text', renderer1, text=1)
+        column1 = Gtk.TreeViewColumn(_("Playlists"), renderer1, text=1)
         column1.set_sizing(Gtk.TreeViewColumnSizing.FIXED)
         column1.set_expand(True)
 
         renderer2 = Gtk.CellRendererPixbuf()
-        column2 = Gtk.TreeViewColumn('delete', renderer2)
+        column2 = Gtk.TreeViewColumn('', renderer2)
         column2.add_attribute(renderer2, 'icon-name', 2)
         column2.set_sizing(Gtk.TreeViewColumnSizing.FIXED)
         column2.set_property('fixed_width', 50)
@@ -680,6 +682,19 @@ class PlaylistsManagerWidget(Gtk.Bin):
         """
         # FIXME Not needed with GTK >= 3.18
         Lp().window.enable_global_shorcuts(True)
+
+    def _on_column0_clicked(self, column):
+        """
+            Select/Unselect all playlists checkboxes
+            @param column as Gtk.TreeViewColumn
+        """
+        selected = False
+        for item in self._model:
+            if item[0]:
+                selected = True
+        for item in self._model:
+            item[0] = not selected
+            self._set_current_object(item[3], item[0])
 
 
 class PlaylistEditWidget(Gtk.Bin):
