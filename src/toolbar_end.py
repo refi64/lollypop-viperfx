@@ -110,8 +110,9 @@ class ToolbarEnd(Gtk.Bin):
            not self._grid_next.is_visible():
             return
         if self._next_popover.should_be_shown() or force:
-            self._next_popover.update()
-            if not self._next_popover.is_visible():
+            if self._next_popover.is_visible():
+                self._next_popover.update()
+            else:
                 self._next_popover.set_relative_to(self._grid_next)
                 self._next_popover.show()
         else:
