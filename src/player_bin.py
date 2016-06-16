@@ -461,7 +461,10 @@ class BinPlayer(BasePlayer):
         if self._playbin.get_bus() == bus:
             self.stop()
             self._finished = NextContext.NONE
-            self._context.next = NextContext.NONE
+            if Lp().settings.get_value('repeat'):
+                self._context.next = NextContext.NONE
+            else:
+                self._context.next = NextContext.STOP_ALL
             if self._next_track.id is not None:
                 self._load_track(self._next_track)
             self.emit('current-changed')
