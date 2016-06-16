@@ -41,6 +41,8 @@ class ArtistAlbumsView(LazyLoadingView):
         self._genre_ids = genre_ids
         self._show_cover = show_cover
 
+        self.connect('size-allocate', self._on_size_allocate)
+
         self._spinner = Gtk.Spinner()
         self._spinner.set_hexpand(True)
         self._spinner.set_vexpand(True)
@@ -167,10 +169,18 @@ class ArtistAlbumsView(LazyLoadingView):
             self._spinner.stop()
             self._spinner.hide()
             self.emit('populated')
-            if self.get_allocation().height < self.requested_height:
-                self._albumbox.add(self._up_btn)
-                self._up_btn.show()
             GLib.idle_add(self.lazy_loading)
+
+    def _on_size_allocate(self, widget, allocation):
+        """
+            Show go top button
+            @param widget as Gtk.Widget
+            @param allocation as Gtk.Allocation
+        """
+        if allocation.height < self.requested_height and\
+                not self._up_btn.is_visible():
+            self._albumbox.add(self._up_btn)
+            self._up_btn.show()
 
     def _on_populated(self, widget, widgets, scroll_value):
         """
