@@ -97,6 +97,7 @@ class NextPopover(Gtk.Popover):
             @param widget as Gtk.Widget
         """
         self._inhibited = False
+        self.update()
         self._signal_id = Lp().player.connect('queue-changed', self.update)
 
     def _on_unmap(self, widget):
