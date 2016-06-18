@@ -266,6 +266,11 @@ class QueuePopover(Gtk.Popover):
         self._view.connect("row-activated", self._on_row_activated)
         self._view.show()
 
+        self.drag_dest_set(Gtk.DestDefaults.DROP | Gtk.DestDefaults.MOTION,
+                           [], Gdk.DragAction.MOVE)
+        self.drag_dest_add_text_targets()
+        self.connect('drag-data-received', self._on_drag_data_received)
+
         builder.get_object('scrolled').add(self._view)
         self.add(builder.get_object('widget'))
 
@@ -434,3 +439,17 @@ class QueuePopover(Gtk.Popover):
             self._view.insert(src_row, row_index)
             Lp().player.insert_in_queue(src, row_index)
         self._update_headers()
+
+    def _on_drag_data_received(self, widget, context, x, y, data, info, time):
+        """
+            Move track
+            @param widget as Gtk.Widget
+            @param context as Gdk.DragContext
+            @param x as int
+            @param y as int
+            @param data as Gtk.SelectionData
+            @param info as int
+            @param time as int
+        """
+        self._on_track_moved(self._view.get_children()[-1],
+                             int(data.get_text()), x, y)
