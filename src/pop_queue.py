@@ -451,5 +451,8 @@ class QueuePopover(Gtk.Popover):
             @param info as int
             @param time as int
         """
-        self._on_track_moved(self._view.get_children()[-1],
-                             int(data.get_text()), x, y)
+        try:
+            self._on_track_moved(self._view.get_children()[-1],
+                                 int(data.get_text()), x, y)
+        except:
+            pass

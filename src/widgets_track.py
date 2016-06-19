@@ -384,15 +384,18 @@ class PlaylistRow(Row):
             @param info as int
             @param time as int
         """
-        src = int(data.get_text())
-        if self._track.id == src:
-            return
-        height = self.get_allocated_height()
-        if y > height/2:
-            up = False
-        else:
-            up = True
-        self.emit('track-moved', self._track.id, src, up)
+        try:
+            src = int(data.get_text())
+            if self._track.id == src:
+                return
+            height = self.get_allocated_height()
+            if y > height/2:
+                up = False
+            else:
+                up = True
+            self.emit('track-moved', self._track.id, src, up)
+        except:
+            pass
 
     def _on_drag_motion(self, widget, context, x, y, time):
         """
@@ -540,9 +543,12 @@ class TracksWidget(Gtk.ListBox):
             @param info as int
             @param time as int
         """
-        bottom_row = self.get_children()[-1]
-        bottom_row.emit('track-moved', bottom_row.get_id(),
-                        int(data.get_text()), False)
+        try:
+            bottom_row = self.get_children()[-1]
+            bottom_row.emit('track-moved', bottom_row.get_id(),
+                            int(data.get_text()), False)
+        except:
+            pass
 
     def _on_queue_changed(self, unused):
         """

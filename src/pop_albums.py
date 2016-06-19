@@ -196,7 +196,10 @@ class AlbumRow(Gtk.ListBoxRow):
             @param info as int
             @param time as int
         """
-        self.emit('track-moved', int(data.get_text()), x, y)
+        try:
+            self.emit('track-moved', int(data.get_text()), x, y)
+        except:
+            pass
 
     def _on_drag_motion(self, widget, context, x, y, time):
         """
@@ -507,8 +510,11 @@ class AlbumsView(LazyLoadingView):
             @param info as int
             @param time as int
         """
-        self._on_track_moved(self._view.get_children()[-1],
-                             int(data.get_text()), x, y)
+        try:
+            self._on_track_moved(self._view.get_children()[-1],
+                                 int(data.get_text()), x, y)
+        except:
+            pass
 
 
 class AlbumsPopover(Gtk.Popover):
