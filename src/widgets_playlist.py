@@ -616,7 +616,7 @@ class PlaylistsManagerWidget(Gtk.Bin):
         """
         iterator = self._model.get_iter(path)
         if iterator:
-            if column.get_title() == "delete":
+            if column.get_title() == '':
                 self._show_infobar(path)
 
     def _on_delete_confirm(self, button):
