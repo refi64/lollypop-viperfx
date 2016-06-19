@@ -10,7 +10,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-from gi.repository import Gtk, GLib, Pango, GObject
+from gi.repository import Gtk, GLib, Gdk, Pango, GObject
 
 from threading import Thread
 from cgi import escape
@@ -48,20 +48,27 @@ class PlaylistsWidget(Gtk.Grid):
         self._locked_widget_right = True
 
         self._box = Gtk.Grid()
+        self._box.set_vexpand(True)
         self._box.set_column_homogeneous(True)
-        self._box.set_property('valign', Gtk.Align.START)
         self._box.show()
 
         self.connect('size-allocate', self._on_size_allocate)
 
-        self._tracks_widget_left = TracksWidget()
-        self._tracks_widget_right = TracksWidget()
+        self._tracks_widget_left = TracksWidget(True)
+        self._tracks_widget_left.set_vexpand(True)
+        self._tracks_widget_right = TracksWidget(True)
+        self._tracks_widget_right.set_vexpand(True)
         self._tracks_widget_left.connect('activated',
                                          self._on_activated)
         self._tracks_widget_right.connect('activated',
                                           self._on_activated)
         self._tracks_widget_left.show()
         self._tracks_widget_right.show()
+
+        self.drag_dest_set(Gtk.DestDefaults.DROP | Gtk.DestDefaults.MOTION,
+                           [], Gdk.DragAction.MOVE)
+        self.drag_dest_add_text_targets()
+        self.connect('drag-data-received', self._on_drag_data_received)
 
         self.add(self._box)
 
@@ -332,6 +339,28 @@ class PlaylistsWidget(Gtk.Grid):
         dst_widget.insert(row, index)
         return (src_widget, dst_widget, src_index, index)
 
+    def _on_drag_data_received(self, widget, context, x, y, data, info, time):
+        """
+            ONLY HAPPEN IN VERTICAL ORIENTATION
+            Horizontal orientation is handled by TracksWidget
+            @param widget as Gtk.Widget
+            @param context as Gdk.DragContext
+            @param x as int
+            @param y as int
+            @param data as Gtk.SelectionData
+            @param info as int
+            @param time as int
+        """
+        try:
+            try:
+                child = self._tracks_widget_right.get_children()[-1]
+            except:
+                child = self._tracks_widget_left.get_children()[-1]
+            self._on_track_moved(widget, child.get_id(),
+                                 int(data.get_text()), False)
+        except:
+            pass
+
     def _on_track_moved(self, widget, dst, src, up):
         """
             Move track from src to row
@@ -378,8 +407,10 @@ class PlaylistsWidget(Gtk.Grid):
         self._width = allocation.width
         redraw = False
         if allocation.width < WindowSize.MONSTER:
+            self._box.set_property('valign', Gtk.Align.START)
             orientation = Gtk.Orientation.VERTICAL
         else:
+            self._box.set_property('valign', Gtk.Align.FILL)
             orientation = Gtk.Orientation.HORIZONTAL
         if orientation != self._orientation:
             self._orientation = orientation

@@ -469,10 +469,10 @@ class TracksWidget(Gtk.ListBox):
         'activated': (GObject.SignalFlags.RUN_FIRST, None, (int,))
     }
 
-    def __init__(self):
+    def __init__(self, dnd=False):
         """
             Init track widget
-            @param show_loved as bool
+            @param drag and drop as bool
         """
         Gtk.ListBox.__init__(self)
         self.connect('destroy', self._on_destroy)
@@ -488,6 +488,11 @@ class TracksWidget(Gtk.ListBox):
         self.get_style_context().add_class('trackswidget')
         self.set_property('hexpand', True)
         self.set_property('selection-mode', Gtk.SelectionMode.NONE)
+        if dnd:
+            self.drag_dest_set(Gtk.DestDefaults.DROP | Gtk.DestDefaults.MOTION,
+                               [], Gdk.DragAction.MOVE)
+            self.drag_dest_add_text_targets()
+            self.connect('drag-data-received', self._on_drag_data_received)
 
     def update_headers(self, prev_album_id=None):
         """
@@ -524,6 +529,21 @@ class TracksWidget(Gtk.ListBox):
 #######################
 # PRIVATE             #
 #######################
+    def _on_drag_data_received(self, widget, context, x, y, data, info, time):
+        """
+            Move track
+            @param widget as Gtk.Widget
+            @param context as Gdk.DragContext
+            @param x as int
+            @param y as int
+            @param data as Gtk.SelectionData
+            @param info as int
+            @param time as int
+        """
+        bottom_row = self.get_children()[-1]
+        bottom_row.emit('track-moved', bottom_row.get_id(),
+                        int(data.get_text()), False)
+
     def _on_queue_changed(self, unused):
         """
             Update all position labels
