@@ -316,6 +316,10 @@ class AlbumsView(LazyLoadingView):
         self.add(grid)
         self._scrolled.set_property('expand', True)
         self.add(self._scrolled)
+        self.drag_dest_set(Gtk.DestDefaults.DROP | Gtk.DestDefaults.MOTION,
+                           [], Gdk.DragAction.MOVE)
+        self.drag_dest_add_text_targets()
+        self.connect('drag-data-received', self._on_drag_data_received)
 
     def populate(self):
         """
@@ -491,6 +495,20 @@ class AlbumsView(LazyLoadingView):
                 row_index += 1
             self._view.insert(src_row, row_index)
             Lp().player.move_album(src, row_index)
+
+    def _on_drag_data_received(self, widget, context, x, y, data, info, time):
+        """
+            Move track
+            @param widget as Gtk.Widget
+            @param context as Gdk.DragContext
+            @param x as int
+            @param y as int
+            @param data as Gtk.SelectionData
+            @param info as int
+            @param time as int
+        """
+        self._on_track_moved(self._view.get_children()[-1],
+                             int(data.get_text()), x, y)
 
 
 class AlbumsPopover(Gtk.Popover):
