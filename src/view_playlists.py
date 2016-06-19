@@ -100,7 +100,7 @@ class PlaylistsView(View):
         count = 0
         for height in heights.values():
             count += height
-            if count > half:
+            if count >= half:
                 break
             mid_tracks += 1
         self._tracks = tracks
