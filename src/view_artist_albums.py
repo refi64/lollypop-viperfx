@@ -12,8 +12,6 @@
 
 from gi.repository import Gtk, GLib, GObject
 
-from gettext import gettext as _
-
 from lollypop.view import LazyLoadingView, View
 from lollypop.view_container import ViewContainer
 from lollypop.define import Lp, Type, ArtSize
@@ -41,8 +39,6 @@ class ArtistAlbumsView(LazyLoadingView):
         self._genre_ids = genre_ids
         self._show_cover = show_cover
 
-        self.connect('size-allocate', self._on_size_allocate)
-
         self._spinner = Gtk.Spinner()
         self._spinner.set_hexpand(True)
         self._spinner.set_vexpand(True)
@@ -51,14 +47,6 @@ class ArtistAlbumsView(LazyLoadingView):
         self._spinner.set_property('halign', Gtk.Align.CENTER)
         self._spinner.set_property('valign', Gtk.Align.CENTER)
         self._spinner.show()
-
-        self._up_btn = Gtk.Button.new_from_icon_name('go-top-symbolic',
-                                                     Gtk.IconSize.MENU)
-        self._up_btn.set_property('halign', Gtk.Align.CENTER)
-        self._up_btn.set_property('valign', Gtk.Align.END)
-        self._up_btn.get_style_context().add_class('up-btn')
-        self._up_btn.set_tooltip_text(_("Go top"))
-        self._up_btn.connect('clicked', self._on_up_btn_clicked)
 
         self._albumbox = Gtk.Grid()
         self._albumbox.set_row_spacing(5)
@@ -141,7 +129,7 @@ class ArtistAlbumsView(LazyLoadingView):
     def _get_children(self):
         """
             Return view children
-            @return [AlbumWidget]
+            @return [AlbumDetailedWidget]
         """
         children = []
         for child in self._albumbox.get_children():
@@ -170,17 +158,6 @@ class ArtistAlbumsView(LazyLoadingView):
             self._spinner.hide()
             self.emit('populated')
             GLib.idle_add(self.lazy_loading)
-
-    def _on_size_allocate(self, widget, allocation):
-        """
-            Show go top button
-            @param widget as Gtk.Widget
-            @param allocation as Gtk.Allocation
-        """
-        if allocation.height < self.requested_height and\
-                not self._up_btn.is_visible():
-            self._albumbox.add(self._up_btn)
-            self._up_btn.show()
 
     def _on_populated(self, widget, widgets, scroll_value):
         """

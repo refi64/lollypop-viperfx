@@ -97,13 +97,6 @@ class View(Gtk.Grid):
         """
         return []
 
-    def _on_up_btn_clicked(self, button):
-        """
-            Go up in scrolled window
-            @param button as Gtk.Button
-        """
-        self._scrolled.get_vadjustment().set_value(0)
-
     def _on_leave_notify(self, widget, event):
         """
             Update overlays as internal widget may not have received the signal

@@ -12,7 +12,6 @@
 
 from gi.repository import Gtk
 
-from gettext import gettext as _
 from cgi import escape
 
 from lollypop.view import View
@@ -56,16 +55,7 @@ class PlaylistsView(View):
                 not editable:
             self._edit_button.hide()
 
-        self._up_btn = Gtk.Button.new_from_icon_name('go-top-symbolic',
-                                                     Gtk.IconSize.MENU)
-        self._up_btn.set_property('halign', Gtk.Align.CENTER)
-        self._up_btn.set_property('valign', Gtk.Align.END)
-        self._up_btn.get_style_context().add_class('up-btn')
-        self._up_btn.set_tooltip_text(_("Go top"))
-        self._up_btn.connect('clicked', self._on_up_btn_clicked)
-
         self._playlists_widget = PlaylistsWidget(playlist_ids)
-        self._playlists_widget.connect('populated', self._on_populated)
         self._playlists_widget.show()
         self.add(builder.get_object('widget'))
         self._viewport.add(self._playlists_widget)
@@ -145,16 +135,6 @@ class PlaylistsView(View):
         else:
             self._jump_button.set_sensitive(False)
             self._jump_button.set_tooltip_text('')
-
-    def _on_populated(self, widget):
-        """
-            Show go top button if needed
-            @param widget as PlaylistsWidget
-        """
-        if widget.get_preferred_height()[0] >\
-                self._viewport.get_allocation().height:
-            self._playlists_widget.add(self._up_btn)
-            self._up_btn.show()
 
     def _on_playlist_add(self, manager, playlist_id, track_id):
         """
