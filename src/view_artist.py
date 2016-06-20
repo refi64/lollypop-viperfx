@@ -336,8 +336,13 @@ class ArtistView(ArtistAlbumsView):
                                                    )[0] == 'list-add-symbolic':
             for album_id in albums:
                 album = Album(album_id)
+                # If playing and no albums, play it
                 if not Lp().player.has_album(album):
-                    Lp().player.add_album(album)
+                    if Lp().player.is_playing() and\
+                            not Lp().player.get_albums():
+                        Lp().player.play_album(album)
+                    else:
+                        Lp().player.add_album(album)
         else:
             for album_id in albums:
                 album = Album(album_id)
