@@ -47,7 +47,7 @@ class PartyPopover(Gtk.Popover):
         scrolled.show()
         self.add(scrolled)
         size = Lp().window.get_size()
-        self.set_size_request(size[0]*0.6,
+        self.set_size_request(size[0]*0.4,
                               size[1]*0.7)
 
         genres = Lp().genres.get()
