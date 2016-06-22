@@ -100,8 +100,6 @@ class ShufflePlayer(BasePlayer):
             Play a new random track if not already playing
             @param party as bool
         """
-        if party == self._is_party:
-            return
         self._is_party = party
 
         self.reset_history()
