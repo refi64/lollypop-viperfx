@@ -10,7 +10,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-from gi.repository import Gtk, Gdk, GLib, Gio, Pango
+from gi.repository import Gtk, Gdk, GLib, Gio
 try:
     from gi.repository import Secret
 except:
@@ -21,7 +21,7 @@ from gettext import gettext as _
 from threading import Thread
 from shutil import which
 
-from lollypop.define import Lp, Type, SecretSchema, SecretAttributes
+from lollypop.define import Lp, SecretSchema, SecretAttributes
 from lollypop.cache import InfoCache
 
 
@@ -146,7 +146,6 @@ class SettingsDialog:
 
         main_chooser_box = builder.get_object('main_chooser_box')
         self._chooser_box = builder.get_object('chooser_box')
-        party_grid = builder.get_object('party_grid')
 
         #
         # Music tab
@@ -173,37 +172,6 @@ class SettingsDialog:
         for directory in dirs:
             self._add_chooser(directory)
 
-        #
-        # Party mode tab
-        #
-        genres = Lp().genres.get()
-        genres.insert(0, (Type.POPULARS, _("Populars")))
-        genres.insert(1, (Type.RECENTS, _("Recently added")))
-        ids = Lp().player.get_party_ids()
-        i = 0
-        x = 0
-        for genre_id, genre in genres:
-            label = Gtk.Label()
-            label.set_property('margin-start', 10)
-            label.set_property('halign', Gtk.Align.START)
-            label.set_property('hexpand', True)
-            label.set_ellipsize(Pango.EllipsizeMode.END)
-            label.set_text(genre)
-            label.set_tooltip_text(genre)
-            label.show()
-            switch = Gtk.Switch()
-            if genre_id in ids:
-                switch.set_state(True)
-            switch.connect("state-set", self._party_switch_state, genre_id)
-            switch.set_property('margin-end', 50)
-            switch.show()
-            party_grid.attach(label, x, i, 1, 1)
-            party_grid.attach(switch, x+1, i, 1, 1)
-            if x == 0:
-                x += 2
-            else:
-                i += 1
-                x = 0
         #
         # Last.fm tab
         #
@@ -459,25 +427,6 @@ class SettingsDialog:
         if set(previous) != set(paths):
             Lp().window.update_db()
         Lp().window.update_view()
-
-    def _party_switch_state(self, widget, state, genre_id):
-        """
-            Update party ids when use change a switch in dialog
-            @param widget as Gtk.Switch
-            @param state as bool, genre id as int
-        """
-        ids = Lp().player.get_party_ids()
-        if state:
-            try:
-                ids.append(genre_id)
-            except:
-                pass
-        else:
-            try:
-                ids.remove(genre_id)
-            except:
-                pass
-        Lp().settings.set_value('party-ids',  GLib.Variant('ai', ids))
 
     def _show_mix_popover(self, widget):
         """

@@ -10,7 +10,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-from gi.repository import Gtk, Gio
+from gi.repository import Gtk, Gio, GLib, Pango
 
 from gettext import gettext as _
 
@@ -21,6 +21,78 @@ from lollypop.pop_playlists import PlaylistsPopover
 from lollypop.pop_queue import QueuePopover
 from lollypop.pop_externals import ExternalsPopover
 from lollypop.define import Lp, Shuffle, Type
+
+
+class PartyPopover(Gtk.Popover):
+    """
+        Show party options
+    """
+
+    def __init__(self):
+        """
+            Init popover
+        """
+        Gtk.Popover.__init__(self)
+
+        party_grid = Gtk.Grid()
+        party_grid.set_column_spacing(5)
+        party_grid.set_row_spacing(5)
+        party_grid.show()
+        scrolled = Gtk.ScrolledWindow()
+        scrolled.add(party_grid)
+        scrolled.show()
+        self.add(scrolled)
+        size = Lp().window.get_size()
+        self.set_size_request(size[0]*0.6,
+                              size[1]*0.7)
+
+        genres = Lp().genres.get()
+        genres.insert(0, (Type.POPULARS, _("Populars")))
+        genres.insert(1, (Type.RECENTS, _("Recently added")))
+        ids = Lp().player.get_party_ids()
+        i = 0
+        x = 0
+        for genre_id, genre in genres:
+            label = Gtk.Label()
+            label.set_property('margin-start', 10)
+            label.set_property('halign', Gtk.Align.START)
+            label.set_property('hexpand', True)
+            label.set_ellipsize(Pango.EllipsizeMode.END)
+            label.set_text(genre)
+            label.set_tooltip_text(genre)
+            label.show()
+            switch = Gtk.Switch()
+            if genre_id in ids:
+                switch.set_state(True)
+            switch.connect("state-set", self._on_switch_state_set, genre_id)
+            switch.set_property('margin-end', 50)
+            switch.show()
+            party_grid.attach(label, x, i, 1, 1)
+            party_grid.attach(switch, x+1, i, 1, 1)
+            if x == 0:
+                x += 2
+            else:
+                i += 1
+                x = 0
+
+    def _on_switch_state_set(self, widget, state, genre_id):
+        """
+            Update party ids when use change a switch in dialog
+            @param widget as Gtk.Switch
+            @param state as bool, genre id as int
+        """
+        ids = Lp().player.get_party_ids()
+        if state:
+            try:
+                ids.append(genre_id)
+            except:
+                pass
+        else:
+            try:
+                ids.remove(genre_id)
+            except:
+                pass
+        Lp().settings.set_value('party-ids',  GLib.Variant('ai', ids))
 
 
 class ToolbarEnd(Gtk.Bin):
@@ -270,6 +342,18 @@ class ToolbarEnd(Gtk.Bin):
             @param widget as Gtk.Widget
         """
         self._next_popover.hide()
+
+    def _on_button_press_event(self, eventbox, event):
+        """
+            Show party popover
+            @param eventbox as Gtk.EventBox
+            @param event as Gdk.Event
+        """
+        if event.button == 3:
+            popover = PartyPopover()
+            popover.set_relative_to(eventbox)
+            popover.show()
+            return True
 
     def _on_list_button_query_tooltip(self, widget, x, y, keyboard, tooltip):
         """
