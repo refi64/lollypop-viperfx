@@ -35,6 +35,10 @@ class PartyPopover(Gtk.Popover):
         Gtk.Popover.__init__(self)
 
         party_grid = Gtk.Grid()
+        party_grid.set_property('margin-start', 5)
+        party_grid.set_property('margin-end', 5)
+        party_grid.set_property('margin-bottom', 5)
+        party_grid.set_property('margin-top', 5)
         party_grid.set_column_spacing(5)
         party_grid.set_row_spacing(5)
         party_grid.show()
