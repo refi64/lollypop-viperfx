@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-06-13 14:30+0200\n"
+"POT-Creation-Date: 2016-06-23 14:20+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -238,17 +238,16 @@ msgid "Genre/Artist/Cover browsing"
 msgstr ""
 
 #: ../data/lollypop.appdata.xml.in.h:8 ../src/playlists.py:239
-#: ../data/ArtistInfo.ui.h:5 ../data/ToolbarEnd.ui.h:7
+#: ../data/ArtistInfo.ui.h:5 ../data/ToolbarEnd.ui.h:8
 msgid "Search"
 msgstr ""
 
 #: ../data/lollypop.appdata.xml.in.h:9 ../src/pop_menu.py:391
-#: ../src/pop_menu.py:412 ../src/toolbar_end.py:285 ../data/QueuePopover.ui.h:2
+#: ../src/pop_menu.py:412 ../src/toolbar_end.py:370 ../data/QueuePopover.ui.h:2
 msgid "Queue"
 msgstr ""
 
-#: ../data/lollypop.appdata.xml.in.h:10 ../data/SettingsDialog.ui.h:28
-#: ../data/ToolbarEnd.ui.h:5
+#: ../data/lollypop.appdata.xml.in.h:10
 msgid "Party mode"
 msgstr ""
 
@@ -362,7 +361,8 @@ msgid "Random albums"
 msgstr ""
 
 #: ../src/container.py:425 ../src/pop_menu.py:321 ../src/pop_menu.py:394
-#: ../src/pop_menu.py:414
+#: ../src/pop_menu.py:414 ../src/widgets_device.py:86
+#: ../src/widgets_playlist.py:503
 msgid "Playlists"
 msgstr ""
 
@@ -403,7 +403,7 @@ msgid "Pause"
 msgstr ""
 
 #: ../src/controllers.py:86 ../src/controllers.py:114 ../src/pop_tunein.py:167
-#: ../src/widgets_album.py:483 ../src/widgets_radio.py:168
+#: ../src/widgets_album.py:487 ../src/widgets_radio.py:168
 #: ../data/AlbumDetailedWidget.ui.h:1 ../data/ArtistView.ui.h:2
 #: ../data/ToolbarPlayback.ui.h:2
 msgid "Play"
@@ -434,7 +434,7 @@ msgstr ""
 msgid "by %s, from %s"
 msgstr ""
 
-#: ../src/player_bin.py:447
+#: ../src/player_bin.py:449
 #, python-format
 msgid "File doesn't exist: %s"
 msgstr ""
@@ -443,16 +443,16 @@ msgstr ""
 msgid "Loved tracks"
 msgstr ""
 
-#: ../src/pop_albums.py:287
+#: ../src/pop_albums.py:290
 msgid "Clear albums"
 msgstr ""
 
-#: ../src/pop_albums.py:295 ../src/view_artist.py:50 ../data/ArtistInfo.ui.h:8
+#: ../src/pop_albums.py:298 ../src/view_artist.py:50 ../data/ArtistInfo.ui.h:8
 #: ../data/ArtistView.ui.h:4
 msgid "Go to current track"
 msgstr ""
 
-#: ../src/pop_albums.py:296 ../src/toolbar_end.py:289
+#: ../src/pop_albums.py:299 ../src/toolbar_end.py:374
 msgid "Playing albums"
 msgstr ""
 
@@ -507,7 +507,7 @@ msgstr ""
 msgid "Edit"
 msgstr ""
 
-#: ../src/pop_radio.py:83 ../src/pop_tunein.py:173 ../src/view_artist.py:165
+#: ../src/pop_radio.py:83 ../src/pop_tunein.py:173 ../src/view_artist.py:166
 #: ../data/ArtistView.ui.h:3
 msgid "Add"
 msgstr ""
@@ -532,19 +532,19 @@ msgstr ""
 msgid "You need to install kid3-cli"
 msgstr ""
 
-#: ../src/settings.py:180
+#: ../src/toolbar_end.py:50
 msgid "Populars"
 msgstr ""
 
-#: ../src/settings.py:181
+#: ../src/toolbar_end.py:51
 msgid "Recently added"
 msgstr ""
 
-#: ../src/toolbar_end.py:283
+#: ../src/toolbar_end.py:368
 msgid "Externals tracks playing"
 msgstr ""
 
-#: ../src/toolbar_end.py:287
+#: ../src/toolbar_end.py:372
 msgid "Playing playlists"
 msgstr ""
 
@@ -554,12 +554,8 @@ msgstr ""
 msgid "The the"
 msgstr ""
 
-#: ../src/view_artist.py:160 ../src/widgets_album.py:232
+#: ../src/view_artist.py:161 ../src/widgets_album.py:233
 msgid "Remove"
-msgstr ""
-
-#: ../src/view_artist_albums.py:58 ../src/view_playlists.py:63
-msgid "Go top"
 msgstr ""
 
 #: ../src/view_device.py:34
@@ -581,34 +577,34 @@ msgstr ""
 msgid "Cancel synchronization"
 msgstr ""
 
-#: ../src/widgets_album.py:228
+#: ../src/widgets_album.py:229
 msgid "Append"
 msgstr ""
 
-#: ../src/widgets_album.py:494
+#: ../src/widgets_album.py:498
 msgid "Play albums"
 msgstr ""
 
-#: ../src/widgets_album.py:504 ../data/AlbumDetailedWidget.ui.h:2
+#: ../src/widgets_album.py:508 ../data/AlbumDetailedWidget.ui.h:2
 msgid "Change artwork"
 msgstr ""
 
-#: ../src/widgets_album.py:667
+#: ../src/widgets_album.py:670
 #, python-format
 msgid "%s h  %s m"
 msgstr ""
 
-#: ../src/widgets_album.py:669
+#: ../src/widgets_album.py:672
 #, python-format
 msgid "%s h"
 msgstr ""
 
-#: ../src/widgets_album.py:671
+#: ../src/widgets_album.py:674
 #, python-format
 msgid "%s m"
 msgstr ""
 
-#: ../src/widgets_album.py:924
+#: ../src/widgets_album.py:929
 #, python-format
 msgid "Disc %s"
 msgstr ""
@@ -617,25 +613,25 @@ msgstr ""
 msgid "You need to install gstreamer-plugins-ugly"
 msgstr ""
 
-#: ../src/widgets_device.py:229
+#: ../src/widgets_device.py:231
 msgid "Unknown error while syncing, try to reboot your device"
 msgstr ""
 
-#: ../src/widgets_device.py:237
+#: ../src/widgets_device.py:239
 msgid "No free space available on device"
 msgstr ""
 
-#: ../src/widgets_playlist.py:492 ../src/widgets_playlist.py:495
+#: ../src/widgets_playlist.py:537 ../src/widgets_playlist.py:540
 msgid "New playlist "
 msgstr ""
 
 #. Need a copy, segfault on EOS 3.1
-#: ../src/widgets_playlist.py:551 ../src/widgets_playlist.py:802
+#: ../src/widgets_playlist.py:596 ../src/widgets_playlist.py:860
 #, python-format
 msgid "Remove \"%s\"?"
 msgstr ""
 
-#: ../src/widgets_playlist.py:810
+#: ../src/widgets_playlist.py:868
 msgid "Remove these tracks?"
 msgstr ""
 
@@ -884,26 +880,22 @@ msgid "Music"
 msgstr ""
 
 #: ../data/SettingsDialog.ui.h:27
-msgid "Select what will be available in party mode"
-msgstr ""
-
-#: ../data/SettingsDialog.ui.h:29
 msgid "Login:"
 msgstr ""
 
-#: ../data/SettingsDialog.ui.h:30
+#: ../data/SettingsDialog.ui.h:28
 msgid "Password:"
 msgstr ""
 
-#: ../data/SettingsDialog.ui.h:31
+#: ../data/SettingsDialog.ui.h:29
 msgid "Connect"
 msgstr ""
 
-#: ../data/SettingsDialog.ui.h:32
+#: ../data/SettingsDialog.ui.h:30
 msgid "You need to install pylast and gi secret"
 msgstr ""
 
-#: ../data/SettingsDialog.ui.h:33
+#: ../data/SettingsDialog.ui.h:31
 msgid "Configure Last.fm credentials"
 msgstr ""
 
@@ -923,8 +915,14 @@ msgstr ""
 msgid "Settings"
 msgstr ""
 
-#: ../data/ToolbarEnd.ui.h:6
+#: ../data/ToolbarEnd.ui.h:5
 msgid "Shuffle"
+msgstr ""
+
+#: ../data/ToolbarEnd.ui.h:6
+msgid ""
+"Party mode\n"
+"Right click to filter"
 msgstr ""
 
 #: ../data/TuneinPopover.ui.h:1
