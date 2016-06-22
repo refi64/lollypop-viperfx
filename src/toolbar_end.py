@@ -357,6 +357,9 @@ class ToolbarEnd(Gtk.Bin):
         if event.button == 3:
             popover = PartyPopover()
             popover.set_relative_to(eventbox)
+            self._next_popover.hide()
+            popover.connect('closed', self._on_popover_closed)
+            self._next_popover.inhibit(True)
             popover.show()
             return True
 
