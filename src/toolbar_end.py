@@ -35,20 +35,21 @@ class PartyPopover(Gtk.Popover):
         Gtk.Popover.__init__(self)
 
         party_grid = Gtk.Grid()
-        party_grid.set_property('margin-start', 5)
-        party_grid.set_property('margin-end', 5)
+        party_grid.set_property('margin-start', 10)
+        party_grid.set_property('margin-end', 10)
         party_grid.set_property('margin-bottom', 5)
         party_grid.set_property('margin-top', 5)
-        party_grid.set_column_spacing(5)
-        party_grid.set_row_spacing(5)
+        party_grid.set_column_spacing(10)
+        party_grid.set_row_spacing(7)
         party_grid.show()
         scrolled = Gtk.ScrolledWindow()
+        scrolled.set_policy(Gtk.PolicyType.NEVER, Gtk.PolicyType.AUTOMATIC)
         scrolled.add(party_grid)
         scrolled.show()
         self.add(scrolled)
         size = Lp().window.get_size()
-        self.set_size_request(size[0]*0.4,
-                              size[1]*0.7)
+        self.set_size_request(-1,
+                              size[1]*0.6)
 
         genres = Lp().genres.get()
         genres.insert(0, (Type.POPULARS, _("Populars")))
@@ -58,9 +59,7 @@ class PartyPopover(Gtk.Popover):
         x = 0
         for genre_id, genre in genres:
             label = Gtk.Label()
-            label.set_property('margin-start', 10)
             label.set_property('halign', Gtk.Align.START)
-            label.set_property('hexpand', True)
             label.set_ellipsize(Pango.EllipsizeMode.END)
             label.set_text(genre)
             label.set_tooltip_text(genre)
@@ -69,13 +68,13 @@ class PartyPopover(Gtk.Popover):
             if genre_id in ids:
                 switch.set_state(True)
             switch.connect("state-set", self._on_switch_state_set, genre_id)
-            switch.set_property('margin-end', 50)
             switch.show()
             party_grid.attach(label, x, i, 1, 1)
             party_grid.attach(switch, x+1, i, 1, 1)
             if x == 0:
                 x += 2
             else:
+                label.set_property('margin-start', 15)
                 i += 1
                 x = 0
 
