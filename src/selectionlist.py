@@ -102,6 +102,8 @@ class SelectionList(Gtk.ScrolledWindow):
         self._renderer0.set_property('ellipsize-set', True)
         self._renderer0.set_property('ellipsize', Pango.EllipsizeMode.END)
         self._renderer1 = Gtk.CellRendererPixbuf()
+        # 16px for Gtk.IconSize.MENU
+        self._renderer1.set_fixed_size(16, -1)
         column = Gtk.TreeViewColumn('')
         column.set_expand(True)
         column.pack_start(self._renderer0, True)
