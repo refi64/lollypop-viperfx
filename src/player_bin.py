@@ -40,6 +40,7 @@ class BinPlayer(BasePlayer):
         self._playbin = self._playbin1 = Gst.ElementFactory.make(
                                                            'playbin', 'player')
         self._playbin2 = Gst.ElementFactory.make('playbin', 'player')
+        self._preview = None
         self._plugins = self.plugins1 = PluginsPlayer(self._playbin1)
         self.plugins2 = PluginsPlayer(self._playbin2)
         self._volume_id = self._playbin.connect('notify::volume',
@@ -61,6 +62,20 @@ class BinPlayer(BasePlayer):
             bus.connect("message::tag", self._on_bus_message_tag)
         self._handled_error = None
         self._start_time = 0
+
+    @property
+    def preview(self):
+        """
+            Get a preview bin
+            @return Gst.Element
+        """
+        if self._preview is None:
+            output = Lp().settings.get_value('preview-output').get_string()
+            self._preview = Gst.ElementFactory.make('playbin', 'player')
+            pulse = Gst.ElementFactory.make('pulsesink', 'output')
+            pulse.set_property('device', output)
+            self._preview.set_property('audio-sink', pulse)
+        return self._preview
 
     def is_playing(self):
         """

@@ -10,7 +10,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-from gi.repository import GObject, Gtk, Gdk, Pango
+from gi.repository import GObject, Gtk, Gdk, Pango, GLib, Gst
 
 from cgi import escape
 
@@ -38,6 +38,8 @@ class Row(Gtk.ListBoxRow):
         self._artists_label = None
         self._track = Track(rowid)
         self._number = num
+        self._timeout_id = None
+        self._player_preview = None
         self._indicator = IndicatorWidget(self._track.id)
         self.set_indicator(Lp().player.current_track.id == self._track.id,
                            utils.is_loved(self._track.id))
@@ -152,6 +154,15 @@ class Row(Gtk.ListBoxRow):
 #######################
 # PRIVATE             #
 #######################
+    def _play_preview(self):
+        """
+            Play track
+            @param widget as Gtk.Widget
+        """
+        Lp().player.preview.set_property('uri', self._track.uri)
+        Lp().player.preview.set_state(Gst.State.PLAYING)
+        self._timeout_id = None
+
     def _on_map(self, widget):
         """
             Fix for Gtk < 3.18,
@@ -172,6 +183,9 @@ class Row(Gtk.ListBoxRow):
             @param widget as Gtk.Widget
             @param event as Gdk.Event
         """
+        if Lp().settings.get_value('preview-output').get_string() != '':
+            widget.connect('leave-notify-event', self._on_leave_notify)
+            self._timeout_id = GLib.timeout_add(500, self._play_preview)
         if self._menu_button.get_image() is None:
             image = Gtk.Image.new_from_icon_name('open-menu-symbolic',
                                                  Gtk.IconSize.MENU)
@@ -179,6 +193,18 @@ class Row(Gtk.ListBoxRow):
             self._menu_button.set_image(image)
             self._menu_button.connect('clicked', self._on_button_clicked)
             self._indicator.update_button()
+
+    def _on_leave_notify(self, widget, event):
+        """
+            Stop preview
+            @param widget as Gtk.Widget
+            @param event as Gdk.Event
+        """
+        if self._timeout_id is not None:
+            GLib.source_remove(self._timeout_id)
+            self._timeout_id = None
+        Lp().player.preview.set_state(Gst.State.NULL)
+        widget.disconnect_by_func(self._on_leave_notify)
 
     def _on_button_press(self, widget, event):
         """
