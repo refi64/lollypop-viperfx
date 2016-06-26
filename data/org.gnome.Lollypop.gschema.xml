@@ -79,7 +79,7 @@
         </key>
 	<key type="s" name="preview-output">
             <default>""</default>
-            <summary>Specify output while overing a track</summary>
+            <summary>Preview audio output</summary>
             <description>Pulseaudio only, example: alsa_output.pci-0000_00_14.2.analog-stereo</description>
         </key>
         <key type="s" name="favorite-cover">
