@@ -80,7 +80,7 @@
 	<key type="s" name="preview-output">
             <default>""</default>
             <summary>Audio output preview on track hover</summary>
-            <description>Pulseaudio only, example: alsa_output.pci-0000_00_14.2.analog-stereo</description>
+            <description>Pulseaudio only. Example: alsa_output.pci-0000_00_14.2.analog-stereo. Command to get outputs: $ pacmd list-sinks|grep 'name:'</description>
         </key>
         <key type="s" name="favorite-cover">
             <default>"cover.jpg"</default>
