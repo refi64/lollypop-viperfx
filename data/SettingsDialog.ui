@@ -268,7 +268,7 @@
               </packing>
             </child>
             <child>
-              <object class="GtkComboBoxText" id="orderby">
+              <object class="GtkComboBoxText" id="combo_orderby">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
                 <property name="halign">end</property>
@@ -458,6 +458,33 @@
               <packing>
                 <property name="left_attach">1</property>
                 <property name="top_attach">4</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkLabel" id="preview">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="halign">start</property>
+                <property name="label" translatable="yes">Preview tracks on</property>
+              </object>
+              <packing>
+                <property name="left_attach">0</property>
+                <property name="top_attach">6</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkComboBoxText" id="combo_preview">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="active">0</property>
+                <items>
+                  <item id="" translatable="yes">None audio device</item>
+                </items>
+                <signal name="changed" handler="_on_preview_changed" swapped="no"/>
+              </object>
+              <packing>
+                <property name="left_attach">1</property>
+                <property name="top_attach">6</property>
               </packing>
             </child>
           </object>

@@ -10,7 +10,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-from gi.repository import Gtk, Gdk, GLib, Gio
+from gi.repository import Gtk, Gdk, GLib, Gio, Pango
 try:
     from gi.repository import Secret
 except:
@@ -20,6 +20,7 @@ except:
 from gettext import gettext as _
 from threading import Thread
 from shutil import which
+from re import findall, DOTALL
 
 from lollypop.define import Lp, SecretSchema, SecretAttributes
 from lollypop.cache import InfoCache
@@ -133,8 +134,10 @@ class SettingsDialog:
         switch_repeat = builder.get_object('switch_repeat')
         switch_repeat.set_state(not Lp().settings.get_value('repeat'))
 
-        combo_orderby = builder.get_object('orderby')
+        combo_orderby = builder.get_object('combo_orderby')
         combo_orderby.set_active(Lp().settings.get_enum(('orderby')))
+
+        combo_preview = builder.get_object('combo_preview')
 
         scale_coversize = builder.get_object('scale_coversize')
         scale_coversize.set_range(150, 300)
@@ -146,6 +149,8 @@ class SettingsDialog:
 
         main_chooser_box = builder.get_object('main_chooser_box')
         self._chooser_box = builder.get_object('chooser_box')
+
+        self._set_outputs(combo_preview)
 
         #
         # Music tab
@@ -198,6 +203,45 @@ class SettingsDialog:
 #######################
 # PRIVATE             #
 #######################
+    def _get_pa_outputs(self):
+        """
+            Get PulseAudio outputs
+            @return name/device as [(str, str)]
+        """
+        ret = []
+        argv = ["pacmd", "list-sinks", None]
+        try:
+            (s, out, err, e) = GLib.spawn_sync(None, argv, None,
+                                               GLib.SpawnFlags.SEARCH_PATH,
+                                               None)
+            string = out.decode('utf-8')
+            string += string
+            devices = findall('name: <([^>]*)>', string, DOTALL)
+            names = findall('device.product.name = "([^"]*)"', string, DOTALL)
+            for name in names:
+                ret.append((name, devices.pop(0)))
+        except Exception as e:
+            print("SettingsDialog::_get_pa_outputse()", e)
+        return ret
+
+    def _set_outputs(self, combo):
+        """
+            Set outputs in combo
+            @parma combo as Gtk.ComboxBoxText
+        """
+        current = Lp().settings.get_value('preview-output').get_string()
+        renderer = combo.get_cells()[0]
+        renderer.set_property('ellipsize', Pango.EllipsizeMode.END)
+        renderer.set_property('max-width-chars', 30)
+        outputs = self._get_pa_outputs()
+        if outputs:
+            for output in outputs:
+                combo.append(output[1], output[0])
+                if output[1] == current:
+                    combo.set_active_id(output[1])
+        else:
+            combo.set_sensitive(False)
+
     def _add_chooser(self, directory=None):
         """
             Add a new chooser widget
@@ -440,6 +484,15 @@ class SettingsDialog:
                 self._popover.set_modal(False)
                 self._popover.add(self._popover_content)
             self._popover.show_all()
+
+    def _on_preview_changed(self, combo):
+        """
+            Update preview setting
+            @param combo as Gtk.ComboBoxText
+        """
+        Lp().settings.set_value('preview-output',
+                                GLib.Variant('s', combo.get_active_id()))
+        Lp().player.set_preview_output()
 
     def _on_mix_button_press(self, widget, event):
         """

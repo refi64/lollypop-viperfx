@@ -70,12 +70,19 @@ class BinPlayer(BasePlayer):
             @return Gst.Element
         """
         if self._preview is None:
-            output = Lp().settings.get_value('preview-output').get_string()
             self._preview = Gst.ElementFactory.make('playbin', 'player')
+            self.set_preview_output()
+        return self._preview
+
+    def set_preview_output(self):
+        """
+            Set preview output
+        """
+        if self._preview is not None:
+            output = Lp().settings.get_value('preview-output').get_string()
             pulse = Gst.ElementFactory.make('pulsesink', 'output')
             pulse.set_property('device', output)
             self._preview.set_property('audio-sink', pulse)
-        return self._preview
 
     def is_playing(self):
         """
