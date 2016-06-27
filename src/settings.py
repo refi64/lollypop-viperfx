@@ -215,9 +215,8 @@ class SettingsDialog:
                                                GLib.SpawnFlags.SEARCH_PATH,
                                                None)
             string = out.decode('utf-8')
-            string += string
             devices = findall('name: <([^>]*)>', string, DOTALL)
-            names = findall('device.product.name = "([^"]*)"', string, DOTALL)
+            names = findall('device.description = "([^"]*)"', string, DOTALL)
             for name in names:
                 ret.append((name, devices.pop(0)))
         except Exception as e:
