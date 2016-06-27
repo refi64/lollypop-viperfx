@@ -161,6 +161,7 @@ class Row(Gtk.ListBoxRow):
         """
         Lp().player.preview.set_property('uri', self._track.uri)
         Lp().player.preview.set_state(Gst.State.PLAYING)
+        self.set_indicator(True, False)
         self._timeout_id = None
 
     def _on_map(self, widget):
@@ -203,6 +204,8 @@ class Row(Gtk.ListBoxRow):
         if self._timeout_id is not None:
             GLib.source_remove(self._timeout_id)
             self._timeout_id = None
+        self.set_indicator(Lp().player.current_track.id == self._track.id,
+                           utils.is_loved(self._track.id))
         Lp().player.preview.set_state(Gst.State.NULL)
         widget.disconnect_by_func(self._on_leave_notify)
 
