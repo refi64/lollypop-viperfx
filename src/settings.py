@@ -231,7 +231,7 @@ class SettingsDialog:
         current = Lp().settings.get_value('preview-output').get_string()
         renderer = combo.get_cells()[0]
         renderer.set_property('ellipsize', Pango.EllipsizeMode.END)
-        renderer.set_property('max-width-chars', 30)
+        renderer.set_property('max-width-chars', 60)
         outputs = self._get_pa_outputs()
         if outputs:
             for output in outputs:
