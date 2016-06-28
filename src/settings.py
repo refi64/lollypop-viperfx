@@ -493,6 +493,17 @@ class SettingsDialog:
                                 GLib.Variant('s', combo.get_active_id()))
         Lp().player.set_preview_output()
 
+    def _on_preview_query_tooltip(self, combo, x, y, keyboard, tooltip):
+        """
+            Show tooltip if needed
+            @param combo as Gtk.ComboBoxText
+            @param x as int
+            @param y as int
+            @param keyboard as bool
+            @param tooltip as Gtk.Tooltip
+        """
+        combo.set_tooltip_text(combo.get_active_text())
+
     def _on_mix_button_press(self, widget, event):
         """
             Show mix popover on long press

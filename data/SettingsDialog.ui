@@ -476,11 +476,13 @@
               <object class="GtkComboBoxText" id="combo_preview">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
+                <property name="has_tooltip">True</property>
                 <property name="active">0</property>
                 <items>
                   <item id="" translatable="yes">None audio device</item>
                 </items>
                 <signal name="changed" handler="_on_preview_changed" swapped="no"/>
+                <signal name="query-tooltip" handler="_on_preview_query_tooltip" swapped="no"/>
               </object>
               <packing>
                 <property name="left_attach">1</property>
