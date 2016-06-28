@@ -160,6 +160,7 @@ class Row(Gtk.ListBoxRow):
             @param widget as Gtk.Widget
         """
         Lp().player.preview.set_property('uri', self._track.uri)
+        Lp().player.set_preview_position(self._track.duration / 2)
         Lp().player.preview.set_state(Gst.State.PLAYING)
         self.set_indicator(True, False)
         self._timeout_id = None

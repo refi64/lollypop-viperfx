@@ -41,6 +41,7 @@ class BinPlayer(BasePlayer):
                                                            'playbin', 'player')
         self._playbin2 = Gst.ElementFactory.make('playbin', 'player')
         self._preview = None
+        self._preview_position = 0
         self._plugins = self.plugins1 = PluginsPlayer(self._playbin1)
         self.plugins2 = PluginsPlayer(self._playbin2)
         self._volume_id = self._playbin.connect('notify::volume',
@@ -71,6 +72,9 @@ class BinPlayer(BasePlayer):
         """
         if self._preview is None:
             self._preview = Gst.ElementFactory.make('playbin', 'player')
+            bus = self._preview.get_bus()
+            bus.add_signal_watch()
+            bus.connect('message::stream-start', self._on_preview_stream_start)
             self.set_preview_output()
         return self._preview
 
@@ -83,6 +87,13 @@ class BinPlayer(BasePlayer):
             pulse = Gst.ElementFactory.make('pulsesink', 'output')
             pulse.set_property('device', output)
             self._preview.set_property('audio-sink', pulse)
+
+    def set_preview_position(self, position):
+        """
+            Set preview position
+            @param position as int
+        """
+        self._preview_position = position
 
     def is_playing(self):
         """
@@ -507,6 +518,18 @@ class BinPlayer(BasePlayer):
         if self._next_track.id is not None:
             self._load_track(self._next_track)
         self._track_finished(finished, finished_start_time)
+
+    def _on_preview_stream_start(self, bus, message):
+        """
+            On preview stream start
+            Emit "current-changed" to notify others components
+            @param bus as Gst.Bus
+            @param message as Gst.Message
+        """
+        self._preview.seek_simple(Gst.Format.TIME,
+                                  Gst.SeekFlags.FLUSH |
+                                  Gst.SeekFlags.KEY_UNIT,
+                                  self._preview_position * Gst.SECOND)
 
     def _on_stream_start(self, bus, message):
         """
