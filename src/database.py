@@ -60,8 +60,8 @@ class Database:
                         album_id INT NOT NULL,
                         year INT,
                         popularity INT NOT NULL,
-                        ltime INT,
-                        mtime INT)'''
+                        ltime INT NOT NULL,
+                        mtime INT NOT NULL)'''
     create_track_artists = '''CREATE TABLE track_artists (
                                                 track_id INT NOT NULL,
                                                 artist_id INT NOT NULL)'''

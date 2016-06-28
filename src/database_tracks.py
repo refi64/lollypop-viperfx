@@ -481,17 +481,6 @@ class TracksDatabase:
                                   ORDER BY random() LIMIT 100")
             return list(itertools.chain(*result))
 
-    def set_ltime(self, track_id, ltime):
-        """
-            Set ltime
-            @param track id as int
-            @param mtime as int
-            @warning: commit needed
-        """
-        with SqlCursor(Lp().db) as sql:
-            sql.execute("UPDATE tracks set ltime=? WHERE rowid=?",
-                        (ltime, track_id))
-
     def set_popularity(self, track_id, popularity, commit=False):
         """
             Set popularity

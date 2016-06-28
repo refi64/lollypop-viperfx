@@ -41,6 +41,7 @@ class DatabaseUpgrade:
             7: "ALTER TABLE tracks ADD discname TEXT",
             8: "CREATE index idx_ag ON album_genres(album_id)",
             9: "CREATE index idx_tg ON track_genres(track_id)",
+            10: "UPDATE tracks set ltime=0 where ltime is null",
                          }
 
     """
