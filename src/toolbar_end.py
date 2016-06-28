@@ -155,6 +155,7 @@ class ToolbarEnd(Gtk.Bin):
         app.set_accels_for_action("app.list", ["<Control>i"])
         self._list_popover = None
         Lp().player.connect('party-changed', self._on_party_changed)
+        Lp().player.connect('lock-changed', self._on_lock_changed)
 
     def setup_menu(self, menu):
         """
@@ -197,6 +198,15 @@ class ToolbarEnd(Gtk.Bin):
 #######################
 # PRIVATE             #
 #######################
+    def _on_lock_changed(self, player):
+        """
+            Lock toolbar
+            @param player as Player
+        """
+        self._party_button.set_sensitive(not player.locked)
+        self._list_button.set_sensitive(not player.locked)
+        self._shuffle_button.set_sensitive(not player.locked)
+
     def _on_shuffle_button_clicked(self, button):
         """
             Hide next popover
