@@ -424,7 +424,8 @@ class Window(Gtk.ApplicationWindow, Container):
         if seek > Lp().player.current_track.duration:
             seek = Lp().player.current_track.duration - 2
         Lp().player.seek(seek)
-        self._toolbar.update_position(seek*60)
+        if Lp().player.current_track.id is not None:
+            self._toolbar.update_position(seek*60)
 
     def _on_player_action(self, action, param):
         """
