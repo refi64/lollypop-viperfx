@@ -275,7 +275,8 @@ class LastFM(LastFMNetwork):
             if populate_loved:
                 self._populate_loved_tracks()
         except Exception as e:
-            print("Lastfm::_connect(): %s" % e)
+            debug("Lastfm::_connect(): %s" % e)
+            self._is_auth = False
 
     def _scrobble(self, artist, album, title, timestamp, duration, first=True):
         """
