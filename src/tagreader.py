@@ -276,14 +276,16 @@ class ScannerTagReader(TagReader):
                 # Get artist id, add it if missing
                 artist_id = Lp().artists.get_id(artist)
                 if i >= sortlen or sortsplit[i] == "":
-                    sortname = format_artist_name(artist)
+                    sortname = None
                 else:
                     sortname = sortsplit[i].strip()
                 if artist_id is None:
+                    if sortname is None:
+                        sortname = format_artist_name(artist)
                     artist_id = Lp().artists.add(artist, sortname)
                     if artist in album_artists:
                         new_artist_ids.append(artist_id)
-                else:
+                elif sortname is not None:
                     Lp().artists.set_sortname(artist_id, sortname)
                 i += 1
                 artist_ids.append(artist_id)
@@ -308,13 +310,15 @@ class ScannerTagReader(TagReader):
                 # Get album artist id, add it if missing
                 artist_id = Lp().artists.get_id(artist)
                 if i >= sortlen or sortsplit[i] == "":
-                    sortname = format_artist_name(artist)
+                    sortname = None
                 else:
                     sortname = sortsplit[i].strip()
                 if artist_id is None:
+                    if sortname is None:
+                        sortname = format_artist_name(artist)
                     artist_id = Lp().artists.add(artist, sortname)
                     new_artist_ids.append(artist_id)
-                else:
+                elif sortname is not None:
                     Lp().artists.set_sortname(artist_id, sortname)
                 i += 1
                 artist_ids.append(artist_id)
