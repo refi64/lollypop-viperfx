@@ -1,6 +1,6 @@
 # 
 # Translators:
-# Fitoschido, 2016
+# Adolfo Jayme-Barrientos, 2016
 # Ricardo Enrique Lugo Ochoa <ricardol8a@hotmail.com>, 2015
 msgid ""
 msgstr ""

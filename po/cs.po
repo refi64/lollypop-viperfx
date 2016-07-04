@@ -11,8 +11,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lollypop\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-06-08 10:51+0200\n"
-"PO-Revision-Date: 2016-06-08 20:18+0000\n"
+"POT-Creation-Date: 2016-06-28 13:39+0200\n"
+"PO-Revision-Date: 2016-06-28 17:03+0000\n"
 "Last-Translator: fri\n"
 "Language-Team: Czech (http://www.transifex.com/gnumdk/lollypop/language/cs/)\n"
 "MIME-Version: 1.0\n"
@@ -90,107 +90,117 @@ msgid "INTERNAL"
 msgstr "VNITŘNÍ"
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:18
+msgid "Audio output preview on track hover"
+msgstr "Ukázka výstupu zvuku při přejetí nad skladbou"
+
+#: ../data/org.gnome.Lollypop.gschema.xml.h:19
+msgid ""
+"Pulseaudio only. Example: alsa_output.pci-0000_00_14.2.analog-stereo. "
+"Command to get outputs: $ pacmd list-sinks|grep 'name:'"
+msgstr "Pouze Pulseaudio. Příklad: alsa_output.pci-0000_00_14.2.analog-stereo. Příkaz pro získání výstupů: $ pacmd list-sinks|grep 'name:'"
+
+#: ../data/org.gnome.Lollypop.gschema.xml.h:20
 msgid "Favorite cover file"
 msgstr "Zařadit soubor s obalem do oblíbených"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:19
+#: ../data/org.gnome.Lollypop.gschema.xml.h:21
 msgid "Restart needed"
 msgstr "Je potřeba program spustit znovu"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:20
+#: ../data/org.gnome.Lollypop.gschema.xml.h:22
 msgid "Database version"
 msgstr "Verze databáze"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:21
+#: ../data/org.gnome.Lollypop.gschema.xml.h:23
 msgid ""
 "Reset this value will reset the database, popular albums will be restored"
 msgstr "Vynulování této hodnoty vynuluje databázi, oblíbená alba budou obnovena"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:22 ../data/SettingsDialog.ui.h:7
+#: ../data/org.gnome.Lollypop.gschema.xml.h:24 ../data/SettingsDialog.ui.h:7
 msgid "Albums cover size"
 msgstr "Velikost obalu alba"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:23
+#: ../data/org.gnome.Lollypop.gschema.xml.h:25
 msgid "Replay gain value in db"
 msgstr "Hodnota vyrovnání hlasitosti v dB"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:24
+#: ../data/org.gnome.Lollypop.gschema.xml.h:26
 msgid "Between -15 and 15"
 msgstr "Mezi -15 a 15"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:25
+#: ../data/org.gnome.Lollypop.gschema.xml.h:27
 msgid "Sync all albums(MTP)"
 msgstr "Seřídit všechna alba (MTP)"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:26
+#: ../data/org.gnome.Lollypop.gschema.xml.h:28
 msgid "Convert to MP3(MTP)"
 msgstr "Převést do MP3 (MTP)"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:27
+#: ../data/org.gnome.Lollypop.gschema.xml.h:29
 msgid "Normalize MP3(MTP)"
 msgstr "Normalizovat MP3 (MTP)"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:28 ../data/SettingsDialog.ui.h:16
+#: ../data/org.gnome.Lollypop.gschema.xml.h:30 ../data/SettingsDialog.ui.h:16
 msgid "Auto update music"
 msgstr "Automatická aktualizace hudby"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:29
+#: ../data/org.gnome.Lollypop.gschema.xml.h:31
 msgid "Show genres list"
 msgstr "Ukázat seznam žánrů"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:30 ../data/SettingsDialog.ui.h:8
+#: ../data/org.gnome.Lollypop.gschema.xml.h:32 ../data/SettingsDialog.ui.h:8
 msgid "Show artist artwork"
 msgstr "Ukázat obal umělce"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:31
+#: ../data/org.gnome.Lollypop.gschema.xml.h:33
 msgid "Use dark gtk theme"
 msgstr "Použít tmavý motiv GTK"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:32
+#: ../data/org.gnome.Lollypop.gschema.xml.h:34
 msgid "Disable the use client side window decorations (headerbar)"
 msgstr "Zakázat používání okenních dekorací na straně klienta (hlavička)"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:33 ../data/SettingsDialog.ui.h:6
+#: ../data/org.gnome.Lollypop.gschema.xml.h:35 ../data/SettingsDialog.ui.h:6
 msgid "Show compilations in albums view"
 msgstr "Ukázat kompilace v pohledu na alba"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:34 ../data/SettingsDialog.ui.h:18
+#: ../data/org.gnome.Lollypop.gschema.xml.h:36 ../data/SettingsDialog.ui.h:18
 msgid "Continue playback when closed"
 msgstr "Pokračovat v přehrávání při zavření"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:35
+#: ../data/org.gnome.Lollypop.gschema.xml.h:37
 msgid "Restore previous state"
 msgstr "Obnovit předchozí stav"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:36
+#: ../data/org.gnome.Lollypop.gschema.xml.h:38
 msgid "Disable MPRIS"
 msgstr "Zakázat MPRIS"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:37
+#: ../data/org.gnome.Lollypop.gschema.xml.h:39
 msgid "Disable notifications"
 msgstr "Zakázat oznámení"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:38
+#: ../data/org.gnome.Lollypop.gschema.xml.h:40
 msgid "Show track number from tags"
 msgstr "Ukázat číslo skladby ze značek"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:39 ../data/SettingsDialog.ui.h:19
+#: ../data/org.gnome.Lollypop.gschema.xml.h:41
 msgid "Mix songs"
 msgstr "Zamíchat skladby"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:40
+#: ../data/org.gnome.Lollypop.gschema.xml.h:42
 msgid "Mix songs only in party mode"
 msgstr "Zamíchat písně jen ve večírkovém režimu"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:41
+#: ../data/org.gnome.Lollypop.gschema.xml.h:43
 msgid "Mix duration"
 msgstr "Zamíchat dobu trvání"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:42
+#: ../data/org.gnome.Lollypop.gschema.xml.h:44
 msgid "Shuffle mode"
 msgstr "Režim míchání"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:43 ../data/SettingsDialog.ui.h:9
+#: ../data/org.gnome.Lollypop.gschema.xml.h:45 ../data/SettingsDialog.ui.h:9
 msgid "Order albums by"
 msgstr "Řadit alba podle"
 
@@ -241,18 +251,17 @@ msgid "Genre/Artist/Cover browsing"
 msgstr "Procházení podle žánrů/umělců/obalů"
 
 #: ../data/lollypop.appdata.xml.in.h:8 ../src/playlists.py:239
-#: ../data/ArtistInfo.ui.h:5 ../data/ToolbarEnd.ui.h:7
+#: ../data/ArtistInfo.ui.h:5 ../data/ToolbarEnd.ui.h:8
 msgid "Search"
 msgstr "Hledat"
 
 #: ../data/lollypop.appdata.xml.in.h:9 ../src/pop_menu.py:391
-#: ../src/pop_menu.py:412 ../src/toolbar_end.py:285
+#: ../src/pop_menu.py:412 ../src/toolbar_end.py:377
 #: ../data/QueuePopover.ui.h:2
 msgid "Queue"
 msgstr "Řada"
 
-#: ../data/lollypop.appdata.xml.in.h:10 ../data/SettingsDialog.ui.h:28
-#: ../data/ToolbarEnd.ui.h:5
+#: ../data/lollypop.appdata.xml.in.h:10
 msgid "Party mode"
 msgstr "Večírek"
 
@@ -349,59 +358,60 @@ msgstr "Vaše hudba se aktualizuje"
 
 #: ../src/collectionscanner.py:248 ../src/database_albums.py:299
 #: ../src/database_artists.py:104 ../src/database_genres.py:69
-#: ../src/database_tracks.py:232 ../src/selectionlist.py:278
+#: ../src/database_tracks.py:232 ../src/selectionlist.py:280
 #: ../src/tagreader.py:87 ../src/tagreader.py:102 ../src/tagreader.py:117
 #: ../src/tagreader.py:162 ../src/tagreader.py:177 ../src/tagreader.py:180
 #: ../src/tagreader.py:190 ../src/tagreader.py:197
 msgid "Unknown"
 msgstr "Neznámý"
 
-#: ../src/container.py:420
+#: ../src/container.py:422
 msgid "Popular albums"
 msgstr "Oblíbená alba"
 
-#: ../src/container.py:421
+#: ../src/container.py:423
 msgid "Recently added albums"
 msgstr "Nedávno přidaná alba"
 
-#: ../src/container.py:422
+#: ../src/container.py:424
 msgid "Random albums"
 msgstr "Náhodná alba"
 
-#: ../src/container.py:423 ../src/pop_menu.py:321 ../src/pop_menu.py:394
-#: ../src/pop_menu.py:414
+#: ../src/container.py:425 ../src/pop_menu.py:321 ../src/pop_menu.py:394
+#: ../src/pop_menu.py:414 ../src/widgets_device.py:86
+#: ../src/widgets_playlist.py:503
 msgid "Playlists"
 msgstr "Seznamy skladeb"
 
-#: ../src/container.py:424
+#: ../src/container.py:426
 msgid "Radios"
 msgstr "Rádia"
 
-#: ../src/container.py:426
+#: ../src/container.py:428
 msgid "All artists"
 msgstr "Všichni umělci"
 
-#: ../src/container.py:428 ../data/DeviceManagerWidget.ui.h:1
+#: ../src/container.py:430 ../data/DeviceManagerWidget.ui.h:1
 msgid "All albums"
 msgstr "Všechna alba"
 
-#: ../src/container.py:476
+#: ../src/container.py:478
 msgid "Compilations"
 msgstr "Kompilace"
 
-#: ../src/container.py:500 ../src/playlists.py:231
+#: ../src/container.py:502 ../src/playlists.py:231
 msgid "Popular tracks"
 msgstr "Oblíbené skladby"
 
-#: ../src/container.py:501 ../src/playlists.py:233
+#: ../src/container.py:503 ../src/playlists.py:233
 msgid "Recently played"
 msgstr "Nedávno hráno"
 
-#: ../src/container.py:502 ../src/playlists.py:235
+#: ../src/container.py:504 ../src/playlists.py:235
 msgid "Never played"
 msgstr "Nikdy nehráno"
 
-#: ../src/container.py:503 ../src/playlists.py:237
+#: ../src/container.py:505 ../src/playlists.py:237
 msgid "Random tracks"
 msgstr "Náhodné skladby"
 
@@ -410,7 +420,7 @@ msgid "Pause"
 msgstr "Pozastavit"
 
 #: ../src/controllers.py:86 ../src/controllers.py:114 ../src/pop_tunein.py:167
-#: ../src/widgets_album.py:474 ../src/widgets_radio.py:168
+#: ../src/widgets_album.py:487 ../src/widgets_radio.py:168
 #: ../data/AlbumDetailedWidget.ui.h:1 ../data/ArtistView.ui.h:2
 #: ../data/ToolbarPlayback.ui.h:2
 msgid "Play"
@@ -441,7 +451,7 @@ msgstr "od %s"
 msgid "by %s, from %s"
 msgstr "od %s, na %s"
 
-#: ../src/player_bin.py:447
+#: ../src/player_bin.py:471
 #, python-format
 msgid "File doesn't exist: %s"
 msgstr "Soubor neexistuje: %s"
@@ -450,16 +460,16 @@ msgstr "Soubor neexistuje: %s"
 msgid "Loved tracks"
 msgstr "Zamilované skladby"
 
-#: ../src/pop_albums.py:287
+#: ../src/pop_albums.py:290
 msgid "Clear albums"
 msgstr "Vyprázdnit alba"
 
-#: ../src/pop_albums.py:295 ../src/view_artist.py:50 ../data/ArtistInfo.ui.h:8
+#: ../src/pop_albums.py:298 ../src/view_artist.py:50 ../data/ArtistInfo.ui.h:8
 #: ../data/ArtistView.ui.h:4
 msgid "Go to current track"
 msgstr "Jít na nynější skladbu"
 
-#: ../src/pop_albums.py:296 ../src/toolbar_end.py:289
+#: ../src/pop_albums.py:299 ../src/toolbar_end.py:381
 msgid "Playing albums"
 msgstr "Přehrávání alb"
 
@@ -514,7 +524,7 @@ msgstr "Upravit údaje"
 msgid "Edit"
 msgstr "Upravit"
 
-#: ../src/pop_radio.py:83 ../src/pop_tunein.py:173 ../src/view_artist.py:165
+#: ../src/pop_radio.py:83 ../src/pop_tunein.py:173 ../src/view_artist.py:166
 #: ../data/ArtistView.ui.h:3
 msgid "Add"
 msgstr "Přidat"
@@ -531,27 +541,27 @@ msgstr "Počkejte, prosím..."
 msgid "Can't connect to TuneIn..."
 msgstr "Nelze se připojit k TuneIn..."
 
-#: ../src/settings.py:90 ../src/settings.py:93 ../data/SettingsDialog.ui.h:3
+#: ../src/settings.py:91 ../src/settings.py:94 ../data/SettingsDialog.ui.h:3
 msgid "Preferences"
 msgstr "Nastavení"
 
-#: ../src/settings.py:118
+#: ../src/settings.py:119
 msgid "You need to install kid3-cli"
 msgstr "Je potřeba nainstalovat kid3-cli"
 
-#: ../src/settings.py:180
+#: ../src/toolbar_end.py:55
 msgid "Populars"
 msgstr "Oblíbené"
 
-#: ../src/settings.py:181
+#: ../src/toolbar_end.py:56
 msgid "Recently added"
 msgstr "Nedávno přidáno"
 
-#: ../src/toolbar_end.py:283
+#: ../src/toolbar_end.py:375
 msgid "Externals tracks playing"
 msgstr "Přehrávání vnějších skladeb"
 
-#: ../src/toolbar_end.py:287
+#: ../src/toolbar_end.py:379
 msgid "Playing playlists"
 msgstr "Přehrávání seznamů skladeb"
 
@@ -561,7 +571,7 @@ msgstr "Přehrávání seznamů skladeb"
 msgid "The the"
 msgstr "\"The\""
 
-#: ../src/view_artist.py:160 ../src/widgets_album.py:221
+#: ../src/view_artist.py:161 ../src/widgets_album.py:233
 msgid "Remove"
 msgstr "Odstranit"
 
@@ -584,34 +594,34 @@ msgstr "Seřídit %s"
 msgid "Cancel synchronization"
 msgstr "Zrušit seřizování"
 
-#: ../src/widgets_album.py:217
+#: ../src/widgets_album.py:229
 msgid "Append"
 msgstr "Připojit"
 
-#: ../src/widgets_album.py:485
+#: ../src/widgets_album.py:498
 msgid "Play albums"
 msgstr "Přehrát alba"
 
-#: ../src/widgets_album.py:495 ../data/AlbumDetailedWidget.ui.h:2
+#: ../src/widgets_album.py:508 ../data/AlbumDetailedWidget.ui.h:2
 msgid "Change artwork"
 msgstr "Změnit obal"
 
-#: ../src/widgets_album.py:658
+#: ../src/widgets_album.py:670
 #, python-format
 msgid "%s h  %s m"
 msgstr "%s h  %s m"
 
-#: ../src/widgets_album.py:660
+#: ../src/widgets_album.py:672
 #, python-format
 msgid "%s h"
 msgstr "%s h"
 
-#: ../src/widgets_album.py:662
+#: ../src/widgets_album.py:674
 #, python-format
 msgid "%s m"
 msgstr "%s m"
 
-#: ../src/widgets_album.py:919
+#: ../src/widgets_album.py:929
 #, python-format
 msgid "Disc %s"
 msgstr "Disk %s"
@@ -620,25 +630,25 @@ msgstr "Disk %s"
 msgid "You need to install gstreamer-plugins-ugly"
 msgstr "Potřebujete nainstalovat gstreamer-plugins-ugly"
 
-#: ../src/widgets_device.py:229
+#: ../src/widgets_device.py:231
 msgid "Unknown error while syncing, try to reboot your device"
 msgstr "Při seřizování nastala neznámá chyba. pokuste se své zařízení zavést znovu"
 
-#: ../src/widgets_device.py:237
+#: ../src/widgets_device.py:239
 msgid "No free space available on device"
 msgstr "Na zařízení není žádné volné místo"
 
-#: ../src/widgets_playlist.py:491 ../src/widgets_playlist.py:494
+#: ../src/widgets_playlist.py:537 ../src/widgets_playlist.py:540
 msgid "New playlist "
 msgstr "Nový seznam skladeb"
 
 #. Need a copy, segfault on EOS 3.1
-#: ../src/widgets_playlist.py:550 ../src/widgets_playlist.py:801
+#: ../src/widgets_playlist.py:596 ../src/widgets_playlist.py:860
 #, python-format
 msgid "Remove \"%s\"?"
 msgstr "Odstranit \"%s\"?"
 
-#: ../src/widgets_playlist.py:809
+#: ../src/widgets_playlist.py:868
 msgid "Remove these tracks?"
 msgstr "Odstranit tyto skladby?"
 
@@ -858,6 +868,10 @@ msgstr "Vzhled"
 msgid "Restore state on startup"
 msgstr "Obnovit stav při spuštění"
 
+#: ../data/SettingsDialog.ui.h:19
+msgid "Mix tracks"
+msgstr "Zamíchat skladby"
+
 #: ../data/SettingsDialog.ui.h:20
 msgid "Long press to show options"
 msgstr "Dlouze stiskněte pro ukázání možností"
@@ -871,24 +885,28 @@ msgid "Save artwork in files"
 msgstr "Uložit obaly do souborů"
 
 #: ../data/SettingsDialog.ui.h:23
+msgid "Preview tracks on"
+msgstr "Předvést skladby při"
+
+#: ../data/SettingsDialog.ui.h:24
+msgid "None audio device"
+msgstr "Žádné zvukové zařízení"
+
+#: ../data/SettingsDialog.ui.h:25
 msgid "Configure lollypop behaviour"
 msgstr "Nastavit chování Lollypopu"
 
-#: ../data/SettingsDialog.ui.h:24
+#: ../data/SettingsDialog.ui.h:26
 msgid "Behaviour"
 msgstr "Chování"
 
-#: ../data/SettingsDialog.ui.h:25
+#: ../data/SettingsDialog.ui.h:27
 msgid "Select music folders"
 msgstr "Vybrat složky s hudbou"
 
-#: ../data/SettingsDialog.ui.h:26
+#: ../data/SettingsDialog.ui.h:28
 msgid "Music"
 msgstr "Hudba"
-
-#: ../data/SettingsDialog.ui.h:27
-msgid "Select what will be available in party mode"
-msgstr "Vyberte, co bude povoleno ve večírkovém režimu"
 
 #: ../data/SettingsDialog.ui.h:29
 msgid "Login:"
@@ -926,9 +944,15 @@ msgstr "Zamíchat skladby"
 msgid "Settings"
 msgstr "Nastavení"
 
-#: ../data/ToolbarEnd.ui.h:6
+#: ../data/ToolbarEnd.ui.h:5
 msgid "Shuffle"
 msgstr "Zamíchat"
+
+#: ../data/ToolbarEnd.ui.h:6
+msgid ""
+"Party mode\n"
+"Right click to filter"
+msgstr "Večírkový režim\nKlepnutí pravým tlačítkem pro filtrování"
 
 #: ../data/TuneinPopover.ui.h:1
 msgid "Go back"

@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lollypop\n"
 "POT-Creation-Date: 2016-05-09 15:53+0200\n"
-"PO-Revision-Date: 2016-05-31 01:14+0000\n"
-"Last-Translator: Lucas Miranda <Liddack@outlook.com>\n"
+"PO-Revision-Date: 2016-06-26 17:08+0000\n"
+"Last-Translator: Laís Figueiredo <laisfigsantos@gmail.com>\n"
 "Language-Team: Portuguese (Brazil) (http://www.transifex.com/gnumdk/lollypop/language/pt_BR/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -20,7 +20,7 @@ msgstr ""
 #. Put one translator per line, in the form NAME <EMAIL>, YEAR1, YEAR2
 msgctxt "_"
 msgid "translator-credits"
-msgstr "translator-credits"
+msgstr "Ian Brunelli <ian@brunelli.me>\nLucas Miranda <liddack@outlook.com>\nLaís Figueiredo <laisfigsantos@gmail.com>"
 
 #. (itstool) path: info/desc
 #: C/index.page:7

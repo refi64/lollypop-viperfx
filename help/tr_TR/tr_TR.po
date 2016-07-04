@@ -1,6 +1,6 @@
 # 
 # Translators:
-# Bilal <kira.gazerock@gmail.com>, 2015
+# Bilal, 2015
 # Serkan Algur <info@wpadami.com>, 2015
 msgid ""
 msgstr ""

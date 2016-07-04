@@ -11,9 +11,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lollypop\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-06-08 10:51+0200\n"
-"PO-Revision-Date: 2016-06-11 15:17+0000\n"
-"Last-Translator: mabier <ma_120420@msn.com>\n"
+"POT-Creation-Date: 2016-06-28 13:39+0200\n"
+"PO-Revision-Date: 2016-06-28 11:39+0000\n"
+"Last-Translator: Cédric Bellegarde <web@adishatz.org>\n"
 "Language-Team: Chinese (China) (http://www.transifex.com/gnumdk/lollypop/language/zh_CN/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -90,107 +90,117 @@ msgid "INTERNAL"
 msgstr "内部"
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:18
+msgid "Audio output preview on track hover"
+msgstr ""
+
+#: ../data/org.gnome.Lollypop.gschema.xml.h:19
+msgid ""
+"Pulseaudio only. Example: alsa_output.pci-0000_00_14.2.analog-stereo. "
+"Command to get outputs: $ pacmd list-sinks|grep 'name:'"
+msgstr ""
+
+#: ../data/org.gnome.Lollypop.gschema.xml.h:20
 msgid "Favorite cover file"
 msgstr "最喜欢的封面文件"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:19
+#: ../data/org.gnome.Lollypop.gschema.xml.h:21
 msgid "Restart needed"
 msgstr "需要重启"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:20
+#: ../data/org.gnome.Lollypop.gschema.xml.h:22
 msgid "Database version"
 msgstr "数据库版本"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:21
+#: ../data/org.gnome.Lollypop.gschema.xml.h:23
 msgid ""
 "Reset this value will reset the database, popular albums will be restored"
 msgstr "重置本值将重置数据库，流行专辑将被还原"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:22 ../data/SettingsDialog.ui.h:7
+#: ../data/org.gnome.Lollypop.gschema.xml.h:24 ../data/SettingsDialog.ui.h:7
 msgid "Albums cover size"
 msgstr "专辑封面大小"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:23
+#: ../data/org.gnome.Lollypop.gschema.xml.h:25
 msgid "Replay gain value in db"
 msgstr "用分贝显示回放增益值"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:24
+#: ../data/org.gnome.Lollypop.gschema.xml.h:26
 msgid "Between -15 and 15"
 msgstr "界于-15和15之间"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:25
+#: ../data/org.gnome.Lollypop.gschema.xml.h:27
 msgid "Sync all albums(MTP)"
 msgstr "同步所有专辑 (MTP)"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:26
+#: ../data/org.gnome.Lollypop.gschema.xml.h:28
 msgid "Convert to MP3(MTP)"
 msgstr "转换为 MP3 (MTP)"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:27
+#: ../data/org.gnome.Lollypop.gschema.xml.h:29
 msgid "Normalize MP3(MTP)"
 msgstr "调制MP3(MTP)"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:28 ../data/SettingsDialog.ui.h:16
+#: ../data/org.gnome.Lollypop.gschema.xml.h:30 ../data/SettingsDialog.ui.h:16
 msgid "Auto update music"
 msgstr "自动更新音乐"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:29
+#: ../data/org.gnome.Lollypop.gschema.xml.h:31
 msgid "Show genres list"
 msgstr "查看分类列表"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:30 ../data/SettingsDialog.ui.h:8
+#: ../data/org.gnome.Lollypop.gschema.xml.h:32 ../data/SettingsDialog.ui.h:8
 msgid "Show artist artwork"
 msgstr "显示艺术家图片"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:31
+#: ../data/org.gnome.Lollypop.gschema.xml.h:33
 msgid "Use dark gtk theme"
 msgstr "使用黑色gtk主题"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:32
+#: ../data/org.gnome.Lollypop.gschema.xml.h:34
 msgid "Disable the use client side window decorations (headerbar)"
 msgstr "不使用客户侧的窗口装饰(标题栏)"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:33 ../data/SettingsDialog.ui.h:6
+#: ../data/org.gnome.Lollypop.gschema.xml.h:35 ../data/SettingsDialog.ui.h:6
 msgid "Show compilations in albums view"
 msgstr "以专辑视图显示曲目"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:34 ../data/SettingsDialog.ui.h:18
+#: ../data/org.gnome.Lollypop.gschema.xml.h:36 ../data/SettingsDialog.ui.h:18
 msgid "Continue playback when closed"
 msgstr "关闭后继续播放"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:35
+#: ../data/org.gnome.Lollypop.gschema.xml.h:37
 msgid "Restore previous state"
 msgstr "恢复到上次的状态"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:36
+#: ../data/org.gnome.Lollypop.gschema.xml.h:38
 msgid "Disable MPRIS"
 msgstr "关闭MPRIS"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:37
+#: ../data/org.gnome.Lollypop.gschema.xml.h:39
 msgid "Disable notifications"
 msgstr "禁用通知"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:38
+#: ../data/org.gnome.Lollypop.gschema.xml.h:40
 msgid "Show track number from tags"
 msgstr "在标签中显示曲目编号"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:39 ../data/SettingsDialog.ui.h:19
+#: ../data/org.gnome.Lollypop.gschema.xml.h:41
 msgid "Mix songs"
 msgstr "混音歌曲"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:40
+#: ../data/org.gnome.Lollypop.gschema.xml.h:42
 msgid "Mix songs only in party mode"
 msgstr "仅在派对模式使用混音歌曲"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:41
+#: ../data/org.gnome.Lollypop.gschema.xml.h:43
 msgid "Mix duration"
 msgstr "混音时长"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:42
+#: ../data/org.gnome.Lollypop.gschema.xml.h:44
 msgid "Shuffle mode"
 msgstr "随机模式"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:43 ../data/SettingsDialog.ui.h:9
+#: ../data/org.gnome.Lollypop.gschema.xml.h:45 ../data/SettingsDialog.ui.h:9
 msgid "Order albums by"
 msgstr "专辑分类方式"
 
@@ -241,18 +251,17 @@ msgid "Genre/Artist/Cover browsing"
 msgstr "流派/艺术家/封面浏览"
 
 #: ../data/lollypop.appdata.xml.in.h:8 ../src/playlists.py:239
-#: ../data/ArtistInfo.ui.h:5 ../data/ToolbarEnd.ui.h:7
+#: ../data/ArtistInfo.ui.h:5 ../data/ToolbarEnd.ui.h:8
 msgid "Search"
 msgstr "搜索"
 
 #: ../data/lollypop.appdata.xml.in.h:9 ../src/pop_menu.py:391
-#: ../src/pop_menu.py:412 ../src/toolbar_end.py:285
+#: ../src/pop_menu.py:412 ../src/toolbar_end.py:377
 #: ../data/QueuePopover.ui.h:2
 msgid "Queue"
 msgstr "排队"
 
-#: ../data/lollypop.appdata.xml.in.h:10 ../data/SettingsDialog.ui.h:28
-#: ../data/ToolbarEnd.ui.h:5
+#: ../data/lollypop.appdata.xml.in.h:10
 msgid "Party mode"
 msgstr "派对模式"
 
@@ -343,59 +352,60 @@ msgstr "您的音乐正在更新"
 
 #: ../src/collectionscanner.py:248 ../src/database_albums.py:299
 #: ../src/database_artists.py:104 ../src/database_genres.py:69
-#: ../src/database_tracks.py:232 ../src/selectionlist.py:278
+#: ../src/database_tracks.py:232 ../src/selectionlist.py:280
 #: ../src/tagreader.py:87 ../src/tagreader.py:102 ../src/tagreader.py:117
 #: ../src/tagreader.py:162 ../src/tagreader.py:177 ../src/tagreader.py:180
 #: ../src/tagreader.py:190 ../src/tagreader.py:197
 msgid "Unknown"
 msgstr "未知"
 
-#: ../src/container.py:420
+#: ../src/container.py:422
 msgid "Popular albums"
 msgstr "流行专辑"
 
-#: ../src/container.py:421
+#: ../src/container.py:423
 msgid "Recently added albums"
 msgstr "最近添加专辑"
 
-#: ../src/container.py:422
+#: ../src/container.py:424
 msgid "Random albums"
 msgstr "随机专辑"
 
-#: ../src/container.py:423 ../src/pop_menu.py:321 ../src/pop_menu.py:394
-#: ../src/pop_menu.py:414
+#: ../src/container.py:425 ../src/pop_menu.py:321 ../src/pop_menu.py:394
+#: ../src/pop_menu.py:414 ../src/widgets_device.py:86
+#: ../src/widgets_playlist.py:503
 msgid "Playlists"
 msgstr "播放列表"
 
-#: ../src/container.py:424
+#: ../src/container.py:426
 msgid "Radios"
 msgstr "电台"
 
-#: ../src/container.py:426
+#: ../src/container.py:428
 msgid "All artists"
 msgstr "所有艺术家"
 
-#: ../src/container.py:428 ../data/DeviceManagerWidget.ui.h:1
+#: ../src/container.py:430 ../data/DeviceManagerWidget.ui.h:1
 msgid "All albums"
 msgstr "所有专辑"
 
-#: ../src/container.py:476
+#: ../src/container.py:478
 msgid "Compilations"
 msgstr "曲集"
 
-#: ../src/container.py:500 ../src/playlists.py:231
+#: ../src/container.py:502 ../src/playlists.py:231
 msgid "Popular tracks"
 msgstr "流行曲目"
 
-#: ../src/container.py:501 ../src/playlists.py:233
+#: ../src/container.py:503 ../src/playlists.py:233
 msgid "Recently played"
 msgstr "最近播放"
 
-#: ../src/container.py:502 ../src/playlists.py:235
+#: ../src/container.py:504 ../src/playlists.py:235
 msgid "Never played"
 msgstr "从未播放"
 
-#: ../src/container.py:503 ../src/playlists.py:237
+#: ../src/container.py:505 ../src/playlists.py:237
 msgid "Random tracks"
 msgstr "随机曲目"
 
@@ -404,7 +414,7 @@ msgid "Pause"
 msgstr "暂停"
 
 #: ../src/controllers.py:86 ../src/controllers.py:114 ../src/pop_tunein.py:167
-#: ../src/widgets_album.py:474 ../src/widgets_radio.py:168
+#: ../src/widgets_album.py:487 ../src/widgets_radio.py:168
 #: ../data/AlbumDetailedWidget.ui.h:1 ../data/ArtistView.ui.h:2
 #: ../data/ToolbarPlayback.ui.h:2
 msgid "Play"
@@ -435,7 +445,7 @@ msgstr "由%s"
 msgid "by %s, from %s"
 msgstr "由%s，来自%s"
 
-#: ../src/player_bin.py:447
+#: ../src/player_bin.py:471
 #, python-format
 msgid "File doesn't exist: %s"
 msgstr "文件不存在：%s"
@@ -444,16 +454,16 @@ msgstr "文件不存在：%s"
 msgid "Loved tracks"
 msgstr "喜欢的曲目"
 
-#: ../src/pop_albums.py:287
+#: ../src/pop_albums.py:290
 msgid "Clear albums"
 msgstr "清除专辑"
 
-#: ../src/pop_albums.py:295 ../src/view_artist.py:50 ../data/ArtistInfo.ui.h:8
+#: ../src/pop_albums.py:298 ../src/view_artist.py:50 ../data/ArtistInfo.ui.h:8
 #: ../data/ArtistView.ui.h:4
 msgid "Go to current track"
 msgstr "转到当前曲目"
 
-#: ../src/pop_albums.py:296 ../src/toolbar_end.py:289
+#: ../src/pop_albums.py:299 ../src/toolbar_end.py:381
 msgid "Playing albums"
 msgstr "正在播放专辑"
 
@@ -508,7 +518,7 @@ msgstr "修改信息"
 msgid "Edit"
 msgstr "编辑"
 
-#: ../src/pop_radio.py:83 ../src/pop_tunein.py:173 ../src/view_artist.py:165
+#: ../src/pop_radio.py:83 ../src/pop_tunein.py:173 ../src/view_artist.py:166
 #: ../data/ArtistView.ui.h:3
 msgid "Add"
 msgstr "添加"
@@ -525,27 +535,27 @@ msgstr "请稍后"
 msgid "Can't connect to TuneIn..."
 msgstr "无法连接到TuneIn..."
 
-#: ../src/settings.py:90 ../src/settings.py:93 ../data/SettingsDialog.ui.h:3
+#: ../src/settings.py:91 ../src/settings.py:94 ../data/SettingsDialog.ui.h:3
 msgid "Preferences"
 msgstr "首选项"
 
-#: ../src/settings.py:118
+#: ../src/settings.py:119
 msgid "You need to install kid3-cli"
 msgstr "您需要安装kid3-cli"
 
-#: ../src/settings.py:180
+#: ../src/toolbar_end.py:55
 msgid "Populars"
 msgstr "流行"
 
-#: ../src/settings.py:181
+#: ../src/toolbar_end.py:56
 msgid "Recently added"
 msgstr "最近添加"
 
-#: ../src/toolbar_end.py:283
+#: ../src/toolbar_end.py:375
 msgid "Externals tracks playing"
 msgstr "正在播放外部曲目"
 
-#: ../src/toolbar_end.py:287
+#: ../src/toolbar_end.py:379
 msgid "Playing playlists"
 msgstr "正在播放播放列表"
 
@@ -555,7 +565,7 @@ msgstr "正在播放播放列表"
 msgid "The the"
 msgstr "The the"
 
-#: ../src/view_artist.py:160 ../src/widgets_album.py:221
+#: ../src/view_artist.py:161 ../src/widgets_album.py:233
 msgid "Remove"
 msgstr "移除"
 
@@ -578,34 +588,34 @@ msgstr "同步%s"
 msgid "Cancel synchronization"
 msgstr "取消同步"
 
-#: ../src/widgets_album.py:217
+#: ../src/widgets_album.py:229
 msgid "Append"
 msgstr "追加"
 
-#: ../src/widgets_album.py:485
+#: ../src/widgets_album.py:498
 msgid "Play albums"
 msgstr "播放专辑"
 
-#: ../src/widgets_album.py:495 ../data/AlbumDetailedWidget.ui.h:2
+#: ../src/widgets_album.py:508 ../data/AlbumDetailedWidget.ui.h:2
 msgid "Change artwork"
 msgstr "更改专辑封面"
 
-#: ../src/widgets_album.py:658
+#: ../src/widgets_album.py:670
 #, python-format
 msgid "%s h  %s m"
 msgstr "%s小时%s分钟"
 
-#: ../src/widgets_album.py:660
+#: ../src/widgets_album.py:672
 #, python-format
 msgid "%s h"
 msgstr "%s小时"
 
-#: ../src/widgets_album.py:662
+#: ../src/widgets_album.py:674
 #, python-format
 msgid "%s m"
 msgstr "%s分钟"
 
-#: ../src/widgets_album.py:919
+#: ../src/widgets_album.py:929
 #, python-format
 msgid "Disc %s"
 msgstr "光盘 %s"
@@ -614,25 +624,25 @@ msgstr "光盘 %s"
 msgid "You need to install gstreamer-plugins-ugly"
 msgstr "你需要安装 gstreamer-plugins-ugly"
 
-#: ../src/widgets_device.py:229
+#: ../src/widgets_device.py:231
 msgid "Unknown error while syncing, try to reboot your device"
 msgstr "同步时发生未知错误，请重启你的设备"
 
-#: ../src/widgets_device.py:237
+#: ../src/widgets_device.py:239
 msgid "No free space available on device"
 msgstr "设备空间不足"
 
-#: ../src/widgets_playlist.py:491 ../src/widgets_playlist.py:494
+#: ../src/widgets_playlist.py:537 ../src/widgets_playlist.py:540
 msgid "New playlist "
 msgstr "新的播放列表"
 
 #. Need a copy, segfault on EOS 3.1
-#: ../src/widgets_playlist.py:550 ../src/widgets_playlist.py:801
+#: ../src/widgets_playlist.py:596 ../src/widgets_playlist.py:860
 #, python-format
 msgid "Remove \"%s\"?"
 msgstr "删除“%s”？"
 
-#: ../src/widgets_playlist.py:809
+#: ../src/widgets_playlist.py:868
 msgid "Remove these tracks?"
 msgstr "删除这些曲目？"
 
@@ -852,6 +862,10 @@ msgstr "外观"
 msgid "Restore state on startup"
 msgstr "启动后恢复到上次的播放状态"
 
+#: ../data/SettingsDialog.ui.h:19
+msgid "Mix tracks"
+msgstr ""
+
 #: ../data/SettingsDialog.ui.h:20
 msgid "Long press to show options"
 msgstr "长按以显示选项"
@@ -865,24 +879,28 @@ msgid "Save artwork in files"
 msgstr "将图片存入文档"
 
 #: ../data/SettingsDialog.ui.h:23
+msgid "Preview tracks on"
+msgstr ""
+
+#: ../data/SettingsDialog.ui.h:24
+msgid "None audio device"
+msgstr ""
+
+#: ../data/SettingsDialog.ui.h:25
 msgid "Configure lollypop behaviour"
 msgstr "配置lollypo的行为"
 
-#: ../data/SettingsDialog.ui.h:24
+#: ../data/SettingsDialog.ui.h:26
 msgid "Behaviour"
 msgstr "行为"
 
-#: ../data/SettingsDialog.ui.h:25
+#: ../data/SettingsDialog.ui.h:27
 msgid "Select music folders"
 msgstr "选择音乐文件夹"
 
-#: ../data/SettingsDialog.ui.h:26
+#: ../data/SettingsDialog.ui.h:28
 msgid "Music"
 msgstr "音乐"
-
-#: ../data/SettingsDialog.ui.h:27
-msgid "Select what will be available in party mode"
-msgstr "选择哪些内容可以用于派对模式"
 
 #: ../data/SettingsDialog.ui.h:29
 msgid "Login:"
@@ -920,9 +938,15 @@ msgstr "重排曲目"
 msgid "Settings"
 msgstr "设置"
 
-#: ../data/ToolbarEnd.ui.h:6
+#: ../data/ToolbarEnd.ui.h:5
 msgid "Shuffle"
 msgstr "随机"
+
+#: ../data/ToolbarEnd.ui.h:6
+msgid ""
+"Party mode\n"
+"Right click to filter"
+msgstr "派对模式\n右键单击以过滤"
 
 #: ../data/TuneinPopover.ui.h:1
 msgid "Go back"

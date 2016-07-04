@@ -1,6 +1,6 @@
 # 
 # Translators:
-# Bilal <kira.gazerock@gmail.com>, 2015
+# Bilal, 2015
 msgid ""
 msgstr ""
 "Project-Id-Version: lollypop\n"
