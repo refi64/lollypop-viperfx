@@ -230,7 +230,7 @@ Please create a search engine here:</property>
         </child>
         <child>
           <object class="GtkLinkButton" id="google_apis">
-            <property name="label" translatable="no">Google APIs</property>
+            <property name="label">Google APIs</property>
             <property name="visible">True</property>
             <property name="can_focus">True</property>
             <property name="has_focus">True</property>
@@ -271,11 +271,6 @@ Please create a search engine here:</property>
         </child>
       </object>
     </child>
-  </object>
-  <object class="GtkImage" id="notfound">
-    <property name="visible">True</property>
-    <property name="can_focus">False</property>
-    <property name="icon_name">computer-fail-symbolic</property>
   </object>
   <object class="GtkScrolledWindow" id="scrolled">
     <property name="visible">True</property>

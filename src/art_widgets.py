@@ -63,7 +63,6 @@ class ArtworkSearch(Gtk.Bin):
         builder.get_object('viewport').add(self._view)
 
         self._spinner = builder.get_object('spinner')
-        self._stack.add_named(builder.get_object('notfound'), 'notfound')
         self._stack.add_named(builder.get_object('scrolled'), 'main')
         self._stack.set_visible_child_name('main')
         self.add(widget)
@@ -163,9 +162,9 @@ class ArtworkSearch(Gtk.Bin):
         """
             Show not found message
         """
-        if len(self._view.get_children()) == 0:
-            self._label.set_text(_("No cover found..."))
-            self._stack.set_visible_child_name('notfound')
+        self._popover.show()
+        self._api_entry.set_text(
+                            Lp().settings.get_value('cs-api-key').get_string())
         self._spinner.stop()
 
     def _add_pixbuf(self, data):
