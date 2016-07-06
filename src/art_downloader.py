@@ -29,6 +29,9 @@ class ArtDownloader:
     except:
         Wikipedia = None
 
+    _KEY = "AIzaSyBiaYluG8pVYxgKRGcc4uEbtgE9q8la0dw"
+    _ID = "015987506728554693370:waw3yqru59a"
+
     def __init__(self):
         """
             Init art downloader
@@ -76,11 +79,15 @@ class ArtDownloader:
             return []
 
         try:
-            f = Gio.File.new_for_uri("https://duckduckgo.com/i.js"
-                                     "?q=%s&ia=images" %
-                                     (GLib.uri_escape_string(search,
+            f = Gio.File.new_for_uri("https://www.googleapis.com/"
+                                     "customsearch/v1?key=%s&cx=%s"
+                                     "&q=%s&searchType=image" %
+                                     (self._KEY,
+                                      self._ID,
+                                      GLib.uri_escape_string(search,
                                                              "",
-                                                             False),))
+                                                             False)))
+
             (status, data, tag) = f.load_contents()
             if not status:
                 return []
@@ -91,8 +98,8 @@ class ArtDownloader:
             decode = json.loads(data.decode('utf-8'))
             if decode is None:
                 return urls
-            for item in decode['results']:
-                urls.append(item['image'])
+            for item in decode['items']:
+                urls.append(item['link'])
         except:
             pass
 
