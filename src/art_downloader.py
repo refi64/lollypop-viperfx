@@ -66,7 +66,7 @@ class ArtDownloader:
         t.daemon = True
         t.start()
 
-    def get_duck_arts(self, search):
+    def get_google_arts(self, search):
         """
             Get arts on duck image corresponding to search
             @param search words as string
@@ -78,11 +78,15 @@ class ArtDownloader:
         if not Gio.NetworkMonitor.get_default().get_network_available():
             return []
 
+        cs_api_key = Lp().settings.get_value('cs-api-key').get_string()
+        if cs_api_key == "":
+            cs_api_key = self._KEY
+
         try:
             f = Gio.File.new_for_uri("https://www.googleapis.com/"
                                      "customsearch/v1?key=%s&cx=%s"
                                      "&q=%s&searchType=image" %
-                                     (self._KEY,
+                                     (cs_api_key,
                                       self._ID,
                                       GLib.uri_escape_string(search,
                                                              "",

@@ -106,7 +106,7 @@ class RadioPopover(Gtk.Popover):
             Same as _populate_threaded()
             @thread safe
         """
-        self._urls = Lp().art.get_duck_arts(self._name+"+logo+radio")
+        self._urls = Lp().art.get_google_arts(self._name+"+logo+radio")
         if self._urls:
             self._add_pixbufs()
         else:

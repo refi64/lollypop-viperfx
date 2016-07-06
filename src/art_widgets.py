@@ -46,6 +46,7 @@ class ArtworkSearch(Gtk.Bin):
         widget = builder.get_object('widget')
         self._stack = builder.get_object('stack')
         self._entry = builder.get_object('entry')
+        self._api_entry = builder.get_object('api_entry')
 
         self._view = Gtk.FlowBox()
         self._view.set_selection_mode(Gtk.SelectionMode.SINGLE)
@@ -53,6 +54,8 @@ class ArtworkSearch(Gtk.Bin):
         self._view.set_max_children_per_line(100)
         self._view.set_property('row-spacing', 10)
         self._view.show()
+
+        self._popover = builder.get_object('popover')
 
         self._label = builder.get_object('label')
         self._label.set_text(_("Select artwork"))
@@ -115,18 +118,19 @@ class ArtworkSearch(Gtk.Bin):
         urls = []
         if Gio.NetworkMonitor.get_default().get_network_available():
             if search != "":
-                urls = Lp().art.get_duck_arts(search)
+                urls = Lp().art.get_google_arts(search)
             elif self._album is not None:
-                urls = Lp().art.get_duck_arts("%s+%s" % (
+                urls = Lp().art.get_google_arts("%s+%s" % (
                                                self._artist,
                                                self._album.name))
             elif self._artist_id is not None:
                 for album_id in Lp().artists.get_albums([self._artist_id]):
                     for genre_id in Lp().albums.get_genre_ids(album_id):
                         genre = Lp().genres.get_name(genre_id)
-                        urls += Lp().art.get_duck_arts("%s+%s" % (self._artist,
+                        urls += Lp().art.get_google_arts("%s+%s" % (
+                                                                  self._artist,
                                                                   genre))
-                urls += Lp().art.get_duck_arts(self._artist)
+                urls += Lp().art.get_google_arts(self._artist)
         if urls:
             self._add_pixbufs(urls, search)
         else:
@@ -325,3 +329,20 @@ class ArtworkSearch(Gtk.Bin):
         if response_id == Gtk.ResponseType.CLOSE:
             self._infobar.hide()
             self._view.unselect_all()
+
+    def _on_settings_button_clicked(self, button):
+        """
+            Show popover
+            @param button as Gtk.Button
+        """
+        self._popover.show()
+        self._api_entry.set_text(
+                            Lp().settings.get_value('cs-api-key').get_string())
+
+    def _on_api_entry_changed(self, entry):
+        """
+            Save key
+            @param entry as Gtk.Entry
+        """
+        Lp().settings.set_value('cs-api-key',
+                                GLib.Variant('s', entry.get_text()))

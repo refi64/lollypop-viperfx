@@ -62,6 +62,11 @@
             <summary>Last.fm login</summary>
             <description></description>
         </key>
+        <key type="s" name="cs-api-key">
+            <default>""</default>
+            <summary>Google Custom Search API key</summary>
+            <description></description>
+        </key>
         <key type="s" name="tag-editor">
             <default>""</default>
             <summary>Favorite tag editor</summary>
