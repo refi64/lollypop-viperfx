@@ -38,6 +38,7 @@ class Window(Gtk.ApplicationWindow, Container):
                                        application=app,
                                        title="Lollypop")
         self.connect('hide', self._on_hide)
+        Lp().player.connect('current-changed', self._on_current_changed)
         self._timeout_configure = None
         seek_action = Gio.SimpleAction.new('seek',
                                            GLib.VariantType.new('i'))
@@ -481,3 +482,14 @@ class Window(Gtk.ApplicationWindow, Container):
             # No idea why, maybe scanner using Gstpbutils before Gstreamer
             # initialisation is finished...
             GLib.timeout_add(2000, self.update_db)
+
+    def _on_current_changed(self, player):
+        """
+            Update toolbar
+            @param player as Player
+        """
+        if Lp().player.current_track.id is None:
+            self.set_title("Lollypop")
+        else:
+            self.set_title(", ".join(player.current_track.artists) + " - " +
+                           player.current_track.title + " - Lollypop")
