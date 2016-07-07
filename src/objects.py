@@ -259,7 +259,8 @@ class Track(Base):
         """
         if not self._non_album_artists:
             # Show all artists for compilations
-            if self.album.artist_ids[0] == Type.COMPILATIONS:
+            if self.album.artist_ids and\
+                    self.album.artist_ids[0] == Type.COMPILATIONS:
                 self._non_album_artists = self.artists
             # Show only non album artist for albums (and only if one)
             elif len(self.artists) > 1:
