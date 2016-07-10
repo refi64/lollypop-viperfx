@@ -155,7 +155,7 @@ class ToolbarEnd(Gtk.Bin):
         app.set_accels_for_action("app.list", ["<Control>i"])
         self._list_popover = None
         Lp().player.connect('party-changed', self._on_party_changed)
-        Lp().player.connect('lock-changed', self._on_lock_changed)
+        Lp().player.connect('state-changed', self._on_lock_changed)
 
     def setup_menu(self, menu):
         """

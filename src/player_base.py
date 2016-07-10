@@ -12,7 +12,7 @@
 
 from gi.repository import GObject
 
-from lollypop.define import PlayContext, Lp, NextContext
+from lollypop.define import PlayContext, Lp, NextContext, PlayerState
 from lollypop.objects import Track
 
 
@@ -27,7 +27,7 @@ class BasePlayer(GObject.GObject):
         'next-changed': (GObject.SignalFlags.RUN_FIRST, None, ()),
         'prev-changed': (GObject.SignalFlags.RUN_FIRST, None, ()),
         'seeked': (GObject.SignalFlags.RUN_FIRST, None, (int,)),
-        'lock-changed': (GObject.SignalFlags.RUN_FIRST, None, ()),
+        'state-changed': (GObject.SignalFlags.RUN_FIRST, None, ()),
         'status-changed': (GObject.SignalFlags.RUN_FIRST, None, ()),
         'volume-changed': (GObject.SignalFlags.RUN_FIRST, None, ()),
         'queue-changed': (GObject.SignalFlags.RUN_FIRST, None, ()),
@@ -45,7 +45,7 @@ class BasePlayer(GObject.GObject):
             self._base_init = True
             # Lock adding tracks to playback, do nothing here, just get it
             # with locked property
-            self._locked = False
+            self._locked = PlayerState.NONE
             # Keep track of artist/album finished
             self._finished = NextContext.NONE
             # A user playlist used as current playlist
@@ -66,19 +66,27 @@ class BasePlayer(GObject.GObject):
             # For tracks from the cmd line
             self._external_tracks = []
 
-    def lock(self):
+    def set_state(self, state):
         """
-            Mark player as locked
+            Set player state
+            @param state as PlayerState
         """
-        self._locked = not self._locked
-        self.emit('lock-changed')
+        self._locked = state
+        self.emit('state-changed')
 
     @property
     def locked(self):
         """
             Is player locked as bool
         """
-        return self._locked
+        return self._locked == PlayerState.LOCKED
+
+    @property
+    def queued(self):
+        """
+            Is player locked as bool
+        """
+        return self._locked == PlayerState.QUEUED
 
     def reset_pcn(self):
         """
