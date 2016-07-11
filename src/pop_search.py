@@ -249,14 +249,6 @@ class SearchPopover(Gtk.Popover):
                                                         artist_id):
                 tracks_non_album_artist.append((track_id, track_name))
 
-        for track_id, track_name in Lp().tracks.search(
-                        self._current_search) + tracks_non_album_artist:
-            search_obj = SearchObject()
-            search_obj.id = track_id
-            search_obj.is_track = True
-            search_obj.artist_ids = Lp().tracks.get_artist_ids(track_id)
-            results.append(search_obj)
-
         for album_id, artist_id in albums:
             search_obj = SearchObject()
             search_obj.id = album_id
@@ -270,6 +262,14 @@ class SearchPopover(Gtk.Popover):
             search_obj.id = album_id
             search_obj.is_track = False
             search_obj.artist_ids = Lp().albums.get_artist_ids(album_id)
+            results.append(search_obj)
+
+        for track_id, track_name in Lp().tracks.search(
+                        self._current_search) + tracks_non_album_artist:
+            search_obj = SearchObject()
+            search_obj.id = track_id
+            search_obj.is_track = True
+            search_obj.artist_ids = Lp().tracks.get_artist_ids(track_id)
             results.append(search_obj)
 
         if not self._stop_thread:
@@ -301,10 +301,7 @@ class SearchPopover(Gtk.Popover):
                                      Album(album_id),
                                      ArtSize.MEDIUM,
                                      self.get_scale_factor()))
-                if result.is_track:
-                    self._view.prepend(search_row)
-                else:
-                    self._view.add(search_row)
+                self._view.add(search_row)
             if self._stop_thread:
                 self._in_thread = False
                 self._stop_thread = False
