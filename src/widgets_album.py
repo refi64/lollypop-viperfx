@@ -583,9 +583,13 @@ class AlbumSimpleWidget(Gtk.FlowBoxChild, AlbumWidget):
         for widget in [self._title_label, self._artist_label]:
             layout = widget.get_layout()
             if layout.is_ellipsized():
-                text = "<b>%s</b> - %s" % (
-                                    escape(self._artist_label.get_text()),
-                                    escape(self._title_label.get_text()))
+                artist_text = self._artist_label.get_text()
+                if artist_text:
+                    text = "<b>%s</b> - %s" % (
+                                        escape(artist_text),
+                                        escape(self._title_label.get_text()))
+                else:
+                    text = escape(self._title_label.get_text())
                 eventbox.set_tooltip_markup(text)
                 break
 
