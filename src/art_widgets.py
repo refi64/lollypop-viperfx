@@ -343,5 +343,5 @@ class ArtworkSearch(Gtk.Bin):
             Save key
             @param entry as Gtk.Entry
         """
-        Lp().settings.set_value('cs-api-key',
-                                GLib.Variant('s', entry.get_text()))
+        value = entry.get_text().strip()
+        Lp().settings.set_value('cs-api-key', GLib.Variant('s', value))
