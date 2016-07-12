@@ -463,10 +463,6 @@ class PlaylistsManagerWidget(Gtk.Bin):
         self._object_id = object_id
         self._is_album = is_album
         self._deleted_path = None
-        self._del_pixbuf = Gtk.IconTheme.get_default().load_icon(
-            "list-remove-symbolic",
-            22,
-            0)
 
         builder = Gtk.Builder()
         builder.add_from_resource('/org/gnome/Lollypop/'
