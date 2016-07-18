@@ -18,7 +18,7 @@ from cgi import escape
 
 from lollypop.radios import Radios
 from lollypop.tunein import TuneIn
-from lollypop.define import Lp, ArtSize
+from lollypop.define import Lp, ArtSize, WindowSize
 from lollypop.art import Art
 
 
@@ -319,16 +319,23 @@ class TuneinPopover(Gtk.Popover):
                 self._previous_urls.append(self._current_url)
             self.populate(item.URL)
         elif item.TYPE == "audio":
-            # Only toolbar will get this one, so only create small in cache
             if Gio.NetworkMonitor.get_default().get_network_available():
+                # Cache for toolbar
                 t = Thread(target=Lp().art.copy_uri_to_cache,
                            args=(item.LOGO, item.TEXT,
                                  Lp().window.toolbar.artsize))
                 t.daemon = True
                 t.start()
+                # Cache for MPRIS
                 t = Thread(target=Lp().art.copy_uri_to_cache,
                            args=(item.LOGO, item.TEXT,
                                  ArtSize.BIG))
+                t.daemon = True
+                t.start()
+                # Cache for miniplayer
+                t = Thread(target=Lp().art.copy_uri_to_cache,
+                           args=(item.LOGO, item.TEXT,
+                                 WindowSize.SMALL))
                 t.daemon = True
                 t.start()
             Lp().player.load_external(item.URL, item.TEXT)
