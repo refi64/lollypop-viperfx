@@ -101,6 +101,9 @@ class NotificationManager:
                 player.current_track.album, ArtSize.BIG)
         if cover_path is None:
             cover_path = 'lollypop'
+        else:
+            self._notification.set_hint('image-path',
+                                        GLib.Variant('s', cover_path))
         if player.current_track.album.name == '':
             self._notification.update(
                 player.current_track.title,
