@@ -102,7 +102,8 @@ class MtpSync:
 
     def _sync(self, playlists, convert, normalize):
         """
-            Sync playlists with device as this
+            Sync playlists with device. If playlists contains Type.NONE,
+            sync albums marked as to be synced
             @param playlists as [str]
             @param convert as bool
             @param normalize as bool
