@@ -33,7 +33,15 @@ class CellRendererAlbum(Gtk.CellRenderer):
                                              widget.get_scale_factor())
         width = surface.get_width()
         height = surface.get_height()
-        ctx.translate(cell_area.x, cell_area.y)
+        # If cover smaller than wanted size, translate
+        translate_x = cell_area.x
+        translate_y = cell_area.y
+        wanted = ArtSize.MEDIUM * widget.get_scale_factor()
+        if width < wanted:
+            translate_x += (wanted - width) / 2
+        if height < wanted:
+            translate_y += (wanted - height) / 2
+        ctx.translate(translate_x, translate_y)
         ctx.new_sub_path()
         radius = 2
         degrees = pi / 180
