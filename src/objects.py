@@ -192,15 +192,15 @@ class Album(Base):
             @return list of int
         """
         if self._track_ids is None:
-            self._track_ids = self.db.get_tracks(self.id,
-                                                 self.genre_ids,
-                                                 self.artist_ids)
+            self._track_ids = self.db.get_track_ids(self.id,
+                                                    self.genre_ids,
+                                                    self.artist_ids)
             # If user tagged track with an artist not present in album
             if not self._track_ids:
                 print("%s missing an album artist in artists" % self.name)
-                self._track_ids = self.db.get_tracks(self.id,
-                                                     self.genre_ids,
-                                                     [])
+                self._track_ids = self.db.get_track_ids(self.id,
+                                                        self.genre_ids,
+                                                        [])
         return self._track_ids
 
     @property
