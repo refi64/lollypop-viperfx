@@ -155,13 +155,10 @@ class Playlists(GObject.GObject):
             @return array of paths as [str]
         """
         with SqlCursor(self) as sql:
-            if playlist_id == Type.ALL:
-                return Lp().tracks.get_paths()
-            else:
-                result = sql.execute("SELECT filepath\
-                                      FROM tracks\
-                                      WHERE playlist_id=?", (playlist_id,))
-                return list(itertools.chain(*result))
+            result = sql.execute("SELECT filepath\
+                                  FROM tracks\
+                                  WHERE playlist_id=?", (playlist_id,))
+            return list(itertools.chain(*result))
 
     def get_track_ids(self, playlist_id):
         """
@@ -171,17 +168,13 @@ class Playlists(GObject.GObject):
             @return array of track id as int
         """
         with SqlCursor(self) as sql:
-            if playlist_id == Type.ALL:
-                tracks = Lp().tracks.get_ids()
-            else:
-                result = sql.execute("SELECT music.tracks.rowid\
-                                      FROM tracks, music.tracks\
-                                      WHERE tracks.playlist_id=?\
-                                      AND music.tracks.filepath=\
-                                      main.tracks.filepath",
-                                     (playlist_id,))
-                return list(itertools.chain(*result))
-            return tracks
+            result = sql.execute("SELECT music.tracks.rowid\
+                                  FROM tracks, music.tracks\
+                                  WHERE tracks.playlist_id=?\
+                                  AND music.tracks.filepath=\
+                                  main.tracks.filepath",
+                                 (playlist_id,))
+            return list(itertools.chain(*result))
 
     def get_id(self, playlist_name):
         """

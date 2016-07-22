@@ -44,10 +44,10 @@ class AlbumsDatabase:
         with SqlCursor(Lp().db) as sql:
             result = sql.execute("INSERT INTO albums\
                                   (name, no_album_artist, year,\
-                                  path, popularity, mtime)\
-                                  VALUES (?, ?, ?, ?, ?, ?)",
+                                  path, popularity, mtime, synced)\
+                                  VALUES (?, ?, ?, ?, ?, ?, ?)",
                                  (name, artist_ids == [], year,
-                                  path, popularity, mtime))
+                                  path, popularity, mtime, 0))
             for artist_id in artist_ids:
                 sql.execute("INSERT INTO album_artists\
                              (album_id, artist_id)\
@@ -99,6 +99,17 @@ class AlbumsDatabase:
                                 (album_id, artist_id)\
                                 VALUES (?, ?)", (album_id, artist_id))
 
+    def set_synced(self, album_id, synced):
+        """
+            Set album synced
+            @param album id as int
+            @param synced as bool
+            @warning: commit needed
+        """
+        with SqlCursor(Lp().db) as sql:
+            sql.execute("UPDATE albums SET synced=? WHERE rowid=?",
+                        (synced, album_id))
+
     def set_year(self, album_id, year):
         """
             Set year
@@ -136,6 +147,30 @@ class AlbumsDatabase:
             except:  # Database is locked
                 pass
 
+    def get_synced_ids(self):
+        """
+            Get synced album ids
+        """
+        with SqlCursor(Lp().db) as sql:
+            result = sql.execute("SELECT rowid FROM albums\
+                                  WHERE synced=1")
+            return list(itertools.chain(*result))
+
+    def get_synced(self, album_id):
+        """
+            Get album synced status
+            @param album_id as int
+            @return synced as bool
+        """
+        with SqlCursor(Lp().db) as sql:
+            result = sql.execute("SELECT synced FROM albums WHERE\
+                                 rowid=?", (album_id,))
+
+            v = result.fetchone()
+            if v is not None:
+                return v[0]
+            return 0
+
     def get_mtime(self, album_id):
         """
             Get modification time
@@ -143,7 +178,7 @@ class AlbumsDatabase:
             @return modification time as int
         """
         with SqlCursor(Lp().db) as sql:
-            result = sql.execute("SELECT mtime FROM albums WHERE\
+            result = sql.execute("SELECT synced FROM albums WHERE\
                                  rowid=?", (album_id,))
 
             v = result.fetchone()
@@ -478,7 +513,7 @@ class AlbumsDatabase:
             result = sql.execute(request, filters)
             return list(itertools.chain(*result))
 
-    def get_tracks(self, album_id, genre_ids, artist_ids):
+    def get_track_ids(self, album_id, genre_ids=[], artist_ids=[]):
         """
             Get tracks for album id
             @param album id as int
@@ -678,7 +713,7 @@ class AlbumsDatabase:
                 result = sql.execute(request, filters)
             return list(itertools.chain(*result))
 
-    def get_compilations(self, genre_ids=[]):
+    def get_compilation_ids(self, genre_ids=[]):
         """
             Get all compilations
             @param Filter genre ids as [int]

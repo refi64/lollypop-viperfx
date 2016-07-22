@@ -135,7 +135,7 @@ class SearchRow(Gtk.ListBoxRow):
         if self._is_track:
             Lp().player.append_to_queue(self._id)
         else:
-            for track in Lp().albums.get_tracks(self._id, [], []):
+            for track in Lp().albums.get_track_ids(self._id, [], []):
                 Lp().player.append_to_queue(track)
         button.set_sensitive(False)
         button.set_opacity(0.4)
@@ -333,7 +333,7 @@ class SearchPopover(Gtk.Popover):
             if child.is_track():
                 track_ids.append(child.get_id())
             else:
-                album_tracks = Lp().albums.get_tracks(child.get_id(), [], [])
+                album_tracks = Lp().albums.get_track_ids(child.get_id())
                 if not is_track and child.get_id() == object_id and\
                         album_tracks:
                     track_id = album_tracks[0]
@@ -356,7 +356,8 @@ class SearchPopover(Gtk.Popover):
             if child.is_track:
                 tracks.append(Track(child.get_id()))
             else:
-                for track_id in Lp().albums.get_tracks(child.get_id(), [],
+                for track_id in Lp().albums.get_track_ids(
+                                                       child.get_id(), [],
                                                        child.get_artist_ids()):
                     tracks.append(Track(track_id))
         if tracks:

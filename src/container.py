@@ -464,7 +464,7 @@ class Container:
         """
         def load():
             artists = Lp().artists.get(genre_ids)
-            compilations = Lp().albums.get_compilations(genre_ids)
+            compilations = Lp().albums.get_compilation_ids(genre_ids)
             return (artists, compilations)
 
         def setup(artists, compilations):
@@ -549,7 +549,7 @@ class Container:
             else:
                 albums = []
                 if artist_ids and artist_ids[0] == Type.COMPILATIONS:
-                    albums += Lp().albums.get_compilations(genre_ids)
+                    albums += Lp().albums.get_compilation_ids(genre_ids)
                 albums += Lp().albums.get_ids(artist_ids, genre_ids)
             return albums
 
@@ -573,7 +573,7 @@ class Container:
             if genre_ids and genre_ids[0] == Type.ALL:
                 if is_compilation or\
                         Lp().settings.get_value('show-compilations'):
-                    albums = Lp().albums.get_compilations()
+                    albums = Lp().albums.get_compilation_ids()
                 if not is_compilation:
                     albums += Lp().albums.get_ids()
             elif genre_ids and genre_ids[0] == Type.POPULARS:
@@ -585,7 +585,7 @@ class Container:
             else:
                 if is_compilation or\
                         Lp().settings.get_value('show-compilations'):
-                    albums = Lp().albums.get_compilations(genre_ids)
+                    albums = Lp().albums.get_compilation_ids(genre_ids)
                 if not is_compilation:
                     albums += Lp().albums.get_ids([], genre_ids)
             return albums

@@ -14,9 +14,13 @@ from gi.repository import Gtk, GLib, Gio, GObject, Pango
 
 from gettext import gettext as _
 from threading import Thread
+from cgi import escape
 
 from lollypop.sync_mtp import MtpSync
+from lollypop.sqlcursor import SqlCursor
+from lollypop.cellrenderer import CellRendererAlbum
 from lollypop.define import Lp, Type
+from lollypop.objects import Album
 
 
 class DeviceManagerWidget(Gtk.Bin, MtpSync):
@@ -63,7 +67,6 @@ class DeviceManagerWidget(Gtk.Bin, MtpSync):
 
         self._view = builder.get_object('view')
         self._view.set_model(self._model)
-        self._view.set_sensitive(not Lp().settings.get_value('sync-albums'))
 
         builder.connect_signals(self)
 
@@ -79,15 +82,18 @@ class DeviceManagerWidget(Gtk.Bin, MtpSync):
         column0.set_clickable(True)
         column0.connect('clicked', self._on_column0_clicked)
 
-        renderer1 = Gtk.CellRendererText()
-        renderer1.set_property('ellipsize-set', True)
-        renderer1.set_property('ellipsize', Pango.EllipsizeMode.END)
-        renderer1.set_property('editable', True)
-        column1 = Gtk.TreeViewColumn(_("Playlists"), renderer1, text=1)
-        column1.set_expand(True)
+        renderer1 = CellRendererAlbum()
+        self._column1 = Gtk.TreeViewColumn("", renderer1, album=2)
+
+        renderer2 = Gtk.CellRendererText()
+        renderer2.set_property('ellipsize-set', True)
+        renderer2.set_property('ellipsize', Pango.EllipsizeMode.END)
+        self._column2 = Gtk.TreeViewColumn("", renderer2, markup=1)
+        self._column2.set_expand(True)
 
         self._view.append_column(column0)
-        self._view.append_column(column1)
+        self._view.append_column(self._column1)
+        self._view.append_column(self._column2)
 
     def populate(self):
         """
@@ -95,9 +101,14 @@ class DeviceManagerWidget(Gtk.Bin, MtpSync):
             @thread safe
         """
         self._model.clear()
-        playlists = [(Type.LOVED, Lp().playlists._LOVED)]
-        playlists += Lp().playlists.get()
-        self._append_playlists(playlists)
+        if Lp().settings.get_value('sync-albums'):
+            self._append_albums()
+            self._column1.set_visible(True)
+            self._column2.set_title(_("Albums"))
+        else:
+            self._append_playlists()
+            self._column1.set_visible(False)
+            self._column2.set_title(_("Playlists"))
 
     def set_uri(self, uri):
         """
@@ -127,13 +138,13 @@ class DeviceManagerWidget(Gtk.Bin, MtpSync):
         self._progress.set_fraction(0.0)
         self._menu.set_sensitive(False)
         playlists = []
-        if not self._switch_albums.get_active():
+        if not Lp().settings.get_value('sync-albums'):
             self._view.set_sensitive(False)
             for item in self._model:
                 if item[0]:
                     playlists.append(item[2])
         else:
-            playlists.append(Type.ALL)
+            playlists.append(Type.NONE)
 
         t = Thread(target=self._sync,
                    args=(playlists,
@@ -165,18 +176,35 @@ class DeviceManagerWidget(Gtk.Bin, MtpSync):
         b = model.get_value(iterb, 1)
         return a.lower() > b.lower()
 
-    def _append_playlists(self, playlists):
+    def _append_playlists(self):
         """
             Append a playlist
-            @param playlists as [(int, str)]
-            @param playlist selected as bool
         """
+        playlists = [(Type.LOVED, Lp().playlists._LOVED)]
+        playlists += Lp().playlists.get()
         for playlist in playlists:
             playlist_name = GLib.uri_escape_string(playlist[1], "", False)
             playlist_obj = Gio.File.new_for_uri(self._uri + "/" +
                                                 playlist_name + '.m3u')
             selected = playlist_obj.query_exists(None)
             self._model.append([selected, playlist[1], playlist[0]])
+
+    def _append_albums(self):
+        """
+            Append albums
+        """
+        for album_id in Lp().albums.get_ids() +\
+                Lp().albums.get_compilation_ids():
+            album = Album(album_id)
+            if album.artist_ids[0] == Type.COMPILATIONS:
+                name = escape(album.name)
+            else:
+                artists = ", ".join(album.artists)
+                name = "<b>%s</b> - %s" % (
+                        escape(artists),
+                        escape(album.name))
+            selected = Lp().albums.get_synced(album_id)
+            self._model.append([selected, name, album_id])
 
     def _update_progress(self):
         """
@@ -212,6 +240,16 @@ class DeviceManagerWidget(Gtk.Bin, MtpSync):
         popover.set_position(Gtk.PositionType.BOTTOM)
         popover.add(self._menu_items)
         popover.show()
+
+    def _populate_albums_playlist(self, album_id, toggle):
+        """
+            Populate hidden albums playlist
+            @param album_id as int
+            @param toggle as bool
+            @warning commit on default sql cursor needed
+        """
+        if Lp().settings.get_value('sync-albums'):
+            Lp().albums.set_synced(album_id, toggle)
 
     def _on_finished(self):
         """
@@ -250,7 +288,7 @@ class DeviceManagerWidget(Gtk.Bin, MtpSync):
             @param state as bool
         """
         Lp().settings.set_value('sync-albums', GLib.Variant('b', state))
-        self._view.set_sensitive(not state)
+        self.populate()
 
     def _on_mp3_state_set(self, widget, state):
         """
@@ -295,13 +333,20 @@ class DeviceManagerWidget(Gtk.Bin, MtpSync):
                 selected = True
         for item in self._model:
             item[0] = not selected
+            self._populate_albums_playlist(item[2], item[0])
+        with SqlCursor(Lp().db) as sql:
+            sql.commit()
 
     def _on_playlist_toggled(self, view, path):
         """
-            When playlist is activated, add object to playlist
+            When item is toggled, set model
             @param widget as cell renderer
             @param path as str representation of Gtk.TreePath
         """
         iterator = self._model.get_iter(path)
         toggle = not self._model.get_value(iterator, 0)
         self._model.set_value(iterator, 0, toggle)
+        album_id = self._model.get_value(iterator, 2)
+        self._populate_albums_playlist(album_id, toggle)
+        with SqlCursor(Lp().db) as sql:
+            sql.commit()

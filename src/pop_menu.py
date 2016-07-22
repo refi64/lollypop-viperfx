@@ -80,9 +80,9 @@ class QueueMenu(BaseMenu):
                 delete = False
         else:
 
-            tracks = Lp().albums.get_tracks(self._object_id,
-                                            self._genre_ids,
-                                            self._artist_ids)
+            tracks = Lp().albums.get_track_ids(self._object_id,
+                                               self._genre_ids,
+                                               self._artist_ids)
             union = set(queue) & set(tracks)
             if len(union) == len(tracks):
                 append = False
@@ -119,9 +119,9 @@ class QueueMenu(BaseMenu):
             @param GVariant
         """
         if self._is_album:
-            for track_id in Lp().albums.get_tracks(self._object_id,
-                                                   self._genre_ids,
-                                                   self._artist_ids):
+            for track_id in Lp().albums.get_track_ids(self._object_id,
+                                                      self._genre_ids,
+                                                      self._artist_ids):
                 Lp().player.append_to_queue(track_id, False)
         else:
             Lp().player.append_to_queue(self._object_id, False)
@@ -134,7 +134,8 @@ class QueueMenu(BaseMenu):
             @param GVariant
         """
         if self._is_album:
-            for track_id in reversed(Lp().albums.get_tracks(self._object_id,
+            for track_id in reversed(Lp().albums.get_track_ids(
+                                                            self._object_id,
                                                             self._genre_ids,
                                                             self._artist_ids)):
                 Lp().player.insert_in_queue(track_id, 0, False)
@@ -149,9 +150,9 @@ class QueueMenu(BaseMenu):
             @param GVariant
         """
         if self._is_album:
-            for track_id in Lp().albums.get_tracks(self._object_id,
-                                                   self._genre_ids,
-                                                   self._artist_ids):
+            for track_id in Lp().albums.get_track_ids(self._object_id,
+                                                      self._genre_ids,
+                                                      self._artist_ids):
                 Lp().player.del_from_queue(track_id, False)
         else:
             Lp().player.del_from_queue(self._object_id, False)
@@ -234,9 +235,9 @@ class PlaylistsMenu(BaseMenu):
         def add(playlist_id):
             tracks = []
             if self._is_album:
-                track_ids = Lp().albums.get_tracks(self._object_id,
-                                                   self._genre_ids,
-                                                   self._artist_ids)
+                track_ids = Lp().albums.get_track_ids(self._object_id,
+                                                      self._genre_ids,
+                                                      self._artist_ids)
                 for track_id in track_ids:
                     tracks.append(Track(track_id))
             else:
@@ -261,9 +262,9 @@ class PlaylistsMenu(BaseMenu):
         def remove(playlist_id):
             tracks = []
             if self._is_album:
-                track_ids = Lp().albums.get_tracks(self._object_id,
-                                                   self._genre_ids,
-                                                   self._artist_ids)
+                track_ids = Lp().albums.get_track_ids(self._object_id,
+                                                      self._genre_ids,
+                                                      self._artist_ids)
                 for track_id in track_ids:
                     tracks.append(Track(track_id))
             else:

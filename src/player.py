@@ -287,14 +287,14 @@ class Player(BinPlayer, QueuePlayer, UserPlaylistPlayer, RadioPlayer,
            (artist_ids and artist_ids[0] == Type.ALL):
             # Genres: all, Artists: compilations
             if artist_ids and artist_ids[0] == Type.COMPILATIONS:
-                self._albums += Lp().albums.get_compilations()
+                self._albums += Lp().albums.get_compilation_ids()
             # Genres: all, Artists: ids
             elif artist_ids and artist_ids[0] != Type.ALL:
                 self._albums += Lp().albums.get_ids(artist_ids)
             # Genres: all, Artists: all
             else:
                 if Lp().settings.get_value('show-compilations'):
-                    self._albums += Lp().albums.get_compilations()
+                    self._albums += Lp().albums.get_compilation_ids()
                 self._albums += Lp().albums.get_ids()
         # We are in populars view, add popular albums
         elif genre_ids and genre_ids[0] == Type.POPULARS:
@@ -307,17 +307,17 @@ class Player(BinPlayer, QueuePlayer, UserPlaylistPlayer, RadioPlayer,
             self._albums = Lp().albums.get_cached_randoms()
         # We are in compilation view without genre
         elif genre_ids and genre_ids[0] == Type.COMPILATIONS:
-            self._albums = Lp().albums.get_compilations()
+            self._albums = Lp().albums.get_compilation_ids()
         # Add albums for artists/genres
         else:
             # If we are not in compilation view and show compilation is on,
             # add compilations
             if artist_ids and artist_ids[0] == Type.COMPILATIONS:
-                self._albums += Lp().albums.get_compilations(genre_ids)
+                self._albums += Lp().albums.get_compilation_ids(genre_ids)
             else:
                 if not artist_ids and\
                         Lp().settings.get_value('show-compilations'):
-                    self._albums += Lp().albums.get_compilations(genre_ids)
+                    self._albums += Lp().albums.get_compilation_ids(genre_ids)
                 self._albums += Lp().albums.get_ids(artist_ids, genre_ids)
 
         if Lp().settings.get_value('repeat'):

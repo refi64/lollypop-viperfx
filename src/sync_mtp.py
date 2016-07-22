@@ -20,6 +20,8 @@ from lollypop.define import Lp, Type
 from lollypop.objects import Track
 
 
+# TODO Rework this code: was designed
+# for playlists and then for albums, it sucks!
 class MtpSync:
     """
         Synchronisation to MTP devices
@@ -118,11 +120,16 @@ class MtpSync:
             self._fraction = 0.0
             plnames = []
 
-            # New tracks
-            for playlist in playlists:
-                plnames.append(Lp().playlists.get_name(playlist))
-                self._fraction = self._done/self._total
-                self._total += len(Lp().playlists.get_tracks(playlist))
+            if playlists[0] == Type.NONE:
+                # New tracks for synced albums
+                album_ids = Lp().albums.get_synced_ids()
+                for album_id in album_ids:
+                    self._total += len(Lp().albums.get_track_ids(album_id))
+            else:
+                # New tracks for playlists
+                for playlist in playlists:
+                    plnames.append(Lp().playlists.get_name(playlist))
+                    self._total += len(Lp().playlists.get_tracks(playlist))
 
             # Old tracks
             try:
@@ -170,22 +177,30 @@ class MtpSync:
             @param playlists as [str]
         """
         for playlist in playlists:
-            try:
-                playlist_name = Lp().playlists.get_name(playlist)
-                # Create playlist
-                m3u = Gio.File.new_for_path(
-                    "/tmp/lollypop_%s.m3u" % (playlist_name,))
-                self._retry(m3u.replace_contents, (b'#EXTM3U\n', None, False,
-                            Gio.FileCreateFlags.REPLACE_DESTINATION,
-                            None))
-                stream = m3u.open_readwrite(None)
-            except Exception as e:
-                print("DeviceWidget::_copy_to_device(): %s" % e)
-                m3u = None
-                stream = None
+            m3u = None
+            stream = None
+            if playlist != Type.NONE:
+                try:
+                    playlist_name = Lp().playlists.get_name(playlist)
+                    # Create playlist
+                    m3u = Gio.File.new_for_path(
+                        "/tmp/lollypop_%s.m3u" % (playlist_name,))
+                    self._retry(m3u.replace_contents, (b'#EXTM3U\n', None,
+                                False, Gio.FileCreateFlags.REPLACE_DESTINATION,
+                                None))
+                    stream = m3u.open_readwrite(None)
+                except Exception as e:
+                    print("DeviceWidget::_copy_to_device(): %s" % e)
 
+            # Get tracks
+            if playlist == Type.NONE:
+                track_ids = []
+                album_ids = Lp().albums.get_synced_ids()
+                for album_id in album_ids:
+                    track_ids += Lp().albums.get_track_ids(album_id)
+            else:
+                track_ids = Lp().playlists.get_track_ids(playlist)
             # Start copying
-            track_ids = Lp().playlists.get_track_ids(playlist)
             for track_id in track_ids:
                 if track_id is None:
                     continue
@@ -293,9 +308,15 @@ class MtpSync:
         track_uris = []
         track_ids = []
 
-        # Get tracks ids
-        for playlist in playlists:
-            track_ids += Lp().playlists.get_track_ids(playlist)
+        # Get tracks
+        if playlists[0] == Type.NONE:
+            track_ids = []
+            album_ids = Lp().albums.get_synced_ids()
+            for album_id in album_ids:
+                track_ids += Lp().albums.get_track_ids(album_id)
+        else:
+            for playlist in playlists:
+                track_ids += Lp().playlists.get_track_ids(playlist)
 
         # Get tracks uris
         for track_id in track_ids:

@@ -14,7 +14,7 @@ from gi.repository import Gtk, Gdk, GObject, GdkPixbuf
 
 from math import pi
 
-from lollypop.define import Lp, ArtSize
+from lollypop.define import Lp, ArtSize, Type
 from lollypop.cache import InfoCache
 from lollypop.objects import Album
 
@@ -26,6 +26,8 @@ class CellRendererAlbum(Gtk.CellRenderer):
         Gtk.CellRenderer.__init__(self)
 
     def do_render(self, ctx, widget, background_area, cell_area, flags):
+        if self.album == Type.NONE:
+            return
         surface = Lp().art.get_album_artwork(Album(self.album),
                                              ArtSize.MEDIUM,
                                              widget.get_scale_factor())
@@ -49,7 +51,10 @@ class CellRendererAlbum(Gtk.CellRenderer):
         ctx.paint()
 
     def do_get_preferred_width(self, widget):
-        size = ArtSize.MEDIUM + 2
+        if self.album == Type.NONE:
+            size = 0
+        else:
+            size = ArtSize.MEDIUM + 2
         return (size, size)
 
     def do_get_preferred_height(self, widget):

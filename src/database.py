@@ -38,6 +38,7 @@ class Database:
                         year INT,
                         path TEXT NOT NULL,
                         popularity INT NOT NULL,
+                        synced INT NOT NULL,
                         mtime INT NOT NULL)'''
     create_artists = '''CREATE TABLE artists (id INTEGER PRIMARY KEY,
                                               name TEXT NOT NULL,
