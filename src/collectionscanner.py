@@ -266,10 +266,9 @@ class CollectionScanner(GObject.GObject, ScannerTagReader):
         new_artist_ids += new_album_artist_ids
 
         debug("CollectionScanner::add2db(): Add album: "
-              "%s, %s, %s" % (album_name, album_artist_ids, year))
+              "%s, %s" % (album_name, album_artist_ids))
         (album_id, new_album) = self.add_album(album_name, album_artist_ids,
-                                               year, filepath,
-                                               album_pop, amtime)
+                                               filepath, album_pop, amtime)
 
         (genre_ids, new_genre_ids) = self.add_genres(genres, album_id)
 
@@ -282,7 +281,7 @@ class CollectionScanner(GObject.GObject, ScannerTagReader):
 
         debug("CollectionScanner::add2db(): Update tracks")
         self.update_track(track_id, artist_ids, genre_ids)
-        self.update_album(album_id, album_artist_ids, genre_ids)
+        self.update_album(album_id, album_artist_ids, genre_ids, year)
         # Notify about new artists/genres
         if new_genre_ids or new_artist_ids:
             with SqlCursor(Lp().db) as sql:

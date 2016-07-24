@@ -30,12 +30,11 @@ class AlbumsDatabase:
         """
         self._cached_randoms = []
 
-    def add(self, name, artist_ids, year, path, popularity, mtime):
+    def add(self, name, artist_ids, path, popularity, mtime):
         """
             Add a new album to database
             @param Album name as string
             @param artist ids as int
-            @param year as int
             @param path as string
             @param mtime as int
             @return inserted rowid as int
@@ -43,10 +42,10 @@ class AlbumsDatabase:
         """
         with SqlCursor(Lp().db) as sql:
             result = sql.execute("INSERT INTO albums\
-                                  (name, no_album_artist, year,\
+                                  (name, no_album_artist,\
                                   path, popularity, mtime, synced)\
-                                  VALUES (?, ?, ?, ?, ?, ?, ?)",
-                                 (name, artist_ids == [], year,
+                                  VALUES (?, ?, ?, ?, ?, ?)",
+                                 (name, artist_ids == [],
                                   path, popularity, mtime, 0))
             for artist_id in artist_ids:
                 sql.execute("INSERT INTO album_artists\
@@ -235,35 +234,11 @@ class AlbumsDatabase:
                 return v[0]
             return 5
 
-    def get_id(self, album_name, artist_id, year):
-        """
-            Get non compilation album id
-            @param Album name as string,
-            @param artist id as int
-            @param year as int
-            @return Album id as int
-        """
-        with SqlCursor(Lp().db) as sql:
-            filters = (album_name, artist_id)
-            request = "SELECT rowid FROM albums where name=?\
-                       AND artist_id=? "
-            if year is None:
-                request += "AND year is null"
-            else:
-                request += "AND year =?"
-                filters += (year,)
-            result = sql.execute(request, filters)
-            v = result.fetchone()
-            if v is not None:
-                return v[0]
-            return None
-
-    def get_non_compilation_id(self, album_name, artist_ids, year):
+    def get_non_compilation_id(self, album_name, artist_ids):
         """
             Get non compilation album id
             @param Album name as string,
             @param artist ids as [int]
-            @param year as int
             @return Album id as int
         """
         with SqlCursor(Lp().db) as sql:
@@ -275,18 +250,14 @@ class AlbumsDatabase:
                        album_artists.album_id=albums.rowid AND (1=0 "
             for artist_id in artist_ids:
                 request += "OR artist_id=? "
-            if year is None:
-                request += ") AND year is null"
-            else:
-                filters += (year,)
-                request += ") AND year=?"
+            request += ")"
             result = sql.execute(request, filters)
             v = result.fetchone()
             if v is not None:
                 return v[0]
             return None
 
-    def get_compilation_id(self, album_name, year):
+    def get_compilation_id(self, album_name):
         """
             Get compilation id
             @param Album name as string,
@@ -294,14 +265,26 @@ class AlbumsDatabase:
             @return Album id as int
         """
         with SqlCursor(Lp().db) as sql:
-            if year is None:
-                result = sql.execute("SELECT rowid FROM albums where name=?\
-                                      AND no_album_artist=1\
-                                      AND year is null", (album_name,))
-            else:
-                result = sql.execute("SELECT rowid FROM albums where name=?\
-                                      AND no_album_artist=1\
-                                      AND year=?", (album_name, year))
+            result = sql.execute("SELECT rowid FROM albums where name=?\
+                                  AND no_album_artist=1", (album_name,))
+            v = result.fetchone()
+            if v is not None:
+                return v[0]
+            return None
+
+    def get_year_from_tracks(self, album_id):
+        """
+            Get album year based on tracks
+            Use most used year by tracks
+            @param album id as int
+        """
+        with SqlCursor(Lp().db) as sql:
+            result = sql.execute("SELECT year, COUNT(year) AS occurrence\
+                                  FROM tracks\
+                                  WHERE tracks.album_id=?\
+                                  GROUP BY year\
+                                  ORDER BY occurrence DESC\
+                                  LIMIT 1", (album_id,))
             v = result.fetchone()
             if v is not None:
                 return v[0]
@@ -388,7 +371,7 @@ class AlbumsDatabase:
             if v is not None:
                 path = v[0]
             if path != "" and not os.path.exists(path):
-                tracks = self.get_tracks(album_id, [], [])
+                tracks = self.get_track_ids(album_id, [], [])
                 if tracks:
                     filepath = Lp().tracks.get_path(tracks[0])
                     path = os.path.dirname(filepath)
@@ -793,7 +776,7 @@ class AlbumsDatabase:
         """
         try:
             ret = []
-            for track_id in self.get_tracks(album_id, [], []):
+            for track_id in self.get_track_ids(album_id, [], []):
                 artist_ids = Lp().tracks.get_artist_ids(track_id)
                 # Check if previous track and
                 # track do not have same artists

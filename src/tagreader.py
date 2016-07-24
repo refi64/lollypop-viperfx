@@ -346,7 +346,7 @@ class ScannerTagReader(TagReader):
         return (genre_ids, new_genre_ids)
 
     def add_album(self, album_name, artist_ids,
-                  year, filepath, popularity, mtime):
+                  filepath, popularity, mtime):
         """
             Add album to db
             @param album name as string
@@ -362,26 +362,26 @@ class ScannerTagReader(TagReader):
         new = False
         if artist_ids:
             album_id = Lp().albums.get_non_compilation_id(album_name,
-                                                          artist_ids,
-                                                          year)
+                                                          artist_ids)
         else:
-            album_id = Lp().albums.get_compilation_id(album_name, year)
+            album_id = Lp().albums.get_compilation_id(album_name)
         if album_id is None:
             new = True
             album_id = Lp().albums.add(album_name, artist_ids,
-                                       year, path, popularity, mtime)
+                                       path, popularity, mtime)
         # Now we have our album id, check if path doesn't change
         if Lp().albums.get_path(album_id) != path:
             Lp().albums.set_path(album_id, path)
 
         return (album_id, new)
 
-    def update_album(self, album_id, artist_ids, genre_ids):
+    def update_album(self, album_id, artist_ids, genre_ids, year):
         """
             Set album artists
             @param album id as int
             @param artist ids as [int]
             @param genre ids as [int]
+            @param year as int
             @commit needed
         """
         # Set artist ids based on content
@@ -392,6 +392,10 @@ class ScannerTagReader(TagReader):
         # Update album genres
         for genre_id in genre_ids:
             Lp().albums.add_genre(album_id, genre_id)
+
+        # Update year based on tracks
+        year = Lp().albums.get_year_from_tracks(album_id)
+        Lp().albums.set_year(album_id, year)
 
     def update_track(self, track_id, artist_ids, genre_ids):
         """
