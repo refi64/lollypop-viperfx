@@ -174,7 +174,7 @@ class TracksDatabase:
                 return v[0]
             return ""
 
-    def get_year(self, album_id):
+    def get_year(self, track_id):
         """
             Get track year
             @param track id as int
@@ -182,7 +182,7 @@ class TracksDatabase:
         """
         with SqlCursor(Lp().db) as sql:
             result = sql.execute("SELECT year FROM tracks WHERE rowid=?",
-                                 (album_id,))
+                                 (track_id,))
             v = result.fetchone()
             if v and v[0]:
                 return str(v[0])
