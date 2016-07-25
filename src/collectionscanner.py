@@ -184,11 +184,14 @@ class CollectionScanner(GObject.GObject, ScannerTagReader):
                         mtime = int(time())
                     debug("Adding file: %s" % filepath)
                     self._add2db(filepath, infos, mtime)
-                except Exception as e:
+                except GLib.GError as e:
+                    print(e)
                     if e.message != gst_message:
                         gst_message = e.message
                         if Lp().notify is not None:
                             Lp().notify.send(gst_message)
+                except:
+                    pass
                 i += 1
 
             # Clean deleted files
