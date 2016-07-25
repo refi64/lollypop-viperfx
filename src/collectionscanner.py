@@ -185,7 +185,7 @@ class CollectionScanner(GObject.GObject, ScannerTagReader):
                     debug("Adding file: %s" % filepath)
                     self._add2db(filepath, infos, mtime)
                 except GLib.GError as e:
-                    print(e)
+                    print(e, filepath)
                     if e.message != gst_message:
                         gst_message = e.message
                         if Lp().notify is not None:
