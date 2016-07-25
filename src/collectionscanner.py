@@ -58,8 +58,6 @@ class CollectionScanner(GObject.GObject, ScannerTagReader):
         if not self.is_locked():
             progress.show()
             self._progress = progress
-            # Keep track of on file with missing codecs
-            self._missing_codecs = None
             self.init_discover()
             paths = Lp().settings.get_music_paths()
             if not paths:
@@ -137,10 +135,6 @@ class CollectionScanner(GObject.GObject, ScannerTagReader):
         self.emit("scan-finished")
         if Lp().settings.get_value('artist-artwork'):
             Lp().art.cache_artists_art()
-        if self._missing_codecs is not None:
-            Lp().player.load_external(
-                                    GLib.filename_to_uri(self._missing_codecs))
-            Lp().player.play_first_external()
 
     def _scan(self, paths):
         """
@@ -148,6 +142,7 @@ class CollectionScanner(GObject.GObject, ScannerTagReader):
             @param paths as [string], paths to scan
             @thread safe
         """
+        gst_message = None
         if self._history is None:
             self._history = History()
         mtimes = Lp().tracks.get_mtimes()
@@ -190,10 +185,10 @@ class CollectionScanner(GObject.GObject, ScannerTagReader):
                     debug("Adding file: %s" % filepath)
                     self._add2db(filepath, infos, mtime)
                 except Exception as e:
-                    debug("Error scanning: %s, %s" % (filepath, e))
-                    string = "%s" % e
-                    if string.startswith('gst-core-error-quark'):
-                        self._missing_codecs = filepath
+                    if e.message != gst_message:
+                        gst_message = e.message
+                        if Lp().notify is not None:
+                            Lp().notify.send(gst_message)
                 i += 1
 
             # Clean deleted files

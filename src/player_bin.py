@@ -12,7 +12,6 @@
 
 from gi.repository import Gst, GstAudio, GstPbutils, GLib
 
-from gettext import gettext as _
 from time import time
 
 from lollypop.player_base import BasePlayer
@@ -468,9 +467,7 @@ class BinPlayer(BasePlayer):
             self._codecs.install()
             Lp().scanner.stop()
         elif Lp().notify is not None:
-            Lp().notify.send(_("File doesn't exist: %s") %
-                             self.current_track.uri)
-        self.stop()
+            Lp().notify.send(message.parse_error()[0].message)
         self.emit('current-changed')
         return True
 

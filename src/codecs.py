@@ -28,6 +28,8 @@ class Codecs:
         """
             Install missing plugins
         """
+        if not GstPbutils.install_plugins_supported():
+            return
         try:
             context = GstPbutils.InstallPluginsContext.new()
             try:
