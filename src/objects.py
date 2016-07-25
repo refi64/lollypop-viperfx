@@ -238,8 +238,8 @@ class Track(Base):
     """
     FIELDS = ['name', 'album_id', 'album_artist_ids',
               'artist_ids', 'album_name', 'artists',
-              'genres', 'duration', 'number', 'path', 'position']
-    DEFAULTS = ['', None, [], [], '', '', '', 0.0, None, '', 0]
+              'genres', 'duration', 'number', 'path', 'position', 'year']
+    DEFAULTS = ['', None, [], [], '', '', '', 0.0, None, '', 0, None]
 
     def __init__(self, track_id=None):
         """
@@ -306,14 +306,6 @@ class Track(Base):
             @return Album
         """
         return Album(self.album_id)
-
-    @property
-    def year(self):
-        """
-            Get track year
-            @return str
-        """
-        return self.album.year
 
     @property
     def album_artists(self):

@@ -430,7 +430,11 @@ class TrackMenuPopover(Gtk.Popover):
         Gtk.Popover.__init__(self)
         self.bind_model(menu, None)
 
-        track_year = str(Lp().tracks.get_year(object_id))
+        track = Track(object_id)
+        if track.year != track.album.year:
+            track_year = str(track.year)
+        else:
+            track_year = ""
 
         rating = RatingWidget(Track(object_id))
         rating.set_margin_top(5)
@@ -450,15 +454,16 @@ class TrackMenuPopover(Gtk.Popover):
         loved.set_property('hexpand', True)
         loved.show()
 
-        year = Gtk.Label()
-        year.set_text(track_year)
-        year.set_margin_end(5)
-        year.set_margin_top(5)
-        year.set_margin_bottom(5)
-        year.get_style_context().add_class('dim-label')
-        year.set_property('halign', Gtk.Align.END)
-        year.set_property('hexpand', True)
-        year.show()
+        if track_year != "":
+            year = Gtk.Label()
+            year.set_text(track_year)
+            year.set_margin_end(5)
+            year.set_margin_top(5)
+            year.set_margin_bottom(5)
+            year.get_style_context().add_class('dim-label')
+            year.set_property('halign', Gtk.Align.END)
+            year.set_property('hexpand', True)
+            year.show()
 
         # Hack to add two widgets in popover
         # Use a Gtk.PopoverMenu later (GTK>3.16 available on Debian stable)
