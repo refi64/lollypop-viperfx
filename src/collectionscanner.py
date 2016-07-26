@@ -97,7 +97,7 @@ class CollectionScanner(GObject.GObject, TagReader):
         track_dirs = list(paths)
         count = 0
         for path in paths:
-            for root, dirs, files in os.walk(path):
+            for root, dirs, files in os.walk(path, followlinks=True):
                 # Add dirs
                 for d in dirs:
                     track_dirs.append(os.path.join(root, d))
