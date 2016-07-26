@@ -13,7 +13,7 @@
 from gi.repository import Gtk, GLib, Pango
 
 from lollypop.define import Lp
-from lollypop.tagreader import ScannerTagReader
+from lollypop.tagreader import TagReader
 from lollypop.utils import seconds_to_string
 
 
@@ -36,7 +36,7 @@ class ExternalsPopover(Gtk.Popover):
         self._signal_id = None
         self._view = builder.get_object('view')
         self._model = builder.get_object('model')
-        self._tagreader = ScannerTagReader()
+        self._tagreader = TagReader()
 
         renderer0 = Gtk.CellRendererPixbuf()
         renderer1 = Gtk.CellRendererText()

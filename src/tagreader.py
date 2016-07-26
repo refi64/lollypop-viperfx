@@ -22,37 +22,37 @@ from lollypop.define import Lp
 from lollypop.utils import format_artist_name
 
 
-class TagReader:
+class Discoverer:
     """
-        Read tags from file
+        Discover tags
     """
 
     def __init__(self):
         """
             Init tag reader
         """
-        self.init_discover()
+        self.init_discoverer()
 
-    def init_discover(self):
+    def init_discoverer(self):
         """
             Init discover
         """
         GstPbutils.pb_utils_init()
-        self._tagreader = GstPbutils.Discoverer.new(10*Gst.SECOND)
+        self._discoverer = GstPbutils.Discoverer.new(10*Gst.SECOND)
 
-    def get_infos(self, path):
+    def get_info(self, path):
         """
-            Return informations on file at path
+            Return information for file at path
             @param path as str
             @Exception GLib.Error
             @return GstPbutils.DiscovererInfo
         """
         uri = GLib.filename_to_uri(path)
-        infos = self._tagreader.discover_uri(uri)
-        return infos
+        info = self._discoverer.discover_uri(uri)
+        return info
 
 
-class ScannerTagReader(TagReader):
+class TagReader(Discoverer):
     """
         Scanner tag reader
     """
@@ -61,7 +61,7 @@ class ScannerTagReader(TagReader):
         """
             Init tag reader
         """
-        TagReader.__init__(self)
+        Discoverer.__init__(self)
 
     def get_title(self, tags, filepath):
         """

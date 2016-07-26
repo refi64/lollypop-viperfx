@@ -20,12 +20,12 @@ from time import time
 from lollypop.inotify import Inotify
 from lollypop.define import Lp
 from lollypop.sqlcursor import SqlCursor
-from lollypop.tagreader import ScannerTagReader
+from lollypop.tagreader import TagReader
 from lollypop.database_history import History
 from lollypop.utils import is_audio, is_pls, debug
 
 
-class CollectionScanner(GObject.GObject, ScannerTagReader):
+class CollectionScanner(GObject.GObject, TagReader):
     """
         Scan user music collection
     """
@@ -41,7 +41,7 @@ class CollectionScanner(GObject.GObject, ScannerTagReader):
             Init collection scanner
         """
         GObject.GObject.__init__(self)
-        ScannerTagReader.__init__(self)
+        TagReader.__init__(self)
 
         self._thread = None
         self._inotify = None
@@ -58,7 +58,6 @@ class CollectionScanner(GObject.GObject, ScannerTagReader):
         if not self.is_locked():
             progress.show()
             self._progress = progress
-            self.init_discover()
             paths = Lp().settings.get_music_paths()
             if not paths:
                 return
@@ -175,7 +174,7 @@ class CollectionScanner(GObject.GObject, ScannerTagReader):
                             continue
                         else:
                             self._del_from_db(filepath)
-                    infos = self.get_infos(filepath)
+                    info = self.get_info(filepath)
                     # On first scan, use modification time
                     # Else, use current time
                     if was_empty:
@@ -183,7 +182,7 @@ class CollectionScanner(GObject.GObject, ScannerTagReader):
                     else:
                         mtime = int(time())
                     debug("Adding file: %s" % filepath)
-                    self._add2db(filepath, infos, mtime)
+                    self._add2db(filepath, info, mtime)
                 except GLib.GError as e:
                     print(e, filepath)
                     if e.message != gst_message:
@@ -205,16 +204,16 @@ class CollectionScanner(GObject.GObject, ScannerTagReader):
         del self._history
         self._history = None
 
-    def _add2db(self, filepath, infos, mtime):
+    def _add2db(self, filepath, info, mtime):
         """
             Add new file to db with informations
             @param filepath as string
-            @param infos as GstPbutils.DiscovererInfo
+            @param info as GstPbutils.DiscovererInfo
             @param mtime as int
             @return track id as int
         """
         debug("CollectionScanner::add2db(): Read tags")
-        tags = infos.get_tags()
+        tags = info.get_tags()
 
         title = self.get_title(tags, filepath)
         artists = self.get_artists(tags)
@@ -229,7 +228,7 @@ class CollectionScanner(GObject.GObject, ScannerTagReader):
         discname = self.get_discname(tags)
         tracknumber = self.get_tracknumber(tags)
         year = self.get_year(tags)
-        duration = int(infos.get_duration()/1000000000)
+        duration = int(info.get_duration()/1000000000)
         name = GLib.path_get_basename(filepath)
 
         # If no artists tag, use album artist

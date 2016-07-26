@@ -15,7 +15,7 @@ from gi.repository import Gst, GstAudio, GstPbutils, GLib
 from time import time
 
 from lollypop.player_base import BasePlayer
-from lollypop.tagreader import ScannerTagReader
+from lollypop.tagreader import TagReader
 from lollypop.player_plugins import PluginsPlayer
 from lollypop.define import GstPlayFlags, NextContext, Lp
 from lollypop.codecs import Codecs
@@ -414,7 +414,7 @@ class BinPlayer(BasePlayer):
            self.current_track.duration > 0.0:
             return
         debug("Player::_on_bus_message_tag(): %s" % self.current_track.uri)
-        reader = ScannerTagReader()
+        reader = TagReader()
         tags = message.parse_tag()
 
         title = reader.get_title(tags, '')
