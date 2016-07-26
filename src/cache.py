@@ -23,10 +23,14 @@ class InfoCache:
         Generic class to cache text and images
     """
     _CACHE_PATH = path.expanduser("~") + "/.cache/lollypop_info"
-    WEBSERVICES = [("deezer", "_get_deezer_artist_info"),
-                   ("spotify", "_get_spotify_artist_info"),
-                   ("lastfm", "_get_lastfm_artist_info"),
-                   ("wikipedia", "_get_wp_artist_info")]
+    WEBSERVICES = [("spotify", "_get_spotify_artist_info",
+                    "_get_spotify_album_artwork"),
+                   ("lastfm", "_get_lastfm_artist_info",
+                    "_get_lastfm_album_artwork"),
+                   ("deezer", "_get_deezer_artist_info",
+                    "_get_deezer_album_artwork"),
+                   ("wikipedia", "_get_wp_artist_info",
+                    "_get_wp_album_artwork")]
 
     def init():
         """
@@ -44,7 +48,7 @@ class InfoCache:
             @param prefix as string
         """
         exists = False
-        for (suffix, helper) in InfoCache.WEBSERVICES:
+        for (suffix, helper1, helper2) in InfoCache.WEBSERVICES:
             filepath = "%s/%s_%s_%s.jpg" % (InfoCache._CACHE_PATH,
                                             escape(prefix),
                                             suffix,
@@ -62,7 +66,7 @@ class InfoCache:
             @return path as string/None
         """
         try:
-            for (suffix, helper) in InfoCache.WEBSERVICES:
+            for (suffix, helper1, helper2) in InfoCache.WEBSERVICES:
                 extract = None
                 filepath = "%s/%s_%s_%s.jpg" % (InfoCache._CACHE_PATH,
                                                 escape(prefix),

@@ -170,7 +170,7 @@ class AlbumArt(BaseArt, TagReader):
                                                                          ratio)
                 # Use default artwork
                 if pixbuf is None:
-                    self.download_album_art(album.id)
+                    self.cache_album_art(album.id)
                     return self.get_default_icon('folder-music-symbolic',
                                                  size,
                                                  scale)
