@@ -20,17 +20,17 @@ from lollypop.define import Lp
 from lollypop.utils import debug
 
 
-class ArtDownloader:
+class Downloader:
     """
-        Download artwork from the web
+        Download from the web
     """
     try:
         from lollypop.wikipedia import Wikipedia
     except:
         Wikipedia = None
 
-    _KEY = "AIzaSyBiaYluG8pVYxgKRGcc4uEbtgE9q8la0dw"
-    _ID = "015987506728554693370:waw3yqru59a"
+    _GOOGLE_API_KEY = "AIzaSyBiaYluG8pVYxgKRGcc4uEbtgE9q8la0dw"
+    _GOOGLE_API_ID = "015987506728554693370:waw3yqru59a"
 
     def __init__(self):
         """
@@ -55,14 +55,14 @@ class ArtDownloader:
                 t.daemon = True
                 t.start()
 
-    def cache_artists_art(self):
+    def cache_artists_info(self):
         """
-            Cache artwork for all artists
+            Cache info for all artists
         """
         if self._cache_artists_running:
             return
         self._cache_artists_running = True
-        t = Thread(target=self._cache_artists_art)
+        t = Thread(target=self._cache_artists_info)
         t.daemon = True
         t.start()
 
@@ -80,14 +80,14 @@ class ArtDownloader:
 
         cs_api_key = Lp().settings.get_value('cs-api-key').get_string()
         if cs_api_key == "":
-            cs_api_key = self._KEY
+            cs_api_key = self._GOOGLE_API_KEY
 
         try:
             f = Gio.File.new_for_uri("https://www.googleapis.com/"
                                      "customsearch/v1?key=%s&cx=%s"
                                      "&q=%s&searchType=image" %
                                      (cs_api_key,
-                                      self._ID,
+                                      self._GOOGLE_API_ID,
                                       GLib.uri_escape_string(search,
                                                              "",
                                                              False)))
@@ -112,11 +112,55 @@ class ArtDownloader:
 #######################
 # PRIVATE             #
 #######################
-    def _get_spotify_artist_artwork(self, artist):
+    def _get_lastfm_artist_info(self, artist):
         """
-            Return spotify artwork url
+            Return lastfm artist information
             @param artist as str
-            @return url as str/None
+            @return (url as str/None, content as str)
+        """
+        if Lp().lastfm is not None:
+            return Lp().lastfm.get_artist_infos(artist)
+        else:
+            return (None, None)
+
+    def _get_wp_artist_info(self, artist):
+        """
+            Return wikipedia artist information
+            @param artist as str
+            @return (url as str/None, content as str)
+        """
+        if Downloader.Wikipedia is not None:
+            wp = Downloader.Wikipedia()
+            return wp.get_page_infos(artist)
+        else:
+            return (None, None)
+
+    def _get_deezer_artist_info(self, artist):
+        """
+            Return deezer artist information
+            @param artist as str
+            @return (url as str/None, content as None)
+        """
+        try:
+            artist_formated = GLib.uri_escape_string(
+                                artist, None, True).replace(' ', '+')
+            s = Gio.File.new_for_uri("https://api.deezer.com//search/artist/?"
+                                     "q=%s&output=json&index=0&limit=1&" %
+                                     artist_formated)
+            (status, data, tag) = s.load_contents()
+            if status:
+                decode = json.loads(data.decode('utf-8'))
+                return (decode['data'][0]['picture_big'], None)
+        except Exception as e:
+            debug("ArtDownloader::_get_deezer_artist_artwork(): %s [%s]" %
+                  (e, artist))
+        return (None, None)
+
+    def _get_spotify_artist_info(self, artist):
+        """
+            Return spotify artist information
+            @param artist as str
+            @return (url as str/None, content as None)
         """
         try:
             artist_formated = GLib.uri_escape_string(
@@ -128,63 +172,43 @@ class ArtDownloader:
                 decode = json.loads(data.decode('utf-8'))
                 for item in decode['artists']['items']:
                     if item['name'].lower() == artist.lower():
-                        return item['images'][0]['url']
+                        return (item['images'][0]['url'], None)
         except Exception as e:
-            debug("ArtDownloader::get_spotify_artist_artwork(): %s [%s]" %
+            debug("ArtDownloader::_get_spotify_artist_artwork(): %s [%s]" %
                   (e, artist))
-        return None
+        return (None, None)
 
-    def _cache_artists_art(self):
+    def _cache_artists_info(self):
         """
-            Cache artwork for all artists
+            Cache info for all artists
         """
         # We create cache if needed
         InfoCache.init()
-        # Then cache artwork for lastfm/wikipedia/spotify
-        # We cache content as the same time
-        # TODO Make this code more generic
+        # Then cache for lastfm/wikipedia/spotify/deezer/...
         for (artist_id, artist) in Lp().artists.get([]):
-            debug("ArtDownloader::_cache_artists_art(): %s" % artist)
-            artwork_set = False
             if not Gio.NetworkMonitor.get_default().get_network_available() or\
                     InfoCache.exists_in_cache(artist):
                 continue
-            if Lp().lastfm is not None:
+            artwork_set = False
+            for (api, helper) in InfoCache.WEBSERVICES:
+                debug("ArtDownloader::_cache_artists_info(): %s@%s" % (artist,
+                                                                       api))
                 try:
-                    (url, content) = Lp().lastfm.get_artist_infos(artist)
+                    method = getattr(self, helper)
+                    (url, content) = method(artist)
                     if url is not None:
                         s = Gio.File.new_for_uri(url)
                         (status, data, tag) = s.load_contents()
                         if status:
                             artwork_set = True
-                            InfoCache.cache(artist, content, data, "lastfm")
+                            InfoCache.cache(artist, content, data, api)
+                            debug("ArtDownloader::_cache_artists_info(): %s"
+                                  % url)
                         else:
-                            InfoCache.cache(artist, None, None, "lastfm")
-                except:
-                    InfoCache.cache(artist, None, None, "lastfm")
-            if ArtDownloader.Wikipedia is not None:
-                try:
-                    wp = ArtDownloader.Wikipedia()
-                    (url, content) = wp.get_page_infos(artist)
-                    if url is not None:
-                        s = Gio.File.new_for_uri(url)
-                        (status, data, tag) = s.load_contents()
-                        if status:
-                            artwork_set = True
-                            InfoCache.cache(artist, content, data, "wikipedia")
-                        else:
-                            InfoCache.cache(artist, None, None, "wikipedia")
-                except:
-                    InfoCache.cache(artist, None, None, "wikipedia")
-            url = self._get_spotify_artist_artwork(artist)
-            if url is not None:
-                s = Gio.File.new_for_uri(url)
-                (status, data, tag) = s.load_contents()
-                if status:
-                    artwork_set = True
-                    InfoCache.cache(artist, None, data, "spotify")
-                else:
-                    InfoCache.cache(artist, None, None, "spotify")
+                            InfoCache.cache(artist, None, None, api)
+                except Exception as e:
+                    print("ArtDownloader::_cache_artists_info():", e)
+                    InfoCache.cache(artist, None, None, api)
             if artwork_set:
                 Lp().art.emit('artist-artwork-changed', artist)
         self._cache_artists_running = False

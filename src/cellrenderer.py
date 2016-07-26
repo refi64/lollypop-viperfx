@@ -109,7 +109,7 @@ class CellRendererArtist(Gtk.CellRendererText):
         if self.rowid in self._surfaces.keys():
             surface = self._surfaces[self.rowid]
         if surface is None:
-            for suffix in ["lastfm", "spotify", "wikipedia"]:
+            for suffix in ["lastfm", "deezer", "spotify", "wikipedia"]:
                 uri = InfoCache.get_artwork(self.artist, suffix, size)
                 if uri is not None:
                     pixbuf = GdkPixbuf.Pixbuf.new_from_file_at_size(uri,

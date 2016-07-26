@@ -133,7 +133,7 @@ class CollectionScanner(GObject.GObject, TagReader):
         self.stop()
         self.emit("scan-finished")
         if Lp().settings.get_value('artist-artwork'):
-            Lp().art.cache_artists_art()
+            Lp().art.cache_artists_info()
 
     def _scan(self, paths):
         """

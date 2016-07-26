@@ -149,7 +149,7 @@ class Application(Gtk.Application):
         self.art = Art()
         self.art.update_art_size()
         if self.settings.get_value('artist-artwork'):
-            GLib.timeout_add(5000, self.art.cache_artists_art)
+            GLib.timeout_add(5000, self.art.cache_artists_info)
         if LastFM is not None:
             self.lastfm = LastFM()
         if not self.settings.get_value('disable-mpris'):

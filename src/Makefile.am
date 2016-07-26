@@ -4,7 +4,6 @@ app_PYTHON = \
     application.py\
     art_album.py\
     art_base.py\
-    art_downloader.py\
     art.py\
     art_radio.py\
     art_widgets.py\
@@ -22,6 +21,7 @@ app_PYTHON = \
     database_tracks.py\
     database_upgrade.py\
     define.py\
+    downloader.py\
     fullscreen.py\
     inhibitor.py\
     inhibitor_legacy.py\

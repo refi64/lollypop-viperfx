@@ -390,7 +390,7 @@ class SettingsDialog:
                                 GLib.Variant('b', state))
         Lp().window.reload_view()
         if state:
-            Lp().art.cache_artists_art()
+            Lp().art.cache_artists_info()
 
     def _update_repeat_setting(self, widget, state):
         """

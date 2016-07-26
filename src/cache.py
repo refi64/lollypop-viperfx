@@ -22,17 +22,21 @@ class InfoCache:
     """
         Generic class to cache text and images
     """
-    CACHE_PATH = path.expanduser("~") + "/.cache/lollypop_info"
+    _CACHE_PATH = path.expanduser("~") + "/.cache/lollypop_info"
+    WEBSERVICES = [("deezer", "_get_deezer_artist_info"),
+                   ("spotify", "_get_spotify_artist_info"),
+                   ("lastfm", "_get_lastfm_artist_info"),
+                   ("wikipedia", "_get_wp_artist_info")]
 
     def init():
         """
             Init cache
         """
-        if not path.exists(InfoCache.CACHE_PATH):
+        if not path.exists(InfoCache._CACHE_PATH):
             try:
-                mkdir(InfoCache.CACHE_PATH)
+                mkdir(InfoCache._CACHE_PATH)
             except:
-                print("Can't create %s" % InfoCache.CACHE_PATH)
+                print("Can't create %s" % InfoCache._CACHE_PATH)
 
     def exists_in_cache(prefix):
         """
@@ -40,8 +44,8 @@ class InfoCache:
             @param prefix as string
         """
         exists = False
-        for suffix in ["lastfm", "wikipedia", "spotify"]:
-            filepath = "%s/%s_%s_%s.jpg" % (InfoCache.CACHE_PATH,
+        for (suffix, helper) in InfoCache.WEBSERVICES:
+            filepath = "%s/%s_%s_%s.jpg" % (InfoCache._CACHE_PATH,
                                             escape(prefix),
                                             suffix,
                                             ArtSize.ARTIST)
@@ -58,61 +62,65 @@ class InfoCache:
             @return path as string/None
         """
         try:
-            extract = None
-            filepath = "%s/%s_%s_%s.jpg" % (InfoCache.CACHE_PATH,
-                                            escape(prefix),
-                                            suffix,
-                                            ArtSize.ARTIST)
-            filepath_at_size = "%s/%s_%s_%s.jpg" % (InfoCache.CACHE_PATH,
-                                                    escape(prefix),
-                                                    suffix,
-                                                    size)
-            if not path.exists(filepath) or path.getsize(filepath) == 0:
-                return None
-            # Make cache for this size
-            if not path.exists(filepath_at_size):
-                pixbuf = GdkPixbuf.Pixbuf.new_from_file_at_size(filepath,
-                                                                size,
-                                                                size)
-                if pixbuf.get_height() > pixbuf.get_width():
-                    vertical = True
-                elif pixbuf.get_height() < pixbuf.get_width():
-                    vertical = False
-                else:
-                    extract = pixbuf
-                if extract is None:
-                    del pixbuf
-                    extract = GdkPixbuf.Pixbuf.new(GdkPixbuf.Colorspace.RGB,
-                                                   True, 8,
-                                                   size, size)
-                    if vertical:
-                        pixbuf = GdkPixbuf.Pixbuf.new_from_file_at_scale(
-                                                                      filepath,
-                                                                      size,
-                                                                      -1,
-                                                                      True)
-                        diff = pixbuf.get_height() - size
-                        pixbuf.copy_area(0, diff/2,
-                                         pixbuf.get_width(),
-                                         size,
-                                         extract,
-                                         0, 0)
+            for (suffix, helper) in InfoCache.WEBSERVICES:
+                extract = None
+                filepath = "%s/%s_%s_%s.jpg" % (InfoCache._CACHE_PATH,
+                                                escape(prefix),
+                                                suffix,
+                                                ArtSize.ARTIST)
+                filepath_at_size = "%s/%s_%s_%s.jpg" % (InfoCache._CACHE_PATH,
+                                                        escape(prefix),
+                                                        suffix,
+                                                        size)
+                if not path.exists(filepath) or path.getsize(filepath) == 0:
+                    filepath_at_size = None
+                    continue
+                # Make cache for this size
+                if not path.exists(filepath_at_size):
+                    pixbuf = GdkPixbuf.Pixbuf.new_from_file_at_size(filepath,
+                                                                    size,
+                                                                    size)
+                    if pixbuf.get_height() > pixbuf.get_width():
+                        vertical = True
+                    elif pixbuf.get_height() < pixbuf.get_width():
+                        vertical = False
                     else:
-                        pixbuf = GdkPixbuf.Pixbuf.new_from_file_at_scale(
+                        extract = pixbuf
+                    if extract is None:
+                        del pixbuf
+                        extract = GdkPixbuf.Pixbuf.new(
+                                                    GdkPixbuf.Colorspace.RGB,
+                                                    True, 8,
+                                                    size, size)
+                        if vertical:
+                            pixbuf = GdkPixbuf.Pixbuf.new_from_file_at_scale(
+                                                                      filepath,
+                                                                      size,
+                                                                      -1,
+                                                                      True)
+                            diff = pixbuf.get_height() - size
+                            pixbuf.copy_area(0, diff/2,
+                                             pixbuf.get_width(),
+                                             size,
+                                             extract,
+                                             0, 0)
+                        else:
+                            pixbuf = GdkPixbuf.Pixbuf.new_from_file_at_scale(
                                                                       filepath,
                                                                       -1,
                                                                       size,
                                                                       True)
-                        diff = pixbuf.get_width() - size
-                        pixbuf.copy_area(diff/2, 0,
-                                         size,
-                                         pixbuf.get_height(),
-                                         extract,
-                                         0, 0)
-                    del pixbuf
-                extract.savev(filepath_at_size, "jpeg", ["quality"], ["90"])
-                del extract
-            return filepath_at_size
+                            diff = pixbuf.get_width() - size
+                            pixbuf.copy_area(diff/2, 0,
+                                             size,
+                                             pixbuf.get_height(),
+                                             extract,
+                                             0, 0)
+                        del pixbuf
+                    extract.savev(filepath_at_size, "jpeg",
+                                  ["quality"], ["90"])
+                    del extract
+                return filepath_at_size
         except Exception as e:
             print("InfoCache::get_artwork():", e)
             return None
@@ -124,7 +132,7 @@ class InfoCache:
             @param suffix as str
             @return (content as string, data as bytes)
         """
-        filepath = "%s/%s_%s" % (InfoCache.CACHE_PATH,
+        filepath = "%s/%s_%s" % (InfoCache._CACHE_PATH,
                                  escape(prefix),
                                  suffix)
         content = None
@@ -150,7 +158,7 @@ class InfoCache:
             @param data as bytes
             @param suffix as str
         """
-        filepath = "%s/%s_%s" % (InfoCache.CACHE_PATH,
+        filepath = "%s/%s_%s" % (InfoCache._CACHE_PATH,
                                  escape(prefix),
                                  suffix)
         if content is not None:
@@ -182,7 +190,7 @@ class InfoCache:
             @param prefix as str
             @param suffix as str
         """
-        filepath = "%s/%s_%s.txt" % (InfoCache.CACHE_PATH,
+        filepath = "%s/%s_%s.txt" % (InfoCache._CACHE_PATH,
                                      escape(prefix),
                                      suffix)
         f = Gio.File.new_for_path(filepath)
@@ -190,7 +198,7 @@ class InfoCache:
             f.delete(None)
         except:
             pass
-        filepath = "%s/%s_%s_%s.jpg" % (InfoCache.CACHE_PATH,
+        filepath = "%s/%s_%s_%s.jpg" % (InfoCache._CACHE_PATH,
                                         escape(prefix),
                                         suffix,
                                         ArtSize.ARTIST)
@@ -208,7 +216,7 @@ class InfoCache:
             @param scale factor as int
         """
         for i in [1, 2]:
-            filepath = "%s/%s_%s_%s.jpg" % (InfoCache.CACHE_PATH,
+            filepath = "%s/%s_%s_%s.jpg" % (InfoCache._CACHE_PATH,
                                             escape(prefix),
                                             suffix,
                                             ArtSize.ARTIST_SMALL*scale*i)

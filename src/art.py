@@ -12,11 +12,12 @@
 
 from lollypop.art_album import AlbumArt
 from lollypop.art_radio import RadioArt
+from lollypop.downloader import Downloader
 
 from shutil import rmtree
 
 
-class Art(AlbumArt, RadioArt):
+class Art(AlbumArt, RadioArt, Downloader):
     """
         Global artwork manager
     """
@@ -27,6 +28,7 @@ class Art(AlbumArt, RadioArt):
         """
         AlbumArt.__init__(self)
         RadioArt.__init__(self)
+        Downloader.__init__(self)
         self._create_cache()
         self._create_store()
 

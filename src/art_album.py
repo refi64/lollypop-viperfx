@@ -18,14 +18,13 @@ from shutil import which
 from threading import Thread
 
 from lollypop.art_base import BaseArt
-from lollypop.art_downloader import ArtDownloader
 from lollypop.tagreader import TagReader
 from lollypop.define import Lp, ArtSize
 from lollypop.objects import Album
 from lollypop.utils import escape, is_readonly
 
 
-class AlbumArt(BaseArt, ArtDownloader, TagReader):
+class AlbumArt(BaseArt, TagReader):
     """
          Manager album artwork
     """
@@ -37,7 +36,6 @@ class AlbumArt(BaseArt, ArtDownloader, TagReader):
             Init radio art
         """
         BaseArt.__init__(self)
-        ArtDownloader.__init__(self)
         TagReader.__init__(self)
         self._favorite = Lp().settings.get_value('favorite-cover').get_string()
 
