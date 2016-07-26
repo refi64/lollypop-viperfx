@@ -293,23 +293,6 @@ class TracksDatabase:
                 mtimes.update((row,))
             return mtimes
 
-    def get_infos(self, track_id):
-        """
-            Get all track informations for track id
-            @param Track id as int
-            @return (name as string, filepath as string,
-            duration as int, tracknumber as int, album_id as int)
-            Returned values can be (None, None, None, None)
-        """
-        with SqlCursor(Lp().db) as sql:
-            result = sql.execute("SELECT name, filepath,\
-                                  duration, album_id\
-                                  FROM tracks WHERE rowid=?", (track_id,))
-            v = result.fetchone()
-            if v is not None:
-                return v
-            return (None, None, None, None)
-
     def get_paths(self):
         """
             Get all tracks filepath

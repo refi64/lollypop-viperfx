@@ -296,13 +296,13 @@ class AlbumArt(BaseArt, ArtDownloader, TagReader):
         """
         pixbuf = None
         try:
-            infos = self.get_infos(filepath)
+            info = self.get_info(filepath)
             exist = False
-            if infos is not None:
-                (exist, sample) = infos.get_tags().get_sample_index('image', 0)
+            if info is not None:
+                (exist, sample) = info.get_tags().get_sample_index('image', 0)
                 # Some file store it in a preview-image tag
                 if not exist:
-                    (exist, sample) = infos.get_tags().get_sample_index(
+                    (exist, sample) = info.get_tags().get_sample_index(
                                                             'preview-image', 0)
             if exist:
                 (exist, mapflags) = sample.get_buffer().map(Gst.MapFlags.READ)
