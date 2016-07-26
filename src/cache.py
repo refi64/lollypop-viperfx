@@ -23,10 +23,10 @@ class InfoCache:
         Generic class to cache text and images
     """
     _CACHE_PATH = path.expanduser("~") + "/.cache/lollypop_info"
-    WEBSERVICES = [("spotify", "_get_spotify_artist_info",
-                    "_get_spotify_album_artwork"),
-                   ("lastfm", "_get_lastfm_artist_info",
+    WEBSERVICES = [("lastfm", "_get_lastfm_artist_info",
                     "_get_lastfm_album_artwork"),
+                   ("spotify", "_get_spotify_artist_info",
+                    "_get_spotify_album_artwork"),
                    ("deezer", "_get_deezer_artist_info",
                     "_get_deezer_album_artwork"),
                    ("wikipedia", "_get_wp_artist_info",
