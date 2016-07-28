@@ -181,7 +181,7 @@ class ArtistView(ArtistAlbumsView):
                                                     self._on_album_changed)
         self._removed_signal_id = Lp().player.connect('album-removed',
                                                       self._on_album_changed)
-        self._lock_signal_id = Lp().player.connect('state-changed',
+        self._lock_signal_id = Lp().player.connect('lock-changed',
                                                    self._on_lock_changed)
 
     def _on_unrealize(self, widget):

@@ -88,12 +88,6 @@ class ArtSize:
     MAX = 4000
 
 
-class PlayerState:
-    NONE = 0             # Normal playback
-    LOCKED = 1           # Locked playback (queue by default, can't seek, ...)
-    QUEUED = 2            # Queue by default
-
-
 class Shuffle:
     NONE = 0             # No shuffle
     TRACKS = 1           # Shuffle by tracks on genre

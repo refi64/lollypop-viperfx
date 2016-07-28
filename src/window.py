@@ -13,7 +13,7 @@
 from gi.repository import Gtk, Gio, Gdk, GLib
 
 from lollypop.container import Container
-from lollypop.define import Lp, NextContext, Shuffle, WindowSize, PlayerState
+from lollypop.define import Lp, NextContext, Shuffle, WindowSize
 from lollypop.toolbar import Toolbar
 from lollypop.utils import is_unity, set_loved, is_loved
 from lollypop.miniplayer import MiniPlayer
@@ -114,8 +114,6 @@ class Window(Gtk.ApplicationWindow, Container):
                                             ["l"])
             self._app.set_accels_for_action("app.player::locked",
                                             ["<Control>l"])
-            self._app.set_accels_for_action("app.player::queued",
-                                            ["<Alt>l"])
         else:
             self._app.set_accels_for_action("app.seek(10)", [None])
             self._app.set_accels_for_action("app.seek(20)", [None])
@@ -130,8 +128,6 @@ class Window(Gtk.ApplicationWindow, Container):
             self._app.set_accels_for_action("app.player::next", [None])
             self._app.set_accels_for_action("app.player::next_album", [None])
             self._app.set_accels_for_action("app.player::prev", [None])
-            self._app.set_accels_for_action("app.player::locked", [None])
-            self._app.set_accels_for_action("app.player::queued", [None])
             self._app.set_accels_for_action("app.player::loved", [None])
 
     def setup_window(self):
@@ -461,15 +457,7 @@ class Window(Gtk.ApplicationWindow, Container):
         elif string == "prev":
             Lp().player.prev()
         elif string == "locked":
-            if Lp().player.locked:
-                Lp().player.set_state(PlayerState.NONE)
-            else:
-                Lp().player.set_state(PlayerState.LOCKED)
-        elif string == "queued":
-            if Lp().player.queued:
-                Lp().player.set_state(PlayerState.NONE)
-            else:
-                Lp().player.set_state(PlayerState.QUEUED)
+            Lp().player.lock()
         elif string == "loved":
             if Lp().player.current_track.id is not None:
                 isloved = is_loved(Lp().player.current_track.id)

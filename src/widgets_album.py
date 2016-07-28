@@ -171,7 +171,7 @@ class AlbumWidget:
         """
         if self._lock_overlay or\
            self._show_overlay == set or\
-           (set is True and (Lp().player.locked or Lp().player.queued)):
+           (set is True and Lp().player.locked):
             return
         self._show_overlay = set
         if set:
@@ -478,7 +478,7 @@ class AlbumSimpleWidget(Gtk.FlowBoxChild, AlbumWidget):
         """
         if self._lock_overlay or\
            self._show_overlay == set or\
-           (set is True and (Lp().player.locked or Lp().player.queued)):
+           (set is True and Lp().player.locked):
             return
         if set:
             # Play button
@@ -970,7 +970,7 @@ class AlbumDetailedWidget(Gtk.Bin, AlbumWidget):
             @param track id as int
         """
         # Add to queue by default
-        if Lp().player.locked or Lp().player.queued:
+        if Lp().player.locked:
             if track_id in Lp().player.get_queue():
                 Lp().player.del_from_queue(track_id)
             else:

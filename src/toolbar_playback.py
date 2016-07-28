@@ -39,7 +39,7 @@ class ToolbarPlayback(Gtk.Bin, PlaybackController):
         self._play_image = builder.get_object('play_image')
         self._pause_image = builder.get_object('pause_image')
 
-        Lp().player.connect('state-changed', self._on_lock_changed)
+        Lp().player.connect('lock-changed', self._on_lock_changed)
 
 #######################
 # PRIVATE             #
