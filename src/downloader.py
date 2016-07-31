@@ -193,6 +193,8 @@ class Downloader:
             for (api, helper, unused) in InfoCache.WEBSERVICES:
                 debug("Downloader::_cache_artists_info(): %s@%s" % (artist,
                                                                     api))
+                if helper is None:
+                    continue
                 try:
                     method = getattr(self, helper)
                     (url, content) = method(artist)
@@ -225,6 +227,8 @@ class Downloader:
                 album = Lp().albums.get_name(album_id)
                 artist = ", ".join(Lp().albums.get_artists(album_id))
                 for (api, unused, helper) in InfoCache.WEBSERVICES:
+                    if helper is None:
+                        continue
                     method = getattr(self, helper)
                     data = method(artist, album)
                     if data is not None:

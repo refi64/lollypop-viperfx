@@ -30,7 +30,7 @@ class InfoCache:
                    ("deezer", "_get_deezer_artist_info",
                     "_get_deezer_album_artwork"),
                    ("wikipedia", "_get_wp_artist_info",
-                    "_get_wp_album_artwork")]
+                    None)]
 
     def init():
         """
