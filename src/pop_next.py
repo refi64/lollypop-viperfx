@@ -25,50 +25,50 @@ class NextPopover(Gtk.Popover):
             Init popover
         """
         Gtk.Popover.__init__(self)
-        self._inhibited = False
+        self.__inhibited = False
         self.set_position(Gtk.PositionType.BOTTOM)
-        self.connect('map', self._on_map)
-        self.connect('unmap', self._on_unmap)
-        self.connect('enter-notify-event', self._on_enter_notify)
+        self.connect('map', self.__on_map)
+        self.connect('unmap', self.__on_unmap)
+        self.connect('enter-notify-event', self.__on_enter_notify)
         self.set_modal(False)
         self.get_style_context().add_class('osd-popover')
         builder = Gtk.Builder()
         builder.add_from_resource('/org/gnome/Lollypop/NextPopover.ui')
         builder.connect_signals(self)
         self.add(builder.get_object('widget'))
-        self._title_label = builder.get_object('title')
-        self._artist_label = builder.get_object('artist')
-        self._cover = builder.get_object('cover')
-        self._skip_btn = builder.get_object('skip_btn')
+        self.__title_label = builder.get_object('title')
+        self.__artist_label = builder.get_object('artist')
+        self.__cover = builder.get_object('cover')
+        self.__skip_btn = builder.get_object('skip_btn')
 
     def update(self, unused=None):
         """
             Update widget with next track
         """
-        self._artist_label.set_text(", ".join(Lp().player.next_track.artists))
-        self._title_label.set_text(Lp().player.next_track.title)
+        self.__artist_label.set_text(", ".join(Lp().player.next_track.artists))
+        self.__title_label.set_text(Lp().player.next_track.title)
         art = Lp().art.get_album_artwork(
                                Lp().player.next_track.album,
                                ArtSize.MEDIUM,
                                self.get_scale_factor())
         if art is not None:
-            self._cover.set_from_surface(art)
+            self.__cover.set_from_surface(art)
             del art
-            self._cover.set_tooltip_text(Lp().player.next_track.album.name)
-            self._cover.show()
+            self.__cover.set_tooltip_text(Lp().player.next_track.album.name)
+            self.__cover.show()
             queue = Lp().player.get_queue()
             if queue and queue[0] == Lp().player.next_track.id:
-                self._skip_btn.hide()
+                self.__skip_btn.hide()
             else:
-                self._skip_btn.show()
+                self.__skip_btn.show()
         else:
-            self._cover.hide()
+            self.__cover.hide()
 
     def should_be_shown(self):
         """
             Return True if widget should be shown, not already closed by user
         """
-        return not self._inhibited and (
+        return not self.__inhibited and (
                 Lp().player.is_party or
                 Lp().settings.get_enum('shuffle') == Shuffle.TRACKS) and\
             Lp().player.next_track.id is not None and\
@@ -79,44 +79,18 @@ class NextPopover(Gtk.Popover):
             Inhibit popover
             @param i as bool
         """
-        self._inhibited = i
+        self.__inhibited = i
 
     @property
     def inhibited(self):
         """
             Inhibited as bool
         """
-        return self._inhibited
+        return self.__inhibited
 
 #######################
-# PRIVATE             #
+# PROTECTED           #
 #######################
-    def _on_map(self, widget):
-        """
-            Connect signal
-            @param widget as Gtk.Widget
-        """
-        self._inhibited = False
-        self.update()
-        self._signal_id = Lp().player.connect('queue-changed', self.update)
-
-    def _on_unmap(self, widget):
-        """
-            Disconnect signal
-            @param widget as Gtk.Widget
-        """
-        if self._signal_id is not None:
-            Lp().player.disconnect(self._signal_id)
-            self._signal_id = None
-
-    def _on_enter_notify(self, widget, event):
-        """
-            Disable overlays
-            @param widget as Gtk.Widget
-            @param event as Gdk.Event
-        """
-        Lp().window.disable_overlays()
-
     def _on_button_enter_notify(self, widget, event):
         """
             Change opacity
@@ -148,3 +122,32 @@ class NextPopover(Gtk.Popover):
         """
         Lp().player.set_next()
         Lp().player.emit('queue-changed')
+
+#######################
+# PRIVATE             #
+#######################
+    def __on_map(self, widget):
+        """
+            Connect signal
+            @param widget as Gtk.Widget
+        """
+        self.__inhibited = False
+        self.update()
+        self._signal_id = Lp().player.connect('queue-changed', self.update)
+
+    def __on_unmap(self, widget):
+        """
+            Disconnect signal
+            @param widget as Gtk.Widget
+        """
+        if self._signal_id is not None:
+            Lp().player.disconnect(self._signal_id)
+            self._signal_id = None
+
+    def __on_enter_notify(self, widget, event):
+        """
+            Disable overlays
+            @param widget as Gtk.Widget
+            @param event as Gdk.Event
+        """
+        Lp().window.disable_overlays()
