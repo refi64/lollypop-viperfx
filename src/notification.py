@@ -25,67 +25,67 @@ class NotificationManager:
         """
             Init notification object with lollypop infos
         """
-        self._caps = Notify.get_server_caps()
-        self._inhibitor = False
-        self._notification = Notify.Notification()
-        self._notification.set_category('x-gnome.music')
-        self._notification.set_hint('desktop-entry',
-                                    GLib.Variant('s', 'lollypop'))
-        self._set_actions()
+        self.__caps = Notify.get_server_caps()
+        self.__inhibitor = False
+        self.__notification = Notify.Notification()
+        self.__notification.set_category('x-gnome.music')
+        self.__notification.set_hint('desktop-entry',
+                                     GLib.Variant('s', 'lollypop'))
+        self.__set_actions()
         Lp().player.connect('current-changed',
-                            self._on_current_changed)
+                            self.__on_current_changed)
 
     def send(self, message):
         """
             Send message to user
             @param message as str
         """
-        self._notification.clear_actions()
-        self._notification.clear_hints()
-        self._notification.update(message,
-                                  None,
-                                  "lollypop")
+        self.__notification.clear_actions()
+        self.__notification.clear_hints()
+        self.__notification.update(message,
+                                   None,
+                                   "lollypop")
         try:
-            self._notification.show()
+            self.__notification.show()
         except:
             pass
-        self._set_actions()
+        self.__set_actions()
 
     def inhibit(self):
         """
             Inhibit notifications for one shot
         """
-        self._inhibitor = True
+        self.__inhibitor = True
 
 #######################
 # PRIVATE             #
 #######################
-    def _set_actions(self):
+    def __set_actions(self):
         """
             Set notification actions
         """
-        self._notification.set_hint("transient",
-                                    GLib.Variant.new_boolean(True))
-        if "action-icons" in self._caps:
-            self._notification.set_hint('action-icons',
-                                        GLib.Variant('b', True))
-        if "actions" in self._caps:
-            self._notification.add_action('media-skip-backward',
-                                          _("Previous"),
-                                          self._go_previous,
-                                          None)
-            self._notification.add_action('media-skip-forward',
-                                          _("Next"),
-                                          self._go_next,
-                                          None)
+        self.__notification.set_hint("transient",
+                                     GLib.Variant.new_boolean(True))
+        if "action-icons" in self.__caps:
+            self.__notification.set_hint('action-icons',
+                                         GLib.Variant('b', True))
+        if "actions" in self.__caps:
+            self.__notification.add_action('media-skip-backward',
+                                           _("Previous"),
+                                           self.__go_previous,
+                                           None)
+            self.__notification.add_action('media-skip-forward',
+                                           _("Next"),
+                                           self.__go_next,
+                                           None)
 
-    def _on_current_changed(self, player):
+    def __on_current_changed(self, player):
         """
             Update notification with track_id infos
             @param player Player
         """
-        if player.current_track.title == '' or self._inhibitor:
-            self._inhibitor = False
+        if player.current_track.title == '' or self.__inhibitor:
+            self.__inhibitor = False
             return
         state = Lp().window.get_window().get_state()
         app = Lp().window.get_application()
@@ -102,17 +102,17 @@ class NotificationManager:
         if cover_path is None:
             cover_path = 'lollypop'
         else:
-            self._notification.set_hint('image-path',
-                                        GLib.Variant('s', cover_path))
+            self.__notification.set_hint('image-path',
+                                         GLib.Variant('s', cover_path))
         if player.current_track.album.name == '':
-            self._notification.update(
+            self.__notification.update(
                 player.current_track.title,
                 # TRANSLATORS: by refers to the artist,
                 _("by %s") %
                 '<b>' + ", ".join(player.current_track.artists) + '</b>',
                 cover_path)
         else:
-            self._notification.update(
+            self.__notification.update(
                 player.current_track.title,
                 # TRANSLATORS: by refers to the artist,
                 # from to the album
@@ -121,17 +121,17 @@ class NotificationManager:
                  '<i>' + player.current_track.album.name + '</i>'),
                 cover_path)
         try:
-            self._notification.show()
+            self.__notification.show()
         except:
             pass
 
-    def _go_previous(self, notification, action, data):
+    def __go_previous(self, notification, action, data):
         """
             Callback for notification prev button
         """
         Lp().player.prev()
 
-    def _go_next(self, notification, action, data):
+    def __go_next(self, notification, action, data):
         """
             Callback for notification next button
         """
