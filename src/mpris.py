@@ -151,31 +151,31 @@ class MPRIS(Server):
         </interface>
     </node>
     '''
-    _MPRIS_IFACE = 'org.mpris.MediaPlayer2'
-    _MPRIS_PLAYER_IFACE = 'org.mpris.MediaPlayer2.Player'
-    _MPRIS_LOLLYPOP = 'org.mpris.MediaPlayer2.Lollypop'
-    _MPRIS_PATH = '/org/mpris/MediaPlayer2'
+    __MPRIS_IFACE = 'org.mpris.MediaPlayer2'
+    __MPRIS_PLAYER_IFACE = 'org.mpris.MediaPlayer2.Player'
+    __MPRIS_LOLLYPOP = 'org.mpris.MediaPlayer2.Lollypop'
+    __MPRIS_PATH = '/org/mpris/MediaPlayer2'
 
     def __init__(self, app):
-        self._app = app
-        self._metadata = {}
-        self._bus = Gio.bus_get_sync(Gio.BusType.SESSION, None)
-        Gio.bus_own_name_on_connection(self._bus,
-                                       self._MPRIS_LOLLYPOP,
+        self.__app = app
+        self.__metadata = {}
+        self.__bus = Gio.bus_get_sync(Gio.BusType.SESSION, None)
+        Gio.bus_own_name_on_connection(self.__bus,
+                                       self.__MPRIS_LOLLYPOP,
                                        Gio.BusNameOwnerFlags.NONE,
                                        None,
                                        None)
-        Server.__init__(self, self._bus, self._MPRIS_PATH)
-        Lp().player.connect('current-changed', self._on_current_changed)
-        Lp().player.connect('seeked', self._on_seeked)
-        Lp().player.connect('status-changed', self._on_status_changed)
-        Lp().player.connect('volume-changed', self._on_volume_changed)
+        Server.__init__(self, self.__bus, self.__MPRIS_PATH)
+        Lp().player.connect('current-changed', self.__on_current_changed)
+        Lp().player.connect('seeked', self.__on_seeked)
+        Lp().player.connect('status-changed', self.__on_status_changed)
+        Lp().player.connect('volume-changed', self.__on_volume_changed)
 
     def Raise(self):
-        self._app.activate()
+        self.__app.activate()
 
     def Quit(self):
-        self._app.quit()
+        self.__app.quit()
 
     def Next(self):
         if Lp().notify is not None:
@@ -209,10 +209,10 @@ class MPRIS(Server):
         pass
 
     def Seeked(self, position):
-        self._bus.emit_signal(
+        self.__bus.emit_signal(
                           None,
-                          self._MPRIS_PATH,
-                          self._MPRIS_PLAYER_IFACE,
+                          self.__MPRIS_PATH,
+                          self.__MPRIS_PLAYER_IFACE,
                           'Seeked',
                           GLib.Variant.new_tuple(GLib.Variant('x', position)))
 
@@ -235,11 +235,11 @@ class MPRIS(Server):
                                        'audio/x-flac',
                                        'audio/mpeg'])
         elif property_name == "PlaybackStatus":
-            return GLib.Variant('s', self._get_status())
+            return GLib.Variant('s', self.__get_status())
         elif property_name == "LoopStatus":
             return GLib.Variant('s', 'Playlist')
         elif property_name == "Metadata":
-            return GLib.Variant('a{sv}', self._metadata)
+            return GLib.Variant('a{sv}', self.__metadata)
         elif property_name == "Volume":
             return GLib.Variant('d', Lp().player.volume)
         elif property_name == "Position":
@@ -250,7 +250,7 @@ class MPRIS(Server):
 
     def GetAll(self, interface):
         ret = {}
-        if interface == self._MPRIS_IFACE:
+        if interface == self.__MPRIS_IFACE:
             for property_name in ['CanQuit',
                                   'CanRaise',
                                   'HasTrackList',
@@ -259,7 +259,7 @@ class MPRIS(Server):
                                   'SupportedUriSchemes',
                                   'SupportedMimeTypes']:
                 ret[property_name] = self.Get(interface, property_name)
-        elif interface == self._MPRIS_PLAYER_IFACE:
+        elif interface == self.__MPRIS_PLAYER_IFACE:
             for property_name in ['PlaybackStatus',
                                   'LoopStatus',
                                   'Rate',
@@ -284,11 +284,11 @@ class MPRIS(Server):
 
     def PropertiesChanged(self, interface_name, changed_properties,
                           invalidated_properties):
-        self._bus.emit_signal(None,
-                              self._MPRIS_PATH,
-                              'org.freedesktop.DBus.Properties',
-                              'PropertiesChanged',
-                              GLib.Variant.new_tuple(
+        self.__bus.emit_signal(None,
+                               self.__MPRIS_PATH,
+                               'org.freedesktop.DBus.Properties',
+                               'PropertiesChanged',
+                               GLib.Variant.new_tuple(
                                    GLib.Variant('s', interface_name),
                                    GLib.Variant('a{sv}', changed_properties),
                                    GLib.Variant('as', invalidated_properties)))
@@ -299,11 +299,11 @@ class MPRIS(Server):
 #######################
 # PRIVATE             #
 #######################
-    def _get_media_id(self, track_id):
+    def __get_media_id(self, track_id):
         return GLib.Variant('s', '/org/mpris/MediaPlayer2/TrackList/%s' %
                             (track_id if track_id is not None else 'NoTrack'))
 
-    def _get_status(self):
+    def __get_status(self):
         state = Lp().player.get_status()
         if state == Gst.State.PLAYING:
             return 'Playing'
@@ -312,42 +312,42 @@ class MPRIS(Server):
         else:
             return 'Stopped'
 
-    def _update_metadata(self):
-        if self._get_status() == 'Stopped':
-            self._metadata = {}
+    def __update_metadata(self):
+        if self.__get_status() == 'Stopped':
+            self.__metadata = {}
         else:
             if Lp().player.current_track.id >= 0:
                 track_id = Lp().player.current_track.id
             else:
                 track_id = randint(10000000, 90000000)
-            self._metadata['mpris:trackid'] = self._get_media_id(track_id)
+            self.__metadata['mpris:trackid'] = self.__get_media_id(track_id)
             track_number = Lp().player.current_track.number
             if track_number is None:
                 track_number = 1
-            self._metadata['xesam:trackNumber'] = GLib.Variant('i',
-                                                               track_number)
-            self._metadata['xesam:title'] = GLib.Variant(
+            self.__metadata['xesam:trackNumber'] = GLib.Variant('i',
+                                                                track_number)
+            self.__metadata['xesam:title'] = GLib.Variant(
                                                 's',
                                                 Lp().player.current_track.name)
-            self._metadata['xesam:album'] = GLib.Variant(
+            self.__metadata['xesam:album'] = GLib.Variant(
                                           's',
                                           Lp().player.current_track.album.name)
-            self._metadata['xesam:artist'] = GLib.Variant(
+            self.__metadata['xesam:artist'] = GLib.Variant(
                                              'as',
                                              Lp().player.current_track.artists)
-            self._metadata['xesam:albumArtist'] = GLib.Variant(
+            self.__metadata['xesam:albumArtist'] = GLib.Variant(
                                        'as',
                                        Lp().player.current_track.album_artists)
-            self._metadata['mpris:length'] = GLib.Variant(
+            self.__metadata['mpris:length'] = GLib.Variant(
                                   'x',
                                   Lp().player.current_track.duration * 1000000)
-            self._metadata['xesam:genre'] = GLib.Variant(
+            self.__metadata['xesam:genre'] = GLib.Variant(
                                               'as',
                                               Lp().player.current_track.genres)
-            self._metadata['xesam:url'] = GLib.Variant(
+            self.__metadata['xesam:url'] = GLib.Variant(
                                                  's',
                                                  Lp().player.current_track.uri)
-            self._metadata["xesam:userRating"] = GLib.Variant(
+            self.__metadata["xesam:userRating"] = GLib.Variant(
                                 'd',
                                 Lp().player.current_track.get_popularity() / 5)
             if Lp().player.current_track.id == Type.RADIOS:
@@ -366,33 +366,33 @@ class MPRIS(Server):
                 cover_path = Lp().art.get_album_cache_path(
                     Lp().player.current_track.album, ArtSize.MONSTER)
             if cover_path is not None:
-                self._metadata['mpris:artUrl'] = GLib.Variant(
+                self.__metadata['mpris:artUrl'] = GLib.Variant(
                                                         's',
                                                         "file://" + cover_path)
-            elif 'mpris:artUrl' in self._metadata:
-                self._metadata['mpris:artUrl'] = GLib.Variant('s', '')
+            elif 'mpris:artUrl' in self.__metadata:
+                self.__metadata['mpris:artUrl'] = GLib.Variant('s', '')
 
-    def _on_seeked(self, player, position):
+    def __on_seeked(self, player, position):
         self.Seeked(position * 1000000)
 
-    def _on_volume_changed(self, player, data=None):
-        self.PropertiesChanged(self._MPRIS_PLAYER_IFACE,
+    def __on_volume_changed(self, player, data=None):
+        self.PropertiesChanged(self.__MPRIS_PLAYER_IFACE,
                                {'Volume': GLib.Variant('d',
                                 Lp().player.volume), },
                                [])
 
-    def _on_current_changed(self, player):
-        self._update_metadata()
-        properties = {'Metadata': GLib.Variant('a{sv}', self._metadata),
+    def __on_current_changed(self, player):
+        self.__update_metadata()
+        properties = {'Metadata': GLib.Variant('a{sv}', self.__metadata),
                       'CanPlay': GLib.Variant('b', True),
                       'CanPause': GLib.Variant('b', True),
                       'CanGoNext': GLib.Variant('b', True),
                       'CanGoPrevious': GLib.Variant('b', True)}
         try:
-            self.PropertiesChanged(self._MPRIS_PLAYER_IFACE, properties, [])
+            self.PropertiesChanged(self.__MPRIS_PLAYER_IFACE, properties, [])
         except Exception as e:
-            print("MPRIS::_on_current_changed(): %s" % e)
+            print("MPRIS::__on_current_changed(): %s" % e)
 
-    def _on_status_changed(self, data=None):
-        properties = {'PlaybackStatus': GLib.Variant('s', self._get_status())}
-        self.PropertiesChanged(self._MPRIS_PLAYER_IFACE, properties, [])
+    def __on_status_changed(self, data=None):
+        properties = {'PlaybackStatus': GLib.Variant('s', self.__get_status())}
+        self.PropertiesChanged(self.__MPRIS_PLAYER_IFACE, properties, [])
