@@ -81,22 +81,13 @@ class PlaybackController:
             @param player as Player
         """
         if player.is_playing():
-            self._change_play_btn_status(self._pause_image, _("Pause"))
+            self.__change_play_btn_status(self._pause_image, _("Pause"))
         else:
-            self._change_play_btn_status(self._play_image, _("Play"))
+            self.__change_play_btn_status(self._play_image, _("Play"))
 
 #######################
-# PRIVATE             #
+# PROTECTED           #
 #######################
-    def _change_play_btn_status(self, image, status):
-        """
-            Update play button with image and status as tooltip
-            @param image as Gtk.Image
-            @param status as str
-        """
-        self._play_btn.set_image(image)
-        self._play_btn.set_tooltip_text(status)
-
     def _on_prev_btn_clicked(self, button):
         """
             Previous track on prev button clicked
@@ -111,10 +102,10 @@ class PlaybackController:
         """
         if Lp().player.is_playing():
             Lp().player.pause()
-            self._change_play_btn_status(self._play_image, _("Play"))
+            self.__change_play_btn_status(self._play_image, _("Play"))
         else:
             Lp().player.play()
-            self._change_play_btn_status(self._pause_image, _("Pause"))
+            self.__change_play_btn_status(self._pause_image, _("Pause"))
 
     def _on_next_btn_clicked(self, button):
         """
@@ -122,6 +113,18 @@ class PlaybackController:
             @param button as Gtk.Button
         """
         Lp().player.next()
+
+#######################
+# PRIVATE             #
+#######################
+    def __change_play_btn_status(self, image, status):
+        """
+            Update play button with image and status as tooltip
+            @param image as Gtk.Image
+            @param status as str
+        """
+        self._play_btn.set_image(image)
+        self._play_btn.set_tooltip_text(status)
 
 
 class ProgressController:
@@ -134,9 +137,9 @@ class ProgressController:
             Init progress controller (for toolbars)
         """
         # Prevent updating progress while seeking
-        self._seeking = False
+        self.__seeking = False
         # Update pogress position
-        self._timeout_id = None
+        self.__timeout_id = None
 
     def on_current_changed(self, player):
         """
@@ -163,31 +166,18 @@ class ProgressController:
             @param player as Player
         """
         if player.is_playing():
-            if self._timeout_id is None:
-                self._timeout_id = GLib.timeout_add(1000,
-                                                    self._update_position)
+            if self.__timeout_id is None:
+                self.__timeout_id = GLib.timeout_add(1000,
+                                                     self.__update_position)
         else:
-            self._update_position()
-            if self._timeout_id is not None:
-                GLib.source_remove(self._timeout_id)
-                self._timeout_id = None
+            self.__update_position()
+            if self.__timeout_id is not None:
+                GLib.source_remove(self.__timeout_id)
+                self.__timeout_id = None
 
 #######################
-# PRIVATE             #
+# PROTECTED           #
 #######################
-    def _update_position(self, value=None):
-        """
-            Update progress bar position
-            @param value as int
-        """
-        if not self._seeking:
-            if value is None and Lp().player.get_status() != Gst.State.PAUSED:
-                value = Lp().player.position/1000000
-            if value is not None:
-                self._progress.set_value(value)
-                self._timelabel.set_text(seconds_to_string(value/60))
-        return True
-
     def _on_progress_press_button(self, scale, event):
         """
             On press, mark player as seeking
@@ -196,7 +186,7 @@ class ProgressController:
         """
         if Lp().player.locked:
             return True
-        self._seeking = True
+        self.__seeking = True
 
     def _on_progress_release_button(self, scale, event):
         """
@@ -207,8 +197,8 @@ class ProgressController:
         """
         value = scale.get_value()
         Lp().player.seek(value/60)
-        self._seeking = False
-        self._update_position(value)
+        self.__seeking = False
+        self.__update_position(value)
 
     def _on_scroll_event(self, scale, event):
         """
@@ -228,7 +218,23 @@ class ProgressController:
             if seek > Lp().player.current_track.duration:
                 seek = Lp().player.current_track.duration - 2
             Lp().player.seek(seek)
-            self._update_position(seek*60)
+            self.__update_position(seek*60)
+
+#######################
+# PRIVATE             #
+#######################
+    def __update_position(self, value=None):
+        """
+            Update progress bar position
+            @param value as int
+        """
+        if not self.__seeking:
+            if value is None and Lp().player.get_status() != Gst.State.PAUSED:
+                value = Lp().player.position/1000000
+            if value is not None:
+                self._progress.set_value(value)
+                self._timelabel.set_text(seconds_to_string(value/60))
+        return True
 
 
 class InfosController:
@@ -241,7 +247,7 @@ class InfosController:
             Init controller
         """
         self._infobox = None
-        self._artsize = artsize
+        self.__artsize = artsize
 
     def on_current_changed(self, player):
         """
@@ -262,17 +268,17 @@ class InfosController:
         if player.current_track.id == Type.RADIOS:
             art = Lp().art.get_radio_artwork(
                                    ", ".join(player.current_track.artists),
-                                   self._artsize,
+                                   self.__artsize,
                                    self.get_scale_factor())
         elif player.current_track.id == Type.EXTERNALS:
             art = Lp().art.get_album_artwork2(
                     player.current_track.uri,
-                    self._artsize,
+                    self.__artsize,
                     self.get_scale_factor())
         elif player.current_track.id is not None:
             art = Lp().art.get_album_artwork(
                                    player.current_track.album,
-                                   self._artsize,
+                                   self.__artsize,
                                    self.get_scale_factor())
         if art is not None:
             self._cover.set_from_surface(art)
@@ -289,4 +295,4 @@ class InfosController:
         """
             Art size as int
         """
-        return self._artsize
+        return self.__artsize
