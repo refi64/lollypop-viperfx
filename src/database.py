@@ -32,50 +32,50 @@ class Database:
     # is an alias for the ROWID.
     # Here, we define an id INT PRIMARY KEY but never feed it,
     # this make VACUUM not destroy rowids...
-    create_albums = '''CREATE TABLE albums (id INTEGER PRIMARY KEY,
-                        name TEXT NOT NULL,
-                        no_album_artist BOOLEAN NOT NULL,
-                        year INT,
-                        path TEXT NOT NULL,
-                        popularity INT NOT NULL,
-                        synced INT NOT NULL,
-                        mtime INT NOT NULL)'''
-    create_artists = '''CREATE TABLE artists (id INTEGER PRIMARY KEY,
+    __create_albums = '''CREATE TABLE albums (id INTEGER PRIMARY KEY,
                                               name TEXT NOT NULL,
-                                              sortname TEXT NOT NULL)'''
-    create_genres = '''CREATE TABLE genres (id INTEGER PRIMARY KEY,
+                                              no_album_artist BOOLEAN NOT NULL,
+                                              year INT,
+                                              path TEXT NOT NULL,
+                                              popularity INT NOT NULL,
+                                              synced INT NOT NULL,
+                                              mtime INT NOT NULL)'''
+    __create_artists = '''CREATE TABLE artists (id INTEGER PRIMARY KEY,
+                                               name TEXT NOT NULL,
+                                               sortname TEXT NOT NULL)'''
+    __create_genres = '''CREATE TABLE genres (id INTEGER PRIMARY KEY,
                                             name TEXT NOT NULL)'''
-    create_album_artists = '''CREATE TABLE album_artists (
+    __create_album_artists = '''CREATE TABLE album_artists (
                                                 album_id INT NOT NULL,
                                                 artist_id INT NOT NULL)'''
-    create_album_genres = '''CREATE TABLE album_genres (
+    __create_album_genres = '''CREATE TABLE album_genres (
                                                 album_id INT NOT NULL,
                                                 genre_id INT NOT NULL)'''
-    create_tracks = '''CREATE TABLE tracks (id INTEGER PRIMARY KEY,
-                        name TEXT NOT NULL,
-                        filepath TEXT NOT NULL,
-                        duration INT,
-                        tracknumber INT,
-                        discnumber INT,
-                        discname TEXT,
-                        album_id INT NOT NULL,
-                        year INT,
-                        popularity INT NOT NULL,
-                        ltime INT NOT NULL,
-                        mtime INT NOT NULL)'''
-    create_track_artists = '''CREATE TABLE track_artists (
+    __create_tracks = '''CREATE TABLE tracks (id INTEGER PRIMARY KEY,
+                                              name TEXT NOT NULL,
+                                              filepath TEXT NOT NULL,
+                                              duration INT,
+                                              tracknumber INT,
+                                              discnumber INT,
+                                              discname TEXT,
+                                              album_id INT NOT NULL,
+                                              year INT,
+                                              popularity INT NOT NULL,
+                                              ltime INT NOT NULL,
+                                              mtime INT NOT NULL)'''
+    __create_track_artists = '''CREATE TABLE track_artists (
                                                 track_id INT NOT NULL,
                                                 artist_id INT NOT NULL)'''
-    create_track_genres = '''CREATE TABLE track_genres (
+    __create_track_genres = '''CREATE TABLE track_genres (
                                                 track_id INT NOT NULL,
                                                 genre_id INT NOT NULL)'''
-    create_album_artists_idx = '''CREATE index idx_aa ON album_artists(
+    __create_album_artists_idx = '''CREATE index idx_aa ON album_artists(
                                                 album_id)'''
-    create_track_artists_idx = '''CREATE index idx_ta ON track_artists(
+    __create_track_artists_idx = '''CREATE index idx_ta ON track_artists(
                                                 track_id)'''
-    create_album_genres_idx = '''CREATE index idx_ag ON album_genres(
+    __create_album_genres_idx = '''CREATE index idx_ag ON album_genres(
                                                 album_id)'''
-    create_track_genres_idx = '''CREATE index idx_tg ON track_genres(
+    __create_track_genres_idx = '''CREATE index idx_tg ON track_genres(
                                                 track_id)'''
 
     def __init__(self):
@@ -95,18 +95,18 @@ class Database:
                     os.mkdir(self.LOCAL_PATH)
                 # Create db schema
                 with SqlCursor(self) as sql:
-                    sql.execute(self.create_albums)
-                    sql.execute(self.create_artists)
-                    sql.execute(self.create_genres)
-                    sql.execute(self.create_album_genres)
-                    sql.execute(self.create_album_artists)
-                    sql.execute(self.create_tracks)
-                    sql.execute(self.create_track_artists)
-                    sql.execute(self.create_track_genres)
-                    sql.execute(self.create_album_artists_idx)
-                    sql.execute(self.create_track_artists_idx)
-                    sql.execute(self.create_album_genres_idx)
-                    sql.execute(self.create_track_genres_idx)
+                    sql.execute(self.__create_albums)
+                    sql.execute(self.__create_artists)
+                    sql.execute(self.__create_genres)
+                    sql.execute(self.__create_album_genres)
+                    sql.execute(self.__create_album_artists)
+                    sql.execute(self.__create_tracks)
+                    sql.execute(self.__create_track_artists)
+                    sql.execute(self.__create_track_genres)
+                    sql.execute(self.__create_album_artists_idx)
+                    sql.execute(self.__create_track_artists_idx)
+                    sql.execute(self.__create_album_genres_idx)
+                    sql.execute(self.__create_track_genres_idx)
                     sql.commit()
                     Lp().settings.set_value('db-version',
                                             GLib.Variant('i', upgrade.count()))
@@ -119,7 +119,7 @@ class Database:
         """
         try:
             c = sqlite3.connect(self.DB_PATH, 600.0)
-            c.create_collation('LOCALIZED', LocalizedCollation())
+            c.__create_collation('LOCALIZED', LocalizedCollation())
             return c
         except:
             exit(-1)

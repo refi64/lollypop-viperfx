@@ -21,11 +21,11 @@ class History:
     """
         Playlists manager
     """
-    LOCAL_PATH = os.path.expanduser("~") + "/.local/share/lollypop"
-    DB_PATH = "%s/history.db" % LOCAL_PATH
-    LIMIT = 1000000  # Delete when limit is reached
-    DELETE = 100     # How many elements to delete
-    create_history = '''CREATE TABLE history (
+    __LOCAL_PATH = os.path.expanduser("~") + "/.local/share/lollypop"
+    __DB_PATH = "%s/history.db" % __LOCAL_PATH
+    __LIMIT = 1000000  # Delete when limit is reached
+    __DELETE = 100     # How many elements to delete
+    __create_history = '''CREATE TABLE history (
                             id INTEGER PRIMARY KEY,
                             name TEXT NOT NULL,
                             duration INT NOT NULL,
@@ -41,7 +41,7 @@ class History:
         # Create db schema
         try:
             with SqlCursor(self) as sql:
-                sql.execute(self.create_history)
+                sql.execute(self.__create_history)
                 sql.commit()
         except:
             pass
@@ -49,11 +49,11 @@ class History:
             result = sql.execute("SELECT COUNT(*)\
                                   FROM history")
             v = result.fetchone()
-            if v is not None and v[0] > self.LIMIT:
-                sql.execute("DELETE FROM history\
+            if v is not None and v[0] > self.__LIMIT:
+                sql.execute("__DELETE FROM history\
                              WHERE rowid IN (SELECT rowid\
                                              FROM history\
-                                             LIMIT %s)" % self.DELETE)
+                                             __LIMIT %s)" % self.__DELETE)
                 sql.commit()
                 sql.execute('VACUUM')
 
@@ -129,7 +129,7 @@ class History:
             Return a new sqlite cursor
         """
         try:
-            return sqlite3.connect(self.DB_PATH, 600.0)
+            return sqlite3.connect(self.__DB_PATH, 600.0)
         except:
             exit(-1)
 
