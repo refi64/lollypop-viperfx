@@ -56,12 +56,12 @@ class QueueMenu(BaseMenu):
             @param is album as bool
         """
         BaseMenu.__init__(self, object_id, genre_ids, artist_ids, is_album)
-        self._set_queue_actions()
+        self.__set_queue_actions()
 
 #######################
 # PRIVATE             #
 #######################
-    def _set_queue_actions(self):
+    def __set_queue_actions(self):
         """
             Set queue actions
         """
@@ -98,21 +98,21 @@ class QueueMenu(BaseMenu):
         Lp().add_action(del_queue_action)
         if append:
             append_queue_action.connect('activate',
-                                        self._append_to_queue)
+                                        self.__append_to_queue)
             self.append(_("Add to queue"), 'app.append_queue_action')
         if prepend:
             prepend_queue_action.connect('activate',
-                                         self._insert_in_queue)
+                                         self.__insert_in_queue)
             if self._is_album:
                 self.append(_("Next tracks"), 'app.prepend_queue_action')
             else:
                 self.append(_("Next track"), 'app.prepend_queue_action')
         if delete:
             del_queue_action.connect('activate',
-                                     self._del_from_queue)
+                                     self.__del_from_queue)
             self.append(_("Remove from queue"), 'app.del_queue_action')
 
-    def _append_to_queue(self, action, variant):
+    def __append_to_queue(self, action, variant):
         """
             Append track to queue
             @param SimpleAction
@@ -127,7 +127,7 @@ class QueueMenu(BaseMenu):
             Lp().player.append_to_queue(self._object_id, False)
         Lp().player.emit('queue-changed')
 
-    def _insert_in_queue(self, action, variant):
+    def __insert_in_queue(self, action, variant):
         """
             Prepend track id to queue
             @param SimpleAction
@@ -143,7 +143,7 @@ class QueueMenu(BaseMenu):
             Lp().player.insert_in_queue(self._object_id, 0, False)
         Lp().player.emit('queue-changed')
 
-    def _del_from_queue(self, action, variant):
+    def __del_from_queue(self, action, variant):
         """
             Delete track id from queue
             @param SimpleAction
@@ -173,19 +173,19 @@ class PlaylistsMenu(BaseMenu):
             @param is album as bool
         """
         BaseMenu.__init__(self, object_id, genre_ids, artist_ids, is_album)
-        self._set_playlist_actions()
+        self.__set_playlist_actions()
 
 #######################
 # PRIVATE             #
 #######################
-    def _set_playlist_actions(self):
+    def __set_playlist_actions(self):
         """
             Set playlist actions
         """
         playlist_action = Gio.SimpleAction(name="playlist_action")
         Lp().add_action(playlist_action)
         playlist_action.connect('activate',
-                                self._add_to_playlists)
+                                self.__add_to_playlists)
         self.append(_("Add to others"), 'app.playlist_action')
 
         i = 0
@@ -202,19 +202,19 @@ class PlaylistsMenu(BaseMenu):
                                                      self._object_id)
             if exists:
                 action.connect('activate',
-                               self._remove_from_playlist,
+                               self.__remove_from_playlist,
                                playlist[0])
                 self.append(_("Remove from \"%s\"") % playlist[1],
                             "app.playlist%s" % i)
             else:
                 action.connect('activate',
-                               self._add_to_playlist,
+                               self.__add_to_playlist,
                                playlist[0])
                 self.append(_("Add to \"%s\"") % playlist[1],
                             "app.playlist%s" % i)
             i += 1
 
-    def _add_to_playlists(self, action, variant):
+    def __add_to_playlists(self, action, variant):
         """
             Add to playlists
             @param SimpleAction
@@ -225,7 +225,7 @@ class PlaylistsMenu(BaseMenu):
                                           self._artist_ids,
                                           self._is_album)
 
-    def _add_to_playlist(self, action, variant, playlist_id):
+    def __add_to_playlist(self, action, variant, playlist_id):
         """
             Add to playlist
             @param SimpleAction
@@ -250,7 +250,7 @@ class PlaylistsMenu(BaseMenu):
         t.daemon = True
         t.start()
 
-    def _remove_from_playlist(self, action, variant, playlist_id):
+    def __remove_from_playlist(self, action, variant, playlist_id):
         """
             Del from playlist
             @param SimpleAction
@@ -277,7 +277,7 @@ class PlaylistsMenu(BaseMenu):
         t.daemon = True
         t.start()
 
-    def _add_to_loved(self, action, variant):
+    def __add_to_loved(self, action, variant):
         """
             Add to loved
             @param SimpleAction
@@ -286,7 +286,7 @@ class PlaylistsMenu(BaseMenu):
         """
         utils.set_loved(self._object_id, True)
 
-    def _del_from_loved(self, action, variant):
+    def __del_from_loved(self, action, variant):
         """
             Remove from loved
             @param SimpleAction
@@ -315,14 +315,14 @@ class PopToolbarMenu(Gio.Menu):
                             'playback',
                             GLib.VariantType.new("s"),
                             GLib.Variant("s", str(Lp().player.context.next)))
-            playback_action.connect('change-state', self._on_change_state)
+            playback_action.connect('change-state', self.__on_change_state)
             Lp().add_action(playback_action)
             self.insert_section(0, _("Playback"),
                                 playback_menu)
         self.insert_section(1, _("Playlists"),
                             PlaylistsMenu(object_id, [], [], False))
 
-    def _on_change_state(self, action, value):
+    def __on_change_state(self, action, value):
         """
             Update playback value
             @param action as Gio.SimpleAction
@@ -336,7 +336,7 @@ class EditMenu(BaseMenu):
     """
         Edition menu for album
     """
-    _TAG_EDITORS = ['exfalso', 'easytag', 'picard', 'puddletag', 'kid3-qt']
+    __TAG_EDITORS = ['exfalso', 'easytag', 'picard', 'puddletag', 'kid3-qt']
 
     def __init__(self, object_id, is_album):
         """
@@ -348,30 +348,30 @@ class EditMenu(BaseMenu):
 
         if is_album:
             favorite = Lp().settings.get_value('tag-editor').get_string()
-            for editor in [favorite] + self._TAG_EDITORS:
+            for editor in [favorite] + self.__TAG_EDITORS:
                 if which(editor) is not None:
-                    self._tag_editor = editor
-                    self._set_edit_actions()
+                    self.__tag_editor = editor
+                    self.__set_edit_actions()
                     break
 
-    def _set_edit_actions(self):
+    def __set_edit_actions(self):
         """
             Set edit actions
         """
         edit_tag_action = Gio.SimpleAction(name="edit_tag_action")
         Lp().add_action(edit_tag_action)
         edit_tag_action.connect('activate',
-                                self._edit_tag)
+                                self.__edit_tag)
         self.append(_("Modify information"), 'app.edit_tag_action')
 
-    def _edit_tag(self, action, variant):
+    def __edit_tag(self, action, variant):
         """
             Run tag editor
             @param SimpleAction
             @param GVariant
         """
         album_path = Lp().albums.get_path(self._object_id)
-        argv = [self._tag_editor, album_path, None]
+        argv = [self.__tag_editor, album_path, None]
         GLib.spawn_async_with_pipes(
                                 None, argv, None,
                                 GLib.SpawnFlags.SEARCH_PATH |
