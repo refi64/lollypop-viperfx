@@ -16,6 +16,8 @@ from gi.repository import GLib, Gst, GstPbutils
 
 import os
 
+from re import match
+
 from gettext import gettext as _
 
 from lollypop.define import Lp
@@ -226,17 +228,26 @@ class TagReader(Discoverer):
             discnumber = 0
         return discnumber
 
-    def get_tracknumber(self, tags):
+    def get_tracknumber(self, tags, filename):
         """
             Return track number for tags
             @param tags as Gst.TagList
+            @param filename as str
             @return track number as int
         """
         if tags is None:
             return 0
         (exists, tracknumber) = tags.get_uint_index('track-number', 0)
         if not exists:
-            tracknumber = 0
+            # Guess from filename
+            m = match('^([0-9]*)', filename)
+            if m:
+                try:
+                    tracknumber = int(m.group(0))
+                except:
+                    tracknumber = 0
+            else:
+                tracknumber = 0
         return tracknumber
 
     def get_year(self, tags):
