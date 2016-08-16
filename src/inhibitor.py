@@ -23,19 +23,19 @@ class Inhibitor:
     SUSPENDING = 4
     IDLE = 8
 
-    _DESTINATION = "org.gnome.SessionManager"
-    _PATH = "/org/gnome/SessionManager"
-    _INTERFACE = "org.gnome.SessionManager"
+    __DESTINATION = "org.gnome.SessionManager"
+    __PATH = "/org/gnome/SessionManager"
+    __INTERFACE = "org.gnome.SessionManager"
 
     def __init__(self):
         """
             Init dbus objects
         """
         # Bus to disable screenlock
-        self._bus = Gio.bus_get_sync(Gio.BusType.SESSION, None)
-        self._cookie = None
-        self._flags = []
-        Lp().player.connect('status-changed', self._on_status_changed)
+        self.__bus = Gio.bus_get_sync(Gio.BusType.SESSION, None)
+        self.__cookie = None
+        self.__flags = []
+        Lp().player.connect('status-changed', self.__on_status_changed)
 
     def uninhibit(self, flag):
         """
@@ -43,20 +43,20 @@ class Inhibitor:
             @param flag as int
         """
         try:
-            if self._cookie is not None:
-                self._bus.call_sync(self._DESTINATION,
-                                    self._PATH,
-                                    self._INTERFACE,
-                                    'Uninhibit',
-                                    GLib.Variant('(u)', (self._cookie,)),
-                                    None,
-                                    Gio.DBusCallFlags.NONE,
-                                    -1,
-                                    None)
-                self._cookie = None
-            if flag in self._flags:
-                self._flags.remove(flag)
-            self._set_flags()
+            if self.__cookie is not None:
+                self.__bus.call_sync(self.__DESTINATION,
+                                     self.__PATH,
+                                     self.__INTERFACE,
+                                     'Uninhibit',
+                                     GLib.Variant('(u)', (self.__cookie,)),
+                                     None,
+                                     Gio.DBusCallFlags.NONE,
+                                     -1,
+                                     None)
+                self.__cookie = None
+            if flag in self.__flags:
+                self.__flags.remove(flag)
+            self.__set_flags()
         except Exception as e:
             print("Inhibator::uninhibit:", e)
 
@@ -66,27 +66,27 @@ class Inhibitor:
             @param flag as int
         """
         try:
-            if self._cookie is not None:
-                self._bus.call_sync(self._DESTINATION,
-                                    self._PATH,
-                                    self._INTERFACE,
-                                    'Uninhibit',
-                                    GLib.Variant('(u)', (self._cookie,)),
-                                    None,
-                                    Gio.DBusCallFlags.NONE,
-                                    -1,
-                                    None)
-                self._cookie = None
-            if flag not in self._flags:
-                self._flags.append(flag)
-            self._set_flags()
+            if self.__cookie is not None:
+                self.__bus.call_sync(self.__DESTINATION,
+                                     self.__PATH,
+                                     self.__INTERFACE,
+                                     'Uninhibit',
+                                     GLib.Variant('(u)', (self.__cookie,)),
+                                     None,
+                                     Gio.DBusCallFlags.NONE,
+                                     -1,
+                                     None)
+                self.__cookie = None
+            if flag not in self.__flags:
+                self.__flags.append(flag)
+            self.__set_flags()
         except Exception as e:
             print("Inhibator::inhibit:", e)
 
 #######################
 # PRIVATE             #
 #######################
-    def _on_status_changed(self, player):
+    def __on_status_changed(self, player):
         """
             Disallow suspend on playback
             @param player as Player
@@ -96,19 +96,19 @@ class Inhibitor:
         else:
             self.uninhibit(Inhibitor.SUSPENDING)
 
-    def _set_flags(self):
+    def __set_flags(self):
         """
             Set inhibite flags
         """
         try:
             flags = 0
-            for flag in self._flags:
+            for flag in self.__flags:
                 flags += flag
             if flags > 0:
-                self._cookie = self._bus.call_sync(
-                                               self._DESTINATION,
-                                               self._PATH,
-                                               self._INTERFACE,
+                self.__cookie = self.__bus.call_sync(
+                                               self.__DESTINATION,
+                                               self.__PATH,
+                                               self.__INTERFACE,
                                                'Inhibit',
                                                GLib.Variant('(susu)',
                                                             ('Lollypop',
@@ -120,4 +120,4 @@ class Inhibitor:
                                                -1,
                                                None)[0]
         except Exception as e:
-            print("Inhibator::_set_flags:", e)
+            print("Inhibator::__set_flags:", e)
