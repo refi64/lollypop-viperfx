@@ -240,10 +240,10 @@ class TagReader(Discoverer):
         (exists, tracknumber) = tags.get_uint_index('track-number', 0)
         if not exists:
             # Guess from filename
-            m = match('^([0-9]*)', filename)
+            m = match('^([0-9]*)[ ]*-', filename)
             if m:
                 try:
-                    tracknumber = int(m.group(0))
+                    tracknumber = int(m.group(1))
                 except:
                     tracknumber = 0
             else:
