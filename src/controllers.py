@@ -168,9 +168,9 @@ class ProgressController:
         if player.is_playing():
             if self.__timeout_id is None:
                 self.__timeout_id = GLib.timeout_add(1000,
-                                                     self.__update_position)
+                                                     self._update_position)
         else:
-            self.__update_position()
+            self._update_position()
             if self.__timeout_id is not None:
                 GLib.source_remove(self.__timeout_id)
                 self.__timeout_id = None
@@ -198,7 +198,7 @@ class ProgressController:
         value = scale.get_value()
         Lp().player.seek(value/60)
         self.__seeking = False
-        self.__update_position(value)
+        self._update_position(value)
 
     def _on_scroll_event(self, scale, event):
         """
@@ -218,12 +218,9 @@ class ProgressController:
             if seek > Lp().player.current_track.duration:
                 seek = Lp().player.current_track.duration - 2
             Lp().player.seek(seek)
-            self.__update_position(seek*60)
+            self._update_position(seek*60)
 
-#######################
-# PRIVATE             #
-#######################
-    def __update_position(self, value=None):
+    def _update_position(self, value=None):
         """
             Update progress bar position
             @param value as int

@@ -24,13 +24,13 @@ class InfoCache:
     """
     _INFO_PATH = path.expanduser("~") + "/.local/share/lollypop/info"
     _CACHE_PATH = path.expanduser("~") + "/.cache/lollypop_info"
-    WEBSERVICES = [("lastfm", "_get_lastfm_artist_info",
-                    "_get_lastfm_album_artwork"),
-                   ("spotify", "_get_spotify_artist_info",
-                    "_get_spotify_album_artwork"),
-                   ("deezer", "_get_deezer_artist_info",
-                    "_get_deezer_album_artwork"),
-                   ("wikipedia", "_get_wp_artist_info",
+    WEBSERVICES = [("lastfm", "__get_lastfm_artist_info",
+                    "__get_lastfm_album_artwork"),
+                   ("spotify", "__get_spotify_artist_info",
+                    "__get_spotify_album_artwork"),
+                   ("deezer", "__get_deezer_artist_info",
+                    "__get_deezer_album_artwork"),
+                   ("wikipedia", "__get_wp_artist_info",
                     None)]
 
     def init():

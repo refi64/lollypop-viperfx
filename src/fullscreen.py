@@ -38,13 +38,12 @@ class FullScreen(Gtk.Window, InfosController,
         PlaybackController.__init__(self)
         ProgressController.__init__(self)
         self.set_application(app)
-        self._timeout1 = None
-        self._timeout2 = None
-        self._seeking = False
-        self._signal1_id = None
-        self._signal2_id = None
+        self.__timeout1 = None
+        self.__timeout2 = None
+        self.__signal1_id = None
+        self.__signal2_id = None
         self.set_decorated(False)
-        self._parent = parent
+        self.__parent = parent
 
         builder = Gtk.Builder()
         builder.add_from_resource('/org/gnome/Lollypop/FullScreen.ui')
@@ -70,7 +69,7 @@ class FullScreen(Gtk.Window, InfosController,
         self._play_image = builder.get_object('play_image')
         self._pause_image = builder.get_object('pause_image')
         close_btn = builder.get_object('close_btn')
-        close_btn.connect('clicked', self._destroy)
+        close_btn.connect('clicked', self.__destroy)
         self._cover = builder.get_object('cover')
         self._title_label = builder.get_object('title')
         self._artist_label = builder.get_object('artist')
@@ -81,35 +80,36 @@ class FullScreen(Gtk.Window, InfosController,
         self._progress = builder.get_object('progress_scale')
         self._timelabel = builder.get_object('playback')
         self._total_time_label = builder.get_object('duration')
-        self.connect('key-release-event', self._on_key_release_event)
+        self.connect('key-release-event', self.__on_key_release_event)
         self.add(builder.get_object('widget'))
 
     def do_show(self):
         """
             Init signals, set color and go party mode if nothing is playing
         """
-        self._signal1_id = Lp().player.connect('current-changed',
-                                               self.on_current_changed)
-        self._signal2_id = Lp().player.connect('status-changed',
-                                               self.on_status_changed)
+        self.__signal1_id = Lp().player.connect('current-changed',
+                                                self.on_current_changed)
+        self.__signal2_id = Lp().player.connect('status-changed',
+                                                self.on_status_changed)
         if Lp().player.current_track.id is None:
             Lp().player.set_party(True)
         else:
             self.on_status_changed(Lp().player)
             self.on_current_changed(Lp().player)
-        if self._timeout1 is None:
-            self._timeout1 = GLib.timeout_add(1000, self._update_position)
+        if self.__timeout1 is None:
+            self.__timeout1 = GLib.timeout_add(1000, self._update_position)
         Gtk.Window.do_show(self)
-        self._parent.set_skip_pager_hint(True)
-        self._parent.set_skip_taskbar_hint(True)
+        self.__parent.set_skip_pager_hint(True)
+        self.__parent.set_skip_taskbar_hint(True)
         now = datetime.now()
         self._datetime.set_label(now.strftime('%a %d %b, %X')[:-3])
-        if self._timeout2 is None:
+        if self.__timeout2 is None:
             second = datetime.now().second
             if 60 - second > 0:
-                GLib.timeout_add((60-second)*1000, self._update_datetime)
+                GLib.timeout_add((60-second)*1000, self.__update_datetime)
             else:
-                self._timeout2 = GLib.timeout_add(60000, self._update_datetime)
+                self.__timeout2 = GLib.timeout_add(60000,
+                                                   self.__update_datetime)
         self._update_position(Lp().player.position/1000000)
         self.fullscreen()
         self._next_popover.set_relative_to(self._album_label)
@@ -122,20 +122,20 @@ class FullScreen(Gtk.Window, InfosController,
         """
             Remove signals and unset color
         """
-        self._parent.set_skip_pager_hint(False)
-        self._parent.set_skip_taskbar_hint(False)
+        self.__parent.set_skip_pager_hint(False)
+        self.__parent.set_skip_taskbar_hint(False)
         Gtk.Window.do_hide(self)
-        if self._signal1_id is not None:
-            Lp().player.disconnect(self._signal1_id)
-            self._signal1_id = None
-        if self._signal2_id is not None:
-            Lp().player.disconnect(self._signal2_id)
-            self._signal2_id = None
-        if self._timeout1 is not None:
-            GLib.source_remove(self._timeout1)
-            self._timeout1 = None
-        if self._timeout2 is not None:
-            GLib.source_remove(self._timeout2)
+        if self.__signal1_id is not None:
+            Lp().player.disconnect(self.__signal1_id)
+            self.__signal1_id = None
+        if self.__signal2_id is not None:
+            Lp().player.disconnect(self.__signal2_id)
+            self.__signal2_id = None
+        if self.__timeout1 is not None:
+            GLib.source_remove(self.__timeout1)
+            self.__timeout1 = None
+        if self.__timeout2 is not None:
+            GLib.source_remove(self.__timeout2)
         self._next_popover.set_relative_to(None)
         self._next_popover.hide()
         # Enable idle
@@ -164,25 +164,25 @@ class FullScreen(Gtk.Window, InfosController,
 #######################
 # PRIVATE             #
 #######################
-    def _update_datetime(self):
+    def __update_datetime(self):
         """
             Update datetime in headerbar
         """
         now = datetime.now()
         self._datetime.set_label(now.strftime('%a %d %b, %X')[:-3])
-        if self._timeout2 is None:
-            self._timeout2 = GLib.timeout_add(60000, self._update_datetime)
+        if self.__timeout2 is None:
+            self.__timeout2 = GLib.timeout_add(60000, self.__update_datetime)
             return False
         return True
 
-    def _destroy(self, widget):
+    def __destroy(self, widget):
         """
             Destroy self
             @param widget as Gtk.Button
         """
         self.destroy()
 
-    def _on_key_release_event(self, widget, event):
+    def __on_key_release_event(self, widget, event):
         """
             Destroy window if Esc
             @param widget as Gtk.Widget

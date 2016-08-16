@@ -29,29 +29,29 @@ class Downloader:
     except:
         Wikipedia = None
 
-    _GOOGLE_API_KEY = "AIzaSyBiaYluG8pVYxgKRGcc4uEbtgE9q8la0dw"
-    _GOOGLE_API_ID = "015987506728554693370:waw3yqru59a"
+    __GOOGLE_API_KEY = "AIzaSyBiaYluG8pVYxgKRGcc4uEbtgE9q8la0dw"
+    __GOOGLE_API_ID = "015987506728554693370:waw3yqru59a"
 
     def __init__(self):
         """
             Init art downloader
         """
-        self._albums_queue = []
-        self._albums_history = []
-        self._in_albums_download = False
-        self._cache_artists_running = False
+        self.__albums_queue = []
+        self.__albums_history = []
+        self.__in_albums_download = False
+        self.__cache_artists_running = False
 
     def cache_album_art(self, album_id):
         """
             Download album artwork
             @param album id as int
         """
-        if album_id in self._albums_history:
+        if album_id in self.__albums_history:
             return
         if Gio.NetworkMonitor.get_default().get_network_available():
-            self._albums_queue.append(album_id)
-            if not self._in_albums_download:
-                t = Thread(target=self._cache_albums_art)
+            self.__albums_queue.append(album_id)
+            if not self.__in_albums_download:
+                t = Thread(target=self.__cache_albums_art)
                 t.daemon = True
                 t.start()
 
@@ -59,10 +59,10 @@ class Downloader:
         """
             Cache info for all artists
         """
-        if self._cache_artists_running:
+        if self.__cache_artists_running:
             return
-        self._cache_artists_running = True
-        t = Thread(target=self._cache_artists_info)
+        self.__cache_artists_running = True
+        t = Thread(target=self.__cache_artists_info)
         t.daemon = True
         t.start()
 
@@ -80,14 +80,14 @@ class Downloader:
 
         cs_api_key = Lp().settings.get_value('cs-api-key').get_string()
         if cs_api_key == "":
-            cs_api_key = self._GOOGLE_API_KEY
+            cs_api_key = self.__GOOGLE_API_KEY
 
         try:
             f = Gio.File.new_for_uri("https://www.googleapis.com/"
                                      "customsearch/v1?key=%s&cx=%s"
                                      "&q=%s&searchType=image" %
                                      (cs_api_key,
-                                      self._GOOGLE_API_ID,
+                                      self.__GOOGLE_API_ID,
                                       GLib.uri_escape_string(search,
                                                              "",
                                                              False)))
@@ -112,7 +112,7 @@ class Downloader:
 #######################
 # PRIVATE             #
 #######################
-    def _get_lastfm_artist_info(self, artist):
+    def __get_lastfm_artist_info(self, artist):
         """
             Return lastfm artist information
             @param artist as str
@@ -123,7 +123,7 @@ class Downloader:
         else:
             return (None, None)
 
-    def _get_wp_artist_info(self, artist):
+    def __get_wp_artist_info(self, artist):
         """
             Return wikipedia artist information
             @param artist as str
@@ -135,7 +135,7 @@ class Downloader:
         else:
             return (None, None)
 
-    def _get_deezer_artist_info(self, artist):
+    def __get_deezer_artist_info(self, artist):
         """
             Return deezer artist information
             @param artist as str
@@ -156,7 +156,7 @@ class Downloader:
                   (e, artist))
         return (None, None)
 
-    def _get_spotify_artist_info(self, artist):
+    def __get_spotify_artist_info(self, artist):
         """
             Return spotify artist information
             @param artist as str
@@ -178,7 +178,7 @@ class Downloader:
                   (e, artist))
         return (None, None)
 
-    def _cache_artists_info(self):
+    def __cache_artists_info(self):
         """
             Cache info for all artists
         """
@@ -191,8 +191,8 @@ class Downloader:
                 continue
             artwork_set = False
             for (api, helper, unused) in InfoCache.WEBSERVICES:
-                debug("Downloader::_cache_artists_info(): %s@%s" % (artist,
-                                                                    api))
+                debug("Downloader::__cache_artists_info(): %s@%s" % (artist,
+                                                                     api))
                 if helper is None:
                     continue
                 try:
@@ -204,26 +204,26 @@ class Downloader:
                         if status:
                             artwork_set = True
                             InfoCache.add(artist, content, data, api)
-                            debug("Downloader::_cache_artists_info(): %s"
+                            debug("Downloader::__cache_artists_info(): %s"
                                   % url)
                         else:
                             InfoCache.add(artist, None, None, api)
                 except Exception as e:
-                    print("Downloader::_cache_artists_info():", e)
+                    print("Downloader::__cache_artists_info():", e)
                     InfoCache.add(artist, None, None, api)
             if artwork_set:
                 Lp().art.emit('artist-artwork-changed', artist)
-        self._cache_artists_running = False
+        self.__cache_artists_running = False
 
-    def _cache_albums_art(self):
+    def __cache_albums_art(self):
         """
             Cache albums artwork (from queue)
             @thread safe
         """
-        self._in_albums_download = True
+        self.__in_albums_download = True
         try:
-            while self._albums_queue:
-                album_id = self._albums_queue.pop()
+            while self.__albums_queue:
+                album_id = self.__albums_queue.pop()
                 album = Lp().albums.get_name(album_id)
                 artist = ", ".join(Lp().albums.get_artists(album_id))
                 for (api, unused, helper) in InfoCache.WEBSERVICES:
@@ -234,15 +234,15 @@ class Downloader:
                     if data is not None:
                         break
                 if data is None:
-                    self._albums_history.append(album_id)
+                    self.__albums_history.append(album_id)
                     continue
                 Lp().art.save_album_artwork(data, album_id)
         except Exception as e:
-            print("Downloader::_cache_albums_art: %s" % e)
-        self._albums_history.append(album_id)
-        self._in_albums_download = False
+            print("Downloader::__cache_albums_art: %s" % e)
+        self.__albums_history.append(album_id)
+        self.__in_albums_download = False
 
-    def _get_deezer_album_artwork(self, artist, album):
+    def __get_deezer_album_artwork(self, artist, album):
         """
             Get album artwork from deezer
             @param artist as string
@@ -268,10 +268,10 @@ class Downloader:
                     s = Gio.File.new_for_uri(url)
                     (status, image, tag) = s.load_contents()
         except Exception as e:
-            print("Downloader::_get_deezer_album_artwork: %s" % e)
+            print("Downloader::__get_deezer_album_artwork: %s" % e)
         return image
 
-    def _get_spotify_album_artwork(self, artist, album):
+    def __get_spotify_album_artwork(self, artist, album):
         """
             Get album artwork from spotify
             @param artist as string
@@ -313,7 +313,7 @@ class Downloader:
                   (e, artist, album))
         return image
 
-    def _get_itunes_album_artwork(self, artist, album):
+    def __get_itunes_album_artwork(self, artist, album):
         """
             Get album artwork from itunes
             @param artist as string
@@ -342,7 +342,7 @@ class Downloader:
                   (e, artist, album))
         return image
 
-    def _get_lastfm_album_artwork(self, artist, album):
+    def __get_lastfm_album_artwork(self, artist, album):
         """
             Get album artwork from lastfm
             @param artist as string
