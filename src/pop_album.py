@@ -37,23 +37,23 @@ class AlbumPopover(Gtk.Popover):
         if height is None:
             height = Lp().window.get_size()[1] * 0.8
         if width is None:
-            self._width = Lp().window.get_size()[0] * 0.8
+            self.__width = Lp().window.get_size()[0] * 0.8
         else:
-            self._width = width
+            self.__width = width
 
         self.get_style_context().add_class('box-shadow')
-        self._view = ArtistAlbumsView(artist_ids, genre_ids, show_cover)
-        self._view.populate([album_id])
-        wanted_height = min(400, min(height, self._view.requested_height))
-        self._view.set_property('height-request', wanted_height)
-        self._view.show()
-        self.add(self._view)
+        view = ArtistAlbumsView(artist_ids, genre_ids, show_cover)
+        view.populate([album_id])
+        wanted_height = min(400, min(height, view.requested_height))
+        view.set_property('height-request', wanted_height)
+        view.show()
+        self.add(view)
 
     def do_get_preferred_width(self):
         """
             Set maximum width
         """
-        width = min(900, self._width * 0.8)
+        width = min(900, self.__width * 0.8)
         return (width, width)
 
 #######################

@@ -498,7 +498,7 @@ class Container:
             @param update as bool
             @thread safe
         """
-        playlists = [(Type.LOVED, Lp().playlists._LOVED)]
+        playlists = [(Type.LOVED, Lp().playlists.LOVED)]
         playlists.append((Type.POPULARS, _("Popular tracks")))
         playlists.append((Type.RECENTS, _("Recently played")))
         playlists.append((Type.NEVER, _("Never played")))

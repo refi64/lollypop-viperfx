@@ -20,7 +20,6 @@ from datetime import datetime
 
 from lollypop.database import Database
 from lollypop.define import Lp, Type
-from lollypop.objects import Track
 from lollypop.sqlcursor import SqlCursor
 from lollypop.localized import LocalizedCollation
 
@@ -29,8 +28,8 @@ class Playlists(GObject.GObject):
     """
         Playlists manager
     """
-    LOCAL_PATH = os.path.expanduser("~") + "/.local/share/lollypop"
-    DB_PATH = "%s/playlists.db" % LOCAL_PATH
+    _LOCAL_PATH = os.path.expanduser("~") + "/.local/share/lollypop"
+    _DB_PATH = "%s/playlists.db" % _LOCAL_PATH
     __gsignals__ = {
         # Add or remove a playlist
         'playlists-changed': (GObject.SignalFlags.RUN_FIRST, None, (int,)),
@@ -38,12 +37,12 @@ class Playlists(GObject.GObject):
         'playlist-add': (GObject.SignalFlags.RUN_FIRST, None, (int, int)),
         'playlist-del': (GObject.SignalFlags.RUN_FIRST, None, (int, int))
     }
-    create_playlists = '''CREATE TABLE playlists (
+    __create_playlists = '''CREATE TABLE playlists (
                             id INTEGER PRIMARY KEY,
                             name TEXT NOT NULL,
                             mtime BIGINT NOT NULL)'''
 
-    create_tracks = '''CREATE TABLE tracks (
+    __create_tracks = '''CREATE TABLE tracks (
                         playlist_id INT NOT NULL,
                         filepath TEXT NOT NULL)'''
 
@@ -52,12 +51,12 @@ class Playlists(GObject.GObject):
             Init playlists manager
         """
         GObject.GObject.__init__(self)
-        self._LOVED = _("Loved tracks")
+        self.LOVED = _("Loved tracks")
         # Create db schema
         try:
             with SqlCursor(self) as sql:
-                sql.execute(self.create_playlists)
-                sql.execute(self.create_tracks)
+                sql.execute(self.__create_playlists)
+                sql.execute(self.__create_tracks)
                 sql.commit()
         except:
             pass
@@ -182,7 +181,7 @@ class Playlists(GObject.GObject):
             @param playlist name as str
             @return playlst id as int
         """
-        if playlist_name == self._LOVED:
+        if playlist_name == self.LOVED:
             return Type.LOVED
 
         with SqlCursor(self) as sql:
@@ -201,7 +200,7 @@ class Playlists(GObject.GObject):
             @return playlist name as str
         """
         if playlist_id == Type.LOVED:
-            return self._LOVED
+            return self.LOVED
 
         with SqlCursor(self) as sql:
             result = sql.execute("SELECT name\
@@ -343,7 +342,7 @@ class Playlists(GObject.GObject):
             Return a new sqlite cursor
         """
         try:
-            sql = sqlite3.connect(self.DB_PATH, 600.0)
+            sql = sqlite3.connect(self._DB_PATH, 600.0)
             sql.execute("ATTACH DATABASE '%s' AS music" % Database.DB_PATH)
             sql.create_collation('LOCALIZED', LocalizedCollation())
             return sql
@@ -353,18 +352,3 @@ class Playlists(GObject.GObject):
 #######################
 # PRIVATE             #
 #######################
-    def _on_entry_parsed(self, parser, uri, metadata, playlist_id):
-        """
-            Import entry
-            @param parser as TotemPlParser.Parser
-            @param playlist uri as str
-            @param metadata as GLib.HastTable
-            @param playlist id as int
-        """
-        try:
-            track_id = Lp().tracks.get_id_by_path(
-                                            GLib.filename_from_uri(uri)[0])
-            if track_id is not None:
-                self.add_tracks(playlist_id, [Track(track_id)])
-        except Exception as e:
-            print("Playlists::_on_entry_parsed: %s" % e)

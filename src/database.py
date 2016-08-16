@@ -24,8 +24,8 @@ class Database:
     """
         Base database object
     """
-    LOCAL_PATH = os.path.expanduser("~") + "/.local/share/lollypop"
-    DB_PATH = "%s/lollypop.db" % LOCAL_PATH
+    _LOCAL_PATH = os.path.expanduser("~") + "/.local/share/lollypop"
+    DB_PATH = "%s/lollypop.db" % _LOCAL_PATH
 
     # SQLite documentation:
     # In SQLite, a column with type INTEGER PRIMARY KEY
@@ -91,8 +91,8 @@ class Database:
                                         GLib.Variant('i', upgrade.count()))
         else:
             try:
-                if not os.path.exists(self.LOCAL_PATH):
-                    os.mkdir(self.LOCAL_PATH)
+                if not os.path.exists(self._LOCAL_PATH):
+                    os.mkdir(self._LOCAL_PATH)
                 # Create db schema
                 with SqlCursor(self) as sql:
                     sql.execute(self.__create_albums)
@@ -119,7 +119,7 @@ class Database:
         """
         try:
             c = sqlite3.connect(self.DB_PATH, 600.0)
-            c.__create_collation('LOCALIZED', LocalizedCollation())
+            c.create_collation('LOCALIZED', LocalizedCollation())
             return c
         except:
             exit(-1)
