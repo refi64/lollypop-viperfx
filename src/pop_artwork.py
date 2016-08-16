@@ -26,13 +26,13 @@ class CommonPopover(Gtk.Popover):
             Connect map signal
         """
         Gtk.Popover.__init__(self)
-        self.connect('map', self._on_map)
-        self.connect('unmap', self._on_unmap)
+        self.connect('map', self.__on_map)
+        self.connect('unmap', self.__on_unmap)
 
 #######################
 # PRIVATE             #
 #######################
-    def _on_map(self, widget):
+    def __on_map(self, widget):
         """
             Resize
             @param widget as Gtk.Widget
@@ -43,7 +43,7 @@ class CommonPopover(Gtk.Popover):
         self.set_size_request(size[0]*0.4,
                               size[1]*0.5)
 
-    def _on_unmap(self, widget):
+    def __on_unmap(self, widget):
         """
             Stop loading
             @param widget as Gtk.Widget
