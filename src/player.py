@@ -92,6 +92,7 @@ class Player(BinPlayer, QueuePlayer, UserPlaylistPlayer, RadioPlayer,
         if self._locked:
             return
         if self._next_track.id is not None:
+            self._scrobble(self.current_track, self._start_time)
             self.load(self._next_track)
         else:
             self.stop()

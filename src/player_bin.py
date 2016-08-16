@@ -370,20 +370,22 @@ class BinPlayer(BasePlayer):
             return False
         return True
 
-    def _track_finished(self, finished, finished_start_time):
+    def _scrobble(self, finished, finished_start_time):
         """
-            Do some actions for played track
+            Scrobble on lastfm
             @param finished as Track
             @param finished_start_time as int
         """
-        # Increment popularity
-        if not Lp().scanner.is_locked():
-            Lp().tracks.set_more_popular(finished.id)
-            Lp().albums.set_more_popular(finished.album_id)
+        # Last.fm policy
+        if finished.duration < 30:
+            return
         # Scrobble on lastfm
         if Lp().lastfm is not None:
             artists = ", ".join(finished.artists)
-            if time() - finished_start_time > 30:
+            played = time() - finished_start_time
+            # We can scrobble if the track has been played
+            # for at least half its duration, or for 4 minutes
+            if played >= finished.duration / 2 or played >= 240:
                 Lp().lastfm.scrobble(artists,
                                      finished.album_name,
                                      finished.title,
@@ -499,11 +501,16 @@ class BinPlayer(BasePlayer):
             return
         if self.current_track.id == Type.RADIOS:
             return
+        # For Last.fm scrobble
         finished = self.current_track
         finished_start_time = self._start_time
         if self._next_track.id is not None:
             self._load_track(self._next_track)
-        self._track_finished(finished, finished_start_time)
+        self._scrobble(finished, finished_start_time)
+        # Increment popularity
+        if not Lp().scanner.is_locked():
+            Lp().tracks.set_more_popular(finished.id)
+            Lp().albums.set_more_popular(finished.album_id)
 
     def _on_stream_start(self, bus, message):
         """
