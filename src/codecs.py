@@ -45,7 +45,7 @@ class Codecs:
             GstPbutils.install_plugins_async(
                 details,
                 context,
-                self._null)
+                self.__null)
         except Exception as e:
             print("Codecs::__init__(): %s" % e)
 
@@ -67,5 +67,8 @@ class Codecs:
             return True
         return False
 
-    def _null(self, arg):
+#######################
+# PRIVATE             #
+#######################
+    def __null(self, arg):
         pass
