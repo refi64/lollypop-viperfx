@@ -29,8 +29,8 @@ class PlaylistsPopover(Gtk.Popover):
         """
         Gtk.Popover.__init__(self)
         self.set_position(Gtk.PositionType.BOTTOM)
-        self.connect('map', self._on_map)
-        self.connect('unmap', self._on_unmap)
+        self.connect('map', self.__on_map)
+        self.connect('unmap', self.__on_unmap)
         self._widget = PlaylistsView(Lp().player.get_user_playlist_ids(),
                                      False)
         self._widget.show()
@@ -48,7 +48,7 @@ class PlaylistsPopover(Gtk.Popover):
 #######################
 # PRIVATE             #
 #######################
-    def _on_map(self, widget):
+    def __on_map(self, widget):
         """
             Connect signals, populate and resize
             @param widget as Gtk.Widget
@@ -58,7 +58,7 @@ class PlaylistsPopover(Gtk.Popover):
         height = Lp().window.get_size()[1]
         self.set_size_request(400, height*0.7)
 
-    def _on_unmap(self, widget):
+    def __on_unmap(self, widget):
         """
             Disconnect signals, clear view
             @param widget as Gtk.Widget
