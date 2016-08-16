@@ -201,7 +201,7 @@ class CollectionScanner(GObject.GObject, TagReader):
                 self.__del_from_db(filepath)
 
             sql.commit()
-        GLib.idle_add(self._finish)
+        GLib.idle_add(self.__finish)
         del self.__history
         self.__history = None
 

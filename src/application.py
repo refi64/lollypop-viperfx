@@ -20,7 +20,6 @@ from gi.repository import Gtk, Gio, GLib, Gdk, Notify, TotemPlParser
 from pickle import dump
 from locale import getlocale
 from gettext import gettext as _
-from gettext import ngettext as ngettext
 from threading import Thread
 import os
 
@@ -44,7 +43,6 @@ from lollypop.art import Art
 from lollypop.sqlcursor import SqlCursor
 from lollypop.settings import Settings, SettingsDialog
 from lollypop.notification import NotificationManager
-from lollypop.database_history import History
 from lollypop.database_albums import AlbumsDatabase
 from lollypop.database_artists import ArtistsDatabase
 from lollypop.database_genres import GenresDatabase
@@ -421,20 +419,6 @@ class Application(Gtk.Application):
         """
         builder = Gtk.Builder()
         builder.add_from_resource('/org/gnome/Lollypop/AboutDialog.ui')
-        if self.scanner.is_locked():
-            builder.get_object('button').set_sensitive(False)
-        builder.get_object('button').connect('clicked',
-                                             self._on_reset_clicked,
-                                             builder.get_object('progress'))
-        artists = self.artists.count()
-        albums = self.albums.count()
-        tracks = self.tracks.count()
-        builder.get_object('artists').set_text(
-                        ngettext("%d artist", "%d artists", artists) % artists)
-        builder.get_object('albums').set_text(
-                            ngettext("%d album", "%d albums", albums) % albums)
-        builder.get_object('tracks').set_text(
-                            ngettext("%d track", "%d tracks", tracks) % tracks)
         about = builder.get_object('about_dialog')
         about.set_transient_for(self.window)
         about.connect("response", self.__about_response)
@@ -523,59 +507,3 @@ class Application(Gtk.Application):
         self.add_action(quitAction)
 
         return menu
-
-    def __reset_database(self, track_ids, count, history, progress):
-        """
-            Backup database and reset
-            @param track ids as [int]
-            @param count as int
-            @param history as History
-            @param progress as Gtk.ProgressBar
-        """
-        if track_ids:
-            track_id = track_ids.pop(0)
-            filepath = self.tracks.get_path(track_id)
-            name = GLib.path_get_basename(filepath)
-            album_id = self.tracks.get_album_id(track_id)
-            popularity = self.tracks.get_popularity(track_id)
-            ltime = self.tracks.get_ltime(track_id)
-            mtime = self.albums.get_mtime(album_id)
-            duration = self.tracks.get_duration(track_id)
-            album_popularity = self.albums.get_popularity(album_id)
-            history.add(name, duration, popularity,
-                        ltime, mtime, album_popularity)
-            progress.set_fraction((count - len(track_ids))/count)
-            GLib.idle_add(self.__reset_database, track_ids,
-                          count, history, progress)
-        else:
-            progress.hide()
-            for artist in self.artists.get([]):
-                self.art.emit('artist-artwork-changed', artist[1])
-            os.remove(Database.DB_PATH)
-            self.db = Database()
-            self.window.show_genres(self.settings.get_value('show-genres'))
-            self.window.show()
-            self.window.update_db()
-            progress.get_toplevel().set_deletable(True)
-
-    def __on_reset_clicked(self, widget, progress):
-        """
-            Reset database
-            @param widget as Gtk.Widget
-            @param progress as Gtk.ProgressBar
-        """
-        try:
-            self.player.stop()
-            self.player.reset_pcn()
-            self.player.emit('current-changed')
-            self.player.emit('prev-changed')
-            self.player.emit('next-changed')
-            self.cursors = {}
-            track_ids = self.tracks.get_ids()
-            progress.show()
-            history = History()
-            widget.get_toplevel().set_deletable(False)
-            widget.set_sensitive(False)
-            self.__reset_database(track_ids, len(track_ids), history, progress)
-        except Exception as e:
-            print("Application::_on_reset_clicked():", e)

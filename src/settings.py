@@ -17,13 +17,17 @@ except:
     Secret = None
 
 
+from os import remove
 from gettext import gettext as _
+from gettext import ngettext as ngettext
 from threading import Thread
 from shutil import which
 from re import findall, DOTALL
 
 from lollypop.define import Lp, SecretSchema, SecretAttributes
 from lollypop.cache import InfoCache
+from lollypop.database import Database
+from lollypop.database_history import History
 
 
 class Settings(Gio.Settings):
@@ -79,6 +83,21 @@ class SettingsDialog:
         builder.add_from_resource('/org/gnome/Lollypop/SettingsDialog.ui')
         if Lp().lastfm and not Lp().lastfm.is_goa:
             builder.get_object('lastfm_grid').show()
+        if Lp().scanner.is_locked():
+            builder.get_object('button').set_sensitive(False)
+        builder.get_object('button').connect('clicked',
+                                             self._on_reset_clicked,
+                                             builder.get_object('progress'))
+        artists = Lp().artists.count()
+        albums = Lp().albums.count()
+        tracks = Lp().tracks.count()
+        builder.get_object('artists').set_text(
+                        ngettext("%d artist", "%d artists", artists) % artists)
+        builder.get_object('albums').set_text(
+                            ngettext("%d album", "%d albums", albums) % albums)
+        builder.get_object('tracks').set_text(
+                            ngettext("%d track", "%d tracks", tracks) % tracks)
+
         self._popover_content = builder.get_object('popover')
         duration = builder.get_object('duration')
         duration.set_range(1, 20)
@@ -585,6 +604,62 @@ class SettingsDialog:
         """
         self._popover.hide()
 
+    def __reset_database(self, track_ids, count, history, progress):
+        """
+            Backup database and reset
+            @param track ids as [int]
+            @param count as int
+            @param history as History
+            @param progress as Gtk.ProgressBar
+        """
+        if track_ids:
+            track_id = track_ids.pop(0)
+            filepath = Lp().tracks.get_path(track_id)
+            name = GLib.path_get_basename(filepath)
+            album_id = Lp().tracks.get_album_id(track_id)
+            popularity = Lp().tracks.get_popularity(track_id)
+            ltime = Lp().tracks.get_ltime(track_id)
+            mtime = Lp().albums.get_mtime(album_id)
+            duration = Lp().tracks.get_duration(track_id)
+            album_popularity = Lp().albums.get_popularity(album_id)
+            history.add(name, duration, popularity,
+                        ltime, mtime, album_popularity)
+            progress.set_fraction((count - len(track_ids))/count)
+            GLib.idle_add(self.__reset_database, track_ids,
+                          count, history, progress)
+        else:
+            progress.hide()
+            for artist in Lp().artists.get([]):
+                Lp().art.emit('artist-artwork-changed', artist[1])
+            remove(Database.DB_PATH)
+            Lp().db = Database()
+            Lp().window.show_genres(Lp().settings.get_value('show-genres'))
+            Lp().window.show()
+            Lp().window.update_db()
+            progress.get_toplevel().set_deletable(True)
+
+    def _on_reset_clicked(self, widget, progress):
+        """
+            Reset database
+            @param widget as Gtk.Widget
+            @param progress as Gtk.ProgressBar
+        """
+        try:
+            Lp().player.stop()
+            Lp().player.reset_pcn()
+            Lp().player.emit('current-changed')
+            Lp().player.emit('prev-changed')
+            Lp().player.emit('next-changed')
+            Lp().cursors = {}
+            track_ids = Lp().tracks.get_ids()
+            progress.show()
+            history = History()
+            widget.get_toplevel().set_deletable(False)
+            widget.set_sensitive(False)
+            self.__reset_database(track_ids, len(track_ids), history, progress)
+        except Exception as e:
+            print("Application::_on_reset_clicked():", e)
+
 
 class ChooserWidget(Gtk.Grid):
     """
@@ -608,7 +683,7 @@ class ChooserWidget(Gtk.Grid):
         self._action_btn.set_property("margin", 5)
         self._action_btn.show()
         self.add(self._action_btn)
-        self._action_btn.connect("clicked", self._do_action)
+        self._action_btn.connect("clicked", self.__do_action)
         self.show()
 
     def set_dir(self, path):
@@ -650,7 +725,7 @@ class ChooserWidget(Gtk.Grid):
 #######################
 # PRIVATE             #
 #######################
-    def _do_action(self, widget):
+    def __do_action(self, widget):
         """
             If action defined, execute, else, remove widget
         """
