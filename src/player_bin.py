@@ -34,32 +34,29 @@ class BinPlayer(BasePlayer):
         """
         Gst.init(None)
         BasePlayer.__init__(self)
-        self._codecs = Codecs()
-        self._crossfading = False
-        self._playbin = self._playbin1 = Gst.ElementFactory.make(
+        self.__codecs = Codecs()
+        self._playbin = self.__playbin1 = Gst.ElementFactory.make(
                                                            'playbin', 'player')
-        self._playbin2 = Gst.ElementFactory.make('playbin', 'player')
-        self._preview = None
-        self._plugins = self.plugins1 = PluginsPlayer(self._playbin1)
-        self.plugins2 = PluginsPlayer(self._playbin2)
-        self._volume_id = self._playbin.connect('notify::volume',
-                                                self._on_volume_changed)
-        for playbin in [self._playbin1, self._playbin2]:
+        self.__playbin2 = Gst.ElementFactory.make('playbin', 'player')
+        self.__preview = None
+        self._plugins = self._plugins1 = PluginsPlayer(self.__playbin1)
+        self._plugins2 = PluginsPlayer(self.__playbin2)
+        self._playbin.connect('notify::volume', self.__on_volume_changed)
+        for playbin in [self.__playbin1, self.__playbin2]:
             flags = playbin.get_property("flags")
             flags &= ~GstPlayFlags.GST_PLAY_FLAG_VIDEO
             playbin.set_property('flags', flags)
             playbin.set_property('buffer-size', 5 << 20)
             playbin.set_property('buffer-duration', 10 * Gst.SECOND)
             playbin.connect('about-to-finish',
-                            self._on_stream_about_to_finish)
+                            self.__on_stream_about_to_finish)
             bus = playbin.get_bus()
             bus.add_signal_watch()
-            bus.connect('message::error', self._on_bus_error)
-            bus.connect('message::eos', self._on_bus_eos)
-            bus.connect('message::element', self._on_bus_element)
+            bus.connect('message::error', self.__on_bus_error)
+            bus.connect('message::eos', self.__on_bus_eos)
+            bus.connect('message::element', self.__on_bus_element)
             bus.connect('message::stream-start', self._on_stream_start)
-            bus.connect("message::tag", self._on_bus_message_tag)
-        self._handled_error = None
+            bus.connect("message::tag", self.__on_bus_message_tag)
         self._start_time = 0
 
     @property
@@ -68,20 +65,20 @@ class BinPlayer(BasePlayer):
             Get a preview bin
             @return Gst.Element
         """
-        if self._preview is None:
-            self._preview = Gst.ElementFactory.make('playbin', 'player')
+        if self.__preview is None:
+            self.__preview = Gst.ElementFactory.make('playbin', 'player')
             self.set_preview_output()
-        return self._preview
+        return self.__preview
 
     def set_preview_output(self):
         """
             Set preview output
         """
-        if self._preview is not None:
+        if self.__preview is not None:
             output = Lp().settings.get_value('preview-output').get_string()
             pulse = Gst.ElementFactory.make('pulsesink', 'output')
             pulse.set_property('device', output)
-            self._preview.set_property('audio-sink', pulse)
+            self.__preview.set_property('audio-sink', pulse)
 
     def is_playing(self):
         """
@@ -118,9 +115,9 @@ class BinPlayer(BasePlayer):
            self.is_playing() and\
            self.current_track.id != Type.RADIOS:
             duration = Lp().settings.get_value('mix-duration').get_int32()
-            self._do_crossfade(duration, track, False)
+            self.__do_crossfade(duration, track, False)
         else:
-            self._load(track)
+            self.__load(track)
 
     def play(self):
         """
@@ -153,8 +150,8 @@ class BinPlayer(BasePlayer):
             Stop all bins, lollypop should quit now
         """
         # Stop
-        self._playbin1.set_state(Gst.State.NULL)
-        self._playbin2.set_state(Gst.State.NULL)
+        self.__playbin1.set_state(Gst.State.NULL)
+        self.__playbin2.set_state(Gst.State.NULL)
 
     def play_pause(self):
         """
@@ -196,7 +193,7 @@ class BinPlayer(BasePlayer):
         if self._crossfading and self.current_track.duration > 0:
             duration = self.current_track.duration - position / 1000000
             if duration < Lp().settings.get_value('mix-duration').get_int32():
-                self._do_crossfade(duration)
+                self.__do_crossfade(duration)
         return position * 60
 
     @property
@@ -212,8 +209,8 @@ class BinPlayer(BasePlayer):
             Set player volume rate
             @param rate as double
         """
-        self._playbin1.set_volume(GstAudio.StreamVolumeFormat.CUBIC, rate)
-        self._playbin2.set_volume(GstAudio.StreamVolumeFormat.CUBIC, rate)
+        self.__playbin1.set_volume(GstAudio.StreamVolumeFormat.CUBIC, rate)
+        self.__playbin2.set_volume(GstAudio.StreamVolumeFormat.CUBIC, rate)
         self.emit('volume-changed')
 
     def next(self):
@@ -223,125 +220,8 @@ class BinPlayer(BasePlayer):
         pass
 
 #######################
-# PRIVATE             #
+# PROTECTED           #
 #######################
-    def _load(self, track, init_volume=True):
-        """
-            Stop current track, load track id and play it
-            If was playing, do not use play as status doesn't changed
-            @param track as Track
-            @param init volume as bool
-        """
-        was_playing = self.is_playing()
-        self._playbin.set_state(Gst.State.NULL)
-        if self._load_track(track, init_volume):
-            if was_playing:
-                self._playbin.set_state(Gst.State.PLAYING)
-            else:
-                self.play()
-
-    def _volume_up(self, playbin, plugins, duration):
-        """
-            Make volume going up smoothly
-            @param playbin as Gst.Bin
-            @param plugins as PluginsPlayer
-            @param duration as int
-        """
-        # We are not the active playbin, stop all
-        if self._playbin != playbin:
-            return
-        if duration > 0:
-            vol = plugins.volume.props.volume
-            steps = duration / 0.25
-            vol_up = (1.0 - vol) / steps
-            rate = vol + vol_up
-            if rate < 1.0:
-                plugins.volume.props.volume = rate
-                GLib.timeout_add(250, self._volume_up,
-                                 playbin, plugins, duration - 0.25)
-            else:
-                plugins.volume.props.volume = 1.0
-        else:
-            plugins.volume.props.volume = 1.0
-
-    def _volume_down(self, playbin, plugins, duration):
-        """
-            Make volume going down smoothly
-            @param playbin as Gst.Bin
-            @param plugins as PluginsPlayer
-            @param duration as int
-        """
-        # We are again the active playbin, stop all
-        if self._playbin == playbin:
-            return
-        if duration > 0:
-            vol = plugins.volume.props.volume
-            steps = duration / 0.25
-            vol_down = vol / steps
-            rate = vol - vol_down
-            if rate > 0:
-                plugins.volume.props.volume = rate
-                GLib.timeout_add(250, self._volume_down,
-                                 playbin, plugins, duration - 0.25)
-            else:
-                plugins.volume.props.volume = 0.0
-                playbin.set_state(Gst.State.NULL)
-        else:
-            plugins.volume.props.volume = 0.0
-            playbin.set_state(Gst.State.NULL)
-
-    def _do_crossfade(self, duration, track=None, next=True):
-        """
-            Crossfade tracks
-            @param duration as int
-            @param track as Track
-            @param next as bool
-        """
-        # No cossfading if we need to stop
-        if self._need_to_stop() and next:
-            return
-        if self._playbin.query_position(Gst.Format.TIME)[1] / 1000000000 >\
-                self.current_track.duration - 10:
-            self._track_finished(self.current_track, self._start_time)
-        GLib.idle_add(self._volume_down, self._playbin,
-                      self._plugins, duration)
-        if self._playbin == self._playbin2:
-            self._playbin = self._playbin1
-            self._plugins = self.plugins1
-        else:
-            self._playbin = self._playbin2
-            self._plugins = self.plugins2
-
-        if track is not None:
-            self._load(track, False)
-            self._plugins.volume.props.volume = 0
-            GLib.idle_add(self._volume_up, self._playbin,
-                          self._plugins, duration)
-        elif next and self._next_track.id is not None:
-            self._load(self._next_track, False)
-            self._plugins.volume.props.volume = 0
-            GLib.idle_add(self._volume_up, self._playbin,
-                          self._plugins, duration)
-        elif self._prev_track.id is not None:
-            self._load(self._prev_track, False)
-            self._plugins.volume.props.volume = 0
-            GLib.idle_add(self._volume_up, self._playbin,
-                          self._plugins, duration)
-
-    def _need_to_stop(self):
-        """
-            Return True if playback needs to stop
-            @return bool
-        """
-        stop = False
-        if self._context.next != NextContext.NONE:
-            # Stop if needed
-            if self._context.next == NextContext.STOP_TRACK:
-                stop = True
-            elif self._context.next == self._finished:
-                stop = True
-        return stop and self.is_playing()
-
     def _load_track(self, track, init_volume=True):
         """
             Load track
@@ -349,7 +229,7 @@ class BinPlayer(BasePlayer):
             @param init volume as bool
             @return False if track not loaded
         """
-        if self._need_to_stop():
+        if self.__need_to_stop():
             return False
         if init_volume:
             self._plugins.volume.props.volume = 1.0
@@ -392,21 +272,161 @@ class BinPlayer(BasePlayer):
                                      int(finished_start_time),
                                      int(finished.duration))
 
-    def _on_volume_changed(self, playbin, sink):
+    def _on_stream_start(self, bus, message):
+        """
+            On stream start
+            Emit "current-changed" to notify others components
+            @param bus as Gst.Bus
+            @param message as Gst.Message
+        """
+        self._start_time = time()
+        debug("Player::_on_stream_start(): %s" % self.current_track.uri)
+        self.emit('current-changed')
+        # Update now playing on lastfm
+        if Lp().lastfm is not None and self.current_track.id >= 0:
+            artists = ", ".join(self.current_track.artists)
+            Lp().lastfm.now_playing(artists,
+                                    self.current_track.album_name,
+                                    self.current_track.title,
+                                    int(self.current_track.duration))
+        if not Lp().scanner.is_locked():
+            Lp().tracks.set_listened_at(self.current_track.id, int(time()))
+
+#######################
+# PRIVATE             #
+#######################
+    def __load(self, track, init_volume=True):
+        """
+            Stop current track, load track id and play it
+            If was playing, do not use play as status doesn't changed
+            @param track as Track
+            @param init volume as bool
+        """
+        was_playing = self.is_playing()
+        self._playbin.set_state(Gst.State.NULL)
+        if self._load_track(track, init_volume):
+            if was_playing:
+                self._playbin.set_state(Gst.State.PLAYING)
+            else:
+                self.play()
+
+    def __volume_up(self, playbin, plugins, duration):
+        """
+            Make volume going up smoothly
+            @param playbin as Gst.Bin
+            @param plugins as PluginsPlayer
+            @param duration as int
+        """
+        # We are not the active playbin, stop all
+        if self._playbin != playbin:
+            return
+        if duration > 0:
+            vol = plugins.volume.props.volume
+            steps = duration / 0.25
+            vol_up = (1.0 - vol) / steps
+            rate = vol + vol_up
+            if rate < 1.0:
+                plugins.volume.props.volume = rate
+                GLib.timeout_add(250, self.__volume_up,
+                                 playbin, plugins, duration - 0.25)
+            else:
+                plugins.volume.props.volume = 1.0
+        else:
+            plugins.volume.props.volume = 1.0
+
+    def __volume_down(self, playbin, plugins, duration):
+        """
+            Make volume going down smoothly
+            @param playbin as Gst.Bin
+            @param plugins as PluginsPlayer
+            @param duration as int
+        """
+        # We are again the active playbin, stop all
+        if self._playbin == playbin:
+            return
+        if duration > 0:
+            vol = plugins.volume.props.volume
+            steps = duration / 0.25
+            vol_down = vol / steps
+            rate = vol - vol_down
+            if rate > 0:
+                plugins.volume.props.volume = rate
+                GLib.timeout_add(250, self.__volume_down,
+                                 playbin, plugins, duration - 0.25)
+            else:
+                plugins.volume.props.volume = 0.0
+                playbin.set_state(Gst.State.NULL)
+        else:
+            plugins.volume.props.volume = 0.0
+            playbin.set_state(Gst.State.NULL)
+
+    def __do_crossfade(self, duration, track=None, next=True):
+        """
+            Crossfade tracks
+            @param duration as int
+            @param track as Track
+            @param next as bool
+        """
+        # No cossfading if we need to stop
+        if self.__need_to_stop() and next:
+            return
+        if self._playbin.query_position(Gst.Format.TIME)[1] / 1000000000 >\
+                self.current_track.duration - 10:
+            self._track_finished(self.current_track, self._start_time)
+        GLib.idle_add(self.__volume_down, self._playbin,
+                      self._plugins, duration)
+        if self._playbin == self.__playbin2:
+            self._playbin = self.__playbin1
+            self._plugins = self._plugins1
+        else:
+            self._playbin = self.__playbin2
+            self._plugins = self._plugins2
+
+        if track is not None:
+            self.__load(track, False)
+            self._plugins.volume.props.volume = 0
+            GLib.idle_add(self.__volume_up, self._playbin,
+                          self._plugins, duration)
+        elif next and self._next_track.id is not None:
+            self.__load(self._next_track, False)
+            self._plugins.volume.props.volume = 0
+            GLib.idle_add(self.__volume_up, self._playbin,
+                          self._plugins, duration)
+        elif self._prev_track.id is not None:
+            self.__load(self._prev_track, False)
+            self._plugins.volume.props.volume = 0
+            GLib.idle_add(self.__volume_up, self._playbin,
+                          self._plugins, duration)
+
+    def __need_to_stop(self):
+        """
+            Return True if playback needs to stop
+            @return bool
+        """
+        stop = False
+        if self._context.next != NextContext.NONE:
+            # Stop if needed
+            if self._context.next == NextContext.STOP_TRACK:
+                stop = True
+            elif self._context.next == self._finished:
+                stop = True
+        return stop and self.is_playing()
+
+    def __on_volume_changed(self, playbin, sink):
         """
             Update volume
             @param playbin as Gst.Bin
             @param sink as Gst.Sink
         """
-        if playbin == self._playbin1:
-            vol = self._playbin1.get_volume(GstAudio.StreamVolumeFormat.CUBIC)
-            self._playbin2.set_volume(GstAudio.StreamVolumeFormat.CUBIC, vol)
+        if playbin == self.__playbin1:
+            vol = self.__playbin1.get_volume(GstAudio.StreamVolumeFormat.CUBIC)
+            self.__playbin2.set_volume(GstAudio.StreamVolumeFormat.CUBIC, vol)
         else:
-            vol = self._playbin2.get_volume(GstAudio.StreamVolumeFormat.CUBIC)
-            self._playbin1.set_volume(GstAudio.StreamVolumeFormat.CUBIC, vol)
+            vol = self.__playbin2.get_volume(GstAudio.StreamVolumeFormat.CUBIC)
+            self.__playbin1.set_volume(GstAudio.StreamVolumeFormat.CUBIC, vol)
         self.emit('volume-changed')
 
-    def _on_bus_message_tag(self, bus, message):
+    def __on_bus_message_tag(self, bus, message):
         """
             Read tags from stream
             @param bus as Gst.Bus
@@ -415,7 +435,7 @@ class BinPlayer(BasePlayer):
         if self.current_track.id >= 0 or\
            self.current_track.duration > 0.0:
             return
-        debug("Player::_on_bus_message_tag(): %s" % self.current_track.uri)
+        debug("Player::__on_bus_message_tag(): %s" % self.current_track.uri)
         reader = TagReader()
         tags = message.parse_tag()
 
@@ -448,16 +468,16 @@ class BinPlayer(BasePlayer):
             self.current_track.genres = reader.get_genres(tags).split(',')
         self.emit('current-changed')
 
-    def _on_bus_element(self, bus, message):
+    def __on_bus_element(self, bus, message):
         """
             Set elements for missings plugins
             @param bus as Gst.Bus
             @param message as Gst.Message
         """
         if GstPbutils.is_missing_plugin_message(message):
-            self._codecs.append(message)
+            self.__codecs.append(message)
 
-    def _on_bus_error(self, bus, message):
+    def __on_bus_error(self, bus, message):
         """
             Handle first bus error, ignore others
             @param bus as Gst.Bus
@@ -465,20 +485,20 @@ class BinPlayer(BasePlayer):
         """
         debug("Error playing: %s" % self.current_track.uri)
         Lp().window.pulse(False)
-        if self._codecs.is_missing_codec(message):
-            self._codecs.install()
+        if self.__codecs.is_missing_codec(message):
+            self.__codecs.install()
             Lp().scanner.stop()
         elif Lp().notify is not None:
             Lp().notify.send(message.parse_error()[0].message)
         self.emit('current-changed')
         return True
 
-    def _on_bus_eos(self, bus, message):
+    def __on_bus_eos(self, bus, message):
         """
             On end of stream, stop playback
             go next otherwise
         """
-        debug("Player::_on_bus_eos(): %s" % self.current_track.uri)
+        debug("Player::__on_bus_eos(): %s" % self.current_track.uri)
         if self._playbin.get_bus() == bus:
             self.stop()
             self._finished = NextContext.NONE
@@ -490,12 +510,12 @@ class BinPlayer(BasePlayer):
                 self._load_track(self._next_track)
             self.emit('current-changed')
 
-    def _on_stream_about_to_finish(self, playbin):
+    def __on_stream_about_to_finish(self, playbin):
         """
             When stream is about to finish, switch to next track without gap
             @param playbin as Gst bin
         """
-        debug("Player::_on_stream_about_to_finish(): %s" % playbin)
+        debug("Player::__on_stream_about_to_finish(): %s" % playbin)
         # Don't do anything if crossfade on
         if self._crossfading:
             return
@@ -511,24 +531,3 @@ class BinPlayer(BasePlayer):
         if not Lp().scanner.is_locked():
             Lp().tracks.set_more_popular(finished.id)
             Lp().albums.set_more_popular(finished.album_id)
-
-    def _on_stream_start(self, bus, message):
-        """
-            On stream start
-            Emit "current-changed" to notify others components
-            @param bus as Gst.Bus
-            @param message as Gst.Message
-        """
-        self._start_time = time()
-        debug("Player::_on_stream_start(): %s" % self.current_track.uri)
-        self.emit('current-changed')
-        # Update now playing on lastfm
-        if Lp().lastfm is not None and self.current_track.id >= 0:
-            artists = ", ".join(self.current_track.artists)
-            Lp().lastfm.now_playing(artists,
-                                    self.current_track.album_name,
-                                    self.current_track.title,
-                                    int(self.current_track.duration))
-        if not Lp().scanner.is_locked():
-            Lp().tracks.set_listened_at(self.current_track.id, int(time()))
-        self._handled_error = None

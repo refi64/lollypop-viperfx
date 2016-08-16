@@ -524,7 +524,7 @@ class Player(BinPlayer, QueuePlayer, UserPlaylistPlayer, RadioPlayer,
                             (mix and party_mix and self._is_party)
 
 #######################
-# PRIVATE             #
+# PROTECTED           #
 #######################
     def _on_stream_start(self, bus, message):
         """

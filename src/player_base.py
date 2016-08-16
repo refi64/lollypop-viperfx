@@ -46,6 +46,8 @@ class BasePlayer(GObject.GObject):
             # Lock adding tracks to playback, do nothing here, just get it
             # with locked property
             self._locked = False
+            # Should player do crossfading
+            self._crossfading = False
             # Keep track of artist/album finished
             self._finished = NextContext.NONE
             # A user playlist used as current playlist

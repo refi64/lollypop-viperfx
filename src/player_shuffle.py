@@ -105,15 +105,15 @@ class ShufflePlayer(BasePlayer):
         self.reset_history()
         self._context.genre_ids = {}
 
-        if self.plugins1.rgvolume is not None and\
-           self.plugins2.rgvolume is not None:
+        if self._plugins1.rgvolume is not None and\
+           self._plugins2.rgvolume is not None:
             if party:
                 self._context.next = NextContext.NONE
-                self.plugins1.rgvolume.props.album_mode = 0
-                self.plugins2.rgvolume.props.album_mode = 0
+                self._plugins1.rgvolume.props.album_mode = 0
+                self._plugins2.rgvolume.props.album_mode = 0
             else:
-                self.plugins1.rgvolume.props.album_mode = 1
-                self.plugins2.rgvolume.props.album_mode = 1
+                self._plugins1.rgvolume.props.album_mode = 1
+                self._plugins2.rgvolume.props.album_mode = 1
 
         if party:
             self._external_tracks = []
@@ -181,14 +181,14 @@ class ShufflePlayer(BasePlayer):
         """
         self._shuffle = Lp().settings.get_enum('shuffle')
 
-        if self.plugins1.rgvolume is not None and\
-           self.plugins2.rgvolume is not None:
+        if self._plugins1.rgvolume is not None and\
+           self._plugins2.rgvolume is not None:
             if self._shuffle == Shuffle.TRACKS or self._user_playlist:
-                self.plugins1.rgvolume.props.album_mode = 0
-                self.plugins2.rgvolume.props.album_mode = 0
+                self._plugins1.rgvolume.props.album_mode = 0
+                self._plugins2.rgvolume.props.album_mode = 0
             else:
-                self.plugins1.rgvolume.props.album_mode = 1
-                self.plugins2.rgvolume.props.album_mode = 1
+                self._plugins1.rgvolume.props.album_mode = 1
+                self._plugins2.rgvolume.props.album_mode = 1
 
         if self._user_playlist:
             self._shuffle_playlist()
