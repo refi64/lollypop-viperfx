@@ -111,7 +111,7 @@ class BaseArt(GObject.GObject):
                                          scale)
 
 #######################
-# PRIVATE             #
+# PROTECTED           #
 #######################
     def _respect_ratio(self, path):
         """
@@ -158,3 +158,7 @@ class BaseArt(GObject.GObject):
             @return path as string
         """
         return "%s/%s_%s.jpg" % (self._CACHE_PATH, icon_name, size)
+
+#######################
+# PRIVATE             #
+#######################
