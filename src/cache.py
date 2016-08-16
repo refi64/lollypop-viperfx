@@ -12,7 +12,7 @@
 
 from gi.repository import Gio, GdkPixbuf
 
-from os import mkdir, path
+from os import mkdir, path, rename
 
 from lollypop.utils import escape
 from lollypop.define import ArtSize
@@ -22,6 +22,7 @@ class InfoCache:
     """
         Generic class to cache text and images
     """
+    _INFO_PATH = path.expanduser("~") + "/.local/share/lollypop/info"
     _CACHE_PATH = path.expanduser("~") + "/.cache/lollypop_info"
     WEBSERVICES = [("lastfm", "_get_lastfm_artist_info",
                     "_get_lastfm_album_artwork"),
@@ -36,28 +37,44 @@ class InfoCache:
         """
             Init cache
         """
+        if not path.exists(InfoCache._INFO_PATH):
+            try:
+                mkdir(InfoCache._INFO_PATH)
+            except:
+                print("Can't create %s" % InfoCache._INFO_PATH)
         if not path.exists(InfoCache._CACHE_PATH):
             try:
                 mkdir(InfoCache._CACHE_PATH)
             except:
                 print("Can't create %s" % InfoCache._CACHE_PATH)
 
-    def exists_in_cache(prefix):
+    def exists(prefix):
         """
             Return True if an info is cached
             @param prefix as string
         """
         exists = False
         for (suffix, helper1, helper2) in InfoCache.WEBSERVICES:
-            filepath = "%s/%s_%s_%s.jpg" % (InfoCache._CACHE_PATH,
-                                            escape(prefix),
-                                            suffix,
-                                            ArtSize.ARTIST)
+            filepath = "%s/%s_%s.jpg" % (InfoCache._INFO_PATH,
+                                         escape(prefix),
+                                         suffix)
             if path.exists(filepath):
                 exists = True
+            else:
+                # FIXME Remove this code, support for old lollypop versions
+                #
+                old_path = "%s/%s_%s_%s.jpg" % (InfoCache._CACHE_PATH,
+                                                escape(prefix),
+                                                suffix,
+                                                ArtSize.ARTIST)
+                if path.exists(old_path):
+                    rename(old_path, filepath)
+                    exists = True
+                #
+                ##########################################################
         return exists
 
-    def get_artwork(prefix, suffix, size=ArtSize.ARTIST):
+    def get_artwork(prefix, suffix, size):
         """
             Return path for artwork
             @param prefix as string
@@ -68,10 +85,9 @@ class InfoCache:
         try:
             for (suffix, helper1, helper2) in InfoCache.WEBSERVICES:
                 extract = None
-                filepath = "%s/%s_%s_%s.jpg" % (InfoCache._CACHE_PATH,
-                                                escape(prefix),
-                                                suffix,
-                                                ArtSize.ARTIST)
+                filepath = "%s/%s_%s.jpg" % (InfoCache._INFO_PATH,
+                                             escape(prefix),
+                                             suffix)
                 filepath_at_size = "%s/%s_%s_%s.jpg" % (InfoCache._CACHE_PATH,
                                                         escape(prefix),
                                                         suffix,
@@ -146,7 +162,7 @@ class InfoCache:
             (status, content, tag) = f.load_contents()
             if not status:
                 content = None
-            image_path = filepath+"_"+str(ArtSize.ARTIST)+".jpg"
+            image_path = filepath+".jpg"
             if path.exists(image_path):
                 f = Gio.File.new_for_path(image_path)
                 (status, data, tag) = f.load_contents()
@@ -154,15 +170,15 @@ class InfoCache:
                     data = None
         return (content, data)
 
-    def cache(prefix, content, data, suffix):
+    def add(prefix, content, data, suffix):
         """
-            Cache datas
+            Add info to store
             @param prefix as str
             @param content as str
             @param data as bytes
             @param suffix as str
         """
-        filepath = "%s/%s_%s" % (InfoCache._CACHE_PATH,
+        filepath = "%s/%s_%s" % (InfoCache._INFO_PATH,
                                  escape(prefix),
                                  suffix)
         if content is not None:
@@ -173,7 +189,7 @@ class InfoCache:
                 fstream.write(content, None)
                 fstream.close()
         if data is None:
-            f = Gio.File.new_for_path(filepath+"_"+str(ArtSize.ARTIST)+".jpg")
+            f = Gio.File.new_for_path(filepath+".jpg")
             fstream = f.replace(None, False,
                                 Gio.FileCreateFlags.REPLACE_DESTINATION, None)
             fstream.close()
@@ -184,17 +200,17 @@ class InfoCache:
                                                                -1,
                                                                True,
                                                                None)
-            pixbuf.savev(filepath+"_"+str(ArtSize.ARTIST)+".jpg",
+            pixbuf.savev(filepath+".jpg",
                          "jpeg", ["quality"], ["90"])
             del pixbuf
 
-    def uncache(prefix, suffix):
+    def remove(prefix, suffix):
         """
-            Remove info from cache
+            Remove info from store
             @param prefix as str
             @param suffix as str
         """
-        filepath = "%s/%s_%s.txt" % (InfoCache._CACHE_PATH,
+        filepath = "%s/%s_%s.txt" % (InfoCache._INFO_PATH,
                                      escape(prefix),
                                      suffix)
         f = Gio.File.new_for_path(filepath)
@@ -202,10 +218,9 @@ class InfoCache:
             f.delete(None)
         except:
             pass
-        filepath = "%s/%s_%s_%s.jpg" % (InfoCache._CACHE_PATH,
-                                        escape(prefix),
-                                        suffix,
-                                        ArtSize.ARTIST)
+        filepath = "%s/%s_%s.jpg" % (InfoCache._INFO_PATH,
+                                     escape(prefix),
+                                     suffix)
         f = Gio.File.new_for_path(filepath)
         try:
             f.delete(None)
@@ -214,7 +229,7 @@ class InfoCache:
 
     def uncache_artwork(prefix, suffix, scale):
         """
-            Remove info from cache
+            Remove artwork from cache
             @param prefix as str
             @param suffix as str
             @param scale factor as int

@@ -187,7 +187,7 @@ class Downloader:
         # Then cache for lastfm/wikipedia/spotify/deezer/...
         for (artist_id, artist) in Lp().artists.get([]):
             if not Gio.NetworkMonitor.get_default().get_network_available() or\
-                    InfoCache.exists_in_cache(artist):
+                    InfoCache.exists(artist):
                 continue
             artwork_set = False
             for (api, helper, unused) in InfoCache.WEBSERVICES:
@@ -203,14 +203,14 @@ class Downloader:
                         (status, data, tag) = s.load_contents()
                         if status:
                             artwork_set = True
-                            InfoCache.cache(artist, content, data, api)
+                            InfoCache.add(artist, content, data, api)
                             debug("Downloader::_cache_artists_info(): %s"
                                   % url)
                         else:
-                            InfoCache.cache(artist, None, None, api)
+                            InfoCache.add(artist, None, None, api)
                 except Exception as e:
                     print("Downloader::_cache_artists_info():", e)
-                    InfoCache.cache(artist, None, None, api)
+                    InfoCache.add(artist, None, None, api)
             if artwork_set:
                 Lp().art.emit('artist-artwork-changed', artist)
         self._cache_artists_running = False

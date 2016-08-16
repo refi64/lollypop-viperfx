@@ -236,7 +236,7 @@ class ArtworkSearch(Gtk.Bin):
                 for suffix in ["lastfm", "wikipedia", "spotify"]:
                     InfoCache.uncache_artwork(self._artist, suffix,
                                               flowbox.get_scale_factor())
-                    InfoCache.cache(self._artist, None, data, suffix)
+                    InfoCache.add(self._artist, None, data, suffix)
                 Lp().art.emit('artist-artwork-changed', self._artist)
             self._streams = {}
         except:
@@ -294,7 +294,7 @@ class ArtworkSearch(Gtk.Bin):
                     for suffix in ["lastfm", "wikipedia", "spotify"]:
                         InfoCache.uncache_artwork(self._artist, suffix,
                                                   button.get_scale_factor())
-                        InfoCache.cache(self._artist, None, data, suffix)
+                        InfoCache.add(self._artist, None, data, suffix)
                     Lp().art.emit('artist-artwork-changed', self._artist)
                 self._streams = {}
             except Exception as e:
@@ -312,10 +312,10 @@ class ArtworkSearch(Gtk.Bin):
             Lp().art.clean_album_cache(self._album)
             Lp().art.emit('album-artwork-changed', self._album.id)
         else:
-            for suffix in ["lastfm", "wikipedia", "spotify"]:
+            for suffix in ["lastfm", "wikipedia", "spotify", "deezer"]:
                 InfoCache.uncache_artwork(self._artist, suffix,
                                           button.get_scale_factor())
-                InfoCache.cache(self._artist, None, None, suffix)
+                InfoCache.add(self._artist, None, None, suffix)
                 Lp().art.emit('artist-artwork-changed', self._artist)
         self._close_popover()
 

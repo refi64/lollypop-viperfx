@@ -148,7 +148,7 @@ class InfoPopover(Gtk.Popover):
             # Clear cache if needed
             if visible_name in ['lastfm', 'wikipedia']:
                 for artist in self._current_track.artists:
-                    InfoCache.uncache(artist, visible_name)
+                    InfoCache.remove(artist, visible_name)
                 # stack -> scrolled -> viewport -> grid
                 self._on_child_unmap(
                        self._stack.get_visible_child().get_child().get_child())

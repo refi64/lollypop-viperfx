@@ -93,7 +93,7 @@ class InfoContent(Gtk.Stack):
                                                                      None)
                     else:
                         data = None
-                InfoCache.cache(prefix, content, data, suffix)
+                InfoCache.add(prefix, content, data, suffix)
             GLib.idle_add(self._set_content, content, stream)
         except Exception as e:
             print("InfoContent::set_content: %s" % e)
@@ -262,7 +262,7 @@ class WikipediaContent(InfoContent):
             @param variant as GVariant
             @param artist as str
         """
-        InfoCache.uncache(artist, 'wikipedia')
+        InfoCache.remove(artist, 'wikipedia')
         InfoContent.clear(self)
         self.set_visible_child_name('spinner')
         self._spinner.start()
