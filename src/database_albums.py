@@ -506,9 +506,9 @@ class AlbumsDatabase:
         """
         genre_ids = remove_static_genres(genre_ids)
         # Reset filters if not needed
-        if not self._has_genres(album_id):
+        if not self.__has_genres(album_id):
             genre_ids = []
-        if not self._has_artists(album_id):
+        if not self.__has_artists(album_id):
             artist_ids = []
         with SqlCursor(Lp().db) as sql:
             filters = (album_id,)
@@ -547,9 +547,9 @@ class AlbumsDatabase:
         """
         genre_ids = remove_static_genres(genre_ids)
         # Reset filters if not needed
-        if not self._has_genres(album_id):
+        if not self.__has_genres(album_id):
             genre_ids = []
-        if not self._has_artists(album_id):
+        if not self.__has_artists(album_id):
             artist_ids = []
         with SqlCursor(Lp().db) as sql:
             filters = (album_id,)
@@ -588,9 +588,9 @@ class AlbumsDatabase:
         """
         genre_ids = remove_static_genres(genre_ids)
         # Reset filters if not needed
-        if not self._has_genres(album_id):
+        if not self.__has_genres(album_id):
             genre_ids = []
-        if not self._has_artists(album_id):
+        if not self.__has_artists(album_id):
             artist_ids = []
         with SqlCursor(Lp().db) as sql:
             filters = (album_id, disc)
@@ -842,7 +842,7 @@ class AlbumsDatabase:
 #######################
 # PRIVATE             #
 #######################
-    def _has_genres(self, album_id):
+    def __has_genres(self, album_id):
         """
             Return True if album has more than one genre
             @param album id as int
@@ -858,7 +858,7 @@ class AlbumsDatabase:
                 return v[0] > 1
         return False
 
-    def _has_artists(self, album_id):
+    def __has_artists(self, album_id):
         """
             Return True if album has more than one artist
             @param album id as int
