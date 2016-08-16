@@ -44,7 +44,7 @@ class RadioArt(BaseArt):
         """
         filename = ''
         try:
-            filename = self._get_radio_cache_name(name)
+            filename = self.__get_radio_cache_name(name)
             cache_path_png = "%s/%s_%s.png" % (self._CACHE_PATH,
                                                filename,
                                                size)
@@ -71,7 +71,7 @@ class RadioArt(BaseArt):
             @return cairo surface
         """
         size *= scale
-        filename = self._get_radio_cache_name(name)
+        filename = self.__get_radio_cache_name(name)
         cache_path_png = "%s/%s_%s.png" % (self._CACHE_PATH, filename, size)
         pixbuf = None
 
@@ -82,7 +82,7 @@ class RadioArt(BaseArt):
                                                                 size,
                                                                 size)
             else:
-                path = self._get_radio_art_path(name)
+                path = self.__get_radio_art_path(name)
                 if path is not None:
                     pixbuf = GdkPixbuf.Pixbuf.new_from_file_at_size(path,
                                                                     size,
@@ -111,7 +111,7 @@ class RadioArt(BaseArt):
             @param size as int
             @thread safe
         """
-        filename = self._get_radio_cache_name(name)
+        filename = self.__get_radio_cache_name(name)
         cache_path_png = "%s/%s_%s.png" % (self._CACHE_PATH, filename, size)
         s = Gio.File.new_for_uri(uri)
         d = Gio.File.new_for_path(cache_path_png)
@@ -156,7 +156,7 @@ class RadioArt(BaseArt):
             Remove logo from cache for radio
             @param radio name as string
         """
-        filename = self._get_radio_cache_name(name)
+        filename = self.__get_radio_cache_name(name)
         try:
             for f in os.listdir(self._CACHE_PATH):
                 if re.search('%s_.*\.png' % re.escape(filename), f):
@@ -167,7 +167,7 @@ class RadioArt(BaseArt):
 #######################
 # PRIVATE             #
 #######################
-    def _get_radio_art_path(self, name):
+    def __get_radio_art_path(self, name):
         """
             Look for radio covers
             @param radio name as string
@@ -179,9 +179,9 @@ class RadioArt(BaseArt):
                 return self._RADIOS_PATH + "/" + name + ".png"
             return None
         except Exception as e:
-            print("Art::_get_radio_art_path(): %s" % e)
+            print("Art::__get_radio_art_path(): %s" % e)
 
-    def _get_radio_cache_name(self, name):
+    def __get_radio_cache_name(self, name):
         """
             Get a uniq string for radio
             @param album id as int
