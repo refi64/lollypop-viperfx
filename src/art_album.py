@@ -37,7 +37,8 @@ class AlbumArt(BaseArt, TagReader):
         """
         BaseArt.__init__(self)
         TagReader.__init__(self)
-        self._favorite = Lp().settings.get_value('favorite-cover').get_string()
+        self.__favorite = Lp().settings.get_value(
+                                                'favorite-cover').get_string()
 
     def get_album_cache_path(self, album, size):
         """
@@ -48,7 +49,7 @@ class AlbumArt(BaseArt, TagReader):
         """
         filename = ''
         try:
-            filename = self._get_album_cache_name(album)
+            filename = self.__get_album_cache_name(album)
             cache_path_jpg = "%s/%s_%s.jpg" % (self._CACHE_PATH,
                                                filename,
                                                size)
@@ -78,12 +79,12 @@ class AlbumArt(BaseArt, TagReader):
         if album.id is None:
             return None
         try:
-            filename = self._get_album_cache_name(album) + ".jpg"
+            filename = self.__get_album_cache_name(album) + ".jpg"
             paths = [
                 # Used when album.path is readonly
                 os.path.join(self._STORE_PATH, filename),
                 # Default favorite artwork
-                os.path.join(album.path, self._favorite),
+                os.path.join(album.path, self.__favorite),
                 # Used when having muliple albums in same folder
                 os.path.join(album.path, filename),
             ]
@@ -129,7 +130,7 @@ class AlbumArt(BaseArt, TagReader):
             @return cairo surface
         """
         size *= scale
-        filename = self._get_album_cache_name(album)
+        filename = self.__get_album_cache_name(album)
         cache_path_jpg = "%s/%s_%s.jpg" % (self._CACHE_PATH, filename, size)
         pixbuf = None
 
@@ -214,9 +215,9 @@ class AlbumArt(BaseArt, TagReader):
                 which("kid3-cli") is not None
             album = Album(album_id)
             path_count = Lp().albums.get_path_count(album.path)
-            filename = self._get_album_cache_name(album) + ".jpg"
+            filename = self.__get_album_cache_name(album) + ".jpg"
             if save_to_tags:
-                t = Thread(target=self._save_artwork_tags,
+                t = Thread(target=self.__save_artwork_tags,
                            args=(data, album))
                 t.daemon = True
                 t.start()
@@ -224,12 +225,12 @@ class AlbumArt(BaseArt, TagReader):
             # Many albums with same path, suffix with artist_album name
             if path_count > 1:
                 artpath = os.path.join(album.path, filename)
-                if os.path.exists(os.path.join(album.path, self._favorite)):
-                    os.remove(os.path.join(album.path, self._favorite))
+                if os.path.exists(os.path.join(album.path, self.__favorite)):
+                    os.remove(os.path.join(album.path, self.__favorite))
             elif is_readonly(album.path):
                 artpath = os.path.join(self._STORE_PATH, filename)
             else:
-                artpath = os.path.join(album.path, self._favorite)
+                artpath = os.path.join(album.path, self.__favorite)
             # Update cover file if exists event if we have written to tags
             if not save_to_tags or os.path.exists(artpath):
                 stream = Gio.MemoryInputStream.new_from_data(data, None)
@@ -278,7 +279,7 @@ class AlbumArt(BaseArt, TagReader):
             Remove cover from cache for album id
             @param album as Album
         """
-        filename = self._get_album_cache_name(album)
+        filename = self.__get_album_cache_name(album)
         try:
             for f in os.listdir(self._CACHE_PATH):
                 if re.search('%s_.*\.jpg' % re.escape(filename), f):
@@ -319,7 +320,7 @@ class AlbumArt(BaseArt, TagReader):
 #######################
 # PRIVATE             #
 #######################
-    def _save_artwork_tags(self, data, album):
+    def __save_artwork_tags(self, data, album):
         """
             Save artwork in tags
             @param data as bytes
@@ -346,7 +347,7 @@ class AlbumArt(BaseArt, TagReader):
             self.clean_album_cache(album)
             GLib.idle_add(self.album_artwork_update, album.id)
 
-    def _get_album_cache_name(self, album):
+    def __get_album_cache_name(self, album):
         """
             Get a uniq string for album
             @param album as Album
