@@ -32,8 +32,8 @@ class RadioPlayer(BasePlayer):
             Init radio player
         """
         BasePlayer.__init__(self)
-        self._current = None
-        self._radios = []
+        self.__current = None
+        self.__radios = []
 
     def load(self, track):
         """
@@ -42,11 +42,11 @@ class RadioPlayer(BasePlayer):
         """
         if Gio.NetworkMonitor.get_default().get_network_available():
             try:
-                self._current = track
+                self.__current = track
                 parser = TotemPlParser.Parser.new()
-                parser.connect("entry-parsed", self._on_entry_parsed, track)
+                parser.connect("entry-parsed", self.__on_entry_parsed, track)
                 parser.parse_async(track.uri, True,
-                                   None, self._on_parse_finished, track)
+                                   None, self.__on_parse_finished, track)
             except Exception as e:
                 print("RadioPlayer::load(): ", e)
             if self.is_party():
@@ -60,21 +60,21 @@ class RadioPlayer(BasePlayer):
             @return Track
         """
         track = Track()
-        if self._current_track.id != Type.RADIOS or not self._radios:
+        if self.__current_track.id != Type.RADIOS or not self.__radios:
             return track
 
         i = 0
-        for (name, url) in self._radios:
+        for (name, url) in self.__radios:
             i += 1
-            if self._current_track.album_artists[0] == name:
+            if self.__current_track.album_artists[0] == name:
                 break
 
         # Get next radio
-        if i >= len(self._radios):
+        if i >= len(self.__radios):
             i = 0
 
-        name = self._radios[i][0]
-        url = self._radios[i][1]
+        name = self.__radios[i][0]
+        url = self.__radios[i][1]
         if url:
             track.set_radio(name, url)
         return track
@@ -85,21 +85,21 @@ class RadioPlayer(BasePlayer):
             @return Track
         """
         track = Track()
-        if self._current_track.id != Type.RADIOS or not self._radios:
+        if self.__current_track.id != Type.RADIOS or not self.__radios:
             return track
 
-        i = len(self._radios) - 1
-        for (name, url) in reversed(self._radios):
+        i = len(self.__radios) - 1
+        for (name, url) in reversed(self.__radios):
             i -= 1
-            if self._current_track.album_artists[0] == name:
+            if self.__current_track.album_artists[0] == name:
                 break
 
         # Get prev radio
         if i < 0:
-            i = len(self._radios) - 1
+            i = len(self.__radios) - 1
 
-        name = self._radios[i][0]
-        url = self._radios[i][1]
+        name = self.__radios[i][0]
+        url = self.__radios[i][1]
         if url:
             track.set_radio(name, url)
         return track
@@ -109,12 +109,12 @@ class RadioPlayer(BasePlayer):
             Set available radios
             @param radios as (name, url)
         """
-        self._radios = radios
+        self.__radios = radios
 
 #######################
 # PRIVATE             #
 #######################
-    def _start_playback(self, track):
+    def __start_playback(self, track):
         """
             Start playing track
             @param track as Track:
@@ -123,14 +123,14 @@ class RadioPlayer(BasePlayer):
         self._playbin.set_state(Gst.State.NULL)
         self._playbin.set_property('uri', track.uri)
         Radios().set_more_popular(track.album_artists[0])
-        self._current_track = track
-        self._current = None
+        self.__current_track = track
+        self.__current = None
         self._playbin.set_state(Gst.State.PLAYING)
-        if not self._radios:
-            self._radios = Radios().get()
+        if not self.__radios:
+            self.__radios = Radios().get()
         self.emit('status-changed')
 
-    def _on_parse_finished(self, parser, result, track):
+    def __on_parse_finished(self, parser, result, track):
         """
             Sometimes, TotemPlparse fails to add
             the playlist URI to the end of the playlist on parse failure
@@ -140,10 +140,10 @@ class RadioPlayer(BasePlayer):
             @param track as Track
         """
         # Only start playing if context always True
-        if self._current == track:
-            self._start_playback(track)
+        if self.__current == track:
+            self.__start_playback(track)
 
-    def _on_entry_parsed(self, parser, uri, metadata, track):
+    def __on_entry_parsed(self, parser, uri, metadata, track):
         """
             Play stream
             @param parser as TotemPlParser.Parser
@@ -152,6 +152,6 @@ class RadioPlayer(BasePlayer):
             @param track as Track
         """
         # Only start playing if context always True
-        if self._current == track:
+        if self.__current == track:
             track.set_radio(track.album_artists[0], uri)
-            self._start_playback(track)
+            self.__start_playback(track)
