@@ -437,7 +437,7 @@ class PlaylistsWidget(Gtk.Grid):
                 Lp().player.append_to_queue(track_id)
         else:
             Lp().player.load(Track(track_id))
-            if not Lp().player.is_party():
+            if not Lp().player.is_party:
                 Lp().player.populate_user_playlist_by_tracks(
                                                             self._tracks_left +
                                                             self._tracks_right,

@@ -432,7 +432,7 @@ class SearchPopover(Gtk.Popover):
             @param widget as Gtk.ListBox
             @param row as SearchRow
         """
-        if Lp().player.is_party() or Lp().player.locked:
+        if Lp().player.is_party or Lp().player.locked:
             if row.is_track():
                 if Lp().player.locked:
                     if row.get_id() in Lp().player.get_queue():

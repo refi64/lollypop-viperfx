@@ -308,7 +308,7 @@ class SettingsDialog:
             @param state as bool
         """
         Lp().settings.set_value('dark-ui', GLib.Variant('b', state))
-        if not Lp().player.is_party():
+        if not Lp().player.is_party:
             settings = Gtk.Settings.get_default()
             settings.set_property("gtk-application-prefer-dark-theme", state)
 

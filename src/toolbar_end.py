@@ -173,7 +173,7 @@ class ToolbarEnd(Gtk.Bin):
         if player.is_playing():
             # Party mode can be activated
             # via Fullscreen class, so check button state
-            self._party_button.set_active(player.is_party())
+            self._party_button.set_active(player.is_party)
 
     def on_next_changed(self, player, force=False):
         """

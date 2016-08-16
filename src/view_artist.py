@@ -318,7 +318,7 @@ class ArtistView(ArtistAlbumsView):
         """
             Play artist albums
         """
-        if Lp().player.is_party():
+        if Lp().player.is_party:
             Lp().player.set_party(False)
         album_id = Lp().albums.get_ids(self._artist_ids, self._genre_ids)[0]
         track = Track(Album(album_id).track_ids[0])

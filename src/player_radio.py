@@ -49,7 +49,7 @@ class RadioPlayer(BasePlayer):
                                    None, self.__on_parse_finished, track)
             except Exception as e:
                 print("RadioPlayer::load(): ", e)
-            if self.is_party():
+            if self.is_party:
                 self.set_party(False)
             self._next_track = Track()
             self.emit('next-changed')
@@ -60,13 +60,13 @@ class RadioPlayer(BasePlayer):
             @return Track
         """
         track = Track()
-        if self.__current_track.id != Type.RADIOS or not self.__radios:
+        if self._current_track.id != Type.RADIOS or not self.__radios:
             return track
 
         i = 0
         for (name, url) in self.__radios:
             i += 1
-            if self.__current_track.album_artists[0] == name:
+            if self._current_track.album_artists[0] == name:
                 break
 
         # Get next radio
@@ -85,13 +85,13 @@ class RadioPlayer(BasePlayer):
             @return Track
         """
         track = Track()
-        if self.__current_track.id != Type.RADIOS or not self.__radios:
+        if self._current_track.id != Type.RADIOS or not self.__radios:
             return track
 
         i = len(self.__radios) - 1
         for (name, url) in reversed(self.__radios):
             i -= 1
-            if self.__current_track.album_artists[0] == name:
+            if self._current_track.album_artists[0] == name:
                 break
 
         # Get prev radio
@@ -123,7 +123,7 @@ class RadioPlayer(BasePlayer):
         self._playbin.set_state(Gst.State.NULL)
         self._playbin.set_property('uri', track.uri)
         Radios().set_more_popular(track.album_artists[0])
-        self.__current_track = track
+        self._current_track = track
         self.__current = None
         self._playbin.set_state(Gst.State.PLAYING)
         if not self.__radios:

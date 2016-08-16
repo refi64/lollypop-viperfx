@@ -346,7 +346,7 @@ class Application(Gtk.Application):
         """
         self.player.load_external(uri)
         if self.__externals_count == 0:
-            if self.player.is_party():
+            if self.player.is_party:
                 self.player.set_party(False)
             self.player.play_first_external()
         self.__externals_count += 1

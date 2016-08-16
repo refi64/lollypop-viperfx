@@ -323,7 +323,7 @@ class AlbumWidget:
             @param: event as Gdk.Event
         """
         self._show_append(False)
-        if Lp().player.is_party():
+        if Lp().player.is_party:
             Lp().player.set_party(False)
         track = Track(self._album.track_ids[0])
         Lp().player.load(track)
@@ -981,7 +981,7 @@ class AlbumDetailedWidget(Gtk.Bin, AlbumWidget):
             Lp().player.load(Track(track_id))
         else:
             # Do not modify album list if in party mode
-            if not Lp().player.is_party():
+            if not Lp().player.is_party:
                 # If in artist view, reset album list
                 if self._filter_ids:
                     Lp().player.set_albums(track_id,

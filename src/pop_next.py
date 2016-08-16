@@ -69,7 +69,7 @@ class NextPopover(Gtk.Popover):
             Return True if widget should be shown, not already closed by user
         """
         return not self._inhibited and (
-                Lp().player.is_party() or
+                Lp().player.is_party or
                 Lp().settings.get_enum('shuffle') == Shuffle.TRACKS) and\
             Lp().player.next_track.id is not None and\
             Lp().player.next_track.id >= 0

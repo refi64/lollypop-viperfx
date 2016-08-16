@@ -46,7 +46,7 @@ class UserPlaylistPlayer(BasePlayer):
         """
         if not Lp().settings.get_value('repeat'):
             self._context.next = NextContext.STOP_ALL
-        if Lp().player.is_party():
+        if Lp().player.is_party:
             Lp().player.set_party(False)
         self._user_playlist = []
         for track_id in track_ids:

@@ -445,7 +445,7 @@ class Window(Gtk.ApplicationWindow, Container):
             Lp().player.next()
         elif string == "next_album":
             # In party or shuffle, just update next track
-            if Lp().player.is_party() or\
+            if Lp().player.is_party or\
                     Lp().settings.get_enum('shuffle') == Shuffle.TRACKS:
                 Lp().player.set_next()
                 # We send this signal to update next popover

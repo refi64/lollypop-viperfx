@@ -307,7 +307,7 @@ class PopToolbarMenu(Gio.Menu):
             @param object id as int
         """
         Gio.Menu.__init__(self)
-        if not Lp().player.is_party():
+        if not Lp().player.is_party:
             builder = Gtk.Builder()
             builder.add_from_resource('/org/gnome/Lollypop/PlaybackMenu.ui')
             playback_menu = builder.get_object('playback-menu')

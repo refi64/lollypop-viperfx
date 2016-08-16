@@ -229,7 +229,7 @@ class Container:
         if pulse and not self.__progress.is_visible():
             self.__progress.show()
             if self.__pulse_timeout is None:
-                self.__pulse_timeout = GLib.timeout_add(500, self._pulse)
+                self.__pulse_timeout = GLib.timeout_add(500, self.__pulse)
         else:
             if self.__pulse_timeout is not None:
                 GLib.source_remove(self.__pulse_timeout)

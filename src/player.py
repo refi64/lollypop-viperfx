@@ -238,7 +238,7 @@ class Player(BinPlayer, QueuePlayer, UserPlaylistPlayer, RadioPlayer,
             Play album
             @param album as Album
         """
-        if self.is_party():
+        if self.is_party:
             self.set_party(False)
         self.reset_history()
         # We are not playing a user playlist anymore
@@ -521,7 +521,7 @@ class Player(BinPlayer, QueuePlayer, UserPlaylistPlayer, RadioPlayer,
         mix = Lp().settings.get_value('mix')
         party_mix = Lp().settings.get_value('party-mix')
         self._crossfading = (mix and not party_mix) or\
-                            (mix and party_mix and self._is_party)
+                            (mix and party_mix and self.is_party)
 
 #######################
 # PROTECTED           #
