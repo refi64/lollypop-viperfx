@@ -43,12 +43,13 @@ class CollectionScanner(GObject.GObject, TagReader):
         GObject.GObject.__init__(self)
         TagReader.__init__(self)
 
-        self._thread = None
-        self._inotify = None
-        self._history = None
+        self.__thread = None
+        self.__history = None
         if Lp().settings.get_value('auto-update'):
-            self._inotify = Inotify()
-        self._progress = None
+            self.__inotify = Inotify()
+        else:
+            self.__inotify = None
+        self.__progress = None
 
     def update(self, progress):
         """
@@ -57,37 +58,37 @@ class CollectionScanner(GObject.GObject, TagReader):
         """
         if not self.is_locked():
             progress.show()
-            self._progress = progress
+            self.__progress = progress
             paths = Lp().settings.get_music_paths()
             if not paths:
                 return
 
             if Lp().notify is not None:
                 Lp().notify.send(_("Your music is updating"))
-            self._thread = Thread(target=self._scan, args=(paths,))
-            self._thread.daemon = True
-            self._thread.start()
+            self.__thread = Thread(target=self.__scan, args=(paths,))
+            self.__thread.daemon = True
+            self.__thread.start()
 
     def is_locked(self):
         """
             Return True if db locked
         """
-        return self._thread is not None and self._thread.isAlive()
+        return self.__thread is not None and self.__thread.isAlive()
 
     def stop(self):
         """
             Stop scan
         """
-        self._thread = None
-        if self._progress is not None:
-            self._progress.hide()
-            self._progress.set_fraction(0.0)
-            self._progress = None
+        self.__thread = None
+        if self.__progress is not None:
+            self.__progress.hide()
+            self.__progress.set_fraction(0.0)
+            self.__progress = None
 
 #######################
 # PRIVATE             #
 #######################
-    def _get_objects_for_paths(self, paths):
+    def __get_objects_for_paths(self, paths):
         """
             Return all tracks/dirs for paths
             @param paths as string
@@ -114,19 +115,19 @@ class CollectionScanner(GObject.GObject, TagReader):
                         else:
                             debug("%s not detected as a music file" % filepath)
                     except Exception as e:
-                        print("CollectionScanner::_get_objects_for_paths: %s"
+                        print("CollectionScanner::__get_objects_for_paths: %s"
                               % e)
         return (tracks, track_dirs, count)
 
-    def _update_progress(self, current, total):
+    def __update_progress(self, current, total):
         """
             Update progress bar status
             @param scanned items as int, total items as int
         """
-        if self._progress is not None:
-            self._progress.set_fraction(current/total)
+        if self.__progress is not None:
+            self.__progress.set_fraction(current/total)
 
-    def _finish(self):
+    def __finish(self):
         """
             Notify from main thread when scan finished
         """
@@ -135,33 +136,33 @@ class CollectionScanner(GObject.GObject, TagReader):
         if Lp().settings.get_value('artist-artwork'):
             Lp().art.cache_artists_info()
 
-    def _scan(self, paths):
+    def __scan(self, paths):
         """
             Scan music collection for music files
             @param paths as [string], paths to scan
             @thread safe
         """
         gst_message = None
-        if self._history is None:
-            self._history = History()
+        if self.__history is None:
+            self.__history = History()
         mtimes = Lp().tracks.get_mtimes()
         orig_tracks = Lp().tracks.get_paths()
         was_empty = len(orig_tracks) == 0
 
-        (new_tracks, new_dirs, count) = self._get_objects_for_paths(paths)
+        (new_tracks, new_dirs, count) = self.__get_objects_for_paths(paths)
         count += len(orig_tracks)
 
         # Add monitors on dirs
-        if self._inotify is not None:
+        if self.__inotify is not None:
             for d in new_dirs:
-                self._inotify.add_monitor(d)
+                self.__inotify.add_monitor(d)
 
         with SqlCursor(Lp().db) as sql:
             i = 0
             for filepath in new_tracks:
-                if self._thread is None:
+                if self.__thread is None:
                     return
-                GLib.idle_add(self._update_progress, i, count)
+                GLib.idle_add(self.__update_progress, i, count)
                 try:
                     # If songs exists and mtime unchanged, continue,
                     # else rescan
@@ -173,7 +174,7 @@ class CollectionScanner(GObject.GObject, TagReader):
                             i += 1
                             continue
                         else:
-                            self._del_from_db(filepath)
+                            self.__del_from_db(filepath)
                     info = self.get_info(filepath)
                     # On first scan, use modification time
                     # Else, use current time
@@ -182,7 +183,7 @@ class CollectionScanner(GObject.GObject, TagReader):
                     else:
                         mtime = int(time())
                     debug("Adding file: %s" % filepath)
-                    self._add2db(filepath, info, mtime)
+                    self.__add2db(filepath, info, mtime)
                 except GLib.GError as e:
                     print(e, filepath)
                     if e.message != gst_message:
@@ -196,15 +197,15 @@ class CollectionScanner(GObject.GObject, TagReader):
             # Clean deleted files
             for filepath in orig_tracks:
                 i += 1
-                GLib.idle_add(self._update_progress, i, count)
-                self._del_from_db(filepath)
+                GLib.idle_add(self.__update_progress, i, count)
+                self.__del_from_db(filepath)
 
             sql.commit()
         GLib.idle_add(self._finish)
-        del self._history
-        self._history = None
+        del self.__history
+        self.__history = None
 
-    def _add2db(self, filepath, info, mtime):
+    def __add2db(self, filepath, info, mtime):
         """
             Add new file to db with informations
             @param filepath as string
@@ -246,7 +247,7 @@ class CollectionScanner(GObject.GObject, TagReader):
 
         debug("CollectionScanner::add2db(): Restore stats")
         # Restore stats
-        (track_pop, track_ltime, amtime, album_pop) = self._history.get(
+        (track_pop, track_ltime, amtime, album_pop) = self.__history.get(
                                                             name, duration)
         # If nothing in stats, set mtime
         if amtime == 0:
@@ -289,7 +290,7 @@ class CollectionScanner(GObject.GObject, TagReader):
                 GLib.idle_add(self.emit, 'artist-added', artist_id, album_id)
         return track_id
 
-    def _del_from_db(self, filepath):
+    def __del_from_db(self, filepath):
         """
             Delete track from db
             @param filepath as str
@@ -305,8 +306,8 @@ class CollectionScanner(GObject.GObject, TagReader):
         mtime = Lp().albums.get_mtime(album_id)
         duration = Lp().tracks.get_duration(track_id)
         album_popularity = Lp().albums.get_popularity(album_id)
-        self._history.add(name, duration, popularity,
-                          ltime, mtime, album_popularity)
+        self.__history.add(name, duration, popularity,
+                           ltime, mtime, album_popularity)
         Lp().tracks.remove(track_id)
         Lp().tracks.clean(track_id)
         modified = Lp().albums.clean(album_id)
