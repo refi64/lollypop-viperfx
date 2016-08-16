@@ -181,8 +181,8 @@ Long press to activate auto reload</property>
             <property name="image">reload_image</property>
             <property name="relief">none</property>
             <property name="always_show_image">True</property>
-            <signal name="button-press-event" handler="_on_btn_press" swapped="no"/>
-            <signal name="button-release-event" handler="_on_btn_release" swapped="no"/>
+            <signal name="button-press-event" handler="_on_button_press" swapped="no"/>
+            <signal name="button-release-event" handler="_on_button_release" swapped="no"/>
             <child>
               <object class="GtkImage" id="reload_image">
                 <property name="visible">True</property>
