@@ -372,7 +372,7 @@ class BinPlayer(BasePlayer):
             return
         if self._playbin.query_position(Gst.Format.TIME)[1] / 1000000000 >\
                 self.current_track.duration - 10:
-            self._track_finished(self.current_track, self._start_time)
+            self._scrobble(self.current_track, self._start_time)
         GLib.idle_add(self.__volume_down, self._playbin,
                       self._plugins, duration)
         if self._playbin == self.__playbin2:
