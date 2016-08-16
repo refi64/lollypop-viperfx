@@ -23,14 +23,14 @@ class Inotify:
         Inotify support
     """
     # 10 second before updating database
-    _TIMEOUT = 10000
+    __TIMEOUT = 10000
 
     def __init__(self):
         """
             Init inode notification
         """
-        self._monitors = {}
-        self._timeout = None
+        self.__monitors = {}
+        self.__timeout = None
 
     def add_monitor(self, path):
         """
@@ -38,22 +38,22 @@ class Inotify:
             @param path as string
         """
         # Check if there is already a monitor for this path
-        if path in self._monitors.keys():
+        if path in self.__monitors.keys():
             return
         try:
             f = Gio.File.new_for_path(path)
             monitor = f.monitor_directory(Gio.FileMonitorFlags.NONE,
                                           None)
             if monitor is not None:
-                monitor.connect('changed', self._on_dir_changed)
-                self._monitors[path] = monitor
+                monitor.connect('changed', self.__on_dir_changed)
+                self.__monitors[path] = monitor
         except:
             pass
 
 #######################
 # PRIVATE             #
 #######################
-    def _on_dir_changed(self, monitor, changed_file, other_file, event):
+    def __on_dir_changed(self, monitor, changed_file, other_file, event):
         """
             Prepare thread to handle changes
         """
@@ -61,8 +61,8 @@ class Inotify:
         # Stop collection scanner and wait
         if Lp().scanner.is_locked():
             Lp().scanner.stop()
-            GLib.timeout_add(self._TIMEOUT,
-                             self._on_dir_changed,
+            GLib.timeout_add(self.__TIMEOUT,
+                             self.__on_dir_changed,
                              monitor,
                              changed_file,
                              other_file,
@@ -82,15 +82,15 @@ class Inotify:
             else:
                 update = True
             if update:
-                if self._timeout is not None:
-                    GLib.source_remove(self._timeout)
-                    self._timeout = None
-                self._timeout = GLib.timeout_add(self._TIMEOUT,
-                                                 self._run_collection_update)
+                if self.__timeout is not None:
+                    GLib.source_remove(self.__timeout)
+                    self.__timeout = None
+                self.__timeout = GLib.timeout_add(self.__TIMEOUT,
+                                                  self.__run_collection_update)
 
-    def _run_collection_update(self):
+    def __run_collection_update(self):
         """
             Run a collection update
         """
-        self._timeout = None
+        self.__timeout = None
         Lp().window.update_db()
