@@ -88,8 +88,8 @@ class Application(Gtk.Application):
         self.notify = None
         self.lastfm = None
         self.debug = False
-        self._externals_count = 0
-        self._init_proxy()
+        self.__externals_count = 0
+        self.__init_proxy()
         GLib.set_application_name('lollypop')
         GLib.set_prgname('lollypop')
         # TODO: Remove this test later
@@ -112,8 +112,8 @@ class Application(Gtk.Application):
                                  GLib.OptionArg.NONE,
                                  "Emulate an Android Phone",
                                  None)
-        self.connect('command-line', self._on_command_line)
-        self.connect('activate', self._on_activate)
+        self.connect('command-line', self.__on_command_line)
+        self.connect('activate', self.__on_activate)
         self.register(None)
         if self.get_is_remote():
             Gdk.notify_startup_complete()
@@ -161,12 +161,12 @@ class Application(Gtk.Application):
         dark = self.settings.get_value('dark-ui')
         settings.set_property('gtk-application-prefer-dark-theme', dark)
 
-        self._parser = TotemPlParser.Parser.new()
-        self._parser.connect('entry-parsed', self._on_entry_parsed)
+        self.__parser = TotemPlParser.Parser.new()
+        self.__parser.connect('entry-parsed', self.__on_entry_parsed)
 
         self.add_action(self.settings.create_action('shuffle'))
 
-        self._is_fs = False
+        self.__is_fs = False
 
     def do_startup(self):
         """
@@ -185,7 +185,7 @@ class Application(Gtk.Application):
             self.window.show()
         elif not self.window:
             self.init()
-            menu = self._setup_app_menu()
+            menu = self.__setup_app_menu()
             # If GNOME/Unity, add appmenu
             if is_gnome() or is_unity():
                 self.set_app_menu(menu)
@@ -193,7 +193,7 @@ class Application(Gtk.Application):
             # If not GNOME/Unity add menu to toolbar
             if not is_gnome() and not is_unity():
                 self.window.setup_menu(menu)
-            self.window.connect('delete-event', self._hide_on_delete)
+            self.window.connect('delete-event', self.__hide_on_delete)
             self.window.init_list_one()
             self.window.show()
             self.player.restore_state()
@@ -207,7 +207,7 @@ class Application(Gtk.Application):
         """
             Save window position and view
         """
-        if self._is_fs:
+        if self.__is_fs:
             return
         if self.settings.get_value('save-state'):
             self.window.save_view_state()
@@ -274,12 +274,21 @@ class Application(Gtk.Application):
         """
             Return True if application is fullscreen
         """
-        return self._is_fs
+        return self.__is_fs
+
+    def set_mini(self, action, param):
+        """
+            Set mini player on/off
+            @param dialog as Gtk.Dialog
+            @param response id as int
+        """
+        if self.window is not None:
+            self.window.set_mini()
 
 #######################
 # PRIVATE             #
 #######################
-    def _init_proxy(self):
+    def __init_proxy(self):
         """
             Init proxy setting env
         """
@@ -292,13 +301,13 @@ class Application(Gtk.Application):
         except:
             pass
 
-    def _on_command_line(self, app, app_cmd_line):
+    def __on_command_line(self, app, app_cmd_line):
         """
             Handle command line
             @param app as Gio.Application
             @param options as Gio.ApplicationCommandLine
         """
-        self._externals_count = 0
+        self.__externals_count = 0
         options = app_cmd_line.get_options_dict()
         if options.contains('debug'):
             self.debug = True
@@ -323,14 +332,14 @@ class Application(Gtk.Application):
                     f = GLib.filename_to_uri(f)
                 except:
                     pass
-                self._parser.parse_async(f, True,
-                                         None, None)
+                self.__parser.parse_async(f, True,
+                                          None, None)
         if self.window is not None and not self.window.is_visible():
             self.window.setup_window()
             self.window.present()
         return 0
 
-    def _on_entry_parsed(self, parser, uri, metadata):
+    def __on_entry_parsed(self, parser, uri, metadata):
         """
             Add playlist entry to external files
             @param parser as TotemPlParser.Parser
@@ -338,13 +347,13 @@ class Application(Gtk.Application):
             @param metadata as GLib.HastTable
         """
         self.player.load_external(uri)
-        if self._externals_count == 0:
+        if self.__externals_count == 0:
             if self.player.is_party():
                 self.player.set_party(False)
             self.player.play_first_external()
-        self._externals_count += 1
+        self.__externals_count += 1
 
-    def _hide_on_delete(self, widget, event):
+    def __hide_on_delete(self, widget, event):
         """
             Hide window
             @param widget as Gtk.Widget
@@ -355,7 +364,7 @@ class Application(Gtk.Application):
             self.scanner.stop()
         return widget.hide_on_delete()
 
-    def _update_db(self, action=None, param=None):
+    def __update_db(self, action=None, param=None):
         """
             Search for new music
             @param action as Gio.SimpleAction
@@ -367,35 +376,35 @@ class Application(Gtk.Application):
             t.start()
             self.window.update_db()
 
-    def _fullscreen(self, action=None, param=None):
+    def __fullscreen(self, action=None, param=None):
         """
             Show a fullscreen window with cover and artist informations
             @param action as Gio.SimpleAction
             @param param as GLib.Variant
         """
-        if self.window and not self._is_fs:
+        if self.window and not self.__is_fs:
             fs = FullScreen(self, self.window)
-            fs.connect("destroy", self._on_fs_destroyed)
-            self._is_fs = True
+            fs.connect("destroy", self.__on_fs_destroyed)
+            self.__is_fs = True
             fs.show()
 
-    def _on_fs_destroyed(self, widget):
+    def __on_fs_destroyed(self, widget):
         """
             Mark fullscreen as False
             @param widget as Fullscreen
         """
-        self._is_fs = False
+        self.__is_fs = False
         if not self.window.is_visible():
             self.prepare_to_exit()
 
-    def _on_activate(self, application):
+    def __on_activate(self, application):
         """
             Call default handler
             @param application as Gio.Application
         """
         self.window.present()
 
-    def _settings_dialog(self, action=None, param=None):
+    def __settings_dialog(self, action=None, param=None):
         """
             Show settings dialog
             @param action as Gio.SimpleAction
@@ -404,7 +413,7 @@ class Application(Gtk.Application):
         dialog = SettingsDialog()
         dialog.show()
 
-    def _about(self, action, param):
+    def __about(self, action, param):
         """
             Setup about dialog
             @param action as Gio.SimpleAction
@@ -428,10 +437,10 @@ class Application(Gtk.Application):
                             ngettext("%d track", "%d tracks", tracks) % tracks)
         about = builder.get_object('about_dialog')
         about.set_transient_for(self.window)
-        about.connect("response", self._about_response)
+        about.connect("response", self.__about_response)
         about.show()
 
-    def _shortcuts(self, action, param):
+    def __shortcuts(self, action, param):
         """
             Show help in yelp
             @param action as Gio.SimpleAction
@@ -443,9 +452,9 @@ class Application(Gtk.Application):
             builder.get_object('shortcuts').set_transient_for(self.window)
             builder.get_object('shortcuts').show()
         except:  # GTK < 3.20
-            self._help(action, param)
+            self.__help(action, param)
 
-    def _help(self, action, param):
+    def __help(self, action, param):
         """
             Show help in yelp
             @param action as Gio.SimpleAction
@@ -456,7 +465,7 @@ class Application(Gtk.Application):
         except:
             print(_("Lollypop: You need to install yelp."))
 
-    def _about_response(self, dialog, response_id):
+    def __about_response(self, dialog, response_id):
         """
             Destroy about dialog when closed
             @param dialog as Gtk.Dialog
@@ -464,16 +473,7 @@ class Application(Gtk.Application):
         """
         dialog.destroy()
 
-    def set_mini(self, action, param):
-        """
-            Set mini player on/off
-            @param dialog as Gtk.Dialog
-            @param response id as int
-        """
-        if self.window is not None:
-            self.window.set_mini()
-
-    def _setup_app_menu(self):
+    def __setup_app_menu(self):
         """
             Setup application menu
             @return menu as Gio.Menu
@@ -483,17 +483,17 @@ class Application(Gtk.Application):
         menu = builder.get_object('app-menu')
 
         settingsAction = Gio.SimpleAction.new('settings', None)
-        settingsAction.connect('activate', self._settings_dialog)
+        settingsAction.connect('activate', self.__settings_dialog)
         self.set_accels_for_action('app.settings', ["<Control>s"])
         self.add_action(settingsAction)
 
         updateAction = Gio.SimpleAction.new('update_db', None)
-        updateAction.connect('activate', self._update_db)
+        updateAction.connect('activate', self.__update_db)
         self.set_accels_for_action('app.update_db', ["<Control>u"])
         self.add_action(updateAction)
 
         fsAction = Gio.SimpleAction.new('fullscreen', None)
-        fsAction.connect('activate', self._fullscreen)
+        fsAction.connect('activate', self.__fullscreen)
         self.set_accels_for_action('app.fullscreen', ["F11", "F7"])
         self.add_action(fsAction)
 
@@ -503,17 +503,17 @@ class Application(Gtk.Application):
         self.set_accels_for_action("app.mini", ["<Control>m"])
 
         aboutAction = Gio.SimpleAction.new('about', None)
-        aboutAction.connect('activate', self._about)
+        aboutAction.connect('activate', self.__about)
         self.set_accels_for_action('app.about', ["F3"])
         self.add_action(aboutAction)
 
         shortcutsAction = Gio.SimpleAction.new('shortcuts', None)
-        shortcutsAction.connect('activate', self._shortcuts)
+        shortcutsAction.connect('activate', self.__shortcuts)
         self.set_accels_for_action('app.shortcuts', ["F2"])
         self.add_action(shortcutsAction)
 
         helpAction = Gio.SimpleAction.new('help', None)
-        helpAction.connect('activate', self._help)
+        helpAction.connect('activate', self.__help)
         self.set_accels_for_action('app.help', ["F1"])
         self.add_action(helpAction)
 
@@ -524,7 +524,7 @@ class Application(Gtk.Application):
 
         return menu
 
-    def _reset_database(self, track_ids, count, history, progress):
+    def __reset_database(self, track_ids, count, history, progress):
         """
             Backup database and reset
             @param track ids as [int]
@@ -545,7 +545,7 @@ class Application(Gtk.Application):
             history.add(name, duration, popularity,
                         ltime, mtime, album_popularity)
             progress.set_fraction((count - len(track_ids))/count)
-            GLib.idle_add(self._reset_database, track_ids,
+            GLib.idle_add(self.__reset_database, track_ids,
                           count, history, progress)
         else:
             progress.hide()
@@ -558,7 +558,7 @@ class Application(Gtk.Application):
             self.window.update_db()
             progress.get_toplevel().set_deletable(True)
 
-    def _on_reset_clicked(self, widget, progress):
+    def __on_reset_clicked(self, widget, progress):
         """
             Reset database
             @param widget as Gtk.Widget
@@ -576,6 +576,6 @@ class Application(Gtk.Application):
             history = History()
             widget.get_toplevel().set_deletable(False)
             widget.set_sensitive(False)
-            self._reset_database(track_ids, len(track_ids), history, progress)
+            self.__reset_database(track_ids, len(track_ids), history, progress)
         except Exception as e:
             print("Application::_on_reset_clicked():", e)
