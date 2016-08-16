@@ -432,6 +432,8 @@ class BinPlayer(BasePlayer):
             @param bus as Gst.Bus
             @param message as Gst.Message
         """
+        # Some radio streams send message tag every seconds!
+        changed = False
         if self.current_track.id >= 0 or\
            self.current_track.duration > 0.0:
             return
@@ -440,15 +442,19 @@ class BinPlayer(BasePlayer):
         tags = message.parse_tag()
 
         title = reader.get_title(tags, '')
-        if title != '':
+        if title != '' and self.current_track.name != title:
             self.current_track.name = title
+            changed = True
         if self.current_track.name == '':
             self.current_track.name = self.current_track.uri
+            changed = True
         artists = reader.get_artists(tags)
-        if artists != '':
+        if artists != '' and self.current_track.artists != artists:
             self.current_track.artists = artists.split(',')
+            changed = True
         if not self.current_track.artists:
             self.current_track.artists = self.current_track.album_artists
+            changed = True
 
         if self.current_track.id == Type.EXTERNALS:
             (b, duration) = self._playbin.query_duration(Gst.Format.TIME)
@@ -466,7 +472,9 @@ class BinPlayer(BasePlayer):
                 self.current_track.set_album_artists(
                                                    self.current_track.artists)
             self.current_track.genres = reader.get_genres(tags).split(',')
-        self.emit('current-changed')
+            changed = True
+        if changed:
+            self.emit('current-changed')
 
     def __on_bus_element(self, bus, message):
         """
