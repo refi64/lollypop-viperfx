@@ -31,7 +31,7 @@ class MiniPlayer(Gtk.Bin, InfosController):
         builder = Gtk.Builder()
         builder.add_from_resource('/org/gnome/Lollypop/MiniPlayer.ui')
         builder.connect_signals(self)
-        self._grid = builder.get_object('grid')
+        self.__grid = builder.get_object('grid')
         self._title_label = builder.get_object('title')
         self._artist_label = builder.get_object('artist')
         self._cover = builder.get_object('cover')
@@ -44,7 +44,7 @@ class MiniPlayer(Gtk.Bin, InfosController):
         """
             Grid height
         """
-        return self._grid.get_preferred_height()
+        return self.__grid.get_preferred_height()
 
     def do_hide(self):
         """
@@ -54,7 +54,7 @@ class MiniPlayer(Gtk.Bin, InfosController):
         Lp().player.disconnect(self._signal_id)
 
 #######################
-# PRIVATE             #
+# PROTECTED           #
 #######################
     def _on_button_press(self, button, event):
         """
