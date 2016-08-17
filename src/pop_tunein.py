@@ -33,82 +33,131 @@ class TuneinPopover(Gtk.Popover):
             @param radios_manager as Radios
         """
         Gtk.Popover.__init__(self)
-        self._tunein = TuneIn()
+        self.__tunein = TuneIn()
         if radios_manager is not None:
-            self._radios_manager = radios_manager
+            self.__radios_manager = radios_manager
         else:
-            self._radios_manager = Radios()
-        self._current_url = None
-        self._timeout_id = None
-        self._previous_urls = []
-        self._covers_to_download = []
+            self.__radios_manager = Radios()
+        self.__current_url = None
+        self.__timeout_id = None
+        self.__previous_urls = []
+        self.__covers_to_download = []
 
-        self._stack = Gtk.Stack()
-        self._stack.set_property('expand', True)
-        self._stack.show()
+        self.__stack = Gtk.Stack()
+        self.__stack.set_property('expand', True)
+        self.__stack.show()
 
         builder = Gtk.Builder()
         builder.add_from_resource('/org/gnome/Lollypop/TuneinPopover.ui')
         builder.connect_signals(self)
         widget = builder.get_object('widget')
-        widget.attach(self._stack, 0, 2, 5, 1)
+        widget.attach(self.__stack, 0, 2, 5, 1)
 
-        self._back_btn = builder.get_object('back_btn')
-        self._home_btn = builder.get_object('home_btn')
-        self._label = builder.get_object('label')
+        self.__back_btn = builder.get_object('back_btn')
+        self.__home_btn = builder.get_object('home_btn')
+        self.__label = builder.get_object('label')
 
-        self._view = Gtk.FlowBox()
-        self._view.set_selection_mode(Gtk.SelectionMode.NONE)
-        self._view.set_max_children_per_line(100)
-        self._view.set_property('row-spacing', 10)
-        self._view.set_property('expand', True)
-        self._view.show()
+        self.__view = Gtk.FlowBox()
+        self.__view.set_selection_mode(Gtk.SelectionMode.NONE)
+        self.__view.set_max_children_per_line(100)
+        self.__view.set_property('row-spacing', 10)
+        self.__view.set_property('expand', True)
+        self.__view.show()
 
-        self._spinner = builder.get_object('spinner')
+        self.__spinner = builder.get_object('spinner')
 
-        builder.get_object('viewport').add(self._view)
+        builder.get_object('viewport').add(self.__view)
         builder.get_object('viewport').set_property('margin', 10)
 
-        self._scrolled = builder.get_object('scrolled')
-        self._stack.add_named(self._spinner, 'spinner')
-        self._stack.add_named(builder.get_object('notfound'), 'notfound')
-        self._stack.add_named(self._scrolled, 'scrolled')
+        self.__scrolled = builder.get_object('scrolled')
+        self.__stack.add_named(self.__spinner, 'spinner')
+        self.__stack.add_named(builder.get_object('notfound'), 'notfound')
+        self.__stack.add_named(self.__scrolled, 'scrolled')
         self.add(widget)
-        self.connect('map', self._on_map)
-        self.connect('unmap', self._on_unmap)
+        self.connect('map', self.__on_map)
+        self.connect('unmap', self.__on_unmap)
 
     def populate(self, url=None):
         """
             Populate views
             @param url as string
         """
-        if url is None and self._current_url is not None:
+        if url is None and self.__current_url is not None:
             return
-        self._spinner.start()
-        self._clear()
-        self._stack.set_visible_child_name('spinner')
-        self._current_url = url
-        self._back_btn.set_sensitive(False)
-        self._home_btn.set_sensitive(False)
-        self._label.set_text(_("Please wait..."))
-        t = Thread(target=self._populate, args=(url,))
+        self.__spinner.start()
+        self.__clear()
+        self.__stack.set_visible_child_name('spinner')
+        self.__current_url = url
+        self.__back_btn.set_sensitive(False)
+        self.__home_btn.set_sensitive(False)
+        self.__label.set_text(_("Please wait..."))
+        t = Thread(target=self.__populate, args=(url,))
         t.daemon = True
         t.start()
 
 #######################
+# PROTECTED           #
+#######################
+    def _on_back_btn_clicked(self, btn):
+        """
+            Go to previous URL
+            @param btn as Gtk.Button
+        """
+        url = None
+        self.__current_url = None
+        if self.__previous_urls:
+            url = self.__previous_urls.pop()
+        self.__stack.set_visible_child_name('spinner')
+        self.__spinner.start()
+        self.__clear()
+        self.populate(url)
+
+    def _on_home_btn_clicked(self, btn):
+        """
+            Go to root URL
+            @param btn as Gtk.Button
+        """
+        self.__current_url = None
+        self.__previous_urls = []
+        self.populate()
+
+    def _on_search_changed(self, widget):
+        """
+            Timeout filtering, call _really_do_filterting()
+            after timeout
+            @param widget as Gtk.TextEntry
+        """
+        self.__current_url = None
+        if self.__timeout_id is not None:
+            GLib.source_remove(self.__timeout_id)
+            self.__timeout_id = None
+
+        text = widget.get_text()
+        if text != "":
+            self.__home_btn.set_sensitive(True)
+            self.__timeout_id = GLib.timeout_add(1000,
+                                                 self.__on_search_timeout,
+                                                 text)
+        else:
+            self.__home_btn.set_sensitive(False)
+            self.__timeout_id = GLib.timeout_add(1000,
+                                                 self._on_home_btn_clicked,
+                                                 None)
+
+#######################
 # PRIVATE             #
 #######################
-    def _show_not_found(self, message=""):
+    def __show_not_found(self, message=""):
         """
             Show not found message
             @param message as str
         """
         # TODO Add a string
-        self._label.set_text(message)
-        self._stack.set_visible_child_name('notfound')
-        self._home_btn.set_sensitive(True)
+        self.__label.set_text(message)
+        self.__stack.set_visible_child_name('notfound')
+        self.__home_btn.set_sensitive(True)
 
-    def _populate(self, url):
+    def __populate(self, url):
         """
             Same as populate()
             @param url as string
@@ -116,40 +165,40 @@ class TuneinPopover(Gtk.Popover):
         """
         try:
             if url is None:
-                items = self._tunein.get_items(
+                items = self.__tunein.get_items(
                                     "http://opml.radiotime.com/Browse.ashx?c=")
             else:
-                items = self._tunein.get_items(url)
+                items = self.__tunein.get_items(url)
 
-            if self._current_url == url:
+            if self.__current_url == url:
                 if items:
-                    self._add_items(items, url)
+                    self.__add_items(items, url)
                 else:
-                    GLib.idle_add(self._show_not_found)
+                    GLib.idle_add(self.__show_not_found)
         except:
-            GLib.idle_add(self._show_not_found,
+            GLib.idle_add(self.__show_not_found,
                           _("Can't connect to TuneIn..."))
 
-    def _add_items(self, items, url):
+    def __add_items(self, items, url):
         """
             Add current items
             @param items as [TuneItem]
             @parma url as str
             @thread safe
         """
-        GLib.idle_add(self._add_item, items, url)
+        GLib.idle_add(self.__add_item, items, url)
 
-    def _add_item(self, items, url):
+    def __add_item(self, items, url):
         """
             Add item
             @param items as [TuneItem]
             @param url as str
         """
-        if url != self._current_url:
+        if url != self.__current_url:
             return
         if not items:
-            self._home_btn.set_sensitive(self._current_url is not None)
-            t = Thread(target=self._download_images, args=(url,))
+            self.__home_btn.set_sensitive(self.__current_url is not None)
+            t = Thread(target=self.__download_images, args=(url,))
             t.daemon = True
             t.start()
             return
@@ -161,13 +210,13 @@ class TuneinPopover(Gtk.Popover):
         link = Gtk.LinkButton.new_with_label(item.URL, item.TEXT)
         # Hack
         link.get_children()[0].set_ellipsize(Pango.EllipsizeMode.END)
-        link.connect('activate-link', self._on_activate_link, item)
+        link.connect('activate-link', self.__on_activate_link, item)
         link.show()
         if item.TYPE == "audio":
             link.set_tooltip_text(_("Play"))
             button = Gtk.Button.new_from_icon_name('list-add-symbolic',
                                                    Gtk.IconSize.MENU)
-            button.connect('clicked', self._on_button_clicked, item)
+            button.connect('clicked', self.__on_button_clicked, item)
             button.set_relief(Gtk.ReliefStyle.NONE)
             button.set_property('valign', Gtk.Align.CENTER)
             button.set_tooltip_text(_("Add"))
@@ -178,44 +227,44 @@ class TuneinPopover(Gtk.Popover):
             image.set_property('height-request', ArtSize.MEDIUM)
             image.show()
             child.add(image)
-            self._covers_to_download.append((item, image))
+            self.__covers_to_download.append((item, image))
         else:
             link.set_tooltip_text('')
         child.add(link)
 
-        self._view.add(child)
+        self.__view.add(child)
 
         # Remove spinner if exist
-        if self._stack.get_visible_child_name() == 'spinner':
-            self._stack.set_visible_child_name('scrolled')
-            self._spinner.stop()
-            self._label.set_text("")
-            if self._current_url is not None:
-                self._back_btn.set_sensitive(True)
-        GLib.idle_add(self._add_items, items, url)
+        if self.__stack.get_visible_child_name() == 'spinner':
+            self.__stack.set_visible_child_name('scrolled')
+            self.__spinner.stop()
+            self.__label.set_text("")
+            if self.__current_url is not None:
+                self.__back_btn.set_sensitive(True)
+        GLib.idle_add(self.__add_items, items, url)
 
-    def _download_images(self, url):
+    def __download_images(self, url):
         """
             Download and set image for TuneItem
             @param url as str
             @thread safe
         """
-        while self._covers_to_download and url == self._current_url:
-            (item, image) = self._covers_to_download.pop(0)
+        while self.__covers_to_download and url == self.__current_url:
+            (item, image) = self.__covers_to_download.pop(0)
             try:
                 f = Gio.File.new_for_uri(item.LOGO)
                 (status, data, tag) = f.load_contents()
                 if status:
                     stream = Gio.MemoryInputStream.new_from_data(data, None)
                     if stream is not None:
-                        GLib.idle_add(self._set_image, image, stream)
+                        GLib.idle_add(self.__set_image, image, stream)
             except Exception as e:
                 GLib.idle_add(image.set_from_icon_name,
                               "image-missing",
                               Gtk.IconSize.LARGE_TOOLBAR)
                 print("TuneinPopover::_download_images: %s" % e)
 
-    def _set_image(self, image, stream):
+    def __set_image(self, image, stream):
         """
             Set image with stream
             @param image as Gtk.Image
@@ -233,15 +282,15 @@ class TuneinPopover(Gtk.Popover):
         image.set_from_surface(surface)
         del surface
 
-    def _clear(self):
+    def __clear(self):
         """
             Clear view
         """
-        for child in self._view.get_children():
-            self._view.remove(child)
+        for child in self.__view.get_children():
+            self.__view.remove(child)
             child.destroy()
 
-    def _add_radio(self, item):
+    def __add_radio(self, item):
         """
             Add selected radio
             @param item as TuneIn Item
@@ -264,9 +313,9 @@ class TuneinPopover(Gtk.Popover):
                 url = data.decode('utf-8').split('\n')[0]
         except Exception as e:
             print("TuneinPopover::_add_radio: %s" % e)
-        self._radios_manager.add(item.TEXT.replace('/', '-'), url)
+        self.__radios_manager.add(item.TEXT.replace('/', '-'), url)
 
-    def _on_map(self, widget):
+    def __on_map(self, widget):
         """
             Resize and disable global shortcuts
             @param widget as Gtk.Widget
@@ -276,7 +325,7 @@ class TuneinPopover(Gtk.Popover):
         size = Lp().window.get_size()
         self.set_size_request(size[0]*0.5, size[1]*0.7)
 
-    def _on_unmap(self, widget):
+    def __on_unmap(self, widget):
         """
             Enable global shorcuts
             @param widget as Gtk.Widget
@@ -284,39 +333,16 @@ class TuneinPopover(Gtk.Popover):
         # FIXME Not needed with GTK >= 3.18
         Lp().window.enable_global_shorcuts(True)
 
-    def _on_back_btn_clicked(self, btn):
-        """
-            Go to previous URL
-            @param btn as Gtk.Button
-        """
-        url = None
-        self._current_url = None
-        if self._previous_urls:
-            url = self._previous_urls.pop()
-        self._stack.set_visible_child_name('spinner')
-        self._spinner.start()
-        self._clear()
-        self.populate(url)
-
-    def _on_home_btn_clicked(self, btn):
-        """
-            Go to root URL
-            @param btn as Gtk.Button
-        """
-        self._current_url = None
-        self._previous_urls = []
-        self.populate()
-
-    def _on_activate_link(self, link, item):
+    def __on_activate_link(self, link, item):
         """
             Update header with new link
             @param link as Gtk.LinkButton
             @param item as TuneIn Item
         """
         if item.TYPE == "link":
-            self._scrolled.get_vadjustment().set_value(0.0)
-            if self._current_url is not None:
-                self._previous_urls.append(self._current_url)
+            self.__scrolled.get_vadjustment().set_value(0.0)
+            if self.__current_url is not None:
+                self.__previous_urls.append(self.__current_url)
             self.populate(item.URL)
         elif item.TYPE == "audio":
             if Gio.NetworkMonitor.get_default().get_network_available():
@@ -342,46 +368,23 @@ class TuneinPopover(Gtk.Popover):
             Lp().player.play_this_external(item.URL)
         return True
 
-    def _on_button_clicked(self, button, item):
+    def __on_button_clicked(self, button, item):
         """
             Play the radio
             @param link as Gtk.Button
             @param item as TuneIn Item
         """
-        self._timeout_id = None
-        t = Thread(target=self._add_radio, args=(item,))
+        self.__timeout_id = None
+        t = Thread(target=self.__add_radio, args=(item,))
         t.daemon = True
         t.start()
         self.hide()
 
-    def _on_search_changed(self, widget):
-        """
-            Timeout filtering, call _really_do_filterting()
-            after timeout
-            @param widget as Gtk.TextEntry
-        """
-        self._current_url = None
-        if self._timeout_id is not None:
-            GLib.source_remove(self._timeout_id)
-            self._timeout_id = None
-
-        text = widget.get_text()
-        if text != "":
-            self._home_btn.set_sensitive(True)
-            self._timeout_id = GLib.timeout_add(1000,
-                                                self._on_search_timeout,
-                                                text)
-        else:
-            self._home_btn.set_sensitive(False)
-            self._timeout_id = GLib.timeout_add(1000,
-                                                self._on_home_btn_clicked,
-                                                None)
-
-    def _on_search_timeout(self, string):
+    def __on_search_timeout(self, string):
         """
             Populate widget
             @param string as str
         """
-        self._timeout_id = None
+        self.__timeout_id = None
         url = "http://opml.radiotime.com/Search.ashx?query=%s" % escape(string)
         self.populate(url)
