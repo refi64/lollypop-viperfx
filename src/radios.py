@@ -61,7 +61,7 @@ class Radios(GObject.GObject):
                 if f.endswith(".m3u"):
                     parser = TotemPlParser.Parser.new()
                     parser.connect('entry-parsed',
-                                   self._on_entry_parsed,
+                                   self.__on_entry_parsed,
                                    f[:-4])
                     parser.parse_async(d.get_uri() + "/%s" % f,
                                        True, None, None)
@@ -257,7 +257,7 @@ class Radios(GObject.GObject):
 #######################
 # PRIVATE             #
 #######################
-    def _on_entry_parsed(self, parser, uri, metadata, name):
+    def __on_entry_parsed(self, parser, uri, metadata, name):
         """
             Import entry
             @param parser as TotemPlParser.Parser
