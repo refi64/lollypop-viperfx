@@ -37,41 +37,41 @@ class RadioPopover(Gtk.Popover):
             @param radios_manager as RadiosManager
         """
         Gtk.Popover.__init__(self)
-        self.connect('map', self._on_map)
-        self.connect('unmap', self._on_unmap)
-        self._name = name
-        self._radios_manager = radios_manager
-        self._start = 0
-        self._orig_pixbufs = {}
+        self.connect('map', self.__on_map)
+        self.connect('unmap', self.__on_unmap)
+        self.__name = name
+        self.__radios_manager = radios_manager
+        self.__start = 0
+        self.__orig_pixbufs = {}
 
-        self._stack = Gtk.Stack()
-        self._stack.set_transition_duration(1000)
-        self._stack.set_transition_type(Gtk.StackTransitionType.CROSSFADE)
-        self._stack.show()
+        self.__stack = Gtk.Stack()
+        self.__stack.set_transition_duration(1000)
+        self.__stack.set_transition_type(Gtk.StackTransitionType.CROSSFADE)
+        self.__stack.show()
 
         builder = Gtk.Builder()
         builder.add_from_resource('/org/gnome/Lollypop/RadioPopover.ui')
         builder.connect_signals(self)
 
-        self._view = Gtk.FlowBox()
-        self._view.set_selection_mode(Gtk.SelectionMode.NONE)
-        self._view.connect('child-activated', self._on_activate)
-        self._view.set_max_children_per_line(100)
-        self._view.set_property('row-spacing', 10)
-        self._view.show()
+        self.__view = Gtk.FlowBox()
+        self.__view.set_selection_mode(Gtk.SelectionMode.NONE)
+        self.__view.connect('child-activated', self.__on_activate)
+        self.__view.set_max_children_per_line(100)
+        self.__view.set_property('row-spacing', 10)
+        self.__view.show()
 
-        builder.get_object('viewport').add(self._view)
+        builder.get_object('viewport').add(self.__view)
 
-        self._name_entry = builder.get_object('name')
-        self._uri_entry = builder.get_object('uri')
-        self._btn_add_modify = builder.get_object('btn_add_modify')
-        self._spinner = builder.get_object('spinner')
-        self._stack.add_named(builder.get_object('spinner-grid'), 'spinner')
-        self._stack.add_named(builder.get_object('notfound'), 'notfound')
-        self._stack.add_named(builder.get_object('logo'), 'logo')
-        self._stack.add_named(builder.get_object('widget'), 'widget')
-        self._stack.set_visible_child_name('widget')
-        self.add(self._stack)
+        self.__name_entry = builder.get_object('name')
+        self.__uri_entry = builder.get_object('uri')
+        self.__btn_add_modify = builder.get_object('btn_add_modify')
+        self.__spinner = builder.get_object('spinner')
+        self.__stack.add_named(builder.get_object('spinner-grid'), 'spinner')
+        self.__stack.add_named(builder.get_object('notfound'), 'notfound')
+        self.__stack.add_named(builder.get_object('logo'), 'logo')
+        self.__stack.add_named(builder.get_object('widget'), 'widget')
+        self.__stack.set_visible_child_name('widget')
+        self.add(self.__stack)
 
         track = Track()
         track.set_radio(name, '')
@@ -79,40 +79,40 @@ class RadioPopover(Gtk.Popover):
         rating.show()
         builder.get_object('widget').attach(rating, 0, 2, 2, 1)
 
-        if self._name == '':
+        if self.__name == '':
             builder.get_object('btn_add_modify').set_label(_("Add"))
         else:
             builder.get_object('btn_add_modify').set_label(_("Modify"))
             builder.get_object('btn_delete').show()
-            self._name_entry.set_text(self._name)
-            url = self._radios_manager.get_url(self._name)
+            self.__name_entry.set_text(self.__name)
+            url = self.__radios_manager.get_url(self.__name)
             if url:
-                self._uri_entry.set_text(url)
+                self.__uri_entry.set_text(url)
 
 #######################
-# PRIVATE             #
+# PROTECTED           #
 #######################
-    def _populate_threaded(self):
+    def __populate_threaded(self):
         """
             Populate view
         """
         self._thread = True
-        t = Thread(target=self._populate)
+        t = Thread(target=self.__populate)
         t.daemon = True
         t.start()
 
-    def _populate(self):
+    def __populate(self):
         """
-            Same as _populate_threaded()
+            Same as __populate_threaded()
             @thread safe
         """
-        self._urls = Lp().art.get_google_arts(self._name+"+logo+radio")
+        self._urls = Lp().art.get_google_arts(self.__name+"+logo+radio")
         if self._urls:
-            self._add_pixbufs()
+            self.__add_pixbufs()
         else:
-            GLib.idle_add(self._show_not_found)
+            GLib.idle_add(self.__show_not_found)
 
-    def _add_pixbufs(self):
+    def __add_pixbufs(self):
         """
             Add urls to the view
         """
@@ -126,20 +126,20 @@ class RadioPopover(Gtk.Popover):
                     stream = Gio.MemoryInputStream.new_from_data(data, None)
             except:
                 if self._thread:
-                    self._add_pixbufs()
+                    self.__add_pixbufs()
             if stream:
-                GLib.idle_add(self._add_pixbuf, stream)
+                GLib.idle_add(self.__add_pixbuf, stream)
             if self._thread:
-                self._add_pixbufs()
+                self.__add_pixbufs()
 
-    def _show_not_found(self):
+    def __show_not_found(self):
         """
             Show not found message if view empty
         """
-        if len(self._view.get_children()) == 0:
-            self._stack.set_visible_child_name('notfound')
+        if len(self.__view.get_children()) == 0:
+            self.__stack.set_visible_child_name('notfound')
 
-    def _add_pixbuf(self, stream):
+    def __add_pixbuf(self, stream):
         """
             Add stream to the view
         """
@@ -153,7 +153,7 @@ class RadioPopover(Gtk.Popover):
             image.get_style_context().add_class('cover-frame')
             image.set_property('halign', Gtk.Align.CENTER)
             image.set_property('valign', Gtk.Align.CENTER)
-            self._orig_pixbufs[image] = pixbuf
+            self.__orig_pixbufs[image] = pixbuf
             # Scale preserving aspect ratio
             width = pixbuf.get_width()
             height = pixbuf.get_height()
@@ -175,24 +175,24 @@ class RadioPopover(Gtk.Popover):
             image.set_from_surface(surface)
             del surface
             image.show()
-            self._view.add(image)
+            self.__view.add(image)
         except Exception as e:
             print(e)
             pass
-        if self._stack.get_visible_child_name() == 'spinner':
-            self._spinner.stop()
-            self._stack.set_visible_child_name('logo')
+        if self.__stack.get_visible_child_name() == 'spinner':
+            self.__spinner.stop()
+            self.__stack.set_visible_child_name('logo')
 
-    def _on_map(self, widget):
+    def __on_map(self, widget):
         """
             Grab focus/Disable global shortcuts
             @param widget as Gtk.Widget
         """
-        GLib.idle_add(self._name_entry.grab_focus)
+        GLib.idle_add(self.__name_entry.grab_focus)
         # FIXME Not needed with GTK >= 3.18
         Lp().window.enable_global_shorcuts(False)
 
-    def _on_unmap(self, widget):
+    def __on_unmap(self, widget):
         """
             Enable global shortcuts, destroy
             @param widget as Gtk.Widget
@@ -207,20 +207,20 @@ class RadioPopover(Gtk.Popover):
             Add/Modify a radio
             @param widget as Gtk.Widget
         """
-        uri = self._uri_entry.get_text()
-        new_name = self._name_entry.get_text()
-        rename = self._name != '' and self._name != new_name
+        uri = self.__uri_entry.get_text()
+        new_name = self.__name_entry.get_text()
+        rename = self.__name != '' and self.__name != new_name
 
         if uri != '' and new_name != '':
-            self._stack.get_visible_child().hide()
+            self.__stack.get_visible_child().hide()
             if rename:
-                self._radios_manager.rename(self._name, new_name)
-                Lp().art.rename_radio(self._name, new_name)
+                self.__radios_manager.rename(self.__name, new_name)
+                Lp().art.rename_radio(self.__name, new_name)
             else:
-                self._radios_manager.add(new_name, uri.lstrip().rstrip())
-            self._stack.set_visible_child_name('spinner')
-            self._name = new_name
-            self._populate_threaded()
+                self.__radios_manager.add(new_name, uri.lstrip().rstrip())
+            self.__stack.set_visible_child_name('spinner')
+            self.__name = new_name
+            self.__populate_threaded()
             self.set_size_request(700, 400)
 
     def _on_btn_delete_clicked(self, widget):
@@ -229,36 +229,24 @@ class RadioPopover(Gtk.Popover):
             @param widget as Gtk.Widget
         """
         self.hide()
-        if self._name != '':
+        if self.__name != '':
             cache = Art._RADIOS_PATH
-            self._radios_manager.delete(self._name)
-            Lp().art.clean_radio_cache(self._name)
-            if os.path.exists(cache+"/%s.png" % self._name):
-                os.remove(cache+"/%s.png" % self._name)
-
-    def _on_activate(self, flowbox, child):
-        """
-            Use pixbuf as cover
-            Reset cache and use player object to announce cover change
-        """
-        pixbuf = self._orig_pixbufs[child.get_child()]
-        Lp().art.save_radio_artwork(pixbuf, self._name)
-        Lp().art.clean_radio_cache(self._name)
-        Lp().art.radio_artwork_update(self._name)
-        self.hide()
-        self._streams = {}
+            self.__radios_manager.delete(self.__name)
+            Lp().art.clean_radio_cache(self.__name)
+            if os.path.exists(cache+"/%s.png" % self.__name):
+                os.remove(cache+"/%s.png" % self.__name)
 
     def _on_entry_changed(self, entry):
         """
             Update modify/add button
             @param entry as Gtk.Entry
         """
-        uri = self._uri_entry.get_text()
-        name = self._name_entry.get_text()
+        uri = self.__uri_entry.get_text()
+        name = self.__name_entry.get_text()
         if name != '' and uri.find('://') != -1:
-            self._btn_add_modify.set_sensitive(True)
+            self.__btn_add_modify.set_sensitive(True)
         else:
-            self._btn_add_modify.set_sensitive(False)
+            self.__btn_add_modify.set_sensitive(False)
 
     def _on_button_clicked(self, button):
         """
@@ -274,10 +262,25 @@ class RadioPopover(Gtk.Popover):
         if response == Gtk.ResponseType.OK:
             try:
                 pixbuf = GdkPixbuf.Pixbuf.new_from_file(dialog.get_filename())
-                Lp().art.save_radio_artwork(pixbuf, self._name)
-                Lp().art.clean_radio_cache(self._name)
-                Lp().art.radio_artwork_update(self._name)
+                Lp().art.save_radio_artwork(pixbuf, self.__name)
+                Lp().art.clean_radio_cache(self.__name)
+                Lp().art.radio_artwork_update(self.__name)
                 self._streams = {}
             except Exception as e:
                 print("RadioPopover::_on_button_clicked():", e)
         dialog.destroy()
+
+#######################
+# PRIVATE             #
+#######################
+    def __on_activate(self, flowbox, child):
+        """
+            Use pixbuf as cover
+            Reset cache and use player object to announce cover change
+        """
+        pixbuf = self.__orig_pixbufs[child.get_child()]
+        Lp().art.save_radio_artwork(pixbuf, self.__name)
+        Lp().art.clean_radio_cache(self.__name)
+        Lp().art.radio_artwork_update(self.__name)
+        self.hide()
+        self._streams = {}
