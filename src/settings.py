@@ -74,10 +74,10 @@ class SettingsDialog:
         """
             Init dialog
         """
-        self._choosers = []
-        self._cover_tid = None
-        self._mix_tid = None
-        self._popover = None
+        self.__choosers = []
+        self.__cover_tid = None
+        self.__mix_tid = None
+        self.__popover = None
 
         builder = Gtk.Builder()
         builder.add_from_resource('/org/gnome/Lollypop/SettingsDialog.ui')
@@ -86,7 +86,7 @@ class SettingsDialog:
         if Lp().scanner.is_locked():
             builder.get_object('button').set_sensitive(False)
         builder.get_object('button').connect('clicked',
-                                             self._on_reset_clicked,
+                                             self.__on_reset_clicked,
                                              builder.get_object('progress'))
         artists = Lp().artists.count()
         albums = Lp().albums.count()
@@ -98,20 +98,20 @@ class SettingsDialog:
         builder.get_object('tracks').set_text(
                             ngettext("%d track", "%d tracks", tracks) % tracks)
 
-        self._popover_content = builder.get_object('popover')
+        self.__popover_content = builder.get_object('popover')
         duration = builder.get_object('duration')
         duration.set_range(1, 20)
         duration.set_value(Lp().settings.get_value('mix-duration').get_int32())
 
-        self._settings_dialog = builder.get_object('settings_dialog')
-        self._settings_dialog.set_transient_for(Lp().window)
+        self.__settings_dialog = builder.get_object('settings_dialog')
+        self.__settings_dialog.set_transient_for(Lp().window)
 
         if Lp().settings.get_value('disable-csd'):
-            self._settings_dialog.set_title(_("Preferences"))
+            self.__settings_dialog.set_title(_("Preferences"))
         else:
             headerbar = builder.get_object('header_bar')
             headerbar.set_title(_("Preferences"))
-            self._settings_dialog.set_titlebar(headerbar)
+            self.__settings_dialog.set_titlebar(headerbar)
 
         switch_scan = builder.get_object('switch_scan')
         switch_scan.set_state(Lp().settings.get_value('auto-update'))
@@ -162,14 +162,14 @@ class SettingsDialog:
         scale_coversize.set_range(150, 300)
         scale_coversize.set_value(
                             Lp().settings.get_value('cover-size').get_int32())
-        self._settings_dialog.connect('destroy', self._edit_settings_close)
+        self.__settings_dialog.connect('destroy', self.__edit_settings_close)
 
         builder.connect_signals(self)
 
         main_chooser_box = builder.get_object('main_chooser_box')
-        self._chooser_box = builder.get_object('chooser_box')
+        self.__chooser_box = builder.get_object('chooser_box')
 
-        self._set_outputs(combo_preview)
+        self.__set_outputs(combo_preview)
 
         #
         # Music tab
@@ -179,127 +179,60 @@ class SettingsDialog:
             dirs.append(directory)
 
         # Main chooser
-        self._main_chooser = ChooserWidget()
+        self.__main_chooser = ChooserWidget()
         image = Gtk.Image.new_from_icon_name("list-add-symbolic",
                                              Gtk.IconSize.MENU)
-        self._main_chooser.set_icon(image)
-        self._main_chooser.set_action(self._add_chooser)
-        main_chooser_box.pack_start(self._main_chooser, False, True, 0)
+        self.__main_chooser.set_icon(image)
+        self.__main_chooser.set_action(self.__add_chooser)
+        main_chooser_box.pack_start(self.__main_chooser, False, True, 0)
         if len(dirs) > 0:
             path = dirs.pop(0)
         else:
             path = GLib.get_user_special_dir(
                 GLib.UserDirectory.DIRECTORY_MUSIC)
-        self._main_chooser.set_dir(path)
+        self.__main_chooser.set_dir(path)
 
         # Others choosers
         for directory in dirs:
-            self._add_chooser(directory)
+            self.__add_chooser(directory)
 
         #
         # Last.fm tab
         #
         if Lp().lastfm is not None and Secret is not None:
-            self._test_img = builder.get_object('test_img')
-            self._login = builder.get_object('login')
-            self._password = builder.get_object('password')
+            self.__test_img = builder.get_object('test_img')
+            self.__login = builder.get_object('login')
+            self.__password = builder.get_object('password')
             schema = Secret.Schema.new("org.gnome.Lollypop",
                                        Secret.SchemaFlags.NONE,
                                        SecretSchema)
             Secret.password_lookup(schema, SecretAttributes, None,
-                                   self._on_password_lookup)
+                                   self.__on_password_lookup)
             builder.get_object('lastfm_grid').set_sensitive(True)
             builder.get_object('lastfm_error').hide()
-            self._login.set_text(
+            self.__login.set_text(
                 Lp().settings.get_value('lastfm-login').get_string())
 
     def show(self):
         """
             Show dialog
         """
-        self._settings_dialog.show()
+        self.__settings_dialog.show()
 
 #######################
-# PRIVATE             #
+# PROTECTED           #
 #######################
-    def _get_pa_outputs(self):
-        """
-            Get PulseAudio outputs
-            @return name/device as [(str, str)]
-        """
-        ret = []
-        argv = ["pacmd", "list-sinks", None]
-        try:
-            (s, out, err, e) = GLib.spawn_sync(None, argv, None,
-                                               GLib.SpawnFlags.SEARCH_PATH,
-                                               None)
-            string = out.decode('utf-8')
-            devices = findall('name: <([^>]*)>', string, DOTALL)
-            names = findall('device.description = "([^"]*)"', string, DOTALL)
-            for name in names:
-                ret.append((name, devices.pop(0)))
-        except Exception as e:
-            print("SettingsDialog::_get_pa_outputse()", e)
-        return ret
-
-    def _set_outputs(self, combo):
-        """
-            Set outputs in combo
-            @parma combo as Gtk.ComboxBoxText
-        """
-        current = Lp().settings.get_value('preview-output').get_string()
-        renderer = combo.get_cells()[0]
-        renderer.set_property('ellipsize', Pango.EllipsizeMode.END)
-        renderer.set_property('max-width-chars', 60)
-        outputs = self._get_pa_outputs()
-        if outputs:
-            for output in outputs:
-                combo.append(output[1], output[0])
-                if output[1] == current:
-                    combo.set_active_id(output[1])
-        else:
-            combo.set_sensitive(False)
-
-    def _add_chooser(self, directory=None):
-        """
-            Add a new chooser widget
-            @param directory path as string
-        """
-        chooser = ChooserWidget()
-        image = Gtk.Image.new_from_icon_name("list-remove-symbolic",
-                                             Gtk.IconSize.MENU)
-        chooser.set_icon(image)
-        if directory:
-            chooser.set_dir(directory)
-        self._chooser_box.add(chooser)
-
     def _update_coversize(self, widget):
         """
             Delayed update cover size
             @param widget as Gtk.Range
         """
-        if self._cover_tid is not None:
-            GLib.source_remove(self._cover_tid)
-            self._cover_tid = None
-        self._cover_tid = GLib.timeout_add(500,
-                                           self._really_update_coversize,
-                                           widget)
-
-    def _really_update_coversize(self, widget):
-        """
-            Update cover size
-            @param widget as Gtk.Range
-        """
-        self._cover_tid = None
-        value = widget.get_value()
-        Lp().settings.set_value('cover-size', GLib.Variant('i', value))
-        Lp().art.update_art_size()
-        for suffix in ["lastfm", "wikipedia", "spotify"]:
-            for artist in Lp().artists.get([]):
-                InfoCache.uncache_artwork(artist[1], suffix,
-                                          widget.get_scale_factor())
-                Lp().art.emit('artist-artwork-changed', artist[1])
-        Lp().window.reload_view()
+        if self.__cover_tid is not None:
+            GLib.source_remove(self.__cover_tid)
+            self.__cover_tid = None
+        self.__cover_tid = GLib.timeout_add(500,
+                                            self.__really_update_coversize,
+                                            widget)
 
     def _update_ui_setting(self, widget, state):
         """
@@ -358,13 +291,13 @@ class SettingsDialog:
         Lp().settings.set_value('mix', GLib.Variant('b', state))
         Lp().player.update_crossfading()
         if state:
-            if self._popover is None:
-                self._popover = Gtk.Popover.new(widget)
-                self._popover.set_modal(False)
-                self._popover.add(self._popover_content)
-            self._popover.show_all()
-        elif self._popover is not None:
-            self._popover.hide()
+            if self.__popover is None:
+                self.__popover = Gtk.Popover.new(widget)
+                self.__popover.set_modal(False)
+                self.__popover.add(self.__popover_content)
+            self.__popover.show_all()
+        elif self.__popover is not None:
+            self.__popover.hide()
 
     def _update_party_mix_setting(self, widget, state):
         """
@@ -441,67 +374,18 @@ class SettingsDialog:
                                            Secret.COLLECTION_DEFAULT,
                                            "org.gnome.Lollypop"
                                            ".lastfm.login %s" %
-                                           self._login.get_text(),
-                                           self._password.get_text(),
+                                           self.__login.get_text(),
+                                           self.__password.get_text(),
                                            None)
                 Lp().settings.set_value('lastfm-login',
                                         GLib.Variant('s',
-                                                     self._login.get_text()))
+                                                     self.__login.get_text()))
                 if sync:
-                    Lp().lastfm.connect_sync(self._password.get_text())
+                    Lp().lastfm.connect_sync(self.__password.get_text())
                 else:
-                    Lp().lastfm.connect(self._password.get_text())
+                    Lp().lastfm.connect(self.__password.get_text())
         except Exception as e:
             print("Settings::_update_lastfm_settings(): %s" % e)
-
-    def _edit_settings_close(self, widget):
-        """
-            Close edit party dialog
-            @param widget as Gtk.Window
-        """
-        # Music path
-        paths = []
-        main_path = self._main_chooser.get_dir()
-        choosers = self._chooser_box.get_children()
-        if main_path == GLib.get_user_special_dir(
-            GLib.UserDirectory.DIRECTORY_MUSIC)\
-           and not choosers:
-            paths = []
-        else:
-            paths.append(main_path)
-            for chooser in choosers:
-                path = chooser.get_dir()
-                if path is not None and path not in paths:
-                    paths.append(path)
-
-        previous = Lp().settings.get_value('music-path')
-        Lp().settings.set_value('music-path', GLib.Variant('as', paths))
-
-        # Last.fm
-        try:
-            if not Lp().lastfm.is_goa:
-                self._update_lastfm_settings()
-        except:
-            pass
-
-        self._settings_dialog.hide()
-        self._settings_dialog.destroy()
-        if set(previous) != set(paths):
-            Lp().window.update_db()
-        Lp().window.update_view()
-
-    def _show_mix_popover(self, widget):
-        """
-            Show mix popover
-            @param widget as Gtk.Widget
-        """
-        self._mix_tid = None
-        if Lp().settings.get_value('mix'):
-            if self._popover is None:
-                self._popover = Gtk.Popover.new(widget)
-                self._popover.set_modal(False)
-                self._popover.add(self._popover_content)
-            self._popover.show_all()
 
     def _on_preview_changed(self, combo):
         """
@@ -529,7 +413,7 @@ class SettingsDialog:
             @param widget as Gtk.Widget
             @param event as Gdk.Event
         """
-        self._mix_tid = GLib.timeout_add(500, self._show_mix_popover, widget)
+        self.__mix_tid = GLib.timeout_add(500, self.__show_mix_popover, widget)
 
     def _on_mix_button_release(self, widget, event):
         """
@@ -537,11 +421,11 @@ class SettingsDialog:
             @param widget as Gtk.Widget
             @param event as Gdk.Event
         """
-        if self._mix_tid is None:
+        if self.__mix_tid is None:
             return True
         else:
-            GLib.source_remove(self._mix_tid)
-            self._mix_tid = None
+            GLib.source_remove(self.__mix_tid)
+            self.__mix_tid = None
 
     def _on_key_release_event(self, widget, event):
         """
@@ -550,7 +434,7 @@ class SettingsDialog:
             @param event as Gdk.event
         """
         if event.keyval == Gdk.KEY_Escape:
-            self._settings_dialog.destroy()
+            self.__settings_dialog.destroy()
 
     def _on_test_btn_clicked(self, button):
         """
@@ -559,14 +443,140 @@ class SettingsDialog:
         """
         self._update_lastfm_settings(True)
         if not Gio.NetworkMonitor.get_default().get_network_available():
-            self._test_img.set_from_icon_name('computer-fail-symbolic',
-                                              Gtk.IconSize.MENU)
+            self.__test_img.set_from_icon_name('computer-fail-symbolic',
+                                               Gtk.IconSize.MENU)
             return
-        t = Thread(target=self._test_lastfm_connection)
+        t = Thread(target=self.__test_lastfm_connection)
         t.daemon = True
         t.start()
 
-    def _test_lastfm_connection(self):
+    def _hide_popover(self, widget):
+        """
+            Hide popover
+            @param widget as Gtk.Widget
+        """
+        self.__popover.hide()
+
+#######################
+# PRIVATE             #
+#######################
+    def __get_pa_outputs(self):
+        """
+            Get PulseAudio outputs
+            @return name/device as [(str, str)]
+        """
+        ret = []
+        argv = ["pacmd", "list-sinks", None]
+        try:
+            (s, out, err, e) = GLib.spawn_sync(None, argv, None,
+                                               GLib.SpawnFlags.SEARCH_PATH,
+                                               None)
+            string = out.decode('utf-8')
+            devices = findall('name: <([^>]*)>', string, DOTALL)
+            names = findall('device.description = "([^"]*)"', string, DOTALL)
+            for name in names:
+                ret.append((name, devices.pop(0)))
+        except Exception as e:
+            print("SettingsDialog::_get_pa_outputse()", e)
+        return ret
+
+    def __set_outputs(self, combo):
+        """
+            Set outputs in combo
+            @parma combo as Gtk.ComboxBoxText
+        """
+        current = Lp().settings.get_value('preview-output').get_string()
+        renderer = combo.get_cells()[0]
+        renderer.set_property('ellipsize', Pango.EllipsizeMode.END)
+        renderer.set_property('max-width-chars', 60)
+        outputs = self.__get_pa_outputs()
+        if outputs:
+            for output in outputs:
+                combo.append(output[1], output[0])
+                if output[1] == current:
+                    combo.set_active_id(output[1])
+        else:
+            combo.set_sensitive(False)
+
+    def __add_chooser(self, directory=None):
+        """
+            Add a new chooser widget
+            @param directory path as string
+        """
+        chooser = ChooserWidget()
+        image = Gtk.Image.new_from_icon_name("list-remove-symbolic",
+                                             Gtk.IconSize.MENU)
+        chooser.set_icon(image)
+        if directory:
+            chooser.set_dir(directory)
+        self.__chooser_box.add(chooser)
+
+    def __really_update_coversize(self, widget):
+        """
+            Update cover size
+            @param widget as Gtk.Range
+        """
+        self.__cover_tid = None
+        value = widget.get_value()
+        Lp().settings.set_value('cover-size', GLib.Variant('i', value))
+        Lp().art.update_art_size()
+        for suffix in ["lastfm", "wikipedia", "spotify"]:
+            for artist in Lp().artists.get([]):
+                InfoCache.uncache_artwork(artist[1], suffix,
+                                          widget.get_scale_factor())
+                Lp().art.emit('artist-artwork-changed', artist[1])
+        Lp().window.reload_view()
+
+    def __edit_settings_close(self, widget):
+        """
+            Close edit party dialog
+            @param widget as Gtk.Window
+        """
+        # Music path
+        paths = []
+        main_path = self.__main_chooser.get_dir()
+        choosers = self.__chooser_box.get_children()
+        if main_path == GLib.get_user_special_dir(
+            GLib.UserDirectory.DIRECTORY_MUSIC)\
+           and not choosers:
+            paths = []
+        else:
+            paths.append(main_path)
+            for chooser in choosers:
+                path = chooser.get_dir()
+                if path is not None and path not in paths:
+                    paths.append(path)
+
+        previous = Lp().settings.get_value('music-path')
+        Lp().settings.set_value('music-path', GLib.Variant('as', paths))
+
+        # Last.fm
+        try:
+            if not Lp().lastfm.is_goa:
+                self._update_lastfm_settings()
+        except:
+            pass
+
+        self.__settings_dialog.hide()
+        self.__settings_dialog.destroy()
+        if set(previous) != set(paths):
+            Lp().window.update_db()
+        Lp().window.update_view()
+
+    def __show_mix_popover(self, widget):
+        """
+            Show mix popover
+            @param widget as Gtk.Widget
+        """
+        self.__mix_tid = None
+        if Lp().settings.get_value('mix'):
+            if self.__popover is None:
+                self.__popover = Gtk.Popover.new(widget)
+                self.__popover.set_modal(False)
+                self.__popover.add(self.__popover_content)
+            self.__popover.show_all()
+
+    def __test_lastfm_connection(self):
         """
             Test lastfm connection
             @thread safe
@@ -574,15 +584,15 @@ class SettingsDialog:
         try:
             u = Lp().lastfm.get_authenticated_user()
             u.get_id()
-            GLib.idle_add(self._test_img.set_from_icon_name,
+            GLib.idle_add(self.__test_img.set_from_icon_name,
                           'object-select-symbolic',
                           Gtk.IconSize.MENU)
         except:
-            GLib.idle_add(self._test_img.set_from_icon_name,
+            GLib.idle_add(self.__test_img.set_from_icon_name,
                           'computer-fail-symbolic',
                           Gtk.IconSize.MENU)
 
-    def _on_password_lookup(self, source, result):
+    def __on_password_lookup(self, source, result):
         """
             Set password entry
             @param source as GObject.Object
@@ -593,18 +603,11 @@ class SettingsDialog:
             if result is not None:
                 password = Secret.password_lookup_finish(result)
             if password is not None:
-                self._password.set_text(password)
+                self.__password.set_text(password)
         except:
             pass
 
-    def _hide_popover(self, widget):
-        """
-            Hide popover
-            @param widget as Gtk.Widget
-        """
-        self._popover.hide()
-
-    def __reset_database(self, track_ids, count, history, progress):
+    def ___reset_database(self, track_ids, count, history, progress):
         """
             Backup database and reset
             @param track ids as [int]
@@ -625,7 +628,7 @@ class SettingsDialog:
             history.add(name, duration, popularity,
                         ltime, mtime, album_popularity)
             progress.set_fraction((count - len(track_ids))/count)
-            GLib.idle_add(self.__reset_database, track_ids,
+            GLib.idle_add(self.___reset_database, track_ids,
                           count, history, progress)
         else:
             progress.hide()
@@ -638,7 +641,7 @@ class SettingsDialog:
             Lp().window.update_db()
             progress.get_toplevel().set_deletable(True)
 
-    def _on_reset_clicked(self, widget, progress):
+    def __on_reset_clicked(self, widget, progress):
         """
             Reset database
             @param widget as Gtk.Widget
@@ -656,7 +659,8 @@ class SettingsDialog:
             history = History()
             widget.get_toplevel().set_deletable(False)
             widget.set_sensitive(False)
-            self.__reset_database(track_ids, len(track_ids), history, progress)
+            self.___reset_database(track_ids, len(track_ids),
+                                   history, progress)
         except Exception as e:
             print("Application::_on_reset_clicked():", e)
 
@@ -671,19 +675,19 @@ class ChooserWidget(Gtk.Grid):
             Init widget
         """
         Gtk.Grid.__init__(self)
-        self._action = None
+        self.__action = None
         self.set_property("orientation", Gtk.Orientation.HORIZONTAL)
         self.set_property("halign", Gtk.Align.CENTER)
-        self._chooser_btn = Gtk.FileChooserButton()
-        self._chooser_btn.set_action(Gtk.FileChooserAction.SELECT_FOLDER)
-        self._chooser_btn.set_property("margin", 5)
-        self._chooser_btn.show()
-        self.add(self._chooser_btn)
-        self._action_btn = Gtk.Button()
-        self._action_btn.set_property("margin", 5)
-        self._action_btn.show()
-        self.add(self._action_btn)
-        self._action_btn.connect("clicked", self.__do_action)
+        self.__chooser_btn = Gtk.FileChooserButton()
+        self.__chooser_btn.set_action(Gtk.FileChooserAction.SELECT_FOLDER)
+        self.__chooser_btn.set_property("margin", 5)
+        self.__chooser_btn.show()
+        self.add(self.__chooser_btn)
+        self.__action_btn = Gtk.Button()
+        self.__action_btn.set_property("margin", 5)
+        self.__action_btn.show()
+        self.add(self.__action_btn)
+        self.__action_btn.connect("clicked", self.___do_action)
         self.show()
 
     def set_dir(self, path):
@@ -692,21 +696,21 @@ class ChooserWidget(Gtk.Grid):
             @param directory path as string
         """
         if path:
-            self._chooser_btn.set_uri("file://"+path)
+            self.__chooser_btn.set_uri("file://"+path)
 
     def set_icon(self, image):
         """
             Set image for action button
             @param Gtk.Image
         """
-        self._action_btn.set_image(image)
+        self.__action_btn.set_image(image)
 
     def set_action(self, action):
         """
             Set action callback for button clicked signal
             @param func
         """
-        self._action = action
+        self.__action = action
 
     def get_dir(self):
         """
@@ -714,7 +718,7 @@ class ChooserWidget(Gtk.Grid):
             @return path as string
         """
         path = None
-        uri = self._chooser_btn.get_uri()
+        uri = self.__chooser_btn.get_uri()
         if uri is not None:
             path = GLib.uri_unescape_string(uri, None)
         if path is not None:
@@ -725,11 +729,11 @@ class ChooserWidget(Gtk.Grid):
 #######################
 # PRIVATE             #
 #######################
-    def __do_action(self, widget):
+    def ___do_action(self, widget):
         """
             If action defined, execute, else, remove widget
         """
-        if self._action:
-            self._action()
+        if self.__action:
+            self.__action()
         else:
             self.destroy()
