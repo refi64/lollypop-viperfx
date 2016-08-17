@@ -36,21 +36,21 @@ class ToolbarInfo(Gtk.Bin, InfosController):
         builder = Gtk.Builder()
         builder.add_from_resource('/org/gnome/Lollypop/ToolbarInfo.ui')
         builder.connect_signals(self)
-        self._pop_tunein = None
-        self._pop_info = None
-        self._timeout_id = None
-        self._width = 0
+        self.__pop_tunein = None
+        self.__pop_info = None
+        self.__timeout_id = None
+        self.__width = 0
 
         self._infobox = builder.get_object('info')
         self.add(self._infobox)
 
-        self._labels = builder.get_object('nowplaying_labels')
-        self._labels.connect('query-tooltip', self._on_query_tooltip)
-        self._labels.set_property('has-tooltip', True)
+        self.__labels = builder.get_object('nowplaying_labels')
+        self.__labels.connect('query-tooltip', self.__on_query_tooltip)
+        self.__labels.set_property('has-tooltip', True)
 
         self._title_label = builder.get_object('title')
         self._artist_label = builder.get_object('artist')
-        self._cover_frame = builder.get_object('frame')
+        self.__cover_frame = builder.get_object('frame')
         self._cover = builder.get_object('cover')
         self._cover.set_property('has-tooltip', True)
         # Since GTK 3.20, we can set cover full height
@@ -59,72 +59,35 @@ class ToolbarInfo(Gtk.Bin, InfosController):
         else:
             self._cover.get_style_context().add_class('small-cover-frame')
 
-        self.connect('realize', self._on_realize)
-        Lp().art.connect('album-artwork-changed', self._update_cover)
-        Lp().art.connect('radio-artwork-changed', self._update_logo)
+        self.connect('realize', self.__on_realize)
+        Lp().art.connect('album-artwork-changed', self.__update_cover)
+        Lp().art.connect('radio-artwork-changed', self.__update_logo)
 
     def do_get_preferred_width(self):
         """
             We force preferred width
             @return (int, int)
         """
-        return (self._width, self._width)
+        return (self.__width, self.__width)
 
     def get_preferred_height(self):
         """
             Return preferred height
             @return (int, int)
         """
-        return self._labels.get_preferred_height()
+        return self.__labels.get_preferred_height()
 
     def set_width(self, width):
         """
             Set widget width
             @param width as int
         """
-        self._width = width
+        self.__width = width
         self.set_property('width-request', width)
 
 #######################
-# PRIVATE             #
+# PROTECTED           #
 #######################
-    def _update_cover(self, art, album_id):
-        """
-            Update cover for album_id
-            @param art as Art
-            @param album id as int
-        """
-        if Lp().player.current_track.album.id == album_id:
-            surface = Lp().art.get_album_artwork(
-                                       Lp().player.current_track.album,
-                                       self._artsize,
-                                       self._cover.get_scale_factor())
-            self._cover.set_from_surface(surface)
-            del surface
-
-    def _update_logo(self, art, name):
-        """
-            Update logo for name
-            @param art as Art
-            @param name as str
-        """
-        if Lp().player.current_track.album_artist == name:
-            pixbuf = Lp().art.get_radio_artwork(name, self._artsize)
-            self._cover.set_from_surface(pixbuf)
-            del pixbuf
-
-    def _show_track_menu(self):
-        """
-            Show current track menu
-        """
-        self._timeout_id = None
-        if Lp().player.current_track.id >= 0:
-            popover = TrackMenuPopover(
-                        Lp().player.current_track.id,
-                        PopToolbarMenu(Lp().player.current_track.id))
-            popover.set_relative_to(self._infobox)
-            popover.show()
-
     def _on_title_press_event(self, widget, event):
         """
             On long press: show current track menu
@@ -132,7 +95,7 @@ class ToolbarInfo(Gtk.Bin, InfosController):
             @param event as Gdk.Event
 
         """
-        self._timeout_id = GLib.timeout_add(500, self._show_track_menu)
+        self.__timeout_id = GLib.timeout_add(500, self.__show_track_menu)
         return True
 
     def _on_title_release_event(self, widget, event):
@@ -142,9 +105,9 @@ class ToolbarInfo(Gtk.Bin, InfosController):
             @param widget as Gtk.Widget
             @param event as Gdk.Event
         """
-        if self._timeout_id is not None:
-            GLib.source_remove(self._timeout_id)
-            self._timeout_id = None
+        if self.__timeout_id is not None:
+            GLib.source_remove(self.__timeout_id)
+            self.__timeout_id = None
             if Lp().player.current_track.id == Type.EXTERNALS:
                 expopover = ExternalsPopover()
                 expopover.set_relative_to(widget)
@@ -153,21 +116,79 @@ class ToolbarInfo(Gtk.Bin, InfosController):
             elif Lp().player.current_track.id is not None:
                 if event.button == 1:
                     if Lp().player.current_track.id == Type.RADIOS:
-                        if self._pop_tunein is None:
-                            self._pop_tunein = TuneinPopover()
-                            self._pop_tunein.populate()
-                            self._pop_tunein.set_relative_to(widget)
-                        self._pop_tunein.show()
+                        if self.__pop_tunein is None:
+                            self.__pop_tunein = TuneinPopover()
+                            self.__pop_tunein.populate()
+                            self.__pop_tunein.set_relative_to(widget)
+                        self.__pop_tunein.show()
                     else:
-                        if self._pop_info is None:
-                            self._pop_info = InfoPopover()
-                            self._pop_info.set_relative_to(widget)
-                        self._pop_info.show()
+                        if self.__pop_info is None:
+                            self.__pop_info = InfoPopover()
+                            self.__pop_info.set_relative_to(widget)
+                        self.__pop_info.show()
                 else:
-                    self._show_track_menu()
+                    self.__show_track_menu()
         return True
 
-    def _on_query_tooltip(self, widget, x, y, keyboard, tooltip):
+    def _on_eventbox_realize(self, eventbox):
+        """
+            Show hand cursor over
+        """
+        eventbox.get_window().set_cursor(Gdk.Cursor(Gdk.CursorType.HAND1))
+
+#######################
+# PRIVATE             #
+#######################
+    def __update_cover(self, art, album_id):
+        """
+            Update cover for album_id
+            @param art as Art
+            @param album id as int
+        """
+        if Lp().player.current_track.album.id == album_id:
+            surface = Lp().art.get_album_artwork(
+                                       Lp().player.current_track.album,
+                                       self.__artsize,
+                                       self._cover.get_scale_factor())
+            self._cover.set_from_surface(surface)
+            del surface
+
+    def __update_logo(self, art, name):
+        """
+            Update logo for name
+            @param art as Art
+            @param name as str
+        """
+        if Lp().player.current_track.album_artist == name:
+            pixbuf = Lp().art.get_radio_artwork(name, self.__artsize)
+            self._cover.set_from_surface(pixbuf)
+            del pixbuf
+
+    def __show_track_menu(self):
+        """
+            Show current track menu
+        """
+        self.__timeout_id = None
+        if Lp().player.current_track.id >= 0:
+            popover = TrackMenuPopover(
+                        Lp().player.current_track.id,
+                        PopToolbarMenu(Lp().player.current_track.id))
+            popover.set_relative_to(self._infobox)
+            popover.show()
+
+    def __on_realize(self, toolbar):
+        """
+            @param toolbar as ToolbarInfos
+        """
+        style = self.get_style_context()
+        padding = style.get_padding(style.get_state())
+        self.__artsize = self.get_allocated_height()\
+            - padding.top - padding.bottom
+        # Since GTK 3.20, we can set cover full height
+        if Gtk.get_minor_version() < 20:
+            self.__artsize -= 2
+
+    def __on_query_tooltip(self, widget, x, y, keyboard, tooltip):
         """
             Show tooltip if needed
             @param widget as Gtk.Widget
@@ -187,21 +208,3 @@ class ToolbarInfo(Gtk.Bin, InfosController):
         else:
             return False
         return True
-
-    def _on_realize(self, toolbar):
-        """
-            @param toolbar as ToolbarInfos
-        """
-        style = self.get_style_context()
-        padding = style.get_padding(style.get_state())
-        self._artsize = self.get_allocated_height()\
-            - padding.top - padding.bottom
-        # Since GTK 3.20, we can set cover full height
-        if Gtk.get_minor_version() < 20:
-            self._artsize -= 2
-
-    def _on_eventbox_realize(self, eventbox):
-        """
-            Show hand cursor over
-        """
-        eventbox.get_window().set_cursor(Gdk.Cursor(Gdk.CursorType.HAND1))
