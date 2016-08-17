@@ -31,31 +31,128 @@ class MtpSync:
             Init MTP synchronisation
         """
         self._syncing = False
-        self._errors = False
-        self._convert = False
-        self._normalize = False
-        self._errors_count = 0
-        self._total = 0  # Total files to sync
-        self._done = 0   # Handled files on sync
+        self.__errors = False
+        self.__convert = False
+        self.__normalize = False
+        self.__errors_count = 0
+        self._uri = ""
+        self.__total = 0  # Total files to sync
+        self.__done = 0   # Handled files on sync
         self._fraction = 0.0
-        self._copied_art_uris = []
+        self.__copied_art_uris = []
+
+#######################
+# PROTECTED           #
+#######################
+    def _check_encoder_status(self):
+        """
+            Check MP3 encode status
+            @return bool
+        """
+        if Gst.ElementFactory.find('lamemp3enc'):
+            return True
+        return False
+
+    def _update_progress(self):
+        """
+            Update progress bar. Do nothing
+        """
+        pass
+
+    def _on_finished(self):
+        """
+            Clean on finished. Do nothing
+        """
+        pass
+
+    def _sync(self, playlists, convert, normalize):
+        """
+            Sync playlists with device. If playlists contains Type.NONE,
+            sync albums marked as to be synced
+            @param playlists as [str]
+            @param convert as bool
+            @param normalize as bool
+        """
+        try:
+            self.__in_thread = True
+            self.__convert = convert
+            self.__normalize = normalize
+            self.__errors = False
+            self.__errors_count = 0
+            self.__copied_art_uris = []
+            # For progress bar
+            self.__total = 1
+            self.__done = 0
+            self._fraction = 0.0
+            plnames = []
+
+            if playlists[0] == Type.NONE:
+                # New tracks for synced albums
+                album_ids = Lp().albums.get_synced_ids()
+                for album_id in album_ids:
+                    self.__total += len(Lp().albums.get_track_ids(album_id))
+            else:
+                # New tracks for playlists
+                for playlist in playlists:
+                    plnames.append(Lp().playlists.get_name(playlist))
+                    self.__total += len(Lp().playlists.get_tracks(playlist))
+
+            # Old tracks
+            try:
+                children = self.__get_track_files()
+                self.__total += len(children)
+            except:
+                pass
+            GLib.idle_add(self._update_progress)
+
+            # Copy new tracks to device
+            if self._syncing:
+                self.__copy_to_device(playlists)
+
+            # Remove old tracks from device
+            if self._syncing:
+                self.__remove_from_device(playlists)
+
+            # Delete old playlists
+            d = Gio.File.new_for_uri(self._uri)
+            infos = d.enumerate_children(
+                'standard::name',
+                Gio.FileQueryInfoFlags.NOFOLLOW_SYMLINKS,
+                None)
+            for info in infos:
+                f = info.get_name()
+                if f.endswith(".m3u") and f[:-4] not in plnames:
+                    uri = self._uri+'/'+f
+                    d = Gio.File.new_for_uri(uri)
+                    self.__retry(d.delete, (None,))
+
+            d = Gio.File.new_for_uri(self._uri+"/unsync")
+            if not d.query_exists(None):
+                self.__retry(d.make_directory_with_parents, (None,))
+        except Exception as e:
+            print("DeviceManagerWidget::_sync(): %s" % e)
+        self._fraction = 1.0
+        self._syncing = False
+        self.__in_thread = False
+        if self.__errors:
+            GLib.idle_add(self.__on_errors)
 
 ############
 # Private  #
 ############
-    def _retry(self, func, args, t=5):
+    def __retry(self, func, args, t=5):
         """
             Try to execute func 5 times
             @param func as function
             @param args as tuple
         """
         # Max allowed errors
-        if self._errors_count > 10:
+        if self.__errors_count > 10:
             self._syncing = False
             return
         if t == 0:
-            self._errors_count += 1
-            self._errors = True
+            self.__errors_count += 1
+            self.__errors = True
             return
         try:
             func(*args)
@@ -65,9 +162,9 @@ class MtpSync:
                 if isinstance(a, Gio.File):
                     print(a.get_uri())
             sleep(5)
-            self._retry(func, args, t-1)
+            self.__retry(func, args, t-1)
 
-    def _get_track_files(self):
+    def __get_track_files(self):
         """
             Return files in self._uri/tracks
             @return [str]
@@ -76,7 +173,7 @@ class MtpSync:
         dir_uris = [self._uri]
         d = Gio.File.new_for_uri(self._uri)
         if not d.query_exists(None):
-            self._retry(d.make_directory_with_parents, (None,))
+            self.__retry(d.make_directory_with_parents, (None,))
         while dir_uris:
             try:
                 uri = dir_uris.pop(0)
@@ -100,79 +197,7 @@ class MtpSync:
                 print("MtpSync::_get_track_files():", e, uri)
         return children
 
-    def _sync(self, playlists, convert, normalize):
-        """
-            Sync playlists with device. If playlists contains Type.NONE,
-            sync albums marked as to be synced
-            @param playlists as [str]
-            @param convert as bool
-            @param normalize as bool
-        """
-        try:
-            self._in_thread = True
-            self._convert = convert
-            self._normalize = normalize
-            self._errors = False
-            self._errors_count = 0
-            self._copied_art_uris = []
-            # For progress bar
-            self._total = 1
-            self._done = 0
-            self._fraction = 0.0
-            plnames = []
-
-            if playlists[0] == Type.NONE:
-                # New tracks for synced albums
-                album_ids = Lp().albums.get_synced_ids()
-                for album_id in album_ids:
-                    self._total += len(Lp().albums.get_track_ids(album_id))
-            else:
-                # New tracks for playlists
-                for playlist in playlists:
-                    plnames.append(Lp().playlists.get_name(playlist))
-                    self._total += len(Lp().playlists.get_tracks(playlist))
-
-            # Old tracks
-            try:
-                children = self._get_track_files()
-                self._total += len(children)
-            except:
-                pass
-            GLib.idle_add(self._update_progress)
-
-            # Copy new tracks to device
-            if self._syncing:
-                self._copy_to_device(playlists)
-
-            # Remove old tracks from device
-            if self._syncing:
-                self._remove_from_device(playlists)
-
-            # Delete old playlists
-            d = Gio.File.new_for_uri(self._uri)
-            infos = d.enumerate_children(
-                'standard::name',
-                Gio.FileQueryInfoFlags.NOFOLLOW_SYMLINKS,
-                None)
-            for info in infos:
-                f = info.get_name()
-                if f.endswith(".m3u") and f[:-4] not in plnames:
-                    uri = self._uri+'/'+f
-                    d = Gio.File.new_for_uri(uri)
-                    self._retry(d.delete, (None,))
-
-            d = Gio.File.new_for_uri(self._uri+"/unsync")
-            if not d.query_exists(None):
-                self._retry(d.make_directory_with_parents, (None,))
-        except Exception as e:
-            print("DeviceManagerWidget::_sync(): %s" % e)
-        self._fraction = 1.0
-        self._syncing = False
-        self._in_thread = False
-        if self._errors:
-            GLib.idle_add(self._on_errors)
-
-    def _copy_to_device(self, playlists):
+    def __copy_to_device(self, playlists):
         """
             Copy file from playlist to device
             @param playlists as [str]
@@ -186,9 +211,10 @@ class MtpSync:
                     # Create playlist
                     m3u = Gio.File.new_for_path(
                         "/tmp/lollypop_%s.m3u" % (playlist_name,))
-                    self._retry(m3u.replace_contents, (b'#EXTM3U\n', None,
-                                False, Gio.FileCreateFlags.REPLACE_DESTINATION,
-                                None))
+                    self.__retry(m3u.replace_contents, (b'#EXTM3U\n', None,
+                                 False,
+                                 Gio.FileCreateFlags.REPLACE_DESTINATION,
+                                 None))
                     stream = m3u.open_readwrite(None)
                 except Exception as e:
                     print("DeviceWidget::_copy_to_device(): %s" % e)
@@ -207,7 +233,7 @@ class MtpSync:
                     continue
                 if not self._syncing:
                     self._fraction = 1.0
-                    self._in_thread = False
+                    self.__in_thread = False
                     return
                 track = Track(track_id)
                 album_name = escape(track.album_name.lower())
@@ -222,23 +248,23 @@ class MtpSync:
 
                 d = Gio.File.new_for_uri(on_device_album_uri)
                 if not d.query_exists(None):
-                    self._retry(d.make_directory_with_parents, (None,))
+                    self.__retry(d.make_directory_with_parents, (None,))
                 # Copy album art
                 art = Lp().art.get_album_artwork_path(track.album)
                 if art is not None:
                     src_art = Gio.File.new_for_path(art)
                     art_uri = "%s/cover.jpg" % on_device_album_uri
-                    self._copied_art_uris.append(art_uri)
+                    self.__copied_art_uris.append(art_uri)
                     dst_art = Gio.File.new_for_uri(art_uri)
                     if not dst_art.query_exists(None):
-                        self._retry(src_art.copy,
-                                    (dst_art, Gio.FileCopyFlags.OVERWRITE,
-                                     None, None))
+                        self.__retry(src_art.copy,
+                                     (dst_art, Gio.FileCopyFlags.OVERWRITE,
+                                      None, None))
 
                 track_name = escape(GLib.basename(track.path))
                 # Check extension, if not mp3, convert
                 ext = os.path.splitext(track.path)[1]
-                if (ext != ".mp3" or self._normalize) and self._convert:
+                if (ext != ".mp3" or self.__normalize) and self.__convert:
                     convertion_needed = True
                     track_name = track_name.replace(ext, ".mp3")
                 else:
@@ -257,27 +283,27 @@ class MtpSync:
                              album_name,
                              mtime,
                              track_name)
-                    self._retry(stream.get_output_stream().write,
-                                (line.encode(encoding='UTF-8'), None))
+                    self.__retry(stream.get_output_stream().write,
+                                 (line.encode(encoding='UTF-8'), None))
                 dst_track = Gio.File.new_for_uri(dst_uri)
                 if not dst_track.query_exists(None):
                     if convertion_needed:
                         mp3_uri = "file:///tmp/%s" % track_name
                         mp3_file = Gio.File.new_for_uri(mp3_uri)
-                        pipeline = self._convert_to_mp3(src_track, mp3_file)
+                        pipeline = self.__convert_to_mp3(src_track, mp3_file)
                         # Check if encoding is finished
                         if pipeline is not None:
                             bus = pipeline.get_bus()
                             bus.add_signal_watch()
-                            bus.connect('message::eos', self._on_bus_eos)
-                            self._encoding = True
-                            while self._encoding and self._sync:
+                            bus.connect('message::eos', self.__on_bus_eos)
+                            self.__encoding = True
+                            while self.__encoding and self.__sync:
                                 sleep(1)
-                            bus.disconnect_by_func(self._on_bus_eos)
+                            bus.disconnect_by_func(self.__on_bus_eos)
                             pipeline.set_state(Gst.State.PAUSED)
                             pipeline.set_state(Gst.State.READY)
                             pipeline.set_state(Gst.State.NULL)
-                            self._retry(
+                            self.__retry(
                                     mp3_file.move,
                                     (dst_track, Gio.FileCopyFlags.OVERWRITE,
                                      None, None))
@@ -287,22 +313,22 @@ class MtpSync:
                             except:
                                 pass
                     else:
-                        self._retry(src_track.copy,
-                                    (dst_track, Gio.FileCopyFlags.OVERWRITE,
-                                     None, None))
+                        self.__retry(src_track.copy,
+                                     (dst_track, Gio.FileCopyFlags.OVERWRITE,
+                                      None, None))
                 else:
-                    self._done += 1
-                self._done += 1
-                self._fraction = self._done/self._total
+                    self.__done += 1
+                self.__done += 1
+                self._fraction = self.__done/self.__total
             if stream is not None:
                 stream.close()
             if m3u is not None:
                 playlist_name = escape(playlist_name)
                 dst = Gio.File.new_for_uri(self._uri+'/'+playlist_name+'.m3u')
-                self._retry(m3u.move,
-                            (dst, Gio.FileCopyFlags.OVERWRITE, None, None))
+                self.__retry(m3u.move,
+                             (dst, Gio.FileCopyFlags.OVERWRITE, None, None))
 
-    def _remove_from_device(self, playlists):
+    def __remove_from_device(self, playlists):
         """
             Delete files not available in playlist
         """
@@ -323,7 +349,7 @@ class MtpSync:
         for track_id in track_ids:
             if not self._syncing:
                 self._fraction = 1.0
-                self._in_thread = False
+                self.__in_thread = False
                 return
             track = Track(track_id)
             album_name = escape(track.album_name.lower())
@@ -337,7 +363,7 @@ class MtpSync:
             track_name = escape(GLib.basename(track.path))
             # Check extension, if not mp3, convert
             ext = os.path.splitext(track.path)[1]
-            if ext != ".mp3" and self._convert:
+            if ext != ".mp3" and self.__convert:
                 track_name = track_name.replace(ext, ".mp3")
             on_disk = Gio.File.new_for_path(track.path)
             info = on_disk.query_info('time::modified',
@@ -348,22 +374,22 @@ class MtpSync:
             dst_uri = "%s/%s_%s" % (album_uri, mtime, track_name)
             track_uris.append(dst_uri)
 
-        on_mtp_files = self._get_track_files()
+        on_mtp_files = self.__get_track_files()
 
         # Delete file on device and not in playlists
         for uri in on_mtp_files:
             if not self._syncing:
                 self._fraction = 1.0
-                self._in_thread = False
+                self.__in_thread = False
                 return
 
-            if uri not in track_uris and uri not in self._copied_art_uris:
+            if uri not in track_uris and uri not in self.__copied_art_uris:
                 to_delete = Gio.File.new_for_uri(uri)
-                self._retry(to_delete.delete, (None,))
-            self._done += 1
-            self._fraction = self._done/self._total
+                self.__retry(to_delete.delete, (None,))
+            self.__done += 1
+            self._fraction = self.__done/self.__total
 
-    def _convert_to_mp3(self, src, dst):
+    def __convert_to_mp3(self, src, dst):
         """
             Convert file to mp3
             @param src as Gio.File
@@ -374,7 +400,7 @@ class MtpSync:
             # We need to escape \ in path
             src_path = src.get_path().replace("\\", "\\\\\\")
             dst_path = dst.get_path().replace("\\", "\\\\\\")
-            if self._normalize:
+            if self.__normalize:
                 pipeline = Gst.parse_launch(
                                         'filesrc location="%s" ! decodebin\
                                         ! audioconvert\
@@ -395,36 +421,15 @@ class MtpSync:
             print("MtpSync::_convert_to_mp3(): %s" % e)
             return None
 
-    def _check_encoder_status(self):
-        """
-            Check MP3 encode status
-            @return bool
-        """
-        if Gst.ElementFactory.find('lamemp3enc'):
-            return True
-        return False
-
-    def _update_progress(self):
-        """
-            Update progress bar. Do nothing
-        """
-        pass
-
-    def _on_bus_eos(self, bus, message):
+    def __on_bus_eos(self, bus, message):
         """
             Stop encoding
             @param bus as Gst.Bus
             @param message as Gst.Message
         """
-        self._encoding = False
+        self.__encoding = False
 
-    def _on_finished(self):
-        """
-            Clean on finished. Do nothing
-        """
-        pass
-
-    def _on_errors(self):
+    def __on_errors(self):
         """
             Show something to the user. Do nothing.
         """

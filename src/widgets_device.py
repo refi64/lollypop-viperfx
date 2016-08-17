@@ -23,6 +23,8 @@ from lollypop.define import Lp, Type
 from lollypop.objects import Album
 
 
+# FIXME This class should not inherit MtpSync
+# TODO Rework MtpSync code
 class DeviceManagerWidget(Gtk.Bin, MtpSync):
     """
         Widget for synchronize mtp devices
@@ -180,7 +182,7 @@ class DeviceManagerWidget(Gtk.Bin, MtpSync):
         """
             Append a playlist
         """
-        playlists = [(Type.LOVED, Lp().playlists._LOVED)]
+        playlists = [(Type.LOVED, Lp().playlists.LOVED)]
         playlists += Lp().playlists.get()
         for playlist in playlists:
             playlist_name = GLib.uri_escape_string(playlist[1], "", False)
