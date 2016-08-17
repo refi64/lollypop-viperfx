@@ -67,7 +67,7 @@ class PartyPopover(Gtk.Popover):
             switch = Gtk.Switch()
             if genre_id in ids:
                 switch.set_state(True)
-            switch.connect("state-set", self._on_switch_state_set, genre_id)
+            switch.connect("state-set", self.__on_switch_state_set, genre_id)
             switch.show()
             party_grid.attach(label, x, i, 1, 1)
             party_grid.attach(switch, x+1, i, 1, 1)
@@ -78,7 +78,10 @@ class PartyPopover(Gtk.Popover):
                 i += 1
                 x = 0
 
-    def _on_switch_state_set(self, widget, state, genre_id):
+#######################
+# PRIVATE             #
+#######################
+    def __on_switch_state_set(self, widget, state, genre_id):
         """
             Update party ids when use change a switch in dialog
             @param widget as Gtk.Switch
@@ -110,60 +113,60 @@ class ToolbarEnd(Gtk.Bin):
             @param app as Gtk.Application
         """
         Gtk.Bin.__init__(self)
-        self.connect('show', self._on_show)
-        self.connect('hide', self._on_hide)
-        self._next_popover = NextPopover()
-        self._search = None
-        self._next_was_inhibited = False
+        self.connect('show', self.__on_show)
+        self.connect('hide', self.__on_hide)
+        self.__next_popover = NextPopover()
+        self.__search = None
+        self.__next_was_inhibited = False
         builder = Gtk.Builder()
         builder.add_from_resource('/org/gnome/Lollypop/ToolbarEnd.ui')
         builder.connect_signals(self)
 
         self.add(builder.get_object('end'))
 
-        self._grid_next = builder.get_object('grid-next')
+        self.__grid_next = builder.get_object('grid-next')
 
-        self._shuffle_button = builder.get_object('shuffle-button')
-        self._shuffle_image = builder.get_object('shuffle-button-image')
+        self.__shuffle_button = builder.get_object('shuffle-button')
+        self.__shuffle_image = builder.get_object('shuffle-button-image')
         shuffleAction = Gio.SimpleAction.new('shuffle-button', None)
-        shuffleAction.connect('activate', self._activate_shuffle_button)
+        shuffleAction.connect('activate', self.__activate_shuffle_button)
         app.add_action(shuffleAction)
         app.set_accels_for_action("app.shuffle-button", ["<Control>r"])
-        Lp().settings.connect('changed::shuffle', self._on_shuffle_changed)
+        Lp().settings.connect('changed::shuffle', self.__on_shuffle_changed)
 
-        self._party_button = builder.get_object('party-button')
+        self.__party_button = builder.get_object('party-button')
         party_action = Gio.SimpleAction.new('party', None)
-        party_action.connect('activate', self._activate_party_button)
+        party_action.connect('activate', self.__activate_party_button)
         app.add_action(party_action)
         app.set_accels_for_action("app.party", ["<Control>p"])
 
-        self._search_button = builder.get_object('search-button')
+        self.__search_button = builder.get_object('search-button')
         search_action = Gio.SimpleAction.new('search', None)
         search_action.connect('activate', self._on_search_button_clicked)
         app.add_action(search_action)
         app.set_accels_for_action("app.search", ["<Control>f"])
 
-        self._settings_button = builder.get_object('settings-button')
+        self.__settings_button = builder.get_object('settings-button')
 
-        self._list_button = builder.get_object('list-button')
-        self._list_button.set_property('has-tooltip', True)
-        self._list_button.connect('query-tooltip',
-                                  self._on_list_button_query_tooltip)
+        self.__list_button = builder.get_object('list-button')
+        self.__list_button.set_property('has-tooltip', True)
+        self.__list_button.connect('query-tooltip',
+                                   self.__on_list_button_query_tooltip)
         list_action = Gio.SimpleAction.new('list', None)
         list_action.connect('activate', self._on_list_button_clicked)
         app.add_action(list_action)
         app.set_accels_for_action("app.list", ["<Control>i"])
-        self._list_popover = None
-        Lp().player.connect('party-changed', self._on_party_changed)
-        Lp().player.connect('lock-changed', self._on_lock_changed)
+        self.__list_popover = None
+        Lp().player.connect('party-changed', self.__on_party_changed)
+        Lp().player.connect('lock-changed', self.__on_lock_changed)
 
     def setup_menu(self, menu):
         """
             Add an application menu to menu button
             @parma: menu as Gio.Menu
         """
-        self._settings_button.show()
-        self._settings_button.set_menu_model(menu)
+        self.__settings_button.show()
+        self.__settings_button.set_menu_model(menu)
 
     def on_status_changed(self, player):
         """
@@ -173,7 +176,7 @@ class ToolbarEnd(Gtk.Bin):
         if player.is_playing():
             # Party mode can be activated
             # via Fullscreen class, so check button state
-            self._party_button.set_active(player.is_party)
+            self.__party_button.set_active(player.is_party)
 
     def on_next_changed(self, player, force=False):
         """
@@ -183,179 +186,40 @@ class ToolbarEnd(Gtk.Bin):
         """
         # Do not show popover is this menu is active
         # or if we are hidden
-        if self._shuffle_button.get_active() or\
-           not self._grid_next.is_visible():
+        if self.__shuffle_button.get_active() or\
+           not self.__grid_next.is_visible():
             return
-        if self._next_popover.should_be_shown() or force:
-            if self._next_popover.is_visible():
-                self._next_popover.update()
+        if self.__next_popover.should_be_shown() or force:
+            if self.__next_popover.is_visible():
+                self.__next_popover.update()
             else:
-                self._next_popover.set_relative_to(self._grid_next)
-                self._next_popover.show()
+                self.__next_popover.set_relative_to(self.__grid_next)
+                self.__next_popover.show()
         else:
-            self._next_popover.hide()
+            self.__next_popover.hide()
 
 #######################
-# PRIVATE             #
+# PROTECTED           #
 #######################
-    def _on_lock_changed(self, player):
-        """
-            Lock toolbar
-            @param player as Player
-        """
-        self._party_button.set_sensitive(not player.locked)
-        self._list_button.set_sensitive(not player.locked)
-        self._shuffle_button.set_sensitive(not player.locked)
-
     def _on_shuffle_button_clicked(self, button):
         """
             Hide next popover
             @param button as Gtk.Button
         """
-        self._next_popover.hide()
-
-    def _set_shuffle_icon(self):
-        """
-            Set shuffle icon
-        """
-        shuffle = Lp().settings.get_enum('shuffle')
-        if shuffle == Shuffle.NONE:
-            self._shuffle_image.get_style_context().remove_class('selected')
-            self._shuffle_image.set_from_icon_name(
-                "media-playlist-consecutive-symbolic",
-                Gtk.IconSize.SMALL_TOOLBAR)
-        else:
-            self._shuffle_image.set_from_icon_name(
-                "media-playlist-shuffle-symbolic",
-                Gtk.IconSize.SMALL_TOOLBAR)
-            if shuffle == Shuffle.TRACKS:
-                self._shuffle_image.get_style_context().add_class('selected')
-            else:
-                self._shuffle_image.get_style_context().remove_class(
-                                                                    'selected')
-
-    def _activate_party_button(self, action=None, param=None):
-        """
-            Activate party button
-            @param action as Gio.SimpleAction
-            @param param as GLib.Variant
-        """
-        self._party_button.set_active(not self._party_button.get_active())
-        Lp().window.responsive_design()
-
-    def _activate_shuffle_button(self, action=None, param=None):
-        """
-            Activate shuffle button
-            @param action as Gio.SimpleAction
-            @param param as GLib.Variant
-        """
-        self._shuffle_button.set_active(not self._shuffle_button.get_active())
-
-    def _on_shuffle_changed(self, settings, value):
-        """
-            Mark shuffle button as active when shuffle active
-            @param settings as Gio.Settings, value as str
-        """
-        self._set_shuffle_icon()
-        self._next_popover.hide()
-
-    def _on_search_button_clicked(self, obj, param=None):
-        """
-            Show search widget on search button clicked
-            @param obj as Gtk.Button or Gtk.Action
-        """
-        self._next_was_inhibited = self._next_popover.inhibited
-        self._next_popover.hide()
-        self._next_popover.inhibit(True)
-        if self._search is None:
-            self._search = SearchPopover()
-            self._search.connect('closed', self._on_popover_closed)
-        self._search.set_relative_to(self._search_button)
-        self._search.show()
+        self.__next_popover.hide()
 
     def _on_party_button_toggled(self, button):
         """
             Set party mode on if party button active
             @param obj as Gtk.button
         """
-        active = self._party_button.get_active()
-        self._shuffle_button.set_sensitive(not active)
+        active = self.__party_button.get_active()
+        self.__shuffle_button.set_sensitive(not active)
         if not Lp().settings.get_value('dark-ui'):
             settings = Gtk.Settings.get_default()
             settings.set_property("gtk-application-prefer-dark-theme", active)
         Lp().player.set_party(active)
         self.on_next_changed(Lp().player)
-
-    def _on_party_changed(self, player, is_party):
-        """
-            On party change, sync toolbar
-            @param player as Player
-            @param is party as bool
-        """
-        if self._party_button.get_active() != is_party:
-            self._activate_party_button()
-
-    def _on_list_button_clicked(self, widget, unused=None):
-        """
-            Show current playback context popover
-            @param widget as Gtk.Widget
-        """
-        if self._list_popover is not None:
-            return
-        self._next_was_inhibited = self._next_popover.inhibited
-        self._next_popover.hide()
-        self._next_popover.inhibit(True)
-        if Lp().player.current_track.id == Type.EXTERNALS:
-            self._list_popover = ExternalsPopover()
-            self._list_popover.set_relative_to(self._list_button)
-            self._list_popover.populate()
-            self._list_popover.show()
-        elif Lp().player.get_queue():
-            self._list_popover = QueuePopover()
-            self._list_popover.set_relative_to(self._list_button)
-            self._list_popover.show()
-        elif Lp().player.get_user_playlist_ids():
-            self._list_popover = PlaylistsPopover()
-            self._list_popover.set_relative_to(self._list_button)
-            self._list_popover.show()
-        else:
-            self._list_popover = AlbumsPopover()
-            self._list_popover.set_relative_to(self._list_button)
-            self._list_popover.show()
-        self._list_popover.connect('closed', self._on_list_popover_closed)
-        return True
-
-    def _on_list_popover_closed(self, popover):
-        """
-            Reset variable
-            @param popover as Gtk.Popover
-        """
-        self._list_popover = None
-        self._on_popover_closed(popover)
-
-    def _on_popover_closed(self, popover):
-        """
-            Restore next popover if needed
-            @param popover as Gtk.Popover
-        """
-        if not self._next_was_inhibited:
-            self._next_popover.inhibit(False)
-        if self._next_popover.should_be_shown():
-            self._next_popover.show()
-
-    def _on_show(self, widget):
-        """
-            Show popover if needed
-            @param widget as Gtk.Widget
-        """
-        self._set_shuffle_icon()
-
-    def _on_hide(self, widget):
-        """
-            Hide popover
-            @param widget as Gtk.Widget
-        """
-        self._next_popover.hide()
 
     def _on_button_press_event(self, eventbox, event):
         """
@@ -366,13 +230,156 @@ class ToolbarEnd(Gtk.Bin):
         if event.button == 3:
             popover = PartyPopover()
             popover.set_relative_to(eventbox)
-            self._next_popover.hide()
-            popover.connect('closed', self._on_popover_closed)
-            self._next_popover.inhibit(True)
+            self.__next_popover.hide()
+            popover.connect('closed', self.__on_popover_closed)
+            self.__next_popover.inhibit(True)
             popover.show()
             return True
 
-    def _on_list_button_query_tooltip(self, widget, x, y, keyboard, tooltip):
+    def _on_list_button_clicked(self, widget, unused=None):
+        """
+            Show current playback context popover
+            @param widget as Gtk.Widget
+        """
+        if self.__list_popover is not None:
+            return
+        self.__next_was_inhibited = self.__next_popover.inhibited
+        self.__next_popover.hide()
+        self.__next_popover.inhibit(True)
+        if Lp().player.current_track.id == Type.EXTERNALS:
+            self.__list_popover = ExternalsPopover()
+            self.__list_popover.set_relative_to(self.__list_button)
+            self.__list_popover.populate()
+            self.__list_popover.show()
+        elif Lp().player.get_queue():
+            self.__list_popover = QueuePopover()
+            self.__list_popover.set_relative_to(self.__list_button)
+            self.__list_popover.show()
+        elif Lp().player.get_user_playlist_ids():
+            self.__list_popover = PlaylistsPopover()
+            self.__list_popover.set_relative_to(self.__list_button)
+            self.__list_popover.show()
+        else:
+            self.__list_popover = AlbumsPopover()
+            self.__list_popover.set_relative_to(self.__list_button)
+            self.__list_popover.show()
+        self.__list_popover.connect('closed', self.__on_list_popover_closed)
+        return True
+
+    def _on_search_button_clicked(self, obj, param=None):
+        """
+            Show search widget on search button clicked
+            @param obj as Gtk.Button or Gtk.Action
+        """
+        self.__next_was_inhibited = self.__next_popover.inhibited
+        self.__next_popover.hide()
+        self.__next_popover.inhibit(True)
+        if self.__search is None:
+            self.__search = SearchPopover()
+            self.__search.connect('closed', self.__on_popover_closed)
+        self.__search.set_relative_to(self.__search_button)
+        self.__search.show()
+
+#######################
+# PRIVATE             #
+#######################
+    def __on_lock_changed(self, player):
+        """
+            Lock toolbar
+            @param player as Player
+        """
+        self.__party_button.set_sensitive(not player.locked)
+        self.__list_button.set_sensitive(not player.locked)
+        self.__shuffle_button.set_sensitive(not player.locked)
+
+    def __set_shuffle_icon(self):
+        """
+            Set shuffle icon
+        """
+        shuffle = Lp().settings.get_enum('shuffle')
+        if shuffle == Shuffle.NONE:
+            self.__shuffle_image.get_style_context().remove_class('selected')
+            self.__shuffle_image.set_from_icon_name(
+                "media-playlist-consecutive-symbolic",
+                Gtk.IconSize.SMALL_TOOLBAR)
+        else:
+            self.__shuffle_image.set_from_icon_name(
+                "media-playlist-shuffle-symbolic",
+                Gtk.IconSize.SMALL_TOOLBAR)
+            if shuffle == Shuffle.TRACKS:
+                self.__shuffle_image.get_style_context().add_class('selected')
+            else:
+                self.__shuffle_image.get_style_context().remove_class(
+                                                                    'selected')
+
+    def __activate_party_button(self, action=None, param=None):
+        """
+            Activate party button
+            @param action as Gio.SimpleAction
+            @param param as GLib.Variant
+        """
+        self.__party_button.set_active(not self.__party_button.get_active())
+        Lp().window.responsive_design()
+
+    def __activate_shuffle_button(self, action=None, param=None):
+        """
+            Activate shuffle button
+            @param action as Gio.SimpleAction
+            @param param as GLib.Variant
+        """
+        self.__shuffle_button.set_active(
+            not self.__shuffle_button.get_active())
+
+    def __on_shuffle_changed(self, settings, value):
+        """
+            Mark shuffle button as active when shuffle active
+            @param settings as Gio.Settings, value as str
+        """
+        self.__set_shuffle_icon()
+        self.__next_popover.hide()
+
+    def __on_party_changed(self, player, is_party):
+        """
+            On party change, sync toolbar
+            @param player as Player
+            @param is party as bool
+        """
+        if self.__party_button.get_active() != is_party:
+            self.__activate_party_button()
+
+    def __on_list_popover_closed(self, popover):
+        """
+            Reset variable
+            @param popover as Gtk.Popover
+        """
+        self.__list_popover = None
+        self.__on_popover_closed(popover)
+
+    def __on_popover_closed(self, popover):
+        """
+            Restore next popover if needed
+            @param popover as Gtk.Popover
+        """
+        if not self.__next_was_inhibited:
+            self.__next_popover.inhibit(False)
+        if self.__next_popover.should_be_shown():
+            self.__next_popover.show()
+
+    def __on_show(self, widget):
+        """
+            Show popover if needed
+            @param widget as Gtk.Widget
+        """
+        self.__set_shuffle_icon()
+
+    def __on_hide(self, widget):
+        """
+            Hide popover
+            @param widget as Gtk.Widget
+        """
+        self.__next_popover.hide()
+
+    def __on_list_button_query_tooltip(self, widget, x, y, keyboard, tooltip):
         """
             Show tooltip
             @param widget as Gtk.Widget
