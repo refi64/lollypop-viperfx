@@ -32,23 +32,23 @@ class WebView(Gtk.Stack):
             @param private as bool
         """
         Gtk.Stack.__init__(self)
-        self.connect('destroy', self._on_destroy)
+        self.connect('destroy', self.__on_destroy)
         self.set_transition_duration(500)
         self.set_transition_type(Gtk.StackTransitionType.CROSSFADE)
-        self._current_domain = ''
-        self._url = ''
-        self._allowed_words = []
-        self._open_links = OpenLink.NEW
+        self.__current_domain = ''
+        self.__url = ''
+        self.__allowed_words = []
+        self.__open_links = OpenLink.NEW
         builder = Gtk.Builder()
         # Use ressource from ArtistContent
         builder.add_from_resource('/org/gnome/Lollypop/InfoContent.ui')
-        self._view = WebKit2.WebView()
-        self._spinner = builder.get_object('spinner')
-        self.add_named(self._spinner, 'spinner')
+        self.__view = WebKit2.WebView()
+        self.__spinner = builder.get_object('spinner')
+        self.add_named(self.__spinner, 'spinner')
         self.set_visible_child_name('spinner')
-        self.add_named(self._view, 'view')
-        self._view.connect('load-changed', self._on_load_changed)
-        settings = self._view.get_settings()
+        self.add_named(self.__view, 'view')
+        self.__view.connect('load-changed', self.__on_load_changed)
+        settings = self.__view.get_settings()
         # Private browsing make duckduckgo fail to switch translations
         if private:
             settings.set_property('enable-private-browsing', True)
@@ -69,29 +69,29 @@ class WebView(Gtk.Stack):
                                   "Mozilla/5.0 (Linux; Ubuntu 14.04;"
                                   " BlackBerry) AppleWebKit2/537.36 Chromium"
                                   "/35.0.1870.2 Mobile Safari/537.36")
-        self._view.set_settings(settings)
+        self.__view.set_settings(settings)
         # FIXME TLS is broken in WebKit2, don't know how to fix this
-        self._view.get_context().set_tls_errors_policy(
+        self.__view.get_context().set_tls_errors_policy(
                                                 WebKit2.TLSErrorsPolicy.IGNORE)
-        self._view.connect('decide-policy', self._on_decide_policy)
-        self._view.connect('context-menu', self._on_context_menu)
-        self._view.set_property('hexpand', True)
-        self._view.set_property('vexpand', True)
-        self._view.show()
+        self.__view.connect('decide-policy', self.__on_decide_policy)
+        self.__view.connect('context-menu', self.__on_context_menu)
+        self.__view.set_property('hexpand', True)
+        self.__view.set_property('vexpand', True)
+        self.__view.show()
 
     @property
     def url(self):
         """
             domain as str
         """
-        return self._url
+        return self.__url
 
     def add_word(self, word):
         """
             Add a word to allowed urls, only urls with this word will
             get a navigation token
         """
-        self._allowed_words.append(word)
+        self.__allowed_words.append(word)
 
     def load(self, url, open_link):
         """
@@ -99,22 +99,22 @@ class WebView(Gtk.Stack):
             @param url as string
             @param open link as OpenLink
         """
-        self._open_link = open_link
-        self._url = url
-        self._current_domain = self._get_domain(url)
-        self._view.grab_focus()
-        self._view.load_uri(url)
+        self.__open_link = open_link
+        self.__url = url
+        self.__current_domain = self.__get_domain(url)
+        self.__view.grab_focus()
+        self.__view.load_uri(url)
 
     def stop(self):
         """
             Stop loading
         """
-        self._view.stop_loading()
+        self.__view.stop_loading()
 
 #######################
 # PRIVATE             #
 #######################
-    def _get_domain(self, url):
+    def __get_domain(self, url):
         """
             Return domain for url
             @param url as str
@@ -123,15 +123,15 @@ class WebView(Gtk.Stack):
         split = hostname.split('.')
         return split[-2] + "." + split[-1]
 
-    def _on_destroy(self, widget):
+    def __on_destroy(self, widget):
         """
             Destroy webkit view to stop any audio playback
             @param widget as Gtk.Widget
         """
-        self._view.stop_loading()
-        self._view.destroy()
+        self.__view.stop_loading()
+        self.__view.destroy()
 
-    def _on_load_changed(self, view, event):
+    def __on_load_changed(self, view, event):
         """
             Show view if finished
             @param view as WebKit2.View
@@ -140,13 +140,13 @@ class WebView(Gtk.Stack):
         if event == WebKit2.LoadEvent.STARTED:
             self.set_transition_type(Gtk.StackTransitionType.NONE)
             self.set_visible_child_name('spinner')
-            self._spinner.start()
+            self.__spinner.start()
             self.set_transition_type(Gtk.StackTransitionType.CROSSFADE)
         elif event == WebKit2.LoadEvent.FINISHED:
             self.set_visible_child_name('view')
-            self._spinner.stop()
+            self.__spinner.stop()
 
-    def _on_decide_policy(self, view, decision, decision_type):
+    def __on_decide_policy(self, view, decision, decision_type):
         """
             Navigation policy
             @param view as WebKit2.WebView
@@ -167,22 +167,22 @@ class WebView(Gtk.Stack):
 
         # Refused non allowed words
         found = False
-        for word in self._allowed_words:
+        for word in self.__allowed_words:
             if word in url:
                 found = True
                 break
-        if self._allowed_words and not found:
+        if self.__allowed_words and not found:
             decision.ignore()
             return True
 
         # On clicked, if external wanted, launch user browser and stop
         # If navigation not allowed, stop
-        if self._open_link == OpenLink.NEW and\
-                self._get_domain(url) != self._current_domain:
+        if self.__open_link == OpenLink.NEW and\
+                self.__get_domain(url) != self.__current_domain:
             GLib.spawn_command_line_async("xdg-open \"%s\"" % url)
             decision.ignore()
             return True
-        elif self._open_link == OpenLink.NONE:
+        elif self.__open_link == OpenLink.NONE:
             decision.ignore()
             return True
         # Use click, load page
@@ -191,14 +191,14 @@ class WebView(Gtk.Stack):
             decision.use()
             return False
         # If external domain, do not load
-        elif self._get_domain(url) != self._current_domain:
+        elif self.__get_domain(url) != self.__current_domain:
             decision.ignore()
             return True
-        self._current_domain = self._get_domain(url)
+        self.__current_domain = self.__get_domain(url)
         decision.use()
         return False
 
-    def _on_context_menu(self, view, menu, event, hit):
+    def __on_context_menu(self, view, menu, event, hit):
         """
             No menu
             @param view as WebKit2.WebView
