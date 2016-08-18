@@ -39,12 +39,12 @@ class ToolbarPlayback(Gtk.Bin, PlaybackController):
         self._play_image = builder.get_object('play_image')
         self._pause_image = builder.get_object('pause_image')
 
-        Lp().player.connect('lock-changed', self._on_lock_changed)
+        Lp().player.connect('lock-changed', self.__on_lock_changed)
 
 #######################
 # PRIVATE             #
 #######################
-    def _on_lock_changed(self, player):
+    def __on_lock_changed(self, player):
         """
             Lock toolbar
             @param player as Player
