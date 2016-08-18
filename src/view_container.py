@@ -27,7 +27,7 @@ class ViewContainer(Gtk.Stack):
         """
         Gtk.Stack.__init__(self)
         self.set_property("expand", True)
-        self._duration = duration
+        self.__duration = duration
         self.set_transition_duration(duration)
         self.set_transition_type(Gtk.StackTransitionType.CROSSFADE)
 
@@ -43,14 +43,14 @@ class ViewContainer(Gtk.Stack):
                         child.stop()
                     # Delayed destroy as we may have an animation running
                     # Gtk.StackTransitionType.CROSSFADE
-                    GLib.timeout_add(self._duration*5,
-                                     self._delayedclean_view,
+                    GLib.timeout_add(self.__duration*5,
+                                     self.__delayedclean_view,
                                      child)
 
 #######################
 # PRIVATE             #
 #######################
-    def _delayedclean_view(self, view):
+    def __delayedclean_view(self, view):
         """
             Clean view
             @param valid view as View
