@@ -42,75 +42,75 @@ class DeviceManagerWidget(Gtk.Bin, MtpSync):
         """
         Gtk.Bin.__init__(self)
         MtpSync.__init__(self)
-        self._parent = parent
+        self.__parent = parent
         self._progress = progress
         self._uri = None
 
         builder = Gtk.Builder()
         builder.add_from_resource('/org/gnome/Lollypop/DeviceManagerWidget.ui')
-        self._error_label = builder.get_object('error-label')
-        self._switch_albums = builder.get_object('switch_albums')
-        self._switch_albums.set_state(Lp().settings.get_value('sync-albums'))
-        self._switch_mp3 = builder.get_object('switch_mp3')
-        self._switch_normalize = builder.get_object('switch_normalize')
+        self.__error_label = builder.get_object('error-label')
+        self.__switch_albums = builder.get_object('switch_albums')
+        self.__switch_albums.set_state(Lp().settings.get_value('sync-albums'))
+        self.__switch_mp3 = builder.get_object('switch_mp3')
+        self.__switch_normalize = builder.get_object('switch_normalize')
         if not self._check_encoder_status():
-            self._switch_mp3.set_sensitive(False)
-            self._switch_normalize.set_sensitive(False)
-            self._switch_mp3.set_tooltip_text(_("You need to install " +
-                                              "gstreamer-plugins-ugly"))
+            self.__switch_mp3.set_sensitive(False)
+            self.__switch_normalize.set_sensitive(False)
+            self.__switch_mp3.set_tooltip_text(_("You need to install " +
+                                               "gstreamer-plugins-ugly"))
         else:
-            self._switch_mp3.set_state(Lp().settings.get_value('convert-mp3'))
-        self._menu_items = builder.get_object('menu-items')
-        self._menu = builder.get_object('menu')
+            self.__switch_mp3.set_state(Lp().settings.get_value('convert-mp3'))
+        self.__menu_items = builder.get_object('menu-items')
+        self.__menu = builder.get_object('menu')
 
-        self._model = Gtk.ListStore(bool, str, int)
-        self._model.set_sort_column_id(1, Gtk.SortType.ASCENDING)
-        self._model.set_sort_func(1, self._sort_items)
+        self.__model = Gtk.ListStore(bool, str, int)
+        self.__model.set_sort_column_id(1, Gtk.SortType.ASCENDING)
+        self.__model.set_sort_func(1, self.__sort_items)
 
-        self._view = builder.get_object('view')
-        self._view.set_model(self._model)
+        self.__view = builder.get_object('view')
+        self.__view.set_model(self.__model)
 
         builder.connect_signals(self)
 
         self.add(builder.get_object('widget'))
 
-        self._infobar = builder.get_object('infobar')
-        self._infobar_label = builder.get_object('infobarlabel')
+        self.__infobar = builder.get_object('infobar')
+        self.__infobar_label = builder.get_object('infobarlabel')
 
         renderer0 = Gtk.CellRendererToggle()
         renderer0.set_property('activatable', True)
-        renderer0.connect('toggled', self._on_playlist_toggled)
+        renderer0.connect('toggled', self.__on_playlist_toggled)
         column0 = Gtk.TreeViewColumn(" ✓", renderer0, active=0)
         column0.set_clickable(True)
-        column0.connect('clicked', self._on_column0_clicked)
+        column0.connect('clicked', self.__on_column0_clicked)
 
         renderer1 = CellRendererAlbum()
-        self._column1 = Gtk.TreeViewColumn("", renderer1, album=2)
+        self.__column1 = Gtk.TreeViewColumn("", renderer1, album=2)
 
         renderer2 = Gtk.CellRendererText()
         renderer2.set_property('ellipsize-set', True)
         renderer2.set_property('ellipsize', Pango.EllipsizeMode.END)
-        self._column2 = Gtk.TreeViewColumn("", renderer2, markup=1)
-        self._column2.set_expand(True)
+        self.__column2 = Gtk.TreeViewColumn("", renderer2, markup=1)
+        self.__column2.set_expand(True)
 
-        self._view.append_column(column0)
-        self._view.append_column(self._column1)
-        self._view.append_column(self._column2)
+        self.__view.append_column(column0)
+        self.__view.append_column(self.__column1)
+        self.__view.append_column(self.__column2)
 
     def populate(self):
         """
             Populate playlists
             @thread safe
         """
-        self._model.clear()
+        self.__model.clear()
         if Lp().settings.get_value('sync-albums'):
-            self._append_albums()
-            self._column1.set_visible(True)
-            self._column2.set_title(_("Albums"))
+            self.__append_albums()
+            self.__column1.set_visible(True)
+            self.__column2.set_title(_("Albums"))
         else:
-            self._append_playlists()
-            self._column1.set_visible(False)
-            self._column2.set_title(_("Playlists"))
+            self.__append_playlists()
+            self.__column1.set_visible(False)
+            self.__column2.set_title(_("Playlists"))
 
     def set_uri(self, uri):
         """
@@ -138,11 +138,11 @@ class DeviceManagerWidget(Gtk.Bin, MtpSync):
         self._syncing = True
         self._progress.show()
         self._progress.set_fraction(0.0)
-        self._menu.set_sensitive(False)
+        self.__menu.set_sensitive(False)
         playlists = []
         if not Lp().settings.get_value('sync-albums'):
-            self._view.set_sensitive(False)
-            for item in self._model:
+            self.__view.set_sensitive(False)
+            for item in self.__model:
                 if item[0]:
                     playlists.append(item[2])
         else:
@@ -150,8 +150,8 @@ class DeviceManagerWidget(Gtk.Bin, MtpSync):
 
         t = Thread(target=self._sync,
                    args=(playlists,
-                         self._switch_mp3.get_active(),
-                         self._switch_normalize.get_active()))
+                         self.__switch_mp3.get_active(),
+                         self.__switch_normalize.get_active()))
         t.daemon = True
         t.start()
 
@@ -168,46 +168,8 @@ class DeviceManagerWidget(Gtk.Bin, MtpSync):
         pass
 
 #######################
-# PRIVATE             #
+# PROTECTED           #
 #######################
-    def _sort_items(self, model, itera, iterb, data):
-        """
-            Sort model
-        """
-        a = model.get_value(itera, 1)
-        b = model.get_value(iterb, 1)
-        return a.lower() > b.lower()
-
-    def _append_playlists(self):
-        """
-            Append a playlist
-        """
-        playlists = [(Type.LOVED, Lp().playlists.LOVED)]
-        playlists += Lp().playlists.get()
-        for playlist in playlists:
-            playlist_name = GLib.uri_escape_string(playlist[1], "", False)
-            playlist_obj = Gio.File.new_for_uri(self._uri + "/" +
-                                                playlist_name + '.m3u')
-            selected = playlist_obj.query_exists(None)
-            self._model.append([selected, playlist[1], playlist[0]])
-
-    def _append_albums(self):
-        """
-            Append albums
-        """
-        for album_id in Lp().albums.get_ids() +\
-                Lp().albums.get_compilation_ids():
-            album = Album(album_id)
-            if album.artist_ids[0] == Type.COMPILATIONS:
-                name = escape(album.name)
-            else:
-                artists = ", ".join(album.artists)
-                name = "<b>%s</b> - %s" % (
-                        escape(artists),
-                        escape(album.name))
-            selected = Lp().albums.get_synced(album_id)
-            self._model.append([selected, name, album_id])
-
     def _update_progress(self):
         """
             Update progress bar smoothly
@@ -235,32 +197,22 @@ class DeviceManagerWidget(Gtk.Bin, MtpSync):
             @param button as Gtk.Button
             @param album id as int
         """
-        parent = self._menu_items.get_parent()
+        parent = self.__menu_items.get_parent()
         if parent is not None:
-            parent.remove(self._menu_items)
+            parent.remove(self.__menu_items)
         popover = Gtk.Popover.new(button)
         popover.set_position(Gtk.PositionType.BOTTOM)
-        popover.add(self._menu_items)
+        popover.add(self.__menu_items)
         popover.show()
-
-    def _populate_albums_playlist(self, album_id, toggle):
-        """
-            Populate hidden albums playlist
-            @param album_id as int
-            @param toggle as bool
-            @warning commit on default sql cursor needed
-        """
-        if Lp().settings.get_value('sync-albums'):
-            Lp().albums.set_synced(album_id, toggle)
 
     def _on_finished(self):
         """
             Emit finished signal
         """
         MtpSync._on_finished(self)
-        if not self._switch_albums.get_state():
-            self._view.set_sensitive(True)
-        self._menu.set_sensitive(True)
+        if not self.__switch_albums.get_state():
+            self.__view.set_sensitive(True)
+        self.__menu.set_sensitive(True)
         self.emit('sync-finished')
 
     def _on_errors(self):
@@ -279,8 +231,8 @@ class DeviceManagerWidget(Gtk.Bin, MtpSync):
                 error_text = _("No free space available on device")
         except Exception as e:
             print("DeviceWidget::_on_errors(): %s" % e)
-        self._error_label.set_text(error_text)
-        self._infobar.show()
+        self.__error_label.set_text(error_text)
+        self.__infobar.show()
 
     def _on_albums_state_set(self, widget, state):
         """
@@ -300,7 +252,7 @@ class DeviceManagerWidget(Gtk.Bin, MtpSync):
         """
         Lp().settings.set_value('convert-mp3', GLib.Variant('b', state))
         if not state:
-            self._switch_normalize.set_active(False)
+            self.__switch_normalize.set_active(False)
             Lp().settings.set_value('normalize-mp3',
                                     GLib.Variant('b', False))
 
@@ -312,7 +264,7 @@ class DeviceManagerWidget(Gtk.Bin, MtpSync):
         """
         Lp().settings.set_value('normalize-mp3', GLib.Variant('b', state))
         if state:
-            self._switch_mp3.set_active(True)
+            self.__switch_mp3.set_active(True)
             Lp().settings.set_value('convert-mp3', GLib.Variant('b', True))
 
     def _on_response(self, infobar, response_id):
@@ -322,33 +274,84 @@ class DeviceManagerWidget(Gtk.Bin, MtpSync):
             @param reponse id as int
         """
         if response_id == Gtk.ResponseType.CLOSE:
-            self._infobar.hide()
+            self.__infobar.hide()
 
-    def _on_column0_clicked(self, column):
+#######################
+# PRIVATE             #
+#######################
+    def __sort_items(self, model, itera, iterb, data):
+        """
+            Sort model
+        """
+        a = model.get_value(itera, 1)
+        b = model.get_value(iterb, 1)
+        return a.lower() > b.lower()
+
+    def __append_playlists(self):
+        """
+            Append a playlist
+        """
+        playlists = [(Type.LOVED, Lp().playlists.LOVED)]
+        playlists += Lp().playlists.get()
+        for playlist in playlists:
+            playlist_name = GLib.uri_escape_string(playlist[1], "", False)
+            playlist_obj = Gio.File.new_for_uri(self._uri + "/" +
+                                                playlist_name + '.m3u')
+            selected = playlist_obj.query_exists(None)
+            self.__model.append([selected, playlist[1], playlist[0]])
+
+    def __append_albums(self):
+        """
+            Append albums
+        """
+        for album_id in Lp().albums.get_ids() +\
+                Lp().albums.get_compilation_ids():
+            album = Album(album_id)
+            if album.artist_ids[0] == Type.COMPILATIONS:
+                name = escape(album.name)
+            else:
+                artists = ", ".join(album.artists)
+                name = "<b>%s</b> - %s" % (
+                        escape(artists),
+                        escape(album.name))
+            selected = Lp().albums.get_synced(album_id)
+            self.__model.append([selected, name, album_id])
+
+    def __populate_albums_playlist(self, album_id, toggle):
+        """
+            Populate hidden albums playlist
+            @param album_id as int
+            @param toggle as bool
+            @warning commit on default sql cursor needed
+        """
+        if Lp().settings.get_value('sync-albums'):
+            Lp().albums.set_synced(album_id, toggle)
+
+    def __on_column0_clicked(self, column):
         """
             Select/Unselect all playlists
             @param column as Gtk.TreeViewColumn
         """
         selected = False
-        for item in self._model:
+        for item in self.__model:
             if item[0]:
                 selected = True
-        for item in self._model:
+        for item in self.__model:
             item[0] = not selected
-            self._populate_albums_playlist(item[2], item[0])
+            self.__populate_albums_playlist(item[2], item[0])
         with SqlCursor(Lp().db) as sql:
             sql.commit()
 
-    def _on_playlist_toggled(self, view, path):
+    def __on_playlist_toggled(self, view, path):
         """
             When item is toggled, set model
             @param widget as cell renderer
             @param path as str representation of Gtk.TreePath
         """
-        iterator = self._model.get_iter(path)
-        toggle = not self._model.get_value(iterator, 0)
-        self._model.set_value(iterator, 0, toggle)
-        album_id = self._model.get_value(iterator, 2)
-        self._populate_albums_playlist(album_id, toggle)
+        iterator = self.__model.get_iter(path)
+        toggle = not self.__model.get_value(iterator, 0)
+        self.__model.set_value(iterator, 0, toggle)
+        album_id = self.__model.get_value(iterator, 2)
+        self.__populate_albums_playlist(album_id, toggle)
         with SqlCursor(Lp().db) as sql:
             sql.commit()
