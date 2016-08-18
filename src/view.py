@@ -49,28 +49,28 @@ class View(Gtk.Grid):
             Stop populating
         """
         self._stop = True
-        for child in self.__get_children():
+        for child in self._get_children():
             child.stop()
 
     def update_children(self):
         """
             Update children
         """
-        GLib.idle_add(self.__update_widgets, self.__get_children())
+        GLib.idle_add(self.__update_widgets, self._get_children())
 
     def disable_overlays(self):
         """
             Disable children's overlay
         """
-        GLib.idle_add(self.__disable_overlays, self.__get_children())
+        GLib.idle_add(self._disable_overlays, self._get_children())
 
     def populate(self):
         pass
 
 #######################
-# PRIVATE             #
+# PROTECTED           #
 #######################
-    def __disable_overlays(self, widgets):
+    def _disable_overlays(self, widgets):
         """
             Disable children's overlay
             @param widgets as AlbumWidget
@@ -78,8 +78,17 @@ class View(Gtk.Grid):
         if widgets:
             widget = widgets.pop(0)
             widget.show_overlay(False)
-            GLib.idle_add(self.__disable_overlays, widgets)
+            GLib.idle_add(self._disable_overlays, widgets)
 
+    def _get_children(self):
+        """
+            Return view children
+        """
+        return []
+
+#######################
+# PRIVATE             #
+#######################
     def __update_widgets(self, widgets):
         """
             Update all widgets
@@ -90,12 +99,6 @@ class View(Gtk.Grid):
             widget.update_state()
             widget.update_playing_indicator()
             GLib.idle_add(self.__update_widgets, widgets)
-
-    def __get_children(self):
-        """
-            Return view children
-        """
-        return []
 
     def __on_leave_notify(self, widget, event):
         """
@@ -128,7 +131,7 @@ class View(Gtk.Grid):
             @param art as Art
             @param album id as int
         """
-        for widget in self.__get_children():
+        for widget in self._get_children():
             if album_id == widget.get_id():
                 widget.update_cover()
 
@@ -137,7 +140,7 @@ class View(Gtk.Grid):
             Current song changed
             @param player as Player
         """
-        GLib.idle_add(self.__update_widgets, self.__get_children())
+        GLib.idle_add(self.__update_widgets, self._get_children())
 
 
 class LazyLoadingView(View):
