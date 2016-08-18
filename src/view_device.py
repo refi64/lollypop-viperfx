@@ -103,32 +103,32 @@ class DeviceView(View):
             @param progress as Gtk.ProgressBar
         """
         View.__init__(self)
-        self._timeout_id = None
-        self._device = device
-        self._progress = progress
+        self.__timeout_id = None
+        self.__device = device
+        self.__progress = progress
         builder = Gtk.Builder()
         builder.add_from_resource('/org/gnome/Lollypop/DeviceManagerView.ui')
-        self._memory_combo = builder.get_object('memory_combo')
-        self._syncing_btn = builder.get_object('sync_btn')
-        self._syncing_btn.set_label(_("Synchronize %s") % device.name)
+        self.__memory_combo = builder.get_object('memory_combo')
+        self.__syncing_btn = builder.get_object('sync_btn')
+        self.__syncing_btn.set_label(_("Synchronize %s") % device.name)
         builder.connect_signals(self)
         grid = builder.get_object('device')
         self.add(grid)
-        self._device_widget = DeviceManagerWidget(progress, self)
-        self._device_widget.connect('sync-finished', self._on_sync_finished)
-        self._device_widget.show()
-        self._viewport.add(self._device_widget)
+        self.__device_widget = DeviceManagerWidget(progress, self)
+        self.__device_widget.connect('sync-finished', self.__on_sync_finished)
+        self.__device_widget.show()
+        self._viewport.add(self.__device_widget)
         self.add(self._scrolled)
-        self._sanitize_non_mtp()
+        self.__sanitize_non_mtp()
 
     def populate(self):
         """
             Populate combo box
             @thread safe
         """
-        files = DeviceView.get_files(self._device.uri)
+        files = DeviceView.get_files(self.__device.uri)
         if files:
-            GLib.idle_add(self._set_combo_text, files)
+            GLib.idle_add(self.__set_combo_text, files)
         else:
             GLib.idle_add(self.destroy)
 
@@ -137,17 +137,52 @@ class DeviceView(View):
             Check if lollypop is syncing
             @return bool
         """
-        return self._device_widget.is_syncing()
+        return self.__device_widget.is_syncing()
+
+#######################
+# PROTECTED           #
+#######################
+    def _on_destroy(self, widget):
+        """
+            Remove running timeout
+            @param widget as Gtk.Widget
+        """
+        if self.__timeout_id is not None:
+            GLib.source_remove(self.__timeout_id)
+            self.__timeout_id = None
+
+    def _on_sync_clicked(self, widget):
+        """
+            Start synchronisation
+            @param widget as Gtk.Button
+        """
+        if self.__device_widget.is_syncing():
+            self.__device_widget.cancel_sync()
+        elif not self.__progress.is_visible():
+            self.__memory_combo.hide()
+            self.__syncing_btn.set_label(_("Cancel synchronization"))
+            self.__device_widget.sync()
+
+    def _on_memory_combo_changed(self, combo):
+        """
+            Update path
+            @param combo as Gtk.ComboxText
+        """
+        self.__timeout_id = None
+        text = combo.get_active_text()
+        uri = "%s%s/Music" % (self.__device.uri, text)
+        self.__device_widget.set_uri(uri)
+        self.__device_widget.populate()
 
 #######################
 # PRIVATE             #
 #######################
-    def _sanitize_non_mtp(self):
+    def __sanitize_non_mtp(self):
         """
             Sanitize non MTP device by changing uri and creating a default
             folder
         """
-        uri = self._device.uri
+        uri = self.__device.uri
         # Mtp device contain a virtual folder
         # For others, just go up in path
         if uri.find('mtp:') == -1:
@@ -157,64 +192,32 @@ class DeviceView(View):
         # Add / to uri if needed, some gvfs modules add one and some not
         if uri is not None and len(uri) > 1 and uri[-1:] != '/':
             uri += '/'
-        self._device.uri = uri
+        self.__device.uri = uri
 
     def stop(self):
         """
             Stop syncing
         """
-        self._device_widget.cancel_sync()
+        self.__device_widget.cancel_sync()
 
-    def _on_destroy(self, widget):
-        """
-            Remove running timeout
-            @param widget as Gtk.Widget
-        """
-        if self._timeout_id is not None:
-            GLib.source_remove(self._timeout_id)
-            self._timeout_id = None
-
-    def _on_sync_clicked(self, widget):
-        """
-            Start synchronisation
-            @param widget as Gtk.Button
-        """
-        if self._device_widget.is_syncing():
-            self._device_widget.cancel_sync()
-        elif not self._progress.is_visible():
-            self._memory_combo.hide()
-            self._syncing_btn.set_label(_("Cancel synchronization"))
-            self._device_widget.sync()
-
-    def _on_sync_finished(self, device_widget):
+    def __on_sync_finished(self, device_widget):
         """
             Restore widgets state
             @param device widget as DeviceManager
         """
-        self._progress.hide()
-        self._progress.set_fraction(0)
-        self._memory_combo.show()
-        self._syncing_btn.set_label(_("Synchronize %s") %
-                                    self._device.name)
+        self.__progress.hide()
+        self.__progress.set_fraction(0)
+        self.__memory_combo.show()
+        self.__syncing_btn.set_label(_("Synchronize %s") %
+                                     self.__device.name)
 
-    def _on_memory_combo_changed(self, combo):
-        """
-            Update path
-            @param combo as Gtk.ComboxText
-        """
-        self._timeout_id = None
-        text = combo.get_active_text()
-        uri = "%s%s/Music" % (self._device.uri, text)
-        self._device_widget.set_uri(uri)
-        self._device_widget.populate()
-
-    def _set_combo_text(self, text_list):
+    def __set_combo_text(self, text_list):
         """
             Set combobox text
             @param text list as [str]
         """
-        if self._memory_combo.get_active_text() is not None:
+        if self.__memory_combo.get_active_text() is not None:
             return
         for text in text_list:
-            self._memory_combo.append_text(text)
-        self._memory_combo.set_active(0)
+            self.__memory_combo.append_text(text)
+        self.__memory_combo.set_active(0)
