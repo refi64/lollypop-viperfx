@@ -42,7 +42,7 @@ class RatingWidget(Gtk.Bin):
         self.add(builder.get_object('widget'))
 
 #######################
-# PRIVATE             #
+# PROTECTED           #
 #######################
     def _on_enter_notify(self, widget, event):
         """

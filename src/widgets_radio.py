@@ -38,7 +38,7 @@ class RadioWidget(Gtk.FlowBoxChild, AlbumWidget):
         self._lock_overlay = False
         self._show_overlay = False
         self._timeout_id = None
-        self._radios_manager = radios_manager
+        self.__radios_manager = radios_manager
 
     def populate(self):
         """
@@ -52,12 +52,12 @@ class RadioWidget(Gtk.FlowBoxChild, AlbumWidget):
         self._cover = Gtk.Image()
         self._cover.set_property('halign', Gtk.Align.CENTER)
         self._cover.set_size_request(ArtSize.BIG, ArtSize.BIG)
-        self._title_label = Gtk.Label()
-        self._title_label.set_ellipsize(Pango.EllipsizeMode.END)
-        self._title_label.set_property('halign', Gtk.Align.CENTER)
-        self._title_label.set_text(self._name)
-        self._title_label.set_property('has-tooltip', True)
-        self._title_label.connect('query-tooltip', self._on_query_tooltip)
+        self.__title_label = Gtk.Label()
+        self.__title_label.set_ellipsize(Pango.EllipsizeMode.END)
+        self.__title_label.set_property('halign', Gtk.Align.CENTER)
+        self.__title_label.set_text(self._name)
+        self.__title_label.set_property('has-tooltip', True)
+        self.__title_label.connect('query-tooltip', self._on_query_tooltip)
         self._overlay = Gtk.Overlay()
         frame = Gtk.Frame()
         frame.get_style_context().add_class('cover-frame')
@@ -67,7 +67,7 @@ class RadioWidget(Gtk.FlowBoxChild, AlbumWidget):
         grid.set_orientation(Gtk.Orientation.VERTICAL)
         self._overlay.get_style_context().add_class('white')
         grid.add(self._overlay)
-        grid.add(self._title_label)
+        grid.add(self.__title_label)
         self._widget.add(grid)
         self.set_property('halign', Gtk.Align.CENTER)
         self.set_property('valign', Gtk.Align.CENTER)
@@ -103,7 +103,7 @@ class RadioWidget(Gtk.FlowBoxChild, AlbumWidget):
             @param name as string
         """
         self._name = name
-        self._title_label.set_label(name)
+        self.__title_label.set_label(name)
 
     def get_name(self):
         """
@@ -153,6 +153,9 @@ class RadioWidget(Gtk.FlowBoxChild, AlbumWidget):
             self._overlay.get_style_context().remove_class(
                                                     'cover-frame-selected')
 
+#######################
+# PROTECTED           #
+#######################
     def _show_overlay_func(self, set):
         """
             Set overlay
@@ -234,7 +237,7 @@ class RadioWidget(Gtk.FlowBoxChild, AlbumWidget):
             @param: widget as Gtk.EventBox
             @param: event as Gdk.Event
         """
-        url = self._radios_manager.get_url(self._name)
+        url = self.__radios_manager.get_url(self._name)
         if url:
             track = Track()
             track.set_radio(self._name, url)
@@ -246,7 +249,7 @@ class RadioWidget(Gtk.FlowBoxChild, AlbumWidget):
             @param: widget as Gtk.EventBox
             @param: event as Gdk.Event
         """
-        popover = RadioPopover(self._name, self._radios_manager)
+        popover = RadioPopover(self._name, self.__radios_manager)
         popover.set_relative_to(widget)
         popover.connect('closed', self._on_pop_cover_closed)
         self._lock_overlay = True

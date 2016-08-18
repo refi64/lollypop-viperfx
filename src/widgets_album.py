@@ -291,7 +291,7 @@ class AlbumWidget:
         """
         popover = CoversPopover(self._album)
         popover.set_relative_to(widget)
-        popover.connect('closed', self.__on_pop_cover_closed)
+        popover.connect('closed', self._on_pop_cover_closed)
         self._lock_overlay = True
         popover.show()
         return True
@@ -327,6 +327,14 @@ class AlbumWidget:
             self.__show_append(False)
         return True
 
+    def _on_pop_cover_closed(self, widget):
+        """
+            Remove selected style
+            @param widget as Gtk.Popover
+        """
+        self._lock_overlay = False
+        GLib.idle_add(self.show_overlay, False)
+
 #######################
 # PRIVATE             #
 #######################
@@ -361,14 +369,6 @@ class AlbumWidget:
         if self._cover is None or self._album.id != album_id:
             return
         self._widget.set_sensitive(False)
-
-    def __on_pop_cover_closed(self, widget):
-        """
-            Remove selected style
-            @param widget as Gtk.Popover
-        """
-        self._lock_overlay = False
-        GLib.idle_add(self.show_overlay, False)
 
     def __on_enter_notify_timeout(self):
         """
