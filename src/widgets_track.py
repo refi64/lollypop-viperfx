@@ -37,22 +37,21 @@ class Row(Gtk.ListBoxRow):
         Gtk.ListBoxRow.__init__(self)
         self._artists_label = None
         self._track = Track(rowid)
-        self._number = num
-        self._timeout_id = None
-        self._player_preview = None
+        self.__number = num
+        self.__timeout_id = None
         self._indicator = IndicatorWidget(self._track.id)
         self.set_indicator(Lp().player.current_track.id == self._track.id,
                            utils.is_loved(self._track.id))
         self._row_widget = Gtk.EventBox()
-        self._row_widget.connect('button-press-event', self._on_button_press)
-        self._row_widget.connect('enter-notify-event', self._on_enter_notify)
+        self._row_widget.connect('button-press-event', self.__on_button_press)
+        self._row_widget.connect('enter-notify-event', self.__on_enter_notify)
         self._grid = Gtk.Grid()
         self._grid.set_column_spacing(5)
         self._row_widget.add(self._grid)
         self._title_label = Gtk.Label.new(self._track.name)
         self._title_label.set_property('has-tooltip', True)
         self._title_label.connect('query-tooltip',
-                                  self._on_query_tooltip)
+                                  self.__on_query_tooltip)
         self._title_label.set_property('hexpand', True)
         self._title_label.set_property('halign', Gtk.Align.START)
         self._title_label.set_ellipsize(Pango.EllipsizeMode.END)
@@ -62,7 +61,7 @@ class Row(Gtk.ListBoxRow):
             self._artists_label.set_use_markup(True)
             self._artists_label.set_property('has-tooltip', True)
             self._artists_label.connect('query-tooltip',
-                                        self._on_query_tooltip)
+                                        self.__on_query_tooltip)
             self._artists_label.set_property('hexpand', True)
             self._artists_label.set_property('halign', Gtk.Align.END)
             self._artists_label.set_ellipsize(Pango.EllipsizeMode.END)
@@ -78,14 +77,14 @@ class Row(Gtk.ListBoxRow):
         self._num_label.set_width_chars(4)
         self._num_label.get_style_context().add_class('dim-label')
         self.update_num_label()
-        self._menu_button = Gtk.Button.new()
+        self.__menu_button = Gtk.Button.new()
         # Here a hack to make old Gtk version support min-height css attribute
         # min-height = 24px, borders = 2px, we set directly on stack
         # min-width = 24px, borders = 2px, padding = 8px
-        self._menu_button.set_size_request(34, 26)
-        self._menu_button.set_relief(Gtk.ReliefStyle.NONE)
-        self._menu_button.get_style_context().add_class('menu-button')
-        self._menu_button.get_style_context().add_class('track-menu-button')
+        self.__menu_button.set_size_request(34, 26)
+        self.__menu_button.set_relief(Gtk.ReliefStyle.NONE)
+        self.__menu_button.get_style_context().add_class('menu-button')
+        self.__menu_button.get_style_context().add_class('track-menu-button')
         self._grid.add(self._num_label)
         self._grid.add(self._title_label)
         if self._artists_label is not None:
@@ -93,9 +92,9 @@ class Row(Gtk.ListBoxRow):
         self._grid.add(self._duration_label)
         # TODO Remove this later
         if Gtk.get_minor_version() > 16:
-            self._grid.add(self._menu_button)
+            self._grid.add(self.__menu_button)
         else:
-            self.connect('map', self._on_map)
+            self.connect('map', self.__on_map)
         self.add(self._row_widget)
         self.get_style_context().add_class('trackrow')
 
@@ -127,7 +126,7 @@ class Row(Gtk.ListBoxRow):
             Set number
             @param number as int
         """
-        self._number = num
+        self.__number = num
 
     def update_num_label(self):
         """
@@ -137,9 +136,9 @@ class Row(Gtk.ListBoxRow):
             self._num_label.get_style_context().add_class('queued')
             pos = Lp().player.get_track_position(self._track.id)
             self._num_label.set_text(str(pos))
-        elif self._number > 0:
+        elif self.__number > 0:
             self._num_label.get_style_context().remove_class('queued')
-            self._num_label.set_text(str(self._number))
+            self._num_label.set_text(str(self.__number))
         else:
             self._num_label.get_style_context().remove_class('queued')
             self._num_label.set_text('')
@@ -154,7 +153,7 @@ class Row(Gtk.ListBoxRow):
 #######################
 # PRIVATE             #
 #######################
-    def _play_preview(self):
+    def __play_preview(self):
         """
             Play track
             @param widget as Gtk.Widget
@@ -162,9 +161,9 @@ class Row(Gtk.ListBoxRow):
         Lp().player.preview.set_property('uri', self._track.uri)
         Lp().player.preview.set_state(Gst.State.PLAYING)
         self.set_indicator(True, False)
-        self._timeout_id = None
+        self.__timeout_id = None
 
-    def _on_map(self, widget):
+    def __on_map(self, widget):
         """
             Fix for Gtk < 3.18,
             if we are in a popover, do not show menu button
@@ -175,41 +174,41 @@ class Row(Gtk.ListBoxRow):
                 break
             widget = widget.get_parent()
         if widget is None:
-            self._grid.add(self._menu_button)
-            self._menu_button.show()
+            self._grid.add(self.__menu_button)
+            self.__menu_button.show()
 
-    def _on_enter_notify(self, widget, event):
+    def __on_enter_notify(self, widget, event):
         """
             Set image on buttons now, speed reason
             @param widget as Gtk.Widget
             @param event as Gdk.Event
         """
         if Lp().settings.get_value('preview-output').get_string() != '':
-            widget.connect('leave-notify-event', self._on_leave_notify)
-            self._timeout_id = GLib.timeout_add(500, self._play_preview)
-        if self._menu_button.get_image() is None:
+            widget.connect('leave-notify-event', self.__on_leave_notify)
+            self.__timeout_id = GLib.timeout_add(500, self.__play_preview)
+        if self.__menu_button.get_image() is None:
             image = Gtk.Image.new_from_icon_name('open-menu-symbolic',
                                                  Gtk.IconSize.MENU)
             image.set_opacity(0.2)
-            self._menu_button.set_image(image)
-            self._menu_button.connect('clicked', self._on_button_clicked)
+            self.__menu_button.set_image(image)
+            self.__menu_button.connect('clicked', self.__on_button_clicked)
             self._indicator.update_button()
 
-    def _on_leave_notify(self, widget, event):
+    def __on_leave_notify(self, widget, event):
         """
             Stop preview
             @param widget as Gtk.Widget
             @param event as Gdk.Event
         """
-        if self._timeout_id is not None:
-            GLib.source_remove(self._timeout_id)
-            self._timeout_id = None
+        if self.__timeout_id is not None:
+            GLib.source_remove(self.__timeout_id)
+            self.__timeout_id = None
         self.set_indicator(Lp().player.current_track.id == self._track.id,
                            utils.is_loved(self._track.id))
         Lp().player.preview.set_state(Gst.State.NULL)
-        widget.disconnect_by_func(self._on_leave_notify)
+        widget.disconnect_by_func(self.__on_leave_notify)
 
-    def _on_button_press(self, widget, event):
+    def __on_button_press(self, widget, event):
         """
             Popup menu for track relative to track row
             @param widget as Gtk.Widget
@@ -218,10 +217,10 @@ class Row(Gtk.ListBoxRow):
         if event.button == 3 and Gtk.get_minor_version() > 16:
             window = widget.get_window()
             if window == event.window:
-                self._popup_menu(widget, event.x, event.y)
+                self.__popup_menu(widget, event.x, event.y)
             # Happens when pressing button over menu btn
             else:
-                self._popup_menu(self._menu_button)
+                self.__popup_menu(self.__menu_button)
             return True
         elif event.button == 2:
             if self._track.id in Lp().player.get_queue():
@@ -229,14 +228,14 @@ class Row(Gtk.ListBoxRow):
             else:
                 Lp().player.append_to_queue(self._track.id)
 
-    def _on_button_clicked(self, widget):
+    def __on_button_clicked(self, widget):
         """
             Popup menu for track relative to button
             @param widget as Gtk.Button
         """
-        self._popup_menu(widget)
+        self.__popup_menu(widget)
 
-    def _popup_menu(self, widget, xcoordinate=None, ycoordinate=None):
+    def __popup_menu(self, widget, xcoordinate=None, ycoordinate=None):
         """
             Popup menu for track
             @param widget as Gtk.Button
@@ -251,18 +250,18 @@ class Row(Gtk.ListBoxRow):
             rect.y = ycoordinate
             rect.width = rect.height = 1
             popover.set_pointing_to(rect)
-        popover.connect('closed', self._on_closed)
+        popover.connect('closed', self.__on_closed)
         self.get_style_context().add_class('track-menu-selected')
         popover.show()
 
-    def _on_closed(self, widget):
+    def __on_closed(self, widget):
         """
             Remove selected style
             @param widget as Gtk.Popover
         """
         self.get_style_context().remove_class('track-menu-selected')
 
-    def _on_query_tooltip(self, widget, x, y, keyboard, tooltip):
+    def __on_query_tooltip(self, widget, x, y, keyboard, tooltip):
         """
             Show tooltip if needed
             @param widget as Gtk.Widget
@@ -295,7 +294,7 @@ class PlaylistRow(Row):
             @param show headers as bool
         """
         Row.__init__(self, rowid, num)
-        self._show_headers = show_headers
+        self.__show_headers = show_headers
         self._indicator.set_margin_start(5)
         self._row_widget.set_margin_start(5)
         self._row_widget.set_margin_top(2)
@@ -304,54 +303,55 @@ class PlaylistRow(Row):
         self._grid.insert_column(0)
         self._grid.insert_column(1)
         self._grid.attach(self._indicator, 1, 1, 1, 2)
-        self._cover = Gtk.Image()
-        self._cover.set_property('halign', Gtk.Align.CENTER)
-        self._cover.set_property('valign', Gtk.Align.CENTER)
-        self._cover.get_style_context().add_class('small-cover-frame')
-        self._cover.set_no_show_all(True)
+        self.__cover = Gtk.Image()
+        self.__cover.set_property('halign', Gtk.Align.CENTER)
+        self.__cover.set_property('valign', Gtk.Align.CENTER)
+        self.__cover.get_style_context().add_class('small-cover-frame')
+        self.__cover.set_no_show_all(True)
         # We force width with a Box
         box = Gtk.Box()
         box.set_homogeneous(True)
-        box.add(self._cover)
+        box.add(self.__cover)
         box.set_property('width-request', ArtSize.MEDIUM+2)
         self._grid.attach(box, 0, 0, 1, 2)
         self.show_all()
-        self._header = Gtk.Grid()
-        self._header.set_column_spacing(5)
+        self.__header = Gtk.Grid()
+        self.__header.set_column_spacing(5)
         if self._track.album.artist_ids[0] != Type.COMPILATIONS:
-            self._album_artist_label = Gtk.Label()
-            self._album_artist_label.set_markup(
+            self.__album_artist_label = Gtk.Label()
+            self.__album_artist_label.set_markup(
                                  "<b>" +
                                  escape(", ".join(self._track.album.artists)) +
                                  "</b>")
-            self._album_artist_label.set_ellipsize(Pango.EllipsizeMode.END)
-            self._album_artist_label.get_style_context().add_class('dim-label')
-            self._header.add(self._album_artist_label)
-        self._album_label = Gtk.Label.new(self._track.album.name)
-        self._album_label.set_ellipsize(Pango.EllipsizeMode.END)
-        self._album_label.get_style_context().add_class('dim-label')
-        self._header.add(self._album_label)
+            self.__album_artist_label.set_ellipsize(Pango.EllipsizeMode.END)
+            self.__album_artist_label.get_style_context().add_class(
+                                                                   'dim-label')
+            self.__header.add(self.__album_artist_label)
+        self.__album_label = Gtk.Label.new(self._track.album.name)
+        self.__album_label.set_ellipsize(Pango.EllipsizeMode.END)
+        self.__album_label.get_style_context().add_class('dim-label')
+        self.__header.add(self.__album_label)
         self._num_label.set_property('valign', Gtk.Align.END)
         self._title_label.set_property('valign', Gtk.Align.END)
         if self._artists_label is not None:
             self._artists_label.set_property('valign', Gtk.Align.END)
         self._duration_label.set_property('valign', Gtk.Align.END)
         self._indicator.set_property('valign', Gtk.Align.END)
-        self._grid.attach(self._header, 1, 0, 4, 1)
+        self._grid.attach(self.__header, 1, 0, 4, 1)
         self.set_indicator(Lp().player.current_track.id == self._track.id,
                            utils.is_loved(self._track.id))
-        self.show_headers(self._show_headers)
+        self.show_headers(self.__show_headers)
         self.drag_source_set(Gdk.ModifierType.BUTTON1_MASK, [],
                              Gdk.DragAction.MOVE)
         self.drag_source_add_text_targets()
         self.drag_dest_set(Gtk.DestDefaults.DROP | Gtk.DestDefaults.MOTION,
                            [], Gdk.DragAction.MOVE)
         self.drag_dest_add_text_targets()
-        self.connect('drag-begin', self._on_drag_begin)
-        self.connect('drag-data-get', self._on_drag_data_get)
-        self.connect('drag-data-received', self._on_drag_data_received)
-        self.connect('drag-motion', self._on_drag_motion)
-        self.connect('drag-leave', self._on_drag_leave)
+        self.connect('drag-begin', self.__on_drag_begin)
+        self.connect('drag-data-get', self.__on_drag_data_get)
+        self.connect('drag-data-received', self.__on_drag_data_received)
+        self.connect('drag-motion', self.__on_drag_motion)
+        self.connect('drag-leave', self.__on_drag_leave)
 
     def show_headers(self, show):
         """
@@ -360,29 +360,29 @@ class PlaylistRow(Row):
         """
         if not self.get_sensitive():
             return
-        if self._header.is_visible() == show:
+        if self.__header.is_visible() == show:
             return
-        self._show_headers = show
+        self.__show_headers = show
         if show:
-            self._cover.set_tooltip_text(self._track.album.name)
+            self.__cover.set_tooltip_text(self._track.album.name)
             surface = Lp().art.get_album_artwork(
                                         self._track.album,
                                         ArtSize.MEDIUM,
                                         self.get_scale_factor())
-            self._cover.set_from_surface(surface)
-            self._cover.show()
+            self.__cover.set_from_surface(surface)
+            self.__cover.show()
             del surface
-            self._header.show_all()
+            self.__header.show_all()
         else:
-            self._cover.set_tooltip_text('')
-            self._cover.clear()
-            self._cover.hide()
-            self._header.hide()
+            self.__cover.set_tooltip_text('')
+            self.__cover.clear()
+            self.__cover.hide()
+            self.__header.hide()
 
 #######################
 # PRIVATE             #
 #######################
-    def _on_drag_begin(self, widget, context):
+    def __on_drag_begin(self, widget, context):
         """
             Set icon
             @param widget as Gtk.Widget
@@ -390,7 +390,7 @@ class PlaylistRow(Row):
         """
         widget.drag_source_set_icon_name('emblem-music-symbolic')
 
-    def _on_drag_data_get(self, widget, context, data, info, time):
+    def __on_drag_data_get(self, widget, context, data, info, time):
         """
             Send track id
             @param widget as Gtk.Widget
@@ -402,7 +402,7 @@ class PlaylistRow(Row):
         track_id = str(self._track.id)
         data.set_text(track_id, len(track_id))
 
-    def _on_drag_data_received(self, widget, context, x, y, data, info, time):
+    def __on_drag_data_received(self, widget, context, x, y, data, info, time):
         """
             Move track
             @param widget as Gtk.Widget
@@ -426,7 +426,7 @@ class PlaylistRow(Row):
         except:
             pass
 
-    def _on_drag_motion(self, widget, context, x, y, time):
+    def __on_drag_motion(self, widget, context, x, y, time):
         """
             Add style
             @param widget as Gtk.Widget
@@ -443,7 +443,7 @@ class PlaylistRow(Row):
             self.get_style_context().remove_class('drag-up')
             self.get_style_context().add_class('drag-down')
 
-    def _on_drag_leave(self, widget, context, time):
+    def __on_drag_leave(self, widget, context, time):
         """
             Remove style
             @param widget as Gtk.Widget
@@ -507,16 +507,16 @@ class TracksWidget(Gtk.ListBox):
             @param drag and drop as bool
         """
         Gtk.ListBox.__init__(self)
-        self.connect('destroy', self._on_destroy)
-        self._queue_signal_id = Lp().player.connect('queue-changed',
-                                                    self._on_queue_changed)
-        self._loved_signal_id1 = Lp().playlists.connect(
-                                               'playlist-add',
-                                               self._on_loved_playlist_changed)
-        self._loved_signal_id2 = Lp().playlists.connect(
-                                               'playlist-del',
-                                               self._on_loved_playlist_changed)
-        self.connect("row-activated", self._on_activate)
+        self.connect('destroy', self.__on_destroy)
+        self.__queue_signal_id = Lp().player.connect('queue-changed',
+                                                     self.__on_queue_changed)
+        self.__loved_signal_id1 = Lp().playlists.connect(
+                                              'playlist-add',
+                                              self.__on_loved_playlist_changed)
+        self.__loved_signal_id2 = Lp().playlists.connect(
+                                              'playlist-del',
+                                              self.__on_loved_playlist_changed)
+        self.connect("row-activated", self.__on_activate)
         self.get_style_context().add_class('trackswidget')
         self.set_property('hexpand', True)
         self.set_property('selection-mode', Gtk.SelectionMode.NONE)
@@ -524,7 +524,7 @@ class TracksWidget(Gtk.ListBox):
             self.drag_dest_set(Gtk.DestDefaults.DROP | Gtk.DestDefaults.MOTION,
                                [], Gdk.DragAction.MOVE)
             self.drag_dest_add_text_targets()
-            self.connect('drag-data-received', self._on_drag_data_received)
+            self.connect('drag-data-received', self.__on_drag_data_received)
 
     def update_headers(self, prev_album_id=None):
         """
@@ -561,7 +561,7 @@ class TracksWidget(Gtk.ListBox):
 #######################
 # PRIVATE             #
 #######################
-    def _on_drag_data_received(self, widget, context, x, y, data, info, time):
+    def __on_drag_data_received(self, widget, context, x, y, data, info, time):
         """
             Move track
             @param widget as Gtk.Widget
@@ -579,14 +579,14 @@ class TracksWidget(Gtk.ListBox):
         except:
             pass
 
-    def _on_queue_changed(self, unused):
+    def __on_queue_changed(self, unused):
         """
             Update all position labels
         """
         for row in self.get_children():
             row.update_num_label()
 
-    def _on_loved_playlist_changed(self, widget, playlist_id, track_id):
+    def __on_loved_playlist_changed(self, widget, playlist_id, track_id):
         """
             Updates the loved icon
             @param playlist as Playlist
@@ -601,22 +601,22 @@ class TracksWidget(Gtk.ListBox):
                 row.set_indicator(track_id == Lp().player.current_track.id,
                                   utils.is_loved(track_id))
 
-    def _on_destroy(self, widget):
+    def __on_destroy(self, widget):
         """
             Remove signals
             @param widget as Gtk.Widget
         """
-        if self._queue_signal_id is not None:
-            Lp().player.disconnect(self._queue_signal_id)
-            self._queue_signal_id = None
-        if self._loved_signal_id1 is not None:
-            Lp().playlists.disconnect(self._loved_signal_id1)
-            self._loved_signal_id1 = None
-        if self._loved_signal_id2 is not None:
-            Lp().playlists.disconnect(self._loved_signal_id2)
-            self._loved_signal_id2 = None
+        if self.__queue_signal_id is not None:
+            Lp().player.disconnect(self.__queue_signal_id)
+            self.__queue_signal_id = None
+        if self.__loved_signal_id1 is not None:
+            Lp().playlists.disconnect(self.__loved_signal_id1)
+            self.__loved_signal_id1 = None
+        if self.__loved_signal_id2 is not None:
+            Lp().playlists.disconnect(self.__loved_signal_id2)
+            self.__loved_signal_id2 = None
 
-    def _on_activate(self, widget, row):
+    def __on_activate(self, widget, row):
         """
             Play activated item
             @param widget as TracksWidget
