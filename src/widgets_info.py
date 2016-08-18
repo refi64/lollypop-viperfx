@@ -35,14 +35,14 @@ class InfoContent(Gtk.Stack):
         Gtk.Stack.__init__(self)
         InfoCache.init()
         self._stop = False
-        self._cancel = Gio.Cancellable.new()
+        self.__cancel = Gio.Cancellable.new()
         self._artist = ""
         self.set_transition_duration(500)
         self.set_transition_type(Gtk.StackTransitionType.CROSSFADE)
         builder = Gtk.Builder()
         builder.add_from_resource('/org/gnome/Lollypop/InfoContent.ui')
-        self._content = builder.get_object('content')
-        self._image = builder.get_object('image')
+        self.__content = builder.get_object('content')
+        self.__image = builder.get_object('image')
         self._menu_found = builder.get_object('menu-found')
         self._menu_not_found = builder.get_object('menu-not-found')
         self.add_named(builder.get_object('widget'), 'widget')
@@ -54,16 +54,16 @@ class InfoContent(Gtk.Stack):
         """
             Clear content
         """
-        self._content.set_text('')
-        self._image.hide()
-        self._image.clear()
+        self.__content.set_text('')
+        self.__image.hide()
+        self.__image.clear()
 
     def stop(self):
         """
             Stop loading
         """
         self._stop = True
-        self._cancel.cancel()
+        self.__cancel.cancel()
 
     @property
     def artist(self):
@@ -87,30 +87,55 @@ class InfoContent(Gtk.Stack):
             if content is not None:
                 if image_url is not None:
                     f = Gio.File.new_for_uri(image_url)
-                    (status, data, tag) = f.load_contents(self._cancel)
+                    (status, data, tag) = f.load_contents(self.__cancel)
                     if status:
                         stream = Gio.MemoryInputStream.new_from_data(data,
                                                                      None)
                     else:
                         data = None
                 InfoCache.add(prefix, content, data, suffix)
-            GLib.idle_add(self._set_content, content, stream)
+            GLib.idle_add(self.__set_content, content, stream)
         except Exception as e:
             print("InfoContent::set_content: %s" % e)
 
 #######################
+# PROTECTED           #
+#######################
+    def _load_cache_content(self, prefix, suffix):
+        """
+            Load from cache
+            @param prefix as str
+            @param suffix as str
+            @return True if loaded
+        """
+        (content, data) = InfoCache.get(prefix, suffix)
+        if content is not None:
+            stream = None
+            if data is not None:
+                stream = Gio.MemoryInputStream.new_from_data(data, None)
+            GLib.idle_add(self.__set_content, content, stream)
+            return True
+        return False
+
+    def __on_not_found(self):
+        """
+            Show not found child
+        """
+        self.set_visible_child_name('notfound')
+
+#######################
 # PRIVATE             #
 #######################
-    def _set_content(self, content, stream):
+    def __set_content(self, content, stream):
         """
             Set content
             @param content as string
             @param data as Gio.MemoryInputStream
         """
         if content is not None:
-            self._content.set_markup(escape(content.decode('utf-8')))
+            self.__content.set_markup(escape(content.decode('utf-8')))
             if stream is not None:
-                scale = self._image.get_scale_factor()
+                scale = self.__image.get_scale_factor()
                 # Will happen if cache is broken or when reading empty files
                 try:
                     pixbuf = GdkPixbuf.Pixbuf.new_from_stream_at_scale(
@@ -124,37 +149,15 @@ class InfoContent(Gtk.Stack):
                                                                    scale,
                                                                    None)
                     del pixbuf
-                    self._image.set_from_surface(surface)
+                    self.__image.set_from_surface(surface)
                     del surface
-                    self._image.show()
+                    self.__image.show()
                 except:
                     pass
             self.set_visible_child_name('widget')
         else:
-            self._on_not_found()
+            self.__on_not_found()
         self._spinner.stop()
-
-    def _load_cache_content(self, prefix, suffix):
-        """
-            Load from cache
-            @param prefix as str
-            @param suffix as str
-            @return True if loaded
-        """
-        (content, data) = InfoCache.get(prefix, suffix)
-        if content is not None:
-            stream = None
-            if data is not None:
-                stream = Gio.MemoryInputStream.new_from_data(data, None)
-            GLib.idle_add(self._set_content, content, stream)
-            return True
-        return False
-
-    def _on_not_found(self):
-        """
-            Show not found child
-        """
-        self.set_visible_child_name('notfound')
 
 
 class WikipediaContent(InfoContent):
@@ -167,11 +170,11 @@ class WikipediaContent(InfoContent):
             Init widget
         """
         InfoContent.__init__(self)
-        self._album = ""
-        self._menu_model = Gio.Menu()
-        self._menu_not_found.set_menu_model(self._menu_model)
-        self._menu_found.set_menu_model(self._menu_model)
-        self._app = Gio.Application.get_default()
+        self.__album = ""
+        self.__menu_model = Gio.Menu()
+        self._menu_not_found.set_menu_model(self.__menu_model)
+        self._menu_found.set_menu_model(self.__menu_model)
+        self.__app = Gio.Application.get_default()
 
     def populate(self, artist, album):
         """
@@ -181,14 +184,14 @@ class WikipediaContent(InfoContent):
             @thread safe
         """
         self._artist = artist
-        self._album = album
+        self.__album = album
         if not self._load_cache_content(artist, 'wikipedia'):
             GLib.idle_add(self.set_visible_child_name, 'spinner')
             self._spinner.start()
-            self._load_page_content(artist)
+            self.__load_page_content(artist)
         else:
-            t = Thread(target=self._setup_menu,
-                       args=(self._artist, self._album))
+            t = Thread(target=self.__setup_menu,
+                       args=(self._artist, self.__album))
             t.daemon = True
             t.start()
 
@@ -196,18 +199,30 @@ class WikipediaContent(InfoContent):
         """
             Clear model and then content
         """
-        self._menu_model.remove_all()
+        self.__menu_model.remove_all()
         InfoContent.clear(self)
+
+#######################
+# PROTECTED           #
+#######################
+    def __on_not_found(self):
+        """
+            Show not found child
+        """
+        self.set_visible_child_name('notfound')
+        t = Thread(target=self.__setup_menu, args=(self._artist, self.__album))
+        t.daemon = True
+        t.start()
 
 #######################
 # PRIVATE             #
 #######################
-    def _load_page_content(self, artist):
+    def __load_page_content(self, artist):
         """
             Load artist page content
             @param artist as str
         """
-        GLib.idle_add(self._menu_model.remove_all)
+        GLib.idle_add(self.__menu_model.remove_all)
         wp = Wikipedia()
         try:
             (url, content) = wp.get_page_infos(artist)
@@ -216,12 +231,12 @@ class WikipediaContent(InfoContent):
         if not self._stop:
             InfoContent.set_content(self, self._artist, content,
                                     url, 'wikipedia')
-            t = Thread(target=self._setup_menu,
-                       args=(self._artist, self._album))
+            t = Thread(target=self.__setup_menu,
+                       args=(self._artist, self.__album))
             t.daemon = True
             t.start()
 
-    def _setup_menu(self, artist, album):
+    def __setup_menu(self, artist, album):
         """
             Setup menu for artist
             @param artist as str
@@ -233,9 +248,9 @@ class WikipediaContent(InfoContent):
         cleaned = list(set(result))
         if artist in cleaned:
             cleaned.remove(artist)
-        GLib.idle_add(self._setup_menu_strings, cleaned)
+        GLib.idle_add(self.__setup_menu_strings, cleaned)
 
-    def _setup_menu_strings(self, strings):
+    def __setup_menu_strings(self, strings):
         """
             Setup a menu with strings
             @param strings as [str]
@@ -248,14 +263,14 @@ class WikipediaContent(InfoContent):
         i = 0
         for string in strings:
             action = Gio.SimpleAction(name="wikipedia_%s" % i)
-            self._app.add_action(action)
+            self.__app.add_action(action)
             action.connect('activate',
-                           self._on_search_activated,
+                           self.__on_search_activated,
                            string)
-            self._menu_model.append(string, "app.wikipedia_%s" % i)
+            self.__menu_model.append(string, "app.wikipedia_%s" % i)
             i += 1
 
-    def _on_search_activated(self, action, variant, artist):
+    def __on_search_activated(self, action, variant, artist):
         """
             Switch to page
             @param action as SimpleAction
@@ -266,16 +281,7 @@ class WikipediaContent(InfoContent):
         InfoContent.clear(self)
         self.set_visible_child_name('spinner')
         self._spinner.start()
-        t = Thread(target=self._load_page_content, args=(artist,))
-        t.daemon = True
-        t.start()
-
-    def _on_not_found(self):
-        """
-            Show not found child
-        """
-        self.set_visible_child_name('notfound')
-        t = Thread(target=self._setup_menu, args=(self._artist, self._album))
+        t = Thread(target=self.__load_page_content, args=(artist,))
         t.daemon = True
         t.start()
 
@@ -301,12 +307,12 @@ class LastfmContent(InfoContent):
         if not self._load_cache_content(artist, 'lastfm'):
             GLib.idle_add(self.set_visible_child_name, 'spinner')
             self._spinner.start()
-            self._load_page_content(artist)
+            self.__load_page_content(artist)
 
 #######################
 # PRIVATE             #
 #######################
-    def _load_page_content(self, artist):
+    def __load_page_content(self, artist):
         """
             Load artists page content
             @param artist as str
