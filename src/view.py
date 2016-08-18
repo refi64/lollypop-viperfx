@@ -25,7 +25,7 @@ class View(Gtk.Grid):
             Init view
         """
         Gtk.Grid.__init__(self)
-        self.connect('destroy', self.__on_destroy)
+        self.connect('destroy', self._on_destroy)
         self.set_property('orientation', Gtk.Orientation.VERTICAL)
         self.set_border_width(0)
         self.__current_signal = Lp().player.connect('current-changed',
@@ -93,6 +93,18 @@ class View(Gtk.Grid):
         """
         GLib.idle_add(self.__update_widgets, self._get_children())
 
+    def _on_destroy(self, widget):
+        """
+            Remove signals on unamp
+            @param widget as Gtk.Widget
+        """
+        if self.__current_signal:
+            Lp().player.disconnect(self.__current_signal)
+            self.__current_signal = None
+        if self.__cover_signal:
+            Lp().art.disconnect(self.__cover_signal)
+            self.__cover_signal = None
+
 #######################
 # PRIVATE             #
 #######################
@@ -119,18 +131,6 @@ class View(Gtk.Grid):
            event.y <= 0 or\
            event.y >= allocation.height:
             self.disable_overlays()
-
-    def __on_destroy(self, widget):
-        """
-            Remove signals on unamp
-            @param widget as Gtk.Widget
-        """
-        if self.__current_signal:
-            Lp().player.disconnect(self.__current_signal)
-            self.__current_signal = None
-        if self.__cover_signal:
-            Lp().art.disconnect(self.__cover_signal)
-            self.__cover_signal = None
 
     def __on_cover_changed(self, art, album_id):
         """

@@ -150,6 +150,7 @@ class DeviceView(View):
         if self.__timeout_id is not None:
             GLib.source_remove(self.__timeout_id)
             self.__timeout_id = None
+        View._on_destroy(self, widget)
 
     def _on_sync_clicked(self, widget):
         """
