@@ -103,6 +103,20 @@ class ArtistAlbumsView(LazyLoadingView):
         return height
 
 #######################
+# PROTECTED           #
+#######################
+    def _get_children(self):
+        """
+            Return view children
+            @return [AlbumDetailedWidget]
+        """
+        children = []
+        for child in self._albumbox.get_children():
+            if isinstance(child, AlbumDetailedWidget):
+                children.append(child)
+        return children
+
+#######################
 # PRIVATE             #
 #######################
     def lazy_loading(self, widgets=[], scroll_value=0):
@@ -125,17 +139,6 @@ class ArtistAlbumsView(LazyLoadingView):
             widget.connect('populated', self.__on_populated,
                            widgets, scroll_value)
             widget.populate()
-
-    def __get_children(self):
-        """
-            Return view children
-            @return [AlbumDetailedWidget]
-        """
-        children = []
-        for child in self._albumbox.get_children():
-            if isinstance(child, AlbumDetailedWidget):
-                children.append(child)
-        return children
 
     def __add_albums(self, albums):
         """
