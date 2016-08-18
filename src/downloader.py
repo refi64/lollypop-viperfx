@@ -110,9 +110,9 @@ class Downloader:
         return urls
 
 #######################
-# PRIVATE             #
+# PROTECTED           #
 #######################
-    def __get_lastfm_artist_info(self, artist):
+    def _get_lastfm_artist_info(self, artist):
         """
             Return lastfm artist information
             @param artist as str
@@ -123,7 +123,7 @@ class Downloader:
         else:
             return (None, None)
 
-    def __get_wp_artist_info(self, artist):
+    def _get_wp_artist_info(self, artist):
         """
             Return wikipedia artist information
             @param artist as str
@@ -135,7 +135,7 @@ class Downloader:
         else:
             return (None, None)
 
-    def __get_deezer_artist_info(self, artist):
+    def _get_deezer_artist_info(self, artist):
         """
             Return deezer artist information
             @param artist as str
@@ -156,7 +156,7 @@ class Downloader:
                   (e, artist))
         return (None, None)
 
-    def __get_spotify_artist_info(self, artist):
+    def _get_spotify_artist_info(self, artist):
         """
             Return spotify artist information
             @param artist as str
@@ -178,6 +178,130 @@ class Downloader:
                   (e, artist))
         return (None, None)
 
+    def _get_deezer_album_artwork(self, artist, album):
+        """
+            Get album artwork from deezer
+            @param artist as string
+            @param album as string
+            @return image as bytes
+            @tread safe
+        """
+        image = None
+        try:
+            album_formated = GLib.uri_escape_string(album, None, True)
+            s = Gio.File.new_for_uri("https://api.deezer.com/search/album/?"
+                                     "q=%s&output=json" %
+                                     album_formated)
+            (status, data, tag) = s.load_contents()
+            if status:
+                decode = json.loads(data.decode('utf-8'))
+                url = None
+                for item in decode['data']:
+                    if item['artist']['name'].lower() == artist.lower():
+                        url = item['cover_xl']
+                        break
+                if url is not None:
+                    s = Gio.File.new_for_uri(url)
+                    (status, image, tag) = s.load_contents()
+        except Exception as e:
+            print("Downloader::__get_deezer_album_artwork: %s" % e)
+        return image
+
+    def _get_spotify_album_artwork(self, artist, album):
+        """
+            Get album artwork from spotify
+            @param artist as string
+            @param album as string
+            @return image as bytes
+            @tread safe
+        """
+        image = None
+        artists_spotify_ids = []
+        try:
+            artist_formated = GLib.uri_escape_string(
+                                artist, None, True).replace(' ', '+')
+            s = Gio.File.new_for_uri("https://api.spotify.com/v1/search?q=%s"
+                                     "&type=artist" % artist_formated)
+            (status, data, tag) = s.load_contents()
+            if status:
+                decode = json.loads(data.decode('utf-8'))
+                for item in decode['artists']['items']:
+                    artists_spotify_ids.append(item['id'])
+
+            for artist_spotify_id in artists_spotify_ids:
+                s = Gio.File.new_for_uri("https://api.spotify.com/v1/artists/"
+                                         "%s/albums" % artist_spotify_id)
+                (status, data, tag) = s.load_contents()
+                if status:
+                    decode = json.loads(data.decode('utf-8'))
+                    url = None
+                    for item in decode['items']:
+                        if item['name'] == album:
+                            url = item['images'][0]['url']
+                            break
+
+                    if url is not None:
+                        s = Gio.File.new_for_uri(url)
+                        (status, image, tag) = s.load_contents()
+                    break
+        except Exception as e:
+            print("Downloader::_get_album_art_spotify: %s [%s/%s]" %
+                  (e, artist, album))
+        return image
+
+    def _get_itunes_album_artwork(self, artist, album):
+        """
+            Get album artwork from itunes
+            @param artist as string
+            @param album as string
+            @return image as bytes
+            @tread safe
+        """
+        image = None
+        try:
+            album_formated = GLib.uri_escape_string(
+                                album, None, True).replace(' ', '+')
+            s = Gio.File.new_for_uri("https://itunes.apple.com/search"
+                                     "?entity=album&term=%s" % album_formated)
+            (status, data, tag) = s.load_contents()
+            if status:
+                decode = json.loads(data.decode('utf-8'))
+                for item in decode['results']:
+                    if item['artistName'].lower() == artist.lower():
+                        url = item['artworkUrl60'].replace('60x60',
+                                                           '512x512')
+                        s = Gio.File.new_for_uri(url)
+                        (status, image, tag) = s.load_contents()
+                        break
+        except Exception as e:
+            print("Downloader::_get_album_art_itunes: %s [%s/%s]" %
+                  (e, artist, album))
+        return image
+
+    def _get_lastfm_album_artwork(self, artist, album):
+        """
+            Get album artwork from lastfm
+            @param artist as string
+            @param album as string
+            @return data as bytes
+            @tread safe
+        """
+        image = None
+        if Lp().lastfm is not None:
+            try:
+                last_album = Lp().lastfm.get_album(artist, album)
+                url = last_album.get_cover_image(4)
+                if url is not None:
+                    s = Gio.File.new_for_uri(url)
+                    (status, image, tag) = s.load_contents()
+            except Exception as e:
+                print("Downloader::_get_album_art_lastfm: %s [%s/%s]" %
+                      (e, artist, album))
+        return image
+
+#######################
+# PRIVATE             #
+#######################
     def __cache_artists_info(self):
         """
             Cache info for all artists
@@ -241,124 +365,3 @@ class Downloader:
             print("Downloader::__cache_albums_art: %s" % e)
         self.__albums_history.append(album_id)
         self.__in_albums_download = False
-
-    def __get_deezer_album_artwork(self, artist, album):
-        """
-            Get album artwork from deezer
-            @param artist as string
-            @param album as string
-            @return image as bytes
-            @tread safe
-        """
-        image = None
-        try:
-            album_formated = GLib.uri_escape_string(album, None, True)
-            s = Gio.File.new_for_uri("https://api.deezer.com/search/album/?"
-                                     "q=%s&output=json" %
-                                     album_formated)
-            (status, data, tag) = s.load_contents()
-            if status:
-                decode = json.loads(data.decode('utf-8'))
-                url = None
-                for item in decode['data']:
-                    if item['artist']['name'].lower() == artist.lower():
-                        url = item['cover_xl']
-                        break
-                if url is not None:
-                    s = Gio.File.new_for_uri(url)
-                    (status, image, tag) = s.load_contents()
-        except Exception as e:
-            print("Downloader::__get_deezer_album_artwork: %s" % e)
-        return image
-
-    def __get_spotify_album_artwork(self, artist, album):
-        """
-            Get album artwork from spotify
-            @param artist as string
-            @param album as string
-            @return image as bytes
-            @tread safe
-        """
-        image = None
-        artists_spotify_ids = []
-        try:
-            artist_formated = GLib.uri_escape_string(
-                                artist, None, True).replace(' ', '+')
-            s = Gio.File.new_for_uri("https://api.spotify.com/v1/search?q=%s"
-                                     "&type=artist" % artist_formated)
-            (status, data, tag) = s.load_contents()
-            if status:
-                decode = json.loads(data.decode('utf-8'))
-                for item in decode['artists']['items']:
-                    artists_spotify_ids.append(item['id'])
-
-            for artist_spotify_id in artists_spotify_ids:
-                s = Gio.File.new_for_uri("https://api.spotify.com/v1/artists/"
-                                         "%s/albums" % artist_spotify_id)
-                (status, data, tag) = s.load_contents()
-                if status:
-                    decode = json.loads(data.decode('utf-8'))
-                    url = None
-                    for item in decode['items']:
-                        if item['name'] == album:
-                            url = item['images'][0]['url']
-                            break
-
-                    if url is not None:
-                        s = Gio.File.new_for_uri(url)
-                        (status, image, tag) = s.load_contents()
-                    break
-        except Exception as e:
-            print("Downloader::_get_album_art_spotify: %s [%s/%s]" %
-                  (e, artist, album))
-        return image
-
-    def __get_itunes_album_artwork(self, artist, album):
-        """
-            Get album artwork from itunes
-            @param artist as string
-            @param album as string
-            @return image as bytes
-            @tread safe
-        """
-        image = None
-        try:
-            album_formated = GLib.uri_escape_string(
-                                album, None, True).replace(' ', '+')
-            s = Gio.File.new_for_uri("https://itunes.apple.com/search"
-                                     "?entity=album&term=%s" % album_formated)
-            (status, data, tag) = s.load_contents()
-            if status:
-                decode = json.loads(data.decode('utf-8'))
-                for item in decode['results']:
-                    if item['artistName'].lower() == artist.lower():
-                        url = item['artworkUrl60'].replace('60x60',
-                                                           '512x512')
-                        s = Gio.File.new_for_uri(url)
-                        (status, image, tag) = s.load_contents()
-                        break
-        except Exception as e:
-            print("Downloader::_get_album_art_itunes: %s [%s/%s]" %
-                  (e, artist, album))
-        return image
-
-    def __get_lastfm_album_artwork(self, artist, album):
-        """
-            Get album artwork from lastfm
-            @param artist as string
-            @param album as string
-            @return data as bytes
-            @tread safe
-        """
-        image = None
-        if Lp().lastfm is not None:
-            try:
-                last_album = Lp().lastfm.get_album(artist, album)
-                url = last_album.get_cover_image(4)
-                if url is not None:
-                    s = Gio.File.new_for_uri(url)
-                    (status, image, tag) = s.load_contents()
-            except Exception as e:
-                print("Downloader::_get_album_art_lastfm: %s [%s/%s]" %
-                      (e, artist, album))
-        return image
