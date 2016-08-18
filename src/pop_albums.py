@@ -362,8 +362,8 @@ class AlbumsView(LazyLoadingView):
             GLib.idle_add(self.__add_items, items, album_id)
         else:
             GLib.idle_add(self.lazy_loading)
-            if self.__viewport.get_child() is None:
-                self.__viewport.add(self.__view)
+            if self._viewport.get_child() is None:
+                self._viewport.add(self.__view)
             if Lp().player.current_track.album.id in Lp().player.get_albums():
                 self.__jump_button.set_sensitive(True)
 

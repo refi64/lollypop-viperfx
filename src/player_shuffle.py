@@ -41,7 +41,7 @@ class ShufflePlayer(BasePlayer):
         # Tracks already played
         self.__history = []
         # Used by shuffle albums to restore playlist before shuffle
-        self.__albums_backup = []
+        self._albums_backup = []
         # Albums already played
         self.__already_played_albums = []
         # Tracks already played for albums
@@ -162,15 +162,15 @@ class ShufflePlayer(BasePlayer):
         """
         if shuffle and self._shuffle == Shuffle.ALBUMS:
             if self._albums:
-                self.__albums_backup = list(self._albums)
+                self._albums_backup = list(self._albums)
                 random.shuffle(self._albums)
                 # In album shuffle, keep current album on top
                 if self._current_track.album.id in self._albums:
                     self._albums.remove(self._current_track.album.id)
                     self._albums.insert(0, self._current_track.album.id)
-        elif self.__albums_backup:
-            self._albums = self.__albums_backup
-            self.__albums_backup = []
+        elif self._albums_backup:
+            self._albums = self._albums_backup
+            self._albums_backup = []
 
 #######################
 # PROTECTED           #

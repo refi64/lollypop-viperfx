@@ -29,7 +29,7 @@ class View(Gtk.Grid):
         self.set_property('orientation', Gtk.Orientation.VERTICAL)
         self.set_border_width(0)
         self.__current_signal = Lp().player.connect('current-changed',
-                                                    self.__on_current_changed)
+                                                    self._on_current_changed)
         self.__cover_signal = Lp().art.connect('album-artwork-changed',
                                                self.__on_cover_changed)
 
@@ -86,6 +86,13 @@ class View(Gtk.Grid):
         """
         return []
 
+    def _on_current_changed(self, player):
+        """
+            Current song changed
+            @param player as Player
+        """
+        GLib.idle_add(self.__update_widgets, self._get_children())
+
 #######################
 # PRIVATE             #
 #######################
@@ -134,13 +141,6 @@ class View(Gtk.Grid):
         for widget in self._get_children():
             if album_id == widget.get_id():
                 widget.update_cover()
-
-    def __on_current_changed(self, player):
-        """
-            Current song changed
-            @param player as Player
-        """
-        GLib.idle_add(self.__update_widgets, self._get_children())
 
 
 class LazyLoadingView(View):
