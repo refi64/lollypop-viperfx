@@ -285,7 +285,7 @@ class PlaylistEditView(View):
 #######################
 # PROTECTED           #
 #######################
-    def __on_back_btn_clicked(self, button):
+    def _on_back_btn_clicked(self, button):
         """
             Restore previous view
             @param button as Gtk.Button
