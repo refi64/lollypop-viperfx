@@ -37,16 +37,16 @@ class ArtistAlbumsView(LazyLoadingView):
         LazyLoadingView.__init__(self)
         self._artist_ids = artist_ids
         self._genre_ids = genre_ids
-        self._show_cover = show_cover
+        self.__show_cover = show_cover
 
-        self._spinner = Gtk.Spinner()
-        self._spinner.set_hexpand(True)
-        self._spinner.set_vexpand(True)
+        self.__spinner = Gtk.Spinner()
+        self.__spinner.set_hexpand(True)
+        self.__spinner.set_vexpand(True)
         spinner_size = int(ArtSize.BIG / 3)
-        self._spinner.set_size_request(spinner_size, spinner_size)
-        self._spinner.set_property('halign', Gtk.Align.CENTER)
-        self._spinner.set_property('valign', Gtk.Align.CENTER)
-        self._spinner.show()
+        self.__spinner.set_size_request(spinner_size, spinner_size)
+        self.__spinner.set_property('halign', Gtk.Align.CENTER)
+        self.__spinner.set_property('valign', Gtk.Align.CENTER)
+        self.__spinner.show()
 
         self._albumbox = Gtk.Grid()
         self._albumbox.set_row_spacing(5)
@@ -57,7 +57,7 @@ class ArtistAlbumsView(LazyLoadingView):
         self._albumbox.set_property("valign", Gtk.Align.START)
         self._overlay = Gtk.Overlay.new()
         self._overlay.add(self._scrolled)
-        self._overlay.add_overlay(self._spinner)
+        self._overlay.add_overlay(self.__spinner)
         self._overlay.show()
         self.add(self._overlay)
 
@@ -68,8 +68,8 @@ class ArtistAlbumsView(LazyLoadingView):
         """
         if albums:
             if len(albums) != 1:
-                self._spinner.start()
-            self._add_albums(albums)
+                self.__spinner.start()
+            self.__add_albums(albums)
 
     def jump_to_current(self):
         """
@@ -98,7 +98,7 @@ class ArtistAlbumsView(LazyLoadingView):
             @return height as int
         """
         height = 0
-        for child in self._get_children():
+        for child in self.__get_children():
             height += child.requested_height
         return height
 
@@ -122,11 +122,11 @@ class ArtistAlbumsView(LazyLoadingView):
         elif self._lazy_queue:
             widget = self._lazy_queue.pop(0)
         if widget is not None:
-            widget.connect('populated', self._on_populated,
+            widget.connect('populated', self.__on_populated,
                            widgets, scroll_value)
             widget.populate()
 
-    def _get_children(self):
+    def __get_children(self):
         """
             Return view children
             @return [AlbumDetailedWidget]
@@ -137,7 +137,7 @@ class ArtistAlbumsView(LazyLoadingView):
                 children.append(child)
         return children
 
-    def _add_albums(self, albums):
+    def __add_albums(self, albums):
         """
             Pop an album and add it to the view,
             repeat operation until album list is empty
@@ -148,18 +148,18 @@ class ArtistAlbumsView(LazyLoadingView):
             widget = AlbumDetailedWidget(album_id,
                                          self._genre_ids,
                                          self._artist_ids,
-                                         self._show_cover)
+                                         self.__show_cover)
             self._lazy_queue.append(widget)
             widget.show()
             self._albumbox.add(widget)
-            GLib.idle_add(self._add_albums, albums)
+            GLib.idle_add(self.__add_albums, albums)
         else:
-            self._spinner.stop()
-            self._spinner.hide()
+            self.__spinner.stop()
+            self.__spinner.hide()
             self.emit('populated')
             GLib.idle_add(self.lazy_loading)
 
-    def _on_populated(self, widget, widgets, scroll_value):
+    def __on_populated(self, widget, widgets, scroll_value):
         """
             Add another album/disc
             @param widget as AlbumDetailedWidget
@@ -185,8 +185,8 @@ class CurrentArtistAlbumsView(ViewContainer):
             Init popover
         """
         ViewContainer.__init__(self, 1000)
-        self.connect('destroy', self._on_destroy)
-        self._track = Track()
+        self.connect('destroy', self.__on_destroy)
+        self.__track = Track()
 
     def populate(self, track):
         """
@@ -194,10 +194,10 @@ class CurrentArtistAlbumsView(ViewContainer):
             @param track as Track
             @thread safe
         """
-        if track.album.artist_ids != self._track.album.artist_ids:
-            self._track = track
-            albums = self._get_albums()
-            GLib.idle_add(self._populate, albums)
+        if track.album.artist_ids != self.__track.album.artist_ids:
+            self.__track = track
+            albums = self.__get_albums()
+            GLib.idle_add(self.__populate, albums)
 
     def stop(self):
         """
@@ -214,14 +214,14 @@ class CurrentArtistAlbumsView(ViewContainer):
 #######################
 # PRIVATE             #
 #######################
-    def _on_destroy(self, widget):
+    def __on_destroy(self, widget):
         """
             Disconnect signal
             @param widget as Gtk.Widget
         """
         self.clean_old_views(None)
 
-    def _populate(self, albums):
+    def __populate(self, albums):
         """
             Populate view and make it visible
             @param albums as [albums ids as int]
@@ -245,23 +245,23 @@ class CurrentArtistAlbumsView(ViewContainer):
         self.clean_old_views(view)
 
         # Populate artist albums view
-        view = ArtistAlbumsView(self._track.album.artist_ids, [])
-        view.connect('populated', self._on_populated, spinner)
+        view = ArtistAlbumsView(self.__track.album.artist_ids, [])
+        view.connect('populated', self.__on_populated, spinner)
         view.show()
         view.populate(albums)
 
-    def _get_albums(self):
+    def __get_albums(self):
         """
             Get albums
             @return album ids as [int]
         """
-        if self._track.album.artist_ids[0] == Type.COMPILATIONS:
-            albums = [self._track.album.id]
+        if self.__track.album.artist_ids[0] == Type.COMPILATIONS:
+            albums = [self.__track.album.id]
         else:
-            albums = Lp().artists.get_albums(self._track.album.artist_ids)
+            albums = Lp().artists.get_albums(self.__track.album.artist_ids)
         return albums
 
-    def _on_populated(self, view, spinner):
+    def __on_populated(self, view, spinner):
         """
             Show the view
             @param view as View
