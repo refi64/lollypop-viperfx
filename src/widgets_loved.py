@@ -26,7 +26,7 @@ class LovedWidget(Gtk.Bin):
             @param track_id as int
         """
         Gtk.Bin.__init__(self)
-        self._track_id = track_id
+        self.__track_id = track_id
         builder = Gtk.Builder()
         builder.add_from_resource('/org/gnome/Lollypop/LovedWidget.ui')
         builder.connect_signals(self)
@@ -35,7 +35,7 @@ class LovedWidget(Gtk.Bin):
         self.set_opacity(0.8 if is_loved(track_id) else 0.1)
 
 #######################
-# PRIVATE             #
+# PROTECTED           #
 #######################
     def _on_enter_notify(self, widget, event):
         """
@@ -43,7 +43,7 @@ class LovedWidget(Gtk.Bin):
             @param widget as Gtk.EventBox
             @param event as Gdk.Event
         """
-        self.set_opacity(0.1 if is_loved(self._track_id) else 0.8)
+        self.set_opacity(0.1 if is_loved(self.__track_id) else 0.8)
 
     def _on_leave_notify(self, widget, event):
         """
@@ -51,7 +51,7 @@ class LovedWidget(Gtk.Bin):
             @param widget as Gtk.EventBox (can be None)
             @param event as Gdk.Event (can be None)
         """
-        self.set_opacity(0.8 if is_loved(self._track_id) else 0.1)
+        self.set_opacity(0.8 if is_loved(self.__track_id) else 0.1)
 
     def _on_button_press(self, widget, event):
         """
@@ -59,6 +59,6 @@ class LovedWidget(Gtk.Bin):
             @param widget as Gtk.EventBox
             @param event as Gdk.Event
         """
-        loved = not is_loved(self._track_id)
-        set_loved(self._track_id, loved)
+        loved = not is_loved(self.__track_id)
+        set_loved(self.__track_id, loved)
         self.set_opacity(0.8 if loved else 0.1)
