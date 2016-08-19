@@ -98,7 +98,7 @@ class ArtistAlbumsView(LazyLoadingView):
             @return height as int
         """
         height = 0
-        for child in self.__get_children():
+        for child in self._get_children():
             height += child.requested_height
         return height
 
