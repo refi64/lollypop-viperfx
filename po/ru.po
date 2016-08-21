@@ -12,8 +12,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lollypop\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-06-28 13:39+0200\n"
-"PO-Revision-Date: 2016-07-04 19:29+0000\n"
+"POT-Creation-Date: 2016-07-07 12:49+0200\n"
+"PO-Revision-Date: 2016-07-07 15:00+0000\n"
 "Last-Translator: Maxim region51 <murmansksity@gmail.com>\n"
 "Language-Team: Russian (http://www.transifex.com/gnumdk/lollypop/language/ru/)\n"
 "MIME-Version: 1.0\n"
@@ -83,125 +83,129 @@ msgid "Last.fm login"
 msgstr "Last.fm авторизация"
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:16
+msgid "Google Custom Search API key"
+msgstr "Google Custom Search API ключ"
+
+#: ../data/org.gnome.Lollypop.gschema.xml.h:17
 msgid "Favorite tag editor"
 msgstr "Любимый редактор тегов"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:17
+#: ../data/org.gnome.Lollypop.gschema.xml.h:18
 msgid "INTERNAL"
 msgstr "ВНУТРЕННИЙ"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:18
+#: ../data/org.gnome.Lollypop.gschema.xml.h:19
 msgid "Audio output preview on track hover"
 msgstr "Воспроизведение звука при наведении указателя мыши на трек"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:19
+#: ../data/org.gnome.Lollypop.gschema.xml.h:20
 msgid ""
 "Pulseaudio only. Example: alsa_output.pci-0000_00_14.2.analog-stereo. "
 "Command to get outputs: $ pacmd list-sinks|grep 'name:'"
-msgstr "Только Pulseaudio. Пример: alsa_output.pci-0000_00_14.2.analog-stereo. Команда для получения выходного сигнала: $ pacmd list-sinks|grep 'name:'"
+msgstr ""
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:20
+#: ../data/org.gnome.Lollypop.gschema.xml.h:21
 msgid "Favorite cover file"
 msgstr "Любимый файл обложки"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:21
+#: ../data/org.gnome.Lollypop.gschema.xml.h:22
 msgid "Restart needed"
 msgstr "Необходим перезапуск"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:22
+#: ../data/org.gnome.Lollypop.gschema.xml.h:23
 msgid "Database version"
 msgstr "Версия базы данных"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:23
+#: ../data/org.gnome.Lollypop.gschema.xml.h:24
 msgid ""
 "Reset this value will reset the database, popular albums will be restored"
 msgstr "Сброс этого значения очистит базу данных, популярные альбомы будут восстановлены"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:24 ../data/SettingsDialog.ui.h:7
+#: ../data/org.gnome.Lollypop.gschema.xml.h:25 ../data/SettingsDialog.ui.h:7
 msgid "Albums cover size"
 msgstr "Размер обложки альбома"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:25
+#: ../data/org.gnome.Lollypop.gschema.xml.h:26
 msgid "Replay gain value in db"
 msgstr "Увеличение громкости в децибелах"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:26
+#: ../data/org.gnome.Lollypop.gschema.xml.h:27
 msgid "Between -15 and 15"
 msgstr "Между -15 и 15"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:27
+#: ../data/org.gnome.Lollypop.gschema.xml.h:28
 msgid "Sync all albums(MTP)"
 msgstr "Синхронизировать все альбомы (MTP)"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:28
+#: ../data/org.gnome.Lollypop.gschema.xml.h:29
 msgid "Convert to MP3(MTP)"
 msgstr "Конвертировать в MP3 (MTP)"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:29
+#: ../data/org.gnome.Lollypop.gschema.xml.h:30
 msgid "Normalize MP3(MTP)"
 msgstr "Нормализовать MP3 (MTP)"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:30 ../data/SettingsDialog.ui.h:16
+#: ../data/org.gnome.Lollypop.gschema.xml.h:31 ../data/SettingsDialog.ui.h:16
 msgid "Auto update music"
 msgstr "Автоматическое обновление музыки"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:31
+#: ../data/org.gnome.Lollypop.gschema.xml.h:32
 msgid "Show genres list"
 msgstr "Показывать список жанров"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:32 ../data/SettingsDialog.ui.h:8
+#: ../data/org.gnome.Lollypop.gschema.xml.h:33 ../data/SettingsDialog.ui.h:8
 msgid "Show artist artwork"
 msgstr "Показывать обложку исполнителя"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:33
+#: ../data/org.gnome.Lollypop.gschema.xml.h:34
 msgid "Use dark gtk theme"
 msgstr "Использовать тёмный вариант темы"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:34
+#: ../data/org.gnome.Lollypop.gschema.xml.h:35
 msgid "Disable the use client side window decorations (headerbar)"
 msgstr "Отключить декорирование на стороне клиента (CSD)"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:35 ../data/SettingsDialog.ui.h:6
+#: ../data/org.gnome.Lollypop.gschema.xml.h:36 ../data/SettingsDialog.ui.h:6
 msgid "Show compilations in albums view"
 msgstr "Показывать сборники в списке альбомов"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:36 ../data/SettingsDialog.ui.h:18
+#: ../data/org.gnome.Lollypop.gschema.xml.h:37 ../data/SettingsDialog.ui.h:18
 msgid "Continue playback when closed"
 msgstr "Продолжить воспроизведение после закрытия"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:37
+#: ../data/org.gnome.Lollypop.gschema.xml.h:38
 msgid "Restore previous state"
 msgstr "Восстанавливать предыдущее состояние"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:38
+#: ../data/org.gnome.Lollypop.gschema.xml.h:39
 msgid "Disable MPRIS"
 msgstr "Отключить MPRIS"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:39
+#: ../data/org.gnome.Lollypop.gschema.xml.h:40
 msgid "Disable notifications"
 msgstr "Отключить уведомления"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:40
+#: ../data/org.gnome.Lollypop.gschema.xml.h:41
 msgid "Show track number from tags"
 msgstr "Показывать номер трека из тегов"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:41
+#: ../data/org.gnome.Lollypop.gschema.xml.h:42
 msgid "Mix songs"
 msgstr "Микшировать песни"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:42
+#: ../data/org.gnome.Lollypop.gschema.xml.h:43
 msgid "Mix songs only in party mode"
 msgstr "Сводить песни только в режиме вечеринки"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:43
+#: ../data/org.gnome.Lollypop.gschema.xml.h:44
 msgid "Mix duration"
 msgstr "Длительность сведения"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:44
+#: ../data/org.gnome.Lollypop.gschema.xml.h:45
 msgid "Shuffle mode"
 msgstr "Режим перемешивания"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:45 ../data/SettingsDialog.ui.h:9
+#: ../data/org.gnome.Lollypop.gschema.xml.h:46 ../data/SettingsDialog.ui.h:9
 msgid "Order albums by"
 msgstr "Сортировать альбомы"
 
@@ -257,7 +261,7 @@ msgid "Search"
 msgstr "Поиск"
 
 #: ../data/lollypop.appdata.xml.in.h:9 ../src/pop_menu.py:391
-#: ../src/pop_menu.py:412 ../src/toolbar_end.py:377
+#: ../src/pop_menu.py:412 ../src/toolbar_end.py:387
 #: ../data/QueuePopover.ui.h:2
 msgid "Queue"
 msgstr "Очередь"
@@ -344,15 +348,15 @@ msgstr[3] "%d треков"
 msgid "Lollypop: You need to install yelp."
 msgstr "Lollypop: Вам необходимо установить yelp."
 
-#: ../src/art_widgets.py:58
+#: ../src/art_widgets.py:61
 msgid "Select artwork"
 msgstr "Выбрать обложку"
 
-#: ../src/art_widgets.py:163
+#: ../src/art_widgets.py:167
 msgid "No cover found..."
 msgstr "Обложка не найдена…"
 
-#: ../src/art_widgets.py:240
+#: ../src/art_widgets.py:244
 msgid "Reset artwork?"
 msgstr "Сбросить обложку?"
 
@@ -438,7 +442,7 @@ msgstr "Множество исполнителей"
 msgid "Last.fm authentication disabled"
 msgstr "Аутентификация Last.fm отключена"
 
-#: ../src/lastfm.py:332
+#: ../src/lastfm.py:333
 msgid "Wrong Last.fm credentials"
 msgstr "Неверные данные учётной записи Last.fm"
 
@@ -473,7 +477,7 @@ msgstr "Очистить альбомы"
 msgid "Go to current track"
 msgstr "Перейти к текущему треку"
 
-#: ../src/pop_albums.py:299 ../src/toolbar_end.py:381
+#: ../src/pop_albums.py:299 ../src/toolbar_end.py:391
 msgid "Playing albums"
 msgstr "Воспроизведение альбомов"
 
@@ -561,11 +565,11 @@ msgstr "Популярные"
 msgid "Recently added"
 msgstr "Недавно добавленные"
 
-#: ../src/toolbar_end.py:375
+#: ../src/toolbar_end.py:385
 msgid "Externals tracks playing"
 msgstr "Воспроизведение внешних треков"
 
-#: ../src/toolbar_end.py:379
+#: ../src/toolbar_end.py:389
 msgid "Playing playlists"
 msgstr "Воспроизведение плейлистов"
 
@@ -768,6 +772,17 @@ msgstr "Выбрать локальный файл"
 msgid "Confirm"
 msgstr "Подтвердить"
 
+#: ../data/ArtworkSearch.ui.h:3
+msgid ""
+"Lollypop uses \"Google Custom Search API\" to search image on the web.\n"
+"This API is limited so it mays not work with default API key.\n"
+"Please create a search engine here:"
+msgstr "Lollypop использует \"Google Custom Search API\" для поиска изображений в Интернете.\nЭтот API ограничен, поэтому он не может работать API ключом по умолчанию.\nПожалуйста, создайте поисковую систему здесь:"
+
+#: ../data/ArtworkSearch.ui.h:6
+msgid "API key"
+msgstr "API ключ"
+
 #: ../data/DeviceManagerView.ui.h:1
 msgid "Synchronize your device with this playlists"
 msgstr "Синхронизировать ваше устройство с этими плейлистами"
@@ -890,11 +905,11 @@ msgstr "Сохранять изображения в файлах"
 
 #: ../data/SettingsDialog.ui.h:23
 msgid "Preview tracks on"
-msgstr "Предварительный просмотр треков на"
+msgstr "Предварительное прослушивание треков"
 
 #: ../data/SettingsDialog.ui.h:24
 msgid "None audio device"
-msgstr "Аудиоустройства отсутствуют"
+msgstr ""
 
 #: ../data/SettingsDialog.ui.h:25
 msgid "Configure lollypop behaviour"
@@ -1014,7 +1029,7 @@ msgstr "Любимый трек"
 #: ../data/Shortcuts.ui.h:8
 msgctxt "shortcut window"
 msgid "Lock playback"
-msgstr "Блокировка воспроизведения"
+msgstr "Блокировать воспроизведение"
 
 #: ../data/Shortcuts.ui.h:9
 msgctxt "shortcut window"

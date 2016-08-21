@@ -152,7 +152,7 @@ class InfoCache:
             @param suffix as str
             @return (content as string, data as bytes)
         """
-        filepath = "%s/%s_%s" % (InfoCache._CACHE_PATH,
+        filepath = "%s/%s_%s" % (InfoCache._INFO_PATH,
                                  escape(prefix),
                                  suffix)
         content = None

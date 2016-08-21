@@ -11,9 +11,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lollypop\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-06-28 13:39+0200\n"
-"PO-Revision-Date: 2016-06-28 11:39+0000\n"
-"Last-Translator: Cédric Bellegarde <web@adishatz.org>\n"
+"POT-Creation-Date: 2016-07-07 12:49+0200\n"
+"PO-Revision-Date: 2016-07-09 11:29+0000\n"
+"Last-Translator: Nathan Follens\n"
 "Language-Team: Dutch (http://www.transifex.com/gnumdk/lollypop/language/nl/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -82,125 +82,129 @@ msgid "Last.fm login"
 msgstr "Last.fm-account"
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:16
+msgid "Google Custom Search API key"
+msgstr "Google Custom Search API-sleutel"
+
+#: ../data/org.gnome.Lollypop.gschema.xml.h:17
 msgid "Favorite tag editor"
 msgstr "Favoriete tagbewerker"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:17
+#: ../data/org.gnome.Lollypop.gschema.xml.h:18
 msgid "INTERNAL"
 msgstr "INTERN"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:18
-msgid "Audio output preview on track hover"
-msgstr ""
-
 #: ../data/org.gnome.Lollypop.gschema.xml.h:19
+msgid "Audio output preview on track hover"
+msgstr "Voorbeeldweergave van audio-uitvoer wanneer nummer wordt aangewezen"
+
+#: ../data/org.gnome.Lollypop.gschema.xml.h:20
 msgid ""
 "Pulseaudio only. Example: alsa_output.pci-0000_00_14.2.analog-stereo. "
 "Command to get outputs: $ pacmd list-sinks|grep 'name:'"
-msgstr ""
+msgstr "Enkel pulseaudio. Voorbeeld: alsa_output.pci-0000_00_14.2.analog-stereo. Commando om audio-uitvoeren weer te geven: $ pacmd list-sinks|grep 'name:'"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:20
+#: ../data/org.gnome.Lollypop.gschema.xml.h:21
 msgid "Favorite cover file"
 msgstr "Favoriete albumhoes"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:21
+#: ../data/org.gnome.Lollypop.gschema.xml.h:22
 msgid "Restart needed"
 msgstr "Opnieuw opstarten van Lollypop vereist"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:22
+#: ../data/org.gnome.Lollypop.gschema.xml.h:23
 msgid "Database version"
 msgstr "Databaseversie"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:23
+#: ../data/org.gnome.Lollypop.gschema.xml.h:24
 msgid ""
 "Reset this value will reset the database, popular albums will be restored"
 msgstr "Deze waarde opnieuw instellen zal de database opnieuw instellen, populaire albums zullen hersteld worden"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:24 ../data/SettingsDialog.ui.h:7
+#: ../data/org.gnome.Lollypop.gschema.xml.h:25 ../data/SettingsDialog.ui.h:7
 msgid "Albums cover size"
 msgstr "Albumhoesgrootte"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:25
+#: ../data/org.gnome.Lollypop.gschema.xml.h:26
 msgid "Replay gain value in db"
 msgstr "ReplayGain-waarde in dB"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:26
+#: ../data/org.gnome.Lollypop.gschema.xml.h:27
 msgid "Between -15 and 15"
 msgstr "Tussen -15 en 15"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:27
+#: ../data/org.gnome.Lollypop.gschema.xml.h:28
 msgid "Sync all albums(MTP)"
 msgstr "Alle albums synchroniseren (MTP)"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:28
+#: ../data/org.gnome.Lollypop.gschema.xml.h:29
 msgid "Convert to MP3(MTP)"
 msgstr "Converteren naar MP3 (MTP)"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:29
+#: ../data/org.gnome.Lollypop.gschema.xml.h:30
 msgid "Normalize MP3(MTP)"
 msgstr "MP3 normaliseren (MTP)"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:30 ../data/SettingsDialog.ui.h:16
+#: ../data/org.gnome.Lollypop.gschema.xml.h:31 ../data/SettingsDialog.ui.h:16
 msgid "Auto update music"
 msgstr "Muziek automatisch bijwerken"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:31
+#: ../data/org.gnome.Lollypop.gschema.xml.h:32
 msgid "Show genres list"
 msgstr "Genrelijst weergeven"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:32 ../data/SettingsDialog.ui.h:8
+#: ../data/org.gnome.Lollypop.gschema.xml.h:33 ../data/SettingsDialog.ui.h:8
 msgid "Show artist artwork"
 msgstr "Foto van artiest weergeven"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:33
+#: ../data/org.gnome.Lollypop.gschema.xml.h:34
 msgid "Use dark gtk theme"
 msgstr "Donker GTK-thema gebruiken"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:34
+#: ../data/org.gnome.Lollypop.gschema.xml.h:35
 msgid "Disable the use client side window decorations (headerbar)"
 msgstr "Client side window decorations (headerbar) uitschakelen"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:35 ../data/SettingsDialog.ui.h:6
+#: ../data/org.gnome.Lollypop.gschema.xml.h:36 ../data/SettingsDialog.ui.h:6
 msgid "Show compilations in albums view"
 msgstr "Compilaties in albumoverzicht weergeven"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:36 ../data/SettingsDialog.ui.h:18
+#: ../data/org.gnome.Lollypop.gschema.xml.h:37 ../data/SettingsDialog.ui.h:18
 msgid "Continue playback when closed"
 msgstr "Doorgaan met afspelen wanneer gesloten"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:37
+#: ../data/org.gnome.Lollypop.gschema.xml.h:38
 msgid "Restore previous state"
 msgstr "Vorige toestand herstellen"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:38
+#: ../data/org.gnome.Lollypop.gschema.xml.h:39
 msgid "Disable MPRIS"
 msgstr "MPRIS uitschakelen"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:39
+#: ../data/org.gnome.Lollypop.gschema.xml.h:40
 msgid "Disable notifications"
 msgstr "Meldingen uitschakelen"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:40
+#: ../data/org.gnome.Lollypop.gschema.xml.h:41
 msgid "Show track number from tags"
 msgstr "Tracknummer uit tags weergeven"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:41
+#: ../data/org.gnome.Lollypop.gschema.xml.h:42
 msgid "Mix songs"
 msgstr "Nummers mengen"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:42
+#: ../data/org.gnome.Lollypop.gschema.xml.h:43
 msgid "Mix songs only in party mode"
 msgstr "Nummers enkel mengen in feestmodus"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:43
+#: ../data/org.gnome.Lollypop.gschema.xml.h:44
 msgid "Mix duration"
 msgstr "Mengduur"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:44
+#: ../data/org.gnome.Lollypop.gschema.xml.h:45
 msgid "Shuffle mode"
 msgstr "Willekeurige volgorde-modus"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:45 ../data/SettingsDialog.ui.h:9
+#: ../data/org.gnome.Lollypop.gschema.xml.h:46 ../data/SettingsDialog.ui.h:9
 msgid "Order albums by"
 msgstr "Albums rangschikken op"
 
@@ -256,7 +260,7 @@ msgid "Search"
 msgstr "Zoeken"
 
 #: ../data/lollypop.appdata.xml.in.h:9 ../src/pop_menu.py:391
-#: ../src/pop_menu.py:412 ../src/toolbar_end.py:377
+#: ../src/pop_menu.py:412 ../src/toolbar_end.py:387
 #: ../data/QueuePopover.ui.h:2
 msgid "Queue"
 msgstr "Wachtrij"
@@ -337,15 +341,15 @@ msgstr[1] "%d nummers"
 msgid "Lollypop: You need to install yelp."
 msgstr "Lollypop: je moet yelp installeren."
 
-#: ../src/art_widgets.py:58
+#: ../src/art_widgets.py:61
 msgid "Select artwork"
 msgstr "Albumhoes kiezen"
 
-#: ../src/art_widgets.py:163
+#: ../src/art_widgets.py:167
 msgid "No cover found..."
 msgstr "Geen hoes gevonden..."
 
-#: ../src/art_widgets.py:240
+#: ../src/art_widgets.py:244
 msgid "Reset artwork?"
 msgstr "Albumhoes opnieuw instellen?"
 
@@ -431,7 +435,7 @@ msgstr "Meerdere artiesten"
 msgid "Last.fm authentication disabled"
 msgstr "Last.fm-authenticatie uitgeschakeld"
 
-#: ../src/lastfm.py:332
+#: ../src/lastfm.py:333
 msgid "Wrong Last.fm credentials"
 msgstr "Verkeerde Last.fm-referenties"
 
@@ -466,7 +470,7 @@ msgstr "Albums wissen"
 msgid "Go to current track"
 msgstr "Ga naar huidig nummer"
 
-#: ../src/pop_albums.py:299 ../src/toolbar_end.py:381
+#: ../src/pop_albums.py:299 ../src/toolbar_end.py:391
 msgid "Playing albums"
 msgstr "Afspelende albums"
 
@@ -554,11 +558,11 @@ msgstr "Populair"
 msgid "Recently added"
 msgstr "Recent toegevoegd"
 
-#: ../src/toolbar_end.py:375
+#: ../src/toolbar_end.py:385
 msgid "Externals tracks playing"
 msgstr "Afspelende externe nummers"
 
-#: ../src/toolbar_end.py:379
+#: ../src/toolbar_end.py:389
 msgid "Playing playlists"
 msgstr "Afspelende afspeellijsten"
 
@@ -761,6 +765,17 @@ msgstr "Kies een lokaal bestand"
 msgid "Confirm"
 msgstr "Bevestigen"
 
+#: ../data/ArtworkSearch.ui.h:3
+msgid ""
+"Lollypop uses \"Google Custom Search API\" to search image on the web.\n"
+"This API is limited so it mays not work with default API key.\n"
+"Please create a search engine here:"
+msgstr "Lollypop gebruikt de \"Google Custom Search API\" om afbeeldingen op het internet te zoeken.\nDeze API is beperkt en werkt dus misschien niet met de standaard API-sleutel.\nMaak hier een nieuwe zoekmachine aan:"
+
+#: ../data/ArtworkSearch.ui.h:6
+msgid "API key"
+msgstr "API-sleutel"
+
 #: ../data/DeviceManagerView.ui.h:1
 msgid "Synchronize your device with this playlists"
 msgstr "Synchroniseer je apparaat met deze afspeellijst"
@@ -867,7 +882,7 @@ msgstr "Toestand herstellen bij opstarten"
 
 #: ../data/SettingsDialog.ui.h:19
 msgid "Mix tracks"
-msgstr ""
+msgstr "Nummers mengen"
 
 #: ../data/SettingsDialog.ui.h:20
 msgid "Long press to show options"
@@ -883,11 +898,11 @@ msgstr "Albumhoezen opslaan in bestanden"
 
 #: ../data/SettingsDialog.ui.h:23
 msgid "Preview tracks on"
-msgstr ""
+msgstr "Voorbeeldweergave van nummer afspelen via"
 
 #: ../data/SettingsDialog.ui.h:24
 msgid "None audio device"
-msgstr ""
+msgstr "Geen audio-apparaat"
 
 #: ../data/SettingsDialog.ui.h:25
 msgid "Configure lollypop behaviour"
