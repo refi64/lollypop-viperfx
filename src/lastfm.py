@@ -320,11 +320,11 @@ class LastFM(LastFMNetwork):
             @thread safe
         """
         try:
-            LastFMNetwork.update__now_playing(self,
-                                              artist=artist,
-                                              album=album,
-                                              title=title,
-                                              duration=duration)
+            LastFMNetwork.update_now_playing(self,
+                                             artist=artist,
+                                             album=album,
+                                             title=title,
+                                             duration=duration)
             debug("LastFM::__now_playing(): %s, %s, %s, %s" % (artist,
                                                                album,
                                                                title,
