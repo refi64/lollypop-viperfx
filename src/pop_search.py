@@ -226,7 +226,7 @@ class SearchPopover(Gtk.Popover):
         """
         if self.__in_thread:
             self.__stop_thread = True
-            GLib.timeout_add(100, self.__on_search_changed, widget)
+            GLib.timeout_add(100, self._on_search_changed, widget)
 
         if self.__timeout:
             GLib.source_remove(self.__timeout)
