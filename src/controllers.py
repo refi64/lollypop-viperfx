@@ -244,7 +244,7 @@ class InfosController:
             Init controller
         """
         self._infobox = None
-        self.__artsize = artsize
+        self._artsize = artsize
 
     def on_current_changed(self, player):
         """
@@ -265,17 +265,17 @@ class InfosController:
         if player.current_track.id == Type.RADIOS:
             art = Lp().art.get_radio_artwork(
                                    ", ".join(player.current_track.artists),
-                                   self.__artsize,
+                                   self._artsize,
                                    self.get_scale_factor())
         elif player.current_track.id == Type.EXTERNALS:
             art = Lp().art.get_album_artwork2(
                     player.current_track.uri,
-                    self.__artsize,
+                    self._artsize,
                     self.get_scale_factor())
         elif player.current_track.id is not None:
             art = Lp().art.get_album_artwork(
                                    player.current_track.album,
-                                   self.__artsize,
+                                   self._artsize,
                                    self.get_scale_factor())
         if art is not None:
             self._cover.set_from_surface(art)
@@ -292,4 +292,4 @@ class InfosController:
         """
             Art size as int
         """
-        return self.__artsize
+        return self._artsize
