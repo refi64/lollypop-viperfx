@@ -191,7 +191,7 @@ class ArtistsDatabase:
         """
         with SqlCursor(Lp().db) as sql:
             result = sql.execute("SELECT rowid FROM artists\
-                                  WHERE name LIKE ?\
+                                  WHERE noaccents(name) LIKE ?\
                                   LIMIT 25", ('%' + string + '%',))
             return list(itertools.chain(*result))
 

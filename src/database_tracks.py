@@ -554,7 +554,7 @@ class TracksDatabase:
         """
         with SqlCursor(Lp().db) as sql:
             result = sql.execute("SELECT rowid, name FROM tracks\
-                                  WHERE name LIKE ? LIMIT 25",
+                                  WHERE noaccents(name) LIKE ? LIMIT 25",
                                  ('%' + searched + '%',))
             return list(result)
 

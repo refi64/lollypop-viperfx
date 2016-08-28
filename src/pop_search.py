@@ -253,6 +253,8 @@ class SearchPopover(Gtk.Popover):
         for child in self.__view.get_children():
                 GLib.idle_add(child.destroy)
         results = []
+        added_album_ids = []
+        added_track_ids = []
         search_items = [self.__current_search]
         search_items += self.__current_search.split()
         for item in search_items:
@@ -268,24 +270,33 @@ class SearchPopover(Gtk.Popover):
                     tracks_non_album_artist.append((track_id, track_name))
 
             for album_id, artist_id in albums:
+                if album_id in added_album_ids:
+                    continue
                 search_obj = SearchObject()
                 search_obj.id = album_id
+                added_album_ids.append(album_id)
                 search_obj.is_track = False
                 search_obj.artist_ids = [artist_id]
                 results.append(search_obj)
 
             albums = Lp().albums.search(item)
             for album_id in albums:
+                if album_id in added_album_ids:
+                    continue
                 search_obj = SearchObject()
                 search_obj.id = album_id
+                added_album_ids.append(album_id)
                 search_obj.is_track = False
                 search_obj.artist_ids = Lp().albums.get_artist_ids(album_id)
                 results.append(search_obj)
 
             for track_id, track_name in Lp().tracks.search(
                                                item) + tracks_non_album_artist:
+                if track_id in added_track_ids:
+                    continue
                 search_obj = SearchObject()
                 search_obj.id = track_id
+                added_track_ids.append(track_id)
                 search_obj.is_track = True
                 search_obj.artist_ids = Lp().tracks.get_artist_ids(track_id)
                 results.append(search_obj)
