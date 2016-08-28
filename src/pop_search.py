@@ -239,79 +239,58 @@ class SearchPopover(Gtk.Popover):
                                               self.__on_search_changed_thread)
         else:
             self.__new_btn.set_sensitive(False)
-            self.__clear([])
+            for child in self.__view.get_children():
+                GLib.idle_add(child.destroy)
 
 #######################
 # PRIVATE             #
 #######################
-    def __clear(self, results):
-        """
-            Remove row not existing in view, thread safe
-        """
-        for child in self.__view.get_children():
-            if not results or not child.exists(results):
-                GLib.idle_add(child.destroy)
-
-    def __exists(self, item):
-        """
-            Return True if item exist in rows
-            @param: item as SearchObject
-        """
-        found = False
-        for child in self.__view.get_children():
-            if item.is_track and child.is_track():
-                if item.id == child.get_id():
-                    found = True
-                    break
-            elif not item.is_track and not child.is_track():
-                if item.id == child.get_id():
-                    found = True
-                    break
-        return found
-
     def __populate(self):
         """
             Populate searching items
             in db based on text entry current text
         """
+        for child in self.__view.get_children():
+                GLib.idle_add(child.destroy)
         results = []
-        albums = []
-        tracks_non_album_artist = []
+        search_items = [self.__current_search]
+        search_items += self.__current_search.split()
+        for item in search_items:
+            albums = []
+            tracks_non_album_artist = []
+            # Get all albums for all artists and non album_artist tracks
+            for artist_id in Lp().artists.search(item):
+                for album_id in Lp().albums.get_ids([artist_id], []):
+                    if (album_id, artist_id) not in albums:
+                        albums.append((album_id, artist_id))
+                for track_id, track_name in Lp(
+                                   ).tracks.get_as_non_album_artist(artist_id):
+                    tracks_non_album_artist.append((track_id, track_name))
 
-        # Get all albums for all artists and non album_artist tracks
-        for artist_id in Lp().artists.search(self.__current_search):
-            for album_id in Lp().albums.get_ids([artist_id], []):
-                if (album_id, artist_id) not in albums:
-                    albums.append((album_id, artist_id))
-            for track_id, track_name in Lp().tracks.get_as_non_album_artist(
-                                                        artist_id):
-                tracks_non_album_artist.append((track_id, track_name))
+            for album_id, artist_id in albums:
+                search_obj = SearchObject()
+                search_obj.id = album_id
+                search_obj.is_track = False
+                search_obj.artist_ids = [artist_id]
+                results.append(search_obj)
 
-        for album_id, artist_id in albums:
-            search_obj = SearchObject()
-            search_obj.id = album_id
-            search_obj.is_track = False
-            search_obj.artist_ids = [artist_id]
-            results.append(search_obj)
+            albums = Lp().albums.search(item)
+            for album_id in albums:
+                search_obj = SearchObject()
+                search_obj.id = album_id
+                search_obj.is_track = False
+                search_obj.artist_ids = Lp().albums.get_artist_ids(album_id)
+                results.append(search_obj)
 
-        albums = Lp().albums.search(self.__current_search)
-        for album_id in albums:
-            search_obj = SearchObject()
-            search_obj.id = album_id
-            search_obj.is_track = False
-            search_obj.artist_ids = Lp().albums.get_artist_ids(album_id)
-            results.append(search_obj)
-
-        for track_id, track_name in Lp().tracks.search(
-                        self.__current_search) + tracks_non_album_artist:
-            search_obj = SearchObject()
-            search_obj.id = track_id
-            search_obj.is_track = True
-            search_obj.artist_ids = Lp().tracks.get_artist_ids(track_id)
-            results.append(search_obj)
+            for track_id, track_name in Lp().tracks.search(
+                                               item) + tracks_non_album_artist:
+                search_obj = SearchObject()
+                search_obj.id = track_id
+                search_obj.is_track = True
+                search_obj.artist_ids = Lp().tracks.get_artist_ids(track_id)
+                results.append(search_obj)
 
         if not self.__stop_thread:
-            self.__clear(results)
             GLib.idle_add(self.__add_rows, results)
         else:
             self.__in_thread = False
@@ -324,22 +303,21 @@ class SearchPopover(Gtk.Popover):
         """
         if results:
             result = results.pop(0)
-            if not self.__exists(result):
-                search_row = SearchRow()
-                if result.is_track:
-                    obj = Track(result.id)
-                    album_id = obj.album_id
-                else:
-                    obj = Album(result.id)
-                    album_id = obj.id
-                search_row.set_id(result.id, result.is_track)
-                search_row.set_artist_ids(result.artist_ids)
-                search_row.set_cover(
-                        Lp().art.get_album_artwork(
-                                     Album(album_id),
-                                     ArtSize.MEDIUM,
-                                     self.get_scale_factor()))
-                self.__view.add(search_row)
+            search_row = SearchRow()
+            if result.is_track:
+                obj = Track(result.id)
+                album_id = obj.album_id
+            else:
+                obj = Album(result.id)
+                album_id = obj.id
+            search_row.set_id(result.id, result.is_track)
+            search_row.set_artist_ids(result.artist_ids)
+            search_row.set_cover(
+                    Lp().art.get_album_artwork(
+                                 Album(album_id),
+                                 ArtSize.MEDIUM,
+                                 self.get_scale_factor()))
+            self.__view.add(search_row)
             if self.__stop_thread:
                 self.__in_thread = False
                 self.__stop_thread = False
