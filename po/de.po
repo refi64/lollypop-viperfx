@@ -9,14 +9,15 @@
 # Mark Gerlach, 2015
 # Mathias Rudolf <manifre.rudolf@gmail.com>, 2015-2016
 # Noah Hüsser <yatekii@yatekii.ch>, 2015-2016
-# HumHumXX <xhummuhx+transifex@gmail.com>, 2015
+# Vincent Bermel <palob@users.noreply.github.com>, 2016
+# HumHumXX, 2015
 msgid ""
 msgstr ""
 "Project-Id-Version: lollypop\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2016-07-07 12:49+0200\n"
-"PO-Revision-Date: 2016-07-15 18:25+0000\n"
-"Last-Translator: Frank Roth <frankroth@mac.com>\n"
+"PO-Revision-Date: 2016-08-30 10:25+0000\n"
+"Last-Translator: Vincent Bermel <palob@users.noreply.github.com>\n"
 "Language-Team: German (http://www.transifex.com/gnumdk/lollypop/language/de/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -98,7 +99,7 @@ msgstr "INTERN"
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:19
 msgid "Audio output preview on track hover"
-msgstr ""
+msgstr "Vorschau beim Überfahren eines Titels mit der Maus"
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:20
 msgid ""
@@ -145,7 +146,7 @@ msgstr "Umwandeln zu MP3(MTP)"
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:30
 msgid "Normalize MP3(MTP)"
-msgstr " MP3(MTP) normalizieren"
+msgstr " MP3(MTP) normalisieren"
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:31 ../data/SettingsDialog.ui.h:16
 msgid "Auto update music"
@@ -165,7 +166,7 @@ msgstr "Dunkles GTK-Theme verwenden"
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:35
 msgid "Disable the use client side window decorations (headerbar)"
-msgstr "Die Nutzung von Client-Side-Fensterdekorationen ausschalten (Kopfleiste)"
+msgstr "Client-Side-Fensterdekorationen ausschalten (Kopfleiste)"
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:36 ../data/SettingsDialog.ui.h:6
 msgid "Show compilations in albums view"
@@ -354,7 +355,7 @@ msgstr "Kein Cover gefunden ..."
 
 #: ../src/art_widgets.py:244
 msgid "Reset artwork?"
-msgstr "Coverbild zurücksetzten."
+msgstr "Coverbild zurücksetzen?"
 
 #: ../src/collectionscanner.py:69
 msgid "Your music is updating"
@@ -699,7 +700,7 @@ msgstr "Cédric Bellegarde <cedric.bellegarde@adishatz.org>"
 
 #: ../data/AboutDialog.ui.h:5
 msgid "Reset database"
-msgstr "Datenbank zurücksetzten"
+msgstr "Datenbank zurücksetzen"
 
 #: ../data/Appmenu.ui.h:1
 msgid "_Update music"
@@ -773,7 +774,7 @@ msgid ""
 "Lollypop uses \"Google Custom Search API\" to search image on the web.\n"
 "This API is limited so it mays not work with default API key.\n"
 "Please create a search engine here:"
-msgstr "Lollypop verwendet die \"Google Custom Search API\" um Bilder auf dem Internet zu suchen.\nDie API is limitiert so dass diese mit dem standard Key nicht immer funktioniert.\nBitte erzeuge eine Suchmaschine hier:"
+msgstr "Lollypop verwendet die \"Google Custom Search API\" um Bilder im Internet zu suchen.\nDie API ist limitiert so dass diese mit dem standard Key nicht immer funktioniert.\nBitte erzeuge eine Suchmaschine hier:"
 
 #: ../data/ArtworkSearch.ui.h:6
 msgid "API key"
@@ -789,7 +790,7 @@ msgstr "Umwandeln zu MP3"
 
 #: ../data/DeviceManagerWidget.ui.h:3
 msgid "Normalize MP3"
-msgstr "Normaliziere MP3"
+msgstr "Normalisiere MP3"
 
 #: ../data/PlaylistsManagerView.ui.h:1
 msgid "New playlist"
@@ -885,7 +886,7 @@ msgstr "Zustand beim Start wiederherstellen"
 
 #: ../data/SettingsDialog.ui.h:19
 msgid "Mix tracks"
-msgstr ""
+msgstr "Titel überblenden"
 
 #: ../data/SettingsDialog.ui.h:20
 msgid "Long press to show options"
@@ -901,11 +902,11 @@ msgstr "Coverbild in Datei speichern"
 
 #: ../data/SettingsDialog.ui.h:23
 msgid "Preview tracks on"
-msgstr ""
+msgstr "Gerät zum Abspielen einer Titelvorschau"
 
 #: ../data/SettingsDialog.ui.h:24
 msgid "None audio device"
-msgstr ""
+msgstr "Keine Vorschau"
 
 #: ../data/SettingsDialog.ui.h:25
 msgid "Configure lollypop behaviour"
@@ -967,7 +968,7 @@ msgstr "Zufall"
 msgid ""
 "Party mode\n"
 "Right click to filter"
-msgstr ""
+msgstr "Partymodus\nRechtsklick für Filter"
 
 #: ../data/TuneinPopover.ui.h:1
 msgid "Go back"
