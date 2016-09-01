@@ -43,6 +43,7 @@ class DeviceManagerWidget(Gtk.Bin, MtpSync):
         Gtk.Bin.__init__(self)
         MtpSync.__init__(self)
         self.__parent = parent
+        self.__stop = False
         self._progress = progress
         self._uri = None
 
@@ -103,12 +104,17 @@ class DeviceManagerWidget(Gtk.Bin, MtpSync):
             @thread safe
         """
         self.__model.clear()
+        self.__stop = False
         if Lp().settings.get_value('sync-albums'):
-            self.__append_albums()
+            albums = Lp().albums.get_ids()
+            albums += Lp().albums.get_compilation_ids()
+            self.__append_albums(albums)
             self.__column1.set_visible(True)
             self.__column2.set_title(_("Albums"))
         else:
-            self.__append_playlists()
+            playlists = [(Type.LOVED, Lp().playlists.LOVED)]
+            playlists += Lp().playlists.get()
+            self.__append_playlists(playlists)
             self.__column1.set_visible(False)
             self.__column2.set_title(_("Playlists"))
 
@@ -241,8 +247,9 @@ class DeviceManagerWidget(Gtk.Bin, MtpSync):
             @param widget as Gtk.Switch
             @param state as bool
         """
+        self.__stop = True
         Lp().settings.set_value('sync-albums', GLib.Variant('b', state))
-        self.populate()
+        GLib.idle_add(self.populate)
 
     def _on_mp3_state_set(self, widget, state):
         """
@@ -287,26 +294,27 @@ class DeviceManagerWidget(Gtk.Bin, MtpSync):
         b = model.get_value(iterb, 1)
         return a.lower() > b.lower()
 
-    def __append_playlists(self):
+    def __append_playlists(self, playlists):
         """
             Append a playlist
+            @param playlists as [(int, str)]
         """
-        playlists = [(Type.LOVED, Lp().playlists.LOVED)]
-        playlists += Lp().playlists.get()
-        for playlist in playlists:
+        if playlists and not self.__stop:
+            playlist = playlists.pop(0)
             playlist_name = GLib.uri_escape_string(playlist[1], "", False)
             playlist_obj = Gio.File.new_for_uri(self._uri + "/" +
                                                 playlist_name + '.m3u')
             selected = playlist_obj.query_exists(None)
             self.__model.append([selected, playlist[1], playlist[0]])
+            GLib.idle_add(self.__append_playlists, playlists)
 
-    def __append_albums(self):
+    def __append_albums(self, albums):
         """
             Append albums
+            @param albums as [int]
         """
-        for album_id in Lp().albums.get_ids() +\
-                Lp().albums.get_compilation_ids():
-            album = Album(album_id)
+        if albums and not self.__stop:
+            album = Album(albums.pop(0))
             if album.artist_ids[0] == Type.COMPILATIONS:
                 name = escape(album.name)
             else:
@@ -314,8 +322,9 @@ class DeviceManagerWidget(Gtk.Bin, MtpSync):
                 name = "<b>%s</b> - %s" % (
                         escape(artists),
                         escape(album.name))
-            selected = Lp().albums.get_synced(album_id)
-            self.__model.append([selected, name, album_id])
+            selected = Lp().albums.get_synced(album.id)
+            self.__model.append([selected, name, album.id])
+            GLib.idle_add(self.__append_albums, albums)
 
     def __populate_albums_playlist(self, album_id, toggle):
         """
