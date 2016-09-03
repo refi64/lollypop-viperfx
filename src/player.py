@@ -42,6 +42,7 @@ class Player(BinPlayer, QueuePlayer, UserPlaylistPlayer, RadioPlayer,
         RadioPlayer.__init__(self)
         ExternalsPlayer.__init__(self)
         self.update_crossfading()
+        self.__do_not_update_next = False
 
     @property
     def current_track(self):
@@ -110,6 +111,8 @@ class Player(BinPlayer, QueuePlayer, UserPlaylistPlayer, RadioPlayer,
             RadioPlayer.load(self, track)
         else:
             if play:
+                if self.is_party:
+                    self.__do_not_update_next = True
                 BinPlayer.load(self, track)
             else:
                 BinPlayer._load_track(self, track)
@@ -534,6 +537,8 @@ class Player(BinPlayer, QueuePlayer, UserPlaylistPlayer, RadioPlayer,
             Lp().window.pulse(False)
         if self._current_track.id >= 0:
             ShufflePlayer._on_stream_start(self, bus, message)
-        self.set_next()
+        if not self.__do_not_update_next:
+            self.set_next()
+        self.__do_not_update_next = False
         self.set_prev()
         BinPlayer._on_stream_start(self, bus, message)
