@@ -405,7 +405,7 @@ class AlbumsView(LazyLoadingView):
         """
         self._stop = True
         self._lazy_queue = []
-        self.__clear()
+        GLib.idle_add(self.__clear)
         if self._signal_id1 is not None:
             Lp().player.disconnect(self._signal_id1)
             self._signal_id1 = None
