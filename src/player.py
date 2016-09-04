@@ -111,7 +111,8 @@ class Player(BinPlayer, QueuePlayer, UserPlaylistPlayer, RadioPlayer,
             RadioPlayer.load(self, track)
         else:
             if play:
-                if self.is_party:
+                # Do not update next if user clicked on a track
+                if self.is_party and track != self._next_track:
                     self.__do_not_update_next = True
                 BinPlayer.load(self, track)
             else:
