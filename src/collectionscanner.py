@@ -96,7 +96,6 @@ class CollectionScanner(GObject.GObject, TagReader):
         """
         tracks = []
         track_dirs = list(paths)
-        count = 0
         for path in paths:
             for root, dirs, files in os.walk(path, followlinks=True):
                 # Add dirs
@@ -111,13 +110,12 @@ class CollectionScanner(GObject.GObject, TagReader):
                             pass
                         elif is_audio(f):
                             tracks.append(filepath)
-                            count += 1
                         else:
                             debug("%s not detected as a music file" % filepath)
                     except Exception as e:
                         print("CollectionScanner::__get_objects_for_paths: %s"
                               % e)
-        return (tracks, track_dirs, count)
+        return (tracks, track_dirs)
 
     def __update_progress(self, current, total):
         """
@@ -149,9 +147,8 @@ class CollectionScanner(GObject.GObject, TagReader):
         orig_tracks = Lp().tracks.get_paths()
         was_empty = len(orig_tracks) == 0
 
-        (new_tracks, new_dirs, count) = self.__get_objects_for_paths(paths)
-        count += len(orig_tracks)
-
+        (new_tracks, new_dirs) = self.__get_objects_for_paths(paths)
+        count = len(new_tracks) + len(orig_tracks)
         # Add monitors on dirs
         if self.__inotify is not None:
             for d in new_dirs:
