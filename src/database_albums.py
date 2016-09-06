@@ -16,7 +16,7 @@ import itertools
 
 from lollypop.sqlcursor import SqlCursor
 from lollypop.define import Lp, Type, OrderBy
-from lollypop.utils import remove_static_genres
+from lollypop.utils import remove_static_genres, noaccents
 
 
 class AlbumsDatabase:
@@ -764,7 +764,7 @@ class AlbumsDatabase:
             result = sql.execute("SELECT albums.rowid\
                                   FROM albums\
                                   WHERE noaccents(name) LIKE ?\
-                                  LIMIT 25", ('%' + string + '%',))
+                                  LIMIT 25", ('%' + noaccents(string) + '%',))
             return list(itertools.chain(*result))
 
     def calculate_artist_ids(self, album_id):

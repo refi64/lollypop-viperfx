@@ -14,12 +14,12 @@ from gi.repository import GLib
 
 import sqlite3
 import os
-import unicodedata
 
 from lollypop.define import Lp
 from lollypop.database_upgrade import DatabaseUpgrade
 from lollypop.sqlcursor import SqlCursor
 from lollypop.localized import LocalizedCollation
+from lollypop.utils import noaccents
 
 
 class Database:
@@ -122,7 +122,7 @@ class Database:
         try:
             c = sqlite3.connect(self.DB_PATH, 600.0)
             c.create_collation('LOCALIZED', LocalizedCollation())
-            c.create_function("noaccents", 1, self.__noaccents)
+            c.create_function("noaccents", 1, noaccents)
             return c
         except:
             exit(-1)
@@ -130,11 +130,3 @@ class Database:
 #######################
 # PRIVATE             #
 #######################
-    def __noaccents(self, string):
-        """
-            Return string without accents
-            @param string as str
-            @return str
-        """
-        nfkd_form = unicodedata.normalize('NFKD', string)
-        return u"".join([c for c in nfkd_form if not unicodedata.combining(c)])

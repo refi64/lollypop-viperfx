@@ -15,7 +15,7 @@ import itertools
 
 from lollypop.sqlcursor import SqlCursor
 from lollypop.define import Lp, Type
-from lollypop.utils import format_artist_name
+from lollypop.utils import format_artist_name, noaccents
 
 
 class ArtistsDatabase:
@@ -192,7 +192,7 @@ class ArtistsDatabase:
         with SqlCursor(Lp().db) as sql:
             result = sql.execute("SELECT rowid FROM artists\
                                   WHERE noaccents(name) LIKE ?\
-                                  LIMIT 25", ('%' + string + '%',))
+                                  LIMIT 25", ('%' + noaccents(string) + '%',))
             return list(itertools.chain(*result))
 
     def count(self):

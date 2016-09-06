@@ -16,6 +16,7 @@ import itertools
 
 from lollypop.sqlcursor import SqlCursor
 from lollypop.define import Lp
+from lollypop.utils import noaccents
 
 
 class TracksDatabase:
@@ -555,7 +556,7 @@ class TracksDatabase:
         with SqlCursor(Lp().db) as sql:
             result = sql.execute("SELECT rowid, name FROM tracks\
                                   WHERE noaccents(name) LIKE ? LIMIT 25",
-                                 ('%' + searched + '%',))
+                                 ('%' + noaccents(searched) + '%',))
             return list(result)
 
     def search_track(self, artist, title):

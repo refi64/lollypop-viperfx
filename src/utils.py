@@ -14,6 +14,7 @@ from gi.repository import Gio
 
 from gettext import gettext as _
 from threading import Thread
+import unicodedata
 import os
 import socket
 import fcntl
@@ -21,6 +22,16 @@ import struct
 
 from lollypop.define import Lp, Type
 from lollypop.objects import Track
+
+
+def noaccents(string):
+        """
+            Return string without accents
+            @param string as str
+            @return str
+        """
+        nfkd_form = unicodedata.normalize('NFKD', string)
+        return u"".join([c for c in nfkd_form if not unicodedata.combining(c)])
 
 
 def escape(str):
