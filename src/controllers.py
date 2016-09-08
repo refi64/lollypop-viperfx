@@ -140,6 +140,7 @@ class ProgressController:
         self.__seeking = False
         # Update pogress position
         self.__timeout_id = None
+        Lp().player.connect('duration-changed', self.__on_duration_changed)
 
     def on_current_changed(self, player):
         """
@@ -233,6 +234,18 @@ class ProgressController:
                 self._timelabel.set_text(seconds_to_string(value/60))
         return True
 
+#######################
+# PRIVATE             #
+#######################
+    def __on_duration_changed(self, player):
+        """
+            Update duration
+            @param player as Player
+        """
+        self._progress.set_range(0.0, player.current_track.duration * 60)
+        self._total_time_label.set_text(
+                seconds_to_string(player.current_track.duration))
+
 
 class InfosController:
     """
@@ -259,8 +272,14 @@ class InfosController:
             self._cover.hide()
             return
 
+        # Stop spinner if running
+        self._spinner.hide()
+        self._spinner.stop()
+
         self._artist_label.set_text(", ".join(player.current_track.artists))
+        self._artist_label.show()
         self._title_label.set_text(player.current_track.title)
+        self._title_label.show()
 
         if player.current_track.id == Type.RADIOS:
             art = Lp().art.get_radio_artwork(

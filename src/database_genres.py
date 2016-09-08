@@ -119,13 +119,17 @@ class GenresDatabase:
         """
             Clean database for genre id
             @param genre id as int
+            @return bool, True if genre deleted
             @warning commit needed
         """
+        ret = False
         with SqlCursor(Lp().db) as sql:
             result = sql.execute("SELECT track_id from track_genres\
                                  WHERE genre_id=?\
                                  LIMIT 1", (genre_id,))
             v = result.fetchone()
             if not v:
+                ret = True
                 sql.execute("DELETE FROM genres\
                             WHERE rowid=?", (genre_id,))
+        return ret

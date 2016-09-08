@@ -16,7 +16,7 @@ from threading import Thread
 import json
 
 from lollypop.cache import InfoCache
-from lollypop.define import Lp
+from lollypop.define import Lp, GOOGLE_API_ID
 from lollypop.utils import debug
 
 
@@ -28,9 +28,6 @@ class Downloader:
         from lollypop.wikipedia import Wikipedia
     except:
         Wikipedia = None
-
-    __GOOGLE_API_KEY = "AIzaSyBiaYluG8pVYxgKRGcc4uEbtgE9q8la0dw"
-    __GOOGLE_API_ID = "015987506728554693370:waw3yqru59a"
 
     def __init__(self):
         """
@@ -79,15 +76,13 @@ class Downloader:
             return []
 
         cs_api_key = Lp().settings.get_value('cs-api-key').get_string()
-        if cs_api_key == "":
-            cs_api_key = self.__GOOGLE_API_KEY
 
         try:
             f = Gio.File.new_for_uri("https://www.googleapis.com/"
                                      "customsearch/v1?key=%s&cx=%s"
                                      "&q=%s&searchType=image" %
                                      (cs_api_key,
-                                      self.__GOOGLE_API_ID,
+                                      GOOGLE_API_ID,
                                       GLib.uri_escape_string(search,
                                                              "",
                                                              False)))
@@ -336,7 +331,7 @@ class Downloader:
                     print("Downloader::__cache_artists_info():", e)
                     InfoCache.add(artist, None, None, api)
             if artwork_set:
-                Lp().art.emit('artist-artwork-changed', artist)
+                GLib.idle_add(Lp().art.emit, 'artist-artwork-changed', artist)
         self.__cache_artists_running = False
 
     def __cache_albums_art(self):

@@ -13,13 +13,14 @@
 from gi.repository import Gst, GstAudio, GstPbutils, GLib
 
 from time import time
+from threading import Thread
 
 from lollypop.player_base import BasePlayer
 from lollypop.tagreader import TagReader
 from lollypop.player_plugins import PluginsPlayer
 from lollypop.define import GstPlayFlags, NextContext, Lp
 from lollypop.codecs import Codecs
-from lollypop.define import Type
+from lollypop.define import Type, DbPersistent
 from lollypop.utils import debug
 
 
@@ -240,16 +241,43 @@ class BinPlayer(BasePlayer):
                 self._queue_track = track
                 self._queue.remove(track.id)
                 self.emit('queue-changed')
-                self._playbin.set_property('uri', self._queue_track.uri)
+                if self._queue_track.is_youtube:
+                    self._load_youtube(self._queue_track)
+                else:
+                    self._playbin.set_property('uri', self._queue_track.uri)
             else:
                 self._current_track = track
                 self._queue_track = None
-                self._playbin.set_property('uri', self.current_track.uri)
+                if self._current_track.is_youtube:
+                    self._load_youtube(self._current_track)
+                else:
+                    self._playbin.set_property('uri', self.current_track.uri)
         except Exception as e:  # Gstreamer error
             print("BinPlayer::_load_track(): ", e)
             self._queue_track = None
             return False
         return True
+
+    def _load_youtube(self, track, play=True):
+        """
+            Load track url and play it
+            @param track as Track
+            @param play as bool
+        """
+        argv = ["youtube-dl", "-g", "-f", "bestaudio", track.uri, None]
+        try:
+            self.emit('loading-changed')
+            (s, pid, i, o, err) = GLib.spawn_async_with_pipes(
+                                       None, argv, None,
+                                       GLib.SpawnFlags.SEARCH_PATH |
+                                       GLib.SpawnFlags.DO_NOT_REAP_CHILD, None)
+            io = GLib.IOChannel(o)
+            io.add_watch(GLib.IO_IN | GLib.IO_HUP,
+                         self.__set_gv_uri,
+                         track, play,
+                         priority=GLib.PRIORITY_HIGH)
+        except Exception as e:
+            print("Youtube::__get_youtube_uri()", e)
 
     def _scrobble(self, finished, finished_start_time):
         """
@@ -296,6 +324,20 @@ class BinPlayer(BasePlayer):
 #######################
 # PRIVATE             #
 #######################
+    def __update_current_duration(self, reader):
+        """
+            Update current track duration
+            @param reader as TagReader
+        """
+        duration = reader.get_info(
+                            self.current_track.uri).get_duration() / 1000000000
+        if duration != self.current_track.duration:
+            Lp().tracks.set_duration(self.current_track.id, duration)
+            # We modify mtime to be sure not looking for tags again
+            Lp().tracks.set_mtime(self.current_track.id, 1)
+            self.current_track.set_duration(duration)
+            GLib.idle_add(self.emit, 'duration-changed')
+
     def __load(self, track, init_volume=True):
         """
             Stop current track, load track id and play it
@@ -435,13 +477,22 @@ class BinPlayer(BasePlayer):
         """
         # Some radio streams send message tag every seconds!
         changed = False
-        if self.current_track.id >= 0 or\
-           self.current_track.duration > 0.0:
+        if (self.current_track.persistence == DbPersistent.INTERNAL or
+            self.current_track.mtime != 0) and\
+            (self.current_track.id >= 0 or
+             self.current_track.duration > 0.0):
             return
         debug("Player::__on_bus_message_tag(): %s" % self.current_track.uri)
         reader = TagReader()
-        tags = message.parse_tag()
 
+        # Update duration of non internals
+        if self.current_track.persistence != DbPersistent.INTERNAL:
+            t = Thread(target=self.__update_current_duration, args=(reader,))
+            t.daemon = True
+            t.start()
+            return
+
+        tags = message.parse_tag()
         title = reader.get_title(tags, '')
         if title != '' and self.current_track.name != title:
             self.current_track.name = title
@@ -540,3 +591,16 @@ class BinPlayer(BasePlayer):
         if not Lp().scanner.is_locked():
             Lp().tracks.set_more_popular(finished.id)
             Lp().albums.set_more_popular(finished.album_id)
+
+    def __set_gv_uri(self, io, condition, track, play):
+        """
+            Play uri for io
+            @param io as GLib.IOChannel
+            @param condition as Constant
+            @param track as Track
+            @param play as bool
+        """
+        track.set_uri(io.readline())
+        if play:
+            self.load(track)
+        return False

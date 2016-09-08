@@ -58,6 +58,9 @@ app_PYTHON = \
     pop_search.py\
     pop_tunein.py\
     radios.py\
+    search_item.py\
+    search_network.py\
+    search_spotify.py\
     selectionlist.py\
     settings.py\
     sqlcursor.py\
@@ -90,5 +93,6 @@ app_PYTHON = \
     widgets_track.py\
     widgets_web.py\
     wikipedia.py\
-    window.py
+    window.py\
+    youtube.py
 

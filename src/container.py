@@ -332,22 +332,27 @@ class Container:
                     list_two_ids.append(i)
         return (list_one_ids, list_two_ids)
 
-    def __add_genre(self, scanner, genre_id):
+    def __on_genre_updated(self, scanner, genre_id, add):
         """
             Add genre to genre list
             @param scanner as CollectionScanner
             @param genre id as int
+            @param add as bool
         """
         if self.__show_genres:
-            genre_name = Lp().genres.get_name(genre_id)
-            self.__list_one.add_value((genre_id, genre_name))
+            if add:
+                genre_name = Lp().genres.get_name(genre_id)
+                self.__list_one.add_value((genre_id, genre_name))
+            else:
+                self.__list_one.remove_value(genre_id)
 
-    def __add_artist(self, scanner, artist_id, album_id):
+    def __on_artist_updated(self, scanner, artist_id, album_id, add):
         """
             Add artist to artist list
             @param scanner as CollectionScanner
             @param artist id as int
             @param album id as int
+            @param add as bool
         """
         artist_name = Lp().artists.get_name(artist_id)
         if self.__show_genres:
@@ -355,9 +360,15 @@ class Container:
             genre_ids.append(Type.ALL)
             for i in self.__list_one.get_selected_ids():
                 if i in genre_ids:
-                    self.__list_two.add_value((artist_id, artist_name))
+                    if add:
+                        self.__list_two.add_value((artist_id, artist_name))
+                    else:
+                        self.__list_two.remove_value(artist_id)
         else:
-            self.__list_one.add_value((artist_id, artist_name))
+            if add:
+                self.__list_one.add_value((artist_id, artist_name))
+            else:
+                self.__list_one.remove_value(artist_id)
 
     def __setup_scanner(self):
         """
@@ -365,8 +376,8 @@ class Container:
             @return True if hard scan is running
         """
         Lp().scanner.connect('scan-finished', self.on_scan_finished)
-        Lp().scanner.connect('genre-added', self.__add_genre)
-        Lp().scanner.connect('artist-added', self.__add_artist)
+        Lp().scanner.connect('genre-updated', self.__on_genre_updated)
+        Lp().scanner.connect('artist-updated', self.__on_artist_updated)
 
     def __update_playlists(self, playlists, playlist_id):
         """
@@ -381,7 +392,7 @@ class Container:
                                              Lp().playlists.get_name(
                                                                   playlist_id))
             else:
-                self.__list_two.remove(playlist_id)
+                self.__list_two.remove_value(playlist_id)
 
     def __update_lists(self, updater=None):
         """
@@ -674,7 +685,7 @@ class Container:
         uri = mount.get_default_location().get_uri()
         for dev in self.__devices.values():
             if dev.uri == uri:
-                self.__list_one.remove(dev.id)
+                self.__list_one.remove_value(dev.id)
                 child = self.__stack.get_child_by_name(uri)
                 if child is not None:
                     child.destroy()

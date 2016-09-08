@@ -242,7 +242,7 @@ class Row(Gtk.ListBoxRow):
             @param xcoordinate as int (or None)
             @param ycoordinate as int (or None)
         """
-        popover = TrackMenuPopover(self._track.id, TrackMenu(self._track.id))
+        popover = TrackMenuPopover(self._track, TrackMenu(self._track))
         popover.set_relative_to(widget)
         if xcoordinate is not None and ycoordinate is not None:
             rect = widget.get_allocation()

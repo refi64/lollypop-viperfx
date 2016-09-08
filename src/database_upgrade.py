@@ -10,10 +10,29 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
+from gi.repository import GLib
+
 import itertools
+import os
+import sqlite3
 
 from lollypop.sqlcursor import SqlCursor
 from lollypop.utils import translate_artist_name
+
+
+class DumbPlaylists:
+    __LOCAL_PATH = os.path.expanduser("~") + "/.local/share/lollypop"
+    __DB_PATH = "%s/playlists.db" % __LOCAL_PATH
+
+    def get_cursor(self):
+        """
+            Return a new sqlite cursor
+        """
+        try:
+            sql = sqlite3.connect(self.__DB_PATH, 600.0)
+            return sql
+        except Exception as e:
+            exit(-1)
 
 
 class DatabaseUpgrade:
@@ -43,6 +62,8 @@ class DatabaseUpgrade:
             9: "CREATE index idx_tg ON track_genres(track_id)",
             10: "UPDATE tracks set ltime=0 where ltime is null",
             11: "ALTER TABLE albums ADD synced INT NOT NULL DEFAULT 0",
+            12: "ALTER TABLE tracks ADD persistent INT NOT NULL DEFAULT 1",
+            13: self.__upgrade_13
                          }
 
     """
@@ -142,4 +163,62 @@ class DatabaseUpgrade:
                                popularity,\
                                mtime FROM backup")
             sql.execute("DROP TABLE backup")
+            sql.commit()
+
+    def __upgrade_13(self):
+        """
+            Convert tracks filepath column to uri
+        """
+        with SqlCursor(self._db) as sql:
+            sql.execute("ALTER TABLE tracks RENAME TO tmp_tracks")
+            sql.execute('''CREATE TABLE tracks (id INTEGER PRIMARY KEY,
+                                              name TEXT NOT NULL,
+                                              uri TEXT NOT NULL,
+                                              duration INT,
+                                              tracknumber INT,
+                                              discnumber INT,
+                                              discname TEXT,
+                                              album_id INT NOT NULL,
+                                              year INT,
+                                              popularity INT NOT NULL,
+                                              ltime INT NOT NULL,
+                                              mtime INT NOT NULL,
+                                              persistent INT NOT NULL
+                                              DEFAULT 1)''')
+
+            sql.execute('''INSERT INTO tracks(id, name, uri, duration,
+                        tracknumber, discnumber, discname, album_id,
+                        year, popularity, ltime, mtime, persistent) SELECT
+                            id, name, filepath, duration,
+                            tracknumber, discnumber, discname, album_id,
+                            year, popularity, ltime, mtime, persistent FROM
+                          tmp_tracks''')
+            sql.execute("DROP TABLE tmp_tracks")
+            result = sql.execute("SELECT rowid FROM tracks")
+            for track_id in list(itertools.chain(*result)):
+                result = sql.execute("SELECT uri FROM tracks WHERE rowid=?",
+                                     (track_id,))
+                v = result.fetchone()
+                if v is not None:
+                    uri = v[0]
+                    if uri.startswith("/"):
+                        uri = GLib.filename_to_uri(uri)
+                        sql.execute("UPDATE tracks set uri=? WHERE rowid=?",
+                                    (uri, track_id))
+            sql.commit()
+        dumb = DumbPlaylists()
+        SqlCursor.add(dumb)
+        with SqlCursor(dumb) as sql:
+            sql.execute("ALTER TABLE tracks RENAME TO tmp_tracks")
+            sql.execute('''CREATE TABLE tracks (playlist_id INT NOT NULL,
+                                                uri TEXT NOT NULL)''')
+            sql.execute('''INSERT INTO tracks(playlist_id, uri) SELECT
+                            playlist_id, filepath FROM tmp_tracks''')
+            sql.execute("DROP TABLE tmp_tracks")
+            result = sql.execute("SELECT uri FROM tracks")
+            for path in list(itertools.chain(*result)):
+                if path.startswith("/"):
+                    uri = GLib.filename_to_uri(path)
+                    sql.execute("UPDATE tracks set uri=? WHERE uri=?",
+                                (uri, path))
             sql.commit()

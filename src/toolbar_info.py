@@ -44,13 +44,14 @@ class ToolbarInfo(Gtk.Bin, InfosController):
         self._infobox = builder.get_object('info')
         self.add(self._infobox)
 
+        self._spinner = builder.get_object('spinner')
+
         self.__labels = builder.get_object('nowplaying_labels')
         self.__labels.connect('query-tooltip', self.__on_query_tooltip)
         self.__labels.set_property('has-tooltip', True)
 
         self._title_label = builder.get_object('title')
         self._artist_label = builder.get_object('artist')
-        self.__cover_frame = builder.get_object('frame')
         self._cover = builder.get_object('cover')
         self._cover.set_property('has-tooltip', True)
         # Since GTK 3.20, we can set cover full height
@@ -60,6 +61,7 @@ class ToolbarInfo(Gtk.Bin, InfosController):
             self._cover.get_style_context().add_class('small-cover-frame')
 
         self.connect('realize', self.__on_realize)
+        Lp().player.connect('loading-changed', self.__on_loading_changed)
         Lp().art.connect('album-artwork-changed', self.__update_cover)
         Lp().art.connect('radio-artwork-changed', self.__update_logo)
 
@@ -175,6 +177,18 @@ class ToolbarInfo(Gtk.Bin, InfosController):
                         PopToolbarMenu(Lp().player.current_track.id))
             popover.set_relative_to(self._infobox)
             popover.show()
+
+    def __on_loading_changed(self, player):
+        """
+            Show spinner based on loading status
+            @param player as player
+        """
+        self._title_label.hide()
+        self._artist_label.hide()
+        self._cover.hide()
+        self._spinner.show()
+        self._spinner.start()
+        self._infobox.show()
 
     def __on_realize(self, toolbar):
         """

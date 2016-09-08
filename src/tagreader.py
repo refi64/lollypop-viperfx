@@ -12,7 +12,7 @@
 
 import gi
 gi.require_version('GstPbutils', '1.0')
-from gi.repository import GLib, Gst, GstPbutils
+from gi.repository import Gst, GstPbutils
 
 import os
 
@@ -42,14 +42,13 @@ class Discoverer:
         GstPbutils.pb_utils_init()
         self._discoverer = GstPbutils.Discoverer.new(10*Gst.SECOND)
 
-    def get_info(self, path):
+    def get_info(self, uri):
         """
-            Return information for file at path
+            Return information for file at uri
             @param path as str
             @Exception GLib.Error
             @return GstPbutils.DiscovererInfo
         """
-        uri = GLib.filename_to_uri(path)
         info = self._discoverer.discover_uri(uri)
         return info
 

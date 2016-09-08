@@ -213,6 +213,17 @@ class Album(Base):
             self._tracks = [Track(track_id) for track_id in self.track_ids]
         return self._tracks
 
+    @property
+    def is_youtube(self):
+        """
+            True if a youtube stream
+            @return bool
+        """
+        if self.tracks:
+            return self.tracks[0].is_youtube
+        else:
+            return False
+
     def disc_names(self, disc):
         """
             Disc names
@@ -237,9 +248,9 @@ class Track(Base):
         Represent a track
     """
     FIELDS = ['name', 'album_id', 'album_artist_ids',
-              'artist_ids', 'album_name', 'artists',
-              'genres', 'duration', 'number', 'path', 'position', 'year']
-    DEFAULTS = ['', None, [], [], '', '', '', 0.0, None, '', 0, None]
+              'artist_ids', 'genre_ids', 'album_name', 'artists',
+              'duration', 'number', 'position', 'year', 'persistence', 'mtime']
+    DEFAULTS = ['', None, [], [], [], '', '', 0.0, None, 0, None, 1, 0]
 
     def __init__(self, track_id=None):
         """
@@ -250,6 +261,14 @@ class Track(Base):
         self.id = track_id
         self._uri = None
         self._non_album_artists = []
+
+    @property
+    def is_youtube(self):
+        """
+            True if a youtube stream
+            @return bool
+        """
+        return self.uri.startswith("https://www.youtube.com")
 
     @property
     def non_album_artists(self):
@@ -283,21 +302,18 @@ class Track(Base):
             Get track file uri
             @return str
         """
-        if self._uri is not None:
-            return self._uri
-        elif self.path != '':
-            return GLib.filename_to_uri(self.path)
-        else:
-            return self.path
+        if self._uri is None:
+            self._uri = Lp().tracks.get_uri(self.id)
+        return self._uri
 
     @property
-    def filepath(self):
+    def path(self):
         """
             Get track file path
             Alias to Track.path
             @return str
         """
-        return self.path
+        return GLib.filename_from_uri(self.uri)[0]
 
     @property
     def album(self):
@@ -318,6 +334,13 @@ class Track(Base):
             self._album_artists = self.album.artists
         return self._album_artists
 
+    def set_duration(self, duration):
+        """
+            Set duration
+            @param duration as in
+        """
+        self._duration = duration
+
     def set_album_artists(self, artists):
         """
             Set album artist
@@ -331,10 +354,6 @@ class Track(Base):
             @param uri as string
         """
         self._uri = uri
-        try:
-            self.path = GLib.filename_from_uri(uri)[0]
-        except:
-            pass
 
     def set_radio(self, name, uri):
         """

@@ -230,7 +230,7 @@ Please create a search engine here:</property>
         </child>
         <child>
           <object class="GtkLinkButton" id="google_apis">
-            <property name="label">Google APIs</property>
+            <property name="label">Custom Search API</property>
             <property name="visible">True</property>
             <property name="can_focus">True</property>
             <property name="has_focus">True</property>

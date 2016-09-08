@@ -31,12 +31,12 @@ class TracksDatabase:
         """
         pass
 
-    def add(self, name, filepath, duration, tracknumber, discnumber, discname,
-            album_id, year, popularity, ltime, mtime):
+    def add(self, name, uri, duration, tracknumber, discnumber, discname,
+            album_id, year, popularity, ltime, mtime, persistent=1):
         """
             Add a new track to database
             @param name as string
-            @param filepath as string,
+            @param uri as string,
             @param duration as int
             @param tracknumber as int
             @param discnumber as int
@@ -47,25 +47,27 @@ class TracksDatabase:
             @param popularity as int
             @param ltime as int
             @param mtime as int
+            @param persistent as int
             @return inserted rowid as int
             @warning: commit needed
         """
         with SqlCursor(Lp().db) as sql:
             result = sql.execute(
-                "INSERT INTO tracks (name, filepath, duration, tracknumber,\
+                "INSERT INTO tracks (name, uri, duration, tracknumber,\
                 discnumber, discname, album_id,\
-                year, popularity, ltime, mtime) VALUES\
-                (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", (name,
-                                                     filepath,
-                                                     duration,
-                                                     tracknumber,
-                                                     discnumber,
-                                                     discname,
-                                                     album_id,
-                                                     year,
-                                                     popularity,
-                                                     ltime,
-                                                     mtime))
+                year, popularity, ltime, mtime, persistent) VALUES\
+                (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", (name,
+                                                        uri,
+                                                        duration,
+                                                        tracknumber,
+                                                        discnumber,
+                                                        discname,
+                                                        album_id,
+                                                        year,
+                                                        popularity,
+                                                        ltime,
+                                                        mtime,
+                                                        persistent))
             return result.lastrowid
 
     def add_artist(self, track_id, artist_id):
@@ -96,6 +98,16 @@ class TracksDatabase:
                             "track_genres (track_id, genre_id)"
                             "VALUES (?, ?)", (track_id, genre_id))
 
+    def del_genres(self, track_id):
+        """
+            Delete all genres for track
+            @parma album id as int
+            @warning: commit needed
+        """
+        with SqlCursor(Lp().db) as sql:
+            sql.execute("DELETE FROM track_genres "
+                        "WHERE track_id=?", (track_id,))
+
     def get_ids(self):
         """
             Return all tracks id
@@ -118,35 +130,23 @@ class TracksDatabase:
                                  (name,))
             return list(itertools.chain(*result))
 
-    def get_id_by_path(self, filepath):
+    def get_id_by_uri(self, uri):
         """
-            Return track id for path
-            @param filepath as str
+            Return track id for uri
+            @param uri as str
             @return track id as int
         """
         with SqlCursor(Lp().db) as sql:
-            result = sql.execute("SELECT rowid FROM tracks WHERE filepath=?",
-                                 (filepath,))
+            result = sql.execute("SELECT rowid FROM tracks WHERE uri=?",
+                                 (uri,))
             v = result.fetchone()
             if v is not None:
                 return v[0]
             return None
 
-    def get_ids_by_path(self, path):
-        """
-            Return track id for path
-            @param path as str
-            @return track id as int
-        """
-        with SqlCursor(Lp().db) as sql:
-            result = sql.execute("SELECT rowid FROM tracks\
-                                  WHERE filepath like ?",
-                                 ('%' + path + '%',))
-            return list(itertools.chain(*result))
-
     def get_id_by(self, name, album_id):
         """
-            Return track id for path
+            Return track id for uri
             @param name as str
             @param album id as int
             @return track id as int
@@ -189,14 +189,14 @@ class TracksDatabase:
                 return str(v[0])
             return ""
 
-    def get_path(self, track_id):
+    def get_uri(self, track_id):
         """
-            Get track path for track id
+            Get track uri for track id
             @param Track id as int
-            @return Path as string
+            @return uri as string
         """
         with SqlCursor(Lp().db) as sql:
-            result = sql.execute("SELECT filepath FROM tracks WHERE rowid=?",
+            result = sql.execute("SELECT uri FROM tracks WHERE rowid=?",
                                  (track_id,))
             v = result.fetchone()
             if v is not None:
@@ -285,23 +285,23 @@ class TracksDatabase:
             Get mtime for tracks
             WARNING: Should be called before anything is shown on screen
             @param None
-            @return dict of {filepath as string: mtime as int}
+            @return dict of {uri as string: mtime as int}
         """
         with SqlCursor(Lp().db) as sql:
             mtimes = {}
-            result = sql.execute("SELECT filepath, mtime FROM tracks")
+            result = sql.execute("SELECT uri, mtime FROM tracks")
             for row in result:
                 mtimes.update((row,))
             return mtimes
 
-    def get_paths(self):
+    def get_uris(self):
         """
-            Get all tracks filepath
+            Get all tracks uri
             @param None
-            @return Array of filepath as string
+            @return Array of uri as string
         """
         with SqlCursor(Lp().db) as sql:
-            result = sql.execute("SELECT filepath FROM tracks;")
+            result = sql.execute("SELECT uri FROM tracks;")
             return list(itertools.chain(*result))
 
     def get_number(self, track_id):
@@ -345,6 +345,18 @@ class TracksDatabase:
             if v is not None:
                 return v[0]
             return 0
+
+    def set_duration(self, track_id, duration):
+        """
+            Get track duration for track id
+            @param Track id as int
+            @param duration as int
+        """
+        with SqlCursor(Lp().db) as sql:
+            sql.execute("UPDATE tracks\
+                         SET duration=?\
+                         WHERE rowid=?", (duration, track_id,))
+            sql.commit()
 
     def is_empty(self):
         """
@@ -455,6 +467,30 @@ class TracksDatabase:
                                   ORDER BY ltime DESC LIMIT 100")
             return list(itertools.chain(*result))
 
+    def get_persistence(self, track_id):
+        """
+            Return track persistence
+            @param track id as int
+            @return int
+        """
+        with SqlCursor(Lp().db) as sql:
+            result = sql.execute("SELECT rowid FROM tracks\
+                                  WHERE persistent=?", (track_id,))
+            v = result.fetchone()
+            if v is not None:
+                return v[0]
+            return 0
+
+    def get_non_persistent(self):
+        """
+            Return non persistent tracks
+            @return track ids as [int]
+        """
+        with SqlCursor(Lp().db) as sql:
+            result = sql.execute("SELECT rowid FROM tracks\
+                                  WHERE persistent=0")
+            return list(itertools.chain(*result))
+
     def get_randoms(self):
         """
             Return random tracks
@@ -513,7 +549,7 @@ class TracksDatabase:
         """
             Get modification time
             @param track id  as int
-            @return popularity as int
+            @return mtime as int
         """
         with SqlCursor(Lp().db) as sql:
             result = sql.execute("SELECT mtime FROM tracks WHERE\
@@ -522,6 +558,18 @@ class TracksDatabase:
             if v is not None:
                 return v[0]
             return 0
+
+    def set_mtime(self, track_id, mtime):
+        """
+            Get modification time
+            @param track id  as int
+            @param mtime as int
+        """
+        with SqlCursor(Lp().db) as sql:
+            sql.execute("UPDATE tracks\
+                         SET mtime=?\
+                         WHERE rowid=?", (mtime, track_id))
+            sql.commit()
 
     def count(self):
         """

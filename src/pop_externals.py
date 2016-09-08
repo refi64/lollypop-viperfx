@@ -101,7 +101,7 @@ class ExternalsPopover(Gtk.Popover):
         for track in tracks:
             if track.duration == 0.0:
                 try:
-                    info = self.__tagreader.get_info(track.path)
+                    info = self.__tagreader.get_info(track.uri)
                     if info is not None:
                         tags = info.get_tags()
                         track.duration = info.get_duration()/1000000000

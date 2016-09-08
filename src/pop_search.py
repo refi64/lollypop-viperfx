@@ -10,15 +10,20 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-from gi.repository import Gtk, GLib
+from gi.repository import Gtk, GLib, Gio, Gdk, GdkPixbuf
 
+from gettext import gettext as _
 from cgi import escape
 from threading import Thread
+from shutil import which
 
-from lollypop.define import Lp, ArtSize, Type
+from lollypop.define import Lp, ArtSize, Type, DbPersistent
 from lollypop.objects import Track, Album
 from lollypop.pop_menu import TrackMenuPopover, TrackMenu
 from lollypop.pop_album import AlbumPopover
+from lollypop.search_item import SearchItem
+from lollypop.search_network import NetworkSearch
+from lollypop.youtube import Youtube
 
 
 class SearchRow(Gtk.ListBoxRow):
@@ -26,16 +31,22 @@ class SearchRow(Gtk.ListBoxRow):
         Album/Track search row
     """
 
-    def __init__(self):
+    def __init__(self, item, internal=True):
         """
             Init row widgets
+            @param item as SearchItem
+            @param internal as bool
         """
         Gtk.ListBoxRow.__init__(self)
-        self.__id = None
-        self.__is_track = True
-        self.__artist_ids = None
+        self.__item = item
+        self.__uri_set = False
         builder = Gtk.Builder()
-        builder.add_from_resource('/org/gnome/Lollypop/SearchRow.ui')
+        if internal:
+            builder.add_from_resource(
+                                    '/org/gnome/Lollypop/InternalSearchRow.ui')
+        else:
+            builder.add_from_resource(
+                                    '/org/gnome/Lollypop/ExternalSearchRow.ui')
         builder.connect_signals(self)
         self.set_property('has-tooltip', True)
         self.connect('query-tooltip', self.__on_query_tooltip)
@@ -43,67 +54,39 @@ class SearchRow(Gtk.ListBoxRow):
         self.__row_widget.set_margin_top(2)
         self.__row_widget.set_margin_end(2)
         self.__artist = builder.get_object('artist')
-        self.__title = builder.get_object('item')
+        self.__name = builder.get_object('item')
         self.__cover = builder.get_object('cover')
         self.add(self.__row_widget)
-        self.show()
+        self.__init()
 
-    def get_id(self):
+    @property
+    def id(self):
         """
             Return row id
             @return int
         """
-        return self.__id
+        return self.__item.id
 
-    def set_id(self, rowid, is_track):
-        """
-            Set row id
-            @param rowid as int
-            @param is track as bool
-        """
-        self.__id = rowid
-        self.__is_track = is_track
-        if self.__is_track:
-            self.__title.set_text("♫ " + Track(self.__id).name)
-        else:
-            self.__title.set_text(Album(self.__id).name)
-
-    def get_artist_ids(self):
+    @property
+    def artist_ids(self):
         """
             Return row artist ids
             @return artist ids as [int]
         """
-        return self.__artist_ids
+        return self.__item.artist_ids
 
-    def set_artist_ids(self, artist_ids):
-        """
-            Set row artist ids
-        """
-        self.__artist_ids = artist_ids
-        artists = []
-        for artist_id in artist_ids:
-            artists.append(Lp().artists.get_name(artist_id))
-        self.__artist.set_text(", ".join(artists))
-
-    def set_cover(self, surface):
-        """
-            Set cover surface
-            @param surface as cairo surface
-        """
-        self.__cover.set_from_surface(surface)
-        del surface
-
+    @property
     def is_track(self):
         """
             True if a track
             @return bool
         """
-        return self.__is_track
+        return self.__item.is_track
 
     def exists(self, items):
         """
             Return True if self exists in items
-            @param: items as array of searchObject
+            @param: items as array of SearchItem
         """
         found = False
         for item in items:
@@ -117,9 +100,43 @@ class SearchRow(Gtk.ListBoxRow):
                     break
         return found
 
+    def play(self):
+        """
+            Play row
+        """
+        yt = Youtube()
+        if self.__item.is_track:
+            yt.save_track(self.__item, DbPersistent.NONE)
+        else:
+            yt.save_album(self.__item, DbPersistent.NONE)
+
+    def set_cover(self, pixbuf):
+        """
+            Set cover
+            @param pixbuf as GdkPixbuf.Pixbuf
+        """
+        surface = Gdk.cairo_surface_create_from_pixbuf(pixbuf,
+                                                       self.get_scale_factor(),
+                                                       None)
+        del pixbuf
+        self.__cover.set_from_surface(surface)
+        del surface
+
 #######################
 # PROTECTED           #
 #######################
+    def _on_save_clicked(self, button):
+        """
+            Save into collection
+            @param button as Gtk.Button
+        """
+        yt = Youtube()
+        if self.__item.is_track:
+            yt.save_track(self.__item, DbPersistent.EXTERNAL)
+        else:
+            yt.save_album(self.__item, DbPersistent.EXTERNAL)
+        self.destroy()
+
     def _on_playlist_clicked(self, button):
         """
             Prepend track to queue
@@ -133,7 +150,7 @@ class SearchRow(Gtk.ListBoxRow):
             Add track to queue
             @param button as Gtk.Button
         """
-        if self.__is_track:
+        if self.__item.is_track:
             Lp().player.append_to_queue(self.__id)
         else:
             for track in Lp().albums.get_track_ids(self.__id, [], []):
@@ -144,6 +161,41 @@ class SearchRow(Gtk.ListBoxRow):
 #######################
 # PRIVATE             #
 #######################
+    def __init(self):
+        """
+            Init row
+        """
+        artists = []
+        if self.__item.is_track:
+            obj = Track(self.__item.id)
+            album_id = obj.album_id
+        else:
+            obj = Album(self.__item.id)
+            album_id = obj.id
+
+        if self.__item.id is None:
+            if self.__item.is_track:
+                self.__name.set_text("♫ " + self.__item.name)
+            else:
+                self.__name.set_text(self.__item.name)
+            artists = self.__item.artists
+            surface = Lp().art.get_default_icon('emblem-music-symbolic',
+                                                ArtSize.MEDIUM,
+                                                self.get_scale_factor())
+        else:
+            if self.__item.is_track:
+                self.__name.set_text("♫ " + Track(self.__item.id).name)
+            else:
+                self.__name.set_text(Album(self.__item.id).name)
+            for artist_id in self.__item.artist_ids:
+                artists.append(Lp().artists.get_name(artist_id))
+            surface = Lp().art.get_album_artwork(Album(album_id),
+                                                 ArtSize.MEDIUM,
+                                                 self.get_scale_factor())
+        self.__cover.set_from_surface(surface)
+        del surface
+        self.__artist.set_text(", ".join(artists))
+
     def __on_query_tooltip(self, widget, x, y, keyboard, tooltip):
         """
             Show tooltip if needed
@@ -153,24 +205,14 @@ class SearchRow(Gtk.ListBoxRow):
             @param keyboard as bool
             @param tooltip as Gtk.Tooltip
         """
-        layout_title = self.__title.get_layout()
+        layout_title = self.__name.get_layout()
         layout_artist = self.__artist.get_layout()
         if layout_title.is_ellipsized() or layout_artist.is_ellipsized():
             artist = escape(self.__artist.get_text())
-            title = escape(self.__title.get_text())
+            title = escape(self.__name.get_text())
             self.set_tooltip_markup("<b>%s</b>\n%s" % (artist, title))
         else:
             self.set_tooltip_text('')
-
-
-class SearchObject:
-    """
-        Represent a search object
-    """
-    def __init__(self):
-        self.id = None
-        self.is_track = False
-        self.artist_ids = []
 
 
 class SearchPopover(Gtk.Popover):
@@ -190,6 +232,7 @@ class SearchPopover(Gtk.Popover):
         self.__stop_thread = False
         self.__timeout = None
         self.__current_search = ''
+        self.__search = None
 
         builder = Gtk.Builder()
         builder.add_from_resource('/org/gnome/Lollypop/SearchPopover.ui')
@@ -204,6 +247,15 @@ class SearchPopover(Gtk.Popover):
         self.__view.set_activate_on_single_click(True)
         self.__view.show()
 
+        self.__spinner = builder.get_object('spinner')
+        self.__stack = builder.get_object('stack')
+
+        switch = builder.get_object('search-switch')
+        if which("youtube-dl") is None:
+            switch.set_sensitive(False)
+            switch.set_tooltip_text(_("You need to install youtube-dl"))
+        else:
+            switch.set_state(Lp().settings.get_value('network-search'))
         builder.get_object('scrolled').add(self.__view)
         self.add(builder.get_object('widget'))
 
@@ -226,6 +278,9 @@ class SearchPopover(Gtk.Popover):
         """
         if self.__in_thread:
             self.__stop_thread = True
+            self.__reset_search()
+            self.__stack.set_visible_child(self.__new_btn)
+            self.__spinner.stop()
             GLib.timeout_add(100, self._on_search_changed, widget)
 
         if self.__timeout:
@@ -238,25 +293,50 @@ class SearchPopover(Gtk.Popover):
             self.__timeout = GLib.timeout_add(100,
                                               self.__on_search_changed_thread)
         else:
+            self.__reset_search()
+            self.__stack.set_visible_child(self.__new_btn)
+            self.__spinner.stop()
             self.__new_btn.set_sensitive(False)
             for child in self.__view.get_children():
                 GLib.idle_add(child.destroy)
 
+    def _on_state_set(self, switch, state):
+        """
+            Save state
+            @param switch as Gtk.switch
+            @param state as bool
+        """
+        Lp().settings.set_boolean('network-search', state)
+
 #######################
 # PRIVATE             #
 #######################
+    def __clear(self):
+        """
+            Clear search view
+            @warning not thread safe
+        """
+        for child in self.__view.get_children():
+            child.destroy()
+
     def __populate(self):
         """
             Populate searching items
             in db based on text entry current text
         """
-        for child in self.__view.get_children():
-                GLib.idle_add(child.destroy)
+        GLib.idle_add(self.__clear)
+
+        # Network Search
+        t = Thread(target=self.__network_search)
+        t.daemon = True
+        t.start()
+
+        # Local search
         results = []
         added_album_ids = []
         added_track_ids = []
         search_items = [self.__current_search]
-        search_items += self.__current_search.split()
+        # search_items += self.__current_search.split()
         for item in search_items:
             albums = []
             tracks_non_album_artist = []
@@ -272,71 +352,93 @@ class SearchPopover(Gtk.Popover):
             for album_id, artist_id in albums:
                 if album_id in added_album_ids:
                     continue
-                search_obj = SearchObject()
-                search_obj.id = album_id
+                search_item = SearchItem()
+                search_item.id = album_id
                 added_album_ids.append(album_id)
-                search_obj.is_track = False
-                search_obj.artist_ids = [artist_id]
-                results.append(search_obj)
+                search_item.is_track = False
+                search_item.artist_ids = [artist_id]
+                results.append(search_item)
 
             albums = Lp().albums.search(item)
             for album_id in albums:
                 if album_id in added_album_ids:
                     continue
-                search_obj = SearchObject()
-                search_obj.id = album_id
+                search_item = SearchItem()
+                search_item.id = album_id
                 added_album_ids.append(album_id)
-                search_obj.is_track = False
-                search_obj.artist_ids = Lp().albums.get_artist_ids(album_id)
-                results.append(search_obj)
+                search_item.is_track = False
+                search_item.artist_ids = Lp().albums.get_artist_ids(album_id)
+                results.append(search_item)
 
             for track_id, track_name in Lp().tracks.search(
                                                item) + tracks_non_album_artist:
                 if track_id in added_track_ids:
                     continue
-                search_obj = SearchObject()
-                search_obj.id = track_id
+                search_item = SearchItem()
+                search_item.id = track_id
                 added_track_ids.append(track_id)
-                search_obj.is_track = True
-                search_obj.artist_ids = Lp().tracks.get_artist_ids(track_id)
-                results.append(search_obj)
-
+                search_item.is_track = True
+                search_item.artist_ids = Lp().tracks.get_artist_ids(track_id)
+                results.append(search_item)
         if not self.__stop_thread:
-            GLib.idle_add(self.__add_rows, results)
+            GLib.idle_add(self.__add_rows_internal, results)
         else:
             self.__in_thread = False
             self.__stop_thread = False
+            if not self.__need_network_search():
+                self.__stack.set_visible_child(self.__new_btn)
+                self.__spinner.stop()
 
-    def __add_rows(self, results):
+    def __network_search(self):
         """
-            Add a rows recursively
-            @param results as array of SearchObject
+            Search on network
+        """
+        if self.__need_network_search():
+            self.__search.do(self.__current_search)
+
+    def __add_rows_internal(self, results):
+        """
+            Add rows for internal results
+            @param results as array of SearchItem
         """
         if results:
             result = results.pop(0)
-            search_row = SearchRow()
-            if result.is_track:
-                obj = Track(result.id)
-                album_id = obj.album_id
-            else:
-                obj = Album(result.id)
-                album_id = obj.id
-            search_row.set_id(result.id, result.is_track)
-            search_row.set_artist_ids(result.artist_ids)
-            search_row.set_cover(
-                    Lp().art.get_album_artwork(
-                                 Album(album_id),
-                                 ArtSize.MEDIUM,
-                                 self.get_scale_factor()))
+            search_row = SearchRow(result)
+            search_row.show()
             self.__view.add(search_row)
             if self.__stop_thread:
                 self.__in_thread = False
                 self.__stop_thread = False
             else:
-                GLib.idle_add(self.__add_rows, results)
+                GLib.idle_add(self.__add_rows_internal, results)
         else:
             self.__in_thread = False
             self.__stop_thread = False
+            if not self.__need_network_search():
+                self.__stack.set_visible_child(self.__new_btn)
+                self.__spinner.stop()
+
+    def __download_cover(self, uri, row):
+        """
+            Download row covers
+            @param uri as str
+            @param row as SearchRow
+        """
+        try:
+            f = Gio.File.new_for_uri(uri)
+            (status, data, tag) = f.load_contents(None)
+            if status:
+                stream = Gio.MemoryInputStream.new_from_data(data,
+                                                             None)
+                pixbuf = GdkPixbuf.Pixbuf.new_from_stream_at_scale(
+                                                   stream,
+                                                   ArtSize.MEDIUM,
+                                                   -1,
+                                                   True,
+                                                   None)
+                GLib.idle_add(row.set_cover, pixbuf)
+        except:
+            pass
 
     def __populate_user_playlist_by_tracks(self, track_ids, track_id):
         """
@@ -357,11 +459,11 @@ class SearchPopover(Gtk.Popover):
         track_ids = []
         track_id = None
         for child in self.__view.get_children():
-            if child.is_track():
-                track_ids.append(child.get_id())
+            if child.is_track:
+                track_ids.append(child.id)
             else:
-                album_tracks = Lp().albums.get_track_ids(child.get_id())
-                if not is_track and child.get_id() == object_id and\
+                album_tracks = Lp().albums.get_track_ids(child.id)
+                if not is_track and child.id == object_id and\
                         album_tracks:
                     track_id = album_tracks[0]
                 for tid in album_tracks:
@@ -381,11 +483,11 @@ class SearchPopover(Gtk.Popover):
         tracks = []
         for child in self.__view.get_children():
             if child.is_track:
-                tracks.append(Track(child.get_id()))
+                tracks.append(Track(child.id))
             else:
                 for track_id in Lp().albums.get_track_ids(
-                                                       child.get_id(), [],
-                                                       child.get_artist_ids()):
+                                                       child.id, [],
+                                                       child.artist_ids):
                     tracks.append(Track(track_id))
         if tracks:
             playlist_id = Lp().playlists.get_id(self.__current_search)
@@ -393,6 +495,69 @@ class SearchPopover(Gtk.Popover):
                 Lp().playlists.add(self.__current_search)
                 playlist_id = Lp().playlists.get_id(self.__current_search)
             Lp().playlists.add_tracks(playlist_id, tracks)
+
+    def __reset_search(self):
+        """
+            Reset search object
+        """
+        if self.__search is not None:
+            self.__search.disconnect_by_func(self.__on_item_found)
+            self.__search.stop()
+            self.__search = None
+
+    def __need_network_search(self):
+        """
+            Return True if network search needed
+            @return True
+        """
+        return Lp().settings.get_value('network-search') and\
+            which("youtube-dl") is not None
+
+    def __item_exists_in_db(self, item):
+        """
+            Search if item exists in db
+            @return bool
+        """
+        artist_ids = []
+        for artist in item.artists:
+            artist_id = Lp().artists.get_id(artist)
+            artist_ids.append(artist_id)
+        if item.is_track:
+            for track_id in Lp().tracks.get_ids_for_name(item.name):
+                db_artist_ids = Lp().tracks.get_artist_ids(track_id)
+                union = list(set(artist_ids) & set(db_artist_ids))
+                if union == db_artist_ids:
+                    return True
+        else:
+            album_ids = Lp().albums.get_ids(artist_ids, [])
+            for album_id in album_ids:
+                album_name = Lp().albums.get_name(album_id)
+                if album_name == item.album_name:
+                    return True
+        return False
+
+    def __on_item_found(self, search):
+        """
+            Add rows for internal results
+            @param search as NetworkSearch
+        """
+        if self.__search != search:
+            return
+        if search.finished:
+            self.__stack.set_visible_child(self.__new_btn)
+            self.__spinner.stop()
+        if not search.items:
+            return
+        item = search.items.pop(0)
+        if self.__item_exists_in_db(item):
+            return
+        search_row = SearchRow(item, False)
+        search_row.show()
+        self.__view.add(search_row)
+        t = Thread(target=self.__download_cover,
+                   args=(item.smallcover, search_row))
+        t.daemon = True
+        t.start()
 
     def __on_map(self, widget):
         """
@@ -411,6 +576,9 @@ class SearchPopover(Gtk.Popover):
         """
         # FIXME Not needed with GTK >= 3.18
         Lp().window.enable_global_shorcuts(True)
+        self.__reset_search()
+        self.__stack.set_visible_child(self.__new_btn)
+        self.__spinner.stop()
 
     def __on_search_changed_thread(self):
         """
@@ -418,6 +586,10 @@ class SearchPopover(Gtk.Popover):
         """
         self.__timeout = None
         self.__in_thread = True
+        self.__search = NetworkSearch()
+        self.__search.connect('item-found', self.__on_item_found)
+        self.__stack.set_visible_child(self.__spinner)
+        self.__spinner.start()
         t = Thread(target=self.__populate)
         t.daemon = True
         t.start()
@@ -429,29 +601,35 @@ class SearchPopover(Gtk.Popover):
             @param row as SearchRow
         """
         if Lp().player.is_party or Lp().player.locked:
-            if row.is_track():
+            # External track/album
+            if row.id is None:
+                pass
+            elif row.is_track:
                 if Lp().player.locked:
-                    if row.get_id() in Lp().player.get_queue():
-                        Lp().player.del_from_queue(row.get_id())
+                    if row.id in Lp().player.get_queue():
+                        Lp().player.del_from_queue(row.id)
                     else:
-                        Lp().player.append_to_queue(row.get_id())
+                        Lp().player.append_to_queue(row.id)
                     row.destroy()
                 else:
-                    Lp().player.load(Track(row.get_id()))
+                    Lp().player.load(Track(row.id))
             elif Gtk.get_minor_version() > 16:
-                popover = AlbumPopover(row.get_id(), [], [])
+                popover = AlbumPopover(row.id, [], [])
                 popover.set_relative_to(row)
                 popover.show()
             else:
-                t = Thread(target=self.__play_search, args=(row.get_id(),
-                                                            row.is_track()))
+                t = Thread(target=self.__play_search, args=(row.id,
+                                                            row.is_track))
                 t.daemon = True
                 t.start()
         else:
-            t = Thread(target=self.__play_search, args=(row.get_id(),
-                                                        row.is_track()))
-            t.daemon = True
-            t.start()
+            if row.id is None:
+                row.play()
+            else:
+                t = Thread(target=self.__play_search, args=(row.id,
+                                                            row.is_track))
+                t.daemon = True
+                t.start()
 
     def __on_button_press(self, widget, event):
         """
@@ -459,21 +637,22 @@ class SearchPopover(Gtk.Popover):
             @param widget as Gtk.ListBox
             @param event as Gdk.EventButton
         """
-        if event.button != 1:
-            rect = widget.get_allocation()
-            rect.x = event.x
-            rect.y = event.y
-            rect.width = rect.height = 1
-            row = widget.get_row_at_y(event.y)
-            if row.is_track():
-                popover = TrackMenuPopover(row.get_id(),
-                                           TrackMenu(row.get_id()))
+        rect = widget.get_allocation()
+        rect.x = event.x
+        rect.y = event.y
+        rect.width = rect.height = 1
+        row = widget.get_row_at_y(event.y)
+        # Internal track/album
+        if event.button != 1 and row.id is not None:
+            if row.is_track:
+                popover = TrackMenuPopover(row.id,
+                                           TrackMenu(row.id))
                 popover.set_relative_to(widget)
                 popover.set_pointing_to(rect)
                 popover.show()
             else:
-                popover = AlbumPopover(row.get_id(), [],
-                                       row.get_artist_ids())
+                popover = AlbumPopover(row.id, [],
+                                       row.artist_ids())
                 popover.set_relative_to(widget)
                 popover.set_pointing_to(rect)
                 popover.show()

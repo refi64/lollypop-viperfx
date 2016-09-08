@@ -81,6 +81,16 @@ class AlbumsDatabase:
                             "album_genres (album_id, genre_id)"
                             "VALUES (?, ?)", (album_id, genre_id))
 
+    def del_genres(self, album_id):
+        """
+            Delete all genres for album
+            @parma album id as int
+            @warning: commit needed
+        """
+        with SqlCursor(Lp().db) as sql:
+            sql.execute("DELETE FROM album_genres "
+                        "WHERE album_id=?", (album_id,))
+
     def set_artist_ids(self, album_id, artist_ids):
         """
             Set artist id
@@ -535,9 +545,9 @@ class AlbumsDatabase:
             result = sql.execute(request, filters)
             return list(itertools.chain(*result))
 
-    def get_track_paths(self, album_id, genre_ids, artist_ids):
+    def get_track_uris(self, album_id, genre_ids, artist_ids):
         """
-            Get track paths for album id/disc
+            Get track uris for album id/disc
             Will search track from albums from same artist
             with same name and different genre
             @param album id as int
@@ -553,7 +563,7 @@ class AlbumsDatabase:
             artist_ids = []
         with SqlCursor(Lp().db) as sql:
             filters = (album_id,)
-            request = "SELECT DISTINCT tracks.filepath\
+            request = "SELECT DISTINCT tracks.uri\
                        FROM tracks"
             if genre_ids:
                 request += ", track_genres"
@@ -753,6 +763,19 @@ class AlbumsDatabase:
             if v and v[0] is not None:
                 return v[0]
             return 0
+
+    def get_genres(self, album_id):
+        """
+            Return genres for album
+        """
+        with SqlCursor(Lp().db) as sql:
+            result = sql.execute("SELECT genres.name\
+                                  FROM albums, album_genres, genres\
+                                  WHERE albums.rowid = ?\
+                                  AND album_genres.album_id = albums.rowid\
+                                  AND album_genres.genre_id = genres.rowid",
+                                 (album_id,))
+            return list(itertools.chain(*result))
 
     def search(self, string):
         """

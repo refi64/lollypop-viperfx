@@ -20,7 +20,7 @@ from lollypop.define import WindowSize, Shuffle, Loading
 from lollypop.widgets_track import TracksWidget, TrackRow
 from lollypop.objects import Track
 from lollypop.widgets_rating import RatingWidget
-from lollypop.pop_menu import AlbumMenu
+from lollypop.pop_menu import AlbumMenuPopover, AlbumMenu
 from lollypop.pop_artwork import CoversPopover
 from lollypop.objects import Album
 
@@ -49,8 +49,8 @@ class AlbumWidget:
         self._overlay_orientation = Gtk.Orientation.HORIZONTAL
         self._squared_class = "squared-icon"
         self._rounded_class = "rounded-icon"
-        self._scan_signal = Lp().scanner.connect('album-update',
-                                                 self.__on_album_update)
+        self._scan_signal = Lp().scanner.connect('album-updated',
+                                                 self.__on_album_updated)
         self.connect('destroy', self.__on_destroy)
 
     def set_cover(self):
@@ -359,7 +359,7 @@ class AlbumWidget:
         if self._scan_signal is not None:
             Lp().scanner.disconnect(self._scan_signal)
 
-    def __on_album_update(self, scanner, album_id):
+    def __on_album_updated(self, scanner, album_id):
         """
             On album modified, disable it
             @param scanner as CollectionScanner
@@ -450,6 +450,9 @@ class AlbumSimpleWidget(Gtk.FlowBoxChild, AlbumWidget):
         self.show_all()
         self._widget.connect('enter-notify-event', self._on_enter_notify)
         self._widget.connect('leave-notify-event', self._on_leave_notify)
+        if self._album.is_youtube:
+            self._cover.get_style_context().add_class(
+                                                'cover-frame-youtube')
 
     def get_id(self):
         """
@@ -717,6 +720,9 @@ class AlbumDetailedWidget(Gtk.Bin, AlbumWidget):
             self._menu.show()
         else:
             self.connect('map', self.__on_map)
+        if self._album.is_youtube and show_cover:
+            self._cover.get_style_context().add_class(
+                                                'cover-frame-youtube')
 
     def update_playing_indicator(self):
         """
@@ -849,8 +855,12 @@ class AlbumDetailedWidget(Gtk.Bin, AlbumWidget):
             @param widget as Gtk.Button
             @param album id as int
         """
-        pop_menu = AlbumMenu(self._album)
-        popover = Gtk.Popover.new_from_model(self._menu, pop_menu)
+        if self._album.is_youtube:
+            popover = AlbumMenuPopover(self._album, AlbumMenu(self._album))
+            popover.set_relative_to(widget)
+        else:
+            popover = Gtk.Popover.new_from_model(widget,
+                                                 AlbumMenu(self._album))
         popover.connect('closed', self.__on_pop_menu_closed)
         self.get_style_context().add_class('album-menu-selected')
         popover.show()

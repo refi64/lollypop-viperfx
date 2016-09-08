@@ -218,7 +218,6 @@ class MtpSync:
                     stream = m3u.open_readwrite(None)
                 except Exception as e:
                     print("DeviceWidget::_copy_to_device(): %s" % e)
-
             # Get tracks
             if playlist == Type.NONE:
                 track_ids = []
@@ -261,15 +260,16 @@ class MtpSync:
                                      (dst_art, Gio.FileCopyFlags.OVERWRITE,
                                       None, None))
 
-                track_name = escape(GLib.basename(track.path))
+                filepath = GLib.filename_from_uri(track.uri)[0]
+                track_name = escape(GLib.basename(filepath))
                 # Check extension, if not mp3, convert
-                ext = os.path.splitext(track.path)[1]
+                ext = os.path.splitext(filepath)[1]
                 if (ext != ".mp3" or self.__normalize) and self.__convert:
                     convertion_needed = True
                     track_name = track_name.replace(ext, ".mp3")
                 else:
                     convertion_needed = False
-                src_track = Gio.File.new_for_path(track.path)
+                src_track = Gio.File.new_for_uri(track.uri)
                 info = src_track.query_info('time::modified',
                                             Gio.FileQueryInfoFlags.NONE,
                                             None)
@@ -360,12 +360,13 @@ class MtpSync:
             album_uri = "%s/%s_%s" % (self._uri,
                                       artists,
                                       album_name)
-            track_name = escape(GLib.basename(track.path))
+            filepath = GLib.filename_from_uri(track.uri)[0]
+            track_name = escape(GLib.basename(filepath))
             # Check extension, if not mp3, convert
-            ext = os.path.splitext(track.path)[1]
+            ext = os.path.splitext(filepath)[1]
             if ext != ".mp3" and self.__convert:
                 track_name = track_name.replace(ext, ".mp3")
-            on_disk = Gio.File.new_for_path(track.path)
+            on_disk = Gio.File.new_for_path(filepath)
             info = on_disk.query_info('time::modified',
                                       Gio.FileQueryInfoFlags.NONE,
                                       None)

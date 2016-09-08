@@ -15,7 +15,7 @@ from gi.repository import Gtk, GLib, Gdk
 from lollypop.view import View, LazyLoadingView
 from lollypop.widgets_album import AlbumSimpleWidget
 from lollypop.pop_album import AlbumPopover
-from lollypop.pop_menu import AlbumMenu
+from lollypop.pop_menu import AlbumMenu, AlbumMenuPopover
 from lollypop.objects import Album
 
 
@@ -127,8 +127,13 @@ class AlbumsView(LazyLoadingView):
             self._scrolled.get_allocation().height + y
             self._scrolled.get_vadjustment().set_value(y)
         if self.__press_rect is not None:
-            pop_menu = AlbumMenu(Album(album_widget.get_id()))
-            popover = Gtk.Popover.new_from_model(cover, pop_menu)
+            album = Album(album_widget.get_id())
+            pop_menu = AlbumMenu(album)
+            if album.is_youtube:
+                popover = AlbumMenuPopover(album, pop_menu)
+                popover.set_relative_to(cover)
+            else:
+                popover = Gtk.Popover.new_from_model(cover, pop_menu)
             popover.set_position(Gtk.PositionType.BOTTOM)
             popover.set_pointing_to(self.__press_rect)
         else:

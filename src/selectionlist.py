@@ -148,7 +148,7 @@ class SelectionList(Gtk.ScrolledWindow):
         self.emit('populated')
         self.__updating = False
 
-    def remove(self, object_id):
+    def remove_value(self, object_id):
         """
             Remove row from model
             @param object id as int
@@ -157,6 +157,9 @@ class SelectionList(Gtk.ScrolledWindow):
             if item[0] == object_id:
                 self.__model.remove(item.iter)
                 break
+        # We force selection of first item
+        self.__selection.unselect_all()
+        self.__selection.select_iter(self.__model[0].iter)
 
     def add_value(self, value):
         """
@@ -229,6 +232,7 @@ class SelectionList(Gtk.ScrolledWindow):
         self.__to_select_ids = []
         if ids:
             try:
+                # Check if items are available for selection
                 iters = []
                 for i in list(ids):
                     for item in self.__model:

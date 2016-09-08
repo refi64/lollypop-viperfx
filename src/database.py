@@ -55,7 +55,7 @@ class Database:
                                                 genre_id INT NOT NULL)'''
     __create_tracks = '''CREATE TABLE tracks (id INTEGER PRIMARY KEY,
                                               name TEXT NOT NULL,
-                                              filepath TEXT NOT NULL,
+                                              uri TEXT NOT NULL,
                                               duration INT,
                                               tracknumber INT,
                                               discnumber INT,
@@ -64,7 +64,9 @@ class Database:
                                               year INT,
                                               popularity INT NOT NULL,
                                               ltime INT NOT NULL,
-                                              mtime INT NOT NULL)'''
+                                              mtime INT NOT NULL,
+                                              persistent INT NOT NULL
+                                              DEFAULT 1)'''
     __create_track_artists = '''CREATE TABLE track_artists (
                                                 track_id INT NOT NULL,
                                                 artist_id INT NOT NULL)'''
@@ -126,6 +128,25 @@ class Database:
             return c
         except:
             exit(-1)
+
+    def del_non_persistent(self):
+        """
+            Delete non persistent tracks from db
+        """
+        for track_id in Lp().tracks.get_non_persistent():
+            album_id = Lp().tracks.get_album_id(track_id)
+            genre_ids = Lp().tracks.get_genre_ids(track_id)
+            album_artist_ids = Lp().albums.get_artist_ids(album_id)
+            artist_ids = Lp().tracks.get_artist_ids(track_id)
+            Lp().tracks.remove(track_id)
+            Lp().tracks.clean(track_id)
+            Lp().albums.clean(album_id)
+            for artist_id in album_artist_ids + artist_ids:
+                Lp().artists.clean(artist_id)
+            for genre_id in genre_ids:
+                Lp().genres.clean(genre_id)
+        with SqlCursor(Lp().db) as sql:
+            sql.commit()
 
 #######################
 # PRIVATE             #

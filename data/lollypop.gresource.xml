@@ -3,7 +3,8 @@
   <gresource prefix="/org/gnome/Lollypop">
     <file preprocess="xml-stripblanks">AboutDialog.ui</file>
     <file preprocess="xml-stripblanks">Appmenu.ui</file>
-    <file preprocess="xml-stripblanks">SearchRow.ui</file>
+    <file preprocess="xml-stripblanks">InternalSearchRow.ui</file>
+    <file preprocess="xml-stripblanks">ExternalSearchRow.ui</file>
     <file preprocess="xml-stripblanks">SearchPopover.ui</file>
     <file preprocess="xml-stripblanks">QueuePopover.ui</file>
     <file preprocess="xml-stripblanks">RatingWidget.ui</file>

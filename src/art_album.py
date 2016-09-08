@@ -113,6 +113,8 @@ class AlbumArt(BaseArt, TagReader):
             @param album as Album
             @return [paths]
         """
+        if album.is_youtube:
+            return []
         all_paths = [os.path.join(album.path, f) for f in os.listdir(
                                                                 album.path)]
         paths = []
@@ -155,7 +157,7 @@ class AlbumArt(BaseArt, TagReader):
                 if pixbuf is None and album.tracks:
                     try:
                         pixbuf = self.pixbuf_from_tags(
-                                    album.tracks[0].path, size)
+                                    album.tracks[0].uri, size)
                     except Exception as e:
                         pass
 
@@ -195,7 +197,7 @@ class AlbumArt(BaseArt, TagReader):
             @return cairo surface
         """
         size *= scale
-        pixbuf = self.pixbuf_from_tags(GLib.filename_from_uri(uri)[0], size)
+        pixbuf = self.pixbuf_from_tags(uri, size)
         if pixbuf is not None:
             surface = Gdk.cairo_surface_create_from_pixbuf(pixbuf, scale, None)
             del pixbuf
@@ -214,6 +216,7 @@ class AlbumArt(BaseArt, TagReader):
             save_to_tags = Lp().settings.get_value('artwork-tags') and\
                 which("kid3-cli") is not None
             album = Album(album_id)
+
             path_count = Lp().albums.get_path_count(album.path)
             filename = self.__get_album_cache_name(album) + ".jpg"
             if save_to_tags:
@@ -227,7 +230,7 @@ class AlbumArt(BaseArt, TagReader):
                 artpath = os.path.join(album.path, filename)
                 if os.path.exists(os.path.join(album.path, self.__favorite)):
                     os.remove(os.path.join(album.path, self.__favorite))
-            elif is_readonly(album.path):
+            elif album.path == "" or is_readonly(album.path):
                 artpath = os.path.join(self._STORE_PATH, filename)
             else:
                 artpath = os.path.join(album.path, self.__favorite)
@@ -266,7 +269,8 @@ class AlbumArt(BaseArt, TagReader):
                     which("kid3-cli") is not None:
                 argv = ["kid3-cli", "-c", "select all", "-c",
                         "set picture:'' ''"]
-                for path in Lp().albums.get_track_paths(album.id, [], []):
+                for uri in Lp().albums.get_track_uris(album.id, [], []):
+                    path = GLib.filename_from_uri(uri)[0]
                     argv.append(path)
                 argv.append(None)
                 GLib.spawn_sync(None, argv, None,
@@ -287,7 +291,7 @@ class AlbumArt(BaseArt, TagReader):
         except Exception as e:
             print("Art::clean_album_cache(): ", e, filename)
 
-    def pixbuf_from_tags(self, filepath, size):
+    def pixbuf_from_tags(self, uri, size):
         """
             Return cover from tags
             @param filepath as str
@@ -295,7 +299,7 @@ class AlbumArt(BaseArt, TagReader):
         """
         pixbuf = None
         try:
-            info = self.get_info(filepath)
+            info = self.get_info(uri)
             exist = False
             if info is not None:
                 (exist, sample) = info.get_tags().get_sample_index('image', 0)
@@ -338,7 +342,8 @@ class AlbumArt(BaseArt, TagReader):
         if os.path.exists("/tmp/lollypop_cover_tags.jpg"):
             argv = ["kid3-cli", "-c", "select all", "-c",
                     "set picture:'/tmp/lollypop_cover_tags.jpg' ''"]
-            for path in Lp().albums.get_track_paths(album.id, [], []):
+            for uri in Lp().albums.get_track_uris(album.id, [], []):
+                path = GLib.filename_from_uri(uri)[0]
                 argv.append(path)
             argv.append(None)
             GLib.spawn_sync(None, argv, None,

@@ -32,6 +32,11 @@
             <summary>Mini player position</summary>
             <description>Window position (x and y).</description>
         </key>
+        <key type="b" name="network-search">
+            <default>false</default>
+            <summary>Search over network</summary>
+            <description></description>
+        </key>
         <key type="b" name="artwork-tags">
             <default>false</default>
             <summary>Save artwork in tags</summary>
@@ -63,7 +68,7 @@
             <description></description>
         </key>
         <key type="s" name="cs-api-key">
-            <default>""</default>
+            <default>"AIzaSyBiaYluG8pVYxgKRGcc4uEbtgE9q8la0dw"</default>
             <summary>Google Custom Search API key</summary>
             <description></description>
         </key>

@@ -197,6 +197,11 @@ class SettingsDialog:
             self.__add_chooser(directory)
 
         #
+        # Google tab
+        #
+        builder.get_object('cs-entry').set_text(
+                            Lp().settings.get_value('cs-api-key').get_string())
+        #
         # Last.fm tab
         #
         if Lp().lastfm is not None and Secret is not None:
@@ -386,6 +391,14 @@ class SettingsDialog:
                     Lp().lastfm.connect(self.__password.get_text())
         except Exception as e:
             print("Settings::_update_lastfm_settings(): %s" % e)
+
+    def _on_cs_api_changed(self, entry):
+        """
+            Save key
+            @param entry as Gtk.Entry
+        """
+        value = entry.get_text().strip()
+        Lp().settings.set_value('cs-api-key', GLib.Variant('s', value))
 
     def _on_preview_changed(self, combo):
         """
@@ -617,7 +630,8 @@ class SettingsDialog:
         """
         if track_ids:
             track_id = track_ids.pop(0)
-            filepath = Lp().tracks.get_path(track_id)
+            uri = Lp().tracks.get_uri(track_id)
+            filepath = GLib.filename_from_uri(uri)[0]
             name = GLib.path_get_basename(filepath)
             album_id = Lp().tracks.get_album_id(track_id)
             popularity = Lp().tracks.get_popularity(track_id)

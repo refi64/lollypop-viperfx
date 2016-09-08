@@ -257,6 +257,7 @@ class Application(Gtk.Application):
             self.scanner.stop()
             GLib.idle_add(self.quit)
             return
+        self.db.del_non_persistent()
         try:
             with SqlCursor(self.db) as sql:
                 sql.execute('VACUUM')

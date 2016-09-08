@@ -35,6 +35,8 @@ DataPath = path.expanduser("~") + "/.local/share/lollypop"
 
 Lp = Gio.Application.get_default
 
+GOOGLE_API_ID = "015987506728554693370:waw3yqru59a"
+
 
 # Represent what to do on next track
 class NextContext:
@@ -48,6 +50,12 @@ class NextContext:
 class SelectionMode:
     NORMAL = 0
     LIMITED = 1
+
+
+class DbPersistent:
+    NONE = 0
+    INTERNAL = 1
+    EXTERNAL = 2
 
 
 class OpenLink:

@@ -211,8 +211,10 @@ class ArtistsDatabase:
         """
             Clean database for artist id
             @param artist id as int
+            @return bool, True if artist deleted
             @warning commit needed
         """
+        ret = False
         with SqlCursor(Lp().db) as sql:
             result = sql.execute("SELECT album_id from album_artists\
                                   WHERE artist_id=?\
@@ -226,5 +228,7 @@ class ArtistsDatabase:
                 v = result.fetchone()
                 # Artist with no relation, remove
                 if not v:
+                    ret = True
                     sql.execute("DELETE FROM artists WHERE rowid=?",
                                 (artist_id,))
+        return ret

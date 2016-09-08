@@ -109,6 +109,8 @@ class Player(BinPlayer, QueuePlayer, UserPlaylistPlayer, RadioPlayer,
                 Lp().window.pulse(False)
                 Lp().window.pulse(True)
             RadioPlayer.load(self, track)
+        elif track.is_youtube:
+            self._load_youtube(track)
         else:
             if play:
                 # Do not update next if user clicked on a track
@@ -125,15 +127,6 @@ class Player(BinPlayer, QueuePlayer, UserPlaylistPlayer, RadioPlayer,
             @param album as Album
         """
         self.shuffle_albums(False)
-        # Add album to main playlist if nothing playing
-        # Do not start to play
-        if not self._albums and self._current_track.id is None:
-                self.load(album.tracks[0], False)
-                self._albums = [self._current_track.album.id]
-                self._context.genre_ids[self._current_track.album.id] = []
-                self._context.artist_ids[self._current_track.album.id] = []
-                self._user_playlist = []
-                self._user_playlist_ids = []
         # If album already exists, merge genres/artists
         if album.id in self._albums:
             genre_ids = self._context.genre_ids[album.id]
@@ -386,7 +379,7 @@ class Player(BinPlayer, QueuePlayer, UserPlaylistPlayer, RadioPlayer,
                     url = radios.get_url(name)
                     track.set_radio(name, url)
                     self.load(track)
-                elif Lp().tracks.get_path(track_id) != "":
+                elif Lp().tracks.get_uri(track_id) != "":
                     track = Track(track_id)
                     if Lp().notify is not None:
                         Lp().notify.inhibit()
@@ -515,6 +508,8 @@ class Player(BinPlayer, QueuePlayer, UserPlaylistPlayer, RadioPlayer,
             if self._next_track.id is None:
                 self._next_track = LinearPlayer.next(self)
             self.emit('next-changed')
+            if self._next_track.is_youtube:
+                self._load_youtube(self._next_track, False)
         except Exception as e:
             print("Player::set_next", e)
 

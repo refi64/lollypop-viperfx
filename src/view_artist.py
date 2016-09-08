@@ -160,37 +160,44 @@ class ArtistView(ArtistAlbumsView):
         """
             Play artist albums
         """
-        if Lp().player.is_party:
-            Lp().player.set_party(False)
-        album_id = Lp().albums.get_ids(self._artist_ids, self._genre_ids)[0]
-        track = Track(Album(album_id).track_ids[0])
-        Lp().player.load(track)
-        Lp().player.set_albums(track.id, self._artist_ids,
-                               self._genre_ids)
-        self.__set_add_icon()
+        try:
+            if Lp().player.is_party:
+                Lp().player.set_party(False)
+            album_id = Lp().albums.get_ids(self._artist_ids,
+                                           self._genre_ids)[0]
+            track = Track(Album(album_id).track_ids[0])
+            Lp().player.load(track)
+            Lp().player.set_albums(track.id, self._artist_ids,
+                                   self._genre_ids)
+            self.__set_add_icon()
+        except:
+            pass  # Artist not available anymore for this context
 
     def _on_add_clicked(self, widget):
         """
             Add artist albums
         """
-        albums = Lp().albums.get_ids(self._artist_ids, self._genre_ids)
-        if self.__add_button.get_image().get_icon_name(
+        try:
+            albums = Lp().albums.get_ids(self._artist_ids, self._genre_ids)
+            if self.__add_button.get_image().get_icon_name(
                                                    )[0] == 'list-add-symbolic':
-            for album_id in albums:
-                album = Album(album_id)
-                # If playing and no albums, play it
-                if not Lp().player.has_album(album):
-                    if Lp().player.is_playing() and\
-                            not Lp().player.get_albums():
-                        Lp().player.play_album(album)
-                    else:
-                        Lp().player.add_album(album)
-        else:
-            for album_id in albums:
-                album = Album(album_id)
-                if Lp().player.has_album(album):
-                    Lp().player.remove_album(album)
-        self.__set_add_icon()
+                for album_id in albums:
+                    album = Album(album_id)
+                    # If playing and no albums, play it
+                    if not Lp().player.has_album(album):
+                        if Lp().player.is_playing() and\
+                                not Lp().player.get_albums():
+                            Lp().player.play_album(album)
+                        else:
+                            Lp().player.add_album(album)
+            else:
+                for album_id in albums:
+                    album = Album(album_id)
+                    if Lp().player.has_album(album):
+                        Lp().player.remove_album(album)
+            self.__set_add_icon()
+        except:
+            pass  # Artist not available anymore for this context
 
     def _on_artwork_draw(self, image, ctx):
         """

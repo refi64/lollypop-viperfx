@@ -19,7 +19,8 @@ from threading import Thread
 from lollypop.widgets_rating import RatingWidget
 from lollypop.widgets_loved import LovedWidget
 from lollypop.define import Lp
-from lollypop.objects import Track
+from lollypop.sqlcursor import SqlCursor
+from lollypop.objects import Track, Album
 from lollypop import utils
 
 
@@ -338,21 +339,33 @@ class EditMenu(BaseMenu):
     """
     __TAG_EDITORS = ['exfalso', 'easytag', 'picard', 'puddletag', 'kid3-qt']
 
-    def __init__(self, object_id, is_album):
+    def __init__(self, object_id, is_youtube):
         """
             Init edit menu
             @param object id as int
-            @param is album as bool
+            @param is youtube as bool
         """
-        BaseMenu.__init__(self, object_id, [], [], is_album)
+        BaseMenu.__init__(self, object_id, [], [], True)
 
-        if is_album:
+        if is_youtube:
+            self.__set_remove_action()
+        else:
             favorite = Lp().settings.get_value('tag-editor').get_string()
             for editor in [favorite] + self.__TAG_EDITORS:
                 if which(editor) is not None:
                     self.__tag_editor = editor
                     self.__set_edit_actions()
                     break
+
+    def __set_remove_action(self):
+        """
+            Remove album
+        """
+        remove_album_action = Gio.SimpleAction(name="remove_album_action")
+        Lp().add_action(remove_album_action)
+        remove_album_action.connect('activate',
+                                    self.__remove_album)
+        self.append(_("Remove album"), 'app.remove_album_action')
 
     def __set_edit_actions(self):
         """
@@ -363,6 +376,35 @@ class EditMenu(BaseMenu):
         edit_tag_action.connect('activate',
                                 self.__edit_tag)
         self.append(_("Modify information"), 'app.edit_tag_action')
+
+    def __remove_album(self, action, variant):
+        """
+            Remove album
+            @param SimpleAction
+            @param GVariant
+        """
+        album = Album(self._object_id)
+        artist_ids = []
+        for track_id in album.track_ids:
+            artist_ids += Lp().tracks.get_artist_ids(track_id)
+            Lp().tracks.remove(track_id)
+            Lp().tracks.clean(track_id)
+        artist_ids += album.artist_ids
+        genre_ids = Lp().albums.get_genre_ids(album.id)
+        Lp().albums.clean(album.id)
+        for artist_id in list(set(artist_ids)):
+            ret = Lp().artists.clean(artist_id)
+            if ret:
+                GLib.idle_add(Lp().scanner.emit, 'artist-updated',
+                              artist_id, album.id, False)
+        for genre_id in genre_ids:
+            ret = Lp().genres.clean(genre_id)
+            if ret:
+                GLib.idle_add(Lp().scanner.emit, 'genre-updated',
+                              genre_id, False)
+        with SqlCursor(Lp().db) as sql:
+            sql.commit()
+        GLib.idle_add(Lp().scanner.emit, 'album-updated', self._object_id)
 
     def __edit_tag(self, action, variant):
         """
@@ -396,7 +438,7 @@ class AlbumMenu(Gio.Menu):
                             PlaylistsMenu(album.id, album.genre_ids,
                                           album.artist_ids, True))
         self.insert_section(2, _("Edit"),
-                            EditMenu(album.id, True))
+                            EditMenu(album.id, album.is_youtube))
 
 
 class TrackMenu(Gio.Menu):
@@ -404,16 +446,16 @@ class TrackMenu(Gio.Menu):
         Contextual menu for a track
     """
 
-    def __init__(self, object_id):
+    def __init__(self, track):
         """
             Init menu model
-            @param object id as int
+            @param track as Track
         """
         Gio.Menu.__init__(self)
         self.insert_section(0, _("Queue"),
-                            QueueMenu(object_id, [], [], False))
+                            QueueMenu(track.id, [], [], False))
         self.insert_section(1, _("Playlists"),
-                            PlaylistsMenu(object_id, [], [], False))
+                            PlaylistsMenu(track.id, [], [], False))
 
 
 class TrackMenuPopover(Gtk.Popover):
@@ -421,29 +463,28 @@ class TrackMenuPopover(Gtk.Popover):
         Contextual menu widget for a track
     """
 
-    def __init__(self, object_id, menu):
+    def __init__(self, track, menu):
         """
             Init widget
-            @param object id as int
+            @param track as Track
             @param menu as Gio.Menu
         """
         Gtk.Popover.__init__(self)
         self.bind_model(menu, None)
 
-        track = Track(object_id)
         if track.year != track.album.year:
             track_year = str(track.year)
         else:
             track_year = ""
 
-        rating = RatingWidget(Track(object_id))
+        rating = RatingWidget(track)
         rating.set_margin_top(5)
         rating.set_margin_bottom(5)
         rating.set_property('halign', Gtk.Align.START)
         rating.set_property('hexpand', True)
         rating.show()
 
-        loved = LovedWidget(object_id)
+        loved = LovedWidget(track.id)
         loved.set_margin_end(5)
         loved.set_margin_top(5)
         loved.set_margin_bottom(5)
@@ -489,3 +530,90 @@ class TrackMenuPopover(Gtk.Popover):
         hgrid.show()
         grid.add(hgrid)
         self.add(stack)
+
+
+class AlbumMenuPopover(Gtk.Popover):
+    """
+        Contextual menu widget for a track
+    """
+
+    def __init__(self, album, menu):
+        """
+            Init widget
+            @param album as album
+            @param menu as Gio.Menu
+        """
+        Gtk.Popover.__init__(self)
+        self.bind_model(menu, None)
+
+        edit = Gtk.Entry()
+        edit.set_margin_end(5)
+        edit.set_margin_bottom(5)
+        edit.set_property('hexpand', True)
+        edit.set_property('halign', Gtk.Align.CENTER)
+        edit.set_text(", ".join(Lp().albums.get_genres(album.id)))
+        edit.show()
+
+        save = Gtk.Button.new_from_icon_name('document-save-symbolic',
+                                             Gtk.IconSize.MENU)
+        save.set_margin_end(5)
+        save.set_margin_bottom(5)
+        save.set_property('hexpand', True)
+        save.set_property('halign', Gtk.Align.CENTER)
+        save.set_property('valign', Gtk.Align.CENTER)
+        save.set_tooltip_text(_("Save genre"))
+        save.connect('clicked', self.__on_clicked, edit, album)
+        save.show()
+
+        # Hack to add two widgets in popover
+        # Use a Gtk.PopoverMenu later (GTK>3.16 available on Debian stable)
+        grid = Gtk.Grid()
+        grid.set_orientation(Gtk.Orientation.VERTICAL)
+
+        stack = Gtk.Stack()
+        stack.add_named(grid, 'main')
+        stack.show_all()
+
+        menu_widget = self.get_child()
+        menu_widget.reparent(grid)
+
+        # separator = Gtk.Separator()
+        # separator.show()
+
+        # grid.add(separator)
+        hgrid = Gtk.Grid()
+        hgrid.add(edit)
+        hgrid.add(save)
+        hgrid.show()
+        grid.add(hgrid)
+        self.add(stack)
+
+#######################
+# PRIVATE             #
+#######################
+    def __on_clicked(self, button, edit, album):
+        """
+            Save album genre
+            @param button as Gtk.Button
+            @param edit as Gtk.Edit
+            @param album as Album
+        """
+        orig_genre_ids = Lp().albums.get_genre_ids(album.id)
+        genre = edit.get_text()
+        genre_id = Lp().genres.get_id(genre)
+        if genre_id is None:
+            genre_id = Lp().genres.add(genre)
+            Lp().scanner.emit('genre-updated', genre_id, True)
+        Lp().albums.del_genres(album.id)
+        Lp().albums.add_genre(album.id, genre_id)
+        for track_id in album.track_ids:
+            Lp().tracks.del_genres(track_id)
+            Lp().tracks.add_genre(track_id, genre_id)
+        for genre_id in orig_genre_ids:
+            ret = Lp().genres.clean(genre_id)
+            if ret:
+                GLib.idle_add(Lp().scanner.emit, 'genre-updated',
+                              genre_id, False)
+        with SqlCursor(Lp().db) as sql:
+            sql.commit()
+        Lp().scanner.emit('album-updated', album.id)
