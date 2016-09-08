@@ -257,6 +257,7 @@ class InfosController:
             Init controller
         """
         self._infobox = None
+        self._spinner = None
         self._artsize = artsize
 
     def on_current_changed(self, player):
@@ -273,8 +274,9 @@ class InfosController:
             return
 
         # Stop spinner if running
-        self._spinner.hide()
-        self._spinner.stop()
+        if self._spinner is not None:
+            self._spinner.hide()
+            self._spinner.stop()
 
         self._artist_label.set_text(", ".join(player.current_track.artists))
         self._artist_label.show()
