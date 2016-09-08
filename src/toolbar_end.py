@@ -99,7 +99,8 @@ class PartyPopover(Gtk.Popover):
             except:
                 pass
         Lp().settings.set_value('party-ids',  GLib.Variant('ai', ids))
-        Lp().player.set_party(True)
+        Lp().player.set_party_ids()
+        Lp().player.set_next()
 
 
 class ToolbarEnd(Gtk.Bin):

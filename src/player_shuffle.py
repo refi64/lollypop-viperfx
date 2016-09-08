@@ -118,20 +118,7 @@ class ShufflePlayer(BasePlayer):
             self._albums_backup = self._albums
             self._external_tracks = []
             self._context.genre_ids = {}
-            party_ids = self.get_party_ids()
-            if party_ids:
-                self._albums = Lp().albums.get_party_ids(party_ids)
-            else:
-                self._albums = Lp().albums.get_ids()
-            # We do not store genre_ids for ALL/POPULARS/...
-            genre_ids = []
-            for genre_id in party_ids:
-                if genre_id > 0:
-                    genre_ids.append(genre_id)
-            # Set context for each album
-            for album_id in self._albums:
-                self._context.genre_ids[album_id] = genre_ids
-                self._context.artist_ids[album_id] = []
+            self.set_party_ids()
             # Start a new song if not playing
             if (self._current_track.id in [None, Type.RADIOS])\
                     and self._albums:
@@ -169,6 +156,25 @@ class ShufflePlayer(BasePlayer):
         elif self._albums_backup:
             self._albums = self._albums_backup
             self._albums_backup = []
+
+    def set_party_ids(self):
+        """
+            Set party mode ids
+        """
+        party_ids = self.get_party_ids()
+        if party_ids:
+            self._albums = Lp().albums.get_party_ids(party_ids)
+        else:
+            self._albums = Lp().albums.get_ids()
+        # We do not store genre_ids for ALL/POPULARS/...
+        genre_ids = []
+        for genre_id in party_ids:
+            if genre_id > 0:
+                genre_ids.append(genre_id)
+        # Set context for each album
+        for album_id in self._albums:
+            self._context.genre_ids[album_id] = genre_ids
+            self._context.artist_ids[album_id] = []
 
 #######################
 # PROTECTED           #
