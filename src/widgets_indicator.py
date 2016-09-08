@@ -65,10 +65,10 @@ class IndicatorWidget(Gtk.EventBox):
         """
             Show play indicator
         """
+        self.__init()
         if self.__stack.get_visible_child_name() == "spinner":
             spinner = self.__stack.get_visible_child()
             spinner.destroy()
-        self.__init()
         self.__stack.set_visible_child_name('play')
 
     def loved(self):
