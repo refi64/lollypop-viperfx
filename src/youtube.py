@@ -118,12 +118,13 @@ class Youtube(GObject.GObject):
                 return (None, None)
         t = TagReader()
         with SqlCursor(Lp().db) as sql:
+            album_artist = item.artists[0]
             artists = "; ".join(item.artists)
             (artist_ids, new_artist_ids) = t.add_artists(artists,
-                                                         item.artists[0],
+                                                         album_artist,
                                                          "")
             (album_artist_ids, new_album_artist_ids) = t.add_album_artists(
-                                                               artists,
+                                                               album_artist,
                                                                "")
             (album_id, new_album) = t.add_album(item.album,
                                                 album_artist_ids,
@@ -154,7 +155,7 @@ class Youtube(GObject.GObject):
             Get youtube id
             @param item as SearchItem
         """
-        search = "%s %s" % (" ".join(item.artists),
+        search = "%s %s" % (item.artists[0],
                             item.name)
         key = Lp().settings.get_value('cs-api-key').get_string()
         try:
@@ -169,7 +170,7 @@ class Youtube(GObject.GObject):
                 decode = json.loads(data.decode('utf-8'))
                 return decode['items'][0]['id']['videoId']
         except Exception as e:
-            print("Youtube::__get_youtube_id():", e)
+            print("Youtube::__get_youtube_id():", e, f.get_uri())
         return None
 
     def __save_cover(self, item, album_id):
