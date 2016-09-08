@@ -132,6 +132,11 @@ Gtk.ListBoxRow .menu-button:hover {
     border: 1px solid shade(@theme_bg_color, 0.7);
 }
 
+.small-cover-youtube {
+    border-radius: 1px;
+    border: 1px solid alpha(red, 0.5);
+}
+
 .cover-frame-youtube {
     border-color: alpha(red, 0.3);
     background-color: alpha(red, 0.3);
