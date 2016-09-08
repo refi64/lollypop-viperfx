@@ -162,7 +162,7 @@ class AlbumArt(BaseArt, TagReader):
                         pass
 
                 # Use folder artwork
-                if pixbuf is None:
+                if pixbuf is None and album.path != "":
                     path = self.get_first_album_artwork(album)
                     # Look in album folder
                     if path is not None:
@@ -298,6 +298,8 @@ class AlbumArt(BaseArt, TagReader):
             @param size as int
         """
         pixbuf = None
+        if not uri.startswith('file:'):
+            return
         try:
             info = self.get_info(uri)
             exist = False
