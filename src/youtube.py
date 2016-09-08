@@ -106,9 +106,16 @@ class Youtube(GObject.GObject):
             @return (album id as int, track id as int)
         """
         yid = self.__get_youtube_id(item)
-        uri = "https://www.youtube.com/watch?v=%s" % yid
-        if yid is None or Lp().tracks.get_id_by_uri(uri) is not None:
+        if yid is None:
             return (None, None)
+        uri = "https://www.youtube.com/watch?v=%s" % yid
+        track_id = Lp().tracks.get_id_by_uri(uri)
+        # Check if track needs to be updated
+        if track_id is not None:
+            if Lp().tracks.get_persistence(track_id) == DbPersistent.NONE\
+                    and persistent == DbPersistent.EXTERNAL:
+                Lp().tracks.set_persistence(track_id, DbPersistent.EXTERNAL)
+                return (None, None)
         t = TagReader()
         with SqlCursor(Lp().db) as sql:
             artists = "; ".join(item.artists)

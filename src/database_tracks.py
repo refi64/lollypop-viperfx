@@ -481,6 +481,18 @@ class TracksDatabase:
                 return v[0]
             return 0
 
+    def set_persistence(self, track_id, persistent):
+        """
+            Set track persistence
+            @param track id as int
+            @param persistent as int
+        """
+        with SqlCursor(Lp().db) as sql:
+            sql.execute("UPDATE tracks\
+                         SET persistent=?\
+                         WHERE rowid=?", (persistent, track_id,))
+            sql.commit()
+
     def get_non_persistent(self):
         """
             Return non persistent tracks

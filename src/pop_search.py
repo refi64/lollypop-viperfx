@@ -652,7 +652,7 @@ class SearchPopover(Gtk.Popover):
                 popover.show()
             else:
                 popover = AlbumPopover(row.id, [],
-                                       row.artist_ids())
+                                       row.artist_ids)
                 popover.set_relative_to(widget)
                 popover.set_pointing_to(rect)
                 popover.show()
