@@ -101,9 +101,8 @@ class ShufflePlayer(BasePlayer):
             @param party as bool
         """
         self.__is_party = party
-
+        albums_backup = self._albums_backup
         self.reset_history()
-        self._context.genre_ids = {}
 
         if self._plugins1.rgvolume is not None and\
            self._plugins2.rgvolume is not None:
@@ -116,9 +115,9 @@ class ShufflePlayer(BasePlayer):
                 self._plugins2.rgvolume.props.album_mode = 1
 
         if party:
+            self._albums_backup = self._albums
             self._external_tracks = []
             self._context.genre_ids = {}
-            self._context.track_id = None
             party_ids = self.get_party_ids()
             if party_ids:
                 self._albums = Lp().albums.get_party_ids(party_ids)
@@ -141,10 +140,9 @@ class ShufflePlayer(BasePlayer):
             elif not self.is_playing():
                 self.play()
         else:
-            # We need to put some context, take first available genre
-            if self._current_track.id is not None:
-                self.set_albums(self._current_track.id,
-                                self._current_track.album.artist_ids, [])
+            self._albums = albums_backup
+            self.set_next()
+            self.set_prev()
         self.emit('party-changed', party)
 
     @property
