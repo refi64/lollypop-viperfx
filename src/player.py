@@ -110,6 +110,7 @@ class Player(BinPlayer, QueuePlayer, UserPlaylistPlayer, RadioPlayer,
                 Lp().window.pulse(True)
             RadioPlayer.load(self, track)
         elif track.is_youtube:
+            self.emit('loading-changed')
             self._load_youtube(track)
         else:
             if play:

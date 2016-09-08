@@ -242,6 +242,7 @@ class BinPlayer(BasePlayer):
                 self._queue.remove(track.id)
                 self.emit('queue-changed')
                 if self._queue_track.is_youtube:
+                    self.emit('loading-changed')
                     self._load_youtube(self._queue_track)
                 else:
                     self._playbin.set_property('uri', self._queue_track.uri)
@@ -249,6 +250,7 @@ class BinPlayer(BasePlayer):
                 self._current_track = track
                 self._queue_track = None
                 if self._current_track.is_youtube:
+                    self.emit('loading-changed')
                     self._load_youtube(self._current_track)
                 else:
                     self._playbin.set_property('uri', self.current_track.uri)
@@ -266,9 +268,6 @@ class BinPlayer(BasePlayer):
         """
         argv = ["youtube-dl", "-g", "-f", "bestaudio", track.uri, None]
         try:
-            # Loading next track should not emit signal
-            if track.id != self.next_track.id:
-                self.emit('loading-changed')
             (s, pid, i, o, err) = GLib.spawn_async_with_pipes(
                                        None, argv, None,
                                        GLib.SpawnFlags.SEARCH_PATH |

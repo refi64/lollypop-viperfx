@@ -104,6 +104,7 @@ class SearchRow(Gtk.ListBoxRow):
         """
             Play row
         """
+        Lp().player.emit('loading-changed')
         yt = Youtube()
         if self.__item.is_track:
             yt.save_track(self.__item, DbPersistent.NONE)
