@@ -268,6 +268,8 @@ class BinPlayer(BasePlayer):
             @return True if loading
         """
         if not Gio.NetworkMonitor.get_default().get_network_available():
+            # Force widgets to update (spinners)
+            self.emit('current-changed')
             return False
         argv = ["youtube-dl", "-g", "-f", "bestaudio", track.uri, None]
         try:

@@ -120,6 +120,8 @@ class Player(BinPlayer, QueuePlayer, UserPlaylistPlayer, RadioPlayer,
                     Lp().notify.send(_("No network available,"
                                        " can't play this track"),
                                      track.uri)
+                    # Force widgets to update (spinners)
+                    self.emit('current-changed')
                     return
                 # Do not update next if user clicked on a track
                 if self.is_party and track != self._next_track:
