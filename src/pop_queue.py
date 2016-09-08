@@ -304,7 +304,7 @@ class QueuePopover(Gtk.Popover):
         for child in self.__view.get_children():
             child.destroy()
         if clear_queue:
-            Lp().player.set_queue([])
+            Lp().player.clear_queue()
 
     def __add_items(self, items, prev_album_id=None):
         """

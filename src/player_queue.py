@@ -10,7 +10,12 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
+from gi.repository import Gio
+
+from gettext import gettext as _
+
 from lollypop.objects import Track
+from lollypop.define import Lp
 
 
 class QueuePlayer:
@@ -31,6 +36,12 @@ class QueuePlayer:
             @param track id as int
             @param notify as bool
         """
+        track = Track(track_id)
+        if track.is_youtube and\
+           not Gio.NetworkMonitor.get_default().get_network_available():
+            Lp().notify.send(_("No network available, can't play this track"),
+                             track.uri)
+            return
         if track_id in self._queue:
             self._queue.remove(track_id)
         self._queue.append(track_id)
@@ -46,6 +57,12 @@ class QueuePlayer:
             @param track id as int
             @param notify as bool
         """
+        track = Track(track_id)
+        if track.is_youtube and\
+           not Gio.NetworkMonitor.get_default().get_network_available():
+            Lp().notify.send(_("No network available, can't play this track"),
+                             track.uri)
+            return
         if track_id in self._queue:
             self._queue.remove(track_id)
         self._queue.insert(pos, track_id)
@@ -67,13 +84,13 @@ class QueuePlayer:
         if notify:
             self.emit('queue-changed')
 
-    def set_queue(self, new_queue, notify=True):
+    def clear_queue(self, notify=True):
         """
             Set queue
             @param [ids as int]
             @param notify as bool
         """
-        self._queue = new_queue
+        self._queue = []
         self.set_next()
         self.set_prev()
         if notify:

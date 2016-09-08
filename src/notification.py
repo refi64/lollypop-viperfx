@@ -35,15 +35,16 @@ class NotificationManager:
         Lp().player.connect('current-changed',
                             self.__on_current_changed)
 
-    def send(self, message):
+    def send(self, message, sub=""):
         """
             Send message to user
             @param message as str
+            @param sub as str
         """
         self.__notification.clear_actions()
         self.__notification.clear_hints()
         self.__notification.update(message,
-                                   None,
+                                   sub,
                                    "lollypop")
         try:
             self.__notification.show()
