@@ -112,9 +112,9 @@ class Youtube(GObject.GObject):
         track_id = Lp().tracks.get_id_by_uri(uri)
         # Check if track needs to be updated
         if track_id is not None:
-            if Lp().tracks.get_persistence(track_id) == DbPersistent.NONE\
+            if Lp().tracks.get_persistent(track_id) == DbPersistent.NONE\
                     and persistent == DbPersistent.EXTERNAL:
-                Lp().tracks.set_persistence(track_id, DbPersistent.EXTERNAL)
+                Lp().tracks.set_persistent(track_id, DbPersistent.EXTERNAL)
                 return (None, None)
         t = TagReader()
         with SqlCursor(Lp().db) as sql:

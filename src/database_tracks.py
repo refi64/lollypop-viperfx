@@ -467,9 +467,9 @@ class TracksDatabase:
                                   ORDER BY ltime DESC LIMIT 100")
             return list(itertools.chain(*result))
 
-    def get_persistence(self, track_id):
+    def get_persistent(self, track_id):
         """
-            Return track persistence
+            Return track persistent
             @param track id as int
             @return int
         """
@@ -481,9 +481,9 @@ class TracksDatabase:
                 return v[0]
             return 0
 
-    def set_persistence(self, track_id, persistent):
+    def set_persistent(self, track_id, persistent):
         """
-            Set track persistence
+            Set track persistent
             @param track id as int
             @param persistent as int
         """

@@ -477,7 +477,7 @@ class BinPlayer(BasePlayer):
         """
         # Some radio streams send message tag every seconds!
         changed = False
-        if (self.current_track.persistence == DbPersistent.INTERNAL or
+        if (self.current_track.persistent == DbPersistent.INTERNAL or
             self.current_track.mtime != 0) and\
             (self.current_track.id >= 0 or
              self.current_track.duration > 0.0):
@@ -486,7 +486,7 @@ class BinPlayer(BasePlayer):
         reader = TagReader()
 
         # Update duration of non internals
-        if self.current_track.persistence != DbPersistent.INTERNAL:
+        if self.current_track.persistent != DbPersistent.INTERNAL:
             t = Thread(target=self.__update_current_duration, args=(reader,))
             t.daemon = True
             t.start()
