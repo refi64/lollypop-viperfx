@@ -98,6 +98,12 @@ class Row(Gtk.ListBoxRow):
         self.add(self._row_widget)
         self.get_style_context().add_class('trackrow')
 
+    def show_spinner(self):
+        """
+            Show spinner
+        """
+        self._indicator.show_spinner()
+
     def set_indicator(self, playing, loved):
         """
             Show indicator
@@ -557,6 +563,15 @@ class TracksWidget(Gtk.ListBox):
         for row in self.get_children():
             row.set_indicator(row.get_id() == track_id,
                               utils.is_loved(row.get_id()))
+
+    def show_spinner(self, track_id):
+        """
+            Show spinner for track_id
+        """
+        for row in self.get_children():
+            if row.get_id() == track_id:
+                row.show_spinner()
+                break
 
 #######################
 # PRIVATE             #

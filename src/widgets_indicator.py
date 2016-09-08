@@ -41,6 +41,19 @@ class IndicatorWidget(Gtk.EventBox):
         # min-width = 24px, borders = 2px, padding = 8px
         self.set_size_request(34, 26)
 
+    def show_spinner(self):
+        """
+            Show spinner
+        """
+        self.__init()
+        spinner = Gtk.Spinner()
+        spinner.set_property('halign', Gtk.Align.CENTER)
+        spinner.set_property('valign', Gtk.Align.CENTER)
+        spinner.start()
+        spinner.show()
+        self.__stack.add_named(spinner, 'spinner')
+        self.__stack.set_visible_child_name('spinner')
+
     def empty(self):
         """
             Show no indicator
@@ -52,6 +65,9 @@ class IndicatorWidget(Gtk.EventBox):
         """
             Show play indicator
         """
+        if self.__stack.get_visible_child_name() == "spinner":
+            spinner = self.__stack.get_visible_child()
+            spinner.destroy()
         self.__init()
         self.__stack.set_visible_child_name('play')
 
