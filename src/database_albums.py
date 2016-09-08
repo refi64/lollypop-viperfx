@@ -10,6 +10,8 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
+from gi.repository import GLib
+
 from gettext import gettext as _
 import os
 import itertools
@@ -383,7 +385,8 @@ class AlbumsDatabase:
             if path != "" and not os.path.exists(path):
                 tracks = self.get_track_ids(album_id, [], [])
                 if tracks:
-                    filepath = Lp().tracks.get_path(tracks[0])
+                    uri = Lp().tracks.get_uri(tracks[0])
+                    filepath = GLib.filename_from_uri(uri)[0]
                     path = os.path.dirname(filepath)
                     if os.path.exists(path):
                         sql.execute("UPDATE albums SET path=? "
