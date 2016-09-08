@@ -266,7 +266,8 @@ class BinPlayer(BasePlayer):
         """
         argv = ["youtube-dl", "-g", "-f", "bestaudio", track.uri, None]
         try:
-            self.emit('loading-changed')
+            if track.id == self.current_track.id:
+                self.emit('loading-changed')
             (s, pid, i, o, err) = GLib.spawn_async_with_pipes(
                                        None, argv, None,
                                        GLib.SpawnFlags.SEARCH_PATH |
