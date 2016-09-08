@@ -10,7 +10,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-from gi.repository import Gst, GstAudio, GstPbutils, GLib
+from gi.repository import Gst, GstAudio, GstPbutils, GLib, Gio
 
 from time import time
 from threading import Thread
@@ -241,19 +241,19 @@ class BinPlayer(BasePlayer):
                 self._queue_track = track
                 self._queue.remove(track.id)
                 self.emit('queue-changed')
-                if self._queue_track.is_youtube:
-                    self.emit('loading-changed')
-                    self._load_youtube(self._queue_track)
-                else:
-                    self._playbin.set_property('uri', self._queue_track.uri)
             else:
                 self._current_track = track
                 self._queue_track = None
-                if self._current_track.is_youtube:
-                    self.emit('loading-changed')
-                    self._load_youtube(self._current_track)
-                else:
-                    self._playbin.set_property('uri', self.current_track.uri)
+            if track.is_youtube:
+                loaded = self._load_youtube(track)
+                # If track not loaded, go next
+                if not loaded:
+                    self.set_next()
+                    GLib.timeout_add(500, self.__load,
+                                     self.next_track, init_volume)
+                return False  # Return not loaded as handled by load_youtube()
+            else:
+                self._playbin.set_property('uri', track.uri)
         except Exception as e:  # Gstreamer error
             print("BinPlayer::_load_track(): ", e)
             self._queue_track = None
@@ -265,9 +265,13 @@ class BinPlayer(BasePlayer):
             Load track url and play it
             @param track as Track
             @param play as bool
+            @return True if loading
         """
+        if not Gio.NetworkMonitor.get_default().get_network_available():
+            return False
         argv = ["youtube-dl", "-g", "-f", "bestaudio", track.uri, None]
         try:
+            self.emit('loading-changed')
             (s, pid, i, o, err) = GLib.spawn_async_with_pipes(
                                        None, argv, None,
                                        GLib.SpawnFlags.SEARCH_PATH |
@@ -277,6 +281,7 @@ class BinPlayer(BasePlayer):
                          self.__set_gv_uri,
                          track, play,
                          priority=GLib.PRIORITY_HIGH)
+            return True
         except Exception as e:
             print("Youtube::__get_youtube_uri()", e)
 

@@ -10,6 +10,11 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
+from gi.repository import Gio
+
+from pickle import load
+from gettext import gettext as _
+
 from lollypop.player_bin import BinPlayer
 from lollypop.player_queue import QueuePlayer
 from lollypop.player_linear import LinearPlayer
@@ -20,8 +25,6 @@ from lollypop.player_userplaylist import UserPlaylistPlayer
 from lollypop.radios import Radios
 from lollypop.objects import Track
 from lollypop.define import Lp, Type, NextContext, DataPath
-
-from pickle import load
 
 
 class Player(BinPlayer, QueuePlayer, UserPlaylistPlayer, RadioPlayer,
@@ -109,11 +112,15 @@ class Player(BinPlayer, QueuePlayer, UserPlaylistPlayer, RadioPlayer,
                 Lp().window.pulse(False)
                 Lp().window.pulse(True)
             RadioPlayer.load(self, track)
-        elif track.is_youtube:
-            self.emit('loading-changed')
-            self._load_youtube(track)
         else:
             if play:
+                if track.is_youtube and\
+                        not Gio.NetworkMonitor.get_default(
+                                                     ).get_network_available():
+                    Lp().notify.send(_("No network available,"
+                                       " can't play this track"),
+                                     track.uri)
+                    return
                 # Do not update next if user clicked on a track
                 if self.is_party and track != self._next_track:
                     self.__do_not_update_next = True
