@@ -266,7 +266,8 @@ class BinPlayer(BasePlayer):
         """
         argv = ["youtube-dl", "-g", "-f", "bestaudio", track.uri, None]
         try:
-            if track.id == self.current_track.id:
+            # Loading next track should not emit signal
+            if track.id != self.next_track.id:
                 self.emit('loading-changed')
             (s, pid, i, o, err) = GLib.spawn_async_with_pipes(
                                        None, argv, None,
