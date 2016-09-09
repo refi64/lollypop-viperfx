@@ -340,7 +340,7 @@ class BinPlayer(BasePlayer):
         """
         try:
             duration = reader.get_info(track.uri).get_duration() / 1000000000
-            if duration != track.duration:
+            if duration != track.duration and duration > 0:
                 Lp().tracks.set_duration(track.id, duration)
                 # We modify mtime to be sure not looking for tags again
                 Lp().tracks.set_mtime(track.id, 1)
