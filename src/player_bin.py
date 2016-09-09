@@ -338,13 +338,16 @@ class BinPlayer(BasePlayer):
             @param reader as TagReader
             @param track id as int
         """
-        duration = reader.get_info(track.uri).get_duration() / 1000000000
-        if duration != track.duration:
-            Lp().tracks.set_duration(track.id, duration)
-            # We modify mtime to be sure not looking for tags again
-            Lp().tracks.set_mtime(track.id, 1)
-            self.current_track.set_duration(duration)
-            GLib.idle_add(self.emit, 'duration-changed', track.id)
+        try:
+            duration = reader.get_info(track.uri).get_duration() / 1000000000
+            if duration != track.duration:
+                Lp().tracks.set_duration(track.id, duration)
+                # We modify mtime to be sure not looking for tags again
+                Lp().tracks.set_mtime(track.id, 1)
+                self.current_track.set_duration(duration)
+                GLib.idle_add(self.emit, 'duration-changed', track.id)
+        except:
+            pass
 
     def __load(self, track, init_volume=True):
         """
