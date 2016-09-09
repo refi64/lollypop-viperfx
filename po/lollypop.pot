@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-09-09 18:06+0200\n"
+"POT-Creation-Date: 2016-09-09 18:12+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -848,14 +848,6 @@ msgid "Create a new playlist based on search"
 msgstr ""
 
 #: ../data/SearchPopover.ui.h:2
-msgid "page0"
-msgstr ""
-
-#: ../data/SearchPopover.ui.h:3
-msgid "page1"
-msgstr ""
-
-#: ../data/SearchPopover.ui.h:4
 msgid "Search on the web"
 msgstr ""
 
@@ -967,7 +959,7 @@ msgstr ""
 msgid ""
 "Google Web Services need a custom API key.\n"
 "Without one, you will reach default quota soon...\n"
-"Lollypop needs this to download artwork and music"
+"Lollypop needs this to download artwork and music."
 msgstr ""
 
 #: ../data/SettingsDialog.ui.h:38
