@@ -109,6 +109,13 @@ class AlbumWidget:
         """
         pass
 
+    def update_duration(self, track_id):
+        """
+            Update duration for current track
+            @param track id as int
+        """
+        pass
+
     def stop(self):
         """
             Stop populating
@@ -734,6 +741,15 @@ class AlbumDetailedWidget(Gtk.Bin, AlbumWidget):
             self._tracks_right[disc.number].update_playing(
                 Lp().player.current_track.id)
 
+    def update_duration(self, track_id):
+        """
+            Update duration for current track
+            @param track id as int
+        """
+        for disc in self._album.discs:
+            self._tracks_left[disc.number].update_duration(track_id)
+            self._tracks_right[disc.number].update_duration(track_id)
+
     def populate(self):
         """
             Populate tracks
@@ -897,6 +913,16 @@ class AlbumDetailedWidget(Gtk.Bin, AlbumWidget):
         widget[disc_number].add(row)
         GLib.idle_add(self.__add_tracks, tracks, widget, disc_number, i + 1)
 
+    def __show_spinner(self, widget, track_id):
+        """
+            Show spinner for widget
+            @param widget as TracksWidget
+            @param track id as int
+        """
+        track = Track(track_id)
+        if track.is_youtube:
+            widget.show_spinner(track_id)
+
     def __on_map(self, widget):
         """
             Fix for Gtk < 3.18,
@@ -997,6 +1023,7 @@ class AlbumDetailedWidget(Gtk.Bin, AlbumWidget):
         # Play track with no album, force repeat on track
         elif self._button_state & Gdk.ModifierType.SHIFT_MASK:
             Lp().player.clear_albums()
+            self.__show_spinner(widget, track_id)
             Lp().player.load(track)
         else:
             # Do not modify album list if in party mode
@@ -1009,6 +1036,7 @@ class AlbumDetailedWidget(Gtk.Bin, AlbumWidget):
                 # Else, add album if missing
                 elif not Lp().player.has_album(self._album):
                     Lp().player.add_album(self._album)
+            self.__show_spinner(widget, track_id)
             Lp().player.load(track)
             if self._button_state & Gdk.ModifierType.CONTROL_MASK:
                 Lp().player.set_next_context(NextContext.STOP_TRACK)

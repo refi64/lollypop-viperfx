@@ -134,6 +134,14 @@ class Row(Gtk.ListBoxRow):
         """
         self.__number = num
 
+    def update_duration(self):
+        """
+            Update duration for row
+        """
+        # Get a new track to get new duration (cache)
+        track = Track(self._track.id)
+        self._duration_label.set_text(seconds_to_string(track.duration))
+
     def update_num_label(self):
         """
             Update position label for row
@@ -149,7 +157,8 @@ class Row(Gtk.ListBoxRow):
             self._num_label.get_style_context().remove_class('queued')
             self._num_label.set_text('')
 
-    def get_id(self):
+    @property
+    def id(self):
         """
             Get object id
             @return Current id as int
@@ -538,7 +547,7 @@ class TracksWidget(Gtk.ListBox):
             @param previous album id as int
         """
         for child in self.get_children():
-            track = Track(child.get_id())
+            track = Track(child.id)
             if track.album.id == prev_album_id:
                 child.show_headers(False)
             else:
@@ -561,15 +570,24 @@ class TracksWidget(Gtk.ListBox):
             @param track id as int
         """
         for row in self.get_children():
-            row.set_indicator(row.get_id() == track_id,
-                              utils.is_loved(row.get_id()))
+            row.set_indicator(row.id == track_id,
+                              utils.is_loved(row.id))
+
+    def update_duration(self, track_id):
+        """
+            Update playing track
+            @param track id as int
+        """
+        for row in self.get_children():
+            if row.id == track_id:
+                row.update_duration()
 
     def show_spinner(self, track_id):
         """
             Show spinner for track_id
         """
         for row in self.get_children():
-            if row.get_id() == track_id:
+            if row.id == track_id:
                 row.show_spinner()
                 break
 
@@ -589,7 +607,7 @@ class TracksWidget(Gtk.ListBox):
         """
         try:
             bottom_row = self.get_children()[-1]
-            bottom_row.emit('track-moved', bottom_row.get_id(),
+            bottom_row.emit('track-moved', bottom_row.id,
                             int(data.get_text()), False)
         except:
             pass
@@ -612,7 +630,7 @@ class TracksWidget(Gtk.ListBox):
             return
 
         for row in self.get_children():
-            if track_id == row.get_id():
+            if track_id == row.id:
                 row.set_indicator(track_id == Lp().player.current_track.id,
                                   utils.is_loved(track_id))
 
@@ -637,4 +655,4 @@ class TracksWidget(Gtk.ListBox):
             @param widget as TracksWidget
             @param row as TrackRow
         """
-        self.emit('activated', row.get_id())
+        self.emit('activated', row.id)

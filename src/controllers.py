@@ -237,14 +237,16 @@ class ProgressController:
 #######################
 # PRIVATE             #
 #######################
-    def __on_duration_changed(self, player):
+    def __on_duration_changed(self, player, track_id):
         """
             Update duration
             @param player as Player
+            @param track id as int
         """
-        self._progress.set_range(0.0, player.current_track.duration * 60)
-        self._total_time_label.set_text(
-                seconds_to_string(player.current_track.duration))
+        if track_id == player.current_track.id:
+            self._progress.set_range(0.0, player.current_track.duration * 60)
+            self._total_time_label.set_text(
+                    seconds_to_string(player.current_track.duration))
 
 
 class InfosController:

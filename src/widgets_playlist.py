@@ -151,6 +151,14 @@ class PlaylistsWidget(Gtk.Grid):
         self.__tracks_widget_left.update_playing(Lp().player.current_track.id)
         self.__tracks_widget_right.update_playing(Lp().player.current_track.id)
 
+    def update_duration(self, track_id):
+        """
+            Update duration for current track
+            @param track id as int
+        """
+        self.__tracks_widget_left.update_duration(track_id)
+        self.__tracks_widget_right.update_duration(track_id)
+
     def stop(self):
         """
             Stop loading
@@ -275,6 +283,16 @@ class PlaylistsWidget(Gtk.Grid):
             if self.__tracks_left:
                 prev_album_id = Track(self.__tracks_left[-1]).album.id
         self.__tracks_widget_right.update_headers(prev_album_id)
+
+    def __show_spinner(self, widget, track_id):
+        """
+            Show spinner for widget
+            @param widget as TracksWidget
+            @param track id as int
+        """
+        track = Track(track_id)
+        if track.is_youtube:
+            widget.show_spinner(track_id)
 
     def __move_track(self, dst, src, up):
         """
@@ -436,6 +454,7 @@ class PlaylistsWidget(Gtk.Grid):
             else:
                 Lp().player.append_to_queue(track_id)
         else:
+            self.__show_spinner(widget, track_id)
             Lp().player.load(Track(track_id))
             if not Lp().player.is_party:
                 Lp().player.populate_user_playlist_by_tracks(

@@ -30,6 +30,8 @@ class View(Gtk.Grid):
         self.set_border_width(0)
         self.__current_signal = Lp().player.connect('current-changed',
                                                     self._on_current_changed)
+        self.__duration_signal = Lp().player.connect('duration-changed',
+                                                     self._on_duration_changed)
         self.__cover_signal = Lp().art.connect('album-artwork-changed',
                                                self.__on_cover_changed)
 
@@ -93,15 +95,25 @@ class View(Gtk.Grid):
         """
         GLib.idle_add(self.__update_widgets, self._get_children())
 
+    def _on_duration_changed(self, player, track_id):
+        """
+            Update duration for current track
+            @param player as Player
+            @param track id as int
+        """
+        GLib.idle_add(self.__update_duration, self._get_children(), track_id)
+
     def _on_destroy(self, widget):
         """
             Remove signals on unamp
             @param widget as Gtk.Widget
         """
-        if self.__current_signal:
+        if self.__duration_signal is not None:
+            Lp().player.disconnect(self.__duration_signal)
+        if self.__current_signal is not None:
             Lp().player.disconnect(self.__current_signal)
             self.__current_signal = None
-        if self.__cover_signal:
+        if self.__cover_signal is not None:
             Lp().art.disconnect(self.__cover_signal)
             self.__cover_signal = None
 
@@ -111,13 +123,23 @@ class View(Gtk.Grid):
     def __update_widgets(self, widgets):
         """
             Update all widgets
-            @param widgets as AlbumWidget
+            @param widgets as AlbumWidget/PlaylistWidget
         """
         if widgets:
             widget = widgets.pop(0)
             widget.update_state()
             widget.update_playing_indicator()
             GLib.idle_add(self.__update_widgets, widgets)
+
+    def __update_duration(self, widgets, track_id):
+        """
+            Update duration on all widgets
+            @param widgets as AlbumWidget/PlaylistWidget
+        """
+        if widgets:
+            widget = widgets.pop(0)
+            widget.update_duration(track_id)
+            GLib.idle_add(self.__update_duration, widgets, track_id)
 
     def __on_leave_notify(self, widget, event):
         """
