@@ -299,7 +299,7 @@ class MtpSync:
                             bus.add_signal_watch()
                             bus.connect('message::eos', self.__on_bus_eos)
                             self.__encoding = True
-                            while self.__encoding and self.__sync:
+                            while self.__encoding and self._syncing:
                                 sleep(1)
                             bus.disconnect_by_func(self.__on_bus_eos)
                             pipeline.set_state(Gst.State.PAUSED)
