@@ -52,6 +52,7 @@ class Youtube(GObject.GObject):
             @param item as SearchItem
             @param persistent as DbPersistent
         """
+        Lp().window.progress.add(self)
         t = Thread(target=self.__save_album_thread, args=(item, persistent))
         t.daemon = True
         t.start()
@@ -65,13 +66,6 @@ class Youtube(GObject.GObject):
             @param item as SearchItem
             @param persistent as DbPersistent
         """
-        progress = Lp().window.progress
-        if progress.is_visible():
-            progress = None
-        else:
-            GLib.idle_add(progress.set_fraction, 0)
-            GLib.idle_add(progress.show)
-
         nb_items = len(item.subitems)
         start = 0
         for track_item in item.subitems:
@@ -84,11 +78,8 @@ class Youtube(GObject.GObject):
                 t.daemon = True
                 t.start()
             start += 1
-            if progress is not None:
-                GLib.idle_add(progress.set_fraction, start / nb_items)
-        if progress is not None:
-            GLib.idle_add(progress.hide)
-            GLib.idle_add(progress.set_fraction, 0)
+            GLib.idle_add(Lp().window.progress.set_fraction,
+                          start / nb_items, self)
         # Play if needed
         if persistent == DbPersistent.NONE:
             Lp().player.clear_albums()

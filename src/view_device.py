@@ -205,8 +205,6 @@ class DeviceView(View):
             Restore widgets state
             @param device widget as DeviceManager
         """
-        Lp().window.progress.hide()
-        Lp().window.progress.set_fraction(0)
         self.__memory_combo.show()
         self.__syncing_btn.set_label(_("Synchronize %s") %
                                      self.__device.name)

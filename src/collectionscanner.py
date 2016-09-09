@@ -57,10 +57,12 @@ class CollectionScanner(GObject.GObject, TagReader):
             Update database
         """
         if not self.is_locked():
-            Lp().window.progress.show()
             paths = Lp().settings.get_music_paths()
             if not paths:
                 return
+
+            Lp().window.progress.add(self)
+            Lp().window.progress.set_fraction(0.0, self)
 
             if Lp().notify is not None:
                 Lp().notify.send(_("Your music is updating"))
@@ -79,8 +81,6 @@ class CollectionScanner(GObject.GObject, TagReader):
             Stop scan
         """
         self.__thread = None
-        Lp().window.progress.hide()
-        Lp().window.progress.set_fraction(0.0)
 
 #######################
 # PRIVATE             #
@@ -120,12 +120,13 @@ class CollectionScanner(GObject.GObject, TagReader):
             Update progress bar status
             @param scanned items as int, total items as int
         """
-        Lp().window.progress.set_fraction(current/total)
+        Lp().window.progress.set_fraction(current / total, self)
 
     def __finish(self):
         """
             Notify from main thread when scan finished
         """
+        Lp().window.progress.set_fraction(1.0, self)
         self.stop()
         self.emit("scan-finished")
         if Lp().settings.get_value('artist-artwork'):
@@ -194,7 +195,8 @@ class CollectionScanner(GObject.GObject, TagReader):
             for uri in orig_tracks:
                 i += 1
                 GLib.idle_add(self.__update_progress, i, count)
-                self.__del_from_db(uri)
+                if uri.startswith('file:'):
+                    self.__del_from_db(uri)
 
             sql.commit()
         GLib.idle_add(self.__finish)

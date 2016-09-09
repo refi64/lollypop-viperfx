@@ -57,6 +57,7 @@ app_PYTHON = \
     pop_radio.py\
     pop_search.py\
     pop_tunein.py\
+    progressbar.py\
     radios.py\
     search_item.py\
     search_network.py\

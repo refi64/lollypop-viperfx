@@ -21,6 +21,7 @@ from lollypop.view_container import ViewContainer
 from lollypop.view_albums import AlbumsView
 from lollypop.view_artist import ArtistView
 from lollypop.view_radios import RadiosView
+from lollypop.progressbar import ProgressBar
 from lollypop.view_playlists import PlaylistsView
 from lollypop.view_playlists import PlaylistsManageView, PlaylistEditView
 from lollypop.view_device import DeviceView, DeviceLocked, DeviceMigration
@@ -77,9 +78,7 @@ class Container:
             Lp().scanner.stop()
             GLib.timeout_add(250, self.update_db)
         else:
-            # Something (device manager) is using progress bar
-            if not self.__progress.is_visible():
-                Lp().scanner.update()
+            Lp().scanner.update()
 
     def get_genre_id(self):
         """
@@ -264,7 +263,7 @@ class Container:
     def progress(self):
         """
             Progress bar
-            @return Gtk.ProgressBar
+            @return ProgressBar
         """
         return self.__progress
 
@@ -302,7 +301,7 @@ class Container:
         self.__list_one.connect('populated', self.__on_list_populated)
         self.__list_two.connect('item-selected', self.__on_list_two_selected)
 
-        self.__progress = Gtk.ProgressBar()
+        self.__progress = ProgressBar()
         self.__progress.set_property('hexpand', True)
 
         vgrid.add(self.__stack)

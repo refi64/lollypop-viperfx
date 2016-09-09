@@ -43,7 +43,6 @@ class DeviceManagerWidget(Gtk.Bin, MtpSync):
         MtpSync.__init__(self)
         self.__parent = parent
         self.__stop = False
-        self._progress = Lp().window.progress
         self._uri = None
 
         builder = Gtk.Builder()
@@ -141,8 +140,7 @@ class DeviceManagerWidget(Gtk.Bin, MtpSync):
             Start synchronisation
         """
         self._syncing = True
-        self._progress.show()
-        self._progress.set_fraction(0.0)
+        Lp().window.progress.add(self)
         self.__menu.set_sensitive(False)
         playlists = []
         if not Lp().settings.get_value('sync-albums'):
@@ -179,15 +177,13 @@ class DeviceManagerWidget(Gtk.Bin, MtpSync):
         """
             Update progress bar smoothly
         """
-        if not self._progress.is_visible():
-            return
-        current = self._progress.get_fraction()
+        current = Lp().window.progress.get_fraction()
         if self._syncing:
             progress = (self._fraction-current)/10
         else:
             progress = 0.01
         if current < self._fraction:
-            self._progress.set_fraction(current+progress)
+            Lp().window.progress.set_fraction(current+progress, self)
         if current < 1.0:
             if progress < 0.0002:
                 GLib.timeout_add(500, self._update_progress)
@@ -215,6 +211,7 @@ class DeviceManagerWidget(Gtk.Bin, MtpSync):
             Emit finished signal
         """
         MtpSync._on_finished(self)
+        Lp().window.progress.set_fraction(1.0, self)
         if not self.__switch_albums.get_state():
             self.__view.set_sensitive(True)
         self.__menu.set_sensitive(True)
