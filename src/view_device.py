@@ -16,6 +16,7 @@ from gettext import gettext as _
 import re
 
 from lollypop.view import View
+from lollypop.define import Lp
 from lollypop.widgets_device import DeviceManagerWidget
 
 
@@ -96,16 +97,14 @@ class DeviceView(View):
             files = []
         return files
 
-    def __init__(self, device, progress):
+    def __init__(self, device):
         """
             Init view
             @param device as Device
-            @param progress as Gtk.ProgressBar
         """
         View.__init__(self)
         self.__timeout_id = None
         self.__device = device
-        self.__progress = progress
         builder = Gtk.Builder()
         builder.add_from_resource('/org/gnome/Lollypop/DeviceManagerView.ui')
         self.__memory_combo = builder.get_object('memory_combo')
@@ -114,7 +113,7 @@ class DeviceView(View):
         builder.connect_signals(self)
         grid = builder.get_object('device')
         self.add(grid)
-        self.__device_widget = DeviceManagerWidget(progress, self)
+        self.__device_widget = DeviceManagerWidget(self)
         self.__device_widget.connect('sync-finished', self.__on_sync_finished)
         self.__device_widget.show()
         self._viewport.add(self.__device_widget)
@@ -159,7 +158,7 @@ class DeviceView(View):
         """
         if self.__device_widget.is_syncing():
             self.__device_widget.cancel_sync()
-        elif not self.__progress.is_visible():
+        elif not Lp().window.progress.is_visible():
             self.__memory_combo.hide()
             self.__syncing_btn.set_label(_("Cancel synchronization"))
             self.__device_widget.sync()
@@ -206,8 +205,8 @@ class DeviceView(View):
             Restore widgets state
             @param device widget as DeviceManager
         """
-        self.__progress.hide()
-        self.__progress.set_fraction(0)
+        Lp().window.progress.hide()
+        Lp().window.progress.set_fraction(0)
         self.__memory_combo.show()
         self.__syncing_btn.set_label(_("Synchronize %s") %
                                      self.__device.name)

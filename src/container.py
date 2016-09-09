@@ -260,6 +260,14 @@ class Container:
             d.make_directory_with_parents(None)
         self.__devices[self.__devices_index] = dev
 
+    @property
+    def progress(self):
+        """
+            Progress bar
+            @return Gtk.ProgressBar
+        """
+        return self.__progress
+
 ############
 # Private  #
 ############
@@ -538,7 +546,7 @@ class Container:
                         child = DeviceMigration()
                         self.__stack.add(child)
                 if child is None:
-                    child = DeviceView(device, self.__progress)
+                    child = DeviceView(device)
                     self.__stack.add_named(child, device.uri)
             else:
                 child = DeviceLocked()

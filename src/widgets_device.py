@@ -33,18 +33,17 @@ class DeviceManagerWidget(Gtk.Bin, MtpSync):
         'sync-finished': (GObject.SignalFlags.RUN_FIRST, None, ())
     }
 
-    def __init__(self, progress, parent):
+    def __init__(self, parent):
         """
             Init widget
             @param device as Device
-            @param progress bar as Gtk.ProgressBar
             @param parent as Gtk.Widget
         """
         Gtk.Bin.__init__(self)
         MtpSync.__init__(self)
         self.__parent = parent
         self.__stop = False
-        self._progress = progress
+        self._progress = Lp().window.progress
         self._uri = None
 
         builder = Gtk.Builder()
