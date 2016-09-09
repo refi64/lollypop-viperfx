@@ -1011,9 +1011,6 @@ class AlbumDetailedWidget(Gtk.Bin, AlbumWidget):
             @param widget as TracksWidget
             @param track id as int
         """
-        track = Track(track_id)
-        if track.is_youtube:
-            widget.show_spinner(track_id)
         # Add to queue by default
         if Lp().player.locked:
             if track_id in Lp().player.get_queue():
@@ -1024,6 +1021,7 @@ class AlbumDetailedWidget(Gtk.Bin, AlbumWidget):
         elif self._button_state & Gdk.ModifierType.SHIFT_MASK:
             Lp().player.clear_albums()
             self.__show_spinner(widget, track_id)
+            track = Track(track_id)
             Lp().player.load(track)
         else:
             # Do not modify album list if in party mode
@@ -1037,6 +1035,7 @@ class AlbumDetailedWidget(Gtk.Bin, AlbumWidget):
                 elif not Lp().player.has_album(self._album):
                     Lp().player.add_album(self._album)
             self.__show_spinner(widget, track_id)
+            track = Track(track_id)
             Lp().player.load(track)
             if self._button_state & Gdk.ModifierType.CONTROL_MASK:
                 Lp().player.set_next_context(NextContext.STOP_TRACK)
