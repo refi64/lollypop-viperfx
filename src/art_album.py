@@ -225,13 +225,13 @@ class AlbumArt(BaseArt, TagReader):
                 t.daemon = True
                 t.start()
 
+            if album.path == "" or is_readonly(album.path):
+                artpath = os.path.join(self._STORE_PATH, filename)
             # Many albums with same path, suffix with artist_album name
-            if path_count > 1:
+            elif path_count > 1:
                 artpath = os.path.join(album.path, filename)
                 if os.path.exists(os.path.join(album.path, self.__favorite)):
                     os.remove(os.path.join(album.path, self.__favorite))
-            elif album.path == "" or is_readonly(album.path):
-                artpath = os.path.join(self._STORE_PATH, filename)
             else:
                 artpath = os.path.join(album.path, self.__favorite)
             # Update cover file if exists event if we have written to tags
