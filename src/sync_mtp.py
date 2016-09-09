@@ -86,7 +86,7 @@ class MtpSync:
             self._fraction = 0.0
             plnames = []
 
-            if playlists[0] == Type.NONE:
+            if playlists and playlists[0] == Type.NONE:
                 # New tracks for synced albums
                 album_ids = Lp().albums.get_synced_ids()
                 for album_id in album_ids:
@@ -336,7 +336,7 @@ class MtpSync:
         track_ids = []
 
         # Get tracks
-        if playlists[0] == Type.NONE:
+        if playlists and playlists[0] == Type.NONE:
             track_ids = []
             album_ids = Lp().albums.get_synced_ids()
             for album_id in album_ids:
