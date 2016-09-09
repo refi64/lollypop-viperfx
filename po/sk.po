@@ -8,9 +8,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lollypop\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-07-07 12:49+0200\n"
-"PO-Revision-Date: 2016-07-07 14:24+0000\n"
-"Last-Translator: Dušan Kazik <prescott66@gmail.com>\n"
+"POT-Creation-Date: 2016-09-09 18:12+0200\n"
+"PO-Revision-Date: 2016-09-09 16:12+0000\n"
+"Last-Translator: Cédric Bellegarde <web@adishatz.org>\n"
 "Language-Team: Slovak (http://www.transifex.com/gnumdk/lollypop/language/sk/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -43,165 +43,169 @@ msgid "Mini player position"
 msgstr "Pozícia mini prehrávača"
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:7
+msgid "Search over network"
+msgstr ""
+
+#: ../data/org.gnome.Lollypop.gschema.xml.h:8
 msgid "Save artwork in tags"
 msgstr "Uložiť obrázky do značiek"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:8
+#: ../data/org.gnome.Lollypop.gschema.xml.h:9
 msgid "Repeat by default"
 msgstr "Opakovanie nastavené ako predvolené"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:9
+#: ../data/org.gnome.Lollypop.gschema.xml.h:10
 msgid "Window maximized"
 msgstr "Maximalizované okno"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:10
+#: ../data/org.gnome.Lollypop.gschema.xml.h:11
 msgid "Window maximized state."
 msgstr "Maximalizovaný stav okna."
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:11
+#: ../data/org.gnome.Lollypop.gschema.xml.h:12
 msgid "Enabled genres in party mode"
 msgstr "Povolené žánre v párty režime"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:12
+#: ../data/org.gnome.Lollypop.gschema.xml.h:13
 msgid "Ids for genres."
 msgstr "Identifikátory žánrov."
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:13
+#: ../data/org.gnome.Lollypop.gschema.xml.h:14
 msgid "Music paths"
 msgstr "Cesty k hudbe"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:14
+#: ../data/org.gnome.Lollypop.gschema.xml.h:15
 msgid "When empty, use XDG_MUSIC_DIR"
 msgstr "Keď je prázdne, použije sa XDG_MUSIC_DIR"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:15
+#: ../data/org.gnome.Lollypop.gschema.xml.h:16
 msgid "Last.fm login"
 msgstr "Prihlásenie do služby Last.fm"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:16
+#: ../data/org.gnome.Lollypop.gschema.xml.h:17
 msgid "Google Custom Search API key"
 msgstr "Kľúč API vlastného vyhľadávania Google"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:17
+#: ../data/org.gnome.Lollypop.gschema.xml.h:18
 msgid "Favorite tag editor"
 msgstr "Editor obľúbených značiek"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:18
+#: ../data/org.gnome.Lollypop.gschema.xml.h:19
 msgid "INTERNAL"
 msgstr "VNÚTORNÉ"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:19
+#: ../data/org.gnome.Lollypop.gschema.xml.h:20
 msgid "Audio output preview on track hover"
 msgstr "Ukážka zvukového výstupu pri prejdení myšou ponad skladbu"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:20
+#: ../data/org.gnome.Lollypop.gschema.xml.h:21
 msgid ""
 "Pulseaudio only. Example: alsa_output.pci-0000_00_14.2.analog-stereo. "
 "Command to get outputs: $ pacmd list-sinks|grep 'name:'"
 msgstr "Iba Pulseaudio. Príklad: alsa_output.pci-0000_00_14.2.analog-stereo. Príkaz na získanie výstupov: $ pacmd list-sinks|grep 'name:'"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:21
+#: ../data/org.gnome.Lollypop.gschema.xml.h:22
 msgid "Favorite cover file"
 msgstr "Súbor obľúbeného obalu"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:22
+#: ../data/org.gnome.Lollypop.gschema.xml.h:23
 msgid "Restart needed"
 msgstr "Potrebný reštart"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:23
+#: ../data/org.gnome.Lollypop.gschema.xml.h:24
 msgid "Database version"
 msgstr "Verzia databázy"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:24
+#: ../data/org.gnome.Lollypop.gschema.xml.h:25
 msgid ""
 "Reset this value will reset the database, popular albums will be restored"
 msgstr "Vynulovaním tejto hodnoty sa vynuluje databáza. Obľúbené albumy budú obnovené."
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:25 ../data/SettingsDialog.ui.h:7
+#: ../data/org.gnome.Lollypop.gschema.xml.h:26 ../data/SettingsDialog.ui.h:7
 msgid "Albums cover size"
 msgstr "Veľkosť obalu albumu"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:26
+#: ../data/org.gnome.Lollypop.gschema.xml.h:27
 msgid "Replay gain value in db"
 msgstr "Zosilnenie prehrávania, hodnota je v db"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:27
+#: ../data/org.gnome.Lollypop.gschema.xml.h:28
 msgid "Between -15 and 15"
 msgstr "Medzi -15 a 15"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:28
+#: ../data/org.gnome.Lollypop.gschema.xml.h:29
 msgid "Sync all albums(MTP)"
 msgstr "Synchronizovať všetky albumy(MTP)"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:29
+#: ../data/org.gnome.Lollypop.gschema.xml.h:30
 msgid "Convert to MP3(MTP)"
 msgstr "Skonvertovať do formátu MP3(MTP)"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:30
+#: ../data/org.gnome.Lollypop.gschema.xml.h:31
 msgid "Normalize MP3(MTP)"
 msgstr "Normalizovať MP3(MTP)"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:31 ../data/SettingsDialog.ui.h:16
+#: ../data/org.gnome.Lollypop.gschema.xml.h:32 ../data/SettingsDialog.ui.h:16
 msgid "Auto update music"
 msgstr "Automaticky aktualizovať hudbu"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:32
+#: ../data/org.gnome.Lollypop.gschema.xml.h:33
 msgid "Show genres list"
 msgstr "Zobraziť zoznam žánrov"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:33 ../data/SettingsDialog.ui.h:8
+#: ../data/org.gnome.Lollypop.gschema.xml.h:34 ../data/SettingsDialog.ui.h:8
 msgid "Show artist artwork"
 msgstr "Zobraziť obrázok interpreta"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:34
+#: ../data/org.gnome.Lollypop.gschema.xml.h:35
 msgid "Use dark gtk theme"
 msgstr "Použiť tmavú tému gtk"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:35
+#: ../data/org.gnome.Lollypop.gschema.xml.h:36
 msgid "Disable the use client side window decorations (headerbar)"
 msgstr "Zakázať dekorácie okien z klientskej strany (záhlavie)"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:36 ../data/SettingsDialog.ui.h:6
+#: ../data/org.gnome.Lollypop.gschema.xml.h:37 ../data/SettingsDialog.ui.h:6
 msgid "Show compilations in albums view"
 msgstr "Zobraziť kompilácie v zobrazení albumov"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:37 ../data/SettingsDialog.ui.h:18
+#: ../data/org.gnome.Lollypop.gschema.xml.h:38 ../data/SettingsDialog.ui.h:18
 msgid "Continue playback when closed"
 msgstr "Pokračovať v prehrávaní aj po zatvorení"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:38
+#: ../data/org.gnome.Lollypop.gschema.xml.h:39
 msgid "Restore previous state"
 msgstr "Obnoviť predchádzajúci stav"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:39
+#: ../data/org.gnome.Lollypop.gschema.xml.h:40
 msgid "Disable MPRIS"
 msgstr "Zakázať MPRIS"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:40
+#: ../data/org.gnome.Lollypop.gschema.xml.h:41
 msgid "Disable notifications"
 msgstr "Zakázať oznámenia"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:41
+#: ../data/org.gnome.Lollypop.gschema.xml.h:42
 msgid "Show track number from tags"
 msgstr "Zobraziť číslo skladby zo značiek"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:42
+#: ../data/org.gnome.Lollypop.gschema.xml.h:43
 msgid "Mix songs"
 msgstr "Zamiešať skladby"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:43
+#: ../data/org.gnome.Lollypop.gschema.xml.h:44
 msgid "Mix songs only in party mode"
 msgstr "Zamiešať skladby iba v párty režime"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:44
+#: ../data/org.gnome.Lollypop.gschema.xml.h:45
 msgid "Mix duration"
 msgstr "Zamiešať trvanie"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:45
+#: ../data/org.gnome.Lollypop.gschema.xml.h:46
 msgid "Shuffle mode"
 msgstr "Náhodný režim"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:46 ../data/SettingsDialog.ui.h:9
+#: ../data/org.gnome.Lollypop.gschema.xml.h:47 ../data/SettingsDialog.ui.h:9
 msgid "Order albums by"
 msgstr "Zoradiť albumy podľa"
 
@@ -221,12 +225,12 @@ msgstr "Prehráva a organizuje vašu hudobnú zbierku"
 msgid "Play/Pause"
 msgstr "Prehrať/pozastaviť"
 
-#: ../data/lollypop.desktop.in.h:5 ../src/notification.py:78
+#: ../data/lollypop.desktop.in.h:5 ../src/notification.py:79
 #: ../data/ToolbarPlayback.ui.h:3
 msgid "Next"
 msgstr "Nasledujúca"
 
-#: ../data/lollypop.desktop.in.h:6 ../src/notification.py:74
+#: ../data/lollypop.desktop.in.h:6 ../src/notification.py:75
 #: ../data/ToolbarPlayback.ui.h:1
 msgid "Previous"
 msgstr "Predchádzajúca"
@@ -251,13 +255,13 @@ msgstr "Prehliadanie žánrov/obalov"
 msgid "Genre/Artist/Cover browsing"
 msgstr "Prehliadanie žánrov/interpretov/obalov"
 
-#: ../data/lollypop.appdata.xml.in.h:8 ../src/playlists.py:239
+#: ../data/lollypop.appdata.xml.in.h:8 ../src/playlists.py:231
 #: ../data/ArtistInfo.ui.h:5 ../data/ToolbarEnd.ui.h:8
 msgid "Search"
 msgstr "Vyhľadá"
 
-#: ../data/lollypop.appdata.xml.in.h:9 ../src/pop_menu.py:391
-#: ../src/pop_menu.py:412 ../src/toolbar_end.py:387
+#: ../data/lollypop.appdata.xml.in.h:9 ../src/pop_menu.py:434
+#: ../src/pop_menu.py:455 ../src/toolbar_end.py:395
 #: ../data/QueuePopover.ui.h:2
 msgid "Queue"
 msgstr "Fronta"
@@ -306,38 +310,14 @@ msgstr "Podpora rozlíšenia HiDPI"
 msgid "Tunein support"
 msgstr "Podpora služby Tunein"
 
-#: ../src/application.py:32
+#: ../src/application.py:31
 msgid ""
 "    - Scrobbler disabled\n"
 "    - Auto cover download disabled\n"
 "    - Artist informations disabled"
 msgstr "    - Scrobbler zakázaný\n    - Automatické prevzatie obalu zakázané\n    - Informácie o interpretoch zakázané"
 
-#: ../src/application.py:424
-#, python-format
-msgid "%d artist"
-msgid_plural "%d artists"
-msgstr[0] "%d interpret"
-msgstr[1] "%d interpreti"
-msgstr[2] "%d interpretov"
-
-#: ../src/application.py:426
-#, python-format
-msgid "%d album"
-msgid_plural "%d albums"
-msgstr[0] "%d album"
-msgstr[1] "%d albumy"
-msgstr[2] "%d albumov"
-
-#: ../src/application.py:428
-#, python-format
-msgid "%d track"
-msgid_plural "%d tracks"
-msgstr[0] "%d skladba"
-msgstr[1] "%d skladby"
-msgstr[2] "%d skladieb"
-
-#: ../src/application.py:457
+#: ../src/application.py:451
 msgid "Lollypop: You need to install yelp."
 msgstr "Lollypop: Musíte nainštalovať knižnicu yelp."
 
@@ -345,83 +325,79 @@ msgstr "Lollypop: Musíte nainštalovať knižnicu yelp."
 msgid "Select artwork"
 msgstr "Vyberte obrázok"
 
-#: ../src/art_widgets.py:167
-msgid "No cover found..."
-msgstr "Nenašiel sa žiadny obal..."
-
-#: ../src/art_widgets.py:244
+#: ../src/art_widgets.py:332
 msgid "Reset artwork?"
 msgstr "Obnoviť obrázok?"
 
-#: ../src/collectionscanner.py:69
+#: ../src/collectionscanner.py:68
 msgid "Your music is updating"
 msgstr "Aktualizuje sa vaša hudba"
 
-#: ../src/collectionscanner.py:248 ../src/database_albums.py:299
+#: ../src/collectionscanner.py:244 ../src/database_albums.py:329
 #: ../src/database_artists.py:104 ../src/database_genres.py:69
-#: ../src/database_tracks.py:232 ../src/selectionlist.py:280
-#: ../src/tagreader.py:87 ../src/tagreader.py:102 ../src/tagreader.py:117
-#: ../src/tagreader.py:162 ../src/tagreader.py:177 ../src/tagreader.py:180
-#: ../src/tagreader.py:190 ../src/tagreader.py:197
+#: ../src/database_tracks.py:233 ../src/selectionlist.py:343
+#: ../src/tagreader.py:88 ../src/tagreader.py:103 ../src/tagreader.py:118
+#: ../src/tagreader.py:163 ../src/tagreader.py:178 ../src/tagreader.py:181
+#: ../src/tagreader.py:191 ../src/tagreader.py:198
 msgid "Unknown"
 msgstr "Neznáme"
 
-#: ../src/container.py:422
+#: ../src/container.py:440
 msgid "Popular albums"
 msgstr "Obľúbené albumy"
 
-#: ../src/container.py:423
+#: ../src/container.py:441
 msgid "Recently added albums"
 msgstr "Nedávno pridané albumy"
 
-#: ../src/container.py:424
+#: ../src/container.py:442
 msgid "Random albums"
 msgstr "Náhodné albumy"
 
-#: ../src/container.py:425 ../src/pop_menu.py:321 ../src/pop_menu.py:394
-#: ../src/pop_menu.py:414 ../src/widgets_device.py:86
-#: ../src/widgets_playlist.py:503
+#: ../src/container.py:443 ../src/pop_menu.py:323 ../src/pop_menu.py:437
+#: ../src/pop_menu.py:457 ../src/widgets_device.py:117
+#: ../src/widgets_playlist.py:521
 msgid "Playlists"
 msgstr "Zoznamy skladieb"
 
-#: ../src/container.py:426
+#: ../src/container.py:444
 msgid "Radios"
 msgstr "Rádiá"
 
-#: ../src/container.py:428
+#: ../src/container.py:446
 msgid "All artists"
 msgstr "Všetci interpreti"
 
-#: ../src/container.py:430 ../data/DeviceManagerWidget.ui.h:1
+#: ../src/container.py:448
 msgid "All albums"
 msgstr "Všetky albumy"
 
-#: ../src/container.py:478
+#: ../src/container.py:496
 msgid "Compilations"
 msgstr "Kompilácie"
 
-#: ../src/container.py:502 ../src/playlists.py:231
+#: ../src/container.py:520 ../src/playlists.py:223
 msgid "Popular tracks"
 msgstr "Obľúbené skladby"
 
-#: ../src/container.py:503 ../src/playlists.py:233
+#: ../src/container.py:521 ../src/playlists.py:225
 msgid "Recently played"
 msgstr "Nedávno prehrávané"
 
-#: ../src/container.py:504 ../src/playlists.py:235
+#: ../src/container.py:522 ../src/playlists.py:227
 msgid "Never played"
 msgstr "Nikdy neprehraté"
 
-#: ../src/container.py:505 ../src/playlists.py:237
+#: ../src/container.py:523 ../src/playlists.py:229
 msgid "Random tracks"
 msgstr "Náhodné skladby"
 
-#: ../src/controllers.py:84 ../src/controllers.py:117
+#: ../src/controllers.py:84 ../src/controllers.py:108
 msgid "Pause"
 msgstr "Pozastaví"
 
-#: ../src/controllers.py:86 ../src/controllers.py:114 ../src/pop_tunein.py:167
-#: ../src/widgets_album.py:487 ../src/widgets_radio.py:168
+#: ../src/controllers.py:86 ../src/controllers.py:105 ../src/pop_tunein.py:216
+#: ../src/widgets_album.py:503 ../src/widgets_radio.py:172
 #: ../data/AlbumDetailedWidget.ui.h:1 ../data/ArtistView.ui.h:2
 #: ../data/ToolbarPlayback.ui.h:2
 msgid "Play"
@@ -435,42 +411,41 @@ msgstr "Mnoho interpretov"
 msgid "Last.fm authentication disabled"
 msgstr "Overenie totožnosti služby Last.fm zakázané"
 
-#: ../src/lastfm.py:333
+#: ../src/lastfm.py:334
 msgid "Wrong Last.fm credentials"
 msgstr "Nesprávne poverenia pre službu Last.fm"
 
 #. TRANSLATORS: by refers to the artist,
-#: ../src/notification.py:108
+#: ../src/notification.py:112
 #, python-format
 msgid "by %s"
 msgstr "od interpreta %s"
 
 #. TRANSLATORS: by refers to the artist,
 #. from to the album
-#: ../src/notification.py:116
+#: ../src/notification.py:120
 #, python-format
 msgid "by %s, from %s"
 msgstr "od interpreta %s, z albumu %s"
 
-#: ../src/player_bin.py:471
-#, python-format
-msgid "File doesn't exist: %s"
-msgstr "Súbor neexistuje: %s"
+#: ../src/player.py:120 ../src/player_queue.py:42 ../src/player_queue.py:63
+msgid "No network available, can't play this track"
+msgstr ""
 
-#: ../src/playlists.py:55
+#: ../src/playlists.py:54
 msgid "Loved tracks"
 msgstr "Obľúbené skladby"
 
-#: ../src/pop_albums.py:290
+#: ../src/pop_albums.py:291
 msgid "Clear albums"
 msgstr "Vymaže albumy"
 
-#: ../src/pop_albums.py:298 ../src/view_artist.py:50 ../data/ArtistInfo.ui.h:8
+#: ../src/pop_albums.py:299 ../src/view_artist.py:50 ../data/ArtistInfo.ui.h:8
 #: ../data/ArtistView.ui.h:4
 msgid "Go to current track"
 msgstr "Prejde na aktuálnu skladbu"
 
-#: ../src/pop_albums.py:299 ../src/toolbar_end.py:391
+#: ../src/pop_albums.py:300 ../src/toolbar_end.py:399
 msgid "Playing albums"
 msgstr "Hrané albumy"
 
@@ -482,50 +457,57 @@ msgstr "Pokročilé informácie o interpretovi zakázané"
 msgid "WebKit support disabled"
 msgstr "Podpora nástroja WebKit zakázaná"
 
-#: ../src/pop_menu.py:102 ../src/widgets_indicator.py:92
-#: ../data/SearchRow.ui.h:2
+#: ../src/pop_menu.py:103 ../src/widgets_indicator.py:111
 msgid "Add to queue"
 msgstr "Pridá do fronty"
 
-#: ../src/pop_menu.py:107
+#: ../src/pop_menu.py:108
 msgid "Next tracks"
 msgstr "Nasledujúce skladby"
 
-#: ../src/pop_menu.py:109 ../data/NextPopover.ui.h:1
+#: ../src/pop_menu.py:110 ../data/NextPopover.ui.h:1
 msgid "Next track"
 msgstr "Nasledujúca skladba"
 
-#: ../src/pop_menu.py:113 ../src/widgets_indicator.py:88
+#: ../src/pop_menu.py:114 ../src/widgets_indicator.py:107
 msgid "Remove from queue"
 msgstr "Odstrániť z fronty"
 
-#: ../src/pop_menu.py:188
+#: ../src/pop_menu.py:190
 msgid "Add to others"
 msgstr "Pridať k ostatným"
 
-#: ../src/pop_menu.py:206
+#: ../src/pop_menu.py:208
 #, python-format
 msgid "Remove from \"%s\""
 msgstr "„%s“"
 
-#: ../src/pop_menu.py:212
+#: ../src/pop_menu.py:214
 #, python-format
 msgid "Add to \"%s\""
 msgstr "Pridať do „%s“"
 
-#: ../src/pop_menu.py:319
+#: ../src/pop_menu.py:321
 msgid "Playback"
 msgstr "Prehrávanie"
 
-#: ../src/pop_menu.py:364
+#: ../src/pop_menu.py:368
+msgid "Remove album"
+msgstr ""
+
+#: ../src/pop_menu.py:378
 msgid "Modify information"
 msgstr "Upraviť informáciu"
 
-#: ../src/pop_menu.py:397 ../data/PlaylistView.ui.h:1
+#: ../src/pop_menu.py:440 ../data/PlaylistView.ui.h:1
 msgid "Edit"
 msgstr "Upraví"
 
-#: ../src/pop_radio.py:83 ../src/pop_tunein.py:173 ../src/view_artist.py:166
+#: ../src/pop_menu.py:564
+msgid "Save genre"
+msgstr ""
+
+#: ../src/pop_radio.py:83 ../src/pop_tunein.py:222 ../src/view_artist.py:315
 #: ../data/ArtistView.ui.h:3
 msgid "Add"
 msgstr "Pridať"
@@ -534,19 +516,47 @@ msgstr "Pridať"
 msgid "Modify"
 msgstr "Upraviť"
 
+#: ../src/pop_search.py:257
+msgid "You need to install youtube-dl"
+msgstr ""
+
 #: ../src/pop_tunein.py:93 ../data/RadioPopover.ui.h:1
 msgid "Please wait..."
 msgstr "Prosím, čakajte..."
 
-#: ../src/pop_tunein.py:131
+#: ../src/pop_tunein.py:180
 msgid "Can't connect to TuneIn..."
 msgstr "Nedá sa pripojiť k službe TuneIn..."
 
-#: ../src/settings.py:91 ../src/settings.py:94 ../data/SettingsDialog.ui.h:3
+#: ../src/settings.py:95
+#, python-format
+msgid "%d artist"
+msgid_plural "%d artists"
+msgstr[0] "%d interpret"
+msgstr[1] "%d interpreti"
+msgstr[2] "%d interpretov"
+
+#: ../src/settings.py:97
+#, python-format
+msgid "%d album"
+msgid_plural "%d albums"
+msgstr[0] "%d album"
+msgstr[1] "%d albumy"
+msgstr[2] "%d albumov"
+
+#: ../src/settings.py:99
+#, python-format
+msgid "%d track"
+msgid_plural "%d tracks"
+msgstr[0] "%d skladba"
+msgstr[1] "%d skladby"
+msgstr[2] "%d skladieb"
+
+#: ../src/settings.py:110 ../src/settings.py:113 ../data/SettingsDialog.ui.h:3
 msgid "Preferences"
 msgstr "Nastavenia"
 
-#: ../src/settings.py:119
+#: ../src/settings.py:138
 msgid "You need to install kid3-cli"
 msgstr "Musíte nainštalovať balík kid3-cli"
 
@@ -558,102 +568,107 @@ msgstr "Obľúbené"
 msgid "Recently added"
 msgstr "Nedávno pridané"
 
-#: ../src/toolbar_end.py:385
+#: ../src/toolbar_end.py:393
 msgid "Externals tracks playing"
 msgstr "Hrané externé skladby"
 
-#: ../src/toolbar_end.py:389
+#: ../src/toolbar_end.py:397
 msgid "Playing playlists"
 msgstr "Hrané zoznamy skladieb"
 
 #. Handle language ordering
 #. Translators: Add here words that shoud be ignored for artist sort order
-#: ../src/utils.py:111
+#: ../src/utils.py:122
 msgid "The the"
 msgstr "The the"
 
-#: ../src/view_artist.py:161 ../src/widgets_album.py:233
+#: ../src/view_artist.py:310 ../src/widgets_album.py:359
 msgid "Remove"
 msgstr "Odstráni"
 
-#: ../src/view_device.py:34
+#: ../src/view_device.py:35
 msgid "Please unlock your device"
 msgstr "Prosím, odomknite vaše zariadenie"
 
-#: ../src/view_device.py:51
+#: ../src/view_device.py:52
 msgid ""
 "Lollypop sync changed due to limitations in some devices.\n"
 "Please remove Music/lollypop folder on your device..."
 msgstr "Synchronizácia prehrávača Lollypop bola zmenená kvôli\nobmedzeniam na niektorých zariadeniach.\nProsím, odstráňte priečinok Music/lollypop z vášho zariadenia..."
 
-#: ../src/view_device.py:113 ../src/view_device.py:197
+#: ../src/view_device.py:112 ../src/view_device.py:209
 #, python-format
 msgid "Synchronize %s"
 msgstr "Synchronizovať %s"
 
-#: ../src/view_device.py:186
+#: ../src/view_device.py:163
 msgid "Cancel synchronization"
 msgstr "Zrušiť synchronizáciu"
 
-#: ../src/widgets_album.py:229
+#: ../src/widgets_album.py:355
 msgid "Append"
 msgstr "Pridá"
 
-#: ../src/widgets_album.py:498
+#: ../src/widgets_album.py:514
 msgid "Play albums"
 msgstr "Prehrá albumy"
 
-#: ../src/widgets_album.py:508 ../data/AlbumDetailedWidget.ui.h:2
+#: ../src/widgets_album.py:524 ../data/AlbumDetailedWidget.ui.h:2
 msgid "Change artwork"
 msgstr "Zmení obrázok"
 
-#: ../src/widgets_album.py:670
+#: ../src/widgets_album.py:690
 #, python-format
 msgid "%s h  %s m"
 msgstr "%s h  %s m"
 
-#: ../src/widgets_album.py:672
+#: ../src/widgets_album.py:692
 #, python-format
 msgid "%s h"
 msgstr "%s h"
 
-#: ../src/widgets_album.py:674
+#: ../src/widgets_album.py:694
 #, python-format
 msgid "%s m"
 msgstr "%s m"
 
-#: ../src/widgets_album.py:929
+#: ../src/widgets_album.py:975
 #, python-format
 msgid "Disc %s"
 msgstr "Disk %s"
 
-#: ../src/widgets_device.py:53
+#: ../src/widgets_device.py:58
 msgid "You need to install gstreamer-plugins-ugly"
 msgstr "Musíte nainštalovať zásuvné moduly gstreamer-plugins-ugly"
 
-#: ../src/widgets_device.py:231
+#: ../src/widgets_device.py:111 ../data/ArtistInfo.ui.h:1
+#: ../data/DeviceManagerWidget.ui.h:1
+msgid "Albums"
+msgstr "Albumy"
+
+#: ../src/widgets_device.py:225
 msgid "Unknown error while syncing, try to reboot your device"
 msgstr "Vyskytla sa neznáma chyba počas synchronizácie. Skúste reštartovať vaše zariadenie."
 
-#: ../src/widgets_device.py:239
+#: ../src/widgets_device.py:233
 msgid "No free space available on device"
 msgstr "Na zariadení nie je dostupné voľné miesto"
 
-#: ../src/widgets_playlist.py:537 ../src/widgets_playlist.py:540
+#: ../src/widgets_playlist.py:555 ../src/widgets_playlist.py:558
 msgid "New playlist "
 msgstr "Nový zoznam skladieb"
 
 #. Need a copy, segfault on EOS 3.1
-#: ../src/widgets_playlist.py:596 ../src/widgets_playlist.py:860
+#: ../src/widgets_playlist.py:659 ../src/widgets_playlist.py:846
 #, python-format
 msgid "Remove \"%s\"?"
 msgstr "Odstrániť „%s“?"
 
-#: ../src/widgets_playlist.py:868
+#: ../src/widgets_playlist.py:854
 msgid "Remove these tracks?"
 msgstr "Odstrániť tieto skladby?"
 
-#: ../src/widgets_radio.py:184
+#: ../src/widgets_radio.py:188
 msgid "Modify radio"
 msgstr "Upraví rádio"
 
@@ -695,8 +710,16 @@ msgid "Cédric Bellegarde <cedric.bellegarde@adishatz.org>"
 msgstr "Dušan Kazik <prescott66@gmail.com>"
 
 #: ../data/AboutDialog.ui.h:5
-msgid "Reset database"
-msgstr "Obnoviť databázu"
+msgid "Donations:"
+msgstr "Darovania:"
+
+#: ../data/AboutDialog.ui.h:6
+msgid "Flattr"
+msgstr "Flattr"
+
+#: ../data/AboutDialog.ui.h:7
+msgid "Paypal"
+msgstr "Paypal"
 
 #: ../data/Appmenu.ui.h:1
 msgid "_Update music"
@@ -729,10 +752,6 @@ msgstr "_Ukončiť"
 #: ../data/InfoContent.ui.h:1
 msgid "No information for this artist..."
 msgstr "Žiadne informácie o tomto intepretovi..."
-
-#: ../data/ArtistInfo.ui.h:1
-msgid "Albums"
-msgstr "Albumy"
 
 #: ../data/ArtistInfo.ui.h:2
 msgid "Last.fm"
@@ -772,7 +791,7 @@ msgid ""
 "Please create a search engine here:"
 msgstr "Prehrávač Lollypop využíva „API vlastného vyhľadávania Google“ na vyhľadávanie obrázkov na webe.\nAPI je limitované, takže nemusí pracovať s predvoleným kľúčom API.\nProsím, tu vytvorte výkonný program vyhľadávania:"
 
-#: ../data/ArtworkSearch.ui.h:6
+#: ../data/ArtworkSearch.ui.h:6 ../data/SettingsDialog.ui.h:37
 msgid "API key"
 msgstr "Kľúš API"
 
@@ -832,9 +851,9 @@ msgstr "Vyhľadá v službe TuneIn"
 msgid "Create a new playlist based on search"
 msgstr "Vytvorí nový zoznam skladieb založený na vyhľadávaní"
 
-#: ../data/SearchRow.ui.h:1
-msgid "Add to playlist"
-msgstr "Pridá do zoznamu skladieb"
+#: ../data/SearchPopover.ui.h:2
+msgid "Search on the web"
+msgstr ""
 
 #: ../data/SettingsDialog.ui.h:1
 msgid "Only in party mode"
@@ -913,30 +932,47 @@ msgid "Behaviour"
 msgstr "Správanie"
 
 #: ../data/SettingsDialog.ui.h:27
+msgid "Reset database"
+msgstr "Obnoviť databázu"
+
+#: ../data/SettingsDialog.ui.h:28
 msgid "Select music folders"
 msgstr "Vyberie priečinky s hudbou"
 
-#: ../data/SettingsDialog.ui.h:28
+#: ../data/SettingsDialog.ui.h:29
 msgid "Music"
 msgstr "Hudba"
 
-#: ../data/SettingsDialog.ui.h:29
+#: ../data/SettingsDialog.ui.h:30
 msgid "Login:"
 msgstr "Prihlasovacie meno:"
 
-#: ../data/SettingsDialog.ui.h:30
+#: ../data/SettingsDialog.ui.h:31
 msgid "Password:"
 msgstr "Heslo"
 
-#: ../data/SettingsDialog.ui.h:31
+#: ../data/SettingsDialog.ui.h:32
 msgid "Connect"
 msgstr "Pripojiť"
 
-#: ../data/SettingsDialog.ui.h:32
+#: ../data/SettingsDialog.ui.h:33
 msgid "You need to install pylast and gi secret"
 msgstr "Musíte nainštalovať knižnice pylast a gi secret"
 
-#: ../data/SettingsDialog.ui.h:33
+#: ../data/SettingsDialog.ui.h:34
+msgid ""
+"Google Web Services need a custom API key.\n"
+"Without one, you will reach default quota soon...\n"
+"Lollypop needs this to download artwork and music."
+msgstr ""
+
+#: ../data/SettingsDialog.ui.h:38
+msgid ""
+"You need to enable \"Custom Search API\" \n"
+"and \"Youtube Data API\" for your project."
+msgstr ""
+
+#: ../data/SettingsDialog.ui.h:40
 msgid "Configure Last.fm credentials"
 msgstr "Nastaví poverenia služby Last.fm"
 
