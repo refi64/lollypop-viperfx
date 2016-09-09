@@ -68,8 +68,10 @@ class Youtube(GObject.GObject):
         """
         nb_items = len(item.subitems)
         start = 0
+        album_artist = item.subitems[0].artists[0]
         for track_item in item.subitems:
-            (album_id, track_id) = self.__save_track(track_item, persistent)
+            (album_id, track_id) = self.__save_track(track_item, persistent,
+                                                     album_artist)
             if track_id is None:
                 continue
             # Download cover
@@ -94,7 +96,9 @@ class Youtube(GObject.GObject):
             @param item as SearchItem
             @param persistent as DbPersistent
         """
-        (album_id, track_id) = self.__save_track(item, persistent)
+        album_artist = item.artists[0]
+        (album_id, track_id) = self.__save_track(item, persistent,
+                                                 album_artist)
         if track_id is None:
             return
         self.__save_cover(item, album_id)
@@ -103,11 +107,12 @@ class Youtube(GObject.GObject):
         if persistent == DbPersistent.NONE:
             GLib.idle_add(Lp().player.load, Track(track_id))
 
-    def __save_track(self, item, persistent):
+    def __save_track(self, item, persistent, album_artist):
         """
             Save item into collection as track
             @param item as SearchItem
             @param persistent as DbPersistent
+            @param album artist as str
             @return (album id as int, track id as int)
         """
         yid = self.__get_youtube_id(item)
@@ -123,7 +128,6 @@ class Youtube(GObject.GObject):
                 return (None, None)
         t = TagReader()
         with SqlCursor(Lp().db) as sql:
-            album_artist = item.artists[0]
             artists = "; ".join(item.artists)
             (artist_ids, new_artist_ids) = t.add_artists(artists,
                                                          album_artist,
