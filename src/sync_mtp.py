@@ -235,6 +235,8 @@ class MtpSync:
                     self.__in_thread = False
                     return
                 track = Track(track_id)
+                if not track.uri.startswith('file:'):
+                    continue
                 album_name = escape(track.album_name.lower())
                 if track.album.artist_ids[0] == Type.COMPILATIONS:
                     artists = escape(", ".join(track.artists).lower())
@@ -352,6 +354,8 @@ class MtpSync:
                 self.__in_thread = False
                 return
             track = Track(track_id)
+            if not track.uri.startswith('file:'):
+                continue
             album_name = escape(track.album_name.lower())
             if track.album.artist_ids[0] == Type.COMPILATIONS:
                 artists = escape(", ".join(track.artists).lower())
