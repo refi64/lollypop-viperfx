@@ -79,7 +79,7 @@ class Container:
         else:
             # Something (device manager) is using progress bar
             if not self.__progress.is_visible():
-                Lp().scanner.update(self.__progress)
+                Lp().scanner.update()
 
     def get_genre_id(self):
         """

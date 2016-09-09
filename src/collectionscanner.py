@@ -51,16 +51,13 @@ class CollectionScanner(GObject.GObject, TagReader):
             self.__inotify = Inotify()
         else:
             self.__inotify = None
-        self.__progress = None
 
-    def update(self, progress):
+    def update(self):
         """
             Update database
-            @param progress as Gtk.Scale
         """
         if not self.is_locked():
-            progress.show()
-            self.__progress = progress
+            Lp().window.progress.show()
             paths = Lp().settings.get_music_paths()
             if not paths:
                 return
@@ -82,10 +79,8 @@ class CollectionScanner(GObject.GObject, TagReader):
             Stop scan
         """
         self.__thread = None
-        if self.__progress is not None:
-            self.__progress.hide()
-            self.__progress.set_fraction(0.0)
-            self.__progress = None
+        Lp().window.progress.hide()
+        Lp().window.progress.set_fraction(0.0)
 
 #######################
 # PRIVATE             #
@@ -125,8 +120,7 @@ class CollectionScanner(GObject.GObject, TagReader):
             Update progress bar status
             @param scanned items as int, total items as int
         """
-        if self.__progress is not None:
-            self.__progress.set_fraction(current/total)
+        Lp().window.progress.set_fraction(current/total)
 
     def __finish(self):
         """
