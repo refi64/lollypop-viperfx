@@ -65,21 +65,35 @@ class Youtube(GObject.GObject):
             @param item as SearchItem
             @param persistent as DbPersistent
         """
-        saved_album_id = None
-        first_track = True
+        progress = Lp().window.progress
+        if progress.is_visible():
+            progress = None
+        else:
+            GLib.idle_add(progress.set_fraction, 0)
+            GLib.idle_add(progress.show)
+
+        nb_items = len(item.subitems)
+        start = 0
         for track_item in item.subitems:
             (album_id, track_id) = self.__save_track(track_item, persistent)
             if track_id is None:
                 continue
-            if first_track:
-                saved_album_id = album_id
-                if persistent == DbPersistent.NONE:
-                    Lp().player.clear_albums()
-                    GLib.idle_add(Lp().player.load, Track(track_id))
-                    GLib.idle_add(Lp().player.add_album, Album(album_id))
-                    first_track = False
-        if saved_album_id is not None:
-            self.__save_cover(item, saved_album_id)
+            # Download cover
+            if start == 0:
+                t = Thread(target=self.__save_cover, args=(item, album_id))
+                t.daemon = True
+                t.start()
+            start += 1
+            if progress is not None:
+                GLib.idle_add(progress.set_fraction, start / nb_items)
+        if progress is not None:
+            GLib.idle_add(progress.hide)
+            GLib.idle_add(progress.set_fraction, 0)
+        # Play if needed
+        if persistent == DbPersistent.NONE:
+            Lp().player.clear_albums()
+            GLib.idle_add(Lp().player.load, Track(track_id))
+            GLib.idle_add(Lp().player.add_album, Album(album_id))
         if Lp().settings.get_value('artist-artwork'):
             Lp().art.cache_artists_info()
 
