@@ -33,6 +33,7 @@ class IndicatorWidget(Gtk.EventBox):
         self.__pass = 1
         self.__timeout_id = None
         self.__button = None
+        self.__stack = None
         self.__signal_id = Lp().player.connect('queue-changed',
                                                self.__on_queue_changed)
         self.connect('destroy', self.__on_destroy)
@@ -46,12 +47,14 @@ class IndicatorWidget(Gtk.EventBox):
             Show spinner
         """
         self.__init()
-        spinner = Gtk.Spinner()
-        spinner.set_property('halign', Gtk.Align.CENTER)
-        spinner.set_property('valign', Gtk.Align.CENTER)
+        spinner = self.__stack.get_child_by_name('spinner')
+        if spinner is None:
+            spinner = Gtk.Spinner()
+            spinner.set_property('halign', Gtk.Align.CENTER)
+            spinner.set_property('valign', Gtk.Align.CENTER)
+            spinner.show()
+            self.__stack.add_named(spinner, 'spinner')
         spinner.start()
-        spinner.show()
-        self.__stack.add_named(spinner, 'spinner')
         self.__stack.set_visible_child_name('spinner')
 
     def empty(self):
@@ -66,9 +69,7 @@ class IndicatorWidget(Gtk.EventBox):
             Show play indicator
         """
         self.__init()
-        if self.__stack.get_visible_child_name() == "spinner":
-            spinner = self.__stack.get_visible_child()
-            spinner.destroy()
+        self.__clear_spinner()
         self.__stack.set_visible_child_name('play')
 
     def loved(self):
@@ -76,6 +77,7 @@ class IndicatorWidget(Gtk.EventBox):
             Show loved indicator
         """
         self.__init()
+        self.__clear_spinner()
         self.__stack.set_visible_child_name('loved')
 
     def play_loved(self):
@@ -83,6 +85,7 @@ class IndicatorWidget(Gtk.EventBox):
             Show play/loved indicator
         """
         self.__init()
+        self.__clear_spinner()
         self.__pass = 1
         self.play()
         self.__timeout_id = GLib.timeout_add(500, self.__play_loved)
@@ -112,6 +115,14 @@ class IndicatorWidget(Gtk.EventBox):
 #######################
 # PRIVATE             #
 #######################
+    def __clear_spinner(self):
+        """
+            Clear spinner
+        """
+        spinner = self.__stack.get_child_by_name('spinner')
+        if spinner is not None:
+            spinner.stop()
+
     def __init(self):
         """
             Init widget content if needed
