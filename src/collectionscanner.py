@@ -220,7 +220,6 @@ class CollectionScanner(GObject.GObject, TagReader):
         performers = self.get_performers(tags)
         a_sortnames = self.get_artist_sortnames(tags)
         aa_sortnames = self.get_album_artist_sortnames(tags)
-        album_artists = self.get_album_artist(tags)
         album_name = self.get_album_name(tags)
         genres = self.get_genres(tags)
         discnumber = self.get_discnumber(tags)
@@ -230,18 +229,9 @@ class CollectionScanner(GObject.GObject, TagReader):
         duration = int(info.get_duration()/1000000000)
         name = GLib.path_get_basename(path)
 
-        # If no artists tag, use album artist
-        if artists == '':
-            artists = album_artists
-        # if artists is always null, no album artists too,
-        # use composer/performer
-        if artists == '':
-            artists = performers
-            album_artists = composers
-            if artists == '':
-                artists = album_artists
-            if artists == '':
-                artists = _("Unknown")
+        album_artists = (self.get_album_artist(tags) or composers)
+        artists = (self.get_artists(tags) or album_artists or
+                   performers or _("Unknown"))
 
         debug("CollectionScanner::add2db(): Restore stats")
         # Restore stats
