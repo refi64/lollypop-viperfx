@@ -22,8 +22,6 @@ from lollypop.objects import Track, Album
 from lollypop.pop_menu import TrackMenuPopover, TrackMenu
 from lollypop.pop_album import AlbumPopover
 from lollypop.search_item import SearchItem
-from lollypop.search_network import NetworkSearch
-from lollypop.youtube import Youtube
 
 
 class SearchRow(Gtk.ListBoxRow):
@@ -104,6 +102,7 @@ class SearchRow(Gtk.ListBoxRow):
         """
             Play row
         """
+        from lollypop.youtube import Youtube
         Lp().player.emit('loading-changed')
         yt = Youtube()
         if self.__item.is_track:
@@ -131,6 +130,7 @@ class SearchRow(Gtk.ListBoxRow):
             Save into collection
             @param button as Gtk.Button
         """
+        from lollypop.youtube import Youtube
         yt = Youtube()
         if self.__item.is_track:
             yt.save_track(self.__item, DbPersistent.EXTERNAL)
@@ -585,6 +585,7 @@ class SearchPopover(Gtk.Popover):
         """
             Populate widget
         """
+        from lollypop.search_network import NetworkSearch
         self.__timeout = None
         self.__in_thread = True
         self.__search = NetworkSearch()
