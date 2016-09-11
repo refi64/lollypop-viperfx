@@ -518,10 +518,10 @@ class Player(BinPlayer, QueuePlayer, UserPlaylistPlayer, RadioPlayer,
             # Get a linear track then
             if next_track.id is None:
                 next_track = LinearPlayer.next(self)
-            self.emit('next-changed')
             if next_track.is_youtube:
                 self._load_youtube(next_track, False)
             self._next_track = next_track
+            self.emit('next-changed')
         except Exception as e:
             print("Player::set_next", e)
 
