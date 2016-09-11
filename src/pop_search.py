@@ -312,6 +312,9 @@ class SearchPopover(Gtk.Popover):
         Lp().settings.set_boolean('network-search', state)
         Lp().window.reload_view()
         if state:
+            if Lp().charts is None:
+                from lollypop.charts_itunes import ItunesCharts
+                Lp().charts = ItunesCharts()
             Lp().charts.update()
         else:
             Lp().charts.stop()

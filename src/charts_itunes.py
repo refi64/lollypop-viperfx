@@ -142,6 +142,7 @@ class ItunesCharts:
         yt = Youtube()
         ids = self.__get_ids(url)
         while ids:
+            sleep(10)
             itunes_id = ids.pop(0)
             album = self.__get_album(itunes_id)
             if album is None or album.exists_in_db():
@@ -153,7 +154,6 @@ class ItunesCharts:
                                                                 album.name,
                                                                 album.artists))
             yt.save_album(album, DbPersistent.CHARTS)
-            sleep(10)
 
     def __get_album(self, itunes_id):
         """
@@ -165,7 +165,7 @@ class ItunesCharts:
                 return
         language = getdefaultlocale()[0][0:2]
         try:
-            debug("ItunesCharts::__get_albums(): %s" % itunes_id)
+            debug("ItunesCharts::__get_album(): %s" % itunes_id)
             url = self.__INFO % (itunes_id, language)
             f = Gio.File.new_for_uri(url)
             (status, data, tag) = f.load_contents(self._cancel)
@@ -193,11 +193,13 @@ class ItunesCharts:
                                            item['discNumber'])
                 track_item.duration = int(
                                     item['trackTimeMillis']) / 1000
+                if album_item.artists[0] != item['artistName']:
+                    track_item.artists.append(album_item.artists[0])
                 track_item.artists.append(item['artistName'])
                 album_item.subitems.append(track_item)
             return album_item
         except Exception as e:
-            print("ItunesCharts::__get_items()", e)
+            print("ItunesCharts::__get_album()", e)
         return None
 
     def __get_ids(self, url):

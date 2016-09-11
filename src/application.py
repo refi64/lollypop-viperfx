@@ -151,6 +151,7 @@ class Application(Gtk.Application):
             from lollypop.notification import NotificationManager
             self.notify = NotificationManager()
 
+        self.charts = None
         if self.settings.get_value('network-search'):
             from shutil import which
             if which("youtube-dl") is not None:
