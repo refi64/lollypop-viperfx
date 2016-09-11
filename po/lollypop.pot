@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-09-11 13:35+0200\n"
+"POT-Creation-Date: 2016-09-11 17:03+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -461,6 +461,7 @@ msgid "WebKit support disabled"
 msgstr ""
 
 #: ../src/pop_menu.py:103 ../src/widgets_indicator.py:111
+#: ../data/InternalSearchRow.ui.h:2
 msgid "Add to queue"
 msgstr ""
 
@@ -506,8 +507,12 @@ msgstr ""
 msgid "Edit"
 msgstr ""
 
-#: ../src/pop_menu.py:564
+#: ../src/pop_menu.py:567
 msgid "Save genre"
+msgstr ""
+
+#: ../src/pop_menu.py:588 ../data/ExternalSearchRow.ui.h:1
+msgid "Save into collection"
 msgstr ""
 
 #: ../src/pop_radio.py:83 ../src/pop_tunein.py:222 ../src/view_artist.py:315
@@ -632,7 +637,7 @@ msgstr ""
 msgid "%s m"
 msgstr ""
 
-#: ../src/widgets_album.py:976
+#: ../src/widgets_album.py:978
 #, python-format
 msgid "Disc %s"
 msgstr ""
@@ -853,6 +858,10 @@ msgstr ""
 
 #: ../data/SearchPopover.ui.h:2
 msgid "Search on the web"
+msgstr ""
+
+#: ../data/InternalSearchRow.ui.h:1
+msgid "Add to playlist"
 msgstr ""
 
 #: ../data/SettingsDialog.ui.h:1

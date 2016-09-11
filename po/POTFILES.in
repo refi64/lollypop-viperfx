@@ -97,6 +97,9 @@ src/window.py
 [type: gettext/glade]data/RadioPopover.ui
 [type: gettext/glade]data/RadiosView.ui
 [type: gettext/glade]data/SearchPopover.ui
+[type: gettext/glade]data/SearchPopover.ui
+[type: gettext/glade]data/InternalSearchRow.ui
+[type: gettext/glade]data/ExternalSearchRow.ui
 [type: gettext/glade]data/SelectionList.ui
 [type: gettext/glade]data/SettingsDialog.ui
 [type: gettext/glade]data/ToolbarEnd.ui
