@@ -39,8 +39,10 @@ class QueuePlayer:
         track = Track(track_id)
         if track.is_youtube and\
            not Gio.NetworkMonitor.get_default().get_network_available():
-            Lp().notify.send(_("No network available, can't play this track"),
-                             track.uri)
+            if Lp().notify is not None:
+                Lp().notify.send(_("No network available,"
+                                   " can't play this track"),
+                                 track.uri)
             return
         if track_id in self._queue:
             self._queue.remove(track_id)
@@ -60,8 +62,10 @@ class QueuePlayer:
         track = Track(track_id)
         if track.is_youtube and\
            not Gio.NetworkMonitor.get_default().get_network_available():
-            Lp().notify.send(_("No network available, can't play this track"),
-                             track.uri)
+            if Lp().notify is not None:
+                Lp().notify.send(_("No network available,"
+                                   " can't play this track"),
+                                 track.uri)
             return
         if track_id in self._queue:
             self._queue.remove(track_id)

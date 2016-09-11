@@ -117,9 +117,10 @@ class Player(BinPlayer, QueuePlayer, UserPlaylistPlayer, RadioPlayer,
                 if track.is_youtube and\
                         not Gio.NetworkMonitor.get_default(
                                                      ).get_network_available():
-                    Lp().notify.send(_("No network available,"
-                                       " can't play this track"),
-                                     track.uri)
+                    if Lp().notify is not None:
+                        Lp().notify.send(_("No network available,"
+                                           " can't play this track"),
+                                         track.uri)
                     # Force widgets to update (spinners)
                     self.emit('current-changed')
                     return
