@@ -9,8 +9,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lollypop\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-09-09 18:12+0200\n"
-"PO-Revision-Date: 2016-09-09 16:14+0000\n"
+"POT-Creation-Date: 2016-09-11 13:35+0200\n"
+"PO-Revision-Date: 2016-09-11 11:40+0000\n"
 "Last-Translator: Cédric Bellegarde <web@adishatz.org>\n"
 "Language-Team: French (http://www.transifex.com/gnumdk/lollypop/language/fr/)\n"
 "MIME-Version: 1.0\n"
@@ -318,7 +318,7 @@ msgid ""
 "    - Artist informations disabled"
 msgstr "- Scrobbler désactivé\n- Téléchargement automatique des pochettes désactivé\n- Informations sur les artistes désactivée"
 
-#: ../src/application.py:451
+#: ../src/application.py:458
 msgid "Lollypop: You need to install yelp."
 msgstr "Lollypop: Vous devez installer yelp."
 
@@ -334,7 +334,7 @@ msgstr "Réinitialiser l'image?"
 msgid "Your music is updating"
 msgstr "Mise à jour de votre musique"
 
-#: ../src/collectionscanner.py:244 ../src/database_albums.py:329
+#: ../src/collectionscanner.py:234 ../src/database_albums.py:329
 #: ../src/database_artists.py:104 ../src/database_genres.py:69
 #: ../src/database_tracks.py:233 ../src/selectionlist.py:343
 #: ../src/tagreader.py:88 ../src/tagreader.py:103 ../src/tagreader.py:118
@@ -366,30 +366,34 @@ msgid "Radios"
 msgstr "Radios"
 
 #: ../src/container.py:446
+msgid "The charts"
+msgstr "Le hit-parade"
+
+#: ../src/container.py:448
 msgid "All artists"
 msgstr "Tous les artistes"
 
-#: ../src/container.py:448
+#: ../src/container.py:450
 msgid "All albums"
 msgstr "Tous les albums"
 
-#: ../src/container.py:496
+#: ../src/container.py:498
 msgid "Compilations"
 msgstr "Compilations"
 
-#: ../src/container.py:520 ../src/playlists.py:223
+#: ../src/container.py:522 ../src/playlists.py:223
 msgid "Popular tracks"
 msgstr "Morceaux populaires"
 
-#: ../src/container.py:521 ../src/playlists.py:225
+#: ../src/container.py:523 ../src/playlists.py:225
 msgid "Recently played"
 msgstr "Jouées récemment"
 
-#: ../src/container.py:522 ../src/playlists.py:227
+#: ../src/container.py:524 ../src/playlists.py:227
 msgid "Never played"
 msgstr "Jamais jouées"
 
-#: ../src/container.py:523 ../src/playlists.py:229
+#: ../src/container.py:525 ../src/playlists.py:229
 msgid "Random tracks"
 msgstr "Morceaux aléatoires"
 
@@ -398,7 +402,7 @@ msgid "Pause"
 msgstr "Pause"
 
 #: ../src/controllers.py:86 ../src/controllers.py:105 ../src/pop_tunein.py:216
-#: ../src/widgets_album.py:503 ../src/widgets_radio.py:172
+#: ../src/widgets_album.py:502 ../src/widgets_radio.py:172
 #: ../data/AlbumDetailedWidget.ui.h:1 ../data/ArtistView.ui.h:2
 #: ../data/ToolbarPlayback.ui.h:2
 msgid "Play"
@@ -517,7 +521,7 @@ msgstr "Ajouter"
 msgid "Modify"
 msgstr "Modifier"
 
-#: ../src/pop_search.py:257
+#: ../src/pop_search.py:256
 msgid "You need to install youtube-dl"
 msgstr "Vous devez installer youtube-dl"
 
@@ -580,7 +584,7 @@ msgstr "Listes de lecture en cours"
 msgid "The the"
 msgstr "The the"
 
-#: ../src/view_artist.py:310 ../src/widgets_album.py:359
+#: ../src/view_artist.py:310 ../src/widgets_album.py:358
 msgid "Remove"
 msgstr "Enlever"
 
@@ -603,34 +607,34 @@ msgstr "Synchroniser %s"
 msgid "Cancel synchronization"
 msgstr "Annuler la synchronisation"
 
-#: ../src/widgets_album.py:355
+#: ../src/widgets_album.py:354
 msgid "Append"
 msgstr "Ajouter"
 
-#: ../src/widgets_album.py:514
+#: ../src/widgets_album.py:513
 msgid "Play albums"
 msgstr "Lire les albums"
 
-#: ../src/widgets_album.py:524 ../data/AlbumDetailedWidget.ui.h:2
+#: ../src/widgets_album.py:523 ../data/AlbumDetailedWidget.ui.h:2
 msgid "Change artwork"
 msgstr "Modifier la pochette"
 
-#: ../src/widgets_album.py:690
+#: ../src/widgets_album.py:689
 #, python-format
 msgid "%s h  %s m"
 msgstr "%s h %s m"
 
-#: ../src/widgets_album.py:692
+#: ../src/widgets_album.py:691
 #, python-format
 msgid "%s h"
 msgstr "%s h"
 
-#: ../src/widgets_album.py:694
+#: ../src/widgets_album.py:693
 #, python-format
 msgid "%s m"
 msgstr "%s m"
 
-#: ../src/widgets_album.py:975
+#: ../src/widgets_album.py:976
 #, python-format
 msgid "Disc %s"
 msgstr "Disque %s"
