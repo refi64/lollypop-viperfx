@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-09-12 10:24+0200\n"
+"POT-Creation-Date: 2016-09-12 10:30+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -328,91 +328,91 @@ msgstr ""
 msgid "Reset artwork?"
 msgstr ""
 
-#: ../src/charts_itunes.py:35
+#: ../src/charts_itunes.py:36
 msgid "alternative"
 msgstr ""
 
-#: ../src/charts_itunes.py:37
+#: ../src/charts_itunes.py:38
 msgid "anime"
 msgstr ""
 
-#: ../src/charts_itunes.py:39
+#: ../src/charts_itunes.py:40
 msgid "blues"
 msgstr ""
 
-#: ../src/charts_itunes.py:41
+#: ../src/charts_itunes.py:42
 msgid "brazil"
 msgstr ""
 
-#: ../src/charts_itunes.py:43
+#: ../src/charts_itunes.py:44
 msgid "classic"
 msgstr ""
 
-#: ../src/charts_itunes.py:45
+#: ../src/charts_itunes.py:46
 msgid "country"
 msgstr ""
 
-#: ../src/charts_itunes.py:47
+#: ../src/charts_itunes.py:48
 msgid "Dance"
 msgstr ""
 
-#: ../src/charts_itunes.py:49
+#: ../src/charts_itunes.py:50
 msgid "electro"
 msgstr ""
 
-#: ../src/charts_itunes.py:51
+#: ../src/charts_itunes.py:52
 msgid "french"
 msgstr ""
 
-#: ../src/charts_itunes.py:53
+#: ../src/charts_itunes.py:54
 msgid "german"
 msgstr ""
 
-#: ../src/charts_itunes.py:55
+#: ../src/charts_itunes.py:56
 msgid "rap"
 msgstr ""
 
-#: ../src/charts_itunes.py:57
+#: ../src/charts_itunes.py:58
 msgid "hip hop"
 msgstr ""
 
-#: ../src/charts_itunes.py:59
+#: ../src/charts_itunes.py:60
 msgid "jazz"
 msgstr ""
 
-#: ../src/charts_itunes.py:61
+#: ../src/charts_itunes.py:62
 msgid "latin"
 msgstr ""
 
-#: ../src/charts_itunes.py:63
+#: ../src/charts_itunes.py:64
 msgid "new age"
 msgstr ""
 
-#: ../src/charts_itunes.py:65
+#: ../src/charts_itunes.py:66
 msgid "opera"
 msgstr ""
 
-#: ../src/charts_itunes.py:67
+#: ../src/charts_itunes.py:68
 msgid "pop"
 msgstr ""
 
-#: ../src/charts_itunes.py:69
+#: ../src/charts_itunes.py:70
 msgid "soul"
 msgstr ""
 
-#: ../src/charts_itunes.py:72
+#: ../src/charts_itunes.py:73
 msgid "reggae"
 msgstr ""
 
-#: ../src/charts_itunes.py:74
+#: ../src/charts_itunes.py:75
 msgid "rock"
 msgstr ""
 
-#: ../src/charts_itunes.py:76
+#: ../src/charts_itunes.py:77
 msgid "soundtrack"
 msgstr ""
 
-#: ../src/charts_itunes.py:78
+#: ../src/charts_itunes.py:79
 msgid "World"
 msgstr ""
 

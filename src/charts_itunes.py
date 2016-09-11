@@ -31,6 +31,7 @@ class ItunesCharts:
         Itunes charts
     """
 
+    # Translators: Only translate this music genre if it makes sense for you
     __GENRES = {"alternative": 1,
                 _("alternative"): 1,
                 "anime": 29,
