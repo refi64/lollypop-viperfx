@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-09-11 17:03+0200\n"
+"POT-Creation-Date: 2016-09-11 17:49+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -316,7 +316,7 @@ msgid ""
 "    - Artist informations disabled"
 msgstr ""
 
-#: ../src/application.py:458
+#: ../src/application.py:460
 msgid "Lollypop: You need to install yelp."
 msgstr ""
 
@@ -332,7 +332,15 @@ msgstr ""
 msgid "Your music is updating"
 msgstr ""
 
-#: ../src/collectionscanner.py:234 ../src/database_albums.py:329
+#: ../src/collectionscanner.py:157
+msgid "Lollypop is detecting an empty folder."
+msgstr ""
+
+#: ../src/collectionscanner.py:158
+msgid "Check your music settings."
+msgstr ""
+
+#: ../src/collectionscanner.py:245 ../src/database_albums.py:329
 #: ../src/database_artists.py:104 ../src/database_genres.py:69
 #: ../src/database_tracks.py:233 ../src/selectionlist.py:343
 #: ../src/tagreader.py:88 ../src/tagreader.py:103 ../src/tagreader.py:118
@@ -431,7 +439,7 @@ msgstr ""
 msgid "by %s, from %s"
 msgstr ""
 
-#: ../src/player.py:120 ../src/player_queue.py:42 ../src/player_queue.py:63
+#: ../src/player.py:121 ../src/player_queue.py:43 ../src/player_queue.py:66
 msgid "No network available, can't play this track"
 msgstr ""
 
@@ -507,11 +515,11 @@ msgstr ""
 msgid "Edit"
 msgstr ""
 
-#: ../src/pop_menu.py:567
+#: ../src/pop_menu.py:570
 msgid "Save genre"
 msgstr ""
 
-#: ../src/pop_menu.py:588 ../data/ExternalSearchRow.ui.h:1
+#: ../src/pop_menu.py:591 ../data/ExternalSearchRow.ui.h:1
 msgid "Save into collection"
 msgstr ""
 

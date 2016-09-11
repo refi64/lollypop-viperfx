@@ -94,6 +94,7 @@ class CollectionScanner(GObject.GObject, TagReader):
         tracks = []
         track_dirs = list(paths)
         for path in paths:
+            tracks_for_path = []
             for root, dirs, files in os.walk(path, followlinks=True):
                 # Add dirs
                 for d in dirs:
@@ -107,12 +108,17 @@ class CollectionScanner(GObject.GObject, TagReader):
                         if is_pls(f):
                             pass
                         elif is_audio(f):
-                            tracks.append(uri)
+                            tracks_for_path.append(uri)
                         else:
                             debug("%s not detected as a music file" % uri)
                     except Exception as e:
                         print("CollectionScanner::__get_objects_for_paths: %s"
                               % e)
+            # If a path is empty, return nothing
+            # Ensure user is not doing something bad
+            if not tracks_for_path:
+                return ([], [])
+            tracks += tracks_for_path
         return (tracks, track_dirs)
 
     def __update_progress(self, current, total):
@@ -146,6 +152,11 @@ class CollectionScanner(GObject.GObject, TagReader):
         was_empty = len(orig_tracks) == 0
 
         (new_tracks, new_dirs) = self.__get_objects_for_paths(paths)
+        if not new_tracks:
+            if Lp().notify is not None:
+                Lp().notify.send(_("Lollypop is detecting an empty folder."),
+                                 _("Check your music settings."))
+            return
         count = len(new_tracks) + len(orig_tracks)
         # Add monitors on dirs
         if self.__inotify is not None:
