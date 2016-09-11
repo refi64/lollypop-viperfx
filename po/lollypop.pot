@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-09-11 13:33+0200\n"
+"POT-Creation-Date: 2016-09-11 13:35+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -791,7 +791,7 @@ msgid ""
 "Please create a search engine here:"
 msgstr ""
 
-#: ../data/ArtworkSearch.ui.h:6 ../data/SettingsDialog.ui.h:38
+#: ../data/ArtworkSearch.ui.h:6 ../data/SettingsDialog.ui.h:37
 msgid "API key"
 msgstr ""
 
@@ -966,17 +966,13 @@ msgid ""
 "Lollypop needs this to download artwork and music."
 msgstr ""
 
-#: ../data/SettingsDialog.ui.h:37
-msgid "AIzaSyAfXimyn-JsnPzAhhIuxYwgyMrj21Ee7e0"
-msgstr ""
-
-#: ../data/SettingsDialog.ui.h:39
+#: ../data/SettingsDialog.ui.h:38
 msgid ""
 "You need to enable \"Custom Search API\" \n"
 "and \"Youtube Data API\" for your project."
 msgstr ""
 
-#: ../data/SettingsDialog.ui.h:41
+#: ../data/SettingsDialog.ui.h:40
 msgid "Configure Last.fm credentials"
 msgstr ""
 
