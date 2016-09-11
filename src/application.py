@@ -152,9 +152,11 @@ class Application(Gtk.Application):
             self.notify = NotificationManager()
 
         if self.settings.get_value('network-search'):
-            from lollypop.charts_itunes import ItunesCharts
-            self.charts = ItunesCharts()
-            self.charts.update()
+            from shutil import which
+            if which("youtube-dl") is not None:
+                from lollypop.charts_itunes import ItunesCharts
+                self.charts = ItunesCharts()
+                self.charts.update()
 
         settings = Gtk.Settings.get_default()
         dark = self.settings.get_value('dark-ui')
