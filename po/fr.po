@@ -9,8 +9,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lollypop\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-09-11 13:35+0200\n"
-"PO-Revision-Date: 2016-09-11 11:40+0000\n"
+"POT-Creation-Date: 2016-09-11 17:03+0200\n"
+"PO-Revision-Date: 2016-09-11 15:05+0000\n"
 "Last-Translator: Cédric Bellegarde <web@adishatz.org>\n"
 "Language-Team: French (http://www.transifex.com/gnumdk/lollypop/language/fr/)\n"
 "MIME-Version: 1.0\n"
@@ -463,6 +463,7 @@ msgid "WebKit support disabled"
 msgstr "Support de WebKit désactivé"
 
 #: ../src/pop_menu.py:103 ../src/widgets_indicator.py:111
+#: ../data/InternalSearchRow.ui.h:2
 msgid "Add to queue"
 msgstr "Ajouter à la file d'attente"
 
@@ -508,9 +509,13 @@ msgstr "Modifier les informations"
 msgid "Edit"
 msgstr "Editer"
 
-#: ../src/pop_menu.py:564
+#: ../src/pop_menu.py:567
 msgid "Save genre"
 msgstr "Enregistrer le genre"
+
+#: ../src/pop_menu.py:588 ../data/ExternalSearchRow.ui.h:1
+msgid "Save into collection"
+msgstr "Enregistrer dans la collection"
 
 #: ../src/pop_radio.py:83 ../src/pop_tunein.py:222 ../src/view_artist.py:315
 #: ../data/ArtistView.ui.h:3
@@ -634,7 +639,7 @@ msgstr "%s h"
 msgid "%s m"
 msgstr "%s m"
 
-#: ../src/widgets_album.py:976
+#: ../src/widgets_album.py:978
 #, python-format
 msgid "Disc %s"
 msgstr "Disque %s"
@@ -856,6 +861,10 @@ msgstr "Créer une nouvelle liste de lecture basée sur la recherche"
 #: ../data/SearchPopover.ui.h:2
 msgid "Search on the web"
 msgstr "Rechercher sur le web"
+
+#: ../data/InternalSearchRow.ui.h:1
+msgid "Add to playlist"
+msgstr "Ajouter à la liste de lecture"
 
 #: ../data/SettingsDialog.ui.h:1
 msgid "Only in party mode"
