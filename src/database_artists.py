@@ -211,7 +211,14 @@ class ArtistsDatabase:
             @return int
         """
         with SqlCursor(Lp().db) as sql:
-            result = sql.execute("SELECT COUNT(1) from artists")
+            result = sql.execute("SELECT COUNT(1)\
+                                  FROM artists, album_artists,\
+                                  album_genres, albums\
+                                  WHERE album_artists.album_id=albums.rowid\
+                                  AND artists.rowid=album_artists.artist_id\
+                                  AND album_genres.album_id=albums.rowid\
+                                  AND album_genres.genre_id!=?",
+                                 (Type.CHARTS,))
             v = result.fetchone()
             if v is not None:
                 return v[0]

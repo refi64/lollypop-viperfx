@@ -15,7 +15,7 @@ from gettext import gettext as _
 import itertools
 
 from lollypop.sqlcursor import SqlCursor
-from lollypop.define import Lp
+from lollypop.define import Lp, Type
 from lollypop.utils import noaccents
 
 
@@ -613,7 +613,11 @@ class TracksDatabase:
             @return int
         """
         with SqlCursor(Lp().db) as sql:
-            result = sql.execute("SELECT COUNT(1) from tracks")
+            result = sql.execute("SELECT COUNT(1)\
+                                  FROM tracks, track_genres\
+                                  WHERE tracks.rowid = track_genres.track_id\
+                                  AND track_genres.genre_id!=?",
+                                 (Type.CHARTS,))
             v = result.fetchone()
             if v is not None:
                 return v[0]

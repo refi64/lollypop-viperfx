@@ -77,7 +77,7 @@ class ItunesCharts:
                 "World": 19,
                 _("World"): 19
                 }
-    __ALL = "https://itunes.apple.com/%s/rss/topalbums/limit=20/xml"
+    __ALL = "https://itunes.apple.com/%s/rss/topalbums/limit=100/xml"
     __GENRE = "https://itunes.apple.com/%s/rss/topalbums/limit=20/genre=%s/xml"
     __INFO = "https://itunes.apple.com/lookup?id=%s&entity=song&country=%s"
 
