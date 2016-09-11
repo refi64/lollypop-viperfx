@@ -517,7 +517,8 @@ class TrackMenuPopover(Gtk.Popover):
         stack.show_all()
 
         menu_widget = self.get_child()
-        menu_widget.reparent(grid)
+        if menu_widget is not None:
+            menu_widget.reparent(grid)
 
         separator = Gtk.Separator()
         separator.show()
@@ -583,6 +584,10 @@ class AlbumMenuPopover(Gtk.Popover):
         # separator = Gtk.Separator()
         # separator.show()
 
+        if menu is None:
+            label = Gtk.Label.new(_("Save into collection"))
+            label.show()
+            grid.add(label)
         # grid.add(separator)
         hgrid = Gtk.Grid()
         hgrid.add(edit)
