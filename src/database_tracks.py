@@ -511,16 +511,19 @@ class TracksDatabase:
             @return track ids as [int]
         """
         with SqlCursor(Lp().db) as sql:
-            result = sql.execute("SELECT DISTINCT(album_id),\
-                                  COUNT(DISTINCT(album_id))\
+            # Get charts album count
+            result = sql.execute("SELECT COUNT(DISTINCT(album_id))\
                                   FROM tracks\
-                                  WHERE persistent=3 LIMIT 1")
+                                  WHERE persistent=3")
             v = result.fetchone()
-            if v is not None and v[1] > limit:
-                album_id = v[0]
-            else:
-                album_id = None
-            # Get tracks
+            count = v[0] if v is not None else 0
+            if count > limit:
+                diff = count - limit
+                result = sql.execute("SELECT DISTINCT(album_id)\
+                                      FROM tracks\
+                                      WHERE persistent=3 LIMIT %s" % diff)
+            v = result.fetchone()
+            album_id = v[0] if v is not None else None
             if album_id is not None:
                 result = sql.execute("SELECT rowid FROM tracks\
                                      WHERE album_id=?", (album_id,))
