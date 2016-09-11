@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-09-12 10:34+0200\n"
+"POT-Creation-Date: 2016-09-12 13:31+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -260,8 +260,8 @@ msgstr ""
 msgid "Search"
 msgstr ""
 
-#: ../data/lollypop.appdata.xml.in.h:9 ../src/pop_menu.py:434
-#: ../src/pop_menu.py:455 ../src/toolbar_end.py:395 ../data/QueuePopover.ui.h:2
+#: ../data/lollypop.appdata.xml.in.h:9 ../src/pop_menu.py:475
+#: ../src/pop_menu.py:496 ../src/toolbar_end.py:395 ../data/QueuePopover.ui.h:2
 msgid "Queue"
 msgstr ""
 
@@ -481,57 +481,57 @@ msgstr ""
 msgid "Unknown"
 msgstr ""
 
-#: ../src/container.py:440
+#: ../src/container.py:448
 msgid "Popular albums"
 msgstr ""
 
-#: ../src/container.py:441
+#: ../src/container.py:449
 msgid "Recently added albums"
 msgstr ""
 
-#: ../src/container.py:442
+#: ../src/container.py:450
 msgid "Random albums"
 msgstr ""
 
-#: ../src/container.py:443 ../src/pop_menu.py:323 ../src/pop_menu.py:437
-#: ../src/pop_menu.py:457 ../src/widgets_device.py:117
+#: ../src/container.py:451 ../src/pop_menu.py:361 ../src/pop_menu.py:478
+#: ../src/pop_menu.py:498 ../src/widgets_device.py:117
 #: ../src/widgets_playlist.py:521
 msgid "Playlists"
 msgstr ""
 
-#: ../src/container.py:444
+#: ../src/container.py:452
 msgid "Radios"
 msgstr ""
 
-#: ../src/container.py:446
+#: ../src/container.py:454
 msgid "The charts"
 msgstr ""
 
-#: ../src/container.py:448
+#: ../src/container.py:456
 msgid "All artists"
 msgstr ""
 
-#: ../src/container.py:450
+#: ../src/container.py:458
 msgid "All albums"
 msgstr ""
 
-#: ../src/container.py:498
+#: ../src/container.py:506
 msgid "Compilations"
 msgstr ""
 
-#: ../src/container.py:522 ../src/playlists.py:223
+#: ../src/container.py:530 ../src/playlists.py:223
 msgid "Popular tracks"
 msgstr ""
 
-#: ../src/container.py:523 ../src/playlists.py:225
+#: ../src/container.py:531 ../src/playlists.py:225
 msgid "Recently played"
 msgstr ""
 
-#: ../src/container.py:524 ../src/playlists.py:227
+#: ../src/container.py:532 ../src/playlists.py:227
 msgid "Never played"
 msgstr ""
 
-#: ../src/container.py:525 ../src/playlists.py:229
+#: ../src/container.py:533 ../src/playlists.py:229
 msgid "Random tracks"
 msgstr ""
 
@@ -600,58 +600,66 @@ msgstr ""
 msgid "WebKit support disabled"
 msgstr ""
 
-#: ../src/pop_menu.py:103 ../src/widgets_indicator.py:111
+#: ../src/pop_menu.py:73
+msgid "Show albums from artist"
+msgstr ""
+
+#: ../src/pop_menu.py:141 ../src/widgets_indicator.py:111
 #: ../data/InternalSearchRow.ui.h:2
 msgid "Add to queue"
 msgstr ""
 
-#: ../src/pop_menu.py:108
+#: ../src/pop_menu.py:146
 msgid "Next tracks"
 msgstr ""
 
-#: ../src/pop_menu.py:110 ../data/NextPopover.ui.h:1
+#: ../src/pop_menu.py:148 ../data/NextPopover.ui.h:1
 msgid "Next track"
 msgstr ""
 
-#: ../src/pop_menu.py:114 ../src/widgets_indicator.py:107
+#: ../src/pop_menu.py:152 ../src/widgets_indicator.py:107
 msgid "Remove from queue"
 msgstr ""
 
-#: ../src/pop_menu.py:190
+#: ../src/pop_menu.py:228
 msgid "Add to others"
 msgstr ""
 
-#: ../src/pop_menu.py:208
+#: ../src/pop_menu.py:246
 #, python-format
 msgid "Remove from \"%s\""
 msgstr ""
 
-#: ../src/pop_menu.py:214
+#: ../src/pop_menu.py:252
 #, python-format
 msgid "Add to \"%s\""
 msgstr ""
 
-#: ../src/pop_menu.py:321
+#: ../src/pop_menu.py:359
 msgid "Playback"
 msgstr ""
 
-#: ../src/pop_menu.py:368
+#: ../src/pop_menu.py:406
 msgid "Remove album"
 msgstr ""
 
-#: ../src/pop_menu.py:378
+#: ../src/pop_menu.py:416
 msgid "Modify information"
 msgstr ""
 
-#: ../src/pop_menu.py:440 ../data/PlaylistView.ui.h:1
+#: ../src/pop_menu.py:472 ../data/SettingsDialog.ui.h:10
+msgid "Artist"
+msgstr ""
+
+#: ../src/pop_menu.py:481 ../data/PlaylistView.ui.h:1
 msgid "Edit"
 msgstr ""
 
-#: ../src/pop_menu.py:570
+#: ../src/pop_menu.py:611
 msgid "Save genre"
 msgstr ""
 
-#: ../src/pop_menu.py:591 ../data/ExternalSearchRow.ui.h:1
+#: ../src/pop_menu.py:632 ../data/ExternalSearchRow.ui.h:1
 msgid "Save into collection"
 msgstr ""
 
@@ -1018,10 +1026,6 @@ msgstr ""
 
 #: ../data/SettingsDialog.ui.h:5
 msgid "Show genres"
-msgstr ""
-
-#: ../data/SettingsDialog.ui.h:10
-msgid "Artist"
 msgstr ""
 
 #: ../data/SettingsDialog.ui.h:11
