@@ -150,11 +150,15 @@ class ArtistsDatabase:
                 result = sql.execute(
                                  "SELECT DISTINCT artists.rowid,\
                                   artists.name\
-                                  FROM artists, albums, album_artists\
+                                  FROM artists, albums,\
+                                  album_genres, album_artists\
                                   WHERE album_artists.artist_id=artists.rowid\
                                   AND album_artists.album_id=albums.rowid\
+                                  AND album_genres.album_id=albums.rowid\
+                                  AND album_genres.genre_id!=?\
                                   ORDER BY artists.sortname\
-                                  COLLATE NOCASE COLLATE LOCALIZED")
+                                  COLLATE NOCASE COLLATE LOCALIZED",
+                                 (Type.CHARTS,))
             else:
                 genres = tuple(genre_ids)
                 request = "SELECT DISTINCT artists.rowid,\
@@ -176,7 +180,7 @@ class ArtistsDatabase:
             @param artist id as int
         """
         with SqlCursor(Lp().db) as sql:
-            result = sql.execute("SELECT COUNT(1) from artists WHERE rowid=?",
+            result = sql.execute("SELECT COUNT(1) FROM artists WHERE rowid=?",
                                  (artist_id,))
             v = result.fetchone()
             if v is not None:
@@ -190,9 +194,15 @@ class ArtistsDatabase:
             @return Array of id as int
         """
         with SqlCursor(Lp().db) as sql:
-            result = sql.execute("SELECT rowid FROM artists\
-                                  WHERE noaccents(name) LIKE ?\
-                                  LIMIT 25", ('%' + noaccents(string) + '%',))
+            result = sql.execute("SELECT artists.rowid FROM artists, albums,\
+                                  album_genres, album_artists\
+                                  WHERE noaccents(artists.name) LIKE ?\
+                                  AND album_artists.artist_id=artists.rowid\
+                                  AND album_artists.album_id=albums.rowid\
+                                  AND album_genres.album_id=albums.rowid\
+                                  AND album_genres.genre_id!=?\
+                                  LIMIT 25", ('%' + noaccents(string) + '%',
+                                              Type.CHARTS))
             return list(itertools.chain(*result))
 
     def count(self):

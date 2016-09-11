@@ -17,6 +17,7 @@ from lollypop.widgets_album import AlbumSimpleWidget
 from lollypop.pop_album import AlbumPopover
 from lollypop.pop_menu import AlbumMenu, AlbumMenuPopover
 from lollypop.objects import Album
+from lollypop.define import Type
 
 
 class AlbumsView(LazyLoadingView):
@@ -129,7 +130,9 @@ class AlbumsView(LazyLoadingView):
         if self.__press_rect is not None:
             album = Album(album_widget.get_id())
             pop_menu = AlbumMenu(album)
-            if album.is_youtube:
+            if self.__genre_ids and self.__genre_ids[0] == Type.CHARTS:
+                return
+            elif album.is_youtube:
                 popover = AlbumMenuPopover(album, pop_menu)
                 popover.set_relative_to(cover)
             else:

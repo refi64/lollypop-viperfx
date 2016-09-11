@@ -640,7 +640,9 @@ class AlbumsDatabase:
         """
         genre_ids = remove_static_genres(genre_ids)
         orderby = Lp().settings.get_enum('orderby')
-        if orderby == OrderBy.ARTIST:
+        if genre_ids and genre_ids[0] == Type.CHARTS:
+            order = "ORDER BY albums.id DESC"
+        elif orderby == OrderBy.ARTIST:
             order = "ORDER BY artists.sortname\
                      COLLATE NOCASE COLLATE LOCALIZED,\
                      albums.year,\
@@ -662,15 +664,18 @@ class AlbumsDatabase:
             result = []
             # Get albums for all artists
             if not artist_ids and not genre_ids:
-                result = sql.execute(
-                                 "SELECT DISTINCT albums.rowid\
-                                  FROM albums, artists, album_artists\
-                                  WHERE artists.rowid=album_artists.artist_id\
-                                  AND albums.rowid=album_artists.album_id\
-                                  %s" % order)
+                filters = (Type.CHARTS,)
+                request = "SELECT DISTINCT albums.rowid\
+                           FROM albums, artists, album_artists, album_genres\
+                           WHERE artists.rowid=album_artists.artist_id\
+                           AND album_genres.genre_id!=?\
+                           AND album_genres.album_id=albums.rowid\
+                           AND albums.rowid=album_artists.album_id\
+                           %s" % order
+                result = sql.execute(request, filters)
             # Get albums for genre
             elif not artist_ids:
-                genres = tuple(genre_ids)
+                filters = tuple(genre_ids)
                 request = "SELECT DISTINCT albums.rowid FROM albums,\
                            album_genres, artists, album_artists\
                            WHERE artists.rowid=album_artists.artist_id\
@@ -679,18 +684,21 @@ class AlbumsDatabase:
                 for genre_id in genre_ids:
                     request += "album_genres.genre_id=? OR "
                 request += "1=0) %s" % order
-                result = sql.execute(request, genres)
+                result = sql.execute(request, filters)
             # Get albums for artist
             elif not genre_ids:
-                artists = tuple(artist_ids)
+                filters = (Type.CHARTS,)
+                filters += tuple(artist_ids)
                 request = "SELECT DISTINCT albums.rowid\
-                           FROM albums, artists, album_artists WHERE\
-                           artists.rowid=album_artists.artist_id AND\
-                           album_artists.album_id=albums.rowid AND ("
+                           FROM albums, artists, album_artists, album_genres\
+                           WHERE artists.rowid=album_artists.artist_id\
+                           AND album_genres.genre_id!=?\
+                           AND album_genres.album_id=albums.rowid\
+                           AND album_artists.album_id=albums.rowid AND ("
                 for artist_id in artist_ids:
                     request += "album_artists.artist_id=? OR "
                 request += "1=0) %s" % order
-                result = sql.execute(request, artists)
+                result = sql.execute(request, filters)
             # Get albums for artist id and genre id
             else:
                 filters = tuple(artist_ids)

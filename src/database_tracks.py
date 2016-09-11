@@ -499,9 +499,33 @@ class TracksDatabase:
             @return track ids as [int]
         """
         with SqlCursor(Lp().db) as sql:
+            # First tracks loaded by play on search
             result = sql.execute("SELECT rowid FROM tracks\
                                   WHERE persistent=0")
             return list(itertools.chain(*result))
+
+    def get_old_from_charts(self, limit):
+        """
+            Return old tracks from charts
+            @param limit as int
+            @return track ids as [int]
+        """
+        with SqlCursor(Lp().db) as sql:
+            result = sql.execute("SELECT DISTINCT(album_id),\
+                                  COUNT(DISTINCT(album_id))\
+                                  FROM tracks\
+                                  WHERE persistent=3 LIMIT 1")
+            v = result.fetchone()
+            if v is not None and v[1] > limit:
+                album_id = v[0]
+            else:
+                album_id = None
+            # Get tracks
+            if album_id is not None:
+                result = sql.execute("SELECT rowid FROM tracks\
+                                     WHERE album_id=?", (album_id,))
+                return list(itertools.chain(*result))
+            return []
 
     def get_randoms(self):
         """

@@ -486,40 +486,42 @@ class Player(BinPlayer, QueuePlayer, UserPlaylistPlayer, RadioPlayer,
         except Exception as e:
             print("Player::set_prev", e)
 
-    def set_next(self):
+    def set_next(self, force=False):
         """
             Play next track
             @param sql as sqlite cursor
+            @param force as bool
         """
         try:
             # Reset finished context
             self._finished = NextContext.NONE
 
             # Look at externals
-            self._next_track = ExternalsPlayer.next(self)
+            next_track = ExternalsPlayer.next(self)
 
             # Look at radio
-            if self._next_track.id is None:
-                self._next_track = RadioPlayer.next(self)
+            if next_track.id is None:
+                next_track = RadioPlayer.next(self)
 
             # Look first at user queue
-            if self._next_track.id is None:
-                self._next_track = QueuePlayer.next(self)
+            if next_track.id is None:
+                next_track = QueuePlayer.next(self)
 
             # Look at user playlist then
-            if self._next_track.id is None:
-                self._next_track = UserPlaylistPlayer.next(self)
+            if next_track.id is None:
+                next_track = UserPlaylistPlayer.next(self, force)
 
             # Get a random album/track then
-            if self._next_track.id is None:
-                self._next_track = ShufflePlayer.next(self)
+            if next_track.id is None:
+                next_track = ShufflePlayer.next(self)
 
             # Get a linear track then
-            if self._next_track.id is None:
-                self._next_track = LinearPlayer.next(self)
+            if next_track.id is None:
+                next_track = LinearPlayer.next(self)
             self.emit('next-changed')
-            if self._next_track.is_youtube:
-                self._load_youtube(self._next_track, False)
+            if next_track.is_youtube:
+                self._load_youtube(next_track, False)
+            self._next_track = next_track
         except Exception as e:
             print("Player::set_next", e)
 

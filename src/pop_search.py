@@ -237,7 +237,6 @@ class SearchPopover(Gtk.Popover):
 
         builder = Gtk.Builder()
         builder.add_from_resource('/org/gnome/Lollypop/SearchPopover.ui')
-        builder.connect_signals(self)
 
         self.__new_btn = builder.get_object('new_btn')
 
@@ -259,6 +258,9 @@ class SearchPopover(Gtk.Popover):
             switch.set_state(Lp().settings.get_value('network-search'))
         builder.get_object('scrolled').add(self.__view)
         self.add(builder.get_object('widget'))
+        # Connect here because we don't want previous switch.set_state()
+        # to emit a signal on init
+        builder.connect_signals(self)
 
 #######################
 # PROTECTED           #
@@ -308,6 +310,11 @@ class SearchPopover(Gtk.Popover):
             @param state as bool
         """
         Lp().settings.set_boolean('network-search', state)
+        Lp().window.reload_view()
+        if state:
+            Lp().charts.update()
+        else:
+            Lp().charts.stop()
 
 #######################
 # PRIVATE             #
@@ -514,29 +521,6 @@ class SearchPopover(Gtk.Popover):
         return Lp().settings.get_value('network-search') and\
             which("youtube-dl") is not None
 
-    def __item_exists_in_db(self, item):
-        """
-            Search if item exists in db
-            @return bool
-        """
-        artist_ids = []
-        for artist in item.artists:
-            artist_id = Lp().artists.get_id(artist)
-            artist_ids.append(artist_id)
-        if item.is_track:
-            for track_id in Lp().tracks.get_ids_for_name(item.name):
-                db_artist_ids = Lp().tracks.get_artist_ids(track_id)
-                union = list(set(artist_ids) & set(db_artist_ids))
-                if union == db_artist_ids:
-                    return True
-        else:
-            album_ids = Lp().albums.get_ids(artist_ids, [])
-            for album_id in album_ids:
-                album_name = Lp().albums.get_name(album_id)
-                if album_name == item.album_name:
-                    return True
-        return False
-
     def __on_item_found(self, search):
         """
             Add rows for internal results
@@ -550,7 +534,7 @@ class SearchPopover(Gtk.Popover):
         if not search.items:
             return
         item = search.items.pop(0)
-        if self.__item_exists_in_db(item):
+        if item.exists_in_db():
             return
         search_row = SearchRow(item, False)
         search_row.show()

@@ -174,7 +174,7 @@ def remove_static_genres(genre_ids):
         Remove static genre ids
         @param genre ids as [int]
     """
-    return [item for item in genre_ids if item >= 0]
+    return [item for item in genre_ids if item >= 0 or item == Type.CHARTS]
 
 
 def set_loved(track_id, loved):

@@ -15,14 +15,13 @@ from gi.repository import Gtk, GLib, Gdk, GObject, Pango
 from cgi import escape
 from gettext import gettext as _
 
-from lollypop.define import Lp, ArtSize, NextContext
+from lollypop.define import Lp, ArtSize, NextContext, Type
 from lollypop.define import WindowSize, Shuffle, Loading
 from lollypop.widgets_track import TracksWidget, TrackRow
-from lollypop.objects import Track
+from lollypop.objects import Track, Album
 from lollypop.widgets_rating import RatingWidget
 from lollypop.pop_menu import AlbumMenuPopover, AlbumMenu
 from lollypop.pop_artwork import CoversPopover
-from lollypop.objects import Album
 
 
 class AlbumWidget:
@@ -871,7 +870,9 @@ class AlbumDetailedWidget(Gtk.Bin, AlbumWidget):
             @param widget as Gtk.Button
             @param album id as int
         """
-        if self._album.is_youtube:
+        if self.__genre_ids and self.__genre_ids[0] == Type.CHARTS:
+            return
+        elif self._album.is_youtube:
             popover = AlbumMenuPopover(self._album, AlbumMenu(self._album))
             popover.set_relative_to(widget)
         else:

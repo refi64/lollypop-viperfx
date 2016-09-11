@@ -129,23 +129,24 @@ class Database:
         except:
             exit(-1)
 
-    def del_non_persistent(self):
+    def del_tracks(self, track_ids):
         """
-            Delete non persistent tracks from db
+            Delete tracks from db
+            @param track_ids as [int]
         """
-        for track_id in Lp().tracks.get_non_persistent():
-            album_id = Lp().tracks.get_album_id(track_id)
-            genre_ids = Lp().tracks.get_genre_ids(track_id)
-            album_artist_ids = Lp().albums.get_artist_ids(album_id)
-            artist_ids = Lp().tracks.get_artist_ids(track_id)
-            Lp().tracks.remove(track_id)
-            Lp().tracks.clean(track_id)
-            Lp().albums.clean(album_id)
-            for artist_id in album_artist_ids + artist_ids:
-                Lp().artists.clean(artist_id)
-            for genre_id in genre_ids:
-                Lp().genres.clean(genre_id)
         with SqlCursor(Lp().db) as sql:
+            for track_id in track_ids:
+                album_id = Lp().tracks.get_album_id(track_id)
+                genre_ids = Lp().tracks.get_genre_ids(track_id)
+                album_artist_ids = Lp().albums.get_artist_ids(album_id)
+                artist_ids = Lp().tracks.get_artist_ids(track_id)
+                Lp().tracks.remove(track_id)
+                Lp().tracks.clean(track_id)
+                Lp().albums.clean(album_id)
+                for artist_id in album_artist_ids + artist_ids:
+                    Lp().artists.clean(artist_id)
+                for genre_id in genre_ids:
+                    Lp().genres.clean(genre_id)
             sql.commit()
 
 #######################

@@ -442,6 +442,8 @@ class Container:
         items.append((Type.RANDOMS, _("Random albums")))
         items.append((Type.PLAYLISTS, _("Playlists")))
         items.append((Type.RADIOS, _("Radios")))
+        if Lp().settings.get_value('network-search'):
+            items.append((Type.CHARTS, _("The charts")))
         if self.__show_genres:
             items.append((Type.ALL, _("All artists")))
         else:
@@ -719,7 +721,8 @@ class Container:
                 self.__update_view_device(selected_ids[0])
         elif selected_ids[0] in [Type.POPULARS,
                                  Type.RECENTS,
-                                 Type.RANDOMS]:
+                                 Type.RANDOMS,
+                                 Type.CHARTS]:
             self.__list_two.hide()
             self.__update_view_albums(selected_ids, [])
         elif selected_ids[0] == Type.RADIOS:

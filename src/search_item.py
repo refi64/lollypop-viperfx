@@ -10,6 +10,8 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
+from lollypop.define import Lp
+
 
 class SearchItem:
     """
@@ -23,9 +25,32 @@ class SearchItem:
         self.artist_ids = []
         # External
         self.artists = []
-        self.album = ""
+        self.album_name = ""
         self.name = ""
         self.track_number = 0
         self.cover = ""
         self.smallcover = ""
         self.subitems = []
+
+    def exists_in_db(self):
+        """
+            Search if item exists in db
+            @return bool
+        """
+        artist_ids = []
+        for artist in self.artists:
+            artist_id = Lp().artists.get_id(artist)
+            artist_ids.append(artist_id)
+        if self.is_track:
+            for track_id in Lp().tracks.get_ids_for_name(self.name):
+                db_artist_ids = Lp().tracks.get_artist_ids(track_id)
+                union = list(set(artist_ids) & set(db_artist_ids))
+                if union == db_artist_ids:
+                    return True
+        else:
+            album_ids = Lp().albums.get_ids(artist_ids, [])
+            for album_id in album_ids:
+                album_name = Lp().albums.get_name(album_id)
+                if album_name == self.album_name:
+                    return True
+        return False

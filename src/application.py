@@ -42,7 +42,6 @@ from lollypop.player import Player
 from lollypop.art import Art
 from lollypop.sqlcursor import SqlCursor
 from lollypop.settings import Settings, SettingsDialog
-from lollypop.notification import NotificationManager
 from lollypop.database_albums import AlbumsDatabase
 from lollypop.database_artists import ArtistsDatabase
 from lollypop.database_genres import GenresDatabase
@@ -51,16 +50,6 @@ from lollypop.playlists import Playlists
 from lollypop.radios import Radios
 from lollypop.collectionscanner import CollectionScanner
 from lollypop.fullscreen import FullScreen
-
-
-# Ubuntu > 16.04
-if Gtk.get_minor_version() > 18:
-    from lollypop.mpris import MPRIS
-    from lollypop.inhibitor import Inhibitor
-# Ubuntu <= 16.04, Debian Jessie, ElementaryOS
-else:
-    from lollypop.mpris_legacy import MPRIS
-    from lollypop.inhibitor_legacy import Inhibitor
 
 
 class Application(Gtk.Application):
@@ -151,9 +140,21 @@ class Application(Gtk.Application):
         if LastFM is not None:
             self.lastfm = LastFM()
         if not self.settings.get_value('disable-mpris'):
+            # Ubuntu > 16.04
+            if Gtk.get_minor_version() > 18:
+                from lollypop.mpris import MPRIS
+            # Ubuntu <= 16.04, Debian Jessie, ElementaryOS
+            else:
+                from lollypop.mpris_legacy import MPRIS
             MPRIS(self)
         if not self.settings.get_value('disable-notifications'):
+            from lollypop.notification import NotificationManager
             self.notify = NotificationManager()
+
+        if self.settings.get_value('network-search'):
+            from lollypop.charts_itunes import ItunesCharts
+            self.charts = ItunesCharts()
+            self.charts.update()
 
         settings = Gtk.Settings.get_default()
         dark = self.settings.get_value('dark-ui')
@@ -199,6 +200,12 @@ class Application(Gtk.Application):
             # after player::restore_state() signals
             GLib.idle_add(self.window.toolbar.set_mark)
             # Will not start sooner
+            # Ubuntu > 16.04
+            if Gtk.get_minor_version() > 18:
+                from lollypop.inhibitor import Inhibitor
+            # Ubuntu <= 16.04, Debian Jessie, ElementaryOS
+            else:
+                from lollypop.inhibitor_legacy import Inhibitor
             self.inhibitor = Inhibitor()
 
     def prepare_to_exit(self, action=None, param=None):
@@ -257,7 +264,7 @@ class Application(Gtk.Application):
             self.scanner.stop()
             GLib.idle_add(self.quit)
             return
-        self.db.del_non_persistent()
+        self.db.del_tracks(self.tracks.get_non_persistent())
         try:
             with SqlCursor(self.db) as sql:
                 sql.execute('VACUUM')

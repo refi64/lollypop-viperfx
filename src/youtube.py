@@ -10,31 +10,27 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-from gi.repository import GLib, Gio, GObject
+from gi.repository import GLib, Gio
 
-from gettext import gettext as _
 from threading import Thread
 import json
 
 from lollypop.sqlcursor import SqlCursor
 from lollypop.tagreader import TagReader
 from lollypop.objects import Track, Album
-from lollypop.define import Lp, DbPersistent, GOOGLE_API_ID
+from lollypop.define import Lp, DbPersistent, GOOGLE_API_ID, Type
 
 
-class Youtube(GObject.GObject):
+class Youtube:
     """
         Youtube helper
     """
-    __gsignals__ = {
-        'uri-set': (GObject.SignalFlags.RUN_FIRST, None, (int,)),
-    }
 
     def __init__(self):
         """
             Init helper
         """
-        GObject.GObject.__init__(self)
+        pass
 
     def save_track(self, item, persistent):
         """
@@ -52,7 +48,8 @@ class Youtube(GObject.GObject):
             @param item as SearchItem
             @param persistent as DbPersistent
         """
-        Lp().window.progress.add(self)
+        if persistent != DbPersistent.CHARTS:
+            Lp().window.progress.add(self)
         t = Thread(target=self.__save_album_thread, args=(item, persistent))
         t.daemon = True
         t.start()
@@ -139,7 +136,10 @@ class Youtube(GObject.GObject):
                                                 album_artist_ids,
                                                 "", 0, 0)
 
-            (genre_ids, new_genre_ids) = t.add_genres(_("Youtube"), album_id)
+            if persistent == DbPersistent.CHARTS:
+                (genre_ids, new_genre_ids) = ([Type.CHARTS], [])
+            else:
+                (genre_ids, new_genre_ids) = t.add_genres("Youtube", album_id)
 
             # Add track to db
             uri = "https://www.youtube.com/watch?v=%s" % yid

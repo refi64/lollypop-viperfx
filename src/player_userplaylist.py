@@ -77,15 +77,20 @@ class UserPlaylistPlayer(BasePlayer):
         else:
             return self.__user_playlist
 
-    def next(self):
+    def next(self, force):
         """
             Next Track
+            @param force as bool
             @return Track
         """
         track = Track()
+        if force:
+            current_track = self._next_track
+        else:
+            current_track = self.current_track
         if self.__user_playlist and\
-           self._current_track.id in self.__user_playlist:
-            idx = self.__user_playlist.index(self._current_track.id)
+           current_track.id in self.__user_playlist:
+            idx = self.__user_playlist.index(current_track.id)
             if idx + 1 >= len(self.__user_playlist):
                 self._finished = NextContext.STOP_ALL
                 idx = 0

@@ -56,6 +56,7 @@ class DbPersistent:
     NONE = 0
     INTERNAL = 1
     EXTERNAL = 2
+    CHARTS = 3
 
 
 class OpenLink:
@@ -126,7 +127,8 @@ class Type:
     RADIOS = -6
     EXTERNALS = -7
     SEARCH = -8
-    ALL = -9
+    CHARTS = -9
+    ALL = -10
     LOVED = -997
     NEVER = -998
     DEVICES = -1000
