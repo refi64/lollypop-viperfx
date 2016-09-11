@@ -11,6 +11,7 @@ src/art_base.py
 src/art.py
 src/art_radio.py
 src/art_widgets.py
+src/charts_itunes.py
 src/codecs.py
 src/collectionscanner.py
 src/container.py

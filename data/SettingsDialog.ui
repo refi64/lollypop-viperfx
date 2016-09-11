@@ -821,7 +821,7 @@
                     <property name="margin_top">10</property>
                     <property name="label" translatable="yes">Google Web Services need a custom API key.
 Without one, you will reach default quota soon...
-Lollypop needs this to download artwork and music.</property>
+Lollypop needs this to search artwork and music.</property>
                     <property name="justify">center</property>
                   </object>
                   <packing>

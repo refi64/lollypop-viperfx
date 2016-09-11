@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-09-11 17:49+0200\n"
+"POT-Creation-Date: 2016-09-12 10:17+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -316,7 +316,7 @@ msgid ""
 "    - Artist informations disabled"
 msgstr ""
 
-#: ../src/application.py:460
+#: ../src/application.py:461
 msgid "Lollypop: You need to install yelp."
 msgstr ""
 
@@ -326,6 +326,94 @@ msgstr ""
 
 #: ../src/art_widgets.py:332
 msgid "Reset artwork?"
+msgstr ""
+
+#: ../src/charts_itunes.py:35
+msgid "alternative"
+msgstr ""
+
+#: ../src/charts_itunes.py:37
+msgid "anime"
+msgstr ""
+
+#: ../src/charts_itunes.py:39
+msgid "blues"
+msgstr ""
+
+#: ../src/charts_itunes.py:41
+msgid "brazil"
+msgstr ""
+
+#: ../src/charts_itunes.py:43
+msgid "classic"
+msgstr ""
+
+#: ../src/charts_itunes.py:45
+msgid "country"
+msgstr ""
+
+#: ../src/charts_itunes.py:47
+msgid "Dance"
+msgstr ""
+
+#: ../src/charts_itunes.py:49
+msgid "electro"
+msgstr ""
+
+#: ../src/charts_itunes.py:51
+msgid "french"
+msgstr ""
+
+#: ../src/charts_itunes.py:53
+msgid "german"
+msgstr ""
+
+#: ../src/charts_itunes.py:55
+msgid "rap"
+msgstr ""
+
+#: ../src/charts_itunes.py:57
+msgid "hip hop"
+msgstr ""
+
+#: ../src/charts_itunes.py:59
+msgid "jazz"
+msgstr ""
+
+#: ../src/charts_itunes.py:61
+msgid "latin"
+msgstr ""
+
+#: ../src/charts_itunes.py:63
+msgid "new age"
+msgstr ""
+
+#: ../src/charts_itunes.py:65
+msgid "opera"
+msgstr ""
+
+#: ../src/charts_itunes.py:67
+msgid "pop"
+msgstr ""
+
+#: ../src/charts_itunes.py:69
+msgid "soul"
+msgstr ""
+
+#: ../src/charts_itunes.py:72
+msgid "reggae"
+msgstr ""
+
+#: ../src/charts_itunes.py:74
+msgid "rock"
+msgstr ""
+
+#: ../src/charts_itunes.py:76
+msgid "soundtrack"
+msgstr ""
+
+#: ../src/charts_itunes.py:78
+msgid "World"
 msgstr ""
 
 #: ../src/collectionscanner.py:68
@@ -980,7 +1068,7 @@ msgstr ""
 msgid ""
 "Google Web Services need a custom API key.\n"
 "Without one, you will reach default quota soon...\n"
-"Lollypop needs this to download artwork and music."
+"Lollypop needs this to search artwork and music."
 msgstr ""
 
 #: ../data/SettingsDialog.ui.h:38
