@@ -9,8 +9,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lollypop\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-09-11 17:49+0200\n"
-"PO-Revision-Date: 2016-09-11 15:51+0000\n"
+"POT-Creation-Date: 2016-09-12 10:34+0200\n"
+"PO-Revision-Date: 2016-09-12 08:36+0000\n"
 "Last-Translator: Cédric Bellegarde <web@adishatz.org>\n"
 "Language-Team: French (http://www.transifex.com/gnumdk/lollypop/language/fr/)\n"
 "MIME-Version: 1.0\n"
@@ -163,7 +163,7 @@ msgid "Use dark gtk theme"
 msgstr "Utiliser le thème gtk sombre"
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:36
-msgid "Disable the use client side window decorations (headerbar)"
+msgid "Disable the use of client side window decorations (headerbar)"
 msgstr "Désactiver les décorations coté client (Barre de titre)"
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:37 ../data/SettingsDialog.ui.h:6
@@ -318,7 +318,7 @@ msgid ""
 "    - Artist informations disabled"
 msgstr "- Scrobbler désactivé\n- Téléchargement automatique des pochettes désactivé\n- Informations sur les artistes désactivée"
 
-#: ../src/application.py:460
+#: ../src/application.py:461
 msgid "Lollypop: You need to install yelp."
 msgstr "Lollypop: Vous devez installer yelp."
 
@@ -329,6 +329,138 @@ msgstr "Choisissez une image"
 #: ../src/art_widgets.py:332
 msgid "Reset artwork?"
 msgstr "Réinitialiser l'image?"
+
+#. Translators: Only translate this music genre
+#. if it makes sense for you
+#: ../src/charts_itunes.py:37
+msgid "alternative"
+msgstr "Alternatif"
+
+#. Translators: Only translate this music genre
+#. if it makes sense for you
+#: ../src/charts_itunes.py:41
+msgid "anime"
+msgstr "animation"
+
+#. Translators: Only translate this music genre
+#. if it makes sense for you
+#: ../src/charts_itunes.py:45
+msgid "blues"
+msgstr "blues"
+
+#. Translators: Only translate this music genre
+#. if it makes sense for you
+#: ../src/charts_itunes.py:49
+msgid "brazil"
+msgstr "brésil"
+
+#. Translators: Only translate this music genre
+#. if it makes sense for you
+#: ../src/charts_itunes.py:53
+msgid "classic"
+msgstr "classique"
+
+#. Translators: Only translate this music genre
+#. if it makes sense for you
+#: ../src/charts_itunes.py:57
+msgid "country"
+msgstr "country"
+
+#. Translators: Only translate this music genre
+#. if it makes sense for you
+#: ../src/charts_itunes.py:61
+msgid "dance"
+msgstr "dance"
+
+#. Translators: Only translate this music genre
+#. if it makes sense for you
+#: ../src/charts_itunes.py:65
+msgid "electro"
+msgstr "électro"
+
+#. Translators: Only translate this music genre
+#. if it makes sense for you
+#: ../src/charts_itunes.py:69
+msgid "french"
+msgstr "français"
+
+#. Translators: Only translate this music genre
+#. if it makes sense for you
+#: ../src/charts_itunes.py:73
+msgid "german"
+msgstr "allemand"
+
+#. Translators: Only translate this music genre
+#. if it makes sense for you
+#: ../src/charts_itunes.py:77
+msgid "rap"
+msgstr "rap"
+
+#. Translators: Only translate this music genre
+#. if it makes sense for you
+#: ../src/charts_itunes.py:81
+msgid "hip hop"
+msgstr "hip hop"
+
+#. Translators: Only translate this music genre
+#. if it makes sense for you
+#: ../src/charts_itunes.py:85
+msgid "jazz"
+msgstr "jazz"
+
+#. Translators: Only translate this music genre
+#. if it makes sense for you
+#: ../src/charts_itunes.py:89
+msgid "latin"
+msgstr "latino"
+
+#. Translators: Only translate this music genre
+#. if it makes sense for you
+#: ../src/charts_itunes.py:93
+msgid "new age"
+msgstr "new age"
+
+#. Translators: Only translate this music genre
+#. if it makes sense for you
+#: ../src/charts_itunes.py:97
+msgid "opera"
+msgstr "opera"
+
+#. Translators: Only translate this music genre
+#. if it makes sense for you
+#: ../src/charts_itunes.py:101
+msgid "pop"
+msgstr "pop"
+
+#. Translators: Only translate this music genre
+#. if it makes sense for you
+#: ../src/charts_itunes.py:105
+msgid "soul"
+msgstr "soul"
+
+#. Translators: Only translate this music genre
+#. if it makes sense for you
+#: ../src/charts_itunes.py:110
+msgid "reggae"
+msgstr "reggae"
+
+#. Translators: Only translate this music genre
+#. if it makes sense for you
+#: ../src/charts_itunes.py:114
+msgid "rock"
+msgstr "rock"
+
+#. Translators: Only translate this music genre
+#. if it makes sense for you
+#: ../src/charts_itunes.py:118
+msgid "soundtrack"
+msgstr "Bande originale"
+
+#. Translators: Only translate this music genre
+#. if it makes sense for you
+#: ../src/charts_itunes.py:122
+msgid "world"
+msgstr "monde"
 
 #: ../src/collectionscanner.py:68
 msgid "Your music is updating"
@@ -801,17 +933,17 @@ msgstr "Confirmer"
 
 #: ../data/ArtworkSearch.ui.h:3
 msgid ""
-"Lollypop uses \"Google Custom Search API\" to search image on the web.\n"
+"Lollypop uses \"Google Custom Search API\" to search images on the web.\n"
 "This API is limited so it mays not work with default API key.\n"
-"Please create a search engine here:"
-msgstr "Lollypop utilise \"Google Custom Search API\" pour rechercher des images sur le web.\nCette API est limitée donc cela pourrait ne pas fonctionner avec la clé d'API par défaut.\nMerci de créer un moteur de recherche ici:"
+"Please create a \"Custom Search Engine\" here:"
+msgstr "Lollypop utilise \"Google Custom Search API\" pour rechercher des images sur le web.\nCette API est limitée donc cela pourrait ne pas fonctionner avec la clé d'API par défaut.\nMerci de créer un \"Custom Search Engine\" ici:"
 
 #: ../data/ArtworkSearch.ui.h:6 ../data/SettingsDialog.ui.h:37
 msgid "API key"
 msgstr "Clé d'API"
 
 #: ../data/DeviceManagerView.ui.h:1
-msgid "Synchronize your device with this playlists"
+msgid "Synchronize your device with these playlists"
 msgstr "Synchronisez votre appareil avec ces listes de lecture"
 
 #: ../data/DeviceManagerWidget.ui.h:2
@@ -939,7 +1071,7 @@ msgid "Preview tracks on"
 msgstr "Prévisualiser les morceaux sur"
 
 #: ../data/SettingsDialog.ui.h:24
-msgid "None audio device"
+msgid "No audio device"
 msgstr "Aucun périphérique audio"
 
 #: ../data/SettingsDialog.ui.h:25
@@ -982,8 +1114,8 @@ msgstr "Vous devez installer pylast et gi secret"
 msgid ""
 "Google Web Services need a custom API key.\n"
 "Without one, you will reach default quota soon...\n"
-"Lollypop needs this to download artwork and music."
-msgstr "Google Web Services a besoin d'une clé d'API personnalisée.\nSans cette dernière, vous aurez atteint le quota par défaut rapidement...\nLollypop a besoin de cela pour télécharger des pochettes et de la musique."
+"Lollypop needs this to search artwork and music."
+msgstr "Google Web Services a besoin d'une clé d'API personnalisée.\nSans cette dernière, vous aurez atteint le quota par défaut rapidement...\nLollypop a besoin de cela pour rechercher des pochettes et de la musique."
 
 #: ../data/SettingsDialog.ui.h:38
 msgid ""
