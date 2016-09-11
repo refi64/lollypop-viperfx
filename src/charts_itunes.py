@@ -122,8 +122,11 @@ class ItunesCharts:
                     if itunes_id not in itunes_ids:
                         itunes_ids.append(itunes_id)
 
-        limit = len(itunes_ids) * 20 + 20
         language = getdefaultlocale()[0][0:2]
+        limit = len(itunes_ids) * 20 + 20
+        # Allow more albums if user do not have many genres
+        if limit < 100:
+            limit = 100
         self.__update_for_url(self.__ALL % language, limit)
         for itunes_id in itunes_ids:
             if self.__stop:
