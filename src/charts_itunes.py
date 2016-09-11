@@ -136,6 +136,8 @@ class ItunesCharts:
             @param url as str
             @param limit as int
         """
+        if not Gio.NetworkMonitor.get_default().get_network_available():
+                return
         debug("ItunesCharts::__update_for_url(): %s => %s" % (url, limit))
         yt = Youtube()
         ids = self.__get_ids(url)
