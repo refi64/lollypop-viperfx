@@ -52,6 +52,6 @@ class SearchItem:
             album_ids = Lp().albums.get_ids(artist_ids, [])
             for album_id in album_ids:
                 album_name = Lp().albums.get_name(album_id)
-                if album_name == self.album_name:
+                if album_name.lower() == self.album_name.lower():
                     return True
         return False
