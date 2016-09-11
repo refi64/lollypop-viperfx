@@ -870,8 +870,10 @@ class AlbumDetailedWidget(Gtk.Bin, AlbumWidget):
             @param widget as Gtk.Button
             @param album id as int
         """
-        if self.__genre_ids and self.__genre_ids[0] == Type.CHARTS:
-            return
+        if self._album.genre_ids and self._album.genre_ids[0] == Type.CHARTS:
+            popover = AlbumMenuPopover(self._album, None)
+            popover.set_relative_to(widget)
+            popover.set_position(Gtk.PositionType.BOTTOM)
         elif self._album.is_youtube:
             popover = AlbumMenuPopover(self._album, AlbumMenu(self._album))
             popover.set_relative_to(widget)

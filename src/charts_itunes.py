@@ -122,7 +122,7 @@ class ItunesCharts:
                     if itunes_id not in itunes_ids:
                         itunes_ids.append(itunes_id)
 
-        limit = (len(itunes_ids) + 1) * 20
+        limit = len(itunes_ids) * 20 + 100
         language = getdefaultlocale()[0][0:2]
         self.__update_for_url(self.__ALL % language, limit)
         for itunes_id in itunes_ids:
@@ -139,7 +139,9 @@ class ItunesCharts:
         debug("ItunesCharts::__update_for_url(): %s => %s" % (url, limit))
         yt = Youtube()
         ids = self.__get_ids(url)
-        for album in self.__get_albums(ids):
+        while ids:
+            itunes_id = ids.pop(0)
+            album = self.__get_album(itunes_id)
             if album.exists_in_db():
                 continue
             if self.__stop:
@@ -151,51 +153,49 @@ class ItunesCharts:
             yt.save_album(album, DbPersistent.CHARTS)
             sleep(10)
 
-    def __get_albums(self, ids):
+    def __get_album(self, itunes_id):
         """
-            Get itunes album items
-            @param ids as [int]
-            @return [SearchItem]
+            Get itunes album items, remove o
+            @param id as int
+            @return SearchItem/None
         """
         if not Gio.NetworkMonitor.get_default().get_network_available():
                 return
-        album_items = []
         language = getdefaultlocale()[0][0:2]
         try:
-            for itunes_id in ids:
-                sleep(10)
-                url = self.__INFO % (itunes_id, language)
-                f = Gio.File.new_for_uri(url)
-                (status, data, tag) = f.load_contents(self._cancel)
-                if not status or self.__stop:
-                    return
-                decode = json.loads(data.decode('utf-8'))
-                item = decode['results'][0]
-                album_item = SearchItem()
-                album_item.name = item['collectionName']
-                album_item.album_name = album_item.name
-                album_item.artists.append(item['artistName'])
-                album_item.cover = item['artworkUrl60'].replace(
-                                                   '60x60',
-                                                   '512x512')
-                album_items.append(album_item)
+            debug("ItunesCharts::__get_albums(): %s" % itunes_id)
+            url = self.__INFO % (itunes_id, language)
+            f = Gio.File.new_for_uri(url)
+            (status, data, tag) = f.load_contents(self._cancel)
+            if not status or self.__stop:
+                return
+            decode = json.loads(data.decode('utf-8'))
+            item = decode['results'][0]
+            album_item = SearchItem()
+            album_item.name = item['collectionName']
+            album_item.album_name = album_item.name
+            album_item.artists.append(item['artistName'])
+            album_item.cover = item['artworkUrl60'].replace(
+                                               '60x60',
+                                               '512x512')
 
-                for item in decode['results'][1:]:
-                    track_item = SearchItem()
-                    track_item.is_track = True
-                    track_item.name = item['trackName']
-                    track_item.album = album_item.name
-                    track_item.tracknumber = int(
-                                              item['trackNumber'])
-                    track_item.discnumber = int(
-                                               item['discNumber'])
-                    track_item.duration = int(
-                                        item['trackTimeMillis']) / 1000
-                    track_item.artists.append(item['artistName'])
-                    album_item.subitems.append(track_item)
+            for item in decode['results'][1:]:
+                track_item = SearchItem()
+                track_item.is_track = True
+                track_item.name = item['trackName']
+                track_item.album = album_item.name
+                track_item.tracknumber = int(
+                                          item['trackNumber'])
+                track_item.discnumber = int(
+                                           item['discNumber'])
+                track_item.duration = int(
+                                    item['trackTimeMillis']) / 1000
+                track_item.artists.append(item['artistName'])
+                album_item.subitems.append(track_item)
+            return album_item
         except Exception as e:
             print("ItunesCharts::__get_items()", e)
-        return album_items
+        return None
 
     def __get_ids(self, url):
         """

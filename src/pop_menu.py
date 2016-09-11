@@ -470,7 +470,8 @@ class TrackMenuPopover(Gtk.Popover):
             @param menu as Gio.Menu
         """
         Gtk.Popover.__init__(self)
-        self.bind_model(menu, None)
+        if menu is not None:
+            self.bind_model(menu, None)
 
         if track.year != track.album.year:
             track_year = str(track.year)
@@ -544,7 +545,8 @@ class AlbumMenuPopover(Gtk.Popover):
             @param menu as Gio.Menu
         """
         Gtk.Popover.__init__(self)
-        self.bind_model(menu, None)
+        if menu is not None:
+            self.bind_model(menu, None)
 
         edit = Gtk.Entry()
         edit.set_margin_end(5)
@@ -575,7 +577,8 @@ class AlbumMenuPopover(Gtk.Popover):
         stack.show_all()
 
         menu_widget = self.get_child()
-        menu_widget.reparent(grid)
+        if menu_widget is not None:
+            menu_widget.reparent(grid)
 
         # separator = Gtk.Separator()
         # separator.show()

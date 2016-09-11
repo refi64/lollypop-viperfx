@@ -129,14 +129,14 @@ class AlbumsView(LazyLoadingView):
             self._scrolled.get_vadjustment().set_value(y)
         if self.__press_rect is not None:
             album = Album(album_widget.get_id())
-            pop_menu = AlbumMenu(album)
             if self.__genre_ids and self.__genre_ids[0] == Type.CHARTS:
-                return
+                popover = AlbumMenuPopover(album, None)
+                popover.set_relative_to(cover)
             elif album.is_youtube:
-                popover = AlbumMenuPopover(album, pop_menu)
+                popover = AlbumMenuPopover(album, AlbumMenu(album))
                 popover.set_relative_to(cover)
             else:
-                popover = Gtk.Popover.new_from_model(cover, pop_menu)
+                popover = Gtk.Popover.new_from_model(cover, AlbumMenu(album))
             popover.set_position(Gtk.PositionType.BOTTOM)
             popover.set_pointing_to(self.__press_rect)
         else:
