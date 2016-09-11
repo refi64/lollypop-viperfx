@@ -87,7 +87,7 @@ class UserPlaylistPlayer(BasePlayer):
         if force:
             current_track = self._next_track
         else:
-            current_track = self.current_track
+            current_track = self._current_track
         if self.__user_playlist and\
            current_track.id in self.__user_playlist:
             idx = self.__user_playlist.index(current_track.id)
