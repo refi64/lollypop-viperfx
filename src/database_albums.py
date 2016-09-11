@@ -796,9 +796,12 @@ class AlbumsDatabase:
         """
         with SqlCursor(Lp().db) as sql:
             result = sql.execute("SELECT albums.rowid\
-                                  FROM albums\
+                                  FROM albums, album_genres\
                                   WHERE noaccents(name) LIKE ?\
-                                  LIMIT 25", ('%' + noaccents(string) + '%',))
+                                  AND album_genres.genre_id!=?\
+                                  AND album_genres.album_id=albums.rowid\
+                                  LIMIT 25", ('%' + noaccents(string) + '%',
+                                              Type.CHARTS))
             return list(itertools.chain(*result))
 
     def calculate_artist_ids(self, album_id):
