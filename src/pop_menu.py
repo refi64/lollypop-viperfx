@@ -554,7 +554,10 @@ class AlbumMenuPopover(Gtk.Popover):
         edit.set_margin_bottom(5)
         edit.set_property('hexpand', True)
         edit.set_property('halign', Gtk.Align.CENTER)
-        edit.set_text(", ".join(Lp().albums.get_genres(album.id)))
+        genres = ", ".join(Lp().albums.get_genres(album.id))
+        if not genres:
+            genres = "Youtube"
+        edit.set_text(genres)
         edit.show()
 
         save = Gtk.Button.new_from_icon_name('document-save-symbolic',
