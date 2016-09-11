@@ -80,7 +80,7 @@ class ArtistsDatabase:
         """
         with SqlCursor(Lp().db) as sql:
             result = sql.execute("SELECT rowid from artists\
-                                  WHERE name=?", (name,))
+                                  WHERE name=? COLLATE NOCASE", (name,))
             v = result.fetchone()
             if v is not None:
                 return v[0]
