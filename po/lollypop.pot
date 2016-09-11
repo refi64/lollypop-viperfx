@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-09-12 10:17+0200\n"
+"POT-Creation-Date: 2016-09-12 10:24+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -162,7 +162,7 @@ msgid "Use dark gtk theme"
 msgstr ""
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:36
-msgid "Disable the use client side window decorations (headerbar)"
+msgid "Disable the use of client side window decorations (headerbar)"
 msgstr ""
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:37 ../data/SettingsDialog.ui.h:6
@@ -887,9 +887,9 @@ msgstr ""
 
 #: ../data/ArtworkSearch.ui.h:3
 msgid ""
-"Lollypop uses \"Google Custom Search API\" to search image on the web.\n"
+"Lollypop uses \"Google Custom Search API\" to search images on the web.\n"
 "This API is limited so it mays not work with default API key.\n"
-"Please create a search engine here:"
+"Please create a \"Custom Search Engine\" here:"
 msgstr ""
 
 #: ../data/ArtworkSearch.ui.h:6 ../data/SettingsDialog.ui.h:37
@@ -897,7 +897,7 @@ msgid "API key"
 msgstr ""
 
 #: ../data/DeviceManagerView.ui.h:1
-msgid "Synchronize your device with this playlists"
+msgid "Synchronize your device with these playlists"
 msgstr ""
 
 #: ../data/DeviceManagerWidget.ui.h:2
@@ -1025,7 +1025,7 @@ msgid "Preview tracks on"
 msgstr ""
 
 #: ../data/SettingsDialog.ui.h:24
-msgid "None audio device"
+msgid "No audio device"
 msgstr ""
 
 #: ../data/SettingsDialog.ui.h:25

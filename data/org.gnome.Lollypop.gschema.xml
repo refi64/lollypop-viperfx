@@ -149,7 +149,7 @@
         </key>
          <key type="b" name="disable-csd">
             <default>false</default>
-            <summary>Disable the use client side window decorations (headerbar)</summary>
+            <summary>Disable the use of client side window decorations (headerbar)</summary>
             <description></description>
         </key>
      	 <key type="b" name="show-compilations">

@@ -218,9 +218,9 @@
           <object class="GtkLabel">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
-            <property name="label" translatable="yes">Lollypop uses "Google Custom Search API" to search image on the web.
+            <property name="label" translatable="yes">Lollypop uses "Google Custom Search API" to search images on the web.
 This API is limited so it mays not work with default API key.
-Please create a search engine here:</property>
+Please create a "Custom Search Engine" here:</property>
           </object>
           <packing>
             <property name="left_attach">0</property>
