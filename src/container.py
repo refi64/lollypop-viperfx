@@ -259,6 +259,14 @@ class Container:
             d.make_directory_with_parents(None)
         self.__devices[self.__devices_index] = dev
 
+    def show_artists_albums(self, artist_ids):
+        """
+            Show albums from artists
+        """
+        self.__update_view_artists([], artist_ids)
+        GLib.idle_add(self.__list_two.hide)
+        GLib.idle_add(self.__list_one.select_ids, [])
+
     @property
     def progress(self):
         """

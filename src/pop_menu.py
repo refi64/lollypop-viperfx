@@ -43,6 +43,44 @@ class BaseMenu(Gio.Menu):
         self._is_album = is_album
 
 
+class ArtistMenu(BaseMenu):
+    """
+        Contextual menu for queue
+    """
+
+    def __init__(self, object_id, genre_ids, artist_ids, is_album):
+        """
+            Init playlists menu
+            @param object id as int
+            @param genre ids as [int]
+            @param artist ids as [int]
+            @param is album as bool
+        """
+        BaseMenu.__init__(self, object_id, genre_ids, artist_ids, is_album)
+        self.__set_artists_actions()
+
+#######################
+# PRIVATE             #
+#######################
+    def __set_artists_actions(self):
+        """
+            Set queue actions
+        """
+        go_artist_action = Gio.SimpleAction(name="go_artist_action")
+        Lp().add_action(go_artist_action)
+        go_artist_action.connect('activate',
+                                 self.__go_to_artists)
+        self.append(_("Show albums from artist"), 'app.go_artist_action')
+
+    def __go_to_artists(self, action, variant):
+        """
+            Show albums from artists
+            @param SimpleAction
+            @param GVariant
+        """
+        Lp().window.show_artists_albums(self._artist_ids)
+
+
 class QueueMenu(BaseMenu):
     """
         Contextual menu for queue
@@ -431,13 +469,16 @@ class AlbumMenu(Gio.Menu):
             @param album as Album
         """
         Gio.Menu.__init__(self)
-        self.insert_section(0, _("Queue"),
+        self.insert_section(0, _("Artist"),
+                            ArtistMenu(album.id, album.genre_ids,
+                                       album.artist_ids, True))
+        self.insert_section(1, _("Queue"),
                             QueueMenu(album.id, album.genre_ids,
                                       album.artist_ids, True))
-        self.insert_section(1, _("Playlists"),
+        self.insert_section(2, _("Playlists"),
                             PlaylistsMenu(album.id, album.genre_ids,
                                           album.artist_ids, True))
-        self.insert_section(2, _("Edit"),
+        self.insert_section(3, _("Edit"),
                             EditMenu(album.id, album.is_youtube))
 
 
