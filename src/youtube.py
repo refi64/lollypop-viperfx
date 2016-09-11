@@ -14,6 +14,7 @@ from gi.repository import GLib, Gio
 
 from threading import Thread
 import json
+from re import findall
 
 from lollypop.sqlcursor import SqlCursor
 from lollypop.tagreader import TagReader
@@ -30,7 +31,7 @@ class Youtube:
         """
             Init helper
         """
-        pass
+        self.__fallback = False
 
     def save_track(self, item, persistent):
         """
@@ -164,6 +165,8 @@ class Youtube:
             Get youtube id
             @param item as SearchItem
         """
+        if self.__fallback:
+            return self.__get_youtube_id_fallback(item)
         search = "%s %s" % (item.artists[0],
                             item.name)
         key = Lp().settings.get_value('cs-api-key').get_string()
@@ -180,6 +183,28 @@ class Youtube:
                 return decode['items'][0]['id']['videoId']
         except Exception as e:
             print("Youtube::__get_youtube_id():", e, f.get_uri())
+            self.__fallback = True
+        return None
+
+    def __get_youtube_id_fallback(self, item):
+        """
+            Get youtube id (fallback)
+            @param item as SearchItem
+        """
+        try:
+            search = "%s %s" % (item.artists[0],
+                                item.name)
+            f = Gio.File.new_for_uri("https://www.youtube.com/"
+                                     "results?search_query=%s" % search)
+            (status, data, tag) = f.load_contents(None)
+            if status:
+                html = data.decode('utf-8')
+                reg = r'<a.*href=[\'"]?/watch\?v=([^\'" >]+)'
+                urls = findall(reg, html)
+                return urls[0]
+        except Exception as e:
+            print("Youtube::__get_youtube_id_fallback():", e, f.get_uri())
+            self.__fallback = True
         return None
 
     def __save_cover(self, item, album_id):
