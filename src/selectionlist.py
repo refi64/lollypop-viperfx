@@ -390,7 +390,7 @@ class SelectionList(Gtk.ScrolledWindow):
         elif object_id == Type.NEVER:
             icon = 'document-new-symbolic'
         elif object_id == Type.CHARTS:
-            icon = 'emblem-shared-symbolic'
+            icon = 'application-rss+xml-symbolic'
         return icon
 
     def __sort_items(self, model, itera, iterb, data):
