@@ -144,7 +144,7 @@ class ItunesCharts:
         while ids:
             itunes_id = ids.pop(0)
             album = self.__get_album(itunes_id)
-            if album.exists_in_db():
+            if album is None or album.exists_in_db():
                 continue
             if self.__stop:
                 return
