@@ -184,6 +184,7 @@ class ItunesCharts:
                 track_item.is_track = True
                 track_item.name = item['trackName']
                 track_item.album = album_item.name
+                track_item.year = item['releaseDate'][:4]
                 track_item.tracknumber = int(
                                           item['trackNumber'])
                 track_item.discnumber = int(

@@ -144,8 +144,8 @@ class Youtube:
             # Add track to db
             uri = "https://www.youtube.com/watch?v=%s" % yid
             track_id = Lp().tracks.add(item.name, uri, item.duration,
-                                       0, item.discnumber, "",
-                                       album_id, None, 0, 0, 0, persistent)
+                                       0, item.discnumber, "", album_id,
+                                       item.year, 0, 0, 0, persistent)
             t.update_track(track_id, artist_ids, genre_ids)
             t.update_album(album_id, album_artist_ids, genre_ids, None)
             sql.commit()

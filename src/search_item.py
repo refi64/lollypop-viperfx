@@ -30,6 +30,7 @@ class SearchItem:
         self.track_number = 0
         self.cover = ""
         self.smallcover = ""
+        self.year = None
         self.subitems = []
 
     def exists_in_db(self):

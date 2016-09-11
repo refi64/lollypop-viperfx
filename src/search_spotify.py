@@ -126,6 +126,11 @@ class SpotifySearch:
                                 track_item.is_track = True
                                 track_item.name = item['name']
                                 track_item.album = album_item.name
+                                try:
+                                    track_item.year = decode[
+                                                            'release_date'][:4]
+                                except:
+                                    pass  # May be missing
                                 track_item.tracknumber = int(
                                                           item['track_number'])
                                 track_item.discnumber = int(
@@ -171,6 +176,11 @@ class SpotifySearch:
                         for item in decode['tracks']['items']:
                             track_item = SearchItem()
                             track_item.is_track = True
+                            try:
+                                track_item.year = decode[
+                                                        'release_date'][:4]
+                            except:
+                                pass  # May be missing
                             track_item.name = item['name']
                             track_item.album = album_item.name
                             track_item.tracknumber = int(item['track_number'])
