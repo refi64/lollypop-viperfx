@@ -140,6 +140,8 @@ class ProgressController:
         self.__seeking = False
         # Update pogress position
         self.__timeout_id = None
+        # Show volume control
+        self._show_volume_control = False
         Lp().player.connect('duration-changed', self.__on_duration_changed)
 
     def on_current_changed(self, player):
@@ -148,15 +150,19 @@ class ProgressController:
             @param player as Player
         """
         self._progress.clear_marks()
-        if player.current_track.id != Type.RADIOS:
-            self._progress.set_sensitive(player.current_track.id is not None)
+        if player.current_track.id is None:
+            self._progress.set_sensitive(False)
+            self._total_time_label.set_text("")
+            return
+
         self._progress.set_value(0.0)
         self._timelabel.set_text("0:00")
         if player.current_track.id == Type.RADIOS:
             self._progress.set_sensitive(False)
-            self._total_time_label.set_text('')
+            self._total_time_label.set_text("")
             self._progress.set_range(0.0, 0.0)
         else:
+            self._progress.set_sensitive(True)
             self._progress.set_range(0.0, player.current_track.duration * 60)
             self._total_time_label.set_text(
                 seconds_to_string(player.current_track.duration))
@@ -179,12 +185,42 @@ class ProgressController:
 #######################
 # PROTECTED           #
 #######################
+    def _update_state(self):
+        """
+            Update controller state volume vs progress
+        """
+        if self._show_volume_control:
+            self._timelabel.set_text(_("Volume"))
+            self._progress.set_range(0.0, 1.0)
+            self._progress.set_sensitive(True)
+            self._update_position()
+        else:
+            self.on_current_changed(Lp().player)
+            if Lp().player.current_track.id is None:
+                self._timelabel.set_text("")
+                self._progress.set_value(0.0)
+                self._progress.set_range(0.0, 0.0)
+                self._progress.set_sensitive(False)
+            else:
+                self._update_position()
+
+    def _on_value_changed(self, scale):
+        """
+            Adjust volume
+        """
+        if not self._show_volume_control:
+            return
+        Lp().player.set_volume(scale.get_value())
+        self._update_position(scale.get_value())
+
     def _on_progress_press_button(self, scale, event):
         """
             On press, mark player as seeking
             @param scale as Gtk.Scale
             @param event as Gdk.Event
         """
+        if self._show_volume_control:
+            return
         if Lp().player.locked:
             return True
         self.__seeking = True
@@ -196,6 +232,8 @@ class ProgressController:
             @param scale as Gtk.Scale
             @param event as Gdk.Event
         """
+        if self._show_volume_control:
+            return
         value = scale.get_value()
         Lp().player.seek(value/60)
         self.__seeking = False
@@ -226,7 +264,11 @@ class ProgressController:
             Update progress bar position
             @param value as int
         """
-        if not self.__seeking:
+        if self._show_volume_control:
+            self._progress.set_value(Lp().player.volume)
+            volume = str(int(Lp().player.volume * 100)) + " %"
+            self._total_time_label.set_text(volume)
+        elif not self.__seeking:
             if value is None and Lp().player.get_status() != Gst.State.PAUSED:
                 value = Lp().player.position/1000000
             if value is not None:

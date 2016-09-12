@@ -115,6 +115,8 @@ class Window(Gtk.ApplicationWindow, Container):
                                              ["l"])
             self.__app.set_accels_for_action("app.player::locked",
                                              ["<Control>l"])
+            self.__app.set_accels_for_action("app.player::volume",
+                                             ["<Alt>v"])
         else:
             self.__app.set_accels_for_action("app.seek(10)", [None])
             self.__app.set_accels_for_action("app.seek(20)", [None])
@@ -130,6 +132,7 @@ class Window(Gtk.ApplicationWindow, Container):
             self.__app.set_accels_for_action("app.player::next_album", [None])
             self.__app.set_accels_for_action("app.player::prev", [None])
             self.__app.set_accels_for_action("app.player::loved", [None])
+            self.__app.set_accels_for_action("app.player::volume", [None])
 
     def setup_window(self):
         """
@@ -460,6 +463,8 @@ class Window(Gtk.ApplicationWindow, Container):
             Lp().player.prev()
         elif string == "locked":
             Lp().player.lock()
+        elif string == "volume":
+            self.__toolbar.show_hide_volume_control()
         elif string == "loved":
             if Lp().player.current_track.id is not None:
                 isloved = is_loved(Lp().player.current_track.id)

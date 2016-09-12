@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Generated with glade 3.19.0 -->
+<!-- Generated with glade 3.20.0 -->
 <interface domain="lollypop">
   <requires lib="gtk+" version="3.10"/>
   <object class="GtkGrid" id="title">
@@ -42,6 +42,7 @@
         <signal name="button-press-event" handler="_on_progress_press_button" swapped="no"/>
         <signal name="button-release-event" handler="_on_progress_release_button" swapped="no"/>
         <signal name="scroll-event" handler="_on_scroll_event" swapped="no"/>
+        <signal name="value-changed" handler="_on_value_changed" swapped="no"/>
       </object>
       <packing>
         <property name="left_attach">1</property>
