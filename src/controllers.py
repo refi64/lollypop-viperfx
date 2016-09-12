@@ -246,18 +246,31 @@ class ProgressController:
             @param event as Gdk.Event
         """
         (smooth, x, y) = event.get_scroll_deltas()
-        if smooth and Lp().player.is_playing():
-            position = Lp().player.position
-            if y > 0:
-                seek = position/1000000/60-5
-            else:
-                seek = position/1000000/60+5
-            if seek < 0:
-                seek = 0
-            if seek > Lp().player.current_track.duration:
-                seek = Lp().player.current_track.duration - 2
-            Lp().player.seek(seek)
-            self._update_position(seek*60)
+        if smooth:
+            if self._show_volume_control:
+                volume = Lp().player.volume
+                if y > 0:
+                    volume -= 0.1
+                else:
+                    volume += 0.1
+                if volume < 0:
+                    volume = 0.0
+                elif volume > 1:
+                    volume = 1.0
+                Lp().player.set_volume(volume)
+                self._update_position(volume)
+            elif Lp().player.is_playing():
+                position = Lp().player.position
+                if y > 0:
+                    seek = position/1000000/60-5
+                else:
+                    seek = position/1000000/60+5
+                if seek < 0:
+                    seek = 0
+                if seek > Lp().player.current_track.duration:
+                    seek = Lp().player.current_track.duration - 2
+                Lp().player.seek(seek)
+                self._update_position(seek*60)
 
     def _update_position(self, value=None):
         """
@@ -265,8 +278,10 @@ class ProgressController:
             @param value as int
         """
         if self._show_volume_control:
-            self._progress.set_value(Lp().player.volume)
-            volume = str(int(Lp().player.volume * 100)) + " %"
+            if value is None:
+                value = Lp().player.volume
+            self._progress.set_value(value)
+            volume = str(int(value * 100)) + " %"
             self._total_time_label.set_text(volume)
         elif not self.__seeking:
             if value is None and Lp().player.get_status() != Gst.State.PAUSED:
