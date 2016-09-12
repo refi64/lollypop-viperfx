@@ -39,8 +39,8 @@ class ProgressBar(Gtk.ProgressBar):
         """
         if not self.__callers:
             return
-        self.show()
         if caller == self.__callers[0]:
+            self.show()
             Gtk.ProgressBar.set_fraction(self, fraction)
             if fraction == 1:
                 self.__callers.remove(caller)

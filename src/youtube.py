@@ -67,6 +67,7 @@ class Youtube:
         nb_items = len(item.subitems)
         start = 0
         album_artist = item.subitems[0].artists[0]
+        album_id = None
         for track_item in item.subitems:
             (album_id, track_id) = self.__save_track(track_item, persistent,
                                                      album_artist)
@@ -82,10 +83,11 @@ class Youtube:
                           start / nb_items, self)
         GLib.idle_add(Lp().window.progress.set_fraction, 1.0, self)
         # Play if needed
-        if persistent == DbPersistent.NONE:
+        if album_id is not None and persistent == DbPersistent.NONE:
             Lp().player.clear_albums()
-            GLib.idle_add(Lp().player.load, Track(track_id))
-            GLib.idle_add(Lp().player.add_album, Album(album_id))
+            album = Album(album_id)
+            GLib.idle_add(Lp().player.load, album.tracks[0])
+            GLib.idle_add(Lp().player.add_album, album)
         if Lp().settings.get_value('artist-artwork'):
             Lp().art.cache_artists_info()
 
