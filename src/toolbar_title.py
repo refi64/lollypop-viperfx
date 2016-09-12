@@ -50,6 +50,7 @@ class ToolbarTitle(Gtk.Bin, ProgressController):
         """
             Show/Hide volume control
         """
+        self._progress.clear_marks()
         self._show_volume_control = not self._show_volume_control
         self._update_state()
 
