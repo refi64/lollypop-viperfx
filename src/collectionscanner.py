@@ -174,7 +174,7 @@ class CollectionScanner(GObject.GObject, TagReader):
                     info = f.query_info('time::modified',
                                         Gio.FileQueryInfoFlags.NONE,
                                         None)
-                    mtime = info.get_attribute_as_string('time::modified')
+                    mtime = int(info.get_attribute_as_string('time::modified'))
                     # If songs exists and mtime unchanged, continue,
                     # else rescan
                     if uri in orig_tracks:
@@ -198,8 +198,8 @@ class CollectionScanner(GObject.GObject, TagReader):
                         gst_message = e.message
                         if Lp().notify is not None:
                             Lp().notify.send(gst_message)
-                except:
-                    pass
+                except Exception as e:
+                    print("CollectionScanner::__scan()", e)
                 i += 1
 
             # Clean deleted files
