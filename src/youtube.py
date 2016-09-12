@@ -184,6 +184,7 @@ class Youtube:
         except Exception as e:
             print("Youtube::__get_youtube_id():", e, f.get_uri())
             self.__fallback = True
+            return self.__get_youtube_id_fallback(item)
         return None
 
     def __get_youtube_id_fallback(self, item):
