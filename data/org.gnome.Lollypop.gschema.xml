@@ -233,7 +233,7 @@
         </key>
 	    <key enum="org.gnome.Lollypop.Charts" name="charts">
             <default>'itunes'</default>
-            <summary>Default charts provider</summary>
+            <summary>Charts provider</summary>
             <description></description>
         </key>
     </schema>
