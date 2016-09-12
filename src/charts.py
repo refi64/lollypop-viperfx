@@ -13,9 +13,11 @@
 from gi.repository import Gio
 
 from lollypop.charts_itunes import ItunesCharts
+from lollypop.charts_spotify import SpotifyCharts
+from lollypop.define import ChartsProvider, Lp
 
 
-class Charts(ItunesCharts):
+class Charts(ItunesCharts, SpotifyCharts):
     """
         Charts
     """
@@ -24,22 +26,28 @@ class Charts(ItunesCharts):
         """
             Init charts
         """
-        self.__stop = False
+        self._stop = False
+        self._count = 0
         self._cancel = Gio.Cancellable.new()
         ItunesCharts.__init__(self)
+        SpotifyCharts.__init__(self)
 
     def update(self):
         """
             Update charts
         """
-        ItunesCharts.update(self)
+        if Lp().settings.get_enum('charts') == ChartsProvider.ITUNES:
+            self._count = ItunesCharts._get_album_count(self)
+            ItunesCharts.update(self)
+        else:
+            self._count = SpotifyCharts._get_album_count(self)
+            SpotifyCharts.update(self)
 
     def stop(self):
         """
             Stop downloads
         """
-        self.__stop = True
-
+        self._stop = True
 #######################
 # PRIVATE             #
 #######################

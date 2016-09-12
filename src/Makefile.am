@@ -11,6 +11,7 @@ app_PYTHON = \
     cellrenderer.py\
     charts.py\
     charts_itunes.py\
+    charts_spotify.py\
     codecs.py\
     collectionscanner.py\
     container.py\
