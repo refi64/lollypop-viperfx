@@ -80,6 +80,7 @@ class Youtube:
             start += 1
             GLib.idle_add(Lp().window.progress.set_fraction,
                           start / nb_items, self)
+        GLib.idle_add(Lp().window.progress.set_fraction, 1.0, self)
         # Play if needed
         if persistent == DbPersistent.NONE:
             Lp().player.clear_albums()
