@@ -9,8 +9,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lollypop\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-09-12 10:34+0200\n"
-"PO-Revision-Date: 2016-09-12 08:36+0000\n"
+"POT-Creation-Date: 2016-09-12 13:31+0200\n"
+"PO-Revision-Date: 2016-09-12 11:34+0000\n"
 "Last-Translator: Cédric Bellegarde <web@adishatz.org>\n"
 "Language-Team: French (http://www.transifex.com/gnumdk/lollypop/language/fr/)\n"
 "MIME-Version: 1.0\n"
@@ -261,8 +261,8 @@ msgstr "Navigation par Genre/Artiste/Pochette"
 msgid "Search"
 msgstr "Recherche"
 
-#: ../data/lollypop.appdata.xml.in.h:9 ../src/pop_menu.py:434
-#: ../src/pop_menu.py:455 ../src/toolbar_end.py:395
+#: ../data/lollypop.appdata.xml.in.h:9 ../src/pop_menu.py:475
+#: ../src/pop_menu.py:496 ../src/toolbar_end.py:395
 #: ../data/QueuePopover.ui.h:2
 msgid "Queue"
 msgstr "File d'attente"
@@ -483,57 +483,57 @@ msgstr "Vérifiez vos paramètres de musique."
 msgid "Unknown"
 msgstr "Inconnu"
 
-#: ../src/container.py:440
+#: ../src/container.py:448
 msgid "Popular albums"
 msgstr "Albums populaires"
 
-#: ../src/container.py:441
+#: ../src/container.py:449
 msgid "Recently added albums"
 msgstr "Albums ajoutés récemment"
 
-#: ../src/container.py:442
+#: ../src/container.py:450
 msgid "Random albums"
 msgstr "Albums aléatoires"
 
-#: ../src/container.py:443 ../src/pop_menu.py:323 ../src/pop_menu.py:437
-#: ../src/pop_menu.py:457 ../src/widgets_device.py:117
+#: ../src/container.py:451 ../src/pop_menu.py:361 ../src/pop_menu.py:478
+#: ../src/pop_menu.py:498 ../src/widgets_device.py:117
 #: ../src/widgets_playlist.py:521
 msgid "Playlists"
 msgstr "Listes de lecture"
 
-#: ../src/container.py:444
+#: ../src/container.py:452
 msgid "Radios"
 msgstr "Radios"
 
-#: ../src/container.py:446
+#: ../src/container.py:454
 msgid "The charts"
 msgstr "Le hit-parade"
 
-#: ../src/container.py:448
+#: ../src/container.py:456
 msgid "All artists"
 msgstr "Tous les artistes"
 
-#: ../src/container.py:450
+#: ../src/container.py:458
 msgid "All albums"
 msgstr "Tous les albums"
 
-#: ../src/container.py:498
+#: ../src/container.py:506
 msgid "Compilations"
 msgstr "Compilations"
 
-#: ../src/container.py:522 ../src/playlists.py:223
+#: ../src/container.py:530 ../src/playlists.py:223
 msgid "Popular tracks"
 msgstr "Morceaux populaires"
 
-#: ../src/container.py:523 ../src/playlists.py:225
+#: ../src/container.py:531 ../src/playlists.py:225
 msgid "Recently played"
 msgstr "Jouées récemment"
 
-#: ../src/container.py:524 ../src/playlists.py:227
+#: ../src/container.py:532 ../src/playlists.py:227
 msgid "Never played"
 msgstr "Jamais jouées"
 
-#: ../src/container.py:525 ../src/playlists.py:229
+#: ../src/container.py:533 ../src/playlists.py:229
 msgid "Random tracks"
 msgstr "Morceaux aléatoires"
 
@@ -602,58 +602,66 @@ msgstr "Informations avancées sur l'artiste désactivée"
 msgid "WebKit support disabled"
 msgstr "Support de WebKit désactivé"
 
-#: ../src/pop_menu.py:103 ../src/widgets_indicator.py:111
+#: ../src/pop_menu.py:73
+msgid "Show albums from artist"
+msgstr "Afficher les albums de l'artiste"
+
+#: ../src/pop_menu.py:141 ../src/widgets_indicator.py:111
 #: ../data/InternalSearchRow.ui.h:2
 msgid "Add to queue"
 msgstr "Ajouter à la file d'attente"
 
-#: ../src/pop_menu.py:108
+#: ../src/pop_menu.py:146
 msgid "Next tracks"
 msgstr "Morceaux suivants"
 
-#: ../src/pop_menu.py:110 ../data/NextPopover.ui.h:1
+#: ../src/pop_menu.py:148 ../data/NextPopover.ui.h:1
 msgid "Next track"
 msgstr "Morceau suivant"
 
-#: ../src/pop_menu.py:114 ../src/widgets_indicator.py:107
+#: ../src/pop_menu.py:152 ../src/widgets_indicator.py:107
 msgid "Remove from queue"
 msgstr "Supprimer de la liste d'attente"
 
-#: ../src/pop_menu.py:190
+#: ../src/pop_menu.py:228
 msgid "Add to others"
 msgstr "Ajouter aux autres"
 
-#: ../src/pop_menu.py:208
+#: ../src/pop_menu.py:246
 #, python-format
 msgid "Remove from \"%s\""
 msgstr "Supprimer de \"%s\""
 
-#: ../src/pop_menu.py:214
+#: ../src/pop_menu.py:252
 #, python-format
 msgid "Add to \"%s\""
 msgstr "Ajouter à \"%s\""
 
-#: ../src/pop_menu.py:321
+#: ../src/pop_menu.py:359
 msgid "Playback"
 msgstr "Lecture"
 
-#: ../src/pop_menu.py:368
+#: ../src/pop_menu.py:406
 msgid "Remove album"
 msgstr "Supprimer l'album"
 
-#: ../src/pop_menu.py:378
+#: ../src/pop_menu.py:416
 msgid "Modify information"
 msgstr "Modifier les informations"
 
-#: ../src/pop_menu.py:440 ../data/PlaylistView.ui.h:1
+#: ../src/pop_menu.py:472 ../data/SettingsDialog.ui.h:10
+msgid "Artist"
+msgstr "Artiste"
+
+#: ../src/pop_menu.py:481 ../data/PlaylistView.ui.h:1
 msgid "Edit"
 msgstr "Editer"
 
-#: ../src/pop_menu.py:570
+#: ../src/pop_menu.py:611
 msgid "Save genre"
 msgstr "Enregistrer le genre"
 
-#: ../src/pop_menu.py:591 ../data/ExternalSearchRow.ui.h:1
+#: ../src/pop_menu.py:632 ../data/ExternalSearchRow.ui.h:1
 msgid "Save into collection"
 msgstr "Enregistrer dans la collection"
 
@@ -1021,10 +1029,6 @@ msgstr "Utiliser une variante de thème foncée"
 #: ../data/SettingsDialog.ui.h:5
 msgid "Show genres"
 msgstr "Afficher les genres"
-
-#: ../data/SettingsDialog.ui.h:10
-msgid "Artist"
-msgstr "Artiste"
 
 #: ../data/SettingsDialog.ui.h:11
 msgid "Name"
