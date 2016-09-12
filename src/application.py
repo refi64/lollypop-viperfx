@@ -155,8 +155,8 @@ class Application(Gtk.Application):
         if self.settings.get_value('network-search'):
             from shutil import which
             if which("youtube-dl") is not None:
-                from lollypop.charts_itunes import ItunesCharts
-                self.charts = ItunesCharts()
+                from lollypop.charts import Charts
+                self.charts = Charts()
                 self.charts.update()
 
         settings = Gtk.Settings.get_default()

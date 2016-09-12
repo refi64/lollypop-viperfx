@@ -129,8 +129,7 @@ class ItunesCharts:
         """
             Init charts
         """
-        self.__stop = False
-        self._cancel = Gio.Cancellable.new()
+        pass
 
     def update(self):
         """
@@ -140,12 +139,6 @@ class ItunesCharts:
         t = Thread(target=self.__update)
         t.daemon = True
         t.start()
-
-    def stop(self):
-        """
-            Stop downloads
-        """
-        self.__stop = True
 
 #######################
 # PRIVATE             #

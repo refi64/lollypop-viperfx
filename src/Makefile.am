@@ -9,6 +9,7 @@ app_PYTHON = \
     art_widgets.py\
     cache.py\
     cellrenderer.py\
+    charts.py\
     charts_itunes.py\
     codecs.py\
     collectionscanner.py\
