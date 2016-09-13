@@ -10,14 +10,12 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-from gi.repository import Gio
-
 from lollypop.charts_itunes import ItunesCharts
 from lollypop.charts_spotify import SpotifyCharts
 from lollypop.define import ChartsProvider, Lp
 
 
-class Charts(ItunesCharts, SpotifyCharts):
+class Charts:
     """
         Charts
     """
@@ -26,28 +24,23 @@ class Charts(ItunesCharts, SpotifyCharts):
         """
             Init charts
         """
-        self._stop = False
-        self._count = 0
-        self._cancel = Gio.Cancellable.new()
-        ItunesCharts.__init__(self)
-        SpotifyCharts.__init__(self)
+        if Lp().settings.get_enum('charts') == ChartsProvider.ITUNES:
+            self.__provider = ItunesCharts()
+        else:
+            self.__provider = SpotifyCharts()
 
     def update(self):
         """
             Update charts
         """
-        if Lp().settings.get_enum('charts') == ChartsProvider.ITUNES:
-            self._count = ItunesCharts._get_album_count(self)
-            ItunesCharts.update(self)
-        else:
-            self._count = SpotifyCharts._get_album_count(self)
-            SpotifyCharts.update(self)
+        self.__provider.update()
 
     def stop(self):
         """
             Stop downloads
         """
-        self._stop = True
+        self.__provider.stop()
+
 #######################
 # PRIVATE             #
 #######################

@@ -129,21 +129,31 @@ class ItunesCharts:
         """
             Init charts
         """
-        pass
+        self.__cancel = Gio.Cancellable.new()
+        self.__stop = False
+        self.__count = 0
 
     def update(self):
         """
             Update charts
         """
-        self._stop = False
+        self.__stop = False
+        self.__count = self.__get_album_count()
         t = Thread(target=self.__update)
         t.daemon = True
         t.start()
 
+    def stop(self):
+        """
+            Stop search
+        """
+        self.__stop = True
+        self.__cancel.cancel()
+
 #######################
-# PROTECTED           #
+# PRIVATE             #
 #######################
-    def _get_album_count(self):
+    def __get_album_count(self):
         """
             Calculate album count
             @return count as int
@@ -151,21 +161,18 @@ class ItunesCharts:
         count = len(self.__get_genre_ids()) * 20 + 20
         return count
 
-#######################
-# PRIVATE             #
-#######################
     def __update(self):
         """
             Update charts
         """
         sleep(5)
-        if self._stop:
+        if self.__stop:
             return
         language = getdefaultlocale()[0][0:2]
         itunes_ids = self.__get_genre_ids()
         self.__update_for_url(self.__ALL % language)
         for itunes_id in itunes_ids:
-            if self._stop:
+            if self.__stop:
                 return
             self.__update_for_url(self.__GENRE % (language, itunes_id))
 
@@ -177,7 +184,7 @@ class ItunesCharts:
         if not Gio.NetworkMonitor.get_default().get_network_available():
                 return
         debug("ItunesCharts::__update_for_url(): %s => %s" % (url,
-                                                              self._count))
+                                                              self.__count))
         yt = Youtube()
         ids = self.__get_ids(url)
         while ids:
@@ -186,9 +193,9 @@ class ItunesCharts:
             album = self.__get_album(itunes_id)
             if album is None or album.exists_in_db():
                 continue
-            if self._stop:
+            if self.__stop:
                 return
-            Lp().db.del_tracks(Lp().tracks.get_old_from_charts(self._count))
+            Lp().db.del_tracks(Lp().tracks.get_old_from_charts(self.__count))
             debug("ItunesCharts::__update_for_url(): %s - %s" % (
                                                                 album.name,
                                                                 album.artists))
@@ -207,8 +214,8 @@ class ItunesCharts:
             debug("ItunesCharts::__get_album(): %s" % itunes_id)
             url = self.__INFO % (itunes_id, language)
             f = Gio.File.new_for_uri(url)
-            (status, data, tag) = f.load_contents(self._cancel)
-            if not status or self._stop:
+            (status, data, tag) = f.load_contents(self.__cancel)
+            if not status or self.__stop:
                 return
             decode = json.loads(data.decode('utf-8'))
             item = decode['results'][0]
@@ -249,8 +256,8 @@ class ItunesCharts:
         items = []
         try:
             f = Gio.File.new_for_uri(url)
-            (status, data, tag) = f.load_contents(self._cancel)
-            if not status or self._stop:
+            (status, data, tag) = f.load_contents(self.__cancel)
+            if not status or self.__stop:
                 return []
             root = xml.fromstring(data)
             for child in root:

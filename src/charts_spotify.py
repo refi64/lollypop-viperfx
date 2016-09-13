@@ -33,30 +33,37 @@ class SpotifyCharts:
         """
             Init charts
         """
-        pass
+        self.__cancel = Gio.Cancellable.new()
+        self.__stop = False
+        self.__count = 0
 
     def update(self):
         """
             Update charts
         """
         self._stop = False
+        self.__count = self.__get_album_count()
         t = Thread(target=self.__update)
         t.daemon = True
         t.start()
 
+    def stop(self):
+        """
+            Stop search
+        """
+        self.__stop = True
+        self.__cancel.cancel()
+
 #######################
-# PROTECTED           #
+# PRIVATE             #
 #######################
-    def _get_album_count(self):
+    def __get_album_count(self):
         """
             Calculate album count
             @return count as int
         """
         return 200
 
-#######################
-# PRIVATE             #
-#######################
     def __update(self):
         """
             Update charts
@@ -76,7 +83,7 @@ class SpotifyCharts:
         if not Gio.NetworkMonitor.get_default().get_network_available():
                 return
         debug("SpotifyCharts::__update_for_url(): %s => %s" % (url,
-                                                               self._count))
+                                                               self.__count))
         ids = self.__get_ids(url)
         yt = Youtube()
         search = SpotifySearch()
@@ -89,7 +96,7 @@ class SpotifyCharts:
                 continue
             if self._stop:
                 return
-            Lp().db.del_tracks(Lp().tracks.get_old_from_charts(self._count))
+            Lp().db.del_tracks(Lp().tracks.get_old_from_charts(self.__count))
             debug("SpotifyCharts::__update_for_url(): %s - %s - %s" % (
                                                                 album.name,
                                                                 album.artists,
@@ -104,7 +111,7 @@ class SpotifyCharts:
         ids = []
         try:
             f = Gio.File.new_for_uri(url)
-            (status, data, tag) = f.load_contents(self._cancel)
+            (status, data, tag) = f.load_contents(self.__cancel)
             if not status or self._stop:
                 return []
             for line in data.decode("utf-8").replace('"', '').split('\n'):
