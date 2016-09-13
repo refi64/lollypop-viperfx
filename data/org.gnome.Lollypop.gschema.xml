@@ -11,6 +11,10 @@
        <value nick="year" value="2"/>
        <value nick="popularity" value="3"/>
     </enum>
+    <enum id="org.gnome.Lollypop.Charts">
+       <value nick="itunes" value="0"/>
+       <value nick="spotify" value="1"/>
+    </enum>
     <schema path="/org/gnome/Lollypop/" id="org.gnome.Lollypop" gettext-domain="lollypop">
         <key type="ai" name="window-size">
             <default>[768, 600]</default>
@@ -222,9 +226,14 @@
             <summary>Shuffle mode</summary>
             <description></description>
         </key>
-	<key enum="org.gnome.Lollypop.OrderBy" name="orderby">
+	    <key enum="org.gnome.Lollypop.OrderBy" name="orderby">
             <default>'artist'</default>
             <summary>Order albums by</summary>
+            <description></description>
+        </key>
+	    <key enum="org.gnome.Lollypop.Charts" name="charts">
+            <default>'itunes'</default>
+            <summary>Charts provider</summary>
             <description></description>
         </key>
     </schema>

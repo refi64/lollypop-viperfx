@@ -412,8 +412,13 @@ class AlbumsDatabase:
             @return array of album ids as int
         """
         with SqlCursor(Lp().db) as sql:
-            result = sql.execute("SELECT rowid FROM albums WHERE popularity!=0\
-                                 ORDER BY popularity DESC LIMIT 100")
+            result = sql.execute("SELECT albums.rowid\
+                                  FROM albums, album_genres\
+                                  WHERE popularity!=0\
+                                  AND album_genres.genre_id!=?\
+                                  AND album_genres.album_id=albums.rowid\
+                                  ORDER BY popularity DESC LIMIT 100",
+                                 (Type.CHARTS,))
             return list(itertools.chain(*result))
 
     def get_recents(self):
@@ -422,8 +427,12 @@ class AlbumsDatabase:
             @return array of albums ids as int
         """
         with SqlCursor(Lp().db) as sql:
-            result = sql.execute("SELECT rowid FROM albums\
-                                  ORDER BY mtime DESC LIMIT 100")
+            result = sql.execute("SELECT albums.rowid\
+                                  FROM albums, album_genres\
+                                  WHERE album_genres.genre_id!=?\
+                                  AND album_genres.album_id=albums.rowid\
+                                  ORDER BY mtime DESC LIMIT 100",
+                                 (Type.CHARTS,))
             return list(itertools.chain(*result))
 
     def get_randoms(self):
@@ -434,8 +443,12 @@ class AlbumsDatabase:
         with SqlCursor(Lp().db) as sql:
             albums = []
 
-            result = sql.execute("SELECT rowid FROM albums\
-                                  ORDER BY random() LIMIT 100")
+            result = sql.execute("SELECT albums.rowid\
+                                  FROM albums, album_genres\
+                                  WHERE album_genres.genre_id!=?\
+                                  AND album_genres.album_id=albums.rowid\
+                                  ORDER BY random() LIMIT 100",
+                                 (Type.CHARTS,))
             albums = list(itertools.chain(*result))
             self._cached_randoms = list(albums)
             return albums

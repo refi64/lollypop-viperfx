@@ -129,27 +129,38 @@ class ItunesCharts:
         """
             Init charts
         """
+        self.__cancel = Gio.Cancellable.new()
         self.__stop = False
-        self._cancel = Gio.Cancellable.new()
+        self.__count = 0
 
     def update(self):
         """
             Update charts
         """
         self.__stop = False
+        self.__count = self.__get_album_count()
         t = Thread(target=self.__update)
         t.daemon = True
         t.start()
 
     def stop(self):
         """
-            Stop downloads
+            Stop search
         """
         self.__stop = True
+        self.__cancel.cancel()
 
 #######################
 # PRIVATE             #
 #######################
+    def __get_album_count(self):
+        """
+            Calculate album count
+            @return count as int
+        """
+        count = len(self.__get_genre_ids()) * 20 + 20
+        return count
+
     def __update(self):
         """
             Update charts
@@ -157,35 +168,23 @@ class ItunesCharts:
         sleep(5)
         if self.__stop:
             return
-        # Calculate genres available in db and in itunes
-        itunes_ids = []
-        for genre in Lp().genres.get_names():
-            for itunes_genre in self.__GENRES.keys():
-                if genre.lower().find(itunes_genre) != -1:
-                    itunes_id = self.__GENRES[itunes_genre]
-                    if itunes_id not in itunes_ids:
-                        itunes_ids.append(itunes_id)
-
         language = getdefaultlocale()[0][0:2]
-        limit = len(itunes_ids) * 20 + 20
-        # Allow more albums if user do not have many genres
-        if limit < 100:
-            limit = 100
-        self.__update_for_url(self.__ALL % language, limit)
+        itunes_ids = self.__get_genre_ids()
+        self.__update_for_url(self.__ALL % language)
         for itunes_id in itunes_ids:
             if self.__stop:
                 return
-            self.__update_for_url(self.__GENRE % (language, itunes_id), limit)
+            self.__update_for_url(self.__GENRE % (language, itunes_id))
 
-    def __update_for_url(self, url, limit):
+    def __update_for_url(self, url):
         """
             Update charts for url
             @param url as str
-            @param limit as int
         """
         if not Gio.NetworkMonitor.get_default().get_network_available():
                 return
-        debug("ItunesCharts::__update_for_url(): %s => %s" % (url, limit))
+        debug("ItunesCharts::__update_for_url(): %s => %s" % (url,
+                                                              self.__count))
         yt = Youtube()
         ids = self.__get_ids(url)
         while ids:
@@ -196,7 +195,7 @@ class ItunesCharts:
                 continue
             if self.__stop:
                 return
-            Lp().db.del_tracks(Lp().tracks.get_old_from_charts(limit))
+            Lp().db.del_tracks(Lp().tracks.get_old_from_charts(self.__count))
             debug("ItunesCharts::__update_for_url(): %s - %s" % (
                                                                 album.name,
                                                                 album.artists))
@@ -204,7 +203,7 @@ class ItunesCharts:
 
     def __get_album(self, itunes_id):
         """
-            Get itunes album items, remove o
+            Get itunes album items
             @param id as int
             @return SearchItem/None
         """
@@ -215,7 +214,7 @@ class ItunesCharts:
             debug("ItunesCharts::__get_album(): %s" % itunes_id)
             url = self.__INFO % (itunes_id, language)
             f = Gio.File.new_for_uri(url)
-            (status, data, tag) = f.load_contents(self._cancel)
+            (status, data, tag) = f.load_contents(self.__cancel)
             if not status or self.__stop:
                 return
             decode = json.loads(data.decode('utf-8'))
@@ -257,7 +256,7 @@ class ItunesCharts:
         items = []
         try:
             f = Gio.File.new_for_uri(url)
-            (status, data, tag) = f.load_contents(self._cancel)
+            (status, data, tag) = f.load_contents(self.__cancel)
             if not status or self.__stop:
                 return []
             root = xml.fromstring(data)
@@ -271,3 +270,18 @@ class ItunesCharts:
         except Exception as e:
             print("ItunesCharts::__get_ids:", e)
         return items
+
+    def __get_genre_ids(self):
+        """
+            Get genre ids
+            @return ids as [int]
+        """
+        # Calculate genres available in db and in itunes
+        itunes_ids = []
+        for genre in Lp().genres.get_names():
+            for itunes_genre in self.__GENRES.keys():
+                if genre.lower().find(itunes_genre) != -1:
+                    itunes_id = self.__GENRES[itunes_genre]
+                    if itunes_id not in itunes_ids:
+                        itunes_ids.append(itunes_id)
+        return itunes_ids

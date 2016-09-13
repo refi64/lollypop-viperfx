@@ -591,6 +591,7 @@ class AlbumMenuPopover(Gtk.Popover):
             self.bind_model(menu, None)
 
         edit = Gtk.Entry()
+        edit.set_margin_start(5)
         edit.set_margin_end(5)
         edit.set_margin_bottom(5)
         edit.set_property('hexpand', True)

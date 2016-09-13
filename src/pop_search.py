@@ -313,8 +313,8 @@ class SearchPopover(Gtk.Popover):
         Lp().window.reload_view()
         if state:
             if Lp().charts is None:
-                from lollypop.charts_itunes import ItunesCharts
-                Lp().charts = ItunesCharts()
+                from lollypop.charts import Charts
+                Lp().charts = Charts()
             Lp().charts.update()
         else:
             Lp().charts.stop()
