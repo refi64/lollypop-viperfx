@@ -25,8 +25,8 @@ class SpotifySearch:
         """
             Init provider
         """
-        if not hasattr(self, '__cancel'):
-            self.__cancel = Gio.Cancellable.new()
+        if not hasattr(self, '_cancel'):
+            self._cancel = Gio.Cancellable.new()
 
     def tracks(self, name):
         """
@@ -38,7 +38,7 @@ class SpotifySearch:
                                                                       ' ', '+')
             s = Gio.File.new_for_uri("https://api.spotify.com/v1/search?q=%s"
                                      "&type=track" % formated)
-            (status, data, tag) = s.load_contents(self.__cancel)
+            (status, data, tag) = s.load_contents(self._cancel)
             if status:
                 decode = json.loads(data.decode('utf-8'))
                 tracks = []
@@ -80,7 +80,7 @@ class SpotifySearch:
         try:
             s = Gio.File.new_for_uri("https://api.spotify.com/v1/"
                                      "tracks/%s" % track_id)
-            (status, data, tag) = s.load_contents(self.__cancel)
+            (status, data, tag) = s.load_contents(self._cancel)
             if status:
                 decode = json.loads(data.decode('utf-8'))
                 return decode['album']['id']
@@ -96,7 +96,7 @@ class SpotifySearch:
         try:
             s = Gio.File.new_for_uri("https://api.spotify.com/v1/"
                                      "albums/%s" % album_id)
-            (status, data, tag) = s.load_contents(self.__cancel)
+            (status, data, tag) = s.load_contents(self._cancel)
             if status:
                 decode = json.loads(data.decode('utf-8'))
                 album_item = SearchItem()
@@ -144,7 +144,7 @@ class SpotifySearch:
                                                                       ' ', '+')
             s = Gio.File.new_for_uri("https://api.spotify.com/v1/search?q=%s"
                                      "&type=artist" % formated)
-            (status, data, tag) = s.load_contents(self.__cancel)
+            (status, data, tag) = s.load_contents(self._cancel)
             if status:
                 decode = json.loads(data.decode('utf-8'))
                 # For each album, get cover and tracks
@@ -158,7 +158,7 @@ class SpotifySearch:
                     s = Gio.File.new_for_uri("https://api.spotify.com/"
                                              "v1/artists/%s/albums" %
                                              artist_id)
-                    (status, data, tag) = s.load_contents(self.__cancel)
+                    (status, data, tag) = s.load_contents(self._cancel)
                     if status:
                         decode = json.loads(data.decode('utf-8'))
                         albums = []
@@ -178,7 +178,7 @@ class SpotifySearch:
                         s = Gio.File.new_for_uri("https://api.spotify.com/v1/"
                                                  "albums/%s" %
                                                  album_item.ex_id)
-                        (status, data, tag) = s.load_contents(self.__cancel)
+                        (status, data, tag) = s.load_contents(self._cancel)
                         if status:
                             decode = json.loads(data.decode('utf-8'))
                             for item in decode['tracks']['items']:
@@ -218,7 +218,7 @@ class SpotifySearch:
                                                                       ' ', '+')
             s = Gio.File.new_for_uri("https://api.spotify.com/v1/search?q=%s"
                                      "&type=album" % formated)
-            (status, data, tag) = s.load_contents(self.__cancel)
+            (status, data, tag) = s.load_contents(self._cancel)
             if status:
                 decode = json.loads(data.decode('utf-8'))
                 # For each album, get cover and tracks
@@ -230,7 +230,7 @@ class SpotifySearch:
                     album_item.smallcover = item['images'][2]['url']
                     s = Gio.File.new_for_uri("https://api.spotify.com/v1/"
                                              "albums/%s" % item['id'])
-                    (status, data, tag) = s.load_contents(self.__cancel)
+                    (status, data, tag) = s.load_contents(self._cancel)
                     if status:
                         decode = json.loads(data.decode('utf-8'))
                         for item in decode['tracks']['items']:
