@@ -462,7 +462,7 @@ class AlbumsView(LazyLoadingView):
             @param widget as Gtk.Button
         """
         self._stop = True
-        GLib.idle_add(self._clear, True)
+        GLib.idle_add(self.__clear, True)
 
     def __on_track_moved(self, row, src, x, y):
         """
