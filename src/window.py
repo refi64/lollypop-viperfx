@@ -250,6 +250,8 @@ class Window(Gtk.ApplicationWindow, Container):
            isinstance(size_setting[0], int) and\
            isinstance(size_setting[1], int):
             self.resize(size_setting[0], size_setting[1])
+            self.__show_subtoolbar(size_setting[0] < WindowSize.MONSTER and
+                                   size_setting[0] > WindowSize.MEDIUM)
         if name == 'window':
             self.__setup_pos(name)
         else:
