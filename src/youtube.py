@@ -174,12 +174,19 @@ class Youtube:
                             item.name)
         key = Lp().settings.get_value('cs-api-key').get_string()
         try:
+            if item.duration >= 1200:
+                duration = "videoDuration=long"
+            elif item.duration >= 240:
+                duration = "videoDuration=medium"
+            else:
+                duration = "videoDuration=short"
             f = Gio.File.new_for_uri("https://www.googleapis.com/youtube/v3/"
                                      "search?part=snippet&q=%s&"
-                                     "type=video&key=%s&cx=%s" % (
+                                     "type=video&key=%s&cx=%s&%s" % (
                                                               search,
                                                               key,
-                                                              GOOGLE_API_ID))
+                                                              GOOGLE_API_ID,
+                                                              duration))
             (status, data, tag) = f.load_contents(None)
             if status:
                 decode = json.loads(data.decode('utf-8'))
@@ -196,10 +203,15 @@ class Youtube:
             @param item as SearchItem
         """
         try:
+            if item.duration >= 1200:
+                duration = "sp=EgIYAg%253D%253D"
+            else:
+                duration = "sp=EgIYAQ%253D%253D"
             search = "%s %s" % (item.artists[0],
                                 item.name)
             f = Gio.File.new_for_uri("https://www.youtube.com/"
-                                     "results?search_query=%s" % search)
+                                     "results?search_query=%s&%s" % (search,
+                                                                     duration))
             (status, data, tag) = f.load_contents(None)
             if status:
                 html = data.decode('utf-8')
