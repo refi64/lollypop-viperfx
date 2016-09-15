@@ -173,7 +173,7 @@ class ToolbarInfo(Gtk.Bin, InfosController):
         self.__timeout_id = None
         if Lp().player.current_track.id >= 0:
             popover = TrackMenuPopover(
-                        Lp().player.current_track.id,
+                        Lp().player.current_track,
                         PopToolbarMenu(Lp().player.current_track.id))
             popover.set_relative_to(self._infobox)
             popover.show()
