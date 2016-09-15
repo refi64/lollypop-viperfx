@@ -158,7 +158,9 @@ class Application(Gtk.Application):
                 from lollypop.charts import Charts
                 self.charts = Charts()
                 self.charts.update()
-
+            else:
+                self.settings.set_value('network-search',
+                                        GLib.Variant('b', False))
         settings = Gtk.Settings.get_default()
         dark = self.settings.get_value('dark-ui')
         settings.set_property('gtk-application-prefer-dark-theme', dark)

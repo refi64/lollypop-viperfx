@@ -22,6 +22,7 @@ from lollypop.define import GstPlayFlags, NextContext, Lp
 from lollypop.codecs import Codecs
 from lollypop.define import Type, DbPersistent
 from lollypop.utils import debug
+from lollypop.objects import Track
 
 
 class BinPlayer(BasePlayer):
@@ -285,7 +286,12 @@ class BinPlayer(BasePlayer):
                          priority=GLib.PRIORITY_HIGH)
             return True
         except Exception as e:
-            print("Youtube::__get_youtube_uri()", e)
+            self._current_track = Track()
+            self.stop()
+            self.emit('current-changed')
+            if Lp().notify is not None:
+                Lp().notify.send(str(e), track.uri)
+            print("PlayerBin::__get_youtube_uri()", e)
 
     def _scrobble(self, finished, finished_start_time):
         """
