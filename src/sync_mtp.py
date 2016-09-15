@@ -86,6 +86,8 @@ class MtpSync:
             self._fraction = 0.0
             plnames = []
 
+            GLib.idle_add(Lp().window.progress.set_fraction, 0, self)
+
             if playlists and playlists[0] == Type.NONE:
                 # New tracks for synced albums
                 album_ids = Lp().albums.get_synced_ids()
