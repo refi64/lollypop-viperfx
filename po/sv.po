@@ -4,13 +4,14 @@
 # 
 # Translators:
 # Anders Jonsson <transifex@norsjovallen.se>, 2016
+# Göran Olsson <kronstadt21@gmail.com>, 2016
 msgid ""
 msgstr ""
 "Project-Id-Version: lollypop\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-09-09 18:12+0200\n"
-"PO-Revision-Date: 2016-09-09 16:12+0000\n"
-"Last-Translator: Cédric Bellegarde <web@adishatz.org>\n"
+"POT-Creation-Date: 2016-09-13 11:18+0200\n"
+"PO-Revision-Date: 2016-09-14 17:12+0000\n"
+"Last-Translator: Anders Jonsson <transifex@norsjovallen.se>\n"
 "Language-Team: Swedish (http://www.transifex.com/gnumdk/lollypop/language/sv/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -44,7 +45,7 @@ msgstr "Position för minispelare"
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:7
 msgid "Search over network"
-msgstr ""
+msgstr "Sök på nätverket"
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:8
 msgid "Save artwork in tags"
@@ -162,7 +163,7 @@ msgid "Use dark gtk theme"
 msgstr "Använd mörkt gtk-tema"
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:36
-msgid "Disable the use client side window decorations (headerbar)"
+msgid "Disable the use of client side window decorations (headerbar)"
 msgstr "Inaktivera användning av fönsterdekorationer på klientsida (rubrikrad)"
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:37 ../data/SettingsDialog.ui.h:6
@@ -208,6 +209,10 @@ msgstr "Blandningsläge"
 #: ../data/org.gnome.Lollypop.gschema.xml.h:47 ../data/SettingsDialog.ui.h:9
 msgid "Order albums by"
 msgstr "Sortera album efter"
+
+#: ../data/org.gnome.Lollypop.gschema.xml.h:48
+msgid "Charts provider"
+msgstr "Listleverantör"
 
 #: ../data/lollypop.desktop.in.h:1 ../data/lollypop.appdata.xml.in.h:1
 msgid "Lollypop"
@@ -260,8 +265,8 @@ msgstr "Genre-/Artist-/Omslagsbläddring"
 msgid "Search"
 msgstr "Sökning"
 
-#: ../data/lollypop.appdata.xml.in.h:9 ../src/pop_menu.py:434
-#: ../src/pop_menu.py:455 ../src/toolbar_end.py:395
+#: ../data/lollypop.appdata.xml.in.h:9 ../src/pop_menu.py:475
+#: ../src/pop_menu.py:496 ../src/toolbar_end.py:395
 #: ../data/QueuePopover.ui.h:2
 msgid "Queue"
 msgstr "Kö"
@@ -317,7 +322,7 @@ msgid ""
 "    - Artist informations disabled"
 msgstr "    - Scrobbler inaktiverat\n    - Automatisk omslagshämtning inaktiverad\n    - Artistinformation inaktiverad"
 
-#: ../src/application.py:451
+#: ../src/application.py:461
 msgid "Lollypop: You need to install yelp."
 msgstr "Lollypop: Du måste installera yelp."
 
@@ -329,11 +334,151 @@ msgstr "Välj bildmaterial"
 msgid "Reset artwork?"
 msgstr "Återställ bildmaterial?"
 
+#. Translators: Only translate this music genre
+#. if it makes sense for you
+#: ../src/charts_itunes.py:37
+msgid "alternative"
+msgstr "alternativ"
+
+#. Translators: Only translate this music genre
+#. if it makes sense for you
+#: ../src/charts_itunes.py:41
+msgid "anime"
+msgstr "anime"
+
+#. Translators: Only translate this music genre
+#. if it makes sense for you
+#: ../src/charts_itunes.py:45
+msgid "blues"
+msgstr "blues"
+
+#. Translators: Only translate this music genre
+#. if it makes sense for you
+#: ../src/charts_itunes.py:49
+msgid "brazil"
+msgstr "brasiliansk"
+
+#. Translators: Only translate this music genre
+#. if it makes sense for you
+#: ../src/charts_itunes.py:53
+msgid "classic"
+msgstr "klassisk"
+
+#. Translators: Only translate this music genre
+#. if it makes sense for you
+#: ../src/charts_itunes.py:57
+msgid "country"
+msgstr "country"
+
+#. Translators: Only translate this music genre
+#. if it makes sense for you
+#: ../src/charts_itunes.py:61
+msgid "dance"
+msgstr "dans"
+
+#. Translators: Only translate this music genre
+#. if it makes sense for you
+#: ../src/charts_itunes.py:65
+msgid "electro"
+msgstr "electro"
+
+#. Translators: Only translate this music genre
+#. if it makes sense for you
+#: ../src/charts_itunes.py:69
+msgid "french"
+msgstr "fransk"
+
+#. Translators: Only translate this music genre
+#. if it makes sense for you
+#: ../src/charts_itunes.py:73
+msgid "german"
+msgstr "tysk"
+
+#. Translators: Only translate this music genre
+#. if it makes sense for you
+#: ../src/charts_itunes.py:77
+msgid "rap"
+msgstr "rap"
+
+#. Translators: Only translate this music genre
+#. if it makes sense for you
+#: ../src/charts_itunes.py:81
+msgid "hip hop"
+msgstr "hip hop"
+
+#. Translators: Only translate this music genre
+#. if it makes sense for you
+#: ../src/charts_itunes.py:85
+msgid "jazz"
+msgstr "jazz"
+
+#. Translators: Only translate this music genre
+#. if it makes sense for you
+#: ../src/charts_itunes.py:89
+msgid "latin"
+msgstr "latino"
+
+#. Translators: Only translate this music genre
+#. if it makes sense for you
+#: ../src/charts_itunes.py:93
+msgid "new age"
+msgstr "new age"
+
+#. Translators: Only translate this music genre
+#. if it makes sense for you
+#: ../src/charts_itunes.py:97
+msgid "opera"
+msgstr "opera"
+
+#. Translators: Only translate this music genre
+#. if it makes sense for you
+#: ../src/charts_itunes.py:101
+msgid "pop"
+msgstr "pop"
+
+#. Translators: Only translate this music genre
+#. if it makes sense for you
+#: ../src/charts_itunes.py:105
+msgid "soul"
+msgstr "soul"
+
+#. Translators: Only translate this music genre
+#. if it makes sense for you
+#: ../src/charts_itunes.py:110
+msgid "reggae"
+msgstr "reggae"
+
+#. Translators: Only translate this music genre
+#. if it makes sense for you
+#: ../src/charts_itunes.py:114
+msgid "rock"
+msgstr "rock"
+
+#. Translators: Only translate this music genre
+#. if it makes sense for you
+#: ../src/charts_itunes.py:118
+msgid "soundtrack"
+msgstr "filmmusik"
+
+#. Translators: Only translate this music genre
+#. if it makes sense for you
+#: ../src/charts_itunes.py:122
+msgid "world"
+msgstr "världsmusik"
+
 #: ../src/collectionscanner.py:68
 msgid "Your music is updating"
 msgstr "Din musik uppdateras"
 
-#: ../src/collectionscanner.py:244 ../src/database_albums.py:329
+#: ../src/collectionscanner.py:157
+msgid "Lollypop is detecting an empty folder."
+msgstr "Lollypop upptäcker en tom mapp."
+
+#: ../src/collectionscanner.py:158
+msgid "Check your music settings."
+msgstr "Kontrollera dina musikinställningar."
+
+#: ../src/collectionscanner.py:245 ../src/database_albums.py:329
 #: ../src/database_artists.py:104 ../src/database_genres.py:69
 #: ../src/database_tracks.py:233 ../src/selectionlist.py:343
 #: ../src/tagreader.py:88 ../src/tagreader.py:103 ../src/tagreader.py:118
@@ -342,53 +487,57 @@ msgstr "Din musik uppdateras"
 msgid "Unknown"
 msgstr "Okänd"
 
-#: ../src/container.py:440
+#: ../src/container.py:448
 msgid "Popular albums"
 msgstr "Populära album"
 
-#: ../src/container.py:441
+#: ../src/container.py:449
 msgid "Recently added albums"
 msgstr "Nyligen tillagda album"
 
-#: ../src/container.py:442
+#: ../src/container.py:450
 msgid "Random albums"
 msgstr "Slumpmässiga album"
 
-#: ../src/container.py:443 ../src/pop_menu.py:323 ../src/pop_menu.py:437
-#: ../src/pop_menu.py:457 ../src/widgets_device.py:117
+#: ../src/container.py:451 ../src/pop_menu.py:361 ../src/pop_menu.py:478
+#: ../src/pop_menu.py:498 ../src/widgets_device.py:117
 #: ../src/widgets_playlist.py:521
 msgid "Playlists"
 msgstr "Spellistor"
 
-#: ../src/container.py:444
+#: ../src/container.py:452
 msgid "Radios"
 msgstr "Radio"
 
-#: ../src/container.py:446
+#: ../src/container.py:454
+msgid "The charts"
+msgstr "Listorna"
+
+#: ../src/container.py:456
 msgid "All artists"
 msgstr "Alla artister"
 
-#: ../src/container.py:448
+#: ../src/container.py:458
 msgid "All albums"
 msgstr "Alla album"
 
-#: ../src/container.py:496
+#: ../src/container.py:506
 msgid "Compilations"
 msgstr "Samlingsalbum"
 
-#: ../src/container.py:520 ../src/playlists.py:223
+#: ../src/container.py:530 ../src/playlists.py:223
 msgid "Popular tracks"
 msgstr "Populära spår"
 
-#: ../src/container.py:521 ../src/playlists.py:225
+#: ../src/container.py:531 ../src/playlists.py:225
 msgid "Recently played"
 msgstr "Nyligen spelade"
 
-#: ../src/container.py:522 ../src/playlists.py:227
+#: ../src/container.py:532 ../src/playlists.py:227
 msgid "Never played"
 msgstr "Aldrig spelade"
 
-#: ../src/container.py:523 ../src/playlists.py:229
+#: ../src/container.py:533 ../src/playlists.py:229
 msgid "Random tracks"
 msgstr "Slumpmässiga spår"
 
@@ -397,11 +546,15 @@ msgid "Pause"
 msgstr "Pausa"
 
 #: ../src/controllers.py:86 ../src/controllers.py:105 ../src/pop_tunein.py:216
-#: ../src/widgets_album.py:503 ../src/widgets_radio.py:172
+#: ../src/widgets_album.py:502 ../src/widgets_radio.py:172
 #: ../data/AlbumDetailedWidget.ui.h:1 ../data/ArtistView.ui.h:2
 #: ../data/ToolbarPlayback.ui.h:2
 msgid "Play"
 msgstr "Spela upp"
+
+#: ../src/controllers.py:193
+msgid "Volume"
+msgstr "Volym"
 
 #: ../src/database_artists.py:97
 msgid "Many artists"
@@ -428,9 +581,9 @@ msgstr "av %s"
 msgid "by %s, from %s"
 msgstr "av %s, från %s"
 
-#: ../src/player.py:120 ../src/player_queue.py:42 ../src/player_queue.py:63
+#: ../src/player.py:121 ../src/player_queue.py:43 ../src/player_queue.py:66
 msgid "No network available, can't play this track"
-msgstr ""
+msgstr "Ingen nätverksåtkomst, kan inte spela spår"
 
 #: ../src/playlists.py:54
 msgid "Loved tracks"
@@ -457,55 +610,68 @@ msgstr "Avancerad artistinformation inaktiverad"
 msgid "WebKit support disabled"
 msgstr "Stöd för WebKit inaktiverat"
 
-#: ../src/pop_menu.py:103 ../src/widgets_indicator.py:111
+#: ../src/pop_menu.py:73
+msgid "Show albums from artist"
+msgstr "Visa alla album av artist"
+
+#: ../src/pop_menu.py:141 ../src/widgets_indicator.py:111
+#: ../data/InternalSearchRow.ui.h:2
 msgid "Add to queue"
 msgstr "Lägg till i kö"
 
-#: ../src/pop_menu.py:108
+#: ../src/pop_menu.py:146
 msgid "Next tracks"
 msgstr "Nästa spår"
 
-#: ../src/pop_menu.py:110 ../data/NextPopover.ui.h:1
+#: ../src/pop_menu.py:148 ../data/NextPopover.ui.h:1
 msgid "Next track"
 msgstr "Nästa spår"
 
-#: ../src/pop_menu.py:114 ../src/widgets_indicator.py:107
+#: ../src/pop_menu.py:152 ../src/widgets_indicator.py:107
 msgid "Remove from queue"
 msgstr "Ta bort från kö"
 
-#: ../src/pop_menu.py:190
+#: ../src/pop_menu.py:228
 msgid "Add to others"
 msgstr "Lägg till i andra"
 
-#: ../src/pop_menu.py:208
+#: ../src/pop_menu.py:246
 #, python-format
 msgid "Remove from \"%s\""
 msgstr "Ta bort från ”%s”"
 
-#: ../src/pop_menu.py:214
+#: ../src/pop_menu.py:252
 #, python-format
 msgid "Add to \"%s\""
 msgstr "Lägg till i ”%s”"
 
-#: ../src/pop_menu.py:321
+#: ../src/pop_menu.py:359
 msgid "Playback"
 msgstr "Uppspelning"
 
-#: ../src/pop_menu.py:368
+#: ../src/pop_menu.py:406
 msgid "Remove album"
-msgstr ""
+msgstr "Ta bort album"
 
-#: ../src/pop_menu.py:378
+#: ../src/pop_menu.py:416
 msgid "Modify information"
 msgstr "Ändra information"
 
-#: ../src/pop_menu.py:440 ../data/PlaylistView.ui.h:1
+#: ../src/pop_menu.py:472 ../data/SettingsDialog.ui.h:10
+msgid "Artist"
+msgstr "Artist"
+
+#: ../src/pop_menu.py:481 ../data/PlaylistView.ui.h:1
 msgid "Edit"
 msgstr "Redigera"
 
-#: ../src/pop_menu.py:564
+#: ../src/pop_menu.py:612
 msgid "Save genre"
-msgstr ""
+msgstr "Spara genre"
+
+#: ../src/pop_menu.py:633 ../data/ExternalSearchRow.ui.h:1
+msgid "Save into collection"
+msgstr "Spara till samling"
 
 #: ../src/pop_radio.py:83 ../src/pop_tunein.py:222 ../src/view_artist.py:315
 #: ../data/ArtistView.ui.h:3
@@ -516,9 +682,9 @@ msgstr "Lägg till"
 msgid "Modify"
 msgstr "Modifiera"
 
-#: ../src/pop_search.py:257
+#: ../src/pop_search.py:256
 msgid "You need to install youtube-dl"
-msgstr ""
+msgstr "Du måste installera youtube-dl"
 
 #: ../src/pop_tunein.py:93 ../data/RadioPopover.ui.h:1
 msgid "Please wait..."
@@ -579,7 +745,7 @@ msgstr "Spellistor som spelas"
 msgid "The the"
 msgstr "The the"
 
-#: ../src/view_artist.py:310 ../src/widgets_album.py:359
+#: ../src/view_artist.py:310 ../src/widgets_album.py:358
 msgid "Remove"
 msgstr "Ta bort"
 
@@ -602,34 +768,34 @@ msgstr "Synkronisera %s"
 msgid "Cancel synchronization"
 msgstr "Avbryt synkronisering"
 
-#: ../src/widgets_album.py:355
+#: ../src/widgets_album.py:354
 msgid "Append"
 msgstr "Lägg till"
 
-#: ../src/widgets_album.py:514
+#: ../src/widgets_album.py:513
 msgid "Play albums"
 msgstr "Spela album"
 
-#: ../src/widgets_album.py:524 ../data/AlbumDetailedWidget.ui.h:2
+#: ../src/widgets_album.py:523 ../data/AlbumDetailedWidget.ui.h:2
 msgid "Change artwork"
 msgstr "Ändra bildmaterial"
 
-#: ../src/widgets_album.py:690
+#: ../src/widgets_album.py:689
 #, python-format
 msgid "%s h  %s m"
 msgstr "%s h  %s m"
 
-#: ../src/widgets_album.py:692
+#: ../src/widgets_album.py:691
 #, python-format
 msgid "%s h"
 msgstr "%s h"
 
-#: ../src/widgets_album.py:694
+#: ../src/widgets_album.py:693
 #, python-format
 msgid "%s m"
 msgstr "%s m"
 
-#: ../src/widgets_album.py:975
+#: ../src/widgets_album.py:978
 #, python-format
 msgid "Disc %s"
 msgstr "Skiva %s"
@@ -708,15 +874,15 @@ msgstr "Cédric Bellegarde <cedric.bellegarde@adishatz.org>"
 
 #: ../data/AboutDialog.ui.h:5
 msgid "Donations:"
-msgstr ""
+msgstr "Donationer:"
 
 #: ../data/AboutDialog.ui.h:6
 msgid "Flattr"
-msgstr ""
+msgstr "Flattr"
 
 #: ../data/AboutDialog.ui.h:7
 msgid "Paypal"
-msgstr ""
+msgstr "Paypal"
 
 #: ../data/Appmenu.ui.h:1
 msgid "_Update music"
@@ -783,9 +949,9 @@ msgstr "Bekräfta"
 
 #: ../data/ArtworkSearch.ui.h:3
 msgid ""
-"Lollypop uses \"Google Custom Search API\" to search image on the web.\n"
+"Lollypop uses \"Google Custom Search API\" to search images on the web.\n"
 "This API is limited so it mays not work with default API key.\n"
-"Please create a search engine here:"
+"Please create a \"Custom Search Engine\" here:"
 msgstr "Lollypop använder ”Google Custom Search API” för att söka bilder på webben.\nDetta API är begränsat så det fungerar kanske inte med standard-API-nyckeln.\nSkapa en sökmotor här:"
 
 #: ../data/ArtworkSearch.ui.h:6 ../data/SettingsDialog.ui.h:37
@@ -793,8 +959,8 @@ msgid "API key"
 msgstr "API-nyckel"
 
 #: ../data/DeviceManagerView.ui.h:1
-msgid "Synchronize your device with this playlists"
-msgstr "Synkronisera din enhet med denna spellista"
+msgid "Synchronize your device with these playlists"
+msgstr "Synkronisera din enhet med dessa spellistor"
 
 #: ../data/DeviceManagerWidget.ui.h:2
 msgid "Convert to MP3"
@@ -850,7 +1016,11 @@ msgstr "Skapa en ny spellista baserad på sökning"
 
 #: ../data/SearchPopover.ui.h:2
 msgid "Search on the web"
-msgstr ""
+msgstr "Sök på nätet"
+
+#: ../data/InternalSearchRow.ui.h:1
+msgid "Add to playlist"
+msgstr "Lägg till i spellista"
 
 #: ../data/SettingsDialog.ui.h:1
 msgid "Only in party mode"
@@ -867,10 +1037,6 @@ msgstr "Använd mörk temavariant"
 #: ../data/SettingsDialog.ui.h:5
 msgid "Show genres"
 msgstr "Visa genrer"
-
-#: ../data/SettingsDialog.ui.h:10
-msgid "Artist"
-msgstr "Artist"
 
 #: ../data/SettingsDialog.ui.h:11
 msgid "Name"
@@ -917,8 +1083,8 @@ msgid "Preview tracks on"
 msgstr "Förhandsgranska spår på"
 
 #: ../data/SettingsDialog.ui.h:24
-msgid "None audio device"
-msgstr "Ingen audioenhet"
+msgid "No audio device"
+msgstr "Ingen ljudenhet"
 
 #: ../data/SettingsDialog.ui.h:25
 msgid "Configure lollypop behaviour"
@@ -960,14 +1126,14 @@ msgstr "Du måste installera pylast och gi secret"
 msgid ""
 "Google Web Services need a custom API key.\n"
 "Without one, you will reach default quota soon...\n"
-"Lollypop needs this to download artwork and music."
-msgstr ""
+"Lollypop needs this to search artwork and music."
+msgstr "Google Web Services behöver en särskild API-nyckel.\nUtan en, kommer du snart nå standardkvoten...\nLollypop behöver detta för att söka bildmaterial och musik."
 
 #: ../data/SettingsDialog.ui.h:38
 msgid ""
 "You need to enable \"Custom Search API\" \n"
 "and \"Youtube Data API\" for your project."
-msgstr ""
+msgstr "Du måste aktivera \"Custom Search API\"\noch \"Youtube Data API\" till ditt projekt."
 
 #: ../data/SettingsDialog.ui.h:40
 msgid "Configure Last.fm credentials"
@@ -1059,50 +1225,55 @@ msgstr "Lås uppspelning"
 
 #: ../data/Shortcuts.ui.h:9
 msgctxt "shortcut window"
+msgid "Show/Hide volume control"
+msgstr "Visa/Göm volymkontroll"
+
+#: ../data/Shortcuts.ui.h:10
+msgctxt "shortcut window"
 msgid "Playback"
 msgstr "Uppspelning"
 
-#: ../data/Shortcuts.ui.h:10
+#: ../data/Shortcuts.ui.h:11
 msgctxt "shortcut window"
 msgid "Play"
 msgstr "Spela upp"
 
-#: ../data/Shortcuts.ui.h:11
+#: ../data/Shortcuts.ui.h:12
 msgctxt "shortcut window"
 msgid "Pause"
 msgstr "Pausa"
 
-#: ../data/Shortcuts.ui.h:12
+#: ../data/Shortcuts.ui.h:13
 msgctxt "shortcut window"
 msgid "Stop"
 msgstr "Stoppa"
 
-#: ../data/Shortcuts.ui.h:13
+#: ../data/Shortcuts.ui.h:14
 msgctxt "shortcut window"
 msgid "Next track"
 msgstr "Nästa spår"
 
-#: ../data/Shortcuts.ui.h:14
+#: ../data/Shortcuts.ui.h:15
 msgctxt "shortcut window"
 msgid "Previous track"
 msgstr "Föregående spår"
 
-#: ../data/Shortcuts.ui.h:15
+#: ../data/Shortcuts.ui.h:16
 msgctxt "shortcut window"
 msgid "Skip current album"
 msgstr "Hoppa över aktuellt album"
 
-#: ../data/Shortcuts.ui.h:16
+#: ../data/Shortcuts.ui.h:17
 msgctxt "shortcut window"
 msgid "Repeat track"
 msgstr "Upprepa spår"
 
-#: ../data/Shortcuts.ui.h:17
+#: ../data/Shortcuts.ui.h:18
 msgctxt "shortcut window"
 msgid "Skip backward in track"
 msgstr "Hoppa bakåt i spår"
 
-#: ../data/Shortcuts.ui.h:18
+#: ../data/Shortcuts.ui.h:19
 msgctxt "shortcut window"
 msgid "Skip forward in track"
 msgstr "Hoppa framåt i spår"

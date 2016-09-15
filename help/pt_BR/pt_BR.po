@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lollypop\n"
 "POT-Creation-Date: 2016-05-09 15:53+0200\n"
-"PO-Revision-Date: 2016-06-26 17:08+0000\n"
-"Last-Translator: Laís Figueiredo <laisfigsantos@gmail.com>\n"
+"PO-Revision-Date: 2016-09-12 15:10+0000\n"
+"Last-Translator: Lucas Miranda <Liddack@outlook.com>\n"
 "Language-Team: Portuguese (Brazil) (http://www.transifex.com/gnumdk/lollypop/language/pt_BR/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -25,13 +25,13 @@ msgstr "Ian Brunelli <ian@brunelli.me>\nLucas Miranda <liddack@outlook.com>\nLa�
 #. (itstool) path: info/desc
 #: C/index.page:7
 msgid "Help for the Lollypop music player."
-msgstr "Ajuda para o reprodutor de música Lollypop"
+msgstr "Ajuda para o reprodutor de músicas Lollypop"
 
 #. (itstool) path: info/title
 #: C/index.page:8
 msgctxt "text"
 msgid "Lollypop music player"
-msgstr "Reprodutor de música Lollypop"
+msgstr "Reprodutor de músicas Lollypop"
 
 #. (itstool) path: credit/name
 #: C/index.page:11
@@ -51,17 +51,17 @@ msgstr "<_:media-1/> Reprodutor de músicas Lollypop"
 #. (itstool) path: section/title
 #: C/index.page:21
 msgid "Add music"
-msgstr "Adicionar música"
+msgstr "Adicionar músicas"
 
 #. (itstool) path: section/p
 #: C/index.page:22
 msgid "If lollypop fails to detect your music:"
-msgstr "Se o lollypop falhar na detecção de sua música:"
+msgstr "Se o lollypop falhar na detecção de sua músicas:"
 
 #. (itstool) path: item/p
 #: C/index.page:24
 msgid "Check you have gstreamer-libav or gstreamer-fluendo installed"
-msgstr "Cheque se você tem o gstreamer-libav e o gstreamer-fleundo instalados"
+msgstr "Verifique se você tem o gstreamer-libav e o gstreamer-fleundo instalados"
 
 #. (itstool) path: item/p
 #: C/index.page:25
@@ -78,14 +78,14 @@ msgstr "Reprodução"
 #. (itstool) path: section/p
 #: C/index.page:31
 msgid "When you start playing a song, a contextual playlist is populated."
-msgstr "Quando você começa a reproduzir uma música, uma playlist contextual é povoada."
+msgstr "Quando você começa a reproduzir uma música, uma lista de reprodução contextual é povoada."
 
 #. (itstool) path: section/p
 #: C/index.page:32
 msgid ""
 "Contexts can be: an album, an artist, a genre, popular or recent albums, "
 "searches, playlists, ..."
-msgstr "Os contextos podem ser: um álbum, um artista, um gênero, álbuns populares ou recentes, pesquisas, playlists, ..."
+msgstr "Os contextos podem ser: um álbum, um artista, um gênero, álbuns populares ou recentes, pesquisas, listas de reprodução, ..."
 
 #. (itstool) path: section/p
 #: C/index.page:33
@@ -108,7 +108,7 @@ msgstr "A popularidade de um álbum é baseada em quantas faixas desse álbum vo
 msgid ""
 "Album rating will be influenced by album popularity. In other words, rate "
 "will decrease if you stop listening to an album."
-msgstr "A classificação de um álbum será influenciada pela sua popularidade. Em outras palavras, a classificação irá diminuir se você parar de escutar esse álbum"
+msgstr "A classificação de um álbum será influenciada pela sua popularidade. Em outras palavras, a classificação irá diminuir se você parar de escutar esse álbum."
 
 #. (itstool) path: section/title
 #: C/index.page:43
@@ -125,7 +125,7 @@ msgstr "Se você passar o ponteiro do mouse por cima de uma capa e o ponteiro mu
 #. (itstool) path: section/p
 #: C/index.page:45
 msgid "You need an internet connection."
-msgstr "Você precisa de uma conexão com a internet."
+msgstr "Você precisa de uma conexão com a Internet."
 
 #. (itstool) path: section/title
 #: C/index.page:49
@@ -135,7 +135,7 @@ msgstr "Atalhos"
 #. (itstool) path: item/p
 #: C/index.page:51
 msgid "Control+s: Lollypop settings"
-msgstr "Control+s: configurações do Lollypop"
+msgstr "Control+s: Configurações do Lollypop"
 
 #. (itstool) path: item/p
 #: C/index.page:52
