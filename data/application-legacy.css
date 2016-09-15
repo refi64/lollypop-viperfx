@@ -184,6 +184,10 @@ Gtk.ListBoxRow .menu-button:hover {
     border-radius: 5px;
 }
 
+.no-padding {
+    padding: 0px;
+}
+
 .queued {
     border-radius: 5px;
     color: @theme_selected_fg_color;
