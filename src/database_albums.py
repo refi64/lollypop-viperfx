@@ -189,7 +189,7 @@ class AlbumsDatabase:
             @return modification time as int
         """
         with SqlCursor(Lp().db) as sql:
-            result = sql.execute("SELECT synced FROM albums WHERE\
+            result = sql.execute("SELECT mtime FROM albums WHERE\
                                  rowid=?", (album_id,))
 
             v = result.fetchone()

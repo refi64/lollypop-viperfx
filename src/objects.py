@@ -142,8 +142,9 @@ class Album(Base):
     """
         Represent an album
     """
-    FIELDS = ['name', 'artists', 'artist_ids', 'year', 'path', 'duration']
-    DEFAULTS = ['', '', [], '', '', 0]
+    FIELDS = ['name', 'artists', 'artist_ids',
+              'year', 'path', 'duration', 'mtime']
+    DEFAULTS = ['', '', [], '', '', 0, 0]
 
     def __init__(self, album_id=None, genre_ids=[], artist_ids=[]):
         """
@@ -219,10 +220,7 @@ class Album(Base):
             True if a youtube stream
             @return bool
         """
-        if self.tracks:
-            return self.tracks[0].is_youtube
-        else:
-            return False
+        return self.mtime == 0
 
     def disc_names(self, disc):
         """
