@@ -14,6 +14,7 @@ from gi.repository import GLib, Gio
 
 from threading import Thread
 import json
+from time import time
 from re import findall
 
 from lollypop.sqlcursor import SqlCursor
@@ -138,7 +139,9 @@ class Youtube:
                                                                "")
             (album_id, new_album) = t.add_album(item.album,
                                                 album_artist_ids,
-                                                "", 0, 0)
+                                                "", 0, int(time()))
+            if new_album:
+                Lp().albums.set_synced(album_id, Type.NONE)
 
             if persistent == DbPersistent.CHARTS:
                 (genre_ids, new_genre_ids) = ([Type.CHARTS], [])

@@ -63,7 +63,8 @@ class DatabaseUpgrade:
             10: "UPDATE tracks set ltime=0 where ltime is null",
             11: "ALTER TABLE albums ADD synced INT NOT NULL DEFAULT 0",
             12: "ALTER TABLE tracks ADD persistent INT NOT NULL DEFAULT 1",
-            13: self.__upgrade_13
+            13: self.__upgrade_13,
+            14: "UPDATE albums SET synced=-1 where mtime=0"
                          }
 
     """

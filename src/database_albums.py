@@ -114,7 +114,7 @@ class AlbumsDatabase:
         """
             Set album synced
             @param album id as int
-            @param synced as bool
+            @param synced as int
             @warning: commit needed
         """
         with SqlCursor(Lp().db) as sql:

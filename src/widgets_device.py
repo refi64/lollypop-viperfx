@@ -311,15 +311,17 @@ class DeviceManagerWidget(Gtk.Bin, MtpSync):
         """
         if albums and not self.__stop:
             album = Album(albums.pop(0))
-            if album.artist_ids[0] == Type.COMPILATIONS:
-                name = escape(album.name)
-            else:
-                artists = ", ".join(album.artists)
-                name = "<b>%s</b> - %s" % (
-                        escape(artists),
-                        escape(album.name))
-            selected = Lp().albums.get_synced(album.id)
-            self.__model.append([selected, name, album.id])
+            synced = Lp().albums.get_synced(album.id)
+            # Do not sync youtube albums
+            if synced != Type.NONE:
+                if album.artist_ids[0] == Type.COMPILATIONS:
+                    name = escape(album.name)
+                else:
+                    artists = ", ".join(album.artists)
+                    name = "<b>%s</b> - %s" % (
+                            escape(artists),
+                            escape(album.name))
+                self.__model.append([synced, name, album.id])
             GLib.idle_add(self.__append_albums, albums)
 
     def __populate_albums_playlist(self, album_id, toggle):

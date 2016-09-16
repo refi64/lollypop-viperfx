@@ -143,8 +143,8 @@ class Album(Base):
         Represent an album
     """
     FIELDS = ['name', 'artists', 'artist_ids',
-              'year', 'path', 'duration', 'mtime']
-    DEFAULTS = ['', '', [], '', '', 0, 0]
+              'year', 'path', 'duration', 'mtime', 'synced']
+    DEFAULTS = ['', '', [], '', '', 0, 0, False]
 
     def __init__(self, album_id=None, genre_ids=[], artist_ids=[]):
         """
@@ -220,7 +220,7 @@ class Album(Base):
             True if a youtube stream
             @return bool
         """
-        return self.mtime == 0
+        return self.synced == Type.NONE
 
     def disc_names(self, disc):
         """
