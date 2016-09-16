@@ -191,6 +191,8 @@ class Youtube:
             if status:
                 decode = json.loads(data.decode('utf-8'))
                 return decode['items'][0]['id']['videoId']
+        except IndexError:
+            pass
         except Exception as e:
             print("Youtube::__get_youtube_id():", e, f.get_uri())
             self.__fallback = True
