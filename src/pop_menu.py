@@ -531,6 +531,7 @@ class TrackMenuPopover(Gtk.Popover):
             edit.set_margin_start(5)
             edit.set_margin_end(5)
             edit.set_margin_bottom(5)
+            edit.set_tooltip_text(_("Youtube video address"))
             edit.set_property('hexpand', True)
             edit.set_text(uri)
             edit.connect('changed', self.__on_edit_changed, track.id)
