@@ -155,10 +155,9 @@ class Window(Gtk.ApplicationWindow, Container):
         """
         size = self.get_size()
         self.__toolbar.set_content_width(size[0])
-        if Lp().player.current_track.id is not None:
-            self.__show_miniplayer(size[0] < WindowSize.MEDIUM)
-            self.__show_subtoolbar(size[0] < WindowSize.MONSTER and
-                                   size[0] > WindowSize.MEDIUM)
+        self.__show_miniplayer(size[0] < WindowSize.MEDIUM)
+        self.__show_subtoolbar(size[0] < WindowSize.MONSTER and
+                               size[0] > WindowSize.MEDIUM)
 
     def set_mini(self):
         """
@@ -250,8 +249,6 @@ class Window(Gtk.ApplicationWindow, Container):
            isinstance(size_setting[0], int) and\
            isinstance(size_setting[1], int):
             self.resize(size_setting[0], size_setting[1])
-            self.__show_subtoolbar(size_setting[0] < WindowSize.MONSTER and
-                                   size_setting[0] > WindowSize.MEDIUM)
         if name == 'window':
             self.__setup_pos(name)
         else:
