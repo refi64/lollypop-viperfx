@@ -203,6 +203,18 @@ class TracksDatabase:
                 return v[0]
             return ""
 
+    def set_uri(self, track_id, uri):
+        """
+            Set track uri
+            @param Track id as int
+            @param uri as string
+        """
+        with SqlCursor(Lp().db) as sql:
+            sql.execute("UPDATE tracks SET uri=?\
+                         WHERE rowid=?",
+                        (uri, track_id))
+            sql.commit()
+
     def get_album_id(self, track_id):
         """
             Get album id for track id

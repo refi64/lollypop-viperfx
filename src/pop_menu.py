@@ -361,6 +361,9 @@ class PopToolbarMenu(Gio.Menu):
         self.insert_section(1, _("Playlists"),
                             PlaylistsMenu(object_id, [], [], False))
 
+#######################
+# PRIVATE             #
+#######################
     def __on_change_state(self, action, value):
         """
             Update playback value
@@ -395,6 +398,9 @@ class EditMenu(BaseMenu):
                     self.__set_edit_actions()
                     break
 
+#######################
+# PRIVATE             #
+#######################
     def __set_remove_action(self):
         """
             Remove album
@@ -519,6 +525,17 @@ class TrackMenuPopover(Gtk.Popover):
         else:
             track_year = ""
 
+        if track.album.is_youtube:
+            uri = Lp().tracks.get_uri(track.id)
+            edit = Gtk.Entry()
+            edit.set_margin_start(5)
+            edit.set_margin_end(5)
+            edit.set_margin_bottom(5)
+            edit.set_property('hexpand', True)
+            edit.set_text(uri)
+            edit.connect('changed', self.__on_edit_changed, track.id)
+            edit.show()
+
         rating = RatingWidget(track)
         rating.set_margin_top(5)
         rating.set_margin_bottom(5)
@@ -584,8 +601,20 @@ class TrackMenuPopover(Gtk.Popover):
         if track_year != "":
             hgrid.add(year)
         hgrid.show()
+        grid.add(edit)
         grid.add(hgrid)
         self.add(stack)
+
+#######################
+# PRIVATE             #
+#######################
+    def __on_edit_changed(self, edit, track_id):
+        """
+            Update track uri
+            @param edit as Gtk.Edit
+            @param track id as int
+        """
+        Lp().tracks.set_uri(track_id, edit.get_text())
 
 
 class AlbumMenuPopover(Gtk.Popover):
