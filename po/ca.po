@@ -10,8 +10,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lollypop\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-09-13 11:18+0200\n"
-"PO-Revision-Date: 2016-09-13 09:20+0000\n"
+"POT-Creation-Date: 2016-09-17 19:15+0200\n"
+"PO-Revision-Date: 2016-09-17 17:17+0000\n"
 "Last-Translator: Cédric Bellegarde <web@adishatz.org>\n"
 "Language-Team: Catalan (http://www.transifex.com/gnumdk/lollypop/language/ca/)\n"
 "MIME-Version: 1.0\n"
@@ -266,8 +266,8 @@ msgstr "Navegació per Gènere/Artista/Caràtula "
 msgid "Search"
 msgstr "Cerca"
 
-#: ../data/lollypop.appdata.xml.in.h:9 ../src/pop_menu.py:475
-#: ../src/pop_menu.py:496 ../src/toolbar_end.py:395
+#: ../data/lollypop.appdata.xml.in.h:9 ../src/pop_menu.py:481
+#: ../src/pop_menu.py:502 ../src/toolbar_end.py:395
 #: ../data/QueuePopover.ui.h:2
 msgid "Queue"
 msgstr "Cua"
@@ -323,7 +323,7 @@ msgid ""
 "    - Artist informations disabled"
 msgstr "- Scrobbler desactivat\n- Descàrrega automàtica de caràtula desactivat\n- Informació de l'artista desactivat "
 
-#: ../src/application.py:461
+#: ../src/application.py:463
 msgid "Lollypop: You need to install yelp."
 msgstr "Lollypop: Heu d'instal·lar \"Yelp\"."
 
@@ -481,7 +481,7 @@ msgstr ""
 
 #: ../src/collectionscanner.py:245 ../src/database_albums.py:329
 #: ../src/database_artists.py:104 ../src/database_genres.py:69
-#: ../src/database_tracks.py:233 ../src/selectionlist.py:343
+#: ../src/database_tracks.py:245 ../src/selectionlist.py:343
 #: ../src/tagreader.py:88 ../src/tagreader.py:103 ../src/tagreader.py:118
 #: ../src/tagreader.py:163 ../src/tagreader.py:178 ../src/tagreader.py:181
 #: ../src/tagreader.py:191 ../src/tagreader.py:198
@@ -500,8 +500,8 @@ msgstr "Àlbums recents"
 msgid "Random albums"
 msgstr "Àlbums a l'atzar"
 
-#: ../src/container.py:451 ../src/pop_menu.py:361 ../src/pop_menu.py:478
-#: ../src/pop_menu.py:498 ../src/widgets_device.py:117
+#: ../src/container.py:451 ../src/pop_menu.py:361 ../src/pop_menu.py:484
+#: ../src/pop_menu.py:504 ../src/widgets_device.py:117
 #: ../src/widgets_playlist.py:521
 msgid "Playlists"
 msgstr "Llistes"
@@ -650,27 +650,31 @@ msgstr "Afegeix a «%s»"
 msgid "Playback"
 msgstr "Reproducció"
 
-#: ../src/pop_menu.py:406
+#: ../src/pop_menu.py:412
 msgid "Remove album"
 msgstr ""
 
-#: ../src/pop_menu.py:416
+#: ../src/pop_menu.py:422
 msgid "Modify information"
 msgstr "Modifica la informació"
 
-#: ../src/pop_menu.py:472 ../data/SettingsDialog.ui.h:10
+#: ../src/pop_menu.py:478 ../data/SettingsDialog.ui.h:10
 msgid "Artist"
 msgstr "Artista"
 
-#: ../src/pop_menu.py:481 ../data/PlaylistView.ui.h:1
+#: ../src/pop_menu.py:487 ../data/PlaylistView.ui.h:1
 msgid "Edit"
 msgstr "Edita"
 
-#: ../src/pop_menu.py:612
+#: ../src/pop_menu.py:534
+msgid "Youtube video address"
+msgstr ""
+
+#: ../src/pop_menu.py:655
 msgid "Save genre"
 msgstr ""
 
-#: ../src/pop_menu.py:633 ../data/ExternalSearchRow.ui.h:1
+#: ../src/pop_menu.py:676 ../data/ExternalSearchRow.ui.h:1
 msgid "Save into collection"
 msgstr ""
 
