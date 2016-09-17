@@ -246,7 +246,7 @@ class Track(Base):
         Represent a track
     """
     FIELDS = ['name', 'album_id', 'album_artist_ids',
-              'artist_ids', 'genre_ids', 'album_name', 'artists',
+              'artist_ids', 'genre_ids', 'album_name', 'artists', 'genres',
               'duration', 'number', 'position', 'year', 'persistent', 'mtime']
     DEFAULTS = ['', None, [], [], [], '', '', 0.0, None, 0, None, 1, 0]
 
