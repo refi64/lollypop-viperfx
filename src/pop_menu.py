@@ -549,13 +549,14 @@ class TrackMenuPopover(Gtk.Popover):
             year.show()
 
         if track.album.is_youtube:
-            youtube = Gtk.LinkButton(track.uri)
+            uri = Lp().tracks.get_uri(track.id)
+            youtube = Gtk.LinkButton(uri)
             icon = Gtk.Image.new_from_icon_name('web-browser-symbolic',
                                                 Gtk.IconSize.MENU)
             youtube.set_image(icon)
             youtube.get_style_context().add_class('no-padding')
             youtube.set_margin_end(5)
-            youtube.set_tooltip_text(Lp().tracks.get_uri(track.id))
+            youtube.set_tooltip_text(uri)
             youtube.show_all()
 
         # Hack to add two widgets in popover
