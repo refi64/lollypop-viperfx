@@ -350,25 +350,27 @@ class SearchPopover(Gtk.Popover):
                     row2_score += 1
         return row1_score < row2_score
 
-    def __clear(self):
+    def __clear(self, rows):
         """
             Clear search view
+            @param items as [SearchRow]
             @warning not thread safe
         """
-        for child in self.__view.get_children():
-            child.destroy()
+        if rows:
+            row = rows.pop(0)
+            row.destroy()
+            GLib.idle_add(self.__clear, rows)
 
     def __populate(self):
         """
             Populate searching items
             in db based on text entry current text
         """
-        GLib.idle_add(self.__clear)
+        self.__stack.set_visible_child(self.__spinner)
+        self.__spinner.start()
 
         # Network Search
         if self.__need_network_search():
-            self.__stack.set_visible_child(self.__spinner)
-            self.__spinner.start()
             t = Thread(target=self.__nsearch.do, args=(self.__current_search,))
             t.daemon = True
             t.start()
@@ -378,6 +380,7 @@ class SearchPopover(Gtk.Popover):
         for item in self.__current_search.split():
             if len(item) >= 3:
                 search_items.append(item)
+        GLib.idle_add(self.__clear, self.__view.get_children())
         t = Thread(target=self.__lsearch.do, args=(search_items,))
         t.daemon = True
         t.start()
@@ -494,6 +497,10 @@ class SearchPopover(Gtk.Popover):
         search_row = SearchRow(item)
         search_row.show()
         self.__view.add(search_row)
+        if self.__lsearch.finished and\
+                (self.__nsearch is None or self.__nsearch.finished):
+            self.__stack.set_visible_child(self.__new_btn)
+            self.__spinner.stop()
 
     def __on_network_item_found(self, search):
         """
@@ -502,9 +509,6 @@ class SearchPopover(Gtk.Popover):
         """
         if self.__nsearch != search:
             return
-        if search.finished:
-            self.__stack.set_visible_child(self.__new_btn)
-            self.__spinner.stop()
         if not search.items:
             return
         item = search.items.pop(0)
@@ -517,6 +521,9 @@ class SearchPopover(Gtk.Popover):
                    args=(item.smallcover, search_row))
         t.daemon = True
         t.start()
+        if self.__nsearch.finished and self.__lsearch.finished:
+            self.__stack.set_visible_child(self.__new_btn)
+            self.__spinner.stop()
 
     def __on_map(self, widget):
         """
@@ -549,11 +556,10 @@ class SearchPopover(Gtk.Popover):
         self.__timeout = None
         self.__lsearch = LocalSearch()
         self.__lsearch.connect('item-found', self.__on_local_item_found)
-        self.__nsearch = NetworkSearch()
-        self.__nsearch.connect('item-found', self.__on_network_item_found)
-        t = Thread(target=self.__populate)
-        t.daemon = True
-        t.start()
+        if self.__need_network_search():
+            self.__nsearch = NetworkSearch()
+            self.__nsearch.connect('item-found', self.__on_network_item_found)
+        self.__populate()
 
     def __on_row_activated(self, widget, row):
         """
