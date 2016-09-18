@@ -264,7 +264,9 @@ class AlbumArt(BaseArt, TagReader):
         """
         try:
             for artwork in self.get_album_artworks(album):
-                os.remove(os.path.join(album.path, artwork))
+                path = os.path.join(album.path, artwork)
+                f = Gio.File.new_for_path(path)
+                f.trash()
             if Lp().settings.get_value('artwork-tags') and\
                     which("kid3-cli") is not None:
                 argv = ["kid3-cli", "-c", "select all", "-c",
