@@ -286,10 +286,6 @@ class SearchPopover(Gtk.Popover):
             Timeout filtering
             @param widget as Gtk.TextEntry
         """
-        self.__reset_search()
-        self.__stack.set_visible_child(self.__new_btn)
-        self.__spinner.stop()
-
         if self.__timeout:
             GLib.source_remove(self.__timeout)
             self.__timeout = None
@@ -297,12 +293,10 @@ class SearchPopover(Gtk.Popover):
         self.__current_search = widget.get_text().strip()
         if self.__current_search != "":
             self.__new_btn.set_sensitive(True)
-            self.__timeout = GLib.timeout_add(100,
+            self.__timeout = GLib.timeout_add(250,
                                               self.__on_search_changed_thread)
         else:
             self.__reset_search()
-            self.__stack.set_visible_child(self.__new_btn)
-            self.__spinner.stop()
             self.__new_btn.set_sensitive(False)
             for child in self.__view.get_children():
                 GLib.idle_add(child.destroy)
@@ -332,36 +326,29 @@ class SearchPopover(Gtk.Popover):
             @param row as Gtk.ListBoxRow
             @param row as Gtk.ListBoxRow
         """
-        row1_score = 0
+        row1_score = row2_score = 0
         for item in self.__current_search.split():
             for artist_id in row1.artist_ids:
                 artist = Lp().artists.get_name(artist_id)
                 if artist.lower().find(item.lower()) != -1:
-                    row1_score += 1
+                    row1_score += 2
+                    if not row1.is_track:
+                        row1_score += 1
             if row1.name.lower().find(item.lower()) != -1:
                 row1_score += 1
-        row2_score = 0
-        for item in self.__current_search.split():
+                if row1.is_track:
+                    row1_score += 1
             for artist_id in row2.artist_ids:
                 artist = Lp().artists.get_name(artist_id)
                 if artist.lower().find(item.lower()) != -1:
-                    row2_score += 1
+                    row2_score += 2
+                    if not row2.is_track:
+                        row2_score += 1
             if row2.name.lower().find(item.lower()) != -1:
                 row2_score += 1
-
-        if row1_score > row2_score:
-            return False
-        elif row1_score == row2_score:
-            if not row1.is_track and row2.is_track:
-                return False
-            else:
-                return True
-        elif not row1.is_track and row2.is_track:
-            return False
-        elif row1.is_track and row2.is_track:
-            return False
-        else:
-            return True
+                if row2.is_track:
+                    row2_score += 1
+        return row1_score < row2_score
 
     def __clear(self):
         """
@@ -380,6 +367,8 @@ class SearchPopover(Gtk.Popover):
 
         # Network Search
         if self.__need_network_search():
+            self.__stack.set_visible_child(self.__spinner)
+            self.__spinner.start()
             t = Thread(target=self.__nsearch.do, args=(self.__current_search,))
             t.daemon = True
             t.start()
@@ -475,6 +464,8 @@ class SearchPopover(Gtk.Popover):
         """
             Reset search object
         """
+        self.__stack.set_visible_child(self.__new_btn)
+        self.__spinner.stop()
         if self.__nsearch is not None:
             self.__nsearch.disconnect_by_func(self.__on_network_item_found)
             self.__nsearch.stop()
@@ -552,6 +543,7 @@ class SearchPopover(Gtk.Popover):
         """
             Populate widget
         """
+        self.__reset_search()
         from lollypop.search_local import LocalSearch
         from lollypop.search_network import NetworkSearch
         self.__timeout = None
@@ -559,8 +551,6 @@ class SearchPopover(Gtk.Popover):
         self.__lsearch.connect('item-found', self.__on_local_item_found)
         self.__nsearch = NetworkSearch()
         self.__nsearch.connect('item-found', self.__on_network_item_found)
-        self.__stack.set_visible_child(self.__spinner)
-        self.__spinner.start()
         t = Thread(target=self.__populate)
         t.daemon = True
         t.start()
