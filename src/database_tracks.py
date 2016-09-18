@@ -214,6 +214,7 @@ class TracksDatabase:
                          WHERE rowid=?",
                         (uri, track_id))
             sql.commit()
+            Lp().tracks.set_mtime(track_id, 0)
 
     def get_album_id(self, track_id):
         """
