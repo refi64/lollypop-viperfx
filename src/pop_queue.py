@@ -110,7 +110,8 @@ class QueueRow(Gtk.ListBoxRow):
         else:
             self.__header.hide()
 
-    def get_id(self):
+    @property
+    def id(self):
         """
             Get row id
             @return row id as int
@@ -366,7 +367,7 @@ class QueuePopover(Gtk.Popover):
         """
         if len(self.__view.get_children()) > 0:
             row = self.__view.get_children()[0]
-            if row.get_id() == player.current_track.id:
+            if row.id == player.current_track.id:
                 row.destroy()
 
     def __update_headers(self):
@@ -375,7 +376,7 @@ class QueuePopover(Gtk.Popover):
         """
         prev_album_id = None
         for child in self.__view.get_children():
-            track = Track(child.get_id())
+            track = Track(child.id)
             if track.album.id == prev_album_id:
                 child.set_cover(None)
                 child.show_header(False)
@@ -403,7 +404,7 @@ class QueuePopover(Gtk.Popover):
             @param row as QueueRow
         """
         if not Lp().player.locked:
-            Lp().player.load(Track(row.get_id()))
+            Lp().player.load(Track(row.id))
             GLib.idle_add(row.destroy)
 
     def __on_track_moved(self, row, src, x, y):
@@ -414,7 +415,7 @@ class QueuePopover(Gtk.Popover):
             @param x as int
             @param y as int
         """
-        if row.get_id() == src:
+        if row.id == src:
             return
         height = row.get_allocated_height()
         if y > height/2:
@@ -428,7 +429,7 @@ class QueuePopover(Gtk.Popover):
         for child in self.__view.get_children():
             if child == row:
                 row_index = i
-            if child.get_id() == src:
+            if child.id == src:
                 Lp().player.del_from_queue(src, False)
                 child.disconnect_by_func(self.__on_child_destroyed)
                 child.destroy()

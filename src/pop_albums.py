@@ -141,7 +141,8 @@ class AlbumRow(Gtk.ListBoxRow):
         """
         return (self.__height, self.__height)
 
-    def get_id(self):
+    @property
+    def id(self):
         """
             Get row id
             @return row id as int
@@ -384,7 +385,7 @@ class AlbumsView(LazyLoadingView):
         """
         y = None
         for child in self.__view.get_children():
-            if child.get_id() == Lp().player.current_track.album.id:
+            if child.id == Lp().player.current_track.album.id:
                 y = child.translate_coordinates(self.__view, 0, 0)[1]
         return y
 
@@ -416,7 +417,7 @@ class AlbumsView(LazyLoadingView):
             @param player object
         """
         for child in self.__view.get_children():
-            child.show_play_indicator(child.get_id() ==
+            child.show_play_indicator(child.id ==
                                       Lp().player.current_track.album.id)
 
     def __on_child_destroyed(self, row):
@@ -424,7 +425,7 @@ class AlbumsView(LazyLoadingView):
             Check clear button aspect
             @param row as AlbumRow
         """
-        if row.get_id() != Lp().player.current_track.album.id:
+        if row.id != Lp().player.current_track.album.id:
             self.__jump_button.set_sensitive(False)
         self.__clear_button.set_sensitive(len(self.__view.get_children()) != 0)
 
@@ -434,18 +435,18 @@ class AlbumsView(LazyLoadingView):
             @param widget as Gtk.ListBox
             @param row as AlbumRow
         """
-        genre_ids = Lp().player.get_genre_ids(row.get_id())
-        artist_ids = Lp().player.get_artist_ids(row.get_id())
+        genre_ids = Lp().player.get_genre_ids(row.id)
+        artist_ids = Lp().player.get_artist_ids(row.id)
         # TODO Remove this later
         if Gtk.get_minor_version() > 16:
             popover = AlbumPopover(
-                                     row.get_id(),
+                                     row.id,
                                      genre_ids,
                                      [])
             popover.set_relative_to(row)
             popover.show()
         else:
-            album = Album(row.get_id(), genre_ids, artist_ids)
+            album = Album(row.id, genre_ids, artist_ids)
             Lp().player.load(album.tracks[0])
 
     def __on_jump_clicked(self, widget):
@@ -472,7 +473,7 @@ class AlbumsView(LazyLoadingView):
             @param x as int
             @param y as int
         """
-        if row.get_id() == src:
+        if row.id == src:
             return
         height = row.get_allocated_height()
         if y > height/2:
@@ -487,7 +488,7 @@ class AlbumsView(LazyLoadingView):
         for child in self.__view.get_children():
             if child == row:
                 row_index = i
-            if child.get_id() == src:
+            if child.id == src:
                 child.disconnect_by_func(self.__on_child_destroyed)
                 child.destroy()
             else:

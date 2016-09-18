@@ -82,7 +82,8 @@ class RadioWidget(Gtk.FlowBoxChild, AlbumWidget):
         """
         pass
 
-    def get_id(self):
+    @property
+    def id(self):
         """
             Return widget id (same value for all radio widgets)
         """

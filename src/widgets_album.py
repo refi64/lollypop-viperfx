@@ -121,7 +121,8 @@ class AlbumWidget:
         """
         self._loading = Loading.STOP
 
-    def get_id(self):
+    @property
+    def id(self):
         """
             Return album id for widget
             @return album id as int
@@ -460,7 +461,8 @@ class AlbumSimpleWidget(Gtk.FlowBoxChild, AlbumWidget):
             self._cover.get_style_context().add_class(
                                                 'cover-frame-youtube')
 
-    def get_id(self):
+    @property
+    def id(self):
         """
             Return album id
             @return int

@@ -72,7 +72,8 @@ class PlaylistsWidget(Gtk.Grid):
 
         self.add(self.__box)
 
-    def get_id(self):
+    @property
+    def id(self):
         """
             Return playlist widget id
             @return int
