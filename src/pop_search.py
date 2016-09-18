@@ -319,7 +319,7 @@ class SearchPopover(Gtk.Popover):
         self.__current_search = widget.get_text().strip()
         if self.__current_search != "":
             self.__new_btn.set_sensitive(True)
-            self.__timeout = GLib.timeout_add(250,
+            self.__timeout = GLib.timeout_add(500,
                                               self.__on_search_changed_thread)
         else:
             self.__new_btn.set_sensitive(False)

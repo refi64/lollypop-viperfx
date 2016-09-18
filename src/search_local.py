@@ -31,6 +31,7 @@ class LocalSearch(GObject.GObject):
         GObject.GObject.__init__(self)
         self._cancel = Gio.Cancellable.new()
         self._items = []
+        self.__stop = False
         self._finished = False
 
     @property
@@ -49,7 +50,7 @@ class LocalSearch(GObject.GObject):
         return self._items
 
     def stop(self):
-        self._cancel.cancel()
+        self.__stop = True
 
     def do(self, search_items):
         """
@@ -57,14 +58,19 @@ class LocalSearch(GObject.GObject):
             @param search items as [str]
             @return tracks as [SearchItem]
         """
+        self.__stop = False
         # Local search
         added_album_ids = []
         added_track_ids = []
         for item in search_items:
+            if self.__stop:
+                return
             albums = []
             tracks_non_album_artist = []
             # Get all albums for all artists and non album_artist tracks
             for artist_id in Lp().artists.search(item):
+                if self.__stop:
+                    return
                 for album_id in Lp().albums.get_ids([artist_id], []):
                     if (album_id, artist_id) not in albums:
                         albums.append((album_id, artist_id))
@@ -73,6 +79,8 @@ class LocalSearch(GObject.GObject):
                     tracks_non_album_artist.append((track_id, track_name))
 
             for album_id, artist_id in albums:
+                if self.__stop:
+                    return
                 if album_id in added_album_ids:
                     continue
                 search_item = SearchItem()
@@ -85,6 +93,8 @@ class LocalSearch(GObject.GObject):
 
             albums = Lp().albums.search(item)
             for album_id in albums:
+                if self.__stop:
+                    return
                 if album_id in added_album_ids:
                     continue
                 search_item = SearchItem()
@@ -97,6 +107,8 @@ class LocalSearch(GObject.GObject):
 
             for track_id, track_name in Lp().tracks.search(
                                                item) + tracks_non_album_artist:
+                if self.__stop:
+                    return
                 if track_id in added_track_ids:
                     continue
                 search_item = SearchItem()
