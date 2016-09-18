@@ -287,7 +287,7 @@ class Container:
             self.__progress.pulse()
             return True
         else:
-            self.__progress.set_fraction(0.0)
+            self.__progress.set_fraction(0.0, self)
             return False
 
     def __setup_view(self):
