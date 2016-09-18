@@ -21,6 +21,7 @@ from lollypop.define import Lp, ArtSize, Type, DbPersistent
 from lollypop.objects import Track, Album
 from lollypop.pop_menu import TrackMenuPopover, TrackMenu
 from lollypop.pop_album import AlbumPopover
+from lollypop.utils import noaccents
 
 
 class SearchRow(Gtk.ListBoxRow):
@@ -326,25 +327,31 @@ class SearchPopover(Gtk.Popover):
             @param row as Gtk.ListBoxRow
             @param row as Gtk.ListBoxRow
         """
-        row1_score = row2_score = 0
+        # Network search score less
+        row1_score = 0 if row1.id is None else 1
+        row2_score = 0 if row2.id is None else 1
         for item in self.__current_search.split():
             for artist_id in row1.artist_ids:
                 artist = Lp().artists.get_name(artist_id)
-                if artist.lower().find(item.lower()) != -1:
+                if noaccents(artist.lower()).find(
+                                                noaccents(item).lower()) != -1:
                     row1_score += 2
                     if not row1.is_track:
                         row1_score += 1
-            if row1.name.lower().find(item.lower()) != -1:
+            if noaccents(row1.name).lower().find(
+                                                noaccents(item).lower()) != -1:
                 row1_score += 1
                 if row1.is_track:
                     row1_score += 1
             for artist_id in row2.artist_ids:
                 artist = Lp().artists.get_name(artist_id)
-                if artist.lower().find(item.lower()) != -1:
+                if noaccents(artist).lower().find(
+                                                noaccents(item).lower()) != -1:
                     row2_score += 2
                     if not row2.is_track:
                         row2_score += 1
-            if row2.name.lower().find(item.lower()) != -1:
+            if noaccents(row2.name).lower().find(
+                                                noaccents(item).lower()) != -1:
                 row2_score += 1
                 if row2.is_track:
                     row2_score += 1
