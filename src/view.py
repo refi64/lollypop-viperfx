@@ -161,7 +161,7 @@ class View(Gtk.Grid):
             @param album id as int
         """
         for widget in self._get_children():
-            if album_id == widget.get_id():
+            if album_id == widget.id:
                 widget.update_cover()
 
 

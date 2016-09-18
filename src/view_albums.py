@@ -128,7 +128,7 @@ class AlbumsView(LazyLoadingView):
             self._scrolled.get_allocation().height + y
             self._scrolled.get_vadjustment().set_value(y)
         if self.__press_rect is not None:
-            album = Album(album_widget.get_id())
+            album = Album(album_widget.id)
             if self.__genre_ids and self.__genre_ids[0] == Type.CHARTS:
                 popover = AlbumMenuPopover(album, None)
                 popover.set_relative_to(cover)
@@ -149,7 +149,7 @@ class AlbumsView(LazyLoadingView):
                 height = bottom_height
             else:
                 height = top_height
-            popover = AlbumPopover(album_widget.get_id(),
+            popover = AlbumPopover(album_widget.id,
                                    self.__genre_ids,
                                    self.__artist_ids,
                                    allocation.width,
