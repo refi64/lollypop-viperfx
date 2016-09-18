@@ -412,7 +412,7 @@ class AlbumsDatabase:
             @return array of album ids as int
         """
         with SqlCursor(Lp().db) as sql:
-            result = sql.execute("SELECT albums.rowid\
+            result = sql.execute("SELECT DISTINCT albums.rowid\
                                   FROM albums, album_genres\
                                   WHERE popularity!=0\
                                   AND album_genres.genre_id!=?\
@@ -427,7 +427,7 @@ class AlbumsDatabase:
             @return array of albums ids as int
         """
         with SqlCursor(Lp().db) as sql:
-            result = sql.execute("SELECT albums.rowid\
+            result = sql.execute("SELECT DISTINCT albums.rowid\
                                   FROM albums, album_genres\
                                   WHERE album_genres.genre_id!=?\
                                   AND album_genres.album_id=albums.rowid\
@@ -443,7 +443,7 @@ class AlbumsDatabase:
         with SqlCursor(Lp().db) as sql:
             albums = []
 
-            result = sql.execute("SELECT albums.rowid\
+            result = sql.execute("SELECT DISTINCT albums.rowid\
                                   FROM albums, album_genres\
                                   WHERE album_genres.genre_id!=?\
                                   AND album_genres.album_id=albums.rowid\

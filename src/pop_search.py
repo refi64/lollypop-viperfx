@@ -394,6 +394,7 @@ class SearchPopover(Gtk.Popover):
                 search_item.is_track = True
                 search_item.artist_ids = Lp().tracks.get_artist_ids(track_id)
                 done = False
+                # Preprend item if artist is in current search
                 for artist_id in search_item.artist_ids:
                     artist = Lp().artists.get_name(artist_id)
                     for item in self.__current_search.split():
