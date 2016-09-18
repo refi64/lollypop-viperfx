@@ -634,8 +634,9 @@ class SearchPopover(Gtk.Popover):
         # Internal track/album
         if event.button != 1 and row.id is not None:
             if row.is_track:
-                popover = TrackMenuPopover(row.id,
-                                           TrackMenu(row.id))
+                track = Track(row.id)
+                popover = TrackMenuPopover(track,
+                                           TrackMenu(track))
                 popover.set_relative_to(widget)
                 popover.set_pointing_to(rect)
                 popover.show()

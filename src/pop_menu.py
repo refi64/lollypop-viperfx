@@ -602,7 +602,8 @@ class TrackMenuPopover(Gtk.Popover):
         if track_year != "":
             hgrid.add(year)
         hgrid.show()
-        grid.add(edit)
+        if track.album.is_youtube:
+            grid.add(edit)
         grid.add(hgrid)
         self.add(stack)
 
