@@ -15,6 +15,7 @@ from gi.repository import Gio
 from threading import Thread
 from time import sleep
 from locale import getdefaultlocale
+from csv import reader
 
 from lollypop.search_spotify import SpotifySearch
 from lollypop.youtube import Youtube
@@ -114,14 +115,18 @@ class SpotifyCharts:
             (status, data, tag) = f.load_contents(self.__cancel)
             if not status or self._stop:
                 return []
-            for line in data.decode("utf-8").replace('"', '').split('\n'):
-                split = line.split(",")
+            for line in data.decode("utf-8").split('\n'):
                 try:  # CSV file is mostly broken
-                    track_id = split[4].split('/')[-1:][0]
-                    if track_id != "URL":
+                    for row in reader([line]):
+                        if not row:
+                            continue
+                        url = row[4]
+                        if url == "URL":
+                            continue
+                        track_id = url.split('/')[-1:][0]
                         ids.append(track_id)
-                except:
-                    pass
+                except Exception as e:
+                    print(e)
         except Exception as e:
             print("SpotifyCharts::__get_ids:", e)
         return ids
