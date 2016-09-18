@@ -85,7 +85,7 @@ class SpotifySearch:
                 decode = json.loads(data.decode('utf-8'))
                 return decode['album']['id']
         except Exception as e:
-            print("SpotifySearch::get_album_id():", e)
+            print("SpotifySearch::get_album_id():", e, track_id)
 
     def get_album(self, album_id):
         """
