@@ -347,9 +347,9 @@ class SearchPopover(Gtk.Popover):
         added_album_ids = []
         added_track_ids = []
         search_items = [self.__current_search]
-        for item in self.__current_search.split():
-            if len(item) < 3:
-                search_items.append(item)
+        # for item in self.__current_search.split():
+        #    if len(item) < 3:
+        #        search_items.append(item)
         for item in search_items:
             albums = []
             tracks_non_album_artist = []
