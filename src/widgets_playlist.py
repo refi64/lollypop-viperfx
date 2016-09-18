@@ -105,7 +105,7 @@ class PlaylistsWidget(Gtk.Grid):
         ordinate = None
         for child in self.__tracks_widget_left.get_children() + \
                 self.__tracks_widget_right.get_children():
-            if child.get_id() == Lp().player.current_track.id:
+            if child.id == Lp().player.current_track.id:
                 ordinate = child.translate_coordinates(self.__box, 0, 0)[1]
         return ordinate
 
@@ -193,7 +193,7 @@ class PlaylistsWidget(Gtk.Grid):
             self.__update_tracks()
         else:
             for child in children:
-                if child.get_id() == track_id:
+                if child.id == track_id:
                     child.destroy()
                     break
             self.__update_tracks()
@@ -245,9 +245,9 @@ class PlaylistsWidget(Gtk.Grid):
         self.__tracks_left = []
         self.__tracks_right = []
         for child in self.__tracks_widget_left.get_children():
-            self.__tracks_left.append(child.get_id())
+            self.__tracks_left.append(child.id)
         for child in self.__tracks_widget_right.get_children():
-            self.__tracks_right.append(child.get_id())
+            self.__tracks_right.append(child.id)
 
     def __update_position(self):
         """
@@ -321,7 +321,7 @@ class PlaylistsWidget(Gtk.Grid):
             return
         # Remove src from src_widget
         for child in src_widget.get_children():
-            if child.get_id() == src:
+            if child.id == src:
                 child.destroy()
                 break
         src_track = Track(src)
@@ -331,7 +331,7 @@ class PlaylistsWidget(Gtk.Grid):
         # Get previous track
         if dst != -1:
             for child in dst_widget.get_children():
-                if child.get_id() == dst:
+                if child.id == dst:
                     break
                 index += 1
             if not up:
@@ -374,7 +374,7 @@ class PlaylistsWidget(Gtk.Grid):
                 child = self.__tracks_widget_right.get_children()[-1]
             except:
                 child = self.__tracks_widget_left.get_children()[-1]
-            self.__on_track_moved(widget, child.get_id(),
+            self.__on_track_moved(widget, child.id,
                                   int(data.get_text()), False)
         except:
             pass

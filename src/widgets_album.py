@@ -811,7 +811,7 @@ class AlbumDetailedWidget(Gtk.Bin, AlbumWidget):
         for dic in [self._tracks_left, self._tracks_right]:
             for widget in dic.values():
                 for child in widget.get_children():
-                    if child.get_id() == Lp().player.current_track.id:
+                    if child.id == Lp().player.current_track.id:
                         return child.translate_coordinates(parent, 0, 0)[1]
         return None
 
