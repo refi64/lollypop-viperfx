@@ -10,7 +10,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-from gi.repository import GObject, Gio
+from gi.repository import GObject, Gio, GLib
 
 from lollypop.search_spotify import SpotifySearch
 
@@ -61,4 +61,4 @@ class NetworkSearch(SpotifySearch, GObject.GObject):
             SpotifySearch.albums(self, name)
             SpotifySearch.tracks(self, name)
         self._finished = True
-        self.emit('item-found')
+        GLib.idle_add(self.emit, 'item-found')

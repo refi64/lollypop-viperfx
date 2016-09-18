@@ -107,3 +107,4 @@ class LocalSearch(GObject.GObject):
                 self._items.append(search_item)
                 GLib.idle_add(self.emit, 'item-found')
         self._finished = True
+        GLib.idle_add(self.emit, 'item-found')

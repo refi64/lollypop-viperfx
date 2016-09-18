@@ -500,14 +500,16 @@ class SearchPopover(Gtk.Popover):
         """
         if self.__lsearch != search:
             return
+        if not search.items:
+            if self.__lsearch.finished and\
+                    (self.__nsearch is None or self.__nsearch.finished):
+                self.__stack.set_visible_child(self.__new_btn)
+                self.__spinner.stop()
+            return
         item = search.items.pop(0)
         search_row = SearchRow(item)
         search_row.show()
         self.__view.add(search_row)
-        if self.__lsearch.finished and\
-                (self.__nsearch is None or self.__nsearch.finished):
-            self.__stack.set_visible_child(self.__new_btn)
-            self.__spinner.stop()
 
     def __on_network_item_found(self, search):
         """
@@ -517,6 +519,9 @@ class SearchPopover(Gtk.Popover):
         if self.__nsearch != search:
             return
         if not search.items:
+            if self.__nsearch.finished and self.__lsearch.finished:
+                self.__stack.set_visible_child(self.__new_btn)
+                self.__spinner.stop()
             return
         item = search.items.pop(0)
         if item.exists_in_db():
@@ -528,9 +533,6 @@ class SearchPopover(Gtk.Popover):
                    args=(item.smallcover, search_row))
         t.daemon = True
         t.start()
-        if self.__nsearch.finished and self.__lsearch.finished:
-            self.__stack.set_visible_child(self.__new_btn)
-            self.__spinner.stop()
 
     def __on_map(self, widget):
         """
