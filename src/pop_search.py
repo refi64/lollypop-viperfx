@@ -343,13 +343,14 @@ class SearchPopover(Gtk.Popover):
         t.start()
 
         # Local search
-        results = []
+        album_results = []
+        track_results = []
         added_album_ids = []
         added_track_ids = []
         search_items = [self.__current_search]
-        # for item in self.__current_search.split():
-        #    if len(item) < 3:
-        #        search_items.append(item)
+        for item in self.__current_search.split():
+            if len(item) >= 3:
+                search_items.append(item)
         for item in search_items:
             albums = []
             tracks_non_album_artist = []
@@ -370,7 +371,7 @@ class SearchPopover(Gtk.Popover):
                 added_album_ids.append(album_id)
                 search_item.is_track = False
                 search_item.artist_ids = [artist_id]
-                results.append(search_item)
+                album_results.append(search_item)
 
             albums = Lp().albums.search(item)
             for album_id in albums:
@@ -381,7 +382,7 @@ class SearchPopover(Gtk.Popover):
                 added_album_ids.append(album_id)
                 search_item.is_track = False
                 search_item.artist_ids = Lp().albums.get_artist_ids(album_id)
-                results.append(search_item)
+                album_results.append(search_item)
 
             for track_id, track_name in Lp().tracks.search(
                                                item) + tracks_non_album_artist:
@@ -392,9 +393,19 @@ class SearchPopover(Gtk.Popover):
                 added_track_ids.append(track_id)
                 search_item.is_track = True
                 search_item.artist_ids = Lp().tracks.get_artist_ids(track_id)
-                results.append(search_item)
+                done = False
+                for artist_id in search_item.artist_ids:
+                    artist = Lp().artists.get_name(artist_id)
+                    for item in self.__current_search.split():
+                        if artist.lower().find(item.lower()) != -1:
+                            track_results.insert(0, search_item)
+                            done = True
+                            break
+                if not done:
+                    track_results.append(search_item)
         if not self.__stop_thread:
-            GLib.idle_add(self.__add_rows_internal, results)
+            GLib.idle_add(self.__add_rows_internal,
+                          album_results+track_results)
         else:
             self.__in_thread = False
             self.__stop_thread = False
