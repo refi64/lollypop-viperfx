@@ -38,6 +38,7 @@ class SearchRow(Gtk.ListBoxRow):
         Gtk.ListBoxRow.__init__(self)
         self.__item = item
         self.__uri_set = False
+        self.__score = None
         builder = Gtk.Builder()
         if internal:
             builder.add_from_resource(
@@ -60,15 +61,23 @@ class SearchRow(Gtk.ListBoxRow):
     @property
     def id(self):
         """
-            Return row id
+            Get row id
             @return int
         """
         return self.__item.id
 
     @property
+    def score(self):
+        """
+            Get row score
+            @return int
+        """
+        return self.__score
+
+    @property
     def name(self):
         """
-            Return row name
+            Get row name
             @return str
         """
         return self.__name.get_text()
@@ -80,6 +89,14 @@ class SearchRow(Gtk.ListBoxRow):
             @return artist ids as [int]
         """
         return self.__item.artist_ids
+
+    @property
+    def artists(self):
+        """
+            Return row artist ids
+            @return artist ids as [int]
+        """
+        return self.__item.artists
 
     @property
     def is_track(self):
@@ -117,6 +134,13 @@ class SearchRow(Gtk.ListBoxRow):
             yt.save_track(self.__item, DbPersistent.NONE)
         else:
             yt.save_album(self.__item, DbPersistent.NONE)
+
+    def set_score(self, score):
+        """
+            Set score
+            @param score as int
+        """
+        self.__score = score
 
     def set_cover(self, pixbuf):
         """
@@ -321,41 +345,46 @@ class SearchPopover(Gtk.Popover):
 #######################
 # PRIVATE             #
 #######################
+    def __calculate_score(self, row):
+        """
+            Calculate score for row
+            @param row as SearchRow
+        """
+        if row.score is not None:
+            return
+        # Network search score less
+        if row.id is None:
+            score = 0
+            artists = row.artists
+        else:
+            score = 1
+            artists = []
+            for artist_id in row.artist_ids:
+                artists.append(Lp().artists.get_name(artist_id))
+
+        for item in self.__current_search.split():
+            for artist in artists:
+                if noaccents(artist.lower()).find(
+                                                noaccents(item).lower()) != -1:
+                    score += 2
+                    if not row.is_track:
+                        score += 1
+            if noaccents(row.name).lower().find(
+                                                noaccents(item).lower()) != -1:
+                score += 1
+                if row.is_track:
+                    score += 1
+        row.set_score(score)
+
     def __sort_func(self, row1, row2):
         """
             Sort rows
-            @param row as Gtk.ListBoxRow
-            @param row as Gtk.ListBoxRow
+            @param row as SearchRow
+            @param row as SearchRow
         """
-        # Network search score less
-        row1_score = 0 if row1.id is None else 1
-        row2_score = 0 if row2.id is None else 1
-        for item in self.__current_search.split():
-            for artist_id in row1.artist_ids:
-                artist = Lp().artists.get_name(artist_id)
-                if noaccents(artist.lower()).find(
-                                                noaccents(item).lower()) != -1:
-                    row1_score += 2
-                    if not row1.is_track:
-                        row1_score += 1
-            if noaccents(row1.name).lower().find(
-                                                noaccents(item).lower()) != -1:
-                row1_score += 1
-                if row1.is_track:
-                    row1_score += 1
-            for artist_id in row2.artist_ids:
-                artist = Lp().artists.get_name(artist_id)
-                if noaccents(artist).lower().find(
-                                                noaccents(item).lower()) != -1:
-                    row2_score += 2
-                    if not row2.is_track:
-                        row2_score += 1
-            if noaccents(row2.name).lower().find(
-                                                noaccents(item).lower()) != -1:
-                row2_score += 1
-                if row2.is_track:
-                    row2_score += 1
-        return row1_score < row2_score
+        self.__calculate_score(row1)
+        self.__calculate_score(row2)
+        return row1.score < row2.score
 
     def __clear(self, rows):
         """
