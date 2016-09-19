@@ -21,7 +21,6 @@ from lollypop.define import Lp, ArtSize, Type, DbPersistent
 from lollypop.objects import Track, Album
 from lollypop.pop_menu import TrackMenuPopover, TrackMenu
 from lollypop.pop_album import AlbumPopover
-from lollypop.search_item import SearchItem
 
 
 class SearchRow(Gtk.ListBoxRow):
@@ -64,6 +63,14 @@ class SearchRow(Gtk.ListBoxRow):
             @return int
         """
         return self.__item.id
+
+    @property
+    def name(self):
+        """
+            Return row name
+            @return str
+        """
+        return self.__name.get_text()
 
     @property
     def artist_ids(self):
@@ -229,11 +236,10 @@ class SearchPopover(Gtk.Popover):
         self.set_position(Gtk.PositionType.BOTTOM)
         self.connect('map', self.__on_map)
         self.connect('unmap', self.__on_unmap)
-        self.__in_thread = False
-        self.__stop_thread = False
         self.__timeout = None
         self.__current_search = ''
-        self.__search = None
+        self.__nsearch = None
+        self.__lsearch = None
 
         builder = Gtk.Builder()
         builder.add_from_resource('/org/gnome/Lollypop/SearchPopover.ui')
@@ -241,6 +247,7 @@ class SearchPopover(Gtk.Popover):
         self.__new_btn = builder.get_object('new_btn')
 
         self.__view = Gtk.ListBox()
+        self.__view.set_sort_func(self.__sort_func)
         self.__view.connect("button-press-event", self.__on_button_press)
         self.__view.connect("row-activated", self.__on_row_activated)
         self.__view.set_selection_mode(Gtk.SelectionMode.SINGLE)
@@ -279,12 +286,9 @@ class SearchPopover(Gtk.Popover):
             Timeout filtering
             @param widget as Gtk.TextEntry
         """
-        if self.__in_thread:
-            self.__stop_thread = True
-            self.__reset_search()
-            self.__stack.set_visible_child(self.__new_btn)
-            self.__spinner.stop()
-            GLib.timeout_add(100, self._on_search_changed, widget)
+        self.__reset_search()
+        self.__stack.set_visible_child(self.__new_btn)
+        self.__spinner.stop()
 
         if self.__timeout:
             GLib.source_remove(self.__timeout)
@@ -322,6 +326,43 @@ class SearchPopover(Gtk.Popover):
 #######################
 # PRIVATE             #
 #######################
+    def __sort_func(self, row1, row2):
+        """
+            Sort rows
+            @param row as Gtk.ListBoxRow
+            @param row as Gtk.ListBoxRow
+        """
+        row1_score = 0
+        for item in self.__current_search.split():
+            for artist_id in row1.artist_ids:
+                artist = Lp().artists.get_name(artist_id)
+                if artist.lower().find(item.lower()) != -1:
+                    row1_score += 1
+            if row1.name.lower().find(item.lower()) != -1:
+                row1_score += 1
+        row2_score = 0
+        for item in self.__current_search.split():
+            for artist_id in row2.artist_ids:
+                artist = Lp().artists.get_name(artist_id)
+                if artist.lower().find(item.lower()) != -1:
+                    row2_score += 1
+            if row2.name.lower().find(item.lower()) != -1:
+                row2_score += 1
+
+        if row1_score > row2_score:
+            return False
+        elif row1_score == row2_score:
+            if not row1.is_track and row2.is_track:
+                return False
+            else:
+                return True
+        elif not row1.is_track and row2.is_track:
+            return False
+        elif row1.is_track and row2.is_track:
+            return False
+        else:
+            return True
+
     def __clear(self):
         """
             Clear search view
@@ -338,110 +379,19 @@ class SearchPopover(Gtk.Popover):
         GLib.idle_add(self.__clear)
 
         # Network Search
-        t = Thread(target=self.__network_search)
-        t.daemon = True
-        t.start()
+        if self.__need_network_search():
+            t = Thread(target=self.__nsearch.do, args=(self.__current_search,))
+            t.daemon = True
+            t.start()
 
-        # Local search
-        album_results = []
-        track_results = []
-        added_album_ids = []
-        added_track_ids = []
+        # Local Search
         search_items = [self.__current_search]
         for item in self.__current_search.split():
             if len(item) >= 3:
                 search_items.append(item)
-        for item in search_items:
-            albums = []
-            tracks_non_album_artist = []
-            # Get all albums for all artists and non album_artist tracks
-            for artist_id in Lp().artists.search(item):
-                for album_id in Lp().albums.get_ids([artist_id], []):
-                    if (album_id, artist_id) not in albums:
-                        albums.append((album_id, artist_id))
-                for track_id, track_name in Lp(
-                                   ).tracks.get_as_non_album_artist(artist_id):
-                    tracks_non_album_artist.append((track_id, track_name))
-
-            for album_id, artist_id in albums:
-                if album_id in added_album_ids:
-                    continue
-                search_item = SearchItem()
-                search_item.id = album_id
-                added_album_ids.append(album_id)
-                search_item.is_track = False
-                search_item.artist_ids = [artist_id]
-                album_results.append(search_item)
-
-            albums = Lp().albums.search(item)
-            for album_id in albums:
-                if album_id in added_album_ids:
-                    continue
-                search_item = SearchItem()
-                search_item.id = album_id
-                added_album_ids.append(album_id)
-                search_item.is_track = False
-                search_item.artist_ids = Lp().albums.get_artist_ids(album_id)
-                album_results.append(search_item)
-
-            for track_id, track_name in Lp().tracks.search(
-                                               item) + tracks_non_album_artist:
-                if track_id in added_track_ids:
-                    continue
-                search_item = SearchItem()
-                search_item.id = track_id
-                added_track_ids.append(track_id)
-                search_item.is_track = True
-                search_item.artist_ids = Lp().tracks.get_artist_ids(track_id)
-                done = False
-                # Preprend item if artist is in current search
-                for artist_id in search_item.artist_ids:
-                    artist = Lp().artists.get_name(artist_id)
-                    for item in self.__current_search.split():
-                        if artist.lower().find(item.lower()) != -1:
-                            track_results.insert(0, search_item)
-                            done = True
-                            break
-                if not done:
-                    track_results.append(search_item)
-        if not self.__stop_thread:
-            GLib.idle_add(self.__add_rows_internal,
-                          album_results+track_results)
-        else:
-            self.__in_thread = False
-            self.__stop_thread = False
-            if not self.__need_network_search():
-                self.__stack.set_visible_child(self.__new_btn)
-                self.__spinner.stop()
-
-    def __network_search(self):
-        """
-            Search on network
-        """
-        if self.__need_network_search():
-            self.__search.do(self.__current_search)
-
-    def __add_rows_internal(self, results):
-        """
-            Add rows for internal results
-            @param results as array of SearchItem
-        """
-        if results:
-            result = results.pop(0)
-            search_row = SearchRow(result)
-            search_row.show()
-            self.__view.add(search_row)
-            if self.__stop_thread:
-                self.__in_thread = False
-                self.__stop_thread = False
-            else:
-                GLib.idle_add(self.__add_rows_internal, results)
-        else:
-            self.__in_thread = False
-            self.__stop_thread = False
-            if not self.__need_network_search():
-                self.__stack.set_visible_child(self.__new_btn)
-                self.__spinner.stop()
+        t = Thread(target=self.__lsearch.do, args=(search_items,))
+        t.daemon = True
+        t.start()
 
     def __download_cover(self, uri, row):
         """
@@ -525,10 +475,14 @@ class SearchPopover(Gtk.Popover):
         """
             Reset search object
         """
-        if self.__search is not None:
-            self.__search.disconnect_by_func(self.__on_item_found)
-            self.__search.stop()
-            self.__search = None
+        if self.__nsearch is not None:
+            self.__nsearch.disconnect_by_func(self.__on_network_item_found)
+            self.__nsearch.stop()
+            self.__nsearch = None
+        if self.__lsearch is not None:
+            self.__lsearch.disconnect_by_func(self.__on_local_item_found)
+            self.__lsearch.stop()
+            self.__lsearch = None
 
     def __need_network_search(self):
         """
@@ -538,12 +492,24 @@ class SearchPopover(Gtk.Popover):
         return Lp().settings.get_value('network-search') and\
             which("youtube-dl") is not None
 
-    def __on_item_found(self, search):
+    def __on_local_item_found(self, search):
+        """
+            Add rows for internal results
+            @param search as LocalSearch
+        """
+        if self.__lsearch != search:
+            return
+        item = search.items.pop(0)
+        search_row = SearchRow(item)
+        search_row.show()
+        self.__view.add(search_row)
+
+    def __on_network_item_found(self, search):
         """
             Add rows for internal results
             @param search as NetworkSearch
         """
-        if self.__search != search:
+        if self.__nsearch != search:
             return
         if search.finished:
             self.__stack.set_visible_child(self.__new_btn)
@@ -586,11 +552,13 @@ class SearchPopover(Gtk.Popover):
         """
             Populate widget
         """
+        from lollypop.search_local import LocalSearch
         from lollypop.search_network import NetworkSearch
         self.__timeout = None
-        self.__in_thread = True
-        self.__search = NetworkSearch()
-        self.__search.connect('item-found', self.__on_item_found)
+        self.__lsearch = LocalSearch()
+        self.__lsearch.connect('item-found', self.__on_local_item_found)
+        self.__nsearch = NetworkSearch()
+        self.__nsearch.connect('item-found', self.__on_network_item_found)
         self.__stack.set_visible_child(self.__spinner)
         self.__spinner.start()
         t = Thread(target=self.__populate)
