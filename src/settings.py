@@ -17,7 +17,6 @@ except:
     Secret = None
 
 
-from os import remove
 from gettext import gettext as _
 from gettext import ngettext as ngettext
 from threading import Thread
@@ -645,13 +644,10 @@ class SettingsDialog:
             GLib.idle_add(self.___reset_database, track_ids,
                           count, history, progress)
         else:
+            Lp().db.del_tracks(Lp().tracks.get_ids())
             progress.hide()
-            for artist in Lp().artists.get([]):
-                Lp().art.emit('artist-artwork-changed', artist[1])
-            remove(Database.DB_PATH)
             Lp().db = Database()
             Lp().window.show_genres(Lp().settings.get_value('show-genres'))
-            Lp().window.show()
             Lp().window.update_db()
             progress.get_toplevel().set_deletable(True)
 

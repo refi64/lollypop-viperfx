@@ -110,11 +110,12 @@ class TracksDatabase:
 
     def get_ids(self):
         """
-            Return all tracks id
-            @return tracks id as [int]
+            Return all internal track ids
+            @return track ids as [int]
         """
         with SqlCursor(Lp().db) as sql:
-            result = sql.execute("SELECT rowid FROM tracks")
+            result = sql.execute("SELECT rowid FROM tracks\
+                                  WHERE mtime>1")
             return list(itertools.chain(*result))
 
     def get_ids_for_name(self, name):
