@@ -114,7 +114,7 @@ class Downloader:
             @return (url as str/None, content as str)
         """
         if Lp().lastfm is not None:
-            return Lp().lastfm.get_artist_infos(artist)
+            return Lp().lastfm.get_artist_info(artist)
         else:
             return (None, None)
 

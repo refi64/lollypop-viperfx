@@ -318,7 +318,7 @@ class LastfmContent(InfoContent):
             @param artist as str
         """
         try:
-            (url, content) = Lp().lastfm.get_artist_infos(artist)
+            (url, content) = Lp().lastfm.get_artist_info(artist)
         except:
             url = content = None
         if not self._stop:

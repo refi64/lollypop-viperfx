@@ -114,7 +114,7 @@ class LastFM(LastFMNetwork):
             t.daemon = True
             t.start()
 
-    def get_artist_infos(self, artist):
+    def get_artist_info(self, artist):
         """
             Get artist infos
             @param artist as str
