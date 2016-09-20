@@ -16,6 +16,7 @@ import sqlite3
 import os
 
 from lollypop.define import Lp
+from lollypop.objects import Album
 from lollypop.database_upgrade import DatabaseUpgrade
 from lollypop.sqlcursor import SqlCursor
 from lollypop.localized import LocalizedCollation
@@ -137,12 +138,14 @@ class Database:
         with SqlCursor(Lp().db) as sql:
             for track_id in track_ids:
                 album_id = Lp().tracks.get_album_id(track_id)
+                art_file = Lp().art.get_album_cache_name(Album(album_id))
                 genre_ids = Lp().tracks.get_genre_ids(track_id)
                 album_artist_ids = Lp().albums.get_artist_ids(album_id)
                 artist_ids = Lp().tracks.get_artist_ids(track_id)
                 Lp().tracks.remove(track_id)
                 Lp().tracks.clean(track_id)
-                Lp().albums.clean(album_id)
+                if Lp().albums.clean(album_id):
+                    Lp().art.clean_store(art_file)
                 for artist_id in album_artist_ids + artist_ids:
                     Lp().artists.clean(artist_id)
                 for genre_id in genre_ids:

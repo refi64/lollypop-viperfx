@@ -49,7 +49,7 @@ class AlbumArt(BaseArt, TagReader):
         """
         filename = ''
         try:
-            filename = self.__get_album_cache_name(album)
+            filename = self.get_album_cache_name(album)
             cache_path_jpg = "%s/%s_%s.jpg" % (self._CACHE_PATH,
                                                filename,
                                                size)
@@ -79,7 +79,7 @@ class AlbumArt(BaseArt, TagReader):
         if album.id is None:
             return None
         try:
-            filename = self.__get_album_cache_name(album) + ".jpg"
+            filename = self.get_album_cache_name(album) + ".jpg"
             paths = [
                 # Used when album.path is readonly
                 os.path.join(self._STORE_PATH, filename),
@@ -132,7 +132,7 @@ class AlbumArt(BaseArt, TagReader):
             @return cairo surface
         """
         size *= scale
-        filename = self.__get_album_cache_name(album)
+        filename = self.get_album_cache_name(album)
         cache_path_jpg = "%s/%s_%s.jpg" % (self._CACHE_PATH, filename, size)
         pixbuf = None
 
@@ -218,7 +218,7 @@ class AlbumArt(BaseArt, TagReader):
             album = Album(album_id)
 
             path_count = Lp().albums.get_path_count(album.path)
-            filename = self.__get_album_cache_name(album) + ".jpg"
+            filename = self.get_album_cache_name(album) + ".jpg"
             if save_to_tags:
                 t = Thread(target=self.__save_artwork_tags,
                            args=(data, album))
@@ -285,7 +285,7 @@ class AlbumArt(BaseArt, TagReader):
             Remove cover from cache for album id
             @param album as Album
         """
-        filename = self.__get_album_cache_name(album)
+        filename = self.get_album_cache_name(album)
         try:
             for f in os.listdir(self._CACHE_PATH):
                 if re.search('%s_.*\.jpg' % re.escape(filename), f):
@@ -325,6 +325,15 @@ class AlbumArt(BaseArt, TagReader):
             print("AlbumArt::pixbuf_from_tags():", e)
         return pixbuf
 
+    def get_album_cache_name(self, album):
+        """
+            Get a uniq string for album
+            @param album as Album
+        """
+        # FIXME special chars
+        name = "_".join(album.artists) + "_" + album.name + "_" + album.year
+        return escape(name)
+
 #######################
 # PRIVATE             #
 #######################
@@ -355,12 +364,3 @@ class AlbumArt(BaseArt, TagReader):
             os.remove("/tmp/lollypop_cover_tags.jpg")
             self.clean_album_cache(album)
             GLib.idle_add(self.album_artwork_update, album.id)
-
-    def __get_album_cache_name(self, album):
-        """
-            Get a uniq string for album
-            @param album as Album
-        """
-        # FIXME special chars
-        name = "_".join(album.artists) + "_" + album.name + "_" + album.year
-        return escape(name)

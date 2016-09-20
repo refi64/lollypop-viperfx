@@ -428,6 +428,7 @@ class EditMenu(BaseMenu):
             @param GVariant
         """
         album = Album(self._object_id)
+        art_file = Lp().art.get_album_cache_name(album)
         artist_ids = []
         for track_id in album.track_ids:
             artist_ids += Lp().tracks.get_artist_ids(track_id)
@@ -449,6 +450,7 @@ class EditMenu(BaseMenu):
         with SqlCursor(Lp().db) as sql:
             sql.commit()
         GLib.idle_add(Lp().scanner.emit, 'album-updated', self._object_id)
+        Lp().art.clean_store(art_file)
 
     def __edit_tag(self, action, variant):
         """

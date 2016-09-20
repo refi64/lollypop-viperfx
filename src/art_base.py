@@ -55,6 +55,15 @@ class BaseArt(GObject.GObject):
         # For a 200 album artwork, we want a 60 artist artwork
         ArtSize.ARTIST_SMALL = ArtSize.BIG * 60 / 200
 
+    def clean_store(self, filename):
+        """
+            @param filename as str
+        """
+        try:
+            os.remove(os.path.join(self._STORE_PATH, filename + ".jpg"))
+        except Exception as e:
+            print("Art::clean_store()", e)
+
     def get_default_icon(self, icon_name, size, scale):
         """
             Construct an empty cover album,
