@@ -117,6 +117,8 @@ class Window(Gtk.ApplicationWindow, Container):
                                              ["<Control>l"])
             self.__app.set_accels_for_action("app.player::volume",
                                              ["<Alt>v"])
+            self.__app.set_accels_for_action("app.player::show-genres",
+                                             ["<Control>g"])
         else:
             self.__app.set_accels_for_action("app.seek(10)", [None])
             self.__app.set_accels_for_action("app.seek(20)", [None])
@@ -132,7 +134,6 @@ class Window(Gtk.ApplicationWindow, Container):
             self.__app.set_accels_for_action("app.player::next_album", [None])
             self.__app.set_accels_for_action("app.player::prev", [None])
             self.__app.set_accels_for_action("app.player::loved", [None])
-            self.__app.set_accels_for_action("app.player::volume", [None])
 
     def setup_window(self):
         """
@@ -464,6 +465,11 @@ class Window(Gtk.ApplicationWindow, Container):
             Lp().player.lock()
         elif string == "volume":
             self.__toolbar.show_hide_volume_control()
+        elif string == "show-genres":
+            state = not Lp().settings.get_value('show-genres')
+            Lp().settings.set_value('show-genres',
+                                    GLib.Variant('b', state))
+            Lp().window.show_genres(state)
         elif string == "loved":
             if Lp().player.current_track.id is not None:
                 isloved = is_loved(Lp().player.current_track.id)
