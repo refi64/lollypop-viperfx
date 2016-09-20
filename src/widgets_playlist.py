@@ -98,6 +98,13 @@ class PlaylistsWidget(Gtk.Grid):
         """
         pass
 
+    def update_allocation(self):
+        """
+            Update widget allocation
+        """
+        self.__width = 0
+        self.__on_size_allocate(self, self.get_allocation())
+
     def get_current_ordinate(self):
         """
             If current track in widget, return it ordinate,
@@ -425,7 +432,8 @@ class PlaylistsWidget(Gtk.Grid):
             return
         self.__width = allocation.width
         redraw = False
-        if allocation.width < WindowSize.MONSTER:
+        if allocation.width < WindowSize.MONSTER or\
+                not Lp().settings.get_value('split-view'):
             self.__box.set_property('valign', Gtk.Align.START)
             orientation = Gtk.Orientation.VERTICAL
         else:

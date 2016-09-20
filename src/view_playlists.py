@@ -10,7 +10,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-from gi.repository import Gtk
+from gi.repository import Gtk, GLib
 
 from cgi import escape
 
@@ -42,13 +42,14 @@ class PlaylistsView(View):
 
         builder = Gtk.Builder()
         builder.add_from_resource('/org/gnome/Lollypop/PlaylistView.ui')
-        builder.connect_signals(self)
 
         builder.get_object('title').set_label(
                              ", ".join(Lp().playlists.get_names(playlist_ids)))
 
         self.__edit_button = builder.get_object('edit-button')
         self.__jump_button = builder.get_object('jump-button')
+        builder.get_object('split-button').set_active(
+            not Lp().settings.get_value('split-view'))
 
         if len(playlist_ids) > 1 or (
            playlist_ids[0] < 0 and playlist_ids[0] != Type.LOVED) or\
@@ -61,6 +62,9 @@ class PlaylistsView(View):
         self._viewport.add(self.__playlists_widget)
         self._scrolled.set_property('expand', True)
         self.add(self._scrolled)
+        # Connect signals after ui init
+        # 'split-button' will emit a signal otherwise
+        builder.connect_signals(self)
 
     def populate(self, tracks):
         """
@@ -134,6 +138,14 @@ class PlaylistsView(View):
         if self.__signal_id2:
             Lp().playlists.disconnect(self.__signal_id2)
             self.__signal_id2 = None
+
+    def _on_split_button_toggled(self, button):
+        """
+            Split/Unsplit view
+        """
+        Lp().settings.set_value('split-view',
+                                GLib.Variant('b', not button.get_active()))
+        self.__playlists_widget.update_allocation()
 
     def _on_jump_button_clicked(self, button):
         """
