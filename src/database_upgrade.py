@@ -31,7 +31,7 @@ class DumbPlaylists:
         try:
             sql = sqlite3.connect(self.__DB_PATH, 600.0)
             return sql
-        except Exception as e:
+        except:
             exit(-1)
 
 

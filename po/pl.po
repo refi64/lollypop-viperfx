@@ -14,8 +14,8 @@ msgstr ""
 "Project-Id-Version: lollypop\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2016-09-17 19:15+0200\n"
-"PO-Revision-Date: 2016-09-17 17:17+0000\n"
-"Last-Translator: Cédric Bellegarde <web@adishatz.org>\n"
+"PO-Revision-Date: 2016-09-19 16:06+0000\n"
+"Last-Translator: Marcin Gałązka <marcin.r.galazka@gmail.com>\n"
 "Language-Team: Polish (http://www.transifex.com/gnumdk/lollypop/language/pl/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -885,15 +885,15 @@ msgstr "Cédric Bellegarde <cedric.bellegarde@adishatz.org>\nPiotr Sokół <psok
 
 #: ../data/AboutDialog.ui.h:5
 msgid "Donations:"
-msgstr ""
+msgstr "Datki:"
 
 #: ../data/AboutDialog.ui.h:6
 msgid "Flattr"
-msgstr ""
+msgstr "Flattr"
 
 #: ../data/AboutDialog.ui.h:7
 msgid "Paypal"
-msgstr ""
+msgstr "Paypal"
 
 #: ../data/Appmenu.ui.h:1
 msgid "_Update music"
@@ -963,7 +963,7 @@ msgid ""
 "Lollypop uses \"Google Custom Search API\" to search images on the web.\n"
 "This API is limited so it mays not work with default API key.\n"
 "Please create a \"Custom Search Engine\" here:"
-msgstr ""
+msgstr "Lollypop wykorzystuje Google Custom Search API do wyszukiwania obrazków w Internecie.\nTo API podlega ograniczeniom i może nie działać ze zwykłym kluczem API.\nUtwórz wyszukiwarkę tutaj:"
 
 #: ../data/ArtworkSearch.ui.h:6 ../data/SettingsDialog.ui.h:37
 msgid "API key"
@@ -1095,7 +1095,7 @@ msgstr "Odsłuchiwanie utworów na"
 
 #: ../data/SettingsDialog.ui.h:24
 msgid "No audio device"
-msgstr ""
+msgstr "Brak"
 
 #: ../data/SettingsDialog.ui.h:25
 msgid "Configure lollypop behaviour"
@@ -1138,13 +1138,13 @@ msgid ""
 "Google Web Services need a custom API key.\n"
 "Without one, you will reach default quota soon...\n"
 "Lollypop needs this to search artwork and music."
-msgstr ""
+msgstr "Google Web Services wymagają dedykowanego klucza API.\nBez niego szybko zostanie przekroczony limit zapytań...\nLollypop potrzebuje tych usług do wyszukiwania obrazków i muzyki."
 
 #: ../data/SettingsDialog.ui.h:38
 msgid ""
 "You need to enable \"Custom Search API\" \n"
 "and \"Youtube Data API\" for your project."
-msgstr ""
+msgstr "Wymagane jest włączenie w twoim projekcie \"Custom Search API\" i \"Youtube Data API\"."
 
 #: ../data/SettingsDialog.ui.h:40
 msgid "Configure Last.fm credentials"

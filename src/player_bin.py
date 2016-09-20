@@ -619,7 +619,11 @@ class BinPlayer(BasePlayer):
             @param track as Track
             @param play as bool
         """
-        track.set_uri(io.readline())
+        uri = io.readline()
+        if not uri:
+            print("youtube-dl failed to get video uri")
+            return
+        track.set_uri(uri)
         if play:
             self.load(track)
         return False
