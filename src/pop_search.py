@@ -265,6 +265,7 @@ class SearchPopover(Gtk.Popover):
         self.__current_search = ''
         self.__nsearch = None
         self.__lsearch = None
+        self.__added_items = []
 
         builder = Gtk.Builder()
         builder.add_from_resource('/org/gnome/Lollypop/SearchPopover.ui')
@@ -402,6 +403,7 @@ class SearchPopover(Gtk.Popover):
             Populate searching items
             in db based on text entry current text
         """
+        self.__added_items = []
         self.__stack.set_visible_child(self.__spinner)
         self.__spinner.start()
 
@@ -536,9 +538,11 @@ class SearchPopover(Gtk.Popover):
                 self.__spinner.stop()
             return
         item = search.items.pop(0)
-        search_row = SearchRow(item)
-        search_row.show()
-        self.__view.add(search_row)
+        if not (item.name, item.artists) in self.__added_items:
+            search_row = SearchRow(item)
+            search_row.show()
+            self.__added_items.append((item.name, item.artists))
+            self.__view.add(search_row)
 
     def __on_network_item_found(self, search):
         """
@@ -555,13 +559,15 @@ class SearchPopover(Gtk.Popover):
         item = search.items.pop(0)
         if item.exists_in_db():
             return
-        search_row = SearchRow(item, False)
-        search_row.show()
-        self.__view.add(search_row)
-        t = Thread(target=self.__download_cover,
-                   args=(item.smallcover, search_row))
-        t.daemon = True
-        t.start()
+        if not (item.name, item.artists) in self.__added_items:
+            search_row = SearchRow(item, False)
+            search_row.show()
+            self.__added_items.append((item.name, item.artists))
+            self.__view.add(search_row)
+            t = Thread(target=self.__download_cover,
+                       args=(item.smallcover, search_row))
+            t.daemon = True
+            t.start()
 
     def __on_map(self, widget):
         """
