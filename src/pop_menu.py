@@ -356,6 +356,8 @@ class PopToolbarMenu(Gio.Menu):
                             GLib.Variant("s", str(Lp().player.context.next)))
             playback_action.connect('change-state', self.__on_change_state)
             Lp().add_action(playback_action)
+            if Lp().player.get_user_playlist_ids():
+                playback_menu.remove(2)
             self.insert_section(0, _("Playback"),
                                 playback_menu)
         self.insert_section(1, _("Playlists"),
