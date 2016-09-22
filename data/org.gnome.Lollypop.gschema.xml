@@ -171,6 +171,11 @@
             <summary>Continue playback when closed</summary>
             <description></description>
         </key>
+        <key type="b" name="smart-artist-sort">
+            <default>true</default>
+            <summary>Smart sort for artist</summary>
+            <description>Ex: The Beatles sorted as Beatles. Resetting database needed.</description>
+        </key>
      	 <key type="b" name="save-state">
             <default>false</default>
             <summary>Restore previous state</summary>
