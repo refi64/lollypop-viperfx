@@ -217,37 +217,43 @@ class InfoPopover(Gtk.Popover):
             Load on map
             @param widget as Gtk.Viewport
         """
+        self._on_child_unmap(widget)
         Lp().settings.set_value('infoswitch',
                                 GLib.Variant('s', 'lyrics'))
         self.__jump_button.hide()
         if self.__current_track.id is None:
             self.__current_track = Lp().player.current_track
-        artists = ", ".join(Lp().player.current_track.artists)
-        title = self.__current_track.name
-        # If already searching in genius, search with duckduckgo
-        # Vice versa
-        duckurl = "https://duckduckgo.com/?q=%s&kl=%s&kd=-1&k5=2&kp=1&k1=-1"\
-            % (artists+"+"+title+" lyrics",
-               Gtk.get_default_language().to_string())
-        geniusurl = url = "http://genius.com/search?q=%s" % artists+" "+title
-        children = widget.get_children()
-        # First time genius
-        if not children:
-            url = geniusurl
-        elif children[0].url == duckurl:
-            url = geniusurl
-        elif children[0].url == geniusurl:
-            url = duckurl
+        # First try to get lyrics from tags
+        from lollypop.tagreader import TagReader
+        reader = TagReader()
+        try:
+            info = reader.get_info(self.__current_track.uri)
+        except:
+            info = None
+        lyrics = ""
+        if info is not None:
+            tags = info.get_tags()
+            lyrics = reader.get_lyrics(tags)
+        if lyrics:
+            label = Gtk.Label()
+            label.set_vexpand(True)
+            label.set_hexpand(True)
+            label.set_margin_top(10)
+            label.set_margin_end(10)
+            label.set_label(lyrics)
+            label.show()
+            widget.add(label)
         else:
-            url = geniusurl
-        self._on_child_unmap(widget)
-        # Delayed load due to WebKit memory loading and Gtk animation
-        web = self.WebView(True, True)
-        web.add_word('search')
-        web.add_word('lyrics')
-        web.show()
-        widget.add(web)
-        GLib.timeout_add(250, web.load, url, OpenLink.OPEN)
+            artists = ", ".join(Lp().player.current_track.artists)
+            title = self.__current_track.name
+            url = "http://genius.com/search?q=%s" % artists + " " + title
+            # Delayed load due to WebKit memory loading and Gtk animation
+            web = self.WebView(True, True)
+            web.add_word('search')
+            web.add_word('lyrics')
+            web.show()
+            widget.add(web)
+            GLib.timeout_add(250, web.load, url, OpenLink.OPEN)
 
     def _on_map_duck(self, widget):
         """
@@ -283,7 +289,8 @@ class InfoPopover(Gtk.Popover):
             @param widget as Gtk.Widget
         """
         for child in widget.get_children():
-            child.stop()
+            if not isinstance(child, Gtk.Label):
+                child.stop()
             child.destroy()
 
 #######################

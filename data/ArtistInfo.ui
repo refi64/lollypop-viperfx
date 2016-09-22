@@ -102,6 +102,7 @@
               <object class="GtkScrolledWindow" id="scrolllyrics">
                 <property name="visible">False</property>
                 <property name="can_focus">True</property>
+		<property name="vexpand">True</property>
                 <child>
                   <object class="GtkViewport" id="viewlyrics">
                     <property name="visible">True</property>

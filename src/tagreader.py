@@ -266,6 +266,28 @@ class TagReader(Discoverer):
             year = None
         return year
 
+    def get_lyrics(self, tags):
+        """
+            Return lyrics for tags
+            @parma tags as Gst.TagList
+            @return lyrics as str
+        """
+        if tags is None:
+            return ""
+        size = tags.get_tag_size('private-id3v2-frame')
+        for i in range(0, size):
+            (exists, sample) = tags.get_sample_index('private-id3v2-frame', i)
+            if not exists:
+                continue
+            (exists, m) = sample.get_buffer().map(Gst.MapFlags.READ)
+            if not exists:
+                continue
+            string = m.data.decode('utf-8')
+            if string.startswith('USLT'):
+                split = string.split('\x00')
+                return split[-1:][0]
+        return ""
+
     def add_artists(self, artists, album_artists, sortnames):
         """
             Add artists to db
