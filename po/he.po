@@ -10,9 +10,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lollypop\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-09-17 19:15+0200\n"
-"PO-Revision-Date: 2016-09-17 17:17+0000\n"
-"Last-Translator: Cédric Bellegarde <web@adishatz.org>\n"
+"POT-Creation-Date: 2016-09-21 16:17+0200\n"
+"PO-Revision-Date: 2016-09-22 20:12+0000\n"
+"Last-Translator: Yosef Or Boczko <yoseforb@gmail.com>\n"
 "Language-Team: Hebrew (http://www.transifex.com/gnumdk/lollypop/language/he/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -152,68 +152,72 @@ msgid "Auto update music"
 msgstr "עדכון מוזיקה באופן אוטומטי"
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:33
+msgid "Split playlists view"
+msgstr "Split playlists view"
+
+#: ../data/org.gnome.Lollypop.gschema.xml.h:34
 msgid "Show genres list"
 msgstr "Show genres list"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:34 ../data/SettingsDialog.ui.h:8
+#: ../data/org.gnome.Lollypop.gschema.xml.h:35 ../data/SettingsDialog.ui.h:8
 msgid "Show artist artwork"
 msgstr "הצגת תמונת אמן"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:35
+#: ../data/org.gnome.Lollypop.gschema.xml.h:36
 msgid "Use dark gtk theme"
 msgstr "Use dark gtk theme"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:36
+#: ../data/org.gnome.Lollypop.gschema.xml.h:37
 msgid "Disable the use of client side window decorations (headerbar)"
 msgstr "Disable the use of client side window decorations (headerbar)"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:37 ../data/SettingsDialog.ui.h:6
+#: ../data/org.gnome.Lollypop.gschema.xml.h:38 ../data/SettingsDialog.ui.h:6
 msgid "Show compilations in albums view"
 msgstr "הצגת אוספים בתצוגת האלבומים"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:38 ../data/SettingsDialog.ui.h:18
+#: ../data/org.gnome.Lollypop.gschema.xml.h:39 ../data/SettingsDialog.ui.h:18
 msgid "Continue playback when closed"
 msgstr "להמשיך השמעה עם סגירה"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:39
+#: ../data/org.gnome.Lollypop.gschema.xml.h:40
 msgid "Restore previous state"
 msgstr "Restore previous state"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:40
+#: ../data/org.gnome.Lollypop.gschema.xml.h:41
 msgid "Disable MPRIS"
 msgstr "Disable MPRIS"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:41
+#: ../data/org.gnome.Lollypop.gschema.xml.h:42
 msgid "Disable notifications"
 msgstr "Disable notifications"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:42
+#: ../data/org.gnome.Lollypop.gschema.xml.h:43
 msgid "Show track number from tags"
 msgstr "Show track number from tags"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:43
+#: ../data/org.gnome.Lollypop.gschema.xml.h:44
 msgid "Mix songs"
 msgstr "Mix songs"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:44
+#: ../data/org.gnome.Lollypop.gschema.xml.h:45
 msgid "Mix songs only in party mode"
 msgstr "Mix songs only in party mode"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:45
+#: ../data/org.gnome.Lollypop.gschema.xml.h:46
 msgid "Mix duration"
 msgstr "Mix duration"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:46
+#: ../data/org.gnome.Lollypop.gschema.xml.h:47
 msgid "Shuffle mode"
 msgstr "Shuffle mode"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:47 ../data/SettingsDialog.ui.h:9
+#: ../data/org.gnome.Lollypop.gschema.xml.h:48 ../data/SettingsDialog.ui.h:9
 msgid "Order albums by"
 msgstr "סידור אלבומים לפי"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:48
+#: ../data/org.gnome.Lollypop.gschema.xml.h:49
 msgid "Charts provider"
-msgstr ""
+msgstr "Charts provider"
 
 #: ../data/lollypop.desktop.in.h:1 ../data/lollypop.appdata.xml.in.h:1
 msgid "Lollypop"
@@ -266,8 +270,8 @@ msgstr "דפדוף סוגה/אמן/כיסוי"
 msgid "Search"
 msgstr "חיפוש"
 
-#: ../data/lollypop.appdata.xml.in.h:9 ../src/pop_menu.py:481
-#: ../src/pop_menu.py:502 ../src/toolbar_end.py:395
+#: ../data/lollypop.appdata.xml.in.h:9 ../src/pop_menu.py:483
+#: ../src/pop_menu.py:504 ../src/toolbar_end.py:395
 #: ../data/QueuePopover.ui.h:2
 msgid "Queue"
 msgstr "תור"
@@ -479,9 +483,9 @@ msgstr ""
 msgid "Check your music settings."
 msgstr ""
 
-#: ../src/collectionscanner.py:245 ../src/database_albums.py:329
+#: ../src/collectionscanner.py:255 ../src/database_albums.py:329
 #: ../src/database_artists.py:104 ../src/database_genres.py:69
-#: ../src/database_tracks.py:245 ../src/selectionlist.py:343
+#: ../src/database_tracks.py:247 ../src/selectionlist.py:343
 #: ../src/tagreader.py:88 ../src/tagreader.py:103 ../src/tagreader.py:118
 #: ../src/tagreader.py:163 ../src/tagreader.py:178 ../src/tagreader.py:181
 #: ../src/tagreader.py:191 ../src/tagreader.py:198
@@ -500,9 +504,9 @@ msgstr "אלבומים שנוספו לאחרונה"
 msgid "Random albums"
 msgstr "אלבומים אקראיים"
 
-#: ../src/container.py:451 ../src/pop_menu.py:361 ../src/pop_menu.py:484
-#: ../src/pop_menu.py:504 ../src/widgets_device.py:117
-#: ../src/widgets_playlist.py:521
+#: ../src/container.py:451 ../src/pop_menu.py:361 ../src/pop_menu.py:486
+#: ../src/pop_menu.py:506 ../src/widgets_device.py:117
+#: ../src/widgets_playlist.py:530
 msgid "Playlists"
 msgstr "רשימות השמעה"
 
@@ -547,7 +551,7 @@ msgid "Pause"
 msgstr "השהיה"
 
 #: ../src/controllers.py:86 ../src/controllers.py:105 ../src/pop_tunein.py:216
-#: ../src/widgets_album.py:502 ../src/widgets_radio.py:172
+#: ../src/widgets_album.py:504 ../src/widgets_radio.py:173
 #: ../data/AlbumDetailedWidget.ui.h:1 ../data/ArtistView.ui.h:2
 #: ../data/ToolbarPlayback.ui.h:2
 msgid "Play"
@@ -590,16 +594,16 @@ msgstr "אין רשת זמינה, על כן לא נתן לנגן רצועה זו
 msgid "Loved tracks"
 msgstr "רצועות אהובות"
 
-#: ../src/pop_albums.py:291
+#: ../src/pop_albums.py:292
 msgid "Clear albums"
 msgstr "ניקוי אלבומים"
 
-#: ../src/pop_albums.py:299 ../src/view_artist.py:50 ../data/ArtistInfo.ui.h:8
+#: ../src/pop_albums.py:300 ../src/view_artist.py:50 ../data/ArtistInfo.ui.h:8
 #: ../data/ArtistView.ui.h:4
 msgid "Go to current track"
 msgstr "חזרה לרצועה הנוכחית"
 
-#: ../src/pop_albums.py:300 ../src/toolbar_end.py:399
+#: ../src/pop_albums.py:301 ../src/toolbar_end.py:399
 msgid "Playing albums"
 msgstr "ניגון אלבומים"
 
@@ -658,23 +662,23 @@ msgstr "הסרת אלבום"
 msgid "Modify information"
 msgstr "שינוי מידע"
 
-#: ../src/pop_menu.py:478 ../data/SettingsDialog.ui.h:10
+#: ../src/pop_menu.py:480 ../data/SettingsDialog.ui.h:10
 msgid "Artist"
 msgstr "אמן"
 
-#: ../src/pop_menu.py:487 ../data/PlaylistView.ui.h:1
+#: ../src/pop_menu.py:489 ../data/PlaylistView.ui.h:1
 msgid "Edit"
 msgstr "עריכה"
 
-#: ../src/pop_menu.py:534
+#: ../src/pop_menu.py:536
 msgid "Youtube video address"
 msgstr ""
 
-#: ../src/pop_menu.py:655
+#: ../src/pop_menu.py:659
 msgid "Save genre"
 msgstr "שמירת סוגה"
 
-#: ../src/pop_menu.py:676 ../data/ExternalSearchRow.ui.h:1
+#: ../src/pop_menu.py:680 ../data/ExternalSearchRow.ui.h:1
 msgid "Save into collection"
 msgstr ""
 
@@ -687,7 +691,7 @@ msgstr "הוספה"
 msgid "Modify"
 msgstr "שינוי"
 
-#: ../src/pop_search.py:256
+#: ../src/pop_search.py:289
 msgid "You need to install youtube-dl"
 msgstr "יש להתקין youtube-dl"
 
@@ -699,32 +703,32 @@ msgstr "נא להמתין…"
 msgid "Can't connect to TuneIn..."
 msgstr "לא ניתן להתחבר ל־TuneIn…"
 
-#: ../src/settings.py:95
+#: ../src/settings.py:94
 #, python-format
 msgid "%d artist"
 msgid_plural "%d artists"
 msgstr[0] "%d אמנים"
 msgstr[1] "%d אמנים"
 
-#: ../src/settings.py:97
+#: ../src/settings.py:96
 #, python-format
 msgid "%d album"
 msgid_plural "%d albums"
 msgstr[0] "%d אלבומים"
 msgstr[1] "%d אלבומים"
 
-#: ../src/settings.py:99
+#: ../src/settings.py:98
 #, python-format
 msgid "%d track"
 msgid_plural "%d tracks"
 msgstr[0] "%d רצועות"
 msgstr[1] "%d רצועות"
 
-#: ../src/settings.py:110 ../src/settings.py:113 ../data/SettingsDialog.ui.h:3
+#: ../src/settings.py:109 ../src/settings.py:112 ../data/SettingsDialog.ui.h:3
 msgid "Preferences"
 msgstr "העדפות"
 
-#: ../src/settings.py:138
+#: ../src/settings.py:137
 msgid "You need to install kid3-cli"
 msgstr "יש להתקין kid3-cli"
 
@@ -750,7 +754,7 @@ msgstr "ניגון רשימות השמעה"
 msgid "The the"
 msgstr " ו"
 
-#: ../src/view_artist.py:310 ../src/widgets_album.py:358
+#: ../src/view_artist.py:310 ../src/widgets_album.py:359
 msgid "Remove"
 msgstr "הסרה"
 
@@ -773,34 +777,34 @@ msgstr "מתאם %s"
 msgid "Cancel synchronization"
 msgstr "ביטול התיאום"
 
-#: ../src/widgets_album.py:354
+#: ../src/widgets_album.py:355
 msgid "Append"
 msgstr "הוספה"
 
-#: ../src/widgets_album.py:513
+#: ../src/widgets_album.py:515
 msgid "Play albums"
 msgstr "ניגון אלבומים"
 
-#: ../src/widgets_album.py:523 ../data/AlbumDetailedWidget.ui.h:2
+#: ../src/widgets_album.py:525 ../data/AlbumDetailedWidget.ui.h:2
 msgid "Change artwork"
 msgstr "שינוי עטיפה"
 
-#: ../src/widgets_album.py:689
+#: ../src/widgets_album.py:691
 #, python-format
 msgid "%s h  %s m"
 msgstr "%s ש׳ ו־%s דק׳"
 
-#: ../src/widgets_album.py:691
+#: ../src/widgets_album.py:693
 #, python-format
 msgid "%s h"
 msgstr "%s שעות"
 
-#: ../src/widgets_album.py:693
+#: ../src/widgets_album.py:695
 #, python-format
 msgid "%s m"
 msgstr "%s דקות"
 
-#: ../src/widgets_album.py:978
+#: ../src/widgets_album.py:980
 #, python-format
 msgid "Disc %s"
 msgstr "דיסק %s"
@@ -822,21 +826,21 @@ msgstr "שגיאה בלתי ידועה אירעה בעת התיאום, יש לנ
 msgid "No free space available on device"
 msgstr "אין שטח פנוי זמן על ההתקן"
 
-#: ../src/widgets_playlist.py:555 ../src/widgets_playlist.py:558
+#: ../src/widgets_playlist.py:564 ../src/widgets_playlist.py:567
 msgid "New playlist "
 msgstr "רשימת השמעה חדשה"
 
 #. Need a copy, segfault on EOS 3.1
-#: ../src/widgets_playlist.py:659 ../src/widgets_playlist.py:846
+#: ../src/widgets_playlist.py:668 ../src/widgets_playlist.py:855
 #, python-format
 msgid "Remove \"%s\"?"
 msgstr "להסיר את „%s”?"
 
-#: ../src/widgets_playlist.py:854
+#: ../src/widgets_playlist.py:863
 msgid "Remove these tracks?"
 msgstr "להסיר רצועות אלו?"
 
-#: ../src/widgets_radio.py:188
+#: ../src/widgets_radio.py:189
 msgid "Modify radio"
 msgstr "ו"
 
@@ -978,6 +982,10 @@ msgstr "‏MP3 רגיל"
 #: ../data/PlaylistsManagerView.ui.h:1
 msgid "New playlist"
 msgstr "רשימת השמעה חדשה"
+
+#: ../data/PlaylistView.ui.h:2
+msgid "Unsplit view"
+msgstr ""
 
 #: ../data/QueuePopover.ui.h:1
 msgid "Clear queue"
@@ -1225,60 +1233,65 @@ msgstr "רצועה נוכחית אהובה"
 
 #: ../data/Shortcuts.ui.h:8
 msgctxt "shortcut window"
+msgid "Show genres"
+msgstr "הצגת סוגה"
+
+#: ../data/Shortcuts.ui.h:9
+msgctxt "shortcut window"
 msgid "Lock playback"
 msgstr "נעילת ההשמעה"
 
-#: ../data/Shortcuts.ui.h:9
+#: ../data/Shortcuts.ui.h:10
 msgctxt "shortcut window"
 msgid "Show/Hide volume control"
 msgstr ""
 
-#: ../data/Shortcuts.ui.h:10
+#: ../data/Shortcuts.ui.h:11
 msgctxt "shortcut window"
 msgid "Playback"
 msgstr "בִצוע מוקלט"
 
-#: ../data/Shortcuts.ui.h:11
+#: ../data/Shortcuts.ui.h:12
 msgctxt "shortcut window"
 msgid "Play"
 msgstr "ניגון"
 
-#: ../data/Shortcuts.ui.h:12
+#: ../data/Shortcuts.ui.h:13
 msgctxt "shortcut window"
 msgid "Pause"
 msgstr "השהיה"
 
-#: ../data/Shortcuts.ui.h:13
+#: ../data/Shortcuts.ui.h:14
 msgctxt "shortcut window"
 msgid "Stop"
 msgstr "עצירה"
 
-#: ../data/Shortcuts.ui.h:14
+#: ../data/Shortcuts.ui.h:15
 msgctxt "shortcut window"
 msgid "Next track"
 msgstr "רצועה הבאה"
 
-#: ../data/Shortcuts.ui.h:15
+#: ../data/Shortcuts.ui.h:16
 msgctxt "shortcut window"
 msgid "Previous track"
 msgstr "רצועה קודמ"
 
-#: ../data/Shortcuts.ui.h:16
+#: ../data/Shortcuts.ui.h:17
 msgctxt "shortcut window"
 msgid "Skip current album"
 msgstr "דילוג על האלבום הנוכחי"
 
-#: ../data/Shortcuts.ui.h:17
+#: ../data/Shortcuts.ui.h:18
 msgctxt "shortcut window"
 msgid "Repeat track"
 msgstr "חזרה על הרצועה"
 
-#: ../data/Shortcuts.ui.h:18
+#: ../data/Shortcuts.ui.h:19
 msgctxt "shortcut window"
 msgid "Skip backward in track"
 msgstr "דילוג קדימה ברצועה"
 
-#: ../data/Shortcuts.ui.h:19
+#: ../data/Shortcuts.ui.h:20
 msgctxt "shortcut window"
 msgid "Skip forward in track"
 msgstr "דילוג לאחור ברצועה"

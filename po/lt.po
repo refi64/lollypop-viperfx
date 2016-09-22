@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lollypop\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-09-17 19:15+0200\n"
-"PO-Revision-Date: 2016-09-17 19:54+0000\n"
+"POT-Creation-Date: 2016-09-21 16:17+0200\n"
+"PO-Revision-Date: 2016-09-22 08:00+0000\n"
 "Last-Translator: Moo\n"
 "Language-Team: Lithuanian (http://www.transifex.com/gnumdk/lollypop/language/lt/)\n"
 "MIME-Version: 1.0\n"
@@ -64,7 +64,7 @@ msgstr "Lango išdidinimo būsena."
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:12
 msgid "Enabled genres in party mode"
-msgstr "Vakarėlio veiksenoje įjungia žanrus"
+msgstr "Įjungti žanrai vakarėlio veiksenoje"
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:13
 msgid "Ids for genres."
@@ -150,66 +150,70 @@ msgid "Auto update music"
 msgstr "Automatiškai atnaujinti muziką"
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:33
+msgid "Split playlists view"
+msgstr ""
+
+#: ../data/org.gnome.Lollypop.gschema.xml.h:34
 msgid "Show genres list"
 msgstr "Rodyti žanrų sąrašą"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:34 ../data/SettingsDialog.ui.h:8
+#: ../data/org.gnome.Lollypop.gschema.xml.h:35 ../data/SettingsDialog.ui.h:8
 msgid "Show artist artwork"
 msgstr "Rodyti atlikėjo iliustraciją"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:35
+#: ../data/org.gnome.Lollypop.gschema.xml.h:36
 msgid "Use dark gtk theme"
 msgstr "Naudoti tamsią gtk temą"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:36
+#: ../data/org.gnome.Lollypop.gschema.xml.h:37
 msgid "Disable the use of client side window decorations (headerbar)"
 msgstr "Išjungti kliento pusės lango dekoracijų naudojimą (antraštės juostą)"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:37 ../data/SettingsDialog.ui.h:6
+#: ../data/org.gnome.Lollypop.gschema.xml.h:38 ../data/SettingsDialog.ui.h:6
 msgid "Show compilations in albums view"
 msgstr "Rodyti albumų rodinyje rinkinius"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:38 ../data/SettingsDialog.ui.h:18
+#: ../data/org.gnome.Lollypop.gschema.xml.h:39 ../data/SettingsDialog.ui.h:18
 msgid "Continue playback when closed"
 msgstr "Užvėrus, tęsti muzikos grojimą"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:39
+#: ../data/org.gnome.Lollypop.gschema.xml.h:40
 msgid "Restore previous state"
 msgstr "Atkurti ankstesnę būseną"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:40
+#: ../data/org.gnome.Lollypop.gschema.xml.h:41
 msgid "Disable MPRIS"
 msgstr "Išjungti MPRIS"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:41
+#: ../data/org.gnome.Lollypop.gschema.xml.h:42
 msgid "Disable notifications"
 msgstr "Išjungti pranešimus"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:42
+#: ../data/org.gnome.Lollypop.gschema.xml.h:43
 msgid "Show track number from tags"
 msgstr "Rodyti takelių numerius iš žymių"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:43
+#: ../data/org.gnome.Lollypop.gschema.xml.h:44
 msgid "Mix songs"
 msgstr "Naudoti dainų perėjimą"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:44
+#: ../data/org.gnome.Lollypop.gschema.xml.h:45
 msgid "Mix songs only in party mode"
 msgstr "Naudoti perėjimą tik vakarėlio veiksenoje"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:45
+#: ../data/org.gnome.Lollypop.gschema.xml.h:46
 msgid "Mix duration"
 msgstr "Perėjimo trukmė"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:46
+#: ../data/org.gnome.Lollypop.gschema.xml.h:47
 msgid "Shuffle mode"
 msgstr "Maišymo veiksena"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:47 ../data/SettingsDialog.ui.h:9
+#: ../data/org.gnome.Lollypop.gschema.xml.h:48 ../data/SettingsDialog.ui.h:9
 msgid "Order albums by"
 msgstr "Rikiuoti albumus pagal"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:48
+#: ../data/org.gnome.Lollypop.gschema.xml.h:49
 msgid "Charts provider"
 msgstr ""
 
@@ -264,8 +268,8 @@ msgstr "Žanrų/Atlikėjų/Viršelių naršymas"
 msgid "Search"
 msgstr "Paieška"
 
-#: ../data/lollypop.appdata.xml.in.h:9 ../src/pop_menu.py:481
-#: ../src/pop_menu.py:502 ../src/toolbar_end.py:395
+#: ../data/lollypop.appdata.xml.in.h:9 ../src/pop_menu.py:483
+#: ../src/pop_menu.py:504 ../src/toolbar_end.py:395
 #: ../data/QueuePopover.ui.h:2
 msgid "Queue"
 msgstr "Eilė"
@@ -477,9 +481,9 @@ msgstr "Lollypop aptinka tuščią aplanką."
 msgid "Check your music settings."
 msgstr "Patikrinkite savo muzikos nustatymus."
 
-#: ../src/collectionscanner.py:245 ../src/database_albums.py:329
+#: ../src/collectionscanner.py:255 ../src/database_albums.py:329
 #: ../src/database_artists.py:104 ../src/database_genres.py:69
-#: ../src/database_tracks.py:245 ../src/selectionlist.py:343
+#: ../src/database_tracks.py:247 ../src/selectionlist.py:343
 #: ../src/tagreader.py:88 ../src/tagreader.py:103 ../src/tagreader.py:118
 #: ../src/tagreader.py:163 ../src/tagreader.py:178 ../src/tagreader.py:181
 #: ../src/tagreader.py:191 ../src/tagreader.py:198
@@ -498,9 +502,9 @@ msgstr "Paskiausiai pridėti albumai"
 msgid "Random albums"
 msgstr "Atsitiktiniai albumai"
 
-#: ../src/container.py:451 ../src/pop_menu.py:361 ../src/pop_menu.py:484
-#: ../src/pop_menu.py:504 ../src/widgets_device.py:117
-#: ../src/widgets_playlist.py:521
+#: ../src/container.py:451 ../src/pop_menu.py:361 ../src/pop_menu.py:486
+#: ../src/pop_menu.py:506 ../src/widgets_device.py:117
+#: ../src/widgets_playlist.py:530
 msgid "Playlists"
 msgstr "Grojaraščiai"
 
@@ -545,7 +549,7 @@ msgid "Pause"
 msgstr "Pristabdyti"
 
 #: ../src/controllers.py:86 ../src/controllers.py:105 ../src/pop_tunein.py:216
-#: ../src/widgets_album.py:502 ../src/widgets_radio.py:172
+#: ../src/widgets_album.py:504 ../src/widgets_radio.py:173
 #: ../data/AlbumDetailedWidget.ui.h:1 ../data/ArtistView.ui.h:2
 #: ../data/ToolbarPlayback.ui.h:2
 msgid "Play"
@@ -588,16 +592,16 @@ msgstr "Tinklas neprieinamas, nepavyks groti šio takelio"
 msgid "Loved tracks"
 msgstr "Pamėgti takeliai"
 
-#: ../src/pop_albums.py:291
+#: ../src/pop_albums.py:292
 msgid "Clear albums"
 msgstr "Išvalyti albumus"
 
-#: ../src/pop_albums.py:299 ../src/view_artist.py:50 ../data/ArtistInfo.ui.h:8
+#: ../src/pop_albums.py:300 ../src/view_artist.py:50 ../data/ArtistInfo.ui.h:8
 #: ../data/ArtistView.ui.h:4
 msgid "Go to current track"
 msgstr "Pereiti prie esamo takelio"
 
-#: ../src/pop_albums.py:300 ../src/toolbar_end.py:399
+#: ../src/pop_albums.py:301 ../src/toolbar_end.py:399
 msgid "Playing albums"
 msgstr "Grojami albumai"
 
@@ -656,23 +660,23 @@ msgstr "Šalinti albumą"
 msgid "Modify information"
 msgstr "Modifikuoti informaciją"
 
-#: ../src/pop_menu.py:478 ../data/SettingsDialog.ui.h:10
+#: ../src/pop_menu.py:480 ../data/SettingsDialog.ui.h:10
 msgid "Artist"
 msgstr "Atlikėjas"
 
-#: ../src/pop_menu.py:487 ../data/PlaylistView.ui.h:1
+#: ../src/pop_menu.py:489 ../data/PlaylistView.ui.h:1
 msgid "Edit"
 msgstr "Redaguoti"
 
-#: ../src/pop_menu.py:534
+#: ../src/pop_menu.py:536
 msgid "Youtube video address"
 msgstr "Youtube vaizdo įrašo adresas"
 
-#: ../src/pop_menu.py:655
+#: ../src/pop_menu.py:659
 msgid "Save genre"
 msgstr "Įrašyti žanrą"
 
-#: ../src/pop_menu.py:676 ../data/ExternalSearchRow.ui.h:1
+#: ../src/pop_menu.py:680 ../data/ExternalSearchRow.ui.h:1
 msgid "Save into collection"
 msgstr "Įrašyti į kolekciją"
 
@@ -685,7 +689,7 @@ msgstr "Pridėti"
 msgid "Modify"
 msgstr "Modifikuoti"
 
-#: ../src/pop_search.py:256
+#: ../src/pop_search.py:289
 msgid "You need to install youtube-dl"
 msgstr "Jums reikia įdiegti youtube-dl"
 
@@ -697,7 +701,7 @@ msgstr "Prašome palaukti..."
 msgid "Can't connect to TuneIn..."
 msgstr "Nepavyksta prisijungti prie TuneIn..."
 
-#: ../src/settings.py:95
+#: ../src/settings.py:94
 #, python-format
 msgid "%d artist"
 msgid_plural "%d artists"
@@ -705,7 +709,7 @@ msgstr[0] "%d atlikėjas"
 msgstr[1] "%d atlikėjai"
 msgstr[2] "%d atlikėjų"
 
-#: ../src/settings.py:97
+#: ../src/settings.py:96
 #, python-format
 msgid "%d album"
 msgid_plural "%d albums"
@@ -713,7 +717,7 @@ msgstr[0] "%d albumas"
 msgstr[1] "%d albumai"
 msgstr[2] "%d albumų"
 
-#: ../src/settings.py:99
+#: ../src/settings.py:98
 #, python-format
 msgid "%d track"
 msgid_plural "%d tracks"
@@ -721,11 +725,11 @@ msgstr[0] "%d takelis"
 msgstr[1] "%d takeliai"
 msgstr[2] "%d takelių"
 
-#: ../src/settings.py:110 ../src/settings.py:113 ../data/SettingsDialog.ui.h:3
+#: ../src/settings.py:109 ../src/settings.py:112 ../data/SettingsDialog.ui.h:3
 msgid "Preferences"
 msgstr "Nuostatos"
 
-#: ../src/settings.py:138
+#: ../src/settings.py:137
 msgid "You need to install kid3-cli"
 msgstr "Jums reikia įdiegti kid3-cli"
 
@@ -751,7 +755,7 @@ msgstr "Grojami grojaraščiai"
 msgid "The the"
 msgstr "The the"
 
-#: ../src/view_artist.py:310 ../src/widgets_album.py:358
+#: ../src/view_artist.py:310 ../src/widgets_album.py:359
 msgid "Remove"
 msgstr "Šalinti"
 
@@ -774,34 +778,34 @@ msgstr "Sinchronizuoti %s"
 msgid "Cancel synchronization"
 msgstr "Atšaukti sinchronizaciją"
 
-#: ../src/widgets_album.py:354
+#: ../src/widgets_album.py:355
 msgid "Append"
 msgstr "Pridėti"
 
-#: ../src/widgets_album.py:513
+#: ../src/widgets_album.py:515
 msgid "Play albums"
 msgstr "Groti albumus"
 
-#: ../src/widgets_album.py:523 ../data/AlbumDetailedWidget.ui.h:2
+#: ../src/widgets_album.py:525 ../data/AlbumDetailedWidget.ui.h:2
 msgid "Change artwork"
 msgstr "Keisti iliustraciją"
 
-#: ../src/widgets_album.py:689
+#: ../src/widgets_album.py:691
 #, python-format
 msgid "%s h  %s m"
 msgstr "%s val.  %s min."
 
-#: ../src/widgets_album.py:691
+#: ../src/widgets_album.py:693
 #, python-format
 msgid "%s h"
 msgstr "%s val."
 
-#: ../src/widgets_album.py:693
+#: ../src/widgets_album.py:695
 #, python-format
 msgid "%s m"
 msgstr "%s min."
 
-#: ../src/widgets_album.py:978
+#: ../src/widgets_album.py:980
 #, python-format
 msgid "Disc %s"
 msgstr "Diskas %s"
@@ -823,21 +827,21 @@ msgstr "Sinchronizuojant, įvyko nežinoma klaida, pabandykite iš naujo paleist
 msgid "No free space available on device"
 msgstr "Įrenginyje nėra prieinamos laisvos vietos"
 
-#: ../src/widgets_playlist.py:555 ../src/widgets_playlist.py:558
+#: ../src/widgets_playlist.py:564 ../src/widgets_playlist.py:567
 msgid "New playlist "
 msgstr "Naujas grojaraštis"
 
 #. Need a copy, segfault on EOS 3.1
-#: ../src/widgets_playlist.py:659 ../src/widgets_playlist.py:846
+#: ../src/widgets_playlist.py:668 ../src/widgets_playlist.py:855
 #, python-format
 msgid "Remove \"%s\"?"
 msgstr "Šalinti \"%s\"?"
 
-#: ../src/widgets_playlist.py:854
+#: ../src/widgets_playlist.py:863
 msgid "Remove these tracks?"
 msgstr "Šalinti šiuos takelius?"
 
-#: ../src/widgets_radio.py:188
+#: ../src/widgets_radio.py:189
 msgid "Modify radio"
 msgstr "Modifikuoti radiją"
 
@@ -979,6 +983,10 @@ msgstr "Normalizuoti MP3"
 #: ../data/PlaylistsManagerView.ui.h:1
 msgid "New playlist"
 msgstr "Naujas grojaraštis"
+
+#: ../data/PlaylistView.ui.h:2
+msgid "Unsplit view"
+msgstr ""
 
 #: ../data/QueuePopover.ui.h:1
 msgid "Clear queue"
@@ -1226,60 +1234,65 @@ msgstr "Pamėgti esamą takelį"
 
 #: ../data/Shortcuts.ui.h:8
 msgctxt "shortcut window"
+msgid "Show genres"
+msgstr "Rodyti žanrus"
+
+#: ../data/Shortcuts.ui.h:9
+msgctxt "shortcut window"
 msgid "Lock playback"
 msgstr "Užrakinti grojimą"
 
-#: ../data/Shortcuts.ui.h:9
+#: ../data/Shortcuts.ui.h:10
 msgctxt "shortcut window"
 msgid "Show/Hide volume control"
 msgstr "Rodyti/slėpti garsio valdiklį"
 
-#: ../data/Shortcuts.ui.h:10
+#: ../data/Shortcuts.ui.h:11
 msgctxt "shortcut window"
 msgid "Playback"
 msgstr "Grojimas"
 
-#: ../data/Shortcuts.ui.h:11
+#: ../data/Shortcuts.ui.h:12
 msgctxt "shortcut window"
 msgid "Play"
 msgstr "Groti"
 
-#: ../data/Shortcuts.ui.h:12
+#: ../data/Shortcuts.ui.h:13
 msgctxt "shortcut window"
 msgid "Pause"
 msgstr "Pristabdyti"
 
-#: ../data/Shortcuts.ui.h:13
+#: ../data/Shortcuts.ui.h:14
 msgctxt "shortcut window"
 msgid "Stop"
 msgstr "Stabdyti"
 
-#: ../data/Shortcuts.ui.h:14
+#: ../data/Shortcuts.ui.h:15
 msgctxt "shortcut window"
 msgid "Next track"
 msgstr "Kitas takelis"
 
-#: ../data/Shortcuts.ui.h:15
+#: ../data/Shortcuts.ui.h:16
 msgctxt "shortcut window"
 msgid "Previous track"
 msgstr "Ankstesnis takelis"
 
-#: ../data/Shortcuts.ui.h:16
+#: ../data/Shortcuts.ui.h:17
 msgctxt "shortcut window"
 msgid "Skip current album"
 msgstr "Praleisti esamą albumą"
 
-#: ../data/Shortcuts.ui.h:17
+#: ../data/Shortcuts.ui.h:18
 msgctxt "shortcut window"
 msgid "Repeat track"
 msgstr "Kartoti takelį"
 
-#: ../data/Shortcuts.ui.h:18
+#: ../data/Shortcuts.ui.h:19
 msgctxt "shortcut window"
 msgid "Skip backward in track"
 msgstr "Peršokti takelyje atgal"
 
-#: ../data/Shortcuts.ui.h:19
+#: ../data/Shortcuts.ui.h:20
 msgctxt "shortcut window"
 msgid "Skip forward in track"
 msgstr "Peršokti takelyje pirmyn"
