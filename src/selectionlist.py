@@ -17,7 +17,7 @@ from gettext import gettext as _
 from locale import strcoll
 
 from lollypop.cellrenderer import CellRendererArtist
-from lollypop.define import Type, Lp, SelectionMode, ArtSize
+from lollypop.define import Type, Lp, ArtSize
 
 
 class SelectionPopover(Gtk.Popover):
@@ -62,7 +62,7 @@ class MotionEvent:
     y = 0.0
 
 
-class SelectionList(Gtk.ScrolledWindow):
+class SelectionList(Gtk.Bin):
     """
         A list for artists/genres
     """
@@ -71,15 +71,12 @@ class SelectionList(Gtk.ScrolledWindow):
         'populated': (GObject.SignalFlags.RUN_FIRST, None, ()),
     }
 
-    def __init__(self, mode):
+    def __init__(self, fast_scroll):
         """
             Init Selection list ui
-            @param mode as SelectionMode
+            @param fast scroll as bool
         """
-        Gtk.ScrolledWindow.__init__(self)
-        self.set_policy(Gtk.PolicyType.NEVER,
-                        Gtk.PolicyType.AUTOMATIC)
-        self.__mode = mode
+        Gtk.Bin.__init__(self)
         self.__last_motion_event = None
         self.__previous_motion_y = 0.0
         self.__timeout = None
@@ -87,6 +84,7 @@ class SelectionList(Gtk.ScrolledWindow):
         self.__modifier = False
         self.__updating = False       # Sort disabled if False
         self.__is_artists = False
+        self.__fast_scroll = fast_scroll  # Show button to scroll to top
         self.__popover = SelectionPopover()
         builder = Gtk.Builder()
         builder.add_from_resource('/org/gnome/Lollypop/SelectionList.ui')
@@ -114,11 +112,31 @@ class SelectionList(Gtk.ScrolledWindow):
         column.add_attribute(self.__renderer1, 'icon-name', 2)
         self.__view.append_column(column)
         self.__view.set_property('has_tooltip', True)
-        self.add(self.__view)
+        self.__scrolled = Gtk.ScrolledWindow()
+        self.__scrolled.set_policy(Gtk.PolicyType.NEVER,
+                                   Gtk.PolicyType.AUTOMATIC)
+        self.__scrolled.add(self.__view)
+        self.__scrolled.show()
+        if self.__fast_scroll:
+            overlay = Gtk.Overlay.new()
+            overlay.show()
+            self.__button = Gtk.Button.new_from_icon_name('go-up-symbolic',
+                                                          Gtk.IconSize.MENU)
+            self.__button.set_property('halign', Gtk.Align.CENTER)
+            self.__button.set_property('valign', Gtk.Align.END)
+            self.__button.get_style_context().add_class('fast-scroll-button')
+            self.__button.connect('clicked', self.__on_button_clicked)
+            overlay.add(self.__scrolled)
+            overlay.add_overlay(self.__button)
+            self.add(overlay)
+        else:
+            self.add(self.__scrolled)
         self.connect('motion_notify_event', self.__on_motion_notify)
-        self.get_vadjustment().connect('value_changed', self.__on_scroll)
+        self.__scrolled.get_vadjustment().connect('value_changed',
+                                                  self.__on_scroll)
         self.connect('enter-notify-event', self.__on_enter_notify)
         self.connect('leave-notify-event', self.__on_leave_notify)
+
         Lp().art.connect('artist-artwork-changed',
                          self.__on_artist_artwork_changed)
 
@@ -270,6 +288,25 @@ class SelectionList(Gtk.ScrolledWindow):
         self.__updating = True
         self.__model.clear()
         self.__updating = False
+
+    def get_headers(self):
+        """
+            Return list one headers
+            @return items as [(int, str)]
+        """
+        items = []
+        items.append((Type.POPULARS, _("Popular albums")))
+        items.append((Type.RECENTS, _("Recently added albums")))
+        items.append((Type.RANDOMS, _("Random albums")))
+        items.append((Type.PLAYLISTS, _("Playlists")))
+        items.append((Type.RADIOS, _("Radios")))
+        if Lp().settings.get_value('network-search'):
+            items.append((Type.CHARTS, _("The charts")))
+        if self.__is_artists:
+            items.append((Type.ALL, _("All albums")))
+        else:
+            items.append((Type.ALL, _("All artists")))
+        return items
 
 #######################
 # PROTECTED           #
@@ -440,7 +477,7 @@ class SelectionList(Gtk.ScrolledWindow):
             @return bool
         """
         ids = self.get_selected_ids()
-        if not ids or self.__mode == SelectionMode.NORMAL:
+        if not ids:
             return True
         elif self.__modifier:
             iterator = self.__model.get_iter(path)
@@ -510,7 +547,18 @@ class SelectionList(Gtk.ScrolledWindow):
             Show a popover with current letter
             @param adj as Gtk.Adjustement
         """
-        # Only show if scrolled window is huge
+        if self.__fast_scroll:
+            top_path = self.__view.get_dest_row_at_pos(0, 0)
+            if top_path is not None:
+                row = top_path[0]
+                if row is not None:
+                    row_iter = self.__model.get_iter(row)
+                    rowid = self.__model.get_value(row_iter, 0)
+                    if rowid < 0:
+                        self.__button.hide()
+                    else:
+                        self.__button.show()
+        # Only show if self.__scrolled window is huge
         if adj.get_upper() < adj.get_page_size() * 3:
             return
         if self.__last_motion_event is None:
@@ -520,12 +568,12 @@ class SelectionList(Gtk.ScrolledWindow):
             GLib.source_remove(self.__timeout)
             self.__timeout = None
 
-        dest_row = self.__view.get_dest_row_at_pos(self.__last_motion_event.x,
-                                                   self.__last_motion_event.y)
-        if dest_row is None:
+        path = self.__view.get_dest_row_at_pos(self.__last_motion_event.x,
+                                               self.__last_motion_event.y)
+        if path is None:
             return
 
-        row = dest_row[0]
+        row = path[0]
 
         if row is None:
             return
@@ -551,6 +599,12 @@ class SelectionList(Gtk.ScrolledWindow):
             self.__popover.set_pointing_to(r)
             self.__popover.set_position(Gtk.PositionType.RIGHT)
             self.__popover.show()
+
+    def __on_button_clicked(self, button):
+        """
+            Move scrollbar at top
+        """
+        self.__scrolled.get_vadjustment().set_value(0)
 
     def __on_artist_artwork_changed(self, art, artist):
         """
