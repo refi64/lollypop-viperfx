@@ -60,7 +60,9 @@ class BaseArt(GObject.GObject):
             @param filename as str
         """
         try:
-            os.remove(os.path.join(self._STORE_PATH, filename + ".jpg"))
+            filepath = os.path.join(self._STORE_PATH, filename + ".jpg")
+            if os.path.exists(filepath):
+                os.remove(filepath)
         except Exception as e:
             print("Art::clean_store()", e)
 
