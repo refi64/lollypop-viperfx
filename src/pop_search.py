@@ -538,10 +538,11 @@ class SearchPopover(Gtk.Popover):
                 self.__spinner.stop()
             return
         item = search.items.pop(0)
-        if not (item.name, item.artists) in self.__added_items:
+        name = "@@"+item.name+"@@" if item.is_track else item.name
+        if not (name, item.artists) in self.__added_items:
             search_row = SearchRow(item)
             search_row.show()
-            self.__added_items.append((item.name, item.artists))
+            self.__added_items.append((name, item.artists))
             self.__view.add(search_row)
 
     def __on_network_item_found(self, search):
@@ -559,10 +560,11 @@ class SearchPopover(Gtk.Popover):
         item = search.items.pop(0)
         if item.exists_in_db():
             return
-        if not (item.name, item.artists) in self.__added_items:
+        name = "@@"+item.name+"@@" if item.is_track else item.name
+        if not (name, item.artists) in self.__added_items:
             search_row = SearchRow(item, False)
             search_row.show()
-            self.__added_items.append((item.name, item.artists))
+            self.__added_items.append((name, item.artists))
             self.__view.add(search_row)
             t = Thread(target=self.__download_cover,
                        args=(item.smallcover, search_row))
