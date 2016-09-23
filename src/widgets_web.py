@@ -61,7 +61,7 @@ class WebView(Gtk.Stack):
         settings.set_property('enable-media-stream', False)
         settings.set_property('enable-mediasource', False)
         settings.set_property('enable-offline-web-application-cache', False)
-        settings.set_property('enable-page-cache', False)
+        settings.set_property('enable-page-cache', True)
         settings.set_property('enable-webaudio', False)
         settings.set_property('enable-webgl', False)
         if mobile:
