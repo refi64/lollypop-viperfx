@@ -872,7 +872,9 @@ class AlbumDetailedWidget(Gtk.Bin, AlbumWidget):
             @param widget as Gtk.Button
             @param album id as int
         """
-        if self._album.genre_ids and self._album.genre_ids[0] == Type.CHARTS:
+        # Get album real genre ids (not contextual)
+        genre_ids = Lp().albums.get_genre_ids(self._album.id)
+        if genre_ids and genre_ids[0] == Type.CHARTS:
             popover = AlbumMenuPopover(self._album, None)
             popover.set_relative_to(widget)
             popover.set_position(Gtk.PositionType.BOTTOM)

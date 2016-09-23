@@ -117,8 +117,11 @@ def format_artist_name(name):
         Return formated artist name
         @param str
     """
+    if not Lp().settings.get_value('smart-artist-sort'):
+        return name
     # Handle language ordering
     # Translators: Add here words that shoud be ignored for artist sort order
+    # Translators: Add The the too
     for special in _("The the").split():
         if name.startswith(special+" "):
             strlen = len(special)+1

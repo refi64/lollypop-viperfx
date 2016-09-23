@@ -645,9 +645,13 @@ class TracksDatabase:
             return: list of [id as int, name as string]
         """
         with SqlCursor(Lp().db) as sql:
-            result = sql.execute("SELECT rowid, name FROM tracks\
-                                  WHERE noaccents(name) LIKE ? LIMIT 25",
-                                 ('%' + noaccents(searched) + '%',))
+            result = sql.execute("SELECT tracks.rowid, tracks.name\
+                                  FROM tracks, track_genres\
+                                  WHERE noaccents(name) LIKE ?\
+                                  AND tracks.rowid=track_genres.track_id\
+                                  AND track_genres.genre_id!=? LIMIT 25",
+                                 ('%' + noaccents(searched) + '%',
+                                  Type.CHARTS))
             return list(result)
 
     def search_track(self, artist, title):

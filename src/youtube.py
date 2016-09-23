@@ -208,15 +208,10 @@ class Youtube:
             @param item as SearchItem
         """
         try:
-            if item.duration >= 1200:
-                duration = "sp=EgIYAg%253D%253D"
-            else:
-                duration = "sp=EgIYAQ%253D%253D"
             search = "%s %s" % (item.artists[0],
                                 item.name)
             f = Gio.File.new_for_uri("https://www.youtube.com/"
-                                     "results?search_query=%s&%s" % (search,
-                                                                     duration))
+                                     "results?search_query=%s" % search)
             (status, data, tag) = f.load_contents(None)
             if status:
                 html = data.decode('utf-8')

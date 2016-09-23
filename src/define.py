@@ -47,11 +47,6 @@ class NextContext:
     START_NEW_ALBUM = 4  # Start a new album
 
 
-class SelectionMode:
-    NORMAL = 0
-    LIMITED = 1
-
-
 class DbPersistent:
     NONE = 0
     INTERNAL = 1

@@ -14,7 +14,7 @@ from gi.repository import Gtk, Gio, GLib
 
 from gettext import gettext as _
 
-from lollypop.define import Lp, Type, SelectionMode
+from lollypop.define import Lp, Type
 from lollypop.loader import Loader
 from lollypop.selectionlist import SelectionList
 from lollypop.view_container import ViewContainer
@@ -302,9 +302,9 @@ class Container:
         vgrid = Gtk.Grid()
         vgrid.set_orientation(Gtk.Orientation.VERTICAL)
 
-        self.__list_one = SelectionList(SelectionMode.LIMITED)
+        self.__list_one = SelectionList(True)
         self.__list_one.show()
-        self.__list_two = SelectionList(SelectionMode.NORMAL)
+        self.__list_two = SelectionList(False)
         self.__list_one.connect('item-selected', self.__on_list_one_selected)
         self.__list_one.connect('populated', self.__on_list_populated)
         self.__list_two.connect('item-selected', self.__on_list_two_selected)
@@ -440,24 +440,6 @@ class Container:
         elif self.__show_genres and ids:
             self.__setup_list_artists(self.__list_two, ids, update)
 
-    def __get_headers(self):
-        """
-            Return list one headers
-        """
-        items = []
-        items.append((Type.POPULARS, _("Popular albums")))
-        items.append((Type.RECENTS, _("Recently added albums")))
-        items.append((Type.RANDOMS, _("Random albums")))
-        items.append((Type.PLAYLISTS, _("Playlists")))
-        items.append((Type.RADIOS, _("Radios")))
-        if Lp().settings.get_value('network-search'):
-            items.append((Type.CHARTS, _("The charts")))
-        if self.__show_genres:
-            items.append((Type.ALL, _("All artists")))
-        else:
-            items.append((Type.ALL, _("All albums")))
-        return items
-
     def __setup_list_genres(self, selection_list, update):
         """
             Setup list for genres
@@ -470,7 +452,7 @@ class Container:
             return genres
 
         def setup(genres):
-            items = self.__get_headers()
+            items = selection_list.get_headers()
             items.append((Type.SEPARATOR, ''))
             items += genres
             selection_list.mark_as_artists(False)
@@ -497,7 +479,7 @@ class Container:
 
         def setup(artists, compilations):
             if selection_list == self.__list_one:
-                items = self.__get_headers()
+                items = selection_list.get_headers()
                 if not compilations:
                     items.append((Type.SEPARATOR, ''))
             else:
