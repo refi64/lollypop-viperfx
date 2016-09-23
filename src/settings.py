@@ -132,9 +132,17 @@ class SettingsDialog:
 
         switch_artwork_tags = builder.get_object('switch_artwork_tags')
         if which("kid3-cli") is None:
-            switch_artwork_tags.set_sensitive(False)
-            switch_artwork_tags.set_tooltip_text(
-                                            _("You need to install kid3-cli"))
+            grid = builder.get_object('grid_behaviour')
+            h = grid.child_get_property(switch_artwork_tags, 'height')
+            w = grid.child_get_property(switch_artwork_tags, 'width')
+            l = grid.child_get_property(switch_artwork_tags, 'left-attach')
+            t = grid.child_get_property(switch_artwork_tags, 'top-attach')
+            switch_artwork_tags.destroy()
+            label = Gtk.Label.new(_("You need to install kid3-cli"))
+            label.get_style_context().add_class('dim-label')
+            label.set_property('halign', Gtk.Align.END)
+            label.show()
+            grid.attach(label, l, t, w, h)
         else:
             switch_artwork_tags.set_state(
                                       Lp().settings.get_value('artwork-tags'))
