@@ -307,11 +307,13 @@ class ArtistView(ArtistAlbumsView):
         albums = Lp().albums.get_ids(self._artist_ids, self._genre_ids)
         player_albums = Lp().player.get_albums()
         if len(set(albums) & set(player_albums)) == len(albums):
+            # Translators: artist context
             self.__add_button.set_tooltip_text(_("Remove"))
             self.__add_button.get_image().set_from_icon_name(
                                                         'list-remove-symbolic',
                                                         Gtk.IconSize.MENU)
         else:
+            # Translators: artist context
             self.__add_button.set_tooltip_text(_("Add"))
             self.__add_button.get_image().set_from_icon_name(
                                                            'list-add-symbolic',

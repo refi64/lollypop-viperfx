@@ -80,8 +80,10 @@ class RadioPopover(Gtk.Popover):
         builder.get_object('widget').attach(rating, 0, 2, 2, 1)
 
         if self.__name == '':
+            # Translators: radio context
             builder.get_object('btn_add_modify').set_label(_("Add"))
         else:
+            # Translators: radio context
             builder.get_object('btn_add_modify').set_label(_("Modify"))
             builder.get_object('btn_delete').show()
             self.__name_entry.set_text(self.__name)

@@ -219,6 +219,7 @@ class TuneinPopover(Gtk.Popover):
             button.connect('clicked', self.__on_button_clicked, item)
             button.set_relief(Gtk.ReliefStyle.NONE)
             button.set_property('valign', Gtk.Align.CENTER)
+            # Translators: radio context
             button.set_tooltip_text(_("Add"))
             button.show()
             child.add(button)
