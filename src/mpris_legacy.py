@@ -41,7 +41,8 @@ class MPRIS(dbus.service.Object):
 
     @dbus.service.method(dbus_interface=MPRIS_IFACE)
     def Raise(self):
-        self._app.activate()
+        self.__app.window.setup_window()
+        self.__app.window.present()
 
     @dbus.service.method(dbus_interface=MPRIS_IFACE)
     def Quit(self):

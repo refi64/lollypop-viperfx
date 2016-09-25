@@ -172,7 +172,8 @@ class MPRIS(Server):
         Lp().player.connect('volume-changed', self.__on_volume_changed)
 
     def Raise(self):
-        self.__app.activate()
+        self.__app.window.setup_window()
+        self.__app.window.present()
 
     def Quit(self):
         self.__app.quit()
