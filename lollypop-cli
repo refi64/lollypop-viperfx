@@ -1,0 +1,129 @@
+#!/usr/bin/env python3
+# Copyright (c) 2014-2016 Cedric Bellegarde <cedric.bellegarde@adishatz.org>
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+# GNU General Public License for more details.
+# You should have received a copy of the GNU General Public License
+# along with this program. If not, see <http://www.gnu.org/licenses/>.
+
+import gi
+gi.require_version('Secret', '1')
+gi.require_version('TotemPlParser', '1.0')
+gi.require_version('GstPbutils', '1.0')
+gi.require_version('Gtk', '3.0')
+gi.require_version('Gst', '1.0')
+from gi.repository import Gtk, Gst
+
+from lollypop.database_albums import AlbumsDatabase
+from lollypop.database_tracks import TracksDatabase
+from lollypop.database_artists import ArtistsDatabase
+from lollypop.database_genres import GenresDatabase
+from lollypop.database import Database
+from lollypop.sqlcursor import SqlCursor
+from lollypop.tagreader import TagReader
+from lollypop.settings import Settings
+from lollypop.define import Type, DbPersistent
+from lollypop.playlists import Playlists
+
+from time import time
+import sys
+
+
+class Application(Gtk.Application):
+    """
+        Lollypop cli application
+        We need this as Lollypop class
+        depends on the global object: Gio.Application.get_default()
+    """
+
+    def __init__(self):
+        """
+            Create application
+        """
+        Gtk.Application.__init__(
+                            self,
+                            application_id='org.gnome.Lollypop')
+        Gst.init(None)
+        self.cursors = {}
+        self.settings = Settings.new()
+        self.albums = AlbumsDatabase()
+        self.artists = ArtistsDatabase()
+        self.genres = GenresDatabase()
+        self.tracks = TracksDatabase()
+        self.playlists = Playlists()
+        self.db = Database()
+        SqlCursor.add(self.db)
+
+    def usage(self):
+        """
+            Show usage
+        """
+        print("usage: lollypop-cli youtube artist album track uri")
+        print("Allow user to add youtube tracks not available in search")
+        print("")
+        print("usage: lollypop-cli export-playlists")
+        print("Export playlists to m3u format in current directory")
+
+    def add_youtube(self, argv):
+        """
+            Add youtube track
+            @param argv as [app, artist, album, title, url]
+        """
+        artists = album_artist = sys.argv[2]
+        album = sys.argv[3]
+        title = sys.argv[4]
+        uri = sys.argv[5]
+
+        t = TagReader()
+        with SqlCursor(self.db) as sql:
+            (artist_ids, new_artist_ids) = t.add_artists(artists,
+                                                         album_artist,
+                                                         "")
+            (album_artist_ids, new_album_artist_ids) = t.add_album_artists(
+                                                               album_artist,
+                                                               "")
+            (album_id, new_album) = t.add_album(album,
+                                                album_artist_ids,
+                                                "", 0, int(time()))
+            if new_album:
+                self.albums.set_synced(album_id, Type.NONE)
+
+            (genre_ids, new_genre_ids) = t.add_genres("Youtube", album_id)
+
+            track_id = self.tracks.add(title, uri, 0,
+                                       0, 0, "", album_id,
+                                       None, 0, 0, 0, DbPersistent.EXTERNAL)
+            t.update_track(track_id, artist_ids, genre_ids)
+            t.update_album(album_id, album_artist_ids, genre_ids, None)
+            sql.commit()
+
+    def export_playlists(self):
+        """
+            Export playlists to m3u format
+        """
+        for (playlist_id, name) in self.playlists.get():
+            f = open("%s.m3u" % name, 'w')
+            f.write("#EXTM3U\n")
+            for uri in self.playlists.get_tracks(playlist_id):
+                f.write(uri+'\n')
+            f.close()
+
+
+if __name__ == '__main__':
+    
+    app = Application()
+    larg = len(sys.argv)
+    if larg == 1:
+        app.usage()
+        exit(0)
+    if sys.argv[1] == "youtube" and larg == 6:
+        app.add_youtube(sys.argv)
+    elif sys.argv[1] == "export-playlists":
+        app.export_playlists()
+    else:
+        app.usage()

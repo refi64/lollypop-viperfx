@@ -2,7 +2,7 @@ ACLOCAL_AMFLAGS = -I m4
 NULL =
 
 bin_SCRIPTS = lollypop\
-	      rhythmbox2lollypop
+              lollypop-cli
 
 SUBDIRS = src data po help
 
