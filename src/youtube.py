@@ -177,19 +177,18 @@ class Youtube:
                             item.name)
         key = Lp().settings.get_value('cs-api-key').get_string()
         try:
-            if item.duration >= 1200:
-                duration = "videoDuration=long"
-            elif item.duration >= 240:
-                duration = "videoDuration=medium"
-            else:
-                duration = "videoDuration=short"
+            # if item.duration >= 1200:
+            #    duration = "videoDuration=long"
+            # elif item.duration >= 240:
+            #    duration = "videoDuration=medium"
+            # else:
+            #    duration = "videoDuration=short"
             f = Gio.File.new_for_uri("https://www.googleapis.com/youtube/v3/"
                                      "search?part=snippet&q=%s&"
-                                     "type=video&key=%s&cx=%s&%s" % (
+                                     "type=video&key=%s&cx=%s" % (
                                                               search,
                                                               key,
-                                                              GOOGLE_API_ID,
-                                                              duration))
+                                                              GOOGLE_API_ID))
             (status, data, tag) = f.load_contents(None)
             if status:
                 decode = json.loads(data.decode('utf-8'))
