@@ -343,6 +343,8 @@ class AlbumArt(BaseArt, TagReader):
             @param data as bytes
             @param album as Album
         """
+        if album.is_youtube:
+            return
         stream = Gio.MemoryInputStream.new_from_data(data, None)
         pixbuf = GdkPixbuf.Pixbuf.new_from_stream_at_scale(stream,
                                                            ArtSize.MONSTER,
