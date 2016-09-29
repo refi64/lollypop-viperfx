@@ -116,6 +116,7 @@ class ToolbarEnd(Gtk.Bin):
         Gtk.Bin.__init__(self)
         self.connect('show', self.__on_show)
         self.connect('hide', self.__on_hide)
+        self.set_hexpand(True)
         self.__next_popover = NextPopover()
         self.__search = None
         self.__next_was_inhibited = False
