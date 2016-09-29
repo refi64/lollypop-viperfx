@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lollypop\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-09-21 16:17+0200\n"
-"PO-Revision-Date: 2016-09-21 14:19+0000\n"
+"POT-Creation-Date: 2016-09-25 21:53+0200\n"
+"PO-Revision-Date: 2016-09-25 19:54+0000\n"
 "Last-Translator: Cédric Bellegarde <web@adishatz.org>\n"
 "Language-Team: Finnish (http://www.transifex.com/gnumdk/lollypop/language/fi/)\n"
 "MIME-Version: 1.0\n"
@@ -178,42 +178,50 @@ msgid "Continue playback when closed"
 msgstr "Jatka toistoa, kun sovellus suljetaan"
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:40
+msgid "Smart sort for artist"
+msgstr ""
+
+#: ../data/org.gnome.Lollypop.gschema.xml.h:41
+msgid "Ex: The Beatles sorted as Beatles. Resetting database needed."
+msgstr ""
+
+#: ../data/org.gnome.Lollypop.gschema.xml.h:42
 msgid "Restore previous state"
 msgstr "Palauta edellinen tila"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:41
+#: ../data/org.gnome.Lollypop.gschema.xml.h:43
 msgid "Disable MPRIS"
 msgstr "Poista MPRIS käytöstä"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:42
+#: ../data/org.gnome.Lollypop.gschema.xml.h:44
 msgid "Disable notifications"
 msgstr "Poista ilmoitukset käytöstä"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:43
+#: ../data/org.gnome.Lollypop.gschema.xml.h:45
 msgid "Show track number from tags"
 msgstr "Näytä kappaleen numero tunnistetiedoista"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:44
+#: ../data/org.gnome.Lollypop.gschema.xml.h:46
 msgid "Mix songs"
 msgstr "Miksaa kappaleet"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:45
+#: ../data/org.gnome.Lollypop.gschema.xml.h:47
 msgid "Mix songs only in party mode"
 msgstr "Miksaa kappaleet vain biletilassa"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:46
+#: ../data/org.gnome.Lollypop.gschema.xml.h:48
 msgid "Mix duration"
 msgstr ""
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:47
+#: ../data/org.gnome.Lollypop.gschema.xml.h:49
 msgid "Shuffle mode"
 msgstr "Sekoitustila"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:48 ../data/SettingsDialog.ui.h:9
+#: ../data/org.gnome.Lollypop.gschema.xml.h:50 ../data/SettingsDialog.ui.h:9
 msgid "Order albums by"
 msgstr "Albumien järjestys"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:49
+#: ../data/org.gnome.Lollypop.gschema.xml.h:51
 msgid "Charts provider"
 msgstr "Listojen tuottaja"
 
@@ -268,8 +276,8 @@ msgstr "Tyylilajin/esittäjän/kannen perusteella selaaminen"
 msgid "Search"
 msgstr "Etsi"
 
-#: ../data/lollypop.appdata.xml.in.h:9 ../src/pop_menu.py:483
-#: ../src/pop_menu.py:504 ../src/toolbar_end.py:395
+#: ../data/lollypop.appdata.xml.in.h:9 ../src/pop_menu.py:485
+#: ../src/pop_menu.py:506 ../src/toolbar_end.py:395
 #: ../data/QueuePopover.ui.h:2
 msgid "Queue"
 msgstr "Jono"
@@ -483,64 +491,30 @@ msgstr "Tarkista musiikkiasetuksesi."
 
 #: ../src/collectionscanner.py:255 ../src/database_albums.py:329
 #: ../src/database_artists.py:104 ../src/database_genres.py:69
-#: ../src/database_tracks.py:247 ../src/selectionlist.py:343
+#: ../src/database_tracks.py:247 ../src/selectionlist.py:381
 #: ../src/tagreader.py:88 ../src/tagreader.py:103 ../src/tagreader.py:118
 #: ../src/tagreader.py:163 ../src/tagreader.py:178 ../src/tagreader.py:181
 #: ../src/tagreader.py:191 ../src/tagreader.py:198
 msgid "Unknown"
 msgstr "Tuntematon"
 
-#: ../src/container.py:448
-msgid "Popular albums"
-msgstr "Suositut albumit"
-
-#: ../src/container.py:449
-msgid "Recently added albums"
-msgstr "Viimeksi lisätyt albumit"
-
-#: ../src/container.py:450
-msgid "Random albums"
-msgstr "Satunnaiset albumit"
-
-#: ../src/container.py:451 ../src/pop_menu.py:361 ../src/pop_menu.py:486
-#: ../src/pop_menu.py:506 ../src/widgets_device.py:117
-#: ../src/widgets_playlist.py:530
-msgid "Playlists"
-msgstr "Soittolistat"
-
-#: ../src/container.py:452
-msgid "Radios"
-msgstr "Radiot"
-
-#: ../src/container.py:454
-msgid "The charts"
-msgstr "Listat"
-
-#: ../src/container.py:456
-msgid "All artists"
-msgstr "Kaikki esittäjät"
-
-#: ../src/container.py:458
-msgid "All albums"
-msgstr "Kaikki albumit"
-
-#: ../src/container.py:506
+#: ../src/container.py:488
 msgid "Compilations"
 msgstr "Kokoelmat"
 
-#: ../src/container.py:530 ../src/playlists.py:223
+#: ../src/container.py:512 ../src/playlists.py:223
 msgid "Popular tracks"
 msgstr "Suositut kappaleet"
 
-#: ../src/container.py:531 ../src/playlists.py:225
+#: ../src/container.py:513 ../src/playlists.py:225
 msgid "Recently played"
 msgstr "Viimeksi toistettu"
 
-#: ../src/container.py:532 ../src/playlists.py:227
+#: ../src/container.py:514 ../src/playlists.py:227
 msgid "Never played"
 msgstr "Ei koskaan toistettu"
 
-#: ../src/container.py:533 ../src/playlists.py:229
+#: ../src/container.py:515 ../src/playlists.py:229
 msgid "Random tracks"
 msgstr "Satunnaiset kappaleet"
 
@@ -648,48 +622,56 @@ msgstr "Poista kohteesta \"%s\""
 msgid "Add to \"%s\""
 msgstr "Lisää kohteeseen \"%s\""
 
-#: ../src/pop_menu.py:359
+#: ../src/pop_menu.py:361
 msgid "Playback"
 msgstr "Toisto"
 
-#: ../src/pop_menu.py:412
+#: ../src/pop_menu.py:363 ../src/pop_menu.py:488 ../src/pop_menu.py:508
+#: ../src/selectionlist.py:302 ../src/widgets_device.py:117
+#: ../src/widgets_playlist.py:530
+msgid "Playlists"
+msgstr "Soittolistat"
+
+#: ../src/pop_menu.py:414
 msgid "Remove album"
 msgstr "Poista albumi"
 
-#: ../src/pop_menu.py:422
+#: ../src/pop_menu.py:424
 msgid "Modify information"
 msgstr "Muokkaa tietoja"
 
-#: ../src/pop_menu.py:480 ../data/SettingsDialog.ui.h:10
+#: ../src/pop_menu.py:482 ../data/SettingsDialog.ui.h:10
 msgid "Artist"
 msgstr "Esittäjä"
 
-#: ../src/pop_menu.py:489 ../data/PlaylistView.ui.h:1
+#: ../src/pop_menu.py:491 ../data/PlaylistView.ui.h:1
 msgid "Edit"
 msgstr "Muokkaa"
 
-#: ../src/pop_menu.py:536
+#: ../src/pop_menu.py:538
 msgid "Youtube video address"
 msgstr "Youtube-video-osoite"
 
-#: ../src/pop_menu.py:659
+#: ../src/pop_menu.py:661
 msgid "Save genre"
 msgstr "Tallenna tyylilaji"
 
-#: ../src/pop_menu.py:680 ../data/ExternalSearchRow.ui.h:1
+#: ../src/pop_menu.py:682 ../data/ExternalSearchRow.ui.h:1
 msgid "Save into collection"
 msgstr "Tallenna kokoelmaan"
 
-#: ../src/pop_radio.py:83 ../src/pop_tunein.py:222 ../src/view_artist.py:315
-#: ../data/ArtistView.ui.h:3
+#. Translators: radio context
+#. Translators: artist context
+#: ../src/pop_radio.py:84 ../src/pop_tunein.py:223 ../src/view_artist.py:317
 msgid "Add"
 msgstr "Lisää"
 
-#: ../src/pop_radio.py:85 ../src/wikipedia.py:58
+#. Translators: radio context
+#: ../src/pop_radio.py:87 ../src/wikipedia.py:58
 msgid "Modify"
 msgstr "Muokkaa"
 
-#: ../src/pop_search.py:289
+#: ../src/pop_search.py:288
 msgid "You need to install youtube-dl"
 msgstr "Asenna youtube-dl"
 
@@ -700,6 +682,34 @@ msgstr "Odota hetki..."
 #: ../src/pop_tunein.py:180
 msgid "Can't connect to TuneIn..."
 msgstr "Yhteys TuneIniin ei onnistu..."
+
+#: ../src/selectionlist.py:299
+msgid "Popular albums"
+msgstr "Suositut albumit"
+
+#: ../src/selectionlist.py:300
+msgid "Recently added albums"
+msgstr "Viimeksi lisätyt albumit"
+
+#: ../src/selectionlist.py:301
+msgid "Random albums"
+msgstr "Satunnaiset albumit"
+
+#: ../src/selectionlist.py:303
+msgid "Radios"
+msgstr "Radiot"
+
+#: ../src/selectionlist.py:305
+msgid "The charts"
+msgstr "Listat"
+
+#: ../src/selectionlist.py:307
+msgid "All albums"
+msgstr "Kaikki albumit"
+
+#: ../src/selectionlist.py:309
+msgid "All artists"
+msgstr "Kaikki esittäjät"
 
 #: ../src/settings.py:94
 #, python-format
@@ -726,7 +736,7 @@ msgstr[1] "%d kappaletta"
 msgid "Preferences"
 msgstr "Asetukset"
 
-#: ../src/settings.py:137
+#: ../src/settings.py:141
 msgid "You need to install kid3-cli"
 msgstr "Asenna kid3-cli"
 
@@ -748,11 +758,13 @@ msgstr "Toistetaan soittolistat"
 
 #. Handle language ordering
 #. Translators: Add here words that shoud be ignored for artist sort order
-#: ../src/utils.py:122
+#. Translators: Add The the too
+#: ../src/utils.py:125
 msgid "The the"
 msgstr ""
 
-#: ../src/view_artist.py:310 ../src/widgets_album.py:359
+#. Translators: artist context
+#: ../src/view_artist.py:311 ../src/widgets_album.py:359
 msgid "Remove"
 msgstr "Poista"
 
@@ -802,7 +814,7 @@ msgstr "%s t"
 msgid "%s m"
 msgstr "%s min"
 
-#: ../src/widgets_album.py:980
+#: ../src/widgets_album.py:982
 #, python-format
 msgid "Disc %s"
 msgstr "Levy %s"
@@ -944,6 +956,11 @@ msgstr "Päivitä tiedot\nPitkä painallus aktivoi automaattipäivityksen"
 #: ../data/ArtistView.ui.h:1
 msgid "Photo"
 msgstr "Kuva"
+
+#: ../data/ArtistView.ui.h:3
+msgctxt "artist context"
+msgid "Add"
+msgstr "Lisää"
 
 #: ../data/ArtworkSearch.ui.h:1 ../data/RadioPopover.ui.h:2
 msgid "Select a local file"

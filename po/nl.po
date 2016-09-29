@@ -11,9 +11,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lollypop\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-09-21 16:17+0200\n"
-"PO-Revision-Date: 2016-09-21 14:19+0000\n"
-"Last-Translator: Cédric Bellegarde <web@adishatz.org>\n"
+"POT-Creation-Date: 2016-09-25 21:53+0200\n"
+"PO-Revision-Date: 2016-09-25 20:19+0000\n"
+"Last-Translator: Nathan Follens\n"
 "Language-Team: Dutch (http://www.transifex.com/gnumdk/lollypop/language/nl/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -181,44 +181,52 @@ msgid "Continue playback when closed"
 msgstr "Doorgaan met afspelen wanneer gesloten"
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:40
+msgid "Smart sort for artist"
+msgstr "Artiesten slim sorteren"
+
+#: ../data/org.gnome.Lollypop.gschema.xml.h:41
+msgid "Ex: The Beatles sorted as Beatles. Resetting database needed."
+msgstr "Bv.: The Beatles sorteren als Beatles. De database opnieuw instellen is hiervoor vereist."
+
+#: ../data/org.gnome.Lollypop.gschema.xml.h:42
 msgid "Restore previous state"
 msgstr "Vorige toestand herstellen"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:41
+#: ../data/org.gnome.Lollypop.gschema.xml.h:43
 msgid "Disable MPRIS"
 msgstr "MPRIS uitschakelen"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:42
+#: ../data/org.gnome.Lollypop.gschema.xml.h:44
 msgid "Disable notifications"
 msgstr "Meldingen uitschakelen"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:43
+#: ../data/org.gnome.Lollypop.gschema.xml.h:45
 msgid "Show track number from tags"
 msgstr "Tracknummer uit tags weergeven"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:44
+#: ../data/org.gnome.Lollypop.gschema.xml.h:46
 msgid "Mix songs"
 msgstr "Nummers mengen"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:45
+#: ../data/org.gnome.Lollypop.gschema.xml.h:47
 msgid "Mix songs only in party mode"
 msgstr "Nummers enkel mengen in feestmodus"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:46
+#: ../data/org.gnome.Lollypop.gschema.xml.h:48
 msgid "Mix duration"
 msgstr "Mengduur"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:47
+#: ../data/org.gnome.Lollypop.gschema.xml.h:49
 msgid "Shuffle mode"
 msgstr "Willekeurige volgorde-modus"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:48 ../data/SettingsDialog.ui.h:9
+#: ../data/org.gnome.Lollypop.gschema.xml.h:50 ../data/SettingsDialog.ui.h:9
 msgid "Order albums by"
 msgstr "Albums rangschikken op"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:49
+#: ../data/org.gnome.Lollypop.gschema.xml.h:51
 msgid "Charts provider"
-msgstr "Aanbieder van grafieken"
+msgstr "Aanbieder van hitlijsten"
 
 #: ../data/lollypop.desktop.in.h:1 ../data/lollypop.appdata.xml.in.h:1
 msgid "Lollypop"
@@ -271,8 +279,8 @@ msgstr "Bladeren door genres/artiesten/albumhoezen"
 msgid "Search"
 msgstr "Zoeken"
 
-#: ../data/lollypop.appdata.xml.in.h:9 ../src/pop_menu.py:483
-#: ../src/pop_menu.py:504 ../src/toolbar_end.py:395
+#: ../data/lollypop.appdata.xml.in.h:9 ../src/pop_menu.py:485
+#: ../src/pop_menu.py:506 ../src/toolbar_end.py:395
 #: ../data/QueuePopover.ui.h:2
 msgid "Queue"
 msgstr "Wachtrij"
@@ -486,64 +494,30 @@ msgstr "Controleer je muziekinstellingen."
 
 #: ../src/collectionscanner.py:255 ../src/database_albums.py:329
 #: ../src/database_artists.py:104 ../src/database_genres.py:69
-#: ../src/database_tracks.py:247 ../src/selectionlist.py:343
+#: ../src/database_tracks.py:247 ../src/selectionlist.py:381
 #: ../src/tagreader.py:88 ../src/tagreader.py:103 ../src/tagreader.py:118
 #: ../src/tagreader.py:163 ../src/tagreader.py:178 ../src/tagreader.py:181
 #: ../src/tagreader.py:191 ../src/tagreader.py:198
 msgid "Unknown"
 msgstr "Onbekend"
 
-#: ../src/container.py:448
-msgid "Popular albums"
-msgstr "Populaire albums"
-
-#: ../src/container.py:449
-msgid "Recently added albums"
-msgstr "Recent toegevoegde albums"
-
-#: ../src/container.py:450
-msgid "Random albums"
-msgstr "Willekeurige albums"
-
-#: ../src/container.py:451 ../src/pop_menu.py:361 ../src/pop_menu.py:486
-#: ../src/pop_menu.py:506 ../src/widgets_device.py:117
-#: ../src/widgets_playlist.py:530
-msgid "Playlists"
-msgstr "Afspeellijsten"
-
-#: ../src/container.py:452
-msgid "Radios"
-msgstr "Radio's"
-
-#: ../src/container.py:454
-msgid "The charts"
-msgstr "De grafieken"
-
-#: ../src/container.py:456
-msgid "All artists"
-msgstr "Alle artiesten"
-
-#: ../src/container.py:458
-msgid "All albums"
-msgstr "Alle albums"
-
-#: ../src/container.py:506
+#: ../src/container.py:488
 msgid "Compilations"
 msgstr "Compilaties"
 
-#: ../src/container.py:530 ../src/playlists.py:223
+#: ../src/container.py:512 ../src/playlists.py:223
 msgid "Popular tracks"
 msgstr "Populaire nummers"
 
-#: ../src/container.py:531 ../src/playlists.py:225
+#: ../src/container.py:513 ../src/playlists.py:225
 msgid "Recently played"
 msgstr "Recent afgespeeld"
 
-#: ../src/container.py:532 ../src/playlists.py:227
+#: ../src/container.py:514 ../src/playlists.py:227
 msgid "Never played"
 msgstr "Nooit afgespeeld"
 
-#: ../src/container.py:533 ../src/playlists.py:229
+#: ../src/container.py:515 ../src/playlists.py:229
 msgid "Random tracks"
 msgstr "Willekeurige nummers"
 
@@ -651,48 +625,56 @@ msgstr "Verwijderen uit \"%s\""
 msgid "Add to \"%s\""
 msgstr "Toevoegen aan \"%s\""
 
-#: ../src/pop_menu.py:359
+#: ../src/pop_menu.py:361
 msgid "Playback"
 msgstr "Afspelen"
 
-#: ../src/pop_menu.py:412
+#: ../src/pop_menu.py:363 ../src/pop_menu.py:488 ../src/pop_menu.py:508
+#: ../src/selectionlist.py:302 ../src/widgets_device.py:117
+#: ../src/widgets_playlist.py:530
+msgid "Playlists"
+msgstr "Afspeellijsten"
+
+#: ../src/pop_menu.py:414
 msgid "Remove album"
 msgstr "Album verwijderen"
 
-#: ../src/pop_menu.py:422
+#: ../src/pop_menu.py:424
 msgid "Modify information"
 msgstr "Gegevens bewerken"
 
-#: ../src/pop_menu.py:480 ../data/SettingsDialog.ui.h:10
+#: ../src/pop_menu.py:482 ../data/SettingsDialog.ui.h:10
 msgid "Artist"
 msgstr "Artiest"
 
-#: ../src/pop_menu.py:489 ../data/PlaylistView.ui.h:1
+#: ../src/pop_menu.py:491 ../data/PlaylistView.ui.h:1
 msgid "Edit"
 msgstr "Bewerken"
 
-#: ../src/pop_menu.py:536
+#: ../src/pop_menu.py:538
 msgid "Youtube video address"
 msgstr "Adres van YouTube-video"
 
-#: ../src/pop_menu.py:659
+#: ../src/pop_menu.py:661
 msgid "Save genre"
 msgstr "Genre opslaan"
 
-#: ../src/pop_menu.py:680 ../data/ExternalSearchRow.ui.h:1
+#: ../src/pop_menu.py:682 ../data/ExternalSearchRow.ui.h:1
 msgid "Save into collection"
 msgstr "Opslaan in verzameling"
 
-#: ../src/pop_radio.py:83 ../src/pop_tunein.py:222 ../src/view_artist.py:315
-#: ../data/ArtistView.ui.h:3
+#. Translators: radio context
+#. Translators: artist context
+#: ../src/pop_radio.py:84 ../src/pop_tunein.py:223 ../src/view_artist.py:317
 msgid "Add"
 msgstr "Toevoegen"
 
-#: ../src/pop_radio.py:85 ../src/wikipedia.py:58
+#. Translators: radio context
+#: ../src/pop_radio.py:87 ../src/wikipedia.py:58
 msgid "Modify"
 msgstr "Bewerken"
 
-#: ../src/pop_search.py:289
+#: ../src/pop_search.py:288
 msgid "You need to install youtube-dl"
 msgstr "Je moet youtube-dl installeren"
 
@@ -703,6 +685,34 @@ msgstr "Even geduld..."
 #: ../src/pop_tunein.py:180
 msgid "Can't connect to TuneIn..."
 msgstr "Kan geen verbinding maken met TuneIn..."
+
+#: ../src/selectionlist.py:299
+msgid "Popular albums"
+msgstr "Populaire albums"
+
+#: ../src/selectionlist.py:300
+msgid "Recently added albums"
+msgstr "Recent toegevoegde albums"
+
+#: ../src/selectionlist.py:301
+msgid "Random albums"
+msgstr "Willekeurige albums"
+
+#: ../src/selectionlist.py:303
+msgid "Radios"
+msgstr "Radio's"
+
+#: ../src/selectionlist.py:305
+msgid "The charts"
+msgstr "Hitlijsten"
+
+#: ../src/selectionlist.py:307
+msgid "All albums"
+msgstr "Alle albums"
+
+#: ../src/selectionlist.py:309
+msgid "All artists"
+msgstr "Alle artiesten"
 
 #: ../src/settings.py:94
 #, python-format
@@ -729,7 +739,7 @@ msgstr[1] "%d nummers"
 msgid "Preferences"
 msgstr "Voorkeuren"
 
-#: ../src/settings.py:137
+#: ../src/settings.py:141
 msgid "You need to install kid3-cli"
 msgstr "Je moet kid3-cli installeren"
 
@@ -751,11 +761,13 @@ msgstr "Afspelende afspeellijsten"
 
 #. Handle language ordering
 #. Translators: Add here words that shoud be ignored for artist sort order
-#: ../src/utils.py:122
+#. Translators: Add The the too
+#: ../src/utils.py:125
 msgid "The the"
 msgstr "The the De de Le le La la Les les"
 
-#: ../src/view_artist.py:310 ../src/widgets_album.py:359
+#. Translators: artist context
+#: ../src/view_artist.py:311 ../src/widgets_album.py:359
 msgid "Remove"
 msgstr "Verwijderen"
 
@@ -805,7 +817,7 @@ msgstr "%s u"
 msgid "%s m"
 msgstr "%s m"
 
-#: ../src/widgets_album.py:980
+#: ../src/widgets_album.py:982
 #, python-format
 msgid "Disc %s"
 msgstr "Schijf %s"
@@ -947,6 +959,11 @@ msgstr "Gegevens herladen\nHou lang ingedrukt om automatisch herladen te activer
 #: ../data/ArtistView.ui.h:1
 msgid "Photo"
 msgstr "Foto"
+
+#: ../data/ArtistView.ui.h:3
+msgctxt "artist context"
+msgid "Add"
+msgstr "Toevoegen"
 
 #: ../data/ArtworkSearch.ui.h:1 ../data/RadioPopover.ui.h:2
 msgid "Select a local file"

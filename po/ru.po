@@ -3,6 +3,7 @@
 # This file is distributed under the same license as the PACKAGE package.
 # 
 # Translators:
+# Alexey, 2016
 # Denis Morozov <www.strelookpb09@mail.ru>, 2015
 # Derpy Crabs <derpycrabs@gmail.com>, 2015
 # Maxim region51 <murmansksity@gmail.com>, 2015
@@ -12,9 +13,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lollypop\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-09-21 16:17+0200\n"
-"PO-Revision-Date: 2016-09-22 19:28+0000\n"
-"Last-Translator: Maxim region51 <murmansksity@gmail.com>\n"
+"POT-Creation-Date: 2016-09-25 21:53+0200\n"
+"PO-Revision-Date: 2016-09-28 03:10+0000\n"
+"Last-Translator: Alexey\n"
 "Language-Team: Russian (http://www.transifex.com/gnumdk/lollypop/language/ru/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -106,7 +107,7 @@ msgstr "Воспроизведение звука при наведении ук
 msgid ""
 "Pulseaudio only. Example: alsa_output.pci-0000_00_14.2.analog-stereo. "
 "Command to get outputs: $ pacmd list-sinks|grep 'name:'"
-msgstr ""
+msgstr "Только Pulseaudio. Например: alsa_output.pci-0000_00_14.2.analog-stereo. Команда для вывода: $ pacmd list-sinks|grep 'name:'"
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:22
 msgid "Favorite cover file"
@@ -155,7 +156,7 @@ msgstr "Автоматическое обновление музыки"
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:33
 msgid "Split playlists view"
-msgstr ""
+msgstr "Разделенный вид плейлистов"
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:34
 msgid "Show genres list"
@@ -182,44 +183,52 @@ msgid "Continue playback when closed"
 msgstr "Продолжить воспроизведение после закрытия"
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:40
+msgid "Smart sort for artist"
+msgstr "Умная сортировка для исполнителя"
+
+#: ../data/org.gnome.Lollypop.gschema.xml.h:41
+msgid "Ex: The Beatles sorted as Beatles. Resetting database needed."
+msgstr "Пример: «The Beatles» сортируются как «Beatles». Потребуется сброс базы данных."
+
+#: ../data/org.gnome.Lollypop.gschema.xml.h:42
 msgid "Restore previous state"
 msgstr "Восстанавливать предыдущее состояние"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:41
+#: ../data/org.gnome.Lollypop.gschema.xml.h:43
 msgid "Disable MPRIS"
 msgstr "Отключить MPRIS"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:42
+#: ../data/org.gnome.Lollypop.gschema.xml.h:44
 msgid "Disable notifications"
 msgstr "Отключить уведомления"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:43
+#: ../data/org.gnome.Lollypop.gschema.xml.h:45
 msgid "Show track number from tags"
 msgstr "Показывать номер трека из тегов"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:44
+#: ../data/org.gnome.Lollypop.gschema.xml.h:46
 msgid "Mix songs"
 msgstr "Микшировать песни"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:45
+#: ../data/org.gnome.Lollypop.gschema.xml.h:47
 msgid "Mix songs only in party mode"
 msgstr "Сводить песни только в режиме вечеринки"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:46
+#: ../data/org.gnome.Lollypop.gschema.xml.h:48
 msgid "Mix duration"
 msgstr "Длительность сведения"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:47
+#: ../data/org.gnome.Lollypop.gschema.xml.h:49
 msgid "Shuffle mode"
 msgstr "Режим перемешивания"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:48 ../data/SettingsDialog.ui.h:9
+#: ../data/org.gnome.Lollypop.gschema.xml.h:50 ../data/SettingsDialog.ui.h:9
 msgid "Order albums by"
 msgstr "Сортировать альбомы"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:49
+#: ../data/org.gnome.Lollypop.gschema.xml.h:51
 msgid "Charts provider"
-msgstr ""
+msgstr "Поставщик чартов"
 
 #: ../data/lollypop.desktop.in.h:1 ../data/lollypop.appdata.xml.in.h:1
 msgid "Lollypop"
@@ -272,8 +281,8 @@ msgstr "Жанр/Исполнитель/Просмотр обложки"
 msgid "Search"
 msgstr "Поиск"
 
-#: ../data/lollypop.appdata.xml.in.h:9 ../src/pop_menu.py:483
-#: ../src/pop_menu.py:504 ../src/toolbar_end.py:395
+#: ../data/lollypop.appdata.xml.in.h:9 ../src/pop_menu.py:485
+#: ../src/pop_menu.py:506 ../src/toolbar_end.py:395
 #: ../data/QueuePopover.ui.h:2
 msgid "Queue"
 msgstr "Очередь"
@@ -345,133 +354,133 @@ msgstr "Сбросить обложку?"
 #. if it makes sense for you
 #: ../src/charts_itunes.py:37
 msgid "alternative"
-msgstr ""
+msgstr "альтернатива"
 
 #. Translators: Only translate this music genre
 #. if it makes sense for you
 #: ../src/charts_itunes.py:41
 msgid "anime"
-msgstr ""
+msgstr "аниме"
 
 #. Translators: Only translate this music genre
 #. if it makes sense for you
 #: ../src/charts_itunes.py:45
 msgid "blues"
-msgstr ""
+msgstr "блюз"
 
 #. Translators: Only translate this music genre
 #. if it makes sense for you
 #: ../src/charts_itunes.py:49
 msgid "brazil"
-msgstr ""
+msgstr "бразильская"
 
 #. Translators: Only translate this music genre
 #. if it makes sense for you
 #: ../src/charts_itunes.py:53
 msgid "classic"
-msgstr ""
+msgstr "классическая"
 
 #. Translators: Only translate this music genre
 #. if it makes sense for you
 #: ../src/charts_itunes.py:57
 msgid "country"
-msgstr ""
+msgstr "кантри"
 
 #. Translators: Only translate this music genre
 #. if it makes sense for you
 #: ../src/charts_itunes.py:61
 msgid "dance"
-msgstr ""
+msgstr "танцевальная"
 
 #. Translators: Only translate this music genre
 #. if it makes sense for you
 #: ../src/charts_itunes.py:65
 msgid "electro"
-msgstr ""
+msgstr "электро"
 
 #. Translators: Only translate this music genre
 #. if it makes sense for you
 #: ../src/charts_itunes.py:69
 msgid "french"
-msgstr ""
+msgstr "французская"
 
 #. Translators: Only translate this music genre
 #. if it makes sense for you
 #: ../src/charts_itunes.py:73
 msgid "german"
-msgstr ""
+msgstr "немецкая"
 
 #. Translators: Only translate this music genre
 #. if it makes sense for you
 #: ../src/charts_itunes.py:77
 msgid "rap"
-msgstr ""
+msgstr "рэп"
 
 #. Translators: Only translate this music genre
 #. if it makes sense for you
 #: ../src/charts_itunes.py:81
 msgid "hip hop"
-msgstr ""
+msgstr "хип-хоп"
 
 #. Translators: Only translate this music genre
 #. if it makes sense for you
 #: ../src/charts_itunes.py:85
 msgid "jazz"
-msgstr ""
+msgstr "джаз"
 
 #. Translators: Only translate this music genre
 #. if it makes sense for you
 #: ../src/charts_itunes.py:89
 msgid "latin"
-msgstr ""
+msgstr "латиноамериканская"
 
 #. Translators: Only translate this music genre
 #. if it makes sense for you
 #: ../src/charts_itunes.py:93
 msgid "new age"
-msgstr ""
+msgstr "нью-эйдж"
 
 #. Translators: Only translate this music genre
 #. if it makes sense for you
 #: ../src/charts_itunes.py:97
 msgid "opera"
-msgstr ""
+msgstr "опера"
 
 #. Translators: Only translate this music genre
 #. if it makes sense for you
 #: ../src/charts_itunes.py:101
 msgid "pop"
-msgstr ""
+msgstr "поп"
 
 #. Translators: Only translate this music genre
 #. if it makes sense for you
 #: ../src/charts_itunes.py:105
 msgid "soul"
-msgstr ""
+msgstr "соул"
 
 #. Translators: Only translate this music genre
 #. if it makes sense for you
 #: ../src/charts_itunes.py:110
 msgid "reggae"
-msgstr ""
+msgstr "регги"
 
 #. Translators: Only translate this music genre
 #. if it makes sense for you
 #: ../src/charts_itunes.py:114
 msgid "rock"
-msgstr ""
+msgstr "рок"
 
 #. Translators: Only translate this music genre
 #. if it makes sense for you
 #: ../src/charts_itunes.py:118
 msgid "soundtrack"
-msgstr ""
+msgstr "саундтрек"
 
 #. Translators: Only translate this music genre
 #. if it makes sense for you
 #: ../src/charts_itunes.py:122
 msgid "world"
-msgstr ""
+msgstr "мировая"
 
 #: ../src/collectionscanner.py:68
 msgid "Your music is updating"
@@ -479,7 +488,7 @@ msgstr "Ваша музыка обновляется"
 
 #: ../src/collectionscanner.py:157
 msgid "Lollypop is detecting an empty folder."
-msgstr ""
+msgstr "Lollypop обнаружил пустую папку."
 
 #: ../src/collectionscanner.py:158
 msgid "Check your music settings."
@@ -487,64 +496,30 @@ msgstr "Проверьте ваши музыкальные настройки."
 
 #: ../src/collectionscanner.py:255 ../src/database_albums.py:329
 #: ../src/database_artists.py:104 ../src/database_genres.py:69
-#: ../src/database_tracks.py:247 ../src/selectionlist.py:343
+#: ../src/database_tracks.py:247 ../src/selectionlist.py:381
 #: ../src/tagreader.py:88 ../src/tagreader.py:103 ../src/tagreader.py:118
 #: ../src/tagreader.py:163 ../src/tagreader.py:178 ../src/tagreader.py:181
 #: ../src/tagreader.py:191 ../src/tagreader.py:198
 msgid "Unknown"
 msgstr "Неизвестный"
 
-#: ../src/container.py:448
-msgid "Popular albums"
-msgstr "Популярные альбомы"
-
-#: ../src/container.py:449
-msgid "Recently added albums"
-msgstr "Недавно добавленные альбомы"
-
-#: ../src/container.py:450
-msgid "Random albums"
-msgstr "Случайные альбомы"
-
-#: ../src/container.py:451 ../src/pop_menu.py:361 ../src/pop_menu.py:486
-#: ../src/pop_menu.py:506 ../src/widgets_device.py:117
-#: ../src/widgets_playlist.py:530
-msgid "Playlists"
-msgstr "Плейлисты"
-
-#: ../src/container.py:452
-msgid "Radios"
-msgstr "Радиостанции"
-
-#: ../src/container.py:454
-msgid "The charts"
-msgstr ""
-
-#: ../src/container.py:456
-msgid "All artists"
-msgstr "Все исполнители"
-
-#: ../src/container.py:458
-msgid "All albums"
-msgstr "Все альбомы"
-
-#: ../src/container.py:506
+#: ../src/container.py:488
 msgid "Compilations"
 msgstr "Подборки"
 
-#: ../src/container.py:530 ../src/playlists.py:223
+#: ../src/container.py:512 ../src/playlists.py:223
 msgid "Popular tracks"
 msgstr "Популярные треки"
 
-#: ../src/container.py:531 ../src/playlists.py:225
+#: ../src/container.py:513 ../src/playlists.py:225
 msgid "Recently played"
 msgstr "Недавно прослушанные"
 
-#: ../src/container.py:532 ../src/playlists.py:227
+#: ../src/container.py:514 ../src/playlists.py:227
 msgid "Never played"
 msgstr "Ни разу не проигрывались"
 
-#: ../src/container.py:533 ../src/playlists.py:229
+#: ../src/container.py:515 ../src/playlists.py:229
 msgid "Random tracks"
 msgstr "Случайные треки"
 
@@ -590,7 +565,7 @@ msgstr "от %s, из %s"
 
 #: ../src/player.py:121 ../src/player_queue.py:43 ../src/player_queue.py:66
 msgid "No network available, can't play this track"
-msgstr ""
+msgstr "Нет соединения с сетью, трек невозможно воспроизвести"
 
 #: ../src/playlists.py:54
 msgid "Loved tracks"
@@ -619,7 +594,7 @@ msgstr "Поддержка WebKit отключена"
 
 #: ../src/pop_menu.py:73
 msgid "Show albums from artist"
-msgstr ""
+msgstr "Показать альбомы исполнителя"
 
 #: ../src/pop_menu.py:141 ../src/widgets_indicator.py:111
 #: ../data/InternalSearchRow.ui.h:2
@@ -652,48 +627,56 @@ msgstr "Удалить из \"%s\""
 msgid "Add to \"%s\""
 msgstr "Добавить к \"%s\" "
 
-#: ../src/pop_menu.py:359
+#: ../src/pop_menu.py:361
 msgid "Playback"
 msgstr "Проигрывание"
 
-#: ../src/pop_menu.py:412
+#: ../src/pop_menu.py:363 ../src/pop_menu.py:488 ../src/pop_menu.py:508
+#: ../src/selectionlist.py:302 ../src/widgets_device.py:117
+#: ../src/widgets_playlist.py:530
+msgid "Playlists"
+msgstr "Плейлисты"
+
+#: ../src/pop_menu.py:414
 msgid "Remove album"
 msgstr "Удалить альбом"
 
-#: ../src/pop_menu.py:422
+#: ../src/pop_menu.py:424
 msgid "Modify information"
 msgstr "Изменить информацию"
 
-#: ../src/pop_menu.py:480 ../data/SettingsDialog.ui.h:10
+#: ../src/pop_menu.py:482 ../data/SettingsDialog.ui.h:10
 msgid "Artist"
 msgstr "по исполнителю"
 
-#: ../src/pop_menu.py:489 ../data/PlaylistView.ui.h:1
+#: ../src/pop_menu.py:491 ../data/PlaylistView.ui.h:1
 msgid "Edit"
 msgstr "Редактировать"
 
-#: ../src/pop_menu.py:536
+#: ../src/pop_menu.py:538
 msgid "Youtube video address"
-msgstr ""
+msgstr "Адрес видео на Youtube"
 
-#: ../src/pop_menu.py:659
+#: ../src/pop_menu.py:661
 msgid "Save genre"
 msgstr "Сохранить жанр"
 
-#: ../src/pop_menu.py:680 ../data/ExternalSearchRow.ui.h:1
+#: ../src/pop_menu.py:682 ../data/ExternalSearchRow.ui.h:1
 msgid "Save into collection"
 msgstr "Сохранить в коллекции"
 
-#: ../src/pop_radio.py:83 ../src/pop_tunein.py:222 ../src/view_artist.py:315
-#: ../data/ArtistView.ui.h:3
+#. Translators: radio context
+#. Translators: artist context
+#: ../src/pop_radio.py:84 ../src/pop_tunein.py:223 ../src/view_artist.py:317
 msgid "Add"
 msgstr "Добавить"
 
-#: ../src/pop_radio.py:85 ../src/wikipedia.py:58
+#. Translators: radio context
+#: ../src/pop_radio.py:87 ../src/wikipedia.py:58
 msgid "Modify"
 msgstr "Изменить"
 
-#: ../src/pop_search.py:289
+#: ../src/pop_search.py:288
 msgid "You need to install youtube-dl"
 msgstr "Вам нужно установить youtube-dl"
 
@@ -704,6 +687,34 @@ msgstr "Пожалуйста, подождите…"
 #: ../src/pop_tunein.py:180
 msgid "Can't connect to TuneIn..."
 msgstr "Не удается подключиться к TuneIn…"
+
+#: ../src/selectionlist.py:299
+msgid "Popular albums"
+msgstr "Популярные альбомы"
+
+#: ../src/selectionlist.py:300
+msgid "Recently added albums"
+msgstr "Недавно добавленные альбомы"
+
+#: ../src/selectionlist.py:301
+msgid "Random albums"
+msgstr "Случайные альбомы"
+
+#: ../src/selectionlist.py:303
+msgid "Radios"
+msgstr "Радиостанции"
+
+#: ../src/selectionlist.py:305
+msgid "The charts"
+msgstr "Чарты"
+
+#: ../src/selectionlist.py:307
+msgid "All albums"
+msgstr "Все альбомы"
+
+#: ../src/selectionlist.py:309
+msgid "All artists"
+msgstr "Все исполнители"
 
 #: ../src/settings.py:94
 #, python-format
@@ -736,7 +747,7 @@ msgstr[3] "%d треков"
 msgid "Preferences"
 msgstr "Настройки"
 
-#: ../src/settings.py:137
+#: ../src/settings.py:141
 msgid "You need to install kid3-cli"
 msgstr "Вам нужно установить kid3-cli"
 
@@ -758,11 +769,13 @@ msgstr "Воспроизведение плейлистов"
 
 #. Handle language ordering
 #. Translators: Add here words that shoud be ignored for artist sort order
-#: ../src/utils.py:122
+#. Translators: Add The the too
+#: ../src/utils.py:125
 msgid "The the"
 msgstr "The the"
 
-#: ../src/view_artist.py:310 ../src/widgets_album.py:359
+#. Translators: artist context
+#: ../src/view_artist.py:311 ../src/widgets_album.py:359
 msgid "Remove"
 msgstr "Удалить"
 
@@ -812,7 +825,7 @@ msgstr "%s ч"
 msgid "%s m"
 msgstr "%s мин"
 
-#: ../src/widgets_album.py:980
+#: ../src/widgets_album.py:982
 #, python-format
 msgid "Disc %s"
 msgstr "Диск %s"
@@ -955,6 +968,11 @@ msgstr "Обновить информацию\nДлительное нажати
 msgid "Photo"
 msgstr "Фото"
 
+#: ../data/ArtistView.ui.h:3
+msgctxt "artist context"
+msgid "Add"
+msgstr "Добавить"
+
 #: ../data/ArtworkSearch.ui.h:1 ../data/RadioPopover.ui.h:2
 msgid "Select a local file"
 msgstr "Выбрать локальный файл"
@@ -969,7 +987,7 @@ msgid ""
 "Lollypop uses \"Google Custom Search API\" to search images on the web.\n"
 "This API is limited so it mays not work with default API key.\n"
 "Please create a \"Custom Search Engine\" here:"
-msgstr ""
+msgstr "Lollypop использует «Google Custom Search API» для поиска изображений в сети.\nЭтот API ограничен и может не работать с API ключом по умолчанию.\nПожалуйста, создайте «Custom Search Engine» здесь:"
 
 #: ../data/ArtworkSearch.ui.h:6 ../data/SettingsDialog.ui.h:37
 msgid "API key"
@@ -977,7 +995,7 @@ msgstr "API ключ"
 
 #: ../data/DeviceManagerView.ui.h:1
 msgid "Synchronize your device with these playlists"
-msgstr ""
+msgstr "Синхронизируйте ваше устройство с этими плейлистами"
 
 #: ../data/DeviceManagerWidget.ui.h:2
 msgid "Convert to MP3"
@@ -993,7 +1011,7 @@ msgstr "Новый плейлист"
 
 #: ../data/PlaylistView.ui.h:2
 msgid "Unsplit view"
-msgstr ""
+msgstr "Неразделённый вид"
 
 #: ../data/QueuePopover.ui.h:1
 msgid "Clear queue"
@@ -1105,7 +1123,7 @@ msgstr "Предварительное прослушивание треков"
 
 #: ../data/SettingsDialog.ui.h:24
 msgid "No audio device"
-msgstr ""
+msgstr "Нет аудиоустройства"
 
 #: ../data/SettingsDialog.ui.h:25
 msgid "Configure lollypop behaviour"
@@ -1148,13 +1166,13 @@ msgid ""
 "Google Web Services need a custom API key.\n"
 "Without one, you will reach default quota soon...\n"
 "Lollypop needs this to search artwork and music."
-msgstr ""
+msgstr "Google Web Services нужен API ключ.\nБез него, вы скоро достигните лимита…\nLollypop он нужен для поиска изображений и музыки."
 
 #: ../data/SettingsDialog.ui.h:38
 msgid ""
 "You need to enable \"Custom Search API\" \n"
 "and \"Youtube Data API\" for your project."
-msgstr ""
+msgstr "Вам нужно включить «Custom Search API»\nи «Youtube Data API» для вашего проекта."
 
 #: ../data/SettingsDialog.ui.h:40
 msgid "Configure Last.fm credentials"
