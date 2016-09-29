@@ -135,8 +135,8 @@ class SelectionList(Gtk.Bin):
         self.connect('motion_notify_event', self.__on_motion_notify)
         self.__scrolled.get_vadjustment().connect('value_changed',
                                                   self.__on_scroll)
-        self.connect('enter-notify-event', self.__on_enter_notify)
-        self.connect('leave-notify-event', self.__on_leave_notify)
+        self.__scrolled.connect('enter-notify-event', self.__on_enter_notify)
+        self.__scrolled.connect('leave-notify-event', self.__on_leave_notify)
 
         Lp().art.connect('artist-artwork-changed',
                          self.__on_artist_artwork_changed)
