@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-10-01 22:38+0200\n"
+"POT-Creation-Date: 2016-10-01 22:40+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -79,7 +79,7 @@ msgid "When empty, use XDG_MUSIC_DIR"
 msgstr ""
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:16
-msgid "Use librefm instead of lastfm"
+msgid "Use Librefm instead of Lastfm"
 msgstr ""
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:17
@@ -1154,7 +1154,7 @@ msgid "You need to install pylast and gi secret"
 msgstr ""
 
 #: ../data/SettingsDialog.ui.h:34
-msgid "Use librefm"
+msgid "Use Librefm"
 msgstr ""
 
 #: ../data/SettingsDialog.ui.h:35

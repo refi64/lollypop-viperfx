@@ -68,7 +68,7 @@
         </key>
         <key type="b" name="use-librefm">
             <default>false</default>
-            <summary>Use librefm instead of lastfm</summary>
+            <summary>Use Librefm instead of Lastfm</summary>
             <description></description>
         </key>
         <key type="s" name="lastfm-login">
