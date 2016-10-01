@@ -26,6 +26,7 @@ from re import findall, DOTALL
 from lollypop.define import Lp, SecretSchema, SecretAttributes
 from lollypop.cache import InfoCache
 from lollypop.database import Database
+from lollypop.lastfm import LastFM
 from lollypop.database_history import History
 
 
@@ -80,8 +81,8 @@ class SettingsDialog:
 
         builder = Gtk.Builder()
         builder.add_from_resource('/org/gnome/Lollypop/SettingsDialog.ui')
-        if Lp().lastfm and not Lp().lastfm.is_goa:
-            builder.get_object('lastfm_grid').show()
+        if Lp().lastfm is None or Lp().lastfm.is_goa:
+            builder.get_object('lastfm_grid').hide()
         if Lp().scanner.is_locked():
             builder.get_object('button').set_sensitive(False)
         builder.get_object('button').connect('clicked',
@@ -129,6 +130,9 @@ class SettingsDialog:
 
         switch_mix_party = builder.get_object('switch_mix_party')
         switch_mix_party.set_state(Lp().settings.get_value('party-mix'))
+
+        switch_librefm = builder.get_object('switch_librefm')
+        switch_librefm.set_state(Lp().settings.get_value('use-librefm'))
 
         switch_artwork_tags = builder.get_object('switch_artwork_tags')
         if which("kid3-cli") is None:
@@ -318,6 +322,15 @@ class SettingsDialog:
         """
         Lp().settings.set_value('party-mix', GLib.Variant('b', state))
         Lp().player.update_crossfading()
+
+    def _update_librefm_setting(self, widget, state):
+        """
+            Update librefm setting
+            @param widget as Gtk.Range
+        """
+        Lp().settings.set_value('use-librefm', GLib.Variant('b', state))
+        # Reset lastfm object
+        Lp().lastfm = LastFM()
 
     def _update_mix_duration_setting(self, widget):
         """
@@ -601,13 +614,11 @@ class SettingsDialog:
             Test lastfm connection
             @thread safe
         """
-        try:
-            u = Lp().lastfm.get_authenticated_user()
-            u.get_id()
+        if Lp().lastfm.session_key:
             GLib.idle_add(self.__test_img.set_from_icon_name,
                           'object-select-symbolic',
                           Gtk.IconSize.MENU)
-        except:
+        else:
             GLib.idle_add(self.__test_img.set_from_icon_name,
                           'computer-fail-symbolic',
                           Gtk.IconSize.MENU)

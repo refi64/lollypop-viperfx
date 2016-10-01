@@ -66,6 +66,11 @@
             <summary>Music paths</summary>
             <description>When empty, use XDG_MUSIC_DIR</description>
         </key>
+        <key type="b" name="use-librefm">
+            <default>false</default>
+            <summary>Use librefm instead of lastfm</summary>
+            <description></description>
+        </key>
         <key type="s" name="lastfm-login">
             <default>""</default>
             <summary>Last.fm login</summary>

@@ -29,7 +29,8 @@ try:
 except:
     pass
 
-from pylast import LastFMNetwork, md5, BadAuthenticationError
+from pylast import LastFMNetwork, LibreFMNetwork, md5, BadAuthenticationError
+from pylast import SessionKeyGenerator
 from gettext import gettext as _
 from locale import getdefaultlocale
 from threading import Thread
@@ -40,8 +41,9 @@ from lollypop.objects import Track
 from lollypop.utils import debug
 
 
-class LastFM(LastFMNetwork):
+class LastFM(LastFMNetwork, LibreFMNetwork):
     """
+       Lastfm:
        We recommend you don't distribute the API key and secret with your app,
        and that you ask users who want to build it to apply for a key of
        their own. We don't believe that this would violate the terms of most
@@ -64,15 +66,18 @@ class LastFM(LastFMNetwork):
         self.__password = None
         self.__check_for_proxy()
         self.__goa = self.__get_goa_oauth()
-        if self.__goa is not None:
-            self.__API_KEY = self.__goa.props.client_id
-            self.__API_SECRET = self.__goa.props.client_secret
+        if self.__goa is None and Lp().settings.get_value('use-librefm'):
+            LibreFMNetwork.__init__(self)
         else:
-            self.__API_KEY = '7a9619a850ccf7377c46cf233c51e3c6'
-            self.__API_SECRET = '9254319364d73bec6c59ace485a95c98'
-        LastFMNetwork.__init__(self,
-                               api_key=self.__API_KEY,
-                               api_secret=self.__API_SECRET)
+            if self.__goa is not None:
+                self.__API_KEY = self.__goa.props.client_id
+                self.__API_SECRET = self.__goa.props.client_secret
+            else:
+                self.__API_KEY = '7a9619a850ccf7377c46cf233c51e3c6'
+                self.__API_SECRET = '9254319364d73bec6c59ace485a95c98'
+            LastFMNetwork.__init__(self,
+                                   api_key=self.__API_KEY,
+                                   api_secret=self.__API_SECRET)
         self.connect(None)
 
     def connect(self, password):
@@ -80,7 +85,7 @@ class LastFM(LastFMNetwork):
             Connect lastfm
             @param password as str/None
         """
-        if self.__goa:
+        if self.__goa is not None:
             t = Thread(target=self.__connect, args=('', '', True))
             t.daemon = True
             t.start()
@@ -258,20 +263,16 @@ class LastFM(LastFMNetwork):
         else:
             self.__is_auth = False
         try:
+            self.session_key = ""
             self.__check_for_proxy()
-            if self.__goa is None:
-                LastFMNetwork.__init__(
-                    self,
-                    api_key=self.__API_KEY,
-                    api_secret=self.__API_SECRET,
-                    username=self.__username,
-                    password_hash=md5(password))
+            if self.__goa is not None:
+                self.session_key = self.__goa.call_get_access_token_sync(
+                                                                      None)[0]
             else:
-                LastFMNetwork.__init__(
-                    self,
-                    api_key=self.__API_KEY,
-                    api_secret=self.__API_SECRET,
-                    session_key=self.__goa.call_get_access_token_sync(None)[0])
+                skg = SessionKeyGenerator(self)
+                self.session_key = skg.get_session_key(
+                                                  username=self.__username,
+                                                  password_hash=md5(password))
             if populate_loved:
                 self.__populate_loved_tracks()
         except Exception as e:
@@ -296,11 +297,10 @@ class LastFM(LastFMNetwork):
                                                             timestamp,
                                                             duration))
         try:
-            LastFMNetwork.scrobble(self,
-                                   artist=artist,
-                                   album=album,
-                                   title=title,
-                                   timestamp=timestamp)
+            self.scrobble(artist=artist,
+                          album=album,
+                          title=title,
+                          timestamp=timestamp)
         except BadAuthenticationError as e:
             pass
         except Exception as e:
@@ -320,11 +320,10 @@ class LastFM(LastFMNetwork):
             @thread safe
         """
         try:
-            LastFMNetwork.update_now_playing(self,
-                                             artist=artist,
-                                             album=album,
-                                             title=title,
-                                             duration=duration)
+            self.update_now_playing(artist=artist,
+                                    album=album,
+                                    title=title,
+                                    duration=duration)
             debug("LastFM::__now_playing(): %s, %s, %s, %s" % (artist,
                                                                album,
                                                                title,

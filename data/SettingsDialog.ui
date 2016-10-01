@@ -692,6 +692,7 @@
             <property name="tab_pos">left</property>
             <child>
               <object class="GtkGrid" id="lastfm_grid">
+                <property name="visible">True</property>
                 <property name="sensitive">False</property>
                 <property name="can_focus">False</property>
                 <property name="halign">center</property>
@@ -761,7 +762,7 @@
                   </object>
                   <packing>
                     <property name="left_attach">1</property>
-                    <property name="top_attach">3</property>
+                    <property name="top_attach">4</property>
                   </packing>
                 </child>
                 <child>
@@ -772,7 +773,7 @@
                   </object>
                   <packing>
                     <property name="left_attach">2</property>
-                    <property name="top_attach">3</property>
+                    <property name="top_attach">4</property>
                   </packing>
                 </child>
                 <child>
@@ -786,6 +787,33 @@
                     <property name="top_attach">0</property>
                     <property name="width">3</property>
                   </packing>
+                </child>
+                <child>
+                  <object class="GtkLabel">
+                    <property name="visible">True</property>
+                    <property name="can_focus">False</property>
+                    <property name="halign">start</property>
+                    <property name="label" translatable="yes">Use librefm</property>
+                  </object>
+                  <packing>
+                    <property name="left_attach">0</property>
+                    <property name="top_attach">3</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkSwitch" id="switch_librefm">
+                    <property name="visible">True</property>
+                    <property name="can_focus">True</property>
+                    <property name="halign">start</property>
+                    <signal name="state-set" handler="_update_librefm_setting" swapped="no"/>
+                  </object>
+                  <packing>
+                    <property name="left_attach">1</property>
+                    <property name="top_attach">3</property>
+                  </packing>
+                </child>
+                <child>
+                  <placeholder/>
                 </child>
                 <child>
                   <placeholder/>
