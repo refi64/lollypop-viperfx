@@ -32,7 +32,7 @@ class ShufflePlayer(BasePlayer):
         self.reset_history()
         # Party mode
         self.__is_party = False
-        Lp().settings.connect('changed::shuffle', self.___set_shuffle)
+        Lp().settings.connect('changed::shuffle', self.__set_shuffle)
 
     def reset_history(self):
         """
@@ -47,8 +47,8 @@ class ShufflePlayer(BasePlayer):
         # Tracks already played for albums
         self.__already_played_tracks = {}
         # Reset user playlist
-        self.__user_playlist = []
-        self.__user_playlist_ids = []
+        self._user_playlist = []
+        self._user_playlist_ids = []
 
     def next(self):
         """
@@ -214,7 +214,7 @@ class ShufflePlayer(BasePlayer):
 #######################
 # PRIVATE             #
 #######################
-    def ___set_shuffle(self, settings, value):
+    def __set_shuffle(self, settings, value):
         """
             Set shuffle mode to gettings value
             @param settings as Gio.Settings, value as str
@@ -223,14 +223,14 @@ class ShufflePlayer(BasePlayer):
 
         if self._plugins1.rgvolume is not None and\
            self._plugins2.rgvolume is not None:
-            if self._shuffle == Shuffle.TRACKS or self.__user_playlist:
+            if self._shuffle == Shuffle.TRACKS or self._user_playlist:
                 self._plugins1.rgvolume.props.album_mode = 0
                 self._plugins2.rgvolume.props.album_mode = 0
             else:
                 self._plugins1.rgvolume.props.album_mode = 1
                 self._plugins2.rgvolume.props.album_mode = 1
 
-        if self.__user_playlist:
+        if self._user_playlist:
             self._shuffle_playlist()
         elif self._shuffle == Shuffle.NONE:
             self.shuffle_albums(False)

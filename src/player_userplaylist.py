@@ -27,8 +27,6 @@ class UserPlaylistPlayer(BasePlayer):
             Init user playlist
         """
         BasePlayer.__init__(self)
-        self.__user_playlist_ids = []
-        self.__user_playlist = []
         self.__user_playlist_backup = []
 
     def get_user_playlist_ids(self):
@@ -36,7 +34,7 @@ class UserPlaylistPlayer(BasePlayer):
             Get playlist id
             @return id as int
         """
-        return self.__user_playlist_ids
+        return self._user_playlist_ids
 
     def populate_user_playlist_by_tracks(self, track_ids, playlist_ids):
         """
@@ -48,11 +46,11 @@ class UserPlaylistPlayer(BasePlayer):
             self._context.next = NextContext.STOP_ALL
         if Lp().player.is_party:
             Lp().player.set_party(False)
-        self.__user_playlist = []
+        self._user_playlist = []
         for track_id in track_ids:
-            self.__user_playlist.append(track_id)
+            self._user_playlist.append(track_id)
         self._albums = []
-        self.__user_playlist_ids = playlist_ids
+        self._user_playlist_ids = playlist_ids
         self.__user_playlist_backup = []
         self._shuffle_playlist()
 
@@ -63,7 +61,7 @@ class UserPlaylistPlayer(BasePlayer):
         """
         if self._albums:
             return
-        self.__user_playlist = track_ids
+        self._user_playlist = track_ids
         self.__user_playlist_backup = []
         self._shuffle_playlist()
 
@@ -75,7 +73,7 @@ class UserPlaylistPlayer(BasePlayer):
         if self.__user_playlist_backup:
             return self.__user_playlist_backup
         else:
-            return self.__user_playlist
+            return self._user_playlist
 
     def next(self, force):
         """
@@ -88,15 +86,15 @@ class UserPlaylistPlayer(BasePlayer):
             current_track = self._next_track
         else:
             current_track = self._current_track
-        if self.__user_playlist and\
-           current_track.id in self.__user_playlist:
-            idx = self.__user_playlist.index(current_track.id)
-            if idx + 1 >= len(self.__user_playlist):
+        if self._user_playlist and\
+           current_track.id in self._user_playlist:
+            idx = self._user_playlist.index(current_track.id)
+            if idx + 1 >= len(self._user_playlist):
                 self._finished = NextContext.STOP_ALL
                 idx = 0
             else:
                 idx += 1
-            track = Track(self.__user_playlist[idx])
+            track = Track(self._user_playlist[idx])
         return track
 
     def prev(self):
@@ -105,14 +103,14 @@ class UserPlaylistPlayer(BasePlayer):
             @return Track
         """
         track = Track()
-        if self.__user_playlist and\
-           self._current_track.id in self.__user_playlist:
-            idx = self.__user_playlist.index(self._current_track.id)
+        if self._user_playlist and\
+           self._current_track.id in self._user_playlist:
+            idx = self._user_playlist.index(self._current_track.id)
             if idx - 1 < 0:
-                idx = len(self.__user_playlist) - 1
+                idx = len(self._user_playlist) - 1
             else:
                 idx -= 1
-            track = Track(self.__user_playlist[idx])
+            track = Track(self._user_playlist[idx])
         return track
 
 #######################
@@ -124,13 +122,13 @@ class UserPlaylistPlayer(BasePlayer):
         """
         if self._shuffle == Shuffle.TRACKS:
             # Shuffle user playlist
-            if self.__user_playlist:
-                self.__user_playlist_backup = list(self.__user_playlist)
-                random.shuffle(self.__user_playlist)
+            if self._user_playlist:
+                self.__user_playlist_backup = list(self._user_playlist)
+                random.shuffle(self._user_playlist)
         # Unshuffle
         else:
             if self.__user_playlist_backup:
-                self.__user_playlist = self.__user_playlist_backup
+                self._user_playlist = self.__user_playlist_backup
                 self.__user_playlist_backup = []
         self.set_next()
         self.set_prev()
