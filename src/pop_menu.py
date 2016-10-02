@@ -446,7 +446,6 @@ class EditMenu(BaseMenu):
             artist_ids = Lp().tracks.get_artist_ids(track.id)
             Lp().tracks.remove(track.id)
             Lp().tracks.clean(track.id)
-            Lp().window.reload_view()
         artist_ids += album.artist_ids
         genre_ids = Lp().albums.get_genre_ids(album.id)
         Lp().albums.clean(album.id)
