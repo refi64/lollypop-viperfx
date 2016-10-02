@@ -173,8 +173,11 @@ class Youtube:
         """
         if self.__fallback:
             return self.__get_youtube_id_fallback(item)
-        search = "%s %s" % (item.artists[0],
-                            item.name)
+        search = GLib.uri_escape_string(
+                            "%s %s" % (item.artists[0],
+                                       item.name),
+                            None,
+                            True)
         key = Lp().settings.get_value('cs-api-key').get_string()
         try:
             # if item.duration >= 1200:
@@ -207,8 +210,11 @@ class Youtube:
             @param item as SearchItem
         """
         try:
-            search = "%s %s" % (item.artists[0],
-                                item.name)
+            search = GLib.uri_escape_string(
+                            "%s %s" % (item.artists[0],
+                                       item.name),
+                            None,
+                            True)
             f = Gio.File.new_for_uri("https://www.youtube.com/"
                                      "results?search_query=%s" % search)
             (status, data, tag) = f.load_contents(None)
