@@ -541,18 +541,6 @@ class TrackMenuPopover(Gtk.Popover):
         else:
             track_year = ""
 
-        if track.album.is_youtube:
-            uri = Lp().tracks.get_uri(track.id)
-            edit = Gtk.Entry()
-            edit.set_margin_start(5)
-            edit.set_margin_end(5)
-            edit.set_margin_bottom(5)
-            edit.set_tooltip_text(_("Youtube video address"))
-            edit.set_property('hexpand', True)
-            edit.set_text(uri)
-            edit.connect('changed', self.__on_edit_changed, track.id)
-            edit.show()
-
         rating = RatingWidget(track)
         rating.set_margin_top(5)
         rating.set_margin_bottom(5)
@@ -592,6 +580,16 @@ class TrackMenuPopover(Gtk.Popover):
             youtube.set_margin_end(5)
             youtube.set_tooltip_text(uri)
             youtube.show_all()
+            uri = "https://www.youtube.com/results?search_query=%s" %\
+                (track.artists[0] + " " + track.name,)
+            search = Gtk.LinkButton(uri)
+            icon = Gtk.Image.new_from_icon_name('edit-find-symbolic',
+                                                Gtk.IconSize.MENU)
+            search.set_image(icon)
+            search.get_style_context().add_class('no-padding')
+            search.set_margin_end(5)
+            search.set_tooltip_text(uri)
+            search.show_all()
 
         # Hack to add two widgets in popover
         # Use a Gtk.PopoverMenu later (GTK>3.16 available on Debian stable)
@@ -616,11 +614,22 @@ class TrackMenuPopover(Gtk.Popover):
         hgrid.add(loved)
         if track.album.is_youtube:
             hgrid.add(youtube)
+            hgrid.add(search)
         if track_year != "":
             hgrid.add(year)
         hgrid.show()
         if track.album.is_youtube:
             grid.set_row_spacing(2)
+            uri = Lp().tracks.get_uri(track.id)
+            edit = Gtk.Entry()
+            edit.set_margin_start(5)
+            edit.set_margin_end(5)
+            edit.set_margin_bottom(5)
+            edit.set_tooltip_text(_("Youtube video address"))
+            edit.set_property('hexpand', True)
+            edit.set_text(uri)
+            edit.connect('changed', self.__on_edit_changed, track.id)
+            edit.show()
             grid.add(edit)
         grid.add(hgrid)
         self.add(stack)
