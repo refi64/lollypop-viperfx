@@ -681,18 +681,8 @@ class AlbumDetailedWidget(Gtk.Bin, AlbumWidget):
             artist_label.show()
             self._cover = None
 
-        label = builder.get_object('duration')
-        duration = Lp().albums.get_duration(album_id, genre_ids)
-        hours = int(duration / 3600)
-        mins = int(duration / 60)
-        if hours > 0:
-            mins -= hours * 60
-            if mins > 0:
-                label.set_text(_("%s h  %s m") % (hours, mins))
-            else:
-                label.set_text(_("%s h") % hours)
-        else:
-            label.set_text(_("%s m") % mins)
+        self.__duration_label = builder.get_object('duration')
+        self.__set_duration()
 
         self.__box = Gtk.Grid()
         self.__box.set_column_homogeneous(True)
@@ -852,12 +842,30 @@ class AlbumDetailedWidget(Gtk.Bin, AlbumWidget):
                     for child in widget.get_children():
                         child.destroy()
             self.__discs = self._album.discs
+            self.__set_duration()
             self.populate()
         AlbumWidget._on_album_updated(self, scanner, album_id, destroy)
 
 #######################
 # PRIVATE             #
 #######################
+    def __set_duration(self):
+        """
+            Set album duration
+        """
+        duration = Lp().albums.get_duration(self._album.id,
+                                            self._album.genre_ids)
+        hours = int(duration / 3600)
+        mins = int(duration / 60)
+        if hours > 0:
+            mins -= hours * 60
+            if mins > 0:
+                self.__duration_label.set_text(_("%s h  %s m") % (hours, mins))
+            else:
+                self.__duration_label.set_text(_("%s h") % hours)
+        else:
+            self.__duration_label.set_text(_("%s m") % mins)
+
     def __set_disc_height(self, disc):
         """
             Set disc widget height
