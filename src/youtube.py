@@ -163,7 +163,7 @@ class Youtube:
                               genre_id, True)
             for artist_id in new_artist_ids:
                 GLib.idle_add(Lp().scanner.emit, 'artist-updated',
-                              artist_id, album_id, True)
+                              artist_id, True)
         return (album_id, track_id)
 
     def __get_youtube_id(self, item):
