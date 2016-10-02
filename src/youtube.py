@@ -175,9 +175,10 @@ class Youtube:
         """
         if self.__fallback:
             return self.__get_youtube_id_fallback(item)
+        unescaped = "%s %s" % (item.artists[0],
+                               item.name)
         search = GLib.uri_escape_string(
-                            "%s %s" % (item.artists[0],
-                                       item.name),
+                            unescaped.replace(' ', '+'),
                             None,
                             True)
         key = Lp().settings.get_value('cs-api-key').get_string()
