@@ -361,29 +361,22 @@ class Container:
             else:
                 self.__list_one.remove_value(genre_id)
 
-    def __on_artist_updated(self, scanner, artist_id, album_id, add):
+    def __on_artist_updated(self, scanner, artist_id, add):
         """
             Add artist to artist list
             @param scanner as CollectionScanner
             @param artist id as int
-            @param album id as int
             @param add as bool
         """
         artist_name = Lp().artists.get_name(artist_id)
         if self.__show_genres:
-            genre_ids = Lp().albums.get_genre_ids(album_id)
-            genre_ids.append(Type.ALL)
-            for i in self.__list_one.get_selected_ids():
-                if i in genre_ids:
-                    if add:
-                        self.__list_two.add_value((artist_id, artist_name))
-                    else:
-                        self.__list_two.remove_value(artist_id)
+            l = self.__list_two
         else:
-            if add:
-                self.__list_one.add_value((artist_id, artist_name))
-            else:
-                self.__list_one.remove_value(artist_id)
+            l = self.__list_one
+        if add:
+            l.add_value((artist_id, artist_name))
+        else:
+            l.remove_value(artist_id)
 
     def __setup_scanner(self):
         """

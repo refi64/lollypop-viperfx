@@ -31,9 +31,7 @@ class CollectionScanner(GObject.GObject, TagReader):
     """
     __gsignals__ = {
         'scan-finished': (GObject.SignalFlags.RUN_FIRST, None, ()),
-        'artist-updated': (GObject.SignalFlags.RUN_FIRST, None, (int,
-                                                                 int,
-                                                                 bool)),
+        'artist-updated': (GObject.SignalFlags.RUN_FIRST, None, (int, bool)),
         'genre-updated': (GObject.SignalFlags.RUN_FIRST, None, (int, bool)),
         'album-updated': (GObject.SignalFlags.RUN_FIRST, None, (int, bool))
     }
@@ -296,8 +294,7 @@ class CollectionScanner(GObject.GObject, TagReader):
             for genre_id in new_genre_ids:
                 GLib.idle_add(self.emit, 'genre-updated', genre_id, True)
             for artist_id in new_artist_ids:
-                GLib.idle_add(self.emit, 'artist-updated',
-                              artist_id, album_id, True)
+                GLib.idle_add(self.emit, 'artist-updated', artist_id, True)
         return track_id
 
     def __del_from_db(self, uri):
@@ -329,8 +326,7 @@ class CollectionScanner(GObject.GObject, TagReader):
         for artist_id in album_artist_ids + artist_ids:
             ret = Lp().artists.clean(artist_id)
             if ret:
-                GLib.idle_add(self.emit, 'artist-updated',
-                              artist_id, album_id, False)
+                GLib.idle_add(self.emit, 'artist-updated', artist_id, False)
         for genre_id in genre_ids:
             ret = Lp().genres.clean(genre_id)
             if ret:
