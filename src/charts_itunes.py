@@ -121,8 +121,8 @@ class ItunesCharts:
                 # if it makes sense for you
                 _("world"): 19
                 }
-    __ALL = "https://itunes.apple.com/%s/rss/topalbums/limit=20/xml"
-    __GENRE = "https://itunes.apple.com/%s/rss/topalbums/limit=20/genre=%s/xml"
+    __ALL = "https://itunes.apple.com/%s/rss/topalbums/limit=40/xml"
+    __GENRE = "https://itunes.apple.com/%s/rss/topalbums/limit=40/genre=%s/xml"
     __INFO = "https://itunes.apple.com/lookup?id=%s&entity=song&country=%s"
 
     def __init__(self):
@@ -158,7 +158,7 @@ class ItunesCharts:
             Calculate album count
             @return count as int
         """
-        count = len(self.__get_genre_ids()) * 20 + 20
+        count = len(self.__get_genre_ids()) * 40 + 40
         return count
 
     def __update(self):
