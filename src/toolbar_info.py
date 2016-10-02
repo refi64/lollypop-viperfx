@@ -178,17 +178,22 @@ class ToolbarInfo(Gtk.Bin, InfosController):
             popover.set_relative_to(self._infobox)
             popover.show()
 
-    def __on_loading_changed(self, player):
+    def __on_loading_changed(self, player, show):
         """
             Show spinner based on loading status
             @param player as player
+            @param show as bool
         """
-        self._title_label.hide()
-        self._artist_label.hide()
-        self._cover.hide()
-        self._spinner.show()
-        self._spinner.start()
-        self._infobox.show()
+        if show:
+            self._title_label.hide()
+            self._artist_label.hide()
+            self._cover.hide()
+            self._spinner.show()
+            self._spinner.start()
+            self._infobox.show()
+        else:
+            self._spinner.hide()
+            self._spinner.stop()
 
     def __on_realize(self, toolbar):
         """

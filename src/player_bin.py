@@ -272,19 +272,12 @@ class BinPlayer(BasePlayer):
             # Force widgets to update (spinners)
             self.emit('current-changed')
             return False
-        argv = ["youtube-dl", "-g", "-f", "bestaudio", track.uri, None]
         try:
             if play:
-                self.emit('loading-changed')
-            (s, pid, i, o, err) = GLib.spawn_async_with_pipes(
-                                       None, argv, None,
-                                       GLib.SpawnFlags.SEARCH_PATH |
-                                       GLib.SpawnFlags.DO_NOT_REAP_CHILD, None)
-            io = GLib.IOChannel(o)
-            io.add_watch(GLib.IO_IN | GLib.IO_HUP,
-                         self.__set_gv_uri,
-                         track, play,
-                         priority=GLib.PRIORITY_HIGH)
+                self.emit('loading-changed', True)
+            t = Thread(target=self.__youtube_dl_lookup, args=(track, play))
+            t.daemon = True
+            t.start()
             return True
         except Exception as e:
             self._current_track = Track()
@@ -611,23 +604,34 @@ class BinPlayer(BasePlayer):
             Lp().tracks.set_more_popular(finished.id)
             Lp().albums.set_more_popular(finished.album_id)
 
-    def __set_gv_uri(self, io, condition, track, play):
+    def __youtube_dl_lookup(self, track, play):
         """
-            Play uri for io
-            @param io as GLib.IOChannel
-            @param condition as Constant
+            Launch youtube-dl to get video url
             @param track as Track
             @param play as bool
         """
-        uris = io.readlines()
-        uri = None
-        for u in uris:
-            if u.startswith("http"):
-                uri = u
-        if uri is None:
-            print("youtube-dl failed to get video uri")
-            return
+        argv = ["youtube-dl", "-g", "-f", "bestaudio", track.uri, None]
+        (s, o, e, s) = GLib.spawn_sync(None,
+                                       argv,
+                                       None,
+                                       GLib.SpawnFlags.SEARCH_PATH,
+                                       None)
+        if o:
+            GLib.idle_add(self.__set_gv_uri, o.decode("utf-8"), track, play)
+        else:
+            if Lp().notify:
+                Lp().notify.send(e.decode("utf-8"))
+            print("BinPlayer::__youtube_dl_lookup:", e.decode("utf-8"))
+            if play:
+                GLib.idle_add(self.emit, 'loading-changed', False)
+
+    def __set_gv_uri(self, uri, track, play):
+        """
+            Play uri for io
+            @param uri as str
+            @param track as Track
+            @param play as bool
+        """
         track.set_uri(uri)
         if play:
             self.load(track)
-        return False
