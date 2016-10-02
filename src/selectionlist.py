@@ -175,9 +175,6 @@ class SelectionList(Gtk.Bin):
         for item in self.__model:
             if item[0] == object_id:
                 self.__model.remove(item.iter)
-                # We force selection of first item
-                self.__selection.unselect_all()
-                self.__selection.select_iter(self.__model[0].iter)
                 break
 
     def add_value(self, value):
