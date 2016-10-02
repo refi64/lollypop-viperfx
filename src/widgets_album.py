@@ -375,7 +375,7 @@ class AlbumWidget:
         """
         if self._cover is None or self._album.id != album_id:
             return
-        self._widget.set_sensitive(False)
+        self.destroy()
 
     def __on_enter_notify_timeout(self):
         """
