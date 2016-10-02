@@ -121,8 +121,10 @@ class ItunesCharts:
                 # if it makes sense for you
                 _("world"): 19
                 }
-    __ALL = "https://itunes.apple.com/%s/rss/topalbums/limit=40/xml"
-    __GENRE = "https://itunes.apple.com/%s/rss/topalbums/limit=40/genre=%s/xml"
+    __LIMIT = 40
+    __MIN = 100
+    __ALL = "https://itunes.apple.com/%s/rss/topalbums/limit=%s/xml"
+    __GENRE = "https://itunes.apple.com/%s/rss/topalbums/limit=%s/genre=%s/xml"
     __INFO = "https://itunes.apple.com/lookup?id=%s&entity=song&country=%s"
 
     def __init__(self):
@@ -158,8 +160,8 @@ class ItunesCharts:
             Calculate album count
             @return count as int
         """
-        count = len(self.__get_genre_ids()) * 40 + 40
-        return count
+        count = len(self.__get_genre_ids()) * self.__LIMIT + self.__LIMIT
+        return count if count > self.__MIN else self.__MIN
 
     def __update(self):
         """
@@ -170,11 +172,13 @@ class ItunesCharts:
             return
         language = getdefaultlocale()[0][0:2]
         itunes_ids = self.__get_genre_ids()
-        self.__update_for_url(self.__ALL % language)
+        self.__update_for_url(self.__ALL % (language, self.__LIMIT))
         for itunes_id in itunes_ids:
             if self.__stop:
                 return
-            self.__update_for_url(self.__GENRE % (language, itunes_id))
+            self.__update_for_url(self.__GENRE % (language,
+                                                  self.__LIMIT,
+                                                  itunes_id))
 
     def __update_for_url(self, url):
         """
