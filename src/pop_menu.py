@@ -382,17 +382,18 @@ class EditMenu(BaseMenu):
     """
     __TAG_EDITORS = ['exfalso', 'easytag', 'picard', 'puddletag', 'kid3-qt']
 
-    def __init__(self, object_id, is_youtube):
+    def __init__(self, object_id, is_album, is_youtube):
         """
             Init edit menu
             @param object id as int
+            @param is album as int
             @param is youtube as bool
         """
-        BaseMenu.__init__(self, object_id, [], [], True)
+        BaseMenu.__init__(self, object_id, [], [], is_album)
 
         if is_youtube:
             self.__set_remove_action()
-        else:
+        elif is_album:
             favorite = Lp().settings.get_value('tag-editor').get_string()
             for editor in [favorite] + self.__TAG_EDITORS:
                 if which(editor) is not None:
@@ -407,11 +408,13 @@ class EditMenu(BaseMenu):
         """
             Remove album
         """
-        remove_album_action = Gio.SimpleAction(name="remove_album_action")
-        Lp().add_action(remove_album_action)
-        remove_album_action.connect('activate',
-                                    self.__remove_album)
-        self.append(_("Remove album"), 'app.remove_album_action')
+        remove_action = Gio.SimpleAction(name="remove_action")
+        Lp().add_action(remove_action)
+        remove_action.connect('activate', self.__remove_object)
+        if self._is_album:
+            self.append(_("Remove album"), 'app.remove_action')
+        else:
+            self.append(_("Remove track"), 'app.remove_action')
 
     def __set_edit_actions(self):
         """
@@ -419,23 +422,30 @@ class EditMenu(BaseMenu):
         """
         edit_tag_action = Gio.SimpleAction(name="edit_tag_action")
         Lp().add_action(edit_tag_action)
-        edit_tag_action.connect('activate',
-                                self.__edit_tag)
+        edit_tag_action.connect('activate', self.__edit_tag)
         self.append(_("Modify information"), 'app.edit_tag_action')
 
-    def __remove_album(self, action, variant):
+    def __remove_object(self, action, variant):
         """
             Remove album
             @param SimpleAction
             @param GVariant
         """
-        album = Album(self._object_id)
-        art_file = Lp().art.get_album_cache_name(album)
         artist_ids = []
-        for track_id in album.track_ids:
-            artist_ids += Lp().tracks.get_artist_ids(track_id)
-            Lp().tracks.remove(track_id)
-            Lp().tracks.clean(track_id)
+        if self._is_album:
+            album = Album(self._object_id)
+            for track_id in album.track_ids:
+                artist_ids += Lp().tracks.get_artist_ids(track_id)
+                Lp().tracks.remove(track_id)
+                Lp().tracks.clean(track_id)
+                art_file = Lp().art.get_album_cache_name(album)
+                Lp().art.clean_store(art_file)
+        else:
+            track = Track(self._object_id)
+            album = track.album
+            artist_ids = Lp().tracks.get_artist_ids(track.id)
+            Lp().tracks.remove(track.id)
+            Lp().tracks.clean(track.id)
         artist_ids += album.artist_ids
         genre_ids = Lp().albums.get_genre_ids(album.id)
         Lp().albums.clean(album.id)
@@ -451,8 +461,7 @@ class EditMenu(BaseMenu):
                               genre_id, False)
         with SqlCursor(Lp().db) as sql:
             sql.commit()
-        GLib.idle_add(Lp().scanner.emit, 'album-updated', self._object_id)
-        Lp().art.clean_store(art_file)
+        GLib.idle_add(Lp().scanner.emit, 'album-updated', album.id)
 
     def __edit_tag(self, action, variant):
         """
@@ -489,7 +498,7 @@ class AlbumMenu(Gio.Menu):
                             PlaylistsMenu(album.id, album.genre_ids,
                                           album.artist_ids, True))
         self.insert_section(3, _("Edit"),
-                            EditMenu(album.id, album.is_youtube))
+                            EditMenu(album.id, True, album.is_youtube))
 
 
 class TrackMenu(Gio.Menu):
@@ -507,6 +516,9 @@ class TrackMenu(Gio.Menu):
                             QueueMenu(track.id, [], [], False))
         self.insert_section(1, _("Playlists"),
                             PlaylistsMenu(track.id, [], [], False))
+        if track.album.is_youtube:
+            self.insert_section(3, _("Edit"),
+                                EditMenu(track.id, False, True))
 
 
 class TrackMenuPopover(Gtk.Popover):
@@ -594,10 +606,11 @@ class TrackMenuPopover(Gtk.Popover):
         if menu_widget is not None:
             menu_widget.reparent(grid)
 
-        separator = Gtk.Separator()
-        separator.show()
+        if not track.album.is_youtube:
+            separator = Gtk.Separator()
+            separator.show()
+            grid.add(separator)
 
-        grid.add(separator)
         hgrid = Gtk.Grid()
         hgrid.add(rating)
         hgrid.add(loved)

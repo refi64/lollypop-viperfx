@@ -376,6 +376,9 @@ class AlbumWidget:
         if self._cover is None or self._album.id != album_id:
             return
         self._widget.set_sensitive(False)
+        # Reenable album if tracks in album
+        if self._album.track_ids:
+            self._widget.set_sensitive(True)
 
     def __on_enter_notify_timeout(self):
         """
