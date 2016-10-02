@@ -137,9 +137,9 @@ class ArtistsDatabase:
             result = sql.execute(request)
             return list(itertools.chain(*result))
 
-    def get(self, genre_ids):
+    def get(self, genre_ids=[]):
         """
-            Get all available artists
+            Get all available album artists
             @param genre ids as [int]
             @return Array of (artist id as int, artist name as string)
         """

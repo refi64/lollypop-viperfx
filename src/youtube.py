@@ -145,7 +145,9 @@ class Youtube:
 
             if persistent == DbPersistent.CHARTS:
                 (genre_ids, new_genre_ids) = ([Type.CHARTS], [])
+                new_artist_ids = []
             else:
+                new_artist_ids += new_album_artist_ids
                 (genre_ids, new_genre_ids) = t.add_genres("Youtube", album_id)
 
             # Add track to db
