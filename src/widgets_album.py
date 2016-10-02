@@ -233,7 +233,7 @@ class AlbumWidget:
         """
         window = eventbox.get_window()
         if window is not None:
-            window.set_cursor(Gdk.Cursor(Gdk.CursorType.HAND1))
+            window.set_cursor(Gdk.Cursor(Gdk.CursorType.HAND2))
 
     def _on_enter_notify(self, widget, event):
         """

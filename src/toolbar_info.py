@@ -136,7 +136,7 @@ class ToolbarInfo(Gtk.Bin, InfosController):
         """
             Show hand cursor over
         """
-        eventbox.get_window().set_cursor(Gdk.Cursor(Gdk.CursorType.HAND1))
+        eventbox.get_window().set_cursor(Gdk.Cursor(Gdk.CursorType.HAND2))
 
 #######################
 # PRIVATE             #

@@ -125,14 +125,14 @@ class ArtistView(ArtistAlbumsView):
             @param eventbox as Gtk.EventBox
         """
         if InfoPopover.should_be_shown() and self._artist_ids:
-            eventbox.get_window().set_cursor(Gdk.Cursor(Gdk.CursorType.HAND1))
+            eventbox.get_window().set_cursor(Gdk.Cursor(Gdk.CursorType.HAND2))
 
     def _on_artwork_realize(self, eventbox):
         """
             Change cursor on image
             @param eventbox as Gtk.EventBox
         """
-        eventbox.get_window().set_cursor(Gdk.Cursor(Gdk.CursorType.HAND1))
+        eventbox.get_window().set_cursor(Gdk.Cursor(Gdk.CursorType.HAND2))
 
     def _on_label_button_release(self, eventbox, event):
         """
