@@ -35,7 +35,7 @@ class CollectionScanner(GObject.GObject, TagReader):
                                                                  int,
                                                                  bool)),
         'genre-updated': (GObject.SignalFlags.RUN_FIRST, None, (int, bool)),
-        'album-updated': (GObject.SignalFlags.RUN_FIRST, None, (int,))
+        'album-updated': (GObject.SignalFlags.RUN_FIRST, None, (int, bool))
     }
 
     def __init__(self):
@@ -321,11 +321,11 @@ class CollectionScanner(GObject.GObject, TagReader):
                            ltime, mtime, album_popularity)
         Lp().tracks.remove(track_id)
         Lp().tracks.clean(track_id)
-        modified = Lp().albums.clean(album_id)
-        if modified:
+        deleted = Lp().albums.clean(album_id)
+        if deleted:
             with SqlCursor(Lp().db) as sql:
                 sql.commit()
-            GLib.idle_add(self.emit, 'album-updated', album_id)
+            GLib.idle_add(self.emit, 'album-updated', album_id, True)
         for artist_id in album_artist_ids + artist_ids:
             ret = Lp().artists.clean(artist_id)
             if ret:

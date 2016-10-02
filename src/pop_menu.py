@@ -448,7 +448,7 @@ class EditMenu(BaseMenu):
             Lp().tracks.clean(track.id)
         artist_ids += album.artist_ids
         genre_ids = Lp().albums.get_genre_ids(album.id)
-        Lp().albums.clean(album.id)
+        deleted = Lp().albums.clean(album.id)
         for artist_id in list(set(artist_ids)):
             ret = Lp().artists.clean(artist_id)
             if ret:
@@ -461,7 +461,7 @@ class EditMenu(BaseMenu):
                               genre_id, False)
         with SqlCursor(Lp().db) as sql:
             sql.commit()
-        GLib.idle_add(Lp().scanner.emit, 'album-updated', album.id)
+        GLib.idle_add(Lp().scanner.emit, 'album-updated', album.id, deleted)
 
     def __edit_tag(self, action, variant):
         """
@@ -731,4 +731,4 @@ class AlbumMenuPopover(Gtk.Popover):
                               genre_id, False)
         with SqlCursor(Lp().db) as sql:
             sql.commit()
-        Lp().scanner.emit('album-updated', album.id)
+        Lp().scanner.emit('album-updated', album.id, True)

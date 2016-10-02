@@ -342,17 +342,17 @@ class AlbumWidget:
         self._lock_overlay = False
         GLib.idle_add(self.show_overlay, False)
 
-    def _on_album_updated(self, scanner, album_id):
+    def _on_album_updated(self, scanner, album_id, destroy):
         """
             On album modified, disable it
             @param scanner as CollectionScanner
             @param album id as int
             @param deleted as bool
+            @param destroy as bool
         """
         if self._cover is None or self._album.id != album_id:
             return
-        album = Album(album_id)
-        if not album.track_ids:
+        if destroy:
             self.destroy()
 
 #######################
@@ -832,12 +832,12 @@ class AlbumDetailedWidget(Gtk.Bin, AlbumWidget):
 #######################
 # PROTECTED           #
 #######################
-    def _on_album_updated(self, scanner, album_id):
+    def _on_album_updated(self, scanner, album_id, destroy):
         """
             On album modified, disable it
             @param scanner as CollectionScanner
             @param album id as int
-            @param deleted as bool
+            @param destroy as bool
         """
         if self._album.id != album_id:
             return
@@ -855,7 +855,7 @@ class AlbumDetailedWidget(Gtk.Bin, AlbumWidget):
                         child.destroy()
             self.__discs = self._album.discs
             self.populate()
-        AlbumWidget._on_album_updated(self, scanner, album_id)
+        AlbumWidget._on_album_updated(self, scanner, album_id, destroy)
 
 #######################
 # PRIVATE             #
