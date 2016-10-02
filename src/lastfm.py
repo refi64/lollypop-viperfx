@@ -241,12 +241,12 @@ class LastFM(LastFMNetwork, LibreFMNetwork):
         try:
             proxy = Gio.Settings.new('org.gnome.system.proxy')
             https = Gio.Settings.new('org.gnome.system.proxy.https')
-            if proxy.get_value('mode') != "none":
+            mode = proxy.get_value('mode').get_string()
+            if mode != 'none':
                 h = https.get_value('host').get_string()
                 p = https.get_value('port').get_int32()
                 if h != '' and p != 0:
                     self.enable_proxy(host=h, port=p)
-                    return
             else:
                 self.disable_proxy()
         except:
