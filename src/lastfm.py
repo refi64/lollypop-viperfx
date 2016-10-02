@@ -57,10 +57,6 @@ class LastFM(LastFMNetwork, LibreFMNetwork):
         """
             Init lastfm support
         """
-        try:
-            self.__settings = Gio.Settings.new('org.gnome.system.proxy.http')
-        except:
-            self.__settings = None
         self.__username = ''
         self.__is_auth = False
         self.__password = None
@@ -242,13 +238,19 @@ class LastFM(LastFMNetwork, LibreFMNetwork):
         """
             Enable proxy if needed
         """
-        if self.__settings is not None:
-            h = self.__settings.get_value('host').get_string()
-            p = self.__settings.get_value('port').get_int32()
-            if h != '' and p != 0:
-                self.enable_proxy(host=h, port=p)
-                return
-        self.disable_proxy()
+        try:
+            proxy = Gio.Settings.new('org.gnome.system.proxy')
+            https = Gio.Settings.new('org.gnome.system.proxy.https')
+            if proxy.get_value('mode') != "none":
+                h = https.get_value('host').get_string()
+                p = https.get_value('port').get_int32()
+                if h != '' and p != 0:
+                    self.enable_proxy(host=h, port=p)
+                    return
+            else:
+                self.disable_proxy()
+        except:
+            pass
 
     def __connect(self, username, password, populate_loved=False):
         """
