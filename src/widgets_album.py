@@ -49,7 +49,7 @@ class AlbumWidget:
         self._squared_class = "squared-icon"
         self._rounded_class = "rounded-icon"
         self._scan_signal = Lp().scanner.connect('album-updated',
-                                                 self.__on_album_updated)
+                                                 self._on_album_updated)
         self.connect('destroy', self.__on_destroy)
 
     def set_cover(self):
@@ -342,6 +342,19 @@ class AlbumWidget:
         self._lock_overlay = False
         GLib.idle_add(self.show_overlay, False)
 
+    def _on_album_updated(self, scanner, album_id):
+        """
+            On album modified, disable it
+            @param scanner as CollectionScanner
+            @param album id as int
+            @param deleted as bool
+        """
+        if self._cover is None or self._album.id != album_id:
+            return
+        album = Album(album_id)
+        if not album.track_ids:
+            self.destroy()
+
 #######################
 # PRIVATE             #
 #######################
@@ -365,17 +378,6 @@ class AlbumWidget:
         """
         if self._scan_signal is not None:
             Lp().scanner.disconnect(self._scan_signal)
-
-    def __on_album_updated(self, scanner, album_id):
-        """
-            On album modified, disable it
-            @param scanner as CollectionScanner
-            @param album id as int
-            @param deleted as bool
-        """
-        if self._cover is None or self._album.id != album_id:
-            return
-        self.destroy()
 
     def __on_enter_notify_timeout(self):
         """
@@ -826,6 +828,34 @@ class AlbumDetailedWidget(Gtk.Bin, AlbumWidget):
             return self.__height
         else:
             return self.__requested_height
+
+#######################
+# PROTECTED           #
+#######################
+    def _on_album_updated(self, scanner, album_id):
+        """
+            On album modified, disable it
+            @param scanner as CollectionScanner
+            @param album id as int
+            @param deleted as bool
+        """
+        if self._album.id != album_id:
+            return
+        removed = False
+        for dic in [self._tracks_left, self._tracks_right]:
+            for widget in dic.values():
+                for child in widget.get_children():
+                    track = Track(child.id)
+                    if track.album.id == Type.NONE:
+                        removed = True
+        if removed:
+            for dic in [self._tracks_left, self._tracks_right]:
+                for widget in dic.values():
+                    for child in widget.get_children():
+                        child.destroy()
+            self.__discs = self._album.discs
+            self.populate()
+        AlbumWidget._on_album_updated(self, scanner, album_id)
 
 #######################
 # PRIVATE             #
