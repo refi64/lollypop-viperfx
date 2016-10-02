@@ -446,6 +446,7 @@ class EditMenu(BaseMenu):
             artist_ids = Lp().tracks.get_artist_ids(track.id)
             Lp().tracks.remove(track.id)
             Lp().tracks.clean(track.id)
+            Lp().window.reload_view()
         artist_ids += album.artist_ids
         genre_ids = Lp().albums.get_genre_ids(album.id)
         Lp().albums.clean(album.id)
@@ -461,7 +462,8 @@ class EditMenu(BaseMenu):
                               genre_id, False)
         with SqlCursor(Lp().db) as sql:
             sql.commit()
-        GLib.idle_add(Lp().scanner.emit, 'album-updated', album.id)
+        if self._is_album:
+            GLib.idle_add(Lp().scanner.emit, 'album-updated', album.id)
 
     def __edit_tag(self, action, variant):
         """
