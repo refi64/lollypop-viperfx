@@ -350,7 +350,7 @@ class AlbumWidget:
             @param deleted as bool
             @param destroy as bool
         """
-        if self._album.id != album_id and destroy:
+        if self._album.id == album_id and destroy:
             self.destroy()
 
 #######################
