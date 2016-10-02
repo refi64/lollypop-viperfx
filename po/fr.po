@@ -9,8 +9,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lollypop\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-10-01 22:40+0200\n"
-"PO-Revision-Date: 2016-10-01 20:41+0000\n"
+"POT-Creation-Date: 2016-10-02 21:20+0200\n"
+"PO-Revision-Date: 2016-10-02 19:22+0000\n"
 "Last-Translator: Cédric Bellegarde <web@adishatz.org>\n"
 "Language-Team: French (http://www.transifex.com/gnumdk/lollypop/language/fr/)\n"
 "MIME-Version: 1.0\n"
@@ -281,8 +281,8 @@ msgstr "Navigation par Genre/Artiste/Pochette"
 msgid "Search"
 msgstr "Recherche"
 
-#: ../data/lollypop.appdata.xml.in.h:9 ../src/pop_menu.py:485
-#: ../src/pop_menu.py:506 ../src/toolbar_end.py:396
+#: ../data/lollypop.appdata.xml.in.h:9 ../src/pop_menu.py:494
+#: ../src/pop_menu.py:515 ../src/toolbar_end.py:396
 #: ../data/QueuePopover.ui.h:2
 msgid "Queue"
 msgstr "File d'attente"
@@ -528,7 +528,7 @@ msgid "Pause"
 msgstr "Pause"
 
 #: ../src/controllers.py:86 ../src/controllers.py:105 ../src/pop_tunein.py:216
-#: ../src/widgets_album.py:504 ../src/widgets_radio.py:173
+#: ../src/widgets_album.py:507 ../src/widgets_radio.py:173
 #: ../data/AlbumDetailedWidget.ui.h:1 ../data/ArtistView.ui.h:2
 #: ../data/ToolbarPlayback.ui.h:2
 msgid "Play"
@@ -631,37 +631,41 @@ msgstr "Ajouter à \"%s\""
 msgid "Playback"
 msgstr "Lecture"
 
-#: ../src/pop_menu.py:363 ../src/pop_menu.py:488 ../src/pop_menu.py:508
+#: ../src/pop_menu.py:363 ../src/pop_menu.py:497 ../src/pop_menu.py:517
 #: ../src/selectionlist.py:302 ../src/widgets_device.py:117
 #: ../src/widgets_playlist.py:530
 msgid "Playlists"
 msgstr "Listes de lecture"
 
-#: ../src/pop_menu.py:414
+#: ../src/pop_menu.py:415
 msgid "Remove album"
 msgstr "Supprimer l'album"
 
-#: ../src/pop_menu.py:424
+#: ../src/pop_menu.py:417
+msgid "Remove track"
+msgstr "Supprimer le morceau"
+
+#: ../src/pop_menu.py:426
 msgid "Modify information"
 msgstr "Modifier les informations"
 
-#: ../src/pop_menu.py:482 ../data/SettingsDialog.ui.h:10
+#: ../src/pop_menu.py:491 ../data/SettingsDialog.ui.h:10
 msgid "Artist"
 msgstr "Artiste"
 
-#: ../src/pop_menu.py:491 ../data/PlaylistView.ui.h:1
+#: ../src/pop_menu.py:500 ../src/pop_menu.py:520 ../data/PlaylistView.ui.h:1
 msgid "Edit"
 msgstr "Editer"
 
-#: ../src/pop_menu.py:538
+#: ../src/pop_menu.py:550
 msgid "Youtube video address"
 msgstr "Adresse de la vidéo Youtube"
 
-#: ../src/pop_menu.py:661
+#: ../src/pop_menu.py:674
 msgid "Save genre"
 msgstr "Enregistrer le genre"
 
-#: ../src/pop_menu.py:682 ../data/ExternalSearchRow.ui.h:1
+#: ../src/pop_menu.py:695 ../data/ExternalSearchRow.ui.h:1
 msgid "Save into collection"
 msgstr "Enregistrer dans la collection"
 
@@ -796,30 +800,30 @@ msgstr "Annuler la synchronisation"
 msgid "Append"
 msgstr "Ajouter"
 
-#: ../src/widgets_album.py:515
+#: ../src/widgets_album.py:518
 msgid "Play albums"
 msgstr "Lire les albums"
 
-#: ../src/widgets_album.py:525 ../data/AlbumDetailedWidget.ui.h:2
+#: ../src/widgets_album.py:528 ../data/AlbumDetailedWidget.ui.h:2
 msgid "Change artwork"
 msgstr "Modifier la pochette"
 
-#: ../src/widgets_album.py:691
+#: ../src/widgets_album.py:694
 #, python-format
 msgid "%s h  %s m"
 msgstr "%s h %s m"
 
-#: ../src/widgets_album.py:693
+#: ../src/widgets_album.py:696
 #, python-format
 msgid "%s h"
 msgstr "%s h"
 
-#: ../src/widgets_album.py:695
+#: ../src/widgets_album.py:698
 #, python-format
 msgid "%s m"
 msgstr "%s m"
 
-#: ../src/widgets_album.py:982
+#: ../src/widgets_album.py:985
 #, python-format
 msgid "Disc %s"
 msgstr "Disque %s"
