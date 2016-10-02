@@ -213,9 +213,10 @@ class Youtube:
             @param item as SearchItem
         """
         try:
+            unescaped = "%s %s" % (item.artists[0],
+                                   item.name)
             search = GLib.uri_escape_string(
-                            "%s %s" % (item.artists[0],
-                                       item.name),
+                            unescaped.replace(' ', '+'),
                             None,
                             True)
             f = Gio.File.new_for_uri("https://www.youtube.com/"
