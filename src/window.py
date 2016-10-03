@@ -407,14 +407,16 @@ class Window(Gtk.ApplicationWindow, Container):
         if self.__was_maximized and\
            self.__main_stack.get_visible_child_name() == 'mini':
             Lp().settings.set_boolean('window-maximized', True)
+        main_pos = self._paned_main_list.get_position()
+        listview_pos = self._paned_list_view.get_position()
+        main_pos = main_pos if main_pos > 100 else 100
+        listview_pos = listview_pos if listview_pos > 100 else 100
         Lp().settings.set_value('paned-mainlist-width',
                                 GLib.Variant('i',
-                                             self._paned_main_list.
-                                             get_position()))
+                                             main_pos))
         Lp().settings.set_value('paned-listview-width',
                                 GLib.Variant('i',
-                                             self._paned_list_view.
-                                             get_position()))
+                                             listview_pos))
 
     def __on_seek_action(self, action, param):
         """
