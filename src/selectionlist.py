@@ -82,6 +82,7 @@ class SelectionList(Gtk.Bin):
         self.__timeout = None
         self.__to_select_ids = []
         self.__modifier = False
+        self.__populating = False
         self.__updating = False       # Sort disabled if False
         self.__is_artists = False
         self.__fast_scroll = fast_scroll  # Show button to scroll to top
@@ -161,11 +162,15 @@ class SelectionList(Gtk.Bin):
             @param [(int, str)], will be deleted
             @thread safe
         """
+        if self.__populating:
+            return
+        self.__populating = True
         if len(self.__model) > 0:
             self.__updating = True
         self.__add_values(values)
         self.emit('populated')
         self.__updating = False
+        self.__populating = False
 
     def remove_value(self, object_id):
         """
