@@ -347,43 +347,6 @@ class Container:
                     list_two_ids.append(i)
         return (list_one_ids, list_two_ids)
 
-    def __on_genre_updated(self, scanner, genre_id, add):
-        """
-            Add genre to genre list
-            @param scanner as CollectionScanner
-            @param genre id as int
-            @param add as bool
-        """
-        if self.__show_genres:
-            if add:
-                genre_name = Lp().genres.get_name(genre_id)
-                self.__list_one.add_value((genre_id, genre_name))
-            else:
-                genre_ids = Lp().genres.get_ids()
-                if genre_id not in genre_ids:
-                    self.__list_one.remove_value(genre_id)
-
-    def __on_artist_updated(self, scanner, artist_id, add):
-        """
-            Add artist to artist list
-            @param scanner as CollectionScanner
-            @param artist id as int
-            @param add as bool
-        """
-        artist_name = Lp().artists.get_name(artist_id)
-        if self.__show_genres:
-            l = self.__list_two
-            artist_ids = Lp().artists.get_ids(self.__list_one.selected_ids)
-        else:
-            l = self.__list_one
-            artist_ids = Lp().artists.get_ids()
-        if add:
-            if artist_id in artist_ids:
-                l.add_value((artist_id, artist_name))
-        else:
-            if artist_id not in artist_ids:
-                l.remove_value(artist_id)
-
     def __setup_scanner(self):
         """
             Run collection update if needed
@@ -754,6 +717,43 @@ class Container:
             self.__update_view_albums(genre_ids, selected_ids)
         else:
             self.__update_view_artists(genre_ids, selected_ids)
+
+    def __on_genre_updated(self, scanner, genre_id, add):
+        """
+            Add genre to genre list
+            @param scanner as CollectionScanner
+            @param genre id as int
+            @param add as bool
+        """
+        if self.__show_genres:
+            if add:
+                genre_name = Lp().genres.get_name(genre_id)
+                self.__list_one.add_value((genre_id, genre_name))
+            else:
+                genre_ids = Lp().genres.get_ids()
+                if genre_id not in genre_ids:
+                    self.__list_one.remove_value(genre_id)
+
+    def __on_artist_updated(self, scanner, artist_id, add):
+        """
+            Add artist to artist list
+            @param scanner as CollectionScanner
+            @param artist id as int
+            @param add as bool
+        """
+        artist_name = Lp().artists.get_name(artist_id)
+        if self.__show_genres:
+            l = self.__list_two
+            artist_ids = Lp().artists.get_ids(self.__list_one.selected_ids)
+        else:
+            l = self.__list_one
+            artist_ids = Lp().artists.get_ids()
+        if add:
+            if artist_id in artist_ids:
+                l.add_value((artist_id, artist_name))
+        else:
+            if artist_id not in artist_ids:
+                l.remove_value(artist_id)
 
     def __on_mount_added(self, vm, mount):
         """
