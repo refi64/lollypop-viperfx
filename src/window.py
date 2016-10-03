@@ -409,7 +409,6 @@ class Window(Gtk.ApplicationWindow, Container):
             Lp().settings.set_boolean('window-maximized', True)
         main_pos = self._paned_main_list.get_position()
         listview_pos = self._paned_list_view.get_position()
-        main_pos = main_pos if main_pos > 100 else 100
         listview_pos = listview_pos if listview_pos > 100 else 100
         Lp().settings.set_value('paned-mainlist-width',
                                 GLib.Variant('i',
