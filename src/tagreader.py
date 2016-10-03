@@ -298,10 +298,9 @@ class TagReader(Discoverer):
             @param artists as [string]
             @param album artists as [string]
             @param sortnames as [string]
-            @return ([artist ids as int], [new artist ids as int])
+            @return artist ids as [int]
             @commit needed
         """
-        new_artist_ids = []
         artist_ids = []
         sortsplit = sortnames.split(';')
         sortlen = len(sortsplit)
@@ -319,24 +318,21 @@ class TagReader(Discoverer):
                     if sortname is None:
                         sortname = format_artist_name(artist)
                     artist_id = Lp().artists.add(artist, sortname)
-                    if artist in album_artists:
-                        new_artist_ids.append(artist_id)
                 elif sortname is not None:
                     Lp().artists.set_sortname(artist_id, sortname)
                 i += 1
                 artist_ids.append(artist_id)
-        return (artist_ids, new_artist_ids)
+        return artist_ids
 
     def add_album_artists(self, artists, sortnames):
         """
             Add album artist to db
             @param artists as [string]
             @param sortnames as [string]
-            @param return ([album artist ids as int], [new as bool])
+            @param artist ids as int
             @commit needed
         """
         artist_ids = []
-        new_artist_ids = []
         sortsplit = sortnames.split(';')
         sortlen = len(sortsplit)
         i = 0
@@ -353,23 +349,21 @@ class TagReader(Discoverer):
                     if sortname is None:
                         sortname = format_artist_name(artist)
                     artist_id = Lp().artists.add(artist, sortname)
-                    new_artist_ids.append(artist_id)
                 elif sortname is not None:
                     Lp().artists.set_sortname(artist_id, sortname)
                 i += 1
                 artist_ids.append(artist_id)
-        return (artist_ids, new_artist_ids)
+        return artist_ids
 
     def add_genres(self, genres, album_id):
         """
             Add genres to db
             @param genres as [string]
-            @param return ([genre_ids], [new_genre_ids])
+            @return genre ids as [int]
             @commit needed
         """
         # Get all genre ids
         genre_ids = []
-        new_genre_ids = []
         for genre in genres.split(';'):
             genre = genre.strip()
             if genre != '':
@@ -377,9 +371,8 @@ class TagReader(Discoverer):
                 genre_id = Lp().genres.get_id(genre)
                 if genre_id is None:
                     genre_id = Lp().genres.add(genre)
-                    new_genre_ids.append(genre_id)
                 genre_ids.append(genre_id)
-        return (genre_ids, new_genre_ids)
+        return genre_ids
 
     def add_album(self, album_name, artist_ids,
                   filepath, popularity, mtime):

@@ -378,7 +378,8 @@ class Container:
             l = self.__list_one
             artist_ids = Lp().artists.get_ids()
         if add:
-            l.add_value((artist_id, artist_name))
+            if artist_id in artist_ids:
+                l.add_value((artist_id, artist_name))
         else:
             if artist_id not in artist_ids:
                 l.remove_value(artist_id)

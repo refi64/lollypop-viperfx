@@ -131,24 +131,21 @@ class Youtube:
         t = TagReader()
         with SqlCursor(Lp().db) as sql:
             artists = "; ".join(item.artists)
-            (artist_ids, new_artist_ids) = t.add_artists(artists,
-                                                         album_artist,
-                                                         "")
-            (album_artist_ids, new_album_artist_ids) = t.add_album_artists(
-                                                               album_artist,
-                                                               "")
+            artist_ids = t.add_artists(artists, album_artist, "")
+            album_artist_ids = t.add_album_artists(album_artist, "")
             (album_id, new_album) = t.add_album(item.album,
                                                 album_artist_ids,
                                                 "", 0, int(time()))
+            # FIXME: Check this, could move this in add_album()
             if new_album:
                 Lp().albums.set_synced(album_id, Type.NONE)
 
             if persistent == DbPersistent.CHARTS:
-                (genre_ids, new_genre_ids) = ([Type.CHARTS], [])
+                genre_ids = []
                 new_artist_ids = []
             else:
-                new_artist_ids += new_album_artist_ids
-                (genre_ids, new_genre_ids) = t.add_genres("Youtube", album_id)
+                new_artist_ids = list(set(artist_ids) | set(album_artist_ids))
+                genre_ids = t.add_genres("Youtube", album_id)
 
             # Add track to db
             uri = "https://www.youtube.com/watch?v=%s" % yid
@@ -158,14 +155,11 @@ class Youtube:
             t.update_track(track_id, artist_ids, genre_ids)
             t.update_album(album_id, album_artist_ids, genre_ids, None)
             sql.commit()
-        # Notify about new artists/genres
-        if new_genre_ids or new_artist_ids:
-            for genre_id in new_genre_ids:
-                GLib.idle_add(Lp().scanner.emit, 'genre-updated',
-                              genre_id, True)
-            for artist_id in new_artist_ids:
-                GLib.idle_add(Lp().scanner.emit, 'artist-updated',
-                              artist_id, True)
+
+        for genre_id in genre_ids:
+            GLib.idle_add(Lp().scanner.emit, 'genre-updated', genre_id, True)
+        for artist_id in new_artist_ids:
+            GLib.idle_add(Lp().scanner.emit, 'artist-updated', artist_id, True)
         return (album_id, track_id)
 
     def __get_youtube_id(self, item):

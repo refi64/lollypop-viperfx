@@ -182,6 +182,10 @@ class SelectionList(Gtk.Bin):
             Add item to list
             @param value as (int, str)
         """
+        # Do not add value if already exists
+        for item in self.__model:
+            if item[0] == value[0]:
+                return
         self.__updating = True
         self.__add_value(value)
         self.__updating = False
@@ -200,7 +204,7 @@ class SelectionList(Gtk.Bin):
                 found = True
                 break
         if not found:
-            self.add_value((object_id, name))
+            self.__add_value((object_id, name))
         self.__updating = False
 
     def update_values(self, values):

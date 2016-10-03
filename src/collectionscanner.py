@@ -259,23 +259,22 @@ class CollectionScanner(GObject.GObject, TagReader):
         # If nothing in stats, set mtime
         if amtime == 0:
             amtime = mtime
+
         debug("CollectionScanner::add2db(): Add artists %s" % artists)
-        (artist_ids, new_artist_ids) = self.add_artists(artists,
-                                                        album_artists,
-                                                        a_sortnames)
+        artist_ids = self.add_artists(artists, album_artists, a_sortnames)
+
         debug("CollectionScanner::add2db(): "
               "Add album artists %s" % album_artists)
-        (album_artist_ids, new_album_artist_ids) = self.add_album_artists(
-                                                                 album_artists,
-                                                                 aa_sortnames)
-        new_artist_ids += new_album_artist_ids
+        album_artist_ids = self.add_album_artists(album_artists, aa_sortnames)
+
+        new_artist_ids = list(set(album_artist_ids) | set(artist_ids))
 
         debug("CollectionScanner::add2db(): Add album: "
               "%s, %s" % (album_name, album_artist_ids))
         (album_id, new_album) = self.add_album(album_name, album_artist_ids,
                                                path, album_pop, amtime)
 
-        (genre_ids, new_genre_ids) = self.add_genres(genres, album_id)
+        genre_ids = self.add_genres(genres, album_id)
 
         # Add track to db
         debug("CollectionScanner::add2db(): Add track")
@@ -287,14 +286,13 @@ class CollectionScanner(GObject.GObject, TagReader):
         debug("CollectionScanner::add2db(): Update tracks")
         self.update_track(track_id, artist_ids, genre_ids)
         self.update_album(album_id, album_artist_ids, genre_ids, year)
-        # Notify about new artists/genres
-        if new_genre_ids or new_artist_ids:
+        if new_album:
             with SqlCursor(Lp().db) as sql:
                 sql.commit()
-            for genre_id in new_genre_ids:
-                GLib.idle_add(self.emit, 'genre-updated', genre_id, True)
-            for artist_id in new_artist_ids:
-                GLib.idle_add(self.emit, 'artist-updated', artist_id, True)
+        for genre_id in genre_ids:
+            GLib.idle_add(self.emit, 'genre-updated', genre_id, True)
+        for artist_id in new_artist_ids:
+            GLib.idle_add(self.emit, 'artist-updated', artist_id, True)
         return track_id
 
     def __del_from_db(self, uri):
