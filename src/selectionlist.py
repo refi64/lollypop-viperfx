@@ -80,7 +80,6 @@ class SelectionList(Gtk.Bin):
         self.__last_motion_event = None
         self.__previous_motion_y = 0.0
         self.__timeout = None
-        self.__selected_ids = []
         self.__to_select_ids = []
         self.__modifier = False
         self.__updating = False       # Sort disabled if False
@@ -268,13 +267,17 @@ class SelectionList(Gtk.Bin):
         else:
             self.__selection.unselect_all()
 
-    @property
-    def selected_ids(self):
+    def get_selected_ids(self):
         """
             Get selected ids
             @return array of ids as [int]
         """
-        return self.__selected_ids
+        selected_ids = []
+        (model, items) = self.__selection.get_selected_rows()
+        if model is not None:
+            for item in items:
+                selected_ids.append(model[item][0])
+        return selected_ids
 
     def clear(self):
         """
@@ -360,14 +363,7 @@ class SelectionList(Gtk.Bin):
             @param view as Gtk.TreeSelection
         """
         if not self.__updating and not self.__to_select_ids:
-            selected_ids = []
-            (model, items) = self.__selection.get_selected_rows()
-            if model is not None:
-                for item in items:
-                    selected_ids.append(model[item][0])
-            if selected_ids != self.__selected_ids:
-                self.__selected_ids = selected_ids
-                self.emit('item-selected')
+            self.emit('item-selected')
 
 #######################
 # PRIVATE             #
@@ -478,16 +474,17 @@ class SelectionList(Gtk.Bin):
             @param current as bool
             @return bool
         """
-        if not self.__selected_ids:
+        ids = self.get_selected_ids()
+        if not ids:
             return True
         elif self.__modifier:
             iterator = self.__model.get_iter(path)
             value = self.__model.get_value(iterator, 0)
-            if value < 0 and len(self.__selected_ids) > 1:
+            if value < 0 and len(ids) > 1:
                 return False
             else:
                 static = False
-                for i in self.__selected_ids:
+                for i in ids:
                     if i < 0:
                         static = True
                 if static:
