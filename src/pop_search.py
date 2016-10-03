@@ -113,11 +113,11 @@ class SearchRow(Gtk.ListBoxRow):
         """
         found = False
         for item in items:
-            if item.is_track and self.__is_track:
+            if item.is_track and self.__item.is_track:
                 if item.id == self.__id:
                     found = True
                     break
-            elif not item.is_track and not self.__is_track:
+            elif not item.is_track and not self.__item.is_track:
                 if item.id == self.__id:
                     found = True
                     break
@@ -176,7 +176,7 @@ class SearchRow(Gtk.ListBoxRow):
             @param button as Gtk.Button
         """
         Lp().window.show_playlist_manager(self.__item.id, [], [],
-                                          not self.__is_track)
+                                          not self.__item.is_track)
 
     def _on_queue_clicked(self, button):
         """
