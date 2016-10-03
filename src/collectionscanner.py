@@ -87,9 +87,11 @@ class CollectionScanner(GObject.GObject, TagReader):
         """
             Return all tracks/dirs for paths
             @param paths as string
-            @return ([tracks path], [dirs path], track count)
+            @return (track path as [str], track dirs as [str],
+                     ignore dirs as [str])
         """
         tracks = []
+        ignore_dirs = []
         track_dirs = list(paths)
         for path in paths:
             tracks_for_path = []
@@ -112,12 +114,12 @@ class CollectionScanner(GObject.GObject, TagReader):
                     except Exception as e:
                         print("CollectionScanner::__get_objects_for_paths: %s"
                               % e)
-            # If a path is empty, return nothing
+            # If a path is empty
             # Ensure user is not doing something bad
             if not tracks_for_path:
-                return ([], [])
+                ignore_dirs.append(GLib.filename_to_uri(path))
             tracks += tracks_for_path
-        return (tracks, track_dirs)
+        return (tracks, track_dirs, ignore_dirs)
 
     def __update_progress(self, current, total):
         """
@@ -146,15 +148,15 @@ class CollectionScanner(GObject.GObject, TagReader):
         if self.__history is None:
             self.__history = History()
         mtimes = Lp().tracks.get_mtimes()
-        orig_tracks = Lp().tracks.get_uris()
+        (new_tracks, new_dirs, ignore_dirs) = self.__get_objects_for_paths(
+                                                                         paths)
+        orig_tracks = Lp().tracks.get_uris(ignore_dirs)
         was_empty = len(orig_tracks) == 0
 
-        (new_tracks, new_dirs) = self.__get_objects_for_paths(paths)
-        if not new_tracks:
+        if ignore_dirs:
             if Lp().notify is not None:
                 Lp().notify.send(_("Lollypop is detecting an empty folder."),
                                  _("Check your music settings."))
-            return
         count = len(new_tracks) + len(orig_tracks)
         # Add monitors on dirs
         if self.__inotify is not None:

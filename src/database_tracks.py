@@ -308,14 +308,22 @@ class TracksDatabase:
                 mtimes.update((row,))
             return mtimes
 
-    def get_uris(self):
+    def get_uris(self, exclude=[]):
         """
             Get all tracks uri
-            @param None
+            @param exclude as [str]
             @return Array of uri as string
         """
         with SqlCursor(Lp().db) as sql:
-            result = sql.execute("SELECT uri FROM tracks;")
+            filters = ()
+            for e in exclude:
+                filters += ('%' + e + '%',)
+            request = "SELECT uri FROM tracks"
+            if exclude:
+                request += " WHERE uri not like ?"
+            for e in exclude[1:]:
+                request += " AND uri not like ?"
+            result = sql.execute(request, filters)
             return list(itertools.chain(*result))
 
     def get_number(self, track_id):
