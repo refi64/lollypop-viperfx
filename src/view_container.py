@@ -13,6 +13,7 @@
 from gi.repository import Gtk, GLib
 
 from lollypop.view_device import DeviceView
+from lollypop.utils import debug
 
 
 class ViewContainer(Gtk.Stack):
@@ -52,4 +53,5 @@ class ViewContainer(Gtk.Stack):
             Clean view
             @param valid view as View
         """
+        debug("ViewContainer::__delayedclean_view(): %s" % view)
         view.destroy()
