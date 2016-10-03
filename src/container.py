@@ -483,12 +483,22 @@ class Container:
             self.__list_two.mark_as_artists(False)
             self.__list_two.populate(playlists)
 
+    def __stop_current_view(self):
+        """
+            Stop current view
+        """
+        child = self.__stack.get_visible_child()
+        if child is not None and not isinstance(child, DeviceView):
+            if hasattr(child, "stop"):
+                child.stop()
+
     def __update_view_device(self, device_id):
         """
             Update current view with device view,
             Use existing view if available
             @param device id as int
         """
+        self.__stop_current_view()
         device = self.__devices[device_id]
         child = self.__stack.get_child_by_name(device.uri)
         if child is None:
@@ -525,6 +535,7 @@ class Container:
                 albums += Lp().albums.get_ids(artist_ids, genre_ids)
             return albums
 
+        self.__stop_current_view()
         view = ArtistView(artist_ids, genre_ids)
         loader = Loader(target=load, view=view)
         loader.start()
@@ -562,6 +573,7 @@ class Container:
                     albums += Lp().albums.get_ids([], genre_ids)
             return albums
 
+        self.__stop_current_view()
         view = AlbumsView(genre_ids, artist_ids)
         loader = Loader(target=load, view=view)
         loader.start()
@@ -593,6 +605,7 @@ class Container:
                         track_ids.append(track_id)
             return track_ids
 
+        self.__stop_current_view()
         view = None
         if playlist_ids:
             view = PlaylistsView(playlist_ids)
@@ -610,6 +623,7 @@ class Container:
         """
             Update current view with radios view
         """
+        self.__stop_current_view()
         view = RadiosView()
         view.populate()
         view.show()

@@ -58,14 +58,6 @@ class AlbumsView(LazyLoadingView):
         """
         GLib.idle_add(self.__add_albums, albums)
 
-    def stop(self):
-        """
-            Stop loading
-        """
-        self._lazy_queue = []
-        for child in self._get_children():
-            child.stop()
-
 #######################
 # PROTECTED           #
 #######################

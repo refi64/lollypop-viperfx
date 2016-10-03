@@ -181,6 +181,13 @@ class LazyLoadingView(View):
         self._scrolled.get_vadjustment().connect('value-changed',
                                                  self._on_value_changed)
 
+    def stop(self):
+        """
+            Stop loading
+        """
+        self._lazy_queue = []
+        View.stop(self)
+
     def append(self, row):
         """
             Append row to lazy queue
