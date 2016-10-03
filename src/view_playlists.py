@@ -48,8 +48,11 @@ class PlaylistsView(View):
 
         self.__edit_button = builder.get_object('edit-button')
         self.__jump_button = builder.get_object('jump-button')
-        builder.get_object('split-button').set_active(
-            not Lp().settings.get_value('split-view'))
+        split_button = builder.get_object('split-button')
+        if editable:
+            split_button.set_active(not Lp().settings.get_value('split-view'))
+        else:
+            split_button.hide()
 
         if len(playlist_ids) > 1 or (
            playlist_ids[0] < 0 and playlist_ids[0] != Type.LOVED) or\
