@@ -137,6 +137,9 @@ class Player(BinPlayer, QueuePlayer, UserPlaylistPlayer, RadioPlayer,
             Add album
             @param album as Album
         """
+        # We are not playing a user playlist anymore
+        self._user_playlist = []
+        self._user_playlist_ids = []
         self.shuffle_albums(False)
         # If album already exists, merge genres/artists
         if album.id in self._albums:
