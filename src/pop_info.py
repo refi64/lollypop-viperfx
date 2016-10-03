@@ -79,13 +79,14 @@ class InfoPopover(Gtk.Popover):
         if show_albums:
             self.__stack.get_child_by_name('albums').show()
         if InfoPopover.Wikipedia is not None:
-            self.__stack.get_child_by_name('wikipedia').show()
-        if Lp().lastfm is not None:
-            self.__stack.get_child_by_name('lastfm').show()
+            builder.get_object('scrollwikipedia').show()
+        if Lp().lastfm is not None and\
+                not Lp().settings.get_value('use-librefm'):
+            builder.get_object('scrolllastfm').show()
         if InfoPopover.WebView is not None:
-            self.__stack.get_child_by_name('duck').show()
-            if not artist_ids:
-                self.__stack.get_child_by_name('lyrics').show()
+            builder.get_object('scrollduck').show()
+        if not artist_ids:
+            builder.get_object('scrolllyrics').show()
         self.__stack.set_visible_child_name(
             Lp().settings.get_value('infoswitch').get_string())
 
@@ -243,7 +244,7 @@ class InfoPopover(Gtk.Popover):
             label.set_label(lyrics)
             label.show()
             widget.add(label)
-        else:
+        elif InfoPopover.WebView is not None:
             artists = ", ".join(Lp().player.current_track.artists)
             title = self.__current_track.name
             url = "http://genius.com/search?q=%s" % artists + " " + title
