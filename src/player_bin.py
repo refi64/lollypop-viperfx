@@ -303,11 +303,10 @@ class BinPlayer(BasePlayer):
             # We can scrobble if the track has been played
             # for at least half its duration, or for 4 minutes
             if played >= finished.duration / 2 or played >= 240:
-                Lp().lastfm.scrobble(artists,
-                                     finished.album_name,
-                                     finished.title,
-                                     int(finished_start_time),
-                                     int(finished.duration))
+                Lp().lastfm.do_scrobble(artists,
+                                        finished.album_name,
+                                        finished.title,
+                                        int(finished_start_time))
 
     def _on_stream_start(self, bus, message):
         """

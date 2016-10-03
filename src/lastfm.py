@@ -133,7 +133,7 @@ class LastFM(LastFMNetwork, LibreFMNetwork):
         url = last_artist.get_cover_image(3)
         return (url, content.encode(encoding='UTF-8'))
 
-    def scrobble(self, artist, album, title, timestamp, duration):
+    def do_scrobble(self, artist, album, title, timestamp):
         """
             Scrobble track
             @param artist as str
@@ -148,8 +148,7 @@ class LastFM(LastFMNetwork, LibreFMNetwork):
                        args=(artist,
                              album,
                              title,
-                             timestamp,
-                             duration))
+                             timestamp))
             t.daemon = True
             t.start()
 
@@ -281,8 +280,7 @@ class LastFM(LastFMNetwork, LibreFMNetwork):
             debug("Lastfm::__connect(): %s" % e)
             self.__is_auth = False
 
-    def __scrobble(self, artist, album, title,
-                   timestamp, duration, first=True):
+    def __scrobble(self, artist, album, title, timestamp, first=True):
         """
             Scrobble track
             @param artist as str
@@ -293,11 +291,10 @@ class LastFM(LastFMNetwork, LibreFMNetwork):
             @param first is internal
             @thread safe
         """
-        debug("LastFM::__scrobble(): %s, %s, %s, %s, %s" % (artist,
-                                                            album,
-                                                            title,
-                                                            timestamp,
-                                                            duration))
+        debug("LastFM::__scrobble(): %s, %s, %s, %s" % (artist,
+                                                        album,
+                                                        title,
+                                                        timestamp))
         try:
             self.scrobble(artist=artist,
                           album=album,
@@ -310,6 +307,7 @@ class LastFM(LastFMNetwork, LibreFMNetwork):
             # Scrobble sometimes fails
             if first:
                 self.__connect(self.__username, self.__password)
+                self.__scrobble(artist, album, title, timestamp, False)
 
     def __now_playing(self, artist, album, title, duration, first=True):
         """
