@@ -267,7 +267,8 @@ class SelectionList(Gtk.Bin):
         else:
             self.__selection.unselect_all()
 
-    def get_selected_ids(self):
+    @property
+    def selected_ids(self):
         """
             Get selected ids
             @return array of ids as [int]
@@ -474,7 +475,7 @@ class SelectionList(Gtk.Bin):
             @param current as bool
             @return bool
         """
-        ids = self.get_selected_ids()
+        ids = self.selected_ids
         if not ids:
             return True
         elif self.__modifier:

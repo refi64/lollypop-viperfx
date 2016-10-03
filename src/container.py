@@ -103,11 +103,11 @@ class Container:
         Lp().settings.set_value(
                             "list-one-ids",
                             GLib.Variant('ai',
-                                         self.__list_one.get_selected_ids()))
+                                         self.__list_one.selected_ids))
         Lp().settings.set_value(
                             "list-two-ids",
                             GLib.Variant('ai',
-                                         self.__list_two.get_selected_ids()))
+                                         self.__list_two.selected_ids))
 
     def show_playlist_manager(self, object_id, genre_ids,
                               artist_ids, is_album):
@@ -206,8 +206,8 @@ class Container:
         """
             Reload current view
         """
-        values_two = self.__list_two.get_selected_ids()
-        values_one = self.__list_one.get_selected_ids()
+        values_two = self.__list_two.selected_ids
+        values_one = self.__list_one.selected_ids
         if not values_one:
             values_one = [Type.POPULARS]
         self.__list_one.select_ids([])
@@ -359,7 +359,9 @@ class Container:
                 genre_name = Lp().genres.get_name(genre_id)
                 self.__list_one.add_value((genre_id, genre_name))
             else:
-                self.__list_one.remove_value(genre_id)
+                genre_ids = Lp().genres.get_ids()
+                if genre_id not in genre_ids:
+                    self.__list_one.remove_value(genre_id)
 
     def __on_artist_updated(self, scanner, artist_id, add):
         """
@@ -371,12 +373,15 @@ class Container:
         artist_name = Lp().artists.get_name(artist_id)
         if self.__show_genres:
             l = self.__list_two
+            artist_ids = Lp().artists.get_ids(self.__list_one.selected_ids)
         else:
             l = self.__list_one
+            artist_ids = Lp().artists.get_ids()
         if add:
             l.add_value((artist_id, artist_name))
         else:
-            l.remove_value(artist_id)
+            if artist_id not in artist_ids:
+                l.remove_value(artist_id)
 
     def __setup_scanner(self):
         """
@@ -393,7 +398,7 @@ class Container:
             @param playlists as Playlists
             @param playlist_id as int
         """
-        ids = self.__list_one.get_selected_ids()
+        ids = self.__list_one.selected_ids
         if ids and ids[0] == Type.PLAYLISTS:
             if Lp().playlists.exists(playlist_id):
                 self.__list_two.update_value(playlist_id,
@@ -427,7 +432,7 @@ class Container:
             @param updater as GObject
         """
         update = updater is not None
-        ids = self.__list_one.get_selected_ids()
+        ids = self.__list_one.selected_ids
         if ids and ids[0] == Type.PLAYLISTS:
             self.__setup_list_playlists(update)
         elif self.__show_genres and ids:
@@ -689,7 +694,7 @@ class Container:
             Update view based on selected object
             @param list as SelectionList
         """
-        selected_ids = self.__list_one.get_selected_ids()
+        selected_ids = self.__list_one.selected_ids
         if not selected_ids:
             return
         self.__list_two.clear()
@@ -738,8 +743,8 @@ class Container:
             Update view based on selected object
             @param list as SelectionList
         """
-        genre_ids = self.__list_one.get_selected_ids()
-        selected_ids = self.__list_two.get_selected_ids()
+        genre_ids = self.__list_one.selected_ids
+        selected_ids = self.__list_two.selected_ids
         if not selected_ids or not genre_ids:
             return
         if genre_ids[0] == Type.PLAYLISTS:

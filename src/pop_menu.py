@@ -18,7 +18,7 @@ from threading import Thread
 
 from lollypop.widgets_rating import RatingWidget
 from lollypop.widgets_loved import LovedWidget
-from lollypop.define import Lp
+from lollypop.define import Lp, Type
 from lollypop.sqlcursor import SqlCursor
 from lollypop.objects import Track, Album
 from lollypop import utils
@@ -450,15 +450,14 @@ class EditMenu(BaseMenu):
         genre_ids = Lp().albums.get_genre_ids(album.id)
         deleted = Lp().albums.clean(album.id)
         for artist_id in list(set(artist_ids)):
-            ret = Lp().artists.clean(artist_id)
-            if ret:
-                GLib.idle_add(Lp().scanner.emit, 'artist-updated',
-                              artist_id, False)
+            Lp().artists.clean(artist_id)
+            # Do not check clean return
+            GLib.idle_add(Lp().scanner.emit, 'artist-updated',
+                          artist_id, False)
         for genre_id in genre_ids:
-            ret = Lp().genres.clean(genre_id)
-            if ret:
-                GLib.idle_add(Lp().scanner.emit, 'genre-updated',
-                              genre_id, False)
+            Lp().genres.clean(genre_id)
+            GLib.idle_add(Lp().scanner.emit, 'genre-updated',
+                          genre_id, False)
         with SqlCursor(Lp().db) as sql:
             sql.commit()
         GLib.idle_add(Lp().scanner.emit, 'album-updated', album.id, deleted)
@@ -734,8 +733,8 @@ class AlbumMenuPopover(Gtk.Popover):
             Lp().tracks.del_genres(track_id)
             Lp().tracks.add_genre(track_id, genre_id)
         for genre_id in orig_genre_ids:
-            ret = Lp().genres.clean(genre_id)
-            if ret:
+            if genre_id != Type.CHARTS:
+                Lp().genres.clean(genre_id)
                 GLib.idle_add(Lp().scanner.emit, 'genre-updated',
                               genre_id, False)
         with SqlCursor(Lp().db) as sql:

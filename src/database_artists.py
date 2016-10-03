@@ -174,6 +174,41 @@ class ArtistsDatabase:
                 result = sql.execute(request, genres)
             return [(row[0], row[1]) for row in result]
 
+    def get_ids(self, genre_ids=[]):
+        """
+            Get all available album artists
+            @param genre ids as [int]
+            @return artist ids as [int]
+        """
+        with SqlCursor(Lp().db) as sql:
+            result = []
+            if not genre_ids or genre_ids[0] == Type.ALL:
+                # Only artist that really have an album
+                result = sql.execute(
+                                 "SELECT DISTINCT artists.rowid\
+                                  FROM artists, albums,\
+                                  album_genres, album_artists\
+                                  WHERE album_artists.artist_id=artists.rowid\
+                                  AND album_artists.album_id=albums.rowid\
+                                  AND album_genres.album_id=albums.rowid\
+                                  AND album_genres.genre_id!=?\
+                                  ORDER BY artists.sortname\
+                                  COLLATE NOCASE COLLATE LOCALIZED",
+                                 (Type.CHARTS,))
+            else:
+                genres = tuple(genre_ids)
+                request = "SELECT DISTINCT artists.rowid\
+                           FROM artists, albums, album_genres, album_artists\
+                           WHERE artists.rowid=album_artists.artist_id\
+                           AND albums.rowid=album_artists.album_id\
+                           AND album_genres.album_id=albums.rowid AND ("
+                for genre_id in genre_ids:
+                    request += "album_genres.genre_id=? OR "
+                request += "1=0) ORDER BY artists.sortname\
+                            COLLATE NOCASE COLLATE LOCALIZED"
+                result = sql.execute(request, genres)
+            return list(itertools.chain(*result))
+
     def exists(self, artist_id):
         """
             Return True if artist exist
@@ -228,10 +263,8 @@ class ArtistsDatabase:
         """
             Clean database for artist id
             @param artist id as int
-            @return bool, True if artist deleted
             @warning commit needed
         """
-        ret = False
         with SqlCursor(Lp().db) as sql:
             result = sql.execute("SELECT album_id from album_artists\
                                   WHERE artist_id=?\
@@ -245,7 +278,5 @@ class ArtistsDatabase:
                 v = result.fetchone()
                 # Artist with no relation, remove
                 if not v:
-                    ret = True
                     sql.execute("DELETE FROM artists WHERE rowid=?",
                                 (artist_id,))
-        return ret
