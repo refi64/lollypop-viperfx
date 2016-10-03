@@ -10,7 +10,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-from gi.repository import Gtk, Gio, GLib, Pango
+from gi.repository import Gtk, Gio, GLib
 
 from gettext import gettext as _
 
@@ -60,8 +60,11 @@ class PartyPopover(Gtk.Popover):
         for genre_id, genre in genres:
             label = Gtk.Label()
             label.set_property('halign', Gtk.Align.START)
-            label.set_ellipsize(Pango.EllipsizeMode.END)
-            label.set_text(genre)
+            # Hack as ellipsize not working as I want, help welcome ;)
+            label_text = genre[0:20]
+            if len(label_text) != len(genre):
+                label_text += "..."
+            label.set_text(label_text)
             label.set_tooltip_text(genre)
             label.show()
             switch = Gtk.Switch()
