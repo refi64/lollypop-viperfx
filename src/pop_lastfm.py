@@ -29,6 +29,7 @@ class LastfmPopover(Gtk.Popover):
         Gtk.Popover.__init__(self)
         builder = Gtk.Builder()
         builder.add_from_resource('/org/gnome/Lollypop/LastfmPopover.ui')
+        self.connect('map', self.__on_map)
         self.__stack = builder.get_object('stack')
         self.__spinner = builder.get_object('spinner')
         self.__spinner.start()
@@ -41,18 +42,6 @@ class LastfmPopover(Gtk.Popover):
         self.__view.show()
         self.__stack.add(self.__view)
         self.add(builder.get_object('widget'))
-
-    def do_get_preferred_width(self):
-        """
-            Set maximum width
-        """
-        return (300, 300)
-
-    def do_get_preferred_height(self):
-        """
-            Set maximum height
-        """
-        return (400, 400)
 
     def populate(self, artist_ids):
         """
@@ -69,6 +58,13 @@ class LastfmPopover(Gtk.Popover):
 #######################
 # PRIVATE             #
 #######################
+    def __on_map(self, widget):
+        """
+            Resize
+            @param widget as Gtk.Widget
+        """
+        self.set_size_request(300, 400)
+
     def __populate(self, artists):
         """
             Populate view with artists
