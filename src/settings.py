@@ -26,7 +26,6 @@ from re import findall, DOTALL
 from lollypop.define import Lp, SecretSchema, SecretAttributes
 from lollypop.cache import InfoCache
 from lollypop.database import Database
-from lollypop.lastfm import LastFM
 from lollypop.database_history import History
 
 
@@ -328,6 +327,7 @@ class SettingsDialog:
             Update librefm setting
             @param widget as Gtk.Range
         """
+        from lollypop.lastfm import LastFM
         Lp().settings.set_value('use-librefm', GLib.Variant('b', state))
         # Reset lastfm object
         Lp().lastfm = LastFM()
