@@ -1,8 +1,10 @@
 ACLOCAL_AMFLAGS = -I m4
 NULL =
 
-bin_SCRIPTS = lollypop\
-              lollypop-cli
+bin_SCRIPTS = lollypop
+
+dist_bin_SCRIPTS = lollypop-cli\
+                   rhythmbox2lollypop
 
 SUBDIRS = src data po help
 
@@ -51,9 +53,6 @@ lollypop: lollypop.in Makefile
 		-e s!\@VERSION\@!$(VERSION)!		\
 		< $< > $@
 	chmod a+x $@
-
-rhythmbox2lollypop: 
-	true
 
 all-local: lollypop
 
