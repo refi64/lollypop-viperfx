@@ -169,7 +169,15 @@ class Youtube:
         """
         if self.__fallback:
             return self.__get_youtube_id_fallback(item)
-        unescaped = "%s %s" % (item.artists[0],
+        # Try to handle compilations (itunes one)
+        if item.artists[0].lower() == "various artists":
+            if len(item.artists) > 1:
+                artist = item.artists[1]
+            else:
+                artist = ""
+        else:
+            artist = item.artists[0]
+        unescaped = "%s %s" % (artist,
                                item.name)
         search = GLib.uri_escape_string(
                             unescaped.replace(' ', '+'),
@@ -207,7 +215,15 @@ class Youtube:
             @param item as SearchItem
         """
         try:
-            unescaped = "%s %s" % (item.artists[0],
+            # Try to handle compilations (itunes one)
+            if item.artists[0].lower() == "various artists":
+                if len(item.artists) > 1:
+                    artist = item.artists[1]
+                else:
+                    artist = ""
+            else:
+                artist = item.artists[0]
+            unescaped = "%s %s" % (artist,
                                    item.name)
             search = GLib.uri_escape_string(
                             unescaped.replace(' ', '+'),
