@@ -51,6 +51,8 @@ class ArtistView(ArtistAlbumsView):
         self.__add_button = builder.get_object('add-button')
         self.__play_button = builder.get_object('play-button')
         self.__grid = builder.get_object('header-grid')
+        if Lp().lastfm is None:
+            builder.get_object('lastfm-button').hide()
         header = builder.get_object('header')
         header.set_property('valign', Gtk.Align.START)
         self._overlay.add_overlay(header)
@@ -112,12 +114,6 @@ class ArtistView(ArtistAlbumsView):
             self.__grid.get_style_context().add_class('header-borders')
             self.__grid.get_style_context().remove_class('header')
             self.__grid.set_property('valign', Gtk.Align.START)
-
-    def _on_jump_button_clicked(self, widget):
-        """
-            Scroll to album
-        """
-        self.jump_to_current()
 
     def _on_label_realize(self, eventbox):
         """
@@ -198,6 +194,22 @@ class ArtistView(ArtistAlbumsView):
             self.__set_add_icon()
         except:
             pass  # Artist not available anymore for this context
+
+    def _on_jump_button_clicked(self, widget):
+        """
+            Scroll to album
+        """
+        self.jump_to_current()
+
+    def _on_lastfm_button_clicked(self, widget):
+        """
+            Show lastfm similar artists
+        """
+        from lollypop.pop_lastfm import LastfmPopover
+        popover = LastfmPopover()
+        popover.set_relative_to(widget)
+        popover.populate(self._artist_ids)
+        popover.show()
 
     def _on_artwork_draw(self, image, ctx):
         """

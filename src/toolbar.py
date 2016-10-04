@@ -128,6 +128,13 @@ class Toolbar(Gtk.HeaderBar):
         except Exception as e:
             print("Toolbar::restore_state():", e)
 
+    def search(self, search):
+        """
+            Search item
+            @param search as str
+        """
+        self.__toolbar_end.search(search)
+
     def show_hide_volume_control(self):
         """
             Show/Hide volume control

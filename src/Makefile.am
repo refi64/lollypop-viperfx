@@ -53,6 +53,7 @@ app_PYTHON = \
     pop_artwork.py\
     pop_externals.py\
     pop_info.py\
+    pop_lastfm.py\
     pop_menu.py\
     pop_next.py\
     pop_playlists.py\

@@ -203,6 +203,14 @@ class ToolbarEnd(Gtk.Bin):
         else:
             self.__next_popover.hide()
 
+    def search(self, search):
+        """
+            Search item
+            @param search as str
+        """
+        self._on_search_button_clicked()
+        self.__search.set_text(search)
+
 #######################
 # PROTECTED           #
 #######################
@@ -271,7 +279,7 @@ class ToolbarEnd(Gtk.Bin):
         self.__list_popover.connect('closed', self.__on_list_popover_closed)
         return True
 
-    def _on_search_button_clicked(self, obj, param=None):
+    def _on_search_button_clicked(self, obj=None, param=None):
         """
             Show search widget on search button clicked
             @param obj as Gtk.Button or Gtk.Action

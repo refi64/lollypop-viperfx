@@ -271,6 +271,7 @@ class SearchPopover(Gtk.Popover):
         builder.add_from_resource('/org/gnome/Lollypop/SearchPopover.ui')
 
         self.__new_btn = builder.get_object('new_btn')
+        self.__entry = builder.get_object('entry')
 
         self.__view = Gtk.ListBox()
         self.__view.set_sort_func(self.__sort_func)
@@ -294,6 +295,12 @@ class SearchPopover(Gtk.Popover):
         # Connect here because we don't want previous switch.set_state()
         # to emit a signal on init
         builder.connect_signals(self)
+
+    def set_text(self, text):
+        """
+            Set search text
+        """
+        self.__entry.set_text(text)
 
 #######################
 # PROTECTED           #

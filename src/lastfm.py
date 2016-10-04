@@ -202,6 +202,21 @@ class LastFM(LastFMNetwork, LibreFMNetwork):
             except Exception as e:
                 print("Lastfm::unlove(): %s" % e)
 
+    def get_similars(self, artist):
+        """
+            Get similar artists
+            @param artist as str
+            @return artists as [str]
+        """
+        artists = []
+        try:
+            artist_item = self.get_artist(artist)
+            for similar_item in artist_item.get_similar():
+                artists.append(similar_item.item.name)
+        except:
+            pass
+        return artists
+
     @property
     def is_auth(self):
         """
