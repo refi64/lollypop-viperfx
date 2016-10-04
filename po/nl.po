@@ -11,8 +11,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lollypop\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-09-25 21:53+0200\n"
-"PO-Revision-Date: 2016-09-25 20:19+0000\n"
+"POT-Creation-Date: 2016-10-02 21:20+0200\n"
+"PO-Revision-Date: 2016-10-02 19:38+0000\n"
 "Last-Translator: Nathan Follens\n"
 "Language-Team: Dutch (http://www.transifex.com/gnumdk/lollypop/language/nl/)\n"
 "MIME-Version: 1.0\n"
@@ -51,7 +51,7 @@ msgstr "Zoeken op netwerk"
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:8
 msgid "Save artwork in tags"
-msgstr "Albumhoezen opslaan in tags"
+msgstr "Sla albumhoezen op in tags"
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:9
 msgid "Repeat by default"
@@ -82,149 +82,153 @@ msgid "When empty, use XDG_MUSIC_DIR"
 msgstr "Gebruik XDG_MUSIC_DIR wanneer leeg"
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:16
+msgid "Use Librefm instead of Lastfm"
+msgstr "Gebruik Libre.fm ipv Last.fm"
+
+#: ../data/org.gnome.Lollypop.gschema.xml.h:17
 msgid "Last.fm login"
 msgstr "Last.fm-account"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:17
+#: ../data/org.gnome.Lollypop.gschema.xml.h:18
 msgid "Google Custom Search API key"
 msgstr "Google Custom Search API-sleutel"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:18
+#: ../data/org.gnome.Lollypop.gschema.xml.h:19
 msgid "Favorite tag editor"
 msgstr "Favoriete tagbewerker"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:19
+#: ../data/org.gnome.Lollypop.gschema.xml.h:20
 msgid "INTERNAL"
 msgstr "INTERN"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:20
+#: ../data/org.gnome.Lollypop.gschema.xml.h:21
 msgid "Audio output preview on track hover"
 msgstr "Voorbeeldweergave van audio-uitvoer wanneer nummer wordt aangewezen"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:21
+#: ../data/org.gnome.Lollypop.gschema.xml.h:22
 msgid ""
 "Pulseaudio only. Example: alsa_output.pci-0000_00_14.2.analog-stereo. "
 "Command to get outputs: $ pacmd list-sinks|grep 'name:'"
 msgstr "Enkel pulseaudio. Voorbeeld: alsa_output.pci-0000_00_14.2.analog-stereo. Commando om audio-uitvoeren weer te geven: $ pacmd list-sinks|grep 'name:'"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:22
+#: ../data/org.gnome.Lollypop.gschema.xml.h:23
 msgid "Favorite cover file"
 msgstr "Favoriete albumhoes"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:23
+#: ../data/org.gnome.Lollypop.gschema.xml.h:24
 msgid "Restart needed"
 msgstr "Opnieuw opstarten van Lollypop vereist"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:24
+#: ../data/org.gnome.Lollypop.gschema.xml.h:25
 msgid "Database version"
 msgstr "Databaseversie"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:25
+#: ../data/org.gnome.Lollypop.gschema.xml.h:26
 msgid ""
 "Reset this value will reset the database, popular albums will be restored"
 msgstr "Deze waarde opnieuw instellen zal de database opnieuw instellen, populaire albums zullen hersteld worden"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:26 ../data/SettingsDialog.ui.h:7
+#: ../data/org.gnome.Lollypop.gschema.xml.h:27 ../data/SettingsDialog.ui.h:7
 msgid "Albums cover size"
 msgstr "Albumhoesgrootte"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:27
+#: ../data/org.gnome.Lollypop.gschema.xml.h:28
 msgid "Replay gain value in db"
 msgstr "ReplayGain-waarde in dB"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:28
+#: ../data/org.gnome.Lollypop.gschema.xml.h:29
 msgid "Between -15 and 15"
 msgstr "Tussen -15 en 15"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:29
+#: ../data/org.gnome.Lollypop.gschema.xml.h:30
 msgid "Sync all albums(MTP)"
 msgstr "Alle albums synchroniseren (MTP)"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:30
+#: ../data/org.gnome.Lollypop.gschema.xml.h:31
 msgid "Convert to MP3(MTP)"
 msgstr "Converteren naar MP3 (MTP)"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:31
+#: ../data/org.gnome.Lollypop.gschema.xml.h:32
 msgid "Normalize MP3(MTP)"
 msgstr "MP3 normaliseren (MTP)"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:32 ../data/SettingsDialog.ui.h:16
+#: ../data/org.gnome.Lollypop.gschema.xml.h:33 ../data/SettingsDialog.ui.h:16
 msgid "Auto update music"
 msgstr "Muziek automatisch bijwerken"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:33
-msgid "Split playlists view"
-msgstr "Afspeellijstoverzicht splitsen"
-
 #: ../data/org.gnome.Lollypop.gschema.xml.h:34
+msgid "Split playlists view"
+msgstr "Splits afspeellijstoverzicht"
+
+#: ../data/org.gnome.Lollypop.gschema.xml.h:35
 msgid "Show genres list"
-msgstr "Genrelijst weergeven"
+msgstr "Toon genrelijst"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:35 ../data/SettingsDialog.ui.h:8
+#: ../data/org.gnome.Lollypop.gschema.xml.h:36 ../data/SettingsDialog.ui.h:8
 msgid "Show artist artwork"
-msgstr "Foto van artiest weergeven"
-
-#: ../data/org.gnome.Lollypop.gschema.xml.h:36
-msgid "Use dark gtk theme"
-msgstr "Donker GTK-thema gebruiken"
+msgstr "Toon foto van artiest"
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:37
+msgid "Use dark gtk theme"
+msgstr "Gebruik donker GTK-thema"
+
+#: ../data/org.gnome.Lollypop.gschema.xml.h:38
 msgid "Disable the use of client side window decorations (headerbar)"
-msgstr "Vensterdecoraties aan cliëntzijde (headerbar) uitschakelen"
+msgstr "Schakel vensterdecoraties aan cliëntzijde (headerbar) uit"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:38 ../data/SettingsDialog.ui.h:6
+#: ../data/org.gnome.Lollypop.gschema.xml.h:39 ../data/SettingsDialog.ui.h:6
 msgid "Show compilations in albums view"
-msgstr "Compilaties in albumoverzicht weergeven"
+msgstr "Toon compilaties in albumoverzicht"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:39 ../data/SettingsDialog.ui.h:18
+#: ../data/org.gnome.Lollypop.gschema.xml.h:40 ../data/SettingsDialog.ui.h:18
 msgid "Continue playback when closed"
 msgstr "Doorgaan met afspelen wanneer gesloten"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:40
+#: ../data/org.gnome.Lollypop.gschema.xml.h:41
 msgid "Smart sort for artist"
 msgstr "Artiesten slim sorteren"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:41
+#: ../data/org.gnome.Lollypop.gschema.xml.h:42
 msgid "Ex: The Beatles sorted as Beatles. Resetting database needed."
 msgstr "Bv.: The Beatles sorteren als Beatles. De database opnieuw instellen is hiervoor vereist."
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:42
+#: ../data/org.gnome.Lollypop.gschema.xml.h:43
 msgid "Restore previous state"
 msgstr "Vorige toestand herstellen"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:43
+#: ../data/org.gnome.Lollypop.gschema.xml.h:44
 msgid "Disable MPRIS"
 msgstr "MPRIS uitschakelen"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:44
+#: ../data/org.gnome.Lollypop.gschema.xml.h:45
 msgid "Disable notifications"
 msgstr "Meldingen uitschakelen"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:45
+#: ../data/org.gnome.Lollypop.gschema.xml.h:46
 msgid "Show track number from tags"
 msgstr "Tracknummer uit tags weergeven"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:46
+#: ../data/org.gnome.Lollypop.gschema.xml.h:47
 msgid "Mix songs"
 msgstr "Nummers mengen"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:47
+#: ../data/org.gnome.Lollypop.gschema.xml.h:48
 msgid "Mix songs only in party mode"
 msgstr "Nummers enkel mengen in feestmodus"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:48
+#: ../data/org.gnome.Lollypop.gschema.xml.h:49
 msgid "Mix duration"
 msgstr "Mengduur"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:49
+#: ../data/org.gnome.Lollypop.gschema.xml.h:50
 msgid "Shuffle mode"
 msgstr "Willekeurige volgorde-modus"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:50 ../data/SettingsDialog.ui.h:9
+#: ../data/org.gnome.Lollypop.gschema.xml.h:51 ../data/SettingsDialog.ui.h:9
 msgid "Order albums by"
 msgstr "Albums rangschikken op"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:51
+#: ../data/org.gnome.Lollypop.gschema.xml.h:52
 msgid "Charts provider"
 msgstr "Aanbieder van hitlijsten"
 
@@ -279,8 +283,8 @@ msgstr "Bladeren door genres/artiesten/albumhoezen"
 msgid "Search"
 msgstr "Zoeken"
 
-#: ../data/lollypop.appdata.xml.in.h:9 ../src/pop_menu.py:485
-#: ../src/pop_menu.py:506 ../src/toolbar_end.py:395
+#: ../data/lollypop.appdata.xml.in.h:9 ../src/pop_menu.py:494
+#: ../src/pop_menu.py:515 ../src/toolbar_end.py:396
 #: ../data/QueuePopover.ui.h:2
 msgid "Queue"
 msgstr "Wachtrij"
@@ -526,7 +530,7 @@ msgid "Pause"
 msgstr "Pauzeren"
 
 #: ../src/controllers.py:86 ../src/controllers.py:105 ../src/pop_tunein.py:216
-#: ../src/widgets_album.py:504 ../src/widgets_radio.py:173
+#: ../src/widgets_album.py:507 ../src/widgets_radio.py:173
 #: ../data/AlbumDetailedWidget.ui.h:1 ../data/ArtistView.ui.h:2
 #: ../data/ToolbarPlayback.ui.h:2
 msgid "Play"
@@ -544,7 +548,7 @@ msgstr "Meerdere artiesten"
 msgid "Last.fm authentication disabled"
 msgstr "Last.fm-authenticatie uitgeschakeld"
 
-#: ../src/lastfm.py:334
+#: ../src/lastfm.py:333
 msgid "Wrong Last.fm credentials"
 msgstr "Verkeerde Last.fm-referenties"
 
@@ -578,7 +582,7 @@ msgstr "Albums wissen"
 msgid "Go to current track"
 msgstr "Ga naar huidig nummer"
 
-#: ../src/pop_albums.py:301 ../src/toolbar_end.py:399
+#: ../src/pop_albums.py:301 ../src/toolbar_end.py:400
 msgid "Playing albums"
 msgstr "Afspelende albums"
 
@@ -629,37 +633,41 @@ msgstr "Toevoegen aan \"%s\""
 msgid "Playback"
 msgstr "Afspelen"
 
-#: ../src/pop_menu.py:363 ../src/pop_menu.py:488 ../src/pop_menu.py:508
+#: ../src/pop_menu.py:363 ../src/pop_menu.py:497 ../src/pop_menu.py:517
 #: ../src/selectionlist.py:302 ../src/widgets_device.py:117
 #: ../src/widgets_playlist.py:530
 msgid "Playlists"
 msgstr "Afspeellijsten"
 
-#: ../src/pop_menu.py:414
+#: ../src/pop_menu.py:415
 msgid "Remove album"
 msgstr "Album verwijderen"
 
-#: ../src/pop_menu.py:424
+#: ../src/pop_menu.py:417
+msgid "Remove track"
+msgstr "Nummer verwijderen"
+
+#: ../src/pop_menu.py:426
 msgid "Modify information"
 msgstr "Gegevens bewerken"
 
-#: ../src/pop_menu.py:482 ../data/SettingsDialog.ui.h:10
+#: ../src/pop_menu.py:491 ../data/SettingsDialog.ui.h:10
 msgid "Artist"
 msgstr "Artiest"
 
-#: ../src/pop_menu.py:491 ../data/PlaylistView.ui.h:1
+#: ../src/pop_menu.py:500 ../src/pop_menu.py:520 ../data/PlaylistView.ui.h:1
 msgid "Edit"
 msgstr "Bewerken"
 
-#: ../src/pop_menu.py:538
+#: ../src/pop_menu.py:550
 msgid "Youtube video address"
 msgstr "Adres van YouTube-video"
 
-#: ../src/pop_menu.py:661
+#: ../src/pop_menu.py:674
 msgid "Save genre"
 msgstr "Genre opslaan"
 
-#: ../src/pop_menu.py:682 ../data/ExternalSearchRow.ui.h:1
+#: ../src/pop_menu.py:695 ../data/ExternalSearchRow.ui.h:1
 msgid "Save into collection"
 msgstr "Opslaan in verzameling"
 
@@ -714,32 +722,32 @@ msgstr "Alle albums"
 msgid "All artists"
 msgstr "Alle artiesten"
 
-#: ../src/settings.py:94
+#: ../src/settings.py:95
 #, python-format
 msgid "%d artist"
 msgid_plural "%d artists"
 msgstr[0] "%d artiest"
 msgstr[1] "%d artiesten"
 
-#: ../src/settings.py:96
+#: ../src/settings.py:97
 #, python-format
 msgid "%d album"
 msgid_plural "%d albums"
 msgstr[0] "%d album"
 msgstr[1] "%d albums"
 
-#: ../src/settings.py:98
+#: ../src/settings.py:99
 #, python-format
 msgid "%d track"
 msgid_plural "%d tracks"
 msgstr[0] "%d nummer"
 msgstr[1] "%d nummers"
 
-#: ../src/settings.py:109 ../src/settings.py:112 ../data/SettingsDialog.ui.h:3
+#: ../src/settings.py:110 ../src/settings.py:113 ../data/SettingsDialog.ui.h:3
 msgid "Preferences"
 msgstr "Voorkeuren"
 
-#: ../src/settings.py:141
+#: ../src/settings.py:145
 msgid "You need to install kid3-cli"
 msgstr "Je moet kid3-cli installeren"
 
@@ -751,11 +759,11 @@ msgstr "Populair"
 msgid "Recently added"
 msgstr "Recent toegevoegd"
 
-#: ../src/toolbar_end.py:393
+#: ../src/toolbar_end.py:394
 msgid "Externals tracks playing"
 msgstr "Afspelende externe nummers"
 
-#: ../src/toolbar_end.py:397
+#: ../src/toolbar_end.py:398
 msgid "Playing playlists"
 msgstr "Afspelende afspeellijsten"
 
@@ -779,7 +787,7 @@ msgstr "Ontgrendel je apparaat"
 msgid ""
 "Lollypop sync changed due to limitations in some devices.\n"
 "Please remove Music/lollypop folder on your device..."
-msgstr "Door beperkingen in sommige apparaten is de Lollypop-synchronisatie veranderd.\nVerwijder de map Music/lollypop op je apparaat..."
+msgstr "Door beperkingen in sommige apparaten is de Lollypop-synchronisatie veranderd.\nVerwijder de map Muziek/lollypop op je apparaat..."
 
 #: ../src/view_device.py:112 ../src/view_device.py:209
 #, python-format
@@ -794,30 +802,30 @@ msgstr "Synchronisatie annuleren"
 msgid "Append"
 msgstr "Toevoegen"
 
-#: ../src/widgets_album.py:515
+#: ../src/widgets_album.py:518
 msgid "Play albums"
 msgstr "Albums afspelen"
 
-#: ../src/widgets_album.py:525 ../data/AlbumDetailedWidget.ui.h:2
+#: ../src/widgets_album.py:528 ../data/AlbumDetailedWidget.ui.h:2
 msgid "Change artwork"
 msgstr "Albumhoes wijzigen"
 
-#: ../src/widgets_album.py:691
+#: ../src/widgets_album.py:694
 #, python-format
 msgid "%s h  %s m"
 msgstr "%s u %s m"
 
-#: ../src/widgets_album.py:693
+#: ../src/widgets_album.py:696
 #, python-format
 msgid "%s h"
 msgstr "%s u"
 
-#: ../src/widgets_album.py:695
+#: ../src/widgets_album.py:698
 #, python-format
 msgid "%s m"
 msgstr "%s m"
 
-#: ../src/widgets_album.py:982
+#: ../src/widgets_album.py:985
 #, python-format
 msgid "Disc %s"
 msgstr "Schijf %s"
@@ -981,7 +989,7 @@ msgid ""
 "Please create a \"Custom Search Engine\" here:"
 msgstr "Lollypop gebruikt de \"Google aangepast zoeken-API\" om afbeeldingen op het web te zoeken.\nDeze API is beperkt dus kan mogelijk niet werken met de standaard API-sleutel.\nMaak hier een \"aangepaste zoekmachine\" aan:"
 
-#: ../data/ArtworkSearch.ui.h:6 ../data/SettingsDialog.ui.h:37
+#: ../data/ArtworkSearch.ui.h:6 ../data/SettingsDialog.ui.h:38
 msgid "API key"
 msgstr "API-sleutel"
 
@@ -1063,7 +1071,7 @@ msgstr "Mengduur in seconden"
 
 #: ../data/SettingsDialog.ui.h:4
 msgid "Use dark theme variant"
-msgstr "Donkere thema-variant gebruiken"
+msgstr "Gebruik donkere thema-variant"
 
 #: ../data/SettingsDialog.ui.h:5
 msgid "Show genres"
@@ -1154,19 +1162,23 @@ msgid "You need to install pylast and gi secret"
 msgstr "Je moet pylast en gi secret installeren"
 
 #: ../data/SettingsDialog.ui.h:34
+msgid "Use Librefm"
+msgstr "Gebruik Libre.fm"
+
+#: ../data/SettingsDialog.ui.h:35
 msgid ""
 "Google Web Services need a custom API key.\n"
 "Without one, you will reach default quota soon...\n"
 "Lollypop needs this to search artwork and music."
 msgstr "Google webdiensten hebben een aangepaste API-sleutel nodig.\nZonder deze sleutel raak je snel aan de standaardquota...\nLollypop heeft dit nodig om albumhoezen en muziek te zoeken."
 
-#: ../data/SettingsDialog.ui.h:38
+#: ../data/SettingsDialog.ui.h:39
 msgid ""
 "You need to enable \"Custom Search API\" \n"
 "and \"Youtube Data API\" for your project."
 msgstr "Je moet \"aangepast zoeken-API\" en \n\"YouTube-gegevens-API\" voor je project inschakelen."
 
-#: ../data/SettingsDialog.ui.h:40
+#: ../data/SettingsDialog.ui.h:41
 msgid "Configure Last.fm credentials"
 msgstr "Stel Last.fm-referenties in"
 

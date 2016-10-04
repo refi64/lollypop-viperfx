@@ -9,8 +9,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lollypop\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-09-25 21:53+0200\n"
-"PO-Revision-Date: 2016-09-28 19:15+0000\n"
+"POT-Creation-Date: 2016-10-02 21:20+0200\n"
+"PO-Revision-Date: 2016-10-04 08:11+0000\n"
 "Last-Translator: Марко М. Костић (Marko M. Kostić) <marko.m.kostic@gmail.com>\n"
 "Language-Team: Serbian (Latin) (http://www.transifex.com/gnumdk/lollypop/language/sr@latin/)\n"
 "MIME-Version: 1.0\n"
@@ -80,149 +80,153 @@ msgid "When empty, use XDG_MUSIC_DIR"
 msgstr "Kada je prazna, koristi XDG_MUSIC_DIR promenljivu"
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:16
+msgid "Use Librefm instead of Lastfm"
+msgstr "Koristi Librefm umesto Lastfm-a"
+
+#: ../data/org.gnome.Lollypop.gschema.xml.h:17
 msgid "Last.fm login"
 msgstr "Last.fm prijava"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:17
+#: ../data/org.gnome.Lollypop.gschema.xml.h:18
 msgid "Google Custom Search API key"
 msgstr "API ključ Guglove prilagođene pretrage"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:18
+#: ../data/org.gnome.Lollypop.gschema.xml.h:19
 msgid "Favorite tag editor"
 msgstr "Omiljeni uređivač oznaka na pesmama"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:19
+#: ../data/org.gnome.Lollypop.gschema.xml.h:20
 msgid "INTERNAL"
 msgstr "INTERNO"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:20
+#: ../data/org.gnome.Lollypop.gschema.xml.h:21
 msgid "Audio output preview on track hover"
 msgstr "Pusti zvuk kada se lebdi mišem nad pesmom"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:21
+#: ../data/org.gnome.Lollypop.gschema.xml.h:22
 msgid ""
 "Pulseaudio only. Example: alsa_output.pci-0000_00_14.2.analog-stereo. "
 "Command to get outputs: $ pacmd list-sinks|grep 'name:'"
 msgstr "Samo za Puls-audio. Na primer: alsa_output.pci-0000_00_14.2.analog-stereo. Naredba za dobijanje izlaza: $ pacmd list-sinks|grep 'name:'"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:22
+#: ../data/org.gnome.Lollypop.gschema.xml.h:23
 msgid "Favorite cover file"
 msgstr "Datoteka sa omiljenim omotom albuma"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:23
+#: ../data/org.gnome.Lollypop.gschema.xml.h:24
 msgid "Restart needed"
 msgstr "Potrebno je ponovo pokrenuti program"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:24
+#: ../data/org.gnome.Lollypop.gschema.xml.h:25
 msgid "Database version"
 msgstr "Izdanje baze podataka"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:25
+#: ../data/org.gnome.Lollypop.gschema.xml.h:26
 msgid ""
 "Reset this value will reset the database, popular albums will be restored"
 msgstr "Ponovno postavljanje ove vrednosti će vratiti bazu na početno stanje, Popularni albumi će biti vraćeni"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:26 ../data/SettingsDialog.ui.h:7
+#: ../data/org.gnome.Lollypop.gschema.xml.h:27 ../data/SettingsDialog.ui.h:7
 msgid "Albums cover size"
 msgstr "Veličina omota albuma"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:27
+#: ../data/org.gnome.Lollypop.gschema.xml.h:28
 msgid "Replay gain value in db"
 msgstr "Vrednost pojačanja u decibelima"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:28
+#: ../data/org.gnome.Lollypop.gschema.xml.h:29
 msgid "Between -15 and 15"
 msgstr "Između -15 i 15"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:29
+#: ../data/org.gnome.Lollypop.gschema.xml.h:30
 msgid "Sync all albums(MTP)"
 msgstr "Uskladi sve albume (MTP)"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:30
+#: ../data/org.gnome.Lollypop.gschema.xml.h:31
 msgid "Convert to MP3(MTP)"
 msgstr "Pretvori u MP3 (MTP)"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:31
+#: ../data/org.gnome.Lollypop.gschema.xml.h:32
 msgid "Normalize MP3(MTP)"
 msgstr "Unormali MP3(MTP)"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:32 ../data/SettingsDialog.ui.h:16
+#: ../data/org.gnome.Lollypop.gschema.xml.h:33 ../data/SettingsDialog.ui.h:16
 msgid "Auto update music"
 msgstr "Automatski ažuriraj muziku"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:33
+#: ../data/org.gnome.Lollypop.gschema.xml.h:34
 msgid "Split playlists view"
 msgstr "Podeljeni pregled spiskova"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:34
+#: ../data/org.gnome.Lollypop.gschema.xml.h:35
 msgid "Show genres list"
 msgstr "Prikaži listu žanrova"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:35 ../data/SettingsDialog.ui.h:8
+#: ../data/org.gnome.Lollypop.gschema.xml.h:36 ../data/SettingsDialog.ui.h:8
 msgid "Show artist artwork"
 msgstr "Prikaži portret izvođača"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:36
+#: ../data/org.gnome.Lollypop.gschema.xml.h:37
 msgid "Use dark gtk theme"
 msgstr "Koristi tamnu GTK temu"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:37
+#: ../data/org.gnome.Lollypop.gschema.xml.h:38
 msgid "Disable the use of client side window decorations (headerbar)"
 msgstr "Onemogući korišćenje klijentskih prozorskih dekoracija (zaglavlje programa)"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:38 ../data/SettingsDialog.ui.h:6
+#: ../data/org.gnome.Lollypop.gschema.xml.h:39 ../data/SettingsDialog.ui.h:6
 msgid "Show compilations in albums view"
 msgstr "Prikaži kompilacije u delu sa albumima"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:39 ../data/SettingsDialog.ui.h:18
+#: ../data/org.gnome.Lollypop.gschema.xml.h:40 ../data/SettingsDialog.ui.h:18
 msgid "Continue playback when closed"
 msgstr "Nastavi sa puštanjem pesama nakon zatvaranja programa"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:40
+#: ../data/org.gnome.Lollypop.gschema.xml.h:41
 msgid "Smart sort for artist"
 msgstr "Skraćeno ređanje po izvođaču"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:41
+#: ../data/org.gnome.Lollypop.gschema.xml.h:42
 msgid "Ex: The Beatles sorted as Beatles. Resetting database needed."
 msgstr "Na primer: \"The Beatles\" se ređa kao \"Beatles\". Potrebno resetovati bazu."
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:42
+#: ../data/org.gnome.Lollypop.gschema.xml.h:43
 msgid "Restore previous state"
 msgstr "Povrati prethodno stanje programa"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:43
+#: ../data/org.gnome.Lollypop.gschema.xml.h:44
 msgid "Disable MPRIS"
 msgstr "Isključi MPRIS kontrole"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:44
+#: ../data/org.gnome.Lollypop.gschema.xml.h:45
 msgid "Disable notifications"
 msgstr "Isključi obaveštenja"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:45
+#: ../data/org.gnome.Lollypop.gschema.xml.h:46
 msgid "Show track number from tags"
 msgstr "Kao broj pesme koristi broj iz oznake pesme"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:46
+#: ../data/org.gnome.Lollypop.gschema.xml.h:47
 msgid "Mix songs"
 msgstr "Preklapaj pesme"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:47
+#: ../data/org.gnome.Lollypop.gschema.xml.h:48
 msgid "Mix songs only in party mode"
 msgstr "Preklapaj pesme samo u režimu za žurke"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:48
+#: ../data/org.gnome.Lollypop.gschema.xml.h:49
 msgid "Mix duration"
 msgstr "Trajanje preklapanja"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:49
+#: ../data/org.gnome.Lollypop.gschema.xml.h:50
 msgid "Shuffle mode"
 msgstr "Režim mešanja pesama"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:50 ../data/SettingsDialog.ui.h:9
+#: ../data/org.gnome.Lollypop.gschema.xml.h:51 ../data/SettingsDialog.ui.h:9
 msgid "Order albums by"
 msgstr "Poređaj albume po"
 
-#: ../data/org.gnome.Lollypop.gschema.xml.h:51
+#: ../data/org.gnome.Lollypop.gschema.xml.h:52
 msgid "Charts provider"
 msgstr "Dostavljač grafikona"
 
@@ -277,8 +281,8 @@ msgstr "pregledanje po žanru, izvođaču i omotu"
 msgid "Search"
 msgstr "Pretraga"
 
-#: ../data/lollypop.appdata.xml.in.h:9 ../src/pop_menu.py:485
-#: ../src/pop_menu.py:506 ../src/toolbar_end.py:395
+#: ../data/lollypop.appdata.xml.in.h:9 ../src/pop_menu.py:494
+#: ../src/pop_menu.py:515 ../src/toolbar_end.py:396
 #: ../data/QueuePopover.ui.h:2
 msgid "Queue"
 msgstr "Redosled"
@@ -524,7 +528,7 @@ msgid "Pause"
 msgstr "Pauziraj"
 
 #: ../src/controllers.py:86 ../src/controllers.py:105 ../src/pop_tunein.py:216
-#: ../src/widgets_album.py:504 ../src/widgets_radio.py:173
+#: ../src/widgets_album.py:507 ../src/widgets_radio.py:173
 #: ../data/AlbumDetailedWidget.ui.h:1 ../data/ArtistView.ui.h:2
 #: ../data/ToolbarPlayback.ui.h:2
 msgid "Play"
@@ -542,7 +546,7 @@ msgstr "Mnogi izvođači"
 msgid "Last.fm authentication disabled"
 msgstr "Prijava na Last.fm je onemogućena"
 
-#: ../src/lastfm.py:334
+#: ../src/lastfm.py:333
 msgid "Wrong Last.fm credentials"
 msgstr "Parametri za prijavu na Last.fm su netačni"
 
@@ -576,7 +580,7 @@ msgstr "Očisti albume"
 msgid "Go to current track"
 msgstr "Idi na trenutnu numeru"
 
-#: ../src/pop_albums.py:301 ../src/toolbar_end.py:399
+#: ../src/pop_albums.py:301 ../src/toolbar_end.py:400
 msgid "Playing albums"
 msgstr "Pušteni albumi"
 
@@ -627,37 +631,41 @@ msgstr "Dodaj u/na \"%s\""
 msgid "Playback"
 msgstr "Puštanje"
 
-#: ../src/pop_menu.py:363 ../src/pop_menu.py:488 ../src/pop_menu.py:508
+#: ../src/pop_menu.py:363 ../src/pop_menu.py:497 ../src/pop_menu.py:517
 #: ../src/selectionlist.py:302 ../src/widgets_device.py:117
 #: ../src/widgets_playlist.py:530
 msgid "Playlists"
 msgstr "Liste pesama"
 
-#: ../src/pop_menu.py:414
+#: ../src/pop_menu.py:415
 msgid "Remove album"
 msgstr "Ukloni album"
 
-#: ../src/pop_menu.py:424
+#: ../src/pop_menu.py:417
+msgid "Remove track"
+msgstr "Ukloni pesmu"
+
+#: ../src/pop_menu.py:426
 msgid "Modify information"
 msgstr "Izmeni podatke"
 
-#: ../src/pop_menu.py:482 ../data/SettingsDialog.ui.h:10
+#: ../src/pop_menu.py:491 ../data/SettingsDialog.ui.h:10
 msgid "Artist"
 msgstr "izvođaču"
 
-#: ../src/pop_menu.py:491 ../data/PlaylistView.ui.h:1
+#: ../src/pop_menu.py:500 ../src/pop_menu.py:520 ../data/PlaylistView.ui.h:1
 msgid "Edit"
 msgstr "Uredi"
 
-#: ../src/pop_menu.py:538
+#: ../src/pop_menu.py:550
 msgid "Youtube video address"
 msgstr "Jutjub video adresa"
 
-#: ../src/pop_menu.py:661
+#: ../src/pop_menu.py:674
 msgid "Save genre"
 msgstr "Sačuvaj žanr"
 
-#: ../src/pop_menu.py:682 ../data/ExternalSearchRow.ui.h:1
+#: ../src/pop_menu.py:695 ../data/ExternalSearchRow.ui.h:1
 msgid "Save into collection"
 msgstr "Sačuvaj u kolekciju"
 
@@ -712,7 +720,7 @@ msgstr "Svi albumi"
 msgid "All artists"
 msgstr "Svi izvođači"
 
-#: ../src/settings.py:94
+#: ../src/settings.py:95
 #, python-format
 msgid "%d artist"
 msgid_plural "%d artists"
@@ -720,7 +728,7 @@ msgstr[0] "%d izvođač"
 msgstr[1] "%d izvođača"
 msgstr[2] "%d izvođača"
 
-#: ../src/settings.py:96
+#: ../src/settings.py:97
 #, python-format
 msgid "%d album"
 msgid_plural "%d albums"
@@ -728,7 +736,7 @@ msgstr[0] "%d album"
 msgstr[1] "%d albuma"
 msgstr[2] "%d albuma"
 
-#: ../src/settings.py:98
+#: ../src/settings.py:99
 #, python-format
 msgid "%d track"
 msgid_plural "%d tracks"
@@ -736,11 +744,11 @@ msgstr[0] "%d numera"
 msgstr[1] "%d numere"
 msgstr[2] "%d numera"
 
-#: ../src/settings.py:109 ../src/settings.py:112 ../data/SettingsDialog.ui.h:3
+#: ../src/settings.py:110 ../src/settings.py:113 ../data/SettingsDialog.ui.h:3
 msgid "Preferences"
 msgstr "Postavke"
 
-#: ../src/settings.py:141
+#: ../src/settings.py:145
 msgid "You need to install kid3-cli"
 msgstr "Potrebno je da instalirate kid3-cli"
 
@@ -752,11 +760,11 @@ msgstr "Popularno"
 msgid "Recently added"
 msgstr "Skoro dodato"
 
-#: ../src/toolbar_end.py:393
+#: ../src/toolbar_end.py:394
 msgid "Externals tracks playing"
 msgstr "Puštene spoljne numere"
 
-#: ../src/toolbar_end.py:397
+#: ../src/toolbar_end.py:398
 msgid "Playing playlists"
 msgstr "Pušteni spiskovi pesama"
 
@@ -795,30 +803,30 @@ msgstr "Otkaži usklađivanje"
 msgid "Append"
 msgstr "Dodaj"
 
-#: ../src/widgets_album.py:515
+#: ../src/widgets_album.py:518
 msgid "Play albums"
 msgstr "Pusti albume"
 
-#: ../src/widgets_album.py:525 ../data/AlbumDetailedWidget.ui.h:2
+#: ../src/widgets_album.py:528 ../data/AlbumDetailedWidget.ui.h:2
 msgid "Change artwork"
 msgstr "Promeni omot"
 
-#: ../src/widgets_album.py:691
+#: ../src/widgets_album.py:694
 #, python-format
 msgid "%s h  %s m"
 msgstr "%s s %s m"
 
-#: ../src/widgets_album.py:693
+#: ../src/widgets_album.py:696
 #, python-format
 msgid "%s h"
 msgstr "%s s"
 
-#: ../src/widgets_album.py:695
+#: ../src/widgets_album.py:698
 #, python-format
 msgid "%s m"
 msgstr "%s m"
 
-#: ../src/widgets_album.py:982
+#: ../src/widgets_album.py:985
 #, python-format
 msgid "Disc %s"
 msgstr "Disk %s"
@@ -982,7 +990,7 @@ msgid ""
 "Please create a \"Custom Search Engine\" here:"
 msgstr "Lolipop koristi „Guglov prilagođeni pretraživački API“ da bi tražio slike na vebu.\nOvaj API je ograničen tako da se može desiti da ne radi sa podrazumevanim API ključem.\nNapravite „prilagođenog pretraživača“ ovde:"
 
-#: ../data/ArtworkSearch.ui.h:6 ../data/SettingsDialog.ui.h:37
+#: ../data/ArtworkSearch.ui.h:6 ../data/SettingsDialog.ui.h:38
 msgid "API key"
 msgstr "API ključ"
 
@@ -1155,19 +1163,23 @@ msgid "You need to install pylast and gi secret"
 msgstr "Potrebno je da instalirate pakete koji sadrže „pylast“ i „gi secret“"
 
 #: ../data/SettingsDialog.ui.h:34
+msgid "Use Librefm"
+msgstr "Koristi Librefm"
+
+#: ../data/SettingsDialog.ui.h:35
 msgid ""
 "Google Web Services need a custom API key.\n"
 "Without one, you will reach default quota soon...\n"
 "Lollypop needs this to search artwork and music."
 msgstr "Guglove Veb Usluge traže prilagođeni API ključ.\nBez ključa ćete dositći podrazumevanu kvotu uskoro…\nLolipopu je ključ potreban zarad pretrae omota i muzike."
 
-#: ../data/SettingsDialog.ui.h:38
+#: ../data/SettingsDialog.ui.h:39
 msgid ""
 "You need to enable \"Custom Search API\" \n"
 "and \"Youtube Data API\" for your project."
 msgstr "Potrebno je da omogućite „prilagođeni pretraživački API“ i „Jutjub API podataka“ za vaš projekat."
 
-#: ../data/SettingsDialog.ui.h:40
+#: ../data/SettingsDialog.ui.h:41
 msgid "Configure Last.fm credentials"
 msgstr "Podesi Last.fm akreditive"
 
