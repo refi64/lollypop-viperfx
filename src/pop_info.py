@@ -235,16 +235,20 @@ class InfoPopover(Gtk.Popover):
         if info is not None:
             tags = info.get_tags()
             lyrics = reader.get_lyrics(tags)
-        if lyrics:
+        if lyrics or InfoPopover.WebView is None:
             label = Gtk.Label()
             label.set_vexpand(True)
             label.set_hexpand(True)
             label.set_margin_top(10)
             label.set_margin_end(10)
-            label.set_label(lyrics)
             label.show()
             widget.add(label)
-        elif InfoPopover.WebView is not None:
+            if lyrics:
+                label.set_label(lyrics)
+            else:
+                label.set_label(
+                       _("No lyrics found, please install gir1.2-webkit2-4.0"))
+        else:
             artists = ", ".join(Lp().player.current_track.artists)
             title = self.__current_track.name
             url = "http://genius.com/search?q=%s" % artists + " " + title
