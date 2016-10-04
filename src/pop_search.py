@@ -265,6 +265,7 @@ class SearchPopover(Gtk.Popover):
         self.__current_search = ''
         self.__nsearch = None
         self.__lsearch = None
+        self.__history = []
 
         builder = Gtk.Builder()
         builder.add_from_resource('/org/gnome/Lollypop/SearchPopover.ui')
@@ -404,7 +405,7 @@ class SearchPopover(Gtk.Popover):
         """
         self.__stack.set_visible_child(self.__spinner)
         self.__spinner.start()
-
+        self.__history = []
         # Network Search
         if self.__need_network_search():
             t = Thread(target=self.__nsearch.do, args=(self.__current_search,))
@@ -555,13 +556,19 @@ class SearchPopover(Gtk.Popover):
         item = search.items.pop(0)
         if item.exists_in_db():
             return
-        search_row = SearchRow(item, False)
-        search_row.show()
-        self.__view.add(search_row)
-        t = Thread(target=self.__download_cover,
-                   args=(item.smallcover, search_row))
-        t.daemon = True
-        t.start()
+        if item.is_track:
+            history = "♫" + item.name + item.artists[0]
+        else:
+            history = item.name + item.artists[0]
+        if history not in self.__history:
+            self.__history.append(history)
+            search_row = SearchRow(item, False)
+            search_row.show()
+            self.__view.add(search_row)
+            t = Thread(target=self.__download_cover,
+                       args=(item.smallcover, search_row))
+            t.daemon = True
+            t.start()
 
     def __on_map(self, widget):
         """
