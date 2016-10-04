@@ -10,7 +10,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-from gi.repository import Gtk, GLib, Pango
+from gi.repository import Gtk, GLib, Pango, Gio
 
 from threading import Thread
 
@@ -48,12 +48,13 @@ class LastfmPopover(Gtk.Popover):
             Populate view artist ids
             @param artist ids as int
         """
-        artists = []
-        for artist_id in artist_ids:
-            artists.append(Lp().artists.get_name(artist_id))
-        t = Thread(target=self.__populate, args=(artists,))
-        t.daemon = True
-        t.start()
+        if Gio.NetworkMonitor.get_default().get_network_available():
+            artists = []
+            for artist_id in artist_ids:
+                artists.append(Lp().artists.get_name(artist_id))
+            t = Thread(target=self.__populate, args=(artists,))
+            t.daemon = True
+            t.start()
 
 #######################
 # PRIVATE             #

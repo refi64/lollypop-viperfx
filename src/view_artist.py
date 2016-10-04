@@ -10,7 +10,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-from gi.repository import Gtk, Gdk, Pango
+from gi.repository import Gtk, Gdk, Pango, Gio
 
 from gettext import gettext as _
 from math import pi
@@ -51,7 +51,8 @@ class ArtistView(ArtistAlbumsView):
         self.__add_button = builder.get_object('add-button')
         self.__play_button = builder.get_object('play-button')
         self.__grid = builder.get_object('header-grid')
-        if Lp().lastfm is None:
+        if Lp().lastfm is None or\
+                not Gio.NetworkMonitor.get_default().get_network_available():
             builder.get_object('lastfm-button').hide()
         header = builder.get_object('header')
         header.set_property('valign', Gtk.Align.START)
