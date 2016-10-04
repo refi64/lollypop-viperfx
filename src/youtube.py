@@ -141,7 +141,7 @@ class Youtube:
                 Lp().albums.set_synced(album_id, Type.NONE)
 
             if persistent == DbPersistent.CHARTS:
-                genre_ids = []
+                genre_ids = [Type.CHARTS]
                 new_artist_ids = []
             else:
                 new_artist_ids = list(set(artist_ids) | set(album_artist_ids))

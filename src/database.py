@@ -87,14 +87,9 @@ class Database:
         """
             Create database tables or manage update if needed
         """
-        db_version = Lp().settings.get_value('db-version').get_int32()
-        upgrade = DatabaseUpgrade(db_version, self)
-        if os.path.exists(self.DB_PATH):
-            with SqlCursor(self) as sql:
-                upgrade.do_db_upgrade()
-                Lp().settings.set_value('db-version',
-                                        GLib.Variant('i', upgrade.count()))
-        else:
+        if not os.path.exists(self.DB_PATH):
+            db_version = Lp().settings.get_value('db-version').get_int32()
+            upgrade = DatabaseUpgrade(db_version, self)
             try:
                 if not os.path.exists(self._LOCAL_PATH):
                     os.mkdir(self._LOCAL_PATH)
@@ -118,6 +113,17 @@ class Database:
             except Exception as e:
                 print("Database::__init__(): %s" % e)
 
+    def upgrade(self):
+        """
+            Upgrade database
+        """
+        db_version = Lp().settings.get_value('db-version').get_int32()
+        upgrade = DatabaseUpgrade(db_version, self)
+        if os.path.exists(self.DB_PATH):
+            upgrade.do_db_upgrade()
+            Lp().settings.set_value('db-version',
+                                    GLib.Variant('i', upgrade.count()))
+
     def get_cursor(self):
         """
             Return a new sqlite cursor
@@ -135,7 +141,7 @@ class Database:
             Delete tracks from db
             @param track_ids as [int]
         """
-        with SqlCursor(Lp().db) as sql:
+        with SqlCursor(self) as sql:
             for track_id in track_ids:
                 album_id = Lp().tracks.get_album_id(track_id)
                 art_file = Lp().art.get_album_cache_name(Album(album_id))

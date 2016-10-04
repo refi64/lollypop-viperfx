@@ -109,6 +109,7 @@ class Application(Gtk.Application):
         """
             Init main application
         """
+        self.__is_fs = False
         if Gtk.get_minor_version() > 18:
             cssProviderFile = Gio.File.new_for_uri(
                 'resource:///org/gnome/Lollypop/application.css')
@@ -151,16 +152,6 @@ class Application(Gtk.Application):
             from lollypop.notification import NotificationManager
             self.notify = NotificationManager()
 
-        self.charts = None
-        if self.settings.get_value('network-search'):
-            from shutil import which
-            if which("youtube-dl") is not None:
-                from lollypop.charts import Charts
-                self.charts = Charts()
-                self.charts.update()
-            else:
-                self.settings.set_value('network-search',
-                                        GLib.Variant('b', False))
         settings = Gtk.Settings.get_default()
         dark = self.settings.get_value('dark-ui')
         settings.set_property('gtk-application-prefer-dark-theme', dark)
@@ -170,7 +161,7 @@ class Application(Gtk.Application):
 
         self.add_action(self.settings.create_action('shuffle'))
 
-        self.__is_fs = False
+        self.db.upgrade()
 
     def do_startup(self):
         """
@@ -212,6 +203,16 @@ class Application(Gtk.Application):
             else:
                 from lollypop.inhibitor_legacy import Inhibitor
             self.inhibitor = Inhibitor()
+            self.charts = None
+            if self.settings.get_value('network-search'):
+                from shutil import which
+                if which("youtube-dl") is not None:
+                    from lollypop.charts import Charts
+                    self.charts = Charts()
+                    self.charts.update()
+                else:
+                    self.settings.set_value('network-search',
+                                            GLib.Variant('b', False))
 
     def prepare_to_exit(self, action=None, param=None):
         """

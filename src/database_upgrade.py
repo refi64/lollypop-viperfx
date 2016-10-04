@@ -13,26 +13,10 @@
 from gi.repository import GLib
 
 import itertools
-import os
-import sqlite3
 
 from lollypop.sqlcursor import SqlCursor
 from lollypop.utils import translate_artist_name
-
-
-class DumbPlaylists:
-    __LOCAL_PATH = os.path.expanduser("~") + "/.local/share/lollypop"
-    __DB_PATH = "%s/playlists.db" % __LOCAL_PATH
-
-    def get_cursor(self):
-        """
-            Return a new sqlite cursor
-        """
-        try:
-            sql = sqlite3.connect(self.__DB_PATH, 600.0)
-            return sql
-        except:
-            exit(-1)
+from lollypop.define import Lp
 
 
 class DatabaseUpgrade:
@@ -64,7 +48,8 @@ class DatabaseUpgrade:
             11: "ALTER TABLE albums ADD synced INT NOT NULL DEFAULT 0",
             12: "ALTER TABLE tracks ADD persistent INT NOT NULL DEFAULT 1",
             13: self.__upgrade_13,
-            14: "UPDATE albums SET synced=-1 where mtime=0"
+            14: "UPDATE albums SET synced=-1 where mtime=0",
+            15: self.__upgrade_15
                          }
 
     """
@@ -207,9 +192,7 @@ class DatabaseUpgrade:
                         sql.execute("UPDATE tracks set uri=? WHERE rowid=?",
                                     (uri, track_id))
             sql.commit()
-        dumb = DumbPlaylists()
-        SqlCursor.add(dumb)
-        with SqlCursor(dumb) as sql:
+        with SqlCursor(Lp().playlists) as sql:
             sql.execute("ALTER TABLE tracks RENAME TO tmp_tracks")
             sql.execute('''CREATE TABLE tracks (playlist_id INT NOT NULL,
                                                 uri TEXT NOT NULL)''')
@@ -223,3 +206,17 @@ class DatabaseUpgrade:
                     sql.execute("UPDATE tracks set uri=? WHERE uri=?",
                                 (uri, path))
             sql.commit()
+
+    def __upgrade_15(self):
+        """
+            Fix broken 0.9.208 release
+        """
+        if Lp().notify:
+            Lp().notify.send("Please wait while upgrading db...")
+        with SqlCursor(Lp().db) as sql:
+            result = sql.execute("SELECT tracks.rowid FROM tracks\
+                                  WHERE NOT EXISTS (\
+                                                 SELECT track_id\
+                                                 FROM track_genres\
+                                                 WHERE track_id=tracks.rowid)")
+            Lp().db.del_tracks(list(itertools.chain(*result)))
