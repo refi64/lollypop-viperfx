@@ -481,15 +481,17 @@ class AlbumMenu(Gio.Menu):
         Contextual menu for album
     """
 
-    def __init__(self, album):
+    def __init__(self, album, show_artist=False):
         """
             Init menu model
             @param album as Album
+            @param show artist menu as bool
         """
         Gio.Menu.__init__(self)
-        self.insert_section(0, _("Artist"),
-                            ArtistMenu(album.id, album.genre_ids,
-                                       album.artist_ids, True))
+        if show_artist:
+            self.insert_section(0, _("Artist"),
+                                ArtistMenu(album.id, album.genre_ids,
+                                           album.artist_ids, True))
         self.insert_section(1, _("Queue"),
                             QueueMenu(album.id, album.genre_ids,
                                       album.artist_ids, True))

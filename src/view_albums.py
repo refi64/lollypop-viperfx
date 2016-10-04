@@ -125,10 +125,11 @@ class AlbumsView(LazyLoadingView):
                 popover = AlbumMenuPopover(album, None)
                 popover.set_relative_to(cover)
             elif album.is_youtube:
-                popover = AlbumMenuPopover(album, AlbumMenu(album))
+                popover = AlbumMenuPopover(album, AlbumMenu(album, True))
                 popover.set_relative_to(cover)
             else:
-                popover = Gtk.Popover.new_from_model(cover, AlbumMenu(album))
+                popover = Gtk.Popover.new_from_model(cover,
+                                                     AlbumMenu(album, True))
             popover.set_position(Gtk.PositionType.BOTTOM)
             popover.set_pointing_to(self.__press_rect)
         else:
