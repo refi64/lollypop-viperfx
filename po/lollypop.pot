@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-10-04 23:49+0200\n"
+"POT-Creation-Date: 2016-10-04 23:56+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -722,32 +722,32 @@ msgstr ""
 msgid "All artists"
 msgstr ""
 
-#: ../src/settings.py:95
+#: ../src/settings.py:94
 #, python-format
 msgid "%d artist"
 msgid_plural "%d artists"
 msgstr[0] ""
 msgstr[1] ""
 
-#: ../src/settings.py:97
+#: ../src/settings.py:96
 #, python-format
 msgid "%d album"
 msgid_plural "%d albums"
 msgstr[0] ""
 msgstr[1] ""
 
-#: ../src/settings.py:99
+#: ../src/settings.py:98
 #, python-format
 msgid "%d track"
 msgid_plural "%d tracks"
 msgstr[0] ""
 msgstr[1] ""
 
-#: ../src/settings.py:110 ../src/settings.py:113 ../data/SettingsDialog.ui.h:3
+#: ../src/settings.py:109 ../src/settings.py:112 ../data/SettingsDialog.ui.h:3
 msgid "Preferences"
 msgstr ""
 
-#: ../src/settings.py:145
+#: ../src/settings.py:144
 msgid "You need to install kid3-cli"
 msgstr ""
 
@@ -872,11 +872,7 @@ msgstr ""
 msgid "musician;band"
 msgstr ""
 
-#: ../data/LastfmPopover.ui.h:1
-msgid "page0"
-msgstr ""
-
-#: ../data/LastfmPopover.ui.h:2 ../data/ArtistView.ui.h:4
+#: ../data/LastfmPopover.ui.h:1 ../data/ArtistView.ui.h:4
 msgid "Similar artists"
 msgstr ""
 
