@@ -14,6 +14,7 @@ from gi.repository import Gst, GstAudio, GstPbutils, GLib, Gio
 
 from time import time
 from threading import Thread
+from re import sub
 
 from lollypop.player_base import BasePlayer
 from lollypop.tagreader import TagReader
@@ -609,7 +610,9 @@ class BinPlayer(BasePlayer):
             @param track as Track
             @param play as bool
         """
-        argv = ["youtube-dl", "-g", "-f", "bestaudio", track.uri, None]
+        # Remove playlist args
+        uri = sub("list=.*", "", track.uri)
+        argv = ["youtube-dl", "-g", "-f", "bestaudio", uri, None]
         (s, o, e, s) = GLib.spawn_sync(None,
                                        argv,
                                        None,
