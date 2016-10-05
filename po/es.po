@@ -18,8 +18,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lollypop\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-10-02 21:20+0200\n"
-"PO-Revision-Date: 2016-10-03 10:46+0000\n"
+"POT-Creation-Date: 2016-10-04 23:56+0200\n"
+"PO-Revision-Date: 2016-10-05 08:21+0000\n"
 "Last-Translator: Jota Sz <jotagral@gmail.com>\n"
 "Language-Team: Spanish (http://www.transifex.com/gnumdk/lollypop/language/es/)\n"
 "MIME-Version: 1.0\n"
@@ -290,8 +290,8 @@ msgstr "Navegación por género, artista o carátula"
 msgid "Search"
 msgstr "Búsqueda"
 
-#: ../data/lollypop.appdata.xml.in.h:9 ../src/pop_menu.py:494
-#: ../src/pop_menu.py:515 ../src/toolbar_end.py:396
+#: ../data/lollypop.appdata.xml.in.h:9 ../src/pop_menu.py:493
+#: ../src/pop_menu.py:514 ../src/toolbar_end.py:407
 #: ../data/QueuePopover.ui.h:2
 msgid "Queue"
 msgstr "Cola"
@@ -491,44 +491,44 @@ msgstr "banda sonora"
 msgid "world"
 msgstr ""
 
-#: ../src/collectionscanner.py:68
+#: ../src/collectionscanner.py:66
 msgid "Your music is updating"
 msgstr "Su música se está actualizando"
 
-#: ../src/collectionscanner.py:157
+#: ../src/collectionscanner.py:158
 msgid "Lollypop is detecting an empty folder."
 msgstr "Lollypop está detectando una carpeta vacía"
 
-#: ../src/collectionscanner.py:158
+#: ../src/collectionscanner.py:159
 msgid "Check your music settings."
 msgstr "Comprobar la configuración de música"
 
 #: ../src/collectionscanner.py:255 ../src/database_albums.py:329
 #: ../src/database_artists.py:104 ../src/database_genres.py:69
-#: ../src/database_tracks.py:247 ../src/selectionlist.py:381
+#: ../src/database_tracks.py:247 ../src/selectionlist.py:388
 #: ../src/tagreader.py:88 ../src/tagreader.py:103 ../src/tagreader.py:118
 #: ../src/tagreader.py:163 ../src/tagreader.py:178 ../src/tagreader.py:181
 #: ../src/tagreader.py:191 ../src/tagreader.py:198
 msgid "Unknown"
 msgstr "Desconocido"
 
-#: ../src/container.py:488
+#: ../src/container.py:450
 msgid "Compilations"
 msgstr "Recopilaciones"
 
-#: ../src/container.py:512 ../src/playlists.py:223
+#: ../src/container.py:474 ../src/playlists.py:223
 msgid "Popular tracks"
 msgstr "Pistas populares"
 
-#: ../src/container.py:513 ../src/playlists.py:225
+#: ../src/container.py:475 ../src/playlists.py:225
 msgid "Recently played"
 msgstr "Recientemente reproducida"
 
-#: ../src/container.py:514 ../src/playlists.py:227
+#: ../src/container.py:476 ../src/playlists.py:227
 msgid "Never played"
 msgstr "No reproducido nunca"
 
-#: ../src/container.py:515 ../src/playlists.py:229
+#: ../src/container.py:477 ../src/playlists.py:229
 msgid "Random tracks"
 msgstr "Pistas aleatorias"
 
@@ -537,7 +537,7 @@ msgid "Pause"
 msgstr "Pausar"
 
 #: ../src/controllers.py:86 ../src/controllers.py:105 ../src/pop_tunein.py:216
-#: ../src/widgets_album.py:507 ../src/widgets_radio.py:173
+#: ../src/widgets_album.py:504 ../src/widgets_radio.py:173
 #: ../data/AlbumDetailedWidget.ui.h:1 ../data/ArtistView.ui.h:2
 #: ../data/ToolbarPlayback.ui.h:2
 msgid "Play"
@@ -555,7 +555,7 @@ msgstr "Muchos artistas"
 msgid "Last.fm authentication disabled"
 msgstr "Autenticación de Last.fm desactivada"
 
-#: ../src/lastfm.py:333
+#: ../src/lastfm.py:348
 msgid "Wrong Last.fm credentials"
 msgstr "Credenciales de Last.fm erróneas"
 
@@ -585,11 +585,11 @@ msgid "Clear albums"
 msgstr "Vaciar álbumes"
 
 #: ../src/pop_albums.py:300 ../src/view_artist.py:50 ../data/ArtistInfo.ui.h:8
-#: ../data/ArtistView.ui.h:4
+#: ../data/ArtistView.ui.h:5
 msgid "Go to current track"
 msgstr "Ir a la pista actual"
 
-#: ../src/pop_albums.py:301 ../src/toolbar_end.py:400
+#: ../src/pop_albums.py:301 ../src/toolbar_end.py:411
 msgid "Playing albums"
 msgstr "Reproducción de álbumes"
 
@@ -601,9 +601,13 @@ msgstr "Información avanzada del artista desactivada"
 msgid "WebKit support disabled"
 msgstr "Compatibilidad con WebKit desactivada"
 
+#: ../src/pop_info.py:250
+msgid "No lyrics found, please install gir1.2-webkit2-4.0"
+msgstr ""
+
 #: ../src/pop_menu.py:73
 msgid "Show albums from artist"
-msgstr "Mostrar los álbumes por artista"
+msgstr "Mostrar álbumes del artista"
 
 #: ../src/pop_menu.py:141 ../src/widgets_indicator.py:111
 #: ../data/InternalSearchRow.ui.h:2
@@ -640,8 +644,8 @@ msgstr "Añadir a «%s»"
 msgid "Playback"
 msgstr "Reproducción"
 
-#: ../src/pop_menu.py:363 ../src/pop_menu.py:497 ../src/pop_menu.py:517
-#: ../src/selectionlist.py:302 ../src/widgets_device.py:117
+#: ../src/pop_menu.py:363 ../src/pop_menu.py:496 ../src/pop_menu.py:516
+#: ../src/selectionlist.py:309 ../src/widgets_device.py:117
 #: ../src/widgets_playlist.py:530
 msgid "Playlists"
 msgstr "Listas"
@@ -658,29 +662,29 @@ msgstr "Eliminar pista"
 msgid "Modify information"
 msgstr "Modificar etiquetas"
 
-#: ../src/pop_menu.py:491 ../data/SettingsDialog.ui.h:10
+#: ../src/pop_menu.py:490 ../data/SettingsDialog.ui.h:10
 msgid "Artist"
 msgstr "Artista"
 
-#: ../src/pop_menu.py:500 ../src/pop_menu.py:520 ../data/PlaylistView.ui.h:1
+#: ../src/pop_menu.py:499 ../src/pop_menu.py:519 ../data/PlaylistView.ui.h:1
 msgid "Edit"
 msgstr "Editar"
 
-#: ../src/pop_menu.py:550
+#: ../src/pop_menu.py:627
 msgid "Youtube video address"
 msgstr "Dirección de video de Youtube"
 
-#: ../src/pop_menu.py:674
+#: ../src/pop_menu.py:682
 msgid "Save genre"
 msgstr "Guardar género"
 
-#: ../src/pop_menu.py:695 ../data/ExternalSearchRow.ui.h:1
+#: ../src/pop_menu.py:703 ../data/ExternalSearchRow.ui.h:1
 msgid "Save into collection"
 msgstr "Guardar en la colección"
 
 #. Translators: radio context
 #. Translators: artist context
-#: ../src/pop_radio.py:84 ../src/pop_tunein.py:223 ../src/view_artist.py:317
+#: ../src/pop_radio.py:84 ../src/pop_tunein.py:223 ../src/view_artist.py:329
 msgid "Add"
 msgstr "Añadir"
 
@@ -689,7 +693,7 @@ msgstr "Añadir"
 msgid "Modify"
 msgstr "Modificar"
 
-#: ../src/pop_search.py:288
+#: ../src/pop_search.py:290
 msgid "You need to install youtube-dl"
 msgstr "Es necesario instalar youtube-dl"
 
@@ -701,60 +705,60 @@ msgstr "Espere un momento…"
 msgid "Can't connect to TuneIn..."
 msgstr "No se puede conectar a TuneIn..."
 
-#: ../src/selectionlist.py:299
+#: ../src/selectionlist.py:306
 msgid "Popular albums"
 msgstr "Álbumes populares"
 
-#: ../src/selectionlist.py:300
+#: ../src/selectionlist.py:307
 msgid "Recently added albums"
 msgstr "Recientemente se añadieron álbumes"
 
-#: ../src/selectionlist.py:301
+#: ../src/selectionlist.py:308
 msgid "Random albums"
 msgstr "Álbumes aleatorios"
 
-#: ../src/selectionlist.py:303
+#: ../src/selectionlist.py:310
 msgid "Radios"
 msgstr "Radios"
 
-#: ../src/selectionlist.py:305
+#: ../src/selectionlist.py:312
 msgid "The charts"
 msgstr "Las estadísticas"
 
-#: ../src/selectionlist.py:307
+#: ../src/selectionlist.py:314
 msgid "All albums"
 msgstr "Todos los Álbumes"
 
-#: ../src/selectionlist.py:309
+#: ../src/selectionlist.py:316
 msgid "All artists"
 msgstr "Todos los artistas"
 
-#: ../src/settings.py:95
+#: ../src/settings.py:94
 #, python-format
 msgid "%d artist"
 msgid_plural "%d artists"
 msgstr[0] "%d artista"
 msgstr[1] "%d artistas"
 
-#: ../src/settings.py:97
+#: ../src/settings.py:96
 #, python-format
 msgid "%d album"
 msgid_plural "%d albums"
 msgstr[0] "%d álbum"
 msgstr[1] "%d álbumes"
 
-#: ../src/settings.py:99
+#: ../src/settings.py:98
 #, python-format
 msgid "%d track"
 msgid_plural "%d tracks"
 msgstr[0] "%d canción"
 msgstr[1] "%d canciones"
 
-#: ../src/settings.py:110 ../src/settings.py:113 ../data/SettingsDialog.ui.h:3
+#: ../src/settings.py:109 ../src/settings.py:112 ../data/SettingsDialog.ui.h:3
 msgid "Preferences"
 msgstr "Preferencias"
 
-#: ../src/settings.py:145
+#: ../src/settings.py:144
 msgid "You need to install kid3-cli"
 msgstr "Es necesario instalar kid3-cli"
 
@@ -766,11 +770,11 @@ msgstr "Populares"
 msgid "Recently added"
 msgstr "Recientemente añadido"
 
-#: ../src/toolbar_end.py:394
+#: ../src/toolbar_end.py:405
 msgid "Externals tracks playing"
 msgstr "Reproducción de pistas externas"
 
-#: ../src/toolbar_end.py:398
+#: ../src/toolbar_end.py:409
 msgid "Playing playlists"
 msgstr "Reproducción de listas"
 
@@ -782,7 +786,7 @@ msgid "The the"
 msgstr "The the Les les La Le la le los el"
 
 #. Translators: artist context
-#: ../src/view_artist.py:311 ../src/widgets_album.py:359
+#: ../src/view_artist.py:323 ../src/widgets_album.py:370
 msgid "Remove"
 msgstr "Quitar"
 
@@ -805,34 +809,34 @@ msgstr "Sincronizar %s"
 msgid "Cancel synchronization"
 msgstr "Cancelar la sincronización"
 
-#: ../src/widgets_album.py:355
+#: ../src/widgets_album.py:366
 msgid "Append"
 msgstr "Añadir"
 
-#: ../src/widgets_album.py:518
+#: ../src/widgets_album.py:515
 msgid "Play albums"
 msgstr "Reproducir álbumes"
 
-#: ../src/widgets_album.py:528 ../data/AlbumDetailedWidget.ui.h:2
+#: ../src/widgets_album.py:525 ../data/AlbumDetailedWidget.ui.h:2
 msgid "Change artwork"
 msgstr "Cambiar carátula"
 
-#: ../src/widgets_album.py:694
+#: ../src/widgets_album.py:863
 #, python-format
 msgid "%s h  %s m"
 msgstr "%s h %s m"
 
-#: ../src/widgets_album.py:696
+#: ../src/widgets_album.py:865
 #, python-format
 msgid "%s h"
 msgstr "%s h"
 
-#: ../src/widgets_album.py:698
+#: ../src/widgets_album.py:867
 #, python-format
 msgid "%s m"
 msgstr "%s m"
 
-#: ../src/widgets_album.py:985
+#: ../src/widgets_album.py:1018
 #, python-format
 msgid "Disc %s"
 msgstr "Album %s"
@@ -878,6 +882,10 @@ msgstr "Modificar radio"
 #: ../src/wikipedia.py:36
 msgid "musician;band"
 msgstr "músico;banda"
+
+#: ../data/LastfmPopover.ui.h:1 ../data/ArtistView.ui.h:4
+msgid "Similar artists"
+msgstr ""
 
 #: ../data/PlaybackMenu.ui.h:1
 msgid "Continuous playback"
