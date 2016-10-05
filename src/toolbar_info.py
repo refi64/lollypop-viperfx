@@ -13,11 +13,6 @@
 from gi.repository import Gtk, Gdk, GLib
 from cgi import escape
 
-from lollypop.pop_menu import TrackMenuPopover
-from lollypop.pop_tunein import TuneinPopover
-from lollypop.pop_externals import ExternalsPopover
-from lollypop.pop_info import InfoPopover
-from lollypop.pop_menu import PopToolbarMenu
 from lollypop.controllers import InfosController
 from lollypop.define import Lp, Type, ArtSize
 
@@ -111,6 +106,7 @@ class ToolbarInfo(Gtk.Bin, InfosController):
             GLib.source_remove(self.__timeout_id)
             self.__timeout_id = None
             if Lp().player.current_track.id == Type.EXTERNALS:
+                from lollypop.pop_externals import ExternalsPopover
                 expopover = ExternalsPopover()
                 expopover.set_relative_to(widget)
                 expopover.populate()
@@ -119,12 +115,14 @@ class ToolbarInfo(Gtk.Bin, InfosController):
                 if event.button == 1:
                     if Lp().player.current_track.id == Type.RADIOS:
                         if self.__pop_tunein is None:
+                            from lollypop.pop_tunein import TuneinPopover
                             self.__pop_tunein = TuneinPopover()
                             self.__pop_tunein.populate()
                             self.__pop_tunein.set_relative_to(widget)
                         self.__pop_tunein.show()
                     else:
                         if self.__pop_info is None:
+                            from lollypop.pop_info import InfoPopover
                             self.__pop_info = InfoPopover()
                             self.__pop_info.set_relative_to(widget)
                         self.__pop_info.show()
@@ -172,6 +170,8 @@ class ToolbarInfo(Gtk.Bin, InfosController):
         """
         self.__timeout_id = None
         if Lp().player.current_track.id >= 0:
+            from lollypop.pop_menu import PopToolbarMenu
+            from lollypop.pop_menu import TrackMenuPopover
             popover = TrackMenuPopover(
                         Lp().player.current_track,
                         PopToolbarMenu(Lp().player.current_track.id))

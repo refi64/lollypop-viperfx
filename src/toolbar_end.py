@@ -15,11 +15,6 @@ from gi.repository import Gtk, Gio, GLib
 from gettext import gettext as _
 
 from lollypop.pop_next import NextPopover
-from lollypop.pop_search import SearchPopover
-from lollypop.pop_albums import AlbumsPopover
-from lollypop.pop_playlists import PlaylistsPopover
-from lollypop.pop_queue import QueuePopover
-from lollypop.pop_externals import ExternalsPopover
 from lollypop.define import Lp, Shuffle, Type
 
 
@@ -260,19 +255,23 @@ class ToolbarEnd(Gtk.Bin):
         self.__next_popover.hide()
         self.__next_popover.inhibit(True)
         if Lp().player.current_track.id == Type.EXTERNALS:
+            from lollypop.pop_externals import ExternalsPopover
             self.__list_popover = ExternalsPopover()
             self.__list_popover.set_relative_to(self.__list_button)
             self.__list_popover.populate()
             self.__list_popover.show()
         elif Lp().player.get_queue():
+            from lollypop.pop_queue import QueuePopover
             self.__list_popover = QueuePopover()
             self.__list_popover.set_relative_to(self.__list_button)
             self.__list_popover.show()
         elif Lp().player.get_user_playlist_ids():
+            from lollypop.pop_playlists import PlaylistsPopover
             self.__list_popover = PlaylistsPopover()
             self.__list_popover.set_relative_to(self.__list_button)
             self.__list_popover.show()
         else:
+            from lollypop.pop_albums import AlbumsPopover
             self.__list_popover = AlbumsPopover()
             self.__list_popover.set_relative_to(self.__list_button)
             self.__list_popover.show()
@@ -288,6 +287,7 @@ class ToolbarEnd(Gtk.Bin):
         self.__next_popover.hide()
         self.__next_popover.inhibit(True)
         if self.__search is None:
+            from lollypop.pop_search import SearchPopover
             self.__search = SearchPopover()
             self.__search.connect('closed', self.__on_popover_closed)
         self.__search.set_relative_to(self.__search_button)

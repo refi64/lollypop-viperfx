@@ -16,7 +16,6 @@ from lollypop.container import Container
 from lollypop.define import Lp, NextContext, Shuffle, WindowSize
 from lollypop.toolbar import Toolbar
 from lollypop.utils import is_unity, set_loved, is_loved
-from lollypop.miniplayer import MiniPlayer
 
 
 class Window(Gtk.ApplicationWindow, Container):
@@ -206,6 +205,7 @@ class Window(Gtk.ApplicationWindow, Container):
         """
         is_visible = self.__subtoolbar.is_visible()
         if show and not is_visible:
+            from lollypop.miniplayer import MiniPlayer
             mini = MiniPlayer()
             mini.show()
             self.__subtoolbar.add(mini)
@@ -227,6 +227,7 @@ class Window(Gtk.ApplicationWindow, Container):
                 if self.__timeout is not None:
                     GLib.source_remove(self.__timeout)
             else:
+                from lollypop.miniplayer import MiniPlayer
                 mini = MiniPlayer()
                 self.__main_stack.add_named(mini, 'mini')
             self.__timeout = None

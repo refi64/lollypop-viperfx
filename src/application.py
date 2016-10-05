@@ -15,6 +15,7 @@ gi.require_version('Gtk', '3.0')
 gi.require_version('Gst', '1.0')
 gi.require_version('Notify', '0.7')
 gi.require_version('TotemPlParser', '1.0')
+gi.require_version('GstPbutils', '1.0')
 from gi.repository import Gtk, Gio, GLib, Gdk, Notify, TotemPlParser
 
 from pickle import dump
@@ -47,9 +48,7 @@ from lollypop.database_artists import ArtistsDatabase
 from lollypop.database_genres import GenresDatabase
 from lollypop.database_tracks import TracksDatabase
 from lollypop.playlists import Playlists
-from lollypop.radios import Radios
 from lollypop.collectionscanner import CollectionScanner
-from lollypop.fullscreen import FullScreen
 
 
 class Application(Gtk.Application):
@@ -226,6 +225,7 @@ class Application(Gtk.Application):
             if self.player.current_track.id is None:
                 track_id = -1
             elif self.player.current_track.id == Type.RADIOS:
+                from lollypop.radios import Radios
                 radios = Radios()
                 track_id = radios.get_id(
                                     self.player.current_track.album_artists[0])
@@ -272,6 +272,7 @@ class Application(Gtk.Application):
             return
         self.db.del_tracks(self.tracks.get_non_persistent())
         try:
+            from lollypop.radios import Radios
             with SqlCursor(self.db) as sql:
                 sql.execute('VACUUM')
             with SqlCursor(self.playlists) as sql:
@@ -395,6 +396,7 @@ class Application(Gtk.Application):
             @param param as GLib.Variant
         """
         if self.window and not self.__is_fs:
+            from lollypop.fullscreen import FullScreen
             fs = FullScreen(self, self.window)
             fs.connect("destroy", self.__on_fs_destroyed)
             self.__is_fs = True

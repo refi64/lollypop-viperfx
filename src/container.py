@@ -18,13 +18,7 @@ from lollypop.define import Lp, Type
 from lollypop.loader import Loader
 from lollypop.selectionlist import SelectionList
 from lollypop.view_container import ViewContainer
-from lollypop.view_albums import AlbumsView
-from lollypop.view_artist import ArtistView
-from lollypop.view_radios import RadiosView
 from lollypop.progressbar import ProgressBar
-from lollypop.view_playlists import PlaylistsView
-from lollypop.view_playlists import PlaylistsManageView, PlaylistEditView
-from lollypop.view_device import DeviceView, DeviceLocked, DeviceMigration
 
 
 # This is a multimedia device
@@ -119,6 +113,7 @@ class Container:
             @param artist ids as [int]
             @param is_album as bool
         """
+        from lollypop.view_playlists import PlaylistsManageView
         current = self.__stack.get_visible_child()
         view = PlaylistsManageView(object_id, genre_ids, artist_ids, is_album)
         view.populate()
@@ -134,6 +129,7 @@ class Container:
             @param playlist id as int
             @param playlist name as str
         """
+        from lollypop.view_playlists import PlaylistEditView
         view = PlaylistEditView(playlist_id)
         view.show()
         self.__stack.add(view)
@@ -488,7 +484,7 @@ class Container:
             Stop current view
         """
         child = self.__stack.get_visible_child()
-        if child is not None and not isinstance(child, DeviceView):
+        if child is not None:
             if hasattr(child, "stop"):
                 child.stop()
 
@@ -498,16 +494,13 @@ class Container:
             Use existing view if available
             @param device id as int
         """
+        from lollypop.view_device import DeviceView, DeviceLocked
         self.__stop_current_view()
         device = self.__devices[device_id]
         child = self.__stack.get_child_by_name(device.uri)
         if child is None:
             files = DeviceView.get_files(device.uri)
-            if files or device.uri.startswith("file:"):
-                for f in files:
-                    if DeviceView.exists_old_sync(device.uri+f):
-                        child = DeviceMigration()
-                        self.__stack.add(child)
+            if files:
                 if child is None:
                     child = DeviceView(device)
                     self.__stack.add_named(child, device.uri)
@@ -534,7 +527,7 @@ class Container:
                     albums += Lp().albums.get_compilation_ids(genre_ids)
                 albums += Lp().albums.get_ids(artist_ids, genre_ids)
             return albums
-
+        from lollypop.view_artist import ArtistView
         self.__stop_current_view()
         view = ArtistView(artist_ids, genre_ids)
         loader = Loader(target=load, view=view)
@@ -573,6 +566,7 @@ class Container:
                     albums += Lp().albums.get_ids([], genre_ids)
             return albums
 
+        from lollypop.view_albums import AlbumsView
         self.__stop_current_view()
         view = AlbumsView(genre_ids, artist_ids)
         loader = Loader(target=load, view=view)
@@ -608,10 +602,12 @@ class Container:
         self.__stop_current_view()
         view = None
         if playlist_ids:
+            from lollypop.view_playlists import PlaylistsView
             view = PlaylistsView(playlist_ids)
             loader = Loader(target=load, view=view)
             loader.start()
         else:
+            from lollypop.view_playlists import PlaylistsManageView
             view = PlaylistsManageView(Type.NONE, [], [], False)
             view.populate()
         view.show()
@@ -623,6 +619,7 @@ class Container:
         """
             Update current view with radios view
         """
+        from lollypop.view_radios import RadiosView
         self.__stop_current_view()
         view = RadiosView()
         view.populate()
