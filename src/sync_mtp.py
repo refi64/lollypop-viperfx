@@ -115,7 +115,10 @@ class MtpSync:
             if self._syncing:
                 self.__remove_from_device(playlists)
 
-            # Delete old playlists
+            # Remove empty dirs
+            self.__remove_empty_dirs()
+
+            # Remove old playlists
             d = Gio.File.new_for_uri(self._uri)
             infos = d.enumerate_children(
                 'standard::name',
@@ -166,6 +169,36 @@ class MtpSync:
             sleep(5)
             self.__retry(func, args, t-1)
 
+    def __remove_empty_dirs(self):
+        """
+            Delete empty dirs
+        """
+        to_delete = []
+        dir_uris = [self._uri]
+        try:
+            # First get all directories
+            while dir_uris:
+                uri = dir_uris.pop(0)
+                d = Gio.File.new_for_uri(uri)
+                infos = d.enumerate_children(
+                    'standard::name,standard::type',
+                    Gio.FileQueryInfoFlags.NOFOLLOW_SYMLINKS,
+                    None)
+                for info in infos:
+                    if info.get_file_type() == Gio.FileType.DIRECTORY:
+                        if info.get_name() != "unsync":
+                            dir_uris.append(uri + "/" + info.get_name())
+                            to_delete.append(uri + "/" + info.get_name())
+            # Then delete
+            for d in to_delete:
+                d = Gio.File.new_for_uri(d)
+                try:
+                    d.delete()
+                except:
+                    pass
+        except Exception as e:
+            print("MtpSync::__remove_empty_dirs():", e, uri)
+
     def __get_track_files(self):
         """
             Return files in self._uri/tracks
@@ -179,8 +212,7 @@ class MtpSync:
         while dir_uris:
             try:
                 uri = dir_uris.pop(0)
-                album = uri.replace(self._uri, "")
-                d = Gio.File.new_for_uri(self._uri+"/"+album)
+                d = Gio.File.new_for_uri(uri)
                 infos = d.enumerate_children(
                     'standard::name,standard::type',
                     Gio.FileQueryInfoFlags.NOFOLLOW_SYMLINKS,
@@ -188,15 +220,13 @@ class MtpSync:
                 for info in infos:
                     if info.get_file_type() == Gio.FileType.DIRECTORY:
                         if info.get_name() != "unsync":
-                            dir_uris.append(uri+info.get_name())
+                            dir_uris.append(uri + "/" + info.get_name())
                     else:
                         track = info.get_name()
                         if not track.endswith('m3u'):
-                            children.append("%s/%s/%s" % (self._uri,
-                                                          album,
-                                                          track))
+                            children.append("%s/%s" % (uri, track))
             except Exception as e:
-                print("MtpSync::_get_track_files():", e, uri)
+                print("MtpSync::__get_track_files():", e, uri)
         return children
 
     def __copy_to_device(self, playlists):
