@@ -723,8 +723,10 @@ class AlbumMenuPopover(Gtk.Popover):
             @param edit as Gtk.Edit
             @param album as Album
         """
-        orig_genre_ids = Lp().albums.get_genre_ids(album.id)
         genre = edit.get_text()
+        if not genre:
+            return
+        orig_genre_ids = Lp().albums.get_genre_ids(album.id)
         genre_id = Lp().genres.get_id(genre)
         if genre_id is None:
             genre_id = Lp().genres.add(genre)
