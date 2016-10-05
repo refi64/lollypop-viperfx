@@ -42,6 +42,7 @@ class AlbumsView(LazyLoadingView):
         self.__albumbox.set_selection_mode(Gtk.SelectionMode.NONE)
         self.__albumbox.connect('child-activated', self.__on_album_activated)
         self.__albumbox.connect('button-press-event', self.__on_button_press)
+        # Allow lazy loading to not jump up and down
         self.__albumbox.set_homogeneous(True)
         self.__albumbox.set_max_children_per_line(1000)
         self.__albumbox.show()

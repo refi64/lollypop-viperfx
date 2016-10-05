@@ -49,6 +49,7 @@ class RadiosView(LazyLoadingView):
 
         self.__radiobox = Gtk.FlowBox()
         self.__radiobox.set_selection_mode(Gtk.SelectionMode.NONE)
+        # Allow lazy loading to not jump up and down
         self.__radiobox.set_homogeneous(True)
         self.__radiobox.set_max_children_per_line(1000)
         self.__radiobox.show()
