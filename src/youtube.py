@@ -145,7 +145,7 @@ class Youtube:
                 new_artist_ids = []
             else:
                 new_artist_ids = list(set(artist_ids) | set(album_artist_ids))
-                genre_ids = t.add_genres("Youtube", album_id)
+                genre_ids = t.add_genres("YouTube", album_id)
 
             # Add track to db
             uri = "https://www.youtube.com/watch?v=%s" % yid
