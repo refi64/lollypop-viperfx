@@ -889,7 +889,7 @@ Lollypop needs this to search artwork and music.</property>
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
                     <property name="label" translatable="yes">You need to enable "Custom Search API" 
-and "Youtube Data API" for your project.</property>
+and "YouTube Data API" for your project.</property>
                     <property name="justify">center</property>
                     <style>
                       <class name="dim-label"/>
