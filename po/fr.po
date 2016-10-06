@@ -9,8 +9,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lollypop\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-10-04 23:56+0200\n"
-"PO-Revision-Date: 2016-10-04 21:58+0000\n"
+"POT-Creation-Date: 2016-10-06 16:02+0200\n"
+"PO-Revision-Date: 2016-10-06 14:04+0000\n"
 "Last-Translator: Cédric Bellegarde <web@adishatz.org>\n"
 "Language-Team: French (http://www.transifex.com/gnumdk/lollypop/language/fr/)\n"
 "MIME-Version: 1.0\n"
@@ -281,8 +281,8 @@ msgstr "Navigation par Genre/Artiste/Pochette"
 msgid "Search"
 msgstr "Recherche"
 
-#: ../data/lollypop.appdata.xml.in.h:9 ../src/pop_menu.py:493
-#: ../src/pop_menu.py:514 ../src/toolbar_end.py:407
+#: ../data/lollypop.appdata.xml.in.h:9 ../src/pop_menu.py:495
+#: ../src/pop_menu.py:516 ../src/toolbar_end.py:407
 #: ../data/QueuePopover.ui.h:2
 msgid "Queue"
 msgstr "File d'attente"
@@ -331,14 +331,14 @@ msgstr "Support de HiDPI"
 msgid "Tunein support"
 msgstr "Support de Tunein"
 
-#: ../src/application.py:31
+#: ../src/application.py:32
 msgid ""
 "    - Scrobbler disabled\n"
 "    - Auto cover download disabled\n"
 "    - Artist informations disabled"
 msgstr "- Scrobbler désactivé\n- Téléchargement automatique des pochettes désactivé\n- Informations sur les artistes désactivée"
 
-#: ../src/application.py:463
+#: ../src/application.py:466
 msgid "Lollypop: You need to install yelp."
 msgstr "Lollypop: Vous devez installer yelp."
 
@@ -497,29 +497,29 @@ msgstr "Vérifiez vos paramètres de musique."
 #: ../src/collectionscanner.py:255 ../src/database_albums.py:329
 #: ../src/database_artists.py:104 ../src/database_genres.py:69
 #: ../src/database_tracks.py:247 ../src/selectionlist.py:388
-#: ../src/tagreader.py:88 ../src/tagreader.py:103 ../src/tagreader.py:118
-#: ../src/tagreader.py:163 ../src/tagreader.py:178 ../src/tagreader.py:181
-#: ../src/tagreader.py:191 ../src/tagreader.py:198
+#: ../src/tagreader.py:86 ../src/tagreader.py:101 ../src/tagreader.py:116
+#: ../src/tagreader.py:161 ../src/tagreader.py:176 ../src/tagreader.py:179
+#: ../src/tagreader.py:189 ../src/tagreader.py:196
 msgid "Unknown"
 msgstr "Inconnu"
 
-#: ../src/container.py:450
+#: ../src/container.py:446
 msgid "Compilations"
 msgstr "Compilations"
 
-#: ../src/container.py:474 ../src/playlists.py:223
+#: ../src/container.py:470 ../src/playlists.py:223
 msgid "Popular tracks"
 msgstr "Morceaux populaires"
 
-#: ../src/container.py:475 ../src/playlists.py:225
+#: ../src/container.py:471 ../src/playlists.py:225
 msgid "Recently played"
 msgstr "Jouées récemment"
 
-#: ../src/container.py:476 ../src/playlists.py:227
+#: ../src/container.py:472 ../src/playlists.py:227
 msgid "Never played"
 msgstr "Jamais jouées"
 
-#: ../src/container.py:477 ../src/playlists.py:229
+#: ../src/container.py:473 ../src/playlists.py:229
 msgid "Random tracks"
 msgstr "Morceaux aléatoires"
 
@@ -635,7 +635,7 @@ msgstr "Ajouter à \"%s\""
 msgid "Playback"
 msgstr "Lecture"
 
-#: ../src/pop_menu.py:363 ../src/pop_menu.py:496 ../src/pop_menu.py:516
+#: ../src/pop_menu.py:363 ../src/pop_menu.py:498 ../src/pop_menu.py:518
 #: ../src/selectionlist.py:309 ../src/widgets_device.py:117
 #: ../src/widgets_playlist.py:530
 msgid "Playlists"
@@ -653,29 +653,29 @@ msgstr "Supprimer le morceau"
 msgid "Modify information"
 msgstr "Modifier les informations"
 
-#: ../src/pop_menu.py:490 ../data/SettingsDialog.ui.h:10
+#: ../src/pop_menu.py:492 ../data/SettingsDialog.ui.h:10
 msgid "Artist"
 msgstr "Artiste"
 
-#: ../src/pop_menu.py:499 ../src/pop_menu.py:519 ../data/PlaylistView.ui.h:1
+#: ../src/pop_menu.py:501 ../src/pop_menu.py:521 ../data/PlaylistView.ui.h:1
 msgid "Edit"
 msgstr "Editer"
 
-#: ../src/pop_menu.py:627
-msgid "Youtube video address"
-msgstr "Adresse de la vidéo Youtube"
+#: ../src/pop_menu.py:629
+msgid "YouTube video address"
+msgstr "Adresse de la vidéo YouTube"
 
-#: ../src/pop_menu.py:682
+#: ../src/pop_menu.py:684
 msgid "Save genre"
 msgstr "Enregistrer le genre"
 
-#: ../src/pop_menu.py:703 ../data/ExternalSearchRow.ui.h:1
+#: ../src/pop_menu.py:705 ../data/ExternalSearchRow.ui.h:1
 msgid "Save into collection"
 msgstr "Enregistrer dans la collection"
 
 #. Translators: radio context
 #. Translators: artist context
-#: ../src/pop_radio.py:84 ../src/pop_tunein.py:223 ../src/view_artist.py:329
+#: ../src/pop_radio.py:84 ../src/pop_tunein.py:223 ../src/view_artist.py:330
 msgid "Add"
 msgstr "Ajouter"
 
@@ -753,11 +753,11 @@ msgstr "Préférences"
 msgid "You need to install kid3-cli"
 msgstr "Vous devez installer kid3-cli"
 
-#: ../src/toolbar_end.py:55
+#: ../src/toolbar_end.py:50
 msgid "Populars"
 msgstr "Populaires"
 
-#: ../src/toolbar_end.py:56
+#: ../src/toolbar_end.py:51
 msgid "Recently added"
 msgstr "Ajoutés récemment"
 
@@ -777,7 +777,7 @@ msgid "The the"
 msgstr "The the La la Le le Les les"
 
 #. Translators: artist context
-#: ../src/view_artist.py:323 ../src/widgets_album.py:370
+#: ../src/view_artist.py:324 ../src/widgets_album.py:370
 msgid "Remove"
 msgstr "Enlever"
 
@@ -785,18 +785,12 @@ msgstr "Enlever"
 msgid "Please unlock your device"
 msgstr "Merci de déverrouiller votre appareil"
 
-#: ../src/view_device.py:52
-msgid ""
-"Lollypop sync changed due to limitations in some devices.\n"
-"Please remove Music/lollypop folder on your device..."
-msgstr "La synchronisation de Lollypop a changée à cause de limitations sur certains périphériques.\nVeuillez supprimer le dossier Music/Lollypop de votre périphérique."
-
-#: ../src/view_device.py:112 ../src/view_device.py:209
+#: ../src/view_device.py:94 ../src/view_device.py:191
 #, python-format
 msgid "Synchronize %s"
 msgstr "Synchroniser %s"
 
-#: ../src/view_device.py:163
+#: ../src/view_device.py:145
 msgid "Cancel synchronization"
 msgstr "Annuler la synchronisation"
 
@@ -1181,8 +1175,8 @@ msgstr "Google Web Services a besoin d'une clé d'API personnalisée.\nSans cett
 #: ../data/SettingsDialog.ui.h:39
 msgid ""
 "You need to enable \"Custom Search API\" \n"
-"and \"Youtube Data API\" for your project."
-msgstr "Vous devez activer \"Custom Search API\"\net \"Youtube Data API\" pour votre projet."
+"and \"YouTube Data API\" for your project."
+msgstr "Vous devez activer \"Custom Search API\"\net \"YouTube Data API\" pour votre projet."
 
 #: ../data/SettingsDialog.ui.h:41
 msgid "Configure Last.fm credentials"
