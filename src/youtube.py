@@ -130,6 +130,9 @@ class Youtube:
                 return (None, None)
         t = TagReader()
         with SqlCursor(Lp().db) as sql:
+            # Happen often with Itunes/Spotify
+            if album_artist not in item.artists:
+                item.artists.append(album_artist)
             artists = "; ".join(item.artists)
             artist_ids = t.add_artists(artists, album_artist, "")
             album_artist_ids = t.add_album_artists(album_artist, "")
