@@ -13,9 +13,10 @@
 import gi
 gi.require_version('Gtk', '3.0')
 gi.require_version('Gst', '1.0')
+gi.require_version('GstAudio', '1.0')
+gi.require_version('GstPbutils', '1.0')
 gi.require_version('Notify', '0.7')
 gi.require_version('TotemPlParser', '1.0')
-gi.require_version('GstPbutils', '1.0')
 from gi.repository import Gtk, Gio, GLib, Gdk, Notify, TotemPlParser
 
 from pickle import dump
