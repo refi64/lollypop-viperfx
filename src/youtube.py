@@ -203,11 +203,23 @@ class Youtube:
             (status, data, tag) = f.load_contents(None)
             if status:
                 decode = json.loads(data.decode('utf-8'))
-                return decode['items'][0]['id']['videoId']
+                dic = {}
+                # Here we are going to look wich youtube title looks
+                # like original title
+                for i in decode['items']:
+                    title = i['snippet']['title']
+                    split = item.name.split(' ')
+                    # Remove part of orig title found in youtube title
+                    for s in split:
+                        title.replace(s, '')
+                    dic[len(title)] = i['id']['videoId']
+                # Return url from first dic item
+                # item() order by key
+                return list(dic.items())[0][1]
         except IndexError:
             pass
         except Exception as e:
-            print("Youtube::__get_youtube_id():", e, f.get_uri())
+            print("Youtube::__get_youtube_id():", e)
             self.__fallback = True
             return self.__get_youtube_id_fallback(item)
         return None
@@ -241,7 +253,7 @@ class Youtube:
                 urls = findall(reg, html)
                 return urls[0]
         except Exception as e:
-            print("Youtube::__get_youtube_id_fallback():", e, f.get_uri())
+            print("Youtube::__get_youtube_id_fallback():", e)
             self.__fallback = True
         return None
 
