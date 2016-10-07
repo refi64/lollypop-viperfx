@@ -81,8 +81,9 @@ class BinPlayer(BasePlayer):
         if self.__preview is not None:
             output = Lp().settings.get_value('preview-output').get_string()
             pulse = Gst.ElementFactory.make('pulsesink', 'output')
-            pulse.set_property('device', output)
-            self.__preview.set_property('audio-sink', pulse)
+            if pulse is not None:
+                pulse.set_property('device', output)
+                self.__preview.set_property('audio-sink', pulse)
 
     def is_playing(self):
         """
