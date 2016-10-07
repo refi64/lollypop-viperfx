@@ -20,6 +20,7 @@ from re import findall
 from lollypop.sqlcursor import SqlCursor
 from lollypop.tagreader import TagReader
 from lollypop.objects import Track, Album
+from lollypop.utils import escape
 from lollypop.define import Lp, DbPersistent, GOOGLE_API_ID, Type
 
 
@@ -209,8 +210,8 @@ class Youtube:
                 # Start with an impossible bad match
                 best = 10000
                 for i in decode['items']:
-                    title = i['snippet']['title'].lower()
-                    split = item.name.split(' ')
+                    title = escape(i['snippet']['title'].lower(), [])
+                    split = escape(item.name, []).split(' ')
                     # Remove common word for a valid track
                     title.replace('official', '')
                     title.replace('video', '')
@@ -220,6 +221,8 @@ class Youtube:
                     l = len(title)
                     if l < best:
                         best = l
+                    elif l == best:
+                        continue  # Keep first result
                     dic[l] = i['id']['videoId']
                 # Return url from first dic item
                 if best == 10000:

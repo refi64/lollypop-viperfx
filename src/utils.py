@@ -34,14 +34,15 @@ def noaccents(string):
         return u"".join([c for c in nfkd_form if not unicodedata.combining(c)])
 
 
-def escape(str):
+def escape(str, ignore=['_', '-', ' ', '.']):
     """
         Escape string
         @param string as str
+        @param ignore as [str]
     """
     return "".join([c for c in str if
                     c.isalpha() or
-                    c.isdigit() or c in ['_', '-', ' ', '.']]).rstrip()
+                    c.isdigit() or c in ignore]).rstrip()
 
 
 def debug(str):
