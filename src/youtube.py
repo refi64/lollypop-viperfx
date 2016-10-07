@@ -206,16 +206,26 @@ class Youtube:
                 dic = {}
                 # Here we are going to look wich youtube title looks
                 # like original title
+                # Start with an impossible bad match
+                best = 10000
                 for i in decode['items']:
-                    title = i['snippet']['title']
+                    title = i['snippet']['title'].lower()
                     split = item.name.split(' ')
+                    # Remove common word for a valid track
+                    title.replace('official', '')
+                    title.replace('video', '')
                     # Remove part of orig title found in youtube title
                     for s in split:
-                        title.replace(s, '')
-                    dic[len(title)] = i['id']['videoId']
+                        title.replace(s.lower(), '')
+                    l = len(title)
+                    if l < best:
+                        best = l
+                    dic[l] = i['id']['videoId']
                 # Return url from first dic item
-                # item() order by key
-                return list(dic.items())[0][1]
+                if best == 10000:
+                    return None
+                else:
+                    return dic[best]
         except IndexError:
             pass
         except Exception as e:
