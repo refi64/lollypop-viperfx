@@ -67,6 +67,9 @@ class Youtube:
             @param persistent as DbPersistent
         """
         nb_items = len(item.subitems)
+        # Should not happen but happen :-/
+        if nb_items == 0:
+            return
         start = 0
         album_artist = item.subitems[0].artists[0]
         album_id = None
