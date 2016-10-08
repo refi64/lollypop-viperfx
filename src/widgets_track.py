@@ -348,6 +348,8 @@ class PlaylistRow(Row):
         self.__album_label = Gtk.Label.new(self._track.album.name)
         self.__album_label.set_ellipsize(Pango.EllipsizeMode.END)
         self.__album_label.get_style_context().add_class('dim-label')
+        self.__album_label.set_hexpand(True)
+        self.__album_label.set_property('halign', Gtk.Align.END)
         self.__header.add(self.__album_label)
         self._num_label.set_property('valign', Gtk.Align.END)
         self._title_label.set_property('valign', Gtk.Align.END)
