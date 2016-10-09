@@ -190,6 +190,7 @@ class CollectionScanner(GObject.GObject, TagReader):
                     # If songs exists and mtime unchanged, continue,
                     # else rescan
                     if uri in orig_tracks:
+                        orig_tracks.remove(uri)
                         i += 1
                         if mtime <= mtimes[uri]:
                             i += 1
