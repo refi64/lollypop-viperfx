@@ -9,8 +9,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lollypop\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-10-06 16:02+0200\n"
-"PO-Revision-Date: 2016-10-06 14:04+0000\n"
+"POT-Creation-Date: 2016-10-09 23:06+0200\n"
+"PO-Revision-Date: 2016-10-09 21:09+0000\n"
 "Last-Translator: Cédric Bellegarde <web@adishatz.org>\n"
 "Language-Team: French (http://www.transifex.com/gnumdk/lollypop/language/fr/)\n"
 "MIME-Version: 1.0\n"
@@ -48,8 +48,8 @@ msgid "Search over network"
 msgstr "Rechercher sur le réseau"
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:8
-msgid "Save artwork in tags"
-msgstr "Sauvegarde les pochettes dans les tags"
+msgid "Save artwork/popularity in tags"
+msgstr "Sauvegarder les pochettes et la popularité dans les tags"
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:9
 msgid "Repeat by default"
@@ -331,14 +331,14 @@ msgstr "Support de HiDPI"
 msgid "Tunein support"
 msgstr "Support de Tunein"
 
-#: ../src/application.py:32
+#: ../src/application.py:33
 msgid ""
 "    - Scrobbler disabled\n"
 "    - Auto cover download disabled\n"
 "    - Artist informations disabled"
 msgstr "- Scrobbler désactivé\n- Téléchargement automatique des pochettes désactivé\n- Informations sur les artistes désactivée"
 
-#: ../src/application.py:466
+#: ../src/application.py:467
 msgid "Lollypop: You need to install yelp."
 msgstr "Lollypop: Vous devez installer yelp."
 
@@ -494,7 +494,7 @@ msgstr "Lollypop a détecté un dossier vide."
 msgid "Check your music settings."
 msgstr "Vérifiez vos paramètres de musique."
 
-#: ../src/collectionscanner.py:255 ../src/database_albums.py:329
+#: ../src/collectionscanner.py:259 ../src/database_albums.py:329
 #: ../src/database_artists.py:104 ../src/database_genres.py:69
 #: ../src/database_tracks.py:247 ../src/selectionlist.py:388
 #: ../src/tagreader.py:86 ../src/tagreader.py:101 ../src/tagreader.py:116
@@ -772,7 +772,7 @@ msgstr "Listes de lecture en cours"
 #. Handle language ordering
 #. Translators: Add here words that shoud be ignored for artist sort order
 #. Translators: Add The the too
-#: ../src/utils.py:125
+#: ../src/utils.py:126
 msgid "The the"
 msgstr "The the La la Le le Les les"
 
@@ -1114,8 +1114,8 @@ msgid "Do not repeat by default"
 msgstr "Ne pas répéter par défaut"
 
 #: ../data/SettingsDialog.ui.h:22
-msgid "Save artwork in files"
-msgstr "Sauvegarder les pochettes dans les fichiers"
+msgid "Save changes to files"
+msgstr "Sauvegarder les modifications dans les fichiers"
 
 #: ../data/SettingsDialog.ui.h:23
 msgid "Preview tracks on"
