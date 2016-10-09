@@ -165,6 +165,18 @@ class CollectionScanner(GObject.GObject, TagReader):
 
         with SqlCursor(Lp().db) as sql:
             i = 0
+            # Get deleted files
+            deleted = list(orig_tracks)
+            for uri in new_tracks:
+                if uri in deleted:
+                    deleted.remove(uri)
+            # Clean deleted files
+            for uri in deleted:
+                i += 1
+                GLib.idle_add(self.__update_progress, i, count)
+                if uri.startswith('file:'):
+                    self.__del_from_db(uri)
+            # Look for new files/modified files
             for uri in new_tracks:
                 if self.__thread is None:
                     return
@@ -178,7 +190,6 @@ class CollectionScanner(GObject.GObject, TagReader):
                     # If songs exists and mtime unchanged, continue,
                     # else rescan
                     if uri in orig_tracks:
-                        orig_tracks.remove(uri)
                         i += 1
                         if mtime <= mtimes[uri]:
                             i += 1
@@ -201,14 +212,6 @@ class CollectionScanner(GObject.GObject, TagReader):
                 except Exception as e:
                     print("CollectionScanner::__scan()", e)
                 i += 1
-
-            # Clean deleted files
-            for uri in orig_tracks:
-                i += 1
-                GLib.idle_add(self.__update_progress, i, count)
-                if uri.startswith('file:'):
-                    self.__del_from_db(uri)
-
             sql.commit()
         GLib.idle_add(self.__finish)
         del self.__history
