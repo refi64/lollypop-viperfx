@@ -213,7 +213,7 @@ class AlbumArt(BaseArt, TagReader):
         """
         try:
             artpath = None
-            save_to_tags = Lp().settings.get_value('artwork-tags') and\
+            save_to_tags = Lp().settings.get_value('save-to-tags') and\
                 which("kid3-cli") is not None
             album = Album(album_id)
 
@@ -267,7 +267,7 @@ class AlbumArt(BaseArt, TagReader):
                 path = os.path.join(album.path, artwork)
                 f = Gio.File.new_for_path(path)
                 f.trash()
-            if Lp().settings.get_value('artwork-tags') and\
+            if Lp().settings.get_value('save-to-tags') and\
                     which("kid3-cli") is not None:
                 argv = ["kid3-cli", "-c", "select all", "-c",
                         "set picture:'' ''"]

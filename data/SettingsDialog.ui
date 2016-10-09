@@ -437,11 +437,11 @@
               </packing>
             </child>
             <child>
-              <object class="GtkLabel" id="artworktags">
+              <object class="GtkLabel" id="saveintags">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
                 <property name="halign">start</property>
-                <property name="label" translatable="yes">Save artwork in files</property>
+                <property name="label" translatable="yes">Save changes to files</property>
               </object>
               <packing>
                 <property name="left_attach">0</property>

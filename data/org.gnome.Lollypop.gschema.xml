@@ -41,9 +41,9 @@
             <summary>Search over network</summary>
             <description></description>
         </key>
-        <key type="b" name="artwork-tags">
+        <key type="b" name="save-to-tags">
             <default>false</default>
-            <summary>Save artwork in tags</summary>
+            <summary>Save artwork/popularity in tags</summary>
             <description></description>
         </key>
         <key type="b" name="repeat">

@@ -148,7 +148,7 @@ class SettingsDialog:
             grid.attach(label, l, t, w, h)
         else:
             switch_artwork_tags.set_state(
-                                      Lp().settings.get_value('artwork-tags'))
+                                      Lp().settings.get_value('save-to-tags'))
 
         switch_genres = builder.get_object('switch_genres')
         switch_genres.set_state(Lp().settings.get_value('show-genres'))
@@ -346,7 +346,7 @@ class SettingsDialog:
             @param widget as Gtk.Switch
             @param state as bool
         """
-        Lp().settings.set_value('artwork-tags', GLib.Variant('b', state))
+        Lp().settings.set_value('save-to-tags', GLib.Variant('b', state))
 
     def _update_compilations_setting(self, widget, state):
         """

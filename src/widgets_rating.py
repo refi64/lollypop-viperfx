@@ -10,9 +10,12 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-from gi.repository import Gtk
+from gi.repository import Gtk, GLib
 
+from lollypop.objects import Track
 from lollypop.define import Lp
+
+from shutil import which
 
 
 class RatingWidget(Gtk.Bin):
@@ -106,4 +109,27 @@ class RatingWidget(Gtk.Bin):
             position = self._stars.index(event_star)
         else:
             position = -1
-        self._object.set_popularity(position + 1)
+        pop = position + 1
+        self._object.set_popularity(pop)
+        # Save to tags if needed
+        if Lp().settings.get_value('save-to-tags') and\
+                which("kid3-cli") is not None and\
+                isinstance(self._object, Track) and\
+                not self._object.is_youtube:
+            if pop == 0:
+                value = 0
+            elif pop == 1:
+                value = 1
+            elif pop == 2:
+                value = 64
+            elif pop == 3:
+                value = 128
+            elif pop == 4:
+                value = 196
+            else:
+                value = 255
+            path = GLib.filename_from_uri(self._object.uri)[0]
+            argv = ["kid3-cli", "-c", "select all", "-c",
+                    "set pop: %s" % value, path, None]
+            GLib.spawn_sync(None, argv, None,
+                            GLib.SpawnFlags.SEARCH_PATH, None)
