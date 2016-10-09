@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-10-06 16:02+0200\n"
+"POT-Creation-Date: 2016-10-09 23:06+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -47,7 +47,7 @@ msgid "Search over network"
 msgstr ""
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:8
-msgid "Save artwork in tags"
+msgid "Save artwork/popularity in tags"
 msgstr ""
 
 #: ../data/org.gnome.Lollypop.gschema.xml.h:9
@@ -329,14 +329,14 @@ msgstr ""
 msgid "Tunein support"
 msgstr ""
 
-#: ../src/application.py:32
+#: ../src/application.py:33
 msgid ""
 "    - Scrobbler disabled\n"
 "    - Auto cover download disabled\n"
 "    - Artist informations disabled"
 msgstr ""
 
-#: ../src/application.py:466
+#: ../src/application.py:467
 msgid "Lollypop: You need to install yelp."
 msgstr ""
 
@@ -492,7 +492,7 @@ msgstr ""
 msgid "Check your music settings."
 msgstr ""
 
-#: ../src/collectionscanner.py:255 ../src/database_albums.py:329
+#: ../src/collectionscanner.py:259 ../src/database_albums.py:329
 #: ../src/database_artists.py:104 ../src/database_genres.py:69
 #: ../src/database_tracks.py:247 ../src/selectionlist.py:388
 #: ../src/tagreader.py:86 ../src/tagreader.py:101 ../src/tagreader.py:116
@@ -770,7 +770,7 @@ msgstr ""
 #. Handle language ordering
 #. Translators: Add here words that shoud be ignored for artist sort order
 #. Translators: Add The the too
-#: ../src/utils.py:125
+#: ../src/utils.py:126
 msgid "The the"
 msgstr ""
 
@@ -1112,7 +1112,7 @@ msgid "Do not repeat by default"
 msgstr ""
 
 #: ../data/SettingsDialog.ui.h:22
-msgid "Save artwork in files"
+msgid "Save changes to files"
 msgstr ""
 
 #: ../data/SettingsDialog.ui.h:23
