@@ -210,6 +210,16 @@ class Application(Gtk.Application):
                     from lollypop.charts import Charts
                     self.charts = Charts()
                     self.charts.update()
+                    cs_api_key = self.settings.get_value(
+                                                     'cs-api-key').get_string()
+                    default_cs_api_key = self.settings.get_default_value(
+                                                     'cs-api-key').get_string()
+                    if (not cs_api_key or
+                        cs_api_key == default_cs_api_key) and\
+                            self.notify is not None:
+                        self.notify.send(
+                         _("Google Web Services need a custom API key"),
+                         _("Lollypop needs this to search artwork and music."))
                 else:
                     self.settings.set_value('network-search',
                                             GLib.Variant('b', False))

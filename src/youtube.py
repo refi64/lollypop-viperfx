@@ -15,7 +15,6 @@ from gi.repository import GLib, Gio
 from threading import Thread
 import json
 from time import time
-from gettext import gettext as _
 
 from lollypop.sqlcursor import SqlCursor
 from lollypop.tagreader import TagReader
@@ -247,10 +246,6 @@ class Youtube:
         except Exception as e:
             print("Youtube::__get_youtube_id():", e)
             self.__fallback = True
-            if Lp().notify is not None:
-                Lp().notify.send(
-                        _("Google Web Services need a custom API key"),
-                        _("Lollypop needs this to search artwork and music."))
             return self.__get_youtube_id_fallback(item)
         return None
 
