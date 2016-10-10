@@ -9,8 +9,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lollypop\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-10-09 23:06+0200\n"
-"PO-Revision-Date: 2016-10-09 21:09+0000\n"
+"POT-Creation-Date: 2016-10-11 14:10+0200\n"
+"PO-Revision-Date: 2016-10-11 12:12+0000\n"
 "Last-Translator: Cédric Bellegarde <web@adishatz.org>\n"
 "Language-Team: French (http://www.transifex.com/gnumdk/lollypop/language/fr/)\n"
 "MIME-Version: 1.0\n"
@@ -338,7 +338,15 @@ msgid ""
 "    - Artist informations disabled"
 msgstr "- Scrobbler désactivé\n- Téléchargement automatique des pochettes désactivé\n- Informations sur les artistes désactivée"
 
-#: ../src/application.py:467
+#: ../src/application.py:221
+msgid "Google Web Services need a custom API key"
+msgstr "Google Web Services a besoin d'une clé d'API personnalisée"
+
+#: ../src/application.py:222
+msgid "Lollypop needs this to search artwork and music."
+msgstr "Lollypop a besoin de cela pour rechercher des pochettes et de la musique"
+
+#: ../src/application.py:477
 msgid "Lollypop: You need to install yelp."
 msgstr "Lollypop: Vous devez installer yelp."
 
