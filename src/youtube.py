@@ -214,13 +214,19 @@ class Youtube:
                 best = 10000
                 for i in decode['items']:
                     title = escape(i['snippet']['title'].lower(), [])
+                    artist = escape(artist.lower(), [])
                     split = escape(item.name, []).split(' ')
                     # Remove common word for a valid track
-                    title.replace('official', '')
-                    title.replace('video', '')
+                    title = title.replace('official', '')
+                    title = title.replace('video', '')
+                    title = title.replace('audio', '')
+                    # Remove artist name
+                    title = title.replace(artist, '')
+                    # Remove album name
+                    title = title.replace(item.album.lower(), '')
                     # Remove part of orig title found in youtube title
                     for s in split:
-                        title.replace(s.lower(), '')
+                        title = title.replace(s.lower(), '')
                     l = len(title)
                     if l < best:
                         best = l
