@@ -12,11 +12,9 @@
 
 from gi.repository import GLib, Gio
 
-from gettext import gettext as _
 from threading import Thread
 import json
 from time import time
-from re import findall
 
 from lollypop.sqlcursor import SqlCursor
 from lollypop.tagreader import TagReader
@@ -248,9 +246,6 @@ class Youtube:
         except Exception as e:
             print("Youtube::__get_youtube_id():", e)
             self.__fallback = True
-            if Lp().notify is not None:
-                GLib.idle_add(Lp().notify.send, _("YouTube: out of quota!"),
-                              _("Add an API key in settings."))
             return self.__get_youtube_id_fallback(item)
         return None
 
@@ -260,34 +255,11 @@ class Youtube:
             @param item as SearchItem
             @return youtube id as str
         """
-        def get_video_ids(item):
-            unescaped = "%s %s" % (artist,
-                                   item.name)
-            search = GLib.uri_escape_string(
-                            unescaped.replace(' ', '+'),
-                            None,
-                            True)
-            f = Gio.File.new_for_uri("https://www.youtube.com/"
-                                     "results?search_query=%s" % search)
-            (status, data, tag) = f.load_contents(None)
-            if status:
-                html = data.decode('utf-8')
-                reg = r'<a.*href=[\'"]?/watch\?v=([^\'" >]+)'
-                ids = findall(reg, html)
-                return ids
-            return []
-
-        def get_title(yid):
-            f = Gio.File.new_for_uri("https://www.youtube.com/"
-                                     "watch?v=%s" % yid)
-            (status, data, tag) = f.load_contents(None)
-            if status:
-                html = data.decode('utf-8')
-                reg = r'<title>([^<]+)</title>'
-                title = findall(reg, html)
-                return title[0]
+        try:
+            from bs4 import BeautifulSoup
+        except:
+            print("$ sudo pip3 install beautifulsoup4")
             return None
-
         try:
             # Try to handle compilations (itunes one)
             if item.artists[0].lower() == "various artists":
@@ -297,13 +269,33 @@ class Youtube:
                     artist = ""
             else:
                 artist = item.artists[0]
-            ids = get_video_ids(item)
+
+            unescaped = "%s %s" % (artist,
+                                   item.name)
+            search = GLib.uri_escape_string(
+                            unescaped.replace(' ', '+'),
+                            None,
+                            True)
+            f = Gio.File.new_for_uri("https://www.youtube.com/"
+                                     "results?search_query=%s" % search)
+            (status, data, tag) = f.load_contents(None)
+            if not status:
+                return None
+
+            html = data.decode('utf-8')
+            soup = BeautifulSoup(html, 'html.parser')
+            ytems = []
+            for link in soup.findAll('a'):
+                href = link.get('href')
+                title = link.get('title')
+                if href is None or title is None:
+                    continue
+                if href.startswith("/watch?v="):
+                    href = href.replace("/watch?v=", "")
+                    ytems.append((href, title))
             dic = {}
             best = 10000
-            for yid in ids:
-                title = get_title(yid)
-                if title is None:
-                    continue
+            for (yid, title) in ytems:
                 score = self.__get_youtube_score(title,
                                                  item.name,
                                                  artist,
@@ -318,7 +310,6 @@ class Youtube:
                 return None
             else:
                 return dic[best]
-            return None
         except Exception as e:
             print("Youtube::__get_youtube_id_fallback():", e)
             self.__fallback = True
