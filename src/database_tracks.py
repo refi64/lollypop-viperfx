@@ -385,16 +385,19 @@ class TracksDatabase:
         """
         with SqlCursor(Lp().db) as sql:
             result = sql.execute("SELECT tracks.rowid, tracks.name\
-                                 FROM tracks, track_artists, album_artists\
+                                 FROM tracks, track_artists,\
+                                 track_genres, album_artists\
                                  WHERE album_artists.album_id=tracks.album_id\
                                  AND track_artists.artist_id=?\
                                  AND track_artists.track_id=tracks.rowid\
+                                 AND track_genres.track_id=tracks.rowid\
+                                 AND track_genres.genre_id!=?\
                                  AND NOT EXISTS (\
                                   SELECT artist_id\
                                   FROM album_artists\
                                   WHERE artist_id=track_artists.artist_id\
                                   AND album_id=tracks.album_id)",
-                                 (artist_id,))
+                                 (artist_id, Type.CHARTS))
             return list(result)
 
     def get_populars(self):
