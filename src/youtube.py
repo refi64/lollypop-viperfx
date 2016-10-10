@@ -12,6 +12,7 @@
 
 from gi.repository import GLib, Gio
 
+from gettext import gettext as _
 from threading import Thread
 import json
 from time import time
@@ -169,10 +170,34 @@ class Youtube:
             GLib.idle_add(Lp().scanner.emit, 'artist-updated', artist_id, True)
         return (album_id, track_id)
 
+    def __get_youtube_score(self, page_title, title, artist, album):
+        """
+            Calculate youtube score
+            if page_title looks like (title, artist, album), score is lower
+            @return int
+        """
+        page_title = escape(page_title.lower(), [])
+        artist = escape(artist.lower(), [])
+        album = escape(album.lower(), [])
+        split = escape(title.lower(), []).split(' ')
+        # Remove common word for a valid track
+        page_title = page_title.replace('official', '')
+        page_title = page_title.replace('video', '')
+        page_title = page_title.replace('audio', '')
+        # Remove artist name
+        page_title = page_title.replace(artist, '')
+        # Remove album name
+        page_title = page_title.replace(album, '')
+        # Remove part of orig title found in youtube title
+        for s in split:
+            page_title = page_title.replace(s, '')
+        return len(page_title)
+
     def __get_youtube_id(self, item):
         """
             Get youtube id
             @param item as SearchItem
+            @return youtube id as str
         """
         if self.__fallback:
             return self.__get_youtube_id_fallback(item)
@@ -192,12 +217,6 @@ class Youtube:
                             True)
         key = Lp().settings.get_value('cs-api-key').get_string()
         try:
-            # if item.duration >= 1200:
-            #    duration = "videoDuration=long"
-            # elif item.duration >= 240:
-            #    duration = "videoDuration=medium"
-            # else:
-            #    duration = "videoDuration=short"
             f = Gio.File.new_for_uri("https://www.googleapis.com/youtube/v3/"
                                      "search?part=snippet&q=%s&"
                                      "type=video&key=%s&cx=%s" % (
@@ -208,31 +227,17 @@ class Youtube:
             if status:
                 decode = json.loads(data.decode('utf-8'))
                 dic = {}
-                # Here we are going to look wich youtube title looks
-                # like original title
-                # Start with an impossible bad match
                 best = 10000
                 for i in decode['items']:
-                    title = escape(i['snippet']['title'].lower(), [])
-                    artist = escape(artist.lower(), [])
-                    split = escape(item.name, []).split(' ')
-                    # Remove common word for a valid track
-                    title = title.replace('official', '')
-                    title = title.replace('video', '')
-                    title = title.replace('audio', '')
-                    # Remove artist name
-                    title = title.replace(artist, '')
-                    # Remove album name
-                    title = title.replace(item.album.lower(), '')
-                    # Remove part of orig title found in youtube title
-                    for s in split:
-                        title = title.replace(s.lower(), '')
-                    l = len(title)
-                    if l < best:
-                        best = l
-                    elif l == best:
+                    score = self.__get_youtube_score(i['snippet']['title'],
+                                                     item.name,
+                                                     artist,
+                                                     item.album)
+                    if score < best:
+                        best = score
+                    elif score == best:
                         continue  # Keep first result
-                    dic[l] = i['id']['videoId']
+                    dic[score] = i['id']['videoId']
                 # Return url from first dic item
                 if best == 10000:
                     return None
@@ -243,6 +248,9 @@ class Youtube:
         except Exception as e:
             print("Youtube::__get_youtube_id():", e)
             self.__fallback = True
+            if Lp().notify is not None:
+                GLib.idle_add(Lp().notify.send, _("YouTube: out of quota!"),
+                              _("Add an API key in settings."))
             return self.__get_youtube_id_fallback(item)
         return None
 
@@ -250,16 +258,9 @@ class Youtube:
         """
             Get youtube id (fallback)
             @param item as SearchItem
+            @return youtube id as str
         """
-        try:
-            # Try to handle compilations (itunes one)
-            if item.artists[0].lower() == "various artists":
-                if len(item.artists) > 1:
-                    artist = item.artists[1]
-                else:
-                    artist = ""
-            else:
-                artist = item.artists[0]
+        def get_video_ids(item):
             unescaped = "%s %s" % (artist,
                                    item.name)
             search = GLib.uri_escape_string(
@@ -272,8 +273,52 @@ class Youtube:
             if status:
                 html = data.decode('utf-8')
                 reg = r'<a.*href=[\'"]?/watch\?v=([^\'" >]+)'
-                urls = findall(reg, html)
-                return urls[0]
+                ids = findall(reg, html)
+                return ids
+            return []
+
+        def get_title(yid):
+            f = Gio.File.new_for_uri("https://www.youtube.com/"
+                                     "watch?v=%s" % yid)
+            (status, data, tag) = f.load_contents(None)
+            if status:
+                html = data.decode('utf-8')
+                reg = r'<title>([^<]+)</title>'
+                title = findall(reg, html)
+                return title[0]
+            return None
+
+        try:
+            # Try to handle compilations (itunes one)
+            if item.artists[0].lower() == "various artists":
+                if len(item.artists) > 1:
+                    artist = item.artists[1]
+                else:
+                    artist = ""
+            else:
+                artist = item.artists[0]
+            ids = get_video_ids(item)
+            dic = {}
+            best = 10000
+            for yid in ids:
+                title = get_title(yid)
+                if title is None:
+                    continue
+                score = self.__get_youtube_score(title,
+                                                 item.name,
+                                                 artist,
+                                                 item.album)
+                if score < best:
+                    best = score
+                elif score == best:
+                    continue  # Keep first result
+                dic[score] = yid
+            # Return url from first dic item
+            if best == 10000:
+                return None
+            else:
+                return dic[best]
+            return None
         except Exception as e:
             print("Youtube::__get_youtube_id_fallback():", e)
             self.__fallback = True
