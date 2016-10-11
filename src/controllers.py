@@ -149,6 +149,8 @@ class ProgressController:
             Update scale on current changed
             @param player as Player
         """
+        if self._show_volume_control:
+            return
         self._progress.clear_marks()
         if player.current_track.id is None:
             self._progress.set_sensitive(False)
