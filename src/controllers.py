@@ -218,12 +218,25 @@ class ProgressController:
         Lp().player.set_volume(scale.get_value())
         self._update_position(scale.get_value())
 
+    def _on_title_press_button(self, widget, event):
+        """
+            Show/Hide volume control
+            @param widget as Gtk.Widget
+            @param event as Gdk.Event
+        """
+        if event.button != 1:
+            self.show_hide_volume_control()
+        return True
+
     def _on_progress_press_button(self, scale, event):
         """
             On press, mark player as seeking
             @param scale as Gtk.Scale
             @param event as Gdk.Event
         """
+        if event.button != 1:
+            self.show_hide_volume_control()
+            return
         if self._show_volume_control:
             return
         if Lp().player.locked:
