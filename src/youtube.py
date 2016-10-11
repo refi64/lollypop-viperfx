@@ -28,6 +28,8 @@ class Youtube:
         Youtube helper
     """
 
+    __BAD_SCORE = 1000000
+
     def __init__(self):
         """
             Init helper
@@ -177,7 +179,10 @@ class Youtube:
         page_title = escape(page_title.lower(), [])
         artist = escape(artist.lower(), [])
         album = escape(album.lower(), [])
-        split = escape(title.lower(), []).split(' ')
+        title = escape(title.lower(), [])
+        # YouTube page title should be at least as long as wanted title
+        if len(page_title) < len(title):
+            return self.__BAD_SCORE
         # Remove common word for a valid track
         page_title = page_title.replace('official', '')
         page_title = page_title.replace('video', '')
@@ -186,9 +191,8 @@ class Youtube:
         page_title = page_title.replace(artist, '')
         # Remove album name
         page_title = page_title.replace(album, '')
-        # Remove part of orig title found in youtube title
-        for s in split:
-            page_title = page_title.replace(s, '')
+        # Remove title
+        page_title = page_title.replace(title, '')
         return len(page_title)
 
     def __get_youtube_id(self, item):
@@ -225,7 +229,7 @@ class Youtube:
             if status:
                 decode = json.loads(data.decode('utf-8'))
                 dic = {}
-                best = 10000
+                best = self.__BAD_SCORE
                 for i in decode['items']:
                     score = self.__get_youtube_score(i['snippet']['title'],
                                                      item.name,
@@ -237,7 +241,7 @@ class Youtube:
                         continue  # Keep first result
                     dic[score] = i['id']['videoId']
                 # Return url from first dic item
-                if best == 10000:
+                if best == self.__BAD_SCORE:
                     return None
                 else:
                     return dic[best]
@@ -294,7 +298,7 @@ class Youtube:
                     href = href.replace("/watch?v=", "")
                     ytems.append((href, title))
             dic = {}
-            best = 10000
+            best = self.__BAD_SCORE
             for (yid, title) in ytems:
                 score = self.__get_youtube_score(title,
                                                  item.name,
@@ -306,7 +310,7 @@ class Youtube:
                     continue  # Keep first result
                 dic[score] = yid
             # Return url from first dic item
-            if best == 10000:
+            if best == self.__BAD_SCORE:
                 return None
             else:
                 return dic[best]
