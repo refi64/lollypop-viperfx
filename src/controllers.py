@@ -191,7 +191,10 @@ class ProgressController:
         """
         if self._show_volume_control:
             self._timelabel.set_text(_("Volume"))
+            # Inhibit _on_value_changed()
+            self._show_volume_control = False
             self._progress.set_range(0.0, 1.0)
+            self._show_volume_control = True
             self._progress.set_sensitive(True)
             self._update_position()
         else:
