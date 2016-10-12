@@ -380,7 +380,7 @@ class EditMenu(BaseMenu):
     """
         Edition menu for album
     """
-    __TAG_EDITORS = ['exfalso', 'easytag', 'picard', 'puddletag', 'kid3-qt']
+    __TAG_EDITORS = ['kid3-qt', 'exfalso', 'easytag', 'picard', 'puddletag']
 
     def __init__(self, object_id, is_album, is_youtube):
         """
