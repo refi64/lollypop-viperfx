@@ -236,7 +236,7 @@ class ProgressController:
         """
         if event.button != 1:
             self.show_hide_volume_control()
-            return
+            return True
         if self._show_volume_control:
             return
         if Lp().player.locked:
@@ -250,7 +250,7 @@ class ProgressController:
             @param scale as Gtk.Scale
             @param event as Gdk.Event
         """
-        if self._show_volume_control:
+        if self._show_volume_control or event.button != 1:
             return
         value = scale.get_value()
         Lp().player.seek(value/60)
