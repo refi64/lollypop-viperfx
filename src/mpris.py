@@ -64,7 +64,7 @@ class Server:
             result = (result,)
 
         out_args = self.method_outargs[method_name]
-        if out_args not in ['()', None]:
+        if out_args != '()':
             variant = GLib.Variant(out_args, result)
             invocation.return_value(variant)
         else:
